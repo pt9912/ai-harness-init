@@ -58,12 +58,17 @@ einordnen() {
 
 GO_VERSION="${GO_VERSION:-1.27.0}"
 tmpbin="$(mktemp -d)"
+# Elternverzeichnis der zwei Klone, die der Vorlauf-Waechter-Abschnitt derselben Quelle
+# anlegt (flach und vollstaendig). chmod 755 aus demselben Grund wie beim tmprepo-Root
+# unten: das d-check-Modul mountet sie read-only in einen Nicht-Root-Container.
+tmpklon="$(mktemp -d)"
 tmprepo="$(mktemp -d)"
 tmprepo_doc="$(mktemp -d)"
 tmprepo_hex="$(mktemp -d)"
 tmprepo_cpphex="$(mktemp -d)"
-cleanup() { rm -rf "$tmpbin" "$tmprepo" "$tmprepo_doc" "$tmprepo_hex" "$tmprepo_cpphex"; }
+cleanup() { rm -rf "$tmpbin" "$tmpklon" "$tmprepo" "$tmprepo_doc" "$tmprepo_hex" "$tmprepo_cpphex"; }
 trap cleanup EXIT
+chmod 755 "$tmpklon"
 chmod 755 "$tmprepo_doc"
 # Das Root-Modul-Ziel (slice-046) wird von a-check als read-only Mount gelesen — wie die
 # anderen Ziele braucht es 0755 (ein echtes Adopter-Repo hat das).
@@ -281,6 +286,170 @@ if [ "$recomputed" != "$(cat "$stamp_file")" ]; then
 	echo "  selbst (fehlt/greift .harness/.gitignore nicht? zaehlt der Stempel in den Hash?) (slice-031)." >&2
 	exit 1
 fi
+
+# --- Vorlauf-Waechter der zwei history-lesenden Targets --------------------------------
+#
+# WAS DER HAPPY PATH NICHT SIEHT: `make gates` faehrt `doc-immutable`/`doc-commits` NICHT —
+# beide brauchen eine RANGE, ein gruener gates-Lauf im Ziel prueft den Waechter also nie
+# (LH-QA-01: ein Gate ueber leerem Pruefbereich, das gruen meldet, behauptet mehr als es
+# prueft). Gefahren wird er darum ausdruecklich, und in beiden Richtungen: der Abbruch
+# ueber einer leeren Range UND der gruene Lauf daneben. Eine Richtung allein belegt nichts
+# (AGENTS.md §3.6) — ein Waechter, der immer rot faerbt, bestuende die erste Haelfte.
+#
+# NUR HIER MESSBAR: die Kette Aggregator -> Fragment -> d-check.mk-Target -> abgelegtes
+# Skript entsteht erst im gebootstrappten Ziel. Der Go-Test liest den TEXT des Fragments
+# (internal/emit/emit_test.go), nicht seine Wirkung.
+#
+# KEIN EIGENER EXIT-CODE-ABSCHNITT fuer die git-Schritte unten: sie koennen kein Bild
+# anfordern, und der Einordner deckt Registry-Ausfaelle. Ein Abschnitt, der ein Ziel mit
+# `docker run` faehrt, traegt dagegen Einordnung UND Exit-Code — die Abdeckungs-Gleichung
+# im Kopf zaehlt beide Seiten.
+
+# waechter_bricht_ab faehrt ein bewachtes Target ueber einer Range, die ABBRECHEN MUSS, und
+# liest den Grund. `exit != 0` genuegt nicht (AGENTS.md §3.6): die Meldung muss vom
+# Vorlauf-Waechter kommen, und der Modul-Lauf darf nicht stattgefunden haben — er sitzt VOR
+# ihm, nicht danach.
+waechter_bricht_ab() {
+	local repo="$1" ziel="$2" range="$3" erwartet="$4" kennung="$5"
+	local out="" rc=0 grund="" flach
+	out="$( make --no-print-directory -C "$repo" "$ziel" RANGE="$range" 2>&1 )" || rc=$?
+	flach="$(tr -s '[:space:]' ' ' <<<"$out")"
+	if [ "$rc" -eq 0 ]; then
+		grund="make $ziel blieb ueber '$range' GRUEN (Exit 0)"
+	elif ! grep -qF -- "$erwartet" <<<"$flach"; then
+		grund="der Abbruch nennt '$erwartet' nicht (rot aus falschem Grund?)"
+	elif grep -qF -- "Datei(en) geprüft" <<<"$flach"; then
+		grund="der d-check-Lauf fand trotzdem statt — der Waechter steht NACH dem Modul-Lauf"
+	fi
+	if [ -n "$grund" ]; then
+		echo "full-smoke: FEHLER — $kennung ($ziel, RANGE=$range): $grund. Ausgabe:" >&2
+		printf '%s\n' "$out" >&2
+		einordnen "make $ziel im Ziel ($kennung)" "$out"
+		exit 1
+	fi
+	echo "full-smoke: Waechter greift ($kennung): make $ziel RANGE=$range bricht ab, ohne ein Modul zu fahren."
+}
+
+vorlauf_waechter_im_ziel() {
+	local repo="$1" kennung="$2"
+	local klon="$tmpklon/flach" voll="$tmpklon/voll"
+	local kette="" kette_rc=0 kette_commits="" kette_commits_rc=0
+	local z_guard="" z_docker="" fehlt="" tiefe=""
+
+	# (a) DIE KETTE DES ZIELS, an SEINER Kante gelesen (`make -n` fuehrt kein Rezept aus):
+	# der Waechter steht VOR dem Modul-Lauf, nicht daneben. Belegt wird die ORDNUNG — ein
+	# "beides kommt vor" haette keine, und `make -j` faehrt die Vorbedingungen eines Ziels
+	# vor dessen Rezept.
+	kette="$( make --no-print-directory -C "$repo" -n doc-immutable RANGE=HEAD..HEAD 2>&1 )" || kette_rc=$?
+	kette_commits="$( make --no-print-directory -C "$repo" -n doc-commits RANGE=HEAD..HEAD 2>&1 )" || kette_commits_rc=$?
+	if [ "$kette_rc" -ne 0 ] || [ "$kette_commits_rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: die Kette des Ziels ist nicht lesbar (make -n, Exit $kette_rc/$kette_commits_rc):" >&2
+		printf '%s\n' "$kette" "$kette_commits" >&2
+		exit 1
+	fi
+	z_guard="$(grep -nF 'history-range-guard.sh' <<<"$kette" | sed -n '1p' | cut -d: -f1)"
+	z_docker="$(grep -nF 'docker run' <<<"$kette" | sed -n '1p' | cut -d: -f1)"
+	if [ -z "$z_guard" ]; then fehlt="$fehlt [doc-immutable nennt den Waechter nicht]"; fi
+	if [ -z "$z_docker" ]; then fehlt="$fehlt [doc-immutable nennt den Modul-Lauf nicht]"; fi
+	if [ -n "$z_guard" ] && [ -n "$z_docker" ] && [ "$z_guard" -ge "$z_docker" ]; then
+		fehlt="$fehlt [der Waechter steht NACH dem Modul-Lauf: Zeile $z_guard gegen $z_docker]"
+	fi
+	if ! grep -qF 'history-range-guard.sh' <<<"$kette_commits"; then
+		fehlt="$fehlt [doc-commits nennt den Waechter nicht]"
+	fi
+	if [ -n "$fehlt" ]; then
+		echo "full-smoke: FEHLER — $kennung: die Kette des Ziels ist nicht die zugesagte:$fehlt (LH-QA-01). Ausgabe:" >&2
+		printf '%s\n' "$kette" >&2
+		exit 1
+	fi
+
+	# ECHTE Historie: eine leere Range gibt es nur, wo Commits liegen. Der zweite Commit ist
+	# leer (--allow-empty) — gemessen wird die Historie, nicht ein Diff.
+	if ! git -C "$repo" -c user.email=full-smoke@example.invalid -c user.name=full-smoke add -A; then
+		echo "full-smoke: FEHLER — $kennung: der gebootstrappte Baum liess sich nicht in den Index nehmen." >&2
+		exit 1
+	fi
+	if ! git -C "$repo" -c user.email=full-smoke@example.invalid -c user.name=full-smoke commit -q -m "Bootstrap (full-smoke)"; then
+		echo "full-smoke: FEHLER — $kennung: der Bootstrap-Commit ist nicht entstanden." >&2
+		exit 1
+	fi
+	if ! git -C "$repo" -c user.email=full-smoke@example.invalid -c user.name=full-smoke commit -q --allow-empty -m "zweiter Commit (full-smoke)"; then
+		echo "full-smoke: FEHLER — $kennung: der zweite Commit ist nicht entstanden — ohne ihn traegt die volle Range nichts." >&2
+		exit 1
+	fi
+	# ZWEI KLONE DERSELBEN QUELLE, ein Unterschied: --depth 1. `file://` ist Pflicht — bei
+	# einem lokalen Pfad ignoriert git die Tiefe und legt einen vollstaendigen Klon an.
+	if ! git clone -q --depth 1 "file://$repo" "$klon"; then
+		echo "full-smoke: FEHLER — $kennung: der flache Klon ist nicht entstanden." >&2
+		exit 1
+	fi
+	if ! git clone -q "file://$repo" "$voll"; then
+		echo "full-smoke: FEHLER — $kennung: der vollstaendige Klon ist nicht entstanden." >&2
+		exit 1
+	fi
+	# Vorbedingung der Sonde: der flache Klon muss wirklich flach sein. Traegt er die
+	# Historie, misst der naechste Schritt einen anderen Fall als den zugesagten.
+	tiefe="$(git -C "$klon" rev-list --count HEAD)"
+	if [ "$tiefe" -ne 1 ]; then
+		echo "full-smoke: FEHLER — $kennung: der Klon der Tiefe 1 traegt $tiefe Commit(s), nicht 1 — die Sonde misst einen anderen Fall." >&2
+		exit 1
+	fi
+
+	# (b) DER ANLASS, an BEIDEN history-lesenden Targets: eine aufloesbare, aber LEERE Range.
+	waechter_bricht_ab "$klon" doc-immutable "HEAD..HEAD" "ist aufloesbar, aber LEER" "$kennung"
+	waechter_bricht_ab "$klon" doc-commits "HEAD..HEAD" "ist aufloesbar, aber LEER" "$kennung"
+
+	# (c) DIE GRENZE, benannt statt ueberdehnt: eine UNAUFLOESBARE Basis bricht ebenfalls ab
+	# — hier deckt der Waechter nur dieselbe Klasse VOR dem teureren Image-Lauf; ohne ihn
+	# faellt der Modul-Lauf selbst. Dieselbe Range dient unten als Gegenprobe auf dem
+	# vollstaendigen Klon.
+	waechter_bricht_ab "$klon" doc-immutable "HEAD~1..HEAD" "ist NICHT aufloesbar" "$kennung"
+
+	# (d) OHNE DEN WAECHTER ist dieselbe leere Range "0 Befund(e)", Exit 0 — genau die
+	# Klasse, gegen die er steht. Gefahren wird d-check.mk DIREKT: das Modul ohne das
+	# Doc-Gate-Fragment (dieselbe Form wie `make smoke`, `-f d-check.mk`).
+	local roh="" roh_rc=0 rohgrund="" rohflach=""
+	roh="$( make --no-print-directory -C "$klon" -f d-check.mk doc-immutable RANGE=HEAD..HEAD 2>&1 )" || roh_rc=$?
+	rohflach="$(tr -s '[:space:]' ' ' <<<"$roh")"
+	if [ "$roh_rc" -ne 0 ]; then
+		rohgrund="das Modul ohne den Waechter endet mit Exit $roh_rc statt mit 0"
+	elif ! grep -qF -- '0 Befund(e)' <<<"$rohflach"; then
+		rohgrund="das Modul meldet ueber der leeren Range nicht '0 Befund(e)' — der Anlass ist hier nicht reproduziert"
+	fi
+	if [ -n "$rohgrund" ]; then
+		echo "full-smoke: FEHLER — $kennung (d-check.mk direkt): $rohgrund. Ausgabe:" >&2
+		printf '%s\n' "$roh" >&2
+		einordnen "make -f d-check.mk doc-immutable im flachen Klon ($kennung)" "$roh"
+		exit 1
+	fi
+	echo "full-smoke: OHNE den Waechter meldet dasselbe Modul ueber derselben leeren Range gruen — die Klasse 'blind und gruen', gegen die der Waechter steht:"
+	grep -F -- '0 Befund(e)' <<<"$roh" | sed -n '1p' | sed 's/^/full-smoke:   /'
+
+	# (e) DIE GEGENPROBE: derselbe Aufruf auf einem VOLLSTAENDIGEN Klon derselben Quelle,
+	# mit der Range, die der flache Klon nicht aufloesen konnte. Er bleibt gruen — der
+	# Waechter faerbt nichts rot, wo Historie da ist, und das Modul laeuft wirklich.
+	local voll_out="" voll_rc=0 vollgrund="" vollflach=""
+	voll_out="$( make --no-print-directory -C "$voll" doc-immutable RANGE=HEAD~1..HEAD 2>&1 )" || voll_rc=$?
+	vollflach="$(tr -s '[:space:]' ' ' <<<"$voll_out")"
+	if [ "$voll_rc" -ne 0 ]; then
+		vollgrund="derselbe Aufruf endet auf dem vollstaendigen Klon mit Exit $voll_rc statt mit 0"
+	elif ! grep -qF -- 'aufgeloest, 1 Commit(s) — OK' <<<"$vollflach"; then
+		vollgrund="der Waechter meldet den aufgeloesten Lauf nicht"
+	elif ! grep -qF -- 'Datei(en) geprüft' <<<"$vollflach"; then
+		vollgrund="der Modul-Lauf fand nicht statt — das Gruen waere dann keines des Moduls"
+	fi
+	if [ -n "$vollgrund" ]; then
+		echo "full-smoke: FEHLER — $kennung (vollstaendiger Klon): $vollgrund. Ausgabe:" >&2
+		printf '%s\n' "$voll_out" >&2
+		einordnen "make doc-immutable im vollstaendigen Klon ($kennung)" "$voll_out"
+		exit 1
+	fi
+	echo "full-smoke: Gegenprobe ($kennung): dieselbe Range auf dem vollstaendigen Klon bleibt gruen —"
+	grep -F -- 'aufgeloest, 1 Commit(s) — OK' <<<"$voll_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
+	grep -F -- 'Datei(en) geprüft' <<<"$voll_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
+}
+
+vorlauf_waechter_im_ziel "$tmprepo" "golang"
 
 # ZAEHNE zur Ortswahl aus slice-098 (AGENTS.md §3.6): dass die Feldliste DA ist, sagt noch
 # nicht, dass das Doku-Gate des Ziels sie LIEST — genau das unterscheidet den geprueften

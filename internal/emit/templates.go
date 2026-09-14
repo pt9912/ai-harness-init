@@ -648,11 +648,14 @@ func InitFragments() (map[string]string, error) { return initFragments() }
 // mindestens einer Bootstrap-Variante und sind darum nicht init-invariant.
 //
 // GRENZE: d-check.mk entsteht erst zur Bootstrap-Zeit aus `d-check --print-mk`
-// und liegt hier nicht vor. Aus ihm traegt die Menge allein `docs-check` ueber die
-// GATE_CHECKS-Kante des Doc-Gate-Fragments; die advisory `doc-*`-Rezepte fehlen.
-// Die Menge ist damit ENGER als die reale Ziel-Menge eines Bootstraps — die
-// fail-closed-Richtung aus MR-017: ein Anspruch auf `doc-links` wuerde
-// neutralisiert, obwohl das Ziel im Ziel-Repo existiert.
+// und liegt hier nicht vor. Aus ihm traegt die Menge `docs-check` ueber die
+// GATE_CHECKS-Kante des Doc-Gate-Fragments sowie `doc-immutable` und `doc-commits`
+// ueber deren Vorbedingungs-Zeilen — die zwei history-lesenden Targets schreibt
+// jeder Bootstrap, sie sind darum init-invariant. Die advisory `doc-*`-Rezepte
+// fehlen weiter. Die Menge ist damit um diese zwei Ziele BREITER und im Uebrigen
+// ENGER als die reale Ziel-Menge eines Bootstraps — die fail-closed-Richtung aus
+// MR-017: ein Anspruch auf `doc-links` wuerde neutralisiert, obwohl das Ziel im
+// Ziel-Repo existiert.
 func InitInvariantTargets() ([]string, error) {
 	fragments, err := initFragments()
 	if err != nil {

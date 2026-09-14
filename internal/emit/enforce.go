@@ -63,6 +63,13 @@ func enforceFiles() []enforceFile {
 		// gehoeren in denselben Emit, sonst laeuft der Guard fail-closed ins Leere.
 		{"templates/enforce/pretooluse-command-guard.sh", ".claude/hooks/pretooluse-command-guard.sh", 0o755},
 		{"templates/enforce/extract-command.awk", "tools/harness/extract-command.awk", 0o644},
+		// Vorlauf-Waechter der zwei history-lesenden d-check-Targets (doc-immutable/
+		// doc-commits). Das Doc-Gate-Fragment haengt ihn als Vorbedingung vor beide
+		// Targets: ueber einer aufloesbaren, aber leeren Commit-Range meldet ein
+		// history-lesendes Modul sonst "0 Befund(e)", Exit 0 — gruen ueber leerem
+		// Pruefbereich (MR-007 Setzung 3). Sprach-agnostisch wie der uebrige Kern:
+		// das Skript ist bash + git, ohne Docker und ohne Image.
+		{"templates/enforce/history-range-guard.sh", "tools/harness/history-range-guard.sh", 0o755},
 	}
 }
 

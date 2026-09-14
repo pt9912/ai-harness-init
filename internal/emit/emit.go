@@ -55,10 +55,34 @@ const DocGateMkPath = "harness/mk/doc-gate.mk"
 // docGateMk ist der Inhalt des Doc-Gate-Fragments — verbatim (der Digest/Pin lebt in
 // d-check.mk, nicht hier). `include d-check.mk` loest relativ zum Ziel-Root auf (make
 // laeuft dort), nicht relativ zum Fragment-Verzeichnis harness/mk/.
+//
+// Es traegt auch den Vorlauf-Waechter der zwei history-lesenden Targets: die Vorbedingung
+// `doc-immutable: history-range-guard` (und dieselbe fuer `doc-commits`) ergaenzt die
+// Targets aus d-check.mk, ohne ihr Rezept anzuruehren — die Datei schreibt das Werkzeug
+// bei jedem Bootstrap kanonisch neu, ein zweites Rezept hier waere beim naechsten Lauf weg.
+// Beide Targets stehen NICHT in GATE_CHECKS: ihre Range setzt der Aufrufer, ohne sie ist
+// der Pruefbereich nicht hermetisch.
 const docGateMk = `# harness/mk/doc-gate.mk — Doc-Gate-Fragment, emittiert von ai-harness-init.
 # Bindet das tool-generierte d-check.mk ein (Befund-Gate docs-check) und haengt
 # docs-check an GATE_CHECKS an; der Root-Aggregator faehrt es via make gates.
 include d-check.mk
+
+# VORLAUF-WAECHTER fuer die zwei history-lesenden Targets: ueber einer aufloesbaren,
+# aber LEEREN Commit-Range melden doc-immutable und doc-commits "0 Befund(e)",
+# Exit 0 — gruen ueber leerem Pruefbereich. Beide haengen darum an
+# history-range-guard, der VOR dem Modul-Lauf mit einer Meldung abbricht; das
+# Rezept der beiden Targets bleibt das aus d-check.mk.
+#
+# KEIN GATE: die Range setzt der Aufrufer, ohne sie ist der Pruefbereich nicht
+# hermetisch (LH-QA-01) — das Ziel steht darum nicht in GATE_CHECKS.
+.PHONY: history-range-guard
+
+history-range-guard: ## Vorlauf-Waechter: RANGE muss aufloesbar UND nicht leer sein (STAGED=1 prueft den Index)
+	@bash tools/harness/history-range-guard.sh "$(if $(STAGED),--staged,$(RANGE))"
+
+doc-immutable: history-range-guard
+doc-commits: history-range-guard
+
 GATE_CHECKS += docs-check
 `
 

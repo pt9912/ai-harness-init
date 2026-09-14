@@ -46,6 +46,10 @@ func TestEnforce_EmitsAllMechanicFiles(t *testing.T) {
 		".harness/.gitignore",
 		".claude/hooks/pretooluse-command-guard.sh",
 		"tools/harness/extract-command.awk",
+		// Vorlauf-Waechter der zwei history-lesenden d-check-Targets: er liegt im
+		// emittierten tools/harness/ (MR-005) und wird vom Doc-Gate-Fragment als
+		// Vorbedingung vor doc-immutable/doc-commits gehaengt.
+		"tools/harness/history-range-guard.sh",
 		"harness/mk/enforce.mk",
 		// Aufraeum- und Berichts-Fragment (slice-099): UNBEDINGT, also im
 		// Kollisions-Pre-Flight — anders als Wrapper und Feldliste, die den Zweig des
@@ -79,6 +83,7 @@ func TestEnforce_ScriptsExecutable(t *testing.T) {
 	for _, rel := range []string{
 		"tools/harness/working-tree-hash.sh",
 		"tools/harness/record-gates.sh",
+		"tools/harness/history-range-guard.sh",
 		".claude/hooks/stop-require-gates.sh",
 		".claude/hooks/pretooluse-command-guard.sh",
 	} {
@@ -208,6 +213,36 @@ func TestEnforce_GuardBashAwkOnly(t *testing.T) {
 	}
 	if !strings.Contains(guard, "tools/harness/extract-command.awk") {
 		t.Error("Guard referenziert den awk-Extraktor nicht am emittierten Pfad")
+	}
+}
+
+// TestEnforce_HistoryRangeGuardZaehltDieRangeMitGit (LH-QA-03): der emittierte
+// Vorlauf-Waechter entscheidet ueber die Commit-Zahl der angeforderten Range — der Wert,
+// an dem der Leerfall haengt — und ruft dazu `git`, kein Image.
+//
+// DIE ABWESENHEIT WIRD HIER NICHT GEGREPT: „docker" steht im erklaerenden Kopfkommentar,
+// und ein String-Grep darauf waere bruechig (dieselbe Grenze, die
+// TestEnforce_GuardBashAwkOnly fuer „node/jq" benennt). Geprueft werden die positiven
+// Struktur-Anker; dass der Modul-Lauf wirklich NICHT stattfindet, belegen der Lauf selbst
+// (harness/tools/full-smoke.sh: der Abbruch nennt keine geprueften Dateien) und die
+// Vorbedingungs-Bindung im Doc-Gate-Fragment.
+func TestEnforce_HistoryRangeGuardZaehltDieRangeMitGit(t *testing.T) {
+	guard := string(emit.EnforceFile("tools/harness/history-range-guard.sh"))
+	if guard == "" {
+		t.Fatal("tools/harness/history-range-guard.sh nicht emittiert (EnforceFile leer)")
+	}
+	for _, want := range []string{"git rev-list --count", "--staged", "set -euo pipefail"} {
+		if !strings.Contains(guard, want) {
+			t.Errorf("der Vorlauf-Waechter traegt %q nicht:\n%s", want, guard)
+		}
+	}
+	// Der Leerfall ist der Fall, den er faengt — die Meldung ist Teil des Vertrags (ein
+	// Abbruch ohne Grund waere von einem Tippfehler nicht zu unterscheiden).
+	if !strings.Contains(guard, "LEER") {
+		t.Errorf("der Waechter meldet den Leerfall nicht:\n%s", guard)
+	}
+	if strings.Contains(guard, "harness/tools/") {
+		t.Errorf("der Waechter nennt das lokale harness/tools/ (MR-005, emittiertes Layout ist tools/harness/):\n%s", guard)
 	}
 }
 

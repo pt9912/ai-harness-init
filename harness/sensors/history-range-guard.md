@@ -46,3 +46,23 @@ Details und Beleg stehen im Kopf von `harness/tools/history-range-guard.sh`, Abs
 ## Bindung
 
 Kein Gate-Versprechen; Vorlauf für `make adr-immutable`.
+
+## Im gebootstrappten Ziel
+
+Dieselbe Logik reist als emittiertes Werkzeug mit — `tools/harness/history-range-guard.sh`
+([`MR-005`](../conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption)) — und hängt dort an
+**beiden** history-lesenden Targets: das Doc-Gate-Fragment des Ziels ergänzt `doc-immutable`
+und `doc-commits` um den Wächter als **Vorbedingung**, er läuft also vor dem Modul-Lauf. Das
+Rezept der zwei Targets bleibt das aus dem tool-generierten `d-check.mk`, das der Bootstrap
+kanonisch neu schreibt. Das Ziel kennt kein `make adr-immutable`; die Bindung ist dort die
+Vorbedingung selbst, und sie liegt in keinem Gate: `make gates` fährt keines der zwei Targets
+(sie brauchen eine `RANGE`).
+
+Die emittierte Fassung unterscheidet sich in einem Punkt von
+[`harness/tools/history-range-guard.sh`](../tools/history-range-guard.sh): sie trägt die zwei
+`--decide`-Zweige nicht, über die der Dogfood den reinen `decide()`-Kern ohne `git` prüft
+(`test/history-range-guard.bats`) — im Ziel gibt es diesen Test nicht, die Entscheidung ist
+dieselbe Funktion. Rot gesehen wird die Ziel-Fassung in
+[`make full-smoke`](full-smoke.md): ein Klon der Tiefe 1 bricht über einer auflösbaren, aber
+leeren Range an beiden Targets mit der Meldung des Wächters ab, dieselbe Range auf einem
+vollständigen Klon bleibt grün.

@@ -158,6 +158,49 @@ func TestDocGate_FragmentWiresDocsCheck(t *testing.T) {
 	}
 }
 
+// TestDocGateMk_BindetDenVorlaufWaechter: das Doc-Gate-Fragment haengt den Vorlauf-Waechter
+// als Vorbedingung vor die zwei history-lesenden Targets — ohne deren Rezept anzuruehren
+// (die Rezepte kommen aus dem tool-generierten d-check.mk und werden bei jedem Bootstrap
+// kanonisch neu geschrieben).
+//
+// WOZU DER TEST, obwohl full-smoke die Wirkung faehrt: die Bindung ist eine Zeile, und eine
+// verschwundene Zeile ist im gebootstrappten Ziel GRUEN — `make gates` faehrt keines der
+// zwei Targets (beide brauchen eine RANGE). Der netzlose Waechter auf die Verdrahtung steht
+// darum hier; die Wirkung (Abbruch ueber einer leeren Range) belegen
+// harness/tools/full-smoke.sh und der Mutations-Fall 325.
+func TestDocGateMk_BindetDenVorlaufWaechter(t *testing.T) {
+	frag := emit.DocGateMk()
+	// Eine Vorbedingungs-Zeile je history-lesendem Target. Fehlt eine, bleibt genau ein
+	// Modul blind — und zwar das, dessen Target niemand mehr an den Waechter haengt.
+	for _, want := range []string{"doc-immutable: history-range-guard", "doc-commits: history-range-guard"} {
+		if !strings.Contains(frag, want) {
+			t.Errorf("Doc-Gate-Fragment bindet den Vorlauf-Waechter nicht: %q fehlt:\n%s", want, frag)
+		}
+	}
+	// Die Bindung steht NACH dem include: davor haengte sie an einem Target, das dieses
+	// Fragment erst mit der eingebundenen Datei erhaelt.
+	inkl, bindung := strings.Index(frag, "include d-check.mk"), strings.Index(frag, "doc-immutable: history-range-guard")
+	if inkl < 0 || bindung < inkl {
+		t.Errorf("die Bindung steht vor dem `include d-check.mk` (oder das include fehlt):\n%s", frag)
+	}
+	// Der Waechter ruft das EMITTIERTE Skript (tools/harness/, MR-005) — nicht den lokalen
+	// Pfad dieses Repos.
+	if !strings.Contains(frag, "tools/harness/history-range-guard.sh") {
+		t.Errorf("der Waechter ruft nicht das emittierte Skript (tools/harness/, MR-005):\n%s", frag)
+	}
+	if strings.Contains(frag, "harness/tools/") {
+		t.Errorf("das Fragment verweist auf das lokale harness/tools/ statt auf tools/harness/ (MR-005):\n%s", frag)
+	}
+	// KEIN GATE: die Range setzt der Aufrufer, ohne sie ist der Pruefbereich nicht
+	// hermetisch (LH-QA-01) — ein `GATE_CHECKS += history-range-guard` waere ein Gate
+	// ueber variablem Pruefbereich.
+	for _, zeile := range strings.Split(frag, "\n") {
+		if strings.HasPrefix(zeile, "GATE_CHECKS +=") && strings.Contains(zeile, "history-range-guard") {
+			t.Errorf("der Vorlauf-Waechter haengt an GATE_CHECKS — die Range variiert pro Lauf:\n%s", frag)
+		}
+	}
+}
+
 func TestAdaptMK_MissingAnchor(t *testing.T) {
 	if _, err := emit.AdaptMK([]byte("# voellig anderes Format\n"), "sha256:x"); err == nil {
 		t.Error("AdaptMK: kein Fehler trotz fehlendem DCHECK_IMAGE-Anker")
