@@ -157,7 +157,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
 **Drei Liefer-Punkte** (die ersten drei); alles darunter ist pro Slice konstant.
 
-- [ ] **(1) Die `# files:`-Angabe wird aufgelöst, nicht gelesen.** `harness/tools/mutate.sh` löst
+- [x] **(1) Die `# files:`-Angabe wird aufgelöst, nicht gelesen.** `harness/tools/mutate.sh` löst
       sie an **beiden** Stellen auf, die sie benutzen — `mutation_targets` (die Vereinigung für
       `target_fingerprint`) und `run_case` (`file_list` für `tar`/`sha256sum`) —, und die zwei
       Stellen benutzen dieselbe Funktion, nicht zwei Fassungen davon. Löst eine Angabe **nicht
@@ -167,14 +167,14 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       **Rot gesehen**, aus dem benannten Grund: `test/mutate-driver.bats` trägt den Fall, und die
       Meldung ist gelesen, nicht nur der Exit-Code
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
-- [ ] **(2) Kein Fall nennt einen Tag mehr, und alle fünf haben wieder Zähne.**
+- [x] **(2) Kein Fall nennt einen Tag mehr, und alle fünf haben wieder Zähne.**
       `git grep -nE '^# files: \.harness/baseline/v[0-9]' -- test/mutations/` ist leer, und
       `MUTATE_FORCE=1 make mutate` läuft ohne Befund — `MUTATE_FORCE`, weil der Beleg-Übersprung aus
       [`ADR-0035`](../../../../docs/plan/adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
       sonst genau den Lauf überspringt, der die Aussage trägt. Damit ist belegt, dass jeder der
       fünf Fälle seinen benannten Wächter **gegen den `v6.8.0`-Vorlagensatz** rot färbt, nicht nur
       gegen den Satz, für den sein `sed`-Anker geschrieben wurde.
-- [ ] **(3) Der neue Zahn steht als Fall, und die falsche Zusage ist weg.**
+- [x] **(3) Der neue Zahn steht als Fall, und die falsche Zusage ist weg.**
       `test/mutations/` trägt einen Fall, der die Schranke aus (1) rot färbt (`# verify: test-bats`
       gegen `test/mutate-driver.bats`) — ohne ihn wäre die Schranke selbst unbewacht, die Lage, die
       der Kopf von `mutate.sh` *„kuratiert heisst unvollstaendig"* nennt. In denselben fünf Fällen
@@ -182,20 +182,25 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Fehlschlag-Form zu (`merge_report`), die der Lauf nicht erreicht. `harness/sensors/mutate.md`
       §Grenze und der Kopf von `harness/tools/mutate.sh` nennen die Auflösungs-Form und was sie
       nicht deckt.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md) — der
+- [x] Doku-Update: [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md) — der
       öffentliche Vertrag, den dieser Slice berührt, ist die **Form der `# files:`-Angabe**; sie
       ist die Schnittstelle zwischen Treiber und jedem künftigen Fall. Der Gate-Index in
       [`harness/README.md`](../../../../harness/README.md) §Werkzeuge bleibt unberührt: `make mutate`
       steht dort schon, und der Slice ändert weder Ziel noch Charakter.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo führt Wellen (`ls docs/plan/planning/*.md` nennt die offenen), also prüft sie die nächste Welle-Closure, auch für diesen Slice ohne Wellen-Zugehörigkeit.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — **hier nicht geprüft**:
+      Dieses Repo führt Wellen (`ls docs/plan/planning/*.md` nennt drei offene), also prüft sie die
+      nächste Welle-Closure, auch für diesen Slice ohne Wellen-Zugehörigkeit. Was sie vorfinden
+      wird, ist gelegt: kein `liegt in`-Feld in §7 (nichts verkörpert, also keine Anker-Paarung),
+      der genannte Folge-Slice liegt als Datei in `open/`, und jede in §7 genannte Beobachtung
+      existiert als Verzeichnis mit nicht leerem `evidence/`.
 
 ## 3. Plan (vor Code)
 
@@ -289,23 +294,55 @@ dasteht.
   (`grep -c 'Kopiere nach' .harness/baseline/v6.8.0/templates/AGENTS.template.md` → 1; ebenso für
   die drei Anker der Fälle 224/244/248 in den beiden `archiv-stub-*`-Vorlagen; **keine
   Erwartungswerte**). Vorhandensein ist nicht Zahn: Ob der benannte Wächter fällt, sagt erst der
-  Lauf. — **Ausgang:** <bei Closure>
+  Lauf. — **Ausgang: entfallen** — der Lauf hat geantwortet. `MUTATE_FORCE=1 make mutate` →
+  `310 ok, 0 Befund(e)`: Jeder Fall, der grün bleibt, ist ein Befund (Treiber-Bedingung 3), und
+  kein Befund fiel. Unabhängig davor gemessen, über einer Kopie von `.harness/baseline/`: alle
+  fünf Mutationen ändern ihre Zieldatei im `v6.8.0`-Satz (Review Runde 1 §5). Das Risiko kann für
+  diese fünf Fälle nicht mehr eintreten; für **künftige** Sprünge bleibt es die Klasse
+  `mutations-fall-wird-von-berechtigter-aenderung-entwaffnet`, die unabhängig von diesem Slice
+  offen steht.
 - **Die Auflösung verschiebt den Beleg-Schlüssel.**
   [`ADR-0035`](../../../../docs/plan/adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
   bindet ihn an `isolation_key_files` und **nicht** an `mutation_targets`; wird die Auflösung an
   der falschen Stelle eingezogen, greift ein stehender Beleg über einem Baum, den niemand geprüft
-  hat — ein stilles Grün in genau dem Sensor, der stilles Grün finden soll. — **Ausgang:** <bei Closure>
+  hat — ein stilles Grün in genau dem Sensor, der stilles Grün finden soll. — **Ausgang: entfallen**
+  — die Auflösung sitzt nicht in der Schlüssel-Bezugsmenge. Selbst gemessen über
+  `git diff f3055672^..HEAD -- harness/tools/mutate.sh`: Die einzigen Diff-Zeilen, die
+  `isolation_key_files` überhaupt nennen, sind **Kommentar**-Zeilen (der umbrochene Mess-Befehl im
+  Kopf); die Funktion selbst ist unverändert und liest keine `# files:`-Zeile
+  (`sed -n '/^isolation_key_files()/,/^}/p' … | grep -c 'files:'` → 0). `ISOLATION_KEY_EXEMPT` und
+  `ISOLATION_EXCLUDES` sind unberührt, `.harness/baseline/` geht weiter in den Schlüssel ein — ein
+  Baseline-Sprung entwertet den Beleg also weiterhin, und der Übersprung kann keinen Lauf über
+  einem neuen Vorlagensatz überspringen.
 - **Die Auflösung trifft mehr als eine Datei.** Lägen zwei `<tag>`-Verzeichnisse, mutierte ein Fall
   beide, und der Wächter urteilte über eine Vereinigung. `make baseline-verify` verbietet den
   Zustand und läuft in `make gates` — aber `make mutate` fährt nicht in `make gates`, also gibt es
   keinen Lauf, in dem die Schranke des einen die des anderen deckt. Deshalb steht die Bedingung
-  *genau ein Treffer* in DoD 1 und wird nicht aus `baseline-verify` gefolgert. — **Ausgang:** <bei Closure>
+  *genau ein Treffer* in DoD 1 und wird nicht aus `baseline-verify` gefolgert. — **Ausgang: entfallen**
+  — die Schranke steht und ist rot gesehen. `resolve_file_spec` gibt bei zwei Tag-Verzeichnissen
+  rc=1 und leere Ausgabe (Sonde, Review Runde 1 §3 und Runde 2 §7), und der bats-Fall
+  *„MEHR ALS EINEM Treffer"* fällt unter der Mutation `-eq 1` → `-ge 1`
+  (`test/mutations/324-mutate-files-schranke-erlaubt-mehrfachtreffer.sh`). Ein Fall kann nicht mehr
+  über eine Vereinigung urteilen, ohne dass der Lauf es sagt — und die Zusage hängt nicht an
+  `make baseline-verify`, wie der Plan es verlangt hat.
 - **Der Slice hat `make mutate` rot vorgefunden und schuldet dafür keine Ausnahme — jeder andere
   Slice, der bis dahin schließt, schon.** Das ist die Beobachtung
   `roter-nicht-gate-sensor-ohne-instrument` (1×, §8): Der Standard-DoD-Punkt *„`make mutate` ohne
   Befund"* kennt keinen Ausgang für einen fremden Vorbefund, und ein Carveout bindet an ein Gate,
   das `mutate` nicht ist. Für **diesen** Slice ist der rote Lauf der Gegenstand und der Punkt
-  erfüllbar; das Risiko liegt bei den Nachbarn. — **Ausgang:** <bei Closure>
+  erfüllbar; das Risiko liegt bei den Nachbarn. — **Ausgang: weiter offen** → Beobachtungs-Register,
+  [`roter-nicht-gate-sensor-ohne-instrument`](../observations/BEO-ALL/roter-nicht-gate-sensor-ohne-instrument/observation.md).
+  **Dieser Vorgang legt dort keinen Beleg an, und das ist gemessen, nicht angenommen.** Im roten
+  Fenster zwischen dem Baum-Tausch und diesem Slice sind drei Slices geschlossen worden
+  (`slice-sprung-auf-v680-wird-vollzogen`, `slice-wellen-schnitt-folgt-der-eroeffnungs-regel`,
+  `slice-flache-welle-ist-eroeffnet-nicht-geplant` — ermittelt über die `R`-Einträge nach
+  `done/slice-*` seit dem Tausch-Commit). **Keiner** von ihnen führte einen `make mutate`-DoD-Punkt
+  oder nannte den Sensor in seiner §7
+  (`grep -nE '^- \[[ x]\].*mutate' docs/plan/planning/done/<datei>` je Datei → kein Treffer). Die
+  Klasse setzt einen DoD-Punkt voraus, der keinen Ausgang hat; wo der Punkt gar nicht steht, ist
+  sie nicht eingetreten. Sie bleibt bei 1× und offen — und der Befund darüber, dass drei Closures
+  einen roten Nicht-Gate-Sensor passierten, ohne ihn je zu nennen, ist eine **schärfere** Frage als
+  die Klasse und keine ihrer Instanzen.
 
 ## 7. Closure-Notiz
 
@@ -317,14 +354,72 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
-  für diesen Slice ohne Wellen-Zugehörigkeit>
+- **Was hat funktioniert:** **Die Politik war schon da, nur nicht überall angewandt.** Der Slice
+  musste nichts erfinden: `harness/tools/baseline-verify.sh` und
+  `harness/tools/sessionstart-inject-regelwerk.sh` sagen seit jeher *„das Verzeichnis wird
+  ENTDECKT, nicht geraten"*, und `make baseline-verify` hält als Gate die Setzung, auf der das
+  ruht. Zu entscheiden war deshalb nicht *welche Form*, sondern nur *warum die fünf Fälle die
+  Ausnahme waren*. Zweitens hat die **Reihenfolge-Vorgabe aus §3** — erst der Wächter, dann die
+  Fälle — genau das geliefert, wofür sie da war: Der rote Beleg für die neue Schranke hängt an
+  synthetischen Fixtures und nicht an den fünf Fällen, also wäre er nach deren Reparatur nicht mehr
+  herstellbar gewesen.
+- **Was ging anders als geplant:** **Drei Dinge, und zwei davon hat erst der Lauf sichtbar
+  gemacht.** (1) Der Plan hatte die Auflösungs-Form als offene Wahl zwischen Glob und
+  Platzhalter-Ersetzung gelassen und nur die Eigenschaft gesetzt; die gewählte Konstruktion
+  (`compgen -G` in `resolve_file_spec`) hat eine Eigenschaft mitgebracht, an die der Plan nicht
+  gedacht hatte — sie unterscheidet **Datei und Verzeichnis nicht**, und ein literaler Pfad mit
+  Glob-Metazeichen im Namen löst nicht auf. Beides ist fail-closed und benannt, aber es war keine
+  Plan-Entscheidung. (2) Die **Schranke hat zwei Richtungen, und nur eine hat einen Zahn** — die
+  Null-Treffer-Richtung, also genau die, die diesen Slice ausgelöst hat, ist bats-getestet und
+  nicht mutations-bewacht. (3) Der **Befund aus §1 war schärfer als gedacht**: Die fünf
+  Fall-Köpfe hatten die Kopplung deklariert und dabei eine Fehlschlag-Form zugesagt
+  (`merge_report`), die der Lauf gar nicht erreicht — der Abbruch kommt run-weit aus
+  `target_fingerprint` und nennt keine Datei. *Laut* war es, *adressiert* nicht; das war die
+  eigentliche Reparatur.
+- **Steering-Loop-Eintrag:** *Neuer Sensor* — `resolve_file_spec` macht aus der stillschweigenden
+  Annahme *„der Pfad in `# files:` existiert"* eine geprüfte Bedingung, und
+  `test/mutations/324-mutate-files-schranke-erlaubt-mehrfachtreffer.sh` hält sie über
+  `test/mutate-driver.bats` am Leben. **Kein `liegt in`-Feld:** Mit diesem Slice ist keine Regel
+  verkörpert worden — der Sensor ist Liefergegenstand, nicht die Antwort auf einen
+  3×-Schwellen-Übertritt. Der Eintrag ist gezählt, nicht verkörpert.
+- **Beobachtungs-Register (`../observations/`):** **Vier Belege an vorhandenen Einträgen, zwei
+  neue Verzeichnisse — und die Zuordnung ist selbst gemessen, nicht aus den Reports übernommen.**
+  Ergänzt: `evidence/slice-mutations-fall-entdeckt-den-vendored-tag.md` in
+  [`kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle`](../observations/BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle/observation.md)
+  (F-1/F-2/F-4/N-1/N-4/N-5),
+  [`zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md)
+  (F-3/F-7/N-2/N-3),
+  [`neue-oeffentliche-funktion-ohne-benannte-grenze`](../observations/BEO-ALL/neue-oeffentliche-funktion-ohne-benannte-grenze/observation.md)
+  (F-5) und
+  [`neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md)
+  (F-6/N-7). Neu angelegt:
+  [`tag-tragende-adresse-ueberlebt-den-baseline-tausch-nicht`](../observations/BEO-ALL/tag-tragende-adresse-ueberlebt-den-baseline-tausch-nicht/observation.md)
+  (der Anlass des Slice, in §7 des Plans vorgesehen) und
+  [`finding-klasse-wird-neu-benannt-statt-zitiert`](../observations/BEO-ALL/finding-klasse-wird-neu-benannt-statt-zitiert/observation.md).
+  **Der zweite ist ein Fund der Closure selbst.** Die Reports vergaben für
+  `zusage-nennt-sensor-der-form-nicht-sieht` zwei neue Slugs, und die Summary der ersten Runde sagte,
+  nur **eine** der genannten Klassen stehe schon im Register; gemessen waren es **drei**. Ungeprüft
+  übernommen hätte diese Closure den Zähler auf zwei neue Namen verteilt und zwei bestehende
+  Belege unterschlagen — genau die Spaltung, vor der `modul-06-roadmap.md` beim Register warnt.
+  Kein Beleg ging an
+  [`roter-nicht-gate-sensor-ohne-instrument`](../observations/BEO-ALL/roter-nicht-gate-sensor-ohne-instrument/observation.md):
+  die Klasse ist im roten Fenster nicht eingetreten (§6, Risiko 4 — gemessen, nicht angenommen).
+- **Folge-Slices:**
+  [slice-mess-aussagen-des-emitters-gegen-v680-messen](../open/slice-mess-aussagen-des-emitters-gegen-v680-messen.md)
+  — ist eine Datei in `open/`; nimmt den Out-of-Scope-Punkt 1 aus §1 an (die drei Proben in
+  `internal/emit/templates.go`, die ihre eigene Nachfahr-Pflicht aussprechen und sie beim Sprung
+  nicht bekommen haben).
+- **Offene Fragen an den Architect** — kein Implementer-Punkt, von beiden Runden so übergeben:
+  Der Geltungsbereich von [`AGENTS.md`](../../../../AGENTS.md) §3.7 nennt in Prosa *„Code,
+  Konfiguration, Skripte"*, der dort gemessene Pathspec führt kein `*.bats` — drei Fundstellen
+  dieses Slice liegen in `test/mutate-driver.bats` (F-9/N-7). Und ob der **kontrafaktische** Modus
+  (*„ohne X wäre …"*) unter §3.7 fällt oder als Grenz-Begründung trägt, ist eine
+  Klassifikations-Frage, die dieselbe Sektion entscheiden müsste (N-4). Beides gehört dem
+  Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8); dieser Slice hat es nicht entschieden.
+- **Risiken aus §6:** vier Risiken, vier Ausgänge — dreimal *entfallen* mit Begründung, einmal
+  *weiter offen* ins Register. Jeder Ausgang steht in §6 neben seinem Risiko.
+- **Drei Paarungen:** Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
+  für diesen Slice ohne Wellen-Zugehörigkeit. Was sie vorfindet, steht im letzten DoD-Punkt in §2.
 
 **Was die Closure im Register anzulegen hat, und warum es hier steht statt dort.** Eingetragen wird
 bei der Slice-Closure (Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtungs-Register); der
