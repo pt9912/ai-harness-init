@@ -42,9 +42,12 @@ brechen müsste),
 dieses Repos und die Regel, die seine Leser bindet).
 
 **Verantwortlich:** Architect. Der Liefergegenstand ist eine **normative** Entscheidung — welchen
-Ausgang ein Registereintrag tragen darf und was der Lese-Schritt liest. Norm-Änderungen schreibt
-nach [`AGENTS.md`](../../../../AGENTS.md) §3.8 und Baseline-Regelwerk `modul-08-agentenrollen.md`
-§Rollen-Regeln der Architect; dieselbe Zuschnitt-Wahl trägt
+Ausgang ein Registereintrag tragen darf und was der Lese-Schritt liest. Wem das **Schreiben**
+gehört, sagt Baseline-Regelwerk `modul-08-agentenrollen.md` §Rollen-Regeln — *„ADR-Änderung:
+Architect schreibt; Reviewer prüft auf Konsistenz; Implementer liest als Constraint"*;
+[`AGENTS.md`](../../../../AGENTS.md) §3.8 bindet daneben **die Hard Rules dieser Datei und den
+Adaptions-Block** und trägt hier nicht: der Ausgang ist keine Hard Rule und kein Adaptions-Eintrag.
+Dieselbe Zuschnitt-Wahl trägt
 [`slice-183`](../done/slice-183-ausloeser-der-wellenlosen-archivierung.md). Der Planner schneidet
 den Slice, er entscheidet ihn nicht.
 
