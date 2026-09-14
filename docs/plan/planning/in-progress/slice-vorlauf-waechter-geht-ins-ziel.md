@@ -105,26 +105,26 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Das Ziel führt den Wächter, gebunden an die zwei history-lesenden Targets** — er läuft
+- [x] **Das Ziel führt den Wächter, gebunden an die zwei history-lesenden Targets** — er läuft
       **vor** dem Modul-Lauf, nicht danach. Der Beleg ist `make full-smoke` über einem
       gebootstrappten Ziel, nicht eine Zeile im Emit-Code.
-- [ ] **Der Fall aus [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
+- [x] **Der Fall aus [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
       Setzung 3 ist rot gesehen:** ein Klon der Tiefe 1 mit einer leeren Range meldet **nicht**
       `0 Befund(e)`/Exit 0, sondern bricht mit einer Meldung ab — dieselbe Sonde mit einer
       **aufgelösten, nicht leeren** Range (`HEAD~1..HEAD`) auf einem vollständigen Klon bleibt grün.
       Ausgabe und Exit-Code gelesen, nicht nur der Exit-Code.
-- [ ] **Keine neue Host-Abhängigkeit** und kein Image-Lauf vor dem Modul-Lauf: der Wächter läuft mit
+- [x] **Keine neue Host-Abhängigkeit** und kein Image-Lauf vor dem Modul-Lauf: der Wächter läuft mit
       `bash + git` ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)),
       und der Fehlt-Fall sagt etwas, statt still zu bleiben.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: die Aufzählung der emittierten Werkzeuge, soweit dieser Slice sie wachsen lässt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Doku-Update: die Aufzählung der emittierten Werkzeuge, soweit dieser Slice sie wachsen lässt.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). **Hier nicht geprüft und nicht fällig:** dieses Repo führt Wellen, und der Slice ist Mitglied von [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md) — den Lese-Schritt trägt ihre Closure.
 
 ## 3. Plan (vor Code)
 
@@ -186,25 +186,43 @@ dasteht.
   den niemand setzt (etwa `HEAD..HEAD`), machte ihn dauerhaft rot und erzöge zum Überlesen —
   dieselbe Klasse, gegen die
   [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) eine
-  Ebene tiefer steht. — **Ausgang:** <eingetreten: CO-NNN / slice-<Kennung> | entfallen: Grund |
-  weiter offen: → BEO im Register>
+  Ebene tiefer steht. — **Ausgang: entfallen** — die Verdrahtung trägt **keinen** Vorgabe-Wert. Die
+  Range setzt der Aufrufer, das Ziel steht darum außerhalb von `GATE_CHECKS`, und ohne Range fällt
+  der Aufruf laut ab, statt in einen Wert hineinzulaufen, den niemand gepflegt hat:
+
+  ```sh
+  make history-range-guard                                        # ohne RANGE
+  # ...: Zeile 147: 1: Usage: history-range-guard.sh <base>..<head> | --staged | --decide <range> <count> | --decide-staged <0|1>
+  # make: *** [Makefile:165: history-range-guard] Fehler 1        EXIT=2
+  ```
+
 - **Die Werkzeug-Lücke im Nachbar-Repo bleibt offen.** Der Wächter umgeht sie (er fängt vor dem
   Modul-Lauf ab), er schließt sie nicht; ihre Abhilfe liegt in einem anderen Baum. Erreicht die
   Beobachtung mit diesem Slice einen weiteren Beleg, ist sie keine Notiz mehr und braucht einen
-  eigenen Folge-Slice. — **Ausgang:** <eingetreten: CO-NNN / slice-<Kennung> | entfallen: Grund |
-  weiter offen: → BEO-ALL/werkzeug-luecke-im-nachbar-repo-ohne-adresse im Register>
+  eigenen Folge-Slice. — **Ausgang: weiter offen** → Beobachtungs-Register,
+  [`BEO-ALL/werkzeug-luecke-im-nachbar-repo-ohne-adresse`](../observations/BEO-ALL/werkzeug-luecke-im-nachbar-repo-ohne-adresse/observation.md).
+  **Dieser Vorgang legt dort keinen Beleg an, und das ist gemessen, nicht angenommen:** er umgeht
+  die Lücke, statt sie zu beobachten (§8), und `commits.id-patterns` ist unberührt. Der Zähler des
+  Eintrags bleibt darum, wo er war — **kein Erwartungswert**
+  ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2), die Zahl wandert mit dem Register; die Schwellen-Folgerung zieht der Lese-Schritt aus
+  dem Lauf, nicht aus dieser Zeile
+  ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)
+  Setzung 2):
+
+  ```sh
+  ls docs/plan/planning/observations/BEO-ALL/werkzeug-luecke-im-nachbar-repo-ohne-adresse/evidence/*.md | wc -l   # 1
+  ```
+
 - **Der Pin bewegt sich unter dem Slice weg.** Ein Sprung, der die Range-Behandlung im Modul ändert,
-  entwertet die Verdrahtung, nicht ihre Absicht. — **Ausgang:** <eingetreten: CO-NNN /
-  slice-<Kennung> | entfallen: Grund | weiter offen: → BEO im Register>
+  entwertet die Verdrahtung, nicht ihre Absicht. — **Ausgang: entfallen** — kein Pin-Sprung in
+  diesem Vorgang, und die eine Hälfte, die ein Sprung bewegen könnte, ist fail-closed gebunden: die
+  zwei Ziel-Namen kommen aus dem tool-generierten `d-check.mk`, das Fragment prüft ihre
+  Ziel-Definition **vor** der Vorbindung und bricht mit Exit 2 ab, wenn sie fehlt. Die andere Hälfte
+  — ein Modul, das eine **leere** Range selbst von der leeren Menge unterscheidet — macht den
+  Wächter überflüssig, nicht falsch; sie ist die Rückführung aus §4 und nicht eingetreten.
 
 ## 7. Closure-Notiz
-
-<!-- BEDIENHINWEIS — keine Norm; faellt beim Kopieren weg (README.md
-§Verwendung, Schritt 5) und darf deshalb nichts Tragendes halten. Reihenfolge:
-diese Sektion vor dem `git mv` nach done/ fuellen — einzige Ausnahme ist das
-letzte DoD-Item in §2 (die Paarungen suchen in `done/`, also nach dem `git mv`).
-Im Repo ohne Wellen-Betrieb braucht die Closure dadurch drei Commits: Inhalt,
-`git mv`, Haekchen — das folgt aus der Hard Rule, es widerspricht ihr nicht. -->
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Das Beobachtungs-Register (vorhandene `BEO-<NNN>` **zitieren** statt neu
@@ -214,18 +232,83 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-kennung-a>, <slice-kennung-b>, <slice-kennung-c> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-<Kennung>.md` | `evidence/slice-<Kennung>.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <von der Welle-Closure getragen — Anker · Folge-Slice · Register>
+- **Was hat funktioniert:** **Die Form lag schon vor, und die Emission hat sie getragen statt sie
+  nachzubauen.** Die Entscheidung des Wächters ist eine reine Funktion, getrennt von der
+  `git`-Abfrage — dieselbe Trennung, die ihn im gepinnten bats-Bild ohne `git` testbar macht —, und
+  das emittierte Skript übernimmt sie bis auf die Test-Einstiege unverändert. **Zweitens hat die
+  fail-closed Probe getragen**, obwohl sie nicht im Plan stand: sie macht aus einem **stillen Grün**
+  (Ziel-Zeile ohne Rezept) einen lauten Abbruch, und sie deckt genau die Fläche, auf die ein
+  tool-generiertes Fragment baut.
+- **Was ging anders als geplant:** **Vier Dinge, und drei davon hat der Lauf sichtbar gemacht.**
+  (1) Der DoD-Punkt 2 war in seiner ersten Fassung **nicht erfüllbar**: er verlangte die grüne
+  Hälfte über einer leeren Range, und die kann in keinem Klon grün werden — die ausführende Rolle
+  ist auf die einzige tragende Range ausgewichen und hat den Plan-Text als Übergabe gelassen; der
+  Planner hat ihn vor der Umsetzung gezogen. (2) §3 nannte das `Makefile` als Träger des Belegs;
+  der Beleg liegt in `harness/tools/full-smoke.sh`, das sein Rezept ruft — die Wirkung war die
+  geplante, die Adresse eine Ebene zu hoch. (3) Die fail-closed Entscheidung war als **Variable**
+  gebaut und damit von der Kommandozeile überschreibbar; das fand erst die vierte Runde, und es ist
+  an der Stelle geschlossen. (4) Die Vorbindung braucht eine **eigene** Prüfung der Ziel-Definition
+  — weder §1 noch §2 nannten sie; sie ist der Grund, aus dem eine fehlende Ziel-Zeile nicht still
+  wird.
+- **Steering-Loop-Eintrag:** *Neuer Sensor* — das emittierte Doc-Gate-Fragment bindet
+  `doc-immutable` und `doc-commits` an einen Vorlauf-Wächter, der über einer auflösbaren, aber
+  **leeren** Commit-Range **vor** dem Modul-Lauf mit einer Meldung abbricht, und hält die
+  Vorbindung selbst fail-closed an die Ziel-Definition des tool-generierten `d-check.mk`.
+  **Kein `liegt in`-Feld:** mit diesem Vorgang ist **keine** Regel dieses Repos verkörpert worden —
+  der Sensor ist Liefergegenstand der *emittierten* Ebene und keine Antwort auf einen
+  3×-Schwellen-Übertritt. Der Eintrag ist gezählt, nicht verkörpert. **Was der Lese-Schritt der
+  [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md)-Closure vorfindet**, sind zwei
+  Einträge, die mit diesem Vorgang die Schwelle erreichen — sie stehen unter *Beobachtungs-Register*
+  und warten dort auf ihren Ausgang.
+- **Beobachtungs-Register (`../observations/`):** **Ein neues Verzeichnis, vier Belege an
+  vorhandenen Einträgen.** Neu angelegt:
+  [`BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`](../observations/BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor/observation.md)
+  — dieselbe Entscheidungslogik liegt als Dogfood-Fassung und als Emissions-Vorlage vor, und kein
+  Sensor vergleicht die zwei; eine einseitige Änderung ließe beide Suiten grün und die Zusage ihrer
+  Gleichheit still falsch werden. Beleg `evidence/slice-vorlauf-waechter-geht-ins-ziel.md` in
+  [`BEO-ALL/zusage-nennt-zwei-kanten-der-sensor-deckt-eine`](../observations/BEO-ALL/zusage-nennt-zwei-kanten-der-sensor-deckt-eine/observation.md)
+  (die Zusage „der Wächter läuft **vor** dem Modul-Lauf" gilt beiden Zielen, der Smoke urteilt die
+  Ordnung nur über eines, und die blinde Grün-Hälfte ist nur für eines gefahren),
+  [`BEO-ALL/abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt`](../observations/BEO-ALL/abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt/observation.md)
+  (der nicht erfüllbare DoD-Punkt 2),
+  [`BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle`](../observations/BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle/observation.md)
+  (Review-Befund-Kennungen als Namen und Ausgabe in neuen Skript-Zeilen; die Klausel im Konjunktiv
+  über die verworfene Alternative) und
+  [`BEO-ALL/zahl-ohne-kommando-trifft-ihren-gegenstand-nicht`](../observations/BEO-ALL/zahl-ohne-kommando-trifft-ihren-gegenstand-nicht/observation.md)
+  („zweimal gefahren" in der Sensor-Prosa, ohne Kommando daneben und seither gewachsen). **Kein
+  Zähler wird gesetzt**, er folgt aus den Dateien — **keine Erwartungswerte**
+  ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2). **Die zwei Schwellen-Übertritte dieses Vorgangs sind gezählt, nicht zugewiesen** — den
+  Ausgang weist der Lese-Schritt zu
+  ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)
+  Setzung 2):
+
+  ```sh
+  for s in zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor zusage-nennt-zwei-kanten-der-sensor-deckt-eine \
+           abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt \
+           kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle \
+           zahl-ohne-kommando-trifft-ihren-gegenstand-nicht; do
+    printf '%-60s %s\n' "$s" "$(ls docs/plan/planning/observations/BEO-ALL/$s/evidence/*.md | wc -l)"
+  done
+  # zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor             1
+  # zusage-nennt-zwei-kanten-der-sensor-deckt-eine                        3
+  # abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt            3
+  # kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle       10
+  # zahl-ohne-kommando-trifft-ihren-gegenstand-nicht                     14
+  ```
+
+- **Folge-Slices:** **keiner aus diesem Vorgang geschnitten.** Die eine offen gebliebene Lücke —
+  der Smoke prüft die **Ordnung** nur für eines der zwei Ziele, für das andere nur die Nennung —
+  liegt als Beleg im Register; ob sie einen eigenen Schnitt bekommt, entscheidet der Lese-Schritt
+  der Wellen-Closure, nicht diese Notiz. Die Werkzeug-Lücke im Nachbar-Repo bleibt ohne Adresse in
+  diesem Baum (§1, §6).
+- **Risiken aus §6:** drei Risiken, drei Ausgänge — **zweimal *entfallen***, **einmal *weiter
+  offen***, jeder mit seiner Begründung in §6.
+- **Drei Paarungen:** von der [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md)-Closure
+  getragen (dieser Slice ist ihr Mitglied), **hier nicht geprüft**. Was sie vorfindet, ist gelegt:
+  kein `liegt in`-Feld in §7 — nichts verkörpert, also keine Anker-Paarung; kein Folge-Slice
+  genannt, also keine Folge-Slice-Paarung; und jede hier genannte Beobachtung existiert als
+  Verzeichnis mit nicht leerem `evidence/`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
