@@ -58,6 +58,11 @@ func enforceFiles() []enforceFile {
 		// Kommandos, kein Gate. Es steht hier und nicht in captureFiles(), weil es an
 		// keinem Laufzeit-Ausgang haengt — die Begruendung traegt erfassung.go.
 		erfassungFile(),
+		// Fragment der Wellen-Archivierung (ADR-0033 Festlegung 4): ein Kommando,
+		// kein Gate, aus derselben Klasse wie das der Erfassungsschicht. Es steht
+		// hier und nicht in captureFiles(), weil es an keinem Laufzeit-Ausgang
+		// haengt — die Begruendung traegt archivierung.go.
+		archivierungFile(),
 		// Command-Guard (slice-032): bash+awk, kein node/jq (LH-QA-03). Der Guard
 		// (0755) referenziert den awk-Extraktor unter tools/harness/ — beide
 		// gehoeren in denselben Emit, sonst laeuft der Guard fail-closed ins Leere.

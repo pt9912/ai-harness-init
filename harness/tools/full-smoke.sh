@@ -1019,6 +1019,217 @@ traeger_im_ziel() {
 
 traeger_im_ziel "$tmprepo" "golang"
 
+# --- Archivierung: das gebootstrappte Ziel erreicht das Unterkommando ---------------
+#
+# WAS DIE GO-STUFE NICHT SIEHT: sie liest den TEXT des emittierten Fragments. Ob ein
+# `make`-Aufruf im gebootstrappten Repo wirklich beim Unterkommando des abgelegten
+# Traegers ankommt, entscheidet die Kette Aggregator -> Fragment -> Traeger ->
+# vendored Stub-Vorlage — und die gibt es nur hier (ADR-0033 Folgepflicht 8).
+#
+# VIER AUSSAGEN:
+#   (a) die zwei fail-closed-Sperren `[untergrenze]` und `[haenger]` aus
+#       internal/archive erreichen den Aufruf: ueber einem Bestand, der beide
+#       ausloest, endet `make archive-welle` nicht erfolgreich und schreibt nichts.
+#       Der Exit-Code des Traegers ist hier NICHT lesbar — `make` gibt fuer ein
+#       fehlgeschlagenes Rezept immer 2 zurueck —, die zwei Sperren stehen darum
+#       in der Ausgabe,
+#   (b) ueber demselben Bestand ohne die zwei Ausloeser laeuft die Operation real:
+#       Archiv und Stubs liegen danach in done/<welle-id>/,
+#   (c) das Kommando ist KEIN Gate: die gates-Kette des Ziels nennt es nicht,
+#   (d) ohne Traeger sagt das Kommando das und endet mit 0 — der frische Klon.
+#
+# NUR HIER MESSBAR: kein Go-Test faehrt `make`, und ein Lauf auf dem HOST faende den
+# Traeger eines gebootstrappten Repos nicht.
+#
+# EINE VARIANTE, und die Grenze steht hier: gefahren wird das --lang-go-Ziel. Das
+# Fragment kommt aus enforceFiles() und liegt in BEIDEN Bootstrap-Varianten unter
+# demselben Glob; dass es auch sprachlos entsteht, misst
+# TestArchivierungFragment_LiegtAuchOhneTraeger ueber einen Emit ohne Sprache.
+archivierung_im_ziel() {
+	local repo="$1" kennung="$2"
+	local frag="$repo/harness/mk/archivierung.mk"
+	local carrier="$repo/.harness/state/bin/ai-harness-init"
+	local plan_done="$repo/docs/plan/planning/done"
+	local reviews="$repo/docs/reviews"
+	local welle="welle-smoke"
+
+	if [ ! -f "$frag" ]; then
+		echo "full-smoke: FEHLER — $kennung: das Fragment der Wellen-Archivierung liegt nicht im Ziel (harness/mk/archivierung.mk, ADR-0033 Festlegung 4)." >&2
+		exit 1
+	fi
+	if [ ! -x "$carrier" ]; then
+		echo "full-smoke: FEHLER — $kennung: der Traeger liegt nicht, bevor dieser Abschnitt ihn ruft — gemessen wuerde dann der falsche Zweig (der Traeger-Abschnitt oben hat ihn abgelegt)." >&2
+		exit 1
+	fi
+	if [ -n "$(git -C "$repo" status --porcelain)" ]; then
+		echo "full-smoke: FEHLER — $kennung: der Arbeitsbaum des Ziels ist vor diesem Abschnitt nicht sauber — ein Lauf braeche an seiner eigenen Sauberkeits-Sperre ab, und der Fall waere nicht der zugesagte:" >&2
+		git -C "$repo" status --porcelain >&2
+		exit 1
+	fi
+
+	# (c) KEIN GATE. `make -n` druckt die Kette, ohne sie zu fahren.
+	local kette="" kette_rc=0
+	kette="$( make --no-print-directory -C "$repo" -n gates 2>&1 )" || kette_rc=$?
+	if [ "$kette_rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: die gates-Kette des Ziels ist nicht lesbar (make -n gates, Exit $kette_rc):" >&2
+		printf '%s\n' "$kette" >&2
+		exit 1
+	fi
+	if grep -qF -- 'archive-welle' <<<"$kette"; then
+		echo "full-smoke: FEHLER — $kennung: die gates-Kette des Ziels nennt archive-welle — eine Archivierung prueft nichts (LH-QA-01)." >&2
+		grep -nF -- 'archive-welle' <<<"$kette" >&2
+		exit 1
+	fi
+
+	# Ein minimaler, GESCHLOSSENER Bestand: Welle-Plan, Ergebnisnotiz und ein Mitglied.
+	mkdir -p "$plan_done" "$reviews"
+	cat >"$plan_done/$welle.md" <<'SMOKEEOF'
+# Welle welle-smoke: E2E der Archivierung
+
+**Verantwortlich:** full-smoke.
+
+## 1. Welle-Ziel
+
+Nur fuer den E2E der Wellen-Archivierung angelegt.
+SMOKEEOF
+	cat >"$plan_done/$welle-results.md" <<'SMOKEEOF'
+# welle-smoke-results: E2E der Archivierung
+
+**Abschluss:** 2026-01-01
+
+## Geliefert
+
+Nur fuer den E2E der Wellen-Archivierung angelegt.
+SMOKEEOF
+	cat >"$plan_done/slice-999-archiv-smoke.md" <<'SMOKEEOF'
+# Slice slice-999: E2E der Archivierung
+
+**Welle:** welle-smoke
+
+## 1. Ziel
+
+Nur fuer den E2E der Wellen-Archivierung angelegt.
+SMOKEEOF
+	# Zwei Ausloeser, je eine Sperre: ein wellenloser Slice ohne beobachtbare
+	# Untergrenze (kein done/*/archiv.zip existiert noch) und ein Review-Report, der
+	# bleibt und auf einen verschwindenden zeigt.
+	cat >"$plan_done/slice-998-ohne-welle.md" <<'SMOKEEOF'
+# Slice slice-998: wellenlos
+
+**Welle:** ohne Welle
+
+## 1. Ziel
+
+Nur fuer den E2E der Wellen-Archivierung angelegt.
+SMOKEEOF
+	cat >"$reviews/slice-999-review.md" <<'SMOKEEOF'
+# Review slice-999
+
+Nur fuer den E2E der Wellen-Archivierung angelegt.
+SMOKEEOF
+	cat >"$reviews/bleibt.md" <<'SMOKEEOF'
+# Review, der bleibt
+
+Er verweist auf [`slice-999-review.md`](slice-999-review.md).
+SMOKEEOF
+	git -C "$repo" -c user.email=full-smoke@example.invalid -c user.name=full-smoke add -A
+	git -C "$repo" -c user.email=full-smoke@example.invalid -c user.name=full-smoke \
+		commit -q -m "Archivierungs-Smoke: geschlossene Welle (full-smoke)"
+	# Der schreibende Lauf committet SELBST und braucht darum eine Identitaet im Repo:
+	# die vier git-Aufrufe des Traegers rufen `git commit` ohne -c.
+	git -C "$repo" config user.email full-smoke@example.invalid
+	git -C "$repo" config user.name full-smoke
+
+	# (a) DIE ZWEI SPERREN, ueber demselben Aufruf wie (b). Kein Erfolg, nichts
+	# geschrieben: die Sperren liegen im Binaer, und der Aufruf erbt sie, statt sie
+	# nachzubauen. Der Exit-Code des Traegers kommt durch `make` nicht an — ein
+	# fehlgeschlagenes Rezept endet dort immer mit 2.
+	local gesperrt="" gesperrt_rc=0 gesperrt_flach="" fehlt="" sperre
+	gesperrt="$( make --no-print-directory -C "$repo" archive-welle WELLE="$welle" 2>&1 )" || gesperrt_rc=$?
+	gesperrt_flach="$(tr -s '[:space:]' ' ' <<<"$gesperrt")"
+	if [ "$gesperrt_rc" -eq 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: make archive-welle endet ueber einem Bestand mit zwei Ausloesern mit Exit 0 — die Sperren des Unterkommandos erreichen den Aufruf nicht. Ausgabe:" >&2
+		printf '%s\n' "$gesperrt" >&2
+		einordnen "make archive-welle ueber zwei Ausloesern ($kennung)" "$gesperrt"
+		exit 1
+	fi
+	for sperre in '[untergrenze]' '[haenger]'; do
+		grep -qF -- "$sperre" <<<"$gesperrt_flach" || fehlt="$fehlt [$sperre]"
+	done
+	if [ -n "$fehlt" ]; then
+		echo "full-smoke: FEHLER — $kennung: der gesperrte Lauf nennt nicht jede der zwei Sperren:$fehlt — rot aus falschem Grund? Ausgabe:" >&2
+		printf '%s\n' "$gesperrt" >&2
+		exit 1
+	fi
+	if [ -e "$plan_done/$welle" ]; then
+		echo "full-smoke: FEHLER — $kennung: der gesperrte Lauf hat trotzdem geschrieben (done/$welle liegt) — die Vorschau steht dann NACH dem Schreibzugriff." >&2
+		exit 1
+	fi
+	echo "full-smoke: Sperren erreichen den Aufruf ($kennung): make archive-welle endet ueber zwei Ausloesern nicht erfolgreich, nennt beide und schreibt nichts:"
+	grep -oE '\[(untergrenze|haenger)\]' <<<"$gesperrt_flach" | sort -u | sed 's/^/full-smoke:   /'
+
+	# (b) DERSELBE AUFRUF OHNE DIE ZWEI AUSLOESER laeuft real durch.
+	git -C "$repo" rm -q -- "$plan_done/slice-998-ohne-welle.md" "$reviews/bleibt.md"
+	git -C "$repo" -c user.email=full-smoke@example.invalid -c user.name=full-smoke \
+		commit -q -m "Archivierungs-Smoke: die zwei Ausloeser entfernt (full-smoke)"
+	local lauf="" lauf_rc=0 lauf_flach=""
+	lauf="$( make --no-print-directory -C "$repo" archive-welle WELLE="$welle" 2>&1 )" || lauf_rc=$?
+	printf '%s\n' "$lauf"
+	lauf_flach="$(tr -s '[:space:]' ' ' <<<"$lauf")"
+	if [ "$lauf_rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: make archive-welle endet ueber demselben Bestand mit Exit $lauf_rc statt mit 0 — die Archivierung ist im gebootstrappten Repo nicht erreichbar (ADR-0033 Festlegung 4)." >&2
+		printf '%s\n' "$lauf" >&2
+		einordnen "make archive-welle im Ziel ($kennung)" "$lauf"
+		exit 1
+	fi
+	if ! grep -qF -- "archive-welle ok: $welle" <<<"$lauf_flach"; then
+		echo "full-smoke: FEHLER — $kennung: der Lauf meldet den Vollzug nicht (rot aus falschem Grund?). Ausgabe:" >&2
+		printf '%s\n' "$lauf" >&2
+		exit 1
+	fi
+	if [ ! -f "$plan_done/$welle/archiv.zip" ]; then
+		echo "full-smoke: FEHLER — $kennung: die Archivierung meldet Vollzug, aber $welle/archiv.zip fehlt — der Traeger lief dann nicht wirklich." >&2
+		exit 1
+	fi
+	local stub
+	for stub in "$welle.md" "slice-999-archiv-smoke.md"; do
+		if [ ! -f "$plan_done/$welle/$stub" ]; then
+			echo "full-smoke: FEHLER — $kennung: kein Stub an der Stelle des bewegten $stub — die Operation laeuft ohne die vendored Vorlage des Ziels (ADR-0033 Festlegung 3)." >&2
+			exit 1
+		fi
+	done
+	if [ -e "$reviews/slice-999-review.md" ]; then
+		echo "full-smoke: FEHLER — $kennung: der Review-Report des archivierten Slice liegt noch flach in docs/reviews/ — er gehoert ins Archiv." >&2
+		exit 1
+	fi
+	echo "full-smoke: Archivierung im Ziel ($kennung): make archive-welle archiviert real — $welle/archiv.zip mit $welle.md und slice-999-archiv-smoke.md als Stubs, der Review-Report des Slice ist fort."
+
+	# (d) OHNE TRAEGER: Meldung, Exit 0, nichts geschrieben. Der Fall des frischen Klons.
+	mv "$carrier" "$carrier.beiseite"
+	local ohne="" ohne_rc=0 ohne_flach=""
+	ohne="$( make --no-print-directory -C "$repo" archive-welle WELLE=welle-zweit 2>&1 )" || ohne_rc=$?
+	mv "$carrier.beiseite" "$carrier"
+	ohne_flach="$(tr -s '[:space:]' ' ' <<<"$ohne")"
+	if [ "$ohne_rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: ohne Traeger endet make archive-welle mit Exit $ohne_rc — ein fehlender Traeger ist kein Fehler des Repos (ADR-0033 Festlegung 4). Ausgabe:" >&2
+		printf '%s\n' "$ohne" >&2
+		einordnen "make archive-welle ohne Traeger ($kennung)" "$ohne"
+		exit 1
+	fi
+	if ! grep -qF -- "der Traeger liegt nicht" <<<"$ohne_flach"; then
+		echo "full-smoke: FEHLER — $kennung: ohne Traeger sagt make archive-welle nicht, was fehlt — ein frischer Klon laese eine leere Ausgabe als erledigt. Ausgabe:" >&2
+		printf '%s\n' "$ohne" >&2
+		exit 1
+	fi
+	if grep -qF -- "archive-welle ok:" <<<"$ohne_flach"; then
+		echo "full-smoke: FEHLER — $kennung: ohne Traeger meldet der Aufruf einen Vollzug — dann lief ein Programm, das es nicht gibt." >&2
+		exit 1
+	fi
+	echo "full-smoke: ohne Traeger ($kennung): make archive-welle meldet den fehlenden Traeger, endet mit 0 und schreibt nichts."
+}
+
+archivierung_im_ziel "$tmprepo" "golang"
+
 # slice-032 (LH-FA-06/LH-QA-03): der emittierte Command-Guard muss real greifen —
 # nicht nur praesent sein. Wir fuettern ihn mit Hook-JSON: die go-Toolchain (BLOCKED-
 # Set --lang go) wird geblockt, ein make-Target durchgelassen. Dieser full-smoke-Schritt
@@ -1767,3 +1978,4 @@ echo "full-smoke: OK — DRITTES LAYOUT (slice-058/ADR-0010): add-lang go apps/h
 echo "full-smoke: OK — IDEMPOTENT (slice-038): 2. Init-Lauf Exit 0, README (skip-if-present) unberuehrt, Makefile-Drift (konvergent) geheilt; sprachloser Re-Lauf prunt kein add-lang-Fragment (kein Prune)."
 echo "full-smoke: OK — ROLLEN-TYPEN (slice-097/LH-FA-10): 6 kanonische Typen unter .claude/agents/ in BEIDEN Bootstrap-Varianten, je mit ihrem Namen im Kopf; das make gates des Ziels laeuft ueber ihnen gruen; der 2. Init-Lauf laesst einen adopter-geaenderten Typ unberuehrt (skip-if-present)."
 echo "full-smoke: OK — FELDLISTE (slice-098/LH-FA-10): $FELDLISTE_REL liegt in BEIDEN Bootstrap-Varianten im geprueften Doku-Bereich, fuehrt die drei stehenden Grenz-Saetze und deckt jeden Feldnamen der real geschriebenen Span-Zeile; ein toter Verweis darin faerbt das docs-check des Ziels rot (Ortswahl belegt); ein 2. Init-Lauf heilt eine von Hand geaenderte Fassung (konvergent, die einzige Zusage des Dokuments ueber sich selbst)."
+echo "full-smoke: OK — ARCHIVIERUNG IM ZIEL (ADR-0033 Festlegung 4 und 5): make archive-welle ist kein Gate, erreicht aber im gebootstrappten Repo den abgelegten Traeger — die zwei Sperren [untergrenze] und [haenger] halten den Aufruf auf, ueber demselben Bestand ohne sie laeuft die Operation real (Archiv + Stubs aus der vendored Vorlage), und ohne Traeger meldet das Kommando die Abwesenheit mit Exit 0."

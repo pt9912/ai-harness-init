@@ -1,0 +1,23 @@
+package emit
+
+// ArchivierungMkPath ist der Zielort des Fragments der Wellen-Archivierung: das
+// Gate-Fragment-Verzeichnis des Ziels (ADR-0033 Festlegung 4, Muster MR-010).
+// Das Praefix ist die Adresse, unter der der Root-Aggregator die Fragmente per
+// Glob einbindet — ein Ziel daneben liefe in keinem `make` des Adopters.
+const ArchivierungMkPath = "harness/mk/archivierung.mk"
+
+// archivierungMkSrc ist der eingebettete Quellpfad des Fragments (enforceFS).
+const archivierungMkSrc = "templates/enforce/archivierung.mk"
+
+// archivierungFile bildet das Fragment auf seinen Ziel-Relpfad ab — KONVERGENT wie
+// die uebrige tool-eigene Infrastruktur (ADR-0007, Idempotenz-Klasse "tool-eigenes
+// Gate-Fragment").
+//
+// UNBEDINGT, wie das Fragment der Erfassungsschicht, und aus demselben Grund: es
+// behauptet nichts ueber einen Lauf, sondern meldet die Abwesenheit des Traegers
+// selbst. Der Traeger liegt gitignored, ein frischer Klon hat ihn also nicht; ohne
+// das Fragment haette ein Ziel dort kein Kommando, das ihm das sagt — der Satz
+// "die Bedingung ist nicht eingetreten" staende in keiner Datei des Ziels.
+func archivierungFile() enforceFile {
+	return enforceFile{src: archivierungMkSrc, dst: ArchivierungMkPath, mode: 0o644}
+}

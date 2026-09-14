@@ -9,6 +9,10 @@
 #   `.claude/settings.json` — die Hooks dieses Repos. Sie rufen den Traeger
 #                             DIREKT, ohne das Wrapper-Skript, das ein
 #                             emittiertes Repo bekommt.
+#   `internal/emit/templates/enforce/archivierung.mk` — das emittierte Fragment,
+#                             das den Aufruf in ein ZIELREPO traegt. Der Name
+#                             reist dort in den gebootstrappten Baum weiter, wo
+#                             ihn kein Gate dieses Repos mehr sieht.
 #
 # WARUM DIESE KOPPLUNG EIN EIGENER SENSOR IST. Ein Name, den main() nicht
 # dispatcht, ist im Traeger ein Positionsargument des Init-Pfads. Der faellt seit
@@ -30,6 +34,7 @@ setup() {
   MK="$REPO/Makefile"
   SETTINGS="$REPO/.claude/settings.json"
   MAIN="$REPO/cmd/ai-harness-init/main.go"
+  ARCHIV="$REPO/internal/emit/templates/enforce/archivierung.mk"
 }
 
 # kopplung_haelt <quelle> <datei> <nennungs-muster> <namens-muster>
@@ -128,4 +133,18 @@ kopplung_haelt() {
     ".claude/settings.json" "$SETTINGS" \
     'ai-harness-init' \
     'ai-harness-init[[:space:]]+[^[:space:]"`]+'
+}
+
+@test "jedes Unterkommando hinter dem Traeger im emittierten Archivierungs-Fragment steht im Dispatch von main()" {
+  # Eine NENNUNG ist hier der Aufruf der Schleifenvariable, die den Traeger
+  # traegt: `exec "$$c" <name>`. Das Fragment schreibt den Ablageort als
+  # Make-Variable; die Ausfuehrbarkeits-Probe daneben nennt dieselbe Variable
+  # OHNE Unterkommando, und das Muster traegt darum das `exec` mit. Der Aufruf
+  # steht an genau einer Stelle, und nur die gibt einen Namen her. Die
+  # Kalibrierung haelt die zwei Zahlen zusammen — ein zweiter Aufruf mit anderer
+  # Form faellt auf, statt still ungelesen zu bleiben.
+  kopplung_haelt \
+    "das emittierte Archivierungs-Fragment" "$ARCHIV" \
+    'exec "\$\$c"[[:space:]]' \
+    'exec "\$\$c"[[:space:]]+[^[:space:]"`]+'
 }
