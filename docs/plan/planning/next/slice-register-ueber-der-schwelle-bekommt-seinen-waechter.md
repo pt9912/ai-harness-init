@@ -40,7 +40,7 @@ dem Register dieses Repos).
 
 **Verantwortlich:** Implementer (pt9912). Der Liefergegenstand ist ein **Werkzeug** — ein Gate, das
 den Register-Bestand hält —, und die Norm, die es prüft, ist nicht seine: sie kommt aus
-[`slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke`](slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke.md)
+[`slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke`](../in-progress/slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke.md)
 und wird hier **gelesen**, nicht entschieden (Baseline-Regelwerk `modul-08-agentenrollen.md`
 §Welche Rolle braucht welche Artefaktklasse: wer die Norm entscheidet, baut ihren Wächter nicht im
 selben Kontext).
@@ -96,7 +96,7 @@ Modul `targets` prüft beide Richtungen (`grep -m1 '^modules:' .d-check.yml`, ke
 
 - **Keine Entscheidung über den Ausgang selbst.** Welchen der Ausgänge eine benannte Lücke trägt und
   was der Lese-Schritt liest, entscheidet
-  [`slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke`](slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke.md)
+  [`slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke`](../in-progress/slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke.md)
   als `Accepted`-ADR. Ein Sensor, der die Regel vor ihr festlegt, prüfte eine Entscheidung, die
   niemand getroffen hat. *Es wäre ein anderer Vorgang — und dieser Slice startet erst danach (§4).*
 - **Keine Änderung an der Verzeichnis-Form oder den drei Datei-Lebensdauern.** Sie sind in
