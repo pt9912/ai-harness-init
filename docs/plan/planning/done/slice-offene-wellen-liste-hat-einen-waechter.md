@@ -486,7 +486,7 @@ Backticks).
   **Kein Eintrag erreicht mit diesem Slice 3×**; drei standen schon davor darüber. Den Lese-Schritt
   trägt in diesem Repo die Welle-Closure.
 - **Folge-Slices:** zwei, beide als Datei in `open/`.
-  [`slice-wellen-schnitt-folgt-der-eroeffnungs-regel`](../next/slice-wellen-schnitt-folgt-der-eroeffnungs-regel.md)
+  [`slice-wellen-schnitt-folgt-der-eroeffnungs-regel`](../in-progress/slice-wellen-schnitt-folgt-der-eroeffnungs-regel.md)
   — die drei Planner-Folgepflichten aus
   [ADR-0046](../../adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) §Konsequenzen in einem
   Schnitt (§6 Risiko 2). Und
