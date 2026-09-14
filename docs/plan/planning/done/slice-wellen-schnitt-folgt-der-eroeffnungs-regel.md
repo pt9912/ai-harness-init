@@ -352,7 +352,7 @@ Backticks).
   als die namentlich genannten Träger, ist als Klasse längst entschieden: Ihr Register-Eintrag
   trägt den Ausgang *geplant* mit Kennung `slice-209`. Ein Lerneintrag daneben entschiede eine
   entschiedene Sache ein zweites Mal; der Beleg gehört in den Zähler, und dorthin geht er.
-- **Beobachtungs-Register (`../observations/`):** zwei Belege, beide
+- **Beobachtungs-Register (`../observations/`):** drei Belege, alle
   `evidence/slice-wellen-schnitt-folgt-der-eroeffnungs-regel.md`, Zähler abgeleitet und nirgends
   gesetzt (Stände als datierte Messung,
   [`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)
@@ -366,6 +366,9 @@ Backticks).
   Funktionskopf** voraus, deren Geltungsbereich der Code darunter nicht hält — hier steht kein Code
   unter der Zusage; `zusage-nennt-zwei-kanten-der-sensor-deckt-eine` trifft die **Zeit**-Achse, hier
   ist es der **Ausschnitt**. Die Abgrenzung steht in der `observation.md` selbst.
+  **(c)** [`BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`](../observations/BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/observation.md)
+  ergänzt — Zähler **19×**, Stand unverändert *offen*. Dieser Beleg entsteht strukturell **nach**
+  dieser Notiz: Er ist ein Befund des `git mv`, und der läuft erst, wenn die Notiz steht.
 - **Folge-Slices:** `slice-flache-welle-ist-eroeffnet-nicht-geplant` (*Die vier Rest-Träger der
   Wellen-Ablage lehren die geltende Arbeitsweise*) — zwei Liefer-Punkte, als Datei in `open/`.
 - **Risiken aus §6:** vier Risiken, vier Ausgänge — (1) **eingetreten**, aufgefangen vom Folge-Slice
