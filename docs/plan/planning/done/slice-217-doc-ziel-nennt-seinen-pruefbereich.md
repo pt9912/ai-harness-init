@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md). Der Slice trägt das
+**Welle:** [welle-13](welle-13-regeln-bekommen-ihren-sensor.md). Der Slice trägt das
 **welle-eigene** Closure-Kriterium aus §3 jenes Plans — jenes, das keine Slice-DoD abschreibt.
 Die Zugehörigkeit ist damit nach Baseline-Regelwerk `modul-06-roadmap.md`
 §Wann Arbeit eine Welle braucht gegeben: Die Welle beobachtet neben diesem Slice weiteres, was
@@ -146,7 +146,7 @@ meldet kein stilles `0 Befund(e)`, sondern bricht laut ab.
 
 ### Die Null muss gegengeprüft werden, sonst ist die Klassifikation selbst eine Behauptung
 
-[welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §3 stellt über die C-Ziele fest:
+[welle-13](welle-13-regeln-bekommen-ihren-sensor.md) §3 stellt über die C-Ziele fest:
 *„Heute melden sie ‚0 Befund(e)' und meinen ‚nichts geprüft'"*. Die zweite Hälfte des Satzes
 trägt diese Zeile aber **nicht**: `0 Befund(e)` ist mit *aktiv und sauber* ebenso verträglich wie
 mit *inert*
@@ -154,7 +154,7 @@ mit *inert*
 **Der erste Schritt der Umsetzung ist darum, `make doc-structure` und `make doc-tracked` selbst zu
 fahren** — dieser Plan zitiert die Welle, er misst nicht an ihrer Stelle.
 
-Die Methode steht schon in [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §1 Messung 1
+Die Methode steht schon in [welle-13](welle-13-regeln-bekommen-ihren-sensor.md) §1 Messung 1
 und wird hier **nachgeholt**, nicht erfunden: derselbe Baum mit einem **eingesetzten Defekt** —
 einem, den das Modul melden *müsste*, wenn es liefe — einmal ohne und einmal mit Config-Block.
 Bleibt er ohne Block stumm und meldet mit Block, ist die Inertheit belegt. Dass diese Gegenprobe
@@ -163,7 +163,7 @@ Defekt an einer vom Block ausgenommenen Stelle saß.
 
 **Der dritte Ausgang ist ausdrücklich erlaubt:** Lässt sich für ein C-Ziel kein Defekt
 konstruieren, weil die Kandidaten-Regel des Moduls unverstanden ist — die Lage, die
-[welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §6 für `reviews` beschreibt —, lautet die
+[welle-13](welle-13-regeln-bekommen-ihren-sensor.md) §6 für `reviews` beschreibt —, lautet die
 ehrliche Einordnung *„Kandidaten-Regel unverstanden"* und **nicht** *„ohne Prüfbereich"*. Eine
 Klassifikation, die den Unterschied verschweigt, wäre dasselbe stille Grün eine Ebene höher.
 
@@ -189,7 +189,7 @@ hinzukommt — und genau dort schlägt der Wächter in seiner zweiten Richtung a
   eine Adresse, die die Sendung annimmt. *(Folge-Slice mit Kennung.)*
 - **`tracked` bekommt hier keinen Block und keine Folge-Kennung.** Eine Adresse steht dafür nicht
   zur Verfügung: [slice-116](../open/slice-116-doku-gate-urteilt-ueber-den-getrackten-bestand.md)
-  ist der Slice, den [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §6 als Berührung
+  ist der Slice, den [welle-13](welle-13-regeln-bekommen-ihren-sensor.md) §6 als Berührung
   nennt, aber sein Text führt das Modul nicht — `grep -c 'tracked'` über seine Datei liefert
   **0**. Ihm hier eine Pflicht zuzuschreiben, die er nicht trägt, wäre eine Adresse, die die
   Sendung ablehnt. Die Aktivierung von `tracked` ist damit ein **anderer Vorgang** mit eigener
@@ -213,7 +213,7 @@ hinzukommt — und genau dort schlägt der Wächter in seiner zweiten Richtung a
 - **Kein Produkt-Code.** Der Slice berührt `internal/` und `cmd/` nicht; er ändert Doku, ein
   Gate-Fragment und einen Test. Das ist beim Review in einem `git diff --stat` prüfbar.
   *(Schicht-Abgrenzung.)*
-- **Die Datei [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) wird nicht angefasst** — weder
+- **Die Datei [welle-13](welle-13-regeln-bekommen-ihren-sensor.md) wird nicht angefasst** — weder
   ihre §4-Tabelle um eine siebte Zeile noch die zwei Zahlen in §3. Sie trägt dort *„Alle sechs
   Slices liegen in `done/`"* und *„für jedes der zwölf `docs?-*`-Ziele"*; heute zählt
   `grep -cE '^docs?-[a-z-]+:.*## ' d-check.mk` **13**, und mit diesem Slice wären es sieben
@@ -320,7 +320,7 @@ Aussagen-Berührung steht hier gar nicht.
 
 ### Der Träger der Aussage — und warum beide Hälften
 
-[welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §3 lässt die Wahl: *„in ihrer eigenen
+[welle-13](welle-13-regeln-bekommen-ihren-sensor.md) §3 lässt die Wahl: *„in ihrer eigenen
 Ausgabe **oder** ihrem Hilfetext"*. Dieser Slice nimmt **beide**, und der Grund ist je Hälfte ein
 anderer:
 
@@ -565,7 +565,7 @@ Backticks).
   zeigt auf die zwei Sensor-Dateien. **Zweitens** brauchte die Ausgabe-Hälfte zwei Runden, weil der
   Wächter zweimal hintereinander eine schwächere Eigenschaft maß als die Zusage daneben: erst
   Anwesenheit statt Position, dann Position ohne Form. **Drittens** trägt
-  [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §3 über die C-Ziele eine Aussage, die die
+  [welle-13](welle-13-regeln-bekommen-ihren-sensor.md) §3 über die C-Ziele eine Aussage, die die
   Messung dieses Slice widerlegt — *„Heute melden sie ‚0 Befund(e)' und meinen ‚nichts geprüft'"*
   gilt für `doc-structure`, nicht für `doc-tracked`. Das ist ein Übergabe-Artefakt an den
   Closure-Lauf der Welle, kein Closure-Schritt dieses Slice
@@ -629,7 +629,7 @@ Backticks).
   Register* (nur `--enable` · Block-Anwesenheit statt -Wirksamkeit · Abhilfe upstream), einmal
   *eingetreten* (die Kopf-Zahl des Adopter-Kopfs, in der Nacharbeit aufgelöst).
 - **Drei Paarungen:** dieses **Repo** fährt Wellen, und dieser Slice gehört zu
-  [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) — Anker, Folge-Slice und Register prüft
+  [welle-13](welle-13-regeln-bekommen-ihren-sensor.md) — Anker, Folge-Slice und Register prüft
   deren Closure. Die mechanisch entscheidbaren Hälften sind hier trotzdem gefahren, damit die
   Welle-Closure keinen Rest vorfindet, den dieser Slice hinterlassen hat: **(a) Anker** — kein
   Eintrag dieser Notiz trägt das Feld `liegt in`, die Paarung hat für diesen Slice keinen

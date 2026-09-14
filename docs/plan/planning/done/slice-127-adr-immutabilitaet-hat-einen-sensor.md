@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) — Achse (2) des Roadmap-Kandidaten
+**Welle:** [welle-13](welle-13-regeln-bekommen-ihren-sensor.md) — Achse (2) des Roadmap-Kandidaten
 *Regeln ohne Feedback-Quadrant schließen*. **Hängt an
 [slice-123](../done/slice-123-ci-sieht-die-historie.md)**: das Modul liest eine Commit-Range.
 
@@ -88,7 +88,7 @@ netzlos, Mount `:ro`, Image `v0.65.0` per Digest, Config aus `--print-config` mi
 
 **Damit ist die offene Frage dieses Slice beantwortet, bevor er beginnt:** das Modul ist scharf,
 die Config zielt richtig, und der Carveout-Pfad aus
-[welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §3 wird für `vcs` nicht gebraucht.
+[welle-13](welle-13-regeln-bekommen-ihren-sensor.md) §3 wird für `vcs` nicht gebraucht.
 
 ### Und der Default-Vorschlag färbt die erlaubte Korrektur rot
 
@@ -184,7 +184,7 @@ der die **Form**-Lücke zählt, statt sie mit diesem Slice als erledigt auszugeb
 
 ## 4. Trigger
 
-**Beginn (`open` → `next` → `in-progress`): [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md)
+**Beginn (`open` → `next` → `in-progress`): [welle-13](welle-13-regeln-bekommen-ihren-sensor.md)
 ist gestartet, [slice-123](../done/slice-123-ci-sieht-die-historie.md) liegt in `done/`, und das WIP-Limit
 ist frei.** Die Kante zu 123 ist **tragend**: ohne sie ist DoD (3) nicht herstellbar, weil es genau
 die Tiefen-Prüfung ist, die 123 baut.
@@ -275,7 +275,7 @@ bei Closure aufgelöst).
   eine Kopie außerhalb des Repos (`git archive aa32e1f`, netzlos, Mount `:ro`, Image `v0.65.0` per
   Digest) meldet ein absichtlich falscher `immutable: sha256:0000…`-Marker auf
   [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) **`core-drift`**
-  ([welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §6). Der Gegenstand ist ein **anderer**:
+  ([welle-13](welle-13-regeln-bekommen-ihren-sensor.md) §6). Der Gegenstand ist ein **anderer**:
   hier der Commit, der eine angenommene ADR ändert, dort ein Marker, den jemand von Hand setzt und
   nachzieht — in **23** Dateien (`ls docs/plan/adr/[0-9]*.md | wc -l`). Wird `vcs` in der Umsetzung
   aus einem anderen Grund untragbar, ist `immutable` der benannte Ausweichpfad und nicht ein

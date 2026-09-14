@@ -9,7 +9,7 @@ git-Index steht — genau das, was auf einem frischen Klon fehlen würde.
 ## Grenze — was das Grün nicht abdeckt
 
 **Was `doc-tracked` und `doc-structure` ohne eigenen `.d-check.yml`-Block wirklich prüfen**
-(slice-217, Antwort auf [`welle-13`](../../docs/plan/planning/welle-13-regeln-bekommen-ihren-sensor.md)
+(slice-217, Antwort auf [`welle-13`](../../docs/plan/planning/done/welle-13-regeln-bekommen-ihren-sensor.md)
 §3): Jedes `docs?-*`-Ziel in [`d-check.mk`](../../d-check.mk) fällt in eine von vier Klassen,
 **abgeleitet** aus Ziel-Zeile, Rezept-Zeile und der Frage, ob [`.d-check.yml`](../../.d-check.yml)
 für das per `--enable` zugeschaltete Modul einen Top-Level-Block führt — kein Zielname steht

@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) — Achse (1) des Roadmap-Kandidaten
+**Welle:** [welle-13](welle-13-regeln-bekommen-ihren-sensor.md) — Achse (1) des Roadmap-Kandidaten
 *Regeln ohne Feedback-Quadrant schließen*. Hermetisch, hängt an keinem anderen Slice der Welle.
 
 **Ebene: Dogfood, nicht emittiert.** Gegenstand sind die Gate-Tabellen **dieses** Repos. Die
@@ -198,7 +198,7 @@ Steering-Loop-Lerneintrag.
 
 ## 4. Trigger
 
-**Beginn (`open` → `next` → `in-progress`): [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md)
+**Beginn (`open` → `next` → `in-progress`): [welle-13](welle-13-regeln-bekommen-ihren-sensor.md)
 ist gestartet und das WIP-Limit ist frei.** Der Slice ist hermetisch und wartet auf keinen anderen —
 insbesondere **nicht** auf [slice-123](../done/slice-123-ci-sieht-die-historie.md): `targets` liest keine
 Historie und ist auf einem Klon der Tiefe 1 genauso scharf wie auf einem vollen.
@@ -386,7 +386,7 @@ fiel es im Review als Vorhersage auf, vor dem Lauf, der es gemeldet hätte.
 
 Dieses Repo führt Wellen-Betrieb (`ls docs/plan/planning/welle-*.md | wc -l`, kein
 Erwartungswert), und dieser Slice ist Mitglied von
-[welle-13](../welle-13-regeln-bekommen-ihren-sensor.md). Der Lese-Schritt — welcher Eintrag **3×**
+[welle-13](welle-13-regeln-bekommen-ihren-sensor.md). Der Lese-Schritt — welcher Eintrag **3×**
 erreicht hat und welchen Ausgang er bekommt — gehört damit der Welle-Closure, und der
 Herkunfts-Anker einer daraus verkörperten Regel lautet `seit welle-13`, nicht `seit slice-124`.
 Die eine Ausnahme greift hier nicht: Kein Eintrag wird von **dieser** Closure über die Schwelle

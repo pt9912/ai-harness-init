@@ -13,14 +13,14 @@ Setzung 1: **(1) Bündel?** Nein — ein Pin, eine Bilanz. **(2) Gemeinsames Clo
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 2 steht wellenlose Arbeit **nicht** in der Roadmap; ihr Zustand ist das Verzeichnis.
 
-**Warum dieser Slice nicht in [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) liegt,
+**Warum dieser Slice nicht in [welle-13](welle-13-regeln-bekommen-ihren-sensor.md) liegt,
 obwohl er ihr Trigger ist.** Die Welle adoptiert vier Regelmodule desselben Werkzeugs, und es liegt
 nahe, den Pin als ihren ersten Slice zu führen. Dagegen stehen zwei gemessene Gründe. **Erstens**
 teilen Pin und Modul-Adoption den Trockenlauf **nicht** — die naheliegende Annahme ist am Bestand
 widerlegt: der Pin-Trockenlauf fährt die sechs aktiven Module über unveränderter Config und
 antwortet `425 Datei(en) geprüft, 0 Befund(e)`; jedes der vier Kandidaten-Module ist **ohne eigenen
 Config-Block inert** und braucht seinen eigenen Lauf mit eigener Config
-([welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §1, dort gemessen). Ein gemeinsamer Beleg
+([welle-13](welle-13-regeln-bekommen-ihren-sensor.md) §1, dort gemessen). Ein gemeinsamer Beleg
 existiert also nicht, nur ein gemeinsames Werkzeug. **Zweitens** ist der Pin eine **Wartungspflicht
 mit eigenem Auflösungs-Trigger**
 ([`MR-024`](../../../../harness/conventions.md#mr-024--d-check-pin-v0620-structure-verfügbar)
@@ -158,7 +158,7 @@ Steering-Loop-Lerneintrag.
 | [`internal/emit/emit.go`](../../../../internal/emit/emit.go) | update | `DefaultImage`/`DefaultDigest`; die zwei go-Tests koppeln beide Stellen und färben DoD (1) rot |
 | [`Makefile`](../../../../Makefile) | update | das Tag-Beispiel im Kommentar über `DCHECK_TAG` — dieselbe Stelle, die [`MR-024`](../../../../harness/conventions.md#mr-024--d-check-pin-v0620-structure-verfügbar) beim Vorgänger-Sprung nachzog |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | **nicht durch diesen Slice** | der Adaptions-Block ist Architect-Eigentum ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Der neue MR-Eintrag und die §Baseline-Version entstehen im Architect-Lauf; dieser Slice liefert die **Messungen** als Übergabe-Artefakt |
-| [`.d-check.yml`](../../../../.d-check.yml) | **unverändert** | der Pin bewegt keine Modul-Liste. Wer hier etwas ändern will, ändert einen Prüfbereich — das ist [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md), nicht dieser Slice |
+| [`.d-check.yml`](../../../../.d-check.yml) | **unverändert** | der Pin bewegt keine Modul-Liste. Wer hier etwas ändern will, ändert einen Prüfbereich — das ist [welle-13](welle-13-regeln-bekommen-ihren-sensor.md), nicht dieser Slice |
 
 ## 4. Trigger
 

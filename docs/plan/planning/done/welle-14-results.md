@@ -251,7 +251,7 @@ ein halluziniertes Gate.
   von Schritt 4 (siehe *Archivierung* unten).
 - [slice-162](../open/slice-162-versions-sensor-baseline-pins.md) — Versions-Sensor
   gegen Tag-Drift der Baseline-Pins; die Linie trägt
-  [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md), nicht diese Welle.
+  [welle-13](welle-13-regeln-bekommen-ihren-sensor.md), nicht diese Welle.
 - [slice-168](../open/slice-168-adaptions-eintraege-trennen-abweichung-von-buchfuehrung.md)
   — der `geplant`-Ausgang von `BEO-014`; von §6 dieser
   Welle ausdrücklich ausgeschlossen.

@@ -134,7 +134,7 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
 
 **Drei Liefer-Punkte, einer je Träger:**
 
-- [x] **(1) [`welle-13`](../welle-13-regeln-bekommen-ihren-sensor.md) §1 Punkt 2 trägt keine der
+- [x] **(1) [`welle-13`](welle-13-regeln-bekommen-ihren-sensor.md) §1 Punkt 2 trägt keine der
       zwei überholten Aussagen mehr.** Weder die Ansage *„Ein Sensor nach `slice-125` muss diese
       Abweichung tragen"* — der Sensor **soll** sie nicht tragen — noch den Verweis, die vier
       `waves`-Befunde benennten die Abweichung, *„die die `roadmap.md` unter Offene Wellen
@@ -176,7 +176,7 @@ Aussagen-Berührung steht hier gar nicht.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| [`welle-13`](../welle-13-regeln-bekommen-ihren-sensor.md) §1 Punkt 2 | update | zwei überholte Aussagen, Messzahlen bleiben — Liefer-Punkt (1) |
+| [`welle-13`](welle-13-regeln-bekommen-ihren-sensor.md) §1 Punkt 2 | update | zwei überholte Aussagen, Messzahlen bleiben — Liefer-Punkt (1) |
 | [`roadmap.md`](../in-progress/roadmap.md) §Nächste Wellen | update | der Satz über verlinkte/unverlinkte Namen — Liefer-Punkt (2) |
 | [`.claude/commands/plan-welle.md`](../../../../.claude/commands/plan-welle.md) | update | Kopf (2×), Schritt 9, Commit-Schritt — Liefer-Punkt (3) |
 
@@ -283,7 +283,7 @@ dasteht.
   eintreten: Der Review hat die hinzugefügten Zeilen aller drei Commits auf Chronik-Marker geprüft
   (*früher · bisher · wäre · hätte · nicht mehr · seither*) und keinen gefunden; die einzige Stelle
   mit *früher* ist futurisch. Die drei Nachzüge sind Ersetzungen.
-- **(3) [`welle-13`](../welle-13-regeln-bekommen-ihren-sensor.md) ist eine offene Welle-Datei, und
+- **(3) [`welle-13`](welle-13-regeln-bekommen-ihren-sensor.md) ist eine offene Welle-Datei, und
   ihr §1 trägt datierte Messungen neben der überholten Aussage.** Wer beim Nachziehen eine Messzahl
   mitkorrigiert, schreibt eine Messung um, die zu ihrem Datum richtig war
   ([`MR-053`](../../../../harness/conventions.md#mr-053--ein-eintrag-datiert-seine-werkzeug-aussage-statt-den-lebenden-pin-zu-führen)

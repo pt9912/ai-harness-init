@@ -100,7 +100,7 @@ Datei ist dieser Report.
 - `quelle`: Slice-Plan §1 (*„Ob die Abweichungs-Frage mit der Aktivierung entfällt oder vorher einen
   Eintrag braucht, entscheidet dieser Slice nicht"*), §4 Rückführung `in-progress → open`,
   §6 Risiko 3 · [`AGENTS.md`](../../AGENTS.md) §3.8 ·
-  [`welle-13`](../plan/planning/welle-13-regeln-bekommen-ihren-sensor.md) §1
+  [`welle-13`](../plan/planning/done/welle-13-regeln-bekommen-ihren-sensor.md) §1
 - `pfad`: [`.d-check.yml:61-63`](../../.d-check.yml) (`waves: {dir, mode: many}`) und die
   Commit-Message-Zeile *„Nicht entschieden (Uebergabe an Architect, Slice-Plan §6 Risiko 3)"*
 - `befund`: Die Abweichung dieses Repos lautet *„Welle-Datei geschnitten vor Eintritt des
@@ -111,7 +111,7 @@ Datei ist dieser Report.
   die gegenteilige Tatsachenbehauptung (HIGH-1), sodass die Rückführungs-Bedingung aus §4 nicht
   greifen kann: Sie hängt an einer Antwort, deren Grundlage falsch beschrieben ist. Ein lebendes
   Planungs-Artefakt dieses Repos hatte die Anforderung an genau diesen Sensor vorab formuliert —
-  [`welle-13`](../plan/planning/welle-13-regeln-bekommen-ihren-sensor.md) §1: *„Ein Sensor nach
+  [`welle-13`](../plan/planning/done/welle-13-regeln-bekommen-ihren-sensor.md) §1: *„Ein Sensor nach
   `slice-125` muss diese Abweichung tragen, sonst meldet er einen legitimen Zustand als Drift"*,
   daneben die damalige Messung *„`planning` mit der `waves`-Fähigkeit und `mode: many` → **4**
   (2 × `wave-drift`, 2 × `wave-preview-exists`, je auf `welle-11` und `welle-13`)"*. Der gelieferte

@@ -24,7 +24,7 @@ Sensor — und keiner dieser Sensoren meldet grün, weil er nichts prüft.**
 Die Welle ist der Schnitt-Vorschlag zu den Achsen **(1)–(4)** und **(6)** des Roadmap-Kandidaten
 *Regeln ohne Feedback-Quadrant schließen*. Sie nimmt **nicht** den ganzen Kandidaten: dessen Achsen
 (5), (7) und (8) sind Eigenbauten, (7) liegt außerhalb von git, und (1) ist bereits am 2026-07-28
-nach [welle-09](welle-09-modul-15-konformitaet.md) eingefaltet worden. Was hier landet, ist die
+nach [welle-09](../welle-09-modul-15-konformitaet.md) eingefaltet worden. Was hier landet, ist die
 Hälfte, die der Kandidat selbst als *„bereits bezahlt"* führt — vier Regelmodule im gepinnten
 d-check-Image, dazu eine zweite Fähigkeit eines davon, die der Kandidat für einen Eigenbau hielt
 (§6).
@@ -48,7 +48,7 @@ aufgenommen hat.
 1. **Alle vier Module sind ohne eigenen Config-Block nachweislich inert, und ihr `doc-*`-Ziel
    meldet dabei grün.** Nachweislich heißt: derselbe Baum trägt **mit** Config-Block Befunde und
    **ohne** ihn Exit 0. Der schärfste Beleg ist `targets`: mit einem angehängten Phantom-Gate in
-   [`AGENTS.md`](../../../AGENTS.md) und **ohne** `targets:`-Block antwortet der Lauf
+   [`AGENTS.md`](../../../../AGENTS.md) und **ohne** `targets:`-Block antwortet der Lauf
    `d-check: 834 Datei(en) geprüft, 0 Befund(e)`, Exit 0 — dasselbe gilt in derselben Lage für
    `planning`, `commits` und `vcs`. Derselbe Baum, dasselbe Phantom-Gate, **mit** `targets:`-Block:
    **24 Befunde** (21 × `gate-undocumented`, 3 × `gate-phantom` — die zwei bestehenden plus das
@@ -58,7 +58,7 @@ aufgenommen hat.
    einer `Accepted`-ADR — weil die Probe den Satz **ans Dateiende** hängte und damit in
    `## Geschichte`, den der Default-Block über `exclude-sections` aus dem Kern nimmt. Derselbe Satz
    in `## Entscheidung` meldet `core-drift-vcs`, Exit 1
-   ([slice-127](done/slice-127-adr-immutabilitaet-hat-einen-sensor.md) §1 führt beide Läufe).
+   ([slice-127](slice-127-adr-immutabilitaet-hat-einen-sensor.md) §1 führt beide Läufe).
    **Damit ist keines der vier Module ohne Rot**, und der Carveout-Pfad aus §3 wird für `vcs` nicht
    gebraucht.
 2. **Die Adoptions-Schuld ist real und je Modul verschieden** — jede Zahl aus dem Lauf des
@@ -77,28 +77,28 @@ aufgenommen hat.
    dort (`ls docs/plan/planning/done/*.md | wc -l`; 12 × `closure-note-missing`,
    8 × `closure-note-thin`, §6).
    **Alle diese Zahlen hängen an ihrem Stand und sind keine Erwartungswerte**
-   ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+   ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
    Setzung 2; der erste Schritt jeder Umsetzung ist, sie neu zu fahren). **Die vier
    `waves`-Befunde sind keine Anforderung an den Sensor dieser Welle:** Sie beschreiben eine
    flache Welle-Datei, die vor Eintritt ihres Start-Triggers entsteht — einen Zustand, den dieses
-   Repo nicht führt. [ADR-0046](../adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md)
+   Repo nicht führt. [ADR-0046](../../adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md)
    Festlegung 1 bindet die Datei an die **Eröffnung**: Mit ihr entsteht die Datei, ihre Zeile
    verlässt die Vorschau *Nächste Wellen*, und unter *Offene Wellen* erscheint der Zeiger. Ein
    Sensor, der die vier Befunde meldet, meldet damit richtig und trägt keine Ausnahme.
 3. **Der Trockenlauf ist nicht geteilt.** Jedes Modul brauchte seinen eigenen Lauf mit seiner eigenen
    Config; der Pin-Trockenlauf aus
-   [slice-187](done/slice-187-d-check-pin-v0741.md) fuhr die zu seiner Zeit sechs **aktiven** Module
+   [slice-187](slice-187-d-check-pin-v0741.md) fuhr die zu seiner Zeit sechs **aktiven** Module
    und sagt über die Kandidaten nichts. Genau deshalb liegt der Pin **nicht** in dieser Welle.
 4. **Zwei der vier sind in CI blind.** `grep -c 'fetch-depth' .github/workflows/ci.yml` → **0** bei
    **4** `actions/checkout`-Zeilen (`grep -c 'actions/checkout' .github/workflows/ci.yml`).
    Voreinstellung ist Tiefe **1**; ein history-lesendes Modul wäre dort **blind und grün** — die
    stille-Grün-Klasse aus
-   [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
+   [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
    Setzung 3.
 
 ### Warum das eine Welle ist und keine Reihe von Wartungs-Slices
 
-Gegen [`MR-016`](../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
+Gegen [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 1 geprüft, alle drei Fragen beantwortet:
 
 1. **Bündel?** **Ja.** Die Aussage *„die gemessenen Regeln ohne Feedback-Quadrant sind geschlossen"*
@@ -120,10 +120,10 @@ Register `docs/plan/planning/observations/` wird vor dem Schnitt durchgegangen; 
 Eintrag die Sub-Areas dieser Welle, gehört er in die Slice-Planung, und bei **3×** als eigener
 Slice. **Keine Treffer sind ebenfalls eine Antwort und werden notiert.** Der Block steht hier und
 nicht als eigener `## 8`-Abschnitt: Die Ziel-Form
-[`welle.template.md`](../../../.harness/baseline/v6.8.0/templates/docs/plan/planning/welle.template.md)
+[`welle.template.md`](../../../../.harness/baseline/v6.8.0/templates/docs/plan/planning/welle.template.md)
 führt **sieben** Abschnitte, und ein achter wäre eine Abweichung, die einen Eintrag im
 Adaptions-Block bräuchte
-([`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage)) — den schreibt der Architect,
+([`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)) — den schreibt der Architect,
 nicht dieser Lauf.
 
 Gesichtet ist der **gemergte** Stand: **52** Verzeichnisse
@@ -135,12 +135,12 @@ Zähler-Stand aus `ls <eintrag>/evidence/*.md | wc -l`:
 
 | Beobachtung | Stand | berührt |
 |---|---|---|
-| [`zusage-nennt-sensor-der-form-nicht-sieht`](observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md) | **7×**, *geplant* (`slice-181`) | jeden Sensor, den diese Welle verdrahtet — der Ausgang ist **vergeben**, die Schwelle bereits überschritten |
-| [`register-paarung-ohne-gate-modul`](observations/BEO-ALL/register-paarung-ohne-gate-modul/observation.md) | **1×**, offen | [slice-129](done/slice-129-closure-notiz-hat-einen-sensor.md); die Tatsachen-Basis hat sich bewegt (§6) |
-| [`zusage-ohne-herstellbares-gegenbeispiel`](observations/BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel/observation.md) | **1×**, offen | §3, Bedingung *einmal rot gesehen* — der Carveout-Zweig dort **ist** die Antwort auf diesen Fall |
-| [`gruen-aussage-ohne-herkunft`](observations/BEO-ALL/gruen-aussage-ohne-herkunft/observation.md) | **1×**, offen | das Welle-Ziel selbst: *kein Sensor meldet grün, weil er nichts prüft* |
-| [`closure-kriterium-ohne-erreichbare-messstelle`](observations/BEO-ALL/closure-kriterium-ohne-erreichbare-messstelle/observation.md) | **1×**, offen | das welle-eigene Kriterium in §3 |
-| [`vollstaendigkeits-zusage-misst-falsche-ebene`](observations/BEO-ALL/vollstaendigkeits-zusage-misst-falsche-ebene/observation.md) | **1×**, offen | die Aufzählung *„vollständig, nicht beispielhaft"* in §6 |
+| [`zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md) | **7×**, *geplant* (`slice-181`) | jeden Sensor, den diese Welle verdrahtet — der Ausgang ist **vergeben**, die Schwelle bereits überschritten |
+| [`register-paarung-ohne-gate-modul`](../observations/BEO-ALL/register-paarung-ohne-gate-modul/observation.md) | **1×**, offen | [slice-129](slice-129-closure-notiz-hat-einen-sensor.md); die Tatsachen-Basis hat sich bewegt (§6) |
+| [`zusage-ohne-herstellbares-gegenbeispiel`](../observations/BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel/observation.md) | **1×**, offen | §3, Bedingung *einmal rot gesehen* — der Carveout-Zweig dort **ist** die Antwort auf diesen Fall |
+| [`gruen-aussage-ohne-herkunft`](../observations/BEO-ALL/gruen-aussage-ohne-herkunft/observation.md) | **1×**, offen | das Welle-Ziel selbst: *kein Sensor meldet grün, weil er nichts prüft* |
+| [`closure-kriterium-ohne-erreichbare-messstelle`](../observations/BEO-ALL/closure-kriterium-ohne-erreichbare-messstelle/observation.md) | **1×**, offen | das welle-eigene Kriterium in §3 |
+| [`vollstaendigkeits-zusage-misst-falsche-ebene`](../observations/BEO-ALL/vollstaendigkeits-zusage-misst-falsche-ebene/observation.md) | **1×**, offen | die Aufzählung *„vollständig, nicht beispielhaft"* in §6 |
 
 **Was daraus folgt, ist nichts — und das ist die Antwort, nicht ihr Fehlen.** Kein Eintrag erreicht
 **durch diese Welle** die Schwelle: Fünf stehen bei 1×, und der sechste steht bei 7× mit bereits
@@ -150,23 +150,23 @@ Spalte oben nennt ihn —, und dort werden sie beim jeweiligen Slice-Schnitt auf
 
 ## 2. Trigger (Welle startet)
 
-- **[slice-122](done/slice-122-d-check-pin-v0650.md) liegt in `done/`.** Beobachtbar ohne Rückfrage:
+- **[slice-122](slice-122-d-check-pin-v0650.md) liegt in `done/`.** Beobachtbar ohne Rückfrage:
   `ls docs/plan/planning/done/slice-122-*.md`. Der Grund ist **tragend, nicht ordnend** — die
   Adoptions-Entscheidungen dieser Welle werden gegen das Verhalten eines Moduls getroffen, und das
   Verhalten hängt an der Version. Eine Config gegen ein Image zu schneiden, das im selben Zug
   ausgetauscht wird, hieße, sie zweimal zu schneiden. **Vom dritten Trigger unten ist dieser
   überholt und bleibt trotzdem stehen:** er ist eingetreten, und die Kette der Pin-Sprünge, gegen
   die diese Welle misst, beginnt bei ihm.
-- **[welle-14](done/welle-14-re-baseline.md) liegt in `done/`.** Der Grund ist **tragend**, nicht bloß
+- **[welle-14](welle-14-re-baseline.md) liegt in `done/`.** Der Grund ist **tragend**, nicht bloß
   ordnend: Zwei Slices dieser Welle bauen Sensoren auf Formen, die jener Sprung bewegt — der
-  Roadmap-/Verzeichnis-Wächter ([slice-125](done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md))
-  und der Closure-Notiz-Sensor ([slice-129](done/slice-129-closure-notiz-hat-einen-sensor.md)). Die
+  Roadmap-/Verzeichnis-Wächter ([slice-125](slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md))
+  und der Closure-Notiz-Sensor ([slice-129](slice-129-closure-notiz-hat-einen-sensor.md)). Die
   Ziel-Fassung schiebt der Wellen-Closure einen Schritt ein, der die Zeitdokumente einer Welle nach
   `done/<welle-id>/` archiviert und an ihrer Stelle Stubs lässt (`v5.18.0`, `modul-06-roadmap.md`,
   §Wellen-Closure-Prozedur, Schritt 4); damit ändert sich, was `done/` enthält und was eine
   Closure-Notiz ist. Es ist derselbe Grund wie beim Pin darüber: eine Config gegen ein Artefakt zu
   schneiden, das im selben Zug ausgetauscht wird.
-- **[slice-187](done/slice-187-d-check-pin-v0741.md) liegt in `done/`.** Beobachtbar ohne
+- **[slice-187](slice-187-d-check-pin-v0741.md) liegt in `done/`.** Beobachtbar ohne
   Rückfrage: `ls docs/plan/planning/done/slice-187-*.md`. Der Grund ist **tragend** und derselbe wie
   beim Pin darüber, nur eine Version weiter: Der Slice zieht den d-check-Pin von `v0.65.0` — dem
   Stand, gegen den die Erstfassung dieser Welle maß — auf `v0.74.1`, und die Fläche, über die diese
@@ -183,7 +183,7 @@ Spalte oben nennt ihn —, und dort werden sie beim jeweiligen Slice-Schnitt auf
 adoptierten Module ist von **zehn** auf **zwölf** nachgezogen; sie war mit der Landung von
 `slice-187` zur Untergrenze geworden. **Die Trigger-Liste ist damit geschlossen: alle drei
 Bedingungen sind eingetreten**, und die Welle steht ab hier unter *Offene Wellen* der
-[`roadmap.md`](in-progress/roadmap.md).
+[`roadmap.md`](../in-progress/roadmap.md).
 
 ## 3. Closure-Trigger (Welle schließt)
 
@@ -193,17 +193,17 @@ Bedingungen sind eingetreten**, und die Welle steht ab hier unter *Offene Wellen
   wandert mit dem Bestand; tragend ist, dass §4 sie vollständig führt).
 - `make gates` grün — **mit** den neu aufgenommenen Modulen in der Modul-Liste, nicht daneben.
 - **Jedes neu verdrahtete Modul ist einmal rot gesehen worden**, mit dem Kommando, das es rot
-  färbt, im jeweiligen Umsetzungs-Commit ([`AGENTS.md`](../../../AGENTS.md) §3.6). **Ein Modul, für
+  färbt, im jeweiligen Umsetzungs-Commit ([`AGENTS.md`](../../../../AGENTS.md) §3.6). **Ein Modul, für
   das kein Rot herstellbar ist, wird nicht verdrahtet, sondern als Carveout geführt** (Modul 7) —
   die Welle darf mit einem dokumentierten Carveout schließen, nie mit einem still grünen Modul.
 - **Das welle-eigene Kriterium, das keine Slice-DoD abschreibt:** für **jedes** der **dreizehn**
-  `docs?-*`-Ziele in [`d-check.mk`](../../../d-check.mk)
+  `docs?-*`-Ziele in [`d-check.mk`](../../../../d-check.mk)
   (`grep -cE '^docs?-[a-z-]+:.*## ' d-check.mk` → **13**; die Zahl wandert mit dem Werkzeug-Zweig,
   tragend ist die Vollständigkeit über der gemessenen Menge) ist entschieden und aufgeschrieben, ob
   es einen Prüfbereich hat — und die Ziele, die weiterhin ohne Config-Block laufen, **sagen das in
   ihrer eigenen Ausgabe oder ihrem Hilfetext**. Heute melden sie „0 Befund(e)" und meinen „nichts
   geprüft"; nach der Welle darf das nicht mehr vorkommen, ohne benannt zu sein
-  ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+  ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 - Closure-Notiz in `done/welle-13-results.md` mit Steering-Loop-Eintrag.
 
 ## 4. Slices in dieser Welle
@@ -214,28 +214,28 @@ Verzeichnisse (dieselbe zweite Wahrheit, die beim Slice retired wurde). -->
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| [slice-123](done/slice-123-ci-sieht-die-historie.md) | CI sieht die Historie — oder der Lauf fällt, statt grün zu melden | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
-| [slice-124](done/slice-124-gate-tabelle-hat-einen-waechter.md) | Die Gate-Tabellen werden gegen das Makefile gehalten (Modul `targets`, Achse 1) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
-| [slice-125](done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) | Roadmap und Lifecycle-Verzeichnis widersprechen sich nicht mehr still (Modul `planning`, Achse 4) | [`MR-016`](../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) |
-| [slice-126](done/slice-126-commit-message-traegt-eine-kennung.md) | Eine Commit-Message ohne Kennung wird rot, und zwar vor dem Commit (Modul `commits`, Achse 3) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
-| [slice-127](done/slice-127-adr-immutabilitaet-hat-einen-sensor.md) | Hard Rule 3.4 bekommt ihren Sensor (Modul `vcs`, Achse 2) | [`AGENTS.md`](../../../AGENTS.md) §3.4 |
-| [slice-129](done/slice-129-closure-notiz-hat-einen-sensor.md) | Die Closure-Notiz-Pflicht bekommt ihren Sensor (Modul `planning`, zweite Fähigkeit, Achse 6) | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
-| [slice-217](done/slice-217-doc-ziel-nennt-seinen-pruefbereich.md) | Ein `docs?-*`-Ziel ohne Config-Block sagt es in Ausgabe und Hilfetext | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-123](slice-123-ci-sieht-die-historie.md) | CI sieht die Historie — oder der Lauf fällt, statt grün zu melden | [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
+| [slice-124](slice-124-gate-tabelle-hat-einen-waechter.md) | Die Gate-Tabellen werden gegen das Makefile gehalten (Modul `targets`, Achse 1) | [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-125](slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) | Roadmap und Lifecycle-Verzeichnis widersprechen sich nicht mehr still (Modul `planning`, Achse 4) | [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) |
+| [slice-126](slice-126-commit-message-traegt-eine-kennung.md) | Eine Commit-Message ohne Kennung wird rot, und zwar vor dem Commit (Modul `commits`, Achse 3) | [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-127](slice-127-adr-immutabilitaet-hat-einen-sensor.md) | Hard Rule 3.4 bekommt ihren Sensor (Modul `vcs`, Achse 2) | [`AGENTS.md`](../../../../AGENTS.md) §3.4 |
+| [slice-129](slice-129-closure-notiz-hat-einen-sensor.md) | Die Closure-Notiz-Pflicht bekommt ihren Sensor (Modul `planning`, zweite Fähigkeit, Achse 6) | [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-217](slice-217-doc-ziel-nennt-seinen-pruefbereich.md) | Ein `docs?-*`-Ziel ohne Config-Block sagt es in Ausgabe und Hilfetext | [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 
 **Der siebte Träger kam über sein Kopf-Feld, nicht über diese Tabelle.** Mitglied ist, wer
 `**Welle:** welle-13` trägt; die Tabelle führt die Mitglieder nach, sie vergibt sie nicht.
-[slice-217](done/slice-217-doc-ziel-nennt-seinen-pruefbereich.md) ist der Träger des
+[slice-217](slice-217-doc-ziel-nennt-seinen-pruefbereich.md) ist der Träger des
 welle-eigenen Kriteriums aus §3 — er trug es, bevor §3 es nannte, und seine §1 hat die Korrektur
 dieser Tabelle ausdrücklich dem Closure-Lauf überlassen („Bestand bleibt bewusst stehen“).
 
 **Die Reihenfolge ist nicht beliebig, eine Kante ist hart und eine ist ein Ausschluss.**
-[slice-123](done/slice-123-ci-sieht-die-historie.md) geht **[slice-126](done/slice-126-commit-message-traegt-eine-kennung.md)
-und [slice-127](done/slice-127-adr-immutabilitaet-hat-einen-sensor.md) voraus**: beide lesen
+[slice-123](slice-123-ci-sieht-die-historie.md) geht **[slice-126](slice-126-commit-message-traegt-eine-kennung.md)
+und [slice-127](slice-127-adr-immutabilitaet-hat-einen-sensor.md) voraus**: beide lesen
 Historie, und ohne die Range-Entscheidung aus 123 wären sie in CI blind und grün — ein fail-open
 Sensor ist schlechter als keiner, weil er eine Zusage trägt. Die drei hermetischen
-([slice-124](done/slice-124-gate-tabelle-hat-einen-waechter.md),
-[slice-125](done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md),
-[slice-129](done/slice-129-closure-notiz-hat-einen-sensor.md)) hängen an nichts und können zuerst
+([slice-124](slice-124-gate-tabelle-hat-einen-waechter.md),
+[slice-125](slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md),
+[slice-129](slice-129-closure-notiz-hat-einen-sensor.md)) hängen an nichts und können zuerst
 laufen. **Nicht gleichzeitig laufen dürfen 125 und 129:** beide konfigurieren dasselbe Modul in
 demselben Schlüsselbaum — die Reihenfolge ist frei, die Parallelität nicht.
 
@@ -248,20 +248,20 @@ ist falsch"*, nicht *„die DoD ist länger"*.
 
 ## 5. Abhängigkeiten
 
-- **Wird blockiert von:** [slice-122](done/slice-122-d-check-pin-v0650.md) (Pin, tragend) und
-  [welle-10](done/welle-10-re-baseline.md) (WIP, ordnend) — beide mit ihrer Begründung in §2.
-- **Blockiert:** nichts. [welle-11](welle-11-traeger-aussage.md) hängt an
-  [welle-10](done/welle-10-re-baseline.md), nicht an dieser Welle; die Reihung ist damit
+- **Wird blockiert von:** [slice-122](slice-122-d-check-pin-v0650.md) (Pin, tragend) und
+  [welle-10](welle-10-re-baseline.md) (WIP, ordnend) — beide mit ihrer Begründung in §2.
+- **Blockiert:** nichts. [welle-11](../welle-11-traeger-aussage.md) hängt an
+  [welle-10](welle-10-re-baseline.md), nicht an dieser Welle; die Reihung ist damit
   welle-10 → welle-11 **und** welle-10 → welle-13, ohne Kante zwischen 11 und 13.
-- **Berührt, aber bindet nicht:** [slice-121](open/slice-121-commit-message-nennt-was-es-gibt.md)
+- **Berührt, aber bindet nicht:** [slice-121](../open/slice-121-commit-message-nennt-was-es-gibt.md)
   liegt **außerhalb** dieser Welle und bekommt aus
-  [slice-126](done/slice-126-commit-message-traegt-eine-kennung.md) seinen **Träger**, nicht seine
+  [slice-126](slice-126-commit-message-traegt-eine-kennung.md) seinen **Träger**, nicht seine
   Eigenschaft (Begründung dort in §1).
 
 ## 6. Out-of-Scope für diese Welle
 
 - **Die Achsen (5), (7) und (8) des Roadmap-Kandidaten.** (5) Co-Change um
-  [`spec/lastenheft.md`](../../../spec/lastenheft.md), (7) veröffentlichte Artefakte außerhalb von
+  [`spec/lastenheft.md`](../../../../spec/lastenheft.md), (7) veröffentlichte Artefakte außerhalb von
   git, (8) der DoD-Punkte-Zähler — alle drei sind **Eigenbauten**, keine Adoption. Sie bleiben als
   Kandidaten-Zeile in der Roadmap stehen.
 - **Achse (6) ist es nicht — sie ist hier drin.** Die Closure-Notiz-Pflicht galt als vierter
@@ -269,9 +269,9 @@ ist falsch"*, nicht *„die DoD ist länger"*.
   über `closure.dir`), mit fünf eigenen Grund-Codes: `closure-note-missing`, `-thin`,
   `-boilerplate`, `-placeholder`, `-ambiguous`. Damit ist sie dieselbe Klasse wie die vier
   gemessenen Achsen — Trockenlauf, Config-Block, Verdrahtung — und liegt als
-  [slice-129](done/slice-129-closure-notiz-hat-einen-sensor.md) in dieser Welle. **Ihre
+  [slice-129](slice-129-closure-notiz-hat-einen-sensor.md) in dieser Welle. **Ihre
   Adoptions-Schuld ist die kleinste der Welle und die Messung dazu die kürzeste:** über den
-  **133** Slice-Notizen in [`done/`](done) (`ls docs/plan/planning/done/slice-*.md | wc -l`) meldet
+  **133** Slice-Notizen in [`done/`](../done) (`ls docs/plan/planning/done/slice-*.md | wc -l`) meldet
   der Lauf `0 Befund(e)`, Exit 0, und dieselbe Kopie mit **einer** auf einen Satz gekürzten Notiz
   meldet **1** × `closure-note-thin` — die Null ist gemessen, nicht leer. Über der **Welle**-Ebene
   (`glob: '*.md'`, alle **157** flachen Dateien dort,
@@ -289,7 +289,7 @@ ist falsch"*, nicht *„die DoD ist länger"*.
   bleibt trotzdem draußen.** Sie prüft die **Register-Deckung**: eine zitierte Kennung `<pfad>`
   gilt als nachgewiesen, wenn `<dir>/<pfad>/observation.md` existiert — genau die maschinelle
   Hälfte der Register-Paarung (c), die Baseline-Regelwerk `modul-06-roadmap.md` verlangt, und genau
-  die Verzeichnis-Form, auf die [welle-15](done/welle-15-re-baseline.md) dieses Register umgestellt
+  die Verzeichnis-Form, auf die [welle-15](welle-15-re-baseline.md) dieses Register umgestellt
   hat. **Sie steht in keiner `--print-config`-Ausgabe** — der `diff` der zwei Ausgaben führt sie
   nicht, und der `planning`-Block ist zwischen den Digests unverändert. Ihre Existenz ist deshalb
   **am Verhalten** belegt, nicht am Hilfetext, und der Beleg ist ein Paar: `planning.QUATSCH.dir`
@@ -313,33 +313,33 @@ ist falsch"*, nicht *„die DoD ist länger"*.
   Inline-Code-Vorkommen insgesamt (keine Erwartungswerte). Die Deckung ist also **echt**, aber
   **schmaler als der Bestand** — wer sie aktiviert, sagt das dazu, sonst entsteht die
   Vollständigkeits-Zusage, die
-  [`vollstaendigkeits-zusage-misst-falsche-ebene`](observations/BEO-ALL/vollstaendigkeits-zusage-misst-falsche-ebene/observation.md)
+  [`vollstaendigkeits-zusage-misst-falsche-ebene`](../observations/BEO-ALL/vollstaendigkeits-zusage-misst-falsche-ebene/observation.md)
   beschreibt.
   **Warum sie trotzdem draußen bleibt:** Sie ist keine der gemessenen Achsen des Kandidaten, aus
   denen diese Welle ihre Identität nimmt, und sie wäre ein **dritter** Slice im selben
-  `planning`-Schlüsselbaum neben [slice-125](done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)
-  und [slice-129](done/slice-129-closure-notiz-hat-einen-sensor.md) — die §4 unten schon nicht
+  `planning`-Schlüsselbaum neben [slice-125](slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)
+  und [slice-129](slice-129-closure-notiz-hat-einen-sensor.md) — die §4 unten schon nicht
   gleichzeitig laufen lässt. **Eine Slice-Kennung steht hier deshalb nicht**; sie behauptete eine
   Datei, die es nicht gibt
-  ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Was
+  ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Was
   dieser Eröffnungs-Lauf hinterlässt, ist die **Messung**, die den Aktivierungs-Schnitt billig
   macht, und die Feststellung, dass
-  [`register-paarung-ohne-gate-modul`](observations/BEO-ALL/register-paarung-ohne-gate-modul/observation.md)
+  [`register-paarung-ohne-gate-modul`](../observations/BEO-ALL/register-paarung-ohne-gate-modul/observation.md)
   in seiner `state.md` bereits denselben Sachverhalt trägt — unabhängig hier nachgemessen und
   bestätigt, samt dem dort benannten Punkt, dass `--print-config` die Frage nicht beantwortet.
 - **Die zwölf nicht adoptierten Module des Images — vollständig aufgezählt, nicht beispielhaft.**
   Das gepinnte Image führt **22** verfügbare Module
   (`--print-config`, dann `grep -m1 '^# Verfügbar:' | tr ',' '\n' | wc -l`),
-  [`.d-check.yml`](../../../.d-check.yml) aktiviert **sieben**
+  [`.d-check.yml`](../../../../.d-check.yml) aktiviert **sieben**
   (`grep -m1 '^modules:' .d-check.yml | tr ',' '\n' | wc -l`), diese Welle nimmt **vier** (§4),
-  von denen `planning` mit [slice-125](done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)
+  von denen `planning` mit [slice-125](slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)
   bereits in der Sieben steht — **zwölf** bleiben draußen. Eine Liste, die nur einen Teil davon nennt, gibt eine Auswahl als
   Vollzähligkeit aus; darum stehen hier alle zwölf. **Zwei davon sind mit `slice-187` neu
   hinzugekommen** und unten eigens gemessen, weil die Erstfassung sie nicht kennen konnte.
 
   **Fünf liegen neben den gemessenen sechs Regeln:** `tracked`, `structure`, `citations`,
   `sources`, `external`. `tracked` ist der interessanteste Grenzfall — es berührt
-  [slice-116](open/slice-116-doku-gate-urteilt-ueber-den-getrackten-bestand.md); die Klärung gehört
+  [slice-116](../open/slice-116-doku-gate-urteilt-ueber-den-getrackten-bestand.md); die Klärung gehört
   dorthin und nicht hierher (§1 dieses Slice misst die Frage, diese Welle nicht).
 
   **Zwei sind mit dem Pin-Sprung neu — beide gemessen, und ihre Nullen sind ungleich viel wert:**
@@ -362,7 +362,7 @@ ist falsch"*, nicht *„die DoD ist länger"*.
     Kandidaten insgesamt, bei **278** Reports (`ls docs/reviews/*.md | wc -l`). Warum das Modul
     schweigt, ist **nicht** gemessen — seine Kandidaten-Regel ist damit unverstanden, und eine
     Aktivierung auf dieser Grundlage wäre genau das stille Grün, gegen das diese Welle steht
-    ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+    ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
     Daneben steht eine Form-Frage: Dieses Repo führt seine Review-Zusage überwiegend als **Prosa**
     in §5 *Closure-Trigger*, nicht als DoD-Haken — das Modul sähe sie auch dann nicht, wenn seine
     Regel verstanden wäre. **Eigener Kandidat**, kein Wellen-Mitglied; die Klärung gehört in den
@@ -388,7 +388,7 @@ ist falsch"*, nicht *„die DoD ist länger"*.
     **Der Ausweg der Erstfassung ist damit versperrt:** `scan.ignore` auf `docs/reviews/**` deckte
     nur noch **30** der **73** und ließe die Befunde in ADRs und im Adaptions-Block stehen — es war
     schon damals eine Senkung und damit eine ADR
-    ([`AGENTS.md`](../../../AGENTS.md) §3.5, s. den nächsten Punkt), jetzt ist es zusätzlich keine
+    ([`AGENTS.md`](../../../../AGENTS.md) §3.5, s. den nächsten Punkt), jetzt ist es zusätzlich keine
     Lösung mehr. Ein Modul, das rot führt, dessen Adoption an einer Senkung hängt **und** dessen
     Befunde in nach §3.4 eingefrorenen ADRs liegen, ist ein **eigener Kandidat** mit eigener
     Entscheidung, kein Mitglied einer Welle, deren Identität die gemessenen Achsen des Kandidaten
@@ -402,27 +402,27 @@ ist falsch"*, nicht *„die DoD ist länger"*.
     `ghcr\.io/pt9912/d-check:(v…)`, `current-from` auf einen eigens angelegten Markdown-Span) und
     den vom Tool vorgeschlagenen Zeitdokument-Ausnahmen ebenfalls **0**; ohne die Ausnahmen **19**,
     davon **1** in `done/` und **18** in `docs/reviews/**` — keiner in einem lebenden Artefakt.
-    Entscheidend ist die Sonde: den gelebten Pin in [`d-check.mk`](../../../d-check.mk) auf
+    Entscheidend ist die Sonde: den gelebten Pin in [`d-check.mk`](../../../../d-check.mk) auf
     `v0.11.0` gedreht → **`0 Befund(e)`**; dieselbe Zahl zusätzlich in
-    [`AGENTS.md`](../../../AGENTS.md) → **1 Befund**, `version-stale`. Das Modul liest Markdown und
+    [`AGENTS.md`](../../../../AGENTS.md) → **1 Befund**, `version-stale`. Das Modul liest Markdown und
     ist damit **blind für die Datei, die den Pin trägt**; es hält Zweitfassungen gegen eine
     Markdown-Autorität. Eine solche Autorität neu anzulegen verschöbe die unbewachte Kante, statt
     sie zu schließen.
     **Der zweite Gegenstand — der Baseline-Tag — ist entschieden, und zwar dagegen.**
-    [ADR-0023](../adr/0023-verweis-beschluss-traegt-ueber-den-sprung.md) Festlegung 3 verwirft das
+    [ADR-0023](../../adr/0023-verweis-beschluss-traegt-ueber-den-sprung.md) Festlegung 3 verwirft das
     Modul als Wächter der **stillen Hälfte** jenes Verweis-Bestands, den
-    [slice-080](done/slice-080-verweis-ueberlebt-tagwechsel.md) misst: das Modul urteilt
+    [slice-080](slice-080-verweis-ueberlebt-tagwechsel.md) misst: das Modul urteilt
     über **Zeichenketten-Frische, nicht über Verweis-Auflösung** — ein Link **ins Leere** unter
     dem aktuellen Tag lässt es schweigen, eine Nennung, die niemand auflösen soll, färbt es rot —,
     es trennt Adresse, datierte Aussage und Operand nicht, und der autoritative Pin steht in einer
     Zeile, die es nicht liest (`grep -c '^BASELINE_TAG' Makefile` → **1**, kein Markdown).
     **Es wird darum auch nicht als Kandidat geführt**
-    ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) — ein
+    ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) — ein
     Modul, das die falsche Eigenschaft misst, ist kein Wächter im Wartestand. Was die Entscheidung
     hinterlässt, ist kein Slice, sondern ein **Kriterium**: ein Sensor über einem `<tag>`-gescopten
     Bestand wird nur adoptiert, wenn er die drei Klassen an je einem Ist-Beleg trennt. Bestand,
     Kommandos und Status der Entscheidung stehen in der ADR und im
-    [ADR-Index](../adr/README.md), nicht zusätzlich hier.
+    [ADR-Index](../../adr/README.md), nicht zusätzlich hier.
   - **`pins` und `immutable` — der Gegenstand muss erst geschrieben werden.** Beide melden ohne
     Block `0 Befund(e)`, und das ist keine Config-Lücke, sondern eine leere Marker-Menge:
     `git grep -l 'dpin: sha256:' -- '*.md' ':!.harness/baseline' ':!docs/plan/planning' ':!docs/reviews' | wc -l`
@@ -433,19 +433,19 @@ ist falsch"*, nicht *„die DoD ist länger"*.
     Messfehlers der Erstfassung**: Ohne sie findet die Suche **sich selbst** — der Satz, der den
     Marker benennt, enthält ihn. Über den ganzen Baum gezählt liefert dieselbe Suche heute **1**
     bzw. **2** Dateien, und alle Treffer sind Sätze *über* den Marker in genau diesem Absatz und in
-    [slice-127](done/slice-127-adr-immutabilitaet-hat-einen-sensor.md) §6 — kein einziger ist einer
-    ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert):
+    [slice-127](slice-127-adr-immutabilitaet-hat-einen-sensor.md) §6 — kein einziger ist einer
+    ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert):
     ein Kommando neben einer Zahl belegt sie erst, wenn es den Gegenstand schneidet).
     **`immutable` bleibt als benannter Ausweichpfad geführt:** ein absichtlich falscher
     `immutable: sha256:0000…`-Marker auf einer Accepted-ADR meldet **`core-drift`** — das
     hermetische Geschwister derselben Zusage, die
-    [slice-127](done/slice-127-adr-immutabilitaet-hat-einen-sensor.md) über `vcs` trägt. Gebraucht
+    [slice-127](slice-127-adr-immutabilitaet-hat-einen-sensor.md) über `vcs` trägt. Gebraucht
     wird es dort nicht: das Rot über die Range ist hergestellt (Messung 1). Der Hinweis steht in
     slice-127 §6 und ändert dessen Zuschnitt nicht.
   - **`diagrams` — bewacht eine Kennung.** Ohne Block `0 Befund(e)`; mit `fences: [mermaid]` und
     einem Muster auf die vierstellige ADR-Kennung (`regex`, **nicht** `pattern` — der falsche
     Schlüssel bricht fail-closed mit Exit 2) ebenfalls **0**, und die Kontrolle färbt rot: die eine
-    ADR-Kennung im Fence von [`roadmap.md`](in-progress/roadmap.md) auf eine nicht vergebene Nummer
+    ADR-Kennung im Fence von [`roadmap.md`](../in-progress/roadmap.md) auf eine nicht vergebene Nummer
     gedreht → **1 Befund**, `diagram-id-undefined`, unter **beiden** Digests. Eine Zeilennummer
     steht hier bewusst nicht: Der Fence wandert mit jeder Roadmap-Änderung, und diese Eröffnung ist
     eine.
@@ -456,14 +456,14 @@ ist falsch"*, nicht *„die DoD ist länger"*.
     statt gegen die ADR-Dateien. Kein Bündel-Bezug und kein Schuldenstand: S-Kandidat für die
     Doc-Gate-Härtungs-Zeile der Roadmap.
 - **Jede Senkung einer bestehenden Schwelle.** Diese Welle **hebt** nur
-  ([`MR-001`](../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids):
+  ([`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids):
   Anheben → Steering-Loop). Stellt sich in einem Slice heraus, dass die Adoption nur durch eine
   Lockerung woanders grün wird, ist das ein ADR und damit ein Rückführungs-Grund, kein Zwischenschritt.
-- **Der Pin selbst** ([slice-122](done/slice-122-d-check-pin-v0650.md)) — Trigger, nicht Mitglied.
+- **Der Pin selbst** ([slice-122](slice-122-d-check-pin-v0650.md)) — Trigger, nicht Mitglied.
 
 ## 7. Closure-Notiz
 
-[`welle-13-results.md`](done/welle-13-results.md) — die Ergebnis-Notiz der Welle: geliefert · was
+[`welle-13-results.md`](welle-13-results.md) — die Ergebnis-Notiz der Welle: geliefert · was
 funktionierte · was anders lief · Steering-Loop-Einträge · Zeiger aufs Beobachtungs-Register ·
 Folge-Slices · Verifikation.
 

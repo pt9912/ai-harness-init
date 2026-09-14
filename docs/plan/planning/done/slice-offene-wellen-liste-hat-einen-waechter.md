@@ -238,7 +238,7 @@ ob ein **gelisteter** Wächter seine Zähne behält, nicht ob ein neuer entsteht
 - **Nicht gleichzeitig mit einem Lauf, der denselben Schlüsselbaum konfiguriert.** `planning:`
   trägt heute `heading`, `marker` und `closure`; zwei Läufe darin erzeugen einen Konflikt, den
   kein Gate meldet — die Lehre aus
-  [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §4, wo
+  [welle-13](welle-13-regeln-bekommen-ihren-sensor.md) §4, wo
   [slice-125](../done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) und
   [slice-129](../done/slice-129-closure-notiz-hat-einen-sensor.md) aus genau diesem Grund nicht
   parallel laufen durften.
@@ -334,7 +334,7 @@ dasteht.
   Träger; der Zähler trägt sie.
 - **(2) Die heutige Null hängt an der Form der Tabelle *Nächste Wellen*, nicht nur an der
   Zeiger-Liste.** Die Fähigkeit kennt neben `wave-drift` den Grund-Code `wave-preview-exists` —
-  belegt in [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §1, dessen Messung **2 ×** je
+  belegt in [welle-13](welle-13-regeln-bekommen-ihren-sensor.md) §1, dessen Messung **2 ×** je
   Code über einem **anderen Baum und einem anderen Pin** führt und deshalb hier als datierter
   Beleg für die *Existenz* des Codes steht, nicht als Zahl über dem heutigen Bestand
   ([`MR-053`](../../../../harness/conventions.md#mr-053--ein-eintrag-datiert-seine-werkzeug-aussage-statt-den-lebenden-pin-zu-führen)).

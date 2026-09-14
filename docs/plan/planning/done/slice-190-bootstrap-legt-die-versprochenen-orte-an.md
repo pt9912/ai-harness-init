@@ -13,7 +13,7 @@ Damit **nicht** in der Roadmap geführt.
 **Ebene: emittiert, nicht Dogfood.** Gegenstand ist der Skelett-Generator
 [`internal/emit/`](../../../../internal/emit) und der Bestand, den er in ein
 fremdes Ziel schreibt. Die `.d-check.yml` **dieses** Repos ist nicht berührt und
-damit auch nicht [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md);
+damit auch nicht [welle-13](welle-13-regeln-bekommen-ihren-sensor.md);
 zwei Verträge, zwei Gründe.
 
 **Bezug:** [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)

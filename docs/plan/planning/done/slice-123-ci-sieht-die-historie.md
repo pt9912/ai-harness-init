@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) — der **erste** Slice und die
+**Welle:** [welle-13](welle-13-regeln-bekommen-ihren-sensor.md) — der **erste** Slice und die
 harte Kante zu [slice-126](../done/slice-126-commit-message-traegt-eine-kennung.md) und
 [slice-127](../done/slice-127-adr-immutabilitaet-hat-einen-sensor.md).
 
@@ -140,7 +140,7 @@ Steering-Loop-Lerneintrag.
 
 ## 4. Trigger
 
-**Beginn (`open` → `next` → `in-progress`): [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md)
+**Beginn (`open` → `next` → `in-progress`): [welle-13](welle-13-regeln-bekommen-ihren-sensor.md)
 ist gestartet (ihr Trigger in §2 ist eingetreten) und das WIP-Limit ist frei.** Innerhalb der Welle
 ist dieser Slice der erste; er wartet auf keinen anderen.
 
@@ -337,7 +337,7 @@ wandern mit dem Bestand.
   und der Slice hat sie befolgt: die drei Fälle 266–268 decken beide beanstandeten Zusagen. Eine
   Registerzeile zählte hier eine Regel, die funktioniert hat.
 - **`zaehler-label-nennt-falsche-einheit` erreicht mit diesem Beleg 3× — der Lese-Schritt gehört
-  nicht hierher.** Dieser Slice hängt an [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md);
+  nicht hierher.** Dieser Slice hängt an [welle-13](welle-13-regeln-bekommen-ihren-sensor.md);
   in einem Repo mit Wellen-Betrieb liest die **Welle-Closure**, was die Schwelle erreicht hat
   (Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtungs-Register). `state.md` trägt darum
   weiter `offen` — zulässig und vorübergehend. **Übergabe an die Closure von welle-13:** der
@@ -392,7 +392,7 @@ wandern mit dem Bestand.
   ins Register** (Risiko 5 → `anweisungssatz-eigentum-ohne-quelle`, Risiko 7 →
   `vorgeschriebener-ortswechsel-macht-adresse-tot`).
 - **Drei Paarungen:** **nicht hier** — dieser Slice gehört zu
-  [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md), und im Repo mit Wellen-Betrieb prüft
+  [welle-13](welle-13-regeln-bekommen-ihren-sensor.md), und im Repo mit Wellen-Betrieb prüft
   sie die Welle-Closure (Vorlagen-Item in §2). Vorgearbeitet ist die Register-Paarung insoweit,
   als jede oben genannte Beobachtung als Verzeichnis existiert und jede einen Beleg trägt.
 - **Nachtrag nach dem Move — der Ruhe-Marker der Roadmap stand die ganze Laufzeit dieses Slice

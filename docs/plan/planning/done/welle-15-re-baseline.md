@@ -265,7 +265,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 Zielsetzung: Was nicht ausdrücklich ausgeschlossen ist, dehnt die Welle, bis
 der Closure-Trigger unerreichbar wird.
 
-- **Sensor-Neubauten** — sie tragen [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md).
+- **Sensor-Neubauten** — sie tragen [welle-13](welle-13-regeln-bekommen-ihren-sensor.md).
 - **Die Archivierung des Altbestands** — der Wellen, die vor der Einführung des
   Archivierungs-Schritts schlossen. **Der Katalog hat die offene Hälfte beantwortet:** Der
   freistellende Satz (*„Kein Zwang zum Nachrüsten — und kein Verbot"*) ist zwischen den Tags

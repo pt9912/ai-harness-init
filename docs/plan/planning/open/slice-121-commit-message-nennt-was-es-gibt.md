@@ -191,7 +191,7 @@ die Norm unverändert bleibt. Entscheidet der Architect **gegen** eine Ausweitun
 (1)–(3) nichts; entscheidet er **dafür**, bekommt der Sensor eine Quelle und keine neue Aufgabe.
 
 **Soll nach [slice-126](../done/slice-126-commit-message-traegt-eine-kennung.md) — der Träger ist geteilt,
-die Eigenschaft nicht.** Beim Schnitt von [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md)
+die Eigenschaft nicht.** Beim Schnitt von [welle-13](../done/welle-13-regeln-bekommen-ihren-sensor.md)
 wurde geprüft, ob dieser Slice und die Verdrahtung von d-checks Modul `commits` derselbe Gegenstand
 sind. **Sind sie nicht**, und das ist gemessen: `commits` prüft die **Anwesenheit** einer Kennung
 (`commit-untraceable`), nicht die **Auflösbarkeit** eines Hex-Tokens — eine Message-Datei, die

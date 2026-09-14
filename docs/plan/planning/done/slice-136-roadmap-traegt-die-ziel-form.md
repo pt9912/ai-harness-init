@@ -220,7 +220,7 @@ aktivierte Modul-Liste führt es nicht (`grep '^modules:' .d-check.yml | grep -c
 `grep -c planning .d-check.yml` → **3** zählt dagegen nur Pfad-Zeichenketten und ist **nicht** der
 Sensor für diese Aussage). Träger ist
 [slice-125](../done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) in
-[welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) — und **dieser Slice ist seine
+[welle-13](welle-13-regeln-bekommen-ihren-sensor.md) — und **dieser Slice ist seine
 Vorbedingung, nicht sein Duplikat.** slice-125 §1 misst gegen den heutigen Stand
 `planning-drift` auf [`roadmap.md`](../in-progress/roadmap.md) **Zeile 13** — das ist die Zeile
 `## Aktuelle Welle` — und stellt genau deshalb die Frage, die er selbst als offen führt: *„Entweder
@@ -311,7 +311,7 @@ Aussagen-Berührung steht hier gar nicht.
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | refactor | der Gegenstand: sieben Abschnitte auf die Ziel-Form, Kopf inklusive |
-| [welle-09](../welle-09-modul-15-konformitaet.md) · [welle-10](welle-10-re-baseline.md) · [welle-11](../welle-11-traeger-aussage.md) · [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) | prüfen, ggf. update | Ziel für Ausgang (b) des Verbleibs-Protokolls: was die Roadmap heute allein trägt und in die Welle-Datei gehört, landet dort — **inhaltlich nur, was heute nirgends steht** |
+| [welle-09](../welle-09-modul-15-konformitaet.md) · [welle-10](welle-10-re-baseline.md) · [welle-11](../welle-11-traeger-aussage.md) · [welle-13](welle-13-regeln-bekommen-ihren-sensor.md) | prüfen, ggf. update | Ziel für Ausgang (b) des Verbleibs-Protokolls: was die Roadmap heute allein trägt und in die Welle-Datei gehört, landet dort — **inhaltlich nur, was heute nirgends steht** |
 | [slice-125](../done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) | update | seine §1-Messung nennt `roadmap.md` Zeile 13 und die Sektion `Aktuelle Welle`; nach diesem Slice zeigt sie ins Leere. Planner-Artefakt, derselbe Rollen-Lauf |
 
 **Nicht in dieser Liste, und das ist gemessen, nicht vergessen.** `Aktuelle Welle` steht an sieben
@@ -384,7 +384,7 @@ dasteht.
   bedienen, ist Wissen weg, das kein `git`-Log wiederbringt, weil niemand weiß, dass er suchen
   müsste. — **Ausgang:** **entfallen** — Ausgang **(c)**: die Zeilen bleiben in der Roadmap, in
   Ziel-Form gekürzt. Der Ort war nicht zu erfinden, er stand fest:
-  [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §6 weist die Rest-Achsen ausdrücklich
+  [welle-13](welle-13-regeln-bekommen-ihren-sensor.md) §6 weist die Rest-Achsen ausdrücklich
   hierher zurück (*„Sie bleiben als Kandidaten-Zeile in der Roadmap stehen"*). Gekürzt ist die
   Herleitung, nicht der Befund — jede Achse und jeder Bauplan steht weiter da, das Ausgeführte
   unter dem Zeiger auf seinen Träger (Verbleibs-Protokoll in §7).

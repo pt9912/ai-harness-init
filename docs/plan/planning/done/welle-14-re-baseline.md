@@ -120,7 +120,7 @@ genau der Fehler. Die Umplanung trägt das Drift-Log der [Roadmap](../in-progres
 **Ein weiterer Slice ist aus demselben Katalog hervorgegangen und hier bewusst kein Mitglied:**
 [slice-162](../open/slice-162-versions-sensor-baseline-pins.md) (Versions-Sensor gegen Tag-Drift der
 Baseline-Pins) ist ein **Sensor-Neubau**, den §6 ausschließt; die Linie trägt
-[welle-13](../welle-13-regeln-bekommen-ihren-sensor.md). Er liegt in `open/` und ist damit verbucht,
+[welle-13](welle-13-regeln-bekommen-ihren-sensor.md). Er liegt in `open/` und ist damit verbucht,
 ohne die Welle zu dehnen. Dass die Slice-Tabelle einer Welle und ihre Out-of-Scope-Liste über
 dieselbe neue Datei Verschiedenes sagen, liegt als `BEO-018` im Register.
 
@@ -148,7 +148,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   Kante zu [welle-10](welle-10-re-baseline.md) trug. Ihr Gegenstand bewegt sich dabei real:
   `modul-02-harness-bootstrap.md` ändert sich in diesem Sprung erneut, und der Freshness-Audit ist
   das Thema von [slice-090](../open/slice-090-freshness-audit-im-ziel.md).
-- **Blockiert: [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md).** Zwei ihrer Slices bauen
+- **Blockiert: [welle-13](welle-13-regeln-bekommen-ihren-sensor.md).** Zwei ihrer Slices bauen
   Sensoren auf Formen, die dieser Sprung bewegt: der Roadmap-/Verzeichnis-Wächter
   ([slice-125](../done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)) und der
   Closure-Notiz-Sensor ([slice-129](../done/slice-129-closure-notiz-hat-einen-sensor.md)). Die
@@ -189,7 +189,7 @@ der Closure-Trigger unerreichbar wird.
   §Wellen-Closure-Prozedur, Schritt 4: *„Kein Zwang zum Nachrüsten — und kein Verbot: Wellen, die
   vor der Einführung schlossen, müssen nicht archiviert werden; ein Repo bleibt ohne das konform."*).
   Ob und ab wann die **laufende** Regel hier gilt, ist eine Position des Katalogs.
-- **Sensor-Neubauten** — sie tragen [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md).
+- **Sensor-Neubauten** — sie tragen [welle-13](welle-13-regeln-bekommen-ihren-sensor.md).
 - **Der d-check-Pin** ([slice-135](../open/slice-135-d-check-pin-v0661.md)) — eigene Linie, eigener
   Trigger; er hängt an keiner Baseline-Version.
 - **Jede Senkung einer bestehenden Schwelle.** Wird ein Gate nur durch eine Lockerung grün, ist das

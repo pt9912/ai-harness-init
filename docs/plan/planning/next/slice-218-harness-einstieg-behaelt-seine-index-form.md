@@ -7,7 +7,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
 **Welle:** ohne Welle. Es gibt keine Closure-Bedingung, die von der DoD dieses Slice verschieden
 wäre — der Trigger wäre die eigene DoD abgeschrieben (Baseline-Regelwerk `modul-06-roadmap.md`
-§Wann Arbeit eine Welle braucht). Und [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §6
+§Wann Arbeit eine Welle braucht). Und [welle-13](../done/welle-13-regeln-bekommen-ihren-sensor.md) §6
 nimmt `structure` **namentlich** aus ihrem Umfang aus; ihn nachträglich hineinzuziehen änderte
 ihre Identität, statt diesen Slice zu tragen.
 

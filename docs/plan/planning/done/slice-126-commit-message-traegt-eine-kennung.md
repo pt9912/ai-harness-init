@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) — Achse (3) des Roadmap-Kandidaten
+**Welle:** [welle-13](welle-13-regeln-bekommen-ihren-sensor.md) — Achse (3) des Roadmap-Kandidaten
 *Regeln ohne Feedback-Quadrant schließen*. **Hängt an
 [slice-123](../done/slice-123-ci-sieht-die-historie.md)**, sobald der Sensor eine Commit-Spanne liest.
 
@@ -183,7 +183,7 @@ Steering-Loop-Lerneintrag.
 
 ## 4. Trigger
 
-**Beginn (`open` → `next` → `in-progress`): [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md)
+**Beginn (`open` → `next` → `in-progress`): [welle-13](welle-13-regeln-bekommen-ihren-sensor.md)
 ist gestartet, das WIP-Limit ist frei — und
 [slice-123](../done/slice-123-ci-sieht-die-historie.md) liegt in `done/`, falls DoD (2) eine Range in CI
 entscheidet.** Der Vor-Commit-Zweig allein braucht keine Historie und könnte früher laufen; weil die
@@ -347,7 +347,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtun
   Gründlichkeit des Reviews misst statt der Häufigkeit des Musters.
 - **Der Lese-Schritt gehört nicht hierher, und das ist eine Messung, keine Bequemlichkeit.** Dieses
   Repo führt Wellen-Betrieb — `ls docs/plan/planning/welle-*.md` führt drei offene Wellen —, und
-  das Kopf-Feld dieses Plans nennt [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md). Damit
+  das Kopf-Feld dieses Plans nennt [welle-13](welle-13-regeln-bekommen-ihren-sensor.md). Damit
   liegt der Lese-Schritt bei der **Welle-Closure** (Baseline-Regelwerk
   `modul-05-planning-harness.md` §Lifecycle als State Machine: *„vom Lese-Schritt (Welle-Closure; in
   einem Repo ohne Wellen-Betrieb löst ihn die Slice-Closure selbst aus)"*), und *wellenlos* ist dort

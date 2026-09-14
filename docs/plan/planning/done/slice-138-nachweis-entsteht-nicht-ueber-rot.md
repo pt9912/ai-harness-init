@@ -19,7 +19,7 @@ und die Regelwerk-Zeile, die ihn benennt, ist über den Tausch hinweg unverände
 Welle ihn?* — lautet ebenfalls **nein**: keiner der drei Durchgänge dort hat einen Makefile-Rezept-
 Zuschnitt zum Gegenstand.
 
-**Auch nicht [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md).** Ihre Identität ist die
+**Auch nicht [welle-13](welle-13-regeln-bekommen-ihren-sensor.md).** Ihre Identität ist die
 **Adoption** vierer gelieferter d-check-Module (*„Adoption heißt Trockenlauf + Config-Block +
 Verdrahtung, nicht Neubau"*, §1); ihr §6 hält die **Eigenbauten** ausdrücklich draußen
 (*„alle drei sind **Eigenbauten**, keine Adoption"*). Hier entsteht kein Config-Block zu einem

@@ -7,7 +7,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
 **Welle:** ohne Welle. Begründung in §1 *Warum wellenlos* — geprüft gegen
 Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht (Modul 6)
-und gegen die Identität von [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md).
+und gegen die Identität von [welle-13](../done/welle-13-regeln-bekommen-ihren-sensor.md).
 
 **Bezug:** [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
 (tragend — ein grünes Vollständigkeits-Urteil über einem Ausschnitt),
@@ -87,7 +87,7 @@ Setzung 2); der erste Schritt der Umsetzung ist, sie neu zu fahren.
 
 Zwei Fragen, beide gemessen beantwortet.
 
-**Gehört der Schnitt in [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md)? Nein.** Deren
+**Gehört der Schnitt in [welle-13](../done/welle-13-regeln-bekommen-ihren-sensor.md)? Nein.** Deren
 Identität sind die **gemessenen Modul-Achsen** des Roadmap-Kandidaten *Regeln ohne
 Feedback-Quadrant schließen*; ihr §6 schließt mit genau dieser Begründung `workflows`, `reviews`,
 `planning.observations`, `hostpaths`, `versions`, `pins`, `immutable` und `diagrams` als **eigene
@@ -102,7 +102,7 @@ ihrer Slices ohnehin belegen. Hier ist es ein Slice; sein Closure-Trigger schrie
 ab — der dort benannte Regelfall für wellenlose Arbeit.
 
 **Eine Berührung bleibt und wird nicht zur Mitgliedschaft.** Der Closure-Trigger von
-[welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) verlangt, dass für **jedes** der zwölf
+[welle-13](../done/welle-13-regeln-bekommen-ihren-sensor.md) verlangt, dass für **jedes** der zwölf
 advisory-`docs?-*`-Ziele in [`d-check.mk`](../../../../d-check.mk) entschieden und aufgeschrieben
 ist, ob es einen Prüfbereich hat. Die Datei führt `grep -cE '^docs?-[a-z-]+:' d-check.mk` → **13**
 Ziele; genau eines davon, `docs-check`, ist als Gate behauptet, die übrigen **zwölf** sind advisory
@@ -182,7 +182,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
    **tragend, nicht ordnend**: Beide Slices schreiben in denselben Schlüsselbaum
    [`.d-check.yml`](../../../../.d-check.yml) — jener verdrahtet das Modul `planning`, dieser den
    `trace:`-Block. Es ist dieselbe Form, die
-   [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §4 für das Paar `slice-125`/`slice-129`
+   [welle-13](../done/welle-13-regeln-bekommen-ihren-sensor.md) §4 für das Paar `slice-125`/`slice-129`
    führt: *„die Reihenfolge ist frei, die Parallelität nicht"*. Am 2026-09-06 ist die **Arbeit**
    von slice-125 committet (`abf05be`), der Slice aber noch nicht geschlossen — der Zustand ist die
    Verzeichnis-Position, nicht der Commit-Stand.

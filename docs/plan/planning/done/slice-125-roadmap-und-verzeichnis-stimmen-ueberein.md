@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) — Achse (4) des Roadmap-Kandidaten
+**Welle:** [welle-13](welle-13-regeln-bekommen-ihren-sensor.md) — Achse (4) des Roadmap-Kandidaten
 *Regeln ohne Feedback-Quadrant schließen*. Hermetisch, hängt an keinem anderen Slice der Welle.
 
 **Ebene: Dogfood, nicht emittiert.** Gegenstand ist die Planungs-Ablage **dieses** Repos. Ein
@@ -147,7 +147,7 @@ Steering-Loop-Lerneintrag.
 
 ## 4. Trigger
 
-**Beginn (`open` → `next` → `in-progress`): [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md)
+**Beginn (`open` → `next` → `in-progress`): [welle-13](welle-13-regeln-bekommen-ihren-sensor.md)
 ist gestartet und das WIP-Limit ist frei.** Hermetisch, hängt an keinem anderen Slice der Welle.
 
 **Eine Reihenfolge-Notiz, die kein Trigger ist:** dieser Slice ändert möglicherweise die Roadmap,
@@ -299,7 +299,7 @@ Setzung 1).
   Risiko-Ausgänge zu; sie liest keine Schwellen. **Ein Eintrag ist damit fällig geworden** — siehe
   Register unten.
   **(2) Die drei Paarungen laufen bei der Welle-Closure.** `slice-125` gehört zu
-  [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md). Vorgearbeitet ist die Register-Paarung
+  [welle-13](welle-13-regeln-bekommen-ihren-sensor.md). Vorgearbeitet ist die Register-Paarung
   insoweit, als jede unten genannte Beobachtung als Verzeichnis existiert und jede mindestens einen
   Beleg trägt.
   **(3) Neun der elf Planner-eigenen Prosa-Stellen sind nachgezogen, aber ohne Wächter.** Kein
@@ -408,7 +408,7 @@ führt.
 **Zwei der dreizehn gehören dem Architect** (oben, Übergabe 1). **Elf gehören dem Planner**, und
 **neun sind gezogen** statt vertagt: der Arbeitspunkt selbst in
 [`roadmap.md`](../in-progress/roadmap.md) (N-4 — die Zeile, die die Klasse beschreibt, trug sie),
-die Modul-Zählung in [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md) §6 und sieben
+die Modul-Zählung in [welle-13](welle-13-regeln-bekommen-ihren-sensor.md) §6 und sieben
 Slice-Pläne in [`open/`](../open) (`slice-073`, `slice-116`, `slice-121`, `slice-124`, `slice-127`,
 `slice-129`, `slice-139`). Die Alternative wäre gewesen, sie an den Arbeitspunkt
 *(6) Prosa-Aufzählung gegen ihre Config* des Roadmap-Kandidaten *Doku- und Sensor-Wartung* zu
@@ -431,7 +431,7 @@ Pin-Trockenlauf von `slice-187` habe *„die sechs aktiven Module"* gefahren. Da
 wahr — er lag vor dieser Aktivierung. Geändert ist allein die Zeitform, damit die Zahl nicht als
 heutiger Stand gelesen wird.
 
-### Übergabe 3 — an die Closure von [welle-13](../welle-13-regeln-bekommen-ihren-sensor.md)
+### Übergabe 3 — an die Closure von [welle-13](welle-13-regeln-bekommen-ihren-sensor.md)
 
 [`zitat-grep-uebersieht-zeilenumbruch-und-markup`](../observations/BEO-ALL/zitat-grep-uebersieht-zeilenumbruch-und-markup/observation.md)
 steht mit dem Beleg dieses Slice bei **3×** und ist damit fällig. Der Lese-Schritt gehört im

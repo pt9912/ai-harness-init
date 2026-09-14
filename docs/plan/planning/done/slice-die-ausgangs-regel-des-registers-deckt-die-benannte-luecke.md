@@ -189,7 +189,7 @@ done
   des Dateisystems. *Es wäre ein anderer Vorgang.*
 - **Kein Nachzug der Einträge *unter* der Schwelle.** Ihr Leser ist der Sichtungs-Schritt in §8
   jedes Slice-Plans, nicht der Lese-Schritt. *Schicht-Abgrenzung.*
-- **Keine Änderung an [`welle-13`](../welle-13-regeln-bekommen-ihren-sensor.md) und keine
+- **Keine Änderung an [`welle-13`](welle-13-regeln-bekommen-ihren-sensor.md) und keine
   Wiederholung ihres Lese-Schritts.** Diese Entscheidung ist die **Vorbedingung** dafür, nicht ihr
   Teil: Die Welle schließt nach diesem Slice, und ihr Lese-Schritt führt die Regel aus, statt sie zu
   erfinden. *Es wäre ein anderer Vorgang.*
@@ -268,7 +268,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`): **`in-progress/` trägt keinen Slice** (WIP frei), und der
-Lese-Schritt der [`welle-13`](../welle-13-regeln-bekommen-ihren-sensor.md) ist **angehalten** — er
+Lese-Schritt der [`welle-13`](welle-13-regeln-bekommen-ihren-sensor.md) ist **angehalten** — er
 kann seinen Gegenstand nicht abschließen, solange diese Regel fehlt. Beobachtbar ohne Rückfrage:
 
 ```sh

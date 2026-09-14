@@ -2,7 +2,7 @@
 
 **Rolle:** Verifier · **Datum:** 2026-09-14 · **Geprüfter Stand:** `cb5646dd` (Baum sauber,
 `git status --porcelain` leer) · **Gegenstand:**
-[`welle-13`](../plan/planning/welle-13-regeln-bekommen-ihren-sensor.md) §1, §2, §3, §4, §6 ·
+[`welle-13`](../plan/planning/done/welle-13-regeln-bekommen-ihren-sensor.md) §1, §2, §3, §4, §6 ·
 **Auftrag:** Wellen-Closure-Prozedur, **Schritt 1** *Trigger prüfen*
 (Baseline-Regelwerk `modul-08-agentenrollen.md` §Rollen-Sequenz für eine Welle — der eine Schritt
 der Closure, der einen Rollenwechsel trägt; sein Beleg geht über die Slice-DoDs hinaus und steht in
