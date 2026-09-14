@@ -4,10 +4,19 @@ Argument: $ARGUMENTS
 
 Dieser Command führt die **Planner**-Rolle für *eine* Welle (Modul 6 — Roadmap Engineering). Eine
 Welle ist ein **Bündel von Slices**, das gemeinsam geplant und geschlossen wird. Seit Regelwerk v3.5.0
-ist der Welle-Status die **Verzeichnis-Position**, **kein `Status:`-Feld**: die **aktive bzw. geplante**
+ist der Welle-Status die **Verzeichnis-Position**, **kein `Status:`-Feld**: die **eröffnete**
 Welle liegt **flach** in `docs/plan/planning/<welle-id>.md`, bei Closure wandert sie per `git mv` nach
-`done/` (das schließt `/close-welle`). Ob eine flache Welle *aktuell* oder *geplant* ist, sagt die
-Roadmap (Sequenzierungs-Autorität).
+`done/` (das schließt `/close-welle`). Die Roadmap bleibt Sequenzierungs-Autorität für die
+**Reihenfolge**; den Zustand sagt die Verzeichnis-Position.
+
+**Dieser Command vollzieht die Eröffnung — und die verlangt den eingetretenen Start-Trigger.**
+Solange eine Welle in der Vorschau *Nächste Wellen* steht, trägt sie **keine** Datei unter
+`docs/plan/planning/` und **keinen** Zeiger unter *Offene Wellen*; ihre Kennung steht dort
+**unverlinkt** ([ADR-0046](../../docs/plan/adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md)
+Festlegung 1). Ist der Trigger noch nicht eingetreten, endet die Arbeit bei dieser Vorschau-Zeile
+(Welle · Trigger · wichtigste Slices · Aufwand) — Schritt 7 und Schritt 9 laufen dann nicht. Wer
+die Datei früher anlegt, färbt `make docs-check` rot: `wave-preview-exists`, und ohne Zeiger unter
+*Offene Wellen* zusätzlich `wave-drift`.
 
 Kanonische Quellen (vendored Regelwerk, `.harness/baseline/<tag>/regelwerk/`): Modul 6 (Roadmap),
 Modul 5 (Planning-Lifecycle), Modul 7 (Carveouts). Bei Konflikt gilt der Kurs.
@@ -77,12 +86,16 @@ Register ist beim Lesen so alt wie der letzte Merge.
 
 ## Roadmap verdrahten und gaten
 
-9. Roadmap fortschreiben: die Welle-Zeile in *Nächste Wellen* pflegen — **oder**, wenn ihr Trigger
-   bereits erfüllt ist, sie in *Aktuelle Welle* heben (mit Slice-IDs · Trigger · Closure-Kriterien).
+9. Roadmap fortschreiben — die zwei Wirkungen der Eröffnung, die dort landen: Die Welle-Zeile
+   **verlässt** die Vorschau *Nächste Wellen*, und unter *Offene Wellen* erscheint der Zeiger auf
+   die neue Plan-Datei. Beide gehören mit Schritt 7 in **einen** Commit: Datei, entfallende
+   Vorschau-Zeile und Zeiger sind ein Vorgang, nicht drei
+   ([ADR-0046](../../docs/plan/adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) Festlegung 1).
    Die Welle-Verweise der zugehörigen Slices auf die neue Plan-Datei ziehen.
 10. `make gates` laufen lassen (grün). Beim **Anlegen** ist der Welle-Plan **Inhalt** → ein einzelner
-    Commit, hier **kein `git mv`** (die neue Welle entsteht flach = aktiv/geplant). Der `git mv` nach
-    `done/` kommt erst bei der **Closure** (`/close-welle`). Commit via `-F`.
+    Commit, hier **kein `git mv`** (die neue Welle entsteht flach, und flach **ist** der Zustand
+    *eröffnet*). Der `git mv` nach `done/` kommt erst bei der **Closure** (`/close-welle`).
+    Commit via `-F`.
 
 **Merke (Modul 6):** Eine Welle endet durch **Closure-Kriterien**, nicht durch ein Datum
 (Welle ≠ Sprint). Ein Trigger ist eine beobachtbare Bedingung, kein Kalendertag. Die fertige Welle
