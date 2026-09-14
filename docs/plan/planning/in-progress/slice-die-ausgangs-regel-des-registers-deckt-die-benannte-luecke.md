@@ -90,38 +90,59 @@ Setzung 2, geschärft durch [`MR-051`](../../../../harness/conventions.md#mr-051
 Setzung 2) — die drei Zahlen wandern mit dem Baum; tragend ist die **Differenz**: 31 über der
 Schwelle, 18 ohne Ausgang.
 
-**Der Grund ist nicht Vergessen, sondern eine Form-Lücke.** Dreizehn dieser `state.md` sagen in
-ihrem Rumpf dasselbe: *„Ein Wächter besteht nicht … Träger ist der Lauf, der X schreibt."* Das ist
-eine **benannte Lücke** — und für sie hat die geschlossene Menge der drei Ausgänge keinen Platz:
-
-- **verkörpert** verlangt einen **Zielort** und einen Herkunfts-Anker. Eine Lücke *ist* kein
-  Zielort; sie beschreibt, wo **keine** Regel steht.
-- **geplant** verlangt die Kennung eines Slice oder einer Welle, die die Regel schreibt. Wo kein
-  Träger geschnitten ist, gibt es keine Kennung — und eine erfundene behauptete eine Datei, die es
-  nicht gibt ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-- **gestrichen** verlangt, daß die Beobachtung nicht mehr auftreten kann. Bei dreizehn Einträgen,
-  die weiter Belege sammeln, ist das nachweislich falsch.
-
-**Und der zweite Teil des Befundes ist eine Datums-Aussage.** Der Eintrag
-[`BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle`](../observations/BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle/observation.md)
-stand **schon vor** dem Lese-Schritt der
-[`welle-15`](../done/welle-15-results.md) über der Schwelle und steht danach unverändert auf
-`offen`:
+**Der Grund ist nicht Vergessen, sondern eine Form-Lücke — und die achtzehn sind keine eine
+Klasse.** Gemessen:
 
 ```sh
-ls docs/plan/planning/observations/BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle/evidence/
-# slice-123 slice-126 slice-129 slice-140 slice-187 -> 5 Belege, alle vor der welle-15-Closure
-git log -1 --format='%ci  %s' -- docs/plan/planning/observations/BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle/state.md
-grep -n 'Zehn Einträge des Registers stehen bei' docs/plan/planning/done/welle-15-results.md
+cd docs/plan/planning/observations/BEO-ALL
+n=0; tl=0; gap=0; kenn=0
+for d in */; do
+  c=$(ls "$d"evidence 2>/dev/null | wc -l)
+  [ "$c" -ge 3 ] || continue
+  grep -q '^\*\*Stand:\*\* offen' "$d/state.md" || continue
+  n=$((n+1))
+  grep -qE 'Träger ist der Lauf' "$d/state.md" && tl=$((tl+1))
+  grep -qE 'Wächter besteht nicht|kein Sensor|kein Modul|Kein Modul|Träger ist' "$d/state.md" && gap=$((gap+1))
+  grep -qE 'slice-[0-9]|slice-[a-z]' "$d/state.md" && kenn=$((kenn+1))
+done
+printf '%s offen, %s woertlich "Traeger ist der Lauf", %s mit Luecken-Aussage, %s mit Slice-Kennung\n' "$n" "$tl" "$gap" "$kenn"
+# 18 offen, 5 woertlich "Traeger ist der Lauf", 14 mit Luecken-Aussage, 3 mit Slice-Kennung
 ```
 
-**Zwei Lesarten, und die Entscheidung ist der Punkt.** Entweder war der Lese-Schritt der
-`welle-15` **unvollständig** — er las zehn Einträge und wies vier Ausgänge zu, während dieser
-Eintrag mit fünf Belegen durchfiel. Oder die gelebte Praxis liest **nur die neu übergetretenen**
-Einträge, und ein Eintrag, der die Schwelle einmal überschritten hat, ist für spätere Läufe
-unsichtbar. Die zweite Lesart wäre eine Abweichung vom Wortlaut (*„Welche Einträge haben 3×
-erreicht?"*), die nirgends aufgeschrieben ist. **Welche gilt, entscheidet dieser Slice** — bis
-dahin ist jeder Satz über die Vollständigkeit des Registers eine Behauptung.
+**Keine Erwartungswerte** — die vier Zahlen wandern mit dem Baum, und **die dritte ist ein
+Muster, die Klasse dahinter ein Urteil**: ob eine Zeile eine Lücken-Aussage *trägt*, entscheidet
+kein `grep` ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Tragend ist darum nicht die Zahl, sondern
+die **Heterogenität** — eine benannte Lücke, ein bereits genannter Träger und ein Rumpf ganz ohne
+Aussage stehen nebeneinander. Genau das ist der Grund, warum die Antwort **eine Regel** sein muß
+und keine Handliste von achtzehn Ausgängen.
+
+Für die Lücken-Form hat die geschlossene Menge der drei Ausgänge keinen offensichtlichen Platz:
+
+- **verkörpert** verlangt einen **Zielort** und einen Herkunfts-Anker. Eine Lücke nennt einen
+  **Lauf** als Träger; ob sie *zugleich* einen Zielort hat, ist genau die Frage.
+- **geplant** verlangt die Kennung eines Slice oder einer Welle, die die Regel schreibt. Drei
+  Einträge nennen eine; für die übrigen gibt es keine — und eine erfundene behauptete eine Datei,
+  die es nicht gibt ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+- **gestrichen** verlangt, daß die Beobachtung nicht mehr auftreten kann. Bei Einträgen, die
+  weiter Belege sammeln, ist das nachweislich falsch.
+
+**Und der zweite Teil des Befundes ist eine Datums-Aussage — in der Gegenrichtung.** Der Eintrag
+[`BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle`](../observations/BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle/observation.md)
+ist **nach** dem Lauf angelegt, der die Results-Notiz der
+[`welle-15`](../done/welle-15-results.md) auf ihre Messungen zog, und stand damit nie unter dessen
+Blick:
+
+```sh
+git log --diff-filter=A --format='%ci %h' -- docs/plan/planning/observations/BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle/observation.md
+# 2026-09-05 20:43:05 +0200 8c9e3710
+git log -1 --format='%ci %h %s' 86349419
+# 2026-09-05 18:13:10 +0200 86349419 Rolle Planner: welle-15-Results -- drei Aussagen auf ihre Messung gezogen
+```
+
+Er ist damit **kein Durchfall jenes Laufes, sondern Zuwachs danach** — und stellt die zweite Frage
+aus der anderen Richtung: ob der Gegenstand des Lese-Schritts der Bestand **zu seinem Zeitpunkt**
+ist oder der seit dem letzten Lauf **hinzugekommene**. Der Befund trägt die Frage, nicht die
+Antwort; **welche gilt, entscheidet dieser Slice.**
 
 ### Was der Slice entscheidet, und was er dafür nicht anfassen muß
 
