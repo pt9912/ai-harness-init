@@ -81,6 +81,17 @@ Datei**"*
 (`grep -c 'Geplante Wellen bekommen noch keine' .harness/baseline/v6.8.0/templates/docs/plan/planning/welle.template.md`
 → **1**, kein Erwartungswert). Die drei Kopfnoten werden an sie angeglichen, statt neu formuliert.
 
+**Und jeder Träger hat seine eigene Ziel-Form.** Die Welle-Vorlage oben gilt für die drei
+`Lifecycle:`-Kopfnoten und für sonst nichts; für
+[`docs/plan/planning/README.md`](../README.md) führt das Instanz-Register
+[`harness/migration.md`](../../../../harness/migration.md) eine andere —
+`v6.8.0` · `templates/docs/plan/planning/README.template.md` §Slices vs. Wellen. Sie trägt neben
+derselben Aussage über die flache Datei die Zuschreibung *Sequenzierungs-Autorität* an die Roadmap
+(`grep -c 'Sequenzierungs-Autorität bleibt' .harness/baseline/v6.8.0/templates/docs/plan/planning/README.template.md`
+→ **1**, kein Erwartungswert), die die Welle-Kopfnote gar nicht führen kann: Sie beschreibt ein
+anderes Artefakt. Wer eine Instanz an die Vorlage ihres Nachbarn angleicht, verliert, was nur die
+eigene trägt.
+
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Keine Änderung an [ADR-0046](../../adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md)
@@ -128,10 +139,26 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
       Kopfnote der vendored Vorlage angeglichen (§1), **ersetzt und nicht ergänzt**
       ([`AGENTS.md`](../../../../AGENTS.md) §3.7). Geprüft an der gemessenen Fundmenge, nicht an
       den drei Dateinamen: die zwei `git grep`-Kommandos aus §1 liefern danach `0`.
-- [ ] **(2) `docs/plan/planning/README.md` §Slices vs. Wellen beschreibt die flache Welle-Datei so,
-      wie [ADR-0046](../../adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) Festlegung 1 sie
-      setzt** — flach heißt *eröffnet*, geplante Wellen haben keine Datei und stehen allein in der
-      Roadmap-Vorschau. Der Absatz ist ersetzt, nicht ergänzt.
+      **Und die angeglichene Zeile trägt die Kennung dieser Welle, nicht den Platzhalter der
+      Vorlage** — die Angleichung gilt der **Aussage**, nicht den Bytes (§6 Risiko 1), und wer die
+      Zeile ohnehin anfasst, zieht sie nach ([`AGENTS.md`](../../../../AGENTS.md) §3.7):
+      `grep -c 'welle-<Kennung>-results\.md' docs/plan/planning/welle-*.md | grep -cv ':0$'`
+      liefert danach `0` (kein Erwartungswert).
+- [ ] **(2) `docs/plan/planning/README.md` §Slices vs. Wellen ist an *seine eigene* Ziel-Form
+      angeglichen** — `v6.8.0` · `templates/docs/plan/planning/README.template.md`
+      §Slices vs. Wellen, die das Instanz-Register
+      [`harness/migration.md`](../../../../harness/migration.md) für genau diese Datei führt; nicht
+      an die Kopfnote der Welle-Vorlage, die ein anderes Artefakt beschreibt. Die Aussage deckt
+      sich mit [ADR-0046](../../adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) Festlegung 1 —
+      flach heißt *eröffnet*, geplante Wellen haben keine Datei —, und die Ziel-Form trägt daneben
+      die Zuschreibung **Sequenzierungs-Autorität** an die Roadmap, die dabei nicht verloren geht:
+      `grep -c 'Sequenzierungs-Autorität' docs/plan/planning/README.md` liefert danach `1` (kein
+      Erwartungswert). Der Absatz ist ersetzt, nicht ergänzt.
+      **Zwei Grenzen, damit die Angleichung nicht in einen Byte-Import kippt:** Was die Ziel-Form
+      nennt und dieses Repo nicht führt, kommt nicht mit — namentlich `reconciliation.md`
+      (`ls docs/plan/planning/reconciliation.md` → Exit 2, §8); und die eigene Sektion
+      `## Beobachtungs-Register` daneben bleibt stehen, sie ist die repo-eigene Fassung desselben
+      Gegenstands.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -155,8 +182,8 @@ Aussagen-Berührung steht hier gar nicht.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `welle-09`, `welle-11`, `welle-13` — je die `Lifecycle:`-Kopfnote | update | derselbe Satz dreimal, an die vendored Kopfnote angeglichen — Liefer-Punkt (1) |
-| [`docs/plan/planning/README.md`](../README.md) §Slices vs. Wellen | update | die zweite Fassung derselben Gleichsetzung — Liefer-Punkt (2) |
+| `welle-09`, `welle-11`, `welle-13` — je die `Lifecycle:`-Kopfnote | update | derselbe Satz dreimal, an `welle.template.md` angeglichen, Kennung statt Platzhalter — Liefer-Punkt (1) |
+| [`docs/plan/planning/README.md`](../README.md) §Slices vs. Wellen | update | die zweite Fassung derselben Gleichsetzung, angeglichen an `README.template.md` §Slices vs. Wellen — Liefer-Punkt (2) |
 
 **Kein Test-Eintrag, und das ist kein Vergessen.** Der Prüfgegenstand ist Prosa in vier lebenden
 Dateien; ihr Wächter ist der Gate-Lauf über den Bestand, den sie beschreiben. Ein `*_test.go` oder
