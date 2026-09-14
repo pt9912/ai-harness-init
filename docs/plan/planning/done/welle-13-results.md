@@ -118,6 +118,17 @@ die daraus schon gezogen wurde (Folge-Slice, Spec-Version).
   Vorgang ([`ADR-0041`](../../adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md)) und
   die Auflösung der toten Review-Verweise. Die Welle schließt **ohne** Schritt 4 — so steht es in
   der Prozedur, und archiviert ist nichts.
+- **Der Breiten-Wächter der `ignore-refs`-Ausnahmen hat die Zielort-Form mitentschieden.** Zwei
+  Zielorte in `state.md` und ein Link in der bewegten Welle-Datei zeigten als Markdown-Link in den
+  vendored Baum. Die drei Baum-Paare aus
+  [`ADR-0039`](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) deklarieren ihre
+  Deckung per `# Deckung: N`, und **jede** Verbreiterung ist eine Senkung nach
+  [`AGENTS.md`](../../../../AGENTS.md) §3.5 — der Wächter `test/ignore-refs-restbreite.bats` fiel
+  rot (`docs/plan/planning/done/** → .harness/baseline/**`: 5 auflösende Links, deklariert 4;
+  `…/observations/**`: 4 gegen 2). **Konsequenz:** Die drei Stellen nennen ihre Baseline-Stelle
+  seither als **Kennung** (`v6.8.0 · regelwerk/<datei>.md` §<Abschnitt>) statt als Link — die Form,
+  die [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
+  Setzung 2 für ein lebendes Artefakt ohnehin verlangt. **Keine** Deklaration wurde angefasst.
 
 ## Steering-Loop-Einträge
 

@@ -1,10 +1,9 @@
 **Stand:** verkörpert
 
-Zielort: Baseline-Regelwerk `v6.8.0`,
-[`modul-08-agentenrollen.md`](../../../../../../.harness/baseline/v6.8.0/regelwerk/modul-08-agentenrollen.md#die-neun-übergaben-und-ihre-artefakte-modul-8)
-§Die neun Übergaben — jede Übergabe zwischen zwei Rollen trägt ein benanntes Artefakt, und für
-Planner → Architect ist es der Slice-Plan. Ein zweiter Herkunfts-Anker steht nicht: Die Regel folgt
-aus dem adoptierten Stand, ihr Zielort trägt seine eigene Stelle.
+Zielort: Baseline-Regelwerk `v6.8.0 · regelwerk/modul-08-agentenrollen.md` §Die neun Übergaben —
+jede Übergabe zwischen zwei Rollen trägt ein benanntes Artefakt, und für Planner → Architect ist es
+der Slice-Plan. Ein zweiter Herkunfts-Anker steht nicht: Die Regel folgt aus dem adoptierten Stand,
+ihr Zielort trägt seine eigene Stelle.
 
 **Grenze der Verkörperung, benannt.** Die Folge-Slice-Paarung der Wellen-Closure prüft **genannte**
 Folge-Slices auf Existenz; ein ausdrückliches *keine* ist für sie kein Gegenstand, und kein Modul

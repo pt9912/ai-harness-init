@@ -119,8 +119,8 @@ Baseline-Regelwerk `modul-06-roadmap.md` §Wellen-Closure-Prozedur, Eröffnung S
 Register `docs/plan/planning/observations/` wird vor dem Schnitt durchgegangen; betrifft ein
 Eintrag die Sub-Areas dieser Welle, gehört er in die Slice-Planung, und bei **3×** als eigener
 Slice. **Keine Treffer sind ebenfalls eine Antwort und werden notiert.** Der Block steht hier und
-nicht als eigener `## 8`-Abschnitt: Die Ziel-Form
-[`welle.template.md`](../../../../.harness/baseline/v6.8.0/templates/docs/plan/planning/welle.template.md)
+nicht als eigener `## 8`-Abschnitt: Die Ziel-Form `v6.8.0 ·
+templates/docs/plan/planning/welle.template.md`
 führt **sieben** Abschnitte, und ein achter wäre eine Abweichung, die einen Eintrag im
 Adaptions-Block bräuchte
 ([`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)) — den schreibt der Architect,
