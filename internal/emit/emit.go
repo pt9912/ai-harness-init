@@ -93,8 +93,11 @@ history-range-guard: ## Vorlauf-Waechter: RANGE muss aufloesbar UND nicht leer s
 # DOC_GATE_ZIEL <ziel> — die EINE Probe: "da", wenn d-check.mk das Ziel mit einer
 # Rezept-Zeile fuehrt, "rezeptlos", wenn es die Ziel-Zeile ohne Rezept traegt. Kein Treffer,
 # ein fehlendes Probe-Werkzeug und jede leere Ausgabe lassen den Vergleich scheitern.
-# Rekursiv zugewiesen (nicht :=), sonst expandiert $(1) schon hier.
-DOC_GATE_ZIEL = $(shell awk '/^$(1):/{f=1;next} f&&/^[[:space:]]*$$/{next} f{print (substr($$0,1,1)=="\t" ? "da" : "rezeptlos");exit}' d-check.mk 2>/dev/null)
+# Die Zuweisung traegt override: die Kommandozeile setzt diese Variable nicht, ein Aufruf wie
+#   make DOC_GATE_ZIEL=da <ziel>
+# aendert die Entscheidung also nicht. Rekursiv zugewiesen (nicht :=), sonst expandiert $(1)
+# schon hier.
+override DOC_GATE_ZIEL = $(shell awk '/^$(1):/{f=1;next} f&&/^[[:space:]]*$$/{next} f{print (substr($$0,1,1)=="\t" ? "da" : "rezeptlos");exit}' d-check.mk 2>/dev/null)
 
 ifeq ($(call DOC_GATE_ZIEL,doc-immutable),da)
 doc-immutable: history-range-guard

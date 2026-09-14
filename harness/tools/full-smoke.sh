@@ -429,6 +429,27 @@ vorbindung_ohne_probewerkzeug() {
 	echo "full-smoke: Zieldefinition ($kennung): ohne das Probe-Werkzeug bricht make $ziel LAUT ab, statt zu binden."
 }
 
+# vorbindung_gegen_die_kommandozeile <repo> <ziel> <kennung> faehrt denselben verfaelschten
+# Baum mit DOC_GATE_ZIEL=da auf der KOMMANDOZEILE: die Entscheidung des Fragments bleibt, der
+# Aufruf bricht ab. Ohne override setzt der Aufrufer die Zusage ausser Kraft.
+vorbindung_gegen_die_kommandozeile() {
+	local repo="$1" ziel="$2" kennung="$3"
+	local out="" rc=0 flach="" grund=""
+	out="$( make --no-print-directory -C "$repo" -n DOC_GATE_ZIEL=da "$ziel" RANGE=HEAD~1..HEAD 2>&1 )" || rc=$?
+	flach="$(tr -s '[:space:]' ' ' <<<"$out")"
+	if grep -qF -- 'history-range-guard.sh' <<<"$flach"; then
+		grund="die Kommandozeile setzte die Entscheidung — make -n druckt die Waechter-Zeile (Exit $rc)"
+	elif ! grep -qF -- "fuehrt '$ziel' nicht" <<<"$flach"; then
+		grund="der Aufruf nennt die fehlende Ziel-Definition nicht (rot aus falschem Grund?)"
+	fi
+	if [ -n "$grund" ]; then
+		echo "full-smoke: FEHLER — $kennung (DOC_GATE_ZIEL auf der Kommandozeile, $ziel): $grund. Ausgabe:" >&2
+		printf '%s\n' "$out" >&2
+		exit 1
+	fi
+	echo "full-smoke: Zieldefinition ($kennung): die Kommandozeile setzt die Entscheidung nicht — make $ziel bricht LAUT ab, statt zu binden."
+}
+
 vorlauf_waechter_im_ziel() {
 	local repo="$1" kennung="$2"
 	local klon="$tmpklon/flach" voll="$tmpklon/voll"
@@ -559,6 +580,9 @@ vorlauf_waechter_im_ziel() {
 	cp "$voll/d-check.mk.orig" "$voll/d-check.mk"
 	sed -i -E 's/^(doc-immutable|doc-commits):/doc-ohne-definition-\1:/' "$voll/d-check.mk"
 	vorbindung_ohne_probewerkzeug "$voll" doc-immutable "$kennung"
+	# Viertens die Zusage gegen den Aufruf: DOC_GATE_ZIEL=da auf der Kommandozeile setzt die
+	# Entscheidung nicht ausser Kraft.
+	vorbindung_gegen_die_kommandozeile "$voll" doc-immutable "$kennung"
 	mv "$voll/d-check.mk.orig" "$voll/d-check.mk"
 	vorbindung_mit_zieldefinition "$voll" doc-commits "$kennung"
 }

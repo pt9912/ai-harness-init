@@ -18,4 +18,4 @@
 # und genau ein Anker, der den Text prueft statt die Wirkung (AGENTS.md §3.6). Der Preis des
 # Modus steht im Kopf von harness/tools/mutate.sh.
 set -euo pipefail
-sed -i "s@^DOC_GATE_ZIEL = .*@DOC_GATE_ZIEL = da@" internal/emit/emit.go
+sed -i "s@^override DOC_GATE_ZIEL = .*@DOC_GATE_ZIEL = da@" internal/emit/emit.go
