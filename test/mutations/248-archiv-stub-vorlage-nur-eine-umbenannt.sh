@@ -18,7 +18,7 @@
 # endet); dieser hier trifft die QUANTIFIZIERUNG (ueber welche Datei gefragt
 # wird). Zwei verschiedene Waende desselben Waechters.
 #
-# `# files:` NENNT DEN TAG NICHT MEHR: der Pfad wird ueber
+# `# files:` ENTDECKT DAS TAG-VERZEICHNIS: der Pfad wird ueber
 # `.harness/baseline/*/templates/...` gegen den EINEN vendored Baum ENTDECKT
 # (harness/tools/mutate.sh, resolve_file_spec) statt ihn zu nennen — ein
 # Baseline-Sprung aendert daran nichts, solange die Vorlage im neuen Satz

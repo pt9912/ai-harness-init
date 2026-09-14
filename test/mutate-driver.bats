@@ -186,10 +186,11 @@ setup() {
   [ "$status" -ne 0 ]
 }
 
-# --- Aufloesung der `# files:`-Angabe (slice-mutations-fall-entdeckt-den-vendored-tag) ---
-# resolve_file_spec traegt DoD 1: eine Angabe, die nicht auf genau eine Datei
-# trifft, ist ein Befund mit dem Namen des Falls — an BEIDEN Stellen, die sie
-# lesen (mutation_targets fuer target_fingerprint, run_case fuer file_list).
+# --- Aufloesung der `# files:`-Angabe ---
+# resolve_file_spec traegt LH-QA-01: eine Angabe, die nicht auf genau eine
+# Datei trifft, ist ein Befund mit dem Namen des Falls — an BEIDEN Stellen,
+# die sie lesen (mutation_targets fuer target_fingerprint, run_case fuer
+# file_list).
 
 @test "driver: run_case meldet eine '# files:'-Angabe OHNE Treffer mit dem Namen des Falls" {
   local iso cases
@@ -223,8 +224,8 @@ setup() {
 
 # Derselbe Befund am ANDEREN Leser der `# files:`-Zeile: mutation_targets laeuft
 # VOR jeder Isolations-Kopie ueber ALLEN Faellen und muss darum ABBRECHEN
-# (nicht nur einen Fall als Befund zaehlen) — vorher blieb hier nur die
-# unadressierte Meldung "Fingerabdruck der Mutations-Ziele nicht berechenbar".
+# (nicht nur einen Fall als Befund zaehlen), mit einer Meldung, die den Fall
+# nennt — nicht nur "Fingerabdruck der Mutations-Ziele nicht berechenbar".
 @test "driver: mutation_targets BRICHT bei einer nicht aufloesenden Angabe MIT Fall-Namen ab" {
   local cases
   cases="$(mktemp -d)"

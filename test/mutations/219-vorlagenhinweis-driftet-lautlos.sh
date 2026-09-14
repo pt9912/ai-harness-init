@@ -25,7 +25,7 @@
 # gebumpt, Klassifikation nicht nachgezogen", deren strukturelle Abschaffung der
 # inScope-Kommentar zusagt.
 #
-# `# files:` NENNT DEN TAG NICHT MEHR: der Pfad wird ueber
+# `# files:` ENTDECKT DAS TAG-VERZEICHNIS: der Pfad wird ueber
 # `.harness/baseline/*/templates/...` gegen den EINEN vendored Baum ENTDECKT
 # (harness/tools/mutate.sh, resolve_file_spec) statt ihn zu nennen — ein
 # Baseline-Sprung aendert daran nichts, solange die Vorlage im neuen Satz

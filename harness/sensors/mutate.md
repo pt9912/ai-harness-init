@@ -30,10 +30,11 @@ weitere Bedingung stehen im Kopf von `harness/tools/mutate.sh`.
 von `run_case`): ein Bash-Glob wie `.harness/baseline/*/templates/…` trifft gegen den jeweils
 einen vendored Baum, ohne dessen Tag im Fall zu nennen — ein Baseline-Sprung zieht keinen
 Nachzug nach sich, solange die Vorlage im neuen Satz unter demselben relativen Pfad liegt. Löst
-die Angabe **nicht genau eine** Datei auf (kein Treffer, mehr als einer), bricht der Lauf laut ab
-und nennt den Fall. **Was die Auflösung nicht deckt:** eine Angabe, die auf die **falsche**,
-aber existierende Datei zeigt, bleibt still grün — Existenz und Eindeutigkeit sind geprüft,
-Richtigkeit ist es nicht.
+die Angabe **nicht genau eine** Datei auf (kein Treffer, mehr als einer), nennt die Meldung den
+Fall — `mutation_targets` bricht darauf den **ganzen** Lauf ab (vor jeder Isolationskopie),
+`run_case` meldet einen Befund für **diesen** Fall, während die übrigen weiterlaufen. **Was die
+Auflösung nicht deckt:** eine Angabe, die auf die **falsche**, aber existierende Datei zeigt,
+bleibt still grün — Existenz und Eindeutigkeit sind geprüft, Richtigkeit ist es nicht.
 
 ## Sperren
 

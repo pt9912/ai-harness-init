@@ -18,7 +18,7 @@
 # damit die Aussage des Test-Namens — „jeder Platzhalter" — gegen die Menge, die
 # der Code wirklich ersetzt.
 #
-# `# files:` NENNT DEN TAG NICHT MEHR: der Pfad wird ueber
+# `# files:` ENTDECKT DAS TAG-VERZEICHNIS: der Pfad wird ueber
 # `.harness/baseline/*/templates/...` gegen den EINEN vendored Baum ENTDECKT
 # (harness/tools/mutate.sh, resolve_file_spec) statt ihn zu nennen — ein
 # Baseline-Sprung aendert daran nichts, solange die Vorlage im neuen Satz

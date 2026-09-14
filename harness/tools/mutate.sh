@@ -23,10 +23,12 @@
 #     resolve_file_spec AUFGELOEST, nicht gelesen — ein Bash-Glob (z.B.
 #     `.harness/baseline/*/templates/…`) trifft gegen den EINEN vendored Baum,
 #     ohne dessen Tag im Fall zu nennen, und ein Baseline-Sprung zieht darum
-#     keinen Nachzug nach sich. Kein Treffer oder mehr als einer bricht den Lauf
-#     laut ab und nennt den Fall (mutation_targets bzw. run_case). Zeigt eine
-#     Angabe dagegen auf die FALSCHE, aber existierende Datei, bleibt sie still
-#     gruen — geprueft sind Existenz und Eindeutigkeit, nicht Richtigkeit.
+#     keinen Nachzug nach sich. Kein Treffer oder mehr als einer nennt den Fall
+#     — mutation_targets bricht darauf den GANZEN Lauf ab (vor jeder
+#     Isolationskopie), run_case meldet einen Befund fuer DIESEN Fall und der
+#     Lauf geht mit den uebrigen weiter. Zeigt eine Angabe dagegen auf die
+#     FALSCHE, aber existierende Datei, bleibt sie still gruen — geprueft sind
+#     Existenz und Eindeutigkeit, nicht Richtigkeit.
 #
 # STALE LOCK (Review-Befund NR-1): der mkdir-Mutex traegt keine PID. Ein hart
 # abgebrochener Lauf (SIGKILL, Stromausfall — nicht INT/TERM, die raeumt der trap)
@@ -237,16 +239,18 @@ fingerprint_of_list() {
 # resolve_file_spec loest EINE `# files:`-Angabe (Bash-Glob oder literaler Pfad)
 # gegen root auf: `compgen -G` matcht das Muster relativ zu root und prueft damit
 # zugleich die EXISTENZ — ein Muster ohne Metazeichen trifft nur sich selbst, und
-# nur, wenn die Datei da ist. GENAU EIN Treffer -> der Pfad auf stdout, Exit 0.
-# Kein Treffer oder mehr als einer -> Exit 1, nichts auf stdout: eine mehrdeutige
-# oder ins Leere zeigende Angabe wird verworfen, nicht geraten.
+# nur, wenn ETWAS unter diesem Namen da ist (eine Datei ODER ein Verzeichnis;
+# die Unterscheidung trifft compgen -G nicht). GENAU EIN Treffer -> der Pfad auf
+# stdout, Exit 0. Kein Treffer oder mehr als einer -> Exit 1, nichts auf
+# stdout: eine mehrdeutige oder ins Leere zeigende Angabe wird verworfen, nicht
+# geraten.
 #
 # EINE Funktion fuer beide Leser der `# files:`-Zeile — mutation_targets (die
 # Vereinigung fuer target_fingerprint) und run_case (file_list fuer tar/
 # sha256sum) —, damit ein Tag-Sprung im vendored Baum (`.harness/baseline/<tag>/…`)
 # nicht an zwei Stellen getrennt nachgezogen werden muss: zwei getrennt gepflegte
-# Ausloesungen sind dieselbe Drift-Konstruktion, die dieses Repo an failure_form
-# schon einmal beseitigt hat.
+# Ausloesungen waeren dieselbe Drift-Konstruktion wie bei failure_form (eine
+# Quelle, keine zweite Liste).
 resolve_file_spec() {
   local root="$1" spec="$2" matches n
   matches="$(cd "$root" 2>/dev/null && compgen -G "$spec" 2>/dev/null)" || return 1
@@ -258,9 +262,8 @@ resolve_file_spec() {
 # mutation_targets loest jede `# files:`-Angabe unter cases_dir gegen root auf und
 # liefert die Vereinigung der Treffer, zeilenweise und sortiert — genau die
 # Dateien, die ein Isolations-Bruch im Host-Baum beschaedigen koennte. Iteriert
-# PRO Fall (nicht ueber der geflachten Zeilen-Menge alter Fassung), damit ein
-# Abbruch den FALL nennt, dessen Angabe nicht genau eine Datei trifft — sonst
-# schrumpfte die Ziel-Menge leiser, als LH-QA-01 zulaesst.
+# PRO Fall, damit ein Abbruch den FALL nennt, dessen Angabe nicht genau eine
+# Datei trifft — sonst schrumpfte die Ziel-Menge leiser, als LH-QA-01 zulaesst.
 mutation_targets() {
   local cases_dir="$1" root="$2" case_file spec resolved
   local -a resolved_all=()
@@ -644,7 +647,7 @@ run_case() {
   # Jede Angabe geht durch resolve_file_spec — dieselbe Funktion wie
   # mutation_targets: eine Angabe, die gegen $WORK nicht auf genau eine Datei
   # aufloest (kein Treffer, mehrere Treffer), ist ein Befund mit Fall-Namen,
-  # kein stilles Uebergehen (LH-QA-01, DoD dieses Slice).
+  # kein stilles Uebergehen (LH-QA-01).
   local -a file_list=()
   local spec resolved
   while IFS= read -r spec; do
