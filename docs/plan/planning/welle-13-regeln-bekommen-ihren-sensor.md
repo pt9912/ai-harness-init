@@ -76,13 +76,13 @@ aufgenommen hat.
    8 × `closure-note-thin`, §6).
    **Alle diese Zahlen hängen an ihrem Stand und sind keine Erwartungswerte**
    ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-   Setzung 2; der erste Schritt jeder Umsetzung ist, sie neu zu fahren). **Zwei von ihnen sind
-   eine Ansage an diese Welle selbst:** die vier `waves`-Befunde benennen genau die
-   repo-eigene Abweichung, die [`roadmap.md`](in-progress/roadmap.md) unter *Offene Wellen*
-   erklärt — eine Welle-Datei wird geschnitten, bevor ihr Start-Trigger eintritt. Die Eröffnung
-   dieser Welle nimmt zwei davon weg; die zwei zu `welle-11` bleiben, bis deren Trigger eintritt.
-   Ein Sensor nach [slice-125](done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) muss
-   diese Abweichung tragen, sonst meldet er einen legitimen Zustand als Drift.
+   Setzung 2; der erste Schritt jeder Umsetzung ist, sie neu zu fahren). **Die vier
+   `waves`-Befunde sind keine Anforderung an den Sensor dieser Welle:** Sie beschreiben eine
+   flache Welle-Datei, die vor Eintritt ihres Start-Triggers entsteht — einen Zustand, den dieses
+   Repo nicht führt. [ADR-0046](../adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md)
+   Festlegung 1 bindet die Datei an die **Eröffnung**: Mit ihr entsteht die Datei, ihre Zeile
+   verlässt die Vorschau *Nächste Wellen*, und unter *Offene Wellen* erscheint der Zeiger. Ein
+   Sensor, der die vier Befunde meldet, meldet damit richtig und trägt keine Ausnahme.
 3. **Der Trockenlauf ist nicht geteilt.** Jedes Modul brauchte seinen eigenen Lauf mit seiner eigenen
    Config; der Pin-Trockenlauf aus
    [slice-187](done/slice-187-d-check-pin-v0741.md) fuhr die zu seiner Zeit sechs **aktiven** Module
