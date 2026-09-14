@@ -113,8 +113,8 @@ Ergebnis-Notiz, keine Nummernfolge.
 | [welle-08-cpp-hexslice](../done/welle-08-cpp-hexslice.md) | 2026-07-27 | [welle-08-results.md](../done/welle-08-results.md) |
 | [welle-10-re-baseline](../done/welle-10-re-baseline.md) | 2026-09-03 | [welle-10-results.md](../done/welle-10-results.md) |
 | [welle-12-erfassungsschicht-emittieren](../done/welle-12-erfassungsschicht-emittieren.md) | 2026-08-27 | [welle-12-results.md](../done/welle-12-results.md) |
-| [welle-14-re-baseline](../done/welle-14-re-baseline.md) | 2026-09-03 | [welle-14-results.md](../done/welle-14-results.md) |
 | [welle-13-regeln-bekommen-ihren-sensor](../done/welle-13-regeln-bekommen-ihren-sensor.md) | 2026-09-14 | [welle-13-results.md](../done/welle-13-results.md) |
+| [welle-14-re-baseline](../done/welle-14-re-baseline.md) | 2026-09-03 | [welle-14-results.md](../done/welle-14-results.md) |
 | [welle-15-re-baseline](../done/welle-15-re-baseline.md) | 2026-09-05 | [welle-15-results.md](../done/welle-15-results.md) |
 
 Die Tabelle ist nach Wellen-Nummer sortiert, nicht nach Abschluss-Datum; `welle-10` schloss nach

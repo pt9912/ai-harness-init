@@ -129,6 +129,14 @@ die daraus schon gezogen wurde (Folge-Slice, Spec-Version).
   seither als **Kennung** (`v6.8.0 · regelwerk/<datei>.md` §<Abschnitt>) statt als Link — die Form,
   die [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
   Setzung 2 für ein lebendes Artefakt ohnehin verlangt. **Keine** Deklaration wurde angefasst.
+- **Die Register-Paarung (c) hat einen beleglosen Eintrag gefunden — und ihn benannt statt
+  geschlossen.** **Ein** Verzeichnis führt kein `evidence/`
+  ([`BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`](../observations/BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab/observation.md));
+  sein `observation.md` nennt den Grund selbst (*„aufgefallen in einer Koordinations-Sitzung, nicht
+  in einem abgeschlossenen Vorgang"*). **Konsequenz:** kein Verzeichnis wurde angelegt, um die
+  Paarung zu befriedigen; der Befund steht als Beleg beim Träger der Klasse
+  ([`BEO-ALL/unbelegter-register-eintrag-faellt-durch-die-paarung`](../observations/BEO-ALL/unbelegter-register-eintrag-faellt-durch-die-paarung/observation.md),
+  Vorgang `welle-13`) und wartet auf die Norm-Entscheidung, die jene Beobachtung registriert.
 
 ## Steering-Loop-Einträge
 
