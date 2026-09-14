@@ -4,22 +4,27 @@
 # geklonten, cleanen Tree OHNE Nachweis frei ("CI ist dort das Netz"). Hier IST
 # das Netz. Jeder Job checkt frisch aus und faehrt ein `make`-Target — die CI
 # traegt KEINE zweite Definition dessen, was ein Gate ist (MR-010-Geist: eine
-# Quelle). Was hier gruen sein muss, ist genau `make gates`/`smoke`/`full-smoke`/`mutate`.
+# Quelle). Was hier gruen sein muss, ist genau `make gates`/`smoke`/`full-smoke`.
 #
-# Diese Datei traegt NUR die hermetischen Pro-Push-Sensoren. Die NETZ-Sensoren
-# (regelwerk-check, baseline-freshness, freshness-*) leben getrennt in
-# upstream-drift.yml (schedule + workflow_dispatch) — ein Upstream-Ausfall darf nie
-# einen Push blockieren (slice-027 Paragraph 6; Trennung nach Sensor-Klasse,
-# MR-014 Setzung 2, jetzt STRUKTURELL statt per `if: event_name`).
+# Diese Datei traegt NUR die hermetischen **Pre-integration**-Sensoren. Zwei
+# Klassen liegen woanders, und beide Gruende sind gemessen: Die NETZ-Sensoren
+# (regelwerk-check, baseline-freshness, freshness-*) leben in upstream-drift.yml
+# (schedule + workflow_dispatch) — ein Upstream-Ausfall darf nie einen Push
+# blockieren (slice-027 Paragraph 6; Trennung nach Sensor-Klasse, MR-014
+# Setzung 2, jetzt STRUKTURELL statt per `if: event_name`). Und `mutate` lebt in
+# mutate.yml (schedule + workflow_dispatch), weil das Regelwerk die Mutationstests
+# der Stufe **Post-integration** zuordnet — `grundlagen-klassifikation.md`
+# §Klassifikation: *"nach Merge : Mutation Tests"*, *"teurer, aber tolerierbar"* —
+# und der Lauf vorher ~50 Minuten je Push kostete.
 #
 # Docker-only (ADR-0003): die Runner bringen Docker mit; keine Host-Go-Toolchain,
 # kein `actions/setup-go`. Alles laeuft in den gepinnten Images der make-Targets.
 #
-# CHECKOUT-TIEFE: vier der fuenf `actions/checkout` unten bleiben bei der
-# Default-Tiefe 1 — `make gates`/`smoke`/`full-smoke`/`mutate` loesen keinen
+# CHECKOUT-TIEFE: drei der vier `actions/checkout` unten bleiben bei der
+# Default-Tiefe 1 — `make gates`/`smoke`/`full-smoke` loesen keinen
 # history-lesenden d-check-Modul-Lauf aus (`.d-check.yml` aktiviert fuer
 # `docs-check` nur `links, anchors, ids, matrix, codepaths, spans, planning, targets`,
-# keines davon liest `git`-Historie). Der fuenfte Job (`adr-immutable`) liest
+# keines davon liest `git`-Historie). Der vierte Job (`adr-immutable`) liest
 # die Range ueber das `vcs`-Modul (Target `doc-immutable`/`adr-immutable` in
 # d-check.mk/Makefile) und traegt darum `fetch-depth: 0` UND einen
 # vorgeschalteten `make history-range-guard` (harness/tools/history-range-guard.sh)
@@ -80,12 +85,6 @@ jobs:
   # Durchsetzung erstmals einen mechanischen Ausloeser PRO PUSH — die
   # Durchsetzungs-Haelfte von Befund N-6. mutate mutiert den Checkout; auf einem
   # eigenen Runner ist das folgenlos.
-  mutate:
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
-      - run: make mutate
-
   # ADR-Immutabilitaet ueber die Range dieses Ausloesers (AGENTS.md 3.4,
   # DC-FA-VCS-001): ein Commit, der den Kern einer Accepted-ADR aendert,
   # faerbt diesen Job rot. Braucht die Historie der Range -> `fetch-depth: 0`

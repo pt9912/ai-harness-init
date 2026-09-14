@@ -107,13 +107,19 @@ das Layout eine geprüfte Schicht trägt. Belegt in [`make full-smoke`](sensors/
 (beide Richtungen + ein verbotener Import, der das emittierte Gate rot färbt), nicht hier.
 
 **CI** ([`MR-014`](conventions.md#mr-014--ci-auf-frischem-klon-github-actions)): GitHub
-Actions fährt `make gates` + [`make smoke`](sensors/smoke.md) + [`make mutate`](sensors/mutate.md)
+Actions fährt `make gates` + [`make smoke`](sensors/smoke.md) +
+[`make full-smoke`](sensors/full-smoke.md)
 auf **frischem Klon** pro Push/PR — schließt die
 [`MR-003`](conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)-Restlücke
-(der lokale Stop-Hook gibt einen cleanen Tree ohne State frei; „CI ist dort das Netz") und
-gibt `make mutate` seinen mechanischen Pro-Push-Auslöser. Die Netz-Sensoren
-`regelwerk-check`/`baseline-freshness` laufen **nur nächtlich** — ein Upstream-Ausfall darf
-keinen Push blockieren. Die CI ruft **ausschließlich `make`-Targets** (keine zweite
+(der lokale Stop-Hook gibt einen cleanen Tree ohne State frei; „CI ist dort das Netz").
+**Nur nächtlich** laufen zwei Klassen, jede mit eigenem Grund und eigener Workflow-Datei
+(`schedule` + `workflow_dispatch`): die Netz-Sensoren `regelwerk-check`/`baseline-freshness`
+in `upstream-drift.yml` — ein Upstream-Ausfall darf keinen Push blockieren — und
+[`make mutate`](sensors/mutate.md) in `mutate.yml`, weil das Regelwerk die Mutationstests
+der Stufe **Post-integration** zuordnet (`grundlagen-klassifikation.md` §Klassifikation:
+*„nach Merge : Mutation Tests"*, *„teurer, aber tolerierbar"*). Der Preis war gemessen:
+`49m54s` des `mutate`-Jobs gegen `49m58s` Gesamtdauer eines Pushes
+(`gh api "repos/pt9912/ai-harness-init/actions/jobs/<job-id>/logs"`). Die CI ruft **ausschließlich `make`-Targets** (keine zweite
 Gate-Definition). **Was CI nicht prüft:** nichts, was nicht in einem dieser Targets steht —
 ein grüner CI-Lauf ist keine Aussage über ungetestete Flächen.
 

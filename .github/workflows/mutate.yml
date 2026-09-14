@@ -1,0 +1,46 @@
+# mutate — der Mutations-Sensor auf der Stufe, die das Regelwerk ihm gibt
+# (AGENTS.md §3.6; grundlagen-klassifikation.md §Klassifikation).
+#
+# WARUM NICHT BEI DEN PRO-PUSH-GATES. Die Klassifikation des Regelwerks verteilt
+# die Kontrollen ueber den Lebenszyklus und ordnet die Mutationstests der Stufe
+# **Post-integration** zu: *"nach Merge : Mutation Tests"*, *"teurer, aber
+# tolerierbar"*. Im Push-Pfad (Pre-integration) stand der Lauf damit auf der
+# falschen Stufe — und der Preis ist gemessen: 49m54s von 49m58s eines Pushes
+# (99,7 %), waehrend die vier uebrigen Jobs zusammen 7m30s kosten.
+#
+# Dieselbe Trennung nach Sensor-Klasse wie bei upstream-drift.yml (MR-014
+# Setzung 2, strukturell statt per `if: github.event_name`) — eigener Grund,
+# eigene Datei: dort ist es der Fremd-Host, hier die **Kosten-Stufe**.
+#
+# Trigger:
+#   * schedule (naechtlich) — der regulaere Lauf auf dem gemergten Stand.
+#   * workflow_dispatch — manuell startbar, wenn ein Waechter neu ist und man den
+#     vollen Satz sofort will statt bis zur Nacht zu warten.
+#
+# Wie die beiden anderen Workflows: nur `make`-Targets, keine zweite
+# Gate-Definition (MR-010-Geist). Docker-only (ADR-0003).
+#
+# CHECKOUT-TIEFE: der eine `actions/checkout` unten bleibt bei der Default-Tiefe 1
+# — `make mutate` loest keinen history-lesenden d-check-Modul-Lauf aus.
+
+name: mutate
+
+on:
+  schedule:
+    - cron: '17 2 * * *' # naechtlich 02:17 UTC (nicht zur vollen Stunde)
+  workflow_dispatch: # manueller "Run workflow"-Button
+
+# Eigene Gruppe je Ausloeser: ein manueller Lauf soll den naechtlichen NICHT
+# abbrechen (und umgekehrt) — `event_name` trennt schedule von workflow_dispatch.
+# `cancel-in-progress` ist hier besonders wichtig: der Lauf mutiert den Checkout
+# in isolierten Kopien, zwei Laeufe desselben Ausloesers verbrennen nur Minuten.
+concurrency:
+  group: mutate-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  mutate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - run: make mutate
