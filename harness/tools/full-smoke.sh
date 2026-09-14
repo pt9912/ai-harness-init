@@ -355,11 +355,12 @@ blind_gruen_ohne_waechter() {
 	grep -F -- '0 Befund(e)' <<<"$roh" | sed -n '1p' | sed 's/^/full-smoke:   /'
 }
 
-# f2_ohne_rezept_def <repo> <ziel> <kennung> erwartet den LAUTEN Abbruch ueber einem
-# d-check.mk, das das Ziel nicht DEFINIERT: Exit != 0, die Meldung des Fragments, kein
-# Modul-Lauf. Ein stiller Erfolg (Exit 0) ist der Fall, gegen den die fail-closed Zeile des
-# Fragments steht — vor ihr endete `make <ziel>` dort mit 0 und fuhr allein den Waechter.
-f2_ohne_rezept_def() {
+# vorbindung_ohne_zieldefinition <repo> <ziel> <kennung> erwartet den LAUTEN Abbruch ueber
+# einem d-check.mk, in dem die Ziel-Definition fehlt — die Ziel-Zeile selbst ODER ihr Rezept:
+# Exit != 0, die Meldung des Fragments, kein Modul-Lauf. Ein stiller Erfolg (Exit 0) ist der
+# Fall, gegen den die fail-closed Zeile des Fragments steht — vor ihr endete `make <ziel>`
+# dort mit 0 und fuhr allein den Waechter.
+vorbindung_ohne_zieldefinition() {
 	local repo="$1" ziel="$2" kennung="$3"
 	local out="" rc=0 flach="" grund=""
 	out="$( make --no-print-directory -C "$repo" "$ziel" RANGE=HEAD~1..HEAD 2>&1 )" || rc=$?
@@ -367,7 +368,7 @@ f2_ohne_rezept_def() {
 	if [ "$rc" -eq 0 ]; then
 		grund="make $ziel blieb ueber einem d-check.mk OHNE die Ziel-Definition GRUEN (Exit 0) — die Vorbindung hat dort kein Rezept"
 	elif ! grep -qF -- "fuehrt '$ziel' nicht" <<<"$flach"; then
-		grund="der Abbruch nennt das fehlende Ziel nicht (rot aus falschem Grund?)"
+		grund="der Abbruch nennt die fehlende Ziel-Definition nicht (rot aus falschem Grund?)"
 	elif grep -qF -- "Datei(en) geprüft" <<<"$flach"; then
 		grund="der Modul-Lauf fand trotzdem statt"
 	fi
@@ -377,12 +378,12 @@ f2_ohne_rezept_def() {
 		einordnen "make $ziel ueber einem d-check.mk ohne Ziel-Definition ($kennung)" "$out"
 		exit 1
 	fi
-	echo "full-smoke: F-2-Fall ($kennung): make $ziel bricht ueber einem d-check.mk ohne Ziel-Definition LAUT ab, ohne ein Modul zu fahren."
+	echo "full-smoke: Zieldefinition ($kennung): make $ziel bricht ueber einem d-check.mk ohne Ziel-Definition LAUT ab, ohne ein Modul zu fahren."
 }
 
-# f2_mit_rezept_def <repo> <ziel> <kennung> ist die gruene Haelfte derselben Sonde: derselbe
-# Aufruf ueber dem UNVERFAELSCHTEN d-check.mk — Waechter greift, das Modul laeuft, Exit 0.
-f2_mit_rezept_def() {
+# vorbindung_mit_zieldefinition <repo> <ziel> <kennung> ist die gruene Haelfte derselben Sonde:
+# derselbe Aufruf ueber dem UNVERFAELSCHTEN d-check.mk — Waechter greift, das Modul laeuft, Exit 0.
+vorbindung_mit_zieldefinition() {
 	local repo="$1" ziel="$2" kennung="$3"
 	local out="" rc=0 flach="" grund=""
 	out="$( make --no-print-directory -C "$repo" "$ziel" RANGE=HEAD~1..HEAD 2>&1 )" || rc=$?
@@ -398,7 +399,34 @@ f2_mit_rezept_def() {
 		einordnen "make $ziel ueber dem unverfaelschten d-check.mk ($kennung)" "$out"
 		exit 1
 	fi
-	echo "full-smoke: F-2-Fall ($kennung): derselbe Aufruf ueber dem unverfaelschten d-check.mk bleibt gruen ($ziel), der Modul-Lauf fand statt."
+	echo "full-smoke: Zieldefinition ($kennung): derselbe Aufruf ueber dem unverfaelschten d-check.mk bleibt gruen ($ziel), der Modul-Lauf fand statt."
+}
+
+# vorbindung_ohne_probewerkzeug <repo> <ziel> <kennung> faehrt die Randlage derselben Sonde:
+# die Ziel-Definition FEHLT und das Probe-Werkzeug (awk) ist nicht im PATH. Der unbekannte
+# Ausgang darf nicht in den permissiven Zweig fallen — der Aufruf muss abbrechen.
+vorbindung_ohne_probewerkzeug() {
+	local repo="$1" ziel="$2" kennung="$3" mk
+	local out="" rc=0 flach="" grund=""
+	if ! mk="$(command -v make)"; then
+		echo "full-smoke: FEHLER — $kennung: make ist nicht auffindbar." >&2
+		exit 1
+	fi
+	out="$( env PATH=/nonexistent "$mk" --no-print-directory -C "$repo" -n "$ziel" RANGE=HEAD~1..HEAD 2>&1 )" || rc=$?
+	flach="$(tr -s '[:space:]' ' ' <<<"$out")"
+	# Der Trockenlauf fuehrt kein Rezept aus — die Entscheidung ist an der GEDRUCKTEN Kette
+	# abgelesen: die Bindung druckt die Waechter-Zeile, der Abbruch seine Meldung.
+	if grep -qF -- 'history-range-guard.sh' <<<"$flach"; then
+		grund="der Aufruf waehlte trotz fehlenden Probe-Werkzeugs die Bindung — make -n druckt die Waechter-Zeile (Exit $rc)"
+	elif ! grep -qF -- "fuehrt '$ziel' nicht" <<<"$flach"; then
+		grund="der Aufruf nennt die fehlende Ziel-Definition nicht (rot aus falschem Grund?)"
+	fi
+	if [ -n "$grund" ]; then
+		echo "full-smoke: FEHLER — $kennung (ohne Probe-Werkzeug im PATH, $ziel): $grund. Ausgabe:" >&2
+		printf '%s\n' "$out" >&2
+		exit 1
+	fi
+	echo "full-smoke: Zieldefinition ($kennung): ohne das Probe-Werkzeug bricht make $ziel LAUT ab, statt zu binden."
 }
 
 vorlauf_waechter_im_ziel() {
@@ -506,21 +534,30 @@ vorlauf_waechter_im_ziel() {
 	grep -F -- 'aufgeloest, 1 Commit(s) — OK' <<<"$voll_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
 	grep -F -- 'Datei(en) geprüft' <<<"$voll_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
 
-	# (f) DER F-2-FALL am gebootstrappten Baum: die Vorbindungs-Zeile steht ueber einem
-	# Target, das das d-check.mk DEFINIEREN muss. Fuehrt es das Ziel nicht, hat sie dort kein
-	# Rezept — der Aufruf des Ziels endet dann mit Erfolg und faehrt allein den Waechter (der
-	# laute Fehlschlag davor war "Keine Regel"). Verfaelscht wird die DEFINITION: die
-	# Ziel-Zeile wird umbenannt, ihre Rezept-Zeilen bleiben an ihr, und die .PHONY-Marke des
-	# Ziels steht weiter da — geprueft ist also die Definition, nicht die Marke. Beide
-	# Richtungen ueber demselben Klon: mit verfaelschtem d-check.mk der laute Abbruch, ueber
-	# dem unverfaelschten das Gruen aus (e) fuer doc-immutable und der Modul-Lauf fuer
-	# doc-commits.
+	# (f) DIE VORBINDUNG UEBER EINEM d-check.mk OHNE ZIEL-DEFINITION, am gebootstrappten Baum:
+	# die Vorbindungs-Zeile setzt voraus, dass das Ziel dort MIT REZEPT definiert ist. Fehlt die
+	# Ziel-Zeile oder ihr Rezept, endet der Aufruf des Ziels sonst mit Erfolg und faehrt allein
+	# den Waechter (der laute Fehlschlag davor war "Keine Regel"). Verfaelscht wird die
+	# DEFINITION — die Ziel-Zeile umbenannt bzw. ihr Rezept entfernt, die .PHONY-Marke bleibt
+	# stehen: geprueft ist die Definition mit Rezept, nicht die Marke. Beide Richtungen ueber
+	# demselben Klon: mit verfaelschtem d-check.mk der laute Abbruch, ueber dem unverfaelschten
+	# das Gruen aus (e) fuer doc-immutable und der Modul-Lauf fuer doc-commits.
 	cp "$voll/d-check.mk" "$voll/d-check.mk.orig"
 	sed -i -E 's/^(doc-immutable|doc-commits):/doc-ohne-definition-\1:/' "$voll/d-check.mk"
-	f2_ohne_rezept_def "$voll" doc-immutable "$kennung"
-	f2_ohne_rezept_def "$voll" doc-commits "$kennung"
+	vorbindung_ohne_zieldefinition "$voll" doc-immutable "$kennung"
+	vorbindung_ohne_zieldefinition "$voll" doc-commits "$kennung"
+	# Zweiter Auslöser derselben Klasse: die Ziel-Zeile bleibt, ihr Rezept geht. Beide
+	# Auslöser sind gemessen gegen dieselbe Erwartung gestellt.
+	cp "$voll/d-check.mk.orig" "$voll/d-check.mk"
+	sed -i '/^doc-immutable:/{n;d}' "$voll/d-check.mk"
+	vorbindung_ohne_zieldefinition "$voll" doc-immutable "$kennung"
+	# Drittens die Randlage: dasselbe verfaelschte d-check.mk OHNE das Probe-Werkzeug im PATH.
+	# Ein unbekannter Ausgang darf nicht in den permissiven Zweig fallen.
+	cp "$voll/d-check.mk.orig" "$voll/d-check.mk"
+	sed -i -E 's/^(doc-immutable|doc-commits):/doc-ohne-definition-\1:/' "$voll/d-check.mk"
+	vorbindung_ohne_probewerkzeug "$voll" doc-immutable "$kennung"
 	mv "$voll/d-check.mk.orig" "$voll/d-check.mk"
-	f2_mit_rezept_def "$voll" doc-commits "$kennung"
+	vorbindung_mit_zieldefinition "$voll" doc-commits "$kennung"
 }
 
 vorlauf_waechter_im_ziel "$tmprepo" "golang"

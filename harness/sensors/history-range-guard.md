@@ -72,8 +72,10 @@ dieselbe Funktion. Rot gesehen wird die Ziel-Fassung in
 leeren Range an beiden Targets mit der Meldung des Wächters ab, dieselbe Range auf einem
 vollständigen Klon bleibt grün. Dieselbe Stufe fährt die zwei Richtungen der Vorbindung
 selbst: über einem `d-check.mk` **ohne** die Ziel-Definition bricht `make doc-immutable` bzw.
-`make doc-commits` mit Exit 2 und der Meldung des Fragments ab, über dem **unverfälschten**
-d-check.mk greift der Wächter und das Modul läuft (Exit 0).
+`make doc-commits` mit Exit 2 und der Meldung des Fragments ab — zweimal gefahren, mit
+entfernter Ziel-Zeile und, als zweiter Auslöser derselben Klasse, mit einer Ziel-Zeile ohne
+Rezept; über dem **unverfälschten** d-check.mk greift der Wächter und das Modul läuft
+(Exit 0).
 
 **Beide Hälften der Zusage sind an beiden Targets gemessen.** Der blinde Grün-Fall — dieselbe
 leere Range über `-f d-check.mk`, also ohne das Doc-Gate-Fragment — meldet für `doc-immutable`
@@ -81,13 +83,14 @@ leere Range über `-f d-check.mk`, also ohne das Doc-Gate-Fragment — meldet f�
 gefahren.
 
 **Das Fragment ist selbst fail-closed, je Ziel.** Es prüft vor der Vorbindung, ob das
-eingebundene `d-check.mk` das Ziel definiert — dieselbe Datei, die sein `include` einbindet,
-mit `grep`, ohne Bild und ohne Netz. Fehlt die Definition, bricht `make doc-immutable` bzw.
-`make doc-commits` mit Exit 2 und einer Meldung ab; die Vorbindung hätte dort kein Rezept,
-und `make` endete sonst mit Erfolg (Exit 0), statt zu fallen. Die Bedingung liest die
-**Ziel-Zeile**, nicht die `.PHONY`-Marke: `make` führt `.PHONY` nicht als abfragbare Variable
-(`$(.PHONY)` expandiert leer, gemessen), und eine Datei ohne Ziel-Zeile bleibt ohne Rezept,
-auch wenn ihre `.PHONY`-Marke stehenbleibt.
+eingebundene `d-check.mk` das Ziel **mit Rezept** führt — dieselbe Datei, die sein `include`
+einbindet, mit `awk`, ohne Bild und ohne Netz. **Nur der belegte Ausgang wählt die Bindung**;
+jeder andere — kein Treffer, eine Ziel-Zeile ohne Rezept, kein `awk` auf dem `PATH` oder eine
+leere Ausgabe — fällt in den Abbruch mit Exit 2 und einer Meldung. Sonst stünde die Vorbindung
+über einem Ziel ohne Rezept, und `make` endete mit Erfolg (Exit 0), statt zu fallen. Gelesen
+wird die **Ziel-Zeile mit ihrer Rezept-Zeile**, nicht die `.PHONY`-Marke: `make` führt
+`.PHONY` nicht als abfragbare Variable (`$(.PHONY)` expandiert leer, gemessen), und eine Datei
+ohne Ziel-Zeile bleibt ohne Rezept, auch wenn ihre `.PHONY`-Marke stehenbleibt.
 
 **Die Emission prüft die Voraussetzung der Bindung.** Beim Bootstrap bricht `AdaptMK`
 (`internal/emit/emit.go`) ab, wenn das erzeugte `d-check.mk` eines der zwei Targets nicht

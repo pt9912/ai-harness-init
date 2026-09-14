@@ -3,18 +3,19 @@
 # expect: OHNE die Ziel-Definition GRUEN
 # verify: full-smoke
 #
-# NIMMT DEM EMITTIERTEN FRAGMENT DIE FAIL-CLOSED BEDINGUNG.
+# NIMMT DEM EMITTIERTEN FRAGMENT DIE FAIL-CLOSED ENTSCHEIDUNG.
 #
 # Das Fragment haengt den Vorlauf-Waechter als Vorbedingung vor `doc-immutable`/`doc-commits`
-# — und prueft vorher, ob das eingebundene d-check.mk das Ziel ueberhaupt definiert. Ohne
-# diese Bedingung steht die Vorbindung ueber einem Ziel ohne Rezept: `make doc-immutable`
-# endet dann mit Erfolg (Exit 0) und faehrt allein den Waechter, wo der laute Fehlschlag
-# "Keine Regel" gehoert.
+# — und prueft vorher, ob das eingebundene d-check.mk das Ziel MIT REZEPT definiert. Der
+# Operand ersetzt die Probe beider Ziele durch ein festes "da": der intakte Baum bleibt damit
+# gesund (die Bindung wird gewaehlt), und ueber einer Datei OHNE die Ziel-Definition wird sie
+# ebenfalls gewaehlt. `make doc-immutable` endet dort mit Erfolg (Exit 0) und faehrt allein den
+# Waechter, wo der laute Abbruch steht.
 #
 # WARUM `full-smoke` DIE SCHMALSTE AUSREICHENDE STUFE IST: die Zusage gilt dem emittierten
-# Fragment in einem gebootstrappten Baum — `make test` faehrt kein Ziel-Makefile, `make
-# smoke` faelscht kein d-check.mk. Ein Go-Waechter ueber den Fragment-TEXT waere die
-# schmalere Stufe und genau die Klasse aus dem Review-Befund F-1 (ein Anker, der den Text
-# prueft statt die Wirkung). Der Preis des Modus steht im Kopf von harness/tools/mutate.sh.
+# Fragment in einem gebootstrappten Baum — `make test` faehrt kein Ziel-Makefile, `make smoke`
+# faelscht kein d-check.mk. Ein Go-Waechter ueber den Fragment-TEXT waere die schmalere Stufe
+# und genau ein Anker, der den Text prueft statt die Wirkung (AGENTS.md §3.6). Der Preis des
+# Modus steht im Kopf von harness/tools/mutate.sh.
 set -euo pipefail
-sed -i "s@grep -c '^doc-immutable:' d-check.mk 2>/dev/null || true@echo 1@" internal/emit/emit.go
+sed -i "s@ifeq (\$(shell awk .*),da)@ifeq (\$(shell echo da),da)@" internal/emit/emit.go

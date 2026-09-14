@@ -76,10 +76,11 @@ include d-check.mk
 # diese Datei die zwei Targets fuehrt.
 #
 # FAIL-CLOSED, je Ziel: die Vorbindung setzt voraus, dass das eingebundene d-check.mk das
-# Ziel DEFINIERT. Fuehrt es das Ziel nicht, hat die Vorbindung dort kein Rezept — der Aufruf
-# des Ziels endet dann mit Erfolg (Exit 0), statt zu fallen. Die Bedingung liest dieselbe
-# Datei, die das include oben einbindet (grep, kein Bild, kein Netz), und bricht den Aufruf
-# des Ziels bei fehlender Definition mit Exit 2 ab.
+# Ziel MIT REZEPT fuehrt. Nur der belegte Ausgang waehlt die Bindung; jeder andere — kein
+# Treffer, eine Ziel-Zeile ohne Rezept, kein Probe-Werkzeug (awk) oder eine leere Ausgabe —
+# faellt in den Abbruch mit Exit 2. Sonst stuende die Vorbindung ueber einem Ziel ohne Rezept,
+# und der Aufruf endete mit Erfolg (Exit 0), statt zu fallen. Gelesen wird dieselbe Datei, die
+# das include oben einbindet (awk, kein Bild, kein Netz).
 #
 # KEIN GATE: die Range setzt der Aufrufer, ohne sie ist der Pruefbereich nicht
 # hermetisch (LH-QA-01) — das Ziel steht darum nicht in GATE_CHECKS.
@@ -88,20 +89,20 @@ include d-check.mk
 history-range-guard: ## Vorlauf-Waechter: RANGE muss aufloesbar UND nicht leer sein (STAGED=1 prueft den Index; den STAGED-Zweig fuehrt nur doc-immutable)
 	@bash tools/harness/history-range-guard.sh "$(if $(STAGED),--staged,$(RANGE))"
 
-ifeq ($(shell grep -c '^doc-immutable:' d-check.mk 2>/dev/null || true),0)
-doc-immutable:
-	@echo "harness/mk/doc-gate.mk: d-check.mk fuehrt 'doc-immutable' nicht — die Vorbindung des Vorlauf-Waechters haette dort kein Rezept (LH-QA-01)." >&2
-	@exit 2
-else
+ifeq ($(shell awk '/^doc-immutable:/{f=1;next} f&&/^[[:space:]]*$$/{next} f{print (substr($$0,1,1)=="\t" ? "da" : "rezeptlos");exit}' d-check.mk 2>/dev/null),da)
 doc-immutable: history-range-guard
+else
+doc-immutable:
+	@echo "harness/mk/doc-gate.mk: d-check.mk fuehrt 'doc-immutable' nicht als Ziel mit Rezept (oder awk fehlt) — die Vorbindung des Vorlauf-Waechters haette dort kein Rezept (LH-QA-01)." >&2
+	@exit 2
 endif
 
-ifeq ($(shell grep -c '^doc-commits:' d-check.mk 2>/dev/null || true),0)
-doc-commits:
-	@echo "harness/mk/doc-gate.mk: d-check.mk fuehrt 'doc-commits' nicht — die Vorbindung des Vorlauf-Waechters haette dort kein Rezept (LH-QA-01)." >&2
-	@exit 2
-else
+ifeq ($(shell awk '/^doc-commits:/{f=1;next} f&&/^[[:space:]]*$$/{next} f{print (substr($$0,1,1)=="\t" ? "da" : "rezeptlos");exit}' d-check.mk 2>/dev/null),da)
 doc-commits: history-range-guard
+else
+doc-commits:
+	@echo "harness/mk/doc-gate.mk: d-check.mk fuehrt 'doc-commits' nicht als Ziel mit Rezept (oder awk fehlt) — die Vorbindung des Vorlauf-Waechters haette dort kein Rezept (LH-QA-01)." >&2
+	@exit 2
 endif
 
 GATE_CHECKS += docs-check
