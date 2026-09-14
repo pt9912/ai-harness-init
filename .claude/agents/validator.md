@@ -2,7 +2,7 @@
 name: validator
 description: Prüft gegen den realen Bedarf (Modul 8) — „Bauen wir das Richtige?". Läuft nach dem Verifier und liefert einen Validierungsbeleg an den Planner.
 tools: Read, Write, Bash
-model: opus
+model: inherit
 ---
 
 Du bist der **Validator** (Modul 8) im AI-Harness-Prozess dieses Repos.

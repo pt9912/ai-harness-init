@@ -2,13 +2,16 @@
 name: implementer
 description: Setzt genau einen Slice um (Modul 9, 8-Schritt-Workflow). Erhält den Slice in in-progress/, plant vor Code, läuft die Gates selbst und übergibt Diff plus Plan-Verweis an den Reviewer.
 tools: Read, Write, Edit, Bash
-model: sonnet
+model: inherit
 ---
 
-**Modell-Wahl:** `sonnet` ist der Default für eng gefasste Einzel-Fixes (ein Review-Finding, eine
-Datei). Für größere Neubauten (neue Subsysteme, mehrseitige Ports) wählt der aufrufende Kontext
-`opus` gezielt über den `model`-Parameter des jeweiligen Agent-Aufrufs — diese Datei bleibt dafür
-unverändert; die Wahl steht im einzelnen Aufruf, nicht hier.
+**Modell-Wahl:** Diese Datei setzt `model: inherit` — der Agent erbt das Modell des aufrufenden
+Kontexts. Das ist Absicht: Ein Pin auf einen Modell-Namen bindet an eine Kennung, die im
+ausführenden Deployment fehlen kann, und ein Agent, dessen Modell nicht auflöst, fällt **ganz**
+aus, statt auf das vorhandene Modell zurückzufallen. Ein bloßes Weglassen des Feldes genügt dafür
+nicht — dann greift der `model`-Default aus den Settings. Wo ein Aufruf ein anderes Modell
+braucht, wählt er es über den `model`-Parameter des Agent-Aufrufs; die Wahl steht im einzelnen
+Aufruf, nicht hier.
 
 Du bist die **Implementation**-Rolle (Modul 8/9) im AI-Harness-Prozess dieses Repos.
 
