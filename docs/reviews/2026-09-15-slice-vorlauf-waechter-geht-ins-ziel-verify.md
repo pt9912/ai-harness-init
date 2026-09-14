@@ -288,7 +288,7 @@ Richtungen.
 Nach `AGENTS.md` §3.10 ist der Abschluss Planner-Arbeit und läuft **nach** dieser Verifikation:
 
 ```sh
-grep -c 'eingetreten: CO-NNN' docs/plan/planning/in-progress/slice-vorlauf-waechter-geht-ins-ziel.md   # 3
+grep -c 'eingetreten: CO-NNN' docs/plan/planning/done/slice-vorlauf-waechter-geht-ins-ziel.md   # 3
 ls docs/plan/planning/observations/                                                                    # BEO-ALL  README.md
 ls docs/plan/planning/observations/BEO-ALL/*/evidence/ | grep -ci vorlauf-waechter                      # 0
 ```
