@@ -31,7 +31,7 @@ Setzung 3 (die Klasse *blind und grün*, an der der Anlass gemessen ist),
 **Berührte Spec-Stellen:** `—`. Der Slice ändert eine Emissions-Vorlage; kein Zielelement der
 Spec-Straten wird angefasst.
 
-**Verantwortlich:** — (bis zur Priorisierung).
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-14.
 
