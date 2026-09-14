@@ -16,10 +16,11 @@ zwei Artefakte und lässt die Frage, die hier entschieden wird, offen),
 Eigentum an einer **Eigenschaft** hängen darf statt an der Datei-Existenz — ihre Eigenschaft ist
 der Ablauf, den das Artefakt **beschreibt**, und die Zuordnung bleibt darum über jede Änderung
 stabil. Diese Entscheidung hängt Eigentum an den **Vorgang, der das Artefakt ändert**; das ist eine
-andere Achse und wird unten als solche benannt, nicht als dieselbe ausgegeben),
-[ADR-0024](0024-derivatives-register-gehoert-der-rolle-seines-originals.md) (dieselbe Familie, die
-Ableitung aus dem Original — und dieselbe Disziplin, die Ableitung dort enden zu lassen, wo eine
-bindende Aussage ohne Original beginnt),
+andere Achse und wird unten als solche benannt, nicht als dieselbe ausgegeben. Festlegung 1
+derselben Datei ist zugleich die dritte Quelle des Satzes, den Festlegung 2 unten auslegt),
+[ADR-0024](0024-derivatives-register-gehoert-der-rolle-seines-originals.md) (dieselbe Familie: die
+Ableitung aus dem **Original**, das eine Aussage wiedergibt — und dieselbe Disziplin, die Ableitung
+dort enden zu lassen, wo ein Artefakt eine bindende Aussage ohne Original trägt),
 [ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md) (ihre Option F nennt den
 Welle-Plan *„fremdes Eigentum (Planner)"* und beruft sich dafür auf
 [ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) — §Kontext hält fest, warum das keine
@@ -32,11 +33,18 @@ den Acceptance-Trigger unten),
 Baseline-Aussage unten trägt Tag und Zitat statt eines Pfad-Links),
 [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert),
 [`MR-033`](../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist),
+[`MR-051`](../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)
+(Setzung 2 für den Register-Zähler in §Konsequenzen — die Klasse, die
+[`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+nach eigener Kopf-Marke nicht erreicht),
 [`MR-055`](../../../harness/conventions.md#mr-055--eine-stellen-messung-trägt-keine-folgerung-über-eine-eigenschaft)
-(die Grenze, die die Negativ-Messung in §Kontext ausdrücklich zieht),
+(die Grenze, die die Negativ-Messungen in §Kontext und §Konsequenzen ausdrücklich ziehen; sein
+Geltungsbereich nimmt `docs/plan/adr/` aus — diese Datei wendet ihn als Selbstbindung an),
+[`MR-057`](../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
+(die Kennungs-Form, gegen die das letzte Muster in §Kontext misst — Nummer **und** Name),
 [`MR-058`](../../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)
 (die benannte Klasse hinter der Pathspec-Verengung in §Kontext; ihr Geltungsbereich nimmt
-`docs/plan/adr/` aus — sie benennt die Lage, sie bindet diese Datei nicht),
+`docs/plan/adr/` ebenso aus — sie benennt die Lage, sie bindet diese Datei nicht),
 [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
 
 **Schärft:** — Prozess-ADR ohne Spec-Stratum: sie entscheidet über die schreibende Rolle für eine
@@ -61,17 +69,19 @@ sich auf einen Satz in §Was diese Entscheidung nicht tut jener Datei
 (`grep -c 'Die ersten drei gehören dem \*\*Planner\*\*' docs/plan/adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md`
 → **1**, kein Erwartungswert) und liest ihn als Zuweisung des **Artefakt-Typs** an den Planner. Der
 Report benennt den Gegeneinwand selbst und stuft nicht herab, sondern übergibt an den Architect —
-Baseline-Regelwerk `modul-08-agentenrollen.md` §Konflikt-Pfad als Rollen-Sequenz.
+Baseline `v6.8.0`, `modul-08-agentenrollen.md` §Konflikt-Pfad als Rollen-Sequenz.
 
 Die Frage ist damit nicht, ob jener Satz gilt, sondern **wie weit er reicht** — und was für alles
 gilt, was er nicht erreicht.
 
 ### Was gemessen ist, und was die Messung nicht trägt
 
-Drei lebende Stellen dieses Repos bringen *Welle-Plan* und *Planner* in einem Satz zusammen; alle
-drei sind gelesen. **Der Pathspec nimmt diese Datei aus** — sie ist der **Gegenstand** der Frage und
-keine ihrer Quellen; ohne die Verengung zählte die Messung ihre eigenen Zeilen mit und wäre an
-keinem Stand nach ihrem eigenen Commit nachzumessen (die benannte Klasse führt
+Im Prüfbereich des Kommandos unten bringen **drei** Stellen *Welle-Plan* und *Planner* in einem
+Satz zusammen; alle drei sind gelesen. Der Prüfbereich ist fünf Pfade breit und **nicht** das Repo —
+`docs/plan/planning/**`, `docs/user/`, `README.md` und `internal/` erreicht er nicht. **Der Pathspec
+nimmt außerdem diese Datei aus** — sie ist der **Gegenstand** der Frage und keine ihrer Quellen;
+ohne die Verengung zählte die Messung ihre eigenen Zeilen mit und wäre an keinem Stand nach ihrem
+eigenen Commit nachzumessen (die benannte Klasse führt
 [`MR-058`](../../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)).
 **Kein Erwartungswert**
 ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
@@ -127,18 +137,20 @@ sie erreichen, benennt keine Quelle eine schreibende Rolle für eine Text-Änder
 eröffneten Welle-Plan.** Wer eine kennt, die sie nicht erreichen, hat den Fall — und dann greift
 Re-Evaluierungs-Trigger 1.
 
-### Was die zwei zitierten Quellen binden
+### Was die zitierten Quellen binden
 
-Der ausgelegte Satz ist **ableitend** formuliert: er beruft sich auf zwei Quellen und setzt nichts
-daneben. Beide binden **Vorgänge**, nicht Dateien.
+Der ausgelegte Satz ist **ableitend** formuliert: er beruft sich auf **drei** Quellen und setzt
+nichts daneben. Zwei davon tragen Welle-Plan und Roadmap, die dritte den Anweisungssatz zum
+Wellen-Schnitt; der volle Wortlaut steht in Festlegung 2. Die zwei, die den Welle-Plan betreffen,
+binden **Vorgänge**, nicht Dateien.
 
 Baseline `v6.8.0`, `modul-08-agentenrollen.md` §Rollen-Sequenz für eine Welle weist die
 **Eröffnung** zu — *„Die Eröffnung ist Planner-Arbeit"* — und führt die Closure als Tabelle mit
 einer Zeile je **Schritt**. Über deren Träger sagt derselbe Abschnitt wörtlich: *„Nur 1, 2 und 3b
 tragen einen Rollenwechsel; 3a, 3c, 4, 5 und 6 laufen im Planner-Kontext"* — Schritt 1 liegt beim
 Verifier, Schritt 2 und 3b führen über den Architect. Der Implementer ist in keinem der sechs
-Schritte Träger. Kein Satz dort weist die **Datei** zu. Die Kommandos lösen den Tag aus
-`BASELINE_TAG` auf und überleben damit den nächsten Sprung; **keine Erwartungswerte**:
+Schritte Träger. Kein Satz dort weist die **Datei** zu. Die drei Kommandos dieses Blocks lösen den
+Tag aus `BASELINE_TAG` auf und überleben damit den nächsten Sprung; **keine Erwartungswerte**:
 
 ```sh
 B=".harness/baseline/$(grep -m1 '^BASELINE_TAG ?= ' Makefile | cut -d' ' -f3)/regelwerk/modul-08-agentenrollen.md"
@@ -168,17 +180,20 @@ geschlossen haben.
 Die drei Kopfnoten sind nach dem Nachzug byte-gleich zur vendored Ziel-Form, bis auf den
 eingesetzten Namen der Ergebnis-Notiz, und die Ziel-Form nennt **keine** Welle-Kennung — sie sagt
 über die einzelne Welle nichts. Die Schleife belegt die byte-gleiche Datei, die zwei `diff`-Läufe
-darunter belegen die zwei übrigen; **keine Erwartungswerte:**
+darunter belegen die zwei übrigen; das letzte Muster trifft beide Kennungs-Formen, die Nummer wie
+den Namen
+([`MR-057`](../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)).
+**Keine Erwartungswerte:**
 
 ```sh
 T=".harness/baseline/$(grep -m1 '^BASELINE_TAG ?= ' Makefile | cut -d' ' -f3)/templates/docs/plan/planning/welle.template.md"
 for f in docs/plan/planning/welle-*.md; do
   diff -q <(sed -n '10,15p' "$T") <(sed -n '3,8p' "$f") >/dev/null && echo "byte-gleich: $f"
-done                                                # eine Zeile
+done                                                    # eine Zeile
 for f in docs/plan/planning/welle-*.md; do
   diff <(sed -n '10,15p' "$T") <(sed -n '3,8p' "$f")
-done                                                # zwei Differenzen, je Zeile 3, je der Name der Ergebnis-Notiz
-grep -cE 'welle-[0-9]' <(sed -n '10,15p' "$T")      # 0
+done                                                    # zwei Differenzen, je Zeile 3, je der Name der Ergebnis-Notiz
+grep -cE 'welle-[0-9a-zäöü]' <(sed -n '10,15p' "$T")    # 0  (die Ziel-Form trägt nur `welle-<Kennung>`)
 ```
 
 Der Text ist damit eine **Vorlagen-Instanz**, deren Originale die Ziel-Form und
@@ -238,13 +253,32 @@ ist er Planner-Arbeit. Die Probe ist in beide Richtungen benannt: Wer die vier B
 alle bejahen kann, hat den Fall nicht — Zweifel fällt auf den Planner zurück, nicht auf den
 laufenden Kontext.
 
+**Warum Bedingung 1 neben der Ziel-Form auch eine kanonische Quelle zulässt:** Ein Welle-Plan gibt
+nicht nur seine Vorlage wieder, sondern auch Regeln, die in [`AGENTS.md`](../../../AGENTS.md) oder
+im Baseline-Regelwerk stehen — die `Lifecycle:`-Kopfnote ist beides zugleich. Die Breite dieser
+Bedingung wird von Bedingung 2 wieder eingeholt: Was an einer Stelle nicht als Aussage über die
+Form des Welle-Plans dasteht, lässt sich dort auch nicht **wiedergeben**. Ein Rang, der über diese
+Form nichts sagt, wird damit praktisch kein Original, ohne dass die Bedingung ihn namentlich
+ausschließen müsste.
+
 ### 2. Der ausgelegte Satz in [ADR-0046](0046-welle-datei-entsteht-mit-der-eroeffnung.md) §Was diese Entscheidung nicht tut bindet, was die von ihm zitierten Quellen binden — und nicht mehr
 
 **Eine Grenze, nicht zwei.** Der Satz nennt Artefakte, aber er weist ihnen nichts aus eigener Kraft
-zu; er leitet aus zwei Quellen ab (*„gehören dem Planner — … **nach** `v6.7.2` … und **nach**
-`AGENTS.md` §3.10"*). Ein Satz in einer begrenzenden Sektion, der seine Zuweisung ableitet, setzt
-keine eigene. Für jedes der genannten Artefakte gilt deshalb, was jene Quellen ihm zuweisen — nicht
-mehr und nicht weniger.
+zu; er leitet ab — und zwar aus **drei** Quellen, im vollen Wortlaut
+([ADR-0016](0016-verweis-traegt-tag-und-zitat.md) Festlegung 2):
+
+> *„Die ersten drei gehören dem **Planner** — für Welle-Plan und Roadmap nach `v6.7.2`,
+> `modul-08-agentenrollen.md` §Rollen-Sequenz für eine Welle (*„Die Eröffnung ist Planner-Arbeit"*
+> und Schritt 6 *Roadmap fortschreiben · Planner*) und nach `AGENTS.md` §3.10, für den
+> Anweisungssatz nach ADR-0028 Festlegung 1."*
+
+Ein Satz in einer begrenzenden Sektion, der seine Zuweisung ableitet, setzt keine eigene. Für jedes
+der drei genannten Artefakte gilt deshalb, was **die ihm zugeordnete** Quelle ihm zuweist — nicht
+mehr und nicht weniger, und die Zuordnung ist im Satz selbst ausgesprochen: `welle-13` und die
+Roadmap über die ersten zwei Quellen, der Anweisungssatz zum Wellen-Schnitt über
+[ADR-0028](0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) Festlegung 1. **Die dritte
+Zuordnung bleibt damit unberührt**, und sie steht ohnehin nicht auf diesem Satz: Jene Festlegung
+bindet den Anweisungssatz aus eigener Kraft.
 
 Für `welle-13` §1 Punkt 2 ändert das nichts: Der Nachzug dort bleibt Planner-Arbeit, weil
 Bedingung 3 und 4 aus Festlegung 1 ihn ausschließen — dort steht eine Anforderung dieser Welle an
@@ -277,6 +311,12 @@ Eine ADR ohne Alternativen ist ein Postulat, kein Entscheidungsprotokoll (Baseli
   Folgepflicht zuweist und was Baseline `v6.8.0`, `modul-08-agentenrollen.md` Schritt 6
   (*Roadmap fortschreiben · Planner*) bindet; diese Datei unterläuft beides nicht und dehnt ihre
   Probe nicht dorthin.
+- **Sie entscheidet nichts über den Anweisungssatz zum Wellen-Schnitt.** Für
+  [`.claude/commands/plan-welle.md`](../../../.claude/commands/plan-welle.md) gilt unverändert
+  [ADR-0028](0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) Festlegung 1 — er gehört der
+  Rolle, die ihn **ausführt**, und das ist nach seinem eigenen Eröffnungssatz der Planner. Er ist
+  kein Welle-Plan, die Probe aus Festlegung 1 greift für ihn nicht, und Festlegung 2 nimmt ihm
+  nichts: Sie hält gerade fest, dass die dritte Quelle des ausgelegten Satzes ihn trägt.
 - **Sie entscheidet nicht, wem der Welle-Plan im Übrigen gehört.** Entschieden sind die
   Vorgangs-Klassen aus Festlegung 1; für jeden Vorgang, der unter keine von ihnen fällt, bleibt die
   Frage offen — dieselbe Verengung, die
@@ -321,13 +361,15 @@ Eine ADR ohne Alternativen ist ein Postulat, kein Entscheidungsprotokoll (Baseli
   ([`BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext`](../planning/observations/BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext/observation.md)),
   und ab hier ist für den Welle-Plan entscheidbar, wann eine zuweist.
 - **Positiv:** Die Eigentums-Familie bekommt eine **dritte** Achse, und sie steht als solche da.
-  [ADR-0024](0024-derivatives-register-gehoert-der-rolle-seines-originals.md) hängt Eigentum an das
-  **Original** eines Registers, [ADR-0028](0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
-  an den **Ablauf, den ein Artefakt beschreibt** — beides Eigenschaften des Artefakts, stabil über
-  seine Änderungen. Diese Entscheidung hängt es an den **Vorgang, der das Artefakt ändert**; die
-  Zuordnung wechselt damit je Änderung. Das ist neu und gehört benannt statt in eine Reihe gestellt:
-  Ein Welle-Plan beschreibt keinen Rollen-Ablauf und projiziert keine Originale, er plant eine
-  Welle — die zwei vorhandenen Achsen liefern für ihn keine Antwort.
+  [ADR-0024](0024-derivatives-register-gehoert-der-rolle-seines-originals.md) leitet aus dem
+  **Original** ab, das eine Aussage wiedergibt — *„Derivativ ist eine Eigenschaft der Aussage,
+  nicht der Datei"* —, und lässt die Zuordnung dort enden, wo ein Artefakt eine bindende Aussage
+  **ohne** Original trägt. [ADR-0028](0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) hängt
+  sie an den **Ablauf, den ein Artefakt beschreibt**, und bleibt darin über seine Änderungen
+  stabil. Diese Entscheidung hängt sie an den **Vorgang, der das Artefakt ändert**; die Zuordnung
+  wechselt damit je Änderung. Drei Achsen, keine davon die andere — und diese ist neu und gehört
+  benannt statt in eine Reihe gestellt: Ein Welle-Plan beschreibt keinen Rollen-Ablauf und
+  projiziert keine Originale, er plant eine Welle.
 - **Negativ:** Die Probe hat vier Bedingungen und ist ein Urteil. Wer sie falsch bejaht, hat eine
   Planungs-Entscheidung im Implementations-Kontext getroffen, und kein Gate meldet es
   (§Fitness Function).
@@ -341,15 +383,34 @@ Eine ADR ohne Alternativen ist ein Postulat, kein Entscheidungsprotokoll (Baseli
   Zuschreibung *Sequenzierungs-Autorität* an die Roadmap verloren; der Review-Report
   `2026-09-14-slice-flache-welle-ist-eroeffnet-nicht-geplant` führt das als MEDIUM. Das ist eine
   **Ziel-Form-Frage**. Diese Entscheidung deckt die Datei **nicht** — sie ist kein Welle-Plan —,
-  und sie weist sie auch niemandem zu: Über jede Stelle, die die Messungen in §Kontext erreichen,
-  benennt keine Quelle eine schreibende Rolle für sie, und eine hier zu setzen wäre die Dehnung,
-  die Option E verwirft. Die Behebung ist von dieser Entscheidung damit weder freigegeben noch
-  blockiert; wer sie fährt, entscheidet die Eigentumsfrage für diese Datei mit — und das ist ein
-  eigener Vorgang.
-- **Folgepflicht (Reviewer), fällig als eigener Vorgang:** Der Review-Report ist Lauf-Beleg und
-  wird nicht überschrieben; sein Finding ist mit dieser Entscheidung aufgelöst, nicht widerlegt. Ob
-  die Grenze aus Festlegung 1 in `.harness/skills/reviewer.md` aufgenommen wird, entscheidet der
-  Reviewer — die Datei gehört der ausführenden Rolle
+  und sie weist sie auch niemandem zu. Eine eigene Suche, die diese Datei zum Gegenstand hat statt
+  des Welle-Plans, findet **eine** Stelle:
+
+  ```sh
+  git grep -nE 'planning/README\.md' -- AGENTS.md harness/ spec/ docs/plan/adr/ .claude/ \
+    .harness/skills/ ':!.harness/baseline' ':!docs/reviews' ':!docs/plan/adr/0048-*.md'   # 1
+  ```
+
+  Sie liegt in `harness/migration.md` und ordnet der Datei ihre Vorlage zu — eine Zeile des
+  Instanz-Registers, keine Rollen-Aussage. **Kein Erwartungswert**, und auch das ist eine
+  Stellen-Messung ohne Folgerung über die Eigenschaft
+  ([`MR-055`](../../../harness/conventions.md#mr-055--eine-stellen-messung-trägt-keine-folgerung-über-eine-eigenschaft)):
+  Sie trägt, dass dieser Lauf keine Zuweisung gefunden hat, nicht, dass es keine gibt. Die Behebung
+  ist von dieser Entscheidung damit weder freigegeben noch blockiert; wer sie fährt, entscheidet
+  die Eigentumsfrage für diese Datei mit — und das ist ein eigener Vorgang.
+- **Folgepflicht (Planner), fällig als eigener Vorgang — die zweite Hälfte des Übergabe-Artefakts:**
+  Das gewählte Konflikt-Verdikt *„Lockerung legitim, aber undokumentiert"* trägt nach Baseline
+  `v6.8.0`, `modul-08-agentenrollen.md` §Konflikt-Pfad als Rollen-Sequenz ein **zweiteiliges**
+  Übergabe-Artefakt: *„Folge-ADR + Erinnerungs-Slice in `next/`"*. Diese Datei ist der erste Teil.
+  Der zweite — ein Erinnerungs-Slice, der den Folgepflichten unten und in §Was diese Entscheidung
+  nicht tut eine Lifecycle-Adresse gibt, statt sie auf *„später"* stehen zu lassen — ist ein
+  **Planner**-Artefakt ([`AGENTS.md`](../../../AGENTS.md) §3.10); der Architect schneidet ihn
+  nicht. Diese Datei ist die Übergabe: Sie nennt den Bedarf, der Planner entscheidet Zuschnitt und
+  Kennung.
+- **Folgepflicht (Reviewer), fällig als eigener Vorgang:** Die Review-Reports sind Lauf-Belege und
+  werden nicht überschrieben; das auslösende Finding ist mit dieser Entscheidung aufgelöst, nicht
+  widerlegt. Ob die Grenze aus Festlegung 1 in `.harness/skills/reviewer.md` aufgenommen wird,
+  entscheidet der Reviewer — die Datei gehört der ausführenden Rolle
   ([ADR-0028](0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) Festlegung 1), und diese
   Entscheidung schreibt sie nicht.
 - **Folgepflicht, fällig vor dem nächsten Accept-Übergang von
@@ -362,10 +423,12 @@ Eine ADR ohne Alternativen ist ein Postulat, kein Entscheidungsprotokoll (Baseli
   Eigentums-Frage ohne Quelle im laufenden Vorgang faktisch beantwortet wurde, ist eine
   Beobachtung. Ob sie unter eine vorhandene Kennung fällt oder eine neue braucht, ist ein Urteil
   über eine Klasse und keine Messung; gemessen ist allein der Umfang des Registers, `107`
-  Verzeichnisse (`ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l`, kein Erwartungswert,
-  datierte Messung nach
-  [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)).
-  Die Closure entscheidet es; diese Datei legt nichts an.
+  Verzeichnisse (`ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l`, kein Erwartungswert —
+  ein Zähler-Stand außerhalb des Registers ist eine **datierte Messung** nach
+  [`MR-051`](../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)
+  Setzung 2, der Klasse, die
+  [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  nach eigener Kopf-Marke nicht erreicht). Die Closure entscheidet es; diese Datei legt nichts an.
 
 ## Fitness Function (falls maschinell prüfbar)
 
@@ -406,9 +469,10 @@ Dateien* ein Commit anfasste, und nichts darüber, *welcher Vorgang* er war.
   Verengung auf den Welle-Plan noch trägt oder ob Option E — eine Regel für alle lebenden
   Planungs-Artefakte — die billigere Antwort ist.
 - **Wenn die regierende Fassung die Rollen-Sequenz für eine Welle von Schritten auf Artefakte
-  umstellt** *(beobachtbar daran, dass eines der drei `grep -c`-Kommandos aus §Kontext unter einem
-  neuen `BASELINE_TAG` **0** ausgibt)*: Festlegung 1 stützt sich dann auf eine Stelle, die es nicht
-  mehr gibt, und der Adaptions-Durchgang des Sprungs hält sie neu.
+  umstellt** *(beobachtbar daran, dass eines der drei `grep -c`-Kommandos des `modul-08`-Blocks in
+  §Kontext — §Was die zitierten Quellen binden — unter einem neuen `BASELINE_TAG` **0** ausgibt)*:
+  Festlegung 1 stützt sich dann auf eine Stelle, die es nicht mehr gibt, und der
+  Adaptions-Durchgang des Sprungs hält sie neu.
 - **Wenn dieselbe Klasse — eine Eigentums-Frage ohne Quelle wird im laufenden Vorgang faktisch
   beantwortet — im Beobachtungs-Register 3× erreicht** *(beobachtbar am Zähler ihres
   Verzeichnisses)*: Dann ist die Verengung oben aufgebraucht, und die Frage gehört als allgemeine
@@ -427,19 +491,21 @@ liegt.**
 [ADR-0046](0046-welle-datei-entsteht-mit-der-eroeffnung.md) §Der Acceptance-Trigger nach derselben
 Beobachtung für sich gesetzt hat. Ein blockierender Befund an der **Darstellung** — Adressform,
 Zahl ohne Kommando, Zitat-Stelle — wird behoben und hindert die Annahme nicht. Dasselbe gilt für
-einen Befund an den **Abschnitten, die mit dem Accept einfrieren, ohne eine Festlegung zu tragen**:
-§Kontext samt seinen Messungen, die Folgepflichten und Feststellungen in §Konsequenzen, die
-Wächter-Aussagen in §Fitness Function, die Re-Evaluierungs-Trigger und die Gegenpositionen in
-§Verglichene Alternativen. Auch er wird behoben, solange die Datei `Proposed` ist, und hindert die
-Annahme nicht — **solange die Behebung keine der beiden Festlegungen ändert**; ändert sie eine, ist
-es ein Substanz-Befund und blockiert.
+einen Befund an **jedem Abschnitt, der mit dem Accept einfriert, ohne eine Festlegung zu tragen**.
+Das ist die Kennzeichnung, und sie trägt; die Aufzählung darunter nennt den heutigen Bestand
+vollständig und ist keine Verengung: §Kontext samt seinen Messungen, §Verglichene Alternativen,
+§Was diese Entscheidung nicht tut, die Folgepflichten und Feststellungen in §Konsequenzen, die
+Wächter-Aussagen in §Fitness Function, die Re-Evaluierungs-Trigger, **dieser Trigger-Abschnitt
+selbst** und **§Geschichte**. Auch ein Befund dort wird behoben, solange die Datei `Proposed` ist,
+und hindert die Annahme nicht — **solange die Behebung keine der beiden Festlegungen ändert**;
+ändert sie eine, ist es ein Substanz-Befund und blockiert.
 
-**Was das dritte Fach ändert.** Ohne es fällt ein Befund an einer Messung in §Kontext oder an einem
-Re-Evaluierungs-Trigger in keines der zwei: Er liegt nicht an der Substanz der Festlegungen und
-nicht an ihrer Darstellung, und der Trigger sagt über ihn dann weder das eine noch das andere.
-**Der Preis steht daneben:** Wer den Trigger ändert, während eine Runde gegen seine frühere Fassung
-vorliegt, verschiebt deren Verdikt, statt es zu erfüllen — die Runde
-`2026-09-14-adr-0048-konsistenzrunde` hat gegen die Zwei-Fächer-Fassung verdiktiert und ihren
+**Was das dritte Fach ändert.** Ohne es fällt ein Befund an einer Messung in §Kontext, an einem
+Re-Evaluierungs-Trigger oder an einer Zeile der §Geschichte in keines der zwei: Er liegt nicht an
+der Substanz der Festlegungen und nicht an ihrer Darstellung, und der Trigger sagt über ihn dann
+weder das eine noch das andere. **Der Preis steht daneben:** Wer den Trigger ändert, während eine
+Runde gegen seine frühere Fassung vorliegt, verschiebt deren Verdikt, statt es zu erfüllen — die
+Runde `2026-09-14-adr-0048-konsistenzrunde` hat gegen die Zwei-Fächer-Fassung verdiktiert und ihren
 schärfsten Befund ausdrücklich aus eigener Kategorisierung als blockierend geführt, nicht aus dem
 Trigger-Wortlaut.
 [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 3 erlaubt die
@@ -458,6 +524,7 @@ nennt ihn als **Kennung**, nicht als Pfad-Link (ebenda, Festlegung 1).
 |---|---|---|
 | 2026-09-14 | **Proposed** | Architect-Lauf als Verdikt im Rollen-Konflikt nach Baseline `v6.8.0`, `modul-08-agentenrollen.md` §Konflikt-Pfad als Rollen-Sequenz. Anlass ist das HIGH mit Rollen-Widerspruch im Review-Report `2026-09-14-slice-flache-welle-ist-eroeffnet-nicht-geplant`. Gewähltes Verdikt: *Lockerung legitim, aber undokumentiert* — der Vorgang stützte sich auf eine Geltungsbereichs-Grenze, die sachlich trägt und die kein Dokument führte; diese Datei zieht sie nach, und der auslösende Slice schließt nicht vor ihrer Annahme. |
 | 2026-09-14 | **Überarbeitet, weiter `Proposed`** | Beleg ist die Runde `2026-09-14-adr-0048-konsistenzrunde`, die die Kern-These beider Festlegungen bestätigt und den Verzicht auf `Supersedes` ausdrücklich bejaht, dabei aber blockierend verdiktiert. Geschärft sind: der Geltungsbereich von Festlegung 1, jetzt auf den Welle-Plan verengt und mit einer Aufzählung dessen, was er nicht deckt; die Probe, jetzt mit einer vierten Bedingung, die den nachgezogenen Text an sein Original bindet; die Messung in §Kontext, jetzt mit Pathspec-Verengung auf Quellen statt auf den Gegenstand und mit benannter Grenze der Stellen-Messung; die Genealogie-Aussage, die die eigene Achse jetzt als dritte führt; Re-Evaluierungs-Trigger 1, der nicht mehr an einer Ordnungszahl hängt; und der Acceptance-Trigger um sein drittes Fach. |
+| 2026-09-14 | **Überarbeitet, weiter `Proposed`** | Beleg ist die Runde `2026-09-14-adr-0048-konsistenzrunde-2`, die alle Befunde der Vorrunde als behoben nachmisst und an einer Stelle blockierend verdiktiert: Festlegung 2 zählte **zwei** zitierte Quellen, wo der ausgelegte Satz **drei** nennt, und quantifizierte über alle von ihm genannten Artefakte. Festlegung 2 führt den Satz jetzt im vollen Wortlaut, ordnet jedem der drei Artefakte seine Quelle zu und hält fest, dass die dritte den Anweisungssatz zum Wellen-Schnitt trägt; §Was diese Entscheidung nicht tut nimmt ihn ebenso namentlich aus wie die Roadmap. Daneben geschärft: die Feststellung zu `docs/plan/planning/README.md` steht jetzt neben einer Messung, die diese Datei zum Gegenstand hat; die Genealogie liest [ADR-0024](0024-derivatives-register-gehoert-der-rolle-seines-originals.md) auf ihrer eigenen Achse; die zweite Hälfte des Übergabe-Artefakts — der Erinnerungs-Slice in `next/` — steht als Folgepflicht an den Planner; die Eröffnungs-Zahl von §Kontext nennt ihren Prüfbereich; das Kennungs-Muster trifft beide Formen nach [`MR-057`](../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer); Re-Evaluierungs-Trigger 4 benennt die gemeinten drei Kommandos; das dritte Fach führt §Geschichte und sich selbst; und der Register-Zähler beruft sich auf [`MR-051`](../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung) statt auf [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert). |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
