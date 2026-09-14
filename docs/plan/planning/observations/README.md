@@ -38,9 +38,25 @@ Freitext:
 
 | Ausgang | Wann | Wohin |
 |---|---|---|
-| **verkörpert** | die Regel steht | Zielort **und** Herkunfts-Anker (`seit welle-<Kennung>` bzw. `seit slice-<Kennung>`) |
+| **verkörpert** | die Regel steht — **auch dann, wenn sie nicht bewacht ist** | der **Zielort**, an dem sie steht, und daneben der Herkunfts-Anker (`seit welle-<Kennung>` bzw. `seit slice-<Kennung>`), wo die Regel aus dem Steering Loop entstand; folgt sie aus Lastenheft, Spezifikation, Baseline oder ADR, trägt der Zielort an dieser Stelle seine eigene Kennung |
 | **geplant** | die Regel ist beschlossen, aber noch nicht geschrieben | Kennung des Slice oder der Welle, die sie schreibt |
 | **gestrichen** | die Beobachtung kann nicht mehr auftreten | die Begründung, warum sie nicht mehr auftreten kann |
+
+**Der Zielort ist ein Norm-Artefakt — ein Lauf ist keiner.** Ist der Inhalt der Beobachtung eine
+**benannte Lücke** (*die Klasse ist benannt, kein Wächter fängt sie*), trägt sie `verkörpert`,
+sobald die Regel **und** die Aussage über ihre fehlende Bewachung an **einem** Zielort stehen; die
+fehlende Bewachung steht als Abschnitt *Grenze der Verkörperung, benannt* in `state.md`. Ein Satz
+der Form *„Träger ist der Lauf, der X schreibt"* nennt **keinen** Zielort: Er sagt, **wer** die
+Regel wirksam hält, und gehört in dieselbe Grenze. **Hat die Klasse keinen Zielort** — steht sie
+nirgends normiert —, trägt sie `geplant`: Der Lese-Schritt schneidet einen Träger und nennt seine
+Kennung. **Ein vierter Ausgang entsteht nicht**
+· seit slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke.
+
+**Der Lese-Schritt liest alle Einträge über der Schwelle, zu seinem Zeitpunkt** — nicht nur die
+seit dem letzten Lauf neu übergetretenen. `offen` über der Schwelle ist damit **zwischen zwei
+Lese-Schritten** zulässig und vorübergehend; danach ist es eine **Vollzugs-Lücke des Schritts**,
+kein Ausgang
+· seit slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke.
 
 Zugewiesen wird der Ausgang vom **Lese-Schritt**; zwischen dem Beleg, der den Zähler auf 3 hebt,
 und diesem Schritt trägt `state.md` noch `offen` — das ist zulässig und vorübergehend. Unterhalb
