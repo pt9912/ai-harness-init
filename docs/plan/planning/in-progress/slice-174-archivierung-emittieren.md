@@ -76,17 +76,16 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       ist `make full-smoke` und **nur** er, nicht `make gates`: das Unterkommando ist bewusst kein
       Gate, und kein Unit-Test des Repos fährt das Ziel. Derselbe Beleg-Typ, mit dem
       [ADR-0022](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) die
-      Erfassungsschicht im Ziel abgenommen hat. **Der Vorlauf ist reich, der E2E fehlt** — gemessen,
-      keine Erwartungswerte
+      Erfassungsschicht im Ziel abgenommen hat. **Der Vorlauf war reich, der E2E fehlte** — das war
+      der Anlass dieses Slice, und der Stand ist seither gezogen; keine Erwartungswerte
       ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
       Setzung 2):
 
       ```sh
       ls internal/archive/*_test.go | wc -l                                   #  7 Go-Testdateien
       ls test/archiv-stub-vorlagen.bats test/unterkommando-kopplung.bats | wc -l  #  2 bats
-      grep -l 'archive' test/mutations/*.sh | wc -l                           # 30 kuratierte Faelle
-      grep -n 'archive' harness/tools/full-smoke.sh harness/tools/smoke.sh harness/tools/start-smoke.sh
-      # keine Ausgabe, Exit 1 — kein E2E nennt das Unterkommando
+      grep -l 'archive' test/mutations/*.sh | wc -l                           # 33 kuratierte Faelle
+      grep -c 'archive' harness/tools/full-smoke.sh                           # 21 — der E2E nennt das Unterkommando
       ```
 - [ ] **Der emittierte `close-welle.md` zeigt auf den Träger**, und der ehrliche Ausgang für ein
       Repo ohne das Werkzeug bleibt **daneben** stehen. Die repo-spezifische Stelle bleibt ein
