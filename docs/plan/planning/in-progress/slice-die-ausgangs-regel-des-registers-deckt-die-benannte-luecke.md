@@ -12,7 +12,7 @@ Setzung 1 — ein freier Slug in lowercase-Kebab-Case.
 **Welle:** ohne Welle. Der Abschluss-Gegenstand ist die DoD unten — **eine** Regel an **einem**
 Ort plus ihr ADR. Es gibt kein *Mehr*, das eine Welle beobachtete: Was die Menge der
 Register-Einträge angeht, so ist sie kein Wellen-Trigger, sondern der Prüfgegenstand des
-Folge-Slice ([`slice-register-ueber-der-schwelle-bekommt-seinen-waechter`](slice-register-ueber-der-schwelle-bekommt-seinen-waechter.md)),
+Folge-Slice ([`slice-register-ueber-der-schwelle-bekommt-seinen-waechter`](../next/slice-register-ueber-der-schwelle-bekommt-seinen-waechter.md)),
 dessen Sensor sie mechanisch hält (Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle
 braucht). Nach
 [`MR-037`](../../../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst)
@@ -146,7 +146,7 @@ done
 
 - **Kein Sensor und keine Gate-Änderung.** Ein Wächter, der *„über der Schwelle ohne Ausgang"* rot
   färbt, ist der Liefergegenstand von
-  [`slice-register-ueber-der-schwelle-bekommt-seinen-waechter`](slice-register-ueber-der-schwelle-bekommt-seinen-waechter.md)
+  [`slice-register-ueber-der-schwelle-bekommt-seinen-waechter`](../next/slice-register-ueber-der-schwelle-bekommt-seinen-waechter.md)
   und hängt an der Regel, die hier erst entsteht. Rollen-Trennung nach Baseline-Regelwerk
   `modul-08-agentenrollen.md` §Rollen-Regeln: wer die Norm entscheidet, baut ihren Wächter nicht im
   selben Kontext. *Es wäre ein anderer Vorgang.*
