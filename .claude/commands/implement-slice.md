@@ -96,8 +96,17 @@ ist eine Lifecycle-Rücksprungkante (11).
 17. Doku, ADR-Index und README aktualisieren, falls ein öffentlicher Vertrag berührt ist.
 18. Die Pre-completion-Checkliste laufen: die DoD Punkt für Punkt **behaupten** und die
     **Sensor-Belege** anhängen — `make gates` **und die Nicht-Gate-Sensoren, die den Slice
-    betreffen** (`make mutate` immer, wenn Wächter neu/geändert sind; `make smoke`, wenn der
-    Emit-Pfad berührt ist). Modul 11 verlangt genau hier den Lauf: *„der Implementation-Agent
+    betreffen**: einen neuen oder geänderten Wächter belegt die Runde **einzeln** — die Mutation
+    von Hand fahren, den benannten Test fallen sehen, die Ausgabe lesen; `make smoke`, wenn der
+    Emit-Pfad berührt ist. Den **repo-weiten** Satz fährt `.github/workflows/mutate.yml`
+    (nächtlich und auf Abruf); `make mutate` bleibt der Sensor dieser Stufe (`AGENTS.md` §3.6).
+    Seine Stufe ist **Post-integration**: `v6.8.0` ·
+    `.harness/baseline/v6.8.0/regelwerk/grundlagen-klassifikation.md` §Klassifikation und
+    Steering Loop › Lifecycle-Verteilung — *„nach Merge : Mutation Tests"* · *„teurer, aber
+    tolerierbar"*. Im Push-Pfad kostete der Job `mutate` 49m54s von 49m58s des Laufs
+    `34867767556` (2026-09-14):
+    `gh run view 34867767556 --json jobs --jq '.jobs[] | [.name, .startedAt, .completedAt] | @tsv'`.
+    Modul 11 verlangt genau hier den Lauf: *„der Implementation-Agent
     läuft `make verify-*` **selbst** vor der ‚fertig'-Meldung"* — ein Sensor, der erst zur
     Wellen-Closure feuert, ist pro Slice keiner. **Ein nicht gelaufener Sensor ist ein
     Befund, kein Formfehler:** ihn wegzulassen ist eine Aussage („betrifft diesen Slice
@@ -111,10 +120,10 @@ ist eine Lifecycle-Rücksprungkante (11).
     (`AGENTS.md` §3.6). Ein grüner Gate-Lauf belegt nur, dass nichts *bricht* — nicht, dass
     der Wächter greift. Pro Zusage also: *welche Änderung am geprüften Code müsste diesen
     Test rot machen, und wurde sie einmal gesehen?* Wo die Antwort dauerhaft interessant
-    ist, gehört sie als Fall nach `test/mutations/` (dann fährt `make mutate` sie künftig
-    automatisch); wo sie einmalig ist, in den Bericht. **Keine Antwort ist ein Befund**, kein
-    Formfehler — die Klasse „Zusage greift weiter als Abdeckung" hat vier Rollen-Durchgänge
-    gekostet, bevor sie hier landete.
+    ist, gehört sie als Fall nach `test/mutations/` (den fährt der repo-weite Satz aus
+    `.github/workflows/mutate.yml` mit); wo sie einmalig ist, in den Bericht. **Keine Antwort
+    ist ein Befund**, kein Formfehler — die Klasse „Zusage greift weiter als Abdeckung" hat vier
+    Rollen-Durchgänge gekostet, bevor sie hier landete.
 20. **Jeden in diesem Lauf neu geschriebenen oder geänderten Kommentar gegen `AGENTS.md` §3.7
     prüfen** (Code, Konfiguration, Skripte — inklusive `.github/workflows/*.yml`, `Makefile`,
     Skript-Köpfe). Die Probe: beschreibt der Satz den **Ist-Zustand** (indikativ, auflösbar), oder
