@@ -1,6 +1,6 @@
 # ADR-0048: Eigentum am Welle-Plan hängt am Vorgang, der ihn ändert, nicht an der Datei
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-14
 
@@ -19,8 +19,9 @@ stabil. Diese Entscheidung hängt Eigentum an den **Vorgang, der das Artefakt ä
 andere Achse und wird unten als solche benannt, nicht als dieselbe ausgegeben. Festlegung 1
 derselben Datei ist zugleich die dritte Quelle des Satzes, den Festlegung 2 unten auslegt),
 [ADR-0024](0024-derivatives-register-gehoert-der-rolle-seines-originals.md) (dieselbe Familie: die
-Ableitung aus dem **Original**, das eine Aussage wiedergibt — und dieselbe Disziplin, die Ableitung
-dort enden zu lassen, wo ein Artefakt eine bindende Aussage ohne Original trägt),
+Ableitung aus dem **Original** — eine derivative Aussage gibt ihr Original wieder, und die
+schreibende Rolle folgt dem Original —, und dieselbe Disziplin, die Ableitung dort enden zu lassen,
+wo ein Artefakt eine bindende Aussage ohne Original trägt),
 [ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md) (ihre Option F nennt den
 Welle-Plan *„fremdes Eigentum (Planner)"* und beruft sich dafür auf
 [ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) — §Kontext hält fest, warum das keine
@@ -362,14 +363,27 @@ Eine ADR ohne Alternativen ist ein Postulat, kein Entscheidungsprotokoll (Baseli
   und ab hier ist für den Welle-Plan entscheidbar, wann eine zuweist.
 - **Positiv:** Die Eigentums-Familie bekommt eine **dritte** Achse, und sie steht als solche da.
   [ADR-0024](0024-derivatives-register-gehoert-der-rolle-seines-originals.md) leitet aus dem
-  **Original** ab, das eine Aussage wiedergibt — *„Derivativ ist eine Eigenschaft der Aussage,
-  nicht der Datei"* —, und lässt die Zuordnung dort enden, wo ein Artefakt eine bindende Aussage
-  **ohne** Original trägt. [ADR-0028](0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) hängt
-  sie an den **Ablauf, den ein Artefakt beschreibt**, und bleibt darin über seine Änderungen
-  stabil. Diese Entscheidung hängt sie an den **Vorgang, der das Artefakt ändert**; die Zuordnung
-  wechselt damit je Änderung. Drei Achsen, keine davon die andere — und diese ist neu und gehört
-  benannt statt in eine Reihe gestellt: Ein Welle-Plan beschreibt keinen Rollen-Ablauf und
-  projiziert keine Originale, er plant eine Welle.
+  **Original** ab — eine derivative Aussage gibt ihr Original wieder (*„Derivativ ist eine
+  Eigenschaft der Aussage, nicht der Datei"*), und die schreibende Rolle folgt dem Original; wo ein
+  Artefakt eine bindende Aussage **ohne** Original trägt, endet die Ableitung.
+  [ADR-0028](0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) hängt sie an den **Ablauf, den
+  ein Artefakt beschreibt**, und bleibt darin über seine Änderungen stabil. Diese Entscheidung
+  hängt sie an den **Vorgang, der das Artefakt ändert**; die Zuordnung wechselt damit je Änderung.
+  Drei Achsen, keine davon die andere.
+- **Positiv — und dies ist die Begründung dafür, dass die dritte gebraucht wird:** Die zwei
+  vorhandenen liefern für den strittigen Text keine Antwort, und zwar geprüft auf **ihrer eigenen
+  Ebene** statt an der Art der Datei. Die `Lifecycle:`-Kopfnote **ist** eine Aussage mit Original,
+  die Achse von [ADR-0024](0024-derivatives-register-gehoert-der-rolle-seines-originals.md) also
+  anwendbar; sie liefert nur nichts Eindeutiges, weil die Originale **auseinanderfallen**: die
+  vendored Ziel-Form, für die dieses Repo überhaupt keine schreibende Rolle führt — sie ist ein
+  committet vendored Fremd-Blob ([`AGENTS.md`](../../../AGENTS.md) §3.7) —, und
+  [ADR-0046](0046-welle-datei-entsteht-mit-der-eroeffnung.md) Festlegung 1, die der Architect
+  schreibt. Den benachbarten Fall, in dem die Originale **verschiedene** schreibende Rollen haben,
+  lässt [ADR-0024](0024-derivatives-register-gehoert-der-rolle-seines-originals.md) Festlegung 2
+  ausdrücklich offen. Der Welle-Plan trägt darüber hinaus bindende Aussagen über **seine** Welle,
+  die kein Original haben — der Punkt, an dem dieselbe Festlegung 1 ihre Ableitung enden lässt. Und
+  die Achse von [ADR-0028](0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) greift nicht,
+  weil ein Welle-Plan keinen Rollen-**Ablauf** beschreibt, sondern eine Welle plant.
 - **Negativ:** Die Probe hat vier Bedingungen und ist ein Urteil. Wer sie falsch bejaht, hat eine
   Planungs-Entscheidung im Implementations-Kontext getroffen, und kein Gate meldet es
   (§Fitness Function).
@@ -492,9 +506,11 @@ liegt.**
 Beobachtung für sich gesetzt hat. Ein blockierender Befund an der **Darstellung** — Adressform,
 Zahl ohne Kommando, Zitat-Stelle — wird behoben und hindert die Annahme nicht. Dasselbe gilt für
 einen Befund an **jedem Abschnitt, der mit dem Accept einfriert, ohne eine Festlegung zu tragen**.
-Das ist die Kennzeichnung, und sie trägt; die Aufzählung darunter nennt den heutigen Bestand
-vollständig und ist keine Verengung: §Kontext samt seinen Messungen, §Verglichene Alternativen,
-§Was diese Entscheidung nicht tut, die Folgepflichten und Feststellungen in §Konsequenzen, die
+Das ist die Kennzeichnung, und **sie** trägt; die Aufzählung darunter zählt auf, wo bisher Befunde
+lagen, und ist keine Verengung — bei Zweifel geht die Kennzeichnung vor, nicht die Liste: die
+Kopffelder `Bezug:`, `Schärft:` und `Regeln:`, §Kontext samt seinen Messungen, §Verglichene
+Alternativen, §Was diese Entscheidung nicht tut, §Konsequenzen mit **allen** seinen Punkten — den
+`Positiv:`- und `Negativ:`-Punkten, den Feststellungen und den Folgepflichten —, die
 Wächter-Aussagen in §Fitness Function, die Re-Evaluierungs-Trigger, **dieser Trigger-Abschnitt
 selbst** und **§Geschichte**. Auch ein Befund dort wird behoben, solange die Datei `Proposed` ist,
 und hindert die Annahme nicht — **solange die Behebung keine der beiden Festlegungen ändert**;
@@ -525,6 +541,7 @@ nennt ihn als **Kennung**, nicht als Pfad-Link (ebenda, Festlegung 1).
 | 2026-09-14 | **Proposed** | Architect-Lauf als Verdikt im Rollen-Konflikt nach Baseline `v6.8.0`, `modul-08-agentenrollen.md` §Konflikt-Pfad als Rollen-Sequenz. Anlass ist das HIGH mit Rollen-Widerspruch im Review-Report `2026-09-14-slice-flache-welle-ist-eroeffnet-nicht-geplant`. Gewähltes Verdikt: *Lockerung legitim, aber undokumentiert* — der Vorgang stützte sich auf eine Geltungsbereichs-Grenze, die sachlich trägt und die kein Dokument führte; diese Datei zieht sie nach, und der auslösende Slice schließt nicht vor ihrer Annahme. |
 | 2026-09-14 | **Überarbeitet, weiter `Proposed`** | Beleg ist die Runde `2026-09-14-adr-0048-konsistenzrunde`, die die Kern-These beider Festlegungen bestätigt und den Verzicht auf `Supersedes` ausdrücklich bejaht, dabei aber blockierend verdiktiert. Geschärft sind: der Geltungsbereich von Festlegung 1, jetzt auf den Welle-Plan verengt und mit einer Aufzählung dessen, was er nicht deckt; die Probe, jetzt mit einer vierten Bedingung, die den nachgezogenen Text an sein Original bindet; die Messung in §Kontext, jetzt mit Pathspec-Verengung auf Quellen statt auf den Gegenstand und mit benannter Grenze der Stellen-Messung; die Genealogie-Aussage, die die eigene Achse jetzt als dritte führt; Re-Evaluierungs-Trigger 1, der nicht mehr an einer Ordnungszahl hängt; und der Acceptance-Trigger um sein drittes Fach. |
 | 2026-09-14 | **Überarbeitet, weiter `Proposed`** | Beleg ist die Runde `2026-09-14-adr-0048-konsistenzrunde-2`, die alle Befunde der Vorrunde als behoben nachmisst und an einer Stelle blockierend verdiktiert: Festlegung 2 zählte **zwei** zitierte Quellen, wo der ausgelegte Satz **drei** nennt, und quantifizierte über alle von ihm genannten Artefakte. Festlegung 2 führt den Satz jetzt im vollen Wortlaut, ordnet jedem der drei Artefakte seine Quelle zu und hält fest, dass die dritte den Anweisungssatz zum Wellen-Schnitt trägt; §Was diese Entscheidung nicht tut nimmt ihn ebenso namentlich aus wie die Roadmap. Daneben geschärft: die Feststellung zu `docs/plan/planning/README.md` steht jetzt neben einer Messung, die diese Datei zum Gegenstand hat; die Genealogie liest [ADR-0024](0024-derivatives-register-gehoert-der-rolle-seines-originals.md) auf ihrer eigenen Achse; die zweite Hälfte des Übergabe-Artefakts — der Erinnerungs-Slice in `next/` — steht als Folgepflicht an den Planner; die Eröffnungs-Zahl von §Kontext nennt ihren Prüfbereich; das Kennungs-Muster trifft beide Formen nach [`MR-057`](../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer); Re-Evaluierungs-Trigger 4 benennt die gemeinten drei Kommandos; das dritte Fach führt §Geschichte und sich selbst; und der Register-Zähler beruft sich auf [`MR-051`](../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung) statt auf [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert). |
+| 2026-09-14 | **Accepted** | Beleg ist die Runde `2026-09-14-adr-0048-konsistenzrunde-3`: Sie verdiktiert **nicht blockierend** — kein Befund an der Substanz der beiden Festlegungen, alles Übrige im dritten Fach —, und sie misst gegen denselben Maßstab wie die Vorrunde, weil die Grenze zwischen blockierend und nicht blockierend seitdem wörtlich unverändert steht. Ihre drei Befunde sind vor diesem Umschlag eingearbeitet: Der Satz, ein Welle-Plan projiziere keine Originale, ist durch die Prüfung auf der Aussagen-Ebene ersetzt — die Kopfnote **hat** Originale, sie fallen nur auseinander, und die Datei sagt jetzt, welche Antwort die ältere Achse für diesen Text liefert; die Richtung der Ableitung aus [ADR-0024](0024-derivatives-register-gehoert-der-rolle-seines-originals.md) ist in `Bezug:` und §Konsequenzen eindeutig gefasst; und das dritte Fach gibt seine Vollständigkeits-Zusage über die eigene Aufzählung auf, zugunsten des Vorrangs der Kennzeichnung. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes ADR-0048`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
