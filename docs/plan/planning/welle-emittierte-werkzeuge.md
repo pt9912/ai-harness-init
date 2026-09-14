@@ -116,6 +116,9 @@ einzelnen Slice-DoDs benennen; kann er das nicht, liegt keine Welle vor.
   (geschärfte Regel · neuer Sensor · benannte Spec-Lücke, Modul 5).
 - Der **Lese-Schritt** über das Beobachtungs-Register ist gefahren: was 3× erreicht hat, hat seinen
   Ausgang.
+- **Die zwei in §6 benannten Lücken stehen in der Ergebnis-Notiz.** Sie bleibt vollständig und
+  flach, während die Zeitdokumente dieser Welle ins Archiv wandern — ohne diesen Schritt verschwände
+  ein benannter Posten mit dem Archiv.
 
 ## 4. Slices in dieser Welle
 
@@ -228,6 +231,26 @@ Anweisungssatz gegen die emittierte Vorlage — sie sind zwei getrennte Artefakt
 das andere als Quelle. Ein Wächter darüber ist ein **eigener Vorgang** (ein Sensor über zwei
 Textartefakte, nicht ein Werkzeug im Ziel) und gehört dem, der die Sensor-Landschaft schneidet; er
 wird hier ausdrücklich **nicht** mitgeschnitten.
+
+**Die zwei `close-welle.md` weichen in Schritt 2 auseinander — benannter Posten, ohne Kennung.**
+Gemessen über die zwei Fassungen desselben Ablaufs:
+
+| Schritt 2 | [`.claude/commands/close-welle.md`](../../../.claude/commands/close-welle.md) | [`internal/emit/templates/commands/close-welle.md`](../../../internal/emit/templates/commands/close-welle.md) |
+|---|---|---|
+| Gegenstand | **Carveout-Audit** — eine Klasse | **Trigger-Audit der Welle** — drei Klassen |
+| genannte Module | 5, 6, 7 | 4, 5, 6, 7, 13 |
+
+Die lokale Fassung lässt **zwei der drei Trigger-Klassen weg**, die Modul 6 verlangt (*„Drei
+Artefaktklassen tragen einen Trigger, alle drei werden geprüft"*) — namentlich den
+Reifestufen-Zweig und den Entscheidungs-Zweig. Das ist **kein** Posten dieser Welle: die Welle
+fährt Werkzeuge im Ziel; dieser Befund ist eine **Drift zwischen zwei Textartefakten** und eine
+Unvollständigkeit gegen das Regelwerk. Er liegt auf derselben Fläche wie die zwei Slices darüber,
+und **keiner von beiden trägt den Schritt**: [slice-153](open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md)
+zieht die Roadmap-Abschnittsnamen nach, [slice-226](open/slice-226-implementer-anweisungssatz-zieht-nach.md)
+die Plan-vor-Code-Blöcke. Eine **Kennung fehlt** — der Posten ist heute an keiner Datei; die Welle
+schneidet dafür keinen vierten Slice, weil ein Nachzug über zwei Ebenen desselben Ablaufs ein
+**eigener Vorgang** ist. Er wird hier benannt und geht über §3 in die Ergebnis-Notiz, damit er nicht
+mit dem Wellen-Archiv verschwindet.
 
 ## 7. Closure-Notiz
 
