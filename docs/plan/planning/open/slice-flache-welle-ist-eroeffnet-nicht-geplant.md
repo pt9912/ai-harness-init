@@ -31,7 +31,7 @@ Arbeitsweise, die diese vier Stellen noch anders lehren),
 **Berührte Spec-Stellen:** — (der Slice berührt keine Spec-Stelle; Gegenstand sind vier
 Planungs-Artefakte).
 
-**Verantwortlich:** — (bis zur Priorisierung).
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-14.
 
