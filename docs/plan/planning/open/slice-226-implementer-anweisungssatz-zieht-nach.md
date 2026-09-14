@@ -42,7 +42,7 @@ Sprungs ist `v6.7.2`),
 **Berührte Spec-Stellen:** — (der Slice berührt keine Spec-Stelle; Gegenstand ist ein
 Rollen-Anweisungssatz).
 
-**Verantwortlich:** — (bis zur Priorisierung).
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-13.
 

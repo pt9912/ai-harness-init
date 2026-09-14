@@ -28,8 +28,7 @@ Hook- und Nachweis-Mechanik dieses Repos — sie entscheidet, wo ein Vor-Commit-
 **Berührte Spec-Stellen:** `—`. Der Slice verschiebt den Träger einer bestehenden Zusage; er
 schreibt keine neue Anforderung und keine technische Festlegung.
 
-**Verantwortlich:** `—` bis zur Priorisierung (Baseline-Regelwerk
-`modul-05-planning-harness.md` §Lifecycle als State Machine).
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-12.
 
