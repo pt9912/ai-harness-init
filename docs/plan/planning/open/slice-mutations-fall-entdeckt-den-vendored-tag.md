@@ -41,7 +41,16 @@ und seine Fall-Dateien. Die Erwähnung von `make mutate` in
 [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 gilt der
 Wächter-Spalte der Span-Tabelle und wird hier nicht angefasst.)
 
-**Verantwortlich:** — (bis zur Priorisierung).
+**Verantwortlich:** Implementer (pt9912). Jeder Liefergegenstand aus §3 ist Code, Test oder der
+Vertragstext des Sensors, der beides fährt — kein Norm-Artefakt: Weder eine Hard Rule noch der
+Adaptions-Block noch eine ADR wird berührt, die [`AGENTS.md`](../../../../AGENTS.md) §3.8 dem
+Architect vorbehält. Der Anweisungssatz-Fall aus
+[`ADR-0028`](../../../../docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
+greift ebenfalls nicht: `harness/sensors/mutate.md` ist ein Sensor-Vertrag, kein
+Rollen-Anweisungssatz. Trifft der Lauf auf die Rückführung aus §4 — die Bezugsmenge des
+Beleg-Schlüssels aus
+[`ADR-0035`](../../../../docs/plan/adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
+verschöbe sich —, ist das die Übergabe an den Architect und nicht eine Entscheidung dieses Laufs.
 
 **Autor:** Planner. **Datum:** 2026-09-14.
 
