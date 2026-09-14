@@ -15,7 +15,7 @@ Setzung 1 — ein freier Slug in lowercase-Kebab-Case.
 steht wellenlose Arbeit nicht in der Roadmap.
 
 **Herkunft:** Übergabe aus
-[slice-mutations-fall-entdeckt-den-vendored-tag](../in-progress/slice-mutations-fall-entdeckt-den-vendored-tag.md)
+[slice-mutations-fall-entdeckt-den-vendored-tag](../done/slice-mutations-fall-entdeckt-den-vendored-tag.md)
 §1, Out-of-Scope Punkt 1 — dort ausdrücklich als Adresse benannt, die die Sendung annimmt.
 
 **Bezug:**
@@ -73,7 +73,7 @@ nicht getan.
 
 - **Der Tag wird nicht entdeckt, sondern neu genannt.** Die Gegenrichtung — eine tag-freie
   Adresse, wie sie
-  [slice-mutations-fall-entdeckt-den-vendored-tag](../in-progress/slice-mutations-fall-entdeckt-den-vendored-tag.md)
+  [slice-mutations-fall-entdeckt-den-vendored-tag](../done/slice-mutations-fall-entdeckt-den-vendored-tag.md)
   für die Mutations-Fälle durchgesetzt hat — wäre hier der Fehler:
   [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
   verlangt den Tag, wo er eine **Messung** datiert. Was fehlt, ist der Lauf, nicht die Adressform.
