@@ -115,6 +115,7 @@ targets:
     - doc-commits
     - record-gates
     - commit-msg-check
+    - hooks-install
     - help
     - test-bats
     - test-go
@@ -376,6 +377,11 @@ vcs:
 # nur mit LEERER oder GANZ WEGGELASSENER id-patterns-Liste und mit
 # --commit-msg statt --range. `doc-commits` bleibt darum ungenutzt advisory
 # stehen (Beleg und Traeger-Entscheidung in harness/README.md).
+# KOPPLUNG: dieselbe Kennungs-Menge fuehrt der git-eigene Hook .githooks/commit-msg
+# als bash-Fassung im Commit-Pfad (harness/tools/commit-msg-traceability.sh) — er
+# darf nichts voraussetzen, was der Host nicht hat (LH-QA-03), also kein Docker und
+# kein d-check. Die zwei Fassungen haelt test/commit-msg-hook.bats gegen diese Liste;
+# die Reichweiten beider Traeger stehen in harness/README.md §Traceability.
 commits:
   id-patterns:
     - 'ADR-\d{4}'

@@ -78,6 +78,7 @@ ist (`make help` listet sie).
 | [`make archive-welle`](sensors/archive-welle.md) | archiviert die Zeitdokumente einer geschlossenen Welle | kein Gate · [`ADR-0033`](../docs/plan/adr/0033-wellen-archivierung-als-unterkommando.md) |
 | [`make vendor-baseline`](sensors/vendor-baseline.md) | legt den eigenen vendored Baum aus dem Release-Asset an | kein Gate · [`MR-007`](conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
 | [`make commit-msg-check`](sensors/commit-msg-check.md) | prüft eine Commit-Message-Datei gegen Traceability-Kennung | kein Gate — Träger ist der PreToolUse-Hook |
+| `make hooks-install` | aktiviert den git-eigenen `commit-msg`-Träger in diesem Klon (`core.hooksPath .githooks`) | kein Gate · [`AGENTS.md`](../AGENTS.md) §5 |
 | [`make history-range-guard`](sensors/history-range-guard.md) | Vorlauf-Wächter: angeforderte Range auflösbar **und** nicht leer | kein Gate |
 | [`make adr-immutable`](sensors/adr-immutable.md) | hält den Kern einer `Accepted`-ADR über einer Range unverändert | kein Gate · [`AGENTS.md`](../AGENTS.md) §3.4 |
 | [`make doc-tracked`](sensors/doc-tracked.md) | sagt, ob ein verlinktes Ziel im git-Index steht | kein Gate |
@@ -90,6 +91,60 @@ ist (`make help` listet sie).
 
 - PRs/Commits nennen mindestens eine `LH-*`- oder `ADR-*`-ID (als Link oder Inline-Code).
 - Neue ADRs ergänzen den ADR-Index.
+
+**Die Regel hat zwei Träger, und ihre Reichweiten sind verschieden.** Beide sind versioniert und
+greifen an zwei Stellen desselben Commit-Pfads; welcher Träger welche Commit-Klasse erreicht, steht
+darum hier und in keinem der beiden allein. Die rechte Spalte gilt für einen Klon, auf dem
+`make hooks-install` gelaufen ist — die beiden letzten Zeilen trennen genau die Fälle heraus, in
+denen das nicht genügt:
+
+| Commit-Klasse | [`pretooluse-commit-msg-guard.sh`](../.claude/hooks/pretooluse-commit-msg-guard.sh) | [`.githooks/commit-msg`](../.githooks/commit-msg) |
+|---|---|---|
+| `git commit … -F <datei>`, vom Agenten getippt | erreicht | erreicht |
+| `git commit … -m …`, vom Agenten getippt | nicht erreicht — der Matcher verlangt eine `-F`/`--file`-Form | erreicht |
+| Commit aus einem Repo-Werkzeug (`make slice-mv`, `archive-welle` committen intern) | strukturell nicht erreicht — der Kanal sieht `make slice-mv …` | erreicht |
+| Commit außerhalb eines Claude-Code-Laufs (Mensch am Terminal) | nicht erreicht — er hängt am Tool-Call-Kanal des Agenten | erreicht |
+| Commit auf einem Klon, der `make hooks-install` nie gefahren hat | erreicht die `-F`-Form (er reist mit dem Klon) | nicht erreicht — `core.hooksPath` ist lokale Konfiguration |
+| `git commit --no-verify` | erreicht — er sieht die Kommandozeile | umgangen — git ruft einen Hook mit `--no-verify` nicht auf |
+
+**Wie der Träger auf einen frischen Klon kommt.** [`.githooks/commit-msg`](../.githooks/commit-msg)
+reist als versionierte Datei mit dem Klon; ihre **Aktivierung** tut das nicht — `core.hooksPath`
+ist lokale Konfiguration. `make hooks-install` setzt sie und ist der einzige Schritt dazwischen;
+seine Host-Abhängigkeit ist `git` ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
+Ein Bootstrap-Schritt, der das von selbst täte, existiert nicht — die Zeile darüber nennt die
+Klasse, die das kostet.
+
+**Beide prüfen die Anwesenheit einer Kennung, nicht ihre Wahrheit** — dieselbe Grenze wie bei
+`make commit-msg-check`; ein Hash oder eine Kennung, die nicht auflöst, geht durch.
+
+**Was der `commit-msg`-Hook im Commit-Pfad tut** — reproduzierbar auf einem Klon mit gesetztem
+`core.hooksPath` (`make hooks-install`). `--allow-empty` hält den Versuch ohne Baum-Änderung: der
+erste Aufruf erzeugt gar keinen Commit, die übrigen einen leeren:
+
+```sh
+git commit --allow-empty -m 'Betreff ohne Kennung'
+# commit-msg-traceability: keine Traceability-Kennung in der Commit-Message (AGENTS.md §5):
+#             Betreff ohne Kennung
+# -> Exit 1, es entsteht kein Commit
+git commit --allow-empty -m 'Bezug: ADR-0004'
+# -> Exit 0
+git commit --allow-empty -m 'Merge branch main into feature'
+# -> Exit 0 — der Merge-/Revert-Betreff, den auch das Gate kennungsfrei lässt
+git commit --allow-empty --no-verify -m 'Betreff ohne Kennung'
+# -> Exit 0 — die Umgehung, die git selbst anbietet
+```
+
+Die hermetische Hälfte derselben Zähne —
+[`test/commit-msg-hook.bats`](../test/commit-msg-hook.bats) im gepinnten bats-Image — fährt den
+Aufruf über den Hook, ohne `git`; die Kopplung an die Liste der Gate-Config steht dort als eigene
+Gruppe.
+
+**Die Konventions-Abhängigkeit entfällt für eine Hälfte.** Der PreToolUse-Zusatz greift nur bei der
+Aufrufform *„Commit via Message-Datei"* (`-F`/`--file`), die nicht jeder Rollen-Anweisungssatz
+nennt — für ihn läuft diese Lücke weiter
+(`waechter-abdeckung-haengt-an-uninstruierter-konvention` im Beobachtungs-Register,
+`docs/plan/planning/observations/`). Der `commit-msg`-Hook braucht die Form nicht: er liest eine
+Message-Datei, die git ihm übergibt, gleichgültig welcher Aufruf sie erzeugt hat.
 
 ## Safety and scope boundaries
 

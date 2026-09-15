@@ -11,7 +11,7 @@ wird **nur die Anwesenheit** einer Kennung aus `commits.id-patterns` (`ADR-\d{4}
 `LH-[A-Z]{2}-\d{2}`, `MR-\d{3}`, `slice-\d+`) — **nicht ihre Wahrheit**: eine Message, die
 zusätzlich einen nicht auflösbaren Hash nennt, geht mit derselben Kennung ebenso durch.
 
-Der **Träger** ist ausschließlich der PreToolUse-Zusatz-Hook
+Der **Träger** dieses Ziels ist der PreToolUse-Zusatz-Hook
 [`.claude/hooks/pretooluse-commit-msg-guard.sh`](../../.claude/hooks/pretooluse-commit-msg-guard.sh),
 zweiter Eintrag im `"Bash"`-Matcher neben `pretooluse-command-guard.sh`
 ([`.claude/settings.json`](../../.claude/settings.json)): er erkennt einen `git commit`-Aufruf,
@@ -21,6 +21,16 @@ doppelten Anführungszeichen, sowie mit `-F` als letztem Zeichen eines kombinier
 Ausführung nach `make commit-msg-check MSG=<datei>`; er blockt bei Exit ≠ 0 — der Commit steht
 dann nicht. Die Prüf-Instanz ist über `PRETOOLUSE_COMMIT_MSG_CHECKER` austauschbar (Default: der
 `make`-Aufruf oben) — einziger Grund ist Testbarkeit.
+
+**Der zweite Träger derselben Regel** ist der git-eigene Hook
+[`.githooks/commit-msg`](../../.githooks/commit-msg) — aktiviert per `make hooks-install`
+(`git config core.hooksPath .githooks`). Er läuft **am Commit** statt am Agenten, setzt darum
+kein Docker voraus (das Skript
+[`harness/tools/commit-msg-traceability.sh`](../../harness/tools/commit-msg-traceability.sh) ist
+bash + coreutils) und führt dieselbe Kennungs-Menge als eigene bash-Fassung — die zwei Fassungen
+hält [`test/commit-msg-hook.bats`](../../test/commit-msg-hook.bats) gegen die Liste aus
+`.d-check.yml`. Welche Commit-Klasse welcher der beiden erreicht, steht in
+[`harness/README.md`](../README.md) §Traceability; dieses Ziel beschreibt nur den `make`-Weg.
 
 ## Grenze — was das Grün nicht abdeckt
 
@@ -38,8 +48,9 @@ dann nicht. Die Prüf-Instanz ist über `PRETOOLUSE_COMMIT_MSG_CHECKER` austausc
   anderen Skripts oder Binaries läuft (etwa `harness/tools/slice-mv.sh`, aufgerufen über
   `make slice-mv`), erscheint dem Hook als `make slice-mv …` und wird nie geprüft, unabhängig von
   Flag-Form oder Kennung — ebenso `archive-welle`/`vendor-baseline`, die aus dem Go-Binär heraus
-  committen. Ob dieser Rest über einen `git`-eigenen `commit-msg`-Hook geschlossen wird (ein
-  anderer Träger, mit eigener Bootstrap-Entscheidung), ist hier **nicht** entschieden.
+  committen. Dieselbe Grenze trifft den `-m`-Aufruf (der Matcher verlangt eine `-F`-Form) und einen
+  Commit außerhalb eines Claude-Code-Laufs. Diese Klassen deckt der zweite Träger, der git-eigene
+  Hook; wo er selbst nicht greift, steht in [`harness/README.md`](../README.md) §Traceability.
 - **Der Prüfbereich trägt seinen Cutoff, und er ist rein prospektiv.** Der PreToolUse-Hook prüft
   strukturell nur den **werdenden** Commit, nie die Historie — der Cutoff **ist** „ab dem ersten
   Aufruf dieses Hooks", nicht ein Datum in der Konfiguration. Ein Maßstab über die ganze Historie
@@ -66,5 +77,8 @@ dann nicht. Die Prüf-Instanz ist über `PRETOOLUSE_COMMIT_MSG_CHECKER` austausc
 
 ## Bindung
 
-Träger: [`.claude/hooks/pretooluse-commit-msg-guard.sh`](../../.claude/hooks/pretooluse-commit-msg-guard.sh);
-kein Gate-Versprechen, aber PreToolUse-Zusatz-Hook vor jedem `git commit -F`.
+Träger dieses Ziels: [`.claude/hooks/pretooluse-commit-msg-guard.sh`](../../.claude/hooks/pretooluse-commit-msg-guard.sh);
+kein Gate-Versprechen, aber PreToolUse-Zusatz-Hook vor jedem `git commit -F`. Die zweite Hälfte
+derselben Regel trägt der git-eigene Hook [`.githooks/commit-msg`](../../.githooks/commit-msg)
+(aktiviert per `make hooks-install`) — beide Reichweiten stehen in
+[`harness/README.md`](../README.md) §Traceability.

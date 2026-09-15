@@ -33,7 +33,7 @@ BASELINE_TAG ?= v6.8.0
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= 2c55e6d1b821ae15ff73f5a9b3dc2269843db0ffcf9845a4bd0df2cfebbdc6c7
 
-.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims history-range-guard adr-immutable commit-msg-check host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle vendor-baseline
+.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle vendor-baseline
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
@@ -129,15 +129,17 @@ mutate: ## Mutations-Sensor fuer AGENTS 3.6: faerbt jede Mutation ihren Waechter
 
 # shellcheck über die harness-eigenen Shell-Hooks/-Helfer. .bats ist
 # ausgenommen (shellcheck parst die @test-Syntax nicht); .awk ist kein Shell.
+# .githooks/commit-msg traegt keine .sh-Endung — git verlangt den nackten
+# Hook-Namen —, wird darum einzeln genannt statt ueber einen Glob.
 shell-lint: ## Shell-Hooks/-Helfer linten (shellcheck) im gepinnten Image — Docker-only (ADR-0003)
 	docker run --rm -v "$(CURDIR)":/mnt:ro -w /mnt $(SHELLCHECK_IMAGE) \
-		.claude/hooks/*.sh harness/tools/*.sh internal/emit/templates/*.sh internal/emit/templates/enforce/*.sh test/mutations/*.sh
+		.claude/hooks/*.sh harness/tools/*.sh internal/emit/templates/*.sh internal/emit/templates/enforce/*.sh test/mutations/*.sh .githooks/commit-msg
 
 # Haelt Kommentar-Behauptungen gegen ihre Sensoren (AGENTS.md 3.6). Hermetisch —
 # reines bash+awk auf dem Arbeitsbaum, kein Docker, kein Netz —, deshalb IN gates.
 # Geprueft werden echte Kommentare; Roh-String-Literale (emittierter Inhalt) nicht.
 comment-claims: ## Kommentar-Behauptungen nennen ihren Sensor (AGENTS.md 3.6) — hermetisch
-	@bash harness/tools/comment-claims.sh $$(git ls-files 'internal/*.go' 'internal/**/*.go' 'cmd/**/*.go' | grep -v '_test[.]go') $$(git ls-files 'harness/tools/*.sh' '.claude/hooks/*.sh')
+	@bash harness/tools/comment-claims.sh $$(git ls-files 'internal/*.go' 'internal/**/*.go' 'cmd/**/*.go' | grep -v '_test[.]go') $$(git ls-files 'harness/tools/*.sh' '.claude/hooks/*.sh' '.githooks/*')
 
 # Prueft die GitHub-Actions-Workflows syntaktisch. IN gates: .github/workflows/
 # ist ein reales committetes Artefakt (kein leerer Pruefbereich, LH-QA-01), und
@@ -181,14 +183,31 @@ adr-immutable: history-range-guard doc-immutable ## ADR-Kern ueber RANGE=<base>.
 # zweiter Regelsatz. Traeger ist der PreToolUse-Hook
 # .claude/hooks/pretooluse-commit-msg-guard.sh, der jeden `git commit -F
 # <datei>`-Aufruf hierher spiegelt, bevor der Commit steht (Repo-Konvention
-# "Commit via Message-Datei"). Geprueft wird NUR die ANWESENHEIT einer
-# Kennung (ADR-/LH-/MR-/slice-), nicht ihre Wahrheit (harness/README.md).
-# NICHT in gates: MSG variiert pro Aufruf und ist damit kein hermetischer
-# Pruefbereich (LH-QA-01).
+# "Commit via Message-Datei"). Daneben fuehrt der git-eigene Hook
+# .githooks/commit-msg dieselbe Regel als bash-Fassung im Commit-Pfad
+# (harness/tools/commit-msg-traceability.sh, dort ohne Docker) — die zwei
+# Fassungen haelt test/commit-msg-hook.bats gegen dieselbe Liste, ihre
+# Reichweiten stehen in harness/README.md §Traceability. Geprueft wird NUR
+# die ANWESENHEIT einer Kennung (ADR-/LH-/MR-/slice-), nicht ihre Wahrheit
+# (harness/README.md). NICHT in gates: MSG variiert pro Aufruf und ist damit
+# kein hermetischer Pruefbereich (LH-QA-01).
 commit-msg-check: ## Commit-Message-Datei gegen Traceability-Kennung pruefen (MSG=<datei>) — NICHT in gates
 	@test -n "$(MSG)" || { echo "commit-msg-check: MSG=<datei> fehlt" >&2; exit 2; }
 	@test -f "$(MSG)" || { echo "commit-msg-check: MSG=$(MSG) ist keine Datei" >&2; exit 2; }
 	docker run --rm --network none -v "$(CURDIR):/repo:ro" -v "$(abspath $(MSG)):/commit-msg.txt:ro" $(DCHECK_REF) --enable commits --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable planning --disable tracked --disable targets --disable citations --disable sources --disable structure --disable workflows --disable reviews --commit-msg /commit-msg.txt
+
+# Aktiviert den git-eigenen Traeger .githooks/commit-msg in DIESEM Klon:
+# `core.hooksPath` ist lokale Konfiguration und reist nicht mit
+# (Reproduzierbarkeit, LH-QA-02), der Aufruf stellt sie her. Host-Abhaengigkeit
+# ist git (LH-QA-03) — das Skript selbst laeuft im Commit-Pfad und ruft kein
+# Docker. Die x-Bit-Probe faengt einen Klon, in dem die Datei ihr Ausfuehrrecht
+# verloren hat: git verwirft einen nicht ausfuehrbaren Hook still. NICHT in
+# gates: der Aufruf schreibt lokale Konfiguration, und ein hermetischer
+# Gate-Lauf schreibt nichts.
+hooks-install: ## den git-eigenen commit-msg-Traeger im Klon aktivieren (core.hooksPath) — NICHT in gates
+	@test -x .githooks/commit-msg || chmod +x .githooks/commit-msg
+	@git config core.hooksPath .githooks
+	@printf '%s\n' "hooks-install: core.hooksPath=$$(git config --get core.hooksPath) — .githooks/commit-msg laeuft ab dem naechsten Commit (Umgehung: git commit --no-verify)."
 
 # Verifiziert die vendored Baseline netzlos, in zwei Schritten: `sha256sum -c`
 # über SHA256SUMS fängt geänderte und gelöschte Dateien, ein Vollständigkeits-
