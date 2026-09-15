@@ -301,18 +301,18 @@ auf. Zwei Punkte, zwei Gegenstände.
 
 | §3-Zeile | Diff | Wort |
 |---|---|---|
-| `internal/emit/templates/commands/implement-slice.md` — update | +29/-… in `6d8401e3` | trägt |
+| `internal/emit/templates/commands/implement-slice.md` — update | `git diff --numstat 6d8401e3~1..HEAD -- internal/emit/templates/commands/implement-slice.md` → `22 7` | trägt |
 | `internal/emit/templates/enforce/` bzw. ein Fragment im emittierten Fragment-Verzeichnis — neu/update | `templates/enforce/slice-mv.mk` und `slice-mv.sh` (neu) | trägt |
-| `Makefile` (`full-smoke`) — update | die Änderung liegt in `harness/tools/full-smoke.sh` (+291) | **Adresse eine Ebene zu hoch** — das Rezept des Ziels ruft genau dieses Skript, die Wirkung ist die geplante. Der Schwester-Slice hat denselben Versatz in seiner §7 als „Was ging anders als geplant“ notiert (Nr. 2) |
+| `Makefile` (`full-smoke`) — update | die Änderung liegt in `harness/tools/full-smoke.sh` — `git diff --numstat 6d8401e3~1..HEAD -- harness/tools/full-smoke.sh` → `286 0` (netto) | **Adresse eine Ebene zu hoch** — das Rezept des Ziels ruft genau dieses Skript, die Wirkung ist die geplante. Der Schwester-Slice hat denselben Versatz in seiner §7 als „Was ging anders als geplant“ notiert (Nr. 2) |
 | `test/…` — neu/update, „die zwei Ersetzungsrichtungen und der unsaubere Baum“ | `test/slice-mv.bats`, `internal/emit/slicemv_test.go`, `test/mutations/343`…`346` | trägt |
 
 ### 3.2 Gebaut, aber nicht im Plan genannt
 
-- **`internal/emit/slicemv.go` (neu, 42 Zeilen)** — die zwei Zielorte und ihre Idempotenz-Klasse.
+- **`internal/emit/slicemv.go` (neu; `wc -l internal/emit/slicemv.go` → `42`)** — die zwei Zielorte und ihre Idempotenz-Klasse.
   Die §3-Zeile nennt „neu/update“ für die Vorlagen und „bzw. ein Fragment im emittierten
   Fragment-Verzeichnis“, aber **kein** Go-Artefakt; die Schwester-Slices nennen ihres
   (`internal/emit/emit.go`). Kein Defekt, eine fehlende Adresse.
-- **`internal/emit/enforce.go` (+8)** — die Verdrahtung der zwei Dateien in `enforceFiles()`.
+- **`internal/emit/enforce.go` (`git diff --numstat 6d8401e3~1..HEAD -- internal/emit/enforce.go` → `8 0`)** — die Verdrahtung der zwei Dateien in `enforceFiles()`.
 - **`test/mutations/346`** — aus der Review-Runde 2 (der Schwester-Befund F-2), im Plan nicht
   vorhersehbar; die anderen drei Fälle deckt die `test/…`-Zeile.
 
