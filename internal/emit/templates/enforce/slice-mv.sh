@@ -53,10 +53,10 @@
 #     Eingehend-Ersetzung NICHT: ihr fehlt das Verzeichnis-Literal, an dem die
 #     Wortgrenzen-Regel ankert. Was danach tot bleibt, meldet das Doku-Gate des
 #     Repos als toten Link; von Hand nachzuziehen ist der vorgesehene Weg.
-# Und eine vierte, kleinere: die AUSGEHEND-Ersetzung trifft die
-# lowercase-Kebab-Form einer benannten Kennung (Zeichenklasse "[0-9a-z]"). Eine
-# Slice-Kennung, die das Praefix eines vorhandenen Ankers traegt (LH-*, ADR-*,
-# CO-*) und darum Grossbuchstaben fuehrt, bleibt unerkannt.
+# (4) Die AUSGEHEND-Ersetzung trifft die lowercase-Kebab-Form einer benannten
+#     Kennung (Zeichenklasse "[0-9a-z]"). Eine Slice-Kennung, die das Praefix
+#     eines vorhandenen Ankers traegt (LH-*, ADR-*, CO-*) und darum
+#     Grossbuchstaben fuehrt, bleibt unerkannt.
 set -euo pipefail
 
 PLANNING="docs/plan/planning"
