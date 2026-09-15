@@ -104,7 +104,7 @@ denen das nicht genügt:
 | `git commit … -m …`, vom Agenten getippt | nicht erreicht — der Matcher verlangt eine `-F`/`--file`-Form | erreicht |
 | Commit aus einem Repo-Werkzeug (`make slice-mv`, `archive-welle` committen intern) | strukturell nicht erreicht — der Kanal sieht `make slice-mv …` | erreicht |
 | Commit außerhalb eines Claude-Code-Laufs (Mensch am Terminal) | nicht erreicht — er hängt am Tool-Call-Kanal des Agenten | erreicht |
-| Commit auf einem Klon, der `make hooks-install` nie gefahren hat | erreicht die `-F`-Form (er reist mit dem Klon) | nicht erreicht — `core.hooksPath` ist lokale Konfiguration |
+| Commit auf einem Klon, der `make hooks-install` nie gefahren hat | erreicht die `-F`-Form in einem Claude-Code-Lauf (er reist mit dem Klon) | nicht erreicht — `core.hooksPath` ist lokale Konfiguration |
 | `git commit --no-verify` | erreicht — er sieht die Kommandozeile | umgangen — git ruft einen Hook mit `--no-verify` nicht auf |
 
 **Wie der Träger auf einen frischen Klon kommt.** [`.githooks/commit-msg`](../.githooks/commit-msg)
