@@ -46,8 +46,11 @@ genau einen Lauf.
    `Makefile` und der Dispatch in `cmd/ai-harness-init/main.go` müssen übereinstimmen; ein
    Tippfehler geht als Zeichenkette durch und wird erst innerhalb des Trägers zum Fehler, nicht als
    fehlender Dateipfad — heilbar durch Namensgleichheit, sonst dauerhaft stumm bis zum Aufruf.
-2. **Zwei Aufrufer liegen im Prüfbereich** — `Makefile` und `.claude/settings.json`, dessen Hooks
-   den Träger direkt rufen, ohne das Wrapper-Skript, das ein emittiertes Repo bekommt.
+2. **Drei Quellen des Namens liegen im Prüfbereich** — `Makefile`, `.claude/settings.json`, dessen
+   Hooks den Träger direkt rufen, ohne das Wrapper-Skript, das ein emittiertes Repo bekommt, und
+   `internal/emit/templates/enforce/archivierung.mk`, das denselben Namen in ein **Zielrepo** trägt.
+   `test/unterkommando-kopplung.bats` hält alle drei gegen den Dispatch in
+   `cmd/ai-harness-init/main.go`.
 3. **Der Suchraum der Verweis-Vorprüfung (`Haenger`) nimmt allein `.git` und
    `.harness/baseline/**` aus** — `docs/reviews/**` **und** `docs/plan/adr/**` stehen darin, denn
    `links`/`anchors` prüfen die Zeitdokumente wie jede andere Datei, und Reports verlinken
