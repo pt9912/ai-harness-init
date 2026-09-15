@@ -1270,6 +1270,224 @@ SMOKEEOF
 
 archivierung_im_ziel "$tmprepo" "golang"
 
+# --- Lifecycle-Wechsel: das gebootstrappte Ziel erreicht das Werkzeug ---------------
+#
+# WAS DER HAPPY PATH NICHT SIEHT: `make gates` faehrt `slice-mv` nicht — es ist kein
+# Gate, und keine Kette ruft es. Die Kette Aggregator -> Fragment -> abgelegtes Skript
+# -> git entsteht erst im gebootstrappten Ziel; die Go-Stufe liest den TEXT von Fragment
+# und Skript, nicht ihre Wirkung.
+#
+# DIE AUSSAGEN DIESES ABSCHNITTS, in der Reihenfolge, in der er sie faehrt:
+#   (a) der Aufruf bewegt die Datei und legt GENAU ZWEI Commits an: den reinen Move
+#       (0 insertions/0 deletions) und, getrennt davon, den Verweis-Nachzug,
+#   (b) EINGEHEND: eine Nachbar-Datei mit Praefix-Verweis zeigt danach auf das neue
+#       Verzeichnis,
+#   (c) AUSGEHEND: ein praefixloses Geschwister-Ziel INNERHALB der bewegten Datei ist
+#       auf ../<from>/ umgehaengt,
+#   (d) die zwei Pfad-Ausnahmen WIRKEN: eine Datei unter docs/plan/adr/ behaelt ihren
+#       Verweis auf den alten Ort,
+#   (e) die VORAUSSETZUNG greift: ueber einem unsauberen Arbeitsbaum bricht der Aufruf
+#       ab, nennt es und bewegt nichts,
+#   (f) `slice-mv` ist KEIN Gate: die gates-Kette des Ziels nennt es nicht.
+#
+# EINE VARIANTE, und die Grenze steht hier: gefahren wird das --lang-go-Ziel. Fragment
+# und Skript kommen aus enforceFiles() und liegen in BEIDEN Bootstrap-Varianten unter
+# denselben Pfaden; dass beide auch sprachlos entstehen, misst
+# TestSliceMvFragment_LiegtImZielUndHaengtNichtAnDerGatesKette ueber einen Emit ohne
+# Sprache.
+#
+# NUR HIER MESSBAR: kein Go-Test faehrt `make`, und ein Lauf auf dem HOST findet das
+# Werkzeug eines gebootstrappten Repos nicht.
+slice_mv_im_ziel() {
+	local repo="$1" kennung="$2"
+	local plan="$repo/docs/plan/planning"
+	local werkzeug="$repo/tools/harness/slice-mv.sh"
+	local frag="$repo/harness/mk/slice-mv.mk"
+	local adr="$repo/docs/plan/adr/0001-smoke.md"
+	local name="slice-smoke-move"
+
+	if [ ! -f "$frag" ]; then
+		echo "full-smoke: FEHLER — $kennung: das Fragment des Lifecycle-Wechsels liegt nicht im Ziel (harness/mk/slice-mv.mk)." >&2
+		exit 1
+	fi
+	if [ ! -x "$werkzeug" ]; then
+		echo "full-smoke: FEHLER — $kennung: $werkzeug liegt nicht ausfuehrbar im Ziel — das Fragment zeigt damit auf ein Programm, das es nicht gibt." >&2
+		exit 1
+	fi
+	if [ -n "$(git -C "$repo" status --porcelain)" ]; then
+		echo "full-smoke: FEHLER — $kennung: der Arbeitsbaum des Ziels ist vor diesem Abschnitt nicht sauber — der Aufruf bricht an seiner eigenen Voraussetzung ab, und der Fall ist dann nicht der zugesagte:" >&2
+		git -C "$repo" status --porcelain >&2
+		exit 1
+	fi
+	# Der schreibende Lauf committet SELBST und braucht darum eine Identitaet im Repo:
+	# die zwei git-Aufrufe des Werkzeugs rufen `git commit` ohne -c.
+	git -C "$repo" config user.email full-smoke@example.invalid
+	git -C "$repo" config user.name full-smoke
+
+	# Der Ausgangsstand: eine Slice-Datei in open/, ein verbliebenes Geschwister
+	# daneben (das praefixlose AUSGEHEND-Ziel), ein Nachbar in next/ (der
+	# EINGEHEND-Verweis per Praefix-Form) und eine ADR, die nach der Repo-Politik des
+	# Fragments unberuehrt bleibt.
+	mkdir -p "$plan/open" "$plan/next" "$plan/in-progress" "$repo/docs/plan/adr"
+	cat >"$plan/open/$name.md" <<'SMOKEEOF'
+# Slice slice-smoke-move: E2E des Lifecycle-Wechsels
+
+## 1. Ziel
+
+Nur fuer den E2E des Lifecycle-Wechsels angelegt. Verweis auf ein verbliebenes
+Geschwister im selben Verzeichnis: [bleibt](slice-smoke-bleibt.md)
+SMOKEEOF
+	cat >"$plan/open/slice-smoke-bleibt.md" <<'SMOKEEOF'
+# Slice slice-smoke-bleibt: verbliebenes Geschwister
+
+## 1. Ziel
+
+Nur fuer den E2E des Lifecycle-Wechsels angelegt. Diese Datei bleibt liegen.
+SMOKEEOF
+	cat >"$plan/next/slice-smoke-nachbar.md" <<'SMOKEEOF'
+# Nachbar-Datei des E2E
+
+Sie verweist per Praefix-Form auf die bewegte Datei:
+[slice-smoke-move](../open/slice-smoke-move.md)
+SMOKEEOF
+	cat >"$adr" <<'SMOKEEOF'
+# ADR-0001: Smoke
+
+Beleg: [Slice](../planning/open/slice-smoke-move.md)
+SMOKEEOF
+	git -C "$repo" -c user.email=full-smoke@example.invalid -c user.name=full-smoke add -A
+	git -C "$repo" -c user.email=full-smoke@example.invalid -c user.name=full-smoke \
+		commit -q -m "Lifecycle-Smoke: Ausgangsstand (full-smoke)"
+
+	# (f) KEIN GATE. `make -n` druckt die Kette, ohne sie zu fahren. DIE VORBEDINGUNG
+	# STEHT ZUERST: ueber einer leeren Kette waere "slice-mv steht nicht darin" still
+	# gruen.
+	local kette="" kette_rc=0 fehlt=""
+	kette="$( make --no-print-directory -C "$repo" -n gates 2>&1 )" || kette_rc=$?
+	if [ "$kette_rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: die gates-Kette des Ziels ist nicht lesbar (make -n gates, Exit $kette_rc):" >&2
+		printf '%s\n' "$kette" >&2
+		exit 1
+	fi
+	for noetig in 'record-gates.sh' 'baseline-verify.sh' 'docker run'; do
+		grep -qF -- "$noetig" <<<"$kette" || fehlt="$fehlt [$noetig]"
+	done
+	if [ -n "$fehlt" ]; then
+		echo "full-smoke: FEHLER — $kennung: die gelesene gates-Kette traegt nicht, was sie tragen muss:$fehlt — der Nicht-Gate-Zahn misst dann einen leeren Pruefbereich." >&2
+		printf '%s\n' "$kette" >&2
+		exit 1
+	fi
+	if grep -qF -- 'slice-mv' <<<"$kette"; then
+		echo "full-smoke: FEHLER — $kennung: die gates-Kette des Ziels nennt slice-mv — ein Move prueft nichts (LH-QA-01)." >&2
+		grep -nF -- 'slice-mv' <<<"$kette" >&2
+		exit 1
+	fi
+
+	# (a)-(d) DER MOVE, in einem Aufruf: er traegt beide Richtungen zugleich.
+	local lauf="" lauf_rc=0 lauf_flach=""
+	lauf="$( make --no-print-directory -C "$repo" slice-mv SLICE="$name" TO=next 2>&1 )" || lauf_rc=$?
+	printf '%s\n' "$lauf"
+	lauf_flach="$(tr -s '[:space:]' ' ' <<<"$lauf")"
+	if [ "$lauf_rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: make slice-mv endet mit Exit $lauf_rc statt mit 0 — der Lifecycle-Wechsel ist im gebootstrappten Repo nicht erreichbar." >&2
+		einordnen "make slice-mv im Ziel ($kennung)" "$lauf"
+		exit 1
+	fi
+	if ! grep -qF -- "slice-mv ok: $name.md" <<<"$lauf_flach"; then
+		echo "full-smoke: FEHLER — $kennung: der Lauf meldet den Vollzug nicht (rot aus falschem Grund?). Ausgabe:" >&2
+		printf '%s\n' "$lauf" >&2
+		exit 1
+	fi
+	if [ ! -f "$plan/next/$name.md" ]; then
+		echo "full-smoke: FEHLER — $kennung: $name.md liegt nicht in next/ — der Aufruf meldet einen Vollzug, den er nicht getan hat." >&2
+		exit 1
+	fi
+	if [ -e "$plan/open/$name.md" ]; then
+		echo "full-smoke: FEHLER — $kennung: $name.md liegt noch in open/ — git mv hat die Quelle nicht bewegt." >&2
+		exit 1
+	fi
+
+	# (b) EINGEHEND: der Praefix-Verweis aus der unbewegten Nachbar-Datei zeigt auf
+	# das neue Verzeichnis.
+	if ! grep -qF -- '../next/slice-smoke-move.md' "$plan/next/slice-smoke-nachbar.md"; then
+		echo "full-smoke: FEHLER — $kennung: der eingehende Verweis in $plan/next/slice-smoke-nachbar.md zeigt nicht auf next/ — er ist nach dem Move tot." >&2
+		cat "$plan/next/slice-smoke-nachbar.md" >&2
+		exit 1
+	fi
+
+	# (c) AUSGEHEND: das praefixlose Ziel INNERHALB der bewegten Datei zeigt auf das
+	# verbliebene Geschwister in open/.
+	if ! grep -qF -- '](../open/slice-smoke-bleibt.md)' "$plan/next/$name.md"; then
+		echo "full-smoke: FEHLER — $kennung: das praefixlose Ziel in der bewegten Datei zeigt nicht auf ../open/ — es zeigt nach dem Wechsel ins falsche Verzeichnis." >&2
+		cat "$plan/next/$name.md" >&2
+		exit 1
+	fi
+
+	# (d) DIE ZWEI AUSNAHMEN: die ADR behaelt ihren Verweis auf den alten Ort
+	# (Repo-Politik des Fragments: eine Accepted-ADR bekommt keinen Byte-Nachzug).
+	if ! grep -qF -- '../planning/open/slice-smoke-move.md' "$adr"; then
+		echo "full-smoke: FEHLER — $kennung: die ADR wurde nachgezogen — sie steht in der Ausnahmeliste der Repo-Politik und darf keinen Byte-Nachzug bekommen." >&2
+		cat "$adr" >&2
+		exit 1
+	fi
+
+	# (a) DIE ZWEI COMMITS, und der erste ist ein REINER Move. `git show --numstat`
+	# ueber dem Move-Commit traegt fuer einen Rename ohne Inhaltsaenderung genau eine
+	# Zeile mit zwei Nullen; jede andere Zahl heisst, dass Move und Inhalt in einem
+	# Commit liegen.
+	local betreffe="" move_stat="" zeilen=0
+	betreffe="$(git -C "$repo" log -2 --format=%s)"
+	move_stat="$(git -C "$repo" show --numstat --format= HEAD~1)"
+	zeilen="$(grep -c . <<<"$move_stat" || true)"
+	if [ "$(printf '%s\n' "$betreffe" | grep -c '^slice-mv:' || true)" -ne 2 ]; then
+		echo "full-smoke: FEHLER — $kennung: der Aufruf hat nicht genau zwei slice-mv-Commits angelegt. Message:" >&2
+		printf '%s\n' "$betreffe" >&2
+		exit 1
+	fi
+	if ! grep -qF -- '(reiner Move)' <<<"$(printf '%s\n' "$betreffe" | sed -n '2p')"; then
+		echo "full-smoke: FEHLER — $kennung: der erste der zwei Commits ist nicht der reine Move (Hard Rule 3.3). Message:" >&2
+		printf '%s\n' "$betreffe" >&2
+		exit 1
+	fi
+	if [ "$zeilen" -ne 1 ] || ! grep -qE '^0[[:space:]]+0[[:space:]]' <<<"$move_stat"; then
+		echo "full-smoke: FEHLER — $kennung: der Move-Commit traegt eine Inhaltsaenderung — Move und Verweis-Nachzug liegen in EINEM Commit ($zeilen Zeile(n) numstat; erwartet: eine mit 0 0)." >&2
+		printf '%s\n' "$move_stat" >&2
+		exit 1
+	fi
+	echo "full-smoke: Lifecycle-Wechsel im Ziel ($kennung): make slice-mv bewegt $name.md nach next/, legt den reinen Move als eigenen Commit an (0 insertions/0 deletions) und zieht den Verweis-Nachzug getrennt davon nach — eingehend die Nachbar-Datei, ausgehend das praefixlose Geschwister; die ADR bleibt nach der Repo-Politik des Fragments unberuehrt."
+
+	# (e) DIE VORAUSSETZUNG: ueber einem unsauberen Arbeitsbaum bricht der Aufruf ab,
+	# nennt es und bewegt nichts. Der Fall ist der einzige, der die Sperre ausloest.
+	printf '\nNachtrag im Arbeitsbaum (full-smoke)\n' >>"$plan/open/slice-smoke-bleibt.md"
+	local schmutzig="" schmutzig_rc=0 schmutzig_flach=""
+	schmutzig="$( make --no-print-directory -C "$repo" slice-mv SLICE="$name" TO=done 2>&1 )" || schmutzig_rc=$?
+	schmutzig_flach="$(tr -s '[:space:]' ' ' <<<"$schmutzig")"
+	if [ "$schmutzig_rc" -eq 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: make slice-mv endet ueber einem unsauberen Arbeitsbaum mit Exit 0 — die Voraussetzung greift nicht, und der fremde Diff landet in einem der Commits." >&2
+		printf '%s\n' "$schmutzig" >&2
+		einordnen "make slice-mv ueber einem unsauberen Arbeitsbaum ($kennung)" "$schmutzig"
+		exit 1
+	fi
+	if ! grep -qF -- 'Arbeitsbaum nicht sauber' <<<"$schmutzig_flach"; then
+		echo "full-smoke: FEHLER — $kennung: der Abbruch nennt den unsauberen Arbeitsbaum nicht (rot aus falschem Grund?). Ausgabe:" >&2
+		printf '%s\n' "$schmutzig" >&2
+		exit 1
+	fi
+	if [ -e "$plan/done/$name.md" ]; then
+		echo "full-smoke: FEHLER — $kennung: der abgebrochene Aufruf hat trotzdem bewegt — die Pruefung steht vor dem git mv, und der Move ist gefallen." >&2
+		exit 1
+	fi
+	if [ ! -f "$plan/next/$name.md" ]; then
+		echo "full-smoke: FEHLER — $kennung: der abgebrochene Aufruf hat die Datei aus next/ entfernt." >&2
+		exit 1
+	fi
+	echo "full-smoke: Voraussetzung ($kennung): make slice-mv bricht ueber einem unsauberen Arbeitsbaum ab, nennt den Grund und bewegt nichts:"
+	grep -F -- 'Arbeitsbaum nicht sauber' <<<"$schmutzig" | sed -n '1p' | sed 's/^/full-smoke:   /'
+	git -C "$repo" checkout -- "$plan/open/slice-smoke-bleibt.md"
+}
+
+slice_mv_im_ziel "$tmprepo" "golang"
+
 # slice-032 (LH-FA-06/LH-QA-03): der emittierte Command-Guard muss real greifen —
 # nicht nur praesent sein. Wir fuettern ihn mit Hook-JSON: die go-Toolchain (BLOCKED-
 # Set --lang go) wird geblockt, ein make-Target durchgelassen. Dieser full-smoke-Schritt
@@ -2019,3 +2237,4 @@ echo "full-smoke: OK — IDEMPOTENT (slice-038): 2. Init-Lauf Exit 0, README (sk
 echo "full-smoke: OK — ROLLEN-TYPEN (slice-097/LH-FA-10): 6 kanonische Typen unter .claude/agents/ in BEIDEN Bootstrap-Varianten, je mit ihrem Namen im Kopf; das make gates des Ziels laeuft ueber ihnen gruen; der 2. Init-Lauf laesst einen adopter-geaenderten Typ unberuehrt (skip-if-present)."
 echo "full-smoke: OK — FELDLISTE (slice-098/LH-FA-10): $FELDLISTE_REL liegt in BEIDEN Bootstrap-Varianten im geprueften Doku-Bereich, fuehrt die drei stehenden Grenz-Saetze und deckt jeden Feldnamen der real geschriebenen Span-Zeile; ein toter Verweis darin faerbt das docs-check des Ziels rot (Ortswahl belegt); ein 2. Init-Lauf heilt eine von Hand geaenderte Fassung (konvergent, die einzige Zusage des Dokuments ueber sich selbst)."
 echo "full-smoke: OK — ARCHIVIERUNG IM ZIEL (ADR-0033 Festlegung 4 und 5): make archive-welle ist kein Gate und steht in keiner gates-Kette; ein Name daneben, den kein Fragment fuehrt, endet laut statt still; die zwei Sperren [untergrenze] und [haenger] halten den Aufruf auf, ueber demselben Bestand ohne sie laeuft die Operation real (Archiv + Stubs aus der vendored Vorlage), und ohne Traeger meldet das Kommando die Abwesenheit mit Exit 0."
+echo "full-smoke: OK — LIFECYCLE-WECHSEL IM ZIEL: make slice-mv ist kein Gate und steht in keiner gates-Kette; der Aufruf bewegt den Slice, legt den reinen Move als eigenen Commit an (0 insertions/0 deletions gegen den Verweis-Nachzug getrennt) und zieht beide Richtungen nach — den eingehenden Praefix-Verweis der Nachbar-Datei und das praefixlose Geschwister-Ziel in der bewegten Datei; eine ADR bleibt nach der Repo-Politik des Fragments unberuehrt, und ueber einem unsauberen Arbeitsbaum bricht der Aufruf ab, nennt es und bewegt nichts."

@@ -63,6 +63,14 @@ func enforceFiles() []enforceFile {
 		// hier und nicht in captureFiles(), weil es an keinem Laufzeit-Ausgang
 		// haengt — die Begruendung traegt archivierung.go.
 		archivierungFile(),
+		// Fragment UND Werkzeug des Lifecycle-Wechsels (die Zwei-Commit-Regel auf
+		// der emittierten Ebene): der mitemittierte Anweisungssatz schreibt den
+		// Wechsel an zwei Stellen vor, und ohne dieses Paar bleibt der
+		// Verweis-Nachzug dort Handarbeit. Beide stehen hier und nicht in
+		// captureFiles(), weil sie an keinem Laufzeit-Ausgang haengen — die
+		// Begruendung traegt slicemv.go.
+		sliceMvMkFile(),
+		sliceMvShFile(),
 		// Command-Guard (slice-032): bash+awk, kein node/jq (LH-QA-03). Der Guard
 		// (0755) referenziert den awk-Extraktor unter tools/harness/ — beide
 		// gehoeren in denselben Emit, sonst laeuft der Guard fail-closed ins Leere.

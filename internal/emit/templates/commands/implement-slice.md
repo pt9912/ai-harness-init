@@ -63,10 +63,24 @@ emittierten Durchsetzungsschicht):
 9. Der Implementer erhält den Slice **in `in-progress/`** (Planner→Implementer-Übergabe,
    Modul 8; `next → in-progress` = „Implementer beginnt", Modul 5). Liegt er noch in `open/`,
    zuerst dorthin verschieben (`open → next → in-progress`); `open → next` setzt dabei das
-   Kopf-Feld `Verantwortlich:`. Jedes `git mv` ist ein **reiner Move, getrennt vom Inhalt
-   committet** (Hard Rule 3.3), und `next → in-progress` landet **auf dem Hauptzweig, vor der
-   Arbeit** — der Branch entsteht danach. Reist der Move erst im PR mit, ist der Zustand
-   zweigelokal, und `in-progress/` bleibt für alle anderen leer, bis die Arbeit fertig ist.
+   Kopf-Feld `Verantwortlich:`. **Jeder dieser Übergänge läuft über
+   `make slice-mv SLICE=slice-<Kennung> TO=<next|in-progress>`** — das Werkzeug bewegt die Datei
+   per `git mv` und committet den **reinen Move** sofort als eigenen Commit (Hard Rule 3.3), und
+   es zieht danach die **Verweise** nach: **eingehend** jede Präfix-Form auf die bewegte Datei,
+   repo-weit, und **ausgehend** die präfixlosen Ziele innerhalb der bewegten Datei selbst. Fielen
+   Verweise an, committet es sie als **zweiten**, vom Move getrennten Commit; sonst bleibt es beim
+   einen Move-Commit. Der Move landet damit **auf dem Hauptzweig, vor der Arbeit** — der Branch
+   entsteht danach. Reist er erst im PR mit, ist der Zustand zweigelokal, und `in-progress/`
+   bleibt für alle anderen leer, bis die Arbeit fertig ist.
+   <!-- ANPASSEN: der Weg zum Werkzeug ist die repo-spezifische Stelle; nenne hier den deines
+        Repos. Der Ziel-NAME `slice-mv` ist es nicht — er kommt aus einem tool-eigenen Fragment,
+        das jeder Bootstrap kanonisch neu schreibt; ein umbenanntes Ziel hält darum nicht, und
+        diese Anleitung bliebe auf einem Namen stehen, den `make` nach dem nächsten Lauf nicht
+        mehr kennt. Das Fragment bricht dann laut ab, statt still nichts zu tun. -->
+   **Was das Werkzeug nicht kann, steht in seinem Kopf, und der Rest ist deine Handarbeit:** es
+   zieht Pfade nach, keine Zustandsätze, und einen präfixlosen **eingehenden** Verweis aus einer
+   unbewegten Geschwister-Datei erkennt es nicht. `make docs-check` nach dem Move zeigt, was
+   stehen blieb — zieh es nach, bevor der nächste Schritt startet.
 10. WIP-Limit = 1 pro Implementer (Modul 5): kein paralleles `in-progress/`.
 11. Lifecycle-Rücksprungkanten (Modul 5), falls sich der Slice als falsch erweist: zu groß →
     `in-progress → next` (zurück zur Zerlegung); blockiert → `in-progress → open` (Carveout,
@@ -143,8 +157,9 @@ Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontex
 24. Erst wenn der Review konform **und** die Verifikation die DoD bestätigt hat, schließt der
     **Planner**: die Closure-Notiz mit einem **Steering-Loop-Eintrag** schreiben (geschärfte Regel ·
     neuer Sensor · benannte Spec-Lücke — Modul 5: der `→ done`-Übergang verlangt einen Lerneintrag,
-    nicht nur grüne Gates), dann den Slice `in-progress → done` verschieben (`git mv`, eigener
-    Commit, getrennt vom Inhalt — Hard Rule 3.3). Ein rotes Gate erreicht `done/` **nur** mit
+    nicht nur grüne Gates), dann den Slice `in-progress → done` verschieben —
+    **`make slice-mv SLICE=slice-<Kennung> TO=done`**, derselbe Aufruf wie in Schritt 9: reiner
+    Move als eigener Commit, Verweis-Nachzug getrennt davon (Hard Rule 3.3). Ein rotes Gate erreicht `done/` **nur** mit
     dokumentiertem Carveout (Modul 7), nie als stilles Rot. **Jedes offene Risiko aus dem Slice-Plan
     bekommt dabei genau einen von drei Ausgängen** (Modul 5): *eingetreten* → Carveout oder
     Folge-Slice mit ID · *entfallen* → gestrichen **mit Begründung** · *weiter offen* → wandert ins
@@ -158,7 +173,7 @@ Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontex
     Sonst ein neues Verzeichnis `BEO-<KUERZEL>/<slug>/` mit `observation.md` und `state.md` anlegen
     — Kürzel aus der Modus-Deklaration nachschlagen, nicht erfinden; das Register ist zugleich die
     Vergabestelle für den `<slug>`-Teil. Der Beleg ist **formgebunden**: `evidence/slice-<NNN>.md`,
-    kein Freitext, eine Datei je Auftreten. Geschrieben wird er **vor** dem `git mv` — die
+    kein Freitext, eine Datei je Auftreten. Geschrieben wird er **vor** dem Move aus Schritt 24 — die
     Slice-Datei liegt dann noch nicht in `done/`, und das ist richtig so, weil Move und Inhalt
     getrennt committen (Hard Rule 3.3). Der Zähler wird **nicht gesetzt**, er ist die Zahl der
     Evidence-Dateien und **folgt** aus ihnen. **Bei null Beobachtungen** bleibt die Ablage
