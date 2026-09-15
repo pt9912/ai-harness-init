@@ -105,33 +105,34 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Der emittierte Anweisungssatz nennt für Schritt 9 und Schritt 24 das Werkzeug** statt des
+- [x] **Der emittierte Anweisungssatz nennt für Schritt 9 und Schritt 24 das Werkzeug** statt des
       `git mv` von Hand, und die repo-spezifischen Stellen bleiben **adaptierbare** Marker
       ([`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)) — der
       Adopter darf sein Fragment anders nennen — und *was* daran frei ist, steht hier, weil der
       Satz sonst zwei Lesarten trägt: die **Datei** ist frei (der Aggregator bindet
       `harness/mk/*.mk` per Glob ein), der **Ziel-Name** darin ist es **nicht** — er kommt aus einem
       tool-eigenen Fragment, das jeder Bootstrap kanonisch neu schreibt.
-- [ ] **Das Ziel führt das Werkzeug, und es zieht Verweise in beiden Richtungen nach:** eingehende
+- [x] **Das Ziel führt das Werkzeug, und es zieht Verweise in beiden Richtungen nach:** eingehende
       (jede Präfix-Form auf die bewegte Datei) und ausgehende (präfixlose Ziele innerhalb der
       bewegten Datei). Der Move bleibt ein **reiner** Commit, getrennt von der Inhaltsänderung; fiel
       keine Änderung an, bleibt es beim einen Commit. Beide Richtungen sind im Ziel belegt, nicht im
       Emit-Code behauptet.
-- [ ] **Fehlt eine Voraussetzung, sagt das Werkzeug das und committet nichts** — der unsaubere
+- [x] **Fehlt eine Voraussetzung, sagt das Werkzeug das und committet nichts** — der unsaubere
       Arbeitsbaum ist der benannte Fall. Rot gesehen: den Fall herstellen, Kommando fahren, Ausgabe
       und Exit-Code lesen. Die zwei Pfad-Ausnahmen sind als Repo-Politik **markiert**, nicht
       versteckt.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: [`harness/sensors/slice-mv.md`](../../../../harness/sensors/slice-mv.md) führt die
-      **zweite** Fassung des Werkzeugs — die, die im Ziel liegt — samt ihrem Ort und ihrer
-      Verdrahtung; sie beschreibt allein die Fassung dieses Repos.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Doku-Update: [`harness/sensors/slice-mv.md`](../../../../harness/sensors/slice-mv.md) führt
+      **beide** Fassungen des Werkzeugs — die dieses Repos und die, die im Ziel liegt — und nennt die
+      zweite samt ihrem Ort und ihrer Verdrahtung; die zwei Pfad-Ausnahmen stehen dort als Politik des
+      jeweiligen Repos, **setzbar** auch im Ziel.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). **Hier nicht geprüft und nicht fällig:** dieses Repo führt Wellen, und der Slice ist Mitglied von [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md) — den Lese-Schritt trägt ihre Closure.
 
 ## 3. Plan (vor Code)
 
@@ -195,26 +196,46 @@ dasteht.
 - **Der Nachzug ist im Ziel nicht entscheidbar, wo er auf fremde Texte trifft.** Das Werkzeug
   ersetzt in **jedem** Vorkommen an einer Wortgrenze; in einem Ziel, das dieselbe Slice-Kennung in
   einem Fremd-Text führt (vendored Baseline, eingefrorene ADR), wäre die Ersetzung falsch. Die zwei
-  Pfad-Ausnahmen decken die zwei Fälle **dieses** Repos, nicht die des Ziels. — **Ausgang:**
-  <eingetreten: CO-NNN / slice-<Kennung> | entfallen: Grund | weiter offen: → BEO im Register>
+  Pfad-Ausnahmen decken die zwei Fälle **dieses** Repos, nicht die des Ziels. — **Ausgang: entfallen**
+  — die zwei Ausnahmen sind im Ziel **setzbar**, nicht versteckt: das Fragment führt die Variable mit
+  einer Vorgabe und reicht sie als Umgebung an das Werkzeug durch, das Skript liest sie mit derselben
+  Vorgabe beim Auslesen. Die Vorgabe ist aus dem mitemittierten Regelwerk abgeleitet und deckt genau
+  die zwei Fremd-Text-Klassen, die es auch im Ziel gibt — vendored Baseline und die eingefrorene ADR;
+  eine andere Politik ist ein **gesetzter Wert**, keine Unmöglichkeit. Am ausgelieferten Fragment
+  gelesen:
+
+  ```sh
+  grep -n 'SLICE_MV_AUSGENOMMENE_PFADE' internal/emit/templates/enforce/slice-mv.mk
+  #  27:SLICE_MV_AUSGENOMMENE_PFADE ?= :!.harness/baseline :!docs/plan/adr
+  #  34:	@SLICE_MV_AUSGENOMMENE_PFADE='$(SLICE_MV_AUSGENOMMENE_PFADE)' bash "$(SLICE_MV)" "$(SLICE)" "$(TO)"
+  ```
 - **Der ausgehende Nachzug kollidiert mit dem Ziel-Ruheort.** Er trifft präfixlose Ziele *innerhalb*
   der bewegten Datei; trägt das Ziel eine andere Lifecycle-Tiefe, ist die Vorgabe falsch. Die
-  Vorlage muss die Tiefe ableiten, nicht annehmen. — **Ausgang:** <eingetreten: CO-NNN /
-  slice-<Kennung> | entfallen: Grund | weiter offen: → BEO im Register>
+  Vorlage muss die Tiefe ableiten, nicht annehmen. — **Ausgang: entfallen** — der ausgehende Nachzug
+  setzt keine Tiefe: er liest sein Von-Verzeichnis aus dem gefundenen Pfad und hängt **ein**
+  `../<altes-verzeichnis>/` an. Dass die zwei Verzeichnisse Geschwister sind, ist keine Annahme über
+  das Ziel, sondern Eigenschaft der emittierten Planungs-Ablage, in der die vier
+  Lifecycle-Verzeichnisse flach nebeneinander liegen. Im gebootstrappten Ziel ist die Richtung
+  gefahren: `make full-smoke` stellt dort das verbliebene Geschwister im Ausgangsverzeichnis her und
+  liest das gezogene Ziel.
 - **Die zwei Fassungen driften weiter ungeobachtet.** Kein Sensor hält den lokalen Anweisungssatz
   gegen die emittierte Vorlage; die zwei sind getrennte Artefakte, und dieses Mitglied schreibt die
   emittierte Fassung, nicht den Wächter. Die Lücke bleibt benannt (Welle §6) und ist der Grund, den
-  Nachzug nicht still zu lassen. — **Ausgang:** <eingetreten: CO-NNN / slice-<Kennung> | entfallen:
-  Grund | weiter offen: → BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen im Register>
+  Nachzug nicht still zu lassen. — **Ausgang: weiter offen** → Beobachtungs-Register,
+  [`BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`](../observations/BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor/observation.md)
+  — dieselbe Regel liegt als lauffähige Dogfood-Fassung und als Text der Emissions-Vorlage vor, und
+  kein Sensor hält die zwei gegeneinander; das ist die Klasse dieses Falls, und sie trifft ihn enger
+  als eine Zusage **neben** einer Ableitung. **Dieser Vorgang legt dort keinen Beleg an, und das ist
+  gemessen, nicht angenommen:** er schreibt die emittierte Fassung und weist an ihr keine Drift gegen
+  die lokale nach. Der Zähler des Eintrags bleibt darum, wo er war — **kein Erwartungswert**, die
+  Zahl wandert mit dem Register:
+
+  ```sh
+  ls docs/plan/planning/observations/BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor/evidence/*.md | wc -l
+  # 2
+  ```
 
 ## 7. Closure-Notiz
-
-<!-- BEDIENHINWEIS — keine Norm; faellt beim Kopieren weg (README.md
-§Verwendung, Schritt 5) und darf deshalb nichts Tragendes halten. Reihenfolge:
-diese Sektion vor dem `git mv` nach done/ fuellen — einzige Ausnahme ist das
-letzte DoD-Item in §2 (die Paarungen suchen in `done/`, also nach dem `git mv`).
-Im Repo ohne Wellen-Betrieb braucht die Closure dadurch drei Commits: Inhalt,
-`git mv`, Haekchen — das folgt aus der Hard Rule, es widerspricht ihr nicht. -->
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Das Beobachtungs-Register (vorhandene `BEO-<NNN>` **zitieren** statt neu
@@ -224,18 +245,105 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-kennung-a>, <slice-kennung-b>, <slice-kennung-c> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-<Kennung>.md` | `evidence/slice-<Kennung>.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <von der Welle-Closure getragen — Anker · Folge-Slice · Register>
+- **Was hat funktioniert:** **Die Form lag schon vor, und die Emission hat sie getragen statt sie
+  nachzubauen.** Die zwei Ersetzungs-Richtungen des Dogfood-Werkzeugs sind in die Emissions-Vorlage
+  übernommen, und `test/slice-mv.bats` vergleicht die **Rümpfe** der drei Ersetzungs-Funktionen
+  beider Fassungen weißraum-normalisiert — eine Form, die eine Musterliste nicht trägt: sie hält die
+  *Regel* statt einer Formen-Aufzählung. **Zweitens hat der E2E getragen**, obwohl er im Plan nur als
+  Beleg geführt war: [`make full-smoke`](../../../../harness/sensors/full-smoke.md) fährt die Kette
+  Aggregator → Fragment → abgelegtes Skript → `git` in einem gebootstrappten Ziel, und dort erst ist
+  [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) eingelöst statt behauptet.
+  **Drittens die fail-closed-Kante:** eine fehlende Voraussetzung bricht ab, statt zu committen, und
+  der E2E fährt diesen Zweig wirklich.
+- **Was ging anders als geplant:** **Vier Dinge.** (1) Der Doku-Punkt nannte **keinen Träger**; er war
+  der einzige Punkt, den die erste Verifikation als Verletzung gelesen hat, und ist auf
+  [`harness/sensors/slice-mv.md`](../../../../harness/sensors/slice-mv.md) gezogen und dort erfüllt.
+  (2) Sein Schlusssatz trug **zwei Lesarten** und war in der zweiten mit jeder Lieferung verletzt — er
+  ist auf die Fassung gezogen, die nach dem Nachzug trägt. (3) §3 nennt `Makefile` als Träger des
+  Belegs; der Beleg liegt in `harness/tools/full-smoke.sh`, das sein Rezept ruft — die Wirkung war die
+  geplante, die Adresse eine Ebene zu hoch. (4) Der E2E brauchte einen **zweiten** Zweig: über einem
+  Slice ganz ohne Verweis fällt der Nachzug-Commit aus, und genau das ist die Zusage der beiden
+  Richtungen.
+- **Steering-Loop-Eintrag:** *Neuer Sensor* — `test/slice-mv.bats` hält die drei
+  Ersetzungs-Funktionen der zwei Fassungen (Dogfood-Werkzeug und Emissions-Vorlage)
+  weißraum-normalisiert gegeneinander, und `test/mutations/346` gibt dem Fall seine Zähne: er fällt
+  über einer **einseitig** entfernten Entscheidung, mit beiden Rümpfen in der Meldung. Das ist die
+  Antwort auf [`BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`](../observations/BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor/observation.md)
+  **für dieses Paar** — geschlossen an einer Stelle, nicht als Klasse. **Kein `liegt in`-Feld:** mit
+  diesem Vorgang ist **keine** Regel dieses Repos verkörpert worden — der Sensor ist Liefergegenstand
+  und keine Antwort auf einen 3×-Schwellen-Übertritt; der Eintrag ist gezählt, nicht verkörpert.
+  **Die vier Grenzen, die dieser Vorgang benennt statt sie zu schließen** — keine davon ist eine
+  DoD-Verletzung, alle vier gehen als Material in den Lese-Schritt:
+
+  1. **Die Mutations-Deckungslücke.** Von den **sieben** Wächtern in `internal/emit/slicemv_test.go`
+     sind **drei** über einen Fall in `test/mutations/` gedeckt und **vier** nicht; einer der vier
+     trägt seine rote Richtung außerhalb des Mutations-Satzes (die fail-closed-Kante fällt im E2E,
+     und dort ist sie rot gelesen), die drei übrigen haben ihre rote Richtung nicht vorgeführt.
+     Beleg: [`BEO-ALL/neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md).
+  2. **Die Anker-Grenze der `schritteIn`-Hilfe.** Sie schlüsselt eine Anleitung über die **Nummer**
+     des Schrittes auf und **überschreibt** einen Schlüssel, der ein zweites Mal in Spalte 0 auftritt;
+     die Annahme *eindeutige Nummern* steht nirgends, und im heutigen Bestand greift die Verletzung
+     nicht.
+  3. **Die kanonische Neuschrift des Fragments hält kein Wächter** — die Aussage ist **wahr** und
+     **unbewacht**; die Grenze steht jetzt benannt an der Stelle der Zusage, geschlossen ist sie
+     nicht. Beleg:
+     [`BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel`](../observations/BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel/observation.md).
+  4. **Eine eingefrorene Commit-Message.** Die Message des Doku-Nachzugs sagt mehr, als gemessen ist
+     („der E2E liest die Vorlage nicht" — er liest sie, nur nicht die **Nennung** des Aufrufs). Der
+     Satz der Sensor-Prosa ist exakt, der Bericht daneben zu breit; die Message liegt in `git` und
+     wird nicht repariert.
+
+  Die drei Messungen dazu — die zweite und die dritte Zahl sind Aufzählungen **im** Dokument, keine
+  Messwerte **über** den Baum, und stehen darum neben ihrem Kommando wie die erste:
+
+  ```sh
+  for g in $(grep -oE '^func Test[A-Za-z_]+' internal/emit/slicemv_test.go | sed 's/func //'); do \
+    printf '%s  %s\n' "$(grep -rl "expect: $g" test/mutations/ | wc -l)" "$g"; done
+  #  1  TestSliceMvFragment_LiegtImZielUndHaengtNichtAnDerGatesKette
+  #  1  TestSliceMvWerkzeug_LiegtAusfuehrbarUndTraegtBeideRichtungen
+  #  0  TestSliceMvAusnahmen_SindAlsRepoPolitikMarkiert
+  #  0  TestSliceMvFragment_ReichtDieAusnahmenAlsUmgebungDurch
+  #  0  TestSliceMvFragment_TraegtDieFailClosedKante
+  #  1  TestSliceMvAnleitung_NenntDasWerkzeugAnDenZweiStellen
+  #  0  TestSliceMvWerkzeug_IstNichtDerDogfoodPfad
+  grep -oE '^[0-9]+\. ' internal/emit/templates/commands/implement-slice.md | sort | uniq -d | wc -l   # 0 Dubletten
+  grep -cE '^[0-9]+\. ' internal/emit/templates/commands/implement-slice.md                            # 25 Nummern
+  ```
+- **Beobachtungs-Register (`../observations/`):** **Ein neues Verzeichnis, zwei Belege an vorhandenen
+  Einträgen.** Neu angelegt:
+  [`BEO-ALL/lebendes-register-traegt-eine-ueberholte-fundliste`](../observations/BEO-ALL/lebendes-register-traegt-eine-ueberholte-fundliste/observation.md)
+  — ein lebender Norm-Eintrag zählt namentlich die Stellen auf, an denen seine Form noch nicht greift,
+  und das Kommando daneben liefert sie nicht mehr; die Klasse ist neu, ihre zwei Nachbarn sind enger
+  (eine Zahl bzw. eine Aufzählung im **selben** Text). Beleg `evidence/slice-lifecycle-move-geht-ins-ziel.md`
+  in [`BEO-ALL/neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md)
+  (die vier Wächter ohne Fall) und in
+  [`BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel`](../observations/BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel/observation.md)
+  (die wahre, unbewachte Zusage). **Kein Zähler wird gesetzt**, er folgt aus den Dateien — die drei
+  Zahlen mit ihrem Kommando:
+
+  ```sh
+  for s in neuer-waechter-ohne-mutations-fall zusage-ohne-herstellbares-gegenbeispiel \
+           lebendes-register-traegt-eine-ueberholte-fundliste; do
+    printf '%-52s %s\n' "$s" "$(ls docs/plan/planning/observations/BEO-ALL/$s/evidence/*.md | wc -l)"
+  done
+  # neuer-waechter-ohne-mutations-fall                        7
+  # zusage-ohne-herstellbares-gegenbeispiel                   3
+  # lebendes-register-traegt-eine-ueberholte-fundliste        1
+  ```
+
+  Der zweite Eintrag erreicht mit diesem Beleg die Schwelle; **den Ausgang weist der Lese-Schritt der
+  Wellen-Closure zu**, nicht diese Notiz.
+- **Folge-Slices:** **keiner aus diesem Vorgang geschnitten.** Die vier benannten Grenzen liegen als
+  Belege im Register; ob eine davon einen eigenen Schnitt bekommt, entscheidet der Lese-Schritt der
+  [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md)-Closure.
+- **Risiken aus §6:** drei Risiken, drei Ausgänge — **zweimal *entfallen***, **einmal *weiter
+  offen***, jeder mit seiner Begründung in §6.
+- **Drei Paarungen:** von der
+  [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md)-Closure getragen (dieser Slice ist
+  ihr Mitglied), **hier nicht geprüft**. Was sie vorfindet, ist gelegt: kein `liegt in`-Feld in §7 —
+  nichts verkörpert, also keine Anker-Paarung; kein Folge-Slice genannt, also keine
+  Folge-Slice-Paarung; und jede hier genannte Beobachtung existiert als Verzeichnis mit nicht leerem
+  `evidence/`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
