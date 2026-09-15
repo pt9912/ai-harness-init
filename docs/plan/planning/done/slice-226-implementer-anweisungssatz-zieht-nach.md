@@ -327,7 +327,7 @@ Backticks).
   ```
 - **Folge-Slices:** keiner geschnitten — das ist Planner-Arbeit. **Ein Zwilling wird frei:**
   [slice-lifecycle-move-geht-ins-ziel](../done/slice-lifecycle-move-geht-ins-ziel.md) liegt in
-  `open/` und ist Mitglied von [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md); sein
+  `open/` und ist Mitglied von [welle-emittierte-werkzeuge](welle-emittierte-werkzeuge.md); sein
   Kopf führt **diesen** Slice als den benannten Ausgang der **ausgeführten** Fassung und wartet
   damit auf ihn (Welle §5: *erst die ausgeführte Fassung, dann die emittierte*). Mit dieser Closure
   ist die ausgeführte Seite gesetzt.
@@ -337,7 +337,7 @@ Backticks).
   trat nicht ein; kein Sprung lag zwischen Schnitt und Ausführung — die zwei Messungen stehen in
   §6), **einmal *weiter offen*** (der fehlende Wächter, ins Register).
 - **Drei Paarungen:** **hier gefahren**, weil dieser Slice **kein** Wellen-Mitglied ist — sein
-  `Welle:`-Feld sagt *ohne Welle*, und [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md)
+  `Welle:`-Feld sagt *ohne Welle*, und [welle-emittierte-werkzeuge](welle-emittierte-werkzeuge.md)
   §6 führt ihn als berührten, nicht aufgenommenen Zwilling. (a) **Anker-Paarung:** kein
   `liegt in`-Feld, nichts verkörpert, kein Gegenstand. (b) **Folge-Slice-Paarung:** der genannte
   Zwilling existiert als Datei im Planning-Lifecycle. (c) **Register-Paarung:** jede hier genannte

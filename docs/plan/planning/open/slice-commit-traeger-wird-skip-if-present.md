@@ -13,7 +13,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 **Welle:** ohne Welle. Sein Closure-Trigger fordert nichts, was die DoD unten nicht schon belegt —
 kein repo-weiter Beleg, kein Replay; damit fehlt das *Mehr*, an dem sich eine Welle entscheidet
 (Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht). Er ist **kein** Mitglied
-von [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md): deren vier Mitglieder liegen oder
+von [welle-emittierte-werkzeuge](../done/welle-emittierte-werkzeuge.md): deren vier Mitglieder liegen oder
 lagen bei ihrer Eröffnung fest, und dieser Vorgang entstand erst aus dem Architect-Lauf, der sie
 schließt.
 

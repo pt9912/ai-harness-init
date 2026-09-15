@@ -11,7 +11,7 @@ Setzung 1 — ein freier Slug in lowercase-Kebab-Case, der den **Gegenstand** ne
 der Anweisungssatz-Grenze.
 
 **Welle:** ohne Welle. Der Gegenstand ist eine **Eigentums-Aussage**, kein Werkzeug:
-[welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md) §1 bindet ihre Mitgliedschaft an die
+[welle-emittierte-werkzeuge](../done/welle-emittierte-werkzeuge.md) §1 bindet ihre Mitgliedschaft an die
 Frage, ob eine **vorgeschriebene Operation** im Ziel ein Werkzeug hat — eine Aussage darüber, welche
 Rolle eine Datei schreiben darf, ist keine Operation, und ihr Beleg wäre kein Lauf von
 [`make full-smoke`](../../../../harness/sensors/full-smoke.md). Wäre dieser Slice ein Mitglied,

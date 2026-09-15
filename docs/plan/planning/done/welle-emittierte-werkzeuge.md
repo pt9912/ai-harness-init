@@ -9,10 +9,10 @@ zwei Positionen, nicht drei.
 
 **Zielmeilenstein:** kein Meilenstein-Bezug. Der klassen-nächste ist M3 (*durchsetzender,
 phasierter Harness — Hooks + Command-Guard + Workflow-Anleitung emittiert*); er ist **erreicht**, sein
-Trigger nennt [welle-04](done/welle-04-durchsetzung-und-emission.md) und
-[welle-05](done/welle-05-bootstrap-phasen.md) und wird von dieser Welle nicht erneut gefahren — eine
+Trigger nennt [welle-04](welle-04-durchsetzung-und-emission.md) und
+[welle-05](welle-05-bootstrap-phasen.md) und wird von dieser Welle nicht erneut gefahren — eine
 Welle, die die Klasse einer erreichten Stufe fortsetzt, ist nicht ihr Beleg. M6
-([`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)) ist die
+([`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)) ist die
 Erfassungsschicht, eine andere Klasse. Ein eigener Meilenstein wird hier nicht geschnitten: Er endet
 nach Modul 6 durch **externe** Bestätigung (Audit, Release, Kunde), und eine solche nennt kein
 Kriterium dieser Welle — ihr stärkster Beleg ist ein repo-interner Smoke.
@@ -31,29 +31,29 @@ vorschreiben, hat dort ein Werkzeug — oder einen Satz, der die Lücke benennt.
 
 Der Gegenstand liegt auf der **emittierten** Ebene, nicht im Dogfood: Was `ai-harness-init` in ein
 fremdes Repo schreibt, wird gegen das gehalten, was es dort zu tun verlangt. Zwei Anforderungen
-tragen ihn — [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)
+tragen ihn — [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)
 (die Durchsetzungsschicht: Stop-Hook, Gate-Nachweis, Command-Guard) und
-[`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) (die
+[`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) (die
 Anleitung: die Workflow-Commands). Wo eine Operation ohne Werkzeug bleibt, ist der Ausgang nach
-[`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) ein
+[`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) ein
 **benannter Satz** — keine stillschweigende Zusage.
 
 **Was das Ziel heute bekommt.** Gemessen am Emit-Baum, nicht am Prosa-Text: die Fragmente im
 Fragment-Verzeichnis des Ziels (Vorlagen unter
-[`internal/emit/templates/enforce/`](../../../internal/emit/templates/enforce/) sowie der im Code
+[`internal/emit/templates/enforce/`](../../../../internal/emit/templates/enforce/) sowie der im Code
 gebaute Doc-Gate-Block), dazu das sprachgebundene Fragment, die drei Hooks
 `.claude/hooks/{stop-require-gates,pretooluse-command-guard,span-emit}.sh`
 (`grep -c '\.sh", "\.claude/hooks/' internal/emit/enforce.go` → **3**), die `doc-*`-Familie aus dem
 tool-generierten `d-check.mk`, und der **Träger** in `.harness/state/bin/ai-harness-init`, der
 `archive-welle`, `span-report`, `vendor-baseline` und `add-lang` als Unterkommandos führt. Die Zahl
 ist kein Erwartungswert
-([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2).
 
 **Die Lücke dieses Zuschnitts ist die fehlende Zündung, nicht der fehlende Ausweg.** Der emittierte
 Anweisungssatz ist an mehreren Stellen **selbstkonsistent**: er verlangt ein Werkzeug *und* liefert
 den ehrlichen Ausgang mit. Am deutlichsten in
-[`internal/emit/templates/commands/close-welle.md`](../../../internal/emit/templates/commands/close-welle.md)
+[`internal/emit/templates/commands/close-welle.md`](../../../../internal/emit/templates/commands/close-welle.md)
 Schritt 4: *„Die Operation gehört in ein Werkzeug, nicht in Handarbeit"* — gefolgt von *„Hat dein
 Repo das Werkzeug nicht, ist die Bedingung nicht eingetreten; **das** gehört als Feststellung in die
 Results-Notiz"*. Der Träger **kann** die Archivierung; im Ziel fehlt allein der Weg zu ihm: es gibt
@@ -72,13 +72,13 @@ git grep -c 'archive-welle' -- internal/emit internal/gen | wc -l
 git grep -c 'commit-msg' -- internal/ | wc -l
 ```
 
-**Die Messung trägt als Eigenschaft, nicht als Betrag** ([`MR-058`](../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)
+**Die Messung trägt als Eigenschaft, nicht als Betrag** ([`MR-058`](../../../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)
 Setzung 2): Der schreibende Vorgang — diese Welle — **bewegt ihre eigene Bezugsmenge**, weil jedes
 ihrer vier Mitglieder gerade in `internal/` schreibt. Was die vier Kommandos **zum Schnitt** zeigten:
 *kein Ziel kannte den Vorlauf-Wächter, den Verweis-Nachzug, den Archivierungs-Träger oder den
 Kennungs-Wächter* — das ist die Eigenschaft, auf der die Auswahl der vier Mitglieder ruht. Die vier
 Beträge sind darum **nicht** angeführt: sie galten für den Stand vor dem ersten Mitglied und in
-keinem Moment danach ([`MR-025`](../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+keinem Moment danach ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 1 — die Kommandos bleiben, sie sind der Weg zu der Eigenschaft; der Betrag fällt).
 
 **Drei Klassen, und nur die erste wird gebaut.** *Klasse 1* — der emittierte Prozess schreibt die
@@ -94,10 +94,10 @@ Mensch ohne Rückfrage sagen kann, ob er eingetreten ist; ein Datum darf erwähn
 werden, aber nie Trigger sein. Und der **Start**-Trigger ist **kein Ergebnis
 dieser Welle**: Steht er in der Slice-Liste unten, ist er falsch platziert.
 
-- **[welle-13](done/welle-13-regeln-bekommen-ihren-sensor.md) liegt in `done/`** — beobachtbar
+- **[welle-13](welle-13-regeln-bekommen-ihren-sensor.md) liegt in `done/`** — beobachtbar
   ohne Rückfrage: `ls docs/plan/planning/done/welle-13-*` führt Plan-Datei und Ergebnis-Notiz.
   **Tragend**, nicht ordnend: diese Welle berührt die Vorlagen unter
-  [`internal/emit/templates/`](../../../internal/emit/templates/) und die Fragmente, die daraus ins
+  [`internal/emit/templates/`](../../../../internal/emit/templates/) und die Fragmente, die daraus ins
   Ziel gehen, und `welle-13` bewegt die Gate-Konfiguration des Dogfoods selbst (Modul-Liste, `vcs`/`commits`)
   — die Fläche soll ruhen, während sie sich bewegt.
 - Keine weitere Bedingung. **Die Welle war nie in der Vorschau *Nächste Wellen*** — sie ist hier
@@ -115,9 +115,9 @@ einzelnen Slice-DoDs benennen; kann er das nicht, liegt keine Welle vor.
   benannte Lücke. Das *Mehr* gegenüber jeder Slice-DoD: kein Mitglied führt die Vollständigkeit der
   Menge, jedes nur seinen Gegenstand.
 - **`make full-smoke` fährt die neu emittierten Werkzeuge im gebootstrappten Ziel einmal durch.**
-  Ein Werkzeug, das nur in [`internal/emit/`](../../../internal/emit/) existiert und im Ziel nicht
+  Ein Werkzeug, das nur in [`internal/emit/`](../../../../internal/emit/) existiert und im Ziel nicht
   läuft, schließt die Welle nicht — die Zusage
-  [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) ist repo-weit, und kein
+  [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) ist repo-weit, und kein
   Mitglied trägt sie.
 - Alle Slices dieser Welle liegen in `done/`.
 - `make gates` grün.
@@ -140,17 +140,17 @@ Mitglieder nach, sie vergibt sie nicht.
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| [slice-vorlauf-waechter-geht-ins-ziel](done/slice-vorlauf-waechter-geht-ins-ziel.md) | Der Vorlauf-Wächter der zwei history-lesenden Targets geht ins Ziel | [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
-| [slice-lifecycle-move-geht-ins-ziel](done/slice-lifecycle-move-geht-ins-ziel.md) | Der Lifecycle-Move zieht seine Verweise im Ziel nach | [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) |
-| [slice-174-archivierung-emittieren](done/slice-174-archivierung-emittieren.md) | Ein gebootstrapptes Ziel erreicht die Wellen-Archivierung | [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) |
-| [slice-kennungs-waechter-geht-ins-ziel](done/slice-kennungs-waechter-geht-ins-ziel.md) | Der Traceability-Constraint bekommt im Ziel einen Träger | [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
+| [slice-vorlauf-waechter-geht-ins-ziel](slice-vorlauf-waechter-geht-ins-ziel.md) | Der Vorlauf-Wächter der zwei history-lesenden Targets geht ins Ziel | [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
+| [slice-lifecycle-move-geht-ins-ziel](slice-lifecycle-move-geht-ins-ziel.md) | Der Lifecycle-Move zieht seine Verweise im Ziel nach | [`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) |
+| [slice-174-archivierung-emittieren](slice-174-archivierung-emittieren.md) | Ein gebootstrapptes Ziel erreicht die Wellen-Archivierung | [`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) |
+| [slice-kennungs-waechter-geht-ins-ziel](slice-kennungs-waechter-geht-ins-ziel.md) | Der Traceability-Constraint bekommt im Ziel einen Träger | [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
 
 **Ein Mitglied steht schon und wurde nicht neu geschnitten.**
-[slice-174](done/slice-174-archivierung-emittieren.md) lag in `next/` und trägt denselben
+[slice-174](slice-174-archivierung-emittieren.md) lag in `next/` und trägt denselben
 Gegenstand; sein Kopf-Feld ist auf diese Welle gezogen, statt einen zweiten Slice daneben zu legen.
 Sein Liefer-Punkt bleibt; seine Begründung ist gezogen — der emittierte Satz ist selbstkonsistent
 (§1), offen ist die Zündung. **Das fertige Muster dafür steht im Baum**, es muss nicht erfunden
-werden: [`internal/emit/templates/enforce/erfassung.mk`](../../../internal/emit/templates/enforce/erfassung.mk)
+werden: [`internal/emit/templates/enforce/erfassung.mk`](../../../../internal/emit/templates/enforce/erfassung.mk)
 Ziel `span-report` setzt eine Variable auf den Trägerpfad, probiert sie samt `.exe`-Endung und
 **sagt es**, wenn der Träger fehlt. Für `archive-welle` heißt das: kein Prerequisite (der Dogfood
 hängt dort `host-bin` an, und der Bau hat im Ziel keinen Gegenstand — der Träger wird abgelegt, nicht
@@ -161,19 +161,19 @@ gebaut), keine neue Logik, und die zwei Sperren des Unterkommandos kommen mit de
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Roadmap-Struktur: fünf Abschnitte.
 
-- **Wird blockiert von:** [welle-13](done/welle-13-regeln-bekommen-ihren-sensor.md) — der
+- **Wird blockiert von:** [welle-13](welle-13-regeln-bekommen-ihren-sensor.md) — der
   Start-Trigger in §2, tragend.
 - **Blockiert:** nichts. Kein offener Slice nennt diese Welle als Vorbedingung.
 - **Berührt, aber bindet nicht — die Dogfood-Zwillinge.** Vier offene Slices fassen dieselben
   Vorlagen auf der **Dogfood**-Seite an; die Mitglieder dieser Welle übernehmen ihr Ergebnis, statt
   es vorwegzunehmen:
-  [slice-226](done/slice-226-implementer-anweisungssatz-zieht-nach.md) (der ausgeführte
+  [slice-226](slice-226-implementer-anweisungssatz-zieht-nach.md) (der ausgeführte
   `implement-slice.md` gegen die Ziel-Fassung),
-  [slice-153](open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md) (die zwei ausgeführten
+  [slice-153](../open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md) (die zwei ausgeführten
   Wellen-Anweisungssätze gegen die Abschnitte, die die Roadmap führt),
-  [slice-215](done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) (der **Träger**
+  [slice-215](slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) (der **Träger**
   des Commit-Kennungs-Wächters — er entscheidet den Kanal, den ein emittierter Wächter erben würde)
-  und [slice-ortswechsel-zieht-sein-zustandsfeld-nach](open/slice-ortswechsel-zieht-sein-zustandsfeld-nach.md)
+  und [slice-ortswechsel-zieht-sein-zustandsfeld-nach](../open/slice-ortswechsel-zieht-sein-zustandsfeld-nach.md)
   (die dritte Hälfte eines Ortswechsels: das bewachte Zustandsfeld).
 - **Zwei Ebenen, zwei Verträge.** `slice-226` und `slice-215` schreiben **Dogfood**-Dateien; die
   Mitglieder dieser Welle schreiben **Emissions**-Vorlagen. Die zwei dürfen nicht auseinanderlaufen,
@@ -190,14 +190,14 @@ der Closure-Trigger unerreichbar wird.
 
 - `*-freshness.sh` (`component`/`go`/`cpp`/`baseline`) — die Image-Pins und die zwei Upstream-Achsen
   sind eine Aussage über die **gepinnten Werkzeuge dieses Repos**; der Ziel-Fall hängt an
-  [slice-090](open/slice-090-freshness-audit-im-ziel.md), und ein zweiter Träger daneben wäre eine
+  [slice-090](../open/slice-090-freshness-audit-im-ziel.md), und ein zweiter Träger daneben wäre eine
   zweite Fassung derselben Achse.
 - `mutate.sh` — der **Treiber** ist generisch, der **Fallsatz** ist eine Repo-Aussage: `test/mutations/`
   hängt an den Zähnen *dieses* Repos, und ein mitgelieferter Fallsatz behauptete Fälle, die es im
-  Ziel nicht gibt ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+  Ziel nicht gibt ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 - `comment-claims.sh` — er urteilt über Kommentare, deren Bestand das Ziel selbst erst schreibt, und
   ist an die Sensor-Namen dieses Repos gebunden; sein Prüfbereich ist offen
-  ([slice-070](open/slice-070-comment-claims-pruefbereich.md)).
+  ([slice-070](../open/slice-070-comment-claims-pruefbereich.md)).
 - `sessionstart-inject-regelwerk.sh` — das Ziel vendort die Baseline ebenfalls, der Injektor ist damit
   **übertragbar**; er ist aber ein **Angebot an den Agenten**, keine Operation, die der emittierte
   Satz vorschreibt — die Mitgliedschaft dieses Zuschnitts entscheidet die Vorschrift, nicht die
@@ -212,9 +212,9 @@ gegen den Baum, den *es* erzeugt. Ein Ziel kann sie nicht fahren — es hat kein
 Klasse wird als **Klasse** benannt und nicht einzeln aufgeführt; die Zugehörigkeit entscheidet der
 Gegenstand („prüft den Emitter"), nicht der Dateiname.
 
-**Die drei Slices am emittierten `d-check.yml`.** [slice-210](open/slice-210-planning-modul-im-emittierten-doc-gate.md),
-[slice-211](open/slice-211-codepaths-im-emittierten-doc-gate.md) und
-[slice-emittierte-gate-vorlage-traegt-targets-und-reviews](open/slice-emittierte-gate-vorlage-traegt-targets-und-reviews.md)
+**Die drei Slices am emittierten `d-check.yml`.** [slice-210](../open/slice-210-planning-modul-im-emittierten-doc-gate.md),
+[slice-211](../open/slice-211-codepaths-im-emittierten-doc-gate.md) und
+[slice-emittierte-gate-vorlage-traegt-targets-und-reviews](../open/slice-emittierte-gate-vorlage-traegt-targets-und-reviews.md)
 entscheiden die **Modul-Liste** der emittierten Startkonfiguration. Das ist eine andere Fläche als
 die der Mitglieder hier: diese entscheiden **Ziele und Wächter**, jene **Module**. Sie bleiben
 wellenlos, und die Auswahl der Mitglieder kreuzt sie nicht.
@@ -228,8 +228,8 @@ fehlende Fähigkeit vorsieht.
 die Emission, die geschrieben wird — dieselbe Linie, die Modul 6 für die Archivierung zieht.
 
 **Der Nachzug des lokalen Anweisungssatzes — geprüft und ausgeschlossen, mit Kennung.**
-[slice-153](open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md) und
-[slice-226](done/slice-226-implementer-anweisungssatz-zieht-nach.md) tragen ihn auf der
+[slice-153](../open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md) und
+[slice-226](slice-226-implementer-anweisungssatz-zieht-nach.md) tragen ihn auf der
 **Dogfood**-Seite; die Welle nimmt sie **nicht** auf, und das ist eine Entscheidung, kein
 Übersehen. Ihr Gegenstand ist die **emittierte** Ebene, und ihr Closure-Trigger fährt die Werkzeuge
 im Ziel — die zwei Slices fahren Texte. Die Prüfung, ob sie den Gegenstand deckten, ist gefahren:
@@ -244,7 +244,7 @@ wird hier ausdrücklich **nicht** mitgeschnitten.
 **Die zwei `close-welle.md` weichen in Schritt 2 auseinander — benannter Posten, ohne Kennung.**
 Gemessen über die zwei Fassungen desselben Ablaufs:
 
-| Schritt 2 | [`.claude/commands/close-welle.md`](../../../.claude/commands/close-welle.md) | [`internal/emit/templates/commands/close-welle.md`](../../../internal/emit/templates/commands/close-welle.md) |
+| Schritt 2 | [`.claude/commands/close-welle.md`](../../../../.claude/commands/close-welle.md) | [`internal/emit/templates/commands/close-welle.md`](../../../../internal/emit/templates/commands/close-welle.md) |
 |---|---|---|
 | Gegenstand | **Carveout-Audit** — eine Klasse | **Trigger-Audit der Welle** — drei Klassen |
 | genannte Module | 5, 6, 7 | 4, 5, 6, 7, 13 |
@@ -254,8 +254,8 @@ Artefaktklassen tragen einen Trigger, alle drei werden geprüft"*) — namentlic
 Reifestufen-Zweig und den Entscheidungs-Zweig. Das ist **kein** Posten dieser Welle: die Welle
 fährt Werkzeuge im Ziel; dieser Befund ist eine **Drift zwischen zwei Textartefakten** und eine
 Unvollständigkeit gegen das Regelwerk. Er liegt auf derselben Fläche wie die zwei Slices darüber,
-und **keiner von beiden trägt den Schritt**: [slice-153](open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md)
-zieht die Roadmap-Abschnittsnamen nach, [slice-226](done/slice-226-implementer-anweisungssatz-zieht-nach.md)
+und **keiner von beiden trägt den Schritt**: [slice-153](../open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md)
+zieht die Roadmap-Abschnittsnamen nach, [slice-226](slice-226-implementer-anweisungssatz-zieht-nach.md)
 die Plan-vor-Code-Blöcke. Eine **Kennung fehlt** — der Posten ist heute an keiner Datei; die Welle
 schneidet dafür keinen vierten Slice, weil ein Nachzug über zwei Ebenen desselben Ablaufs ein
 **eigener Vorgang** ist. Er wird hier benannt und geht über §3 in die Ergebnis-Notiz, damit er nicht

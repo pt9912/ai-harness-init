@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md). Die Welle trägt das
+**Welle:** [welle-emittierte-werkzeuge](welle-emittierte-werkzeuge.md). Die Welle trägt das
 *Mehr* über dieser DoD: ihr Closure-Trigger fährt die neu emittierten Werkzeuge im gebootstrappten
 Ziel einmal durch (`make full-smoke`) — einen Beleg, den kein Punkt dieser DoD führt
 (Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht).
@@ -111,7 +111,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). **Hier nicht geprüft und nicht fällig:** dieses Repo führt Wellen, und dieser Slice ist Mitglied von [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md) — die drei Paarungen trägt ihre Closure (§7).
+- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). **Hier nicht geprüft und nicht fällig:** dieses Repo führt Wellen, und dieser Slice ist Mitglied von [welle-emittierte-werkzeuge](welle-emittierte-werkzeuge.md) — die drei Paarungen trägt ihre Closure (§7).
 
 ## 3. Plan (vor Code)
 
@@ -302,7 +302,7 @@ Backticks).
   ist mit [ADR-0033](../../adr/0033-wellen-archivierung-als-unterkommando.md) Festlegung 4
   beantwortet · die Tag-Adresse ist nachgezogen), **einmal *eingetreten*** (die Text-Hälfte blieb
   eine Übergabe; die offene Adopter-Seite trägt der Folge-Slice).
-- **Drei Paarungen:** von der [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md)-Closure
+- **Drei Paarungen:** von der [welle-emittierte-werkzeuge](welle-emittierte-werkzeuge.md)-Closure
   getragen (dieser Slice ist ihr Mitglied), **hier nicht geprüft** — der §2-Schlußpunkt dieses Plans
   bleibt darum offen. Was sie vorfindet, ist gelegt: kein `liegt in`-Feld in §7 — nichts verkörpert,
   also keine Anker-Paarung; der eine Folge-Slice existiert als Datei in `next/`; und jede hier

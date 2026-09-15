@@ -9,7 +9,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md). Die Welle trägt das
+**Welle:** [welle-emittierte-werkzeuge](welle-emittierte-werkzeuge.md). Die Welle trägt das
 *Mehr* über dieser DoD: ihr Closure-Trigger fährt die neu emittierten Werkzeuge im gebootstrappten
 Ziel einmal durch (`make full-smoke`) — einen Beleg, den kein Punkt dieser DoD führt
 (Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht).
@@ -351,7 +351,7 @@ Backticks).
   Folge-Slice-Paarung der Wellen-Closure fällt.
 - **Risiken aus §6:** drei Risiken, drei Ausgänge — **einmal *eingetreten*** (mit der Kennung des
   Folge-Slices), **zweimal *entfallen***, jeder mit seiner Begründung in §6.
-- **Drei Paarungen:** von der [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md)-Closure
+- **Drei Paarungen:** von der [welle-emittierte-werkzeuge](welle-emittierte-werkzeuge.md)-Closure
   getragen (dieser Slice ist ihr Mitglied), **hier nicht geprüft**. Was sie vorfindet, ist gelegt:
   **ein** Folge-Slice genannt und als Datei vorhanden (Zeile darüber); keine `liegt in`-Zeile —
   nichts verkörpert, also keine Anker-Paarung; und jede hier genannte Beobachtung existiert als

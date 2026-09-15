@@ -9,7 +9,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md). Die Welle trägt das
+**Welle:** [welle-emittierte-werkzeuge](welle-emittierte-werkzeuge.md). Die Welle trägt das
 *Mehr* über dieser DoD: ihr Closure-Trigger fährt die neu emittierten Werkzeuge im gebootstrappten
 Ziel einmal durch (`make full-smoke`) — einen Beleg, den kein Punkt dieser DoD führt
 (Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht).
@@ -132,7 +132,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). **Hier nicht geprüft und nicht fällig:** dieses Repo führt Wellen, und der Slice ist Mitglied von [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md) — den Lese-Schritt trägt ihre Closure.
+- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). **Hier nicht geprüft und nicht fällig:** dieses Repo führt Wellen, und der Slice ist Mitglied von [welle-emittierte-werkzeuge](welle-emittierte-werkzeuge.md) — den Lese-Schritt trägt ihre Closure.
 
 ## 3. Plan (vor Code)
 
@@ -334,11 +334,11 @@ Backticks).
   Wellen-Closure zu**, nicht diese Notiz.
 - **Folge-Slices:** **keiner aus diesem Vorgang geschnitten.** Die vier benannten Grenzen liegen als
   Belege im Register; ob eine davon einen eigenen Schnitt bekommt, entscheidet der Lese-Schritt der
-  [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md)-Closure.
+  [welle-emittierte-werkzeuge](welle-emittierte-werkzeuge.md)-Closure.
 - **Risiken aus §6:** drei Risiken, drei Ausgänge — **zweimal *entfallen***, **einmal *weiter
   offen***, jeder mit seiner Begründung in §6.
 - **Drei Paarungen:** von der
-  [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md)-Closure getragen (dieser Slice ist
+  [welle-emittierte-werkzeuge](welle-emittierte-werkzeuge.md)-Closure getragen (dieser Slice ist
   ihr Mitglied), **hier nicht geprüft**. Was sie vorfindet, ist gelegt: kein `liegt in`-Feld in §7 —
   nichts verkörpert, also keine Anker-Paarung; kein Folge-Slice genannt, also keine
   Folge-Slice-Paarung; und jede hier genannte Beobachtung existiert als Verzeichnis mit nicht leerem
