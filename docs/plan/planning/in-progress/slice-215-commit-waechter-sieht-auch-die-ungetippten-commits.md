@@ -155,14 +155,15 @@ Aussagen-Berührung steht hier gar nicht.
 | [`harness/README.md`](../../../../harness/README.md) | update | Reichweite und Grenze (DoD (3)) |
 | `.claude/agents/*.md`, [`.harness/skills/reviewer.md`](../../../../.harness/skills/reviewer.md) | **nicht durch diesen Slice** | fremdes Rollen-Eigentum ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)), §1 |
 
-**Die Form für die `git`-eigene Fassung steht in einem Nachbar-Repo, und ihr Urteil ist gemessen.**
-`/Development/pg-change-feed/.githooks/commit-msg` spiegelt die zwei Hälften seines Standing-Gates
-als Regex auf `$1` — **inklusive** der Merge-/Revert-Ausnahme, damit er keinen Commit zurückweist,
-den das Gate zulässt — und läuft **bash-only**, ohne Docker. Er ist dort ausdrücklich **optional
-und nicht-durchsetzend**: `core.hooksPath` ist lokale Konfiguration, die nicht mit dem Klon reist,
-und `--no-verify` umgeht ihn; seine Abwägung steht unter
-`/Development/pg-change-feed/docs/plan/adr/0062-lokaler-commit-msg-hook-ergaenzt-standing-gate.md`.
-**Die Form abschreiben, das Ergebnis nicht übernehmen** — die Entscheidung fällt an diesem Baum.
+**Die Form ist an einem Nachbar-Repo erprobt, und ihr Urteil ist gemessen — beschrieben, nicht
+verlinkt.** Ein Nachbar-Repo desselben Nutzers führt einen `commit-msg`-Hook, der die zwei Hälften
+seines Standing-Gates als Regex auf `$1` spiegelt — **inklusive** der Merge-/Revert-Ausnahme, damit
+er keinen Commit zurückweist, den das Gate zulässt — und **bash-only** läuft, ohne Docker. Er ist
+dort ausdrücklich **optional und nicht-durchsetzend**: `core.hooksPath` ist lokale Konfiguration,
+die nicht mit dem Klon reist, und `--no-verify` umgeht ihn. **Die Form abschreiben, das Ergebnis
+nicht übernehmen** — die Entscheidung fällt an diesem Baum; einen **maschinen-lokalen Pfad** auf
+jenes Checkout trägt dieses Dokument nicht, er löst für niemanden sonst auf
+(`hostpaths` ist der Wächter dieser Klasse und in diesem Repo nicht adoptiert, s. [`AGENTS.md`](../../../../AGENTS.md) §3.1).
 
 ## 4. Trigger
 

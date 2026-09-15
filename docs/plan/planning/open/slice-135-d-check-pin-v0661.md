@@ -93,8 +93,9 @@ eigenen Sonde. Geerbt wird nichts.**
 ### Sechs Messungen, jede neben ihrem Kommando
 
 Alle in diesem Planungslauf selbst gefahren, am 2026-08-29. Die Läufe gegen den Baum benutzen den
-Arbeitsbaum dieses Repos, netzlos (`--network none`), Mount `:ro`; der Klon des Werkzeugs unter
-`/Development/d-check` ist eine **Fremdquelle** und kein Artefakt dieses Repos (§6).
+Arbeitsbaum dieses Repos, netzlos (`--network none`), Mount `:ro`; ein maschinen-lokaler Klon des
+Werkzeugs ist eine **Fremdquelle** und kein Artefakt dieses Repos (§6) — sein Ort steht deshalb
+nicht in diesem Plan, sondern als Variable im Kommando unten.
 
 1. **Der Digest ist dreifach belegt, und alle drei Beine sind hier gefahren.**
    `sha256:117a3503b2e721aee35dad85b477b6e29b497721f67b7d042b16daef4410a7f1` — aus der Registry
@@ -102,8 +103,8 @@ Arbeitsbaum dieses Repos, netzlos (`--network none`), Mount `:ro`; der Klon des 
    lokalen Bestand
    (`docker image inspect --format '{{index .RepoDigests 0}}' ghcr.io/pt9912/d-check:v0.66.1`) und
    als **Fremdquelle** aus dem Benutzerhandbuch des Werkzeugs
-   (`grep -rn '117a3503' /Development/d-check --include='*.md'` → **1** Zeile, der Pin-Block des
-   Handbuchs). Drei Wege, ein Wert
+   (`D=<maschinen-lokaler Klon des Werkzeugs>; grep -rn '117a3503' "$D" --include='*.md'` → **1**
+   Zeile, der Pin-Block des Handbuchs). Drei Wege, ein Wert
    ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
 2. **Der Trockenlauf vor dem Pin zeigt eine Differenz von null Befunden.** `make docs-check`
    (gepinnt) und `make docs-check DCHECK_DIGEST=sha256:117a3503…a7f1` über denselben unveränderten
@@ -362,8 +363,8 @@ dasteht.
   Gegenmessung auf Nicht-Null-Basis aus DoD (2) liefert identische Befundmengen | eingetreten: sie
   liefert eine Differenz, und §4 greift>
 - **Die Bilanz ist gegen ein Fremd-Repo gemessen, nicht gegen ein Gate.** Kein Modul dieses Repos
-  vergleicht die Befundklassen zweier d-check-Versionen; wer den Klon unter `/Development/d-check`
-  nicht hat, kann §1 Messung 5 nicht nachvollziehen. Die konstruierte Sonde aus DoD (3) und die
+  vergleicht die Befundklassen zweier d-check-Versionen; wer den Klon nicht hat, kann §1 Messung 5
+  nicht nachvollziehen. Die konstruierte Sonde aus DoD (3) und die
   Gegenmessung aus DoD (2) sind deshalb die Teile, die **ohne** ihn reichen. Dass das Werkzeug ein
   Nachbar-Repo ist und keine Fremd-Software, macht die Lage zugleich zu einer **Anforderung** statt
   zu einer Grenze. — **Ausgang:** <entfallen: die zwei repo-eigenen Messungen tragen die Bilanz
