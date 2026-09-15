@@ -55,7 +55,7 @@ Adaptions-Block („MR-Block") in `harness/conventions.md`; die workflow-relevan
 9. Die Implementation erhält den Slice **in `in-progress/`** (Planner→Implementation-Übergabe,
    Modul 8; `next → in-progress` = „Implementer beginnt", Modul 5). Liegt er noch in `open/`,
    zuerst dorthin verschieben (`open → next → in-progress`). Jeder Übergang läuft über
-   `make slice-mv SLICE=<slice-NNN> TO=<next|in-progress>` — es bewegt die Datei per `git mv`,
+   `make slice-mv SLICE=slice-<Kennung> TO=<next|in-progress>` — es bewegt die Datei per `git mv`,
    committet den reinen Move **sofort als eigenen Commit** (Hard Rule 3.3: kein Byte Inhalt
    geändert, die Rename-Erkennung greift) und zieht danach reale Verweise nach: **eingehend** jede
    gemessene Präfix-Form eines Verweises auf die bewegte Datei, repo-weit; **ausgehend** präfixlose
@@ -79,6 +79,21 @@ Adaptions-Block („MR-Block") in `harness/conventions.md`; die workflow-relevan
     `edit`) — Geschwister-Slices lassen Pläne altern (gelöschte Pfade, verschobene
     Lifecycle-Dateien). Drift zuerst abgleichen; keinen veralteten Plan blind abarbeiten.
 13. Die kleinste sinnvolle Änderung gegen die DoD planen. Erst planen, dann coden.
+    **Die Testdatei-Zeile der Plan-Ausgabe bindet an die Akzeptanzkriterien der in Schritt 3
+    identifizierten Requirement-ID, statt sie zu wiederholen.** Die Zeile zitiert die ID, nicht
+    ihren Text — dieselbe Kennung-statt-Wiederholung-Disziplin wie überall im Korpus. Ohne diese
+    Zeile sagt der Plan nur, *was* sich ändert; mit ihr sagt er zusätzlich, *woran* das Ergebnis
+    gemessen wird — vor dem ersten Diff, nicht erst im Bericht danach.
+    **Betrifft dieselbe Ursache viele gleichrangige Dateien, nennt der Plan sie einmal — nicht pro
+    Datei.** Eine Schnittstellenänderung über viele gleichrangige Aufrufer bekommt eine
+    Begründung, nicht ebenso viele wortgleiche: die Datei-Liste wird zum Muster oder zur
+    Aufzählung ohne Einzel-Begründung. Wortgleiche Begründungen driften beim nächsten Refactor
+    gegeneinander, ein einmal genannter Grund nicht.
+    **Die Plan-Ausgabe in Schritt 4 nennt Out-of-Scope.** Das ist die Schritt-Hälfte einer Regel;
+    ihre Dokument-Hälfte ist §1 *Ziel und Abgrenzung* des Slice-Plans. Der Lauf schreibt fort, was der
+    Plan schon ausschließt — er erfindet die Abgrenzung nicht neu und weitet sie nicht
+    stillschweigend. Nimmt der Lauf etwas mit, das §1 ausschließt, ist das eine
+    **Plan-Änderung vor dem Code**, keine Zeile im Bericht danach.
 
 ## Implementieren und gaten (Modul 9, Schritte 5–6)
 
@@ -90,6 +105,10 @@ Adaptions-Block („MR-Block") in `harness/conventions.md`; die workflow-relevan
 zurück zum **Plan** (13) — den Plan verfeinern, nicht den Kontext neu lesen. Ein Rücksprung zu
 Schritt 1 signalisiert einen Kontext-Defekt. Ein struktureller Fehlschnitt (zu groß / blockiert)
 ist eine Lifecycle-Rücksprungkante (11).
+
+**Der Plan lebt in §3 des Slice-Plans, nicht im Chat-Verlauf.** Was Schritt 4 ausgibt, erweitert
+die Datei-Tabelle aus §3 derselben Datei — „Plan verfeinern" (5→4) und „Plan korrigieren" (6→4)
+schreiben dort fort, und es entsteht kein zweites Artefakt.
 
 ## Pre-completion-Checkliste (Modul 9, Schritt 8 — letzte Handlung der Implementation-Rolle)
 
@@ -130,8 +149,9 @@ ist eine Lifecycle-Rücksprungkante (11).
     trägt er eine Slice-Nummer als Begründung, ein „(… , entschieden)" ohne Anker-Form, oder einen
     Konjunktiv über eine verworfene Alternative bzw. eine noch nicht existierende künftige Änderung
     (**„sobald Slice X das tut …"**)? Herkunft steht nur als **ein** auflösbares Feld in den dort
-    genannten Formen (`LH-*`, `ADR-*`, `· seit welle-<NN>`, wellenlos `· seit slice-<NNN>`) — alles
-    andere ist Zustand, keine Chronik, und wird vor der Übergabe umformuliert statt mitgeschleift.
+    genannten Formen (`LH-*`, `ADR-*`, `· seit welle-<Kennung>`, wellenlos
+    `· seit slice-<Kennung>`) — alles andere ist Zustand, keine Chronik, und wird vor der Übergabe
+    umformuliert statt mitgeschleift.
 
 Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontexten** (Modul 8).
 
@@ -156,7 +176,7 @@ Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontex
     **Planner**: die Closure-Notiz mit einem **Steering-Loop-Eintrag** schreiben (geschärfte Regel ·
     neuer Sensor · benannte Spec-Lücke — Modul 5: der `→ done`-Übergang verlangt einen Lerneintrag,
     nicht nur grüne Gates) und **committen**, dann den Slice `in-progress → done` per
-    `make slice-mv SLICE=<slice-NNN> TO=done` verschieben — ein Lauf, zwei Commits: zuerst der reine
+    `make slice-mv SLICE=slice-<Kennung> TO=done` verschieben — ein Lauf, zwei Commits: zuerst der reine
     Move, danach — getrennt, nur falls welche anfielen — der Verweis-Nachzug (Hard Rule 3.3,
     dieselbe Begründung wie in Schritt 9). Dieselben drei Grenzen bleiben (keine Zustandssätze,
     keine Welle-Plan-Dateien, präfixlose Eingehend-Form unerkannt — `BEO-ALL/verweise-brechen-beim-ortswechsel`). `make docs-check`
@@ -170,7 +190,7 @@ Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontex
     ein neues Verzeichnis `BEO-<KUERZEL>/<slug>/` mit `observation.md` und `state.md` anlegen —
     Kürzel aus der Modus-Deklaration in `harness/conventions.md` **nachschlagen, nicht erfinden**;
     das Register ist zugleich die Vergabestelle für den `<slug>`-Teil. Der Beleg ist
-    **formgebunden**: `evidence/slice-<NNN>.md`, kein Freitext, eine Datei je Auftreten. Geschrieben
+    **formgebunden**: `evidence/slice-<Kennung>.md`, kein Freitext, eine Datei je Auftreten. Geschrieben
     wird er **vor** dem `git mv` — die Slice-Datei liegt dann noch nicht in `done/`, und das ist
     richtig so, weil Move und Inhalt getrennt committen (Hard Rule 3.3). Der Zähler wird **nicht
     gesetzt**, er ist die Zahl der Evidence-Dateien und **folgt** aus ihnen. **Bei null
@@ -179,6 +199,6 @@ Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontex
     diesem Slice** 3× (die Zahl seiner Evidence-Dateien), ist er keine Notiz mehr — er wandert in
     die Steering-Loop-Einträge der laufenden Welle-Closure (`/close-welle`) und wird zur
     verkörperten Regel; läuft gerade keine Welle, löst die Slice-Closure den Lese-Schritt selbst
-    aus, und der Herkunfts-Anker lautet dann `seit slice-<NNN>` statt `seit welle-<NN>`.
+    aus, und der Herkunfts-Anker lautet dann `seit slice-<Kennung>` statt `seit welle-<Kennung>`.
 
 Gates nicht überspringen. Keine Erfolgsmeldung ohne Command-Ausgabe.
