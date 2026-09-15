@@ -2289,6 +2289,163 @@ for frag in harness/mk/apps-api.mk harness/mk/apps-web.mk tools/harness/blocked/
 	fi
 done
 
+# --- Commit-Kennung: das gebootstrappte Ziel erreicht seinen Traeger ------------------
+#
+# WAS DER HAPPY PATH NICHT SIEHT: `make gates` faehrt den Traeger nicht — er ist kein
+# Gate, und keine Kette ruft ihn. Die Kette Aggregator -> Aktivierungs-Fragment -> git
+# entsteht erst im gebootstrappten Ziel; die Go-Stufe liest den TEXT der drei Dateien,
+# nicht ihre Wirkung.
+#
+# DIE AUSSAGEN DIESES ABSCHNITTS, in der Reihenfolge, in der er sie faehrt:
+#   (a) die drei Dateien liegen, der Hook ist ausfuehrbar, und die Aktivierung ist
+#       KEIN Gate: die gates-Kette des Ziels nennt sie nicht,
+#   (b) `make hooks-install` setzt core.hooksPath und nennt den gesetzten Wert,
+#   (c) ROT: eine Message OHNE Kennung faellt am Traeger, und es entsteht kein Commit
+#       — gelesen werden Ausgabe und Exit-Code,
+#   (d) GRUEN: eine Message MIT Kennung geht durch,
+#   (e) DIE ERSTE GRENZE: `git commit --no-verify` geht durch — der Traeger ist ein
+#       Stolperdraht, keine Sandbox,
+#   (f) DIE REICHWEITE STEHT IM ZIEL: das Fragment nennt die zweite Haelfte der
+#       Traceability-Zusage, die kein Commit-Waechter mechanisch pruefen kann.
+#
+# NUR HIER MESSBAR: kein Go-Test faehrt `git`, und ein Lauf auf dem HOST findet den
+# Traeger eines gebootstrappten Repos nicht.
+#
+# ZULETZT IM LAUF, und das ist keine Ordnungsliebe: nach (b) prueft der Traeger JEDEN
+# weiteren Commit dieses Klons. Die uebrigen Abschnitte legen ihre eigenen
+# Smoke-Commits an, und die tragen keine Kennung — ein frueherer Ort risse sie in den
+# Abbruch. Ein frischer Klon ist bis (b) ungeprueft; genau das liest (e).
+#
+# GRENZE dieses Abschnitts: gefahren wird die --lang-go-Variante des Bootstraps. Die
+# drei Dateien kommen aus enforceFiles() und liegen in BEIDEN Bootstrap-Varianten;
+# dass sie auch sprachlos entstehen, misst
+# TestCommitMsgTraeger_LiegtImZielUndRuftDiePruefungDortAuf ueber einen Emit ohne
+# Sprache.
+kennungs_traeger_im_ziel() {
+	local repo="$1" kennung="$2"
+	local hook="$repo/.githooks/commit-msg"
+	local pruefung="$repo/tools/harness/commit-msg-traceability.sh"
+	local frag="$repo/harness/mk/hooks-install.mk"
+
+	if [ ! -f "$frag" ]; then
+		echo "full-smoke: FEHLER — $kennung: das Aktivierungs-Fragment des Commit-Kennungs-Waechters liegt nicht im Ziel (harness/mk/hooks-install.mk)." >&2
+		exit 1
+	fi
+	if [ ! -f "$pruefung" ]; then
+		echo "full-smoke: FEHLER — $kennung: die Pruefung des Traegers liegt nicht im Ziel (tools/harness/commit-msg-traceability.sh) — der Hook ruft damit ein Programm, das es nicht gibt (LH-QA-01)." >&2
+		exit 1
+	fi
+	if [ ! -x "$hook" ]; then
+		echo "full-smoke: FEHLER — $kennung: der Traeger liegt nicht ausfuehrbar ($hook) — git verwirft einen Hook ohne Ausfuehrungsrecht still, und das Ziel haette einen Waechter, der nur so aussieht." >&2
+		exit 1
+	fi
+
+	# (a) KEIN GATE. `make -n` druckt die Kette, ohne sie zu fahren. DIE VORBEDINGUNG
+	# STEHT ZUERST: ueber einer leeren Kette waere "hooks-install steht nicht darin"
+	# still gruen.
+	local kette="" kette_rc=0 fehlt=""
+	kette="$( make --no-print-directory -C "$repo" -n gates 2>&1 )" || kette_rc=$?
+	if [ "$kette_rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: die gates-Kette des Ziels ist nicht lesbar (make -n gates, Exit $kette_rc):" >&2
+		printf '%s\n' "$kette" >&2
+		exit 1
+	fi
+	local noetig
+	for noetig in 'record-gates.sh' 'baseline-verify.sh' 'docker run'; do
+		grep -qF -- "$noetig" <<<"$kette" || fehlt="$fehlt [$noetig]"
+	done
+	if [ -n "$fehlt" ]; then
+		echo "full-smoke: FEHLER — $kennung: die gelesene gates-Kette traegt nicht, was sie tragen muss:$fehlt — der Nicht-Gate-Zahn misst dann einen leeren Pruefbereich." >&2
+		printf '%s\n' "$kette" >&2
+		exit 1
+	fi
+	if grep -qF -- 'hooks-install' <<<"$kette"; then
+		echo "full-smoke: FEHLER — $kennung: die gates-Kette des Ziels nennt hooks-install — die Aktivierung schreibt lokale Konfiguration und prueft nichts (LH-QA-01)." >&2
+		grep -nF -- 'hooks-install' <<<"$kette" >&2
+		exit 1
+	fi
+
+	# (b) DIE AKTIVIERUNG. Der Traeger allein prueft nichts: `core.hooksPath` ist
+	# lokale Konfiguration, und dieses Rezept ist der eine Schritt dazwischen. Gelesen
+	# wird der Wert, den das Rezept selbst aus git zurueckliest — nicht die Absicht.
+	local install_out="" install_rc=0 install_flach=""
+	install_out="$( make --no-print-directory -C "$repo" hooks-install 2>&1 )" || install_rc=$?
+	if [ "$install_rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: make hooks-install endet mit Exit $install_rc — der Traeger ist im gebootstrappten Repo nicht aktivierbar (LH-FA-06). Ausgabe:" >&2
+		printf '%s\n' "$install_out" >&2
+		einordnen "make hooks-install im Ziel ($kennung)" "$install_out"
+		exit 1
+	fi
+	install_flach="$(tr -s '[:space:]' ' ' <<<"$install_out")"
+	if ! grep -qF -- 'core.hooksPath=.githooks' <<<"$install_flach"; then
+		echo "full-smoke: FEHLER — $kennung: make hooks-install meldet nicht den gesetzten core.hooksPath (rot aus falschem Grund?). Ausgabe:" >&2
+		printf '%s\n' "$install_out" >&2
+		exit 1
+	fi
+
+	# (c)-(e) DIE DREI COMMIT-VERSUCHE, je mit dem Exit-Code, den der Fall verlangt.
+	# `--allow-empty` haelt jeden Versuch ohne Baum-Aenderung; die Form ist die
+	# `-m`-Form, weil der Kommando-Zeilen-Matcher des Agenten-Kanals sie nicht
+	# zuverlaessig erkennt und der Traeger am Commit sie darum mitfuehrt.
+	local lauf="" erwartet="" msg="" extra=() out="" rc=0 rot_meldung=""
+	for lauf in rot gruen umgehung; do
+		case "$lauf" in
+			rot)      erwartet="" ; msg="Smoke ohne Kennung" ; extra=() ;;
+			gruen)    erwartet="x"; msg="Smoke mit Kennung LH-FA-01" ; extra=() ;;
+			umgehung) erwartet="x"; msg="Smoke ohne Kennung (Umgehung)" ; extra=(--no-verify) ;;
+		esac
+		out=""
+		if out="$( git -C "$repo" -c user.email=full-smoke@example.invalid -c user.name=full-smoke \
+			commit -q --allow-empty ${extra[@]+"${extra[@]}"} -m "$msg" 2>&1 )"; then
+			rc=0
+		else
+			rc=$?
+		fi
+		if [ -n "$erwartet" ] && [ "$rc" -ne 0 ]; then
+			echo "full-smoke: FEHLER — $kennung: der Commit '$msg' faellt am Traeger (Exit $rc), erwartet war ein Durchgang. Ausgabe:" >&2
+			printf '%s\n' "$out" >&2
+			exit 1
+		fi
+		if [ -z "$erwartet" ] && [ "$rc" -eq 0 ]; then
+			echo "full-smoke: FEHLER — $kennung: der Commit '$msg' geht durch — eine Message ohne Kennung faerbt den Traeger nicht rot (LH-QA-01)." >&2
+			exit 1
+		fi
+		if [ "$lauf" = "rot" ]; then
+			rot_meldung="$out"
+			if ! grep -qF -- 'keine Traceability-Kennung' <<<"$rot_meldung"; then
+				echo "full-smoke: FEHLER — $kennung: der Commit faellt, aber die Ausgabe nennt die Kennungs-Pruefung nicht (rot aus falschem Grund?). Ausgabe:" >&2
+				printf '%s\n' "$rot_meldung" >&2
+				exit 1
+			fi
+			# Der Commit darf nicht entstehen, wo er fallen soll: ohne diesen Schritt
+			# liest der Zahn nur eine Ausgabe, nicht den Abbruch.
+			local betreffe
+			betreffe="$(git -C "$repo" log -1 --format=%s)"
+			if [ "$betreffe" = "$msg" ]; then
+				echo "full-smoke: FEHLER — $kennung: der Traeger meldet den Abbruch, der Commit ist aber entstanden (HEAD: '$betreffe')." >&2
+				exit 1
+			fi
+		fi
+	done
+	echo "full-smoke: Traeger im Ziel ($kennung): make hooks-install setzt core.hooksPath; ein Commit OHNE Kennung faellt mit der Meldung der Pruefung und entsteht nicht, einer MIT Kennung geht durch, und --no-verify umgeht den Traeger:"
+	grep -F -- 'keine Traceability-Kennung' <<<"$rot_meldung" | sed -n '1p' | sed 's/^/full-smoke:   /'
+
+	# (f) DIE REICHWEITE STEHT IM ZIEL. Die zweite Haelfte der Traceability-Zusage ist
+	# von keinem Commit-Waechter mechanisch pruefbar; dass das dasteht, ist die
+	# Zusage, die der Traeger ueber sich selbst traegt.
+	local fragflach
+	fragflach="$(tr -s '[:space:]' ' ' <"$frag")"
+	for noetig in 'nicht mechanisch pruefbar' 'ANWESENHEIT einer Kennung, nicht ihre Wahrheit' '--no-verify'; do
+		if ! grep -qF -- "$noetig" <<<"$fragflach"; then
+			echo "full-smoke: FEHLER — $kennung: das Aktivierungs-Fragment nennt '$noetig' nicht — eine Grenze, die nicht neben der Zusage steht, ist keine (LH-QA-01)." >&2
+			exit 1
+		fi
+	done
+	echo "full-smoke: Reichweite im Ziel ($kennung): das Fragment nennt die zwei Grenzen des Traegers (Umgehung und Anwesenheit-statt-Wahrheit) und die Haelfte der Zusage, die kein Commit-Waechter pruefen kann."
+}
+
+kennungs_traeger_im_ziel "$tmprepo" "golang"
+
 echo "full-smoke: OK — frisch gebootstrapptes Repo faehrt make -j gates out-of-the-box gruen (lint/build/test + docs-check + baseline-verify via Fragment-Assembly, record-gates zuletzt), Exit 0 (LH-FA-01/LH-QA-01)."
 echo "full-smoke: OK — sprachloser Init (ohne --lang) faehrt make -j gates doc-only gruen (docs-check + baseline-verify, KEIN Code-Gate, kein Skelett) — --lang optional (slice-035/LH-FA-01)."
 echo "full-smoke: OK — Gate-Nachweis-Kreis geschlossen: record-gates stempelt, Hash stimmt, .harness/.gitignore greift (slice-031)."
@@ -2305,3 +2462,4 @@ echo "full-smoke: OK — ROLLEN-TYPEN (slice-097/LH-FA-10): 6 kanonische Typen u
 echo "full-smoke: OK — FELDLISTE (slice-098/LH-FA-10): $FELDLISTE_REL liegt in BEIDEN Bootstrap-Varianten im geprueften Doku-Bereich, fuehrt die drei stehenden Grenz-Saetze und deckt jeden Feldnamen der real geschriebenen Span-Zeile; ein toter Verweis darin faerbt das docs-check des Ziels rot (Ortswahl belegt); ein 2. Init-Lauf heilt eine von Hand geaenderte Fassung (konvergent, die einzige Zusage des Dokuments ueber sich selbst)."
 echo "full-smoke: OK — ARCHIVIERUNG IM ZIEL (ADR-0033 Festlegung 4 und 5): make archive-welle ist kein Gate und steht in keiner gates-Kette; ein Name daneben, den kein Fragment fuehrt, endet laut statt still; die zwei Sperren [untergrenze] und [haenger] halten den Aufruf auf, ueber demselben Bestand ohne sie laeuft die Operation real (Archiv + Stubs aus der vendored Vorlage), und ohne Traeger meldet das Kommando die Abwesenheit mit Exit 0."
 echo "full-smoke: OK — LIFECYCLE-WECHSEL IM ZIEL: make slice-mv ist kein Gate und steht in keiner gates-Kette; der Aufruf bewegt den Slice, legt den reinen Move als eigenen Commit an (0 insertions/0 deletions gegen den Verweis-Nachzug getrennt) und zieht beide Richtungen nach — den eingehenden Praefix-Verweis der Nachbar-Datei und das praefixlose Geschwister-Ziel in der bewegten Datei; eine ADR bleibt nach der Repo-Politik des Fragments unberuehrt; ueber einem unsauberen Arbeitsbaum bricht der Aufruf ab, nennt es und bewegt nichts; ohne jeden Verweis bleibt es beim einen Move-Commit; und ohne das Werkzeug bricht das Ziel laut ab, statt still auf ein fehlendes Programm zu zeigen."
+echo "full-smoke: OK — COMMIT-KENNUNG IM ZIEL: .githooks/commit-msg liegt ausfuehrbar im Ziel und reist mit dem Klon, seine Aktivierung nicht — make hooks-install setzt core.hooksPath und ist kein Gate (steht in keiner gates-Kette); danach faellt ein Commit OHNE Kennung mit der Meldung der Pruefung und entsteht nicht, einer MIT Kennung geht durch, und git commit --no-verify umgeht den Traeger; die Reichweite (Umgehung, Anwesenheit-statt-Wahrheit, die von keinem Commit-Waechter pruefbare zweite Haelfte der Zusage) steht im Ziel geschrieben."

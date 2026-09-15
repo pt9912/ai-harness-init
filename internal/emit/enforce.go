@@ -83,6 +83,13 @@ func enforceFiles() []enforceFile {
 		// Pruefbereich (MR-007 Setzung 3). Sprach-agnostisch wie der uebrige Kern:
 		// das Skript ist bash + git, ohne Docker und ohne Image.
 		{"templates/enforce/history-range-guard.sh", "tools/harness/history-range-guard.sh", 0o755},
+		// Commit-Kennungs-Waechter: der git-eigene Traeger, die Pruefung, die er
+		// aufruft, und das Ziel, das ihn aktiviert. Er liegt versioniert im Ziel und
+		// reist mit dessen Klon; seine Aktivierung ist lokale Konfiguration. Die
+		// Begruendung der drei Eintraege traegt commitmsg.go.
+		commitMsgHookFile(),
+		commitMsgCheckFile(),
+		hooksInstallMkFile(),
 	}
 }
 

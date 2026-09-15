@@ -44,6 +44,13 @@ emittierten Durchsetzungsschicht):
   dann ausfüllen — keine handgeschriebenen oder repo-gepflegten Template-Kopien.
 - **Commit via Message-Datei** (`git commit -F <datei>`): der Guard scannt den Command-String,
   also nie eine Commit-Message inline, die ein geblocktes Tool-Token enthält.
+- **Commit-Kennung.** Eine Commit-Message ohne Kennung (`ADR-NNNN`, `LH-XX-NN`, `MR-NNN`,
+  `slice-N`) weist der git-eigene Hook `.githooks/commit-msg` ab, sobald er aktiviert ist. Er liegt
+  versioniert im Repo und **reist mit dem Klon, seine Aktivierung nicht**: `make hooks-install`
+  setzt `core.hooksPath` und ist der eine Schritt dazwischen; `git commit --no-verify` umgeht ihn.
+  Geprüft wird die **Anwesenheit** einer Kennung, nicht ihre Wahrheit. Was er **nicht** erreicht:
+  die zweite Hälfte der Traceability-Zusage — ein Doku-Update bei berührtem öffentlichem Vertrag —
+  ist von einem Commit-Wächter nicht mechanisch prüfbar und bleibt deine Arbeit.
 
 ## Kontext lesen (Modul 9, Schritte 1–3)
 

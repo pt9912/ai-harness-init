@@ -128,19 +128,18 @@ Aussagen-Berührung steht hier gar nicht.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `internal/emit/templates/enforce/` + `internal/emit/enforce.go` | neu/update | die Vorlage des Trägers und seine Verdrahtung in der emittierten `settings.json` |
+| `internal/emit/templates/enforce/` + `internal/emit/enforce.go` | neu/update | die Vorlage des Trägers, seine Prüfung, die Aktivierung als Make-Fragment — **nicht** in die emittierte `settings.json`: ein git-eigener Hook hat dort keinen Eintrag |
 | `internal/emit/templates/commands/` | update | der Anweisungssatz trägt die Konvention („Commit via Message-Datei"), an der der Träger hängt |
 | `Makefile` (`full-smoke`) | update | der Beleg aus DoD (1)/(2) |
 | `test/…` | neu/update | Happy/Negative nach DoD (2) und die Reichweiten-Zeile aus DoD (3) |
 
-**Der Träger wird nicht neu erfunden.** Dieses Repo führt beide Hälften — den PreToolUse-Hook und
-das Kommando, das dieselbe Prüfung ohne Agenten fährt. Die Emission übernimmt die Form, die
-[slice-215](../done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) für den **Dogfood**
-entscheidet; bis dahin steht hier der heutige Kanal, und der Slice ist nicht fertig, solange die
-Reichweiten-Zeile aus DoD (3) fehlt. **Fällt dort die Wahl auf den `git`-eigenen Hook, ist die Form
-im Ziel dieselbe wie im Klon — und ihre Grenze wandert mit:** `core.hooksPath` ist lokale
+**Der Träger wird nicht neu erfunden.** Dieses Repo führt seine drei Hälften — den PreToolUse-Hook,
+das Kommando, das dieselbe Prüfung ohne Agenten fährt, und den git-eigenen Hook, den
+[slice-215](../done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) für den
+**Dogfood** entschieden hat. Die Emission übernimmt dessen Form: der git-eigene Hook ist der Träger
+im Ziel, der PreToolUse-Kanal bleibt hier. **Seine Grenze wandert mit:** `core.hooksPath` ist lokale
 Konfiguration, die kein Bootstrap setzt; der emittierte Wächter ist damit **optional**, und was er
-nicht erreicht, sagt die Reichweiten-Zeile.
+nicht erreicht, sagt die Reichweiten-Zeile aus DoD (3) — ohne sie ist der Slice nicht fertig.
 
 ## 4. Trigger
 
