@@ -74,7 +74,7 @@ dem, was es trägt.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
-- **Die Träger-Wahl des Dogfoods für sich.** [slice-215](../in-progress/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md)
+- **Die Träger-Wahl des Dogfoods für sich.** [slice-215](../done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md)
   entscheidet, wo der Wächter **dieses** Repos hängt, wenn der Aufruf nicht als Kommando erscheint;
   die emittierte Fassung erbt diese Entscheidung, statt sie vorwegzunehmen (§5 der Welle).
 - **Der `commits`-Modulblock als solcher.** Sein Zustand am gepinnten Stand ist ein Befund des
@@ -134,7 +134,7 @@ Aussagen-Berührung steht hier gar nicht.
 
 **Der Träger wird nicht neu erfunden.** Dieses Repo führt beide Hälften — den PreToolUse-Hook und
 das Kommando, das dieselbe Prüfung ohne Agenten fährt. Die Emission übernimmt die Form, die
-[slice-215](../in-progress/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) für den **Dogfood**
+[slice-215](../done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) für den **Dogfood**
 entscheidet; bis dahin steht hier der heutige Kanal, und der Slice ist nicht fertig, solange die
 Reichweiten-Zeile aus DoD (3) fehlt. **Fällt dort die Wahl auf den `git`-eigenen Hook, ist die Form
 im Ziel dieselbe wie im Klon — und ihre Grenze wandert mit:** `core.hooksPath` ist lokale
@@ -147,7 +147,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`): Der Slice ist priorisiert (`Verantwortlich:` gesetzt) und das
-WIP-Limit frei. **Keine harte Bindung an [slice-215](../in-progress/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md):**
+WIP-Limit frei. **Keine harte Bindung an [slice-215](../done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md):**
 er entscheidet den Dogfood-Träger; dieser Slice kann mit dem heutigen Kanal beginnen und zieht nach,
 wenn dort entschieden ist — die Richtung „erst die ausgeführte Fassung, dann die emittierte" (Welle
 §5) ist eine Ordnung, keine Sperre.
@@ -181,7 +181,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 dasteht.
 
 - **Der emittierte Wächter erbt eine Entscheidung, die noch nicht gefallen ist.**
-  [slice-215](../in-progress/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) bewegt den Träger des
+  [slice-215](../done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) bewegt den Träger des
   Dogfoods; eine emittierte Form, die davor geschrieben wird, ist mit seinem Ergebnis zu
   vergleichen und gegebenenfalls nachzuziehen. — **Ausgang:** <eingetreten: CO-NNN /
   slice-<Kennung> | entfallen: Grund | weiter offen: → BEO im Register>

@@ -253,7 +253,7 @@ Baum endete mit **EXIT 2** und genau einer Befund-Zeile:
 
 ```text
 d-check: 1406 Datei(en) geprüft, 1 Befund(e)
-docs/plan/planning/in-progress/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md:163  ADR-0062  id-unlinked  Kennung ohne Link auf ihre Definition
+docs/plan/planning/done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md:163  ADR-0062  id-unlinked  Kennung ohne Link auf ihre Definition
 ```
 
 Die Kennung stand **nicht** am committeten Stand (`git show HEAD:<datei> | grep -c 'ADR-0062'` → 0)
