@@ -92,8 +92,10 @@ Adaptions-Block („MR-Block") in `harness/conventions.md`; die workflow-relevan
     **Die Plan-Ausgabe in Schritt 4 nennt Out-of-Scope.** Das ist die Schritt-Hälfte einer Regel;
     ihre Dokument-Hälfte ist §1 *Ziel und Abgrenzung* des Slice-Plans. Der Lauf schreibt fort, was der
     Plan schon ausschließt — er erfindet die Abgrenzung nicht neu und weitet sie nicht
-    stillschweigend. Nimmt der Lauf etwas mit, das §1 ausschließt, ist das eine
-    **Plan-Änderung vor dem Code**, keine Zeile im Bericht danach.
+    stillschweigend. Nimmt der Lauf etwas mit, das §1 ausschließt, ist das **Planner-Arbeit**, kein
+    Schritt dieses Laufs: die verschobene Out-of-Scope-Grenze ist ein Übergabe-Artefakt an den
+    Planner (`AGENTS.md` §3.10), und die ausführende Rolle schreibt ihr eigenes Abnahmekriterium
+    nicht um. Die Plan-Änderung geht dem Code voraus, keine Zeile im Bericht danach.
 
 ## Implementieren und gaten (Modul 9, Schritte 5–6)
 
