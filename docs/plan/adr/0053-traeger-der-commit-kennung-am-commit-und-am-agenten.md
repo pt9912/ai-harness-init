@@ -45,11 +45,12 @@ Baseline-Aussage unten mißt gegen die regierende Fassung `v6.8.0`
 
 ### Der Gegenstand ist eine Zusage an den Commit, nicht an den Agenten
 
-[`AGENTS.md`](../../../AGENTS.md) §5 und
-[`harness/README.md`](../../../harness/README.md#traceability) §Traceability sagen dasselbe:
-*eine Commit-Message nennt mindestens eine Kennung*. Der Satz richtet sich an **jeden** Commit. Ein
-Commit entsteht in diesem Repo aber auf zwei Wegen, und die unterscheiden sich nicht im Aufrufer,
-sondern im **Kanal**, auf dem der Aufruf sichtbar wird:
+[`AGENTS.md`](../../../AGENTS.md) §5 verlangt, Requirement- und ADR-IDs in Commits zu
+referenzieren; [`harness/README.md`](../../../harness/README.md#traceability) §Traceability sagt dasselbe in
+der expliziten Form: *mindestens eine `LH-*`- oder `ADR-*`-ID*. **Durchgesetzt** wird eine
+**Menge**, und sie ist die Konfiguration des Gegenstands — `commits.id-patterns` in
+[`.d-check.yml`](../../../.d-check.yml), geführt von den zwei Trägern. Der Satz richtet sich an **jeden** Commit. Ein
+Commit entsteht in diesem Repo aber auf zwei Wegen, und die unterscheiden sich nicht im Aufrufer, sondern im **Kanal**, auf dem der Aufruf sichtbar wird:
 
 - **getippt** — ein Agent oder ein Mensch führt `git commit …` aus;
 - **im Werkzeug** — `make slice-mv`, `make archive-welle` und der Verweis-Nachzug committen
@@ -291,6 +292,7 @@ Festlegung 4 eine **Zuordnung** — für beide gibt es keinen, und das steht hie
 | bats — `test/commit-msg-hook.bats`, Fälle *kopplung:\** | **Festlegung 1, Kopplung:** die zwei Fassungen der Kennungs-Menge und der Betreff-Ausnahme werden gegeneinander gehalten. Welche Richtung dieser Fall deckt, steht im Sensor-Dokument ([`harness/sensors/commit-msg-check.md`](../../../harness/sensors/commit-msg-check.md)) — der Prüfbereich eines Sensors ist sein eigener Gegenstand und steht nicht als zweite Fassung hier | `make test` (in `make gates`) |
 | — | **Festlegung 3:** die zwei Grenzen des Trägers sind **Prosa in der Reichweiten-Tabelle** und haben keinen Sensor; kein Modul der [`.d-check.yml`](../../../.d-check.yml) vergleicht eine Commit-Klasse mit einer Tabellenzeile. Träger ist der Lauf, der die Tabelle ändert | — |
 | — | **Festlegung 4:** die vier Message-Formen sind **heute ungeprüft**; ein Sensor darauf wäre erst mit dem Kandidaten zu bauen. Der Zahn aus Festlegung 1 färbt die Klasse nicht rot, weil kein Werkzeug-Commit im Prüfbereich der bats-Stufe liegt | — |
+**Was diese Tabelle nicht belegt.** Sie beschreibt, welche Sensoren die Festlegungen halten, und behauptet keinen Rot-Beleg: der gehört dem Lauf, der den Träger ändert, und das Rot muß die **behauptete** Ursache tragen, nicht irgendeine ([`AGENTS.md`](../../../AGENTS.md) §3.6). Festlegung 3 und Festlegung 4 haben keinen Sensor, und das steht hier ausgeschrieben statt durch eine Zeile ersetzt.
 
 ## Re-Evaluierungs-Trigger
 
