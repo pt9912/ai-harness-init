@@ -139,7 +139,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
 Zwei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
 
-- [ ] **1 — Die vier Plan-vor-Code-Blöcke stehen im Anweisungssatz, je an der Stelle, an der der
+- [x] **1 — Die vier Plan-vor-Code-Blöcke stehen im Anweisungssatz, je an der Stelle, an der der
       Lauf sie braucht.** Nicht als Anhang und nicht als Zitat des Moduls: Die
       Akzeptanzkriterien-Bindung steht bei der Testdatei-Zeile der Plan-Ausgabe — so nennt dieser
       Punkt die Stelle; das Regelwerk führt sie als *„Tests-Zeile"*
@@ -150,7 +150,7 @@ Zwei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
       **und** §Rücksprungkanten-Regeln, der vierte Block steht im zweiten —, je
       Block eine benannte Fundstelle im Anweisungssatz; ein Block ohne Fundstelle ist der Befund,
       keine Auslassung.
-- [ ] **2 — Die Kennungs-Notation ist nachgezogen.** Nach dem Lauf liefert
+- [x] **2 — Die Kennungs-Notation ist nachgezogen.** Nach dem Lauf liefert
 
       ```sh
       git grep -cE 'slice-<NNN>|welle-<NN>|<slice-NNN>|<welle-NN>' -- .claude/commands/implement-slice.md
@@ -164,17 +164,17 @@ Zwei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
       repo-weit fährt, zählt Platzhalter statt Fundstellen. Was außerhalb dieses Bereichs liegt, ist
       in §1 benannt und hat dort seinen Ausgang; eine lebende Fundstelle außerhalb
       (`Makefile:340`) ist benannt, nicht still gelassen.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: kein öffentlicher Vertrag berührt — der Anweisungssatz ist Lauf-Instruktion,
+- [x] Doku-Update: kein öffentlicher Vertrag berührt — der Anweisungssatz ist Lauf-Instruktion,
       keine kanonische Quelle (Source Precedence, [`AGENTS.md`](../../../../AGENTS.md) §2).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt Wellen (`ls docs/plan/planning/welle-*.md`), sie werden deshalb von der nächsten Welle-Closure geprüft, auch für diesen Slice ohne Wellen-Zugehörigkeit.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt Wellen (`ls docs/plan/planning/welle-*.md`), sie werden deshalb von der nächsten Welle-Closure geprüft, auch für diesen Slice ohne Wellen-Zugehörigkeit.
 
 ## 3. Plan (vor Code)
 
@@ -236,7 +236,11 @@ dasteht.
   [`.d-check.yml`](../../../../.d-check.yml) hält einen Anweisungssatz gegen sein Regelwerks-Modul,
   und `make comment-claims` führt `.claude/commands/` nicht in seinem Prüfbereich
   ([`harness/README.md`](../../../../harness/README.md) §Sensors). Ein vergessener Block bleibt
-  grün. — **Ausgang:** offen bis zur Closure.
+  grün. — **Ausgang:** *weiter offen* → ins **Beobachtungs-Register**:
+  [`BEO-ALL/anweisungssatz-nachzug-ohne-waechter`](../observations/BEO-ALL/anweisungssatz-nachzug-ohne-waechter/observation.md),
+  Beleg `evidence/slice-226-implementer-anweisungssatz-zieht-nach.md`. Der Nachzug gegen zwei
+  Quellen — das Regelwerks-Modul und die Notations-Form der Ziel-Fassung — bleibt Handarbeit; der
+  Sensor, der ihn schließen würde, ist in §1 ausdrücklich ausgeschlossen.
 - **Der Lauf ändert den Anweisungssatz, unter dem er selbst läuft.**
   [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) Festlegung 1 weist
   genau das dieser Rolle zu, und §Der Anlass, gemessen derselben ADR führt den Gegenfall als
@@ -244,7 +248,13 @@ dasteht.
   über den Delta-Posten hinaus Norm setzt (Festlegung 2). Register-Stand der Klasse
   `fremdes-rollen-artefakt-im-implementations-kontext`: **8×**
   (`ls docs/plan/planning/observations/BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext/evidence/*.md | wc -l`,
-  kein Erwartungswert). — **Ausgang:** offen bis zur Closure.
+  kein Erwartungswert). — **Ausgang:** *entfallen* — die stille Erweiterung trat nicht ein: Der
+  Nachzug hat dem Out-of-Scope-Block die Rollen-Zuordnung aus
+  [`AGENTS.md`](../../../../AGENTS.md) §3.10 gegeben, und sie hat dort ihr Original — genau die
+  Lage, die [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
+  Festlegung 2 **nicht** trifft (bindende Aussage **ohne** kanonische Quelle). Die Kollision
+  selbst, die den Nachzug ausgelöst hat, ist als eigene Klasse ins Register gegangen:
+  [`BEO-ALL/uebernommener-regelwerk-satz-kollidiert-mit-eigener-hard-rule`](../observations/BEO-ALL/uebernommener-regelwerk-satz-kollidiert-mit-eigener-hard-rule/observation.md).
 - **Die Sendung könnte bis zum Start altern.** Zwischen dem Schnitt dieses Plans und seiner
   Ausführung kann ein weiterer Baseline-Sprung liegen; dann misst Liefer-Punkt 1 gegen einen Stand,
   den `.harness/baseline/` nicht mehr führt. Register-Stand der Klasse
@@ -252,7 +262,9 @@ dasteht.
   (`ls docs/plan/planning/observations/BEO-ALL/folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht/evidence/*.md | wc -l`)
   — über der Schwelle, und der Lese-Schritt liegt bei der nächsten Welle-Closure. Der Beleg gegen
   das Altern ist die Form der DoD: Sie nennt den Baum, nicht den Tag-String allein. — **Ausgang:**
-  offen bis zur Closure.
+  *entfallen* — kein Sprung lag zwischen Schnitt und Ausführung: `.harness/baseline/` führt
+  `v6.8.0` (`ls .harness/baseline/`), und der Form-Vergleich ist gegen diesen Baum gefahren, nicht
+  gegen den Tag-String allein.
 
 ## 7. Closure-Notiz
 
@@ -264,16 +276,72 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<…>`. Auslöser: `<BEO-ALL/<slug>>`.
-  *(Wurde mit diesem Slice nichts verkörpert, entfällt die Teil-Zeile `— liegt in …` ersatzlos.)*
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
-  für diesen Slice ohne Wellen-Zugehörigkeit>
+- **Was hat funktioniert:** **Beide Liefer-Punkte sind von zwei Rollen unabhängig nachgemessen, und
+  beide tragen.** Der Beleg zu Liefer-Punkt 1 ist ein Form-Vergleich von Hand gegen den vendored
+  Baum; er hat die vier Blöcke an den Stellen gefunden, an denen der Lauf sie liest — und den
+  vierten in einem **anderen** Abschnitt, als §1 zunächst notiert hatte. Der Beleg zu Liefer-Punkt 2
+  liest **beide** Schreibweisen der alten Form; am Vor-Stand `bbd10ea2^` zählt er **fünf** Stellen,
+  während die spitze Schreibweise allein an zwei geklammerten (`SLICE=<slice-NNN>`) blind
+  vorbeigelesen hätte. **Zweitens hat der Rollen-Zuschnitt gehalten:** Umsetzung und Rollen-Zuordnung
+  liegen im Implementer-Kontext, die zwei die Abnahme verschiebenden Nachzüge im Planner-Kontext.
+- **Was ging anders als geplant:** **Drei Dinge.** (1) §1 verortete alle vier Blöcke im Abschnitt
+  §Minimal Agent Workflow; gemessen steht der vierte — *„Der Plan lebt in §3 des Slice-Plans"* — in
+  §Rücksprungkanten-Regeln. §1 und der Vergleichsbereich der DoD nennen jetzt beide Abschnitte.
+  (2) Der aus dem Modul übernommene Out-of-Scope-Block nannte die Rolle nicht, die
+  [`AGENTS.md`](../../../../AGENTS.md) §3.10 für eine verschobene Out-of-Scope-Grenze bestimmt; das
+  Regelwerk führt keine Rollen, die Kollision entsteht erst beim Übertragen. (3) Die Kopplung
+  Anweisungssatz ↔ Quelle bleibt ohne Sensor: §1 schließt seinen Bau aus, die Lücke ist damit
+  **benannt und offen**.
+- **Steering-Loop-Eintrag: eine benannte Lücke, gezählt statt verkörpert.** Der Nachzug eines
+  Rollen-Anweisungssatzes gegen seine zwei Quellen — das Regelwerks-Modul und die Notations-Form der
+  Ziel-Fassung — hat keinen Wächter: kein Modul aus `modules:` der `.d-check.yml` hält den Satz
+  gegen seine Quelle, und `make comment-claims` führt `.claude/commands/` nicht in seinem
+  Prüfbereich. **Kein `liegt in`-Feld:** mit diesem Vorgang ist **keine** Regel dieses Repos
+  verkörpert worden — der Sensor ist in §1 ausgeschlossen, und ein Adaptions-Eintrag entsteht daraus
+  nicht. Auslöser:
+  [`BEO-ALL/anweisungssatz-nachzug-ohne-waechter`](../observations/BEO-ALL/anweisungssatz-nachzug-ohne-waechter/observation.md)
+  (1×) und
+  [`BEO-ALL/uebernommener-regelwerk-satz-kollidiert-mit-eigener-hard-rule`](../observations/BEO-ALL/uebernommener-regelwerk-satz-kollidiert-mit-eigener-hard-rule/observation.md)
+  (1×); der Lese-Schritt greift bei 3×.
+- **Beobachtungs-Register (`../observations/`):** **zwei neue Einträge, ein Beleg an einem
+  vorhandenen.** Neu angelegt:
+  [`BEO-ALL/anweisungssatz-nachzug-ohne-waechter`](../observations/BEO-ALL/anweisungssatz-nachzug-ohne-waechter/observation.md)
+  (der Nachzug gegen zwei Quellen ohne Wächter) und
+  [`BEO-ALL/uebernommener-regelwerk-satz-kollidiert-mit-eigener-hard-rule`](../observations/BEO-ALL/uebernommener-regelwerk-satz-kollidiert-mit-eigener-hard-rule/observation.md)
+  (die Kollision des übernommenen Satzes mit §3.10). Beleg
+  `evidence/slice-226-implementer-anweisungssatz-zieht-nach.md` in
+  [`BEO-ALL/unbelegter-register-eintrag-faellt-durch-die-paarung`](../observations/BEO-ALL/unbelegter-register-eintrag-faellt-durch-die-paarung/observation.md)
+  — dieser Lauf hat die Register-Paarung gefahren und den einen Eintrag ohne `evidence/` gefunden,
+  den ihre `state.md` als ihren Träger benennt. **Kein Zähler wird gesetzt**, er folgt aus den
+  Dateien — **keine Erwartungswerte**
+  ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2):
+
+  ```sh
+  for s in anweisungssatz-nachzug-ohne-waechter \
+           uebernommener-regelwerk-satz-kollidiert-mit-eigener-hard-rule \
+           unbelegter-register-eintrag-faellt-durch-die-paarung; do
+    printf '%-58s %s\n' "$s" "$(ls docs/plan/planning/observations/BEO-ALL/$s/evidence/*.md | wc -l)"
+  done
+  ```
+- **Folge-Slices:** keiner geschnitten — das ist Planner-Arbeit. **Ein Zwilling wird frei:**
+  [slice-lifecycle-move-geht-ins-ziel](../open/slice-lifecycle-move-geht-ins-ziel.md) liegt in
+  `open/` und ist Mitglied von [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md); sein
+  Kopf führt **diesen** Slice als den benannten Ausgang der **ausgeführten** Fassung und wartet
+  damit auf ihn (Welle §5: *erst die ausgeführte Fassung, dann die emittierte*). Mit dieser Closure
+  ist die ausgeführte Seite gesetzt.
+- **Risiken aus §6:** drei Punkte, je ein Ausgang — **zweimal *entfallen*** (die stille Erweiterung
+  trat nicht ein; kein Sprung lag zwischen Schnitt und Ausführung — die zwei Messungen stehen in
+  §6), **einmal *weiter offen*** (der fehlende Wächter, ins Register).
+- **Drei Paarungen:** **hier gefahren**, weil dieser Slice **kein** Wellen-Mitglied ist — sein
+  `Welle:`-Feld sagt *ohne Welle*, und [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md)
+  §6 führt ihn als berührten, nicht aufgenommenen Zwilling. (a) **Anker-Paarung:** kein
+  `liegt in`-Feld, nichts verkörpert, kein Gegenstand. (b) **Folge-Slice-Paarung:** der genannte
+  Zwilling existiert als Datei im Planning-Lifecycle. (c) **Register-Paarung:** jede hier genannte
+  Beobachtung existiert als Verzeichnis mit nicht leerem `evidence/`; die zweite Hälfte meldet
+  **einen** Eintrag ohne Beleg, der als *benannt, nicht gezählt* geführt wird —
+  [`BEO-ALL/unbelegter-register-eintrag-faellt-durch-die-paarung`](../observations/BEO-ALL/unbelegter-register-eintrag-faellt-durch-die-paarung/observation.md),
+  mit Beleg aus diesem Lauf.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
