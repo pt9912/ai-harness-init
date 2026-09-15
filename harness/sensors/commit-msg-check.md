@@ -48,9 +48,10 @@ hält [`test/commit-msg-hook.bats`](../../test/commit-msg-hook.bats) gegen die L
   anderen Skripts oder Binaries läuft (etwa `harness/tools/slice-mv.sh`, aufgerufen über
   `make slice-mv`), erscheint dem Hook als `make slice-mv …` und wird nie geprüft, unabhängig von
   Flag-Form oder Kennung — ebenso `archive-welle`/`vendor-baseline`, die aus dem Go-Binär heraus
-  committen. Dieselbe Grenze trifft den `-m`-Aufruf (der Matcher verlangt eine `-F`-Form) und einen
-  Commit außerhalb eines Claude-Code-Laufs. Diese Klassen deckt der zweite Träger, der git-eigene
-  Hook; wo er selbst nicht greift, steht in [`harness/README.md`](../README.md) §Traceability.
+  committen. Dieselbe Grenze trifft den `-m`-Aufruf, solange sein Text keine `-F`/`--file`-Form
+  trägt (der Matcher liest die Befehlszeile flach), und einen Commit außerhalb eines
+  Claude-Code-Laufs. Diese Klassen deckt der zweite Träger, der git-eigene Hook; wo er selbst nicht
+  greift, steht in [`harness/README.md`](../README.md) §Traceability.
 - **Der Prüfbereich trägt seinen Cutoff, und er ist rein prospektiv.** Der PreToolUse-Hook prüft
   strukturell nur den **werdenden** Commit, nie die Historie — der Cutoff **ist** „ab dem ersten
   Aufruf dieses Hooks", nicht ein Datum in der Konfiguration. Ein Maßstab über die ganze Historie
