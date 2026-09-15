@@ -243,7 +243,7 @@ ohne angelegt ist dieselbe Klasse wie ein halluziniertes Gate.
 
 **Drei Träger, aus diesem Lauf geschnitten** (jeder liegt in `open/`):
 
-- [`slice-beleglose-register-eintraege-bekommen-eine-lesart`](../open/slice-beleglose-register-eintraege-bekommt-eine-lesart.md)
+- [`slice-beleglose-register-eintraege-bekommen-eine-lesart`](../open/slice-beleglose-register-eintraege-bekommen-eine-lesart.md)
   (Architect) — der Träger des einzigen `geplant`-Ausgangs dieses Lese-Schritts.
 - [`slice-kennungs-erkennung-traegt-die-zugelassenen-formen`](../open/slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md)
   — die Fundliste aus [`MR-059`](../../../../harness/conventions.md#mr-059) Setzung 2.
