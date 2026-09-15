@@ -66,11 +66,20 @@ Messung, auf der die Auswahl ruht, ist die Zählung, was der emittierte Satz ver
 Emit-Baum dazu führt — namentlich:
 
 ```sh
-git grep -c 'history-range-guard' -- internal/ | wc -l                   # 0 — kein Ziel kennt den Vorlauf-Wächter
-git grep -c 'slice-mv'   -- internal/emit internal/gen | wc -l           # 0 — kein Ziel kennt den Verweis-Nachzug
-git grep -c 'archive-welle' -- internal/emit internal/gen | wc -l        # 0 — kein Ziel zündet den Träger
-git grep -c 'commit-msg' -- internal/ | wc -l                            # 0 — kein Ziel kennt den Kennungs-Wächter
+git grep -c 'history-range-guard' -- internal/ | wc -l
+git grep -c 'slice-mv'   -- internal/emit internal/gen | wc -l
+git grep -c 'archive-welle' -- internal/emit internal/gen | wc -l
+git grep -c 'commit-msg' -- internal/ | wc -l
 ```
+
+**Die Messung trägt als Eigenschaft, nicht als Betrag** ([`MR-058`](../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)
+Setzung 2): Der schreibende Vorgang — diese Welle — **bewegt ihre eigene Bezugsmenge**, weil jedes
+ihrer vier Mitglieder gerade in `internal/` schreibt. Was die vier Kommandos **zum Schnitt** zeigten:
+*kein Ziel kannte den Vorlauf-Wächter, den Verweis-Nachzug, den Archivierungs-Träger oder den
+Kennungs-Wächter* — das ist die Eigenschaft, auf der die Auswahl der vier Mitglieder ruht. Die vier
+Beträge sind darum **nicht** angeführt: sie galten für den Stand vor dem ersten Mitglied und in
+keinem Moment danach ([`MR-025`](../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 1 — die Kommandos bleiben, sie sind der Weg zu der Eigenschaft; der Betrag fällt).
 
 **Drei Klassen, und nur die erste wird gebaut.** *Klasse 1* — der emittierte Prozess schreibt die
 Operation vor, das Ziel hat kein Werkzeug: ihre Mitglieder stehen in §4. *Klasse 2* — übertragbar,
@@ -259,5 +268,8 @@ Regeln dieser Sektion: Baseline-Regelwerk `grundlagen-traceability.md`
 beiden Zeiger unten sind so zu schreiben, wie sie vom Ruheort `done/` auflösen,
 nicht vom Schreibort.
 
-Ergebnis: die Ergebnis-Notiz `welle-emittierte-werkzeuge-results.md` — Geschwister im Ruheort `done/`.
-Zähler: das Beobachtungs-Register — eine Ebene über dem Ruheort, wie es die Vorlage der Ergebnis-Notiz führt.
+Ergebnis: die Ergebnis-Notiz [`welle-emittierte-werkzeuge-results.md`](welle-emittierte-werkzeuge-results.md)
+— Geschwister im Ruheort `done/`. Zähler: das Beobachtungs-Register — eine Ebene über dem Ruheort,
+wie es die Vorlage der Ergebnis-Notiz führt.
+
+Der Zustand dieser Welle ist die Verzeichnis-Position, kein Status-Feld.

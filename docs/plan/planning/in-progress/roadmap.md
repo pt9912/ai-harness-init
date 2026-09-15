@@ -18,7 +18,6 @@ nicht hier.
 
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
 - [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
-- [welle-emittierte-werkzeuge — Jede vorgeschriebene Operation hat im Ziel ein Werkzeug](../welle-emittierte-werkzeuge.md)
 
 Nichts in Arbeit.
 
@@ -120,9 +119,12 @@ Ergebnis-Notiz, keine Nummernfolge.
 | [welle-13-regeln-bekommen-ihren-sensor](../done/welle-13-regeln-bekommen-ihren-sensor.md) | 2026-09-14 | [welle-13-results.md](../done/welle-13-results.md) |
 | [welle-14-re-baseline](../done/welle-14-re-baseline.md) | 2026-09-03 | [welle-14-results.md](../done/welle-14-results.md) |
 | [welle-15-re-baseline](../done/welle-15-re-baseline.md) | 2026-09-05 | [welle-15-results.md](../done/welle-15-results.md) |
+| [welle-emittierte-werkzeuge](../done/welle-emittierte-werkzeuge.md) | 2026-09-15 | [welle-emittierte-werkzeuge-results.md](../done/welle-emittierte-werkzeuge-results.md) |
 
 Die Tabelle ist nach Wellen-Nummer sortiert, nicht nach Abschluss-Datum; `welle-10` schloss nach
-`welle-12`. Die Lücken sind keine Auslassung: `welle-09` und `welle-11` sind geschnitten und nicht
+`welle-12`, und `welle-emittierte-werkzeuge` steht am Ende, weil ihre Kennung keine Nummer trägt
+([`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)).
+Die Lücken sind keine Auslassung: `welle-09` und `welle-11` sind geschnitten und nicht
 geschlossen — ihr Zustand steht oben unter *Offene Wellen*.
 
 ## Historische Trigger-Verschiebungen
