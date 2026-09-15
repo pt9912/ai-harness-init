@@ -310,16 +310,27 @@ Backticks).
   Abnahmekriterium) und derselbe Vorgang — er bekommt darum keine zweite Datei. Und in
   [`BEO-ALL/neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md)
   — von **18** neuen Wächtern dieses Slice (**7** Go-Wächter, **10** bats-Fälle, **eine**
-  E2E-Sektion) nennt **11** ein gelisteter Fall, **7** keinen; **zwei** davon tragen eine Zusage:
-  der E2E-Eintrag aus dem Steering-Loop-Eintrag oben und die Kopplungs-Gruppe der Betreff-Ausnahme
-  (die in einer eigenen Sonde Zähne zeigte: einseitig geänderte `exempt=`-Zeile färbt zwei
-  bats-Fälle rot). Die Zuordnung je Wächter samt ihren Kommandos steht im Verifikations-Report zu
-  diesem Vorgang (§3); die Zählungen selbst, **kein gespeicherter Wert**:
+  E2E-Sektion) nennt ein gelisteter Fall **10**, **8** keinen. **Gemessen ist die Zuordnung, die
+  ein `# expect:`-Kopf herstellt** — der Verifikations-Report zu diesem Vorgang zählt eine Zeile
+  mehr („11"), weil er die Kopplungs-Gruppe der zwei bash-Fassungen über `340`/`341`/`342` als
+  gedeckt führt; deren `# expect:` nennt aber `test/commit-msg-hook.bats`, nicht die Gruppe der
+  emittierten Fassung. Von den acht ohne Fall trägt die Kopplungs-Gruppe der Betreff-Ausnahme Zähne
+  (in einer eigenen Sonde: einseitig geänderte `exempt=`-Zeile färbt zwei bats-Fälle rot), und der
+  E2E-Eintrag aus dem Steering-Loop-Eintrag oben ist der **zusätzliche** Wächter der
+  Mitnahme-Zusage — die Zusage selbst hält der Go-Marker samt Fall `357`, sein eigener Verlust ist
+  es, den kein Lauf meldet. Die Kommandos, **kein gespeicherter Wert**:
 
   ```sh
-  grep -c '^func Test' internal/emit/commitmsg_test.go                 # 7  Go-Waechter
-  grep -c '^@test' test/commit-msg-emission.bats                       # 10 bats-Faelle
-  ls test/mutations/34[7-9]-*.sh test/mutations/35[0-6]-*.sh | wc -l   # 10 gelistete Faelle
+  grep -c '^func Test' internal/emit/commitmsg_test.go   # 7 Go-Waechter, jeder von einem Fall genannt
+  grep -c '^@test' test/commit-msg-emission.bats         # 10 bats-Faelle der emittierten Fassung
+  # je Waechter die Zahl der gelisteten Faelle, die ihn nennen (0 = keiner):
+  for t in 'rot: eine Message ohne' 'kopplung: die Klassen-Aufzaehlung' 'rot: der Grund nennt den Ort' \
+           'gruen: jede der vier' 'gruen: die Kennung darf' 'gruen: die Merge-' \
+           'rot: eine Kennung in einer Kommentarzeile' 'fail-closed: fehlende Datei' \
+           'kopplung: die zwei bash-Fassungen' 'kopplung: die Betreff-Ausnahme' \
+           'kennungs_traeger_im_ziel'; do
+    printf '%s  %s\n' "$(grep -rlF -- "$t" test/mutations/ | wc -l)" "$t"; done
+  # 3x 1 (die ersten drei) und 8x 0 (die uebrigen acht, darunter die E2E-Sektion)
   for s in abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt neuer-waechter-ohne-mutations-fall; do
     printf '%-58s %s\n' "$s" "$(ls docs/plan/planning/observations/BEO-ALL/$s/evidence/*.md | wc -l)"
   done
