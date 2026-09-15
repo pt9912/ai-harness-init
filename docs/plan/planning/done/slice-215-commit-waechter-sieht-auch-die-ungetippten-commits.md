@@ -295,6 +295,14 @@ Backticks).
   eine"*, und die Mehrheit trägt eine
   (`git log --format='%s' | grep '^slice-mv:' | grep -cE 'ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3}|slice-[0-9]+'`
   → **367** von `git log --format='%s' | grep -c '^slice-mv:'` → **411**; **keine Erwartungswerte**).
+  (4) **Die Vorab-Messung, die [`AGENTS.md`](../../../../AGENTS.md) §3.11 Absatz 2 vor jedem
+  vorgeschriebenen Ortswechsel verlangt, ist hier nicht über die zwei eingefrorenen Bäume
+  gefahren.** Die Messung dieses Laufs hat `docs/reviews/` und `docs/plan/planning/done/` mit ihren
+  beiden Ausschlüssen ausgeblendet — und genau dort hat der Nachzug dann geschrieben: zwei
+  Zeitdokumente, eine fremde Verifikation und die Closure-Notiz von `slice-126`. Der Nachzug selbst
+  ist die von [`ADR-0042`](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 2
+  entschiedene Antwort; unterblieben ist der Schritt **vor** dem Move. Der Fund steht im
+  Register-Beleg.
 - **Steering-Loop-Eintrag:** *Neuer Sensor* — [`.githooks/commit-msg`](../../../../.githooks/commit-msg)
   samt [`harness/tools/commit-msg-traceability.sh`](../../../../harness/tools/commit-msg-traceability.sh)
   (die Prüfung), `make hooks-install` (die Aktivierung), `test/commit-msg-hook.bats`
@@ -304,7 +312,7 @@ Backticks).
   `liegt in`-Feld:** Mit diesem Slice ist keine Regel verkörpert worden — der Sensor ist der
   Liefergegenstand, nicht die Antwort auf einen 3×-Schwellen-Übertritt. Der Eintrag ist gezählt,
   nicht verkörpert.
-- **Beobachtungs-Register (`../observations/`):** **Drei Belege an vorhandenen Einträgen, kein neues
+- **Beobachtungs-Register (`../observations/`):** **Vier Belege an vorhandenen Einträgen, kein neues
   Verzeichnis**; je Eintrag eine Datei `evidence/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md`,
   und **kein Zähler wird gesetzt** — er folgt aus den Dateien. Die Zuordnung ist am Bestand
   gemessen, nicht aus den Reports übernommen:
@@ -329,6 +337,13 @@ Backticks).
     Stand `geplant` (`slice-181`): **V-1**, die Zelle, die eine Klasse absolut behauptete, wo der
     Bestand sie teilt. Es ist genau der Fall, den §8 als Evidenz-Risiko dieser DoD angekündigt hatte
     — die eigene Ankündigung ist eingetreten.
+  - [`verweis-nachzug-schreibt-in-eingefrorenes-artefakt`](../observations/BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt/observation.md)
+    — **14×** (`ls docs/plan/planning/observations/BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt/evidence/*.md | wc -l`),
+    Stand `verkörpert`
+    ([`ADR-0042`](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md)): der Nachzug des
+    Closure-Move hat in **zwei** Zeitdokumente geschrieben — die Closure-Notiz von `slice-126` und
+    den Verifikations-Report von `slice-174`. Das ist die entschiedene Antwort und kein Befund; der
+    Fund dieses Belegs ist die **Reihenfolge**, siehe (4) oben.
   - **Kein Beleg** ging an
     [`adaptions-marker-nennt-eine-stelle-die-emissions-klasse-nicht-haelt`](../observations/BEO-ALL/adaptions-marker-nennt-eine-stelle-die-emissions-klasse-nicht-haelt/observation.md):
     gemessen hat dieser Vorgang **keinen** `ANPASSEN`-Marker geschrieben oder angefasst
