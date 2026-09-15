@@ -85,7 +85,7 @@ adaptierbarer Marker, kein hart verdrahteter Wert
   Ausgang). Beide in einem Slice hieße, zwei Verträge mit einem Diff zu bedienen.
 - **Die dritte Hälfte eines Ortswechsels.** Ein bewachtes **Zustandsfeld** nachzuziehen ist ein
   eigener Vorgang; er liegt bei
-  [slice-ortswechsel-zieht-sein-zustandsfeld-nach](slice-ortswechsel-zieht-sein-zustandsfeld-nach.md).
+  [slice-ortswechsel-zieht-sein-zustandsfeld-nach](../open/slice-ortswechsel-zieht-sein-zustandsfeld-nach.md).
   Das Werkzeug deckt **Verweise**, nicht Zustandsfelder — die Grenze bleibt an beiden Stellen benannt.
 - **Der Nachzug über die Ebene.** Dass die emittierte Vorlage der ausgeführten nachläuft, hält keine
   Quelle zusammen; die Klasse ist im Register gezählt und die Welle schließt sie nicht mit (Welle

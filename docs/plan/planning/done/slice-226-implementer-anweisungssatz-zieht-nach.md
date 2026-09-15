@@ -326,7 +326,7 @@ Backticks).
   done
   ```
 - **Folge-Slices:** keiner geschnitten — das ist Planner-Arbeit. **Ein Zwilling wird frei:**
-  [slice-lifecycle-move-geht-ins-ziel](../open/slice-lifecycle-move-geht-ins-ziel.md) liegt in
+  [slice-lifecycle-move-geht-ins-ziel](../next/slice-lifecycle-move-geht-ins-ziel.md) liegt in
   `open/` und ist Mitglied von [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md); sein
   Kopf führt **diesen** Slice als den benannten Ausgang der **ausgeführten** Fassung und wartet
   damit auf ihn (Welle §5: *erst die ausgeführte Fassung, dann die emittierte*). Mit dieser Closure
