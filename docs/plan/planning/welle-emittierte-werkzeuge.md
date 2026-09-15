@@ -162,7 +162,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   `implement-slice.md` gegen die Ziel-Fassung),
   [slice-153](open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md) (die zwei ausgeführten
   Wellen-Anweisungssätze gegen die Abschnitte, die die Roadmap führt),
-  [slice-215](next/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) (der **Träger**
+  [slice-215](in-progress/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) (der **Träger**
   des Commit-Kennungs-Wächters — er entscheidet den Kanal, den ein emittierter Wächter erben würde)
   und [slice-ortswechsel-zieht-sein-zustandsfeld-nach](open/slice-ortswechsel-zieht-sein-zustandsfeld-nach.md)
   (die dritte Hälfte eines Ortswechsels: das bewachte Zustandsfeld).
