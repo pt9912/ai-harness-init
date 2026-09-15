@@ -59,10 +59,12 @@ ENDE
 )"
 
   # (L3) Lokaler Lauf vom 2026-08-27:
+  # Der Pfad des lokalen Klons ist in dieser Aufzeichnung durch $PWD normalisiert; sie
+  # gibt die Form der Ausgabe wieder, nicht den maschinen-lokalen Ort des Laufs.
   # make ci-lint ACTIONLINT_IMAGE=ghcr.io/pt9912/gibt-es-diesen-namen-nicht:v0
   # Der andere Weg zur Registry: der Daemon holt beim Container-Start.
   LEITUNG_DAEMON="$(cat <<'ENDE'
-docker run --rm -v "/Development/KI/ai-harness-init":/repo:ro -w /repo ghcr.io/pt9912/gibt-es-diesen-namen-nicht:v0
+docker run --rm -v "$PWD":/repo:ro -w /repo ghcr.io/pt9912/gibt-es-diesen-namen-nicht:v0
 Unable to find image 'ghcr.io/pt9912/gibt-es-diesen-namen-nicht:v0' locally
 docker: Error response from daemon: Head "https://ghcr.io/v2/pt9912/gibt-es-diesen-namen-nicht/manifests/v0": denied
 make: *** [Makefile:142: ci-lint] Fehler 125
@@ -98,10 +100,12 @@ ENDE
 )"
 
   # (B2) Lokaler Lauf vom 2026-08-27: make docs-check, nachdem der gitignorierte
+  # Der Pfad des lokalen Klons ist in dieser Aufzeichnung durch $PWD normalisiert; sie
+  # gibt die Form der Ausgabe wieder, nicht den maschinen-lokalen Ort des Laufs.
   # Traeger beiseitegelegt wurde — derselbe Befund, mit dem die CI am 2026-08-26 rot
   # war. Ein Doku-Gate-Befund ohne jede Registry-Zeile.
   BAUM_DCHECK="$(cat <<'ENDE'
-docker run --rm --network none -v "/Development/KI/ai-harness-init:/repo:ro" ghcr.io/pt9912/d-check@sha256:3996a593b9cb71aa3bcb4f3ddf8f637e7409db31b3a2dac7eedc28d65814cacf
+docker run --rm --network none -v "$PWD:/repo:ro" ghcr.io/pt9912/d-check@sha256:3996a593b9cb71aa3bcb4f3ddf8f637e7409db31b3a2dac7eedc28d65814cacf
 docs/plan/planning/done/slice-098-feldliste-ist-ausdruck-des-traegers.md:198	../../../../.harness/state/bin	target-missing
 d-check: 406 Datei(en) geprueft, 1 Befund(e)
 make: *** [d-check.mk:32: docs-check] Fehler 1

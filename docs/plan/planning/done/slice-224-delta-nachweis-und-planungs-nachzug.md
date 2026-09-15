@@ -104,7 +104,7 @@ dem Klon-Stand und sind **keine Erwartungswerte**
 Setzung 2):
 
 ```sh
-cd /Development/KI/ai-harness-course
+cd <Klon des Kurs-Repos>
 git diff --shortstat v6.0.0..v6.7.2 -- lab/regelwerk/ lab/templates/   # 42 Dateien, +907/−404
 git diff --shortstat v6.0.0..v6.5.0 -- lab/regelwerk/ lab/templates/   # 32 Dateien, +624/−153
 git diff --shortstat v6.5.0..v6.7.2 -- lab/regelwerk/ lab/templates/   # 33 Dateien, +295/−263
@@ -114,7 +114,7 @@ git log  --oneline  v6.0.0..v6.7.2  -- lab/regelwerk/ lab/templates/   # 11 Comm
 Die 42 Posten sind **nicht** 32 + 33: **23** Dateien ändern sich in **beiden** Hälften.
 
 ```sh
-cd /Development/KI/ai-harness-course
+cd <Klon des Kurs-Repos>
 comm -12 <(git diff --name-only v6.0.0..v6.5.0 -- lab/regelwerk/ lab/templates/ | sort) \
          <(git diff --name-only v6.5.0..v6.7.2 -- lab/regelwerk/ lab/templates/ | sort) | wc -l   # 23
 ```
@@ -619,7 +619,7 @@ dieser Planung. Die Form ist die von
 der zwei Antworten mit Beleg und dem Ort, an dem er landet. Die Zahl der Zeilen ist die Zahl, die
 `git diff --name-only v6.0.0..v6.7.2 -- lab/regelwerk/ lab/templates/` im Lauf ausgibt.
 
-Gemessen im Lauf: `cd /Development/KI/ai-harness-course && git diff --name-only v6.0.0..v6.7.2 -- lab/regelwerk/ lab/templates/ | wc -l` → **42**. Die Tabelle hat **42** Zeilen, eine je Datei, in derselben Reihenfolge.
+Gemessen im Lauf: `cd <Klon des Kurs-Repos> && git diff --name-only v6.0.0..v6.7.2 -- lab/regelwerk/ lab/templates/ | wc -l` → **42**. Die Tabelle hat **42** Zeilen, eine je Datei, in derselben Reihenfolge.
 
 Zwei Antworten, gelesen gegen unseren Bestand: **schon erfüllt** heißt, unser Bestand erfüllt die Regel bereits (kein Handlungsbedarf, an niemanden). **übernommen** heißt, eine Adoptions-Handlung ist nötig — `landet in` sagt, wer sie trägt: `slice-224` (hier vollzogen), `slice-225`/`Implementer` (Übergabe, hier nur benannt) oder eine der in §1 ausgeschlossenen Kennungen (slice-210/211/212/213/214, emittierte Ebene). **Korrigiert (Review slice-224 MEDIUM-5):** `Reviewer` steht hier nicht mehr als Ziel — keine Zeile der Tabelle trägt diesen Wert, obwohl §1/§3 die Sendung an `.harness/skills/reviewer.md` benennen; der fehlende Träger für diese Sendung und für `Implementer` ist als offenes Risiko in §6 geführt. Die Klammerzusätze `(teilweise)` und `(Übergabe)` verfeinern **übernommen**, sie eröffnen keine dritte oder vierte Antwort — die Menge bleibt zwei (Review slice-224 LOW-1).
 
@@ -630,7 +630,7 @@ Zeile, die sich unten auf „ausschließlich Tabellen-Reformatierung"/„keine I
 ist mit dem robusteren Vergleich neu gefahren:
 
 ```sh
-cd /Development/KI/ai-harness-course
+cd <Klon des Kurs-Repos>
 diff <(git show v6.0.0:<datei> | sed 's/[[:space:]]\+/ /g; s/ *| */|/g') \
      <(git show v6.7.2:<datei> | sed 's/[[:space:]]\+/ /g; s/ *| */|/g')
 ```

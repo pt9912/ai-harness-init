@@ -96,7 +96,7 @@ Aussagen-Berührung steht hier gar nicht.
 | `docs/plan/planning/open/` | neu | je Folge-Slice eine Datei, per `cp` aus der Vorlage |
 | [welle-15](welle-15-re-baseline.md) §4 | update | die Slice-Tabelle der Welle bekommt ihre übrigen Zeilen |
 
-Der Katalog wird am lokalen Kurs-Klon `/Development/KI/ai-harness-course` gemessen (`git diff`
+Der Katalog wird am lokalen Kurs-Klon `<Klon des Kurs-Repos>` gemessen (`git diff`
 zwischen den zwei Tags). Der vendored Baum unter `.harness/baseline/` wird in diesem Slice **nicht**
 angefasst — der Tausch ist ein eigener Slice, den der Katalog benennt.
 
@@ -215,7 +215,7 @@ Backticks).
   **Cross-Check gegen das Nachbar-Repo lief nur zur Hälfte**: Zuordnung und Strang-Schnitt decken
   sich, aber die Messung nach
   [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) hat dort kein
-  Gegenstück, weil `/Development/d-check` die Frage
+  Gegenstück, weil `<Klon des d-check-Repos>` die Frage
   nach der regierenden Fassung gar nicht als Entscheidung führt (83 ADRs, 0 Treffer). Eine
   Präzedenz deckt die **Form** der Arbeit, nicht die **Entscheidungen**, die ein Repo trägt.
 - **Steering-Loop-Eintrag (geschärfte Regel, benannt und noch nicht verkörpert):** *Eine
@@ -309,7 +309,7 @@ Positionen dürfen mehrere Hunks bündeln. **21 Hunks über 14 Dateien**, davon 
 und **eine** entfallene (`D`):
 
 ```sh
-# am lokalen Kurs-Klon /Development/KI/ai-harness-course
+# am lokalen Kurs-Klon <Klon des Kurs-Repos>
 git diff --name-status v5.18.0 v6.0.0 -- lab/regelwerk lab/templates          # 14 Zeilen, 1×A, 1×D
 git diff v5.18.0 v6.0.0 -- lab/regelwerk lab/templates | grep -c '^@@'        # 21
 ```
@@ -446,7 +446,7 @@ Damit greift die zweite Rückführung von
 
 ### Cross-Check gegen das Nachbar-Repo
 
-`/Development/d-check` hat denselben Sprung am 2026-09-03/04 vollzogen (`welle-88`, Slices
+`<Klon des d-check-Repos>` hat denselben Sprung am 2026-09-03/04 vollzogen (`welle-88`, Slices
 `193`–`195`, Volltexte unter `done/welle-88/archiv.zip`). Er ist **Präzedenz und Beleg-Quelle,
 keine Vorgabe** — dort gelten eigene Adaptionen und ein eigener Sub-Area-Zuschnitt.
 
@@ -477,7 +477,7 @@ Bezugs-Feld fünf `MR`-Einträge und **keine** ADR, und über seinen ganzen ADR-
 Suche nach der Meta-Frage nicht:
 
 ```sh
-# im Nachbar-Repo /Development/d-check
+# im Nachbar-Repo <Klon des d-check-Repos>
 ls docs/plan/adr/[0-9]*.md | wc -l                                              # 83 ADRs
 grep -rlicE 'regierende Fassung|Ziel-Fassung regiert' docs/plan/adr/ | wc -l    #  0
 ```

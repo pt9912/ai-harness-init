@@ -37,13 +37,13 @@ genau den geprüften Stand. Zusätzlich `make docs-check` (netzlos) selbst gefah
 **Erfüllt.**
 
 ```sh
-cd /Development/KI/ai-harness-course
+cd <Klon des Kurs-Repos>
 git diff --name-only v6.0.0..v6.7.2 -- lab/regelwerk/ lab/templates/ | wc -l   # 42
 ```
 
 ```sh
-cd /Development/KI/ai-harness-init
-diff <(cd /Development/KI/ai-harness-course && git diff --name-only v6.0.0..v6.7.2 -- lab/regelwerk/ lab/templates/) \
+cd <maschinen-lokaler Klon>
+diff <(cd <Klon des Kurs-Repos> && git diff --name-only v6.0.0..v6.7.2 -- lab/regelwerk/ lab/templates/) \
      <(sed -n '/^| Posten/,$p' docs/plan/planning/in-progress/slice-224-*.md \
        | grep -E '^\| `lab/' | sed -E 's/^\| `([^`]+)`.*/\1/')
 # -> leer, EXIT 0

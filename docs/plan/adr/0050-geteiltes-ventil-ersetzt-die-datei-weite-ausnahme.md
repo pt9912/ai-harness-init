@@ -79,8 +79,8 @@ der Pin** und wurde zwischen seiner Einführung und ihm nicht entfernt:
 
 ```sh
 grep -n '^DCHECK_IMAGE' d-check.mk
-grep -c '^## \[0\.49\.0\]' /Development/d-check/CHANGELOG.md                                          # 1
-awk '/^## \[0\.65\.0\]/,/^## \[0\.49\.0\]/' /Development/d-check/CHANGELOG.md | grep -c '^### Removed'  # 0
+grep -c '^## \[0\.49\.0\]' <Klon des d-check-Repos>/CHANGELOG.md                                          # 1
+awk '/^## \[0\.65\.0\]/,/^## \[0\.49\.0\]/' <Klon des d-check-Repos>/CHANGELOG.md | grep -c '^### Removed'  # 0
 ```
 
 **Keine Erwartungswerte** ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)

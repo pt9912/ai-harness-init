@@ -265,7 +265,7 @@ die nach dieser Rolle läuft (§3.10). Kein Befund.
   ADR Folgepflicht 3 ausdrücklich nicht Gegenstand dieses Slice (der Lese-Schritt der nächsten
   Welle-Closure und der Folge-Slice `slice-register-ueber-der-schwelle-bekommt-seinen-waechter`).
   Ich habe nur die Zähler und die `Stand:`-Zeilen gemessen.
-- **Die Nachbar-Repos** `/Development/d-check` und `/Development/a-check` — Fremdquellen
+- **Die Nachbar-Repos** `<Klon des d-check-Repos>` und `<Klon des a-check-Repos>` — Fremdquellen
   außerhalb dieses Repos; ich habe die zwei Kommandos der ADR nicht nachgefahren, sondern nur die
   Aussage geprüft, die die ADR aus ihnen zieht und die sie selbst als „abschreibbar ist die Form,
   nicht das Ergebnis" einordnet.

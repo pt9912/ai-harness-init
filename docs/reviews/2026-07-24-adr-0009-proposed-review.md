@@ -10,7 +10,7 @@ ADR-0009 verfeinert ADR-0008 sauber, ist überwiegend referenz-treu, die Richtun
 
 ## Verifiziert (referenz-treu, wörtlich geprüft)
 
-- **a-check-Pin exakt:** `ghcr.io/pt9912/a-check@sha256:6425c93a9a4359ef28c4da231a2d1db6f421fdaa8f96877ac89d201827c42d09` steht byte-genau in `/Development/hexslice-architecture/lab/examples/go/a-check.mk:5` + `Makefile:20`; **v0.15.0** bestätigt (`README.md:41`), „HexSlice rules: lateral-slice & port-locality" real (`README.md:49/51`).
+- **a-check-Pin exakt:** `ghcr.io/pt9912/a-check@sha256:6425c93a9a4359ef28c4da231a2d1db6f421fdaa8f96877ac89d201827c42d09` steht byte-genau in `<Klon des hexslice-Repos>/lab/examples/go/a-check.mk:5` + `Makefile:20`; **v0.15.0** bestätigt (`README.md:41`), „HexSlice rules: lateral-slice & port-locality" real (`README.md:49/51`).
 - **Layout** deckt sich mit der kanonischen Ordnerstruktur (`hexslice-architecture.de.md:84-120`): `domain/<area>/{entity·value-object·domain-event·domain-service}`, `application/<area>/<usecase>/{command|query·handler·validator·result}`+`ports/`, `application/<area>/ports/`, `application/ports/` (im Doc-Struktur-Block vorhanden, auch wenn das minimale Beispiel ihn nicht materialisiert — kanonisch gedeckt, nicht erfunden), `adapters/{inbound,outbound}/<typ>/<area>`, `cmd/<binary>/main.go` (`composition_root: cmd/**`).
 - **`.a-check.yml`-Schema** (version/languages/layers domain·app·port·adapter/edges/composition_root/exclude `**/*_test.go`) trifft die reale Datei.
 - **Naming `hexslice`** gerechtfertigt (Referenz „HexSlice Architecture"; a-check v0.15.0 prüft „HexSlice rules"); „hexagonal" korrekt als ADR-0008-Skizze geframt.

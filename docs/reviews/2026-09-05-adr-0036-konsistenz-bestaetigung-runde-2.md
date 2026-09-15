@@ -242,7 +242,7 @@ Fundort.**
   `171`, `185` in `open/`, `176`, `178` in `done/` (`ls -1 docs/plan/planning/*/slice-<N>-*.md`).
   ADR-0030 Festlegung 3 (Kennung ohne Pfad-Adresse) bleibt gewahrt.
 - **Die zwei Nebenbefunde von Runde 1 sind erledigt.** `git worktree list` zeigt nur
-  `/Development/KI/ai-harness-init`; `d-check` meldet `796 Datei(en) geprüft, 0 Befund(e)` statt
+  `<maschinen-lokaler Klon>`; `d-check` meldet `796 Datei(en) geprüft, 0 Befund(e)` statt
   `1607/5616`. `make gates` steht auf **EXIT 0**.
 - **Register-Deckung der zitierten Klassen.** Beide in diesem Report zitierten Beobachtungs-Pfade
   existieren und tragen Belege:

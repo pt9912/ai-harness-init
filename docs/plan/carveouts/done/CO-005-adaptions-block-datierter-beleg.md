@@ -62,7 +62,7 @@ Messung lief gegen `v0.62.0`):**
   als *„querschnittliche Top-Level-Fähigkeit, die `links`, `anchors` und `codepaths` gemeinsam
   honorieren"*, mit `in` (Glob auf die Quelldatei), `refs` (Globs auf das aufgelöste Ziel) und
   `keep`; der modul-lokale `codepaths.ignore-refs` bleibt Alias
-  (`grep -n 'ignore-refs' /Development/d-check/CHANGELOG.md`, lokaler Klon). Sonde in
+  (`grep -n 'ignore-refs' <Klon des d-check-Repos>/CHANGELOG.md`, lokaler Klon). Sonde in
   [`.d-check.yml`](../../../../.d-check.yml) mit `in: "harness/conventions.md"` und
   `refs: [".harness/baseline/v3.5.2/**"]`, ein `make docs-check`, danach zurückgenommen:
   `468 Datei(en) geprüft, 0 Befund(e)` — **dieselbe Dateizahl** wie ohne Sonde, das Ventil sitzt

@@ -285,7 +285,7 @@ ls docs/plan/planning/done/welle-13-results.md                # existiert nicht 
   Regel-Zeile** — etwa weil die Ausgangs-Menge selbst, die Verzeichnis-Form oder die zwei Leser
   zusammen neu zu schneiden sind. Dann ist das ein eigener Gegenstand und dieser Schnitt falsch.
 - `in-progress` → `open` (blockiert — Carveout?): **Eine Quelle spricht gegen die Zuständigkeit** —
-  etwa weil ein Nachbar-Repo (`/Development/d-check`, `/Development/a-check`) dieselbe Frage
+  etwa weil ein Nachbar-Repo (`<Klon des d-check-Repos>`, `<Klon des a-check-Repos>`) dieselbe Frage
   bereits entschieden hat und die Übernahme vor der eigenen Entscheidung zu klären ist; oder weil
   die Frage nach [`AGENTS.md`](../../../../AGENTS.md) §3.8 einer anderen schreibenden Rolle gehört
   als der hier benannten.
@@ -342,7 +342,7 @@ dasteht.
   [`BEO-ALL/zahl-ohne-kommando-trifft-ihren-gegenstand-nicht`](../observations/BEO-ALL/zahl-ohne-kommando-trifft-ihren-gegenstand-nicht/observation.md)
   bereits benannt, und dieser Slice zählt dort als Vorgang.
 - **(3) Die Nachbar-Repos haben die Frage bereits entschieden, und die Antwort fällt anders aus.**
-  `/Development/d-check` und `/Development/a-check` fahren dieselbe Baseline und dieselbe
+  `<Klon des d-check-Repos>` und `<Klon des a-check-Repos>` fahren dieselbe Baseline und dieselbe
   Rollen-Sequenz; eine übernommene **Form** ohne eigene Messung wäre eine Zusammenfassung, die
   stärker ist als ihre Quelle — die gemessene Klasse
   [`BEO-ALL/zusammenfassung-staerker-als-ihre-quelle`](../observations/BEO-ALL/zusammenfassung-staerker-als-ihre-quelle/observation.md).

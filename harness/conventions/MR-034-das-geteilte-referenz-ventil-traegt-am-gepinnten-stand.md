@@ -35,8 +35,8 @@
   ihm nicht entfernt — beide Zeilen gegen den lokalen Klon des Werkzeug-Repos:
 
   ```sh
-  grep -c '^## \[0\.49\.0\] — 2026-07-18' /Development/d-check/CHANGELOG.md                             # 1
-  awk '/^## \[0\.65\.0\]/,/^## \[0\.49\.0\]/' /Development/d-check/CHANGELOG.md | grep -c '^### Removed' # 0
+  grep -c '^## \[0\.49\.0\] — 2026-07-18' <Klon des d-check-Repos>/CHANGELOG.md                             # 1
+  awk '/^## \[0\.65\.0\]/,/^## \[0\.49\.0\]/' <Klon des d-check-Repos>/CHANGELOG.md | grep -c '^### Removed' # 0
   ```
 
   **Gemessen am eigenen Baum, mit beiden Skopen an einer roten Gegenprobe:** eine Sonde in

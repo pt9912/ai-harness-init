@@ -149,7 +149,7 @@ Beide Fassungen erfüllen den Eintrag: §2 seine Nachher-Hälfte, §1 seine Pin-
 ```sh
 grep -n 'Tests-Zeile' .harness/baseline/v6.8.0/regelwerk/modul-09-implementierung.md
 #  27:**Die Tests-Zeile bindet an die Akzeptanzkriterien der in Schritt 3
-cd /Development/KI/ai-harness-course
+cd <Klon des Kurs-Repos>
 git diff --stat v6.7.2..v6.8.0 -- lab/regelwerk/modul-09-implementierung.md   # leer
 ```
 

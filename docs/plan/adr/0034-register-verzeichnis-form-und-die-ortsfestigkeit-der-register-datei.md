@@ -63,7 +63,7 @@ dieses Repo ist zum Zeitpunkt dieser Entscheidung noch auf den Vorgänger gepinn
 
 ```sh
 sed -n '/^### Das Beobachtungs-Register/,/^### Wellen-Closure/p' \
-  /Development/d-check/.harness/baseline/v6.0.0/regelwerk/modul-06-roadmap.md
+  <Klon des d-check-Repos>/.harness/baseline/v6.0.0/regelwerk/modul-06-roadmap.md
 ls .harness/baseline/            # v5.18.0 — der hier adoptierte Stand
 ```
 

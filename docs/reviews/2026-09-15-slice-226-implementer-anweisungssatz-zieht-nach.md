@@ -73,7 +73,7 @@ Setzung 2).
 ### 1. Der Delta-Nachweis — nachgefahren, er trägt
 
 ```sh
-cd /Development/KI/ai-harness-course
+cd <Klon des Kurs-Repos>
 git diff --shortstat v6.0.0..v6.7.2 -- lab/regelwerk/modul-09-implementierung.md
 #  1 file changed, 35 insertions(+), 4 deletions(-)
 

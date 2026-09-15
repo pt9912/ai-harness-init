@@ -203,7 +203,7 @@ gefunden.
   Gegenstand, Träger `slice-129`), `observations` (vierte, additiv fünfte Fähigkeit, **kein**
   Träger-Slice, Zeiger auf `BEO-ALL/register-paarung-ohne-gate-modul`). Selbst gegen den
   gepinnten Werkzeug-Quellstand geprüft: `grep -n ObservationsConfig
-  /Development/d-check/internal/hexagon/core/model/config.go` bestätigt die vierte Fähigkeit
+  <Klon des d-check-Repos>/internal/hexagon/core/model/config.go` bestätigt die vierte Fähigkeit
   wörtlich als „VIERTE planning-Fähigkeit". Der einzige verbleibende Mangel dieses Absatzes
   (Runde 3, R-1, MEDIUM) betrifft **andere** Dateien (den ADR-Index, `AGENTS.md`, sieben fremde
   Slice-Pläne), nicht diesen Absatz selbst.

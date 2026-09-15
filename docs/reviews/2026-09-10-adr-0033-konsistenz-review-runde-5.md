@@ -143,7 +143,7 @@ liefern die geschriebene Zahl.
 | `:180` | `grep -c 'archive-welle' test/mutations/233-…-haenger-suchraum.sh` | 0 | 0 |
 | `:185` | `ls test/mutations/*archive-welle*.sh …*archiv-stub-vorlage*.sh \| wc -l` | 24 | 24 |
 | `:190` | `grep -cE '^[A-Z_]+_IMAGE \?=' Makefile` | 3 | 3 |
-| `:193` | `ls /Development/d-check/tools/archive-wave/*_test.go \| wc -l` | 7 | 7 |
+| `:193` | `ls <Klon des d-check-Repos>/tools/archive-wave/*_test.go \| wc -l` | 7 | 7 |
 | `:205-206` | `TAG=$(sed …); ls ".harness/baseline/$TAG/…/archiv-stub-"*.template.md \| wc -l` | 2 | 2 |
 | `:212` | der Report-Zähler oben | 122 | 122 |
 | `:243` | `grep -c '^func Test' cmd/ai-harness-init/archive_welle_echt_test.go` | 3 | 3 |

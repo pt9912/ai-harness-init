@@ -91,7 +91,7 @@ ADR-0016 zum Annahme-Zeitpunkt **aktiv**; F-6 wäre dann ein Verstoß gegen eine
 
 ```sh
 $ diff <(sed -n '26,29p' .harness/baseline/v3.5.2/regelwerk/modul-07-carveouts.md) \
-       <(git -C /Development/KI/ai-harness-course show v5.3.1:lab/regelwerk/modul-07-carveouts.md | sed -n '26,29p')
+       <(git -C <Klon des Kurs-Repos> show v5.3.1:lab/regelwerk/modul-07-carveouts.md | sed -n '26,29p')
                                           # leer -> byte-gleich
 
 $ sed -n '129p' .harness/baseline/v3.5.2/regelwerk/modul-07-carveouts.md

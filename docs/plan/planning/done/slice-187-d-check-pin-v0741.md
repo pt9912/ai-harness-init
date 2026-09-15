@@ -84,7 +84,7 @@ Quell-Differenz **und** an einer Nicht-Null-Basis gezogen. Geerbt wird nichts.**
 
 **Die Spanne ist die zweitgrößte dieser Linie und der eigentliche Kostentreiber.** Auf den
 gepinnten Stand folgen **zwölf** Tags — neun Minors, dazu zwei Patch-Releases und der bekannte tote
-Tag `v0.66.0`. Gezählt am lokalen Klon `/Development/d-check` mit
+Tag `v0.66.0`. Gezählt am lokalen Klon `<Klon des d-check-Repos>` mit
 `git for-each-ref --sort=v:refname --format='%(refname:short) %(creatordate:short)' 'refs/tags/v0.6[5-9]*' 'refs/tags/v0.7[0-9].*'`;
 die Ausgabe spannt `v0.65.0` (2026-08-28) bis `v0.74.1` (2026-09-04). **Keine Erwartungswerte** —
 die Zahl wächst mit jedem Upstream-Release
@@ -97,7 +97,7 @@ maß drei.
 ### Sechs Messungen, jede neben ihrem Kommando
 
 Alle in diesem Planungslauf gefahren, am 2026-09-05, netzlos gegen den Baum (`--network none`,
-Mount `:ro`); der Klon des Werkzeugs unter `/Development/d-check` ist eine **Fremdquelle** und kein
+Mount `:ro`); der Klon des Werkzeugs unter `<Klon des d-check-Repos>` ist eine **Fremdquelle** und kein
 Artefakt dieses Repos (§6). Die Registry-Abfragen brauchen Netz und liegen außerhalb von
 `make gates`.
 
@@ -107,7 +107,7 @@ Artefakt dieses Repos (§6). Die Registry-Abfragen brauchen Netz und liegen auß
    lokalen Bestand
    (`docker image inspect --format '{{index .RepoDigests 0}}' ghcr.io/pt9912/d-check:v0.74.1`) und
    als **Fremdquelle** aus dem Benutzerhandbuch des Werkzeugs
-   (`grep -rn 'e31a372b' /Development/d-check --include='*.md'` → **1** Zeile, der Pin-Block des
+   (`grep -rn 'e31a372b' <Klon des d-check-Repos> --include='*.md'` → **1** Zeile, der Pin-Block des
    Handbuchs). Drei Wege, ein Wert
    ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
 2. **Der Trockenlauf vor dem Pin zeigt eine Differenz von null Befunden.** `make docs-check`

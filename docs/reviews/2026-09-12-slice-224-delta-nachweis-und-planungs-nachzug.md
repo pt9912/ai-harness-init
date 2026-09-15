@@ -17,7 +17,7 @@
 **Vorherige Findings am gleichen Modul:** [`2026-09-12-slice-223-…`](2026-09-12-slice-223-baum-tausch-v672-pins-ziehen.md) MEDIUM-1/MEDIUM-2/INFO-1/INFO-2
 
 Alle Zahlen unten stehen neben dem Kommando, das sie liefert, gefahren über `92c3140b` bzw. im
-Kurs-Klon `/Development/KI/ai-harness-course` über die Tags `v6.0.0`/`v6.7.2`. **Keine
+Kurs-Klon `<Klon des Kurs-Repos>` über die Tags `v6.0.0`/`v6.7.2`. **Keine
 Erwartungswerte** — sie wandern mit Baum und Klon.
 
 **Prüfmethode: Stichprobe, ausdrücklich als solche.** Von 42 Posten habe ich **19** am Diff des
@@ -59,7 +59,7 @@ Das ist nicht ein Posten unter 42. **23 der 42 Posten sind Folgeerscheinungen ge
 sie tragen die neue Kennungs-Form ein:
 
 ```sh
-cd /Development/KI/ai-harness-course
+cd <Klon des Kurs-Repos>
 for f in $(git diff --name-only v6.0.0..v6.7.2 -- lab/regelwerk/ lab/templates/); do
   git diff v6.0.0..v6.7.2 -- "$f" | grep -qE '^\+.*(<Kennung>|slice-kennung|Namen, nicht Nummern)' && echo "$f"
 done | wc -l          # 23
@@ -84,7 +84,7 @@ Liefer-Punkt 3 filtert die Adaptions-Einträge nach ihrem Auflösungs-Trigger, u
 `permanent`:
 
 ```sh
-cd /Development/KI/ai-harness-init
+cd <maschinen-lokaler Klon>
 for f in harness/conventions/MR-*.md; do
   awk '/^- \*\*Auflösungs-Trigger:\*\*/{p=1} p{print} p&&/^- \*\*(Datum|Wirksamkeits-Anlass|Geltungsbereich|Ersetzt)/&&!/Auflösungs/{exit}' "$f" \
     | grep -qiE 'baseline|regelwerk|kurs-|upstream|adoptiert|Ziel-Fassung' && basename "$f"
@@ -121,7 +121,7 @@ die der geprüfte Korpus flächendeckend trifft: Es **filtert Tabellenzeilen aus
 Beides schlägt real durch:
 
 ```sh
-cd /Development/KI/ai-harness-course
+cd <Klon des Kurs-Repos>
 # behauptet: "keine Inhaltsänderung" — gemessen mit dem Beleg-Kommando:
 git diff v6.0.0..v6.7.2 -- lab/regelwerk/grundlagen-begriffe.md \
   | grep -E '^[+-][^+-]' | grep -vE '^[+-]\|' | wc -l                       # 0
@@ -193,7 +193,7 @@ Glossar-Eintrag hätte auffallen müssen, decken sich gegenseitig zu.
 `implement-slice.md`**"*. Wörtlich gefahren über `92c3140b`:
 
 ```sh
-cd /Development/KI/ai-harness-init
+cd <maschinen-lokaler Klon>
 git grep -nE 'slice-<NNN>|welle-<NN>' -- docs/plan/planning .claude/commands ':!docs/plan/planning/done' | wc -l   # 15
 git grep -lE 'slice-<NNN>|welle-<NN>' -- docs/plan/planning .claude/commands ':!docs/plan/planning/done' | wc -l   # 3
 ```
@@ -236,7 +236,7 @@ Modul-Zusammensetzung des **emittierten Doc-Gates** (`planning`, `codepaths`), s
 Adaptions-Eintrag zur Modul-Aktivierung — und schließt die Sache wörtlich aus:
 
 ```sh
-cd /Development/KI/ai-harness-init
+cd <maschinen-lokaler Klon>
 git grep -cE 'slice-<NNN>|welle-<NN>' -- internal/emit/templates       # commands/close-welle.md:2, commands/implement-slice.md:4
 grep -n 'Kein Nachzug der emittierten Startkonfiguration' docs/plan/planning/open/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md   # 112
 git grep -clE 'slice-<NNN>|welle-<NN>|Kennungs-Notation' -- docs/plan/planning/open/slice-21[012]-*.md   # 0
@@ -281,7 +281,7 @@ ausdrücklich führt"*, INFO-2), und §1 dieses Plans schließt Schreibzugriff a
 damit weiter auf einem Tag, den der Checkout nicht führt:
 
 ```sh
-cd /Development/KI/ai-harness-init
+cd <maschinen-lokaler Klon>
 grep -n '^\*\*Version:\*\*\|Baseline:' .harness/skills/reviewer.md | head -2   # "Baseline: … v6.0.0 (Kurs-Welle 116)"
 ls .harness/baseline/                                                          # v6.7.2
 ```
@@ -304,7 +304,7 @@ Menge im Kopf, offene Menge in der Tabelle
 `befund`
 
 ```sh
-cd /Development/KI/ai-harness-init
+cd <maschinen-lokaler Klon>
 sed -n '/^| Posten (Datei im Kurs-Klon)/,$p' docs/plan/planning/in-progress/slice-224-*.md \
   | grep -E '^\| `lab/' | awk -F'|' '{print $4}' | sed 's/^ *//;s/ *$//' | sort | uniq -c
 #   30 schon erfüllt · 10 übernommen · 1 übernommen (teilweise) · 1 übernommen (Übergabe)
@@ -346,7 +346,7 @@ Stellen-Messung (n = 1) als Aussage über eine Menge
 eigenen Slice-Plan** bereits verkörpert"* seien. Das ist eine Messung an **einer** Datei:
 
 ```sh
-cd /Development/KI/ai-harness-init
+cd <maschinen-lokaler Klon>
 grep -rhE '^## 1\. ' docs/plan/planning/{open,next,in-progress} | sort | uniq -c   # 50 "## 1. Ziel" · 19 "## 1. Ziel und Abgrenzung"
 grep -rhE '^## 8\. ' docs/plan/planning/{open,next,in-progress} | sort | uniq -c   # 50 alt · 19 neu
 ```
@@ -362,7 +362,7 @@ liest der nächste Lauf eine Bestands-Aussage, die der Bestand mit 50 : 19 wider
 
 - **Vollständigkeit der Postenmenge** — die 42 Tabellenzeilen sind die 42 Dateien des Deltas, in
   identischer Reihenfolge, keine erfunden, keine fehlend:
-  `diff <(cd /Development/KI/ai-harness-course && git diff --name-only v6.0.0..v6.7.2 -- lab/regelwerk/ lab/templates/) <(sed -n '/^| Posten/,$p' docs/plan/planning/in-progress/slice-224-*.md | grep -E '^\| `lab/' | sed -E 's/^\| `([^`]+)`.*/\1/')`
+  `diff <(cd <Klon des Kurs-Repos> && git diff --name-only v6.0.0..v6.7.2 -- lab/regelwerk/ lab/templates/) <(sed -n '/^| Posten/,$p' docs/plan/planning/in-progress/slice-224-*.md | grep -E '^\| `lab/' | sed -E 's/^\| `([^`]+)`.*/\1/')`
   → leer, EXIT 0.
 - **Die drei geänderten Nicht-Plan-Dateien** (`observations/README.md`, `welle-13-…md`,
   `close-welle.md`) — je eine reine Notations-Ersetzung `<NN>`/`<NNN>` → `<Kennung>`, kein

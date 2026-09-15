@@ -40,7 +40,7 @@ Shell-Helfer je Dogfood-Repo, oder eigenständiges Go-Modul.**
 
 Die Frage steht, weil zwei Antworten nebeneinander liegen. Dieses Repo baut den Schritt als
 Shell-Helfer ([slice-170](../done/slice-170-archivierungs-werkzeug.md)); im Nachbar-Repo
-`/Development/d-check/tools/archive-wave/` läuft dieselbe Operation als eigenständiges Go-Modul
+`<Klon des d-check-Repos>/tools/archive-wave/` läuft dieselbe Operation als eigenständiges Go-Modul
 mit eigenem `go.mod`, `Dockerfile` und `Makefile`. Für eine dritte Antwort besteht eine
 angenommene Präzedenz: [ADR-0022](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
 hat für die Erfassungsschicht entschieden, dass der Träger das laufende Produkt-Binär ist und die
@@ -140,7 +140,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **einen** Ausgang, und kein Slice geht nach `done/`, während eines ohne Ausgang
 dasteht.
 
-- **Das Vorbild steht in keinem Rang der Source Precedence.** `/Development/d-check/tools/archive-wave/`
+- **Das Vorbild steht in keinem Rang der Source Precedence.** `<Klon des d-check-Repos>/tools/archive-wave/`
   ist ein Nachbar-Repo, kein kanonischer Rang; eine ADR, die es als **Begründung** zitiert, beruft
   sich auf eine Quelle, die kein Rang deckt. Tragen kann es nur als **gemessenes** Vorbild — eine
   Aussage über seinen Bestand mit dem Kommando daneben. — **Ausgang:** **entfallen** — die ADR

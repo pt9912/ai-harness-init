@@ -79,7 +79,7 @@ Kennungs-Notation des Herkunfts-Ankers bewegt; der neue Absatz über die maschin
 **Deckungs**-Prüfung steht in §Harness-Einordnung, also außerhalb des Pins:
 
 ```sh
-cd /Development/KI/ai-harness-course
+cd <Klon des Kurs-Repos>
 diff <(git show v6.0.0:lab/regelwerk/modul-10-review-harness.md | sed 's/[[:space:]]\+/ /g; s/ *| */|/g') \
      <(git show v6.7.2:lab/regelwerk/modul-10-review-harness.md | sed 's/[[:space:]]\+/ /g; s/ *| */|/g')
 git diff --name-only v6.0.0..v6.7.2 -- lab/templates/.harness/   # leer — die Ziel-Form selbst ist unverändert

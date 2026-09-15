@@ -90,7 +90,7 @@ der, unter dem es steht.** Der d-check-CHANGELOG führt es unter `[0.49.0] — 2
 Top-Level-Fähigkeit, die `links`, `anchors` und `codepaths` gemeinsam honorieren"*, mit den
 Feldern `in` (Glob auf die Quelldatei), `refs` (Globs auf das aufgelöste Ziel) und `keep`
 (Ausnahmen, reihenfolge-unabhängig); der modul-lokale Schlüssel bleibt Alias
-(`grep -n 'ignore-refs' /Development/d-check/CHANGELOG.md`, lokaler Klon — `0.49.0` liegt vor dem
+(`grep -n 'ignore-refs' <Klon des d-check-Repos>/CHANGELOG.md`, lokaler Klon — `0.49.0` liegt vor dem
 Pin `v0.65.0`). **Wer unter `links:` nach `ignore-refs` sucht, findet nichts und schließt falsch:**
 `--print-config` gibt eine kommentierte Beispiel-Config aus, keine Schema-Liste — Abwesenheit
 darin ist keine Abwesenheit der Option. Dieselbe Klasse wie eine Trefferliste, die als
@@ -201,8 +201,8 @@ wäre also regelkonform per `cp`
 Zeilen bei **34** Einträgen (`wc -l harness/conventions.md`,
 `grep -c '^### MR-' harness/conventions.md`); das Nachbar-Repo d-check fährt die Verzeichnis-Form
 mit **32** Einträgen und einem Index von **184** Zeilen
-(`wc -l /Development/d-check/harness/conventions.md`,
-`ls /Development/d-check/harness/conventions/*.md | wc -l`, lokaler Klon). **Alle vier Zahlen
+(`wc -l <Klon des d-check-Repos>/harness/conventions.md`,
+`ls <Klon des d-check-Repos>/harness/conventions/*.md | wc -l`, lokaler Klon). **Alle vier Zahlen
 wandern mit ihrem Bestand und sind keine Erwartungswerte**
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2).
@@ -223,7 +223,7 @@ zu lesen).
 **Auf einen neuen Pfad zöge der Umzug sie nicht.** Alle Treffer der Suche oben tragen die Form
 `conventions.md#mr-<slug>` — Datei **plus Anker** —, und in der Verzeichnis-Form bleibt die Datei
 als **Index** stehen. Das Nachbar-Repo hält seine Index-Zeilen genau dafür adressierbar:
-`grep -c '<a id=' /Development/d-check/harness/conventions.md` → **55** explizite HTML-Anker,
+`grep -c '<a id=' <Klon des d-check-Repos>/harness/conventions.md` → **55** explizite HTML-Anker,
 je Zeile der alte lange Slug **und** die Kurzform `mr-NNN`. Dass der gepinnte d-check ein solches
 `<a id="…"></a>` als Link-Ziel auflöst, ist unten an einer Sonde gemessen. Was der Umzug kostet,
 ist damit eine Index-Zeile je Eintrag, nicht ein Verweis-Nachzug.

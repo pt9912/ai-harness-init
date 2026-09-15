@@ -82,11 +82,11 @@ das **`lab/regelwerk` + `lab/templates`**, nicht `kurs/de`: Ein Diff über `kurs
 Kurs-Fassung, aus der der Baum abgeleitet wird, und ordnet Änderungen anderen Tags zu. Die
 Byte-Gleichheit dieser Achse ist in
 [`ADR-0038`](../../adr/0038-ziel-fassung-regiert-den-sprung-v650.md) §Die Achse belegt und hier
-nicht zweitgemessen. Gemessen am lokalen Kurs-Klon `/Development/KI/ai-harness-course`, Stand
+nicht zweitgemessen. Gemessen am lokalen Kurs-Klon `<Klon des Kurs-Repos>`, Stand
 `ac94c33` — eine **Host-Voraussetzung**, kein Artefakt dieses Repos:
 
 ```sh
-K=/Development/KI/ai-harness-course
+K=<Klon des Kurs-Repos>
 git -C "$K" diff --numstat v6.0.0 v6.5.0 -- lab/regelwerk lab/templates \
   | awk '{a+=$1;d+=$2;n++} END{printf "%d Dateien  +%d  -%d\n", n,a,d}'   # 32 Dateien  +624  -153
 for p in v6.0.0..v6.1.0 v6.1.0..v6.2.0 v6.2.0..v6.3.0 \

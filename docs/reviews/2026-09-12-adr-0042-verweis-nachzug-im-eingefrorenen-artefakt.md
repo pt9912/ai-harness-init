@@ -18,7 +18,7 @@ Beide Träger nehmen heute allein `.harness/baseline` aus (`harness/tools/slice-
 Festlegung 1 bindet `docs/plan/planning/observations/` als Ganzes; die Baseline führt darin `state.md` ausdrücklich als *„der veränderliche Stand"*. Heute folgenlos — die Vorschau trifft nur zwei `evidence/*.md` —, aber die Einordnung friert mit ein. · Verifizierbar: nein · Klasse: „Baum als eingefroren geführt, obwohl er ein deklariert veränderliches Glied trägt"
 
 **LOW-2 · Der Nachbar-Beleg trägt kein auflösbares Zitat-Ziel** · Quelle: [ADR-0016](../plan/adr/0016-verweis-traegt-tag-und-zitat.md), [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) · Pfad: `docs/plan/adr/0042-…md:203–213`
-Messung 6 zitiert *„Ein Nachbar-Repo desselben Nutzers"* ohne Repo-Namen, Pfad oder Stand; der Leser einer eingefrorenen Datei kann es nicht nachschlagen. Inhaltlich geprüft und **bestätigt**: der Wortlaut steht verbatim in `/Development/d-check/harness/conventions/MR-070-frozen-klassen-vor-mechanischer-ersetzung.md:66–71`. · Verifizierbar: nein · Klasse: „Zitat ohne auflösbare Adresse in einem einfrierenden Artefakt"
+Messung 6 zitiert *„Ein Nachbar-Repo desselben Nutzers"* ohne Repo-Namen, Pfad oder Stand; der Leser einer eingefrorenen Datei kann es nicht nachschlagen. Inhaltlich geprüft und **bestätigt**: der Wortlaut steht verbatim in `<Klon des d-check-Repos>/harness/conventions/MR-070-frozen-klassen-vor-mechanischer-ersetzung.md:66–71`. · Verifizierbar: nein · Klasse: „Zitat ohne auflösbare Adresse in einem einfrierenden Artefakt"
 
 ## Negativbefunde (geprüft, ohne Befund)
 

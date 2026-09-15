@@ -12,7 +12,7 @@
 **Schnitt dieses Laufs — eng, ausdrücklich.** Geprüft ist ausschließlich, ob die Nacharbeit die
 sieben Befunde der ersten Runde auflöst, dazu der Posten des Verifiers. Kein zweiter Durchgang über
 die 42 Posten. Alle Zahlen stehen neben dem Kommando, das sie liefert, gefahren über `6803ed31`
-bzw. im Kurs-Klon `/Development/KI/ai-harness-course` (`v6.0.0`/`v6.7.2`) — **keine
+bzw. im Kurs-Klon `<Klon des Kurs-Repos>` (`v6.0.0`/`v6.7.2`) — **keine
 Erwartungswerte**. Nur lesende Kommandos, nichts geändert.
 
 ---
@@ -28,7 +28,7 @@ lizenzierende Absatz aus `v6.0.0` ist tatsächlich gestrichen:
 sed -n '360p' .harness/baseline/v6.7.2/regelwerk/grundlagen-source-precedence.md
 # -> **Welle- und Slice-Kennungen sind Namen, nicht Nummern — unabhängig von der
 grep -c 'dichte Nummern' .harness/baseline/v6.7.2/regelwerk/grundlagen-source-precedence.md   # 0
-cd /Development/KI/ai-harness-course && git show v6.0.0:lab/regelwerk/grundlagen-source-precedence.md | grep -c 'dichte Nummern'   # 1
+cd <Klon des Kurs-Repos> && git show v6.0.0:lab/regelwerk/grundlagen-source-precedence.md | grep -c 'dichte Nummern'   # 1
 ```
 
 Damit ist der Kern von HIGH-1 weg: Die Feststellung ist durch eine Entscheidung ersetzt, die
@@ -39,7 +39,7 @@ Entscheidung hat einen Inhalt (Namen ab jetzt, kein Nachrüsten des Bestands) un
 `slice-225`. Dessen §1 schließt genau das aus:
 
 ```sh
-cd /Development/KI/ai-harness-init
+cd <maschinen-lokaler Klon>
 grep -n 'Kein neuer `MR`-Eintrag' docs/plan/planning/done/slice-225-gate-index-steht-einmal.md
 # -> 143:- **Kein neuer `MR`-Eintrag.** … *Bestand bleibt bewusst stehen* — die 52 aktiven Einträge werden geprüft, nicht vermehrt.
 grep -n 'kein neuer `MR`-Eintrag' docs/plan/planning/done/slice-225-gate-index-steht-einmal.md
@@ -75,7 +75,7 @@ Reformatierung/„keine Inhaltsänderung" stützen. Es filtert keine Zeilenklass
 die whitespace-normalisierten Volltexte:
 
 ```sh
-cd /Development/KI/ai-harness-course
+cd <Klon des Kurs-Repos>
 for f in grundlagen-begriffe modul-08-agentenrollen modul-16-produktiver-betrieb \
          grundlagen-bootstrap grundlagen-klassifikation modul-04-adrs modul-11-verification \
          modul-12-replay-evaluierung modul-14-docker-harness grundlagen-durchsetzungsschicht \
@@ -96,7 +96,7 @@ alten Kommandos positiv getroffen.
 einer davon fällt sie:
 
 ```sh
-cd /Development/KI/ai-harness-course
+cd <Klon des Kurs-Repos>
 diff <(git show v6.0.0:lab/regelwerk/modul-02-harness-bootstrap.md | sed 's/[[:space:]]\+/ /g; s/ *| */|/g') \
      <(git show v6.7.2:lab/regelwerk/modul-02-harness-bootstrap.md | sed 's/[[:space:]]\+/ /g; s/ *| */|/g') | head -12
 # Zeile 148: Zelle erhält "`AGENTS.md` 1 → 2 (Source Precedence + Hard Rules)"
@@ -124,7 +124,7 @@ Spalte nicht — es gibt keinen `trace:`-Block, und das `matrix`-Modul ist die R
 `grundlagen-traceability.md` ausdrücklich von der RTM unterscheidet:
 
 ```sh
-cd /Development/KI/ai-harness-init
+cd <maschinen-lokaler Klon>
 grep -c '^trace:' .d-check.yml                 # 0
 grep -n '^modules:' .d-check.yml               # links, anchors, ids, matrix, codepaths, spans, planning, targets
 sed -n '/^matrix:/,/^codepaths:/p' .d-check.yml | grep -c 'from:.*to:'   # 2 — Referenz-Richtung, keine Anforderungs-Abdeckung

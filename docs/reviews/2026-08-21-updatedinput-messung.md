@@ -127,7 +127,7 @@ Eine Zeile; der `prompt` trägt die Markierung und gezielte Fallen (zitiertes `"
 Klammern im Text, nacktes `run_in_background`, Backslash-Escape, Umlaut):
 
 ```json
-{"session_id":"sonde-fixture","transcript_path":"/tmp/nirgends.jsonl","cwd":"/Development/KI/ai-harness-init","hook_event_name":"PreToolUse","tool_name":"Agent","tool_input":{"description":"Sonden-Fixture slice-086","prompt":"Freitext mit Markierung SONDE-MARKER-7c1de4b2a90f und JSON-Fallen: ein zitiertes \"tool_input\": { hier }, ein nacktes run_in_background im Text, eine Klammer } mitten im Satz, ein Backslash-Escape \\n und ein ü als Escape.","subagent_type":"Explore"}}
+{"session_id":"sonde-fixture","transcript_path":"/tmp/nirgends.jsonl","cwd":"<maschinen-lokaler Klon>","hook_event_name":"PreToolUse","tool_name":"Agent","tool_input":{"description":"Sonden-Fixture slice-086","prompt":"Freitext mit Markierung SONDE-MARKER-7c1de4b2a90f und JSON-Fallen: ein zitiertes \"tool_input\": { hier }, ein nacktes run_in_background im Text, eine Klammer } mitten im Satz, ein Backslash-Escape \\n und ein ü als Escape.","subagent_type":"Explore"}}
 ```
 
 ## 4. Offline-Belege (vor der Verdrahtung)

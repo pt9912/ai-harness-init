@@ -46,7 +46,7 @@ ls -d harness/conventions/done 2>&1                    # existiert nicht
 
 **Der Mechanismus ist in diesem Repo kein Neuland.** `docs/plan/carveouts/done/` fährt ihn seit
 Modul 7 (`ls docs/plan/carveouts/done/ | wc -l` → 3), und das Schwester-Repo führt ihn für genau
-diesen Block (`ls -1 /Development/a-check/harness/conventions/done/*.md | wc -l` → 10).
+diesen Block (`ls -1 <Klon des a-check-Repos>/harness/conventions/done/*.md | wc -l` → 10).
 
 ### `ÜBERHOLT` und *aufgelöst* sind zwei verschiedene Mengen
 

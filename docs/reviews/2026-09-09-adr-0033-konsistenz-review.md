@@ -213,7 +213,7 @@ Festlegung 2) — dieser Report wird mit seinem Abschluss unveränderlich.
   (`grep -l 'archive-welle' test/mutations/*.sh | wc -l`) → heute **8**, und die Menge ist eine
   andere: die sieben Shell-Fälle sind fort, gezählt werden die Go-Fälle, die Festlegung 2 an ihre
   Stelle gesetzt hat. **„68 Report-Dateien"** (das `for`-Kommando im Kontext) → heute **106**.
-  **„fünf Testdateien"** (`ls /Development/d-check/tools/archive-wave/*_test.go | wc -l`) → heute
+  **„fünf Testdateien"** (`ls <Klon des d-check-Repos>/tools/archive-wave/*_test.go | wc -l`) → heute
   **7**. Keine der vier kippt ein Argument: die Pin-Zahl trug *„ein gepinntes Bild entfällt"* und
   ist damit erfüllt statt widerlegt; die 68 trugen *„der Suchraum ist nicht theoretisch"* und
   tragen es bei 106 stärker; die fünf trugen *„ein eigener Test je Gegenstand"* und tragen es bei

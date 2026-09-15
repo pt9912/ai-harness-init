@@ -55,9 +55,9 @@ bzw. dasselbe Muster mit `-lihP … | wc -l`) tragen die Form `conventions.md#mr
 expliziten HTML-Anker, zeigt jeder dieser Verweise weiterhin auf eine existierende Datei und einen
 existierenden Anker. Der Umzug kostet dann **eine Index-Zeile je Eintrag**, keinen Verweis-Nachzug.
 
-Vorgemacht hat das Nachbar-Repo `/Development/a-check`: seine Index-Zeilen tragen je **zwei**
+Vorgemacht hat das Nachbar-Repo `<Klon des a-check-Repos>`: seine Index-Zeilen tragen je **zwei**
 Anker — die stabile Kennung `mr-<NNN>` und daneben den alten Überschriften-Slug. Es fährt denselben
-d-check-Pin wie wir (`grep -m1 '^DCHECK_IMAGE' /Development/a-check/d-check.mk` und
+d-check-Pin wie wir (`grep -m1 '^DCHECK_IMAGE' <Klon des a-check-Repos>/d-check.mk` und
 `grep -m1 '^DCHECK_IMAGE' d-check.mk` nennen beide `ghcr.io/pt9912/d-check:v0.69.0`).
 [slice-132](../done/slice-132-adaptions-block-ohne-totes-ziel.md) §1 hat die tragende Vorfrage
 bereits an einer Sonde gemessen: ein Link auf ein `<a id="…"></a>` mit abweichendem
@@ -141,8 +141,8 @@ nicht die Antwort.
   Selbstnennung in der H1 der Zieldatei und die Index-Zellen-Verlinkung
   `[MR-<NNN>](conventions/MR-<NNN>-<titel>.md)`. Im Nachbar-Repo tragen beide Formen **ohne**
   `d-check:ignore`-Marker und **ohne** `exempt-path`
-  (`grep -rc 'd-check:ignore' --include='MR-*.md' /Development/a-check/harness/conventions/` → je 0;
-  `grep -n 'exempt-paths' /Development/a-check/.d-check.yml` nennt nur `CHANGELOG.md` und
+  (`grep -rc 'd-check:ignore' --include='MR-*.md' <Klon des a-check-Repos>/harness/conventions/` → je 0;
+  `grep -n 'exempt-paths' <Klon des a-check-Repos>/.d-check.yml` nennt nur `CHANGELOG.md` und
   `docs/reviews/**`). **Das ist ein Anlass, keine Deckung** — die Sonde läuft über *unserem*
   Korpus.
 
@@ -233,7 +233,7 @@ Rot ist die **Adressierbarkeit**. `make docs-check` meldet über dem vollzogenen
 **Zwei Prämissen des Plans sind an derselben Messung gefallen** und gehören in den nächsten
 Schnitt:
 
-- §1 nennt für `/Development/a-check` und dieses Repo denselben d-check-Pin.
+- §1 nennt für `<Klon des a-check-Repos>` und dieses Repo denselben d-check-Pin.
   `grep -m1 '^DCHECK_IMAGE' d-check.mk` nennt hier **v0.65.0**, dasselbe Kommando im Nachbar-Repo
   **v0.69.0** — die Referenz-Form ist an einem neueren Pin gemessen als unser Korpus.
 - §1 nennt die Korrektur an den blockinternen Selbstverweisen als **einzigen** zulässigen Eingriff.

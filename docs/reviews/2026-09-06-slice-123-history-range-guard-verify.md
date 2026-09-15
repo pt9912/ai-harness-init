@@ -35,7 +35,7 @@ Zitate aus den Review-Reports. **Nicht Gegenstand:** Closure-Notiz §7, DoD-Häk
 **Erfüllt.** Selbst reproduziert, nicht nur behauptet übernommen:
 
 ```
-$ git clone --depth 1 file:///Development/KI/ai-harness-init /tmp/klon-verify
+$ git clone --depth 1 file://<maschinen-lokaler Klon> /tmp/klon-verify
 $ cd /tmp/klon-verify && git log --oneline | wc -l
 1
 $ bash harness/tools/history-range-guard.sh HEAD..HEAD

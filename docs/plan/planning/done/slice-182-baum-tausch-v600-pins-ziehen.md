@@ -208,7 +208,7 @@ dasteht.
   Das Nachbar-Repo hat an genau dieser Stelle **zwei** übersehene Klassen gemeldet: eine
   Version-Annotation neben einem Zitat und die Selbstauskunfts-Zahlen des begleitenden
   Adaptions-Eintrags
-  (`unzip -p /Development/d-check/docs/plan/planning/done/welle-88/archiv.zip
+  (`unzip -p <Klon des d-check-Repos>/docs/plan/planning/done/welle-88/archiv.zip
   docs/plan/planning/done/slice-193-baseline-v600-bump.md`, §9). — **Ausgang: weiter offen →
   Beobachtungs-Register, `BEO-009`.** Beide vom Nachbar-Repo genannten
   Klassen sind aufgetreten. Die **Version-Annotation neben einem Zitat** zweimal, beide in diesem

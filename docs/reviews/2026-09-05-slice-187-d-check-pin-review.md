@@ -251,7 +251,7 @@ Geprüft ist hier, ob die Zusagen **tragen** und ob ein stiller Grün-Pfad beste
   Lesart geht nicht auf: Zählt man `v0.66.0` **nur** als toten Tag, bleiben **acht** Minors und
   **drei** Patches — dann stimmt die Neun nicht.
 - **verifizierbar:** ja, selbst gefahren am Klon:
-  `git -C /Development/d-check for-each-ref --sort=v:refname --format='%(refname:short)' 'refs/tags/v0.6[5-9]*' 'refs/tags/v0.7[0-9].*'`
+  `git -C <Klon des d-check-Repos> for-each-ref --sort=v:refname --format='%(refname:short)' 'refs/tags/v0.6[5-9]*' 'refs/tags/v0.7[0-9].*'`
   → `v0.65.0 v0.66.0 v0.66.1 v0.67.0 v0.68.0 v0.69.0 v0.70.0 v0.71.0 v0.71.1 v0.72.0 v0.73.0 v0.74.0 v0.74.1`.
 - **klasse:** `zahl-ohne-kommando-trifft-ihren-gegenstand-nicht`
   ([Register](../plan/planning/observations/BEO-ALL/zahl-ohne-kommando-trifft-ihren-gegenstand-nicht/observation.md),
@@ -300,7 +300,7 @@ Geprüft ist hier, ob die Zusagen **tragen** und ob ein stiller Grün-Pfad beste
   zeichengleich.** Selbst gefahren:
   `docker buildx imagetools inspect ghcr.io/pt9912/d-check:v0.74.1` → `Digest: sha256:e31a372b66dbde26305982424854cfce7c9ab7ce555a94debeee7ee26e6d4641`;
   `docker image inspect --format '{{index .RepoDigests 0}}' …:v0.74.1` → derselbe Wert;
-  `grep -rn 'e31a372b' /Development/d-check --include='*.md'` → **1** Zeile
+  `grep -rn 'e31a372b' <Klon des d-check-Repos> --include='*.md'` → **1** Zeile
   (`docs/user/benutzerhandbuch.md:99`, Fremdquelle). `d-check.mk:59-60` und
   `internal/emit/emit.go:33-34` tragen Tag und Digest zeichengleich. Kein stiller Grün-Pfad im
   Kopplungstest: `mkVar` bricht auf **beiden** Fehlerpfaden mit `t.Fatalf` ab (Datei unlesbar ·

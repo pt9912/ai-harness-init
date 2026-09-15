@@ -124,7 +124,7 @@ nicht. Wer slice-174 priorisiert, zieht seinen Start-Trigger hierher.
 
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): wenn Stub-Erzeugung und Ablösung
   zusammen nicht in *einer* Review-Sitzung prüfbar sind. Die Messlatte ist die Schreib-Hälfte des
-  Vorbilds — `wc -l /Development/d-check/tools/archive-wave/{archive,stub}.go` — plus die
+  Vorbilds — `wc -l <Klon des d-check-Repos>/tools/archive-wave/{archive,stub}.go` — plus die
   Ablösung; der Stub ist der einzige Gegenstand dieses Slice, den das Vorbild **nicht** trägt
   (Festlegung 3 verlangt die Vorlage, das Vorbild formatiert im Code). Dann geht der Stub als
   eigener Slice zurück und die Ablösung bleibt hier — Festlegung 2 bindet sie an den Lauf, der

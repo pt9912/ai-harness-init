@@ -72,7 +72,7 @@ Verifikation (wie in der Aufgabe vorgegeben).
   `FROM golang:${GO_VERSION}@sha256:792443b89f65105abba56b9bd5e97f680a80074ac62fc844a584212f8c8102c3
   AS deps`. `Makefile:14` `GO_VERSION ?= 1.26.4`, durchgereicht via `--build-arg
   GO_VERSION=$(GO_VERSION)`. `go.mod` `go 1.26`.
-- **Unabhängig gegenbelegt (a-check-Spiegel, Plan §6):** `grep golang /Development/a-check/Dockerfile`
+- **Unabhängig gegenbelegt (a-check-Spiegel, Plan §6):** `grep golang <Klon des a-check-Repos>/Dockerfile`
   → `FROM golang:${GO_VERSION}@sha256:792443b89f65105abba56b9bd5e97f680a80074ac62fc844a584212f8c8102c3`
   — **byte-identisch** zum hiesigen Base-Digest. Der Pin ist der bewusste Schwester-Repo-Spiegel,
   nicht frei erfunden.

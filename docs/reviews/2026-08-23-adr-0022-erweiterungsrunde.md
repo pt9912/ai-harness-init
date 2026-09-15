@@ -56,8 +56,8 @@ derselbe Lauf verursacht und die dieser Commit behebt.
 | `grep -n '^RELEASE_PLATFORMS' Makefile` | 6 Plattformen — deckt die "sechs Binaries"-Behauptung von H |
 | `grep -n '^### ' .harness/baseline/v3.5.2/regelwerk/modul-15-observability.md` | 7 Abschnitte — deckt die "sieben"-Behauptung |
 | Python-Script: alle Backtick-Spans mit `\|` je Tabellen-/Prosa-Zeile gezählt, OLD (4fcc141) vs. NEW (bb65edd) | OLD: **1** Tabellenzeilen-Treffer (unescaped, Zeile 564, G-Zeile), **10** Prosa-Treffer; NEW: **1** Tabellenzeilen-Treffer (escaped, Zeile 597), **10** Prosa-Treffer — deckt die "genau eine Stelle"-Behauptung exakt |
-| Verbatim-Gegenprobe (`grep -qF` als Here-String) beider Regelwerks-Zitate gegen `/Development/KI/ai-harness-course/lab/regelwerk/modul-15-observability.md` | beide `FOUND` |
-| `git -C /Development/KI/ai-harness-course describe --tags` / `diff v5.11.0..HEAD --stat` | `v5.11.0-1-g5f47950`; einziger Zusatz-Commit ändert nur `docs/roadmap.md` — `modul-15-observability.md` bei HEAD byte-identisch zu `v5.11.0` |
+| Verbatim-Gegenprobe (`grep -qF` als Here-String) beider Regelwerks-Zitate gegen `<Klon des Kurs-Repos>/lab/regelwerk/modul-15-observability.md` | beide `FOUND` |
+| `git -C <Klon des Kurs-Repos> describe --tags` / `diff v5.11.0..HEAD --stat` | `v5.11.0-1-g5f47950`; einziger Zusatz-Commit ändert nur `docs/roadmap.md` — `modul-15-observability.md` bei HEAD byte-identisch zu `v5.11.0` |
 | `grep -rn "GOOS\|GOARCH\|runtime\.\|platform" internal/fetch/baseline.go` | leer, Exit 1 — **keine** Plattform-Auswahl-Logik im heutigen Fetch-Code |
 | `make docs-check` | `d-check: 355 Datei(en) geprüft, 0 Befund(e)` |
 | `make gates` | Exit 0; `grep -c '^ok '` → **143**; `grep -c '^not ok '` → **0**; letzte Zeile `span-check: Emitter vorhanden, ein Span geschrieben, Ablageort git-ignoriert` |
@@ -221,7 +221,7 @@ Dokument sonst sehr genau zwischen Zitat und Ableitung trennt, wäre die explizi
   auf ein fehlendes Programm zeigt"* verweist selbst auf `LH-QA-01`, exakt die Formulierung, die
   K's Contra-Spalte aufgreift.
 - **Frage 4 — beide Regelwerks-Zitate verbatim bestätigt, Tag-Stand des Klons verifiziert.**
-  Beide Zitate mit `grep -qF` als Here-String gegen `/Development/KI/ai-harness-course/lab/regelwerk/modul-15-observability.md`
+  Beide Zitate mit `grep -qF` als Here-String gegen `<Klon des Kurs-Repos>/lab/regelwerk/modul-15-observability.md`
   bestätigt (`FOUND`). Klon-Stand `v5.11.0-1-g5f47950`; der einzige Commit über dem Tag ändert nur
   `docs/roadmap.md` — `modul-15-observability.md` ist bei `HEAD` byte-identisch zu `v5.11.0`, das
   ADR-Zitat auf diesen Tag also korrekt gepinnt. Die inhaltliche Auflösung (LH-FA-10 Rang 1

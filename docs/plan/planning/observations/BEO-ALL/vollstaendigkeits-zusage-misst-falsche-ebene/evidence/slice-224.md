@@ -4,7 +4,7 @@ die `git diff --name-only v6.0.0..v6.7.2 -- lab/regelwerk/ lab/templates/` ausgi
 Zeile **eine** Antwort. Eine Datei trägt aber mehrere unabhängige Positionen:
 
 ```sh
-cd /Development/KI/ai-harness-course
+cd <Klon des Kurs-Repos>
 diff <(git show v6.0.0:lab/regelwerk/modul-02-harness-bootstrap.md | sed 's/[[:space:]]\+/ /g; s/ *| */|/g') \
      <(git show v6.7.2:lab/regelwerk/modul-02-harness-bootstrap.md | sed 's/[[:space:]]\+/ /g; s/ *| */|/g') \
   | grep -c '^[0-9]'

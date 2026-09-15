@@ -78,13 +78,13 @@ Setzung 2).
   Adaptions-Eintrag ([`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)). Die
   Präzedenz trägt nicht von selbst: `harness/conventions.md` steht in der Pflichtgliederung der
   Baseline und **muss** existieren, `observations.md` nicht.
-- **Volle Ziel-Form.** Die Datei entfällt. Präzedenz ist das Nachbar-Repo `/Development/d-check`,
+- **Volle Ziel-Form.** Die Datei entfällt. Präzedenz ist das Nachbar-Repo `<Klon des d-check-Repos>`,
   das denselben Sprung bereits vollzogen hat — seine Entscheidung dazu trägt den Titel *Das
   Beobachtungs-Register bekommt einen zweiten, additiven Verzeichnis-Modus* und liegt in
-  `/Development/d-check/docs/plan/adr/`. Dort ist
+  `<Klon des d-check-Repos>/docs/plan/adr/`. Dort ist
   `observations.md` gelöscht, und die Adressen der eingefrorenen Bestände sind über **fünf**
   `ignore-refs`-Paare stumm geschaltet (`grep -c 'refs: \["docs/plan/planning/observations.md"\]'
-  /Development/d-check/.d-check.yml` → **5**). **Der Preis:** Jene fünf Paare sind auf
+  <Klon des d-check-Repos>/.d-check.yml` → **5**). **Der Preis:** Jene fünf Paare sind auf
   **Verzeichnis-Globs** geschnitten — eine Form, die
   [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Festlegung 2 für
   dieses Repo ausdrücklich ausschließt (*„jedes zusätzliche Glob in `in` oder `refs` und jede
@@ -124,7 +124,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       **(c) den Commit-Zuschnitt** — ein Commit oder zwei
       ([`AGENTS.md`](../../../../AGENTS.md) §3.3). Das Nachbar-Repo hat für denselben Vorgang
       gemessen, dass keine grüne Zwischenteilung existiert, und dafür eine eigene, auf **einen**
-      Commit geschnittene Adaption gebraucht (`/Development/d-check/harness/conventions/`, Eintrag
+      Commit geschnittene Adaption gebraucht (`<Klon des d-check-Repos>/harness/conventions/`, Eintrag
       *Register-Formatmigration ist ein einziger, deklarierter Commit*) — die Messung ist hier zu
       wiederholen, nicht zu zitieren.
       → [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md),

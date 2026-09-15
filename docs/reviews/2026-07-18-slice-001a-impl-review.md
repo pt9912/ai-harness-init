@@ -46,7 +46,7 @@ Reviewer-Agent) · **Datum:** 2026-07-18
 - `make gates` → **Exit 0**: `baseline-verify` (`v3.1.0 OK — 42 Dateien`, netzlos) · `docs-check`
   (d-check, `--network none`) · `test` (bats **47 ok** + go-test-Build) · `shell-lint` ·
   `record-gates`. Alle grün.
-- **Digest-Abgleich a-check** (`/Development/a-check/Dockerfile`): golang-Base
+- **Digest-Abgleich a-check** (`<Klon des a-check-Repos>/Dockerfile`): golang-Base
   `golang:1.26.4@sha256:792443b89f65105abba56b9bd5e97f680a80074ac62fc844a584212f8c8102c3` — **byte-identisch**
   gespiegelt; `ARG GO_VERSION=1.26.4` und `go 1.26` (go.mod) stimmen mit a-check überein.
 - **Guard-Selbsttest** (bats, in `make gates`): `ok 24 guard: go build blockt`, `ok 25 guard:

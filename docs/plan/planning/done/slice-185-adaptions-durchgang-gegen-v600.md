@@ -209,7 +209,7 @@ dasteht.
 - **Die Selbstauskunft eines frisch geschriebenen Eintrags ist zu klein** (`BEO-009`, 10×,
   **geplant**). Das Nachbar-Repo hat an genau dieser Stelle einen Review-Befund: die Zahlen im
   begleitenden Adaptions-Dokument (cite-Direktiven, Tombstone-Fundstellen) waren beide zu niedrig
-  (`unzip -p /Development/d-check/docs/plan/planning/done/welle-88/archiv.zip
+  (`unzip -p <Klon des d-check-Repos>/docs/plan/planning/done/welle-88/archiv.zip
   docs/plan/planning/done/slice-193-baseline-v600-bump.md`, §9). Jede Zahl in einem neuen Eintrag
   steht neben dem Kommando, das sie liefert
   ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)). —

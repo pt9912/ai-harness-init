@@ -139,7 +139,7 @@ Zahl `6`, nicht `0` bleibt.
    selbst — ist es eingetreten?** **Ja, für `slice-213`, empirisch bestätigt:**
    ```sh
    diff -u .harness/baseline/v6.7.2/templates/docs/reviews/review-report.template.md \
-           /Development/KI/ai-harness-course/lab/templates/docs/reviews/review-report.template.md
+           <Klon des Kurs-Repos>/lab/templates/docs/reviews/review-report.template.md
    # -> leer, EXIT 0
    ```
    Der Kurs-Klon steht heute bei `v6.7.2-2-gf37abb8` (zwei reine Doku-Commits nach dem Tag, keiner

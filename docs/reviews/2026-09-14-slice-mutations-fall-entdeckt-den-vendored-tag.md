@@ -69,7 +69,7 @@ bash -c "source harness/tools/mutate.sh 2>/dev/null || true; mutation_targets <c
 Ausgabe, EXIT 1:
 
 ```text
-mutate: ABBRUCH — 219-toter-tag-nachgestellt: '# files: .harness/baseline/v6.7.2/templates/AGENTS.template.md' loest gegen /Development/KI/ai-harness-init nicht auf genau eine Datei auf.
+mutate: ABBRUCH — 219-toter-tag-nachgestellt: '# files: .harness/baseline/v6.7.2/templates/AGENTS.template.md' loest gegen <maschinen-lokaler Klon> nicht auf genau eine Datei auf.
 ```
 
 Dieselbe Meldung über `target_fingerprint <repo> <cases>`, ebenfalls EXIT 1. Die Zusage aus DoD 1

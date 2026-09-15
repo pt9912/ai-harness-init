@@ -72,7 +72,7 @@ mit dem Klon-Stand und sind **keine Erwartungswerte**
 Setzung 2):
 
 ```sh
-cd /Development/KI/ai-harness-course
+cd <Klon des Kurs-Repos>
 git diff --shortstat v6.0.0..v6.7.2 -- lab/regelwerk/modul-09-implementierung.md   # 1 Datei, +35/−4
 ```
 

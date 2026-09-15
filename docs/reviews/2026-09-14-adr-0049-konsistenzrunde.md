@@ -157,12 +157,12 @@ der Lese-Schritt selbst nennt"* trägt.
 ### Die Nachbar-Repo-Treffer
 
 ```sh
-grep -n 'Ausgängen\|Ausgänge' /Development/d-check/docs/plan/planning/observations/README.md \
-  /Development/a-check/docs/plan/planning/observations/README.md
+grep -n 'Ausgängen\|Ausgänge' <Klon des d-check-Repos>/docs/plan/planning/observations/README.md \
+  <Klon des a-check-Repos>/docs/plan/planning/observations/README.md
 # d-check :10  "… einer von drei Ausgängen"      (eine Zeile)
 # a-check :5   "welchen der drei Ausgänge ein Eintrag ab 3× trägt."
 # a-check :9   "… `offen` oder einer der drei Ausgänge"
-grep -n 'keinen der drei Ausgänge' /Development/a-check/.harness/skills/reviewer.md
+grep -n 'keinen der drei Ausgänge' <Klon des a-check-Repos>/.harness/skills/reviewer.md
 # :45  `Stand:`-Zeile bei 3× keinen der drei Ausgänge trägt.
 ```
 
@@ -308,7 +308,7 @@ erfüllen).
   Setzung 1 (*„trägt im selben Absatz das Kommando, das **genau sie** ausgibt"*)
 - `pfad`: `docs/plan/adr/0049-ausgang-traegt-die-benannte-luecke.md`:160–166
 - `befund`: Die Anmerkung lautet *„je eine Zeile"*; das abgedruckte Kommando gibt heute für
-  `/Development/d-check` **eine** Zeile aus und für `/Development/a-check` **zwei** (dessen
+  `<Klon des d-check-Repos>` **eine** Zeile aus und für `<Klon des a-check-Repos>` **zwei** (dessen
   Register-README führt den Satz an zwei Stellen). Die getroffene Aussage — beide Repos führen die
   Menge der drei Ausgänge — bleibt richtig.
 - `verifizierbar`: nein — die Nachbar-Repos liegen außerhalb des Prüfbereichs dieses Repos; das

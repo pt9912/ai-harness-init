@@ -98,7 +98,7 @@ Aussagen-Berührung steht hier gar nicht.
 | `docs/plan/planning/open/` | neu | je Folge-Slice eine Datei, per `cp` aus der Vorlage |
 | [welle-14](welle-14-re-baseline.md) §4 | update | die Slice-Tabelle der Welle bekommt ihre übrigen Zeilen |
 
-Der Katalog wird am lokalen Kurs-Klon `/Development/KI/ai-harness-course` gemessen (`git diff`
+Der Katalog wird am lokalen Kurs-Klon `<Klon des Kurs-Repos>` gemessen (`git diff`
 zwischen den zwei Tags). Der vendored Baum unter `.harness/baseline/` wird in diesem Slice **nicht**
 angefasst — der Tausch ist ein eigener Slice, den der Katalog benennt.
 

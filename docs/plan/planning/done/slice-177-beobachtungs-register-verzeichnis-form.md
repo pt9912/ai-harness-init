@@ -92,7 +92,7 @@ teilte einen Speicher, der heute `cat harness/conventions.md harness/conventions
 **52 701** Zeichen bei `grep -c '^| BEO-' docs/plan/planning/observations.md` → **29** Einträgen.
 Das Nachbar-Repo, das denselben Umzug bereits vollzogen hat, führt in der Ziel-Form **30**
 Beobachtungen mit **90** Beleg-Dateien in **43 701** Zeichen
-(`find /Development/d-check/docs/plan/planning/observations -name observation.md | wc -l`, dieselbe
+(`find <Klon des d-check-Repos>/docs/plan/planning/observations -name observation.md | wc -l`, dieselbe
 Suche mit `-path '*/evidence/*.md'`, und `… -name '*.md' -exec cat {} + | wc -c`): dreimal so viele
 Belege bei weniger Text. Keine Erwartungswerte
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)

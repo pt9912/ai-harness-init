@@ -22,7 +22,7 @@ Basis `4186c20`. Datum: 2026-07-25.
 ### 1. Wellen-Vorbedingung (Schritt 0): a-check real, Digest verifiziert, `--print-mk`, Lauf Exit 0 — **BESTÄTIGT** (Notat-Hälfte offen, s. Punkt 10)
 - **Digest real:** `docker run` **per Digest** `sha256:6425c93a9a4359ef28c4da231a2d1db6f421fdaa8f96877ac89d201827c42d09`
   läuft — die Referenz löst gegen die Registry auf. Derselbe Digest steht byte-genau in der
-  kanonischen Referenz `/Development/hexslice-architecture/lab/examples/go/a-check.mk:5` und in
+  kanonischen Referenz `<Klon des hexslice-Repos>/lab/examples/go/a-check.mk:5` und in
   `internal/emit/archgate.go:22` (`DefaultArchDigest`).
 - **`--print-mk` real:** von mir selbst ausgeführt, liefert das Fragment (Kopf + `A_CHECK_IMAGE ?=`
   + `.PHONY: a-check a-check-graph` + Recipes).
@@ -151,7 +151,7 @@ Nichts Geplantes fehlt. Kein ungeplantes Verhalten.
 - **ADR-0009 Entsch. 1/2** (`hexslice`, inward-only): die emittierte `.a-check.yml` trägt die
   **fünf** kanonischen Kanten `app→domain`, `app→ports`, `ports→domain`, `adapters→app`,
   `adapters→domain` und **keine** `adapters→ports`-Kante — 1:1 gegen
-  `/Development/hexslice-architecture/lab/examples/go/.a-check.yml:39-47` geprüft, inklusive der
+  `<Klon des hexslice-Repos>/lab/examples/go/.a-check.yml:39-47` geprüft, inklusive der
   Begründung der Nicht-Kante. `composition_root: ["cmd/**"]` und `exclude: ["**/*_test.go"]`
   ebenfalls verbatim.
 - **ADR-0009 Entsch. 3** (Schema + Digest-Pin `sha256:6425c93a…`): erfüllt; Pin identisch mit ADR-Text.

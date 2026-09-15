@@ -159,12 +159,12 @@ kennen ebenfalls **drei** Ausgänge und keinen vierten; eines davon trägt die f
 sogar in seiner High-Liste:
 
 ```sh
-grep -n 'Ausgängen\|Ausgänge' /Development/d-check/docs/plan/planning/observations/README.md \
-  /Development/a-check/docs/plan/planning/observations/README.md
+grep -n 'Ausgängen\|Ausgänge' <Klon des d-check-Repos>/docs/plan/planning/observations/README.md \
+  <Klon des a-check-Repos>/docs/plan/planning/observations/README.md
 # d-check :10  "… einer von drei Ausgängen"      (eine Zeile)
 # a-check :5   "welchen der drei Ausgänge ein Eintrag ab 3× trägt."
 # a-check :9   "… `offen` oder einer der drei Ausgänge"    (zwei Zeilen)
-grep -n 'keinen der drei Ausgänge' /Development/a-check/.harness/skills/reviewer.md
+grep -n 'keinen der drei Ausgänge' <Klon des a-check-Repos>/.harness/skills/reviewer.md
 # 45:  `Stand:`-Zeile bei 3× keinen der drei Ausgänge trägt.
 ```
 

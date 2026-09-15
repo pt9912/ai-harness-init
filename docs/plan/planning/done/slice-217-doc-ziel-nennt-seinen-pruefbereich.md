@@ -202,7 +202,7 @@ hinzukommt — und genau dort schlägt der Wächter in seiner zweiten Richtung a
 - **Kein Ziel wird aus [`d-check.mk`](../../../../d-check.mk) entfernt, und die Generator-Lücke
   wird nicht geschlossen.** Die Ursache der C-Klasse liegt darin, dass `--print-mk` je Modul ein
   Ziel ausgibt, ohne die Konfiguration zu lesen (§1). Sie zu schließen hieße, im Nachbar-Repo
-  `/Development/d-check` zu arbeiten — ein anderer Vorgang in einem anderen Baum, über den dieser
+  `<Klon des d-check-Repos>` zu arbeiten — ein anderer Vorgang in einem anderen Baum, über den dieser
   Slice nicht entscheidet; ein Ziel hier zu löschen wäre die Umkehrung: der Adopter nähme dem
   Generat Zeilen weg und vergrößerte das Nachpflege-Delta, statt es zu benennen. Beide Hälften
   stehen als **benannte Lücke** in §6. *(Anderer Vorgang.)*
@@ -502,7 +502,7 @@ dasteht.
   gezählt (Stand am 2026-09-12 **6×**, `evidence/slice-217.md`; kein Erwartungswert, das Kommando steht in §7)
 - **Die Abhilfe liegt upstream und ist hier nur benannt.** Dass `--print-mk` die Konfiguration
   nicht liest, ist keine feste Werkzeug-Grenze: `d-check` ist ein Nachbar-Repo desselben Nutzers
-  (`/Development/d-check`), und eine hier gemessene Generator-Lücke ist dort eine **Anforderung**.
+  (`<Klon des d-check-Repos>`), und eine hier gemessene Generator-Lücke ist dort eine **Anforderung**.
   Solange sie offen ist, trägt dieses Repo die Nachpflege — und trüge sie auch dann noch, wenn
   ein künftiger Generator die Ziele config-abhängig ausgäbe, bis der Pin nachzieht. Der Punkt
   steht als Lücke im Plan und **nicht** als Kennung: Eine Slice-Kennung dieses Repos behauptete

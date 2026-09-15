@@ -10,7 +10,7 @@ Der Ersatz misst dieselbe Frage ohne Filter — whitespace- und spaltenbreiten-n
 Volltext-Vergleich beider Stände:
 
 ```sh
-cd /Development/KI/ai-harness-course
+cd <Klon des Kurs-Repos>
 for f in grundlagen-begriffe modul-08-agentenrollen modul-16-produktiver-betrieb \
          modul-02-harness-bootstrap grundlagen-referenz-richtung; do
   printf '%-32s %s\n' "$f" \

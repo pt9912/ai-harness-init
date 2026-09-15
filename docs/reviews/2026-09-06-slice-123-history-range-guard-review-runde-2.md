@@ -79,7 +79,7 @@ noch zeigt, sind zwei Treffer, und beide sind **kein** Finding: `history-range-g
 EINEN Commit zaehlen") beschreibt die Wirkung **der Mutation**, also den Gegenstand der Datei.
 Beide tragen die Klasse *Abgrenzung* bzw. *Zusage* aus [`AGENTS.md`](../../AGENTS.md) §3.7.
 
-**F-2, selbst nachgemessen.** `git clone --depth 5 file:///Development/KI/ai-harness-init <klon>`
+**F-2, selbst nachgemessen.** `git clone --depth 5 file://<maschinen-lokaler Klon> <klon>`
 → `git log --oneline | wc -l` = **5**, `wc -l < .git/shallow` = **1**, Ausgabe des Wächters:
 `Shallow-Grenzen: 1`. Label und Wert stimmen jetzt überein; im vollen Checkout steht
 `Shallow-Grenzen: voll (kein Shallow-Klon)`. `test/history-range-guard.bats:30` prüft die Zeile

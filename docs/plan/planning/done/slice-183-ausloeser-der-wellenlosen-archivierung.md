@@ -221,7 +221,7 @@ offen, nicht vorweggenommen: Das Unterkommando nimmt eine **Welle-Kennung** und 
 Plan und Ergebnisnotiz in `done/`; ein Sammel-Archiv ohne Welle hat beides nicht. Fällt die
 Entscheidung dorthin, benennt sie den Folge-Slice mit Kennung; die Datei in `open/` schneidet dann
 der Planner. Die Präzedenz im Nachbar-Repo hält dieselbe Reihenfolge —
-`unzip -p /Development/d-check/docs/plan/planning/done/welle-88/archiv.zip
+`unzip -p <Klon des d-check-Repos>/docs/plan/planning/done/welle-88/archiv.zip
 docs/plan/planning/done/slice-193-baseline-v600-bump.md` §3 trennt Regelwerks-Adoption und
 Werkzeug-Umsetzung.
 

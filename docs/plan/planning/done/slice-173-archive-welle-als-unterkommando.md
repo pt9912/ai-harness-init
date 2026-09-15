@@ -117,10 +117,10 @@ die **7** lesenden Funktionen tragen **97** Zeilen plus die Lesephase von `main(
 `awk 'NR>=523 && NR<=648' harness/tools/archive-welle.sh | wc -l`), die **10** schreibenden
 **189** plus die Schreibphase (**114**, `NR>=650 && NR<=763`); die drei `rewrite_*` (**52**)
 verschmelzen Fund und Schreiben. Am Vorbild, das beide trennt:
-`wc -l /Development/d-check/tools/archive-wave/{collect,rewrite,main}.go` → **474** für das Sagen
+`wc -l <Klon des d-check-Repos>/tools/archive-wave/{collect,rewrite,main}.go` → **474** für das Sagen
 gegen `{archive,stub}.go` → **299** für das Tun, und `rewrite.go` trägt in **187** Zeilen genau
 **1** schreibenden Aufruf
-(`grep -c -E 'os\.WriteFile|os\.MkdirAll|os\.Rename|os\.Remove|\.Create\(' /Development/d-check/tools/archive-wave/rewrite.go`).
+(`grep -c -E 'os\.WriteFile|os\.MkdirAll|os\.Rename|os\.Remove|\.Create\(' <Klon des d-check-Repos>/tools/archive-wave/rewrite.go`).
 Keine der zwei Hälften erreicht die Vereinigung, an der die Rückführung gemessen wurde; **welche**
 größer ist, hängt vom Maßstab ab — am Shell-Helfer das Tun, am Vorbild das Sagen.
 

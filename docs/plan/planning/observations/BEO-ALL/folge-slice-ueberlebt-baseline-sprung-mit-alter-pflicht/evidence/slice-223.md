@@ -7,7 +7,7 @@ leer:
 
 ```sh
 diff -q .harness/baseline/v6.7.2/templates/docs/reviews/review-report.template.md \
-        /Development/KI/ai-harness-course/lab/templates/docs/reviews/review-report.template.md   # leer, EXIT 0
+        <Klon des Kurs-Repos>/lab/templates/docs/reviews/review-report.template.md   # leer, EXIT 0
 ```
 
 Der Plan war damit nicht nur anders formuliert, sondern **anders verpflichtet**: Die

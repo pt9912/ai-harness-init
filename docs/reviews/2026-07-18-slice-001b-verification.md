@@ -39,7 +39,7 @@ Der geprüfte Stand ist damit neuer als der Review-Snapshot.
 - **Digest-Pin über `deps`:** `deps` = `FROM golang:${GO_VERSION}@sha256:792443b89f65105abba56b9bd5e97f680a80074ac62fc844a584212f8c8102c3`
   (`Dockerfile:14`), `GO_VERSION ?= 1.26.4` (`Makefile:14`), durchgereicht via `--build-arg
   GO_VERSION=$(GO_VERSION)` (`Makefile:49`). Byte-identisch zum Schwester-Repo
-  (`grep golang: /Development/a-check/Dockerfile` → derselbe `@sha256:792443b8…`) — LH-QA-02.
+  (`grep golang: <Klon des a-check-Repos>/Dockerfile` → derselbe `@sha256:792443b8…`) — LH-QA-02.
 - **Ausgeführt (Exit 0):** `make build` lief im `make gates`-Lauf grün
   (`#13 [build 2/2] RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/ai-harness-init
   ./cmd/ai-harness-init` → CACHED, `writing image … naming to ai-harness-init:build`). CACHED ist
@@ -57,7 +57,7 @@ Der geprüfte Stand ist damit neuer als der Review-Snapshot.
 - **Dockerfile-`lint`-Stage real (`Dockerfile:34-40`):** `FROM golangci/golangci-lint:${GOLANGCI_LINT_VERSION}@sha256:5cceeef04e53efe1470638d4b4b4f5ceefd574955ab3941b2d9a68a8c9ad5240 AS lint`
   · `COPY --from=deps /go/pkg/mod /go/pkg/mod` · `COPY . .` · `RUN golangci-lint run ./...`.
   `GOLANGCI_LINT_VERSION ?= v2.12.2` (`Makefile:15`).
-- **Image digest-gepinnt + byte-identisch zu a-check:** `grep golangci /Development/a-check/Dockerfile`
+- **Image digest-gepinnt + byte-identisch zu a-check:** `grep golangci <Klon des a-check-Repos>/Dockerfile`
   → `@sha256:5cceeef04e53efe1470638d4b4b4f5ceefd574955ab3941b2d9a68a8c9ad5240` — **byte-identisch**
   (LH-QA-02, bewusster Schwester-Repo-Spiegel).
 - **Grün, frisch (kein Stale-Green):** im `make gates`-Lauf lief `lint` mit `--no-cache-filter lint`

@@ -278,7 +278,7 @@ Baseline-Regelwerk `modul-10-review-harness.md` §Ziel-Form: Reviewer-Skill.
   Sensor-Tabelle in `harness/README.md` §Sensors ist folgerichtig nicht erweitert —
   dieselbe Behandlung wie `slice-mv`, `archive-welle`, `span-report`, `hook-overhead`.
 - geprüft, ohne Befund: **Der BELEG-Transkript im Skriptkopf reproduziert.** In einem
-  echten Klon (`git clone --depth 1 file:///Development/KI/ai-harness-init <klon>`,
+  echten Klon (`git clone --depth 1 file://<maschinen-lokaler Klon> <klon>`,
   `git log --oneline | wc -l` → 1) liefert `bash harness/tools/history-range-guard.sh
   HEAD..HEAD` Exit **1** mit den vier zugesagten Zeilen und
   `… HEAD~1..HEAD` Exit **2** — zeichengleich mit `history-range-guard.sh:32–50`.

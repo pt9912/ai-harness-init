@@ -35,7 +35,7 @@ der die Vorrunde blockierte.
 - Regelwerk `v3.5.2`: `README.md`, `modul-08-agentenrollen.md`, `modul-10-review-harness.md`,
   `grundlagen-konventionen.md`
 - **vorherige Findings am gleichen Modul:** die vier Vorgänger-Reports unter `docs/reviews/`
-- **Upstream-Referenz:** `/Development/KI/ai-harness-course`, gepinnt gelesen am Tag **`v5.3.0`**
+- **Upstream-Referenz:** `<Klon des Kurs-Repos>`, gepinnt gelesen am Tag **`v5.3.0`**
   (`git show v5.3.0:<pfad>`), nicht am beweglichen HEAD
 
 **Mess-Grundlage.** Jede Zahl unten ist in diesem Kontext selbst erhoben. Keine Zusicherung einer
@@ -124,7 +124,7 @@ Das Muster greift also — und findet am HEAD in keinem lebenden Artefakt mehr e
 **Die Sachaussage habe ich selbst gegen den Upstream-Tag gemessen, nicht übernommen:**
 
 ```
-$ git -C /Development/KI/ai-harness-course show v5.3.0:lab/templates/AGENTS.template.md | grep -n '^### 3\.'
+$ git -C <Klon des Kurs-Repos> show v5.3.0:lab/templates/AGENTS.template.md | grep -n '^### 3\.'
 ...
 150:### 3.7 Ein Kommentar beschreibt, was da ist
 

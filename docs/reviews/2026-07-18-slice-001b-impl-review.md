@@ -56,7 +56,7 @@ Reviewer-Agent) · **Datum:** 2026-07-18
   shell-lint → record-gates`. `lint` frisch (`#17 4.797 0 issues.`), `test`-Stage frisch
   (`#13 3.513 ok  github.com/pt9912/ai-harness-init/cmd/ai-harness-init 0.002s`), bats **50 ok /
   0 not-ok**, `baseline-verify: v3.1.0 OK — 42 Dateien` (netzlos).
-- **Digest-/Byte-Abgleich a-check** (`/Development/a-check/Dockerfile`, `/Development/a-check/.golangci.yml`):
+- **Digest-/Byte-Abgleich a-check** (`<Klon des a-check-Repos>/Dockerfile`, `<Klon des a-check-Repos>/.golangci.yml`):
   golangci-lint-Base `golangci/golangci-lint:v2.12.2@sha256:5cceeef04e53efe1470638d4b4b4f5ceefd574955ab3941b2d9a68a8c9ad5240`
   — **byte-identisch** gespiegelt; die **gesamte `lint`-Stage** (WORKDIR/ENV/COPY --from=deps/COPY/RUN)
   ist byte-identisch; die `build`-Stage differiert nur im Binary-Namen (`ai-harness-init` statt
@@ -81,7 +81,7 @@ Reviewer-Agent) · **Datum:** 2026-07-18
 - **pfad:** `.golangci.yml:156-159` (nur `unused-parameter`-Ausnahme für `_test.go`)
 - **befund:** Die Config aktiviert `revive`-Regel `unused-receiver` (Zeile 117) und schließt für
   `_test.go` nur `revive/^unused-parameter` aus (Zeile 156-159). a-checks Vorbild
-  (`/Development/a-check/.golangci.yml:167-170`) trägt **zusätzlich** eine
+  (`<Klon des a-check-Repos>/.golangci.yml:167-170`) trägt **zusätzlich** eine
   `revive/^unused-receiver`-Ausnahme für `_test.go`. Anders als die bewusst entfernten
   a-check-**spezifischen** Einträge (ireturn-Port-Pfad, yaml.v2-gomodguard — genuin irrelevant) ist
   `unused-receiver` ein **generisches** Go-Test-Muster ohne a-check-Bezug; seine Auslassung ist eine
@@ -93,7 +93,7 @@ Reviewer-Agent) · **Datum:** 2026-07-18
   a-check grün bliebe; der Implementer trifft die Suppression-Falle (§3.2 verbietet inline `//nolint`)
   und muss die Ausnahme dann erst nachziehen.
 - **verifizierbar:** ja — ein `_test.go` mit ungenutztem Receiver lässt `make lint` fehlschlagen;
-  `diff <(grep -A3 unused-receiver /Development/a-check/.golangci.yml) .golangci.yml` zeigt die
+  `diff <(grep -A3 unused-receiver <Klon des a-check-Repos>/.golangci.yml) .golangci.yml` zeigt die
   fehlende Test-Ausnahme.
 
 ### INFO-1 — `compile`-Stage im Dockerfile ohne treibendes make-Target (undokumentierte Dev-Bequemlichkeit)

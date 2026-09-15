@@ -108,7 +108,7 @@ Gemessen am 2026-09-12 gegen den lokalen Kurs-Klon — eine **Host-Voraussetzung
 dieses Repos:
 
 ```sh
-K=/Development/KI/ai-harness-course
+K=<Klon des Kurs-Repos>
 mkdir -p /tmp/v650 && git -C "$K" archive v6.5.0 lab/regelwerk lab/templates \
   | tar -x -C /tmp/v650 --strip-components=1
 diff -rq -x SHA256SUMS .harness/baseline/v6.5.0 /tmp/v650 | wc -l                       # -> 28

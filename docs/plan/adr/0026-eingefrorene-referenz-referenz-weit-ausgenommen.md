@@ -116,8 +116,8 @@ Der gepinnte d-check ist `ghcr.io/pt9912/d-check:v0.65.0`, Digest
 zwischen seiner Einführung und ihm nicht entfernt:
 
 ```sh
-grep -n '^## \[0\.49\.0\]' /Development/d-check/CHANGELOG.md                              # Release-Überschrift des Ventils
-awk '/^## \[0\.65\.0\]/,/^## \[0\.49\.0\]/' /Development/d-check/CHANGELOG.md | grep -c '^### Removed'   # 0
+grep -n '^## \[0\.49\.0\]' <Klon des d-check-Repos>/CHANGELOG.md                              # Release-Überschrift des Ventils
+awk '/^## \[0\.65\.0\]/,/^## \[0\.49\.0\]/' <Klon des d-check-Repos>/CHANGELOG.md | grep -c '^### Removed'   # 0
 ```
 
 **Der Name, unter dem man ihn sucht, ist nicht der, unter dem er steht.** Wer unter `links:` nach

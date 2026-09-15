@@ -40,7 +40,7 @@ nicht reproduzierbar):
   `docs/reviews/2026-08-08-slice-066-plan-review.md` (3 HIGH / 7 MEDIUM / 5 LOW / 2 INFO),
   `docs/reviews/2026-08-08-slice-066-review.md` (0/4/5/3),
   `docs/reviews/2026-08-08-slice-066-verify.md` (V1–V5)
-- **Upstream-Referenz** für die `MR-022`-Sachprüfung: `/Development/KI/ai-harness-course`,
+- **Upstream-Referenz** für die `MR-022`-Sachprüfung: `<Klon des Kurs-Repos>`,
   gepinnt gelesen am Tag **`v5.3.0`** (`git show v5.3.0:<pfad>`), nicht am beweglichen HEAD
 
 **Mess-Grundlage.** Jede Zahl unten ist in diesem Kontext selbst erhoben; kein Wert des

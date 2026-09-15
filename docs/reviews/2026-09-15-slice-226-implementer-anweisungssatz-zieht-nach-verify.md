@@ -87,7 +87,7 @@ er weicht vom Tag `v6.8.0` in **genau einer** Zeile ab (dem Quellen-Kommentar, d
 auf eine absolute URL umschreibt), der Regelwerkstext ist identisch:
 
 ```sh
-git -C /Development/KI/ai-harness-course show v6.8.0:lab/regelwerk/modul-09-implementierung.md > /tmp/kurs9.md
+git -C <Klon des Kurs-Repos> show v6.8.0:lab/regelwerk/modul-09-implementierung.md > /tmp/kurs9.md
 diff /tmp/kurs9.md .harness/baseline/v6.8.0/regelwerk/modul-09-implementierung.md | grep -c '^[<>]'   # 2
 ```
 
@@ -95,7 +95,7 @@ diff /tmp/kurs9.md .harness/baseline/v6.8.0/regelwerk/modul-09-implementierung.m
 Block einer, über beide Tags:
 
 ```sh
-cd /Development/KI/ai-harness-course
+cd <Klon des Kurs-Repos>
 for p in 'Die Tests-Zeile bindet an die Akzeptanzkriterien' \
          'Betrifft dieselbe Ursache viele gleichrangige Dateien' \
          'Die Plan-Ausgabe in Schritt 4 nennt Out-of-Scope' \

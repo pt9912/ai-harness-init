@@ -247,13 +247,13 @@ Alle berührten Sub-Areas GF (siehe Kurs Modul 5 §Worked Mini-Example): `harnes
 **Gewählter Abschnitt und Beleg der Delta-Freiheit.** `### Multi-Stage-Build: die operativen
 Disziplinen (Modul 14)` in `modul-14-docker-harness.md`. Kein regelwerk-Datei ist zwischen `v3.5.2`
 und `v5.12.0` auf **Datei**-Ebene delta-frei (gemessen am lokalen Kurs-Klon
-`/Development/KI/ai-harness-course`, weil `.harness/baseline/` in diesem Repo nur den Ziel-Stand
-führt): `for f in $(git -C /Development/KI/ai-harness-course ls-tree -r --name-only v3.5.2 --
-lab/regelwerk); do git -C /Development/KI/ai-harness-course diff --quiet v3.5.2 v5.12.0 -- "$f" &&
+`<Klon des Kurs-Repos>`, weil `.harness/baseline/` in diesem Repo nur den Ziel-Stand
+führt): `for f in $(git -C <Klon des Kurs-Repos> ls-tree -r --name-only v3.5.2 --
+lab/regelwerk); do git -C <Klon des Kurs-Repos> diff --quiet v3.5.2 v5.12.0 -- "$f" &&
 echo "$f"; done` → kein Treffer (nur `lab/templates/Makefile` ist datei-delta-frei, kein Regelwerk).
 „Abschnitt" ist deshalb wie bei [slice-082](../done/slice-082-adaptions-durchgang.md) (Modul 15,
 Block-Ebene) eine **Unter-Sektion**: die gewählte ist wortgleich in beiden Tags —
-`diff <(git -C /Development/KI/ai-harness-course show v3.5.2:lab/regelwerk/modul-14-docker-harness.md | awk '/^### Multi-Stage-Build/{f=1} f{print} /^### Reproduzierbarkeits-Regeln/{exit}') <(git -C /Development/KI/ai-harness-course show v5.12.0:lab/regelwerk/modul-14-docker-harness.md | awk '/^### Multi-Stage-Build/{f=1} f{print} /^### Reproduzierbarkeits-Regeln/{exit}')`
+`diff <(git -C <Klon des Kurs-Repos> show v3.5.2:lab/regelwerk/modul-14-docker-harness.md | awk '/^### Multi-Stage-Build/{f=1} f{print} /^### Reproduzierbarkeits-Regeln/{exit}') <(git -C <Klon des Kurs-Repos> show v5.12.0:lab/regelwerk/modul-14-docker-harness.md | awk '/^### Multi-Stage-Build/{f=1} f{print} /^### Reproduzierbarkeits-Regeln/{exit}')`
 → leer.
 
 **Geprüft ist das ausgefüllte Artefakt `Dockerfile`, Regel für Regel:**

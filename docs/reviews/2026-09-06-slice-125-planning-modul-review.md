@@ -52,7 +52,7 @@ nicht reproduzierbar):
 Die Aussagen über das Verhalten des gepinnten `planning`-Moduls sind gemessen, nicht
 angenommen — auf zwei Wegen.
 
-**Quellstand des Werkzeugs:** Klon `/Development/d-check`, `git describe --tags` →
+**Quellstand des Werkzeugs:** Klon `<Klon des d-check-Repos>`, `git describe --tags` →
 `v0.74.1-1-g6b09612` (ein Commit über dem in `d-check.mk` gepinnten Tag `v0.74.1`, und der
 ändert nur Doku). Gelesen: `internal/hexagon/core/rules/planning.go`,
 `internal/hexagon/core/rules/planning_waves.go`, `internal/hexagon/core/model/config.go`.
