@@ -277,7 +277,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`):
-[slice-174-archivierung-emittieren](../in-progress/slice-174-archivierung-emittieren.md) liegt in
+[slice-174-archivierung-emittieren](../done/slice-174-archivierung-emittieren.md) liegt in
 `done/`, und `in-progress/` trägt keinen Slice. Beobachtbar ohne Rückfrage, auf dem
 **Hauptzweig**:
 

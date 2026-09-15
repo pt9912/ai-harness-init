@@ -133,11 +133,11 @@ Mitglieder nach, sie vergibt sie nicht.
 |---|---|---|
 | [slice-vorlauf-waechter-geht-ins-ziel](done/slice-vorlauf-waechter-geht-ins-ziel.md) | Der Vorlauf-Wächter der zwei history-lesenden Targets geht ins Ziel | [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
 | [slice-lifecycle-move-geht-ins-ziel](open/slice-lifecycle-move-geht-ins-ziel.md) | Der Lifecycle-Move zieht seine Verweise im Ziel nach | [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) |
-| [slice-174-archivierung-emittieren](in-progress/slice-174-archivierung-emittieren.md) | Ein gebootstrapptes Ziel erreicht die Wellen-Archivierung | [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) |
+| [slice-174-archivierung-emittieren](done/slice-174-archivierung-emittieren.md) | Ein gebootstrapptes Ziel erreicht die Wellen-Archivierung | [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) |
 | [slice-kennungs-waechter-geht-ins-ziel](open/slice-kennungs-waechter-geht-ins-ziel.md) | Der Traceability-Constraint bekommt im Ziel einen Träger | [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
 
 **Ein Mitglied steht schon und wurde nicht neu geschnitten.**
-[slice-174](in-progress/slice-174-archivierung-emittieren.md) lag in `next/` und trägt denselben
+[slice-174](done/slice-174-archivierung-emittieren.md) lag in `next/` und trägt denselben
 Gegenstand; sein Kopf-Feld ist auf diese Welle gezogen, statt einen zweiten Slice daneben zu legen.
 Sein Liefer-Punkt bleibt; seine Begründung ist gezogen — der emittierte Satz ist selbstkonsistent
 (§1), offen ist die Zündung. **Das fertige Muster dafür steht im Baum**, es muss nicht erfunden
