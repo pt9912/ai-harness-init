@@ -108,7 +108,10 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 - [ ] **Der emittierte Anweisungssatz nennt für Schritt 9 und Schritt 24 das Werkzeug** statt des
       `git mv` von Hand, und die repo-spezifischen Stellen bleiben **adaptierbare** Marker
       ([`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)) — der
-      Adopter darf sein Fragment anders nennen.
+      Adopter darf sein Fragment anders nennen — und *was* daran frei ist, steht hier, weil der
+      Satz sonst zwei Lesarten trägt: die **Datei** ist frei (der Aggregator bindet
+      `harness/mk/*.mk` per Glob ein), der **Ziel-Name** darin ist es **nicht** — er kommt aus einem
+      tool-eigenen Fragment, das jeder Bootstrap kanonisch neu schreibt.
 - [ ] **Das Ziel führt das Werkzeug, und es zieht Verweise in beiden Richtungen nach:** eingehende
       (jede Präfix-Form auf die bewegte Datei) und ausgehende (präfixlose Ziele innerhalb der
       bewegten Datei). Der Move bleibt ein **reiner** Commit, getrennt von der Inhaltsänderung; fiel
