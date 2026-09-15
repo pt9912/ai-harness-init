@@ -146,14 +146,15 @@ Aussagen-Berührung steht hier gar nicht.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| [`docs/plan/adr/`](../../adr/) | **offen** | Die Träger-Wahl unterscheidet sich in der **Reichweite** der Alternativen und ist damit eine Architektur-Entscheidung; ob sie eine eigene ADR trägt oder in die Zeile dieses Abschnitts passt, entscheidet der Architect vor `next` → `in-progress` (§4) |
+| [`docs/plan/adr/`](../../adr/) | **neu** — [ADR-0053](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) (Proposed) | **beantwortet:** der Träger der Werkzeug-Klasse ist der git-eigene `commit-msg`-Hook, und der PreToolUse-Kanal bleibt daneben die reisende Hälfte (Festlegungen 1 und 2). Die Wahl unterscheidet sich in der **Reichweite** der Alternativen und bindet damit über diesen Slice hinaus — sie steht darum als ADR und nicht als Zeile dieses Abschnitts |
 | `harness/tools/` oder `.githooks/` | neu | der Träger selbst, falls die Wahl auf einen `git`-eigenen `commit-msg`-Hook fällt — versioniert, mit `core.hooksPath` statt `.git/hooks/` ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)) |
 | [`Makefile`](../../../../Makefile) | update | das Ziel, das den Träger auf einem frischen Klon herstellt; ein neues behauptetes Ziel zieht [`AGENTS.md`](../../../../AGENTS.md) §4 und das Modul `targets` mit |
-| [`.claude/hooks/pretooluse-commit-msg-guard.sh`](../../../../.claude/hooks/pretooluse-commit-msg-guard.sh) | update / entfällt | zwei Wächter über demselben Gegenstand sind zwei Orte, an denen dieselbe Config driftet — die Entscheidung aus DoD (1) sagt, ob der Zusatz-Hook bleibt |
+| [`.claude/hooks/pretooluse-commit-msg-guard.sh`](../../../../.claude/hooks/pretooluse-commit-msg-guard.sh) | bleibt | der Agenten-Kanal trägt die Klasse *getippter Aufruf* ohne Aktivierungsschritt und ist mit dem Commit-Kanal nicht austauschbar ([ADR-0053](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) Festlegung 2) — zwei Träger, zwei Reichweiten, kein zweiter Satz über denselben Gegenstand |
 | `test/` | neu | der hermetische Fall zum neuen Träger; das gepinnte `BATS_IMAGE` führt kein `git` — der reale Beleg gehört wie bei `slice-mv` in den Skriptkopf |
 | `test/mutations/` | neu | der Zahn aus DoD (2) |
 | [`harness/README.md`](../../../../harness/README.md) | update | Reichweite und Grenze (DoD (3)) |
 | `.claude/agents/*.md`, [`.harness/skills/reviewer.md`](../../../../.harness/skills/reviewer.md) | **nicht durch diesen Slice** | fremdes Rollen-Eigentum ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)), §1 |
+| [`harness/tools/slice-mv.sh`](../../../../harness/tools/slice-mv.sh), `internal/archive/anwenden.go` | **nicht durch diesen Slice** | die vier Commit-Message-Formen der Werkzeuge tragen keine Kennung und brechen den scharf gestellten Träger **nach** dem `git mv`; ein Folge-Slice übernimmt es — Kennung **`slice-werkzeug-commits-tragen-eine-kennung`** ([ADR-0053](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) Festlegung 4) |
 
 **Die Form ist an einem Nachbar-Repo erprobt, und ihr Urteil ist gemessen — beschrieben, nicht
 verlinkt.** Ein Nachbar-Repo desselben Nutzers führt einen `commit-msg`-Hook, der die zwei Hälften
