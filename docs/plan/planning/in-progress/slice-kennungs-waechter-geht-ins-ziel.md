@@ -106,28 +106,28 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Das Ziel hat einen Träger an einer benannten Stelle, und der Anweisungssatz trägt die
+- [x] **Das Ziel hat einen Träger an einer benannten Stelle, und der Anweisungssatz trägt die
       Konvention mit, an der er hängt** — oder die Lücke ist an derselben Stelle als Satz benannt.
       Der Beleg ist `make full-smoke` über einem gebootstrappten Ziel, nicht eine Zeile im Emit-Code.
-- [ ] **Der Fall ist rot gesehen:** eine Commit-Message **ohne** Kennung fällt im Ziel, eine **mit**
+- [x] **Der Fall ist rot gesehen:** eine Commit-Message **ohne** Kennung fällt im Ziel, eine **mit**
       Kennung nicht; Ausgabe und Exit-Code gelesen. Ist der Träger nicht gebaut, ist der Rot-Beleg
       die gelesene Ausgabe des benannten Satzes.
-- [ ] **Reichweite und Abhängigkeit stehen neben der Zusage:** benannt ist beides — was der Träger
+- [x] **Reichweite und Abhängigkeit stehen neben der Zusage:** benannt ist beides — was der Träger
       **nicht** erreicht (die zweite Hälfte des Constraints: ein Doku-Update bei berührtem
       öffentlichem Vertrag) und was er **erreicht und abbricht** (die Commits der Repo-Werkzeuge:
       er hängt am Commit und sieht jede Klasse, die `git` erzeugt — ihre Messages tragen mit einer
       benannten Kennung aber keine aus der Menge und fallen darum an ihm); der Träger braucht
       nichts über `bash + git` bzw. das gepinnte Gate-Bild hinaus
       ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: die Prosa, die den Träger führt, nennt die Fassung, die im Ziel liegt — ihren Ort
+- [x] Doku-Update: die Prosa, die den Träger führt, nennt die Fassung, die im Ziel liegt — ihren Ort
       und ihre Verdrahtung —, soweit dieser Slice diese Prosa wachsen lässt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -211,13 +211,6 @@ dasteht.
 
 ## 7. Closure-Notiz
 
-<!-- BEDIENHINWEIS — keine Norm; faellt beim Kopieren weg (README.md
-§Verwendung, Schritt 5) und darf deshalb nichts Tragendes halten. Reihenfolge:
-diese Sektion vor dem `git mv` nach done/ fuellen — einzige Ausnahme ist das
-letzte DoD-Item in §2 (die Paarungen suchen in `done/`, also nach dem `git mv`).
-Im Repo ohne Wellen-Betrieb braucht die Closure dadurch drei Commits: Inhalt,
-`git mv`, Haekchen — das folgt aus der Hard Rule, es widerspricht ihr nicht. -->
-
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Das Beobachtungs-Register (vorhandene `BEO-<NNN>` **zitieren** statt neu
 formulieren — sonst zählt das Register zwei Namen getrennt) ·
@@ -226,18 +219,116 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-kennung-a>, <slice-kennung-b>, <slice-kennung-c> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-<Kennung>.md` | `evidence/slice-<Kennung>.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <von der Welle-Closure getragen — Anker · Folge-Slice · Register>
+- **Was hat funktioniert:** **Die Träger-Entscheidung lag vor, und die Emission hat sie geerbt
+  statt sie zu wiederholen.** Der Träger des Ziels ist der git-eigene Hook — die Form hat
+  [slice-215](../done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) für den
+  Dogfood entschieden, und dieser Slice hat sie übernommen; ein zweiter Kanal daneben wäre eine
+  zweite Fassung derselben Zusage geworden. **Getragen hat zweitens der E2E:** die Sektion
+  `kennungs_traeger_im_ziel` fährt die Kette im gebootstrappten Ziel — ein Commit **ohne** Kennung
+  fällt mit der Meldung der Prüfung und entsteht nicht, einer **mit** Kennung geht durch,
+  `--no-verify` umgeht den Träger. Damit ist
+  [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) an dieser Stelle
+  eingelöst statt behauptet. **Drittens hat die Reichweiten-Zusage ihre zweite Richtung bekommen**
+  — der Träger nimmt die Commits der Repo-Werkzeuge mit und bricht sie ab; ohne diese Hälfte läse
+  er sich als Zaun für Agenten-Commits.
+- **Was ging anders als geplant:** **Vier Dinge.** (1) Der **Anlass-Block in §1 ist mit dem Vollzug
+  im Präsens falsch geworden**: er nennt *„das Ziel kennt ihn nicht"* und belegt das mit
+  `git grep -c 'commit-msg' -- internal/ | wc -l` → `0` — nach der Lieferung ist die Zahl nicht mehr
+  null. Er bleibt als **Messung vor dem Vollzug** stehen (der Plan ist vom 2026-09-14 datiert); ihn
+  umzuschreiben hieße, den Gegenstand aus seinem eigenen Anlass zu entfernen, und die ausführende
+  Rolle schreibt ihren Maßstab nicht um ([`AGENTS.md`](../../../../AGENTS.md) §3.10). (2) **Die
+  Lieferung weicht an drei Stellen von
+  [`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md) ab, und alle drei Sätze
+  sind heute wahr:**
+  `harness/README.md`, der Kommentar unmittelbar über `HOOKS_DIR ?= .githooks` im
+  Aktivierungs-Fragment und `internal/emit/commitmsg.go` sagen konvergent zu, was die ADR
+  (`Proposed`) als `skip-if-present` entscheidet; `TestEnforce_Convergent` hält die Aussage, Fall
+  `49` färbt ihn rot. Die Abweichung ist **entschieden und terminiert** — ihr Träger ist
+  [`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md) Folgepflicht 1, und sie
+  bindet erst mit dem Accept-Übergang
+  ([`ADR-0040`](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md)); bis dahin ist
+  das ein **Zustand**, nicht „erledigt". (3) **Zwei Abweichungen zwischen §3 und dem Vollzug**,
+  beide keine DoD-Verletzung: §3 nennt `Makefile` (`full-smoke`) als geändertes Artefakt — geändert
+  wurde `harness/tools/full-smoke.sh`, das Rezept ist unberührt; und `harness/README.md` und
+  `internal/emit/enforce_test.go` sind gebaut, ohne in der Datei-Tabelle zu stehen (die erste
+  verlangt der Doku-Punkt, die zweite der Review-Befund F-4). (4) **§8 nannte einen bewegten Zähler
+  und einen Satz, der im Ziel nicht gilt** — beides ist gezogen.
+- **Steering-Loop-Eintrag:** **Neuer Sensor — gezählt, nicht verkörpert.** Die Zusage *„der Träger
+  nimmt die Commits der Repo-Werkzeuge mit und bricht sie ab"* hat **vier Träger, und ihre Deckung
+  ist ungleich.** Das **Aktivierungs-Fragment** trägt sie bewacht:
+  `TestHooksInstallFragment_TraegtDieReichweite` führt unter anderen die zwei Marker der Mitnahme
+  (*„sieht jede Klasse, die `git` erzeugt"*, *„gibt seinen Werkzeug-Messages darum eine Kennung"*),
+  Fall `357` färbt ihn rot, und der E2E prüft den Satz im Ziel — beide Kanäle dieses Repos melden
+  ihn also. Die **Command-Vorlage** und die **README-Prosa** sagen dieselbe Zusage noch einmal in
+  eigenen Worten; sie tragen **keine** eigene Prüfung, und keine hält sie gegen das Fragment —
+  dieselbe Lücke, die Welle §6 für das Paar aus ausgeführter und emittierter Fassung benennt. Der
+  **vierte** ist der Eintrag `'auch die Commits der Repo-Werkzeuge'` in der `for noetig`-Liste des
+  E2E ([`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh)): er ist **selbst**
+  ein Wächter der Zusage, `make full-smoke` läuft in **keinem** Gate, und kein gelisteter Fall nennt
+  die Datei — er kann seine Zähne verlieren, ohne daß ein Lauf davon spricht. Von den vier ist er
+  der einzige **Wächter**, den weder `make gates` noch `make mutate` meldet; die zwei Wiederholungen
+  haben kein Zahn-Verlust-Risiko, weil sie keine Zähne haben.
+
+  ```sh
+  grep -l '^# files:.*full-smoke.sh' test/mutations/*.sh    # nur 190 — anderer Gegenstand
+  ```
+
+  **Kein `liegt in`-Feld:** mit diesem Vorgang ist **keine** Regel dieses Repos verkörpert worden —
+  Fall `357` ist Liefergegenstand, keine Antwort auf einen Schwellen-Übertritt; der Eintrag ist
+  damit gezählt, nicht verkörpert. **Auslöser:**
+  [`BEO-ALL/neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md)
+  — der Eintrag ist seit seiner Einführung verkörpert ([`AGENTS.md`](../../../../AGENTS.md) §3.6);
+  dieser Vorgang zählt ihn nicht auf 3×, er belegt ihn. **Die Adresse dieser Grenze ist sein
+  Beleg** `evidence/slice-kennungs-waechter-geht-ins-ziel.md`; bis dahin stand sie nur in einer
+  Übergabe und in einem Zeitdokument.
+- **Beobachtungs-Register (`../observations/`):** **Zwei Belege an vorhandenen Einträgen, kein neues
+  Verzeichnis.** `evidence/slice-kennungs-waechter-geht-ins-ziel.md` liegt danach in
+  [`BEO-ALL/abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt`](../observations/BEO-ALL/abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt/observation.md)
+  — die **Apposition** im Liefer-Punkt 3 setzte zwei Dinge gleich, die nicht dasselbe sind (die
+  Werkzeug-Commits als etwas, das der Träger *nicht* erreicht, während er sie erreicht **und**
+  abbricht); der Vorgang hat sie widerlegt, und der Punkt war nur unter der Lesart *Beispiel-Liste*
+  abhakbar. **Urteil: eigene Klasse? Nein** — die Klasse deckt den Fall, die Nachbarn sind enger
+  (der eine nennt eine wahre, nichtssagende Zusage, der andere eine Bezugsmenge), und ein zweiter
+  Name daneben wäre eine zweite Fassung derselben Beobachtung. **Mitbenannt, nicht mitgezählt:** der
+  **Anlass-Block** aus §1 ist derselbe Fehler an einem zweiten Träger (Plan-Prosa statt
+  Abnahmekriterium) und derselbe Vorgang — er bekommt darum keine zweite Datei. Und in
+  [`BEO-ALL/neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md)
+  — von **18** neuen Wächtern dieses Slice (**7** Go-Wächter, **10** bats-Fälle, **eine**
+  E2E-Sektion) nennt **11** ein gelisteter Fall, **7** keinen; **zwei** davon tragen eine Zusage:
+  der E2E-Eintrag aus dem Steering-Loop-Eintrag oben und die Kopplungs-Gruppe der Betreff-Ausnahme
+  (die in einer eigenen Sonde Zähne zeigte: einseitig geänderte `exempt=`-Zeile färbt zwei
+  bats-Fälle rot). Die Zuordnung je Wächter samt ihren Kommandos steht im Verifikations-Report zu
+  diesem Vorgang (§3); die Zählungen selbst, **kein gespeicherter Wert**:
+
+  ```sh
+  grep -c '^func Test' internal/emit/commitmsg_test.go                 # 7  Go-Waechter
+  grep -c '^@test' test/commit-msg-emission.bats                       # 10 bats-Faelle
+  ls test/mutations/34[7-9]-*.sh test/mutations/35[0-6]-*.sh | wc -l   # 10 gelistete Faelle
+  for s in abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt neuer-waechter-ohne-mutations-fall; do
+    printf '%-58s %s\n' "$s" "$(ls docs/plan/planning/observations/BEO-ALL/$s/evidence/*.md | wc -l)"
+  done
+  ```
+
+  **Zwei Kandidaten tragen nicht, und das ist ebenfalls eine Antwort:**
+  `lebendes-register-traegt-eine-ueberholte-fundliste` — kein lebender Norm-Eintrag dieses Vorgangs
+  zählt eine Fundliste namentlich auf, die seine Messung nicht mehr führt; der Satz, den die
+  Lieferung richtigstellt, ist keine Aufzählung. `waechter-abdeckung-haengt-an-uninstruierter-konvention`
+  — der Träger des Ziels hängt am Commit und liest die Message-Datei, die `git` ihm übergibt,
+  gleichgültig welcher Aufruf sie erzeugt hat
+  ([`ADR-0053`](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md)
+  Festlegung 2); dieser Vorgang bewegt den Zähler nicht.
+- **Folge-Slices:** **einer, und er ist eine Datei:** `slice-commit-traeger-wird-skip-if-present`
+  (Der emittierte Commit-Träger verliert die konvergente Klasse) — in diesem Closure-Lauf unter
+  `open/` angelegt, weil [`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md)
+  Folgepflicht 1 ihn namentlich übergibt und eine Kennung **ohne** Datei durch die
+  Folge-Slice-Paarung der Wellen-Closure fällt.
+- **Risiken aus §6:** drei Risiken, drei Ausgänge — **einmal *eingetreten*** (mit der Kennung des
+  Folge-Slices), **zweimal *entfallen***, jeder mit seiner Begründung in §6.
+- **Drei Paarungen:** von der [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md)-Closure
+  getragen (dieser Slice ist ihr Mitglied), **hier nicht geprüft**. Was sie vorfindet, ist gelegt:
+  **ein** Folge-Slice genannt und als Datei vorhanden (Zeile darüber); keine `liegt in`-Zeile —
+  nichts verkörpert, also keine Anker-Paarung; und jede hier genannte Beobachtung existiert als
+  Verzeichnis mit nicht leerem `evidence/`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
