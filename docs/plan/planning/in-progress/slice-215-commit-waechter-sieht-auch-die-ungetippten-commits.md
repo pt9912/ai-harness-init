@@ -112,20 +112,20 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
 Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt.
 
-- [ ] **(1) Der Träger ist entschieden, und die Entscheidung ordnet jeder gemessenen Commit-Klasse
+- [x] **(1) Der Träger ist entschieden, und die Entscheidung ordnet jeder gemessenen Commit-Klasse
       einen Träger zu.** Mindestens drei Klassen sind zu bedienen: direkt getippter Aufruf · Commit
       aus einem Repo-Werkzeug heraus · Aufruf ohne die Konventions-Form. Zu entscheiden ist
       zugleich, wie der Träger auf einem **frischen Klon** entsteht — ein `.git/hooks/`-Pfad reist
       nicht mit und wäre sonst ein Wächter, den nur der lokale Baum kennt.
       **Rot:** eine Klasse ohne benannten Träger, oder eine Trägerschaft, die der frische Klon nicht
       herstellt.
-- [ ] **(2) Der gewählte Träger ist verdrahtet und einmal rot gesehen — an einer Commit-Klasse, die
+- [x] **(2) Der gewählte Träger ist verdrahtet und einmal rot gesehen — an einer Commit-Klasse, die
       der heutige PreToolUse-Hook strukturell nicht erreicht.** Beide Läufe (rot ohne Kennung, grün
       mit) gehören in den Umsetzungs-Commit.
       **Rot:** `make mutate` meldet **BEFUND** auf den `test/mutations/`-Fall, der die
       Kennungs-Prüfung des neuen Trägers entwaffnet — der Zahn muss die Stelle treffen, die der
       Aufrufer benutzt.
-- [ ] **(3) Die neue Reichweite steht neben der alten, und was draußen bleibt, ist benannt.** In
+- [x] **(3) Die neue Reichweite steht neben der alten, und was draußen bleibt, ist benannt.** In
       [`harness/README.md`](../../../../harness/README.md) steht, welche Commit-Klassen der Träger
       erreicht, welche nicht, und ob die Konventions-Abhängigkeit aus §1 damit entfällt oder als
       Lücke weiterläuft.
@@ -211,29 +211,161 @@ dasteht.
   installiert hat — dieselbe Klasse, die
   [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) für
   behauptete Gates verbietet. Die Antwort (`core.hooksPath`, ein `make`-Ziel, ein Bootstrap-Schritt)
-  gehört in DoD (1) entschieden, nicht hier weggewunken. — **Ausgang:** <eingetreten: CO-NNN /
-  slice-NNN | entfallen: Grund | weiter offen: → Beobachtungs-Register>
+  gehört in DoD (1) entschieden, nicht hier weggewunken. — **Ausgang: entfallen** — die Antwort ist
+  eine andere als die im Risiko genannte. Der Träger liegt **versioniert** unter `.githooks/`, nicht
+  in `.git/hooks/`; er reist mit dem Klon (`git ls-files -s .githooks/commit-msg` → `100755`). Was
+  der Klon allein **nicht** herstellt, ist die Aktivierung (`core.hooksPath` ist lokale
+  Konfiguration) — das ist die bewusst gewählte Eigenschaft, nicht der Rest des Risikos: sie steht
+  als Zeile in der Reichweiten-Tabelle und als Annahme in der
+  [`ADR-0053`](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) Festlegung 3,
+  und ihr Zustand ist gemessen — kennungsloser `-m`-Commit im frischen Klon **EXIT 0**, nach
+  `make hooks-install` **EXIT 1** (Verifikation §3). Die Lücke ist damit deklariert und terminiert:
+  ihr Hochschalt-Trigger ist der Re-Evaluierungs-Trigger 1 derselben ADR (`core.hooksPath` wird zum
+  Automatismus). Kein unentschiedener Rest.
 - **Ein `commit-msg`-Hook liegt außerhalb von `make`.** `git` startet ihn selbst; er darf darum
   nicht Docker voraussetzen, sonst bricht jeder Commit ohne laufenden Daemon. Ein hermetischer
   bash+awk-Prüfer wäre ein **zweiter** Prüfer neben dem `commits:`-Block der
   [`.d-check.yml`](../../../../.d-check.yml) — zwei Fassungen derselben Kennungs-Liste, die driften.
-  — **Ausgang:** <eingetreten: CO-NNN / slice-NNN | entfallen: Grund | weiter offen: →
-  Beobachtungs-Register>
+  — **Ausgang: entfallen** — beide Hälften sind beantwortet. Der Träger ist `bash` + coreutils ohne
+  Docker und ohne Netz ([`ADR-0053`](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md)
+  Festlegung 1, [`ADR-0004`](../../adr/0004-durchsetzungs-emission.md)); ein Commit ohne laufenden
+  Daemon bricht nicht. Und die zwei Fassungen derselben Kennungs-Menge stehen nicht mehr
+  unvergleichen da: `test/commit-msg-hook.bats` Fall 10 hält ihre **Mengen-Gleichheit**, nachdem der
+  Review gemessen hatte, dass nur **eine** Richtung hielt (F-2, MEDIUM) — der Nachzug `8a0538d3`
+  stellt jeder Richtung einen eigenen Zahn daneben, beide einzeln gefahren (Verifikation §4.4). Die
+  Kopplung ist benannt **und** bewacht; ihr Träger ist `make test`.
 - **Zwei Wächter über demselben Gegenstand.** Bleibt der PreToolUse-Zusatz neben dem neuen Träger
   stehen, blockt derselbe Commit zweimal mit zwei Begründungen, und ein Lauf weiß nicht, welche
-  gilt. — **Ausgang:** <eingetreten: CO-NNN / slice-NNN | entfallen: Grund | weiter offen: →
-  Beobachtungs-Register>
+  gilt. — **Ausgang: entfallen** — die Entscheidung ist getroffen und lautet: **beide bleiben**, und
+  sie sind nicht austauschbar
+  ([`ADR-0053`](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md)
+  Festlegung 2). *Zweimal derselbe Commit mit zwei Begründungen* kann nicht entstehen, weil die zwei
+  an zwei Punkten **desselben Pfades** sitzen und in einer Reihenfolge liegen: der Agenten-Kanal
+  **vor** der Ausführung, der Hook **an** ihr. Blockt der erste, entsteht kein Commit, den der
+  zweite sehen könnte; im Normalpfad urteilt genau einer, und die Reichweiten-Tabelle sagt, welcher
+  welche Klasse trägt. Die Zusage, die das Risiko berührt, ist damit an einer Stelle deklariert statt
+  zweimal.
 - **Der Cutoff bleibt prospektiv, und das muss er.** Ein Maßstab über die ganze Historie wäre an
   einem Bestand rot, den niemand mehr ändern kann; gemessen liegt der kennungslose Anteil im
   jüngsten Bestand bereits niedrig
   (`RE='ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3}|slice-[0-9]+|^(Merge |Revert )';
   git log --format='%s' -50 | grep -vcE "$RE"` → **2**, kein Erwartungswert). Ein Träger, der die
-  Historie liest, kippt diese Lage. — **Ausgang:** <eingetreten: CO-NNN / slice-NNN | entfallen:
-  Grund | weiter offen: → Beobachtungs-Register>
+  Historie liest, kippt diese Lage. — **Ausgang: entfallen** — der gewählte Träger liest die
+  **Message**, nicht die Historie: `git` übergibt ihm die Datei des Commits, der gerade entsteht
+  ([`ADR-0053`](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md)
+  Festlegung 1). Der Satz *„der Cutoff bleibt prospektiv"* gilt also unverändert weiter — er ist
+  nicht durch die Träger-Wahl in Frage gestellt worden, weil keine der beiden Fassungen die
+  Historie liest. Was der Bestand daneben trägt, ist eine andere Achse und bleibt benannt: die
+  Werkzeug-Messages (Register-Beleg zu
+  [`commit-message-ohne-traceability-kennung`](../observations/BEO-ALL/commit-message-ohne-traceability-kennung/observation.md)).
 
 ## 7. Closure-Notiz
 
-<!-- Erst nach Abschluss füllen. -->
+Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
+§Das Beobachtungs-Register (vorhandene `BEO-<KUERZEL>/<slug>` **zitieren** statt neu
+formulieren — sonst zählt das Register zwei Namen getrennt) ·
+`grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln (das
+Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
+wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
+Backticks).
+
+- **Was hat funktioniert:** **Die Bauart des Trägers war keine Abwägung, sondern Bedingung — und sie
+  ist eingehalten.** `bash` + coreutils, kein Docker, kein Netz: ein Commit, der ohne laufenden
+  Daemon bricht, wäre kein Wächter, sondern ein Ausfall
+  ([`ADR-0004`](../../adr/0004-durchsetzungs-emission.md)). Zweitens war die **Reichweite am Bestand
+  entscheidbar**, weil die zwei Hälften an zwei verschiedenen Punkten desselben Pfades sitzen — der
+  Agenten-Kanal *vor* der Ausführung, der Hook *an* ihr; die Tabelle ist damit eine Messung und
+  keine Absichtserklärung. Drittens hat der Review die Kopplung der zwei Kennungs-Listen **gemessen**
+  statt sie zu glauben (F-2), und daraus wurde eine Mengen-Gleichheit mit je einem Zahn pro
+  Richtung.
+- **Was ging anders als geplant:** **Drei Dinge, und das erste ist ein Ablauf-Befund.** (1) **Der
+  Start-Trigger aus §4 war beim Vollzug nicht erfüllt.** Die §3-Zelle stand auf *„offen"*, und die
+  Architecture-Antwort kam **nach** den drei Umsetzungs-Commits
+  (`7ee36939` · `2557901e` · `9ab67fa0` → `0f2409cc`). Getragen hat den Vollzug die **Form** — die
+  Vorlage führt `core.hooksPath` + ein `make`-Ziel ausdrücklich als mögliche Antwort —, nicht die
+  **Entscheidung**; der Reviewer führt es als Vorbemerkung, und dass es gutging, heilt den Ablauf
+  nicht. (2) **Die Träger-Wahl brachte einen zweiten Arm mit**, den der Plan nicht als Liefer-Punkt
+  hatte: die vier Message-Formen der eigenen Werkzeuge
+  ([`ADR-0053`](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) Festlegung 4;
+  die Kennung des Kandidaten steht am Ende dieser Notiz). Er ist der Grund, warum der Träger in
+  diesem Klon **nicht aktiv** ist: scharf gestellt bricht `make slice-mv` **nach** dem `git mv`. Ein vierter
+  Liefer-Punkt hieße *zurück zur Zerlegung*, also steht er als benannter Kandidat. (3) **Ein
+  Zellen-Überclaim der neuen Reichweiten-Tabelle** ist erst von der Verifikation widerlegt worden
+  (V-1) und in `dc392dd9` gezogen — die Zelle sagte über die Werkzeug-Klasse *„heute trägt keine
+  eine"*, und die Mehrheit trägt eine
+  (`git log --format='%s' | grep '^slice-mv:' | grep -cE 'ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3}|slice-[0-9]+'`
+  → **367** von `git log --format='%s' | grep -c '^slice-mv:'` → **411**; **keine Erwartungswerte**).
+- **Steering-Loop-Eintrag:** *Neuer Sensor* — [`.githooks/commit-msg`](../../../../.githooks/commit-msg)
+  samt [`harness/tools/commit-msg-traceability.sh`](../../../../harness/tools/commit-msg-traceability.sh)
+  (die Prüfung), `make hooks-install` (die Aktivierung), `test/commit-msg-hook.bats`
+  (`grep -c '^@test' test/commit-msg-hook.bats` → **13** Fälle, darunter die Mengen-Gleichheit der
+  zwei Kennungs-Listen) und `test/mutations/340`–`342` (`ls test/mutations/34[0-2]*.sh | wc -l` →
+  **3** Zähne; `340` färbt den bats-Fall, und der fährt den Aufruf **über** den Hook). **Kein
+  `liegt in`-Feld:** Mit diesem Slice ist keine Regel verkörpert worden — der Sensor ist der
+  Liefergegenstand, nicht die Antwort auf einen 3×-Schwellen-Übertritt. Der Eintrag ist gezählt,
+  nicht verkörpert.
+- **Beobachtungs-Register (`../observations/`):** **Drei Belege an vorhandenen Einträgen, kein neues
+  Verzeichnis**; je Eintrag eine Datei `evidence/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md`,
+  und **kein Zähler wird gesetzt** — er folgt aus den Dateien. Die Zuordnung ist am Bestand
+  gemessen, nicht aus den Reports übernommen:
+  - [`commit-message-ohne-traceability-kennung`](../observations/BEO-ALL/commit-message-ohne-traceability-kennung/observation.md)
+    — der Zähler steht damit bei **3×**
+    (`ls docs/plan/planning/observations/BEO-ALL/commit-message-ohne-traceability-kennung/evidence/*.md | wc -l`).
+    Der Eintrag ist über der Schwelle und trägt noch `offen`: Den **Ausgang** weist der Lese-Schritt
+    zu, und in diesem Repo mit Wellen-Betrieb ist das die **nächste Welle-Closure** — nicht diese
+    Slice-Closure. Die Commits dieses Vorgangs selbst fallen **nicht** in die Klasse (gemessen über
+    die ganze Kette, Kommando im Beleg); die Klasse steht an der Werkzeug-Hälfte, die der Vorgang
+    benennt und liegen lässt.
+  - [`waechter-abdeckung-haengt-an-uninstruierter-konvention`](../observations/BEO-ALL/waechter-abdeckung-haengt-an-uninstruierter-konvention/observation.md)
+    — **2×**, unter der Schwelle. Die **Feststellung, die §5 verlangt:** der Eintrag bekommt mit
+    diesem Slice **keinen Ausgang**; er läuft als Lücke weiter. Geschlossen ist die Hälfte, die ohne
+    Konvention auskommt — der Hook braucht die Aufrufform nicht —, offen die rollen-gebundene, und
+    die ist fremdes Eigentum
+    ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)). Der Vorgang hat
+    sie nicht geschrieben (gemessen: `git diff --name-only 7ee36939^..dc392dd9 | grep -c '\.claude/agents/\|\.harness/skills/'`
+    → **0**); sie steht jetzt aber als Zeile neben der Tabelle, mit diesem Eintrag als Adresse.
+  - [`zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md)
+    — **16×** (`ls docs/plan/planning/observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/evidence/*.md | wc -l`),
+    Stand `geplant` (`slice-181`): **V-1**, die Zelle, die eine Klasse absolut behauptete, wo der
+    Bestand sie teilt. Es ist genau der Fall, den §8 als Evidenz-Risiko dieser DoD angekündigt hatte
+    — die eigene Ankündigung ist eingetreten.
+  - **Kein Beleg** ging an
+    [`adaptions-marker-nennt-eine-stelle-die-emissions-klasse-nicht-haelt`](../observations/BEO-ALL/adaptions-marker-nennt-eine-stelle-die-emissions-klasse-nicht-haelt/observation.md):
+    gemessen hat dieser Vorgang **keinen** `ANPASSEN`-Marker geschrieben oder angefasst
+    (`git diff 7ee36939^..dc392dd9 | grep -c 'ANPASSEN'` → **0**), und `internal/emit/` kommt im Diff
+    nicht vor. Die Klasse ist nicht eingetreten.
+- **Folge-Slices:** **keiner geschnitten.** Der benannte Kandidat steht unten und ist nicht
+  Gegenstand dieses Laufs.
+- **Risiken aus §6:** vier Risiken, vier Ausgänge — **alle vier *entfallen***, jeder mit der
+  Entscheidung oder Messung, die ihn beendet; die Ausgänge stehen in §6 neben ihren Risiken. **Kein
+  Risiko wandert ins Register**, und das ist keine Weglassung: die zwei verbleibenden Lagen sind
+  **deklariert** statt offen — die eine als Grenze der Trägerschaft mit Re-Evaluierungs-Trigger
+  ([`ADR-0053`](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) Festlegung 3
+  und Trigger 1), die andere als Kandidat mit Kennung.
+- **Drei Paarungen:** Dieses Repo führt **Wellen** — geprüft von der nächsten Welle-Closure, auch
+  für diesen Slice ohne Wellen-Zugehörigkeit. Was sie vorfindet, steht im letzten DoD-Punkt in §2.
+
+**Der Zwilling — und der Kandidat, der noch nicht geschnitten ist.** Dieser Slice ist der
+**Zwilling** von
+[`slice-kennungs-waechter-geht-ins-ziel`](../open/slice-kennungs-waechter-geht-ins-ziel.md) in
+[welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md) — dem Mitglied, das diesen Träger in
+ein gebootstrapptes Ziel bringt. Das Mitglied **erbt die Träger-Wahl** aus
+[`ADR-0053`](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) und nimmt sie
+nicht vorweg; die Richtung *„erst die ausgeführte Fassung, dann die emittierte"* ist die Ordnung der
+Welle und keine Sperre für dieses Mitglied. Die ADR steht auf `Proposed` — ihr Accept-Übergang ist
+eine eigene Frage mit eigenem Beleg
+([`ADR-0040`](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md)) und kein Punkt
+dieses Slice.
+
+Benannt und **nicht** geschnitten: **`slice-werkzeug-commits-tragen-eine-kennung`**
+([`ADR-0053`](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) Festlegung 4).
+Sein Gegenstand sind die vier Message-Formen der eigenen Werkzeuge, die ihre Message ohne Kennung
+bilden — scharf gestellt bricht der Träger damit `make slice-mv` **nach** dem `git mv` und
+hinterlässt einen gestagten Rename ohne Commit. Seine Arbeit ist die Bedingung dafür, dass die
+Aktivierung des Trägers in einem Baum, den mehrere Rollen zugleich benutzen, gefahrlos wird. Die
+Kennung ist vergeben, seine Datei existiert nicht
+(`ls docs/plan/planning/*/slice-werkzeug-commits-tragen-eine-kennung.md` → kein Treffer); ihn zu
+schneiden ist Planner-Arbeit und lag nicht in diesem Auftrag.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
