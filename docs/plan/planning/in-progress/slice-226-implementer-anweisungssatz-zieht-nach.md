@@ -90,8 +90,8 @@ Vier Blöcke tragen die Pflicht, alle im Abschnitt §Minimal Agent Workflow (8 S
 
 Dazu die Kennungs-Notation der Ziel-Fassung, die im Anweisungssatz an **5** Stellen in der alten
 Form steht. Die Sonde liest **beide** Schreibweisen — die spitze **und** die geklammerte —, weil
-die spitze allein an der geklammerten blind vorbeigeht; am Anlege-Commit gemessen, weil der
-laufende Nachzug die Grundmenge bewegt
+die spitze allein an der geklammerten blind vorbeigeht; am Vor-Stand gemessen (`bbd10ea2^`, der
+Commit vor dem Nachzug), weil der laufende Nachzug die Grundmenge bewegt
 ([`MR-058`](../../../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)):
 
 ```sh
@@ -156,9 +156,12 @@ Zwei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
 
       keinen Treffer (EXIT 1). **Die Sonde liest beide Schreibweisen** — die spitze und die
       geklammerte: die spitze allein ließe eine Wiederkehr der geklammerten Form grün durch, und
-      der Beleg schnitte dann seinen Gegenstand nicht. Die Zusage gilt dem **Prüfbereich einer
-      Datei** und nicht dem Repo: Was außerhalb liegt, ist in §1 benannt und hat dort seinen
-      Ausgang; eine lebende Fundstelle außerhalb (`Makefile:340`) ist benannt, nicht still gelassen.
+      der Beleg schnitte dann seinen Gegenstand nicht. **Der Prüfbereich ist darum genau diese eine
+      Datei**: die breite Schreibweise fängt außerhalb eine **Meta-Notation** mit (`<slice-NNN>` als
+      Platzhalter in Prosa, z. B. in den Plänen unter `docs/plan/planning/open/`), und wer sie
+      repo-weit fährt, zählt Platzhalter statt Fundstellen. Was außerhalb dieses Bereichs liegt, ist
+      in §1 benannt und hat dort seinen Ausgang; eine lebende Fundstelle außerhalb
+      (`Makefile:340`) ist benannt, nicht still gelassen.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
