@@ -231,7 +231,7 @@ Drei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
       Klassen, die beide benannt sind: **verwendet** in
       [`.claude/commands/implement-slice.md`](../../../../.claude/commands/implement-slice.md),
       das §1 an die Implementer-Rolle übergibt und das
-      [slice-226](../in-progress/slice-226-implementer-anweisungssatz-zieht-nach.md) aufnimmt — und
+      [slice-226](../done/slice-226-implementer-anweisungssatz-zieht-nach.md) aufnimmt — und
       **zitiert** in den Plandateien, die den Wechsel selbst zum Gegenstand haben. Welche das im
       Planungs-Baum sind, sagt `git grep -lE 'slice-<NNN>|welle-<NN>' -- docs/plan/planning
       .claude/commands ':!docs/plan/planning/done'`; die Menge wächst mit jedem weiteren Plan,
@@ -394,7 +394,7 @@ dasteht.
   ([`AGENTS.md`](../../../../AGENTS.md) §3.10) und liegt außerhalb dieses Laufs. — **Ausgang:**
   eingetreten → zwei Folge-Slices, je einer pro Empfänger-Rolle, weil ein Lauf nicht zwei Rollen
   füllt ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
-  Festlegung 1): [slice-226](../in-progress/slice-226-implementer-anweisungssatz-zieht-nach.md) für den
+  Festlegung 1): [slice-226](../done/slice-226-implementer-anweisungssatz-zieht-nach.md) für den
   Implementer-Anweisungssatz und
   [slice-227](../open/slice-227-reviewer-skill-nennt-den-vorhandenen-stand.md) für den
   Reviewer-Skill. Beide sind Dateien in `open/`, beide tragen den Start-Trigger *„slice-224 liegt
@@ -493,7 +493,7 @@ Backticks).
   still.
 - **Folge-Slices:** [slice-225](../done/slice-225-gate-index-steht-einmal.md) (Der Gate-Index steht
   einmal) — Datei in `open/`, sein §1 nimmt die Deklaration der Kennungs-Form jetzt an und seine
-  DoD-2 nennt sie; [slice-226](../in-progress/slice-226-implementer-anweisungssatz-zieht-nach.md) (Der
+  DoD-2 nennt sie; [slice-226](../done/slice-226-implementer-anweisungssatz-zieht-nach.md) (Der
   Implementer-Anweisungssatz trägt die Plan-vor-Code-Disziplin) und
   [slice-227](../open/slice-227-reviewer-skill-nennt-den-vorhandenen-stand.md) (Der Reviewer-Skill
   nennt den Baseline-Stand, der im Baum liegt) — beide Dateien in `open/`, beide neu geschnitten,
