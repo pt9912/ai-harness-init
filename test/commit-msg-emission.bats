@@ -62,6 +62,35 @@ patterns_von() {
   [[ "$output" == *"Betreff ohne Kennung"* ]]
 }
 
+# klassen_kopf <datei> — die Klassen-Aufzaehlung im ZUSAGE-Absatz des Kopfes, eine
+# Klasse je Zeile. Der Absatz ist der einzige Ort der Datei mit geschweiften
+# Klammern; die uebrigen sind Parameter-Expansionen des Codes.
+klassen_kopf() {
+  sed -n '/^# ZUSAGE\./,/^#$/p' "$1" \
+    | sed -n 's/.*{\([^}]*\)}.*/\1/p' \
+    | tr ',' '\n' | sed 's/^[[:space:]]*//; s/[[:space:]]*$//' | sed '/^$/d'
+}
+
+# klassen_muster <datei> — dieselben Klassen aus der Zeile `patterns=`: je
+# Alternative der Teil bis einschliesslich des ersten Bindestrichs.
+klassen_muster() {
+  patterns_von "$1" | sed 's/^\([^-]*-\)[^|]*$/\1/'
+}
+
+@test "kopplung: die Klassen-Aufzaehlung im Kopf ist die der Zeile patterns=" {
+  local datei soll ist
+  for datei in "$EMITTIERT" "$DOGFOOD"; do
+    soll="$(klassen_kopf "$datei" | sort)"
+    ist="$(klassen_muster "$datei" | sort)"
+    # Ein leeres `soll` ist kein Durchgang: der Kopf traegt dann keine Aufzaehlung,
+    # die diese Ableitung liest — fail-closed statt still gruen.
+    if [ -z "$soll" ] || [ "$soll" != "$ist" ]; then
+      echo "STORUNG: $datei — Klassen im Kopf: [$(printf '%s' "$soll" | tr '\n' ' ')] / in patterns=: [$(printf '%s' "$ist" | tr '\n' ' ')]"
+      return 1
+    fi
+  done
+}
+
 @test "rot: der Grund nennt den Ort der Menge und zaehlt sie nicht selbst auf" {
   lauf 'Betreff ohne Kennung\n'
   [ "$status" -eq 1 ]
