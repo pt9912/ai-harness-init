@@ -76,7 +76,8 @@ cd /Development/KI/ai-harness-course
 git diff --shortstat v6.0.0..v6.7.2 -- lab/regelwerk/modul-09-implementierung.md   # 1 Datei, +35/−4
 ```
 
-Vier Blöcke tragen die Pflicht, alle im Abschnitt §Minimal Agent Workflow (8 Schritte):
+Vier Blöcke tragen die Pflicht — **drei** im Abschnitt §Minimal Agent Workflow (8 Schritte), der
+**vierte** in §Rücksprungkanten-Regeln:
 
 1. **Die Tests-Zeile bindet an die Akzeptanzkriterien-ID** der in Schritt 3 identifizierten
    Requirement-ID, statt den Text zu wiederholen — der Plan sagt damit vor dem ersten Diff, *woran*
@@ -145,7 +146,8 @@ Zwei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
       (`modul-09-implementierung.md` §Minimal Agent Workflow, Stand `v6.8.0`) —, die
       Out-of-Scope-Nennung bei Schritt 4, die Ein-Begründung-je-Ursache-Regel daneben, und der Satz
       *der Plan lebt in §3* bei den Rücksprüngen. Der Beleg ist ein Form-Vergleich gegen
-      `.harness/baseline/v6.8.0/regelwerk/modul-09-implementierung.md` §Minimal Agent Workflow, je
+      `.harness/baseline/v6.8.0/regelwerk/modul-09-implementierung.md` — §Minimal Agent Workflow
+      **und** §Rücksprungkanten-Regeln, der vierte Block steht im zweiten —, je
       Block eine benannte Fundstelle im Anweisungssatz; ein Block ohne Fundstelle ist der Befund,
       keine Auslassung.
 - [ ] **2 — Die Kennungs-Notation ist nachgezogen.** Nach dem Lauf liefert
