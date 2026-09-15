@@ -61,10 +61,14 @@ grep -c '\.sh", "\.claude/hooks/' internal/emit/enforce.go      # 3 — so viele
 
 **Keine Erwartungswerte**
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-Setzung 2) — alle drei wandern mit dem Baum. Der lokale Träger hat zwei Hälften: den
-PreToolUse-Hook und ein Kommando, das dieselbe Prüfung ohne Agenten fährt — beide bleiben hier. Auch
-die Modul-Liste der emittierten Gate-Konfiguration führt den Constraint nicht: sie liest
-`modules: [links, anchors, ids, matrix, spans]`.
+Setzung 2) — alle drei wandern mit dem Baum. Der lokale Träger hat drei Hälften: den
+PreToolUse-Hook (`.claude/hooks/pretooluse-commit-msg-guard.sh`), das Kommando
+`make commit-msg-check`, das dieselbe Prüfung ohne Agenten fährt, und den git-eigenen Hook
+`.githooks/commit-msg`, den
+[slice-215](../done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) für den
+Dogfood entschieden hat. Die ersten zwei erreichen das Ziel nicht; die dritte ist die Form, die es
+bekommt. Auch die Modul-Liste der emittierten Gate-Konfiguration führt den Constraint nicht: sie
+liest `modules: [links, anchors, ids, matrix, spans]`.
 
 **Der Träger ist die Entscheidung, nicht ein Artefakt.** Ein Wächter kann am **Agenten** hängen (wie
 hier) oder am **Commit**; die zwei erreichen verschiedene Mengen. Eine Commit-Message ohne Kennung
@@ -75,15 +79,19 @@ dem, was es trägt.
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Die Träger-Wahl des Dogfoods für sich.** [slice-215](../done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md)
-  entscheidet, wo der Wächter **dieses** Repos hängt, wenn der Aufruf nicht als Kommando erscheint;
-  die emittierte Fassung erbt diese Entscheidung, statt sie vorwegzunehmen (§5 der Welle).
+  hat entschieden, wo der Wächter **dieses** Repos hängt, wenn der Aufruf nicht als Kommando
+  erscheint; die emittierte Fassung erbt diese Entscheidung, statt sie vorwegzunehmen (§5 der
+  Welle).
 - **Der `commits`-Modulblock als solcher.** Sein Zustand am gepinnten Stand ist ein Befund des
   Nachbar-Werkzeugs und steht im Register
   ([`BEO-ALL/werkzeug-luecke-im-nachbar-repo-ohne-adresse`](../observations/BEO-ALL/werkzeug-luecke-im-nachbar-repo-ohne-adresse/observation.md));
   dieser Slice entscheidet den **Träger**, nicht das Modul.
 - **Die zweite Hälfte des Constraints — das Doku-Update.** Sie ist von einem Commit-Gate nicht
   mechanisch prüfbar; sie wird **benannt**, nicht gebaut. Sie zu bauen wäre ein anderer Vorgang.
-- **Der Produkt-Code.** Diese Eröffnung schneidet; `internal/` wird von ihr nicht angefasst.
+- **Der Produkt-Code außerhalb der Emission.** Diese Eröffnung schneidet an der **emittierten**
+  Ebene: ihr Gegenstand ist `internal/emit/` samt den Vorlagen, die es ablegt. Der
+  **Laufzeitpfad** des Werkzeugs — die CLI (`cmd/`), der Generator (`internal/gen`), die
+  Verdrahtung (`internal/wire`) — wird von ihr nicht angefasst.
 
 **Keine Mindestzahl.** Ein Slice mit *einem* echten Ausschluss ist besser als
 einer mit vier erfundenen; die vier Klassen sind ein Suchraster, keine
@@ -147,13 +155,13 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`): Der Slice ist priorisiert (`Verantwortlich:` gesetzt) und das
-WIP-Limit frei. **Keine harte Bindung an [slice-215](../done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md):**
-er entscheidet den Dogfood-Träger; dieser Slice kann mit dem heutigen Kanal beginnen und zieht nach,
-wenn dort entschieden ist — die Richtung „erst die ausgeführte Fassung, dann die emittierte" (Welle
+WIP-Limit frei. **Der Träger des Dogfoods ist entschieden**
+([slice-215](../done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md)); dieser
+Slice erbt die Form (§3) — die Richtung „erst die ausgeführte Fassung, dann die emittierte" (Welle
 §5) ist eine Ordnung, keine Sperre.
 
 **Reihenfolge innerhalb der Welle:** unabhängig von den drei übrigen Mitgliedern; die Flächen sind
-disjunkt — dieses Mitglied fasst die Hooks und die `settings.json` an, kein anderes tut das.
+disjunkt — dieses Mitglied fasst die Hook-Vorlagen an, kein anderes tut das.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
