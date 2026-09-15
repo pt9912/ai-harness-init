@@ -327,7 +327,7 @@ auf. Zwei Punkte, zwei Gegenstände.
 
 Dazu die zwei Grenzen aus dem Auftrag: **`MR-057` ist nicht angefaßt** (`harness/conventions/**`
 steht in keiner Datei-Liste der vier Commits — der Befund F-7 bleibt beim Architect), das zweite
-Wellen-Mitglied (`docs/plan/planning/next/slice-kennungs-waechter-geht-ins-ziel.md`) ebenso wenig,
+Wellen-Mitglied (`docs/plan/planning/in-progress/slice-kennungs-waechter-geht-ins-ziel.md`) ebenso wenig,
 und **`make hooks-install` ist nicht gelaufen**: `git config --get core.hooksPath` ist leer, unter
 `.git/hooks/` liegen nur die `.sample`-Dateien.
 

@@ -6,7 +6,7 @@ beide Adress-Formen ist dabei nicht über die zwei eingefrorenen Bäume gefahren
 ```sh
 git show --stat fe0f0cd6
 # docs/plan/planning/done/slice-126-commit-message-traegt-eine-kennung.md          | 12 ++++++------
-# docs/plan/planning/next/slice-kennungs-waechter-geht-ins-ziel.md                 |  8 ++++----
+# docs/plan/planning/in-progress/slice-kennungs-waechter-geht-ins-ziel.md                 |  8 ++++----
 # docs/plan/planning/welle-emittierte-werkzeuge.md                                 |  2 +-
 # docs/reviews/2026-09-15-slice-174-archivierung-emittieren-verify.md              |  2 +-
 ```
