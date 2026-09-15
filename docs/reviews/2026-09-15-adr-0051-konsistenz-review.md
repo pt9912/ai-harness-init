@@ -128,7 +128,7 @@ ist damit **nicht** eingetreten; sein Negativ stand bei `v5.18.0`, zwei Re-Basel
 
 | Baum | Ergebnis |
 |---|---|
-| **committeter Stand `efce6042`** (Wegwerf-Worktree, danach entfernt) | **`EXIT 0`** — entscheidende Zeile `span-check: Traeger vorhanden, span-emit hat einen Span geschrieben, Ablageort git-ignoriert` · `GATES_EXIT=0` |
+| **committeter Stand — `efce6042` und, mit diesem Report am Tip, `f1175850`** (je Wegwerf-Worktree, danach entfernt) | **`EXIT 0`** in beiden Läufen — entscheidende Zeilen `baseline-verify: v6.8.0 OK — 54 Dateien (Integritaet + Vollstaendigkeit, netzlos)`, `d-check: 1405 Datei(en) geprüft, 0 Befund(e)`, `GATES_EXIT=0` |
 | **Arbeitsbaum um 04:1x** | **`EXIT 2`** — entscheidende Zeile `--- FAIL: TestArchivierungFragment_ZielAmTraegerUndNichtInDerGatesKette`, `archivierung_test.go:115: harness/mk/archivierung.mk haengt [archive-welle] an GATE_CHECKS — es traegt ein Kommando, kein Gate` |
 
 Der Arbeitsbaum trug zum Zeitpunkt des zweiten Laufs **fünf nicht committete Dateien**
@@ -137,8 +137,9 @@ Der Arbeitsbaum trug zum Zeitpunkt des zweiten Laufs **fünf nicht committete Da
 `test/mutations/338-archivierung-ohne-traeger-schweigt.sh`) — fremde, laufende Arbeit an
 `slice-174`s Fragment. Dieser Lauf hat sie nicht angefasst; der rote Lauf misst den Zeitpunkt und
 nicht den Stand, und deshalb steht der grüne Lauf über der committeten Spitze daneben. **Die
-Abweichung gehört `slice-174` und nicht diesem Gegenstand**, hätte dort aber vor jeder Closure
-einen Ausgang.
+Abweichung gehört `slice-174` und nicht diesem Gegenstand**, hätte dort aber vor jeder Closure einen Ausgang.
+
+Ein dritter Lauf desselben Standes brach vor der Go-Stufe ab, weil das gepinnte Dockerfile-Frontend `docker/dockerfile:1.7` nicht aus der Registry aufgelöst werden konnte (Netz-Zeitüberschreitung); der Wiederholungslauf war grün. Der Abbruch ist Umgebung und nicht Gegenstand — er steht hier, damit die Wiederholung nicht als Zufall gelesen wird.
 
 ---
 
@@ -170,7 +171,7 @@ einen Ausgang.
 | Die Folgepflichten 1 bis 4 — auflösbarer Träger | geprüft, ohne Befund — P1 nennt die Annahme als Bedingung des Slice, P2 nennt Plan und §3/§6 (beide gelesen, die Doppelantwort steht wie beschrieben), P3 nennt die Vorlage, P4 nennt den Erinnerungs-Slice; die zwei genannten Artefakte existieren (§Eigene Messungen 2) |
 | Die Vorlagen unter `internal/emit/templates/commands/` und ihr Emissionsmodus | geprüft, ohne Befund — drei Dateien, drei Eröffnungssätze, `skip-if-present` belegt |
 | [`ADR-0040`](../plan/adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1 und 2 — Form des Accept-Belegs | geprüft, ohne Befund — der Trigger nennt den Beleg (eine Runde der prüfenden Rolle) und die Kennungs-Form der künftigen Accept-Zeile; dieser Report ist die Runde, und er hat an dem Gegenstand nicht geschrieben |
-| `make gates` über den committeten Stand `efce6042` | geprüft, ohne Befund — `EXIT 0` (Wegwerf-Worktree, danach entfernt) |
+| `make gates` über den committeten Stand (`efce6042` und, mit diesem Report, `f1175850`) | geprüft, ohne Befund — `EXIT 0` (Wegwerf-Worktree, danach entfernt) |
 | `make gates` über den Arbeitsbaum | **nicht** ohne Befund — `EXIT 2`, `TestArchivierungFragment_ZielAmTraegerUndNichtInDerGatesKette`; fünf fremde, nicht committete Dateien, Gegenstand `slice-174` und nicht dieser Report (§Eigene Messungen 5) |
 
 ## Summary
