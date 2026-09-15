@@ -18,14 +18,15 @@ Sensoren gefahren.
 diese zwei Fall-Dateien. Fall `335` ist zusätzlich dort einzeln über `make test-go` gefahren, sein
 Fragment danach aus der Sicherung zurückgeholt (`git status --porcelain` in der Kopie: leer). Am
 **Repo** ist keine Mutation angewandt worden; `make gates` lief in einem Wegwerf-Worktree auf
-`db309c8c`, `make full-smoke` im Hauptbaum. Der Hauptbaum trug zum Messzeitpunkt eine **fremde,
-laufende** Änderung (`docs/plan/adr/0051-…`, Rolle Reviewer) — sie ist in keiner meiner Messungen
-Gegenstand und in keiner Zusicherung dieses Berichts enthalten.
+`db309c8c` und zusätzlich über dem Hauptbaum; `make full-smoke` im Hauptbaum. Der Hauptbaum trug zum
+Messzeitpunkt eine **fremde, laufende** Änderung (zuerst `docs/plan/adr/0051-…`, später `slice-215-…`
+und das zweite Wellen-Mitglied) — sie ist in keiner Zusicherung dieses Berichts enthalten und in
+keiner Messung Gegenstand.
 
 **Ausgenommener Gegenstand — nicht geprüft, mit Grund.** Die Annahme von
 [`ADR-0051`](../../docs/plan/adr/0051-anweisungssatz-eigentum-traegt-ueber-die-emissionsgrenze.md)
-(eigene Reviewer-Runde, Architect-Entscheidung; wahrend dieses Laufs in `ff6daa84` vollzogen) und die **Closure** (§7, Beobachtungs-Register,
-§6-Ausgänge, `git mv`, DoD-Häkchen — Planner-Arbeit nach [`AGENTS.md`](../../AGENTS.md) §3.10).
+(eigene Reviewer-Runde, Architect-Entscheidung; während dieses Laufs in `ff6daa84` vollzogen) und
+die **Closure** (§7, Beobachtungs-Register, §6-Ausgänge, `git mv`, DoD-Häkchen — Planner-Arbeit nach [`AGENTS.md`](../../AGENTS.md) §3.10).
 
 **Zitier-Form:** Kennung statt Adresse für alles, was der Prozess bewegt; ortsfeste Code-Pfade als
 Inline-Code. Der geprüfte Gegenstand wird über seinen **Stand** festgehalten, nicht über seinen
@@ -225,13 +226,16 @@ heil, der Aufruf endet mit **0** — rot wird der Sensor am **fehlenden Satz**, 
 ### 2.4 `make gates` grün — **erfüllt**
 
 ```sh
-make gates        # EXIT 0 (Wegwerf-Worktree auf db309c8c)
+make gates        # EXIT 0 (Wegwerf-Worktree auf dem Stand db309c8c)
 # baseline-verify: v6.8.0 OK — 54 Dateien (Integritaet + Vollstaendigkeit, netzlos)
 # d-check: 1405 Datei(en) geprüft, 0 Befund(e)
 # 1..281                                    ← bats
 # comment-claims: 59 Datei(en) geprueft, 0 Befund(e)
 # span-check: Traeger vorhanden, span-emit hat einen Span geschrieben, Ablageort git-ignoriert
 # acht Go-Pakete `ok` (cmd + sieben internal), kein `FAIL`
+#
+# Derselbe Lauf über dem Hauptbaum (mit diesem Bericht) ist ebenfalls EXIT 0:
+# d-check: 1406 Datei(en) geprüft, 0 Befund(e) — die Zahl liegt um diesen Bericht höher.
 ```
 
 **Eine fremde Messung desselben Gegenstands ist damit erklärt, nicht übernommen:** die
@@ -241,6 +245,23 @@ ADR-0051-Konsistenzrunde hat über einem **Arbeitsbaum um 04:1x** `EXIT 2` geseh
 diese Zeile) auf einem Baum, den ein anderer Lauf gerade bewegte; über dem committeten Stand
 `db309c8c` ist derselbe Wächter grün, hier nachgemessen. Der Befund gehört damit zur Klasse
 *„ein Lauf über einem bewegten Baum misst den Zeitpunkt“* und **nicht** zu diesem Slice.
+
+**Dieselbe Lage war während dieses Laufs kurzzeitig zu sehen, mit demselben Ausgang.** Zwischenzeitlich trug der Hauptbaum
+die **nicht committete** Arbeit einer anderen Rolle an `slice-215-commit-waechter-sieht-auch-die-ungetippten-commits`
+und am zweiten Wellen-Mitglied `slice-kennungs-waechter-geht-ins-ziel`. `make gates` über **diesem**
+Baum endete mit **EXIT 2** und genau einer Befund-Zeile:
+
+```text
+d-check: 1406 Datei(en) geprüft, 1 Befund(e)
+docs/plan/planning/next/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md:163  ADR-0062  id-unlinked  Kennung ohne Link auf ihre Definition
+```
+
+Die Kennung stand **nicht** am committeten Stand (`git show HEAD:<datei> | grep -c 'ADR-0062'` → 0)
+und in keiner Datei dieses Slice (`git diff --name-only 36ba3d5e..db309c8c | grep -c 'slice-215'` →
+0) — der Befund gehörte der laufenden Arbeit dort. Er ist mit ihr wieder verschwunden, und der Lauf
+über dem Hauptbaum am Ende dieses Berichts ist **EXIT 0** (mit demselben Ergebnis). Was von der
+Beobachtung bleibt: ein `make gates` über einem Baum, an dem gerade geschrieben wird, misst den
+Zeitpunkt — für den DoD-Punkt zählt der Lauf über dem Stand, und beide sind grün.
 
 ### 2.5 Doku-Update: die zwei genannten Dateien führen keine solche Aufzählung — **nicht fällig**
 
@@ -430,12 +451,12 @@ Ziel-Name *kann* nicht adopter-eigen sein, solange das Fragment konvergent ist.
 **drei** Quellen des Namens — die dritte ist genau die, die der Slice hinzugefügt hat:
 
 ```sh
-grep -n 'Aufrufer' harness/sensors/archive-welle.md              # 49: Zwei Aufrufer liegen im Prüfbereich …
-grep -n 'Makefile$\|settings.json$\|archivierung.mk$' test/unterkommando-kopplung.bats | head -3
+grep -n 'Aufrufer' harness/sensors/archive-welle.md              # 49: 2. **Zwei Aufrufer liegen im Prüfbereich** — `Makefile` und `.claude/settings.json`, dessen Hooks
+grep -n 'Makefile\|settings.json\|archivierung.mk' test/unterkommando-kopplung.bats | head -3
 # 8:   `Makefile`              — das Ziel `archive-welle`, der Bedien-Einstieg.
 # 9:   `.claude/settings.json` — die Hooks dieses Repos. …
-# 12:  `internal/emit/templates/enforce/archivierung.mk` — das emittierte Fragment …
-grep -c 'kopplung_haelt' test/unterkommando-kopplung.bats         # 3 Quellen (je ein @test)
+# 12:  `internal/emit/templates/enforce/archivierung.mk` — das emittierte Fragment,
+grep -c '^@test' test/unterkommando-kopplung.bats                  # 3 — je eine Quelle
 ```
 
 Die Zahl steht in der **Grenz-Liste** eines Sensors, den dieser Slice erweitert hat, und ist nicht
@@ -471,12 +492,13 @@ Zusicherung darüber fehlt an dieser Stelle.
 ## 6. Was ich nicht geprüft habe, und die Rest-Unsicherheit
 
 1. **Der volle `make mutate`** ist nicht gefahren (§1). Von den sechs neuen Fällen sind **zwei**
-   einzeln gefahren; `334`, `336`, `337`, `339` sind in diesem Lauf **nicht** gefahren worden — die
-   die Runden 1 und 2 haben `334` und `337` (Runde 1) sowie `339` (Runde 2) selbst gefahren; ich habe keinen der vier wiederholt. Für die
-   vier gilt die Zusage dieses Berichts **nicht**.
+   einzeln gefahren; `334`, `336`, `337`, `339` sind in diesem Lauf **nicht** gefahren worden —
+   die Runden 1 und 2 haben `334` und `337` (Runde 1) sowie `339` (Runde 2) selbst gefahren;
+   ich habe keinen der vier wiederholt. Für die vier gilt die Zusage dieses Berichts **nicht**.
 2. **`make gates` ist über dem Worktree gefahren, nicht über dem Hauptbaum** — Grund und Mess-Stand
    stehen im Kopf. Der Hauptbaum trug eine fremde, laufende Änderung; sie in eine Gate-Aussage
-   hineinzunehmen hieße, den Zeitpunkt zu messen.
+   hineinzunehmen hieße, den Zeitpunkt zu messen. Zwischenzeitlich war er fremd rot (§2.4); beim
+   Abschluss ist er grün (`EXIT 0`, dieselben Zeilen wie §2.4) — beide Belege stehen in diesem Bericht.
 3. **Die Annahme von [`ADR-0051`](../../docs/plan/adr/0051-anweisungssatz-eigentum-traegt-ueber-die-emissionsgrenze.md)
    und die Closure** sind ausgenommen (Kopf). Der Slice ist damit **nicht schließbar**, und der eine
    Grund, der bleibt, ist die eine DoD-Verletzung (§5.1); die ADR-Bedingung (Folgepflicht 1) hat sich
@@ -511,8 +533,8 @@ gehört nach [`AGENTS.md`](../../AGENTS.md) §3.10 in die Hand des **Planners**,
 Nachzug der Arbeit. Solange sie steht, ist der Punkt „DoD vollständig“ des §5-Closure-Triggers
 **nicht erfüllt**, und die Closure ist zusätzlich an die Annahme von
 [`ADR-0051`](../../docs/plan/adr/0051-anweisungssatz-eigentum-traegt-ueber-die-emissionsgrenze.md)
-gebunden — zwei Gründe, die nicht zusammenfallen. **Der zweite ist mit `ff6daa84` entfallen**, der erste
- steht: DoD-Punkt 2 wartet auf den Planner.
+gebunden — zwei Gründe, die nicht zusammenfallen. **Der zweite ist mit `ff6daa84` entfallen**,
+der erste steht: DoD-Punkt 2 wartet auf den Planner.
 
 **§5-Closure-Trigger, einzeln:** *DoD vollständig* — **nein** (§5.1); *`make full-smoke` grün über
 beiden Zweigen* — **ja**, EXIT 0 über `(a)/(b)` und `(d)`; *`make gates` grün* — **ja**, EXIT 0;
