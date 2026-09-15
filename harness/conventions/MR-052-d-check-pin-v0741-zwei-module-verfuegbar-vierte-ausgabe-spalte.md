@@ -27,7 +27,8 @@
   lokaler RepoDigest
   (`docker image inspect --format '{{index .RepoDigests 0}}' ghcr.io/pt9912/d-check:v0.74.1`) und
   als **Fremdquelle** das Benutzerhandbuch des Werkzeugs
-  (`grep -rn 'e31a372b' /Development/d-check --include='*.md'` → **1** Zeile) — drei Wege, ein Wert
+  (`D=<maschinen-lokaler Klon des Werkzeugs>; grep -rn 'e31a372b' "$D" --include='*.md'` → **1**
+  Zeile) — drei Wege, ein Wert
   ([`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Der **lebende** Pin steht
   in `d-check.mk` und, daran gekoppelt, in `internal/emit/emit.go`; hier steht, wogegen er belegt
   ist, und der Sprung, den er gemacht hat
@@ -36,7 +37,8 @@
   lokalen Klon des Werkzeug-Repos:
 
   ```sh
-  git -C /Development/d-check for-each-ref --sort=v:refname \
+  D=<maschinen-lokaler Klon des Werkzeugs>
+  git -C "$D" for-each-ref --sort=v:refname \
     --format='%(refname:short) %(creatordate:short)' 'refs/tags/v0.6[5-9]*' 'refs/tags/v0.7[0-9].*'
   ```
 
@@ -84,10 +86,10 @@
   **informationsleer** — eine weggefallene Befundklasse erzeugt dieselbe Ausgabe wie eine
   unveränderte. Diese Richtung tragen die zwei Messungen darunter.
 - **Strenge-Bilanz an der Quell-Differenz: null bewegte Zeilen an allen sechs aktiven
-  Regeldateien.** Am Klon gibt
-  `git -C /Development/d-check diff --numstat v0.65.0..v0.74.1 -- internal/hexagon/core/rules/{links,anchors,ids,matrix,codepaths,spans}.go`
+  Regeldateien.** Am Klon (`D` wie oben) gibt
+  `git -C "$D" diff --numstat v0.65.0..v0.74.1 -- internal/hexagon/core/rules/{links,anchors,ids,matrix,codepaths,spans}.go`
   **keine** Zeile aus. **Gegen das falsche Negativ geprüft**, statt aus der leeren Ausgabe
-  geschlossen: `git -C /Development/d-check ls-tree --name-only <tag> internal/hexagon/core/rules/`
+  geschlossen: `git -C "$D" ls-tree --name-only <tag> internal/hexagon/core/rules/`
   führt unter **beiden** Tags alle sechs Dateien unter denselben Pfaden — eine Umbenennung, die
   dieselbe leere Ausgabe erzeugt hätte, liegt nicht vor.
 - **Die Reichweite dieser Messung endet an den Regeldateien, und das ist ihre benannte Grenze.**
