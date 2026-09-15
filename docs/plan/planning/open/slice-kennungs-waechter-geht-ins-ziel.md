@@ -136,7 +136,10 @@ Aussagen-Berührung steht hier gar nicht.
 das Kommando, das dieselbe Prüfung ohne Agenten fährt. Die Emission übernimmt die Form, die
 [slice-215](../next/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) für den **Dogfood**
 entscheidet; bis dahin steht hier der heutige Kanal, und der Slice ist nicht fertig, solange die
-Reichweiten-Zeile aus DoD (3) fehlt.
+Reichweiten-Zeile aus DoD (3) fehlt. **Fällt dort die Wahl auf den `git`-eigenen Hook, ist die Form
+im Ziel dieselbe wie im Klon — und ihre Grenze wandert mit:** `core.hooksPath` ist lokale
+Konfiguration, die kein Bootstrap setzt; der emittierte Wächter ist damit **optional**, und was er
+nicht erreicht, sagt die Reichweiten-Zeile.
 
 ## 4. Trigger
 

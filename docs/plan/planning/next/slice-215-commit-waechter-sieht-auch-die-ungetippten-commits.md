@@ -155,6 +155,15 @@ Aussagen-Berührung steht hier gar nicht.
 | [`harness/README.md`](../../../../harness/README.md) | update | Reichweite und Grenze (DoD (3)) |
 | `.claude/agents/*.md`, [`.harness/skills/reviewer.md`](../../../../.harness/skills/reviewer.md) | **nicht durch diesen Slice** | fremdes Rollen-Eigentum ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)), §1 |
 
+**Die Form für die `git`-eigene Fassung steht in einem Nachbar-Repo, und ihr Urteil ist gemessen.**
+`/Development/pg-change-feed/.githooks/commit-msg` spiegelt die zwei Hälften seines Standing-Gates
+als Regex auf `$1` — **inklusive** der Merge-/Revert-Ausnahme, damit er keinen Commit zurückweist,
+den das Gate zulässt — und läuft **bash-only**, ohne Docker. Er ist dort ausdrücklich **optional
+und nicht-durchsetzend**: `core.hooksPath` ist lokale Konfiguration, die nicht mit dem Klon reist,
+und `--no-verify` umgeht ihn; seine Abwägung steht unter
+`/Development/pg-change-feed/docs/plan/adr/0062-lokaler-commit-msg-hook-ergaenzt-standing-gate.md`.
+**Die Form abschreiben, das Ergebnis nicht übernehmen** — die Entscheidung fällt an diesem Baum.
+
 ## 4. Trigger
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
