@@ -5,12 +5,13 @@
 #
 # WARUM ER AM COMMIT HAENGT UND NICHT AM AGENTEN: er sieht jede Commit-Klasse,
 # die git selbst erzeugt — auch die aus einem Repo-Werkzeug (`make slice-mv`,
-# `archive-welle`) und die `-m`-Form. Die vorgeschlagenen Commit-Klassen und
-# ihre Reichweite stehen in harness/README.md §Traceability.
+# `archive-welle`) und die `-m`-Form. Die Commit-Klassen und ihre Reichweite
+# stehen in harness/README.md §Traceability.
 #
 # AKTIVIERUNG: `core.hooksPath` ist lokale Konfiguration und reist nicht mit
 # dem Klon; `make hooks-install` setzt sie. `git commit --no-verify` umgeht
-# diesen Hook. Beides gehoert zur Reichweite, nicht zu ihren Grenzen.
+# diesen Hook. Beides steht in der Reichweiten-Zeile in
+# harness/README.md §Traceability.
 #
 # GEBAUT WIE DER COMMIT-PFAD ES VERLANGT (LH-QA-03): bash und coreutils, kein
 # Docker, kein d-check-Image, kein Netz. Die Pruefung selbst liegt in
