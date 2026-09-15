@@ -51,9 +51,12 @@ Die Command-Vorlage des Ziels (`.claude/commands/implement-slice.md`) nennt den 
 vorschreibt. [`make full-smoke`](full-smoke.md) fährt die Kette Aggregator → Fragment →
 abgelegtes Skript → `git`: es ruft `make slice-mv` im gebootstrappten Ziel auf. Frei ist die
 **Datei**, über die der Adopter das Fragment einbindet, der Ziel-Name `slice-mv` dagegen nicht —
-er kommt aus dem tool-eigenen Fragment, das jeder Bootstrap kanonisch neu schreibt. Den **Text**
-der Anleitung hält `make test-go` fest (`TestSliceMvAnleitung_NenntDasWerkzeugAnDenZweiStellen`),
-die **Wirkung** der Kette misst `make full-smoke`.
+er kommt aus dem tool-eigenen Fragment, das jeder Bootstrap kanonisch neu schreibt, eine
+Umbenennung wäre damit nicht von Dauer. **Diese Neuschrift hält kein Wächter:** sie ruht auf der
+Emission — der E2E legt das Fragment an seinem Ort an, die Idempotenz-Prüfung des Ziels driftet
+aber allein `Makefile` und die Feldliste, nicht dieses Fragment. Den **Text** der Anleitung hält
+`make test-go` fest (`TestSliceMvAnleitung_NenntDasWerkzeugAnDenZweiStellen`), die **Wirkung** der
+Kette misst `make full-smoke`.
 
 **Beide Richtungen, und der Move bleibt rein.** Im Ziel zieht das Werkzeug eingehende Verweise auf
 die bewegte Datei nach und präfixlose Geschwister-Ziele **innerhalb** der bewegten Datei; der
@@ -71,9 +74,10 @@ prüft seine Anwesenheit und bricht mit eigener Meldung ab, statt auf ein Progra
 es nicht ablegt.
 
 **Was Politik ist und was Mechanik.** Die Pfade, die der eingehende Nachzug ausnimmt, sind im Ziel
-**setzbar**: Skriptkopf und Fragment führen sie als `SLICE_MV_AUSGENOMMENE_PFADE` mit einer Vorgabe
-(`?=`) und reichen den Wert als Umgebung an das Werkzeug durch. Die zwei Werte sind Politik des
-jeweiligen Repos, nicht Mechanik des Werkzeugs — ein Adopter mit anderer Politik setzt die
+**setzbar**: die Variable `SLICE_MV_AUSGENOMMENE_PFADE` steht an beiden Orten mit einer Vorgabe, in
+je einer Form — das Fragment als Make-Zuweisung (`?=`), das Skript als `${…:-…}` beim Auslesen —,
+und das Fragment reicht den Wert als Umgebung an das Werkzeug durch. Die zwei Werte sind Politik
+des jeweiligen Repos, nicht Mechanik des Werkzeugs — ein Adopter mit anderer Politik setzt die
 Variable, statt das Skript zu ändern, und die Ausnahmen wirken über die Funktion, die das Werkzeug
 ausliest, nicht über eine zweite Liste im Ersetzungs-Aufruf. `make test-go` hält Markierung und
 Durchreichung fest (`TestSliceMvAusnahmen_SindAlsRepoPolitikMarkiert`,
@@ -91,4 +95,6 @@ den Ersetzungs-Regeln, nicht der Gleichheit. Die Zwei-Commit-Sequenz fährt dies
 Vergleich ruft die Funktionen ohne Repository auf, und der Ablauf mit `git` gehört ins Ziel, wo
 `make full-smoke` ihn trägt. Gefahren wird die Kette über der `--lang-go`-Variante des
 Bootstraps; dass Fragment und Skript auch sprachlos unter denselben Pfaden liegen, hält
-`make test-go` (`TestSliceMvFragment_LiegtImZielUndHaengtNichtAnDerGatesKette`).
+`make test-go` (`TestSliceMvFragment_LiegtImZielUndHaengtNichtAnDerGatesKette` für das Fragment,
+`TestSliceMvWerkzeug_LiegtAusfuehrbarUndTraegtBeideRichtungen` für das Skript — beide über einen
+Emit ohne Sprache).
