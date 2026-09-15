@@ -293,8 +293,7 @@ Backticks).
      Satz der Sensor-Prosa ist exakt, der Bericht daneben zu breit; die Message liegt in `git` und
      wird nicht repariert.
 
-  Die drei Messungen dazu — die zweite und die dritte Zahl sind Aufzählungen **im** Dokument, keine
-  Messwerte **über** den Baum, und stehen darum neben ihrem Kommando wie die erste:
+  Die Messungen dazu — jede Zahl steht neben dem Kommando, das sie liefert:
 
   ```sh
   for g in $(grep -oE '^func Test[A-Za-z_]+' internal/emit/slicemv_test.go | sed 's/func //'); do \
