@@ -112,9 +112,12 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 - [ ] **Der Fall ist rot gesehen:** eine Commit-Message **ohne** Kennung fällt im Ziel, eine **mit**
       Kennung nicht; Ausgabe und Exit-Code gelesen. Ist der Träger nicht gebaut, ist der Rot-Beleg
       die gelesene Ausgabe des benannten Satzes.
-- [ ] **Reichweite und Abhängigkeit stehen neben der Zusage:** was der Träger **nicht** erreicht
-      (die zweite Hälfte des Constraints, die Commits innerhalb von Werkzeugen), ist benannt; der
-      Träger braucht nichts über `bash + git` bzw. das gepinnte Gate-Bild hinaus
+- [ ] **Reichweite und Abhängigkeit stehen neben der Zusage:** benannt ist beides — was der Träger
+      **nicht** erreicht (die zweite Hälfte des Constraints: ein Doku-Update bei berührtem
+      öffentlichem Vertrag) und was er **erreicht und abbricht** (die Commits der Repo-Werkzeuge:
+      er hängt am Commit und sieht jede Klasse, die `git` erzeugt — ihre Messages tragen mit einer
+      benannten Kennung aber keine aus der Menge und fallen darum an ihm); der Träger braucht
+      nichts über `bash + git` bzw. das gepinnte Gate-Bild hinaus
       ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
@@ -136,10 +139,11 @@ Aussagen-Berührung steht hier gar nicht.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `internal/emit/templates/enforce/` + `internal/emit/enforce.go` | neu/update | die Vorlage des Trägers, seine Prüfung, die Aktivierung als Make-Fragment — **nicht** in die emittierte `settings.json`: ein git-eigener Hook hat dort keinen Eintrag |
-| `internal/emit/templates/commands/` | update | der Anweisungssatz trägt die Konvention („Commit via Message-Datei"), an der der Träger hängt |
-| `Makefile` (`full-smoke`) | update | der Beleg aus DoD (1)/(2) |
-| `test/…` | neu/update | Happy/Negative nach DoD (2) und die Reichweiten-Zeile aus DoD (3) |
+| `internal/emit/templates/enforce/` (Hook, Prüfung, Aktivierungs-Fragment) + `internal/emit/commitmsg.go` + `internal/emit/enforce.go` | neu/update | die drei Vorlagen des Trägers, ihre Ziel-Zuordnung und ihr Eintrag in `enforceFiles()` — **nicht** in die emittierte `settings.json`: ein git-eigener Hook hat dort keinen Eintrag |
+| `internal/emit/templates/commands/` | update | der Anweisungssatz nennt den Träger, den Schritt, der ihn aktiviert, und seine Grenzen — die Konvention „Commit via Message-Datei" trägt ihn nicht: er liest die Datei, die `git` ihm übergibt |
+| `harness/tools/full-smoke.sh` | update | der Beleg aus DoD (1)/(2): die E2E-Sektion `kennungs_traeger_im_ziel` fährt die Kette im gebootstrappten Ziel |
+| `harness/README.md` | update | die Prosa, die den Träger des Ziels führt — Ort, Verdrahtung, Grenzen (DoD-Punkt „Doku-Update") |
+| `test/…` + `internal/emit/*_test.go` | neu/update | Happy/Negative nach DoD (2), die Reichweiten-Zeile aus DoD (3) und die Konvergenz-Menge der emittierten Durchsetzungs-Dateien |
 
 **Der Träger wird nicht neu erfunden.** Dieses Repo führt seine drei Hälften — den PreToolUse-Hook,
 das Kommando, das dieselbe Prüfung ohne Agenten fährt, und den git-eigenen Hook, den
@@ -193,10 +197,13 @@ dasteht.
   Dogfoods; eine emittierte Form, die davor geschrieben wird, ist mit seinem Ergebnis zu
   vergleichen und gegebenenfalls nachzuziehen. — **Ausgang:** <eingetreten: CO-NNN /
   slice-<Kennung> | entfallen: Grund | weiter offen: → BEO im Register>
-- **Ein Wächter am Agenten sieht die Commits nicht, die Werkzeuge selbst setzen.** Das ist die
-  gemessene Reichweiten-Grenze, die der Dogfood-Slice führt; im Ziel gilt sie unverändert, und die
-  DoD (3) verlangt, sie **neben** die Zusage zu schreiben. — **Ausgang:** <eingetreten: CO-NNN /
-  slice-<Kennung> | entfallen: Grund | weiter offen: → BEO-ALL/waechter-abdeckung-haengt-an-uninstruierter-konvention im Register>
+- **Der Träger des Ziels hängt am Commit, nicht am Agenten-Kanal — seine Reichweite fällt darum
+  anders aus als die des Dogfoods: er erreicht die Commits der Repo-Werkzeuge und bricht sie ab,
+  solange deren Messages keine Kennung aus der Menge tragen.** `make slice-mv` und
+  `make archive-welle` committen intern mit dem Slice- bzw. Welle-Namen, und eine benannte Kennung
+  trifft kein Muster der Menge. Die DoD (3) verlangt, die Reichweite **neben** die Zusage zu
+  schreiben. — **Ausgang:** <eingetreten: CO-NNN / slice-<Kennung> | entfallen: Grund | weiter
+  offen: → BEO-ALL/waechter-abdeckung-haengt-an-uninstruierter-konvention im Register>
 - **Die Konvention, an der der Wächter hängt, wird nicht von allen Anweisungssätzen getragen.** Der
   Hook greift nur bei einer Message-**Datei**; ein Anweisungssatz, der den Commit anders beschreibt,
   fällt durch. — **Ausgang:** <eingetreten: CO-NNN / slice-<Kennung> | entfallen: Grund | weiter
@@ -256,8 +263,10 @@ Fläche, jeder mit seinem Zähler-Stand (die Zahl der Dateien unter `evidence/`,
 `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l` — kein gespeicherter Wert):
 
 - [`BEO-ALL/waechter-abdeckung-haengt-an-uninstruierter-konvention`](../observations/BEO-ALL/waechter-abdeckung-haengt-an-uninstruierter-konvention/observation.md)
-  — **1×, offen.** Berührt: der Wächter greift nur bei einer Message-Datei, und vier von sechs
-  Agenten-Briefings nennen die Konvention nicht. Im Ziel gilt dieselbe Abhängigkeit; sie steht als
+  — **2×, offen.** Berührt: der Wächter greift nur bei einer Message-Datei, und vier von sechs
+  Agenten-Briefings nennen die Konvention nicht. **Im Ziel gilt die Abhängigkeit nicht:** der Träger
+  des Ziels hängt am Commit und liest die Message-Datei, die `git` ihm übergibt, gleichgültig
+  welcher Aufruf sie erzeugt hat — die Form-Abhängigkeit bleibt die dieses Klons; sie steht als
   Risiko in §6 und als Out-of-Scope-Punkt in §1.
 - [`BEO-ALL/werkzeug-luecke-im-nachbar-repo-ohne-adresse`](../observations/BEO-ALL/werkzeug-luecke-im-nachbar-repo-ohne-adresse/observation.md)
   — **1×, offen.** Berührt: der `commits`-Modulblock ist am gepinnten Stand unbedienbar, und dieser
