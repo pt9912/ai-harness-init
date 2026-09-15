@@ -37,8 +37,7 @@ mitzieht).
 **Berührte Spec-Stellen:** `—`. Der Slice zieht eine Emissions-Klasse und die Sätze an ihren
 Stellen; kein Zielelement der Spec-Straten wird angefasst.
 
-**Verantwortlich:** `—` — bis zur Priorisierung (Baseline-Regelwerk
-`modul-05-planning-harness.md` §Lifecycle als State Machine: der Übergang `open→next` setzt sie).
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-15.
 
@@ -185,7 +184,14 @@ Accept-Übergang sie trägt, schriebe eine Setzung in den Code, die niemand ausg
 ([`ADR-0040`](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md)).
 
 **Reihenfolge:** unabhängig von jedem anderen offenen Slice; die Fläche — `internal/emit/` und die
-zwei Sätze neben dem Pfad — fasst kein laufender Vorgang an.
+vier Sätze neben dem Pfad — fasst kein laufender Vorgang an. **Der eine Vorgang, der sie
+mit-fasst, ist serialisiert:**
+[`slice-aktivierung-reist-nicht-mit-dem-klon`](../open/slice-aktivierung-reist-nicht-mit-dem-klon.md)
+berührt `harness/tools/full-smoke.sh` (dort die neue Stufe) und nimmt dem Fragment
+`internal/emit/templates/enforce/hooks-install.mk` die `test -f`-Zeile — beide stehen auch in §3
+dieses Plans. Er liegt in `open/` **hinter** [welle-11](../welle-11-traeger-aussage.md) und damit
+nach diesem Slice; die Anordnung trägt die Serialisierung, nicht die Ungleichzeitigkeit der
+Flächen.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
