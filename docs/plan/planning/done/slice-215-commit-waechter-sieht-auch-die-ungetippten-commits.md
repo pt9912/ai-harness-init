@@ -362,7 +362,7 @@ Backticks).
 
 **Der Zwilling — und der Kandidat, der noch nicht geschnitten ist.** Dieser Slice ist der
 **Zwilling** von
-[`slice-kennungs-waechter-geht-ins-ziel`](../in-progress/slice-kennungs-waechter-geht-ins-ziel.md) in
+[`slice-kennungs-waechter-geht-ins-ziel`](../done/slice-kennungs-waechter-geht-ins-ziel.md) in
 [welle-emittierte-werkzeuge](../welle-emittierte-werkzeuge.md) — dem Mitglied, das diesen Träger in
 ein gebootstrapptes Ziel bringt. Das Mitglied **erbt die Träger-Wahl** aus
 [`ADR-0053`](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) und nimmt sie
