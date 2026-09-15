@@ -99,7 +99,7 @@ trägt, nicht ob die Vorlage sich bewegt hat (Register-Klasse
   *Es wäre ein anderer Vorgang.*
 - **Kein anderer Anweisungssatz.**
   [`.claude/commands/implement-slice.md`](../../../../.claude/commands/implement-slice.md) liegt bei
-  [slice-226](../next/slice-226-implementer-anweisungssatz-zieht-nach.md), die zwei Planner-Commands sind von
+  [slice-226](../in-progress/slice-226-implementer-anweisungssatz-zieht-nach.md), die zwei Planner-Commands sind von
   [slice-224](../done/slice-224-delta-nachweis-und-planungs-nachzug.md) nachgezogen. *Es wäre
   ein anderer Vorgang einer anderen Rolle*
   ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)).
