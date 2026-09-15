@@ -1484,6 +1484,44 @@ SMOKEEOF
 	echo "full-smoke: Voraussetzung ($kennung): make slice-mv bricht ueber einem unsauberen Arbeitsbaum ab, nennt den Grund und bewegt nichts:"
 	grep -F -- 'Arbeitsbaum nicht sauber' <<<"$schmutzig" | sed -n '1p' | sed 's/^/full-smoke:   /'
 	git -C "$repo" checkout -- "$plan/open/slice-smoke-bleibt.md"
+
+	# (g) OHNE VERWEISE BLEIBT ES BEIM EINEN COMMIT. Ein zweiter Slice, auf den
+	# nichts zeigt und der auf nichts zeigt: der Nachtrag faellt aus, und der zweite
+	# Commit entsteht nicht. Ohne diesen Zweig waere die Haelfte der Zusage gefahren —
+	# dass eine Ersetzung anfiel, heisst nicht, dass die leere Menge denselben Weg
+	# nimmt.
+	cat >"$plan/open/slice-smoke-einsam.md" <<'SMOKEEOF'
+# Slice slice-smoke-einsam: ohne Verweise
+
+## 1. Ziel
+
+Nur fuer den E2E des Lifecycle-Wechsels angelegt. Auf diese Datei zeigt nichts,
+und sie zeigt auf nichts.
+SMOKEEOF
+	git -C "$repo" -c user.email=full-smoke@example.invalid -c user.name=full-smoke add -A
+	git -C "$repo" -c user.email=full-smoke@example.invalid -c user.name=full-smoke \
+		commit -q -m "Lifecycle-Smoke: einsamer Slice (full-smoke)"
+	local einsam="" einsam_rc=0 einsam_flach="" einsam_spitze=""
+	einsam="$( make --no-print-directory -C "$repo" slice-mv SLICE=slice-smoke-einsam TO=next 2>&1 )" || einsam_rc=$?
+	einsam_flach="$(tr -s '[:space:]' ' ' <<<"$einsam")"
+	if [ "$einsam_rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: make slice-mv endet ohne jeden Verweis mit Exit $einsam_rc statt mit 0." >&2
+		printf '%s\n' "$einsam" >&2
+		einordnen "make slice-mv ohne Verweise ($kennung)" "$einsam"
+		exit 1
+	fi
+	if ! grep -qF -- 'Kein Verweis zu ziehen' <<<"$einsam_flach"; then
+		echo "full-smoke: FEHLER — $kennung: ohne Verweis meldet der Aufruf den einen Commit nicht (rot aus falschem Grund?). Ausgabe:" >&2
+		printf '%s\n' "$einsam" >&2
+		exit 1
+	fi
+	einsam_spitze="$(git -C "$repo" log -1 --format=%s)"
+	if [ "$einsam_spitze" != "slice-mv: slice-smoke-einsam.md  open/ -> next/ (reiner Move)" ]; then
+		echo "full-smoke: FEHLER — $kennung: ohne Verweis steht ein zweiter Commit auf der Spitze — der Nachtrag entsteht dann auch ueber der leeren Menge. Letzte Message:" >&2
+		printf '%s\n' "$einsam_spitze" >&2
+		exit 1
+	fi
+	echo "full-smoke: ohne Verweise ($kennung): make slice-mv bewegt slice-smoke-einsam.md und laesst es beim einen Move-Commit — kein zweiter Commit ohne Inhaltsaenderung."
 }
 
 slice_mv_im_ziel "$tmprepo" "golang"
@@ -2237,4 +2275,4 @@ echo "full-smoke: OK — IDEMPOTENT (slice-038): 2. Init-Lauf Exit 0, README (sk
 echo "full-smoke: OK — ROLLEN-TYPEN (slice-097/LH-FA-10): 6 kanonische Typen unter .claude/agents/ in BEIDEN Bootstrap-Varianten, je mit ihrem Namen im Kopf; das make gates des Ziels laeuft ueber ihnen gruen; der 2. Init-Lauf laesst einen adopter-geaenderten Typ unberuehrt (skip-if-present)."
 echo "full-smoke: OK — FELDLISTE (slice-098/LH-FA-10): $FELDLISTE_REL liegt in BEIDEN Bootstrap-Varianten im geprueften Doku-Bereich, fuehrt die drei stehenden Grenz-Saetze und deckt jeden Feldnamen der real geschriebenen Span-Zeile; ein toter Verweis darin faerbt das docs-check des Ziels rot (Ortswahl belegt); ein 2. Init-Lauf heilt eine von Hand geaenderte Fassung (konvergent, die einzige Zusage des Dokuments ueber sich selbst)."
 echo "full-smoke: OK — ARCHIVIERUNG IM ZIEL (ADR-0033 Festlegung 4 und 5): make archive-welle ist kein Gate und steht in keiner gates-Kette; ein Name daneben, den kein Fragment fuehrt, endet laut statt still; die zwei Sperren [untergrenze] und [haenger] halten den Aufruf auf, ueber demselben Bestand ohne sie laeuft die Operation real (Archiv + Stubs aus der vendored Vorlage), und ohne Traeger meldet das Kommando die Abwesenheit mit Exit 0."
-echo "full-smoke: OK — LIFECYCLE-WECHSEL IM ZIEL: make slice-mv ist kein Gate und steht in keiner gates-Kette; der Aufruf bewegt den Slice, legt den reinen Move als eigenen Commit an (0 insertions/0 deletions gegen den Verweis-Nachzug getrennt) und zieht beide Richtungen nach — den eingehenden Praefix-Verweis der Nachbar-Datei und das praefixlose Geschwister-Ziel in der bewegten Datei; eine ADR bleibt nach der Repo-Politik des Fragments unberuehrt, und ueber einem unsauberen Arbeitsbaum bricht der Aufruf ab, nennt es und bewegt nichts."
+echo "full-smoke: OK — LIFECYCLE-WECHSEL IM ZIEL: make slice-mv ist kein Gate und steht in keiner gates-Kette; der Aufruf bewegt den Slice, legt den reinen Move als eigenen Commit an (0 insertions/0 deletions gegen den Verweis-Nachzug getrennt) und zieht beide Richtungen nach — den eingehenden Praefix-Verweis der Nachbar-Datei und das praefixlose Geschwister-Ziel in der bewegten Datei; eine ADR bleibt nach der Repo-Politik des Fragments unberuehrt, ueber einem unsauberen Arbeitsbaum bricht der Aufruf ab, nennt es und bewegt nichts, und ohne jeden Verweis bleibt es beim einen Move-Commit."
