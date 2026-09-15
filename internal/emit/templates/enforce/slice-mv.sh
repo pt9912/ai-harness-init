@@ -13,13 +13,13 @@
 # welche anfiel, als ZWEITEN, vom Move getrennten Commit; fiel keine an, bleibt
 # es beim einen Move-Commit.
 #
-# WAS DIESE COMMITS ALS KENNUNG TRAGEN. Die zwei Messages nennen den bewegten
-# Slice mit seinem DATEINAMEN — die Kennung eines Slice ist ihr Dateiname, und
-# beide Messages tragen sie damit verbatim. Ob eine Kennungs-Menge dieses Repos
-# den Namen trifft und ob ein Waechter sie am Commit prueft, entscheidet dieses
-# Repo: diese Datei fuehrt keine Kennungs-Menge und setzt keine voraus. Ein Repo
-# ohne Commits-Waechter committet hier also kennungsfrei im Sinne seiner eigenen
-# Konfiguration.
+# WAS DIESE COMMITS TRAGEN. Beide Messages nennen den bewegten Slice mit seinem
+# Dateinamen, und der Dateiname IST die Kennung eines Slice: die Messages tragen
+# sie damit verbatim. Ob eine Kennungs-Menge dieses Repos diese Form trifft, ist
+# eine andere Achse — dieses Werkzeug fuehrt keine Kennungs-Menge und setzt keine
+# voraus, und es prueft die Message nicht. Setzt das Repo einen Waechter ein, der
+# einen anderen Zuschnitt prueft, fallen die zwei Commits NACH dem `git mv` durch
+# ihn; was dann liegen bleibt, ist ein gestagter Rename.
 #
 # VORAUSSETZUNG. Weil dieses Skript selbst committet, verlangt es einen sauberen
 # Arbeitsbaum (keine gestagten oder ungestagten Aenderungen an getrackten
@@ -32,10 +32,10 @@
 # Ableitungen aus dem mitemittierten Regelwerk, keine Vorliebe des Werkzeugs:
 # `.harness/baseline` ist unveraenderter Fremdtext, und eine `Accepted`-ADR
 # wird nach der Hard Rule fuer Accepted-ADRs nicht inhaltlich ueberschrieben.
-# Ein Repo mit einer anderen Politik — weitere Baeume, oder ein anderer Umgang
-# mit seinen Zeitdokumenten — setzt die Variable; sie zu aendern ist der
-# markierte Ort dafuer. Diese Datei selbst wird bei jedem Bootstrap kanonisch
-# neu geschrieben, eine Aenderung an ihr ueberlebt den naechsten Lauf nicht.
+# Diese Datei wird bei jedem Bootstrap kanonisch neu geschrieben, eine Aenderung
+# an ihr ueberlebt den naechsten Lauf nicht; gesetzt wird die Variable darum von
+# aussen (dieselbe im mitemittierten Make-Fragment, s. dort) — der Ort dafuer ist
+# jede Make-Quelle oder die Umgebung des Aufrufs.
 #
 # GRENZEN (vier, jede mit ihrer Ursache):
 # (1) Das Werkzeug zieht PFADE nach, keine ZUSTANDSSAETZE. Eine Zeile
@@ -66,9 +66,10 @@ LIFECYCLE="open next in-progress done"
 # NICHT durchsucht — whitespace-getrennt, eine Angabe je Eintrag. Die Vorgabe
 # ist aus dem mitemittierten Regelwerk abgeleitet (Fremdtext und die Hard Rule
 # fuer Accepted-ADRs). Ein Repo, das weitere Baeume ausnimmt oder Zeitdokumente
-# anders behandelt, setzt diese Variable — im Aufruf oder in seinem eigenen
-# Make-Fragment; die Datei selbst ist tool-eigen und wird kanonisch neu
-# geschrieben.
+# anders behandelt, setzt diese Variable in der Umgebung des Aufrufs oder in
+# einer Make-Quelle — das mitemittierte Fragment reicht seinen Wert als Umgebung
+# an dieses Skript durch. Der Vorgabewert hier greift nur, wenn von aussen keiner
+# gesetzt ist.
 SLICE_MV_AUSGENOMMENE_PFADE="${SLICE_MV_AUSGENOMMENE_PFADE:-:!.harness/baseline :!docs/plan/adr}"
 
 usage() {

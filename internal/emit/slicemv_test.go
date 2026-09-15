@@ -125,14 +125,42 @@ func TestSliceMvAusnahmen_SindAlsRepoPolitikMarkiert(t *testing.T) {
 	}
 }
 
-// TestSliceMvFragment_MeldetEinFehlendesWerkzeug haelt die fail-closed-Kante des
-// Fragments fest: fehlt das Werkzeug, bricht das Ziel mit einer eigenen Meldung
-// ab, statt in die Meldung eines Interpreters zu laufen.
+// TestSliceMvFragment_ReichtDieAusnahmenAlsUmgebungDurch haelt die Verdrahtung
+// fest, an der der zweite genannte Ort der Repo-Politik haengt: das Fragment
+// fuehrt die Variable mit Vorgabe UND gibt sie dem Werkzeug als Umgebung mit.
 //
-// Die Unterscheidung ist nicht kosmetisch: `bash` ueber einer fehlenden Datei
-// endet ebenfalls ungleich null, nennt aber nicht, was fehlt und wie es
-// zurueckkommt.
-func TestSliceMvFragment_MeldetEinFehlendesWerkzeug(t *testing.T) {
+// Der Grund ist gemessen: eine blosse Zuweisung in einer Make-Quelle erreicht das
+// Rezept nicht — nur die Umgebung, die Kommandozeile oder `export` tun es. Ohne
+// die Uebergabe unten waere "setze sie in deinem Make-Fragment" eine Zusage, die
+// der Aufruf nicht einloest, und der Nachzug schriebe weiter in Baeume hinein,
+// die das Repo ausgenommen glaubt.
+func TestSliceMvFragment_ReichtDieAusnahmenAlsUmgebungDurch(t *testing.T) {
+	frag := mustReadString(t, filepath.Join(slicemvZiel(t), filepath.FromSlash(emit.SliceMvMkPath)))
+	flach := strings.Join(strings.Fields(frag), " ")
+
+	if !strings.Contains(flach, "SLICE_MV_AUSGENOMMENE_PFADE ?=") {
+		t.Errorf("%s fuehrt %s nicht mit Vorgabe — ein Repo ohne eigene Zuweisung bekaeme dann keine Ausnahmen",
+			emit.SliceMvMkPath, "SLICE_MV_AUSGENOMMENE_PFADE")
+	}
+	if !strings.Contains(flach, `SLICE_MV_AUSGENOMMENE_PFADE='$(SLICE_MV_AUSGENOMMENE_PFADE)'`) {
+		t.Errorf("%s reicht %s dem Werkzeug nicht als Umgebung durch — eine Zuweisung in einer Make-Quelle erreicht das Rezept sonst nicht",
+			emit.SliceMvMkPath, "SLICE_MV_AUSGENOMMENE_PFADE")
+	}
+}
+
+// TestSliceMvFragment_TraegtDieFailClosedKante haelt den TEXT der Kante fest:
+// das Fragment prueft die Anwesenheit des Werkzeugs und nennt selbst, was fehlt.
+//
+// WAS DIESER TEST NICHT MISST, und wo der Beleg dafuer liegt: dass die Kante
+// greift. Ein Name, der ein Verhalten fuehrt, und ein Rumpf, der Zeichenketten
+// zaehlt, sind zwei verschiedene Aussagen — gefahren wird der Zweig am
+// gebootstrappten Ziel, in harness/tools/full-smoke.sh Abschnitt (h): Werkzeug
+// beiseite, Aufruf, Ausgabe und Exit gelesen.
+//
+// Die Unterscheidung der zwei Meldungen ist nicht kosmetisch: `bash` ueber einer
+// fehlenden Datei endet ebenfalls ungleich null, nennt aber nicht, was fehlt und
+// wie es zurueckkommt.
+func TestSliceMvFragment_TraegtDieFailClosedKante(t *testing.T) {
 	frag := mustReadString(t, filepath.Join(slicemvZiel(t), filepath.FromSlash(emit.SliceMvMkPath)))
 	flach := strings.Join(strings.Fields(frag), " ")
 
@@ -144,35 +172,135 @@ func TestSliceMvFragment_MeldetEinFehlendesWerkzeug(t *testing.T) {
 	}
 }
 
+// schritteIn zerlegt eine nummerierte Anleitung in ihre Schritte: Schluessel ist
+// die Nummer, Wert der Text des Schrittes — die Zeile, die in Spalte 0 mit
+// "<n>." beginnt, und alles, was folgt, bis die naechste solche Zeile kommt.
+//
+// GELESEN, NICHT GEZAEHLT: ein `strings.Count` ueber das ganze Dokument kann die
+// Stelle nicht von einer Erwaehnung daneben unterscheiden. Der Anker dieses
+// Waechters ist die Stelle, an der die Anleitung die Handlung vorschreibt — also
+// der Schritt, in dem sie steht.
+func schritteIn(text string) map[string]string {
+	out := map[string]string{}
+	aktuell := ""
+	for _, line := range strings.Split(text, "\n") {
+		if nr, ok := schrittNummer(line); ok {
+			aktuell = nr
+			out[aktuell] = ""
+		}
+		if aktuell != "" {
+			out[aktuell] += line + "\n"
+		}
+	}
+	return out
+}
+
+// schrittNummer liest "<n>. " am Zeilenanfang in Spalte 0 — die Form, in der die
+// Anleitung ihre Schritte fuehrt. Eine eingerueckte Aufzaehlung im Fliesstext ist
+// damit keine Schritt-Grenze, und eine Fortsetzungszeile ebenso wenig.
+func schrittNummer(line string) (string, bool) {
+	if line == "" || line[0] < '0' || line[0] > '9' {
+		return "", false
+	}
+	i := strings.Index(line, ". ")
+	if i <= 0 {
+		return "", false
+	}
+	for _, r := range line[:i] {
+		if r < '0' || r > '9' {
+			return "", false
+		}
+	}
+	return line[:i], true
+}
+
+// ohneKommentare entfernt HTML-Kommentare aus einem Text: eine Bemerkung im
+// Kommentar ist keine Vorschrift. Ohne diesen Schnitt genuegte eine
+// Ersatz-Nennung im ANPASSEN-Block, um einen Schritt als "nennt das Werkzeug"
+// durchgehen zu lassen, waehrend sein Text die Handarbeit vorschreibt.
+//
+// Ein ungeschlossener Kommentar nimmt den Rest mit: die Form ist dann kaputt, und
+// was danach kommt, ist nicht mehr als Vorschrift lesbar.
+func ohneKommentare(text string) string {
+	var b strings.Builder
+	rest := text
+	for {
+		i := strings.Index(rest, "<!--")
+		if i < 0 {
+			b.WriteString(rest)
+			return b.String()
+		}
+		b.WriteString(rest[:i])
+		j := strings.Index(rest[i:], "-->")
+		if j < 0 {
+			return b.String()
+		}
+		rest = rest[i+j+3:]
+	}
+}
+
 // TestSliceMvAnleitung_NenntDasWerkzeugAnDenZweiStellen haelt den Lieferpunkt des
 // Anweisungssatzes fest: der Lifecycle-Wechsel ist an den zwei Stellen, an denen
 // die Anleitung ihn vorschreibt (Eintritt nach in-progress und Closure nach done),
 // als Kommando benannt — und die repo-spezifische Stelle ist als Marker
 // ausgewiesen, waehrend der Ziel-NAME ausdruecklich keiner ist.
 //
+// GEMESSEN WIRD JE SCHRITT UND AUSSERHALB DER KOMMENTARE. Zwei engere Anker, und
+// beide sind noetig: ein Zaehler ueber das ganze Dokument bliebe gruen, waehrend
+// Schritt 9 wieder die Handarbeit vorschreibt; und ein Schritt-Anker allein
+// bliebe gruen, solange die Ersatz-Nennung im ANPASSEN-Kommentar desselben
+// Schrittes steht. Eine Bemerkung ist keine Vorschrift.
+//
+// WAS DIESER TEST NICHT ENTSCHEIDET: ob die gefundene Nennung im Schritt die
+// vorgeschriebene Handlung ist. Der Anker ist die Stelle ohne Kommentar; die
+// Prosa daneben, die den Aufruf nur erwaehnt, waere ein Review-Griff.
+//
 // Die zweite Haelfte ist die tragende: der Ziel-Name kommt aus einem tool-eigenen
 // Fragment, das jeder Bootstrap kanonisch neu schreibt. Eine Anleitung, die ihn
 // als adaptierbar ausweist, laedt zu einer Umbenennung ein, die der naechste Lauf
 // zuruecknimmt.
+//
+// Rot-Gegenbeispiel: test/mutations/345-lifecycle-anleitung-ohne-werkzeug.sh.
 func TestSliceMvAnleitung_NenntDasWerkzeugAnDenZweiStellen(t *testing.T) {
 	anleitung := string(emit.CommandFile(".claude/commands/implement-slice.md"))
 	if anleitung == "" {
 		t.Fatal("die emittierte Anleitung ist leer — der Waechter misst nichts")
 	}
-	if n := strings.Count(anleitung, "make slice-mv"); n < 2 {
-		t.Errorf("die Anleitung nennt `make slice-mv` %d-mal — der Eintritt nach in-progress UND die Closure nach done sind zwei Stellen", n)
+	schritte := schritteIn(anleitung)
+
+	// Vorbedingung: die zwei Schritte sind wirklich gelesen — ueber fehlenden
+	// Schritten misst der Waechter nichts.
+	eingangRoh, ok := schritte["9"]
+	if !ok {
+		t.Fatalf("Schritt 9 nicht gelesen — der Waechter misst dann keine Stelle")
 	}
-	if !strings.Contains(anleitung, "ANPASSEN") {
-		t.Errorf("die Anleitung traegt keinen ANPASSEN-Marker — die repo-spezifische Stelle ist dann nicht als solche erkennbar")
+	verschlussRoh, ok := schritte["24"]
+	if !ok {
+		t.Fatalf("Schritt 24 nicht gelesen — der Waechter misst dann keine Stelle")
 	}
-	if !strings.Contains(anleitung, "Der Ziel-NAME `slice-mv` ist es nicht") {
-		t.Errorf("die Anleitung weist den Ziel-Namen nicht als NICHT-repo-spezifisch aus — er kommt aus einem tool-eigenen, kanonisch neu geschriebenen Fragment")
+	eingang := ohneKommentare(eingangRoh)
+	verschluss := ohneKommentare(verschlussRoh)
+
+	// Die vorgeschriebene Handlung, nicht die Erwaehnung: der Aufruf in seiner
+	// vollen Form steht in jedem der zwei Schritte, und zwar im Text — nicht im
+	// Kommentar daneben.
+	if !strings.Contains(eingang, "make slice-mv SLICE=") {
+		t.Errorf("Schritt 9 (Eintritt nach in-progress) nennt den Aufruf `make slice-mv SLICE=…` nicht in seinem Text — der Lifecycle-Wechsel steht dort als Handarbeit")
 	}
-	// Die zwei Stellen sind nicht mehr die Handarbeit, die sie ersetzt: der
-	// Anweisungssatz fuehrt `git mv` nur noch dort, wo er den Move BESCHREIBT,
-	// nicht als die vorgeschriebene Handlung.
-	if strings.Contains(anleitung, "verschieben (`git mv`, eigener") {
-		t.Errorf("die Anleitung schreibt an der Closure weiter den `git mv` von Hand vor")
+	if !strings.Contains(verschluss, "make slice-mv SLICE=") || !strings.Contains(verschluss, "TO=done") {
+		t.Errorf("Schritt 24 (Closure nach done) nennt den Aufruf `make slice-mv SLICE=… TO=done` nicht in seinem Text — die Closure steht dort als Handarbeit")
+	}
+	if strings.Contains(verschluss, "verschieben (`git mv`, eigener") {
+		t.Errorf("Schritt 24 schreibt weiter den `git mv` von Hand vor")
+	}
+
+	// Der Marker steht an der Stelle daneben, an der die Adaption faellig wird,
+	// und er weist den Ziel-Namen als NICHT-repo-spezifisch aus.
+	if !strings.Contains(eingangRoh, "ANPASSEN") {
+		t.Errorf("Schritt 9 traegt keinen ANPASSEN-Marker — die repo-spezifische Stelle ist dann nicht als solche erkennbar")
+	}
+	if !strings.Contains(eingangRoh, "Der Ziel-NAME `slice-mv` ist es nicht") {
+		t.Errorf("Schritt 9 weist den Ziel-Namen nicht als NICHT-repo-spezifisch aus — er kommt aus einem tool-eigenen, kanonisch neu geschriebenen Fragment")
 	}
 }
 

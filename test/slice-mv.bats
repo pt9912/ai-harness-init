@@ -14,11 +14,16 @@
 #
 # ZWEI FASSUNGEN, EINE PRUEFUNG: dieselbe Ersetzungs-Logik liegt als
 # ausgeführte Fassung dieses Repos (harness/tools/slice-mv.sh) und als
-# Emissions-Vorlage (internal/emit/templates/enforce/slice-mv.sh) vor. Jeder
-# Fall unten faehrt BEIDE: eine einseitige Aenderung liesse die eine Haelfte
-# gruen und die andere still falsch werden. Die zwei unterscheiden sich in ihrer
-# Verankerung — Repo-Pfade, Kommentare, die Ausnahmeliste als Konstante bzw. als
-# setzbare Variable —, nicht in der Ersetzung.
+# Emissions-Vorlage (internal/emit/templates/enforce/slice-mv.sh) vor. Zwei
+# Pruefungen tragen die Kopplung, und die zweite traegt sie breiter:
+#   (1) jeder Fall unten faehrt BEIDE Fassungen — das deckt die Entscheidungen,
+#       die ein Fall ausloest;
+#   (2) der Kopplungs-Fall am Dateiende vergleicht die RUEMPFE der drei
+#       Ersetzungs-Funktionen — das deckt auch eine einseitig entfernte
+#       Entscheidung, die kein Fall trifft (etwa das /g-Flag des Eingehend-sed).
+# Die zwei unterscheiden sich in ihrer Verankerung — Repo-Pfade, Kommentare, die
+# Ausnahmeliste als Konstante bzw. als setzbare Variable —, nicht in der
+# Ersetzung; genau diesen Kern haelt (2) zusammen.
 
 setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
@@ -190,3 +195,34 @@ EOF
 # steht darum NICHT hier, sondern an zwei anderen Orten: im Skriptkopf
 # (harness/tools/slice-mv.sh) und, fuer BEIDE Richtungen an einem echten Move im
 # gebootstrappten Ziel, in harness/tools/full-smoke.sh.
+
+# Der Ersetzungs-KERN, den beide Fassungen teilen MUESSEN. Ein Fall trifft nur die
+# Entscheidungen, die er ausloest; eine einseitig entfernte Entscheidung bliebe
+# ueber jedem Fall gruen. Verglichen werden darum die Funktionsruempfe.
+KERN=(re_escape rewrite_incoming_in_file rewrite_outgoing_bare_in_file)
+
+# funktions_rumpf liest den Rumpf EINER Funktion: von der Definitionszeile in
+# Spalte 0 bis zur ersten schliessenden Klammer in Spalte 0. Die drei Funktionen
+# des Kerns tragen keine inneren Kommentare und keine Verschachtelung auf
+# Spalte 0 — die zwei Grenzen des Lesers stehen hier, statt still zu gelten.
+funktions_rumpf() {  # $1=datei $2=funktion
+  awk -v f="$2" '
+    $0 ~ "^" f "\\(\\) \\{" { im = 1 }
+    im { print }
+    im && /^}/ { exit }
+  ' "$1"
+}
+
+@test "kopplung: die drei Ersetzungs-Funktionen sind in beiden Fassungen wortgleich (weissraum-normalisiert)" {
+  for fn in "${KERN[@]}"; do
+    a="$(funktions_rumpf "$DOGFOOD" "$fn" | tr -s '[:space:]' ' ')"
+    b="$(funktions_rumpf "$EMITTIERT" "$fn" | tr -s '[:space:]' ' ')"
+    # Vorbedingung: ueber einem leeren Rumpf waere "beide gleich" still gruen.
+    [ -n "$a" ] || { echo "Rumpf von $fn in $DOGFOOD nicht gelesen — der Vergleich misst dann nichts"; return 1; }
+    [ -n "$b" ] || { echo "Rumpf von $fn in $EMITTIERT nicht gelesen — der Vergleich misst dann nichts"; return 1; }
+    # Weissraum-normalisiert: WO der Rumpf umbricht, ist gleichgueltig; WAS er
+    # entscheidet, nicht. Ein entferntes /g oder eine verengte Zeichenklasse
+    # fallen hier, auch wenn kein Fall sie trifft.
+    [ "$a" = "$b" ] || { echo "Rumpf von $fn weicht zwischen den zwei Fassungen ab:"; echo "  Dogfood:   $a"; echo "  emittiert: $b"; return 1; }
+  done
+}

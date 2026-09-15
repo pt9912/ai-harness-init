@@ -1288,7 +1288,9 @@ archivierung_im_ziel "$tmprepo" "golang"
 #       Verweis auf den alten Ort,
 #   (e) die VORAUSSETZUNG greift: ueber einem unsauberen Arbeitsbaum bricht der Aufruf
 #       ab, nennt es und bewegt nichts,
-#   (f) `slice-mv` ist KEIN Gate: die gates-Kette des Ziels nennt es nicht.
+#   (f) `slice-mv` ist KEIN Gate: die gates-Kette des Ziels nennt es nicht,
+#   (g) ohne jeden Verweis bleibt es beim einen Move-Commit,
+#   (h) ohne das Werkzeug bricht das Ziel laut ab und bewegt nichts.
 #
 # EINE VARIANTE, und die Grenze steht hier: gefahren wird das --lang-go-Ziel. Fragment
 # und Skript kommen aus enforceFiles() und liegen in BEIDEN Bootstrap-Varianten unter
@@ -1522,6 +1524,33 @@ SMOKEEOF
 		exit 1
 	fi
 	echo "full-smoke: ohne Verweise ($kennung): make slice-mv bewegt slice-smoke-einsam.md und laesst es beim einen Move-Commit — kein zweiter Commit ohne Inhaltsaenderung."
+
+	# (h) FEHLT DAS WERKZEUG, BRICHT DAS ZIEL LAUT AB, OHNE ZU BEWEGEN. Der Fall
+	# entsteht im halben Zustand — das Fragment liegt, das Programm daneben nicht;
+	# ohne diesen Schritt bliebe die fail-closed-Zusage des Fragments eine
+	# Zeichenkette, die kein Lauf beruehrt.
+	mv "$werkzeug" "$werkzeug.beiseite"
+	local ohnewerk="" ohnewerk_rc=0 ohnewerk_flach=""
+	ohnewerk="$( make --no-print-directory -C "$repo" slice-mv SLICE=slice-smoke-einsam TO=done 2>&1 )" || ohnewerk_rc=$?
+	mv "$werkzeug.beiseite" "$werkzeug"
+	ohnewerk_flach="$(tr -s '[:space:]' ' ' <<<"$ohnewerk")"
+	if [ "$ohnewerk_rc" -eq 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: ohne Werkzeug endet make slice-mv mit Exit 0 — das Fragment zeigt dann still auf ein Programm, das es nicht gibt." >&2
+		printf '%s\n' "$ohnewerk" >&2
+		einordnen "make slice-mv ohne Werkzeug ($kennung)" "$ohnewerk"
+		exit 1
+	fi
+	if ! grep -qF -- 'liegt nicht' <<<"$ohnewerk_flach"; then
+		echo "full-smoke: FEHLER — $kennung: der Abbruch nennt das fehlende Werkzeug nicht (rot aus falschem Grund?). Ausgabe:" >&2
+		printf '%s\n' "$ohnewerk" >&2
+		exit 1
+	fi
+	if [ -e "$plan/done/slice-smoke-einsam.md" ]; then
+		echo "full-smoke: FEHLER — $kennung: der abgebrochene Aufruf hat trotzdem bewegt." >&2
+		exit 1
+	fi
+	echo "full-smoke: ohne Werkzeug ($kennung): make slice-mv bricht LAUT ab und nennt die fehlende Datei:"
+	grep -F -- 'liegt nicht' <<<"$ohnewerk" | sed -n '1p' | sed 's/^/full-smoke:   /'
 }
 
 slice_mv_im_ziel "$tmprepo" "golang"
@@ -2275,4 +2304,4 @@ echo "full-smoke: OK — IDEMPOTENT (slice-038): 2. Init-Lauf Exit 0, README (sk
 echo "full-smoke: OK — ROLLEN-TYPEN (slice-097/LH-FA-10): 6 kanonische Typen unter .claude/agents/ in BEIDEN Bootstrap-Varianten, je mit ihrem Namen im Kopf; das make gates des Ziels laeuft ueber ihnen gruen; der 2. Init-Lauf laesst einen adopter-geaenderten Typ unberuehrt (skip-if-present)."
 echo "full-smoke: OK — FELDLISTE (slice-098/LH-FA-10): $FELDLISTE_REL liegt in BEIDEN Bootstrap-Varianten im geprueften Doku-Bereich, fuehrt die drei stehenden Grenz-Saetze und deckt jeden Feldnamen der real geschriebenen Span-Zeile; ein toter Verweis darin faerbt das docs-check des Ziels rot (Ortswahl belegt); ein 2. Init-Lauf heilt eine von Hand geaenderte Fassung (konvergent, die einzige Zusage des Dokuments ueber sich selbst)."
 echo "full-smoke: OK — ARCHIVIERUNG IM ZIEL (ADR-0033 Festlegung 4 und 5): make archive-welle ist kein Gate und steht in keiner gates-Kette; ein Name daneben, den kein Fragment fuehrt, endet laut statt still; die zwei Sperren [untergrenze] und [haenger] halten den Aufruf auf, ueber demselben Bestand ohne sie laeuft die Operation real (Archiv + Stubs aus der vendored Vorlage), und ohne Traeger meldet das Kommando die Abwesenheit mit Exit 0."
-echo "full-smoke: OK — LIFECYCLE-WECHSEL IM ZIEL: make slice-mv ist kein Gate und steht in keiner gates-Kette; der Aufruf bewegt den Slice, legt den reinen Move als eigenen Commit an (0 insertions/0 deletions gegen den Verweis-Nachzug getrennt) und zieht beide Richtungen nach — den eingehenden Praefix-Verweis der Nachbar-Datei und das praefixlose Geschwister-Ziel in der bewegten Datei; eine ADR bleibt nach der Repo-Politik des Fragments unberuehrt, ueber einem unsauberen Arbeitsbaum bricht der Aufruf ab, nennt es und bewegt nichts, und ohne jeden Verweis bleibt es beim einen Move-Commit."
+echo "full-smoke: OK — LIFECYCLE-WECHSEL IM ZIEL: make slice-mv ist kein Gate und steht in keiner gates-Kette; der Aufruf bewegt den Slice, legt den reinen Move als eigenen Commit an (0 insertions/0 deletions gegen den Verweis-Nachzug getrennt) und zieht beide Richtungen nach — den eingehenden Praefix-Verweis der Nachbar-Datei und das praefixlose Geschwister-Ziel in der bewegten Datei; eine ADR bleibt nach der Repo-Politik des Fragments unberuehrt; ueber einem unsauberen Arbeitsbaum bricht der Aufruf ab, nennt es und bewegt nichts; ohne jeden Verweis bleibt es beim einen Move-Commit; und ohne das Werkzeug bricht das Ziel laut ab, statt still auf ein fehlendes Programm zu zeigen."
