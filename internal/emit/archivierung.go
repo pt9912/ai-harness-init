@@ -3,7 +3,7 @@ package emit
 // ArchivierungMkPath ist der Zielort des Fragments der Wellen-Archivierung: das
 // Gate-Fragment-Verzeichnis des Ziels (ADR-0033 Festlegung 4, Muster MR-010).
 // Das Praefix ist die Adresse, unter der der Root-Aggregator die Fragmente per
-// Glob einbindet — ein Ziel daneben liefe in keinem `make` des Adopters.
+// Glob einbindet; nur dort fahren die `make`-Laeufe des Adopters sie.
 const ArchivierungMkPath = "harness/mk/archivierung.mk"
 
 // archivierungMkSrc ist der eingebettete Quellpfad des Fragments (enforceFS).

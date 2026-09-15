@@ -1026,7 +1026,7 @@ traeger_im_ziel "$tmprepo" "golang"
 # Traegers ankommt, entscheidet die Kette Aggregator -> Fragment -> Traeger ->
 # vendored Stub-Vorlage — und die gibt es nur hier (ADR-0033 Folgepflicht 8).
 #
-# FUENF AUSSAGEN:
+# DIE AUSSAGEN DIESES ABSCHNITTS, in der Reihenfolge, in der er sie faehrt:
 #   (a) die zwei fail-closed-Sperren `[untergrenze]` und `[haenger]` aus
 #       internal/archive erreichen den Aufruf: ueber einem Bestand, der beide
 #       ausloest, endet `make archive-welle` nicht erfolgreich und schreibt nichts.
@@ -1257,7 +1257,7 @@ SMOKEEOF
 		exit 1
 	fi
 	if ! grep -qF -- "der Traeger liegt nicht" <<<"$ohne_flach"; then
-		echo "full-smoke: FEHLER — $kennung: ohne Traeger sagt make archive-welle nicht, was fehlt — die Ausgabe bleibt leer, und der Fall des frischen Klons bleibt unbemerkt. Ausgabe:" >&2
+		echo "full-smoke: FEHLER — $kennung: ohne Traeger sagt make archive-welle nicht, was fehlt — dass etwas fehlt, steht dann nirgends, und der Fall des frischen Klons bleibt unbemerkt. Ausgabe:" >&2
 		printf '%s\n' "$ohne" >&2
 		exit 1
 	fi
@@ -2018,4 +2018,4 @@ echo "full-smoke: OK — DRITTES LAYOUT (slice-058/ADR-0010): add-lang go apps/h
 echo "full-smoke: OK — IDEMPOTENT (slice-038): 2. Init-Lauf Exit 0, README (skip-if-present) unberuehrt, Makefile-Drift (konvergent) geheilt; sprachloser Re-Lauf prunt kein add-lang-Fragment (kein Prune)."
 echo "full-smoke: OK — ROLLEN-TYPEN (slice-097/LH-FA-10): 6 kanonische Typen unter .claude/agents/ in BEIDEN Bootstrap-Varianten, je mit ihrem Namen im Kopf; das make gates des Ziels laeuft ueber ihnen gruen; der 2. Init-Lauf laesst einen adopter-geaenderten Typ unberuehrt (skip-if-present)."
 echo "full-smoke: OK — FELDLISTE (slice-098/LH-FA-10): $FELDLISTE_REL liegt in BEIDEN Bootstrap-Varianten im geprueften Doku-Bereich, fuehrt die drei stehenden Grenz-Saetze und deckt jeden Feldnamen der real geschriebenen Span-Zeile; ein toter Verweis darin faerbt das docs-check des Ziels rot (Ortswahl belegt); ein 2. Init-Lauf heilt eine von Hand geaenderte Fassung (konvergent, die einzige Zusage des Dokuments ueber sich selbst)."
-echo "full-smoke: OK — ARCHIVIERUNG IM ZIEL (ADR-0033 Festlegung 4 und 5): make archive-welle ist kein Gate, erreicht aber im gebootstrappten Repo den abgelegten Traeger — die zwei Sperren [untergrenze] und [haenger] halten den Aufruf auf, ueber demselben Bestand ohne sie laeuft die Operation real (Archiv + Stubs aus der vendored Vorlage), und ohne Traeger meldet das Kommando die Abwesenheit mit Exit 0."
+echo "full-smoke: OK — ARCHIVIERUNG IM ZIEL (ADR-0033 Festlegung 4 und 5): make archive-welle ist kein Gate und steht in keiner gates-Kette; ein Name daneben, den kein Fragment fuehrt, endet laut statt still; die zwei Sperren [untergrenze] und [haenger] halten den Aufruf auf, ueber demselben Bestand ohne sie laeuft die Operation real (Archiv + Stubs aus der vendored Vorlage), und ohne Traeger meldet das Kommando die Abwesenheit mit Exit 0."

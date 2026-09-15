@@ -10,10 +10,10 @@
 # ohne diesen Satz liest die Abhilfe-Zeile daneben ohne ihren Anlass: dass etwas
 # fehlt, steht dann nirgends.
 #
-# GENAU EINE ZEILE FAELLT, und das ist tragend: die Zeile mit der Abhilfe bleibt
-# stehen. Sie traegt die Fortsetzungsmarke des Rezepts; sie ist die letzte Zeile,
-# und ohne sie endet die Rezept-Fortsetzung im Leeren (ein make-Fehler, der den
-# Sensor aus einem fremden Grund rot faerbt).
+# GENAU EINE ZEILE FAELLT: die vorletzte des Rezepts; die letzte mit der Abhilfe
+# bleibt stehen. Die Fortsetzungsmarke traegt das `done; \` darueber weiter, das
+# Rezept bleibt heil, und der Aufruf endet mit 0 — wie ohne die Mutation. Rot wird
+# der Sensor am fehlenden Satz, nicht an einem make-Fehler.
 #
 # WARUM der Fall ueber `full-smoke` faehrt: gemessen wird die AUSGABE eines
 # `make`-Aufrufs im gebootstrappten Ziel. Die Go-Stufe liest nur den Text des

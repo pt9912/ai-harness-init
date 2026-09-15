@@ -35,7 +35,7 @@ func archivierungsFragmentMitTraeger(t *testing.T) string {
 
 // gatesHuelle liefert die transitive Prerequisite-Huelle des emittierten
 // `gates`-Ziels ueber JEDER Make-Quelle des Ziels. Sie wird GELESEN, nicht
-// aufgezaehlt: eine im Test gepflegte Kette bliebe gruen, sobald ein neues
+// aufgezaehlt: eine im Test gepflegte Kette waechst nicht mit, wenn ein neues
 // Fragment eine Kante dazunimmt.
 func gatesHuelle(t *testing.T) map[string]bool {
 	t.Helper()
@@ -68,8 +68,8 @@ func gatesHuelle(t *testing.T) map[string]bool {
 			offen = append(offen, p)
 		}
 	}
-	// Vorbedingung: die Huelle traegt wirklich die Gate-Kette. Ohne sie liefe der
-	// Waechter ueber einem leeren Ergebnis und saehe nie etwas.
+	// Vorbedingung: die Huelle traegt wirklich die Gate-Kette — sie ist der
+	// Pruefbereich des Waechters, und ein leeres Ergebnis hat keinen.
 	for _, noetig := range []string{"record-gates", "baseline-verify", "docs-check"} {
 		if !huelle[noetig] {
 			t.Fatalf("die gelesene gates-Kette traegt %q nicht — der Waechter misst nichts (gelesen: %v)", noetig, sortiert(huelle))
