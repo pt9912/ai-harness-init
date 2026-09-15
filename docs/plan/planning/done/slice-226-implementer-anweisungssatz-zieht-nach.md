@@ -280,9 +280,10 @@ Backticks).
   beide tragen.** Der Beleg zu Liefer-Punkt 1 ist ein Form-Vergleich von Hand gegen den vendored
   Baum; er hat die vier Blöcke an den Stellen gefunden, an denen der Lauf sie liest — und den
   vierten in einem **anderen** Abschnitt, als §1 zunächst notiert hatte. Der Beleg zu Liefer-Punkt 2
-  liest **beide** Schreibweisen der alten Form; am Vor-Stand `bbd10ea2^` zählt er **fünf** Stellen,
-  während die spitze Schreibweise allein an zwei geklammerten (`SLICE=<slice-NNN>`) blind
-  vorbeigelesen hätte. **Zweitens hat der Rollen-Zuschnitt gehalten:** Umsetzung und Rollen-Zuordnung
+  liest **beide** Schreibweisen der alten Form; am Vor-Stand `bbd10ea2^` zählt er **fünf** Stellen
+  (`git grep -cE 'slice-<NNN>|welle-<NN>|<slice-NNN>|<welle-NN>' bbd10ea2^ -- .claude/commands/implement-slice.md`
+  → **5**), während die spitze Schreibweise allein an der geklammerten Form (`SLICE=<slice-NNN>`)
+  blind vorbeigelesen hätte. **Zweitens hat der Rollen-Zuschnitt gehalten:** Umsetzung und Rollen-Zuordnung
   liegen im Implementer-Kontext, die zwei die Abnahme verschiebenden Nachzüge im Planner-Kontext.
 - **Was ging anders als geplant:** **Drei Dinge.** (1) §1 verortete alle vier Blöcke im Abschnitt
   §Minimal Agent Workflow; gemessen steht der vierte — *„Der Plan lebt in §3 des Slice-Plans"* — in
@@ -330,7 +331,9 @@ Backticks).
   Kopf führt **diesen** Slice als den benannten Ausgang der **ausgeführten** Fassung und wartet
   damit auf ihn (Welle §5: *erst die ausgeführte Fassung, dann die emittierte*). Mit dieser Closure
   ist die ausgeführte Seite gesetzt.
-- **Risiken aus §6:** drei Punkte, je ein Ausgang — **zweimal *entfallen*** (die stille Erweiterung
+- **Risiken aus §6:** drei Punkte
+  (`awk '/^## 6\. Risiken/,/^## 7\. Closure-Notiz/' docs/plan/planning/*/slice-226-implementer-anweisungssatz-zieht-nach.md | grep -c '^- \*\*'`
+  → **3**), je ein Ausgang — **zweimal *entfallen*** (die stille Erweiterung
   trat nicht ein; kein Sprung lag zwischen Schnitt und Ausführung — die zwei Messungen stehen in
   §6), **einmal *weiter offen*** (der fehlende Wächter, ins Register).
 - **Drei Paarungen:** **hier gefahren**, weil dieser Slice **kein** Wellen-Mitglied ist — sein
