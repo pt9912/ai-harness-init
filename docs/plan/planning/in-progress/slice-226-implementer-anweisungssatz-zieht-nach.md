@@ -88,11 +88,14 @@ Vier Blöcke tragen die Pflicht, alle im Abschnitt §Minimal Agent Workflow (8 S
 4. **Der Plan lebt in §3 des Slice-Plans, nicht im Chat-Verlauf** — die Rücksprünge 5→4 und 6→4
    schreiben dort fort, es entsteht kein zweites Artefakt.
 
-Dazu die Kennungs-Notation der Ziel-Fassung, die im Anweisungssatz an **3** Stellen in der alten
-Form steht:
+Dazu die Kennungs-Notation der Ziel-Fassung, die im Anweisungssatz an **5** Stellen in der alten
+Form steht. Die Sonde liest **beide** Schreibweisen — die spitze **und** die geklammerte —, weil
+die spitze allein an der geklammerten blind vorbeigeht; am Anlege-Commit gemessen, weil der
+laufende Nachzug die Grundmenge bewegt
+([`MR-058`](../../../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)):
 
 ```sh
-git grep -cE 'slice-<NNN>|welle-<NN>' -- .claude/commands/implement-slice.md   # 3
+git grep -cE 'slice-<NNN>|welle-<NN>|<slice-NNN>|<welle-NN>' bbd10ea2^ -- .claude/commands/implement-slice.md   # 5
 ```
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
@@ -137,7 +140,9 @@ Zwei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
 
 - [ ] **1 — Die vier Plan-vor-Code-Blöcke stehen im Anweisungssatz, je an der Stelle, an der der
       Lauf sie braucht.** Nicht als Anhang und nicht als Zitat des Moduls: Die
-      Akzeptanzkriterien-Bindung steht bei der Testdatei-Zeile der Plan-Ausgabe, die
+      Akzeptanzkriterien-Bindung steht bei der Testdatei-Zeile der Plan-Ausgabe — so nennt dieser
+      Punkt die Stelle; das Regelwerk führt sie als *„Tests-Zeile"*
+      (`modul-09-implementierung.md` §Minimal Agent Workflow, Stand `v6.8.0`) —, die
       Out-of-Scope-Nennung bei Schritt 4, die Ein-Begründung-je-Ursache-Regel daneben, und der Satz
       *der Plan lebt in §3* bei den Rücksprüngen. Der Beleg ist ein Form-Vergleich gegen
       `.harness/baseline/v6.8.0/regelwerk/modul-09-implementierung.md` §Minimal Agent Workflow, je
@@ -146,11 +151,14 @@ Zwei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
 - [ ] **2 — Die Kennungs-Notation ist nachgezogen.** Nach dem Lauf liefert
 
       ```sh
-      git grep -cE 'slice-<NNN>|welle-<NN>' -- .claude/commands/implement-slice.md
+      git grep -cE 'slice-<NNN>|welle-<NN>|<slice-NNN>|<welle-NN>' -- .claude/commands/implement-slice.md
       ```
 
-      keinen Treffer (EXIT 1). Die Zusage gilt dem **Prüfbereich einer Datei** und nicht dem Repo:
-      Was außerhalb liegt, ist in §1 benannt und hat dort seinen Ausgang.
+      keinen Treffer (EXIT 1). **Die Sonde liest beide Schreibweisen** — die spitze und die
+      geklammerte: die spitze allein ließe eine Wiederkehr der geklammerten Form grün durch, und
+      der Beleg schnitte dann seinen Gegenstand nicht. Die Zusage gilt dem **Prüfbereich einer
+      Datei** und nicht dem Repo: Was außerhalb liegt, ist in §1 benannt und hat dort seinen
+      Ausgang; eine lebende Fundstelle außerhalb (`Makefile:340`) ist benannt, nicht still gelassen.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
