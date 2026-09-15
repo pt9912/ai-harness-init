@@ -245,7 +245,7 @@ in den Reports, kein Sensor dieses Repos liest es.
 
 ```sh
 git diff --name-only 6d8401e3~1..HEAD | grep -E '\.md$'
-#  docs/plan/planning/in-progress/slice-lifecycle-move-geht-ins-ziel.md   (Planner-Korrektur)
+#  docs/plan/planning/done/slice-lifecycle-move-geht-ins-ziel.md   (Planner-Korrektur)
 #  docs/reviews/2026-09-15-slice-lifecycle-move-geht-ins-ziel.md          (Review Runde 1)
 #  docs/reviews/2026-09-15-slice-lifecycle-move-geht-ins-ziel-runde-2.md  (Review Runde 2)
 #  internal/emit/templates/commands/implement-slice.md                    (die emittierte Vorlage)
