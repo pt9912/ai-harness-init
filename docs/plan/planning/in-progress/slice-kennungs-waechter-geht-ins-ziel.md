@@ -195,19 +195,35 @@ dasteht.
 - **Der emittierte Wächter erbt eine Entscheidung, die noch nicht gefallen ist.**
   [slice-215](../done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) bewegt den Träger des
   Dogfoods; eine emittierte Form, die davor geschrieben wird, ist mit seinem Ergebnis zu
-  vergleichen und gegebenenfalls nachzuziehen. — **Ausgang:** <eingetreten: CO-NNN /
-  slice-<Kennung> | entfallen: Grund | weiter offen: → BEO im Register>
+  vergleichen und gegebenenfalls nachzuziehen. — **Ausgang: eingetreten —
+  `slice-commit-traeger-wird-skip-if-present`** (eine Datei in `open/`, in diesem Closure-Lauf
+  angelegt). Der Vergleich ist gefahren: die Form des Ziels ist die, die
+  [slice-215](../done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) entschieden
+  hat, und das **Nachziehen** betrifft nicht den Kanal, sondern die **Klasse** des Pfades — sie ist
+  in [`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md) Festlegung 1
+  entschieden und ihrer Folgepflicht 1 übergeben. Kein Carveout: kein Gate steht rot.
 - **Der Träger des Ziels hängt am Commit, nicht am Agenten-Kanal — seine Reichweite fällt darum
   anders aus als die des Dogfoods: er erreicht die Commits der Repo-Werkzeuge und bricht sie ab,
   solange deren Messages keine Kennung aus der Menge tragen.** `make slice-mv` und
   `make archive-welle` committen intern mit dem Slice- bzw. Welle-Namen, und eine benannte Kennung
   trifft kein Muster der Menge. Die DoD (3) verlangt, die Reichweite **neben** die Zusage zu
-  schreiben. — **Ausgang:** <eingetreten: CO-NNN / slice-<Kennung> | entfallen: Grund | weiter
-  offen: → BEO-ALL/waechter-abdeckung-haengt-an-uninstruierter-konvention im Register>
+  schreiben. — **Ausgang: entfallen.** Die Reichweite steht an der Stelle der Zusage — im
+  Aktivierungs-Fragment als eigener Block („WAS ER MITNIMMT"), in der
+  [`harness/README.md`](../../../../harness/README.md)-Prosa und als Prüfung im E2E; der Abbruch
+  der Werkzeug-Commits ist damit benannt und nicht mehr die stille Nebenfolge, die das Risiko
+  beschreibt. Für die Reparatur auf der **Dogfood**-Seite trägt die README-Tabelle bereits ihre
+  Adresse ([`ADR-0053`](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md)
+  Festlegung 4); sie ist **nicht** Gegenstand dieses Slice.
 - **Die Konvention, an der der Wächter hängt, wird nicht von allen Anweisungssätzen getragen.** Der
   Hook greift nur bei einer Message-**Datei**; ein Anweisungssatz, der den Commit anders beschreibt,
-  fällt durch. — **Ausgang:** <eingetreten: CO-NNN / slice-<Kennung> | entfallen: Grund | weiter
-  offen: → BEO im Register>
+  fällt durch. — **Ausgang: entfallen.** Für den Träger **dieses** Slice gilt der Satz nicht: er
+  hängt am Commit und liest die Message-Datei, die `git` ihm übergibt, gleichgültig welcher Aufruf
+  sie erzeugt hat ([`ADR-0053`](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md)
+  Festlegung 2; im Ziel ohne jeden Anweisungssatz feuern gesehen). Die Form-Abhängigkeit bleibt die
+  des **Agenten-Kanals dieses Klons** — sie ist Gegenstand des Registers
+  ([`BEO-ALL/waechter-abdeckung-haengt-an-uninstruierter-konvention`](../observations/BEO-ALL/waechter-abdeckung-haengt-an-uninstruierter-konvention/observation.md),
+  offen) und **kein** Ausgang dieses Risikos; dieser Vorgang bewegt ihren Zähler nicht, weil sein
+  Gegenstand die emittierte Ebene ist (§8).
 
 ## 7. Closure-Notiz
 
