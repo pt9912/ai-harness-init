@@ -23,8 +23,7 @@ den vier Slice-Plänen, `internal/emit/**`, `harness/**`, `test/**` und den Revi
 **nichts** verfasst — kein Satz, kein Kommentar, kein Testfall, keine Mutation, kein Befund im
 Fremdartefakt. Er hat gelesen und die zwei Sensoren gefahren; die eine Datei, die er schreibt, ist
 dieser Report. Am Repo liefen ausschließlich `make gates` und `make full-smoke`; beide arbeiten
-lesend über dem Repo (der E2E in `mktemp`-Verzeichnissen). Danach: `git status --porcelain` ohne
-Zeile, der Gate-Stempel unverändert gültig (unten).
+lesend über dem Repo (der E2E in `mktemp`-Verzeichnissen).
 
 **Zitier-Form:** Kennung statt Adresse für alles, was der Prozess bewegt (die Welle, die vier
 Mitglieder, dieser Report — die Wellen-Archivierung sammelt ihn ein). Ortsfeste Code- und
@@ -78,6 +77,13 @@ git status --porcelain                    # keine Zeile
 
 Die zwei Rechnungen sind **identisch**, und zwar **nach** dem E2E-Lauf — der Nachweis ist der des
 gefahrenen Standes, nicht der eines früheren.
+
+**Der Stand dieser zwei Beträge ist der, über dem der E2E lief.** Dieser Report ist als
+Markdown-Datei unter `docs/reviews/` **danach** committet; er verschiebt den d-check-Zähler um
+**eins** und den Working-Tree-Hash, wie jede Datei dieses Verzeichnisses es täte — über dem Stand
+**mit** ihm sind die zwei Beträge darum andere. Was trägt, ist die **Gleichheit** der zwei
+Rechnungen **in demselben Lauf**, nicht ihr Betrag; `make gates` ist nach dem Commit erneut
+gefahren und wieder **EXIT 0**.
 
 ### 1.2 `make full-smoke` — **EXIT 0** (Punkt 2)
 
