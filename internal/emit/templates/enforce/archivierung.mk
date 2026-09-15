@@ -3,7 +3,7 @@
 #
 # Es liegt im Fragment-Verzeichnis wie die Gate-Fragmente, haengt aber NICHTS an
 # GATE_CHECKS und steht in keiner Prerequisite-Kette: die Archivierung prueft nichts
-# und faerbt nichts rot, und ein Gate ueber ihr waere eines ueber leerem Pruefbereich.
+# und faerbt nichts rot.
 #
 # DER AUFRUF BEWEGT, LOESCHT UND COMMITTET IM VERSIONIERTEN BAUM DIESES REPOS.
 # Er zieht die eingesammelten Slice-Dateien und den Welle-Plan nach

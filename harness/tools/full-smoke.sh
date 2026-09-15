@@ -1026,7 +1026,7 @@ traeger_im_ziel "$tmprepo" "golang"
 # Traegers ankommt, entscheidet die Kette Aggregator -> Fragment -> Traeger ->
 # vendored Stub-Vorlage — und die gibt es nur hier (ADR-0033 Folgepflicht 8).
 #
-# VIER AUSSAGEN:
+# FUENF AUSSAGEN:
 #   (a) die zwei fail-closed-Sperren `[untergrenze]` und `[haenger]` aus
 #       internal/archive erreichen den Aufruf: ueber einem Bestand, der beide
 #       ausloest, endet `make archive-welle` nicht erfolgreich und schreibt nichts.
@@ -1036,9 +1036,12 @@ traeger_im_ziel "$tmprepo" "golang"
 #   (b) ueber demselben Bestand ohne die zwei Ausloeser laeuft die Operation real:
 #       Archiv und Stubs liegen danach in done/<welle-id>/,
 #   (c) das Kommando ist KEIN Gate: die gates-Kette des Ziels nennt es nicht,
+#   (c2) ein Name, den die Anleitung nicht fuehrt, endet laut statt still: der
+#       Adopter, der das Ziel umbenennt und nur die skip-if-present-Anleitung
+#       zieht, faellt hier auf,
 #   (d) ohne Traeger sagt das Kommando das und endet mit 0 — der frische Klon.
 #
-# NUR HIER MESSBAR: kein Go-Test faehrt `make`, und ein Lauf auf dem HOST faende den
+# NUR HIER MESSBAR: kein Go-Test faehrt `make`, und ein Lauf auf dem HOST findet den
 # Traeger eines gebootstrappten Repos nicht.
 #
 # EINE VARIANTE, und die Grenze steht hier: gefahren wird das --lang-go-Ziel. Das
@@ -1058,20 +1061,35 @@ archivierung_im_ziel() {
 		exit 1
 	fi
 	if [ ! -x "$carrier" ]; then
-		echo "full-smoke: FEHLER — $kennung: der Traeger liegt nicht, bevor dieser Abschnitt ihn ruft — gemessen wuerde dann der falsche Zweig (der Traeger-Abschnitt oben hat ihn abgelegt)." >&2
+		echo "full-smoke: FEHLER — $kennung: der Traeger liegt nicht, bevor dieser Abschnitt ihn ruft — dieser Abschnitt misst dann den falschen Zweig (der Traeger-Abschnitt oben hat ihn abgelegt)." >&2
 		exit 1
 	fi
 	if [ -n "$(git -C "$repo" status --porcelain)" ]; then
-		echo "full-smoke: FEHLER — $kennung: der Arbeitsbaum des Ziels ist vor diesem Abschnitt nicht sauber — ein Lauf braeche an seiner eigenen Sauberkeits-Sperre ab, und der Fall waere nicht der zugesagte:" >&2
+		echo "full-smoke: FEHLER — $kennung: der Arbeitsbaum des Ziels ist vor diesem Abschnitt nicht sauber — ein Lauf bricht an seiner eigenen Sauberkeits-Sperre ab, der Fall ist damit nicht der zugesagte:" >&2
 		git -C "$repo" status --porcelain >&2
 		exit 1
 	fi
 
 	# (c) KEIN GATE. `make -n` druckt die Kette, ohne sie zu fahren.
-	local kette="" kette_rc=0
+	#
+	# DIE VORBEDINGUNG STEHT ZUERST: die Zusicherung "archive-welle steht nicht in
+	# der Kette" ist ueber einer leeren Kette still gruen. Gelesen wird darum, dass
+	# die Kette die Gate-Rezepte traegt, die jeder Bootstrap fahrt — der Nachweis,
+	# die Baseline-Pruefung und der Modul-Lauf in seinem Bild. Die Marker sind
+	# REZEPT-Zeilen: `make -n` druckt die Befehle, nicht die Ziel-Namen.
+	local kette="" kette_rc=0 fehlt=""
 	kette="$( make --no-print-directory -C "$repo" -n gates 2>&1 )" || kette_rc=$?
 	if [ "$kette_rc" -ne 0 ]; then
 		echo "full-smoke: FEHLER — $kennung: die gates-Kette des Ziels ist nicht lesbar (make -n gates, Exit $kette_rc):" >&2
+		printf '%s\n' "$kette" >&2
+		exit 1
+	fi
+	local noetig
+	for noetig in 'record-gates.sh' 'baseline-verify.sh' 'docker run'; do
+		grep -qF -- "$noetig" <<<"$kette" || fehlt="$fehlt [$noetig]"
+	done
+	if [ -n "$fehlt" ]; then
+		echo "full-smoke: FEHLER — $kennung: die gelesene gates-Kette traegt nicht, was sie tragen muss:$fehlt — der Nicht-Gate-Zahn misst dann einen leeren Pruefbereich." >&2
 		printf '%s\n' "$kette" >&2
 		exit 1
 	fi
@@ -1080,6 +1098,28 @@ archivierung_im_ziel() {
 		grep -nF -- 'archive-welle' <<<"$kette" >&2
 		exit 1
 	fi
+
+	# (c2) EIN NAME, DEN DIE ANLEITUNG NICHT FUEHRT, ENDET LAUT. Die emittierte
+	# Anleitung nennt `archive-welle`, und das Fragment fuehrt genau dieses Ziel; der
+	# Name daneben kennt `make` nicht. Gemessen wird die Richtung, die den Adopter
+	# trifft, der das Ziel umbenennt und nur die skip-if-present-Anleitung zieht:
+	# `make` bricht ueber dem unbekannten Namen ab und nennt ihn, statt still nichts
+	# zu tun.
+	local fremd="" fremd_rc=0
+	fremd="$( make --no-print-directory -C "$repo" archiv-welle WELLE="$welle" 2>&1 )" || fremd_rc=$?
+	if [ "$fremd_rc" -eq 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: make archiv-welle laeuft — ein Ziel, das kein Fragment dieses Repos fuehrt, ist damit still erreichbar." >&2
+		printf '%s\n' "$fremd" >&2
+		exit 1
+	fi
+	if ! grep -qF -- 'archiv-welle' <<<"$fremd"; then
+		echo "full-smoke: FEHLER — $kennung: der Aufruf bricht ab, nennt den unbekannten Namen aber nicht (rot aus falschem Grund?):" >&2
+		printf '%s\n' "$fremd" >&2
+		einordnen "make archiv-welle im Ziel ($kennung)" "$fremd"
+		exit 1
+	fi
+	echo "full-smoke: unbekanntes Ziel ($kennung): make archiv-welle endet laut und nennt den Namen — die Anleitung zeigt auf das Ziel, das das Fragment fuehrt:"
+	grep -F -- 'archiv-welle' <<<"$fremd" | sed -n '1p' | sed 's/^/full-smoke:   /'
 
 	# Ein minimaler, GESCHLOSSENER Bestand: Welle-Plan, Ergebnisnotiz und ein Mitglied.
 	mkdir -p "$plan_done" "$reviews"
@@ -1162,7 +1202,7 @@ SMOKEEOF
 		exit 1
 	fi
 	if [ -e "$plan_done/$welle" ]; then
-		echo "full-smoke: FEHLER — $kennung: der gesperrte Lauf hat trotzdem geschrieben (done/$welle liegt) — die Vorschau steht dann NACH dem Schreibzugriff." >&2
+		echo "full-smoke: FEHLER — $kennung: der gesperrte Lauf hat trotzdem geschrieben (done/$welle liegt) — die Vorschau steht vor dem Schreibzugriff, und der Lauf hat ihn getan." >&2
 		exit 1
 	fi
 	echo "full-smoke: Sperren erreichen den Aufruf ($kennung): make archive-welle endet ueber zwei Ausloesern nicht erfolgreich, nennt beide und schreibt nichts:"
@@ -1188,7 +1228,7 @@ SMOKEEOF
 		exit 1
 	fi
 	if [ ! -f "$plan_done/$welle/archiv.zip" ]; then
-		echo "full-smoke: FEHLER — $kennung: die Archivierung meldet Vollzug, aber $welle/archiv.zip fehlt — der Traeger lief dann nicht wirklich." >&2
+		echo "full-smoke: FEHLER — $kennung: die Archivierung meldet Vollzug, aber $welle/archiv.zip fehlt — der Traeger ist damit nicht gelaufen." >&2
 		exit 1
 	fi
 	local stub
@@ -1217,7 +1257,7 @@ SMOKEEOF
 		exit 1
 	fi
 	if ! grep -qF -- "der Traeger liegt nicht" <<<"$ohne_flach"; then
-		echo "full-smoke: FEHLER — $kennung: ohne Traeger sagt make archive-welle nicht, was fehlt — ein frischer Klon laese eine leere Ausgabe als erledigt. Ausgabe:" >&2
+		echo "full-smoke: FEHLER — $kennung: ohne Traeger sagt make archive-welle nicht, was fehlt — die Ausgabe bleibt leer, und der Fall des frischen Klons bleibt unbemerkt. Ausgabe:" >&2
 		printf '%s\n' "$ohne" >&2
 		exit 1
 	fi

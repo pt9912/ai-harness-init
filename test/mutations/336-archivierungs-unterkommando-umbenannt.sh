@@ -8,8 +8,8 @@
 #
 # WAS DAS IM ZIEL BEDEUTET: der Name reist als Zeichenkette in das gebootstrappte
 # Repo, wo ihn kein Gate DIESES Repos sieht. Dort faellt der Aufruf in den
-# Init-Pfad und endet an der Sperre in run() mit Exit 2 — ein Aufruf, der nichts
-# archiviert und dabei aussieht, als haette er es getan.
+# Init-Pfad und endet an der Sperre in run() mit Exit 2 — der Aufruf archiviert
+# nichts, und sein Ausgang sieht aus wie ein Lauf, der es getan hat.
 #
 # DAS ZIEL DES FRAGMENTS BLEIBT UNVERAENDERT, und darum trifft dieser Fall allein
 # die Namens-Kopplung: die Go-Stufe liest das Ziel `archive-welle` weiterhin, und

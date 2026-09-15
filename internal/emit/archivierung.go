@@ -15,9 +15,8 @@ const archivierungMkSrc = "templates/enforce/archivierung.mk"
 //
 // UNBEDINGT, wie das Fragment der Erfassungsschicht, und aus demselben Grund: es
 // behauptet nichts ueber einen Lauf, sondern meldet die Abwesenheit des Traegers
-// selbst. Der Traeger liegt gitignored, ein frischer Klon hat ihn also nicht; ohne
-// das Fragment haette ein Ziel dort kein Kommando, das ihm das sagt — der Satz
-// "die Bedingung ist nicht eingetreten" staende in keiner Datei des Ziels.
+// selbst. Der Traeger liegt gitignored, ein frischer Klon hat ihn also nicht — und
+// das Kommando, das ihm das sagt, liegt hier und nicht bei ihm.
 func archivierungFile() enforceFile {
 	return enforceFile{src: archivierungMkSrc, dst: ArchivierungMkPath, mode: 0o644}
 }

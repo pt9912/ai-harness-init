@@ -11,10 +11,9 @@
 # fehlt, steht dann nirgends.
 #
 # GENAU EINE ZEILE FAELLT, und das ist tragend: die Zeile mit der Abhilfe bleibt
-# stehen, damit das Rezept syntaktisch heil bleibt. Eine zweite geloeschte Zeile
-# naehme der letzten Rezept-Zeile ihre Fortsetzungsmarke, das Rezept braeche mit
-# einem make-Fehler ab — und der Fall faerbte den Sensor rot, ohne die Zusage zu
-# treffen.
+# stehen. Sie traegt die Fortsetzungsmarke des Rezepts; sie ist die letzte Zeile,
+# und ohne sie endet die Rezept-Fortsetzung im Leeren (ein make-Fehler, der den
+# Sensor aus einem fremden Grund rot faerbt).
 #
 # WARUM der Fall ueber `full-smoke` faehrt: gemessen wird die AUSGABE eines
 # `make`-Aufrufs im gebootstrappten Ziel. Die Go-Stufe liest nur den Text des

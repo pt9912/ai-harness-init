@@ -82,15 +82,15 @@ func gatesHuelle(t *testing.T) map[string]bool {
 // Meldung des fehlenden Traegers haengt: das Fragment ist UNBEDINGT und teilt den
 // Zweig des Traegers nicht.
 //
-// Ein Ziel ohne Fragment haette dort gar kein Kommando — und damit auch nicht den
-// Satz, der ihm sagt, dass die Archivierung nicht eingetreten ist. Genau der Fall
-// eines frischen Klons ist der, fuer den der Satz dasteht.
+// Das Fragment ist die Stelle, an der ein Ziel liest, dass die Archivierung nicht
+// eingetreten ist — und der Fall des frischen Klons ist der, fuer den der Satz
+// dasteht.
 //
 // Rot-Gegenbeispiel: test/mutations/334-archivierungs-fragment-am-traeger-zweig.sh.
 func TestArchivierungFragment_LiegtAuchOhneTraeger(t *testing.T) {
 	frag := archivierungsFragment(t, zielOhneTraeger(t))
 	if !strings.Contains(frag, zielArchiv) {
-		t.Errorf("%s liegt ohne abgelegten Traeger, nennt %q aber nicht — das Ziel haette dann kein Kommando, das ihm die fehlende Faehigkeit nennt:\n%s",
+		t.Errorf("%s liegt ohne abgelegten Traeger, nennt %q aber nicht — dem Ziel fehlt damit das Kommando, das ihm die fehlende Faehigkeit nennt:\n%s",
 			emit.ArchivierungMkPath, zielArchiv, frag)
 	}
 }
@@ -101,8 +101,7 @@ func TestArchivierungFragment_LiegtAuchOhneTraeger(t *testing.T) {
 //
 // Der Ablageort des Traegers steht NICHT als abgeschriebener Pfad im Waechter: er
 // wird gegen emit.CarrierPath gehalten, denselben Ort, an den der Bootstrap den
-// Traeger legt. Driften die zwei, sucht das Kommando ein Programm, das dort nicht
-// liegt, und meldet bei jedem Aufruf die Abwesenheit — bei vorhandenem Traeger.
+// Traeger legt. Die zwei sind derselbe Ort, und beide werden hier gemessen.
 //
 // Rot-Gegenbeispiel: test/mutations/337-archivierung-haengt-an-gate-checks.sh.
 func TestArchivierungFragment_ZielAmTraegerUndNichtInDerGatesKette(t *testing.T) {
@@ -110,17 +109,17 @@ func TestArchivierungFragment_ZielAmTraegerUndNichtInDerGatesKette(t *testing.T)
 
 	regeln, checks := regelnIn(frag)
 	if _, da := regeln[zielArchiv]; !da {
-		t.Errorf("%s definiert das Ziel %q nicht — das Ziel-Repo haette kein Kommando:\n%s", emit.ArchivierungMkPath, zielArchiv, frag)
+		t.Errorf("%s definiert das Ziel %q nicht — das Ziel-Repo hat damit kein Kommando:\n%s", emit.ArchivierungMkPath, zielArchiv, frag)
 	}
 	if len(checks) != 0 {
 		t.Errorf("%s haengt %v an GATE_CHECKS — es traegt ein Kommando, kein Gate", emit.ArchivierungMkPath, checks)
 	}
 	if !strings.Contains(frag, "ARCHIV_CARRIER ?= "+emit.CarrierPath("ai-harness-init")+"\n") {
-		t.Errorf("%s nennt als Ablageort nicht %q — das Kommando sucht den Traeger dann, wo der Bootstrap ihn nicht ablegt:\n%s",
+		t.Errorf("%s nennt als Ablageort nicht %q — gesucht wird damit an einem Ort, an dem der Bootstrap nichts ablegt:\n%s",
 			emit.ArchivierungMkPath, emit.CarrierPath("ai-harness-init"), frag)
 	}
 	if huelle := gatesHuelle(t); huelle[zielArchiv] {
-		t.Errorf("%q haengt in der gates-Kette des Ziels — ein Gate ueber einer Archivierung waere eines ueber leerem Pruefbereich: %v",
+		t.Errorf("%q haengt in der gates-Kette des Ziels — die Archivierung prueft nichts: %v",
 			zielArchiv, sortiert(huelle))
 	}
 }

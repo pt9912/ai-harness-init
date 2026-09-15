@@ -88,9 +88,11 @@ Wellen-Closure), Modul 7 (Carveouts), Modul 5 (Lifecycle). Bei Konflikt gilt der
    bezeugt allein der Archivierungs-Commit, und der Move bricht die Verweise auf die bewegten
    Dateien. Liegt der Träger im Repo, führt `make archive-welle WELLE=<welle-id>` ihn; fehlt er,
    sagt das Kommando das selbst.
-   <!-- ANPASSEN: heißt das Ziel in DEINEM Repo anders, nenne hier deines — der Adopter darf es
-        umbenennen. Der Weg zum Träger ist die repo-spezifische Stelle; der Satz über das fehlende
-        Werkzeug darunter gilt unabhängig davon. -->
+   <!-- ANPASSEN: der Weg zum Träger ist die repo-spezifische Stelle; nenne hier den deines Repos.
+        Das Ziel `archive-welle` führt ein tool-eigenes Fragment dieses Repos, das jeder Bootstrap
+        kanonisch neu schreibt, während diese Anleitung skip-if-present bleibt und nicht nachzieht.
+        Wer das Ziel umbenennt, zieht das Fragment mit — sonst steht hier ein Name, den `make`
+        nicht kennt, und der Aufruf endet laut statt still. -->
    Hat dein Repo das Werkzeug nicht, ist die Bedingung nicht eingetreten; **das** gehört als
    Feststellung in die Results-Notiz, nicht in einen Handlauf. Wellen, die vor der Einführung
    schlossen, müssen nicht nachgerüstet werden.

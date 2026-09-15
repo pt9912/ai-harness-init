@@ -15,8 +15,8 @@
 # zwei Faelle — jedes Kommando meldet seine eigene Abwesenheit.
 #
 # WARUM die Go-Stufe die schmalste ausreichende ist: gemessen wird der Bestand
-# nach einem Emit in ein leeres Zielverzeichnis. `make full-smoke` faende denselben
-# Fehler ueber die Kette des gebootstrappten Repos und kostet dafuer einen
+# nach einem Emit in ein leeres Zielverzeichnis. Ein `make full-smoke`-Lauf findet
+# denselben Fehler ueber die Kette des gebootstrappten Repos; sein Preis ist ein
 # Docker-Bau je Sprache.
 set -euo pipefail
 sed -i 's@^\t\tcontent, err := enforceContent(f.src, captured)$@\t\tif f.dst == ArchivierungMkPath \&\& !captured {\n\t\t\tcontinue\n\t\t}\n&@' internal/emit/enforce.go
