@@ -323,33 +323,73 @@ func TestEnforce_LangAgnostic(t *testing.T) {
 	}
 }
 
-// TestEnforce_Convergent (slice-038): die Durchsetzungs-Mechanik ist tool-eigene
-// Infrastruktur (ADR-0007 konvergent) — ein Re-Lauf schreibt sie KANONISCH neu (heilt eine
-// adopter-modifizierte Fassung), kein Refuse. Der Modus wird MITgezogen (0755, Befund
-// slice-022a L2: os.WriteFile setzt Perm nur beim Anlegen; writeFileMode chmod't nach).
-// Rot-Gegenbeispiel: eine Mutation, die Enforce wieder refusen laesst, faerbt das rot.
+// TestEnforce_Convergent: die Durchsetzungs-Mechanik ist tool-eigene Infrastruktur
+// (ADR-0007 konvergent) — ein Re-Lauf schreibt sie KANONISCH neu (heilt eine
+// adopter-modifizierte Fassung), kein Refuse. Der Modus wird MITGEZOGEN: os.WriteFile
+// setzt das Perm nur beim Anlegen, writeFileMode chmod't nach.
+//
+// GEMESSEN WIRD DIE GANZE MENGE: ADR-0007 bindet die Klasse an JEDE emittierte Datei.
+// Je Pfad wird der kanonische Stand des ersten Laufs festgehalten, die Datei danach
+// GELOESCHT und verstellt neu angelegt — Inhalt und Modus zugleich — und der zweite Lauf
+// gegen den festgehaltenen Stand gehalten. Die drei Pfade des Commit-Kennungs-Waechters
+// (.githooks/commit-msg, die Pruefung, das Aktivierungs-Fragment) liegen in dieser Menge
+// und werden damit einzeln gegen ihre Klasse gehalten.
+//
+// Rot-Gegenbeispiel: test/mutations/49-enforce-konvergent.sh biegt den Schreiber der
+// Schleife auf skip-if-present um; der zweite Lauf laesst die Drift dann stehen.
 func TestEnforce_Convergent(t *testing.T) {
 	dir := t.TempDir()
-	dst := filepath.Join(dir, filepath.FromSlash("tools/harness/record-gates.sh"))
-	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
-		t.Fatalf("vorbereiten: %v", err)
+	if err := emit.Enforce(dir, io.Discard); err != nil {
+		t.Fatalf("Enforce: %v", err)
 	}
-	if err := os.WriteFile(dst, []byte("adopter-modifiziert"), 0o644); err != nil {
-		t.Fatalf("vorbereiten: %v", err)
+	kanonisch := map[string][]byte{}
+	modus := map[string]os.FileMode{}
+	for _, rel := range emit.EnforcePaths() {
+		p := filepath.Join(dir, filepath.FromSlash(rel))
+		roh, err := os.ReadFile(p)
+		if err != nil {
+			t.Fatalf("%s lesen: %v", rel, err)
+		}
+		info, err := os.Stat(p)
+		if err != nil {
+			t.Fatalf("%s stat: %v", rel, err)
+		}
+		kanonisch[rel] = roh
+		modus[rel] = info.Mode().Perm()
+		// Verstellt wird per Loeschen + Neuanlegen: ueber eine vorhandene Datei
+		// geschrieben bliebe ihr Modus stehen und die zweite Haelfte der Pruefung
+		// waere still gruen.
+		if err := os.Remove(p); err != nil {
+			t.Fatalf("%s entfernen: %v", rel, err)
+		}
+		if err := os.WriteFile(p, []byte("adopter-modifiziert"), 0o600); err != nil {
+			t.Fatalf("%s verstellen: %v", rel, err)
+		}
 	}
+	if len(kanonisch) == 0 {
+		t.Fatal("EnforcePaths ist leer — der Waechter misst dann nichts")
+	}
+
 	// konvergent: kein Refuse, kanonisch neu (Drift geheilt).
 	if err := emit.Enforce(dir, io.Discard); err != nil {
 		t.Fatalf("Enforce (konvergent darf nicht refusen): %v", err)
 	}
-	if got := mustReadString(t, dst); got == "adopter-modifiziert" {
-		t.Error("konvergenter Re-Lauf hat record-gates.sh NICHT geheilt (nicht ueberschrieben)")
-	}
-	info, err := os.Stat(dst)
-	if err != nil {
-		t.Fatalf("stat: %v", err)
-	}
-	if info.Mode().Perm()&0o111 == 0 {
-		t.Errorf("nach konvergentem Re-Lauf Mode %v — richtiger Inhalt in nicht ausfuehrbarer Datei (L2)", info.Mode().Perm())
+	for _, rel := range emit.EnforcePaths() {
+		p := filepath.Join(dir, filepath.FromSlash(rel))
+		got := mustReadString(t, p)
+		if got != string(kanonisch[rel]) {
+			t.Errorf("%s wurde nicht kanonisch neu geschrieben (konvergent verletzt): %d Bytes gegen %d des ersten Laufs",
+				rel, len(got), len(kanonisch[rel]))
+			continue
+		}
+		info, err := os.Stat(p)
+		if err != nil {
+			t.Fatalf("%s stat: %v", rel, err)
+		}
+		if info.Mode().Perm() != modus[rel] {
+			t.Errorf("%s hat nach dem Re-Lauf Mode %v statt %v — der Modus wandert nicht mit (L2)",
+				rel, info.Mode().Perm(), modus[rel])
+		}
 	}
 }
 

@@ -62,6 +62,19 @@ patterns_von() {
   [[ "$output" == *"Betreff ohne Kennung"* ]]
 }
 
+@test "rot: der Grund nennt den Ort der Menge und zaehlt sie nicht selbst auf" {
+  lauf 'Betreff ohne Kennung\n'
+  [ "$status" -eq 1 ]
+  # Die Menge steht in der Zeile `patterns=`; der Grund zeigt dorthin ...
+  [[ "$output" == *'patterns='* ]]
+  # ... und fuehrt sie nicht als zweite Fassung: keine Kennungs-Klasse der Menge
+  # steht in der Ausgabe. Als Muster steht die Menge allein in `patterns=`.
+  [[ "$output" != *'ADR-'* ]]
+  [[ "$output" != *'LH-'* ]]
+  [[ "$output" != *'MR-'* ]]
+  [[ "$output" != *'slice-'* ]]
+}
+
 @test "gruen: jede der vier Kennungs-Klassen der Menge wird angenommen" {
   local k
   for k in 'ADR-0053' 'LH-FA-01' 'MR-057' 'slice-126'; do

@@ -79,6 +79,49 @@ func TestCommitMsgTraeger_LiegtImZielUndRuftDiePruefungDortAuf(t *testing.T) {
 	}
 }
 
+// Rot-Gegenbeispiel: test/mutations/354-agenten-kanal-geht-ins-ziel.sh.
+//
+// TestCommitMsgTraeger_ZielTraegtNurDenGitKanal haelt den Traeger-BESTAND des Ziels fest:
+// die Kennungs-Zusage haengt dort an EINEM Kanal, dem git-eigenen Hook. Den
+// PreToolUse-Zusatz dieses Repos bekommt das Ziel nicht — der haengt am Tool-Call des
+// Agenten, und harness/README.md §Traceability sagt das zu. Gemessen wird darum die
+// ABWESENHEIT: kein emittierter Pfad eines Agenten-Kanals fuer Commit-Messages, und die
+// emittierte .claude/settings.json verdrahtet keinen.
+//
+// WARUM DIE ABWESENHEIT UND NICHT NUR DIE ZWEI DATEIEN: die Zusage gilt der
+// Traeger-MENGE des Ziels. Ein Zahn, der allein die erwarteten Dateien stat't, ist blind
+// fuer einen zweiten Kanal daneben — der Gegenstand ist die Menge, nicht der Einzelpfad.
+//
+// Die zwei Hook-Namen sind Vorbedingung, nicht Wiederholung: sie belegen, dass die
+// gelesene settings.json die emittierte ist. EnforceFile liefert einen leeren slice,
+// wenn der Pfad unbekannt ist, und ueber einem leeren slice misst die Abwesenheit nichts.
+func TestCommitMsgTraeger_ZielTraegtNurDenGitKanal(t *testing.T) {
+	var kanal []string
+	for _, rel := range emit.EnforcePaths() {
+		if strings.Contains(rel, "commit-msg") &&
+			rel != emit.CommitMsgHookPath && rel != emit.CommitMsgCheckPath {
+			kanal = append(kanal, rel)
+		}
+	}
+	if len(kanal) > 0 {
+		t.Errorf("das Ziel bekommt %v als zweiten Commit-Message-Kanal — harness/README.md §Traceability sagt zu, dass die Kennungs-Zusage dort am git-eigenen Hook haengt",
+			kanal)
+	}
+
+	settings := string(emit.EnforceFile(".claude/settings.json"))
+	if settings == "" {
+		t.Fatal(".claude/settings.json nicht emittiert (EnforceFile leer) — der Waechter misst dann nichts")
+	}
+	for _, noetig := range []string{"stop-require-gates.sh", "pretooluse-command-guard.sh"} {
+		if !strings.Contains(settings, noetig) {
+			t.Fatalf(".claude/settings.json nennt %q nicht — gemessen waere ein anderer Bestand als der des Ziels:\n%s", noetig, settings)
+		}
+	}
+	if strings.Contains(settings, "commit-msg") {
+		t.Errorf(".claude/settings.json verdrahtet einen Commit-Message-Waechter — das Ziel traegt die Kennungs-Zusage am git-eigenen Hook, nicht am Agenten-Kanal:\n%s", settings)
+	}
+}
+
 // Rot-Gegenbeispiel: test/mutations/353-traeger-ohne-umgehungs-zeile.sh.
 //
 // TestCommitMsgTraeger_NenntSeineZweiGrenzen haelt den TEXT der zwei Grenzen fest,

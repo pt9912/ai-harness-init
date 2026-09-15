@@ -13,10 +13,11 @@
 # GRENZE. Geprueft wird die ANWESENHEIT einer Kennung, nicht ihre Wahrheit: eine
 # Message, die zusaetzlich einen nicht aufloesbaren Verweis nennt, geht mit
 # derselben Kennung durch. Die Menge ist die des mitgelieferten Regelwerks und
-# steht in der Zeile `patterns=` unten — sie ist die einzige Fassung in diesem
-# Baum, und ein erneuter Bootstrap schreibt diese Datei kanonisch neu. Ein Repo
-# mit einer eigenen Kennungs-Klasse setzt darum HOOKS_DIR auf sein eigenes
-# Hook-Verzeichnis (harness/mk/hooks-install.mk) und fuehrt dort seinen Traeger.
+# steht in der Zeile `patterns=` unten — als Muster steht sie nur dort: der Kopf
+# nennt die Klassen in Worten, die Fehlermeldung zeigt auf die Zeile, und ein
+# erneuter Bootstrap schreibt diese Datei kanonisch neu. Ein Repo mit einer
+# eigenen Kennungs-Klasse setzt darum HOOKS_DIR auf sein eigenes Hook-Verzeichnis
+# (harness/mk/hooks-install.mk) und fuehrt dort seinen Traeger.
 # Als Kommentarzeile gilt die fuehrende Raute; ein abweichendes core.commentChar
 # liest dieses Skript nicht.
 #
@@ -69,6 +70,5 @@ done < "$msg_file"
 
 echo "commit-msg-traceability: keine Traceability-Kennung in der Commit-Message:" >&2
 echo "            ${subject}" >&2
-echo "            Erwartet wird eine Kennung aus {ADR-NNNN, LH-XX-NN, MR-NNN, slice-N};" >&2
-echo "            die Menge steht in dieser Datei in der Zeile \`patterns=\`." >&2
+echo "            Erwartet wird eine Kennung aus der Menge in der Zeile \`patterns=\` dieser Pruefung." >&2
 exit 1

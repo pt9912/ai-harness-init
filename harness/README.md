@@ -152,21 +152,24 @@ nennt — für ihn läuft diese Lücke weiter
 `docs/plan/planning/observations/`). Der `commit-msg`-Hook braucht die Form nicht: er liest eine
 Message-Datei, die git ihm übergibt, gleichgültig welcher Aufruf sie erzeugt hat.
 
-**Im gebootstrappten Ziel liegen dieselben zwei Träger, mit derselben Reichweite.** Der
-git-eigene Hook reist als `.githooks/commit-msg` mit dem Klon, seine Prüfung als
-`tools/harness/commit-msg-traceability.sh` daneben; beide schreibt der Bootstrap kanonisch neu, und
-der Hook ruft die Prüfung über sein eigenes Verzeichnis auf. Verdrahtet wird er über
+**Im gebootstrappten Ziel trägt der git-eigene Hook die Kennungs-Zusage; den PreToolUse-Zusatz für
+Commit-Messages bekommt es nicht.** Er reist als `.githooks/commit-msg` mit dem Klon, seine Prüfung
+als `tools/harness/commit-msg-traceability.sh` daneben; beide schreibt der Bootstrap kanonisch neu,
+und der Hook ruft die Prüfung über sein eigenes Verzeichnis auf. Verdrahtet wird er über
 `harness/mk/hooks-install.mk` <!-- d-check:ignore (der Pfad entsteht erst im gebootstrappten Ziel) -->:
 das Fragment definiert `make hooks-install`, das `core.hooksPath` auf `.githooks` setzt, und der
 Aggregator des Ziels bindet es über `include harness/mk/*.mk` ein. Die Command-Vorlage des Ziels
 (`.claude/commands/implement-slice.md`) nennt den Hook, den Aktivierungsschritt und seine zwei
 Grenzen — ohne diesen Satz läge der Träger dort und schwiege. Die zwei Grenzen sind dieselben wie
-hier: die Aktivierung reist nicht mit dem Klon, und `--no-verify` umgeht ihn. Was er dort ebenso
-wenig erreicht wie hier, steht im Fragment geschrieben: die zweite Hälfte der Zusage — ein
-Doku-Update bei berührtem öffentlichem Vertrag — ist von einem Commit-Wächter nicht mechanisch
+hier: die Aktivierung reist nicht mit dem Klon, und `--no-verify` umgeht ihn. **Die erste wiegt dort
+schwerer, weil der Agenten-Kanal fehlt:** hier fängt der PreToolUse-Zusatz Commits in der
+`-F`-Form auch ohne Aktivierung, im Ziel ist jeder Commit ohne `make hooks-install` ungeprüft. Was
+er dort ebenso wenig erreicht wie hier, steht im Fragment geschrieben: die zweite Hälfte der Zusage
+— ein Doku-Update bei berührtem öffentlichem Vertrag — ist von einem Commit-Wächter nicht mechanisch
 prüfbar. **Die Kennungs-Menge steht dort in der Zeile `patterns=` der Prüfung, und der Bootstrap
 legt keine zweite Fassung daneben ab** — die `commits:`-Kopplung aus §Traceability bleibt eine
-Eigenschaft dieses Repos, und die Prüfung des Ziels liest die Doku-Gate-Konfiguration nicht.
+Eigenschaft dieses Repos, und die Prüfung des Ziels liest die Doku-Gate-Konfiguration nicht. Ihre
+Fehlermeldung wiederholt die Menge nicht, sondern nennt die Zeile, in der sie steht.
 Gemessen wird die ganze Kette am gebootstrappten Ziel von
 [`make full-smoke`](sensors/full-smoke.md): Aktivierung, ein Commit ohne Kennung (der fällt), einer
 mit Kennung (der durchgeht) und die Umgehung.
