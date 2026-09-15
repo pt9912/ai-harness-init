@@ -15,6 +15,13 @@
 # Kennung durch. Beide Grenzen stehen auch im Kopf von
 # tools/harness/commit-msg-traceability.sh.
 #
+# WAS ER MITNIMMT. Er haengt am Commit und sieht jede Klasse, die `git` erzeugt —
+# auch die Commits der Repo-Werkzeuge. `make slice-mv` und `make archive-welle`
+# committen intern mit dem Slice- bzw. Welle-Namen; traegt er keine Kennung aus der
+# Menge, faellt der Commit des Werkzeugs. Ein Repo, das diesen Traeger aktiviert,
+# gibt seinen Werkzeug-Messages darum eine Kennung — sonst bricht sein eigenes
+# Werkzeug an seinem eigenen Waechter.
+#
 # ABHAENGIGKEIT. Dieses Rezept ruft `git` — die zugelassene Host-Abhaengigkeit
 # dieses Aufbaus; der Traeger selbst laeuft im Commit-Pfad und setzt weder Docker
 # noch Netz noch ein Gate-Bild voraus.

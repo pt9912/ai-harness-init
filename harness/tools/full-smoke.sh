@@ -2430,18 +2430,20 @@ kennungs_traeger_im_ziel() {
 	echo "full-smoke: Traeger im Ziel ($kennung): make hooks-install setzt core.hooksPath; ein Commit OHNE Kennung faellt mit der Meldung der Pruefung und entsteht nicht, einer MIT Kennung geht durch, und --no-verify umgeht den Traeger:"
 	grep -F -- 'keine Traceability-Kennung' <<<"$rot_meldung" | sed -n '1p' | sed 's/^/full-smoke:   /'
 
-	# (f) DIE REICHWEITE STEHT IM ZIEL. Die zweite Haelfte der Traceability-Zusage ist
-	# von keinem Commit-Waechter mechanisch pruefbar; dass das dasteht, ist die
-	# Zusage, die der Traeger ueber sich selbst traegt.
+	# (f) DIE REICHWEITE STEHT IM ZIEL, in beiden Richtungen: die zwei Grenzen des
+	# Traegers, die Haelfte der Traceability-Zusage, die kein Commit-Waechter
+	# mechanisch pruefen kann, und die Commits der Repo-Werkzeuge, die er mitnimmt
+	# und abbricht. Dass das dasteht, ist die Zusage, die der Traeger ueber sich
+	# selbst traegt.
 	local fragflach
 	fragflach="$(tr -s '[:space:]' ' ' <"$frag")"
-	for noetig in 'nicht mechanisch pruefbar' 'ANWESENHEIT einer Kennung, nicht ihre Wahrheit' '--no-verify'; do
+	for noetig in 'nicht mechanisch pruefbar' 'ANWESENHEIT einer Kennung, nicht ihre Wahrheit' '--no-verify' 'auch die Commits der Repo-Werkzeuge'; do
 		if ! grep -qF -- "$noetig" <<<"$fragflach"; then
-			echo "full-smoke: FEHLER — $kennung: das Aktivierungs-Fragment nennt '$noetig' nicht — eine Grenze, die nicht neben der Zusage steht, ist keine (LH-QA-01)." >&2
+			echo "full-smoke: FEHLER — $kennung: das Aktivierungs-Fragment nennt '$noetig' nicht — die Reichweite des Traegers steht damit nicht neben der Zusage (LH-QA-01)." >&2
 			exit 1
 		fi
 	done
-	echo "full-smoke: Reichweite im Ziel ($kennung): das Fragment nennt die zwei Grenzen des Traegers (Umgehung und Anwesenheit-statt-Wahrheit) und die Haelfte der Zusage, die kein Commit-Waechter pruefen kann."
+	echo "full-smoke: Reichweite im Ziel ($kennung): das Fragment nennt die zwei Grenzen des Traegers (Umgehung und Anwesenheit-statt-Wahrheit), die Haelfte der Zusage, die kein Commit-Waechter pruefen kann, und die Commits der Repo-Werkzeuge, die er mitnimmt und abbricht."
 }
 
 kennungs_traeger_im_ziel "$tmprepo" "golang"
@@ -2462,4 +2464,4 @@ echo "full-smoke: OK — ROLLEN-TYPEN (slice-097/LH-FA-10): 6 kanonische Typen u
 echo "full-smoke: OK — FELDLISTE (slice-098/LH-FA-10): $FELDLISTE_REL liegt in BEIDEN Bootstrap-Varianten im geprueften Doku-Bereich, fuehrt die drei stehenden Grenz-Saetze und deckt jeden Feldnamen der real geschriebenen Span-Zeile; ein toter Verweis darin faerbt das docs-check des Ziels rot (Ortswahl belegt); ein 2. Init-Lauf heilt eine von Hand geaenderte Fassung (konvergent, die einzige Zusage des Dokuments ueber sich selbst)."
 echo "full-smoke: OK — ARCHIVIERUNG IM ZIEL (ADR-0033 Festlegung 4 und 5): make archive-welle ist kein Gate und steht in keiner gates-Kette; ein Name daneben, den kein Fragment fuehrt, endet laut statt still; die zwei Sperren [untergrenze] und [haenger] halten den Aufruf auf, ueber demselben Bestand ohne sie laeuft die Operation real (Archiv + Stubs aus der vendored Vorlage), und ohne Traeger meldet das Kommando die Abwesenheit mit Exit 0."
 echo "full-smoke: OK — LIFECYCLE-WECHSEL IM ZIEL: make slice-mv ist kein Gate und steht in keiner gates-Kette; der Aufruf bewegt den Slice, legt den reinen Move als eigenen Commit an (0 insertions/0 deletions gegen den Verweis-Nachzug getrennt) und zieht beide Richtungen nach — den eingehenden Praefix-Verweis der Nachbar-Datei und das praefixlose Geschwister-Ziel in der bewegten Datei; eine ADR bleibt nach der Repo-Politik des Fragments unberuehrt; ueber einem unsauberen Arbeitsbaum bricht der Aufruf ab, nennt es und bewegt nichts; ohne jeden Verweis bleibt es beim einen Move-Commit; und ohne das Werkzeug bricht das Ziel laut ab, statt still auf ein fehlendes Programm zu zeigen."
-echo "full-smoke: OK — COMMIT-KENNUNG IM ZIEL: .githooks/commit-msg liegt ausfuehrbar im Ziel und reist mit dem Klon, seine Aktivierung nicht — make hooks-install setzt core.hooksPath und ist kein Gate (steht in keiner gates-Kette); danach faellt ein Commit OHNE Kennung mit der Meldung der Pruefung und entsteht nicht, einer MIT Kennung geht durch, und git commit --no-verify umgeht den Traeger; die Reichweite (Umgehung, Anwesenheit-statt-Wahrheit, die von keinem Commit-Waechter pruefbare zweite Haelfte der Zusage) steht im Ziel geschrieben."
+echo "full-smoke: OK — COMMIT-KENNUNG IM ZIEL: .githooks/commit-msg liegt ausfuehrbar im Ziel und reist mit dem Klon, seine Aktivierung nicht — make hooks-install setzt core.hooksPath und ist kein Gate (steht in keiner gates-Kette); danach faellt ein Commit OHNE Kennung mit der Meldung der Pruefung und entsteht nicht, einer MIT Kennung geht durch, und git commit --no-verify umgeht den Traeger; die Reichweite (Umgehung, Anwesenheit-statt-Wahrheit, die von keinem Commit-Waechter pruefbare zweite Haelfte der Zusage, die mitgenommenen Werkzeug-Commits) steht im Ziel geschrieben."

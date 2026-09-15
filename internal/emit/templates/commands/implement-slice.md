@@ -50,7 +50,10 @@ emittierten Durchsetzungsschicht):
   setzt `core.hooksPath` und ist der eine Schritt dazwischen; `git commit --no-verify` umgeht ihn.
   Geprüft wird die **Anwesenheit** einer Kennung, nicht ihre Wahrheit. Was er **nicht** erreicht:
   die zweite Hälfte der Traceability-Zusage — ein Doku-Update bei berührtem öffentlichem Vertrag —
-  ist von einem Commit-Wächter nicht mechanisch prüfbar und bleibt deine Arbeit.
+  ist von einem Commit-Wächter nicht mechanisch prüfbar und bleibt deine Arbeit. Er **erreicht**
+  dagegen jede Commit-Klasse, die `git` erzeugt — auch die der Repo-Werkzeuge (`make slice-mv`,
+  `make archive-welle`): trägt eine solche Message keine Kennung aus der Menge — bei einer benannten
+  Kennung trifft kein Muster —, fällt sie.
 
 ## Kontext lesen (Modul 9, Schritte 1–3)
 

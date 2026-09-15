@@ -186,9 +186,9 @@ func TestHooksInstallFragment_IstKeinGateUndNenntDenTraeger(t *testing.T) {
 //
 // TestHooksInstallFragment_TraegtDieReichweite steht fuer die Zusage aus der
 // DoD-Reichweiten-Haelfte: was der Traeger NICHT erreicht, steht neben dem, was er
-// erreicht. Gemessen wird der Text, nicht seine Wirkung — die zweite Haelfte der
-// Traceability-Regel ist von keinem Commit-Waechter pruefbar, und genau das muss
-// dastehen.
+// MITNIMMT. Gemessen wird der Text, nicht seine Wirkung — die zweite Haelfte der
+// Traceability-Regel ist von keinem Commit-Waechter pruefbar, und die Commits der
+// Repo-Werkzeuge fallen an ihm; beides muss dastehen.
 func TestHooksInstallFragment_TraegtDieReichweite(t *testing.T) {
 	frag := mustReadString(t, filepath.Join(commitMsgZiel(t), filepath.FromSlash(emit.HooksInstallMkPath)))
 	flach := strings.Join(strings.Fields(frag), " ")
@@ -198,6 +198,8 @@ func TestHooksInstallFragment_TraegtDieReichweite(t *testing.T) {
 		"ANWESENHEIT einer Kennung, nicht ihre Wahrheit",
 		"--no-verify",
 		"weder Docker",
+		"sieht jede Klasse, die `git` erzeugt",
+		"gibt seinen Werkzeug-Messages darum eine Kennung",
 	} {
 		if !strings.Contains(flach, satz) {
 			t.Errorf("%s fuehrt %q nicht — die Reichweiten-Zusage ist damit weiter als der Traeger:\n%s",

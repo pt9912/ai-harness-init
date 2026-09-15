@@ -159,11 +159,19 @@ und der Hook ruft die Prüfung über sein eigenes Verzeichnis auf. Verdrahtet wi
 `harness/mk/hooks-install.mk` <!-- d-check:ignore (der Pfad entsteht erst im gebootstrappten Ziel) -->:
 das Fragment definiert `make hooks-install`, das `core.hooksPath` auf `.githooks` setzt, und der
 Aggregator des Ziels bindet es über `include harness/mk/*.mk` ein. Die Command-Vorlage des Ziels
-(`.claude/commands/implement-slice.md`) nennt den Hook, den Aktivierungsschritt und seine zwei
-Grenzen — ohne diesen Satz läge der Träger dort und schwiege. Die zwei Grenzen sind dieselben wie
-hier: die Aktivierung reist nicht mit dem Klon, und `--no-verify` umgeht ihn. **Die erste wiegt dort
-schwerer, weil der Agenten-Kanal fehlt:** hier fängt der PreToolUse-Zusatz Commits in der
-`-F`-Form auch ohne Aktivierung, im Ziel ist jeder Commit ohne `make hooks-install` ungeprüft. Was
+(`.claude/commands/implement-slice.md`) nennt den Hook, den Aktivierungsschritt, seine zwei Grenzen
+und die Commits, die er mitnimmt — ohne diesen Satz läge der Träger dort und schwiege. Die zwei
+Grenzen sind dieselben wie hier: die Aktivierung reist nicht mit dem Klon, und `--no-verify` umgeht
+ihn. **Die erste wiegt dort schwerer, weil der Agenten-Kanal fehlt:** hier fängt der
+PreToolUse-Zusatz Commits in der `-F`-Form auch ohne Aktivierung, im Ziel ist jeder Commit ohne
+`make hooks-install` ungeprüft.
+**Er hängt dort am Commit und sieht darum auch die Commits der Repo-Werkzeuge:** `make slice-mv`
+und `make archive-welle` committen intern mit dem Slice- bzw. Welle-Namen, und eine benannte
+Kennung trifft kein Muster der Menge — solche Commits fallen an ihm, sobald er aktiviert ist. Ein
+Ziel, das ihn aktiviert, gibt seinen Werkzeug-Messages darum eine Kennung. Wie viele Messages
+dieser Klasse hier ohne Kennung sind, sagt die Tabelle oben mit ihrem Kommando — die Zahl steht
+darum nicht daneben
+([`MR-025`](conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)). Was
 er dort ebenso wenig erreicht wie hier, steht im Fragment geschrieben: die zweite Hälfte der Zusage
 — ein Doku-Update bei berührtem öffentlichem Vertrag — ist von einem Commit-Wächter nicht mechanisch
 prüfbar. **Die Kennungs-Menge steht dort in der Zeile `patterns=` der Prüfung, und der Bootstrap
