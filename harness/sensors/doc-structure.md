@@ -70,6 +70,23 @@ ausgibt, kein No-op und kein Kommentar auf einer anderen Zeile — und damit, ob
 würde*, nicht, ob sie in jedem realen Lauf tatsächlich erscheint; Letzteres bräuchte einen
 laufenden Docker-Aufruf und ist kein hermetischer, netzloser Test.
 
+## Ausgabe und Ausgänge
+
+| Exit | Bedeutung |
+|---|---|
+| 0 | kein Befund im Prüfbereich des Moduls |
+| 1 | mindestens ein Befund; je Befund eine Zeile *Datei:Zeile · Ziel · Befund-Art · Grund* |
+| 2 | Nutzungs- oder Umgebungsfehler, gemeldet als `d-check: error: …`; kein Befund ist erhoben |
+
+Die Vollständigkeits-Zeile `N Datei(en) geprüft, M Befund(e)` erscheint bei 0 und 1 und spricht
+über den Prüfbereich (§Grenze), nicht über das Repo. `make` meldet den Exit als `Fehler <n>` und
+endet selbst mit 2. Die Block-Marke des Rezepts folgt nur auf Exit 0 (§Grenze).
+
+## Sperren
+
+- `d-check: error: …` — die `.d-check.yml` ist ungültig; jeder Konfigurationsfehler bricht vor dem
+  Scan ab, ohne Vollständigkeits-Zeile, mit Exit 2 → die Konfiguration berichtigen.
+
 ## Bindung
 
 Kuratiert in `exempt-targets` (`.d-check.yml` `targets:`-Block) — kein Gate-Versprechen. Ein

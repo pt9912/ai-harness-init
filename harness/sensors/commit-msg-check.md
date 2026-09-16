@@ -76,6 +76,16 @@ hält [`test/commit-msg-hook.bats`](../../test/commit-msg-hook.bats) gegen die L
 | 1 | keine Kennung gefunden (`commit-untraceable`) |
 | 2 | Aufruf-Fehler, z. B. `commits.id-patterns` leer/fehlend |
 
+## Sperren
+
+Die zwei ersten prüft das Rezept im `Makefile`, bevor es das Bild startet.
+
+- `commit-msg-check: MSG=<datei> fehlt` — `MSG` ist leer; Exit 2 → eine Message-Datei nennen.
+- `commit-msg-check: MSG=… ist keine Datei` — der Pfad ist keine Datei; Exit 2 → den Pfad
+  berichtigen.
+- `d-check: error: …` — die `.d-check.yml` ist ungültig; der Lauf bricht vor der Prüfung ab,
+  Exit 2 → die Konfiguration berichtigen.
+
 ## Bindung
 
 Träger dieses Ziels: [`.claude/hooks/pretooluse-commit-msg-guard.sh`](../../.claude/hooks/pretooluse-commit-msg-guard.sh);

@@ -19,6 +19,21 @@ existiert — hermetisch (bash+awk), kein Docker, kein Netz.
 
 Der Mechanismus selbst ist hier **nicht** geändert (Gate-*Anheben* ist ein Steering-Loop nach [`MR-001`](../conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids), und er betrifft jede künftige neue Datei, nicht die Telemetrie) — er wartet auf einen eigenen Schnitt.
 
+## Ausgabe und Ausgänge
+
+| Exit | Bedeutung |
+|---|---|
+| 0 | kein Befund; letzte Zeile `comment-claims: N Datei(en) geprueft, 0 Befund(e)` |
+| 1 | mindestens eine Behauptung ohne Sensor-Nennung oder ein genannter Test, den es nicht gibt; die Befunde stehen auf stderr |
+
+`N` ist die Zahl der übergebenen Pfade. Die Zeile spricht über den Ausschnitt aus §Grenze, nicht
+über das Repo; ohne Pfade lautet sie `0 Datei(en) geprueft, 0 Befund(e)`.
+
+## Sperren
+
+Keine: der Lauf bricht vor dem Prüfen nicht ab. Ein übergebener Pfad, der keine Datei ist, wird
+ohne Meldung übersprungen (`harness/tools/comment-claims.sh`, Schleife über die Argumente).
+
 ## Bindung
 
 [`AGENTS.md`](../../AGENTS.md) §3.6; Bestandteil von `make gates`.

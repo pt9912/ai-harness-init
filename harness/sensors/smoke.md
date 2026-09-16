@@ -14,6 +14,11 @@ gehört an DoD-Verify/CI/Wellen-Closure. Prüft nur die Bootstrap-**Schritte** e
 **zusammengeführte** `make gates`-Sicht eines Adopters prüft [`make full-smoke`](full-smoke.md).
 Details, Schritte und Belege stehen im Kopf von `harness/tools/smoke.sh`.
 
+## Sperren
+
+Keine: der Lauf bricht vor seinem ersten Schritt nicht ab. Jeder Abbruch liegt in einem Schritt
+und nennt ihn (`smoke: FEHLER — …`); `harness/tools/smoke.sh` läuft unter `set -euo pipefail`.
+
 ## Bindung
 
 Kein Gate-Versprechen.

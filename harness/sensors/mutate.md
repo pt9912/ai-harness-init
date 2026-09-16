@@ -36,7 +36,32 @@ Fall — `mutation_targets` bricht darauf den **ganzen** Lauf ab (vor jeder Isol
 Auflösung nicht deckt:** eine Angabe, die auf die **falsche**, aber existierende Datei zeigt,
 bleibt still grün — Existenz und Eindeutigkeit sind geprüft, Richtigkeit ist es nicht.
 
+## Ausgabe und Ausgänge
+
+| Exit | Bedeutung |
+|---|---|
+| 0 | jeder Fall färbte seinen Wächter rot (`mutate: <n> ok, 0 Befund(e)`), oder ein Beleg über demselben Prüfgegenstand lag vor und kein Fall lief (`mutate: Beleg fuer Pruefgegenstand … liegt vor`) |
+| 1 | mindestens ein Befund (`mutate: BEFUND  <fall>  <grund>` je Fund, Summe in `mutate: <n> ok, <m> Befund(e)`), oder eine Sperre griff |
+| 130 | ein Signal beendete den Lauf; berichtet ist, was bis dahin gemessen war, gekennzeichnet `ABGEBROCHEN` |
+
 ## Sperren
+
+- `mutate: ABBRUCH — ein Lauf ist bereits aktiv (…)` — das Lock-Verzeichnis unter
+  `.harness/state/` besteht → den anderen Lauf abwarten; ein verwaistes Lock von Hand entfernen.
+- `mutate: ABBRUCH — MUTATE_JOBS ist keine Worker-Zahl >= 1` → eine ganze Zahl ab 1 setzen.
+- `mutate: ABBRUCH — MUTATE_STALL_SECONDS ist keine Sekundenzahl >= 1` → eine ganze Zahl ab 1
+  setzen.
+- `mutate: … fehlt` bzw. `mutate: keine Faelle in …` — `test/mutations/` fehlt oder ist leer; ein
+  leeres Set ist kein grüner Lauf.
+- `mutate: ABBRUCH — Fingerabdruck der Mutations-Ziele nicht berechenbar.` — unter anderem, wenn
+  eine `# files:`-Angabe nicht genau eine Datei auflöst (§Grenze) → die Angabe berichtigen.
+- `mutate: ABBRUCH — unbekannter '# verify: …'` — ein Fall nennt eine Prüfart ohne bekanntes
+  Fehlschlag-Muster → den Fall berichtigen.
+- `mutate: ABBRUCH — WORK …` — die Isolations-Wurzel ist leer, liegt im Repo oder ist kein
+  Verzeichnis; ohne Isolation wird nicht mutiert.
+
+Diese Sperren enden mit Exit 1, bevor ein Fall läuft (`harness/tools/mutate.sh`, `main`). Die
+folgende greift während des Laufs:
 
 - Stille über `MUTATE_STALL_SECONDS` hinweg (kein Worker zieht oder schließt einen Fall ab) → Lauf
   bricht selbst ab und wird rot; ein hängender Sensor ist sonst von einem langsamen nicht zu

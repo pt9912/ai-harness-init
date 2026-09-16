@@ -98,6 +98,37 @@ Teil-Supersede-Anordnung).
 geprüft, aber nicht übernommen, solange kein ADR-Kopf eine dieser zwei zusätzlichen
 Überschriften trägt.
 
+## Ausgabe und Ausgänge
+
+Das Ziel kettet zwei Läufe; es zählt der Exit des ersten, der abbricht. `make` meldet ihn als
+`Fehler <n>` und endet selbst mit 2.
+
+| Exit | Bedeutung |
+|---|---|
+| 0 | Range auflösbar und nicht leer (oder `STAGED=1`), und der `vcs`-Lauf meldet keinen Befund |
+| 1 | der Vorlauf findet keine Range oder eine leere, oder der `vcs`-Lauf meldet mindestens einen Befund |
+| 2 | der Vorlauf findet die Range nicht auflösbar, oder der `vcs`-Lauf endet mit einem Nutzungs- oder Umgebungsfehler |
+
+Welcher Lauf abbrach, sagt die Zeile davor: `history-range-guard: …` gehört zum Vorlauf, eine
+Befund-Zeile oder `d-check: error: …` zum `vcs`-Lauf. Die Vollständigkeits-Zeile
+`N Datei(en) geprüft, M Befund(e)` spricht über den Prüfbereich des `vcs`-Moduls, nicht über das
+Repo.
+
+## Sperren
+
+Der Vorlauf-Wächter ist Voraussetzung des Ziels; bricht er ab, läuft `make doc-immutable` nicht.
+
+- `Usage: history-range-guard.sh …` — weder `RANGE` noch `STAGED=1` ist gesetzt; die Shell bricht
+  am leeren Parameter mit Exit 1 ab → eine Range nennen.
+- `history-range-guard: Range '…' ist aufloesbar, aber LEER (0 Commits).` — der `vcs`-Lauf wäre
+  blind grün; Exit 1 → mit ausreichender Tiefe auschecken (`fetch-depth: 0`).
+- `history-range-guard: Range '…' ist NICHT aufloesbar (Basis fehlt im Klon?).` — Exit 2 → die
+  Basis nachholen oder eine vorhandene nennen.
+- `d-check: error: …` — die `.d-check.yml` ist ungültig; der `vcs`-Lauf bricht vor dem Scan ab,
+  Exit 2 → die Konfiguration berichtigen.
+- `d-check: error: kein lesbares git-Repository unter /repo` — der Mount trägt kein `.git`; Exit 2
+  → aus einem Klon aufrufen.
+
 ## Bindung
 
 [`AGENTS.md`](../../AGENTS.md) §3.4/§3.5; Vorlauf-Wächter [`history-range-guard`](history-range-guard.md).

@@ -298,6 +298,23 @@ mehrere Rollen-Grenzen hinweg — genau der Fall, den
 §1 mit *„findet sie viele, ist das ein eigener Vorgang"* für den Gesamtbestand vorwegnimmt, hier
 schon bei zwölf Fundstellen, weil die Eigentums-Grenze und nicht die Stückzahl den Ausschlag gibt.
 
+## Ausgabe und Ausgänge
+
+| Exit | Bedeutung |
+|---|---|
+| 0 | kein Befund im Prüfbereich der aktiven Module |
+| 1 | mindestens ein Befund; je Befund eine Zeile *Datei:Zeile · Ziel · Befund-Art · Grund* |
+| 2 | Nutzungs- oder Umgebungsfehler, gemeldet als `d-check: error: …`; kein Befund ist erhoben |
+
+Die Vollständigkeits-Zeile `N Datei(en) geprüft, M Befund(e)` erscheint bei 0 und 1 und spricht
+über den Prüfbereich (§Grenze), nicht über das Repo. `make` meldet den Exit als `Fehler <n>` und
+endet selbst mit 2.
+
+## Sperren
+
+- `d-check: error: …` — die `.d-check.yml` ist ungültig; jeder Konfigurationsfehler bricht vor dem
+  Scan ab, ohne Vollständigkeits-Zeile, mit Exit 2 → die Konfiguration berichtigen.
+
 ## Bindung
 
 [`MR-010`](../conventions.md#mr-010--d-check-gate-fragment-tool-generiert) (Gate-Fragment

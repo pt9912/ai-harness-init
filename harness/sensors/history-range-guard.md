@@ -48,6 +48,12 @@ Details und Beleg stehen im Kopf von `harness/tools/history-range-guard.sh`, Abs
 | 1 | Range auflösbar, aber leer (0 Commits) |
 | 2 | Range **nicht** auflösbar (Basis fehlt im Klon) |
 
+## Sperren
+
+- `Usage: history-range-guard.sh …` — kein Argument, über `make` also weder `RANGE` noch
+  `STAGED=1`; die Shell bricht am leeren Parameter ab, **mit Exit 1**, derselben Zahl wie die leere
+  Range → eine Range nennen. Die zwei Fälle trennt die Meldung, nicht der Exit.
+
 ## Bindung
 
 Kein Gate-Versprechen; Vorlauf für `make adr-immutable`.

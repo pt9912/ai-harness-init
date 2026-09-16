@@ -6,8 +6,7 @@
 `git mv` und zieht seine Verweise nach ([`AGENTS.md`](../../AGENTS.md) §3.3, Antwort auf
 `BEO-ALL/verweise-brechen-beim-ortswechsel`) — kein Gate, in keiner Prerequisite-Kette: es
 bewegt, es prüft nicht ([`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-Voraussetzung ist ein sauberer Arbeitsbaum — das Skript committet selbst und bricht sonst vor
-dem ersten `git mv` ab. Es setzt zwei getrennte Commits (Hard Rule 3.3): zuerst der reine Move
+Es setzt zwei getrennte Commits (Hard Rule 3.3): zuerst der reine Move
 (kein Byte Inhalt geändert), danach — nur falls Verweise anfielen — der Inhalts-Nachzug als
 zweiter Commit.
 
@@ -33,6 +32,28 @@ Setzung 1 — das Präfix eines vorhandenen Ankers (`LH-*`, `ADR-*`, `CO-*`), in
 großgeschrieben — trifft die Zeichenklasse des Fundmusters nicht.
 
 Details und Beleg stehen im Kopf von `harness/tools/slice-mv.sh`, Abschnitt BELEG.
+
+## Ausgabe und Ausgänge
+
+| Exit | Bedeutung |
+|---|---|
+| 0 | bewegt: `slice-mv ok: <datei>  <von>/ -> <nach>/`, darunter `Commit 1 (reiner Move)` und, nur wenn Verweise anfielen, `Commit 2 (Inhalt, …)` mit den zwei Zählern |
+| 2 | eine Sperre griff; es ist nichts bewegt |
+
+Scheitert danach ein `git`-Schritt, etwa ein Commit an einem Hook, endet der Lauf mit dessen Exit
+(`set -euo pipefail`).
+
+## Sperren
+
+Alle vor dem ersten `git mv`, alle mit Exit 2:
+
+- Aufruf ohne `SLICE` oder `TO` → Aufruf-Hilfe → beide nennen.
+- `slice-mv: Arbeitsbaum nicht sauber …` — das Skript committet selbst; eine unstaged oder gestagte
+  Änderung landete sonst in einem seiner Commits → erst committen oder stashen.
+- `slice-mv: '…' ist kein Lifecycle-Verzeichnis` → `open`, `next`, `in-progress` oder `done`.
+- `slice-mv: '…' ist mehrdeutig` — die Angabe trifft zwei Dateien → die Kennung länger schreiben.
+- `slice-mv: kein Slice '…' unter …` → die Kennung prüfen.
+- `slice-mv: '…' liegt bereits in …/` → nichts zu tun.
 
 ## Bindung
 

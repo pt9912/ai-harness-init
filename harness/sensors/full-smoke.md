@@ -38,6 +38,20 @@ wird darum gehalten.
 
 ## Grenze — was das Grün nicht abdeckt
 
+**Die Stufen-Menge hängt an einer Textform.** Eine Stufe eröffnet für den Aufruf wie für
+den Erzeuger nur, wenn ihre Kopfzeile `echo "full-smoke: … ..."` lautet. Eine Stufe, die
+anders eröffnet wird, ist für beide keine — die Lücke fiele in der Richtung *Stufe ohne
+Deklaration* nicht auf, weil die Region dann zur vorigen Stufe gehört. Beide Seiten lesen
+dasselbe Muster aus derselben Datei; es steht an zwei Stellen, weil der Aufruf zur
+Laufzeit kein zweites Werkzeug ruft, und wer es ändert, ändert beide.
+
+## Ausgabe und Ausgänge
+
+| Exit | Bedeutung |
+|---|---|
+| 0 | jede Stufe grün; je Stufe steht ihre Abdeckungs-Zeile `full-smoke: Abdeckung der Stufe …` im Lauf |
+| 1 | eine Stufe brach ab, mit `full-smoke: FEHLER — …`; der Ausgang des Abbruchs steht in der Zeile `AUSGANG LEITUNG` oder `AUSGANG BAUM` |
+
 **Sein Grün sagt das eine, sein Rot sagt zwei Dinge:** der Lauf fragt je Durchgang fremde
 Registries nach gepinnten Bildern und macht jede dieser Anfragen zur Bedingung seines Grüns.
 Bricht ein Abschnitt ab, ordnet `harness/tools/full-smoke-ausgang.sh` ihn einem von zwei
@@ -55,12 +69,10 @@ im Kopf von `harness/tools/full-smoke.sh`. Die Ausgangs-Muster, ihre Messung und
 Grenzen (Paketquellen der C++-Kette fallen in den Baum-Fall) stehen im Kopf von
 `harness/tools/full-smoke-ausgang.sh`.
 
-**Die Stufen-Menge hängt an einer Textform.** Eine Stufe eröffnet für den Aufruf wie für
-den Erzeuger nur, wenn ihre Kopfzeile `echo "full-smoke: … ..."` lautet. Eine Stufe, die
-anders eröffnet wird, ist für beide keine — die Lücke fiele in der Richtung *Stufe ohne
-Deklaration* nicht auf, weil die Region dann zur vorigen Stufe gehört. Beide Seiten lesen
-dasselbe Muster aus derselben Datei; es steht an zwei Stellen, weil der Aufruf zur
-Laufzeit kein zweites Werkzeug ruft, und wer es ändert, ändert beide.
+## Sperren
+
+Keine: der Lauf bricht vor seiner ersten Stufe nicht ab. Davor legt `harness/tools/full-smoke.sh`
+nur Arbeitsverzeichnisse an; jeder Abbruch liegt in einer Stufe.
 
 ## Bindung
 

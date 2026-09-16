@@ -13,6 +13,19 @@ Die Ausgabe nennt ihren Nenner, den Sammelposten-Anteil und die Abdeckungszahl s
 Bezugsmenge. Ohne Span-Bestand ist der Nenner leer, und der Bericht sagt das statt eine Bilanz
 über nichts zu behaupten.
 
+## Ausgabe und Ausgänge
+
+| Exit | Bedeutung |
+|---|---|
+| 0 | die Bilanz steht auf stdout, mit den Größen aus §Grenze |
+| 1 | `span-report: …` auf stderr: der Ablageort ist nicht auflösbar, oder der Bestand ist nicht lesbar |
+
+## Sperren
+
+- `span-report: keine Repo-Wurzel ueber … — Ablageort als Argument nennen` — der Aufruf liegt
+  außerhalb eines Repos und nennt keinen Ablageort; Exit 1, bevor ein Span gelesen ist → aus dem
+  Repo aufrufen (`cmd/ai-harness-init/span_report.go`).
+
 ## Bindung
 
 Kein Gate-Versprechen — Bericht.
