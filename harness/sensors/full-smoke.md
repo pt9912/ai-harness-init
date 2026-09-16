@@ -30,8 +30,9 @@ Review hält — der Anker kann auflösen, während sich die Aussage der Stufe �
 **Die committete Tabelle hat einen Halter.** Ein Fall in
 [`test/e2e-abdeckung.bats`](../../test/e2e-abdeckung.bats) fährt den Erzeuger über dem
 geprüften Skript und hält sein Ergebnis **byte-gleich** gegen
-[`docs/user/e2e-abdeckung.md`](../../docs/user/e2e-abdeckung.md); er läuft in `make test`,
-nicht in `make gates`. Ungeprüft bleibt damit allein die Zuordnung selbst: dass die
+[`docs/user/e2e-abdeckung.md`](../../docs/user/e2e-abdeckung.md); er läuft in `make test` —
+und damit in `make gates`, das `test` über `record-gates` als Voraussetzung führt.
+Ungeprüft bleibt damit allein die Zuordnung selbst: dass die
 committete Datei der aktuelle Ausgang ihres Erzeugers ist, entscheidet kein Urteil und
 wird darum gehalten.
 

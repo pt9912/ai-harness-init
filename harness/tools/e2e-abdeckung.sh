@@ -71,10 +71,10 @@ RUF_TEIL='^[[:space:]]*e2e_abdeckung "'
 TYPOGRAFIE='—–…·→'
 ANFUEHRUNGEN="$(printf '\342\200\231\342\200\236\342\200\234\342\200\235')"
 # Die ASCII-Satzzeichen, die der Slug fallen laesst: eine WOERTLICHE AUFZAEHLUNG, kein
-# Bereich. Ein Bereich wie [!-,] wird von glibc-sed und busybox-sed VERSCHIEDEN gelesen —
-# dem einen fallen die Ziffern mit heraus, dem anderen nicht —, und der Anker haengt dann
-# an der sed-Fassung der Laufzeitumgebung statt an der Ueberschrift. '-', '_' und alles ab
-# 0x80 stehen nicht in der Aufzaehlung und bleiben damit stehen.
+# Bereich. Ein Bereich wie [.-@] wird von glibc-sed und busybox-sed VERSCHIEDEN gelesen —
+# busybox-sed fallen darin auch die Ziffern heraus, glibc-sed nicht —, und der Anker haengt
+# dann an der sed-Fassung der Laufzeitumgebung statt an der Ueberschrift. '-', '_' und
+# alles ab 0x80 stehen nicht in der Aufzaehlung und bleiben damit stehen.
 SATZZEICHEN='!"#$%&'"'"'()*+,./:;<=>?@'
 BT='`'
 LASTENHEFT_REL="spec/lastenheft.md"
