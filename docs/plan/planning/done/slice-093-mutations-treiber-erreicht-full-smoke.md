@@ -195,7 +195,7 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
 | `test/mutate-driver.bats` | update | der **Wertebereich** von `narrow_sensor` aus DoD 3. Dort liegen bereits **4** Fälle über dieselbe Funktion (`grep -c '^@test "driver: narrow_sensor' test/mutate-driver.bats`) — sie prüfen die einzelnen Zuordnungen, keiner den Bereich |
 | [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) | **unverändert** | der Wächter, gegen den der Fall zielt, existiert bereits; ihn zu bauen wäre ein anderer Slice. Er wird nur **vorübergehend** zahnlos gemacht, um DoD 1 rot zu sehen, und danach zurückgenommen |
 | [`docs/plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) | **unverändert** | *Accepted*, immutabel ([`AGENTS.md`](../../../../AGENTS.md) §3.4). Sie wird als Constraint gelesen, nicht nachgezogen |
-| [`docs/plan/planning/open/slice-092-traeger-inventur.md`](../open/slice-092-traeger-inventur.md), [`docs/plan/planning/welle-11-traeger-aussage.md`](../welle-11-traeger-aussage.md) | **unverändert in diesem Lauf** | beide beschreiben heute einen wahren Zustand; ihr Nachzug gehört dem Planner, dem sie gehören, und steht mit Träger und Trigger in §6 und §7 |
+| [`docs/plan/planning/next/slice-092-traeger-inventur.md`](../next/slice-092-traeger-inventur.md), [`docs/plan/planning/welle-11-traeger-aussage.md`](../welle-11-traeger-aussage.md) | **unverändert in diesem Lauf** | beide beschreiben heute einen wahren Zustand; ihr Nachzug gehört dem Planner, dem sie gehören, und steht mit Träger und Trigger in §6 und §7 |
 | [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | **unverändert** | wellenlose Arbeit wird dort nicht geführt ([`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) Setzung 2/3) |
 
 **Die Wahl des Wächters ist nicht frei — sie hat ein Kriterium und eine mechanische Probe.** Der
@@ -273,7 +273,7 @@ Falls; `make full-smoke` grün; Closure-Notiz mit Steering-Loop-Lerneintrag in e
     [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) **bleibt
     stehen** — *Accepted* und damit immutabel ([`AGENTS.md`](../../../../AGENTS.md) §3.4; eine
     Korrektur wäre eine Folge-ADR mit Supersedes, kein Slice-Nebenprodukt). Die Zeilen in
-    [slice-092](../open/slice-092-traeger-inventur.md) (DoD 2 und §6) und in
+    [slice-092](../next/slice-092-traeger-inventur.md) (DoD 2 und §6) und in
     [welle-11](../welle-11-traeger-aussage.md) (§3, Closure-Trigger) sind lebende Plan-Artefakte
     des Planners; ihr Nachzug ist **Folgepflicht mit Träger** (§7).
   - **Zwei, für die die Aufzählung nur der Beleg ist** (dieselbe Liste,
@@ -444,7 +444,7 @@ dann gehört die Sache in denselben Architect-Lauf, an
 
 | Posten | Träger |
 |---|---|
-| [slice-092](../open/slice-092-traeger-inventur.md) (Zeilen 124 und 211) und [welle-11](../welle-11-traeger-aussage.md) (Zeile 151) führen `grep -c 'full-smoke' harness/tools/mutate.sh` → **0**; seit `569eec7` gibt dasselbe Kommando **7** aus | **Planner**, eigener Lauf, sofort fällig. Beide gehören ihm; das Kommando aus §6 nennt sie |
+| [slice-092](../next/slice-092-traeger-inventur.md) (Zeilen 124 und 211) und [welle-11](../welle-11-traeger-aussage.md) (Zeile 151) führen `grep -c 'full-smoke' harness/tools/mutate.sh` → **0**; seit `569eec7` gibt dasselbe Kommando **7** aus | **Planner**, eigener Lauf, sofort fällig. Beide gehören ihm; das Kommando aus §6 nennt sie |
 | [slice-072](../open/slice-072-adr-verweist-nicht-auf-lifecycle.md) §4 und [slice-075](../open/slice-075-regelwerk-verweis-linkpflicht.md) §4 belegen eine wahre Aussage mit einer überholten Aufzählung | **ihr eigener Schnitt** — fremde Slices, und ihre Trigger-Aussage bricht nicht. Wer sie aufschlägt, zieht den Beleg-Satz nach |
 | Die dritte Setzung in [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) | **Architect**, an dessen bereits fälligem Auflösungs-Trigger — kein neuer Termin |
 | Die Grenze über der Fitness-Tabelle von [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) zählt die Modi ohne `full-smoke` auf | **kein Träger, und das ist entschieden**: *Accepted* und damit immutabel ([`AGENTS.md`](../../../../AGENTS.md) §3.4). Ihre **Pflicht** — Wächter *und* Fehlschlag-Muster — ist zur Hälfte eingelöst; wer die zwei Zeilen liefert, schuldet nur noch den Wächter |

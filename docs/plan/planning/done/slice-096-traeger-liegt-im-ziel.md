@@ -215,7 +215,7 @@ Closure-Notiz in §7 mit Steering-Loop-Eintrag.
   sie stellbar und verlangt eine Plattform-Angabe, die
   [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) heute in keinem seiner
   Akzeptanzkriterien kennt.
-- **Berührung mit [slice-092](../open/slice-092-traeger-inventur.md), falls jener zuerst liegt.** Sein
+- **Berührung mit [slice-092](../next/slice-092-traeger-inventur.md), falls jener zuerst liegt.** Sein
   Wächter färbt rot, sobald das Präfix `.claude/hooks/` über seinen gepinnten Bestand hinauswächst,
   während seine Inventur-Zelle noch Abwesenheit behauptet. Das ist **gewollte Reibung**: sie
   erzwingt den Blick auf die Inventur. Wer sie für einen Fehlalarm hält, hat den Wächter
@@ -367,7 +367,7 @@ Mutations-Fälle `155`–`162`. `ab0e855` und `603a6f8` sind die reinen Lifecycl
   Schnitt zwei Einträge, seit der Umsetzung drei — der dritte ist der Wrapper dieses Slice. §1 und
   DoD (3) sind auf den gemessenen Wert gezogen; beide sagten schon vorher *„mitwandernd"*, es war
   also kein Verstoß, aber der `done/`-Move friert den Text ein. Dieselbe Zahl steht in
-  [slice-092](../open/slice-092-traeger-inventur.md) §2 und ist dort ebenfalls gezogen — der Slice
+  [slice-092](../next/slice-092-traeger-inventur.md) §2 und ist dort ebenfalls gezogen — der Slice
   ist sonst unberührt, seine Inventur-Zelle behauptet weiterhin Abwesenheit, und genau diese
   Reibung ist die, die §6 als gewollt führt.
 

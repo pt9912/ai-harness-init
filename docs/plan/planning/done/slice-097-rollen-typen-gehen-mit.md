@@ -189,7 +189,7 @@ Closure-Notiz in §7 mit Steering-Loop-Eintrag.
   ihre Läufe, solange [slice-096](../done/slice-096-traeger-liegt-im-ziel.md) nicht liegt. Das ist ein
   **Zwischenstand, kein Widerspruch**: die Typen behaupten nichts über Erfassung, und wer sie liest,
   liest keine Zusage, die nicht gilt.
-- **Berührung mit [slice-092](../open/slice-092-traeger-inventur.md), falls jener zuerst liegt.** Seine
+- **Berührung mit [slice-092](../next/slice-092-traeger-inventur.md), falls jener zuerst liegt.** Seine
   Zelle für Modul 8 §Rollen-Trennung nennt das Präfix `.claude/agents/`, heute leer
   (`grep -rl '".claude/agents/' --include=*.go internal/ | wc -l` → **0**, mitwandernd). Sobald
   dieser Slice die Adresse anlegt, färbt jener Wächter rot — **gewollt**, denn genau dann ist die

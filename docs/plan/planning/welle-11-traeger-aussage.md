@@ -162,7 +162,7 @@ Der Zustand jedes Slice ist sein Lifecycle-Verzeichnis, hier nicht gespiegelt.
 |---|---|---|
 | [slice-090](next/slice-090-freshness-audit-im-ziel.md) | Das Ziel erfährt, dass sein vendored Baum altert — und warum kein Sensor mitkommt | [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) |
 | [slice-091](next/slice-091-vendored-baum-ohne-anspruch.md) | Der mitgelieferte Baum stellt keine `make`-Ansprüche an das Ziel, und eine lebende Zeile sagt es | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
-| [slice-092](open/slice-092-traeger-inventur.md) | Die Träger-Inventur: je Regelblock ein Wert, Inventar gegen Abdeckung | [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) |
+| [slice-092](next/slice-092-traeger-inventur.md) | Die Träger-Inventur: je Regelblock ein Wert, Inventar gegen Abdeckung | [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) |
 
 **Die Reihenfolge ist die Aussage: 090 und 091 setzen je einen Wert, 092 schließt die Liste.** 090
 und 091 hängen nicht aneinander — der eine spricht über eine Regel **ohne** Träger, der andere über
@@ -212,7 +212,7 @@ Der Wert *Träger kommt mit* für Modul 10 wird in 092 gesetzt, nicht erarbeitet
   Träger und Rollen-Typen entscheidet sie *geht mit*, für Token-Attribution/Cache-Counter eine
   Auswertung ohne Bilanz (§1) — nicht mehr als Abwesenheit zu benennen. Die Lesart-Wahl entfällt
   damit, nicht weil sie beantwortet wurde, sondern weil ihr Gegenstand sich aufgelöst hat.
-  [slice-092](open/slice-092-traeger-inventur.md) ist darauf gezogen: die Vorfrage steht dort nicht
+  [slice-092](next/slice-092-traeger-inventur.md) ist darauf gezogen: die Vorfrage steht dort nicht
   mehr als Blocker, und an die Stelle der alten Grenze ist die Eigenschaft getreten, dass keine
   Zelle die Abwesenheit eines Trägers behauptet, den derselbe Lauf ablegt.
 - **Nicht abhängig, aber benachbart:** slice-087 räumt dieselbe Fehlerklasse in den **lebenden**

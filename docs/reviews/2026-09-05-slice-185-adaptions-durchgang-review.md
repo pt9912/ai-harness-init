@@ -293,7 +293,7 @@ gegenstandslos, teilweise überholt, ohne Bezug oder im Widerspruch. Die Befunde
 - **befund:** Von allen Baseline-Pfaden im Eintrags-Bestand zeigt genau dieser eine am Zielstand ins
   Leere; die Datei existiert weder unter `v6.0.0` noch unter `v5.18.0`. Der Slice ordnet die Klasse
   ausdrücklich [slice-091](../plan/planning/next/slice-091-vendored-baum-ohne-anspruch.md) und
-  [slice-092](../plan/planning/open/slice-092-traeger-inventur.md) zu (§Was dieser Durchgang
+  [slice-092](../plan/planning/next/slice-092-traeger-inventur.md) zu (§Was dieser Durchgang
   **nicht** trägt) — kein Befund gegen diesen Slice, aber der Posten hat, anders als die 87
   Tag-Nennungen daneben, kein lebendes Ziel mehr und ist damit von anderer Härte.
   Gemessen:
@@ -358,7 +358,7 @@ gegenstandslos, teilweise überholt, ohne Bezug oder im Widerspruch. Die Befunde
   **Kein Befund.**
 - **Folge-Slice-Paarung** — jede im Plan genannte Kennung existiert im Lifecycle:
   [slice-091](../plan/planning/next/slice-091-vendored-baum-ohne-anspruch.md),
-  [slice-092](../plan/planning/open/slice-092-traeger-inventur.md),
+  [slice-092](../plan/planning/next/slice-092-traeger-inventur.md),
   [slice-153](../plan/planning/open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md),
   [slice-186](../plan/planning/done/slice-186-beobachtungs-kennungen-loesen-wieder-auf.md).
   **Kein Befund.**
