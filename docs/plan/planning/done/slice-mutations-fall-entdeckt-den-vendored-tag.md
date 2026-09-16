@@ -405,7 +405,7 @@ Backticks).
   [`roter-nicht-gate-sensor-ohne-instrument`](../observations/BEO-ALL/roter-nicht-gate-sensor-ohne-instrument/observation.md):
   die Klasse ist im roten Fenster nicht eingetreten (§6, Risiko 4 — gemessen, nicht angenommen).
 - **Folge-Slices:**
-  [slice-mess-aussagen-des-emitters-gegen-v680-messen](../open/slice-mess-aussagen-des-emitters-gegen-v680-messen.md)
+  [slice-mess-aussagen-des-emitters-gegen-v680-messen](../next/slice-mess-aussagen-des-emitters-gegen-v680-messen.md)
   — ist eine Datei in `open/`; nimmt den Out-of-Scope-Punkt 1 aus §1 an (die drei Proben in
   `internal/emit/templates.go`, die ihre eigene Nachfahr-Pflicht aussprechen und sie beim Sprung
   nicht bekommen haben).
