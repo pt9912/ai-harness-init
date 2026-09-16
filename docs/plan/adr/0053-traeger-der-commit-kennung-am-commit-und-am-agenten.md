@@ -1,6 +1,6 @@
 # ADR-0053: Die Kennungs-Zusage hat zwei Träger — einen am Commit und einen am Agenten, und beide bleiben
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-15
 
@@ -341,6 +341,7 @@ Festlegung 4 eine **Zuordnung** — für beide gibt es keinen, und das steht hie
 |---|---|---|
 | 2026-09-15 | **Proposed** | Architect-Antwort auf die Träger-Wahl, die `slice-215-commit-waechter-sieht-auch-die-ungetippten-commits` in §3 führt und in §4 an den Architect bindet. Die Messungen in §Kontext stehen neben ihren Kommandos |
 | 2026-09-16 | **Überarbeitet, weiter Proposed** | Der Bezug zu [ADR-0019](0019-agent-guard-prueft-die-aufrufform.md) trägt den Zustand ihrer Re-Evaluierungs-Trigger statt der Behauptung, keiner sei gefeuert; die Trägerschaft der Kennungs-Menge steht an **einer** Stelle, und die Zeile der Werkzeug-Klasse trägt in der Reichweiten-Tabelle ihr Gegenbeispiel noch nicht; die Bedingung, unter der die Kennung „hier" auflöste, ist durch den Zustand ersetzt. Die Konsistenz-Runde ist gefahren und hat einen blockierenden Befund gemeldet; nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 ist der Beleg des Accept-Übergangs darum die nächste Runde derselben Rolle |
+| 2026-09-16 | **Accepted** | Beleg nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1 und 2 ist die Bestätigungsrunde `2026-09-16-adr-0053-und-0054-konsistenz-bestaetigung`, **ihr Teil A** — die Runde davor hatte für diese Datei einen blockierenden Befund gemeldet, der Beleg ist darum die **nächste** Runde derselben prüfenden Rolle und nicht die Nachmessung des auflösenden Kontexts; ihr Verdikt zu Teil A lautet *„Annahmefähig: ja"*, und ihre Kategorie-Summary nennt keinen Befund — die Zählung führt sie dort, nicht hier. **Die zwei gleichzeitig fälligen Übergänge dieser Datei und der [ADR-0054](0054-emittierter-commit-traeger-skip-if-present.md) sind ausdrücklich geordnet:** dieser ist der erste, [ADR-0054](0054-emittierter-commit-traeger-skip-if-present.md) der zweite — sie liest die Ausnahme der emittierten Ebene aus §Kontext dieser Datei. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes ADR-0053`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit

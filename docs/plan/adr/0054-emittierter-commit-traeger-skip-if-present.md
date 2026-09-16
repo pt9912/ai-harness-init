@@ -1,6 +1,6 @@
 # ADR-0054: Der emittierte Commit-Träger liegt an einem Namen, den git fixiert — er wird skip-if-present abgelegt
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-15
 
@@ -273,6 +273,7 @@ nicht bewacht.**
 |---|---|---|
 | 2026-09-15 | **Proposed** | Architect-Lauf zur Klasse des emittierten Commit-Trägers, ausgelöst von dem Slice `slice-kennungs-waechter-geht-ins-ziel` ([`MR-057`](../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer) Kennungs-Form). Die Messungen in §Kontext stehen neben ihren Kommandos |
 | 2026-09-16 | **Überarbeitet, weiter Proposed** | Die zweite Fitness-Zeile steht auf dem, was sie trägt: den vollständigen Ist-Bestand gegen eine Erwartungsliste hält der Vorlagen-Emitter, der Enforce-Emitter führt eine Teilmengen-Inventur und verlangt für **jeden** Pfad seiner Aufzählung die konvergente Klasse — die nicht gehaltene Hälfte ist damit benannt. Die Zahl der drei Träger-Einträge steht neben dem Kommando, das die Schreib-Semantik trägt; die Aufzählung der Folgepflicht nennt auch den Satz in [`harness/README.md`](../../../harness/README.md#traceability), und die Bedingung, unter der die Kennung „hier" auflöste, ist durch den Zustand ersetzt. Die Konsistenz-Runde ist gefahren und hat einen blockierenden Befund gemeldet; nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 ist der Beleg des Accept-Übergangs darum die nächste Runde derselben Rolle |
+| 2026-09-16 | **Accepted** | Beleg nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1 und 2 ist die Bestätigungsrunde `2026-09-16-adr-0053-und-0054-konsistenz-bestaetigung`, **ihr Teil B** — die Runde davor hatte für diese Datei einen blockierenden Befund gemeldet, der Beleg ist darum die **nächste** Runde derselben prüfenden Rolle und nicht die Nachmessung des auflösenden Kontexts; ihr Verdikt zu Teil B lautet *„Annahmefähig: ja"*, und ihre Kategorie-Summary nennt keinen Befund — die Zählung führt sie dort, nicht hier. **Die zwei gleichzeitig fälligen Übergänge dieser Datei und der [ADR-0053](0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) sind ausdrücklich geordnet:** dieser ist der zweite, [ADR-0053](0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) der erste — diese Datei liest die Ausnahme der emittierten Ebene aus §Kontext jener. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes ADR-0054`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
