@@ -142,7 +142,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 **Drei Liefer-Punkte, und sie bauen aufeinander:** (1) gibt jeder Stufe einen Ort für ihre
 Anforderung, (2) macht daraus die erzeugte Tabelle, (3) hält beide Lücken laut.
 
-- [ ] **(1) Jede Stufe trägt ihre Deklaration, und die Deklarations-Form ist eine.** Eine
+- [x] **(1) Jede Stufe trägt ihre Deklaration, und die Deklarations-Form ist eine.** Eine
   Funktion `e2e_abdeckung <Kennungen> <Kurzbeschreibung> <Anker>` steht in `harness/tools/full-smoke.sh`;
   **jede** der fünfzehn Stufen (Zahl aus §1) führt mindestens einen Aufruf, der die Anforderung(en)
   nennt, die diese Stufe trägt, und einen **Anker** — einen wörtlichen Ausschnitt aus einer Zeile
@@ -150,7 +150,7 @@ Anforderung, (2) macht daraus die erzeugte Tabelle, (3) hält beide Lücken laut
   nicht mehr auflöst (die Stufe wurde umgebaut). Die Form ist eine **Entscheidung dieses Slice**:
   der Anker ist eine *bestehende* Zeile der Stufe, nicht eine neue Marke — so trägt die Deklaration
   ihren Ort aus dem Skript, das sie beschreibt.
-- [ ] **(2) `make e2e-abdeckung` erzeugt docs/user/e2e-abdeckung.md aus dem Quelltext, nicht aus
+- [x] **(2) `make e2e-abdeckung` erzeugt docs/user/e2e-abdeckung.md aus dem Quelltext, nicht aus
   einem Lauf.** Das Ziel fährt einen Helfer unter `harness/tools/`, der `harness/tools/full-smoke.sh`
   als **Text** liest (Docker-frei, keine E2E-Ausführung), je Deklaration den Anker auf eine Zeile
   auflöst und die Tabelle rendert. **Kein Gate** — das Ziel steht **nicht** in `make gates` und wird
@@ -162,16 +162,18 @@ Anforderung, (2) macht daraus die erzeugte Tabelle, (3) hält beide Lücken laut
   [`spec/lastenheft.md`](../../../../spec/lastenheft.md); die Beschreibungsspalte trägt keine
   Kennungen. **Rot gesehen:** eine Deklaration, deren Anker gelöscht ist, endet mit Exit ≠ 0 und
   nennt Anker und Nachweis (Ausgabe im Umsetzungs-Commit).
-- [ ] **Der Halter der committeten Datei ist ein Fall in `make test`, nicht ein Gate.** Ein Fall in
+- [x] **Der Halter der committeten Datei ist ein Fall in `make test`, nicht ein Gate.** Ein Fall in
   `test/e2e-abdeckung.bats` fährt den Erzeuger über dem **geprüften** Skript in ein **tmp**-Ziel und
   hält das Ergebnis **byte-gleich** gegen die committete `docs/user/e2e-abdeckung.md` — ohne Docker
   und ohne E2E-Lauf, denn der Erzeuger liest Text. Damit ist *diese Datei ist der aktuelle Ausgang
   ihres Erzeugers* eine geprüfte Zusage und nicht die Behauptung, die ein ungefahrener Erzeuger
-  zurücklässt. **Rot gesehen:** über einer Kopie, in der eine Stufe ihre Deklaration verloren hat,
-  weicht die frische Erzeugung von der committeten Datei ab und der Fall fällt (Kommando im
-  Umsetzungs-Commit). Das Ziel `e2e-abdeckung` bleibt davon unberührt und tritt weiter als `kein
-  Gate` in die advisory-Ziele.
-- [ ] **(3) Beide Richtungen fallen laut aus, und ihr Rot ist hergestellt.** Der Erzeuger bricht ab
+  zurücklässt. **Rot gesehen:** eine **eingefügte** Zeile oberhalb einer Stufe verschiebt die
+  Zeilennummern ihrer `Ort`-Spalte, die frische Erzeugung weicht **byte-weise** von der committeten
+  Datei ab und der Fall fällt (Kommando im Umsetzungs-Commit). Eine **verlorene** Deklaration fällt
+  denselben Fall auf dem **anderen** Weg: der Erzeuger bricht mit Exit ≠ 0 ab, `cmp` kommt nicht zu
+  Wort — die Byte-Abweichung trägt allein der eingefügte Fall. Das Ziel `e2e-abdeckung` bleibt davon
+  unberührt und tritt weiter als `kein Gate` in die advisory-Ziele.
+- [x] **(3) Beide Richtungen fallen laut aus, und ihr Rot ist hergestellt.** Der Erzeuger bricht ab
   (a) bei einer **Deklaration ohne Stufe** (Anker löst nirgends auf, Klammer aus Punkt 2) und (b) bei
   einer **Stufe ohne Deklaration** — die Stufen-Menge ist über ein **Kriterium** abgegrenzt, nicht
   über eine Aufzählung: eine Zeile `echo "full-smoke: … ..."` eröffnet eine Stufe (Zahl aus §1), und
@@ -181,19 +183,19 @@ Anforderung, (2) macht daraus die erzeugte Tabelle, (3) hält beide Lücken laut
   Skripts für beide Richtungen; `make mutate` meldet den Fall als bewacht. Der Erzeuger nimmt
   Quelle und Ziel als Argumente, damit ein Test ihn über einer Kopie fahren kann, ohne den
   geprüften Baum zu berühren.
-- [ ] `make gates` grün.
-- [ ] `make e2e-abdeckung` geschrieben und der generierte Stand von docs/user/e2e-abdeckung.md
+- [x] `make gates` grün.
+- [x] `make e2e-abdeckung` geschrieben und der generierte Stand von docs/user/e2e-abdeckung.md
   committet (der Erzeuger meldet „unverändert" bei einem zweiten Lauf — belegt).
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: der E2E-Sensor [`harness/sensors/full-smoke.md`](../../../../harness/sensors/full-smoke.md)
+- [x] Doku-Update: der E2E-Sensor [`harness/sensors/full-smoke.md`](../../../../harness/sensors/full-smoke.md)
   nennt die Deklarations-Form, und [`harness/README.md`](../../../../harness/README.md) §Werkzeuge
   führt das neue Ziel.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -277,24 +279,45 @@ dasteht.
   dieser Form folgt. Eine Stufe, die anders eröffnet wird, ist für den Erzeuger keine — die
   Lücke fiele in die Richtung *Stufe ohne Deklaration* nicht auf. Die Grenze wird in
   [`harness/sensors/full-smoke.md`](../../../../harness/sensors/full-smoke.md) benannt, statt sie
-  zu behaupten. — **Ausgang:** <offen>
+  zu behaupten. — **Ausgang: weiter offen** — die Grenze steht im Sensor (§Deklaration der Stufen,
+  verifiziert), ein Wächter besteht nicht. **Ins Beobachtungs-Register gewandert** als Zuordnung zu
+  [`BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md)
+  (*eine Zusage nennt einen Geltungsbereich, den der Code darunter nicht hält*; dort `geplant` auf
+  `slice-181`). **Keine Beleg-Datei angelegt:** der Zähler misst Wiederholung über abgeschlossene
+  Vorgänge, und dieser Slice hat die Grenze **benannt**, nicht erlitten.
 - **Risiko 2 — die `Ort`-Spalte ist möglicherweise unbewacht.** Ob `codepaths.check-lines` des
   gepinnten d-check eine **einzelne** `file:NNN`-Referenz prüft oder nur die Bereichsform
   `file:N-M`, entscheidet, ob `make docs-check` die Zeilennummern der Tabelle überhaupt hält.
   Gemessen wird das in der Umsetzung; fällt die Antwort *nein*, ist die Spalte eine **benannte
   Lücke** — der Erzeuger garantiert die Nummer durch Konstruktion, kein Gate prüft sie gegen das
-  Skript. — **Ausgang:** <offen>
+  Skript. — **Ausgang: entfallen — nicht eingetreten, gemessen.** Der Verifier hat die **Einzelform**
+  geprüft: ein Sonden-Dokument unter `docs/` mit `harness/tools/full-smoke.sh:99999` färbt
+  `make docs-check` rot (Exit 2, `citation-out-of-range`), dieselbe Form mit einer gültigen Nummer
+  bleibt grün — das Modul normalisiert intern auf `N-N` und verlangt `bis <= Zeilenzahl`. Die
+  `Ort`-Spalte ist damit **doppelt gebunden**: das Gate hält die Zeilennummer gegen das Skript, der
+  Halter hält die committete Datei gegen den Erzeuger. Die als Rückfall vorgesehene *benannte Lücke*
+  entsteht nicht.
 - **Risiko 3 — eine Deklaration kann veralten, ohne rot zu werden.** Der Anker bleibt auflösbar,
   während die Stufe ihre Aussage ändert: der Erzeuger sieht nur, **dass** der Anker existiert,
   nicht ob die genannte Anforderung noch zu ihr gehört. Der Text bleibt damit ein **Urteil**, das
   der Review hält — kein Sensor. **Die mechanische Nachbarhälfte ist davon getrennt und wird
   gehalten:** ob die committete Datei überhaupt noch der Ausgang des Erzeugers ist, entscheidet
   kein Urteil und hat darum einen Zahn (Liefer-Punkt 2, Fall in `make test`). Dieses Risiko ist
-  genau die Hälfte, die **keinen** haben kann. — **Ausgang:** <offen>
+  genau die Hälfte, die **keinen** haben kann. — **Ausgang: weiter offen** — der Gegenstand ist ein
+  **Urteil** (gehört die genannte Anforderung noch zu dieser Stufe?), und für ein Urteil gibt es
+  keinen Sensor; benannt ist die Grenze in
+  [`harness/sensors/full-smoke.md`](../../../../harness/sensors/full-smoke.md). **Zuordnung ins
+  Beobachtungs-Register: keine** — kein geführter Eintrag trägt diese Klasse, und einen Namen dafür
+  erfindet dieser Lauf nicht; Träger bleibt der Review, der die Deklaration gegen ihre Stufe liest.
+  **Keine Beleg-Datei:** kein Vorkommen.
 - **Risiko 4 — eine erzeugte Datei unter `docs/user/` ist neu in diesem Baum.** Alles unter
   `docs/user/` liegt im Prüfbereich von `docs-check` (roots `["."]`); eine nicht verlinkte Kennung
   oder ein Toter-Anker-Link färbt es rot. Der Erzeuger muss die Link-Form des Hauses treffen (Anker
-  mit Fragment), sonst ist `make gates` rot, nicht die Tabelle. — **Ausgang:** <offen>
+  mit Fragment), sonst ist `make gates` rot, nicht die Tabelle. — **Ausgang: entfallen** —
+  `make docs-check` ist über der erzeugten Tabelle grün (der Verifikations-Lauf meldet Exit 0 und
+  `d-check: 1477 Datei(en) geprüft, 0 Befund(e)`); die Link-Form des Hauses ist getroffen, und die
+  Kennungsspalte trägt je Zeile einen auflösenden Anker-Link. Die Form ist **belegt**, nicht
+  behauptet.
 
 ## 7. Closure-Notiz
 
@@ -306,18 +329,56 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-kennung-a>, <slice-kennung-b>, <slice-kennung-c> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-<Kennung>.md` | `evidence/slice-<Kennung>.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+- **Was hat funktioniert:** Die Deklaration als **bestehende** Zeile — jedes der sechzehn dritten
+  Argumente stand schon im Vor-Zustand des Skripts, es wurde keine zweite Marke erfunden, die
+  driften könnte. Die Stufen-Menge ist in **beiden** Trägern dieselbe Zeichenkette statt einer
+  Aufzählung, und die Schluss-Invariante des Erzeugers (Stufen- gegen Deklarations-Zahl) läuft über
+  den Halter in `make gates`. Der Halter hat sich im ersten Lauf bezahlt: er hat einen Unterschied
+  zwischen zwei Umgebungen gefunden (Register-Beleg unten).
+- **Was ging anders als geplant — vier benannte Grenzen dieses Laufs:**
+  - **Die Stufen-Zahl wanderte.** §1 lässt sie wandern („keine Erwartungswerte"); die Substanz
+    *„jede Stufe"* hält, die Zahl nicht.
+  - **Der Rot-Beleg des Halters ist gezogen (Review R2, F-6).** Der DoD-Punkt nannte *„eine Stufe
+    hat ihre Deklaration verloren"* als Byte-Beleg; diesen Pfad nimmt die Messung **nicht** — dort
+    bricht der Erzeuger mit Exit ≠ 0 ab, `cmp` kommt nicht zu Wort. Die Byte-Abweichung trägt der
+    **eingefügte** Fall (eine Zeile oberhalb einer Stufe verschiebt die Zeilennummern), der
+    entfernte Aufruf trägt den **Abbruch**. §2 sagt das jetzt so.
+  - **Die Verdrahtung im echten E2E-Prozess ist nicht beobachtet (Review R1/R2, F-2, offen).** Rot
+    gesehen ist der **Funktionskörper** — der Verifier hat ihn wörtlich über einer Kopie in beiden
+    Richtungen gefahren —, nicht die Stufe in einem `make full-smoke`-Lauf; dass der Aufruf sie
+    erreicht, ist aus dem Kontrollfluss ablesbar und kostete einen vollen E2E-Lauf.
+  - **Eine widerlegte Ursache in einer eingefrorenen Message.** Die Message von `32ef9ef7` nennt
+    `[!-,]` als Grund der Umgebungs-Divergenz; gemessen kam der Ziffern-Verlust aus `[.-@]`
+    (Review R2, F-4). Der Code ist geheilt (`6121b1a6`), die Message ist Historie und nicht
+    editierbar — die Richtigstellung steht in der Review-Runde, nicht im Commit-Text.
+- **Steering-Loop-Eintrag:** **Neuer Sensor**, ergänzt: eine **erzeugte** Datei wird gegen ihren
+  Erzeuger gehalten — ein Fall in `make test` fährt Quelle und Ziel in einem Sandkasten mit
+  denselben relativen Pfaden und hält den Ausgang byte-gleich gegen die committete Datei
+  (`test/e2e-abdeckung.bats`, vierte Laufform). Der Grund ist gemessen: der Erzeuger läuft in
+  **keiner** Kette, sein Ausgang hängt an der Werkzeugkette der Laufumgebung (Host-sed gegen
+  busybox-sed), und ohne diesen Halter bleibt die Abweichung zwischen erzeugender und prüfender
+  Umgebung still. **Kein `liegt in`-Feld:** verkörpert ist der Sensor als **Lieferung dieses
+  Slice**, nicht als Regel aus dem Register — sein Auslöser ist der Review, kein Schwellen-Übertritt.
+- **Beobachtungs-Register (`../observations/`):** Beleg
+  `evidence/slice-e2e-abdeckung-ist-deklariert-und-erzeugt.md` in
+  [`BEO-ALL/bats-zusicherung-nutzt-gnu-only-erweiterung`](../observations/BEO-ALL/bats-zusicherung-nutzt-gnu-only-erweiterung/observation.md)
+  ergaenzt — Zaehler steht damit bei **2×** (Kommando:
+  `ls docs/plan/planning/observations/BEO-ALL/bats-zusicherung-nutzt-gnu-only-erweiterung/evidence/ | wc -l`);
+  `state.md` bleibt `offen` — unter der Schwelle ist das der Normalzustand, kein Ausgang.
+  **Nicht getragen:** `BEO-ALL/neuer-waechter-ohne-mutations-fall` — der neue Wächter ist von dem
+  gelisteten Fall `test/mutations/362-e2e-stufe-ohne-deklaration.sh` (`# verify: test-bats`)
+  mitgefahren und fällt in ihm (der Erzeuger bricht über der mutierten Kopie ab); der Eintrag
+  verlangt einen Wächter **ohne** Fall, und er ist bereits `verkörpert`. **Nicht getragen:** die
+  Klasse *„erzeugtes Artefakt ohne Halter gegen seine Quelle"* — dieser Slice ist ihre **Antwort**
+  (er baut den Halter), kein Vorkommen; eine Beleg-Datei zählte einen Vorgang, der nicht stattfand.
+- **Folge-Slices:** keiner geschnitten. Die zwei offenen Grenzen tragen heute keinen eigenen Schnitt:
+  die erste (F-2-Verdrahtung) kostet einen vollen E2E-Lauf und ist benannt, die zweite (veraltende
+  Deklaration ohne Sensor) ist ein Urteil und hat keinen Sensor-Kandidaten — beide stehen in §6.
+- **Risiken aus §6:** jedes mit genau einem Ausgang — siehe §6.
+- **Drei Paarungen:** (a) **Anker-Paarung — kein Gegenstand**: dieser §7 führt kein Feld
+  `liegt in <Zielort>`. (b) **Folge-Slice-Paarung — kein Gegenstand**: kein Folge-Slice genannt.
+  (c) **Register-Paarung — getragen**: der genannte Beleg existiert, sein Verzeichnis ist nicht
+  leer, und die genannte Beobachtung löst als Pfad auf.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
