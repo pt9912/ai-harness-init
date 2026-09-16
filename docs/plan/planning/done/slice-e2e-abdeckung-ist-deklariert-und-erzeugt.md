@@ -291,7 +291,8 @@ dasteht.
   Gemessen wird das in der Umsetzung; fällt die Antwort *nein*, ist die Spalte eine **benannte
   Lücke** — der Erzeuger garantiert die Nummer durch Konstruktion, kein Gate prüft sie gegen das
   Skript. — **Ausgang: entfallen — nicht eingetreten, gemessen.** Der Verifier hat die **Einzelform**
-  geprüft: ein Sonden-Dokument unter `docs/` mit `harness/tools/full-smoke.sh:99999` färbt
+  geprüft: ein Sonden-Dokument unter `docs/` mit einer Zeilen-Referenz **hinter dem Datei-Ende** von
+  [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) färbt
   `make docs-check` rot (Exit 2, `citation-out-of-range`), dieselbe Form mit einer gültigen Nummer
   bleibt grün — das Modul normalisiert intern auf `N-N` und verlangt `bis <= Zeilenzahl`. Die
   `Ort`-Spalte ist damit **doppelt gebunden**: das Gate hält die Zeilennummer gegen das Skript, der
