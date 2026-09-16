@@ -68,7 +68,7 @@ derselbe Abschnitt `in-progress/roadmap.md` — Rang 5 der Source Precedence. **
 adressiert diesen Pfad**, und zwar in mehreren ihrer Dateien, das Regelwerk daneben:
 
 ```sh
-grep -rl 'in-progress/roadmap' .harness/baseline/v6.8.0/ | wc -l                                  # 7
+grep -rl 'in-progress/roadmap' .harness/baseline/v6.9.0/ | wc -l                                  # 7
 git grep -l 'in-progress/roadmap\.md' \
   -- ':!.harness/baseline' ':!docs/plan/planning/done' ':!docs/reviews' | wc -l                    # 38
 ```
@@ -95,7 +95,7 @@ Die Zelle ist damit nicht nur knapper als ihre Ziel-Form, sie lehrt eine andere 
   Precedence, die Baseline adressiert ihn selbst (Messung oben), und 38 lebende Dateien zeigen
   darauf. Der Satz folgt dem Bestand, nicht umgekehrt. *Bestand bleibt bewusst stehen.*
 - **Keine Änderung an der vendored Vorlage**
-  `.harness/baseline/v6.8.0/templates/docs/plan/planning/README.template.md`. Der Baum ist
+  `.harness/baseline/v6.9.0/templates/docs/plan/planning/README.template.md`. Der Baum ist
   committet vendored Fremdtext, den [`AGENTS.md`](../../../../AGENTS.md) §3.7 ausdrücklich
   ausnimmt; `make baseline-verify` hält ihn gegen `SHA256SUMS`. *Bestand bleibt bewusst stehen.*
 - **Kein Adaptions-Eintrag `MR-<NNN>`.** Ob aus Befund A eine Abweichung von der Baseline folgt,

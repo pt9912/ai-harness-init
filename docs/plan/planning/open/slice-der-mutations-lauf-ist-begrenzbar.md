@@ -134,7 +134,7 @@ Setzung 2 — der Adaptions-Eintrag dazu ist **Architect**-Arbeit
 **Der Sensor bleibt, was er ist.** [`AGENTS.md`](../../../../AGENTS.md) §3.6 nennt `make mutate`
 weiter als seine Feedback-Hälfte; geändert wird die **Stufe** ihres Laufs, nicht sein Bestand. Die
 Sektion führt bereits, daß das Regelwerk diesen Träger nicht kennt —
-`grep -rl 'make mutate' .harness/baseline/v6.8.0/regelwerk/ | wc -l` → **0** (kein Erwartungswert)
+`grep -rl 'make mutate' .harness/baseline/v6.9.0/regelwerk/ | wc -l` → **0** (kein Erwartungswert)
 —, und dieser Plan schreibt das nicht neu.
 
 ### Eigentum: wem die Liefergegenstände gehören

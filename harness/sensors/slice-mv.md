@@ -36,7 +36,7 @@ Details und Beleg stehen im Kopf von `harness/tools/slice-mv.sh`, Abschnitt BELE
 
 ## Bindung
 
-Kein Gate-Versprechen; Träger von [Modul 5](../../.harness/baseline/v6.8.0/regelwerk/modul-05-planning-harness.md#lifecycle-als-state-machine)
+Kein Gate-Versprechen; Träger von [Modul 5](../../.harness/baseline/v6.9.0/regelwerk/modul-05-planning-harness.md#lifecycle-als-state-machine)
 und `BEO-ALL/verweise-brechen-beim-ortswechsel`.
 
 ## Im gebootstrappten Ziel

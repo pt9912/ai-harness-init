@@ -65,7 +65,7 @@ nicht aus einem gesetzten Wert (§1 *Warum hier kein Grenzwert steht*).
 Der vendored Baum trägt die Vorlage, und seit dem Baum-Tausch ist es die **neue** Fassung:
 
 ```sh
-ls .harness/baseline/v6.8.0/templates/docs/reviews/review-report.template.md
+ls .harness/baseline/v6.9.0/templates/docs/reviews/review-report.template.md
 ```
 
 Die Ziel-Form ist damit **adoptiert**; ein Vorgriff auf eine Lab-Fassung steht nicht mehr zur
@@ -300,7 +300,7 @@ Standard-Punkte der Vorlage (nicht slice-eigen, zählen nicht zur Drei):
 **Start** (`next` → `in-progress`): Der Slice ist priorisiert (`open → next` vollzogen,
 `Verantwortlich:` gesetzt), das WIP-Limit des Rolleninhabers ist frei, **und die Ziel-Form ist
 adoptiert** — der vendored Baum führt die Vorlage in der neuen Fassung
-(`ls .harness/baseline/v6.8.0/templates/docs/reviews/review-report.template.md`, §1). Damit ist die
+(`ls .harness/baseline/v6.9.0/templates/docs/reviews/review-report.template.md`, §1). Damit ist die
 Form gedeckt; ohne sie schriebe DoD (1) eine Form, für die keine Quelle steht. Beobachtbar ohne
 Rückfrage, und **kein Ergebnis dieses Slice**: Den Baum tauschte
 [slice-223](../done/slice-223-baum-tausch-v672-pins-ziehen.md).
@@ -380,7 +380,7 @@ Zwei beobachtbare Kriterien und ein Lerneintrag:
 [`harness/conventions.md`](../../../../harness/conventions.md) führt drei Sub-Areas — `*` (`ALL`),
 `harness/tools/` (`TOOLS`) und `.codex/` (`CODEX`); keiner der berührten Pfade liegt in den zwei
 engeren. Die Berührung ist damit `*` (`ALL`), und sie hält die Schwelle ≥ 2 von 3
-([`grundlagen-bootstrap.md`](../../../../.harness/baseline/v6.8.0/regelwerk/grundlagen-bootstrap.md#was-ist-eine-sub-area)):
+([`grundlagen-bootstrap.md`](../../../../.harness/baseline/v6.9.0/regelwerk/grundlagen-bootstrap.md#was-ist-eine-sub-area)):
 Achse 1 (Konventions-Härte) — der Block trägt repo-weite Einträge; Achse 2 (Inventur-Linie) — Gate-
 und Doku-Aussage sind als Paar abgleichbar; Achse 3 (Struktureller Cluster) trägt für `*`
 naturgemäß nicht. **Eine feinere Ausdifferenzierung wird hier nicht vorgenommen** — sie wäre eine

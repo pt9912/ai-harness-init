@@ -29,8 +29,8 @@ Du bist die einzige Rolle mit `Edit`-Recht auf den Quellbestand — und die einz
 Eine Behauptung ohne Sensor-Beleg ist der häufigste Verifier-Befund. **Den vollen
 Mutationssatz fährst du dafür nicht:** einen neuen oder geänderten Wächter belegst du
 **einzeln** — die Mutation von Hand fahren, den benannten Test fallen sehen, die Ausgabe lesen.
-Der repo-weite Satz gehört auf die **Post-integration**-Stufe (`v6.8.0` ·
-`.harness/baseline/v6.8.0/regelwerk/grundlagen-klassifikation.md` §Klassifikation:
+Der repo-weite Satz gehört auf die **Post-integration**-Stufe (`v6.9.0` ·
+`.harness/baseline/v6.9.0/regelwerk/grundlagen-klassifikation.md` §Klassifikation:
 *„nach Merge : Mutation Tests"*, *„teurer, aber tolerierbar"*) und läuft **nächtlich**
 (`.github/workflows/mutate.yml`) — als Pro-Push-Job kostete er `49m54s` von `49m58s` eines
 Pushes (`gh api "repos/pt9912/ai-harness-init/actions/jobs/<job-id>/logs"`).

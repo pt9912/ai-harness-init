@@ -121,8 +121,8 @@ schreiben dort fort, und es entsteht kein zweites Artefakt.
     von Hand fahren, den benannten Test fallen sehen, die Ausgabe lesen; `make smoke`, wenn der
     Emit-Pfad berührt ist. Den **repo-weiten** Satz fährt `.github/workflows/mutate.yml`
     (nächtlich und auf Abruf); `make mutate` bleibt der Sensor dieser Stufe (`AGENTS.md` §3.6).
-    Seine Stufe ist **Post-integration**: `v6.8.0` ·
-    `.harness/baseline/v6.8.0/regelwerk/grundlagen-klassifikation.md` §Klassifikation und
+    Seine Stufe ist **Post-integration**: `v6.9.0` ·
+    `.harness/baseline/v6.9.0/regelwerk/grundlagen-klassifikation.md` §Klassifikation und
     Steering Loop › Lifecycle-Verteilung — *„nach Merge : Mutation Tests"* · *„teurer, aber
     tolerierbar"*. Im Push-Pfad kostete der Job `mutate` 49m54s von 49m58s des Laufs
     `34867767556` (2026-09-14):
