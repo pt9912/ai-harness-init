@@ -24,6 +24,8 @@ blinden Fleck.
 nicht und landet im Sammelposten; wer diesen Typ umbenennt oder entfernt, nimmt die
 Rollen-Achse der Telemetrie mit, die `make span-report` je Rolle ausweist.
 
+**Budget: ≤ 40 Tool-Calls; bündle; wer mehr braucht, sagt es im Auftrag.**
+
 Vor jeder Arbeit: `CLAUDE.md`, [`AGENTS.md`](../../AGENTS.md),
 [`harness/conventions.md`](../../harness/conventions.md) und das Regelwerk-Modul zur Aufgabe
 (on-demand aus `.harness/baseline/<tag>/regelwerk/`, nie der ganze Baum).
