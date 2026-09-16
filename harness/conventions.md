@@ -8,11 +8,11 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 ## Baseline
 
 - **Konvention:** AI-Harness-Kurs
-- **Stand:** `v6.8.0`
+- **Stand:** `v6.9.0`
 - **Regelwerk + Templates:** committet vendored unter
-  `.harness/baseline/v6.8.0/` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); Regelwerks-Stand laut
-  `regelwerk/README.md`: **Kurs-Welle 135 · 2026-09-13**
-  (`sed -n '3p' .harness/baseline/v6.8.0/regelwerk/README.md`).
+  `.harness/baseline/v6.9.0/` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); Regelwerks-Stand laut
+  `regelwerk/README.md`: **Kurs-Welle 137 · 2026-09-16**
+  (`sed -n '3p' .harness/baseline/v6.9.0/regelwerk/README.md`).
 - **d-check:** der lebende Pin steht in `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`) und, per
   go-Test daran gekoppelt, in `internal/emit/emit.go` — hier steht keine zweite Fassung davon
   ([`MR-027`](#mr-027--d-check-pin-v0650-ignore-marker-in-zwei-achsen-verengt) §Kein Wächter);
@@ -29,7 +29,8 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   **auf `v6.0.0`:** 2026-09-04, Delta-Nachweis in slice-176;
   **auf `v6.5.0`:** 2026-09-07, Delta-Nachweis in slice-224;
   **auf `v6.7.2`:** 2026-09-12, Delta-Nachweis in slice-224;
-  **auf `v6.8.0`:** 2026-09-13, Delta-Nachweis in slice-sprung-auf-v680-wird-vollzogen.
+  **auf `v6.8.0`:** 2026-09-13, Delta-Nachweis in slice-sprung-auf-v680-wird-vollzogen;
+  **auf `v6.9.0`:** 2026-09-16, Delta-Nachweis in slice-sprung-auf-v690-wird-vollzogen.
   Die Form dieser Zeile — Ziel-Tag, Datum, der Slice mit dem Delta-Nachweis, sonst nichts — und
   der Ort einer Zielstand-Setzung stehen in
   [`ADR-0031`](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
@@ -90,18 +91,18 @@ Feld steht als Ziel-Form, nicht als bewachte Zusage.
 
 ## Adoptierte Konventions-Quellen
 
-- **Extern (Kurs, kanonisch):** <https://github.com/pt9912/ai-harness-course/tree/v6.8.0/kurs/de>
-  — auf den Tag `v6.8.0` gepinnt, **nicht** `main`-floating
+- **Extern (Kurs, kanonisch):** <https://github.com/pt9912/ai-harness-course/tree/v6.9.0/kurs/de>
+  — auf den Tag `v6.9.0` gepinnt, **nicht** `main`-floating
   ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Netzlos nachprüfbar ist der
   vendored Baum — `make baseline-verify` →
-  `baseline-verify: v6.8.0 OK — 54 Dateien (Integritaet + Vollstaendigkeit, netzlos)`. **Die
+  `baseline-verify: v6.9.0 OK — 54 Dateien (Integritaet + Vollstaendigkeit, netzlos)`. **Die
   Dateizahl ist kein Erwartungswert** ([`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2) — sie wandert mit dem Stand; tragend ist das `OK`. Die URL ersetzt die frühere
   `raw…/main/…/agents-regelwerk.md`-Monolith-URL, die **404** liefert (der Monolith
   existiert upstream seit v2.0.0 nicht mehr — die Module leben unter `/kurs/de/`).
 - **Die Provenienz-Kette ist zur Hälfte bewacht**, und die unbewachte Hälfte steht hier, weil sie
   sonst als belegt gälte ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Fünf
-  Stellen pinnen `v6.8.0` samt dem sha256 seines Release-Assets: `BASELINE_TAG` und
+  Stellen pinnen `v6.9.0` samt dem sha256 seines Release-Assets: `BASELINE_TAG` und
   `BASELINE_ZIP_SHA256` (`grep -nE '^BASELINE_(TAG|ZIP_SHA256)' Makefile`), das `sources`-Paar in
   [`.d-check.yml`](../.d-check.yml) (`grep -n 'lab-regelwerk' -A 1 .d-check.yml`) und
   `DefaultTag`/`DefaultBaselineSHA256` in `internal/fetch/baseline.go`
@@ -118,7 +119,7 @@ Feld steht als Ziel-Form, nicht als bewachte Zusage.
   (`grep -nE '^(baseline|regelwerk)[a-z-]*:' Makefile` nennt die drei). Diese Hälfte hängt am
   Vendoring-Vorgang, nicht an einem Sensor.
 - **In-Repo (verkörperte Form):** die committet vendored Baseline
-  `.harness/baseline/v6.8.0/{regelwerk,templates}/` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) — die
+  `.harness/baseline/v6.9.0/{regelwerk,templates}/` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)) — die
   präsente, netzlose Sicht auf die kanonische Quelle; bei Konflikt gilt der Kurs.
 
 ## Adaptions-Block

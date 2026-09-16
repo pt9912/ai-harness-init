@@ -94,10 +94,10 @@ Delta-Nachweis-Feld ausweist. Die Festlegung erlaubt **nicht**, einen Durchgang 
 *„Fällt auch dieser aus, wächst die Basis weiter, und die Kosten wachsen mit."* — wörtlich aus der
 Quelle zitiert, nicht als Beschreibung abgeschwächt.
 
-Gemessen am Stand dieses Dokuments trägt die letzte Zeile mit gefülltem Nachweis-Feld `v6.8.0`
+Gemessen am Stand dieses Dokuments trägt die letzte Zeile mit gefülltem Nachweis-Feld `v6.9.0`
 (`grep -o '\*\*auf \`v[0-9.]*\`:\*\* [0-9-]*, Delta-Nachweis[^.;]*' harness/conventions.md` — die
-Zeile mit `Delta-Nachweis in slice-sprung-auf-v680-wird-vollzogen`, kein Erwartungswert). Für einen
-achten Sprung wäre `v6.8.0` damit die Basis, **solange** kein weiterer Durchgang zwischenzeitlich
+Zeile mit `Delta-Nachweis in slice-sprung-auf-v690-wird-vollzogen`, kein Erwartungswert). Für einen
+neunten Sprung wäre `v6.9.0` damit die Basis, **solange** kein weiterer Durchgang zwischenzeitlich
 läuft.
 
 ## 4. Instanz-Register
