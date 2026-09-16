@@ -30,7 +30,7 @@ Stand, gegen den sie läuft).
 
 **Berührte Spec-Stellen:** — (der Slice misst Werkzeuge und schreibt Sensor-Dateien).
 
-**Verantwortlich:** — bis zur Priorisierung.
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-16.
 
