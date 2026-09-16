@@ -161,7 +161,7 @@ Der Zustand jedes Slice ist sein Lifecycle-Verzeichnis, hier nicht gespiegelt.
 | Slice | Titel | Bezug |
 |---|---|---|
 | [slice-090](next/slice-090-freshness-audit-im-ziel.md) | Das Ziel erfährt, dass sein vendored Baum altert — und warum kein Sensor mitkommt | [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) |
-| [slice-091](open/slice-091-vendored-baum-ohne-anspruch.md) | Der mitgelieferte Baum stellt keine `make`-Ansprüche an das Ziel, und eine lebende Zeile sagt es | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-091](next/slice-091-vendored-baum-ohne-anspruch.md) | Der mitgelieferte Baum stellt keine `make`-Ansprüche an das Ziel, und eine lebende Zeile sagt es | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-092](open/slice-092-traeger-inventur.md) | Die Träger-Inventur: je Regelblock ein Wert, Inventar gegen Abdeckung | [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) |
 
 **Die Reihenfolge ist die Aussage: 090 und 091 setzen je einen Wert, 092 schließt die Liste.** 090
@@ -245,7 +245,7 @@ Der Wert *Träger kommt mit* für Modul 10 wird in 092 gesetzt, nicht erarbeitet
 - **Die `make`-Ansprüche der lebenden emittierten Doku-Tische** (`AGENTS.md`,
   `harness/README.md`, `.harness/skills/closure-note-reviewer.md`). Derselbe Fehler, anderer
   Gegenstand: sie sind slice-087, und der liegt in welle-09.
-  [slice-091](open/slice-091-vendored-baum-ohne-anspruch.md) nimmt ausdrücklich nur den **vendored**
+  [slice-091](next/slice-091-vendored-baum-ohne-anspruch.md) nimmt ausdrücklich nur den **vendored**
   Baum — die Trennung ist am Kommando ablesbar: sein Sweep schließt genau diese drei Vorlagen aus
   (dort §1).
 - **Eine Reparatur im vendored Baum.** Er ist auf beiden Ebenen byte-verifiziert (`make

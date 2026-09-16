@@ -191,7 +191,7 @@ Mitglieds-Slice, der ihn nannte):
 
 **Nicht aus dieser Welle**, obwohl von Mitgliedern zitiert:
 [slice-090](../next/slice-090-freshness-audit-im-ziel.md) und
-[slice-091](../open/slice-091-vendored-baum-ohne-anspruch.md) (Mitglieder von
+[slice-091](../next/slice-091-vendored-baum-ohne-anspruch.md) (Mitglieder von
 [welle-11](../welle-11-traeger-aussage.md)) ·
 [slice-112](../open/slice-112-replay-schritt-hat-keinen-referenten.md) ·
 [slice-125](../done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) ·

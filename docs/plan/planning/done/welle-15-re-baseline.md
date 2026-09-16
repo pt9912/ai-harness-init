@@ -200,11 +200,11 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   Register-Paarung (c) neu, und die berührt
   [slice-129](../done/slice-129-closure-notiz-hat-einen-sensor.md). Dazu wechselt jede Präsens-Aussage
   über den vendored Baum mit dem Tausch ihren Gegenstand
-  ([slice-091](../open/slice-091-vendored-baum-ohne-anspruch.md),
+  ([slice-091](../next/slice-091-vendored-baum-ohne-anspruch.md),
   [slice-092](../open/slice-092-traeger-inventur.md), [`MR-040`](../../../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)).
   Die Kante ist damit nicht *`welle-15` blockiert beide Wellen*, sondern
   **[slice-182](slice-182-baum-tausch-v600-pins-ziehen.md) blockiert
-  [slice-091](../open/slice-091-vendored-baum-ohne-anspruch.md),
+  [slice-091](../next/slice-091-vendored-baum-ohne-anspruch.md),
   [slice-092](../open/slice-092-traeger-inventur.md) und
   [slice-129](../done/slice-129-closure-notiz-hat-einen-sensor.md)** — drei Slices, nicht zwei Wellen.
 - **Zwei Übergaben an den Architect** stehen in
