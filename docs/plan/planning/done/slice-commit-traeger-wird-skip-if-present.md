@@ -331,6 +331,15 @@ Backticks).
   Teil-Zeile `— liegt in …` entfällt, weil mit diesem Slice nichts verkörpert wurde.
   Auslöser: `BEO-ALL/praesens-aussage-in-einzufrierendem-artefakt-ohne-form` (slice-145,
   slice-offene-wellen-liste-hat-einen-waechter, dieser Vorgang — 3×).
+
+  **Warum der Ausgang hier steht und nicht erst in der nächsten Welle-Closure:** der Eintrag ist mit
+  diesem Vorgang **neu** über die Schwelle getreten, und ein `geplant`-Ausgang ohne auflösende
+  Kennung wäre ein Vorsatz — die Plandatei musste darum mit ihm entstehen. `offen` wäre nach
+  [`ADR-0049`](../../adr/0049-ausgang-traegt-die-benannte-luecke.md) Festlegung 3 zwischen zwei
+  Lese-Schritten zulässig gewesen; keiner der zwei offenen Wellen trägt den Eintrag (weder
+  [welle-09](../welle-09-modul-15-konformitaet.md) noch
+  [welle-11](../welle-11-traeger-aussage.md) nennt ihn). Die nächste Welle-Closure liest ihn als
+  Eintrag über der Schwelle ohnehin wieder und bestätigt oder verschiebt den Ausgang.
 - **Beobachtungs-Register (`../observations/`):** **fünf** Belege in bestehende Einträge gelegt und
   **ein** Verzeichnis neu angelegt; die Stände sind gemessen, nicht abgelesen
   ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)
