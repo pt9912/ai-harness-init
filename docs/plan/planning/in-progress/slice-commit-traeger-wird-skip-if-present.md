@@ -108,32 +108,32 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Ein Pfad, eine Klasse — und die Klasse steht an einer Stelle.** Die Aufzählung, die den
+- [x] **Ein Pfad, eine Klasse — und die Klasse steht an einer Stelle.** Die Aufzählung, die den
       Träger führt, und **jeder** Nachbar, der über „jede emittierte Datei wird konvergent
       geschrieben" fährt, trennen `.githooks/commit-msg` von den zwei übrigen Träger-Dateien; keine
       zweite Fassung der Klassifikation entsteht daneben. Der Beleg ist `make test`, nicht eine
       Zeile Prosa ([`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md)
       §Fitness Function).
-- [ ] **Skip-if-present heißt dreierlei, und jede Richtung ist gelesen:** der Pfad ist **frei** →
+- [x] **Skip-if-present heißt dreierlei, und jede Richtung ist gelesen:** der Pfad ist **frei** →
       der Träger wird geschrieben; der Pfad ist **belegt** → die liegende Datei bleibt unberührt
       **und der Lauf sagt es**, mit dem Hinweis auf die mitgelieferte Prüfung; die **Prüfung**
       selbst bleibt konvergent. Der Beleg ist die gefahrene Ausgabe im gebootstrappten Ziel
       (leeres Ziel und belegter Pfad), nicht die Zeile, die die Meldung baut.
-- [ ] **Die Sätze am Pfad sind gezogen.** Der Kopf und die Fehlermeldung des Aktivierungs-Fragments,
+- [x] **Die Sätze am Pfad sind gezogen.** Der Kopf und die Fehlermeldung des Aktivierungs-Fragments,
       der Commit-Absatz des emittierten Anweisungssatzes und die Prosa in
       [`harness/README.md`](../../../../harness/README.md) behaupten an keiner Stelle mehr, der
       Träger sei der des Werkzeugs oder werde kanonisch neu geschrieben — jeder beschreibt, was an
       diesem Pfad gilt ([`AGENTS.md`](../../../../AGENTS.md) §3.7).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow ([`AGENTS.md`](../../../../AGENTS.md) §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: die Prosa, die den Träger führt, nennt seine **Klasse** und den Ausgang für den
+- [x] Doku-Update: die Prosa, die den Träger führt, nennt seine **Klasse** und den Ausgang für den
       belegten Pfad, soweit dieser Slice diese Prosa wachsen lässt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). **Dieses Repo fährt Wellen-Betrieb:** der Kasten bleibt darum offen — sein Träger ist die nächste Welle-Closure (Baseline-Regelwerk `modul-06-roadmap.md` §Wellen-Closure-Prozedur, Schritt 3c, der auch Slices ohne Wellen-Zugehörigkeit liest), nicht dieser Lauf. Was er prüft, liegt vor: der Zielort der Register-Zeile, die Plandatei des Folge-Slice und der Beleg unter `evidence/`.
 
 ## 3. Plan (vor Code)
 
@@ -222,16 +222,33 @@ dasteht.
 - **Die Klasse bindet nicht, wenn die ADR nicht `Accepted` wird** (oder mit geändertem Inhalt).
   Der Start-Trigger hängt daran; wird die ADR unterwegs zurückgezogen oder umgeschrieben, vollzieht
   der Slice eine Setzung, die es so nicht mehr gibt, und die zwei Fassungen fallen wieder
-  auseinander. — **Ausgang:** <…>
+  auseinander. — **Ausgang: entfallen.** Die Bedingung ist eingetreten statt ausgefallen:
+  [`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md) ist `Accepted`
+  (`0ec7e7b9`), ihre Festlegungen 1 bis 4 stehen unverändert, und der Teil-`Supersedes` der
+  [`ADR-0055`](../../adr/0055-abgeschaffte-kennung-verlaesst-die-fitness-function-als-teil-abloesung.md)
+  nimmt **eine** Deckungs-Begründung ihrer §Fitness Function, keine Festlegung; die Klasse bindet
+  damit so, wie dieser Slice sie vollzogen hat.
 - **Der Träger wird nach dem ersten Schreiben nicht mehr geheilt.** Das ist die benannte negative
   Konsequenz der gewählten Klasse
   ([`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md) §Konsequenzen): eine
   spätere Änderung an seinem Inhalt erreicht ein Ziel nicht mehr. Gebrochen wird laut (der `exec`
-  auf einen verschobenen Prüfpfad endet im Commit-Pfad mit Exit ≠ 0), geheilt nicht. — **Ausgang:** <…>
+  auf einen verschobenen Prüfpfad endet im Commit-Pfad mit Exit ≠ 0), geheilt nicht. — **Ausgang:
+  entfallen.** Sie ist die benannte negative Konsequenz der getroffenen Entscheidung und kein offener
+  Posten: [`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md) Festlegung 3,
+  dritter Spiegelstrich, führt sie im Wortlaut (*„sein Veralten bricht laut …, es heilt nicht von
+  selbst"*). Ein Risiko, das die Entscheidung selbst ist, fällt aus der Liste statt in den Zähler;
+  der laute Bruch ist dort ein Satz der Entscheidung — ein Sensor trägt ihn nicht.
 - **Die zwei Klassen treffen sich im Ganz-Mengen-Test, und dort ist ein stilles Grün möglich.** Der
   Test hält heute für **jeden** Pfad der Aufzählung die konvergente Klasse fest; wer ihn auf die
   zwei Klassen zieht, kann die Modi- und Inhalts-Hälfte für den Träger verlieren, ohne daß ein
-  Zeichen rot wird. — **Ausgang:** <…>
+  Zeichen rot wird. — **Ausgang: entfallen.** Der Test ist mit dem Vorgang auf beide Klassen gezogen
+  (`TestEnforce_IdempotenzKlasseJePfad`): je Pfad fährt er die Richtung **seiner** Klasse, seine
+  Vorbedingung *beide Klassen besetzt* fällt, wenn eine leer läuft, und die Modus-/Inhalts-Hälfte des
+  Trägers liegt nicht bei ihm, sondern in `TestCommitMsgTraeger_BelegterPfadBleibtUndWirdGemeldet`
+  (Teil 1 und 3) und in `TestEnforce_ScriptsExecutable` — beide im Review gelesen und **nicht** als
+  verloren befunden. Was bleibt, ist enger als dieses Risiko und steht als **V-1** benannt: eine
+  **zweite** Klassen-Liste daneben sieht der Test nicht, weil er seine Erwartung aus derselben
+  Aufzählung ableitet, die der Writer liest.
 - **Die Fitness-Zeile in [`ADR-0007`](../../adr/0007-bootstrap-phasen.md) §Fitness Function nennt
   einen Träger, der die Klasse nur entartet hält, und sie steht dort unbeschränkt.** *„ein Test
   koppelt jede emittierte Datei an ihre Klasse (konvergent vs. skip-if-present); eine Fehl-Klasse
@@ -243,7 +260,16 @@ dasteht.
   Sensor, den es nicht mehr gibt; wird er auf beide Klassen gezogen, trägt sie ihn. Der erste Fall braucht
   beides: eine Folge-ADR mit **Teil-`Supersedes`** auf die Zeile und einen Implementer-Vorgang —
   benannt als `slice-klassifikations-zeile-nennt-ihren-traeger`, der mit der Anlage seiner Datei
-  auflöst. — **Ausgang:** <…>
+  auflöst. — **Ausgang: entfallen.** Die zweite Verzweigung ist eingetreten: der Ganz-Mengen-Test
+  **fiel** nicht, er ist umbenannt und auf beide Klassen gezogen, und die Fitness-Zeile hält damit
+  einen Sensor, der läuft — Klasse und Richtung je gelistetem Pfad, und ein Pfad **ohne** Klasse
+  färbt rot (`test/mutations/361-traeger-ohne-klasse.sh`). Die erste Verzweigung ist nicht
+  eingetreten; der dort genannte Vorgang `slice-klassifikations-zeile-nennt-ihren-traeger` hat damit
+  **kein Objekt und keine Datei** — er wird nicht angelegt und ist kein Folge-Slice dieses Vorgangs.
+  Die **Mengen**-Richtung (kein geschriebener Pfad ohne Listeneintrag) hat mit diesem Vorgang eine
+  **neue**, gemessene Grenze bekommen; sie ist in
+  [`ADR-0055`](../../adr/0055-abgeschaffte-kennung-verlaesst-die-fitness-function-als-teil-abloesung.md)
+  benannt und dort als eigener Re-Evaluierungs-Trigger geführt.
 
 ## 7. Closure-Notiz
 
@@ -255,12 +281,88 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register:** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
+- **Was hat funktioniert:** Der Schnitt hat getragen. Der teure Teil war der **Fund** der Sätze, nicht
+  ihr Schreiben — fünf der sechs Stellen, die die alte Klasse behaupteten, kamen aus dem Sweep über
+  die zwei Formen. DoD 2 ist im **gebootstrappten Ziel** an der **gelesenen** Ausgabe belegt, nicht an
+  der Zeile, die die Meldung baut; der Verifikations-Lauf hat das in eigener Messung nachgefahren
+  (leeres Ziel · belegter Pfad · driftende Prüfung). Und der Rollenwechsel hat genau das geleistet,
+  wofür er existiert: der HIGH dieses Vorgangs — vier entwaffnete Mutations-Fälle — ist für **kein**
+  Gate des Push-Pfads sichtbar, gefunden hat ihn der Review.
+- **Was ging anders als geplant:** fünf Dinge, und keine davon war im Plan.
+  (1) Die Lieferung kam in **zwei divergenten Läufen mit demselben Betreff** (`2f82b466`,
+  `d7fd8227`); der zweite zieht zwei Dateien des ersten nach.
+  (2) **F-1 (HIGH):** der Umbau entwaffnete vier gelistete Mutations-Fälle — zwei griffen nicht mehr,
+  zwei fielen aus einem fremden Grund; nachgezogen in `65b78423`, jeder mit seinem `# expect:`.
+  (3) Die Umbenennung des Ganz-Mengen-Tests ließ eine **abgeschaffte Kennung** in der `Accepted`
+  [`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md) stehen → die
+  [`ADR-0055`](../../adr/0055-abgeschaffte-kennung-verlaesst-die-fitness-function-als-teil-abloesung.md)
+  (Teil-`Supersedes`). Genau diese Klasse hatte §6/**Risiko 4** nur für die **namensfreie** Zeile der
+  [`ADR-0007`](../../adr/0007-bootstrap-phasen.md) formuliert.
+  (4) **F-3:** der Zahl-Beleg der Commit-Message trifft die Fundmenge nicht (s. u.).
+  (5) **Sechs gebaute Stellen stehen nicht in §3** — fünf Emitter-Einträge als Folge des
+  fail-closed-Writers, die Go-Test-Hälfte des Belegs, ein Namens-Nachzug, vier Anker aus Review-F-1;
+  **keine** nimmt einen §1-Ausschluss mit, und keine ist ein Zuviel.
+  Dazu ein **Ertrag, den kein DoD-Punkt trägt:** dieser Slice hat **drei** ADRs ausgelöst —
+  [`ADR-0053`](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md),
+  [`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md),
+  [`ADR-0055`](../../adr/0055-abgeschaffte-kennung-verlaesst-die-fitness-function-als-teil-abloesung.md)
+  —, alle heute `Accepted`.
+- **F-3 — der eingefrorene Zahl-Beleg, als benannte Grenze:** die Message von `d7fd8227` sagt *„Dazu
+  vier Stellen, die der Plan nicht nannte"*. Die Fundmenge ist **fünf**: `Enforce`-Doc,
+  `writeFileMode`-Doc, `captureFiles`-Doc, `EnforcePaths`-Doc, `hooksInstallMkFile`-Doc; eine sechste
+  ist nur in der Lesart **ohne** die §3-Tabelle unbenannt, eine siebte trägt keine Klassen-Aussage.
+  Die Rückgabe desselben Laufs nannte **sieben**:
+
+  ```sh
+  git diff -U0 77b927c7 d7fd8227 | grep -E '^-[^-]' | grep -icE 'konvergent|kanonisch|unbedingt'   # 22 Zeilen
+  ```
+
+  Die 22 sind **Zeilen**, nicht Stellen — die fünf sind an ihnen gelesen. Die Message ist gepusht und
+  unveränderlich; **kein Gate liest eine Commit-Message**
+  ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)
+  Setzung 1). Die „vier" bleibt darum stehen, wo sie steht; die Closure-Notiz ist die Stelle, die die
+  Fundmenge daneben trägt — eine Reparatur gibt es nicht.
+- **Steering-Loop-Eintrag:** **geplant, nicht verkörpert** — der Lese-Schritt hat den Eintrag
+  [`BEO-ALL/praesens-aussage-in-einzufrierendem-artefakt-ohne-form`](../observations/BEO-ALL/praesens-aussage-in-einzufrierendem-artefakt-ohne-form/observation.md)
+  mit diesem Vorgang bei **3×** gelesen und ihm seinen Ausgang gegeben: `geplant`, Träger
+  [`slice-praesens-aussage-in-einzufrierendem-artefakt-bekommt-eine-form`](../open/slice-praesens-aussage-in-einzufrierendem-artefakt-bekommt-eine-form.md)
+  — die **Form** für die Präsens-Aussage über ein lebendes Artefakt in einem einfrierenden Text. Der
+  Norm-Text entsteht nach [`AGENTS.md`](../../../../AGENTS.md) §3.8 in der **Architect**-Rolle; die
+  Teil-Zeile `— liegt in …` entfällt, weil mit diesem Slice nichts verkörpert wurde.
+  Auslöser: `BEO-ALL/praesens-aussage-in-einzufrierendem-artefakt-ohne-form` (slice-145,
+  slice-offene-wellen-liste-hat-einen-waechter, dieser Vorgang — 3×).
+- **Beobachtungs-Register (`../observations/`):** **fünf** Belege in bestehende Einträge gelegt und
+  **ein** Verzeichnis neu angelegt; die Stände sind gemessen, nicht abgelesen
+  ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)
+  Setzung 2):
+
+  ```sh
+  for s in mutations-fall-wird-von-berechtigter-aenderung-entwaffnet \
+           praesens-aussage-in-einzufrierendem-artefakt-ohne-form \
+           extensionale-zahl-unterschreitet-die-eigene-fundmenge \
+           zusage-neben-geaenderter-ableitung-bleibt-stehen \
+           kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle \
+           rang-zeiger-nennt-eine-festlegung-deren-zweifelsregel-anders-entscheidet; do
+    printf '%-64s %s\n' "$s" "$(ls docs/plan/planning/observations/BEO-ALL/$s/evidence/*.md | wc -l)"
+  done
+  # mutations-fall-wird-von-berechtigter-aenderung-entwaffnet          4
+  # praesens-aussage-in-einzufrierendem-artefakt-ohne-form             3   (= Schwelle)
+  # extensionale-zahl-unterschreitet-die-eigene-fundmenge              2
+  # zusage-neben-geaenderter-ableitung-bleibt-stehen                  26
+  # kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle    11
+  # rang-zeiger-nennt-eine-festlegung-deren-zweifelsregel-anders-entscheidet  1
+  ```
+
+  Der **eine neue** Eintrag ist `rang-zeiger-nennt-eine-festlegung-deren-zweifelsregel-anders-entscheidet`
+  — die einzige Finding-Klasse des Reviews ohne vorhandene Kennung; sie zu erfinden, wo eine
+  existiert, wäre der Verstoß, den die Register-Regel **zitieren statt neu formulieren** verbietet.
+  Sein `state.md` steht auf `offen` (1×, unter der Schwelle). **Kein Zähler wurde gesetzt.**
+- **Folge-Slices:** [`slice-praesens-aussage-in-einzufrierendem-artefakt-bekommt-eine-form`](../open/slice-praesens-aussage-in-einzufrierendem-artefakt-bekommt-eine-form.md)
+  — ist eine Datei in `open/`; er ist der Träger des `geplant`-Ausgangs oben. Sonst keiner: der in
+  §6/**Risiko 4** für die erste Verzweigung genannte Vorgang ist **nicht** eingetreten und wird nicht
+  angelegt.
+- **Risiken aus §6:** **vier**, jeder mit genau einem Ausgang — alle vier `entfallen`; die Gründe
+  stehen je am Risiko in §6. Keines wandert ins Register, keines bleibt offen.
 - **Drei Paarungen:** dieses **Repo** fährt Wellen — Anker, Folge-Slice und Register prüft die
   nächste Welle-Closure, auch für diesen Slice ohne Wellen-Zugehörigkeit.
 
