@@ -27,6 +27,14 @@ Stufe ohne Deklaration. Was die Deklaration **nicht** prüft, ist die Zuordnung 
 ob die genannte Anforderung noch zu ihrer Stufe gehört, bleibt ein Urteil, das der
 Review hält — der Anker kann auflösen, während sich die Aussage der Stufe ändert.
 
+**Die committete Tabelle hat einen Halter.** Ein Fall in
+[`test/e2e-abdeckung.bats`](../../test/e2e-abdeckung.bats) fährt den Erzeuger über dem
+geprüften Skript und hält sein Ergebnis **byte-gleich** gegen
+[`docs/user/e2e-abdeckung.md`](../../docs/user/e2e-abdeckung.md); er läuft in `make test`,
+nicht in `make gates`. Ungeprüft bleibt damit allein die Zuordnung selbst: dass die
+committete Datei der aktuelle Ausgang ihres Erzeugers ist, entscheidet kein Urteil und
+wird darum gehalten.
+
 ## Grenze — was das Grün nicht abdeckt
 
 **Sein Grün sagt das eine, sein Rot sagt zwei Dinge:** der Lauf fragt je Durchgang fremde

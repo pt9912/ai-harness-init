@@ -34,3 +34,6 @@ Der repo-weite Satz gehört auf die **Post-integration**-Stufe (`v6.8.0` ·
 *„nach Merge : Mutation Tests"*, *„teurer, aber tolerierbar"*) und läuft **nächtlich**
 (`.github/workflows/mutate.yml`) — als Pro-Push-Job kostete er `49m54s` von `49m58s` eines
 Pushes (`gh api "repos/pt9912/ai-harness-init/actions/jobs/<job-id>/logs"`).
+
+**Budget:** ≤ 60 Tool-Calls; bündle Schleifen und Skripte statt Einzelaufrufe; wer mehr
+braucht, sagt es im Auftrag.

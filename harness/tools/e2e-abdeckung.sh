@@ -12,7 +12,12 @@
 # Kein Docker, kein E2E, keine Ausfuehrung der Quelle. Die Tabelle aendert sich damit
 # mit den DEKLARATIONEN, nicht mit jedem Lauf. Das Werkzeug ist darum kein Gate: es
 # urteilte ueber den Quelltext eines Skripts, nicht ueber den Zustand des Baums
-# (LH-QA-01). Was es schreibt, prueft `make docs-check` mit.
+# (LH-QA-01). Dass die committete docs/user/e2e-abdeckung.md der aktuelle Ausgang dieses
+# Erzeugers ist, prueft der Halter in test/e2e-abdeckung.bats (Fall "halter: die committete
+# Tabelle ist der aktuelle Ausgang des Erzeugers"): er faehrt diesen Erzeuger ueber einer
+# Kopie des geprueften E2E-Skripts und haelt das Ergebnis byte-gleich gegen die committete
+# Datei. `make docs-check` prueft an der Tabelle nur ihre Verweise, nicht ihre
+# Uebereinstimmung mit diesem Erzeuger.
 #
 # DIE STUFEN-MENGE IST EIN KRITERIUM, KEINE AUFZAEHLUNG: eine Zeile der Form
 #   echo "full-smoke: … ..."
@@ -65,6 +70,12 @@ RUF_TEIL='^[[:space:]]*e2e_abdeckung "'
 # ist “, \342\200\235 ist ”.
 TYPOGRAFIE='—–…·→'
 ANFUEHRUNGEN="$(printf '\342\200\231\342\200\236\342\200\234\342\200\235')"
+# Die ASCII-Satzzeichen, die der Slug fallen laesst: eine WOERTLICHE AUFZAEHLUNG, kein
+# Bereich. Ein Bereich wie [!-,] wird von glibc-sed und busybox-sed VERSCHIEDEN gelesen —
+# dem einen fallen die Ziffern mit heraus, dem anderen nicht —, und der Anker haengt dann
+# an der sed-Fassung der Laufzeitumgebung statt an der Ueberschrift. '-', '_' und alles ab
+# 0x80 stehen nicht in der Aufzaehlung und bleiben damit stehen.
+SATZZEICHEN='!"#$%&'"'"'()*+,./:;<=>?@'
 BT='`'
 LASTENHEFT_REL="spec/lastenheft.md"
 
@@ -110,7 +121,7 @@ slug_fuer() {
 		| tr '[:upper:]' '[:lower:]' \
 		| sed -e 's/Ä/ä/g' -e 's/Ö/ö/g' -e 's/Ü/ü/g' \
 		| sed -e "s/[$TYPOGRAFIE$ANFUEHRUNGEN]//g" \
-		| sed -e 's/[!-,]//g' -e 's/[.-@]//g' \
+		| sed -e "s/[$SATZZEICHEN]//g" \
 		| sed -e 's/\[//g' -e 's/\\//g' -e 's/\]//g' -e 's/\^//g' \
 		| sed -e 's/`//g' -e 's/[{-~]//g' \
 		| sed -e 's/ /-/g'

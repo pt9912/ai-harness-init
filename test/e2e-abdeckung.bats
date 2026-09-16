@@ -7,7 +7,7 @@
 # KOPIEN davon — kein Docker, kein Netz, kein E2E. Die Kopien entstehen in
 # BATS_TEST_TMPDIR; der gepruefte Baum wird angefasst, aber nicht veraendert.
 #
-# VIER LAUFFORMEN, und jede traegt eine andere Zusage:
+# FUENF LAUFFORMEN, und jede traegt eine andere Zusage:
 #   (1) HAPPY PATH ueber dem GEPRUEFTEN Skript: der Erzeuger rendert je Stufe eine Zeile,
 #       und ein zweiter Lauf meldet unveraendert. Dieser Fall ist zugleich der Waechter
 #       gegen die zweite Luecken-Richtung: nimmt eine Stufe ihre Deklaration weg, faellt
@@ -17,6 +17,10 @@
 #   (3) DEKLARATION OHNE STUFE, in zwei Auspraegungen: die Zeile, die ein Anker nennt,
 #       ist umgeschrieben (der Aufruf steht noch da), und ein Aufruf steht vor der ersten
 #       Stufe.
+#   (4) HALTER DER COMMITTETEN TABELLE: der Erzeuger faehrt ueber dem geprueften Skript,
+#       und sein Ausgang wird byte-gleich gegen docs/user/e2e-abdeckung.md gehalten. Diese
+#       Datei ist erzeugt und kein Gate-Target liest sie auf ihren Inhalt — die Verweise
+#       an ihr prueft `make docs-check` —, darum traegt sie hier ihren Halter.
 # Eine Richtung allein belegte nichts (AGENTS.md 3.6); gefahren werden beide.
 #
 # DIE AUSGANGSLAGE IST DER GEPRUEFTE BAUM, nicht eine Fixture. Jeder Fall belegt darum
@@ -27,6 +31,7 @@ setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
   ERZEUGER="$REPO/harness/tools/e2e-abdeckung.sh"
   QUELLE="$REPO/harness/tools/full-smoke.sh"
+  TABELLE="$REPO/docs/user/e2e-abdeckung.md"
   TMP="$BATS_TEST_TMPDIR"
   STUFEN_MUSTER='^echo "full-smoke: .* \.\.\."$'
   RUF_MUSTER='^[[:space:]]*e2e_abdeckung "'
@@ -89,4 +94,20 @@ zeilen() { grep -c '^| \[' "$1"; }
   run bash "$ERZEUGER" "$TMP/kopie.sh" "$TMP/tabelle.md"
   [ "$status" -ne 0 ]
   printf '%s' "$output" | grep -q 'VOR der ersten Stufen-Kopfzeile'
+}
+
+@test "halter: die committete Tabelle ist der aktuelle Ausgang des Erzeugers" {
+  # Der Erzeuger schreibt den Pfad der QUELLE in die Spalte `Ort` und leitet den
+  # Link-Prefix aus der TIEFE des Ziels ab. Byte-Gleichheit mit der committeten Datei ist
+  # darum nur ueber derselben Aufrufform herstellbar: Quelle `harness/tools/full-smoke.sh`,
+  # Ziel `docs/user/…`, beide relativ. Der Sandkasten stellt genau diese zwei Pfade her —
+  # die Quelle als KOPIE des geprueften Skripts, die der Erzeuger als Text liest; der
+  # gepruefte Baum wird gelesen, nicht geschrieben.
+  mkdir -p "$TMP/sandkasten/harness/tools" "$TMP/sandkasten/docs/user"
+  cp "$QUELLE" "$TMP/sandkasten/harness/tools/full-smoke.sh"
+  cd "$TMP/sandkasten"
+  run bash "$ERZEUGER" harness/tools/full-smoke.sh docs/user/tabelle.md
+  [ "$status" -eq 0 ]
+  run cmp -s docs/user/tabelle.md "$TABELLE"
+  [ "$status" -eq 0 ]
 }
