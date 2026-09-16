@@ -418,7 +418,7 @@ Commit**, nicht in dem der Closure: Ein Prosa-Nachzug in neun Planner-Artefakten
 Closure-Artefakt nach [`AGENTS.md`](../../../../AGENTS.md) §3.10.
 
 **Zwei Fundstellen bleiben bewusst stehen, und hier steht warum.** Beide liegen in
-[slice-135](../open/slice-135-d-check-pin-v0661.md), und beide sind Teil einer **datierten Messung**
+[slice-135](../next/slice-135-d-check-pin-v0661.md), und beide sind Teil einer **datierten Messung**
 über die Spanne `v0.65.0..v0.66.1` — einer Spanne, die das Repo mit
 [slice-187](../done/slice-187-d-check-pin-v0741.md) hinter sich gelassen hat. Der Plan ist als
 überholt geführt

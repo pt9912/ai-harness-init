@@ -202,7 +202,7 @@ also über einen eigenen Schnitt mit eigener Config-Entscheidung und eigenem Tro
 Pin eine Fähigkeit **verfügbar** macht, ist keine Entscheidung über sie — dieselbe Trennung, die
 [`MR-024`](../../../../harness/conventions.md#mr-024--d-check-pin-v0620-structure-verfügbar) schon
 für `structure` selbst gezogen hat. **Und sie trägt die Frage nicht, für die sie sonst naheläge:**
-[slice-134](slice-134-adr-index-traegt-die-ziel-form.md) bräuchte die Gleichheit einer
+[slice-134](../open/slice-134-adr-index-traegt-die-ziel-form.md) bräuchte die Gleichheit einer
 Tabellenzelle mit der **H1 der verlinkten Datei**; die neue Bedingung begrenzt die **Zeichenzahl**
 einer über ihren Kopfzeilen-Namen benannten Spalte. Gemessen an der Quelle:
 `grep -rn -i 'H1 der\|Überschrift der verlinkten\|verlinkten Datei'` über `spec/lastenheft.md` und

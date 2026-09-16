@@ -413,7 +413,7 @@ Geprüft ist hier, ob die Zusagen **tragen** und ob ein stiller Grün-Pfad beste
   0 Befund(e)`, `comment-claims: 55 Datei(en) geprueft, 0 Befund(e)`, `span-check` grün, 218
   bats-Fälle `ok`. `make freshness-dcheck` → *„aktuell — gepinnt und latest sind beide v0.74.1"*,
   EXIT 0.
-- **N-15 — Der Zeiger von `slice-135` steht.** `grep -n 'slice-187' docs/plan/planning/open/slice-135-d-check-pin-v0661.md`
+- **N-15 — Der Zeiger von `slice-135` steht.** `grep -n 'slice-187' docs/plan/planning/next/slice-135-d-check-pin-v0661.md`
   → drei Zeilen, alle mit korrektem `../in-progress/`-Pfad. Die Datei ist nicht gelöscht, wie
   §1 des Plans es begründet.
 - **N-16 — Nicht geprüft (fremde Rolle oder außerhalb der Reichweite dieses Laufs):** die

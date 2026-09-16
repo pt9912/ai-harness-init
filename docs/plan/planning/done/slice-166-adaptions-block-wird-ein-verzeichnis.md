@@ -226,7 +226,7 @@ Rot ist die **Adressierbarkeit**. `make docs-check` meldet über dem vollzogenen
    (`in:`) und nach
    [`ADR-0026`](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md) **extensional
    geschlossen**; den Schlüssel nachzuziehen ist eine neue Senkung mit eigener ADR.
-3. **1× `citation-out-of-range`**: [slice-135](../open/slice-135-d-check-pin-v0661.md) zitiert eine
+3. **1× `citation-out-of-range`**: [slice-135](../next/slice-135-d-check-pin-v0661.md) zitiert eine
    Zeilen-Nummer der Index-Datei, die der 146-Zeilen-Stand nicht mehr hat. Die Datei ist zugleich
    eine der referenzierenden — DoD (2) schließt aus, sie anzufassen.
 
@@ -338,7 +338,7 @@ Steering-Loop-Regeln.
   `ignore-refs`-Schlüssel: [`ADR-0032`](../../adr/0032-eingefrorene-referenz-folgt-ihrem-rumpf.md).
 - **Die dritte Klasse war ein Konflikt in der DoD selbst, und er ist aufgelöst.** DoD (2) verbietet,
   eine der referenzierenden Dateien anzufassen; die Zeilen-Zitation auf Zeile 1015 der Index-Datei
-  in [slice-135](../open/slice-135-d-check-pin-v0661.md) musste trotzdem fallen. Aufgelöst über die
+  in [slice-135](../next/slice-135-d-check-pin-v0661.md) musste trotzdem fallen. Aufgelöst über die
   **Referenz-Klasse**: DoD (2) gibt eine Zusage über **Anker**-Verweise, und der Doppel-Anker hält
   sie — an einer Zeilen-Zitation ist kein Anker beteiligt, sie kann von diesem Vertrag nicht
   getragen werden. Die Zusage ist gemessen eingehalten: **null** gelöschte Zeilen mit einem
