@@ -1,6 +1,7 @@
 package emit_test
 
 import (
+	"bytes"
 	"io"
 	"os"
 	"path/filepath"
@@ -144,6 +145,76 @@ func TestCommitMsgTraeger_NenntSeineZweiGrenzen(t *testing.T) {
 	}
 }
 
+// Rot-Gegenbeispiele: test/mutations/358-traeger-wieder-konvergent.sh (die Klasse des
+// Traegers wird konvergent — die liegende Datei verschwindet) und
+// test/mutations/359-meldung-ohne-pruefpfad.sh (die Meldung nennt die bereitliegende
+// Pruefung nicht mehr).
+//
+// TestCommitMsgTraeger_BelegterPfadBleibtUndWirdGemeldet haelt die Klasse des Traegers an
+// ihren drei Richtungen (ADR-0054 Festlegung 1 und 3): ein FREIER Pfad bekommt den Traeger
+// des Werkzeugs, ein BELEGTER behaelt seine Datei Byte fuer Byte und der Lauf nennt sie
+// zusammen mit der Pruefung, die daneben bereitliegt, und die PRUEFUNG selbst bleibt
+// konvergent — ihre verstellte Fassung heilt der naechste Lauf.
+//
+// WAS DIESER TEST NICHT MISST: die Meldung im gebootstrappten Ziel aus einem echten
+// Werkzeug-Aufruf. Das faehrt harness/tools/full-smoke.sh (belegter Pfad im Ziel, Ausgabe
+// gelesen); die Meldung ist Ausgabe und kein Gate — kein Modul des Doku-Gates liest sie
+// (LH-QA-01).
+func TestCommitMsgTraeger_BelegterPfadBleibtUndWirdGemeldet(t *testing.T) {
+	// (1) DER PFAD IST FREI: der Emit in ein leeres Ziel legt den Traeger des Werkzeugs ab.
+	dir := commitMsgZiel(t)
+	pfad := filepath.Join(dir, filepath.FromSlash(emit.CommitMsgHookPath))
+	geschrieben := mustReadString(t, pfad)
+	if !strings.Contains(geschrieben, emit.CommitMsgCheckPath) {
+		t.Errorf("%s ruft die mitgelieferte Pruefung nicht auf — das Ziel bekaeme einen Traeger, der nichts prueft:\n%s",
+			emit.CommitMsgHookPath, geschrieben)
+	}
+
+	// (2) DER PFAD IST BELEGT: ein Ziel, das an diesem Namen seine eigene Zusage fuehrt.
+	belegt := t.TempDir()
+	eigen := "#!/usr/bin/env bash\n# adopter-eigener Traeger dieses Repos\nset -euo pipefail\nexit 0\n"
+	eigenPfad := filepath.Join(belegt, filepath.FromSlash(emit.CommitMsgHookPath))
+	if err := os.MkdirAll(filepath.Dir(eigenPfad), 0o755); err != nil {
+		t.Fatalf("%s anlegen: %v", filepath.Dir(emit.CommitMsgHookPath), err)
+	}
+	if err := os.WriteFile(eigenPfad, []byte(eigen), 0o755); err != nil {
+		t.Fatalf("%s schreiben: %v", emit.CommitMsgHookPath, err)
+	}
+	pruefung := filepath.Join(belegt, filepath.FromSlash(emit.CommitMsgCheckPath))
+	var notice bytes.Buffer
+	if err := emit.Enforce(belegt, &notice); err != nil {
+		t.Fatalf("Enforce: %v", err)
+	}
+	if got := mustReadString(t, eigenPfad); got != eigen {
+		t.Errorf("%s wurde ueberschrieben (skip-if-present verletzt):\n%q\nerwartet war die liegende Fassung:\n%q",
+			emit.CommitMsgHookPath, got, eigen)
+	}
+	meldung := notice.String()
+	for _, satz := range []string{emit.CommitMsgHookPath, emit.CommitMsgCheckPath} {
+		if !strings.Contains(meldung, satz) {
+			t.Errorf("die Meldung nennt %q nicht — ein stilles Uebergehen erfuehre den Adopter nicht von dem, was ihm bereitliegt:\n%s",
+				satz, meldung)
+		}
+	}
+
+	// (3) DIE PRUEFUNG BLEIBT KONVERGENT: sie ist das Stueck des Paares, das sich mit der
+	// Fassung des Werkzeugs aendert — eine verstellte Fassung im Ziel heilt der naechste Lauf,
+	// waehrend der Traeger daneben stehenbleibt.
+	kanonisch := mustReadString(t, pruefung)
+	if err := os.WriteFile(pruefung, []byte(kanonisch+"\n# adopter-drift\n"), 0o755); err != nil {
+		t.Fatalf("%s verstellen: %v", emit.CommitMsgCheckPath, err)
+	}
+	if err := emit.Enforce(belegt, io.Discard); err != nil {
+		t.Fatalf("Enforce (kein Refuse erwartet): %v", err)
+	}
+	if got := mustReadString(t, pruefung); got != kanonisch {
+		t.Errorf("%s wurde nicht kanonisch neu geschrieben (konvergent verletzt):\n%q", emit.CommitMsgCheckPath, got)
+	}
+	if got := mustReadString(t, eigenPfad); got != eigen {
+		t.Errorf("%s wurde beim zweiten Lauf ueberschrieben (skip-if-present verletzt):\n%q", emit.CommitMsgHookPath, got)
+	}
+}
+
 // Rot-Gegenbeispiel: test/mutations/349-aktivierung-haengt-an-gate-checks.sh.
 //
 // TestHooksInstallFragment_IstKeinGateUndNenntDenTraeger haelt die zwei Adressen
@@ -203,6 +274,35 @@ func TestHooksInstallFragment_TraegtDieReichweite(t *testing.T) {
 	} {
 		if !strings.Contains(flach, satz) {
 			t.Errorf("%s fuehrt %q nicht — die Reichweiten-Zusage ist damit weiter als der Traeger:\n%s",
+				emit.HooksInstallMkPath, satz, frag)
+		}
+	}
+}
+
+// Rot-Gegenbeispiel: test/mutations/360-fragment-ohne-klassen-satz.sh.
+//
+// TestHooksInstallFragment_TraegtDieKlasseSeinesPfades steht fuer den Satz, der am Pfad gilt
+// (ADR-0054 Festlegung 1 und 3): das Fragment nennt dem Aktivierer die Klasse des Traegers —
+// skip-if-present, abgelegt nur, wo der Pfad frei ist —, damit sich der Pfad nicht als
+// Werkzeug-Eigentum liest und der Adopter den Grund an der richtigen Stelle sucht. Daneben
+// verliert es die Pruefung nicht aus dem Blick: sie liegt auch dann bereit, wenn der Traeger
+// stehenbleibt.
+//
+// WAS DIESER TEST NICHT MISST: ob daneben ein Satz steht, der die alte Klasse behauptet. Eine
+// Textprobe faengt eine Formulierung, die wieder hinzukommt, nicht — das ist Review-Arbeit
+// (AGENTS.md §3.6).
+func TestHooksInstallFragment_TraegtDieKlasseSeinesPfades(t *testing.T) {
+	frag := mustReadString(t, filepath.Join(commitMsgZiel(t), filepath.FromSlash(emit.HooksInstallMkPath)))
+	flach := strings.Join(strings.Fields(frag), " ")
+
+	for _, satz := range []string{
+		"SKIP-IF-PRESENT",
+		"WO DER PFAD FREI IST",
+		"unberuehrt und der Lauf sagt es",
+		emit.CommitMsgCheckPath,
+	} {
+		if !strings.Contains(flach, satz) {
+			t.Errorf("%s fuehrt %q nicht — das Aktivierungs-Fragment liest sich dann als Ziel des Werkzeugs:\n%s",
 				emit.HooksInstallMkPath, satz, frag)
 		}
 	}

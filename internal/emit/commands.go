@@ -3,6 +3,7 @@ package emit
 import (
 	"embed"
 	"fmt"
+	"io"
 )
 
 // commandsFS traegt die tool-AUTORIERTEN Agenten-Workflow-Commands (LH-FA-08,
@@ -23,12 +24,12 @@ var commandsFS embed.FS
 
 // commandFiles bildet jede eingebettete Command-Quelle auf ihren Ziel-Relpfad ab.
 // Ziel ist .claude/commands/ (von Claude Code fixiert), die Commands sind reine
-// .md-Anleitung (0644).
+// .md-Anleitung (0644) und darum skip-if-present wie der uebrige Adopter-Boden.
 func commandFiles() []enforceFile {
 	return []enforceFile{
-		{"templates/commands/implement-slice.md", ".claude/commands/implement-slice.md", 0o644},
-		{"templates/commands/plan-welle.md", ".claude/commands/plan-welle.md", 0o644},
-		{"templates/commands/close-welle.md", ".claude/commands/close-welle.md", 0o644},
+		{src: "templates/commands/implement-slice.md", dst: ".claude/commands/implement-slice.md", mode: 0o644, class: SkipIfPresent},
+		{src: "templates/commands/plan-welle.md", dst: ".claude/commands/plan-welle.md", mode: 0o644, class: SkipIfPresent},
+		{src: "templates/commands/close-welle.md", dst: ".claude/commands/close-welle.md", mode: 0o644, class: SkipIfPresent},
 	}
 }
 
@@ -43,18 +44,21 @@ func CommandPaths() []string {
 	return paths
 }
 
-// Commands schreibt die Workflow-Commands nach targetDir — SKIP-IF-PRESENT (slice-038,
-// ADR-0007: die Commands tragen den ANPASSEN-Marker, der Adopter adaptiert sie). Ein
+// Commands schreibt die Workflow-Commands nach targetDir — SKIP-IF-PRESENT (ADR-0007
+// Festlegung 3: die Commands tragen den ANPASSEN-Marker, der Adopter adaptiert sie). Ein
 // idempotenter Re-Lauf clobbert eine adopter-adaptierte Command-Anleitung NIE; Prozess-
 // Updates zieht der Adopter aus dem vendored regelwerk, nicht per Auto-Clobber. Keine
 // --lang-Substitution — die Commands sind sprach-agnostisch.
+//
+// Ein liegender Command wird nicht gemeldet: dieses Ziel kennt keinen notice-Kanal, und eine
+// Anleitung, die der Adopter ohnehin selbst pflegt, braucht keine Zeile pro Lauf.
 func Commands(targetDir string) error {
 	for _, f := range commandFiles() {
 		content, err := commandsFS.ReadFile(f.src)
 		if err != nil {
 			return fmt.Errorf("%s einbetten: %w", f.src, err)
 		}
-		if err := writeSkipIfPresent(targetDir, f.dst, content, f.mode); err != nil {
+		if err := writeEnforceFile(targetDir, f, content, io.Discard); err != nil {
 			return err
 		}
 	}

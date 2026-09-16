@@ -3,6 +3,7 @@ package emit
 import (
 	"embed"
 	"fmt"
+	"io"
 
 	"github.com/pt9912/ai-harness-init/internal/span"
 )
@@ -38,15 +39,17 @@ func CanonicalRoles() []string { return canonicalRoles() }
 
 // agentFiles bildet jede eingebettete Typ-Quelle auf ihren Ziel-Relpfad ab. Ziel ist
 // .claude/agents/ (vom Agenten-Werkzeug fixiert), die Typen sind reine .md-Dateien
-// mit Frontmatter (0644). Quell- und Ziel-Basisname sind der Rollen-Name selbst.
+// mit Frontmatter (0644), skip-if-present wie der uebrige Adopter-Boden. Quell- und
+// Ziel-Basisname sind der Rollen-Name selbst.
 func agentFiles() []enforceFile {
 	roles := canonicalRoles()
 	files := make([]enforceFile, 0, len(roles))
 	for _, role := range roles {
 		files = append(files, enforceFile{
-			src:  "templates/agents/" + role + ".md",
-			dst:  ".claude/agents/" + role + ".md",
-			mode: 0o644,
+			src:   "templates/agents/" + role + ".md",
+			dst:   ".claude/agents/" + role + ".md",
+			mode:  0o644,
+			class: SkipIfPresent,
 		})
 	}
 	return files
@@ -74,13 +77,16 @@ func AgentPaths() []string {
 // trotzdem; sie machen die Rollen startbar, und das gilt auch ohne Traeger.
 //
 // Kein --lang-Zweig: die Rollen-Sequenz ist in jedem Ziel dieselbe.
+//
+// Ein liegender Rollen-Typ wird nicht gemeldet: dieses Ziel kennt keinen notice-Kanal, und ein
+// Rollen-Typ, den der Adopter an sein Repo angepasst hat, braucht keine Zeile pro Lauf.
 func Agents(targetDir string) error {
 	for _, f := range agentFiles() {
 		content, err := agentsFS.ReadFile(f.src)
 		if err != nil {
 			return fmt.Errorf("%s einbetten: %w", f.src, err)
 		}
-		if err := writeSkipIfPresent(targetDir, f.dst, content, f.mode); err != nil {
+		if err := writeEnforceFile(targetDir, f, content, io.Discard); err != nil {
 			return err
 		}
 	}

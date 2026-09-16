@@ -27,7 +27,7 @@ const slicemvShSrc = "templates/enforce/slice-mv.sh"
 // und aus demselben Grund: es behauptet nichts ueber einen Lauf. Es meldet die
 // Abwesenheit des Werkzeugs selbst, statt auf ein fehlendes Programm zu zeigen.
 func sliceMvMkFile() enforceFile {
-	return enforceFile{src: slicemvMkSrc, dst: SliceMvMkPath, mode: 0o644}
+	return enforceFile{src: slicemvMkSrc, dst: SliceMvMkPath, mode: 0o644, class: Konvergent}
 }
 
 // sliceMvShFile bildet das Werkzeug auf seinen Ziel-Relpfad ab — KONVERGENT,
@@ -38,5 +38,5 @@ func sliceMvMkFile() enforceFile {
 // fehlt der Operation ihr Traeger — und das Fragment daneben, das ihn nennt,
 // faellt mit ihm.
 func sliceMvShFile() enforceFile {
-	return enforceFile{src: slicemvShSrc, dst: SliceMvShPath, mode: 0o755}
+	return enforceFile{src: slicemvShSrc, dst: SliceMvShPath, mode: 0o755, class: Konvergent}
 }

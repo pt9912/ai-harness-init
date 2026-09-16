@@ -24,5 +24,5 @@ const erfassungMkSrc = "templates/enforce/erfassung.mk"
 // den ein frueherer Lauf hinterlassen hat — und seine zwei Ziele fielen aus der
 // init-invarianten Menge, obwohl jeder Bootstrap sie schreibt.
 func erfassungFile() enforceFile {
-	return enforceFile{src: erfassungMkSrc, dst: ErfassungMkPath, mode: 0o644}
+	return enforceFile{src: erfassungMkSrc, dst: ErfassungMkPath, mode: 0o644, class: Konvergent}
 }

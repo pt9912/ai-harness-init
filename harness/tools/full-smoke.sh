@@ -2244,6 +2244,10 @@ readme_before="$(cat "$tmprepo/README.md")"
 printf '\nDeine Rolle liest zusaetzlich das Betriebshandbuch.\n' >> "$tmprepo/.claude/agents/planner.md"
 agent_before="$(cat "$tmprepo/.claude/agents/planner.md")"
 printf '\n# drift\n' >> "$tmprepo/Makefile"                # konvergent: MUSS geheilt werden
+# Die PRUEFUNG des Commit-Kennungs-Waechters ist konvergent, der TRAEGER daneben
+# skip-if-present (ADR-0054 Festlegung 1): die Drift der Pruefung muss dieser Lauf heilen —
+# sie ist das Stueck des Paares, das sich mit der Fassung des Werkzeugs aendert.
+printf '\n# adopter-drift\n' >> "$tmprepo/tools/harness/commit-msg-traceability.sh"  # konvergent: MUSS geheilt werden
 # Die Feldliste ist konvergent wie das Makefile, und das Dokument sagt es selbst („Ein
 # erneuter Lauf des Werkzeugs schreibt diese Datei kanonisch neu."). Hier steht der
 # Beleg dafuer, dass der Satz im emittierten Text zutrifft.
@@ -2270,13 +2274,48 @@ if grep -qF -- '<!-- von Hand geaendert -->' "$tmprepo/$FELDLISTE_REL"; then
 	echo "full-smoke: FEHLER — 2. Lauf heilte die Drift in $FELDLISTE_REL NICHT: das Dokument sagt zu, dass ein erneuter Lauf es kanonisch neu schreibt, und dieser Lauf tat es nicht (konvergent verletzt)." >&2
 	exit 1
 fi
+if grep -qF -- '# adopter-drift' "$tmprepo/tools/harness/commit-msg-traceability.sh"; then
+	echo "full-smoke: FEHLER — 2. Lauf heilte die Drift der Traeger-Pruefung NICHT (konvergent verletzt): die Pruefung liegt unter der Wurzel tools/harness/* der Tabelle in ADR-0007 Festlegung 3 und wird bei jedem Lauf kanonisch neu geschrieben." >&2
+	exit 1
+fi
+
+# --- Klasse des Commit-Traegers: der BELEGTE Pfad bleibt und wird gemeldet -------------
+#
+# DIE DRITTE RICHTUNG der Klasse aus ADR-0054 Festlegung 3, und sie wird hier im
+# gebootstrappten Ziel gefahren statt in der Go-Stufe: `internal/emit/commitmsg_test.go` liest
+# die Meldung aus dem notice-Kanal eines Enforce-Laufs, hier kommt sie aus einem echten
+# Werkzeug-Aufruf heraus.
+#
+# DER PFAD GEHOERT DEM ADOPTER, nicht der Emission: der Name ist von git fixiert, das
+# Verzeichnis das des Repos. Ein Lauf, der ihn konvergent schriebe, naehme einem Ziel, das
+# seine Kennungs-Zusage dort schon fuehrt, seinen Traeger lautlos weg — es stuende danach
+# schlechter da als vorher. Gepflanzt wird ein eigener Traeger mit einer Marke: er bleibt nur,
+# wenn der Lauf ihn nicht anfasst, und gelesen wird der INHALT, nicht ein Exit-Code.
+#
+# DIE ZWEI ANDEREN RICHTUNGEN DESSELBEN DoD-PUNKTS in diesem Lauf: der FREIE Pfad hat den
+# Traeger des Werkzeugs bekommen (die Init-Laeufe in ein leeres Ziel legen ihn an; der
+# Abschnitt COMMIT-KENNUNG unten faehrt ihn und prueft dort, dass die liegende Datei an die
+# Pruefung delegiert), und die PRUEFUNG daneben bleibt konvergent — ihre Drift heilte der
+# zweite Init-Lauf im Idempotenz-Abschnitt oben.
+echo "full-smoke: Klasse des Commit-Traegers — belegter Pfad in tmprepo_doc, dann der sprachlose Re-Lauf ..."
+mkdir -p "$tmprepo_doc/.githooks"
+# OHNE abschliessenden Zeilenumbruch: verglichen wird gegen `$(cat <datei>)` weiter unten,
+# und die Kommando-Substitution nimmt den letzten Umbruch weg — mit ihm waere der Vergleich
+# schon vor dem ersten Lauf falsch.
+adopter_traeger='#!/usr/bin/env bash
+# ADOPTER-EIGENER TRAEGER: dieser Pfad gehoert diesem Repo, nicht dem Werkzeug.
+set -euo pipefail
+exit 0'
+printf '%s\n' "$adopter_traeger" > "$tmprepo_doc/.githooks/commit-msg"
+chmod 755 "$tmprepo_doc/.githooks/commit-msg"
 
 # slice-038 KEIN PRUNE: ein sprachloser 2. Init-Lauf am Mono-Repo-Ziel (tmprepo_doc, das per
 # add-lang apps/api + apps/web + blocked/go traegt) darf diese Fragmente NICHT pruen — der
 # Init emittiert sie nicht, aber loescht sie auch nicht (die H2-Clobber-Falle eine Ebene tiefer).
 echo "full-smoke: kein Prune — sprachloser 2. Init-Lauf am Mono-Repo, add-lang-Fragmente muessen ueberleben ..."
 prune_rc=0
-( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" --name full-smoke-doc ) || prune_rc=$?
+prune_out="$( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" --name full-smoke-doc 2>&1 )" || prune_rc=$?
+printf '%s\n' "$prune_out"
 if [ "$prune_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — sprachloser 2. Init-Lauf ist NICHT Exit 0 (nicht idempotent, slice-038). rc=$prune_rc" >&2
 	exit 1
@@ -2288,6 +2327,23 @@ for frag in harness/mk/apps-api.mk harness/mk/apps-web.mk tools/harness/blocked/
 		exit 1
 	fi
 done
+if [ "$(cat "$tmprepo_doc/.githooks/commit-msg")" != "$adopter_traeger" ]; then
+	echo "full-smoke: FEHLER — sprachloser Re-Lauf ueberschrieb den liegenden Commit-Traeger (skip-if-present verletzt, ADR-0054 Festlegung 1)." >&2
+	exit 1
+fi
+if [ ! -f "$tmprepo_doc/tools/harness/commit-msg-traceability.sh" ]; then
+	echo "full-smoke: FEHLER — die Pruefung des Traegers liegt im Ziel nicht (tools/harness/commit-msg-traceability.sh) — sie ist die Fassung, die sich mit dem Werkzeug aendert (ADR-0054 Festlegung 3)." >&2
+	exit 1
+fi
+for satz in 'skip-if-present' '.githooks/commit-msg' 'tools/harness/commit-msg-traceability.sh'; do
+	if ! grep -qF -- "$satz" <<<"$prune_out"; then
+		echo "full-smoke: FEHLER — der Re-Lauf meldet den belegten Traeger-Pfad nicht (nennt '$satz' nicht): ein stilles Uebergehen liesse den Adopter mit einem Traeger zurueck, von dem er nicht weiss, wessen er ist (ADR-0054 Festlegung 3). Ausgabe:" >&2
+		printf '%s\n' "$prune_out" >&2
+		exit 1
+	fi
+done
+echo "full-smoke: Klasse im Ziel: der belegte .githooks/commit-msg blieb unberuehrt, und der Lauf nennt ihn samt der mitgelieferten Pruefung:"
+sed -n '/skip-if-present/{p;q;}' <<<"$prune_out" | sed 's/^/full-smoke:   /'
 
 # --- Commit-Kennung: das gebootstrappte Ziel erreicht seinen Traeger ------------------
 #
@@ -2325,6 +2381,7 @@ kennungs_traeger_im_ziel() {
 	local repo="$1" kennung="$2"
 	local hook="$repo/.githooks/commit-msg"
 	local pruefung="$repo/tools/harness/commit-msg-traceability.sh"
+	local pruefung_rel="tools/harness/commit-msg-traceability.sh"
 	local frag="$repo/harness/mk/hooks-install.mk"
 
 	if [ ! -f "$frag" ]; then
@@ -2337,6 +2394,14 @@ kennungs_traeger_im_ziel() {
 	fi
 	if [ ! -x "$hook" ]; then
 		echo "full-smoke: FEHLER — $kennung: der Traeger liegt nicht ausfuehrbar ($hook) — git verwirft einen Hook ohne Ausfuehrungsrecht still, und das Ziel haette einen Waechter, der nur so aussieht." >&2
+		exit 1
+	fi
+	# DER PFAD WAR FREI, ALSO LIEGT DER TRAEGER DES WERKZEUGS: die Init-Laeufe in ein leeres
+	# Ziel haben ihn angelegt, und er delegiert an die Pruefung daneben. Die andere Richtung
+	# derselben Klasse — ein Ziel, das an diesem Pfad schon seinen eigenen Traeger fuehrt —
+	# liest der Abschnitt "Klasse des Commit-Traegers" oben im Ziel tmprepo_doc.
+	if ! grep -qF -- "$pruefung_rel" "$hook"; then
+		echo "full-smoke: FEHLER — $kennung: der Traeger im Ziel ruft $pruefung_rel nicht auf — er ist damit nicht der des Werkzeugs, wie es ein freier Pfad verlangt." >&2
 		exit 1
 	fi
 
@@ -2465,3 +2530,4 @@ echo "full-smoke: OK — FELDLISTE (slice-098/LH-FA-10): $FELDLISTE_REL liegt in
 echo "full-smoke: OK — ARCHIVIERUNG IM ZIEL (ADR-0033 Festlegung 4 und 5): make archive-welle ist kein Gate und steht in keiner gates-Kette; ein Name daneben, den kein Fragment fuehrt, endet laut statt still; die zwei Sperren [untergrenze] und [haenger] halten den Aufruf auf, ueber demselben Bestand ohne sie laeuft die Operation real (Archiv + Stubs aus der vendored Vorlage), und ohne Traeger meldet das Kommando die Abwesenheit mit Exit 0."
 echo "full-smoke: OK — LIFECYCLE-WECHSEL IM ZIEL: make slice-mv ist kein Gate und steht in keiner gates-Kette; der Aufruf bewegt den Slice, legt den reinen Move als eigenen Commit an (0 insertions/0 deletions gegen den Verweis-Nachzug getrennt) und zieht beide Richtungen nach — den eingehenden Praefix-Verweis der Nachbar-Datei und das praefixlose Geschwister-Ziel in der bewegten Datei; eine ADR bleibt nach der Repo-Politik des Fragments unberuehrt; ueber einem unsauberen Arbeitsbaum bricht der Aufruf ab, nennt es und bewegt nichts; ohne jeden Verweis bleibt es beim einen Move-Commit; und ohne das Werkzeug bricht das Ziel laut ab, statt still auf ein fehlendes Programm zu zeigen."
 echo "full-smoke: OK — COMMIT-KENNUNG IM ZIEL: .githooks/commit-msg liegt ausfuehrbar im Ziel und reist mit dem Klon, seine Aktivierung nicht — make hooks-install setzt core.hooksPath und ist kein Gate (steht in keiner gates-Kette); danach faellt ein Commit OHNE Kennung mit der Meldung der Pruefung und entsteht nicht, einer MIT Kennung geht durch, und git commit --no-verify umgeht den Traeger; die Reichweite (Umgehung, Anwesenheit-statt-Wahrheit, die von keinem Commit-Waechter pruefbare zweite Haelfte der Zusage, die mitgenommenen Werkzeug-Commits) steht im Ziel geschrieben."
+echo "full-smoke: OK — KLASSE DES COMMIT-TRAEGERS (ADR-0054 Festlegung 1 und 3): der Traeger liegt skip-if-present und die Pruefung daneben konvergent — ein FREIER Pfad bekommt den Traeger des Werkzeugs (er liegt ausfuehrbar im Ziel und ruft die Pruefung daneben), ein BELEGTER bleibt Byte fuer Byte unberuehrt und der Lauf nennt Pfad und mitgelieferte Pruefung; die Drift der Pruefung heilte der naechste Lauf, die des Traegers blieb stehen."

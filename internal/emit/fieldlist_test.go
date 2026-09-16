@@ -202,8 +202,8 @@ func TestFeldliste_GrenzeUeberDenBestand(t *testing.T) {
 // sie nach der ersten Schema-Aenderung eine Erfassung, die es nicht mehr gibt, und der
 // Satz im Dokument waere falsch.
 //
-// In der Gestalt von TestEnforce_Convergent: die Drift liegt VOR dem Lauf, der Lauf ist
-// der Re-Lauf. Der Dauer-Sensor ist test/mutations/172-feldliste-nicht-konvergent.sh.
+// In der Gestalt von TestEnforce_IdempotenzKlasseJePfad: die Drift liegt VOR dem Lauf, der
+// Lauf ist der Re-Lauf. Der Dauer-Sensor ist test/mutations/172-feldliste-nicht-konvergent.sh.
 func TestFeldliste_Konvergent(t *testing.T) {
 	dir := t.TempDir()
 	dst := filepath.Join(dir, filepath.FromSlash(emit.FieldListPath))

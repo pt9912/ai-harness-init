@@ -18,5 +18,5 @@ const archivierungMkSrc = "templates/enforce/archivierung.mk"
 // selbst. Der Traeger liegt gitignored, ein frischer Klon hat ihn also nicht — und
 // das Kommando, das ihm das sagt, liegt hier und nicht bei ihm.
 func archivierungFile() enforceFile {
-	return enforceFile{src: archivierungMkSrc, dst: ArchivierungMkPath, mode: 0o644}
+	return enforceFile{src: archivierungMkSrc, dst: ArchivierungMkPath, mode: 0o644, class: Konvergent}
 }

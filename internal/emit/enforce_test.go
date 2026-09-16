@@ -323,28 +323,51 @@ func TestEnforce_LangAgnostic(t *testing.T) {
 	}
 }
 
-// TestEnforce_Convergent: die Durchsetzungs-Mechanik ist tool-eigene Infrastruktur
-// (ADR-0007 konvergent) — ein Re-Lauf schreibt sie KANONISCH neu (heilt eine
-// adopter-modifizierte Fassung), kein Refuse. Der Modus wird MITGEZOGEN: os.WriteFile
-// setzt das Perm nur beim Anlegen, writeFileMode chmod't nach.
+// TestEnforce_IdempotenzKlasseJePfad: die Durchsetzungs-Mechanik traegt ihre
+// Idempotenz-Klasse JE PFAD (ADR-0007 Festlegung 3, ADR-0054 Festlegung 1) — ein konvergenter
+// Pfad wird bei jedem Lauf KANONISCH neu geschrieben (heilt eine adopter-modifizierte
+// Fassung), ein skip-if-present-Pfad dagegen nur, wo nichts liegt (ein liegender Inhalt
+// bleibt stehen).
 //
-// GEMESSEN WIRD DIE GANZE MENGE: ADR-0007 bindet die Klasse an JEDE emittierte Datei.
-// Je Pfad wird der kanonische Stand des ersten Laufs festgehalten, die Datei danach
-// GELOESCHT und verstellt neu angelegt — Inhalt und Modus zugleich — und der zweite Lauf
-// gegen den festgehaltenen Stand gehalten. Die drei Pfade des Commit-Kennungs-Waechters
-// (.githooks/commit-msg, die Pruefung, das Aktivierungs-Fragment) liegen in dieser Menge
-// und werden damit einzeln gegen ihre Klasse gehalten.
+// GEMESSEN WIRD DIE GANZE MENGE, und die Richtung kommt aus PathClass — derselben
+// Aufzaehlung, die Enforce faehrt. Eine zweite Klassen-Liste im Test haette eine zweite
+// Fassung der Klassifikation daneben, und die zwei liefen auseinander.
 //
-// Rot-Gegenbeispiel: test/mutations/49-enforce-konvergent.sh biegt den Schreiber der
-// Schleife auf skip-if-present um; der zweite Lauf laesst die Drift dann stehen.
-func TestEnforce_Convergent(t *testing.T) {
+// VORBEDINGUNG: BEIDE Klassen sind in der Aufzaehlung besetzt. Ueber einer leeren Menge waere
+// die jeweilige Richtung still gruen — ein Test, der die halbe Menge misst, sieht aus wie
+// einer, der sie ganz misst.
+//
+// Der Modus wird MITGEZOGEN: os.WriteFile setzt das Perm nur beim Anlegen, writeFileMode
+// chmod't nach — verstellt wird per Loeschen + Neuanlegen, sonst bliebe die zweite Haelfte
+// still gruen.
+//
+// Rot-Gegenbeispiele: test/mutations/49-enforce-konvergent.sh (ein konvergenter Pfad wird
+// uebersprungen — die Heilung faellt aus) und
+// test/mutations/358-traeger-wieder-konvergent.sh (der Traeger traegt die konvergente Klasse
+// — die liegende Datei wird ueberschrieben).
+func TestEnforce_IdempotenzKlasseJePfad(t *testing.T) {
+	const verstellt = "adopter-modifiziert"
+	type stand struct {
+		inhalt []byte
+		mode   os.FileMode
+	}
+
 	dir := t.TempDir()
 	if err := emit.Enforce(dir, io.Discard); err != nil {
 		t.Fatalf("Enforce: %v", err)
 	}
-	kanonisch := map[string][]byte{}
-	modus := map[string]os.FileMode{}
+	kanonisch := map[string]stand{}
+	klassen := map[string]emit.EnforceClass{}
+	jeKlasse := map[emit.EnforceClass][]string{}
 	for _, rel := range emit.EnforcePaths() {
+		klasse := emit.PathClass(rel)
+		switch klasse {
+		case emit.Konvergent, emit.SkipIfPresent:
+		default:
+			t.Fatalf("%s traegt keine Idempotenz-Klasse (%s) — die Aufzaehlung fuehrt einen Pfad ohne Klasse", rel, klasse)
+		}
+		klassen[rel] = klasse
+		jeKlasse[klasse] = append(jeKlasse[klasse], rel)
 		p := filepath.Join(dir, filepath.FromSlash(rel))
 		roh, err := os.ReadFile(p)
 		if err != nil {
@@ -354,41 +377,53 @@ func TestEnforce_Convergent(t *testing.T) {
 		if err != nil {
 			t.Fatalf("%s stat: %v", rel, err)
 		}
-		kanonisch[rel] = roh
-		modus[rel] = info.Mode().Perm()
-		// Verstellt wird per Loeschen + Neuanlegen: ueber eine vorhandene Datei
-		// geschrieben bliebe ihr Modus stehen und die zweite Haelfte der Pruefung
-		// waere still gruen.
+		kanonisch[rel] = stand{inhalt: roh, mode: info.Mode().Perm()}
 		if err := os.Remove(p); err != nil {
 			t.Fatalf("%s entfernen: %v", rel, err)
 		}
-		if err := os.WriteFile(p, []byte("adopter-modifiziert"), 0o600); err != nil {
+		if err := os.WriteFile(p, []byte(verstellt), 0o600); err != nil {
 			t.Fatalf("%s verstellen: %v", rel, err)
 		}
 	}
 	if len(kanonisch) == 0 {
 		t.Fatal("EnforcePaths ist leer — der Waechter misst dann nichts")
 	}
+	for _, klasse := range []emit.EnforceClass{emit.Konvergent, emit.SkipIfPresent} {
+		if len(jeKlasse[klasse]) == 0 {
+			t.Fatalf("kein Pfad der Klasse %s in der Aufzaehlung — die Richtung dieser Klasse misst nichts", klasse)
+		}
+	}
 
-	// konvergent: kein Refuse, kanonisch neu (Drift geheilt).
+	// kein Refuse: beide Klassen tragen einen verstellten Bestand ins zweite Tor.
 	if err := emit.Enforce(dir, io.Discard); err != nil {
-		t.Fatalf("Enforce (konvergent darf nicht refusen): %v", err)
+		t.Fatalf("Enforce (kein Refuse erwartet): %v", err)
 	}
 	for _, rel := range emit.EnforcePaths() {
 		p := filepath.Join(dir, filepath.FromSlash(rel))
 		got := mustReadString(t, p)
-		if got != string(kanonisch[rel]) {
-			t.Errorf("%s wurde nicht kanonisch neu geschrieben (konvergent verletzt): %d Bytes gegen %d des ersten Laufs",
-				rel, len(got), len(kanonisch[rel]))
-			continue
-		}
 		info, err := os.Stat(p)
 		if err != nil {
 			t.Fatalf("%s stat: %v", rel, err)
 		}
-		if info.Mode().Perm() != modus[rel] {
-			t.Errorf("%s hat nach dem Re-Lauf Mode %v statt %v — der Modus wandert nicht mit (L2)",
-				rel, info.Mode().Perm(), modus[rel])
+		switch klassen[rel] {
+		case emit.Konvergent:
+			if got != string(kanonisch[rel].inhalt) {
+				t.Errorf("%s wurde nicht kanonisch neu geschrieben (konvergent verletzt): %d Bytes gegen %d des ersten Laufs",
+					rel, len(got), len(kanonisch[rel].inhalt))
+			}
+			if info.Mode().Perm() != kanonisch[rel].mode {
+				t.Errorf("%s hat nach dem Re-Lauf Mode %v statt %v — der Modus wandert nicht mit (L2)",
+					rel, info.Mode().Perm(), kanonisch[rel].mode)
+			}
+		case emit.SkipIfPresent:
+			if got != verstellt {
+				t.Errorf("%s wurde ueberschrieben (skip-if-present verletzt): %d Bytes gegen die %d des verstellten Stands",
+					rel, len(got), len(verstellt))
+			}
+			if info.Mode().Perm() != 0o600 {
+				t.Errorf("%s hat nach dem Re-Lauf Mode %v statt 0600 — ein skip-if-present-Pfad bleibt ganz unberuehrt",
+					rel, info.Mode().Perm())
+			}
 		}
 	}
 }

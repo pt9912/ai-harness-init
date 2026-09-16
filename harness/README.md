@@ -154,8 +154,14 @@ Message-Datei, die git ihm übergibt, gleichgültig welcher Aufruf sie erzeugt h
 
 **Im gebootstrappten Ziel trägt der git-eigene Hook die Kennungs-Zusage; den PreToolUse-Zusatz für
 Commit-Messages bekommt es nicht.** Er reist als `.githooks/commit-msg` mit dem Klon, seine Prüfung
-als `tools/harness/commit-msg-traceability.sh` daneben; beide schreibt der Bootstrap kanonisch neu,
-und der Hook ruft die Prüfung über sein eigenes Verzeichnis auf. Verdrahtet wird er über
+als `tools/harness/commit-msg-traceability.sh` daneben, und der Hook ruft die Prüfung über sein
+eigenes Verzeichnis auf. **Die zwei Nachbarn tragen zwei verschiedene Klassen**
+([`ADR-0054`](../docs/plan/adr/0054-emittierter-commit-traeger-skip-if-present.md) Festlegung 1):
+die Prüfung wird bei jedem Lauf kanonisch neu geschrieben — sie ist das Stück des Paares, das sich
+mit der Werkzeug-Fassung ändert —, der **Träger dagegen nur dort, wo der Pfad frei ist**
+(skip-if-present). Der Name ist von `git` fixiert und das Verzeichnis gehört dem Repo: führt ein
+Ziel an diesem Pfad bereits seinen eigenen Träger, bleibt er unberührt, und der Lauf nennt ihm den
+Pfad und die mitgelieferte Prüfung, die daneben bereitliegt. Verdrahtet wird er über
 `harness/mk/hooks-install.mk` <!-- d-check:ignore (der Pfad entsteht erst im gebootstrappten Ziel) -->:
 das Fragment definiert `make hooks-install`, das `core.hooksPath` auf `.githooks` setzt, und der
 Aggregator des Ziels bindet es über `include harness/mk/*.mk` ein. Die Command-Vorlage des Ziels

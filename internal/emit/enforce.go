@@ -28,11 +28,49 @@ import (
 //go:embed all:templates/enforce
 var enforceFS embed.FS
 
-// enforceFile bildet eine eingebettete Quelle auf ihren Ziel-Relpfad + Modus ab.
+// EnforceClass ist die Idempotenz-Klasse eines emittierten Pfades (ADR-0007 Festlegung 3):
+// konvergent heisst "bei jedem Lauf kanonisch neu schreiben", skip-if-present heisst "nur
+// schreiben, wo nichts liegt". Der Nullwert ist absichtlich ungueltig — ein Eintrag ohne
+// ausgewiesene Klasse faellt im Emit aus, statt still als konvergent zu gelten: "im Zweifel
+// konvergent" ist das Fehlerbild, gegen das die Klasse dasteht (ADR-0054 §Kontext).
+type EnforceClass int
+
+const (
+	klasseUnbestimmt EnforceClass = iota
+	// Konvergent ist die Klasse der tool-eigenen Infrastruktur an einem Pfad, den die
+	// Emission bestimmt — ein Verzeichnis, das sie selbst anlegt, oder ein Name, den sie
+	// waehlt.
+	Konvergent
+	// SkipIfPresent ist die Klasse eines Pfades, den ein Adopter selbst belegen kann; ein
+	// liegender Inhalt bleibt unberuehrt.
+	SkipIfPresent
+)
+
+// String nennt die Klasse in der Schreibweise der ADR. Dieselbe Zeichenkette liefert
+// PathClass je Pfad; der Test ueber die ganze Menge haelt sie gegen die gefahrene Richtung.
+func (c EnforceClass) String() string {
+	switch c {
+	case Konvergent:
+		return "konvergent"
+	case SkipIfPresent:
+		return "skip-if-present"
+	}
+	return "unbestimmt"
+}
+
+// enforceFile bildet eine eingebettete Quelle auf ihren Ziel-Relpfad + Modus ab und traegt
+// die Klasse, mit der Enforce sie ablegt.
 type enforceFile struct {
-	src  string      // Pfad in enforceFS
-	dst  string      // Ziel-Relpfad (slash), relativ zu targetDir
-	mode fs.FileMode // 0755 fuer ausfuehrbare Hooks/Tools, 0644 sonst
+	src   string       // Pfad in enforceFS
+	dst   string       // Ziel-Relpfad (slash), relativ zu targetDir
+	mode  fs.FileMode  // 0755 fuer ausfuehrbare Hooks/Tools, 0644 sonst
+	class EnforceClass // Konvergent | SkipIfPresent
+
+	// meldung ist der Zusatz, den ein skip-if-present-Eintrag nennt, wenn an seinem Pfad schon
+	// eine Datei liegt: das Stueck, das dem Adopter dann statt dieser Datei bereitliegt
+	// (ADR-0054 Festlegung 3). Leer bei konvergenten Eintraegen — dort gibt es diesen Zustand
+	// nicht.
+	meldung string
 }
 
 // enforceFiles ist die emittierte Durchsetzungsschicht. Die Tool-Skripte liegen
@@ -42,18 +80,25 @@ type enforceFile struct {
 // den Stop-Hook (slice-031) und den PreToolUse-Command-Guard (slice-032); der Guard
 // wird mit seinem awk-Extraktor (tools/harness/) mit-emittiert, sonst liefe der Hook
 // im Ziel ins Leere.
+//
+// JEDER EINTRAG NENNT SEINE KLASSE, und die Klasse eines Pfades steht nur hier bzw. in
+// der Konstruktor-Funktion ihres Eintrags (commitmsg.go, slicemv.go u. a.) — eine zweite
+// Liste daneben liefe gegen sie. Der Commit-Traeger ist der eine Eintrag mit
+// SkipIfPresent: er liegt an einem Namen, den git fixiert, in einem Verzeichnis des
+// Adopters, und ein Ziel, das dort seine eigene Zusage fuehrt, behaelt sie (ADR-0054
+// Festlegung 1 und 2).
 func enforceFiles() []enforceFile {
 	return []enforceFile{
-		{"templates/enforce/working-tree-hash.sh", "tools/harness/working-tree-hash.sh", 0o755},
-		{"templates/enforce/record-gates.sh", "tools/harness/record-gates.sh", 0o755},
-		{"templates/enforce/stop-require-gates.sh", ".claude/hooks/stop-require-gates.sh", 0o755},
-		{"templates/enforce/settings.json", ".claude/settings.json", 0o644},
-		{"templates/enforce/gitignore", ".harness/.gitignore", 0o644},
+		{src: "templates/enforce/working-tree-hash.sh", dst: "tools/harness/working-tree-hash.sh", mode: 0o755, class: Konvergent},
+		{src: "templates/enforce/record-gates.sh", dst: "tools/harness/record-gates.sh", mode: 0o755, class: Konvergent},
+		{src: "templates/enforce/stop-require-gates.sh", dst: ".claude/hooks/stop-require-gates.sh", mode: 0o755, class: Konvergent},
+		{src: "templates/enforce/settings.json", dst: ".claude/settings.json", mode: 0o644, class: Konvergent},
+		{src: "templates/enforce/gitignore", dst: ".harness/.gitignore", mode: 0o644, class: Konvergent},
 		// Enforce-Gate-Fragment (slice-034): das record-gates-Rezept als
 		// harness/mk/enforce.mk. Die Ordnungskante (record-gates: $(GATE_CHECKS)) +
 		// `gates: record-gates` leben im Root-Aggregator (gen), weil sie GATE_CHECKS
 		// erst nach dem Glob-Include vollstaendig sehen. Sprach-agnostisch, verbatim.
-		{"templates/enforce/enforce.mk", "harness/mk/enforce.mk", 0o644},
+		{src: "templates/enforce/enforce.mk", dst: "harness/mk/enforce.mk", mode: 0o644, class: Konvergent},
 		// Aufraeum- und Berichts-Fragment der Erfassungsschicht (slice-099): zwei
 		// Kommandos, kein Gate. Es steht hier und nicht in captureFiles(), weil es an
 		// keinem Laufzeit-Ausgang haengt — die Begruendung traegt erfassung.go.
@@ -74,19 +119,19 @@ func enforceFiles() []enforceFile {
 		// Command-Guard (slice-032): bash+awk, kein node/jq (LH-QA-03). Der Guard
 		// (0755) referenziert den awk-Extraktor unter tools/harness/ — beide
 		// gehoeren in denselben Emit, sonst laeuft der Guard fail-closed ins Leere.
-		{"templates/enforce/pretooluse-command-guard.sh", ".claude/hooks/pretooluse-command-guard.sh", 0o755},
-		{"templates/enforce/extract-command.awk", "tools/harness/extract-command.awk", 0o644},
+		{src: "templates/enforce/pretooluse-command-guard.sh", dst: ".claude/hooks/pretooluse-command-guard.sh", mode: 0o755, class: Konvergent},
+		{src: "templates/enforce/extract-command.awk", dst: "tools/harness/extract-command.awk", mode: 0o644, class: Konvergent},
 		// Vorlauf-Waechter der zwei history-lesenden d-check-Targets (doc-immutable/
 		// doc-commits). Das Doc-Gate-Fragment haengt ihn als Vorbedingung vor beide
 		// Targets: ueber einer aufloesbaren, aber leeren Commit-Range meldet ein
 		// history-lesendes Modul sonst "0 Befund(e)", Exit 0 — gruen ueber leerem
 		// Pruefbereich (MR-007 Setzung 3). Sprach-agnostisch wie der uebrige Kern:
 		// das Skript ist bash + git, ohne Docker und ohne Image.
-		{"templates/enforce/history-range-guard.sh", "tools/harness/history-range-guard.sh", 0o755},
+		{src: "templates/enforce/history-range-guard.sh", dst: "tools/harness/history-range-guard.sh", mode: 0o755, class: Konvergent},
 		// Commit-Kennungs-Waechter: der git-eigene Traeger, die Pruefung, die er
 		// aufruft, und das Ziel, das ihn aktiviert. Er liegt versioniert im Ziel und
 		// reist mit dessen Klon; seine Aktivierung ist lokale Konfiguration. Die
-		// Begruendung der drei Eintraege traegt commitmsg.go.
+		// Begruendung der drei Eintraege und ihre zwei Klassen traegt commitmsg.go.
 		commitMsgHookFile(),
 		commitMsgCheckFile(),
 		hooksInstallMkFile(),
@@ -127,12 +172,12 @@ func CarrierPath(image string) string {
 // auf ihn zeigte, waere ein Hook auf ein fehlendes Programm (LH-QA-01), sobald ein
 // frischer Klon oder ein Aufraeum-Lauf ihn wegnimmt.
 //
-// KONVERGENT wie die uebrigen Hook-Skripte (ADR-0007 Festlegung 3), aber bewusst NICHT
-// in enforceFiles()/EnforcePaths(): jene Menge entsteht unbedingt, diese nur im
-// Gelingens-Zweig.
+// KONVERGENT wie jedes weitere Hook-Skript an einem von Claude Code fixierten .claude/-Pfad
+// (ADR-0007 Festlegung 3) — die Klasse nennt der Eintrag wie jeder andere. Bewusst NICHT in
+// enforceFiles()/EnforcePaths(): jene Menge entsteht unbedingt, diese nur im Gelingens-Zweig.
 func captureFiles() []enforceFile {
 	return []enforceFile{
-		{"templates/enforce/span-emit.sh", ".claude/hooks/span-emit.sh", 0o755},
+		{src: "templates/enforce/span-emit.sh", dst: ".claude/hooks/span-emit.sh", mode: 0o755, class: Konvergent},
 	}
 }
 
@@ -171,13 +216,17 @@ func blockedByLang() map[string]string {
 // gen-Profile); leer, wenn lang kein Profil hat.
 func BlockedFragmentForLang(lang string) string { return blockedByLang()[lang] }
 
-// EnforcePaths liefert die Ziel-Relpfade der Durchsetzungs-Mechanik — fuer den
-// Bootstrap-Pre-Flight (cmd, Phase 3). Ohne sie faende eine Kollision (z.B. eine
-// vorhandene .claude/settings.json) erst mitten in Phase 4 statt (Teil-Bootstrap).
-// SPRACH-AGNOSTISCH (slice-037): das blocked/<lang>-Fragment gehoert NICHT mehr hierher
-// — es ist skip-if-present (Mono-Repo-Wiederverwendung, mehrere Module gleicher Sprache)
-// und wird von add-lang via BlockedFragment gedroppt, nicht vom Kollisions-Pre-Flight
-// erfasst.
+// EnforcePaths liefert die Ziel-Relpfade der Durchsetzungs-Mechanik — die Inventur der
+// Pfade, die der Emit anfasst. Tests koppeln den Bestand des Ziels daran
+// (TestEnforce_EmitsAllMechanicFiles, TestEnforce_IdempotenzKlasseJePfad).
+//
+// Der Commit-Traeger bleibt in dieser Menge, obwohl er skip-if-present abgelegt wird: die
+// Liste nennt die Pfade, die ein Lauf anfasst, nicht die, die er ueberschreibt — welche
+// Klasse ein Pfad traegt, sagt PathClass.
+//
+// SPRACH-AGNOSTISCH: das blocked/<lang>-Fragment gehoert NICHT hierher — es ist
+// skip-if-present (Mono-Repo-Wiederverwendung, mehrere Module gleicher Sprache) und wird von
+// add-lang via BlockedFragment gedroppt, nicht von diesem Emit.
 //
 // UNBEDINGT (ADR-0022 Festlegung 5): der Hook-Wrapper aus captureFiles() gehoert
 // ebenfalls nicht hierher. Diese Menge entsteht bei jedem Lauf; jene nur, wenn der
@@ -192,12 +241,26 @@ func EnforcePaths() []string {
 	return paths
 }
 
-// Enforce schreibt die sprach-agnostische Durchsetzungs-Mechanik nach targetDir —
-// KONVERGENT (slice-038, ADR-0007 Idempotenz-Klasse): reine tool-eigene Infrastruktur,
-// bei jedem Lauf kanonisch neu geschrieben (heilt Drift), kein Refuse, kein --force
-// (das Pre-Flight-refuse-Modell aus slice-025 ist mit slice-038 gefallen). Der Guard
-// traegt seinen universellen Boden GEBACKEN (slice-036); das Sprach-Set kommt als
-// blocked/<lang>-Fragment (BlockedFragment, add-lang), NICHT hier (Enforce ist sprachlos).
+// PathClass nennt die Idempotenz-Klasse des Ziel-Relpfads dst; klasseUnbestimmt, wenn dst
+// nicht in der Aufzaehlung steht oder ihr Eintrag keine Klasse nennt. Sie ist die Auskunft
+// ueber dieselbe Klassifikation, die Enforce faehrt: ein Test, der die Klassen je Pfad selbst
+// auflistet, haette eine zweite Fassung daneben, und die zwei liefen auseinander.
+func PathClass(dst string) EnforceClass {
+	for _, f := range enforceFiles() {
+		if f.dst == dst {
+			return f.class
+		}
+	}
+	return klasseUnbestimmt
+}
+
+// Enforce schreibt die sprach-agnostische Durchsetzungs-Mechanik nach targetDir — JEDEN PFAD
+// NACH SEINER KLASSE (ADR-0007 Festlegung 3, ADR-0054 Festlegung 1): ein konvergenter Pfad
+// wird bei jedem Lauf kanonisch neu geschrieben (heilt Drift), ein skip-if-present-Pfad nur
+// dort, wo nichts liegt — ein liegender Inhalt bleibt stehen und der Lauf nennt ihn auf
+// notice. Kein Refuse, kein --force. Der Guard traegt seinen universellen Boden GEBACKEN;
+// das Sprach-Set kommt als blocked/<lang>-Fragment (BlockedFragment, add-lang), NICHT hier
+// (Enforce ist sprachlos).
 //
 // MIT DER ERFASSUNG, UND ZWAR GEKOPPELT (LH-FA-10, ADR-0022 Festlegung 4 und 5): der
 // Traeger, der Hook-Wrapper und der Erfassungs-Block in .claude/settings.json entstehen
@@ -231,7 +294,7 @@ func Enforce(targetDir string, notice io.Writer) error {
 		if err != nil {
 			return err
 		}
-		if err := writeFileMode(targetDir, f.dst, content, f.mode); err != nil {
+		if err := writeEnforceFile(targetDir, f, content, notice); err != nil {
 			return err
 		}
 	}
@@ -243,7 +306,7 @@ func Enforce(targetDir string, notice io.Writer) error {
 		if err != nil {
 			return fmt.Errorf("%s einbetten: %w", f.src, err)
 		}
-		if err := writeFileMode(targetDir, f.dst, content, f.mode); err != nil {
+		if err := writeEnforceFile(targetDir, f, content, notice); err != nil {
 			return err
 		}
 	}
@@ -371,11 +434,61 @@ func BlockedFragment(targetDir, lang string) error {
 	return writeFileMode(targetDir, BlockedFragmentPath(lang), []byte(frag), 0o644)
 }
 
-// writeFileMode ist der KONVERGENTE Writer (slice-038): schreibt content nach targetDir/rel
+// writeEnforceFile legt eine emittierte Datei nach der Klasse ihres Eintrags ab. Ein Eintrag
+// ohne Klasse bricht ab, statt als konvergent durchzugehen: die Klasse entscheidet, ob ein
+// liegender Inhalt ueberschrieben wird, und ein stiller Default waere genau die Setzung, die
+// niemand ausgesprochen hat (ADR-0054 §Kontext).
+func writeEnforceFile(targetDir string, f enforceFile, content []byte, notice io.Writer) error {
+	switch f.class {
+	case Konvergent:
+		return writeFileMode(targetDir, f.dst, content, f.mode)
+	case SkipIfPresent:
+		return writeSkipIfPresentTold(targetDir, f, content, notice)
+	}
+	return fmt.Errorf("%s: keine Idempotenz-Klasse (%s) — ein Pfad ohne Klasse faellt aus, statt konvergent zu gelten (ADR-0007 Festlegung 3)", f.dst, f.class)
+}
+
+// writeSkipIfPresentTold ist writeSkipIfPresent MIT Meldung: liegt am Zielpfad schon eine
+// Datei, bleibt sie unberuehrt und der Lauf nennt es auf notice, zusammen mit dem Zusatz des
+// Eintrags (ADR-0054 Festlegung 3). Ein stilles Uebergehen waere die zweite Haelfte desselben
+// Fehlers — der Adopter erfuehre sonst nicht, dass sein Inhalt stehenbleibt und was ihm statt
+// dieser Datei bereitliegt.
+func writeSkipIfPresentTold(targetDir string, f enforceFile, content []byte, notice io.Writer) error {
+	liegt, err := dateiLiegt(targetDir, f.dst)
+	if err != nil {
+		return err
+	}
+	if !liegt {
+		return writeFileMode(targetDir, f.dst, content, f.mode)
+	}
+	zeile := fmt.Sprintf("ai-harness-init: %s liegt bereits — die Datei bleibt unberuehrt (skip-if-present).", f.dst)
+	if f.meldung != "" {
+		zeile += " " + f.meldung
+	}
+	fmt.Fprintln(notice, zeile)
+	return nil
+}
+
+// dateiLiegt sagt, ob am Zielpfad schon etwas liegt. Ein anderes Stat-Ergebnis als
+// "liegt" oder "fehlt" ist ein Fehler und wird zurueckgegeben, nicht als "fehlt" gelesen.
+func dateiLiegt(targetDir, rel string) (bool, error) {
+	_, err := os.Stat(filepath.Join(targetDir, filepath.FromSlash(rel)))
+	switch {
+	case err == nil:
+		return true, nil
+	case errors.Is(err, fs.ErrNotExist):
+		return false, nil
+	}
+	return false, fmt.Errorf("%s pruefen: %w", rel, err)
+}
+
+// writeFileMode ist der KONVERGENTE Writer: schreibt content nach targetDir/rel
 // (slash) mit mode IMMER (kanonisch, ueberschreibt) — MkdirAll fuer den Elternpfad + Chmod
-// NACH dem Write (os.WriteFile wendet den Modus nur beim Anlegen an — ueber eine vorhandene
-// 0644-Datei geschrieben bliebe der richtige Inhalt sonst nicht ausfuehrbar zurueck, Befund
-// slice-022a L2). Fuer tool-eigene Infrastruktur, die der Adopter nicht editieren soll.
+// NACH dem Write (os.WriteFile wendet den Modus nur beim Anlegen an, und eine restriktive
+// umask nimmt davon noch Bits weg: ueber eine vorhandene 0644-Datei geschrieben bliebe der
+// richtige Inhalt sonst nicht ausfuehrbar zurueck). Fuer tool-eigene Infrastruktur an einem
+// Pfad, den die Emission bestimmt — den Adopter-Boden kann er clobbern, ein
+// skip-if-present-Pfad mit liegender Datei erreicht ihn nicht (writeSkipIfPresentTold).
 func writeFileMode(targetDir, rel string, content []byte, mode fs.FileMode) error {
 	dst := filepath.Join(targetDir, filepath.FromSlash(rel))
 	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
@@ -390,17 +503,19 @@ func writeFileMode(targetDir, rel string, content []byte, mode fs.FileMode) erro
 	return nil
 }
 
-// writeSkipIfPresent ist der SKIP-IF-PRESENT-Writer (slice-038, ADR-0007): schreibt content
+// writeSkipIfPresent ist der SKIP-IF-PRESENT-Writer ohne Meldung: schreibt content
 // NUR, wenn targetDir/rel FEHLT — eine vorhandene Datei bleibt unberuehrt (return nil, kein
-// Fehler). Fuer Adopter-Boden (Doc-Chain, README, Skelett-Code, .d-check.yml, Commands): der
-// idempotente Re-Lauf clobbert adopter-modifizierten Inhalt NIE (der sichere Default der ADR).
+// Fehler). Fuer Adopter-Boden (Doc-Chain, README, Skelett-Code, .d-check.yml, Commands,
+// Rollen-Typen): der idempotente Re-Lauf clobbert adopter-modifizierten Inhalt NIE (der
+// sichere Default der ADR). Ein Pfad, dessen belegter Zustand dem Adopter GEMELDET werden
+// soll, nimmt writeSkipIfPresentTold.
 func writeSkipIfPresent(targetDir, rel string, content []byte, mode fs.FileMode) error {
-	dst := filepath.Join(targetDir, filepath.FromSlash(rel))
-	switch _, err := os.Stat(dst); {
-	case err == nil:
+	liegt, err := dateiLiegt(targetDir, rel)
+	if err != nil {
+		return err
+	}
+	if liegt {
 		return nil // vorhanden -> nie ueberschreiben (skip-if-present)
-	case !errors.Is(err, fs.ErrNotExist):
-		return fmt.Errorf("%s pruefen: %w", rel, err)
 	}
 	return writeFileMode(targetDir, rel, content, mode)
 }

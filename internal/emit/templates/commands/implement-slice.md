@@ -48,6 +48,11 @@ emittierten Durchsetzungsschicht):
   `slice-N`) weist der git-eigene Hook `.githooks/commit-msg` ab, sobald er aktiviert ist. Er liegt
   versioniert im Repo und **reist mit dem Klon, seine Aktivierung nicht**: `make hooks-install`
   setzt `core.hooksPath` und ist der eine Schritt dazwischen; `git commit --no-verify` umgeht ihn.
+  **An diesem Pfad ist das Werkzeug ein Gast** — der Name ist von `git` fixiert und das Verzeichnis
+  gehört dem Repo: der Bootstrap legt seinen Träger **nur ab, wo der Pfad frei ist**. Führt dieses
+  Repo dort schon einen eigenen, bleibt er unberührt, und der Bootstrap sagt es; die mitgelieferte
+  Prüfung `tools/harness/commit-msg-traceability.sh` liegt in beiden Fällen daneben (sie wird bei
+  jedem Lauf kanonisch neu geschrieben) und kann aus dem eigenen Träger aufgerufen werden.
   Geprüft wird die **Anwesenheit** einer Kennung, nicht ihre Wahrheit. Was er **nicht** erreicht:
   die zweite Hälfte der Traceability-Zusage — ein Doku-Update bei berührtem öffentlichem Vertrag —
   ist von einem Commit-Wächter nicht mechanisch prüfbar und bleibt deine Arbeit. Er **erreicht**
