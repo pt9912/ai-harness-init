@@ -150,7 +150,7 @@ verschwindet; Tausch- und Nachzugs-Commit gehören darum in denselben Push (Base
 
 - **Keine Messung, ob `make slice-mv` und `make docs-check` die neuen Kanten `open → done` und
   `next → done` tragen.** *Ein Folge-Slice übernimmt sie:* `slice-stilllegungs-kanten-sind-gemessen`
-  in `open/`, dessen §1 genau diese Messung als Ziel führt. *Es wäre ein anderer Vorgang:* Dieser
+  — sein §1 führt genau diese Messung als Ziel. *Es wäre ein anderer Vorgang:* Dieser
   Slice arbeitet am Gegenstand, jener misst Werkzeuge, und sein Maßstab — der Abschnitt *Ein
   Slice, dessen Gegenstand ein anderer übernimmt* in `modul-05-planning-harness.md` — liegt erst
   nach diesem Slice vendored vor. Dieser Plan sagt deshalb **nichts** darüber, ob die Werkzeuge
@@ -535,7 +535,7 @@ Den Ausgang setzt die Closure. *Absehbar* nennt, welcher Ausgang unter welcher B
    Beleg in `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`.
 9. **Die offenen Pläne werden gegen den neuen Stand nicht gehalten.** Die neuen Kanten verschieben,
    was aus einem Plan in `open/` oder `next/` werden darf (`ls docs/plan/planning/open/*.md | wc -l`
-   → **67**, `ls docs/plan/planning/next/*.md | wc -l` → **22**, keine Erwartungswerte).
+   → **66**, `ls docs/plan/planning/next/*.md | wc -l` → **23**, keine Erwartungswerte).
    *Absehbar:* weiter offen, Register-Eintrag
    `folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht`.
 10. **Für die Planungs-README nennt keine Quelle die schreibende Rolle.** Ihre Zeile zu `done/`
