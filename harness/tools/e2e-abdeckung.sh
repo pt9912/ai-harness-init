@@ -10,9 +10,9 @@
 #
 # WAS ER LIEST — TEXT, KEIN LAUF: die Quelle wird Zeile fuer Zeile als Text gelesen.
 # Kein Docker, kein E2E, keine Ausfuehrung der Quelle. Die Tabelle aendert sich damit
-# mit den DEKLARATIONEN, nicht mit jedem Lauf; dasselbe Argument traegt ihre
-# Einordnung als advisories Ziel (LH-QA-01). Das Werkzeug ist darum kein Gate: was es
-# findet, urteilt es nicht, und was es schreibt, prueft `make docs-check` mit.
+# mit den DEKLARATIONEN, nicht mit jedem Lauf. Das Werkzeug ist darum kein Gate: es
+# urteilte ueber den Quelltext eines Skripts, nicht ueber den Zustand des Baums
+# (LH-QA-01). Was es schreibt, prueft `make docs-check` mit.
 #
 # DIE STUFEN-MENGE IST EIN KRITERIUM, KEINE AUFZAEHLUNG: eine Zeile der Form
 #   echo "full-smoke: … ..."
@@ -56,6 +56,16 @@ RUF_MUSTER='^[0-9]+:[[:space:]]*e2e_abdeckung "[^"]*" "[^"]*" "[^"]*"[[:space:]]
 # Dieselbe Zeile OHNE die Zeilen-Angabe: sie erkennt eine Deklarations-Zeile dort, wo
 # ueber Text gelaufen wird.
 RUF_TEIL='^[[:space:]]*e2e_abdeckung "'
+# Die typografischen Zeichen, die der Anker-Slug fallen laesst, und der Backtick der
+# Orts-Spalte stehen als VARIABLE: woertlich in einem Kommando liest shellcheck das ’
+# als Unicode-Anfuehrungszeichen (SC1112) und den Backtick im printf-Format als
+# Kommando-Substitution (SC2016), und eine Inline-Suppression ist nach AGENTS.md §3.2
+# gesperrt. Die Anfuehrungszeichen entstehen darum aus ihren UTF-8-BYTES statt aus einer
+# Zeichenkodierung der Umgebung: \342\200\231 ist ’, \342\200\236 ist „, \342\200\234
+# ist “, \342\200\235 ist ”.
+TYPOGRAFIE='—–…·→'
+ANFUEHRUNGEN="$(printf '\342\200\231\342\200\236\342\200\234\342\200\235')"
+BT='`'
 LASTENHEFT_REL="spec/lastenheft.md"
 
 if [ "$#" -ne 2 ]; then
@@ -99,7 +109,7 @@ slug_fuer() {
 	printf '%s' "$titel" \
 		| tr '[:upper:]' '[:lower:]' \
 		| sed -e 's/Ä/ä/g' -e 's/Ö/ö/g' -e 's/Ü/ü/g' \
-		| sed -e 's/[—–„“”’…·→]//g' \
+		| sed -e "s/[$TYPOGRAFIE$ANFUEHRUNGEN]//g" \
 		| sed -e 's/[!-,]//g' -e 's/[.-@]//g' \
 		| sed -e 's/\[//g' -e 's/\\//g' -e 's/\]//g' -e 's/\^//g' \
 		| sed -e 's/`//g' -e 's/[{-~]//g' \
@@ -108,7 +118,7 @@ slug_fuer() {
 
 stufen="$(grep -nE "$STUFEN_MUSTER" "$quelle" || true)"
 if [ -z "$stufen" ]; then
-	echo "e2e-abdeckung: FEHLER — $quelle fuehrt keine Zeile der Form $STUFEN_MUSTER — ueber null Stufen waere die Tabelle leer und ihr Gruen still." >&2
+	echo "e2e-abdeckung: FEHLER — $quelle fuehrt keine Zeile der Form $STUFEN_MUSTER — die Tabelle hat ohne Stufen keine Zeile, und ihr Grün sagt dann nichts (LH-QA-01)." >&2
 	exit 1
 fi
 
@@ -196,9 +206,9 @@ while IFS=: read -r start _rest; do
 			;;
 		esac
 		# Die Deklarations-Zeilen sind von der Anker-Suche AUSGENOMMEN: der Anker steht
-		# wortwoertlich im dritten Argument des Aufrufs, und ohne diese Ausnahme faende
-		# sich jede Deklaration selbst — der Ort zeigte auf sie statt auf die Zeile der
-		# Stufe, die sie nennt, und die Pruefung waere ueber jedem Anker still.
+		# wortwoertlich im dritten Argument des Aufrufs. Die Ausnahme ist der Grund, warum
+		# der Ort auf eine Zeile der STUFE zeigt und nicht auf die Deklaration, und warum
+		# die Pruefung an einem gebrochenen Anker nicht still vorbeilaeuft.
 		ort="$(awk -v s="$start" -v e="$ende" -v a="$anker" -v rufmuster="$RUF_TEIL" \
 			'NR >= s && NR <= e && $0 !~ rufmuster && index($0, a) { print NR; exit }' "$quelle")"
 		if [ -z "$ort" ]; then
@@ -221,7 +231,7 @@ while IFS=: read -r start _rest; do
 			fi
 			links="${links}[\`$k\`](${rel_prefix}${LASTENHEFT_REL}#${slug})"
 		done
-		printf '| %s | Stufe %s | `%s:%s` | %s |\n' "$links" "$stufen_gesamt" "$quelle" "$ort" "$kurz" >>"$tmp"
+		printf '| %s | Stufe %s | %s%s:%s%s | %s |\n' "$links" "$stufen_gesamt" "$BT" "$quelle" "$ort" "$BT" "$kurz" >>"$tmp"
 		deklarationen=$((deklarationen + 1))
 	done <<<"$region_aufrufe"
 done <<<"$stufen"
@@ -238,9 +248,9 @@ else
 	if [ ! -d "$ziel_dir" ]; then
 		mkdir -p "$ziel_dir"
 	fi
-	# Der Modus steht EXPLIZIT: die Temp-Datei kommt aus mktemp und traegt 0600, und ein
-	# unveraendertes Kopieren naehme dem Ziel die Lesbarkeit — der d-check-Container
-	# laeuft als Nicht-Root und kaeme an die Tabelle nicht heran.
+	# Der Modus steht EXPLIZIT: `mktemp` legt die Temp-Datei mit 0600 an, und die Tabelle
+	# wird vom Doku-Gate gelesen — der d-check-Container laeuft als Nicht-Root und kommt an
+	# eine 0600-Datei nicht heran.
 	rm -f "$ziel"
 	cat "$tmp" >"$ziel"
 	chmod 0644 "$ziel"

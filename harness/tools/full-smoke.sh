@@ -58,12 +58,10 @@ einordnen() {
 
 # e2e_abdeckung <Kennungen> <Kurzbeschreibung> <Anker> — DIE DEKLARATION EINER STUFE.
 #
-# WOZU: WELCHE Stufe WELCHE Anforderung traegt, stand an keiner Stelle — die Kennungen
-# lagen als Kommentar ueber das Skript verstreut, und keine Stufe nannte ihre eigene.
-# Diese Funktion gibt der Beziehung einen ORT: der Aufruf steht IN der Stufe, die er
-# deklariert, und der Anker ist ein woertlicher Ausschnitt aus einer Zeile DIESER Stufe.
-# Aus denselben Aufrufen erzeugt `make e2e-abdeckung` die Tabelle
-# docs/user/e2e-abdeckung.md; die drei Argumente sind dort die drei Spalten je Zeile.
+# WOZU: Diese Funktion gibt der Beziehung ANFORDERUNG -> STUFE einen ORT. Der Aufruf steht
+# IN der Stufe, die er deklariert, und der Anker ist ein woertlicher Ausschnitt aus einer
+# Zeile DIESER Stufe. Die drei Argumente sind in docs/user/e2e-abdeckung.md die drei
+# Spalten je Zeile; erzeugt wird die Tabelle von `make e2e-abdeckung`.
 #
 # DIE STUFEN-MENGE ist ein KRITERIUM und keine Aufzaehlung: eine Zeile
 # `echo "full-smoke: … ..."` eroeffnet eine Stufe, ihre Region reicht bis zur naechsten
@@ -105,12 +103,13 @@ e2e_abdeckung() {
 	fi
 	[ -n "$ende" ] || ende="$(wc -l <"$quelle")"
 	# Die Deklarations-Zeilen sind von der Anker-Suche AUSGENOMMEN: der Anker steht
-	# wortwoertlich im dritten Argument des Aufrufs, und ohne diese Ausnahme faende
-	# sich jede Deklaration selbst — die Pruefung waere ueber jedem Anker still.
+	# wortwoertlich im dritten Argument des Aufrufs. Die Ausnahme ist der Grund, warum
+	# der aufgeloeste Ort auf eine Zeile der STUFE zeigt und nicht auf die Deklaration,
+	# und warum die Pruefung an einem gebrochenen Anker nicht still vorbeilaeuft.
 	ort="$(awk -v s="$start" -v e="$ende" -v a="$anker" -v rufmuster='^[[:space:]]*e2e_abdeckung "' \
 		'NR >= s && NR <= e && $0 !~ rufmuster && index($0, a) { print NR; exit }' "$quelle")"
 	if [ -z "$ort" ]; then
-		echo "full-smoke: FEHLER — Deklaration ohne Stufe: der Anker loest in der Region dieser Stufe nicht auf ($quelle:$start-$ende, Anker: [$anker]). Die Stufe wurde umgebaut; die Tabelle haengt an denselben Deklarationen und faellt dort ebenso aus (make e2e-abdeckung)." >&2
+		echo "full-smoke: FEHLER — Deklaration ohne Stufe: der Anker loest in der Region dieser Stufe nicht auf ($quelle:$start-$ende, Anker: [$anker]). Beide Seiten lesen denselben Anker; make e2e-abdeckung endet hier ebenso mit Exit 1." >&2
 		exit 1
 	fi
 	echo "full-smoke: Abdeckung der Stufe ab Zeile $start: $kennungen — $kurz (Anker aufgeloest in $quelle:$ort)."

@@ -19,9 +19,9 @@
 #       Stufe.
 # Eine Richtung allein belegte nichts (AGENTS.md 3.6); gefahren werden beide.
 #
-# DIE AUSGANGSLAGE IST DER GEPRUEFTE BAUM, nicht eine Fixture: waere der Erzeuger schon
-# ueber ihm rot, faerbten alle Faelle unten aus demselben Grund. Deshalb prueft jeder
-# Fall zuerst, dass seine eigene Mutation wirklich das getan hat, was er behauptet.
+# DIE AUSGANGSLAGE IST DER GEPRUEFTE BAUM, nicht eine Fixture. Jeder Fall belegt darum
+# zuerst, dass seine eigene Mutation eingetreten ist — die Zaehlungen vor dem Lauf
+# gehoeren zum Fall und nicht zur Umgebung.
 
 setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
