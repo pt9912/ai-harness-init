@@ -190,7 +190,7 @@ der Termin, den dieser Slice trägt.** Beide Fassungen liegen im Baum, die Messu
 über ihm, Frage A und B sind ohne Vorarbeit eines anderen Slice entscheidbar. Er wartet
 insbesondere **nicht** auf die Closure von
 [welle-12](../done/welle-12-erfassungsschicht-emittieren.md) und **nicht** auf
-[slice-108](../open/slice-108-feldlisten-waechter-tragen-ihren-fall.md): jener gibt bestehenden Wächtern
+[slice-108](../next/slice-108-feldlisten-waechter-tragen-ihren-fall.md): jener gibt bestehenden Wächtern
 ihre Fälle, dieser ändert den Text, den sie halten. Laufen sie in beliebiger Reihenfolge, kostet
 die zweite Runde einen Abgleich der berührten Fall-Köpfe — sie brechen einander nicht.
 
