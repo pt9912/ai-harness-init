@@ -97,17 +97,29 @@ wellenlose Arbeit.
   urteilt der Leser gegen den Bestand von
   [`spec/lastenheft.md`](../../../../spec/lastenheft.md) — und das ist die Matrix, nicht diese Datei.
 - **Ein Gate, und damit ein Platz in `make gates`** — **anderer Vorgang, und der Gegenstand trägt
-  ihn nicht.** Die Tabelle ändert sich mit den **Deklarationen**, nicht mit jedem Lauf; ein Gate
-  darüber urteilte über den Quelltext eines Skripts, nicht über den Zustand des Baums. Sie tritt
-  darum neben `smoke`, `full-smoke` und `doc-trace` in die advisory-Ziele (`kein Gate`).
+  ihn nicht.** Gemeint ist der **Erzeuger als Ziel**: er ändert sich mit den **Deklarationen**, nicht
+  mit jedem Lauf, und ihn bei jedem Gate zu fahren urteilte über den Quelltext eines Skripts, statt
+  über den Zustand des Baums. Er tritt darum neben `smoke`, `full-smoke` und `doc-trace` in die
+  advisory-Ziele (`kein Gate`). **Nicht ausgeschlossen ist damit der Halter der erzeugten Datei:**
+  dass die **committete** `docs/user/e2e-abdeckung.md` der aktuelle Ausgang des Erzeugers ist, ist
+  eine Aussage über den Zustand des Baums, mechanisch entscheidbar und ohne Urteil — dieselbe Klasse,
+  die `make baseline-verify` über den vendored Baum hält. Sie gehört darum gehalten, und zwar von
+  einem **Fall in `make test`** (Liefer-Punkt 2): kein Gate-Target, aber ein Zahn. Die Grenze dieses
+  Plans ist die *Richtung* — der Erzeuger ist kein Gate; die von ihm erzeugte Datei ist nicht
+  ungeprüft.
 - **Ein zweiter Halbzug aus Go** — **anderer Vorgang.** Die Nachbar-Form (*Go-Zeilen aus dem
   Testpaket, Bash-Zeilen aus dem Runner*) setzt ein Go-E2E-Testpaket voraus. Dieses Repo hat keines:
   sein Voll-E2E **ist** das Bash-Skript. Eine Go-Hälfte zu bauen hieße, einen Gegenstand zu
   erfinden, den der E2E nicht hat.
 - **Eine Änderung daran, was der E2E prüft** — **Schicht-Abgrenzung, kein Produkt-Code.** Der Slice
-  setzt **Deklarationen** an die vorhandenen Stufen und ändert keine einzige Prüfung, keine
-  Erwartung und keinen Exit-Code des Skripts; das Werkzeug, das er hinzufügt, ist ein Bash-Helfer
-  unter `harness/tools/` und ein `make`-Ziel daneben.
+  setzt **Deklarationen** an die vorhandenen Stufen und ändert keine einzige **bestehende** Prüfung,
+  keine **bestehende** Erwartung und keinen **bestehenden** Exit-Code des Skripts; die Erweiterung
+  ist additiv. Das Werkzeug, das er hinzufügt, ist ein Bash-Helfer unter `harness/tools/` und ein
+  `make`-Ziel daneben. **Der neue Abbruchpfad ist davon nicht gedeckt, sondern ihr Gegenstand:** dass
+  der Aufruf im E2E abbricht, wenn sein Anker nicht mehr auflöst (Liefer-Punkt 1), ist ein **neuer**
+  Pfad **neben** den bestehenden — kein geänderter. *„Keinen Exit-Code"* bindet den **Bestand**,
+  nicht die Hinzufügung; wer es als Verbot des neuen Pfades liest, hält genau den Liefer-Punkt für
+  ausgeschlossen, den §2(1) verlangt.
 
 **Keine Mindestzahl.** Ein Slice mit *einem* echten Ausschluss ist besser als
 einer mit vier erfundenen; die vier Klassen sind ein Suchraster, keine
@@ -150,6 +162,15 @@ Anforderung, (2) macht daraus die erzeugte Tabelle, (3) hält beide Lücken laut
   [`spec/lastenheft.md`](../../../../spec/lastenheft.md); die Beschreibungsspalte trägt keine
   Kennungen. **Rot gesehen:** eine Deklaration, deren Anker gelöscht ist, endet mit Exit ≠ 0 und
   nennt Anker und Nachweis (Ausgabe im Umsetzungs-Commit).
+- [ ] **Der Halter der committeten Datei ist ein Fall in `make test`, nicht ein Gate.** Ein Fall in
+  `test/e2e-abdeckung.bats` fährt den Erzeuger über dem **geprüften** Skript in ein **tmp**-Ziel und
+  hält das Ergebnis **byte-gleich** gegen die committete `docs/user/e2e-abdeckung.md` — ohne Docker
+  und ohne E2E-Lauf, denn der Erzeuger liest Text. Damit ist *diese Datei ist der aktuelle Ausgang
+  ihres Erzeugers* eine geprüfte Zusage und nicht die Behauptung, die ein ungefahrener Erzeuger
+  zurücklässt. **Rot gesehen:** über einer Kopie, in der eine Stufe ihre Deklaration verloren hat,
+  weicht die frische Erzeugung von der committeten Datei ab und der Fall fällt (Kommando im
+  Umsetzungs-Commit). Das Ziel `e2e-abdeckung` bleibt davon unberührt und tritt weiter als `kein
+  Gate` in die advisory-Ziele.
 - [ ] **(3) Beide Richtungen fallen laut aus, und ihr Rot ist hergestellt.** Der Erzeuger bricht ab
   (a) bei einer **Deklaration ohne Stufe** (Anker löst nirgends auf, Klammer aus Punkt 2) und (b) bei
   einer **Stufe ohne Deklaration** — die Stufen-Menge ist über ein **Kriterium** abgegrenzt, nicht
@@ -183,14 +204,14 @@ Aussagen-Berührung steht hier gar nicht.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `harness/tools/full-smoke.sh` | update | der Funktionskopf `e2e_abdeckung` und je ein Aufruf an jeder der fünfzehn Stufen (Liefer-Punkt 1). Die Prüfungen, Erwartungen und Exit-Codes des Skripts bleiben unberührt |
-| harness/tools/e2e-abdeckung.sh | neu | der Erzeuger: liest `harness/tools/full-smoke.sh` als Text, löst Anker auf, prüft beide Richtungen, rendert die Tabelle (Liefer-Punkte 2 und 3). Nimmt Quelle und Ziel als Argumente |
+| `harness/tools/full-smoke.sh` | update | der Funktionskopf `e2e_abdeckung` und je ein Aufruf an jeder der fünfzehn Stufen (Liefer-Punkt 1). Die **bestehenden** Prüfungen, Erwartungen und Exit-Codes des Skripts bleiben unberührt; der neue Abbruchpfad des Aufrufs ist eine Hinzufügung (§1, `NICHT`-Punkt 4) |
+| harness/tools/e2e-abdeckung.sh | neu | der Erzeuger: liest `harness/tools/full-smoke.sh` als Text, löst Anker auf, prüft beide Richtungen, rendert die Tabelle (Liefer-Punkte 2 und 3). Nimmt Quelle und Ziel als Argumente. Sein Kopfkommentar nennt den **Halter** der erzeugten Datei, statt `make docs-check` als ihren Wächter auszugeben: das Gate prüft ihre **Verweise**, nicht ihre Übereinstimmung mit dem Erzeuger |
 | `Makefile` | update | das advisory-Ziel `e2e-abdeckung` (`kein Gate`), nach der Form von `smoke`/`full-smoke`/`archive-welle` |
 | docs/user/e2e-abdeckung.md | neu (erzeugt) | die Abdeckungs-Tabelle, mit dem Kopf *stabile Deklaration, kein Lauf-Beleg* (Liefer-Punkt 2) |
-| [`harness/README.md`](../../../../harness/README.md) §Werkzeuge | update | die Zeile des neuen Ziels in der `kein Gate`-Tabelle, sonst listet es nur `make help` |
+| [`harness/README.md`](../../../../harness/README.md) §Werkzeuge | update | die Zeile des neuen Ziels in der `kein Gate`-Tabelle (mit dem Halter der erzeugten Datei daneben), sonst listet es nur `make help` |
 | [`.d-check.yml`](../../../../.d-check.yml) `targets.exempt-targets` | update | das neue Ziel trägt keinen Anker in §Sensors — dieselbe Einordnung wie `smoke`/`full-smoke` |
-| [`harness/sensors/full-smoke.md`](../../../../harness/sensors/full-smoke.md) | update | die Prosa des E2E nennt die Deklarations-Form und den Erzeuger |
-| `test/e2e-abdeckung.bats` | neu | die zwei Richtungen, je über einer mutierten **Kopie** des Skripts — Happy Path, Boundary (Stufe ohne Deklaration) und Negative (Deklaration ohne Stufe) nach [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [`harness/sensors/full-smoke.md`](../../../../harness/sensors/full-smoke.md) | update | die Prosa des E2E nennt die Deklarations-Form, den Erzeuger und den **Halter** der erzeugten Tabelle; ungeprüft bleibt damit nur, was ungeprüft ist (die Zuordnung selbst, Risiko 3) |
+| `test/e2e-abdeckung.bats` | neu | die zwei Richtungen, je über einer mutierten **Kopie** des Skripts — Happy Path, Boundary (Stufe ohne Deklaration) und Negative (Deklaration ohne Stufe) nach [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) — **plus der Halter der committeten Tabelle** (Liefer-Punkt 2), gleichfalls über einer Kopie rot gesehen |
 | `test/mutations/` | neu | der Fall, der einer Stufe ihre Deklaration nimmt und den bats-Fall daraus rot färbt (Liefer-Punkt 3) |
 
 **Optional: Ansatz als Liste, wenn eine Zeile pro Datei nicht trägt** — z. B.
@@ -266,7 +287,10 @@ dasteht.
 - **Risiko 3 — eine Deklaration kann veralten, ohne rot zu werden.** Der Anker bleibt auflösbar,
   während die Stufe ihre Aussage ändert: der Erzeuger sieht nur, **dass** der Anker existiert,
   nicht ob die genannte Anforderung noch zu ihr gehört. Der Text bleibt damit ein **Urteil**, das
-  der Review hält — kein Sensor. — **Ausgang:** <offen>
+  der Review hält — kein Sensor. **Die mechanische Nachbarhälfte ist davon getrennt und wird
+  gehalten:** ob die committete Datei überhaupt noch der Ausgang des Erzeugers ist, entscheidet
+  kein Urteil und hat darum einen Zahn (Liefer-Punkt 2, Fall in `make test`). Dieses Risiko ist
+  genau die Hälfte, die **keinen** haben kann. — **Ausgang:** <offen>
 - **Risiko 4 — eine erzeugte Datei unter `docs/user/` ist neu in diesem Baum.** Alles unter
   `docs/user/` liegt im Prüfbereich von `docs-check` (roots `["."]`); eine nicht verlinkte Kennung
   oder ein Toter-Anker-Link färbt es rot. Der Erzeuger muss die Link-Form des Hauses treffen (Anker

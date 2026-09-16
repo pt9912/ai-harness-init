@@ -18,6 +18,8 @@ Rollen-Achse der Telemetrie mit, die `make span-report` je Rolle ausweist.
 **Eingang:** Anforderung oder Welle. **Ausgang:** Slice-Plan mit Bezug auf `LH-*` an den
 Architect; am Ende der Sequenz die **Closure** mit Lerneintrag.
 
+**Budget: ≤ 25 Tool-Calls; bündle Inspektionen; wer mehr braucht, sagt es im Auftrag.**
+
 Zwei Grenzen, die Modul 5 hart zieht: **höchstens drei slice-eigene DoD-Punkte** — mehr heißt,
 der Schnitt ist falsch, nicht dass die DoD länger sein muss. Und der Übergang nach `done/`
 verlangt einen **Steering-Loop-Eintrag** (geschärfte Regel · neuer Sensor · benannte Spec-Lücke),
