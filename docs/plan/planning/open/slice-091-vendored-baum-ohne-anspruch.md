@@ -27,6 +27,8 @@ kopiert — genau der Weg, auf dem der Anspruch weiterwandert),
 (hier als Gegenkraft: *laut falsch* hilft nur, wenn der Adopter am Befund ablesen kann, dass er
 einer ist).
 
+**Verantwortlich:** Implementer (pt9912).
+
 **Autor:** Planner. **Datum:** 2026-08-22.
 
 ---

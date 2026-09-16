@@ -36,7 +36,7 @@ Spec-Zeilen sind darum kein Lastenheft-Thema)
 übersprungenen `NAME=WERT`-Präfixen"*). Beide Zeilen beschreiben die heutige Mechanik wörtlich und
 werden mit ihr falsch — sie wandern mit.
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-08.
 

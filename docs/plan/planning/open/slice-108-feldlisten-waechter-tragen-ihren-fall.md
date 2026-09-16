@@ -40,6 +40,8 @@ Sensor-Mechanik, in der ein Fall zählt),
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 (Verortung).
 
+**Verantwortlich:** Implementer (pt9912).
+
 **Autor:** Planner. **Datum:** 2026-08-26.
 
 ---

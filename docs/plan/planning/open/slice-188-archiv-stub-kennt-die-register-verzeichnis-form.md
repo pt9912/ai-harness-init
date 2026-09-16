@@ -23,7 +23,7 @@ Stub-Feld hier repariert wird),
 **Berührte Spec-Stellen:** `—`. Der Slice repariert eine Kennungs-Erkennung; er schreibt keine
 Spec-Stelle.
 
-**Verantwortlich:** `—` bis zur Priorisierung.
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-05.
 

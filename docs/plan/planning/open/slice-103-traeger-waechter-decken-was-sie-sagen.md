@@ -38,6 +38,8 @@ Sensor-Mechanik, in der ein Fall zählt),
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 (jede Zahl unten steht neben dem Kommando, das genau sie liefert).
 
+**Verantwortlich:** Implementer (pt9912).
+
 **Autor:** Planner. **Datum:** 2026-08-25.
 
 ---

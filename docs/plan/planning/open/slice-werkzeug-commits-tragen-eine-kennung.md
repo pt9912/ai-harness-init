@@ -37,7 +37,7 @@ Träger, auf dem die Werkzeuge des eigenen Prozesses fallen, trägt seine Klasse
 **Berührte Spec-Stellen:** `—` (der Slice berührt keine Spec-Stelle; Gegenstand sind vier
 Betreffzeilen, die dieses Repo selbst baut).
 
-**Verantwortlich:** Implementer. Der Liefergegenstand ist ein **Werkzeug-Zustand** — vier Stellen
+**Verantwortlich:** Implementer (pt9912). Der Liefergegenstand ist ein **Werkzeug-Zustand** — vier Stellen
 bilden ihre Message und tragen künftig eine Kennung; die Norm, gegen die das geschieht, steht in
 [ADR-0053](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) und
 [`AGENTS.md`](../../../../AGENTS.md) §5.

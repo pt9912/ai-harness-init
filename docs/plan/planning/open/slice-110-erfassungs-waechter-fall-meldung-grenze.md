@@ -24,6 +24,8 @@ Festlegung 4, 6 Stück 2 und 8 sind die Verträge, über die diese Wächter wach
 [`AGENTS.md`](../../../../AGENTS.md) §3.6 (wer keinen Fall in `test/mutations/` hat, gilt als
 unbewacht — die Regel, an der DoD (2) hängt).
 
+**Verantwortlich:** Implementer (pt9912).
+
 **Autor:** Planner. **Datum:** 2026-08-26.
 
 ---

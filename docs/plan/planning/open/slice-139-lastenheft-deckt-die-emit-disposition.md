@@ -46,7 +46,7 @@ namentliche Aufzählung der wiederkehrenden Vorlagen und ihre Dispositions-Menge
 Glossar-Zeile *Wiederkehrendes Template* in §6 derselben Datei. Der Verweis zeigt **aufwärts**:
 das Lastenheft nennt diesen Slice nie.
 
-**Verantwortlich:** — (bis zur Priorisierung).
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-08-30.
 

@@ -32,7 +32,7 @@ nachfahrbar sein — heute nennen sie einen Pfad, den es nicht gibt),
 
 **Berührte Spec-Stellen:** — (Gegenstand sind Doc-Kommentare in `internal/emit/templates.go`).
 
-**Verantwortlich:** — (bis zur Priorisierung).
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-14.
 

@@ -35,6 +35,8 @@ Zellwert — §1),
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 (Setzung 2 — der Nenner misst seinen Gegenstand, nicht sein Umfeld).
 
+**Verantwortlich:** Implementer (pt9912).
+
 **Autor:** Planner. **Datum:** 2026-08-23.
 
 ---

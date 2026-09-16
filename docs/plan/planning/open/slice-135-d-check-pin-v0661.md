@@ -67,7 +67,7 @@ ein Fremd-Werkzeug; welche Module das Doku-Gate fährt, entscheidet
 ohnehin **aufwärts**: die Spec nennt diesen Slice nie (Baseline-Regelwerk
 `grundlagen-referenz-richtung.md` §Referenz-Richtung (SDP)).
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-08-29.
 
