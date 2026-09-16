@@ -269,7 +269,7 @@ dasteht.
   Register-Paarung über der neuen Ablage prüft — die Lücke, die `BEO-006` (1×) führt. Ob der hier gepinnte Stand sie
   trägt, ist **nicht gemessen**; sie hier zu behaupten wäre
   [`AGENTS.md`](../../../../AGENTS.md) §3.1. Der Gegenstand gehört zum Pin-Slice
-  [slice-135](../next/slice-135-d-check-pin-v0661.md), nicht hierher. — **Ausgang:** **weiter
+  [slice-135](../open/slice-135-d-check-pin-v0661.md), nicht hierher. — **Ausgang:** **weiter
   offen**, im Beobachtungs-Register als `BEO-006`. Der Zähler bleibt bei
   **1×**: Die Lücke ist in diesem Slice **benannt**, aber nicht **aufgetreten** — sie wurde
   ausdrücklich nicht gemessen und nicht verbucht, und ein Beleg für eine Beobachtung, die der
@@ -330,7 +330,7 @@ Backticks).
 - **Folge-Slices:** keiner neu. Die Arbeit, die aus dieser Entscheidung folgt, hat ihre Dateien
   bereits — [slice-177](../done/slice-177-beobachtungs-register-verzeichnis-form.md) vollzieht den
   Umzug und trägt die drei Folgepflichten 1 bis 3 der ADR;
-  [slice-135](../next/slice-135-d-check-pin-v0661.md) hält die Gate-Fähigkeit.
+  [slice-135](../open/slice-135-d-check-pin-v0661.md) hält die Gate-Fähigkeit.
 - **Risiken aus §6:** vier, jedes mit genau einem Ausgang — zwei *entfallen* mit Begründung, zwei
   *weiter offen* im Register. Keines *eingetreten*, also kein Carveout.
 - **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — sie prüft die Closure von
