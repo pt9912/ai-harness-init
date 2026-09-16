@@ -153,8 +153,9 @@ nennt — für ihn läuft diese Lücke weiter
 Message-Datei, die git ihm übergibt, gleichgültig welcher Aufruf sie erzeugt hat.
 
 **Im gebootstrappten Ziel trägt der git-eigene Hook die Kennungs-Zusage; den PreToolUse-Zusatz für
-Commit-Messages bekommt es nicht.** Er reist als `.githooks/commit-msg` mit dem Klon, seine Prüfung
-als `tools/harness/commit-msg-traceability.sh` daneben, und der Hook ruft die Prüfung über sein
+Commit-Messages bekommt es nicht.** Seine Prüfung reist als
+`tools/harness/commit-msg-traceability.sh` mit dem Klon; den Träger `.githooks/commit-msg` legt der
+Lauf daneben nur an einem freien Pfad ab, und der abgelegte Träger ruft die Prüfung über sein
 eigenes Verzeichnis auf. **Die zwei Nachbarn tragen zwei verschiedene Klassen**
 ([`ADR-0054`](../docs/plan/adr/0054-emittierter-commit-traeger-skip-if-present.md) Festlegung 1):
 die Prüfung wird bei jedem Lauf kanonisch neu geschrieben — sie ist das Stück des Paares, das sich

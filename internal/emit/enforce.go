@@ -243,8 +243,8 @@ func EnforcePaths() []string {
 
 // PathClass nennt die Idempotenz-Klasse des Ziel-Relpfads dst; klasseUnbestimmt, wenn dst
 // nicht in der Aufzaehlung steht oder ihr Eintrag keine Klasse nennt. Sie ist die Auskunft
-// ueber dieselbe Klassifikation, die Enforce faehrt: ein Test, der die Klassen je Pfad selbst
-// auflistet, haette eine zweite Fassung daneben, und die zwei liefen auseinander.
+// ueber dieselbe Klassifikation, die Enforce faehrt: die Klassen stehen an den Eintraegen der
+// Aufzaehlung, und ein Test, der die Klassen je Pfad prueft, liest sie hier.
 func PathClass(dst string) EnforceClass {
 	for _, f := range enforceFiles() {
 		if f.dst == dst {
@@ -436,8 +436,7 @@ func BlockedFragment(targetDir, lang string) error {
 
 // writeEnforceFile legt eine emittierte Datei nach der Klasse ihres Eintrags ab. Ein Eintrag
 // ohne Klasse bricht ab, statt als konvergent durchzugehen: die Klasse entscheidet, ob ein
-// liegender Inhalt ueberschrieben wird, und ein stiller Default waere genau die Setzung, die
-// niemand ausgesprochen hat (ADR-0054 §Kontext).
+// liegender Inhalt ueberschrieben wird, und jeder Eintrag nennt sie darum (ADR-0054 §Kontext).
 func writeEnforceFile(targetDir string, f enforceFile, content []byte, notice io.Writer) error {
 	switch f.class {
 	case Konvergent:
@@ -450,9 +449,8 @@ func writeEnforceFile(targetDir string, f enforceFile, content []byte, notice io
 
 // writeSkipIfPresentTold ist writeSkipIfPresent MIT Meldung: liegt am Zielpfad schon eine
 // Datei, bleibt sie unberuehrt und der Lauf nennt es auf notice, zusammen mit dem Zusatz des
-// Eintrags (ADR-0054 Festlegung 3). Ein stilles Uebergehen waere die zweite Haelfte desselben
-// Fehlers — der Adopter erfuehre sonst nicht, dass sein Inhalt stehenbleibt und was ihm statt
-// dieser Datei bereitliegt.
+// Eintrags (ADR-0054 Festlegung 3). Die Meldung ist die Auskunft an den Adopter: sein Inhalt
+// bleibt stehen, und ihm liegt die genannte Datei statt dieser bereit.
 func writeSkipIfPresentTold(targetDir string, f enforceFile, content []byte, notice io.Writer) error {
 	liegt, err := dateiLiegt(targetDir, f.dst)
 	if err != nil {

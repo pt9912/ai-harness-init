@@ -16,4 +16,4 @@
 # harness/tools/full-smoke.sh faellt daneben ebenfalls — er traegt denselben Zahn eine
 # Ebene hoeher, ueber dem zweiten Lauf des Produkt-Binaers, und bleibt dort stehen.
 set -euo pipefail
-sed -i 's/writeSkipIfPresent(targetDir, f.dst, content, f.mode)/writeFileMode(targetDir, f.dst, content, f.mode)/' internal/emit/agents.go
+sed -i 's/class: SkipIfPresent,/class: Konvergent,/' internal/emit/agents.go

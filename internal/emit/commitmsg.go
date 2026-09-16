@@ -51,8 +51,8 @@ const (
 // SKIP-IF-PRESENT, und das ist die Klasse des Bodens, auf dem er liegt: der Name ist von git
 // fixiert und das Verzeichnis gehoert dem Repo — ein Adopter, der an diesem Pfad seine eigene
 // Kennungs-Zusage fuehrt, behaelt sie, und der Lauf nennt ihm die Pruefung, die daneben
-// bereitliegt (ADR-0054 Festlegung 1 und 3). Ein Lauf, der ihn konvergent schriebe, koennte
-// am Pfad nicht erkennen, wessen Datei dort liegt, und stellte das Ziel schlechter als es war.
+// bereitliegt (ADR-0054 Festlegung 1 und 3). Die Klasse steht am Eintrag, und der Lauf liest
+// die liegende Datei, bevor er schreibt.
 func commitMsgHookFile() enforceFile {
 	return enforceFile{src: commitMsgHookSrc, dst: CommitMsgHookPath, mode: 0o755,
 		class: SkipIfPresent, meldung: commitMsgBelegterPfadMeldung}

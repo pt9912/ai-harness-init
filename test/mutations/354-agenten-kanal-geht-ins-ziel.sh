@@ -17,4 +17,4 @@
 # Kanal im Ziel wirklich ueber den Agenten greift, ist eine Eigenschaft des Agentenlaufs
 # und steht in keiner Ziel-Stufe dieses Repos.
 set -euo pipefail
-sed -i 's@commitMsgHookFile(),@{"templates/enforce/commit-msg-traceability.sh", ".claude/hooks/pretooluse-commit-msg-guard.sh", 0o755},\n\t\tcommitMsgHookFile(),@' internal/emit/enforce.go
+sed -i 's@commitMsgHookFile(),@{src: "templates/enforce/commit-msg-traceability.sh", dst: ".claude/hooks/pretooluse-commit-msg-guard.sh", mode: 0o755, class: Konvergent},\n\t\tcommitMsgHookFile(),@' internal/emit/enforce.go

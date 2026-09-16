@@ -9,4 +9,4 @@
 # koennte unter keiner Mutation rot werden (AGENTS.md 3.6). Ohne Wrapper zeigten die
 # Hook-Eintraege in .claude/settings.json auf eine Datei, die nicht existiert.
 set -euo pipefail
-sed -i '/{"templates\/enforce\/span-emit.sh", ".claude\/hooks\/span-emit.sh", 0o755},/d' internal/emit/enforce.go
+sed -i '/{src: "templates\/enforce\/span-emit.sh",/d' internal/emit/enforce.go
