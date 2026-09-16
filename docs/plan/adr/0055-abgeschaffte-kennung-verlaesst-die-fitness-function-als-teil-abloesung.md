@@ -1,6 +1,6 @@
 # ADR-0055: Die abgeschaffte Kennung `TestEnforce_Convergent` verläßt die Fitness Function der ADR-0054 als Teil-Ablösung — die Regel bleibt, die Deckung wird neu benannt
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-16
 
@@ -74,17 +74,19 @@ Namens, der je Pfad die Richtung der Klasse fährt, die dieser Pfad trägt:
 ```sh
 grep -rn 'TestEnforce_Convergent' --include='*.go' . | wc -l                       # 0 — im Code lebt der Name nicht
 grep -n 'func TestEnforce_IdempotenzKlasseJePfad' internal/emit/enforce_test.go    # :348 — der Test, der an seiner Stelle steht
-git grep -n 'TestEnforce_Convergent' ':!docs/reviews'                              # zwei Stellen: ADR-0054:252 und ein done/-Zeitdokument
+git grep -n 'TestEnforce_Convergent' ':!docs/reviews' ':!docs/plan/adr/0055-*'    # außerhalb dieser Datei drei Stellen: ADR-0054:252, ein done/-Zeitdokument, die Titel-Zelle des Index
 ```
 
 **Keine Erwartungswerte** ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2) — die Zahlen wandern mit dem Baum; tragend ist, daß die dritte Ausgabe **keine** lebende
-Go-Stelle nennt.
+Go-Stelle nennt und die drei Stellen, die sie zeigt, außerhalb dieser Datei liegen.
 
-Die zwei Fundstellen der dritten Zeile gehören zwei Klassen an. Die eine ist ein
+Die drei Fundstellen der dritten Zeile gehören drei Klassen an. Die eine ist ein
 `done/`-Zeitdokument: es hält den Stand seines Vorgangs fest, die Kennung steht dort als Chronik von
 Beruf, und es wird nicht nachgezogen ([`AGENTS.md`](../../../AGENTS.md) §3.7, Geltungsbereich). Die
-andere steht in einer `Accepted`-ADR, und **sie** ist der Gegenstand dieser Entscheidung.
+zweite steht in einer `Accepted`-ADR, und **sie** ist der Gegenstand dieser Entscheidung. Die dritte
+ist die Titel-Zelle dieser Entscheidung im ADR-Index: sie führt den Namen im Wortlaut, weil der
+Titel dieser Datei ihn führt, und zeigt damit auf die Entscheidung, die ihn abschafft.
 
 ### Was der Absatz behauptet hat — und was davon steht
 
@@ -98,7 +100,7 @@ Die **zweite** und die **dritte** stehen heute umgekehrt: die Richtung kommt je 
 Klasse, und der Rot-Fall des Tests ist der Pfad **ohne** Klasse:
 
 ```sh
-grep -n 'for _, rel := range emit.EnforcePaths()' internal/emit/enforce_test.go   # :362 und :401 — die zwei Läufe über die Menge
+grep -n 'for _, rel := range emit.EnforcePaths()' internal/emit/enforce_test.go   # :32 :271 :362 :401 — die zwei Läufe über die Menge sind :362 und :401; :32 prüft die Emission, :271 den Zielpfad
 grep -n 'case emit.SkipIfPresent:' internal/emit/enforce_test.go                  # :418 — die Richtung dieses Pfades: unberührt, kein Rot
 grep -n 'traegt keine Idempotenz-Klasse' internal/emit/enforce_test.go            # :367 — der Rot-Fall ist der klassenlose Pfad
 grep -n '^# expect:' test/mutations/361-traeger-ohne-klasse.sh                    # :3 — der gelistete Fall, der genau diesen Zustand rot färbt
@@ -107,15 +109,15 @@ grep -n '^# expect:' test/mutations/361-traeger-ohne-klasse.sh                  
 ### Was von der Folgerung bleibt — und auf welchem Grund
 
 Der Schlusssatz des Absatzes stand auf **zwei** Gründen: der Teilmengen-Inventur des Enforce-Emitters
-und dem Ganz-Mengen-Test. Der zweite ist mit der Umbenennung entfallen; der erste steht, und die
-Menge, auf die er sich bezieht, ist enger als das, was ein Lauf schreibt:
+und dem Ganz-Mengen-Test. Der zweite **Grund** ist mit der Umbenennung entfallen; der erste steht, und
+die Menge, auf die er sich bezieht, ist enger als das, was ein Lauf schreibt:
 
 ```sh
 grep -n 'strings.Contains(got, w)' internal/emit/enforce_test.go    # :61 — die Erwartungs-Seite ist ein Enthaltensein, keine Gleichheit
 grep -rn 'EnforcePaths()' --include='*.go' . | grep -v '^internal/emit/enforce.go' | wc -l   # 6 — die Leser der Aufzählung, alle in Tests
 grep -n 'FieldList(targetDir)' internal/emit/enforce.go             # :319 — der Lauf schreibt einen Pfad, den die Aufzählung nicht führt
 grep -c 'erfassung-feldliste' internal/emit/enforce.go              # 0 — ihn führt sie nicht
-grep -n 'captureFiles()' internal/emit/enforce.go                   # :178 — der zweite Pfad außerhalb der Aufzählung, im Gelingens-Zweig
+grep -n 'captureFiles()' internal/emit/enforce.go                   # :178 die Deklaration, :304 der Aufruf im Gelingens-Zweig; :103 :108 :115 :231 nennen sie nur im Kommentar
 grep -n 'writeFileMode(targetDir, FieldListPath' internal/emit/fieldlist.go   # :37 — ein eigener Writer, ohne Klasseneintrag
 ```
 
@@ -169,16 +171,19 @@ vier Festlegungen ändert sich. Ein `Supersedes` auf die Datei behauptete eine n
 denselben Gegenstand, die es nicht gibt; dieselbe Verwerfung, die
 [ADR-0016](0016-verweis-traegt-tag-und-zitat.md) als Option E führt und
 [ADR-0050](0050-geteiltes-ventil-ersetzt-die-datei-weite-ausnahme.md) für seine Lage wiederholt.
-Dazu fiele ihre Status-Zeile auf *Superseded by …*, und auf die Datei zeigen heute sechs lebende
-Markdown-Dateien mit sechzehn Nennungen:
+Dazu fiele ihre Status-Zeile auf *Superseded by …*, und auf die Datei zeigen — diese Entscheidung
+selbst nicht mitgezählt — sechs lebende Markdown-Dateien mit achtzehn Nennungen:
 
 ```sh
-git grep -l '0054-emittierter-commit-traeger-skip-if-present' -- ':!docs/reviews' ':!docs/plan/planning/done' | wc -l   # 6
-git grep -o '0054-emittierter-commit-traeger-skip-if-present' -- ':!docs/reviews' ':!docs/plan/planning/done' | wc -l   # 16
+git grep -l '0054-emittierter-commit-traeger-skip-if-present' -- ':!docs/reviews' ':!docs/plan/planning/done' ':!docs/plan/adr/0055-*' | wc -l   # 6
+git grep -o '0054-emittierter-commit-traeger-skip-if-present' -- ':!docs/reviews' ':!docs/plan/planning/done' ':!docs/plan/adr/0055-*' | wc -l   # 18
 ```
 
 **Keine Erwartungswerte** ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-Setzung 2) — der Bestand wächst mit jedem neuen Verweis.
+Setzung 2) — der Bestand wächst mit jedem neuen Verweis. **Die zwei Läufe zählen diese Datei nicht
+mit:** ihre Nennungen setzt sie selbst, und eine Zitation aus der ablösenden Entscheidung ist kein
+Zeugnis fremder Abhängigkeit. **Tragend ist, daß die Status-Zelle von mehreren lebenden Dokumenten
+angesprochen wird und nicht von einem einzigen.**
 
 ## Entscheidung
 
@@ -227,7 +232,7 @@ Regeln dieser Sektion: **mindestens drei Optionen mit Pro/Contra** — „nichts
 |---|---|---|
 | A — **nichts tun**, die Zeile stehen lassen | kein Schreibaufwand, keine neue ADR | die Kennung löst nicht mehr auf, und die zwei Behauptungen, die auf ihr stehen, gelten umgekehrt: wer den Absatz liest, liest einen Sensor beschrieben, den es so nicht mehr gibt. Nach [`AGENTS.md`](../../../AGENTS.md) §3.4 ist die Stelle danach **dauerhaft** nicht mehr behebbar — die Korrektur, die jetzt billig ist, wird nie wieder möglich |
 | B — **die Datei an der Stelle berichtigen** („nur klarstellend") | der kürzeste Text: ein Satz ersetzt, kein neues Artefakt | §3.4 verbietet es, und der zitierte Baseline-Satz sagt warum: eine `Accepted`-ADR ist ein Geschichtsdokument, kein Wiki. Wird sie nachgebessert, kann der Reviewer-Agent auf ältere Entscheidungen nicht mehr vertrauen, ohne Versionsstände zu vergleichen — der Schaden ist größer als der Satz, um den es geht |
-| C — **[ADR-0054](0054-emittierter-commit-traeger-skip-if-present.md) ganz superseden** | der abgelöste Absatz wäre mit einer ganzen Entscheidung als abgelöst markiert | **ADR-Inflation:** die Entscheidung — die Klasse der drei Träger-Dateien — ist unverändert, und ein `Supersedes` behauptete eine neue über denselben Gegenstand. Zudem fiele die Status-Zeile auf *Superseded by …*, während sechs lebende Markdown-Dateien mit sechzehn Nennungen genau dorthin zeigen (§Kontext) |
+| C — **[ADR-0054](0054-emittierter-commit-traeger-skip-if-present.md) ganz superseden** | der abgelöste Absatz wäre mit einer ganzen Entscheidung als abgelöst markiert | **ADR-Inflation:** die Entscheidung — die Klasse der drei Träger-Dateien — ist unverändert, und ein `Supersedes` behauptete eine neue über denselben Gegenstand. Zudem fiele die Status-Zeile auf *Superseded by …*, während sechs lebende Markdown-Dateien mit achtzehn Nennungen genau dorthin zeigen (§Kontext) |
 | **D — gewählt: Teil-`Supersedes` auf den einen Gegenstand** | die Geltung des Absatzes endet, sein Text bleibt als Befund; die Festlegungen, die Regel-Zeilen und die Geltungsbereichs-Grenze bleiben unangetastet und sind im Kopf-Feld **benannt**; die Bewegung ist an `git log` und in §Geschichte ablesbar; die Form hat zwei Vorgänger ([ADR-0032](0032-eingefrorene-referenz-folgt-ihrem-rumpf.md), [ADR-0050](0050-geteiltes-ventil-ersetzt-die-datei-weite-ausnahme.md)) | der abgelöste Absatz steht weiter in [ADR-0054](0054-emittierter-commit-traeger-skip-if-present.md) — der Teil-`Supersedes` nimmt ihm den Gegenstand, nicht die Worte; ein Leser ohne den Index merkt nichts davon. Und die Nachfolge-Kette wird um ein Glied länger, ohne daß sich eine Entscheidung ändert |
 
 ## Konsequenzen
@@ -248,11 +253,13 @@ Regeln dieser Sektion: **mindestens drei Optionen mit Pro/Contra** — „nichts
 - **Negativ, und das ist der Preis:** Der Korrektur-Weg hängt an einem Leser des Index. Kein Modul
   des Doku-Gates prüft, ob eine Kennung, die ein einfrierendes Artefakt nennt, noch existiert
   (§Fitness Function). Eine Zeile dieser Art fällt erst auf, wenn ihr jemand folgt.
-- **Folgepflicht (der Lauf, der diese ADR annimmt):** den Zusatz in der `Status`-Zelle von
-  [ADR-0054](0054-emittierter-commit-traeger-skip-if-present.md) im ADR-Index setzen. Der Index trägt
-  ihn nur, wo eine `Accepted`-ADR ihn anordnet — **diese ADR ordnet ihn an**, weil jene ihre eigene
-  Teil-Revision nicht nachtragen kann. Inhalt: der Umfang der Revision und die revidierende ADR, sonst
-  nichts; was fortgilt, steht im Kopf-Feld dieser Datei und wird hier nicht wiederholt.
+- **Folgepflicht (der Lauf, der diese ADR annimmt, im selben Commit wie ihr Umschlag):** den Zusatz in
+  der `Status`-Zelle von [ADR-0054](0054-emittierter-commit-traeger-skip-if-present.md) im ADR-Index
+  setzen. Der Index trägt ihn nur, wo eine `Accepted`-ADR ihn anordnet — **diese ADR ordnet ihn an**,
+  weil jene ihre eigene Teil-Revision nicht nachtragen kann. Inhalt: der Umfang der Revision und die
+  revidierende ADR, sonst nichts; was fortgilt, steht im Kopf-Feld dieser Datei und wird hier nicht
+  wiederholt. **Beide Änderungen sind ein Commit:** kein Stand führt den Index mit einer noch
+  `Proposed` geführten ADR als der revidierenden.
 - **Keine Folgepflicht in Code und Konfiguration.** Diese Entscheidung bewegt außer sich selbst nur
   ihren Eintrag im ADR-Index. Kein Pfad, keine Schwelle, kein Gate ändert sich; `make gates` prüft
   über demselben Baum.
@@ -299,13 +306,16 @@ Diese Entscheidung steht auf `Proposed`. Sie wird `Accepted`, **wenn eine Review
 [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) auf Konsistenz geprüft hat und
 ihr Report ohne blockierenden Befund in `docs/reviews/` liegt.**
 
-**Drei Fächer, wie bei den zwei Vorbildern** ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md)
-Festlegung 1 und 3): Ein blockierender Befund an der **Darstellung** — Adressform, Zahl ohne
-Kommando, Zitat-Stelle — wird behoben und hindert die Annahme nicht; dasselbe gilt für einen Befund
-an jedem Abschnitt, der mit dem Accept einfriert, **ohne eine Festlegung zu tragen** — die Kopffelder,
-§Kontext, §Verglichene Alternativen, §Konsequenzen, §Fitness Function, die Re-Evaluierungs-Trigger,
-dieser Trigger-Abschnitt selbst und §Geschichte. Ändert eine Behebung eine der zwei **Festlegungen
-dieser Datei** oder die Feststellung, was der abgelöste Absatz trägt und was nicht, ist es ein
+**Drei Fächer** — die Dreiteilung, die [ADR-0046](0046-welle-datei-entsteht-mit-der-eroeffnung.md)
+§Der Acceptance-Trigger gesetzt hat und
+[ADR-0048](0048-eigentum-haengt-am-vorgang-nicht-an-der-datei.md) und
+[ADR-0051](0051-anweisungssatz-eigentum-traegt-ueber-die-emissionsgrenze.md) führen: Ein
+blockierender Befund an der **Darstellung** — Adressform, Zahl ohne Kommando, Zitat-Stelle — wird
+behoben und hindert die Annahme nicht; dasselbe gilt für einen Befund an jedem Abschnitt, der mit
+dem Accept einfriert, **ohne eine Festlegung zu tragen** — die Kopffelder, §Kontext, §Verglichene
+Alternativen, §Konsequenzen, §Fitness Function, die Re-Evaluierungs-Trigger, dieser
+Trigger-Abschnitt selbst und §Geschichte. Ändert eine Behebung eine der zwei **Festlegungen dieser
+Datei** oder die Feststellung, was der abgelöste Absatz trägt und was nicht, ist es ein
 Substanz-Befund und blockiert.
 
 Der Beleg ist eine Runde der prüfenden Rolle; ihre **Kennung** steht in der Accept-Zeile der
@@ -317,6 +327,7 @@ Festlegung 1).
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-16 | **Proposed** | Architect-Entscheid auf den Vollzug der Folgepflicht 1 von [ADR-0054](0054-emittierter-commit-traeger-skip-if-present.md): der Ganz-Mengen-Test ist mit dem Vorgang umbenannt, und die Kennung, die jene Datei in ihrer §Fitness Function führt, löst im Code nicht mehr auf. Die Messungen in §Kontext stehen neben ihren Kommandos; der ADR-Index trägt den Eintrag dieser Datei, der Zusatz an der Status-Zelle von [ADR-0054](0054-emittierter-commit-traeger-skip-if-present.md) ist Folgepflicht des annehmenden Laufs |
+| 2026-09-16 | **Accepted** | Beleg nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1 ist die Konsistenzrunde `2026-09-16-adr-0055-konsistenz` — ihr Verdikt lautet *„Annahmefähig: ja"*, und kein Befund berührt eine der zwei Festlegungen dieser Datei; ihre Summary nennt 3 LOW und 2 INFO, und die drei Darstellungs-Befunde wie die zwei Anmerkungen sind vor diesem Umschlag gezogen. [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 ist nicht ausgelöst: die Runde meldet keinen blockierenden Befund. **Der Zusatz an der Status-Zelle von [ADR-0054](0054-emittierter-commit-traeger-skip-if-present.md) entsteht in demselben Commit.** **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes ADR-0055`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
