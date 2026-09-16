@@ -208,13 +208,21 @@ entschieden, ob sie in diese Menge fallen oder unter Buchstabe b gehören.
 | **keine Instanz** | die Vorlage hat in diesem Repo keine Instanz (§4) | Begründung |
 
 **Woran *schon erfüllt* bei der Gliederung gemessen wird.** Die `##`-Abschnitte der Instanz sind
-genau die der Vorlage; eigener Stoff steht als Unterabschnitt im passenden Vorlagen-Abschnitt. Ein
-`##`-Abschnitt, den die Vorlage nicht führt, schließt *schon erfüllt* aus. Die Lesart ist die des
-Auftraggebers (2026-09-16); ihre Quelle ist die Baseline selbst, `v6.9.0` · `templates/README.md`
-§Pflichtgliederung vs. freie Form: *„Die Templates geben **Pflichtgliederung** vor (Abschnitte,
-IDs, Verlinkung). Innerhalb der Abschnitte hast du Freiraum"*. Das Kriterium wendet diese Stelle an
-und weicht von ihr nicht ab; ein Adaptions-Eintrag folgt daraus nicht
-([`MR-000`](conventions.md#mr-000--baseline-aussage)).
+die der Vorlage; eigener Stoff steht als Unterabschnitt im passenden Vorlagen-Abschnitt. Ein
+`##`-Abschnitt, den die Vorlage nicht führt, schließt *schon erfüllt* aus, und ebenso ein
+Vorlagen-Abschnitt, der in der Instanz fehlt. **Fehlen darf ein Abschnitt nur, wenn die Vorlage ihn
+selbst als bedingt kennzeichnet und seine Bedingung nicht zutrifft.** Gekennzeichnet ist er im
+Titel (`conventions.template.md`: `## Glossar (optional)`) oder durch einen Hinweis im
+Abschnitt, der die Bedingung nennt (`gate.template.md`, `## Ausgabe und Ausgänge`:
+*„Nur, wenn der Lauf mehr als grün/rot sagt."*). Jeder andere Abschnitt steht in jeder Instanz,
+auch wenn er nichts trägt; dann trägt er die gemessene Aussage, dass er leer ist. Bietet die
+Vorlage dafür eine Leer-Form an (`conventions.template.md` §Zusatzklassen-Deklaration für
+Sensors-Bindung: *„Tabelle entfernen oder "— keine —" eintragen"*), betrifft sie den Inhalt des
+Abschnitts, nicht seine Existenz. Die Lesart ist die des Auftraggebers (2026-09-16); ihre Quelle
+ist die Baseline selbst, `v6.9.0` · `templates/README.md` §Pflichtgliederung vs. freie Form:
+*„Die Templates geben **Pflichtgliederung** vor (Abschnitte, IDs, Verlinkung). Innerhalb der
+Abschnitte hast du Freiraum"*. Das Kriterium wendet diese Stelle an und weicht von ihr nicht ab;
+ein Adaptions-Eintrag folgt daraus nicht ([`MR-000`](conventions.md#mr-000--baseline-aussage)).
 
 Report-Skelett je Vorlage:
 
