@@ -10,7 +10,7 @@ sein Beleg ist eine Messung an einem realen Strom, und die steht in seiner eigen
 (Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht).
 
 **Ebene: Dogfood *und* emittiert, hier mit zwei Dateien statt einer.** Anders als bei
-[slice-204](slice-204-das-programm-feld-nennt-das-programm.md), wo die Änderung über den Träger
+[slice-204](../next/slice-204-das-programm-feld-nennt-das-programm.md), wo die Änderung über den Träger
 reist: Die Hook-Verdrahtung steht **zweimal** im Repo — in `.claude/settings.json` (dieses Repo)
 und in `internal/emit/templates/enforce/settings-capture-hooks.json` (was ein Zielrepo bekommt).
 

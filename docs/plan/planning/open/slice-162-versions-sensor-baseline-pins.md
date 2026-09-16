@@ -94,7 +94,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 [slice-161](../done/slice-161-conventions-kopf-traegt-die-ziel-form.md) liegt in `done/` (der Bezugspunkt,
 den `current-from` liest, existiert), **und** der gepinnte d-check-Stand führt das Modul
 `versions`, gemessen über `--print-config` statt angenommen
-([slice-135](slice-135-d-check-pin-v0661.md) trägt den Pin-Sprung).
+([slice-135](../next/slice-135-d-check-pin-v0661.md) trägt den Pin-Sprung).
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
