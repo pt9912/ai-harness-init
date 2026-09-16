@@ -29,3 +29,6 @@ Werkzeuge führen `Write`; wenn du sie nicht benutzen kannst, ist das ein Befund
 gemeldet, nicht durch eine Text-Ausgabe ersetzt.
 Ein HIGH mit Rollen-Konflikt folgt dem Konflikt-Pfad aus Modul 8 — eine Sequenz mit
 Übergabe-Artefakten, nie „herabstufen, weil der Implementer widerspricht".
+
+**Budget: ≤ 40 Tool-Calls** — bündle Inspektionen statt vieler Einzelblicke, und fahre keine
+Belege nach, die ein anderer Lauf schon gefahren hat; wer mehr braucht, sagt es im Auftrag.
