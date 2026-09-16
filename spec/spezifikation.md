@@ -34,8 +34,7 @@ Drei Formregeln, weil alle drei von außen gelesen werden:
   (`ids`); die Historie nimmt `matrix.exclude-sections` dabei aus, und eine nackte
   Planungs-Kennung wie jede Kennung, deren Link woanders endet,
   trifft kein Muster — dort gilt die Regel ohne Wächter.
-- **Abschnittsnummern werden nie neu vergeben.** Sie sind die der vendored Vorlage
-  `.harness/baseline/v6.8.0/templates/spec/spezifikation.template.md`; ein
+- **Abschnittsnummern werden nie neu vergeben.** Ein
   Abschnitt ohne Inhalt lässt seine Nummer frei, und ein hinzukommender bekommt
   seine eigene. Neu zu nummerieren verschöbe die Anker, auf die von außen gezeigt
   wird — und ein Teil dieser Zeiger steht in Dokumenten, die nicht mehr geändert
@@ -464,11 +463,9 @@ wegzulassen; von welcher Regel sie abweicht, gehört dazu:
    deshalb eine Aussage über **unser Wissen**, nicht über den Lauf: es heißt *unbekannt*,
    niemals *ohne Rolle*.
 
-   [Modul 15 §Token-Attributions-Regeln](../.harness/baseline/v6.8.0/regelwerk/modul-15-observability.md#token-attributions-regeln)
-   verlangt an dieser Stelle wörtlich: *„Wo ein Span keinen Rollen-Tag trägt (Sammelposten),
-   entscheide begründet, wie du ihn aufteilst (anteilig nach Tool-Calls? dem auslösenden
-   Slice zugeschlagen?)"*. Daraus folgt genau dreierlei, und die Reihenfolge ist die
-   Prüfreihenfolge:
+   Ein Span ohne Rollen-Tag (Sammelposten) wird begründet aufgeteilt — anteilig nach Tool-Calls
+   oder dem auslösenden Slice zugeschlagen. Daraus folgt genau dreierlei, und die Reihenfolge
+   ist die Prüfreihenfolge:
    1. **Pflicht:** eine begründete Splitting-Regel, angewendet — am Ende liegt jedes Token
       auf einer der realen Rollen, nicht auf *unbekannt*.
    2. **Ebenfalls Pflicht, weil dieses Repo Annahmen benennt:** wie **groß** der aufgeteilte
