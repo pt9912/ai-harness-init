@@ -20,7 +20,7 @@ Review-Befund, kein Kommentar. Er hat gelesen und Sensoren gefahren.
 Zählung, gleicher Exit-Code). Am **Repo** ist keine Mutation angewandt worden;
 `git status --porcelain` war vor und nach jeder Messung leer. `make gates` und `make docs-check`
 liefen über den Hauptbaum. Er trug zum Messzeitpunkt den Commit `25ac0b5c` eines **parallelen
-Planner-Laufs** (`docs/plan/planning/next/slice-e2e-abdeckung-ist-deklariert-und-erzeugt.md`) — er
+Planner-Laufs** (`docs/plan/planning/in-progress/slice-e2e-abdeckung-ist-deklariert-und-erzeugt.md`) — er
 ist in keiner Zusicherung dieses Berichts enthalten, und die von ihm ausgelöste Wanderung der
 `docs-check`-Dateizahl (1418 → 1419) ist nicht dem Slice zugeordnet.
 
