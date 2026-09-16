@@ -190,7 +190,7 @@ der Closure-Trigger unerreichbar wird.
 
 - `*-freshness.sh` (`component`/`go`/`cpp`/`baseline`) — die Image-Pins und die zwei Upstream-Achsen
   sind eine Aussage über die **gepinnten Werkzeuge dieses Repos**; der Ziel-Fall hängt an
-  [slice-090](../open/slice-090-freshness-audit-im-ziel.md), und ein zweiter Träger daneben wäre eine
+  [slice-090](../next/slice-090-freshness-audit-im-ziel.md), und ein zweiter Träger daneben wäre eine
   zweite Fassung derselben Achse.
 - `mutate.sh` — der **Treiber** ist generisch, der **Fallsatz** ist eine Repo-Aussage: `test/mutations/`
   hängt an den Zähnen *dieses* Repos, und ein mitgelieferter Fallsatz behauptete Fälle, die es im
