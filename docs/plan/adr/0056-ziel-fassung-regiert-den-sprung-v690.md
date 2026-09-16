@@ -11,9 +11,10 @@
 die Trennung von Prozedur und Ist-Maßstab in Festlegung 2 und die Grenzen in Festlegung 4; ihr
 §*Wer den Zielstand bewegt* behält die Setzung dem Auftraggeber vor),
 [ADR-0047](0047-ziel-fassung-regiert-den-sprung-v680.md) (der vorige Sprung; ihr erster und zweiter
-Re-Evaluierungs-Trigger sind eingetreten),
+Re-Evaluierungs-Trigger sind eingetreten, und ihre §Konsequenzen verbuchen die Übernahme-Vorgabe
+des Auftraggebers in der Form, die hier wiederkehrt),
 [ADR-0044](0044-ziel-fassung-regiert-den-sprung-v672.md) (zuletzt ein inhaltlicher Grund, dort in
-einem Delegat),
+einem Delegat; ihre §Konsequenzen benennen, welchen Ausgang die Übernahme-Vorgabe trifft),
 [ADR-0043](0043-ziel-fassung-regiert-den-sprung-v671.md) (Festlegung 2, die Leseregel für die
 Delta-Basis, wird gelesen, nicht ersetzt),
 [ADR-0031](0031-regierende-fassung-und-ort-der-zielstand-setzung.md) (**`Proposed`**; Festlegung 2
@@ -257,7 +258,7 @@ Accept-Übergang nennt den Report namentlich.** Die Nachmessung durch den Kontex
 aufgelöst hat, zählt nicht als Beleg
 ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegungen 1 und 2).
 
-**Die Runde hat zwei neue Prüfgegenstände:**
+**Die Runde hat drei neue Prüfgegenstände:**
 
 1. **Trägt der inhaltliche Grund?** Der Unterschied steht diesmal im Prozedur-Text selbst und ist
    additiv. Geprüft wird in zwei Richtungen. **Zu viel** behauptet, wer daraus die Regel „additiv,
@@ -268,6 +269,10 @@ aufgelöst hat, zählt nicht als Beleg
    bestehende Instanzen. Bis zum Tausch soll die Klassen-Aussage der Ziel-Fassung nur den Durchgang
    steuern. Sie soll keine Konformitätsfrage über einen bestehenden `MR`-Eintrag, eine Sensor-Datei
    oder eine Ergebnis-Notiz beantworten. Die Runde prüft, ob diese Grenze hält.
+3. **Ist die Übernahme-Vorgabe verbucht und nicht abgewogen?** Die Runde prüft, ob die Festlegung
+   ohne sie trägt. Außerdem prüft sie die Reichweite des Wortlauts über die zwei Durchgänge dieses
+   Sprungs (§Konsequenzen), insbesondere beim Ausgang **bewusst abweichend** mit einem bestehenden
+   Eintrag.
 
 Bis zur Annahme ist diese Entscheidung ein Architect-Verdikt, das der Schnitt der Folge-Slices als
 Constraint liest. Eingefroren ist sie noch nicht ([`AGENTS.md`](../../../AGENTS.md) §3.4).
@@ -280,7 +285,7 @@ Constraint liest. Eingefroren ist sie noch nicht ([`AGENTS.md`](../../../AGENTS.
 | B — die gepinnte Fassung `v6.8.0` regiert | netzlos im Arbeitsbaum; ihre Klausel ist eine Teilmenge der Ziel-Klausel | Der Durchgang liest die Klausel ohne die drei Klassen-Aussagen, die offenen Fragen aus §6 bleiben ungestellt, und nach dem Tausch trägt kein Pin mehr diesen Tag |
 | C — allgemeine Regel *„bei additiver Änderung regiert die Ziel-Fassung"* | spart künftige Runden | Der Aufwand liegt in der Messung, die Regel spart nur das Aufschreiben. Sie nähme außerdem die Prüfung vorweg, die [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) mit Option C verworfen hat |
 | D — Ziel-Fassung für den Adaptions-Durchgang, gepinnte für den Instanz-Durchgang | Die drei Vorlagen mit Delta werden unter beiden Fassungen gleich eingeordnet | Die geänderte Klausel gehört gerade zum Form-Durchgang. Derselbe Punkt hätte in einem Sprung zwei Fassungen |
-| **E — gewählt: Ziel-Fassung `v6.9.0`, ohne allgemeine Regel, ohne zweite Festlegung** | Die Wahl ruht auf einem inhaltlichen Grund im Prozedur-Text und wird von Additivität und Klammer gestützt | Der Durchgang bekommt mehr zu tun. Der nächste Sprung muss wieder messen |
+| **E — gewählt: Ziel-Fassung `v6.9.0`, ohne allgemeine Regel, ohne zweite Festlegung** | Die Wahl ruht auf einem inhaltlichen Grund im Prozedur-Text und wird von Additivität und Klammer gestützt | Der Durchgang bekommt mehr zu tun: Er hält die Klassen-Aussagen gegen Register und `MR`-Einträge. Wo sie widersprechen, setzt er nach der Übernahme-Vorgabe keine Abweichung (§Konsequenzen). Der nächste Sprung muss wieder messen |
 
 ## Konsequenzen
 
@@ -313,9 +318,19 @@ Constraint liest. Eingefroren ist sie noch nicht ([`AGENTS.md`](../../../AGENTS.
   Zweitens der **Instanz-Durchgang** über die drei Vorlagen, in der Report-Form von
   [`harness/migration.md`](../../../harness/migration.md) §5. Ob beides ein Slice wird, schneidet
   der Planner ([ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md)).
-- **Offen:** Für ihren Durchgang verbucht [ADR-0047](0047-ziel-fassung-regiert-den-sprung-v680.md)
-  eine Vorgabe des Auftraggebers, die Ziel-Fassung vollständig zu übernehmen. Für diesen Durchgang
-  liegt keine solche Vorgabe vor, und hier wird keine gesetzt.
+- **Vorgabe des Auftraggebers für diesen Sprung — hier verbucht, nicht abgewogen:** *„Der
+  Durchgang übernimmt die Ziel-Fassung vollständig; eine Abweichung wird nicht gesetzt."*
+  (Auftraggeber, 2026-09-16). Sie gilt für `v6.8.0` → `v6.9.0` wie für die zwei Sprünge davor.
+  [ADR-0044](0044-ziel-fassung-regiert-den-sprung-v672.md) §Konsequenzen verbucht sie wörtlich als *„Der Adaptions-Durchgang übernimmt die
+  Ziel-Fassung **vollständig**; eine Abweichung wird nicht gesetzt."*, und [ADR-0047](0047-ziel-fassung-regiert-den-sprung-v680.md)
+  §Konsequenzen übernimmt diese Form. **Die Festlegung stützt sich nicht auf sie:** Die Vorgabe
+  bindet das Ergebnis des Durchgangs, nicht die Quelle seiner Prozedur, und die Wahl der
+  regierenden Fassung trägt ohne sie. **Reichweite:** Im Adaptions-Durchgang trifft sie den
+  Ausgang *widerspricht*, wie [ADR-0044](0044-ziel-fassung-regiert-den-sprung-v672.md) benennt. Im Instanz-Durchgang schließt ihr
+  zweiter Halbsatz den Ausgang **bewusst abweichend** aus, soweit er eine Abweichung neu setzte
+  ([`harness/migration.md`](../../../harness/migration.md) §5). Ob sie dort auch einen Ausgang
+  ausschließt, der sich auf einen bestehenden Eintrag stützt, sagt ihr Wortlaut nicht. **Eine
+  allgemeine Regel darüber, wer diese Wahl trifft, entsteht nicht.**
 - **Diese ADR ändert keine weiteren Dateien** als sich selbst, den ADR-Index, §Baseline von
   `harness/conventions.md` und `harness/migration.md` §1.
 

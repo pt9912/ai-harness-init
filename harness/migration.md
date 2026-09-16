@@ -222,6 +222,13 @@ Report-Skelett je Vorlage:
 |---|---|---|---|
 | `<Vorlagen-Pfad>` | `<Instanz-Pfad oder „—">` | übernommen / schon erfüllt / bewusst abweichend / keine Instanz | `<Commit-Hash / Fundstelle / MR-Kennung / Begründung>` |
 
+**Für den Sprung `v6.8.0` → `v6.9.0` ist ein Ausgang eingeschränkt.**
+[ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md) §Konsequenzen verbucht
+die Vorgabe des Auftraggebers: *„Der Durchgang übernimmt die Ziel-Fassung vollständig; eine
+Abweichung wird nicht gesetzt."* Ein Ausgang **bewusst abweichend**, der dafür eine Abweichung neu
+setzte, steht in diesem Sprung damit nicht zur Verfügung. Ob die Vorgabe auch den Ausgang mit einem
+bestehenden Eintrag ausschließt, lässt ihr Wortlaut offen, und die ADR steht auf **`Proposed`**.
+
 ### b) Wiederkehrende Vorlagen — Append-only
 
 Für die sieben in §4 aus der [ADR-0018](../docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md)-Klausel
