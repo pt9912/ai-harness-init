@@ -89,7 +89,7 @@ wellenlose Arbeit.
 
 - **Ein Waisen-Urteil** (*welche Anforderung hat gar keine E2E-Stufe*) — **anderer Vorgang.** Diese
   Richtung ist der Gegenstand von `doc-complete` (Bezug *Anforderung → ADR/Slice*), und
-  [slice-192](slice-192-rtm-sieht-alle-anforderungen.md) gibt ihrem Vollständigkeits-Urteil
+  [slice-192](../open/slice-192-rtm-sieht-alle-anforderungen.md) gibt ihrem Vollständigkeits-Urteil
   gerade einen Leser. Ein zweiter Waisen-Richter neben dem ersten wäre eine **zweite Quelle** für
   dieselbe Frage, und genau das ist die Klasse
   [`vollstaendigkeits-zusage-misst-falsche-ebene`](../observations/BEO-ALL/vollstaendigkeits-zusage-misst-falsche-ebene/observation.md).
