@@ -7,5 +7,5 @@
 # dann als Werkzeug-Eigentum — und der Adopter, dessen eigener Traeger dort liegt, sucht den
 # Grund an der falschen Stelle.
 set -euo pipefail
-sed -i '/^# DIE KLASSE DES TRAEGERS IST SKIP-IF-PRESENT (ADR-0054)\./,/^# geschrieben und liegt auch in diesem Fall bereit\.$/d' \
+sed -i '/^# DIE KLASSE DES TRAEGERS IST SKIP-IF-PRESENT (ADR-0054)\./,/^# Lauf kanonisch neu geschrieben und liegt auch in diesem Fall bereit\.$/d' \
 	internal/emit/templates/enforce/hooks-install.mk

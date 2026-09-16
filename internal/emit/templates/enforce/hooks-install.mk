@@ -10,11 +10,10 @@
 # DIE KLASSE DES TRAEGERS IST SKIP-IF-PRESENT (ADR-0054). Der Name ist von git
 # fixiert und das Verzeichnis gehoert dem Repo: das Werkzeug legt seinen Traeger
 # nur ab, WO DER PFAD FREI IST. Fuehrt das Repo dort schon einen eigenen, bleibt
-# er unberuehrt und der Lauf sagt es — dieser Pfad traegt dann nicht das Programm
-# des Werkzeugs, und ein `test -f` weiter unten ist ueber ihn keine Aussage
-# darueber, wer ihn geschrieben hat. Die Pruefung daneben ist davon unberuehrt:
-# tools/harness/commit-msg-traceability.sh wird bei jedem Lauf kanonisch neu
-# geschrieben und liegt auch in diesem Fall bereit.
+# er unberuehrt und der Lauf sagt es — die Aktivierung unten nimmt dann ein
+# Programm in Betrieb, das dieser Lauf nicht geschrieben hat. Die Pruefung daneben
+# ist davon unberuehrt: tools/harness/commit-msg-traceability.sh wird bei jedem
+# Lauf kanonisch neu geschrieben und liegt auch in diesem Fall bereit.
 #
 # WAS DER TRAEGER NICHT ERREICHT. Die zweite Haelfte der Traceability-Zusage —
 # das Doku-Update bei beruehrtem oeffentlichem Vertrag — ist von einem
