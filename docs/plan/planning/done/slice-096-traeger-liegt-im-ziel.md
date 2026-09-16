@@ -451,8 +451,8 @@ oder mit Grund gar nicht entsteht, entscheidet der Lauf an dem Skript. Eine Sch�
 
 | Posten | Träger |
 |---|---|
-| Die Träger-Abwesenheit im Fehlerzweig (`:425`) und die sha256-Identität (`:353`) haben kein `test/mutations/`-Gegenstück; für die zweite ist der Eingriff bekannt (`io.Copy` → `io.CopyN(out, src, 16)`) | **[slice-103](../open/slice-103-traeger-waechter-decken-was-sie-sagen.md)** — neu geschnitten. Beide liegen an **einem** Artefakt-Paar und beantworten **eine** Frage |
-| `TestEnforce_WrapperSuchtDenAblageort` leitet seine Erwartung aus `emit.CarrierPath()` ab und bleibt darum unter `159` grün; der Kommentar nennt trotzdem `159` | **[slice-103](../open/slice-103-traeger-waechter-decken-was-sie-sagen.md)** — dieselbe Frage, dieselbe Datei: ein Wächter, dessen Erwartung aus der mutierten Funktion stammt, misst nicht, was sein Kommentar sagt |
+| Die Träger-Abwesenheit im Fehlerzweig (`:425`) und die sha256-Identität (`:353`) haben kein `test/mutations/`-Gegenstück; für die zweite ist der Eingriff bekannt (`io.Copy` → `io.CopyN(out, src, 16)`) | **[slice-103](../next/slice-103-traeger-waechter-decken-was-sie-sagen.md)** — neu geschnitten. Beide liegen an **einem** Artefakt-Paar und beantworten **eine** Frage |
+| `TestEnforce_WrapperSuchtDenAblageort` leitet seine Erwartung aus `emit.CarrierPath()` ab und bleibt darum unter `159` grün; der Kommentar nennt trotzdem `159` | **[slice-103](../next/slice-103-traeger-waechter-decken-was-sie-sagen.md)** — dieselbe Frage, dieselbe Datei: ein Wächter, dessen Erwartung aus der mutierten Funktion stammt, misst nicht, was sein Kommentar sagt |
 | Der Zeiger vom Kommentar auf den Fall ist mechanisch prüfbar und ungeprüft; `_test[.]go` liegt permanent außerhalb von `make comment-claims` | **[slice-070](../open/slice-070-comment-claims-pruefbereich.md)** — der Steering-Loop-Eintrag oben |
 | Ein `# expect:`-Kopf nennt den Wächter, an dem der Treiber misst, nicht die Menge der Wächter, die der Eingriff fällt — an **2** von **3** Fällen gemessen | **[slice-069](../open/slice-069-zahn-bindet-zusicherung.md)** — sein DoD (1) hebt den Kopf von **Wächter**- auf **Zusicherungs**-Granularität; die Messung oben ist eine Eingabe für genau diese Entscheidung, und sie sagt: die Achse *„welcher Wächter"* ist neben der Achse *„welche Assertion"* zu entscheiden |
 | *„`make gates` des Ziels ist grün"* ist im Fehlerzweig argumentiert, nicht gelaufen | **[slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md)** — seine §3-Zeile zu [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) nennt *„beide Varianten, beide Zweige"*; dahinter steht der Closure-Trigger von [welle-12](welle-12-erfassungsschicht-emittieren.md), der das frische Ziel **in beiden Zweigen** grün sehen will |
@@ -463,7 +463,7 @@ oder mit Grund gar nicht entsteht, entscheidet der Lauf an dem Skript. Eine Sch�
 | Die Formabweichung bei `# verify:` | **kein Träger, und das ist entschieden** — `narrow_sensor()` leitet `test-go` aus der Erwartung ab und ist im Zweifel fail-closed; Wirkung identisch, und ein zweiter Weg zur selben Wirkung ist keine Lücke |
 
 **Folge-Slices: ein neuer `open/`-Eintrag —
-[slice-103](../open/slice-103-traeger-waechter-decken-was-sie-sagen.md).** Alles Übrige hat einen
+[slice-103](../next/slice-103-traeger-waechter-decken-was-sie-sagen.md).** Alles Übrige hat einen
 bestehenden Träger oder eine begründete Ablehnung. **Warum ein eigener Schnitt und kein Anhängsel
 an [slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md):** jener trägt bereits
 drei DoD-Punkte über einem anderen Gegenstand, und ein Posten ohne eigenen DoD-Punkt ist genau die
@@ -506,7 +506,7 @@ Die Dateizahl des Doku-Gates wandert mit dem Markdown-Bestand und ist **kein** E
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2). Der Unterschied zwischen **381** und **383** sind zwei Markdown-Dateien: der
 Verifikations-Bericht und der mit dieser Closure geschnittene
-[slice-103](../open/slice-103-traeger-waechter-decken-was-sie-sagen.md). Jede weitere Zeile an
+[slice-103](../next/slice-103-traeger-waechter-decken-was-sie-sagen.md). Jede weitere Zeile an
 dieser Notiz verschiebt den Stempel erneut; der Lauf, der ihn wieder bindet, gehört zu ihr.
 
 ## 8. Sub-Area-Modus-Begründung

@@ -75,16 +75,16 @@ genannte Wächter fällt. `159` nennt `TestCarrierPath_NimmtDieEndungMit`, und d
 ist zu Recht `ok`. Die falsche Zuschreibung steht im **Kommentar**, und
 `make comment-claims` prüft die Existenz eines genannten Testnamens, nicht seine Aussage; sein
 Prüfbereich nimmt `_test[.]go` zudem ganz aus
-([slice-070](slice-070-comment-claims-pruefbereich.md) §1, dritte Verengung).
+([slice-070](../open/slice-070-comment-claims-pruefbereich.md) §1, dritte Verengung).
 
 ### Die Abgrenzung: was hier **nicht** entschieden wird
 
 - **Die Kopf-Granularität von `test/mutations/`.** Ob ein Kopf die erwartete **Zusicherung** statt
   des **Wächter-Namens** trägt, ist der Gegenstand von
-  [slice-069](slice-069-zahn-bindet-zusicherung.md) DoD (1). Dieser Slice legt Fälle in der heute
+  [slice-069](../open/slice-069-zahn-bindet-zusicherung.md) DoD (1). Dieser Slice legt Fälle in der heute
   geltenden Form an und migriert nichts.
 - **Der Prüfbereich von `make comment-claims`.** Er gehört
-  [slice-070](slice-070-comment-claims-pruefbereich.md). Dieser Slice repariert **einen**
+  [slice-070](../open/slice-070-comment-claims-pruefbereich.md). Dieser Slice repariert **einen**
   Kommentar, nicht den Sensor über Kommentaren.
 - **Der ziel-seitige Wächter.** Ausgeschlossen durch
   [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 5(c);
@@ -167,7 +167,7 @@ Gründen rot würde und deshalb keinen bindet.
   blockierten Ablageort **hergestellt**; jeder Eingriff, der die Blockade umgeht, verändert
   zugleich die Adresse, an der `TestCarrierPath_NimmtDieEndungMit` misst. Ein Fall, der aus zwei
   Gründen rot wird, ist genau die Klasse, die
-  [slice-069](slice-069-zahn-bindet-zusicherung.md) §1 als gemessene Instanz führt.
+  [slice-069](../open/slice-069-zahn-bindet-zusicherung.md) §1 als gemessene Instanz führt.
 - **DoD (2) kann die Kopplung schwächen statt schärfen.** Ein festgeschriebener Namens-Satz driftet
   von `emit.CarrierPath()` weg, wenn dort etwas anderes entschieden wird. Genau darum ist
   `TestCarrierPath_NimmtDieEndungMit` die zweite Hälfte: er hält die Funktion gegen ihre Tabelle,
