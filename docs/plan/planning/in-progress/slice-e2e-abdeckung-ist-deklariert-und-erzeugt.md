@@ -19,7 +19,7 @@ Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht (Modul
 [`spec/lastenheft.md`](../../../../spec/lastenheft.md) und auf die **Stufen** des E2E; er ändert
 keine Spec-Aussage. Die Spec ist Prüfgegenstand, nicht Änderungsziel.
 
-**Verantwortlich:** — .
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-15.
 
