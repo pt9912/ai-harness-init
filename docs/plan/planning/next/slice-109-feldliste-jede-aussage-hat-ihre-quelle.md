@@ -190,14 +190,14 @@ der Termin, den dieser Slice trägt.** Beide Fassungen liegen im Baum, die Messu
 über ihm, Frage A und B sind ohne Vorarbeit eines anderen Slice entscheidbar. Er wartet
 insbesondere **nicht** auf die Closure von
 [welle-12](../done/welle-12-erfassungsschicht-emittieren.md) und **nicht** auf
-[slice-108](slice-108-feldlisten-waechter-tragen-ihren-fall.md): jener gibt bestehenden Wächtern
+[slice-108](../open/slice-108-feldlisten-waechter-tragen-ihren-fall.md): jener gibt bestehenden Wächtern
 ihre Fälle, dieser ändert den Text, den sie halten. Laufen sie in beliebiger Reihenfolge, kostet
 die zweite Runde einen Abgleich der berührten Fall-Köpfe — sie brechen einander nicht.
 
 **Was dieser Slice ausdrücklich nicht ist: eine Nennung.** Beide Befunde sind in einer Review- und
 einer Verifikations-Runde gemessen und benannt worden; ein Träger ohne Termin ist in diesem Repo
 dreimal vergeben und nullmal eingelöst worden
-([slice-101](slice-101-norm-postens-bekommen-einen-termin.md) §1, dort mit Kommando).
+([slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) §1, dort mit Kommando).
 
 Die zwei Rückführungen, vorab benannt:
 
