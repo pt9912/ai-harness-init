@@ -114,7 +114,7 @@ Beleg ist der gefahrene Lauf.
   Beiseitelegen und Zurücklegen ließe ihn liegen. Einen eigenen Schnitt dafür zu legen ist ein
   Planner-Schnitt, nicht ein Anhängsel dieses Plans.
 - **Die Deklaration der neuen Stufe** — **Folge-Slice, mit Adresse:**
-  [slice-e2e-abdeckung-ist-deklariert-und-erzeugt](slice-e2e-abdeckung-ist-deklariert-und-erzeugt.md).
+  [slice-e2e-abdeckung-ist-deklariert-und-erzeugt](../in-progress/slice-e2e-abdeckung-ist-deklariert-und-erzeugt.md).
   Sein Erzeuger verlangt für jede Stufe eine Deklaration (`echo "full-smoke: … ..."` eröffnet eine
   Stufe, die Region bis zur nächsten muss eine tragen) und sein §1 schließt aus, *was der E2E
   prüft*, zu ändern — eine **Deklaration** ist keine Prüfungs-Änderung, und seine DoD (1) führt
@@ -320,7 +320,7 @@ dasteht.
   Slice eine gezogene Meldung vor und misst gegen den dann geltenden Stand; landen beide zugleich,
   schreiben zwei Kontexte dieselben Dateien. — **Ausgang:** <…>
 - **Risiko 5 — die Deklaration der neuen Stufe hängt an der Reihenfolge.**
-  [slice-e2e-abdeckung-ist-deklariert-und-erzeugt](slice-e2e-abdeckung-ist-deklariert-und-erzeugt.md)
+  [slice-e2e-abdeckung-ist-deklariert-und-erzeugt](../in-progress/slice-e2e-abdeckung-ist-deklariert-und-erzeugt.md)
   verlangt für jede Stufe eine Deklaration. Ist sein Erzeuger zur Closure dieses Slice gebaut,
   fällt die neue Stufe dort **laut** aus (die Regel, nicht still) und die Deklaration ist in der
   dann geltenden Form nachzuziehen; ist er es nicht, trägt der Lauf die neue Stufe als einzige
