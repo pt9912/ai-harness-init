@@ -148,9 +148,9 @@ for t in v6.8.0 v6.9.0; do git -C "$K" show $t:$F | sed -n "$S" \
   | grep -oE '(welle-results|observation|gate|MR-NNN-titel)\.template\.md' | sort -u | wc -l; done
 # -> 0
 #    3      (gate, MR-NNN-titel, welle-results; observation fehlt)
-for t in v6.8.0 v6.9.0; do git -C "$K" show $t:$F | grep -n 'Regelt die neue Fassung das' | cut -d: -f1; done
-# -> 221
-#    221
+for t in v6.8.0 v6.9.0; do git -C "$K" show $t:$F | grep -n 'Regelt die neue Fassung das' | cut -d: -f1; done   # -> 221 / 221
+P='/Eine Stichprobe gegen den Bestand/,/^#### Gate-Fragment/p'
+diff <(git -C "$K" show v6.8.0:$F | sed -n "$P") <(git -C "$K" show v6.9.0:$F | sed -n "$P") | wc -l   # -> 0
 git -C "$K" diff --name-only v6.8.0..v6.9.0 -- lab/templates \
   | grep -cE '(welle-results|gate|MR-NNN-titel)\.template\.md'                # -> 0
 ```
@@ -158,7 +158,7 @@ git -C "$K" diff --name-only v6.8.0..v6.9.0 -- lab/templates \
 Bei vier Vorlagen lässt [`harness/migration.md`](../../../harness/migration.md#6-offene-fragen) §6
 offen, ob sie append-only sind. Die Prozedur in `v6.8.0` nennt keine davon, die in `v6.9.0` drei.
 **Der Durchgang dieses Sprungs behandelt diese drei trotzdem unter beiden Fassungen gleich.** Die
-neue Klausel könnte an zwei Stellen wirken, und an keiner ändert sie etwas:
+neue Klausel ändert in keinem der drei Durchgänge der Prozedur etwas ([ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 1):
 
 - **Im Adaptions-Durchgang.** Seine Frage *„Regelt die neue Fassung das, wofür diese Adaption
   angelegt wurde?"* steht in beiden Tags auf derselben Zeile, außerhalb des einzigen Hunks. Unter
@@ -171,8 +171,11 @@ neue Klausel könnte an zwei Stellen wirken, und an keiner ändert sie etwas:
   Punkt *„Der Review vergleicht auch die Form"*). `gate`, `MR-NNN-titel` und `welle-results`
   haben kein Delta. Die drei Vorlagen, die eines haben, ordnen beide Fassungen gleich ein
   (§Außerhalb der Prozedur).
+- **In der Stichprobe.** Ihr Text ist in beiden Tags wortgleich, und sie zieht nur Abschnitte ohne
+  Delta, also nicht den geänderten Prozedur-Abschnitt. Hängt ihre Antwort an einer
+  Klassen-Aussage, ist das eine Konformitätsfrage über bestehende Instanzen.
 
-Die Klassen-Aussagen wirken deshalb nur auf die Register-Zeilen von Vorlagen **ohne** Delta. Das
+Die Klassen-Aussagen wirken deshalb nur auf Register-Zeilen und bestehende Instanzen von Vorlagen **ohne** Delta. Das
 ist **Ist-Maßstab**: Es wird mit dem Tausch fällig, gleich welche Fassung die Prozedur stellt, und
 bis dahin gilt `v6.8.0` ([ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 2).
 
@@ -193,7 +196,7 @@ grep -cE '^\| `\.harness/baseline/v6\.8\.0/templates/docs/plan/planning/(README|
   harness/migration.md                                                              # -> 2
 ```
 
-Außer `modul-02` ändern sich drei Regelwerks-Dateien. `README.md` ändert nur seine Stand-Zeile.
+Neben `modul-02` ändern sich `README.md` (nur die Stand-Zeile), `modul-05` und `modul-06` (`git -C "$K" diff --numstat v6.8.0..v6.9.0 -- lab/regelwerk`).
 `modul-05` und `modul-06` sind als Symlink in `.claude/rules/` eingebunden und stehen damit in
 **jedem** Claude-Lauf im Kontext. `modul-05` bringt den neuen Abschnitt *Ein Slice, dessen
 Gegenstand ein anderer übernimmt* samt den Kanten `open → done` und `next → done`. `modul-06` nimmt
@@ -238,8 +241,8 @@ Baseline (Schritt 2), samt ihren Eigenschaften, Ausgängen und den Abschnitten, 
 abgewogen ist. Das stützt sich auf zwei gemessene Gründe:
 
 1. **Die Wahl führt den Durchgang dieses Sprungs inhaltlich nicht anders.** Der Prozedur-Text
-   ändert sich nur additiv (§Stufe (b)). An beiden Stellen, an denen die neue Klausel wirken
-   könnte, stellt der Durchgang unter beiden Fassungen dieselben Fragen an dieselben Gegenstände
+   ändert sich nur additiv (§Stufe (b)). In allen drei Durchgängen der Prozedur stellt der
+   Durchgang unter beiden Fassungen dieselben Fragen an dieselben Gegenstände
    (§Der Unterschied nennt offene Vorlagen). Dieser Grund trägt die Wahl nicht allein, nimmt ihr
    aber jedes inhaltliche Gegenargument. Damit ist die Abwägung geführt, die der zweite
    Re-Evaluierungs-Trigger von [ADR-0047](0047-ziel-fassung-regiert-den-sprung-v680.md) verlangt.
@@ -254,7 +257,7 @@ abgewogen ist. Das stützt sich auf zwei gemessene Gründe:
    diesen Grund, und hier trägt er aus demselben Grund allein.
 
 **Die Klassen-Aussagen der Ziel-Fassung begründen die Wahl nicht.** Ihre Folgen für die
-Register-Zeilen von Vorlagen ohne Delta gehören zum Ist-Maßstab und werden mit dem Tausch fällig,
+Register-Zeilen und bestehenden Instanzen gehören zum Ist-Maßstab und werden mit dem Tausch fällig,
 gleich welche Fassung die Prozedur stellt. Auch den zweiten Grund aus
 [ADR-0036](0036-ziel-fassung-regiert-den-sprung-v600.md) nimmt diese Entscheidung nicht in
 Anspruch, denn die gepinnte Fassung liegt noch vendored vor.
@@ -293,16 +296,17 @@ nennt den Report namentlich.** Hat eine Runde einen blockierenden Befund gemelde
 die nächste Runde derselben Rolle. Die Nachmessung durch den auflösenden Kontext zählt nicht
 ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegungen 1 und 2).
 
-**Die Runde prüft drei neue Gegenstände:**
+**Die Runde prüft drei Gegenstände:**
 
 1. **Hält die Messung, dass der Unterschied den Durchgang nicht anders führt, und trägt die
    Klammer damit allein?** Die Runde prüft, ob der Durchgang unter beiden Fassungen dieselben
    Fragen an dieselben Gegenstände stellt: die Adaptions-Frage wortgleich, der Form-Durchgang über
-   dieselben Vorlagen mit Delta bei gleicher Einordnung, die neu genannten Vorlagen ohne Delta.
+   dieselben Vorlagen mit Delta bei gleicher Einordnung, die Stichprobe wortgleich und ohne den
+   geänderten Abschnitt, die neu genannten Vorlagen ohne Delta.
    **Zu viel** behauptet, wer daraus eine Regel für wirkungslose Änderungen liest. **Zu wenig**
    behauptet, wer die Wahl für beliebig hält, weil der Durchgang gleich läuft.
 2. **Bleibt die Trennung aus [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 2
-   scharf?** Die Festlegung ordnet die Folgen der Klassen-Aussagen für Register-Zeilen dem
+   scharf?** Die Festlegung ordnet die Folgen der Klassen-Aussagen für Register-Zeilen und bestehende Instanzen dem
    Ist-Maßstab zu, fällig mit dem Tausch. Die Runde prüft, ob diese Zuordnung hält. Außerdem prüft
    sie, dass keine Stelle der ADR die Klassen-Aussage schon vor dem Tausch als Maßstab für einen
    bestehenden `MR`-Eintrag, eine Sensor-Datei oder eine Ergebnis-Notiz verwendet.
@@ -328,7 +332,7 @@ sie als Constraint, eingefroren ist sie aber noch nicht ([`AGENTS.md`](../../../
   Die Pins und die regierende Entscheidung nennen denselben Tag. Die Delta-Basis ist zugleich der
   vendored Stand, deshalb ist der Durchgang nicht größer als der Sprung selbst (§Achse und Range).
 - **Positiv:** Für den Durchgang kostet die Zwei-Fassungen-Phase inhaltlich nichts. Solange der Baum
-  `v6.8.0` trägt, stellt die gewählte Prozedur dieselben Fragen wie die gepinnte.
+  `v6.8.0` trägt, stellt die gewählte Prozedur in allen drei Durchgängen dieselben Fragen wie die gepinnte.
 - **Negativ:** Der tragende Grund betrifft die Adresse, nicht den Inhalt. Führt die geänderte
   Klausel den Durchgang doch anders, stünde ein inhaltlicher Grund zur Verfügung, den diese
   Entscheidung nicht geführt hat (§Re-Evaluierungs-Trigger).
@@ -404,11 +408,11 @@ ein Durchgang der gewählten Prozedur *gefolgt* ist, bleibt ein Urteil über ein
 - **Der Zielstand bewegt sich vor dem Vollzug** *(sichtbar in §Baseline)*: Dann verliert diese
   Festlegung ihr Objekt. Wie eine Teil-Ablösung zu schneiden ist, zeigt
   [ADR-0044](0044-ziel-fassung-regiert-den-sprung-v672.md).
-- **Der Durchgang läuft unter der geänderten Klausel anders als unter der gepinnten** *(sichtbar
-  am Report des Durchgangs: ein Ausgang oder eine Einordnung an einer Vorlage mit Delta oder an
-  einem `MR`-Eintrag, die nur die Ziel-Klausel trägt)*: Dann hält Grund 1 nicht, und es gibt einen
-  inhaltlichen Grund, den diese Entscheidung nicht abgewogen hat. Sie ist dann neu zu führen, nicht
-  nachzubessern.
+- **Der Durchgang tut unter der Ziel-Fassung etwas, das die gepinnte nicht vorschreibt** *(sichtbar
+  am Report des Durchgangs: ein Schritt, eine Frage oder eine Einordnung, die allein der
+  Prozedur-Text von `v6.9.0` verlangt)*: Dann hält Grund 1 nicht, und die Entscheidung ist neu zu
+  führen, nicht nachzubessern. Kein solcher Fall ist ein Ausgang an einem `MR`-Eintrag, den die neue
+  Klausel als Teil des geprüften Deltas trägt (§Der Unterschied nennt offene Vorlagen).
 - **Eine künftige Baseline beantwortet die Meta-Frage selbst** *(Textänderung upstream)*: Dann ist
   diese Festlegung gegen den neuen Wortlaut neu zu begründen oder als Abweichung zu deklarieren.
 

@@ -202,7 +202,7 @@ entscheidet das eindeutig ([§6](#6-offene-fragen)).
 
 Wie §4 ist auch dieser Abschnitt eine Formvorgabe für einen künftigen Bericht, keine ADR-Aussage —
 dazu [§6](#6-offene-fragen). Ausgenommen ist der sprung-bezogene Absatz am Ende von Buchstabe a; er
-projiziert [ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md) §Konsequenzen. Er unterscheidet zwei Fälle, je nachdem, ob §4 die betroffene Vorlage
+projiziert [ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md) §Konsequenzen. Der Abschnitt unterscheidet zwei Fälle, je nachdem, ob §4 die betroffene Vorlage
 als wiederkehrend ausweist.
 
 ### a) Einmalige Vorlagen — vier Ausgänge
@@ -331,6 +331,6 @@ Achsen, die nicht ineinander übersetzt werden: dazu [§6](#6-offene-fragen).
   dieser Form läuft. Die Report-Form in §5 ist ohne einen solchen Anlass reine Vorbereitung.
 - **Ob `harness/migration.md` selbst bei jedem Baseline-Sprung fortzuschreiben ist** (neue Vorlagen,
   entfallene Vorlagen, geänderte Instanz-Zuordnungen), sagt keine der acht ADRs als allgemeine
-  Regel. [ADR-0047](../docs/plan/adr/0047-ziel-fassung-regiert-den-sprung-v680.md) und [ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md) ziehen je für ihren Sprung
-  nur §1 nach, [ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md) zusätzlich §5 a. Sie sind
+  Regel. [ADR-0047](../docs/plan/adr/0047-ziel-fassung-regiert-den-sprung-v680.md) zieht für ihren Sprung §1 nach; [ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md) zieht für ihren
+  Sprung zusätzlich §5 a und die Stellen nach, die Sprung-ADRs aufzählen oder zählen. Sie sind
   Prozess-ADRs über die regierende Fassung, nicht über die Pflege dieses Dokuments.
