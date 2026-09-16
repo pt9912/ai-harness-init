@@ -218,7 +218,7 @@ dort auf, und die Folge-Slice-Paarung fällt über eine genannte Kennung ohne Da
 | Norm-Text | Träger |
 |---|---|
 | [`MR-059`](../../../../harness/conventions.md#mr-059) Setzung 2 und 5 | [`slice-kennungs-erkennung-traegt-die-zugelassenen-formen`](../open/slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md) |
-| [ADR-0053](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) Festlegung 4 | [`slice-werkzeug-commits-tragen-eine-kennung`](../open/slice-werkzeug-commits-tragen-eine-kennung.md) |
+| [ADR-0053](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) Festlegung 4 | [`slice-werkzeug-commits-tragen-eine-kennung`](../next/slice-werkzeug-commits-tragen-eine-kennung.md) |
 
 **Der Zähler ist eine datierte Messung**
 ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)
@@ -247,7 +247,7 @@ ohne angelegt ist dieselbe Klasse wie ein halluziniertes Gate.
   (Architect) — der Träger des einzigen `geplant`-Ausgangs dieses Lese-Schritts.
 - [`slice-kennungs-erkennung-traegt-die-zugelassenen-formen`](../open/slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md)
   — die Fundliste aus [`MR-059`](../../../../harness/conventions.md#mr-059) Setzung 2.
-- [`slice-werkzeug-commits-tragen-eine-kennung`](../open/slice-werkzeug-commits-tragen-eine-kennung.md)
+- [`slice-werkzeug-commits-tragen-eine-kennung`](../next/slice-werkzeug-commits-tragen-eine-kennung.md)
   — der Kandidat aus [ADR-0053](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md)
   Festlegung 4.
 

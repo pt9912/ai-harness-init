@@ -83,7 +83,7 @@ zählt die Werkzeug-Commits, die heute **keine** Kennung führen, die ein Muster
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Die Kennungs-Erkennung.** Welche Formen die Werkzeuge dieses Repos erkennen, ist der Gegenstand
-  von [slice-kennungs-erkennung-traegt-die-zugelassenen-formen](slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md);
+  von [slice-kennungs-erkennung-traegt-die-zugelassenen-formen](../open/slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md);
   dieser Slice schreibt die **Nachricht**, jener die **Erkennung**, die sie liest. *Es wäre ein
   anderer Vorgang.* Der Start-Trigger unten nennt die Reihenfolge.
 - **Eine Ausnahme für die Werkzeug-Formen.** Eine Zeile, die `slice-mv:`-Messages von der Prüfung
@@ -172,7 +172,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`): **
-[slice-kennungs-erkennung-traegt-die-zugelassenen-formen](slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md)
+[slice-kennungs-erkennung-traegt-die-zugelassenen-formen](../open/slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md)
 liegt in `done/`** — die Erkennung trägt die Form, in der die Kennung geschrieben wird —, **
 [ADR-0053](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) ist `Accepted`**
 (sonst wird eine Setzung vollzogen, die niemand ausgesprochen hat,
