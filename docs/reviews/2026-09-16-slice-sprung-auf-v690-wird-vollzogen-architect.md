@@ -4,7 +4,7 @@
 **Autor:** ai-harness-init-Team (pt9912).
 
 **Gegenstand:** der Slice-Plan `slice-sprung-auf-v690-wird-vollzogen` am Stand `e8fb5248`
-(`git show e8fb5248:docs/plan/planning/next/slice-sprung-auf-v690-wird-vollzogen.md | wc -l` → **657**);
+(`git show e8fb5248:docs/plan/planning/in-progress/slice-sprung-auf-v690-wird-vollzogen.md | wc -l` → **657**);
 der Mess-Slice `slice-stilllegungs-kanten-sind-gemessen` nur als Adresse des Ausschlusses in §1.
 Zeilenangaben unten beziehen sich auf diesen Stand.
 
