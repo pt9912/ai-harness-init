@@ -1,6 +1,6 @@
 # ADR-0056: Die Ziel-Fassung regiert auch den Sprung `v6.8.0` → `v6.9.0` — die Prozedur ändert sich additiv, führt den Durchgang dieses Sprungs aber nicht anders; tragend ist deshalb die Tag-Klammer, und das Vorlagen-Delta gibt dem Instanz-Durchgang einen Gegenstand
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-16
 
@@ -421,6 +421,7 @@ ein Durchgang der gewählten Prozedur *gefolgt* ist, bleibt ein Urteil über ein
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-16 | **Proposed** | Zielstand-Setzung des Auftraggebers auf `v6.9.0` vom selben Tag; zweiter Fall aus [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) Festlegung 3 |
+| 2026-09-16 | **Accepted** | **Angenommen auf Weisung des Auftraggebers vom 2026-09-16, vollzogen in der Architect-Rolle. Der Acceptance-Trigger ist eingelöst.** Die Belege nennt diese Zeile als Kennung ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1): `2026-09-16-adr-0056-konsistenz-bestaetigung` deckt den Text am Stand `98908f51`, `2026-09-16-adr-0056-konsistenz-diff-runde` deckt den Diff `98908f51..2187ae22`. Beide Runden liefen in frischem Kontext gegen [ADR-0018](0018-ziel-fassung-regiert-die-migration.md), [ADR-0043](0043-ziel-fassung-regiert-den-sprung-v671.md), [ADR-0047](0047-ziel-fassung-regiert-den-sprung-v680.md) und [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md), und keine meldet einen blockierenden Befund. `2026-09-16-adr-0056-konsistenz` meldete einen blockierenden Befund; diese Runde ist nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 Anlass, kein Beleg. Das LOW der Diff-Runde zur Folgepflicht *mit dem Tausch* bleibt nach Entscheidung des Auftraggebers im Text; die bestehenden Instanzen trägt die DoD des Slice, der den Tausch vollzieht. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit

@@ -53,9 +53,7 @@ Die Zeile zu `v5.12.0` → `v5.18.0` zitiert
 [ADR-0031](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 1;
 die ADR steht auf **`Proposed`** (ihre eigene §Geschichte) und ist damit nach
 [`AGENTS.md`](../AGENTS.md) §3.4 noch nicht eingefroren — die Zeile hält fest, was sie **heute**
-vorschlägt, nicht, dass die Entscheidung feststeht. Für die Zeile zu `v6.8.0` → `v6.9.0` gilt
-dieselbe Lesart: Auch [ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md)
-steht auf **`Proposed`**.
+vorschlägt, nicht, dass die Entscheidung feststeht.
 
 Der aktuell vendored Stand ist `v6.8.0`
 (`ls -1 .harness/baseline/` — kein Erwartungswert, wandert mit jedem Tausch); die
@@ -231,7 +229,7 @@ die Vorgabe des Auftraggebers: *„Der Durchgang übernimmt die Ziel-Fassung vol
 Abweichung wird nicht gesetzt."* Der Ausgang **bewusst abweichend** steht in diesem Sprung damit
 nicht zur Verfügung, auch nicht mit einem bestehenden `MR`-Eintrag als Beleg: Der Eintrag tritt
 zurück, und die neue Fassung wird übernommen. Welcher Eintrag betroffen ist, klärt der Durchgang;
-die ADR steht auf **`Proposed`**.
+die ADR ist **`Accepted`**.
 
 ### b) Wiederkehrende Vorlagen — Append-only
 
