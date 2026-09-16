@@ -63,7 +63,7 @@ nennt den Tag, gegen den sie gemessen ist — im Plan, im Bericht und in der Com
 eine Adresse in den vendored Baum, zählen die Kommandos in §1 sie mit; ihr Nachzug ist Adresse,
 keine Spec-Änderung).
 
-**Verantwortlich:** — bis zur Priorisierung.
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-16.
 
@@ -535,7 +535,7 @@ Den Ausgang setzt die Closure. *Absehbar* nennt, welcher Ausgang unter welcher B
    Beleg in `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`.
 9. **Die offenen Pläne werden gegen den neuen Stand nicht gehalten.** Die neuen Kanten verschieben,
    was aus einem Plan in `open/` oder `next/` werden darf (`ls docs/plan/planning/open/*.md | wc -l`
-   → **68**, `ls docs/plan/planning/next/*.md | wc -l` → **21**, keine Erwartungswerte).
+   → **67**, `ls docs/plan/planning/next/*.md | wc -l` → **22**, keine Erwartungswerte).
    *Absehbar:* weiter offen, Register-Eintrag
    `folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht`.
 10. **Für die Planungs-README nennt keine Quelle die schreibende Rolle.** Ihre Zeile zu `done/`
