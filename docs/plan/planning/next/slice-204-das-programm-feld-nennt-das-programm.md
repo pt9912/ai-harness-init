@@ -95,7 +95,7 @@ dieselbe Mechanik eine Ebene höher: Die Funktion überspringt bereits etwas (f�
   Quelle — [`AGENTS.md`](../../../../AGENTS.md) §3.8 weist nur Hard Rules und Adaptions-Block dem
   Architect zu und sagt ausdrücklich: *„wo keine Quelle sie benennt, bleibt die Frage offen"*. Die
   Frage hat bereits eine Adresse, und **das ist ein Folge-Slice, der die Sendung annimmt**:
-  [slice-151](slice-151-spec-straten-haben-eine-schreibende-rolle.md) liefert genau diese ADR. Wie
+  [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md) liefert genau diese ADR. Wie
   dieser Slice sich in der Zwischenzeit verhält, steht in §2 — er entscheidet die Frage nicht
   still mit.
 - **Keine Änderung an `span-report`, `span-watch` oder `hook-overhead`.** Sie lesen das Feld;
@@ -134,7 +134,7 @@ drei: Die Spec-Zeilen und die Fälle sind die Form derselben Lieferung, nicht zu
       das Lastenheft wird **nicht** angefasst.
 - [ ] **Die offene Eigentumsfrage ist benannt, nicht entschieden.** Der Lauf, der die zwei
       Spec-Zeilen schreibt, hält in §7 fest, dass für dieses Stratum **keine Quelle** eine
-      schreibende Rolle benennt, und nennt [slice-151](slice-151-spec-straten-haben-eine-schreibende-rolle.md)
+      schreibende Rolle benennt, und nennt [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md)
       als deren Adresse. Er leitet daraus **keine** Zuständigkeit ab — eine aus Zweckmäßigkeit
       abgeleitete Rolle wäre genau der Befund, den slice-151 auflösen soll.
 - [ ] Ein Fall in `test/mutations/` nimmt der neuen Zusage die Zähne — ohne ihn ist sie
@@ -188,7 +188,7 @@ zum Verhältnis zu slice-203.
   Übersprung-Regel. Dann ist es ein anderer Slice als dieser.
 - `in-progress` → `open` (blockiert — Carveout?): Die zwei Spec-Zeilen lassen sich ohne eine
   Entscheidung über das Rollen-Eigentum nicht schreiben — dann wartet der Slice auf
-  [slice-151](slice-151-spec-straten-haben-eine-schreibende-rolle.md), und **das** ist der Blocker,
+  [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md), und **das** ist der Blocker,
   nicht der Code.
 
 ## 5. Closure-Trigger
@@ -228,7 +228,7 @@ dasteht.
   — **Ausgang:** <offen>
 - **Für das berührte Spec-Stratum benennt keine Quelle eine schreibende Rolle.** Der Slice ändert
   zwei Zeilen in Rang 2 der Source Precedence, ohne dass gesagt ist, wer das darf. Adresse:
-  [slice-151](slice-151-spec-straten-haben-eine-schreibende-rolle.md). — **Ausgang:** <offen>
+  [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md). — **Ausgang:** <offen>
 
 ## 7. Closure-Notiz
 
