@@ -29,7 +29,7 @@ nach dem Lauf sauber (`git status --porcelain` leer).
 
   ```text
   SlicePfadRelativ("werkzeug-erkennt-die-benannte-kennung") = ""
-  SlicePfadRelativ("188")                                   = "../../open/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md"
+  SlicePfadRelativ("188")                                   = "../../next/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md"
   SlicePfadRelativ("176")                                   = "../slice-176-inventur-vor-dem-schnitt-v600.md"
   Hervorgegangen(<Folge-Slices-Zeile mit der benannten Kennung>) = "slice-werkzeug-erkennt-die-benannte-kennung"
   ```
@@ -250,7 +250,7 @@ nach dem Lauf sauber (`git status --porcelain` leer).
   (Kommentar, Definition `stub.go:207`, Verwendung `stub.go:241`); die Verwendung steht
   ausschließlich in `Hervorgegangen()` und dort auf der gefilterten `folge`-Zeilenmenge.
   `beoRE` (`BEO-[0-9]{3}`) und `adrRE` (`ADR-[0-9]{4}`) sind im Diff unberührt — die Abgrenzung
-  zu [slice-188](../plan/planning/open/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md)
+  zu [slice-188](../plan/planning/next/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md)
   trägt, beide Diffs bleiben disjunkt.
 - **Kein Verlust an nummerierten Formen — beide Seiten gemessen.**
   *Shell:* über den ganzen Planning-Baum trifft das alte Muster 119 eindeutige bare Ziele, das
@@ -314,7 +314,7 @@ nach dem Lauf sauber (`git status --porcelain` leer).
 - **Die emittierte Ebene** (`internal/emit/**`) — in §1 ausgeschlossen und im Diff unberührt;
   ob die dort liegenden Muster dieselbe Lücke tragen, ist nicht Gegenstand dieses Laufs.
 - **`beoRE`** und die Register-Kennungsform — Gegenstand von
-  [slice-188](../plan/planning/open/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md).
+  [slice-188](../plan/planning/next/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md).
 - **Ob der Groß-Schreibung der Anker-Präfix-Form eine Entscheidung fehlt**, ist als MEDIUM-1
   gemeldet; die Entscheidung selbst zu treffen ist Architect-Arbeit, nicht meine.
 

@@ -196,7 +196,7 @@ dasteht.
   Kommandos in §1 finden **Muster**; eine Prosa-Beschreibung der Tabellen-Form ohne diese Wörter
   fänden sie nicht. Der Slice sagt darum die getroffene Menge zu, nicht die vollständige. —
   **Ausgang: eingetreten →**
-  [slice-188](../open/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md). Zweimal
+  [slice-188](../next/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md). Zweimal
   eingetreten, an zwei Orten mit zwei Folgen. **Innerhalb** der Anweisungssätze: Das Muster fand
   **zwei** von **vier** betroffenen Dateien; die zwei übrigen tragen dieselbe Tabellen-Form unter
   anderen Wörtern (`— keine —`, *Gestrichene Einträge*, *keine Zeile*) und sind hier mitgezogen
@@ -289,7 +289,7 @@ Backticks).
   **Zähler**-Vorgang für ein Auftreten der Klasse und **nicht** ein zweiter Ausgang für Risiko 2 —
   dessen einer Ausgang ist der Folge-Slice unten.
 - **Folge-Slices:**
-  [slice-188](../open/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md) (*Der
+  [slice-188](../next/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md) (*Der
   Archiv-Stub kennt die Kennungs-Form des Registers*) — liegt als Datei in `open/`.
 - **Risiken aus §6:** vier notiert, vier mit genau einem Ausgang — dreimal *entfallen* mit
   Begründung, einmal *eingetreten* mit Folge-Slice-ID. Keines steht ohne Ausgang da.

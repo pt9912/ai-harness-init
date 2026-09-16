@@ -156,7 +156,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       und ihr Träger ist eine Datei, kein Satz:**
       [slice-189](../open/slice-189-abgeschaffte-kennung-in-architect-artefakten.md) in `open/`
       (§7). **1** in
-      [slice-188](../open/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md) —
+      [slice-188](../next/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md) —
       ein **wörtliches Zitat** von `anwenden_test.go`s Testfixture-Zeichenkette, keine Zusage
       dieses Repos über die heutige Kennung; ein Nachzug würde eine falsche Aussage über den
       real vorhandenen Go-Test-Quelltext einführen (`AGENTS.md` §3.7). Das vierte Kommando aus §1
