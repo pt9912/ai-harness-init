@@ -129,7 +129,8 @@ geschlossen — ihr Zustand steht oben unter *Offene Wellen*.
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Roadmap-Struktur: fünf Abschnitte, Bullet *Historische Trigger-Verschiebungen* — **nur**
-Umplanungen (Trigger verschoben, präzisiert, ersetzt; Slice oder Welle umgehängt). Keine
+Umplanungen (Trigger verschoben, präzisiert, ersetzt; Slice oder Welle umgehängt, Slice in einem
+anderen aufgegangen). Keine
 Schließungen (die stehen im Closure-Log) und keine erreichten Meilensteine (`Status`-Spalte) —
 sonst führt diese Tabelle ein zweites Closure-Log, und zwei Logs driften. Das ausgeführte Argument
 einer Umplanung steht im Beleg, nicht in der Zelle.
