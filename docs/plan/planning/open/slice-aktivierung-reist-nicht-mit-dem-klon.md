@@ -255,7 +255,7 @@ rein additiv gegenüber dem, was heute läuft. Dazu die zwei gewöhnlichen Bedin
 priorisiert (`Verantwortlich:` gesetzt) und das WIP-Limit frei.
 
 **Reihenfolge — und sie ist keine Abhängigkeit, sondern eine Serialisierung.**
-[slice-commit-traeger-wird-skip-if-present](../in-progress/slice-commit-traeger-wird-skip-if-present.md) führt
+[slice-commit-traeger-wird-skip-if-present](../done/slice-commit-traeger-wird-skip-if-present.md) führt
 dieselben zwei Dateien in seinem §3 (das Aktivierungs-Fragment — Kopf **und Fehlermeldung** — und
 `harness/tools/full-smoke.sh`); er hängt an seinem eigenen Start-Trigger
 ([`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md) `Accepted`). Die zwei
@@ -306,7 +306,7 @@ dasteht.
   liest sie einen Zustand, den sie nicht mehr herstellt. — **Ausgang:** <…>
 - **Risiko 2 — die Abbruch-Meldung des Fragments ist fremd.** Gelesen wird der **Pfad**, den die
   Meldung nennt (`.githooks/commit-msg` bzw. der `HOOKS_DIR`-Wert), nicht ihr Satz:
-  [slice-commit-traeger-wird-skip-if-present](../in-progress/slice-commit-traeger-wird-skip-if-present.md) zieht
+  [slice-commit-traeger-wird-skip-if-present](../done/slice-commit-traeger-wird-skip-if-present.md) zieht
   Kopf **und Fehlermeldung** desselben Fragments; eine wörtlich gelesene Zusage bräche dabei, ohne
   dass etwas kaputt wäre. — **Ausgang:** <…>
 - **Risiko 3 — der Zahn läuft nur nächtlich und teuer.** Ein `# verify: full-smoke`-Fall kostet
@@ -315,7 +315,7 @@ dasteht.
   Gate. Bis zum Nacht-Job ist die neue Stufe **gelistet, aber nicht gefahren** — der Rot-Beleg aus
   DoD (3) ist die Bedingung, unter der ihr Grün trotzdem etwas sagt. — **Ausgang:** <…>
 - **Risiko 4 — zwei Schreibende auf denselben zwei Dateien.**
-  [slice-commit-traeger-wird-skip-if-present](../in-progress/slice-commit-traeger-wird-skip-if-present.md) führt
+  [slice-commit-traeger-wird-skip-if-present](../done/slice-commit-traeger-wird-skip-if-present.md) führt
   das Fragment **und** `harness/tools/full-smoke.sh` in seinem §3. Landet er zuerst, findet dieser
   Slice eine gezogene Meldung vor und misst gegen den dann geltenden Stand; landen beide zugleich,
   schreiben zwei Kontexte dieselben Dateien. — **Ausgang:** <…>
