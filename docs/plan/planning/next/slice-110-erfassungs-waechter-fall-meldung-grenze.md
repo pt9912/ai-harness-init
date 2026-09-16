@@ -110,7 +110,7 @@ Standard-Punkte der Vorlage (nicht slice-eigen): `make gates` grün · Doku-Upda
 | [`internal/report/report_test.go`](../../../../internal/report) | **unverändert oder Fall-Nennung** | (c) braucht den Fall, nicht den Test — der Wächter hat gemessen Zähne |
 | [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) | update | (b) zweiter Aufräum-Lauf; (d), falls der Ausgang *Fall* statt *Grenze* ist |
 | `test/mutations/` — Fälle für (a), (c) und (3) <!-- d-check:ignore (geplante Dateien) --> | neu | [`AGENTS.md`](../../../../AGENTS.md) §3.6: wer keinen Fall hat, gilt als unbewacht |
-| **Bestehende gemeinsame Stellen, die ein neuer Wächter bewegt** — heute erkennbar: `emitDokumentSatz` in [`internal/emit/emitteddocs_test.go`](../../../../internal/emit) (Fixture-Grenze (e)) und `makeQuellenDesZiels` (Quellenmenge (f)) | update | Diese Zeile steht hier, weil die letzten drei Slices dieser Familie genau sie im Plan nicht hatten (Träger: [slice-101](slice-101-norm-postens-bekommen-einen-termin.md), neunter Posten) |
+| **Bestehende gemeinsame Stellen, die ein neuer Wächter bewegt** — heute erkennbar: `emitDokumentSatz` in [`internal/emit/emitteddocs_test.go`](../../../../internal/emit) (Fixture-Grenze (e)) und `makeQuellenDesZiels` (Quellenmenge (f)) | update | Diese Zeile steht hier, weil die letzten drei Slices dieser Familie genau sie im Plan nicht hatten (Träger: [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md), neunter Posten) |
 | [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | **unverändert** | wellenlose Arbeit wird dort nicht geführt ([`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) Setzung 2/3) |
 
 ## 4. Trigger

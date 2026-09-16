@@ -439,7 +439,7 @@ und ist rot gesehen. Der „Rest", den (b) meinte — ob die Emit-Regel einen **
 —, ist genau der Gegenstand, den DoD (2) am Code benannt haben will, und er steht dort. Zwei
 DoD-Punkte auf **einem** Gegenstand wären Doppel-Buchführung, und die Pflicht *„mit Grund **und**
 Folge-Slice"* hinge an einer Zusage ohne eigenen Gegenstand.
-[slice-110](../open/slice-110-erfassungs-waechter-fall-meldung-grenze.md) ist als **Präzedenz für
+[slice-110](../next/slice-110-erfassungs-waechter-fall-meldung-grenze.md) ist als **Präzedenz für
 den Schnitt** richtig genannt und als **Adressat** falsch: sein DoD-(3)-Posten (e) betrifft
 `emitDokumentSatz` und `makeQuellenDesZiels`, eine andere Fixture-Grenze. Was bleibt, ist keine
 offene DoD-Pflicht, sondern ein **Bau-Problem mit eigenem Ort** — siehe *Übergabe* unten.
@@ -583,7 +583,7 @@ Ursache ist eine Zeile: `cat .dockerignore` → `.git`, `.harness`. Die go-test-
 vendored Satz nicht, die bats-Stufe hat keine Go-Toolchain. **Dieselbe Ursache trägt drei
 unabhängig gefundene Befunde:** `docs/reviews/2026-08-26-slice-099-review.md` `F-3` (der
 Gate-Tabellen-Wächter misst über der synthetischen Fixture),
-[slice-110](../open/slice-110-erfassungs-waechter-fall-meldung-grenze.md) DoD (3) Posten (e)
+[slice-110](../next/slice-110-erfassungs-waechter-fall-meldung-grenze.md) DoD (3) Posten (e)
 (dieselbe Fixture-Grenze, als **Meldung** geschnitten) und der Rest dieses Slice. **Der Ort ist
 vorbereitet und nicht erfunden:** slice-110 §4 benennt die Rückführung vorab — *„`in-progress` →
 `next`, wenn der Ausgang von (e) den **Docker-Build-Kontext** berührt … dann ist die

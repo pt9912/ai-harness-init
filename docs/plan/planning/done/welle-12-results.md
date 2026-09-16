@@ -190,7 +190,7 @@ einem bestehenden erzeugt. Was offen bleibt, in Klassen statt als Liste:
   [slice-103](../next/slice-103-traeger-waechter-decken-was-sie-sagen.md),
   [slice-104](../done/slice-104-rollen-namen-haben-eine-quelle.md),
   [slice-108](../next/slice-108-feldlisten-waechter-tragen-ihren-fall.md),
-  [slice-110](../open/slice-110-erfassungs-waechter-fall-meldung-grenze.md).
+  [slice-110](../next/slice-110-erfassungs-waechter-fall-meldung-grenze.md).
 - **Texte, die mehr sagen als sie halten — im emittierten Produkt.** Die Feldliste behauptet
   Lesbarkeit für *„wer dieses Arbeitsverzeichnis lesen kann"* gegen gemessene Rechte; ihre
   Ortszusage gilt der emittierten `.d-check.yml` und wird von einer eigenen Adopter-Config
@@ -364,7 +364,7 @@ Setzung 1 und darum **nicht** in der Roadmap (Setzung 2):
 | [slice-107](../open/slice-107-inhalts-hash-traegt-eine-entscheidung.md) | der Inhalts-Hash bekommt seine Entscheidung |
 | [slice-108](../next/slice-108-feldlisten-waechter-tragen-ihren-fall.md) | die Feldlisten-Wächter tragen ihren Fall oder ihre Grenze |
 | [slice-109](../next/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md) | jede Aussage der Feldliste hat ihre Quelle |
-| [slice-110](../open/slice-110-erfassungs-waechter-fall-meldung-grenze.md) | die Wächter der Erfassungs-Ausgabe tragen Fall, Meldung und Grenze |
+| [slice-110](../next/slice-110-erfassungs-waechter-fall-meldung-grenze.md) | die Wächter der Erfassungs-Ausgabe tragen Fall, Meldung und Grenze |
 | [slice-111](../open/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md) | was ein Bootstrap anlegt, steht in der Nutzer-Doku |
 
 Aus **dieser Closure** kommen zwei:
