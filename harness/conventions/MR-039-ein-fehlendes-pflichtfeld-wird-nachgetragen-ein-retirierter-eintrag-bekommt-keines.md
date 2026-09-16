@@ -1,6 +1,8 @@
 # MR-039 — Ein fehlendes Pflichtfeld wird nachgetragen, ein retirierter Eintrag bekommt keines
 
 > **ÜBERHOLT: die Deckungs-Messung samt ihrer drei Kommandos über `harness/conventions.md` → [`MR-046`](../conventions.md#mr-046--die-verzeichnis-position-ist-binär-und-trägt-die-kopf-marke-nicht).** Setzung 1, 2 und 3 gelten fort — je einzeln geprüft; die Gleichung selbst gilt über das Verzeichnis unverändert.
+>
+> **ÜBERHOLT: Setzung 1 und 2 → [`MR-060`](../conventions.md#mr-060--ein-neues-pflichtfeld-gilt-für-neue-einträge-bestehende-werden-nicht-nachgetragen).** Setzung 3 gilt fort, und die im Bestand nachgetragenen Felder bleiben stehen.
 
 - **Datum:** 2026-09-02
 - **Wirksamkeits-Anlass:** slice-083 — der Form-Vergleich der Re-Baseline, dessen zweiter

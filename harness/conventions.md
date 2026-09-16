@@ -129,9 +129,9 @@ nummeriert, mit den Pflichtfeldern der Ziel-Form
 Eintrag wird nichts nachträglich inhaltlich geändert: eine Teil-Ablösung trägt eine Kopf-Marke
 ([`MR-032`](#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)), eine
 vollständige Aufhebung Kopf und Zeiger
-([`MR-020`](#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)), ein nachgetragenes
-Pflichtfeld tritt hinzu statt zu ersetzen
-([`MR-039`](#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)).
+([`MR-020`](#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf)), und ein neues
+Pflichtfeld der Ziel-Form trägt erst der Eintrag, der danach entsteht
+([`MR-060`](#mr-060--ein-neues-pflichtfeld-gilt-für-neue-einträge-bestehende-werden-nicht-nachgetragen)).
 Ist der Auflösungs-Trigger eines Eintrags eingetreten, wandert seine Datei per `git mv` nach
 [`conventions/done/`](conventions/done/): der Zustand ist die Verzeichnis-Position, kein
 Status-Feld. Die Position ist **binär** — sie trennt *aktiv* von *aufgelöst* und trägt die
@@ -143,9 +143,8 @@ was ein Eintrag setzt, setzt seine Datei. Die Spalten `Geltungsbereich` und
 `Ersetzt-Baseline-Regel` der aktiven Tabelle tragen den **Anfang** des gleichnamigen
 Pflichtfelds, und ein `…` sagt,
 dass es in der Datei weitergeht; bei Abweichung gilt die Datei. Ein `—` steht, wo der Eintrag das
-Feld nicht führt — nachgetragen wird es nur nach
-[`MR-039`](#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines),
-und ein retirierter Eintrag bekommt keines.
+Feld nicht führt; nachgetragen wird es nicht
+([`MR-060`](#mr-060--ein-neues-pflichtfeld-gilt-für-neue-einträge-bestehende-werden-nicht-nachgetragen)).
 
 **Jede Zeile trägt zwei Anker.** Die kurze Kennung `mr-<NNN>` ist die Adresse, die die Ziel-Form
 für neue Verweise vorsieht; der Überschriften-Slug `mr-<NNN>--<titel>` ist die Adresse, unter der
@@ -214,6 +213,7 @@ Eine Zeile je Datei in [`conventions/`](conventions/).
 | [MR-057](conventions/MR-057-kennungs-form-fuer-neue-slices-und-wellen-ist-der-name.md) <a id="mr-057"></a><a id="mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer"></a> | Die Kennungs-Form für neue Slices und Wellen ist der Name, nicht die Nummer | die **Form** jeder ab diesem Eintrag **neu vergebenen** Slice- und Welle-Kennung dieses Repos, und die Platzhalter-Notation dort, wo eine lebende Regel diese Form … | keine — und nach dem Wortlaut der Eintrags-Vorlage trotzdem **kein Fork**, aus demselben Grund wie bei … |
 | [MR-058](conventions/MR-058-eine-messung-die-ihr-eigener-vorgang-bewegt-wird-danach-genommen.md) <a id="mr-058"></a><a id="mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen"></a> | Eine Messung, die ihr eigener Vorgang bewegt, wird nach dem Vorgang genommen | die Zahl neben dem `grep -c 'slice-NNN'`-Kommando im Feld `Löst auf` von [`MR-057`](#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer), und die **Form** jeder Messung in einem lebenden, repo-eigenen Markdown-Artefakt, deren … | keine — nach dem Wortlaut der Eintrags-Vorlage damit ein **Fork**, der nach … |
 | [MR-059](conventions/MR-059-kennungs-erkennung-traegt-die-zugelassenen-formen.md) <a id="mr-059"></a><a id="mr-059--jede-kennungs-erkennung-trägt-die-zugelassenen-formen-die-fundliste-steht-im-vorgang"></a> | Jede Kennungs-Erkennung trägt die zugelassenen Formen, die Fundliste steht im Vorgang | das Feld `Grenze` von [`MR-057`](#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer) — die einzige Stelle, die dieser Eintrag ablöst … | keine — §Grenze setzt keine Baseline-Regel; sie zieht die Reichweite einer Deklaration … |
+| [MR-060](conventions/MR-060-ein-neues-pflichtfeld-gilt-fuer-neue-eintraege.md) <a id="mr-060"></a><a id="mr-060--ein-neues-pflichtfeld-gilt-für-neue-einträge-bestehende-werden-nicht-nachgetragen"></a> | Ein neues Pflichtfeld gilt für neue Einträge, bestehende werden nicht nachgetragen | [`MR-039`](#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines) Setzung 1 (ein neues Pflichtfeld wird in jeden Eintrag mit vollem Rumpf nachgetragen) und … | [`modul-02-harness-bootstrap.md`](../.harness/baseline/v6.9.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2) §Freshness-Audit der vendored Baseline (Schritt 2) … |
 
 ### Aufgelöste Adaptionen
 
