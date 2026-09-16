@@ -55,11 +55,12 @@ die ADR steht auf **`Proposed`** (ihre eigene §Geschichte) und ist damit nach
 [`AGENTS.md`](../AGENTS.md) §3.4 noch nicht eingefroren — die Zeile hält fest, was sie **heute**
 vorschlägt, nicht, dass die Entscheidung feststeht.
 
-Der aktuell vendored Stand ist `v6.8.0`
-(`ls -1 .harness/baseline/` — kein Erwartungswert, wandert mit jedem Tausch); die
-Zwei-Fassungen-Phase des siebten Sprungs ist geschlossen. Der Zielstand steht auf `v6.9.0`
-(§Baseline von [`conventions.md`](conventions.md)); der Tausch steht aus, und damit läuft die
-Zwei-Fassungen-Phase des achten Sprungs.
+Der aktuell vendored Stand ist `v6.9.0`
+(`ls -1 .harness/baseline/` — kein Erwartungswert, wandert mit jedem Tausch); der Zielstand steht
+auf demselben Tag (§Baseline von [`conventions.md`](conventions.md)), der Baum ist getauscht, und
+damit ist die Zwei-Fassungen-Phase des achten Sprungs geschlossen. Der Vollzug steht aus:
+[ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md) §Konsequenzen legt
+neben den Tausch den Instanz-Durchgang vor ihn.
 
 ## 2. Ort und Form der Zielstand-Setzung
 
@@ -101,39 +102,39 @@ läuft.
 
 ## 4. Instanz-Register
 
-Je Vorlage unter `.harness/baseline/v6.8.0/templates/` genau eine Zeile
-(`find .harness/baseline/v6.8.0/templates -name '*.template.md' | wc -l` → **25**, kein
+Je Vorlage unter `.harness/baseline/v6.9.0/templates/` genau eine Zeile
+(`find .harness/baseline/v6.9.0/templates -name '*.template.md' | wc -l` → **25**, kein
 Erwartungswert — die Zahl wandert mit dem Tag). Die Zuordnung ist eine **Beobachtung am Bestand**,
 keine ADR-Aussage: Die Sprung-ADRs aus §1 entscheiden über die regierende Fassung, nicht über die
 Zuordnung Vorlage → Instanz (dazu [§6](#6-offene-fragen)).
 
 | Vorlage | Instanz(en) in diesem Repo | Beleg / Begründung |
 |---|---|---|
-| `.harness/baseline/v6.8.0/templates/AGENTS.template.md` | [`AGENTS.md`](../AGENTS.md) | eine Instanz, Repo-Wurzel |
-| `.harness/baseline/v6.8.0/templates/docs/plan/adr/NNNN-titel.template.md` | `docs/plan/adr/[0-9]*.md` | 46 Instanzen (`ls docs/plan/adr/[0-9]*.md \| wc -l`, kein Erwartungswert) |
-| `.harness/baseline/v6.8.0/templates/docs/plan/adr/README.template.md` | [`docs/plan/adr/README.md`](../docs/plan/adr/README.md) | eine Instanz, derivativ ([ADR-0024](../docs/plan/adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)) |
-| `.harness/baseline/v6.8.0/templates/docs/plan/carveouts/carveout.template.md` | `docs/plan/carveouts/CO-*.md` (offen und `done/`) | 6 Instanzen (`ls docs/plan/carveouts/*.md docs/plan/carveouts/done/*.md 2>/dev/null \| grep -v README \| wc -l`, kein Erwartungswert) |
-| `.harness/baseline/v6.8.0/templates/docs/plan/carveouts/README.template.md` | `docs/plan/carveouts/README.md` | eine Instanz |
-| `.harness/baseline/v6.8.0/templates/docs/plan/planning/archiv-stub-slice.template.md` | keine Instanz | dieses Repo hat noch keine Welle archiviert — `git ls-files 'docs/plan/planning/done/**/*.zip'` → leer (kein Erwartungswert); [`make archive-welle`](sensors/archive-welle.md) ist verdrahtet, aber gegen keine geschlossene Welle gelaufen. Zur wiederkehrenden **Slice**-Familie gezählt (unten, §4 Ausdehnungs-Schritt) und darum schon jetzt §5 Buchstabe b zugeordnet, nicht den vier Ausgängen aus Buchstabe a — die Klassenzugehörigkeit ist eine Eigenschaft der Vorlage und unabhängig vom heutigen Instanzenstand; der Instanzenstand selbst ändert sich erst, sobald `make archive-welle` die erste Archivierung erzeugt |
-| `.harness/baseline/v6.8.0/templates/docs/plan/planning/archiv-stub-welle.template.md` | keine Instanz | dieselbe Begründung wie die Zeile darüber — derselbe Vorgang erzeugt beide Stub-Arten gemeinsam. Zur wiederkehrenden **Welle**-Familie gezählt (unten, §4 Ausdehnungs-Schritt); dieselbe Zuordnung wie in der Zeile darüber |
-| `.harness/baseline/v6.8.0/templates/docs/plan/planning/observation.template.md` | `docs/plan/planning/observations/BEO-*/**/observation.md` | 104 Instanzen (`find docs/plan/planning/observations -mindepth 2 -maxdepth 2 -type d \| wc -l`, kein Erwartungswert) |
-| `.harness/baseline/v6.8.0/templates/docs/plan/planning/README.template.md` | `docs/plan/planning/README.md` | eine Instanz |
-| `.harness/baseline/v6.8.0/templates/docs/plan/planning/reconciliation.template.md` | keine Instanz | Datei existiert nicht (`ls docs/plan/planning/reconciliation.md` → Exit 2, kein Erwartungswert); die berührte Sub-Area ist Greenfield und führt kein Reconciliation-Register |
-| `.harness/baseline/v6.8.0/templates/docs/plan/planning/roadmap.template.md` | [`docs/plan/planning/in-progress/roadmap.md`](../docs/plan/planning/in-progress/roadmap.md) | eine Instanz |
-| `.harness/baseline/v6.8.0/templates/docs/plan/planning/slice.template.md` | `docs/plan/planning/{open,next,in-progress,done}/slice-*.md` | 229 Instanzen (`find docs/plan/planning/open docs/plan/planning/next docs/plan/planning/in-progress docs/plan/planning/done -maxdepth 1 -iname 'slice-*.md' \| wc -l`, kein Erwartungswert) |
-| `.harness/baseline/v6.8.0/templates/docs/plan/planning/welle-results.template.md` | `docs/plan/planning/done/welle-*-results.md` | 12 Instanzen (`find docs/plan/planning/done -maxdepth 1 -iname 'welle-*-results.md' \| wc -l`, kein Erwartungswert) |
-| `.harness/baseline/v6.8.0/templates/docs/plan/planning/welle.template.md` | `docs/plan/planning/welle-*.md` (offen) und `docs/plan/planning/done/welle-*.md` ohne `-results` | 15 Instanzen (3 offen + 12 in `done/`, `find docs/plan/planning -maxdepth 1 -iname 'welle-*.md' \| wc -l` und `find docs/plan/planning/done -maxdepth 1 -iname 'welle-*.md' ! -iname '*-results.md' \| wc -l`, kein Erwartungswert) |
-| `.harness/baseline/v6.8.0/templates/docs/reviews/review-report.template.md` | `docs/reviews/*.md` | die Zahl der `docs/reviews/*.md`-Dateien zum Zeitpunkt des Lesens (`ls docs/reviews/*.md \| wc -l` — am Stand dieses Commits **382**); kein Endwert, weil jeder Commit, der eine Datei unter `docs/reviews/` hinzufügt, diese Zahl vor dem nächsten Lesen selbst bewegt — auch der Review-Lauf, der diese Zeile prüft ([`MR-058`](conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen) Setzung 2 und 3) |
-| `.harness/baseline/v6.8.0/templates/harness/conventions/MR-NNN-titel.template.md` | `harness/conventions/MR-*.md` (aktiv und `done/`) | 59 Instanzen (55 aktiv + 4 `done/`, `ls harness/conventions/*.md \| wc -l` und `ls harness/conventions/done/*.md \| wc -l`, kein Erwartungswert) |
-| `.harness/baseline/v6.8.0/templates/harness/conventions.template.md` | [`harness/conventions.md`](conventions.md) | eine Instanz, Index des Adaptions-Blocks |
-| `.harness/baseline/v6.8.0/templates/harness/README.template.md` | [`harness/README.md`](README.md) | eine Instanz |
-| `.harness/baseline/v6.8.0/templates/harness/sensors/gate.template.md` | `harness/sensors/*.md` | 15 Instanzen (`ls harness/sensors/*.md \| wc -l`, kein Erwartungswert) |
-| `.harness/baseline/v6.8.0/templates/.harness/skills/closure-note-reviewer.template.md` | keine Instanz | dieses Repo führt bislang nur eine Skill-Datei (`ls .harness/skills/*.md \| wc -l` → **1**, kein Erwartungswert); `v6.8.0` · `regelwerk/modul-08-agentenrollen.md` §Welche Rolle braucht welche Artefaktklasse verlangt diese Skill nur, wenn das Urteil inferential **und** aus keinem Artefakt ableitbar ist — bislang nicht eingetreten |
-| `.harness/baseline/v6.8.0/templates/.harness/skills/reviewer.template.md` | [`.harness/skills/reviewer.md`](../.harness/skills/reviewer.md) | eine Instanz |
-| `.harness/baseline/v6.8.0/templates/project-readme.template.md` | [`README.md`](../README.md) | eine Instanz, Repo-Wurzel |
-| `.harness/baseline/v6.8.0/templates/spec/architecture.template.md` | [`spec/architecture.md`](../spec/architecture.md) | eine Instanz |
-| `.harness/baseline/v6.8.0/templates/spec/lastenheft.template.md` | [`spec/lastenheft.md`](../spec/lastenheft.md) | eine Instanz |
-| `.harness/baseline/v6.8.0/templates/spec/spezifikation.template.md` | [`spec/spezifikation.md`](../spec/spezifikation.md) | eine Instanz |
+| `.harness/baseline/v6.9.0/templates/AGENTS.template.md` | [`AGENTS.md`](../AGENTS.md) | eine Instanz, Repo-Wurzel |
+| `.harness/baseline/v6.9.0/templates/docs/plan/adr/NNNN-titel.template.md` | `docs/plan/adr/[0-9]*.md` | 46 Instanzen (`ls docs/plan/adr/[0-9]*.md \| wc -l`, kein Erwartungswert) |
+| `.harness/baseline/v6.9.0/templates/docs/plan/adr/README.template.md` | [`docs/plan/adr/README.md`](../docs/plan/adr/README.md) | eine Instanz, derivativ ([ADR-0024](../docs/plan/adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)) |
+| `.harness/baseline/v6.9.0/templates/docs/plan/carveouts/carveout.template.md` | `docs/plan/carveouts/CO-*.md` (offen und `done/`) | 6 Instanzen (`ls docs/plan/carveouts/*.md docs/plan/carveouts/done/*.md 2>/dev/null \| grep -v README \| wc -l`, kein Erwartungswert) |
+| `.harness/baseline/v6.9.0/templates/docs/plan/carveouts/README.template.md` | `docs/plan/carveouts/README.md` | eine Instanz |
+| `.harness/baseline/v6.9.0/templates/docs/plan/planning/archiv-stub-slice.template.md` | keine Instanz | dieses Repo hat noch keine Welle archiviert — `git ls-files 'docs/plan/planning/done/**/*.zip'` → leer (kein Erwartungswert); [`make archive-welle`](sensors/archive-welle.md) ist verdrahtet, aber gegen keine geschlossene Welle gelaufen. Zur wiederkehrenden **Slice**-Familie gezählt (unten, §4 Ausdehnungs-Schritt) und darum schon jetzt §5 Buchstabe b zugeordnet, nicht den vier Ausgängen aus Buchstabe a — die Klassenzugehörigkeit ist eine Eigenschaft der Vorlage und unabhängig vom heutigen Instanzenstand; der Instanzenstand selbst ändert sich erst, sobald `make archive-welle` die erste Archivierung erzeugt |
+| `.harness/baseline/v6.9.0/templates/docs/plan/planning/archiv-stub-welle.template.md` | keine Instanz | dieselbe Begründung wie die Zeile darüber — derselbe Vorgang erzeugt beide Stub-Arten gemeinsam. Zur wiederkehrenden **Welle**-Familie gezählt (unten, §4 Ausdehnungs-Schritt); dieselbe Zuordnung wie in der Zeile darüber |
+| `.harness/baseline/v6.9.0/templates/docs/plan/planning/observation.template.md` | `docs/plan/planning/observations/BEO-*/**/observation.md` | 104 Instanzen (`find docs/plan/planning/observations -mindepth 2 -maxdepth 2 -type d \| wc -l`, kein Erwartungswert) |
+| `.harness/baseline/v6.9.0/templates/docs/plan/planning/README.template.md` | `docs/plan/planning/README.md` | eine Instanz |
+| `.harness/baseline/v6.9.0/templates/docs/plan/planning/reconciliation.template.md` | keine Instanz | Datei existiert nicht (`ls docs/plan/planning/reconciliation.md` → Exit 2, kein Erwartungswert); die berührte Sub-Area ist Greenfield und führt kein Reconciliation-Register |
+| `.harness/baseline/v6.9.0/templates/docs/plan/planning/roadmap.template.md` | [`docs/plan/planning/in-progress/roadmap.md`](../docs/plan/planning/in-progress/roadmap.md) | eine Instanz |
+| `.harness/baseline/v6.9.0/templates/docs/plan/planning/slice.template.md` | `docs/plan/planning/{open,next,in-progress,done}/slice-*.md` | 229 Instanzen (`find docs/plan/planning/open docs/plan/planning/next docs/plan/planning/in-progress docs/plan/planning/done -maxdepth 1 -iname 'slice-*.md' \| wc -l`, kein Erwartungswert) |
+| `.harness/baseline/v6.9.0/templates/docs/plan/planning/welle-results.template.md` | `docs/plan/planning/done/welle-*-results.md` | 12 Instanzen (`find docs/plan/planning/done -maxdepth 1 -iname 'welle-*-results.md' \| wc -l`, kein Erwartungswert) |
+| `.harness/baseline/v6.9.0/templates/docs/plan/planning/welle.template.md` | `docs/plan/planning/welle-*.md` (offen) und `docs/plan/planning/done/welle-*.md` ohne `-results` | 15 Instanzen (3 offen + 12 in `done/`, `find docs/plan/planning -maxdepth 1 -iname 'welle-*.md' \| wc -l` und `find docs/plan/planning/done -maxdepth 1 -iname 'welle-*.md' ! -iname '*-results.md' \| wc -l`, kein Erwartungswert) |
+| `.harness/baseline/v6.9.0/templates/docs/reviews/review-report.template.md` | `docs/reviews/*.md` | die Zahl der `docs/reviews/*.md`-Dateien zum Zeitpunkt des Lesens (`ls docs/reviews/*.md \| wc -l` — am Stand dieses Commits **382**); kein Endwert, weil jeder Commit, der eine Datei unter `docs/reviews/` hinzufügt, diese Zahl vor dem nächsten Lesen selbst bewegt — auch der Review-Lauf, der diese Zeile prüft ([`MR-058`](conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen) Setzung 2 und 3) |
+| `.harness/baseline/v6.9.0/templates/harness/conventions/MR-NNN-titel.template.md` | `harness/conventions/MR-*.md` (aktiv und `done/`) | 59 Instanzen (55 aktiv + 4 `done/`, `ls harness/conventions/*.md \| wc -l` und `ls harness/conventions/done/*.md \| wc -l`, kein Erwartungswert) |
+| `.harness/baseline/v6.9.0/templates/harness/conventions.template.md` | [`harness/conventions.md`](conventions.md) | eine Instanz, Index des Adaptions-Blocks |
+| `.harness/baseline/v6.9.0/templates/harness/README.template.md` | [`harness/README.md`](README.md) | eine Instanz |
+| `.harness/baseline/v6.9.0/templates/harness/sensors/gate.template.md` | `harness/sensors/*.md` | 15 Instanzen (`ls harness/sensors/*.md \| wc -l`, kein Erwartungswert) |
+| `.harness/baseline/v6.9.0/templates/.harness/skills/closure-note-reviewer.template.md` | keine Instanz | dieses Repo führt bislang nur eine Skill-Datei (`ls .harness/skills/*.md \| wc -l` → **1**, kein Erwartungswert); `v6.9.0` · `regelwerk/modul-08-agentenrollen.md` §Welche Rolle braucht welche Artefaktklasse verlangt diese Skill nur, wenn das Urteil inferential **und** aus keinem Artefakt ableitbar ist — bislang nicht eingetreten |
+| `.harness/baseline/v6.9.0/templates/.harness/skills/reviewer.template.md` | [`.harness/skills/reviewer.md`](../.harness/skills/reviewer.md) | eine Instanz |
+| `.harness/baseline/v6.9.0/templates/project-readme.template.md` | [`README.md`](../README.md) | eine Instanz, Repo-Wurzel |
+| `.harness/baseline/v6.9.0/templates/spec/architecture.template.md` | [`spec/architecture.md`](../spec/architecture.md) | eine Instanz |
+| `.harness/baseline/v6.9.0/templates/spec/lastenheft.template.md` | [`spec/lastenheft.md`](../spec/lastenheft.md) | eine Instanz |
+| `.harness/baseline/v6.9.0/templates/spec/spezifikation.template.md` | [`spec/spezifikation.md`](../spec/spezifikation.md) | eine Instanz |
 
 **Vollständigkeit** ist die Übereinstimmung der Zeilenzahl oben (25) mit
 `find .harness/baseline/<tag>/templates -name '*.template.md' | wc -l`, `<tag>` aus
@@ -155,21 +156,21 @@ Dokument liest jede Klasse als Verweis auf **alle** Lebenszyklus-Formen desselbe
 nur seine offene Form —, und wendet diesen Ausdehnungs-Schritt **einheitlich** an: Er ist eine
 eigene Interpretation dieses Dokuments, keine Aussage der Klausel selbst. Ein Grund trägt ihn: die
 **Archiv-Stub-Form** von Slice und Welle
-(`.harness/baseline/v6.8.0/templates/docs/plan/planning/archiv-stub-slice.template.md`, Kopf
+(`.harness/baseline/v6.9.0/templates/docs/plan/planning/archiv-stub-slice.template.md`, Kopf
 `# slice-<Kennung> — <Titel>`, und
-`.harness/baseline/v6.8.0/templates/docs/plan/planning/archiv-stub-welle.template.md`, Kopf
-`# <welle-id> — <Titel>`) — beide sind nach `v6.8.0` · `regelwerk/modul-06-roadmap.md`
+`.harness/baseline/v6.9.0/templates/docs/plan/planning/archiv-stub-welle.template.md`, Kopf
+`# <welle-id> — <Titel>`) — beide sind nach `v6.9.0` · `regelwerk/modul-06-roadmap.md`
 Wellen-Closure-Prozedur, Schritt 4, dasselbe Artefakt wie Slice bzw. Welle, nur gekürzt, kein
 eigener Artefakt-Typ: dieselbe Datei über ihren Lebenszyklus, in ihrer Schlussform. Auf dieses
 Register abgebildet sind es **sieben** Zeilen, keine mehr — die
 Slice-Familie und die Welle-Familie führen je zwei Vorlagen —, mit den Vorlagen
-`.harness/baseline/v6.8.0/templates/docs/plan/adr/NNNN-titel.template.md` (ADR),
-`.harness/baseline/v6.8.0/templates/docs/plan/planning/slice.template.md` **und**
-`.harness/baseline/v6.8.0/templates/docs/plan/planning/archiv-stub-slice.template.md` (Slice),
-`.harness/baseline/v6.8.0/templates/docs/plan/planning/welle.template.md` **und**
-`.harness/baseline/v6.8.0/templates/docs/plan/planning/archiv-stub-welle.template.md` (Welle),
-`.harness/baseline/v6.8.0/templates/docs/plan/carveouts/carveout.template.md` (Carveout),
-`.harness/baseline/v6.8.0/templates/docs/reviews/review-report.template.md` (Review-Report). Für
+`.harness/baseline/v6.9.0/templates/docs/plan/adr/NNNN-titel.template.md` (ADR),
+`.harness/baseline/v6.9.0/templates/docs/plan/planning/slice.template.md` **und**
+`.harness/baseline/v6.9.0/templates/docs/plan/planning/archiv-stub-slice.template.md` (Slice),
+`.harness/baseline/v6.9.0/templates/docs/plan/planning/welle.template.md` **und**
+`.harness/baseline/v6.9.0/templates/docs/plan/planning/archiv-stub-welle.template.md` (Welle),
+`.harness/baseline/v6.9.0/templates/docs/plan/carveouts/carveout.template.md` (Carveout),
+`.harness/baseline/v6.9.0/templates/docs/reviews/review-report.template.md` (Review-Report). Für
 sie gilt unten §5 Buchstabe b statt Buchstabe a — auch für die zwei Archiv-Stub-Zeilen, obwohl §4
 sie oben (noch) als *keine Instanz* führt: Die Zuordnung zu Buchstabe a oder b folgt der
 Artefakt-Klassen-Zugehörigkeit aus diesem Ausdehnungs-Schritt, nicht dem heutigen Instanzenstand —
@@ -179,14 +180,14 @@ Repos. Die Klassenzugehörigkeit gilt bereits jetzt; der Instanzenstand ändert 
 sobald `make archive-welle` die erste Archivierung erzeugt.
 
 Drei der übrigen mehrinstanzigen Zeilen dieses Registers —
-`.harness/baseline/v6.8.0/templates/docs/plan/planning/welle-results.template.md` (12 Instanzen),
-`.harness/baseline/v6.8.0/templates/docs/plan/planning/observation.template.md` (104) und
-`.harness/baseline/v6.8.0/templates/harness/sensors/gate.template.md` (15) — nennt dieselbe Stelle
+`.harness/baseline/v6.9.0/templates/docs/plan/planning/welle-results.template.md` (12 Instanzen),
+`.harness/baseline/v6.9.0/templates/docs/plan/planning/observation.template.md` (104) und
+`.harness/baseline/v6.9.0/templates/harness/sensors/gate.template.md` (15) — nennt dieselbe Stelle
 **nicht**. Ob sie strukturell dieselbe Append-only-Logik tragen, misst dieses Dokument nicht und
 behauptet es deshalb auch nicht ([§6](#6-offene-fragen)); bis zur Entscheidung sind sie von §5
 Buchstabe a **ausgenommen**, nicht ihm zugeordnet.
 
-Eine vierte — `.harness/baseline/v6.8.0/templates/harness/conventions/MR-NNN-titel.template.md`
+Eine vierte — `.harness/baseline/v6.9.0/templates/harness/conventions/MR-NNN-titel.template.md`
 (59 Instanzen) — ist aus demselben Grund offen, nicht zugeordnet:
 [`MR-039`](conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
 regelt nur einen Teilaspekt — Setzung 1 trägt ein neues Pflichtfeld bei jedem Eintrag mit vollem
@@ -257,7 +258,7 @@ Ergänzung dieser Menge, sondern eine eigene, disjunkte Antwort für eine andere
 Festlegung 4).
 
 **Diese Ausgänge (vier aus Buchstabe a, einer aus Buchstabe b) sind nicht die fünf Ausgänge des
-Adaptions-Durchgangs.** `v6.8.0` · `regelwerk/modul-02-harness-bootstrap.md` §Freshness-Audit der
+Adaptions-Durchgangs.** `v6.9.0` · `regelwerk/modul-02-harness-bootstrap.md` §Freshness-Audit der
 vendored Baseline (Schritt 2) führt für den **Adaptions-Eintrag** (`MR-<NNN>`) fünf eigene
 Ausgänge — *gegenstandslos · bleibt gültig · teilweise überholt · Bezug ist entfallen ·
 widerspricht* —, benannt in
@@ -278,10 +279,10 @@ Achsen, die nicht ineinander übersetzt werden: dazu [§6](#6-offene-fragen).
   bzw. eine Formvorgabe für einen künftigen Bericht, ausgenommen der sprung-bezogene Absatz in §5 a.
   [ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md) nennt die Report-Form außerdem als Form ihres Instanz-Durchgangs; ob daraus eine
   Pflicht über ihren Sprung hinaus folgt, bleibt offen.
-- **`.harness/baseline/v6.8.0/templates/docs/plan/planning/welle-results.template.md` — 12
+- **`.harness/baseline/v6.9.0/templates/docs/plan/planning/welle-results.template.md` — 12
   Instanzen (`find docs/plan/planning/done -maxdepth 1 -iname 'welle-*-results.md' | wc -l`, kein
   Erwartungswert): append-only wie die sieben Zeilen aus §5 Buchstabe b, oder Buchstabe a (vier
-  Ausgänge)? Sie ist keine Lebenszyklus-Form von `welle.template.md` — nach `v6.8.0` ·
+  Ausgänge)? Sie ist keine Lebenszyklus-Form von `welle.template.md` — nach `v6.9.0` ·
   `regelwerk/modul-06-roadmap.md` Wellen-Closure-Prozedur Schritt 4 bleibt die Ergebnisnotiz
   vollständig und flach, während Slice-Datei und Welle-Plan zum Stub werden —, sondern die
   Ergebnis-Notiz, die derselbe Abschluss-Vorgang zusätzlich zur offenen Form erzeugt; die
@@ -291,10 +292,10 @@ Achsen, die nicht ineinander übersetzt werden: dazu [§6](#6-offene-fragen).
   Sprung-ADRs entscheidet, ob eine wachsende Instanzmenge allein für Buchstabe b genügt. Weder
   Buchstabe a noch Buchstabe b ist damit zugewiesen; die Zeile bleibt offen (siehe §5 Buchstabe a,
   Ausnahme-Satz).
-- **`.harness/baseline/v6.8.0/templates/docs/plan/planning/observation.template.md` — 104
+- **`.harness/baseline/v6.9.0/templates/docs/plan/planning/observation.template.md` — 104
   Instanzen (`find docs/plan/planning/observations -mindepth 2 -maxdepth 2 -type d | wc -l`, kein
   Erwartungswert): append-only wie die sieben Zeilen aus §5 Buchstabe b, oder Buchstabe a (vier
-  Ausgänge)? Keine der acht Sprung-ADRs entscheidet es. `v6.8.0` ·
+  Ausgänge)? Keine der acht Sprung-ADRs entscheidet es. `v6.9.0` ·
   `regelwerk/modul-06-roadmap.md` §Das Beobachtungs-Register führt `observation.md` und
   `evidence/*.md` zwar als „unveränderlich ab Anlage" bzw. „unveränderlich ab Merge" — das
   beschreibt die Lebensdauer einer einzelnen Beobachtung innerhalb des Registers, nicht, ob eine
@@ -303,14 +304,14 @@ Achsen, die nicht ineinander übersetzt werden: dazu [§6](#6-offene-fragen).
   rückwirkende Form-Anwendung wäre eine Änderung an 104 ab Anlage unveränderlichen Instanzen.
   Weder Buchstabe a noch Buchstabe b ist damit zugewiesen; die Zeile bleibt offen (siehe §5
   Buchstabe a, Ausnahme-Satz).
-- **`.harness/baseline/v6.8.0/templates/harness/sensors/gate.template.md` — 15 Instanzen
-  (`ls harness/sensors/*.md | wc -l`, kein Erwartungswert): append-only oder Buchstabe a? `v6.8.0` ·
+- **`.harness/baseline/v6.9.0/templates/harness/sensors/gate.template.md` — 15 Instanzen
+  (`ls harness/sensors/*.md | wc -l`, kein Erwartungswert): append-only oder Buchstabe a? `v6.9.0` ·
   `regelwerk/grundlagen-begriffe.md` nennt für `harness/sensors/<target>.md`: *„kein
   Lifecycle-Verzeichnis, ein retiriertes Gate verschwindet."* Das spricht gegen eine
   Bestandsschutz-Logik für die einzelne Sensor-Datei, entscheidet aber nicht, ob eine geänderte
   Template-**Form** rückwirkend auf bestehende Instanzen angewendet würde. Weder Buchstabe a noch
   Buchstabe b ist damit zugewiesen; die Zeile bleibt offen (siehe §5 Buchstabe a, Ausnahme-Satz).
-- **`.harness/baseline/v6.8.0/templates/harness/conventions/MR-NNN-titel.template.md` — 59
+- **`.harness/baseline/v6.9.0/templates/harness/conventions/MR-NNN-titel.template.md` — 59
   Instanzen (55 aktiv + 4 `done/`, §4): append-only oder Buchstabe a?
   [`MR-039`](conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
   regelt nur einen Teilaspekt — Setzung 1 trägt ein neues Pflichtfeld bei jedem Eintrag mit vollem

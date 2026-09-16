@@ -18,8 +18,8 @@ Netz. Der Baum ist eine **derivative Sicht** auf den Kurs; bei Konflikt gilt die
 kanonische Quelle (§2 und der Kurs selbst, den `regelwerk/README.md` nennt).
 **Lektüre vor dem Workflow (§6): der Index** (`.harness/baseline/<tag>/regelwerk/README.md`)
 **+ das relevante Modul on-demand**, **nicht** der Volltext am Stück — der `regelwerk/`-Baum
-misst am adoptierten Stand `v6.8.0` mehr als das Doppelte von Claudes
-150k-Zeichen-Memory-Limit (`cat .harness/baseline/v6.8.0/regelwerk/*.md | wc -c` → **354868**;
+misst am adoptierten Stand `v6.9.0` mehr als das Doppelte von Claudes
+150k-Zeichen-Memory-Limit (`cat .harness/baseline/v6.9.0/regelwerk/*.md | wc -c` → **362419**;
 **kein Erwartungswert**, die Zahl wandert mit dem Tag. Das Limit selbst ist eine
 Werkzeug-Eigenschaft und hier nicht messbar — erhoben in
 [`MR-004`](harness/conventions.md#mr-004--sessionstart-regelwerk-injektor)).
@@ -31,7 +31,7 @@ injiziert via SessionStart-Hook nur den **Index** (`.codex/hooks.json` →
 **außer** den Modulen unter `.claude/rules/`, die als Symlink in den vendored Baum zeigen
 und dadurch in **jedem** Claude-Lauf im Kontext stehen, ohne gelesen worden zu sein
 (`readlink .claude/rules/*.md | grep -c '\.harness/baseline/'` → **7** von **26**,
-`ls .harness/baseline/v6.8.0/regelwerk/*.md | wc -l`; beide **keine Erwartungswerte**).
+`ls .harness/baseline/v6.9.0/regelwerk/*.md | wc -l`; beide **keine Erwartungswerte**).
 Gezählt sind die Zeiger **in den vendored Baum**; daneben trägt das Verzeichnis
 Zeiger auf repo-eigene Quellen, die keine Baseline-Module sind.
 Ein `@`-Auto-Import besteht nicht — Träger ist das Verzeichnis. Die Menge ist
@@ -129,15 +129,15 @@ prüft, ist ein stilles Grün im Gate — §3.1 eine Ebene tiefer. Die Regel ist
 **Verschärfung** und braucht darum kein ADR (§3.5 gilt für Senkungen; vgl.
 [`MR-001`](harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) „Gate-*Anheben* → Steering-Loop").
 
-**Herkunft, mit Mess-Stand:** die adoptierte Baseline `v6.8.0` deckt **eine** der
+**Herkunft, mit Mess-Stand:** die adoptierte Baseline `v6.9.0` deckt **eine** der
 Zusage-Klassen, die der erste Satz dieser Sektion aufzählt — den DoD-Punkt, der
 sich auf einen Test beruft. Ausgeschrieben steht sie im Regelwerk, nicht im
 Briefing:
-`grep -c '^### Bewusstes Brechen für DoD-Testbehauptungen (Modul 11)$' .harness/baseline/v6.8.0/regelwerk/modul-11-verification.md`
+`grep -c '^### Bewusstes Brechen für DoD-Testbehauptungen (Modul 11)$' .harness/baseline/v6.9.0/regelwerk/modul-11-verification.md`
 → **1**, mit Zeigern aus zwei weiteren Modulen
-(`grep -rl 'Bewusstes Brechen' .harness/baseline/v6.8.0/regelwerk/ | wc -l` → **3**),
+(`grep -rl 'Bewusstes Brechen' .harness/baseline/v6.9.0/regelwerk/ | wc -l` → **3**),
 während die AGENTS-Vorlage desselben Stands dazu keine Hard Rule führt
-(`grep -c 'rot gesehen' .harness/baseline/v6.8.0/templates/AGENTS.template.md` →
+(`grep -c 'rot gesehen' .harness/baseline/v6.9.0/templates/AGENTS.template.md` →
 **0**, Exit 1) — die Nummer hier ist eine Adresse und keine Entsprechung
 ([`MR-026`](harness/conventions.md#mr-026--die-hard-rule-nummer-ist-eine-adresse-keine-baseline-entsprechung)).
 **Keine Erwartungswerte**, alle drei wandern mit dem Stand
@@ -147,12 +147,12 @@ während die AGENTS-Vorlage desselben Stands dazu keine Hard Rule führt
 hier.** Diese Sektion trägt darüber hinaus die drei übrigen Zusage-Klassen, die
 Pflicht **ohne** Kritikalitäts-Filter und beim Zusagenden statt beim Verifier,
 und die Sensor-Hälfte `make mutate`, die das Regelwerk nicht kennt
-(`grep -rl 'make mutate' .harness/baseline/v6.8.0/regelwerk/ | wc -l` → **0**).
+(`grep -rl 'make mutate' .harness/baseline/v6.9.0/regelwerk/ | wc -l` → **0**).
 Die Baseline trägt umgekehrt zwei Dinge, die hier nicht stehen: Das Rot muss die
 **behauptete** Ursache tragen, nicht irgendeine; und fehlt der Rot-Beleg bei
 einem sicherheits- oder korrektheitskritischen DoD-Punkt, trägt ihn der
 **Verifier** nach, statt die grüne Suite ungeprüft zu übernehmen
-(`grep -c 'sicherheits- oder korrektheitskritischen' .harness/baseline/v6.8.0/regelwerk/modul-11-verification.md`
+(`grep -c 'sicherheits- oder korrektheitskritischen' .harness/baseline/v6.9.0/regelwerk/modul-11-verification.md`
 → **1**). Beides bindet über die Baseline und wird hier **nicht** abgeschrieben —
 zwei Fassungen derselben Regel driften.
 
@@ -265,22 +265,22 @@ ob eine Zelle Chronik trägt, ist wie die zwei Urteils-Klassen oben ein Urteil u
 kein Muster — ein `grep` zählte Zellen, nicht Verstöße, und gäbe damit ein Muster
 als Kriterium aus, das keines ist (§3.6).
 
-**Herkunft, mit Mess-Stand:** die adoptierte Baseline `v6.8.0` **führt** diese
+**Herkunft, mit Mess-Stand:** die adoptierte Baseline `v6.9.0` **führt** diese
 Regel — als Hard Rule mit derselben Nummer und demselben Titel im Hard-Rules-Block
 der AGENTS-Vorlage
-(`grep -c '^### 3\.7 Ein Kommentar beschreibt, was da ist$' .harness/baseline/v6.8.0/templates/AGENTS.template.md` → **1**)
+(`grep -c '^### 3\.7 Ein Kommentar beschreibt, was da ist$' .harness/baseline/v6.9.0/templates/AGENTS.template.md` → **1**)
 und ausgeschrieben in
-`grep -c '^### Was ein Kommentar trägt — Code, Konfiguration, Skripte$' .harness/baseline/v6.8.0/regelwerk/grundlagen-harness-dateien.md` → **1**.
+`grep -c '^### Was ein Kommentar trägt — Code, Konfiguration, Skripte$' .harness/baseline/v6.9.0/regelwerk/grundlagen-harness-dateien.md` → **1**.
 Was hier über die Vorlage hinaus steht — Geltungsbereich, Cutoff, Quellen-Klausel
 und die Wächter-Aussage —, ergänzt sie, ohne sie einzuschränken. Die
 Quellen-Klausel ist die **Anwendung** der Baseline-Hard-Rule *„Wer Herkunft nennt,
 nennt sie als **ein** auflösbares Feld … und nie als Absatz"*
-(`grep -c 'nennt sie als \*\*ein\*\* auflösbares Feld' .harness/baseline/v6.8.0/regelwerk/grundlagen-harness-dateien.md` → **1**):
+(`grep -c 'nennt sie als \*\*ein\*\* auflösbares Feld' .harness/baseline/v6.9.0/regelwerk/grundlagen-harness-dateien.md` → **1**):
 Sie nimmt keine der fünf Klassen weg und keine der dort genannten Anker-Formen.
 **Die Anker-Form der Begründung oben ist die des adoptierten Stands** — er
 schreibt die Slice-Kennung als Namen:
-`grep -c 'seit slice-<NNN>' .harness/baseline/v6.8.0/regelwerk/grundlagen-traceability.md` → **0**,
-`grep -c 'seit slice-<Kennung>' .harness/baseline/v6.8.0/regelwerk/grundlagen-traceability.md` → **3**;
+`grep -c 'seit slice-<NNN>' .harness/baseline/v6.9.0/regelwerk/grundlagen-traceability.md` → **0**,
+`grep -c 'seit slice-<Kennung>' .harness/baseline/v6.9.0/regelwerk/grundlagen-traceability.md` → **3**;
 **keine Erwartungswerte**, beide wandern mit dem Stand. **Welche Form dieses Repo
 führt, deklariert** [`MR-057`](harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer):
 Namens-Form für jede neu vergebene Slice- und Welle-Kennung, der Bestand behält
@@ -428,7 +428,7 @@ Kontext schreiben.
 **Warum der Planner — und was diese Sektion hinzufügt.** Die Zuweisung ist nicht neu: die
 adoptierte Baseline führt den Schritt in der Rollen-Sequenz für einen Slice als
 `P->>P: Closure in done/ + Lerneintrag`
-(`grep -c 'P->>P: Closure in done/ + Lerneintrag' .harness/baseline/v6.8.0/regelwerk/modul-08-agentenrollen.md`
+(`grep -c 'P->>P: Closure in done/ + Lerneintrag' .harness/baseline/v6.9.0/regelwerk/modul-08-agentenrollen.md`
 → **1**). Neu ist der **Commit-Zuschnitt**, den §3.8 für die zwei Architect-Artefakte führt und
 den für den Abschluss keine Quelle führt — ohne ihn ist die Rollen-Grenze im Nachhinein an nichts
 ablesbar. Die Sektion füllt damit eine Lücke, statt von der Baseline abzuweichen; deshalb steht zu

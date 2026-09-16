@@ -17,7 +17,7 @@
   aus demselben Grund wie bei
   [`MR-035`](../conventions.md#mr-035--der-automatische-claude-kontext-trägt-eine-benannte-geschlossene-modul-auswahl):
   Die Baseline kennt den Mechanismus nicht. Am heute adoptierten Stand nachgemessen
-  (`grep -rl 'claude/rules' .harness/baseline/v6.8.0/ | wc -l` → **0**), weil
+  (`grep -rl 'claude/rules' .harness/baseline/v6.9.0/ | wc -l` → **0**), weil
   [`MR-033`](../conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
   zu einer Baseline-Aussage den Tag verlangt, gegen den sie gemessen ist.
 - **Löst auf:** [`MR-035`](../conventions.md#mr-035--der-automatische-claude-kontext-trägt-eine-benannte-geschlossene-modul-auswahl)
@@ -43,9 +43,9 @@
      Gate-Lauf vor Handoff. §3.6 nennt die Pre-completion-Checkliste
      (`grep -c 'Pre-completion' AGENTS.md` → **1**); eine eigene Begriffs-Sektion dafür führt
      `modul-11`
-     (`grep -c '^### Begriffe: Pre-completion Checklist Middleware und DoD-Verletzung$' .harness/baseline/v6.8.0/regelwerk/modul-11-verification.md`
+     (`grep -c '^### Begriffe: Pre-completion Checklist Middleware und DoD-Verletzung$' .harness/baseline/v6.9.0/regelwerk/modul-11-verification.md`
      → **1**), genannt wird der Begriff im Regelwerk daneben in einem zweiten Modul
-     (`grep -rl 'Pre-completion' .harness/baseline/v6.8.0/regelwerk/ | wc -l` → **2**).
+     (`grep -rl 'Pre-completion' .harness/baseline/v6.9.0/regelwerk/ | wc -l` → **2**).
 
   Dieselbe Bewegung — von der Aufzählung zur Eigenschaft — vollzieht
   [`AGENTS.md`](../../AGENTS.md) §3.11 für die eingefrorenen Adressen, und aus demselben Grund:
@@ -58,7 +58,7 @@
   (`readlink .claude/rules/*.md | grep -c 'modul-10'` → **0**, Exit **1**).
 
   **Dieselbe Tabelle nimmt Modul 11 herein.** Der Verifier steht dort in der Klasse **keins**
-  (`grep -c '| \*\*keins\*\* |.*Verifier · Validator |' .harness/baseline/v6.8.0/regelwerk/modul-08-agentenrollen.md`
+  (`grep -c '| \*\*keins\*\* |.*Verifier · Validator |' .harness/baseline/v6.9.0/regelwerk/modul-08-agentenrollen.md`
   → **1**) — *„Die Prüfgrundlage steht bereits im Slice"*. Eine Skill-Datei wäre für ihn nach
   demselben Kriterium eine **Attrappe**; es gibt für sein Modul also keinen Träger außer dem
   On-demand-Lesevorgang. Ausschluss von Modul 10 und Aufnahme von Modul 11 folgen damit aus
@@ -73,19 +73,19 @@
   Eintrag ist der Nachzug. Setzung 2 jenes Eintrags verlangt für *einen Eintrag mehr oder weniger*
   einen neuen Eintrag dieses Blocks — für die drei zusammen ist dieser es. Stand:
   `readlink .claude/rules/*.md | grep -c '\.harness/baseline/'` → **7** von **26**
-  (`ls .harness/baseline/v6.8.0/regelwerk/*.md | wc -l`). **Keine Erwartungswerte**
+  (`ls .harness/baseline/v6.9.0/regelwerk/*.md | wc -l`). **Keine Erwartungswerte**
   ([`MR-025`](../conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2) — beide wandern mit dem Verzeichnis und mit dem Tag.
 - **Setzung 4 — der Preis ist beziffert und bezahlt.** Die sieben Baseline-Zeiger messen
-  **113031** Zeichen
+  **119270** Zeichen
   (`(cd .claude/rules && cat $(readlink *.md | grep '\.harness/baseline/')) | wc -c`); davon
   entfallen **25622** auf die zwei neuen
-  (`cat .harness/baseline/v6.8.0/regelwerk/modul-1[13]-*.md | wc -c`), also ein Aufschlag von
-  **29,3 %** auf die vorige Modul-Menge:
+  (`cat .harness/baseline/v6.9.0/regelwerk/modul-1[13]-*.md | wc -c`), also ein Aufschlag von
+  **27,4 %** auf die vorige Modul-Menge:
 
   ```sh
   awk -v ganz="$( (cd .claude/rules && cat $(readlink *.md | grep '\.harness/baseline/')) | wc -c )" \
-      -v neu="$(cat .harness/baseline/v6.8.0/regelwerk/modul-1[13]-*.md | wc -c)" \
+      -v neu="$(cat .harness/baseline/v6.9.0/regelwerk/modul-1[13]-*.md | wc -c)" \
       'BEGIN{printf "%.1f\n", neu/(ganz-neu)*100}'
   ```
 

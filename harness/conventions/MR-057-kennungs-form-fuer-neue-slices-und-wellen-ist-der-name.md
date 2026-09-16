@@ -18,15 +18,15 @@
   Fork**, aus demselben Grund wie bei [`MR-000`](../conventions.md#mr-000--baseline-aussage):
   Dieser Eintrag ist die **Deklaration, die die Baseline selbst verlangt**, nicht eine Adaption
   neben anderen.
-  [`grundlagen-source-precedence.md`](../../.harness/baseline/v6.8.0/regelwerk/grundlagen-source-precedence.md#vergabe-woher-die-nächste-kennung-kommt)
+  [`grundlagen-source-precedence.md`](../../.harness/baseline/v6.9.0/regelwerk/grundlagen-source-precedence.md#vergabe-woher-die-nächste-kennung-kommt)
   §Vergabe setzt *„Welle- und Slice-Kennungen sind Namen, nicht Nummern — unabhängig von der
   Schreiberzahl"* und verlangt daneben ausdrücklich *„Welche Form gilt, deklariert das Repo — in
-  `harness/conventions.md`"*. Gemessen am adoptierten Stand `v6.8.0`, weil
+  `harness/conventions.md`"*. Gemessen am adoptierten Stand `v6.9.0`, weil
   [`MR-033`](../conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
   zu einer Baseline-Aussage den Tag verlangt, gegen den sie gemessen ist:
 
   ```sh
-  B=.harness/baseline/v6.8.0/regelwerk/grundlagen-source-precedence.md
+  B=.harness/baseline/v6.9.0/regelwerk/grundlagen-source-precedence.md
   grep -c 'Welle- und Slice-Kennungen sind Namen, nicht Nummern' "$B"   # 1
   grep -c 'Welche Form gilt, deklariert das Repo' "$B"                  # 1
   grep -c 'dichte Nummern' "$B"                                         # 0  (Exit 1)
@@ -108,7 +108,7 @@
   ändert einen Vertrag gegenüber Zielrepos.
 - **Kein Wächter, und die Baseline sagt es selbst.** §Vergabe schließt mit *„Kein Sensor.
   Doppelvergabe ist heute ein Review-Griff, kein Gate"*
-  (`grep -c 'Doppelvergabe ist heute ein Review-Griff' .harness/baseline/v6.8.0/regelwerk/grundlagen-source-precedence.md`
+  (`grep -c 'Doppelvergabe ist heute ein Review-Griff' .harness/baseline/v6.9.0/regelwerk/grundlagen-source-precedence.md`
   → **1**). Hier ist es enger: Das Modul `ids` der [`.d-check.yml`](../../.d-check.yml) führt drei
   Muster — `ADR-\d{4}`, `LH-[A-Z]{2}-\d{2}`, `MR-\d{3}` —, keines davon eine Slice- oder
   Welle-Kennung (`grep -c 'regex:' .d-check.yml` → **3**), und das Modul `planning` liest

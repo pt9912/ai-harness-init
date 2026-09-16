@@ -19,12 +19,12 @@
   [`MR-039`](../conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
   Setzung 3. **Das reklassifiziert [`MR-057`](../conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
   nicht:** sein Feld trägt seine eigene Einordnung, und sie bindet für ihn fort. Am adoptierten
-  Stand `v6.8.0` gemessen, weil
+  Stand `v6.9.0` gemessen, weil
   [`MR-033`](../conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
   zu einer Baseline-Aussage den Tag verlangt, gegen den sie gemessen ist:
 
   ```sh
-  B=.harness/baseline/v6.8.0/regelwerk/grundlagen-source-precedence.md
+  B=.harness/baseline/v6.9.0/regelwerk/grundlagen-source-precedence.md
   grep -c 'Der Name trägt das Präfix eines vorhandenen Ankers' "$B"   # 1
   grep -c 'Erkennung' "$B"                                           # 0  (Exit 1)
   grep -c 'Kein Sensor' "$B"                                         # 1
