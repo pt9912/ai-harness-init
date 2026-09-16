@@ -19,8 +19,10 @@ verträgt kein Docker; `git` ist die zugelassene Host-Abhängigkeit),
 [ADR-0004](0004-durchsetzungs-emission.md) (**Accepted** — der Stolperdraht-Charakter eines Guards
 und die `bash`/`awk`-Bauart; gegen beide wird jede Träger-Wahl gehalten),
 [ADR-0019](0019-agent-guard-prueft-die-aufrufform.md) (**Accepted** — der Agenten-Kanal entscheidet
-die **Aufrufform**; diese Entscheidung setzt an derselben Kanal-Grenze an und keiner ihrer
-Re-Evaluierungs-Trigger ist gefeuert),
+die **Aufrufform**; ihr dritter Re-Evaluierungs-Trigger ist gefeuert und mit
+[ADR-0021](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) beantwortet, und diese Antwort gilt der
+**Verbrauchs-Achse je Rolle** — die Festlegung, aus der diese Entscheidung liest, bleibt von ihr
+unberührt),
 [`MR-002`](../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks) (die
 Hook- und Nachweis-Mechanik dieses Repos — sie entscheidet, **wo** ein Vor-Commit-Sensor hängen
 darf),
@@ -49,7 +51,8 @@ Baseline-Aussage unten mißt gegen die regierende Fassung `v6.8.0`
 referenzieren; [`harness/README.md`](../../../harness/README.md#traceability) §Traceability sagt dasselbe in
 der expliziten Form: *mindestens eine `LH-*`- oder `ADR-*`-ID*. **Durchgesetzt** wird eine
 **Menge**, und sie ist die Konfiguration des Gegenstands — `commits.id-patterns` in
-[`.d-check.yml`](../../../.d-check.yml), geführt von den zwei Trägern. Der Satz richtet sich an **jeden** Commit. Ein
+[`.d-check.yml`](../../../.d-check.yml), geführt an **einer** Stelle und gelesen vom Agenten-Kanal, während der
+Träger am Commit dieselbe Menge als **zweite Fassung** führt (§Der zweite Kanal). Der Satz richtet sich an **jeden** Commit. Ein
 Commit entsteht in diesem Repo aber auf zwei Wegen, und die unterscheiden sich nicht im Aufrufer, sondern im **Kanal**, auf dem der Aufruf sichtbar wird:
 
 - **getippt** — ein Agent oder ein Mensch führt `git commit …` aus;
@@ -85,6 +88,17 @@ git ls-files -s .githooks/                                            # 100755 .
 Die `archive-welle`-Zeile des Blocks zählt **null** — die Klasse ist heute klein und
 wächst mit der ersten geschlossenen Welle; sie ist die Klasse, die ein Träger am Commit
 erreichen muß und die am Agenten strukturell unerreichbar bleibt.
+
+**Die Grenze, an der diese Entscheidung ansetzt, ist die Aufrufform** — und sie ist von der
+**Verbrauchs-Achse zu trennen.** [ADR-0019](0019-agent-guard-prueft-die-aufrufform.md) hat die
+*Betriebsart* des Agenten-Aufrufs aus dem Guard genommen; ihr dritter Re-Evaluierungs-Trigger ist
+gefeuert, und [ADR-0021](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) ist seine Antwort — der
+Ausfall der Verbrauchs-Achse je Rolle ist permanent. Diese Entscheidung liest aus ihr die andere
+Hälfte: **der Kanal entscheidet die Aufrufform** und damit die Reichweite einer Zusage — ob ein
+Commit ihn erreicht, hängt an der Befehlszeile, die er sieht, und nicht am Aufrufer. Ein Neu-Wägen an
+dieser Stelle hat darum keinen Gegenstand: keine Festlegung jener Entscheidung trägt die hier
+gelesene Kanal-Grenze anders, und die Antwort auf den gefeuerten Trigger fällt auf einer Achse, die
+diese ADR nicht berührt.
 
 ### Der zweite Kanal und seine zwei Grenzen
 
@@ -201,6 +215,13 @@ eine Zusage ohne Gegenbeispiel ist keine
 gelesen würde, wäre eine Zusage ohne Deckung
 ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 
+**Eine ihrer Zeilen trägt ihr Gegenbeispiel noch nicht.** Die Zeile der Werkzeug-Klasse sagt
+*„bricht darum am Träger"* und belegt das über die **Zahl** der kennungsfreien `slice-mv:`-Messages
+und nicht über den abgebrochenen Commit; der hermetische Fall
+([`test/commit-msg-hook.bats`](../../../test/commit-msg-hook.bats)) fährt die Mechanik an generischen
+Betreffen und keinen `slice-mv:`-Betreff. Gezeigt ist damit die Mechanik, das Gegenbeispiel der
+**Klasse** nicht.
+
 **4. Die Commit-Message-Formen der eigenen Werkzeuge sind der zweite Arm derselben Frage, und sie
 sind ein eigener Träger.** Vier Stellen
 ([`harness/tools/slice-mv.sh`](../../../harness/tools/slice-mv.sh) `:234` und `:268`,
@@ -222,8 +243,8 @@ Der Kandidat trägt eine Kennung: **`slice-werkzeug-commits-tragen-eine-kennung`
 ([`MR-057`](../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)).
 Der Schnitt — ein Slice, seine Priorisierung, seine Zeile in der Vorschau — ist **Planner-Arbeit**
 (Baseline-Regelwerk `modul-08-agentenrollen.md` §Rollen-Sequenz für eine Welle); dieser Lauf liefert
-die Messung und die Kennung, nicht den Plan. Bis der Slice im Planning-Lifecycle liegt, löst die
-Kennung hier auf. **Eine Ausnahme für die Werkzeug-Formen ist damit nicht ausgesprochen:** eine
+die Messung und die Kennung, nicht den Plan. Der Slice liegt im Planning-Lifecycle; seine Kennung
+löst dort auf. **Eine Ausnahme für die Werkzeug-Formen ist damit nicht ausgesprochen:** eine
 Zeile, die `slice-mv:`-Messages von der Prüfung nimmt, wäre eine **Senkung** der Durchsetzung
 ([`AGENTS.md`](../../../AGENTS.md) §3.5) und höhlte die Klasse aus, für die dieser Träger gewählt
 ist.
@@ -318,7 +339,8 @@ Festlegung 4 eine **Zuordnung** — für beide gibt es keinen, und das steht hie
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
-| 2026-09-15 | **Proposed** | Architect-Antwort auf die Träger-Wahl, die `slice-215-commit-waechter-sieht-auch-die-ungetippten-commits` in §3 führt und in §4 an den Architect bindet. Die Messungen in §Kontext stehen neben ihren Kommandos; der Reviewer-Konsistenz-Durchgang steht aus ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md)) |
+| 2026-09-15 | **Proposed** | Architect-Antwort auf die Träger-Wahl, die `slice-215-commit-waechter-sieht-auch-die-ungetippten-commits` in §3 führt und in §4 an den Architect bindet. Die Messungen in §Kontext stehen neben ihren Kommandos |
+| 2026-09-16 | **Überarbeitet, weiter Proposed** | Der Bezug zu [ADR-0019](0019-agent-guard-prueft-die-aufrufform.md) trägt den Zustand ihrer Re-Evaluierungs-Trigger statt der Behauptung, keiner sei gefeuert; die Trägerschaft der Kennungs-Menge steht an **einer** Stelle, und die Zeile der Werkzeug-Klasse trägt in der Reichweiten-Tabelle ihr Gegenbeispiel noch nicht; die Bedingung, unter der die Kennung „hier" auflöste, ist durch den Zustand ersetzt. Die Konsistenz-Runde ist gefahren und hat einen blockierenden Befund gemeldet; nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 ist der Beleg des Accept-Übergangs darum die nächste Runde derselben Rolle |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit

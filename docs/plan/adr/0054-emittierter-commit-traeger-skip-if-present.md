@@ -53,8 +53,16 @@ gebootstrapptes Zielrepo an Commit-Wächtern bekommt, entscheidet der Slice, der
 entscheidet"*. Diese Datei entscheidet die **Klasse**, mit der die drei Dateien im Ziel abgelegt
 werden.
 
-`grep -n 'commitMsgHookFile()\|commitMsgCheckFile()\|hooksInstallMkFile()' internal/emit/enforce.go`
-→ **3** Zeilen: alle drei sind Einträge der Menge, die ein Lauf unbedingt und kanonisch schreibt.
+```sh
+grep -c 'commitMsgHookFile()\|commitMsgCheckFile()\|hooksInstallMkFile()' internal/emit/enforce.go   # 3
+grep -n 'for _, f := range enforceFiles()' internal/emit/enforce.go                                  # :229 — die Schreib-Schleife; die zweite Nennung (:411) liest nur
+grep -n 'writeFileMode(targetDir, f.dst, content, f.mode)' internal/emit/enforce.go                  # :234 — der Aufruf in dieser Schleife; :246 gehört zur Traeger-Schleife
+```
+
+Das erste Kommando gibt die **Zahl** der Einträge; die Schreib-Semantik trägt es nicht — sie steht im
+Rumpf dieser Schleife und im Kommentar über `enforceFiles()`. Heute unterliegen alle drei dem
+konvergenten Writer; **Festlegung 1 löst das für einen von ihnen ab**, und die Zahl des ersten
+Kommandos bleibt dabei stehen. **Kein Erwartungswert** — die drei Zahlen wandern mit dem Code.
 
 Zwei ihrer Klassen sind von [ADR-0007](0007-bootstrap-phasen.md) Festlegung 3 bereits gedeckt, weil
 ihre Zielpfade unter Wurzeln fallen, die die Tabelle dort nennt: `tools/harness/*` (die Prüfung) und
@@ -207,12 +215,14 @@ Regeln dieser Sektion: **mindestens drei Optionen mit Pro/Contra** — „nichts
   Menge **im Code**: die Aufzählung, die ihn führt, und jeder Nachbar, der über „jede emittierte
   Datei wird konvergent geschrieben" fährt, ziehen mit. Dazu die Meldung aus Festlegung 3 und die
   Sätze, die am Pfad behaupten, der Träger sei der des Werkzeugs — der Kopf und die Fehlermeldung des
-  Aktivierungs-Fragments (*„den Traeger, den der Bootstrap schreibt"*) und der Commit-Absatz des
-  emittierten Anweisungssatzes (*„weist der git-eigene Hook `.githooks/commit-msg` ab"*) —, jedes an
+  Aktivierungs-Fragments (*„den Traeger, den der Bootstrap schreibt"*), der Commit-Absatz des
+  emittierten Anweisungssatzes (*„weist der git-eigene Hook `.githooks/commit-msg` ab"*) und der
+  Absatz in [`harness/README.md`](../../../harness/README.md#traceability) §Traceability, der für das
+  gebootstrappete Ziel *„beide schreibt der Bootstrap kanonisch neu"* sagt —, jedes an
   seiner Stelle gezogen auf das, was gilt. Die Kennung nach
   [`MR-057`](../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
   lautet **`slice-commit-traeger-wird-skip-if-present`**. Schnitt, Priorisierung und Vorschau-Zeile
-  sind **Planner-Arbeit**; bis der Vorgang im Planning-Lifecycle liegt, löst die Kennung hier auf.
+  sind **Planner-Arbeit**; der Vorgang liegt im Planning-Lifecycle, und seine Kennung löst dort auf.
 - **Folgepflicht 2 — die zwei Nachbar-Dateien brauchen nichts.** Ihre Klassen sind bestätigt, nicht
   geändert; wer sie liest, findet weiter die Wurzel aus der Tabelle.
 
@@ -225,13 +235,24 @@ Function und gilt fort:
 | Tooling | Regel | Make-Target |
 |---|---|---|
 | `go test` | **ein emittierter Pfad, eine Klasse:** die Prüfung wird kanonisch neu geschrieben, der Träger **nicht**, wenn der Pfad belegt ist, und **doch**, wenn er fehlt | `make test` |
-| `go test` | **jeder emittierte Pfad trägt genau eine Klasse** — ein Pfad ohne Klasse färbt rot (Zeile *„Klassifikation"* der Tabelle in ADR-0007 §Fitness Function) | `make test` |
+| `go test` | **jeder emittierte Pfad trägt genau eine Klasse** — ein Pfad ohne Klasse färbt rot (Zeile *„Klassifikation"* der Tabelle in ADR-0007 §Fitness Function). **Diese Vollständigkeit trägt heute nur einer der zwei Emitter**; welcher, steht unter dieser Tabelle | `make test` |
 | **kein Gate** — die Meldung aus Festlegung 3 ist **Ausgabe**, kein Sensor. Ob ein belegter Pfad dem Adopter gemeldet wurde, prüft kein Modul des Doku-Gates (`grep -n '^modules:' .d-check.yml`), und `make mutate` kennt keine Fehlschlag-Form dafür. Benannt, nicht bewacht | — | — |
 
 **Was heute gegen die erste Zeile läuft, ist der Test über die ganze Menge:** er hält für jeden Pfad
 der Aufzählung die konvergente Klasse fest, also auch für den Träger. Er fällt mit dem Vorgang aus
 Folgepflicht 1 — bis dahin ist er die Stelle, an der die zwei Klassen aufeinandertreffen, und das
 ist eine Aussage über den Sensor, keine über den Bau.
+
+**Die zweite Zeile trägt heute für eine Hälfte der Emitter.**
+[`TestTemplates_EmittierterBestandVollstaendig`](../../../internal/emit/templates_test.go) hält den
+Ist-Bestand der Vorlagen-Emission **vollständig** gegen eine Erwartungsliste — dort färbt jeder Pfad
+rot, der nur auf einer der beiden Seiten steht. Der Enforce-Emitter führt dieselbe Inventur als
+**Teil**mengen-Prüfung: `TestEnforce_EmitsAllMechanicFiles` sucht je erwartetem Pfad nach seinem
+Vorkommen in der Aufzählung und meldet darum keinen Pfad, der umgekehrt nur in der Aufzählung steht;
+und `TestEnforce_Convergent` läuft über **jeden** Pfad dieser Aufzählung und verlangt die konvergente
+Klasse — ein korrekt skip-if-present geführter Pfad ist dort kein erkennbarer Zustand, sondern ein
+Rot. Für die zweite Zeile trägt damit der Vorlagen-Emitter und der Enforce-Emitter nicht: **benannt,
+nicht bewacht.**
 
 ## Re-Evaluierungs-Trigger
 
@@ -250,7 +271,8 @@ ist eine Aussage über den Sensor, keine über den Bau.
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
-| 2026-09-15 | **Proposed** | Architect-Lauf zur Klasse des emittierten Commit-Trägers, ausgelöst von dem Slice `slice-kennungs-waechter-geht-ins-ziel` ([`MR-057`](../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer) Kennungs-Form). Die Messungen in §Kontext stehen neben ihren Kommandos; der Konsistenz-Durchgang der prüfenden Rolle steht aus ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md)) |
+| 2026-09-15 | **Proposed** | Architect-Lauf zur Klasse des emittierten Commit-Trägers, ausgelöst von dem Slice `slice-kennungs-waechter-geht-ins-ziel` ([`MR-057`](../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer) Kennungs-Form). Die Messungen in §Kontext stehen neben ihren Kommandos |
+| 2026-09-16 | **Überarbeitet, weiter Proposed** | Die zweite Fitness-Zeile steht auf dem, was sie trägt: den vollständigen Ist-Bestand gegen eine Erwartungsliste hält der Vorlagen-Emitter, der Enforce-Emitter führt eine Teilmengen-Inventur und verlangt für **jeden** Pfad seiner Aufzählung die konvergente Klasse — die nicht gehaltene Hälfte ist damit benannt. Die Zahl der drei Träger-Einträge steht neben dem Kommando, das die Schreib-Semantik trägt; die Aufzählung der Folgepflicht nennt auch den Satz in [`harness/README.md`](../../../harness/README.md#traceability), und die Bedingung, unter der die Kennung „hier" auflöste, ist durch den Zustand ersetzt. Die Konsistenz-Runde ist gefahren und hat einen blockierenden Befund gemeldet; nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 ist der Beleg des Accept-Übergangs darum die nächste Runde derselben Rolle |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
