@@ -270,9 +270,7 @@ aufgelöst hat, zählt nicht als Beleg
    steuern. Sie soll keine Konformitätsfrage über einen bestehenden `MR`-Eintrag, eine Sensor-Datei
    oder eine Ergebnis-Notiz beantworten. Die Runde prüft, ob diese Grenze hält.
 3. **Ist die Übernahme-Vorgabe verbucht und nicht abgewogen?** Die Runde prüft, ob die Festlegung
-   ohne sie trägt. Außerdem prüft sie die Reichweite des Wortlauts über die zwei Durchgänge dieses
-   Sprungs (§Konsequenzen), insbesondere beim Ausgang **bewusst abweichend** mit einem bestehenden
-   Eintrag.
+   ohne sie trägt.
 
 Bis zur Annahme ist diese Entscheidung ein Architect-Verdikt, das der Schnitt der Folge-Slices als
 Constraint liest. Eingefroren ist sie noch nicht ([`AGENTS.md`](../../../AGENTS.md) §3.4).
@@ -325,12 +323,15 @@ Constraint liest. Eingefroren ist sie noch nicht ([`AGENTS.md`](../../../AGENTS.
   Ziel-Fassung **vollständig**; eine Abweichung wird nicht gesetzt."*, und [ADR-0047](0047-ziel-fassung-regiert-den-sprung-v680.md)
   §Konsequenzen übernimmt diese Form. **Die Festlegung stützt sich nicht auf sie:** Die Vorgabe
   bindet das Ergebnis des Durchgangs, nicht die Quelle seiner Prozedur, und die Wahl der
-  regierenden Fassung trägt ohne sie. **Reichweite:** Im Adaptions-Durchgang trifft sie den
-  Ausgang *widerspricht*, wie [ADR-0044](0044-ziel-fassung-regiert-den-sprung-v672.md) benennt. Im Instanz-Durchgang schließt ihr
-  zweiter Halbsatz den Ausgang **bewusst abweichend** aus, soweit er eine Abweichung neu setzte
-  ([`harness/migration.md`](../../../harness/migration.md) §5). Ob sie dort auch einen Ausgang
-  ausschließt, der sich auf einen bestehenden Eintrag stützt, sagt ihr Wortlaut nicht. **Eine
-  allgemeine Regel darüber, wer diese Wahl trifft, entsteht nicht.**
+  regierenden Fassung trägt ohne sie. **Reichweite:** *Vollständig* gilt ohne Ausnahme. Im
+  Adaptions-Durchgang trifft die Vorgabe den Ausgang *widerspricht*, und
+  [ADR-0044](0044-ziel-fassung-regiert-den-sprung-v672.md) wendet sie dort an: Der bestehende
+  Eintrag tritt zurück, und die neue Fassung wird übernommen. In derselben Lesart schließt sie im
+  Instanz-Durchgang den Ausgang **bewusst abweichend** aus
+  ([`harness/migration.md`](../../../harness/migration.md) §5), und zwar auch dann, wenn ein
+  bestehender `MR`-Eintrag die Abweichung trägt (Auftraggeber, 2026-09-16). Welcher Eintrag davon
+  betroffen ist, klärt der Durchgang. **Eine allgemeine Regel darüber, wer diese Wahl trifft,
+  entsteht nicht.**
 - **Diese ADR ändert keine weiteren Dateien** als sich selbst, den ADR-Index, §Baseline von
   `harness/conventions.md` und `harness/migration.md` §1.
 
