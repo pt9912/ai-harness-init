@@ -231,6 +231,45 @@ Datei: die wandert bei ihrer eigenen Auflösung weiter.
 | [MR-022](conventions/done/MR-022-kommentar-regel-als-vorgriff-auf-eine-neuere-baseline.md) <a id="mr-022"></a><a id="mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline"></a> | [MR-031](#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline) |
 | [MR-023](conventions/done/MR-023-die-platzierung-der-kommentar-regel-ist-keine-abweichung.md) <a id="mr-023"></a><a id="mr-023--die-platzierung-der-kommentar-regel-ist-keine-abweichung"></a> | [MR-031](#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline) |
 
+## Zusatzklassen-Deklaration für Sensors-Bindung
+
+Die Bindung-Spalte der zwei Tabellen in [`README.md`](README.md) §Sensors (Feedback-Gates) —
+Gates und Werkzeuge — führt neben der kanonischen Klasse ADR vier Zusatzklassen. Gemessen über
+alle Zeilen beider Tabellen; eine Zeile kann mehrere Klassen tragen, gezählt ist je Klasse:
+
+```sh
+B=$(awk '/^## Sensors/{f=1} /^## Traceability/{f=0} f && /^\| / && !/^\|---/ && !/^\| Target/' harness/README.md \
+    | awk -F'|' '{print $(NF-1)}')
+wc -l <<<"$B"                                    # 30 Zeilen
+grep -cE 'ADR-[0-9]{4}'         <<<"$B"          #  7  kanonisch: ADR
+grep -cE 'CO-[0-9]{3}'          <<<"$B"          #  0  kanonisch: Carveout
+grep -cE 'MR-[0-9]{3}'          <<<"$B"          #  4
+grep -cE 'LH-[A-Z]{2}-[0-9]{2}' <<<"$B"          #  2
+grep -cE 'AGENTS\.md'           <<<"$B"          #  5
+grep -cE 'spezifikation\.md'    <<<"$B"          #  1
+grep -c  'kein Gate'            <<<"$B"          # 19
+grep -cE '^ *— *$'              <<<"$B"          #  1
+grep -vcE 'ADR-[0-9]{4}|CO-[0-9]{3}|MR-[0-9]{3}|LH-[A-Z]{2}-[0-9]{2}|AGENTS\.md|spezifikation\.md|kein Gate|^ *— *$' <<<"$B"   # 0
+```
+
+**Keine Erwartungswerte**
+([`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) Setzung 2): Die
+Zahlen wandern mit den Tabellen. Tragend ist die letzte Zeile: Keine Zelle trägt etwas außerhalb
+der Klassen und Marken dieses Abschnitts.
+
+| Klasse | Form | Bedeutung | Beispiel |
+|---|---|---|---|
+| Adaptions-Bindung | `MR-<NNN>`, Link auf die Index-Zeile dieser Datei | das Target trägt eine deklarierte Abweichung dieses Repos von der Baseline | `make baseline-verify` → [`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
+| Anforderungs-Bindung | `LH-<FA\|QA>-<NN>`, Link in das Lastenheft | das Target belegt eine Anforderung des Vertrags-Stratums | `make full-smoke` → [`LH-FA-01`](../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
+| Hard-Rule-Bindung | `AGENTS.md` §`<N>` | das Target trägt eine Hard Rule oder Doku-Regel des Briefings | `make comment-claims` → [`AGENTS.md`](../AGENTS.md) §3.6 |
+| Technik-Bindung | `spec/spezifikation.md` §`<N>` | das Target prüft eine Festlegung des Technik-Stratums | `make span-check` → [`spec/spezifikation.md`](../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 |
+
+**Zwei Zellen-Inhalte sind keine Klasse.** `kein Gate` ist die Marke, die das Baseline-Regelwerk
+`modul-13-quality-gates.md` §Hard Rule (Doku-Disziplin) für ein genanntes Target ohne
+Gate-Anspruch **in der Zeile selbst** verlangt; was ihr in derselben Zelle folgt, sagt, was das
+Target stattdessen tut, oder nennt eine der Klassen oben. `—` steht allein in der Zeile
+`make gates`: Das Aggregat bindet über die Gates, die es fährt, nicht selbst.
+
 ## Modus-Deklaration pro Sub-Area
 
 **Die Spalte ist nicht bedingt — seit `v6.0.0` trägt sie.** Bis `v5.18.0` verlangte die Ziel-Form
@@ -263,10 +302,8 @@ unveränderlich — es steht dann in Kennungen, in Commits und in Verweisen.
 | `harness/tools/` | `TOOLS` | Greenfield | adoptierte Harness-Mechanik (Adaptions-Block) | n/a (GF) |
 | `.codex/` | `CODEX` | Greenfield | neue Pfad-Familie, adoptierte SessionStart-Hook-Mechanik | n/a (GF) |
 
-**Wer der „Auswerter (slice-060)" aus [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) ist.**
-Die ADR ist ab *Accepted* immutabel und nennt an drei Stellen die Slice-**ID** 060 als den
-Auswertungs-Slice (Festlegung 1 Punkt 3 sowie die Re-Evaluierungs-Trigger 2 und 6). Der Schnitt
-vom 2026-07-29 hat die Arbeit geteilt: **slice-060 ist die Rollen-Achse** (Erfassung),
-**slice-066 ist die Auswertung**. Gemeint ist an allen drei Stellen der **auswertende** Slice,
-also slice-066. Diese Umdeutung steht hier und nur hier — die ADR wird dafür nicht angefasst
-([`AGENTS.md`](../AGENTS.md) §3.4).
+## Glossar (optional)
+
+| Begriff | Bedeutung |
+|---|---|
+| „Auswerter (slice-060)" in [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) | der **auswertende** Slice, also slice-066. Die ADR ist ab *Accepted* immutabel und nennt an drei Stellen die Slice-**ID** 060 als Auswertungs-Slice (Festlegung 1 Punkt 3 sowie die Re-Evaluierungs-Trigger 2 und 6); die Arbeit liegt in **slice-060** (Rollen-Achse, Erfassung) und **slice-066** (Auswertung). Diese Umdeutung steht hier und nur hier; die ADR wird dafür nicht angefasst ([`AGENTS.md`](../AGENTS.md) §3.4). |
