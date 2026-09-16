@@ -70,6 +70,7 @@ ist (`make help` listet sie).
 |---|---|---|
 | [`make smoke`](sensors/smoke.md) | Tier-2-Emit-Smoke: emittiertes `docs-check` real gegen ein tmp-Repo | kein Gate |
 | [`make full-smoke`](sensors/full-smoke.md) | Voll-E2E: Bootstrap in tmp-Repo → dort `make gates` out-of-the-box grün | kein Gate · [`LH-FA-01`](../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
+| `make e2e-abdeckung` | erzeugt [`docs/user/e2e-abdeckung.md`](../docs/user/e2e-abdeckung.md) aus den Stufen-Deklarationen in `harness/tools/full-smoke.sh` — liest Text, fährt keinen E2E | kein Gate · [`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [`make mutate`](sensors/mutate.md) | Mutations-Sensor: färbt jede kuratierte Mutation ihren Wächter rot? | kein Gate · [`AGENTS.md`](../AGENTS.md) §3.6 |
 | [`make span-report`](sensors/span-report.md) | Token-Bilanz je Rolle aus dem Span-Bestand, read-only und netzlos | kein Gate — Bericht |
 | `make span-clean` | räumt den lokalen Span-Bestand weg (ausdrücklich, kein Automatismus) | kein Gate |

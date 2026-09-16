@@ -56,6 +56,66 @@ einordnen() {
 	bash "$HIER/full-smoke-ausgang.sh" "$1" <<<"$2" >&2
 }
 
+# e2e_abdeckung <Kennungen> <Kurzbeschreibung> <Anker> — DIE DEKLARATION EINER STUFE.
+#
+# WOZU: WELCHE Stufe WELCHE Anforderung traegt, stand an keiner Stelle — die Kennungen
+# lagen als Kommentar ueber das Skript verstreut, und keine Stufe nannte ihre eigene.
+# Diese Funktion gibt der Beziehung einen ORT: der Aufruf steht IN der Stufe, die er
+# deklariert, und der Anker ist ein woertlicher Ausschnitt aus einer Zeile DIESER Stufe.
+# Aus denselben Aufrufen erzeugt `make e2e-abdeckung` die Tabelle
+# docs/user/e2e-abdeckung.md; die drei Argumente sind dort die drei Spalten je Zeile.
+#
+# DIE STUFEN-MENGE ist ein KRITERIUM und keine Aufzaehlung: eine Zeile
+# `echo "full-smoke: … ..."` eroeffnet eine Stufe, ihre Region reicht bis zur naechsten
+# solchen. Beide Seiten — dieser Aufruf und der Erzeuger — lesen dasselbe Muster aus
+# DIESER Datei. Es steht an zwei Stellen, weil der Aufruf zur LAUFZEIT keine zweite Datei
+# aufruft und der Erzeuger keinen E2E faehrt; wer es aendert, aendert beide.
+#
+# WAS DER AUFRUF SELBST PRUEFT: dass sein Anker in der Region SEINER Stufe noch
+# woertlich vorkommt — auf einer ANDEREN Zeile als der des Aufrufs selbst, denn der Anker
+# steht ja in seinem dritten Argument. Seine eigene Zeilennummer liefert
+# BASH_LINENO[0]: genau die Angabe, die wandert, wenn jemand die Stufe umbaut. Loest der
+# Anker dort nicht mehr auf, endet der Aufruf LAUT, statt eine Deklaration
+# weiterzufuehren, deren Ort es nicht mehr gibt. Der Lauf nennt fuer jede Stufe
+# Kennungen, Region und aufgeloesten Ort.
+#
+# WAS ER NICHT PRUEFT: ob die genannte Anforderung noch ZU der Stufe gehoert. Der Anker
+# kann aufloesen, waehrend die Stufe ihre Aussage aendert — die Zuordnung bleibt ein
+# Urteil, das der Review haelt. Und die beiden Luecken-Richtungen (Deklaration ohne
+# Stufe, Stufe ohne Deklaration) prueft der Erzeuger ueber dem TEXT des Skripts: nur er
+# sieht auch eine Stufe, die gar keinen Aufruf mehr fuehrt.
+#
+# Rot-Gegenbeispiele: test/e2e-abdeckung.bats faehrt beide Richtungen ueber Kopien,
+# test/mutations/362-e2e-stufe-ohne-deklaration.sh nimmt einer Stufe ihre Deklaration.
+e2e_abdeckung() {
+	local kennungen="$1" kurz="$2" anker="$3"
+	local quelle="$HIER/full-smoke.sh"
+	local stufen ruf start ende ort
+	ruf="${BASH_LINENO[0]}"
+	stufen="$(grep -nE '^echo "full-smoke: .* \.\.\."$' "$quelle" || true)"
+	if [ -z "$stufen" ]; then
+		echo "full-smoke: FEHLER — Deklaration ohne Stufe: $quelle fuehrt keine Stufen-Kopfzeile — der Aufruf steht damit ueber keiner Stufe, die er deklarieren koennte (Zeile $ruf)." >&2
+		exit 1
+	fi
+	start="$(awk -F: -v z="$ruf" '$1 < z { s = $1 } END { print s }' <<<"$stufen")"
+	ende="$(awk -F: -v z="$ruf" '$1 > z { print $1; exit }' <<<"$stufen")"
+	if [ -z "$start" ]; then
+		echo "full-smoke: FEHLER — Deklaration ohne Stufe: der Aufruf in Zeile $ruf steht VOR der ersten Stufen-Kopfzeile; die erste liegt in Zeile $(sed -n '1p' <<<"$stufen" | cut -d: -f1)." >&2
+		exit 1
+	fi
+	[ -n "$ende" ] || ende="$(wc -l <"$quelle")"
+	# Die Deklarations-Zeilen sind von der Anker-Suche AUSGENOMMEN: der Anker steht
+	# wortwoertlich im dritten Argument des Aufrufs, und ohne diese Ausnahme faende
+	# sich jede Deklaration selbst — die Pruefung waere ueber jedem Anker still.
+	ort="$(awk -v s="$start" -v e="$ende" -v a="$anker" -v rufmuster='^[[:space:]]*e2e_abdeckung "' \
+		'NR >= s && NR <= e && $0 !~ rufmuster && index($0, a) { print NR; exit }' "$quelle")"
+	if [ -z "$ort" ]; then
+		echo "full-smoke: FEHLER — Deklaration ohne Stufe: der Anker loest in der Region dieser Stufe nicht auf ($quelle:$start-$ende, Anker: [$anker]). Die Stufe wurde umgebaut; die Tabelle haengt an denselben Deklarationen und faellt dort ebenso aus (make e2e-abdeckung)." >&2
+		exit 1
+	fi
+	echo "full-smoke: Abdeckung der Stufe ab Zeile $start: $kennungen — $kurz (Anker aufgeloest in $quelle:$ort)."
+}
+
 GO_VERSION="${GO_VERSION:-1.27.0}"
 tmpbin="$(mktemp -d)"
 # Elternverzeichnis der zwei Klone, die der Vorlauf-Waechter-Abschnitt derselben Quelle
@@ -196,6 +256,7 @@ feldliste_deckt_die_zeile() {
 }
 
 echo "full-smoke: 1/3 natives Release-Binary auf den Host extrahieren (make artifact) ..."
+	e2e_abdeckung "LH-FA-01" "Produkt-Traeger liegt auf dem Host; ohne ihn laeuft kein Ziel-Bootstrap" "das Release-Binary kam nicht auf den Host"
 # Die Ausgabe wird EINGEFANGEN und danach gedruckt, statt zu stroemen: nur eingefangen
 # steht sie der Einordnung zur Verfuegung. Unter pipefail traegt der Zuweisungs-Exit
 # den Exit der make-Stufe.
@@ -209,6 +270,7 @@ if [ "$artefakt_rc" -ne 0 ]; then
 fi
 
 echo "full-smoke: 2/3 Bootstrap (--lang go --name full-smoke) in ein leeres tmp-Repo ..."
+	e2e_abdeckung "LH-FA-01" "Bootstrap in ein leeres Zielverzeichnis, sprachgebunden in einem Lauf" "der Bootstrap (--lang go) ist NICHT Exit 0"
 # ERSTER AUFRUF DES WERKZEUGS und damit die erste Anfrage nach dem d-check-Bild: das
 # Werkzeug erzeugt das Doku-Gate-Fragment aus dessen --print-mk-Ausgabe. Auf einem
 # frischen Laeufer liegt das Bild nicht lokal.
@@ -233,6 +295,7 @@ feldliste_im_ziel "$tmprepo" "--lang go"
 git init -q "$tmprepo"
 
 echo "full-smoke: 3/3 im Ziel: make -j gates (der zusammengefuehrte Einstiegspunkt, Fragment-Assembly slice-034) ..."
+	e2e_abdeckung "LH-FA-01 LH-FA-03 LH-FA-06 LH-FA-08 LH-FA-09 LH-FA-10 LH-QA-01 LH-QA-03" "Das gates des Ziels laeuft vollstaendig, nicht als stille Teilmenge" "stilles Teilmengen-Gate"
 gates_rc=0
 gates_out="$( make -j -C "$tmprepo" gates 2>&1 )" || gates_rc=$?
 printf '%s\n' "$gates_out"
@@ -1606,6 +1669,7 @@ fi
 # Durchsetzung, OHNE Skelett — `make gates` ist doc-only gruen. Beweis in einem zweiten
 # tmp-Repo (der --lang-go-Lauf oben bleibt der One-Shot).
 echo "full-smoke: doc-only Bootstrap (OHNE --lang) in ein zweites tmp-Repo ..."
+	e2e_abdeckung "LH-FA-01 LH-FA-10" "Dieselbe Harness ohne Sprachskelett; die zweite Bootstrap-Variante" "die Rollen-Typen sind sprach-agnostisch und UNBEDINGT"
 ( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" --name full-smoke-doc )
 # slice-097, zweite Variante: die Rollen-Typen sind sprach-agnostisch und UNBEDINGT —
 # sie haengen an keinem Laufzeit-Ausgang. Auch hier vor dem Gate-Lauf.
@@ -1615,6 +1679,7 @@ rollen_typen_im_ziel "$tmprepo_doc" "sprachlos"
 feldliste_im_ziel "$tmprepo_doc" "sprachlos"
 git init -q "$tmprepo_doc"
 echo "full-smoke: doc-only im Ziel: make -j gates (docs-check + baseline-verify + record-gates, KEIN Code-Gate) ..."
+	e2e_abdeckung "LH-FA-01 LH-FA-06 LH-FA-10 LH-QA-01" "Das sprachlose Ziel faehrt ein reines Doku-Gate, ohne Code-Gate" "sprachloser make gates ist NICHT Exit 0"
 doc_rc=0
 doc_out="$( make -j -C "$tmprepo_doc" gates 2>&1 )" || doc_rc=$?
 printf '%s\n' "$doc_out"
@@ -1674,6 +1739,7 @@ traeger_im_ziel "$tmprepo_doc" "sprachlos"
 # (skip-if-present), beide modul-scoped Code-Gate-Fragmente koexistieren, und `make -j gates`
 # faehrt danach ZUSAETZLICH die modul-scoped Go-Gates BEIDER Module (Build-Kontext je <pfad>).
 echo "full-smoke: add-lang go apps/api + apps/web ins doc-only-Repo (Mono-Repo, wiederholbar, slice-037) ..."
+	e2e_abdeckung "LH-FA-04 LH-QA-01" "Zwei Sprachmodule in einem Ziel koexistieren, ihre Gates laufen beide" "Mono-Repo/Wiederholbarkeit kaputt"
 ( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang go apps/api )
 ( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang go apps/web )
 for rel in apps/api/go.mod apps/api/Dockerfile apps/api/cmd/app/main.go harness/mk/apps-api.mk \
@@ -1717,6 +1783,7 @@ fi
 # die REALEN C++-Gates (cmake build + ctest + clang-tidy in Docker) — der reale Gate-Lauf
 # ist der LH-QA-01-Beweis, dass die C++-Toolchain wirklich lief (kein halluziniertes Gate).
 echo "full-smoke: add-lang cpp apps/engine ins Mono-Repo (zweite Sprache, slice-039) ..."
+	e2e_abdeckung "LH-FA-04 LH-QA-01" "Eine zweite Sprache im selben Ziel, mit den realen C++-Gates" "zweite Sprache kaputt"
 ( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang cpp apps/engine )
 for rel in apps/engine/CMakeLists.txt apps/engine/Dockerfile apps/engine/src/main.cpp \
            apps/engine/.clang-tidy apps/engine/tests/test_main.cpp \
@@ -1765,6 +1832,7 @@ fi
 # emittierte .golangci.yml-Lint auf dem Schichten-Code. Ein flaches Modul (--arch flat)
 # traegt hier KEINE hexagon-Schicht — die Achse wirkt.
 echo "full-smoke: add-lang go apps/hex --arch hexslice ins Mono-Repo (Arch-Achse, slice-045b) ..."
+	e2e_abdeckung "LH-FA-04 LH-FA-07 LH-QA-01" "Das geschichtete Modul uebersetzt, lintet und traegt sein Arch-Gate" "Arch-Achse kaputt"
 # ERSTES --arch-MODUL und damit die erste Anfrage nach dem a-check-Bild: das Werkzeug
 # erzeugt das Arch-Gate-Fragment aus dessen --print-mk-Ausgabe. Auf einem frischen
 # Laeufer liegt das Bild nicht lokal.
@@ -1888,6 +1956,7 @@ grep -E 'core-impurity|wrong-direction' <<<"$teeth_out" | sed -n '1,2s/^/full-sm
 # und eine Schicht-Datei, die keine erreicht, waere still tot bei gruenem Gate (die
 # slice-024-Klasse "gruen ueber einer Teilmenge").
 echo "full-smoke: add-lang cpp apps/cpphex --arch hexslice (Arch-Achse, zweite Sprache, slice-053) ..."
+	e2e_abdeckung "LH-FA-04 LH-FA-07 LH-QA-01" "Dasselbe Schicht-Layout in der zweiten Sprache, mit Arch-Gate" "C++-hexSlice uebersetzt/lintet nicht"
 ( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang cpp apps/cpphex --arch hexslice )
 for rel in apps/cpphex/src/hexagon/domain/example/greeting.hpp \
            apps/cpphex/src/hexagon/application/example/greet/handler.hpp \
@@ -2001,6 +2070,7 @@ grep -E 'core-impurity|wrong-direction' <<<"$cpparch_out" | sed -n '1,2s/^/full-
 # Nicht-Root und kann es nicht traversieren -> Exit 2 „permission denied"). Der Fall ist
 # eigenstaendig zu belegen; die Mono-Repo-Module oben mounten nur ihr Unterverzeichnis.
 echo "full-smoke: Root-Modul-Bootstrap (--lang go --arch hexslice) in ein viertes tmp-Repo (slice-046) ..."
+	e2e_abdeckung "LH-FA-07 LH-QA-01" "Das geschichtete Modul am Repo-Root statt unter einem Modulpfad" "Root-Modul (--arch hexslice) ohne"
 ( cd "$tmprepo_hex" && "$tmpbin/ai-harness-init" --lang go --arch hexslice --name full-smoke-hex )
 git init -q "$tmprepo_hex"
 for rel in .a-check.yml a-check.mk harness/mk/arch-go.mk internal/hexagon/domain/example/greeting.go; do
@@ -2043,6 +2113,7 @@ fi
 # Schicht-Includes muessen sich also gegen einen anderen Basis-Pfad aufloesen als im
 # Mono-Repo-Fall. Der Pfad war plausibel korrekt und ungeprueft — dieser Block prueft ihn.
 echo "full-smoke: Root-Modul-Bootstrap (--lang cpp --arch hexslice) in ein fuenftes tmp-Repo (slice-054) ..."
+	e2e_abdeckung "LH-FA-07 LH-QA-02" "Dasselbe am Root in der zweiten Sprache, mit gesetztem Image-Override" "cpp-Root-Modul (--arch hexslice) ohne"
 ( cd "$tmprepo_cpphex" && "$tmpbin/ai-harness-init" --lang cpp --arch hexslice --name full-smoke-cpphex )
 git init -q "$tmprepo_cpphex"
 for rel in .a-check.yml a-check.mk harness/mk/arch-cpp.mk src/hexagon/domain/example/greeting.hpp src/main.cpp; do
@@ -2091,6 +2162,7 @@ fi
 # meldet "overriding recipe" und das Verhalten haengt an der Include-Reihenfolge. Der
 # Waechter war bis hierhin nur als Literal getestet; DIES ist sein Verhaltens-Beleg.
 echo "full-smoke: zweites hexSlice-Modul (apps/hex2) ins Mono-Repo — include-once + Koexistenz (slice-046) ..."
+	e2e_abdeckung "LH-FA-07 LH-QA-01" "Ein zweites geschichtetes Modul; das Arch-Gate wird nicht doppelt eingebunden" "zweites hexSlice-Modul ohne"
 ( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang go apps/hex2 --arch hexslice )
 for rel in apps/hex2/.a-check.yml harness/mk/arch-apps-hex2.mk; do
 	if [ ! -e "$tmprepo_doc/$rel" ]; then
@@ -2132,6 +2204,7 @@ grep -oE 'apps/hex2?":/src:ro' <<<"$two_out" | sort -u | sed 's/^/full-smoke:   
 # gates` UEBERSETZT und LINTET den Schichten-Code real, (c) die beiden TRAGENDEN Regeln
 # dieses Layouts haben Zaehne — mit Regel-NAMEN, nicht nur Exit != 0.
 echo "full-smoke: add-lang go apps/hexagonal --arch hexagonal (drittes Layout, slice-058/ADR-0010) ..."
+	e2e_abdeckung "LH-FA-04 LH-FA-07 LH-QA-01" "Ein drittes Layout mit eigenem Vokabular, seine zwei Regeln greifen" "add-lang --arch hexagonal dropte"
 ( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang go apps/hexagonal --arch hexagonal )
 for rel in apps/hexagonal/internal/hexagon/core/greet.go \
            apps/hexagonal/internal/hexagon/core/greeting.go \
@@ -2234,6 +2307,7 @@ grep -F -- 'lateral-adapter' <<<"$lateral_out" | sed -n '1,2s/^/full-smoke:   /p
 # (Exit 0 statt Kollisions-Refuse). Konvergente Dateien (tool-Infra) werden kanonisch neu
 # geschrieben (heilen Drift); skip-if-present-Dateien (Adopter-Boden) bleiben unberuehrt.
 echo "full-smoke: Idempotenz — README + Rollen-Typ driften (skip-if-present) + Makefile + Feldliste driften (konvergent), dann 2. Init-Lauf ..."
+	e2e_abdeckung "LH-FA-01 LH-FA-05 LH-FA-10" "Ein zweiter Lauf ueberschreibt Adopter-Inhalt nicht und heilt Doku-Drift" "2. Lauf heilte die Makefile-Drift NICHT"
 printf '\n# adopter-gewachsen\n' >> "$tmprepo/README.md"   # skip-if-present: MUSS bleiben
 readme_before="$(cat "$tmprepo/README.md")"
 # slice-097 (ADR-0022 Festlegung 4, ADR-0007 Festlegung 3): ein Rollen-Typ ist ein Text,
@@ -2298,6 +2372,7 @@ fi
 # Pruefung delegiert), und die PRUEFUNG daneben bleibt konvergent — ihre Drift heilte der
 # zweite Init-Lauf im Idempotenz-Abschnitt oben.
 echo "full-smoke: Klasse des Commit-Traegers — belegter Pfad in tmprepo_doc, dann der sprachlose Re-Lauf ..."
+	e2e_abdeckung "LH-FA-06" "Ein belegter Pfad behaelt seinen Traeger, und der Lauf nennt ihn" "ADOPTER-EIGENER TRAEGER"
 mkdir -p "$tmprepo_doc/.githooks"
 # OHNE abschliessenden Zeilenumbruch: verglichen wird gegen `$(cat <datei>)` weiter unten,
 # und die Kommando-Substitution nimmt den letzten Umbruch weg — mit ihm waere der Vergleich
@@ -2313,6 +2388,7 @@ chmod 755 "$tmprepo_doc/.githooks/commit-msg"
 # add-lang apps/api + apps/web + blocked/go traegt) darf diese Fragmente NICHT pruen — der
 # Init emittiert sie nicht, aber loescht sie auch nicht (die H2-Clobber-Falle eine Ebene tiefer).
 echo "full-smoke: kein Prune — sprachloser 2. Init-Lauf am Mono-Repo, add-lang-Fragmente muessen ueberleben ..."
+	e2e_abdeckung "LH-FA-06 LH-QA-01" "Die Aktivierung greift: ein Commit ohne Kennung faellt, einer mit geht durch" "sprachloser Re-Lauf ueberschrieb den liegenden Commit-Traeger"
 prune_rc=0
 prune_out="$( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" --name full-smoke-doc 2>&1 )" || prune_rc=$?
 printf '%s\n' "$prune_out"

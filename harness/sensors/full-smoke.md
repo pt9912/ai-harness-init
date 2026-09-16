@@ -10,6 +10,23 @@ gebootstrapptes Repo out-of-the-box grün fährt (die Nutzer-Sicht, die
 [`make smoke`](smoke.md) mit seinen getrennten Schritten nicht nimmt). Host-Docker + ggf.
 Netz-Pull → nicht in `make gates`; gehört an DoD-Verify/CI/Wellen-Closure.
 
+## Deklaration der Stufen
+
+Jede Stufe nennt an sich selbst, welche Anforderung sie trägt. Unmittelbar nach ihrer
+Kopfzeile steht in `harness/tools/full-smoke.sh` ein Aufruf
+`e2e_abdeckung "<Kennungen>" "<Kurzbeschreibung>" "<Anker>"`; das dritte Argument ist ein
+wörtlicher Ausschnitt aus einer Zeile **dieser** Stufe. Der Aufruf läuft im E2E mit und
+bricht ab, wenn sein Anker in der Region seiner Stufe nicht mehr wörtlich vorkommt — die
+Stufe wurde dann umgebaut, und die Deklaration verlöre ihren Ort.
+
+`make e2e-abdeckung` liest dieselben Aufrufe als **Text** — kein Docker, kein E2E-Lauf —
+und schreibt daraus [`docs/user/e2e-abdeckung.md`](../../docs/user/e2e-abdeckung.md), die
+Tabelle *Anforderung · Stufe · Ort · Kurzbeschreibung*. Beide Lücken-Richtungen fallen
+dort laut aus: eine Deklaration, deren Anker in ihrer Stufe nicht auflöst, und eine
+Stufe ohne Deklaration. Was die Deklaration **nicht** prüft, ist die Zuordnung selbst:
+ob die genannte Anforderung noch zu ihrer Stufe gehört, bleibt ein Urteil, das der
+Review hält — der Anker kann auflösen, während sich die Aussage der Stufe ändert.
+
 ## Grenze — was das Grün nicht abdeckt
 
 **Sein Grün sagt das eine, sein Rot sagt zwei Dinge:** der Lauf fragt je Durchgang fremde
@@ -28,6 +45,13 @@ nachprüfbar **kein** Bild anfordern (Trockenlauf, `make span-clean`, der Hook-W
 im Kopf von `harness/tools/full-smoke.sh`. Die Ausgangs-Muster, ihre Messung und ihre weiteren
 Grenzen (Paketquellen der C++-Kette fallen in den Baum-Fall) stehen im Kopf von
 `harness/tools/full-smoke-ausgang.sh`.
+
+**Die Stufen-Menge hängt an einer Textform.** Eine Stufe eröffnet für den Aufruf wie für
+den Erzeuger nur, wenn ihre Kopfzeile `echo "full-smoke: … ..."` lautet. Eine Stufe, die
+anders eröffnet wird, ist für beide keine — die Lücke fiele in der Richtung *Stufe ohne
+Deklaration* nicht auf, weil die Region dann zur vorigen Stufe gehört. Beide Seiten lesen
+dasselbe Muster aus derselben Datei; es steht an zwei Stellen, weil der Aufruf zur
+Laufzeit kein zweites Werkzeug ruft, und wer es ändert, ändert beide.
 
 ## Bindung
 

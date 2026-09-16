@@ -117,6 +117,13 @@ smoke: ## Emit-Smoke: Doc-Gate in tmp-Repo emittieren + emittiertes docs-check r
 full-smoke: ## Voll-E2E: Bootstrap in tmp-Repo -> dort make gates out-of-the-box gruen (Host-Docker) — NICHT in gates
 	@GO_VERSION='$(GO_VERSION)' bash harness/tools/full-smoke.sh
 
+# Die Abdeckungs-Tabelle liest den TEXT von harness/tools/full-smoke.sh — kein Docker,
+# kein E2E-Lauf, deshalb auch hostlaeufig. KEIN GATE (LH-QA-01): die Tabelle aendert
+# sich mit den DEKLARATIONEN, nicht mit dem Zustand des Baums; ein Gate darueber
+# urteilte ueber den Quelltext eines Skripts. Sie tritt darum neben smoke/full-smoke.
+e2e-abdeckung: ## E2E-Abdeckungs-Tabelle aus den Stufen-Deklarationen erzeugen (kein Docker) — NICHT in gates
+	@bash harness/tools/e2e-abdeckung.sh harness/tools/full-smoke.sh docs/user/e2e-abdeckung.md
+
 # MUTATE_JOBS ist die Worker-Zahl des Treibers und eine ZEIT-Stellschraube, keine
 # Verdikt-Stellschraube: dieselbe Fall-Menge liefert dasselbe Ergebnis, ueber wie viele
 # Worker sie auch lief (LH-QA-02) — der Treiber belegt das je Lauf mit seiner
