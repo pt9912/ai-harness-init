@@ -115,8 +115,8 @@ Zuordnung Vorlage → Instanz (dazu [§6](#6-offene-fragen)).
 | `.harness/baseline/v6.9.0/templates/docs/plan/adr/README.template.md` | [`docs/plan/adr/README.md`](../docs/plan/adr/README.md) | eine Instanz, derivativ ([ADR-0024](../docs/plan/adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)) |
 | `.harness/baseline/v6.9.0/templates/docs/plan/carveouts/carveout.template.md` | `docs/plan/carveouts/CO-*.md` (offen und `done/`) | 6 Instanzen (`ls docs/plan/carveouts/*.md docs/plan/carveouts/done/*.md 2>/dev/null \| grep -v README \| wc -l`, kein Erwartungswert) |
 | `.harness/baseline/v6.9.0/templates/docs/plan/carveouts/README.template.md` | `docs/plan/carveouts/README.md` | eine Instanz |
-| `.harness/baseline/v6.9.0/templates/docs/plan/planning/archiv-stub-slice.template.md` | keine Instanz | dieses Repo hat noch keine Welle archiviert — `git ls-files 'docs/plan/planning/done/**/*.zip'` → leer (kein Erwartungswert); [`make archive-welle`](sensors/archive-welle.md) ist verdrahtet, aber gegen keine geschlossene Welle gelaufen. Zur wiederkehrenden **Slice**-Familie gezählt (unten, §4 Ausdehnungs-Schritt) und darum schon jetzt §5 Buchstabe b zugeordnet, nicht den vier Ausgängen aus Buchstabe a — die Klassenzugehörigkeit ist eine Eigenschaft der Vorlage und unabhängig vom heutigen Instanzenstand; der Instanzenstand selbst ändert sich erst, sobald `make archive-welle` die erste Archivierung erzeugt |
-| `.harness/baseline/v6.9.0/templates/docs/plan/planning/archiv-stub-welle.template.md` | keine Instanz | dieselbe Begründung wie die Zeile darüber — derselbe Vorgang erzeugt beide Stub-Arten gemeinsam. Zur wiederkehrenden **Welle**-Familie gezählt (unten, §4 Ausdehnungs-Schritt); dieselbe Zuordnung wie in der Zeile darüber |
+| `.harness/baseline/v6.9.0/templates/docs/plan/planning/archiv-stub-slice.template.md` | keine Instanz | dieses Repo hat noch keine Welle archiviert — `git ls-files 'docs/plan/planning/done/**/*.zip'` → leer (kein Erwartungswert); [`make archive-welle`](sensors/archive-welle.md) ist verdrahtet, aber gegen keine geschlossene Welle gelaufen. Zur wiederkehrenden **Slice**-Familie gezählt (unten, §4 *Neun dieser Zeilen sind wiederkehrend*) und darum schon jetzt §5 Buchstabe b zugeordnet, nicht den vier Ausgängen aus Buchstabe a — die Klassenzugehörigkeit ist eine Eigenschaft der Vorlage und unabhängig vom heutigen Instanzenstand; der Instanzenstand selbst ändert sich erst, sobald `make archive-welle` die erste Archivierung erzeugt |
+| `.harness/baseline/v6.9.0/templates/docs/plan/planning/archiv-stub-welle.template.md` | keine Instanz | dieselbe Begründung wie die Zeile darüber — derselbe Vorgang erzeugt beide Stub-Arten gemeinsam. Zur wiederkehrenden **Welle**-Familie gezählt (unten, §4 *Neun dieser Zeilen sind wiederkehrend*); dieselbe Zuordnung wie in der Zeile darüber |
 | `.harness/baseline/v6.9.0/templates/docs/plan/planning/observation.template.md` | `docs/plan/planning/observations/BEO-*/**/observation.md` | 104 Instanzen (`find docs/plan/planning/observations -mindepth 2 -maxdepth 2 -type d \| wc -l`, kein Erwartungswert) |
 | `.harness/baseline/v6.9.0/templates/docs/plan/planning/README.template.md` | `docs/plan/planning/README.md` | eine Instanz |
 | `.harness/baseline/v6.9.0/templates/docs/plan/planning/reconciliation.template.md` | keine Instanz | Datei existiert nicht (`ls docs/plan/planning/reconciliation.md` → Exit 2, kein Erwartungswert); die berührte Sub-Area ist Greenfield und führt kein Reconciliation-Register |
@@ -143,59 +143,48 @@ Zuordnung Vorlage → Instanz (dazu [§6](#6-offene-fragen)).
 Setzung 2, [`MR-033`](conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)).
 Eine Vorlage ohne Zeile ist der Befund, keine Auslassung.
 
-**Sieben dieser Zeilen sind wiederkehrend und tragen in §5 keinen der dortigen vier Ausgänge.**
-Modul 2 §Freshness-Audit der vendored Baseline (Schritt 2), Eigenschaft *Der Review vergleicht auch
-die Form*, nennt die Menge ohne Fortsetzungspunkte — anders als die Singleton-Aufzählung direkt
-davor in derselben Quelle — und damit abschließend (`v6.8.0` ·
-`regelwerk/modul-02-harness-bootstrap.md`; dieselbe Klausel wörtlich zitiert in
-[ADR-0018](../docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md) §Entscheidung
-Festlegung 4): *„Für wiederkehrende Templates (ADR, Slice, Welle, Carveout, Review-Report) gilt
+**Neun dieser Zeilen sind wiederkehrend und tragen in §5 keinen der dortigen vier Ausgänge.** Die
+Baseline benennt sie selbst, in `v6.9.0` · `regelwerk/modul-02-harness-bootstrap.md`
+§Freshness-Audit der vendored Baseline (Schritt 2), Eigenschaft *Der Review vergleicht auch die
+Form*: *„Für **wiederkehrende** Templates (ADR, Slice, Welle, Carveout, Review-Report, `MR`) gilt
 die Append-only-Logik: Neue Instanzen folgen der neuen Form, bestehende werden nicht rückwirkend
-umgeschrieben."* Die Klausel benennt fünf **Artefakt-Klassen**, keine Vorlagen-Dateien. Dieses
-Dokument liest jede Klasse als Verweis auf **alle** Lebenszyklus-Formen desselben Artefakts — nicht
-nur seine offene Form —, und wendet diesen Ausdehnungs-Schritt **einheitlich** an: Er ist eine
-eigene Interpretation dieses Dokuments, keine Aussage der Klausel selbst. Ein Grund trägt ihn: die
-**Archiv-Stub-Form** von Slice und Welle
-(`.harness/baseline/v6.9.0/templates/docs/plan/planning/archiv-stub-slice.template.md`, Kopf
-`# slice-<Kennung> — <Titel>`, und
-`.harness/baseline/v6.9.0/templates/docs/plan/planning/archiv-stub-welle.template.md`, Kopf
-`# <welle-id> — <Titel>`) — beide sind nach `v6.9.0` · `regelwerk/modul-06-roadmap.md`
-Wellen-Closure-Prozedur, Schritt 4, dasselbe Artefakt wie Slice bzw. Welle, nur gekürzt, kein
-eigener Artefakt-Typ: dieselbe Datei über ihren Lebenszyklus, in ihrer Schlussform. Auf dieses
-Register abgebildet sind es **sieben** Zeilen, keine mehr — die
-Slice-Familie und die Welle-Familie führen je zwei Vorlagen —, mit den Vorlagen
-`.harness/baseline/v6.9.0/templates/docs/plan/adr/NNNN-titel.template.md` (ADR),
-`.harness/baseline/v6.9.0/templates/docs/plan/planning/slice.template.md` **und**
-`.harness/baseline/v6.9.0/templates/docs/plan/planning/archiv-stub-slice.template.md` (Slice),
-`.harness/baseline/v6.9.0/templates/docs/plan/planning/welle.template.md` **und**
-`.harness/baseline/v6.9.0/templates/docs/plan/planning/archiv-stub-welle.template.md` (Welle),
-`.harness/baseline/v6.9.0/templates/docs/plan/carveouts/carveout.template.md` (Carveout),
-`.harness/baseline/v6.9.0/templates/docs/reviews/review-report.template.md` (Review-Report). Für
-sie gilt unten §5 Buchstabe b statt Buchstabe a — auch für die zwei Archiv-Stub-Zeilen, obwohl §4
-sie oben (noch) als *keine Instanz* führt: Die Zuordnung zu Buchstabe a oder b folgt der
-Artefakt-Klassen-Zugehörigkeit aus diesem Ausdehnungs-Schritt, nicht dem heutigen Instanzenstand —
-eine Vorlage kann append-only-klassifiziert sein und trotzdem aktuell keine Instanz haben, wie die
-beiden Archiv-Stub-Zeilen; das eine ist eine Eigenschaft der Vorlage, das andere ein Zustand des
-Repos. Die Klassenzugehörigkeit gilt bereits jetzt; der Instanzenstand ändert sich erst künftig,
-sobald `make archive-welle` die erste Archivierung erzeugt.
+umgeschrieben."* Dieselbe Stelle liest die Aufzählung als Artefakt-Klassen — *„Das Wort
+**Templates** benennt hier die Artefakt-Klasse, nicht 1:1 eine einzelne Vorlagen-Datei"* — und
+ordnet die Vorlagen je Klasse zu: für Slice und Welle jede Lebenszyklus-Form, einschließlich der
+Ergebnis-Notiz der Welle und der zwei Archiv-Stubs (*„Auch ein Archiv-Stub ist eine eingefrorene
+historische Form"*), und für den Adaptions-Eintrag *„`MR`-Einträge
+(…) gehören ebenfalls dazu"*. Auf dieses Register
+abgebildet sind es **neun** Zeilen, keine mehr:
 
-Drei der übrigen mehrinstanzigen Zeilen dieses Registers —
-`.harness/baseline/v6.9.0/templates/docs/plan/planning/welle-results.template.md` (12 Instanzen),
-`.harness/baseline/v6.9.0/templates/docs/plan/planning/observation.template.md` (104) und
-`.harness/baseline/v6.9.0/templates/harness/sensors/gate.template.md` (15) — nennt dieselbe Stelle
-**nicht**. Ob sie strukturell dieselbe Append-only-Logik tragen, misst dieses Dokument nicht und
-behauptet es deshalb auch nicht ([§6](#6-offene-fragen)); bis zur Entscheidung sind sie von §5
-Buchstabe a **ausgenommen**, nicht ihm zugeordnet.
+| Klasse | Vorlage |
+|---|---|
+| ADR | `.harness/baseline/v6.9.0/templates/docs/plan/adr/NNNN-titel.template.md` |
+| Slice | `.harness/baseline/v6.9.0/templates/docs/plan/planning/slice.template.md` |
+| Slice | `.harness/baseline/v6.9.0/templates/docs/plan/planning/archiv-stub-slice.template.md` |
+| Welle | `.harness/baseline/v6.9.0/templates/docs/plan/planning/welle.template.md` |
+| Welle | `.harness/baseline/v6.9.0/templates/docs/plan/planning/welle-results.template.md` |
+| Welle | `.harness/baseline/v6.9.0/templates/docs/plan/planning/archiv-stub-welle.template.md` |
+| Carveout | `.harness/baseline/v6.9.0/templates/docs/plan/carveouts/carveout.template.md` |
+| Review-Report | `.harness/baseline/v6.9.0/templates/docs/reviews/review-report.template.md` |
+| `MR` | `.harness/baseline/v6.9.0/templates/harness/conventions/MR-NNN-titel.template.md` |
 
-Eine vierte — `.harness/baseline/v6.9.0/templates/harness/conventions/MR-NNN-titel.template.md`
-(59 Instanzen) — ist aus demselben Grund offen, nicht zugeordnet:
-[`MR-039`](conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
-regelt nur einen Teilaspekt — Setzung 1 trägt ein neues Pflichtfeld bei jedem Eintrag mit vollem
-Rumpf nach, Setzung 2 nimmt die vier retirierten Einträge davon aus —, beantwortet aber nicht, ob
-eine geänderte **Gesamt-Form** der Vorlage unter Buchstabe a oder b fällt. Keine der acht
-Sprung-ADRs oder
-[`MR-039`](conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
-entscheidet das eindeutig ([§6](#6-offene-fragen)).
+Für sie gilt unten §5 Buchstabe b statt Buchstabe a — auch für die zwei Archiv-Stub-Zeilen, die die
+Register-Tabelle oben als *keine Instanz* führt. Die Zuordnung folgt der Klasse, nicht dem heutigen
+Instanzenstand: Das eine ist eine Eigenschaft der Vorlage, das andere ein Zustand des Repos, der
+sich erst mit der ersten Archivierung durch [`make archive-welle`](sensors/archive-welle.md) ändert.
+
+**Eine mehrinstanzige Zeile nimmt dieselbe Stelle ausdrücklich aus:**
+`.harness/baseline/v6.9.0/templates/harness/sensors/gate.template.md` — *„**Sensor-Gate-Dateien
+(…) dagegen nicht**, obwohl auch sie mehrfach vendored vorliegen:
+Ihr Vertrag wird bei einer Mechanismus-Änderung fortgeschrieben statt durch einen neuen Eintrag
+abgelöst"*. §4 weist sie damit **nicht** als wiederkehrend aus, obwohl sie mehrere Instanzen hat;
+sie steht unter §5 Buchstabe a.
+
+**Eine weitere nennt die Stelle nicht:**
+`.harness/baseline/v6.9.0/templates/docs/plan/planning/observation.template.md`. Ob sie die
+Append-only-Logik trägt, misst dieses Dokument nicht und behauptet es deshalb auch nicht
+([§6](#6-offene-fragen)); bis zur Entscheidung ist sie von §5 Buchstabe a **ausgenommen**, nicht ihm
+zugeordnet.
 
 ## 5. Report-Form für `docs/migrations/<tag>.md`
 
@@ -218,6 +207,15 @@ entschieden, ob sie in diese Menge fallen oder unter Buchstabe b gehören.
 | **bewusst abweichend** | dieses Repo weicht von der neuen Fassung ab | `MR`-Kennung des tragenden Adaptions-Eintrags |
 | **keine Instanz** | die Vorlage hat in diesem Repo keine Instanz (§4) | Begründung |
 
+**Woran *schon erfüllt* bei der Gliederung gemessen wird.** Die `##`-Abschnitte der Instanz sind
+genau die der Vorlage; eigener Stoff steht als Unterabschnitt im passenden Vorlagen-Abschnitt. Ein
+`##`-Abschnitt, den die Vorlage nicht führt, schließt *schon erfüllt* aus. Die Lesart ist die des
+Auftraggebers (2026-09-16); ihre Quelle ist die Baseline selbst, `v6.9.0` · `templates/README.md`
+§Pflichtgliederung vs. freie Form: *„Die Templates geben **Pflichtgliederung** vor (Abschnitte,
+IDs, Verlinkung). Innerhalb der Abschnitte hast du Freiraum"*. Das Kriterium wendet diese Stelle an
+und weicht von ihr nicht ab; ein Adaptions-Eintrag folgt daraus nicht
+([`MR-000`](conventions.md#mr-000--baseline-aussage)).
+
 Report-Skelett je Vorlage:
 
 | Vorlage | Instanz(en) | Ausgang | Beleg |
@@ -234,9 +232,9 @@ die ADR ist **`Accepted`**.
 
 ### b) Wiederkehrende Vorlagen — Append-only
 
-Für die sieben in §4 aus der [ADR-0018](../docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md)-Klausel
-abgeleiteten Zeilen (ADR, Slice, Slice-Archiv-Stub, Welle, Welle-Archiv-Stub, Carveout,
-Review-Report) trägt ein künftiger Migrations-Report **keinen** der vier Ausgänge aus Buchstabe a:
+Für die neun Zeilen, die §4 aus der Klausel von `v6.9.0` ableitet (ADR, Slice, Slice-Archiv-Stub,
+Welle, Welle-Ergebnis-Notiz, Welle-Archiv-Stub, Carveout, Review-Report, `MR`-Eintrag), trägt ein
+künftiger Migrations-Report **keinen** der vier Ausgänge aus Buchstabe a:
 *übernommen* verlangt genau das rückwirkende Umschreiben bestehender Instanzen, das die jeweilige
 Quelle für diese Vorlagen untersagt oder auf einen Teil der Instanzen beschränkt. *schon erfüllt* /
 *bewusst abweichend* / *keine Instanz* gehen dagegen von einer **einzelnen, über die Zeit
@@ -279,23 +277,11 @@ Achsen, die nicht ineinander übersetzt werden: dazu [§6](#6-offene-fragen).
   bzw. eine Formvorgabe für einen künftigen Bericht, ausgenommen der sprung-bezogene Absatz in §5 a.
   [ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md) nennt die Report-Form außerdem als Form ihres Instanz-Durchgangs; ob daraus eine
   Pflicht über ihren Sprung hinaus folgt, bleibt offen.
-- **`.harness/baseline/v6.9.0/templates/docs/plan/planning/welle-results.template.md` — 12
-  Instanzen (`find docs/plan/planning/done -maxdepth 1 -iname 'welle-*-results.md' | wc -l`, kein
-  Erwartungswert): append-only wie die sieben Zeilen aus §5 Buchstabe b, oder Buchstabe a (vier
-  Ausgänge)? Sie ist keine Lebenszyklus-Form von `welle.template.md` — nach `v6.9.0` ·
-  `regelwerk/modul-06-roadmap.md` Wellen-Closure-Prozedur Schritt 4 bleibt die Ergebnisnotiz
-  vollständig und flach, während Slice-Datei und Welle-Plan zum Stub werden —, sondern die
-  Ergebnis-Notiz, die derselbe Abschluss-Vorgang zusätzlich zur offenen Form erzeugt; die
-  Archiv-Stub-Begründung aus §4 trägt hier darum nicht. Die einzig greifbare Gemeinsamkeit mit den
-  sieben append-only-Zeilen ist dieselbe **wachsende Instanzmenge**, die auch
-  `observation.template.md` (104) und `gate.template.md` (15) haben — keine der acht
-  Sprung-ADRs entscheidet, ob eine wachsende Instanzmenge allein für Buchstabe b genügt. Weder
-  Buchstabe a noch Buchstabe b ist damit zugewiesen; die Zeile bleibt offen (siehe §5 Buchstabe a,
-  Ausnahme-Satz).
 - **`.harness/baseline/v6.9.0/templates/docs/plan/planning/observation.template.md` — 104
   Instanzen (`find docs/plan/planning/observations -mindepth 2 -maxdepth 2 -type d | wc -l`, kein
-  Erwartungswert): append-only wie die sieben Zeilen aus §5 Buchstabe b, oder Buchstabe a (vier
-  Ausgänge)? Keine der acht Sprung-ADRs entscheidet es. `v6.9.0` ·
+  Erwartungswert): append-only wie die neun Zeilen aus §5 Buchstabe b, oder Buchstabe a (vier
+  Ausgänge)? Keine der acht Sprung-ADRs entscheidet es, und die Klausel aus §4 nennt die Vorlage
+  weder als wiederkehrend noch als ausgenommen. `v6.9.0` ·
   `regelwerk/modul-06-roadmap.md` §Das Beobachtungs-Register führt `observation.md` und
   `evidence/*.md` zwar als „unveränderlich ab Anlage" bzw. „unveränderlich ab Merge" — das
   beschreibt die Lebensdauer einer einzelnen Beobachtung innerhalb des Registers, nicht, ob eine
@@ -304,23 +290,6 @@ Achsen, die nicht ineinander übersetzt werden: dazu [§6](#6-offene-fragen).
   rückwirkende Form-Anwendung wäre eine Änderung an 104 ab Anlage unveränderlichen Instanzen.
   Weder Buchstabe a noch Buchstabe b ist damit zugewiesen; die Zeile bleibt offen (siehe §5
   Buchstabe a, Ausnahme-Satz).
-- **`.harness/baseline/v6.9.0/templates/harness/sensors/gate.template.md` — 15 Instanzen
-  (`ls harness/sensors/*.md | wc -l`, kein Erwartungswert): append-only oder Buchstabe a? `v6.9.0` ·
-  `regelwerk/grundlagen-begriffe.md` nennt für `harness/sensors/<target>.md`: *„kein
-  Lifecycle-Verzeichnis, ein retiriertes Gate verschwindet."* Das spricht gegen eine
-  Bestandsschutz-Logik für die einzelne Sensor-Datei, entscheidet aber nicht, ob eine geänderte
-  Template-**Form** rückwirkend auf bestehende Instanzen angewendet würde. Weder Buchstabe a noch
-  Buchstabe b ist damit zugewiesen; die Zeile bleibt offen (siehe §5 Buchstabe a, Ausnahme-Satz).
-- **`.harness/baseline/v6.9.0/templates/harness/conventions/MR-NNN-titel.template.md` — 59
-  Instanzen (55 aktiv + 4 `done/`, §4): append-only oder Buchstabe a?
-  [`MR-039`](conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
-  regelt nur einen Teilaspekt — Setzung 1 trägt ein neues Pflichtfeld bei jedem Eintrag mit vollem
-  Rumpf nach, Setzung 2 nimmt die vier retirierten Einträge davon aus —, beantwortet aber nicht, ob
-  eine geänderte **Gesamt-Form** der Vorlage unter Buchstabe a oder b fällt. Keine der acht
-  Sprung-ADRs oder
-  [`MR-039`](conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
-  entscheidet das eindeutig. Weder Buchstabe a noch Buchstabe b ist damit zugewiesen; die Zeile
-  bleibt offen (siehe §5 Buchstabe a, Ausnahme-Satz).
 - **Das Verhältnis der vier Report-Ausgänge zu den fünf Baseline-Ausgängen bleibt uneindeutig,
   solange niemand einen Durchgang gegen beide Mengen gleichzeitig fährt.** Sie messen
   unterschiedliche Gegenstände (Vorlage gegen Adaptions-Eintrag); ob ein künftiger Durchgang beide
