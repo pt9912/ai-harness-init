@@ -52,7 +52,7 @@ Details und Beleg stehen im Kopf von `harness/tools/history-range-guard.sh`, Abs
 
 Kein Gate-Versprechen; Vorlauf für `make adr-immutable`.
 
-## Im gebootstrappten Ziel
+### Im gebootstrappten Ziel
 
 Dieselbe Logik reist als emittiertes Werkzeug mit — `tools/harness/history-range-guard.sh`
 ([`MR-005`](../conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption)) — und hängt dort an

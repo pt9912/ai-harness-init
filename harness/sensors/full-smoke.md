@@ -10,7 +10,7 @@ gebootstrapptes Repo out-of-the-box grün fährt (die Nutzer-Sicht, die
 [`make smoke`](smoke.md) mit seinen getrennten Schritten nicht nimmt). Host-Docker + ggf.
 Netz-Pull → nicht in `make gates`; gehört an DoD-Verify/CI/Wellen-Closure.
 
-## Deklaration der Stufen
+### Deklaration der Stufen
 
 Jede Stufe nennt an sich selbst, welche Anforderung sie trägt. Unmittelbar nach ihrer
 Kopfzeile steht in `harness/tools/full-smoke.sh` ein Aufruf

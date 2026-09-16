@@ -39,7 +39,7 @@ Details und Beleg stehen im Kopf von `harness/tools/slice-mv.sh`, Abschnitt BELE
 Kein Gate-Versprechen; Träger von [Modul 5](../../.harness/baseline/v6.9.0/regelwerk/modul-05-planning-harness.md#lifecycle-als-state-machine)
 und `BEO-ALL/verweise-brechen-beim-ortswechsel`.
 
-## Im gebootstrappten Ziel
+### Im gebootstrappten Ziel
 
 Dieselbe Logik reist als emittiertes Werkzeug mit: das Skript liegt im Ziel unter
 `tools/harness/slice-mv.sh`, das Fragment daneben unter
