@@ -30,7 +30,7 @@ Setzung 1 und 2 (die drei Formen und die Nummernform des Bestands),
 hier: der rot gesehene Fall je Form),
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) (eine
 Erkennung, die eine Form auslässt, behauptet eine Kennungs-Menge, die sie nicht führt),
-[ADR-0053](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) (**Proposed** —
+[ADR-0053](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) (**Accepted** —
 Festlegung 1 wählt den git-eigenen Träger, dessen Prüfung dieselbe Erkennung führt; die zwei
 Gegenstände liegen aufeinander),
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)

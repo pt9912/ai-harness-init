@@ -18,10 +18,11 @@ lagen bei ihrer Eröffnung fest, und dieser Vorgang entstand erst aus dem Archit
 schließt.
 
 **Bezug:**
-[`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md) (**Proposed** — ihre
+[`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md) (**Accepted** — ihre
 Festlegung 1 entscheidet die Klasse des Träger-Pfades, ihre Folgepflicht 1 übergibt genau diesen
-Vorgang an den Planner; sie bindet nach [ADR-0040](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md)
-erst mit ihrem Accept-Übergang, und der Start-Trigger unten hängt daran),
+Vorgang an den Planner; mit ihrem Accept-Übergang bindet sie nach
+[ADR-0040](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md), und der
+Start-Trigger unten ist damit eingetreten),
 [ADR-0007](../../adr/0007-bootstrap-phasen.md) (**Accepted** — ihre Festlegung 3 führt die
 Idempotenz-Klassifikation **je Datei** und die Wurzeln, unter die dieser Pfad nicht fällt; ihre
 Zweifelsregel entscheidet ihn, die Tabelle selbst bleibt eingefroren),
@@ -179,8 +180,8 @@ grep -n '^\*\*Status:\*\*' docs/plan/adr/0054-emittierter-commit-traeger-skip-if
 
 Dazu die zwei gewöhnlichen Bedingungen: der Slice ist priorisiert (`Verantwortlich:` gesetzt) und
 das WIP-Limit frei. **Warum die Bedingung nicht ordnend ist:** Ihr Gegenstand ist die Klasse eines
-Pfades, und die Klasse ist heute entschieden, aber nicht bindend — sie zu vollziehen, bevor der
-Accept-Übergang sie trägt, schriebe eine Setzung in den Code, die niemand ausgesprochen hat
+Pfades, und die Klasse bindet erst mit dem Accept-Übergang — sie zu vollziehen, bevor er sie trägt,
+schriebe eine Setzung in den Code, die niemand ausgesprochen hat
 ([`ADR-0040`](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md)).
 
 **Reihenfolge:** unabhängig von jedem anderen offenen Slice; die Fläche — `internal/emit/` und die
@@ -231,6 +232,18 @@ dasteht.
   Test hält heute für **jeden** Pfad der Aufzählung die konvergente Klasse fest; wer ihn auf die
   zwei Klassen zieht, kann die Modi- und Inhalts-Hälfte für den Träger verlieren, ohne daß ein
   Zeichen rot wird. — **Ausgang:** <…>
+- **Die Fitness-Zeile in [`ADR-0007`](../../adr/0007-bootstrap-phasen.md) §Fitness Function nennt
+  einen Träger, der die Klasse nur entartet hält, und sie steht dort unbeschränkt.** *„ein Test
+  koppelt jede emittierte Datei an ihre Klasse (konvergent vs. skip-if-present); eine Fehl-Klasse
+  färbt rot"* — den vollständigen Ist-Bestand hält der Vorlagen-Emitter, der Enforce-Emitter
+  verlangt für **jeden** Pfad seiner Aufzählung die konvergente Klasse; für einen korrekt
+  skip-if-present geführten Pfad ist das ein Rot, kein erkennbarer Zustand
+  ([`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md) §Fitness Function:
+  *benannt, nicht bewacht*). Fällt der Ganz-Mengen-Test mit diesem Vorgang aus, nennt die Zeile einen
+  Sensor, den es nicht mehr gibt; wird er auf beide Klassen gezogen, trägt sie ihn. Der erste Fall braucht
+  beides: eine Folge-ADR mit **Teil-`Supersedes`** auf die Zeile und einen Implementer-Vorgang —
+  benannt als `slice-klassifikations-zeile-nennt-ihren-traeger`, der mit der Anlage seiner Datei
+  auflöst. — **Ausgang:** <…>
 
 ## 7. Closure-Notiz
 

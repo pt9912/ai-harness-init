@@ -18,11 +18,11 @@ von [welle-emittierte-werkzeuge](../done/welle-emittierte-werkzeuge.md); der Ver
 **Herkunft** — der Kanal, den dieser Vorgang bedient, wurde in der Welle entschieden.
 
 **Bezug:**
-[ADR-0053](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) (**Proposed** —
+[ADR-0053](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) (**Accepted** —
 Festlegung 1 wählt den git-eigenen `commit-msg`-Träger, Festlegung 4 übergibt genau diesen Vorgang
-an den Planner und sagt, dass die Kennung bis dahin *hier* auflöst; die ADR bindet nach
-[ADR-0040](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) erst mit ihrem
-Accept-Übergang, und der Start-Trigger unten hängt daran),
+an den Planner und gibt ihm damit seine Adresse; mit ihrem Accept-Übergang bindet sie nach
+[ADR-0040](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md), und der
+Start-Trigger unten ist damit eingetreten),
 [`AGENTS.md`](../../../../AGENTS.md) §5 und [`harness/README.md`](../../../../harness/README.md#traceability)
 §Traceability (die Zusage, die dieser Slice in ihren Gegenstand zieht),
 [`AGENTS.md`](../../../../AGENTS.md) §3.3 (Move und Inhalt sind zwei Commits — die Werkzeuge führen
