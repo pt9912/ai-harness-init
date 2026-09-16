@@ -86,7 +86,7 @@ Kennung trägt.
   weil sie danach als benannte Sperre im Lauf steht statt als Kommentar im Code.
 - **Die `[haenger]`-Sperre und die Norm-Frage dahinter** — ein anderer Vorgang mit eigener
   Alternativen-Menge, geschnitten als
-  [slice-216](slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md), und eine
+  [slice-216](../open/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md), und eine
   Architect-Entscheidung, keine Werkzeug-Arbeit.
 - **Die zwei Ausgänge, die am ruhenden Baum *nicht* beobachtbar sind** — die verletzte Stub-Form
   entsteht erst zwischen den zwei Commits, das fehlende Wellen-Argument fängt der Aufrufer vor dem
@@ -166,7 +166,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`): keine weitere Bedingung. Der Slice wartet **nicht** auf
-[slice-216](slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md): Er macht eine
+[slice-216](../open/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md): Er macht eine
 vorhandene Bedingung sichtbar und ändert an ihr nichts, und `[haenger]` hält den Vollzug ohnehin
 zurück.
 
