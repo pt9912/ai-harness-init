@@ -13,10 +13,12 @@ Jeder normative Punkt unten trägt die ADR, an der er belegt ist —
 [ADR-0031](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md),
 [ADR-0036](../docs/plan/adr/0036-ziel-fassung-regiert-den-sprung-v600.md),
 [ADR-0038](../docs/plan/adr/0038-ziel-fassung-regiert-den-sprung-v650.md),
-[ADR-0043](../docs/plan/adr/0043-ziel-fassung-regiert-den-sprung-v671.md) und
-[ADR-0044](../docs/plan/adr/0044-ziel-fassung-regiert-den-sprung-v672.md). Was sich dort nicht
+[ADR-0043](../docs/plan/adr/0043-ziel-fassung-regiert-den-sprung-v671.md),
+[ADR-0044](../docs/plan/adr/0044-ziel-fassung-regiert-den-sprung-v672.md),
+[ADR-0047](../docs/plan/adr/0047-ziel-fassung-regiert-den-sprung-v680.md) und
+[ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md). Was sich dort nicht
 belegen lässt, steht in [§6 Offene Fragen](#6-offene-fragen) — benannt, nicht als Regel getarnt. Das
-Dokument ist keine ADR und ersetzt keine der sechs Entscheidungen; es zitiert sie.
+Dokument ist keine ADR und ersetzt keine dieser Entscheidungen; es zitiert sie.
 
 ## 1. Regierende Fassung eines Sprungs
 
@@ -104,7 +106,7 @@ läuft.
 Je Vorlage unter `.harness/baseline/v6.8.0/templates/` genau eine Zeile
 (`find .harness/baseline/v6.8.0/templates -name '*.template.md' | wc -l` → **25**, kein
 Erwartungswert — die Zahl wandert mit dem Tag). Die Zuordnung ist eine **Beobachtung am Bestand**,
-keine ADR-Aussage: Die sechs Sprung-ADRs entscheiden über die regierende Fassung, nicht über die
+keine ADR-Aussage: Die Sprung-ADRs aus §1 entscheiden über die regierende Fassung, nicht über die
 Zuordnung Vorlage → Instanz (dazu [§6](#6-offene-fragen)).
 
 | Vorlage | Instanz(en) in diesem Repo | Beleg / Begründung |
@@ -191,7 +193,7 @@ Eine vierte — `.harness/baseline/v6.8.0/templates/harness/conventions/MR-NNN-t
 [`MR-039`](conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
 regelt nur einen Teilaspekt — Setzung 1 trägt ein neues Pflichtfeld bei jedem Eintrag mit vollem
 Rumpf nach, Setzung 2 nimmt die vier retirierten Einträge davon aus —, beantwortet aber nicht, ob
-eine geänderte **Gesamt-Form** der Vorlage unter Buchstabe a oder b fällt. Keine der sechs
+eine geänderte **Gesamt-Form** der Vorlage unter Buchstabe a oder b fällt. Keine der acht
 Sprung-ADRs oder
 [`MR-039`](conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
 entscheidet das eindeutig ([§6](#6-offene-fragen)).
@@ -199,7 +201,8 @@ entscheidet das eindeutig ([§6](#6-offene-fragen)).
 ## 5. Report-Form für `docs/migrations/<tag>.md`
 
 Wie §4 ist auch dieser Abschnitt eine Formvorgabe für einen künftigen Bericht, keine ADR-Aussage —
-dazu [§6](#6-offene-fragen). Er unterscheidet zwei Fälle, je nachdem, ob §4 die betroffene Vorlage
+dazu [§6](#6-offene-fragen). Ausgenommen ist der sprung-bezogene Absatz am Ende von Buchstabe a; er
+projiziert [ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md) §Konsequenzen. Er unterscheidet zwei Fälle, je nachdem, ob §4 die betroffene Vorlage
 als wiederkehrend ausweist.
 
 ### a) Einmalige Vorlagen — vier Ausgänge
@@ -267,14 +270,16 @@ Achsen, die nicht ineinander übersetzt werden: dazu [§6](#6-offene-fragen).
 
 ## 6. Offene Fragen
 
-- **Ob die sechs Sprung-ADRs eine Pflicht zum Führen des Instanz-Registers oder der Report-Form
+- **Ob die acht Sprung-ADRs aus §1 eine Pflicht zum Führen des Instanz-Registers oder der Report-Form
   überhaupt tragen, ist gemessen offen.** Sie entscheiden über die regierende Fassung eines
   Sprungs, nicht nachweislich über die Zuordnung Vorlage → Instanz — sie nennen das Wort
   `templates` zwischen 0 und 16 Mal
-  (`for f in 0018 0031 0036 0038 0043 0044; do grep -c templates docs/plan/adr/$f-*.md; done`, kein
+  (`for f in 0018 0031 0036 0038 0043 0044 0047 0056; do grep -c templates docs/plan/adr/$f-*.md; done`, kein
   Erwartungswert), und eine bloße Nennung ist kein Beleg. §4 und §5 dieses Dokuments sind darum
-  **keine** aus den sechs ADRs abgeleiteten Normen, sondern eine am Bestand gemessene Beobachtung
-  bzw. eine Formvorgabe für einen künftigen Bericht.
+  **keine** aus den acht ADRs abgeleiteten Normen, sondern eine am Bestand gemessene Beobachtung
+  bzw. eine Formvorgabe für einen künftigen Bericht, ausgenommen der sprung-bezogene Absatz in §5 a.
+  [ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md) nennt die Report-Form außerdem als Form ihres Instanz-Durchgangs; ob daraus eine
+  Pflicht über ihren Sprung hinaus folgt, bleibt offen.
 - **`.harness/baseline/v6.8.0/templates/docs/plan/planning/welle-results.template.md` — 12
   Instanzen (`find docs/plan/planning/done -maxdepth 1 -iname 'welle-*-results.md' | wc -l`, kein
   Erwartungswert): append-only wie die sieben Zeilen aus §5 Buchstabe b, oder Buchstabe a (vier
@@ -284,14 +289,14 @@ Achsen, die nicht ineinander übersetzt werden: dazu [§6](#6-offene-fragen).
   Ergebnis-Notiz, die derselbe Abschluss-Vorgang zusätzlich zur offenen Form erzeugt; die
   Archiv-Stub-Begründung aus §4 trägt hier darum nicht. Die einzig greifbare Gemeinsamkeit mit den
   sieben append-only-Zeilen ist dieselbe **wachsende Instanzmenge**, die auch
-  `observation.template.md` (104) und `gate.template.md` (15) haben — keine der sechs
+  `observation.template.md` (104) und `gate.template.md` (15) haben — keine der acht
   Sprung-ADRs entscheidet, ob eine wachsende Instanzmenge allein für Buchstabe b genügt. Weder
   Buchstabe a noch Buchstabe b ist damit zugewiesen; die Zeile bleibt offen (siehe §5 Buchstabe a,
   Ausnahme-Satz).
 - **`.harness/baseline/v6.8.0/templates/docs/plan/planning/observation.template.md` — 104
   Instanzen (`find docs/plan/planning/observations -mindepth 2 -maxdepth 2 -type d | wc -l`, kein
   Erwartungswert): append-only wie die sieben Zeilen aus §5 Buchstabe b, oder Buchstabe a (vier
-  Ausgänge)? Keine der sechs Sprung-ADRs entscheidet es. `v6.8.0` ·
+  Ausgänge)? Keine der acht Sprung-ADRs entscheidet es. `v6.8.0` ·
   `regelwerk/modul-06-roadmap.md` §Das Beobachtungs-Register führt `observation.md` und
   `evidence/*.md` zwar als „unveränderlich ab Anlage" bzw. „unveränderlich ab Merge" — das
   beschreibt die Lebensdauer einer einzelnen Beobachtung innerhalb des Registers, nicht, ob eine
@@ -312,7 +317,7 @@ Achsen, die nicht ineinander übersetzt werden: dazu [§6](#6-offene-fragen).
   [`MR-039`](conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
   regelt nur einen Teilaspekt — Setzung 1 trägt ein neues Pflichtfeld bei jedem Eintrag mit vollem
   Rumpf nach, Setzung 2 nimmt die vier retirierten Einträge davon aus —, beantwortet aber nicht, ob
-  eine geänderte **Gesamt-Form** der Vorlage unter Buchstabe a oder b fällt. Keine der sechs
+  eine geänderte **Gesamt-Form** der Vorlage unter Buchstabe a oder b fällt. Keine der acht
   Sprung-ADRs oder
   [`MR-039`](conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
   entscheidet das eindeutig. Weder Buchstabe a noch Buchstabe b ist damit zugewiesen; die Zeile
@@ -321,8 +326,11 @@ Achsen, die nicht ineinander übersetzt werden: dazu [§6](#6-offene-fragen).
   solange niemand einen Durchgang gegen beide Mengen gleichzeitig fährt.** Sie messen
   unterschiedliche Gegenstände (Vorlage gegen Adaptions-Eintrag); ob ein künftiger Durchgang beide
   Register nebeneinander braucht oder eines das andere trägt, ist hier nicht entschieden.
-- **Keine der sechs ADRs benennt, wer ein `docs/migrations/<tag>.md` schreibt oder wann.** <!-- d-check:ignore (geplante Ablage) -->
-  Die Report-Form in §5 ist ohne einen solchen Anlass reine Vorbereitung.
+- **Keine der acht ADRs benennt, wer ein `docs/migrations/<tag>.md` schreibt.** <!-- d-check:ignore (geplante Ablage) -->
+  [ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md) legt für ihren Sprung nur fest, dass der Instanz-Durchgang vor dem Vollzug in
+  dieser Form läuft. Die Report-Form in §5 ist ohne einen solchen Anlass reine Vorbereitung.
 - **Ob `harness/migration.md` selbst bei jedem Baseline-Sprung fortzuschreiben ist** (neue Vorlagen,
-  entfallene Vorlagen, geänderte Instanz-Zuordnungen), sagt keine der sechs ADRs — sie sind
+  entfallene Vorlagen, geänderte Instanz-Zuordnungen), sagt keine der acht ADRs als allgemeine
+  Regel. [ADR-0047](../docs/plan/adr/0047-ziel-fassung-regiert-den-sprung-v680.md) und [ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md) ziehen je für ihren Sprung
+  nur §1 nach, [ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md) zusätzlich §5 a. Sie sind
   Prozess-ADRs über die regierende Fassung, nicht über die Pflege dieses Dokuments.
