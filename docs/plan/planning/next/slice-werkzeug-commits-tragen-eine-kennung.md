@@ -226,36 +226,76 @@ dasteht.
 - **(1) Der Fix wird grün gemessen, ohne den Träger zu aktivieren.** Ohne `make hooks-install` ist
   `core.hooksPath` nicht gesetzt, und derselbe Aufruf läuft **vor** dem Fix durch — der Rot-Beleg
   wäre dann nicht herstellbar. **Gegenmittel im Plan:** Liefer-Punkt (2) nennt die Aktivierung als
-  Teil des Belegs. — **Ausgang:** <…>
+  Teil des Belegs. — **Ausgang: eingetreten** → `slice-lifecycle-werkzeuge-tragen-die-kennung`. Das Gegenmittel reist
+  mit: Sein Liefer-Punkt (3) macht die Aktivierung zum Teil des Belegs — *vor* dem Fix und **nach**
+  `make hooks-install` endet ein `make slice-mv` am Träger und hinterlässt einen gestagten Rename
+  ohne Commit, und die **gelesene** Meldung nennt den Grund.
 - **(2) Die Kennung wird in einer Form geschrieben, die die Erkennung nicht trägt.** Dann bleibt der
   Commit rot, obwohl er eine Kennung führt — die Klasse, die
   [`MR-059`](../../../../harness/conventions.md#mr-059) Setzung 1 zusagt. **Gegenmittel im Plan:**
-  §4 bindet den Start an den Nachbarn. — **Ausgang:** <…>
+  §4 bindet den Start an den Nachbarn. — **Ausgang: eingetreten** → derselbe Nehmer. Er verlangt die Kennung *„in einer Form, die die
+  Erkennung dieses Repos trägt"* (Liefer-Punkt 3) und bindet damit dieselbe Zusage, auf die dieses
+  Risiko zielt. Die Prüfung bleibt am Commit, nicht an einer zweiten Fassung der Form.
 - **(3) Die Message wird zur zweiten Fassung einer Kennungs-Regel.** Wer die Form der Betreffzeile
   an einer Stelle festlegt, an der sie nicht hingehört, erzeugt eine zweite Quelle für
   [`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer).
   **Gegenmittel im Plan:** die Form wird **gelesen**, nicht entschieden;
   [ADR-0053](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) Festlegung 4
-  nimmt die Form-Wahl ausdrücklich als eigenen Gegenstand. — **Ausgang:** <…>
+  nimmt die Form-Wahl ausdrücklich als eigenen Gegenstand. — **Ausgang: eingetreten** → derselbe Nehmer, und die Trennung bleibt gewahrt: Sein Liefer-Punkt (3)
+  **liest** die Form, statt sie zu setzen — er nennt keine eigene Betreffzeilen-Grammatik, sondern
+  verlangt eine Kennung, die die vorhandene Erkennung trifft. Eine zweite Quelle für die
+  Kennungs-Form entsteht dort nicht.
 
 ## 7. Closure-Notiz
 
-Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
-§Das Beobachtungs-Register (vorhandene Kennung **zitieren** statt neu
-formulieren — sonst zählt das Register zwei Namen getrennt) ·
-`grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln (das
-Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
-wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
-Backticks).
+**Gegenstand:** übernommen von `slice-lifecycle-werkzeuge-tragen-die-kennung`.
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register:** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** dieses **Repo** fährt Wellen — Anker, Folge-Slice und Register prüft die
-  nächste Welle-Closure, auch für diesen Slice ohne Wellen-Zugehörigkeit.
+**Stillgelegt ohne Lieferung** — Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice,
+dessen Gegenstand ein anderer übernimmt. Die Liefer-Punkte in §2 bleiben **leer**: Dieser Slice
+hat nichts geliefert, und ein Haken behauptete es. `Verantwortlich:` bleibt stehen.
+
+**Die Adresse nimmt an.** Der Nehmer liegt in `open/`, ist nicht geschlossen und nennt in §1
+unter `Übernimmt:` diese Kennung. Er führt den Gegenstand als Liefer-Punkt (3): *Die
+Commit-Messages der eigenen Werkzeuge tragen im Betreff die Kennung des Vorgangs, den sie
+abschließen* — beim Lifecycle-Move und beim Verweis-Nachzug die des bewegten Slice, bei den
+Archiv-Commits die der Welle.
+
+**Wellenlos.** Der Kopf führt keine Welle; die Roadmap führt wellenlose Arbeit nicht
+(`modul-06-roadmap.md` §Wann Arbeit eine Welle braucht), und diese Closure trägt sie allein.
+
+**Was hat funktioniert:** Der Slice hatte zu jedem Risiko schon im Plan sein **Gegenmittel**
+benannt und den Ort, an dem es hängt. Beim Ausgang war deshalb nur noch zu prüfen, ob der Nehmer
+denselben Ort führt — und er tut es, in allen drei Fällen an seinem Liefer-Punkt (3).
+
+**Was ging anders als geplant:** Geprüft hat den Schnitt keine Implementation, sondern erst die
+Gruppierung — das Muster *tote Slices* aus `modul-05-planning-harness.md` §Regeln gegen typische
+Fehlannahmen. Der Plan stand von seinem Schnitt am 2026-09-15 an unbeansprucht in `next/`; er ist
+der jüngste der drei Geber dieses Nehmers und war schon bei seinem Schnitt einer von dreien mit
+derselben Frage.
+
+**Steering-Loop-Eintrag:** **gezählt, nicht verkörpert** — kein Zielort, darum **kein**
+`liegt in`-Feld (`grundlagen-traceability.md` §Herkunfts-Anker). Die Form der Stilllegung steht
+seit `v6.9.0` in der adoptierten Baseline; eine zweite Fassung daneben driftete.
+
+**Beobachtungs-Register** (`../observations/`): zitiert, nicht neu formuliert —
+[`BEO-ALL/geplanter-slice-wird-nie-gearbeitet`](../observations/BEO-ALL/geplanter-slice-wird-nie-gearbeitet/observation.md).
+**Keine zweite Beleg-Datei:** Dieser Geber steht dort unter *Benannt, nicht gezählt*; er ist ein
+Fund **derselben** Gelegenheit wie `slice-090-freshness-audit-im-ziel`, und der Zähler misst
+Wiederholung über Vorgänge hinweg, nicht die Zahl der Funde (`modul-06-roadmap.md` §Das
+Beobachtungs-Register). Der Stand bleibt `offen`, unter der Schwelle.
+
+**Lese-Schritt** (Repo ohne Wellen-Betrieb, `modul-06-roadmap.md` §Wann Arbeit eine Welle
+braucht): Kein Eintrag erreicht mit dieser Closure 3×, und kein Eintrag über der Schwelle steht
+ohne Ausgang — dasselbe Kommando wie in
+[`slice-090`](slice-090-freshness-audit-im-ziel.md) §7, Ausgabe leer.
+
+**Die drei Paarungen.** (a) Anker-Paarung: kein Eintrag trägt `liegt in`, sie hat keinen
+Gegenstand. (b) Folge-Slice-Paarung: kein Folge-Slice genannt. (c) Register-Paarung: die zitierte
+Beobachtung existiert als Verzeichnis und trägt einen Beleg.
+
+**Was diese Closure nicht trägt:** Review und Verifikation am Gegenstand — es gibt keinen Diff,
+den sie prüfen könnten. Geprüft ist die **Form** der Stilllegung durch `make docs-check` (Modul
+`structure`, `open-tasks-require-marker`) und der Gesamtstand durch `make gates`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
