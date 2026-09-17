@@ -377,10 +377,12 @@ stehen nicht in dieser Liste, das Rezept des Doku-Gates schaltet keines zu
 Message: `commits` prüft die Message auf eine Kennung, `vcs` den Kern einer Datei zwischen zwei
 Ständen. Gemessen am Stand `v0.76.1`, `D` ein maschinen-lokaler Klon des Werkzeugs —
 `git -C "$D" grep -l 'driven\.VCS' v0.76.1 -- internal/hexagon/core/rules/ ':!*_test.go'` nennt
-neben dem Verteiler `run.go` genau `commits.go` und `vcs.go`. Und `make mutate` kennt zwei
-Fehlschlag-Formen — `--- FAIL:` der Go-Stufe, `not ok N` der bats-Stufe —, keine, in der ein
-Commit-Zuschnitt rot wird. Die Regel liegt im Feedforward-Quadranten: benannt, nicht geschlossen;
-ihr Träger ist der Rollen-Wechsel vor der Änderung, nicht ein Gate danach.
+neben dem Verteiler `run.go` genau `commits.go` und `vcs.go`. Und `make mutate` lässt einen Fall
+nur für eine Stufe zu, für die `failure_form()` ein Fehlschlag-Muster führt
+(`sed -n '/^failure_form()/,/^}/p' harness/tools/mutate.sh`); keines davon trifft einen
+Commit-Zuschnitt, denn keine dieser Stufen hält die Dateien eines Commits gegen die Rolle, die ihn
+schreibt. Die Regel liegt im Feedforward-Quadranten: benannt, nicht geschlossen; ihr Träger ist der
+Rollen-Wechsel vor der Änderung, nicht ein Gate danach.
 
 ### 3.9 Docker-only
 

@@ -98,9 +98,11 @@ Entscheidung sagt, sagt ihre Datei; dieser Index zeigt auf sie.
   nichts abgelöst, also ist auch nichts zu warnen.
 - **`Bezug` ist voll verlinkt und darum lang** — Kennungen sind linkpflichtig
   ([`MR-001`](../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)).
-- **Kein Sensor hält die Titel- und die Status-Regel.** Keines der in
-  `.d-check.yml` aktivierten Module (`links, anchors, ids, matrix, codepaths,
-  spans`) vergleicht eine Zelle mit der `# `-Überschrift oder einem Kopffeld der
-  Datei, auf die sie zeigt, und kein `make`-Ziel tut es. Eine Schranke auf die
-  Zellenlänge misst etwas anderes: kurz ist nicht gleich. Wer eine Überschrift
-  oder ein `Status:`-Kopffeld ändert, zieht die Zelle von Hand nach.
+- **Kein Sensor hält die Titel- und die Status-Regel.** Keines der Module, die
+  das Doku-Gate fährt (`grep -n '^modules:' .d-check.yml`), vergleicht eine Zelle
+  mit der `# `-Überschrift oder einem Kopffeld der Datei, auf die sie zeigt, und
+  kein `make`-Ziel tut es. `structure` hält Abschnitte nur in den Dateien, die
+  seine `files:`-Zeilen nennen, und diese Datei ist keine davon
+  (`sed -n '/^structure:/,/^[a-z]/p' .d-check.yml | grep 'files:'`). Eine Schranke
+  auf die Zellenlänge misst etwas anderes: kurz ist nicht gleich. Wer eine
+  Überschrift oder ein `Status:`-Kopffeld ändert, zieht die Zelle von Hand nach.
