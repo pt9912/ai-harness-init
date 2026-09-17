@@ -182,10 +182,11 @@ make -C <kopie> docs-check              # je Lage die Datei in der Kopie ändern
 | `Gegenstand:` als unausgefüllter Vorlagen-Platzhalter | keine, weil `placeholder` aus ist (§Modul `planning`) |
 | derselbe Platzhalter, `placeholder: true` in der Kopie | `closure-note-placeholder` auf der Zeile (`<Grund>`) |
 
-Rot war der Lauf über der Kopie trotzdem (d-check Exit 1, `make` Exit 2): Die dritte Grenze von
-`make slice-mv` ließ präfixlose Verweise aus unbewegten Geschwister-Dateien in `open/` stehen
-(`target-missing`, [`slice-mv.md`](slice-mv.md) §Kanten). Diese Befunde stehen in anderen Dateien,
-nicht im stillgelegten Slice. `planning-drift` meldet keine der zwei Kanten, weil beide
+Rot war der Lauf nach dem Wechsel trotzdem (d-check Exit 1, `make` Exit 2), an `open → done` wie
+an `next → done`, sobald ein Geschwister im Ausgangsverzeichnis präfixlos auf den Geber verwies: Die
+dritte Grenze von `make slice-mv` lässt diese Verweise stehen (`target-missing`,
+[`slice-mv.md`](slice-mv.md) §Kanten). Diese Befunde stehen in den Geschwister-Dateien, nicht im
+stillgelegten Slice. `planning-drift` meldet keine der zwei Kanten, weil beide
 `in-progress/` nicht berühren.
 
 **Was daraus folgt.** `closure` liest den stillgelegten Slice wie jeden anderen in `done/`; das
@@ -194,8 +195,9 @@ Die Ziel-Fassung nennt es urteilsfrei, dass die Zeile `Gegenstand:` eine Kennung
 trägt. Im gepinnten Stand hält das kein Modul, und seine Konfigurations-Vorlage
 (`docker run --rm ghcr.io/pt9912/d-check@<digest> --print-config`) führt keine Regel, die eine Zeile
 an eine Bedingung knüpft, etwa *offene Task-Items in §2 eines Slice in `done/`, dann trägt §7 die
-Zeile `Gegenstand:`*. Diese Lücke liegt im Werkzeug, nicht in diesem Repo; ihre Adresse ist eine
-Anforderung an das d-check-Repo. Zwei Punkte sind dagegen Grenzen und keine Lücken: Ob die genannte
+Zeile `Gegenstand:`*. Diese Lücke liegt im Werkzeug, nicht in diesem Repo. Ihre Adresse ist der
+eingehende CR im d-check-Repo vom 2026-09-17, „`planning.closure` liest die Stilllegungs-Form
+nicht" (d-check-Commit `d8e30b7d`). Zwei Punkte sind dagegen Grenzen und keine Lücken: Ob die genannte
 Kennung auflöst, lässt die Ziel-Fassung selbst als Urteil oder eigenen Sensor offen. Ob ein
 abgehakter Punkt ein Liefer-Punkt ist, bleibt Urteil.
 

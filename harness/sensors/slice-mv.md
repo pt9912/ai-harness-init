@@ -82,21 +82,28 @@ sind und §7 die Zeile `Gegenstand:` trägt (`v6.9.0` ·
 `.harness/baseline/v6.9.0/regelwerk/modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand
 ein anderer übernimmt), prüft es nicht; den Inhalts-Commit vor dem Wechsel setzt der Aufrufer.
 
-**Gemessen** an einer Kopie außerhalb des Repos ohne `core.hooksPath`, je Kante ein Slice mit
-eingehenden Präfix-Verweisen (auch aus `done/**` und `docs/reviews/**`) und präfixlosen Zielen
-auf Geschwister im Ausgangsverzeichnis, der Stilllegungs-Inhalt vorher committet:
+**Gemessen** am Stand `004335cc` von `harness/tools/slice-mv.sh`
+(`git log -1 --format=%h -- harness/tools/slice-mv.sh`), an einer Kopie außerhalb des Repos ohne
+`core.hooksPath`. Je Kante lief ein Slice mit eingehenden Präfix-Verweisen (auch aus `done/**` und
+`docs/reviews/**`), der Stilllegungs-Inhalt vorher committet. Aus `open/` war es ein Slice mit
+präfixlosen Zielen auf Geschwister und präfixlosen Verweisen von Geschwistern. Aus `next/` liefen
+zwei: einer mit präfixlosen Zielen auf Geschwister und ohne präfixlosen Verweis von ihnen, einer mit
+präfixlosen Verweisen von Geschwistern. Das Werkzeug committet selbst und braucht in der Kopie eine
+git-Identität; das Rezept setzt sie lokal, damit es von keiner Host-Konfiguration abhängt:
 
 ```sh
-git archive HEAD | tar -x -C <kopie>; cd <kopie>; git init -q; git add -A; git commit -qm basis
+git archive HEAD | tar -x -C <kopie>; cd <kopie>; git init -q
+git config user.name <name>; git config user.email <adresse>   # lokal, nur in der Kopie
+git add -A; git commit -qm basis
 make slice-mv SLICE=<slice-in-open> TO=done; echo $?    # ebenso ein Slice aus next/
 git show --numstat --format= -M HEAD~1                    # der Move-Commit
 make docs-check
 ```
 
-| Kante | Exit | Move-Commit | eingehend | ausgehend |
-|---|---|---|---|---|
-| `open → done` | 0, Skript und `make` | reiner Rename, `0 0` | jede Präfix-Form nachgezogen, im zweiten Commit | präfixlose Geschwister-Ziele tragen danach `../<altes-verzeichnis>/`, hier `open` |
-| `next → done` | 0, Skript und `make` | reiner Rename, `0 0` | ebenso | ebenso, hier `next` |
+| Kante | Exit | Move-Commit | eingehend mit Präfix | ausgehend | präfixlos von Geschwistern |
+|---|---|---|---|---|---|
+| `open → done` | 0, Skript und `make` | reiner Rename, `0 0` | jede Präfix-Form nachgezogen, im zweiten Commit | präfixlose Geschwister-Ziele tragen danach `../<altes-verzeichnis>/`, hier `open` | bleibt stehen, `target-missing` je Verweis |
+| `next → done` | 0, Skript und `make` | reiner Rename, `0 0` | jede Präfix-Form nachgezogen, im zweiten Commit | präfixlose Geschwister-Ziele tragen danach `../<altes-verzeichnis>/`, hier `next` | bleibt stehen, `target-missing` je Verweis |
 
 **Rot gesehen, was der Nachzug trägt:** Derselbe `open → done`-Wechsel als bloßer `git mv` färbt
 `make docs-check` an jedem eingehenden Präfix-Verweis und an den ausgehenden Zielen rot
@@ -104,10 +111,12 @@ make docs-check
 aktivierten `commit-msg`-Träger; was er mit den zwei Commits des Werkzeugs tut, steht in
 [`harness/README.md`](../README.md) §Traceability.
 
-**Die dritte Grenze wird an der Kante `open → done` wirksam.** Nach dem Werkzeug bleiben allein die
-präfixlosen Verweise aus unbewegten Geschwister-Dateien im Ausgangsverzeichnis rot
-(`target-missing`, das Ziel ist der blanke Dateiname); `make docs-check` zeigt sie, nachgezogen
-werden sie von Hand. Wie viele solche Verweise zwischen Geschwistern stehen, zählt
+**Die dritte Grenze wird an beiden Kanten wirksam.** Nach dem Werkzeug bleiben allein die präfixlosen
+Verweise aus unbewegten Geschwister-Dateien im Ausgangsverzeichnis rot (`target-missing`, das Ziel
+ist der blanke Dateiname); `make docs-check` zeigt sie, nachgezogen werden sie von Hand. Ob eine
+Kante sie zeigt, hängt am Geber, nicht an der Kante: Ein Slice, auf den kein Geschwister präfixlos
+verweist, verlässt sein Verzeichnis ohne diesen Rest. Wie viele solche Verweise zwischen
+Geschwistern stehen, zählt
 
 ```sh
 P=docs/plan/planning; for d in open next; do n=0; for f in "$P/$d"/*.md; do
