@@ -168,31 +168,84 @@ Gründen rot würde und deshalb keinen bindet.
   zugleich die Adresse, an der `TestCarrierPath_NimmtDieEndungMit` misst. Ein Fall, der aus zwei
   Gründen rot wird, ist genau die Klasse, die
   [slice-069](../open/slice-069-zahn-bindet-zusicherung.md) §1 als gemessene Instanz führt.
+  — **Ausgang: eingetreten** → `slice-waechter-der-erfassungsschicht-decken-was-sie-sagen`. Der
+  Nehmer nimmt genau diese Klasse an und entscheidet sie vorab: Sein Liefer-Punkt (1) setzt *„wo
+  ein Eingriff mehrere Wächter zugleich reißt, bindet er keinen"* und nennt für
+  `TestEnforce_WrapperSuchtDenAblageort` den angewendeten Fall `test/mutations/159` als den
+  Beleg, der heute grün bleibt und danach fallen **muss**.
 - **DoD (2) kann die Kopplung schwächen statt schärfen.** Ein festgeschriebener Namens-Satz driftet
   von `emit.CarrierPath()` weg, wenn dort etwas anderes entschieden wird. Genau darum ist
   `TestCarrierPath_NimmtDieEndungMit` die zweite Hälfte: er hält die Funktion gegen ihre Tabelle,
   und der Wrapper-Wächter hält den Wrapper gegen den festgeschriebenen Satz. Fallen sie
   auseinander, fällt einer von beiden — das ist der Zweck, nicht der Fehler.
+  — **Ausgang: eingetreten** → derselbe Nehmer. Er hebt die Bedingung aus dem Slice-Text in seinen
+  Liefer-Punkt (1): *„kein Wächter bezieht seine Erwartung aus der Funktion, die ihn rot färben
+  soll"*. Damit ist die Kopplung dort eine Zusage mit Rot-Weg, nicht mehr eine Absicht im Plan.
 - **Der Slice kann seine eigene Lehre wiederholen.** Sein Ergebnis sind Mutations-Fälle, und ein
   Fall, dessen Kopf mehr behauptet, als sein Eingriff bewegt, ist der Befund, den er behandelt. Die
   Closure-Notiz gehört daraufhin gelesen, welche Wächter jeder neue Fall **wirklich** fällt —
   gemessen, nicht aus dem Kopf gelesen.
+  — **Ausgang: eingetreten** → derselbe Nehmer. Sein Liefer-Punkt (1) verlangt die Messung statt
+  der Selbsteinschätzung: Nach dem Lauf liefert das `comm`-Kommando aus seinem §1 genau die Namen
+  mit ausgesprochener Grenze und keinen weiteren — die Lehre wird dort geprüft, nicht wiederholt.
 - **`make gates` sieht den Gegenstand nur zum Teil.** Der Doku-Gate prüft Kennungen und Pfade,
   `make comment-claims` prüft Existenz statt Aussage und lässt `_test[.]go` ganz aus. Was hier grün
   wird, ist der Mutations-Lauf; die Richtigkeit der Zuschreibung trägt das Review.
+  — **Ausgang: eingetreten** → derselbe Nehmer, und dort als Eigenschaft der Stufe benannt statt
+  als Lücke des Schnitts: Sein Rot-Weg ist `make mutate` (kein Gate,
+  [`harness/README.md`](../../../../harness/README.md) §Werkzeuge), und die Richtigkeit der
+  Zuschreibung trägt sein Review-Punkt. Der Befund bleibt damit adressiert und außerhalb von
+  `make gates`.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!--
-Wird *nach* Abschluss ergänzt. Inhalt:
-- Was hat funktioniert?
-- Was ging anders als geplant?
-- Steering-Loop-Eintrag: welcher Guide/Sensor sollte verbessert werden?
-  (kanonische Definition: [`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/grundlagen/klassifikation.md#steering-loop))
-- Folge-Slices: welche neuen open/-Einträge?
--->
+**Gegenstand:** übernommen von `slice-waechter-der-erfassungsschicht-decken-was-sie-sagen`.
 
-<!-- Erst nach Abschluss füllen. -->
+**Stillgelegt ohne Lieferung** — Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice,
+dessen Gegenstand ein anderer übernimmt. Die Liefer-Punkte in §2 bleiben **leer**: Dieser Slice
+hat nichts geliefert, und ein Haken behauptete es. `Verantwortlich:` bleibt stehen.
+
+**Die Adresse nimmt an.** Der Nehmer liegt in `open/`, ist nicht geschlossen und nennt in §1
+unter `Übernimmt:` diese Kennung. Er führt den Gegenstand in seinem Liefer-Punkt (1): *Jede
+Zusage dieses Bestands trägt ihren `test/mutations/`-Fall oder ihre an der Assertion
+ausgesprochene Grenze mit Grund* — und benennt den Träger-Bestand
+(`internal/emit/enforce_test.go`) ausdrücklich.
+
+**Wellenlos.** Der Kopf führt keine Welle; die Roadmap führt wellenlose Arbeit nicht
+(`modul-06-roadmap.md` §Wann Arbeit eine Welle braucht), und diese Closure trägt sie allein.
+
+**Was hat funktioniert:** Die drei Fragen dieses Slice — Fall oder ausgesprochene Grenze, Meldung
+trifft den Treffer, Grenze in der Meldung — sind im Nehmer **wörtlich** als die drei
+Liefer-Punkte wiederzufinden. Der Schnitt hat den Gegenstand gebündelt, nicht verdünnt.
+
+**Was ging anders als geplant:** Geprüft hat den Schnitt keine Implementation, sondern erst die
+Gruppierung — das Muster *tote Slices* aus `modul-05-planning-harness.md` §Regeln gegen typische
+Fehlannahmen. Der Plan stand von seinem Schnitt am 2026-08-26 an unbeansprucht in `next/`, neben
+zwei Nachbarn mit derselben Leserichtung; erst die Gruppierung hat das gesehen.
+
+**Steering-Loop-Eintrag:** **gezählt, nicht verkörpert** — kein Zielort, darum **kein**
+`liegt in`-Feld (`grundlagen-traceability.md` §Herkunfts-Anker). Die Form der Stilllegung steht
+seit `v6.9.0` in der adoptierten Baseline; eine zweite Fassung daneben driftete.
+
+**Beobachtungs-Register** (`../observations/`): zitiert, nicht neu formuliert —
+[`BEO-ALL/geplanter-slice-wird-nie-gearbeitet`](../observations/BEO-ALL/geplanter-slice-wird-nie-gearbeitet/observation.md).
+**Keine zweite Beleg-Datei:** Dieser Geber steht dort unter *Benannt, nicht gezählt*; er ist ein
+Fund **derselben** Gelegenheit wie `slice-090-freshness-audit-im-ziel`, und der Zähler misst
+Wiederholung über Vorgänge hinweg, nicht die Zahl der Funde (`modul-06-roadmap.md` §Das
+Beobachtungs-Register). Der Stand bleibt `offen`, unter der Schwelle.
+
+**Lese-Schritt** (Repo ohne Wellen-Betrieb, `modul-06-roadmap.md` §Wann Arbeit eine Welle
+braucht): Kein Eintrag erreicht mit dieser Closure 3×, und kein Eintrag über der Schwelle steht
+ohne Ausgang — dasselbe Kommando wie in
+[`slice-090`](slice-090-freshness-audit-im-ziel.md) §7, Ausgabe leer.
+
+**Die drei Paarungen.** (a) Anker-Paarung: kein Eintrag trägt `liegt in`, sie hat keinen
+Gegenstand. (b) Folge-Slice-Paarung: kein Folge-Slice genannt. (c) Register-Paarung: die zitierte
+Beobachtung existiert als Verzeichnis und trägt einen Beleg.
+
+**Was diese Closure nicht trägt:** Review und Verifikation am Gegenstand — es gibt keinen Diff,
+den sie prüfen könnten. Geprüft ist die **Form** der Stilllegung durch `make docs-check` (Modul
+`structure`, `open-tasks-require-marker`) und der Gesamtstand durch `make gates`.
 
 ## 8. Sub-Area-Modus-Begründung
 
