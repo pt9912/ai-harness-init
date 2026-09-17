@@ -83,8 +83,9 @@ gefahren.
 ## Sperren
 
 - `Usage: history-range-guard.sh …` — kein Argument, über `make` also weder `RANGE` noch
-  `STAGED=1`; die Shell bricht am leeren Parameter ab, **mit Exit 1**, derselben Zahl wie die leere
-  Range → eine Range nennen. Die zwei Fälle trennt die Meldung, nicht der Exit.
+  `STAGED=1`; die Shell bricht am leeren Parameter ab → eine Range nennen. Beim Direktaufruf endet
+  das Skript damit mit 1, derselben Zahl wie bei der leeren Range; die Meldung trennt die zwei
+  Fälle. Über `make history-range-guard` endet jeder Abbruch des Wächters mit 2.
 
 ### Im gebootstrappten Ziel
 

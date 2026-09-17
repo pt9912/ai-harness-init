@@ -52,6 +52,9 @@ Laufzeit kein zweites Werkzeug ruft, und wer es ändert, ändert beide.
 | 0 | jede Stufe grün; je Stufe steht ihre Abdeckungs-Zeile `full-smoke: Abdeckung der Stufe …` im Lauf |
 | 1 | eine Stufe brach ab, mit `full-smoke: FEHLER — …`; der Ausgang des Abbruchs steht in der Zeile `AUSGANG LEITUNG` oder `AUSGANG BAUM` |
 
+Die Tabelle nennt den Exit des Skripts; über `make full-smoke` meldet `make` einen Exit ungleich null
+als `Fehler <n>` und endet selbst mit 2.
+
 **Sein Grün sagt das eine, sein Rot sagt zwei Dinge:** der Lauf fragt je Durchgang fremde
 Registries nach gepinnten Bildern und macht jede dieser Anfragen zur Bedingung seines Grüns.
 Bricht ein Abschnitt ab, ordnet `harness/tools/full-smoke-ausgang.sh` ihn einem von zwei

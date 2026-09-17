@@ -26,6 +26,9 @@ Der Mechanismus selbst ist hier **nicht** geändert (Gate-*Anheben* ist ein Stee
 | 0 | kein Befund; letzte Zeile `comment-claims: N Datei(en) geprueft, 0 Befund(e)` |
 | 1 | mindestens eine Behauptung ohne Sensor-Nennung oder ein genannter Test, den es nicht gibt; die Befunde stehen auf stderr |
 
+Die Tabelle nennt den Exit des Skripts; über `make comment-claims` meldet `make` einen Exit ungleich null
+als `Fehler <n>` und endet selbst mit 2.
+
 `N` ist die Zahl der übergebenen Pfade. Die Zeile spricht über den Ausschnitt aus §Grenze, nicht
 über das Repo; ohne Pfade lautet sie `0 Datei(en) geprueft, 0 Befund(e)`.
 

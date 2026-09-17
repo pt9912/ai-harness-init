@@ -95,12 +95,14 @@ Emit ohne Sprache).
 | 0 | bewegt: `slice-mv ok: <datei>  <von>/ -> <nach>/`, darunter `Commit 1 (reiner Move)` und, nur wenn Verweise anfielen, `Commit 2 (Inhalt, …)` mit den zwei Zählern |
 | 2 | eine Sperre griff; es ist nichts bewegt |
 
-Scheitert danach ein `git`-Schritt, etwa ein Commit an einem Hook, endet der Lauf mit dessen Exit
-(`set -euo pipefail`).
+Die Tabelle nennt den Exit des Skripts. Scheitert nach dem `git mv` ein `git`-Schritt, etwa ein
+Commit an einem Hook, endet das Skript mit dessen Exit (`set -euo pipefail`); der Move ist dann
+schon ausgeführt. Über `make slice-mv` endet jeder Fehlschlag mit 2, eine Sperre ebenso wie ein
+gescheiterter Commit — ob etwas bewegt ist, sagt dort nur die Meldung.
 
 ## Sperren
 
-Alle vor dem ersten `git mv`, alle mit Exit 2:
+Alle vor dem ersten `git mv`; das Skript endet bei jeder mit 2, `make slice-mv` ebenso:
 
 - Aufruf ohne `SLICE` oder `TO` → Aufruf-Hilfe → beide nennen.
 - `slice-mv: Arbeitsbaum nicht sauber …` — das Skript committet selbst; eine unstaged oder gestagte

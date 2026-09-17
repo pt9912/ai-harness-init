@@ -27,6 +27,8 @@ Zahl gilt dem Host, auf dem sie entstand.
 | 1 | `hook-overhead: BEFUND — …`: eine Sperre griff, der Träger endete mindestens einmal ungleich null, oder er schrieb auf stdout |
 | 2 | Aufruf ohne Programm; die Aufruf-Hilfe steht auf stderr |
 
+Die Tabelle nennt den Exit des Skripts; über `make hook-overhead` endet jeder Fehlschlag mit 2.
+
 Die Schwelle setzt der Exit nicht durch: Exit 0 heißt *gemessen*, nicht *unter der Schwelle*.
 
 ## Sperren
@@ -39,7 +41,8 @@ Die Schwelle setzt der Exit nicht durch: Exit 0 heißt *gemessen*, nicht *unter 
 - `hook-overhead: BEFUND — aus … entstand keine Payload.` — die Strom-Datei trägt keinen
   nachspielbaren Aufruf → eine andere Quelle wählen.
 
-Alle drei `BEFUND`-Sperren enden mit Exit 1, bevor gemessen wird (`harness/tools/hook-overhead.sh`).
+Alle drei `BEFUND`-Sperren enden beim Direktaufruf mit 1, über `make hook-overhead` mit 2, bevor
+gemessen wird (`harness/tools/hook-overhead.sh`).
 
 ## Bindung
 

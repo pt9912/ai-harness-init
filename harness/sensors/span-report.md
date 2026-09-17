@@ -20,11 +20,16 @@ Bezugsmenge. Ohne Span-Bestand ist der Nenner leer, und der Bericht sagt das sta
 | 0 | die Bilanz steht auf stdout, mit den Größen aus §Grenze |
 | 1 | `span-report: …` auf stderr: der Ablageort ist nicht auflösbar, oder der Bestand ist nicht lesbar |
 
+Die Tabelle nennt den Exit des Unterkommandos; über `make span-report` meldet `make` einen Exit ungleich null
+als `Fehler <n>` und endet selbst mit 2.
+
 ## Sperren
 
 - `span-report: keine Repo-Wurzel ueber … — Ablageort als Argument nennen` — der Aufruf liegt
   außerhalb eines Repos und nennt keinen Ablageort; Exit 1, bevor ein Span gelesen ist → aus dem
   Repo aufrufen (`cmd/ai-harness-init/span_report.go`).
+  Über `make span-report` tritt sie nicht auf: das Rezept ruft das Unterkommando in der
+  Repo-Wurzel auf.
 
 ## Bindung
 

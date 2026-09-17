@@ -32,6 +32,10 @@ Baum byte-gleich (`git status --porcelain -- .harness/baseline/` bleibt leer), u
 
 ## Sperren
 
+- `vendor-baseline: keine Repo-Wurzel ueber …` — der Aufruf liegt außerhalb eines Repos → Abbruch
+  vor jedem Zugriff; das Unterkommando endet mit 1 und schreibt nichts
+  (`cmd/ai-harness-init/vendor_baseline.go`). Über `make vendor-baseline` tritt sie nicht auf: das
+  Rezept ruft das Unterkommando in der Repo-Wurzel auf.
 - Der übergebene sha256 weicht vom aus dem Asset berechneten ab → der Lauf bricht **vor** jedem
   Schreibzugriff ab (`internal/fetch.SHA256Mismatch`), ein bestehender Baum bleibt unverändert.
 - Ein anderer Tag liegt bereits vor (s. Grenze) → Abbruch vor jedem Zugriff, kein zweites

@@ -44,6 +44,9 @@ bleibt still grün — Existenz und Eindeutigkeit sind geprüft, Richtigkeit ist
 | 1 | mindestens ein Befund (`mutate: BEFUND  <fall>  <grund>` je Fund, Summe in `mutate: <n> ok, <m> Befund(e)`), oder eine Sperre griff |
 | 130 | ein Signal beendete den Lauf; berichtet ist, was bis dahin gemessen war, gekennzeichnet `ABGEBROCHEN` |
 
+Die Tabelle nennt den Exit des Skripts. Über `make mutate` endet ein Lauf, den das Skript mit 1
+beendet, mit 2.
+
 ## Sperren
 
 - `mutate: ABBRUCH — ein Lauf ist bereits aktiv (…)` — das Lock-Verzeichnis unter
@@ -60,7 +63,8 @@ bleibt still grün — Existenz und Eindeutigkeit sind geprüft, Richtigkeit ist
 - `mutate: ABBRUCH — WORK …` — die Isolations-Wurzel ist leer, liegt im Repo oder ist kein
   Verzeichnis; ohne Isolation wird nicht mutiert.
 
-Diese Sperren enden mit Exit 1, bevor ein Fall läuft (`harness/tools/mutate.sh`, `main`). Die
+Diese Sperren enden beim Direktaufruf mit 1, über `make mutate` mit 2, bevor ein Fall läuft
+(`harness/tools/mutate.sh`, `main`). Die
 folgende greift während des Laufs:
 
 - Stille über `MUTATE_STALL_SECONDS` hinweg (kein Worker zieht oder schließt einen Fall ab) → Lauf
