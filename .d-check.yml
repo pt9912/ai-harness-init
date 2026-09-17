@@ -369,8 +369,8 @@ vcs:
 # Traeger dieses Blocks ist AUSSCHLIESSLICH der PreToolUse-Hook
 # .claude/hooks/pretooluse-commit-msg-guard.sh (ueber `make commit-msg-check
 # MSG=<datei>`, --commit-msg) — NICHT `make doc-commits` (d-check.mk, --range):
-# gemessen (v0.74.1, v0.76.0) bricht der gepinnte d-check mit "Range-Basis-Vorfahren nicht
-# lesbar: object not found" ab, sobald `commits.id-patterns` IRGENDEINE
+# der gepinnte d-check bricht mit "Range-Basis-Vorfahren nicht lesbar: object not
+# found" ab (Messung und Stand: MR-061), sobald `commits.id-patterns` IRGENDEINE
 # nicht-leere Liste traegt UND gleichzeitig --range laeuft — auch die drei
 # eingebauten Muster VERBATIM brechen ab; nicht die Abweichung von den
 # Vorschlaegen ist die unterscheidende Variable, sondern die blosse

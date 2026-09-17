@@ -217,6 +217,7 @@ Aussagen-Berührung steht hier gar nicht.
 | [`harness/README.md`](../../../../harness/README.md) oder [`.d-check.yml`](../../../../.d-check.yml) | update, falls ein Target hinzukommt | [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) (DoD 1) |
 | [`harness/sensors/docs-check.md`](../../../../harness/sensors/docs-check.md) | update | DoD 3 |
 | [`.d-check.yml`](../../../../.d-check.yml) (Kommentar am `commits`-Block) und [`harness/sensors/commit-msg-check.md`](../../../../harness/sensors/commit-msg-check.md) | update | Beide nennen den `--range`-Abbruch als Eigenschaft des gepinnten `v0.74.1`; nach dem Sprung ist die Aussage am neuen Stand nachgemessen und datiert ([`MR-053`](../../../../harness/conventions.md#mr-053)). Die Zählung in §1 lief über den Digest und fand diese zwei Tag-Nennungen nicht. |
+| [`Makefile`](../../../../Makefile) | update | Zwei handgeschriebene `--disable`-Listen folgen dem Fragment und der Modul-Liste: `commit-msg-check` schaltet `mentions` ab, `regelwerk-check` schaltet alle aktiven Module ab (dazu `targets`); der Kommentar dort nennt statt einer festen Zahl die zwei Kommandos, die gleich sein müssen ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). |
 
 ## 4. Trigger
 

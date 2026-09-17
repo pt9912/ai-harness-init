@@ -35,9 +35,8 @@
 # Marker" — es gibt sie, sie tragen nur nicht. WAS DAS MISST, IST DER LAUF SELBST: `make
 # docs-check` faehrt den gepinnten Digest und ist gruen, und jeder `make gates`-Lauf prueft
 # es neu. DAS IST FALSIFIZIERBAR, nicht tautologisch: traegt ein Marker in einer der zwei
-# nicht mehr honorierten Formen einen echten Befund, wird `docs-check` rot — gemessen unter
-# v0.74.1 an einer Sonde ueber einer Kopie, blanke Prosa ueber unverlinkter Kennung,
-# `1 Befund`.
+# nicht mehr honorierten Formen einen echten Befund, wird `docs-check` rot (Messung und
+# Stand: MR-027).
 # Hier steht dazu bewusst KEINE Zahl: die Marker-Menge waechst mit dem Bestand.
 # Wer zaehlt, schneidet ueber den PFAD statt ueber den Text und summiert:
 #   `git grep -h 'd-check:ignore' -- '*.md' ':!.harness/baseline' | wc -l`
@@ -45,14 +44,13 @@
 # `git grep -c` gibt `pfad:anzahl` je Datei aus statt einer Summe. Beide liefern eine
 # plausible Zahl ohne Fehler — ein Kommando neben einer Zahl belegt sie erst, wenn es den
 # Gegenstand schneidet.
-# JEDE BEFUND-ZEILE TRAEGT EINE VIERTE, TAB-GETRENNTE SPALTE (seit v0.74.1, unter v0.76.0
-# auf einer Nicht-Null-Basis nachgemessen): den Klartext des Grundes (`target-missing` ->
-# „Linkziel existiert nicht"). Wer eine Ausgabe spaltenweise zerlegt und die letzte Spalte
+# JEDE BEFUND-ZEILE TRAEGT EINE VIERTE, TAB-GETRENNTE SPALTE (Messung und Stand: MR-061):
+# den Klartext des Grundes (`target-missing` -> „Linkziel existiert nicht"). Wer eine Ausgabe spaltenweise zerlegt und die letzte Spalte
 # (`awk -F'\t' '{print $NF}'`) als Grund-CODE liest, bekommt den Klartext statt des Codes —
 # kein Skript dieses Repos tut das.
 # DIE ZUSAMMENFASSUNG AUF STDERR KANN VOR DER ZAEHL-ZEILE `d-check: N Datei(en) geprüft,
-# M Befund(e)` WEITERE `d-check: …`-ZEILEN TRAGEN (`summary.notes`, seit v0.75.0; gefuellt
-# nur vom Modul `mentions`, das hier nicht aktiv ist). Die Zaehl-Zeile bleibt die letzte.
+# M Befund(e)` WEITERE `d-check: …`-ZEILEN TRAGEN (`summary.notes`, v0.75.0; gefuellt nur
+# vom Modul `mentions`, das hier nicht aktiv ist; MR-061). Die Zaehl-Zeile bleibt die letzte.
 # Einbinden: `include d-check.mk`; eine eigene .d-check.yml danebenlegen.
 # NEU-ERZEUGUNG: FUENF Handgriffe, ACHT Diff-Hunks — das Kommando zaehlt HUNKS, nicht
 # Handgriffe: Handgriff 5 aendert ZWEI nicht benachbarte Ziele, und je Ziel trennt die
