@@ -1,0 +1,2 @@
+**Vorgang:** slice-d-check-pin-bringt-die-stilllegungs-bedingung
+**Fund:** Drei Kommentare, die der Diff schrieb oder änderte, trugen das Protokoll eines Laufs statt der Stelle: zwei im Kopf von `d-check.mk`, einer am `commits`-Block der `.d-check.yml` (*„unter v0.76.0 … nachgemessen"*). Gefunden hat es der Review (HIGH), kein Sensor. Behoben ist es vor der Closure mit einem Rang-Zeiger auf den datierten Adaptions-Eintrag.

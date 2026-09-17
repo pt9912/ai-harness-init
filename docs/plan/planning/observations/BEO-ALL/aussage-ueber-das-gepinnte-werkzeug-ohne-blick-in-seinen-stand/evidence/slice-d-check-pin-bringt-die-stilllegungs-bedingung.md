@@ -1,0 +1,2 @@
+**Vorgang:** slice-d-check-pin-bringt-die-stilllegungs-bedingung
+**Fund:** Der Pin-Eintrag zum Sprung auf `v0.74.1` sagte, die Befund-Zeile trage ab diesem Pin eine vierte, tab-getrennte Spalte. Das deckt sich mit dem Wortlaut des d-check-CHANGELOG, nicht mit dem Quellstand: Dort hängt die Spalte an einer nicht leeren Meldung, `spans` setzt keine und trug schon unter `v0.74.1` drei Spalten. Gefunden hat es die Nachmessung in diesem Vorgang (Review Runde 2); abgelöst ist die Aussage durch einen neuen Adaptions-Eintrag mit Kopf-Marke am alten.

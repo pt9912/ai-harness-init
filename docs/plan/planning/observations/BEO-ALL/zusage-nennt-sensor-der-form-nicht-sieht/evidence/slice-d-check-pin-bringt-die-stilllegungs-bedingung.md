@@ -1,0 +1,2 @@
+**Vorgang:** slice-d-check-pin-bringt-die-stilllegungs-bedingung
+**Fund:** Der Kommentar am Rezept `regelwerk-check` sagt, die `--disable`-Flags nennen genau die aktiven Module, und stellt ein Paar aus Zählkommandos daneben. Das Paar vergleicht Anzahlen, nicht Namen: Mit `--disable structure` statt `--disable targets` bleibt es bei `8 = 8` (Review F-5, von der Verifikation rot gesehen). Heute sind die Namensmengen gleich; den Kommentar zieht `slice-d-check-pin-zieht-den-vcs-patch-nach` nach.

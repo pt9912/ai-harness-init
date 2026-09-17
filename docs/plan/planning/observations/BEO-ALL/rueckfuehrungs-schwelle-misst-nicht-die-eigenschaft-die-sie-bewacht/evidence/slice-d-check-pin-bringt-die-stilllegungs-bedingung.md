@@ -1,0 +1,2 @@
+**Vorgang:** slice-d-check-pin-bringt-die-stilllegungs-bedingung
+**Fund:** §4 des Plans schickte den Slice zurück, wenn das Fragment mehr Handgriffe braucht, als der zitierte Adaptions-Eintrag nennt. Der nannte vier, das Fragment trug aber schon vor dem Sprung fünf. Die Bedingung war damit dem Wortlaut nach erfüllt, obwohl der Sprung keinen Handgriff hinzubrachte und der Slice nicht zu groß war (Verifikation V-1). Die Closure liest die Bedingung als „durch den Sprung neu", und der Folge-Plan schreibt sie so.
