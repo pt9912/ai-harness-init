@@ -66,7 +66,7 @@ Setzung 2):
 
 ```sh
 grep -cE '^- \[ \] \*\*\(' docs/plan/planning/next/slice-071-bilanz-nennt-ihren-bestand.md              # 3
-grep -cE '^- \[ \] \*\*\(' docs/plan/planning/open/slice-die-bilanz-sagt-worueber-sie-gerechnet-hat.md  # 3
+grep -cE '^- \[ \] \*\*\(' docs/plan/planning/done/slice-die-bilanz-sagt-worueber-sie-gerechnet-hat.md  # 3
 ```
 
 **Folge:** `slice-071-bilanz-nennt-ihren-bestand` bleibt unter seiner Kennung in `next/` und führt
