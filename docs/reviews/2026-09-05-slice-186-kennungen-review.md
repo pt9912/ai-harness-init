@@ -60,7 +60,7 @@ git grep -o 'BEO-[0-9][0-9][0-9]' -- '*.md' ':!.harness/baseline' ':!docs/review
 #  1 harness/conventions/MR-041-…​.md
 #  1 harness/conventions/MR-047-…​.md
 #  1 harness/conventions/MR-048-…​.md
-#  1 docs/plan/planning/next/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md
+#  1 docs/plan/planning/done/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md
 ```
 
 Die Aufteilung deckt sich mit der DoD Zeile für Zeile. **Jede der vier Ausnahmen trägt** — siehe

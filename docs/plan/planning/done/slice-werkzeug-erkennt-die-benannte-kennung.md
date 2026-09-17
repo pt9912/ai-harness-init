@@ -117,7 +117,7 @@ als sie misst, lädt dazu ein, die Fähigkeit daneben ebenfalls für abwesend zu
   prüfbar am Pathspec des Diffs.
 - **Keine Änderung an der `BEO-`-Kennungs-Erkennung im Stub.** `beoRE` in derselben Datei bindet
   `BEO-[0-9]{3}` und ist die abgeschaffte Register-Kennungsform; sie übernimmt
-  [slice-188](../next/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md). Dieser Slice
+  [slice-188](../done/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md). Dieser Slice
   fasst **nur** `sliceRE` an, damit beide Diffs disjunkt bleiben. *Folge-Slice übernimmt es* —
   und `slice-188` nimmt die Sendung an, weil sein Gegenstand genau diese Kennungsklasse ist.
 - **Keine Erweiterung der Ausnahmeliste des Verweis-Nachzugs.**

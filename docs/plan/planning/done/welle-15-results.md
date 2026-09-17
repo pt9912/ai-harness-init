@@ -287,7 +287,7 @@ ein halluziniertes Gate.
   Auslöser der Zeitdokumente-Archivierung im wellenlosen Betrieb (Architect).
   Position **P-06** des Katalogs, von §6 dieser Welle ausdrücklich außerhalb
   gehalten.
-- [slice-188](../next/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md)
+- [slice-188](../done/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md)
   — der Archiv-Stub kennt die Kennungs-Form des Registers; hervorgegangen aus
   [slice-184](slice-184-register-form-im-bestand-nachziehen.md).
 - [slice-189](../open/slice-189-abgeschaffte-kennung-in-architect-artefakten.md)
