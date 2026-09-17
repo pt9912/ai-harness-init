@@ -5,8 +5,8 @@
 Prüft die gesamte Repo-Doku netzlos (`--network none`) mit dem in
 [`d-check.mk`](../../d-check.mk) gepinnten `d-check` gegen
 [`.d-check.yml`](../../.d-check.yml). Welche Module aktiv sind, nennt
-`grep -n '^modules:' .d-check.yml`; keines davon liest Historie (gemessen am Stand `v0.76.1`:
-[`AGENTS.md`](../../AGENTS.md) §3.8). Grün heißt: im Prüfbereich **dieser** Module ist kein
+`grep -n '^modules:' .d-check.yml`; keines davon liest Historie, gemessen am Stand `v0.76.3` mit
+dem Kommando aus [`AGENTS.md`](../../AGENTS.md) §3.8. Grün heißt: im Prüfbereich **dieser** Module ist kein
 Befund offen, nicht mehr.
 
 ## Grenze — was das Grün nicht abdeckt

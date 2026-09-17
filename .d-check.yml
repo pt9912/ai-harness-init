@@ -437,17 +437,19 @@ vcs:
 # Traeger dieses Blocks ist AUSSCHLIESSLICH der PreToolUse-Hook
 # .claude/hooks/pretooluse-commit-msg-guard.sh (ueber `make commit-msg-check
 # MSG=<datei>`, --commit-msg) — NICHT `make doc-commits` (d-check.mk, --range):
-# ein Range-Lauf haengt am Objektspeicher des Klons. Liegen Objekte der Range in
-# einem Pack, dessen Name nicht mit `pack-` beginnt (gemessen ist das an
-# `loose-*.pack`; dass es am Praefix haengt, ist eine Vermutung;
-# `ls .git/objects/pack/`), und fuehrt `commits.id-patterns` eine nicht-leere
-# Liste, bricht der gepinnte d-check mit einem Fehler ab ("... nicht lesbar" oder
-# "... nicht aufloesbar"); mit leerer Liste laeuft er durch und prueft nichts.
-# Ebenso bricht er ab, wenn der Klon seine Objekte ueber Alternates liest
-# (`git clone --shared`). Geprueft hat derselbe Range-Lauf in den gemessenen Klonen
-# ohne Alternates, deren Objekte in Packs mit dem Praefix `pack-` oder lose liegen
-# (umgepackt, per `--no-local` geklont, nur lose Objekte); dass das fuer einen
-# pruefenden Lauf genuegt, ist nicht belegt. --commit-msg liest keine Historie und
+# ein Range-Lauf haengt am Objektspeicher des Klons. Der gepinnte d-check liest
+# Packs auch unter einem anderen Namens-Praefix als `pack-`, sofern die Datei ein
+# gueltiges Hash-Suffix und eine passende `.idx` traegt (gemessen am Stand v0.76.3
+# an `loose-*.pack`; `ls .git/objects/pack/`): dort laeuft der Range-Lauf durch und
+# meldet seine Befunde. Er bricht mit "... nicht aufloesbar" ab, wenn die Objekte
+# der Range wirklich fehlen (Pack ohne passende `.idx`) und wenn der Klon seine
+# Objekte ueber Alternates liest (`git clone --shared`) — und zwar unabhaengig
+# davon, ob `commits.id-patterns` eine nicht-leere Liste fuehrt: die Range wird vor
+# der Klassen-Config aufgeloest. Eine aufloesbare Range mit leerer Liste laeuft
+# weiter durch und prueft nichts. Geprueft hat derselbe Range-Lauf in den
+# gemessenen Klonen ohne Alternates, deren Objekte in Packs (Praefix `pack-` oder
+# `loose-`) oder lose liegen; dass das fuer einen pruefenden Lauf genuegt, ist
+# nicht belegt. --commit-msg liest keine Historie und
 # haengt an keiner dieser Formen. `doc-commits` bleibt ungenutzt advisory stehen
 # (Messung, Stand und Traeger-Entscheidung: harness/sensors/commit-msg-check.md
 # §Grenze).

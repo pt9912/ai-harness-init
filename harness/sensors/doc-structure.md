@@ -35,7 +35,8 @@ docker run --rm --network none -v <kopie>:/repo:ro "ghcr.io/pt9912/d-check@$DIGE
 #     … ## 7. Closure-Notiz    section-missing    kein Abschnitt passt auf den Selektor
 ```
 
-Gemessen gegen d-check `v0.76.1` (der Digest in [`d-check.mk`](../../d-check.mk)). Beide Zahlen
+Gemessen gegen d-check `v0.76.1` (der damals in [`d-check.mk`](../../d-check.mk) gepinnte Digest;
+den lebenden Pin führt dieselbe Datei). Beide Zahlen
 sind **kein Erwartungswert** — sie wandern mit dem Bestand. Ohne Block bleibt der eingesetzte
 Defekt unsichtbar, genau die Inertheit, die `d-check --print-config` selbst ankündigt. Die **100**
 Befunde (nicht nur der eine eingesetzte) kommen aus dem groben Sonden-Block: `section: "## 7.
@@ -86,8 +87,10 @@ denen die Regel gemessen und eine Bedingung verletzt gefunden hat. Gemessen an d
 `.d-check.yml` ([`docs-check.md`](docs-check.md) §Modul `structure`) gilt das für
 `section-open-tasks-marker-missing`, `section-tasks-open` und für `section-missing` an einer Datei,
 der die geforderte Überschrift fehlt. Befunde, die *nicht gemessen* bedeuten, behalten den Text des
-Werkzeugs; d-check `v0.76.1` trennt die zwei Arten in `internal/hexagon/core/rules/structure.go`
-(Zeilen 308–310, `structureRawFinding`), nicht nach Datei gegen Glob. Nicht gemessen hat die Regel
+Werkzeugs; d-check `v0.76.3` trennt die zwei Arten in `internal/hexagon/core/rules/structure.go`
+(Zeilen 308–310, `structureRawFinding`), nicht nach Datei gegen Glob — die Datei ist zwischen
+`v0.76.1` und `v0.76.3` unverändert (`git -C <Klon des Werkzeugs> diff --numstat v0.76.1 v0.76.3
+-- internal/hexagon/core/rules/` nennt sie nicht). Nicht gemessen hat die Regel
 in drei Fällen:
 
 - **Sie trifft keine Datei** (Zeilen 72–79): `section-missing` auf ihrem Glob (`<files>:1`) mit

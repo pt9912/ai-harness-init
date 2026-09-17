@@ -28,22 +28,35 @@ Vorbedingung selbst, und sie liegt in keinem Gate: `make gates` fährt keines de
 
 ## Grenze — was das Grün nicht abdeckt
 
-- **Eine *unauflösbare* Basis** (z. B. `HEAD~1` in einem Tiefe-1-Klon) deckt der Wächter **nicht
-  zusätzlich** — d-check selbst bricht dafür schon mit Exit 2 ab, und ein Wächter, der nur das
-  fängt, prüfte eine Eigenschaft, die das Werkzeug bereits hält.
+- **Eine *unauflösbare* Basis** (z. B. `HEAD~1` in einem Tiefe-1-Klon) fängt der Wächter **selbst**
+  ab: `git rev-list --count` schlägt fehl, er meldet die Basis als *nicht auflösbar* und endet mit
+  2 (`grep -n 'NICHT aufloesbar' ../tools/history-range-guard.sh`). Das ist keine doppelte
+  Prüfung ohne Gegenstand: d-check bricht für diesen Fall erst seit `v0.76.3` unabhängig von der
+  Klassen-Konfiguration ab. Gemessen am frisch emittierten Ziel (dessen `.d-check.yml` weder
+  `vcs:` noch `commits:` führt), am Wächter vorbei über `docker run` mit dem Digest des Ziels,
+  `--range deadbeef..cafebabe`: unter `v0.76.3` `d-check: error: Range-Basis "deadbeef" nicht
+  auflösbar: reference not found`, Exit 2, für `vcs` und für `commits`; unter `v0.76.1` an
+  derselben Stelle `d-check: 20 Datei(en) geprüft, 0 Befund(e)`, Exit 0 — blind und grün. Im
+  Dogfood, dessen `.d-check.yml` beide Blöcke führt, brach d-check schon vorher ab.
 - **`STAGED=1` prüft nicht den Inhalt.** Fehlt jede gestagte Änderung, meldet der Wächter das
   explizit statt schweigend mit Exit 0 zu enden; findet sich mindestens eine, bleibt die Ausgabe
   leer — den Inhalt der gestagten Änderung prüft dann das d-check-Modul selbst, nicht dieser
   Wächter.
 - **`doc-commits` im Dogfood hängt am Objektspeicher des Klons.** Der `commits:`-Block in
-  [`.d-check.yml`](../../.d-check.yml) trägt eine nicht-leere `id-patterns`-Liste. Liegen Objekte
-  der Range in einem Pack, dessen Name nicht mit `pack-` beginnt — gemessen ist das an
-  `loose-*.pack`; dass es am Präfix hängt, ist eine Vermutung —, bricht der `--range`-Lauf des
-  `commits`-Moduls ab (Exit 2); ebenso in einem Klon, der seine Objekte über Alternates liest
-  (`git clone --shared`). Geprüft hat er in den gemessenen Klonen ohne Alternates, deren Objekte
-  in Packs mit dem Präfix `pack-` oder lose liegen: `make doc-commits RANGE=c414119b..ebb76b3d`
-  meldet dort unter `v0.76.1` 1 × `commit-untraceable`. Dass diese Formen genügen, ist nicht
-  belegt. Einzelheiten und die gemessenen Formen im Sensor
+  [`.d-check.yml`](../../.d-check.yml) trägt eine nicht-leere `id-patterns`-Liste. Ein Pack, dessen
+  Name nicht mit `pack-` beginnt, ist kein Abbruchgrund mehr: Der gepinnte d-check liest jedes
+  Pack mit gültigem Hash-Suffix und passender `.idx`. Gemessen am Stand `v0.76.3` an einer
+  Wegwerf-Kopie, deren Objekte vollständig in einem `loose-*.pack` mit passender `.idx` liegen
+  (`ls .git/objects/pack/`, keine Alternates, `count: 0`): `make doc-commits
+  RANGE=c414119b..ebb76b3d` meldet dort 1 × `commit-untraceable`, make-Exit 2, und
+  `make adr-immutable RANGE=8ae647cc~1..8ae647cc` meldet `0 Befund(e)`, make-Exit 0 — unter
+  `v0.76.1` brachen beide an derselben Kopie mit `Range-Basis "<hash>" nicht auflösbar: reference
+  not found` ab, make-Exit 2. **Abbruchgründe bleiben zwei:** ein wirklich fehlendes Objekt der
+  Range (dieselbe Kopie ohne die `.idx` des Packs: Exit 2, dieselbe Meldung, unter `v0.76.3`) und
+  ein Klon, der seine Objekte über Alternates liest (`git clone --shared`: beide Ziele Exit 2,
+  dieselbe Meldung, unter `v0.76.3` wie unter `v0.76.1`). Geprüft hat der Lauf in den gemessenen
+  Klonen ohne Alternates, deren Objekte in einem Pack mit gültigem Index oder lose liegen; dass
+  diese Formen genügen, ist nicht belegt. Einzelheiten und die gemessenen Formen im Sensor
   [`commit-msg-check`](commit-msg-check.md). Das emittierte
   `.d-check.yml` (`internal/emit/templates/d-check.yml`) führt keinen `commits:`-Block; dort ist
   das Ziel bedienbar, und die Zusage ist messbar. Der Wächter bleibt für `doc-immutable`
@@ -52,8 +65,8 @@ Vorbedingung selbst, und sie liegt in keinem Gate: `make gates` fährt keines de
   `STAGED`-Zweig (`--staged`); `doc-commits` übergibt allein `--range $(RANGE)`. Ein Aufruf
   `make doc-commits STAGED=1` prüft den Index also im Wächter, nicht im Modul.
 - `.d-check.yml` aktiviert für `docs-check` selbst die Module, die `grep -n '^modules:' .d-check.yml`
-  nennt — keines davon liest Historie (gemessen am Stand `v0.76.1`: [`AGENTS.md`](../../AGENTS.md)
-  §3.8). Ein history-lesender Job braucht
+  nennt — keines davon liest Historie, gemessen am Stand `v0.76.3` mit dem Kommando aus
+  [`AGENTS.md`](../../AGENTS.md) §3.8. Ein history-lesender Job braucht
   `fetch-depth: 0` an seinem Checkout **und** diesen Wächter davor.
 
 Details und Beleg stehen im Kopf von `harness/tools/history-range-guard.sh`, Abschnitt BELEG.

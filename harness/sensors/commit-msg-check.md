@@ -58,36 +58,35 @@ hält [`test/commit-msg-hook.bats`](../../test/commit-msg-hook.bats) gegen die L
   wäre an einem Bestand rot, den niemand mehr ändern kann
   ([`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 - **`doc-commits` (`d-check.mk`, `--range`) bleibt advisory und ungenutzt für diese Zusage** — ein
-  Range-Lauf hängt am Objektspeicher des Klons, dieser Sensor nicht. Gemessen an `v0.76.0` und
-  `v0.76.1` (jeder Digest mit dem Fragment seines Standes), `make doc-commits RANGE=HEAD~3..HEAD`
-  über demselben Verlauf (Kopf `e4c6cb0b`), mit der `commits`-Konfiguration dieses Repos:
-  - **Objekte der Range liegen in einem Pack, dessen Name nicht mit `pack-` beginnt; gemessen ist
-    das an `loose-*.pack`** (wie `git maintenance run --task=loose-objects` sie anlegt;
-    `ls .git/objects/pack/`). Dass es am Präfix hängt, ist eine Vermutung; am Quelltext des
-    Werkzeugs ist die Regel nicht nachgelesen. Der Range-Lauf bricht ab, make-Exit 2: unter beiden
-    Digests mit `Range-Basis-Vorfahren nicht lesbar: object not found`, wenn ein Teil der Objekte
-    dort liegt; unter `v0.76.1` mit `Range-Basis "<hash>" nicht auflösbar: reference not found`,
-    wenn alle dort liegen (Transportklon mit umbenannten Pack-Dateien,
-    `RANGE=c414119b..ebb76b3d`).
-    Derselbe Klon mit leerer `id-patterns`-Liste: make-Exit 0 und `0 Befund(e)` — der Range-Lauf
-    prüft dann nichts (dasselbe stille Grün wie im Sensor
-    [`history-range-guard`](history-range-guard.md)). Ein lokaler Klon
-    (`git clone --no-hardlinks <pfad>`) übernimmt die Pack-Namen seiner Quelle.
+  Range-Lauf hängt am Objektspeicher des Klons, dieser Sensor nicht. Gemessen an `v0.76.1` und
+  `v0.76.3` (jeder Digest mit dem Fragment seines Standes), mit der `commits`-Konfiguration dieses
+  Repos:
+  - **Ein Pack, dessen Name nicht mit `pack-` beginnt, ist kein Abbruchgrund mehr.** Der gepinnte
+    d-check löst jedes Pack auf, dessen Datei ein gültiges Hash-Suffix und eine passende `.idx`
+    trägt. Gemessen an einer Wegwerf-Kopie, deren Objekte vollständig in einem `loose-*.pack` mit
+    passender `.idx` liegen (wie `git maintenance run --task=loose-objects` es anlegt;
+    `ls .git/objects/pack/` nennt genau dieses eine Paar, keine Alternates, `count: 0`):
+    `make doc-commits RANGE=c414119b..ebb76b3d` meldet unter `v0.76.3` 1 × `commit-untraceable`
+    auf `7c1f228`, make-Exit 2, und `make adr-immutable RANGE=8ae647cc~1..8ae647cc` meldet dort
+    `0 Befund(e)`, make-Exit 0. Unter `v0.76.1` brachen beide an derselben Kopie mit
+    `Range-Basis "<hash>" nicht auflösbar: reference not found` ab, make-Exit 2.
+  - **Ein wirklich fehlendes Objekt der Range bricht weiter ab.** Dieselbe Kopie ohne die `.idx`
+    ihres Packs — das Pack wird damit auch für `git` selbst unlesbar
+    (`git cat-file -t 8ae647cc` → `fatal: Not a valid object name`) —: `make doc-immutable
+    RANGE=8ae647cc~1..8ae647cc` unter `v0.76.3` mit
+    `Range-Basis "8ae647cc~1" nicht auflösbar: reference not found`, make-Exit 2.
   - **Der Klon liest seine Objekte über Alternates** (`git clone --shared <pfad>`: keine eigenen
     Packs, `.git/objects/info/alternates` nennt den Objektspeicher der Quelle, `git` liest Commit
-    und Baum). Unter `v0.76.1` brechen `make doc-commits RANGE=c414119b..ebb76b3d` und
-    `make adr-immutable RANGE=8ae647cc~1..8ae647cc` ab, make-Exit 2, mit
-    `Range-Basis "<hash>" nicht auflösbar: reference not found`. Derselbe Abbruch steht, wenn der
-    Pfad aus `alternates` zusätzlich in den Container gemountet ist.
-  - **Geprüft hat der Range-Lauf in den gemessenen Klonen ohne Alternates, deren Objekte in Packs
-    mit dem Präfix `pack-` oder lose liegen:** umgepackt (`git repack -a -d`), aus
-    `git clone --no-local file://<pfad>`, und eine Kopie nur mit losen Objekten (Pack per
-    `git unpack-objects` ausgepackt und entfernt). Dort meldet er `commit-untraceable`,
-    make-Exit 2: im per `--no-local` geklonten Repo unter beiden Digests für `RANGE=HEAD~3..HEAD`
-    (Kopf `e4c6cb0b`), unter `v0.76.1` in allen drei Formen für `RANGE=c414119b..ebb76b3d`
-    (1 × `commit-untraceable` auf `7c1f228`). In der Kopie nur mit losen Objekten meldet
-    `make adr-immutable RANGE=8ae647cc~1..8ae647cc` `0 Befund(e)`, make-Exit 0. Dass diese Formen
-    für einen prüfenden Lauf genügen, ist nicht belegt; genannt sind die gemessenen.
+    und Baum). Unter `v0.76.1` **und unter `v0.76.3`** brechen `make doc-commits
+    RANGE=c414119b..ebb76b3d` und `make adr-immutable RANGE=8ae647cc~1..8ae647cc` ab, make-Exit 2,
+    mit `Range-Basis "<hash>" nicht auflösbar: reference not found`. Derselbe Abbruch steht, wenn
+    der Pfad aus `alternates` zusätzlich in den Container gemountet ist.
+  - **Geprüft hat der Range-Lauf in den gemessenen Klonen ohne Alternates, deren Objekte in einem
+    Pack mit passendem Index oder lose liegen:** umgepackt (`git repack -a -d`), aus
+    `git clone --no-local file://<pfad>`, eine Kopie nur mit losen Objekten (Pack per
+    `git unpack-objects` ausgepackt und entfernt) und — neu unter `v0.76.3` — eine Kopie mit
+    einem `loose-*.pack`. Dass diese Formen für einen prüfenden Lauf genügen, ist nicht belegt;
+    genannt sind die gemessenen.
 
   Welche Form vorliegt, ist ein Zustand des Klons und wechselt mit seiner Pack-Wartung und seiner
   Klon-Art; die Abbruch-Bedingung und ihre Grenze für alle history-lesenden Ziele führt
