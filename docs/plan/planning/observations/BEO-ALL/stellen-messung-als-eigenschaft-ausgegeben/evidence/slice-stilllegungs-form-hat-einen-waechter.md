@@ -1,0 +1,2 @@
+**Vorgang:** slice-stilllegungs-form-hat-einen-waechter
+**Fund:** Ein Suchmuster wurde als Eigenschaft ausgegeben: Die Trefferliste zu *keine Stufe liest Commit-Dateien* suchte `--stat` und traf `--numstat` nicht (Runde 3, R3-1); ein Beleg-Kommando über den Typ des VCS-Ports stützte eine Aussage über die Module, die Historie lesen (Review F-10); die Stütze des Reviewers stand auf dem engen Präfix-Muster (Runde 4, R4-2). Der Satz, der `hint` stehe an Befunden je Datei, war weiter gefasst als das Werkzeug, das ihn nur an Befunden einer verletzten Bedingung setzt (R4-1).

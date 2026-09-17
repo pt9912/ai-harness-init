@@ -1,0 +1,2 @@
+**Vorgang:** slice-stilllegungs-form-hat-einen-waechter
+**Fund:** Teilersetzungen ließen daneben stehende Zusagen falsch zurück: Die Kommentar-Zeile eines Mutations-Falls strich `doc-structure` aus der Menge, die Zeile darüber nennt das eingesetzte Ziel weiter das dritte (Review F-3); die Sensor-Datei von `doc-structure` nennt ein `@echo` im Rezept, das es nicht mehr hat (F-4). Die Aktivierung eines Moduls machte jede Aufzählung der aktiven Module falsch, und der Plan sah diesen Nachzug nicht vor (Verifikation V-5).

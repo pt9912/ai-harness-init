@@ -1,0 +1,2 @@
+**Vorgang:** slice-stilllegungs-form-hat-einen-waechter
+**Fund:** Die Liste `exempt-paths` der neuen `structure`-Regel prüft d-check am gepinnten Stand nur auf Glob-Syntax (Review F-9, Runde 2 R2-5). Ein Eintrag, dessen Datei fehlt, bleibt still (Verifikation V-4, Lage V13). Archiviert eine Welle-Closure einen ausgenommenen Plan, zeigt sein Eintrag ins Leere, und die Zusage *extensional geschlossen* beschreibt eine Liste mit toten Einträgen. Hier fehlt damit schon die Existenz-Prüfung, nicht erst die der Berechtigung.

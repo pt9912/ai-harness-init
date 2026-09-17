@@ -1,0 +1,2 @@
+**Vorgang:** slice-stilllegungs-form-hat-einen-waechter
+**Fund:** Der `hint` der `structure`-Regel verlangt für den stillgelegten Fall eine Zeile *mit Kennung oder Grund* (Review F-7). Geprüft wird nur, dass die Marke da ist: Die unausgefüllte Platzhalter-Zeile der Vorlage besteht (Verifikation, Lage V3). Die Grenze ist an zwei Stellen benannt, der Meldungstext reicht trotzdem weiter als die Regel.
