@@ -98,7 +98,7 @@ zählt die Werkzeug-Commits, deren Betreff eine Kennung in einer **nicht** erkan
   aus: die Erkennungen unter `internal/emit/templates/` gehören dem Vertrag gegenüber Zielrepos.
   *Schicht-Abgrenzung.*
 - **Die vier Werkzeug-Commit-Messages.** Welche Form jede der vier Betreffzeilen trägt, ist der
-  Gegenstand von [slice-werkzeug-commits-tragen-eine-kennung](../next/slice-werkzeug-commits-tragen-eine-kennung.md):
+  Gegenstand von [slice-werkzeug-commits-tragen-eine-kennung](../done/slice-werkzeug-commits-tragen-eine-kennung.md):
   er schreibt die **Nachricht**, dieser Slice die **Erkennung**, die sie liest. *Es wäre ein anderer
   Vorgang — die zwei Mengen sind disjunkt.*
 - **Die Vergabe-Regel selbst.** Kein Wort von

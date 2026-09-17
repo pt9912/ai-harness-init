@@ -13,7 +13,7 @@ strukturell weder einen Commit aus einem Repo-Werkzeug noch einen Commit außerh
 Zwei Hälften des Eintrags sind benannt und **nicht** geschlossen — die Bezugseinheit *jeder Commit*
 gegen *die Änderung als ganze* liegt bei
 [`slice-121`](../../../open/slice-121-commit-message-nennt-was-es-gibt.md), die vier Werkzeug-Formen
-bei [`slice-werkzeug-commits-tragen-eine-kennung`](../../../next/slice-werkzeug-commits-tragen-eine-kennung.md).
+bei [`slice-werkzeug-commits-tragen-eine-kennung`](../../../done/slice-werkzeug-commits-tragen-eine-kennung.md).
 Träger der Wirkung bleibt der Commit-Pfad selbst; die Kennungs-Erkennung, die ihn liest, ist der
 Gegenstand von
 [`slice-kennungs-erkennung-traegt-die-zugelassenen-formen`](../../../open/slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md).
