@@ -201,38 +201,99 @@ DoD (1)–(3) erfüllt mit gefahrenen Kommandos, `make gates` grün, `make full-
   kommt an den vier Zellen nicht vorbei. **Was der Weg zusätzlich kostet:** dieser Wächter wird
   auch von jeder anderen Emissions-Erweiterung an denselben Präfixen rot; das ist Reibung, und sie
   ist gewollt — sie zwingt einen Blick auf die Inventur, den sonst niemand tut.
+  — **Ausgang: eingetreten** → `slice-das-ziel-sagt-was-sein-vendored-baum-ist`. Der Nehmer nimmt
+  den Punkt samt seinem Wächter an: Sein Liefer-Punkt (3) verlangt, dass **keine** Zelle die
+  Abwesenheit eines Trägers behauptet, den derselbe Lauf ablegt — dieselbe Klammer, dieselbe
+  gewollte Reibung.
 - **Bewacht ist die Abdeckung, nicht die Richtigkeit — mit einer Ausnahme in einer Richtung.** Der
   Wächter aus DoD (1) zählt, ob jeder Abschnitt einen Wert trägt; ob der Wert **stimmt**, prüft er
   nicht. DoD (3) schließt davon genau eine Richtung: eine behauptete Abwesenheit, die der Emit
   desselben Laufs widerlegt. Die Gegenrichtung — ein behaupteter Träger, den es nicht gibt, oder
   ein falsch zugeordneter — bleibt offen; ein Sensor darüber wäre der Doku-Konsistenz-Agent aus
   Modul 15, der hier ausdrücklich nicht Gegenstand ist.
+  — **Ausgang: eingetreten** → derselbe Nehmer. Er trägt beide Hälften: Liefer-Punkt (3) hält die
+  **Abdeckung** (keine leere Zelle) und die eine geschlossene Richtung; die Gegenrichtung schließt
+  er in §1 ausdrücklich aus — *„Kein Sensor, der Träger und Regel automatisch aufeinander
+  abbildet"*, **anderer Vorgang**. Die Grenze ist damit adressiert, nicht geschlossen.
 - **DoD (2) hängt allein an `make full-smoke` — der Treiber erreicht ihn.** `failure_form` in
   [`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh) führt den Modus
   (`grep -c 'full-smoke' harness/tools/mutate.sh` → **7**, mitwandernd), der Fall ist damit
   anlegbar und läuft im Standard-Lauf mit. Was bleibt, ist sein **Preis**: der Grün-Vorlauf fährt
   `make full-smoke` einmal mit, und der ist die Untergrenze — der Fall-Lauf selbst liegt darunter,
   weil er am getroffenen Wächter abbricht.
+  — **Ausgang: eingetreten** → derselbe Nehmer. Sein Liefer-Punkt (3) führt beide Rot-Wege
+  getrennt: **hermetisch** über `make test` samt `test/mutations/`-Fällen und **real** über
+  `make full-smoke` gegen den zur Laufzeit gelesenen Nenner. Der Preis bleibt derselbe und trifft
+  dort auf einen Punkt, der ihn benennt.
 - **Die Inventur altert mit dem Baum.** Sie steht deshalb hinter
   [welle-10](../done/welle-10-re-baseline.md) (§2 der Welle) und nennt ihren Nenner als Kommando, nicht
   als Ziffer. Kommt upstream ein Abschnitt hinzu, meldet der Wächter die Differenz — das ist der
   gewollte Ausgang, kein Fehlalarm.
+  — **Ausgang: eingetreten** → derselbe Nehmer. Er liest den Nenner **zur Laufzeit** statt ihn zu
+  notieren (Bezug auf [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+  Setzung 2 in seinem Kopf); kommt upstream ein Abschnitt hinzu, meldet der Wächter die Differenz.
+  Das Altern ist dort der gewollte Ausgang, kein Fehlalarm.
 - **Ein Wert ist fremdbestimmt:** *Doku-Konsistenz-Drift* hängt am Ausgang von slice-063 in
   [welle-09](../welle-09-modul-15-konformitaet.md). Er wird **entgegengenommen**, nicht hier
   entschieden; die Trigger-Reihenfolge stellt sicher, dass er vorliegt.
+  — **Ausgang: entfallen.** Der Wert ist nicht mehr entgegenzunehmen: Der Nehmer führt in seinem
+  Bezug [`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md) (`**Status:** Accepted`,
+  `grep -m1 '^\*\*Status:\*\*' docs/plan/adr/0020-emittierte-modul-15-regeln.md`) als die Quelle,
+  die den Wert des Doku-Konsistenz-Blocks trägt. Damit hängt keine Zelle mehr am Ausgang eines
+  fremden Slice.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!--
-Wird *nach* Abschluss ergänzt. Inhalt:
-- Was hat funktioniert?
-- Was ging anders als geplant?
-- Steering-Loop-Eintrag: welcher Guide/Sensor sollte verbessert werden?
-  (kanonische Definition: [`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/grundlagen/klassifikation.md#steering-loop))
-- Folge-Slices: welche neuen open/-Einträge?
--->
+**Gegenstand:** übernommen von `slice-das-ziel-sagt-was-sein-vendored-baum-ist`.
 
-<!-- Erst nach Abschluss füllen. -->
+**Stillgelegt ohne Lieferung** — Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice,
+dessen Gegenstand ein anderer übernimmt. Die Liefer-Punkte in §2 bleiben **leer**: Dieser Slice
+hat nichts geliefert, und ein Haken behauptete es. `Verantwortlich:` bleibt stehen.
+
+**Die Adresse nimmt an.** Der Nehmer liegt in `open/`, ist nicht geschlossen und nennt in §1
+unter `Übernimmt:` diese Kennung. Er führt den Gegenstand als Liefer-Punkt (3): *Jeder Abschnitt
+des mitgelieferten Regelwerks trägt genau einen der drei Träger-Werte* — mit beiden Rot-Wegen,
+hermetisch und real.
+
+**Die Wellen-Zugehörigkeit ist bereits gewandert.** Der Kopf nennt
+[welle-11](../welle-11-traeger-aussage.md); sie ist aufgelöst, der Nehmer steht ohne Welle, und
+die Umplanung trägt das Drift-Log der Roadmap (Eintrag vom 2026-09-17, er nennt diese drei Geber
+und den Nehmer). Diese Closure fasst weder die Welle-Datei noch das Drift-Log an; mit ihr ist der
+dritte und letzte Geber der Welle stillgelegt.
+
+**Was hat funktioniert:** Die Inventur war von Anfang an gegen einen **Nenner** geschnitten statt
+gegen eine Liste — und genau dieser Zuschnitt ist im Nehmer wiederzufinden. Was den Schnitt
+überlebt hat, ist die Bauart, nicht der Text.
+
+**Was ging anders als geplant:** Geprüft hat den Schnitt keine Implementation, sondern erst die
+Gruppierung — das Muster *tote Slices* aus `modul-05-planning-harness.md` §Regeln gegen typische
+Fehlannahmen. Der Plan stand von seinem Schnitt am 2026-08-25 an unbeansprucht in `next/`. Eines
+seiner fünf Risiken hat sich in der Wartezeit von selbst erledigt (Ausgang *entfallen* in §6) —
+der Preis des Wartens ist hier einmal sichtbar.
+
+**Steering-Loop-Eintrag:** **gezählt, nicht verkörpert** — kein Zielort, darum **kein**
+`liegt in`-Feld (`grundlagen-traceability.md` §Herkunfts-Anker). Die Form der Stilllegung steht
+seit `v6.9.0` in der adoptierten Baseline; eine zweite Fassung daneben driftete.
+
+**Beobachtungs-Register** (`../observations/`): zitiert, nicht neu formuliert —
+[`BEO-ALL/geplanter-slice-wird-nie-gearbeitet`](../observations/BEO-ALL/geplanter-slice-wird-nie-gearbeitet/observation.md).
+**Keine zweite Beleg-Datei:** Dieser Geber steht dort unter *Benannt, nicht gezählt*; er ist ein
+Fund **derselben** Gelegenheit wie `slice-090-freshness-audit-im-ziel`, und der Zähler misst
+Wiederholung über Vorgänge hinweg, nicht die Zahl der Funde (`modul-06-roadmap.md` §Das
+Beobachtungs-Register). Der Stand bleibt `offen`, unter der Schwelle.
+
+**Lese-Schritt** (Repo ohne Wellen-Betrieb, `modul-06-roadmap.md` §Wann Arbeit eine Welle
+braucht): Kein Eintrag erreicht mit dieser Closure 3×, und kein Eintrag über der Schwelle steht
+ohne Ausgang — dasselbe Kommando wie in
+[`slice-090`](slice-090-freshness-audit-im-ziel.md) §7, Ausgabe leer.
+
+**Die drei Paarungen.** (a) Anker-Paarung: kein Eintrag trägt `liegt in`, sie hat keinen
+Gegenstand. (b) Folge-Slice-Paarung: kein Folge-Slice genannt. (c) Register-Paarung: die zitierte
+Beobachtung existiert als Verzeichnis und trägt einen Beleg.
+
+**Was diese Closure nicht trägt:** Review und Verifikation am Gegenstand — es gibt keinen Diff,
+den sie prüfen könnten. Geprüft ist die **Form** der Stilllegung durch `make docs-check` (Modul
+`structure`, `open-tasks-require-marker`) und der Gesamtstand durch `make gates`.
 
 ## 8. Sub-Area-Modus-Begründung
 
