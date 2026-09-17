@@ -154,28 +154,77 @@ Closure-Notiz in §7 mit Steering-Loop-Eintrag geschrieben.
   [welle-10](../done/welle-10-re-baseline.md). Die **Zahl fünf** in §1 ist ein Ist-Stand vom
   2026-08-22, **kein Erwartungswert** — sie bewegt sich mit dem Baum, ohne dass am Gegenstand
   etwas bricht.
+  — **Ausgang: eingetreten** → `slice-das-ziel-sagt-was-sein-vendored-baum-ist`. Der Nehmer nimmt
+  den Punkt als **Eigenschaft** an: Sein Liefer-Punkt (2) verlangt ausdrücklich eine Zeile, die
+  den Baum als Kurs-Inhalt ausweist, *„als Eigenschaft, nicht als Namensliste"*. Die Ist-Zahl aus
+  §1 wandert damit weiter, ohne dass am Gegenstand etwas bricht.
 - **Die Zeile deckt den Fall nicht, in dem der Adopter die Vorlage schon kopiert hat.** Sie
   erreicht ihn beim Lesen, nicht rückwirkend in seinen Plan-Dateien. Ein Sensor, der das fände,
   wäre der `targets`-Träger über dem Plan-Verzeichnis des Ziels — er hängt an
   [welle-09](../welle-09-modul-15-konformitaet.md) und ist hier ausdrücklich nicht Gegenstand.
+  — **Ausgang: eingetreten** → derselbe Nehmer. Er zieht dieselbe Grenze und schreibt sie in §1
+  als Ausschluss aus: *Die Aktivierung von `doc-targets` im Ziel* gehört welle-09, hier steht für
+  diesen Regelblock nur der Wert *liegt bei, nicht verdrahtet*. Der Fall des Adopters, der die
+  Vorlage schon kopiert hat, bleibt damit adressiert und unbewacht — benannt, nicht geschlossen.
 - **Abgrenzung, die beim Ändern zählt:** dieser Slice fasst **nur** den vendored Baum an. Die
   Ansprüche der lebenden emittierten Doku-Tische (`AGENTS.md`, `harness/README.md`,
   `.harness/skills/closure-note-reviewer.md`) gehören slice-087. Wer beide Mengen in einem Lauf
   bearbeitet, macht den Befund unentscheidbar — das ist der Grund für den `--exclude` im Sweep
   oben.
+  — **Ausgang: entfallen.** Der Ausschluss hing daran, dass **dieser** Slice in den vendored Baum
+  eingreift; der Nehmer tut das nicht — seine Zusage ist eine **lebende** Zeile (Liefer-Punkt 2),
+  und `make baseline-verify` hielte den Baum ohnehin gegen `SHA256SUMS`. Die Verwechslungsgefahr
+  mit den lebenden Doku-Tischen, gegen die der Ausschluss stand, hat damit keinen Gegenstand mehr.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!--
-Wird *nach* Abschluss ergänzt. Inhalt:
-- Was hat funktioniert?
-- Was ging anders als geplant?
-- Steering-Loop-Eintrag: welcher Guide/Sensor sollte verbessert werden?
-  (kanonische Definition: [`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/grundlagen/klassifikation.md#steering-loop))
-- Folge-Slices: welche neuen open/-Einträge?
--->
+**Gegenstand:** übernommen von `slice-das-ziel-sagt-was-sein-vendored-baum-ist`.
 
-<!-- Erst nach Abschluss füllen. -->
+**Stillgelegt ohne Lieferung** — Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice,
+dessen Gegenstand ein anderer übernimmt. Die drei Liefer-Punkte in §2 bleiben **leer**: Dieser
+Slice hat nichts geliefert, und ein Haken behauptete es. `Verantwortlich:` bleibt stehen.
+
+**Die Adresse nimmt an.** Der Nehmer liegt in `open/`, ist nicht geschlossen und nennt in §1
+unter `Übernimmt:` diese Kennung. Er führt den Gegenstand als Liefer-Punkt (2): *Eine lebende
+Zeile weist den mitgelieferten Baum als Kurs-Inhalt aus, dessen `make`-Namen keine Ziele dieses
+Repos sind* — als Eigenschaft, nicht als Namensliste.
+
+**Die Wellen-Zugehörigkeit ist bereits gewandert.** Der Kopf nennt
+[welle-11](../welle-11-traeger-aussage.md); sie ist aufgelöst, der Nehmer steht ohne Welle, und
+die Umplanung trägt das Drift-Log der Roadmap (Eintrag vom 2026-09-17, er nennt diese drei Geber
+und den Nehmer). Diese Closure fasst weder die Welle-Datei noch das Drift-Log an.
+
+**Was hat funktioniert:** Der Slice hatte seine Zusage schon als **Eigenschaft** formuliert (§2
+Punkt 2, *„keine Namensliste"*), und genau diese Formulierung ist im Nehmer wörtlich
+wiederzufinden. Der Gegenstand hat den Schnitt überlebt, weil er nicht an einer Aufzählung hing.
+
+**Was ging anders als geplant:** Geprüft hat den Schnitt keine Implementation, sondern erst die
+Gruppierung — das Muster *tote Slices* aus `modul-05-planning-harness.md` §Regeln gegen typische
+Fehlannahmen. Der Plan stand von seinem Schnitt am 2026-08-22 an unbeansprucht in `next/`.
+
+**Steering-Loop-Eintrag:** **gezählt, nicht verkörpert** — kein Zielort, darum **kein**
+`liegt in`-Feld (`grundlagen-traceability.md` §Herkunfts-Anker). Die Form der Stilllegung steht
+seit `v6.9.0` in der adoptierten Baseline; eine zweite Fassung daneben driftete.
+
+**Beobachtungs-Register** (`../observations/`): zitiert, nicht neu formuliert —
+[`BEO-ALL/geplanter-slice-wird-nie-gearbeitet`](../observations/BEO-ALL/geplanter-slice-wird-nie-gearbeitet/observation.md).
+**Keine zweite Beleg-Datei:** Dieser Geber steht dort unter *Benannt, nicht gezählt*; er ist ein
+Fund **derselben** Gelegenheit wie `slice-090-freshness-audit-im-ziel`, und der Zähler misst
+Wiederholung über Vorgänge hinweg, nicht die Zahl der Funde (`modul-06-roadmap.md` §Das
+Beobachtungs-Register). Der Stand bleibt `offen`, unter der Schwelle.
+
+**Lese-Schritt** (Repo ohne Wellen-Betrieb, `modul-06-roadmap.md` §Wann Arbeit eine Welle
+braucht): Kein Eintrag erreicht mit dieser Closure 3×, und kein Eintrag über der Schwelle steht
+ohne Ausgang — dasselbe Kommando wie in
+[`slice-090`](slice-090-freshness-audit-im-ziel.md) §7, Ausgabe leer.
+
+**Die drei Paarungen.** (a) Anker-Paarung: kein Eintrag trägt `liegt in`, sie hat keinen
+Gegenstand. (b) Folge-Slice-Paarung: kein Folge-Slice genannt. (c) Register-Paarung: die zitierte
+Beobachtung existiert als Verzeichnis und trägt einen Beleg.
+
+**Was diese Closure nicht trägt:** Review und Verifikation am Gegenstand — es gibt keinen Diff,
+den sie prüfen könnten. Geprüft ist die **Form** der Stilllegung durch `make docs-check` (Modul
+`structure`, `open-tasks-require-marker`) und der Gesamtstand durch `make gates`.
 
 ## 8. Sub-Area-Modus-Begründung
 
