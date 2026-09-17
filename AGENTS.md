@@ -379,9 +379,10 @@ Ständen. Gemessen am Stand `v0.76.1`, `D` ein maschinen-lokaler Klon des Werkze
 `git -C "$D" grep -l 'driven\.VCS' v0.76.1 -- internal/hexagon/core/rules/ ':!*_test.go'` nennt
 neben dem Verteiler `run.go` genau `commits.go` und `vcs.go`. Und `make mutate` lässt einen Fall
 nur für eine Stufe zu, für die `failure_form()` ein Fehlschlag-Muster führt
-(`sed -n '/^failure_form()/,/^}/p' harness/tools/mutate.sh`); keines davon trifft einen
-Commit-Zuschnitt, denn keine dieser Stufen hält die Dateien eines Commits gegen die Rolle, die ihn
-schreibt. Die Regel liegt im Feedforward-Quadranten: benannt, nicht geschlossen; ihr Träger ist der
+(`sed -n '/^failure_form()/,/^}/p' harness/tools/mutate.sh`). Keine dieser Stufen hält die Dateien
+eines Commits gegen die Rolle, die ihn schreibt. `full-smoke` liest sie, um den Move-Commit von
+`make slice-mv` auf die Form aus §3.3 zu prüfen (`grep -n 'show --numstat' harness/tools/full-smoke.sh`).
+Die Regel liegt im Feedforward-Quadranten: benannt, nicht geschlossen; ihr Träger ist der
 Rollen-Wechsel vor der Änderung, nicht ein Gate danach.
 
 ### 3.9 Docker-only
@@ -460,9 +461,10 @@ der Bestand ist kein Arbeitsauftrag. **Geltungsbereich: dieses Repo.** Was ein e
 Eigentums-Aussagen bekommt, entscheidet der Slice, der die Tool-Ebene entscheidet.
 
 **Ein Wächter existiert nicht.** Keines der Module, die das Doku-Gate fährt, liest die git-Historie
-(`grep -n '^modules:' .d-check.yml`), und `make mutate` kennt keine Fehlschlag-Form für einen
-Commit-Zuschnitt — dieselbe Lage, die §3.8 für sich selbst feststellt. Träger ist der
-Rollen-Wechsel vor dem Abschluss, nicht ein Gate danach · seit welle-15.
+(`grep -n '^modules:' .d-check.yml`), und keine Stufe, für die `make mutate` einen Fall zulässt,
+hält die Dateien eines Commits gegen die Rolle, die ihn schreibt — dieselbe Lage, die §3.8 für
+sich selbst feststellt. Träger ist der Rollen-Wechsel vor dem Abschluss, nicht ein Gate
+danach · seit welle-15.
 
 ### 3.11 Eine Adresse, die der Prozess bewegt, steht nicht in einem einfrierenden Artefakt
 
