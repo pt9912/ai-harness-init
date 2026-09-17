@@ -58,8 +58,8 @@
   weiterer Patch trifft dasselbe Muster
   ([`MR-025`](../conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2).
-- **Zweck: `vcs` bricht bei einem unlesbaren Objekt ab.** Bisher meldete es in diesem Fall still
-  grün oder eine falsche Ursache. Der CHANGELOG des Klons nennt das als **Fremdquelle**
+- **Zweck: `vcs` bricht bei einem unlesbaren Unterbaum ab.** Bisher meldete es in diesem Fall
+  still grün oder eine falsche Ursache. Der CHANGELOG des Klons nennt das als **Fremdquelle**
   (`git -C "$D" show v0.76.1:CHANGELOG.md | awk '/^## \[0\.76\.1\]/,/^## \[0\.76\.0\]/'`):
   - `vcs` löst die geschützte Pfad-Menge gegen beide Tree-Stände auf.
   - Ein unlesbarer Unterbaum bricht den Lauf mit Exit 2 ab.
@@ -94,33 +94,50 @@
   **Der fünfte Anker ist ein Literal mit führendem Hochkomma.** `grep -cF "'^doc-[a-z-]+:"`
   ergibt **1** über beiden Dateien. Als Regex gelesen (`grep -cE '^doc-[a-z-]+:'`) zählt dasselbe
   Muster die Ziel-Zeilen, über der Fixture **11**, und ist dann nicht der Anker.
-- **Strenge-Bilanz an der Quell-Differenz: null bewegte Zeilen in allen acht aktiven
-  Regeldateien.**
-  - `git -C "$D" diff --numstat v0.76.0..v0.76.1 -- internal/hexagon/core/rules/{links,anchors,ids,matrix,codepaths,spans,planning,targets}.go`
-    gibt keine Zeile aus.
-  - **Gegenprobe auf ein falsches Negativ:**
+- **Strenge-Bilanz: jede Aussage mit ihrem Träger.** Am Klon des Werkzeugs (`D` wie oben), nur
+  lesend.
+  - **Die acht aktiven Regeldateien bewegen sich nicht. Träger: die Quell-Differenz.**
+    `git -C "$D" diff --numstat v0.76.0..v0.76.1 -- internal/hexagon/core/rules/{links,anchors,ids,matrix,codepaths,spans,planning,targets}.go`
+    gibt keine Zeile aus. Gegenprobe auf ein falsches Negativ:
     `git -C "$D" ls-tree --name-only v0.76.1 internal/hexagon/core/rules/` führt alle acht Dateien
     unter denselben Pfaden; für `v0.76.0` misst das
     [`MR-061`](../conventions.md#mr-061--d-check-pin-v0760-ein-modul-und-eine-structure-bedingung-verfügbar-beide-nicht-aktiv).
     Die acht Namen stammen aus der `modules:`-Zeile, die zum Sprung gilt
     (`grep -m1 '^modules:' .d-check.yml`).
-  - Über ganz `internal/` nennt `git -C "$D" diff --numstat v0.76.0..v0.76.1 -- internal/` sieben
-    Dateien, davon drei `_test.go`. Die übrigen vier:
-    - `core/rules/vcs.go` (+42/−26);
-    - `adapter/driven/git/git.go` (+54/−70);
-    - `port/driven/vcs.go` (+11/−27);
-    - `port/driven/workflow.go` (+1/−1, nur ein Kommentar).
+  - **Was sich sonst bewegt. Träger: die Quell-Differenz.**
+    `git -C "$D" diff --numstat v0.76.0..v0.76.1 -- internal/` nennt sieben Dateien, davon drei
+    `_test.go`. Die übrigen vier:
+    - `core/rules/vcs.go` (+42/−26), die einzige bewegte Regeldatei; von den Modulen, die ein
+      Werkzeug dieses Repos außerhalb von `modules:` fährt, bewegt sich damit keine andere;
+    - `adapter/driven/git/git.go` (+54/−70), der git-Adapter;
+    - `port/driven/vcs.go` (+11/−27), der VCS-Port;
+    - `port/driven/workflow.go` (+1/−1): Der `diff` dieser Datei ändert nur eine Kommentarzeile.
 
-  **Von den Regeldateien bewegt sich allein `vcs.go`.** Damit bewegt sich von den Modulen, die ein
-  Werkzeug dieses Repos außerhalb von `modules:` fährt, auch keine andere Regeldatei. **Die
-  geteilte Infrastruktur verliert Zeilen.** Welches aktive Modul den git-Adapter liest, hat diese
-  Bilanz nicht gelesen. Die zweite Hälfte des Auflösungs-Triggers von
-  [`MR-027`](../conventions.md#mr-027--d-check-pin-v0650-ignore-marker-in-zwei-achsen-verengt)
-  greift darum, und den Schluss trägt die Gegenmessung.
+    **Die geteilte Infrastruktur verliert Zeilen.** Damit greift die zweite Hälfte des
+    Auflösungs-Triggers von
+    [`MR-027`](../conventions.md#mr-027--d-check-pin-v0650-ignore-marker-in-zwei-achsen-verengt).
+  - **Kein aktives Modul liest über den git-Adapter oder den VCS-Port. Träger: die Quell-Lesung am
+    Tag `v0.76.1`.**
+    - `git -C "$D" grep -nE '\.(TrackedPaths|FileAt|AllPaths|CommitMessages)\(' v0.76.1 -- 'internal/**/*.go' ':!*_test.go' ':!internal/adapter/driven/git/*'`
+      nennt sechs Aufrufe der vier Port-Methoden, alle in drei Dateien: `rules/vcs.go`
+      (`AllPaths`, `FileAt`), `rules/commits.go` (`CommitMessages`) und `rules/run.go`, dort nur
+      unter aktivem `tracked` (`TrackedPaths`).
+    - `git -C "$D" grep -n 'adapter/driven/git' v0.76.1 -- '*.go' ':!*_test.go'` nennt einen
+      Import, in `cli/cli.go`. Dort öffnet genau eine Stelle den Adapter (`gitadapter.Open`), und
+      der Kommentar davor bindet die Verdrahtung an ein aktives git-Modul.
+    - `vcs`, `commits` und `tracked` stehen nicht in `modules:`.
+
+    **Die Gegenmessung trägt diese Aussage nicht.** Sie läuft über einer `git archive`-Kopie ohne
+    `.git` und fährt den Port nie.
+  - **An den datei-scannenden Pfaden der acht aktiven Module fällt keine Prüfung weg. Träger: die
+    Gegenmessung** (nächster Absatz).
+  - **Die Verhaltensänderung in `vcs.go` ist eine Verschärfung. Träger: die Wegwerf-Kopie** (unten).
+    Der CHANGELOG bestätigt das nur.
 - **Gegenmessung nach
   [`MR-063`](../conventions.md#mr-063--die-gegenmessung-eines-d-check-sprungs-gibt-jedem-aktiven-modul-eine-basis-und-lässt-die-symlinks-stehen)
   Setzung 2.** Aufbau:
-  - Grundlage ist eine Kopie von `e4c6cb0b`; gemessen wird netzlos.
+  - Grundlage ist eine Kopie von `e4c6cb0b`; gemessen wird netzlos. Die Kopie trägt kein `.git`,
+    und über den VCS-Port läuft sie nicht.
   - Die Kopie für `v0.76.0` trägt `d-check.mk` aus `e4c6cb0b`, die für `v0.76.1` das Fragment aus
     `ebb76b3d`.
   - Dass beide Fragmente gelaufen sind, zeigt die `make`-Fehlerzeile der dritten Stufe:
@@ -161,34 +178,43 @@
   die Ursache, die tatsächlich vorliegt.
 - **Im Arbeitsklon bricht `vcs` genauso ab, und der Abbruch hängt am Objektspeicher, nicht an der
   Range.**
-  - **Pack-Namen.** Der Arbeitsklon, in dem dieser Eintrag misst, trägt neben kanonisch benannten
-    Packs auch solche mit dem Namen `loose-*.pack`. Solche Namen vergibt
+  - **Die Bedingung:** *Objekte der Range liegen in einem Pack, dessen Name nicht mit `pack-`
+    beginnt; gemessen ist das an `loose-*.pack`.* Dass es am Namens-Präfix liegt, ist eine
+    Vermutung über die git-Bibliothek des Werkzeugs (go-git); im Quelltext nachgelesen ist sie
+    nicht.
+  - **Pack-Namen.** Der Arbeitsklon, in dem dieser Eintrag misst, trägt neben Packs mit dem Namen
+    `pack-*.pack` auch solche mit dem Namen `loose-*.pack`. Solche Namen vergibt
     `git maintenance run --task=loose-objects` (CHANGELOG `[0.76.1]`, Fremdquelle).
     `ls .git/objects/pack/ | grep -c '^loose-.*\.pack$'` ergibt **5**,
     `ls .git/objects/pack/ | grep -c '^pack-.*\.pack$'` ergibt **2**. Beides sind keine
     Erwartungswerte: Die nächste git-Wartung verschiebt die Zahlen.
+  - **Welche Klon-Form solche Packs übernimmt.** Gemessen an einem Wegwerf-Repo nach
+    `git maintenance run --task=loose-objects`, je Klon mit `ls .git/objects/pack/`:
+    - `git clone <pfad>` (Voreinstellung) übernimmt `loose-*`;
+    - `git clone --no-hardlinks <pfad>` übernimmt `loose-*`;
+    - `git clone --no-local <pfad>` legt `pack-*` an.
   - **`make adr-immutable RANGE=8ae647cc~1..8ae647cc` im Arbeitsklon.** Unter `v0.76.0` meldet der
     Lauf `0 Befund(e)`, make-Exit 0. Unter `v0.76.1` bricht er mit make-Exit 2 ab:
     `Range-Basis "8ae647cc~1" nicht auflösbar: nicht vollständig lesbarer Tree zu "8ae647cc~1": nicht lesbarer Unterbaum ".claude/hooks": object not found`.
-  - **Derselbe Lauf in einem kanonischen Klon** (`git clone --no-local <pfad>`;
-    `ls .git/objects/pack/` nennt dort nur `pack-*`-Dateien) meldet unter beiden Digests
-    `0 Befund(e)`, make-Exit 0.
+  - **Derselbe Lauf in einem Klon per `git clone --no-local <pfad>`** (`ls .git/objects/pack/`
+    nennt dort nur `pack-*`-Dateien) meldet unter beiden Digests `0 Befund(e)`, make-Exit 0.
 
   **Das `0 Befund(e)` unter `v0.76.0` ist im Arbeitsklon darum kein lesbarer Fall.** Es ist ein
   stiller Durchgang über einem Baum, den das Werkzeug nicht lesen konnte. Tatsächlich geprüft wird
-  die Range erst im kanonischen Klon. Dort ist sie befundfrei, und `v0.76.1` bestätigt das,
-  obwohl es bei einem unlesbaren Objekt abbräche.
+  die Range erst im `--no-local`-Klon. Dort ist sie befundfrei, und `v0.76.1` bestätigt das,
+  obwohl es bei einem unlesbaren Unterbaum abbräche.
 - **Der `--range`-Abbruch von `commits` hängt am selben Objektspeicher.** Gemessen mit
-  `make doc-commits RANGE=HEAD~3..HEAD` beim Kopf `ebb76b3d`, unter `v0.76.1`:
+  `make doc-commits RANGE=HEAD~3..HEAD` beim Kopf `ebb76b3d`, nur unter `v0.76.1`:
   - Im Arbeitsklon bricht der Lauf mit `Range-Basis-Vorfahren nicht lesbar: object not found` ab,
     make-Exit 2.
-  - Im kanonischen Klon bricht er nicht ab. Er prüft und meldet einen Befund: `grep -c 'commit-untraceable'`
-    ergibt **1**, nämlich den `slice-mv`-Commit der Range; make-Exit 2.
+  - Im `--no-local`-Klon bricht er nicht ab. Er prüft und meldet einen Befund:
+    `grep -c 'commit-untraceable'` ergibt **1**, nämlich den `slice-mv`-Commit der Range;
+    make-Exit 2.
 
-  Die gefüllte `id-patterns`-Liste bestimmt den Abbruch nur mit: Mit leerer Liste läuft derselbe
-  Arbeitsklon durch und prüft nichts. Diese Messung unter beiden Digests steht mit ihrem Stand in
-  [`harness/sensors/commit-msg-check.md`](../sensors/commit-msg-check.md) und im Kommentar am
-  `commits`-Block der [`.d-check.yml`](../../.d-check.yml).
+  Dass die gefüllte `id-patterns`-Liste den Abbruch mitbestimmt, misst
+  [`harness/sensors/commit-msg-check.md`](../sensors/commit-msg-check.md) an einem eigenen Stand,
+  unter beiden Digests: Mit leerer Liste läuft derselbe Arbeitsklon durch und prüft nichts. Die
+  zwei Läufe oben sind davon getrennt.
 - **[`ADR-0042`](../../docs/plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md),
   Re-Evaluierungs-Trigger 2 (ein Modul des Doku-Gates hält Status und Adress-Form zusammen): nicht
   eingetreten.** Der Sprung bringt kein Modul und keine Bedingung: Das zeigen der Fragment-`diff`
@@ -196,12 +222,15 @@
   `vcs` abbricht, nicht was es liest. Der `diff` von `--print-config` **bestätigt** das nur und
   trägt es nicht, denn `--print-config` gibt eine Beispiel-Config aus, keine Schema-Liste
   ([`MR-034`](../conventions.md#mr-034--das-geteilte-referenz-ventil-trägt-am-gepinnten-stand)).
-- **Kein ADR nötig ([`AGENTS.md`](../../AGENTS.md) §3.5).**
-  - In den acht aktiven Regeldateien bewegt sich keine Quellzeile.
-  - Die Gegenmessung ist über alle acht Module gleich, und jedes hat eine eigene Basis.
+- **Kein ADR nötig ([`AGENTS.md`](../../AGENTS.md) §3.5).** Die Träger stehen in der
+  Strenge-Bilanz oben:
+  - In den acht aktiven Regeldateien bewegt sich keine Quellzeile (Quell-Differenz).
+  - Kein aktives Modul liest über den geänderten git-Adapter oder VCS-Port (Quell-Lesung).
+  - Auf den datei-scannenden Pfaden sind die Befunde aller acht Module gleich, und jedes hat eine
+    eigene Basis (Gegenmessung).
   - Die einzige Verhaltensänderung trifft `vcs`, das in keinem Gate läuft, und sie ist eine
     Verschärfung: Aus dem stillen Durchgang wird ein Abbruch, aus der falschen Diagnose ein
-    Umgebungsfehler.
+    Umgebungsfehler (Wegwerf-Kopie).
 
   Der CHANGELOG **bestätigt nur** (*„Kein Konfigurations-Bruch, keine Änderung am Grund-Code"*).
 - **Emitter-Pin gekoppelt.** `TestDefaultImage_MatchesCanonical` und
@@ -211,23 +240,32 @@
   [`MR-054`](../conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
   ist nicht berührt.
 - **Grenze.**
-  - **In einem Arbeitsklon mit unkanonisch benannten Packs brechen die history-lesenden Ziele ab,
-    in einem frischen Klon nicht.** Unter `v0.76.1` enden dort `make adr-immutable`,
-    `make doc-immutable` und `make doc-commits` mit make-Exit 2, sobald die Range ein Objekt
-    braucht, das in einem `loose-*.pack` liegt. Ein frischer Klon trägt solche Packs nicht, und
-    dort prüfen die Ziele. Der Abbruch sagt dann etwas über den Klon, nicht über den Verlauf; die
-    Meldung nennt `object not found`. Keines der drei Ziele ist ein Gate. Dass d-check Objekte in
-    solchen Packs nicht liest, ist eine Lücke im Werkzeug eines Nachbar-Repos. Dort ist sie eine
-    Anforderung, keine feste Grenze.
-  - **Unter `v0.76.0` bleibt derselbe Klon still.** Ein `0 Befund(e)`, das ein history-lesender
-    Lauf in einem solchen Klon unter jenem Stand meldet, sagt nichts aus.
+  - **Liegen Objekte der Range in einem Pack, dessen Name nicht mit `pack-` beginnt, brechen die
+    history-lesenden Ziele ab; gemessen ist das an `loose-*.pack`.** Dass es am Namens-Präfix
+    liegt, ist eine Vermutung über go-git und im Quelltext nicht nachgelesen. Unter `v0.76.1`
+    enden in einem solchen Klon mit make-Exit 2:
+    - `make adr-immutable` und das Rezept darunter, `make doc-immutable`: gemessen an einem
+      Unterbaum (Meldung `nicht lesbarer Unterbaum`);
+    - `make doc-commits`: gemessen an der Vorfahren-Kette der Range (Meldung
+      `Range-Basis-Vorfahren nicht lesbar`).
+
+    Der Abbruch sagt dann etwas über den Klon, nicht über den Verlauf; die Meldung nennt
+    `object not found`. Keines der drei Ziele ist ein Gate. Dass d-check solche Packs nicht liest,
+    ist eine Lücke im Werkzeug eines Nachbar-Repos. Dort ist sie eine Anforderung, keine feste
+    Grenze.
+  - **Nur ein Klon per `git clone --no-local` ist von solchen Packs frei.** Die Voreinstellung und
+    `--no-hardlinks` übernehmen die Pack-Namen der Quelle. Ein frisch angelegter Klon ist darum
+    nicht schon deshalb frei davon.
+  - **Unter `v0.76.0` bleibt ein solcher Klon still.** Ein `0 Befund(e)`, das ein
+    history-lesender Lauf dort unter jenem Stand meldet, sagt nichts aus.
   - **Die Wegwerf-Kopie misst nur eine Stelle**
     ([`MR-055`](../conventions.md#mr-055--eine-stellen-messung-trägt-keine-folgerung-über-eine-eigenschaft)):
     zwei Fälle, einen Unterbaum, einen Objekt-Typ (Baum). Einen unlesbaren Blob stellt sie nicht
     her, und über ihn sagt dieser Eintrag nichts.
   - **Die Grenzen der Gegenmessung aus
     [`MR-063`](../conventions.md#mr-063--die-gegenmessung-eines-d-check-sprungs-gibt-jedem-aktiven-modul-eine-basis-und-lässt-die-symlinks-stehen)
-    gelten weiter.** Für Codes ohne Basis trägt allein die Quell-Differenz den Schluss.
+    gelten weiter.** Für Codes ohne Basis trägt allein die Quell-Differenz den Schluss. Einen Pfad
+    über den VCS-Port fährt sie nicht; dort trägt die Quell-Lesung.
 - **Begründung:**
   - Der Digest ist die Reproduzierbarkeits-Zusage
     ([`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Der Sprung beseitigt
@@ -260,6 +298,9 @@
   [`MR-061`](../conventions.md#mr-061--d-check-pin-v0760-ein-modul-und-eine-structure-bedingung-verfügbar-beide-nicht-aktiv);
   die Gegenmessung folgt
   [`MR-063`](../conventions.md#mr-063--die-gegenmessung-eines-d-check-sprungs-gibt-jedem-aktiven-modul-eine-basis-und-lässt-die-symlinks-stehen).
-  **Zusätzlich** läuft jeder history-lesende Lauf, der in die Bilanz eingeht, in einem frischen
-  Klon oder nennt die Pack-Namen seines Klons (`ls .git/objects/pack/`). Die Grenze ist neu zu
-  prüfen, sobald d-check Objekte in unkanonisch benannten Packs liest.
+  Bewegt sich die geteilte Infrastruktur, nennt die Bilanz für jede Aussage ihren Träger; über
+  den VCS-Port ist das die Quell-Lesung, nicht die Gegenmessung.
+  **Zusätzlich** läuft jeder history-lesende Lauf, der in die Bilanz eingeht, in einem Klon per
+  `git clone --no-local` oder nennt die Pack-Namen seines Klons (`ls .git/objects/pack/`). Die
+  Grenze ist neu zu prüfen, sobald d-check Objekte in einem Pack liest, dessen Name nicht mit
+  `pack-` beginnt.
