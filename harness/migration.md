@@ -228,6 +228,12 @@ ist die Baseline selbst, `v6.9.0` · `templates/README.md` §Pflichtgliederung v
 Abschnitte hast du Freiraum"*. Das Kriterium wendet diese Stelle an und weicht von ihr nicht ab;
 ein Adaptions-Eintrag folgt daraus nicht ([`MR-000`](conventions.md#mr-000--baseline-aussage)).
 
+**Stoff, der beim Angleichen umzieht.** Innerhalb derselben Datei darf Stoff in den
+Vorlagen-Abschnitt wandern, zu dem er gehört, und zwar **wörtlich**. Eine Umformulierung ist dabei
+nicht erlaubt, ein Umzug in eine andere Datei ebenfalls nicht. Die Setzung ist die des
+Auftraggebers (2026-09-17), als Lesart derselben Pflichtgliederung: Sie ordnet vorhandenen Stoff
+den Abschnitten zu, ohne ihn zu ändern.
+
 Report-Skelett je Vorlage:
 
 | Vorlage | Instanz(en) | Ausgang | Beleg |
