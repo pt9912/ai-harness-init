@@ -280,7 +280,7 @@ dasteht.
   am Beispiel `kein-slice`. Beide sind rot gesehen, und zwar vom Reviewer statt vom schreibenden
   Kontext. Das Risiko kann für diesen Slice nicht mehr eintreten; für den **schreibenden** Pfad
   stellt es sich neu und steht darum als Risiko 3 in
-  [slice-220](../next/slice-220-plan-ausgang-traegt-eine-kennung.md), nicht als offener Rest hier.
+  [slice-220](../done/slice-220-plan-ausgang-traegt-eine-kennung.md), nicht als offener Rest hier.
 
 ## 7. Closure-Notiz
 
@@ -359,7 +359,7 @@ Backticks).
   Kein Ausgang wird zugewiesen, kein `state.md` angefasst. Festgehalten für den, der ihn fährt:
   Zwei der drei oben gespeisten Einträge stehen **über** der Schwelle und tragen den Stand `offen`
   (7× und 7×) — das ist der Gegenstand des Lese-Schritts, nicht dieser Notiz.
-- **Folge-Slices:** [slice-220](../next/slice-220-plan-ausgang-traegt-eine-kennung.md) — *Der
+- **Folge-Slices:** [slice-220](../done/slice-220-plan-ausgang-traegt-eine-kennung.md) — *Der
   Plan-Ausgang des schreibenden Laufs trägt eine Kennung*; liegt als Datei in `open/`. Er ist der
   **Ausgang der benannten Lücke aus MEDIUM-1**, und der Ausgang ist ein Folge-Slice und nicht
   *weiter offen*: Ein Kommentar im Go-Code trägt eine Lücke nicht, er beschreibt sie nur.
