@@ -41,8 +41,8 @@ Wächter — weil ein zurückgedrehtes Muster das Urteil still grün lässt.**
 
 Alle Zahlen dieses Abschnitts stammen aus dem Schnitt-Lauf vom 2026-09-06 über einem Klon außerhalb
 des Repos (Stand `abf05be`), netzlos (`--network none`), Mount `:ro`, Image per Digest
-`sha256:e31a372b66dbde26305982424854cfce7c9ab7ce555a94debeee7ee26e6d4641` — derselbe Pin, den
-[`d-check.mk`](../../../../d-check.mk) führt. **Keine Erwartungswerte**
+`sha256:e31a372b66dbde26305982424854cfce7c9ab7ce555a94debeee7ee26e6d4641` — der Digest von `v0.74.1`; den gepinnten Stand führt
+[`d-check.mk`](../../../../d-check.mk). **Keine Erwartungswerte**
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2); der erste Schritt der Umsetzung ist, sie neu zu fahren.
 

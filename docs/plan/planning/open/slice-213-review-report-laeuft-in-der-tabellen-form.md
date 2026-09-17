@@ -144,9 +144,9 @@ hier nicht führbar. Die **Auswahl der zwei Abschnitte** ist damit begründet, i
 
 ### Der Mechanismus ist rot gesehen, gegen eine Kopie außerhalb des Repos
 
-`structure` adressiert die Spalte über ihren **Kopfzeilen-Namen**. Gegen den in
-[`d-check.mk`](../../../../d-check.mk) gepinnten Digest
-(`sha256:e31a372b66dbde26305982424854cfce7c9ab7ce555a94debeee7ee26e6d4641`), netzlos, Mount `:ro`:
+`structure` adressiert die Spalte über ihren **Kopfzeilen-Namen**. Gegen den Digest von `v0.74.1`
+(`sha256:e31a372b66dbde26305982424854cfce7c9ab7ce555a94debeee7ee26e6d4641`; Messstand, den gepinnten Stand führt [`d-check.mk`](../../../../d-check.mk), und die Umsetzung misst an ihm neu),
+netzlos, Mount `:ro`:
 
 ```sh
 docker run --rm --network none -v <kopie>:/repo:ro \

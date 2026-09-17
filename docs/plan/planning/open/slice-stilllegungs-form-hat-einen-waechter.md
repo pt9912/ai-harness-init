@@ -46,7 +46,7 @@ entscheidet er nach den drei Kriterien aus [`MR-054`](../../../../harness/conven
 - Die Ziel-Fassung nennt den Teil urteilsfrei: *„dass die `Gegenstand:`-Zeile eine Kennung oder
   einen Grund trägt"* (`v6.9.0` · `modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein
   anderer übernimmt).
-- Am gepinnten `v0.74.1` meldet kein aktives Modul einen stillgelegten Slice ohne diese Zeile
+- Am `v0.74.1` (Messstand; den gepinnten Stand führt `d-check.mk`, und die Umsetzung misst an ihm neu) meldet kein aktives Modul einen stillgelegten Slice ohne diese Zeile
   ([`harness/sensors/docs-check.md`](../../../../harness/sensors/docs-check.md) §Grenze).
 - d-check `v0.76.0` bringt die Bedingung (`CHANGELOG.md`, `[0.76.0]`); den Pin hebt
   `slice-d-check-pin-bringt-die-stilllegungs-bedingung`.

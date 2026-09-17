@@ -49,8 +49,8 @@ dasteht.
 
 ### Die Sonde
 
-Gefahren an einer Wegwerf-Kopie des Arbeitsbaums am Stand `c6d2f731`, mit dem d-check-Pin aus
-`d-check.mk` (`v0.74.1`). Die Änderung am `matrix:`-Block von
+Gefahren an einer Wegwerf-Kopie des Arbeitsbaums am Stand `c6d2f731`, mit d-check `v0.74.1` (Messstand; den gepinnten Stand führt
+`d-check.mk`, und die Umsetzung misst an ihm neu). Die Änderung am `matrix:`-Block von
 [`.d-check.yml`](../../../../.d-check.yml) umfasst drei Zeilen:
 
 ```yaml
