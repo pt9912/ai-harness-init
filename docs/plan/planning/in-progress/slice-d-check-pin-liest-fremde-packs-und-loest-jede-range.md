@@ -44,7 +44,8 @@ zusammen mit der Begründungs-Pflicht je Punkt.
 [`d-check.mk`](../../../../d-check.mk) und in
 [`internal/emit/emit.go`](../../../../internal/emit/emit.go), mit belegtem Digest und einem
 Adaptions-Eintrag zum Sprung. Was dieses Repo über den Range-Lauf des Werkzeugs sagt, ist am neuen
-Stand gemessen.
+Stand gemessen — in den Sensor-Dateien, im Kommentar am `commits`-Block und in der E2E-Stufe, die
+den blind-grünen Fall behauptet.
 
 **Herkunft:** Trigger-Audit der Closure von `slice-stilllegungs-form-hat-einen-waechter`. Die zwei
 Releases lösen den permanenten Trigger von
@@ -140,13 +141,31 @@ Drei Liefer-Punkte, jeder mit dem Kommando, das ihn rot färbt
         [`MR-062`](../../../../harness/conventions.md#mr-062) laufen gegen eine frische
         `--print-mk`-Ausgabe. Die zwei `--disable`-Listen im [`Makefile`](../../../../Makefile)
         sind nach Namen gegen Fragment und `modules:`-Zeile gehalten, wie beim letzten Sprung.
+        Für `regelwerk-check` heißt das: seine Liste trägt **jeden** Namen der `modules:`-Zeile.
+        Der Kommentar darüber behauptet diese Deckungsgleichheit, und sein Kopplungs-Kommando
+        misst sie — es gibt nichts aus und endet mit 0:
+        `diff <(grep -m1 '^modules:' .d-check.yml | sed 's/^modules:[[:space:]]*//; s/[][]//g' | tr ',' '\n' | tr -d ' ' | sort) <(sed -n '/^regelwerk-check:/{n;p}' Makefile | grep -oE -- '--disable [a-z-]+' | awk '{print $2}' | sort)`.
+        `regelwerk-check` braucht Netz und läuft nicht in `make gates`; kein Gate hält diese Zeile,
+        das Kommando ist ihr einziger Maßstab.
       - Der Adaptions-Eintrag zum Sprung `v0.76.1` → `v0.76.3` steht (Übergabe an den Architect,
         §6) und trägt die Messungen aus DoD 2.
-      - [`make full-smoke`](../../../../harness/sensors/full-smoke.md) bleibt grün, denn der
-        emittierte Pin wandert mit.
+      - [`make full-smoke`](../../../../harness/sensors/full-smoke.md) ist grün, und die Stufe
+        `blind_gruen_ohne_waechter` in
+        [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) sagt am
+        gepinnten Stand, was sie misst. Der Anlass des Vorlauf-Wächters ist die **auflösbare, aber
+        leere** Range (`git rev-list --count` → 0); der flache Klon der Stufe legt daneben eine
+        **unauflösbare Basis** vor, und die nimmt `v0.76.3` dem Wächter ab —
+        `make -C <flacher Klon> -f d-check.mk doc-commits RANGE=HEAD..HEAD` endet dort mit Exit 2
+        statt mit `0 Befund(e)`, und `doc-immutable` am selben Aufbau nicht. **Ersatzlos entfällt
+        die Stufe nicht:** Welcher Aufbau die Klasse *blind und grün* am gepinnten Stand noch
+        trägt und an welchem Ziel, nennt der Umsetzungs-Commit; was die Stufe danach behauptet,
+        steht in ihrem Kommentar und in ihrer `e2e_abdeckung`-Deklaration. Das Urteil darüber,
+        was sie misst, liegt beim Implementer.
       - **Rot:** Wer nur `d-check.mk` bewegt, bringt `make test` an
         `TestDefaultImage_MatchesCanonical` und `TestDefaultDigest_MatchesCanonical` zu Fall. Die
-        Meldung ist gelesen.
+        Meldung ist gelesen. Daneben: `make full-smoke` endet ungleich 0; oder das
+        Kopplungs-Kommando oben nennt eine `<`- oder `>`-Zeile; oder eine Stufe behauptet weiter
+        blindes Grün an einem Ziel, das am gepinnten Stand selbst mit Exit 2 abbricht.
 - [ ] **2 — Die Strenge-Bilanz über `v0.76.1..v0.76.3` ist gezogen, und die zwei geänderten
       Verhalten sind an diesem Repo und an einem frischen Ziel gemessen.**
       - **Bilanz** nach [`MR-063`](../../../../harness/conventions.md#mr-063): die Quell-Differenz
@@ -210,7 +229,9 @@ Aussagen-Berührung steht hier gar nicht.
 |---|---|---|
 | [`d-check.mk`](../../../../d-check.mk) | update | DoD 1: Pin, Digest, re-adaptiertes Fragment, Kopf über den neuen Stand |
 | [`internal/emit/emit.go`](../../../../internal/emit/emit.go) | update | DoD 1: emittierter Default-Pin |
-| [`Makefile`](../../../../Makefile) | prüfen | DoD 1: die zwei `--disable`-Listen nach Namen |
+| [`Makefile`](../../../../Makefile) | update | DoD 1: die zwei `--disable`-Listen nach Namen — die Liste von `regelwerk-check` trägt jeden Namen der `modules:`-Zeile |
+| [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) | update | DoD 1: die Stufe `blind_gruen_ohne_waechter` sagt am gepinnten Stand, was sie misst |
+| [`docs/user/e2e-abdeckung.md`](../../../../docs/user/e2e-abdeckung.md), [`test/e2e-abdeckung.bats`](../../../../test/e2e-abdeckung.bats) | update, falls die `e2e_abdeckung`-Deklaration der Stufe sich ändert | DoD 1: die Datei entsteht mit `make e2e-abdeckung` aus den Stufen-Deklarationen, ihren Inhalt hält ein Fall in `make test` ([`harness/README.md`](../../../../harness/README.md) §Werkzeuge) |
 | Adaptions-Eintrag unter `harness/conventions/` samt Index-Zeile | neu | DoD 1, DoD 3: Architect-Artefakt ([`AGENTS.md`](../../../../AGENTS.md) §3.8), eigener Commit |
 | [`harness/sensors/history-range-guard.md`](../../../../harness/sensors/history-range-guard.md) | update | DoD 3: §Grenze, beide Punkte aus §1 |
 | [`AGENTS.md`](../../../../AGENTS.md) | update, falls das Zählkommando trifft | DoD 3: Architect-Artefakt, eigener Commit (§3.8) |
@@ -229,7 +250,9 @@ Release erschienen, oder der Planner hat den Ziel-Tag in Titel und §1 nachgezog
 
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): Die Bilanz fällt auf Senkung, oder das
   Fragment braucht einen neuen Handgriff. Dann ist der Sprung eine Entscheidung nach
-  [`AGENTS.md`](../../../../AGENTS.md) §3.5 und wird neu geschnitten.
+  [`AGENTS.md`](../../../../AGENTS.md) §3.5 und wird neu geschnitten. Ebenso, wenn die E2E-Stufe
+  aus DoD 1 mehr verlangt als eine Umschrift ihrer Aussage — dann wird der Stufen-Teil eigens
+  geschnitten, statt in diesem Slice zu wachsen.
 - `in-progress` → `open` (blockiert — Carveout?): Das Bild ist aus der Registry nicht abrufbar,
   oder sein Digest lässt sich nicht aus Registry und lokalem Bild zugleich belegen.
 
@@ -266,6 +289,13 @@ dasteht.
    Wächter bricht eine unauflösbare Range selbst ab; ein Rot über ihn belegt nichts über d-check.
    *Absehbar:* entfallen, wenn der Umsetzungs-Commit den Aufruf ohne Wächter nennt und dieselbe
    Stelle unter `v0.76.1` anders meldet. — **Ausgang:** <eingetreten | entfallen: Grund | weiter offen: Register>
+5. **Die Klasse *blind und grün* ist am gepinnten Stand an keinem Aufbau mehr herstellbar, den
+   diese Stufe fahren kann.** Dann trägt die Stufe keine Aussage mehr, und `make full-smoke` bleibt
+   rot — der Sensor läuft laut [`harness/README.md`](../../../../harness/README.md) §Safety and
+   scope boundaries bei jedem Push in der CI. *Absehbar:* entfallen, wenn `make full-smoke` mit
+   einer benannten Stufen-Aussage grün endet. Sonst eingetreten: Rückführung nach §4 und
+   Folge-Slice für den Stufen-Teil; ein Carveout trägt den roten Stand nur, wenn der Slice mit
+   rotem `full-smoke` schließen soll. — **Ausgang:** <eingetreten: CO-NNN / slice-<Kennung> | entfallen: Grund | weiter offen: Register>
 
 ### Übergabe an den Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8)
 
