@@ -28,11 +28,14 @@
   - den Satz nach der Tabelle *„Die Lagen mit Packs, deren Name nicht mit `pack-` beginnt
     (`loose-*`, `xyz-*`), misst MR-064; sie brechen ab."*;
   - in Setzung 2 den zitierten Wortlaut *„… deren Objekte in Packs mit dem Präfix `pack-` oder
-    lose liegen …"*, den die Sensor-Dateien und der Kommentar am `commits`-Block seit diesem
-    Sprung um das Präfix `loose-` erweitert führen
-    (`grep -c 'Praefix .pack-. oder .loose-.' .d-check.yml` → **1**; kein Erwartungswert,
-    [`MR-025`](../conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-    Setzung 2).
+    lose liegen …"*. Die zwei lebenden Träger führen ihn seit diesem Sprung nicht mehr, und zwar
+    verschieden: Die Sensor-Dateien haben die Präfix-Bedingung durch die Index-Bedingung
+    **ersetzt** (`git grep -l 'Index oder lose liegen' -- harness/sensors/ | wc -l` → **2**), der
+    Kommentar am `commits`-Block nennt das Präfix `loose-` daneben
+    (`grep -c 'Praefix .pack-. oder$' .d-check.yml` → **1**; die Zeile bricht nach *oder* um, das
+    Muster endet deshalb dort). **Keine Erwartungswerte**
+    ([`MR-025`](../conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+    Setzung 2) — beide Zahlen wandern mit dem Baum.
 
   Die **Regel** beider Setzungen bleibt: Eine Lage außerhalb der gemessenen heißt *ungemessen*,
   nicht frei.
