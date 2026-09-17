@@ -46,17 +46,25 @@
   in der `.d-check.yml` führen: *„Geprüft hat der Range-Lauf in den gemessenen Klonen ohne
   Alternates, deren Objekte in Packs mit dem Präfix `pack-` oder lose liegen; dass das genügt, ist
   nicht belegt."* Eine Lage außerhalb der Tabelle heißt **ungemessen**, nicht frei.
-- **Die Messungen, unter `v0.76.1`.** Kopien des Arbeitsklons außerhalb des Repos. Ranges:
-  `8ae647cc~1..8ae647cc` für `make adr-immutable`, `c414119b..ebb76b3d` für `make doc-commits`.
-  In jeder Zeile liest das git des Hosts den Baum (`git cat-file -t '8ae647cc~1:.claude/hooks'` →
-  `tree`), und `history-range-guard` löst die Range auf. Die Zahl in der Spalte `count:` ist kein
-  Erwartungswert, denn sie wächst mit dem Verlauf.
+- **Die Messungen, unter `v0.76.1`.** Der Arbeitsklon und Kopien davon außerhalb des Repos.
+  Ranges: `8ae647cc~1..8ae647cc` für `make adr-immutable` und `c414119b..ebb76b3d` für
+  `make doc-commits`, sofern die Zelle keine andere nennt. In jeder Zeile liest das git des Hosts
+  den Baum (`git cat-file -t '8ae647cc~1:.claude/hooks'` → `tree`); wo `adr-immutable` läuft,
+  löst `history-range-guard` die Range auf. Die Zahl in der Spalte `count:`
+  (`git count-objects -v`) gilt zum Laufzeitpunkt und ist kein Erwartungswert: Sie wandert mit
+  jedem Commit und jeder Wartung.
 
   | Klon | `ls .git/objects/pack/` | Alternates | `count:` | `adr-immutable` | `doc-commits` |
   |---|---|---|---|---|---|
   | `git clone --no-local` | nur `pack-*` | keine | nicht erhoben | geprüft: `0 Befund(e)`, make-Exit 0 | geprüft: 1 × `commit-untraceable`, make-Exit 2 |
   | derselbe Klon, Pack per `git unpack-objects` ausgepackt und entfernt | leer | keine | 26255 | geprüft: `0 Befund(e)`, make-Exit 0 | geprüft: 1 × `commit-untraceable`, make-Exit 2 |
+  | Arbeitsklon nach `git repack -a -d`, Kopf `439731c5` | ein `pack-*`-Pack | keine | 100 | geprüft: `0 Befund(e)`, make-Exit 0 | geprüft: 1 × `commit-untraceable`, make-Exit 2 |
+  | `git clone --no-local`, danach ein leerer Commit ohne Kennung | ein `pack-*`-Pack | keine | 1, der neue Commit | nicht gefahren | `RANGE=HEAD~1..HEAD`: geprüft, 1 × `commit-untraceable` auf dem neuen Commit, make-Exit 2 |
   | `git clone --shared` | leer | der Objektspeicher des Arbeitsklons, dort nur `pack-*` | 0 | Abbruch: `Range-Basis "8ae647cc~1" nicht auflösbar: reference not found`, make-Exit 2 | Abbruch: `Range-Basis "c414119b" nicht auflösbar: reference not found`, make-Exit 2 |
+
+  Die zwei Mischungs-Zeilen verteilen die Objekte verschieden. In der Einzel-Commit-Zeile liegt der
+  geprüfte Commit lose und sein Vorgänger im Pack. In der Arbeitsklon-Zeile ist nicht erhoben,
+  welche Objekte der zwei Ranges lose liegen.
 
   Die Lagen mit Packs, deren Name nicht mit `pack-` beginnt (`loose-*`, `xyz-*`), misst
   [`MR-064`](../conventions.md#mr-064--d-check-pin-v0761-vcs-bricht-bei-unlesbarem-unterbaum-ab);
@@ -69,10 +77,13 @@
   dieser Messung folgt d-check `v0.76.1` den Alternates nicht. Eine Aussage über andere
   Alternates-Formen (relative Pfade, mehrere Einträge) ist das nicht.
 - **Grenze.**
-  - **Gemessen ist nur, was die Tabelle zeigt:** drei Lagen, ein Stand (`v0.76.1`), zwei Ranges,
-    zwei Ziele. `v0.76.0` ist für die Lagen *Alternates* und *nur lose* nicht gemessen.
-  - **Ungemessen** sind eine Mischung aus losen Objekten und Packs, `git worktree`, flache Klone
-    (`--depth`), partielle Klone (`--filter`) und Submodule. Über sie sagt dieser Eintrag nichts.
+  - **Gemessen ist nur, was die Tabelle zeigt:** fünf Lagen, ein Stand (`v0.76.1`), drei Ranges,
+    zwei Ziele. Unter `v0.76.0` misst diese Tabelle nichts; was dort gemessen ist, führt
+    [`MR-064`](../conventions.md#mr-064--d-check-pin-v0761-vcs-bricht-bei-unlesbarem-unterbaum-ab).
+  - **Ungemessen ist die Mischung im Allgemeinen.** Gemessen sind zwei Mischungen aus einem
+    `pack-*`-Pack und losen Objekten (Tabelle), nicht jede Verteilung der Range-Objekte auf Pack
+    und lose Dateien. Ebenso ungemessen sind `git worktree`, flache Klone (`--depth`), partielle
+    Klone (`--filter`) und Submodule. Über sie sagt dieser Eintrag nichts.
   - **Kein Wächter.** Kein `make`-Ziel gibt die Angabe aus. `history-range-guard` löst die Range
     über das git des Hosts auf, das Alternates und Packs jeden Namens liest, und sieht die Lage
     darum nicht: In der Zeile *Alternates* meldet er OK. Träger der Angabe ist der Lauf, der die
