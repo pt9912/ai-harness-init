@@ -57,16 +57,26 @@ hält [`test/commit-msg-hook.bats`](../../test/commit-msg-hook.bats) gegen die L
   Aufruf dieses Hooks", nicht ein Datum in der Konfiguration. Ein Maßstab über die ganze Historie
   wäre an einem Bestand rot, den niemand mehr ändern kann
   ([`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-- **`doc-commits` (`d-check.mk`, `--range`) bleibt advisory und ungenutzt für diese Zusage** — nicht
-  aus Vorsicht, sondern gemessen defekt, an `v0.74.1` wie an `v0.76.0`: Der gepinnte d-check
-  bricht `--range`-Läufe des `commits`-Moduls mit `Range-Basis-Vorfahren nicht lesbar: object not found` ab, sobald
-  `commits.id-patterns` irgendeine nicht-leere Liste trägt; verschwindet mit einer leeren oder ganz
-  weggelassenen Liste — dann prüft der Range-Lauf aber auch nichts mehr (dasselbe stille Grün wie
-  im Sensor [`history-range-guard`](history-range-guard.md)). Fehlerfrei **und** weiter prüfend
-  bleibt nur `--commit-msg` mit der realen, nicht-leeren Liste (dieser Sensor). Ein Range-Lauf in
-  CI bräuchte entweder einen Tool-Fix oder den vollständigen Verzicht auf eine explizite
-  `id-patterns`-Liste — beides eine eigene Abwägung; `d-check` ist ein Nachbar-Repo desselben
-  Nutzers, eine hier gemessene Modul-Lücke ist dort eine Anforderung, keine feste Werkzeug-Grenze.
+- **`doc-commits` (`d-check.mk`, `--range`) bleibt advisory und ungenutzt für diese Zusage** — ein
+  Range-Lauf hängt am Objektspeicher des Klons, dieser Sensor nicht. Gemessen an `v0.76.0` und
+  `v0.76.1` (jeder Digest mit dem Fragment seines Standes), `make doc-commits RANGE=HEAD~3..HEAD`
+  über demselben Verlauf (Kopf `e4c6cb0b`), mit der `commits`-Konfiguration dieses Repos:
+  - **Packs mit unkanonischem Namen** (`loose-*.pack`, wie `git maintenance run
+    --task=loose-objects` sie anlegt; `ls .git/objects/pack/`): Abbruch mit
+    `Range-Basis-Vorfahren nicht lesbar: object not found`, make-Exit 2, unter beiden Digests.
+    Derselbe Klon mit leerer `id-patterns`-Liste: make-Exit 0 und `0 Befund(e)` — der Range-Lauf
+    prüft dann nichts (dasselbe stille Grün wie im Sensor
+    [`history-range-guard`](history-range-guard.md)). Ein lokaler Klon
+    (`git clone --no-hardlinks <pfad>`) übernimmt die Pack-Namen seiner Quelle.
+  - **Kanonische Packs** (`pack-*.pack`, etwa aus `git clone --no-local file://<pfad>`): kein
+    Abbruch; der Range-Lauf prüft und meldet `commit-untraceable`, make-Exit 2, unter beiden
+    Digests.
+
+  Fehlerfrei **und** weiter prüfend bleibt in jedem Klon nur `--commit-msg` mit der realen,
+  nicht-leeren Liste (dieser Sensor). Ob ein Range-Lauf über einem Klon mit kanonischen Packs ein
+  Gate wird, ist eine eigene Abwägung. Dass d-check Objekte in Packs mit unkanonischem Namen nicht
+  liest, ist eine Lücke im Werkzeug eines Nachbar-Repos desselben Nutzers — dort eine Anforderung,
+  keine feste Werkzeug-Grenze.
 
 ## Ausgabe und Ausgänge
 

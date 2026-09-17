@@ -198,6 +198,10 @@ adr-immutable: history-range-guard doc-immutable ## ADR-Kern ueber RANGE=<base>.
 # die ANWESENHEIT einer Kennung (ADR-/LH-/MR-/slice-), nicht ihre Wahrheit
 # (harness/README.md). NICHT in gates: MSG variiert pro Aufruf und ist damit
 # kein hermetischer Pruefbereich (LH-QA-01).
+# KOPPLUNG: die --disable-Liste unten nennt dieselben Namen wie das Rezept
+# `doc-commits` des Fragments d-check.mk; das Kommando gibt dann nichts aus, sonst
+# je abweichendem Namen eine Zeile:
+#   diff <(sed -n '/^doc-commits:/{n;p}' d-check.mk | grep -oE -- '--disable [a-z]+' | sort) <(sed -n '/^commit-msg-check:/,/^$/p' Makefile | grep -oE -- '--disable [a-z]+' | sort)
 commit-msg-check: ## Commit-Message-Datei gegen Traceability-Kennung pruefen (MSG=<datei>) — NICHT in gates
 	@test -n "$(MSG)" || { echo "commit-msg-check: MSG=<datei> fehlt" >&2; exit 2; }
 	@test -f "$(MSG)" || { echo "commit-msg-check: MSG=$(MSG) ist keine Datei" >&2; exit 2; }
@@ -235,9 +239,9 @@ baseline-verify: ## Vendored Baseline netzlos verifizieren (Integrität + Vollst
 # isolieren den Lauf auf `sources`: sie nennen genau die Module, die .d-check.yml
 # fuer docs-check aktiviert — dort laufen sie netzlos und in gates. Ein Modul, das
 # dort hinzukommt, braucht hier sein --disable, sonst prueft dieser Netz-Lauf es mit.
-# Beide Zahlen muessen gleich sein:
-#   grep -m1 '^modules:' .d-check.yml | tr ',' '\n' | wc -l
-#   sed -n '/^regelwerk-check:/{n;p}' Makefile | grep -o -- '--disable' | wc -l
+# Gleich sein muessen die NAMEN, nicht nur ihre Zahl; das Kommando gibt dann nichts
+# aus, sonst je abweichendem Namen eine Zeile:
+#   diff <(grep -m1 '^modules:' .d-check.yml | sed 's/^modules:[[:space:]]*//; s/[][]//g' | tr ',' '\n' | tr -d ' ' | sort) <(sed -n '/^regelwerk-check:/{n;p}' Makefile | grep -oE -- '--disable [a-z]+' | awk '{print $2}' | sort)
 regelwerk-check: ## Upstream-Content-Drift des Baseline-ZIP (d-check sources, Netz) — Maintenance/CI, NICHT in gates
 	docker run --rm -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable sources --disable links --disable anchors --disable ids --disable matrix --disable codepaths --disable spans --disable planning --disable targets
 	@echo "Hinweis: prueft NUR das Asset von $(BASELINE_TAG). Ein NEUER Tag upstream bleibt hier unsichtbar — 'make baseline-freshness' prueft die Release-Liste (slice-018, MR-007)."

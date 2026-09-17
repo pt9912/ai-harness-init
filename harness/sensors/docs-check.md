@@ -160,8 +160,8 @@ oder benennt an dieser Stelle, dass die Zusage ab dann nur für den flachen Best
 `.harness/baseline/v6.9.0/regelwerk/modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand
 ein anderer übernimmt) legt einen Slice, dessen Gegenstand ein anderer übernimmt oder der
 entfällt, ohne Lieferung nach `done/`: Die Liefer-Punkte der DoD bleiben leer, §7 trägt die Zeile
-`Gegenstand:`, und jedes Risiko hat einen Ausgang. Gemessen gegen d-check `v0.76.0`
-`@sha256:f0b55fde2be414dda51ddeea5677d5ad1094eecb23a528cfef768cbd61945396`, an einer Kopie außerhalb
+`Gegenstand:`, und jedes Risiko hat einen Ausgang. Gemessen gegen d-check `v0.76.1`
+`@sha256:1470ecdcaa686a5ef4513dee9b0ae522586f54b87d568b06fc6b5b2741b633b3`, an einer Kopie außerhalb
 des Repos, netzlos, über allen Modulen der `.d-check.yml`: je ein Slice über die Kante
 `open → done` (Gegenstand *übernommen von*) und über `next → done` (Gegenstand *entfallen*),
 der Stilllegungs-Inhalt vor dem Wechsel committet. Gelesen ist jede Meldung, die den stillgelegten

@@ -1,8 +1,8 @@
 # d-check.mk — Doku-Referenz-Gate via d-check. Abgeleitet aus `d-check --print-mk`
-# (v0.76.0) und adaptiert (MR-010/MR-011/MR-012/MR-024/MR-027/MR-052/MR-061/MR-062):
+# (v0.76.1) und adaptiert (MR-010/MR-011/MR-012/MR-024/MR-027/MR-052/MR-061/MR-062):
 #   * das Befund-Gate heißt `docs-check` statt `doc-check` (Ziel-Form-/modul-13-
 #     Konsistenz; als EINZIGES Target in `make gates` + AGENTS/README behauptet);
-#   * DCHECK_DIGEST ist auf den v0.76.0-Release-Digest GEPINNT (das Tool liefert es
+#   * DCHECK_DIGEST ist auf den v0.76.1-Release-Digest GEPINNT (das Tool liefert es
 #     leer) — strikte Reproduzierbarkeit (LH-QA-02);
 #   * die advisory-Targets (`doc-trace`/`doc-doctor`/…) bleiben SONST verbatim vom Tool
 #     (`doc-help` ist der eine Handgriff, s. u.) und sind NICHT als Gate behauptet —
@@ -23,10 +23,10 @@
 #     enabled sein eigenes Modul, wie jedes advisory-Target ohne Platz in `make gates`.
 #     Die Zeilenreferenz-Prüfung `codepaths.check-lines` ist in `.d-check.yml`
 #     aktiviert (additive Härtung, MR-011).
-# VERENGTES MARKER-VERHALTEN seit v0.74.1: ein `d-check:ignore` unterdrueckt
-# nur noch, wenn es (a) in einem echten HTML-Kommentar steht UND (b) nicht in
-# Inline-Code eingeschlossen ist. Vier Lagen ueber einem toten Codepath, Kopie
-# ausserhalb des Repos, unter v0.74.1:
+# VERENGTES MARKER-VERHALTEN: ein `d-check:ignore` unterdrueckt nur, wenn es
+# (a) in einem echten HTML-Kommentar steht UND (b) nicht in Inline-Code
+# eingeschlossen ist. Vier Lagen ueber einem toten Codepath (Messung und Stand
+# dieser Tabelle und der Sonde unten: MR-027):
 #   `<!-- d-check:ignore -->`      unterdrueckt
 #   blanke Prosa `d-check:ignore`  MELDET
 #   Kommentar in Inline-Code       MELDET
@@ -35,8 +35,7 @@
 # Marker" — es gibt sie, sie tragen nur nicht. WAS DAS MISST, IST DER LAUF SELBST: `make
 # docs-check` faehrt den gepinnten Digest und ist gruen, und jeder `make gates`-Lauf prueft
 # es neu. DAS IST FALSIFIZIERBAR, nicht tautologisch: traegt ein Marker in einer der zwei
-# nicht mehr honorierten Formen einen echten Befund, wird `docs-check` rot (Messung und
-# Stand: MR-027).
+# nicht honorierten Formen einen echten Befund, wird `docs-check` rot.
 # Hier steht dazu bewusst KEINE Zahl: die Marker-Menge waechst mit dem Bestand.
 # Wer zaehlt, schneidet ueber den PFAD statt ueber den Text und summiert:
 #   `git grep -h 'd-check:ignore' -- '*.md' ':!.harness/baseline' | wc -l`
@@ -62,7 +61,7 @@
 # Der Digest steht literal, weil `$(DCHECK_REF)` in einem Kommentar keine Shell-Variable ist
 # und wortwoertlich gefahren still `1` liefert:
 #   diff <(docker run --rm --network none \
-#     ghcr.io/pt9912/d-check@sha256:f0b55fde2be414dda51ddeea5677d5ad1094eecb23a528cfef768cbd61945396 \
+#     ghcr.io/pt9912/d-check@sha256:1470ecdcaa686a5ef4513dee9b0ae522586f54b87d568b06fc6b5b2741b633b3 \
 #     --print-mk) d-check.mk | grep -c '^[0-9]'                                    # 8
 #   1. dieser Adopter-Kopf (das Tool liefert ihn nicht),
 #   2. DCHECK_DIGEST pinnen (das Tool liefert es leer),
@@ -71,8 +70,8 @@
 #   5. die Marke bei `doc-tracked`/`doc-structure` (Hilfetext-Anhang UND Ausgabe-Zeile
 #      `.d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, …` — der Generator liefert
 #      keins von beidem; MR-062).
-DCHECK_IMAGE ?= ghcr.io/pt9912/d-check:v0.76.0
-DCHECK_DIGEST ?= sha256:f0b55fde2be414dda51ddeea5677d5ad1094eecb23a528cfef768cbd61945396
+DCHECK_IMAGE ?= ghcr.io/pt9912/d-check:v0.76.1
+DCHECK_DIGEST ?= sha256:1470ecdcaa686a5ef4513dee9b0ae522586f54b87d568b06fc6b5b2741b633b3
 # TRACE_FLAGS: optionale Flags für die RTM-Targets (z. B. --json).
 TRACE_FLAGS ?=
 

@@ -369,15 +369,14 @@ vcs:
 # Traeger dieses Blocks ist AUSSCHLIESSLICH der PreToolUse-Hook
 # .claude/hooks/pretooluse-commit-msg-guard.sh (ueber `make commit-msg-check
 # MSG=<datei>`, --commit-msg) — NICHT `make doc-commits` (d-check.mk, --range):
-# der gepinnte d-check bricht mit "Range-Basis-Vorfahren nicht lesbar: object not
-# found" ab (Messung und Stand: MR-061), sobald `commits.id-patterns` IRGENDEINE
-# nicht-leere Liste traegt UND gleichzeitig --range laeuft — auch die drei
-# eingebauten Muster VERBATIM brechen ab; nicht die Abweichung von den
-# Vorschlaegen ist die unterscheidende Variable, sondern die blosse
-# Anwesenheit einer expliziten Liste. Reproduziert unabhaengig von
-# Range-Tiefe, expliziten Commit-Hashes und den --disable-Flags, verschwindet
-# nur mit LEERER oder GANZ WEGGELASSENER id-patterns-Liste und mit
-# --commit-msg statt --range. `doc-commits` bleibt darum ungenutzt advisory
+# ein Range-Lauf haengt am Objektspeicher des Klons. Traegt der Klon Packs mit
+# unkanonischem Namen (`loose-*.pack`, `ls .git/objects/pack/`) und fuehrt
+# `commits.id-patterns` eine nicht-leere Liste, bricht der gepinnte d-check mit
+# "Range-Basis-Vorfahren nicht lesbar: object not found" ab; mit leerer Liste
+# laeuft er durch und prueft nichts. Ueber kanonischen Packs (`pack-*.pack`)
+# laeuft derselbe Range-Lauf durch und prueft (Messung und Stand:
+# harness/sensors/commit-msg-check.md). --commit-msg liest keine Historie und
+# haengt an keinem der zwei Faelle. `doc-commits` bleibt ungenutzt advisory
 # stehen (Beleg und Traeger-Entscheidung in harness/README.md).
 # KOPPLUNG: dieselbe Kennungs-Menge fuehrt der git-eigene Hook .githooks/commit-msg
 # als bash-Fassung im Commit-Pfad (harness/tools/commit-msg-traceability.sh) — er
