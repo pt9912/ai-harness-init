@@ -323,7 +323,9 @@ docs/plan/planning/done/slice-sonde-stilllegung.md:89	docs/plan/planning/done/sl
   ist Lage V8. Das Rot folgt der Quelle (*Was es hält*): Die Baseline sieht für diese Zeile keine
   Ausnahme vor, das Werkzeug muss also keine bieten.
 - **Der Glob ist flach.** Ein Stub unter `done/<welle-id>/` liegt außerhalb. Trifft die Regel keine
-  Datei mehr, meldet sie `section-missing`.
+  Datei mehr, meldet sie `section-missing` auf ihrem Glob und behält dabei den Text des Werkzeugs
+  (*„Regel trifft keine Datei … — das Gate liefe leer"*), nicht den `hint`. Gemessen in einer Kopie,
+  deren Regel `files` auf ein Muster ohne Treffer zeigt.
 - **Der `hint` passt nicht zu jedem Grund-Code der Regel.** Trägt ein Plan die §2-Überschrift in
   anderer Form, meldet die Regel `section-missing`, und die vierte Spalte ist der `hint` (Lage V10).
   Keiner seiner zwei Auswege behebt diesen Befund; die Ursache ist die Überschrift. Heute weicht
