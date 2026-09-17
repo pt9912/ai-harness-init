@@ -201,35 +201,78 @@ dasteht.
 
 - **Eine Probe fällt nicht leer aus.** Dann trägt die Grenz-Aussage *„heute nicht auslösbar"* nicht
   mehr, und der Slice liefert einen Befund statt einer Bestätigung. Das ist kein Fehlschlag des
-  Slice — es ist das, wofür die Probe da ist —, aber es verschiebt seinen Ausgang. — **Ausgang:** <bei Closure>
+  Slice — es ist das, wofür die Probe da ist —, aber es verschiebt seinen Ausgang. — **Ausgang: eingetreten** → `slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt`. Der
+  Nehmer nimmt **beide** Ergebnisse vorweg, statt eines zu erwarten: Sein Liefer-Punkt (3)
+  verlangt, dass jede Probe den Stand nennt, gegen den sie lief, und die Ausgabe, die sie lieferte
+  — *„leer oder nicht"*. Ein Befund verschiebt dort keinen Ausgang mehr, er ist einer.
 - **Die Probe ist nachfahrbar, aber nicht mehr aussagekräftig.** Der `v6.8.0`-Satz kann Vorlagen
   enthalten, die die geprüfte Form gar nicht mehr tragen; dann ist die Probe über der leeren Menge
   wahr und belegt nichts — die Klasse
   [`zusicherung-ueber-der-leeren-menge-wahr`](../observations/BEO-ALL/zusicherung-ueber-der-leeren-menge-wahr/observation.md).
-  Ein leeres Ergebnis ist darum gegen die **Kandidaten-Menge** zu halten, nicht nur zu notieren. — **Ausgang:** <bei Closure>
+  Ein leeres Ergebnis ist darum gegen die **Kandidaten-Menge** zu halten, nicht nur zu notieren. — **Ausgang: eingetreten** → derselbe Nehmer. Die Gegenprobe wandert mit: Sein Liefer-Punkt (3)
+  verlangt, dass **jeder Operand** der Kommentar-Kommandos auflöst (`[ -e ]` über den genannten
+  Pfaden). Eine Zusicherung, die nur deshalb wahr ist, weil ihre Menge leer war, fällt damit auf,
+  statt zu bestehen.
 - **Der Lauf schreibt eine neue Zahl neben ein Kommando, das er nicht gefahren hat.** Genau die
   Klasse [`zahl-neben-nie-gefahrenem-kommando`](../observations/BEO-ALL/zahl-neben-nie-gefahrenem-kommando/observation.md)
   (verkörpert), und sie liegt hier besonders nah: Der Slice besteht aus nichts anderem als aus
-  Kommandos und ihren Ausgaben. — **Ausgang:** <bei Closure>
+  Kommandos und ihren Ausgaben. — **Ausgang: eingetreten** → derselbe Nehmer. Er bindet genau diese Klasse an einen Rot-Weg: Die
+  Zusage neben jeder Probe muss **ihr** Ergebnis tragen, und `make gates` fällt, sobald ein
+  Kommentar-Operand einen Fehler statt der zugesagten leeren Ausgabe liefert. Die Kommandos werden
+  dort gefahren, nicht abgeschrieben.
 
 ## 7. Closure-Notiz
 
-Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
-§Das Beobachtungs-Register (vorhandene `BEO-<NNN>` **zitieren** statt neu
-formulieren — sonst zählt das Register zwei Namen getrennt) ·
-`grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln (das
-Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
-wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
-Backticks).
+**Gegenstand:** übernommen von `slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt`.
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
-  für diesen Slice ohne Wellen-Zugehörigkeit>
+**Stillgelegt ohne Lieferung** — Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice,
+dessen Gegenstand ein anderer übernimmt. Die Liefer-Punkte in §2 bleiben **leer**: Dieser Slice
+hat nichts geliefert, und ein Haken behauptete es. `Verantwortlich:` bleibt stehen.
+
+**Die Adresse nimmt an.** Der Nehmer liegt in `open/`, ist nicht geschlossen und nennt in §1
+unter `Übernimmt:` diese Kennung. Er führt den Gegenstand als Liefer-Punkt (3): *Die drei Proben
+sind gegen den geltenden Vorlagensatz gefahren, und die Zusage daneben trägt genau ihr Ergebnis.*
+
+**Wellenlos.** Der Kopf führt keine Welle; die Roadmap führt wellenlose Arbeit nicht
+(`modul-06-roadmap.md` §Wann Arbeit eine Welle braucht), und diese Closure trägt sie allein.
+
+**Was hat funktioniert:** Der Gegenstand war von Anfang an als **Messung** geschnitten, nicht als
+Behauptung — und das hat ihn übertragbar gemacht: Beim Nehmer steht dieselbe Arbeit, ohne dass
+eine Zahl aus diesem Plan mitwandern musste.
+
+**Was ging anders als geplant:** Der Slice trägt einen **Stand im Namen**, und der Stand ist
+weitergezogen — geschnitten am 2026-09-14 gegen `v6.8.0`, während `harness/conventions.md`
+§Baseline heute einen anderen führt. Der Nehmer macht daraus eine Eigenschaft: Sein Liefer-Punkt
+(3) liest den geltenden Stand **aus** §Baseline, statt ihn im Plan einzufrieren
+([`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)).
+Geprüft hat den Schnitt im Übrigen keine Implementation, sondern erst die Gruppierung — das
+Muster *tote Slices* aus `modul-05-planning-harness.md` §Regeln gegen typische Fehlannahmen.
+
+**Steering-Loop-Eintrag:** **gezählt, nicht verkörpert** — kein Zielort, darum **kein**
+`liegt in`-Feld (`grundlagen-traceability.md` §Herkunfts-Anker). Die Form der Stilllegung steht
+seit `v6.9.0` in der adoptierten Baseline; eine zweite Fassung daneben driftete.
+
+**Beobachtungs-Register** (`../observations/`): zitiert, nicht neu formuliert —
+[`BEO-ALL/geplanter-slice-wird-nie-gearbeitet`](../observations/BEO-ALL/geplanter-slice-wird-nie-gearbeitet/observation.md).
+**Keine zweite Beleg-Datei:** Dieser Geber steht dort unter *Benannt, nicht gezählt*; er ist ein
+Fund **derselben** Gelegenheit wie `slice-090-freshness-audit-im-ziel`, und der Zähler misst
+Wiederholung über Vorgänge hinweg, nicht die Zahl der Funde (`modul-06-roadmap.md` §Das
+Beobachtungs-Register). Der Stand bleibt `offen`, unter der Schwelle. Die zwei in §6 zitierten
+Beobachtungen bekommen aus demselben Grund keine Beleg-Datei: Beide Risiken sind mit der Kennung
+des Nehmers ausgegangen, nicht eingetreten.
+
+**Lese-Schritt** (Repo ohne Wellen-Betrieb, `modul-06-roadmap.md` §Wann Arbeit eine Welle
+braucht): Kein Eintrag erreicht mit dieser Closure 3×, und kein Eintrag über der Schwelle steht
+ohne Ausgang — dasselbe Kommando wie in
+[`slice-090`](slice-090-freshness-audit-im-ziel.md) §7, Ausgabe leer.
+
+**Die drei Paarungen.** (a) Anker-Paarung: kein Eintrag trägt `liegt in`, sie hat keinen
+Gegenstand. (b) Folge-Slice-Paarung: kein Folge-Slice genannt. (c) Register-Paarung: jede
+zitierte Beobachtung existiert als Verzeichnis und trägt mindestens einen Beleg.
+
+**Was diese Closure nicht trägt:** Review und Verifikation am Gegenstand — es gibt keinen Diff,
+den sie prüfen könnten. Geprüft ist die **Form** der Stilllegung durch `make docs-check` (Modul
+`structure`, `open-tasks-require-marker`) und der Gesamtstand durch `make gates`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
