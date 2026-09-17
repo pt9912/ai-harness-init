@@ -1,5 +1,7 @@
 # MR-064 — d-check-Pin v0.76.1 (vcs bricht bei unlesbarem Unterbaum ab)
 
+> **ÜBERHOLT: in §Grenze der Punkt „Frei von solchen Packs ist ein Klon, dessen Packs zum Zeitpunkt des Laufs alle mit `pack-` beginnen …“ und im Auflösungs-Trigger der Satz „Zusätzlich nennt jeder history-lesende Lauf, der in die Bilanz eingeht, die Pack-Namen seines Klons zum Laufzeitpunkt …“ → [`MR-065`](../conventions.md#mr-065--ein-history-lesender-lauf-einer-d-check-bilanz-nennt-woher-sein-klon-die-objekte-liest).** Pin, Digest, Strenge-Bilanz, die Bedingung für den Abbruch und die übrigen Messungen gelten fort; die Pack-Namen, die die Formen von `git clone` und `git repack -a -d` hinterlassen, bleiben als Messung stehen.
+
 - **Datum:** 2026-09-17
 - **Wirksamkeits-Anlass:** slice-d-check-pin-zieht-den-vcs-patch-nach.
 - **Geltungsbereich:** `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`, Kopfkommentar),
