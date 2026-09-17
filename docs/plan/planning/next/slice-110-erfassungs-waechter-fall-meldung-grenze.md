@@ -60,7 +60,7 @@ Setzung 2).
 Test-Dateien plus ein Fragment), die Leserichtung (was sagt der Wächter über sich selbst?) und die
 Prüfbarkeit in einer Sitzung. Sie zu trennen erzeugte Slices, die dieselbe Datei nacheinander
 anfassen — der Schicht-Schnitt, vor dem Modul 5 §Ziel-Form warnt. Die Präzedenz für die Form ist
-[slice-103](slice-103-traeger-waechter-decken-was-sie-sagen.md) (dieselbe Frage für die
+[slice-103](../done/slice-103-traeger-waechter-decken-was-sie-sagen.md) (dieselbe Frage für die
 Träger-Ablage) und [slice-108](slice-108-feldlisten-waechter-tragen-ihren-fall.md) (für die
 Feldliste); dies ist die dritte Ausfertigung, für Leser und Aufräum-Fragment.
 

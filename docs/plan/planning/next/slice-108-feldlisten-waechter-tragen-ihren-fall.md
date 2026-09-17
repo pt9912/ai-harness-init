@@ -111,7 +111,7 @@ keiner wartet auf den anderen.
 - **Der Durchgang über die Wächter der Träger-Ablage.** Assertions in
   [`internal/emit/enforce_test.go`](../../../../internal/emit/enforce_test.go) über
   [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 1
-  und 5 gehören [slice-103](slice-103-traeger-waechter-decken-was-sie-sagen.md). Verschieden ist
+  und 5 gehören [slice-103](../done/slice-103-traeger-waechter-decken-was-sie-sagen.md). Verschieden ist
   der **Vertrag**: dort die Ablage des Trägers, hier das Dokument aus Festlegung 7. Gemeinsam ist
   ihnen allein das Verzeichnis `test/mutations/`, in dem beide **eigene** Dateien anlegen — die
   Nummern werden beim Anlegen neu ausgezählt (`ls -1 test/mutations/*.sh | wc -l` → **165**,
@@ -190,7 +190,7 @@ Die zwei Rückführungen, vorab benannt:
 - **`in-progress` → `next` (zu groß):** wenn mehr als zwei der acht nur über einen Umbau der
   Wächter erreichbar sind. Dann trägt der Slice Produktionsnähe statt Fällen, und der Umbau ist ein
   eigener Schnitt mit eigener Begründung — dieselbe Schwelle, die
-  [slice-103](slice-103-traeger-waechter-decken-was-sie-sagen.md) für seinen zweiten Punkt zieht.
+  [slice-103](../done/slice-103-traeger-waechter-decken-was-sie-sagen.md) für seinen zweiten Punkt zieht.
 - **`in-progress` → `open` (blockiert):** wenn sich beim Bauen zeigt, dass eine Assertion selbst
   falsch geschnitten ist — etwa weil sie zwei Eigenschaften in einem Vergleich hält. Dann ist erst
   der Wächter zu entscheiden und dann sein Fall; ein Fall über einer unklaren Zusicherung bindet

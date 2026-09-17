@@ -187,7 +187,7 @@ einem bestehenden erzeugt. Was offen bleibt, in Klassen statt als Liste:
   `grep -c 'slice-110-erfassungs-waechter-fall-meldung-grenze' docs/plan/planning/done/slice-099-leser-und-aufraeum-kommando.md`
   → **8** Nennungen an einen einzigen Träger reicht. Nach
   [`AGENTS.md`](../../../../AGENTS.md) §3.6 gilt: wer keinen Fall hat, ist unbewacht. Träger:
-  [slice-103](../next/slice-103-traeger-waechter-decken-was-sie-sagen.md),
+  [slice-103](../done/slice-103-traeger-waechter-decken-was-sie-sagen.md),
   [slice-104](../done/slice-104-rollen-namen-haben-eine-quelle.md),
   [slice-108](../next/slice-108-feldlisten-waechter-tragen-ihren-fall.md),
   [slice-110](../next/slice-110-erfassungs-waechter-fall-meldung-grenze.md).
@@ -357,7 +357,7 @@ Setzung 1 und darum **nicht** in der Roadmap (Setzung 2):
 |---|---|
 | [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) | die offenen Norm-Postens bekommen einen Termin — fünf der neun kommen aus dieser Welle |
 | [slice-102](../open/slice-102-messung-nennt-grenzen-und-anlass.md) | die Messung nennt ihre Grenzen und ihren Anlass |
-| [slice-103](../next/slice-103-traeger-waechter-decken-was-sie-sagen.md) | die Träger-Wächter decken, was sie sagen |
+| [slice-103](../done/slice-103-traeger-waechter-decken-was-sie-sagen.md) | die Träger-Wächter decken, was sie sagen |
 | [slice-104](../done/slice-104-rollen-namen-haben-eine-quelle.md) | die Rollen-Namen haben eine Quelle statt vier Fundorte |
 | [slice-105](../done/slice-105-mutate-messen-dann-teilen.md) | `make mutate` wird erst gemessen, dann geteilt |
 | [slice-106](../done/slice-106-rotes-ci-traegt-seinen-ausgang.md) | jedes Rot der CI trägt einen Ausgang |
