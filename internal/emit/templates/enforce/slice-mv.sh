@@ -124,8 +124,9 @@ rewrite_incoming_in_file() {  # $1=datei $2=base $3=from $4=to
 # der Link-Klammer "](" und am Ende des Namens (")" oder "#"): ein Code-Span mit
 # dem blossen Namen, ein Tree-Operand "<sha>:<base>", ein Verweis mit
 # Verzeichnis-Segment und ein laengerer Name mit demselben Anfang bleiben
-# stehen. Markdown liest sie nicht (Grenze 3 im Skriptkopf). Gibt die Anzahl
-# ersetzter Links auf stdout aus.
+# stehen. Die Regel liest kein Markdown: steht die Link-Syntax selbst mit
+# genau diesem Namen in einem Code-Span oder Code-Block, wird sie mitersetzt
+# (Grenze 3 im Skriptkopf). Gibt die Anzahl ersetzter Links auf stdout aus.
 rewrite_incoming_bare_in_file() {  # $1=datei $2=base $3=to
   local file="$1" base="$2" to="$3" esc_base count
   esc_base="$(re_escape "$base")"

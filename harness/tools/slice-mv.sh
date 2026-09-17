@@ -50,15 +50,15 @@
 #   vorher:  make docs-check  ->  d-check: 480 Datei(en) geprueft, 0 Befund(e)
 #   danach:  make docs-check  ->  d-check: 480 Datei(en) geprueft, 8 Befund(e)
 #            alle acht target-missing, alle acht praefixlose Geschwister
-#            UNTER open/ ohne Verzeichnis-Segment — keiner in
+#            UNTER open/ ohne Verzeichnis-Segment (Grenze 3 unten) — keiner in
 #            docs/reviews/** oder docs/plan/planning/done/**. `git show --stat`
 #            auf Commit 1 zeigt einen reinen Rename (0 insertions/0 deletions);
 #            Commit 2 traegt ausschliesslich Inhalt, darunter den
 #            docs/reviews-Treffer.
-#   Die acht Befunde gehoeren zu der praefixlosen Link-Form aus Geschwistern,
-#   die main() an jenem Stand nicht nachzog; der heutige Stand zieht sie nach
-#   (Grenze 3), gemessen an den Kanten `open -> done` und `next -> done` in
-#   harness/sensors/slice-mv.md §Kanten. Die konkreten Zahlen wandern mit dem
+#   Grenze dieser Messung: sie belegt die Zwei-Commit-Sequenz, nicht die Menge
+#   der Verweis-Formen, die main() nachzieht. Welche Formen das sind, sagen die
+#   GRENZEN unten; die Messung dazu steht in harness/sensors/slice-mv.md
+#   §Kanten. Stand der Messung: 8737ca7. Die konkreten Zahlen wandern mit dem
 #   Baum und sind kein Erwartungswert (MR-025 Setzung 2).
 #
 # ZWEITE MESSUNG (ADR-0042 Festlegung 2: `docs/plan/adr` zusätzlich zu
@@ -101,7 +101,7 @@
 #     Markdown liest die Ersetzung nicht: steht die Link-Syntax selbst mit
 #     genau diesem Namen in einem Code-Span oder Code-Block, wird sie
 #     mitersetzt. Welche Dateien main() ihr uebergibt, faehrt keine bats-Stufe;
-#     gemessen ist es an den Kanten in harness/sensors/slice-mv.md §Kanten.
+#     die Messung dazu steht in harness/sensors/slice-mv.md §Kanten.
 # (4) Die AUSGEHEND-Ersetzung trifft nur die lowercase-Kebab-Form einer
 #     benannten Kennung (Zeichenklasse "[0-9a-z]"). Die zweite Namensform aus
 #     MR-057 Setzung 1 — das Präfix eines vorhandenen Ankers (LH-*, ADR-*,
@@ -179,8 +179,9 @@ rewrite_incoming_in_file() {  # $1=datei $2=base $3=from $4=to
 # der Link-Klammer "](" und am Ende des Namens (")" oder "#"): ein Code-Span mit
 # dem blossen Namen, ein Tree-Operand "<sha>:<base>", ein Verweis mit
 # Verzeichnis-Segment und ein laengerer Name mit demselben Anfang bleiben
-# stehen. Markdown liest sie nicht (Grenze 3 im Skriptkopf). Gibt die Anzahl
-# ersetzter Links auf stdout aus.
+# stehen. Die Regel liest kein Markdown: steht die Link-Syntax selbst mit
+# genau diesem Namen in einem Code-Span oder Code-Block, wird sie mitersetzt
+# (Grenze 3 im Skriptkopf). Gibt die Anzahl ersetzter Links auf stdout aus.
 rewrite_incoming_bare_in_file() {  # $1=datei $2=base $3=to
   local file="$1" base="$2" to="$3" esc_base count
   esc_base="$(re_escape "$base")"

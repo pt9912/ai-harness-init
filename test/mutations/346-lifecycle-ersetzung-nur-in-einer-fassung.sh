@@ -10,7 +10,7 @@
 #
 # WARUM DIESER FALL DIE FALL-SAETZE NICHT BRAUCHT: jede Probe der Praefix-Faelle
 # traegt genau ein Vorkommen je Zeile, und die zwei Fassungen werden getrennt
-# gefahren — alle Fall-Saetze blieben mit dieser Mutation gruen. Getragen wird sie allein
+# gefahren — unter dieser Mutation faerbt kein Fall-Satz rot. Getragen wird sie allein
 # vom Kopplungs-Fall, der die Funktionsruempfe der zwei Fassungen gegeneinander
 # haelt.
 #
