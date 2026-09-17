@@ -325,7 +325,9 @@ docs/plan/planning/done/slice-sonde-stilllegung.md:89	docs/plan/planning/done/sl
 - **Der Glob ist flach.** Ein Stub unter `done/<welle-id>/` liegt außerhalb. Trifft die Regel keine
   Datei mehr, meldet sie `section-missing` auf ihrem Glob und behält dabei den Text des Werkzeugs
   (*„Regel trifft keine Datei … — das Gate liefe leer"*), nicht den `hint`. Gemessen in einer Kopie,
-  deren Regel `files` auf ein Muster ohne Treffer zeigt.
+  deren Regel `files` auf ein Muster ohne Treffer zeigt. Der `hint` steht nur an Befunden einer
+  verletzten Bedingung; was *nicht gemessen* bedeutet, behält den Text des Werkzeugs, auch an einer
+  unlesbaren Datei ([`doc-structure.md`](doc-structure.md) §Ausgabe und Ausgänge).
 - **Der `hint` passt nicht zu jedem Grund-Code der Regel.** Trägt ein Plan die §2-Überschrift in
   anderer Form, meldet die Regel `section-missing`, und die vierte Spalte ist der `hint` (Lage V10).
   Keiner seiner zwei Auswege behebt diesen Befund; die Ursache ist die Überschrift. Heute weicht

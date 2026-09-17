@@ -81,13 +81,21 @@ laufenden Docker-Aufruf und ist kein hermetischer, netzloser Test.
 
 Die Vollständigkeits-Zeile `N Datei(en) geprüft, M Befund(e)` erscheint bei 0 und 1 und spricht
 über den Prüfbereich (§Grenze), nicht über das Repo. `make` meldet den Exit als `Fehler <n>` und
-endet selbst mit 2. Trägt eine Regel einen `hint`, steht er in der vierten Spalte der Befunde, die
-eine Datei betreffen. Gemessen an der Regel der `.d-check.yml` (d-check `v0.76.1`,
-[`docs-check.md`](docs-check.md) §Modul `structure`) gilt das für
+endet selbst mit 2. Trägt eine Regel einen `hint`, steht er in der vierten Spalte der Befunde, an
+denen die Regel gemessen und eine Bedingung verletzt gefunden hat. Gemessen an der Regel der
+`.d-check.yml` ([`docs-check.md`](docs-check.md) §Modul `structure`) gilt das für
 `section-open-tasks-marker-missing`, `section-tasks-open` und für `section-missing` an einer Datei,
-der die geforderte Überschrift fehlt. Trifft die Regel keine Datei, meldet sie `section-missing` auf
-ihrem Glob (`<files>:1`) und behält den Text des Werkzeugs: *„Regel trifft keine Datei (auch nach
-Abzug von exempt-paths) — das Gate liefe leer"*.
+der die geforderte Überschrift fehlt. Befunde, die *nicht gemessen* bedeuten, behalten den Text des
+Werkzeugs; d-check `v0.76.1` trennt die zwei Arten in `internal/hexagon/core/rules/structure.go`
+(Zeilen 308–310, `structureRawFinding`), nicht nach Datei gegen Glob. Nicht gemessen hat die Regel
+in drei Fällen:
+
+- **Sie trifft keine Datei** (Zeilen 72–79): `section-missing` auf ihrem Glob (`<files>:1`) mit
+  *„Regel trifft keine Datei (auch nach Abzug von exempt-paths) — das Gate liefe leer"*; gemessen.
+- **Eine Kandidaten-Datei ist unlesbar** (Zeilen 117–122): `section-missing` auf Zeile 1 mit
+  *„Datei ist unlesbar (fail-closed)"*; aus der Quelle gelesen, nicht gemessen.
+- **`exempt-section-pattern` leert die Abschnitte einer Datei** (Zeilen 162–174); aus der Quelle
+  gelesen. Die Regel dieses Repos setzt den Schlüssel nicht.
 
 ## Sperren
 
