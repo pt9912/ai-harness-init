@@ -79,7 +79,7 @@ Dateiname des bewegten Slice:
   `open/slice-101-norm-postens-bekommen-einen-termin.md:173`, jeweils mit dem Ziel
   `slice-070-comment-claims-pruefbereich.md` und `target-missing`;
 - nach `next → done` kommen drei hinzu: `done/slice-108-feldlisten-waechter-tragen-ihren-fall.md:114`
-  und `:193`, `next/slice-110-erfassungs-waechter-fall-meldung-grenze.md:63`, mit dem Ziel
+  und `:193`, `done/slice-110-erfassungs-waechter-fall-meldung-grenze.md:63`, mit dem Ziel
   `slice-103-traeger-waechter-decken-was-sie-sagen.md`.
 
 Die Zahl der Meldungen ist je Kante gleich der Vorzählung (6, dann 6 + 3). Auch die
