@@ -189,8 +189,11 @@ zugeordnet.
 ## 5. Report-Form für `docs/migrations/<tag>.md`
 
 Wie §4 ist auch dieser Abschnitt eine Formvorgabe für einen künftigen Bericht, keine ADR-Aussage —
-dazu [§6](#6-offene-fragen). Ausgenommen ist der sprung-bezogene Absatz am Ende von Buchstabe a; er
-projiziert [ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md) §Konsequenzen. Der Abschnitt unterscheidet zwei Fälle, je nachdem, ob §4 die betroffene Vorlage
+dazu [§6](#6-offene-fragen). Ausgenommen sind die Absätze in Buchstabe a, die allein für den Sprung
+`v6.8.0` → `v6.9.0` gelten: Sie projizieren
+[ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md) §Konsequenzen und die
+Setzung des Auftraggebers, dass die Übernahme delta-gebunden ist (2026-09-16). Der Abschnitt
+unterscheidet zwei Fälle, je nachdem, ob §4 die betroffene Vorlage
 als wiederkehrend ausweist.
 
 ### a) Einmalige Vorlagen — vier Ausgänge
@@ -292,7 +295,7 @@ Achsen, die nicht ineinander übersetzt werden: dazu [§6](#6-offene-fragen).
   (`for f in 0018 0031 0036 0038 0043 0044 0047 0056; do grep -c templates docs/plan/adr/$f-*.md; done`, kein
   Erwartungswert), und eine bloße Nennung ist kein Beleg. §4 und §5 dieses Dokuments sind darum
   **keine** aus den acht ADRs abgeleiteten Normen, sondern eine am Bestand gemessene Beobachtung
-  bzw. eine Formvorgabe für einen künftigen Bericht, ausgenommen der sprung-bezogene Absatz in §5 a.
+  bzw. eine Formvorgabe für einen künftigen Bericht, ausgenommen die sprung-bezogenen Absätze in §5 a.
   [ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md) nennt die Report-Form außerdem als Form ihres Instanz-Durchgangs; ob daraus eine
   Pflicht über ihren Sprung hinaus folgt, bleibt offen.
 - **`.harness/baseline/v6.9.0/templates/docs/plan/planning/observation.template.md` — 104
