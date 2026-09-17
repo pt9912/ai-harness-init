@@ -19,7 +19,7 @@ ersetzen darf), [`ADR-0056`](../../adr/0056-ziel-fassung-regiert-den-sprung-v690
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-17.
 
