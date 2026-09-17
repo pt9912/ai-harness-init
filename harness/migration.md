@@ -198,7 +198,8 @@ als wiederkehrend ausweist.
 Für jede Vorlage, die §4 **nicht** als wiederkehrend ausweist, führt ein künftiger
 Migrations-Report genau einen von **vier** Ausgängen — eine geschlossene Menge, kein Freitext.
 Ausgenommen sind die in [§6](#6-offene-fragen) als offen geführten Zeilen: Für sie ist noch nicht
-entschieden, ob sie in diese Menge fallen oder unter Buchstabe b gehören.
+entschieden, ob sie in diese Menge fallen oder unter Buchstabe b gehören. Für den Sprung
+`v6.8.0` → `v6.9.0` sind außerdem die Vorlagen ohne Delta ausgenommen (Absatz unten).
 
 | Ausgang | Bedingung | Beleg-Art |
 |---|---|---|
@@ -237,6 +238,15 @@ Abweichung wird nicht gesetzt."* Der Ausgang **bewusst abweichend** steht in die
 nicht zur Verfügung, auch nicht mit einem bestehenden `MR`-Eintrag als Beleg: Der Eintrag tritt
 zurück, und die neue Fassung wird übernommen. Welcher Eintrag betroffen ist, klärt der Durchgang;
 die ADR ist **`Accepted`**.
+
+**Und die Vorgabe ist delta-gebunden** (Auftraggeber, 2026-09-16): Sie greift, wo das Delta dieses
+Sprungs eine Vorlage oder ihre Instanz erreicht. Eine einmalige Vorlage **ohne** Delta ist darum
+nicht Gegenstand des Instanz-Durchgangs dieses Sprungs und trägt keinen der vier Ausgänge; der
+Report führt sie als *nicht Gegenstand dieses Sprungs*. Ergibt der Ist-Maßstab
+([ADR-0018](../docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 2) für ihre
+Instanz eine Abweichung, bekommt der Befund statt eines Ausgangs die Kennung eines Folge-Slice als
+Adresse. Das gilt für diesen Sprung, wie der Absatz darüber; ob es darüber hinaus gilt, ist nicht
+entschieden.
 
 ### b) Wiederkehrende Vorlagen — Append-only
 
