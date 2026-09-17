@@ -15,6 +15,17 @@ blind und grün, statt zu fallen
 Setzung 3). Geprüft wird darum die **Range** (`git rev-list --count`), nicht die Klon-Tiefe.
 `STAGED=1` prüft keine Range, sondern vergleicht den Index gegen `HEAD` (`git diff --cached`).
 
+### Im gebootstrappten Ziel
+
+Dieselbe Logik reist als emittiertes Werkzeug mit — `tools/harness/history-range-guard.sh`
+([`MR-005`](../conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption)) — und hängt dort an
+**beiden** history-lesenden Targets: das Doc-Gate-Fragment des Ziels ergänzt `doc-immutable`
+und `doc-commits` um den Wächter als **Vorbedingung**, er läuft also vor dem Modul-Lauf. Das
+Rezept der zwei Targets bleibt das aus dem tool-generierten `d-check.mk`, das der Bootstrap
+kanonisch neu schreibt. Das Ziel kennt kein `make adr-immutable`; die Bindung ist dort die
+Vorbedingung selbst, und sie liegt in keinem Gate: `make gates` fährt keines der zwei Targets
+(sie brauchen eine `RANGE`).
+
 ## Grenze — was das Grün nicht abdeckt
 
 - **Eine *unauflösbare* Basis** (z. B. `HEAD~1` in einem Tiefe-1-Klon) deckt der Wächter **nicht
@@ -40,34 +51,7 @@ Setzung 3). Geprüft wird darum die **Range** (`git rev-list --count`), nicht di
 
 Details und Beleg stehen im Kopf von `harness/tools/history-range-guard.sh`, Abschnitt BELEG.
 
-## Ausgabe und Ausgänge
-
-| Exit | Bedeutung |
-|---|---|
-| 0 | Range aufgelöst und nicht leer, oder `--staged` (unabhängig davon, ob etwas gestagt ist) |
-| 1 | Range auflösbar, aber leer (0 Commits) |
-| 2 | Range **nicht** auflösbar (Basis fehlt im Klon) |
-
-## Sperren
-
-- `Usage: history-range-guard.sh …` — kein Argument, über `make` also weder `RANGE` noch
-  `STAGED=1`; die Shell bricht am leeren Parameter ab, **mit Exit 1**, derselben Zahl wie die leere
-  Range → eine Range nennen. Die zwei Fälle trennt die Meldung, nicht der Exit.
-
-## Bindung
-
-Kein Gate-Versprechen; Vorlauf für `make adr-immutable`.
-
 ### Im gebootstrappten Ziel
-
-Dieselbe Logik reist als emittiertes Werkzeug mit — `tools/harness/history-range-guard.sh`
-([`MR-005`](../conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption)) — und hängt dort an
-**beiden** history-lesenden Targets: das Doc-Gate-Fragment des Ziels ergänzt `doc-immutable`
-und `doc-commits` um den Wächter als **Vorbedingung**, er läuft also vor dem Modul-Lauf. Das
-Rezept der zwei Targets bleibt das aus dem tool-generierten `d-check.mk`, das der Bootstrap
-kanonisch neu schreibt. Das Ziel kennt kein `make adr-immutable`; die Bindung ist dort die
-Vorbedingung selbst, und sie liegt in keinem Gate: `make gates` fährt keines der zwei Targets
-(sie brauchen eine `RANGE`).
 
 Die emittierte Fassung unterscheidet sich in einem Punkt von
 [`harness/tools/history-range-guard.sh`](../tools/history-range-guard.sh): sie trägt die zwei
@@ -88,6 +72,22 @@ leere Range über `-f d-check.mk`, also ohne das Doc-Gate-Fragment — meldet f�
 **und** `doc-commits` `0 Befund(e)` bei Exit 0; der Abbruch des Wächters ist für beide
 gefahren.
 
+## Ausgabe und Ausgänge
+
+| Exit | Bedeutung |
+|---|---|
+| 0 | Range aufgelöst und nicht leer, oder `--staged` (unabhängig davon, ob etwas gestagt ist) |
+| 1 | Range auflösbar, aber leer (0 Commits) |
+| 2 | Range **nicht** auflösbar (Basis fehlt im Klon) |
+
+## Sperren
+
+- `Usage: history-range-guard.sh …` — kein Argument, über `make` also weder `RANGE` noch
+  `STAGED=1`; die Shell bricht am leeren Parameter ab, **mit Exit 1**, derselben Zahl wie die leere
+  Range → eine Range nennen. Die zwei Fälle trennt die Meldung, nicht der Exit.
+
+### Im gebootstrappten Ziel
+
 **Das Fragment ist selbst fail-closed, je Ziel.** Es prüft vor der Vorbindung, ob das
 eingebundene `d-check.mk` das Ziel **mit Rezept** führt — dieselbe Datei, die sein `include`
 einbindet, mit `awk`, ohne Bild und ohne Netz. **Nur der belegte Ausgang wählt die Bindung**;
@@ -103,3 +103,7 @@ ohne Ziel-Zeile bleibt ohne Rezept, auch wenn ihre `.PHONY`-Marke stehenbleibt.
 führt: die Vorbindungs-Zeile hätte dort kein Rezept, und `make` endete über dem Ziel mit
 Erfolg, statt mit `Keine Regel` abzubrechen — fail-closed
 ([`MR-017`](../conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)).
+
+## Bindung
+
+Kein Gate-Versprechen; Vorlauf für `make adr-immutable`.

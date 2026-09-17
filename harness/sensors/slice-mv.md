@@ -10,56 +10,6 @@ Es setzt zwei getrennte Commits (Hard Rule 3.3): zuerst der reine Move
 (kein Byte Inhalt geändert), danach — nur falls Verweise anfielen — der Inhalts-Nachzug als
 zweiter Commit.
 
-## Grenze — was das Grün nicht abdeckt
-
-Zwei Richtungen: **eingehend** ersetzt jede Präfix-Form eines Verweises **auf** die bewegte
-Datei, repo-weit außer `.harness/baseline/**` (unveränderter Fremdtext) und `docs/plan/adr/**`
-(eine `Accepted`-ADR bekommt keinen Byte-Nachzug —
-[`ADR-0042`](../../docs/plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 2) —
-`docs/plan/planning/done/**` **und** `docs/reviews/**` sind **nicht** ausgenommen, ihre
-Verweise sind reale, von `docs-check` geprüfte Links. **Ausgehend** hängt präfixlosen Zielen
-**innerhalb** der bewegten Datei, die einen im alten Verzeichnis verbliebenen
-Geschwister-Slice referenzieren, `../<altes-verzeichnis>/` an — eine nummerierte Kennung
-(`slice-NNN…`) trifft das Fundmuster ebenso wie eine benannte (`slice-<slug>`, ein Slug aus
-Kleinbuchstaben, Ziffern und Bindestrich).
-
-Vier gemessene Grenzen (Skriptkopf `harness/tools/slice-mv.sh`): es zieht Pfade nach, keine
-Zustandssätze; Welle-Plan-Dateien (Tiefenwechsel beim Closure-Move) bleiben außen vor; eine
-präfixlose Referenz **auf** die bewegte Datei aus einer *anderen*, unbewegten Datei erkennt es
-nicht — ihr fehlt das Verzeichnis-Literal, an dem die Ersetzung ankert; und die zweite Namensform
-aus [`MR-057`](../conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
-Setzung 1 — das Präfix eines vorhandenen Ankers (`LH-*`, `ADR-*`, `CO-*`), in diesem Repo
-großgeschrieben — trifft die Zeichenklasse des Fundmusters nicht.
-
-Details und Beleg stehen im Kopf von `harness/tools/slice-mv.sh`, Abschnitt BELEG.
-
-## Ausgabe und Ausgänge
-
-| Exit | Bedeutung |
-|---|---|
-| 0 | bewegt: `slice-mv ok: <datei>  <von>/ -> <nach>/`, darunter `Commit 1 (reiner Move)` und, nur wenn Verweise anfielen, `Commit 2 (Inhalt, …)` mit den zwei Zählern |
-| 2 | eine Sperre griff; es ist nichts bewegt |
-
-Scheitert danach ein `git`-Schritt, etwa ein Commit an einem Hook, endet der Lauf mit dessen Exit
-(`set -euo pipefail`).
-
-## Sperren
-
-Alle vor dem ersten `git mv`, alle mit Exit 2:
-
-- Aufruf ohne `SLICE` oder `TO` → Aufruf-Hilfe → beide nennen.
-- `slice-mv: Arbeitsbaum nicht sauber …` — das Skript committet selbst; eine unstaged oder gestagte
-  Änderung landete sonst in einem seiner Commits → erst committen oder stashen.
-- `slice-mv: '…' ist kein Lifecycle-Verzeichnis` → `open`, `next`, `in-progress` oder `done`.
-- `slice-mv: '…' ist mehrdeutig` — die Angabe trifft zwei Dateien → die Kennung länger schreiben.
-- `slice-mv: kein Slice '…' unter …` → die Kennung prüfen.
-- `slice-mv: '…' liegt bereits in …/` → nichts zu tun.
-
-## Bindung
-
-Kein Gate-Versprechen; Träger von [Modul 5](../../.harness/baseline/v6.9.0/regelwerk/modul-05-planning-harness.md#lifecycle-als-state-machine)
-und `BEO-ALL/verweise-brechen-beim-ortswechsel`.
-
 ### Im gebootstrappten Ziel
 
 Dieselbe Logik reist als emittiertes Werkzeug mit: das Skript liegt im Ziel unter
@@ -87,13 +37,6 @@ Präfix-Verweis und ein verbliebenes Geschwister im Ausgangsverzeichnis her und 
 Ziele, den Move-Commit ohne Inhaltsänderung (`git show --numstat` auf ihn) und den Nachzug als
 getrennten zweiten Commit — über einem Slice ohne jeden Verweis, dass der zweite Commit ausfällt.
 
-**Fehlt eine Voraussetzung, bewegt es nichts.** Ein unsauberer Arbeitsbaum bricht den Aufruf vor
-dem ersten `git mv` ab, mit einer Meldung, die den Fall nennt. Dieselbe Stufe stellt den Fall im
-Ziel her und liest, dass der Aufruf ungleich null endet, den Grund nennt und die Datei an ihrem
-alten Ort liegen lässt. Der zweite Fall dieser Klasse ist das fehlende Werkzeug: das Fragment
-prüft seine Anwesenheit und bricht mit eigener Meldung ab, statt auf ein Programm zu zeigen, das
-es nicht ablegt.
-
 **Was Politik ist und was Mechanik.** Die Pfade, die der eingehende Nachzug ausnimmt, sind im Ziel
 **setzbar**: die Variable `SLICE_MV_AUSGENOMMENE_PFADE` steht an beiden Orten mit einer Vorgabe, in
 je einer Form — das Fragment als Make-Zuweisung (`?=`), das Skript als `${…:-…}` beim Auslesen —,
@@ -107,6 +50,31 @@ Durchreichung fest (`TestSliceMvAusnahmen_SindAlsRepoPolitikMarkiert`,
 Ort ([`ADR-0042`](../../docs/plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md)
 Festlegung 2).
 
+## Grenze — was das Grün nicht abdeckt
+
+Zwei Richtungen: **eingehend** ersetzt jede Präfix-Form eines Verweises **auf** die bewegte
+Datei, repo-weit außer `.harness/baseline/**` (unveränderter Fremdtext) und `docs/plan/adr/**`
+(eine `Accepted`-ADR bekommt keinen Byte-Nachzug —
+[`ADR-0042`](../../docs/plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 2) —
+`docs/plan/planning/done/**` **und** `docs/reviews/**` sind **nicht** ausgenommen, ihre
+Verweise sind reale, von `docs-check` geprüfte Links. **Ausgehend** hängt präfixlosen Zielen
+**innerhalb** der bewegten Datei, die einen im alten Verzeichnis verbliebenen
+Geschwister-Slice referenzieren, `../<altes-verzeichnis>/` an — eine nummerierte Kennung
+(`slice-NNN…`) trifft das Fundmuster ebenso wie eine benannte (`slice-<slug>`, ein Slug aus
+Kleinbuchstaben, Ziffern und Bindestrich).
+
+Vier gemessene Grenzen (Skriptkopf `harness/tools/slice-mv.sh`): es zieht Pfade nach, keine
+Zustandssätze; Welle-Plan-Dateien (Tiefenwechsel beim Closure-Move) bleiben außen vor; eine
+präfixlose Referenz **auf** die bewegte Datei aus einer *anderen*, unbewegten Datei erkennt es
+nicht — ihr fehlt das Verzeichnis-Literal, an dem die Ersetzung ankert; und die zweite Namensform
+aus [`MR-057`](../conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
+Setzung 1 — das Präfix eines vorhandenen Ankers (`LH-*`, `ADR-*`, `CO-*`), in diesem Repo
+großgeschrieben — trifft die Zeichenklasse des Fundmusters nicht.
+
+Details und Beleg stehen im Kopf von `harness/tools/slice-mv.sh`, Abschnitt BELEG.
+
+### Im gebootstrappten Ziel
+
 **Was die zwei Fassungen zusammenhält, und was nicht.** Gleich gehalten werden die drei
 Ersetzungs-Funktionen: `make test-bats` vergleicht ihre Rümpfe zwischen
 `harness/tools/slice-mv.sh` und der emittierten Fassung, weißraum-normalisiert — die eingehende
@@ -119,3 +87,39 @@ Bootstraps; dass Fragment und Skript auch sprachlos unter denselben Pfaden liege
 `make test-go` (`TestSliceMvFragment_LiegtImZielUndHaengtNichtAnDerGatesKette` für das Fragment,
 `TestSliceMvWerkzeug_LiegtAusfuehrbarUndTraegtBeideRichtungen` für das Skript — beide über einen
 Emit ohne Sprache).
+
+## Ausgabe und Ausgänge
+
+| Exit | Bedeutung |
+|---|---|
+| 0 | bewegt: `slice-mv ok: <datei>  <von>/ -> <nach>/`, darunter `Commit 1 (reiner Move)` und, nur wenn Verweise anfielen, `Commit 2 (Inhalt, …)` mit den zwei Zählern |
+| 2 | eine Sperre griff; es ist nichts bewegt |
+
+Scheitert danach ein `git`-Schritt, etwa ein Commit an einem Hook, endet der Lauf mit dessen Exit
+(`set -euo pipefail`).
+
+## Sperren
+
+Alle vor dem ersten `git mv`, alle mit Exit 2:
+
+- Aufruf ohne `SLICE` oder `TO` → Aufruf-Hilfe → beide nennen.
+- `slice-mv: Arbeitsbaum nicht sauber …` — das Skript committet selbst; eine unstaged oder gestagte
+  Änderung landete sonst in einem seiner Commits → erst committen oder stashen.
+- `slice-mv: '…' ist kein Lifecycle-Verzeichnis` → `open`, `next`, `in-progress` oder `done`.
+- `slice-mv: '…' ist mehrdeutig` — die Angabe trifft zwei Dateien → die Kennung länger schreiben.
+- `slice-mv: kein Slice '…' unter …` → die Kennung prüfen.
+- `slice-mv: '…' liegt bereits in …/` → nichts zu tun.
+
+### Im gebootstrappten Ziel
+
+**Fehlt eine Voraussetzung, bewegt es nichts.** Ein unsauberer Arbeitsbaum bricht den Aufruf vor
+dem ersten `git mv` ab, mit einer Meldung, die den Fall nennt. Dieselbe Stufe stellt den Fall im
+Ziel her und liest, dass der Aufruf ungleich null endet, den Grund nennt und die Datei an ihrem
+alten Ort liegen lässt. Der zweite Fall dieser Klasse ist das fehlende Werkzeug: das Fragment
+prüft seine Anwesenheit und bricht mit eigener Meldung ab, statt auf ein Programm zu zeigen, das
+es nicht ablegt.
+
+## Bindung
+
+Kein Gate-Versprechen; Träger von [Modul 5](../../.harness/baseline/v6.9.0/regelwerk/modul-05-planning-harness.md#lifecycle-als-state-machine)
+und `BEO-ALL/verweise-brechen-beim-ortswechsel`.
