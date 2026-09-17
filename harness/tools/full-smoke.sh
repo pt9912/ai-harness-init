@@ -396,8 +396,9 @@ waechter_bricht_ab() {
 # Doc-Gate-Fragment — `-f d-check.mk` DIREKT, dieselbe Form wie `make smoke` — und erwartet
 # ueber der leeren Range die Klasse, gegen die der Waechter steht: "0 Befund(e)", Exit 0.
 # Gefahren werden BEIDE history-lesenden Targets; eine Haelfte ohne eigene Messung waere eine
-# verlinkte Behauptung (AGENTS.md §3.6). <aufbau> nennt den Klon in der Meldung, weil die zwei
-# Haelften ihn NICHT teilen:
+# verlinkte Behauptung (AGENTS.md §3.6). <aufbau> ist PFLICHT und nennt den Klon in der
+# Beleg-Zeile; die zwei Haelften teilen ihn NICHT, und ein Aufruf ohne das Argument bricht ab,
+# statt ein Etikett zu raten:
 #   * DER ANLASS DES WAECHTERS IST DIE AUFLOESBARE, ABER LEERE RANGE (`git rev-list --count
 #     HEAD..HEAD` -> 0). Sie liegt im flachen wie im vollstaendigen Klon vor, und der gepinnte
 #     d-check deckt sie an KEINEM der beiden ab: das Modul meldet "0 Befund(e)" bei Exit 0.
@@ -409,14 +410,17 @@ waechter_bricht_ab() {
 # Darum traegt `doc-immutable` die Klasse am FLACHEN und `doc-commits` am VOLLSTAENDIGEN Klon;
 # beide Aufbauten fuehren dieselbe leere Range. Der Aufbau ist gemessen, nicht angenommen.
 blind_gruen_ohne_waechter() {
-	local repo="$1" ziel="$2" kennung="$3" aufbau="${4:-flachen Klon}"
+	local repo="$1" ziel="$2" kennung="$3" aufbau="${4-}"
 	local roh="" roh_rc=0 rohgrund="" rohflach=""
-	# Vorbedingung: der Aufbau muss den ANLASS wirklich vorlegen — die Range ist aufloesbar
-	# UND leer. Ist sie das nicht, misst der Lauf darunter eine andere Klasse. Der Exit-Code
-	# wird hier bewusst NICHT in einer eigenen Variablen gefuehrt: `|| <var>=$?` ist der
-	# Ausdruck, ueber dem die Einordnungs-Zusage des Sensor-Kopfes gilt (test/full-smoke-
-	# ausgang.bats), und diese Zeile fordert kein Bild an — sie liefe sonst unter einer
-	# Zusage, die sie nicht traegt.
+	if [ -z "$aufbau" ]; then
+		echo "full-smoke: FEHLER — $kennung ($ziel): blind_gruen_ohne_waechter ohne viertes Argument aufgerufen. Das Etikett des Aufbaus steht in der Beleg-Zeile; es wird genannt, nicht vorbelegt." >&2
+		exit 1
+	fi
+	# Vorbedingung: sie haelt fest, dass der uebergebene Aufbau den ANLASS vorlegt — eine
+	# aufloesbare UND leere Range. Nur dann misst der Lauf darunter die zugesagte Klasse.
+	# KOPPLUNG: `|| <var>=$?` ist der Ausdruck, ueber dem die Einordnungs-Zusage des
+	# Sensor-Kopfes gilt (test/full-smoke-ausgang.bats). Diese Zeile fordert kein Bild an und
+	# fuehrt ihren Exit-Code darum in der `if`-Bedingung statt in einer eigenen Variablen.
 	local anzahl=""
 	if ! anzahl="$( git -C "$repo" rev-list --count HEAD..HEAD 2>&1 )" || [ "$anzahl" != "0" ]; then
 		echo "full-smoke: FEHLER — $kennung ($aufbau, $ziel): HEAD..HEAD ist dort nicht aufloesbar-und-leer — git rev-list --count meldet '$anzahl'. Der Anlass des Waechters liegt nicht vor." >&2
@@ -613,11 +617,11 @@ vorlauf_waechter_im_ziel() {
 	# Klasse, gegen die er steht. Gefahren wird d-check.mk DIREKT: das Modul ohne das
 	# Doc-Gate-Fragment (dieselbe Form wie `make smoke`, `-f d-check.mk`) — und zwar an
 	# beiden history-lesenden Targets, weil die Zusage des Fragments beide nennt. JE ZIEL SEIN
-	# AUFBAU: `doc-commits` traegt die Klasse am VOLLSTAENDIGEN Klon, weil der flache daneben
-	# eine unaufloesbare Vorfahren-Kette vorlegt, die der gepinnte Stand selbst abfaengt (Exit 2)
-	# — dort waere das Gruen nicht mehr herstellbar und die Behauptung falsch. Beide Aufbauten
-	# fuehren dieselbe aufloesbare, aber leere Range; die Funktion prueft das vorab. Einzelheiten
-	# im Kopf von blind_gruen_ohne_waechter.
+	# AUFBAU: `doc-commits` traegt die Klasse am VOLLSTAENDIGEN Klon, `doc-immutable` am
+	# FLACHEN. Der flache Klon legt neben der leeren Range eine unaufloesbare Vorfahren-Kette
+	# vor; die faengt der gepinnte Stand am Modul `commits` selbst ab (Exit 2), am Modul `vcs`
+	# nicht. Beide Aufbauten fuehren dieselbe aufloesbare, aber leere Range; die Funktion prueft
+	# das vorab. Einzelheiten im Kopf von blind_gruen_ohne_waechter.
 	blind_gruen_ohne_waechter "$klon" doc-immutable "$kennung" "flachen Klon"
 	blind_gruen_ohne_waechter "$voll" doc-commits "$kennung" "vollstaendigen Klon"
 
