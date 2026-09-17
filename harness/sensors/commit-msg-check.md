@@ -81,7 +81,7 @@ hält [`test/commit-msg-hook.bats`](../../test/commit-msg-hook.bats) gegen die L
 
   Welcher der zwei Fälle vorliegt, ist ein Zustand des Klons und wechselt mit seiner
   Pack-Wartung; die Bedingung und ihre Grenze für alle history-lesenden Ziele führt
-  [`MR-064`](../conventions.md#mr-064--d-check-pin-v0761-vcs-bricht-bei-unlesbarem-objekt-ab)
+  [`MR-064`](../conventions.md#mr-064--d-check-pin-v0761-vcs-bricht-bei-unlesbarem-unterbaum-ab)
   §Grenze.
 
   Fehlerfrei **und** weiter prüfend bleibt in jedem Klon nur `--commit-msg` mit der realen,
