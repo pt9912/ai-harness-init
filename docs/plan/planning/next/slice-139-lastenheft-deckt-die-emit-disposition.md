@@ -234,34 +234,80 @@ dasteht.
 
 - **Die Nutzer-Entscheidung bleibt aus.** Der Start-Trigger ist eine Bedingung außerhalb dieses
   Repos-Prozesses; ohne sie hat der Slice keinen Gegenstand, und ein Wächter über der heutigen,
-  falschen Aufzählung wäre dauerhaft rot. — **Ausgang:** <entfallen: der CR-Commit liegt vor und
-  ist benannt | eingetreten: CO-NNN mit Auflösungs-Trigger, solange der Vertrag die Menge nicht
-  deckt>
+  falschen Aufzählung wäre dauerhaft rot. — **Ausgang: entfallen.** Der Gegenstand hängt nicht mehr an der Nutzer-Entscheidung:
+  [`ADR-0057`](../../adr/0057-wiederkehrende-vorlagen-menge-bindet-als-eigenschaft.md) (`Accepted`)
+  bindet die Menge als **Eigenschaft** gegen den vendored Satz und nimmt die Aufzählung in Rang 1
+  ausdrücklich aus dem Operanden des Wächters heraus. Ein Wächter über der Aufzählung — der
+  dauerhaft rote — kann damit nicht mehr entstehen; der Change Request bleibt ein eigener Vorgang.
 - **[`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md) nennt dieselbe Menge und ist
   `Accepted`.** Ihr Satz *„die fünf wiederkehrenden Vorlagen"* wird mit dem CR falsch
   (`grep -c 'die fünf wiederkehrenden Vorlagen' docs/plan/adr/0020-emittierte-modul-15-regeln.md`
   → **1**). [`AGENTS.md`](../../../../AGENTS.md) §3.4 verbietet das Überschreiben; Korrekturen
-  entstehen als neue ADR mit `Supersedes`, und die schreibt nach §3.8 der **Architect**. — **Ausgang:**
-  <eingetreten: Übergabe an den Architect, ADR-Kennung nachtragen | entfallen: der CR ändert die
-  Menge nicht>
+  entstehen als neue ADR mit `Supersedes`, und die schreibt nach §3.8 der **Architect**. — **Ausgang: eingetreten** → `slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt`. Die Frage
+  stirbt nicht mit diesem Plan: Der Nehmer nimmt sie in seinem Liefer-Punkt (2) an — wo keine
+  Aussage deckt, steht ein **benannter Befund mit Adressat**, nicht eine Lücke. Wer die ADR
+  gegebenenfalls nachzieht, bleibt damit adressiert, und geschrieben wird sie nach
+  [`AGENTS.md`](../../../../AGENTS.md) §3.8 weiterhin vom Architect.
 - **Die Weichen-Kommentare könnten den Rang-Zeiger als Beleg missverstehen.** Ein Kommentar, der
   auf [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) zeigt,
   ist ein Rang-Zeiger und zulässig; einer, der die Begründung **wiederholt**, ist die Quelle in
   keinem Rang, gegen die [`AGENTS.md`](../../../../AGENTS.md) §3.7 geschrieben ist. Die Grenze ist
-  eine Urteilsfrage, kein Muster. — **Ausgang:** <entfallen: je Weiche ein Zeiger, keine zweite
-  Fassung | weiter offen: → als `BEO-<NNN>` im Register>
+  eine Urteilsfrage, kein Muster. — **Ausgang: eingetreten** → derselbe Nehmer. Die Urteilsfrage wandert mit den Kommentaren, die er
+  schreibt: Sein Liefer-Punkt (2) ordnet **jede** Weiche einer Aussage zu, und die Grenze zwischen
+  Rang-Zeiger und wiederholter Begründung ([`AGENTS.md`](../../../../AGENTS.md) §3.7) fällt dort
+  an, wo die Zeile entsteht.
 
 ## 7. Closure-Notiz
 
-Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
-§Das Beobachtungs-Register (vorhandene `BEO-<NNN>` **zitieren** statt neu
-formulieren — sonst zählt das Register zwei Namen getrennt) ·
-`grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln (das
-Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
-wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
-Backticks).
+**Gegenstand:** übernommen von `slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt`.
 
-Erst nach Abschluss füllen.
+**Stillgelegt ohne Lieferung** — Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice,
+dessen Gegenstand ein anderer übernimmt. Die Liefer-Punkte in §2 bleiben **leer**: Dieser Slice
+hat nichts geliefert, und ein Haken behauptete es. `Verantwortlich:` bleibt stehen.
+
+**Die Adresse nimmt an.** Der Nehmer liegt in `open/`, ist nicht geschlossen und nennt in §1
+unter `Übernimmt:` diese Kennung. Er führt den Gegenstand als Liefer-Punkt (2): *Jede Weiche, die
+über die Emit-Disposition einer Vorlage entscheidet, ist einer Aussage in
+[`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
+zugeordnet* — vollständig über die Weichen, nicht über die auffälligen.
+
+**Wellenlos.** Der Kopf führt keine Welle; die Roadmap führt wellenlose Arbeit nicht
+(`modul-06-roadmap.md` §Wann Arbeit eine Welle braucht), und diese Closure trägt sie allein.
+
+**Was hat funktioniert:** Der Slice hatte seine drei Risiken mit **beiden** möglichen Ausgängen
+vorab beschrieben. Beim Ausgang war deshalb keine Deutung nötig, sondern nur eine Feststellung,
+welcher der beiden eingetreten ist — und bei Risiko 1 hat eine Entscheidung ihn zwischenzeitlich
+entschieden, ohne dass jemand den Plan anfassen musste.
+
+**Was ging anders als geplant:** Geprüft hat den Schnitt keine Implementation, sondern erst die
+Gruppierung — das Muster *tote Slices* aus `modul-05-planning-harness.md` §Regeln gegen typische
+Fehlannahmen. Der Plan stand von seinem Schnitt am 2026-08-30 an unbeansprucht in `next/` und
+wartete dabei auf eine Bedingung außerhalb dieses Prozesses; genau diese Wartezeit hat seinen
+ersten Risiko-Ausgang erledigt.
+
+**Steering-Loop-Eintrag:** **gezählt, nicht verkörpert** — kein Zielort, darum **kein**
+`liegt in`-Feld (`grundlagen-traceability.md` §Herkunfts-Anker). Die Form der Stilllegung steht
+seit `v6.9.0` in der adoptierten Baseline; eine zweite Fassung daneben driftete.
+
+**Beobachtungs-Register** (`../observations/`): zitiert, nicht neu formuliert —
+[`BEO-ALL/geplanter-slice-wird-nie-gearbeitet`](../observations/BEO-ALL/geplanter-slice-wird-nie-gearbeitet/observation.md).
+**Keine zweite Beleg-Datei:** Dieser Geber steht dort unter *Benannt, nicht gezählt*; er ist ein
+Fund **derselben** Gelegenheit wie `slice-090-freshness-audit-im-ziel`, und der Zähler misst
+Wiederholung über Vorgänge hinweg, nicht die Zahl der Funde (`modul-06-roadmap.md` §Das
+Beobachtungs-Register). Der Stand bleibt `offen`, unter der Schwelle.
+
+**Lese-Schritt** (Repo ohne Wellen-Betrieb, `modul-06-roadmap.md` §Wann Arbeit eine Welle
+braucht): Kein Eintrag erreicht mit dieser Closure 3×, und kein Eintrag über der Schwelle steht
+ohne Ausgang — dasselbe Kommando wie in
+[`slice-090`](slice-090-freshness-audit-im-ziel.md) §7, Ausgabe leer.
+
+**Die drei Paarungen.** (a) Anker-Paarung: kein Eintrag trägt `liegt in`, sie hat keinen
+Gegenstand. (b) Folge-Slice-Paarung: kein Folge-Slice genannt. (c) Register-Paarung: die zitierte
+Beobachtung existiert als Verzeichnis und trägt einen Beleg.
+
+**Was diese Closure nicht trägt:** Review und Verifikation am Gegenstand — es gibt keinen Diff,
+den sie prüfen könnten. Geprüft ist die **Form** der Stilllegung durch `make docs-check` (Modul
+`structure`, `open-tasks-require-marker`) und der Gesamtstand durch `make gates`.
 
 ## 8. Sub-Area-Modus-Begründung
 
