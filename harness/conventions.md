@@ -304,6 +304,10 @@ unveränderlich — es steht dann in Kennungen, in Commits und in Verweisen.
 
 ## Glossar (optional)
 
-| Begriff | Bedeutung |
-|---|---|
-| „Auswerter (slice-060)" in [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) | der **auswertende** Slice, also slice-066. Die ADR ist ab *Accepted* immutabel und nennt an drei Stellen die Slice-**ID** 060 als Auswertungs-Slice (Festlegung 1 Punkt 3 sowie die Re-Evaluierungs-Trigger 2 und 6); die Arbeit liegt in **slice-060** (Rollen-Achse, Erfassung) und **slice-066** (Auswertung). Diese Umdeutung steht hier und nur hier; die ADR wird dafür nicht angefasst ([`AGENTS.md`](../AGENTS.md) §3.4). |
+**Wer der „Auswerter (slice-060)" aus [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) ist.**
+Die ADR ist ab *Accepted* immutabel und nennt an drei Stellen die Slice-**ID** 060 als den
+Auswertungs-Slice (Festlegung 1 Punkt 3 sowie die Re-Evaluierungs-Trigger 2 und 6). Der Schnitt
+vom 2026-07-29 hat die Arbeit geteilt: **slice-060 ist die Rollen-Achse** (Erfassung),
+**slice-066 ist die Auswertung**. Gemeint ist an allen drei Stellen der **auswertende** Slice,
+also slice-066. Diese Umdeutung steht hier und nur hier — die ADR wird dafür nicht angefasst
+([`AGENTS.md`](../AGENTS.md) §3.4).
