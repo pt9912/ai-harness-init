@@ -24,7 +24,8 @@
 # Default-Tiefe 1 — `make gates`/`smoke`/`full-smoke` loesen keinen
 # history-lesenden d-check-Modul-Lauf aus (`.d-check.yml` aktiviert fuer
 # `docs-check` die Module, die `grep -n '^modules:' .d-check.yml` nennt,
-# keines davon liest `git`-Historie). Der vierte Job (`adr-immutable`) liest
+# keines davon liest `git`-Historie; gemessen am Stand v0.76.1: AGENTS.md §3.8).
+# Der vierte Job (`adr-immutable`) liest
 # die Range ueber das `vcs`-Modul (Target `doc-immutable`/`adr-immutable` in
 # d-check.mk/Makefile) und traegt darum `fetch-depth: 0` UND einen
 # vorgeschalteten `make history-range-guard` (harness/tools/history-range-guard.sh)

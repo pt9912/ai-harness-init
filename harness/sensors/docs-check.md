@@ -296,6 +296,7 @@ make -C <kopie> docs-check                # je Lage die Datei oder .d-check.yml 
 | V7 regulär, ein offenes Item in §6 | keine |
 | V8 regulär, ein offenes Item in §2 | `section-open-tasks-marker-missing` |
 | V9 wie V1, `structure` aus `modules:` genommen | keine |
+| V10 regulär, §2-Überschrift als `## 2. Definition of Done (Sonde)` | `section-missing` auf Zeile 1; die vierte Spalte trägt den `hint` |
 | M1 `open-tasks-require-marker` und `-section` entfernt | 5 × `section-tasks-open` in `slice-135` |
 | M2 nur `open-tasks-require-marker-section` entfernt | `section-open-tasks-marker-missing` in `slice-135` |
 | M3 `structure`-Block und Aktivierung entfernt | `docs-check` ohne Befund; `test/doc-block-marke-wiring.bats` Fall 1 rot |
@@ -323,9 +324,15 @@ docs/plan/planning/done/slice-sonde-stilllegung.md:89	docs/plan/planning/done/sl
   Ausnahme vor, das Werkzeug muss also keine bieten.
 - **Der Glob ist flach.** Ein Stub unter `done/<welle-id>/` liegt außerhalb. Trifft die Regel keine
   Datei mehr, meldet sie `section-missing`.
-- **Die Aktivierung hält kein Gate außerhalb von `docs-check`.** `make mutate` kennt zwei
-  Fehlschlag-Formen, `--- FAIL:` der Go-Stufe und `not ok N` der bats-Stufe, und `make docs-check`
-  gibt keine davon aus. M1 und M2 sind darum einmalige Belege und kein Fall unter `test/mutations/`.
+- **Der `hint` passt nicht zu jedem Grund-Code der Regel.** Trägt ein Plan die §2-Überschrift in
+  anderer Form, meldet die Regel `section-missing`, und die vierte Spalte ist der `hint` (Lage V10).
+  Keiner seiner zwei Auswege behebt diesen Befund; die Ursache ist die Überschrift. Heute weicht
+  kein Plan ab: `grep -L '^## 2\. Definition of Done$' docs/plan/planning/done/slice-*.md | wc -l`
+  → 0, kein Erwartungswert.
+- **Die Aktivierung hält kein Gate außerhalb von `docs-check`.** `make mutate` lässt einen Fall nur
+  für eine Stufe zu, für die `failure_form()` ein Fehlschlag-Muster führt
+  (`sed -n '/^failure_form()/,/^}/p' harness/tools/mutate.sh`); für `make docs-check` führt es
+  keines. M1 und M2 sind darum einmalige Belege und kein Fall unter `test/mutations/`.
   M3 fällt in `make test`, weil `doc-structure` dann wieder in die Menge fällt, die
   [`test/doc-block-marke-wiring.bats`](../../test/doc-block-marke-wiring.bats) aus beiden Dateien
   ableitet. Für V9 schlägt kein Wächter an.
