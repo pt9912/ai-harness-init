@@ -14,6 +14,7 @@
   die Methode der Gegenmessung
   ([`MR-063`](../conventions.md#mr-063--die-gegenmessung-eines-d-check-sprungs-gibt-jedem-aktiven-modul-eine-basis-und-lässt-die-symlinks-stehen)):
   Sie läuft über einer `git archive`-Kopie ohne `.git` und hat keinen Objektspeicher. **Nicht**
+  der **Bestand** der angenommenen Einträge: Setzung 4 zieht die zeitliche Grenze. **Nicht**
   `docs/plan/adr/`, wo [`AGENTS.md`](../../AGENTS.md) §3.4 gilt; **nicht** die emittierte Ebene.
 - **Löst auf:** in
   [`MR-066`](../conventions.md#mr-066--d-check-pin-v0763-packs-unter-fremdem-präfix-lesbar-range-immer-aufgelöst)
@@ -40,22 +41,50 @@
   Kommandos, mit denen der schreibende Lauf sie erreicht hat. Die Bedingung ist die Zusage; die
   Kommandos sind **eine** gemessene Erreichung, nicht ihre Definition. Ein Lauf, der die Kommandos
   fährt, prüft die Bedingung, bevor er misst.
-- **Setzung 2 — die Bedingung für die Pack-Namens-Lage, zweiteilig.** Für den Fall, den
+- **Setzung 2 — die Bedingung für die Pack-Namens-Lage: zwei Abwesenheiten und eine
+  Anwesenheit.** Für den Fall, den
   [`MR-066`](../conventions.md#mr-066--d-check-pin-v0763-packs-unter-fremdem-präfix-lesbar-range-immer-aufgelöst)
   Messung 1 misst:
   - **kein Pack mit dem Präfix `pack-`** — `ls .git/objects/pack/ | grep -c '^pack-'` → **0**;
-  - **kein loses Objekt** — `git count-objects -v`, Zeile `count:` → **0**.
+  - **kein loses Objekt** — `git count-objects -v`, Zeile `count:` → **0**;
+  - **die Objekte der Range sind da** — `git cat-file -t <Range-Basis>` → `commit`, gefahren mit
+    dem `git` des Hosts, das Packs jeden Namens liest.
 
-  Erst beide zusammen machen das Pack unter fremdem Präfix zum **einzigen** Weg zu den Objekten
-  der Range. Ist eine der zwei verletzt, misst der Lauf nicht das Pack.
-- **Setzung 3 — warum die zweite Hälfte trägt, und warum sie die übersehene ist.** Liegen die
+  Die zwei Abwesenheiten zusammen machen das Pack unter fremdem Präfix zum **einzigen** Weg zu den
+  Objekten; die Anwesenheit sagt, dass es diesen Weg überhaupt gibt. Ist eine der drei verletzt,
+  misst der Lauf nicht das Pack.
+
+  **Warum die dritte Zeile dasteht, obwohl ihr Fehlen laut scheitert.** Ein leerer Objektspeicher
+  erfüllt die zwei Abwesenheiten und trägt trotzdem nichts; ein Lauf darüber bricht unter **beiden**
+  Ständen ab, und ein stilles falsches Grün entsteht daraus nicht. Die Zeile kostet also keine
+  Deckung, sondern spricht aus, was die zwei anderen voraussetzen — und sie ist ohnehin gemessen
+  (Schritt 5 der Folge unten). Eine Bedingung, die nur Abwesenheit prüft, liest sich als *„nichts
+  stört"* und ist eine über *„der Gegenstand ist da"*.
+- **Setzung 3 — warum `count: 0` trägt, und warum es die übersehene Zeile ist.** Liegen die
   Objekte lose **neben** dem Pack, findet jeder Leser sie direkt; das Pack wird nicht gebraucht,
   und der Unterschied zwischen zwei Werkzeug-Ständen verschwindet. Der Lauf ist dann grün ohne
   Gegenstand — dieselbe Klasse wie ein Gate ohne Deckung
   ([`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6),
   [`AGENTS.md`](../../AGENTS.md) §3.6), nur eine Stufe früher: nicht die Prüfung fehlt, sondern
-  ihr Objekt. Die erste Hälfte sieht man am Dateinamen, die zweite nur an `count:` — deshalb steht
-  sie hier als Schritt und nicht nur als Angabe hinterher.
+  ihr Objekt. Die Pack-Zeile sieht man am Dateinamen, `count:` nur an `git count-objects -v` —
+  deshalb steht es hier als Schritt und nicht nur als Angabe hinterher.
+- **Setzung 4 — Cutoff: ab diesem Eintrag, kein Nachrüsten.** Gebunden ist die Aufbau-Anleitung,
+  die **geschrieben oder geändert** wird; der **Bestand ist kein Arbeitsauftrag**. Die
+  angenommenen Einträge dieses Blocks tragen ihre Anleitungen, wie sie sie tragen: Nachgetragen
+  wird dort nichts —
+  [`MR-060`](../conventions.md#mr-060--ein-neues-pflichtfeld-gilt-für-neue-einträge-bestehende-werden-nicht-nachgetragen)
+  schließt das für eine neue Pflicht aus, und wo eine Anleitung wirklich abgelöst wird, ist die
+  Kopf-Marke der Weg
+  ([`MR-032`](../conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)).
+  Ein Maßstab über den Bestand wäre dauerhaft rot und entwertete die Setzung, statt sie zu tragen;
+  dieselbe Begründung trägt den Cutoff in [`AGENTS.md`](../../AGENTS.md) §3.7 und §3.8.
+
+  **Eine Zahl steht hier nicht.** Ob eine Anleitung ihre Prüf-Bedingung trägt, ist ein **Urteil,
+  kein Muster**: Ein `grep` zählte Einträge, die Kommandos führen, nicht Anleitungen ohne
+  Bedingung, und gäbe damit ein Muster als Kriterium aus, das keines ist
+  ([`AGENTS.md`](../../AGENTS.md) §3.6). Dieselbe Einordnung trifft
+  [`MR-032`](../conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
+  für die Fälligkeit seiner Marke.
 - **Die Folge, gemessen.** Host-`git` in der Fassung aus `git --version` → **2.43.0**; die Lage
   ist an einem `git clone --no-local` dieses Repos hergestellt, außerhalb des Arbeitsbaums. Die
   Zahlen wandern mit dem Bestand und sind **keine Erwartungswerte**
@@ -70,8 +99,8 @@
   | 4 | `git maintenance run --task=loose-objects` | 26713 | 26713 | `loose-<hash>.{idx,pack,rev}` |
   | 5 | `git prune-packed` | **0** | 26713 | `loose-<hash>.{idx,pack,rev}` |
 
-  Nach Schritt 5 ist die Bedingung aus Setzung 2 erfüllt, und das Host-`git` liest die Range
-  weiter (`git cat-file -t 8ae647cc~1` → `commit`) — der Klon ist intakt, nur anders verpackt.
+  Nach Schritt 5 sind die zwei Abwesenheiten aus Setzung 2 erfüllt, und die dritte Zeile ist
+  gefahren: `git cat-file -t 8ae647cc~1` → `commit`. Der Klon ist intakt, nur anders verpackt.
 - **Zwei Schritte hängen an der git-Fassung, und beide scheitern still.** Beide sind am Aufbau
   oben vorgeführt, nicht abgeleitet:
   - **Schritt 2 ist kein Zierrat.** `git unpack-objects` überspringt Objekte, die noch gepackt
@@ -81,22 +110,22 @@
     `usage: git unpack-objects [-n] [-q] [-r] [--strict]`.
   - **Schritt 5 ist kein Zierrat.** `git maintenance run --task=loose-objects` legt das
     `loose-*.pack` an und **lässt die losen Objekte liegen**: Zeile 4 der Tabelle zeigt `count:`
-    und `in-pack:` gleichzeitig auf **26713**. Wer hier aufhört, hat die erste Hälfte der
-    Bedingung erfüllt und die zweite verletzt.
+    und `in-pack:` gleichzeitig auf **26713**. Wer hier aufhört, hat die erste Zeile der Bedingung
+    erfüllt und die zweite verletzt.
 - **Grenze.**
   - **Gemessen ist eine Stelle** — eine git-Fassung, ein Klon-Verfahren, ein Repo
     ([`MR-055`](../conventions.md#mr-055--eine-stellen-messung-trägt-keine-folgerung-über-eine-eigenschaft)).
     Eine andere git-Fassung kann andere Schritte verlangen; **die Bedingung aus Setzung 2 bleibt
     davon unberührt**, und genau dafür steht sie vor den Kommandos.
-  - **Die Folge ist nicht die einzige Erreichung.** Jeder Weg, der die zwei Zeilen aus Setzung 2
+  - **Die Folge ist nicht die einzige Erreichung.** Jeder Weg, der die Zeilen aus Setzung 2
     erfüllt, taugt; `git maintenance` ist der gemessene, nicht der vorgeschriebene.
   - **Die Wirkung auf d-check misst dieser Eintrag nicht.** Er stellt die Lage her und prüft sie;
     was die zwei Werkzeug-Stände darin melden, steht in
     [`MR-066`](../conventions.md#mr-066--d-check-pin-v0763-packs-unter-fremdem-präfix-lesbar-range-immer-aufgelöst)
     Messung 1 und bleibt dort.
   - **Kein Wächter.** Kein `make`-Ziel prüft eine Aufbau-Anleitung, und keines gibt die Bedingung
-    aus; Träger ist der Lauf, der die Lage herstellt. Die drei Kommandos brauchen nur `git` auf
-    dem Host ([`LH-QA-03`](../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
+    aus; Träger ist der Lauf, der die Lage herstellt. Die Kommandos brauchen nur `git` auf dem
+    Host ([`LH-QA-03`](../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
 - **Begründung:**
   - **Die Anleitung wird beim nächsten Pin-Sprung gelesen, der Slice-Plan nicht.** Die drei
     Stellen, die ein Sprung konsultiert, liegen alle in diesem Block — der Trigger von
@@ -135,3 +164,5 @@
   Alternates folgt oder Packs jeden Namens liest — dann ist die Lage kein Gegenstand mehr, und
   mit ihr entfällt ihre Bedingung. Die **Folge** ist neu zu messen, sobald der Host eine andere
   `git`-Fassung führt und einer ihrer Schritte anders antwortet; die Bedingung darüber bleibt.
+  Setzung 4 hat keinen Trigger: Ein Cutoff, der später fiele, machte den Bestand nachträglich zum
+  Arbeitsauftrag.
