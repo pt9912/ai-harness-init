@@ -9,11 +9,14 @@ aus `open/` oder `next/` nach `done/` — §7 nennt in der Zeile `Gegenstand:`
 Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 (§Ein Slice, dessen Gegenstand ein anderer übernimmt).
 
-**Welle:** [welle-11](../welle-11-traeger-aussage.md). Die Wellen-Zugehörigkeit wandert mit dem
-Gegenstand: Die drei übernommenen Slices verlassen §4 des Welle-Plans, dieser steht an ihrer Stelle
-(Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
-übernimmt). Welle-Plan und Drift-Log der Roadmap zieht der Planner mit der Stilllegung der Geber
-nach, in einem eigenen Vorgang.
+**Welle:** ohne Welle. Die Wellen-Zugehörigkeit wandert zwar mit dem Gegenstand (Baseline-Regelwerk
+`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer übernimmt) — nur bündelte
+[welle-11](../welle-11-traeger-aussage.md) danach **einen** Slice, und der Test aus
+`modul-06-roadmap.md` §Wann Arbeit eine Welle braucht fällt negativ aus: Ihr Closure-Trigger
+beobachtet nichts, was die DoD unten nicht belegt — `make gates`, `make full-smoke` und die Inventur
+gegen den Laufzeit-Nenner stehen dort, und das Trigger-Audit trägt im Repo ohne Wellen-Betrieb die
+Slice-Closure. **Die Welle ist aufgelöst**; Begründung, gesperrter Ortswechsel und die benannte
+Lücke stehen in ihrem §4, die Umplanung im Drift-Log der Roadmap.
 
 **Bezug:**
 [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) (das Regelwerk geht
@@ -197,9 +200,9 @@ lässt. Ergänzt die Tabelle, ersetzt sie nicht:
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): Das WIP-Limit des Rolleninhabers ist frei, die drei
-übernommenen Slices liegen in `done/`, und die Welle-Zugehörigkeit steht in §4 des Welle-Plans auf
-diesem Slice.
+**Start** (`next` → `in-progress`): Das WIP-Limit des Rolleninhabers ist frei und die drei
+übernommenen Slices liegen in `done/`. Eine Welle-Zugehörigkeit ist keine Bedingung mehr — der
+Slice läuft wellenlos (Kopf).
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 

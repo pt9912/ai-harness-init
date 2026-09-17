@@ -164,6 +164,45 @@ Der Zustand jedes Slice ist sein Lifecycle-Verzeichnis, hier nicht gespiegelt.
 | [slice-091](next/slice-091-vendored-baum-ohne-anspruch.md) | Der mitgelieferte Baum stellt keine `make`-Ansprüche an das Ziel, und eine lebende Zeile sagt es | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-092](next/slice-092-traeger-inventur.md) | Die Träger-Inventur: je Regelblock ein Wert, Inventar gegen Abdeckung | [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) |
 
+### Die Welle ist aufgelöst — der Wellen-Test fällt negativ aus
+
+Der Gegenstand der drei Slices unten geht in `slice-das-ziel-sagt-was-sein-vendored-baum-ist` auf;
+die Welle bündelt danach **einen** Slice. Der Test aus Baseline-Regelwerk `modul-06-roadmap.md`
+§Wann Arbeit eine Welle braucht fragt, ob der Closure-Trigger **mehr** beobachtet, als die DoDs
+ihrer Slices belegen. Er tut es nicht: `make gates` und `make full-smoke` stehen in der DoD des
+Nehmers, die Inventur gegen den Laufzeit-Nenner ebenso, und das Trigger-Audit über
+`docs/plan/carveouts/` trägt nach `modul-08-agentenrollen.md` §Rollen-Sequenz für eine Welle im
+Repo ohne Wellen-Betrieb die Slice-Closure. Was bliebe, ist der **repo-weite Verifikations-Beleg
+über die Slice-DoD hinaus** — und genau der fehlt; derselbe Abschnitt nennt ihn als das *Mehr*, an
+dem eine Welle hängt. **Der Nehmer steht deshalb ohne Welle.**
+
+**Der Vollzug des Ortswechsels ist gesperrt, und das ist gemessen.** Diese Datei müsste per
+`git mv` nach `done/`; dabei sterben **19** Pfad-Nennungen in eingefrorenen Artefakten, über beide
+Adress-Formen — ein Code-Span in [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
+und Markdown-Links in `done/`. **Keine Erwartungswerte**
+([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2):
+
+```sh
+git grep -c 'welle-11-traeger-aussage' -- 'docs/plan/adr/*.md' 'docs/plan/planning/done/*.md' \
+  | awk -F: '{s+=$NF} END{print s+0}'   # 19
+grep -c '^  - in: ' .d-check.yml                                                  # 7 Ventile, keines deckt sie
+```
+
+Nach [`AGENTS.md`](../../../AGENTS.md) §3.11 gehört die Entscheidung **vor** den Move, und ein
+weiteres `ignore-refs`-Paar ist eine Senkung nach §3.5 mit eigener ADR — **Architect-Arbeit**, kein
+Planungs-Schritt. Bis sie vorliegt, bleibt diese Datei flach; *Offene Wellen* der Roadmap folgt ihr,
+weil der Abschnitt derivativ ist.
+
+**Und die Form der Auflösung selbst führt keine Quelle.** Modul 6 kennt die **Closure** einer Welle
+(sechs Schritte, Ergebnis-Notiz, `git mv` nach `done/`) und Modul 5 die Stilllegung eines Slice,
+dessen Gegenstand ein anderer übernimmt. Eine eröffnete Welle, die ihren Gegenstand abgibt, steht
+in keinem der beiden — offen bleiben damit drei Fragen: wohin ihre Datei gehört, ob eine
+`welle-11-results.md` entsteht (hier: nein, es ist nichts geliefert und nichts verkörpert), und in
+welcher Tabelle der Roadmap sie erscheint. Die dritte ist beantwortbar: Eine Auflösung ist eine
+**Umplanung**, keine Schließung, und trägt deshalb im Drift-Log, nicht im Closure-Log — zwei Logs
+derselben Sache driften. Die ersten zwei sind eine benannte Lücke.
+
 **Die Reihenfolge ist die Aussage: 090 und 091 setzen je einen Wert, 092 schließt die Liste.** 090
 und 091 hängen nicht aneinander — der eine spricht über eine Regel **ohne** Träger, der andere über
 einen **Anspruch ohne Gegenstand**; beide sind einzeln lieferbar und einzeln nützlich. 092 läuft
