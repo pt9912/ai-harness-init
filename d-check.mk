@@ -44,10 +44,13 @@
 # `git grep -c` gibt `pfad:anzahl` je Datei aus statt einer Summe. Beide liefern eine
 # plausible Zahl ohne Fehler — ein Kommando neben einer Zahl belegt sie erst, wenn es den
 # Gegenstand schneidet.
-# JEDE BEFUND-ZEILE TRAEGT EINE VIERTE, TAB-GETRENNTE SPALTE (Messung und Stand: MR-061):
-# den Klartext des Grundes (`target-missing` -> „Linkziel existiert nicht"). Wer eine Ausgabe spaltenweise zerlegt und die letzte Spalte
-# (`awk -F'\t' '{print $NF}'`) als Grund-CODE liest, bekommt den Klartext statt des Codes —
-# kein Skript dieses Repos tut das.
+# BEFUND-ZEILEN TRAGEN EINE VIERTE, TAB-GETRENNTE SPALTE, AUSSER DENEN VON `spans`
+# (`span-unclosed`, `span-nested-link`, `fence-unclosed`: drei Spalten; Messung und Stand: MR-063):
+# den Klartext des Grundes (`target-missing` -> „Linkziel existiert nicht"). Den Grund-Code
+# liefert in beiden Faellen die dritte Spalte (`awk -F'\t' '{print $3}'`); die letzte
+# (`$NF`) gibt bei vierspaltigen Zeilen den Klartext, bei dreispaltigen den Code. Kein
+# Werkzeug dieses Repos liest `$NF` als Grund-Code:
+#   git grep -nF '$NF' -- ':!d-check.mk' ':!*.md' ':!.harness'      # kein Treffer
 # DIE ZUSAMMENFASSUNG AUF STDERR KANN VOR DER ZAEHL-ZEILE `d-check: N Datei(en) geprüft,
 # M Befund(e)` WEITERE `d-check: …`-ZEILEN TRAGEN (`summary.notes`, v0.75.0; gefuellt nur
 # vom Modul `mentions`, das hier nicht aktiv ist; MR-061). Die Zaehl-Zeile bleibt die letzte.
