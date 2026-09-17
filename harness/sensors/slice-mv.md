@@ -57,19 +57,33 @@ Datei, repo-weit außer `.harness/baseline/**` (unveränderter Fremdtext) und `d
 (eine `Accepted`-ADR bekommt keinen Byte-Nachzug —
 [`ADR-0042`](../../docs/plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 2) —
 `docs/plan/planning/done/**` **und** `docs/reviews/**` sind **nicht** ausgenommen, ihre
-Verweise sind reale, von `docs-check` geprüfte Links. **Ausgehend** hängt präfixlosen Zielen
+Verweise sind reale, von `docs-check` geprüfte Links. Dazu ersetzt es **eingehend** den
+präfixlosen Markdown-Link auf die bewegte Datei, auch mit Anker, in den getrackten Dateien, die flach
+im Ausgangsverzeichnis liegen: er bekommt `../<neues-verzeichnis>/` vorangestellt, unter derselben
+Ausnahmeliste. **Ausgehend** hängt präfixlosen Zielen
 **innerhalb** der bewegten Datei, die einen im alten Verzeichnis verbliebenen
 Geschwister-Slice referenzieren, `../<altes-verzeichnis>/` an — eine nummerierte Kennung
 (`slice-NNN…`) trifft das Fundmuster ebenso wie eine benannte (`slice-<slug>`, ein Slug aus
 Kleinbuchstaben, Ziffern und Bindestrich).
 
 Vier gemessene Grenzen (Skriptkopf `harness/tools/slice-mv.sh`): es zieht Pfade nach, keine
-Zustandssätze; Welle-Plan-Dateien (Tiefenwechsel beim Closure-Move) bleiben außen vor; eine
-präfixlose Referenz **auf** die bewegte Datei aus einer *anderen*, unbewegten Datei erkennt es
-nicht — ihr fehlt das Verzeichnis-Literal, an dem die Ersetzung ankert; und die zweite Namensform
+Zustandssätze; Welle-Plan-Dateien (Tiefenwechsel beim Closure-Move) bleiben außen vor; die
+präfixlose Eingehend-Ersetzung erkennt allein den Markdown-Link in flachen Geschwistern und liest
+kein Markdown — eine andere Schreibweise desselben Verweises (ein Link mit vorangestelltem Punkt-Segment,
+ein Link in spitzen Klammern, eine Referenz-Definition) bleibt stehen, und steht die Link-Syntax
+selbst mit genau diesem Namen in einem Code-Span oder Code-Block, wird sie mitersetzt; und die
+zweite Namensform
 aus [`MR-057`](../conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
 Setzung 1 — das Präfix eines vorhandenen Ankers (`LH-*`, `ADR-*`, `CO-*`), in diesem Repo
 großgeschrieben — trifft die Zeichenklasse des Fundmusters nicht.
+
+**Die präfixlose Ersetzung ist ohne Repository gedeckt:** `test/slice-mv.bats` ruft sie in beiden
+Fassungen auf und hält den ganzen Dateiinhalt einer Probe fest — die ersetzten Links, dazu
+unverändert einen gleichnamigen Code-Span, einen Tree-Operanden, einen Präfix-Verweis und einen
+längeren Namen mit demselben Anfang.
+`test/mutations/363-slice-mv-eingehend-verliert-geschwister-ersetzung.sh` nimmt ihr das `sed` und
+färbt diesen Fall rot. Welche Dateien `main()` ihr übergibt, fährt keine bats-Stufe; das misst die
+Tabelle unter §Kanten.
 
 Details und Beleg stehen im Kopf von `harness/tools/slice-mv.sh`, Abschnitt BELEG.
 
@@ -82,14 +96,14 @@ sind und §7 die Zeile `Gegenstand:` trägt (`v6.9.0` ·
 `.harness/baseline/v6.9.0/regelwerk/modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand
 ein anderer übernimmt), prüft es nicht; den Inhalts-Commit vor dem Wechsel setzt der Aufrufer.
 
-**Gemessen** am Stand `004335cc` von `harness/tools/slice-mv.sh`
-(`git log -1 --format=%h -- harness/tools/slice-mv.sh`), an einer Kopie außerhalb des Repos ohne
-`core.hooksPath`. Je Kante lief ein Slice mit eingehenden Präfix-Verweisen (auch aus `done/**` und
-`docs/reviews/**`), der Stilllegungs-Inhalt vorher committet. Aus `open/` war es ein Slice mit
-präfixlosen Zielen auf Geschwister und präfixlosen Verweisen von Geschwistern. Aus `next/` liefen
-zwei: einer mit präfixlosen Zielen auf Geschwister und ohne präfixlosen Verweis von ihnen, einer mit
-präfixlosen Verweisen von Geschwistern. Das Werkzeug committet selbst und braucht in der Kopie eine
-git-Identität; das Rezept setzt sie lokal, damit es von keiner Host-Konfiguration abhängt:
+**Gemessen** am Blob `7eaeb0d` von `harness/tools/slice-mv.sh`
+(`git rev-parse --short HEAD:harness/tools/slice-mv.sh`), an einer Kopie außerhalb des Repos ohne
+`core.hooksPath`. Je Kante lief ein Slice, auf den Geschwister im Ausgangsverzeichnis präfixlos
+verweisen und der daneben eingehende Präfix-Verweise trägt: aus `open/`
+`slice-070-comment-claims-pruefbereich`, danach in derselben Kopie aus `next/`
+`slice-103-traeger-waechter-decken-was-sie-sagen`. Einen Stilllegungs-Inhalt setzte die Kopie
+nicht. Das Werkzeug committet selbst und braucht in der Kopie eine git-Identität; das Rezept setzt
+sie lokal, damit es von keiner Host-Konfiguration abhängt:
 
 ```sh
 git archive HEAD | tar -x -C <kopie>; cd <kopie>; git init -q
@@ -102,21 +116,25 @@ make docs-check
 
 | Kante | Exit | Move-Commit | eingehend mit Präfix | ausgehend | präfixlos von Geschwistern |
 |---|---|---|---|---|---|
-| `open → done` | 0, Skript und `make` | reiner Rename, `0 0` | jede Präfix-Form nachgezogen, im zweiten Commit | präfixlose Geschwister-Ziele tragen danach `../<altes-verzeichnis>/`, hier `open` | bleibt stehen, `target-missing` je Verweis |
-| `next → done` | 0, Skript und `make` | reiner Rename, `0 0` | jede Präfix-Form nachgezogen, im zweiten Commit | präfixlose Geschwister-Ziele tragen danach `../<altes-verzeichnis>/`, hier `next` | bleibt stehen, `target-missing` je Verweis |
+| `open → done` | 0, `make` | reiner Rename, `0 0` | nachgezogen, im zweiten Commit | präfixlose Geschwister-Ziele tragen danach `../<altes-verzeichnis>/`, hier `open` | 6 Links in 5 Dateien nachgezogen, im zweiten Commit; kein `target-missing` |
+| `next → done` | 0, `make` | reiner Rename, `0 0` | nachgezogen, im zweiten Commit | der Slice trägt kein präfixloses Ziel | 3 Links in 2 Dateien nachgezogen, im zweiten Commit; kein `target-missing` |
+
+Die Link-Zahlen gibt das Werkzeug in seiner Zeile `eingehend:` aus; vor dem Wechsel zählt sie
+`cat docs/plan/planning/<von>/*.md | grep -oE '\]\(<slice>\.md[)#]' | wc -l` — keine
+Erwartungswerte. `make docs-check` blieb in der Kopie trotzdem rot (d-check Exit 1, `make` Exit 2),
+mit einem einzigen Befund: `closure-note-thin` auf §7 des stillgelegten
+`slice-070-comment-claims-pruefbereich`, dessen Stilllegungs-Inhalt die Kopie nicht setzt
+([`docs-check.md`](docs-check.md) nennt, welche Form der Stilllegung das Modul liest).
 
 **Rot gesehen, was der Nachzug trägt:** Derselbe `open → done`-Wechsel als bloßer `git mv` färbt
 `make docs-check` an jedem eingehenden Präfix-Verweis und an den ausgehenden Zielen rot
-(`target-missing`); über das Werkzeug fallen genau diese Befunde weg. Die Kopie lief ohne
-aktivierten `commit-msg`-Träger; was er mit den zwei Commits des Werkzeugs tut, steht in
-[`harness/README.md`](../README.md) §Traceability.
+(`target-missing`); über das Werkzeug fallen genau diese Befunde weg. Über den Blob `d1bda5b`, der
+den präfixlosen Link nicht ersetzt, färbt dasselbe Paar Wechsel in einer zweiten Kopie genau die
+präfixlosen Geschwister-Verweise rot: 6 × `target-missing` nach `open → done`, 9 nach dem
+folgenden `next → done`. Die Kopien liefen ohne aktivierten `commit-msg`-Träger; was er mit den
+zwei Commits des Werkzeugs tut, steht in [`harness/README.md`](../README.md) §Traceability.
 
-**Die dritte Grenze wird an beiden Kanten wirksam.** Nach dem Werkzeug bleiben allein die präfixlosen
-Verweise aus unbewegten Geschwister-Dateien im Ausgangsverzeichnis rot (`target-missing`, das Ziel
-ist der blanke Dateiname); `make docs-check` zeigt sie, nachgezogen werden sie von Hand. Ob eine
-Kante sie zeigt, hängt am Geber, nicht an der Kante: Ein Slice, auf den kein Geschwister präfixlos
-verweist, verlässt sein Verzeichnis ohne diesen Rest. Wie viele solche Verweise zwischen
-Geschwistern stehen, zählt
+**Wie viele präfixlose Verweise zwischen Geschwistern stehen,** zählt
 
 ```sh
 P=docs/plan/planning; for d in open next; do n=0; for f in "$P/$d"/*.md; do
@@ -124,8 +142,8 @@ P=docs/plan/planning; for d in open next; do n=0; for f in "$P/$d"/*.md; do
     [ -f "$P/$d/$t" ] && n=$((n+1)); done; done; echo "$d: $n"; done
 ```
 
-— kein Erwartungswert. Jeder davon bricht, sobald sein Ziel das Verzeichnis verlässt. Adresse der
-Lücke: `slice-mv-zieht-praefixlose-geschwister-verweise-nach`.
+— kein Erwartungswert. Jeder davon bekommt beim Wechsel seines Ziels `../<neues-verzeichnis>/`
+vorangestellt; welche Schreibweise die Ersetzung nicht erkennt, steht unter §Grenze.
 
 **Kein Wächter hält die zwei Kanten.** `test/slice-mv.bats` ruft die Ersetzungs-Funktionen ohne
 Repository auf. [`make full-smoke`](full-smoke.md) fährt im gebootstrappten Ziel den erfolgreichen
@@ -135,8 +153,8 @@ keine bewachte Zusage: Wer `harness/tools/slice-mv.sh` ändert, misst sie neu.
 
 ### Im gebootstrappten Ziel — Grenze
 
-**Was die zwei Fassungen zusammenhält, und was nicht.** Gleich gehalten werden die drei
-Ersetzungs-Funktionen: `make test-bats` vergleicht ihre Rümpfe zwischen
+**Was die zwei Fassungen zusammenhält, und was nicht.** Gleich gehalten werden die
+Funktionen der Liste `KERN` in `test/slice-mv.bats`: `make test-bats` vergleicht ihre Rümpfe zwischen
 `harness/tools/slice-mv.sh` und der emittierten Fassung, weißraum-normalisiert — die eingehende
 Ersetzung trifft damit im Ziel dieselben Präfix-Formen wie hier. Die Skript-Köpfe und alles
 Übrige vergleicht er nicht — die zwei Dateien sind nicht als Ganzes gleich, und die Zusage gilt

@@ -6,7 +6,8 @@
 # bewegt den Slice per `git mv` und committet den reinen Move SOFORT als eigenen
 # Commit (ein Move und eine Inhaltsaenderung in einem Commit verlieren die
 # Rename-Erkennung). Danach zieht es reale Verweise nach — EINGEHEND (jede
-# Praefix-Form auf die bewegte Datei, repo-weit) UND AUSGEHEND (praefixlose
+# Praefix-Form auf die bewegte Datei, repo-weit, dazu die praefixlose
+# Link-Form aus den Geschwistern im Ausgangsverzeichnis) UND AUSGEHEND (praefixlose
 # Ziele INNERHALB der bewegten Datei, die nach dem Wechsel ins falsche
 # Verzeichnis zeigen; getroffen wird eine nummerierte wie eine benannte
 # Slice-Kennung gleichermassen) — und committet diese Inhaltsaenderung, falls
@@ -47,12 +48,16 @@
 #     auf gleicher Ebene. Dieses Werkzeug bewegt nur SLICE-Dateien
 #     (SLICE=slice-<Kennung>) und ersetzt in der Ausgehend-Richtung darum auch
 #     nur "slice-"-Ziele; ein praefixloses "welle-"-Ziel bleibt unberuehrt.
-# (3) Praefixlose EINGEHENDE Verweise — eine andere, im $from-Verzeichnis
-#     bleibende Datei referenziert die bewegte Datei ohne jedes
-#     Verzeichnis-Segment ("[x](slice-N….md)") — erkennt die
-#     Eingehend-Ersetzung NICHT: ihr fehlt das Verzeichnis-Literal, an dem die
-#     Wortgrenzen-Regel ankert. Was danach tot bleibt, meldet das Doku-Gate des
-#     Repos als toten Link; von Hand nachzuziehen ist der vorgesehene Weg.
+# (3) Die praefixlose EINGEHEND-Ersetzung (rewrite_incoming_bare_in_file)
+#     erkennt einen Verweis ohne Verzeichnis-Segment nur als Markdown-Link
+#     "](<datei>)" oder "](<datei>#…)" und nur in den getrackten Dateien, die
+#     flach im $from-Verzeichnis liegen — dort loest der blanke Name gegen das
+#     Verzeichnis auf, das die Datei verlassen hat. Eine andere Schreibweise
+#     desselben Verweises ("](./<datei>)", "](<<datei>>)", eine
+#     Referenz-Definition "[x]: <datei>") bleibt stehen; was danach tot ist,
+#     meldet das Doku-Gate des Repos als toten Link. Markdown liest die
+#     Ersetzung nicht: steht die Link-Syntax selbst mit genau diesem Namen in
+#     einem Code-Span oder Code-Block, wird sie mitersetzt.
 # (4) Die AUSGEHEND-Ersetzung trifft die lowercase-Kebab-Form einer benannten
 #     Kennung (Zeichenklasse "[0-9a-z]"). Eine Slice-Kennung, die das Praefix
 #     eines vorhandenen Ankers traegt (LH-*, ADR-*, CO-*) und darum
@@ -110,6 +115,23 @@ rewrite_incoming_in_file() {  # $1=datei $2=base $3=from $4=to
   local file="$1" base="$2" from="$3" to="$4" esc_base
   esc_base="$(re_escape "$base")"
   sed -i -E "s#(^|[^A-Za-z0-9_-])$from/$esc_base#\\1$to/$base#g" "$file"
+}
+
+# EINGEHEND, PRAEFIXLOS: jeder Markdown-Link "](<base>)" oder "](<base>#…)" in
+# $file wird zu "](../<to>/<base>…)". main() ruft das fuer die Geschwister im
+# Ausgangsverzeichnis der bewegten Datei auf — dort loest der blanke Name gegen
+# das Verzeichnis auf, das die Datei gerade verlassen hat. Die Regel ankert an
+# der Link-Klammer "](" und am Ende des Namens (")" oder "#"): ein Code-Span mit
+# dem blossen Namen, ein Tree-Operand "<sha>:<base>", ein Verweis mit
+# Verzeichnis-Segment und ein laengerer Name mit demselben Anfang bleiben
+# stehen. Markdown liest sie nicht (Grenze 3 im Skriptkopf). Gibt die Anzahl
+# ersetzter Links auf stdout aus.
+rewrite_incoming_bare_in_file() {  # $1=datei $2=base $3=to
+  local file="$1" base="$2" to="$3" esc_base count
+  esc_base="$(re_escape "$base")"
+  count="$( { grep -oE "[]]\\(${esc_base}[)#]" "$file" 2>/dev/null || true; } | wc -l)"
+  sed -i -E "s|[]]\\($esc_base([)#])|](../$to/$base\\1|g" "$file"
+  printf '%d\n' "$((count))"
 }
 
 # AUSGEHEND: praefixlose "](slice-…)"-Ziele INNERHALB von $file, deren Datei im
@@ -201,6 +223,22 @@ main() {
     in_count=$((in_count + 1))
   done < <(git grep -l -F -e "$from/$base" -- "${in_pathspec[@]}" 2>/dev/null || true)
 
+  # EINGEHEND, praefixlos — in den getrackten Geschwistern, die flach im
+  # Ausgangsverzeichnis liegen (":(glob)" haelt "*" innerhalb eines Segments),
+  # unter derselben Ausnahmeliste. Eine Datei, die die Praefix-Ersetzung schon
+  # getroffen hat, zaehlt in $in_count nicht doppelt.
+  local bare_count=0 n sf
+  while IFS= read -r sf; do
+    [ -n "$sf" ] || continue
+    n="$(rewrite_incoming_bare_in_file "$sf" "$base" "$TO")"
+    [ "$n" -gt 0 ] || continue
+    bare_count=$((bare_count + n))
+    case " ${touched[*]-} " in
+      *" $sf "*) ;;
+      *) touched+=("$sf"); in_count=$((in_count + 1)) ;;
+    esac
+  done < <(git grep -l -F -e "]($base" -- ":(glob)$PLANNING/$from/*.md" "${in_pathspec[@]}" 2>/dev/null || true)
+
   # AUSGEHEND — nur in der bewegten Datei selbst, an ihrem NEUEN Ort.
   local out_count
   out_count="$(rewrite_outgoing_bare_in_file "$PLANNING/$TO/$base" "$from")"
@@ -211,22 +249,22 @@ main() {
   # (eigentlich schon per VORAUSSETZUNG ausgeschlossener) Diff mitgenommen wird.
   if [ "${#touched[@]}" -gt 0 ]; then
     git add -- "${touched[@]}"
-    git commit -q -m "slice-mv: Verweise auf $base nach $TO/ nachgezogen ($in_count eingehend, $out_count ausgehend)"
+    git commit -q -m "slice-mv: Verweise auf $base nach $TO/ nachgezogen ($in_count eingehend, $out_count ausgehend, $bare_count praefixlos aus $from/)"
   fi
 
   echo "slice-mv ok: $base  $from/ -> $TO/"
   echo "  Commit 1 (reiner Move): $from/$base -> $TO/$base"
-  echo "  eingehend: $in_count Datei(en) mit Verweisen nachgezogen"
+  echo "  eingehend: $in_count Datei(en) mit Verweisen nachgezogen, darin $bare_count praefixlose(r) Link(s) aus Geschwistern unter $from/"
   echo "  ausgehend: $out_count praefixloses Ziel(e) in der bewegten Datei auf ../$from/ umgehaengt"
   if [ "${#touched[@]}" -gt 0 ]; then
-    echo "  Commit 2 (Inhalt, getrennt vom Move): $in_count eingehend, $out_count ausgehend"
+    echo "  Commit 2 (Inhalt, getrennt vom Move): $in_count eingehend, $out_count ausgehend, $bare_count praefixlos aus $from/"
   else
     echo "  Kein Verweis zu ziehen — kein zweiter Commit noetig."
   fi
 }
 
 # BASH_SOURCE-Waechter: ein Test sourced dieses Skript, um
-# rewrite_incoming_in_file/rewrite_outgoing_bare_in_file direkt zu pruefen,
+# die Ersetzungs-Funktionen direkt zu pruefen,
 # ohne main() (und damit git mv) auszuloesen — sonst misst der Test sich selbst
 # statt der Ersetzung.
 if [ "${BASH_SOURCE[0]}" = "${0}" ]; then

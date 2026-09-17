@@ -189,11 +189,9 @@ stillgelegten Slice auf `Risiko 1 eingetreten` gekürzt; Risiko 2 bis 5 stehen d
 Danach läuft `make -C <kopie> docs-check`. Ebenso ohne Meldung bleibt ein stillgelegter Slice,
 dessen §7 die Zeile gar nicht trägt.
 
-Rot war der Lauf nach dem Wechsel trotzdem (d-check Exit 1, `make` Exit 2), an `open → done` wie
-an `next → done`, sobald ein Geschwister im Ausgangsverzeichnis präfixlos auf den Geber verwies: Die
-dritte Grenze von `make slice-mv` lässt diese Verweise stehen (`target-missing`,
-[`slice-mv.md`](slice-mv.md) §Kanten). Diese Befunde stehen in den Geschwister-Dateien, nicht im
-stillgelegten Slice. `planning-drift` meldet keine der zwei Kanten, weil beide
+Aus den Geschwister-Dateien bleibt nach dem Wechsel kein Befund stehen: `make slice-mv` zieht ihre
+präfixlosen Verweise auf den stillgelegten Slice nach ([`slice-mv.md`](slice-mv.md) §Kanten, dort an
+beiden Kanten gemessen). `planning-drift` meldet keine der zwei Kanten, weil beide
 `in-progress/` nicht berühren.
 
 **Was daraus folgt.** `closure` liest den stillgelegten Slice wie jeden anderen in `done/`; das

@@ -154,8 +154,12 @@ Aussagen-Berührung steht hier gar nicht.
 | `harness/tools/slice-mv.sh` | update | Ersetzung im Ausgangsverzeichnis, Ausgabe-Zeile, Grenze 3 (DoD 1) |
 | `internal/emit/templates/enforce/slice-mv.sh` | update | über den Rumpf-Vergleich gekoppelte Fassung (DoD 2) |
 | `test/slice-mv.bats` | update | `KERN`-Liste, Fall für die Ersetzung ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6); DoD 3) |
-| `test/mutations/<nnn>-slice-mv-…` | neu | Mutation gegen die Ersetzung (DoD 3) |
+| `test/mutations/363-slice-mv-eingehend-verliert-geschwister-ersetzung.sh` | neu | Mutation gegen die Ersetzung (DoD 3) |
 | [`harness/sensors/slice-mv.md`](../../../../harness/sensors/slice-mv.md) | update | neue Messung, Grenze gezogen |
+| `test/mutations/346-lifecycle-ersetzung-nur-in-einer-fassung.sh` | update | `expect` folgt dem Kopplungs-Fall, dessen Name die Liste `KERN` statt einer Zahl nennt (DoD 2) |
+| `.claude/commands/implement-slice.md` | update | nennt die präfixlose Eingehend-Form so, wie das Werkzeug sie erkennt |
+| `internal/emit/templates/commands/implement-slice.md` | update | dasselbe in der emittierten Anleitung (DoD 2) |
+| [`harness/sensors/docs-check.md`](../../../../harness/sensors/docs-check.md) | update | der Satz über Geschwister-Befunde nach einer Stilllegungs-Kante |
 
 ## 4. Trigger
 

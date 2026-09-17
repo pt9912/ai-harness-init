@@ -58,14 +58,16 @@ Adaptions-Block („MR-Block") in `harness/conventions.md`; die workflow-relevan
    `make slice-mv SLICE=slice-<Kennung> TO=<next|in-progress>` — es bewegt die Datei per `git mv`,
    committet den reinen Move **sofort als eigenen Commit** (Hard Rule 3.3: kein Byte Inhalt
    geändert, die Rename-Erkennung greift) und zieht danach reale Verweise nach: **eingehend** jede
-   gemessene Präfix-Form eines Verweises auf die bewegte Datei, repo-weit; **ausgehend** präfixlose
+   gemessene Präfix-Form eines Verweises auf die bewegte Datei, repo-weit, dazu präfixlose Links aus den
+   Geschwistern im Ausgangsverzeichnis; **ausgehend** präfixlose
    Ziele innerhalb der bewegten Datei selbst. Fielen Verweise an, committet das Skript sie als
    **zweiten**, vom Move getrennten Commit — sonst bleibt es beim einen Move-Commit. Voraussetzung
    dafür ist ein sauberer Arbeitsbaum beim Aufruf (Skriptkopf `harness/tools/slice-mv.sh`, Abschnitt
    VORAUSSETZUNG); ein unsauberer Baum bricht den Aufruf, statt fremde Änderungen mitzureißen. Drei
    gemessene Grenzen bleiben: es zieht Pfade nach, keine Zustandssätze; Welle-Plan-Dateien
-   (Tiefenwechsel beim Closure-Move) bleiben außen vor; und eine präfixlose Referenz **auf** die
-   bewegte Datei aus einer unbewegten Geschwister-Datei erkennt es nicht (`BEO-ALL/verweise-brechen-beim-ortswechsel`).
+   (Tiefenwechsel beim Closure-Move) bleiben außen vor; und einen präfixlosen Verweis **auf** die
+   bewegte Datei erkennt es nur als Markdown-Link in den Geschwistern, die flach im
+   Ausgangsverzeichnis liegen (Skriptkopf `harness/tools/slice-mv.sh`, Grenze 3).
    `make docs-check` nach dem Move zeigt einen etwaigen Rest — von Hand nachziehen, bevor der
    nächste Schritt startet.
 10. WIP-Limit = 1 pro Implementer (Modul 5): kein paralleles `in-progress/`.
@@ -181,7 +183,7 @@ Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontex
     `make slice-mv SLICE=slice-<Kennung> TO=done` verschieben — ein Lauf, zwei Commits: zuerst der reine
     Move, danach — getrennt, nur falls welche anfielen — der Verweis-Nachzug (Hard Rule 3.3,
     dieselbe Begründung wie in Schritt 9). Dieselben drei Grenzen bleiben (keine Zustandssätze,
-    keine Welle-Plan-Dateien, präfixlose Eingehend-Form unerkannt — `BEO-ALL/verweise-brechen-beim-ortswechsel`). `make docs-check`
+    keine Welle-Plan-Dateien, präfixlose Eingehend-Form nur als Link aus flachen Geschwistern). `make docs-check`
     danach prüft den Rest. Ein rotes Gate erreicht `done/` **nur** mit dokumentiertem Carveout
     (Modul 7), nie als stilles Rot.
 25. **Das Beobachtungs-Register fortschreiben** (`docs/plan/planning/observations/`, Modul 6) —

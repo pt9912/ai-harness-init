@@ -19,7 +19,8 @@
 # bewegt den Slice per `git mv` und committet den reinen Move SOFORT als
 # eigenen Commit (Hard Rule 3.3: kein Byte Inhalt veraendert, die
 # Rename-Erkennung greift). Danach zieht es reale Verweise nach — EINGEHEND
-# (jede Praefix-Form auf die bewegte Datei, repo-weit) UND AUSGEHEND
+# (jede Praefix-Form auf die bewegte Datei, repo-weit, dazu die praefixlose
+# Link-Form aus den Geschwistern im Ausgangsverzeichnis) UND AUSGEHEND
 # (praefixlose Ziele INNERHALB der bewegten Datei, die nach dem Wechsel ins
 # falsche Verzeichnis zeigen; getroffen wird eine nummerierte wie eine
 # benannte Slice-Kennung gleichermassen) — und committet diese
@@ -49,16 +50,16 @@
 #   vorher:  make docs-check  ->  d-check: 480 Datei(en) geprueft, 0 Befund(e)
 #   danach:  make docs-check  ->  d-check: 480 Datei(en) geprueft, 8 Befund(e)
 #            alle acht target-missing, alle acht praefixlose Geschwister
-#            UNTER open/ ohne Verzeichnis-Segment (Grenze 3 unten) — keiner in
+#            UNTER open/ ohne Verzeichnis-Segment — keiner in
 #            docs/reviews/** oder docs/plan/planning/done/**. `git show --stat`
 #            auf Commit 1 zeigt einen reinen Rename (0 insertions/0 deletions);
 #            Commit 2 traegt ausschliesslich Inhalt, darunter den
 #            docs/reviews-Treffer.
-#   Reproduzierbar auf jedem sauberen Checkout mit
-#   `make slice-mv SLICE=slice-069 TO=next` gefolgt von `make docs-check` (vor
-#   UND nach). Die konkreten Zahlen wandern mit dem Baum und sind kein
-#   Erwartungswert (MR-025 Setzung 2) — die Befundklasse (praefixlos, unter der
-#   ausgeschlossenen Grenze 3) bleibt es, solange Grenze 3 offen ist.
+#   Die acht Befunde gehoeren zu der praefixlosen Link-Form aus Geschwistern,
+#   die main() an jenem Stand nicht nachzog; der heutige Stand zieht sie nach
+#   (Grenze 3), gemessen an den Kanten `open -> done` und `next -> done` in
+#   harness/sensors/slice-mv.md §Kanten. Die konkreten Zahlen wandern mit dem
+#   Baum und sind kein Erwartungswert (MR-025 Setzung 2).
 #
 # ZWEITE MESSUNG (ADR-0042 Festlegung 2: `docs/plan/adr` zusätzlich zu
 # `.harness/baseline` in eingehend_ausgenommene_pfade — die erste Messung oben
@@ -86,12 +87,21 @@
 #     der Tausch auf gleicher Ebene. Dieses Werkzeug bewegt nur SLICE-Dateien
 #     (SLICE=slice-<Kennung>) und ersetzt in der Ausgehend-Richtung darum
 #     auch nur "slice-"-Ziele; ein präfixloses "welle-"-Ziel bleibt unberührt.
-# (3) Präfixlose EINGEHENDE Verweise — eine andere, im $from-Verzeichnis
-#     bleibende Datei referenziert die bewegte Datei ohne jedes
-#     Verzeichnis-Segment ("[x](slice-N….md)") — erkennt die
-#     Eingehend-Ersetzung NICHT: ihr fehlt das Verzeichnis-Literal, an dem die
-#     Wortgrenzen-Regel ankert. Gemessen (BEO-003 im Beobachtungs-Register),
-#     nicht geschlossen.
+# (3) Die praefixlose EINGEHEND-Ersetzung (rewrite_incoming_bare_in_file)
+#     erkennt einen Verweis ohne Verzeichnis-Segment nur als Markdown-Link
+#     "](<datei>)" oder "](<datei>#…)" und nur in den getrackten Dateien, die
+#     flach im $from-Verzeichnis liegen — dort loest der blanke Name gegen das
+#     Verzeichnis auf, das die Datei verlassen hat. Eine andere Schreibweise
+#     desselben Verweises ("](./<datei>)", "](<<datei>>)", eine
+#     Referenz-Definition "[x]: <datei>") bleibt stehen; im Bestand der drei
+#     Ausgangsverzeichnisse zaehlt sie (kein Erwartungswert)
+#       git grep -hE '\]\(\./slice-|\]\(<slice-|^\[[^]]*\]: *slice-' -- \
+#         docs/plan/planning/open docs/plan/planning/next \
+#         docs/plan/planning/in-progress | wc -l
+#     Markdown liest die Ersetzung nicht: steht die Link-Syntax selbst mit
+#     genau diesem Namen in einem Code-Span oder Code-Block, wird sie
+#     mitersetzt. Welche Dateien main() ihr uebergibt, faehrt keine bats-Stufe;
+#     gemessen ist es an den Kanten in harness/sensors/slice-mv.md §Kanten.
 # (4) Die AUSGEHEND-Ersetzung trifft nur die lowercase-Kebab-Form einer
 #     benannten Kennung (Zeichenklasse "[0-9a-z]"). Die zweite Namensform aus
 #     MR-057 Setzung 1 — das Präfix eines vorhandenen Ankers (LH-*, ADR-*,
@@ -113,7 +123,8 @@ usage() {
 Aufruf: make slice-mv SLICE=slice-<Kennung>[-kurztitel[.md]] TO=<open|next|in-progress|done>
 
   Bewegt den Slice per `git mv`, committet den reinen Move sofort, und zieht
-  danach die Verweise nach — repo-weit eingehend (jede gemessene Präfix-Form)
+  danach die Verweise nach — repo-weit eingehend (jede gemessene Präfix-Form,
+  dazu präfixlose Links aus den Geschwistern im Ausgangsverzeichnis)
   und innerhalb der Datei selbst ausgehend (präfixlose Ziele, die nach dem
   Wechsel ins falsche Verzeichnis zeigen); fielen Verweise an, committet es
   sie getrennt vom Move. Verlangt einen sauberen Arbeitsbaum. Grenzen: siehe
@@ -159,6 +170,23 @@ rewrite_incoming_in_file() {  # $1=datei $2=base $3=from $4=to
   local file="$1" base="$2" from="$3" to="$4" esc_base
   esc_base="$(re_escape "$base")"
   sed -i -E "s#(^|[^A-Za-z0-9_-])$from/$esc_base#\\1$to/$base#g" "$file"
+}
+
+# EINGEHEND, PRAEFIXLOS: jeder Markdown-Link "](<base>)" oder "](<base>#…)" in
+# $file wird zu "](../<to>/<base>…)". main() ruft das fuer die Geschwister im
+# Ausgangsverzeichnis der bewegten Datei auf — dort loest der blanke Name gegen
+# das Verzeichnis auf, das die Datei gerade verlassen hat. Die Regel ankert an
+# der Link-Klammer "](" und am Ende des Namens (")" oder "#"): ein Code-Span mit
+# dem blossen Namen, ein Tree-Operand "<sha>:<base>", ein Verweis mit
+# Verzeichnis-Segment und ein laengerer Name mit demselben Anfang bleiben
+# stehen. Markdown liest sie nicht (Grenze 3 im Skriptkopf). Gibt die Anzahl
+# ersetzter Links auf stdout aus.
+rewrite_incoming_bare_in_file() {  # $1=datei $2=base $3=to
+  local file="$1" base="$2" to="$3" esc_base count
+  esc_base="$(re_escape "$base")"
+  count="$( { grep -oE "[]]\\(${esc_base}[)#]" "$file" 2>/dev/null || true; } | wc -l)"
+  sed -i -E "s|[]]\\($esc_base([)#])|](../$to/$base\\1|g" "$file"
+  printf '%d\n' "$((count))"
 }
 
 # AUSGEHEND: präfixlose "](slice-…)"-Ziele INNERHALB von $file, deren Datei im
@@ -254,6 +282,22 @@ main() {
     in_count=$((in_count + 1))
   done < <(git grep -l -F -e "$from/$base" -- "${in_pathspec[@]}" 2>/dev/null || true)
 
+  # EINGEHEND, praefixlos — in den getrackten Geschwistern, die flach im
+  # Ausgangsverzeichnis liegen (":(glob)" haelt "*" innerhalb eines Segments),
+  # unter derselben Ausnahmeliste. Eine Datei, die die Praefix-Ersetzung schon
+  # getroffen hat, zaehlt in $in_count nicht doppelt.
+  local bare_count=0 n sf
+  while IFS= read -r sf; do
+    [ -n "$sf" ] || continue
+    n="$(rewrite_incoming_bare_in_file "$sf" "$base" "$TO")"
+    [ "$n" -gt 0 ] || continue
+    bare_count=$((bare_count + n))
+    case " ${touched[*]-} " in
+      *" $sf "*) ;;
+      *) touched+=("$sf"); in_count=$((in_count + 1)) ;;
+    esac
+  done < <(git grep -l -F -e "]($base" -- ":(glob)$PLANNING/$from/*.md" "${in_pathspec[@]}" 2>/dev/null || true)
+
   # AUSGEHEND — nur in der bewegten Datei selbst, an ihrem NEUEN Ort.
   local out_count
   out_count="$(rewrite_outgoing_bare_in_file "$PLANNING/$TO/$base" "$from")"
@@ -265,22 +309,22 @@ main() {
   # mitgenommen wird.
   if [ "${#touched[@]}" -gt 0 ]; then
     git add -- "${touched[@]}"
-    git commit -q -m "slice-mv: Verweise auf $base nach $TO/ nachgezogen ($in_count eingehend, $out_count ausgehend)"
+    git commit -q -m "slice-mv: Verweise auf $base nach $TO/ nachgezogen ($in_count eingehend, $out_count ausgehend, $bare_count praefixlos aus $from/)"
   fi
 
   echo "slice-mv ok: $base  $from/ -> $TO/"
   echo "  Commit 1 (reiner Move): $from/$base -> $TO/$base"
-  echo "  eingehend: $in_count Datei(en) mit Verweisen nachgezogen"
+  echo "  eingehend: $in_count Datei(en) mit Verweisen nachgezogen, darin $bare_count praefixlose(r) Link(s) aus Geschwistern unter $from/"
   echo "  ausgehend: $out_count präfixloses Ziel(e) in der bewegten Datei auf ../$from/ umgehängt"
   if [ "${#touched[@]}" -gt 0 ]; then
-    echo "  Commit 2 (Inhalt, getrennt vom Move — AGENTS.md §3.3): $in_count eingehend, $out_count ausgehend"
+    echo "  Commit 2 (Inhalt, getrennt vom Move — AGENTS.md §3.3): $in_count eingehend, $out_count ausgehend, $bare_count praefixlos aus $from/"
   else
     echo "  Kein Verweis zu ziehen — kein zweiter Commit nötig."
   fi
 }
 
 # BASH_SOURCE-Wächter: test/slice-mv.bats sourced dieses Skript, um
-# rewrite_incoming_in_file/rewrite_outgoing_bare_in_file direkt zu prüfen,
+# die Ersetzungs-Funktionen direkt zu prüfen,
 # ohne main() (und damit git mv) auszulösen — sonst misst der Selbsttest sich
 # selbst statt der Ersetzung.
 if [ "${BASH_SOURCE[0]}" = "${0}" ]; then

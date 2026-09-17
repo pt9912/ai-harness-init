@@ -82,7 +82,8 @@ emittierten Durchsetzungsschicht):
    `make slice-mv SLICE=slice-<Kennung> TO=<next|in-progress>`** — das Werkzeug bewegt die Datei
    per `git mv` und committet den **reinen Move** sofort als eigenen Commit (Hard Rule 3.3), und
    es zieht danach die **Verweise** nach: **eingehend** jede Präfix-Form auf die bewegte Datei,
-   repo-weit, und **ausgehend** die präfixlosen Ziele innerhalb der bewegten Datei selbst. Fielen
+   repo-weit, dazu präfixlose Links aus den Geschwistern im Ausgangsverzeichnis, und **ausgehend**
+   die präfixlosen Ziele innerhalb der bewegten Datei selbst. Fielen
    Verweise an, committet es sie als **zweiten**, vom Move getrennten Commit; sonst bleibt es beim
    einen Move-Commit. Der Move landet damit **auf dem Hauptzweig, vor der Arbeit** — der Branch
    entsteht danach. Reist er erst im PR mit, ist der Zustand zweigelokal, und `in-progress/`
@@ -93,8 +94,9 @@ emittierten Durchsetzungsschicht):
         diese Anleitung bliebe auf einem Namen stehen, den `make` nach dem nächsten Lauf nicht
         mehr kennt. Das Fragment bricht dann laut ab, statt still nichts zu tun. -->
    **Was das Werkzeug nicht kann, steht in seinem Kopf, und der Rest ist deine Handarbeit:** es
-   zieht Pfade nach, keine Zustandsätze, und einen präfixlosen **eingehenden** Verweis aus einer
-   unbewegten Geschwister-Datei erkennt es nicht. `make docs-check` nach dem Move zeigt, was
+   zieht Pfade nach, keine Zustandsätze, und einen präfixlosen **eingehenden** Verweis erkennt es nur
+   als Markdown-Link in den Geschwistern, die flach im Ausgangsverzeichnis liegen. `make docs-check`
+   nach dem Move zeigt, was
    stehen blieb — zieh es nach, bevor der nächste Schritt startet.
 10. WIP-Limit = 1 pro Implementer (Modul 5): kein paralleles `in-progress/`.
 11. Lifecycle-Rücksprungkanten (Modul 5), falls sich der Slice als falsch erweist: zu groß →

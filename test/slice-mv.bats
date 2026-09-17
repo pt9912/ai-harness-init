@@ -3,7 +3,7 @@
 #
 # Der Selbsttest der Ersetzung laeuft OHNE ein Repo zu bewegen: er sourced das
 # Skript (BASH_SOURCE-Waechter unterdrueckt main()/git mv) und ruft
-# rewrite_incoming_in_file/rewrite_outgoing_bare_in_file direkt auf Proben —
+# die Ersetzungs-Funktionen direkt auf Proben —
 # sonst misst der Selbsttest sich selbst statt der Ersetzung. Diese Datei fuehrt
 # ALLE ihre Faelle so, ohne Ausnahme — die EINGEHEND-Ausnahmeliste
 # (eingehend_ausgenommene_pfade) ist eine reine Funktion und darum
@@ -18,8 +18,8 @@
 # Pruefungen tragen die Kopplung, und die zweite traegt sie breiter:
 #   (1) jeder Fall unten faehrt BEIDE Fassungen — das deckt die Entscheidungen,
 #       die ein Fall ausloest;
-#   (2) der Kopplungs-Fall am Dateiende vergleicht die RUEMPFE der drei
-#       Ersetzungs-Funktionen — das deckt auch eine einseitig entfernte
+#   (2) der Kopplungs-Fall am Dateiende vergleicht die RUEMPFE der Funktionen
+#       in KERN — das deckt auch eine einseitig entfernte
 #       Entscheidung, die kein Fall trifft (etwa das /g-Flag des Eingehend-sed).
 # Die zwei unterscheiden sich in ihrer Verankerung — Repo-Pfade, Kommentare, die
 # Ausnahmeliste als Konstante bzw. als setzbare Variable —, nicht in der
@@ -100,6 +100,33 @@ EOF
   grep -qF '../ZIEL/slice-13-x.md' "$TMP/probe.md"
   grep -qF '../open/slice-130-y.md' "$TMP/probe.md"
   ! grep -q 'slice-130-y\.md' <(grep 'ZIEL' "$TMP/probe.md")
+  done
+}
+
+@test "eingehend praefixlos: jeder Link auf die bewegte Datei bekommt ../ZIEL/ — gleichnamiger Code-Span, Tree-Operand, Praefix-Verweis und laengerer Name bleiben (ganzer Dateiinhalt)" {
+  for fassung in "${FASSUNGEN[@]}"; do
+  load_functions "$fassung"
+  cat > "$TMP/geschwister.md" <<'EOF'
+[a](slice-999-x.md) und [b](slice-999-x.md#7-closure-notiz)
+`slice-999-x.md`
+`git show 1a2b3c4:slice-999-x.md`
+[c](../open/slice-999-x.md)
+[d](slice-999-x.mdx)
+[e](slice-998-y.md)
+[f](slice-999-x.md)
+EOF
+  run rewrite_incoming_bare_in_file "$TMP/geschwister.md" "slice-999-x.md" "ZIEL"
+  [ "$status" -eq 0 ]
+  [ "$output" = "3" ] || { echo "Zaehler ($fassung): $output"; return 1; }
+  erwartet='[a](../ZIEL/slice-999-x.md) und [b](../ZIEL/slice-999-x.md#7-closure-notiz)
+`slice-999-x.md`
+`git show 1a2b3c4:slice-999-x.md`
+[c](../open/slice-999-x.md)
+[d](slice-999-x.mdx)
+[e](slice-998-y.md)
+[f](../ZIEL/slice-999-x.md)'
+  ist="$(cat "$TMP/geschwister.md")"
+  [ "$ist" = "$erwartet" ] || { echo "Ist-Bestand ($fassung) weicht ab:"; echo "$ist"; return 1; }
   done
 }
 
@@ -199,10 +226,10 @@ EOF
 # Der Ersetzungs-KERN, den beide Fassungen teilen MUESSEN. Ein Fall trifft nur die
 # Entscheidungen, die er ausloest; eine einseitig entfernte Entscheidung bliebe
 # ueber jedem Fall gruen. Verglichen werden darum die Funktionsruempfe.
-KERN=(re_escape rewrite_incoming_in_file rewrite_outgoing_bare_in_file)
+KERN=(re_escape rewrite_incoming_in_file rewrite_incoming_bare_in_file rewrite_outgoing_bare_in_file)
 
 # funktions_rumpf liest den Rumpf EINER Funktion: von der Definitionszeile in
-# Spalte 0 bis zur ersten schliessenden Klammer in Spalte 0. Die drei Funktionen
+# Spalte 0 bis zur ersten schliessenden Klammer in Spalte 0. Die Funktionen
 # des Kerns tragen keine inneren Kommentare und keine Verschachtelung auf
 # Spalte 0 — die zwei Grenzen des Lesers stehen hier, statt still zu gelten.
 funktions_rumpf() {  # $1=datei $2=funktion
@@ -213,7 +240,7 @@ funktions_rumpf() {  # $1=datei $2=funktion
   ' "$1"
 }
 
-@test "kopplung: die drei Ersetzungs-Funktionen sind in beiden Fassungen wortgleich (weissraum-normalisiert)" {
+@test "kopplung: die Funktionen der Liste KERN sind in beiden Fassungen wortgleich (weissraum-normalisiert)" {
   for fn in "${KERN[@]}"; do
     a="$(funktions_rumpf "$DOGFOOD" "$fn" | tr -s '[:space:]' ' ')"
     b="$(funktions_rumpf "$EMITTIERT" "$fn" | tr -s '[:space:]' ' ')"

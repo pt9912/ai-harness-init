@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # files: internal/emit/templates/enforce/slice-mv.sh
-# expect: die drei Ersetzungs-Funktionen sind in beiden Fassungen wortgleich
+# expect: die Funktionen der Liste KERN sind in beiden Fassungen wortgleich
 # verify: test-bats
 #
 # NIMMT DEM EINGEHEND-SED DAS /g-FLAG — NUR IM EMITTIERTEN EXEMPLAR. Danach
@@ -8,9 +8,9 @@
 # Nachzug laesst in jeder Zeile mit zwei Treffern einen Verweis auf das alte
 # Verzeichnis stehen.
 #
-# WARUM DIESER FALL DIE FALL-SAETZE NICHT BRAUCHT: jede Probe der Fall-Saetze
+# WARUM DIESER FALL DIE FALL-SAETZE NICHT BRAUCHT: jede Probe der Praefix-Faelle
 # traegt genau ein Vorkommen je Zeile, und die zwei Fassungen werden getrennt
-# gefahren — alle elf blieben mit dieser Mutation gruen. Getragen wird sie allein
+# gefahren — alle Fall-Saetze blieben mit dieser Mutation gruen. Getragen wird sie allein
 # vom Kopplungs-Fall, der die Funktionsruempfe der zwei Fassungen gegeneinander
 # haelt.
 #
