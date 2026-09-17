@@ -1,0 +1,2 @@
+**Vorgang:** slice-mv-zieht-praefixlose-geschwister-verweise-nach
+**Fund:** Die Nacharbeit zum Review änderte Kommentarzeilen in `harness/tools/slice-mv.sh` und ließ die Blob-Angabe der Kanten-Tabelle in der Sensor-Datei stehen. Das Kommando daneben gab am neuen Stand einen anderen Blob aus (Verifikation V-1). Die Angabe steht jetzt mit einem Kommando auf einen festen Commit. Dass Tabelle und Skript im Baum zusammengehören, hält weiterhin kein Schritt.

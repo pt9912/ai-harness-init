@@ -1,0 +1,2 @@
+**Vorgang:** slice-mv-zieht-praefixlose-geschwister-verweise-nach
+**Fund:** Skriptkopf, Sensor-Datei und Review nannten `slice-mv-kanten-nach-done-sind-bewacht` als Adresse für zwei Lücken: die Übergabe in `main()` ohne Zahn und die Zusage, dass eine Datei in der Zeile `eingehend:` einmal zählt (Review F-4). Dessen DoD deckte die Auswahl nur über die Auflösung und die Zählung gar nicht. Die Closure hat die DoD des noch nicht begonnenen Slice geschärft (`7d3f66e5`).

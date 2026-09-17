@@ -1,0 +1,2 @@
+**Vorgang:** slice-mv-zieht-praefixlose-geschwister-verweise-nach
+**Fund:** Nach der Messung an zwei Slices sagte die Sensor-Datei von `make docs-check`, aus den Geschwister-Dateien bleibe nach einer Stilllegungs-Kante kein Befund stehen. Das Ergebnis hängt aber an der Schreibweise des Verweises: Das Werkzeug erkennt nur den präfixlosen Markdown-Link, und der Satz traf nur zu, weil der Bestand keine andere Schreibweise führt (Verifikation V-2). Der Satz ist jetzt auf die erkannte Form eingeschränkt.

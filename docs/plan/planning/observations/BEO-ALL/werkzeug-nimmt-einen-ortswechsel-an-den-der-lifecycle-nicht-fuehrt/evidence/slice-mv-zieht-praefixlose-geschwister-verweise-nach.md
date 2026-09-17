@@ -1,0 +1,2 @@
+**Vorgang:** slice-mv-zieht-praefixlose-geschwister-verweise-nach
+**Fund:** Die neue präfixlose Ersetzung von `make slice-mv` läuft auch, wenn die bewegte Datei aus `done/` kommt, und schreibt dann in flache `done/`-Geschwister (Review F-2). §6 Risiko 4 knüpfte *entfallen* an eine Beschränkung auf `open/`, `next/` und `in-progress/`, die nicht gebaut ist, und bleibt weiter offen. Im Repo hat kein Werkzeug-Commit `done/` verlassen.

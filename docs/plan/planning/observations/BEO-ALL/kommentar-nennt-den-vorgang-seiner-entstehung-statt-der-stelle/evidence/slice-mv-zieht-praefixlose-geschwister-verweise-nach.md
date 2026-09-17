@@ -1,0 +1,2 @@
+**Vorgang:** slice-mv-zieht-praefixlose-geschwister-verweise-nach
+**Fund:** Zwei Kommentarzeilen, die der Diff schrieb oder änderte, beschrieben den Vorgang statt der Stelle. Ein BELEG-Satz im Kopf von `harness/tools/slice-mv.sh` stellte das frühere Verhalten von `main()` dem heutigen gegenüber. Der Kopf eines angefassten Mutations-Falls behielt ein Lauf-Protokoll im Präteritum. Gefunden hat beides der Review (HIGH), kein Sensor; behoben ist es vor der Closure.
