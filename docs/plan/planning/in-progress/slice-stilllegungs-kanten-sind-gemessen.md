@@ -105,14 +105,18 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **1 — `make slice-mv` ist für beide Kanten gemessen.** Je ein Slice aus `open/` und einer
+- [x] **1 — `make slice-mv` ist für beide Kanten gemessen.** Je ein Slice aus `open/` und einer
       aus `next/` gehen mit `TO=done`, auf einer Wegwerf-Kopie außerhalb des Repos, in der das
       Werkzeug committen darf. Festgehalten sind je Kante Exit-Code und Ausgabe, ob der Move rein
       bleibt, ob eingehende Verweise nachgezogen werden und ob ausgehende Verweise auf Geschwister
       im alten Verzeichnis ihr Präfix bekommen
       ([`harness/sensors/slice-mv.md`](../../../../harness/sensors/slice-mv.md) §Grenze).
       **Beide Kanten, nicht eine** (§8, `zusage-nennt-zwei-kanten-der-sensor-deckt-eine`).
-- [ ] **2 — `make docs-check` ist über einem Stand gemessen, in dem je Kante ein Slice in der
+      **Beleg:** [`harness/sensors/slice-mv.md`](../../../../harness/sensors/slice-mv.md) §Grenze,
+      Abschnitt *Kanten `open → done` und `next → done`*, gemessen am Stand `004335cc` des Skripts
+      (`git log -1 --format=%h -- harness/tools/slice-mv.sh`). Jede Kante ist in zwei Kontexten
+      gemessen, und die Werte stimmen überein (Verifikation vom 2026-09-17, §1 und §2).
+- [x] **2 — `make docs-check` ist über einem Stand gemessen, in dem je Kante ein Slice in der
       Form der Ziel-Fassung in `done/` liegt:** leere Liefer-Punkte, §7 mit `Gegenstand:`,
       Risiken mit Ausgang. Gelesen ist jede Meldung samt Grund-Code, nicht nur der Exit —
       namentlich `closure-note-thin` und `closure-note-placeholder` der Fähigkeit `closure`
@@ -121,7 +125,12 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       dann kein Modul, ist das eine Grenze und wird so benannt; die Ziel-Fassung sagt selbst, dass
       kein Link-Sensor die Kennung als Token prüft. Die Messung nennt den Digest des gepinnten
       d-check, gegen den sie läuft (§8, `aussage-ueber-das-gepinnte-werkzeug-ohne-blick-in-seinen-stand`).
-- [ ] **3 — Jede Kante hat ihren Ausgang an dem Ort, den der nächste Lauf liest.** Trägt ein
+      **Beleg:** [`harness/sensors/docs-check.md`](../../../../harness/sensors/docs-check.md)
+      §Grenze, Abschnitt *Ein stillgelegter Slice in `done/`*, gemessen gegen den Digest
+      `e31a372b…`, den `grep -n DCHECK_DIGEST d-check.mk` nennt. Das Gegenbeispiel ohne
+      `Gegenstand:` bleibt still und steht als Lücke mit Adresse da. `closure-note-thin` und
+      `closure-note-placeholder` sind rot gesehen und gelesen (Verifikation §1 und §2).
+- [x] **3 — Jede Kante hat ihren Ausgang an dem Ort, den der nächste Lauf liest.** Trägt ein
       Werkzeug die Kante, steht das als gemessene Eigenschaft mit Kommando in seiner Sensor-Datei
       ([`harness/sensors/slice-mv.md`](../../../../harness/sensors/slice-mv.md),
       [`harness/sensors/docs-check.md`](../../../../harness/sensors/docs-check.md)). Trägt es sie
@@ -129,17 +138,28 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       mit Kennung oder eine Anforderung an das d-check-Repo. Jede Zusage, die dabei in eine
       Sensor-Datei kommt, hat ein rot gesehenes Gegenbeispiel
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
-- [ ] `make gates` grün über dem Liefer-Stand.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+      **Beleg:** Beide Dateien führen Messung, Grenze und Gegenbeispiel und sagen, dass kein
+      Wächter sie hält. Die Adressen der Lücken sind `slice-mv-zieht-praefixlose-geschwister-verweise-nach`
+      und `slice-risiko-ausgang-hat-einen-sensor` in `open/` sowie der eingehende Änderungswunsch
+      im d-check-Repo (Commit `d8e30b7d` auf dessen Remote). Der Wächter hat die Adresse
+      `slice-mv-kanten-nach-done-sind-bewacht`. Das Element Risiko-Ausgang ist mit `42f3a6d1`
+      nachgetragen (Verifikations-Nachprüfung vom 2026-09-17, Punkte 1 und 2).
+- [x] `make gates` grün über dem Liefer-Stand. **Beleg:** EXIT 0 über `28aaca3d` (Verifikation §1)
+      und über dem Stand der Nacharbeit (Message von `cdda6cfd`). Die Closure-Commits deckt der
+      Lauf, der nach ihnen fährt.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
-      Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: über Liefer-Punkt 3 hinaus keines — die zwei Sensor-Dateien sind der Ort,
-      an dem der Befund steht.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt Wellen (`ls docs/plan/planning/welle-*.md`), sie werden deshalb von der nächsten Welle-Closure geprüft, auch für diesen Slice ohne Wellen-Zugehörigkeit.
+      Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8). **Beleg:** Review und
+      Nachprüfung vom 2026-09-17, beide aus einem Reviewer-Kontext.
+- [x] Doku-Update: über Liefer-Punkt 3 hinaus keines — die zwei Sensor-Dateien sind der Ort,
+      an dem der Befund steht. **Beleg:** `git diff --stat cbb49bf2..28aaca3d` (Verifikation §1).
+      Daneben änderte der Planner seinen Anweisungssatz `.claude/commands/plan-welle.md`
+      (`dd330ee9`); einen öffentlichen Vertrag berührt das nicht.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt Wellen (`ls docs/plan/planning/welle-*.md`), sie werden deshalb von der nächsten Welle-Closure geprüft, auch für diesen Slice ohne Wellen-Zugehörigkeit.
 
 ## 3. Plan (vor Code)
 
@@ -215,17 +235,39 @@ dasteht.
 Den Ausgang setzt die Closure. *Absehbar* nennt, welcher Ausgang unter welcher Bedingung eintritt.
 
 1. **`make slice-mv` committet selbst.** Am Arbeitsbaum gefahren, legt die Messung echte Commits
-   auf den Hauptzweig. *Absehbar:* entfallen, wenn sie an der Kopie läuft.
+   auf den Hauptzweig. *Absehbar:* entfallen, wenn sie an der Kopie läuft. — **Ausgang:
+   entfallen.** Alle Messungen liefen an Wegwerf-Kopien, beim Implementer, im Review und in der
+   Verifikation. Seit dem Claim trägt der Hauptzweig keinen weiteren Werkzeug-Commit
+   (`git log --format=%s cbb49bf2..cdda6cfd | grep -c '^slice-mv:'` → 0).
 2. **Grün ohne Gegenbeispiel sagt nichts.** Ein Modul, das die Form gar nicht liest, bleibt grün.
-   *Absehbar:* entfallen mit dem Gegenbeispiel aus Liefer-Punkt 2.
+   *Absehbar:* entfallen mit dem Gegenbeispiel aus Liefer-Punkt 2. — **Ausgang: entfallen.** Das
+   Gegenbeispiel ohne `Gegenstand:` ist gefahren und bleibt still; die Sensor-Datei führt es als
+   Lücke mit Adresse. Rot gesehen sind `closure-note-thin` (§7 auf einen Satz gekürzt),
+   `closure-note-placeholder` und der bloße `git mv` mit `target-missing` (Review, Eigene Messung;
+   Verifikation §2). Still bleibt auch ein Risiko ohne Ausgang; die Datei führt es mit der Adresse
+   `slice-risiko-ausgang-hat-einen-sensor`.
 3. **Der gepinnte d-check wandert, bevor die Gruppierung läuft.** Dann gilt die Messung für einen
    anderen Stand. *Absehbar:* entfallen, wenn der Digest zwischen Messung und Gruppierung
    gleich bleibt; sonst eingetreten, Beleg in
-   `aussage-ueber-das-gepinnte-werkzeug-ohne-blick-in-seinen-stand`.
+   `aussage-ueber-das-gepinnte-werkzeug-ohne-blick-in-seinen-stand`. — **Ausgang: weiter offen.**
+   Bis zur Closure hat sich der Pin nicht bewegt
+   (`git log --format=%h 5655d3a0..cdda6cfd -- d-check.mk | wc -l` → 0). Die Gruppierung hat aber
+   nicht begonnen, und bis dahin kann er wandern. Einen lauten Fall fängt Prüfung 3 aus
+   `.claude/commands/plan-welle.md` §Einen Slice stilllegen, denn sie fährt `make docs-check` am
+   geltenden Pin. Still bliebe ein neuer Stand, der eine gemessene Meldung nicht mehr gibt: Kein
+   Schritt hält den Digest der Sensor-Datei gegen `DCHECK_DIGEST` in `d-check.mk`. Eingetreten ist
+   das Risiko nicht. Der Beleg steht darum nicht in dem Eintrag, den der Plan für diesen Fall nennt,
+   sondern in
+   [`BEO-ALL/werkzeug-messung-und-gemessener-stand-werden-nicht-zusammengehalten`](../observations/BEO-ALL/werkzeug-messung-und-gemessener-stand-werden-nicht-zusammengehalten/observation.md).
 4. **`make slice-mv` committet mit dem Slice-Namen**, und auf einem Klon mit aktiviertem
    `commit-msg`-Hook fällt dieser Commit ([`harness/README.md`](../../../../harness/README.md)
    §Traceability). Eine Kopie ohne `core.hooksPath` sieht das nicht. *Absehbar:* weiter offen,
-   Adresse ist `slice-werkzeug-commits-tragen-eine-kennung`.
+   Adresse ist `slice-werkzeug-commits-tragen-eine-kennung`. — **Ausgang: weiter offen.** Der
+   Claim-Commit `cbb49bf2` trägt keine Kennung und ging durch, weil dieser Klon `core.hooksPath`
+   nicht setzt (`git config --get core.hooksPath` → Exit 1); den Move-Commit dieser Closure
+   schreibt dasselbe Werkzeug. Der Beleg steht in
+   [`BEO-ALL/commit-message-ohne-traceability-kennung`](../observations/BEO-ALL/commit-message-ohne-traceability-kennung/observation.md).
+   Die Adresse `slice-werkzeug-commits-tragen-eine-kennung` ist in `next/`.
 
 ## 7. Closure-Notiz
 
@@ -237,13 +279,155 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** offen bis zur Closure.
-- **Was ging anders als geplant:** offen bis zur Closure.
-- **Steering-Loop-Eintrag:** offen bis zur Closure; die Form hängt am Ergebnis der Messung (§5).
-- **Beobachtungs-Register (`../observations/`):** offen bis zur Closure.
-- **Folge-Slices:** offen bis zur Closure — je Lücke einer, sonst keiner (Liefer-Punkt 3).
-- **Risiken aus §6:** offen bis zur Closure, jedes mit genau einem Ausgang.
-- **Drei Paarungen:** entfällt hier — dieses Repo fährt Wellen (§2).
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10), am Stand
+`cdda6cfd`. Maßstab sind Baseline-Regelwerk `v6.9.0` · `modul-05-planning-harness.md` §Closure- und
+Lerneintrag-Regeln und `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht, dort die Tabelle der
+Träger im Repo ohne Wellen. Für fremde Repos gilt die Regel des Auftraggebers vom 2026-09-17: Dort
+wird nichts committet oder gepusht.
+
+- **Was hat funktioniert:**
+  - Jede Kante ist in zwei Kontexten gemessen, beide Male an Wegwerf-Kopien: `open → done` beim
+    Implementer und in der Verifikation, `next → done` beim Implementer und im Review. Die Werte
+    stimmen überein (Verifikation §1).
+  - Die Gegenbeispiele sind rot gesehen und die Meldungen gelesen (§6 Risiko 2). Was still bleibt,
+    steht als Grenze mit Adresse in den Sensor-Dateien.
+  - Beide Closure-Kriterien aus §5 sind erfüllt. Die vier Paarungen aus Kante und Werkzeug stehen
+    mit Kommando, Exit-Code und gelesener Meldung in den zwei Sensor-Dateien. Jede Adresse löst
+    auf: die Folge-Slices in `open/` und der eingehende Änderungswunsch im d-check-Repo, dessen
+    Commit `d8e30b7d` auf dem Remote steht (`git -C <d-check-klon> branch -r --contains d8e30b7d`
+    → `origin/main`, nur gelesen).
+- **Was ging anders als geplant:**
+  - **Die Wächter-Pflicht aus §3 entfiel im ausführenden Kontext** (Review F-2). Die Verfeinerung
+    erklärte die Einträge zu Messungen. Den Ausschluss mit Adresse hat der Planner in §1 gesetzt
+    (`d6bd222c`); damit ist der Plan geändert, nicht nur ergänzt.
+  - **Die Grenze der präfixlosen Verweise stand zuerst an der falschen Größe** (Review F-1). Sie
+    hängt am Geber, nicht an der Kante; die Sensor-Datei nennt sie jetzt für beide Kanten.
+  - **Für den Risiko-Ausgang war Liefer-Punkt 3 im ersten Verifikations-Lauf offen**
+    (Verifikation §3). Nachgetragen sind die Adresse `slice-risiko-ausgang-hat-einen-sensor`
+    (`a1ae2e74`) und die Lage in der Sensor-Datei (`42f3a6d1`).
+  - **Ein Anweisungssatz entstand im Vorgang, den §3 nicht vorsah:**
+    `.claude/commands/plan-welle.md` §Einen Slice stilllegen (`dd330ee9`). Anlass waren
+    Review-Nachprüfung N-1 und die Punkte 3 und 4 der Verifikation.
+  - **Die Lücke im gepinnten d-check hatte zuerst keine auflösbare Adresse** (Review F-5). Dass der
+    Commit auf dem Remote steht, hat erst die Verifikation festgestellt (§5 dort).
+- **Steering-Loop-Eintrag:** **Geschärfte Regel.** Eine Stilllegung über `make slice-mv` nimmt die
+  Kante nach `done/` je Slice einzeln. Nach jedem Wechsel laufen drei Prüfungen: Der Exit-Code ist
+  0, der Move-Commit ist ein reiner Rename, und `make docs-check` meldet keinen Befund. Fällt eine
+  Prüfung, hält die Serie an. Ob die `Gegenstand:`-Kennung auflöst, beurteilt der Lauf; einen
+  Sensor dafür gibt es nicht. Die Regel steht in `.claude/commands/plan-welle.md` §Einen Slice
+  stilllegen und gilt, bis `slice-mv-kanten-nach-done-sind-bewacht` geschlossen ist. **Kein
+  `liegt in`-Feld:** Auslöser war keine Beobachtung über der Schwelle, sondern ein Befund dieses
+  Vorgangs. Die Regel ist im Vorgang geschrieben und verifiziert (Verifikations-Nachprüfung,
+  Punkte 3 und 4). Für den Rest gilt: Die Lücken der zwei Werkzeuge sind **benannt**, jede mit
+  Adresse, und keine davon ist eine Spec-Lücke.
+- **Beobachtungs-Register (`../observations/`):** Der Beleg heißt in jedem Fall
+  `evidence/slice-stilllegungs-kanten-sind-gemessen.md`. Den Zähler liefert
+  `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/ | wc -l`, die Zahl der Belege aus
+  diesem Vorgang
+  `ls docs/plan/planning/observations/BEO-ALL/*/evidence/slice-stilllegungs-kanten-sind-gemessen.md | wc -l`
+  (→ 8). Keine der Zahlen ist ein Erwartungswert.
+
+  | Eintrag | Quelle | Zähler | Stand |
+  |---|---|---|---|
+  | [`stellen-messung-als-eigenschaft-ausgegeben`](../observations/BEO-ALL/stellen-messung-als-eigenschaft-ausgegeben/observation.md) | F-1 (wiederkehrende Klasse laut Review), Verifikation §3 | 1, neu | offen |
+  | [`plan-bedingung-im-ausfuehrenden-kontext-umgedeutet`](../observations/BEO-ALL/plan-bedingung-im-ausfuehrenden-kontext-umgedeutet/observation.md) | F-2 | 1, neu | offen |
+  | [`werkzeug-messung-und-gemessener-stand-werden-nicht-zusammengehalten`](../observations/BEO-ALL/werkzeug-messung-und-gemessener-stand-werden-nicht-zusammengehalten/observation.md) | F-3; §6 Risiko 3 | 1, neu | offen |
+  | [`mess-rezept-setzt-unbenannte-host-konfiguration-voraus`](../observations/BEO-ALL/mess-rezept-setzt-unbenannte-host-konfiguration-voraus/observation.md) | F-4 | 1, neu | offen |
+  | [`bedingung-ohne-traeger-im-lauf-den-sie-bindet`](../observations/BEO-ALL/bedingung-ohne-traeger-im-lauf-den-sie-bindet/observation.md) | N-1; zwei Hinweise der Verifikations-Nachprüfung | 1, neu | offen |
+  | [`werkzeug-luecke-im-nachbar-repo-ohne-adresse`](../observations/BEO-ALL/werkzeug-luecke-im-nachbar-repo-ohne-adresse/observation.md) | F-5; Anforderung zum Risiko-Ausgang | 2 | offen |
+  | [`eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`](../observations/BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet/observation.md) | F-6; dritter Hinweis der Verifikations-Nachprüfung | 2 | offen |
+  | [`commit-message-ohne-traceability-kennung`](../observations/BEO-ALL/commit-message-ohne-traceability-kennung/observation.md) | Claim `cbb49bf2`; §6 Risiko 4 | 4 | verkörpert |
+
+  **Kein Eintrag erreicht mit diesem Slice zum ersten Mal 3×**, der Lese-Schritt hat also keinen
+  Gegenstand. `commit-message-ohne-traceability-kennung` stand schon über der Schwelle. Der Fall
+  tritt innerhalb seiner benannten Grenze wieder auf, der Werkzeug-Zeile der Reichweiten-Tabelle in
+  [`harness/README.md`](../../../../harness/README.md) §Traceability, und der Ausgang bleibt.
+  **Nicht getragen, mit Urteil:**
+  - `zusage-nennt-zwei-kanten-der-sensor-deckt-eine`: Der Eintrag verlangt einen Sensor, der einen
+    der zwei Zeitpunkte einer Regel nicht urteilt. Hier hält kein Wächter die Kanten, und beide
+    Sensor-Dateien sagen das. Gemessen sind beide Lifecycle-Kanten, verfehlt war bei F-1 die Größe,
+    an der das Ergebnis hängt. Den Fall trägt der neue Eintrag oben.
+  - `aussage-ueber-das-gepinnte-werkzeug-ohne-blick-in-seinen-stand`: kein drittes Auftreten. Die
+    Messung lief gegen den gepinnten Digest und nennt ihn, und der Review hat die
+    Konfigurations-Vorlage desselben Bildes gelesen. Der offene Teil von Risiko 3 ist eine andere
+    Frage.
+  - `verweise-brechen-beim-ortswechsel`: Die gemessene Lücke ist die eingehende präfixlose Form, die
+    der Eintrag als Grenze seiner Verkörperung schon nennt. Aufgetreten ist sie nur an Kopien.
+  - `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`: Claim und Closure ziehen den
+    Ruhe-Marker in eigenen Commits mit, der Claim mit `5655d3a0`, die Closure mit dem Commit nach
+    ihrem Move.
+  - `uebergabe-an-andere-rolle-ohne-traeger-artefakt`: kein Beleg für die Frage an den Architect
+    (unten). [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
+    §Konsequenzen führt die Lücke selbst als offen, und das Register trägt ihr Auftreten. Die
+    Frage hängt also nicht allein an dieser Notiz.
+  - F-7 bekommt keinen Eintrag: Die Lücke hat mit `slice-risiko-ausgang-hat-einen-sensor` ihre
+    Adresse.
+- **Trigger-Audit** (wellenlos, bei der Slice-Closure):
+  - **Carveout:** `CO-001` steht auf *Auflösung fällig*, die Adresse ist
+    `slice-113-co-001-ist-faellig`. `CO-002` steht auf *permanent*. Dieser Slice berührt keine
+    ihrer Bedingungen.
+  - **Bootstrap-aware Gate:** keines vorhanden
+    (`grep -n -i 'bootstrap-aware' Makefile *.mk harness/mk/*.mk` → kein Treffer).
+  - **ADR:**
+    - [`ADR-0056`](../../adr/0056-ziel-fassung-regiert-den-sprung-v690.md) §Was diese Festlegung
+      nicht tut: Die Frage, ob Werkzeuge und Doku-Gate die Kanten tragen, ist jetzt gemessen. Die
+      Antwort steht in [`harness/sensors/slice-mv.md`](../../../../harness/sensors/slice-mv.md)
+      und [`harness/sensors/docs-check.md`](../../../../harness/sensors/docs-check.md), jeweils
+      §Grenze. Die ADR bleibt, wie sie ist: Der Satz grenzt ab, was die Festlegung selbst
+      entscheidet, und die ADR ist `Accepted` ([`AGENTS.md`](../../../../AGENTS.md) §3.4,
+      Verifikation §6). Offen bleibt, ob das Repo die Kanten nimmt. Keiner ihrer vier
+      Re-Evaluierungs-Trigger ist berührt.
+    - [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md): Der offene
+      Teil von Festlegung 2, die Norm-Aussage ohne Original, ist getroffen (Übergabe unten).
+      Keiner der vier Trigger feuert: `plan-welle.md` hat eine ausführende Rolle, und ihr Commit
+      nennt sie.
+    - [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md): nur als Ausschluss
+      berührt, keiner ihrer Trigger.
+    - [`ADR-0042`](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md): Vor dem Move
+      nennt kein Report unter `docs/reviews/` den Pfad in `in-progress/`
+      (`grep -rn 'in-progress/slice-stilllegungs' docs/reviews/` → kein Treffer). Ob der
+      Nachzug-Commit einen Tree-Operanden umschreibt, liest die Closure nach dem Move.
+- **Folge-Slices:**
+  - `slice-mv-zieht-praefixlose-geschwister-verweise-nach` (`61be4d3a`): die präfixlosen Verweise
+    aus unbewegten Geschwistern.
+  - `slice-mv-kanten-nach-done-sind-bewacht` (`d6bd222c`): der dauerhafte Wächter beider Kanten.
+  - `slice-risiko-ausgang-hat-einen-sensor` (`a1ae2e74`): Kein Modul prüft den Risiko-Ausgang.
+  - `slice-werkzeug-commits-tragen-eine-kennung`, vorhanden in `next/`: Risiko 4.
+  - **Adresse ohne Slice:** die bedingte Pflichtzeile `Gegenstand:` als eingehender
+    Änderungswunsch im d-check-Repo (`d8e30b7d`). Die Anforderung zum Risiko-Ausgang liegt als
+    Text beim Auftraggeber.
+- **Übergaben:**
+  - **An den Architect:** Wem gehört die Setzung „Urteil" in `.claude/commands/plan-welle.md`
+    §Einen Slice stilllegen? Sie ist eine Norm-Aussage ohne Original, und
+    [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) Festlegung 2
+    nennt dafür keine Rolle. Der Architect entscheidet, ob sie so stehen bleibt und wem sie gehört.
+    Er entscheidet auch, ob die Verneinung einer Baseline-Abweichung, die heute nur in der Message
+    von `dd330ee9` steht, in eine Datei gehört. Einen Slice-Plan als Übergabe-Artefakt schneidet
+    diese Closure nicht. Die Frage tragen die ADR, die sie als offen führt, und der Beleg im
+    Register oben.
+  - **An den Lauf, der die Gruppierung beginnt** (Hinweise der Verifikations-Nachprüfung):
+    1. **Reihenfolge:** `slice-mv-zieht-praefixlose-geschwister-verweise-nach` schließt vor der
+       Gruppierung. Das steht heute nur in Plan-Dateien. Ein früherer Start fällt an Prüfung 3 laut
+       auf und hält die Serie an.
+    2. **Reichweite:** Die drei Prüfungen binden nur einen Lauf, der `plan-welle.md` liest. Ob der
+       Gruppierungs-Lauf diesen Anweisungssatz lädt, entscheidet der Planner beim Start.
+    3. **Risiko 3:** Vor der Serie ist der Digest in der Sensor-Datei gegen `DCHECK_DIGEST` in
+       `d-check.mk` zu halten.
+
+    Getragen sind die drei Punkte von den Register-Einträgen
+    `bedingung-ohne-traeger-im-lauf-den-sie-bindet` und
+    `werkzeug-messung-und-gemessener-stand-werden-nicht-zusammengehalten`. Beide liest §8 jeder
+    Slice-Planung.
+- **Risiken aus §6:** Jedes hat genau einen Ausgang: 1 und 2 sind entfallen, 3 und 4 bleiben weiter
+  offen.
+- **Archiv:** keines. Dieses Repo archiviert bei einer Slice-Closure nicht
+  (`ls docs/plan/planning/done/*.zip docs/plan/planning/done/*/archiv.zip 2>/dev/null | wc -l`
+  → 0).
+- **Drei Paarungen**, die die nächste Welle-Closure ebenfalls prüft (§2):
+  - (a) Kein Gegenstand, denn diese Notiz führt kein `liegt in`-Feld.
+  - (b) Getragen: Jeder genannte Folge-Slice existiert als Datei im Lifecycle.
+  - (c) Getragen: Jede genannte Beobachtung existiert als Verzeichnis, und jedes trägt einen
+    Beleg.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

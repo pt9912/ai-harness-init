@@ -1,0 +1,2 @@
+**Vorgang:** slice-stilllegungs-kanten-sind-gemessen
+**Fund:** Beide Hälften im selben Vorgang. Die Messtabelle in der Sensor-Datei von `make slice-mv` nannte den Stand des gemessenen Skripts nicht, bis die Nacharbeit ihn mit Kommando nachtrug (Review F-3). Und §6 Risiko 3 des Slice bleibt offen: Die Messung in der Sensor-Datei von `make docs-check` nennt ihren Digest, aber kein Schritt des Laufs, der die Kanten nimmt, hält ihn gegen `DCHECK_DIGEST` in `d-check.mk`.

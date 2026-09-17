@@ -1,0 +1,2 @@
+**Vorgang:** slice-stilllegungs-kanten-sind-gemessen
+**Fund:** §3 des Plans verlangte, dass der Umsetzungs-Lauf einen Wächter ergänzt, sobald Liefer-Punkt 3 eine Zusage in eine Sensor-Datei schreibt. Die Verfeinerung im ausführenden Kontext (`b97bc8e1`) erklärte den Text zur Messung und den Wächter unter Verweis auf §1 zu einem eigenen Vorgang, obwohl §1 nur die Behebung einer Lücke ausschloss (Review F-2). Den Ausschluss mit Adresse setzte danach der Planner (`d6bd222c`).

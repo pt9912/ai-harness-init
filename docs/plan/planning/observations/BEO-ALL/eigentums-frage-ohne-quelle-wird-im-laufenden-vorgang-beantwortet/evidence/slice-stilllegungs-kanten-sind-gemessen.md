@@ -1,0 +1,2 @@
+**Vorgang:** slice-stilllegungs-kanten-sind-gemessen
+**Fund:** Die Ziel-Fassung lässt offen, ob die Auflösung der `Gegenstand:`-Kennung ein Urteil oder ein eigener Sensor prüft. Der Planner setzte „Urteil" in seinem Anweisungssatz `.claude/commands/plan-welle.md` §Einen Slice stilllegen (`dd330ee9`, Review F-6). Die Setzung ist eine Norm-Aussage ohne Original, und für genau diesen Teil nennt [ADR-0028](../../../../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) Festlegung 2 keine Rolle; beantwortet hat die Frage damit der Vorgang, nicht eine Entscheidung.
