@@ -89,9 +89,11 @@ hält [`test/commit-msg-hook.bats`](../../test/commit-msg-hook.bats) gegen die L
     genannt sind die gemessenen.
 
   Welche Form vorliegt, ist ein Zustand des Klons und wechselt mit seiner Pack-Wartung und seiner
-  Klon-Art; die Abbruch-Bedingung und ihre Grenze für alle history-lesenden Ziele führt
-  [`MR-064`](../conventions.md#mr-064--d-check-pin-v0761-vcs-bricht-bei-unlesbarem-unterbaum-ab)
-  §Grenze.
+  Klon-Art; entscheidend ist dabei nicht der **Name** des Packs, sondern ob seine Objekte über
+  einen passenden Index überhaupt erreichbar sind. Die zwei verbliebenen Abbruch-Bedingungen und
+  ihre Grenze für alle history-lesenden Ziele führt
+  [`MR-066`](../conventions.md#mr-066--d-check-pin-v0763-packs-unter-fremdem-präfix-lesbar-range-immer-aufgelöst)
+  ([`#mr-066`](../conventions.md#mr-066)) §Messung 1 und §Grenze.
 
   Fehlerfrei **und** weiter prüfend bleibt in jedem Klon nur `--commit-msg` mit der realen,
   nicht-leeren Liste (dieser Sensor). Ob ein Range-Lauf über einem Klon in einer der geprüften
