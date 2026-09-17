@@ -1,5 +1,7 @@
 # MR-065 — Ein history-lesender Lauf einer d-check-Bilanz nennt, woher sein Klon die Objekte liest
 
+> **ÜBERHOLT: der Satz nach der Tabelle „Die Lagen mit Packs, deren Name nicht mit `pack-` beginnt (`loose-*`, `xyz-*`), misst MR-064; sie brechen ab.“ und in Setzung 2 der zitierte Wortlaut „… deren Objekte in Packs mit dem Präfix `pack-` oder lose liegen …“ → [`MR-066`](../conventions.md#mr-066--d-check-pin-v0763-packs-unter-fremdem-präfix-lesbar-range-immer-aufgelöst).** Setzung 1, die Regel von Setzung 2 — eine Lage außerhalb der gemessenen heißt ungemessen, nicht frei —, die Tabelle und ihre Grenzen gelten fort; die Alternates-Zeile ist am Stand `v0.76.3` nachgemessen und bricht dort unverändert ab.
+
 - **Datum:** 2026-09-17
 - **Wirksamkeits-Anlass:** slice-d-check-pin-zieht-den-vcs-patch-nach.
 - **Geltungsbereich:** die **Angabe**, die ein history-lesender Lauf (`make adr-immutable`, das

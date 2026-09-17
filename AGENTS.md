@@ -375,8 +375,8 @@ entscheidet der Slice, der die Tool-Ebene entscheidet — nicht diese Sektion.
 stehen nicht in dieser Liste, das Rezept des Doku-Gates schaltet keines zu
 (`sed -n '/^docs-check:/,+1p' d-check.mk`), und keines hält die Dateien eines Commits gegen seine
 Message: `commits` prüft die Message auf eine Kennung, `vcs` den Kern einer Datei zwischen zwei
-Ständen. Gemessen am Stand `v0.76.1`, `D` ein maschinen-lokaler Klon des Werkzeugs —
-`git -C "$D" grep -l 'driven\.VCS' v0.76.1 -- internal/hexagon/core/rules/ ':!*_test.go'` nennt
+Ständen. Gemessen am Stand `v0.76.3`, `D` ein maschinen-lokaler Klon des Werkzeugs —
+`git -C "$D" grep -l 'driven\.VCS' v0.76.3 -- internal/hexagon/core/rules/ ':!*_test.go'` nennt
 neben dem Verteiler `run.go` genau `commits.go` und `vcs.go`. Und `make mutate` lässt einen Fall
 nur für eine Stufe zu, für die `failure_form()` ein Fehlschlag-Muster führt
 (`sed -n '/^failure_form()/,/^}/p' harness/tools/mutate.sh`). Keine dieser Stufen hält die Dateien
