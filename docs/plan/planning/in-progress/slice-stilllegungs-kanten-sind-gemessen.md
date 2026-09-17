@@ -74,6 +74,12 @@ die Gruppierung warten kann.
   eigene Zusage mit rot gesehenem Gegenbeispiel ([`AGENTS.md`](../../../../AGENTS.md) §3.6);
   Liefer-Punkt 3 gibt der Lücke eine Adresse. Liegt sie im gepinnten d-check, ist die Adresse
   eine Anforderung an dessen Repo — *Schicht-Abgrenzung*, das Werkzeug gehört nicht diesem Repo.
+- **Ein Wächter, der die zwei Kanten dauerhaft hält.** *Ein Folge-Slice übernimmt ihn:*
+  `slice-mv-kanten-nach-done-sind-bewacht`, im Dogfood und im gebootstrappten Ziel. Gesetzt vom
+  Planner nach Review-Befund F-2. Die Messung aus Liefer-Punkt 3 ist darum eine Messung und keine
+  bewachte Zusage. Vor der Gruppierung muss der Wächter nicht stehen, weil der Lauf, der die Kanten
+  nimmt, je Wechsel Exit-Code, reinen Rename und `make docs-check` prüft. Die Begründung steht in
+  §1 des Folge-Slice.
 - **Die Stub-Zeile `Hervorgegangen:` in `make archive-welle`.** *Anderer Vorgang:* Die
   Ziel-Fassung verlangt sie, wenn eine Welle einen Geber archiviert, und dieses Repo hat noch
   keine Welle archiviert (`git ls-files 'docs/plan/planning/done/**/*.zip'` → leer, kein
@@ -161,7 +167,9 @@ gesehene Gegenbeispiel steht je Datei daneben — der bloße `git mv` in
 hält, bräuchte `git` in der bats-Stufe oder einen Fall in `make full-smoke`; das ist ein eigener
 Vorgang am Werkzeug (§1). Zwei Lücken bekommen eine Adresse, als Übergabe an den Planner: der
 Folge-Slice `slice-mv-zieht-praefixlose-geschwister-verweise-nach` (Sub-Area `TOOLS`) und eine
-Anforderung an das d-check-Repo (bedingte Pflichtzeile `Gegenstand:`).
+Anforderung an das d-check-Repo (bedingte Pflichtzeile `Gegenstand:`). Der Wächter selbst hat
+seine Adresse als dritte in §1 (`slice-mv-kanten-nach-done-sind-bewacht`, Planner-Entscheidung
+nach Review-Befund F-2).
 
 ## 4. Trigger
 

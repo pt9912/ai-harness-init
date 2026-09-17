@@ -111,8 +111,13 @@ Drei Liefer-Punkte auf zwei Ebenen: Dogfood-Werkzeug und emittierte Fassung.
 - [ ] **1 — `harness/tools/slice-mv.sh` zieht die präfixlosen Geschwister-Verweise nach.** Im
       Ausgangsverzeichnis wird in jeder unbewegten Datei `](<ziel>)` zu `](../<TO>/<ziel>)`, und
       zwar im Nachzug-Commit. Die Zeile der Werkzeug-Ausgabe zählt diese Verweise mit.
-      - Der Messaufbau aus §1 meldet danach keinen `target-missing` mehr aus einer
-        Geschwister-Datei; die Zahl steht mit Kommando im Umsetzungs-Commit.
+      - Der Messaufbau aus §1 läuft für **beide** Kanten, `open → done` und `next → done`. Je
+        Kante endet der Wechsel mit Exit 0, der Move-Commit ist ein reiner Rename, und
+        `make docs-check` meldet keinen `target-missing` mehr aus einer Geschwister-Datei. Die
+        Zahlen stehen mit Kommando im Umsetzungs-Commit. Die Tabelle der Kanten in
+        [`harness/sensors/slice-mv.md`](../../../../harness/sensors/slice-mv.md) ist damit für das
+        geänderte Werkzeug neu gemessen, bevor die Gruppierung die Kanten nimmt. Bis
+        `slice-mv-kanten-nach-done-sind-bewacht` schließt, hält kein Wächter sie.
       - Grenze 3 im Skriptkopf ist so gefasst, wie das Werkzeug jetzt ist.
 - [ ] **2 — Die emittierte Fassung `internal/emit/templates/enforce/slice-mv.sh` ist
       gleichgezogen, und der Rumpf-Vergleich deckt die Änderung.** Ist die Ersetzung eine neue
@@ -175,7 +180,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Closure- und Lerneintrag-Regeln — zwei beobachtbare Kriterien **und** ein
 Lerneintrag; ohne ihn ist der Slice nur abgelegt.
 
-1. Der Messaufbau aus §1 meldet nach `open → done` keinen `target-missing` aus einer
+1. Der Messaufbau aus §1 meldet nach `open → done` und nach `next → done` keinen `target-missing` aus einer
    Geschwister-Datei.
 2. Der Mutations-Fall aus DoD 3 ist rot gesehen, und `make gates` ist grün.
 
