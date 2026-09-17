@@ -160,8 +160,8 @@ oder benennt an dieser Stelle, dass die Zusage ab dann nur für den flachen Best
 `.harness/baseline/v6.9.0/regelwerk/modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand
 ein anderer übernimmt) legt einen Slice, dessen Gegenstand ein anderer übernimmt oder der
 entfällt, ohne Lieferung nach `done/`: Die Liefer-Punkte der DoD bleiben leer, §7 trägt die Zeile
-`Gegenstand:`, und jedes Risiko hat einen Ausgang. Gemessen gegen d-check
-`@sha256:e31a372b66dbde26305982424854cfce7c9ab7ce555a94debeee7ee26e6d4641`, an einer Kopie außerhalb
+`Gegenstand:`, und jedes Risiko hat einen Ausgang. Gemessen gegen d-check `v0.76.0`
+`@sha256:f0b55fde2be414dda51ddeea5677d5ad1094eecb23a528cfef768cbd61945396`, an einer Kopie außerhalb
 des Repos, netzlos, über allen Modulen der `.d-check.yml`: je ein Slice über die Kante
 `open → done` (Gegenstand *übernommen von*) und über `next → done` (Gegenstand *entfallen*),
 der Stilllegungs-Inhalt vor dem Wechsel committet. Gelesen ist jede Meldung, die den stillgelegten
@@ -206,12 +206,16 @@ git grep -hE '\]\(\./slice-|\]\(<slice-|^\[[^]]*\]: *slice-' -- docs/plan/planni
 **Was daraus folgt.** `closure` liest den stillgelegten Slice wie jeden anderen in `done/`; das
 Gegenbeispiel in Zeile 2 färbt rot. Die Form der Stilllegung liest dagegen kein aktives Modul.
 Die Ziel-Fassung nennt es urteilsfrei, dass die Zeile `Gegenstand:` eine Kennung oder einen Grund
-trägt. Im gepinnten Stand hält das kein Modul, und seine Konfigurations-Vorlage
-(`docker run --rm ghcr.io/pt9912/d-check@<digest> --print-config`) führt keine Regel, die eine Zeile
-an eine Bedingung knüpft, etwa *offene Task-Items in §2 eines Slice in `done/`, dann trägt §7 die
-Zeile `Gegenstand:`*. Diese Lücke liegt im Werkzeug, nicht in diesem Repo. Ihre Adresse ist der
-eingehende CR im d-check-Repo vom 2026-09-17, „`planning.closure` liest die Stilllegungs-Form
-nicht" (d-check-Commit `d8e30b7d`). Ebenso urteilsfrei nennt die Ziel-Fassung, dass jedes Risiko
+trägt. Im gepinnten Stand hält das kein **aktives** Modul; `planning` liest die Form nicht (Lage
+*die Zeile `Gegenstand:` fehlt*). Die Konfigurations-Vorlage
+(`docker run --rm ghcr.io/pt9912/d-check@<digest> --print-config`) führt dafür die
+`structure`-Bedingung `open-tasks-require-marker` samt `open-tasks-require-marker-section`: Trägt
+ein Abschnitt mehr offene Task-Items als `max-open-tasks` zulässt, verlangt sie eine Marke wie
+`**Gegenstand:**` in einem benannten Abschnitt derselben Datei und meldet
+`section-open-tasks-marker-missing`, wenn die Marke fehlt. `structure` steht nicht in der
+Modul-Liste der `.d-check.yml` (`grep -n '^modules:' .d-check.yml`), die Bedingung wirkt hier also
+nicht. Diese Lücke liegt in der Konfiguration dieses Repos, nicht im Werkzeug; ihre Adresse ist der
+Folge-Slice `slice-stilllegungs-form-hat-einen-waechter`. Ebenso urteilsfrei nennt die Ziel-Fassung, dass jedes Risiko
 aus §6 einen Ausgang trägt, und auch das prüft kein aktives Modul (Tabelle, Lage *ein Risiko aus §6
 ohne Ausgang*). Diese Lücke betrifft jede Closure, nicht nur die Stilllegung; ihre Adresse ist der
 Folge-Slice `slice-risiko-ausgang-hat-einen-sensor`. Zwei Punkte sind dagegen Grenzen und keine

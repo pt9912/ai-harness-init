@@ -1,20 +1,24 @@
 # d-check.mk — Doku-Referenz-Gate via d-check. Abgeleitet aus `d-check --print-mk`
-# (v0.74.1) und adaptiert (MR-010/MR-011/MR-012/MR-024/MR-027/MR-052):
+# (v0.76.0) und adaptiert (MR-010/MR-011/MR-012/MR-024/MR-027/MR-052):
 #   * das Befund-Gate heißt `docs-check` statt `doc-check` (Ziel-Form-/modul-13-
 #     Konsistenz; als EINZIGES Target in `make gates` + AGENTS/README behauptet);
-#   * DCHECK_DIGEST ist auf den v0.74.1-Release-Digest GEPINNT (das Tool liefert es
+#   * DCHECK_DIGEST ist auf den v0.76.0-Release-Digest GEPINNT (das Tool liefert es
 #     leer) — strikte Reproduzierbarkeit (LH-QA-02);
 #   * die advisory-Targets (`doc-trace`/`doc-doctor`/…) bleiben SONST verbatim vom Tool
 #     (`doc-help` ist der eine Handgriff, s. u.) und sind NICHT als Gate behauptet —
 #     verfügbar wie `regelwerk-check`, kein halluziniertes Gate (LH-QA-01). Die
 #     opt-in-Module `citations` (18., v0.50.0), `sources` (19., Netz, v0.51.0),
-#     `structure` (20., v0.57.0, Target `doc-structure`), `workflows` (21., v0.67.0)
-#     und `reviews` (22., v0.73.0) sind in `.d-check.yml` NICHT aktiviert — was NICHT
-#     heisst, dass es keinen Lauf gibt: `sources` faehrt in `make regelwerk-check`
-#     (`--enable sources`, mit Netz, nicht in `make gates`), `structure` in
-#     `doc-structure`; `workflows`/`reviews` haben (noch) kein eigenes Recipe.
-#     „Nicht aktiviert" meint die Modul-Liste des Befund-Gates.
-#     Von den sechs fokussierten advisory-Recipes disablen FUENF alle FUENF
+#     `structure` (20., v0.57.0, Target `doc-structure`), `workflows` (21., v0.67.0),
+#     `reviews` (22., v0.73.0) und `mentions` (23., v0.75.0) sind in `.d-check.yml`
+#     NICHT aktiviert — was NICHT heisst, dass es keinen Lauf gibt: `sources` faehrt in
+#     `make regelwerk-check` (`--enable sources`, mit Netz, nicht in `make gates`),
+#     `structure` in `doc-structure`; `workflows`/`reviews`/`mentions` haben kein
+#     eigenes Recipe. „Nicht aktiviert" meint die Modul-Liste des Befund-Gates.
+#     Ebenso verfuegbar und nicht aktiv ist die elfte `structure`-Bedingung
+#     `open-tasks-require-marker` (v0.76.0, Grund-Code
+#     `section-open-tasks-marker-missing`): sie wirkt nur in einem `structure`-Block,
+#     und `.d-check.yml` fuehrt keinen.
+#     Von den sechs fokussierten advisory-Recipes disablen FUENF alle SECHS
 #     opt-in-Module (verbatim vom Tool) — das sechste IST `doc-structure` und
 #     enabled sein eigenes Modul, wie jedes advisory-Target ohne Platz in `make gates`.
 #     Die Zeilenreferenz-Prüfung `codepaths.check-lines` ist in `.d-check.yml`
@@ -29,10 +33,11 @@
 #   ohne Marker (Kontrolle)        meldet
 # UEBER DIESEM BAUM KOSTET DAS NICHTS, und der Grund ist nicht „wir fuehren keine solchen
 # Marker" — es gibt sie, sie tragen nur nicht. WAS DAS MISST, IST DER LAUF SELBST: `make
-# docs-check` faehrt den gepinnten v0.74.1 und ist gruen, und jeder `make gates`-Lauf prueft
+# docs-check` faehrt den gepinnten Digest und ist gruen, und jeder `make gates`-Lauf prueft
 # es neu. DAS IST FALSIFIZIERBAR, nicht tautologisch: traegt ein Marker in einer der zwei
-# nicht mehr honorierten Formen einen echten Befund, wird `docs-check` rot — gemessen an
-# einer Sonde ueber einer Kopie, blanke Prosa ueber unverlinkter Kennung, `1 Befund`.
+# nicht mehr honorierten Formen einen echten Befund, wird `docs-check` rot — gemessen unter
+# v0.74.1 an einer Sonde ueber einer Kopie, blanke Prosa ueber unverlinkter Kennung,
+# `1 Befund`.
 # Hier steht dazu bewusst KEINE Zahl: die Marker-Menge waechst mit dem Bestand.
 # Wer zaehlt, schneidet ueber den PFAD statt ueber den Text und summiert:
 #   `git grep -h 'd-check:ignore' -- '*.md' ':!.harness/baseline' | wc -l`
@@ -40,11 +45,14 @@
 # `git grep -c` gibt `pfad:anzahl` je Datei aus statt einer Summe. Beide liefern eine
 # plausible Zahl ohne Fehler — ein Kommando neben einer Zahl belegt sie erst, wenn es den
 # Gegenstand schneidet.
-# AB v0.74.1 TRAEGT JEDE BEFUND-ZEILE EINE VIERTE, TAB-GETRENNTE SPALTE: den Klartext
-# des Grundes (`target-missing` -> „Linkziel existiert nicht"). Wer eine Ausgabe
-# spaltenweise zerlegt und die letzte Spalte (`awk -F'\t' '{print $NF}'`) als Grund-CODE
-# liest, bekommt ab diesem Pin den Klartext statt des Codes — kein Skript dieses Repos
-# tut das heute.
+# JEDE BEFUND-ZEILE TRAEGT EINE VIERTE, TAB-GETRENNTE SPALTE (seit v0.74.1, unter v0.76.0
+# auf einer Nicht-Null-Basis nachgemessen): den Klartext des Grundes (`target-missing` ->
+# „Linkziel existiert nicht"). Wer eine Ausgabe spaltenweise zerlegt und die letzte Spalte
+# (`awk -F'\t' '{print $NF}'`) als Grund-CODE liest, bekommt den Klartext statt des Codes —
+# kein Skript dieses Repos tut das.
+# DIE ZUSAMMENFASSUNG AUF STDERR KANN VOR DER ZAEHL-ZEILE `d-check: N Datei(en) geprüft,
+# M Befund(e)` WEITERE `d-check: …`-ZEILEN TRAGEN (`summary.notes`, seit v0.75.0; gefuellt
+# nur vom Modul `mentions`, das hier nicht aktiv ist). Die Zaehl-Zeile bleibt die letzte.
 # Einbinden: `include d-check.mk`; eine eigene .d-check.yml danebenlegen.
 # NEU-ERZEUGUNG: FUENF Handgriffe, ACHT Diff-Hunks — das Kommando zaehlt HUNKS, nicht
 # Handgriffe: Handgriff 5 aendert ZWEI nicht benachbarte Ziele, und je Ziel trennt die
@@ -53,7 +61,7 @@
 # Der Digest steht literal, weil `$(DCHECK_REF)` in einem Kommentar keine Shell-Variable ist
 # und wortwoertlich gefahren still `1` liefert:
 #   diff <(docker run --rm --network none \
-#     ghcr.io/pt9912/d-check@sha256:e31a372b66dbde26305982424854cfce7c9ab7ce555a94debeee7ee26e6d4641 \
+#     ghcr.io/pt9912/d-check@sha256:f0b55fde2be414dda51ddeea5677d5ad1094eecb23a528cfef768cbd61945396 \
 #     --print-mk) d-check.mk | grep -c '^[0-9]'                                    # 8
 #   1. dieser Adopter-Kopf (das Tool liefert ihn nicht),
 #   2. DCHECK_DIGEST pinnen (das Tool liefert es leer),
@@ -62,8 +70,8 @@
 #   5. die Marke bei `doc-tracked`/`doc-structure` (Hilfetext-Anhang UND Ausgabe-Zeile
 #      `.d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, …` — der Generator liefert
 #      keins von beidem).
-DCHECK_IMAGE ?= ghcr.io/pt9912/d-check:v0.74.1
-DCHECK_DIGEST ?= sha256:e31a372b66dbde26305982424854cfce7c9ab7ce555a94debeee7ee26e6d4641
+DCHECK_IMAGE ?= ghcr.io/pt9912/d-check:v0.76.0
+DCHECK_DIGEST ?= sha256:f0b55fde2be414dda51ddeea5677d5ad1094eecb23a528cfef768cbd61945396
 # TRACE_FLAGS: optionale Flags für die RTM-Targets (z. B. --json).
 TRACE_FLAGS ?=
 
@@ -96,28 +104,28 @@ doc-repair: ## Reparatur-Patch (unified diff) auf stdout, git-apply-rein (DC-FA-
 
 .PHONY: doc-immutable
 doc-immutable: ## Doc-/ADR-Immutabilität via git-Diff (Modul vcs); RANGE=base..head oder STAGED=1 (DC-FA-VCS-001)
-	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable vcs --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable commits --disable planning --disable tracked --disable targets --disable citations --disable sources --disable structure --disable workflows --disable reviews $(if $(STAGED),--staged,--range $(RANGE))
+	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable vcs --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable commits --disable planning --disable tracked --disable targets --disable citations --disable sources --disable structure --disable workflows --disable reviews --disable mentions $(if $(STAGED),--staged,--range $(RANGE))
 
 .PHONY: doc-commits
 doc-commits: ## Commit-Message-Traceability via Modul commits; RANGE=base..head (DC-FA-COMMITS-001)
-	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable commits --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable planning --disable tracked --disable targets --disable citations --disable sources --disable structure --disable workflows --disable reviews --range $(RANGE)
+	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable commits --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable planning --disable tracked --disable targets --disable citations --disable sources --disable structure --disable workflows --disable reviews --disable mentions --range $(RANGE)
 
 .PHONY: doc-planning
 doc-planning: ## Planning-Lifecycle-Konsistenz (Roadmap <-> in-progress) via Modul planning; hermetisch, ohne Range (DC-FA-PLAN-001)
-	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable planning --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable tracked --disable targets --disable citations --disable sources --disable structure --disable workflows --disable reviews
+	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable planning --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable tracked --disable targets --disable citations --disable sources --disable structure --disable workflows --disable reviews --disable mentions
 
 .PHONY: doc-tracked
 doc-tracked: ## Getrackt-Status aufloesbarer Referenz-Ziele via Modul tracked; braucht .git im Mount, ohne Range (DC-FA-TRK-001) -- .d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, siehe harness/sensors/doc-tracked.md bzw. harness/sensors/doc-structure.md
-	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable tracked --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable planning --disable targets --disable citations --disable sources --disable structure --disable workflows --disable reviews
+	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable tracked --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable planning --disable targets --disable citations --disable sources --disable structure --disable workflows --disable reviews --disable mentions
 	@echo '.d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, siehe harness/sensors/doc-tracked.md bzw. harness/sensors/doc-structure.md'
 
 .PHONY: doc-targets
 doc-targets: ## Deklarations-Konsistenz Doku<->Build-Targets via Modul targets; hermetisch, ohne Range (DC-FA-TGT-001)
-	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable targets --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable planning --disable tracked --disable citations --disable sources --disable structure --disable workflows --disable reviews
+	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable targets --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable planning --disable tracked --disable citations --disable sources --disable structure --disable workflows --disable reviews --disable mentions
 
 .PHONY: doc-structure
 doc-structure: ## Struktur-Invarianten innerhalb der Dokumente via Modul structure; hermetisch, ohne Range (DC-FA-STRUCT-001) -- .d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, siehe harness/sensors/doc-tracked.md bzw. harness/sensors/doc-structure.md
-	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable structure --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable planning --disable tracked --disable targets --disable citations --disable sources --disable workflows --disable reviews
+	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable structure --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable planning --disable tracked --disable targets --disable citations --disable sources --disable workflows --disable reviews --disable mentions
 	@echo '.d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, siehe harness/sensors/doc-tracked.md bzw. harness/sensors/doc-structure.md'
 
 .PHONY: doc-usage

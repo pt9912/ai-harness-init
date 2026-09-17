@@ -58,8 +58,8 @@ hält [`test/commit-msg-hook.bats`](../../test/commit-msg-hook.bats) gegen die L
   wäre an einem Bestand rot, den niemand mehr ändern kann
   ([`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 - **`doc-commits` (`d-check.mk`, `--range`) bleibt advisory und ungenutzt für diese Zusage** — nicht
-  aus Vorsicht, sondern gemessen defekt: Der gepinnte `v0.74.1` bricht `--range`-Läufe des
-  `commits`-Moduls mit `Range-Basis-Vorfahren nicht lesbar: object not found` ab, sobald
+  aus Vorsicht, sondern gemessen defekt, an `v0.74.1` wie an `v0.76.0`: Der gepinnte d-check
+  bricht `--range`-Läufe des `commits`-Moduls mit `Range-Basis-Vorfahren nicht lesbar: object not found` ab, sobald
   `commits.id-patterns` irgendeine nicht-leere Liste trägt; verschwindet mit einer leeren oder ganz
   weggelassenen Liste — dann prüft der Range-Lauf aber auch nichts mehr (dasselbe stille Grün wie
   im Sensor [`history-range-guard`](history-range-guard.md)). Fehlerfrei **und** weiter prüfend

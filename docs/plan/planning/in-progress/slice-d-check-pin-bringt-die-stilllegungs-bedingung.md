@@ -216,6 +216,7 @@ Aussagen-Berührung steht hier gar nicht.
 | `internal/emit/testdata/raw-print-mk.txt` | update, falls ein Anker fehlt | [`MR-010`](../../../../harness/conventions.md#mr-010) §Auflösungs-Trigger |
 | [`harness/README.md`](../../../../harness/README.md) oder [`.d-check.yml`](../../../../.d-check.yml) | update, falls ein Target hinzukommt | [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) (DoD 1) |
 | [`harness/sensors/docs-check.md`](../../../../harness/sensors/docs-check.md) | update | DoD 3 |
+| [`.d-check.yml`](../../../../.d-check.yml) (Kommentar am `commits`-Block) und [`harness/sensors/commit-msg-check.md`](../../../../harness/sensors/commit-msg-check.md) | update | Beide nennen den `--range`-Abbruch als Eigenschaft des gepinnten `v0.74.1`; nach dem Sprung ist die Aussage am neuen Stand nachgemessen und datiert ([`MR-053`](../../../../harness/conventions.md#mr-053)). Die Zählung in §1 lief über den Digest und fand diese zwei Tag-Nennungen nicht. |
 
 ## 4. Trigger
 
