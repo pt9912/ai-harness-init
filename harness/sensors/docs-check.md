@@ -189,9 +189,18 @@ stillgelegten Slice auf `Risiko 1 eingetreten` gekürzt; Risiko 2 bis 5 stehen d
 Danach läuft `make -C <kopie> docs-check`. Ebenso ohne Meldung bleibt ein stillgelegter Slice,
 dessen §7 die Zeile gar nicht trägt.
 
-Aus den Geschwister-Dateien bleibt nach dem Wechsel kein Befund stehen: `make slice-mv` zieht ihre
-präfixlosen Verweise auf den stillgelegten Slice nach ([`slice-mv.md`](slice-mv.md) §Kanten, dort an
-beiden Kanten gemessen). `planning-drift` meldet keine der zwei Kanten, weil beide
+Aus den Geschwister-Dateien bleibt nach dem Wechsel kein Befund stehen, soweit ihre präfixlosen
+Verweise auf den stillgelegten Slice die Form tragen, die `make slice-mv` erkennt: den Markdown-Link
+in einer Datei, die flach im Ausgangsverzeichnis liegt (Skriptkopf `harness/tools/slice-mv.sh`,
+Grenze 3; [`slice-mv.md`](slice-mv.md) §Grenze, an beiden Kanten gemessen unter §Kanten). Eine
+andere Schreibweise desselben Verweises bleibt stehen und färbt den Lauf mit `target-missing` rot;
+unter open/, next/ und in-progress/ zählt sie
+
+```sh
+git grep -hE '\]\(\./slice-|\]\(<slice-|^\[[^]]*\]: *slice-' -- docs/plan/planning/open docs/plan/planning/next docs/plan/planning/in-progress | wc -l   # 0
+```
+
+— kein Erwartungswert. `planning-drift` meldet keine der zwei Kanten, weil beide
 `in-progress/` nicht berühren.
 
 **Was daraus folgt.** `closure` liest den stillgelegten Slice wie jeden anderen in `done/`; das

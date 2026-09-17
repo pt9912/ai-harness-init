@@ -96,8 +96,8 @@ sind und §7 die Zeile `Gegenstand:` trägt (`v6.9.0` ·
 `.harness/baseline/v6.9.0/regelwerk/modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand
 ein anderer übernimmt), prüft es nicht; den Inhalts-Commit vor dem Wechsel setzt der Aufrufer.
 
-**Gemessen** am Blob `7eaeb0d` von `harness/tools/slice-mv.sh`
-(`git rev-parse --short HEAD:harness/tools/slice-mv.sh`), an einer Kopie außerhalb des Repos ohne
+**Gemessen** am Blob `7e53bd7` von `harness/tools/slice-mv.sh`, dem Stand des Commits `7348e55c`
+(`git rev-parse --short=7 7348e55c:harness/tools/slice-mv.sh`), an einer Kopie außerhalb des Repos ohne
 `core.hooksPath`. Je Kante lief ein Slice, auf den Geschwister im Ausgangsverzeichnis präfixlos
 verweisen und der daneben eingehende Präfix-Verweise trägt: aus `open/`
 `slice-070-comment-claims-pruefbereich`, danach in derselben Kopie aus `next/`
@@ -128,7 +128,8 @@ mit einem einzigen Befund: `closure-note-thin` auf §7 des stillgelegten
 
 **Rot gesehen, was der Nachzug trägt:** Derselbe `open → done`-Wechsel als bloßer `git mv` färbt
 `make docs-check` an jedem eingehenden Präfix-Verweis und an den ausgehenden Zielen rot
-(`target-missing`); über das Werkzeug fallen genau diese Befunde weg. Über den Blob `d1bda5b`, der
+(`target-missing`); über das Werkzeug fallen genau diese Befunde weg. Über den Blob `d1bda5b`
+(`git rev-parse --short=7 0ea7e148:harness/tools/slice-mv.sh`), der
 den präfixlosen Link nicht ersetzt, färbt dasselbe Paar Wechsel in einer zweiten Kopie genau die
 präfixlosen Geschwister-Verweise rot: 6 × `target-missing` nach `open → done`, 9 nach dem
 folgenden `next → done`. Die Kopien liefen ohne aktivierten `commit-msg`-Träger; was er mit den
@@ -149,7 +150,9 @@ vorangestellt; welche Schreibweise die Ersetzung nicht erkennt, steht unter §Gr
 Repository auf. [`make full-smoke`](full-smoke.md) fährt im gebootstrappten Ziel den erfolgreichen
 Wechsel mit `TO=next` und `TO=done` nur in den zwei Sperr-Fällen
 (`grep -n 'slice-mv SLICE' harness/tools/full-smoke.sh`). Die Tabelle ist darum eine Messung und
-keine bewachte Zusage: Wer `harness/tools/slice-mv.sh` ändert, misst sie neu.
+keine bewachte Zusage: Wer `harness/tools/slice-mv.sh` ändert, misst sie neu;
+ob sie zum Skript im Baum gehört, zeigt `git rev-parse --short=7 HEAD:harness/tools/slice-mv.sh` im
+Vergleich mit dem Blob oben.
 
 ### Im gebootstrappten Ziel — Grenze
 
