@@ -65,8 +65,9 @@ stilllegen, Prüfung 3).
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
-- **Der Pin-Sprung.** *Ein anderer Slice übernimmt ihn:*
-  `slice-d-check-pin-bringt-die-stilllegungs-bedingung`. Dieser Slice startet danach (§4).
+- **Die Pin-Sprünge.** *Zwei andere Slices übernehmen sie:*
+  `slice-d-check-pin-bringt-die-stilllegungs-bedingung` und danach der Patch-Sprung
+  `slice-d-check-pin-zieht-den-vcs-patch-nach`. Dieser Slice startet nach beiden (§4).
 - **Die offenen Task-Items im Bestand werden nicht umgeschrieben.** *Bestand bleibt bewusst
   stehen:* Die Dateien in `done/` sind Zeitdokumente. Der Prüfbereich aus DoD 1 grenzt sie aus.
 - **Kein Sensor für den Risiko-Ausgang.** *Ein anderer Slice übernimmt ihn:*
@@ -144,7 +145,8 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`): `slice-d-check-pin-bringt-die-stilllegungs-bedingung` liegt in
-`done/`, und das WIP-Limit ist frei. **Die Gruppierung der Go-Slices startet erst nach diesem
+`done/`, ebenso `slice-d-check-pin-zieht-den-vcs-patch-nach`, und das WIP-Limit ist frei.
+**Die Gruppierung der Go-Slices startet erst nach diesem
 Slice.**
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
