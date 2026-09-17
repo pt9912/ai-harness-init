@@ -178,7 +178,7 @@ je Artefakt kopiert; ein frisch gebootstrapptes Zielrepo bekommt keine co-locate
 - **Folge-Slices:** keine. Die Lücke in
   [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) — die
   Aufzählung nennt vier der neun wiederkehrenden Vorlagen nicht — hat ihren Träger bereits in
-  [slice-139](../next/slice-139-lastenheft-deckt-die-emit-disposition.md); ein zweiter wäre eine
+  [slice-139](../done/slice-139-lastenheft-deckt-die-emit-disposition.md); ein zweiter wäre eine
   zweite Adresse für dieselbe Sache.
 - **Risiken aus §6:** zwei, je genau ein Ausgang, beide **entfallen** — mit Messung in §6 selbst.
 - **Drei Paarungen:** nicht hier fällig. Dieser Slice ist Mitglied von
