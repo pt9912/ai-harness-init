@@ -140,33 +140,93 @@ Steering-Loop-Eintrag.
   zulässig — die Meldung an den Wächter anpassen oder den Wächter an die Meldung —, und nur der
   zweite entscheidet die Sachfrage, welche Schreibweise ein Adopter schreiben darf. Wer den
   billigeren nimmt, ohne die Frage zu stellen, hat die Meldung geheilt und die Zusage nicht.
+  — **Ausgang: eingetreten** → `slice-waechter-der-erfassungsschicht-decken-was-sie-sagen`. Der
+  Nehmer lässt beide Ausgänge ausdrücklich zu und bindet sie an einen Rot-Weg: Sein Liefer-Punkt
+  (2) verlangt, dass die Meldung genau die Schreibweise nennt, die der Wächter akzeptiert — *oder*
+  der Wächter die genannte —, geprüft durch einen `test/mutations/`-Fall, der eine Zeile in
+  **exakt der von der Meldung verlangten** Schreibweise einträgt. Die Sachfrage ist damit nicht
+  mehr umgehbar.
 - **(b) sieht harmlos aus und ist die Klasse dieses Bestands.** Eine Meldung, die eine Entfernung
   behauptet, die nicht stattfand, ist folgenlos — bis jemand sie als Beleg liest. Der Ausgang darf
   auch *„die Meldung bleibt, weil sie über die Zusage spricht und nicht über den Lauf"* sein,
   aber dann steht dieser Satz geschrieben.
+  — **Ausgang: eingetreten** → derselbe Nehmer. Er schreibt den Satz, den dieses Risiko verlangt,
+  als Zusage statt als Option: *„das Aufräum-Ziel meldet, **was es getan hat**, statt was es getan
+  hätte"* (Liefer-Punkt 2), mit dem zweiten Lauf über bereits leerem Zustand als Rot-Weg.
 - **(d) kann teuer werden.** Ein Zahn über der **Wahrheit** des Wiederablage-Satzes braucht einen
   zweiten Init-Lauf nach einer Träger-Wegnahme — ein `full-smoke`-Fall, und genau diese Klasse
   misst [slice-105](../done/slice-105-mutate-messen-dann-teilen.md) als Klippe. Die ausgesprochene Grenze
   ist der billigere Ausgang und muss nicht der schlechtere sein.
+  — **Ausgang: eingetreten** → derselbe Nehmer, und dort ist der teurere Weg **gewählt**: Sein
+  Liefer-Punkt (2) verankert den zweiten Lauf im Zahn von
+  [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh). Die ausgesprochene
+  Grenze bleibt der Rückfall, nicht der Default.
 - **(e) ist eine vorbestehende Grenze der gesamten Emit-Test-Infrastruktur**, nicht ein Defekt
   dieses Wächters. Wer sie hier zu schließen versucht, schneidet einen anderen Slice.
+  — **Ausgang: eingetreten** → derselbe Nehmer. Seine Liefer-Punkt (3) nennt die **Fixture-Grenze
+  des Gate-Tabellen-Wächters** ausdrücklich als einen der zwei betroffenen Fälle und verlangt, dass
+  der Wächter sie in seiner **Meldung** sagt. Die vorbestehende Grenze bleibt damit eine benannte,
+  kein geschlossener Nebengegenstand.
 - **(f) ist heute nicht realisiert.** Das Arch-Gate-Fragment behauptet nichts über die zwei Ziele
   (`grep -c 'span-' internal/emit/archgate.go` → **0**, mitwandernd). Der Slice schließt eine
   **Aussage**-Lücke, keine gemessene Verletzung — das gehört in die Closure-Notiz, damit niemand
   einen Fund behauptet, wo eine Vorsorge steht.
+  — **Ausgang: eingetreten** → derselbe Nehmer. Sein Liefer-Punkt (3) führt die **Menge der
+  Ziel-Quellen ohne das konditionale Arch-Gate-Fragment** als zweiten Fall und hält sie mit einem
+  Go-Test gegen den tatsächlich gelesenen Satz. Dass hier eine **Aussage**-Lücke und keine
+  gemessene Verletzung vorliegt, wandert mit: Der Rot-Weg entsteht dort durch eine **hinzugefügte**
+  Quelle, nicht durch einen Fund.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!--
-Wird *nach* Abschluss ergänzt. Inhalt:
-- Was hat funktioniert?
-- Was ging anders als geplant?
-- Steering-Loop-Eintrag: welcher Guide/Sensor sollte verbessert werden?
-  (kanonische Definition: [`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/grundlagen/klassifikation.md#steering-loop))
-- Folge-Slices: welche neuen open/-Einträge?
--->
+**Gegenstand:** übernommen von `slice-waechter-der-erfassungsschicht-decken-was-sie-sagen`.
 
-<!-- Erst nach Abschluss füllen. -->
+**Stillgelegt ohne Lieferung** — Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice,
+dessen Gegenstand ein anderer übernimmt. Die Liefer-Punkte in §2 bleiben **leer**: Dieser Slice
+hat nichts geliefert, und ein Haken behauptete es. `Verantwortlich:` bleibt stehen.
+
+**Die Adresse nimmt an.** Der Nehmer liegt in `open/`, ist nicht geschlossen und nennt in §1
+unter `Übernimmt:` diese Kennung. Er führt den Gegenstand in seinen Liefer-Punkten (2) und (3)
+und nennt den Erfassungs-Bestand (`internal/emit/erfassung_test.go`,
+`internal/report/report_test.go`, das Aufräum-Fragment
+`internal/emit/templates/enforce/erfassung.mk`) ausdrücklich als Teil seiner geschlossenen Menge.
+
+**Wellenlos.** Der Kopf führt keine Welle; die Roadmap führt wellenlose Arbeit nicht
+(`modul-06-roadmap.md` §Wann Arbeit eine Welle braucht), und diese Closure trägt sie allein.
+
+**Was hat funktioniert:** Der Slice hatte je Fall die zulässigen Ausgänge **vorab** benannt und
+die billige Antwort (Meldung anpassen) von der tragenden (Wächter entscheiden) getrennt. Genau
+diese Trennung steht im Nehmer als Zusage mit Rot-Weg — sie hat den Schnitt überlebt, weil sie
+eine Bedingung war und keine Aufzählung.
+
+**Was ging anders als geplant:** Geprüft hat den Schnitt keine Implementation, sondern erst die
+Gruppierung — das Muster *tote Slices* aus `modul-05-planning-harness.md` §Regeln gegen typische
+Fehlannahmen. Der Plan stand von seinem Schnitt am 2026-08-23 an unbeansprucht in `next/`, und er
+ist der älteste der drei Wächter-Geber; der Nehmer bündelt sie in einer Leserichtung.
+
+**Steering-Loop-Eintrag:** **gezählt, nicht verkörpert** — kein Zielort, darum **kein**
+`liegt in`-Feld (`grundlagen-traceability.md` §Herkunfts-Anker). Die Form der Stilllegung steht
+seit `v6.9.0` in der adoptierten Baseline; eine zweite Fassung daneben driftete.
+
+**Beobachtungs-Register** (`../observations/`): zitiert, nicht neu formuliert —
+[`BEO-ALL/geplanter-slice-wird-nie-gearbeitet`](../observations/BEO-ALL/geplanter-slice-wird-nie-gearbeitet/observation.md).
+**Keine zweite Beleg-Datei:** Dieser Geber steht dort unter *Benannt, nicht gezählt*; er ist ein
+Fund **derselben** Gelegenheit wie `slice-090-freshness-audit-im-ziel`, und der Zähler misst
+Wiederholung über Vorgänge hinweg, nicht die Zahl der Funde (`modul-06-roadmap.md` §Das
+Beobachtungs-Register). Der Stand bleibt `offen`, unter der Schwelle.
+
+**Lese-Schritt** (Repo ohne Wellen-Betrieb, `modul-06-roadmap.md` §Wann Arbeit eine Welle
+braucht): Kein Eintrag erreicht mit dieser Closure 3×, und kein Eintrag über der Schwelle steht
+ohne Ausgang — dasselbe Kommando wie in
+[`slice-090`](slice-090-freshness-audit-im-ziel.md) §7, Ausgabe leer.
+
+**Die drei Paarungen.** (a) Anker-Paarung: kein Eintrag trägt `liegt in`, sie hat keinen
+Gegenstand. (b) Folge-Slice-Paarung: kein Folge-Slice genannt. (c) Register-Paarung: die zitierte
+Beobachtung existiert als Verzeichnis und trägt einen Beleg.
+
+**Was diese Closure nicht trägt:** Review und Verifikation am Gegenstand — es gibt keinen Diff,
+den sie prüfen könnten. Geprüft ist die **Form** der Stilllegung durch `make docs-check` (Modul
+`structure`, `open-tasks-require-marker`) und der Gesamtstand durch `make gates`.
 
 ## 8. Sub-Area-Modus-Begründung
 
