@@ -216,21 +216,81 @@ Gründen rot wird — und ein Fall, der aus zwei Gründen rot wird, bindet keine
   ist, ist **kein** Grund für eine schmalere Stufe — es ist der Gegenstand von
   [slice-105](../done/slice-105-mutate-messen-dann-teilen.md). Umgekehrt gilt DoD (2): eine teure Stufe
   ohne Eigenschaft, die sie verlangt, ist bezahlte Gewohnheit.
+  — **Ausgang: eingetreten** → `slice-waechter-der-erfassungsschicht-decken-was-sie-sagen`. Der
+  Nehmer hebt die Frage aus der Kosten-Ebene auf die Eigenschafts-Ebene: Sein Liefer-Punkt (3)
+  verlangt, dass die Stufe je Fall an der **Eigenschaft** hängt und wer die teure wählt, im
+  Fall-Kopf schreibt, welche Eigenschaft die schmalere nicht trifft. Damit ist *bezahlte
+  Gewohnheit* dort ausgeschlossen, statt hier nur benannt.
 - **Ein Fall kann die Zusage verschieben, statt sie zu binden.** Wer für
   `TestFeldliste_LiegtVerbatimImZiel` den Ausdruck **und** die Datei zugleich mutiert, hält beide
   Seiten aus derselben Funktion gegeneinander und bleibt grün — die Bauart, die
   [slice-096](../done/slice-096-traeger-liegt-im-ziel.md) §7 schon einmal gemessen hat. Der
   Prüfpunkt: **an welchen zwei verschiedenen Artefakten** der Eingriff angreift.
+  — **Ausgang: eingetreten** → derselbe Nehmer. Sein Liefer-Punkt (1) setzt die Bedingung
+  ausdrücklich: *„kein Wächter bezieht seine Erwartung aus der Funktion, die ihn rot färben soll"*
+  — genau der Prüfpunkt, an welchen **zwei verschiedenen** Artefakten der Eingriff angreift.
 - **Eine ausgesprochene Grenze kann zur Ausrede werden.** Sie ist der richtige Ausgang, wo ein
   Eingriff nichts bindet — und der falsche, wo er nur unbequem ist. Der Unterschied steht in der
   Ist-Messung aus §3 und gehört ins Review, nicht in die Selbsteinschätzung des Laufs.
+  — **Ausgang: eingetreten** → derselbe Nehmer. Er entscheidet die Frage vorab statt im Lauf: *„Eine
+  ausgesprochene Grenze ist ein vollwertiger Ausgang; ein Fall, der irgendetwas rot färbt, ist es
+  nicht"* (Liefer-Punkt 1), und das `comm`-Kommando aus seinem §1 macht die Menge der Grenzen
+  nachzählbar statt selbsteingeschätzt.
 - **`make gates` sieht den Gegenstand nicht.** `make mutate` steht nicht in `make gates`
   ([`AGENTS.md`](../../../../AGENTS.md) §4); wer nach diesem Slice nur `make gates` fährt, sieht
   keinen der neuen Zähne. Das ist eine Eigenschaft der Stufe, keine Lücke des Schnitts.
+  — **Ausgang: eingetreten** → derselbe Nehmer. Die Eigenschaft wandert mit dem Gegenstand: Sein
+  Rot-Weg ist `make mutate`, und das ist **kein Gate**
+  ([`harness/README.md`](../../../../harness/README.md) §Werkzeuge). Übernommen, nicht geschlossen
+  — wer nach jenem Slice nur `make gates` fährt, sieht die neuen Zähne dort ebenso wenig.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Gegenstand:** übernommen von `slice-waechter-der-erfassungsschicht-decken-was-sie-sagen`.
+
+**Stillgelegt ohne Lieferung** — Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice,
+dessen Gegenstand ein anderer übernimmt. Die Liefer-Punkte in §2 bleiben **leer**: Dieser Slice
+hat nichts geliefert, und ein Haken behauptete es. `Verantwortlich:` bleibt stehen.
+
+**Die Adresse nimmt an.** Der Nehmer liegt in `open/`, ist nicht geschlossen und nennt in §1
+unter `Übernimmt:` diese Kennung. Er führt den Gegenstand in seinen Liefer-Punkten (1) und (3)
+und nennt den Feldlisten-Bestand (`internal/span/fieldlist_test.go`,
+`internal/emit/fieldlist_test.go`) ausdrücklich als Teil seiner geschlossenen Menge.
+
+**Wellenlos.** Der Kopf führt keine Welle; die Roadmap führt wellenlose Arbeit nicht
+(`modul-06-roadmap.md` §Wann Arbeit eine Welle braucht), und diese Closure trägt sie allein.
+
+**Was hat funktioniert:** Der Slice hatte seine Kosten **fremdbelegt** statt geschätzt und die
+Kostenfrage ausdrücklich von der Schnitt-Frage getrennt. Beim Nehmer steht deshalb keine
+Kosten-Diskussion mehr, sondern ein Kriterium — die Stufe hängt an der Eigenschaft.
+
+**Was ging anders als geplant:** Geprüft hat den Schnitt keine Implementation, sondern erst die
+Gruppierung — das Muster *tote Slices* aus `modul-05-planning-harness.md` §Regeln gegen typische
+Fehlannahmen. Der Plan stand von seinem Schnitt am 2026-08-26 an unbeansprucht in `next/`.
+
+**Steering-Loop-Eintrag:** **gezählt, nicht verkörpert** — kein Zielort, darum **kein**
+`liegt in`-Feld (`grundlagen-traceability.md` §Herkunfts-Anker). Die Form der Stilllegung steht
+seit `v6.9.0` in der adoptierten Baseline; eine zweite Fassung daneben driftete.
+
+**Beobachtungs-Register** (`../observations/`): zitiert, nicht neu formuliert —
+[`BEO-ALL/geplanter-slice-wird-nie-gearbeitet`](../observations/BEO-ALL/geplanter-slice-wird-nie-gearbeitet/observation.md).
+**Keine zweite Beleg-Datei:** Dieser Geber steht dort unter *Benannt, nicht gezählt*; er ist ein
+Fund **derselben** Gelegenheit wie `slice-090-freshness-audit-im-ziel`, und der Zähler misst
+Wiederholung über Vorgänge hinweg, nicht die Zahl der Funde (`modul-06-roadmap.md` §Das
+Beobachtungs-Register). Der Stand bleibt `offen`, unter der Schwelle.
+
+**Lese-Schritt** (Repo ohne Wellen-Betrieb, `modul-06-roadmap.md` §Wann Arbeit eine Welle
+braucht): Kein Eintrag erreicht mit dieser Closure 3×, und kein Eintrag über der Schwelle steht
+ohne Ausgang — dasselbe Kommando wie in
+[`slice-090`](slice-090-freshness-audit-im-ziel.md) §7, Ausgabe leer.
+
+**Die drei Paarungen.** (a) Anker-Paarung: kein Eintrag trägt `liegt in`, sie hat keinen
+Gegenstand. (b) Folge-Slice-Paarung: kein Folge-Slice genannt. (c) Register-Paarung: die zitierte
+Beobachtung existiert als Verzeichnis und trägt einen Beleg.
+
+**Was diese Closure nicht trägt:** Review und Verifikation am Gegenstand — es gibt keinen Diff,
+den sie prüfen könnten. Geprüft ist die **Form** der Stilllegung durch `make docs-check` (Modul
+`structure`, `open-tasks-require-marker`) und der Gesamtstand durch `make gates`.
 
 ## 8. Sub-Area-Modus-Begründung
 
