@@ -1,0 +1,2 @@
+**Vorgang:** slice-d-check-pin-liest-fremde-packs-und-loest-jede-range
+**Fund:** Die Aufbau-Anleitung zu Messung 1 in `MR-066` stellt die gemessene Lage wörtlich ausgeführt nicht her: `git unpack-objects` überspringt Objekte, die schon im Speicher liegen, und ohne `git prune-packed` liegen die losen Objekte neben dem `loose-*.pack` — in diesem Zustand liest auch der Gegen-Stand `v0.76.1` die Range anstandslos, und der Unterschied, den die Messung zeigt, verschwindet (Verifikation V-1).

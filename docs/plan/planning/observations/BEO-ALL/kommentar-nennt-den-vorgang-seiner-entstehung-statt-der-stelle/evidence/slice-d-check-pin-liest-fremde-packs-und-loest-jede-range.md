@@ -1,0 +1,2 @@
+**Vorgang:** slice-d-check-pin-liest-fremde-packs-und-loest-jede-range
+**Fund:** Zwei neu geschriebene Kommentare in `harness/tools/full-smoke.sh` begründeten im Konjunktiv über die verworfene Alternative statt im Indikativ über den Zustand (Review F-2); eine dritte Zeile derselben Form steht unverändert im Altbestand desselben Blocks und bleibt unter dem Cutoff von `AGENTS.md` §3.7 (Runde 2, G-1).

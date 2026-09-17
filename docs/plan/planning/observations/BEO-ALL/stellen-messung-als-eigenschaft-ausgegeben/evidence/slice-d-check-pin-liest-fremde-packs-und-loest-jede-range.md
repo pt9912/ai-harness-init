@@ -1,0 +1,2 @@
+**Vorgang:** slice-d-check-pin-liest-fremde-packs-und-loest-jede-range
+**Fund:** Drei Sätze reichen weiter als die Stelle, an der sie gemessen sind: der Bilanz-Schluss *keine Senkung an einem der neun aktiven Module* gibt dem mitgeänderten Ziel `tracked` kein eigenes Verdikt (Review F-7), *am Modul `vcs` nicht* ist an einem Aufbau und einer Range gemessen und liest sich herausgelöst als Eigenschaft von `vcs` (Runde 2, G-2), und die Bedingungs-Zeile *die Objekte der Range sind da* prüft mit `git cat-file -t` ein Objekt statt der Range (Runde 4, I-1).
