@@ -258,9 +258,9 @@ Beobachtungs-Register.
     - `slice-werkzeug-aussage-traegt-quelle-stand-und-messstelle` nimmt die Sendung nicht an. Sein
       §1 schließt den Bestand und die Umschrift von Adaptions-Einträgen aus, und die drei Stellen
       sprechen über die eigene Gate-Konfiguration, nicht über das Verhalten des Werkzeugs.
-    - `MR-011` und `MR-012` nennen die emittierte Startkonfiguration `modules: [links, anchors]`,
+    - [`MR-011`](../../../../harness/conventions.md#mr-011) und [`MR-012`](../../../../harness/conventions.md#mr-012) nennen die emittierte Startkonfiguration `modules: [links, anchors]`,
       die Vorlage führt mehr (`grep -m1 '^modules:' internal/emit/templates/d-check.yml`); das war
-      schon vor diesem Slice so. `MR-025` nennt `structure` *nicht aktiviert*; das hat dieser Slice
+      schon vor diesem Slice so. [`MR-025`](../../../../harness/conventions.md#mr-025) nennt `structure` *nicht aktiviert*; das hat dieser Slice
       überholt.
   - **`.claude/commands/close-welle.md`:** ergänzt (`b77ae1bd`). Das abgehakte Paarungen-Kästchen
     weist die Prüfung im Repo mit Wellen der Welle-Closure zu. Ein Anweisungssatz, der sie nicht
