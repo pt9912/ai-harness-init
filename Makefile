@@ -201,7 +201,7 @@ adr-immutable: history-range-guard doc-immutable ## ADR-Kern ueber RANGE=<base>.
 commit-msg-check: ## Commit-Message-Datei gegen Traceability-Kennung pruefen (MSG=<datei>) — NICHT in gates
 	@test -n "$(MSG)" || { echo "commit-msg-check: MSG=<datei> fehlt" >&2; exit 2; }
 	@test -f "$(MSG)" || { echo "commit-msg-check: MSG=$(MSG) ist keine Datei" >&2; exit 2; }
-	docker run --rm --network none -v "$(CURDIR):/repo:ro" -v "$(abspath $(MSG)):/commit-msg.txt:ro" $(DCHECK_REF) --enable commits --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable planning --disable tracked --disable targets --disable citations --disable sources --disable structure --disable workflows --disable reviews --commit-msg /commit-msg.txt
+	docker run --rm --network none -v "$(CURDIR):/repo:ro" -v "$(abspath $(MSG)):/commit-msg.txt:ro" $(DCHECK_REF) --enable commits --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable planning --disable tracked --disable targets --disable citations --disable sources --disable structure --disable workflows --disable reviews --disable mentions --commit-msg /commit-msg.txt
 
 # Aktiviert den git-eigenen Traeger .githooks/commit-msg in DIESEM Klon:
 # `core.hooksPath` ist lokale Konfiguration und reist nicht mit

@@ -1,5 +1,5 @@
 # d-check.mk — Doku-Referenz-Gate via d-check. Abgeleitet aus `d-check --print-mk`
-# (v0.76.0) und adaptiert (MR-010/MR-011/MR-012/MR-024/MR-027/MR-052):
+# (v0.76.0) und adaptiert (MR-010/MR-011/MR-012/MR-024/MR-027/MR-052/MR-061):
 #   * das Befund-Gate heißt `docs-check` statt `doc-check` (Ziel-Form-/modul-13-
 #     Konsistenz; als EINZIGES Target in `make gates` + AGENTS/README behauptet);
 #   * DCHECK_DIGEST ist auf den v0.76.0-Release-Digest GEPINNT (das Tool liefert es
