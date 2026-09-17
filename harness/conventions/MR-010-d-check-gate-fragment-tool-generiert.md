@@ -1,5 +1,7 @@
 # MR-010 — d-check-Gate-Fragment tool-generiert
 
+> **ÜBERHOLT: in Setzung 1 die Zahl „vier kleine, dokumentierte Handgriffe“ und der Satz „Die advisory-Targets bleiben sonst verbatim“ → [`MR-062`](../conventions.md#mr-062--ein-fragment-ziel-ohne-eigenen-config-block-trägt-eine-marke--der-fünfte-handgriff).** Die Namens-Adaption, Setzung 2 und der Auflösungs-Trigger gelten fort; dessen „dieselben vier Handgriffe“ meint `AdaptMK`, das die Marke nicht emittiert.
+
 - **Datum:** 2026-07-18
 - **Geltungsbereich:** `d-check.mk` (aus `harness.mk` umbenannt), `Makefile` (`include`), §Baseline,
   [`harness/README.md`](../README.md) §Sensors; ergänzt [`MR-009`](../conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile).
