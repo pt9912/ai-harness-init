@@ -63,6 +63,17 @@ Wellen-Closure), Modul 7 (Carveouts), Modul 5 (Lifecycle). Bei Konflikt gilt der
    *„das Register führt keinen Eintrag"*. Auslassen ist in beiden Fällen keine Antwort. Was **unter**
    3× steht, liest diese Closure **nicht** — dafür ist §8 des nächsten Slice-Plans zuständig
    (`/plan-welle`); wer nur den Lese-Schritt kennt, sieht alles darunter nie wieder an.
+   **Zum Schluss die drei Paarungen prüfen** — erst nach dem `git mv` der Welle-Plan-Datei, weil
+   sie die gerade entstandenen Einträge prüfen (Modul 6, Schritt 3): (a) *Anker* — wo ein
+   Steering-Loop-Eintrag das Feld `liegt in <Zielort>` trägt, existiert der Zielort ab Repo-Wurzel
+   und trägt `seit welle-<Kennung>` bzw. `seit slice-<Kennung>`; (b) *Folge-Slice* — jeder genannte
+   Folge-Slice existiert als Datei im Planning-Lifecycle, nicht nur in `open/`; (c) *Register* —
+   jede genannte Beobachtung `BEO-<KUERZEL>/<slug>` existiert als Verzeichnis, und jedes
+   Verzeichnis trägt ein nicht leeres `evidence/`. **Geprüft werden auch die Slices, die seit der
+   letzten Welle-Closure in `done/` liegen, wellenlose eingeschlossen:** Ihre abgehakte DoD-Zeile
+   *„Die drei Paarungen … sind getragen"* weist diese Prüfung im Repo mit Wellen-Betrieb der
+   Welle-Closure zu (Modul 6 §Wann Arbeit eine Welle braucht). Das Ergebnis steht in der
+   Results-Notiz. Rot heißt in allen drei Fällen: etwas wurde versprochen und nicht angelegt.
 5. **Schritt 4 — Zeitdokumente der Welle archivieren.** Ihre Slice-Dateien, ihr Plan und die
    Review-Reports dieser Slices wandern nach `done/<welle-id>/archiv.zip`; an der Stelle von Slice
    und Plan bleibt je ein gekürzter Stub, die **Ergebnisnotiz bleibt vollständig und flach**,
