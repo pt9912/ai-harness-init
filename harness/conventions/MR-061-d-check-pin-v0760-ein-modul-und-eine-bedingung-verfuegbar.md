@@ -1,5 +1,7 @@
 # MR-061 — d-check-Pin v0.76.0 (ein Modul und eine structure-Bedingung verfügbar, beide nicht aktiv)
 
+> **ÜBERHOLT: die Gegenmessung auf Nicht-Null-Basis samt dem Satz zur vierten Ausgabe-Spalte, im Absatz „Kein ADR nötig“ der Satzteil über die Basis, im Auflösungs-Trigger die Stelle zur Gegenmessung, die Zahl „vier Anker“ und der Zeiger „ihre Zahl setzt MR-010 Setzung 1“ → [`MR-063`](../conventions.md#mr-063--die-gegenmessung-eines-d-check-sprungs-gibt-jedem-aktiven-modul-eine-basis-und-lässt-die-symlinks-stehen).** Pin, Digest, Quell-Differenz, Trockenlauf und die übrigen Messungen gelten fort, ebenso der Schluss „keine Senkung“, den MR-063 über alle acht aktiven Module misst.
+
 - **Datum:** 2026-09-17
 - **Wirksamkeits-Anlass:** slice-d-check-pin-bringt-die-stilllegungs-bedingung.
 - **Geltungsbereich:** `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`, Kopfkommentar),

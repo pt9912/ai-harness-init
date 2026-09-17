@@ -1,5 +1,7 @@
 # MR-052 — d-check-Pin v0.74.1 (zwei Module verfügbar, vierte Ausgabe-Spalte)
 
+> **ÜBERHOLT: die Aussage „Die Befund-Zeile trägt ab diesem Pin eine vierte, tab-getrennte Spalte“ — die Codes von `spans` tragen drei → [`MR-063`](../conventions.md#mr-063--die-gegenmessung-eines-d-check-sprungs-gibt-jedem-aktiven-modul-eine-basis-und-lässt-die-symlinks-stehen).** Der Pin-Sprung und die übrigen Messungen gelten fort.
+
 - **Datum:** 2026-09-05
 - **Wirksamkeits-Anlass:** slice-187.
 - **Geltungsbereich:** `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`, Kopfkommentar),
