@@ -74,7 +74,7 @@ Setzung 2):
 ```sh
 grep -cE '^\*\*Liefer-Punkt 1|^\*\*Ein Liefer-Punkt' \
   docs/plan/planning/next/slice-204-das-programm-feld-nennt-das-programm.md \
-  docs/plan/planning/open/slice-span-programm-nennt-das-programm.md          # je 1
+  docs/plan/planning/done/slice-span-programm-nennt-das-programm.md          # je 1
 ```
 
 Eine Verschachtelung der Unterpunkte in Kontrollkästchen ist eine Umschrift am Plan; sie ist am
