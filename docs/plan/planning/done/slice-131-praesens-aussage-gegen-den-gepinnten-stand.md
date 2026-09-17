@@ -178,7 +178,7 @@ Aussagen-Berührung steht hier gar nicht.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| [slice-090](../next/slice-090-freshness-audit-im-ziel.md), [slice-091](../next/slice-091-vendored-baum-ohne-anspruch.md), [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md), [slice-112](../open/slice-112-replay-schritt-hat-keinen-referenten.md) | update | je eine bis zwei Präsens-Aussagen über den vendored Baum; zwei von ihnen bewegen sich nachweislich (§1) |
+| [slice-090](../done/slice-090-freshness-audit-im-ziel.md), [slice-091](../next/slice-091-vendored-baum-ohne-anspruch.md), [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md), [slice-112](../open/slice-112-replay-schritt-hat-keinen-referenten.md) | update | je eine bis zwei Präsens-Aussagen über den vendored Baum; zwei von ihnen bewegen sich nachweislich (§1) |
 | [welle-09](../welle-09-modul-15-konformitaet.md), [welle-11](../welle-11-traeger-aussage.md) | update | lebende Welle-Pläne; `welle-11` trägt allein **5** der 11 Nennungen und die größte bewegte Zahl (7 → 11) |
 | [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) | **unverändert** | Tree-Operand der Vor-Tausch-Seite; das Ziehen zerstörte die Messung ([welle-10](welle-10-re-baseline.md) §5) |
 | `docs/plan/adr/**` | **unverändert** | Accepted und damit unveränderlich ([`AGENTS.md`](../../../../AGENTS.md) §3.4); die Verweis-Form dort regelt [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 1, und sie heilt den Bestand nicht |

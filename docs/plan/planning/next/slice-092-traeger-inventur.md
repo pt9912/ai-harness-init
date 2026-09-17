@@ -7,7 +7,7 @@ wechselt nur durch `git mv`, siehe
 
 **Welle:** [welle-11](../welle-11-traeger-aussage.md) — er schließt die Liste und ist damit der
 Slice, an dem das Closure-Kriterium der Welle wahr wird. Er läuft **nach**
-[slice-090](slice-090-freshness-audit-im-ziel.md) und
+[slice-090](../done/slice-090-freshness-audit-im-ziel.md) und
 [slice-091](slice-091-vendored-baum-ohne-anspruch.md), deren Werte er entgegennimmt statt sie zu
 erarbeiten.
 
@@ -169,7 +169,7 @@ Standard-Punkte der Vorlage (nicht slice-eigen): `make gates` grün · Doku-Upda
 
 ## 4. Trigger
 
-**`open` → `next`:** [slice-090](slice-090-freshness-audit-im-ziel.md) **und**
+**`open` → `next`:** [slice-090](../done/slice-090-freshness-audit-im-ziel.md) **und**
 [slice-091](slice-091-vendored-baum-ohne-anspruch.md) liegen in `done/` — beide setzen einen Wert,
 den diese Inventur sonst als offen führte. **`next` → `in-progress`:** WIP-Limit frei.
 

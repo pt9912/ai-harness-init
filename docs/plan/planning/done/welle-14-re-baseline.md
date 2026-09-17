@@ -147,7 +147,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   vendored Baum, und diese Welle tauscht genau ihn — derselbe Grund, mit dem ihre §2 bisher die
   Kante zu [welle-10](welle-10-re-baseline.md) trug. Ihr Gegenstand bewegt sich dabei real:
   `modul-02-harness-bootstrap.md` ändert sich in diesem Sprung erneut, und der Freshness-Audit ist
-  das Thema von [slice-090](../next/slice-090-freshness-audit-im-ziel.md).
+  das Thema von [slice-090](../done/slice-090-freshness-audit-im-ziel.md).
 - **Blockiert: [welle-13](welle-13-regeln-bekommen-ihren-sensor.md).** Zwei ihrer Slices bauen
   Sensoren auf Formen, die dieser Sprung bewegt: der Roadmap-/Verzeichnis-Wächter
   ([slice-125](../done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md)) und der

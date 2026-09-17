@@ -190,7 +190,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   ([slice-176](slice-176-inventur-vor-dem-schnitt-v600.md) §9) misst die zwei Kandidaten
   von damals einzeln, statt sie zu vermuten. **Die benannten Gegenstände sind byte-gleich:**
   §Freshness-Audit der vendored Baseline (Schritt 2) — der Gegenstand von
-  [slice-090](../next/slice-090-freshness-audit-im-ziel.md) — trägt zwischen den Tags kein Delta
+  [slice-090](../done/slice-090-freshness-audit-im-ziel.md) — trägt zwischen den Tags kein Delta
   (`git diff --name-only v5.18.0 v6.0.0 -- lab/regelwerk/modul-02-harness-bootstrap.md` → leer), und
   §Roadmap-Struktur: fünf Abschnitte — der Gegenstand von
   [slice-125](../done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) — liegt zwischen zwei
