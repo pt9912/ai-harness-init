@@ -241,43 +241,89 @@ dasteht.
 1. **Der neue Text nimmt dem bestehenden `full-smoke`-Fall die Zähne**, weil sein Grund-Satz
    verschwindet. *Absehbar:* entfallen, wenn der Satz an seinem Messort bleibt und der Fall dort
    weiter fällt.
+   — **Ausgang: weiter offen.** Der Text wird von diesem Plan nicht mehr geschrieben, die Klasse
+   bleibt aber für jeden, der ihn anfasst: ein Fall, der einen Wortlaut misst, verliert seine Zähne
+   an einer berechtigten Änderung. **Ins Beobachtungs-Register gewandert** als Zuordnung zu
+   [`BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet`](../observations/BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet/observation.md)
+   (`verkörpert`). **Keine Beleg-Datei angelegt:** benannt, nicht erlitten — der Text ist nie
+   entstanden.
 2. **Die Lagen-Trennung wird im Exit-Code statt im Text gesucht.** *Absehbar:* entfallen, wenn die
    Tests allein den geschriebenen Text lesen; sonst Rückführung nach §4.
+   — **Ausgang: entfallen.** Das Risiko hing am Ausführungs-Weg **dieses** Plans (Tests, die den
+   Text statt den Exit-Code lesen); dieser Weg entsteht nicht. Wer den Gegenstand arbeitet,
+   schneidet ihn in `slice-071-bilanz-nennt-ihren-bestand` neu und trifft die Wahl dort.
 3. **Die Angabe neben der Zahl greift über die gezählte Menge hinaus.** *Absehbar:* entfallen,
    wenn ein Test mit einer nicht parsenden Zeile die Angabe hält.
+   — **Ausgang: entfallen.** Die Angabe neben der Zahl bleibt beim Gegenstand:
+   `slice-071-bilanz-nennt-ihren-bestand` führt sie in seinem Liefer-Punkt (3) — *die Bestandszeile
+   ist eindeutig* — und grenzt sie in seinem §6 gegen die ungemessene Streuung ab. Dieser Plan
+   fügt dem nichts hinzu, was mit ihm stürbe.
 4. **Der fehlende Ablageort bleibt maskiert**, weil das `make`-Ziel sein Verzeichnis vorher
    anlegt. *Absehbar:* entfallen, wenn der Test das Unterkommando direkt mit einem freien Pfad
    aufruft statt über das `make`-Ziel.
+   — **Ausgang: entfallen.** Auch dieses Risiko hing am Ausführungs-Weg dieses Plans (Aufruf über
+   das `make`-Ziel statt über das Unterkommando); er entsteht nicht. Die Frage stellt sich erst
+   wieder dem Lauf, der den Gegenstand in `slice-071-bilanz-nennt-ihren-bestand` arbeitet.
 
 ## 7. Closure-Notiz
 
+**Gegenstand:** entfallen: Die Gruppe ist gestrichen. Der Gegenstand bleibt bei
+`slice-071-bilanz-nennt-ihren-bestand`, der ihn unverändert führt und nicht geschlossen ist —
+übertragen war er nie (§1: `Übernimmt: — nichts`).
 
-Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
-§Das Beobachtungs-Register (vorhandene `BEO-<NNN>` **zitieren** statt neu
-formulieren — sonst zählt das Register zwei Namen getrennt) ·
-`grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln (das
-Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
-wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
-Backticks). Ging der Gegenstand an einen anderen Slice oder entfiel er, trägt
-diese Sektion die Zeile `Gegenstand:` mit Kennung oder Grund und jedes Risiko
-aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
-(`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
-übernimmt).
+**Stillgelegt ohne Lieferung** — Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice,
+dessen Gegenstand ein anderer übernimmt, Wegfall-Hälfte: *Entfällt der Gegenstand ganz, trägt die
+Zeile statt einer Kennung den Grund.* Die Liefer-Punkte in §2 bleiben **leer**: Dieser Slice hat
+nichts geliefert. `Verantwortlich:` bleibt stehen.
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Gegenstand:** <übernommen von `slice-<Kennung>` | entfallen: <Grund>>
-  *(nur beim Ausgang ohne Arbeit; sonst Zeile löschen)*
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-kennung-a>, <slice-kennung-b>, <slice-kennung-c> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-<Kennung>.md` | `evidence/slice-<Kennung>.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+**Keine Adresse zeigt ins Leere.** Vor dem Move nannte nur diese Datei selbst ihre Kennung; nach
+dem Move ist die Ausgabe über der lebenden Plan- und Norm-Fläche leer:
+
+```sh
+git grep -l 'slice-die-bilanz-sagt-worueber-sie-gerechnet-hat' -- \
+  'docs/plan/planning/open' 'docs/plan/planning/next' 'docs/plan/planning/in-progress' \
+  'docs/plan/planning/*.md' 'docs/plan/adr' 'spec' 'harness' 'AGENTS.md' '.claude'
+```
+
+**Wellenlos.** Der Kopf führt keine Welle; die Roadmap führt wellenlose Arbeit nicht
+(`modul-06-roadmap.md` §Wann Arbeit eine Welle braucht), und diese Closure trägt sie allein. Die
+Streichung der Gruppe ist damit keine Umplanung im Sinne des Drift-Logs — dort steht, was **eine
+Welle** bewegt.
+
+**Was hat funktioniert:** Der Weg aus `open/` ist derselbe wie aus `next/`, und er kostet nichts
+außer dieser Notiz: Die Kennung bleibt auffindbar, statt gelöscht zu werden, und die
+`Gegenstand:`-Zeile sagt an ihrer Form, dass hier nichts übernommen wurde, sondern etwas wegfiel.
+
+**Was ging anders als geplant:** Der Plan war **zu früh**, nicht zu spät. Er entstand im Schnitt
+der sechs Gruppen-Slices und wurde von den Runden danach — Architect-Verdikt, zwei Reviews, die
+Stufe-2a-Entscheidung — wieder zurückgenommen, ohne je beansprucht worden zu sein. Das ist die
+Gegenrichtung zum Muster *tote Slices*: Dort kommt die Prüfung zu spät, hier kam der Plan zu früh.
+
+**Steering-Loop-Eintrag:** **gezählt, nicht verkörpert** — kein Zielort, darum **kein**
+`liegt in`-Feld (`grundlagen-traceability.md` §Herkunfts-Anker). Eine Regel dafür schreibt dieser
+Lauf nicht: Ob ein Schnitt erst nach dem Verdikt entstehen darf, ist eine Entscheidung über den
+Planungs-Ablauf und gehört nicht in die Closure des Plans, den sie beträfe.
+
+**Beobachtungs-Register** (`../observations/`): neu angelegt
+[`BEO-ALL/plan-entsteht-vor-dem-verdikt-ueber-seinen-gegenstand`](../observations/BEO-ALL/plan-entsteht-vor-dem-verdikt-ueber-seinen-gegenstand/observation.md)
+mit dem Beleg `evidence/slice-die-bilanz-sagt-worueber-sie-gerechnet-hat.md`, Stand `offen`. Der
+Eintrag grenzt sich dort gegen
+[`BEO-ALL/geplanter-slice-wird-nie-gearbeitet`](../observations/BEO-ALL/geplanter-slice-wird-nie-gearbeitet/observation.md)
+ab: **zwei** Klassen, nicht ein Name für beides. Der zweite Plan derselben Gelegenheit steht unter
+*Benannt, nicht gezählt*.
+
+**Lese-Schritt** (Repo ohne Wellen-Betrieb, `modul-06-roadmap.md` §Wann Arbeit eine Welle
+braucht): Kein Eintrag erreicht mit dieser Closure 3×, und kein Eintrag über der Schwelle steht
+ohne Ausgang — dasselbe Kommando wie in
+[`slice-090`](slice-090-freshness-audit-im-ziel.md) §7, Ausgabe leer.
+
+**Die drei Paarungen.** (a) Anker-Paarung: kein Eintrag trägt `liegt in`, sie hat keinen
+Gegenstand. (b) Folge-Slice-Paarung: kein Folge-Slice genannt. (c) Register-Paarung: beide
+zitierten Beobachtungen existieren als Verzeichnis und tragen je mindestens einen Beleg.
+
+**Was diese Closure nicht trägt:** Review und Verifikation am Gegenstand — es gibt keinen Diff,
+den sie prüfen könnten. Geprüft ist die **Form** der Stilllegung durch `make docs-check` (Modul
+`structure`, `open-tasks-require-marker`) und der Gesamtstand durch `make gates`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
