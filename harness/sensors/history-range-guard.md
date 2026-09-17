@@ -35,12 +35,15 @@ Vorbedingung selbst, und sie liegt in keinem Gate: `make gates` fährt keines de
   explizit statt schweigend mit Exit 0 zu enden; findet sich mindestens eine, bleibt die Ausgabe
   leer — den Inhalt der gestagten Änderung prüft dann das d-check-Modul selbst, nicht dieser
   Wächter.
-- **`doc-commits` im Dogfood ist unbedienbar**, unabhängig von der Range: der `commits:`-Block
-  in [`.d-check.yml`](../../.d-check.yml) trägt eine nicht-leere `id-patterns`-Liste, und jeder
-  `--range`-Lauf des `commits`-Moduls bricht darunter ab (Exit 2) — Einzelheiten im Sensor
-  [`commit-msg-check`](commit-msg-check.md). Das emittierte `.d-check.yml`
-  (`internal/emit/templates/d-check.yml`) führt keinen `commits:`-Block; das Ziel ist darum
-  bedienbar, und dort ist die Zusage messbar. Der Wächter bleibt für `doc-immutable`
+- **`doc-commits` im Dogfood hängt am Objektspeicher des Klons.** Der `commits:`-Block in
+  [`.d-check.yml`](../../.d-check.yml) trägt eine nicht-leere `id-patterns`-Liste. Liegen Objekte
+  der Range in einem Pack, dessen Name nicht mit `pack-` beginnt — gemessen ist das an
+  `loose-*.pack`; dass es am Präfix hängt, ist eine Vermutung —, bricht der `--range`-Lauf des
+  `commits`-Moduls ab (Exit 2). Liegen alle in Packs, deren Name mit `pack-` beginnt, prüft er:
+  `make doc-commits RANGE=c414119b..ebb76b3d` meldet unter `v0.76.1` 1 × `commit-untraceable`.
+  Einzelheiten im Sensor [`commit-msg-check`](commit-msg-check.md). Das emittierte
+  `.d-check.yml` (`internal/emit/templates/d-check.yml`) führt keinen `commits:`-Block; dort ist
+  das Ziel bedienbar, und die Zusage ist messbar. Der Wächter bleibt für `doc-immutable`
   unverändert wirksam.
 - **`STAGED=1` gehört zu `doc-immutable`.** Nur dessen Rezept in `d-check.mk` führt einen
   `STAGED`-Zweig (`--staged`); `doc-commits` übergibt allein `--range $(RANGE)`. Ein Aufruf

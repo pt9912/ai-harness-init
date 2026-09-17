@@ -61,16 +61,23 @@ hält [`test/commit-msg-hook.bats`](../../test/commit-msg-hook.bats) gegen die L
   Range-Lauf hängt am Objektspeicher des Klons, dieser Sensor nicht. Gemessen an `v0.76.0` und
   `v0.76.1` (jeder Digest mit dem Fragment seines Standes), `make doc-commits RANGE=HEAD~3..HEAD`
   über demselben Verlauf (Kopf `e4c6cb0b`), mit der `commits`-Konfiguration dieses Repos:
-  - **Objekte der Range in Packs unter anderem Präfix als `pack-`** (etwa `loose-*.pack`, wie
-    `git maintenance run --task=loose-objects` sie anlegt; `ls .git/objects/pack/`): Abbruch mit
-    `Range-Basis-Vorfahren nicht lesbar: object not found`, make-Exit 2, unter beiden Digests.
+  - **Objekte der Range liegen in einem Pack, dessen Name nicht mit `pack-` beginnt; gemessen ist
+    das an `loose-*.pack`** (wie `git maintenance run --task=loose-objects` sie anlegt;
+    `ls .git/objects/pack/`). Dass es am Präfix hängt, ist eine Vermutung; am Quelltext des
+    Werkzeugs ist die Regel nicht nachgelesen. Der Range-Lauf bricht ab, make-Exit 2: unter beiden
+    Digests mit `Range-Basis-Vorfahren nicht lesbar: object not found`, wenn ein Teil der Objekte
+    dort liegt; unter `v0.76.1` mit `Range-Basis "<hash>" nicht auflösbar: reference not found`,
+    wenn alle dort liegen (Transportklon mit umbenannten Pack-Dateien,
+    `RANGE=c414119b..ebb76b3d`).
     Derselbe Klon mit leerer `id-patterns`-Liste: make-Exit 0 und `0 Befund(e)` — der Range-Lauf
     prüft dann nichts (dasselbe stille Grün wie im Sensor
     [`history-range-guard`](history-range-guard.md)). Ein lokaler Klon
     (`git clone --no-hardlinks <pfad>`) übernimmt die Pack-Namen seiner Quelle.
-  - **Objekte der Range in Packs mit dem Präfix `pack-`** (etwa nach `git repack -a -d` oder aus
-    `git clone --no-local file://<pfad>`): kein Abbruch; der Range-Lauf prüft und meldet
-    `commit-untraceable`, make-Exit 2, unter beiden Digests.
+  - **Alle Objekte der Range liegen in Packs, deren Name mit `pack-` beginnt** (etwa nach
+    `git repack -a -d` oder aus `git clone --no-local file://<pfad>`): kein Abbruch; der
+    Range-Lauf prüft und meldet `commit-untraceable`, make-Exit 2, unter beiden Digests. Unter
+    `v0.76.1` meldet `make doc-commits RANGE=c414119b..ebb76b3d` so 1 × `commit-untraceable` auf
+    `7c1f228`, im umgepackten Arbeitsklon wie im Transportklon.
 
   Welcher der zwei Fälle vorliegt, ist ein Zustand des Klons und wechselt mit seiner
   Pack-Wartung; die Bedingung und ihre Grenze für alle history-lesenden Ziele führt
@@ -78,10 +85,10 @@ hält [`test/commit-msg-hook.bats`](../../test/commit-msg-hook.bats) gegen die L
   §Grenze.
 
   Fehlerfrei **und** weiter prüfend bleibt in jedem Klon nur `--commit-msg` mit der realen,
-  nicht-leeren Liste (dieser Sensor). Ob ein Range-Lauf über einem Klon, dessen Packs das Präfix
-  `pack-` tragen, ein Gate wird, ist eine eigene Abwägung. Dass d-check Objekte in Packs unter
-  anderem Präfix nicht liest, ist eine Lücke im Werkzeug eines Nachbar-Repos desselben Nutzers —
-  dort eine Anforderung, keine feste Werkzeug-Grenze.
+  nicht-leeren Liste (dieser Sensor). Ob ein Range-Lauf über einem Klon, dessen Pack-Namen alle mit
+  `pack-` beginnen, ein Gate wird, ist eine eigene Abwägung. Dass d-check Objekte in einem Pack
+  mit anderem Namen nicht liest, ist eine Lücke im Werkzeug eines Nachbar-Repos desselben
+  Nutzers — dort eine Anforderung, keine feste Werkzeug-Grenze.
 
 ## Ausgabe und Ausgänge
 

@@ -370,14 +370,16 @@ vcs:
 # .claude/hooks/pretooluse-commit-msg-guard.sh (ueber `make commit-msg-check
 # MSG=<datei>`, --commit-msg) — NICHT `make doc-commits` (d-check.mk, --range):
 # ein Range-Lauf haengt am Objektspeicher des Klons. Liegen Objekte der Range in
-# Packs unter anderem Praefix als `pack-` (etwa `loose-*.pack`,
-# `ls .git/objects/pack/`) und fuehrt `commits.id-patterns` eine nicht-leere
-# Liste, bricht der gepinnte d-check mit "Range-Basis-Vorfahren nicht lesbar:
-# object not found" ab; mit leerer Liste laeuft er durch und prueft nichts. Liegen
-# sie in Packs mit dem Praefix `pack-`, laeuft derselbe Range-Lauf durch und
-# prueft (Messung und Stand: MR-064 §Grenze). --commit-msg liest keine Historie und
-# haengt an keinem der zwei Faelle. `doc-commits` bleibt ungenutzt advisory
-# stehen (Beleg und Traeger-Entscheidung in harness/README.md).
+# einem Pack, dessen Name nicht mit `pack-` beginnt (gemessen ist das an
+# `loose-*.pack`; dass es am Praefix haengt, ist eine Vermutung;
+# `ls .git/objects/pack/`), und fuehrt `commits.id-patterns` eine nicht-leere
+# Liste, bricht der gepinnte d-check mit einem Fehler ab ("... nicht lesbar" oder
+# "... nicht aufloesbar"); mit leerer Liste laeuft er durch und prueft nichts.
+# Liegen alle in Packs, deren Name mit `pack-` beginnt, laeuft derselbe Range-Lauf
+# durch und prueft (Messung und Stand: MR-064 §Grenze). --commit-msg liest keine
+# Historie und haengt an keinem der zwei Faelle. `doc-commits` bleibt ungenutzt
+# advisory stehen (Beleg und Traeger-Entscheidung: harness/sensors/commit-msg-check.md
+# §Grenze).
 # KOPPLUNG: dieselbe Kennungs-Menge fuehrt der git-eigene Hook .githooks/commit-msg
 # als bash-Fassung im Commit-Pfad (harness/tools/commit-msg-traceability.sh) — er
 # darf nichts voraussetzen, was der Host nicht hat (LH-QA-03), also kein Docker und

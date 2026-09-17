@@ -38,8 +38,9 @@ Top-Level-Block (`doc-immutable`/`vcs`, `doc-commits`/`commits`, `doc-planning`/
 (`doc-usage` fährt nur `--help`, `doc-help` grep't `$(MAKEFILE_LIST)`, kein Docker) — die Frage
 nach einem Prüfbereich ist für D sinnlos, und das steht hier, statt stillschweigend zu fehlen.
 `doc-commits` ist der eine B-Fall mit einer eigenen Geschichte: sein `commits:`-Block existiert,
-das Ziel bricht trotzdem an jedem `--range`-Lauf ab — Beleg und Träger-Entscheidung stehen im
-Sensor [`commit-msg-check`](commit-msg-check.md), hier nur der Zeiger.
+und ob ein `--range`-Lauf prüft oder abbricht, hängt am Objektspeicher des Klons — Beleg und
+Träger-Entscheidung stehen im Sensor [`commit-msg-check`](commit-msg-check.md), hier nur der
+Zeiger.
 
 **Die Gegenprobe je C-Ziel — und warum die zwei Antworten verschieden ausfallen.** Ein
 `0 Befund(e)`-Lauf ist mit *aktiv und sauber* ebenso verträglich wie mit *inert*; ob ein Ziel ohne
