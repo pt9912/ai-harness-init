@@ -1,8 +1,10 @@
-**Stand:** offen
+**Stand:** geplant
 
-Ein Träger besteht nicht: Kein Modul aus `modules:` der
+Kennung: `slice-werkzeug-luecke-im-nachbar-repo-bekommt-eine-adresse`. Er schreibt die Regel,
+welche Adresse eine gemessene Lücke im gepinnten Nachbar-Werkzeug bekommt und wer über sie
+entscheidet. Zielort und schreibende Rolle bestätigt der Architect.
+
+Bis dahin besteht kein Träger: Kein Modul aus `modules:` der
 [`.d-check.yml`](../../../../../../.d-check.yml) urteilt über das Werkzeug, das es selbst ist, und
-`make mutate` kennt keine Fehlschlag-Form für eine Anforderung an einen anderen Baum. Auch die
-Planungs-Seite hat keine: Der Lifecycle dieses Repos kennt `open/` für Arbeit **in** diesem Baum,
-und [`docs/plan/adr/`](../../../../adr/) entscheidet, es beauftragt nicht. Träger ist der Lauf,
-der die Lücke misst, und das Zeitdokument, in dem seine Messung stehen bleibt.
+`make mutate` kennt keine Fehlschlag-Form für eine Anforderung an einen anderen Baum. Die Messung
+steht in dem Zeitdokument, das sie erhoben hat.

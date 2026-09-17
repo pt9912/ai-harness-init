@@ -1,0 +1,2 @@
+**Vorgang:** slice-d-check-pin-zieht-den-vcs-patch-nach
+**Fund:** Der Pin-Eintrag zum Sprung schloss *keine Senkung* für die geteilte Infrastruktur, die Zeilen verliert, und übertrug den Schluss einer Gegenmessung an einer Kopie ohne `.git`. Diese fährt keinen Pfad über den VCS-Port. Getragen hat den Schluss eine Quell-Lesung, die der Eintrag nicht führte: Kein aktives Modul greift auf den Port zu (Review F-3, Runde 2).

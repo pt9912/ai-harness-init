@@ -1,0 +1,2 @@
+**Vorgang:** slice-d-check-pin-zieht-den-vcs-patch-nach
+**Fund:** Die angenommene [`ADR-0053`](../../../../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) führt in einer verglichenen Alternative weiter, der Range-Lauf des `commits`-Moduls sei am gepinnten d-check unbedienbar. Der Pin-Eintrag dieses Vorgangs löst die Einordnung ab, denn der Abbruch hängt am Objektspeicher des Klons. Die Entscheidung der ADR hängt nicht daran (Verifikation V-3).
