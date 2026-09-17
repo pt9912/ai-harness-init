@@ -1,6 +1,8 @@
 # MR-061 — d-check-Pin v0.76.0 (ein Modul und eine structure-Bedingung verfügbar, beide nicht aktiv)
 
 > **ÜBERHOLT: die Gegenmessung auf Nicht-Null-Basis samt dem Satz zur vierten Ausgabe-Spalte, im Absatz „Kein ADR nötig“ der Satzteil über die Basis, im Auflösungs-Trigger die Stelle zur Gegenmessung, die Zahl „vier Anker“ und der Zeiger „ihre Zahl setzt MR-010 Setzung 1“ → [`MR-063`](../conventions.md#mr-063--die-gegenmessung-eines-d-check-sprungs-gibt-jedem-aktiven-modul-eine-basis-und-lässt-die-symlinks-stehen).** Pin, Digest, Quell-Differenz, Trockenlauf und die übrigen Messungen gelten fort, ebenso der Schluss „keine Senkung“, den MR-063 über alle acht aktiven Module misst.
+>
+> **ÜBERHOLT: im Absatz über die drei Regeldateien nicht aktiver Module der Satz „Der lesbare Fall bleibt still …“ samt seiner Messung und der Satz „Den abbrechenden Fall misst dieser Eintrag nicht.“, unter „Neu gemessen am neuen Digest“ die Gleichsetzung des gemessenen `--range`-Abbruchs mit dem Abbruch, den die zwei dort genannten Stellen an jenem Stand beschrieben → [`MR-064`](../conventions.md#mr-064--d-check-pin-v0761-vcs-bricht-bei-unlesbarem-objekt-ab).** Beide Messwerte gelten für den Klon, in dem sie genommen sind; ob ein Range-Lauf prüft oder abbricht, hängt am Objektspeicher des Klons. Pin, Digest und die übrigen Messungen gelten fort.
 
 - **Datum:** 2026-09-17
 - **Wirksamkeits-Anlass:** slice-d-check-pin-bringt-die-stilllegungs-bedingung.
