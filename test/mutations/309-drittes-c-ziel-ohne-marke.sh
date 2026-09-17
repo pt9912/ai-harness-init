@@ -3,7 +3,7 @@
 # expect: doc-*: C-Menge (kein .d-check.yml-Block) == Ziele mit Hilfetext-Marke == Ziele mit Ausgabe-Marke
 #
 # Setzt ein DRITTES `docs?-*`-Ziel ein, das ein Modul per `--enable` zuschaltet, fuer das
-# `.d-check.yml` keinen Top-Level-Block fuehrt (`citations`, wie `doc-tracked`/`doc-structure`
+# `.d-check.yml` keinen Top-Level-Block fuehrt (`citations`, wie `doc-tracked`
 # heute) — aber ohne die Marke im Hilfetext oder in der Ausgabe. Das ist die
 # Auspraegung-statt-Eigenschaft-Falle in Reinform (AGENTS.md 3.6): ein Waechter, der die
 # C-Menge als feste Namensliste statt als abgeleitete Eigenschaft haelt, bliebe hier gruen.

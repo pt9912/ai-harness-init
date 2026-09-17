@@ -26,7 +26,7 @@ scan:
   # Datei (ADR-0017). Jeder weitere Eintrag ist eine neue Senkung nach AGENTS.md 3.5
   # und braucht seine eigene ADR — auch dann, wenn er dieselbe Bedingung erfuellt.
   ignore: ["**/*.template.md", ".tmp/**", ".harness/baseline/**", "docs/user/claude-hooks-referenz.md", "docs/plan/adr/0013-technik-stratum-als-zielort.md"]
-modules: [links, anchors, ids, matrix, codepaths, spans, planning, targets]
+modules: [links, anchors, ids, matrix, codepaths, spans, planning, targets, structure]
 # planning (hermetisch, kein git, opt-in): haelt die Lifecycle-Invariante ueber dem
 # Abschnitt "## Offene Wellen" der Roadmap — der Ruhe-Marker steht dort genau dann,
 # wenn docs/plan/planning/in-progress/ keinen slice-*.md traegt (Grund-Code
@@ -64,6 +64,67 @@ planning:
   waves:
     dir: docs/plan/planning
     mode: many
+# structure (hermetisch, kein git, opt-in; die Bedingung open-tasks-require-marker traegt
+# d-check ab v0.76.0): haelt die Stilllegungs-Form eines Slice-Plans in done/ (v6.9.0 ·
+# modul-05-planning-harness.md §Ein Slice, dessen Gegenstand ein anderer uebernimmt). Traegt
+# §2 ("## 2. Definition of Done") offene Task-Items, verlangt die Regel in §7
+# ("## 7. Closure-Notiz", mit oder ohne Zusatz) eine Zeile in Marken-Form **Gegenstand:**;
+# fehlt sie, meldet sie EINEN section-open-tasks-marker-missing auf der §2-Ueberschrift.
+# Offene Items ausserhalb von §2 zaehlen nicht, eine Marke ausserhalb von §7 auch nicht. Ein
+# regulaer gelieferter Slice traegt in done/ keine offenen Items (modul-05 §Lifecycle als State
+# Machine: die DoD-Haekchen sind Bedingung fuer done/) und bleibt von der Regel unberuehrt;
+# traegt er doch eines, faerbt er dieselbe Regel rot, und `hint` nennt beide Auswege.
+# GRENZEN: Die Marke gilt als vorhanden, sobald eine Zeile in Marken-Form in §7 steht, auch als
+# unausgefuellter Vorlagen-Platzhalter; ob sie eine Kennung oder einen Grund traegt, prueft die
+# Regel nicht. Der Glob ist flach, Stubs in done/<welle-id>/ liegen ausserhalb. Trifft die Regel
+# keine Datei, meldet sie section-missing. tasks-ignore-pattern wirkt nur auf max-tasks: eine
+# einzelne DoD-Zeile laesst sich nicht aus max-open-tasks nehmen. Messungen und Gegenbeispiele:
+# harness/sensors/docs-check.md §Modul structure.
+# exempt-paths: BESTAND BLEIBT STEHEN. Die Liste ist EXTENSIONAL GESCHLOSSEN auf die Plaene in
+# done/, die offene Items in §2 und keine Marke in §7 tragen; sie sind Zeitdokumente und werden
+# nicht nachgezogen. Kein Glob: ein Muster ueber die Kennungs-Form naehme auch die nummerierten
+# Slices aus open/ und next/ aus, die kuenftig stillgelegt werden. Der stillgelegte
+# slice-135-d-check-pin-v0661.md steht NICHT darin: er traegt die Marke und haelt die Regel
+# ueber dem Bestand gruen, und ohne open-tasks-require-marker oder mit der Marken-Suche in §2
+# statt §7 faerbt er docs-check rot. Ein weiterer Eintrag ist eine Senkung nach AGENTS.md 3.5.
+structure:
+  - files: "docs/plan/planning/done/slice-*.md"
+    section-pattern: '^## 2\. Definition of Done$'
+    max-open-tasks: 0
+    open-tasks-require-marker: "Gegenstand"
+    open-tasks-require-marker-section: '^## 7\. Closure-Notiz'
+    hint: "offene DoD-Punkte in done/ — geliefert: abhaken; stillgelegt: §7 trägt **Gegenstand:** mit Kennung oder Grund"
+    exempt-paths:
+      - "docs/plan/planning/done/slice-007-sessionstart-regelwerk-injektor.md"
+      - "docs/plan/planning/done/slice-008-shell-lint-gate.md"
+      - "docs/plan/planning/done/slice-009-regelwerk-drift-check.md"
+      - "docs/plan/planning/done/slice-010-regelwerk-split-modul-cache.md"
+      - "docs/plan/planning/done/slice-011-baseline-vendoring.md"
+      - "docs/plan/planning/done/slice-013-vorlagen-und-slice-koepfe.md"
+      - "docs/plan/planning/done/slice-014-reviewer-und-wellen-closure.md"
+      - "docs/plan/planning/done/slice-024-voll-smoke.md"
+      - "docs/plan/planning/done/slice-028-emit-gate-sicher.md"
+      - "docs/plan/planning/done/slice-029-artifact-target.md"
+      - "docs/plan/planning/done/slice-030-durchsetzung-skills-emit.md"
+      - "docs/plan/planning/done/slice-034-gate-fragment-assembly.md"
+      - "docs/plan/planning/done/slice-035-cli-phasierung.md"
+      - "docs/plan/planning/done/slice-036-guard-blocked-union.md"
+      - "docs/plan/planning/done/slice-037-add-lang.md"
+      - "docs/plan/planning/done/slice-038-idempotenz-klassifikation.md"
+      - "docs/plan/planning/done/slice-045a-hexslice-go-renderer.md"
+      - "docs/plan/planning/done/slice-045b-arch-cli.md"
+      - "docs/plan/planning/done/slice-050-doku-nachzug-release.md"
+      - "docs/plan/planning/done/slice-086-vordergrund-per-updatedinput.md"
+      - "docs/plan/planning/done/slice-098-feldliste-ist-ausdruck-des-traegers.md"
+      - "docs/plan/planning/done/slice-137-beobachtungs-register-bekommt-seinen-ort.md"
+      - "docs/plan/planning/done/slice-174-archivierung-emittieren.md"
+      - "docs/plan/planning/done/slice-176-inventur-vor-dem-schnitt-v600.md"
+      - "docs/plan/planning/done/slice-193-baum-tausch-v650-pins-ziehen.md"
+      - "docs/plan/planning/done/slice-commit-traeger-wird-skip-if-present.md"
+      - "docs/plan/planning/done/slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke.md"
+      - "docs/plan/planning/done/slice-kennungs-waechter-geht-ins-ziel.md"
+      - "docs/plan/planning/done/slice-lifecycle-move-geht-ins-ziel.md"
+      - "docs/plan/planning/done/slice-vorlauf-waechter-geht-ins-ziel.md"
 # targets (hermetisch, kein git, kein Netz): haelt zwei Richtungen zwischen den
 # Makefile-Rezepten und den Gate-Tabellen der Doku. Richtung 1 (gate-undocumented):
 # jedes .PHONY-Rezept aus makefiles steht entweder in einer `make X`-Tabellenzeile

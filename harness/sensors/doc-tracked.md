@@ -8,7 +8,7 @@ git-Index steht — genau das, was auf einem frischen Klon fehlen würde.
 
 ## Grenze — was das Grün nicht abdeckt
 
-**Was `doc-tracked` und `doc-structure` ohne eigenen `.d-check.yml`-Block wirklich prüfen**
+**Was `doc-tracked` ohne eigenen `.d-check.yml`-Block wirklich prüft**
 (slice-217, Antwort auf [`welle-13`](../../docs/plan/planning/done/welle-13-regeln-bekommen-ihren-sensor.md)
 §3): Jedes `docs?-*`-Ziel in [`d-check.mk`](../../d-check.mk) fällt in eine von vier Klassen,
 **abgeleitet** aus Ziel-Zeile, Rezept-Zeile und der Frage, ob [`.d-check.yml`](../../.d-check.yml)
@@ -33,8 +33,8 @@ mit [`d-check.mk`](../../d-check.mk)) in vier Klassen: **A** — kein `--enable`
 dem ganzen Baum (`docs-check`, `doc-doctor`, `doc-repair`, `doc-trace`, `doc-complete`); **B** —
 ein Modul ist zugeschaltet **und** [`.d-check.yml`](../../.d-check.yml) führt dafür einen
 Top-Level-Block (`doc-immutable`/`vcs`, `doc-commits`/`commits`, `doc-planning`/`planning`,
-`doc-targets`/`targets`); **C** — ein Modul ist zugeschaltet, **kein** Block dafür
-(`doc-tracked`/`tracked`, `doc-structure`/`structure`); **D** — kein Docker-Lauf über dem Baum
+`doc-targets`/`targets`, `doc-structure`/`structure`); **C** — ein Modul ist zugeschaltet, **kein** Block dafür
+(`doc-tracked`/`tracked`); **D** — kein Docker-Lauf über dem Baum
 (`doc-usage` fährt nur `--help`, `doc-help` grep't `$(MAKEFILE_LIST)`, kein Docker) — die Frage
 nach einem Prüfbereich ist für D sinnlos, und das steht hier, statt stillschweigend zu fehlen.
 `doc-commits` ist der eine B-Fall mit einer eigenen Geschichte: sein `commits:`-Block existiert,
@@ -113,5 +113,5 @@ endet selbst mit 2. Die Block-Marke des Rezepts folgt nur auf Exit 0.
 ## Bindung
 
 Kuratiert in `exempt-targets` (`.d-check.yml` `targets:`-Block) — kein Gate-Versprechen. Siehe
-auch [`make doc-structure`](doc-structure.md) für die inerte Gegenprobe derselben
+auch [`make doc-structure`](doc-structure.md) für die Gegenprobe ohne Block derselben
 Klassifikation.

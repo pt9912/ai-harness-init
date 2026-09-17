@@ -4,8 +4,8 @@
 
 Prüft die gesamte Repo-Doku netzlos (`--network none`) mit dem in
 [`d-check.mk`](../../d-check.mk) gepinnten `d-check` gegen
-[`.d-check.yml`](../../.d-check.yml). Aktiv sind acht Module:
-`links, anchors, ids, matrix, codepaths, spans, planning, targets` — keines davon liest
+[`.d-check.yml`](../../.d-check.yml). Aktiv sind neun Module:
+`links, anchors, ids, matrix, codepaths, spans, planning, targets, structure` — keines davon liest
 Historie. Grün heißt: im Prüfbereich **dieser** Module ist kein Befund offen, nicht mehr.
 
 ## Grenze — was das Grün nicht abdeckt
@@ -176,18 +176,22 @@ make -C <kopie> docs-check              # je Lage die Datei in der Kopie ändern
 |---|---|
 | Ziel-Form vollständig | keine |
 | §7 auf einen Satz gekürzt | `closure-note-thin` auf seiner §7-Überschrift |
-| die Zeile `Gegenstand:` fehlt | keine |
+| die Zeile `Gegenstand:` fehlt | `section-open-tasks-marker-missing` auf der §2-Überschrift (§Modul `structure`) |
 | `Gegenstand:` nennt eine Kennung, die es nicht gibt | keine |
 | ein Liefer-Punkt abgehakt | keine |
 | ein Risiko aus §6 ohne Ausgang | keine |
-| `Gegenstand:` als unausgefüllter Vorlagen-Platzhalter | keine, weil `placeholder` aus ist (§Modul `planning`) |
+| `Gegenstand:` als unausgefüllter Vorlagen-Platzhalter | keine: `placeholder` ist aus (§Modul `planning`), und `structure` nimmt die Zeile als Marke (§Modul `structure`) |
 | derselbe Platzhalter, `placeholder: true` in der Kopie | `closure-note-placeholder` auf der Zeile (`<Grund>`) |
+
+Die zwei Zeilen zur Zeile `Gegenstand:` ohne `placeholder: true` gelten für die Modul-Liste mit
+`structure` und sind dort gemessen (§Modul `structure`, Lagen V1 und V3). Die übrigen Zeilen gelten
+für die Modul-Liste ohne `structure` und sind mit ihm nicht neu gemessen.
 
 Die Kopie trägt eine lokale git-Identität, wie in [`slice-mv.md`](slice-mv.md) §Kanten. Für die
 Lage *ein Risiko aus §6 ohne Ausgang* ist in der Kopie die §7-Zeile `- **Risiken aus §6:**` des
 stillgelegten Slice auf `Risiko 1 eingetreten` gekürzt; Risiko 2 bis 5 stehen danach ohne Ausgang.
-Danach läuft `make -C <kopie> docs-check`. Ebenso ohne Meldung bleibt ein stillgelegter Slice,
-dessen §7 die Zeile gar nicht trägt.
+Danach läuft `make -C <kopie> docs-check`. Ein stillgelegter Slice, dessen §7 die Zeile gar nicht
+trägt, meldet `section-open-tasks-marker-missing` (§Modul `structure`, Lage V1).
 
 Aus den Geschwister-Dateien bleibt nach dem Wechsel kein Befund stehen, soweit ihre präfixlosen
 Verweise auf den stillgelegten Slice die Form tragen, die `make slice-mv` erkennt: den Markdown-Link
@@ -204,18 +208,11 @@ git grep -hE '\]\(\./slice-|\]\(<slice-|^\[[^]]*\]: *slice-' -- docs/plan/planni
 `in-progress/` nicht berühren.
 
 **Was daraus folgt.** `closure` liest den stillgelegten Slice wie jeden anderen in `done/`; das
-Gegenbeispiel in Zeile 2 färbt rot. Die Form der Stilllegung liest dagegen kein aktives Modul.
-Die Ziel-Fassung nennt es urteilsfrei, dass die Zeile `Gegenstand:` eine Kennung oder einen Grund
-trägt. Im gepinnten Stand hält das kein **aktives** Modul; `planning` liest die Form nicht (Lage
-*die Zeile `Gegenstand:` fehlt*). Die Konfigurations-Vorlage
-(`docker run --rm ghcr.io/pt9912/d-check@<digest> --print-config`) führt dafür die
-`structure`-Bedingung `open-tasks-require-marker` samt `open-tasks-require-marker-section`: Trägt
-ein Abschnitt mehr offene Task-Items als `max-open-tasks` zulässt, verlangt sie eine Marke wie
-`**Gegenstand:**` in einem benannten Abschnitt derselben Datei und meldet
-`section-open-tasks-marker-missing`, wenn die Marke fehlt. `structure` steht nicht in der
-Modul-Liste der `.d-check.yml` (`grep -n '^modules:' .d-check.yml`), die Bedingung wirkt hier also
-nicht. Diese Lücke liegt in der Konfiguration dieses Repos, nicht im Werkzeug; ihre Adresse ist der
-Folge-Slice `slice-stilllegungs-form-hat-einen-waechter`. Ebenso urteilsfrei nennt die Ziel-Fassung, dass jedes Risiko
+Gegenbeispiel in Zeile 2 färbt rot. Die Ziel-Fassung nennt es urteilsfrei, dass die Zeile
+`Gegenstand:` eine Kennung oder einen Grund trägt. Davon hält `structure` die **Anwesenheit** der
+Zeile: Trägt §2 offene Punkte und §7 keine Zeile in Marken-Form, färbt der Slice den Lauf rot
+(§Modul `structure`). **Was** die Zeile trägt, hält kein aktives Modul; der unausgefüllte
+Platzhalter bleibt grün (Tabelle). Ebenso urteilsfrei nennt die Ziel-Fassung, dass jedes Risiko
 aus §6 einen Ausgang trägt, und auch das prüft kein aktives Modul (Tabelle, Lage *ein Risiko aus §6
 ohne Ausgang*). Diese Lücke betrifft jede Closure, nicht nur die Stilllegung; ihre Adresse ist der
 Folge-Slice `slice-risiko-ausgang-hat-einen-sensor`. Zwei Punkte sind dagegen Grenzen und keine
@@ -226,6 +223,124 @@ Ob ein abgehakter Punkt ein Liefer-Punkt ist, bleibt Urteil.
 
 **Kein Wächter hält die Tabelle.** Sie ist eine Messung gegen den genannten Digest; wandert der Pin
 in `d-check.mk`, gilt sie für den alten Stand, bis jemand neu misst.
+
+### Modul `structure`
+
+**Was es hält.** [`.d-check.yml`](../../.d-check.yml) führt `structure` in `modules:` und einen
+`structure`-Block mit einer Regel: Über jedem Slice-Plan flach in `done/` zählt sie die offenen
+Task-Items im Abschnitt `## 2. Definition of Done` (`max-open-tasks: 0`). Trägt er welche, verlangt
+`open-tasks-require-marker` im Abschnitt `## 7. Closure-Notiz` (mit oder ohne Zusatz) eine Zeile
+in Marken-Form `**Gegenstand:**`. Fehlt sie, meldet die Regel **einen**
+`section-open-tasks-marker-missing` auf der §2-Überschrift; die vierte Spalte trägt den `hint` der
+Regel. Offene Items außerhalb von §2 zählen nicht, und eine Marke außerhalb von §7 zählt nicht. Ein
+regulär gelieferter Slice trägt in `done/` keine offenen Items
+(`.harness/baseline/v6.9.0/regelwerk/modul-05-planning-harness.md` §Lifecycle als State Machine:
+die DoD-Häkchen sind Bedingung für `done/`). Trägt er doch eines, färbt er dieselbe Regel rot, und
+der `hint` nennt beide Auswege.
+
+**Der Prüfbereich und seine Grenze.** Gemessen gegen d-check `v0.76.1`
+`@sha256:1470ecdcaa686a5ef4513dee9b0ae522586f54b87d568b06fc6b5b2741b633b3`. Alle Zahlen wandern mit
+dem Bestand und sind **keine Erwartungswerte**:
+
+```sh
+ls docs/plan/planning/done/slice-*.md | wc -l                             # 177 Kandidaten
+grep -lE '^\s*[-*] \[ \]' docs/plan/planning/done/*.md | wc -l            #  31 mit offenen Items
+for f in $(grep -lE '^\s*[-*] \[ \]' docs/plan/planning/done/*.md); do
+  awk '/^```/{c=!c} !c&&/^## /{h=$0} !c&&/^[[:space:]]*[-*] \[ \]/{print h}' "$f"
+done | sort -u                                                           # nur "## 2. Definition of Done"
+sed -n '/^structure:/,/^# targets/p' .d-check.yml | grep -c '^      - "docs/plan/planning/done/'   # 30 ausgenommen
+```
+
+Von den 31 Plänen mit offenen Items tragen 30 keine Marke in §7. Sie stehen namentlich in
+`exempt-paths`, sind Zeitdokumente und bleiben unverändert. Der 31. ist der stillgelegte
+[`slice-135`](../../docs/plan/planning/done/slice-135-d-check-pin-v0661.md). Er trägt
+`- **Gegenstand:** entfallen: …` in §7, liegt im Prüfbereich und bleibt ohne Befund. Ohne
+Ausnahmeliste meldet derselbe Lauf 30 Befunde, und ihre Dateien sind genau die 30 der Liste. Ein
+Glob über die Kennungs-Form nähme mehr aus: Nummerierte Slices liegen auch dort, woher künftige
+Stilllegungen kommen:
+
+```sh
+ls docs/plan/planning/open/slice-[0-9]*.md docs/plan/planning/next/slice-[0-9]*.md | wc -l   # 65
+```
+
+**Rot gesehen, gegen eine Kopie des Arbeitsbaums außerhalb des Repos, netzlos, derselbe Digest.**
+Der stillgelegte Slice ist ein Slice-Plan aus `in-progress/` mit leeren DoD-Punkten, dessen §7
+keine Zeile in Marken-Form trägt. Er liegt als `done/slice-sonde-stilllegung.md` in der Kopie und
+steht nicht in `exempt-paths`. Der reguläre Slice ist ein Plan aus `done/`, dessen DoD-Punkte alle
+abgehakt sind. Je Lage beginnt eine frische Kopie:
+
+```sh
+git archive HEAD | tar -x -C <kopie>      # dazu die geänderten Dateien des Arbeitsbaums
+cp <plan> <kopie>/docs/plan/planning/done/slice-sonde-stilllegung.md
+make -C <kopie> docs-check                # je Lage die Datei oder .d-check.yml in der Kopie ändern
+```
+
+| Lage | Meldung |
+|---|---|
+| V0 Bestand unverändert | keine, `1601 Datei(en) geprüft, 0 Befund(e)` |
+| V1 stillgelegt, §7 ohne `Gegenstand:` | `section-open-tasks-marker-missing` auf der §2-Überschrift |
+| V2 stillgelegt, `- **Gegenstand:** entfallen: …` in §7 | keine |
+| V3 stillgelegt, die Platzhalter-Zeile der Vorlage in §7 | keine |
+| V4 stillgelegt, `Gegenstand:` in §2 statt §7 | `section-open-tasks-marker-missing` |
+| V5 wie V2, ein Liefer-Punkt abgehakt | keine |
+| V6 alle DoD-Punkte abgehakt, ohne `Gegenstand:` | keine |
+| V7 regulär, ein offenes Item in §6 | keine |
+| V8 regulär, ein offenes Item in §2 | `section-open-tasks-marker-missing` |
+| V9 wie V1, `structure` aus `modules:` genommen | keine |
+| M1 `open-tasks-require-marker` und `-section` entfernt | 5 × `section-tasks-open` in `slice-135` |
+| M2 nur `open-tasks-require-marker-section` entfernt | `section-open-tasks-marker-missing` in `slice-135` |
+| M3 `structure`-Block und Aktivierung entfernt | `docs-check` ohne Befund; `test/doc-block-marke-wiring.bats` Fall 1 rot |
+
+Die Meldung in V1 lautet, Spalten durch Tabulatoren getrennt:
+
+```text
+docs/plan/planning/done/slice-sonde-stilllegung.md:89	docs/plan/planning/done/slice-*.md :: ^## 2\. Definition of Done$	section-open-tasks-marker-missing	offene DoD-Punkte in done/ — geliefert: abhaken; stillgelegt: §7 trägt **Gegenstand:** mit Kennung oder Grund
+```
+
+**Grenzen.**
+
+- **Die Marke ist eine Form, kein Inhalt.** Eine Zeile in Marken-Form in §7 genügt, auch der
+  unausgefüllte Platzhalter der Vorlage (V3). Dasselbe gilt für eine `**Gegenstand:**`-Zeile, die
+  in §7 etwas anderes meint; am Zeilenanfang tragen sie
+  `grep -lE '^(- )?\*\*Gegenstand:\*\*' docs/plan/planning/done/slice-*.md | wc -l` → 9 Pläne.
+  Keiner davon trägt offene Items außer `slice-135`.
+- **Eine einzelne DoD-Zeile lässt sich nicht ausnehmen.** `tasks-ignore-pattern` wirkt nur auf
+  `max-tasks`. Mit `max-tasks: 1000` und `tasks-ignore-pattern: '^Die drei Paarungen'` meldet die
+  Regel ohne Ausnahmeliste weiter 30 Befunde, gemessen mit `--enable structure` allein. Die Zeile
+  *„Die drei Paarungen … sind getragen"* steht in
+  `grep -lE '^\s*- \[ \] Die drei Paarungen' docs/plan/planning/done/slice-*.md | wc -l` → 7 Plänen
+  offen. Alle sieben stehen in `exempt-paths`. Ein künftiger regulärer Slice, der sie offen lässt,
+  ist Lage V8.
+- **Der Glob ist flach.** Ein Stub unter `done/<welle-id>/` liegt außerhalb. Trifft die Regel keine
+  Datei mehr, meldet sie `section-missing`.
+- **Die Aktivierung hält kein Gate außerhalb von `docs-check`.** `make mutate` kennt zwei
+  Fehlschlag-Formen, `--- FAIL:` der Go-Stufe und `not ok N` der bats-Stufe, und `make docs-check`
+  gibt keine davon aus. M1 und M2 sind darum einmalige Belege und kein Fall unter `test/mutations/`.
+  M3 fällt in `make test`, weil `doc-structure` dann wieder in die Menge fällt, die
+  [`test/doc-block-marke-wiring.bats`](../../test/doc-block-marke-wiring.bats) aus beiden Dateien
+  ableitet. Für V9 schlägt kein Wächter an.
+
+**Das emittierte Gate bekommt die Regel nicht.** Die drei Kriterien aus
+[`MR-054`](../conventions.md#mr-054) sind gemessen an einem Ziel, das
+`ai-harness-init --lang go --name probe` in einem leeren git-Repo außerhalb dieses Repos erzeugt,
+mit dem Träger aus `make host-bin`:
+
+1. **Der Dogfood fährt das Modul:** erfüllt, `grep -m1 '^modules:' .d-check.yml` nennt `structure`.
+2. **Grün über dem frisch emittierten Bestand:** nicht erfüllt. `done/` trägt in diesem Ziel nur
+   `.gitkeep`. Mit `structure` in `modules:` und der Regel ohne `exempt-paths` meldet der Lauf über
+   der `.d-check.yml` des Ziels `section-missing` mit dem Grund *„Regel trifft keine Datei (auch
+   nach Abzug von exempt-paths) — das Gate liefe leer"*.
+3. **Rot im Ziel:** von Hand gesehen, ohne Zahn. Eine Kopie der Vorlage `slice.template.md` in
+   `done/` bleibt grün, denn die Vorlage trägt in §7 die Zeile
+   `- **Gegenstand:** <übernommen von … | entfallen: <Grund>>`. Ohne diese Zeile meldet der Lauf
+   `section-open-tasks-marker-missing`. `harness/tools/full-smoke.sh` trägt keinen Zahn dafür
+   (`grep -ciE 'structure|open-tasks' harness/tools/full-smoke.sh` → 0).
+
+Kriterium 2 trägt die Entscheidung. Die emittierte Vorlage `internal/emit/templates/d-check.yml`
+bleibt ohne `structure`
+(`grep -c 'structure' internal/emit/templates/d-check.yml` → 0). Nach
+[`MR-055`](../conventions.md#mr-055) gilt die Messung für dieses eine Ziel. Neu zu messen ist
+Kriterium 2, sobald ein frisch emittiertes Ziel eine Datei trägt, die die Regel trifft.
 
 ### Modul `targets`
 

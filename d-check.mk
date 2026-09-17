@@ -8,16 +8,16 @@
 #     (`doc-help` ist der eine Handgriff, s. u.) und sind NICHT als Gate behauptet —
 #     verfügbar wie `regelwerk-check`, kein halluziniertes Gate (LH-QA-01). Die
 #     opt-in-Module `citations` (18., v0.50.0), `sources` (19., Netz, v0.51.0),
-#     `structure` (20., v0.57.0, Target `doc-structure`), `workflows` (21., v0.67.0),
-#     `reviews` (22., v0.73.0) und `mentions` (23., v0.75.0) sind in `.d-check.yml`
-#     NICHT aktiviert — was NICHT heisst, dass es keinen Lauf gibt: `sources` faehrt in
-#     `make regelwerk-check` (`--enable sources`, mit Netz, nicht in `make gates`),
-#     `structure` in `doc-structure`; `workflows`/`reviews`/`mentions` haben kein
-#     eigenes Recipe. „Nicht aktiviert" meint die Modul-Liste des Befund-Gates.
-#     Ebenso verfuegbar und nicht aktiv ist die elfte `structure`-Bedingung
+#     `workflows` (21., v0.67.0), `reviews` (22., v0.73.0) und `mentions` (23., v0.75.0)
+#     sind in `.d-check.yml` NICHT aktiviert — was NICHT heisst, dass es keinen Lauf
+#     gibt: `sources` faehrt in `make regelwerk-check` (`--enable sources`, mit Netz,
+#     nicht in `make gates`); `workflows`/`reviews`/`mentions` haben kein eigenes
+#     Recipe. „Nicht aktiviert" meint die Modul-Liste des Befund-Gates.
+#     Das opt-in-Modul `structure` (20., v0.57.0) IST aktiviert: `.d-check.yml` fuehrt
+#     es in `modules:` und einen `structure`-Block mit der elften Bedingung
 #     `open-tasks-require-marker` (v0.76.0, Grund-Code
-#     `section-open-tasks-marker-missing`): sie wirkt nur in einem `structure`-Block,
-#     und `.d-check.yml` fuehrt keinen.
+#     `section-open-tasks-marker-missing`); `docs-check` faehrt es, `doc-structure`
+#     faehrt es allein.
 #     Von den sechs fokussierten advisory-Recipes disablen FUENF alle SECHS
 #     opt-in-Module (verbatim vom Tool) — das sechste IST `doc-structure` und
 #     enabled sein eigenes Modul, wie jedes advisory-Target ohne Platz in `make gates`.
@@ -54,22 +54,24 @@
 # M Befund(e)` WEITERE `d-check: …`-ZEILEN TRAGEN (`summary.notes`, v0.75.0; gefuellt nur
 # vom Modul `mentions`, das hier nicht aktiv ist; MR-061). Die Zaehl-Zeile bleibt die letzte.
 # Einbinden: `include d-check.mk`; eine eigene .d-check.yml danebenlegen.
-# NEU-ERZEUGUNG: FUENF Handgriffe, ACHT Diff-Hunks — das Kommando zaehlt HUNKS, nicht
-# Handgriffe: Handgriff 5 aendert ZWEI nicht benachbarte Ziele, und je Ziel trennt die
+# NEU-ERZEUGUNG: FUENF Handgriffe, SECHS Diff-Hunks — das Kommando zaehlt HUNKS, nicht
+# Handgriffe: Handgriff 5 aendert jedes Ziel seiner Menge, und je Ziel trennt die
 # unveraenderte `docker run`-Zeile die geaenderte Ziel-/Hilfetext-Zeile von der angehaengten
-# `@echo`-Zeile -- macht 4 Hunks statt 1 (die Handgriffe 1-4 liefern je einen, zusammen 8).
+# `@echo`-Zeile -- macht 2 Hunks je Ziel; die Menge ist `doc-tracked`, die Handgriffe 1-4
+# liefern je einen, zusammen 6.
 # Der Digest steht literal, weil `$(DCHECK_REF)` in einem Kommentar keine Shell-Variable ist
 # und wortwoertlich gefahren still `1` liefert:
 #   diff <(docker run --rm --network none \
 #     ghcr.io/pt9912/d-check@sha256:1470ecdcaa686a5ef4513dee9b0ae522586f54b87d568b06fc6b5b2741b633b3 \
-#     --print-mk) d-check.mk | grep -c '^[0-9]'                                    # 8
+#     --print-mk) d-check.mk | grep -c '^[0-9]'                                    # 6
 #   1. dieser Adopter-Kopf (das Tool liefert ihn nicht),
 #   2. DCHECK_DIGEST pinnen (das Tool liefert es leer),
 #   3. `.PHONY`- und Target-Zeile `doc-check` -> `docs-check`, Hilfetext erweitert,
 #   4. `doc-help` zieht mit (`^docs?-` statt `^doc-`, sonst faellt docs-check aus der Liste),
-#   5. die Marke bei `doc-tracked`/`doc-structure` (Hilfetext-Anhang UND Ausgabe-Zeile
-#      `.d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, …` — der Generator liefert
-#      keins von beidem; MR-062).
+#   5. die Marke an jedem Ziel, dessen `--enable`-Modul in `.d-check.yml` keinen eigenen
+#      Block hat (Hilfetext-Anhang UND Ausgabe-Zeile `.d-check.yml fuehrt fuer dieses Modul
+#      keinen eigenen Block, …` — der Generator liefert keins von beidem; MR-062). Die Menge
+#      leitet test/doc-block-marke-wiring.bats aus beiden Dateien ab.
 DCHECK_IMAGE ?= ghcr.io/pt9912/d-check:v0.76.1
 DCHECK_DIGEST ?= sha256:1470ecdcaa686a5ef4513dee9b0ae522586f54b87d568b06fc6b5b2741b633b3
 # TRACE_FLAGS: optionale Flags für die RTM-Targets (z. B. --json).
@@ -124,9 +126,8 @@ doc-targets: ## Deklarations-Konsistenz Doku<->Build-Targets via Modul targets; 
 	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable targets --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable planning --disable tracked --disable citations --disable sources --disable structure --disable workflows --disable reviews --disable mentions
 
 .PHONY: doc-structure
-doc-structure: ## Struktur-Invarianten innerhalb der Dokumente via Modul structure; hermetisch, ohne Range (DC-FA-STRUCT-001) -- .d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, siehe harness/sensors/doc-tracked.md bzw. harness/sensors/doc-structure.md
+doc-structure: ## Struktur-Invarianten innerhalb der Dokumente via Modul structure; hermetisch, ohne Range (DC-FA-STRUCT-001)
 	docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable structure --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable commits --disable planning --disable tracked --disable targets --disable citations --disable sources --disable workflows --disable reviews --disable mentions
-	@echo '.d-check.yml fuehrt fuer dieses Modul keinen eigenen Block, siehe harness/sensors/doc-tracked.md bzw. harness/sensors/doc-structure.md'
 
 .PHONY: doc-usage
 doc-usage: ## Aufruf und Optionen von d-check selbst (--help)

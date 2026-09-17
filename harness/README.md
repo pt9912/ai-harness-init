@@ -47,7 +47,7 @@ wird dann zum Link auf die Datei.
 | Target | Vertrag | Bindung |
 |---|---|---|
 | `make baseline-verify` | Vendored Baseline unverändert: Integrität **und** Vollständigkeit, netzlos | [`MR-007`](conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
-| [`make docs-check`](sensors/docs-check.md) | Doku-Referenzen grün (links/anchors/ids/matrix/codepaths/spans/planning/targets), netzlos (`--network none`) — im Prüfbereich seiner Module | [`MR-010`](conventions.md#mr-010--d-check-gate-fragment-tool-generiert) |
+| [`make docs-check`](sensors/docs-check.md) | Doku-Referenzen grün (links/anchors/ids/matrix/codepaths/spans/planning/targets/structure), netzlos (`--network none`) — im Prüfbereich seiner Module | [`MR-010`](conventions.md#mr-010--d-check-gate-fragment-tool-generiert) |
 | `make test` | Command-Guard-Tests (bats) + Go-Unit-Tests (Dockerfile-`test`-Stage) grün | [`ADR-0004`](../docs/plan/adr/0004-durchsetzungs-emission.md), [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md) |
 | `make lint` | Go-Lint (golangci-lint, Dockerfile-`lint`-Stage) grün | [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md) |
 | `make build` | Go-Binary cross-compiliert (Dockerfile-`build`-Stage) | [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md) |
@@ -83,7 +83,7 @@ ist (`make help` listet sie).
 | [`make history-range-guard`](sensors/history-range-guard.md) | Vorlauf-Wächter: angeforderte Range auflösbar **und** nicht leer | kein Gate |
 | [`make adr-immutable`](sensors/adr-immutable.md) | hält den Kern einer `Accepted`-ADR über einer Range unverändert | kein Gate · [`AGENTS.md`](../AGENTS.md) §3.4 |
 | [`make doc-tracked`](sensors/doc-tracked.md) | sagt, ob ein verlinktes Ziel im git-Index steht | kein Gate |
-| [`make doc-structure`](sensors/doc-structure.md) | sagt, ob eine erwartete Section-Überschrift fehlt (inert ohne `structure:`-Block) | kein Gate |
+| [`make doc-structure`](sensors/doc-structure.md) | fährt die `structure`-Regeln der `.d-check.yml` allein (inert ohne `structure:`-Block) | kein Gate |
 | `make regelwerk-check` | Upstream-Content-Drift des Baseline-ZIP auditieren (Netz) | kein Gate — nur nächtlich |
 | `make baseline-freshness` | neueren Upstream-Tag als `BASELINE_TAG` melden (Netz, read-only) | kein Gate — nur nächtlich |
 | `make record-gates` | Working-Tree-Hash-Nachweis für den Stop-Hook | kein Gate |
