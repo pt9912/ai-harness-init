@@ -87,10 +87,16 @@ entfernter Ziel-Zeile und, als zweiter Auslöser derselben Klasse, mit einer Zie
 Rezept; über dem **unverfälschten** d-check.mk greift der Wächter und das Modul läuft
 (Exit 0).
 
-**Beide Hälften der Zusage sind an beiden Targets gemessen.** Der blinde Grün-Fall — dieselbe
-leere Range über `-f d-check.mk`, also ohne das Doc-Gate-Fragment — meldet für `doc-immutable`
-**und** `doc-commits` `0 Befund(e)` bei Exit 0; der Abbruch des Wächters ist für beide
-gefahren.
+**Der Abbruch des Wächters ist an beiden Targets gemessen.** Der blinde Grün-Fall — dieselbe
+leere Range über `-f d-check.mk`, also ohne das Doc-Gate-Fragment — trägt dagegen **nur noch
+`doc-immutable`**. Gemessen an einem flachen Klon (Tiefe 1 über zwei Commits, `.git/shallow`
+vorhanden) eines frisch emittierten Ziels, `--range HEAD..HEAD`, ohne Wächter: `doc-immutable`
+meldet unter `v0.76.1` wie unter `v0.76.3` `0 Befund(e)` bei Exit 0; `doc-commits` meldet das nur
+unter `v0.76.1` — unter dem gepinnten `v0.76.3` bricht es mit
+`d-check: error: Range-Basis-Vorfahren nicht lesbar: object not found` und Exit 2 ab, weil das
+Modul die Range jetzt vor seiner Klassen-Konfiguration auflöst. Die Stufe
+`blind_gruen_ohne_waechter` von [`make full-smoke`](full-smoke.md) fährt `doc-commits` gegen die
+erste Erwartung und fällt unter dem gepinnten Stand daran.
 
 ## Ausgabe und Ausgänge
 
