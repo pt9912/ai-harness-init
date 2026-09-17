@@ -101,7 +101,14 @@ dieselbe Mechanik eine Ebene höher: Die Funktion überspringt bereits etwas (f�
 - **Keine Änderung an `span-report`, `span-watch` oder `hook-overhead`.** Sie lesen das Feld;
   dieser Slice schreibt es — **anderer Vorgang**.
 
-## 2. Definition of Done
+### Nachbarschaft: ein zweiter Slice schreibt an §5
+
+`slice-109-feldliste-jede-aussage-hat-ihre-quelle` schreibt ebenfalls an
+[`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 — an
+den Aussagen der Feldliste, nicht an `SPEC-021`/`SPEC-031`. Die zwei sind inhaltlich unabhängig
+und voneinander nicht blockiert; **gleichzeitig** angefasst erzeugen sie einen Konflikt in
+derselben Sektion. Wer den zweiten beginnt, während der erste läuft, löst ihn im Text statt in der
+Planung.
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Ziel-Form: Slice — **≤ 3 Liefer-Punkte**; mehr heißt: der Slice ist zu groß und

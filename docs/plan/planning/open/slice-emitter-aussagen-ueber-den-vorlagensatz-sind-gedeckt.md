@@ -23,8 +23,18 @@ Zusage, deren Operand nicht mehr existiert, behauptet eine Deckung, die niemand 
 (Setzung 2 — die Zahlen unten wandern und sind keine Erwartungswerte),
 [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
 (eine Aussage über die Baseline nennt den Tag, gegen den sie gemessen ist),
-[`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
-(die Lastenheft-Änderung selbst ist ein Change Request, nicht Teil dieses Slice — §4).
+[`MR-036`](../../../../harness/conventions.md#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline)
+(die Lastenheft-Änderung ist ein Change Request und gehört dem Auftraggeber — nicht Teil dieses
+Slice, §1),
+[`ADR-0005`](../../adr/0005-ziel-repo-distribution.md) (*Accepted* — die Entscheidung, aus der die
+zweiklassige Ablage hervorgeht),
+[`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md) (*Accepted* — Festlegung (e) trägt den
+Präzedenzfall *„Welcher Satz das ist, ist eine Regel und keine Aufzählung"*; die Zahl in ihrer
+Begründung ist eine datierte Messung, §6 Risiko 5),
+[`ADR-0057`](../../adr/0057-wiederkehrende-vorlagen-menge-bindet-als-eigenschaft.md) (*Accepted* —
+Festlegung 1 ist der Wächter aus DoD 1, Festlegung 2 löst ihn vom Change Request, Festlegung 4
+setzt die geltende Lesart der Zahl in
+[`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md)).
 
 **Berührte Spec-Stellen:** [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
 — der Slice **liest** sie als Vertrag und hält den Code dagegen; geschrieben wird sie hier nicht.
@@ -76,8 +86,14 @@ grep -cE '^func (isRecurring|isDerivativeIndex|isBrownfieldOnly)\(' internal/emi
 git grep -c 'v6\.7\.2' -- internal/emit/templates.go                           # 3
 ```
 
-**Zu (a):** Dieselbe Menge, zwei Stände — die Aufzählung in Rang 1 ist kürzer als der Code, und
-kein Wächter hält sie zusammen. **Zu (c):** Zwei der drei Stellen sind **Kommandos**, die ihren
+**Zu (a):** Dieselbe Klasse, zwei Stände — die Aufzählung in Rang 1 ist kürzer als der Code, und
+kein Wächter hält die Disposition überhaupt zusammen. **Der Wächter dieses Slice bindet deshalb
+nicht an die Aufzählung**, sondern an die Eigenschaft gegen den vendored Satz
+([`ADR-0057`](../../adr/0057-wiederkehrende-vorlagen-menge-bindet-als-eigenschaft.md)
+Festlegung 1): Eine Liste in Rang 1 altert bei jedem Baseline-Sprung erneut, die Bezugsmenge
+wandert mit dem Satz. Die stille Stelle ist dabei nicht die Differenz, sondern der **Default** —
+eine Vorlagen-Art, die in keine Weiche fällt, wird ohne Entscheidung als Singleton gestempelt.
+**Zu (c):** Zwei der drei Stellen sind **Kommandos**, die ihren
 eigenen Beleg liefern sollen; ihr Operand ist ein Vorlagenbaum unter einem Tag, den
 [`harness/conventions.md`](../../../../harness/conventions.md) §Baseline nicht mehr als Stand
 führt. Ein Nachfahren liefert heute einen Fehler statt der zugesagten leeren Ausgabe, und die
@@ -90,8 +106,12 @@ nicht mehr da ist. Der Block verlangt es selbst: jede Re-Baseline fährt die Pro
 - **Das Lastenheft wird hier nicht geschrieben.** Die Aufzählung in
   [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) zu
   ändern, ist eine Vertragsänderung und damit ein Change Request nach
-  [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
-  — ein **anderer Vorgang**, und er ist Vorbedingung dieses Slice (§4).
+  [`MR-036`](../../../../harness/conventions.md#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline)
+  — ein **anderer Vorgang**, und er gehört dem Auftraggeber. **Er ist keine Vorbedingung dieses
+  Slice** ([`ADR-0057`](../../adr/0057-wiederkehrende-vorlagen-menge-bindet-als-eigenschaft.md)
+  Festlegung 2): Der Wächter aus DoD 1 bezieht seine Sollmenge aus dem vendored Satz, nicht aus
+  dem Vertrag. Welche Gestalt die ADR empfiehlt — die Eigenschaft statt der längeren Liste —,
+  steht dort als Festlegung 3 und ist eine Empfehlung, keine Setzung.
 - **Der Vorlagensatz selbst wird nicht verändert.** Er ist byte-verifiziert; die Proben lesen ihn,
   sie schreiben ihn nicht. Der **Bestand bleibt stehen**.
 - **Fällt eine Probe nicht leer aus, wird die Grenz-Aussage nicht weicher formuliert.** Dann steht
@@ -122,14 +142,28 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 **Drei Liefer-Punkte**, jeder mit dem Kommando, das ihn **rot** färbt
 ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 
-- [ ] **(1) Ein Wächter hält die wiederkehrende Menge aus
-      [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) gegen
-      den Rumpf von `emit.isRecurring` — in beide Richtungen.** Er misst die **Aufzählung**, nicht
-      ihre heutige Länge: eine Zahl im Test wäre genau der Erwartungswert, den
+- [ ] **(1) Ein Wächter führt vier Dispositionen positiv und hält sie gegen die Bezugsmenge, über
+      die der Emitter selbst läuft** —
+      [`ADR-0057`](../../adr/0057-wiederkehrende-vorlagen-menge-bindet-als-eigenschaft.md)
+      Festlegung 1. Die Bezugsmenge ist `emit.inScope` über dem vendored `templates/`-Baum, also
+      jede `*.template.md` außer `project-readme.template.md`; sie wird **aus `emit.inScope`
+      abgeleitet**, nicht ein zweites Mal aufgezählt. Die vier Dispositionen sind `isRecurring`,
+      `isDerivativeIndex`, `isBrownfieldOnly` und die **Singleton-Menge als benannte Liste im
+      Prüfbereich des Wächters** — im Emitter ist sie der Default und dort keine Aussage. Geprüft
+      wird in zwei Richtungen: **Vollständigkeit** (jede Vorlage der Bezugsmenge steht in genau
+      einer der vier Mengen; eine in keiner färbt rot, und die Meldung nennt ihren Pfad **und den
+      geprüften Ausschnitt**) und **Disjunktheit** (keine steht in zweien — jede Menge wird einzeln
+      ausgewertet, nicht über die kurzschließende `||`-Kette des Dispatchs). Eine Zahl im Test wäre
+      der Erwartungswert, den
       [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-      Setzung 2 ausschließt.
-      **Rot:** `make test` mit einem `test/mutations/`-Fall, der einen Namen auf **einer** der
-      beiden Seiten entfernt; sein `# expect:`-Kopf nennt den fallenden Wächter.
+      Setzung 2 ausschließt; die Aufzählung in
+      [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) ist
+      **nicht** der Operand dieses Wächters (§1).
+      **Rot:** `make mutate` mit drei `test/mutations/`-Fällen — (a) eine Vorlage der Bezugsmenge
+      steht in keiner der vier Mengen, (b) ein Name der Singleton-Liste steht zusätzlich in
+      `isRecurring`, (c) ein Name in `isRecurring` wird gegen einen anderen **aus der Bezugsmenge**
+      getauscht: dann fällt der Wächter zweifach — an Vollständigkeit und an Disjunktheit — und
+      **nicht an einer Zahl**, denn die Kardinalität bleibt gleich.
 - [ ] **(2) Jede Weiche, die über die Emit-Disposition einer Vorlage entscheidet, ist einer Aussage
       in [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
       zugeordnet** — vollständig über die Weichen, nicht über die auffälligen. Der Nenner ist das
@@ -172,7 +206,7 @@ Aussagen-Berührung steht hier gar nicht.
 |---|---|---|
 | [`internal/emit/templates.go`](../../../../internal/emit/templates.go) | update | die drei Proben und die Zuordnung der Weichen zu Rang-1-Aussagen |
 | [`internal/emit/templates_test.go`](../../../../internal/emit/templates_test.go) | neu / update | der Wächter aus DoD 1 und 2, in beide Richtungen |
-| [`test/mutations/`](../../../../test/mutations) | neu | ein Fall, der einen Namen auf einer Seite entfernt |
+| [`test/mutations/`](../../../../test/mutations) | neu | drei Fälle — fehlende Disposition, doppelte Disposition, Tausch bei gleicher Kardinalität |
 
 **Optional: Ansatz als Liste, wenn eine Zeile pro Datei nicht trägt** — z. B.
 eine Schnittstellenänderung über viele gleichrangige Dateien mit derselben
@@ -180,9 +214,10 @@ Begründung, oder ein Ansatz, der sich nicht auf eine Datei herunterbrechen
 lässt. Ergänzt die Tabelle, ersetzt sie nicht:
 
 - Vorbild für die Form ist der Wächter in
-  [`test/courseset-fixture.bats`](../../../../test/courseset-fixture.bats), der dieselbe Menge aus
-  dem **vendored Satz** ableitet; dieser hier leitet sie aus **Rang 1** ab, und die zwei Quellen
-  sind verschieden.
+  [`test/courseset-fixture.bats`](../../../../test/courseset-fixture.bats), der seine Menge
+  ebenfalls aus dem **vendored Satz** ableitet. Der Unterschied liegt nicht in der Quelle, sondern
+  im Gegenstand: jener prüft den Satz, dieser die **Zuordnung** jeder seiner Vorlagen zu genau
+  einer Disposition.
 - Reihenfolge: zuerst (3) — die Proben zu fahren ist billig und sagt, ob der Satz überhaupt trägt
   —, danach der Wächter aus (1) und (2).
 
@@ -192,20 +227,24 @@ lässt. Ergänzt die Tabelle, ersetzt sie nicht:
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): Das WIP-Limit des Rolleninhabers ist frei, die zwei
-übernommenen Slices liegen in `done/`, **und** die Aufzählung in
-[`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) ist als
-Change Request entschieden — der Wächter aus DoD 1 kann eine Menge nicht gegen einen Vertrag
-halten, der die Menge nicht führt.
+**Start** (`next` → `in-progress`): Das WIP-Limit des Rolleninhabers ist frei und die zwei
+übernommenen Slices liegen in `done/`. **Der Change Request zu
+[`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) ist keine
+Vorbedingung** — der Wächter aus DoD 1 bezieht seine Sollmenge aus dem vendored Satz, nicht aus
+dem Vertrag
+([`ADR-0057`](../../adr/0057-wiederkehrende-vorlagen-menge-bindet-als-eigenschaft.md)
+Festlegung 2).
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): Eine Probe fällt nicht leer aus und
   verlangt eine Änderung an der Maskierung selbst. Dann ist das ein eigener Gegenstand, und dieser
   Slice behält die Deckungsfrage.
-- `in-progress` → `open` (blockiert — Carveout?): Der Change Request zu
-  [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) ist beim
-  Start doch nicht entschieden.
+- `in-progress` → `open` (blockiert — Carveout?): Eine Vorlagen-Art der Bezugsmenge fällt in
+  **keine** der vier Dispositionen sinnvoll. Dann ist die Dispositions-Achse selbst neu zu
+  schneiden statt die Liste zu erweitern — eine Entscheidung, die vor die Arbeit gehört
+  ([`ADR-0057`](../../adr/0057-wiederkehrende-vorlagen-menge-bindet-als-eigenschaft.md)
+  §Re-Evaluierungs-Trigger, zweiter Punkt).
 
 ## 5. Closure-Trigger
 
@@ -216,8 +255,9 @@ Lerneintrag; ohne ihn ist der Slice nur abgelegt.
 
 1. `make gates` ist grün, und `git grep -c` auf den abgelösten Tag in
    [`internal/emit/templates.go`](../../../../internal/emit/templates.go) liefert `0`.
-2. Der Wächter aus DoD 1 ist mit seinem `test/mutations/`-Fall einmal rot gesehen; die gelesene
-   Ausgabe der drei Proben steht im Umsetzungs-Commit.
+2. Der Wächter aus DoD 1 ist mit **jedem** seiner drei `test/mutations/`-Fälle einmal rot gesehen —
+   Fall (c) zweifach, an Vollständigkeit und Disjunktheit; die gelesene Ausgabe der drei Proben
+   steht im Umsetzungs-Commit.
 
 Dazu ein **Lerneintrag** in einer der drei Formen (§7).
 
@@ -229,18 +269,32 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **einen** Ausgang, und kein Slice geht nach `done/`, während eines ohne Ausgang
 dasteht.
 
-1. **Der Change Request zu Rang 1 ist beim Start nicht entschieden.** *Absehbar:* entfallen, wenn
-   der Start-Trigger aus §4 wirklich geprüft wird; sonst eingetreten mit der Rückführung nach
-   `open` als Ausgang.
+1. **Die Aufzählung in Rang 1 trifft den Bestand weiter nicht.** Der Wächter hängt nicht an ihr
+   ([`ADR-0057`](../../adr/0057-wiederkehrende-vorlagen-menge-bindet-als-eigenschaft.md)
+   Festlegung 2), die Differenz bleibt aber bestehen, bis ein Change Request sie einholt.
+   *Absehbar:* **weiter offen** — der Ausgang ist das Beobachtungs-Register, nicht ein
+   Folge-Slice: Ein Slice kann Rang 1 nicht schreiben.
 2. **Eine Probe fällt nicht leer aus.** *Absehbar:* entfallen, wenn alle drei leer bleiben; sonst
    eingetreten, und der Ausgang ist ein Folge-Slice mit der Fundstelle — nicht eine weichere
    Formulierung.
-3. **Der Wächter misst die Länge statt der Aufzählung.** *Absehbar:* entfallen, wenn der
-   Mutations-Fall einen **Namen** tauscht statt einen zu entfernen und der Wächter trotzdem fällt.
+3. **Der Wächter misst eine Zahl statt der Zuordnung.** *Absehbar:* entfallen, wenn Rot-Fall (c)
+   aus DoD 1 — der **Tausch** bei gleicher Kardinalität — den Wächter zweifach fallen lässt; ein
+   Zähl-Test bliebe dort grün.
 4. **Ein weiterer Baseline-Sprung fällt zwischen Plan und Lauf**, und die Proben laufen gegen den
    vorletzten Satz. *Absehbar:* entfallen, wenn DoD 3 den Stand aus
    [`harness/conventions.md`](../../../../harness/conventions.md) §Baseline liest statt einen im
    Plan genannten.
+5. **Die Zahl-Aussage in [`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md) Festlegung (e)
+   — *„die fünf wiederkehrenden Vorlagen"* — trifft den Bestand nicht**, und die Datei ist
+   `Accepted`, wird also nicht nachgezogen ([`AGENTS.md`](../../../../AGENTS.md) §3.4). Gemessen,
+   **keine Erwartungswerte**:
+   `grep -c 'die fünf wiederkehrenden Vorlagen' docs/plan/adr/0020-emittierte-modul-15-regeln.md`
+   → **1** gegen
+   `awk '/^func isRecurring/,/^}/' internal/emit/templates.go | grep -o '"[A-Za-z-]*\.template\.md"' | sort -u | wc -l`
+   → **11**. *Absehbar:* entfallen — der Ausgang steht in
+   [`ADR-0057`](../../adr/0057-wiederkehrende-vorlagen-menge-bindet-als-eigenschaft.md)
+   Festlegung 4: Die Zahl ist eine datierte Messung in einer Begründung, kein Bestandteil der
+   Festlegung; maßgeblich für die Menge ist ab dort der Wächter aus DoD 1.
 
 ## 7. Closure-Notiz
 

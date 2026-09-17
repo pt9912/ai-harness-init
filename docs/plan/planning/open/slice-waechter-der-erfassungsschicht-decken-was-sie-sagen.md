@@ -89,9 +89,10 @@ einen **anderen** Wächter nennt, der zu Recht fällt.
 
 - **Die Aussagen der Feldliste selbst.** Ob die Incident-Frage je Feld an **eine** Quelle gebunden
   ist und ob ein Satz über den Bestand mehr behauptet als der Träger, ist ein Gegenstand des
-  **Produkts**, nicht der Wächter, und er schreibt an
-  [`spec/spezifikation.md`](../../../../spec/spezifikation.md) §5. Das ist ein **anderer Vorgang**;
-  die Adresse ist `slice-109-feldliste-jede-aussage-hat-ihre-quelle`, der weiter offen steht.
+  **Produkts**; dieser Slice hat die **Wächter** darüber. Zwei verschiedene Gegenstände, zwei
+  Schnitte — das ist der Grund, und er allein trägt. Das ist ein **anderer Vorgang**; die Adresse
+  ist `slice-109-feldliste-jede-aussage-hat-ihre-quelle`, der unverändert in `next/` steht.
+
 - **Die Kopf-Granularität von `test/mutations/`.** Ob ein Kopf die erwartete **Zusicherung** statt
   des Wächter-Namens trägt, übernimmt der **Folge-Slice** `slice-069-zahn-bindet-zusicherung`;
   dieser Slice legt Fälle in der heute geltenden Form an und migriert nichts.
@@ -100,7 +101,18 @@ einen **anderen** Wächter nennt, der zu Recht fällt.
   wird hier nicht nebenbei verschoben.
 - **Die Ausgabe des Lesers.** Dass `make span-report` seine Lagen mit zutreffenden Ursachen
   begründet, ist das **Produkt**; hier geht es um die Wächter darüber —
-  **Schicht-Abgrenzung**, und die Adresse ist `slice-die-bilanz-sagt-worueber-sie-gerechnet-hat`.
+  **Schicht-Abgrenzung**, und die Adresse ist `slice-071-bilanz-nennt-ihren-bestand`.
+
+### Nachbarschaft: zwei Slices schreiben an §5, und dieser ist keiner davon
+
+`slice-109-feldliste-jede-aussage-hat-ihre-quelle` schreibt an
+[`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5, und
+`slice-204-das-programm-feld-nennt-das-programm` zieht dort `SPEC-021` und `SPEC-031` nach. **Der
+Ausschluss von `slice-109` hängt nicht daran, wer als Einziger §5 schreibt** — dieser Grund trüge
+nicht, denn es sind zwei; er hängt am Gegenstand. Die Nachbarschaft steht hier, weil zwei
+schreibende Zugriffe auf denselben Abschnitt einen Konflikt erzeugen, wenn sie gleichzeitig
+laufen: Wer beide zugleich anfasst, löst ihn im Text statt in der Planung. Dieser Slice berührt §5
+nicht und ist von beiden unabhängig.
 
 **Keine Mindestzahl.** Ein Slice mit *einem* echten Ausschluss ist besser als
 einer mit vier erfundenen; die vier Klassen sind ein Suchraster, keine

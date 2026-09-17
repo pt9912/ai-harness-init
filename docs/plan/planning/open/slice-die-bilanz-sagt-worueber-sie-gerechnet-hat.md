@@ -47,7 +47,34 @@ zusammen mit der Begründungs-Pflicht je Punkt.
 begründet jede ihrer Leeren mit einer Ursache, die auf den gemeldeten Zustand zutrifft, und ihre
 Bestandszeile benennt die Menge, die sie zählt.
 
-**Übernimmt:** `slice-071-bilanz-nennt-ihren-bestand`.
+**Übernimmt:** — nichts. Die Übernahme von `slice-071-bilanz-nennt-ihren-bestand` ist gestrichen.
+
+### Die Übernahme ist gestrichen, der Gegenstand bleibt beim Geber
+
+Eine Übernahme von **einem** Geber ist keine Gruppierung, sondern ein Identitäts-Wechsel. Verlangt
+wird er von keiner Quelle:
+[`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
+setzt die Namens-Form für jede **neu vergebene** Kennung, *der Bestand behält seine Nummer*.
+Bezahlt würde er mit einer vollständigen Stilllegung des Gebers — ein Ausgang für jedes seiner
+Risiken, `Gegenstand:`-Zeile, Register-Beleg, Closure-Notiz, `git mv` —, also mit einem
+Closure-Vorgang für einen Gegenstand, den derselbe Plan unverändert weiterträgt.
+
+**Gemessen, was dieser Plan über den Geber hinaus führt: nichts.** Beide tragen dieselben drei
+Liefer-Punkte, (1) und (3) im gleichen Wortlaut; **keine Erwartungswerte**
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2):
+
+```sh
+grep -cE '^- \[ \] \*\*\(' docs/plan/planning/next/slice-071-bilanz-nennt-ihren-bestand.md              # 3
+grep -cE '^- \[ \] \*\*\(' docs/plan/planning/open/slice-die-bilanz-sagt-worueber-sie-gerechnet-hat.md  # 3
+```
+
+**Folge:** `slice-071-bilanz-nennt-ihren-bestand` bleibt unter seiner Kennung in `next/` und führt
+den Gegenstand weiter. **Dieser Plan wird in Stufe 2b stillgelegt** — `git mv` nach `done/`, §7
+trägt `Gegenstand: entfallen — der Gegenstand bleibt bei slice-071-bilanz-nennt-ihren-bestand`,
+die Liefer-Punkte bleiben leer (Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice,
+dessen Gegenstand ein anderer übernimmt, Wegfall-Hälfte). Gelöscht wird er nicht: Löschen machte
+seine Kennung ununterscheidbar von einer, die es nie gab.
 
 **Der Befund, je mit dem Kommando neben der Aussage** — **keine Erwartungswerte**
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)

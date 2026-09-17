@@ -52,7 +52,42 @@ erste Token des nächsten Segments;
 [`SPEC-031`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) beschreiben danach,
 was das Feld misst.
 
-**Übernimmt:** `slice-204-das-programm-feld-nennt-das-programm`.
+**Übernimmt:** — nichts. Die Übernahme von `slice-204-das-programm-feld-nennt-das-programm` ist
+gestrichen.
+
+### Die Übernahme ist gestrichen, der Gegenstand bleibt beim Geber
+
+Eine Übernahme von **einem** Geber ist keine Gruppierung, sondern ein Identitäts-Wechsel. Verlangt
+wird er von keiner Quelle:
+[`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
+setzt die Namens-Form für jede **neu vergebene** Kennung, *der Bestand behält seine Nummer*.
+Bezahlt würde er mit einer vollständigen Stilllegung des Gebers — ein Ausgang für jedes seiner
+Risiken, `Gegenstand:`-Zeile, Register-Beleg, Closure-Notiz, `git mv` —, also mit einem
+Closure-Vorgang für einen Gegenstand, den derselbe Plan unverändert weiterträgt.
+
+**Der Unterschied zum Geber ist die Darstellung, nicht der Schnitt.** Beide führen **einen**
+Liefer-Punkt und begründen ihn gleich: Spec-Zeilen und Mutations-Fälle sind die Form derselben
+Lieferung, nicht zusätzlicher Umfang. **Keine Erwartungswerte**
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2):
+
+```sh
+grep -cE '^\*\*Liefer-Punkt 1|^\*\*Ein Liefer-Punkt' \
+  docs/plan/planning/next/slice-204-das-programm-feld-nennt-das-programm.md \
+  docs/plan/planning/open/slice-span-programm-nennt-das-programm.md          # je 1
+```
+
+Eine Verschachtelung der Unterpunkte in Kontrollkästchen ist eine Umschrift am Plan; sie ist am
+Geber selbst möglich, denn der liegt in `next/` und ist nicht eingefroren. Ein Identitäts-Wechsel
+ist dafür nicht der Preis wert.
+
+**Folge:** `slice-204-das-programm-feld-nennt-das-programm` bleibt unter seiner Kennung in `next/`
+und führt den Gegenstand weiter — samt der Eigentumsfrage über das Technik-Stratum, die er in
+seiner DoD benennt. **Dieser Plan wird in Stufe 2b stillgelegt** — `git mv` nach `done/`, §7 trägt
+`Gegenstand: entfallen — der Gegenstand bleibt bei slice-204-das-programm-feld-nennt-das-programm`,
+die Liefer-Punkte bleiben leer (Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice,
+dessen Gegenstand ein anderer übernimmt, Wegfall-Hälfte). Gelöscht wird er nicht: Löschen machte
+seine Kennung ununterscheidbar von einer, die es nie gab.
 
 **Der Befund gehört gefahren, nicht zitiert.** Der Span-Bestand liegt gitignored und
 maschinenlokal; eine Zahl aus einem fremden Lauf sagt über den eigenen nichts
