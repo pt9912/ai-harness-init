@@ -15,7 +15,7 @@ blind und grün, statt zu fallen
 Setzung 3). Geprüft wird darum die **Range** (`git rev-list --count`), nicht die Klon-Tiefe.
 `STAGED=1` prüft keine Range, sondern vergleicht den Index gegen `HEAD` (`git diff --cached`).
 
-### Im gebootstrappten Ziel
+### Im gebootstrappten Ziel — Vertrag
 
 Dieselbe Logik reist als emittiertes Werkzeug mit — `tools/harness/history-range-guard.sh`
 ([`MR-005`](../conventions.md#mr-005--harness-tools-unter-harnesstools-layout-adaption)) — und hängt dort an
@@ -51,7 +51,7 @@ Vorbedingung selbst, und sie liegt in keinem Gate: `make gates` fährt keines de
 
 Details und Beleg stehen im Kopf von `harness/tools/history-range-guard.sh`, Abschnitt BELEG.
 
-### Im gebootstrappten Ziel
+### Im gebootstrappten Ziel — Grenze
 
 Die emittierte Fassung unterscheidet sich in einem Punkt von
 [`harness/tools/history-range-guard.sh`](../tools/history-range-guard.sh): sie trägt die zwei
@@ -87,7 +87,7 @@ gefahren.
   das Skript damit mit 1, derselben Zahl wie bei der leeren Range; die Meldung trennt die zwei
   Fälle. Über `make history-range-guard` endet jeder Abbruch des Wächters mit 2.
 
-### Im gebootstrappten Ziel
+### Im gebootstrappten Ziel — Sperren
 
 **Das Fragment ist selbst fail-closed, je Ziel.** Es prüft vor der Vorbindung, ob das
 eingebundene `d-check.mk` das Ziel **mit Rezept** führt — dieselbe Datei, die sein `include`

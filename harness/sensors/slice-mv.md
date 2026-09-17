@@ -10,7 +10,7 @@ Es setzt zwei getrennte Commits (Hard Rule 3.3): zuerst der reine Move
 (kein Byte Inhalt geändert), danach — nur falls Verweise anfielen — der Inhalts-Nachzug als
 zweiter Commit.
 
-### Im gebootstrappten Ziel
+### Im gebootstrappten Ziel — Vertrag
 
 Dieselbe Logik reist als emittiertes Werkzeug mit: das Skript liegt im Ziel unter
 `tools/harness/slice-mv.sh`, das Fragment daneben unter
@@ -73,7 +73,7 @@ großgeschrieben — trifft die Zeichenklasse des Fundmusters nicht.
 
 Details und Beleg stehen im Kopf von `harness/tools/slice-mv.sh`, Abschnitt BELEG.
 
-### Im gebootstrappten Ziel
+### Im gebootstrappten Ziel — Grenze
 
 **Was die zwei Fassungen zusammenhält, und was nicht.** Gleich gehalten werden die drei
 Ersetzungs-Funktionen: `make test-bats` vergleicht ihre Rümpfe zwischen
@@ -112,7 +112,7 @@ Alle vor dem ersten `git mv`; das Skript endet bei jeder mit 2, `make slice-mv` 
 - `slice-mv: kein Slice '…' unter …` → die Kennung prüfen.
 - `slice-mv: '…' liegt bereits in …/` → nichts zu tun.
 
-### Im gebootstrappten Ziel
+### Im gebootstrappten Ziel — Sperren
 
 **Fehlt eine Voraussetzung, bewegt es nichts.** Ein unsauberer Arbeitsbaum bricht den Aufruf vor
 dem ersten `git mv` ab, mit einer Meldung, die den Fall nennt. Dieselbe Stufe stellt den Fall im
