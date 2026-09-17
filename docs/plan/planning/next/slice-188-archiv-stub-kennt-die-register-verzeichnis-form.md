@@ -159,36 +159,77 @@ dasteht.
   ([`BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)).
   Der Doc-Kommentar von `Hervorgegangen` sagt heute zu, jede Kennung werde als Anker-Link **neu
   gebaut**; nach dem Tausch gilt das nur für die Kennungen, die der neue Ausdruck trifft. —
-  **Ausgang:** <…>
+  **Ausgang: eingetreten** → `slice-lifecycle-werkzeuge-tragen-die-kennung`. Der Nehmer nimmt die
+  Frage als **Entscheidung** an, statt sie offenzulassen: Sein Liefer-Punkt (1) verlangt, dass im
+  Doc-Kommentar der Funktion begründet steht, ob die abgelöste dreistellige Form daneben erkannt
+  bleibt. Die Zusage wandert damit mit dem Ausdruck, statt daneben stehenzubleiben.
 - **Die Bezugsmenge ist wieder ein `grep`**
   ([`BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md)).
   Das Kommando in §1 findet `BEO-`; ein Ort, der die Kennung aus einer Variablen zusammensetzt
   oder unter anderem Namen führt, steht nicht darin. Der Slice sagt die getroffene Menge zu, nicht
-  die vollständige. — **Ausgang:** <…>
+  die vollständige. — **Ausgang: weiter offen.** Kein Sensor dieses Repos schließt diese Lücke, und der Nehmer
+  nimmt sie nicht mit — er misst dieselbe getroffene Menge. **Ins Beobachtungs-Register
+  gewandert** als Zuordnung zu der in diesem Risiko genannten Beobachtung
+  [`BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md).
+  **Keine Beleg-Datei angelegt:** Dieser Slice hat die Grenze **benannt**, nicht erlitten, und der
+  Zähler misst die Vorgänge, in denen sie auftrat.
 - **Kein Gate sieht die Klasse.** Dass ein Stub eine Zeile **verliert**, ist kein rotes Modul,
   sondern eine fehlende Zeile in einer Datei, die erst bei der nächsten Archivierung entsteht. Der
   Träger ist der Test aus DoD 2 und sonst nichts
   ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6): kein
-  Gate behaupten, das nicht prüft). — **Ausgang:** <…>
+  Gate behaupten, das nicht prüft). — **Ausgang: eingetreten** → derselbe Nehmer. Der Träger wandert mit dem Gegenstand: Sein
+  Liefer-Punkt (1) nennt `make test` als Rot-Weg und misst die **Eigenschaft** statt der abgelösten
+  Form. Ein Gate über der Klasse behauptet er ebenso wenig wie dieser Plan.
 
 ## 7. Closure-Notiz
 
-Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
-§Das Beobachtungs-Register (vorhandene Kennung **zitieren** statt neu
-formulieren — sonst zählt das Register zwei Pfade getrennt) ·
-`grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln (das
-Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
-wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
-Backticks).
+**Gegenstand:** übernommen von `slice-lifecycle-werkzeuge-tragen-die-kennung`.
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** dieses Repo führt Wellen-Betrieb; sie prüft die nächste Welle-Closure —
-  auch für einen Slice ohne Wellen-Zugehörigkeit.
+**Stillgelegt ohne Lieferung** — Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice,
+dessen Gegenstand ein anderer übernimmt. Die Liefer-Punkte in §2 bleiben **leer**: Dieser Slice
+hat nichts geliefert, und ein Haken behauptete es. `Verantwortlich:` bleibt stehen.
+
+**Die Adresse nimmt an.** Der Nehmer liegt in `open/`, ist nicht geschlossen und nennt in §1
+unter `Übernimmt:` diese Kennung. Er führt den Gegenstand als Liefer-Punkt (1): *`Hervorgegangen:`
+erkennt die heutige Register-Kennung und baut einen Link, der auflöst* — samt der Entscheidung
+über die abgelöste Form.
+
+**Wellenlos.** Der Kopf führt keine Welle; die Roadmap führt wellenlose Arbeit nicht
+(`modul-06-roadmap.md` §Wann Arbeit eine Welle braucht), und diese Closure trägt sie allein.
+
+**Was hat funktioniert:** Der Slice hatte seine drei Risiken bereits mit **Register-Kennungen**
+geschrieben statt als Prosa. Beim Ausgang war deshalb nicht mehr zu entscheiden, *welche* Klasse
+vorliegt, sondern nur noch, wer sie trägt — das ist der Unterschied zwischen einem Risiko und
+einer Ahnung.
+
+**Was ging anders als geplant:** Geprüft hat den Schnitt keine Implementation, sondern erst die
+Gruppierung — das Muster *tote Slices* aus `modul-05-planning-harness.md` §Regeln gegen typische
+Fehlannahmen. Der Plan stand von seinem Schnitt am 2026-09-05 an unbeansprucht in `next/`.
+
+**Steering-Loop-Eintrag:** **gezählt, nicht verkörpert** — kein Zielort, darum **kein**
+`liegt in`-Feld (`grundlagen-traceability.md` §Herkunfts-Anker). Die Form der Stilllegung steht
+seit `v6.9.0` in der adoptierten Baseline; eine zweite Fassung daneben driftete.
+
+**Beobachtungs-Register** (`../observations/`): zitiert, nicht neu formuliert —
+[`BEO-ALL/geplanter-slice-wird-nie-gearbeitet`](../observations/BEO-ALL/geplanter-slice-wird-nie-gearbeitet/observation.md).
+**Keine zweite Beleg-Datei:** Dieser Geber steht dort unter *Benannt, nicht gezählt*; er ist ein
+Fund **derselben** Gelegenheit wie `slice-090-freshness-audit-im-ziel`, und der Zähler misst
+Wiederholung über Vorgänge hinweg, nicht die Zahl der Funde (`modul-06-roadmap.md` §Das
+Beobachtungs-Register). Der Stand bleibt `offen`, unter der Schwelle. Der Risiko-Ausgang *weiter
+offen* in §6 ordnet sich derselben Regel unter: Zuordnung ja, Beleg-Datei nein.
+
+**Lese-Schritt** (Repo ohne Wellen-Betrieb, `modul-06-roadmap.md` §Wann Arbeit eine Welle
+braucht): Kein Eintrag erreicht mit dieser Closure 3×, und kein Eintrag über der Schwelle steht
+ohne Ausgang — dasselbe Kommando wie in
+[`slice-090`](slice-090-freshness-audit-im-ziel.md) §7, Ausgabe leer.
+
+**Die drei Paarungen.** (a) Anker-Paarung: kein Eintrag trägt `liegt in`, sie hat keinen
+Gegenstand. (b) Folge-Slice-Paarung: kein Folge-Slice genannt. (c) Register-Paarung: beide
+zitierten Beobachtungen existieren als Verzeichnis und tragen je mindestens einen Beleg.
+
+**Was diese Closure nicht trägt:** Review und Verifikation am Gegenstand — es gibt keinen Diff,
+den sie prüfen könnten. Geprüft ist die **Form** der Stilllegung durch `make docs-check` (Modul
+`structure`, `open-tasks-require-marker`) und der Gesamtstand durch `make gates`.
 
 ## 8. Sub-Area-Modus-Begründung
 
