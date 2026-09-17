@@ -4,9 +4,9 @@
 ist von `v0.74.1` überholt; die Pin-Linie trägt **einen** lebenden Pin, und wer `v0.66.1` pinnte,
 ließe `make freshness-dcheck` im selben Moment wieder rot. Die sechs Messungen unten sind über
 `v0.65.0..v0.66.1` gezogen — eine echte Teilmenge der Spanne, die slice-187 misst — und dort **neu
-gefahren** statt übernommen. Die Datei bleibt liegen: Für das Entfernen einer Plandatei nennt
-Modul 5 keinen Zustand und keinen Weg; die Lücke steht in
-[slice-187](../done/slice-187-d-check-pin-v0741.md) §6 mit Ausgang.
+gefahren** statt übernommen. Die Datei geht ohne Lieferung nach `done/`
+(Baseline-Regelwerk `v6.9.0` · `modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein
+anderer übernimmt); §7 trägt die Zeile `Gegenstand:`.
 
 **Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese
 Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
@@ -276,13 +276,13 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt
       Versions-Referenz, und die Gate-Namen in [`AGENTS.md`](../../../../AGENTS.md) §4 und
       [`harness/README.md`](../../../../harness/README.md) bewegen sich nicht (§1 Messung 3, `12`
       Targets vor wie nach).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register fortgeschrieben: neue `BEO-<NNN>` oder Zähler +1 mit Beleg in
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register fortgeschrieben: neue `BEO-<NNN>` oder Zähler +1 mit Beleg in
       [`observations/README.md`](../observations/README.md) — *keine Beobachtung angefallen* ist ebenfalls eine
       Antwort und wird in §7 notiert. Das Reconciliation-Register entfällt dauerhaft: dieses Repo
       hat keinen Brownfield-Bootstrap.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt
       Wellen-Betrieb, sie werden also von der nächsten Welle-Closure geprüft, nicht hier (auch für
       Slices ohne Wellen-Zugehörigkeit).
 
@@ -361,7 +361,9 @@ dasteht.
   Untergrenze: die Bilanz ist über **Dateien** gezogen, während die Frage über **Verhalten** geht,
   und geteilte Infrastruktur hat sich bewegt (§1 Messung 5). — **Ausgang:** <entfallen: die
   Gegenmessung auf Nicht-Null-Basis aus DoD (2) liefert identische Befundmengen | eingetreten: sie
-  liefert eine Differenz, und §4 greift>
+  liefert eine Differenz, und §4 greift> — **Ausgang: entfallen.** Der Slice wird nicht gearbeitet.
+  Die Frage stellt sich bei jedem Pin-Sprung; für den nächsten führt sie
+  `slice-d-check-pin-bringt-die-stilllegungs-bedingung` als §6 Risiko 1.
 - **Die Bilanz ist gegen ein Fremd-Repo gemessen, nicht gegen ein Gate.** Kein Modul dieses Repos
   vergleicht die Befundklassen zweier d-check-Versionen; wer den Klon nicht hat, kann §1 Messung 5
   nicht nachvollziehen. Die konstruierte Sonde aus DoD (3) und die
@@ -369,22 +371,29 @@ dasteht.
   Nachbar-Repo ist und keine Fremd-Software, macht die Lage zugleich zu einer **Anforderung** statt
   zu einer Grenze. — **Ausgang:** <entfallen: die zwei repo-eigenen Messungen tragen die Bilanz
   allein | eingetreten: Folge-Slice mit der Anforderung an das Werkzeug, benannt und adressiert>
+  — **Ausgang: entfallen.** Der Slice wird nicht gearbeitet. Die zwei repo-eigenen Messungen
+  verlangt `slice-d-check-pin-bringt-die-stilllegungs-bedingung` in DoD 2.
 - **Der Kopf ist der billigste Ort, an dem eine Aussage veraltet, und der teuerste, an dem sie
   gelesen wird.** Er steht in jedem Lauf im Kontext, der [`d-check.mk`](../../../../d-check.mk)
   aufschlägt, und **kein Modul der aktiven sechs liest ihn** — die zehn Nennungen des alten Standes
   hat kein Gate gemeldet, sondern ein `grep` (§3). Nach diesem Slice gilt dasselbe für die neuen.
   — **Ausgang:** <entfallen: die Aussagen des Kopfes sind gemessen und tragen bis zum nächsten Pin
-  | eingetreten: Folge-Slice oder Übergabe, wenn eine Aussage einen Wächter braucht>
+  | eingetreten: Folge-Slice oder Übergabe, wenn eine Aussage einen Wächter braucht> —
+  **Ausgang: entfallen.** Dieser Slice schreibt keinen Kopf. Den Kopf zum nächsten Stand zieht
+  `slice-d-check-pin-bringt-die-stilllegungs-bedingung` in DoD 1 nach.
 - **Der Pin trägt einen Grund, den kein Sensor dieses Repos kennt.** `make freshness-dcheck` sagt
   *„ein neuer Tag ist da"*, nicht *„der gepinnte ist verwundbar"*; kein Gate scannt das gepinnte
   Fremd-Image. Diese Klasse ist bereits einmal aufgefallen
   ([slice-122](../done/slice-122-d-check-pin-v0650.md) §6, vierzehn HIGH-CVEs im damaligen Sprung)
   und ist mit diesem Slice nicht geschlossen. — **Ausgang:** <weiter offen: als Kandidat notiert,
-  ohne eigenen Schnitt in diesem Lauf | eingetreten: Folge-Slice>
+  ohne eigenen Schnitt in diesem Lauf | eingetreten: Folge-Slice> — **Ausgang: entfallen.** Dieser
+  Slice pinnt nichts. Die Lücke besteht für jeden Pin und steht als §6 Risiko 3 in
+  `slice-d-check-pin-bringt-die-stilllegungs-bedingung`.
 - **Ein toter Tag kann sich wiederholen.** `v0.66.0` existiert am Klon und **nicht** in der
   Registry (§1). Ein Lauf, der dem Freshness-Ausgang blind folgt, pinnt auf ein Image, das es nicht
   gibt. — **Ausgang:** <entfallen: der Digest ist vor dem Pin dreifach belegt, DoD (1) | eingetreten:
-  Übergabe an den Architect, weil die Beleg-Pflicht dann eine Regel-Frage ist>
+  Übergabe an den Architect, weil die Beleg-Pflicht dann eine Regel-Frage ist> — **Ausgang:
+  entfallen.** Dieser Slice pinnt nichts. Der Nachfolger belegt den Digest vor dem Pin (DoD 1).
 - **Der Rang-Zeiger bleibt nach diesem Slice halb.** Zeile 2 des Kopfes nennt nach DoD (3) die
   richtige **Version**, aber weiter nur die Einträge der Vorgänger-Sprünge — der Eintrag zu diesem
   hier existiert zum Umsetzungs-Zeitpunkt nicht (§6 Übergabe 1). Das ist eine echte
@@ -392,7 +401,9 @@ dasteht.
   aufhalten. — **Ausgang:** <entfallen: der Architect-Lauf liegt vor dem Umsetzungs-Lauf und der
   Zeiger nennt den Eintrag sofort | eingetreten: Folge-Slice nach dem Muster von
   [slice-128](../done/slice-128-d-check-kopf-sagt-was-gilt.md), mit dem Beginn-Trigger *„der
-  Eintrag existiert"*>
+  Eintrag existiert"*> — **Ausgang: entfallen.** Dieser Slice schreibt keinen Kopf. Für den
+  nächsten Sprung steht dieselbe Reihenfolge-Frage als §6 Risiko 4 in
+  `slice-d-check-pin-bringt-die-stilllegungs-bedingung`.
 
 ### Übergabe an den Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8 — vier Posten, keiner hier geschrieben)
 
@@ -444,7 +455,72 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-<!-- Erst nach Abschluss füllen. -->
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10) als
+Stilllegung ohne Lieferung. Maßstab ist Baseline-Regelwerk `v6.9.0` ·
+`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer übernimmt, dazu
+[`.claude/commands/plan-welle.md`](../../../../.claude/commands/plan-welle.md) §Einen Slice
+stilllegen.
+
+- **Gegenstand:** entfallen: `slice-187-d-check-pin-v0741` hat den Pin über die Ziel-Version
+  dieses Slice hinaus gehoben, auf `v0.74.1` statt `v0.66.1`, und die Linie trägt einen lebenden
+  Pin.
+- **Liefer-Punkte:** Die drei Liefer-Punkte der DoD bleiben leer, denn geliefert hat dieser Slice
+  nichts. Leer bleiben auch der Gate-Lauf und das Doku-Update, weil beide an einer Lieferung
+  hängen.
+- **Was hat funktioniert:** Der Zeiger im Kopf dieser Datei hielt ihre Adresse gültig, solange die
+  Baseline für einen überholten Plan keinen Ausgang kannte.
+- **Was ging anders als geplant:** Der Slice wurde nie begonnen. Vor dem Start hatte ein neuerer
+  Release die Ziel-Version überholt, und `slice-187-d-check-pin-v0741` trat mit eigener Kennung an
+  seine Stelle. Diese Datei lag danach als zweiter Plan derselben Linie in `open/`, bis `v6.9.0`
+  den Ausgang normierte.
+- **Steering-Loop-Eintrag:** **Geschärfte Regel**, gezählt und nicht verkörpert. Ein reaktiver
+  Slice nennt seinen Ziel-Stand im Titel und in §1, nicht in der Kennung. Überholt ein Release ihn
+  vor dem Start, wird der Plan umgezielt, und kein zweiter Slice entsteht. Angewandt ist die Regel
+  in `slice-d-check-pin-bringt-die-stilllegungs-bedingung` (§6 Risiko 2). Ein `liegt in`-Feld
+  steht nicht, denn die Regel erreicht die Schwelle nicht.
+- **Beobachtungs-Register (`../observations/`):** Den Zähler liefert
+  `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/ | wc -l`; keine der Zahlen ist ein
+  Erwartungswert.
+
+  | Eintrag | Quelle | Zähler | Stand |
+  |---|---|---|---|
+  | [`kennung-traegt-den-stand-den-ein-release-ueberholt`](../observations/BEO-ALL/kennung-traegt-den-stand-den-ein-release-ueberholt/observation.md) | dieser Vorgang | 1, neu | offen |
+  | [`ueberholter-offener-plan-ohne-genormten-ausgang`](../observations/BEO-ALL/ueberholter-offener-plan-ohne-genormten-ausgang/observation.md) | kein neues Auftreten, denn der Beleg `slice-187` betrifft diesen Plan | 1 | gestrichen |
+
+  **`ueberholter-offener-plan-ohne-genormten-ausgang` ist gestrichen.** Die Baseline `v6.9.0`
+  normiert den Ausgang, und diese Stilllegung nimmt ihn. Ein überholter Plan ist damit nicht mehr
+  ohne genormten Ausgang, und die offene Übergabe an den Architect hat die Baseline beantwortet.
+  **Kein Eintrag erreicht zum ersten Mal 3×**, der Lese-Schritt hat also keinen Gegenstand. Die
+  Register-Paarung (c) findet weiter das Verzeichnis
+  `einstiegs-datei-weicht-von-der-pflichtgliederung-ab` ohne Beleg. Das ist derselbe Fund, kein
+  neues Auftreten: Die Klasse `unbelegter-register-eintrag-faellt-durch-die-paarung` hat ihn
+  belegt, und ihre Entscheidung trägt `slice-beleglose-register-eintraege-bekommen-eine-lesart`.
+- **Übergaben:** Die vier Übergaben an den Architect aus §6 entfallen mit dem Gegenstand. Den Sprung
+  auf `v0.74.1` trägt [`MR-052`](../../../../harness/conventions.md#mr-052), und den Eintrag zum
+  nächsten Sprung verlangt der Plan des Nachfolgers.
+- **Trigger-Audit** (wellenlos, bei der Slice-Closure):
+  - **Carveout:** `CO-005`, auf den §2 sich stützt, liegt aufgelöst in `carveouts/done/`.
+    `CO-001` und `CO-002` berührt dieser Slice nicht.
+  - **Bootstrap-aware Gate:** keines vorhanden
+    (`grep -n -i 'bootstrap-aware' Makefile *.mk harness/mk/*.mk` → kein Treffer).
+  - **ADR:** Der Move ist eine Lifecycle-Kante der Ziel-Fassung
+    ([`ADR-0056`](../../adr/0056-ziel-fassung-regiert-den-sprung-v690.md)), sein Nachzug fällt
+    unter [`ADR-0042`](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 1.
+    Vor dem Move gemessen: Keine ADR nennt den Pfad
+    (`git grep -n 'slice-135-d-check-pin-v0661' -- docs/plan/adr` → kein Treffer). Zwei
+    Review-Reports nennen ihn als Code-Span, einer davon als Operand eines `grep`-Kommandos. Das
+    ist die zweite Gegenform aus Festlegung 4, und sie bleibt unrepariert. Einen Tree-Operanden
+    gibt es nicht. Keiner der Trigger beider ADRs ist berührt.
+- **Folge-Slices:** keine. Die Pin-Linie setzt
+  `slice-d-check-pin-bringt-die-stilllegungs-bedingung` fort, in `next/`. Er übernimmt nichts von
+  diesem Slice, sondern zielt auf einen neuen Stand.
+- **Risiken aus §6:** Alle sechs sind entfallen, jedes mit Grund und mit dem Ort, der die Frage
+  weiter führt.
+- **Drei Paarungen**, die die nächste Welle-Closure ebenfalls prüft:
+  - (a) Kein Gegenstand, denn diese Notiz führt kein `liegt in`-Feld.
+  - (b) Getragen: Die genannten Slices liegen als Datei im Lifecycle.
+  - (c) Getragen für die genannten Beobachtungen: Jede existiert als Verzeichnis und trägt einen
+    Beleg.
 
 ## 8. Sub-Area-Modus-Begründung
 
