@@ -87,16 +87,25 @@ entfernter Ziel-Zeile und, als zweiter Auslöser derselben Klasse, mit einer Zie
 Rezept; über dem **unverfälschten** d-check.mk greift der Wächter und das Modul läuft
 (Exit 0).
 
-**Der Abbruch des Wächters ist an beiden Targets gemessen.** Der blinde Grün-Fall — dieselbe
-leere Range über `-f d-check.mk`, also ohne das Doc-Gate-Fragment — trägt dagegen **nur noch
-`doc-immutable`**. Gemessen an einem flachen Klon (Tiefe 1 über zwei Commits, `.git/shallow`
-vorhanden) eines frisch emittierten Ziels, `--range HEAD..HEAD`, ohne Wächter: `doc-immutable`
-meldet unter `v0.76.1` wie unter `v0.76.3` `0 Befund(e)` bei Exit 0; `doc-commits` meldet das nur
-unter `v0.76.1` — unter dem gepinnten `v0.76.3` bricht es mit
-`d-check: error: Range-Basis-Vorfahren nicht lesbar: object not found` und Exit 2 ab, weil das
-Modul die Range jetzt vor seiner Klassen-Konfiguration auflöst. Die Stufe
-`blind_gruen_ohne_waechter` von [`make full-smoke`](full-smoke.md) fährt `doc-commits` gegen die
-erste Erwartung und fällt unter dem gepinnten Stand daran.
+**Beide Hälften der Zusage sind an beiden Targets gemessen, jede an ihrem Aufbau.** Der Abbruch
+des Wächters läuft an beiden Targets über dem flachen Klon. Der blinde Grün-Fall — dieselbe
+leere Range über `-f d-check.mk`, also ohne das Doc-Gate-Fragment — trägt `doc-immutable` am
+**flachen** und `doc-commits` am **vollständigen** Klon; beide führen dieselbe auflösbare, aber
+leere Range (`git rev-list --count HEAD..HEAD` → **0**), und die Stufe prüft das vorab.
+
+Warum zwei Aufbauten, gemessen am frisch emittierten Ziel unter dem gepinnten `v0.76.3`,
+`--range HEAD..HEAD`, ohne Wächter:
+
+| Aufbau | `doc-immutable` | `doc-commits` |
+|---|---|---|
+| vollständiger Klon | `0 Befund(e)`, Exit 0 | `0 Befund(e)`, Exit 0 |
+| flacher Klon (Tiefe 1 über zwei Commits) | `0 Befund(e)`, Exit 0 | `d-check: error: Range-Basis-Vorfahren nicht lesbar: object not found`, Exit 2 |
+
+Der **Anlass** des Wächters — die auflösbare, aber leere Range — bleibt an beiden Aufbauten
+ungedeckt; das ist die Klasse, gegen die er steht. Der flache Klon legt daneben eine
+**unauflösbare Vorfahren-Kette** vor, und die nimmt `v0.76.3` dem Wächter ab, aber nur am Modul
+`commits`, das die Range über die Vorfahren auflöst — `vcs` löst nur die zwei Bäume auf. Unter
+`v0.76.1` meldete auch `doc-commits` im flachen Klon `0 Befund(e)` bei Exit 0.
 
 ## Ausgabe und Ausgänge
 

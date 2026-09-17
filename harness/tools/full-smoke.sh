@@ -392,14 +392,36 @@ waechter_bricht_ab() {
 	echo "full-smoke: Waechter greift ($kennung): make $ziel RANGE=$range bricht ab, ohne ein Modul zu fahren."
 }
 
-# blind_gruen_ohne_waechter <repo> <ziel> <kennung> faehrt ein bewachtes Target OHNE das
+# blind_gruen_ohne_waechter <repo> <ziel> <kennung> <aufbau> faehrt ein bewachtes Target OHNE das
 # Doc-Gate-Fragment — `-f d-check.mk` DIREKT, dieselbe Form wie `make smoke` — und erwartet
 # ueber der leeren Range die Klasse, gegen die der Waechter steht: "0 Befund(e)", Exit 0.
 # Gefahren werden BEIDE history-lesenden Targets; eine Haelfte ohne eigene Messung waere eine
-# verlinkte Behauptung (AGENTS.md §3.6).
+# verlinkte Behauptung (AGENTS.md §3.6). <aufbau> nennt den Klon in der Meldung, weil die zwei
+# Haelften ihn NICHT teilen:
+#   * DER ANLASS DES WAECHTERS IST DIE AUFLOESBARE, ABER LEERE RANGE (`git rev-list --count
+#     HEAD..HEAD` -> 0). Sie liegt im flachen wie im vollstaendigen Klon vor, und der gepinnte
+#     d-check deckt sie an KEINEM der beiden ab: das Modul meldet "0 Befund(e)" bei Exit 0.
+#   * IM FLACHEN KLON LIEGT DANEBEN EINE UNAUFLOESBARE VORFAHREN-KETTE, und die nimmt der
+#     gepinnte Stand dem Waechter ab — aber nur am Modul `commits`, das die Range ueber die
+#     Vorfahren aufloest: `doc-commits` bricht dort mit "Range-Basis-Vorfahren nicht lesbar:
+#     object not found" und Exit 2 ab. `doc-immutable` (Modul `vcs`) loest nur die zwei Baeume
+#     auf und meldet weiter "0 Befund(e)", Exit 0.
+# Darum traegt `doc-immutable` die Klasse am FLACHEN und `doc-commits` am VOLLSTAENDIGEN Klon;
+# beide Aufbauten fuehren dieselbe leere Range. Der Aufbau ist gemessen, nicht angenommen.
 blind_gruen_ohne_waechter() {
-	local repo="$1" ziel="$2" kennung="$3"
+	local repo="$1" ziel="$2" kennung="$3" aufbau="${4:-flachen Klon}"
 	local roh="" roh_rc=0 rohgrund="" rohflach=""
+	# Vorbedingung: der Aufbau muss den ANLASS wirklich vorlegen — die Range ist aufloesbar
+	# UND leer. Ist sie das nicht, misst der Lauf darunter eine andere Klasse. Der Exit-Code
+	# wird hier bewusst NICHT in einer eigenen Variablen gefuehrt: `|| <var>=$?` ist der
+	# Ausdruck, ueber dem die Einordnungs-Zusage des Sensor-Kopfes gilt (test/full-smoke-
+	# ausgang.bats), und diese Zeile fordert kein Bild an — sie liefe sonst unter einer
+	# Zusage, die sie nicht traegt.
+	local anzahl=""
+	if ! anzahl="$( git -C "$repo" rev-list --count HEAD..HEAD 2>&1 )" || [ "$anzahl" != "0" ]; then
+		echo "full-smoke: FEHLER — $kennung ($aufbau, $ziel): HEAD..HEAD ist dort nicht aufloesbar-und-leer — git rev-list --count meldet '$anzahl'. Der Anlass des Waechters liegt nicht vor." >&2
+		exit 1
+	fi
 	roh="$( make --no-print-directory -C "$repo" -f d-check.mk "$ziel" RANGE=HEAD..HEAD 2>&1 )" || roh_rc=$?
 	rohflach="$(tr -s '[:space:]' ' ' <<<"$roh")"
 	if [ "$roh_rc" -ne 0 ]; then
@@ -408,12 +430,12 @@ blind_gruen_ohne_waechter() {
 		rohgrund="das Modul meldet ueber der leeren Range nicht '0 Befund(e)' — der Anlass ist hier nicht reproduziert"
 	fi
 	if [ -n "$rohgrund" ]; then
-		echo "full-smoke: FEHLER — $kennung (d-check.mk direkt, $ziel): $rohgrund. Ausgabe:" >&2
+		echo "full-smoke: FEHLER — $kennung (d-check.mk direkt, $ziel, $aufbau): $rohgrund. Ausgabe:" >&2
 		printf '%s\n' "$roh" >&2
-		einordnen "make -f d-check.mk $ziel im flachen Klon ($kennung)" "$roh"
+		einordnen "make -f d-check.mk $ziel im $aufbau ($kennung)" "$roh"
 		exit 1
 	fi
-	echo "full-smoke: OHNE den Waechter meldet dasselbe Modul ueber derselben leeren Range gruen ($ziel) — die Klasse 'blind und gruen', gegen die der Waechter steht:"
+	echo "full-smoke: OHNE den Waechter meldet dasselbe Modul ueber derselben leeren Range gruen ($ziel, $aufbau) — die Klasse 'blind und gruen', gegen die der Waechter steht:"
 	grep -F -- '0 Befund(e)' <<<"$roh" | sed -n '1p' | sed 's/^/full-smoke:   /'
 }
 
@@ -590,9 +612,14 @@ vorlauf_waechter_im_ziel() {
 	# (d) OHNE DEN WAECHTER ist dieselbe leere Range "0 Befund(e)", Exit 0 — genau die
 	# Klasse, gegen die er steht. Gefahren wird d-check.mk DIREKT: das Modul ohne das
 	# Doc-Gate-Fragment (dieselbe Form wie `make smoke`, `-f d-check.mk`) — und zwar an
-	# beiden history-lesenden Targets, weil die Zusage des Fragments beide nennt.
-	blind_gruen_ohne_waechter "$klon" doc-immutable "$kennung"
-	blind_gruen_ohne_waechter "$klon" doc-commits "$kennung"
+	# beiden history-lesenden Targets, weil die Zusage des Fragments beide nennt. JE ZIEL SEIN
+	# AUFBAU: `doc-commits` traegt die Klasse am VOLLSTAENDIGEN Klon, weil der flache daneben
+	# eine unaufloesbare Vorfahren-Kette vorlegt, die der gepinnte Stand selbst abfaengt (Exit 2)
+	# — dort waere das Gruen nicht mehr herstellbar und die Behauptung falsch. Beide Aufbauten
+	# fuehren dieselbe aufloesbare, aber leere Range; die Funktion prueft das vorab. Einzelheiten
+	# im Kopf von blind_gruen_ohne_waechter.
+	blind_gruen_ohne_waechter "$klon" doc-immutable "$kennung" "flachen Klon"
+	blind_gruen_ohne_waechter "$voll" doc-commits "$kennung" "vollstaendigen Klon"
 
 	# (e) DIE GEGENPROBE: derselbe Aufruf auf einem VOLLSTAENDIGEN Klon derselben Quelle,
 	# mit der Range, die der flache Klon nicht aufloesen konnte. Er bleibt gruen — der

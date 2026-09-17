@@ -245,7 +245,7 @@ baseline-verify: ## Vendored Baseline netzlos verifizieren (Integrität + Vollst
 # `>`-Zeile, dazu Hunk-Koepfe und Trenner:
 #   diff <(grep -m1 '^modules:' .d-check.yml | sed 's/^modules:[[:space:]]*//; s/[][]//g' | tr ',' '\n' | tr -d ' ' | sort) <(sed -n '/^regelwerk-check:/{n;p}' Makefile | grep -oE -- '--disable [a-z-]+' | awk '{print $2}' | sort)
 regelwerk-check: ## Upstream-Content-Drift des Baseline-ZIP (d-check sources, Netz) — Maintenance/CI, NICHT in gates
-	docker run --rm -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable sources --disable links --disable anchors --disable ids --disable matrix --disable codepaths --disable spans --disable planning --disable targets
+	docker run --rm -v "$(CURDIR):/repo:ro" $(DCHECK_REF) --enable sources --disable links --disable anchors --disable ids --disable matrix --disable codepaths --disable spans --disable planning --disable targets --disable structure
 	@echo "Hinweis: prueft NUR das Asset von $(BASELINE_TAG). Ein NEUER Tag upstream bleibt hier unsichtbar — 'make baseline-freshness' prueft die Release-Liste (slice-018, MR-007)."
 
 # Meldet einen neueren Upstream-Tag als BASELINE_TAG: folgt dem
