@@ -45,6 +45,10 @@ dass kein Wächter sie hält. Die Tests in `test/slice-mv.bats` rufen die Ersetz
 Repository auf, und das gepinnte bats-Image führt kein `git`. [`make full-smoke`](../../../../harness/sensors/full-smoke.md)
 fährt im Ziel `TO=done` nur in zwei Sperr-Fällen (`grep -n 'slice-mv SLICE' harness/tools/full-smoke.sh`).
 Review-Befund F-2 zu jenem Slice verlangt für den Wächter eine Adresse; das ist sie.
+Review-Befund F-4 zu `slice-mv-zieht-praefixlose-geschwister-verweise-nach` nennt in derselben
+Stufe zwei weitere Zusagen ohne Zahn: welche Dateien `main()` der präfixlosen Ersetzung übergibt,
+und dass eine Datei mit Präfix- und präfixloser Form in der Zeile `eingehend:` einmal zählt. Eine
+Gegenmutation am Aufruf ließ `make test-bats` grün.
 
 **Warum nicht vor der Gruppierung der Go-Slices.** Die Gruppierung nimmt die Kanten einmal, in
 Serie, und jeder Wechsel hat dort ein sofortiges Urteil: den Exit-Code,
@@ -96,6 +100,11 @@ Drei Liefer-Punkte auf zwei Ebenen: Dogfood-Werkzeug und emittierte Fassung im Z
         Geschwister-Verweisen.
       - Er prüft je Kante Exit 0, einen Move-Commit als reinen Rename und einen Nachzug, nach dem
         jeder Verweis auf die bewegte Datei auflöst.
+      - Er prüft den **vollständigen Ist-Bestand** des Ausgangsverzeichnisses, nicht nur die
+        Auflösung: Eine Datei in einem Unterverzeichnis und eine ungetrackte Datei, beide mit
+        demselben präfixlosen Verweis, bleiben byte-gleich. Die Zeile `eingehend:` der
+        Werkzeug-Ausgabe nennt die erwartete Zahl, und eine Datei mit Präfix- und präfixloser Form
+        zählt darin einmal.
       - **Wo der Wächter läuft, entscheidet der Umsetzungs-Lauf und begründet es.** Zur Wahl
         stehen `git` in der bats-Stufe (`BATS_IMAGE` im `Makefile`) oder ein anderer Weg über ein
         gepinntes Image ([`AGENTS.md`](../../../../AGENTS.md) §3.9).
@@ -105,7 +114,8 @@ Drei Liefer-Punkte auf zwei Ebenen: Dogfood-Werkzeug und emittierte Fassung im Z
       `docs/user/e2e-abdeckung.md` ist neu erzeugt (`make e2e-abdeckung`).
 - [ ] **3 — Jeder der zwei Wächter ist rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
       - Für den Wächter aus DoD 1: ein Fall unter `test/mutations/`, der den Nachzug oder den
-        reinen Move bricht. `make mutate` meldet ihn rot, die Meldung ist gelesen.
+        reinen Move bricht, und ein Fall, der in `main()` den Aufruf der präfixlosen Ersetzung
+        zurücknimmt. `make mutate` meldet beide rot, die Meldungen sind gelesen.
       - Für den Fall aus DoD 2: ein einmaliges Rot über einer gebrochenen emittierten Fassung,
         mit Kommando im Umsetzungs-Commit. `make mutate` kennt für `make full-smoke` keine
         Fehlschlag-Form.
