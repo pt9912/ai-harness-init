@@ -2,7 +2,7 @@
 
 **Rolle:** Verifier (Modul 11). **Datum:** 2026-09-17. **Frischer Kontext**, kein Self-Verify.
 
-**Gegenstand:** `docs/plan/planning/in-progress/slice-d-check-pin-liest-fremde-packs-und-loest-jede-range.md`,
+**Gegenstand:** `docs/plan/planning/done/slice-d-check-pin-liest-fremde-packs-und-loest-jede-range.md`,
 Stand `93a0d10f`. **Grundlage:** DoD, Plan und die kanonischen Quellen — **nicht** die
 Review-Reports.
 
