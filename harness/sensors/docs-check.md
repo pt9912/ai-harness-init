@@ -179,8 +179,15 @@ make -C <kopie> docs-check              # je Lage die Datei in der Kopie ändern
 | die Zeile `Gegenstand:` fehlt | keine |
 | `Gegenstand:` nennt eine Kennung, die es nicht gibt | keine |
 | ein Liefer-Punkt abgehakt | keine |
+| ein Risiko aus §6 ohne Ausgang | keine |
 | `Gegenstand:` als unausgefüllter Vorlagen-Platzhalter | keine, weil `placeholder` aus ist (§Modul `planning`) |
 | derselbe Platzhalter, `placeholder: true` in der Kopie | `closure-note-placeholder` auf der Zeile (`<Grund>`) |
+
+Die Kopie trägt eine lokale git-Identität, wie in [`slice-mv.md`](slice-mv.md) §Kanten. Für die
+Lage *ein Risiko aus §6 ohne Ausgang* ist in der Kopie die §7-Zeile `- **Risiken aus §6:**` des
+stillgelegten Slice auf `Risiko 1 eingetreten` gekürzt; Risiko 2 bis 5 stehen danach ohne Ausgang.
+Danach läuft `make -C <kopie> docs-check`. Ebenso ohne Meldung bleibt ein stillgelegter Slice,
+dessen §7 die Zeile gar nicht trägt.
 
 Rot war der Lauf nach dem Wechsel trotzdem (d-check Exit 1, `make` Exit 2), an `open → done` wie
 an `next → done`, sobald ein Geschwister im Ausgangsverzeichnis präfixlos auf den Geber verwies: Die
@@ -197,9 +204,14 @@ trägt. Im gepinnten Stand hält das kein Modul, und seine Konfigurations-Vorlag
 an eine Bedingung knüpft, etwa *offene Task-Items in §2 eines Slice in `done/`, dann trägt §7 die
 Zeile `Gegenstand:`*. Diese Lücke liegt im Werkzeug, nicht in diesem Repo. Ihre Adresse ist der
 eingehende CR im d-check-Repo vom 2026-09-17, „`planning.closure` liest die Stilllegungs-Form
-nicht" (d-check-Commit `d8e30b7d`). Zwei Punkte sind dagegen Grenzen und keine Lücken: Ob die genannte
-Kennung auflöst, lässt die Ziel-Fassung selbst als Urteil oder eigenen Sensor offen. Ob ein
-abgehakter Punkt ein Liefer-Punkt ist, bleibt Urteil.
+nicht" (d-check-Commit `d8e30b7d`). Ebenso urteilsfrei nennt die Ziel-Fassung, dass jedes Risiko
+aus §6 einen Ausgang trägt, und auch das prüft kein aktives Modul (Tabelle, Lage *ein Risiko aus §6
+ohne Ausgang*). Diese Lücke betrifft jede Closure, nicht nur die Stilllegung; ihre Adresse ist der
+Folge-Slice `slice-risiko-ausgang-hat-einen-sensor`. Zwei Punkte sind dagegen Grenzen und keine
+Lücken: Ob die genannte Kennung auflöst, lässt die Ziel-Fassung selbst als Urteil oder eigenen
+Sensor offen, und dieses Repo wählt das Urteil — Setzung des Planners vom 2026-09-17 in
+[`.claude/commands/plan-welle.md`](../../.claude/commands/plan-welle.md) §Einen Slice stilllegen.
+Ob ein abgehakter Punkt ein Liefer-Punkt ist, bleibt Urteil.
 
 **Kein Wächter hält die Tabelle.** Sie ist eine Messung gegen den genannten Digest; wandert der Pin
 in `d-check.mk`, gilt sie für den alten Stand, bis jemand neu misst.
