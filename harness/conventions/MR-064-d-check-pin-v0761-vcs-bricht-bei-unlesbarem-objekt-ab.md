@@ -1,4 +1,4 @@
-# MR-064 — d-check-Pin v0.76.1 (vcs bricht bei unlesbarem Objekt ab)
+# MR-064 — d-check-Pin v0.76.1 (vcs bricht bei unlesbarem Unterbaum ab)
 
 - **Datum:** 2026-09-17
 - **Wirksamkeits-Anlass:** slice-d-check-pin-zieht-den-vcs-patch-nach.
@@ -182,6 +182,14 @@
     beginnt; gemessen ist das an `loose-*.pack`.* Dass es am Namens-Präfix liegt, ist eine
     Vermutung über die git-Bibliothek des Werkzeugs (go-git); im Quelltext nachgelesen ist sie
     nicht.
+    Ein zweiter Name stützt die Vermutung. In einem Klon per `git clone --no-local`, dessen
+    einziges Pack auf das Präfix `xyz-` umbenannt ist, liest git das Objekt weiter:
+    `git cat-file -t 8ae647cc~1:.claude/hooks` ergibt `tree`, und `history-range-guard` löst die
+    Range auf. `make adr-immutable RANGE=8ae647cc~1..8ae647cc` bricht dort unter `v0.76.1` trotzdem
+    mit make-Exit 2 ab, mit der Meldung
+    `Range-Basis "8ae647cc~1" nicht auflösbar: reference not found`; hier liegt auch der Commit im
+    umbenannten Pack. Vor der Umbenennung meldet derselbe Klon `0 Befund(e)`, make-Exit 0. Belegt
+    ist die Vermutung damit nicht.
   - **Pack-Namen.** Der Arbeitsklon, in dem dieser Eintrag misst, trägt neben Packs mit dem Namen
     `pack-*.pack` auch solche mit dem Namen `loose-*.pack`. Solche Namen vergibt
     `git maintenance run --task=loose-objects` (CHANGELOG `[0.76.1]`, Fremdquelle).
