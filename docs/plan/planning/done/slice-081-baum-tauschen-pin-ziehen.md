@@ -602,7 +602,7 @@ ins Kommando gezogen wurde (`b1b1ab7`) — als Einzelfall, nicht als Regel.
 `[links, anchors, ids, matrix, codepaths, spans]`; keines davon führt ein Kommando aus und
 vergleicht seine Ausgabe mit der Ziffer daneben. `make comment-claims` hat keine Markdown-Datei im
 Prüfbereich. Ob ein solches Modul **baubar** ist, ist keine Frage an dieses Repo, sondern an
-d-check; der Pin-Zug [slice-135](../open/slice-135-d-check-pin-v0661.md) ist der Ort, an dem diese
+d-check; der Pin-Zug [slice-135](../done/slice-135-d-check-pin-v0661.md) ist der Ort, an dem diese
 Frage ohnehin gestellt wird.
 
 **Der Träger, und er ist zweigeteilt — weil der Gegenstand es ist.**

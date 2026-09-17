@@ -274,7 +274,7 @@ der Closure-Trigger unerreichbar wird.
   könnte. Diese Welle schließt beides aus; **ob** die Freistellung sich auf den wellenlosen
   Altbestand überträgt, entscheidet
   [slice-183](../done/slice-183-ausloeser-der-wellenlosen-archivierung.md) und nicht diese Zeile.
-- **Der d-check-Pin** ([slice-135](../open/slice-135-d-check-pin-v0661.md)) — eigene Linie, eigener
+- **Der d-check-Pin** ([slice-135](../done/slice-135-d-check-pin-v0661.md)) — eigene Linie, eigener
   Trigger; er hängt an keiner Baseline-Version.
 - **Jede Senkung einer bestehenden Schwelle.** Wird ein Gate nur durch eine Lockerung grün, ist das
   ein ADR ([`AGENTS.md`](../../../../AGENTS.md) §3.5) und ein Rückführungs-Grund, kein Zwischenschritt.

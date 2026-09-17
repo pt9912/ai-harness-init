@@ -193,7 +193,7 @@ sie nicht**, aus drei gemessenen Gründen:
    `docker run --rm --network none ghcr.io/pt9912/d-check@sha256:5ea03abe7918381c68203d8ac078a78d0d4ab91b5478e87c66b5a7b4fda41288 --print-config | grep -ci 'observation'`
    → **0** (gepinnt, `v0.65.0`) und dasselbe Kommando mit
    `sha256:117a3503b2e721aee35dad85b477b6e29b497721f67b7d042b16daef4410a7f1` → **0**
-   (`v0.66.1`, das Ziel von [slice-135](../open/slice-135-d-check-pin-v0661.md)). Das Modul `planning`
+   (`v0.66.1`, das Ziel von [slice-135](../done/slice-135-d-check-pin-v0661.md)). Das Modul `planning`
    führt dort drei Fähigkeiten — Lifecycle, `closure`, `waves` —, keine über ein Register. Das ist
    eine **fehlende Fähigkeit eines Fremd-Werkzeugs**, keine Grenze dieses Repos: d-check hängt an
    einem eigenen Pin, und ob die Fähigkeit entsteht, wird dort entschieden. Der Eigenbau, den es
@@ -377,7 +377,7 @@ dasteht.
   sondern der Preis — ein viertes `ids`-Pattern kostet einen Eintrag im Adaptions-Block und damit
   einen Architect-Lauf. Die Messung ist in diesem Lauf selbst wiederholt und nicht abgeschrieben:
   `--print-config | grep -ci 'observation'` → **0** über den gepinnten Digest und **0** über den
-  von [slice-135](../open/slice-135-d-check-pin-v0661.md) angezielten. Die zweite Hälfte bleibt eine
+  von [slice-135](../done/slice-135-d-check-pin-v0661.md) angezielten. Die zweite Hälfte bleibt eine
   **Anforderung an d-check** und gehört dorthin gemeldet.
 - **Wer die Anweisungssätze unter `.claude/commands/` schreiben darf, sagt keine Quelle.**
   [ADR-0015](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) besetzt zwei Norm-Artefakte und

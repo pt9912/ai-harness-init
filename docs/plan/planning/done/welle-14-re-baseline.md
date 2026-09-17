@@ -190,7 +190,7 @@ der Closure-Trigger unerreichbar wird.
   vor der Einführung schlossen, müssen nicht archiviert werden; ein Repo bleibt ohne das konform."*).
   Ob und ab wann die **laufende** Regel hier gilt, ist eine Position des Katalogs.
 - **Sensor-Neubauten** — sie tragen [welle-13](welle-13-regeln-bekommen-ihren-sensor.md).
-- **Der d-check-Pin** ([slice-135](../open/slice-135-d-check-pin-v0661.md)) — eigene Linie, eigener
+- **Der d-check-Pin** ([slice-135](../done/slice-135-d-check-pin-v0661.md)) — eigene Linie, eigener
   Trigger; er hängt an keiner Baseline-Version.
 - **Jede Senkung einer bestehenden Schwelle.** Wird ein Gate nur durch eine Lockerung grün, ist das
   ein ADR ([`AGENTS.md`](../../../../AGENTS.md) §3.5) und ein Rückführungs-Grund, kein Zwischenschritt.

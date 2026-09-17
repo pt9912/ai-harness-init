@@ -297,7 +297,7 @@ ein halluziniertes Gate.
 **Zwei Slices sind in dieser Welle entstanden und sind trotzdem keine Folge von
 ihr:** [slice-187](../done/slice-187-d-check-pin-v0741.md) trägt den d-check-Pin
 `v0.65.0` → `v0.74.1` und tritt an die Stelle von
-[slice-135](../open/slice-135-d-check-pin-v0661.md). Sein Trigger ist
+[slice-135](../done/slice-135-d-check-pin-v0661.md). Sein Trigger ist
 `make freshness-dcheck` und hängt an keiner Baseline-Version; §6 dieser Welle
 nennt die Linie namentlich als Out-of-Scope. Beide bleiben in `open/`.
 
