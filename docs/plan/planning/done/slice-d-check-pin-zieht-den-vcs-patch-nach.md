@@ -267,18 +267,18 @@ dasteht.
    liest.** Ein Defekt darin braucht dann einen weiteren Eintrag samt Kopf-Marken
    ([`norm-eintrag-friert-vor-seinem-review-ein`](../observations/BEO-ALL/norm-eintrag-friert-vor-seinem-review-ein/observation.md)).
    *Absehbar:* entfallen, wenn der Review keinen Befund am Eintrag meldet. —
-   **Ausgang:** **eingetreten**, im Slice aufgefangen durch
-   [`MR-065`](../../../../harness/conventions.md#mr-065).
+   **Ausgang:** **weiter offen** → Register,
+   [`norm-eintrag-friert-vor-seinem-review-ein`](../observations/BEO-ALL/norm-eintrag-friert-vor-seinem-review-ein/observation.md)
+   (Beleg aus diesem Slice, §7).
    - Review Runde 1 und 2 lasen [`MR-064`](../../../../harness/conventions.md#mr-064) vor dem
      Push. Der Nachtrag zu Runde 2, N-1 (`78cf6680`), ging ohne eigene Runde hinaus:
      `git reflog show origin/main` führt ihn als eigene Push-Spitze, vor dem Verifikations-Commit
      `97e71814`.
    - Die Verifikation fand in genau diesem Absatz V-2. Weil der Eintrag eingefroren war, heilt ihn
-     ein weiterer Eintrag mit Kopf-Marke. [`MR-065`](../../../../harness/conventions.md#mr-065)
-     selbst ging erst nach Runde 3 und 4 hinaus (Push-Spitze `11393a7f`).
-   - Kein Carveout und kein Folge-Slice: Der Defekt ist geheilt, nichts bleibt rot. Die Klasse
-     trägt das Register weiter (§7,
-     [`norm-eintrag-friert-vor-seinem-review-ein`](../observations/BEO-ALL/norm-eintrag-friert-vor-seinem-review-ein/observation.md)).
+     ein weiterer Eintrag mit Kopf-Marke, [`MR-065`](../../../../harness/conventions.md#mr-065).
+     Dieser ging erst nach Runde 3 und 4 hinaus (Push-Spitze `11393a7f`).
+   - Kein Carveout, denn der Defekt ist geheilt und nichts bleibt rot. Die Klasse selbst bleibt
+     offen, und das Register trägt sie weiter.
 
 ### Übergabe an den Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8)
 
@@ -505,8 +505,8 @@ die Tabelle der Träger im Repo ohne Wellen.
   - `slice-stilllegungs-form-hat-einen-waechter` (vorhanden, in `open/`): die Aktivierung, die §1
     ausschließt.
   - Kein Pin-Slice für den nächsten d-check-Release; das Urteil steht unter *Adressen*.
-- **Risiken aus §6:** Jedes hat genau einen Ausgang. 1 und 2 sind entfallen, 3 ist eingetreten
-  und im Slice aufgefangen.
+- **Risiken aus §6:** Jedes hat genau einen Ausgang. 1 und 2 sind entfallen, 3 bleibt weiter
+  offen und steht im Register unter `norm-eintrag-friert-vor-seinem-review-ein`.
 - **Archiv:** keines. Dieses Repo archiviert bei einer Slice-Closure nicht.
 - **Drei Paarungen** (§2):
   - **(a) kein Gegenstand**, denn diese Notiz führt kein `liegt in`-Feld.
