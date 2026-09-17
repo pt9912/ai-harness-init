@@ -375,10 +375,13 @@ vcs:
 # `ls .git/objects/pack/`), und fuehrt `commits.id-patterns` eine nicht-leere
 # Liste, bricht der gepinnte d-check mit einem Fehler ab ("... nicht lesbar" oder
 # "... nicht aufloesbar"); mit leerer Liste laeuft er durch und prueft nichts.
-# Liegen alle in Packs, deren Name mit `pack-` beginnt, laeuft derselbe Range-Lauf
-# durch und prueft (Messung und Stand: MR-064 §Grenze). --commit-msg liest keine
-# Historie und haengt an keinem der zwei Faelle. `doc-commits` bleibt ungenutzt
-# advisory stehen (Beleg und Traeger-Entscheidung: harness/sensors/commit-msg-check.md
+# Ebenso bricht er ab, wenn der Klon seine Objekte ueber Alternates liest
+# (`git clone --shared`). Geprueft hat derselbe Range-Lauf in den gemessenen Klonen
+# ohne Alternates, deren Objekte in Packs mit dem Praefix `pack-` oder lose liegen
+# (umgepackt, per `--no-local` geklont, nur lose Objekte); dass das fuer einen
+# pruefenden Lauf genuegt, ist nicht belegt. --commit-msg liest keine Historie und
+# haengt an keiner dieser Formen. `doc-commits` bleibt ungenutzt advisory stehen
+# (Messung, Stand und Traeger-Entscheidung: harness/sensors/commit-msg-check.md
 # §Grenze).
 # KOPPLUNG: dieselbe Kennungs-Menge fuehrt der git-eigene Hook .githooks/commit-msg
 # als bash-Fassung im Commit-Pfad (harness/tools/commit-msg-traceability.sh) — er

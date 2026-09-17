@@ -39,9 +39,12 @@ Vorbedingung selbst, und sie liegt in keinem Gate: `make gates` fährt keines de
   [`.d-check.yml`](../../.d-check.yml) trägt eine nicht-leere `id-patterns`-Liste. Liegen Objekte
   der Range in einem Pack, dessen Name nicht mit `pack-` beginnt — gemessen ist das an
   `loose-*.pack`; dass es am Präfix hängt, ist eine Vermutung —, bricht der `--range`-Lauf des
-  `commits`-Moduls ab (Exit 2). Liegen alle in Packs, deren Name mit `pack-` beginnt, prüft er:
-  `make doc-commits RANGE=c414119b..ebb76b3d` meldet unter `v0.76.1` 1 × `commit-untraceable`.
-  Einzelheiten im Sensor [`commit-msg-check`](commit-msg-check.md). Das emittierte
+  `commits`-Moduls ab (Exit 2); ebenso in einem Klon, der seine Objekte über Alternates liest
+  (`git clone --shared`). Geprüft hat er in den gemessenen Klonen ohne Alternates, deren Objekte
+  in Packs mit dem Präfix `pack-` oder lose liegen: `make doc-commits RANGE=c414119b..ebb76b3d`
+  meldet dort unter `v0.76.1` 1 × `commit-untraceable`. Dass diese Formen genügen, ist nicht
+  belegt. Einzelheiten und die gemessenen Formen im Sensor
+  [`commit-msg-check`](commit-msg-check.md). Das emittierte
   `.d-check.yml` (`internal/emit/templates/d-check.yml`) führt keinen `commits:`-Block; dort ist
   das Ziel bedienbar, und die Zusage ist messbar. Der Wächter bleibt für `doc-immutable`
   unverändert wirksam.

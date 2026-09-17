@@ -73,21 +73,31 @@ hält [`test/commit-msg-hook.bats`](../../test/commit-msg-hook.bats) gegen die L
     prüft dann nichts (dasselbe stille Grün wie im Sensor
     [`history-range-guard`](history-range-guard.md)). Ein lokaler Klon
     (`git clone --no-hardlinks <pfad>`) übernimmt die Pack-Namen seiner Quelle.
-  - **Alle Objekte der Range liegen in Packs, deren Name mit `pack-` beginnt** (etwa nach
-    `git repack -a -d` oder aus `git clone --no-local file://<pfad>`): kein Abbruch; der
-    Range-Lauf prüft und meldet `commit-untraceable`, make-Exit 2, unter beiden Digests. Unter
-    `v0.76.1` meldet `make doc-commits RANGE=c414119b..ebb76b3d` so 1 × `commit-untraceable` auf
-    `7c1f228`, im umgepackten Arbeitsklon wie im Transportklon.
+  - **Der Klon liest seine Objekte über Alternates** (`git clone --shared <pfad>`: keine eigenen
+    Packs, `.git/objects/info/alternates` nennt den Objektspeicher der Quelle, `git` liest Commit
+    und Baum). Unter `v0.76.1` brechen `make doc-commits RANGE=c414119b..ebb76b3d` und
+    `make adr-immutable RANGE=8ae647cc~1..8ae647cc` ab, make-Exit 2, mit
+    `Range-Basis "<hash>" nicht auflösbar: reference not found`. Derselbe Abbruch steht, wenn der
+    Pfad aus `alternates` zusätzlich in den Container gemountet ist.
+  - **Geprüft hat der Range-Lauf in den gemessenen Klonen ohne Alternates, deren Objekte in Packs
+    mit dem Präfix `pack-` oder lose liegen:** umgepackt (`git repack -a -d`), aus
+    `git clone --no-local file://<pfad>`, und eine Kopie nur mit losen Objekten (Pack per
+    `git unpack-objects` ausgepackt und entfernt). Dort meldet er `commit-untraceable`,
+    make-Exit 2: im per `--no-local` geklonten Repo unter beiden Digests für `RANGE=HEAD~3..HEAD`
+    (Kopf `e4c6cb0b`), unter `v0.76.1` in allen drei Formen für `RANGE=c414119b..ebb76b3d`
+    (1 × `commit-untraceable` auf `7c1f228`). In der Kopie nur mit losen Objekten meldet
+    `make adr-immutable RANGE=8ae647cc~1..8ae647cc` `0 Befund(e)`, make-Exit 0. Dass diese Formen
+    für einen prüfenden Lauf genügen, ist nicht belegt; genannt sind die gemessenen.
 
-  Welcher der zwei Fälle vorliegt, ist ein Zustand des Klons und wechselt mit seiner
-  Pack-Wartung; die Bedingung und ihre Grenze für alle history-lesenden Ziele führt
+  Welche Form vorliegt, ist ein Zustand des Klons und wechselt mit seiner Pack-Wartung und seiner
+  Klon-Art; die Abbruch-Bedingung und ihre Grenze für alle history-lesenden Ziele führt
   [`MR-064`](../conventions.md#mr-064--d-check-pin-v0761-vcs-bricht-bei-unlesbarem-unterbaum-ab)
   §Grenze.
 
   Fehlerfrei **und** weiter prüfend bleibt in jedem Klon nur `--commit-msg` mit der realen,
-  nicht-leeren Liste (dieser Sensor). Ob ein Range-Lauf über einem Klon, dessen Pack-Namen alle mit
-  `pack-` beginnen, ein Gate wird, ist eine eigene Abwägung. Dass d-check Objekte in einem Pack
-  mit anderem Namen nicht liest, ist eine Lücke im Werkzeug eines Nachbar-Repos desselben
+  nicht-leeren Liste (dieser Sensor). Ob ein Range-Lauf über einem Klon in einer der geprüften
+  Formen ein Gate wird, ist eine eigene Abwägung. Dass d-check Objekte in einem Pack mit anderem
+  Namen und über Alternates nicht liest, ist eine Lücke im Werkzeug eines Nachbar-Repos desselben
   Nutzers — dort eine Anforderung, keine feste Werkzeug-Grenze.
 
 ## Ausgabe und Ausgänge
