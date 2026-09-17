@@ -54,7 +54,9 @@ ist, und das färbt `make docs-check`. Der Wächter schützt gegen Regression ü
 diesen einen Lauf. Die Messung ist bei der Gruppierung frisch, weil
 `slice-mv-zieht-praefixlose-geschwister-verweise-nach` das Werkzeug davor noch einmal ändert und
 beide Kanten neu misst. **Die Bedingung dafür:** Der Lauf, der die Kanten nimmt, fährt die drei
-Prüfungen je Wechsel.
+Prüfungen je Wechsel. Ihr Träger ist
+[`.claude/commands/plan-welle.md`](../../../../.claude/commands/plan-welle.md) §Einen Slice
+stilllegen.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 

@@ -76,6 +76,39 @@ Register ist beim Lesen so alt wie der letzte Merge.
 6. Existiert ein Slice der Welle noch nicht, ihn **per `cp` aus `slice.template.md`** anlegen
    (`docs/plan/planning/open/slice-<NN>-<titel>.md`), dann füllen. Nie hand-authoren.
 
+## Einen Slice stilllegen (`open/` oder `next/` → `done/`)
+
+Gilt, wenn ein Slice beim Bereitstellen seinen Gegenstand an einen anderen abgibt oder der
+Gegenstand entfällt, etwa bei einer Gruppierung (Baseline-Regelwerk `modul-05-planning-harness.md`
+§Ein Slice, dessen Gegenstand ein anderer übernimmt). Die Kante führt an `in-progress/` vorbei.
+**Kein Wächter hält sie** ([`harness/sensors/slice-mv.md`](../../harness/sensors/slice-mv.md)
+§Grenze). Die Prüfungen unten trägt darum dieser Lauf, bis `slice-mv-kanten-nach-done-sind-bewacht`
+geschlossen ist.
+
+- **Vorher, im Inhalts-Commit:**
+  - Die Liefer-Punkte der DoD bleiben leer.
+  - §7 trägt die Zeile `Gegenstand:` mit der Kennung des übernehmenden Slice oder mit dem Grund.
+  - Jedes Risiko aus §6 trägt einen Ausgang. Kein Modul prüft das; die Adresse der Lücke ist
+    `slice-risiko-ausgang-hat-einen-sensor`.
+- **Die genannte Kennung löst auf:** `ls docs/plan/planning/*/<kennung>.md` nennt genau eine Datei.
+  **Diese Prüfung ist ein Urteil dieses Laufs, kein Sensor.** Die Ziel-Fassung lässt *Urteil oder
+  eigener Sensor* offen, und dieses Repo wählt das Urteil. Setzung des Planners vom 2026-09-17;
+  sie ist neu zu entscheiden, sobald der gepinnte d-check die Auflösung prüft oder in `done/` eine
+  Kennung steht, die nicht auflöst.
+- **Der Wechsel:** `make slice-mv SLICE=<kennung> TO=done`, **je Slice einzeln**. Nach jedem
+  Wechsel laufen drei Prüfungen, bevor der nächste beginnt:
+  1. Der Exit-Code ist 0.
+  2. Der Move-Commit ist ein reiner Rename: `git show --numstat --format= -M <commit>` gibt `0 0`
+     aus. Der Move-Commit ist `HEAD~1`, wenn das Werkzeug einen Nachzug-Commit meldet, sonst
+     `HEAD`.
+  3. `make docs-check` meldet keinen Befund.
+
+  **Fällt eine Prüfung, hält die Serie an.** Der Befund wird geklärt, bevor der nächste Slice
+  wandert.
+- **Den Nachzug-Commit lesen:** Hat er in `docs/reviews/**` einen Tree-Operanden (`<sha>:<pfad>`)
+  umgeschrieben, nimmst du diese Hunks per Gegen-Commit zurück. Kein Gate sieht das; das Register
+  führt die Klasse als `verweis-nachzug-bricht-tree-operand`.
+
 ## Welle-Plan per cp anlegen und füllen (der Kern-Schritt)
 
 7. **`cp` aus `.harness/baseline/<tag>/templates/docs/plan/planning/welle.template.md` nach
