@@ -190,12 +190,14 @@
     `Range-Basis "8ae647cc~1" nicht auflösbar: reference not found`; hier liegt auch der Commit im
     umbenannten Pack. Vor der Umbenennung meldet derselbe Klon `0 Befund(e)`, make-Exit 0. Belegt
     ist die Vermutung damit nicht.
-  - **Pack-Namen.** Der Arbeitsklon, in dem dieser Eintrag misst, trägt neben Packs mit dem Namen
-    `pack-*.pack` auch solche mit dem Namen `loose-*.pack`. Solche Namen vergibt
-    `git maintenance run --task=loose-objects` (CHANGELOG `[0.76.1]`, Fremdquelle).
-    `ls .git/objects/pack/ | grep -c '^loose-.*\.pack$'` ergibt **5**,
+  - **Pack-Namen zum Laufzeitpunkt.** Zum Zeitpunkt der Läufe dieses Absatzes trägt der
+    Arbeitsklon neben Packs mit dem Namen `pack-*.pack` auch solche mit dem Namen `loose-*.pack`.
+    Solche Namen vergibt `git maintenance run --task=loose-objects` (CHANGELOG `[0.76.1]`,
+    Fremdquelle); `git repack -a -d` fasst sie in ein Pack mit dem Präfix `pack-` zusammen.
+    `ls .git/objects/pack/ | grep -c '^loose-.*\.pack$'` ergibt dort **5**,
     `ls .git/objects/pack/ | grep -c '^pack-.*\.pack$'` ergibt **2**. Beides sind keine
-    Erwartungswerte: Die nächste git-Wartung verschiebt die Zahlen.
+    Erwartungswerte: Die Zahlen beschreiben den Objektspeicher bei diesen Läufen, und jede Wartung
+    verschiebt sie.
   - **Welche Klon-Form solche Packs übernimmt.** Gemessen an einem Wegwerf-Repo nach
     `git maintenance run --task=loose-objects`, je Klon mit `ls .git/objects/pack/`:
     - `git clone <pfad>` (Voreinstellung) übernimmt `loose-*`;
@@ -261,9 +263,11 @@
     `object not found`. Keines der drei Ziele ist ein Gate. Dass d-check solche Packs nicht liest,
     ist eine Lücke im Werkzeug eines Nachbar-Repos. Dort ist sie eine Anforderung, keine feste
     Grenze.
-  - **Nur ein Klon per `git clone --no-local` ist von solchen Packs frei.** Die Voreinstellung und
-    `--no-hardlinks` übernehmen die Pack-Namen der Quelle. Ein frisch angelegter Klon ist darum
-    nicht schon deshalb frei davon.
+  - **Frei von solchen Packs ist ein Klon, dessen Packs zum Zeitpunkt des Laufs alle mit `pack-`
+    beginnen** (`ls .git/objects/pack/`). So liegt es nach `git clone --no-local` oder nach
+    `git repack -a -d`, bis eine Wartung andere Packs anlegt. `git clone <pfad>` übernimmt in der
+    Voreinstellung und mit `--no-hardlinks` die Pack-Namen der Quelle; ein frisch angelegter Klon
+    ist darum nicht schon deshalb frei.
   - **Unter `v0.76.0` bleibt ein solcher Klon still.** Ein `0 Befund(e)`, das ein
     history-lesender Lauf dort unter jenem Stand meldet, sagt nichts aus.
   - **Die Wegwerf-Kopie misst nur eine Stelle**
@@ -308,7 +312,6 @@
   [`MR-063`](../conventions.md#mr-063--die-gegenmessung-eines-d-check-sprungs-gibt-jedem-aktiven-modul-eine-basis-und-lässt-die-symlinks-stehen).
   Bewegt sich die geteilte Infrastruktur, nennt die Bilanz für jede Aussage ihren Träger; über
   den VCS-Port ist das die Quell-Lesung, nicht die Gegenmessung.
-  **Zusätzlich** läuft jeder history-lesende Lauf, der in die Bilanz eingeht, in einem Klon per
-  `git clone --no-local` oder nennt die Pack-Namen seines Klons (`ls .git/objects/pack/`). Die
-  Grenze ist neu zu prüfen, sobald d-check Objekte in einem Pack liest, dessen Name nicht mit
-  `pack-` beginnt.
+  **Zusätzlich** nennt jeder history-lesende Lauf, der in die Bilanz eingeht, die Pack-Namen
+  seines Klons zum Laufzeitpunkt (`ls .git/objects/pack/`). Die Grenze ist neu zu prüfen, sobald
+  d-check Objekte in einem Pack liest, dessen Name nicht mit `pack-` beginnt.
