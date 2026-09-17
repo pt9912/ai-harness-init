@@ -33,7 +33,7 @@ und treffen den Gegenstand; beide ADRs sind `Accepted`
 (`grep -m1 '^\*\*Status:\*\*' docs/plan/adr/00{20,22}-*.md`), und der Plan setzt keinen Wert, den
 sie nicht decken — die Zelle *geht mit, noch nicht umgesetzt* ist genau die Lesart, die
 [ADR-0022](../plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) erlaubt. Offen
-bleibt nicht der Bezug, sondern der Wellen-Zuschnitt (**B-4**).
+bleibt nicht der Bezug, sondern der Wellen-Zuschnitt (B-4).
 
 **Gruppe 2 — `slice-waechter-der-erfassungsschicht-decken-was-sie-sagen`: bestätigt.** Bezug auf
 [ADR-0022](../plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegungen 1
@@ -61,7 +61,7 @@ HIGH-Befunde, ein Folge-ADR-Vorschlag.** Die Bezüge auf
 [`MR-033`](../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
 stimmen; es fehlen zwei bindende ADR-Bezüge (**B-1**), und die Konstruktion des Change Requests
 trägt in der Sache, aber nicht in der gewählten Form (**B-2**). Der Ausgang ist
-[ADR-0057](../plan/adr/0057-wiederkehrende-vorlagen-menge-bindet-als-eigenschaft.md), `Proposed`.
+[ADR-0057](../plan/adr/0057-wiederkehrende-vorlagen-menge-bindet-als-eigenschaft.md).
 
 **Gruppe 5 — `slice-die-bilanz-sagt-worueber-sie-gerechnet-hat`: bestätigt im Bezug, beanstandet im
 Zuschnitt (B-6).** [ADR-0011](../plan/adr/0011-telemetrie-erfassung-policy.md) und
@@ -70,8 +70,8 @@ Gegenstand; die Kopf-Zeile *Berührte Spec-Stellen* nennt
 [`spec/spezifikation.md`](../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 als
 **gelesen** — das ist richtig und vollständig.
 
-**Gruppe 6 — `slice-span-programm-nennt-das-programm`: bestätigt.**
-[ADR-0011](../plan/adr/0011-telemetrie-erfassung-policy.md) trägt die fail-closed-Linie;
+**Gruppe 6 — `slice-span-programm-nennt-das-programm`: bestätigt im Bezug, beanstandet im Zuschnitt
+(B-6).** [ADR-0011](../plan/adr/0011-telemetrie-erfassung-policy.md) trägt die fail-closed-Linie;
 [`MR-019`](../../harness/conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence)
 ist die richtige Adresse dafür, dass `SPEC-021`/`SPEC-031` ohne Vertragsänderung nachgezogen
 werden. Der vierte Liefer-Punkt des Gebers — die **offene Eigentumsfrage** über das Technik-Stratum
@@ -88,9 +88,10 @@ und ist `Accepted`, also immutabel"*). Der Nehmer nennt **keine** von beiden. Da
 Formalie: Die Begründung zu Festlegung (e) von
 [ADR-0020](../plan/adr/0020-emittierte-modul-15-regeln.md) spricht von *„den fünf wiederkehrenden
 Vorlagen"* (`grep -c 'die fünf wiederkehrenden Vorlagen' docs/plan/adr/0020-emittierte-modul-15-regeln.md`
-→ **1**). Wer die Menge auf ihren heutigen Stand zieht, stellt diese Aussage in einer `Accepted`-ADR
-still auf falsch, und überschrieben wird sie nicht ([`AGENTS.md`](../../AGENTS.md) §3.4). Ohne den
-Bezug im Plan sieht das niemand vor dem Commit.
+→ **1**), während der Code elf führt. Die Aussage ist damit **heute schon** unrichtig, und
+überschrieben wird sie nicht ([`AGENTS.md`](../../AGENTS.md) §3.4). Ohne den Bezug im Plan sieht das
+niemand vor dem Commit; ihren Ausgang hat sie in
+[ADR-0057](../plan/adr/0057-wiederkehrende-vorlagen-menge-bindet-als-eigenschaft.md) Festlegung 4.
 
 **B-2 (HIGH) — Gruppe 4: die CR-Konstruktion trägt in der Sache, nicht in der Form.** Richtig ist:
 Die Aufzählung in Rang 1 darf nur der Auftraggeber bewegen, und der Plan schließt die
@@ -110,10 +111,10 @@ Zwei Kosten folgen daraus: Jede künftige Vorlagen-Art eines Baseline-Sprungs wi
 [ADR-0020](../plan/adr/0020-emittierte-modul-15-regeln.md) Festlegung (e) hat für den
 **benachbarten** Satz bereits anders entschieden — *„Welcher Satz das ist, ist eine Regel und keine
 Aufzählung"* —, für die wiederkehrende Klasse fehlte die Entscheidung. Sie liegt jetzt als
-[ADR-0057](../plan/adr/0057-wiederkehrende-vorlagen-menge-bindet-als-eigenschaft.md) (`Proposed`)
-vor: Der Wächter bindet die **Eigenschaft gegen den vendored Satz** (vollständig, disjunkt,
-fail-closed), der CR bleibt Sache des Auftraggebers und ist **keine** Vorbedingung des
-Eigenschafts-Wächters. Ein `Supersedes` ist nicht nötig — keine `Accepted`-ADR wird abgelöst, eine
+[ADR-0057](../plan/adr/0057-wiederkehrende-vorlagen-menge-bindet-als-eigenschaft.md) vor: Der
+Wächter führt vier Dispositionen **positiv** und hält sie gegen den vendored Satz (Vollständigkeit
+und Disjunktheit, fail-closed), der CR bleibt Sache des Auftraggebers und ist **keine** Vorbedingung
+des Wächters. Ein `Supersedes` ist nicht nötig — keine `Accepted`-Festlegung wird abgelöst, eine
 Lücke wird gefüllt.
 
 **B-3 (MEDIUM) — die Adresse `MR-015` ist überholt.** Gruppe 4 stützt die CR-Pflicht auf
@@ -144,24 +145,39 @@ und [`spec/spezifikation.md`](../../spec/spezifikation.md#5-metriken-und-tracing
 die Deckung der Wächter; seine Liefer-Punkte fallen mit denen von Gruppe 2 nicht zusammen, und
 Gruppe 2 nennt ihn ausdrücklich als Adresse. Der **zweite** Grund — er schreibe als einziger §5 —
 hält der Messung nicht stand: `slice-span-programm-nennt-das-programm` führt `SPEC-021` und
-`SPEC-031` in §5 als *„werden nachgezogen"*, und weitere offene Pläne berühren dieselbe Sektion
-(`grep -l 'spezifikation.md#5-metriken' docs/plan/planning/open/*.md`). Die Abgrenzung bleibt
-gültig; ihre Begründung ist auf den ersten Grund zu verkürzen, und die **Gleichzeitigkeit** zweier
-schreibender Zugriffe auf §5 gehört in beide Pläne als benannte Nachbarschaft.
+`SPEC-031` im Kopf als *„werden nachgezogen"* und hat dafür einen eigenen DoD-Punkt
+(*„Doku-Update — berührt ist das Technik-Stratum"*) — **ein zweiter Schreiber ist damit belegt, und
+einer genügt**, um die Alleinstellung zu widerlegen.
 
-**B-6 (MEDIUM) — Gruppe 5 ist keine Gruppierung, sondern eine Umbenennung.** Der Nehmer übernimmt
-**einen** Geber, und seine drei Liefer-Punkte sind die drei von
-`slice-071-bilanz-nennt-ihren-bestand`, bis in die Formulierung
-(`grep -E '^- \[ \] \*\*\(' docs/plan/planning/{next/slice-071-bilanz-nennt-ihren-bestand,open/slice-die-bilanz-sagt-worueber-sie-gerechnet-hat}.md`).
-Die Übernahme-Form ist dafür zulässig, aber sie kostet eine vollständige Stilllegung samt
-Risiko-Ausgängen für einen Identitäts-Wechsel, den
+**Was daneben nicht belegt ist, und das gehört dazu:** Ein Sweep über die Verlinkung —
+`grep -l 'spezifikation.md#5-metriken' docs/plan/planning/open/*.md` — nennt weitere Pläne, misst
+aber, wer §5 **verlinkt**, nicht wer dort **schreibt**. Diese Treffer sind Kandidaten, kein
+Nachweis; aus der Stellen-Messung folgt die Eigenschaft nicht
+([`MR-055`](../../harness/conventions.md#mr-055--eine-stellen-messung-trägt-keine-folgerung-über-eine-eigenschaft)).
+Wer die volle Menge der §5-Schreiber braucht, liest die Kopf-Zeile *Berührte Spec-Stellen* und die
+Doku-DoD je Plan einzeln.
+
+Die Abgrenzung bleibt gültig; ihre Begründung ist auf den ersten Grund zu verkürzen, und die
+**Gleichzeitigkeit** zweier schreibender Zugriffe auf §5 gehört in beide Pläne als benannte
+Nachbarschaft.
+
+**B-6 (MEDIUM) — Gruppe 5 und Gruppe 6 sind Übernahmen von je *einem* Geber; der Kosten-Einwand
+trifft beide gleich.** Beide Nehmer nennen unter `Übernimmt:` genau eine Kennung — Gruppe 5
+`slice-071-bilanz-nennt-ihren-bestand`, Gruppe 6 `slice-204-das-programm-feld-nennt-das-programm`.
+Damit ist keine von beiden eine *Gruppierung*; beide sind ein Identitäts-Wechsel, den
 [`MR-057`](../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
 nicht verlangt — dort behält *der Bestand seine Nummer*, und die Namens-Form gilt für **neu
-vergebene** Kennungen. Zwei saubere Ausgänge: `slice-071` unangetastet in `next/` lassen und die
-Gruppe streichen, **oder** in der Stilllegung benennen, was der Nehmer über den Geber hinaus führt.
-Für Gruppe 6 gilt der Einwand **nicht** in dieser Schärfe — dort ist die DoD neu geschnitten
-(vier Punkte des Gebers zu einem Liefer-Punkt mit Unterpunkten plus Doku-Update), und der
-Gegenstand ist vollständig mitgenommen.
+vergebene** Kennungen. Bezahlt wird er in beiden Fällen gleich: eine vollständige Stilllegung des
+Gebers samt Ausgang für jedes seiner Risiken.
+
+Was die zwei **unterscheidet**, ist der Inhalt, nicht der Preis: Gruppe 5 übernimmt die drei
+Liefer-Punkte des Gebers bis in die Formulierung
+(`grep -E '^- \[ \] \*\*\(' docs/plan/planning/{next/slice-071-bilanz-nennt-ihren-bestand,open/slice-die-bilanz-sagt-worueber-sie-gerechnet-hat}.md`),
+Gruppe 6 schneidet die DoD neu (vier Punkte des Gebers zu einem Liefer-Punkt mit Unterpunkten plus
+Doku-Update, Gegenstand vollständig mitgenommen). Das ist ein Unterschied im Nutzen, und er gehört
+in die Abwägung — er nimmt Gruppe 6 aber nicht aus der Frage heraus. **Beide brauchen denselben
+Entscheidungspunkt:** Geber unangetastet in `next/` lassen und die Übernahme streichen, **oder** in
+der Stilllegung benennen, was der Nehmer über den Geber hinaus führt.
 
 **B-7 (INFO) — die Übernahme-Form selbst ist regelkonform.** Alle sechs Pläne tragen `Übernimmt:`
 in §1; alle dreizehn genannten Geber existieren und liegen in `next/`, also ungeschlossen
@@ -180,10 +196,12 @@ führen.
    [ADR-0005](../plan/adr/0005-ziel-repo-distribution.md),
    [ADR-0020](../plan/adr/0020-emittierte-modul-15-regeln.md) und
    [ADR-0057](../plan/adr/0057-wiederkehrende-vorlagen-menge-bindet-als-eigenschaft.md) ergänzen;
-   DoD 1 auf den Eigenschafts-Wächter stellen; den Start-Trigger vom CR lösen und den
-   Aufzählungs-Nachzug als eigenen, CR-abhängigen Punkt oder Folge-Slice führen; das Risiko des
-   Gebers zur `Accepted`-Zahl-Aussage in
-   [ADR-0020](../plan/adr/0020-emittierte-modul-15-regeln.md) in §6 aufnehmen; `MR-015` durch
+   DoD 1 auf den Wächter mit den vier positiv geführten Dispositionen stellen; den Start-Trigger vom
+   CR lösen und den Aufzählungs-Nachzug als eigenen, CR-abhängigen Punkt oder Folge-Slice führen;
+   das Risiko des Gebers zur Zahl-Aussage in
+   [ADR-0020](../plan/adr/0020-emittierte-modul-15-regeln.md) in §6 aufnehmen — ihr Ausgang steht in
+   [ADR-0057](../plan/adr/0057-wiederkehrende-vorlagen-menge-bindet-als-eigenschaft.md)
+   Festlegung 4; `MR-015` durch
    [`MR-036`](../../harness/conventions.md#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline)
    ersetzen. Bis dahin geht `slice-139` **nicht** nach `done/` — sein Risiko hätte keinen Ausgang.
 2. **Welle-11 entscheiden, dann nachziehen** (B-4): Wellen-Test nach
@@ -193,7 +211,8 @@ führen.
    Zuschnitt gezogen; das Drift-Log der Roadmap bekommt seinen Eintrag *in einem anderen
    aufgegangen* mit Datum und Grund. Entfällt die Welle, entfällt zusätzlich das Kopf-Feld des
    Nehmers und der Zeiger unter *Offene Wellen*.
-3. **Gruppe 5 entscheiden** (B-6): streichen oder den Mehrwert in der Stilllegung benennen.
+3. **Gruppe 5 und Gruppe 6 entscheiden** (B-6): je Übernahme streichen **oder** den Mehrwert in der
+   Stilllegung benennen — dieselbe Frage, zweimal beantwortet, nicht einmal.
 4. **Die Nicht-Aufnahme von `slice-109` umformulieren** (B-5): den Alleinstellungs-Grund streichen,
    den Gegenstands-Grund behalten, die Nachbarschaft zu Gruppe 6 in beiden Plänen benennen.
 5. **Bei jeder Stilllegung** die drei Bedingungen aus `modul-05-planning-harness.md` §Ein Slice,
@@ -205,7 +224,9 @@ führen.
 
 Geprüft sind die Pläne, die genannten ADRs auf Status und Aussage, der Welle-Plan und die
 Übernahme-Form. **Nicht** geprüft sind: die inhaltliche Angemessenheit jedes einzelnen
-Liefer-Punkts, die Risiko-Vollständigkeit der Geber über die in §2 genannten Fälle hinaus, und die
-Frage, ob die je drei Gruppen-Mitglieder in **einer** Review-Sitzung prüfbar sind — das ist eine
-Größen-Frage, die erst der Diff beantwortet, und sie steht in allen sechs Plänen bereits als Risiko
-mit Rückführung.
+Liefer-Punkts, die Risiko-Vollständigkeit der Geber über die in §2 genannten Fälle hinaus, die
+vollständige Menge der Pläne, die
+[`spec/spezifikation.md`](../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 schreiben
+(B-5 belegt zwei, nicht alle), und die Frage, ob die je drei Gruppen-Mitglieder in **einer**
+Review-Sitzung prüfbar sind — das ist eine Größen-Frage, die erst der Diff beantwortet, und sie
+steht in allen sechs Plänen bereits als Risiko mit Rückführung.

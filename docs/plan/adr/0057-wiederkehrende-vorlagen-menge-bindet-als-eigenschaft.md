@@ -1,12 +1,13 @@
 # ADR-0057: Die wiederkehrende Vorlagen-Menge bindet als Eigenschaft gegen den vendored Satz — die Aufzählung in Rang 1 ist Gegenstand eines Change Requests, nicht eines Wächters
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-17
 
 **Autor:** Architect (pt9912)
 
 **Bezug:** [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3),
+[`LH-FA-05`](../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2),
 [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren),
 [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6),
 [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit),
@@ -16,7 +17,8 @@
 [`MR-008`](../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert),
 [`MR-019`](../../../harness/conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence),
 [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert),
-[`MR-036`](../../../harness/conventions.md#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline)
+[`MR-036`](../../../harness/conventions.md#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline),
+[`MR-055`](../../../harness/conventions.md#mr-055--eine-stellen-messung-trägt-keine-folgerung-über-eine-eigenschaft)
 
 **Schärft:** — Prozess- und Emissions-Entscheidung ohne Zielelement im Technik-Stratum:
 [`spec/spezifikation.md`](../../../spec/spezifikation.md) führt keine Sektion über den
@@ -90,17 +92,38 @@ Kippt sie, kippt die Prüfbarkeit der Eigenschaft gegen den Satz.
 
 Wir wählen **B — die Menge bindet als Eigenschaft gegen den vendored Satz**, in vier Festlegungen.
 
-**Festlegung 1 — der Wächter führt **vier** Dispositionen positiv und hält sie gegen den vendored
+**Festlegung 1 — der Wächter führt vier Dispositionen positiv und hält sie gegen den vendored
 Satz.** Neben den drei Weichen des Dispatchs (`isRecurring`, `isDerivativeIndex`,
 `isBrownfieldOnly`) führt der Wächter die **Singleton-Menge als benannte Liste** in seinem eigenen
 Prüfbereich — sie ist im Emitter der Default und damit dort keine Aussage, hier aber die vierte
-Disposition. Geprüft wird gegen den in-scope-Teil des vendored Satzes, in zwei Richtungen:
+Disposition. Geprüft wird in zwei Richtungen:
 
-- **Vollständigkeit:** Jede Vorlage des Satzes steht in genau einer der vier Mengen. Eine, die in
-  **keiner** steht, färbt den Wächter rot, und die Meldung nennt ihren Pfad — das ist die
+- **Vollständigkeit:** Jede Vorlage der Bezugsmenge steht in genau einer der vier Mengen. Eine, die
+  in **keiner** steht, färbt den Wächter rot, und die Meldung nennt ihren Pfad — das ist die
   Rot-Bedingung, die der Default im Emitter nicht hat.
 - **Disjunktheit:** Keine Vorlage steht in **zwei** Mengen. Heute ist das unsichtbar, weil `||` im
   Dispatch kurzschließt; der Wächter sieht es, weil er jede Menge einzeln auswertet.
+
+**Die Bezugsmenge ist die, über die der Emitter selbst läuft — `emit.inScope` über dem vendored
+`templates/`-Baum**, und sie steht hier, damit das Grün des Wächters nicht über einem engeren
+Ausschnitt gilt als sein Satz behauptet (`modul-13-quality-gates.md` §Hard Rule, *Ein Gate ohne
+seine Grenze behauptet ebenfalls zu viel*). Sie ist **jede `*.template.md` des Baums außer
+`project-readme.template.md`**, die einen eigenen Emit-Schritt hat
+([`LH-FA-05`](../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2)). **Ausserhalb**
+liegen die Nicht-Vorlagen desselben Baums — `.d-check.yml`, `Makefile`, die Set-Index-`README.md`
+—; sie sind keine Ziel-Artefakte und tragen keine Disposition. Welche Dateien das im jeweiligen
+Stand sind, zeigt das Kommando, nicht eine Zahl
+([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2):
+
+```sh
+find .harness/baseline/*/templates -name '*.template.md' ! -name 'project-readme.template.md' | sort
+```
+
+**Zwei Bindungen, damit die Menge nicht heimlich schrumpft:** Der Wächter leitet sie **aus
+`emit.inScope` ab**, statt sie ein zweites Mal aufzuzählen — weicht der Emitter-Ausschnitt später
+ab, wandert die Prüfung mit. Und die Meldung des Wächters nennt seinen Ausschnitt, damit ein Grün
+nicht als Aussage über den ganzen Baum gelesen wird.
 
 **Der Dispatch selbst behält seinen Default** — die Entscheidung verlangt keinen Umbau am Emitter.
 Was sie verlangt, ist die **deklarierte Redundanz**: eine gepflegte Liste neben einem abgeleiteten
@@ -128,11 +151,19 @@ nachgezogen, und diese ADR ist die Adresse ihrer geltenden Lesart.** *„Die fü
 Vorlagen"* nennt den Stand, den der Satz bei Abfassung jener Datei hatte; die Festlegung, die sie
 stützt, sagt über die Zahl nichts — sie schließt den vendored Baum aus dem geprüften
 Dokument-Satz aus, und dieser Ausschluss gilt unverändert für fünf wie für elf. Maßgeblich für die
-**Menge** ist ab hier allein, was der Wächter aus Festlegung 1 gegen den vendored Satz hält.
+**Menge** ist ab hier allein, was der Wächter aus Festlegung 1 gegen die Bezugsmenge hält.
 **Kein `Supersedes`, und kein zweiter Träger:** Abgelöst wird keine Festlegung, sondern eine Zahl
 in einer Begründung gelesen; und die Lesart steht **hier und nur hier** — ein zusätzlicher
 Glossar-Eintrag in [`harness/conventions.md`](../../../harness/conventions.md) wäre eine zweite
 Fassung derselben Aussage, und zwei Fassungen driften.
+
+**Diese Festlegung trägt genau eine Aussage und keine Klasse.** Dass die geltende Lesart hier steht
+und für die Slice-Nennung in [ADR-0011](0011-telemetrie-erfassung-policy.md) im Glossar von
+[`harness/conventions.md`](../../../harness/conventions.md), ist eine **Stellen-Beobachtung** und
+keine Zuordnungsregel — aus zwei Fällen folgt keine Eigenschaft
+([`MR-055`](../../../harness/conventions.md#mr-055--eine-stellen-messung-trägt-keine-folgerung-über-eine-eigenschaft)).
+Wo eine solche Lesart künftig hingehört, ist offen und gehört in einen eigenen Architect-Vorgang;
+er steht unten als Folgepflicht 3.
 
 ## Verglichene Alternativen
 
@@ -167,14 +198,20 @@ Fassung derselben Aussage, und zwei Fassungen driften.
   CR-Vorgang selbst, dass die neue Aufzählung ihren Mess-Stand nennt; für
   [ADR-0020](0020-emittierte-modul-15-regeln.md) folgt daraus nichts mehr — Festlegung 4 hat ihre
   Lesart gesetzt.
+- **Folgepflicht 3:** Wo die **geltende Lesart einer überholten Aussage in einem eingefrorenen
+  Artefakt** grundsätzlich steht — in der entscheidenden ADR oder im Glossar des
+  Konventionsspeichers —, ist nicht entschieden. Das ist eine Norm-Frage über zwei Träger und
+  gehört dem Architect ([`AGENTS.md`](../../../AGENTS.md) §3.8), nicht dieser Entscheidung: Sie
+  bräuchte eine eigene Bestandsaufnahme, und diese ADR hat sie nicht. Bis dahin gilt die
+  Einzelfall-Setzung aus Festlegung 4 und sonst nichts.
 
 ## Fitness Function (falls maschinell prüfbar)
 
 | Tooling | Regel | Make-Target |
 |---|---|---|
-| Go-Test über `internal/emit` | **Vollständigkeit:** jede in-scope-Vorlage des vendored Satzes steht in genau einer der vier geführten Mengen (wiederkehrend · derivativer Index · brownfield-only · Singleton-Liste des Wächters); eine Vorlage in keiner Menge bricht den Test fail-closed, und die Meldung nennt ihren Pfad | `make test` |
+| Go-Test über `internal/emit` | **Vollständigkeit:** jede Vorlage der Bezugsmenge (`emit.inScope` über dem vendored `templates/`-Baum) steht in genau einer der vier geführten Mengen (wiederkehrend · derivativer Index · brownfield-only · Singleton-Liste des Wächters); eine Vorlage in keiner Menge bricht den Test fail-closed, und die Meldung nennt ihren Pfad und den geprüften Ausschnitt | `make test` |
 | Go-Test über `internal/emit` | **Disjunktheit:** keine Vorlage steht in zwei Mengen — jede Menge wird einzeln ausgewertet, nicht über die kurzschließende `||`-Kette des Dispatchs | `make test` |
-| `test/mutations/` | **Rot 1:** ein Fall legt eine Vorlage in den geprüften Satz, die in keiner der vier Mengen steht — der Wächter fällt mit ihrem Pfad in der Meldung. **Rot 2:** ein Fall trägt einen Namen der Singleton-Liste **zusätzlich** in `isRecurring` ein — der Wächter fällt an der Disjunktheit. **Rot 3:** ein Fall **tauscht** einen Namen in `isRecurring` gegen einen anderen aus dem Satz — der Wächter fällt zweifach, an Vollständigkeit und Disjunktheit, und nicht an einer Zahl | `make mutate` |
+| `test/mutations/` | **Rot 1:** ein Fall legt eine Vorlage in die Bezugsmenge, die in keiner der vier Mengen steht — der Wächter fällt mit ihrem Pfad in der Meldung. **Rot 2:** ein Fall trägt einen Namen der Singleton-Liste **zusätzlich** in `isRecurring` ein — der Wächter fällt an der Disjunktheit. **Rot 3:** ein Fall **tauscht** einen Namen in `isRecurring` gegen einen anderen aus der Bezugsmenge — der Wächter fällt zweifach, an Vollständigkeit und Disjunktheit, und nicht an einer Zahl | `make mutate` |
 
 **Drei Rot-Bedingungen, alle am heutigen Dispatch herstellbar** — keine verlangt einen Umbau des
 Emitters, weil die vierte Menge beim Wächter liegt und nicht im `else`-Zweig.
@@ -192,6 +229,8 @@ tiefer.
   ihre Folgepflicht ausgelöst hat.
 - Ein Baseline-Sprung bringt eine Vorlagen-Art, die in keine der vier Mengen sinnvoll fällt —
   dann ist die Dispositions-Achse selbst neu zu schneiden statt die Liste zu erweitern.
+- Der Emitter-Ausschnitt `emit.inScope` wird enger oder weiter geschnitten — dann ist zu prüfen, ob
+  die Bezugsmenge aus Festlegung 1 noch die ist, über die das Grün gelesen wird.
 - [ADR-0020](0020-emittierte-modul-15-regeln.md) wird aus anderem Anlass durch eine Folge-ADR mit
   `Supersedes` abgelöst — dann ist zu prüfen, ob Festlegung 4 noch einen Gegenstand hat.
 - Das Technik-Stratum bekommt aus anderem Anlass eine Sektion über den Vorlagensatz — dann ist
@@ -211,3 +250,4 @@ Accept-Zeile der §Geschichte nennt diese Runde bei ihrer Kennung.
 |---|---|---|
 | 2026-09-17 | Proposed | Architect-Verdikt zur Gruppierung der Go-Slices, Rolle Architect |
 | 2026-09-17 | Befunde der ersten Review-Runde eingearbeitet (Festlegung 1 neu gefasst, Festlegung 4 ergänzt, Fitness Function auf herstellbare Rot-Bedingungen gezogen), Status bleibt `Proposed` | Review-Runde zur Gruppierung der dreizehn Go-Slices, erster Durchgang |
+| 2026-09-17 | Accepted — der Acceptance-Trigger ist eingelöst: zweiter Durchgang derselben prüfenden Rolle, kein blockierender Befund | `2026-09-17-gruppierung-review-runde-2` |
