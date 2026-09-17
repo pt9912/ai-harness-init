@@ -370,11 +370,17 @@ bindet.
 **Geltungsbereich: dieses Repo.** Was ein **emittiertes** Repo an Eigentums-Aussagen bekommt,
 entscheidet der Slice, der die Tool-Ebene entscheidet — nicht diese Sektion.
 
-**Ein Wächter existiert nicht.** Kein Modul des Doku-Gates liest Commits (`.d-check.yml` führt
-`links, anchors, ids, matrix, codepaths, spans`), und `make mutate` kennt zwei Fehlschlag-Formen —
-`--- FAIL:` der Go-Stufe, `not ok N` der bats-Stufe —, keine, in der ein Commit-Zuschnitt rot
-wird. Die Regel liegt im Feedforward-Quadranten: benannt, nicht geschlossen; ihr Träger ist der
-Rollen-Wechsel vor der Änderung, nicht ein Gate danach.
+**Ein Wächter existiert nicht.** Keines der Module, die das Doku-Gate fährt, liest die git-Historie
+(`grep -n '^modules:' .d-check.yml`). Der gepinnte d-check führt zwei Module, die sie lesen; beide
+stehen nicht in dieser Liste, das Rezept des Doku-Gates schaltet keines zu
+(`sed -n '/^docs-check:/,+1p' d-check.mk`), und keines hält die Dateien eines Commits gegen seine
+Message: `commits` prüft die Message auf eine Kennung, `vcs` den Kern einer Datei zwischen zwei
+Ständen. Gemessen am Stand `v0.76.1`, `D` ein maschinen-lokaler Klon des Werkzeugs —
+`git -C "$D" grep -l 'driven\.VCS' v0.76.1 -- internal/hexagon/core/rules/ ':!*_test.go'` nennt
+neben dem Verteiler `run.go` genau `commits.go` und `vcs.go`. Und `make mutate` kennt zwei
+Fehlschlag-Formen — `--- FAIL:` der Go-Stufe, `not ok N` der bats-Stufe —, keine, in der ein
+Commit-Zuschnitt rot wird. Die Regel liegt im Feedforward-Quadranten: benannt, nicht geschlossen;
+ihr Träger ist der Rollen-Wechsel vor der Änderung, nicht ein Gate danach.
 
 ### 3.9 Docker-only
 
@@ -451,7 +457,7 @@ fehlende zweite Blick vor einem Merge, der Artefakte einfriert.
 der Bestand ist kein Arbeitsauftrag. **Geltungsbereich: dieses Repo.** Was ein emittiertes Repo an
 Eigentums-Aussagen bekommt, entscheidet der Slice, der die Tool-Ebene entscheidet.
 
-**Ein Wächter existiert nicht.** Kein Modul des Doku-Gates liest Commits
+**Ein Wächter existiert nicht.** Keines der Module, die das Doku-Gate fährt, liest die git-Historie
 (`grep -n '^modules:' .d-check.yml`), und `make mutate` kennt keine Fehlschlag-Form für einen
 Commit-Zuschnitt — dieselbe Lage, die §3.8 für sich selbst feststellt. Träger ist der
 Rollen-Wechsel vor dem Abschluss, nicht ein Gate danach · seit welle-15.
