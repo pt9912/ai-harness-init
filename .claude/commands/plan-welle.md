@@ -94,7 +94,10 @@ geschlossen ist.
   **Diese Prüfung ist ein Urteil dieses Laufs, kein Sensor.** Die Ziel-Fassung lässt *Urteil oder
   eigener Sensor* offen, und dieses Repo wählt das Urteil. Setzung des Planners vom 2026-09-17;
   sie ist neu zu entscheiden, sobald der gepinnte d-check die Auflösung prüft oder in `done/` eine
-  Kennung steht, die nicht auflöst.
+  Kennung steht, die nicht auflöst. Der Auftraggeber hat die Setzung am 2026-09-17 bestätigt und
+  dem Planner zugewiesen. Die Zuständigkeit für eine Norm-Aussage ohne Original lässt
+  [ADR-0028](../../docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
+  Festlegung 2 offen; hier trägt darum die Entscheidung des Auftraggebers.
 - **Der Wechsel:** `make slice-mv SLICE=<kennung> TO=done`, **je Slice einzeln**. Nach jedem
   Wechsel laufen drei Prüfungen, bevor der nächste beginnt:
   1. Der Exit-Code ist 0.
