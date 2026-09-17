@@ -132,7 +132,7 @@ und Linkziel dieselbe Kennung tragen und der Gate einen Befund daraus macht. `gr
 | `test/mutations/` | neu | der Zahn aus DoD (2) |
 | `test/mutate-driver.bats` | update | der neue `failure_form`-Zweig ist selbst eine Zusage und braucht seinen Fall |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update | der Eintrag aus DoD (3) |
-| [`harness/README.md`](../../../../harness/README.md) | update | die `docs-check`-Zeile nennt heute „links/anchors/ids/codepaths" und lässt `matrix` weg — der Vertrag wächst hier, also wächst die Zeile mit |
+| [`harness/README.md`](../../../../harness/README.md) | update | die `docs-check`-Zeile zählt die aktiven Module auf — der Vertrag wächst hier, also wächst die Zeile mit |
 
 **Nebenbefund, der zum Schnitt gehört:** die neue `welle`-Klasse macht
 Welle-Pläne zu Matrix-**Quellen**, und damit greift die schon aktive `status`-Regel auch dort.

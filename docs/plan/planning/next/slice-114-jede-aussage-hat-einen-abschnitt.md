@@ -44,10 +44,11 @@ sagt, dass nichts es tut),
 (Ausfüll-Templates werden referenziert und kopiert, nicht nachgebaut — der Anlege-Commit dieser
 Datei hat das nicht getan, und die fehlende Pflicht-Sektion ist die Spur davon),
 [`MR-024`](../../../../harness/conventions.md#mr-024--d-check-pin-v0620-structure-verfügbar)
-(`structure` liegt im Pin und ist nicht aktiviert — der einzige Wächter-Kandidat für die
-**Gliederung**, seine Eignung ist ungeprüft),
+(`structure` liegt im Pin — der einzige Wächter-Kandidat für die
+**Gliederung**; aktiv ist er mit einer Regel über den Slice-Plänen in `done/`, seine Eignung für
+diese Datei ist ungeprüft),
 [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)
-(*„Gate-Anheben → Steering-Loop"* — falls der Kandidat trägt, ist seine Aktivierung ein
+(*„Gate-Anheben → Steering-Loop"* — falls der Kandidat trägt, ist eine Regel für diese Datei ein
 Steering-Loop und kein ADR),
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 (jede Zahl unten steht neben dem Kommando, das genau sie ausgibt; die Ziel-Werte in §2 sind
@@ -241,12 +242,13 @@ mehr macht keinen Absatz kürzer.
 
 Der Wächter-Kandidat dafür ist `structure` aus dem d-check-Pin: verfügbar seit
 [`MR-024`](../../../../harness/conventions.md#mr-024--d-check-pin-v0620-structure-verfügbar),
-nicht aktiviert (`grep -c 'structure' .d-check.yml` → **0**, Exit 1), und seine Eignung ist an
-diesem Repo **nicht erprobt** — das sagt
+aktiv mit einer Regel über den Slice-Plänen in `done/`
+(`sed -n '/^structure:/,/^[a-z]/p' .d-check.yml | grep 'files:'`), und seine Eignung für diese
+Datei ist **nicht erprobt** — das sagt, am Stand vor der Aktivierung,
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-über denselben Kandidaten ausdrücklich. **Dieser Slice aktiviert ihn nicht und sagt ihn nicht zu.**
+über denselben Kandidaten ausdrücklich. **Dieser Slice setzt ihm keine Regel für diese Datei und sagt ihn nicht zu.**
 Er stellt die Gliederung her und schreibt in §7 auf, ob `structure` sie halten könnte — geprüft an
-einem Trockenlauf, nicht an einer Modul-Beschreibung. Trägt er, ist seine Aktivierung ein eigener
+einem Trockenlauf, nicht an einer Modul-Beschreibung. Trägt er, ist eine Regel für diese Datei ein eigener
 Schnitt und ein Steering-Loop nach
 [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids),
 kein ADR.
@@ -446,7 +448,7 @@ Standard-Punkte der Vorlage (nicht slice-eigen): `make gates` grün · Doku-Upda
 | [`harness/tools/hook-overhead.sh`](../../../../harness/tools/hook-overhead.sh) | **unverändert** | sein Kopf trägt den Mess-Stand schon; der Einstieg verweist bereits dorthin. Was daran fehlt, ist Gegenstand von slice-102, nicht von diesem Slice |
 | [`AGENTS.md`](../../../../AGENTS.md) | **unverändert** | §3 gehört dem Architect ([`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1); §4 ist am 2026-08-27 zurückgeführt worden — von **7 604** auf **2 667** Zeichen (`git show c5d9a47^:AGENTS.md \| awk '/^## 4\./{f=1} /^## 5\./{f=0} f' \| wc -c` gegen dasselbe `awk` über die heutige Datei), und die verbliebene Ziel-Liste ist die gewollte Dopplung aus §1 (c) |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | **unverändert** | Adaptions-Block, Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Die Setzung über die Bauart **und** die Verzeichnis-Entscheidung gehen als Übergabe-Artefakt hinaus (§1) |
-| [`.d-check.yml`](../../../../.d-check.yml) | **unverändert** | `structure` wird hier **nicht** aktiviert; ein Trockenlauf darüber ist Erkenntnis für §7, seine Aktivierung ein eigener Schnitt und ein Steering-Loop ([`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)) |
+| [`.d-check.yml`](../../../../.d-check.yml) | **unverändert** | `structure` bekommt hier **keine** Regel für diese Datei; ein Trockenlauf darüber ist Erkenntnis für §7, eine solche Regel ein eigener Schnitt und ein Steering-Loop ([`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids)) |
 | [`internal/`](../../../../internal) und die emittierte Ebene | **unverändert** | der Adopter bekommt die Vorlage, nicht diese Datei (Kopfzeile *Ebene*). Ob ein emittiertes Repo eine Bauart-Regel bekommt, ist ein eigener Schnitt mit eigener Abwägung |
 | [`docs/plan/adr`](../../adr) | **unverändert** | der Slice senkt keine Schwelle: er stellt eine Pflichtgliederung her und verschiebt Prosa. Ergibt der Lauf, dass ein Satz nur unter einer **gelockerten** Zusage an sein neues Ziel passt, greift die Rückführung aus §4 |
 | [`docs/reviews`](../../../reviews), [`docs/plan/planning/done`](../done) | **unverändert** | Zeitdokumente ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) §Geltungsbereich) |

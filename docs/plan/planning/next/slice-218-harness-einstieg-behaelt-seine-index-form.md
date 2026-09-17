@@ -83,11 +83,13 @@ Fensters**, nicht die Messung selbst; wandert das Fenster, ist das eine Änderun
   Pflicht-Abschnitt des Einstiegs fängt `section-missing` und ist im Trockenlauf von slice-114
   gemessen; er deckelt aber nichts, sondern verlangt Anwesenheit — anderer Gegenstand, andere
   Fehlerrichtung, eigener Schnitt. Die Adresse steht in §6. *(Anderer Vorgang.)*
-- **[`harness/README.md`](../../../../harness/README.md) wird nicht umgeschrieben.** Genau **eine**
-  Zelle wird nachgezogen — die `make doc-structure`-Zeile sagt heute *„inert ohne
-  `structure:`-Block"*, und der Block entsteht mit diesem Slice
-  ([`AGENTS.md`](../../../../AGENTS.md) §3.7: ein Zustandsfeld beschreibt, was da ist). Jedes
-  weitere Byte bleibt stehen. *(Bestand bleibt bewusst stehen.)*
+- **[`harness/README.md`](../../../../harness/README.md) wird nicht umgeschrieben.** Die
+  `make doc-structure`-Zeile beschreibt den bestehenden `structure:`-Block bereits.
+  *(Bestand bleibt bewusst stehen.)*
+- **`doc-structure` verlässt die C-Klasse nicht hier.** *Ein anderer Slice hat es geliefert:*
+  `slice-stilllegungs-form-hat-einen-waechter` hat mit dem Block die Marke aus
+  [`d-check.mk`](../../../../d-check.mk) genommen und
+  [`harness/sensors/doc-structure.md`](../../../../harness/sensors/doc-structure.md) nachgezogen.
 - **Keine Änderung an der emittierten Doc-Gate-Startkonfiguration.** Ebene Dogfood; was ein
   emittiertes Repo an Modulen bekommt, hängt an
   [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
@@ -100,15 +102,13 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-Drei slice-eigene Punkte. Der dritte ist keine Zugabe, sondern die mechanische Folge des ersten:
-`test/doc-block-marke-wiring.bats` (in `make gates`) leitet ab, welche `doc-*`-Ziele ein Modul
-zuschalten, für das [`.d-check.yml`](../../../../.d-check.yml) **keinen** eigenen Block führt —
-mit dem Block fällt `doc-structure` aus dieser Menge, und die Marke muss weg, sonst ist der Gate
-rot. [slice-217](../done/slice-217-doc-ziel-nennt-seinen-pruefbereich.md) §6 führt genau
-diesen Fall bereits als Risiko.
+Zwei slice-eigene Punkte. `structure` ist in `modules:` aktiv, und der `structure:`-Block besteht;
+beides hat `slice-stilllegungs-form-hat-einen-waechter` angelegt, samt der Folge, die hier als
+dritter Punkt stand: `doc-structure` hat die C-Klasse verlassen, und `test/doc-block-marke-wiring.bats`
+(in `make gates`) hält das. Dieser Slice fügt dem Block eine Regel hinzu.
 
-- [ ] **(1) Die Grenze steht, grüner Start und rotes Gegenbeispiel im Repo.** `structure` in
-      `modules:` und ein `structure:`-Block mit `cell-max-chars: 180` auf beide Vertrags-Spalten
+- [ ] **(1) Die Grenze steht, grüner Start und rotes Gegenbeispiel im Repo.** Der bestehende
+      `structure:`-Block trägt eine Regel mit `cell-max-chars: 180` auf beide Vertrags-Spalten
       (Schlüsselform `table.column[].cell-max-chars`, am gepinnten Digest aus
       [`d-check.mk`](../../../../d-check.mk) gemessen, nicht angenommen). `make docs-check` ist
       über dem unveränderten `harness/README.md` grün; eine Zelle über 180 Zeichen färbt
@@ -117,20 +117,14 @@ diesen Fall bereits als Risiko.
       trifft, ist über der anderen still grün
       ([`BEO-ALL/zusicherung-ueber-der-leeren-menge-wahr`](../observations/BEO-ALL/zusicherung-ueber-der-leeren-menge-wahr/observation.md)).
 - [ ] **(2) Der neue Wächter hat einen Zahn.** `test/structure-modul-wiring.bats` hält
-      Modul-Aktivierung, Selector und den Wert `180` hermetisch gegen Regression — dieselbe Bauart
+      Modul-Aktivierung (fällt `structure` allein aus `modules:` und der Block bleibt, ist
+      `make docs-check` heute still), Selector und den Wert `180` hermetisch gegen Regression — dieselbe Bauart
       wie `test/planning-modul-wiring.bats` und `test/vcs-modul-wiring.bats`, ohne Docker-Lauf. Ein
       Fall unter `test/mutations/` mit `# verify: test-bats` nimmt dem Wert die Zähne und **muss**
       diesen Test röten. *(`make mutate` kennt keinen `docs-check`-Modus: `failure_form()` in
       `harness/tools/mutate.sh` führt sechs, keiner fährt das Doku-Gate. Der Zahn sitzt deshalb auf
       dem hermetischen Wächter — die im Repo etablierte Route, keine Ersatzhandlung.)*
-- [ ] **(3) `doc-structure` verlässt die C-Klasse sauber.** Die Marke fällt aus `##`-Hilfetext und
-      Ausgabe-Zeile des Rezepts in [`d-check.mk`](../../../../d-check.mk),
-      `test/doc-block-marke-wiring.bats` bleibt grün, und die Inertheits-Aussage in
-      [`harness/sensors/doc-structure.md`](../../../../harness/sensors/doc-structure.md) wird
-      **abgelöst**, nicht ergänzt — samt der einen Zelle in
-      [`harness/README.md`](../../../../harness/README.md) (§1).
-
-Standard-Punkte der Vorlage (nicht slice-eigen, zählen nicht zur Drei):
+Standard-Punkte der Vorlage (nicht slice-eigen, zählen nicht zur Zwei):
 
 - [ ] `make gates` grün · `make mutate` ohne Befund.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
@@ -155,12 +149,10 @@ Aussagen-Berührung steht hier gar nicht.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| [`.d-check.yml`](../../../../.d-check.yml) | update | DoD (1): `structure` in `modules:`, `structure:`-Block mit beiden Vertrags-Spalten und `cell-max-chars: 180` |
+| [`.d-check.yml`](../../../../.d-check.yml) | update | DoD (1): eine Regel im bestehenden `structure:`-Block, mit beiden Vertrags-Spalten und `cell-max-chars: 180` |
 | `test/structure-modul-wiring.bats` | neu | DoD (2): hält Aktivierung, Selector und Wert hermetisch — Vorbild `test/planning-modul-wiring.bats` |
 | `test/mutations/` | neu | DoD (2): der Zahn über dem Wert, `# verify: test-bats` |
-| [`d-check.mk`](../../../../d-check.mk) | update | DoD (3): die Marke fällt aus Hilfetext und Ausgabe-Zeile des `doc-structure`-Rezepts |
-| [`harness/sensors/doc-structure.md`](../../../../harness/sensors/doc-structure.md) | update | DoD (3): die Inertheits-Aussage wird abgelöst; hier steht die Grenze mit ihrer Bezugsmenge |
-| [`harness/README.md`](../../../../harness/README.md) | update | **eine** Zelle: `inert ohne structure:-Block` trifft nicht mehr zu (§1) |
+| [`harness/sensors/doc-structure.md`](../../../../harness/sensors/doc-structure.md) | update | Doku-Update: hier steht die Grenze mit ihrer Bezugsmenge |
 | [`.harness/skills/reviewer.md`](../../../../.harness/skills/reviewer.md) | **unverändert** | Reviewer-Eigentum ([ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)); der Report-Prüfbereich gehört slice-213/214 |
 
 ## 4. Trigger
@@ -172,9 +164,8 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 [slice-217](../done/slice-217-doc-ziel-nennt-seinen-pruefbereich.md) **und**
 [slice-114](../next/slice-114-jede-aussage-hat-einen-abschnitt.md) liegen in `done/`.
 Beobachtbar ohne Rückfrage (`ls docs/plan/planning/done/`) und **kein Ergebnis dieses Slice**.
-Beide sind harte Kanten: 217 baut die C-Klassen-Ableitung, die DoD (3) benutzt und verkleinert —
-parallel geführt schreiben beide dasselbe Rezept und denselben Wächter; 114 stellt die Bezugsmenge
-her, gegen die §1 misst.
+217 baut die C-Klassen-Ableitung, neben der der Wächter aus DoD (2) steht; 114 stellt die
+Bezugsmenge her, gegen die §1 misst.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
@@ -304,5 +295,4 @@ geändert.
 - **Evidenz-/Diskrepanz-Risiko:** mittel, und es liegt beim Prüfbereich, nicht beim Bestand — die
   zwei Treffer oben benennen genau die Richtung, in der ein zu breiter oder ins Leere zeigender
   Selector still grün bliebe. Der Bestand selbst ist mit §1 gemessen.
-- **Reconciliation-Aufwand:** gering. Ein Modul-Block, ein Wächter, ein Mutations-Fall, dazu die
-  erzwungene C-Klassen-Nachführung aus DoD (3). Graduation-Trigger entfällt (bereits GF).
+- **Reconciliation-Aufwand:** gering. Eine Regel im bestehenden Block, ein Wächter, ein Mutations-Fall. Graduation-Trigger entfällt (bereits GF).
