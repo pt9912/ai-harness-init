@@ -78,7 +78,7 @@ Dateiname des bewegten Slice:
   `open/slice-078-verdrahtung-hat-waechter.md:178`, `open/slice-079-exit-code-vertrag.md:144`,
   `open/slice-101-norm-postens-bekommen-einen-termin.md:173`, jeweils mit dem Ziel
   `slice-070-comment-claims-pruefbereich.md` und `target-missing`;
-- nach `next → done` kommen drei hinzu: `next/slice-108-feldlisten-waechter-tragen-ihren-fall.md:114`
+- nach `next → done` kommen drei hinzu: `done/slice-108-feldlisten-waechter-tragen-ihren-fall.md:114`
   und `:193`, `next/slice-110-erfassungs-waechter-fall-meldung-grenze.md:63`, mit dem Ziel
   `slice-103-traeger-waechter-decken-was-sie-sagen.md`.
 
