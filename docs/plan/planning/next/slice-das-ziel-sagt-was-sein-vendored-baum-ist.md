@@ -40,7 +40,7 @@ ihre Emission nicht liegt, ist sie der Auflösungs-Trigger dieser Zellen, nicht 
 **Berührte Spec-Stellen:** — Der Slice ändert keine Spec-Stelle; er füllt die emittierte
 Doku-Schicht des Ziels.
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-17.
 
