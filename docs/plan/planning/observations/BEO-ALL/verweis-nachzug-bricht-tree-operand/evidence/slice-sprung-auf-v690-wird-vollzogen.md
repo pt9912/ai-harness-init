@@ -1,0 +1,2 @@
+**Vorgang:** slice-sprung-auf-v690-wird-vollzogen
+**Fund:** Der eingehende Nachzug des Claim-Moves `next/` → `in-progress/` (`b04d0ae7`, geschrieben von `make slice-mv`) ersetzte im Architect-Verdikt zum Plan den Pfad im Kommando `git show e8fb5248:docs/plan/planning/next/…`; an diesem Commit liegt die Datei unter `next/`, und das nachgezogene Kommando endet mit Exit 128. Zurückgenommen per `git revert` (`3c069894`).

@@ -1,0 +1,2 @@
+**Vorgang:** slice-sprung-auf-v690-wird-vollzogen
+**Fund:** Drei Funde, eine Gelegenheit. `### Im gebootstrappten Ziel` hing nach der Lage unter `## Bindung` (Review F-7). Dieselbe Überschrift stand je Datei dreimal und machte die Anker von der Reihenfolge abhängig (N-1, gezogen in `56a86a77`). `harness/migration.md` §5 nahm „den sprung-bezogenen Absatz am Ende von Buchstabe a" aus, nachdem ein zweiter dazugekommen war (N-2, gezogen in `fabe5188`).

@@ -1,0 +1,2 @@
+**Vorgang:** slice-sprung-auf-v690-wird-vollzogen
+**Fund:** §6 Risiko 3 nannte nach einem Überschriften-Vergleich drei Sensor-Dateien mit fremden Abschnitten. Das im Vorgang festgelegte Gliederungs-Kriterium (`harness/migration.md` §5 a, `3c566c9a` und `58f2156f`) zählt auch fehlende Pflicht-Abschnitte, und die Umschrift traf 14 Sensor-Dateien (`git show --name-only --format= 5ea9a75d 42276db5 42a2164e 3b84a873 56a86a77 -- harness/sensors | sort -u | wc -l`). Rückführung (b) aus §4 feuerte; der Slice übernahm die Gruppe nach Setzungen des Auftraggebers, statt zu warten.

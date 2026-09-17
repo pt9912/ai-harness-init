@@ -1,0 +1,2 @@
+**Vorgang:** slice-sprung-auf-v690-wird-vollzogen
+**Fund:** DoD-Punkt 1 sagte *„ein halb getauschtes Repo ist rot"*. Die Verifikation (`docs/reviews/2026-09-17-slice-sprung-auf-v690-wird-vollzogen-verify.md` §5, Fall C) stellte alle fünf Pins auf den alten Tag über den neuen Baum, und `test/sources-pin.bats` wie `make baseline-verify` blieben grün. Die Closure schränkt den Satz auf die gemessenen Fälle ein, statt ihn abzuhaken.

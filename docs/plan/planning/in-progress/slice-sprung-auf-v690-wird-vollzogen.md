@@ -181,8 +181,17 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
 Drei slice-eigene Punkte, einer je Achse aus §1.
 
-- [ ] **1 — Jeder Träger des Tags steht auf `v6.9.0`, und keine lebende Adresse bleibt auf dem
-      abgelösten Tag.** Fünf Träger-Klassen, eine Eigenschaft; ein halb getauschtes Repo ist rot.
+- [x] **1 — Jeder Träger des Tags steht auf `v6.9.0`, und keine lebende Adresse bleibt auf dem
+      abgelösten Tag.** Fünf Träger-Klassen, eine Eigenschaft. **Rot ist ein halb getauschtes
+      Repo nur in zwei Fällen, gezogen bei der Closure:** wenn eine Pin-Stelle von den übrigen
+      abweicht und wenn ein Markdown-Link auf einen fehlenden Baum zeigt. **Grün bleibt es in drei
+      Fällen:** alle fünf Pins stehen auf dem alten Tag und der Baum auf dem neuen; ein Symlink
+      zeigt ins Leere; ein Inline-Pfad ist veraltet (Verifikation
+      `docs/reviews/2026-09-17-slice-sprung-auf-v690-wird-vollzogen-verify.md` §2 V-3 und §5,
+      Fall C). Der erste Grün-Fall ist die unbewachte Hälfte der Provenienz-Kette, die
+      [`harness/conventions.md`](../../../../harness/conventions.md) §Adoptierte
+      Konventions-Quellen ausweist. Den Zustand belegen deshalb die direkten Messungen der
+      Verifikation, nicht die Gates.
 
       1. **Der vendored Baum.** `.harness/baseline/v6.9.0/{regelwerk,templates}` samt
          `SHA256SUMS` liegt committet, das `v6.8.0`-Verzeichnis existiert nicht mehr, und
@@ -218,6 +227,13 @@ Drei slice-eigene Punkte, einer je Achse aus §1.
       dann gehört sie auf den neuen Tag — oder Teil einer Aussage, die den Stand nennt, gegen den
       sie gemessen ist ([`MR-033`](../../../../harness/conventions.md#mr-033)). Welche von beiden,
       ist ein Urteil je Treffer; der Rest steht im Umsetzungs-Lauf benannt und abgezählt daneben.
+      **Der Rest, bei der Closure abgezählt:** 27 Treffer am Stand `b31d5179`
+      (`git grep -cE "$I" b31d5179 -- "${PS[@]}"`, mit dem Pathspec aus §1 und dem Inline-Muster
+      der zweiten Zeile dort als `I`). Davon stehen 25 in `docs/migrations/v6.8.0.md`: Sie sind
+      datierte Aussagen des Berichts über den damaligen Baum
+      ([`MR-033`](../../../../harness/conventions.md#mr-033)) und keine Adressen. Je 1 Treffer steht
+      in diesem Plan (die Kommandos in §1 messen den Vorzustand) und in
+      `slice-der-mutations-lauf-ist-begrenzbar`. Alle drei Gruppen bleiben stehen.
       Der Nachzug läuft **je Eigentümer in einem eigenen Commit**, der die Rolle nennt
       ([`AGENTS.md`](../../../../AGENTS.md) §3.8): Planungs- und Sensor-Artefakte im
       Implementations-Kontext; [`AGENTS.md`](../../../../AGENTS.md),
@@ -228,7 +244,7 @@ Drei slice-eigene Punkte, einer je Achse aus §1.
       [`.harness/skills/reviewer.md`](../../../../.harness/skills/reviewer.md) bei der Rolle, die
       sie ausführt ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md));
       die Roadmap beim Planner.
-- [ ] **2 — Die Freshness-Review des Adaptions-Blocks ist über alle 56 aktiven Einträge
+- [x] **2 — Die Freshness-Review des Adaptions-Blocks ist über alle 56 aktiven Einträge
       gefahren, jeder betroffene trägt einen der fünf Ausgänge, und die Stichprobe gegen den
       Bestand ist gelaufen.** Die Frage je Eintrag: Regelt eine der im Sprung geänderten
       Regelwerks-Dateien das, wofür dieser Eintrag angelegt wurde?
@@ -258,7 +274,7 @@ Drei slice-eigene Punkte, einer je Achse aus §1.
       [`harness/conventions.md`](../../../../harness/conventions.md) in der Form von
       [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
       Festlegung 2.
-- [ ] **3 — Der Vorlagen-Bericht zum Tag `v6.9.0` liegt unter `docs/migrations/` vor, in der
+- [x] **3 — Der Vorlagen-Bericht zum Tag `v6.9.0` liegt unter `docs/migrations/` vor, in der
       Report-Form aus [`harness/migration.md`](../../../../harness/migration.md) §5, und hält die
       bestehenden Instanzen.**
 
@@ -292,21 +308,21 @@ Drei slice-eigene Punkte, einer je Achse aus §1.
 
       Der Bericht wird von `docs-check` gescannt; jede `LH-`/`ADR-`/`MR-`-Kennung darin ist ein
       Anker-Link ([`MR-001`](../../../../harness/conventions.md#mr-001)).
-- [ ] `make gates` grün über dem Liefer-Stand, gedeckt durch den Stempel
+- [x] `make gates` grün über dem Liefer-Stand, gedeckt durch den Stempel
       `.harness/state/gates-passed.diffsha`. Nicht gedeckt sind die Commits danach
       (Architect-Buchung, Closure).
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: [`harness/conventions.md`](../../../../harness/conventions.md) §Baseline und
+- [x] Doku-Update: [`harness/conventions.md`](../../../../harness/conventions.md) §Baseline und
       §Adoptierte Konventions-Quellen tragen den neuen Stand (**Architect-Commit** aus dem
       Übergabe-Artefakt von Liefer-Punkt 2); [`harness/migration.md`](../../../../harness/migration.md)
       trägt die Register-Zuordnung (**Architect-Commit** aus dem Schritt in §3).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt Wellen (`ls docs/plan/planning/welle-*.md`), sie werden deshalb von der nächsten Welle-Closure geprüft, auch für diesen Slice ohne Wellen-Zugehörigkeit.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt Wellen (`ls docs/plan/planning/welle-*.md`), sie werden deshalb von der nächsten Welle-Closure geprüft, auch für diesen Slice ohne Wellen-Zugehörigkeit.
 
 ## 3. Plan (vor Code)
 
@@ -412,13 +428,21 @@ Den Ausgang setzt die Closure. *Absehbar* nennt, welcher Ausgang unter welcher B
    ([`MR-033`](../../../../harness/conventions.md#mr-033)); kein Gate sieht es. Diese Datei ist
    selbst betroffen: Die Kommandos in §1 messen den Vorzustand und behalten den abgelösten Tag.
    *Absehbar:* entfallen, wenn je Treffer geurteilt ist; sonst eingetreten, Beleg in
-   `verweis-nachzug-ersetzt-eine-historisch-richtige-adresse`.
+   `verweis-nachzug-ersetzt-eine-historisch-richtige-adresse`. — **Ausgang: entfallen.** Jeder
+   Inline-Treffer ist geurteilt. Die Verifikation hat die Zahl am Ausgangsstand aufgeteilt (§2
+   des Berichts): Den Nachzug trugen die Rollen-Commits, die Spezifikation verlor ihre Treffer,
+   und der Rest steht abgezählt in §2, Liefer-Punkt 1. Kein Treffer, der eine Messung gegen
+   `v6.8.0` datiert, wurde ersetzt.
 2. **Das Vorlagen-Delta zwischen den vendorten Bäumen ist größer als das im Klon.** Beim
    vorigen Sprung unterschieden sich zwei Vorlagen nur im vendorten Baum
    ([slice-sprung-auf-v680-wird-vollzogen](../done/slice-sprung-auf-v680-wird-vollzogen.md) §7).
    *Absehbar:* entfallen, wenn Liefer-Punkt 3.2 vendored misst und jede weitere Vorlage einen
    Ausgang trägt; misst der Lauf nur im Klon, eingetreten, Beleg in
-   `delta-messung-trifft-den-quelltext-statt-den-vendorten-baum`.
+   `delta-messung-trifft-den-quelltext-statt-den-vendorten-baum`. — **Ausgang: entfallen.**
+   Liefer-Punkt 3.2 hat zwischen `63e0964e^` und `63e0964e` gemessen: fünf Vorlagen mit Delta
+   statt drei im Klon, jede mit Ausgang (Verifikation §4). Die zwei zusätzlichen,
+   `conventions.template.md` und `AGENTS.template.md`, deckt dieses Risiko. Die Zahl im Klon
+   stand in diesem Plan als Vormessung mit Risiko; eine Beleg-Datei entsteht nicht.
 3. **Unter Buchstabe a fehlt das Ventil *bewusst abweichend*.** `v6.9.0` nimmt
    Sensor-Gate-Dateien ausdrücklich von der Append-only-Logik aus. Landet `gate` damit im
    Architect-Schritt unter Buchstabe a, wiegt das schwer: Schon der Überschriften-Vergleich
@@ -426,14 +450,31 @@ Den Ausgang setzt die Closure. *Absehbar* nennt, welcher Ausgang unter welcher B
    Abschnitte, die die Vorlage nicht kennt — in `full-smoke.md`, `history-range-guard.md` und
    `slice-mv.md` unter `harness/sensors/`. Jede abweichende Instanz muss *übernommen* werden;
    Rückführung (b) ist damit realistisch. *Absehbar:* entfallen bei *schon erfüllt*; sonst
-   eingetreten, Rückführung (b).
+   eingetreten, Rückführung (b). — **Ausgang: eingetreten.** Der Architect-Schritt ordnete `gate`
+   unter Buchstabe a ein (`3c566c9a`), und das Gliederungs-Kriterium traf 14 Sensor-Dateien
+   (das Kommando steht im Beleg zu
+   [`BEO-ALL/instanz-umfang-vor-seinem-kriterium-gemessen`](../observations/BEO-ALL/instanz-umfang-vor-seinem-kriterium-gemessen/observation.md)).
+   Die Bedingung von Rückführung (b) war damit erfüllt. **Der Weg war keiner der zwei, die §4
+   nennt:** Die Gruppe wurde **im Slice übernommen** (`5ea9a75d`, `42276db5`, `42a2164e`,
+   `3b84a873`, `56a86a77`). Die Quelle dafür sind Setzungen des Auftraggebers vom 2026-09-16
+   (Übernahme vollständig und delta-gebunden, Pflichtgliederung mit Freiraum nur innerhalb der
+   Abschnitte) und vom 2026-09-17 (wörtlicher Umzug nur innerhalb derselben Datei). Alle drei
+   stehen in [`harness/migration.md`](../../../../harness/migration.md) §5. Von der Gruppe
+   bleibt nichts offen. Den angrenzenden Rest, die fünf Instanzen ohne Vorlagen-Delta, trägt der
+   Folge-Slice `slice-gliederung-der-instanzen-ohne-vorlagen-delta`.
 4. **Die Lifecycle-Züge machen den Ruhe-Marker der Roadmap falsch.** Der Zug nach
    `in-progress/` und die Closure nach `done/` kippen ihn, und `make slice-mv` zieht Pfade nach,
    keine Zustandssätze. *Absehbar:* entfallen, wenn beide Züge ihn mitziehen; sonst eingetreten,
-   Beleg in `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`.
+   Beleg in `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`. — **Ausgang: entfallen.**
+   Beide Züge ziehen den Marker mit: Der Claim nahm ihn zurück (`1aee7739`), und die Closure setzt
+   ihn in einem eigenen Commit direkt nach dem Move, im selben Push.
 5. **Die offenen Pläne werden gegen den neuen Stand nicht gehalten**, obwohl die neuen Kanten
    verschieben, was aus einem Plan in `open/` oder `next/` werden darf. *Absehbar:* weiter offen,
-   Register-Eintrag `folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht`.
+   Register-Eintrag `folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht`. — **Ausgang:
+   weiter offen.** Der Beleg dieses Vorgangs steht in
+   [`BEO-ALL/folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht`](../observations/BEO-ALL/folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht/observation.md)
+   (`slice-212` und `slice-222`, siehe §7). Der Eintrag steht auf `geplant` mit
+   `slice-offene-plaene-gegen-den-neuen-stand`, die Datei liegt in `open/`.
 6. **Für die Planungs-README nennt keine Norm-Quelle die schreibende Rolle.** — **Ausgang:
    entfallen.** Setzung des Auftraggebers vom 2026-09-16: Die Datei ist die Singleton-Instanz
    einer Vorlage, die einmal beim Bootstrap angelegt wird (Baseline-Vorlagen-Index `v6.8.0`,
@@ -450,17 +491,177 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** offen bis zur Closure.
-- **Was ging anders als geplant:** offen bis zur Closure.
-- **Freshness-Durchgang und Stichprobe (Liefer-Punkt 2):** offen bis zur Closure. Für den
-  Ausgang *bleibt gültig* sieht die Baseline keinen Vermerk im Eintrag vor; ist das das Ergebnis,
-  steht der Durchgang nur an dieser Stelle.
-- **Steering-Loop-Eintrag:** offen bis zur Closure; die Form ist nicht vorweggenommen (§5).
-- **Beobachtungs-Register (`../observations/`):** offen bis zur Closure.
-- **Folge-Slices:** offen bis zur Closure. Die Messung der neuen Kanten hat ihre Adresse bereits:
-  `slice-stilllegungs-kanten-sind-gemessen` (§1).
-- **Risiken aus §6:** offen bis zur Closure, jedes mit genau einem Ausgang.
-- **Drei Paarungen:** entfällt hier — dieses Repo fährt Wellen (§2).
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10), am Stand
+`b31d5179`. Die Setzungen des Auftraggebers, auf die sich diese Notiz stützt, stammen vom
+2026-09-16 und vom 2026-09-17.
+
+- **Was hat funktioniert:**
+  - Der Baum entstand über `make vendor-baseline` aus dem verifizierten Asset (`63e0964e`). Die
+    drei Pin-Wächter hat die Verifikation aus dem richtigen Grund rot gesehen (Bericht §5, Fälle
+    A und B).
+  - Den Nachzug trug jeder Eigentümer in einem eigenen Commit: Implementer `a12a75ae`, Reviewer
+    `1b643a87`, Architect `f599169f`, Planner `76e84171`. Tausch und Nachzug gingen in
+    denselben Push.
+  - Die Register-Zuordnung lag nach dem Tausch und vor dem Instanz-Durchgang (`3c566c9a`). Das
+    Delta ist am vendorten Baum gemessen, und der Instanz-Abschnitt ist als Ist-Maßstab
+    ausgewiesen.
+- **Was ging anders als geplant:**
+  - **Rückführung (b) feuerte, und der Slice wartete nicht** (§6 Risiko 3, Verifikation V-4).
+    Die Gruppe `gate` wurde im Slice übernommen. Quelle dafür sind die Setzungen des
+    Auftraggebers; bis zu dieser Notiz stand der gewählte Weg in keinem Artefakt.
+  - **Eine Spec-Stelle ist berührt, obwohl der Kopf `—` führt.** `072c330c`, `b3dbb770` und
+    `fcb88b9b` änderten `spec/spezifikation.md`: Die Verweise nach außen und zwei
+    Herkunfts-Sätze sind entfernt, der Satz zum Sammelposten ist neu gefasst, und §7 Historie hat
+    eine Zeile vom 2026-09-17. Quelle ist die Setzung vom 2026-09-16: Die Spezifikation zeigt
+    nicht nach außen und nennt ihre Herkunft nicht, und ihre Verweise zieht in diesem Slice der
+    Implementer nach. Der Kopf bleibt, wie er geplant war.
+  - **Der DoD-Satz *„ein halb getauschtes Repo ist rot"* reichte weiter als seine Sensoren**
+    (V-3). §2 schränkt ihn ein. Liefer-Punkt 1 ist über die direkten Messungen abgehakt, nicht
+    über die Gates.
+  - **Die Abzählung des Inline-Rests fehlte** (V-2); §2 Liefer-Punkt 1 trägt sie jetzt.
+  - **Die Buchung des Vollzugs (`44f5c034`) lag vor vier Commits des Durchgangs** (`42a2164e`,
+    `3b84a873`, `952aed15`, `56a86a77`; V-6). Ihre Bedingung war, dass die Report-Datei existiert,
+    nicht dass der Durchgang abgeschlossen ist. Tag, Datum und ADR der Buchung berührt das nicht.
+  - **Das Übergabe-Artefakt von Liefer-Punkt 2 entstand erst nach der Verifikation** (`77eae68b`,
+    V-1). Den Durchgang fuhr der Architect selbst, wie
+    [`ADR-0056`](../../adr/0056-ziel-fassung-regiert-den-sprung-v690.md) §Konsequenzen es ihm
+    zuweist.
+  - **Das Gliederungs-Kriterium und die Umzugs-Regel entstanden erst im Vorgang**
+    ([`harness/migration.md`](../../../../harness/migration.md) §5 a: `3c566c9a`, `58f2156f`,
+    `267d380a`, `fabe5188`, `b31d5179`). §3 hatte für die Datei nur tag-tragende Pfade und die
+    Register-Zuordnung vorgesehen.
+- **Freshness-Durchgang und Stichprobe (Liefer-Punkt 2):** Das vollständige Ergebnis steht im
+  Architect-Artefakt `docs/reviews/2026-09-17-slice-sprung-auf-v690-wird-vollzogen-freshness.md`.
+  Hier stehen nur die Ausgänge außer *bleibt gültig* und das, was an ihnen hängt.
+  - **Grundgesamtheit: 56 Einträge**
+    (`git ls-tree --name-only 0b7bcd2e^ harness/conventions/ | grep -c '/MR-[0-9]*-.*\.md$'`).
+    [`MR-039`](../../../../harness/conventions.md#mr-039) *widerspricht* und ist durch
+    [`MR-060`](../../../../harness/conventions.md#mr-060) mit Kopf-Marke übernommen (`0b7bcd2e`).
+    Die übrigen 55 *bleiben gültig*; jeder trägt seine Begründung im Artefakt, §2.
+  - **[`MR-035`](../../../../harness/conventions.md#mr-035) und
+    [`MR-056`](../../../../harness/conventions.md#mr-056):** Der Tag-Wechsel-Trigger hat mit
+    `63e0964e` gefeuert. Setzung 2 greift nicht, weil die Menge der sieben Zeiger gleich bleibt,
+    und der Auswahl-Maßstab ist nicht berührt (Artefakt §3). **Die Annahme aus [`MR-056`](../../../../harness/conventions.md#mr-056)
+    Setzung 4 deckt den Auto-Kontext von 119270 Zeichen.** Das ist die Setzung des Auftraggebers
+    vom 2026-09-17 auf die offene Frage aus Artefakt §3, wo auch Zahlen und Kommandos stehen. Ob
+    die Setzung in den Eintrag gehört, entscheidet der Architect
+    ([`AGENTS.md`](../../../../AGENTS.md) §3.8); diese Notiz schreibt ihn nicht.
+  - **Stichprobe:** Baseline `v6.9.0` · `modul-07-carveouts.md` §Ziel-Form: Carveout. 4 von 5
+    Regeln sind im Bestand erfüllt. Gefunden wurde: Die Gate-Konfiguration nennt `CO-001` nicht.
+    Adresse ist `slice-113-co-001-ist-faellig`, dessen §1 den Fund führt. Urteil: Die Aussage
+    von [`MR-000`](../../../../harness/conventions.md#mr-000) hält. Einen Nebenbefund liefert
+    `modul-13-quality-gates.md`: Die `shell-lint`-Zeile in
+    [`harness/README.md`](../../../../harness/README.md) trägt
+    [`ADR-0003`](../../adr/0003-go-native-binaries.md), aber nicht `CO-001`. Er hängt am
+    selben Carveout und hat dieselbe Adresse.
+  - Offene Posten aus Artefakt §5: (a) ist durch die Setzung oben beantwortet; (b) und (c) stehen
+    im Register (unten).
+- **Steering-Loop-Eintrag:** **Geschärfte Regel.** Für den Instanz-Durchgang eines Sprungs gelten
+  jetzt ein Gliederungs-Kriterium und eine Umzugs-Regel:
+  - Die Pflichtgliederung einer Vorlage ist vollständig zu übernehmen; Freiraum gibt es nur
+    innerhalb der Abschnitte.
+  - Ein Abschnitt fehlt nur, wenn die Vorlage ihn als bedingt kennzeichnet und die Bedingung
+    nicht zutrifft.
+  - Stoff zieht nur wörtlich und nur innerhalb derselben Datei um.
+
+  Die Regel steht in [`harness/migration.md`](../../../../harness/migration.md) §5 a und wurde im
+  Architect-Kontext aus den Setzungen des Auftraggebers geschrieben. **Kein `liegt in`-Feld:**
+  Auslöser war keine Beobachtung über der Schwelle, sondern eine Setzung, und die Regel ist eine
+  Lieferung dieses Vorgangs.
+- **Beobachtungs-Register (`../observations/`):** Der Beleg heißt in jedem Fall
+  `evidence/slice-sprung-auf-v690-wird-vollzogen.md`. Den Zähler liefert
+  `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/ | wc -l`; keine der Zahlen ist ein
+  Erwartungswert.
+
+  | Eintrag | Quelle | Zähler | Stand |
+  |---|---|---|---|
+  | [`verweis-nachzug-bricht-tree-operand`](../observations/BEO-ALL/verweis-nachzug-bricht-tree-operand/observation.md) | Claim-Nachzug `b04d0ae7`, zurückgenommen per `3c069894` | 2 | offen |
+  | [`rotierender-pruef-gegenstand-ohne-ort`](../observations/BEO-ALL/rotierender-pruef-gegenstand-ohne-ort/observation.md) | Freshness-Artefakt §5 (c) | 2 | offen |
+  | [`folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht`](../observations/BEO-ALL/folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht/observation.md) | `slice-212`, `slice-222`; Risiko 5 | 7 | geplant |
+  | [`abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt`](../observations/BEO-ALL/abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt/observation.md) | V-3 | 6 | verkörpert |
+  | [`zahl-ohne-kommando-trifft-ihren-gegenstand-nicht`](../observations/BEO-ALL/zahl-ohne-kommando-trifft-ihren-gegenstand-nicht/observation.md) | N-3 | 15 | verkörpert |
+  | [`inline-zaehlmuster-paart-backticks-ueber-zellgrenzen`](../observations/BEO-ALL/inline-zaehlmuster-paart-backticks-ueber-zellgrenzen/observation.md) | Message von `072c330c` | 1, neu | offen |
+  | [`instanz-umfang-vor-seinem-kriterium-gemessen`](../observations/BEO-ALL/instanz-umfang-vor-seinem-kriterium-gemessen/observation.md) | Risiko 3 | 1, neu | offen |
+  | [`zahl-in-commit-message-ohne-kommando`](../observations/BEO-ALL/zahl-in-commit-message-ohne-kommando/observation.md) | F-8 | 1, neu | offen |
+  | [`umschrift-eines-zitats-aendert-die-aussage`](../observations/BEO-ALL/umschrift-eines-zitats-aendert-die-aussage/observation.md) | F-2 | 1, neu | offen |
+  | [`exit-zusage-aus-anderem-aufruf-abgeleitet`](../observations/BEO-ALL/exit-zusage-aus-anderem-aufruf-abgeleitet/observation.md) | F-4 | 1, neu | offen |
+  | [`spec-aenderung-ohne-historie-zeile`](../observations/BEO-ALL/spec-aenderung-ohne-historie-zeile/observation.md) | F-6, Kopf-Feld | 1, neu | offen |
+  | [`zuordnung-haengt-an-der-lage-statt-am-inhalt`](../observations/BEO-ALL/zuordnung-haengt-an-der-lage-statt-am-inhalt/observation.md) | F-7, N-1, N-2 | 1, neu | offen |
+  | [`stand-feld-ausserhalb-des-konventionsspeichers-bleibt-beim-sprung-stehen`](../observations/BEO-ALL/stand-feld-ausserhalb-des-konventionsspeichers-bleibt-beim-sprung-stehen/observation.md) | Kopf von `.harness/skills/reviewer.md` | 1, neu | offen |
+
+  **Kein Eintrag erreicht mit diesem Slice zum ersten Mal 3×**, der Lese-Schritt hat also keinen
+  Gegenstand. Die zwei Einträge über der Schwelle mit `verkörpert` treten innerhalb ihrer
+  benannten Grenze wieder auf, und ihr Ausgang bleibt stehen. **Nicht getragen, mit Urteil:**
+  - `verweis-nachzug-schreibt-in-eingefrorenes-artefakt`: Seine Verkörperung
+    ([`ADR-0042`](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md)) hält den Nachzug
+    in `docs/reviews/**` für richtig und nimmt die Gegenformen, in denen die Adresse die Aussage
+    trägt, ausdrücklich ohne Wächter hin. Der Tree-Operand ist eine dieser Gegenformen und hat
+    den engeren Eintrag oben. Der Ausgang *verkörpert* bleibt.
+  - `delta-messung-trifft-den-quelltext-statt-den-vendorten-baum`: Gemessen wurde am vendorten
+    Baum. Die Zahl aus dem Klon stand in diesem Plan nur als Vormessung, begleitet von
+    Risiko 2.
+  - `vendored-vorlage-nennt-pfad-den-das-adoptierende-repo-nicht-fuehrt`: Die zwei Pfade, die
+    `modul-02-harness-bootstrap.md` am neuen Stand nennt, liegen innerhalb des vendorten
+    Vorlagen-Baums und existieren dort (Baseline `v6.9.0` · `templates/harness/sensors/gate.template.md`
+    und `templates/harness/conventions/MR-NNN-titel.template.md`). Außerdem wird das Regelwerk
+    nicht kopiert. Den Mechanismus des Eintrags gibt es hier also nicht: Keine Kopie trägt einen
+    Pfad ins Gate. Es entsteht kein dritter Beleg und kein Lese-Schritt.
+  - Finding-Klassen ohne Eintrag:
+    - *Inhaltsumzug beim Angleichen der Gliederung* (F-1): Die Umzugs-Regel, die den Fall
+      entscheidet, ist im Vorgang gesetzt (`b31d5179`).
+    - *Ausgang außerhalb der geschlossenen Menge* (F-3): Der sprungbezogene Ausschluss steht seit
+      `267d380a` in §5 a.
+    - *Teil-Entfernung eines Verweises* (F-5): Sie ist Gegenstand des Matrix-Slice
+      `slice-spec-straten-zeigen-nicht-nach-aussen`.
+- **Trigger-Audit** (wellenlos, bei der Slice-Closure):
+  - **Carveout:** `CO-001` hat den Fund aus der Stichprobe; Adresse ist
+    `slice-113-co-001-ist-faellig`. `CO-002` steht auf *permanent*, und dieser Slice berührt
+    seine Bedingung nicht.
+  - **Bootstrap-aware Gate:** keines berührt.
+  - **ADR:**
+    - [`ADR-0047`](../../adr/0047-ziel-fassung-regiert-den-sprung-v680.md) Trigger 2 hat gefeuert;
+      beantwortet ist er durch
+      [`ADR-0056`](../../adr/0056-ziel-fassung-regiert-den-sprung-v690.md).
+    - [`ADR-0048`](../../adr/0048-eigentum-haengt-am-vorgang-nicht-an-der-datei.md) Trigger 3 hat
+      nicht gefeuert. Nach der Setzung vom 2026-09-16 ist die Planungs-README eine
+      Singleton-Instanz, und eine Eigentums-Frage stellt sich nicht.
+    - [`ADR-0056`](../../adr/0056-ziel-fassung-regiert-den-sprung-v690.md) Trigger 3 ist unberührt, denn der Instanz-Abschnitt ist als Ist-Maßstab
+      ausgewiesen (Verifikation §7).
+  - **[`MR-035`](../../../../harness/conventions.md#mr-035)/[`MR-056`](../../../../harness/conventions.md#mr-056):** siehe oben.
+- **Folge-Slices:**
+  - `slice-gliederung-der-instanzen-ohne-vorlagen-delta` (`8ee9b1f2`): die fünf Instanzen ohne
+    Vorlagen-Delta.
+  - `slice-stilllegungs-kanten-sind-gemessen`: misst die neuen Kanten (§1).
+  - `slice-spec-straten-zeigen-nicht-nach-aussen`: die Matrix-Regel. Er übernimmt Review F-5 und
+    wird im Commit nach dieser Closure angelegt.
+  - `slice-113-co-001-ist-faellig`: der Stichproben-Fund und der Nebenbefund.
+  - **Kein neuer Schnitt für `slice-222-sensor-datei-traegt-die-form-ihrer-vorlage`.** Sein Titel
+    nennt den Gegenstand, den die Gruppe `gate` hier umgeschrieben hat. Ob der Gegenstand ganz
+    übernommen ist, prüft der Lauf, der ihn beansprucht oder über die neue Kante stilllegt;
+    diese Kante misst zuerst `slice-stilllegungs-kanten-sind-gemessen`.
+  - **Übergaben ohne Slice:**
+    - Das Kopffeld `v6.7.2` in `.harness/skills/reviewer.md` geht an den Reviewer, dem die Datei
+      gehört ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md));
+      der Register-Eintrag dazu steht oben.
+    - Die Setzung zu [`MR-056`](../../../../harness/conventions.md#mr-056) geht an den Architect.
+    - Dass [`MR-000`](../../../../harness/conventions.md#mr-000) als eigene Datei statt in der Index-Datei steht, braucht keine Handlung: Die
+      Form ist durch [`MR-045`](../../../../harness/conventions.md#mr-045) deklariert, und das
+      `##`-Kriterium aus §5 a erfasst den Unterabschnitt nicht.
+    - Fall C aus V-3 ist ein Kandidat für einen Sensor: `make baseline-verify` hält den Tag des
+      Verzeichnisses nicht gegen `BASELINE_TAG`. Die Lücke bleibt in
+      [`harness/conventions.md`](../../../../harness/conventions.md) §Adoptierte
+      Konventions-Quellen deklariert; ein Schnitt ist hier nicht gesetzt.
+- **Risiken aus §6:** Jedes hat genau einen Ausgang: 1, 2, 4 und 6 sind entfallen, 3 ist
+  eingetreten, 5 bleibt weiter offen.
+- **Archiv:** keines. Dieses Repo archiviert bei einer Slice-Closure nicht
+  (`ls docs/plan/planning/done/*.zip docs/plan/planning/done/*/archiv.zip 2>/dev/null | wc -l`
+  → 0), und die Vorbild-Closure hat es ebenso gehalten.
+- **Drei Paarungen**, obwohl die nächste Welle-Closure sie ebenfalls prüft (§2):
+  - (a) Kein Gegenstand: Diese Notiz führt kein `liegt in`-Feld.
+  - (b) Getragen: Jeder genannte Folge-Slice liegt als Datei im Lifecycle. Der Matrix-Slice
+    entsteht im selben Push.
+  - (c) Getragen: Jede genannte Beobachtung existiert als Verzeichnis, und jedes trägt einen
+    Beleg.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

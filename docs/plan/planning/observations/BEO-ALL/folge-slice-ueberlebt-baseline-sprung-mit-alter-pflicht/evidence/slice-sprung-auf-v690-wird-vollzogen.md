@@ -1,0 +1,2 @@
+**Vorgang:** slice-sprung-auf-v690-wird-vollzogen
+**Fund:** Nach dem Sprung auf `v6.9.0` tragen zwei offene Pläne eine überholte Pflicht: `slice-212` nennt [`MR-039`](../../../../../../../harness/conventions.md#mr-039) Setzung 1 als erlaubte Form, einen Eintrag fortzuschreiben, obwohl sie mit [`MR-060`](../../../../../../../harness/conventions.md#mr-060) zurückgetreten ist; `slice-222` sagt, der Vollzug des gesetzten Zielstands stehe aus, und dieser Slice hat ihn vollzogen.
