@@ -463,9 +463,8 @@ wegzulassen; von welcher Regel sie abweicht, gehört dazu:
    deshalb eine Aussage über **unser Wissen**, nicht über den Lauf: es heißt *unbekannt*,
    niemals *ohne Rolle*.
 
-   Ein Span ohne Rollen-Tag (Sammelposten) wird begründet aufgeteilt — anteilig nach Tool-Calls
-   oder dem auslösenden Slice zugeschlagen. Daraus folgt genau dreierlei, und die Reihenfolge
-   ist die Prüfreihenfolge:
+   Ein Span ohne Rollen-Tag (Sammelposten) wird begründet aufgeteilt. Daraus folgt genau
+   dreierlei, und die Reihenfolge ist die Prüfreihenfolge:
    1. **Pflicht:** eine begründete Splitting-Regel, angewendet — am Ende liegt jedes Token
       auf einer der realen Rollen, nicht auf *unbekannt*.
    2. **Ebenfalls Pflicht, weil dieses Repo Annahmen benennt:** wie **groß** der aufgeteilte
@@ -740,3 +739,4 @@ festgelegt ist.
 | 2026-08-02 | §5 nimmt das Span-Schema auf (Feldtabelle mit Sensor-Spalte, Werkzeug-Liste, Positiv-Liste, Start-Konvention, sechs erklärte Abweichungen, Wächter-Bindungen); §3 nimmt die strukturelle Schranke um `model_version` auf |
 | 2026-08-28 | §5: Der Absatz über die kanonischen Agenten-Typ-Namen nennt keine Abweichung mehr — der adoptierte Baseline-Stand `v5.12.0` schreibt die dritte Rolle `Implementer` statt `Implementation`, womit die sechs Bezeichner die sechs Rollen-Namen des Moduls in Kleinschreibung sind. Der Wert selbst ist unverändert |
 | 2026-09-02 | §3, §5 und §6 tragen die `ID`-Spalte mit fortlaufendem `SPEC-<NNN>`; §7 führt keine `ADR`-Spalte mehr |
+| 2026-09-17 | Die Aufnahme-Regel und §5 nennen die Herkunft ihrer Regeln nicht mehr, die Aussagen bleiben. Die Regel zum Sammelposten in §5 steht ohne Zitat und sagt nur noch, dass begründet aufgeteilt wird |
