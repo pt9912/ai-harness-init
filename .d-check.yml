@@ -71,9 +71,15 @@ planning:
 # ("## 7. Closure-Notiz", mit oder ohne Zusatz) eine Zeile in Marken-Form **Gegenstand:**;
 # fehlt sie, meldet sie EINEN section-open-tasks-marker-missing auf der §2-Ueberschrift.
 # Offene Items ausserhalb von §2 zaehlen nicht, eine Marke ausserhalb von §7 auch nicht. Ein
-# regulaer gelieferter Slice traegt in done/ keine offenen Items (modul-05 §Lifecycle als State
-# Machine: die DoD-Haekchen sind Bedingung fuer done/) und bleibt von der Regel unberuehrt;
-# traegt er doch eines, faerbt er dieselbe Regel rot, und `hint` nennt beide Auswege.
+# regulaer gelieferter Slice traegt in done/ keine offenen Items (v6.9.0 · modul-05 §Lifecycle als
+# State Machine: die DoD-Haekchen sind Bedingung fuer done/; §Ein Slice, dessen Gegenstand ein
+# anderer uebernimmt: einzige Ausnahme sind die Liefer-Punkte eines stillgelegten Slice). Das
+# gilt auch fuer die letzte DoD-Zeile der Vorlage, "Die drei Paarungen ... sind getragen": dieselbe
+# modul-05-Stelle zaehlt die Paarungen zu den Closure-Pflichten, die "wie bei jeder Closure"
+# abgehakt werden. Im Repo mit Wellen-Betrieb sagt das Haekchen, dass die naechste Welle-Closure
+# die Paarungen prueft (v6.9.0 · modul-06 §Wann Arbeit eine Welle braucht), nicht, dass sie schon
+# geprueft sind. Traegt ein gelieferter Slice doch ein offenes Item, faerbt er dieselbe Regel rot,
+# und `hint` nennt beide Auswege.
 # GRENZEN: Die Marke gilt als vorhanden, sobald eine Zeile in Marken-Form in §7 steht, auch als
 # unausgefuellter Vorlagen-Platzhalter; ob sie eine Kennung oder einen Grund traegt, prueft die
 # Regel nicht. Der Glob ist flach, Stubs in done/<welle-id>/ liegen ausserhalb. Trifft die Regel
@@ -82,8 +88,9 @@ planning:
 # harness/sensors/docs-check.md §Modul structure.
 # exempt-paths: BESTAND BLEIBT STEHEN. Die Liste ist EXTENSIONAL GESCHLOSSEN auf die Plaene in
 # done/, die offene Items in §2 und keine Marke in §7 tragen; sie sind Zeitdokumente und werden
-# nicht nachgezogen. Kein Glob: ein Muster ueber die Kennungs-Form naehme auch die nummerierten
-# Slices aus open/ und next/ aus, die kuenftig stillgelegt werden. Der stillgelegte
+# nicht nachgezogen. Sie nennt Dateinamen, kein Muster: nummerierte Slices liegen auch in open/
+# und next/, und ein Slice, der von dort stillgelegt wird, liegt danach unter demselben Namen in
+# done/ und damit im Pruefbereich. Der stillgelegte
 # slice-135-d-check-pin-v0661.md steht NICHT darin: er traegt die Marke und haelt die Regel
 # ueber dem Bestand gruen, und ohne open-tasks-require-marker oder mit der Marken-Suche in §2
 # statt §7 faerbt er docs-check rot. Ein weiterer Eintrag ist eine Senkung nach AGENTS.md 3.5.

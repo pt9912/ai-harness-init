@@ -60,9 +60,9 @@ dieses Modul keinen eigenen Block führt, und zeigt hierher. Ob das im Einzelfal
 bedeutet, sagt die Sensor-Datei des Ziels, nicht die Marke. Eine Marke, die *„nichts geprüft"*
 behauptete, wäre für `doc-tracked` schlicht falsch.
 
-**Die Ausgabe-Hälfte gilt nur für einen Lauf ohne Befund.** Das Rezept reicht `docker run` vor dem
-`@echo` durch, ohne `-` davorzustellen. Meldet der Lauf einen Befund, endet er mit einem Exit-Code
-ungleich null, und `make` bricht das Rezept an dieser Stelle ab — die Marke wird dann **nicht**
+**Die Ausgabe-Hälfte gilt nur für einen Lauf ohne Befund.** Das Rezept von `doc-tracked` reicht
+`docker run` vor dem `@echo` durch, ohne `-` davorzustellen. Meldet der Lauf einen Befund, endet er
+mit einem Exit-Code ungleich null, und `make` bricht das Rezept an dieser Stelle ab — die Marke wird dann **nicht**
 ausgegeben. Für [`doc-tracked`](doc-tracked.md), das laut dortiger Gegenprobe *nicht* inert ist,
 ist das ein erreichbarer Zustand: ein echter `target-untracked`-Fund unterdrückt die Marke in genau
 dem Lauf, der sie am nötigsten hätte. [`test/doc-block-marke-wiring.bats`](../../test/doc-block-marke-wiring.bats)

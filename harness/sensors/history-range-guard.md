@@ -51,8 +51,9 @@ Vorbedingung selbst, und sie liegt in keinem Gate: `make gates` fährt keines de
 - **`STAGED=1` gehört zu `doc-immutable`.** Nur dessen Rezept in `d-check.mk` führt einen
   `STAGED`-Zweig (`--staged`); `doc-commits` übergibt allein `--range $(RANGE)`. Ein Aufruf
   `make doc-commits STAGED=1` prüft den Index also im Wächter, nicht im Modul.
-- `.d-check.yml` aktiviert für `docs-check` selbst nur `links, anchors, ids, matrix, codepaths,
-  spans, planning, targets` — keines davon liest Historie. Ein history-lesender Job braucht
+- `.d-check.yml` aktiviert für `docs-check` selbst die Module, die `grep -n '^modules:' .d-check.yml`
+  nennt — keines davon liest Historie (gemessen am Stand `v0.76.1`: [`AGENTS.md`](../../AGENTS.md)
+  §3.8). Ein history-lesender Job braucht
   `fetch-depth: 0` an seinem Checkout **und** diesen Wächter davor.
 
 Details und Beleg stehen im Kopf von `harness/tools/history-range-guard.sh`, Abschnitt BELEG.

@@ -4,9 +4,10 @@
 
 Prüft die gesamte Repo-Doku netzlos (`--network none`) mit dem in
 [`d-check.mk`](../../d-check.mk) gepinnten `d-check` gegen
-[`.d-check.yml`](../../.d-check.yml). Aktiv sind neun Module:
-`links, anchors, ids, matrix, codepaths, spans, planning, targets, structure` — keines davon liest
-Historie. Grün heißt: im Prüfbereich **dieser** Module ist kein Befund offen, nicht mehr.
+[`.d-check.yml`](../../.d-check.yml). Welche Module aktiv sind, nennt
+`grep -n '^modules:' .d-check.yml`; keines davon liest Historie (gemessen am Stand `v0.76.1`:
+[`AGENTS.md`](../../AGENTS.md) §3.8). Grün heißt: im Prüfbereich **dieser** Module ist kein
+Befund offen, nicht mehr.
 
 ## Grenze — was das Grün nicht abdeckt
 
@@ -134,7 +135,7 @@ driften kann, dieselbe Klasse, die [`MR-010`](../conventions.md#mr-010--d-check-
 für das Gate-Fragment schon einmal ausbuchstabiert hat. **Was das nicht leistet:** Jeder
 `docs-check`-Lauf öffnet jetzt auch jede `slice-*.md`, die **flach** unter `done/` liegt, und prüft
 ihre §7-Struktur — auch dann, wenn die Änderung, die den Lauf auslöst, mit `done/` nichts zu tun
-hat; ein dediziertes Advisory-Target, das nur die Closure-Prüfung fährt, ohne die übrigen sechs
+hat; ein dediziertes Advisory-Target, das nur die Closure-Prüfung fährt, ohne die übrigen
 aktiven Module, gibt es nicht.
 
 **Der Prüfbereich greift nicht rekursiv, und das ist heute folgenlos, morgen nicht mehr.**
@@ -232,11 +233,19 @@ Task-Items im Abschnitt `## 2. Definition of Done` (`max-open-tasks: 0`). Trägt
 `open-tasks-require-marker` im Abschnitt `## 7. Closure-Notiz` (mit oder ohne Zusatz) eine Zeile
 in Marken-Form `**Gegenstand:**`. Fehlt sie, meldet die Regel **einen**
 `section-open-tasks-marker-missing` auf der §2-Überschrift; die vierte Spalte trägt den `hint` der
-Regel. Offene Items außerhalb von §2 zählen nicht, und eine Marke außerhalb von §7 zählt nicht. Ein
-regulär gelieferter Slice trägt in `done/` keine offenen Items
+Regel. Offene Items außerhalb von §2 zählen nicht, und eine Marke außerhalb von §7 zählt nicht.
+Ein regulär gelieferter Slice trägt in `done/` keine offenen Items
 (`.harness/baseline/v6.9.0/regelwerk/modul-05-planning-harness.md` §Lifecycle als State Machine:
-die DoD-Häkchen sind Bedingung für `done/`). Trägt er doch eines, färbt er dieselbe Regel rot, und
-der `hint` nennt beide Auswege.
+die DoD-Häkchen sind Bedingung für `done/`; §Ein Slice, dessen Gegenstand ein anderer übernimmt:
+die einzige Ausnahme sind die Liefer-Punkte eines stillgelegten Slice). **Das gilt auch für die
+letzte DoD-Zeile der Vorlage**, *„Die drei Paarungen … sind getragen"*: Dieselbe Stelle zählt die
+Paarungen zu den Closure-Pflichten, die *„wie bei jeder Closure"* abgehakt werden. Im Repo mit
+Wellen-Betrieb sagt das Häkchen, dass die nächste Welle-Closure die Paarungen prüft. Sie liest
+auch Slices ohne Wellen-Zugehörigkeit (`v6.9.0` · `modul-06-roadmap.md` §Wann Arbeit eine Welle
+braucht). Das Häkchen sagt nicht, dass die Paarungen schon geprüft sind. Die Zeile *„**nach** dem
+`git mv`"* in `modul-06` steht in der Tabelle für das Repo **ohne** Wellen. Sie regelt, wann
+abgehakt wird, nicht ob. Trägt ein gelieferter Slice doch ein offenes Item, färbt er dieselbe
+Regel rot, und der `hint` nennt beide Auswege.
 
 **Der Prüfbereich und seine Grenze.** Gemessen gegen d-check `v0.76.1`
 `@sha256:1470ecdcaa686a5ef4513dee9b0ae522586f54b87d568b06fc6b5b2741b633b3`. Alle Zahlen wandern mit
@@ -310,7 +319,8 @@ docs/plan/planning/done/slice-sonde-stilllegung.md:89	docs/plan/planning/done/sl
   *„Die drei Paarungen … sind getragen"* steht in
   `grep -lE '^\s*- \[ \] Die drei Paarungen' docs/plan/planning/done/slice-*.md | wc -l` → 7 Plänen
   offen. Alle sieben stehen in `exempt-paths`. Ein künftiger regulärer Slice, der sie offen lässt,
-  ist Lage V8.
+  ist Lage V8. Das Rot folgt der Quelle (*Was es hält*): Die Baseline sieht für diese Zeile keine
+  Ausnahme vor, das Werkzeug muss also keine bieten.
 - **Der Glob ist flach.** Ein Stub unter `done/<welle-id>/` liegt außerhalb. Trifft die Regel keine
   Datei mehr, meldet sie `section-missing`.
 - **Die Aktivierung hält kein Gate außerhalb von `docs-check`.** `make mutate` kennt zwei
@@ -330,14 +340,16 @@ mit dem Träger aus `make host-bin`:
    `.gitkeep`. Mit `structure` in `modules:` und der Regel ohne `exempt-paths` meldet der Lauf über
    der `.d-check.yml` des Ziels `section-missing` mit dem Grund *„Regel trifft keine Datei (auch
    nach Abzug von exempt-paths) — das Gate liefe leer"*.
-3. **Rot im Ziel:** von Hand gesehen, ohne Zahn. Eine Kopie der Vorlage `slice.template.md` in
+3. **Rot im Ziel:** nicht erfüllt. `harness/tools/full-smoke.sh` trägt keinen Zahn dafür, und
+   [`MR-055`](../conventions.md#mr-055) Setzung 3 wertet diese Lage als nicht erfüllt. Von Hand ist
+   das Rot gesehen: Eine Kopie der Vorlage `slice.template.md` in
    `done/` bleibt grün, denn die Vorlage trägt in §7 die Zeile
    `- **Gegenstand:** <übernommen von … | entfallen: <Grund>>`. Ohne diese Zeile meldet der Lauf
-   `section-open-tasks-marker-missing`. `harness/tools/full-smoke.sh` trägt keinen Zahn dafür
-   (`grep -ciE 'structure|open-tasks' harness/tools/full-smoke.sh` → 0).
+   `section-open-tasks-marker-missing`. Den fehlenden Zahn zeigt
+   `grep -ciE 'structure|open-tasks' harness/tools/full-smoke.sh` → 0.
 
-Kriterium 2 trägt die Entscheidung. Die emittierte Vorlage `internal/emit/templates/d-check.yml`
-bleibt ohne `structure`
+Kriterium 2 trägt die Entscheidung; Kriterium 3 ist unabhängig davon nicht erfüllt. Die
+emittierte Vorlage `internal/emit/templates/d-check.yml` bleibt ohne `structure`
 (`grep -c 'structure' internal/emit/templates/d-check.yml` → 0). Nach
 [`MR-055`](../conventions.md#mr-055) gilt die Messung für dieses eine Ziel. Neu zu messen ist
 Kriterium 2, sobald ein frisch emittiertes Ziel eine Datei trägt, die die Regel trifft.
