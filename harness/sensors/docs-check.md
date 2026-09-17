@@ -154,6 +154,54 @@ und die Stubs tragen nach der Ziel-Form ohnehin kein volles §7 mehr, sind also 
 sinnvoller Kandidat. Wer `archive-welle` produktiv nimmt, zieht den Geltungsbereich hier nach
 oder benennt an dieser Stelle, dass die Zusage ab dann nur für den flachen Bestand gilt.
 
+### Ein stillgelegter Slice in `done/`
+
+**Was gemessen ist.** Die Ziel-Fassung (`v6.9.0` ·
+`.harness/baseline/v6.9.0/regelwerk/modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand
+ein anderer übernimmt) legt einen Slice, dessen Gegenstand ein anderer übernimmt oder der
+entfällt, ohne Lieferung nach `done/`: Die Liefer-Punkte der DoD bleiben leer, §7 trägt die Zeile
+`Gegenstand:`, und jedes Risiko hat einen Ausgang. Gemessen gegen d-check
+`@sha256:e31a372b66dbde26305982424854cfce7c9ab7ce555a94debeee7ee26e6d4641`, an einer Kopie außerhalb
+des Repos, netzlos, über allen Modulen der `.d-check.yml`: je ein Slice über die Kante
+`open → done` (Gegenstand *übernommen von*) und über `next → done` (Gegenstand *entfallen*),
+der Stilllegungs-Inhalt vor dem Wechsel committet. Gelesen ist jede Meldung, die den stillgelegten
+Slice betrifft:
+
+```sh
+git archive HEAD | tar -x -C <kopie>    # Inhalt committen, dann make slice-mv … TO=done
+make -C <kopie> docs-check              # je Lage die Datei in der Kopie ändern und neu fahren
+```
+
+| Lage im stillgelegten Slice | Meldung zu diesem Slice |
+|---|---|
+| Ziel-Form vollständig | keine |
+| §7 auf einen Satz gekürzt | `closure-note-thin` auf seiner §7-Überschrift |
+| die Zeile `Gegenstand:` fehlt | keine |
+| `Gegenstand:` nennt eine Kennung, die es nicht gibt | keine |
+| ein Liefer-Punkt abgehakt | keine |
+| `Gegenstand:` als unausgefüllter Vorlagen-Platzhalter | keine, weil `placeholder` aus ist (§Modul `planning`) |
+| derselbe Platzhalter, `placeholder: true` in der Kopie | `closure-note-placeholder` auf der Zeile (`<Grund>`) |
+
+Rot war der Lauf über der Kopie trotzdem (d-check Exit 1, `make` Exit 2): Die dritte Grenze von
+`make slice-mv` ließ präfixlose Verweise aus unbewegten Geschwister-Dateien in `open/` stehen
+(`target-missing`, [`slice-mv.md`](slice-mv.md) §Kanten). Diese Befunde stehen in anderen Dateien,
+nicht im stillgelegten Slice. `planning-drift` meldet keine der zwei Kanten, weil beide
+`in-progress/` nicht berühren.
+
+**Was daraus folgt.** `closure` liest den stillgelegten Slice wie jeden anderen in `done/`; das
+Gegenbeispiel in Zeile 2 färbt rot. Die Form der Stilllegung liest dagegen kein aktives Modul.
+Die Ziel-Fassung nennt es urteilsfrei, dass die Zeile `Gegenstand:` eine Kennung oder einen Grund
+trägt. Im gepinnten Stand hält das kein Modul, und seine Konfigurations-Vorlage
+(`docker run --rm ghcr.io/pt9912/d-check@<digest> --print-config`) führt keine Regel, die eine Zeile
+an eine Bedingung knüpft, etwa *offene Task-Items in §2 eines Slice in `done/`, dann trägt §7 die
+Zeile `Gegenstand:`*. Diese Lücke liegt im Werkzeug, nicht in diesem Repo; ihre Adresse ist eine
+Anforderung an das d-check-Repo. Zwei Punkte sind dagegen Grenzen und keine Lücken: Ob die genannte
+Kennung auflöst, lässt die Ziel-Fassung selbst als Urteil oder eigenen Sensor offen. Ob ein
+abgehakter Punkt ein Liefer-Punkt ist, bleibt Urteil.
+
+**Kein Wächter hält die Tabelle.** Sie ist eine Messung gegen den genannten Digest; wandert der Pin
+in `d-check.mk`, gilt sie für den alten Stand, bis jemand neu misst.
+
 ### Modul `targets`
 
 **Was das Modul `targets` in `docs-check` deckt, und was nicht:** `.d-check.yml` hält zwei

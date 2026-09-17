@@ -73,6 +73,57 @@ großgeschrieben — trifft die Zeichenklasse des Fundmusters nicht.
 
 Details und Beleg stehen im Kopf von `harness/tools/slice-mv.sh`, Abschnitt BELEG.
 
+### Kanten `open → done` und `next → done`
+
+**Das Werkzeug führt beide Kanten aus, und die Form der Stilllegung liest es nicht.** `TO` prüft es
+allein gegen die Lifecycle-Liste (`grep -n 'LIFECYCLE=' harness/tools/slice-mv.sh`); eine Sperre
+für einen Übergang, der an `in-progress/` vorbeiführt, hat es nicht. Ob die Liefer-Punkte leer
+sind und §7 die Zeile `Gegenstand:` trägt (`v6.9.0` ·
+`.harness/baseline/v6.9.0/regelwerk/modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand
+ein anderer übernimmt), prüft es nicht; den Inhalts-Commit vor dem Wechsel setzt der Aufrufer.
+
+**Gemessen** an einer Kopie außerhalb des Repos ohne `core.hooksPath`, je Kante ein Slice mit
+eingehenden Präfix-Verweisen (auch aus `done/**` und `docs/reviews/**`) und präfixlosen Zielen
+auf Geschwister im Ausgangsverzeichnis, der Stilllegungs-Inhalt vorher committet:
+
+```sh
+git archive HEAD | tar -x -C <kopie>; cd <kopie>; git init -q; git add -A; git commit -qm basis
+make slice-mv SLICE=<slice-in-open> TO=done; echo $?    # ebenso ein Slice aus next/
+git show --numstat --format= -M HEAD~1                    # der Move-Commit
+make docs-check
+```
+
+| Kante | Exit | Move-Commit | eingehend | ausgehend |
+|---|---|---|---|---|
+| `open → done` | 0, Skript und `make` | reiner Rename, `0 0` | jede Präfix-Form nachgezogen, im zweiten Commit | präfixlose Geschwister-Ziele tragen danach `../<altes-verzeichnis>/`, hier `open` |
+| `next → done` | 0, Skript und `make` | reiner Rename, `0 0` | ebenso | ebenso, hier `next` |
+
+**Rot gesehen, was der Nachzug trägt:** Derselbe `open → done`-Wechsel als bloßer `git mv` färbt
+`make docs-check` an jedem eingehenden Präfix-Verweis und an den ausgehenden Zielen rot
+(`target-missing`); über das Werkzeug fallen genau diese Befunde weg. Die Kopie lief ohne
+aktivierten `commit-msg`-Träger; was er mit den zwei Commits des Werkzeugs tut, steht in
+[`harness/README.md`](../README.md) §Traceability.
+
+**Die dritte Grenze wird an der Kante `open → done` wirksam.** Nach dem Werkzeug bleiben allein die
+präfixlosen Verweise aus unbewegten Geschwister-Dateien im Ausgangsverzeichnis rot
+(`target-missing`, das Ziel ist der blanke Dateiname); `make docs-check` zeigt sie, nachgezogen
+werden sie von Hand. Wie viele solche Verweise zwischen Geschwistern stehen, zählt
+
+```sh
+P=docs/plan/planning; for d in open next; do n=0; for f in "$P/$d"/*.md; do
+  for t in $(grep -ohE '\]\(slice-[0-9a-z][^)/#]*' "$f" | cut -c3-); do
+    [ -f "$P/$d/$t" ] && n=$((n+1)); done; done; echo "$d: $n"; done
+```
+
+— kein Erwartungswert. Jeder davon bricht, sobald sein Ziel das Verzeichnis verlässt. Adresse der
+Lücke: `slice-mv-zieht-praefixlose-geschwister-verweise-nach`.
+
+**Kein Wächter hält die zwei Kanten.** `test/slice-mv.bats` ruft die Ersetzungs-Funktionen ohne
+Repository auf. [`make full-smoke`](full-smoke.md) fährt im gebootstrappten Ziel den erfolgreichen
+Wechsel mit `TO=next` und `TO=done` nur in den zwei Sperr-Fällen
+(`grep -n 'slice-mv SLICE' harness/tools/full-smoke.sh`). Die Tabelle ist darum eine Messung und
+keine bewachte Zusage: Wer `harness/tools/slice-mv.sh` ändert, misst sie neu.
+
 ### Im gebootstrappten Ziel — Grenze
 
 **Was die zwei Fassungen zusammenhält, und was nicht.** Gleich gehalten werden die drei

@@ -153,6 +153,16 @@ Aussagen-Berührung steht hier gar nicht.
 entsteht; schreibt Liefer-Punkt 3 eine in eine Sensor-Datei, ergänzt der Umsetzungs-Lauf ihren
 Wächter und das rot gesehene Gegenbeispiel.
 
+**Verfeinert nach der Messung.** Liefer-Punkt 3 schreibt Messungen, keine bewachten Zusagen: Beide
+Sensor-Dateien führen ihre Tabelle mit Kommando und sagen, dass kein Wächter sie hält. Das rot
+gesehene Gegenbeispiel steht je Datei daneben — der bloße `git mv` in
+[`slice-mv.md`](../../../../harness/sensors/slice-mv.md), die auf einen Satz gekürzte §7 in
+[`docs-check.md`](../../../../harness/sensors/docs-check.md). Ein Wächter, der die Kanten dauerhaft
+hält, bräuchte `git` in der bats-Stufe oder einen Fall in `make full-smoke`; das ist ein eigener
+Vorgang am Werkzeug (§1). Zwei Lücken bekommen eine Adresse, als Übergabe an den Planner: der
+Folge-Slice `slice-mv-zieht-praefixlose-geschwister-verweise-nach` (Sub-Area `TOOLS`) und eine
+Anforderung an das d-check-Repo (bedingte Pflichtzeile `Gegenstand:`).
+
 ## 4. Trigger
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
