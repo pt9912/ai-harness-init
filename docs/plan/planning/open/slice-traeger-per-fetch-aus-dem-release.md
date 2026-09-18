@@ -33,7 +33,7 @@ Deklaration),
 [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md)
 (`archive-welle` ist der Unterkommando-Konsument, an dem die E2E-Stufe den
 Gelingens-Fall misst),
-[`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
+[`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
 (dasselbe Pin-Muster: Netz nur bei dem einen Aufruf, kein Gate);
 Setzung des Auftraggebers vom 2026-09-18: Träger per Fetch aus dem gepinnten
 Release, E2E-Stufe ausdrücklich als Liefer-Punkt.
@@ -64,7 +64,7 @@ bricht ab, ohne den Träger zu legen; der Fehlt-Fall des Trägers bleibt wie
 heute benannt (Exit 0, nennt das Fehlende, schreibt nichts). Die E2E-Stufe
 misst genau das am realen gebootstrappten Ziel und trägt ihre Kopfzeile im
 Stufen-Muster des Erzeugers samt Deklaration. Der Fehlt-Fall ist heute
-gemessen und in [`make full-smoke`](../../../harness/sensors/full-smoke.md)
+gemessen und in [`make full-smoke`](../../../../harness/sensors/full-smoke.md)
 (Archivierungs-Abschnitt) benannt; mit diesem Slice ist er mit einem Kommando
 behebbar, statt nur durch einen erneuten Bootstrap-Lauf von außen.
 
@@ -152,7 +152,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       existiert, fällt aus der Sicht heraus, und der Generator meldet das
       nicht — gemessen an der bestehenden Archivierungs-Stufe, die genau so
       außerhalb steht).
-- [ ] **Liefer-Punkt 3 — Doku:** [`harness/README.md`](../../../README.md)
+- [ ] **Liefer-Punkt 3 — Doku:** [`harness/README.md`](../../../../README.md)
       nennt das neue Target (Gate-Klasse korrekt: kein Gate, mit Halbsatz, was
       es stattdessen tut — Netz-Bedarf benannt), und
       `docs/user/e2e-abdeckung.md` ist regeneriert. Rote Gegenprobe: nennt die
@@ -188,7 +188,7 @@ Aussagen-Berührung steht hier gar nicht.
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `internal/emit` (Fragment-Emission) | update | legt den Pin (Release-Tag + sha256) als Default im emittierten Fragment ab bzw. trägt die Stempel-Logik — je nach Architect-Entscheidung, Frage 1 |
-| `harness/mk/archivierung.mk` oder ein neues Fragment | update / neu | der Fetch als Target — je nach Architect-Entscheidung, Frage 2; Dogfood braucht dieselbe Zeile |
+| Dogfood-Makefile bzw. der Fragment-Ort im Ziel | update / neu | der Fetch als Target — je nach Architect-Entscheidung, Frage 2; das emittierte Fragment und der Dogfood brauchen dieselbe Zeile |
 | `harness/tools/full-smoke.sh` | update | neue E2E-Stufe am realen Ziel (Liefer-Punkt 2), Kopfzeile im Stufen-Muster |
 | `test/traeger-fetch.bats` | neu | Happy/Negative (Digest fail-closed)/Fehlt-Fall — nach Liefer-Punkt 1; Rote Gegenprobe über die Digest-Verifizierung |
 | `test/e2e-abdeckung.bats` | update | Fall, der die Deklaration der neuen Stufe gegen die Sicht hält — nach Liefer-Punkt 2 |
@@ -205,7 +205,7 @@ Aussagen-Berührung steht hier gar nicht.
 - Netz-Bedarf der E2E-Stufe — **Plan-Entscheidung, hier begründet:** Die
   Gates (`make gates`) sind netzlos, und der Fetch ist kein Gate; `full-smoke`
   ist ebenfalls kein Gate und läuft in CI auf frischem Klon mit Netz
-  ([`harness/README.md`](../../../README.md) §Safety and scope boundaries).
+  ([`harness/README.md`](../../../../README.md) §Safety and scope boundaries).
   Die Stufe fährt den Fetch daher **real gegen das Release** — ein lokales
   Fixture würde die Zusage („per Fetch aus dem gepinnten Release") nicht
   messen, sondern ihre Nachbildung, und der Digest-Verifizierungs-Schritt
@@ -326,16 +326,17 @@ grob — die Modus-Deklaration in `harness/conventions.md` führt beide namentli
 **Vorgelagert — offene Beobachtungen sichten:** Register durchgegangen am
 2026-09-18, 145 Verzeichnisse unter `BEO-ALL/`. Treffer für diese Sub-Areas:
 `BEO-ALL/vorhandene-faehigkeit-ohne-traeger-wird-von-hand-nachgebaut` —
-**Zählerstand 1×**; dieser Slice ist genau die gegenläufige Richtung (eine
+**Zählerstand 1×**; dieser Slice ist die gegenläufige Richtung: eine
 Fähigkeit bekommt ihren Einstieg als Target, statt von Hand — bzw. statt
-erneutem Bootstrap) nachgebaut zu werden); er senkt das Risiko nicht auf null,
-sondern gibt dem Muster seinen Träger. `BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`
-— **Zählerstand 2×**; der Fetch ist eine emittierte Zusage über das Ziel, und
+durch einen erneuten Bootstrap-Lauf von außen — nachgebaut zu werden; er senkt
+das Risiko nicht auf null, sondern gibt dem Muster seinen Träger.
+`BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht` —
+**Zählerstand 2×**; der Fetch ist eine emittierte Zusage über das Ziel, und
 die E2E-Stufe am realen Ziel ist genau der Ort, an dem die Differenz zwischen
 Aussage und Gelingens-Zweig messbar wird — dieses Risiko gehört in den
-Implementer-Kontext (§6, Risiko 2). Kein Eintrag steht bei 2× mit dieser
-Sub-Area als dritter Berührung — der Zähler von `emittierte-zusage…` erreicht
-hier nicht 3×, der Slice schreibt ihn nicht hoch.
+Implementer-Kontext (§6, Risiko 2). Kein Eintrag erreicht mit dieser
+Berührung 3× — der Zähler von `emittierte-zusage…` wird durch diesen Plan
+nicht hochgeschrieben.
 
 **Modus-Begründungsblock:** alle berührten Sub-Areas GF (`*` und
 `harness/tools/` stehen in der Modus-Deklaration als Greenfield); kein
