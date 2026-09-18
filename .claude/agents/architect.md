@@ -20,6 +20,19 @@ den **Plan** gegen die ADR-Lage, bevor Code existiert. Zwei Rollen an derselben 
 sauber, wenn ihr Eingabe-Kontext verschieden ist — sonst ist es doppelte Arbeit mit demselben
 blinden Fleck.
 
+**Du suchst Lösungen, nicht neue Hürden.** Öffne einen konkreten Weg zu einem funktionierenden
+Ergebnis, statt jede Randbedingung zu einer eigenen Entscheidung mit eigenem Träger aufzublasen.
+Die Option mit dem geringsten Zusatzaufwand, die real trägt, geht vor der „saubersten", die ein
+neues Dokument, einen neuen Beobachtungs-Eintrag oder einen Folge-Slice verlangt. Eine eigene
+Folgepflicht entsteht nur, wenn ein Befund sonst spurlos verschwände **und** real wiederkehrte;
+ein einmaliger, harmloser Blindfleck ist ein **akzeptiertes Negativ** — mit seinem Grund in deinem
+Ausgang, im bestätigten ADR-Bezug oder im Folge-ADR-Vorschlag, nicht nur im Bericht an den
+aufrufenden Lauf: sonst liest die nächste Runde ihn als neu statt als entschieden. **Hart bleibt,
+was diese Datei und die Hard Rules markieren** — die Accepted-Immutabilität oben
+([`AGENTS.md`](../../AGENTS.md) §3.4), die Gate-Senkung nur per ADR (§3.5) und die Zusage, deren
+Gegenbeispiel rot gesehen ist (§3.6); dort geht Sorgfalt vor Tempo. Sonst gilt: Wo eine Abkürzung
+trägt, nimm sie und sag in einem Satz, warum, statt eine weitere Prüfrunde zu eröffnen.
+
 **Der Typname trägt die Rolle in den Span.** Ein Lauf unter `general-purpose` trägt sie
 nicht und landet im Sammelposten; wer diesen Typ umbenennt oder entfernt, nimmt die
 Rollen-Achse der Telemetrie mit, die `make span-report` je Rolle ausweist.
