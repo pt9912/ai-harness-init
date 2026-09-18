@@ -56,7 +56,7 @@ Der Träger eines gebootstrappten Ziels liegt im gitignorierten Zustands-Bereich
 (`.harness/state/bin/ai-harness-init`); ein frischer Klon hat ihn nicht
 ([ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 5(b)),
 und [ADR-0033](0033-wellen-archivierung-als-unterkommando.md) Festlegung 4 hält als
-Wiederherstellungs-Weg allein den erneuten Tool-Lauf fest. Der Slice
+Wiederherstellungs-Weg den erneuten Tool-Lauf fest. Der Slice
 `slice-traeger-per-fetch-aus-dem-release` trägt zwei Fragen an den Architect, die
 diese Entscheidung beantwortet: **welches Release wird gepinnt, und wo steht der
 Pin** — und **wo lebt der Fetch**. Die Richtung selbst — Fetch aus dem gepinnten
@@ -148,10 +148,14 @@ der wellenlose Folge-Posten, den der Slice-Plan als Voraussetzung benennt —
 koppelt Pin und Werkzeug-Fassung im selben Commit; solange er das tut, führt ein
 Ziel, das von einer Fassung gebootstrapped wurde, einen Pin, der zur jüngsten
 Release-Fassung passt, und ein Re-Lauf heilt ihn auf die Fassung des letzten
-Laufs. **Bricht die Kopplung, fällt sie laut:** ein Träger, dessen Fassung ein vom
-Fragment gerufenes Unterkommando nicht führt, bricht beim Aufruf mit einem
-Fehler — nicht still.
-
+Laufs. **Bricht die Kopplung, bricht der Aufruf am gepinnten Stand nicht laut.**
+Der Unterkommando-switch des Trägers führt vier Fälle und keinen Default
+(`grep -c 'case "' cmd/ai-harness-init/main.go` → 4); ein Aufruf, dessen
+Unterkommando der Träger nicht führt, fällt in den Init-Pfad statt mit einem
+Fehler zu brechen. Der laut-Bruch ist die Zusage an den Release-Schnitt aus
+Folgepflicht 3: er pinnt einen Stand, der die Sperren im Dispatch führt — erst
+ab ihm bricht ein Fassungs-Bruch beim Aufruf mit einem Fehler statt still zu
+starten.
 **3. Der Fetch lebt in einem eigenen Fragment mit eigenem Target, ohne
 Prerequisite.** Das Ziel bekommt `harness/mk/traeger.mk` <!-- d-check:ignore (der Pfad entsteht erst im gebootstrappten Ziel) --> — konvergent nach
 [ADR-0007](0007-bootstrap-phasen.md) Festlegung 3, nichts an `GATE_CHECKS`, in
@@ -199,7 +203,7 @@ ist eine davon (Baseline-Regelwerk `modul-04-adrs.md` §Ziel-Form: ADR (MADR)).
 | C — **Binary einchecken** (vom Auftraggeber verworfen) | kein Netz, kein Pin, kein Transport | ein Binär-Artefakt im versionierten Baum — Plattform-Matrix im Repo, Binär-Drift gegen die Quelle, und der Zustands-Bereich wäre genau damit zweitrangig; Setzung vom 2026-09-18 trifft die Richtung |
 | D — **Quelle emittieren und im Ziel bauen** | der Träger wäre immer die Quelle, kein Fassungs-Drift | das Ziel kompiliert nicht ([`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten): make/docker-getrieben, keine Sprachlaufzeit) — ein Bau-Schritt im Ziel wäre genau der, den [ADR-0007](0007-bootstrap-phasen.md) vor der Doc-Chain ausschließt, und [ADR-0003](0003-go-native-binaries.md) wählt native Binaries als Vertriebsform |
 | E — **nichts tun: der Fehlt-Fall bleibt nur per erneuertem Bootstrap behebbar** | keine Änderung; der Bestand läuft | der Fehlt-Fall ist heute gemessen und benannt, aber nur durch einen Bootstrap-Lauf **von außen** behebbar — ein Adopter ohne das Werkzeug auf dem Host bleibt bei „die Bedingung ist nicht eingetreten", obwohl das Release die Fähigkeit längst trägt |
-| **F — fester Pin im emittierten Fragment, eigenes Target, Transport im Bild (gewählt)** | der Fehlt-Fall wird mit einem Kommando behebbar; das Pin-Muster ist etabliert (drei Stellen fahren es); kein neues Vertriebsstück — das Release mit seinen sechs Assets existiert; [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) bleibt unberührt | der Fassungs-Fit ist prozedural getragen, nicht konstruktiv — zwischen zwei Releases liegt der Träger hinter der bootstrapenden Fassung (lauter Bruch, Festlegung 2); ein weiterer Pin (Transport-Bild) kommt dazu; der Fetch braucht Netz an genau diesem Target |
+| **F — fester Pin im emittierten Fragment, eigenes Target, Transport im Bild (gewählt)** | der Fehlt-Fall wird mit einem Kommando behebbar; das Pin-Muster ist etabliert (drei Stellen fahren es); kein neues Vertriebsstück — das Release mit seinen sechs Assets existiert; [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) bleibt unberührt | der Fassungs-Fit ist prozedural getragen, nicht konstruktiv — zwischen zwei Releases liegt der Träger hinter der bootstrapenden Fassung (still startend am gepinnten Stand, Festlegung 2); ein weiterer Pin (Transport-Bild) kommt dazu; der Fetch braucht Netz an genau diesem Target |
 
 ## Konsequenzen
 
@@ -210,7 +214,7 @@ ist eine davon (Baseline-Regelwerk `modul-04-adrs.md` §Ziel-Form: ADR (MADR)).
   neues Muster, keine neue Artefakt-Klasse, kein Vertriebskanal.
 - **Negativ:** Der Fassungs-Fit hängt an der Release-Disziplin, nicht an einer
   Konstruktion. Der Träger kann hinter der Fassung liegen, die das Ziel
-  gebootstrapped hat; der Bruch fällt laut, aber er fällt auf den Adopter.
+  gebootstrapped hat; bis zum Release-Schnitt fällt der Bruch still (Festlegung 2), und er fällt auf den Adopter.
 - **Negativ:** Ein weiterer gepinnter Wert-Paar (Release-Tag + Digests) und ein
   gepinntes Transport-Bild — jede Freshness-Achse hat einen Pin mehr zu bewegen.
 - **Negativ:** Das Target braucht Netz. Es ist kein Gate, hängt an keiner
@@ -251,10 +255,10 @@ ist eine davon (Baseline-Regelwerk `modul-04-adrs.md` §Ziel-Form: ADR (MADR)).
   Alternative A gegen diese Entscheidung neu zu wägen — der tragende Grund von
   Festlegung 2 entfiele.
 - **Wenn ein Ziel einen Träger legt, der ein vom Fragment gerufenes Unterkommando
-  nicht führt** (lauter Bruch, an einem Ziel ablesbar), trägt die prozedurale
-  Kopplung aus Festlegung 2 nicht — dann ist der Release-Schnitt zu
-  verschärfen oder der Fassungs-Fit konstruktiv zu bauen.
-- **Wenn das Release keinen Signier-Schritt bekommt und ein Digest-Angriff zum
+  nicht führt, bricht der Aufruf am gepinnten Stand still** (er startet den
+  Init-Pfad — Festlegung 2). Trägt der laut-Bruch nach dem Release-Schnitt nicht —
+  ein gepinnter Stand führt die Sperren im Dispatch nicht, oder ein Bruch fällt
+  danach still —, ist der Fassungs-Fit konstruktiv zu bauen.- **Wenn das Release keinen Signier-Schritt bekommt und ein Digest-Angriff zum
   Befund wird** (Feedforward — kein Sensor dieses Repos): der Fetch prüft den
   Digest, nicht die Signatur; die Grenze steht im Slice-Plan als Bestand und wird
   hier bestätigt, bis sie bricht.
@@ -267,7 +271,7 @@ ist eine davon (Baseline-Regelwerk `modul-04-adrs.md` §Ziel-Form: ADR (MADR)).
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-18 | **Proposed** | Architect-Lauf zu `slice-traeger-per-fetch-aus-dem-release`. Die zwei Fragen des Slice-Plans entschieden: Pin `v0.1.1` kanonisch im Makefile und als Emissions-Default, kein Stempel (das Werkzeug kennt seine Fassung nicht — gemessen), eigenes Fragment `harness/mk/traeger.mk` <!-- d-check:ignore (der Pfad entsteht erst im gebootstrappten Ziel) --> mit eigenem Target `traeger-fetch` ohne Prerequisite, Transport im gepinnten Bild. Der Acceptance-Trigger steht unten |
-
+| 2026-09-18 | Überarbeitet, weiter **Proposed** | Reviewer-Runde `2026-09-18-slice-traeger-per-fetch-aus-dem-release-runde-1.md` (Commit `2a7b6aae`), Verdikt zum Implementer-Diff *merge-blockierend nein*; zwei Befunde an dieser Datei im `Proposed`-Fenster behoben. **F-3 (MEDIUM):** Festlegung 2 und Re-Evaluierungs-Trigger 2 setzten einen laut-Bruch voraus, den der gepinnte Stand nicht trägt — der Unterkommando-switch des Trägers führt keinen Default, ein Aufruf ohne das Unterkommando startet den Init-Pfad; der laut-Bruch ist jetzt die Zusage an den Release-Schnitt (Folgepflicht 3), die Contra-Zelle der gewählten Alternative und die Konsequenzen tragen dieselbe Korrektur. **F-5 (LOW):** die Paraphrase von [ADR-0033](0033-wellen-archivierung-als-unterkommando.md) Festlegung 4 trug das Verbatim-Wort nicht — geglättet. **F-6 (INFO)** hängt an keinem Text dieser Datei. Den Accept-Übergang trägt nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 eine erneute Runde derselben prüfenden Rolle |
 **Acceptance-Trigger:** Diese Entscheidung wird `Accepted`, wenn eine
 Reviewer-Runde sie gegen [ADR-0033](0033-wellen-archivierung-als-unterkommando.md),
 [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) und
