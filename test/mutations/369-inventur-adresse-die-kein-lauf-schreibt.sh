@@ -14,4 +14,4 @@
 # Die Mutation ist die reale Form des Befundes: der Ort, den man vermutet, statt dem, den
 # singletonTarget vergibt.
 set -euo pipefail
-sed -i 's@`docs/plan/planning/in-progress/roadmap.md`@`docs/plan/planning/roadmap.md`@' internal/emit/baumaussage.go
+sed -i 's@docs/plan/planning/in-progress/roadmap.md@docs/plan/planning/roadmap.md@' internal/emit/baumaussage.go
