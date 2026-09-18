@@ -83,7 +83,7 @@ func traegerInventur() []TraegerEintrag {
 		{Modul: "grundlagen-source-precedence.md", Wert: TraegerKommtMit,
 			Text: "`harness/README.md` §Source precedence und der Kopf von `AGENTS.md` tragen die Rangfolge."},
 		{Modul: "grundlagen-traceability.md", Wert: TraegerKommtMit,
-			Text: "`.githooks/commit-msg` ruft `tools/harness/commit-msg-traceability.sh`; aktiviert wird der Träger durch `make hooks-install` — bis dahin liegt er unwirksam da."},
+			Text: "Die Prüfung `tools/harness/commit-msg-traceability.sh` liegt in jedem Lauf. Der Träger `.githooks/commit-msg`, der sie ruft, kommt nur an einem freien Pfad — sein Name gehört git, und führt das Repo dort schon einen eigenen Hook, bleibt der stehen und ruft die Prüfung nur, wenn er es selbst tut. Aktiviert wird der Träger durch `make hooks-install`; bis dahin liegt er unwirksam da."},
 		{Modul: "modul-00-einfuehrung.md", Wert: TraegerLiegtBei,
 			Text: "Einführung ohne eigene Mechanik — der Text ist sein eigener Träger und hängt an keinem Trigger."},
 		{Modul: "modul-01-entwicklungszyklus.md", Wert: TraegerKommtMit,
@@ -200,9 +200,14 @@ func pfadEndungen() []string {
 // und `direction: no-downward` draussen, ohne dass eine Namensliste noetig waere.
 //
 // GRENZE, benannt statt behauptet: die Regel verfuegt ueber eine FORM, nicht ueber den
-// Sinn. Ein Traeger, den eine Zelle in Prosa statt in Inline-Code nennt, faellt heraus
-// und bleibt ungeprueft; und dass die genannte Adresse die RICHTIGE fuer diesen
-// Regelblock ist, sagt sie ebenfalls nicht — das bleibt ein Urteil.
+// Sinn. Vier Stuecke fallen heraus. Ein Traeger, den eine Zelle in Prosa statt in
+// Inline-Code nennt, bleibt ungeprueft. Ein nackter Ziel-Name ohne Trenner und ohne eine
+// der pfadEndungen (`SHA256SUMS`, `GATE_CHECKS`) ebenso — die Regel kann ihn von einem
+// Konfigurations-Schluessel nicht unterscheiden. Eine Adresse im vendored Baum liegt
+// zwar im Ziel, aber ausserhalb der Menge des Emitters: sie schreibt der Fetch, und der
+// Waechter meldete sie als unbekannt — deshalb nennen die Zellen diesen Baum in Prosa.
+// Und dass die genannte Adresse die RICHTIGE fuer diesen Regelblock ist, sagt die Regel
+// ohnehin nicht; das bleibt ein Urteil.
 func AdressenAusText(text string) []string {
 	out := []string{}
 	for i, teil := range strings.Split(text, "`") {
@@ -291,6 +296,10 @@ func baumAussage(targets []string) (string, error) {
 	b.WriteString("kommt mit* · *liegt bei, nicht verdrahtet* · *kommt nicht mit* (mit Grund und Dauer).\n")
 	b.WriteString("Die Zelle sagt den Zustand **dieses** Repos, nicht den Stand einer Entscheidung.\n")
 	b.WriteString("Wie viele Regelblöcke der Baum führt, sagt `ls .harness/baseline/*/regelwerk/*.md`.\n\n")
+	b.WriteString("**Gesagt ist, was ein frisches Repo bekommt.** Ein Teil dieser Adressen gehört dem\n")
+	b.WriteString("Adopter: dort legt der Bootstrap nur ab, wo nichts liegt, und eine vorhandene\n")
+	b.WriteString("Fassung überlebt jeden weiteren Lauf unberührt. Welche Adresse dazugehört, sagt das\n")
+	b.WriteString("Werkzeug beim Ablegen — es nennt jeden Pfad, den es stehen lässt.\n\n")
 	b.WriteString("**Gemessen gegen den Kurs-Stand `" + InventurMessTag + "`, und die Tabelle wandert nicht mit.** Sie\n")
 	b.WriteString("nennt Regelblöcke beim Namen; ein Baseline-Sprung kann einen umbenennen, hinzufügen\n")
 	b.WriteString("oder wegnehmen. Dieses Dokument wird von einem erneuten Bootstrap **nicht**\n")

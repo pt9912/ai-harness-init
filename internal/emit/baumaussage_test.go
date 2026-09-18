@@ -106,10 +106,10 @@ func TestTraegerInventur_KeineZelleBehauptetEineAbwesenheitDieDerEmitWiderlegt(t
 // TestTraegerInventur_JedeGenannteAdresseEntstehtImZiel ist die POSITIVE Richtung: eine
 // Zelle, die einen Träger nennt, nennt eine Adresse, die im Ziel wirklich entsteht.
 //
-// Ohne sie ist die Zusage breiter als ihr Waechter — hermetisch geprueft waeren nur die
+// Ohne ihn ist die Zusage breiter als ihr Waechter: hermetisch geprueft waeren nur die
 // Abwesenheits-Richtung und der Nenner, und eine Zelle duerfte auf einen Pfad zeigen, den
-// kein Lauf schreibt. Der Verifikations-Report fand genau das: die Roadmap-Zelle nannte
-// einen Ort, an dem die Datei nicht liegt.
+// kein Lauf schreibt — der Wert bliebe richtig, die Adresse falsch, und der Leser suchte
+// an einer Stelle, an der nichts liegt.
 //
 // Die bekannte Menge ist die des Emitters selbst — Singletons aus dem Vorlagen-Satz
 // (inklusive Struktur-.gitkeeps und Register-README) plus jede Adresse, die ein Lauf
