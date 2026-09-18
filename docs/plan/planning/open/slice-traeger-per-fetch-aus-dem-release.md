@@ -40,7 +40,7 @@ Release, E2E-Stufe ausdrücklich als Liefer-Punkt.
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912)
 
 **Autor:** Planner. **Datum:** 2026-09-18.
 
