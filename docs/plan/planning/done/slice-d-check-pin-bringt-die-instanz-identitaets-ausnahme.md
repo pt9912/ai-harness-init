@@ -180,7 +180,7 @@ Drei Liefer-Punkte, jeder mit dem Kommando, das ihn rot färbt
 - [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei nicht.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert. *(Belege in zwei bestehenden Verzeichnissen — §7.)*
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen). *(alle sechs entfallen — §6.)*
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). *(geprüft wird nach dem `git mv`; Häkchen im eigenen Commit danach.)*
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). *(geprüft nach dem `git mv` — die Ergebnisse stehen in §7; Häkchen im eigenen Commit nach dem Move.)*
 
 ## 3. Plan (vor Code)
 
@@ -339,7 +339,13 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   (`open/`) · Register — jede genannte Beobachtung existiert als Verzeichnis, und jedes
   Verzeichnis unter `BEO-ALL/` trägt nicht-leeres `evidence/`
   (`for d in docs/plan/planning/observations/BEO-ALL/*/; do [ -n "$(ls "$d/evidence" 2>/dev/null)" ] || echo "$d"; done`
-  → keine Ausgabe). Geprüft nach dem `git mv`.
+  → zwei Verzeichnisse ohne Beleg:
+  `einstiegs-datei-weicht-von-der-pflichtgliederung-ab` und
+  `planungs-bestand-waechst-schneller-als-er-abgebaut-wird`, beide Stand `offen` — derselbe Fund
+  wie in `slice-135`; seine Lesart trägt
+  `slice-beleglose-register-eintraege-bekommen-eine-lesart` (ist eine Datei in `open/`): ein
+  Vorkommen ohne abgeschlossenen Vorgang bekommt keinen Beleg und bleibt benannt, nicht gezählt).
+  Geprüft nach dem `git mv`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
