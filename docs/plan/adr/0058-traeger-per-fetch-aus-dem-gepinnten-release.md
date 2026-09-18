@@ -150,7 +150,7 @@ Ziel, das von einer Fassung gebootstrapped wurde, einen Pin, der zur jüngsten
 Release-Fassung passt, und ein Re-Lauf heilt ihn auf die Fassung des letzten
 Laufs. **Bricht die Kopplung, bricht der Aufruf am gepinnten Stand nicht laut.**
 Der Unterkommando-switch des Trägers führt vier Fälle und keinen Default
-(`grep -c 'case "' cmd/ai-harness-init/main.go` → 4); ein Aufruf, dessen
+(`grep -c 'case "' cmd/ai-harness-init/main.go` → 4; daß kein Default-Zweig folgt, trägt die Lektüre des Switches — Zeilen 558–570 — und kein Muster-Grep); ein Aufruf, dessen
 Unterkommando der Träger nicht führt, fällt in den Init-Pfad statt mit einem
 Fehler zu brechen. Der laut-Bruch ist die Zusage an den Release-Schnitt aus
 Folgepflicht 3: er pinnt einen Stand, der die Sperren im Dispatch führt — erst
@@ -258,7 +258,8 @@ ist eine davon (Baseline-Regelwerk `modul-04-adrs.md` §Ziel-Form: ADR (MADR)).
   nicht führt, bricht der Aufruf am gepinnten Stand still** (er startet den
   Init-Pfad — Festlegung 2). Trägt der laut-Bruch nach dem Release-Schnitt nicht —
   ein gepinnter Stand führt die Sperren im Dispatch nicht, oder ein Bruch fällt
-  danach still —, ist der Fassungs-Fit konstruktiv zu bauen.- **Wenn das Release keinen Signier-Schritt bekommt und ein Digest-Angriff zum
+  danach still —, ist der Release-Schnitt zu verschärfen oder der Fassungs-Fit konstruktiv zu bauen.
+- **Wenn das Release keinen Signier-Schritt bekommt und ein Digest-Angriff zum
   Befund wird** (Feedforward — kein Sensor dieses Repos): der Fetch prüft den
   Digest, nicht die Signatur; die Grenze steht im Slice-Plan als Bestand und wird
   hier bestätigt, bis sie bricht.
