@@ -1,6 +1,6 @@
 # ADR-0058: Der Träger eines adoptierten Repos kommt per Fetch aus dem gepinnten Release — ein eigenes Target, kein Stempel
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-18
 
@@ -273,6 +273,7 @@ ist eine davon (Baseline-Regelwerk `modul-04-adrs.md` §Ziel-Form: ADR (MADR)).
 |---|---|---|
 | 2026-09-18 | **Proposed** | Architect-Lauf zu `slice-traeger-per-fetch-aus-dem-release`. Die zwei Fragen des Slice-Plans entschieden: Pin `v0.1.1` kanonisch im Makefile und als Emissions-Default, kein Stempel (das Werkzeug kennt seine Fassung nicht — gemessen), eigenes Fragment `harness/mk/traeger.mk` <!-- d-check:ignore (der Pfad entsteht erst im gebootstrappten Ziel) --> mit eigenem Target `traeger-fetch` ohne Prerequisite, Transport im gepinnten Bild. Der Acceptance-Trigger steht unten |
 | 2026-09-18 | Überarbeitet, weiter **Proposed** | Reviewer-Runde `2026-09-18-slice-traeger-per-fetch-aus-dem-release-runde-1.md` (Commit `2a7b6aae`), Verdikt zum Implementer-Diff *merge-blockierend nein*; zwei Befunde an dieser Datei im `Proposed`-Fenster behoben. **F-3 (MEDIUM):** Festlegung 2 und Re-Evaluierungs-Trigger 2 setzten einen laut-Bruch voraus, den der gepinnte Stand nicht trägt — der Unterkommando-switch des Trägers führt keinen Default, ein Aufruf ohne das Unterkommando startet den Init-Pfad; der laut-Bruch ist jetzt die Zusage an den Release-Schnitt (Folgepflicht 3), die Contra-Zelle der gewählten Alternative und die Konsequenzen tragen dieselbe Korrektur. **F-5 (LOW):** die Paraphrase von [ADR-0033](0033-wellen-archivierung-als-unterkommando.md) Festlegung 4 trug das Verbatim-Wort nicht — geglättet. **F-6 (INFO)** hängt an keinem Text dieser Datei. Den Accept-Übergang trägt nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 eine erneute Runde derselben prüfenden Rolle |
+| 2026-09-18 | **Accepted** | Beleg nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 ist die Reviewer-Runde `2026-09-18-adr-0058-glaettung-nachrunde.md` — die Nachrunde zur Glättung trug F-3 und F-5 als behoben, die Bestätigungsrunde derselben prüfenden Rolle meldet READY FOR ACCEPT (Bullet-Zählung 4, Trigger 2 mit beiden Ausgängen, N-3-Lektüre-Kennzeichnung; Commit `9a586519`). **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes ADR-0058`. |
 **Acceptance-Trigger:** Diese Entscheidung wird `Accepted`, wenn eine
 Reviewer-Runde sie gegen [ADR-0033](0033-wellen-archivierung-als-unterkommando.md),
 [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) und
