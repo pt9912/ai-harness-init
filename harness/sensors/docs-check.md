@@ -225,6 +225,57 @@ Ob ein abgehakter Punkt ein Liefer-Punkt ist, bleibt Urteil.
 **Kein Wächter hält die Tabelle.** Sie ist eine Messung gegen den genannten Digest; wandert der Pin
 in `d-check.mk`, gilt sie für den alten Stand, bis jemand neu misst.
 
+### Modul `matrix`
+
+Die Klasse `aussen` steht als **letzte** in `classes:` und fängt jede Datei, die keine
+frühere fängt. Die Regel `spec-straten → aussen` ist damit die Decken-Regel: Ein
+Spec-Stratum nennt kein Artefakt außerhalb der Spec, nicht nur keines unterhalb. Welche
+Klassen, Regeln und Ausnahmen gelten, sagt der Block selbst:
+
+```sh
+sed -n '/^matrix:/,/^codepaths:/p' .d-check.yml
+```
+
+**Drei Grenzen — alle drei Eigenschaften dieser Konfiguration, keine des Werkzeugs.**
+
+**1 — Die Regel fängt Referenzen, keine Kennungen.** Eine blanke `MR`- oder `ADR`-Kennung
+im Fließtext ist für `matrix` keine Referenz; sie fällt dem Modul `ids` zu
+(`link-policy: always`, Befund `id-unlinked`). Belegt:
+
+```sh
+printf '\nSonde: MR-<NNN> als blanke Kennung.\n' >> spec/spezifikation.md
+make docs-check   # spec/spezifikation.md:<N>  MR-<NNN>  id-unlinked  Kennung ohne Link auf ihre Definition
+git checkout -- spec/spezifikation.md
+```
+
+In der **emittierten** Startkonfiguration läuft derselbe Fang für `MR` über `matrix`
+statt über `ids` — dort trägt die Klasse `adaptionsblock` ein `token:`. Eine Messung an
+der einen Ebene ist keine Aussage über die andere.
+
+**2 — Die Historie-Abschnitte stehen außerhalb.** `exclude-sections` nimmt `Historie`,
+`7. Historie` und `Geschichte` aus; dort und nur dort lebt Provenienz. Das Modul `ids`
+teilt diese Ausnahme **nicht** — eine blanke Kennung meldet es auch in einer
+Historie-Tabelle.
+
+**3 — `exempt-paths` nimmt aus der Status-Prüfung heraus, nicht aus den Regeln.** Die
+Status-Prüfung trifft jede klassifizierte Quelle, mit `aussen: ["**"]` also jede Datei;
+ausgenommen sind der ADR-Index, die Review-Reports und die Welle-Dateien in `done/` —
+drei Pfade, die einen zum Schreibzeitpunkt aktiven Stand dauerhaft nennen. Keiner von
+ihnen wird dadurch zu einem **erlaubten Ziel**:
+
+```sh
+printf '\n[Index](../docs/plan/adr/README.md)\n' >> spec/architecture.md
+make docs-check   # spec/architecture.md:<N>  ../docs/plan/adr/README.md  matrix-forbidden  Referenz spec-straten → aussen ist nicht erlaubt
+git checkout -- spec/architecture.md
+```
+
+Die Slice-Dateien in `done/` bleiben ausdrücklich in der Status-Prüfung. Wie viele das
+sind, sagt das Kommando, nicht diese Zeile:
+
+```sh
+find docs/plan/planning/done -maxdepth 1 -name 'slice-*.md' | wc -l
+```
+
 ### Modul `structure`
 
 **Was es hält.** [`.d-check.yml`](../../.d-check.yml) führt `structure` in `modules:` und einen

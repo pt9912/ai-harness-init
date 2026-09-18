@@ -801,11 +801,13 @@ echo "full-smoke: Feldlisten-Ortswahl belegt (toter Verweis im Dokument faerbt d
 grep -E "$FELDLISTE_REL:[0-9]+" <<<"$feldzahn_out" | sed -n '1,2s/^/full-smoke:   /p'
 
 # ZAEHNE zu den drei in der emittierten Konfiguration aktiven Modulen ids/matrix/spans —
-# VIER Gegenbeispiele im gebootstrappten Ziel (AGENTS.md §3.6), nach derselben Form wie der
+# SECHS Gegenbeispiele im gebootstrappten Ziel (AGENTS.md §3.6), nach derselben Form wie der
 # Feldlisten-Zahn oben: Verletzung einschmuggeln -> docs-check MUSS roeten, MIT der
-# benannten Befund-Art -> zurueckgenommen. matrix traegt zwei Regeln und damit zwei eigene
-# Zaehne (matrix-forbidden, matrix-downward); eine Regel ohne eigenes Gegenbeispiel waere
-# gelistet-aber-unbewacht. Die ZWEITE Richtung gehoert bei allen vier dazu: dieselbe
+# benannten Befund-Art -> zurueckgenommen. matrix traegt drei gepruefte Aussagen und drei eigene
+# Zaehne (matrix-forbidden abwaerts, matrix-downward, matrix-forbidden nach aussen) und ein
+# viertes auf dem token: der Klasse adaptionsblock; ids traegt eines
+# (ADR-Kennung); eine Regel ohne eigenes Gegenbeispiel waere
+# gelistet-aber-unbewacht. Die ZWEITE Richtung gehoert bei allen sechs dazu: dieselbe
 # Verletzung MUSS unter dem AELTEREN modules: [links, anchors] gruen bleiben — sonst
 # belegt der Zahn nur "irgendein Modul faengt es", nicht "ERST dieses Modul findet sie".
 modul_zahn_alte_module_gruen() {
@@ -877,6 +879,33 @@ grep -E 'matrix-downward' <<<"$matrixdownzahn_out" | sed -n '1,2s/^/full-smoke: 
 modul_zahn_alte_module_gruen "$tmprepo" "matrix-downward-Zahn"
 mv "$matrixdown_doc.orig" "$matrixdown_doc"
 
+# (2a) matrix-forbidden nach aussen: eine Referenz aus einem Spec-Stratum auf eine Datei
+# ausserhalb der Spec (Klasse aussen, letzte Klasse im First-Match). Die Regel
+# spec-straten -> adr oben deckt nur den Abwaerts-Fall; diese hier deckt jedes andere Ziel.
+matrixaussen_doc="$tmprepo/spec/lastenheft.md"
+cp "$matrixaussen_doc" "$matrixaussen_doc.orig"
+sed -i '5a\
+\
+Siehe [README](../README.md) fuer den Ueberblick (Referenz nach aussen, Zahn).
+' "$matrixaussen_doc"
+matrixaussenzahn_rc=0
+matrixaussenzahn_out="$( make -C "$tmprepo" docs-check 2>&1 )" || matrixaussenzahn_rc=$?
+if [ "$matrixaussenzahn_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — matrix-aussen-Zahn: eine Referenz aus einem Spec-Stratum nach aussen laesst docs-check im Ziel GRUEN: die Klasse aussen ist nicht wirksam (AGENTS.md §3.6)." >&2
+	printf '%s\n' "$matrixaussenzahn_out" >&2
+	exit 1
+fi
+if ! grep -qE 'matrix-forbidden.*spec-straten . aussen' <<<"$matrixaussenzahn_out"; then
+	echo "full-smoke: FEHLER — matrix-aussen-Zahn: docs-check im Ziel rot, aber ohne matrix-forbidden auf der Regel spec-straten -> aussen (rot aus falschem Grund?). Ausgabe:" >&2
+	printf '%s\n' "$matrixaussenzahn_out" >&2
+	einordnen "make docs-check im Ziel (matrix-aussen-Zahn)" "$matrixaussenzahn_out"
+	exit 1
+fi
+echo "full-smoke: matrix-aussen-Zahn belegt (Referenz aus einem Spec-Stratum nach aussen faerbt matrix im Ziel rot, danach zurueckgenommen):"
+grep -E 'matrix-forbidden' <<<"$matrixaussenzahn_out" | sed -n '1,2s/^/full-smoke:   /p'
+modul_zahn_alte_module_gruen "$tmprepo" "matrix-aussen-Zahn"
+mv "$matrixaussen_doc.orig" "$matrixaussen_doc"
+
 # (3) id-unlinked: eine bare ADR-Kennung (kein Link) — link-policy: always verlangt einen
 # klickbaren Verweis auch in Prosa.
 ids_doc="$tmprepo/spec/lastenheft.md"
@@ -902,6 +931,34 @@ echo "full-smoke: ids-Zahn belegt (bare ADR-Kennung faerbt ids im Ziel rot, dana
 grep -E 'id-unlinked' <<<"$idszahn_out" | sed -n '1,2s/^/full-smoke:   /p'
 modul_zahn_alte_module_gruen "$tmprepo" "ids-Zahn"
 mv "$ids_doc.orig" "$ids_doc"
+
+# (3a) matrix-forbidden auf einer baren MR-Kennung: das token: der Klasse adaptionsblock
+# macht die blanke Kennung im Fliesstext zu einer Referenz. Ein ids-Muster leistete das
+# auch, faerbte aber jedes frische Ziel rot: die emittierte harness/conventions.md nennt
+# ihre eigenen Kennungen blank. Die Klasse aussen deckt Referenzen, nicht Kennungen.
+matrixmr_doc="$tmprepo/spec/lastenheft.md"
+cp "$matrixmr_doc" "$matrixmr_doc.orig"
+sed -i '5a\
+\
+Siehe MR-001 fuer die Abweichung (bare Kennung, kein Link).
+' "$matrixmr_doc"
+matrixmrzahn_rc=0
+matrixmrzahn_out="$( make -C "$tmprepo" docs-check 2>&1 )" || matrixmrzahn_rc=$?
+if [ "$matrixmrzahn_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — matrix-MR-Zahn: eine bare MR-Kennung laesst docs-check im Ziel GRUEN: das token: der Klasse adaptionsblock ist nicht wirksam (AGENTS.md §3.6)." >&2
+	printf '%s\n' "$matrixmrzahn_out" >&2
+	exit 1
+fi
+if ! grep -qE 'MR-001.*matrix-forbidden' <<<"$matrixmrzahn_out"; then
+	echo "full-smoke: FEHLER — matrix-MR-Zahn: docs-check im Ziel rot, aber ohne matrix-forbidden auf MR-001 (rot aus falschem Grund?). Ausgabe:" >&2
+	printf '%s\n' "$matrixmrzahn_out" >&2
+	einordnen "make docs-check im Ziel (matrix-MR-Zahn)" "$matrixmrzahn_out"
+	exit 1
+fi
+echo "full-smoke: matrix-MR-Zahn belegt (bare MR-Kennung faerbt matrix im Ziel rot, danach zurueckgenommen):"
+grep -E 'matrix-forbidden' <<<"$matrixmrzahn_out" | sed -n '1,2s/^/full-smoke:   /p'
+modul_zahn_alte_module_gruen "$tmprepo" "matrix-MR-Zahn"
+mv "$matrixmr_doc.orig" "$matrixmr_doc"
 
 # (4) span-unclosed: ein nicht geschlossener Inline-Code-Span.
 spans_doc="$tmprepo/spec/lastenheft.md"
