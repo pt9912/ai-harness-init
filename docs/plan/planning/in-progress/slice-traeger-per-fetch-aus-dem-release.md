@@ -128,7 +128,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1 — Fetch mit Pin:** Ein `make`-Target (Name und Ort gemäß
+- [x] **Liefer-Punkt 1 — Fetch mit Pin:** Ein `make`-Target (Name und Ort gemäß
       Architect-Entscheidung, Frage 1 und 2) legt den Träger
       `.harness/state/bin/ai-harness-init` per Fetch aus dem gepinnten Release;
       Version + sha256 sind gepinnt und fail-closed gekoppelt (dieselbe
@@ -142,7 +142,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Verifizierung umgangen, färbt der Negative-Fall des bats-Tests rot —
       unter der geschwächten Zusicherung (Abweichung bricht, aber der Träger
       bleibt liegen) muss der zweite Negative-Fall rot bleiben.
-- [ ] **Liefer-Punkt 2 — E2E-Stufe am realen Ziel:** Eine Stufe in
+- [x] **Liefer-Punkt 2 — E2E-Stufe am realen Ziel:** Eine Stufe in
       `harness/tools/full-smoke.sh` misst am realen gebootstrappten Ziel:
       frischer Klon ohne Träger → Fetch → Digest verifiziert. Der
       `archive-welle`-Aufruf geht dem Fetch voraus (Klon ohne Träger) und
@@ -165,7 +165,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       existiert, fällt aus der Sicht heraus, und der Generator meldet das
       nicht — gemessen an der bestehenden Archivierungs-Stufe, die genau so
       außerhalb steht).
-- [ ] **Liefer-Punkt 3 — Doku:** [`harness/README.md`](../../../../README.md)
+- [x] **Liefer-Punkt 3 — Doku:** [`harness/README.md`](../../../../README.md)
       nennt das neue Target (Gate-Klasse korrekt: kein Gate, mit Halbsatz, was
       es stattdessen tut — Netz-Bedarf benannt), und
       `docs/user/e2e-abdeckung.md` ist regeneriert. Rote Gegenprobe: nennt die
@@ -177,21 +177,21 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       (gemessen 1704/0); das Modul liest den Target-Namen gegen das Makefile,
       nicht den Stempel, und `test/targets-modul-wiring.bats` hält eine andere
       Mutation (Makefile-Regel ohne Sensors-Zeile), nicht diese.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update für die neue Fetch-Fähigkeit, falls ein öffentlicher Vertrag
+- [x] Doku-Update für die neue Fetch-Fähigkeit, falls ein öffentlicher Vertrag
       berührt ist (Liefer-Punkt 3).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen
       Brownfield-Bootstrap und führt die Register-Datei nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschritten — neues
+- [x] Beobachtungs-Register (`../observations/`) fortgeschritten — neues
       Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen
       `evidence/`; **kein Zähler wird gesetzt**, er folgt aus den Dateien.
       Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7
       notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
       Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der
@@ -280,23 +280,33 @@ dasteht.
   — ein älterer Träger in einem Repo, das von einer neueren Fassung
   gebootstrapped wurde. Die Spannung ist benannt und wird nicht hier
   entschieden, sondern von der Architect-Entscheidung, Frage 1 — **Ausgang:**
-  *offen bis zur Entscheidung; nach ihr* eingetreten → Folge-Slice, der den
-  Stempel-/Fit-Mechanismus liefert | entfallen: wenn der gewählte Pin-Ort die
-  Fassungs-Frage strukturell auffängt (Stempel durch den Bootstrap-Lauf) |
-  weiter offen: → Register.
+  *eingetreten* → `slice-release-schnitt-koppelt-pin-und-fassung` (Datei in
+  `open/` angelegt). Grund: der Pin trägt `v0.1.1`, und der Träger dieses
+  Standes führt das Unterkommando `archive-welle` nicht — am gepinnten Stand
+  startet der Aufruf still den Init-Pfad (gemessen, GRENZE der E2E-Stufe);
+  ADR-0058 Festlegung 2 (geglättet) und Folgepflicht 3 machen den
+  Release-Schnitt zum Träger der Pin↔Fassung-Kopplung.
 - **Emission berührt sich selbst:** das Werkzeug emittiert einen Fetch **für
   sich selbst** — der Träger des Ziels ist das eigene Binary; ein Fehler in
   Pin- oder Pfad-Logik fällt erst im Ziel auf, nicht im Dogfood. Gegenbeispiel
   ist der hermetische bats-Test plus die E2E-Stufe am realen Ziel — **Ausgang:**
-  weiter offen, falls der Implementer eine Lücke findet, die weder Test noch
-  Stufe decken.
+  *entfallen* — Grund: der Implementer fand keine Lücke, die weder Test noch
+  Stufe decken; die Deckung ist zweiteilig gemessen — der hermetische
+  bats-Zahn ersetzt docker/curl durch Stubs (8 Fälle in
+  `test/traeger-fetch.bats`), und die E2E-Stufe misst am realen Ziel genau das,
+  was der Zahn nicht kann (realer Transport im gepinnten Bild, realer Digest
+  vor der Ablage, realer Fehlt-Fall); `make full-smoke` EXIT 0, die
+  Negative-Richtung vom Verifier selbst gefahren.
 - **Der Fehlt-Fall verliert seine Zusage:** heute misst `full-smoke` (Stufe
   der Archivierung), dass der Fehlt-Fall Exit 0 meldet und nichts schreibt.
   Legt der Fetch den Träger, könnte eine spätere Fassung den Fehlt-Fall still
   umdrehen (z. B. automatisch fetchen). Die Zusage „Exit 0, nennt das
   Fehlende, schreibt nichts" wird im bats-Test gehalten — **Ausgang:**
-  entfallen, wenn der Negative-/Fehlt-Fall-Test die Zusage misst; sonst
-  eingetreten → Folge-Slice.
+  *entfallen* — Grund: die Zusage wird gemessen, nicht behauptet — im
+  bats-Test (Fall „fehlt-fall": kein Prerequisite, nichts an `GATE_CHECKS`,
+  Meldung „der Traeger liegt nicht") und am realen Ziel in der E2E-Stufe (a);
+  der Verifier fuhr den Fehlt-Fall real (Exit 0, nennt das Fehlende, schreibt
+  nichts).
 
 ## 7. Closure-Notiz
 
@@ -312,16 +322,63 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu
-  angelegt, Beleg `evidence/slice-traeger-per-fetch-aus-dem-release.md` |
-  `evidence/slice-traeger-per-fetch-aus-dem-release.md` in `BEO-<KUERZEL>/<slug>/`
-  ergänzt — Zähler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** Anker · Folge-Slice · Register, Ergebnis
+- **Was hat funktioniert:** Der Fetch-Vertrag hielt in beiden Mess-Ebenen —
+  hermetisch (bats, 8 Fälle, Stubs für docker/curl) und am realen Ziel
+  (E2E-Stufe `traeger_fetch_im_ziel`: realer Transport im gepinnten Bild,
+  Digest vor der Ablage, Fehlt-Fall Exit 0). Die Festlegungen von ADR-0058
+  gingen dem Verifier als Constraint-Tabelle durch — keine Abweichung; die
+  Pin-Kopplung hängt an der etablierten Klasse (`test/sources-pin.bats`).
+- **Was ging anders als geplant:** Drei Abweichungen, alle als
+  Übergabe-Artefakt gezogen, keine still: (1) der Plan-Kopf berief den Fetch
+  auf `LH-QA-03` mit „nur git/make" — der Transport läuft im gepinnten
+  Docker-Bild (F-1, Plan gezogen `ff21ce71`). (2) L2 verlangte den
+  `archive-welle`-Aufruf **anschließend** an den Fetch; die Stufe ruft ihn
+  **vor** dem Fetch und nach dem Fetch gar nicht — ein Aufruf danach stünde am
+  gepinnten Stand nicht an der dokumentierten Grenze, sondern startete still
+  den Init-Pfad; Substanz getroffen, Wortlaut gezogen (F-2, `35e3d582`). (3)
+  die Rot-Gegenprobe von L3 behauptete einen Wächter, der die Stempel-Klasse
+  nicht sieht — gezogen auf die Sonde `gate-phantom`, die rot färbt
+  (1705/1, 2026-09-18).
+- **Steering-Loop-Eintrag:** geschärfte Regel, gezählt, nicht verkörpert —
+  die Regel steht bereits: eine Zusage über eine rot färbende Mutation nennt
+  den Wächter, der die Mutation sieht, nicht die Klasse, über die er nicht
+  urteilt (`AGENTS.md` §3.6, *„benennen, was wirklich deckt"* — verkörpert
+  durch einen früheren Vorgang; dieser Vorgang trägt den Beleg in
+  `BEO-ALL/zusage-nennt-zwei-kanten-der-sensor-deckt-eine/evidence/`). Dazu
+  die benannte Lücke aus der Verifikation: vier von sechs sha256-Pins
+  (`TRAEGER_SHA256_LINUX_ARM64`, `TRAEGER_SHA256_DARWIN_AMD64`,
+  `TRAEGER_SHA256_DARWIN_ARM64`, `TRAEGER_SHA256_WINDOWS_ARM64`) tragen
+  keinen unabhängigen Beleg — verifiziert sind linux-amd64 und
+  windows-amd64.exe gegen die realen Assets; Fail-closed bricht bei Abweichung
+  sichtbar, aber auf genau der Plattform. Benannt, nicht geschlossen; das
+  Nachziehen ist optional.
+- **Beobachtungs-Register (`../observations/`):**
+  `evidence/slice-traeger-per-fetch-aus-dem-release.md` in
+  `../observations/BEO-ALL/vorhandene-faehigkeit-ohne-traeger-wird-von-hand-nachgebaut/evidence/`
+  ergänzt — Zähler steht damit bei 2x;
+  `evidence/slice-traeger-per-fetch-aus-dem-release.md` in
+  `../observations/BEO-ALL/aussage-ueber-das-gepinnte-werkzeug-ohne-blick-in-seinen-stand/evidence/`
+  ergänzt — Zählerstand 4x (Stand *geplant*, Kennung unverändert). Geprüft und
+  **nicht** aufgefallen: `BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`
+  — die emittierten Aussagen über den Träger (Fragment-Kommentar,
+  Fehlt-Fall-Meldung, Deklaration) hielten am realen Ziel; die §8-Sichtung
+  sagte dasselbe voraus; kein Beleg, Zähler bleibt 2x. Keine neue Beobachtung
+  angefallen.
+- **Folge-Slices:** `slice-release-schnitt-koppelt-pin-und-fassung` (Der
+  Release-Schnitt koppelt Träger-Pin und Werkzeug-Fassung) — ist eine Datei
+  in `open/`.
+- **Risiken aus §6:** Fassungs-Drift — *eingetreten* →
+  `slice-release-schnitt-koppelt-pin-und-fassung`; Emission berührt sich
+  selbst — *entfallen* (keine Lücke; Deckung zweiteilig gemessen:
+  bats-Stubs plus E2E-Stufe am realen Ziel); Der Fehlt-Fall verliert seine
+  Zusage — *entfallen* (im bats-Test und am realen Ziel gemessen, vom
+  Verifier real gefahren).
+- **Drei Paarungen:** Anker — kein Gegenstand: mit diesem Slice wurde nichts
+  verkörpert, §7 trägt kein Feld `liegt in` (die Regeln dieses Slices tragen
+  ihre ADR-0058-Festlegungen als IDs). Folge-Slice —
+  `slice-release-schnitt-koppelt-pin-und-fassung` existiert als Datei in
+  `open/`. Register — die zitierten Register-Pfade existieren und tragen
+  nicht leere `evidence/`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
