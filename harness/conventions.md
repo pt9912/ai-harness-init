@@ -14,68 +14,13 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
   `regelwerk/README.md`: **Kurs-Welle 137 · 2026-09-16**
   (`sed -n '3p' .harness/baseline/v6.9.0/regelwerk/README.md`).
 - **d-check:** der lebende Pin steht in `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`) und, per
-  go-Test daran gekoppelt, in `internal/emit/emit.go` — hier steht keine zweite Fassung davon
-  ([`MR-027`](#mr-027--d-check-pin-v0650-ignore-marker-in-zwei-achsen-verengt) §Kein Wächter);
-  dass auch kein **Eintrag** dieses Blocks eine zweite Fassung führt, setzt
+  go-Test daran gekoppelt, in `internal/emit/emit.go`; dass kein Eintrag dieses Blocks eine
+  zweite Fassung führt, setzt
   [`MR-053`](#mr-053--ein-eintrag-datiert-seine-werkzeug-aussage-statt-den-lebenden-pin-zu-führen).
-  Die Sprünge dieser Linie führen [`MR-009`](#mr-009--d-check-pin-sprung-und-codepath-ventile),
-  [`MR-010`](#mr-010--d-check-gate-fragment-tool-generiert), [`MR-011`](#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines), [`MR-012`](#mr-012--d-check-pin-v0511-sources-verfügbar), [`MR-024`](#mr-024--d-check-pin-v0620-structure-verfügbar), [`MR-027`](#mr-027--d-check-pin-v0650-ignore-marker-in-zwei-achsen-verengt), [`MR-052`](#mr-052--d-check-pin-v0741-zwei-module-verfügbar-vierte-ausgabe-spalte), [`MR-061`](#mr-061--d-check-pin-v0760-ein-modul-und-eine-structure-bedingung-verfügbar-beide-nicht-aktiv), [`MR-064`](#mr-064--d-check-pin-v0761-vcs-bricht-bei-unlesbarem-unterbaum-ab), [`MR-066`](#mr-066--d-check-pin-v0763-packs-unter-fremdem-präfix-lesbar-range-immer-aufgelöst) und [`MR-068`](#mr-068--d-check-pin-v0770-instanz-identitäts-ausnahme-verfügbar-ohne-gegenstand). Die Gegenmessung je aktivem Modul setzt [`MR-063`](#mr-063--die-gegenmessung-eines-d-check-sprungs-gibt-jedem-aktiven-modul-eine-basis-und-lässt-die-symlinks-stehen), der sie auch für den Sprung von [`MR-061`](#mr-061--d-check-pin-v0760-ein-modul-und-eine-structure-bedingung-verfügbar-beide-nicht-aktiv) führt. Welche Angabe ein history-lesender Lauf in der Bilanz eines Sprungs trägt, setzt [`MR-065`](#mr-065--ein-history-lesender-lauf-einer-d-check-bilanz-nennt-woher-sein-klon-die-objekte-liest). Wie eine Lage hergestellt wird, die ein späterer Lauf wiederherstellen soll, setzt [`MR-067`](#mr-067--eine-aufbau-anleitung-nennt-ihre-prüf-bedingung-vor-ihren-kommandos).
-- **Datum der Adoption:** 2026-06-13 (Templates-Stand damals: `templates-v4`).
-  **Re-Baseline auf `v3.1.0`:** 2026-07-17 (slice-011/012); **auf `v3.5.0`:** 2026-07-19 (slice-019);
-  **auf `v3.5.1`:** 2026-07-24 (slice-043); **auf `v3.5.2`:** 2026-07-26 (slice-049,
-  Normativ-Delta in [`MR-015`](#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) entschieden);
-  **auf `v5.12.0`:** 2026-08-28 (slice-081, Normativ-Delta in slice-082 entschieden);
-  **auf `v5.18.0`:** 2026-09-03, Delta-Nachweis in slice-155;
-  **auf `v6.0.0`:** 2026-09-04, Delta-Nachweis in slice-176;
-  **auf `v6.5.0`:** 2026-09-07, Delta-Nachweis in slice-224;
-  **auf `v6.7.2`:** 2026-09-12, Delta-Nachweis in slice-224;
-  **auf `v6.8.0`:** 2026-09-13, Delta-Nachweis in slice-sprung-auf-v680-wird-vollzogen;
-  **auf `v6.9.0`:** 2026-09-16, Delta-Nachweis in slice-sprung-auf-v690-wird-vollzogen.
-  Die Form dieser Zeile — Ziel-Tag, Datum, der Slice mit dem Delta-Nachweis, sonst nichts — und
-  der Ort einer Zielstand-Setzung stehen in
-  [`ADR-0031`](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
-  Festlegung 2. **Die Prozedur des Sprungs auf `v6.0.0` stellt die Ziel-Fassung** —
-  [`ADR-0036`](../docs/plan/adr/0036-ziel-fassung-regiert-den-sprung-v600.md), einzige Festlegung,
-  `Accepted`; sie bindet damit nach [`AGENTS.md`](../AGENTS.md) §3.4, Korrekturen entstehen als
-  Folge-ADR mit `Supersedes`. **Der Zielstand ist am 2026-09-07 auf `v6.5.0` gesetzt und am
-  selben Tag vollzogen** — die Setzung ist die des Auftraggebers, die
-  [`ADR-0018`](../docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md) §Wer den Zielstand
-  bewegt ihm vorbehält. **Die
-  Prozedur dieses Sprungs stellt die Ziel-Fassung** —
-  [`ADR-0038`](../docs/plan/adr/0038-ziel-fassung-regiert-den-sprung-v650.md), einzige Festlegung,
-  `Accepted`; sie bindet damit nach
-  [`AGENTS.md`](../AGENTS.md) §3.4. **Der Zielstand ist am 2026-09-12 auf `v6.7.2` gesetzt und am
-  selben Tag vollzogen** — die Setzung ist die des Auftraggebers, die
-  [`ADR-0018`](../docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md) §Wer den Zielstand
-  bewegt ihm vorbehält. **Die Prozedur dieses
-  Sprungs stellt die Ziel-Fassung** —
-  [`ADR-0044`](../docs/plan/adr/0044-ziel-fassung-regiert-den-sprung-v672.md) Festlegung 1,
-  `Accepted`; sie bindet damit nach [`AGENTS.md`](../AGENTS.md) §3.4, Korrekturen entstehen
-  als Folge-ADR mit `Supersedes`. **Der Zielstand ist am 2026-09-13 auf `v6.8.0` gesetzt und am
-  selben Tag vollzogen** — die Setzung ist die des Auftraggebers, die
-  [`ADR-0018`](../docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md) §Wer den Zielstand
-  bewegt ihm vorbehält. **Die Prozedur dieses Sprungs stellt die Ziel-Fassung** —
-  [`ADR-0047`](../docs/plan/adr/0047-ziel-fassung-regiert-den-sprung-v680.md), einzige Festlegung,
-  `Accepted`; sie bindet damit nach [`AGENTS.md`](../AGENTS.md) §3.4, Korrekturen entstehen als
-  Folge-ADR mit `Supersedes`.
-  **Der Zielstand ist am 2026-09-16 auf `v6.9.0` gesetzt und am selben Tag vollzogen** — die Setzung
-  ist die des Auftraggebers, die
-  [`ADR-0018`](../docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md) §Wer den Zielstand
-  bewegt ihm vorbehält. **Die Prozedur dieses Sprungs stellt die Ziel-Fassung** —
-  [`ADR-0056`](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md), einzige Festlegung,
-  `Accepted`; sie bindet damit nach [`AGENTS.md`](../AGENTS.md) §3.4, Korrekturen entstehen als
-  Folge-ADR mit `Supersedes`.
+- **Datum der Adoption:** 2026-06-13.
   Die Delta-Basis des Adaptions-Durchgangs liest
   [`ADR-0043`](../docs/plan/adr/0043-ziel-fassung-regiert-den-sprung-v671.md) Festlegung 2,
-  `Accepted`, aus der Aufzählung oben. Festlegung 1 von
-  [`ADR-0031`](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) bindet
-  allein den Sprung auf `v5.18.0`; die eigene Messung, die ihr erster Re-Evaluierungs-Trigger für
-  jeden weiteren verlangt, ist in slice-176 gefahren und in slice-178 entschieden. Die
-  Prozedur des Sprungs auf `v5.12.0` steht in
-  [`ADR-0018`](../docs/plan/adr/0018-ziel-fassung-regiert-die-migration.md), der
-  Verweis-Beschluss ist in
-  [`ADR-0023`](../docs/plan/adr/0023-verweis-beschluss-traegt-ueber-den-sprung.md) gegen jenen
-  Zielstand neu gehalten. **Wie viele Upstream-Releases dazwischenliegen, steht hier
+  `Accepted`. **Wie viele Upstream-Releases dazwischenliegen, steht hier
   nicht:** die Zahl ist nur am lokalen Kurs-Klon zu messen, und kein Kommando dieses Repos gibt
   sie aus ([`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 1).
