@@ -364,7 +364,7 @@ Baseline-Regelwerk `v6.9.0` · `modul-05-planning-harness.md` §Closure- und Ler
     gegebenenfalls der Nachtrag. Der Absatz gehört dem Architect; dieser Lauf fasst ihn nicht an.
   - **Klassenfrage aus F-5:** Darf ein emittiertes **skip-if-present**-Dokument eine abgeleitete
     Namensliste über einer konvergenten Quelle tragen, und woran hängt ihre Grenze? Hier ist sie
-    mit dem Mess-Tag beantwortet (`MR-033`-Form); ob das die Regel für die Klasse ist, ist eine
+    mit dem Mess-Tag beantwortet (in der Form von [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)); ob das die Regel für die Klasse ist, ist eine
     Entscheidung und keine Umsetzung.
 - **Steering-Loop-Eintrag:** **Neuer Sensor.** Jede Adresse, die eine Zelle der Träger-Inventur
   nennt, wird gegen die Adressen gehalten, die der Emit wirklich schreibt — hermetisch in
