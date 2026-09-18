@@ -193,7 +193,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
       Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der
       nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
