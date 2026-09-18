@@ -2733,7 +2733,7 @@ kennungs_traeger_im_ziel "$tmprepo" "golang"
 # legt ihren EIGENEN Klon an und ist von diesem Zustand unabhaengig; nacheinander gelesen
 # bleibt im Output getrennt, was von aussen und was von innen gemessen wurde.
 echo "full-smoke: Selbstpruefung im Ziel — das Ziel klont sich selbst, aktiviert den Traeger und faehrt beide Commit-Ausgaenge ..."
-	e2e_abdeckung "LH-FA-11 LH-FA-02 LH-QA-03" "Das Ziel prueft seine eigene Durchsetzungsschicht auf einem frischen Klon seines Repos" "die Selbstpruefung im Ziel ist NICHT Exit 0"
+	e2e_abdeckung "LH-FA-11 LH-FA-02" "Das Ziel prueft seine eigene Durchsetzungsschicht auf einem frischen Klon seines Repos" "die Selbstpruefung im Ziel ist NICHT Exit 0"
 # EIN EIGENES, FRISCH GEBOOTSTRAPPTES ZIEL — sprachlos, weil die Selbstpruefung im Klon
 # die Gate-Kette des Ziels ein zweites Mal faehrt und das doku-only-Gate der billigste
 # Vertreter dieser Kette ist. Der Stand, den der Klon sieht, ist der committete: er
@@ -2741,7 +2741,7 @@ echo "full-smoke: Selbstpruefung im Ziel — das Ziel klont sich selbst, aktivie
 selbst_init_rc=0
 selbst_init_out="$( cd "$tmprepo_selbst" && "$tmpbin/ai-harness-init" --name full-smoke-selbst 2>&1 )" || selbst_init_rc=$?
 if [ "$selbst_init_rc" -ne 0 ]; then
-	echo "full-smoke: FEHLER — golang: der Bootstrap des Selbstpruefungs-Ziels ist NICHT Exit 0 (Exit $selbst_init_rc)." >&2
+	echo "full-smoke: FEHLER — sprachlos: der Bootstrap des Selbstpruefungs-Ziels ist NICHT Exit 0 (Exit $selbst_init_rc)." >&2
 	printf '%s\n' "$selbst_init_out" >&2
 	exit 1
 fi
@@ -2749,11 +2749,11 @@ git init -q "$tmprepo_selbst"
 if ! git -C "$tmprepo_selbst" -c user.email=full-smoke@example.invalid -c user.name=full-smoke add -A ||
 	! git -C "$tmprepo_selbst" -c user.email=full-smoke@example.invalid -c user.name=full-smoke \
 		commit -q -m "Bootstrap (full-smoke) LH-FA-11"; then
-	echo "full-smoke: FEHLER — golang: der Bootstrap-Commit des Selbstpruefungs-Ziels ist nicht entstanden — ohne ihn hat der Klon keinen Baum." >&2
+	echo "full-smoke: FEHLER — sprachlos: der Bootstrap-Commit des Selbstpruefungs-Ziels ist nicht entstanden — ohne ihn hat der Klon keinen Baum." >&2
 	exit 1
 fi
-if [ -n "$( git -C "$tmprepo_selbst" config --get core.hooksPath || true )" ]; then
-	echo "full-smoke: FEHLER — golang: das Selbstpruefungs-Ziel traegt schon einen core.hooksPath — dann misst der Lauf nicht, was die Aktivierung im Klon bewirkt." >&2
+if [ -n "$( git -C "$tmprepo_selbst" config --get --local core.hooksPath || true )" ]; then
+	echo "full-smoke: FEHLER — sprachlos: das Selbstpruefungs-Ziel traegt schon einen core.hooksPath — dann misst der Lauf nicht, was die Aktivierung im Klon bewirkt." >&2
 	exit 1
 fi
 # KEIN GATE, und die Vorbedingung steht zuerst: ueber einer leeren Kette waere
@@ -2762,17 +2762,17 @@ selbst_kette=""
 selbst_kette_rc=0
 selbst_kette="$( make --no-print-directory -C "$tmprepo_selbst" -n gates 2>&1 )" || selbst_kette_rc=$?
 if [ "$selbst_kette_rc" -ne 0 ]; then
-	echo "full-smoke: FEHLER — golang: die gates-Kette des Ziels ist nicht lesbar (make -n gates, Exit $selbst_kette_rc):" >&2
+	echo "full-smoke: FEHLER — sprachlos: die gates-Kette des Ziels ist nicht lesbar (make -n gates, Exit $selbst_kette_rc):" >&2
 	printf '%s\n' "$selbst_kette" >&2
 	exit 1
 fi
 if ! grep -qF -- 'record-gates.sh' <<<"$selbst_kette"; then
-	echo "full-smoke: FEHLER — golang: die gelesene gates-Kette traegt record-gates.sh nicht — der Nicht-Gate-Zahn misst dann einen leeren Pruefbereich." >&2
+	echo "full-smoke: FEHLER — sprachlos: die gelesene gates-Kette traegt record-gates.sh nicht — der Nicht-Gate-Zahn misst dann einen leeren Pruefbereich." >&2
 	printf '%s\n' "$selbst_kette" >&2
 	exit 1
 fi
 if grep -qF -- 'selbstpruefung' <<<"$selbst_kette"; then
-	echo "full-smoke: FEHLER — golang: die gates-Kette des Ziels nennt selbstpruefung — die Pruefung legt einen eigenen Klon an und faehrt darin ein Gate; in der Kette waere jeder Gate-Lauf des Ziels ein doppelter, und ein rotes Ziel-Gate nicht mehr vom roten Klon-Lauf zu unterscheiden (LH-QA-01)." >&2
+	echo "full-smoke: FEHLER — sprachlos: die gates-Kette des Ziels nennt selbstpruefung — die Pruefung legt einen eigenen Klon an und faehrt darin ein Gate; in der Kette waere jeder Gate-Lauf des Ziels ein doppelter, und ein rotes Ziel-Gate nicht mehr vom roten Klon-Lauf zu unterscheiden (LH-QA-01)." >&2
 	grep -nF -- 'selbstpruefung' <<<"$selbst_kette" >&2
 	exit 1
 fi
@@ -2783,52 +2783,77 @@ selbst_rc=0
 selbst_out="$( make --no-print-directory -C "$tmprepo_selbst" selbstpruefung 2>&1 )" || selbst_rc=$?
 printf '%s\n' "$selbst_out"
 if [ "$selbst_rc" -ne 0 ]; then
-	echo "full-smoke: FEHLER — golang: die Selbstpruefung im Ziel ist NICHT Exit 0 (Exit $selbst_rc) — das gebootstrappte Repo kann seine Durchsetzungsschicht nicht an sich selbst belegen (LH-FA-11)." >&2
-	einordnen "make selbstpruefung im Ziel (--lang go)" "$selbst_out"
+	echo "full-smoke: FEHLER — sprachlos: die Selbstpruefung im Ziel ist NICHT Exit 0 (Exit $selbst_rc) — das gebootstrappte Repo kann seine Durchsetzungsschicht nicht an sich selbst belegen (LH-FA-11)." >&2
+	einordnen "make selbstpruefung im sprachlosen Ziel" "$selbst_out"
 	exit 1
 fi
-for satz in 'der frische Klon traegt keinen core.hooksPath' \
+# DIE VIER SAETZE SIND WIRKUNGEN, KEINE ANKUENDIGUNGEN: die zwei Commit-Ausgaenge
+# entstehen aus git, und `Datei(en) geprueft` schreibt das Doku-Gate im Klon — keine der
+# vier Zeilen entsteht durch Interpolation eines Markers.
+for satz in 'der frische Klon traegt lokal keinen core.hooksPath' \
             'selbstpruefung: ROT — ein Commit OHNE Kennung faellt am Traeger' \
             'selbstpruefung: GRUEN — ein Commit MIT Kennung geht durch' \
-            'selbstpruefung: GATE — [make gates] im Klon ist Exit 0.'; do
+            'Datei(en) geprüft'; do
 	if ! grep -qF -- "$satz" <<<"$selbst_out"; then
-		echo "full-smoke: FEHLER — golang: die Selbstpruefung belegt den Ausgang '$satz' nicht — ein Lauf, der nur einen der zwei Commit-Ausgaenge beobachtet, loest die Zusage nicht ein (LH-FA-11)." >&2
+		echo "full-smoke: FEHLER — sprachlos: die Selbstpruefung belegt den Ausgang '$satz' nicht — ein Lauf, der nur einen der zwei Commit-Ausgaenge beobachtet, loest die Zusage nicht ein (LH-FA-11)." >&2
 		printf '%s\n' "$selbst_out" >&2
 		exit 1
 	fi
 done
 
-# (b) DER MARKER-LAUF. Das gesetzte Gate-Kommando ist ein anderes als die Belegung, und
-# es hinterlaesst eine andere Spur: baseline-verify laeuft, record-gates nicht.
+# (b) DER MARKER-LAUF, GEMESSEN AN DER SPUR DES GEFAHRENEN KOMMANDOS. Die Vorlage druckt
+# die AUSGABE des Gate-Schritts, nicht nur ihre eigene Ankuendigung — und die zwei
+# Kommandos hinterlassen verschiedene Spuren: `make baseline-verify` schreibt
+# `Integritaet + Vollstaendigkeit`, `make gates` zusaetzlich die Zeile des Doku-Gates und
+# den Gate-Nachweis. Eine Zusicherung, die nur die Zeile `Gate=[…]` liest, faende den
+# gesetzten Wert auch dann, wenn die Vorlage ihn ignorierte: dort steht die Variable.
 marker_out=""
 marker_rc=0
 marker_out="$( make --no-print-directory -C "$tmprepo_selbst" selbstpruefung SELBSTPRUEFUNG_GATE='make baseline-verify' 2>&1 )" || marker_rc=$?
 if [ "$marker_rc" -ne 0 ]; then
-	echo "full-smoke: FEHLER — golang: die Selbstpruefung mit gesetztem Marker ist NICHT Exit 0 (Exit $marker_rc) — ein Marker, der den Lauf abbrechen laesst, ist keine Adaption (LH-FA-02)." >&2
+	echo "full-smoke: FEHLER — sprachlos: die Selbstpruefung mit gesetztem Marker ist NICHT Exit 0 (Exit $marker_rc) — ein Marker, der den Lauf abbrechen laesst, ist keine Adaption (LH-FA-02)." >&2
 	printf '%s\n' "$marker_out" >&2
-	einordnen "make selbstpruefung mit gesetztem Marker im Ziel" "$marker_out"
+	einordnen "make selbstpruefung mit gesetztem Gate-Marker im Ziel" "$marker_out"
 	exit 1
 fi
-for satz in 'Gate=[make baseline-verify]' \
-            'selbstpruefung: GATE — [make baseline-verify] im Klon ist Exit 0.' \
-            'baseline-verify'; do
-	if ! grep -qF -- "$satz" <<<"$marker_out"; then
-		echo "full-smoke: FEHLER — golang: der Lauf mit gesetztem Marker nennt '$satz' nicht — ein Marker, den der Lauf nicht traegt, ist kein Marker (LH-FA-02)." >&2
-		printf '%s\n' "$marker_out" >&2
-		exit 1
-	fi
-done
-for verboten in 'Gate=[make gates]' 'record-gates'; do
+if ! grep -qF -- 'Integritaet + Vollstaendigkeit' <<<"$marker_out"; then
+	echo "full-smoke: FEHLER — sprachlos: der Lauf mit gesetztem Gate-Marker traegt die Spur von [make baseline-verify] nicht — das gesetzte Kommando lief dann nicht (LH-FA-02)." >&2
+	printf '%s\n' "$marker_out" >&2
+	exit 1
+fi
+for verboten in 'Datei(en) geprüft' 'record-gates'; do
 	if grep -qF -- "$verboten" <<<"$marker_out"; then
-		echo "full-smoke: FEHLER — golang: der Lauf mit gesetztem Marker traegt weiter '$verboten' — der gesetzte Wert hat den Lauf dann nicht gelenkt, sondern nur danebengestanden (LH-FA-02)." >&2
+		echo "full-smoke: FEHLER — sprachlos: der Lauf mit gesetztem Gate-Marker traegt weiter die Spur '$verboten' der Belegung — der gesetzte Wert hat den Lauf dann nicht gelenkt, sondern nur danebengestanden (LH-FA-02)." >&2
 		printf '%s\n' "$marker_out" >&2
 		exit 1
 	fi
 done
-echo "full-smoke: Selbstpruefung im Ziel (golang): beide Commit-Ausgaenge in einem Lauf, und der gesetzte Marker lenkt den Gate-Schritt:"
+
+# (c) DER TRAEGER-MARKER, GEGEN EINE ANDERE VORHANDENE DATEI GESETZT. Er nennt den Hook,
+# der aufhaelt; zeigt er woandershin, waehrend der Aktivierungsschritt seinen eigenen in
+# Betrieb nimmt, schriebe die Schluss-Zeile eine Wirkung der falschen Datei zu. Geprueft
+# wird nicht nur der Abbruch, sondern SEIN GRUND — ein Abbruch aus einer anderen Ursache
+# (etwa ein Bild, das nicht kommt) saehe sonst wie ein wirkender Marker aus.
+traeger_out=""
+traeger_rc=0
+traeger_out="$( make --no-print-directory -C "$tmprepo_selbst" selbstpruefung SELBSTPRUEFUNG_TRAEGER=Makefile 2>&1 )" || traeger_rc=$?
+if [ "$traeger_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — sprachlos: die Selbstpruefung laeuft mit SELBSTPRUEFUNG_TRAEGER=Makefile gruen — der Marker lenkt dann nur eine Existenzpruefung, waehrend .githooks/commit-msg aufhaelt, und die Schluss-Zeile nennt die falsche Datei (LH-FA-02)." >&2
+	printf '%s\n' "$traeger_out" >&2
+	exit 1
+fi
+if ! grep -qF -- 'ist nicht der Traeger, den der Aktivierungsschritt in Betrieb nimmt' <<<"$traeger_out"; then
+	echo "full-smoke: FEHLER — sprachlos: der Lauf mit falsch gesetztem Traeger-Marker faellt (Exit $traeger_rc), nennt aber nicht den Marker als Grund — rot aus falschem Grund (LH-FA-02)." >&2
+	printf '%s\n' "$traeger_out" >&2
+	einordnen "make selbstpruefung mit falschem Traeger-Marker im Ziel" "$traeger_out"
+	exit 1
+fi
+
+echo "full-smoke: Selbstpruefung im Ziel (sprachlos): beide Commit-Ausgaenge in einem Lauf, und die zwei gesetzten Marker lenken:"
 grep -F -- 'selbstpruefung: ROT —' <<<"$selbst_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
 grep -F -- 'selbstpruefung: GRUEN —' <<<"$selbst_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
-grep -F -- 'selbstpruefung: GATE — [make baseline-verify]' <<<"$marker_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
+grep -F -- 'Integritaet + Vollstaendigkeit' <<<"$marker_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
+grep -F -- 'ist nicht der Traeger, den der Aktivierungsschritt in Betrieb nimmt' <<<"$traeger_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
 
 echo "full-smoke: OK — frisch gebootstrapptes Repo faehrt make -j gates out-of-the-box gruen (lint/build/test + docs-check + baseline-verify via Fragment-Assembly, record-gates zuletzt), Exit 0 (LH-FA-01/LH-QA-01)."
 echo "full-smoke: OK — sprachloser Init (ohne --lang) faehrt make -j gates doc-only gruen (docs-check + baseline-verify, KEIN Code-Gate, kein Skelett) — --lang optional (slice-035/LH-FA-01)."

@@ -30,17 +30,24 @@ const (
 	selbstpruefungMkSrc = "templates/enforce/selbstpruefung.mk"
 )
 
-// SelbstpruefungMarker nennt die drei adaptierbaren Marker der Vorlage (LH-FA-02): ein
-// Adopter setzt sie am Aufruf oder im Fragment, statt die Datei zu editieren — eine von
-// Hand geaenderte Fassung schriebe der naechste konvergente Lauf ohnehin neu.
+// SelbstpruefungMarker nennt die adaptierbaren Marker der Vorlage (LH-FA-02): ein Adopter
+// setzt sie am Aufruf oder im Makefile seines Repos, statt die Datei zu editieren — eine
+// von Hand geaenderte Fassung schriebe der naechste konvergente Lauf ohnehin neu.
 //
-// Die Liste ist die EINE Stelle, an der die drei Namen stehen; der Test haelt Vorlage und
+// DIE ZWEI MESSAGE-MARKER GEHOEREN ZUM TRAEGER, nicht zum Lauf: an .githooks/commit-msg
+// darf ein Adopter seinen eigenen Traeger fuehren (ADR-0054 Festlegung 1), und der bringt
+// seine eigene Kennungs-Menge mit. Ohne sie faellt die Pruefung in genau diesem Zustand
+// konstruktionsbedingt.
+//
+// Die Liste ist die EINE Stelle, an der die Namen stehen; der Test haelt Vorlage und
 // Fragment gegen sie, und eine Umbenennung in nur einer der zwei Dateien faellt.
 func SelbstpruefungMarker() []string {
 	return []string{
 		"SELBSTPRUEFUNG_TRAEGER",
 		"SELBSTPRUEFUNG_AKTIVIERUNG",
 		"SELBSTPRUEFUNG_GATE",
+		"SELBSTPRUEFUNG_MSG_ROT",
+		"SELBSTPRUEFUNG_MSG_GRUEN",
 	}
 }
 

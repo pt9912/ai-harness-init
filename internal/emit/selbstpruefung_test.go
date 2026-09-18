@@ -95,21 +95,23 @@ func TestSelbstpruefung_FragmentHaengtAnKeinerGateKetteDesZiels(t *testing.T) {
 // markerRe findet jeden Marker-Namen in Vorlage und Fragment. Gesucht wird der ganze
 // Bestand, nicht die erwartete Liste: nur so faellt auch ein Name, den eine der zwei
 // Dateien fuehrt und die andere nicht kennt.
-var markerRe = regexp.MustCompile(`SELBSTPRUEFUNG_[A-Z]+`)
+var markerRe = regexp.MustCompile(`SELBSTPRUEFUNG_[A-Z]+(?:_[A-Z]+)*`)
 
-// TestSelbstpruefung_DieDreiMarkerStehenInBeidenDateienUndSonstKeiner haelt die
-// Adaptierbarkeit an ihrer Verdrahtung fest: jeder der drei Marker hat im Fragment eine
-// Belegung und wird durchgereicht, und die Vorlage liest ihn mit derselben Belegung.
+// TestSelbstpruefung_DieMarkerStehenInBeidenDateienUndSonstKeiner haelt die
+// Adaptierbarkeit an ihrer Verdrahtung fest: jeder Marker hat im Fragment eine Belegung
+// und wird durchgereicht, und die Vorlage liest ihn mit derselben Belegung.
 //
 // GEMESSEN WIRD DER VOLLSTAENDIGE IST-BESTAND gegen die erwartete Liste, in beide
-// Richtungen: ein vierter Marker in einer der zwei Dateien faellt hier ebenso wie ein
-// dritter, der nur noch in einer steht. Eine Pruefung, die nur die drei erwarteten
-// Namen sucht, bliebe bei einer halben Umbenennung gruen.
+// Richtungen: ein weiterer Marker in einer der zwei Dateien faellt hier ebenso wie einer,
+// der nur noch in einer steht. Eine Pruefung, die nur die erwarteten Namen sucht, bliebe
+// bei einer halben Umbenennung gruen.
 //
 // WAS DIESER TEST NICHT LEISTET: er misst die Verdrahtung, nicht die Wirkung. Dass ein
 // GESETZTER Wert den Lauf lenkt und der Lauf ihn nennt, misst die Stufe im Voll-E2E
-// (harness/tools/full-smoke.sh), die die Pruefung mit gesetztem Marker faehrt.
-func TestSelbstpruefung_DieDreiMarkerStehenInBeidenDateienUndSonstKeiner(t *testing.T) {
+// (harness/tools/full-smoke.sh): sie faehrt die Pruefung mit gesetztem Gate-Marker und
+// liest die AUSGABE des gefahrenen Kommandos, und sie faehrt sie mit einem Traeger-Marker,
+// der auf eine andere Datei zeigt, und verlangt den Abbruch.
+func TestSelbstpruefung_DieMarkerStehenInBeidenDateienUndSonstKeiner(t *testing.T) {
 	dir := selbstpruefungZiel(t)
 	skript := mustReadString(t, filepath.Join(dir, filepath.FromSlash(emit.SelbstpruefungPath)))
 	frag := mustReadString(t, filepath.Join(dir, filepath.FromSlash(emit.SelbstpruefungMkPath)))
@@ -172,6 +174,42 @@ func TestSelbstpruefung_FragmentRuftDenEmittiertenOrt(t *testing.T) {
 	} {
 		if strings.Contains(text, "harness/tools/") {
 			t.Errorf("%s nennt das lokale harness/tools/ (MR-005, emittiertes Layout ist tools/harness/)", name)
+		}
+	}
+}
+
+// TestSelbstpruefung_EinEditIstNachDemNaechstenLaufWiederDieAusgelieferteFassung misst die
+// Folge der konvergenten Klasse: beide Dateien werden bei jedem Lauf kanonisch neu
+// geschrieben, ein Edit an ihnen ist danach weg. Das ist der Grund, warum die
+// anpassbaren Stellen VARIABLEN sind und kein Text zum Suchen-und-Ersetzen — und beide
+// Dateien sagen es in ihrem Kopf, damit ein Adopter seine dauerhafte Vorgabe nicht dorthin
+// schreibt, wo der naechste Lauf sie nimmt.
+//
+// Zwei Haelften, und die zweite ist die schwaechere: der Ueberschreib-Vorgang ist
+// gemessen, die Anwesenheit des Satzes darueber nur als Wort geprueft. Ein Kopf, der die
+// Klasse gar nicht mehr nennt, faellt; einer, der sie falsch erklaert, nicht.
+func TestSelbstpruefung_EinEditIstNachDemNaechstenLaufWiederDieAusgelieferteFassung(t *testing.T) {
+	dir := selbstpruefungZiel(t)
+	kanonisch := map[string]string{}
+	for _, rel := range []string{emit.SelbstpruefungPath, emit.SelbstpruefungMkPath} {
+		p := filepath.Join(dir, filepath.FromSlash(rel))
+		kanonisch[rel] = mustReadString(t, p)
+		if !strings.Contains(strings.ToLower(kanonisch[rel]), "konvergent") {
+			t.Errorf("%s nennt seine Idempotenz-Klasse nicht — ein Adopter setzt seine Vorgabe dann in eine Datei, die der naechste Lauf neu schreibt (ADR-0007 Festlegung 3)", rel)
+		}
+		if err := os.WriteFile(p, []byte(kanonisch[rel]+"\n# Fassung des Adopters\n"), 0o644); err != nil {
+			t.Fatalf("%s aendern: %v", rel, err)
+		}
+	}
+
+	if err := emit.Enforce(dir, io.Discard); err != nil {
+		t.Fatalf("zweiter Enforce: %v", err)
+	}
+
+	for rel, soll := range kanonisch {
+		ist := mustReadString(t, filepath.Join(dir, filepath.FromSlash(rel)))
+		if ist != soll {
+			t.Errorf("%s ist nach dem zweiten Lauf nicht die ausgelieferte Fassung — dann ist die Klasse nicht konvergent, und der Kopf der Datei sagt etwas anderes zu", rel)
 		}
 	}
 }

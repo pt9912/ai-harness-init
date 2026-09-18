@@ -3,39 +3,60 @@
 # Durchsetzungsschicht, emittiert von ai-harness-init. EIN KOMMANDO, KEIN GATE.
 #
 # WAS SIE BELEGT. Dieses Repo klont sich selbst in ein Wegwerf-Verzeichnis,
-# stellt fest, dass der frische Klon KEINEN core.hooksPath traegt, aktiviert
-# dort den Traeger der Commit-Kennung und faehrt danach ZWEI Commit-Versuche:
-# einer OHNE Kennung faellt und entsteht nicht, einer MIT Kennung geht durch.
-# Zuletzt laeuft das Gate-Kommando im Klon. BEIDE AUSGAENGE STEHEN IN EINEM
-# LAUF — ein Lauf, der nur den durchgelassenen Commit beobachtet, belegt
-# nicht, dass der Traeger ueberhaupt etwas aufhaelt.
+# stellt fest, dass der frische Klon in seiner LOKALEN Konfiguration keinen
+# core.hooksPath traegt, aktiviert dort den Traeger der Commit-Kennung und
+# faehrt danach ZWEI Commit-Versuche: einer OHNE Kennung faellt und entsteht
+# nicht, einer MIT Kennung geht durch. Zuletzt laeuft das Gate-Kommando im
+# Klon. BEIDE AUSGAENGE STEHEN IN EINEM LAUF — ein Lauf, der nur den
+# durchgelassenen Commit beobachtet, belegt nicht, dass der Traeger ueberhaupt
+# etwas aufhaelt.
 #
 # WARUM EIN KLON UND NICHT DIESES ARBEITSVERZEICHNIS. Die Aktivierung ist
 # lokale Konfiguration (core.hooksPath) und reist nicht mit dem Klon; genau
 # dieser Zustand ist der Pruefgegenstand. Und die zwei Commit-Versuche
 # schreiben Historie — im Klon ist sie nach dem Lauf weg.
 #
-# DREI MARKER, JE MIT BELEGUNG. Sie sind Variablen, keine Platzhalter zum
-# Suchen-und-Ersetzen: ein erneuter Lauf des Werkzeugs schreibt diese Datei
-# kanonisch neu, und eine von Hand editierte Fassung waere danach wieder die
-# ausgelieferte. Gesetzt werden sie ueber die Umgebung oder ueber das Fragment
-# harness/mk/selbstpruefung.mk (make selbstpruefung SELBSTPRUEFUNG_GATE=…).
-# Der Lauf nennt in seiner ersten Zeile die Werte, mit denen er faehrt.
+# FUENF MARKER, JE MIT BELEGUNG. Sie sind Variablen, keine Platzhalter zum
+# Suchen-und-Ersetzen:
+#   SELBSTPRUEFUNG_TRAEGER      der Hook, den der Aktivierungsschritt in Betrieb nimmt
+#   SELBSTPRUEFUNG_AKTIVIERUNG  der Schritt, der ihn in Betrieb nimmt
+#   SELBSTPRUEFUNG_GATE         das Kommando, das im Klon gruen laufen muss
+#   SELBSTPRUEFUNG_MSG_ROT      die Message, die am Traeger fallen muss
+#   SELBSTPRUEFUNG_MSG_GRUEN    die Message, die durchgehen muss
+# Der Lauf nennt in seiner ersten Zeile die Werte, mit denen er faehrt, und er
+# prueft den Traeger-Marker gegen den Hook, den git nach der Aktivierung
+# wirklich ruft — ein Marker, der eine andere Datei nennt, bricht den Lauf ab.
+#
+# DIESE DATEI IST KONVERGENT (ADR-0007 Festlegung 3): jeder Lauf des Werkzeugs
+# schreibt sie kanonisch neu. Ein Edit an ihr ist danach still weg — deshalb
+# sind die fuenf Stellen oben Variablen. Eine DAUERHAFTE Vorgabe gehoert in
+# das Makefile des Repos (dort, wo dieses Ziel eingebunden wird) oder in die
+# Umgebung, nicht in diese Datei und nicht in das Fragment daneben, das
+# derselben Klasse folgt. Der Traeger unter .githooks/ ist der eine Pfad mit
+# der anderen Klasse (skip-if-present, ADR-0054): er gehoert dem Repo.
 #
 # DIE GRENZE. Geprueft sind der Traeger und die zwei Commit-Ausgaenge. NICHT
 # geprueft ist, ob der Traeger jeden Commit-Pfad erreicht: `git commit
 # --no-verify` umgeht ihn, Commits aus Repo-Werkzeugen tragen ihre eigenen
 # Messages, und Aufrufformen ausserhalb der aktivierten Traeger-Form bleiben
 # ausserhalb der Zusage. Geprueft ist ferner die ANWESENHEIT einer Kennung in
-# der Message, nicht ihre Wahrheit. Die Kennung der durchgelassenen Message
-# unten stammt aus der Menge, die die Pruefung in ihrer Zeile `patterns=`
-# fuehrt; wer jene Menge aendert, aendert diese Zeile mit.
+# der Message, nicht ihre Wahrheit.
 #
-# VORAUSSETZUNG. Ein git-Repo mit mindestens einem Commit. Der Klon traegt den
-# Stand von HEAD — nicht committete Aenderungen des Arbeitsverzeichnisses sind
-# darin nicht enthalten. Die Identitaet der zwei Commit-Versuche bringt der
-# Lauf selbst mit (git -c user.email/user.name), damit die Pruefung auch auf
-# einem Rechner ohne konfigurierte Identitaet laeuft.
+# EIN REPO MIT EIGENEM TRAEGER passt die zwei Message-Marker an. Die Belegung
+# unten gilt dem Traeger, den dieses Werkzeug mitbringt, und der Kennungs-Menge
+# der Pruefung daneben (Zeile `patterns=`). Fuehrt das Repo an .githooks/ seinen
+# eigenen Traeger — der Zustand, den ADR-0054 Festlegung 1 ihm freistellt —,
+# nennt es mit SELBSTPRUEFUNG_MSG_ROT und SELBSTPRUEFUNG_MSG_GRUEN je eine
+# Message, die sein Traeger aufhaelt bzw. durchlaesst.
+#
+# VORAUSSETZUNG. Ein git-Repo mit mindestens einem Commit. Geklont wird die
+# Wurzel, die `git rev-parse --show-toplevel` von hier aus liefert — liegt
+# dieses Repo als Unterverzeichnis in einem umgebenden, ist das die AEUSSERE
+# Wurzel. Der Klon traegt den Stand von HEAD; nicht committete Aenderungen des
+# Arbeitsverzeichnisses sind darin nicht enthalten. Die Identitaet der zwei
+# Commit-Versuche bringt der Lauf selbst mit (git -c user.email/user.name),
+# damit die Pruefung auch auf einem Rechner ohne konfigurierte Identitaet
+# laeuft.
 #
 # ABHAENGIGKEIT. git, make und coreutils. Kein Netz, kein Paketmanager, kein
 # zweites Bild — was das Gate-Kommando seinerseits braucht, bringt es selbst
@@ -50,6 +71,10 @@ SELBSTPRUEFUNG_AKTIVIERUNG="${SELBSTPRUEFUNG_AKTIVIERUNG:-make hooks-install}"
 # Das Kommando, das im Klon gruen laufen muss. Ein Ziel mit anderem Bau- oder
 # Sprachmodell setzt hier seines.
 SELBSTPRUEFUNG_GATE="${SELBSTPRUEFUNG_GATE:-make gates}"
+# Die zwei Commit-Messages. Sie gehoeren zum Traeger, nicht zum Lauf: ein
+# eigener Traeger bringt eine eigene Kennungs-Menge mit.
+SELBSTPRUEFUNG_MSG_ROT="${SELBSTPRUEFUNG_MSG_ROT:-Selbstpruefung ohne Kennung}"
+SELBSTPRUEFUNG_MSG_GRUEN="${SELBSTPRUEFUNG_MSG_GRUEN:-Selbstpruefung mit Kennung LH-FA-01}"
 
 fehler() {
 	echo "selbstpruefung: FEHLER — $1" >&2
@@ -62,7 +87,7 @@ quelle="$(git rev-parse --show-toplevel 2>/dev/null)" || fehler "dieses Verzeich
 git -C "$quelle" rev-parse --verify --quiet 'HEAD^{commit}' >/dev/null 2>&1 ||
 	fehler "$quelle traegt keinen Commit — ein Klon haette keinen Baum, auf dem ein Commit-Versuch etwas bedeutete. Ein erster Commit macht die Pruefung fahrbar."
 
-echo "selbstpruefung: Marker — Traeger=[$SELBSTPRUEFUNG_TRAEGER] Aktivierung=[$SELBSTPRUEFUNG_AKTIVIERUNG] Gate=[$SELBSTPRUEFUNG_GATE]"
+echo "selbstpruefung: Marker — Traeger=[$SELBSTPRUEFUNG_TRAEGER] Aktivierung=[$SELBSTPRUEFUNG_AKTIVIERUNG] Gate=[$SELBSTPRUEFUNG_GATE] MsgRot=[$SELBSTPRUEFUNG_MSG_ROT] MsgGruen=[$SELBSTPRUEFUNG_MSG_GRUEN]"
 echo "selbstpruefung: Quelle=[$quelle] (der Klon traegt den Stand von HEAD)"
 
 arbeit="$(mktemp -d)"
@@ -77,31 +102,47 @@ klon="$arbeit/klon"
 git clone -q "file://$quelle" "$klon" || fehler "der Klon von $quelle ist nicht entstanden."
 chmod 755 "$klon"
 
-# (1) DER FRISCHE KLON IST UNGEPRUEFT. Gelesen wird der Wert aus git, nicht
-# eine Meldung: `config --get` endet ohne Ausgabe und mit Exit 1, wo nichts
-# gesetzt ist.
-vorher_hooks="$(git -C "$klon" config --get core.hooksPath || true)"
+# (1) DER FRISCHE KLON IST UNGEPRUEFT. Gelesen wird die LOKALE Konfiguration
+# des Klons — sie ist es, die ein Klon nicht erbt. `--get` ohne Scope naehme
+# auch eine globale oder systemweite Setzung mit und meldete einen Zustand des
+# Rechners als einen des Klons.
+vorher_hooks="$(git -C "$klon" config --get --local core.hooksPath || true)"
 if [ -n "$vorher_hooks" ]; then
-	fehler "der frische Klon traegt bereits core.hooksPath=$vorher_hooks — dann misst der Lauf nicht, was die Aktivierung bewirkt."
+	fehler "der frische Klon traegt in seiner lokalen Konfiguration bereits core.hooksPath=$vorher_hooks — dann misst der Lauf nicht, was die Aktivierung bewirkt."
 fi
-echo "selbstpruefung: der frische Klon traegt keinen core.hooksPath — der Traeger reist mit, seine Aktivierung nicht."
+echo "selbstpruefung: der frische Klon traegt lokal keinen core.hooksPath — der Traeger reist mit, seine Aktivierung nicht."
 
 if [ ! -f "$klon/$SELBSTPRUEFUNG_TRAEGER" ]; then
 	fehler "im Klon liegt kein Traeger unter [$SELBSTPRUEFUNG_TRAEGER] — er ist entweder nicht committet oder liegt woanders; der Marker SELBSTPRUEFUNG_TRAEGER nennt den Pfad."
 fi
 
-# (2) DIE AKTIVIERUNG. Gelesen wird der Wert, den git danach zurueckgibt.
+# (2) DIE AKTIVIERUNG. Gelesen wird der Wert, den git danach lokal fuehrt.
 akt_out=""
 if ! akt_out="$(cd "$klon" && bash -c "$SELBSTPRUEFUNG_AKTIVIERUNG" 2>&1)"; then
 	printf '%s\n' "$akt_out" >&2
 	fehler "der Aktivierungsschritt [$SELBSTPRUEFUNG_AKTIVIERUNG] endet nicht mit Exit 0 — der Traeger ist im Klon nicht in Betrieb zu nehmen."
 fi
 printf '%s\n' "$akt_out" | sed 's/^/selbstpruefung:   /'
-nachher_hooks="$(git -C "$klon" config --get core.hooksPath || true)"
+nachher_hooks="$(git -C "$klon" config --get --local core.hooksPath || true)"
 if [ -z "$nachher_hooks" ]; then
 	fehler "nach [$SELBSTPRUEFUNG_AKTIVIERUNG] ist core.hooksPath im Klon weiter leer — der Schritt meldet Erfolg, ohne einen zu haben."
 fi
 echo "selbstpruefung: aktiviert — core.hooksPath=$nachher_hooks"
+
+# (2b) DER TRAEGER-MARKER NENNT DIE DATEI, DIE AUFHAELT — nicht irgendeine.
+# git ruft einen Hook ueber seinen nackten Namen aus core.hooksPath; welche
+# Datei das ist, steht damit fest. Ohne diesen Abgleich lenkte der Marker nur
+# eine Existenzpruefung, und die Schluss-Zeile schriebe ihm eine Wirkung zu,
+# die eine andere Datei hatte.
+hook_name="${SELBSTPRUEFUNG_TRAEGER##*/}"
+case "$nachher_hooks" in
+/*) gerufen="$nachher_hooks/$hook_name" ;;
+*) gerufen="$klon/$nachher_hooks/$hook_name" ;;
+esac
+if [ ! -e "$gerufen" ] || [ ! "$gerufen" -ef "$klon/$SELBSTPRUEFUNG_TRAEGER" ]; then
+	fehler "[$SELBSTPRUEFUNG_TRAEGER] ist nicht der Traeger, den der Aktivierungsschritt in Betrieb nimmt: [$SELBSTPRUEFUNG_AKTIVIERUNG] setzt core.hooksPath=$nachher_hooks, und git ruft daraus $gerufen. Der Marker nennt damit eine andere Datei, als aufhaelt."
+fi
+echo "selbstpruefung: in Betrieb ist [$SELBSTPRUEFUNG_TRAEGER] — git ruft ihn als $nachher_hooks/$hook_name."
 
 # (3) DIE ZWEI COMMIT-AUSGAENGE, in einem Lauf. `--allow-empty` haelt jeden
 # Versuch ohne Baum-Aenderung; gelesen werden Exit-Code UND die Lage von HEAD,
@@ -109,8 +150,8 @@ echo "selbstpruefung: aktiviert — core.hooksPath=$nachher_hooks"
 vorher_head="$(git -C "$klon" rev-parse HEAD)"
 for fall in rot gruen; do
 	case "$fall" in
-	rot) msg="Selbstpruefung ohne Kennung" ;;
-	gruen) msg="Selbstpruefung mit Kennung LH-FA-01" ;;
+	rot) msg="$SELBSTPRUEFUNG_MSG_ROT" ;;
+	gruen) msg="$SELBSTPRUEFUNG_MSG_GRUEN" ;;
 	*) fehler "unbekannter Fall [$fall]." ;;
 	esac
 	out=""
@@ -119,7 +160,7 @@ for fall in rot gruen; do
 		commit -q --allow-empty -m "$msg" 2>&1)" || rc=$?
 	if [ "$fall" = rot ]; then
 		if [ "$rc" -eq 0 ]; then
-			fehler "der Commit '$msg' geht durch — eine Message ohne Kennung faerbt den Traeger nicht rot; das Ziel hat dann keine Durchsetzung, sondern eine Behauptung."
+			fehler "der Commit '$msg' geht durch — er sollte am Traeger [$SELBSTPRUEFUNG_TRAEGER] fallen. Fuehrt dieses Repo dort seinen EIGENEN Traeger (skip-if-present, ADR-0054 Festlegung 1), nennt SELBSTPRUEFUNG_MSG_ROT eine Message, die jener aufhaelt."
 		fi
 		nun_head="$(git -C "$klon" rev-parse HEAD)"
 		if [ "$nun_head" != "$vorher_head" ]; then
@@ -130,7 +171,7 @@ for fall in rot gruen; do
 	else
 		if [ "$rc" -ne 0 ]; then
 			printf '%s\n' "$out" >&2
-			fehler "der Commit '$msg' faellt am Traeger (Exit $rc) — erwartet war ein Durchgang; der Traeger haelt dann auch auf, was er durchlassen soll."
+			fehler "der Commit '$msg' faellt am Traeger (Exit $rc) — erwartet war ein Durchgang. Fuehrt dieses Repo an [$SELBSTPRUEFUNG_TRAEGER] seinen EIGENEN Traeger, nennt SELBSTPRUEFUNG_MSG_GRUEN eine Message, die jener durchlaesst."
 		fi
 		betreff="$(git -C "$klon" log -1 --format=%s)"
 		if [ "$betreff" != "$msg" ]; then
@@ -148,9 +189,9 @@ if [ "$gate_rc" -ne 0 ]; then
 	printf '%s\n' "$gate_out" >&2
 	fehler "[$SELBSTPRUEFUNG_GATE] im Klon endet mit Exit $gate_rc — der Klon traegt den Stand von HEAD, und der ist damit nicht gruen."
 fi
-# Die letzte Zeile des Gate-Laufs steht mit da: sie zeigt, WELCHES Kommando lief.
-# Ohne sie waere von aussen nicht zu unterscheiden, ob der gesetzte Marker den Lauf
-# gelenkt hat oder die Belegung.
-echo "selbstpruefung: GATE — [$SELBSTPRUEFUNG_GATE] im Klon ist Exit 0. Letzte Zeile:"
-printf '%s\n' "$gate_out" | sed '/^[[:space:]]*$/d' | tail -n 1 | sed 's/^/selbstpruefung:   /'
-echo "selbstpruefung: OK — der Traeger [$SELBSTPRUEFUNG_TRAEGER] reist mit dem Klon, seine Aktivierung nicht; [$SELBSTPRUEFUNG_AKTIVIERUNG] setzt core.hooksPath, danach faellt ein Commit OHNE Kennung und geht einer MIT Kennung durch, und [$SELBSTPRUEFUNG_GATE] laeuft im Klon gruen. Nicht geprueft: ob der Traeger jeden Commit-Pfad erreicht (--no-verify, Werkzeug-Commits, andere Aufrufformen)."
+# DIE GANZE AUSGABE, nicht ihre letzte Zeile: was ein Kommando hinterlaesst, ist
+# das einzige, woran von aussen abzulesen ist, WELCHES lief. Eine einzelne Zeile
+# stammt aus einem fremden Werkzeug und traegt diese Unterscheidung nicht.
+echo "selbstpruefung: GATE — [$SELBSTPRUEFUNG_GATE] im Klon ist Exit 0. Ausgabe:"
+printf '%s\n' "$gate_out" | sed 's/^/selbstpruefung:   /'
+echo "selbstpruefung: OK — der Traeger [$SELBSTPRUEFUNG_TRAEGER] reist mit dem Klon, seine Aktivierung nicht; [$SELBSTPRUEFUNG_AKTIVIERUNG] nimmt genau ihn in Betrieb, danach faellt '$SELBSTPRUEFUNG_MSG_ROT' und geht '$SELBSTPRUEFUNG_MSG_GRUEN' durch, und [$SELBSTPRUEFUNG_GATE] laeuft im Klon gruen. Nicht geprueft: ob der Traeger jeden Commit-Pfad erreicht (--no-verify, Werkzeug-Commits, andere Aufrufformen)."

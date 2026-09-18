@@ -6,21 +6,31 @@
 # fuehrte jeder Gate-Lauf einen Klon mit, und ein rotes Ergebnis waere nicht
 # mehr vom roten Klon-Lauf zu unterscheiden. Es wird ausdruecklich gerufen.
 #
-# DREI MARKER, JE MIT BELEGUNG. Sie werden an das Skript durchgereicht und
-# koennen am Aufruf gesetzt werden:
+# DIESE DATEI IST KONVERGENT (ADR-0007 Festlegung 3): jeder Lauf des Werkzeugs
+# schreibt sie kanonisch neu, und ein Edit an den Belegungen unten ist danach
+# still weg. Sie sind darum die VORGABE, nicht der Setz-Ort. Gesetzt wird am
+# Aufruf
 #   make selbstpruefung SELBSTPRUEFUNG_GATE='make baseline-verify'
-# Der Lauf nennt in seiner ersten Zeile die Werte, mit denen er faehrt.
+# oder dauerhaft im Makefile des Repos — dort, wo dieses Fragment eingebunden
+# wird, und vor dem `include`, damit die `?=` hier nicht mehr greifen. Der
+# Traeger unter .githooks/ ist der eine Pfad mit der anderen Klasse
+# (skip-if-present, ADR-0054): er gehoert dem Repo und bleibt unberuehrt.
 #
 # ABHAENGIGKEIT. git, make und coreutils; was das Gate-Kommando braucht,
 # bringt es selbst mit.
 .PHONY: selbstpruefung
 
-# Der Traeger im Klon — der Name gehoert git, das Verzeichnis dem Repo.
+# Der Traeger im Klon — der Name gehoert git, das Verzeichnis dem Repo. Der
+# Lauf haelt ihn gegen den Hook, den git nach der Aktivierung wirklich ruft.
 SELBSTPRUEFUNG_TRAEGER ?= .githooks/commit-msg
 # Der eine Schritt zwischen liegendem und wirksamem Traeger.
 SELBSTPRUEFUNG_AKTIVIERUNG ?= make hooks-install
 # Das Kommando, das im Klon gruen laufen muss.
 SELBSTPRUEFUNG_GATE ?= make gates
+# Die zwei Commit-Messages. Ein Repo mit EIGENEM Traeger nennt hier je eine,
+# die jener aufhaelt bzw. durchlaesst.
+SELBSTPRUEFUNG_MSG_ROT ?= Selbstpruefung ohne Kennung
+SELBSTPRUEFUNG_MSG_GRUEN ?= Selbstpruefung mit Kennung LH-FA-01
 
 # Fehlt das Skript, sagt dieses Ziel das und bricht ab, statt auf ein
 # fehlendes Programm zu zeigen.
@@ -29,4 +39,6 @@ selbstpruefung: ## die emittierte Durchsetzungsschicht auf einem frischen Klon s
 	@SELBSTPRUEFUNG_TRAEGER="$(SELBSTPRUEFUNG_TRAEGER)" \
 	 SELBSTPRUEFUNG_AKTIVIERUNG="$(SELBSTPRUEFUNG_AKTIVIERUNG)" \
 	 SELBSTPRUEFUNG_GATE="$(SELBSTPRUEFUNG_GATE)" \
+	 SELBSTPRUEFUNG_MSG_ROT="$(SELBSTPRUEFUNG_MSG_ROT)" \
+	 SELBSTPRUEFUNG_MSG_GRUEN="$(SELBSTPRUEFUNG_MSG_GRUEN)" \
 	 bash tools/harness/selbstpruefung.sh
