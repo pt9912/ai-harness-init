@@ -144,7 +144,17 @@ Keines steht daneben.
       der Aggregator des Ziels bindet das Fragment über `include harness/mk/*.mk` ein, der
       Lauf endet mit Exit 0 und die Sicht liegt am **deklarierten** Zielort. Gemessen ist
       ein gesetzter Marker an dem, **was entsteht**, nicht an seiner Erwähnung in der
-      Ausgabe. Der Erzeuger fügt dem Ziel keine Abhängigkeit hinzu: er liest Text — kein
+      Ausgabe. **Der Spec-Marker lenkt dabei keine Ableitung**, sondern nennt den Maßstab,
+      gegen den der Leser die Sicht hält — die Kennungs-Zelle der ausgelieferten Fassung
+      ist ein Code-Span (LP3). **Zeigt er auf nichts, sagt der Lauf das:** eine Sicht, die
+      einen Maßstab nennt, den es im Ziel nicht gibt, behauptet Prüfbarkeit, die niemand
+      einlösen kann — derselbe Satz wie in
+      [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6),
+      eine Ebene tiefer. Ein Abbruch ist es nicht: die Sicht entsteht ohne die Spec-Datei
+      vollständig, nur ihr Maßstab fehlt. **Rot durch:** den Hinweis herausnehmen und den
+      Marker auf einen Pfad setzen, den das Ziel nicht führt → der Fall in
+      [`test/e2e-abdeckung.bats`](../../../../test/e2e-abdeckung.bats) sieht eine Ausgabe
+      ohne den Hinweis und fällt. Der Erzeuger fügt dem Ziel keine Abhängigkeit hinzu: er liest Text — kein
       Container, kein Netz
       ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)). **Und
       ein zweiter Lauf ohne geänderte Deklaration schreibt die Sicht nicht neu und sagt
@@ -166,9 +176,11 @@ Keines steht daneben.
       steht dort nicht mehr — die Stufe prüft die **Sicht**, nicht das E2E, und das ist
       dieselbe Grenze, die [`LH-FA-12`](../../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren)
       §Abgrenzung zieht. Damit führt [`docs/user/e2e-abdeckung.md`](../../../../docs/user/e2e-abdeckung.md)
-      die Kennung in dieser Zeile. **Kein Gate wird davon rot:** der Erzeuger prüft, ob der
-      Anker auflöst, nicht *welche* Kennung dasteht, und `make docs-check` prüft an der
-      Tabelle nur die Verweise. Träger sind dieser DoD-Punkt und das Review.
+      die Kennung in dieser Zeile. **Kein Gate wird davon rot:** unsere Fassung prüft, ob
+      die genannte Kennung im Lastenheft eine **Überschrift** hat — nicht, ob es die
+      **richtige** Kennung für diese Stufe ist; die ausgelieferte prüft auch das erste
+      nicht, und `make docs-check` prüft an der Tabelle nur die Verweise. Träger sind
+      dieser DoD-Punkt und das Review.
 - [ ] **Die Sicht entsteht aus den Deklarationen des Ziels, und beide Lücken-Richtungen
       fallen laut.** Die emittierte `selbstpruefung.sh` führt eine Stufen-Kopfzeile in der
       Form, die der Erzeuger liest, und darin den Aufruf, der die Stufe deklariert — die
@@ -189,16 +201,24 @@ Keines steht daneben.
       [`docs/user/e2e-abdeckung.md`](../../../../docs/user/e2e-abdeckung.md) ist mit
       `make e2e-abdeckung` neu erzeugt, nicht von Hand gedreht — dieselbe Mechanik, die im
       Ziel läuft, ist damit hier real erprobt. **Die zwei Fassungen trennt genau eine
-      Regel, und sie ist gewollt:** Löst eine deklarierte Kennung in der Spec des Ziels
-      nicht auf, schreibt die **emittierte** Fassung sie als Code-Span **ohne Verweis** und
-      läuft weiter — die benannte Grenze von
-      [`LH-FA-12`](../../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren);
-      unsere Fassung bricht an derselben Stelle ab, weil sie über *unser* Lastenheft
-      urteilt. Wer die zwei angleicht, hebt eine Zusage auf. **Rot durch:** eine der zwei
-      Fassungen in der Spaltenfolge stehen lassen → `make test` fällt zweifach (Halter-Fall
-      gegen den Ausgang des Erzeugers, neuer Fall gegen die Kopfzeile der emittierten
-      Fassung); und eine nicht auflösende Kennung in eine Ziel-Deklaration setzen → bricht
-      die emittierte Fassung ab, statt den Code-Span zu schreiben, fällt der Fall.
+      Regel, und sie hängt am Träger:** Die **ausgelieferte** Fassung schreibt **jede**
+      Kennung als Code-Span und leitet keinen Anker ab — ein Verweis brauchte einen Anker,
+      den dieses Werkzeug aus einer fremden Überschrift nachbilden müsste, und eine
+      Nachbildung im fremden Repo kann es weder kalibrieren noch halten; ein Code-Span
+      behauptet nichts. **Unsere** Fassung leitet ab und verweist, weil ihr Träger hier
+      existiert: `make docs-check` prüft in `make gates` genau den Ausgang dieses Erzeugers,
+      und eine Kennung ohne Überschrift im Lastenheft bricht den Lauf ab, statt einen Link
+      ohne Ziel zu schreiben. Wer die zwei angleicht, nimmt der einen ihren Träger oder der
+      anderen ihre Zurückhaltung. **Rot durch:** (a) eine der zwei Fassungen in der
+      Spaltenfolge stehen lassen → `make test` fällt zweifach (Halter-Fall gegen den
+      Ausgang des Erzeugers, Fall gegen die Kopfzeile der ausgelieferten Fassung); (b) der
+      ausgelieferten Fassung die Verweis-Form geben — die Zelle als Link statt als
+      Code-Span → der Fall, der die Kennungs-Zelle der emittierten Sicht gegen die
+      Code-Span-Form hält, fällt; (c) einer Deklaration in `harness/tools/full-smoke.sh`
+      eine Kennung ohne Überschrift im Lastenheft geben → unser `make e2e-abdeckung` endet
+      mit `hat keine Ueberschrift`, Exit 1. Nimmt man **diesen Abbruch** heraus, schreibt
+      unsere Fassung einen Link ohne Ziel und `make docs-check` fällt im Modul `anchors` —
+      damit ist auch der Träger, auf dem ihre Ableitung ruht, einmal rot gesehen.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -346,6 +366,19 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 - **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
 - **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
 - **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+- **Adressen, die bei Abschluss zu entscheiden sind** *(hier notiert, nicht hier
+  entschieden)*:
+  - **Architect —** [`LH-FA-12`](../../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren)
+    §Benannte Grenze ist wörtlich wahr und ihre Implikatur nicht mehr: Sie stellt den
+    Code-Span als **Ausnahme** für die nicht auflösende Kennung dar, während die
+    ausgelieferte Fassung ihn als **Regel** für jede schreibt. Das Lastenheft ist
+    Vertrags-Stratum und wird hier nicht angefasst (§1 *Ausdrücklich NICHT* Punkt 2) — die
+    Adresse steht, den Text schreibt der Architect.
+  - **Beobachtung —** der Hinweis auf eine fehlende Spec-Datei fiel mit dem Verweis-Zweig
+    weg, während die geschriebene Sicht sie weiter als Maßstab des Lesers nennt: eine
+    Zusage, die neben ihrer geänderten Ableitung stehenblieb. Die Route liegt in LP1, der
+    Beleg gehört nach
+    `../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
