@@ -40,7 +40,11 @@
 # ein Urteil, das der Review haelt.
 #
 # DER ANKER-SLUG der Kennungsspalte wird aus der Ueberschrift im Lastenheft ABGELEITET
-# statt gepflegt; eine deklarierte Kennung ohne Ueberschrift bricht darum ab, statt
+# statt gepflegt, und die Ableitung wird danach auf VOLLSTAENDIGKEIT geprueft: sie
+# loescht eine Aufzaehlung von Zeichen, und was darin fehlt — ein Guillemet etwa — bliebe
+# im Slug stehen, waehrend der Markdown-Anker es fallen laesst. Bleibt im Slug etwas
+# uebrig, das nicht Kleinbuchstabe, Ziffer, '-', '_' oder ein deutscher Umlaut ist, bricht
+# der Lauf ab (slug_sicher). Eine deklarierte Kennung ohne Ueberschrift bricht ebenso ab, statt
 # einen Link ohne Ziel zu schreiben. Dass der abgeleitete Link aufloest, haelt das
 # Modul `anchors` von `make docs-check`.
 #
@@ -79,20 +83,29 @@ SATZZEICHEN='!"#$%&'"'"'()*+,./:;<=>?@'
 BT='`'
 LASTENHEFT_REL="spec/lastenheft.md"
 
-if [ "$#" -ne 2 ]; then
-	echo "Aufruf: e2e-abdeckung.sh <quelle> <ziel>" >&2
+if [ "$#" -lt 2 ] || [ "$#" -gt 3 ]; then
+	echo "Aufruf: e2e-abdeckung.sh <quelle> <ziel> [<spec>]" >&2
 	exit 2
 fi
 quelle="$1"
 ziel="$2"
-lastenheft="$HIER/../../$LASTENHEFT_REL"
+spec="$HIER/../../$LASTENHEFT_REL"
+# <spec> ist derselbe TEST-SEAM wie <quelle> und <ziel>: ohne ihn liest der Erzeuger das
+# Lastenheft DIESES Repos, und im regulaeren Lauf ist genau das gewollt. Mit ihm faehrt
+# ein Test die Anker-Ableitung ueber einer Ueberschrift, die dieses Lastenheft nicht
+# fuehrt, ohne es anzufassen. Der Pfad gilt dann fuer BEIDES — das Nachschlagen und den
+# geschriebenen Link —, sonst zeigte der Verweis auf eine andere Datei als die gelesene.
+if [ "$#" -eq 3 ]; then
+	spec="$3"
+	LASTENHEFT_REL="$3"
+fi
 
 if [ ! -f "$quelle" ]; then
 	echo "e2e-abdeckung: FEHLER — die Quelle liegt nicht: $quelle" >&2
 	exit 1
 fi
-if [ ! -f "$lastenheft" ]; then
-	echo "e2e-abdeckung: FEHLER — das Lastenheft liegt nicht: $lastenheft — die Kennungsspalte leitet ihre Anker daraus ab" >&2
+if [ ! -f "$spec" ]; then
+	echo "e2e-abdeckung: FEHLER — das Lastenheft liegt nicht: $spec — die Kennungsspalte leitet ihre Anker daraus ab" >&2
 	exit 1
 fi
 
@@ -115,7 +128,7 @@ slug_fuer() {
 			sub(/[[:space:]].*$/, "", kurz)
 			if (kurz == k) { print t; exit }
 		}
-	' "$lastenheft")"
+	' "$spec")"
 	[ -n "$titel" ] || return 0
 	printf '%s' "$titel" \
 		| tr '[:upper:]' '[:lower:]' \
@@ -125,6 +138,22 @@ slug_fuer() {
 		| sed -e 's/\[//g' -e 's/\\//g' -e 's/\]//g' -e 's/\^//g' \
 		| sed -e 's/`//g' -e 's/[{-~]//g' \
 		| sed -e 's/ /-/g'
+}
+
+# slug_sicher <slug> — sagt, ob der abgeleitete Anker vollstaendig ist.
+#
+# WARUM DIE ABLEITUNG ALLEIN NICHT GENUEGT: sie loescht eine AUFZAEHLUNG von Zeichen.
+# Ein Satzzeichen, das darin nicht steht — ein Guillemet etwa —, bleibt im Slug stehen,
+# waehrend der Markdown-Anker der Ueberschrift es fallen laesst; der Link zeigte dann ins
+# Leere, und zwar bei Exit 0. Geprueft wird darum der BESTAND des Slugs statt der Liste
+# der Loeschungen: uebrig bleiben duerfen Kleinbuchstaben, Ziffern, '-' und '_' sowie die
+# deutschen Umlaute und das scharfe s, deren Bytes die Ableitung oben ausdruecklich
+# stehen laesst. Was sonst uebrig ist, heisst: dieser Erzeuger kann den Anker nicht
+# garantieren — und schreibt ihn deshalb nicht.
+slug_sicher() {
+	local rest
+	rest="$(printf '%s' "$1" | sed -e 's/[äöüß]//g' -e 's/[a-z0-9_-]//g')"
+	[ -z "$rest" ]
 }
 
 stufen="$(grep -nE "$STUFEN_MUSTER" "$quelle" || true)"
@@ -235,7 +264,11 @@ while IFS=: read -r start _rest; do
 		for k in $kennungen; do
 			slug="$(slug_fuer "$k")"
 			if [ -z "$slug" ]; then
-				echo "e2e-abdeckung: FEHLER — die deklarierte Kennung $k hat keine Ueberschrift in $lastenheft; die Kennungsspalte bekaeme einen Link ohne Ziel ($quelle:$rufzeile)." >&2
+				echo "e2e-abdeckung: FEHLER — die deklarierte Kennung $k hat keine Ueberschrift in $spec; die Kennungsspalte bekaeme einen Link ohne Ziel ($quelle:$rufzeile)." >&2
+				exit 1
+			fi
+			if ! slug_sicher "$slug"; then
+				echo "e2e-abdeckung: FEHLER — der Anker der Kennung $k ist aus ihrer Ueberschrift nicht sicher abzuleiten: [$slug] traegt ein Zeichen, das diese Ableitung nicht kennt, waehrend der Markdown-Anker es fallen laesst. Die Kennungsspalte bekaeme einen Link ohne Ziel ($quelle:$rufzeile)." >&2
 				exit 1
 			fi
 			if [ -n "$links" ]; then

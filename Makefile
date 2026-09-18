@@ -42,7 +42,7 @@ DCHECK_TAG := $(lastword $(subst :, ,$(DCHECK_IMAGE)))
 # -h unterdrueckt den Dateinamen-Praefix: MAKEFILE_LIST traegt mehrere Dateien,
 # und ohne -h trennt awk am Doppelpunkt des Praefixes statt am Zielnamen.
 help: ## Targets anzeigen
-	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | LC_ALL=C sort -t: -k1,1 | \
+	@grep -hE '^[a-zA-Z0-9_-]+:.*?## ' $(MAKEFILE_LIST) | LC_ALL=C sort -t: -k1,1 | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-18s %s\n", $$1, $$2}'
 
 test: test-bats test-go ## Harness-Tests (bats) + Go-Unit-Tests (go test in Docker) — Docker-only (ADR-0003/0004)

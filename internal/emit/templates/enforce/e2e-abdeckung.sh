@@ -15,6 +15,11 @@
 # bis zum Dateiende. In der Region steht ein Aufruf
 #   e2e_abdeckung "<Kennungen>" "<Kurzbeschreibung>" "<Anker>"
 # und der Anker ist ein woertlicher Ausschnitt aus einer ANDEREN Zeile derselben Stufe.
+# DREI ZEILEN, NICHT ZWEI: die Deklaration ist ein Funktionsaufruf, und ihre Funktion
+# gehoert dazu — einmal, vor der ersten Stufe. Wer nur Kopfzeile und Aufruf uebernimmt,
+# bekommt beim Lauf seines E2E ein `command not found`:
+#   e2e_abdeckung() { echo "abdeckung: $1 — $2 (Anker: $3)"; }
+# Was die Funktion ausgibt, ist frei; dieser Erzeuger liest den TEXT des Aufrufs.
 #
 # DIE ZWEI LUECKEN-RICHTUNGEN, beide laut:
 #   (a) DEKLARATION OHNE STUFE — der Anker loest in der Region SEINER Stufe nicht
@@ -139,6 +144,22 @@ slug_fuer() {
 		| sed -e 's/ /-/g'
 }
 
+# slug_sicher <slug> — sagt, ob der abgeleitete Anker vollstaendig ist.
+#
+# WARUM DIE ABLEITUNG ALLEIN NICHT GENUEGT: sie loescht eine AUFZAEHLUNG von Zeichen.
+# Ein Satzzeichen, das darin nicht steht — ein Guillemet etwa —, bleibt im Slug stehen,
+# waehrend der Markdown-Anker der Ueberschrift es fallen laesst; der Link zeigte dann ins
+# Leere, und zwar bei Exit 0. Geprueft wird darum der BESTAND des Slugs statt der Liste
+# der Loeschungen: uebrig bleiben duerfen Kleinbuchstaben, Ziffern, '-' und '_' sowie die
+# deutschen Umlaute und das scharfe s, deren Bytes die Ableitung oben ausdruecklich
+# stehen laesst. Was sonst uebrig ist, heisst: dieser Erzeuger kann den Anker nicht
+# garantieren — und schreibt ihn deshalb nicht.
+slug_sicher() {
+	local rest
+	rest="$(printf '%s' "$1" | sed -e 's/[äöüß]//g' -e 's/[a-z0-9_-]//g')"
+	[ -z "$rest" ]
+}
+
 stufen="$(grep -nE "$STUFEN_MUSTER" "$quelle" || true)"
 if [ -z "$stufen" ]; then
 	echo "e2e-abdeckung: FEHLER — $quelle fuehrt keine Stufen-Kopfzeile, und eine Sicht ueber null Stufen sagt nichts: ihr Gruen belegte eine Abdeckung, die niemand deklariert hat." >&2
@@ -146,6 +167,9 @@ if [ -z "$stufen" ]; then
 	echo "    echo \"$E2E_ABDECKUNG_PRAEFIX: <was die Stufe tut> ...\"" >&2
 	echo "  Und in ihrer Region, auf einer eigenen Zeile, die Deklaration:" >&2
 	echo "    e2e_abdeckung \"<Kennungen>\" \"<Kurzbeschreibung>\" \"<Anker aus einer anderen Zeile dieser Stufe>\"" >&2
+	echo "  Die Deklaration ist ein Funktionsaufruf und braucht ihre Funktion — EINE Zeile, irgendwo" >&2
+	echo "  vor der ersten Stufe; ohne sie endet der Lauf des E2E mit 'command not found':" >&2
+	echo "    e2e_abdeckung() { echo \"abdeckung: \$1 — \$2 (Anker: \$3)\"; }" >&2
 	echo "  Faehrt dieses Repo sein E2E woanders oder mit einem anderen Wort am Zeilenanfang, nennen es die Marker:" >&2
 	echo "    make e2e-abdeckung E2E_ABDECKUNG_QUELLE=<pfad> E2E_ABDECKUNG_PRAEFIX=<wort>" >&2
 	echo "  Dauerhaft in einem eigenen Fragment unter harness/mk/, das dieses Werkzeug nicht schreibt (etwa harness/mk/vorgaben.mk)." >&2
@@ -268,13 +292,20 @@ while IFS=: read -r start _rest; do
 			if [ -n "$links" ]; then
 				links="$links, "
 			fi
-			if [ -z "$slug" ]; then
+			if [ -z "$slug" ] || ! slug_sicher "$slug"; then
 				# KEIN LINK OHNE ZIEL: die Kennung steht als Code-Span da. Der Lauf zaehlt
 				# sie und nennt sie unten — still waere das eine Abdeckung, die einen
-				# Verweis behauptet, den sie nicht hat.
+				# Verweis behauptet, den sie nicht hat. ZWEI GRUENDE fuehren hierher, und
+				# der Hinweis nennt den zutreffenden: es gibt keine Ueberschrift, oder aus
+				# ihr ist der Anker nicht sicher abzuleiten.
+				if [ -z "$slug" ]; then
+					grund="sie hat keine \`### \`-Ueberschrift in $spec"
+				else
+					grund="ihr Anker ist aus der Ueberschrift nicht sicher abzuleiten: [$slug] traegt ein Zeichen, das diese Ableitung nicht kennt, waehrend der Markdown-Anker es fallen laesst"
+				fi
 				links="${links}\`$k\`"
 				ohne_link=$((ohne_link + 1))
-				echo "e2e-abdeckung: Hinweis — die Kennung $k hat keine \`### \`-Ueberschrift in $spec ($quelle:$rufzeile); sie steht als Code-Span ohne Verweis."
+				echo "e2e-abdeckung: Hinweis — die Kennung $k bekommt keinen Verweis ($quelle:$rufzeile): $grund. Sie steht als Code-Span ohne Verweis."
 			else
 				links="${links}[\`$k\`](${rel_prefix}${spec}#${slug})"
 			fi

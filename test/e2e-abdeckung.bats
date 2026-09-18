@@ -227,6 +227,33 @@ EOF
     grep -qF "$schluessel" "$ERZEUGER"
     grep -qF "$schluessel" "$(emittiert)"
   done
+
+  # DIE ANKER-ABLEITUNG. Sie ist das Stueck, das LINKS in einen fremden Baum schreibt;
+  # laeuft sie auseinander, schreibt eine der zwei Fassungen Verweise, die die andere
+  # nicht schriebe. Verglichen werden die drei Zeichen-Mengen und die zwei Funktionen.
+  for zeile in TYPOGRAFIE ANFUEHRUNGEN SATZZEICHEN; do
+    [ "$(grep -c "^$zeile=" "$ERZEUGER")" -eq 1 ]
+    [ "$(grep -c "^$zeile=" "$(emittiert)")" -eq 1 ]
+    [ "$(sed -n "s/^$zeile=//p" "$ERZEUGER")" = "$(sed -n "s/^$zeile=//p" "$(emittiert)")" ]
+  done
+  # slug_sicher woertlich gleich: der Waechter, der einen unvollstaendig abgeleiteten
+  # Anker erkennt, darf nicht in einer Fassung strenger sein als in der anderen.
+  sed -n '/^slug_sicher() {/,/^}/p' "$ERZEUGER" > "$TMP/sicher-hier.txt"
+  sed -n '/^slug_sicher() {/,/^}/p' "$(emittiert)" > "$TMP/sicher-dort.txt"
+  [ "$(wc -l < "$TMP/sicher-hier.txt")" -ge 4 ]
+  cmp -s "$TMP/sicher-hier.txt" "$TMP/sicher-dort.txt"
+
+  # slug_fuer gleich BIS AUF DEN EINEN GEWOLLTEN UNTERSCHIED, und der wird hier benannt
+  # statt verschwiegen: die emittierte Fassung traegt den Waechter `spec_da`, weil eine
+  # fehlende Spec-Datei im Ziel kein Befund ist; unsere bricht davor schon ab, weil das
+  # Lastenheft dieses Repos liegen muss. Genau diese eine Zeile wird herausgerechnet —
+  # steht in der emittierten Fassung eine zweite Abweichung, faellt der Vergleich.
+  sed -n '/^slug_fuer() {/,/^}/p' "$ERZEUGER" > "$TMP/slug-hier.txt"
+  sed -n '/^slug_fuer() {/,/^}/p' "$(emittiert)" | grep -v 'spec_da' > "$TMP/slug-dort.txt"
+  [ "$(grep -c 'spec_da' "$ERZEUGER")" -eq 0 ]
+  [ "$(sed -n '/^slug_fuer() {/,/^}/p' "$(emittiert)" | grep -c 'spec_da')" -eq 1 ]
+  [ "$(wc -l < "$TMP/slug-hier.txt")" -ge 15 ]
+  cmp -s "$TMP/slug-hier.txt" "$TMP/slug-dort.txt"
 }
 
 @test "emittiert: die mitgelieferte Selbstpruefung traegt eine Stufe mit ihrer Deklaration, und die Zelle bleibt ohne geratene Kennung" {
@@ -355,4 +382,36 @@ EOF
   [ "$(grep -c '| Stufe 1 | `anders/eigenes-e2e.sh:' sicht/abdeckung.md)" -eq 1 ]
   # SPEC: der Verweis loest gegen die GENANNTE Datei auf, nicht gegen eine Vorgabe.
   grep -qF '(../anders/anforderungen.md#rq-7--eigene-anforderung)' sicht/abdeckung.md
+}
+
+@test "anker: ein abgeleiteter Anker, der die Ueberschrift nicht trifft, wird nicht als Verweis geschrieben" {
+  # DIE UEBERSCHRIFT AUS DEM BEFUND. Die Ableitung loescht eine AUFZAEHLUNG von Zeichen;
+  # die Guillemets stehen nicht darin und blieben im Slug stehen, waehrend der
+  # Markdown-Anker sie fallen laesst. Ohne den Waechter entsteht daraus ein Verweis bei
+  # Exit 0 — und das Doku-Gate des Ziels faellt auf einer Datei, die dieses Werkzeug
+  # selbst geschrieben hat.
+  fixture "$TMP/anker"
+  sed -i 's@"LH-FA-01"@"RQ-8"@' "$TMP/anker/tools/harness/mein-e2e.sh"
+  printf '### RQ-8 — Zitat »Wert«\n\nText.\n' > "$TMP/anker/spec/lastenheft.md"
+  cd "$TMP/anker"
+  # Die Ausgangslage belegen: die Ueberschrift ist da, die Kennung loest also auf — der
+  # Fall misst NICHT den Zweig "keine Ueberschrift".
+  [ "$(grep -c '^### RQ-8 ' spec/lastenheft.md)" -eq 1 ]
+
+  # (a) DIE EMITTIERTE FASSUNG: Code-Span statt Verweis, Exit 0, und der Lauf sagt warum.
+  run env E2E_ABDECKUNG_QUELLE=tools/harness/mein-e2e.sh bash "$(emittiert)"
+  [ "$status" -eq 0 ]
+  [ "$(grep -c '^| `RQ-8` |' docs/user/e2e-abdeckung.md)" -eq 1 ]
+  [ "$(grep -c 'lastenheft.md#' docs/user/e2e-abdeckung.md)" -eq 0 ]
+  printf '%s' "$output" | grep -qF 'nicht sicher abzuleiten'
+  # Der Zaehler der Schluss-Zeile nennt sie: still ist der Fall nicht.
+  printf '%s' "$output" | grep -qF '1 ohne Verweis'
+
+  # (b) UNSERE FASSUNG ueber derselben Lage: Abbruch mit dem abgeleiteten Slug im Klartext.
+  sed -i 's@^echo "selbstpruefung: @echo "full-smoke: @' tools/harness/mein-e2e.sh
+  run bash "$ERZEUGER" tools/harness/mein-e2e.sh docs/user/unsere.md spec/lastenheft.md
+  [ "$status" -ne 0 ]
+  printf '%s' "$output" | grep -qF 'nicht sicher abzuleiten'
+  printf '%s' "$output" | grep -qF 'Link ohne Ziel'
+  [ ! -f docs/user/unsere.md ]
 }

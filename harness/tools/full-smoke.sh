@@ -39,7 +39,7 @@ HIER="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Hook-Wrapper (ein Shell-Skript, das das Host-Binaer startet und docker nicht nennt) und
 # make e2e-abdeckung (sein Rezept im Ziel ist bash + coreutils ueber dem Quelltext eines
 # Skripts; es nennt docker nicht):
-#   (B) … | grep -cE ' -n |span-clean|bash "\$wrapper"|e2e-abdeckung'
+#   (B) … | grep -cE ' -n |span-clean|bash "\$wrapper"| e2e-abdeckung '
 # Der Rest teilt sich in make-Stufen und Aufrufe des Werkzeugs:
 #   (C) … | grep -c 'tmpbin/ai-harness-init'
 # JEDE make-Stufe dieser Restmenge traegt eine Einordnung, dazu die zwei Werkzeug-Aufrufe,
@@ -2920,6 +2920,21 @@ if ! grep -qF -- '| Spec-Kennung | Kurzbeschreibung | Stufe | Ort |' "$abd_ziel"
 	cat "$abd_ziel" >&2
 	exit 1
 fi
+# (a2) DAS KOMMANDO STEHT IM INDEX DES ZIELS. `make help` ist der eine Index, den ein
+# gebootstrapptes Repo von sich aus fuehrt — ein Werkzeug, das dort nicht erscheint,
+# findet niemand. Gelesen wird die AUSGABE des Ziels, nicht das Rezept: das Muster des
+# Hilfe-Rezepts entscheidet, welche Ziele es trifft, und eine Ziffer im Namen hat es
+# schon einmal fallen lassen. Der Schwester-Eintrag `selbstpruefung` steht daneben in
+# derselben Pruefung, damit ein leerer Index nicht als Treffer durchgeht.
+hilfe_out="$( make --no-print-directory -C "$tmprepo_selbst" help 2>&1 )" || true
+for eintrag in e2e-abdeckung selbstpruefung; do
+	if ! grep -qE "^[[:space:]]*${eintrag}[[:space:]]" <<<"$hilfe_out"; then
+		echo "full-smoke: FEHLER — sprachlos: make help des Ziels fuehrt [$eintrag] nicht — ein Kommando, das in keinem Index des Ziels steht, findet der Adopter nicht." >&2
+		printf '%s\n' "$hilfe_out" >&2
+		exit 1
+	fi
+done
+
 # (b) SCHREIBEN NUR BEI ABWEICHUNG.
 abd2_rc=0
 abd2_out="$( make --no-print-directory -C "$tmprepo_selbst" e2e-abdeckung 2>&1 )" || abd2_rc=$?
@@ -2982,4 +2997,4 @@ echo "full-smoke: OK — LIFECYCLE-WECHSEL IM ZIEL: make slice-mv ist kein Gate 
 echo "full-smoke: OK — COMMIT-KENNUNG IM ZIEL: .githooks/commit-msg liegt ausfuehrbar im Ziel und reist mit dem Klon, seine Aktivierung nicht — make hooks-install setzt core.hooksPath und ist kein Gate (steht in keiner gates-Kette); danach faellt ein Commit OHNE Kennung mit der Meldung der Pruefung und entsteht nicht, einer MIT Kennung geht durch, und git commit --no-verify umgeht den Traeger; die Reichweite (Umgehung, Anwesenheit-statt-Wahrheit, die von keinem Commit-Waechter pruefbare zweite Haelfte der Zusage, die mitgenommenen Werkzeug-Commits) steht im Ziel geschrieben."
 echo "full-smoke: OK — KLASSE DES COMMIT-TRAEGERS (ADR-0054 Festlegung 1 und 3): der Traeger liegt skip-if-present und die Pruefung daneben konvergent — ein FREIER Pfad bekommt den Traeger des Werkzeugs (er liegt ausfuehrbar im Ziel und ruft die Pruefung daneben), ein BELEGTER bleibt Byte fuer Byte unberuehrt und der Lauf nennt Pfad und mitgelieferte Pruefung; die Drift der Pruefung heilte der naechste Lauf, die des Traegers blieb stehen."
 echo "full-smoke: OK — SELBSTPRUEFUNG IM ZIEL (LH-FA-11): das gebootstrappte Repo faehrt make selbstpruefung ueber einem frischen Klon seiner selbst — der Klon traegt keinen core.hooksPath, der Aktivierungsschritt setzt ihn, danach faellt ein Commit OHNE Kennung (HEAD unbewegt) und geht einer MIT Kennung durch, und das Gate-Kommando laeuft im Klon gruen; beide Ausgaenge stehen in EINEM Lauf, das Kommando haengt an keiner gates-Kette des Ziels, und ein am Aufruf gesetzter Marker lenkt den Gate-Schritt (LH-FA-02)."
-echo "full-smoke: OK — E2E-ABDECKUNG IM ZIEL: das gebootstrappte Repo erzeugt mit make e2e-abdeckung die Sicht ueber seine eigenen E2E-Stufen — eine Zeile aus der einen Stufe der mitgelieferten Selbstpruefung, mit dem Gedankenstrich statt einer geratenen Kennung und dem Ort in tools/harness/selbstpruefung.sh; das Kommando haengt an keiner gates-Kette des Ziels (LH-QA-01), der zweite Lauf meldet unveraendert, ein am Aufruf gesetzter Ziel-Marker lenkt die geschriebene Datei (LH-FA-02), und eine Stufe ohne Deklaration faerbt den Erzeuger rot."
+echo "full-smoke: OK — E2E-ABDECKUNG IM ZIEL: das gebootstrappte Repo erzeugt mit make e2e-abdeckung die Sicht ueber seine eigenen E2E-Stufen — eine Zeile aus der einen Stufe der mitgelieferten Selbstpruefung, mit dem Gedankenstrich statt einer geratenen Kennung und dem Ort in tools/harness/selbstpruefung.sh; es steht in make help des Ziels (dem einen Index, den ein gebootstrapptes Repo von sich aus fuehrt) und haengt an keiner gates-Kette (LH-QA-01), der zweite Lauf meldet unveraendert, ein am Aufruf gesetzter Ziel-Marker lenkt die geschriebene Datei (LH-FA-02), und eine Stufe ohne Deklaration faerbt den Erzeuger rot."

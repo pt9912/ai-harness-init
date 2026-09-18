@@ -180,7 +180,7 @@ ordne() {
 # (Rezept im Ziel: rm -rf plus echo), der Hook-Wrapper (ein Shell-Skript, das das
 # Host-Binaer startet und docker nicht nennt) und make e2e-abdeckung (Rezept im Ziel:
 # bash + coreutils ueber dem Quelltext eines Skripts, es nennt docker nicht).
-OHNE_BILD=' -n |span-clean|bash "\$wrapper"|e2e-abdeckung'
+OHNE_BILD=' -n |span-clean|bash "\$wrapper"| e2e-abdeckung '
 
 # abschnitte druckt "<zeile>:<inhalt>" jedes Abschnitts, der seinen eigenen Exit-Code
 # fuehrt — das ist die Menge, ueber der das Kriterium gilt. EIN Ausdruck, hier und im
@@ -195,7 +195,7 @@ abschnitte() { grep -nE '\|\| [a-z_0-9]+=\$\?$' "$SMOKE"; }
     if [ -z "$nr" ]; then continue; fi
     zeile="$(sed -n "${nr}p" "$SMOKE")"
     case "$zeile" in
-      *' -n '*|*span-clean*|*'bash "$wrapper"'*|*e2e-abdeckung*|*tmpbin/ai-harness-init*) continue ;;
+      *' -n '*|*span-clean*|*'bash "$wrapper"'*|*' e2e-abdeckung '*|*tmpbin/ai-harness-init*) continue ;;
     esac
     geprueft=$((geprueft + 1))
     # Das Fenster reicht bis zum naechsten Abschnitt: der Fehlschlag-Zweig eines

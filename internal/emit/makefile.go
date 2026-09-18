@@ -27,7 +27,7 @@ GATE_CHECKS :=
 include harness/mk/*.mk
 
 help: ## Diese Hilfe
-	@grep -hE '^[a-z-]+:.*##' $(MAKEFILE_LIST) | sort | awk 'BEGIN{FS=":.*##"}{printf "  %-14s %s\n",$$1,$$2}'
+	@grep -hE '^[a-z0-9-]+:.*##' $(MAKEFILE_LIST) | sort | awk 'BEGIN{FS=":.*##"}{printf "  %-14s %s\n",$$1,$$2}'
 
 # gates haengt allein an record-gates; record-gates haengt an ALLEN akkumulierten
 # Checks — der Nachweis laeuft strikt nach den Checks (Ordnungskante), waehrend make
