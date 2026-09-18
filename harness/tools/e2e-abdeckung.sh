@@ -173,6 +173,7 @@ er führt den E2E nicht aus, und er schreibt sie nur bei inhaltlicher Abweichung
 ändert sich mit den Deklarationen und mit dem Ort ihrer Quellen — eine Einfügung
 oberhalb einer Stufe verschiebt deren Zeile in der Spalte `Ort`.
 
+Die Spalten stehen in der Folge `Spec-Kennung`, `Kurzbeschreibung`, `Stufe`, `Ort`.
 Die Spalte `Spec-Kennung` nennt die Anforderung, die diese Stufe trägt, als klickbaren
 Verweis in `spec/lastenheft.md`; die Spalte `Kurzbeschreibung` trägt keine Kennung. Die
 Spalte `Stufe` zählt die Stufen-Kopfzeilen in der Reihenfolge des Skripts — eine Stufe
@@ -180,7 +181,7 @@ eröffnet mit ihrer Ausgabe-Kopfzeile und reicht bis zur nächsten. Ob eine hier
 Anforderung eine Lücke ist, urteilt der Leser gegen `spec/lastenheft.md`; ein
 Waisen-Urteil fällt nicht hier.
 
-| Spec-Kennung | Stufe | Ort | Kurzbeschreibung |
+| Spec-Kennung | Kurzbeschreibung | Stufe | Ort |
 | --- | --- | --- | --- |
 KOPF
 
@@ -242,7 +243,7 @@ while IFS=: read -r start _rest; do
 			fi
 			links="${links}[\`$k\`](${rel_prefix}${LASTENHEFT_REL}#${slug})"
 		done
-		printf '| %s | Stufe %s | %s%s:%s%s | %s |\n' "$links" "$stufen_gesamt" "$BT" "$quelle" "$ort" "$BT" "$kurz" >>"$tmp"
+		printf '| %s | %s | Stufe %s | %s%s:%s%s |\n' "$links" "$kurz" "$stufen_gesamt" "$BT" "$quelle" "$ort" "$BT" >>"$tmp"
 		deklarationen=$((deklarationen + 1))
 	done <<<"$region_aufrufe"
 done <<<"$stufen"

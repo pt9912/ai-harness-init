@@ -39,7 +39,7 @@ setup() {
   # Praefix, das der Marker E2E_ABDECKUNG_PRAEFIX nennt.
   STUFEN_MUSTER_ZIEL='^echo "selbstpruefung: .* \.\.\."$'
   # Die Tabellen-Kopfzeile, die BEIDE Fassungen schreiben.
-  KOPFZEILE='| Spec-Kennung | Stufe | Ort | Kurzbeschreibung |'
+  KOPFZEILE='| Spec-Kennung | Kurzbeschreibung | Stufe | Ort |'
 }
 
 stufen() { grep -cE "$STUFEN_MUSTER" "$1"; }
@@ -241,7 +241,7 @@ EOF
   [ "$(grep -c '^| .* | Stufe [0-9]' docs/user/e2e-abdeckung.md)" -eq 1 ]
   # KEINE GERATENE KENNUNG: die Stufe kommt mit dem Werkzeug, die Anforderung gehoert dem
   # Ziel. Ein aufloesender Verweis waere hier die teurere Luege — er saehe richtig aus.
-  [ "$(grep -c '^| — | Stufe 1 | `tools/harness/selbstpruefung.sh:' docs/user/e2e-abdeckung.md)" -eq 1 ]
+  [ "$(grep -c '^| — | .* | Stufe 1 | `tools/harness/selbstpruefung.sh:' docs/user/e2e-abdeckung.md)" -eq 1 ]
   [ "$(grep -c 'lastenheft.md#' docs/user/e2e-abdeckung.md)" -eq 0 ]
   printf '%s' "$output" | grep -qF 'deklariert keine Kennung'
 }

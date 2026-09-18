@@ -192,6 +192,7 @@ done
 	echo "ändert sich mit den Deklarationen und mit dem Ort ihrer Quellen — eine Einfügung"
 	echo "oberhalb einer Stufe verschiebt deren Zeile in der Spalte \`Ort\`."
 	echo
+	echo "Die Spalten stehen in der Folge \`Spec-Kennung\`, \`Kurzbeschreibung\`, \`Stufe\`, \`Ort\`."
 	echo "Die Spalte \`Spec-Kennung\` nennt die Anforderung, die diese Stufe trägt, als Verweis"
 	echo "in \`$spec\`; löst die Kennung dort nicht auf, steht sie ohne Link. Die Spalte"
 	echo "\`Kurzbeschreibung\` trägt keine Kennung. Die Spalte \`Stufe\` zählt die"
@@ -200,7 +201,7 @@ done
 	echo "Ob eine hier fehlende Anforderung eine Lücke ist, urteilt der Leser gegen"
 	echo "\`$spec\`; ein Waisen-Urteil fällt nicht hier."
 	echo
-	echo "| Spec-Kennung | Stufe | Ort | Kurzbeschreibung |"
+	echo "| Spec-Kennung | Kurzbeschreibung | Stufe | Ort |"
 	echo "| --- | --- | --- | --- |"
 } >"$tmp"
 
@@ -258,7 +259,7 @@ while IFS=: read -r start _rest; do
 			links="$OHNE_KENNUNG"
 			ohne_link=$((ohne_link + 1))
 			echo "e2e-abdeckung: Hinweis — Stufe $stufen_gesamt deklariert keine Kennung ($quelle:$rufzeile); die Zelle traegt $OHNE_KENNUNG. Eine Anforderung dieses Repos traegt sie, sobald die Deklaration sie nennt."
-			printf '| %s | Stufe %s | %s%s:%s%s | %s |\n' "$links" "$stufen_gesamt" "$BT" "$quelle" "$ort" "$BT" "$kurz" >>"$tmp"
+			printf '| %s | %s | Stufe %s | %s%s:%s%s |\n' "$links" "$kurz" "$stufen_gesamt" "$BT" "$quelle" "$ort" "$BT" >>"$tmp"
 			deklarationen=$((deklarationen + 1))
 			continue
 		fi
@@ -278,7 +279,7 @@ while IFS=: read -r start _rest; do
 				links="${links}[\`$k\`](${rel_prefix}${spec}#${slug})"
 			fi
 		done
-		printf '| %s | Stufe %s | %s%s:%s%s | %s |\n' "$links" "$stufen_gesamt" "$BT" "$quelle" "$ort" "$BT" "$kurz" >>"$tmp"
+		printf '| %s | %s | Stufe %s | %s%s:%s%s |\n' "$links" "$kurz" "$stufen_gesamt" "$BT" "$quelle" "$ort" "$BT" >>"$tmp"
 		deklarationen=$((deklarationen + 1))
 	done <<<"$region_aufrufe"
 done <<<"$stufen"

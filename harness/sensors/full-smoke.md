@@ -21,7 +21,7 @@ Stufe wurde dann umgebaut, und die Deklaration verlöre ihren Ort.
 
 `make e2e-abdeckung` liest dieselben Aufrufe als **Text** — kein Docker, kein E2E-Lauf —
 und schreibt daraus [`docs/user/e2e-abdeckung.md`](../../docs/user/e2e-abdeckung.md), die
-Tabelle *Anforderung · Stufe · Ort · Kurzbeschreibung*. Beide Lücken-Richtungen fallen
+Tabelle *Anforderung · Kurzbeschreibung · Stufe · Ort*. Beide Lücken-Richtungen fallen
 dort laut aus: eine Deklaration, deren Anker in ihrer Stufe nicht auflöst, und eine
 Stufe ohne Deklaration. Was die Deklaration **nicht** prüft, ist die Zuordnung selbst:
 ob die genannte Anforderung noch zu ihrer Stufe gehört, bleibt ein Urteil, das der

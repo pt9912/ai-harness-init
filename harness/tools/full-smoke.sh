@@ -2910,12 +2910,12 @@ fi
 # ihn als Kommando-Substitution (SC2016), und eine Inline-Suppression ist nach
 # AGENTS.md §3.2 gesperrt.
 abd_bt='`'
-if ! grep -qE "^\| — \| Stufe 1 \| ${abd_bt}tools/harness/selbstpruefung\.sh:[0-9]+${abd_bt} \| " "$abd_ziel"; then
+if ! grep -qE "^\| — \| .* \| Stufe 1 \| ${abd_bt}tools/harness/selbstpruefung\.sh:[0-9]+${abd_bt} \|" "$abd_ziel"; then
 	echo "full-smoke: FEHLER — sprachlos: die eine Zeile der Sicht nennt nicht den Gedankenstrich und den Ort in tools/harness/selbstpruefung.sh — eine geratene Kennung behauptete eine Zuordnung, die niemand getroffen hat (LH-FA-02)." >&2
 	cat "$abd_ziel" >&2
 	exit 1
 fi
-if ! grep -qF -- '| Spec-Kennung | Stufe | Ort | Kurzbeschreibung |' "$abd_ziel"; then
+if ! grep -qF -- '| Spec-Kennung | Kurzbeschreibung | Stufe | Ort |' "$abd_ziel"; then
 	echo "full-smoke: FEHLER — sprachlos: die Sicht des Ziels traegt eine andere Spaltenfolge als die dieses Repos — zwei Fassungen desselben Erzeugers sind auseinandergelaufen." >&2
 	cat "$abd_ziel" >&2
 	exit 1
@@ -2960,7 +2960,7 @@ if ! grep -qF -- 'Stufe ohne Deklaration' <<<"$abdr_out"; then
 fi
 
 echo "full-smoke: E2E-Abdeckungs-Sicht im Ziel (sprachlos): eine Zeile aus der einen Stufe der Selbstpruefung, und die Luecken-Richtung faerbt rot:"
-grep -E '^\| — \| Stufe 1 \|' "$abd_ziel" | sed -n '1p' | sed 's/^/full-smoke:   /'
+grep -E '^\| — \| ' "$abd_ziel" | sed -n '1p' | sed 's/^/full-smoke:   /'
 grep -F -- 'Stufe ohne Deklaration' <<<"$abdr_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
 
 echo "full-smoke: OK — frisch gebootstrapptes Repo faehrt make -j gates out-of-the-box gruen (lint/build/test + docs-check + baseline-verify via Fragment-Assembly, record-gates zuletzt), Exit 0 (LH-FA-01/LH-QA-01)."

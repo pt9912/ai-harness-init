@@ -16,7 +16,7 @@ import (
 // ein Leser der Sicht ohne den Erzeuger nachvollziehen kann. Dass die Fassung dieses
 // Repos dieselbe Folge fuehrt, haelt test/e2e-abdeckung.bats ueber beiden Dateien —
 // hier liegt der Zielbaum, dort der gepruefte.
-const e2eKopfzeile = "| Spec-Kennung | Stufe | Ort | Kurzbeschreibung |"
+const e2eKopfzeile = "| Spec-Kennung | Kurzbeschreibung | Stufe | Ort |"
 
 // TestE2eAbdeckung_LiegtImZielMitDemModusIhrerRolle haelt fest, dass beide Dateien im
 // Ziel liegen und der Modus zur Rolle passt: der Erzeuger wird gestartet und braucht das
