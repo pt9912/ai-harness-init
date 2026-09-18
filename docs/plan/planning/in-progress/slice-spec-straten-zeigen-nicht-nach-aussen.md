@@ -166,9 +166,11 @@ vom 2026-09-16 noch zählte, hat der Sprung-Slice schon entfernt.
   erlaubt. *Anderer Vorgang*, so beauftragt.
 - **Kein Referenz-Ventil (`ignore-refs`) für eine Fundstelle.** *Anderer Vorgang:* Jedes Paar
   ist eine Senkung mit eigener ADR ([`AGENTS.md`](../../../../AGENTS.md) §3.5 und §3.11).
-- **Keine Verbots-Regel, deren Quelle ein Planungs-Artefakt ist.** Der Slice fügt genau **eine**
-  Regel hinzu, und ihre Quelle ist `spec-straten`; `slice`, `welle` und die Beleg-Dateien des
-  Registers bleiben Quellen ohne Regel. *Schicht-Abgrenzung:* Die Achse dieses Slice ist die
+- **Keine Verbots-Regel, deren Quelle ein Planungs-Artefakt ist.** Auf der **Dogfood**-Ebene fügt
+  der Slice **eine** Regel hinzu, auf der **Emissions**-Ebene **zwei** — `spec-straten → aussen`
+  und `spec-straten → adaptionsblock`, den zweiten Weg gibt DoD 3 frei. Tragend ist nicht ihre
+  Zahl, sondern ihre **Quelle**: jede nennt `spec-straten`; `slice`, `welle` und die Beleg-Dateien
+  des Registers bleiben Quellen ohne Regel. *Schicht-Abgrenzung:* Die Achse dieses Slice ist die
   **Spec**, nicht der Planungs-Baum. Eine Regel wie *„ein Slice nennt keinen Review-Report"*
   läge auf der anderen Achse und träfe hier den Normalfall statt des Fehlers — gemessen:
 
