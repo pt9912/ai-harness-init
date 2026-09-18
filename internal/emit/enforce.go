@@ -135,6 +135,12 @@ func enforceFiles() []enforceFile {
 		commitMsgHookFile(),
 		commitMsgCheckFile(),
 		hooksInstallMkFile(),
+		// Selbstpruefung der Durchsetzungsschicht (LH-FA-11): das Skript, das das Ziel
+		// auf einem frischen Klon seines eigenen Repos faehrt, und das Fragment, das es
+		// ueber `make` erreichbar macht. Sie liest den Traeger daneben und aendert ihn
+		// nicht; die Begruendung der zwei Eintraege traegt selbstpruefung.go.
+		selbstpruefungFile(),
+		selbstpruefungMkFile(),
 	}
 }
 

@@ -67,6 +67,7 @@ func TestTraegerInventur_KeineZelleBehauptetEineAbwesenheitDieDerEmitWiderlegt(t
 			"tools/harness/extract-command.awk",
 			"tools/harness/history-range-guard.sh",
 			"tools/harness/record-gates.sh",
+			"tools/harness/selbstpruefung.sh",
 			"tools/harness/slice-mv.sh",
 			"tools/harness/working-tree-hash.sh",
 		},
@@ -77,6 +78,7 @@ func TestTraegerInventur_KeineZelleBehauptetEineAbwesenheitDieDerEmitWiderlegt(t
 			"harness/mk/enforce.mk",
 			"harness/mk/erfassung.mk",
 			"harness/mk/hooks-install.mk",
+			"harness/mk/selbstpruefung.mk",
 			"harness/mk/slice-mv.mk",
 		},
 	}
