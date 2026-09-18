@@ -22,8 +22,10 @@ einem Kommando nachholbar, ohne zweiten Bootstrap von außen),
 (der Pin trägt Version + sha256, fail-closed gekoppelt — dasselbe Muster wie
 Baseline- und d-check-Pin),
 [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)
-(das Ziel kompiliert nicht — der Host braucht nur `git`, `docker`, `make`, und
-der Fetch braucht davon nur `git`/`make`),
+(das Ziel kompiliert nicht — der Host braucht nur `git`, `docker`, `make`; der
+Fetch fährt im gepinnten Docker-Bild und braucht damit docker,
+[`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
+Festlegung 4),
 [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)
 (die Plattform-Matrix der Release-Assets — der Fetch wählt das Asset seiner
 Plattform),
@@ -31,8 +33,9 @@ Plattform),
 (die neue E2E-Stufe trägt Kopfzeile im Stufen-Muster des Erzeugers und ihre
 Deklaration),
 [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md)
-(`archive-welle` ist der Unterkommando-Konsument, an dem die E2E-Stufe den
-Gelingens-Fall misst),
+(`archive-welle` ist der Unterkommando-Konsument, dessen Träger die E2E-Stufe
+misst; sein Gelingens-Fall ist erst nach dem Release-Schnitt fahrbar —
+[`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)),
 [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
 (dasselbe Pin-Muster: Netz nur bei dem einen Aufruf, kein Gate);
 Setzung des Auftraggebers vom 2026-09-18: Träger per Fetch aus dem gepinnten
@@ -141,8 +144,15 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       bleibt liegen) muss der zweite Negative-Fall rot bleiben.
 - [ ] **Liefer-Punkt 2 — E2E-Stufe am realen Ziel:** Eine Stufe in
       `harness/tools/full-smoke.sh` misst am realen gebootstrappten Ziel:
-      frischer Klon ohne Träger → Fetch → Digest verifiziert → `archive-welle`
-      läuft; Digest-Abweichung bricht fail-closed; der Fehlt-Fall bleibt
+      frischer Klon ohne Träger → Fetch → Digest verifiziert; der
+      anschließende `archive-welle`-Aufruf endet an der dokumentierten Grenze,
+      nicht in einem Erfolg, der nichts belegt. Der gepinnte Träger führt das
+      Unterkommando nicht — die „läuft"-Hälfte der Kette ist erst nach dem
+      Release-Schnitt fahrbar, der ihr den fähigen Träger legt
+      ([`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
+      Festlegung 2: am gepinnten Stand bricht der Aufruf still). Die Stufe
+      trägt ihren Messbefund in ihrem GRENZE-Abschnitt und in ihrer OK-Zeile;
+      Digest-Abweichung bricht fail-closed; der Fehlt-Fall bleibt
       benannt. Die Stufe trägt ihre **Kopfzeile im Stufen-Muster des
       Erzeugers** und ihre **Deklaration** — nach `make e2e-abdeckung` steht
       sie in `docs/user/e2e-abdeckung.md`. Test: der Fall in
@@ -245,7 +255,9 @@ Lerneintrag; ohne ihn ist der Slice nur abgelegt.
 
 DoD vollständig mit roten Gegenproben der drei Liefer-Punkte belegt, und
 `make full-smoke` grün über der neuen Stufe (frisches Ziel: Fetch legt den
-Träger, `archive-welle` läuft).
+Träger, der Digest stimmt; die „läuft"-Hälfte von `archive-welle` wird erst
+vom Release-Schnitt fahrbar — die Stufe trägt ihre Grenze in GRENZE-Abschnitt
+und OK-Zeile).
 
 ## 6. Risiken und offene Punkte
 
@@ -324,7 +336,8 @@ ja — die Werkzeuge-Tabelle in `harness/README.md`). Keine der beiden ist zu
 grob — die Modus-Deklaration in `harness/conventions.md` führt beide namentlich.
 
 **Vorgelagert — offene Beobachtungen sichten:** Register durchgegangen am
-2026-09-18, 145 Verzeichnisse unter `BEO-ALL/`. Treffer für diese Sub-Areas:
+2026-09-18 (`ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l` →
+**145**), Verzeichnisse unter `BEO-ALL/`. Treffer für diese Sub-Areas:
 `BEO-ALL/vorhandene-faehigkeit-ohne-traeger-wird-von-hand-nachgebaut` —
 **Zählerstand 1×**; dieser Slice ist die gegenläufige Richtung: eine
 Fähigkeit bekommt ihren Einstieg als Target, statt von Hand — bzw. statt
