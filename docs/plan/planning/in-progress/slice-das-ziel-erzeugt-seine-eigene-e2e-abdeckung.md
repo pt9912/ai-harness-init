@@ -13,26 +13,18 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 repo-weiter Beleg, den sie nicht schon trägt, kommt nicht hinzu — siehe
 Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht (Modul 6).
 
-**Bezug:** [`LH-FA-11`](../../../../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren)
-(das ziel-eigene E2E ist der Gegenstand, über den die Sicht spricht),
+**Bezug:** [`LH-FA-12`](../../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren)
+(**tragend** — sie sagt genau diese Emission zu und stellt die acht Akzeptanzkriterien,
+gegen die §2 aufgeht),
+[`LH-FA-11`](../../../../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren)
+(der **Gegenstand**, über den die Sicht spricht — das ziel-eigene E2E; es läuft, die Sicht
+sagt, welche Anforderung das Laufende trägt),
 [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
 (der Erzeuger reist mit adaptierbaren Markern, nicht mit unseren Pfaden),
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
-(kein Gate — eine Sicht über null Stufen sagt nichts und bricht darum laut),
+(kein Gate — eine Sicht über null Stufen entsteht nicht, der Lauf bricht laut),
 [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)
 (bash + coreutils, kein Docker, kein Netz).
-**Befund, gemeldet statt erfunden:** **keine** Anforderung sagt die Emission einer
-Abdeckungs-Sicht zu. Gemessen an den elf `LH-FA-*`-Überschriften
-(`grep -nE '^### LH-' spec/lastenheft.md`):
-[`LH-FA-11`](../../../../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren)
-sagt das ziel-eigene **E2E** zu, nicht eine Sicht darüber;
-[`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) sagt
-den **Lauf-Beleg** zu, und diese Sicht ist ausdrücklich keiner;
-[`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)
-sagt die **Durchsetzung** zu, und ein Erzeuger erzwingt nichts. Die vier oben sind damit **berührte**, nicht **tragende** Anforderungen. Die
-tragende entstünde als Change Request des Auftraggebers
-([`MR-036`](../../../../harness/conventions.md#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline));
-sie ist §1 *Ausdrücklich NICHT* Punkt 2 und §6 Risiko 1.
 
 **Berührte Spec-Stellen:** `ARC-005`
 ([`spec/architecture.md`](../../../../spec/architecture.md#1-komponenten-übersicht) §1) —
@@ -95,11 +87,14 @@ Beobachtungs-Register unter `zusage-neben-geaenderter-ableitung-bleibt-stehen` f
   Inhalt **dieses** Repos; mitgeliefert wären sie eine Zusage über ein fremdes Lastenheft,
   die kein Lauf einlöst. *(Schicht-Abgrenzung: der Erzeuger ist Werkzeug, die Kennungen
   sind Inhalt.)*
-- **Keine neue Anforderung im Lastenheft** — der Befund oben bleibt ein Befund. Grund: das
-  Lastenheft ist Vertrags-Stratum, seine Änderung ist ein **anderer Vorgang** — ein Change
-  Request des Auftraggebers
+- **Keine Änderung am Lastenheft in diesem Slice** — die tragende Anforderung
+  [`LH-FA-12`](../../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren)
+  steht, und sie ist **außerhalb** dieses Slice entstanden. Grund: das Lastenheft ist
+  Vertrags-Stratum, seine Änderung ist ein **anderer Vorgang** — ein Change Request des
+  Auftraggebers
   ([`MR-036`](../../../../harness/conventions.md#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline)),
-  nicht die Selbstermächtigung des Slice, der die Mechanik baut.
+  nicht die Selbstermächtigung des Slice, der die Mechanik baut. Was der Slice liefert,
+  ist die Einlösung; was der Vertrag sagt, entscheidet er nicht.
 - **Kein Gate, weder hier noch im Ziel** — der Erzeuger urteilt über den Quelltext eines
   Skripts, nicht über den Zustand des Baums. Grund: das ist die bestehende Einordnung
   unseres Werkzeugs (`harness/README.md` §Werkzeuge, `kein Gate`), und sie kippt nicht
@@ -133,33 +128,77 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
 Drei Liefer-Punkte, jeder mit dem Kommando, das ihn **rot** färbt
 ([`AGENTS.md`](../../../../AGENTS.md) §3.6 — die Zusage ist erst fertig, wenn das
-Gegenbeispiel benannt **und** einmal rot gesehen ist).
+Gegenbeispiel benannt **und** einmal rot gesehen ist). **Die acht Akzeptanzkriterien von**
+[`LH-FA-12`](../../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren)
+**gehen in diesen drei Punkten auf** — Happy Path, Adaptierbarkeit, Minimalität und der
+zweite Lauf im ersten; die Herkunft aus den Deklarationen und beide Lücken-Richtungen im
+zweiten; die Form der Tabelle samt Kennungs-Zelle und *kein aus dem Nichts* im dritten.
+Keines steht daneben.
 
 - [ ] **Der Erzeuger reist ins Ziel und läuft dort.** Das Paar
       `tools/harness/e2e-abdeckung.sh` + `harness/mk/e2e-abdeckung.mk` <!-- d-check:ignore (der Pfad entsteht mit diesem Slice) --> wird emittiert
-      (konvergent, ausführbar), seine ziel-spezifischen Stellen — Quelle, Spec-Datei,
-      Sicht-Ort, Stufen-Präfix — stehen als **Marker**
+      (konvergent, ausführbar), seine vier ziel-spezifischen Stellen — Quell-Skript, Wort
+      der Stufen-Kopfzeile, Spec-Datei, Zielort der Sicht — stehen als **gesetzte,
+      überschreibbare Marker**
       ([`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)),
-      und der Aggregator des Ziels bindet das Fragment über `include harness/mk/*.mk`
-      ein. **Rot durch:** den Eintrag des Paares aus dem Emitter nehmen → `make test`
+      der Aggregator des Ziels bindet das Fragment über `include harness/mk/*.mk` ein, der
+      Lauf endet mit Exit 0 und die Sicht liegt am **deklarierten** Zielort. Gemessen ist
+      ein gesetzter Marker an dem, **was entsteht**, nicht an seiner Erwähnung in der
+      Ausgabe. Der Erzeuger fügt dem Ziel keine Abhängigkeit hinzu: er liest Text — kein
+      Container, kein Netz
+      ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)). **Und
+      ein zweiter Lauf ohne geänderte Deklaration schreibt die Sicht nicht neu und sagt
+      es** — sonst wäre sie der Lauf-Beleg, den
+      [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)
+      trägt und diese Anforderung ausschließt.
+      **Rot durch:** den Eintrag des Paares aus dem Emitter nehmen → `make test`
       meldet FAIL im neuen Go-Fall (Ablage, Modus, Marker-Liste); zusätzlich fällt die
       neue Stufe von `make full-smoke`, weil `make e2e-abdeckung` im gebootstrappten Ziel
-      dann kein Rezept hat.
-- [ ] **Das ziel-eigene E2E trägt seine Deklaration.** Die emittierte
-      `selbstpruefung.sh` führt eine Stufen-Kopfzeile in der Form, die der Erzeuger liest,
-      und darin den Aufruf, der die Anforderung nennt, die sie trägt — die Sicht des Ziels
-      hat damit eine Zeile statt null. **Rot durch:** der Stufe ihre Deklaration nehmen →
-      der emittierte Erzeuger endet im Ziel mit `Stufe ohne Deklaration`, Exit 1, und die
-      `full-smoke`-Stufe fällt; hermetisch derselbe Ausgang über einer Kopie in
+      dann kein Rezept hat. Für den zweiten Lauf: die Schreib-nur-bei-Abweichung aufheben
+      → die `full-smoke`-Stufe sieht beim zweiten Aufruf keine Unverändert-Meldung und
+      fällt.
+      **Dazu ein Posten, den kein Sensor hält:** Die Deklarations-Zeile *unserer* Stufe in
+      `harness/tools/full-smoke.sh`, die genau diese Emission prüft, nennt
+      [`LH-FA-12`](../../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren)
+      als die Anforderung, die sie trägt, neben
+      [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
+      für die Marker; [`LH-FA-11`](../../../../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren)
+      steht dort nicht mehr — die Stufe prüft die **Sicht**, nicht das E2E, und das ist
+      dieselbe Grenze, die [`LH-FA-12`](../../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren)
+      §Abgrenzung zieht. Damit führt [`docs/user/e2e-abdeckung.md`](../../../../docs/user/e2e-abdeckung.md)
+      die Kennung in dieser Zeile. **Kein Gate wird davon rot:** der Erzeuger prüft, ob der
+      Anker auflöst, nicht *welche* Kennung dasteht, und `make docs-check` prüft an der
+      Tabelle nur die Verweise. Träger sind dieser DoD-Punkt und das Review.
+- [ ] **Die Sicht entsteht aus den Deklarationen des Ziels, und beide Lücken-Richtungen
+      fallen laut.** Die emittierte `selbstpruefung.sh` führt eine Stufen-Kopfzeile in der
+      Form, die der Erzeuger liest, und darin den Aufruf, der die Stufe deklariert — die
+      Sicht des Ziels hat damit eine Zeile statt null, mit dem **Ort** der Stufe. Ihre
+      Kennungs-Zelle trägt den **Gedankenstrich**, keine geratene Anforderung: welche
+      Anforderung *seines* Repos diese Stufe trägt, weiß das Werkzeug nicht. Eine
+      mitgelieferte Kennungs-Liste gibt es nicht. **Rot durch:** (a) der Stufe ihre
+      Deklaration nehmen → der emittierte Erzeuger endet im Ziel mit `Stufe ohne
+      Deklaration`, Exit 1, und die `full-smoke`-Stufe fällt; (b) dem Quell-Skript seine
+      einzige Stufen-Kopfzeile nehmen → derselbe Exit ≠ 0 mit der **anderen** Richtung in
+      der Meldung, statt einer Sicht über null Stufen; (c) die Kennungs-Zelle auf eine
+      geratene Kennung setzen → der Fall fällt. Hermetisch laufen alle drei über Kopien in
       [`test/e2e-abdeckung.bats`](../../../../test/e2e-abdeckung.bats) unter `make test`.
-- [ ] **Die Spaltenfolge lautet in beiden Fassungen
-      `| Spec-Kennung | Kurzbeschreibung | Stufe | Ort |`.** Gedreht sind der Erzeuger
-      dieses Repos, die emittierte Fassung und die Kopf-Prosa, die die Spalten erklärt;
+- [ ] **Die Tabellen-Form: Spaltenfolge in beiden Fassungen, und die Kennungs-Zelle trägt
+      nur, was die Deklaration hergibt.** Die Folge lautet
+      `| Spec-Kennung | Kurzbeschreibung | Stufe | Ort |`; gedreht sind der Erzeuger dieses
+      Repos, die emittierte Fassung und die Kopf-Prosa, die die Spalten erklärt;
       [`docs/user/e2e-abdeckung.md`](../../../../docs/user/e2e-abdeckung.md) ist mit
-      `make e2e-abdeckung` neu erzeugt, nicht von Hand gedreht. **Rot durch:** eine der
-      zwei Fassungen stehen lassen → `make test` fällt zweifach: der Halter-Fall hält die
-      committete Tabelle gegen den Ausgang des Erzeugers, der neue Fall hält die Kopfzeile
-      der **emittierten** Fassung gegen dieselbe Folge.
+      `make e2e-abdeckung` neu erzeugt, nicht von Hand gedreht — dieselbe Mechanik, die im
+      Ziel läuft, ist damit hier real erprobt. **Die zwei Fassungen trennt genau eine
+      Regel, und sie ist gewollt:** Löst eine deklarierte Kennung in der Spec des Ziels
+      nicht auf, schreibt die **emittierte** Fassung sie als Code-Span **ohne Verweis** und
+      läuft weiter — die benannte Grenze von
+      [`LH-FA-12`](../../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren);
+      unsere Fassung bricht an derselben Stelle ab, weil sie über *unser* Lastenheft
+      urteilt. Wer die zwei angleicht, hebt eine Zusage auf. **Rot durch:** eine der zwei
+      Fassungen in der Spaltenfolge stehen lassen → `make test` fällt zweifach (Halter-Fall
+      gegen den Ausgang des Erzeugers, neuer Fall gegen die Kopfzeile der emittierten
+      Fassung); und eine nicht auflösende Kennung in eine Ziel-Deklaration setzen → bricht
+      die emittierte Fassung ab, statt den Code-Span zu schreiben, fällt der Fall.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -236,8 +275,11 @@ fährt die neue Stufe durch — das gebootstrappte Ziel erzeugt seine Sicht mit 
 Zeile, und der Lauf liest deren Ausgabe. **(2)** Jeder der drei Liefer-Punkte ist einmal
 **rot gesehen** worden, mit dem Kommando und der Meldung aus §2, nicht nur grün
 ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Dazu der **Lerneintrag** in §7 in einer der
-drei Formen (geschärfte Regel · neuer Sensor · benannte Spec-Lücke) — die benannte
-Spec-Lücke liegt hier nahe, sie ist der Befund im Kopf.
+drei Formen (geschärfte Regel · neuer Sensor · benannte Spec-Lücke). Die Spec-Lücke, die
+dieser Slice bei seinem Schnitt fand, ist mit
+[`LH-FA-12`](../../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren)
+geschlossen; welche der drei Formen der Lerneintrag trägt, entscheidet die Closure am
+Lauf, nicht dieser Plan.
 
 ## 6. Risiken und offene Punkte
 
@@ -246,11 +288,14 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **einen** Ausgang, und kein Slice geht nach `done/`, während eines ohne Ausgang
 dasteht.
 
-- **Der Slice liefert ein emittiertes Artefakt, das keine Anforderung zusagt** (Befund im
-  Kopf). Ein Adopter bekommt damit ein Kommando, dessen Zusage nur in diesem Plan steht —
-  dieselbe Richtung wie ein behaupteter Gate, nur umgekehrt: die Leistung ist da, der
-  Vertrag fehlt. — **Ausgang:** <eingetreten: Change Request des Auftraggebers, der die
-  Anforderung setzt | entfallen: Grund | weiter offen: → Beobachtung im Register>
+- **Die Leistung entsteht vor ihrem Vertrag** — der Slice wurde geschnitten, als keine
+  Anforderung die Emission einer Abdeckungs-Sicht zusagte; ein Adopter bekäme dann ein
+  Kommando, dessen Zusage nur in diesem Plan steht. Das ist die Richtung eines behaupteten
+  Gates, nur umgekehrt: die Leistung ist da, der Rang fehlt. Der Vertrag entsteht nicht
+  hier (§1 *Ausdrücklich NICHT* Punkt 2), also entscheidet den Ausgang die Closure und
+  nicht dieser Slice-Lauf. — **Ausgang:** <eingetreten: der angenommene Change Request
+  setzt [`LH-FA-12`](../../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren)
+  und fängt es auf | entfallen: Grund | weiter offen: → Beobachtung im Register>
 - **Die Spaltenfolge ändert die Ableitung, und die Zusagen daneben bleiben stehen** — die
   Kopf-Prosa der erzeugten Datei erklärt die Spalten, `harness/sensors/full-smoke.md` und
   `harness/README.md` sprechen über sie. — **Ausgang:** <eingetreten: → Beleg in
