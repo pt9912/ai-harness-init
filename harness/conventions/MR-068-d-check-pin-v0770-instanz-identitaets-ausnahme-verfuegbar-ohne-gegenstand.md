@@ -149,9 +149,9 @@
 
   | Stufe | `v0.76.3` | `v0.77.0` | `diff` voll |
   |---|---|---|---|
-  | unverändert | 1702 Dateien, 0 Befunde | 1702 Dateien, 0 Befunde | — |
-  | Marker entwertet | 59 Befunde, Exit 2 | 59 Befunde, Exit 2 | leer |
-  | zusätzlich die Sonden | 78 Befunde, Exit 2 | 78 Befunde, Exit 2 | leer |
+  | unverändert | 1695 Dateien, 0 Befunde | 1695 Dateien, 0 Befunde | — |
+  | Marker entwertet | 59 Befunde, Exit 1 | 59 Befunde, Exit 1 | leer |
+  | zusätzlich die Sonden | 78 Befunde, Exit 1 | 78 Befunde, Exit 1 | leer |
 
   **Die Dateizahl ist kein Erwartungswert**; tragend ist die **0** der ersten Stufe und die
   Gleichheit der Befundmengen — volle Zeilen und Verteilung je Grund-Code sind über beide
