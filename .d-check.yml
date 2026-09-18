@@ -362,7 +362,7 @@ matrix:
   # das zurueck, was die Klasse aussen hinzufuegt. Die Slice-Dateien in done/ bleiben
   # ausdruecklich drin — ein done/** naehme sie aus der Status-Pruefung heraus, und das
   # waere eine Senkung nach AGENTS.md §3.5.
-  exempt-paths: ["docs/plan/adr/README.md", "docs/reviews/*.md", "docs/plan/planning/done/welle-*.md"]
+  exempt-paths: ["docs/plan/adr/README.md", "docs/reviews/**", "docs/plan/planning/done/welle-*.md"]
   exclude-sections: [Historie, "7. Historie", Geschichte]
 codepaths:
   roots: [spec, docs, harness]                                  # tools/cmd/internal folgen mit dem Go-Code (Phase 3); Harness-Tools liegen unter harness/tools/ (MR-005)

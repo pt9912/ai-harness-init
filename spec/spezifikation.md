@@ -171,7 +171,7 @@ Daraus fünf Festlegungen:
    `tool_input` trug damals `run_in_background`, und ein Hook konnte den Start ohne diesen
    Schalter verweigern. Am **2026-08-15** führt das Eingabe-Schema von `Agent` das Feld nicht
    mehr, und ein trotzdem gesendetes wird angenommen, bleibt aber wirkungslos; Subagenten
-starten standardmäßig im Hintergrund. Damit ist die Verbrauchs-Achse ohne Quelle.
+   starten standardmäßig im Hintergrund. Damit ist die Verbrauchs-Achse ohne Quelle.
    **Der zweite Weg ist gefahren, und er stellt die Vordergrund-Form nicht her.** Die vendored
    Hooks-Referenz `docs/user/claude-hooks-referenz.md`
    führt für dasselbe Ereignis ein `updatedInput`, das die Tool-Argumente **vor** der Ausführung
@@ -250,8 +250,8 @@ Punkt, sonst liest sich die Regel breiter als ihr Sensor:
   tragen kann, verweigerte alles und schützte nichts. **Was damit NICHT zugesagt ist — und
   der Unterschied war schon vorher der ganze Punkt:** dass ein Rollen-Lauf am Ende Zähler
   trägt. Der Guard sieht den Start, nicht den Ausgang; der Bestand dieses Repos trägt
-   `Agent`-Spans von **Rollen**-Typen, die von den neun Werten nur `model_version` führen.
-   Fail-closed-Politik, Dauer-Sensoren und **Grenzen** stehen in **Abweichung 5**; kurz: er
+  `Agent`-Spans von **Rollen**-Typen, die von den neun Werten nur `model_version` führen.
+  Fail-closed-Politik, Dauer-Sensoren und **Grenzen** stehen in **Abweichung 5**; kurz: er
   greift für jeden Agenten-Aufruf, den der Hook sieht, er sieht nur den Start, und er kann
   fehlen oder abgeschaltet sein.
 - **Bedingung 1 ist NICHT durchgesetzt — und der Grund trägt nur für einen Teil der
