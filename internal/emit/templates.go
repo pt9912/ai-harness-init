@@ -371,21 +371,9 @@ func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
 		// Dieselbe Lage eine Stelle weiter: ein Link, dessen Ziel-Pfad einen
 		// <…>-Platzhalter traegt, zeigt im frischen Repo auf keine Datei.
 		body = NeutralizePlaceholderLinks(body)
-		if rel == roadmapTemplate {
-			// Die Roadmap MUSS emittiert bleiben (stark inbound-verlinkt), traegt aber
-			// eine gate-unsichere Beispielzeile — emit-seitig neutralisieren (§6 b).
-			body = NeutralizeRoadmap(body)
-		}
-		if rel == conventionsTemplate {
-			// Der Vorlagen-Pfad ist baseline-relativ (ADR-0037 Festlegung 1) — emit-seitig
-			// entschaerfen, der vendored Fremdtext bleibt unveraendert (MR-007).
-			body = NeutralizeConventionsTemplateRef(body)
-		}
-		if rel == planningReadmeTemplate {
-			// docs/plan/carveouts/done entsteht erst bei der ersten Carveout-Aufloesung
-			// (ADR-0037 Festlegung 4) — derselbe Marker, den die Baseline fuer denselben
-			// Ort in carveout.template.md selbst setzt.
-			body = NeutralizePlanningReadmeCarveoutsDoneRef(body)
+		body, jeDateiErr := neutralisiereJeDatei(rel, body, targets)
+		if jeDateiErr != nil {
+			return jeDateiErr
 		}
 		out[singletonTarget(rel)] = []byte(body)
 		return nil
@@ -408,6 +396,38 @@ func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
 	// teilt sich das Backing-Array nicht mit dem eingebetteten Paket-Global.
 	out[observationsReadmeTarget] = bytes.Clone(observationsReadme)
 	return out, nil
+}
+
+// neutralisiereJeDatei fuehrt die Schritte, die nur EINE Vorlage betreffen — anders als
+// die Schritte davor, die jedes Singleton durchlaeuft. Sie stehen zusammen und nicht in
+// der Walk-Schleife, damit dort eine Zeile je Belang bleibt.
+//
+// Der einzige Schritt mit Fehlerausgang ist die Baum-Aussage: sie faellt laut, wenn ihr
+// Anker im Vorlagen-Satz fehlt oder ihr Text ein `make`-Ziel nennt, das die Init-Phase
+// nicht schreibt. Die uebrigen sind Ersetzungen ueber einem Wortlaut und ohne Marker ein
+// No-op.
+func neutralisiereJeDatei(rel, body string, targets []string) (string, error) {
+	switch rel {
+	case roadmapTemplate:
+		// Die Roadmap MUSS emittiert bleiben (stark inbound-verlinkt), traegt aber
+		// eine gate-unsichere Beispielzeile — emit-seitig neutralisieren (§6 b).
+		return NeutralizeRoadmap(body), nil
+	case conventionsTemplate:
+		// Der Vorlagen-Pfad ist baseline-relativ (ADR-0037 Festlegung 1) — emit-seitig
+		// entschaerfen, der vendored Fremdtext bleibt unveraendert (MR-007).
+		body = NeutralizeConventionsTemplateRef(body)
+		// Die drei Aussagen ueber den mitgelieferten Baum gehen in dieselbe Datei: sie
+		// fuehrt den Baum als Quelle ein, und ohne sie schwiege das Ziel darueber, was der
+		// Baum ist, dass er still altert und welche seiner Regelbloecke hier einen Traeger
+		// haben. Der Schritt steht NACH den Neutralisierungen und traegt seine eigene.
+		return InjectBaumAussage(body, targets)
+	case planningReadmeTemplate:
+		// docs/plan/carveouts/done entsteht erst bei der ersten Carveout-Aufloesung
+		// (ADR-0037 Festlegung 4) — derselbe Marker, den die Baseline fuer denselben
+		// Ort in carveout.template.md selbst setzt.
+		return NeutralizePlanningReadmeCarveoutsDoneRef(body), nil
+	}
+	return body, nil
 }
 
 // structureGitkeeps liefert die .gitkeep-Zielpfade der Lifecycle-/Struktur-

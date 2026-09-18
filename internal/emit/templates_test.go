@@ -34,6 +34,11 @@ func courseSet() fs.FS {
 	// (ADR-0037 Festlegung 1, Fundstelle 1) — NeutralizeConventionsTemplateRef
 	// muss ihn beim Emit entschaerfen.
 	conventionsPathQuirk := "\nJede Adaption ist eine eigene Datei unter `harness/conventions/`, kopiert aus\n`harness/conventions/MR-NNN-titel.template.md` der vendored Baseline;\n"
+	// adaptionsBlockAnker traegt die Ueberschrift, VOR die InjectBaumAussage den
+	// Baum-Aussage-Block setzt. Sie steht im realen Vorlagen-Satz; ohne sie hier
+	// braeche der Emit der Fixture-conventions, statt die Injektion zu messen. Dass die
+	// Fixture die Ueberschrift des realen Satzes fuehrt, haelt test/baum-inventur.bats fest.
+	adaptionsBlockAnker := "\n## Adaptions-Block\n\nIndex.\n"
 	// carveoutsDoneQuirk traegt die reale Nennung von docs/plan/carveouts/done/
 	// (ADR-0037 Festlegung 4, Fundstelle 2) — NeutralizePlanningReadmeCarveoutsDoneRef
 	// muss sie beim Emit mit dem d-check:ignore-Marker versehen.
@@ -46,7 +51,7 @@ func courseSet() fs.FS {
 		"spec/architecture.template.md":         f(hint + body),
 		"spec/spezifikation.template.md":        f(hint + body),
 		"harness/README.template.md":            f(hint + body + spitz),
-		"harness/conventions.template.md":       f(hint + body + nurAnker + conventionsPathQuirk),
+		"harness/conventions.template.md":       f(hint + body + nurAnker + conventionsPathQuirk + adaptionsBlockAnker),
 		"docs/plan/adr/README.template.md":      f(hint + body),
 		"docs/plan/carveouts/README.template.md": f(hint + body),
 		"docs/plan/planning/README.template.md": f(hint + body + carveoutsDoneQuirk),
