@@ -144,16 +144,19 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       bleibt liegen) muss der zweite Negative-Fall rot bleiben.
 - [ ] **Liefer-Punkt 2 — E2E-Stufe am realen Ziel:** Eine Stufe in
       `harness/tools/full-smoke.sh` misst am realen gebootstrappten Ziel:
-      frischer Klon ohne Träger → Fetch → Digest verifiziert; der
-      anschließende `archive-welle`-Aufruf endet an der dokumentierten Grenze,
-      nicht in einem Erfolg, der nichts belegt. Der gepinnte Träger führt das
+      frischer Klon ohne Träger → Fetch → Digest verifiziert. Der
+      `archive-welle`-Aufruf geht dem Fetch voraus (Klon ohne Träger) und
+      endet an der dokumentierten Grenze, nicht in einem Erfolg, der nichts
+      belegt; nach dem Fetch wird er nicht gerufen — am gepinnten Stand würde
+      er nicht an der Grenze enden, sondern still den Init-Pfad starten, und
+      ein solcher Aufruf belegt nichts. Der gepinnte Träger führt das
       Unterkommando nicht — die „läuft"-Hälfte der Kette ist erst nach dem
       Release-Schnitt fahrbar, der ihr den fähigen Träger legt
       ([`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
       Festlegung 2: am gepinnten Stand bricht der Aufruf still). Die Stufe
       trägt ihren Messbefund in ihrem GRENZE-Abschnitt und in ihrer OK-Zeile;
-      Digest-Abweichung bricht fail-closed; der Fehlt-Fall bleibt
-      benannt. Die Stufe trägt ihre **Kopfzeile im Stufen-Muster des
+      Digest-Abweichung bricht fail-closed. Die Stufe trägt ihre **Kopfzeile
+      im Stufen-Muster des
       Erzeugers** und ihre **Deklaration** — nach `make e2e-abdeckung` steht
       sie in `docs/user/e2e-abdeckung.md`. Test: der Fall in
       `test/e2e-abdeckung.bats` hält die Deklaration gegen die Stufen. Rote
@@ -166,8 +169,14 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       nennt das neue Target (Gate-Klasse korrekt: kein Gate, mit Halbsatz, was
       es stattdessen tut — Netz-Bedarf benannt), und
       `docs/user/e2e-abdeckung.md` ist regeneriert. Rote Gegenprobe: nennt die
-      Werkzeuge-Tabelle das Target mit Gate-Anspruch, färbt `make docs-check`
-      (Modul `targets`) rot — der Stempel muss zur Klasse passen.
+      Werkzeuge-Tabelle ein Target ohne Makefile-Regel, färbt `make docs-check`
+      (Modul `targets`, Grund `gate-phantom`) rot — rot gesehen: Sonde
+      `make traeger-fetch-halluzination` in der Werkzeuge-Tabelle → 1705/1
+      (2026-09-18). Grenze: der Klasse-Stempel selbst ist unbewacht — entfernt
+      ein Lauf `kein Gate` aus der Werkzeuge-Zeile, bleibt `docs-check` grün
+      (gemessen 1704/0); das Modul liest den Target-Namen gegen das Makefile,
+      nicht den Stempel, und `test/targets-modul-wiring.bats` hält eine andere
+      Mutation (Makefile-Regel ohne Sensors-Zeile), nicht diese.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
