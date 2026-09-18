@@ -6,7 +6,7 @@ Validators (realer Bedarf). Die zwei Review-Reports sind **nicht** Eingangs-Kont
 Laufs; sie werden nur dort genannt, wo die DoD-Zeile *„Report liegt vor"* sie zum Gegenstand
 macht.
 
-**Gegenstand:** `docs/plan/planning/in-progress/slice-das-ziel-sagt-was-sein-vendored-baum-ist.md`
+**Gegenstand:** `docs/plan/planning/done/slice-das-ziel-sagt-was-sein-vendored-baum-ist.md`
 §2, geprüft gegen den Stand `5c45749a`. Umsetzung in `6db58a73`, `15cd2a82`, `872170f4`,
 `d47c7c57`, `3b7d7baa`, `0b891130`.
 
