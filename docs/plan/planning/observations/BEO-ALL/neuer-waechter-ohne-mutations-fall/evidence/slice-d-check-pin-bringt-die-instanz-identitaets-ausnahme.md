@@ -10,7 +10,7 @@ d-check-Pin. Der Wächter trägt seine Zähne — die Rotation wurde am Wegwerf-
 Bestands-Defekt der Kuratierung, kein Bruch des Sprungs, den der Vorgang trägt.
 
 **Wirkung und Grenze.** Die Klasse ist verkörpert
-([`AGENTS.md`](../../../../../../../../AGENTS.md) §3.6 — wer keinen Fall in `test/mutations/` hat,
+([`AGENTS.md`](../../../../../../../AGENTS.md) §3.6 — wer keinen Fall in `test/mutations/` hat,
 ist unbewacht; `make mutate` meldet jeden gelisteten Wächter, der seine Zähne verloren hat); dieser
 Beleg ist die vierte Fundstelle und kein zweiter Anker — der Eintrag trägt keinen neuen Ausgang.
 Der Ausgleich ist verdrahtet: `slice-pin-kopplung-bekommt-ihren-mutations-fall` (ist eine Datei in
