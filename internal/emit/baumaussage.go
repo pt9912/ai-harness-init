@@ -25,6 +25,16 @@ const (
 	TraegerKommtNichtMit TraegerWert = "kommt nicht mit"
 )
 
+// InventurMessTag ist der Kurs-Stand, gegen den die Zuordnung der Inventur gemessen ist.
+// Er steht im emittierten Block, weil die Tabelle Regelbloecke beim NAMEN nennt: ohne den
+// Stand waere sie eine Aussage ohne Bezugspunkt, und der Adopter koennte die Drift nicht
+// einmal erkennen (MR-033).
+//
+// FAIL-CLOSED an den Tag gekoppelt, den der Bootstrap fetcht:
+// TestInventurMessTag_IstDerGefetchteStand haelt beide gegeneinander — ein Baseline-Sprung,
+// der den Stand hier stehen laesst, faerbt rot statt einen falschen Mess-Tag auszuliefern.
+const InventurMessTag = "v6.9.0"
+
 // TraegerEintrag ist eine Zeile der Inventur.
 //
 // Modul ist der Dateiname im `regelwerk/`-Verzeichnis des Ziels — der Nenner, gegen den
@@ -109,7 +119,7 @@ func traegerInventur() []TraegerEintrag {
 		{Modul: "modul-14-docker-harness.md", Wert: TraegerKommtMit,
 			Text: "Das Doku-Gate fährt in einem per Digest gepinnten Image; Tag und Digest stehen in `d-check.mk`."},
 		{Modul: "modul-15-observability.md", Abschnitt: "§Erfassung und Token-Attribution", Wert: TraegerKommtMit,
-			Text: "Der Hook-Wrapper `.claude/hooks/span-emit.sh` schreibt je Tool-Call einen Span; `harness/mk/erfassung.mk` trägt `span-report` und `span-clean`, die Feldliste liegt unter `harness/erfassung-feldliste.md`."},
+			Text: "`harness/mk/erfassung.mk` trägt `span-report` und `span-clean` — beide in jedem Lauf. Der schreibende Teil hängt an einer Bedingung: Träger, Hook-Wrapper `.claude/hooks/span-emit.sh`, Hook-Eintrag und die Feldliste `harness/erfassung-feldliste.md` entstehen nur, wenn die Ablage des Trägers gelang; misslingt sie, endet der Bootstrap dennoch erfolgreich und diese vier fehlen."},
 		{Modul: "modul-15-observability.md", Abschnitt: "§Doku-Konsistenz-Drift", Wert: TraegerLiegtBei,
 			Text: "Das Doku-Gate bringt Module mit, die Ziel-Ansprüche und Code-Pfade prüfen; die Zeile `modules:` in `.d-check.yml` führt sie nicht — ihre Aktivierung ist eine eigene Entscheidung."},
 		{Modul: "modul-16-produktiver-betrieb.md", Wert: TraegerLiegtBei,
@@ -136,11 +146,12 @@ func TraegerInventurModule() []string {
 	return out
 }
 
-// emittierteKernpfade liefert die Ziel-Relpfade, die JEDER Bootstrap schreibt — die
-// Menge, gegen die eine Abwesenheits-Aussage der Inventur gehalten wird.
+// emittierteKernpfade liefert die Ziel-Relpfade, die das Werkzeug als feste Adressen
+// fuehrt — die Menge, gegen die eine Abwesenheits-Aussage der Inventur gehalten wird.
 //
-// GRENZE: die Menge ist der unbedingte Kern. Die Singletons aus dem Vorlagen-Satz, die
-// Sprach-Phase und das konditionale Arch-Gate stehen nicht darin; eine Abwesenheits-
+// GRENZE: die Menge ist der unbedingte Kern plus die Feldliste, die am Gelingen der
+// Traeger-Ablage haengt (ADR-0022 Festlegung 7). Die Singletons aus dem Vorlagen-Satz,
+// die Sprach-Phase und das konditionale Arch-Gate stehen nicht darin; eine Abwesenheits-
 // Aussage ueber ein Praefix, das nur dort waechst, traegt dieser Bestand nicht.
 func emittierteKernpfade() []string {
 	paths := append([]string{}, EnforcePaths()...)
@@ -199,8 +210,9 @@ func baumAussage(targets []string) (string, error) {
 	b.WriteString(baumAussageMarke + "\n\n")
 	b.WriteString("Der Baum unter `.harness/baseline/` ist Kurs-Inhalt und in diesem Repo nicht\n")
 	b.WriteString("autoritativ: er wird byte-genau so mitgeliefert, wie der Kurs ihn veröffentlicht, und\n")
-	b.WriteString("von beiden Doku-Gates ausgenommen. Was er an `make`-Namen nennt, sind **Beispiele des\n")
-	b.WriteString("Kurses**, keine Ziele dieses Repos — maßgeblich ist allein `make help`. Dasselbe gilt\n")
+	b.WriteString("vom Doku-Gate ausgenommen — `scan.ignore` in `.d-check.yml` nennt ihn. Was er an\n")
+	b.WriteString("`make`-Namen nennt, sind **Beispiele des Kurses**, keine Ziele dieses Repos —\n")
+	b.WriteString("maßgeblich ist allein `make help`. Dasselbe gilt\n")
 	b.WriteString("für die Vorlagen darunter: wer eine kopiert, prüft ihre Ziel-Namen gegen `make help`,\n")
 	b.WriteString("bevor er sie in ein lebendes Dokument übernimmt.\n\n")
 
@@ -213,8 +225,10 @@ func baumAussage(targets []string) (string, error) {
 	b.WriteString("Der Freshness-Audit ist deshalb eine **geschuldete Handlung dieses Repos**, kein Lauf:\n")
 	b.WriteString("die **Release-Liste** des Kurs-Repos gegen den gepinnten Tag halten. Die Liste, nicht\n")
 	b.WriteString("das Asset — ein Asset-Abgleich sagt, ob sich dieser Tag änderte, nicht, ob ein neuerer\n")
-	b.WriteString("existiert. Die Adresse der Liste steht im Abschnitt *Adoptierte Konventions-Quellen*\n")
-	b.WriteString("darüber; der Audit selbst ist im mitgelieferten Regelwerk ausgeschrieben.\n\n")
+	b.WriteString("existiert. Die Adresse ist die **Release-Übersicht des Repos**, aus dem das Asset im\n")
+	b.WriteString("Abschnitt *Adoptierte Konventions-Quellen* darüber stammt — nicht jene Asset-URL\n")
+	b.WriteString("selbst, die genau einen Tag nennt. Der Audit ist im mitgelieferten Regelwerk\n")
+	b.WriteString("ausgeschrieben.\n\n")
 	b.WriteString("**Ein Sensor dafür kommt nicht mit, und das ist eine Aussage.** Er bräuchte einen\n")
 	b.WriteString("Netz-Abruf der Release-Liste und damit eine Host-Abhängigkeit über `bash`, `git` und\n")
 	b.WriteString("`docker` hinaus. Ein Repo, das nur diese drei voraussetzt, bekommt ihn nicht; was hier\n")
@@ -225,6 +239,11 @@ func baumAussage(targets []string) (string, error) {
 	b.WriteString("kommt mit* · *liegt bei, nicht verdrahtet* · *kommt nicht mit* (mit Grund und Dauer).\n")
 	b.WriteString("Die Zelle sagt den Zustand **dieses** Repos, nicht den Stand einer Entscheidung.\n")
 	b.WriteString("Wie viele Regelblöcke der Baum führt, sagt `ls .harness/baseline/*/regelwerk/*.md`.\n\n")
+	b.WriteString("**Gemessen gegen den Kurs-Stand `" + InventurMessTag + "`, und die Tabelle wandert nicht mit.** Sie\n")
+	b.WriteString("nennt Regelblöcke beim Namen; ein Baseline-Sprung kann einen umbenennen, hinzufügen\n")
+	b.WriteString("oder wegnehmen. Dieses Dokument wird von einem erneuten Bootstrap **nicht**\n")
+	b.WriteString("überschrieben, und kein Lauf dieses Repos hält die Tabelle gegen den Baum, der hier\n")
+	b.WriteString("liegt — wer den Baum tauscht, prüft sie von Hand gegen das Kommando oben.\n\n")
 	b.WriteString("| Regelblock | Wert | Träger bzw. Grund und Dauer |\n")
 	b.WriteString("|---|---|---|\n")
 	for _, e := range traegerInventur() {

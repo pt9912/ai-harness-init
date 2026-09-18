@@ -7,7 +7,20 @@ import (
 	"testing"
 
 	"github.com/pt9912/ai-harness-init/internal/emit"
+	"github.com/pt9912/ai-harness-init/internal/fetch"
 )
+
+// TestInventurMessTag_IstDerGefetchteStand koppelt den Mess-Stand der Inventur an den
+// Tag, den der Bootstrap holt. Ohne die Kopplung uebersteht ein Baseline-Sprung den
+// Mess-Tag: die Tabelle traegt dann einen Stand, gegen den sie nicht gemessen ist, und
+// der Adopter liest eine Bezugsangabe, die nicht gilt.
+func TestInventurMessTag_IstDerGefetchteStand(t *testing.T) {
+	t.Parallel()
+	if emit.InventurMessTag != fetch.DefaultTag {
+		t.Errorf("Mess-Stand der Inventur %q != gefetchter Baseline-Tag %q — die Zuordnung ist gegen einen anderen Baum gemessen, als das Ziel bekommt",
+			emit.InventurMessTag, fetch.DefaultTag)
+	}
+}
 
 // TestTraegerInventur_JedeZeileTraegtGenauEinenWert haelt die Form der Inventur: der
 // Wert-Vorrat ist geschlossen, und keine Zelle bleibt leer. Eine leere Zelle waere die
