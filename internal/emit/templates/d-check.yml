@@ -45,7 +45,7 @@ ids:
 # gibt es keine solche ids-Regel, darum bleibt dessen token: aktiv. Fuer MR ebenso
 # wenig: ein ids-Muster darauf faerbt ein frisches Ziel rot, weil die emittierte
 # harness/conventions.md ihre eigenen Kennungen blank nennt — der Fang laeuft darum
-# ueber matrix, wo er nur eine klassifizierte Quelle trifft.
+# ueber matrix, wo ihn die Regel aus spec-straten auf die Spec-Straten begrenzt.
 matrix:
   classes:
     - {name: spec-straten, paths: [spec/lastenheft.md, spec/spezifikation.md, spec/architecture.md], order: [spec/lastenheft.md, spec/spezifikation.md, spec/architecture.md], direction: no-downward}
@@ -53,9 +53,10 @@ matrix:
     - {name: slice, paths: ["docs/plan/planning/**/slice-*.md"], token: 'slice-\d{3}'}
     - {name: welle, paths: ["docs/plan/planning/**/welle-*.md"], token: 'welle-\d{2}'}
     # Das Kennungs-Muster faengt die blosse MR-Kennung im Fliesstext, die kein
-    # Link-Sensor sieht. Es haengt an der Regel unten und trifft nur eine
-    # klassifizierte Quelle: die Index-Datei dieses Blocks nennt ihre eigenen
-    # Kennungen blank, und das bleibt erlaubt.
+    # Link-Sensor sieht. Begrenzend ist die Regel darunter, nicht die Klassifikation:
+    # Gefangen wird die Kennung nur in einer Quelle der Klasse spec-straten. Die
+    # Index-Datei dieses Blocks nennt ihre eigenen Kennungen blank, und das bleibt
+    # erlaubt.
     - {name: adaptionsblock, paths: ["harness/conventions.md", "harness/conventions/**"], token: 'MR-\d{3}'}
     # Letzte Klasse, First-Match: was keine fruehere faengt, ist aussen. Ein
     # Spec-Stratum nennt damit kein Artefakt ausserhalb der Spec, nicht nur keines
@@ -77,12 +78,14 @@ matrix:
     - {from: adr, to: welle, allow: false}
   status: {forbidden: [superseded, deprecated]}
   # Die Status-Pruefung trifft jede klassifizierte Quelle unabhaengig von den Regeln;
-  # mit aussen: ["**"] ist das jede Datei. Ausgenommen sind die drei Pfade, die einen
-  # zum Schreibzeitpunkt aktiven Stand dauerhaft nennen und einer spaeteren
-  # Supersession nicht folgen koennen: der ADR-Index (er fuehrt superseded ADRs, das
-  # ist seine Aufgabe), die Review-Reports und die Welle-Dateien in done/. Der Grund
-  # ist die Rolle dieser Pfade im Lifecycle, nicht ihr Bestand. Die Slice-Dateien in
-  # done/ bleiben ausdruecklich drin — ein done/** naehme sie aus der Status-Pruefung
-  # heraus und waere eine Senkung.
-  exempt-paths: ["docs/plan/adr/README.md", "docs/reviews/*.md", "docs/plan/planning/done/welle-*.md"]
+  # mit aussen: ["**"] ist das jede Datei. Ausgenommen sind zwei Pfade, die einen zum
+  # Schreibzeitpunkt aktiven Stand dauerhaft nennen und einer spaeteren Supersession
+  # nicht folgen koennen: der ADR-Index (er fuehrt superseded ADRs, das ist seine
+  # Aufgabe) und die Review-Reports.
+  # Die Welle-Dateien in done/ stehen hier bewusst NICHT: In einem frischen Ziel hat
+  # eine solche Ausnahme keinen Gegenstand, und ab dem ersten geschlossenen Buendel
+  # naehme sie der Klasse welle oben ihre Status-Deckung — unsichtbar, weil diese Datei
+  # nur an einem freien Pfad geschrieben wird. Wer die Ausnahme braucht, setzt sie in
+  # seiner eigenen Kopie; bis dahin ist die Deckung die strengere Vorgabe.
+  exempt-paths: ["docs/plan/adr/README.md", "docs/reviews/**"]
   exclude-sections: [Geschichte]

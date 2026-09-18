@@ -801,12 +801,11 @@ echo "full-smoke: Feldlisten-Ortswahl belegt (toter Verweis im Dokument faerbt d
 grep -E "$FELDLISTE_REL:[0-9]+" <<<"$feldzahn_out" | sed -n '1,2s/^/full-smoke:   /p'
 
 # ZAEHNE zu den drei in der emittierten Konfiguration aktiven Modulen ids/matrix/spans —
-# SECHS Gegenbeispiele im gebootstrappten Ziel (AGENTS.md §3.6), nach derselben Form wie der
 # Feldlisten-Zahn oben: Verletzung einschmuggeln -> docs-check MUSS roeten, MIT der
-# benannten Befund-Art -> zurueckgenommen. matrix traegt drei gepruefte Aussagen und drei eigene
-# Zaehne (matrix-forbidden abwaerts, matrix-downward, matrix-forbidden nach aussen) und ein
-# viertes auf dem token: der Klasse adaptionsblock; ids traegt eines
-# (ADR-Kennung); eine Regel ohne eigenes Gegenbeispiel waere
+# benannten Befund-Art -> zurueckgenommen. matrix traegt vier gepruefte Aussagen und
+# vier eigene Zaehne (matrix-forbidden abwaerts, matrix-downward, matrix-forbidden nach
+# aussen, matrix-forbidden auf dem token: der Klasse adaptionsblock); ids traegt einen
+# (ADR-Kennung) und spans einen; eine Regel ohne eigenes Gegenbeispiel waere
 # gelistet-aber-unbewacht. Die ZWEITE Richtung gehoert bei allen sechs dazu: dieselbe
 # Verletzung MUSS unter dem AELTEREN modules: [links, anchors] gruen bleiben — sonst
 # belegt der Zahn nur "irgendein Modul faengt es", nicht "ERST dieses Modul findet sie".

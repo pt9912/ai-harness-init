@@ -27,11 +27,15 @@ func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 		t.Errorf("eingebettete .d-check.yml aktiviert nicht genau [links, anchors, ids, matrix, spans]:\n%s", yml)
 	}
 	sawPrefixPattern := false
+	var letzteKlasse string
 	for _, line := range strings.Split(yml, "\n") {
 		if strings.HasPrefix(line, "codepaths:") {
 			t.Errorf("codepaths unkommentiert aktiv im frischen Repo (halluziniertes Gate): %q", line)
 		}
 		trimmed := strings.TrimSpace(line)
+		if strings.HasPrefix(trimmed, "- {name: ") {
+			letzteKlasse = trimmed
+		}
 		if strings.Contains(trimmed, "<PREFIX>") {
 			sawPrefixPattern = true
 			if !strings.HasPrefix(trimmed, "#") {
@@ -50,6 +54,33 @@ func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 	}
 	if !strings.Contains(yml, "order: [spec/lastenheft.md, spec/spezifikation.md, spec/architecture.md]") || !strings.Contains(yml, "direction: no-downward") {
 		t.Errorf("die Richtungspruefung (order:/direction: no-downward) auf spec-straten fehlt:\n%s", yml)
+	}
+	// Die Klasse aussen ist die LETZTE in classes: — sie faengt, was keine fruehere
+	// faengt, und macht ihre Regel zur Decken-Regel. Steht sie nicht ganz unten, nimmt
+	// sie den nachfolgenden Klassen ihre Dateien, und deren Regeln laufen leer.
+	if !strings.Contains(yml, `- {name: aussen, paths: ["**"]}`) ||
+		!strings.Contains(yml, "{from: spec-straten, to: aussen, allow: false}") {
+		t.Errorf("die Klasse aussen oder ihre Regel aus spec-straten fehlt:\n%s", yml)
+	}
+	if !strings.HasPrefix(letzteKlasse, "- {name: aussen,") {
+		t.Errorf("aussen ist nicht die letzte Klasse in classes: (letzte ist %q)", letzteKlasse)
+	}
+	// Die blosse MR-Kennung faengt im Ziel kein ids-Muster: die emittierte
+	// harness/conventions.md nennt ihre eigenen Kennungen blank, ein solches Muster
+	// liesse ein frisches Ziel rot starten. Der Fang haengt darum am token: dieser
+	// Klasse, begrenzt durch die Regel aus spec-straten.
+	if !strings.Contains(yml, `- {name: adaptionsblock, paths: ["harness/conventions.md", "harness/conventions/**"], token: 'MR-\d{3}'}`) ||
+		!strings.Contains(yml, "{from: spec-straten, to: adaptionsblock, allow: false}") {
+		t.Errorf("die Klasse adaptionsblock samt token: oder ihre Regel aus spec-straten fehlt:\n%s", yml)
+	}
+	// exempt-paths traegt genau zwei Pfade. Die Welle-Dateien in done/ gehoeren NICHT
+	// dazu: im frischen Ziel hat die Ausnahme keinen Gegenstand und naehme der Klasse
+	// welle ab dem ersten geschlossenen Buendel ihre Status-Deckung.
+	if !strings.Contains(yml, `exempt-paths: ["docs/plan/adr/README.md", "docs/reviews/**"]`) {
+		t.Errorf("matrix.exempt-paths traegt nicht genau [ADR-Index, Review-Reports]:\n%s", yml)
+	}
+	if strings.Contains(yml, "docs/plan/planning/done/welle-") {
+		t.Errorf("die Welle-Dateien in done/ stehen in der emittierten Konfiguration (Status-Deckung der Klasse welle):\n%s", yml)
 	}
 	// exclude-sections traegt exakt [Geschichte] — weder leer (dann faengt
 	// {from: adr, to: slice} auch die legitime, im Zeilen-Marker deklarierte
