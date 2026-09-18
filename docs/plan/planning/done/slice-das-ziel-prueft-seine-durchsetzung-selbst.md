@@ -473,6 +473,14 @@ Baseline-Regelwerk `v6.9.0` · `modul-05-planning-harness.md` §Closure- und Ler
     Planning-Lifecycle (`open/`).
   - **Register:** jede hier genannte Beobachtung existiert als Verzeichnis unter
     `observations/BEO-ALL/`, und jedes dieser Verzeichnisse trägt mindestens einen Beleg.
+    **Die repo-weite Hälfte ist rot, und zwar an zwei Stellen** — gemessen zur Closure, je
+    Verzeichnis `ls <eintrag>/evidence/*.md | wc -l`:
+    [`einstiegs-datei-weicht-von-der-pflichtgliederung-ab`](../observations/BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab/observation.md)
+    und [`planungs-bestand-waechst-schneller-als-er-abgebaut-wird`](../observations/BEO-ALL/planungs-bestand-waechst-schneller-als-er-abgebaut-wird/observation.md)
+    tragen keinen Beleg; ihr einziges Vorkommen steht dort jeweils unter *Benannt, nicht gezählt*.
+    Beide sind **kein Fund dieser Closure** — dieser Slice zitiert keine von ihnen —, und die
+    Lesart dafür entscheidet `slice-beleglose-register-eintraege-bekommen-eine-lesart`. Beim
+    vorigen Abschluss war es **eines**; die Zahl wandert, und deshalb steht hier das Kommando.
 - **Trigger-Audit** (bei der Slice-Closure, weil dieses Repo ohne Wellen-Betrieb arbeitet):
   - **Carveout:** [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) steht auf *Aktiv —
     Auflösung fällig* mit seiner Adresse in `next/`; [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md)
