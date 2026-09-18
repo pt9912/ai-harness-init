@@ -157,6 +157,17 @@ Aussagen-Berührung steht hier gar nicht.
 | `harness/tools/full-smoke.sh` (Stufe `traeger_fetch_im_ziel`) | update | GRENZE-Stelle wird zum gemessenen Gelingens-Fall; laut-Bruch als Negative (Liefer-Punkt 3) |
 | `docs/user/e2e-abdeckung.md` | update | regeneriert via `make e2e-abdeckung` — nicht hand-edited |
 
+**Verfeinert im Lauf (gemessen, nicht geplant):** der erste `make
+release-artifacts`-Lauf brach an `internal/span/emit.go:360` — `syscall.Flock`
+ist auf Windows undefined, und die Datei trug keinen Build-Tag; zwei der sechs
+Assets der Matrix bauten nicht. Die Spaltung der zwei POSIX-Stellen
+(`tryLockExclusive`/`removeStaleDir` je OS, `emit.go` plattformfrei) geht dem
+Pin-Commit voraus — sie ist Vorbedingung von Liefer-Punkt 1, nicht eine zweite
+Schicht: | `internal/span/emit.go` + `internal/span/lock_unix.go` +
+`internal/span/lock_windows.go` | update/neu | die zwei POSIX-Syscalls der
+Span-Sperre tragen je-OS-Dateien, sonst bauen windows-amd64/arm64 nicht
+(LH-QA-04) |
+
 ## 4. Trigger
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`

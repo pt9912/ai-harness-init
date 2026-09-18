@@ -12,7 +12,6 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"syscall"
 	"time"
 )
 
@@ -342,12 +341,9 @@ func acquire(path string) (*os.File, error) {
 		// Kommentar ausschliesst. Einmal aufraeumen
 		// und erneut versuchen; scheitert auch das, gilt fail-open.
 		if fi, statErr := os.Stat(path); statErr == nil && fi.IsDir() {
-			// Rmdir und NICHT os.Remove: letzteres unlinkt auch DATEIEN. Treffen zwei
-			// Emitter dasselbe Altlast-Verzeichnis, koennte der zweite die frische,
-			// bereits geflockte Lock-DATEI des ersten loeschen — zwei Inodes, dieselbe
-			// Folgenummer, also wieder die Doppelvergabe, die das Schloss verhindern
-			// soll. Rmdir scheitert an einer Datei und kann diesen Weg nicht gehen.
-			if rmErr := syscall.Rmdir(path); rmErr != nil {
+			// removeStaleDir nimmt nur ein Verzeichnis (lock_unix.go/lock_windows.go):
+			// eine Lock-DATEI an der Stelle wird nicht angetastet.
+			if rmErr := removeStaleDir(path); rmErr != nil {
 				return nil, err
 			}
 			f, err = os.OpenFile(path, os.O_CREATE|os.O_RDWR, 0o600)
@@ -357,7 +353,7 @@ func acquire(path string) (*os.File, error) {
 		return nil, err
 	}
 	for range lockTries {
-		if err := syscall.Flock(int(f.Fd()), syscall.LOCK_EX|syscall.LOCK_NB); err == nil {
+		if err := tryLockExclusive(f); err == nil {
 			return f, nil
 		}
 		time.Sleep(lockWait)
