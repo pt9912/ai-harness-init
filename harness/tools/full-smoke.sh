@@ -158,6 +158,83 @@ chmod 755 "$tmprepo"
 #
 # Aufgerufen fuer BEIDE Bootstrap-Varianten: die Rollen-Sequenz ist sprach-agnostisch,
 # und ein Zahn in nur einer Variante belegte das nicht.
+# DAS ZIEL SAGT, WAS SEIN MITGELIEFERTER BAUM IST — UND WAS ER NICHT VERSPRICHT.
+#
+# Drei Aussagen in der emittierten harness/conventions.md: der Baum ist Kurs-Inhalt und
+# seine `make`-Namen sind Beispiele; er altert still und der Freshness-Audit ist eine
+# Handlung dieses Repos, kein Sensor; und je Regelblock steht genau einer von drei
+# Traeger-Werten.
+#
+# VIER ACHSEN, und die dritte ist die, die nur HIER laeuft: der NENNER der Inventur wird
+# im ZIEL gelesen (ls .harness/baseline/*/regelwerk/*.md), nicht in diesem Repo. Nur so
+# faellt der Fall auf, in dem das Ziel einen anderen Baum bekommt als dieses Repo fuehrt —
+# die hermetische Haelfte (test/baum-inventur.bats) misst gegen den vendored Baum HIER.
+#
+# Die vierte haelt die Gegenrichtung zur Eigenschafts-Aussage: der Block nennt keinen
+# `make`-Namen, den das Ziel nicht fuehrt. Dass die Aussage eine EIGENSCHAFT nennt statt
+# einer Namensliste, faerbt kein Kommando rot — das ist ein Urteil beim Schreiben.
+#
+# Aufgerufen fuer BEIDE Bootstrap-Varianten: der Baum kommt in jeder mit, und ein Marker
+# an nur einer Variante liesse die zweite still durchfallen.
+baum_aussagen_im_ziel() {
+	local repo="$1" label="$2"
+	local datei="$repo/harness/conventions.md"
+	local marke fehlend="" block regelwerk="" ziel d f n=0
+
+	if [ ! -f "$datei" ]; then
+		echo "full-smoke: FEHLER — $label: harness/conventions.md fehlt im Ziel — die drei Aussagen ueber den mitgelieferten Baum haetten keinen Ort." >&2
+		exit 1
+	fi
+	for marke in "### Was der mitgelieferte Baum ist — und was er nicht verspricht" \
+	             "### Der mitgelieferte Baum altert still" \
+	             "### Welche Regelblöcke des Baums hier einen Träger haben"; do
+		grep -qxF -- "$marke" "$datei" || fehlend="$fehlend [$marke]"
+	done
+	if [ -n "$fehlend" ]; then
+		echo "full-smoke: FEHLER — $label: die emittierte harness/conventions.md traegt die Aussage(n) nicht:$fehlend" >&2
+		exit 1
+	fi
+
+	# Der Block reicht von seiner ersten Marke bis zur naechsten `## `-Ueberschrift.
+	block="$(awk '/^### Was der mitgelieferte Baum ist/{f=1} f&&/^## /{exit} f' "$datei")"
+
+	for d in "$repo"/.harness/baseline/*/regelwerk; do
+		if [ -d "$d" ]; then
+			regelwerk="$d"
+			break
+		fi
+	done
+	if [ -z "$regelwerk" ]; then
+		echo "full-smoke: FEHLER — $label: das Ziel fuehrt kein .harness/baseline/*/regelwerk — der Nenner der Inventur ist leer." >&2
+		exit 1
+	fi
+	fehlend=""
+	for f in "$regelwerk"/*.md; do
+		n=$((n + 1))
+		grep -qF -- "\`$(basename "$f")\`" <<<"$block" || fehlend="$fehlend [$(basename "$f")]"
+	done
+	if [ "$n" -eq 0 ]; then
+		echo "full-smoke: FEHLER — $label: kein Regelblock unter $regelwerk (leerer Pruefbereich)." >&2
+		exit 1
+	fi
+	if [ -n "$fehlend" ]; then
+		echo "full-smoke: FEHLER — $label: Regelbloecke des ZIEL-Baums ohne Inventur-Zeile:$fehlend — das Ziel bekam einen anderen Baum, als die Inventur fuehrt." >&2
+		exit 1
+	fi
+
+	fehlend=""
+	while read -r ziel; do
+		[ -n "$ziel" ] || continue
+		make -n -C "$repo" "$ziel" >/dev/null 2>&1 || fehlend="$fehlend [$ziel]"
+	done < <(grep -oE 'make [a-z][a-z0-9-]*' <<<"$block" | sed 's/^make //' | sort -u)
+	if [ -n "$fehlend" ]; then
+		echo "full-smoke: FEHLER — $label: der Block nennt make-Ziel(e), die das Ziel nicht fuehrt:$fehlend (LH-QA-01)." >&2
+		exit 1
+	fi
+
+	echo "full-smoke: Baum-Aussagen im Ziel ($label): drei Aussagen stehen, die Inventur deckt $n Regelbloecke des ZIEL-Baums, und jedes genannte make-Ziel existiert dort."
+}
+
 rollen_typen_im_ziel() {
 	local repo="$1" label="$2" quelle role f n=0
 	quelle="$HIER/../../internal/emit/templates/agents"
@@ -283,6 +360,7 @@ if [ "$init_rc" -ne 0 ]; then
 fi
 
 # Vor dem Gate-Lauf, damit dessen Gruen eine Aussage ueber die Typ-Dateien ist (slice-097).
+baum_aussagen_im_ziel "$tmprepo" "--lang go"
 rollen_typen_im_ziel "$tmprepo" "--lang go"
 # Aus demselben Grund vor dem Gate-Lauf: das Dokument liegt im geprueften Bereich (slice-098).
 feldliste_im_ziel "$tmprepo" "--lang go"
@@ -1703,6 +1781,7 @@ echo "full-smoke: doc-only Bootstrap (OHNE --lang) in ein zweites tmp-Repo ..."
 ( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" --name full-smoke-doc )
 # slice-097, zweite Variante: die Rollen-Typen sind sprach-agnostisch und UNBEDINGT —
 # sie haengen an keinem Laufzeit-Ausgang. Auch hier vor dem Gate-Lauf.
+baum_aussagen_im_ziel "$tmprepo_doc" "sprachlos"
 rollen_typen_im_ziel "$tmprepo_doc" "sprachlos"
 # slice-098, zweite Variante: die Feldliste beschreibt eine sprach-agnostische Erfassung
 # und teilt darum keinen --lang-Zweig. Ein Zahn in nur einer Variante belegte das nicht.
