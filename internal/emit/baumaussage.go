@@ -10,8 +10,10 @@ import (
 // TraegerWert ist einer der drei Werte, die ein Regelblock des mitgelieferten
 // Regelwerks in der Inventur traegt. Die Menge ist GESCHLOSSEN: sie sagt den Zustand
 // des Ziel-Repos, nicht den Stand einer Entscheidung. Fuer einen Traeger, der
-// beschlossen und nicht abgelegt ist, waere "Traeger kommt mit" die Falschaussage, die
-// diese Inventur verhindert (LH-QA-01 eine Ebene weiter).
+// beschlossen und nicht abgelegt ist, waere "Traeger kommt mit" eine Falschaussage;
+// gegen die eine Richtung, die ein Sensor erreicht — eine behauptete Abwesenheit, die
+// derselbe Lauf ablegt —, steht
+// TestTraegerInventur_KeineZelleBehauptetEineAbwesenheitDieDerEmitWiderlegt.
 type TraegerWert string
 
 const (
