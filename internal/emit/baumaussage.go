@@ -96,13 +96,13 @@ func traegerInventur() []TraegerEintrag {
 		{Modul: "modul-03-spec.md", Wert: TraegerKommtMit,
 			Text: "`spec/lastenheft.md`, `spec/spezifikation.md` und `spec/architecture.md` liegen als ausgefüllte Dateien; die Klasse `spec-straten` des Doku-Gates hält ihre Richtung."},
 		{Modul: "modul-04-adrs.md", Wert: TraegerKommtMit,
-			Text: "`docs/plan/adr/` ist angelegt, die ADR-Vorlage liegt im vendored `templates/`-Baum, und `.d-check.yml` verlangt für jede ADR-Kennung einen auflösenden Link."},
+			Text: "`docs/plan/adr/` ist angelegt, die ADR-Vorlage liegt im mitgelieferten Vorlagen-Baum, und `.d-check.yml` verlangt für jede ADR-Kennung einen auflösenden Link."},
 		{Modul: "modul-05-planning-harness.md", Wert: TraegerKommtMit,
 			Text: "Die vier Lifecycle-Verzeichnisse unter `docs/plan/planning/` sind angelegt; `make slice-mv` bewegt einen Slice und zieht seine Verweise nach."},
 		{Modul: "modul-06-roadmap.md", Wert: TraegerKommtMit,
-			Text: "`docs/plan/planning/roadmap.md` und die Register-Ablage `docs/plan/planning/observations/` liegen; `make archive-welle` archiviert die Zeitdokumente einer geschlossenen Welle."},
+			Text: "`docs/plan/planning/in-progress/roadmap.md` und die Register-Ablage `docs/plan/planning/observations/` liegen; `make archive-welle` archiviert die Zeitdokumente einer geschlossenen Welle."},
 		{Modul: "modul-07-carveouts.md", Wert: TraegerLiegtBei,
-			Text: "`docs/plan/carveouts/` ist angelegt und die Carveout-Vorlage liegt im vendored `templates/`-Baum; kein Sensor prüft Frist oder Auflösungs-Trigger."},
+			Text: "`docs/plan/carveouts/` ist angelegt und die Carveout-Vorlage liegt im mitgelieferten Vorlagen-Baum; kein Sensor prüft Frist oder Auflösungs-Trigger."},
 		{Modul: "modul-08-agentenrollen.md", Wert: TraegerKommtMit,
 			Text: "Unter `.claude/agents/` liegt je ein Rollen-Typ für die sechs kanonischen Rollen; der Typname trägt die Rolle in den Span."},
 		{Modul: "modul-09-implementierung.md", Wert: TraegerKommtMit,
@@ -169,6 +169,58 @@ func emittierteKernpfade() []string {
 	)
 	sort.Strings(paths)
 	return paths
+}
+
+// EmittierteAdressen liefert jede Ziel-Adresse, die ein Lauf schreiben KANN — den
+// unbedingten Kern plus den Hook-Wrapper, der nur im Gelingens-Zweig der Traeger-Ablage
+// entsteht (ADR-0022 Festlegung 5).
+//
+// Sie ist die Gegenmenge zu PfadBestand: jene haelt eine behauptete ABWESENHEIT gegen
+// den unbedingten Bestand, diese eine behauptete ANWESENHEIT gegen alles, was ueberhaupt
+// entstehen kann. Eine Zelle, die einen bedingten Traeger nennt UND seine Bedingung
+// benennt, ist damit richtig; eine, die eine Adresse nennt, die kein Lauf schreibt, faellt.
+func EmittierteAdressen() []string {
+	adressen := append([]string{}, emittierteKernpfade()...)
+	for _, f := range captureFiles() {
+		adressen = append(adressen, f.dst)
+	}
+	sort.Strings(adressen)
+	return adressen
+}
+
+// pfadEndungen sind die Datei-Endungen, an denen AdressenAusText eine Inline-Code-Spanne
+// ohne Verzeichnis-Trenner noch als Pfad erkennt (`AGENTS.md`, `d-check.mk`).
+func pfadEndungen() []string {
+	return []string{".md", ".sh", ".yml", ".mk", ".json", ".awk"}
+}
+
+// AdressenAusText liefert die Ziel-Adressen, die eine Inventur-Zelle in Inline-Code
+// nennt: jede Backtick-Spanne, die einen Verzeichnis-Trenner oder eine der
+// pfadEndungen traegt. Eine Spanne mit Leerraum faellt heraus — so bleiben `make gates`
+// und `direction: no-downward` draussen, ohne dass eine Namensliste noetig waere.
+//
+// GRENZE, benannt statt behauptet: die Regel verfuegt ueber eine FORM, nicht ueber den
+// Sinn. Ein Traeger, den eine Zelle in Prosa statt in Inline-Code nennt, faellt heraus
+// und bleibt ungeprueft; und dass die genannte Adresse die RICHTIGE fuer diesen
+// Regelblock ist, sagt sie ebenfalls nicht — das bleibt ein Urteil.
+func AdressenAusText(text string) []string {
+	out := []string{}
+	for i, teil := range strings.Split(text, "`") {
+		if i%2 == 0 || strings.ContainsAny(teil, " \t") || teil == "" {
+			continue // ausserhalb der Spanne, oder keine Adresse
+		}
+		if strings.Contains(teil, "/") {
+			out = append(out, teil)
+			continue
+		}
+		for _, endung := range pfadEndungen() {
+			if strings.HasSuffix(teil, endung) {
+				out = append(out, teil)
+				break
+			}
+		}
+	}
+	return out
 }
 
 // PfadBestand liefert sortiert die Kernpfade unter praefix — der Ist-Bestand, gegen den

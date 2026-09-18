@@ -103,6 +103,52 @@ func TestTraegerInventur_KeineZelleBehauptetEineAbwesenheitDieDerEmitWiderlegt(t
 	}
 }
 
+// TestTraegerInventur_JedeGenannteAdresseEntstehtImZiel ist die POSITIVE Richtung: eine
+// Zelle, die einen Träger nennt, nennt eine Adresse, die im Ziel wirklich entsteht.
+//
+// Ohne sie ist die Zusage breiter als ihr Waechter — hermetisch geprueft waeren nur die
+// Abwesenheits-Richtung und der Nenner, und eine Zelle duerfte auf einen Pfad zeigen, den
+// kein Lauf schreibt. Der Verifikations-Report fand genau das: die Roadmap-Zelle nannte
+// einen Ort, an dem die Datei nicht liegt.
+//
+// Die bekannte Menge ist die des Emitters selbst — Singletons aus dem Vorlagen-Satz
+// (inklusive Struktur-.gitkeeps und Register-README) plus jede Adresse, die ein Lauf
+// schreiben kann. Eine Adresse mit abschliessendem Trenner ist ein Verzeichnis und gilt
+// als aufgeloest, sobald mindestens ein Pfad darunter liegt.
+func TestTraegerInventur_JedeGenannteAdresseEntstehtImZiel(t *testing.T) {
+	t.Parallel()
+	singletons, err := emit.TemplateTargets(courseSet(), "Probe")
+	if err != nil {
+		t.Fatalf("TemplateTargets: %v", err)
+	}
+	bekannt := append(singletons, emit.EmittierteAdressen()...)
+	if len(bekannt) == 0 {
+		t.Fatal("leere Adress-Menge — der Test pruefte ueber nichts")
+	}
+	geprueft := 0
+	for _, e := range emit.TraegerInventur() {
+		if e.Wert == emit.TraegerKommtNichtMit {
+			continue // Abwesenheit haelt die Gegenrichtung (PfadBestand)
+		}
+		for _, adresse := range emit.AdressenAusText(e.Text) {
+			geprueft++
+			treffer := false
+			for _, p := range bekannt {
+				if p == adresse || (strings.HasSuffix(adresse, "/") && strings.HasPrefix(p, adresse)) {
+					treffer = true
+					break
+				}
+			}
+			if !treffer {
+				t.Errorf("%s %s: die Zelle nennt %q — kein Lauf schreibt diese Adresse", e.Modul, e.Abschnitt, adresse)
+			}
+		}
+	}
+	if geprueft == 0 {
+		t.Error("keine Adresse geprueft — die Erkennung trifft nichts, der Waechter ist leer")
+	}
+}
+
 // TestTraegerInventur_ModulListeOhneWiederholung haelt die Nenner-Seite der Inventur
 // hermetisch: die Modul-Liste ist die Menge, die test/baum-inventur.bats gegen das
 // regelwerk/-Verzeichnis des gepinnten Baums haelt (der liegt unter .harness/ und damit
