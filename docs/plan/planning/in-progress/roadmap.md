@@ -16,9 +16,6 @@ Welle-Dateien; woran gearbeitet wird, sagt das `Welle:`-Feld der Slices in
 [`in-progress/`](../in-progress). Ziel, Trigger und Closure-Kriterien stehen in der Welle-Datei,
 nicht hier.
 
-**Nichts in Arbeit.** — [`in-progress/`](../in-progress) trägt keinen Slice
-(`ls docs/plan/planning/in-progress/` → leer).
-
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
 - [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
 
