@@ -64,6 +64,7 @@ func TestTraegerInventur_KeineZelleBehauptetEineAbwesenheitDieDerEmitWiderlegt(t
 		"tools/harness/": {
 			"tools/harness/baseline-verify.sh",
 			"tools/harness/commit-msg-traceability.sh",
+			"tools/harness/e2e-abdeckung.sh",
 			"tools/harness/extract-command.awk",
 			"tools/harness/history-range-guard.sh",
 			"tools/harness/record-gates.sh",
@@ -75,6 +76,7 @@ func TestTraegerInventur_KeineZelleBehauptetEineAbwesenheitDieDerEmitWiderlegt(t
 			"harness/mk/archivierung.mk",
 			"harness/mk/baseline.mk",
 			"harness/mk/doc-gate.mk",
+			"harness/mk/e2e-abdeckung.mk",
 			"harness/mk/enforce.mk",
 			"harness/mk/erfassung.mk",
 			"harness/mk/hooks-install.mk",

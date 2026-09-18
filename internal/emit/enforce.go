@@ -141,6 +141,12 @@ func enforceFiles() []enforceFile {
 		// nicht; die Begruendung der zwei Eintraege traegt selbstpruefung.go.
 		selbstpruefungFile(),
 		selbstpruefungMkFile(),
+		// Erzeuger der E2E-Abdeckungs-Sicht: das Skript, das den Quelltext des
+		// E2E-Skripts des Ziels liest, und das Fragment, das es ueber `make`
+		// erreichbar macht. Es liest die Selbstpruefung daneben und aendert sie
+		// nicht; die Begruendung der zwei Eintraege traegt e2eabdeckung.go.
+		e2eAbdeckungFile(),
+		e2eAbdeckungMkFile(),
 	}
 }
 
