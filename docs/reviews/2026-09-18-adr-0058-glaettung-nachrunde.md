@@ -115,3 +115,49 @@ zweite Option nachtragen); N-3 ist ein INFO-Anhang ohne Blockwirkung.
 **Übergabe:** N-1/N-2 an den **Architect** (ein Zeilenwechsel, eine
 Ausgangs-Entscheidung — beides im `Proposed`-Fenster gratis). Die Finding-Klassen
 gehen in die Slice-Closure §7 und von dort in den Zähler.
+
+---
+
+# Bestätigungsrunde — 2026-09-18, nach Commit `1b722b71`
+
+**Gegenstand:** `1b722b71` (Architect: N-1/N-2/N-3 gezogen — nur die ADR-Datei,
++3/−3, `make docs-check` 1706/0 als Beleg in der Message). Die drei Prüfungen der
+Bestätigungsrunde, alle selbst gefahren:
+
+1. **Bullet-Zählung:** `sed -n '/## Re-Evaluierungs-Trigger/,/## Geschichte/p' … |
+   grep -c '^- \*\*Wenn'` → **4**. Die verschmolzene Zeile ist getrennt, Trigger 3
+   (Signier-Schritt/Digest-Angriff) führt sein List-Item wieder. N-1 getragen.
+2. **Trigger 2 trägt beide Ausgänge wörtlich:** „ist der Release-Schnitt zu
+   verschärfen oder der Fassungs-Fit konstruktiv zu bauen" — die Zweiteilung der
+   Fassung vor der Glättung, restauriert. Die Klärung von N-2 („keine beabsichtigte
+   Setzung; die ursprüngliche Zweiteilung gilt unverändert") steht in der
+   Commit-Message, nicht im ADR-Text: das Artefakt trägt nur den Zustand (beide
+   Ausgänge), den Vorgang der Restauration hält `git`. Kein Chronik-Text im
+   Artefakt — §3.7 geprüft, ohne Befund. N-2 getragen.
+3. **N-3 trägt die Lektüre-Kennzeichnung:** Festlegung 2 nennt jetzt „daß kein
+   Default-Zweig folgt, trägt die Lektüre des Switches — Zeilen 558–570 — und kein
+   Muster-Grep". Die Evidenz ist als Lektüre gekennzeichnet statt als belegte
+   Messung ausgegeben; die Lektüre stimmt mit meiner eigenen
+   (`main.go:559`, vier string-cases, kein `default`, Fall-through zum Init-Pfad).
+   N-3 getragen. Das „daß" ist keine Orthographie-Abweichung mit Anker — der
+   Bestand führt es auch in zwölf weiteren ADR-Stellen (`grep -rn 'daß' … docs/plan/adr |
+   grep -v 0058 | wc -l` → 12); nach dem Stil-Polizist-Ausschluss des Skills kein
+   Finding.
+
+**Negativbefunde:** Commit-Zuschnitt `1b722b71` geprüft, ohne Befund — nur die
+ADR-Datei, Rolle und Kennung in der Message, Beleg (`make docs-check` 1706/0)
+genannt. Keine weitere Stelle der ADR vom Diff berührt; die Festlegungen 1–5, die
+Konsequenzen und die Geschichte-Zeile stehen unverändert. **Nicht gefahren:**
+`make gates`/`make docs-check` — vom Architect gefahren und in der Message belegt.
+
+## Verdikt der Bestätigungsrunde
+
+**READY FOR ACCEPT.** Kein blockierender Befund: N-1 ist behoben (vier Trigger-Bullets,
+selbst gezählt), N-2 ist geklärt und als Zustand im Artefakt formuliert, N-3 trägt
+die Lektüre-Kennzeichnung ohne Messungs-Behauptung. Die ADR-0058 trägt die Messung
+am gepinnten Stand (F-3), die Verbatim-Paraphrase (F-5) und die
+Korrektur-Geschichte als auflösbare Anker. Der Accept-Übergang — Status-Setzung
+`Proposed` → `Accepted` samt Accept-Zeile in §Geschichte — ist der kleine
+Architect-Zug, den der Acceptance-Trigger der ADR freigibt; Beleg dieser Runde nach
+[ADR-0040](../plan/adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md)
+Festlegung 2 ist diese Datei.
