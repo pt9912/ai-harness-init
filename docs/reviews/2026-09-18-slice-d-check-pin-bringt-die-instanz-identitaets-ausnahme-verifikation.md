@@ -1,6 +1,6 @@
 # Verifikations-Report: slice-d-check-pin-bringt-die-instanz-identitaets-ausnahme — 2026-09-18
 
-**Verifikation (Modul 11):** geprüft gegen den Slice-Plan (`docs/plan/planning/in-progress/slice-d-check-pin-bringt-die-instanz-identitaets-ausnahme.md`) und die kanonischen Quellen, auf die er sich beruft. Nicht geprüft: der Review — der ist Runde 1 durch (`docs/reviews/2026-09-18-slice-d-check-pin-bringt-die-instanz-identitaets-ausnahme-runde-1.md`, Verdikt nicht merge-blockierend).
+**Verifikation (Modul 11):** geprüft gegen den Slice-Plan (`docs/plan/planning/done/slice-d-check-pin-bringt-die-instanz-identitaets-ausnahme.md`) und die kanonischen Quellen, auf die er sich beruft. Nicht geprüft: der Review — der ist Runde 1 durch (`docs/reviews/2026-09-18-slice-d-check-pin-bringt-die-instanz-identitaets-ausnahme-runde-1.md`, Verdikt nicht merge-blockierend).
 
 **Gegenstand:** `cb3bc567` (Implementer: `d-check.mk`, `internal/emit/emit.go`) · `3aec7e7d` (Architect: MR-068) · `cf0d947d` (Reviewer) · `a1efbf79` (Architect: F-2 gezogen). Kopf des Baums `a1efbf79`, gepusht.
 
