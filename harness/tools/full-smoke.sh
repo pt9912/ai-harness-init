@@ -2790,12 +2790,17 @@ fi
 # DIE VIER SAETZE SIND WIRKUNGEN, KEINE ANKUENDIGUNGEN: die zwei Commit-Ausgaenge
 # entstehen aus git, und `Datei(en) geprueft` schreibt das Doku-Gate im Klon — keine der
 # vier Zeilen entsteht durch Interpolation eines Markers.
+# DIE LETZTEN ZWEI HALTEN ZUSAMMEN EINE EIGENE ZUSAGE: die Vorlage druckt die GANZE
+# Ausgabe des Gate-Schritts, nicht nur deren letzte Zeile. Die zwei Spuren stammen aus
+# zwei Kommandos der Kette und stehen auf verschiedenen Zeilen — ein Rueckfall auf die
+# letzte liesse eine von beiden fallen.
 for satz in 'der frische Klon traegt lokal keinen core.hooksPath' \
             'selbstpruefung: ROT — die Message [' \
             'selbstpruefung: GRUEN — die Message [' \
+            'Integritaet + Vollstaendigkeit' \
             'Datei(en) geprüft'; do
 	if ! grep -qF -- "$satz" <<<"$selbst_out"; then
-		echo "full-smoke: FEHLER — sprachlos: die Selbstpruefung belegt den Ausgang '$satz' nicht — ein Lauf, der nur einen der zwei Commit-Ausgaenge beobachtet, loest die Zusage nicht ein (LH-FA-11)." >&2
+		echo "full-smoke: FEHLER — sprachlos: die Selbstpruefung belegt den Ausgang '$satz' nicht — gelesen wird die AUSGABE des Laufs: beide Commit-Ausgaenge in EINEM Lauf, und beide Spuren der Gate-Kette, die zusammen belegen, dass die ganze Ausgabe des Gate-Schritts dasteht (LH-FA-11)." >&2
 		printf '%s\n' "$selbst_out" >&2
 		exit 1
 	fi

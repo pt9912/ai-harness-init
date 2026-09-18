@@ -222,11 +222,16 @@ func TestSelbstpruefung_EinEditIstNachDemNaechstenLaufWiederDieAusgelieferteFass
 // gehalten, die ein Lauf schreibt. Ein Kopf, der stattdessen das Root-Makefile oder eine
 // der zwei eigenen Dateien naennte, faellt hier — genau die Klasse, die der Kopf erklaert.
 //
-// GRENZE: geprueft sind die Mengen, die dieses Paket kennt (Durchsetzungsschicht,
-// Commands, Rollen-Typen, Aggregator). Die Code-Gate-Fragmente, die das Sprach-Skelett
-// unter harness/mk/ ablegt, tragen den Namen ihres Moduls und stehen in keiner von
-// ihnen; ein Adopter, der sein Modul so nennt wie diesen Ort, kollidiert mit ihnen, und
-// das faengt kein Test hier.
+// GEPRUEFT SIND ALLE PFADE, DIE DIESES PAKET SCHREIBT und die als Konstante oder Muster
+// greifbar sind: der Aggregator, die Durchsetzungsschicht, Commands, Rollen-Typen, das
+// Baseline- und das Doc-Gate-Fragment, das Arch-Gate-Fragment am Root und die Familie
+// harness/mk/arch-<modul>.mk.
+//
+// GRENZE — EINE FAMILIE BLEIBT AUSSEN: die Code-Gate-Fragmente, die das Sprach-Skelett
+// (internal/gen) unter harness/mk/ ablegt, tragen den Namen ihres Moduls
+// (harness/mk/apps-api.mk fuer das Modul apps/api) und sind von hier aus weder Konstante
+// noch Muster. Ein Adopter, der sein Vorgabe-Fragment so nennt wie eines seiner Module,
+// verliert seine Vorgabe beim naechsten Lauf, und das faengt dieser Test nicht.
 func TestSelbstpruefung_DerGenannteVorgabeOrtWirdVonKeinemLaufGeschrieben(t *testing.T) {
 	dir := selbstpruefungZiel(t)
 	for _, rel := range []string{emit.SelbstpruefungPath, emit.SelbstpruefungMkPath} {
@@ -237,7 +242,12 @@ func TestSelbstpruefung_DerGenannteVorgabeOrtWirdVonKeinemLaufGeschrieben(t *tes
 		}
 	}
 
-	geschrieben := append([]string{emit.MakefilePath}, emit.EnforcePaths()...)
+	geschrieben := append([]string{
+		emit.MakefilePath,
+		emit.BaselineMkPath,
+		emit.DocGateMkPath,
+		emit.ArchMkPath,
+	}, emit.EnforcePaths()...)
 	geschrieben = append(geschrieben, emit.CommandPaths()...)
 	geschrieben = append(geschrieben, emit.AgentPaths()...)
 	for _, p := range geschrieben {
@@ -245,6 +255,17 @@ func TestSelbstpruefung_DerGenannteVorgabeOrtWirdVonKeinemLaufGeschrieben(t *tes
 			t.Errorf("%s wird von einem Lauf geschrieben — eine Vorgabe dort ist nach dem naechsten Bootstrap weg, und die Koepfe nennen sie trotzdem als dauerhaften Ort",
 				emit.SelbstpruefungVorgabeOrt)
 		}
+	}
+	// Die Arch-Gate-Fragmente sind eine FAMILIE, kein einzelner Pfad: ihr Name traegt das
+	// Modul. Geprueft wird ihr Praefix, und der kommt aus derselben Funktion, die sie
+	// schreibt — eine zweite Schreibweise daneben liefe gegen sie.
+	archPraefix := strings.TrimSuffix(emit.ArchGateMkPath(""), ".mk")
+	if !strings.HasPrefix(archPraefix, "harness/mk/") {
+		t.Fatalf("der gelesene Praefix der Arch-Gate-Familie ist %q — er trifft harness/mk/ nicht, und der Abgleich prueft dann nichts", archPraefix)
+	}
+	if strings.HasPrefix(emit.SelbstpruefungVorgabeOrt, archPraefix) {
+		t.Errorf("%s faellt in die Familie %s*, die ein Lauf je Modul schreibt — eine Vorgabe dort ist nach dem naechsten Bootstrap weg",
+			emit.SelbstpruefungVorgabeOrt, archPraefix)
 	}
 	// Vorbedingung: eine leere Menge liesse die Schleife oben still gruen.
 	if len(geschrieben) < 2 {

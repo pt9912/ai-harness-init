@@ -201,7 +201,9 @@ if [ "$gate_rc" -ne 0 ]; then
 fi
 # DIE GANZE AUSGABE, nicht ihre letzte Zeile: was ein Kommando hinterlaesst, ist
 # das einzige, woran von aussen abzulesen ist, WELCHES lief. Eine einzelne Zeile
-# stammt aus einem fremden Werkzeug und traegt diese Unterscheidung nicht.
+# stammt aus einem fremden Werkzeug und traegt diese Unterscheidung nicht. Der
+# Voll-E2E des Werkzeugs greift dafuer in seiner Selbstpruefungs-Stufe zwei Spuren
+# aus zwei Kommandos der Kette, die auf verschiedenen Zeilen stehen.
 echo "selbstpruefung: GATE — [$SELBSTPRUEFUNG_GATE] im Klon ist Exit 0. Ausgabe:"
 printf '%s\n' "$gate_out" | sed 's/^/selbstpruefung:   /'
 echo "selbstpruefung: OK — der Traeger [$SELBSTPRUEFUNG_TRAEGER] reist mit dem Klon, seine Aktivierung nicht; [$SELBSTPRUEFUNG_AKTIVIERUNG] nimmt genau ihn in Betrieb, danach faellt '$SELBSTPRUEFUNG_MSG_ROT' und geht '$SELBSTPRUEFUNG_MSG_GRUEN' durch, und [$SELBSTPRUEFUNG_GATE] laeuft im Klon gruen. Nicht geprueft: ob der Traeger jeden Commit-Pfad erreicht (--no-verify, Werkzeug-Commits, andere Aufrufformen)."
