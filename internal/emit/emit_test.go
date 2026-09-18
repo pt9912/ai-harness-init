@@ -27,13 +27,23 @@ func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 		t.Errorf("eingebettete .d-check.yml aktiviert nicht genau [links, anchors, ids, matrix, spans]:\n%s", yml)
 	}
 	sawPrefixPattern := false
+	// letzteKlasse haelt die LETZTE Klassen-Zeile — nur innerhalb von matrix.classes:,
+	// sonst zaehlte jede spaetere Liste mit und die Positions-Zusicherung darunter
+	// pruefte eine andere Stelle als die, ueber die sie spricht.
 	var letzteKlasse string
+	inClasses := false
 	for _, line := range strings.Split(yml, "\n") {
 		if strings.HasPrefix(line, "codepaths:") {
 			t.Errorf("codepaths unkommentiert aktiv im frischen Repo (halluziniertes Gate): %q", line)
 		}
 		trimmed := strings.TrimSpace(line)
-		if strings.HasPrefix(trimmed, "- {name: ") {
+		switch trimmed {
+		case "classes:":
+			inClasses = true
+		case "rules:":
+			inClasses = false
+		}
+		if inClasses && strings.HasPrefix(trimmed, "- {name: ") {
 			letzteKlasse = trimmed
 		}
 		if strings.Contains(trimmed, "<PREFIX>") {
@@ -80,7 +90,7 @@ func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 		t.Errorf("matrix.exempt-paths traegt nicht genau [ADR-Index, Review-Reports]:\n%s", yml)
 	}
 	if strings.Contains(yml, "docs/plan/planning/done/welle-") {
-		t.Errorf("die Welle-Dateien in done/ stehen in der emittierten Konfiguration (Status-Deckung der Klasse welle):\n%s", yml)
+		t.Errorf("der Welle-Pfad steht irgendwo in der emittierten Konfiguration — an keiner Position darf er die Status-Deckung der Klasse welle zuruecknehmen:\n%s", yml)
 	}
 	// exclude-sections traegt exakt [Geschichte] — weder leer (dann faengt
 	// {from: adr, to: slice} auch die legitime, im Zeilen-Marker deklarierte

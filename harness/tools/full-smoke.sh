@@ -801,6 +801,7 @@ echo "full-smoke: Feldlisten-Ortswahl belegt (toter Verweis im Dokument faerbt d
 grep -E "$FELDLISTE_REL:[0-9]+" <<<"$feldzahn_out" | sed -n '1,2s/^/full-smoke:   /p'
 
 # ZAEHNE zu den drei in der emittierten Konfiguration aktiven Modulen ids/matrix/spans —
+# SECHS Gegenbeispiele im gebootstrappten Ziel (AGENTS.md §3.6), nach derselben Form wie der
 # Feldlisten-Zahn oben: Verletzung einschmuggeln -> docs-check MUSS roeten, MIT der
 # benannten Befund-Art -> zurueckgenommen. matrix traegt vier gepruefte Aussagen und
 # vier eigene Zaehne (matrix-forbidden abwaerts, matrix-downward, matrix-forbidden nach
