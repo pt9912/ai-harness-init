@@ -196,23 +196,33 @@ EOF
   printf '%s' "$output" | grep -qF 'tools/harness/mein-e2e.sh:'
 }
 
-@test "emittiert: eine fehlende Spec-Datei ist keine Vorbedingung — die Sicht entsteht unveraendert" {
-  # DIE SPEC-DATEI IST DER MASSSTAB DES LESERS, nicht die Quelle eines Ankers. Fehlt sie,
-  # aendert sich an der Sicht nichts — das ist die Probe darauf, dass die ausgelieferte
-  # Fassung sie gar nicht mehr liest. Vor dem Wegfall der Verweise hing hier ein
-  # Sonderzweig; er hat kein Objekt mehr.
+@test "emittiert: eine fehlende Spec-Datei bricht nicht ab — die Sicht entsteht, und Lauf und Kopf sagen, dass ihr Massstab fehlt" {
+  # DIE SPEC-DATEI IST DER MASSSTAB DES LESERS, nicht die Quelle eines Ankers — gelesen
+  # wird sie nicht mehr. Fehlt sie, entsteht die Sicht vollstaendig; STILL darf das nicht
+  # bleiben, denn ihr Kopf nennt die Datei weiter. Eine Sicht, die auf nichts zeigt und
+  # das verschweigt, behauptet Pruefbarkeit, die niemand einloesen kann.
   fixture "$TMP/mitspec"
   cd "$TMP/mitspec"
   run env E2E_ABDECKUNG_QUELLE=tools/harness/mein-e2e.sh E2E_ABDECKUNG_ZIEL=docs/user/a.md bash "$(emittiert)"
   [ "$status" -eq 0 ]
+  # Mit Spec-Datei sagt der Lauf dazu nichts, und der Kopf traegt den Fehl-Hinweis nicht.
+  ! printf '%s' "$output" | grep -qF 'die Spec-Datei liegt nicht'
+  [ "$(grep -c 'liegt in diesem Repo derzeit' docs/user/a.md)" -eq 0 ]
+
+  # Die Mutation belegen: die Datei ist weg, der Marker zeigt unveraendert auf sie.
   rm spec/lastenheft.md
+  [ ! -f spec/lastenheft.md ]
   run env E2E_ABDECKUNG_QUELLE=tools/harness/mein-e2e.sh E2E_ABDECKUNG_ZIEL=docs/user/b.md bash "$(emittiert)"
   [ "$status" -eq 0 ]
-  cmp -s docs/user/a.md docs/user/b.md
+  # (1) DER LAUF SAGT ES — und nennt den Marker, ueber den der Adopter die Datei benennt.
+  printf '%s' "$output" | grep -qF 'die Spec-Datei liegt nicht: spec/lastenheft.md'
+  printf '%s' "$output" | grep -qF 'E2E_ABDECKUNG_SPEC'
+  # (2) DIE SICHT SAGT ES AUCH — sie wird ohne den Lauf gelesen.
+  [ "$(grep -c 'liegt in diesem Repo derzeit' docs/user/b.md)" -eq 1 ]
+  # (3) UND SIE IST TROTZDEM VOLLSTAENDIG: dieselbe Zeile, dieselbe Code-Span-Form.
   [ "$(grep -c '^| `LH-FA-01` |' docs/user/b.md)" -eq 1 ]
   [ "$(grep -c '](' docs/user/b.md)" -eq 0 ]
-  # Genannt bleibt sie: der Kopf sagt dem Leser, wogegen er die Sicht haelt.
-  grep -qF 'spec/lastenheft.md' docs/user/b.md
+  [ "$(grep -c '^| .* | Stufe [0-9]' docs/user/b.md)" -eq "$(grep -c '^| .* | Stufe [0-9]' docs/user/a.md)" ]
 }
 
 @test "kopplung: die zwei Fassungen teilen die Form und trennen sich in EINER Sache — dem Verweis" {

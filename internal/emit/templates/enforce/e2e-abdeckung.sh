@@ -101,6 +101,19 @@ if [ ! -f "$quelle" ]; then
 	exit 1
 fi
 
+# DIE SPEC-DATEI IST KEINE VORBEDINGUNG, SONDERN DER MASSSTAB DES LESERS. Gelesen wird
+# sie nicht — die Kennungsspalte traegt Code-Spans, keine Anker. Fehlt sie, entsteht die
+# Sicht vollstaendig; was ihr fehlt, ist der Massstab. GESAGT WIRD ES TROTZDEM, an zwei
+# Stellen: hier im Lauf und im Kopf der geschriebenen Sicht. Eine Sicht, die einen
+# Massstab nennt, den es nicht gibt, behauptet Pruefbarkeit, die niemand einloesen kann.
+# KEIN ABBRUCH: ein Abbruch machte aus diesem Kommando ein Gate ueber dem Zustand des
+# Baums, und genau das ist es nicht.
+spec_da=1
+if [ ! -f "$spec" ]; then
+	spec_da=0
+	echo "e2e-abdeckung: Hinweis — die Spec-Datei liegt nicht: $spec. Die Sicht entsteht trotzdem und ist vollstaendig; was ihr fehlt, ist der Massstab, gegen den ihr Leser sie haelt — ihr Kopf sagt das. Der Marker E2E_ABDECKUNG_SPEC nennt die Datei."
+fi
+
 stufen="$(grep -nE "$STUFEN_MUSTER" "$quelle" || true)"
 if [ -z "$stufen" ]; then
 	echo "e2e-abdeckung: FEHLER — $quelle fuehrt keine Stufen-Kopfzeile, und eine Sicht ueber null Stufen sagt nichts: ihr Gruen belegte eine Abdeckung, die niemand deklariert hat." >&2
@@ -152,7 +165,14 @@ trap 'rm -f "$tmp"' EXIT
 	echo "Code-Span statt als Verweis**: ein Verweis brauchte einen Anker, und den müsste dieser"
 	echo "Erzeuger aus der Rohzeile einer Überschrift nachbilden — ein Link, der aussieht wie"
 	echo "einer und im Doku-Gate rot wird, wäre teurer als gar keiner. Gehalten wird die Sicht"
-	echo "deshalb gegen \`$spec\`, und zwar vom Leser. Die Spalte"
+	if [ "$spec_da" -eq 1 ]; then
+		echo "deshalb gegen \`$spec\`, und zwar vom Leser. Die Spalte"
+	else
+		# DER MASSSTAB FEHLT, UND DIE SICHT SAGT ES SELBST. Ohne diesen Zweig nennte sie
+		# eine Datei, die es nicht gibt, und behauptete damit Pruefbarkeit.
+		echo "deshalb vom Leser gegen \`$spec\` — **diese Datei liegt in diesem Repo derzeit"
+		echo "nicht**; solange sie fehlt, hat die Sicht keinen Maßstab. Die Spalte"
+	fi
 	echo "\`Kurzbeschreibung\` trägt keine Kennung. Die Spalte \`Stufe\` zählt die"
 	echo "Stufen-Kopfzeilen in der Reihenfolge des Skripts — eine Stufe eröffnet mit ihrer"
 	echo "Ausgabe-Kopfzeile und reicht bis zur nächsten. Die Spalte \`Ort\` adressiert sie."
