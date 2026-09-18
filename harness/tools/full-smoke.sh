@@ -2872,7 +2872,7 @@ grep -F -- 'Integritaet + Vollstaendigkeit' <<<"$marker_out" | sed -n '1p' | sed
 grep -F -- 'ist nicht der Traeger, den der Aktivierungsschritt in Betrieb nimmt' <<<"$traeger_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
 
 echo "full-smoke: Das gebootstrappte Ziel erzeugt seine eigene E2E-Abdeckungs-Sicht ..."
-e2e_abdeckung "LH-FA-11 LH-FA-02" "Das Ziel erzeugt die Sicht ueber seine eigenen E2E-Stufen aus deren Deklarationen" "Der Erzeuger urteilt ueber den QUELLTEXT des E2E-Skripts"
+e2e_abdeckung "LH-FA-12 LH-FA-02" "Das Ziel erzeugt die Sicht ueber seine eigenen E2E-Stufen aus deren Deklarationen" "Der Erzeuger urteilt ueber den QUELLTEXT des E2E-Skripts"
 
 # Der Erzeuger urteilt ueber den QUELLTEXT des E2E-Skripts, nicht ueber den Zustand des
 # Baums — an der Gate-Kette faerbte er rot, weil eine Deklaration fehlt (LH-QA-01).

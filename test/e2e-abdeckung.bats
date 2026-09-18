@@ -259,3 +259,100 @@ EOF
   printf '%s' "$output" | grep -q 'Stufe ohne Deklaration'
   [ ! -f docs/user/e2e-abdeckung.md ]
 }
+
+@test "emittiert: ein zweiter Lauf ohne geaenderte Deklaration schreibt die Sicht nicht neu und sagt es" {
+  fixture "$TMP/zweitlauf"
+  cd "$TMP/zweitlauf"
+  run env E2E_ABDECKUNG_QUELLE=tools/harness/mein-e2e.sh bash "$(emittiert)"
+  [ "$status" -eq 0 ]
+  # GEMESSEN WIRD DER SCHREIB-ZEITSTEMPEL, nicht die Meldung: ein Schreiben setzt ihn neu.
+  # Ein Fall, der nur die Meldung liest, bliebe gruen, wenn die Vorlage sie ausgibt UND
+  # trotzdem schriebe. (Der Inode taugt nicht: er wird nach dem rm sofort wiederverwendet.)
+  vorher="$(stat -c %y docs/user/e2e-abdeckung.md)"
+  run env E2E_ABDECKUNG_QUELLE=tools/harness/mein-e2e.sh bash "$(emittiert)"
+  [ "$status" -eq 0 ]
+  nachher="$(stat -c %y docs/user/e2e-abdeckung.md)"
+  [ "$vorher" = "$nachher" ]
+  printf '%s' "$output" | grep -qF 'unveraendert'
+  # GEGENPROBE: mit geaenderter Deklaration schreibt er sehr wohl — sonst waere die
+  # Gleichheit oben die Eigenschaft einer Datei, die nie neu entsteht.
+  sed -i 's@"was die eine Stufe belegt"@"was die eine Stufe nun belegt"@' tools/harness/mein-e2e.sh
+  run env E2E_ABDECKUNG_QUELLE=tools/harness/mein-e2e.sh bash "$(emittiert)"
+  [ "$status" -eq 0 ]
+  [ "$(stat -c %y docs/user/e2e-abdeckung.md)" != "$nachher" ]
+  printf '%s' "$output" | grep -qF 'geschrieben'
+}
+
+@test "emittiert: dem Quell-Skript seine einzige Stufen-Kopfzeile nehmen faerbt rot — die ANDERE Luecken-Richtung" {
+  mkdir -p "$TMP/ohnestufe/tools/harness" "$TMP/ohnestufe/docs/user"
+  grep -vE '^echo "selbstpruefung: .* \.\.\."$' "$REPO/internal/emit/templates/enforce/selbstpruefung.sh" \
+    > "$TMP/ohnestufe/tools/harness/selbstpruefung.sh"
+  cd "$TMP/ohnestufe"
+  # Die Mutation belegen: die Deklaration steht noch, die Kopfzeile ist weg. Das ist die
+  # Gegenrichtung zu "Stufe ohne Deklaration" — hier gibt es gar keine Stufe.
+  [ "$(grep -cE "$STUFEN_MUSTER_ZIEL" tools/harness/selbstpruefung.sh)" -eq 0 ]
+  [ "$(grep -cE "$RUF_MUSTER" tools/harness/selbstpruefung.sh)" -eq 1 ]
+  run bash "$(emittiert)"
+  [ "$status" -eq 1 ]
+  printf '%s' "$output" | grep -q 'keine Stufen-Kopfzeile'
+  printf '%s' "$output" | grep -q 'null Stufen'
+  # Eine Sicht ueber null Stufen entsteht NICHT — ihr Gruen belegte eine Abdeckung, die
+  # niemand deklariert hat (LH-QA-01).
+  [ ! -f docs/user/e2e-abdeckung.md ]
+}
+
+@test "trennlinie: eine nicht aufloesende Kennung bricht UNSERE Fassung ab und gibt der emittierten einen Code-Span" {
+  # DIE EINE GEWOLLTE DIFFERENZ DER ZWEI FASSUNGEN, in einem Fall belegt. Wer sie
+  # angleicht, hebt eine Zusage auf: unsere urteilt ueber UNSER Lastenheft und darf einen
+  # Link ohne Ziel nicht schreiben; die emittierte kennt die Spec des Ziels nicht und
+  # macht aus einer unbekannten Kennung keinen Befund (LH-FA-12 §Benannte Grenze).
+  fixture "$TMP/trenn"
+  sed -i 's@"LH-FA-01"@"LH-ZZ-99"@' "$TMP/trenn/tools/harness/mein-e2e.sh"
+  [ "$(grep -c 'LH-ZZ-99' "$TMP/trenn/tools/harness/mein-e2e.sh")" -eq 1 ]
+  [ "$(grep -c 'LH-ZZ-99' "$TMP/trenn/spec/lastenheft.md")" -eq 0 ]
+
+  # (a) DIE EMITTIERTE FASSUNG: Exit 0, Code-Span, kein Verweis.
+  cd "$TMP/trenn"
+  run env E2E_ABDECKUNG_QUELLE=tools/harness/mein-e2e.sh bash "$(emittiert)"
+  [ "$status" -eq 0 ]
+  [ "$(grep -c '^| `LH-ZZ-99` |' docs/user/e2e-abdeckung.md)" -eq 1 ]
+  [ "$(grep -c 'lastenheft.md#' docs/user/e2e-abdeckung.md)" -eq 0 ]
+
+  # (b) UNSERE FASSUNG ueber derselben Lage: Abbruch, und der Grund nennt den Link ohne
+  # Ziel. Gefahren wird sie mit unserem Stufen-Praefix, damit die Stufe fuer sie eine ist.
+  sed -i 's@^echo "selbstpruefung: @echo "full-smoke: @' tools/harness/mein-e2e.sh
+  run bash "$ERZEUGER" tools/harness/mein-e2e.sh docs/user/unsere.md
+  [ "$status" -ne 0 ]
+  printf '%s' "$output" | grep -qF 'LH-ZZ-99'
+  printf '%s' "$output" | grep -q 'Link ohne Ziel'
+  [ ! -f docs/user/unsere.md ]
+}
+
+@test "emittiert: jeder der vier Marker lenkt den Lauf, gemessen an dem was entsteht" {
+  mkdir -p "$TMP/marker/tools/harness" "$TMP/marker/anders" "$TMP/marker/sicht"
+  cd "$TMP/marker"
+  # Quelle und Praefix weichen beide von der Vorgabe ab: laeuft der Lauf ohne gesetzte
+  # Marker, findet er gar nichts — das macht den Test der zwei Marker unabhaengig von der
+  # Vorgabe.
+  cat > anders/eigenes-e2e.sh <<'EOF'
+#!/usr/bin/env bash
+e2e_abdeckung() { :; }
+echo "meinlauf: die eine Stufe des eigenen E2E ..."
+e2e_abdeckung "RQ-7" "was das eigene E2E belegt" "der Anker des eigenen E2E"
+echo "meinlauf: der Anker des eigenen E2E steht hier"
+EOF
+  printf '### RQ-7 — Eigene Anforderung\n' > anders/anforderungen.md
+  run env E2E_ABDECKUNG_QUELLE=anders/eigenes-e2e.sh \
+          E2E_ABDECKUNG_PRAEFIX=meinlauf \
+          E2E_ABDECKUNG_SPEC=anders/anforderungen.md \
+          E2E_ABDECKUNG_ZIEL=sicht/abdeckung.md \
+          bash "$(emittiert)"
+  [ "$status" -eq 0 ]
+  # ZIEL: die Datei entsteht dort und nirgends sonst.
+  [ -f sicht/abdeckung.md ]
+  [ ! -f docs/user/e2e-abdeckung.md ]
+  # QUELLE + PRAEFIX: die Stufe des genannten Skripts steht in der Sicht, mit seinem Pfad.
+  [ "$(grep -c '| Stufe 1 | `anders/eigenes-e2e.sh:' sicht/abdeckung.md)" -eq 1 ]
+  # SPEC: der Verweis loest gegen die GENANNTE Datei auf, nicht gegen eine Vorgabe.
+  grep -qF '(../anders/anforderungen.md#rq-7--eigene-anforderung)' sicht/abdeckung.md
+}

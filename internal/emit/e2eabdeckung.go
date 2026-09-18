@@ -1,6 +1,6 @@
 package emit
 
-// Der Erzeuger der E2E-Abdeckungs-Sicht der emittierten Ebene: das Skript, das den
+// Der Erzeuger der E2E-Abdeckungs-Sicht der emittierten Ebene (LH-FA-12): das Skript, das den
 // Quelltext des E2E-Skripts eines Zielrepos liest, und das Fragment, das es ueber
 // `make` des Ziels erreichbar macht. Zwei Dateien, ein Gegenstand.
 //
