@@ -147,14 +147,14 @@ structure:
 # exempt-targets ist EXAKT (kein Glob) und in zwei Gruppen kuratiert:
 #
 # (a) Nicht-Gate-Verifies und Maintenance/CI-Sensoren — kein Gate-Versprechen (wie (b)),
-# jedes Rezept zusaetzlich in harness/README.md namentlich genannt (14 von 18 ueber einen
+# jedes Rezept zusaetzlich in harness/README.md namentlich genannt (15 von 19 ueber einen
 # eigenen `## `-Hilfetext mit der Angabe "NICHT in gates"; span-clean, doc-immutable,
-# doc-commits und record-gates tragen diesen Hilfetext nicht, stehen aber ebenfalls im
-# Fliesstext): smoke, full-smoke, e2e-abdeckung, mutate, span-clean, span-report,
-# hook-overhead, slice-mv,
+# doc-commits, record-gates und traeger-fetch tragen diesen Hilfetext nicht, stehen aber
+# ebenfalls im Fliesstext): smoke, full-smoke, e2e-abdeckung, mutate, span-clean,
+# span-report, hook-overhead, slice-mv,
 # archive-welle, vendor-baseline, regelwerk-check, baseline-freshness,
 # history-range-guard, adr-immutable, doc-immutable, doc-commits, record-gates,
-# commit-msg-check.
+# commit-msg-check, traeger-fetch.
 #
 # (b) reine Utility-/Advisory-Ziele ohne Prosa-Erwaehnung — jedes traegt seinen
 # eigenen `## `-Hilfetext, sichtbar ueber `make help` bzw. `make doc-help`, und
@@ -185,6 +185,7 @@ targets:
     - doc-commits
     - record-gates
     - commit-msg-check
+    - traeger-fetch
     - hooks-install
     - help
     - test-bats

@@ -108,6 +108,12 @@ func enforceFiles() []enforceFile {
 		// hier und nicht in captureFiles(), weil es an keinem Laufzeit-Ausgang
 		// haengt — die Begruendung traegt archivierung.go.
 		archivierungFile(),
+		// Fragment UND Transport-Skript des Traeger-Fetch (ADR-0058 Festlegung 3):
+		// ein Kommando, kein Gate, aus derselben Klasse wie das der Archivierung.
+		// UNBEDINGT, weil der frische Klon ohne Traeger genau sein Fall ist — die
+		// Begruendung traegt traeger.go.
+		traegerMkFile(),
+		traegerFetchShFile(),
 		// Fragment UND Werkzeug des Lifecycle-Wechsels (die Zwei-Commit-Regel auf
 		// der emittierten Ebene): der mitemittierte Anweisungssatz schreibt den
 		// Wechsel an zwei Stellen vor, und ohne dieses Paar bleibt der

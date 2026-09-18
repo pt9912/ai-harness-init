@@ -247,14 +247,14 @@ alle Zeilen beider Tabellen; eine Zeile kann mehrere Klassen tragen, gezählt is
 ```sh
 B=$(awk '/^## Sensors/{f=1} /^## Traceability/{f=0} f && /^\| / && !/^\|---/ && !/^\| Target/' harness/README.md \
     | awk -F'|' '{print $(NF-1)}')
-wc -l <<<"$B"                                    # 30 Zeilen
-grep -cE 'ADR-[0-9]{4}'         <<<"$B"          #  7  kanonisch: ADR
+wc -l <<<"$B"                                    # 31 Zeilen
+grep -cE 'ADR-[0-9]{4}'         <<<"$B"          #  8  kanonisch: ADR
 grep -cE 'CO-[0-9]{3}'          <<<"$B"          #  0  kanonisch: Carveout
 grep -cE 'MR-[0-9]{3}'          <<<"$B"          #  4
 grep -cE 'LH-[A-Z]{2}-[0-9]{2}' <<<"$B"          #  2
 grep -cE 'AGENTS\.md'           <<<"$B"          #  5
 grep -cE 'spezifikation\.md'    <<<"$B"          #  1
-grep -c  'kein Gate'            <<<"$B"          # 19
+grep -c  'kein Gate'            <<<"$B"          # 20
 grep -cE '^ *— *$'              <<<"$B"          #  1
 grep -vcE 'ADR-[0-9]{4}|CO-[0-9]{3}|MR-[0-9]{3}|LH-[A-Z]{2}-[0-9]{2}|AGENTS\.md|spezifikation\.md|kein Gate|^ *— *$' <<<"$B"   # 0
 ```

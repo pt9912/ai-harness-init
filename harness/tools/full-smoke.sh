@@ -128,6 +128,7 @@ tmprepo="$(mktemp -d)"
 tmprepo_doc="$(mktemp -d)"
 tmprepo_hex="$(mktemp -d)"
 tmprepo_cpphex="$(mktemp -d)"
+tmprepo_traeger="$(mktemp -d)"
 # EIGENES ZIEL FUER DIE SELBSTPRUEFUNG, weil sie einen KLON ihres Ziels faehrt und darin
 # dessen Gate-Kette: gelesen wird damit der committete Stand, nicht das Arbeitsverzeichnis.
 # Die uebrigen Ziele tragen absichtlich committete Smoke-Artefakte, deren Drift ein
@@ -136,7 +137,7 @@ tmprepo_cpphex="$(mktemp -d)"
 # ihr Klon waere darum nie gruen, und das Rot kaeme aus dem Fixture statt aus dem
 # Pruefgegenstand.
 tmprepo_selbst="$(mktemp -d)"
-cleanup() { rm -rf "$tmpbin" "$tmpklon" "$tmprepo" "$tmprepo_doc" "$tmprepo_hex" "$tmprepo_cpphex" "$tmprepo_selbst"; }
+cleanup() { rm -rf "$tmpbin" "$tmpklon" "$tmprepo" "$tmprepo_doc" "$tmprepo_hex" "$tmprepo_cpphex" "$tmprepo_selbst" "$tmprepo_traeger"; }
 trap cleanup EXIT
 # Aus demselben Grund wie bei den uebrigen Zielen: der Klon dieses Ziels wird von
 # d-check read-only gemountet, und der Container laeuft als Nicht-Root.
@@ -1511,6 +1512,137 @@ SMOKEEOF
 }
 
 archivierung_im_ziel "$tmprepo" "golang"
+
+# --- Traeger-Fetch: der frische Klon holt den Traeger aus dem gepinnten Release ------
+echo "full-smoke: Traeger-Fetch — frischer Klon ohne Traeger, Fetch aus dem gepinnten Release (ADR-0058) ..."
+e2e_abdeckung "LH-FA-01 LH-QA-02 LH-QA-03" "Der frische Klon holt den Traeger per Fetch aus dem gepinnten Release — sha256 vor der Ablage verifiziert, Transport im gepinnten Bild" "ohne den Traeger zu legen"
+#
+# WAS DIE STUFE DAVOR NICHT SIEHT: der Traeger liegt gitignored — der Bootstrap-Lauf
+# legt ihn im Bootstrap-Ziel ab, aber ein FRISCHER KLON dieses Ziels hat ihn nicht
+# (ADR-0022 Festlegung 5(b)). Der Fetch (ADR-0058) ist der Weg aus diesem Zustand mit
+# einem Kommando, und die Kette Fragment (harness/mk/traeger.mk) -> Transport-Skript
+# -> gepinntes Bild -> Digest vor der Ablage -> gitignorierte Ablage gibt es nur hier.
+#
+# DIE AUSSAGEN DIESES ABSCHNITTS, in der Reihenfolge, in der er sie faehrt:
+#   (a) die Vorbereitung ist echt: der Klon traegt keinen Traeger, und der Fehlt-Fall
+#       der Konsumenten bleibt, wie er zugesagt ist — Exit 0, nennt das Fehlende,
+#       schreibt nichts (ADR-0033 Festlegung 4; der Fetch ist kein Prerequisite und
+#       kein Automatismus, ADR-0058 Festlegung 3),
+#   (b) der Fetch laeuft REAL gegen das gepinnte Release: Exit 0, der Traeger liegt
+#       ausfuehrbar, der Digest war vor der Ablage verifiziert (LH-QA-02, LH-QA-04),
+#   (c) der Negative-Fall bricht fail-closed: der verdrehte sha256-Pin laesst denselben
+#       Aufruf das Asset EINMAL laden und bricht ab, ohne den Traeger zu legen; der
+#       abgelegte Traeger bleibt unangetastet (LH-QA-02).
+#
+# GRENZE, GEMESSEN AM ASSET: die Stufe misst den Fetch gegen den gepinnten
+# Release-Stand. Der Traeger von v0.1.1 fuehrt das Unterkommando archive-welle nicht —
+# der Konsumenten-Teil ("archive-welle laeuft mit dem gefetchten Traeger") ist hier
+# NICHT messbar, solange der gepinnte Stand hinter dem Baum liegt; der Aufruf
+# `archive-welle WELLE=...` an den v0.1.1-Traeger startet dort den Init-Pfad
+# (Bootstrap-Versuch) statt laut zu brechen — der laut-Bruch aus ADR-0058 Festlegung 2
+# gilt fuer Traeger ab der Sperre im Dispatch, nicht fuer den gepinnten Stand. Die
+# Kopplung Pin zu Werkzeug-Fassung traegt der Release-Schnitt (ADR-0058 Festlegung 2,
+# Folgepflicht 3); mit einem gepinnten Stand, der das Unterkommando fuehrt, gehoert
+# dieser Teil an genau diese Stelle.
+#
+# NUR HIER MESSBAR: kein Go-Test faehrt `make` mit Netz, und der hermetische bats-Zahn
+# (test/traeger-fetch.bats) ersetzt die Grenzen docker/curl durch Stubs — dass auch
+# sie real sind, misst nur diese Stufe.
+traeger_fetch_im_ziel() {
+	local repo="$1" kennung="$2"
+	local frag="$repo/harness/mk/traeger.mk"
+	local skript="$repo/tools/harness/traeger-fetch.sh"
+	local carrier=".harness/state/bin/ai-harness-init"
+	local klon="$tmprepo_traeger"
+
+	if [ ! -f "$frag" ]; then
+		echo "full-smoke: FEHLER — $kennung: das Fragment des Traeger-Fetch liegt nicht im Ziel (harness/mk/traeger.mk, ADR-0058 Festlegung 3)." >&2
+		exit 1
+	fi
+	if [ ! -x "$skript" ]; then
+		echo "full-smoke: FEHLER — $kennung: das Transport-Skript liegt nicht ausfuehrbar im Ziel (tools/harness/traeger-fetch.sh) — das Fragment zeigt damit auf ein Programm, das es nicht gibt (LH-QA-01)." >&2
+		exit 1
+	fi
+	git clone --quiet "$repo" "$klon"
+	if [ -e "$klon/$carrier" ]; then
+		echo "full-smoke: FEHLER — $kennung: der frische Klon traegt einen Traeger — die gitignore der Ablage greift nicht, die Stufe misst dann nicht den Fall des frischen Klons (ADR-0022 Festlegung 5(b))." >&2
+		exit 1
+	fi
+
+	# (a) DER FEHLT-FALL BLEIBT.
+	local ohne="" ohne_rc=0 ohne_flach=""
+	ohne="$( make --no-print-directory -C "$klon" archive-welle WELLE=welle-smoke 2>&1 )" || ohne_rc=$?
+	ohne_flach="$(tr -s '[:space:]' ' ' <<<"$ohne")"
+	if [ "$ohne_rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: ohne Traeger endet make archive-welle im frischen Klon mit Exit $ohne_rc — ein fehlender Traeger ist kein Fehler des Repos (ADR-0033 Festlegung 4); der Fetch ist kein Prerequisite (ADR-0058 Festlegung 3). Ausgabe:" >&2
+		printf '%s\n' "$ohne" >&2
+		einordnen "make archive-welle im frischen Klon ($kennung)" "$ohne"
+		exit 1
+	fi
+	if ! grep -qF -- 'der Traeger liegt nicht' <<<"$ohne_flach"; then
+		echo "full-smoke: FEHLER — $kennung: ohne Traeger sagt make archive-welle im frischen Klon nicht, was fehlt — der Fall des frischen Klons bleibt dann unbemerkt. Ausgabe:" >&2
+		printf '%s\n' "$ohne" >&2
+		exit 1
+	fi
+	if grep -qF -- 'archive-welle ok:' <<<"$ohne_flach"; then
+		echo "full-smoke: FEHLER — $kennung: ohne Traeger meldet der Aufruf einen Vollzug — dann lief ein Programm, das es nicht gibt." >&2
+		exit 1
+	fi
+	if [ -n "$(git -C "$klon" status --porcelain)" ]; then
+		echo "full-smoke: FEHLER — $kennung: der Fehlt-Fall hat in den Klon geschrieben — die Zusage 'schreibt nichts' haelt nicht (ADR-0033 Festlegung 4):" >&2
+		git -C "$klon" status --porcelain >&2
+		exit 1
+	fi
+	echo "full-smoke: ohne Traeger im frischen Klon ($kennung): make archive-welle meldet die Abwesenheit mit Exit 0 und schreibt nichts — der Fehlt-Fall ist unangetastet, der Fetch kein Prerequisite."
+
+	# (b) DER FETCH LAEUFT REAL.
+	local lauf="" lauf_rc=0 lauf_flach=""
+	lauf="$( make --no-print-directory -C "$klon" traeger-fetch 2>&1 )" || lauf_rc=$?
+	lauf_flach="$(tr -s '[:space:]' ' ' <<<"$lauf")"
+	if [ "$lauf_rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: make traeger-fetch endet im frischen Klon mit Exit $lauf_rc — der Fetch aus dem gepinnten Release ist im gebootstrappten Repo nicht erreichbar (ADR-0058 Festlegung 3). Ausgabe:" >&2
+		printf '%s\n' "$lauf" >&2
+		einordnen "make traeger-fetch im frischen Klon ($kennung)" "$lauf"
+		exit 1
+	fi
+	if ! grep -qF -- 'Digest verifiziert' <<<"$lauf_flach"; then
+		echo "full-smoke: FEHLER — $kennung: der Fetch endete mit 0, meldet aber keinen verifizierten Digest — die Verifizierung vor der Ablage ist dann nicht der Grund des Erfolgs (LH-QA-02). Ausgabe:" >&2
+		printf '%s\n' "$lauf" >&2
+		exit 1
+	fi
+	if [ ! -x "$klon/$carrier" ]; then
+		echo "full-smoke: FEHLER — $kennung: der Fetch endete mit 0, aber der Traeger liegt nicht (oder nicht ausfuehrbar) — die Ablage ist nicht die zugesagte (ADR-0058 Festlegung 1, LH-QA-04). Ausgabe:" >&2
+		printf '%s\n' "$lauf" >&2
+		exit 1
+	fi
+	echo "full-smoke: Fetch im frischen Klon ($kennung): make traeger-fetch legt den Traeger aus dem gepinnten Release ab, ausfuehrbar, Digest vor der Ablage verifiziert."
+
+	# (c) DER NEGATIVE FALL BRICHT FAIL-CLOSED, OHNE DEN TRAEGER ZU LEGEN.
+	local vor="" nach="" verdreht="" neg="" neg_rc=0 neg_flach=""
+	vor="$(sha256sum "$klon/$carrier" | awk '{print $1}')"
+	verdreht="0000000000000000000000000000000000000000000000000000000000000000"
+	neg="$( make --no-print-directory -C "$klon" traeger-fetch TRAEGER_SHA256_LINUX_AMD64="$verdreht" 2>&1 )" || neg_rc=$?
+	neg_flach="$(tr -s '[:space:]' ' ' <<<"$neg")"
+	if [ "$neg_rc" -eq 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: der verdrehte sha256-Pin endete mit 0 — die Digest-Verifizierung haelt den Pin nicht fail-closed (ADR-0058 Festlegung 1, LH-QA-02). Ausgabe:" >&2
+		printf '%s\n' "$neg" >&2
+		einordnen "make traeger-fetch mit verdrehtem sha256-Pin ($kennung)" "$neg"
+		exit 1
+	fi
+	if ! grep -qF -- 'Digest-Abweichung' <<<"$neg_flach"; then
+		echo "full-smoke: FEHLER — $kennung: der Bruch nennt nicht die Digest-Abweichung — die Meldung traegt nicht die behauptete Ursache (AGENTS.md 3.6). Ausgabe:" >&2
+		printf '%s\n' "$neg" >&2
+		exit 1
+	fi
+	nach="$(sha256sum "$klon/$carrier" | awk '{print $1}')"
+	if [ "$nach" != "$vor" ]; then
+		echo "full-smoke: FEHLER — $kennung: der abgebrochene Negative-Fall hat den liegenden Traeger geaendert — die Abweichung bricht, aber der Traeger bleibt liegen, nicht anders (ADR-0058 Festlegung 1)." >&2
+		exit 1
+	fi
+	echo "full-smoke: ohne den Traeger zu legen ($kennung): der verdrehte sha256-Pin bricht den Fetch nach EINMAL Laden laut, nennt die Digest-Abweichung, und der liegende Traeger bleibt unangetastet."
+}
+
+traeger_fetch_im_ziel "$tmprepo" "golang"
 
 # --- Lifecycle-Wechsel: das gebootstrappte Ziel erreicht das Werkzeug ---------------
 #
@@ -3059,6 +3191,7 @@ echo "full-smoke: OK — IDEMPOTENT (slice-038): 2. Init-Lauf Exit 0, README (sk
 echo "full-smoke: OK — ROLLEN-TYPEN (slice-097/LH-FA-10): 6 kanonische Typen unter .claude/agents/ in BEIDEN Bootstrap-Varianten, je mit ihrem Namen im Kopf; das make gates des Ziels laeuft ueber ihnen gruen; der 2. Init-Lauf laesst einen adopter-geaenderten Typ unberuehrt (skip-if-present)."
 echo "full-smoke: OK — FELDLISTE (slice-098/LH-FA-10): $FELDLISTE_REL liegt in BEIDEN Bootstrap-Varianten im geprueften Doku-Bereich, fuehrt die drei stehenden Grenz-Saetze und deckt jeden Feldnamen der real geschriebenen Span-Zeile; ein toter Verweis darin faerbt das docs-check des Ziels rot (Ortswahl belegt); ein 2. Init-Lauf heilt eine von Hand geaenderte Fassung (konvergent, die einzige Zusage des Dokuments ueber sich selbst)."
 echo "full-smoke: OK — ARCHIVIERUNG IM ZIEL (ADR-0033 Festlegung 4 und 5): make archive-welle ist kein Gate und steht in keiner gates-Kette; ein Name daneben, den kein Fragment fuehrt, endet laut statt still; die zwei Sperren [untergrenze] und [haenger] halten den Aufruf auf, ueber demselben Bestand ohne sie laeuft die Operation real (Archiv + Stubs aus der vendored Vorlage), und ohne Traeger meldet das Kommando die Abwesenheit mit Exit 0."
+echo "full-smoke: OK — TRAEGER-FETCH IM ZIEL (ADR-0058): im frischen Klon eines gebootstrappten Repos bleibt der Fehlt-Fall der Konsumenten unangetastet (Exit 0, nennt das Fehlende, schreibt nichts — der Fetch ist kein Prerequisite); make traeger-fetch legt den Traeger per Fetch aus dem gepinnten Release real ab, ausfuehrbar, den Digest vor der Ablage verifiziert (Transport im gepinnten Bild, kein curl auf dem Host, LH-QA-03); ein verdrehter sha256-Pin bricht denselben Aufruf nach einmal Laden laut mit der Digest-Abweichung und laesst den liegenden Traeger unangetastet. Die Konsumenten-Haelfte (archive-welle laeuft mit dem gefetchten Traeger) misst diese Stufe NICHT — der gepinnte Stand v0.1.1 fuehrt das Unterkommando nicht; der Release-Schnitt traegt die Kopplung (ADR-0058 Festlegung 2, Folgepflicht 3)."
 echo "full-smoke: OK — LIFECYCLE-WECHSEL IM ZIEL: make slice-mv ist kein Gate und steht in keiner gates-Kette; der Aufruf bewegt den Slice, legt den reinen Move als eigenen Commit an (0 insertions/0 deletions gegen den Verweis-Nachzug getrennt) und zieht beide Richtungen nach — den eingehenden Praefix-Verweis der Nachbar-Datei und das praefixlose Geschwister-Ziel in der bewegten Datei; eine ADR bleibt nach der Repo-Politik des Fragments unberuehrt; ueber einem unsauberen Arbeitsbaum bricht der Aufruf ab, nennt es und bewegt nichts; ohne jeden Verweis bleibt es beim einen Move-Commit; und ohne das Werkzeug bricht das Ziel laut ab, statt still auf ein fehlendes Programm zu zeigen."
 echo "full-smoke: OK — COMMIT-KENNUNG IM ZIEL: .githooks/commit-msg liegt ausfuehrbar im Ziel und reist mit dem Klon, seine Aktivierung nicht — make hooks-install setzt core.hooksPath und ist kein Gate (steht in keiner gates-Kette); danach faellt ein Commit OHNE Kennung mit der Meldung der Pruefung und entsteht nicht, einer MIT Kennung geht durch, und git commit --no-verify umgeht den Traeger; die Reichweite (Umgehung, Anwesenheit-statt-Wahrheit, die von keinem Commit-Waechter pruefbare zweite Haelfte der Zusage, die mitgenommenen Werkzeug-Commits) steht im Ziel geschrieben."
 echo "full-smoke: OK — KLASSE DES COMMIT-TRAEGERS (ADR-0054 Festlegung 1 und 3): der Traeger liegt skip-if-present und die Pruefung daneben konvergent — ein FREIER Pfad bekommt den Traeger des Werkzeugs (er liegt ausfuehrbar im Ziel und ruft die Pruefung daneben), ein BELEGTER bleibt Byte fuer Byte unberuehrt und der Lauf nennt Pfad und mitgelieferte Pruefung; die Drift der Pruefung heilte der naechste Lauf, die des Traegers blieb stehen."

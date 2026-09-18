@@ -70,6 +70,7 @@ func TestTraegerInventur_KeineZelleBehauptetEineAbwesenheitDieDerEmitWiderlegt(t
 			"tools/harness/record-gates.sh",
 			"tools/harness/selbstpruefung.sh",
 			"tools/harness/slice-mv.sh",
+			"tools/harness/traeger-fetch.sh",
 			"tools/harness/working-tree-hash.sh",
 		},
 		"harness/mk/": {
@@ -82,6 +83,7 @@ func TestTraegerInventur_KeineZelleBehauptetEineAbwesenheitDieDerEmitWiderlegt(t
 			"harness/mk/hooks-install.mk",
 			"harness/mk/selbstpruefung.mk",
 			"harness/mk/slice-mv.mk",
+			"harness/mk/traeger.mk",
 		},
 	}
 	benutzt := map[string]bool{}

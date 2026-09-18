@@ -33,7 +33,23 @@ BASELINE_TAG ?= v6.9.0
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= 8a4e0aaf597a9c67404cb7a350a6fba992f0c98195e011e025c073660ee55cce
 
-.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle vendor-baseline
+# Traeger-Fetch-Pins (ADR-0058 Festlegung 1, LH-QA-02): Release-Tag und sha256 der
+# sechs Assets der Plattform-Matrix (LH-QA-04). KANONISCHE Pin-Stelle — die KANONISCHE
+# Form ist dasselbe Muster wie das Baseline-Paar oben: das emittierte Fragment des
+# Ziels spiegelt dieselben Werte als ueberschreibbare Variablen, und
+# test/traeger-fetch.bats haelt jede Stelle gegen dieses Paar. Netz nur am Target
+# traeger-fetch (kein Gate, nicht in gates).
+TRAEGER_TAG ?= v0.1.1
+TRAEGER_SHA256_LINUX_AMD64 ?= 654041d9c7a198435c9b32067a1c938b358174c28905d05dd94b44016d88b0bc
+TRAEGER_SHA256_LINUX_ARM64 ?= 7f637eb993c66e6dc373fef47f67cc03381674a45f1829fe9de21809bb23c7ec
+TRAEGER_SHA256_DARWIN_AMD64 ?= e02bc2eb313df701b72b8223bb5fd43db40eec38fef9590323998d27f875fe6c
+TRAEGER_SHA256_DARWIN_ARM64 ?= a6512e99c85c17e0beef407fe5568a5771ac1cb452e3d1b3a188032e19ad359b
+TRAEGER_SHA256_WINDOWS_AMD64 ?= 18d406f4c619339c6556c5602fd86fbf630022199ac9ad52cd777d64839103e7
+TRAEGER_SHA256_WINDOWS_ARM64 ?= 5cab3da5670069ad38dadb8a1497ffcf25faeb457199894721df0688dca8af0b
+TRAEGER_CARRIER ?= .harness/state/bin/ai-harness-init
+export TRAEGER_TAG TRAEGER_SHA256_LINUX_AMD64 TRAEGER_SHA256_LINUX_ARM64 TRAEGER_SHA256_DARWIN_AMD64 TRAEGER_SHA256_DARWIN_ARM64 TRAEGER_SHA256_WINDOWS_AMD64 TRAEGER_SHA256_WINDOWS_ARM64 TRAEGER_CARRIER
+
+.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle traeger-fetch vendor-baseline
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
@@ -399,6 +415,15 @@ slice-mv: ## Lifecycle-Wechsel eines Slice inkl. Verweise (SLICE=<slice-NNN> TO=
 # Sauberkeits-Sperre ab, und kein Gate zeigt den Zusammenhang.
 archive-welle: host-bin ## Zeitdokumente einer geschlossenen Welle archivieren (WELLE=<welle-id>) — NICHT in gates
 	@$(HOST_BIN) archive-welle "$(WELLE)"
+
+# Holt den Traeger per Fetch aus dem gepinnten Release (ADR-0058 Festlegung 1-4):
+# sha256 je Asset VOR der Ablage verifiziert, Abweichung bricht ab, ohne den Traeger
+# zu legen; der Transport laeuft im gepinnten Bild. KEIN Gate und KEIN Prerequisite —
+# der Fehlt-Fall der Konsumenten ("Exit 0, nennt das Fehlende, schreibt nichts") wird
+# nicht angetastet; der Fetch ist der ausdrueckliche Weg aus dem Zustand, den sie
+# benennen (ADR-0058 Festlegung 3 und 5). Braucht Netz an genau diesem Aufruf.
+traeger-fetch: ## Traeger aus dem gepinnten Release nachholen (braucht Netz, Transport im gepinnten Bild) — NICHT in gates
+	@bash harness/tools/traeger-fetch.sh
 
 # Legt den vendored Baum DIESES Repos (.harness/baseline/$(BASELINE_TAG)/) aus
 # dem VERIFIZIERTEN Release-Asset an, statt ihn von Hand aus einem fremden

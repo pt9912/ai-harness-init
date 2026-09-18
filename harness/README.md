@@ -77,6 +77,7 @@ ist (`make help` listet sie).
 | [`make hook-overhead`](sensors/hook-overhead.md) | misst den Aufschlag je Tool-Call (Median) | kein Gate · [`ADR-0011`](../docs/plan/adr/0011-telemetrie-erfassung-policy.md) |
 | [`make slice-mv`](sensors/slice-mv.md) | Lifecycle-Wechsel eines Slice inklusive seiner Verweise | kein Gate · [`AGENTS.md`](../AGENTS.md) §3.3 |
 | [`make archive-welle`](sensors/archive-welle.md) | archiviert die Zeitdokumente einer geschlossenen Welle | kein Gate · [`ADR-0033`](../docs/plan/adr/0033-wellen-archivierung-als-unterkommando.md) |
+| `make traeger-fetch` | legt den Träger (`.harness/state/bin/ai-harness-init`) per Fetch aus dem gepinnten Release ab — sha256 je Asset vor der Ablage verifiziert, Transport im gepinnten Bild, kein Prerequisite; braucht Netz an genau diesem Aufruf | kein Gate · [`ADR-0058`](../docs/plan/adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md) |
 | [`make vendor-baseline`](sensors/vendor-baseline.md) | legt den eigenen vendored Baum aus dem Release-Asset an | kein Gate · [`MR-007`](conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
 | [`make commit-msg-check`](sensors/commit-msg-check.md) | prüft eine Commit-Message-Datei gegen Traceability-Kennung | kein Gate — Träger ist der PreToolUse-Hook |
 | `make hooks-install` | aktiviert den git-eigenen `commit-msg`-Träger in diesem Klon (`core.hooksPath .githooks`) | kein Gate · [`AGENTS.md`](../AGENTS.md) §5 |

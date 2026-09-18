@@ -440,7 +440,7 @@ Prüfbereichs — dieselbe Lücke, die
 [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) offen lässt.
 
 Jedes Rezept aus `makefiles`, das keine `make X`-Zeile in der `authority`-Datei trägt, steht
-entweder dort **oder** kuratiert (exakte Namen, kein Glob) in `exempt-targets` — heute **37**
+entweder dort **oder** kuratiert (exakte Namen, kein Glob) in `exempt-targets` — heute **40**
 (`sed -n '/^targets:/,/^ignore-refs:/p' ../../.d-check.yml | grep -c '^    - '`), in zwei
 Gruppen: Nicht-Gate-Verifies (jeweils mit eigenem Sensor-Eintrag in der Tabelle „Werkzeuge
 (kein Gate)" von [`harness/README.md`](../README.md#sensors-feedback-gates)) und reine

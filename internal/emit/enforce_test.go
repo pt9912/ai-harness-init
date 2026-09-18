@@ -55,6 +55,10 @@ func TestEnforce_EmitsAllMechanicFiles(t *testing.T) {
 		// Kollisions-Pre-Flight — anders als Wrapper und Feldliste, die den Zweig des
 		// Traegers teilen.
 		"harness/mk/erfassung.mk",
+		// Fragment UND Transport-Skript des Traeger-Fetch (ADR-0058 Festlegung 3):
+		// UNBEDINGT, weil der frische Klon ohne Traeger genau sein Fall ist.
+		"harness/mk/traeger.mk",
+		"tools/harness/traeger-fetch.sh",
 	}
 	got := strings.Join(emit.EnforcePaths(), "\n")
 	for _, w := range want {
