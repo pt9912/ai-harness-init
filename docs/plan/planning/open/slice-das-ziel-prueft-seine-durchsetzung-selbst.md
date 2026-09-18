@@ -31,7 +31,7 @@ Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht (Modul
 zeigt **aufwärts**: die Spec nennt diesen Slice nie. Geändert wird die Spec **nicht** — sie ist
 mit dem CR 0.20.0 geschrieben, dieser Slice löst sie ein.
 
-**Verantwortlich:** `—` — bis zur Priorisierung (Baseline-Regelwerk
+**Verantwortlich:** Implementer (pt9912) — gesetzt mit der Priorisierung (Baseline-Regelwerk
 `modul-05-planning-harness.md` §Lifecycle als State Machine: der Übergang `open→next` setzt sie).
 
 **Autor:** Planner. **Datum:** 2026-09-18.
