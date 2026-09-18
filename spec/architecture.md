@@ -1,6 +1,6 @@
 # Architektur — ai-harness-init
 
-**Status:** Aktiv. **Letzte Änderung:** 2026-09-02.
+**Status:** Aktiv. **Letzte Änderung:** 2026-09-18.
 
 **Hard Rule:** sprach- und meilensteinfrei — keine Wellen, Slices oder
 Commit-Hashes. Die zeitliche Schicht lebt in docs/plan/planning/ *(folgt)*.
@@ -196,8 +196,7 @@ byte-identisch). `--lang <X>` beim Init ist die One-Shot-Kurzform (Init + ein
   skip-if-present, also seine Datei. Die emittierten Pfade folgen bewusst der **gelebten
   Konvention** der Werkzeug-Familie und nicht der Standardform, die das Gate selbst
   vorschlägt. Die Regel dahinter — *bei unbekannten Adoptern ist der Default fail-closed,
-  laut falsch schlägt leise falsch* — gilt für **jeden** emittierten Prüfbereich
-  ([`MR-017`](../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)).
+  laut falsch schlägt leise falsch* — gilt für **jeden** emittierten Prüfbereich.
   Die Verdrahtung liegt im Composition Root und trägt dort **nur Konstruktion**: die
   Use-Case bleibt im Kern, sonst wanderte Logik in den einzigen ungeprüften Bereich.
 - **Was das Arch-Gate sehen kann, bestimmt das Layout — nicht umgekehrt.** a-check

@@ -1,6 +1,6 @@
 # Spezifikation — ai-harness-init
 
-**Status:** Aktiv. **Letzte Änderung:** 2026-09-02.
+**Status:** Aktiv. **Letzte Änderung:** 2026-09-18.
 
 **Bezug zum Lastenheft:** Diese Spezifikation präzisiert die in
 [`spec/lastenheft.md`](lastenheft.md) formulierten Anforderungen (`LH-*`-IDs). Bei
@@ -89,8 +89,7 @@ noch so heißt — `codepaths` validiert nur Pfade unter seinen `roots` (`spec`,
 unter `harness/` meldet `codepath-missing` (gemessen); `make mutate` fährt nur die
 Fall-Dateien, die es findet; `make comment-claims` lässt jede Markdown-Datei außen vor.
 Die Spalte ist damit **Feedforward**: ihre Alterung fängt niemand mechanisch, und wer eine
-Zeile ändert, zieht ihren Wächter von Hand nach (Sonden und Gegenproben in
-[`MR-021`](../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)).
+Zeile ändert, zieht ihren Wächter von Hand nach.
 
 | ID | Feld | Pflicht | Incident-Frage | Sensor |
 |---|---|---|---|---|
@@ -172,16 +171,13 @@ Daraus fünf Festlegungen:
    `tool_input` trug damals `run_in_background`, und ein Hook konnte den Start ohne diesen
    Schalter verweigern. Am **2026-08-15** führt das Eingabe-Schema von `Agent` das Feld nicht
    mehr, und ein trotzdem gesendetes wird angenommen, bleibt aber wirkungslos; Subagenten
-   starten standardmäßig im Hintergrund. Damit ist die Verbrauchs-Achse ohne Quelle — geführt als
-   [`CO-002`](../docs/plan/carveouts/CO-002-token-achse-je-rolle.md), gemessen in
-   [`docs/reviews/2026-08-15-agent-guard-tool-vertrag.md`](../docs/reviews/2026-08-15-agent-guard-tool-vertrag.md).
+starten standardmäßig im Hintergrund. Damit ist die Verbrauchs-Achse ohne Quelle.
    **Der zweite Weg ist gefahren, und er stellt die Vordergrund-Form nicht her.** Die vendored
-   Hooks-Referenz [`docs/user/claude-hooks-referenz.md`](../docs/user/claude-hooks-referenz.md)
+   Hooks-Referenz `docs/user/claude-hooks-referenz.md`
    führt für dasselbe Ereignis ein `updatedInput`, das die Tool-Argumente **vor** der Ausführung
    ersetzt und sich ausdrücklich mit `"allow"` kombinieren lässt: ein Hook kann den Schalter
    **einsetzen**, statt ihn vom Aufrufer zu verlangen. Am **2026-08-21** ist das gefahren, und der
-   so gestartete Lauf lief im **Hintergrund**
-   ([`docs/reviews/2026-08-21-updatedinput-messung.md`](../docs/reviews/2026-08-21-updatedinput-messung.md));
+   so gestartete Lauf lief im **Hintergrund**;
    damit bleibt es beim Satz oben, denn ein Hintergrund-Lauf liefert keine Zähler.
    **Belegklasse, zweigeteilt: der AUSGANG ist gemessen, die Übernahme der Hook-Ausgabe ist eine
    SICHT.** Dass das Werkzeug das eingesetzte Eingabeobjekt annahm, ist am Dialog gesehen und mit
@@ -207,7 +203,7 @@ nicht in ein Gedächtnis. Wer Rollen-Arbeit an einen Subagenten gibt, startet ih
    Herstellerseite (`/docs/de/sub-agents`) nennt die @-Erwähnung als den Weg, der die
    Ausführung *garantiert*, während natürliche Sprache die Delegation dem Modell überlässt.
    Die vendored Hooks-Referenz
-   [`docs/user/claude-hooks-referenz.md`](../docs/user/claude-hooks-referenz.md)
+   `docs/user/claude-hooks-referenz.md`
    **verweist** in ihrem `Agent`-Eintrag nur auf diese Seite und trägt den Satz nicht. Er
    steht hier als **fremde Zusage**, nicht als Repo-Beleg — wer ihn nachprüfen will, findet
    im Repo nichts, woran.
@@ -225,8 +221,7 @@ nicht in ein Gedächtnis. Wer Rollen-Arbeit an einen Subagenten gibt, startet ih
    Verbrauchs-Achse — im Einzelnen in **Abweichung 5**, hier nicht wiederholt —, und die
    Hooks-Referenz führt den Hintergrund als **Standard**, dessen Antwort keine Nutzungsfelder
    trägt, sondern `status: "async_launched"`, `agentId`, `description`, `prompt`, `outputFile`
-   und `resolvedModel`. Die Folge für die Erfassung führt
-   [`CO-002`](../docs/plan/carveouts/CO-002-token-achse-je-rolle.md). **Die Konvention hat
+   und `resolvedModel`. **Die Konvention hat
    damit nur noch Bedingung 1** — der Typ ist weiter zu wählen, die Betriebsart nicht mehr.
 
 **Die zwei Bedingungen sind UNABHÄNGIG — gemessen, nicht angenommen.** Ein per @-Erwähnung
@@ -245,8 +240,7 @@ am 2026-08-15). Was ausfällt, ist das Kosten-Aggregat des Aufrufs, nicht die Zu
 Arbeit zu einer Rolle.
 
 **Was diese Konvention ERZWINGT und was sie nur behauptet** — beides gehört in denselben
-Punkt, sonst liest sich die Regel breiter als ihr Sensor
-([`AGENTS.md`](../AGENTS.md) §3.6):
+Punkt, sonst liest sich die Regel breiter als ihr Sensor:
 
 - **Für Bedingung 2 gibt es keinen Wächter mehr, weil es nichts zu bewachen gibt.** Der
   `PreToolUse`-Guard `.claude/hooks/pretooluse-agent-guard.sh` entscheidet die **Aufrufform**
@@ -256,9 +250,8 @@ Punkt, sonst liest sich die Regel breiter als ihr Sensor
   tragen kann, verweigerte alles und schützte nichts. **Was damit NICHT zugesagt ist — und
   der Unterschied war schon vorher der ganze Punkt:** dass ein Rollen-Lauf am Ende Zähler
   trägt. Der Guard sieht den Start, nicht den Ausgang; der Bestand dieses Repos trägt
-  `Agent`-Spans von **Rollen**-Typen, die von den neun Werten nur `model_version` führen. Die
-  Ausfall-Achse führt [`CO-002`](../docs/plan/carveouts/CO-002-token-achse-je-rolle.md),
-  fail-closed-Politik, Dauer-Sensoren und **Grenzen** stehen in **Abweichung 5**; kurz: er
+   `Agent`-Spans von **Rollen**-Typen, die von den neun Werten nur `model_version` führen.
+   Fail-closed-Politik, Dauer-Sensoren und **Grenzen** stehen in **Abweichung 5**; kurz: er
   greift für jeden Agenten-Aufruf, den der Hook sieht, er sieht nur den Start, und er kann
   fehlen oder abgeschaltet sein.
 - **Bedingung 1 ist NICHT durchgesetzt — und der Grund trägt nur für einen Teil der
@@ -382,7 +375,7 @@ wegzulassen; von welcher Regel sie abweicht, gehört dazu:
    müsste. **Erfassbar** sind `cache_creation_input_tokens` und `cache_read_input_tokens` aus
    dem `usage`-Objekt der `tool_response` eines Vordergrund-`Agent`-Aufrufs — ohne Transkript
    und ohne Zugriff außerhalb des Repos —, und genau diese Antwort entsteht nicht mehr
-   ([`CO-002`](../docs/plan/carveouts/CO-002-token-achse-je-rolle.md); die Erfassung selbst
+   (die Erfassung selbst
    steht unverändert und nimmt die Zähler, sobald sie wieder ankommen). Eine Auswertung, die
    die Cache-Hit-Rate
    rechnet, fände die **Zähler** getrennt nach Erzeugung und Lesung vor, wie das Modul es
@@ -498,7 +491,7 @@ wegzulassen; von welcher Regel sie abweicht, gehört dazu:
       `PreToolUse`-Guard `.claude/hooks/pretooluse-agent-guard.sh` jeden Rollen-Typ ohne sie
       abwies. Seit das Eingabe-Schema von `Agent` den Schalter nicht mehr führt, wies dieselbe
       Bedingung **jeden** Rollen-Lauf ab und verhinderte damit nicht die Lücke, sondern die
-      Arbeit; sie ist gefallen ([`CO-002`](../docs/plan/carveouts/CO-002-token-achse-je-rolle.md)).
+      Arbeit; sie ist gefallen.
       Was der Guard weiter entscheidet, ist die **Lesbarkeit** der Aufrufform: ein **fehlender
       Typ** gilt als unlesbarer Aufruf, weil der Hook an `"matcher": "Agent"` hängt und
       deshalb keinen Nicht-Agenten-Aufruf sieht — ohne Typ ist die Form geraten, nicht
@@ -583,7 +576,7 @@ wegzulassen; von welcher Regel sie abweicht, gehört dazu:
       sonst nichts. Die Payloads der übrigen Ereignisse hat hier niemand angesehen, auch die
       des verdrahteten `Stop`-Hooks nicht: der greift genau ein Feld heraus und protokolliert
       nichts. Für sie ist **gelesen** statt gemessen, und zwar die vendored
-      [`docs/user/claude-hooks-referenz.md`](../docs/user/claude-hooks-referenz.md): über
+      `docs/user/claude-hooks-referenz.md`: über
       ihre ganze Länge nennt sie ein `usage`-Objekt und ein `totalTokens` ausschließlich für
       die `tool_response` des `Agent`-Werkzeugs, für kein anderes Ereignis ein Nutzungsfeld.
       Das ist Herkunft, keine Messung — die Regel lautet *„die Payload ist die Quelle"*.
@@ -740,3 +733,4 @@ festgelegt ist.
 | 2026-08-28 | §5: Der Absatz über die kanonischen Agenten-Typ-Namen nennt keine Abweichung mehr — der adoptierte Baseline-Stand `v5.12.0` schreibt die dritte Rolle `Implementer` statt `Implementation`, womit die sechs Bezeichner die sechs Rollen-Namen des Moduls in Kleinschreibung sind. Der Wert selbst ist unverändert |
 | 2026-09-02 | §3, §5 und §6 tragen die `ID`-Spalte mit fortlaufendem `SPEC-<NNN>`; §7 führt keine `ADR`-Spalte mehr |
 | 2026-09-17 | Die Aufnahme-Regel und §5 nennen die Herkunft ihrer Regeln nicht mehr, die Aussagen bleiben. Die Regel zum Sammelposten in §5 steht ohne Zitat und sagt nur noch, dass begründet aufgeteilt wird |
+| 2026-09-18 | §5 trägt keine Referenz nach außen mehr: Die Aussagen über Verbrauchs-Achse, Hooks-Referenz, Guard-Bedingungen und Cache-Zähler stehen ohne Verweis auf Carveout, Review-Report, Nutzer-Doku, Briefing und Adaptions-Block. Der Name der gelesenen Quelle `docs/user/claude-hooks-referenz.md` bleibt als Text stehen, weil die Aussage ohne ihn nicht prüfbar ist; die erklärten Abweichungen selbst bleiben unverändert in §5 |

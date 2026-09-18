@@ -332,18 +332,37 @@ ids:
       target: harness/conventions/
       link-policy: always
       exempt-paths: [CHANGELOG.md, "docs/reviews/**"]
-# Referenz-Richtung (SDP) mechanisch: Spec-Straten verweisen nie abwärts
-# auf ADRs/Slices; Verweise auf superseded/deprecated ADRs verboten.
+# Referenz-Richtung (SDP) mechanisch: Spec-Straten verweisen nie nach aussen —
+# weder abwaerts auf ADRs/Slices noch auf sonst eine Datei. Verweise auf
+# superseded/deprecated ADRs verboten.
 # Provenance nur in den Historie-/Geschichte-Tabellen (ausgenommen).
 matrix:
   classes:
     - {name: spec-straten, paths: [spec/lastenheft.md, spec/spezifikation.md, spec/architecture.md]}
     - {name: adr, paths: ["docs/plan/adr/[0-9]*.md"]}
-    - {name: slice, paths: ["docs/plan/planning/**/slice-*.md"]}
+    # Die vier Lifecycle-Verzeichnisse ausdruecklich, dazu eine Ebene darunter fuer
+    # archivierte Stubs. Ein ** an dieser Stelle griffe ueber den Lifecycle hinaus bis in
+    # observations/<slug>/evidence/slice-<Kennung>.md: Beleg-Dateien, deren Name die Kennung
+    # ihres Vorgangs IST (ADR-0034), keine Slice-Plaene. Traegt ein * eine /-Grenze, faellt
+    # die Enge in sich zusammen — am gepinnten Stand matcht * genau ein Pfad-Segment.
+    - {name: slice, paths: ["docs/plan/planning/open/slice-*.md", "docs/plan/planning/next/slice-*.md", "docs/plan/planning/in-progress/slice-*.md", "docs/plan/planning/done/slice-*.md", "docs/plan/planning/done/*/slice-*.md"]}
+    # Letzte Klasse, First-Match: was keine fruehere faengt, ist aussen.
+    - {name: aussen, paths: ["**"]}
   rules:
     - {from: spec-straten, to: adr, allow: false}
     - {from: spec-straten, to: slice, allow: false}
+    - {from: spec-straten, to: aussen, allow: false}
   status: {forbidden: [superseded, deprecated]}
+  # Die Status-Pruefung trifft jede klassifizierte Quelle unabhaengig von den Regeln; mit
+  # aussen: ["**"] ist das jede Datei des Repos. Ausgenommen sind drei Pfade, die einen zum
+  # Schreibzeitpunkt aktiven Stand dauerhaft nennen: der ADR-Index (er fuehrt superseded
+  # ADRs, das ist seine Aufgabe) sowie die Review-Reports und die Welle-Dateien in done/
+  # (beide frieren ein und koennen einer spaeteren Supersession nicht folgen).
+  # KEINE Senkung: keiner der drei traegt heute eine Klasse, die Ausnahme nimmt also genau
+  # das zurueck, was die Klasse aussen hinzufuegt. Die Slice-Dateien in done/ bleiben
+  # ausdruecklich drin — ein done/** naehme sie aus der Status-Pruefung heraus, und das
+  # waere eine Senkung nach AGENTS.md §3.5.
+  exempt-paths: ["docs/plan/adr/README.md", "docs/reviews/*.md", "docs/plan/planning/done/welle-*.md"]
   exclude-sections: [Historie, "7. Historie", Geschichte]
 codepaths:
   roots: [spec, docs, harness]                                  # tools/cmd/internal folgen mit dem Go-Code (Phase 3); Harness-Tools liegen unter harness/tools/ (MR-005)
