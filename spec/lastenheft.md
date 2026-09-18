@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.20.0
+**Version:** 0.21.0
 
 **Status:** Draft
 
@@ -370,6 +370,84 @@ Beleg eines gelaufenen Prozesses; dieses E2E **prüft** die Durchsetzung, die ih
   ist, ob der Träger jeden Commit-Pfad des Ziels erreicht — Werkzeug-Commits, Umgehungen und
   Aufrufformen außerhalb der aktivierten Träger-Form bleiben außerhalb der Zusage.
 
+### LH-FA-12 — E2E-Abdeckungs-Sicht emittieren
+
+**Beschreibung:** Der Bootstrap emittiert ins Zielrepo den **Erzeuger einer
+Abdeckungs-Sicht** über die Stufen seines ziel-eigenen E2E
+([`LH-FA-11`](../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren)):
+ein Kommando des Ziels liest den **Quelltext** des E2E-Skripts und schreibt daraus je
+Stufe eine Zeile — die Anforderung, die die Stufe trägt, eine Kurzbeschreibung, die
+Nummer der Stufe und ihren Ort. Die Zuordnung *Anforderung → Stufe* **deklariert das
+E2E an sich selbst**; der Erzeuger liest diese Deklarationen und erfindet keine. Die
+mitgelieferte Selbstprüfung trägt ihre Deklaration, die Sicht des Ziels ist damit ab
+Bootstrap nicht leer. Das Kommando hängt an **keiner** Gate-Kette des Ziels. Es reist
+als Template mit **adaptierbaren Markern**
+([`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)) — Quell-Skript,
+Wort der Stufen-Kopfzeile, Spec-Datei der Kennungen und Zielort der Sicht. Damit erhält
+der Adopter die **Sicht** auf seine Abdeckung, nicht nur den Lauf, der sie herstellt.
+
+**Quelle (Tool-als-Quelle — §5).** Wie
+[`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren),
+[`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) und
+[`LH-FA-11`](../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren)
+bringt das Tool die Fassung selbst mit, abgeleitet aus dem erprobten Dogfood-Stand.
+**Gegenstand ist nicht die Abdeckungs-Sicht dieses Repos:** die spricht über das E2E des
+Emitters. Emittiert wird ein Erzeuger, der über die Stufen des **Ziels** spricht — mit
+dessen Quell-Skript, dessen Spec-Datei und dessen Zielort.
+
+**Abgrenzung.**
+[`LH-FA-11`](../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren)
+emittiert das **E2E** (was läuft), diese Anforderung die **Sicht darüber** (welche
+Anforderung das Laufende trägt): die Selbstprüfung kann vollständig sein, ohne dass
+irgendwo steht, welche Stufe welche Anforderung deckt.
+[`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) schreibt den
+**Beleg eines gelaufenen Prozesses**; hier entsteht ausdrücklich **keiner** — der
+Erzeuger liest Quelltext, fährt kein E2E, und die Sicht bewegt sich mit den
+Deklarationen statt mit jedem Lauf.
+[`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) urteilt
+über behauptete Abdeckung ohne Deckung; die Sicht **urteilt nicht** über Lücken: sie
+zeigt, welche Anforderung welche Stufe deklariert, und ob eine dort fehlende Anforderung
+eine Lücke ist, urteilt der Leser gegen die Spec des Ziels — deshalb hängt das Kommando
+an keiner Gate-Kette.
+[`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) trägt die
+Form: die ziel-spezifischen Stellen sind **adaptierbar**, nicht hart — ein Repo mit
+eigenem E2E, eigener Spec-Datei oder eigenem Ablageort setzt die Marker, statt die
+emittierte Datei zu ändern.
+
+**Akzeptanzkriterien:**
+
+- **Happy Path:** Given ein gebootstrapptes Zielrepo, when sein Abdeckungs-Kommando
+  gefahren wird, then liegt der Erzeuger im Zielrepo, ist über dessen `make` fahrbar,
+  endet mit Exit 0, und die Sicht liegt am deklarierten Zielort.
+- **Aus den Deklarationen des Ziels:** Die Sicht entsteht aus den Deklarationen des
+  ziel-eigenen E2E, nicht aus einer mitgelieferten Liste. Die Stufe der emittierten
+  Selbstprüfung erscheint mit ihrem Ort, und ihre Kennungs-Zelle trägt den
+  **Gedankenstrich** statt einer geratenen Anforderung des Adopters: welche Anforderung
+  *seines* Repos diese Stufe trägt, weiß das Werkzeug nicht.
+- **Beide Lücken-Richtungen fallen laut:** Eine Stufe **ohne** Deklaration und ein
+  Quell-Skript **ohne** eine einzige Stufe beenden den Lauf mit Exit ≠ 0 und einer
+  Meldung, die die Richtung nennt. Eine Sicht über null Stufen entsteht nicht — ihr Grün
+  belegte eine Abdeckung, die niemand deklariert hat.
+- **Adaptierbar ([`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)):**
+  Quell-Skript, Wort der Stufen-Kopfzeile, Spec-Datei und Zielort sind **gesetzte,
+  überschreibbare Marker**; ein gesetzter Marker lenkt den Lauf, gemessen an dem, was
+  entsteht, nicht an seiner Erwähnung in der Ausgabe.
+- **Stabile Deklaration, kein Lauf-Artefakt:** Ein zweiter Lauf ohne geänderte
+  Deklaration schreibt die Sicht nicht neu und sagt es — sonst wäre sie der Lauf-Beleg,
+  den [`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) trägt
+  und diese Anforderung ausschließt.
+- **Kein aus dem Nichts ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)):**
+  Die emittierte Fassung ist real erprobt — dieselbe Mechanik erzeugt die
+  Abdeckungs-Sicht des Emitters über sein eigenes E2E, und der Emitter-Lauf fährt sie im
+  gebootstrappten Ziel einmal durch.
+- **Minimal ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)):** Der
+  Erzeuger fügt dem Ziel keine Abhängigkeit hinzu — er liest Text; über `bash + git +
+  docker` braucht er nichts, kein Netz und keinen Container.
+- **Benannte Grenze:** Zugesagt ist die Sicht auf die **deklarierte** Zuordnung.
+  **Nicht** zugesagt ist, dass eine Deklaration zutrifft: Löst eine genannte Kennung in
+  der Spec des Ziels nicht auf, steht sie als Code-Span ohne Verweis statt als Befund,
+  und ob die Stufe die genannte Anforderung wirklich prüft, misst kein Lauf.
+
 ## 4. Nichtfunktionale Anforderungen
 
 ### LH-QA-01 — Keine halluzinierten Gates (F4, F5, F6)
@@ -438,6 +516,7 @@ Beleg eines gelaufenen Prozesses; dieses E2E **prüft** die Durchsetzung, die ih
   + Workflow-Commands ([`LH-FA-08`](../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren))
   + Erfassungsschicht ([`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren))
   + Selbstprüfung ([`LH-FA-11`](../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren))
+  + Abdeckungs-Sicht ([`LH-FA-12`](../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren))
   per **Tool-als-Quelle** (generische, aus Dogfood + Kurs-Prozess-Modulen abgeleitete
   Fassung — die tragende Entscheidung steht in der Historie, §7 zu 0.9.0);
   das Sprachskelett per **deterministischem Generator** (Tool-als-Quelle). Weitere
@@ -472,6 +551,7 @@ Beleg eines gelaufenen Prozesses; dieses E2E **prüft** die Durchsetzung, die ih
 | 0.15.0 | 2026-07-27 | CR: **§5 Globale Out-of-Scope-Punkte an die eigenen Anforderungen nachgezogen** — zwei Herkunfts-Aussagen dort waren überholt, während `LH-FA-06`/`LH-FA-08` im Rumpf längst das Richtige sagten. (1) „Durchsetzung + Workflow-Commands per **Picker** (Kurs-Template-Satz)" ist seit **0.9.0** falsch: [`ADR-0006`](../docs/plan/adr/0006-durchsetzung-commands-tool-als-quelle.md) stellte beide auf **Tool-als-Quelle** um (generische, aus Dogfood + Kurs-Prozess-Modulen abgeleitete Fassung) — der 0.9.0-CR zog §5 nicht mit. (2) „C++/CMake **folgt** sprach-agnostisch" beschreibt einen Zustand, der nicht mehr gilt: `cpp` ist implementiert (`grep -n 'func profiles' -A 5 internal/gen/gen.go` → `go`, `cpp`); der Satz sagt jetzt allgemein, dass weitere Sprachen über je einen Renderer folgen, ohne eine bestimmte zu nennen, die schon da ist. **Warum Minor und nicht Patch wie 0.14.1:** dort wurde eine falsche Tatsachen-Aussage in einer *erläuternden Grenz-Notiz* zurückgenommen; §5 ist ein **normativer** Abschnitt — eine Herkunfts-Aussage darin wiegt so viel wie eine Anforderungs-Aussage (Nutzer-Entscheidung). Weder eine `LH-*`-Anforderung noch eine Messmethode ändert sich. Anlass: Lastenheft-Ist-Abgleich am 2026-07-27 nach dem slice-052-Abschluss (dieselbe Klasse, die slice-052 in der Nutzer-Doku behoben hat: die Beschreibung sagt, was das Werkzeug **nicht** tut) | Nutzer-Entscheidung 2026-07-27 |
 | 0.19.0 | 2026-08-22 | CR: **neue [`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) Erfassungsschicht emittieren** — der Träger der Blöcke *Span-Attribute*, *Token-Attribution* und *Cache-Counter* samt Rollen-Typen geht ins Ziel; Schreiber **und** Auswertung, letztere nennt ihre Abdeckung zuerst. **Additiv, nicht Erweiterung von [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren):** Durchsetzung wirkt davor, Anleitung ([`LH-FA-08`](../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren)) daneben, Regelwerk ([`LH-FA-09`](../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)) darüber — der Beleg eines gelaufenen Prozesses fällt in keine der drei. Der **Weg** der Emission bleibt ausdrücklich draußen. Zugesagt sind ein ausdrückliches Aufräum-Kommando **ohne** automatische Rotation und die Redaktions-Policy samt ihrer Nicht-Zusage (Pfadnamen, kein Schutz des Bestands). §5 mitgezogen. | Nutzer-Entscheidung 2026-08-22 |
 | 0.20.0 | 2026-09-16 | CR: **neue [`LH-FA-11`](../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren) Selbstprüfung der Durchsetzungsschicht emittieren** — das Ziel erhält, als emittiertes Template mit adaptierbaren Markern ([`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)), ein **ziel-eigenes E2E**: frischer Klon des eigenen Repos, Träger aktivieren, Commit **ohne** Kennung scheitert, Commit **mit** Kennung geht durch, `make gates` grün; gemessen im Emitter-Lauf, der es dort einmal durchfährt. **Additiv, keine Erweiterung von [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren):** dort die Durchsetzung, hier ihr Nachweis im Ziel — und nicht die Messung von [`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), die von außen prüft, während das Ziel hier sich selbst fährt. §5 mitgezogen. | Angenommener CR — Nutzer-Entscheidung 2026-09-16 |
+| 0.21.0 | 2026-09-18 | CR: **neue [`LH-FA-12`](../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren) E2E-Abdeckungs-Sicht emittieren** — das Ziel erhält den **Erzeuger** einer Sicht über die Stufen seines ziel-eigenen E2E ([`LH-FA-11`](../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren)): ein Kommando des Ziels liest den **Quelltext** des E2E-Skripts und schreibt je Stufe eine Zeile aus der Deklaration, die die Stufe an sich selbst trägt; adaptierbare Marker für Quell-Skript, Kopfzeilen-Wort, Spec-Datei und Zielort ([`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)), beide Lücken-Richtungen fallen laut, an **keiner** Gate-Kette. **Additiv, keine Erweiterung von [`LH-FA-11`](../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren):** dort das E2E, hier die Sicht darüber — und kein Lauf-Beleg, den [`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) trägt, weil der Erzeuger Quelltext liest statt zu fahren. Die Sicht **urteilt nicht** über Lücken ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)); ob eine dort fehlende Anforderung eine ist, urteilt der Leser. §5 mitgezogen. | Angenommener CR — Nutzer-Entscheidung 2026-09-18 |
 | 0.18.0 | 2026-07-28 | CR: **[`LH-FA-07`](../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) vom einen Layout auf die Layout-KLASSE gehoben.** Beschreibung und Happy-Path-AC nannten `--arch hexslice` namentlich; seit der hexagonalen Emission trat die abnahmebindende Ebene vom Verhalten weg (ein zweiter Schicht-Satz, zwei nur dort greifende Regeln — ohne AC). Die Emissions-Bedingung ist jetzt **strukturell** formuliert (schichten-tragendes Layout statt Namensliste), dazu zwei neue AC: **Zähne mit Regel-Namen je Layout** (`core-impurity` bzw. `app-impurity`/`lateral-adapter` — Letztere greifen kanten-**unabhängig**, ein Kanten-Kriterium deckt sie nicht ab) und **Disjunktheit der Layouts**. **Keine** Änderung an einer Messmethode; die Fähigkeit selbst ist mit CR 0.17.0 beschlossen, hier bekommt sie ihr Akzeptanzkriterium. **Abweichung von [`MR-015`](../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Setzung 2, ausdrücklich benannt statt kaschiert:** dieser CR liegt **nach** dem `open → in-progress`-Move von slice-058, nicht davor — er wurde erst durch den Implementierungs-Review sichtbar (Befund F-2). Die Form (eigener Commit, nur diese Datei) ist eingehalten | Nutzer-Entscheidung 2026-07-28, Review-Befund F-2 (`docs/reviews/2026-07-28-slice-058-impl-review.md`) |
 | 0.17.0 | 2026-07-27 | CR: **`hexagonal` als dritte Architektur aufgenommen** ([`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)). Die Setzung „weitere nur mit **belegtem Bedarf**" ist erfüllt, und der Beleg ist doppelt: (1) das gepinnte Arch-Gate liefert die hexagonale Form als **Standard-Gerüst** (`a-check --print-config` → `core` / `ports` / `adapters`, Kanten `adapters→ports`, `ports→core`) — wer es in ein Ziel-Repo legt, bekommt ein Layout, das unser Generator bisher **nicht erzeugen kann**; (2) **zwei reale Repos derselben Werkzeug-Familie** bauen so (gemessen an ihren `.a-check.yml`: `internal/hexagon/core`, `internal/hexagon/port`, `internal/adapter/driven`, Composition Root `cmd/**` + `internal/cli/**`). **`hexagonal` ist ein eigenes Layout, kein Strenge-Grad von `hexslice`** — die Verzeichnisnamen unterscheiden sich (`core` vs `domain`, `port` vs `application/**/ports`, `adapter/driven` vs `adapters/outbound`), ein gemeinsames Layout mit zwei Kanten-Mengen wäre eine Beschönigung. **Keine** Änderung an einer Messmethode oder an einer anderen Anforderung; die Umsetzung folgt als eigener Slice je Sprache (Doc-führt). Anlass: Nutzer-Hinweis auf `a-check`/`d-check` als belegten Bedarf | Nutzer-Entscheidung 2026-07-27 |
 | 0.16.0 | 2026-07-27 | CR: **[`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)-AC „Arch-Achse" präzisiert** — die Bau-Gerüstung bleibt arch-invariant (keine arch-abhängigen Zweige), darf aber das für ein Schicht-Layout **notwendige, für `flat` wirkungslose** Minimum tragen; `flat` bleibt statt „byte-identisch" nun **funktional unverändert** (gleicher Datei-Satz, gleiche Gate-Targets, Abweichung allein um dieses Minimum). **Anlass — eine Messung, kein Wunsch:** beim Bau des cpp-hexSlice-Renderers (slice-053) zeigte sich, dass a-check **nur modul-root-relative** Include-Strings auflöst. Gegen das gepinnte Image gemessen: `#include "src/hexagon/domain/…"` → `core-impurity`, Exit 1; **dieselbe verbotene Kante** als `../../../domain/…` **und** als `hexagon/domain/…` geschrieben → **0 Befunde**. Ein C++-Schicht-Layout ohne Modul-Root im Include-Pfad ist also entweder nicht übersetzbar oder für das Arch-Gate **unsichtbar** — ein still grünes Gate, genau der [`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Fall. Die alte Fassung („die Bau-Gerüstung unverändert … byte-identisch") war für Go schreibbar, weil Go modul-qualifizierte Importe hat, und ist für C++ **nicht einlösbar**. Die geprüften Alternativen (Include-Pfad im Test-Verzeichnis setzen; Gerüstung arch-abhängig machen) wurden verworfen — die eine verdrahtet das Produktions-Target aus den Tests, die andere bricht die Arch-Invarianz der Gerüstung. Determinismus ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)) unberührt | Nutzer-Entscheidung 2026-07-27 |
