@@ -201,9 +201,10 @@ func pfadEndungen() []string {
 //
 // GRENZE, benannt statt behauptet: die Regel verfuegt ueber eine FORM, nicht ueber den
 // Sinn. Vier Stuecke fallen heraus. Ein Traeger, den eine Zelle in Prosa statt in
-// Inline-Code nennt, bleibt ungeprueft. Ein nackter Ziel-Name ohne Trenner und ohne eine
-// der pfadEndungen (`SHA256SUMS`, `GATE_CHECKS`) ebenso — die Regel kann ihn von einem
-// Konfigurations-Schluessel nicht unterscheiden. Eine Adresse im vendored Baum liegt
+// Inline-Code nennt, bleibt ungeprueft. Ein nackter Name ohne Trenner und ohne eine der
+// pfadEndungen ebenso — so fallen `baseline-verify`, `span-report`, `span-clean` und
+// `GATE_CHECKS` heraus, und die Regel unterscheidet einen Ziel-Namen nicht von einem
+// Konfigurations-Schluessel. Eine Adresse im vendored Baum liegt
 // zwar im Ziel, aber ausserhalb der Menge des Emitters: sie schreibt der Fetch, und der
 // Waechter meldete sie als unbekannt — deshalb nennen die Zellen diesen Baum in Prosa.
 // Und dass die genannte Adresse die RICHTIGE fuer diesen Regelblock ist, sagt die Regel
@@ -298,8 +299,13 @@ func baumAussage(targets []string) (string, error) {
 	b.WriteString("Wie viele Regelblöcke der Baum führt, sagt `ls .harness/baseline/*/regelwerk/*.md`.\n\n")
 	b.WriteString("**Gesagt ist, was ein frisches Repo bekommt.** Ein Teil dieser Adressen gehört dem\n")
 	b.WriteString("Adopter: dort legt der Bootstrap nur ab, wo nichts liegt, und eine vorhandene\n")
-	b.WriteString("Fassung überlebt jeden weiteren Lauf unberührt. Welche Adresse dazugehört, sagt das\n")
-	b.WriteString("Werkzeug beim Ablegen — es nennt jeden Pfad, den es stehen lässt.\n\n")
+	b.WriteString("Fassung überlebt jeden weiteren Lauf unberührt. **Einen einzigen solchen Pfad nennt\n")
+	b.WriteString("der Lauf** — den Commit-Träger `.githooks/commit-msg`. Für jeden anderen schweigt er:\n")
+	b.WriteString("für die Dokumente der Doku-Kette, die Spec-Dateien, die Roadmap, `README.md`,\n")
+	b.WriteString("`.d-check.yml`, die Rollen-Typen und die Workflow-Commands steht in der Ausgabe\n")
+	b.WriteString("nichts — gleichgültig, ob er sie geschrieben oder stehen gelassen hat. Ohne Ausgabe\n")
+	b.WriteString("erkennbar ist es am Inhalt: eine Datei, die der Bootstrap geschrieben hat, trägt\n")
+	b.WriteString("seinen Text; eine, die er stehen ließ, den dieses Repos.\n\n")
 	b.WriteString("**Gemessen gegen den Kurs-Stand `" + InventurMessTag + "`, und die Tabelle wandert nicht mit.** Sie\n")
 	b.WriteString("nennt Regelblöcke beim Namen; ein Baseline-Sprung kann einen umbenennen, hinzufügen\n")
 	b.WriteString("oder wegnehmen. Dieses Dokument wird von einem erneuten Bootstrap **nicht**\n")
