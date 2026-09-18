@@ -375,7 +375,8 @@ Baseline-Regelwerk `v6.9.0` · `modul-05-planning-harness.md` §Closure- und Ler
     Klasse in jeder Runde). *Gebaut, nicht geplant:* ein **zweiter** Mutations-Fall
     (`371`, der die Marker-Wirkung deckt), **fünf** statt drei Marker (die zwei Message-Marker
     tragen den Adopter mit eigenem Träger und eigener Kennungs-Menge), ein benannter Vorgabe-Ort
-    `harness/mk/vorgaben.mk` samt eigenem Go-Zahn, und ein **eigenes** Bootstrap-Ziel, in dem die
+    `vorgaben.mk` im Fragment-Verzeichnis **des Ziels** samt eigenem Go-Zahn (der Pfad entsteht erst
+    im gebootstrappten Ziel und steht deshalb ohne Verzeichnis), und ein **eigenes** Bootstrap-Ziel, in dem die
     Stufe `make selbstpruefung` **dreimal** ruft statt einmal. Jede dieser vier Abweichungen ist
     additiv, innerhalb §1 und im Code begründet; keine bricht eine Zusage. **§3 bleibt trotzdem,
     wie er ist:** Der Plan ist das Artefakt *vor* dem Code, und ein nachgetragener Plan behauptete
