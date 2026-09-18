@@ -97,8 +97,8 @@ pin_wert() {
 @test "pin-kopplung: Makefile und emittiertes Fragment tragen dieselben Pin-Werte (ADR-0058 Festlegung 1)" {
   # Die Pin-Stellen sind da und tragen 64 Hex-Zeichen — eine Stelle ohne Wert waere
   # still gruen (LH-QA-01).
-  [ "$(pin_wert "$MK" 'TRAEGER_TAG')" = "v0.1.1" ]
-  [ "$(pin_wert "$FRAG" 'TRAEGER_TAG')" = "v0.1.1" ]
+  [ "$(pin_wert "$MK" 'TRAEGER_TAG')" = "v0.2.0" ]
+  [ "$(pin_wert "$FRAG" 'TRAEGER_TAG')" = "v0.2.0" ]
   for p in LINUX_AMD64 LINUX_ARM64 DARWIN_AMD64 DARWIN_ARM64 WINDOWS_AMD64 WINDOWS_ARM64; do
     mk="$(pin_wert "$MK" "TRAEGER_SHA256_$p")"
     fr="$(pin_wert "$FRAG" "TRAEGER_SHA256_$p")"
@@ -116,7 +116,7 @@ pin_wert() {
 }
 
 @test "happy: der Fetch legt den Traeger ab, ausfuehrbar und lauffaehig, Digest verifiziert" {
-  run env TRAEGER_TAG=v0.1.1 \
+  run env TRAEGER_TAG=v0.2.0 \
     TRAEGER_SHA256_LINUX_AMD64="$FIXTURE_SHA" \
     TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
     bash "$SKRIPT"
@@ -130,14 +130,14 @@ pin_wert() {
   [ "$output" = "traeger-echo-ok" ]
   # Genau EIN Transport-Aufruf, und er fragt das Asset des gepinnten Tags an.
   [ "$(grep -c . "$TRAEGER_SHIM_LOG")" -eq 1 ]
-  grep -qF 'releases/download/v0.1.1/ai-harness-init-linux-amd64' "$TRAEGER_SHIM_LOG"
+  grep -qF 'releases/download/v0.2.0/ai-harness-init-linux-amd64' "$TRAEGER_SHIM_LOG"
 }
 
 @test "negative: Digest-Abweichung bricht fail-closed, ohne den Traeger zu legen (kein zweiter Download)" {
   # Der Pin ist VERDREHT gegen dasselbe Asset — der Lauf laedt EINMAL und legt
   # nichts ab; der Träger des richtigen Laufs bliebe unangetastet.
   verdreht="$(printf '0%.0s' $(seq 64))"
-  run env TRAEGER_TAG=v0.1.1 \
+  run env TRAEGER_TAG=v0.2.0 \
     TRAEGER_SHA256_LINUX_AMD64="$verdreht" \
     TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
     bash "$SKRIPT"
@@ -152,7 +152,7 @@ pin_wert() {
 @test "fail-closed vor dem Transport: fehlt der sha256-Pin seiner Plattform, bricht der Lauf, ohne den Transport zu rufen" {
   # Der Ablageort wird auf ein Verzeichnis gesetzt, das NUR der Transport haette
   # anlegen duerfen — nach dem Lauf darf es nicht existieren.
-  run env TRAEGER_TAG=v0.1.1 \
+  run env TRAEGER_TAG=v0.2.0 \
     TRAEGER_SHA256_DARWIN_AMD64="$FIXTURE_SHA" \
     TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
     bash "$SKRIPT"
@@ -163,7 +163,7 @@ pin_wert() {
 }
 
 @test "fail-closed vor dem Transport: unbekannte Plattform und Architektur brechen laut (Asset-Matrix, LH-QA-04)" {
-  run env TRAEGER_TAG=v0.1.1 \
+  run env TRAEGER_TAG=v0.2.0 \
     TRAEGER_SHA256_LINUX_AMD64="$FIXTURE_SHA" \
     TRAEGER_OS=SunOS \
     TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
@@ -171,7 +171,7 @@ pin_wert() {
   [ "$status" -eq 2 ]
   printf '%s' "$output" | grep -qF 'unbekannte Plattform'
   [ "$(grep -c . "$TRAEGER_SHIM_LOG")" -eq 0 ]
-  run env TRAEGER_TAG=v0.1.1 \
+  run env TRAEGER_TAG=v0.2.0 \
     TRAEGER_SHA256_LINUX_AMD64="$FIXTURE_SHA" \
     TRAEGER_ARCH=sparc64 \
     TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
@@ -181,21 +181,21 @@ pin_wert() {
 }
 
 @test "plattform-matrix: das windows-Asset traegt .exe, und der Traeger liegt als ai-harness-init.exe (LH-QA-04)" {
-  run env TRAEGER_TAG=v0.1.1 \
+  run env TRAEGER_TAG=v0.2.0 \
     TRAEGER_SHA256_WINDOWS_AMD64="$FIXTURE_SHA" \
     TRAEGER_OS='MINGW64_NT-10.0' \
     TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
     bash "$SKRIPT"
   [ "$status" -eq 0 ]
-  grep -qF 'releases/download/v0.1.1/ai-harness-init-windows-amd64.exe' "$TRAEGER_SHIM_LOG"
+  grep -qF 'releases/download/v0.2.0/ai-harness-init-windows-amd64.exe' "$TRAEGER_SHIM_LOG"
   [ -x "$TMP/ablage/ai-harness-init.exe" ]
-  run env TRAEGER_TAG=v0.1.1 \
+  run env TRAEGER_TAG=v0.2.0 \
     TRAEGER_SHA256_LINUX_ARM64="$FIXTURE_SHA" \
     TRAEGER_ARCH=aarch64 \
     TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
     bash "$SKRIPT"
   [ "$status" -eq 0 ]
-  grep -qF 'releases/download/v0.1.1/ai-harness-init-linux-arm64' "$TRAEGER_SHIM_LOG"
+  grep -qF 'releases/download/v0.2.0/ai-harness-init-linux-arm64' "$TRAEGER_SHIM_LOG"
 }
 
 @test "fehlt-fall: der Fetch ist kein Prerequisite und kein Automatismus (ADR-0058 Festlegung 3)" {
