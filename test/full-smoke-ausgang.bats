@@ -176,7 +176,7 @@ ordne() {
 # --- (2) die Abdeckungs-Zusage im Kopf von harness/tools/full-smoke.sh ---------------
 #
 # FUENF FORMEN OHNE BILD-ANFORDERUNG, in derselben Gestalt wie im Kopf des Sensors und in
-# harness/README.md: der Trockenlauf (make -n fuehrt kein Rezept aus), make span-clean
+# harness/sensors/full-smoke.md: der Trockenlauf (make -n fuehrt kein Rezept aus), make span-clean
 # (Rezept im Ziel: rm -rf plus echo), der Hook-Wrapper (ein Shell-Skript, das das
 # Host-Binaer startet und docker nicht nennt) und make e2e-abdeckung (Rezept im Ziel:
 # bash + coreutils ueber dem Quelltext eines Skripts, es nennt docker nicht) und

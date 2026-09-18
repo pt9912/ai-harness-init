@@ -31,25 +31,21 @@
 # Suchen-und-Ersetzen:
 #   E2E_ABDECKUNG_QUELLE   das E2E-Skript, dessen Stufen gelesen werden
 #   E2E_ABDECKUNG_PRAEFIX  das Wort, mit dem eine Stufen-Kopfzeile dieses Skripts beginnt
-#   E2E_ABDECKUNG_SPEC     die Spec-Datei, aus deren Ueberschriften die Anker stammen
+#   E2E_ABDECKUNG_SPEC     die Spec-Datei, gegen die der LESER die Sicht haelt; die Sicht
+#                          nennt sie in ihrem Kopf
 #   E2E_ABDECKUNG_ZIEL     die zu schreibende Sicht
 # Der Lauf nennt in seiner ersten Zeile die Werte, mit denen er faehrt.
 #
-# DIE KENNUNGEN GEHOEREN DIESEM REPO. Der Erzeuger kennt kein Kennungs-SCHEMA: er
-# schlaegt jede deklarierte Kennung als erstes Wort einer `### `-Ueberschrift in der
-# Spec-Datei nach und leitet den Anker aus DIESER Ueberschrift ab.
-#
-# EIN VERWEIS ENTSTEHT NUR, WO DIE ABLEITUNG TRAEGT — drei Lagen fuehren stattdessen zum
-# CODE-SPAN, und der Lauf nennt je Kennung, welche:
-#   (1) es gibt keine solche Ueberschrift (oder die Spec-Datei liegt gar nicht);
-#   (2) die Rohzeile der Ueberschrift traegt Markdown-Inline-Syntax, deren GERENDERTER
-#       Text anders lautet — der Anker entstuende daneben (titel_rein);
-#   (3) im abgeleiteten Slug bleibt ein Zeichen stehen, das diese Ableitung nicht kennt,
-#       waehrend der Markdown-Anker es fallen laesst (slug_sicher).
-# Das ist die Wahl gegen einen Verweis, der ins Leere zeigt: ein toter Link faerbt ein
-# Doku-Gate rot und behauptet dabei eine Stelle, die es nicht gibt; ein Code-Span
-# behauptet nichts. Zugesagt ist damit die Sicht auf die DEKLARIERTE Zuordnung — nicht,
-# dass jede Kennung einen Verweis bekommt.
+# DIE KENNUNGSSPALTE TRAEGT CODE-SPANS, KEINE VERWEISE — und das ist eine Entscheidung,
+# keine fehlende Bequemlichkeit. Ein Verweis braucht einen ANKER, und ein Anker entsteht
+# aus dem GERENDERTEN Text einer Ueberschrift. Wer ihn aus der Rohzeile ableitet, bildet
+# das Verhalten eines Markdown-Renderers nach: Satzzeichen, Inline-Syntax, Whitespace,
+# Entities — jede Regel, die man dabei nicht trifft, ergibt einen Link, der AUSSIEHT wie
+# ein Verweis, bei Exit 0 entsteht und erst im Doku-Gate des Adopters rot wird. Dieses
+# Werkzeug kennt das Doku-Gate des Ziels nicht und bringt keines mit; es kann die
+# Nachbildung also weder kalibrieren noch halten. Ein Code-Span behauptet nichts, wird
+# nie tot und faerbt kein Gate rot. Was der Leser braucht, steht daneben: die Sicht nennt
+# im Kopf die Spec-Datei, gegen die er sie haelt.
 #
 # UND EINE STUFE DARF NOCH KEINE KENNUNG HABEN. Steht im ersten Argument der Deklaration
 # allein ein Gedankenstrich, heisst das: dieses Repo fuehrt fuer diese Stufe (noch) keine
@@ -90,18 +86,9 @@ RUF_MUSTER='^[0-9]+:[[:space:]]*e2e_abdeckung "[^"]*" "[^"]*" "[^"]*"[[:space:]]
 # Dieselbe Zeile OHNE die Zeilen-Angabe: sie erkennt eine Deklarations-Zeile dort, wo
 # ueber Text gelaufen wird.
 RUF_TEIL='^[[:space:]]*e2e_abdeckung "'
-# Die typografischen Zeichen, die der Anker-Slug fallen laesst, und der Backtick der
-# Orts-Spalte stehen als VARIABLE: woertlich in einem Kommando liest shellcheck das
-# typografische Apostroph als Unicode-Anfuehrungszeichen (SC1112) und den Backtick im
-# printf-Format als Kommando-Substitution (SC2016). Die Anfuehrungszeichen entstehen
-# darum aus ihren UTF-8-BYTES: \342\200\231 \342\200\236 \342\200\234 \342\200\235.
-TYPOGRAFIE='—–…·→'
-ANFUEHRUNGEN="$(printf '\342\200\231\342\200\236\342\200\234\342\200\235')"
-# Die ASCII-Satzzeichen, die der Slug fallen laesst: eine WOERTLICHE AUFZAEHLUNG, kein
-# Bereich. Ein Bereich wie [.-@] wird von glibc-sed und busybox-sed VERSCHIEDEN gelesen,
-# und der Anker haengt dann an der sed-Fassung der Laufzeitumgebung statt an der
-# Ueberschrift. '-', '_' und alles ab 0x80 stehen nicht darin und bleiben stehen.
-SATZZEICHEN='!"#$%&'"'"'()*+,./:;<=>?@'
+# Der Backtick der Orts- und der Kennungsspalte steht als VARIABLE: woertlich im
+# printf-Format liest shellcheck ihn als Kommando-Substitution (SC2016), und eine
+# Inline-Suppression ist gesperrt.
 BT='`'
 # Das erste Argument einer Deklaration, das KEINE Kennung ist, sondern die Auskunft,
 # dass dieses Repo fuer die Stufe (noch) keine Anforderung fuehrt.
@@ -113,86 +100,6 @@ if [ ! -f "$quelle" ]; then
 	echo "e2e-abdeckung: FEHLER — die Quelle liegt nicht: $quelle — der Marker E2E_ABDECKUNG_QUELLE nennt das E2E-Skript, dessen Stufen gelesen werden." >&2
 	exit 1
 fi
-
-# Die Spec-Datei ist KEINE Vorbedingung des Laufs, sondern die Quelle der LINKS. Fehlt
-# sie, entsteht die Sicht trotzdem — mit Code-Spans statt Verweisen.
-spec_da=1
-if [ ! -f "$spec" ]; then
-	spec_da=0
-	echo "e2e-abdeckung: Hinweis — die Spec-Datei liegt nicht: $spec. Die Kennungsspalte traegt Code-Spans statt Verweise; der Marker E2E_ABDECKUNG_SPEC nennt die Datei, aus deren Ueberschriften die Anker stammen."
-fi
-
-# slug_fuer <Kennung> — der Anker-Slug der Ueberschrift, aus der Ueberschrift selbst.
-# Leere Ausgabe heisst: es gibt keine solche Ueberschrift; der Aufrufer schreibt dann
-# einen Code-Span statt eines Links.
-#
-# Die Abbildung ist die des Markdown-Ankers: kleinschreiben, Leerzeichen zu '-', und
-# Satzzeichen fallen weg. Geloescht werden genau die ASCII-Satzzeichen AUSSER '-' und
-# '_'; alles ab 0x80 BLEIBT STEHEN, damit ein Umlaut im Slug erhalten bleibt.
-titel_fuer() {
-	[ "$spec_da" -eq 1 ] || return 0
-	awk -v k="$1" '
-		/^### / {
-			t = $0
-			sub(/^### /, "", t)
-			kurz = t
-			sub(/[[:space:]].*$/, "", kurz)
-			if (kurz == k) { print t; exit }
-		}
-	' "$spec"
-}
-
-# titel_rein <titel> — sagt, ob die ROHZEILE schon ihr eigener gerenderter Text ist.
-#
-# WARUM DIE FRAGE AN DIE ROHZEILE GEHOERT UND NICHT AN DEN SLUG: der Anker entsteht aus
-# dem GERENDERTEN Text der Ueberschrift, diese Ableitung liest die Rohzeile. Wo beide
-# gleich lauten, trifft sie; wo Markdown beim Rendern etwas wegnimmt, geht sie daneben —
-# und zwar mit lauter erlaubten Zeichen, an denen slug_sicher nichts findet.
-#
-# GEMESSEN, NICHT VERMUTET (Ziel-Repo, je eine Ueberschrift pro Klasse, danach das
-# Doku-Gate des Ziels ueber der geschriebenen Sicht): Link `[t](u)` und Bild `![a](s)`
-# fallen mit `anchor-missing`; Code-Span, Hervorhebung (`*`/`**`) und HTML (`<sup>`)
-# leitet das Gate GLEICH ab und meldet nichts. Die zwei, die fallen, tragen beide eckige
-# Klammern — und die stehen in keiner Ueberschrift, die schlicht gemeint ist. Geprueft
-# wird darum auf '[' und ']': das trifft Inline-Link, Bild, Referenz- und Kurzform in
-# einem, ohne Markdown zu parsen. Eine eckige Klammer, die keine Verweis-Syntax ist,
-# kostet einen Verweis und behauptet nichts Falsches.
-titel_rein() {
-	case "$1" in
-	*'['* | *']'*) return 1 ;;
-	esac
-	return 0
-}
-
-# slug_fuer <titel> — der Anker-Slug AUS DER UEBERSCHRIFT selbst.
-slug_fuer() {
-	local titel="$1"
-	[ -n "$titel" ] || return 0
-	printf '%s' "$titel" \
-		| tr '[:upper:]' '[:lower:]' \
-		| sed -e 's/Ä/ä/g' -e 's/Ö/ö/g' -e 's/Ü/ü/g' \
-		| sed -e "s/[$TYPOGRAFIE$ANFUEHRUNGEN]//g" \
-		| sed -e "s/[$SATZZEICHEN]//g" \
-		| sed -e 's/\[//g' -e 's/\\//g' -e 's/\]//g' -e 's/\^//g' \
-		| sed -e 's/`//g' -e 's/[{-~]//g' \
-		| sed -e 's/ /-/g'
-}
-
-# slug_sicher <slug> — sagt, ob der abgeleitete Anker vollstaendig ist.
-#
-# WARUM DIE ABLEITUNG ALLEIN NICHT GENUEGT: sie loescht eine AUFZAEHLUNG von Zeichen.
-# Ein Satzzeichen, das darin nicht steht — ein Guillemet etwa —, bleibt im Slug stehen,
-# waehrend der Markdown-Anker der Ueberschrift es fallen laesst; der Link zeigte dann ins
-# Leere, und zwar bei Exit 0. Geprueft wird darum der BESTAND des Slugs statt der Liste
-# der Loeschungen: uebrig bleiben duerfen Kleinbuchstaben, Ziffern, '-' und '_' sowie die
-# deutschen Umlaute und das scharfe s, deren Bytes die Ableitung oben ausdruecklich
-# stehen laesst. Was sonst uebrig ist, heisst: dieser Erzeuger kann den Anker nicht
-# garantieren — und schreibt ihn deshalb nicht.
-slug_sicher() {
-	local rest
-	rest="$(printf '%s' "$1" | sed -e 's/[äöüß]//g' -e 's/[a-z0-9_-]//g')"
-	[ -z "$rest" ]
-}
 
 stufen="$(grep -nE "$STUFEN_MUSTER" "$quelle" || true)"
 if [ -z "$stufen" ]; then
@@ -231,15 +138,6 @@ fi
 tmp="$(mktemp)"
 trap 'rm -f "$tmp"' EXIT
 
-# Der Link auf die Spec-Datei steht relativ zum ZIEL.
-rel_prefix=""
-tiefe="$(printf '%s' "$ziel" | tr -dc '/' | wc -c)"
-i=0
-while [ "$i" -lt "$tiefe" ]; do
-	rel_prefix="$rel_prefix../"
-	i=$((i + 1))
-done
-
 {
 	echo "# E2E-Abdeckung der Stufen des Voll-E2E"
 	echo
@@ -250,14 +148,16 @@ done
 	echo "ändert sich mit den Deklarationen und mit dem Ort ihrer Quellen — eine Einfügung"
 	echo "oberhalb einer Stufe verschiebt deren Zeile in der Spalte \`Ort\`."
 	echo
-	echo "Die Spalten stehen in der Folge \`Spec-Kennung\`, \`Kurzbeschreibung\`, \`Stufe\`, \`Ort\`."
-	echo "Die Spalte \`Spec-Kennung\` nennt die Anforderung, die diese Stufe trägt, als Verweis"
-	echo "in \`$spec\`; löst die Kennung dort nicht auf, steht sie ohne Link. Die Spalte"
+	echo "Die Spalte \`Spec-Kennung\` nennt die Anforderung, die diese Stufe trägt, **als"
+	echo "Code-Span statt als Verweis**: ein Verweis brauchte einen Anker, und den müsste dieser"
+	echo "Erzeuger aus der Rohzeile einer Überschrift nachbilden — ein Link, der aussieht wie"
+	echo "einer und im Doku-Gate rot wird, wäre teurer als gar keiner. Gehalten wird die Sicht"
+	echo "deshalb gegen \`$spec\`, und zwar vom Leser. Die Spalte"
 	echo "\`Kurzbeschreibung\` trägt keine Kennung. Die Spalte \`Stufe\` zählt die"
 	echo "Stufen-Kopfzeilen in der Reihenfolge des Skripts — eine Stufe eröffnet mit ihrer"
 	echo "Ausgabe-Kopfzeile und reicht bis zur nächsten. Die Spalte \`Ort\` adressiert sie."
-	echo "Ob eine hier fehlende Anforderung eine Lücke ist, urteilt der Leser gegen"
-	echo "\`$spec\`; ein Waisen-Urteil fällt nicht hier."
+	echo "Ob eine hier fehlende Anforderung eine Lücke ist, urteilt ebenfalls der Leser; ein"
+	echo "Waisen-Urteil fällt nicht hier."
 	echo
 	echo "| Spec-Kennung | Kurzbeschreibung | Stufe | Ort |"
 	echo "| --- | --- | --- | --- |"
@@ -266,7 +166,7 @@ done
 zeilen_gesamt="$(wc -l <"$quelle")"
 stufen_gesamt=0
 deklarationen=0
-ohne_link=0
+ohne_kennung=0
 while IFS=: read -r start _rest; do
 	stufen_gesamt=$((stufen_gesamt + 1))
 	naechste="$(awk -F: -v z="$start" '$1 > z { print $1; exit }' <<<"$stufen")"
@@ -309,50 +209,25 @@ while IFS=: read -r start _rest; do
 			echo "  Nachweis: sed -n '${start},${ende}p' $quelle" >&2
 			exit 1
 		fi
-		links=""
 		if [ "$kennungen" = "$OHNE_KENNUNG" ]; then
 			# KEINE ZUORDNUNG BEHAUPTEN, WO KEINE GETROFFEN IST: die Zelle traegt den
 			# Gedankenstrich der Deklaration weiter, und die Stufe steht trotzdem in der
 			# Sicht — sie laeuft ja.
-			links="$OHNE_KENNUNG"
-			ohne_link=$((ohne_link + 1))
+			zelle="$OHNE_KENNUNG"
+			ohne_kennung=$((ohne_kennung + 1))
 			echo "e2e-abdeckung: Hinweis — Stufe $stufen_gesamt deklariert keine Kennung ($quelle:$rufzeile); die Zelle traegt $OHNE_KENNUNG. Eine Anforderung dieses Repos traegt sie, sobald die Deklaration sie nennt."
-			printf '| %s | %s | Stufe %s | %s%s:%s%s |\n' "$links" "$kurz" "$stufen_gesamt" "$BT" "$quelle" "$ort" "$BT" >>"$tmp"
-			deklarationen=$((deklarationen + 1))
-			continue
-		fi
-		for k in $kennungen; do
-			# KEIN LINK OHNE ZIEL: die Kennung steht als Code-Span da. Der Lauf zaehlt sie
-			# und nennt sie unten — still waere das eine Abdeckung, die einen Verweis
-			# behauptet, den sie nicht hat. DREI GRUENDE fuehren hierher, und der Hinweis
-			# nennt den zutreffenden: es gibt keine Ueberschrift; ihre Rohzeile traegt
-			# Markdown-Inline-Syntax, deren gerenderter Text anders lautet; oder aus ihr
-			# ist der Anker nicht sicher abzuleiten.
-			ueber="$(titel_fuer "$k")"
-			slug=""
-			grund=""
-			if [ -z "$ueber" ]; then
-				grund="sie hat keine \`### \`-Ueberschrift in $spec"
-			elif ! titel_rein "$ueber"; then
-				grund="ihre Ueberschrift traegt Markdown-Inline-Syntax ([$ueber]); deren gerenderter Text lautet anders als die Rohzeile, aus der diese Ableitung liest"
-			else
-				slug="$(slug_fuer "$ueber")"
-				if ! slug_sicher "$slug"; then
-					grund="ihr Anker ist aus der Ueberschrift nicht sicher abzuleiten: [$slug] traegt ein Zeichen, das diese Ableitung nicht kennt, waehrend der Markdown-Anker es fallen laesst"
+		else
+			# JEDE KENNUNG ALS CODE-SPAN. Kein Nachschlagen, keine Anker-Ableitung, kein
+			# Zustand, in dem ein Link entstuende, den die Zieldatei nicht traegt.
+			zelle=""
+			for k in $kennungen; do
+				if [ -n "$zelle" ]; then
+					zelle="$zelle, "
 				fi
-			fi
-			if [ -n "$links" ]; then
-				links="$links, "
-			fi
-			if [ -n "$grund" ]; then
-				links="${links}\`$k\`"
-				ohne_link=$((ohne_link + 1))
-				echo "e2e-abdeckung: Hinweis — die Kennung $k bekommt keinen Verweis ($quelle:$rufzeile): $grund. Sie steht als Code-Span ohne Verweis."
-			else
-				links="${links}[\`$k\`](${rel_prefix}${spec}#${slug})"
-			fi
-		done
-		printf '| %s | %s | Stufe %s | %s%s:%s%s |\n' "$links" "$kurz" "$stufen_gesamt" "$BT" "$quelle" "$ort" "$BT" >>"$tmp"
+				zelle="${zelle}${BT}${k}${BT}"
+			done
+		fi
+		printf '| %s | %s | Stufe %s | %s%s:%s%s |\n' "$zelle" "$kurz" "$stufen_gesamt" "$BT" "$quelle" "$ort" "$BT" >>"$tmp"
 		deklarationen=$((deklarationen + 1))
 	done <<<"$region_aufrufe"
 done <<<"$stufen"
@@ -363,7 +238,7 @@ if [ "$deklarationen" -ne "$stufen_gesamt" ]; then
 fi
 
 if [ -f "$ziel" ] && cmp -s "$tmp" "$ziel"; then
-	echo "e2e-abdeckung: unveraendert — $ziel ($stufen_gesamt Stufen, $deklarationen Deklarationen, $ohne_link ohne Verweis)."
+	echo "e2e-abdeckung: unveraendert — $ziel ($stufen_gesamt Stufen, $deklarationen Deklarationen, $ohne_kennung ohne Kennung)."
 else
 	ziel_dir="$(dirname "$ziel")"
 	if [ ! -d "$ziel_dir" ]; then
@@ -374,5 +249,5 @@ else
 	rm -f "$ziel"
 	cat "$tmp" >"$ziel"
 	chmod 0644 "$ziel"
-	echo "e2e-abdeckung: geschrieben — $ziel ($stufen_gesamt Stufen, $deklarationen Deklarationen aus $quelle, $ohne_link ohne Verweis)."
+	echo "e2e-abdeckung: geschrieben — $ziel ($stufen_gesamt Stufen, $deklarationen Deklarationen aus $quelle, $ohne_kennung ohne Kennung)."
 fi

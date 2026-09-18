@@ -38,16 +38,31 @@ Aufruf und nimmt der Stufe ihre Deklaration, bis der Erzeuger rot wird. Der Erze
 dem Ziel dabei keine Abhängigkeit hinzu — er liest Text, ohne Container und ohne Netz
 ([`LH-QA-03`](../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
 
-**Genau eine Regel trennt die zwei Fassungen, und sie ist gewollt.** Löst eine deklarierte
-Kennung in der Spec des Ziels nicht auf, schreibt die **emittierte** Fassung sie als
-Code-Span ohne Verweis und läuft weiter — die benannte Grenze von
-[`LH-FA-12`](../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren); die
-Fassung dieses Repos bricht an derselben Stelle ab, weil sie über *unser* Lastenheft
-urteilt und ein Link ohne Ziel hier ein Befund ist. Wer die zwei angleicht, hebt eine
-Zusage auf; beide Verhalten hält ein Fall in
-[`test/e2e-abdeckung.bats`](../../test/e2e-abdeckung.bats) nebeneinander. Die vier
-ziel-spezifischen Stellen der Vorlage sind darüber hinaus gesetzte, überschreibbare Marker
-([`LH-FA-02`](../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)).
+**Genau eine Regel trennt die zwei Fassungen, und sie ist gewollt: den Verweis.** Die
+Kennungsspalte der **emittierten** Sicht trägt **Code-Spans**, nie Links. Ein Link
+brauchte einen Anker, und ein Anker entsteht aus dem *gerenderten* Text einer Überschrift;
+wer ihn aus der Rohzeile ableitet, bildet einen Markdown-Renderer nach — Satzzeichen,
+Inline-Syntax, Whitespace, Entities. Jede Regel, die diese Nachbildung nicht trifft, ergibt
+einen Link, der aussieht wie ein Verweis, bei Exit 0 entsteht und erst im Doku-Gate des
+Adopters rot wird. **Eine Nachbildung ist nur zu verantworten, wo ihr Gate läuft:** hier
+hält [`make docs-check`](docs-check.md) in `make gates` den Ausgang unseres Erzeugers
+([`docs/user/e2e-abdeckung.md`](../../docs/user/e2e-abdeckung.md)) bei jedem Lauf — eine
+Abweichung wird dort rot statt still. Im Ziel gibt es diesen Träger nicht, und das Werkzeug
+bringt keinen mit. Unsere Fassung leitet deshalb ab und verlinkt, die emittierte nicht; wer
+die zwei angleicht, hebt eine Zusage auf. Beide Verhalten hält ein Fall in
+[`test/e2e-abdeckung.bats`](../../test/e2e-abdeckung.bats) nebeneinander, und ein zweiter
+misst, dass die emittierte Fassung **keine** der Ableitungs-Stellen führt.
+
+**Was das für unsere Fassung offen lässt.** Ihre Ableitung ist an gemessenem
+Gate-Verhalten kalibriert, nicht an einer Markdown-Spezifikation; welche Überschriften-Formen
+geprüft wurden, steht im Kopf von `harness/tools/e2e-abdeckung.sh`. Ein Sprung des
+Doku-Gates oder eine Überschrift in einer dort nicht geprüften Form bleibt nicht still — sie
+fällt an `make docs-check` über der committeten Sicht —, aber sie fällt **nach** dem
+Schreiben, nicht davor. Die vier ziel-spezifischen Stellen der Vorlage sind davon unberührt:
+gesetzte, überschreibbare Marker
+([`LH-FA-02`](../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)); die
+Spec-Datei benennt seit dem Wegfall der Verweise den Maßstab des **Lesers** und steht im
+Kopf der erzeugten Sicht.
 
 **Die committete Tabelle hat einen Halter.** Ein Fall in
 [`test/e2e-abdeckung.bats`](../../test/e2e-abdeckung.bats) fährt den Erzeuger über dem

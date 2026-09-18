@@ -146,18 +146,22 @@ EOF
   printf '### LH-FA-01 — Repo bootstrappen\n\nText.\n' > "$1/spec/lastenheft.md"
 }
 
-@test "emittiert: ueber einer Fixture entsteht je Stufe eine Zeile, mit Verweis in die Spec des Ziels" {
+@test "emittiert: ueber einer Fixture entsteht je Stufe eine Zeile — und kein einziger Verweis" {
   fixture "$TMP/ziel"
   cd "$TMP/ziel"
   run env E2E_ABDECKUNG_QUELLE=tools/harness/mein-e2e.sh bash "$(emittiert)"
   [ "$status" -eq 0 ]
-  [ "$(grep -c '^| \[' docs/user/e2e-abdeckung.md)" -eq 1 ]
-  # Der Verweis loest gegen die Ueberschrift der Spec-Datei auf, nicht gegen eine Liste.
-  grep -qF '[`LH-FA-01`](../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)' docs/user/e2e-abdeckung.md
+  [ "$(grep -c '^| .* | Stufe [0-9]' docs/user/e2e-abdeckung.md)" -eq 1 ]
+  # DIE KENNUNG STEHT ALS CODE-SPAN — auch hier, wo die Ueberschrift laege und ein Anker
+  # abzuleiten waere. Die ausgelieferte Fassung leitet keinen ab: sie kennt das Doku-Gate
+  # des Ziels nicht und kann eine Nachbildung darum weder kalibrieren noch halten.
+  [ "$(grep -c '^| `LH-FA-01` |' docs/user/e2e-abdeckung.md)" -eq 1 ]
+  [ "$(grep -c '](' docs/user/e2e-abdeckung.md)" -eq 0 ]
   # Der Ort zeigt auf die Zeile der STUFE, nicht auf die Deklaration.
   grep -qF '`tools/harness/mein-e2e.sh:5`' docs/user/e2e-abdeckung.md
+  # Die Spec-Datei bleibt im Kopf genannt: sie ist der Massstab des LESERS.
+  grep -qF 'spec/lastenheft.md' docs/user/e2e-abdeckung.md
 }
-
 @test "emittiert: null Stufen enden laut, mit Exit 1 und der Form, die eine Kopfzeile haben muss" {
   fixture "$TMP/leer"
   cd "$TMP/leer"
@@ -192,80 +196,58 @@ EOF
   printf '%s' "$output" | grep -qF 'tools/harness/mein-e2e.sh:'
 }
 
-@test "emittiert: eine Kennung ohne Ueberschrift steht als Code-Span, nicht als toter Link" {
-  fixture "$TMP/ohnespec"
-  cd "$TMP/ohnespec"
-  rm spec/lastenheft.md
-  run env E2E_ABDECKUNG_QUELLE=tools/harness/mein-e2e.sh bash "$(emittiert)"
+@test "emittiert: eine fehlende Spec-Datei ist keine Vorbedingung — die Sicht entsteht unveraendert" {
+  # DIE SPEC-DATEI IST DER MASSSTAB DES LESERS, nicht die Quelle eines Ankers. Fehlt sie,
+  # aendert sich an der Sicht nichts — das ist die Probe darauf, dass die ausgelieferte
+  # Fassung sie gar nicht mehr liest. Vor dem Wegfall der Verweise hing hier ein
+  # Sonderzweig; er hat kein Objekt mehr.
+  fixture "$TMP/mitspec"
+  cd "$TMP/mitspec"
+  run env E2E_ABDECKUNG_QUELLE=tools/harness/mein-e2e.sh E2E_ABDECKUNG_ZIEL=docs/user/a.md bash "$(emittiert)"
   [ "$status" -eq 0 ]
-  # Kein Verweis in eine Datei, die es nicht gibt — und die Zeile entsteht trotzdem.
-  [ "$(grep -c '^| `LH-FA-01` |' docs/user/e2e-abdeckung.md)" -eq 1 ]
-  [ "$(grep -c 'lastenheft.md#' docs/user/e2e-abdeckung.md)" -eq 0 ]
-  # Still ist das nicht: der Lauf nennt die Kennung und den Marker, der die Datei nennt.
-  printf '%s' "$output" | grep -qF 'als Code-Span ohne Verweis'
-  printf '%s' "$output" | grep -qF 'E2E_ABDECKUNG_SPEC'
+  rm spec/lastenheft.md
+  run env E2E_ABDECKUNG_QUELLE=tools/harness/mein-e2e.sh E2E_ABDECKUNG_ZIEL=docs/user/b.md bash "$(emittiert)"
+  [ "$status" -eq 0 ]
+  cmp -s docs/user/a.md docs/user/b.md
+  [ "$(grep -c '^| `LH-FA-01` |' docs/user/b.md)" -eq 1 ]
+  [ "$(grep -c '](' docs/user/b.md)" -eq 0 ]
+  # Genannt bleibt sie: der Kopf sagt dem Leser, wogegen er die Sicht haelt.
+  grep -qF 'spec/lastenheft.md' docs/user/b.md
 }
 
-@test "kopplung: beide Fassungen schreiben dieselbe Tabellen-Kopfzeile und lesen dieselbe Deklarations-Form" {
-  # Die Kopfzeile: in dieser Fassung steht sie im Kopf-Heredoc, in der emittierten in
-  # einem echo. Verglichen wird die ZEICHENKETTE, nicht ihre Schreibweise.
+@test "kopplung: die zwei Fassungen teilen die Form und trennen sich in EINER Sache — dem Verweis" {
+  # GETEILT: die Tabellen-Kopfzeile, die Deklarations-Form und die zwei Luecken-Richtungen.
+  # Laeuft eines davon auseinander, liest die eine Fassung als Deklaration, was die andere
+  # als gewoehnliche Zeile sieht, oder die zwei Sichten sind nicht mehr dieselbe Tabelle.
   hier="$(grep -cF "$KOPFZEILE" "$ERZEUGER")"
   dort="$(grep -cF "$KOPFZEILE" "$(emittiert)")"
   [ "$hier" -eq 1 ]
   [ "$dort" -eq 1 ]
-  # Die Deklarations-Form: beide erkennen denselben Aufruf, sonst liest die eine als
-  # Deklaration, was die andere als gewoehnliche Zeile sieht.
   for datei in "$ERZEUGER" "$(emittiert)"; do
     [ "$(grep -c "^RUF_MUSTER='" "$datei")" -eq 1 ]
     [ "$(grep -c "^RUF_TEIL='" "$datei")" -eq 1 ]
   done
   [ "$(sed -n "s/^RUF_MUSTER=//p" "$ERZEUGER")" = "$(sed -n "s/^RUF_MUSTER=//p" "$(emittiert)")" ]
   [ "$(sed -n "s/^RUF_TEIL=//p" "$ERZEUGER")" = "$(sed -n "s/^RUF_TEIL=//p" "$(emittiert)")" ]
-  # Die zwei Luecken-Richtungen heissen in beiden gleich — die Meldung ist das, woran
-  # ein Adopter den Fall erkennt.
   for schluessel in 'Stufe ohne Deklaration' 'Deklaration ohne Stufe'; do
     grep -qF "$schluessel" "$ERZEUGER"
     grep -qF "$schluessel" "$(emittiert)"
   done
 
-  # DIE ANKER-ABLEITUNG. Sie ist das Stueck, das LINKS in einen fremden Baum schreibt;
-  # laeuft sie auseinander, schreibt eine der zwei Fassungen Verweise, die die andere
-  # nicht schriebe. Verglichen werden die drei Zeichen-Mengen und die zwei Funktionen.
-  for zeile in TYPOGRAFIE ANFUEHRUNGEN SATZZEICHEN; do
-    [ "$(grep -c "^$zeile=" "$ERZEUGER")" -eq 1 ]
-    [ "$(grep -c "^$zeile=" "$(emittiert)")" -eq 1 ]
-    [ "$(sed -n "s/^$zeile=//p" "$ERZEUGER")" = "$(sed -n "s/^$zeile=//p" "$(emittiert)")" ]
+  # GETRENNT, UND ZWAR GEMESSEN STATT UNTERSTELLT: die Anker-Ableitung ist KEIN geteiltes
+  # Stueck. Sie bildet das Verhalten eines Doku-Gates nach, und das ist nur dort zu
+  # verantworten, wo dieses Gate laeuft — hier haelt `make docs-check` in `make gates` den
+  # Ausgang dieses Erzeugers, im Ziel gibt es keinen solchen Traeger. Die ausgelieferte
+  # Fassung fuehrt darum KEINE der Ableitungs-Stellen; ein Nachzug, der sie doch mitnaehme,
+  # faellt hier.
+  for stelle in 'slug_fuer' 'slug_sicher' 'titel_rein' 'titel_fuer' 'TYPOGRAFIE' 'SATZZEICHEN' 'ANFUEHRUNGEN'; do
+    [ "$(grep -c "$stelle" "$ERZEUGER")" -ge 1 ]
+    [ "$(grep -c "$stelle" "$(emittiert)")" -eq 0 ]
   done
-  # slug_sicher woertlich gleich: der Waechter, der einen unvollstaendig abgeleiteten
-  # Anker erkennt, darf nicht in einer Fassung strenger sein als in der anderen.
-  sed -n '/^slug_sicher() {/,/^}/p' "$ERZEUGER" > "$TMP/sicher-hier.txt"
-  sed -n '/^slug_sicher() {/,/^}/p' "$(emittiert)" > "$TMP/sicher-dort.txt"
-  [ "$(wc -l < "$TMP/sicher-hier.txt")" -ge 4 ]
-  cmp -s "$TMP/sicher-hier.txt" "$TMP/sicher-dort.txt"
-
-  # slug_fuer gleich BIS AUF DEN EINEN GEWOLLTEN UNTERSCHIED, und der wird hier benannt
-  # statt verschwiegen: die emittierte Fassung traegt den Waechter `spec_da`, weil eine
-  # fehlende Spec-Datei im Ziel kein Befund ist; unsere bricht davor schon ab, weil das
-  # Lastenheft dieses Repos liegen muss. Genau diese eine Zeile wird herausgerechnet —
-  # steht in der emittierten Fassung eine zweite Abweichung, faellt der Vergleich.
-  sed -n '/^titel_fuer() {/,/^}/p' "$ERZEUGER" > "$TMP/slug-hier.txt"
-  sed -n '/^titel_fuer() {/,/^}/p' "$(emittiert)" | grep -v 'spec_da' > "$TMP/slug-dort.txt"
-  [ "$(grep -c 'spec_da' "$ERZEUGER")" -eq 0 ]
-  [ "$(sed -n '/^titel_fuer() {/,/^}/p' "$(emittiert)" | grep -c 'spec_da')" -eq 1 ]
-  [ "$(wc -l < "$TMP/slug-hier.txt")" -ge 9 ]
-  cmp -s "$TMP/slug-hier.txt" "$TMP/slug-dort.txt"
-
-  # slug_fuer und titel_rein woertlich gleich: die eine bildet ab, die andere entscheidet,
-  # ob die Abbildung ueberhaupt gilt. Eine Fassung, die hier abweicht, schriebe Verweise,
-  # die die andere nicht schriebe.
-  for fn in slug_fuer titel_rein; do
-    sed -n "/^$fn() {/,/^}/p" "$ERZEUGER" > "$TMP/$fn-hier.txt"
-    sed -n "/^$fn() {/,/^}/p" "$(emittiert)" > "$TMP/$fn-dort.txt"
-    [ "$(wc -l < "$TMP/$fn-hier.txt")" -ge 4 ]
-    cmp -s "$TMP/$fn-hier.txt" "$TMP/$fn-dort.txt"
-  done
+  # Und sie baut auch keinen Link zusammen: kein Markdown-Verweis im Ausgabe-Pfad.
+  [ "$(grep -c '](' "$(emittiert)")" -eq 0 ]
+  [ "$(grep -c '](' "$ERZEUGER")" -ge 1 ]
 }
-
 @test "emittiert: die mitgelieferte Selbstpruefung traegt eine Stufe mit ihrer Deklaration, und die Zelle bleibt ohne geratene Kennung" {
   mkdir -p "$TMP/mit/tools/harness" "$TMP/mit/docs/user"
   cp "$REPO/internal/emit/templates/enforce/selbstpruefung.sh" "$TMP/mit/tools/harness/"
@@ -338,31 +320,26 @@ EOF
   [ ! -f docs/user/e2e-abdeckung.md ]
 }
 
-@test "trennlinie: eine nicht aufloesende Kennung bricht UNSERE Fassung ab und gibt der emittierten einen Code-Span" {
-  # DIE EINE GEWOLLTE DIFFERENZ DER ZWEI FASSUNGEN, in einem Fall belegt. Wer sie
-  # angleicht, hebt eine Zusage auf: unsere urteilt ueber UNSER Lastenheft und darf einen
-  # Link ohne Ziel nicht schreiben; die emittierte kennt die Spec des Ziels nicht und
-  # macht aus einer unbekannten Kennung keinen Befund (LH-FA-12 §Benannte Grenze).
+@test "trennlinie: die ausgelieferte Fassung schreibt nie einen Verweis, unsere immer einen aufloesenden" {
+  # DIE EINE GEWOLLTE DIFFERENZ, in einem Fall belegt. Wer sie angleicht, hebt eine Zusage
+  # auf: unsere Fassung urteilt ueber UNSER Lastenheft, und ihr Ausgang steht unter
+  # `make docs-check`; die ausgelieferte kennt das Gate ihres Ziels nicht und behauptet
+  # darum keinen Anker.
   fixture "$TMP/trenn"
-  sed -i 's@"LH-FA-01"@"LH-ZZ-99"@' "$TMP/trenn/tools/harness/mein-e2e.sh"
-  [ "$(grep -c 'LH-ZZ-99' "$TMP/trenn/tools/harness/mein-e2e.sh")" -eq 1 ]
-  [ "$(grep -c 'LH-ZZ-99' "$TMP/trenn/spec/lastenheft.md")" -eq 0 ]
-
-  # (a) DIE EMITTIERTE FASSUNG: Exit 0, Code-Span, kein Verweis.
   cd "$TMP/trenn"
+
+  # (a) DIE AUSGELIEFERTE FASSUNG: Code-Span, obwohl die Ueberschrift auflosen WUERDE.
   run env E2E_ABDECKUNG_QUELLE=tools/harness/mein-e2e.sh bash "$(emittiert)"
   [ "$status" -eq 0 ]
-  [ "$(grep -c '^| `LH-ZZ-99` |' docs/user/e2e-abdeckung.md)" -eq 1 ]
-  [ "$(grep -c 'lastenheft.md#' docs/user/e2e-abdeckung.md)" -eq 0 ]
+  [ "$(grep -c '^| `LH-FA-01` |' docs/user/e2e-abdeckung.md)" -eq 1 ]
+  [ "$(grep -c '](' docs/user/e2e-abdeckung.md)" -eq 0 ]
 
-  # (b) UNSERE FASSUNG ueber derselben Lage: Abbruch, und der Grund nennt den Link ohne
-  # Ziel. Gefahren wird sie mit unserem Stufen-Praefix, damit die Stufe fuer sie eine ist.
+  # (b) UNSERE FASSUNG ueber derselben Lage: ein Verweis, und er loest gegen die
+  # Ueberschrift auf.
   sed -i 's@^echo "selbstpruefung: @echo "full-smoke: @' tools/harness/mein-e2e.sh
-  run bash "$ERZEUGER" tools/harness/mein-e2e.sh docs/user/unsere.md
-  [ "$status" -ne 0 ]
-  printf '%s' "$output" | grep -qF 'LH-ZZ-99'
-  printf '%s' "$output" | grep -q 'Link ohne Ziel'
-  [ ! -f docs/user/unsere.md ]
+  run bash "$ERZEUGER" tools/harness/mein-e2e.sh docs/user/unsere.md spec/lastenheft.md
+  [ "$status" -eq 0 ]
+  grep -qF '[`LH-FA-01`](../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)' docs/user/unsere.md
 }
 
 @test "emittiert: jeder der vier Marker lenkt den Lauf, gemessen an dem was entsteht" {
@@ -390,92 +367,56 @@ EOF
   [ ! -f docs/user/e2e-abdeckung.md ]
   # QUELLE + PRAEFIX: die Stufe des genannten Skripts steht in der Sicht, mit seinem Pfad.
   [ "$(grep -c '| Stufe 1 | `anders/eigenes-e2e.sh:' sicht/abdeckung.md)" -eq 1 ]
-  # SPEC: der Verweis loest gegen die GENANNTE Datei auf, nicht gegen eine Vorgabe.
-  grep -qF '(../anders/anforderungen.md#rq-7--eigene-anforderung)' sicht/abdeckung.md
+  # SPEC: die GENANNTE Datei steht im Kopf der Sicht als Massstab des Lesers — und die
+  # Vorgabe steht nicht daneben. Das ist die Wirkung, die der Marker seit dem Wegfall der
+  # Verweise hat; gemessen an dem, was entsteht.
+  [ "$(grep -c 'anders/anforderungen.md' sicht/abdeckung.md)" -ge 1 ]
+  [ "$(grep -c 'spec/lastenheft.md' sicht/abdeckung.md)" -eq 0 ]
 }
 
-@test "anker: ein abgeleiteter Anker, der die Ueberschrift nicht trifft, wird nicht als Verweis geschrieben" {
-  # DIE UEBERSCHRIFT AUS DEM BEFUND. Die Ableitung loescht eine AUFZAEHLUNG von Zeichen;
-  # die Guillemets stehen nicht darin und blieben im Slug stehen, waehrend der
-  # Markdown-Anker sie fallen laesst. Ohne den Waechter entsteht daraus ein Verweis bei
-  # Exit 0 — und das Doku-Gate des Ziels faellt auf einer Datei, die dieses Werkzeug
-  # selbst geschrieben hat.
-  fixture "$TMP/anker"
-  sed -i 's@"LH-FA-01"@"RQ-8"@' "$TMP/anker/tools/harness/mein-e2e.sh"
-  printf '### RQ-8 — Zitat »Wert«\n\nText.\n' > "$TMP/anker/spec/lastenheft.md"
-  cd "$TMP/anker"
-  # Die Ausgangslage belegen: die Ueberschrift ist da, die Kennung loest also auf — der
-  # Fall misst NICHT den Zweig "keine Ueberschrift".
-  [ "$(grep -c '^### RQ-8 ' spec/lastenheft.md)" -eq 1 ]
-
-  # (a) DIE EMITTIERTE FASSUNG: Code-Span statt Verweis, Exit 0, und der Lauf sagt warum.
-  run env E2E_ABDECKUNG_QUELLE=tools/harness/mein-e2e.sh bash "$(emittiert)"
-  [ "$status" -eq 0 ]
-  [ "$(grep -c '^| `RQ-8` |' docs/user/e2e-abdeckung.md)" -eq 1 ]
-  [ "$(grep -c 'lastenheft.md#' docs/user/e2e-abdeckung.md)" -eq 0 ]
-  printf '%s' "$output" | grep -qF 'nicht sicher abzuleiten'
-  # Der Zaehler der Schluss-Zeile nennt sie: still ist der Fall nicht.
-  printf '%s' "$output" | grep -qF '1 ohne Verweis'
-
-  # (b) UNSERE FASSUNG ueber derselben Lage: Abbruch mit dem abgeleiteten Slug im Klartext.
-  sed -i 's@^echo "selbstpruefung: @echo "full-smoke: @' tools/harness/mein-e2e.sh
-  run bash "$ERZEUGER" tools/harness/mein-e2e.sh docs/user/unsere.md spec/lastenheft.md
-  [ "$status" -ne 0 ]
-  printf '%s' "$output" | grep -qF 'nicht sicher abzuleiten'
-  printf '%s' "$output" | grep -qF 'Link ohne Ziel'
-  [ ! -f docs/user/unsere.md ]
-}
-
-@test "anker: eine Ueberschrift mit Inline-Syntax bekommt keinen Verweis — eine ohne bekommt ihn" {
-  # DAS KRITERIUM SITZT AUF DER ROHZEILE, nicht auf dem Slug: der Anker entsteht aus dem
-  # GERENDERTEN Text, die Ableitung liest die Rohzeile. Wo Markdown beim Rendern etwas
-  # wegnimmt, geht sie mit LAUTER ERLAUBTEN ZEICHEN daneben — slug_sicher findet daran
-  # nichts.
-  #
-  # DIE KLASSEN SIND GEMESSEN, nicht vermutet (Ziel-Repo, je eine Ueberschrift, danach
-  # das Doku-Gate des Ziels ueber der geschriebenen Sicht): Link und Bild fallen mit
-  # `anchor-missing`, Code-Span, Hervorhebung und HTML nicht. Die beiden Richtungen
-  # stehen darum hier nebeneinander — HTML ist der PRUEFSTEIN gegen eine zu breite Regel.
+@test "anker (unsere Fassung): Inline-Syntax, unbekanntes Zeichen und Whitespace bekommen keinen Verweis — schlichte Ueberschriften bekommen ihn" {
+  # DREI LAGEN, IN DENEN DIE ROHZEILE NICHT IHR EIGENER GERENDERTER TEXT IST, und die
+  # vierte, in der sie es ist. Gemessen wurde die Klasse je Lage gegen `make docs-check`;
+  # gehalten wird sie hier und, fuer den realen Bestand, vom Doku-Gate ueber
+  # docs/user/e2e-abdeckung.md.
   mkdir -p "$TMP/roh/tools/harness" "$TMP/roh/spec" "$TMP/roh/docs/user"
   cd "$TMP/roh"
-  cat > tools/harness/mein-e2e.sh <<'EOF'
-#!/usr/bin/env bash
-e2e_abdeckung() { :; }
-echo "selbstpruefung: eins ..."
-e2e_abdeckung "RQ-1" "link" "eins"
-echo "selbstpruefung: zwei ..."
-e2e_abdeckung "RQ-2" "bild" "zwei"
-echo "selbstpruefung: drei ..."
-e2e_abdeckung "RQ-5" "html" "drei"
-echo "selbstpruefung: vier ..."
-e2e_abdeckung "RQ-6" "schlicht" "vier"
-EOF
   {
-    printf '### RQ-1 — [Zitat](../README.md) im Titel\n\nText.\n\n'
-    printf '### RQ-2 — ![Bild](../README.md) im Titel\n\nText.\n\n'
-    printf '### RQ-5 — HTML <sup>hoch</sup> im Titel\n\nText.\n\n'
-    printf '### RQ-6 — schlicht und ohne Syntax\n\nText.\n'
+    printf '### RQ-A — [Zitat](../README.md) im Titel\n\nText.\n\n'
+    printf '### RQ-B — Zitat »Wert«\n\nText.\n\n'
+    printf '### RQ-C — Titel mit Leerzeichen   \n\nText.\n\n'
+    printf '### RQ-D — schlicht und ohne Syntax\n\nText.\n'
   } > spec/lastenheft.md
-  # Die Ausgangslage belegen: alle vier Ueberschriften liegen, jede Kennung loest auf.
   [ "$(grep -c '^### RQ-' spec/lastenheft.md)" -eq 4 ]
 
-  run env E2E_ABDECKUNG_QUELLE=tools/harness/mein-e2e.sh bash "$(emittiert)"
+  # GRUEN: die zwei Lagen, die tragen — und RQ-C ist die, an der der Trim haengt.
+  cat > tools/harness/gruen.sh <<'EOF'
+#!/usr/bin/env bash
+e2e_abdeckung() { :; }
+echo "full-smoke: eins ..."
+e2e_abdeckung "RQ-C" "whitespace" "eins"
+echo "full-smoke: zwei ..."
+e2e_abdeckung "RQ-D" "schlicht" "zwei"
+EOF
+  run bash "$ERZEUGER" tools/harness/gruen.sh docs/user/gruen.md spec/lastenheft.md
   [ "$status" -eq 0 ]
-  # ROT-RICHTUNG: Link und Bild bekommen einen Code-Span, keinen Verweis.
-  [ "$(grep -c '^| `RQ-1` |' docs/user/e2e-abdeckung.md)" -eq 1 ]
-  [ "$(grep -c '^| `RQ-2` |' docs/user/e2e-abdeckung.md)" -eq 1 ]
-  printf '%s' "$output" | grep -qF 'Markdown-Inline-Syntax'
-  printf '%s' "$output" | grep -qF '2 ohne Verweis'
-  # GRUEN-RICHTUNG, und sie ist die Haelfte, die eine zu breite Regel kaputtmacht:
-  # HTML im Titel ist KEIN Treffer — das Doku-Gate leitet dort gleich ab.
-  grep -qF '[`RQ-5`](../../spec/lastenheft.md#rq-5--html-suphochsup-im-titel)' docs/user/e2e-abdeckung.md
-  grep -qF '[`RQ-6`](../../spec/lastenheft.md#rq-6--schlicht-und-ohne-syntax)' docs/user/e2e-abdeckung.md
+  grep -qF '(../../spec/lastenheft.md#rq-c--titel-mit-leerzeichen)' docs/user/gruen.md
+  grep -qF '(../../spec/lastenheft.md#rq-d--schlicht-und-ohne-syntax)' docs/user/gruen.md
 
-  # UNSERE FASSUNG bricht ueber derselben Ueberschrift ab, statt den Code-Span zu setzen.
-  sed -i 's@^echo "selbstpruefung: @echo "full-smoke: @' tools/harness/mein-e2e.sh
-  run bash "$ERZEUGER" tools/harness/mein-e2e.sh docs/user/unsere.md spec/lastenheft.md
-  [ "$status" -ne 0 ]
-  printf '%s' "$output" | grep -qF 'Markdown-Inline-Syntax'
-  printf '%s' "$output" | grep -qF 'Link ohne Ziel'
-  [ ! -f docs/user/unsere.md ]
+  # ROT, je Lage einzeln — und jede mit IHRER Begruendung, nicht irgendeiner.
+  for fall in A:Markdown-Inline-Syntax B:"nicht sicher abzuleiten"; do
+    k="RQ-${fall%%:*}"
+    grund="${fall#*:}"
+    cat > tools/harness/rot.sh <<EOF
+#!/usr/bin/env bash
+e2e_abdeckung() { :; }
+echo "full-smoke: eins ..."
+e2e_abdeckung "$k" "rot" "eins"
+EOF
+    run bash "$ERZEUGER" tools/harness/rot.sh docs/user/rot.md spec/lastenheft.md
+    [ "$status" -ne 0 ]
+    printf '%s' "$output" | grep -qF "$grund"
+    printf '%s' "$output" | grep -qF 'Link ohne Ziel'
+    [ ! -f docs/user/rot.md ]
+  done
 }

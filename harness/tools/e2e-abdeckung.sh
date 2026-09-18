@@ -142,14 +142,23 @@ titel_fuer() {
 # gleich lauten, trifft sie; wo Markdown beim Rendern etwas wegnimmt, geht sie daneben —
 # und zwar mit lauter erlaubten Zeichen, an denen slug_sicher nichts findet.
 #
-# GEMESSEN, NICHT VERMUTET (Ziel-Repo, je eine Ueberschrift pro Klasse, danach das
-# Doku-Gate des Ziels ueber der geschriebenen Sicht): Link `[t](u)` und Bild `![a](s)`
-# fallen mit `anchor-missing`; Code-Span, Hervorhebung (`*`/`**`) und HTML (`<sup>`)
-# leitet das Gate GLEICH ab und meldet nichts. Die zwei, die fallen, tragen beide eckige
-# Klammern — und die stehen in keiner Ueberschrift, die schlicht gemeint ist. Geprueft
-# wird darum auf '[' und ']': das trifft Inline-Link, Bild, Referenz- und Kurzform in
-# einem, ohne Markdown zu parsen. Eine eckige Klammer, die keine Verweis-Syntax ist,
-# kostet einen Verweis und behauptet nichts Falsches.
+# GEMESSEN, NICHT VERMUTET (je eine Ueberschrift pro Klasse, danach `make docs-check`
+# ueber der geschriebenen Sicht): Link `[t](u)` und Bild `![a](s)` fallen mit
+# `anchor-missing`; Code-Span, Hervorhebung (`*`/`**`) und HTML (`<sup>`) leitet das Gate
+# GLEICH ab und meldet nichts. Die zwei, die fallen, tragen beide eckige Klammern —
+# und die stehen in keiner Ueberschrift, die schlicht gemeint ist. Geprueft wird darum
+# auf '[' und ']': das trifft Inline-Link, Bild, Referenz- und Kurzform in einem, ohne
+# Markdown zu parsen.
+#
+# WAS DIESE NACHBILDUNG TRAEGT — UND WARUM SIE NUR HIER STEHT. Sie bildet das Verhalten
+# EINES Doku-Gates nach, und das ist nur zu verantworten, wo dieses Gate wirklich laeuft:
+# `make docs-check` prueft in `make gates` bei jedem Lauf die Verweise in
+# docs/user/e2e-abdeckung.md, dem Ausgang genau dieses Erzeugers. Eine Abweichung — ein
+# Sprung des Gates, eine Ueberschrift in einer Form, die hier nicht steht — wird dort rot
+# und nicht still. Die Nachbildung haengt damit an einem Traeger, nicht an dieser Liste.
+# Die EMITTIERTE Fassung hat diesen Traeger nicht: sie kennt das Doku-Gate des Ziels
+# nicht und bringt keines mit. Sie schreibt darum ueberhaupt keine Verweise, sondern
+# Code-Spans — die Begruendung steht in ihrem Kopf, und keine der Regeln hier reist mit.
 titel_rein() {
 	case "$1" in
 	*'['* | *']'*) return 1 ;;
@@ -161,6 +170,13 @@ titel_rein() {
 slug_fuer() {
 	local titel="$1"
 	[ -n "$titel" ] || return 0
+	# GETRIMMT WIE DAS GATE: fuehrender und folgender Whitespace der Rohzeile gehoert
+	# nicht zum gerenderten Text. Ohne den Trim ergibt eine Ueberschrift mit
+	# Leerzeichen am Ende einen Slug mit Bindestrichen am Ende — lauter erlaubte
+	# Zeichen, an denen slug_sicher nichts findet, und ein Anker, den die Zieldatei
+	# nicht traegt.
+	titel="${titel#"${titel%%[![:space:]]*}"}"
+	titel="${titel%"${titel##*[![:space:]]}"}"
 	printf '%s' "$titel" \
 		| tr '[:upper:]' '[:lower:]' \
 		| sed -e 's/Ä/ä/g' -e 's/Ö/ö/g' -e 's/Ü/ü/g' \
