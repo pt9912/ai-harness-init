@@ -1,8 +1,8 @@
 # d-check.mk — Doku-Referenz-Gate via d-check. Abgeleitet aus `d-check --print-mk`
-# (v0.76.3) und adaptiert (MR-010/MR-011/MR-012/MR-024/MR-027/MR-052/MR-061/MR-062/MR-064/MR-066):
+# (v0.77.0) und adaptiert (MR-010/MR-011/MR-012/MR-024/MR-027/MR-052/MR-061/MR-062/MR-064/MR-066):
 #   * das Befund-Gate heißt `docs-check` statt `doc-check` (Ziel-Form-/modul-13-
 #     Konsistenz; als EINZIGES Target in `make gates` + AGENTS/README behauptet);
-#   * DCHECK_DIGEST ist auf den v0.76.3-Release-Digest GEPINNT (das Tool liefert es
+#   * DCHECK_DIGEST ist auf den v0.77.0-Release-Digest GEPINNT (das Tool liefert es
 #     leer) — strikte Reproduzierbarkeit (LH-QA-02);
 #   * die advisory-Targets (`doc-trace`/`doc-doctor`/…) bleiben SONST verbatim vom Tool
 #     (`doc-help` ist der eine Handgriff, s. u.) und sind NICHT als Gate behauptet —
@@ -58,11 +58,13 @@
 # Handgriffe: Handgriff 5 aendert jedes Ziel seiner Menge, und je Ziel trennt die
 # unveraenderte `docker run`-Zeile die geaenderte Ziel-/Hilfetext-Zeile von der angehaengten
 # `@echo`-Zeile -- macht 2 Hunks je Ziel; die Menge ist `doc-tracked`, die Handgriffe 1-4
-# liefern je einen, zusammen 6.
+# liefern je einen, zusammen 6. Dieselbe Verschmelzung sieht die Pin-Zeile: laeuft das
+# Kommando gegen ein Fragment mit UNGLICHEM Tag, faellt die Zahl auf 5, weil Kopf- und
+# Pin-Block in einen Hunk ruecken.
 # Der Digest steht literal, weil `$(DCHECK_REF)` in einem Kommentar keine Shell-Variable ist
 # und wortwoertlich gefahren still `1` liefert:
 #   diff <(docker run --rm --network none \
-#     ghcr.io/pt9912/d-check@sha256:2f2f24601251d6b6c1dda13c4a847039a88abfd7e2de508d64180be97bfd2af0 \
+#     ghcr.io/pt9912/d-check@sha256:3f84502b09af65246fff38b1c3893130050e50581943a0434da95bf68091e337 \
 #     --print-mk) d-check.mk | grep -c '^[0-9]'                                    # 6
 #   1. dieser Adopter-Kopf (das Tool liefert ihn nicht),
 #   2. DCHECK_DIGEST pinnen (das Tool liefert es leer),
@@ -72,8 +74,8 @@
 #      Block hat (Hilfetext-Anhang UND Ausgabe-Zeile `.d-check.yml fuehrt fuer dieses Modul
 #      keinen eigenen Block, …` — der Generator liefert keins von beidem; MR-062). Die Menge
 #      leitet test/doc-block-marke-wiring.bats aus beiden Dateien ab.
-DCHECK_IMAGE ?= ghcr.io/pt9912/d-check:v0.76.3
-DCHECK_DIGEST ?= sha256:2f2f24601251d6b6c1dda13c4a847039a88abfd7e2de508d64180be97bfd2af0
+DCHECK_IMAGE ?= ghcr.io/pt9912/d-check:v0.77.0
+DCHECK_DIGEST ?= sha256:3f84502b09af65246fff38b1c3893130050e50581943a0434da95bf68091e337
 # TRACE_FLAGS: optionale Flags für die RTM-Targets (z. B. --json).
 TRACE_FLAGS ?=
 
