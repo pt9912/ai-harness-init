@@ -528,7 +528,7 @@ Baseline-Regelwerk `v6.9.0` · `modul-05-planning-harness.md` §Closure- und Ler
   damit **keine** Regel zu verkörpern und kein Ausgang neu zuzuweisen.
 - **Folge-Slices:** **keiner.** Kein Befund dieses Slice verschwände ohne einen: V-1 und V-2
   sind im Register gezählt, V-4 ist mit Grund abgelehnt, V-3 ist eine Adresse an eine andere
-  Rolle. Der einzige Posten mit Arbeitsfolge ist der Vertragstext von `LH-FA-12`, und den
+  Rolle. Der einzige Posten mit Arbeitsfolge ist der Vertragstext von [`LH-FA-12`](../../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren), und den
   schreibt der Architect, kein Slice-Plan.
 - **Risiken aus §6:** fünf, jedes mit genau **einem** Ausgang — Risiko 1, 3 und 5 *entfallen*
   mit Begründung, Risiko 2 und 4 *weiter offen* ins Register. Die Begründungen stehen

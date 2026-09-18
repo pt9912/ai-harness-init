@@ -1,6 +1,7 @@
 **Vorgang:** slice-das-ziel-erzeugt-seine-eigene-e2e-abdeckung
 **Fund:** Drei Stellen, eine Klasse. **(a)** Der Slice dreht die Spaltenfolge der
-Abdeckungs-Sicht und nimmt der ausgelieferten Fassung den Verweis-Zweig; `LH-FA-12`
+Abdeckungs-Sicht und nimmt der ausgelieferten Fassung den Verweis-Zweig;
+[`LH-FA-12`](../../../../../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren)
 §Benannte Grenze beschreibt den Code-Span weiter als **Ausnahme** für die nicht auflösende
 Kennung (*„Löst eine genannte Kennung in der Spec des Ziels nicht auf, steht sie als
 Code-Span ohne Verweis statt als Befund"*), während die emittierte Fassung ihn als **Regel**
