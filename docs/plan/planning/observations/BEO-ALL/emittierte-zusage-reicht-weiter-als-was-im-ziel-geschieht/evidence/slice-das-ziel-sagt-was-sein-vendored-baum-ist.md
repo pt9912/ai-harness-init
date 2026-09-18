@@ -1,0 +1,2 @@
+**Vorgang:** slice-das-ziel-sagt-was-sein-vendored-baum-ist
+**Fund:** Vier emittierte Aussagen reichten weiter als das, was der Emit im Ziel tut: ein Traeger aus dem Gelingens-Zweig als *Traeger kommt mit* (F-3), ein skip-if-present-Traeger ohne seine Bedingung (R3-1), eine Melde-Zusage ueber jeden stehengelassenen Pfad, die nur eine Teilmenge kennt (R4-1), und eine Zell-Adresse, die im Ziel unter einem anderen Namen liegt (V-1).

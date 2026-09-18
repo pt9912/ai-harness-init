@@ -1,4 +1,6 @@
-**Stand:** offen
+**Stand:** geplant — die Regel schreibt
+[`slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand`](../../../open/slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand.md),
+eine Datei in `open/`.
 
 Kein Modul aus `modules:` der [`.d-check.yml`](../../../../../../.d-check.yml) liest
 Kommentar-Prosa, und `make comment-claims` nimmt die

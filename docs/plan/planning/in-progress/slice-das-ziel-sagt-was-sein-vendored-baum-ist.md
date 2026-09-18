@@ -138,36 +138,36 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 **Drei Liefer-Punkte**, jeder mit dem Kommando, das ihn **rot** färbt
 ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 
-- [ ] **(1) Das Ziel nennt den Freshness-Audit als geschuldete Handlung** — mit dem gepinnten Tag,
+- [x] **(1) Das Ziel nennt den Freshness-Audit als geschuldete Handlung** — mit dem gepinnten Tag,
       der Release-**Listen**-Quelle und der Aussage, dass kein Sensor mitkommt, weil er `curl`
       bräuchte. **Rot:** `make full-smoke` — eine Marker-Prüfung über `tmprepo` **und**
       `tmprepo_doc`, die [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh)
       beide fährt; rot gesehen, indem die Zeile emit-seitig zurückgenommen wird.
-- [ ] **(2) Eine lebende Zeile weist den mitgelieferten Baum als Kurs-Inhalt aus**, dessen
+- [x] **(2) Eine lebende Zeile weist den mitgelieferten Baum als Kurs-Inhalt aus**, dessen
       `make`-Namen keine Ziele dieses Repos sind — als **Eigenschaft**, nicht als Namensliste.
       **Rot:** derselbe `make full-smoke`-Lauf für die Anwesenheit der Zeile. Dass sie eine
       Eigenschaft nennt, färbt **kein** Kommando rot; das ist ein Urteil beim Schreiben, und es
       steht hier, statt sich hinter (1) zu verstecken. Prüfbar bleibt die Gegenrichtung: die Zeile
       nennt keinen `make`-Namen, den das Ziel nicht führt.
-- [ ] **(3) Jeder Abschnitt des mitgelieferten Regelwerks trägt genau einen der drei Träger-Werte**
+- [x] **(3) Jeder Abschnitt des mitgelieferten Regelwerks trägt genau einen der drei Träger-Werte**
       — keine leere Zelle, und keine Zelle behauptet die Abwesenheit eines Trägers, den derselbe
       Lauf ablegt. **Rot (hermetisch):** `make test` — ein Go-Test hält die Einträge gegen die
       `*.md` des committeten `regelwerk/`-Verzeichnisses und gegen die Emit-Pfad-Listen; dazu je
       ein `test/mutations/`-Fall mit `# verify: test-go`. **Rot (real):** `make full-smoke` gegen
       den zur Laufzeit gelesenen Nenner des Ziels — nur dieser Lauf fängt den Fall, in dem das Ziel
       einen anderen Baum bekommt, als dieses Repo führt.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: berührt ist die emittierte Doku-Schicht selbst — sie **ist** der Gegenstand.
+- [x] Doku-Update: berührt ist die emittierte Doku-Schicht selbst — sie **ist** der Gegenstand.
       Der emittierte Datei-Satz bleibt dabei unverändert (DoD 3, Ziel-Pfad-Liste in
       [`internal/emit/templates_test.go`](../../../../internal/emit/templates_test.go)).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -236,18 +236,43 @@ dasteht.
 
 1. **DoD 3 sprengt die Review-Sitzung.** Die Inventur trägt einen Eintrag je Regelblock; der Nenner
    ist das `regelwerk/`-Verzeichnis. *Absehbar:* entfallen, wenn der Review den Slice in einer
-   Sitzung durchgeht; sonst eingetreten mit der Rückführung aus §4 als Ausgang.
+   Sitzung durchgeht; sonst eingetreten mit der Rückführung aus §4 als Ausgang. — **Ausgang:**
+   **entfallen** — die Rückführung `in-progress → next` wurde nicht gezogen, und jede der fünf
+   Runden liegt als je *ein* Report vor. Die Inventur blieb bei drei Liefer-Punkten und einer
+   Trägerdatei; kein Punkt wurde nachgeschoben. **Was die Sitzung dennoch kostete, gehört in den
+   Ausgang:** fünf Runden statt einer, davon drei über Nacharbeit an derselben Klasse (§7).
 2. **Eine Zelle verlangt einen Wert, den keine ADR setzt.** *Absehbar:* entfallen, wenn
    [`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md) und
    [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) jede offene
-   Zelle decken; sonst Übergabe an den Architect und Folge-Slice.
+   Zelle decken; sonst Übergabe an den Architect und Folge-Slice. — **Ausgang:** **entfallen** —
+   keine Zelle steht ohne Wert, und die zwei Zellen, die eine Entscheidung brauchen, sind gedeckt:
+   der Doku-Konsistenz-Block durch [`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md)
+   Festlegung 4 (*liegt bei, nicht verdrahtet*), die Erfassungs-Zelle durch
+   [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 7.
+   Ein Folge-Slice entstand daraus nicht. **Die Zelle blieb trotzdem angreifbar** — nicht wegen des
+   fehlenden Wertes, sondern wegen der fehlenden Bedingung (Review F-3 und R3-1); das ist die
+   Beobachtung dieses Slice, nicht dieses Risiko.
 3. **Der Marker hängt nur an einer Bootstrap-Variante**, und die zweite fällt still durch.
-   *Absehbar:* entfallen, wenn die Prüfung in beiden Varianten einmal rot gesehen wurde.
+   *Absehbar:* entfallen, wenn die Prüfung in beiden Varianten einmal rot gesehen wurde. —
+   **Ausgang:** **entfallen, mit benannter Einschränkung.** Beide Varianten laufen und melden
+   getrennt: `make full-smoke` gibt die Stufe zweimal aus, mit eigenem Etikett und eigenem Nenner
+   (`--lang go` und `sprachlos`), und die Funktion ist an jeder ihrer fünf Bedingungen
+   fail-closed — vom Verifier selbst gemessen. **Rot gesehen ist der zweite Aufruf nicht:** was ihn
+   deckt, ist `test/mutations/367` samt der gelesenen Ausgabe im Umsetzungs-Commit `d47c7c57` (der
+   erste Aufruf meldet Erfolg, der zweite fällt) — und die Struktur-Aussage des Verifikations-Laufs
+   über den `sed`-Anker. Ein Rot aus der Hand des Verifiers steht nicht dagegen; der Fall kostet je
+   Lauf einen vollen E2E. Die Einschränkung ist damit benannt statt weggelassen; ihre Klasse zählt
+   das Register (§7, `zusage-ohne-herstellbares-gegenbeispiel` ist es **nicht** — der Fall ist
+   herstellbar und wurde einmal hergestellt, nur nicht vom prüfenden Lauf wiederholt).
 4. **Die drei Aussagen finden in keinem vorhandenen Dokument Platz**, und der Datei-Satz wächst
    doch. *Absehbar:* entfallen, wenn die Ziel-Pfad-Liste unverändert bleibt; sonst ist es eine
    Vertragsfrage nach
    [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) und
-   damit ein anderer Vorgang.
+   damit ein anderer Vorgang. — **Ausgang:** **entfallen** — der Block wird in die vorhandene
+   emittierte `harness/conventions.md` injiziert; keine neue Ziel-Adresse im Diff, die
+   Schlüsselmenge der Fixture unverändert, die oberste Gliederungs-Ebene der emittierten Datei
+   unangetastet. [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)
+   bleibt unberührt; eine Vertragsfrage ist nicht entstanden.
 
 ## 7. Closure-Notiz
 
@@ -264,20 +289,189 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Gegenstand:** <übernommen von `slice-<Kennung>` | entfallen: <Grund>>
-  *(nur beim Ausgang ohne Arbeit; sonst Zeile löschen)*
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-kennung-a>, <slice-kennung-b>, <slice-kennung-c> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-<Kennung>.md` | `evidence/slice-<Kennung>.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10). Eingang
+sind die fünf Review-Reports und der Verifikations-Report, alle vom 2026-09-18. Maßstab sind
+Baseline-Regelwerk `v6.9.0` · `modul-05-planning-harness.md` §Closure- und Lerneintrag-Regeln und
+`modul-06-roadmap.md` §Das Beobachtungs-Register.
+
+- **Was hat funktioniert:**
+  - **Die drei Aussagen kosteten keinen neuen Pfad.** Sie werden emit-seitig in ein Dokument
+    injiziert, das das Ziel ohnehin bekommt; der vendored Baum bleibt byte-verifiziert und die
+    Ziel-Pfad-Liste unverändert. Damit hielt der Slice die drei Ausschlüsse aus §1, die genau das
+    verboten hätten — der Verifikations-Report hat jeden einzeln gegen den Diff gehalten.
+  - **Der Nenner wird zur Laufzeit gelesen, nicht notiert.** Die Inventur misst gegen das
+    `regelwerk/`-Verzeichnis **des Ziels**, und die Stufen-Meldung erzeugt ihre Zahl im Lauf
+    ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+    Setzung 2). Ein Ziel mit anderem Baum fällt damit auf, statt still eine fremde Zahl zu erben.
+  - **Zwei Wächter statt eines, in zwei Härten.** Hermetisch (Go-Test über der Deckung und über der
+    Abwesenheits-Richtung, dazu `test/baum-inventur.bats`) und real
+    (`make full-smoke` über beide Bootstrap-Varianten). Zwei Mutations-Fälle hat der Verifier selbst
+    rot gefahren und **die Meldung gelesen** — sie nennt in beiden Fällen den behaupteten Grund.
+  - **Fünf Review-Runden haben ihre Befunde weitergetragen:** F-1 bis F-6, R3-1 bis R3-4, R4-1 und
+    R4-2 behoben; jede Behebung prüfte die Folgerunde mit einem selbst gefahrenen Kommando nach.
+    Die Runden 4 und 5 haben dabei zweimal die **Zusage verengt**, statt den Slice über seine
+    Schicht hinauszutreiben — der Satz sagt am Ende, was der Lauf tut, und nicht mehr.
+- **Was ging anders als geplant:**
+  - **§3 deckt den berührten Datei-Satz in beide Richtungen nicht** (Verifikation V-2, Review F-7).
+    *Gebaut, nicht geplant:* [`test/baum-inventur.bats`](../../../../test/baum-inventur.bats) — der
+    Wächter, der die Nenner-Hälfte trägt — und die Regeneration von
+    [`docs/user/e2e-abdeckung.md`](../../../../docs/user/e2e-abdeckung.md). *Geplant, nicht gebaut:*
+    die Zeile `internal/emit/templates/` *(betroffene Vorlage)* mit Änderungs-Art **update**; unter
+    diesem Pfad berührt der Diff keine Datei. Der gewählte Weg — Injektion in die Zeichenkette des
+    Dokuments statt Änderung einer Vorlage — ist der richtige, und §1 schließt das Anfassen des
+    vendored Baums ausdrücklich aus; die Plan-Zeile hätte so nicht dastehen dürfen.
+    **§3 bleibt trotzdem, wie er ist:** Der Plan ist das Artefakt *vor* dem Code, und ein
+    nachgetragener Plan behauptete Voraussicht, die es nicht gab. Der Befund steht hier, die Klasse
+    ist unten gezählt.
+  - **Fünf Runden statt einer, und drei davon trugen dieselbe Klasse.** F-3, R3-1 und R4-1 sind
+    derselbe Fehler an drei Stellen: eine Aussage über das Ziel, die weiter reicht als der Zweig des
+    Emitters, den sie nicht nennt. Keine davon fand ein Gate; gefunden hat sie jedes Mal der
+    Abgleich der emittierten Zeile mit dem Code, der sie erzeugt. Das ist die Beobachtung dieses
+    Slice.
+  - **Zwei Fragen gehören einer anderen Rolle** und sind darum nicht hier beantwortet — Übergabe
+    unten.
+- **Entscheidungen zu den Befunden, die offen in die Closure kamen:**
+  - **V-1 (MEDIUM, behoben):** Die Roadmap-Zelle nannte eine Adresse, die im Ziel nicht existiert.
+    Geheilt in `63618fb6`, **und die Richtung hat seitdem einen Wächter** — das ist der Lerneintrag
+    unten. Die Klasse ist als eine der vier Instanzen der neuen Beobachtung gezählt: Sie ist
+    dieselbe Richtung wie F-3/R3-1/R4-1, nur an der Adresse statt an der Bedingung.
+  - **V-2 (LOW) / F-7 (LOW):** oben festgehalten; §3 bleibt. Klasse gezählt.
+  - **V-3 und V-4 (INFO):** kein Beleg, kein Eintrag. Beide sagen, dass der emittierte Text an
+    dieser Stelle **genauer** ist als der Wortlaut der DoD (`curl` ist der Träger *dieses* Repos,
+    nicht des Ziels) bzw. dass der Tag als Route statt als zweite eingefrorene Fassung dasteht —
+    die Anwendung von [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+    Setzung 2, nicht ihre Verletzung.
+  - **F-8 (INFO):** **Register**, [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md).
+    Der Grund, warum kein eigener Vorgang daraus wird: Die erzeugte Sicht führt **Stufen**, nicht
+    Zähne, und die neue Prüfung eröffnet keine — sie läuft in zweien
+    (`harness/tools/full-smoke.sh:363` und `:1784`). Was dabei stehen blieb, ist die *Deklaration*
+    dieser zwei Stufen: Ihr Inhalt ist gewachsen, ihre Kennungs-Zeile nicht. Genau diese Klasse
+    zählt der Eintrag; wer die Stufen-Deklaration das nächste Mal anfasst, zieht sie nach.
+  - **R2-2 (INFO):** **Register**, [`config-kommentar-nennt-anderen-bereich-als-der-eintrag`](../observations/BEO-ALL/config-kommentar-nennt-anderen-bereich-als-der-eintrag/observation.md)
+    — der Eintrag erreicht damit die Schwelle; sein Ausgang steht unten beim Lese-Schritt.
+  - **R5-1 (INFO):** **Register**, [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md).
+    Die Aussage ist heute wahr und vom Reviewer über alle drei skip-if-present-Gruppen nachgezählt;
+    was fehlt, ist der Wächter für ihre **Abgrenzung**. Kein eigener Vorgang: Der Sensor wäre ein
+    Go-Test über der Zahl der skip-if-present-Einträge mit echtem Melde-Kanal, und er gehört zu dem
+    Kanal-Ausbau, den §1 als Schicht-Abgrenzung ausschließt — solange der Kanal so bleibt, ist die
+    Aussage eine Messung mit gelesenem Beleg und keine Zusage ohne Deckung.
+- **Übergabe an den Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8)** — keine Bedingung dieses
+  Slice, beide aus dem Review:
+  - **R2-1 (LOW):** [`harness/conventions.md`](../../../../harness/conventions.md) §Adoptierte
+    Konventions-Quellen zählt *„Fünf Stellen"*, die den Baseline-Tag pinnen; mit `InventurMessTag`
+    ist eine sechste entstanden, fail-closed gekoppelt und in `make gates` laufend. Zu entscheiden
+    ist die Lesart (*Stellen, die Tag **samt** sha256 pinnen* — dann bleibt es bei fünf) und
+    gegebenenfalls der Nachtrag. Der Absatz gehört dem Architect; dieser Lauf fasst ihn nicht an.
+  - **Klassenfrage aus F-5:** Darf ein emittiertes **skip-if-present**-Dokument eine abgeleitete
+    Namensliste über einer konvergenten Quelle tragen, und woran hängt ihre Grenze? Hier ist sie
+    mit dem Mess-Tag beantwortet (`MR-033`-Form); ob das die Regel für die Klasse ist, ist eine
+    Entscheidung und keine Umsetzung.
+- **Steering-Loop-Eintrag:** **Neuer Sensor.** Jede Adresse, die eine Zelle der Träger-Inventur
+  nennt, wird gegen die Adressen gehalten, die der Emit wirklich schreibt — hermetisch in
+  `internal/emit/baumaussage_test.go` (`make test`), dazu die Nenner-Deckung in
+  [`test/baum-inventur.bats`](../../../../test/baum-inventur.bats) und die reale Gegenprobe in
+  [`make full-smoke`](../../../../harness/sensors/full-smoke.md) über beide Bootstrap-Varianten.
+  - **Ohne Anker-Feld.** Der Sensor entstand aus einem Verifikations-Befund (V-1), nicht aus dem
+    3×-Übertritt des Registers; `grundlagen-traceability.md` §Herkunfts-Anker bindet den Anker eng
+    an die Schwelle, und `liegt in` steht deshalb hier nicht.
+  - **Was er zieht:** Eine Zelle kann keine Adresse mehr nennen, die im Ziel nicht entsteht — die
+    Richtung, die vor ihm nur ein Leser fand, der die Tabelle Zeile für Zeile gegen eine Sonde hielt.
+  - **Was er nicht erreicht:** die **Bedingung** eines Trägers. Gelingens-Zweig, skip-if-present und
+    Melde-Kanal liest er nicht, und `make full-smoke` auch nicht — dort entsteht jedes Ziel im
+    Gelingens-Zweig und auf leerem Grund. Genau dort liegt die neue Beobachtung unten; sie ist
+    **gezählt, nicht verkörpert**.
+- **Beobachtungs-Register (`../observations/`):**
+  - Der Beleg heißt in jedem Fall `evidence/slice-das-ziel-sagt-was-sein-vendored-baum-ist.md`.
+    Den Zähler liefert `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/ | wc -l`, die
+    Zahl der Belege aus diesem Vorgang
+    `ls docs/plan/planning/observations/BEO-ALL/*/evidence/slice-das-ziel-sagt-was-sein-vendored-baum-ist.md | wc -l`.
+    Keine der Zahlen ist ein Erwartungswert.
+  - **Ein neues Verzeichnis**,
+    [`emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`](../observations/BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/observation.md).
+    Kein vorhandener Eintrag trägt die Klasse: Der nächste,
+    [`gate-zusage-in-prosa-reicht-weiter-als-ihr-pruefumfang`](../observations/BEO-ALL/gate-zusage-in-prosa-reicht-weiter-als-ihr-pruefumfang/observation.md),
+    misst eine Prosa-Zusage gegen den Prüfumfang eines **benannten Gates** — hier nennt keine
+    Aussage ein Gate, und der Maßstab ist der bedingte Zweig des Emitters. Die zwei weiteren
+    Abgrenzungen stehen im Eintrag selbst.
+
+  | Eintrag | Quelle | Zähler | Stand |
+  |---|---|---|---|
+  | [`emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`](../observations/BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/observation.md) | Review F-3, R3-1, R4-1; Verifikation V-1 | 1 | offen |
+  | [`config-kommentar-nennt-anderen-bereich-als-der-eintrag`](../observations/BEO-ALL/config-kommentar-nennt-anderen-bereich-als-der-eintrag/observation.md) | Runde 2, R2-2 | 3 | geplant |
+  | [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md) | Review F-5, F-7, F-8; Runde 5, R5-1; Verifikation V-2 | 29 | geplant |
+  | [`baseline-aussage-ohne-mess-tag`](../observations/BEO-ALL/baseline-aussage-ohne-mess-tag/observation.md) | Review F-5, zweite Hälfte | 5 | verkörpert |
+
+  **Lese-Schritt.** **Ein** Eintrag erreicht mit diesem Slice zum ersten Mal 3×:
+  `config-kommentar-nennt-anderen-bereich-als-der-eintrag`. Sein Ausgang ist **geplant**, mit
+  Kennung: [`slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand`](../open/slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand.md)
+  — er schreibt die Regel, dass die Begründung neben einem Ausnahme-Eintrag den ganzen Gegenstand
+  ihres Schlüssels nennt, und deckt beide Ebenen (diese Gate-Konfiguration und die emittierte).
+  *Verkörpert* war hier nicht zu setzen: Der Norm-Text gehört dem Architect
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8), und ein Ausgang, der auf einen ungeschriebenen Ort
+  zeigt, wäre die Form ohne die Sache.
+  **Die Nachbar-Adresse nimmt ihn nicht an:** `slice-ausnahmeliste-bekommt-ihre-berechtigungs-pruefung`
+  trägt [`ausnahmeliste-nur-auf-form-geprueft`](../observations/BEO-ALL/ausnahmeliste-nur-auf-form-geprueft/observation.md)
+  und entscheidet, **ob** ein Eintrag sein darf; hier geht es darum, **worüber** seine Begründung
+  spricht. Ihn dort einzuhängen hieße, einen Ausgang auf einen Träger zu setzen, der ihn nicht führt.
+  Repo-weit trägt danach kein Eintrag mit mindestens drei Belegen den Stand `offen` — in der Closure
+  gemessen, je Verzeichnis die Zahl der Belege gegen die erste Zeile der `state.md`.
+- **Folge-Slices:** **einer, neu** —
+  [`slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand`](../open/slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand.md)
+  (Die Begründung neben einem Ausnahme-Eintrag nennt den ganzen Gegenstand, den ihr Schlüssel stumm
+  schaltet) — eine Datei in `open/`, angelegt aus der vendored Vorlage. Er ist der Ausgang des
+  Lese-Schritts und trägt keinen der übrigen Befunde.
+  **Kein weiterer, und der nächstliegende ausdrücklich nicht:** Ein Melde-Kanal für `Templates`,
+  `RootReadme` und `DocGate` (der Rest aus R4-1) wäre eine **Verhaltens**-Änderung des Bootstraps
+  statt einer Aussage über ihn — §1 grenzt das als Schicht ab, und die Runde 5 hat diese
+  Abgrenzung eigens geprüft. Wer den Kanal will, eröffnet den Vorgang dafür; diese Closure
+  erfindet ihn nicht.
+- **Risiken aus §6:** vier, jedes mit genau **einem** Ausgang, alle *entfallen* — Risiko 3 mit der
+  Einschränkung, die dort ausgeschrieben steht (der zweite Varianten-Aufruf ist durch
+  `test/mutations/367` und die gelesene Ausgabe in `d47c7c57` gedeckt, nicht durch ein Rot aus der
+  Hand des prüfenden Laufs).
+- **Drei Paarungen** (Repo ohne Wellen-Betrieb, geprüft zur Closure):
+  - **Anker:** kein Gegenstand — der Steering-Loop-Eintrag trägt kein Feld `liegt in`, weil mit
+    diesem Slice keine 3×-Regel verkörpert wurde.
+  - **Folge-Slice:** `slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand` liegt als Datei im
+    Planning-Lifecycle (`open/`).
+  - **Register:** jede hier genannte Beobachtung existiert als Verzeichnis unter
+    `observations/BEO-ALL/`, und jedes dieser Verzeichnisse trägt mindestens einen Beleg.
+    Repo-weit trägt **ein** Verzeichnis keinen —
+    [`einstiegs-datei-weicht-von-der-pflichtgliederung-ab`](../observations/BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab/observation.md);
+    sein einziges Vorkommen steht dort unter *Benannt, nicht gezählt*, und die Lesart dazu
+    entscheidet `slice-beleglose-register-eintraege-bekommen-eine-lesart`. Benannte Lücke mit
+    Adresse, kein Fund dieser Closure.
+- **Trigger-Audit** (bei der Slice-Closure, weil dieses Repo ohne Wellen-Betrieb arbeitet):
+  - **Carveout:** [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) steht auf *Aktiv —
+    Auflösung fällig*, seine Adresse ist `slice-141-co-001-aufloesung-ist-vorher-entschieden` in
+    `next/`; [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) steht auf *Permanent*.
+    Dieser Slice berührt keine ihrer Bedingungen — er nennt `CO-002` nur als Vorbedingung einer
+    Inventur-Zelle, wie es [`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md) vorsieht.
+  - **Bootstrap-aware Gate:** keines in diesem Repo.
+  - **ADR:** [`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md) — kein Re-Evaluierungs-Trigger
+    eingetreten: Der Erfassungs-Block entsteht im Ziel nicht neu, die Hook-Oberfläche ist unberührt,
+    und die Frage hinter `CO-002` bleibt offen. [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
+    — ebenfalls keiner: kein Latenz-Befund, kein Adopter-Bestand mit Verbrauchs-Zählern, keine
+    geänderte Hook-Oberfläche; Festlegung 7 ist von zwei Zellen **zitiert**, nicht bewegt.
+    [`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md) — keiner: Das
+    Werkzeug entscheidet die Herkunft des Pfades weiterhin nicht, und die zwei Sonden dieses Laufs
+    sind leere Ziele, keine Stichprobe gebauter Ziele ohne fremden Träger. Der Slice **beschreibt**
+    die Klasse im Ziel, er wägt sie nicht neu.
+  - **Adaptions-Einträge, die dieser Slice fährt:**
+    [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
+    (der vendored Baum bleibt byte-verifiziert — `make baseline-verify` in beiden Sonden grün),
+    [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+    Setzung 2 (der Nenner zur Laufzeit),
+    [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
+    (der Mess-Tag des Inventur-Blocks, fail-closed an den gefetchten Stand gekoppelt) und
+    [`MR-053`](../../../../harness/conventions.md#mr-053--ein-eintrag-datiert-seine-werkzeug-aussage-statt-den-lebenden-pin-zu-führen)
+    (die `modul-14`-Zelle zeigt auf `d-check.mk`, statt eine zweite Fassung zu führen). Keiner ihrer
+    Auflösungs-Trigger ist eingetreten; die Reichweiten-Frage an
+    [`MR-053`](../../../../harness/conventions.md#mr-053--ein-eintrag-datiert-seine-werkzeug-aussage-statt-den-lebenden-pin-zu-führen)
+    steht als R2-1 beim Architect.
+    [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel):
+    nicht berührt — kein Modul geht neu ins emittierte Doc-Gate.
+- **Archiv:** keines. Dieses Repo archiviert bei einer Slice-Closure nicht.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
