@@ -232,8 +232,7 @@ sagt je Ebene, welche. Eine Messung an der einen Ebene ist keine Aussage über d
         in §7 Historie, `architecture.md` den Frische-Marker `**Letzte Änderung:**` im Kopf auf
         dem Datum der Änderung. Die Architektur-Sicht führt **keine** Historie — die Ziel-Form
         des Sicht-Stratums nennt dort allein dieses Feld
-        ([`modul-03-spec.md`](../../../../.harness/baseline/v6.9.0/regelwerk/modul-03-spec.md#ziel-form-architektur-sicht)
-        §Ziel-Form: Architektur-Sicht).
+        (`v6.9.0` · `regelwerk/modul-03-spec.md` §Ziel-Form: Architektur-Sicht).
       - **Rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6): Ein Link aus einem
         Spec-Stratum auf den ADR-Index färbt `matrix-forbidden`, und die Meldung nennt die neue
         Regel. Das Kommando steht im Umsetzungs-Commit.
@@ -452,7 +451,7 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   angelegt — sein Gegenstand ist eine Anforderungs- und Sensor-Entscheidung außerhalb dieses
   Vorgangs.
 
-- **Beobachtungs-Register (`../observations/`):** Drei Belege angelegt, alle unter `BEO-ALL`:
+- **Beobachtungs-Register (`../observations/`):** Vier Belege angelegt, alle unter `BEO-ALL`:
   `evidence/slice-spec-straten-zeigen-nicht-nach-aussen.md` in
   `neuer-waechter-ohne-mutations-fall` (die Finding-Klasse dieses Vorgangs, in seinen drei
   Review-Läufen unter demselben Namen geführt), in
@@ -462,7 +461,11 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/ | wc -l` gibt für die drei
   **10 · 3 · 2**. Am Eintrag `spec-aenderung-ohne-historie-zeile` ist der Geltungsbereich in
   `state.md` verengt; ein Beleg entsteht dort nicht, weil die Beobachtung in diesem Vorgang nicht
-  aufgetreten ist.
+  aufgetreten ist. Der vierte Beleg steht in
+  `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`: Der Move hat den Ruhe-Marker der
+  Roadmap und die deklarierte Deckungs-Zahl der `ignore-refs`-Ausnahme falsch gemacht, beide
+  bewacht, beide von Hand nachgezogen — der eine Ausgleich vor dem Nachziehen der Zahl, der andere
+  danach. `make slice-mv` nennt keinen davon.
 
 - **Folge-Slices:** `slice-151-spec-straten-haben-eine-schreibende-rolle` (die Adresse für die
   schreibende Rolle der Spec-Straten, Risiko 4) und
