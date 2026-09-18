@@ -20,4 +20,4 @@
 # Laufzeit des Voll-E2E ueber einem gebootstrappten Ziel; `make test` faehrt ihn nicht. Der
 # Preis des Modus steht im Kopf von harness/tools/mutate.sh.
 set -euo pipefail
-sed -i 's@^baum_aussagen_im_ziel "\$tmprepo_doc" "sprachlos"$@baum_aussagen_im_ziel "$tmprepo_doc/harness" "sprachlos"@' harness/tools/full-smoke.sh
+sed -i "s@^baum_aussagen_im_ziel \"\$tmprepo_doc\" \"sprachlos\"\$@baum_aussagen_im_ziel \"\$tmprepo_doc/harness\" \"sprachlos\"@" harness/tools/full-smoke.sh
