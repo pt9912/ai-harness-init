@@ -41,7 +41,7 @@ Commit-Träger ablegt; seine Zeile in §1 und §2 bleibt wörtlich, weil sie die
 und keine Datei-Liste führt. Eine Änderung an Vertrags-, Technik- oder Sicht-Stratum
 liefert dieser Slice nicht.
 
-**Verantwortlich:** — .
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-18.
 
