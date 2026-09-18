@@ -228,3 +228,34 @@ EOF
     grep -qF "$schluessel" "$(emittiert)"
   done
 }
+
+@test "emittiert: die mitgelieferte Selbstpruefung traegt eine Stufe mit ihrer Deklaration, und die Zelle bleibt ohne geratene Kennung" {
+  mkdir -p "$TMP/mit/tools/harness" "$TMP/mit/docs/user"
+  cp "$REPO/internal/emit/templates/enforce/selbstpruefung.sh" "$TMP/mit/tools/harness/"
+  cd "$TMP/mit"
+  # Die Ausgangslage belegen: genau eine Stufe, genau eine Deklaration.
+  [ "$(grep -cE "$STUFEN_MUSTER_ZIEL" tools/harness/selbstpruefung.sh)" -eq 1 ]
+  [ "$(grep -cE "$RUF_MUSTER" tools/harness/selbstpruefung.sh)" -eq 1 ]
+  run bash "$(emittiert)"
+  [ "$status" -eq 0 ]
+  [ "$(grep -c '^| .* | Stufe [0-9]' docs/user/e2e-abdeckung.md)" -eq 1 ]
+  # KEINE GERATENE KENNUNG: die Stufe kommt mit dem Werkzeug, die Anforderung gehoert dem
+  # Ziel. Ein aufloesender Verweis waere hier die teurere Luege — er saehe richtig aus.
+  [ "$(grep -c '^| — | Stufe 1 | `tools/harness/selbstpruefung.sh:' docs/user/e2e-abdeckung.md)" -eq 1 ]
+  [ "$(grep -c 'lastenheft.md#' docs/user/e2e-abdeckung.md)" -eq 0 ]
+  printf '%s' "$output" | grep -qF 'deklariert keine Kennung'
+}
+
+@test "emittiert: der Selbstpruefung ihre Deklaration nehmen faerbt den Erzeuger rot" {
+  mkdir -p "$TMP/ohnedekl/tools/harness" "$TMP/ohnedekl/docs/user"
+  grep -v '^e2e_abdeckung "' "$REPO/internal/emit/templates/enforce/selbstpruefung.sh" \
+    > "$TMP/ohnedekl/tools/harness/selbstpruefung.sh"
+  cd "$TMP/ohnedekl"
+  # Die Mutation belegen: die Stufe steht noch, der Aufruf ist weg.
+  [ "$(grep -cE "$STUFEN_MUSTER_ZIEL" tools/harness/selbstpruefung.sh)" -eq 1 ]
+  [ "$(grep -cE "$RUF_MUSTER" tools/harness/selbstpruefung.sh)" -eq 0 ]
+  run bash "$(emittiert)"
+  [ "$status" -eq 1 ]
+  printf '%s' "$output" | grep -q 'Stufe ohne Deklaration'
+  [ ! -f docs/user/e2e-abdeckung.md ]
+}

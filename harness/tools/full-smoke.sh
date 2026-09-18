@@ -34,10 +34,12 @@ HIER="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Die Menge, ueber der es gilt, ist mechanisch abgegrenzt — ein Abschnitt fuehrt seinen
 # eigenen Exit-Code:
 #   (A) grep -cE '\|\| [a-z_0-9]+=\$\?$' harness/tools/full-smoke.sh
-# Drei Formen darin fordern KEIN Bild an, und zwar nachpruefbar: der Trockenlauf (make -n
-# fuehrt kein Rezept aus), make span-clean (sein Rezept im Ziel ist rm -rf plus echo) und
-# der Hook-Wrapper (ein Shell-Skript, das das Host-Binaer startet und docker nicht nennt):
-#   (B) … | grep -cE ' -n |span-clean|bash "\$wrapper"'
+# Vier Formen darin fordern KEIN Bild an, und zwar nachpruefbar: der Trockenlauf (make -n
+# fuehrt kein Rezept aus), make span-clean (sein Rezept im Ziel ist rm -rf plus echo), der
+# Hook-Wrapper (ein Shell-Skript, das das Host-Binaer startet und docker nicht nennt) und
+# make e2e-abdeckung (sein Rezept im Ziel ist bash + coreutils ueber dem Quelltext eines
+# Skripts; es nennt docker nicht):
+#   (B) … | grep -cE ' -n |span-clean|bash "\$wrapper"|e2e-abdeckung'
 # Der Rest teilt sich in make-Stufen und Aufrufe des Werkzeugs:
 #   (C) … | grep -c 'tmpbin/ai-harness-init'
 # JEDE make-Stufe dieser Restmenge traegt eine Einordnung, dazu die zwei Werkzeug-Aufrufe,
@@ -2869,6 +2871,98 @@ grep -F -- 'selbstpruefung: GRUEN — die Message [' <<<"$selbst_out" | sed -n '
 grep -F -- 'Integritaet + Vollstaendigkeit' <<<"$marker_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
 grep -F -- 'ist nicht der Traeger, den der Aktivierungsschritt in Betrieb nimmt' <<<"$traeger_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
 
+echo "full-smoke: Das gebootstrappte Ziel erzeugt seine eigene E2E-Abdeckungs-Sicht ..."
+e2e_abdeckung "LH-FA-11 LH-FA-02" "Das Ziel erzeugt die Sicht ueber seine eigenen E2E-Stufen aus deren Deklarationen" "Der Erzeuger urteilt ueber den QUELLTEXT des E2E-Skripts"
+
+# Der Erzeuger urteilt ueber den QUELLTEXT des E2E-Skripts, nicht ueber den Zustand des
+# Baums — an der Gate-Kette faerbte er rot, weil eine Deklaration fehlt (LH-QA-01).
+if grep -qF -- 'e2e-abdeckung' <<<"$selbst_kette"; then
+	echo "full-smoke: FEHLER — sprachlos: die gates-Kette des Ziels nennt e2e-abdeckung — der Erzeuger liest Quelltext und urteilt nicht ueber den Zustand des Baums (LH-QA-01)." >&2
+	grep -nF -- 'e2e-abdeckung' <<<"$selbst_kette" >&2
+	exit 1
+fi
+
+abd_ziel="$tmprepo_selbst/docs/user/e2e-abdeckung.md"
+rm -f "$abd_ziel"
+abd_out=""
+abd_rc=0
+abd_out="$( make --no-print-directory -C "$tmprepo_selbst" e2e-abdeckung 2>&1 )" || abd_rc=$?
+printf '%s\n' "$abd_out"
+if [ "$abd_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — sprachlos: make e2e-abdeckung im Ziel ist NICHT Exit 0 (Exit $abd_rc) — das gebootstrappte Repo kann die Sicht ueber seine eigenen E2E-Stufen nicht erzeugen." >&2
+	exit 1
+fi
+if [ ! -f "$abd_ziel" ]; then
+	echo "full-smoke: FEHLER — sprachlos: $abd_ziel ist nicht entstanden — der Lauf meldet Erfolg ohne einen zu haben." >&2
+	exit 1
+fi
+# EINE ZEILE, NICHT NULL: die mitgelieferte Selbstpruefung traegt genau eine Stufe, und
+# ihre Deklaration steht in ihrer Region. Null Zeilen waeren eine Sicht ohne Aussage.
+abd_zeilen="$(grep -c '^| .* | Stufe [0-9]' "$abd_ziel" || true)"
+if [ "$abd_zeilen" -ne 1 ]; then
+	echo "full-smoke: FEHLER — sprachlos: die Sicht des Ziels traegt $abd_zeilen Zeilen statt einer — die emittierte Selbstpruefung fuehrt genau eine Stufe mit genau einer Deklaration (LH-FA-11)." >&2
+	cat "$abd_ziel" >&2
+	exit 1
+fi
+# DIE ZELLE TRAEGT DEN GEDANKENSTRICH, KEINE GERATENE KENNUNG: die Stufe kommt mit dem
+# Werkzeug, und welche Anforderung DIESES Repos sie traegt, weiss das Werkzeug nicht.
+# Der Backtick der Orts-Spalte steht als VARIABLE: woertlich im Muster liest shellcheck
+# ihn als Kommando-Substitution (SC2016), und eine Inline-Suppression ist nach
+# AGENTS.md §3.2 gesperrt.
+abd_bt='`'
+if ! grep -qE "^\| — \| Stufe 1 \| ${abd_bt}tools/harness/selbstpruefung\.sh:[0-9]+${abd_bt} \| " "$abd_ziel"; then
+	echo "full-smoke: FEHLER — sprachlos: die eine Zeile der Sicht nennt nicht den Gedankenstrich und den Ort in tools/harness/selbstpruefung.sh — eine geratene Kennung behauptete eine Zuordnung, die niemand getroffen hat (LH-FA-02)." >&2
+	cat "$abd_ziel" >&2
+	exit 1
+fi
+if ! grep -qF -- '| Spec-Kennung | Stufe | Ort | Kurzbeschreibung |' "$abd_ziel"; then
+	echo "full-smoke: FEHLER — sprachlos: die Sicht des Ziels traegt eine andere Spaltenfolge als die dieses Repos — zwei Fassungen desselben Erzeugers sind auseinandergelaufen." >&2
+	cat "$abd_ziel" >&2
+	exit 1
+fi
+# (b) SCHREIBEN NUR BEI ABWEICHUNG.
+abd2_rc=0
+abd2_out="$( make --no-print-directory -C "$tmprepo_selbst" e2e-abdeckung 2>&1 )" || abd2_rc=$?
+if [ "$abd2_rc" -ne 0 ] || ! grep -qF -- 'unveraendert' <<<"$abd2_out"; then
+	echo "full-smoke: FEHLER — sprachlos: der zweite Lauf meldet nicht 'unveraendert' (Exit $abd2_rc) — der Erzeuger schriebe dann bei jedem Lauf und machte aus einer stabilen Deklaration ein Lauf-Artefakt." >&2
+	printf '%s\n' "$abd2_out" >&2
+	exit 1
+fi
+# (c) DER ZIEL-MARKER LENKT, GEMESSEN AN DER DATEI, DIE ENTSTEHT — nicht an der Zeile
+# `Ziel=[…]`: dort steht die Variable, und sie stuende auch da, wenn die Vorlage sie
+# ignorierte.
+abdm_rc=0
+abdm_out="$( make --no-print-directory -C "$tmprepo_selbst" e2e-abdeckung E2E_ABDECKUNG_ZIEL=docs/user/abdeckung-anderswo.md 2>&1 )" || abdm_rc=$?
+if [ "$abdm_rc" -ne 0 ] || [ ! -f "$tmprepo_selbst/docs/user/abdeckung-anderswo.md" ]; then
+	echo "full-smoke: FEHLER — sprachlos: der gesetzte Marker E2E_ABDECKUNG_ZIEL hat den Lauf nicht gelenkt (Exit $abdm_rc) — er stand nur daneben (LH-FA-02)." >&2
+	printf '%s\n' "$abdm_out" >&2
+	exit 1
+fi
+rm -f "$tmprepo_selbst/docs/user/abdeckung-anderswo.md"
+# (d) DIE LUECKEN-RICHTUNG 'STUFE OHNE DEKLARATION' IM ZIEL. Der Stufe der emittierten
+# Selbstpruefung ihre Deklaration nehmen: der Erzeuger muss laut werden, sonst schriebe
+# er eine Sicht ohne die Stufe und behauptete Abdeckung, die niemand deklariert hat.
+cp "$tmprepo_selbst/tools/harness/selbstpruefung.sh" "$tmprepo_selbst/selbstpruefung.sicherung"
+grep -v '^e2e_abdeckung "' "$tmprepo_selbst/selbstpruefung.sicherung" >"$tmprepo_selbst/tools/harness/selbstpruefung.sh"
+abdr_rc=0
+abdr_out="$( make --no-print-directory -C "$tmprepo_selbst" e2e-abdeckung 2>&1 )" || abdr_rc=$?
+cp "$tmprepo_selbst/selbstpruefung.sicherung" "$tmprepo_selbst/tools/harness/selbstpruefung.sh"
+rm -f "$tmprepo_selbst/selbstpruefung.sicherung"
+if [ "$abdr_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — sprachlos: der Erzeuger laeuft ueber einer Stufe OHNE Deklaration gruen — eine Stufe faellt dann still aus der Sicht (LH-QA-01)." >&2
+	printf '%s\n' "$abdr_out" >&2
+	exit 1
+fi
+if ! grep -qF -- 'Stufe ohne Deklaration' <<<"$abdr_out"; then
+	echo "full-smoke: FEHLER — sprachlos: der Lauf ueber einer Stufe ohne Deklaration faellt (Exit $abdr_rc), nennt aber nicht die Luecken-Richtung als Grund — rot aus falschem Grund." >&2
+	printf '%s\n' "$abdr_out" >&2
+	exit 1
+fi
+
+echo "full-smoke: E2E-Abdeckungs-Sicht im Ziel (sprachlos): eine Zeile aus der einen Stufe der Selbstpruefung, und die Luecken-Richtung faerbt rot:"
+grep -E '^\| — \| Stufe 1 \|' "$abd_ziel" | sed -n '1p' | sed 's/^/full-smoke:   /'
+grep -F -- 'Stufe ohne Deklaration' <<<"$abdr_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
+
 echo "full-smoke: OK — frisch gebootstrapptes Repo faehrt make -j gates out-of-the-box gruen (lint/build/test + docs-check + baseline-verify via Fragment-Assembly, record-gates zuletzt), Exit 0 (LH-FA-01/LH-QA-01)."
 echo "full-smoke: OK — sprachloser Init (ohne --lang) faehrt make -j gates doc-only gruen (docs-check + baseline-verify, KEIN Code-Gate, kein Skelett) — --lang optional (slice-035/LH-FA-01)."
 echo "full-smoke: OK — Gate-Nachweis-Kreis geschlossen: record-gates stempelt, Hash stimmt, .harness/.gitignore greift (slice-031)."
@@ -2888,3 +2982,4 @@ echo "full-smoke: OK — LIFECYCLE-WECHSEL IM ZIEL: make slice-mv ist kein Gate 
 echo "full-smoke: OK — COMMIT-KENNUNG IM ZIEL: .githooks/commit-msg liegt ausfuehrbar im Ziel und reist mit dem Klon, seine Aktivierung nicht — make hooks-install setzt core.hooksPath und ist kein Gate (steht in keiner gates-Kette); danach faellt ein Commit OHNE Kennung mit der Meldung der Pruefung und entsteht nicht, einer MIT Kennung geht durch, und git commit --no-verify umgeht den Traeger; die Reichweite (Umgehung, Anwesenheit-statt-Wahrheit, die von keinem Commit-Waechter pruefbare zweite Haelfte der Zusage, die mitgenommenen Werkzeug-Commits) steht im Ziel geschrieben."
 echo "full-smoke: OK — KLASSE DES COMMIT-TRAEGERS (ADR-0054 Festlegung 1 und 3): der Traeger liegt skip-if-present und die Pruefung daneben konvergent — ein FREIER Pfad bekommt den Traeger des Werkzeugs (er liegt ausfuehrbar im Ziel und ruft die Pruefung daneben), ein BELEGTER bleibt Byte fuer Byte unberuehrt und der Lauf nennt Pfad und mitgelieferte Pruefung; die Drift der Pruefung heilte der naechste Lauf, die des Traegers blieb stehen."
 echo "full-smoke: OK — SELBSTPRUEFUNG IM ZIEL (LH-FA-11): das gebootstrappte Repo faehrt make selbstpruefung ueber einem frischen Klon seiner selbst — der Klon traegt keinen core.hooksPath, der Aktivierungsschritt setzt ihn, danach faellt ein Commit OHNE Kennung (HEAD unbewegt) und geht einer MIT Kennung durch, und das Gate-Kommando laeuft im Klon gruen; beide Ausgaenge stehen in EINEM Lauf, das Kommando haengt an keiner gates-Kette des Ziels, und ein am Aufruf gesetzter Marker lenkt den Gate-Schritt (LH-FA-02)."
+echo "full-smoke: OK — E2E-ABDECKUNG IM ZIEL: das gebootstrappte Repo erzeugt mit make e2e-abdeckung die Sicht ueber seine eigenen E2E-Stufen — eine Zeile aus der einen Stufe der mitgelieferten Selbstpruefung, mit dem Gedankenstrich statt einer geratenen Kennung und dem Ort in tools/harness/selbstpruefung.sh; das Kommando haengt an keiner gates-Kette des Ziels (LH-QA-01), der zweite Lauf meldet unveraendert, ein am Aufruf gesetzter Ziel-Marker lenkt die geschriebene Datei (LH-FA-02), und eine Stufe ohne Deklaration faerbt den Erzeuger rot."

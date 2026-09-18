@@ -38,6 +38,12 @@
 # zeigt: ein toter Link faerbt ein Doku-Gate rot und behauptet dabei eine Stelle, die es
 # nicht gibt; ein Code-Span behauptet nichts.
 #
+# UND EINE STUFE DARF NOCH KEINE KENNUNG HABEN. Steht im ersten Argument der Deklaration
+# allein ein Gedankenstrich, heisst das: dieses Repo fuehrt fuer diese Stufe (noch) keine
+# Anforderung. Die Zelle traegt dann denselben Gedankenstrich, und der Lauf nennt die
+# Stufe. Das ist der ehrliche Zustand einer mitgelieferten Stufe: eine geratene Kennung
+# loeste vielleicht auf und behauptete trotzdem eine Zuordnung, die niemand getroffen hat.
+#
 # DIESE DATEI IST KONVERGENT: jeder Lauf des Werkzeugs schreibt sie kanonisch neu, und
 # ein Edit an ihr ist danach still weg — deshalb sind die vier Stellen oben Variablen.
 # Gesetzt wird am Aufruf
@@ -84,6 +90,9 @@ ANFUEHRUNGEN="$(printf '\342\200\231\342\200\236\342\200\234\342\200\235')"
 # Ueberschrift. '-', '_' und alles ab 0x80 stehen nicht darin und bleiben stehen.
 SATZZEICHEN='!"#$%&'"'"'()*+,./:;<=>?@'
 BT='`'
+# Das erste Argument einer Deklaration, das KEINE Kennung ist, sondern die Auskunft,
+# dass dieses Repo fuer die Stufe (noch) keine Anforderung fuehrt.
+OHNE_KENNUNG='—'
 
 echo "e2e-abdeckung: Marker — Quelle=[$quelle] Praefix=[$E2E_ABDECKUNG_PRAEFIX] Spec=[$spec] Ziel=[$ziel]"
 
@@ -242,6 +251,17 @@ while IFS=: read -r start _rest; do
 			exit 1
 		fi
 		links=""
+		if [ "$kennungen" = "$OHNE_KENNUNG" ]; then
+			# KEINE ZUORDNUNG BEHAUPTEN, WO KEINE GETROFFEN IST: die Zelle traegt den
+			# Gedankenstrich der Deklaration weiter, und die Stufe steht trotzdem in der
+			# Sicht — sie laeuft ja.
+			links="$OHNE_KENNUNG"
+			ohne_link=$((ohne_link + 1))
+			echo "e2e-abdeckung: Hinweis — Stufe $stufen_gesamt deklariert keine Kennung ($quelle:$rufzeile); die Zelle traegt $OHNE_KENNUNG. Eine Anforderung dieses Repos traegt sie, sobald die Deklaration sie nennt."
+			printf '| %s | Stufe %s | %s%s:%s%s | %s |\n' "$links" "$stufen_gesamt" "$BT" "$quelle" "$ort" "$BT" "$kurz" >>"$tmp"
+			deklarationen=$((deklarationen + 1))
+			continue
+		fi
 		for k in $kennungen; do
 			slug="$(slug_fuer "$k")"
 			if [ -n "$links" ]; then

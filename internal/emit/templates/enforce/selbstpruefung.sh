@@ -91,6 +91,33 @@ fehler() {
 	exit 1
 }
 
+# e2e_abdeckung <Kennungen> <Kurzbeschreibung> <Anker> — DIE DEKLARATION EINER STUFE.
+#
+# WOZU: Der Aufruf gibt der Beziehung ANFORDERUNG -> STUFE einen Ort. Er steht IN der
+# Stufe, die er deklariert, und der Anker ist ein woertlicher Ausschnitt aus einer
+# ANDEREN Zeile dieser Stufe. Aus diesen drei Argumenten schreibt
+# `make e2e-abdeckung` (tools/harness/e2e-abdeckung.sh) die Abdeckungs-Sicht dieses
+# Repos.
+#
+# DIE STUFEN-MENGE IST EIN KRITERIUM, KEINE AUFZAEHLUNG: eine Zeile
+# `echo "selbstpruefung: … ..."` eroeffnet eine Stufe, ihre Region reicht bis zur
+# naechsten solchen. Ein eigenes E2E dieses Repos deklariert seine Stufen genauso und
+# nennt sich dem Erzeuger ueber die Marker E2E_ABDECKUNG_QUELLE und
+# E2E_ABDECKUNG_PRAEFIX.
+#
+# DAS ERSTE ARGUMENT IST HIER EIN GEDANKENSTRICH: diese Stufe kommt mit dem Werkzeug,
+# und welche Anforderung DIESES Repos sie traegt, weiss das Werkzeug nicht. Eine
+# geratene Kennung loeste vielleicht auf und behauptete trotzdem eine Zuordnung, die
+# niemand getroffen hat; der Gedankenstrich sagt, dass keine getroffen ist. Der
+# Erzeuger traegt ihn in die Zelle und nennt die Stufe.
+#
+# WAS DER AUFRUF PRUEFT: nichts. Die zwei Luecken-Richtungen — Stufe ohne Deklaration,
+# Deklaration ohne aufloesenden Anker — prueft der Erzeuger ueber dem TEXT dieser Datei,
+# und nur er sieht auch eine Stufe, die gar keinen Aufruf mehr fuehrt.
+e2e_abdeckung() {
+	echo "selbstpruefung: Abdeckung dieser Stufe — Kennung(en): $1 — $2 (Anker: $3)"
+}
+
 command -v git >/dev/null 2>&1 || fehler "git liegt nicht im Pfad — ohne git gibt es keinen Klon, auf dem ein Traeger etwas aufhalten koennte."
 
 quelle="$(git rev-parse --show-toplevel 2>/dev/null)" || fehler "dieses Verzeichnis liegt in keinem git-Repo — die Pruefung klont das Repo, in dem sie laeuft."
@@ -99,6 +126,9 @@ git -C "$quelle" rev-parse --verify --quiet 'HEAD^{commit}' >/dev/null 2>&1 ||
 
 echo "selbstpruefung: Marker — Traeger=[$SELBSTPRUEFUNG_TRAEGER] Aktivierung=[$SELBSTPRUEFUNG_AKTIVIERUNG] Gate=[$SELBSTPRUEFUNG_GATE] MsgRot=[$SELBSTPRUEFUNG_MSG_ROT] MsgGruen=[$SELBSTPRUEFUNG_MSG_GRUEN]"
 echo "selbstpruefung: Quelle=[$quelle] (der Klon traegt den Stand von HEAD)"
+
+echo "selbstpruefung: Traeger, Aktivierung, die zwei Commit-Ausgaenge und das Gate-Kommando im frischen Klon ..."
+e2e_abdeckung "—" "Der Traeger der Commit-Kennung greift im frischen Klon, und das Gate-Kommando laeuft dort gruen" "der frische Klon traegt lokal keinen core.hooksPath"
 
 arbeit="$(mktemp -d)"
 trap 'rm -rf "$arbeit"' EXIT

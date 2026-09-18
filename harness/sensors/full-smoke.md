@@ -27,6 +27,18 @@ Stufe ohne Deklaration. Was die Deklaration **nicht** prüft, ist die Zuordnung 
 ob die genannte Anforderung noch zu ihrer Stufe gehört, bleibt ein Urteil, das der
 Review hält — der Anker kann auflösen, während sich die Aussage der Stufe ändert.
 
+**Dieselbe Mechanik reist ins Ziel, und eine Stufe des Laufs misst sie dort.** Das
+gebootstrappte Repo bekommt `tools/harness/e2e-abdeckung.sh` und
+`harness/mk/e2e-abdeckung.mk` <!-- d-check:ignore (die Pfade entstehen erst im gebootstrappten Ziel) -->,
+und seine mitgelieferte Selbstprüfung trägt eine Stufe mit ihrer Deklaration — die Sicht
+des Ziels hat damit eine Zeile. Der Lauf fährt dort `make e2e-abdeckung`, hält die eine
+Zeile samt Spaltenfolge, verlangt vom zweiten Lauf *unverändert*, setzt den Ziel-Marker am
+Aufruf und nimmt der Stufe ihre Deklaration, bis der Erzeuger rot wird. Zwei Unterschiede
+zur Fassung dieses Repos stehen im Kopf der Vorlage: ihre vier ziel-spezifischen Stellen
+sind Marker ([`LH-FA-02`](../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)),
+und eine Kennung, die in der Spec des Ziels nicht auflöst, steht dort als Code-Span statt
+als toter Verweis.
+
 **Die committete Tabelle hat einen Halter.** Ein Fall in
 [`test/e2e-abdeckung.bats`](../../test/e2e-abdeckung.bats) fährt den Erzeuger über dem
 geprüften Skript und hält sein Ergebnis **byte-gleich** gegen
@@ -66,8 +78,9 @@ durchzuwinken, und das wäre die Schwellen-Senkung, die [`AGENTS.md`](../../AGEN
 ein ADR bindet.
 
 Abgedeckt ist **jeder Abschnitt, der ein Bild anfordern kann** — ein Kriterium, keine
-Fundstellen-Liste; die mechanische Abgrenzung, ihre Gleichung und die drei Formen, die
-nachprüfbar **kein** Bild anfordern (Trockenlauf, `make span-clean`, der Hook-Wrapper) stehen
+Fundstellen-Liste; die mechanische Abgrenzung, ihre Gleichung und die vier Formen, die
+nachprüfbar **kein** Bild anfordern (Trockenlauf, `make span-clean`, der Hook-Wrapper,
+`make e2e-abdeckung` im Ziel) stehen
 im Kopf von `harness/tools/full-smoke.sh`. Die Ausgangs-Muster, ihre Messung und ihre weiteren
 Grenzen (Paketquellen der C++-Kette fallen in den Baum-Fall) stehen im Kopf von
 `harness/tools/full-smoke-ausgang.sh`.
