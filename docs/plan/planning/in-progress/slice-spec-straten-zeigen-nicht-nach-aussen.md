@@ -22,7 +22,7 @@ Closure-Bedingung beobachtet mehr als diese DoD.
 [`MR-017`](../../../../harness/conventions.md#mr-017) (emittierte Prüfbereiche fail-closed).
 
 **Berührte Spec-Stellen:** `spezifikation.md §5` · `architecture.md §5`: Dort liegen die
-Fundstellen der Sonde (§1). Die Historie beider Dateien bekommt je eine Zeile.
+Fundstellen der Sonde (§1). Je Datei trägt die Änderung ihren eigenen Träger (DoD 1).
 
 **Verantwortlich:** Implementer (pt9912)
 
@@ -226,7 +226,12 @@ sagt je Ebene, welche. Eine Messung an der einen Ebene ist keine Aussage über d
         (Setzung des Auftraggebers vom 2026-09-16). Das gilt auch für die zwei `MR`-Nennungen in
         §5 und die Rückbezüge ohne Ziel aus F-5.
       - `make docs-check` meldet `0 Befund(e)`.
-      - Die Historie von `spezifikation.md` und `architecture.md` trägt je eine Zeile.
+      - Je Spec-Stratum trägt die Änderung ihren eigenen Träger: `spezifikation.md` eine Zeile
+        in §7 Historie, `architecture.md` den Frische-Marker `**Letzte Änderung:**` im Kopf auf
+        dem Datum der Änderung. Die Architektur-Sicht führt **keine** Historie — die Ziel-Form
+        des Sicht-Stratums nennt dort allein dieses Feld
+        ([`modul-03-spec.md`](../../../../.harness/baseline/v6.9.0/regelwerk/modul-03-spec.md#ziel-form-architektur-sicht)
+        §Ziel-Form: Architektur-Sicht).
       - **Rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6): Ein Link aus einem
         Spec-Stratum auf den ADR-Index färbt `matrix-forbidden`, und die Meldung nennt die neue
         Regel. Das Kommando steht im Umsetzungs-Commit.
@@ -286,7 +291,7 @@ Aussagen-Berührung steht hier gar nicht.
 |---|---|---|
 | [`.d-check.yml`](../../../../.d-check.yml) (`matrix:`) | update | Klasse `aussen`, Regel, `exempt-paths` samt Begründung an der Zeile, enge Pfad-Liste für `slice` (DoD 1) |
 | `spec/spezifikation.md` §5, §7 | update | zwölf Fundstellen, Rückbezüge aus F-5, Historie-Zeile |
-| `spec/architecture.md` §5, Historie | update | eine Fundstelle, Historie-Zeile |
+| `spec/architecture.md` §5, Kopf | update | eine Fundstelle, Frische-Marker `**Letzte Änderung:**` (DoD 1) |
 | `test/mutations/` | neu, falls der neue Wächter ein Test ist | Register `neuer-waechter-ohne-mutations-fall` (§8) |
 | [`harness/sensors/docs-check.md`](../../../../harness/sensors/docs-check.md) | update | Modul `matrix`: neue Klasse, die enge Pfad-Liste und ihre Grenze |
 
@@ -423,7 +428,7 @@ der `state.md`; keine der Zahlen ist ein Erwartungswert.
 | `zusage-ohne-herstellbares-gegenbeispiel` | 3 | verkörpert | DoD 1 bis 3 verlangen je ein rot gesehenes Gegenbeispiel |
 | `slice-plan-umfang-waechst-ueber-umsetzung-hinaus` | 3 | geplant, `slice-plan-umfang-bleibt-beim-gegenstand` | dieser Plan |
 | `umschrift-eines-zitats-aendert-die-aussage` | 1 | offen | §6, Risiko 1 |
-| `spec-aenderung-ohne-historie-zeile` | 1 | offen | DoD 1 verlangt die Historie-Zeile |
+| `spec-aenderung-ohne-historie-zeile` | 1 | offen | DoD 1 verlangt je Spec-Stratum seinen Träger |
 | `eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet` | 1 | offen | §6, Risiko 4 |
 | `senkungs-pruefung-misst-die-menge-statt-des-gate-verhaltens` | 1 | offen | §6, Risiko 5 |
 | `gate-zusage-in-prosa-reicht-weiter-als-ihr-pruefumfang` | 1 | offen | DoD-Update in `harness/sensors/docs-check.md` nennt die Grenze der Regel |
