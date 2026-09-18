@@ -216,7 +216,7 @@ sondern ein frisch gebootstrapptes Ziel. Liefer-Punkt 3 hat auf **beiden** Ebene
 sagt je Ebene, welche. Eine Messung an der einen Ebene ist keine Aussage über die andere
 (Register `emittierter-stand-laeuft-dem-dogfood-voraus`, §8).
 
-- [ ] **1 — Im Dogfood steht die Regel, der Block ist genau, und der Bestand hält beides.**
+- [x] **1 — Im Dogfood steht die Regel, der Block ist genau, und der Bestand hält beides.**
       - Der `matrix:`-Block in [`.d-check.yml`](../../../../.d-check.yml) trägt die drei Zeilen
         aus §1.
       - Die Klasse `slice` steht auf ausdrücklichen Pfaden statt auf `**` (§1, Schärfung 1). Dass
@@ -237,7 +237,7 @@ sagt je Ebene, welche. Eine Messung an der einen Ebene ist keine Aussage über d
       - **Rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6): Ein Link aus einem
         Spec-Stratum auf den ADR-Index färbt `matrix-forbidden`, und die Meldung nennt die neue
         Regel. Das Kommando steht im Umsetzungs-Commit.
-- [ ] **2 — Die emittierte Regel geht ins Ziel, und das Ziel startet grün.** Produkt-Ebene:
+- [x] **2 — Die emittierte Regel geht ins Ziel, und das Ziel startet grün.** Produkt-Ebene:
       geprüft wird am gebootstrappten Ziel, nicht an diesem Baum.
       - `internal/emit/templates/d-check.yml` trägt Klasse und Regel; der Kopfkommentar des
         `matrix`-Blocks nennt die neue Position.
@@ -252,7 +252,7 @@ sagt je Ebene, welche. Eine Messung an der einen Ebene ist keine Aussage über d
       - Eine Referenz aus einem Spec-Stratum des Ziels auf eine Datei außerhalb färbt das
         emittierte Gate rot, rot gesehen, im E2E oder als Fall in `make test`.
       - Ob die Historie im Ziel ausgenommen wird, ist gemessen und nicht angenommen.
-- [ ] **3 — Für bloße Kennungen ist entschieden, wer sie fängt, und die Entscheidung ist
+- [x] **3 — Für bloße Kennungen ist entschieden, wer sie fängt, und die Entscheidung ist
       belegt.** Möglich sind zwei Wege:
       - `token`-Klassen für `MR-` und `ADR-` (d-check `DC-FA-MTX-003`). Der Mechanismus ist am
         gepinnten Stand verfügbar und in der emittierten Hälfte in Gebrauch (§1, Schärfung 2).
@@ -268,17 +268,17 @@ sagt je Ebene, welche. Eine Messung an der einen Ebene ist keine Aussage über d
       Spec-Stratum ist **rot gesehen** — im Dogfood gegen diesen Baum, in der Emission gegen ein
       Ziel. Der Bestand liefert das Gegenbeispiel nicht (§1, Schärfung 2: heute `0`); es wird
       hergestellt.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: [`harness/sensors/docs-check.md`](../../../../harness/sensors/docs-check.md)
+- [x] Doku-Update: [`harness/sensors/docs-check.md`](../../../../harness/sensors/docs-check.md)
       nennt beim Modul `matrix` die neue Klasse und ihre Grenze.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -359,24 +359,45 @@ dasteht.
 1. **Eine Aussage trägt ohne ihre Quelle nicht.** Wer nur die Referenz entfernt, lässt einen
    Rückbezug ohne Ziel stehen (F-5), und wer umformuliert, kann die Aussage verschieben.
    *Absehbar:* entfallen, wenn je Fundstelle die Aussage ohne Quelle geprüft ist; sonst
-   eingetreten, mit Beleg in `umschrift-eines-zitats-aendert-die-aussage`. — **Ausgang:** <offen>
+   eingetreten, mit Beleg in `umschrift-eines-zitats-aendert-die-aussage`. — **Ausgang:**
+   **entfallen.** Die Gegenprobe aus DoD 1 ist gefahren: alle Fundstellen der Sonde sind aufgelöst,
+   die Rückbezugs-Formen ohne Ziel (`wie dort`, `siehe dort`, `ebenda`) treffen in beiden Straten
+   keine Zeile mehr, und jede Aussage, die ihre einzige Quelle im Verweis hatte, ist auf das
+   zurückgeschnitten, was sie ohne sie hält. Kein Beleg in
+   `umschrift-eines-zitats-aendert-die-aussage` — die Beobachtung ist nicht eingetreten.
 2. **Das emittierte Gate startet rot.** Nimmt das Template `Historie` nicht aus und trägt eine
    Spec-Vorlage dort eine Referenz nach außen, ist ein frisches Ziel rot. *Absehbar:* entfallen,
-   wenn `make full-smoke` grün ist; sonst eingetreten, Rückführung nach `open`. —
-   **Ausgang:** <offen>
+   wenn `make full-smoke` grün ist; sonst eingetreten, Rückführung nach `open`. — **Ausgang:**
+   **entfallen.** `make full-smoke` ist grün; Beleg ist der CI-Lauf über den gepushten Stamm
+   (`eea3a34c`): die Jobs `gates`, `smoke` und `full-smoke` grün, die zwei neuen Zähne im
+   `full-smoke`-Log belegt. Die Rückführung nach `open` ist damit nicht gezogen.
 3. **Zwei Slices greifen an dieselbe Datei:** Dieser und
    `slice-gliederung-der-instanzen-ohne-vorlagen-delta` ändern `spec/spezifikation.md`. Das ist
    hier genannt, nicht aufgelöst. *Absehbar:* entfallen, wenn beide nacheinander laufen. —
-   **Ausgang:** <offen>
+   **Ausgang: entfallen.** Der Nachbar liegt in `open/` und hat `in-progress/` nie betreten; die
+   zwei Vorgänge haben sich nicht überlappt, und `spec/spezifikation.md` trägt allein die
+   Änderungen dieses Slice. Der Nachbar bleibt die Adresse für die Gliederungs-Änderung.
 4. **Für die Spec-Straten benennt keine Quelle die schreibende Rolle.** Die Setzung vom
    2026-09-16 ließ die Verweise den Implementer im Sprung-Slice nachziehen; ob sie auch hier
    gilt, sagt sie nicht. `slice-151-spec-straten-haben-eine-schreibende-rolle` ist die Adresse.
    *Absehbar:* entfallen, wenn `slice-151` vorher schließt oder der Auftraggeber setzt; sonst
    eingetreten, mit Beleg in `eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`.
-   — **Ausgang:** <offen>
+   — **Ausgang: eingetreten.** `slice-151-spec-straten-haben-eine-schreibende-rolle` liegt in
+   `open/` (Kopf `Verantwortlich: — bis zur Priorisierung`), und eine Setzung des Auftraggebers für
+   diese zwei Straten steht nicht im Baum. Geschrieben sind sie trotzdem: der laufende Vorgang hat
+   die Frage durch Tun beantwortet. Beleg in
+   `eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet` — sein Zähler erreicht damit
+   3×, und der fünfte Re-Evaluierungs-Trigger von
+   [`ADR-0048`](../../adr/0048-eigentum-haengt-am-vorgang-nicht-an-der-datei.md) ist eingetreten
+   (Trigger-Audit in §7).
 5. **`exempt-paths` wird als Senkung gelesen, ohne ihr Gate-Verhalten zu messen.** *Absehbar:*
    entfallen durch Start-Frage (b) und die Gegenprobe aus §1; sonst eingetreten, mit Beleg in
-   `senkungs-pruefung-misst-die-menge-statt-des-gate-verhaltens`. — **Ausgang:** <offen>
+   `senkungs-pruefung-misst-die-menge-statt-des-gate-verhaltens`. — **Ausgang: entfallen.** Die
+   Start-Frage (b) ist als Architect-Verdikt beantwortet, und sie beantwortet sie über das
+   Gate-Verhalten statt über die Menge: für den ADR-Index und die Review-Reports *keine Senkung*,
+   für die weite `done/**`-Fassung *Senkung* — und die ist darum **nicht** geliefert. Die
+   Gegenprobe aus §1 misst zusätzlich, dass die Ausnahme aus der Status-Prüfung nimmt und nicht aus
+   den Regeln. Beleg in `senkungs-pruefung-misst-die-menge-statt-des-gate-verhaltens`.
 
 ## 7. Closure-Notiz
 
@@ -392,13 +413,83 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-- **Was hat funktioniert:** offen bis zur Closure.
-- **Was ging anders als geplant:** offen bis zur Closure.
-- **Steering-Loop-Eintrag:** offen bis zur Closure.
-- **Beobachtungs-Register (`../observations/`):** offen bis zur Closure.
-- **Folge-Slices:** offen bis zur Closure.
-- **Risiken aus §6:** offen bis zur Closure, jedes mit genau einem Ausgang.
-- **Drei Paarungen:** offen bis zur Closure.
+- **Was hat funktioniert:** Die zwei Ebenen sind getrennt geliefert und getrennt gemessen — Dogfood
+  am eigenen Baum, Emission am gebootstrappten Ziel über den `full-smoke`-Lauf —, und keine Aussage
+  reicht weiter als ihr Sensor. Die Vorab-Sonde aus §1 hat den Schnitt getragen: die Fundstellen
+  waren gezählt, bevor die erste geändert wurde, und der Umfang ist nicht gewachsen. Die drei
+  Start-Fragen lagen vor der ersten Zeile Code als Architect-Verdikt vor; die dritte hat den
+  Abweichungs-Abschnitt an seinem Ort gehalten, statt einen Umzug in den Adaptions-Block
+  anzunehmen, und die zweite hat die weite `done/**`-Fassung der Ausnahme rechtzeitig verworfen.
+
+- **Was ging anders als geplant:** Zwei Punkte, beide benannt statt stillschweigend absorbiert.
+  Erstens ist die Dogfood-Ausnahme für die Review-Reports als `docs/reviews/**` geliefert, während
+  §1 und DoD 1 `docs/reviews/*.md` nennen. Auf diesem Baum sind die zwei Formen deckungsgleich — es
+  gibt kein Unterverzeichnis —, die Lieferung erfüllt den Punkt also, ohne ihm etwas hinzuzufügen.
+  Der Plan-Wortlaut wird **nicht** nachgezogen: die weitere Form zur Deckung zu bringen hieße, eine
+  Ausnahme nachträglich zu weiten, und eine geweitete Ausnahme ist eine Senkung nach
+  [`AGENTS.md`](../../../../AGENTS.md) §3.5 — kein Plan-Text-Zug. Das Gate-Verhalten der Ausnahme
+  ist dabei gemessen: sie nimmt aus der **Status**-Prüfung, nicht aus den Regeln
+  ([`harness/sensors/docs-check.md`](../../../../harness/sensors/docs-check.md) nennt die Grenze
+  beim Modul `matrix`). Zweitens hat der **Trigger-Audit** einen fälligen ADR-Trigger ergeben:
+  Risiko 4 ist eingetreten, sein Beleg hebt den Zähler von
+  `eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet` auf 3×, und damit ist der
+  fünfte Re-Evaluierungs-Trigger von
+  [`ADR-0048`](../../adr/0048-eigentum-haengt-am-vorgang-nicht-an-der-datei.md) eingetreten. Er
+  verlangt, die Frage als allgemeine Regel zu entscheiden statt ein weiteres Mal je
+  Artefaktklasse — das ist eine ADR-Frage und damit Architect-Arbeit, kein Closure-Schritt.
+  Adresse: eine Folge-ADR zum Eigentum an Text-Artefakten, für die keine Quelle eine schreibende
+  Rolle nennt.
+
+- **Steering-Loop-Eintrag — benannte Spec-Lücke:** *Eine Prosa-Rückverweisung ohne Link und ohne
+  Kennung bleibt in jedem Stratum grün.* Die neue Decken-Regel fängt zwei Formen — den Link über
+  die Regel `spec-straten → aussen`, die bloße Kennung über `token:` bzw. `ids`. Ein Satz wie *„wie
+  in der Nutzer-Doku beschrieben"* trägt weder noch; er ist die Form, die dieser Vorgang
+  handwerklich geschlossen hat (die Rückbezüge sind umgeschrieben, nicht nur entlinkt), mechanisch
+  aber nicht. Ein Sensor darauf existiert nicht, und das Lastenheft führt keine Anforderung, die
+  ihn verlangt; das Baseline-Regelwerk nennt den Fall (`v6.9.0` ·
+  `regelwerk/modul-11-verification.md` §Fitness Function ohne Standard-Tool). **Weitergereicht,
+  nicht hier gelöst:** Ein Slice, der den Sensor baut, existiert nicht und wird hier nicht
+  angelegt — sein Gegenstand ist eine Anforderungs- und Sensor-Entscheidung außerhalb dieses
+  Vorgangs.
+
+- **Beobachtungs-Register (`../observations/`):** Drei Belege angelegt, alle unter `BEO-ALL`:
+  `evidence/slice-spec-straten-zeigen-nicht-nach-aussen.md` in
+  `neuer-waechter-ohne-mutations-fall` (die Finding-Klasse dieses Vorgangs, in seinen drei
+  Review-Läufen unter demselben Namen geführt), in
+  `eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet` (Risiko 4) und in
+  `senkungs-pruefung-misst-die-menge-statt-des-gate-verhaltens` (Risiko 5). Kein Zähler wird
+  gesetzt, er folgt aus den Dateien —
+  `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/ | wc -l` gibt für die drei
+  **10 · 3 · 2**. Am Eintrag `spec-aenderung-ohne-historie-zeile` ist der Geltungsbereich in
+  `state.md` verengt; ein Beleg entsteht dort nicht, weil die Beobachtung in diesem Vorgang nicht
+  aufgetreten ist.
+
+- **Folge-Slices:** `slice-151-spec-straten-haben-eine-schreibende-rolle` (die Adresse für die
+  schreibende Rolle der Spec-Straten, Risiko 4) und
+  `slice-gliederung-der-instanzen-ohne-vorlagen-delta` (die Gliederungs-Änderung an
+  `spec/spezifikation.md`) — beide sind Dateien in `open/`. **Kein neuer Folge-Slice entsteht aus
+  diesem Vorgang.** Die wiederkehrende Finding-Klasse `neuer-waechter-ohne-mutations-fall` hat eine
+  geschärfte Kategorie ergeben — *ein gelisteter Fall muss seine Zusicherung binden; nimmt man ihr
+  den Zahn, muss er grün werden* —, und ihr Zielort gehört nicht hierher: `AGENTS.md` §3.6 schreibt
+  der Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8), eine Zeile in
+  `.harness/skills/reviewer.md` die Rolle, die sie ausführt. Das ist Norm-Arbeit und wird hier
+  benannt, nicht ausgeführt.
+
+- **Risiken aus §6:** **1 entfallen · 2 entfallen · 3 entfallen · 4 eingetreten · 5 entfallen.**
+  Begründung und Beleg stehen an jedem Risiko; die vier entfallenen tragen keinen Register-Beleg,
+  der eingetretene (4) und der Befund zu 5 je einen.
+
+- **Drei Paarungen** (nach dem `git mv` gefahren): **Anker** — kein Eintrag dieses Vorgangs trägt
+  das Feld `liegt in`; der Lerneintrag ist eine benannte Spec-Lücke und damit ohne Feld verkörpert,
+  also kein Gegenstand der Paarung. **Folge-Slice** — beide genannten Kennungen liegen als Dateien
+  im Planning-Lifecycle (`open/`). **Register** — jeder genannte Eintrag existiert als Verzeichnis,
+  und jeder in diesem Vorgang entstandene Beleg steht in einem solchen. **Rot, und darum benannt:**
+  Zwei Einträge tragen kein nicht-leeres `evidence/` —
+  `einstiegs-datei-weicht-von-der-pflichtgliederung-ab` (Verzeichnis fehlt) und
+  `planungs-bestand-waechst-schneller-als-er-abgebaut-wird` (Verzeichnis leer). Beide liegen
+  **vor** diesem Vorgang und sind von ihm nicht verursacht; der erste nennt seinen Zustand selbst
+  (*„Ohne Beleg, in der Form, die die Ablage verlangt"*), und für beide ist
+  `slice-beleglose-register-eintraege-bekommen-eine-lesart` die Adresse — eine Datei in `open/`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
