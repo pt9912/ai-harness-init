@@ -71,8 +71,10 @@ func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 	if !strings.Contains(yml, `- {name: aussen, paths: ["**"]}`) ||
 		!strings.Contains(yml, "{from: spec-straten, to: aussen, allow: false}") {
 		t.Errorf("die Klasse aussen oder ihre Regel aus spec-straten fehlt:\n%s", yml)
-	}
-	if !strings.HasPrefix(letzteKlasse, "- {name: aussen,") {
+	} else if !strings.HasPrefix(letzteKlasse, "- {name: aussen,") {
+		// Ordnung setzt Vorhandensein voraus: fehlt die Klasse, sagt der Zweig darueber
+		// bereits alles, und eine zweite Meldung derselben Ursache naehme dieser hier
+		// ihren eigenen Fall in test/mutations/.
 		t.Errorf("aussen ist nicht die letzte Klasse in classes: (letzte ist %q)", letzteKlasse)
 	}
 	// Die blosse MR-Kennung faengt im Ziel kein ids-Muster: die emittierte
@@ -90,7 +92,7 @@ func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 		t.Errorf("matrix.exempt-paths traegt nicht genau [ADR-Index, Review-Reports]:\n%s", yml)
 	}
 	if strings.Contains(yml, "docs/plan/planning/done/welle-") {
-		t.Errorf("der Welle-Pfad steht irgendwo in der emittierten Konfiguration — an keiner Position darf er die Status-Deckung der Klasse welle zuruecknehmen:\n%s", yml)
+		t.Errorf("der Welle-Pfad wird in der emittierten Konfiguration genannt — auch eine Nennung im Kommentar faengt diese Zusicherung, und als Ausnahme naehme er der Klasse welle ihre Status-Deckung:\n%s", yml)
 	}
 	// exclude-sections traegt exakt [Geschichte] — weder leer (dann faengt
 	// {from: adr, to: slice} auch die legitime, im Zeilen-Marker deklarierte
