@@ -24,7 +24,7 @@ Closure-Bedingung beobachtet mehr als diese DoD.
 **Berührte Spec-Stellen:** `spezifikation.md §5` · `architecture.md §5`: Dort liegen die
 Fundstellen der Sonde (§1). Die Historie beider Dateien bekommt je eine Zeile.
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912)
 
 **Autor:** Planner. **Datum:** 2026-09-17.
 
@@ -49,8 +49,10 @@ dasteht.
 
 ### Die Sonde
 
-Gefahren an einer Wegwerf-Kopie des Arbeitsbaums am Stand `c6d2f731`, mit d-check `v0.74.1` (Messstand; den gepinnten Stand führt
-`d-check.mk`, und die Umsetzung misst an ihm neu). Die Änderung am `matrix:`-Block von
+Gefahren an einer Wegwerf-Kopie des Arbeitsbaums am Stand `c6d2f731`, mit d-check `v0.74.1` als
+Messstand. Der gepinnte Stand ist ein anderer —
+`grep -nE '^DCHECK_(IMAGE|DIGEST)' d-check.mk` nennt ihn, und die Umsetzung misst an ihm neu;
+jede Zahl dieses Abschnitts hängt am Messstand. Die Änderung am `matrix:`-Block von
 [`.d-check.yml`](../../../../.d-check.yml) umfasst drei Zeilen:
 
 ```yaml
@@ -62,6 +64,70 @@ Gefahren an einer Wegwerf-Kopie des Arbeitsbaums am Stand `c6d2f731`, mit d-chec
 **Warum `exempt-paths`:** Die Status-Prüfung trifft jede klassifizierte Quelle, unabhängig von
 den Regeln (d-check `DC-FA-MTX-001.a`). Ohne die Zeile meldeten der ADR-Index und eine
 Welle-Datei unter `done/` in der Sonde vom 2026-09-16 `matrix-inactive`.
+
+### Drei Schärfungen am selben Block — gemessen an diesem Baum
+
+Die Klasse `aussen: ["**"]` ist die **letzte** und fängt alles, was keine frühere Klasse fängt.
+Damit wird zweierlei tragend, was es vorher nicht war: die **Genauigkeit** der früheren Klassen
+(wer zu weit greift, nimmt der letzten ihre Dateien) und die **Fläche** der Status-Prüfung (ab
+jetzt ist jede Datei des Repos eine klassifizierte Quelle). Die drei Punkte unten folgen daraus
+und gehören in Liefer-Punkt 1 und 3, nicht in einen vierten.
+
+**1 — Die Klasse `slice` greift über den Lifecycle hinaus.** Sie steht auf
+`docs/plan/planning/**/slice-*.md`; `**` überquert `/`-Grenzen:
+
+```sh
+find docs/plan/planning -name 'slice-*.md' | wc -l                                            # 681
+find docs/plan/planning/{open,next,in-progress,done} -maxdepth 1 -name 'slice-*.md' | wc -l   # 281
+find docs/plan/planning/done -mindepth 2 -maxdepth 2 -name 'slice-*.md' | wc -l               #   0
+find docs/plan/planning -name 'slice-*.md' | grep -c '/observations/'                         # 400
+```
+
+**Keine Erwartungswerte** ([`MR-025`](../../../../harness/conventions.md#mr-025)) — alle vier
+wandern mit dem Baum. 400 der 681 Treffer liegen in
+`observations/<slug>/evidence/slice-<Kennung>.md`: Beleg-Dateien, deren Name die Kennung ihres
+Vorgangs **ist** ([`ADR-0034`](../../../../docs/plan/adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)),
+keine Slice-Pläne. Die enge Fassung nennt die vier Lifecycle-Verzeichnisse ausdrücklich und eine
+Ebene darunter für archivierte Stubs (`done/<welle-id>/slice-*.md`) — heute die leere Menge, s.
+die dritte Zeile oben, und darum eine Zusage nach vorn statt eines Befunds.
+
+**Sie hängt an einer Eigenschaft des Werkzeugs, die die Umsetzung misst:** dass `*` **keine**
+`/`-Grenze überquert, `**` aber schon. Trifft das am gepinnten Stand nicht zu, trägt die enge
+Fassung nicht, und das ist der Befund — nicht das Motiv, sie wegzulassen.
+
+**2 — Eine bloße Kennung im Fließtext fängt kein Link-Sensor.** Das Kennungs-Muster je Klasse
+(`token:`) ist am gepinnten Stand verfügbar und in der emittierten Hälfte in Gebrauch:
+
+```sh
+grep -c 'token:' internal/emit/templates/d-check.yml   # 2
+grep -c 'token:' .d-check.yml                          # 0
+```
+
+Im Bestand der drei Straten steht heute **keine** solche Kennung:
+
+```sh
+grep -nE '(MR-[0-9]{3}|ADR-[0-9]{4})' spec/lastenheft.md spec/spezifikation.md spec/architecture.md \
+  | grep -vcE '\]\('                                   # 0
+```
+
+Der Sensor zielt deshalb nicht auf den Bestand, sondern auf den Zustand **nach** Liefer-Punkt 1:
+Wer die Referenz entfernt und die Kennung als Text stehen lässt, erfüllt die Zeile „die Aussage
+bleibt, die Referenz fällt" dem Buchstaben nach, und eine Regel über Links sieht das Ergebnis
+nicht. Das ist die Lücke, die Liefer-Punkt 3 entscheidet.
+
+**3 — Der Grund einer Ausnahme steht an der Ausnahme.** Mit `aussen: ["**"]` wird auch
+`docs/reviews/*.md` klassifizierte Quelle. Ein Review-Report nennt den zum Laufzeitpunkt aktiven
+Stand dauerhaft — seine Einfrierung ist **zeitlich, nicht status-basiert**:
+
+```sh
+SUP=$(grep -l '^\*\*Status:\*\* \(Superseded\|Deprecated\)' docs/plan/adr/[0-9]*.md | sed 's|.*/||;s|\.md$||')
+for a in $SUP; do grep -rl "$a" docs/reviews/; done | sort -u | wc -l   # 5
+ls docs/reviews/*.md | wc -l                                           # 481
+```
+
+5 von 481 Reports nennen heute eine ADR, die inzwischen `Superseded` ist; **keine
+Erwartungswerte**, und die linke Zahl kann nur steigen, weil Supersession einseitig ist. Die
+Ausnahme trägt ihre Begründung als Kommentar an ihrer Zeile, nicht in einem Absatz daneben.
 
 **Ergebnis:** `d-check: 1522 Datei(en) geprüft, 13 Befund(e)`, alle `matrix-forbidden`
 (`grep -c matrix-forbidden <ausgabe>`), 12 in `spec/spezifikation.md` und 1 in
@@ -119,12 +185,24 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-Drei Liefer-Punkte auf zwei Ebenen: Dogfood (Konfiguration und Spec) und Emission (Template und
-seine Tests).
+**Zwei Ebenen, und sie fallen nicht zusammen.** Liefer-Punkt 1 ist **Dogfood** — die
+Konfiguration dieses Repos und sein Spec-Bestand; er wirkt hier und nirgends sonst.
+Liefer-Punkt 2 ist **Produkt-Arbeit** — was das Werkzeug in ein fremdes Repo schreibt
+([`LH-FA-03`](../../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7)); dort
+bindet zusätzlich [`MR-054`](../../../../harness/conventions.md#mr-054) und die fail-closed-Regel
+[`MR-017`](../../../../harness/conventions.md#mr-017), und sein Bestand ist nicht dieser Baum,
+sondern ein frisch gebootstrapptes Ziel. Liefer-Punkt 3 hat auf **beiden** Ebenen eine Hälfte und
+sagt je Ebene, welche. Eine Messung an der einen Ebene ist keine Aussage über die andere
+(Register `emittierter-stand-laeuft-dem-dogfood-voraus`, §8).
 
-- [ ] **1 — Im Dogfood steht die Regel, und der Bestand hält sie.**
+- [ ] **1 — Im Dogfood steht die Regel, der Block ist genau, und der Bestand hält beides.**
       - Der `matrix:`-Block in [`.d-check.yml`](../../../../.d-check.yml) trägt die drei Zeilen
         aus §1.
+      - Die Klasse `slice` steht auf ausdrücklichen Pfaden statt auf `**` (§1, Schärfung 1). Dass
+        `*` keine `/`-Grenze überquert, ist am gepinnten Stand **gemessen**, nicht angenommen;
+        die Differenz `681 → 281` ist nach der Änderung mit demselben Kommando nachgewiesen.
+      - `exempt-paths` nimmt `docs/reviews/*.md` auf und trägt seine Begründung als Kommentar an
+        der Zeile (§1, Schärfung 3).
       - Jede Fundstelle der Sonde ist aufgelöst: Die Aussage bleibt, die Referenz fällt
         (Setzung des Auftraggebers vom 2026-09-16). Das gilt auch für die zwei `MR`-Nennungen in
         §5 und die Rückbezüge ohne Ziel aus F-5.
@@ -133,22 +211,37 @@ seine Tests).
       - **Rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6): Ein Link aus einem
         Spec-Stratum auf den ADR-Index färbt `matrix-forbidden`, und die Meldung nennt die neue
         Regel. Das Kommando steht im Umsetzungs-Commit.
-- [ ] **2 — Die emittierte Regel geht ins Ziel, und das Ziel startet grün.**
+- [ ] **2 — Die emittierte Regel geht ins Ziel, und das Ziel startet grün.** Produkt-Ebene:
+      geprüft wird am gebootstrappten Ziel, nicht an diesem Baum.
       - `internal/emit/templates/d-check.yml` trägt Klasse und Regel; der Kopfkommentar des
         `matrix`-Blocks nennt die neue Position.
+      - Die Klassen `slice` und `welle` des Templates stehen beide auf `**`
+        (`grep -c '\*\*/\(slice\|welle\)-\*\.md' internal/emit/templates/d-check.yml` → `2`, die
+        Zeilen nennt `grep -n`). Ob die enge Fassung aus Schärfung 1 mitreist, ist **entschieden
+        und begründet**: Das Ziel bekommt denselben Planning-Lifecycle, aber seinen
+        Register-Bestand baut es selbst auf — eine Zusage über seine Dateizahl wäre hier nicht
+        messbar ([`MR-055`](../../../../harness/conventions.md#mr-055)). Die Entscheidung steht
+        als Kommentar im Template, nicht nur im Commit.
       - `make full-smoke` ist grün, das Ziel startet also grün.
       - Eine Referenz aus einem Spec-Stratum des Ziels auf eine Datei außerhalb färbt das
         emittierte Gate rot, rot gesehen, im E2E oder als Fall in `make test`.
       - Ob die Historie im Ziel ausgenommen wird, ist gemessen und nicht angenommen.
 - [ ] **3 — Für bloße Kennungen ist entschieden, wer sie fängt, und die Entscheidung ist
       belegt.** Möglich sind zwei Wege:
-      - `token`-Klassen für `MR-` und `ADR-` in beiden Konfigurationen (d-check `DC-FA-MTX-003`);
+      - `token`-Klassen für `MR-` und `ADR-` (d-check `DC-FA-MTX-003`). Der Mechanismus ist am
+        gepinnten Stand verfügbar und in der emittierten Hälfte in Gebrauch (§1, Schärfung 2).
+        Für `ADR-` trägt ihn die vorhandene Klasse `adr`. Für `MR-` gibt es heute **keine
+        Klasse**: Die Einträge liegen unter `harness/conventions/`, und `aussen: ["**"]` kann kein
+        Muster tragen, das nur sie meint — dieser Weg verlangt also eine eigene Klasse für den
+        Adaptions-Block, vor `aussen` einsortiert.
       - oder der Nachweis, dass `ids` mit `link-policy: always` die bloße Kennung in einem
         Spec-Stratum schon fängt. So begründet das emittierte Template heute, warum dort kein
         `ADR`-Token steht.
 
-      Auf beiden Ebenen gilt dasselbe: Eine bloße `MR-`-Kennung in einem Spec-Stratum ist rot
-      gesehen.
+      Auf beiden Ebenen gilt dasselbe, und je Ebene eigens: Eine bloße `MR-`-Kennung in einem
+      Spec-Stratum ist **rot gesehen** — im Dogfood gegen diesen Baum, in der Emission gegen ein
+      Ziel. Der Bestand liefert das Gegenbeispiel nicht (§1, Schärfung 2: heute `0`); es wird
+      hergestellt.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -168,16 +261,23 @@ Regeln dieser Sektion: Baseline-Regelwerk `grundlagen-bootstrap.md`
 nicht die Antwort: Pfad-Berührung ist nicht hinreichend, und eine
 Aussagen-Berührung steht hier gar nicht.
 
+**Dogfood-Ebene** — wirkt in diesem Repo:
+
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| [`.d-check.yml`](../../../../.d-check.yml) (`matrix:`) | update | Klasse, Regel, `exempt-paths` (DoD 1) |
+| [`.d-check.yml`](../../../../.d-check.yml) (`matrix:`) | update | Klasse `aussen`, Regel, `exempt-paths` samt Begründung an der Zeile, enge Pfad-Liste für `slice` (DoD 1) |
 | `spec/spezifikation.md` §5, §7 | update | zwölf Fundstellen, Rückbezüge aus F-5, Historie-Zeile |
 | `spec/architecture.md` §5, Historie | update | eine Fundstelle, Historie-Zeile |
-| `internal/emit/templates/d-check.yml` | update | Klasse, Regel, Kopfkommentar (DoD 2) |
-| Test der emittierten Konfiguration (die Datei nennt der Implementer) | update | [`LH-FA-03`](../../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7): Regel vorhanden, Gegenbeispiel rot |
-| `harness/tools/full-smoke.sh` | update, falls das Gegenbeispiel im E2E läuft | [`LH-FA-03`](../../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
 | `test/mutations/` | neu, falls der neue Wächter ein Test ist | Register `neuer-waechter-ohne-mutations-fall` (§8) |
-| [`harness/sensors/docs-check.md`](../../../../harness/sensors/docs-check.md) | update | Modul `matrix` |
+| [`harness/sensors/docs-check.md`](../../../../harness/sensors/docs-check.md) | update | Modul `matrix`: neue Klasse, die enge Pfad-Liste und ihre Grenze |
+
+**Produkt-Ebene** — wirkt in einem fremden Repo, Bestand ist dort und nicht hier:
+
+| Datei / Komponente | Änderungs-Art | Begründung |
+|---|---|---|
+| `internal/emit/templates/d-check.yml` | update | Klasse, Regel, Kopfkommentar; Entscheidung zur Pfad-Enge von `slice`/`welle` als Kommentar (DoD 2) |
+| Test der emittierten Konfiguration (die Datei nennt der Implementer) | update | [`LH-FA-03`](../../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7): Regel vorhanden, Gegenbeispiel rot |
+| `harness/tools/full-smoke.sh` | update, falls das Gegenbeispiel im E2E läuft | [`LH-FA-03`](../../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7): der Beleg wird am Ziel genommen, nicht an diesem Baum |
 
 ## 4. Trigger
 
@@ -191,8 +291,9 @@ Artefakt vor. Es beantwortet drei Fragen:
   **Regel**-Änderung in einem Modul, das im emittierten Gate schon aktiv ist, oder nur die
   Aufnahme eines Moduls?
 - **(b)** Ist `exempt-paths` eine Senkung nach [`AGENTS.md`](../../../../AGENTS.md) §3.5? Die
-  zwei Pfade sind heute keiner Klasse zugeordnet, die Ausnahme nimmt ihnen also nichts, was sie
-  heute tragen.
+  drei Pfade — ADR-Index, `done/**`, `docs/reviews/*.md` — sind heute keiner Klasse zugeordnet,
+  die Ausnahme nimmt ihnen also nichts, was sie heute tragen. Die Frage gilt für alle drei
+  zugleich; die Zahlen dazu stehen in §1, Schärfung 3.
 - **(c)** Bleibt der Abweichungs-Abschnitt in der Spezifikation, oder wandert er in den
   Adaptions-Block?
 
