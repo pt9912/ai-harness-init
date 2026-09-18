@@ -122,26 +122,10 @@ hat, ist unbewacht. Es prüft die **Haltbarkeit** vorhandener Zähne, nicht die
 **Entstehung** neuer — letztere hängt an der Pre-completion-Checkliste, die zu
 jeder Zusage die rot färbende Mutation verlangt.
 
-**Begründung (gemessen, nicht postuliert):** In slice-022a fünf Instanzen dieser
-Klasse, in slice-022b vier — gefunden von vier getrennten Rollen-Durchgängen.
 Ein Test, der eine Eigenschaft im Namen führt und ein Implementierungsdetail
 prüft, ist ein stilles Grün im Gate — §3.1 eine Ebene tiefer. Die Regel ist eine
 **Verschärfung** und braucht darum kein ADR (§3.5 gilt für Senkungen; vgl.
 [`MR-001`](harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) „Gate-*Anheben* → Steering-Loop").
-
-**Herkunft, mit Mess-Stand:** die adoptierte Baseline `v6.9.0` deckt **eine** der
-Zusage-Klassen, die der erste Satz dieser Sektion aufzählt — den DoD-Punkt, der
-sich auf einen Test beruft. Ausgeschrieben steht sie im Regelwerk, nicht im
-Briefing:
-`grep -c '^### Bewusstes Brechen für DoD-Testbehauptungen (Modul 11)$' .harness/baseline/v6.9.0/regelwerk/modul-11-verification.md`
-→ **1**, mit Zeigern aus zwei weiteren Modulen
-(`grep -rl 'Bewusstes Brechen' .harness/baseline/v6.9.0/regelwerk/ | wc -l` → **3**),
-während die AGENTS-Vorlage desselben Stands dazu keine Hard Rule führt
-(`grep -c 'rot gesehen' .harness/baseline/v6.9.0/templates/AGENTS.template.md` →
-**0**, Exit 1) — die Nummer hier ist eine Adresse und keine Entsprechung
-([`MR-026`](harness/conventions.md#mr-026--die-hard-rule-nummer-ist-eine-adresse-keine-baseline-entsprechung)).
-**Keine Erwartungswerte**, alle drei wandern mit dem Stand
-([`MR-033`](harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)).
 
 **Die Deckung ist in beide Richtungen unvollständig, und beide Richtungen stehen
 hier.** Diese Sektion trägt darüber hinaus die drei übrigen Zusage-Klassen, die
@@ -230,72 +214,24 @@ entscheidet der Slice, der die Tool-Ebene entscheidet — nicht diese Sektion.
 
 **Cutoff — ab Einführung, kein Nachrüsten; für die Quellen-Klausel oben ab dem
 2026-08-30.** Gebunden ist der Kommentar, der geschrieben oder geändert wird; der
-**Bestand ist kein Arbeitsauftrag dieser Sektion**. Er ist gemessen, nicht
-geschätzt — jede Zahl neben dem Kommando, das sie ausgibt, alle über denselben
-Pathspec, der den Geltungsbereich oben abbildet (Stand 2026-09-03):
-
-```sh
-PS=( '*.go' '*.sh' '*.awk' '*Makefile' 'Dockerfile' ':!internal/emit/templates' ':!.harness/baseline' )
-git ls-files "${PS[@]}" | wc -l                                                                   # 296 Dateien im Prüfbereich
-git grep -lE '^[[:space:]]*(#|//).*Review-Befund' -- "${PS[@]}" | wc -l                           #  38 mit Befund-Kennung
-git grep -cE '^[[:space:]]*(#|//).*Review-Befund' -- "${PS[@]}" | awk -F: '{s+=$NF} END{print s}' #  65 solche Zeilen
-git grep -lE '^[[:space:]]*(#|//).*slice-[0-9]'  -- "${PS[@]}" | wc -l                            # 126 mit Slice-Nummer
-git grep -cE '^[[:space:]]*(#|//).*slice-[0-9]'  -- "${PS[@]}" | awk -F: '{s+=$NF} END{print s}'  # 472 solche Zeilen
-git grep -lE '· seit (welle|slice)-'             -- "${PS[@]}" | wc -l                            #   1 in der zulässigen Feld-Form
-```
-
-**Keine Erwartungswerte** ([`MR-025`](harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-Setzung 2) — die Zahlen wandern mit dem Baum. **Zwei Klassen sind gezählt, zwei
-nicht:** Befund-Kennung und Slice-Nummer sind **Muster** und darum zählbar;
-Chronik-Prosa (*„Bis slice-026 hing …"*) und Lauf-Protokoll (*„hier und heute rot
-gesehen"*) sind **Urteile** — sie hier zu beziffern hieße, ein Muster als
-Kriterium auszugeben, das keines ist (§3.6). Die Zahlen oben sind darum kein
-Gesamtmaß des Bestands, sondern der Ausschnitt, den ein `grep` trifft. Schon
-dieser Ausschnitt trägt den Cutoff: ein Maßstab über ihn wäre dauerhaft rot und
-entwertete die Regel, statt sie zu tragen — dieselbe Begründung trägt ihn in
-[`MR-015`](harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler).
-Wer eine solche Zeile ohnehin anfasst, zieht sie nach; wer sie stehen lässt,
-bricht nichts. Ob der Bestand darüber hinaus geräumt wird, entscheidet ein
-Planungs-Schnitt und nicht diese Sektion: die vier Klassen überlappen in derselben
-Zeile, und wer eine Zeile räumt, muss sie lesen.
+**Bestand ist kein Arbeitsauftrag dieser Sektion**: Wer eine solche Zeile ohnehin
+anfasst, zieht sie nach; wer sie stehen lässt, bricht nichts. Ob der Bestand
+darüber hinaus geräumt wird, entscheidet ein Planungs-Schnitt und nicht diese
+Sektion: die vier Klassen überlappen in derselben Zeile, und wer eine Zeile
+räumt, muss sie lesen.
 
 **Für die Zustandsfeld-Hälfte gilt derselbe Cutoff, ab dem 2026-08-29.** Gebunden
-ist die Zelle, die geschrieben oder geändert wird. **Eine Zahl steht hier nicht:**
-ob eine Zelle Chronik trägt, ist wie die zwei Urteils-Klassen oben ein Urteil und
-kein Muster — ein `grep` zählte Zellen, nicht Verstöße, und gäbe damit ein Muster
-als Kriterium aus, das keines ist (§3.6).
+ist die Zelle, die geschrieben oder geändert wird.
 
-**Herkunft, mit Mess-Stand:** die adoptierte Baseline `v6.9.0` **führt** diese
-Regel — als Hard Rule mit derselben Nummer und demselben Titel im Hard-Rules-Block
-der AGENTS-Vorlage
-(`grep -c '^### 3\.7 Ein Kommentar beschreibt, was da ist$' .harness/baseline/v6.9.0/templates/AGENTS.template.md` → **1**)
-und ausgeschrieben in
-`grep -c '^### Was ein Kommentar trägt — Code, Konfiguration, Skripte$' .harness/baseline/v6.9.0/regelwerk/grundlagen-harness-dateien.md` → **1**.
-Was hier über die Vorlage hinaus steht — Geltungsbereich, Cutoff, Quellen-Klausel
-und die Wächter-Aussage —, ergänzt sie, ohne sie einzuschränken. Die
-Quellen-Klausel ist die **Anwendung** der Baseline-Hard-Rule *„Wer Herkunft nennt,
-nennt sie als **ein** auflösbares Feld … und nie als Absatz"*
-(`grep -c 'nennt sie als \*\*ein\*\* auflösbares Feld' .harness/baseline/v6.9.0/regelwerk/grundlagen-harness-dateien.md` → **1**):
-Sie nimmt keine der fünf Klassen weg und keine der dort genannten Anker-Formen.
-**Die Anker-Form der Begründung oben ist die des adoptierten Stands** — er
-schreibt die Slice-Kennung als Namen:
-`grep -c 'seit slice-<NNN>' .harness/baseline/v6.9.0/regelwerk/grundlagen-traceability.md` → **0**,
-`grep -c 'seit slice-<Kennung>' .harness/baseline/v6.9.0/regelwerk/grundlagen-traceability.md` → **3**;
-**keine Erwartungswerte**, beide wandern mit dem Stand. **Welche Form dieses Repo
-führt, deklariert** [`MR-057`](harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer):
+**Welche Kennungs-Form dieses Repo führt, deklariert**
+[`MR-057`](harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer):
 Namens-Form für jede neu vergebene Slice- und Welle-Kennung, der Bestand behält
-seine Nummer. Der Platzhalter `<Kennung>` oben trägt beides — eine Nummer ist
-eine Kennung. Die zwei Kommandos dieses Absatzes zitieren dagegen ein
-**Suchmuster** und bleiben wörtlich stehen: Ein geändertes Muster liefert eine
-andere Zahl. Die Deckung ist gegen den
-adoptierten Stand gehalten und in
-[`MR-031`](harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline)
-protokolliert — dort als datierte Messung an dem Stand, der sie auslöste.
+seine Nummer — der Platzhalter `<Kennung>` in den Anker-Formen oben trägt beides,
+eine Nummer ist eine Kennung.
 **Ein Wächter existiert nicht:** `make comment-claims` prüft, ob ein genannter
 Sensor existiert, nicht, worüber ein Kommentar spricht — und keine Markdown-Datei
 liegt in seinem Prüfbereich, also auch kein Zustandsfeld. Für die zwei zählbaren
-Klassen wäre ein Sensor **baubar** — die Kommandos oben sind er beinahe schon —,
-gebaut ist er nicht; ihn hier zu behaupten wäre §3.1 eine Ebene tiefer. Den
+Klassen wäre ein Sensor **baubar**, gebaut ist er nicht; ihn hier zu behaupten wäre §3.1 eine Ebene tiefer. Den
 zweiten Träger, den die Baseline nennt, führt
 [`MR-031`](harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline)
 als gemessene Lücke.
@@ -336,36 +272,21 @@ Lauf die Hard Rule und den Adaptions-Eintrag schreibt.
 **Richtig:** eigener Commit, nur Architect-Artefakte, Rolle in der Message — nachträglich an
 `git log --stat` ablesbar.
 
-**Warum diese zwei, und warum der Architect.** Für die ADR spricht das Regelwerk die Dreiteilung
-aus (`v3.5.2`, `modul-08-agentenrollen.md` §Rollen-Regeln: *„ADR-Änderung: Architect schreibt;
-Reviewer prüft auf Konsistenz; Implementer liest als Constraint"*). Der Adaptions-Block ist das
+**Warum diese zwei, und warum der Architect.** Der Adaptions-Block ist das
 Abweichungs-Register — ob eine Abweichung von der Baseline **besteht**, ist eine
-Architektur-Frage —, die Hard Rules sind derselbe Gegenstand eine Ebene allgemeiner; beide sind
-normativ wie eine ADR, nur ohne deren Immutabilität (§3.4). Dass für diese zwei **keine** Quelle
-eine schreibende Rolle benennt, ist über die adoptierte wie über die Ziel-Fassung gemessen:
-[ADR-0015](docs/plan/adr/0015-rollen-eigentum-an-norm-artefakten.md) §Kontext, die auch die
-Abwägung trägt. Die Regel füllt damit eine Lücke, statt von der Baseline abzuweichen — deshalb
-steht zu ihr **kein** Eintrag im Adaptions-Block
+Architektur-Frage —, die Hard Rules sind derselbe Gegenstand eine Ebene allgemeiner;
+beide sind normativ wie eine ADR, nur ohne deren Immutabilität (§3.4). Dass für
+diese zwei **keine** Quelle eine schreibende Rolle benennt, trägt
+[ADR-0015](docs/plan/adr/0015-rollen-eigentum-an-norm-artefakten.md) §Kontext, die
+auch die Abwägung führt. Die Regel füllt damit eine Lücke, statt von der Baseline
+abzuweichen — deshalb steht zu ihr **kein** Eintrag im Adaptions-Block
 ([`MR-000`](harness/conventions.md#mr-000--baseline-aussage)).
 
-**Begründung (gemessen, nicht postuliert):** In einem einzigen Slice wurde dreimal ein Artefakt
-einer anderen Rolle im Implementations-Kontext geändert, und die Klasse bewegte sich **aufwärts** —
-Definition of Done, Roadmap, repo-weite Norm. Der dritte Fall setzte eine Hard Rule samt
-Adaptions-Eintrag in Kraft, die eine Baseline-Abweichung behauptete, die es nicht gibt: gemessen
-gegen einen Tag, den zwei Releases überholt hatten, und ohne die Mess-Version zu nennen. Ein
-zweiter Kontext hätte das in einem `git show`-Lauf gefunden — genau die Eigenschaft, für die
-Rollen-Trennung existiert.
-
 **Cutoff — ab der Annahme von [ADR-0015](docs/plan/adr/0015-rollen-eigentum-an-norm-artefakten.md),
-kein Nachrüsten.** Gebunden ist die Norm-Änderung, die geschrieben wird; der **Bestand ist kein
-Arbeitsauftrag**, und ein Maßstab über ihn wäre dauerhaft rot — gemessen, nicht geschätzt
-(Stand 2026-08-09): `git log --format=%H -- AGENTS.md harness/conventions.md | wc -l` → **100**
-Commits berühren eine der zwei Dateien; davon tragen **89** daneben Dateien außerhalb der
-Architect-Artefakte (dieselbe Commit-Liste, je Commit
-`git show --pretty=format: --name-only "$c" | grep -cvE '^(AGENTS|harness/conventions)\.md$|^docs/plan/adr/|^$'`,
-gezählt die Nicht-Null-Ausgaben). **Obergrenze, mit Absicht:** `git` sieht Dateien, nicht
-Abschnitte — ein Commit, der allein §6 dieser Datei berührt, zählt mit, obwohl die Regel ihn nicht
-bindet.
+kein Nachrüsten.** Gebunden ist die Norm-Änderung, die geschrieben wird; der **Bestand
+ist kein Arbeitsauftrag**, und ein Maßstab über ihn wäre dauerhaft rot. **Obergrenze,
+mit Absicht:** `git` sieht Dateien, nicht Abschnitte — ein Commit, der allein §6 dieser
+Datei berührt, zählt mit, obwohl die Regel ihn nicht bindet.
 
 **Geltungsbereich: dieses Repo.** Was ein **emittiertes** Repo an Eigentums-Aussagen bekommt,
 entscheidet der Slice, der die Tool-Ebene entscheidet — nicht diese Sektion.
@@ -434,27 +355,11 @@ Commit setzen, der die Arbeit des Slice trägt.
 **Richtig:** die Arbeit committen, an Review und Verifikation übergeben, den Abschluss in frischem
 Kontext schreiben.
 
-**Warum der Planner — und was diese Sektion hinzufügt.** Die Zuweisung ist nicht neu: die
-adoptierte Baseline führt den Schritt in der Rollen-Sequenz für einen Slice als
-`P->>P: Closure in done/ + Lerneintrag`
-(`grep -c 'P->>P: Closure in done/ + Lerneintrag' .harness/baseline/v6.9.0/regelwerk/modul-08-agentenrollen.md`
-→ **1**). Neu ist der **Commit-Zuschnitt**, den §3.8 für die zwei Architect-Artefakte führt und
-den für den Abschluss keine Quelle führt — ohne ihn ist die Rollen-Grenze im Nachhinein an nichts
-ablesbar. Die Sektion füllt damit eine Lücke, statt von der Baseline abzuweichen; deshalb steht zu
-ihr **kein** Eintrag im Adaptions-Block ([`MR-000`](harness/conventions.md#mr-000--baseline-aussage)).
-
-**Begründung (gemessen, nicht postuliert):** Der Zähler des Beobachtungs-Registers steht bei
-**4** —
-
-```sh
-ls docs/plan/planning/observations/BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext/evidence/*.md | wc -l
-```
-
-**kein Erwartungswert**, er wandert mit dem Register. In dreien der vier Fälle schrieb derselbe
-Kontext, der die Arbeit tat, den Abschluss dazu; in einem davon eine ab Merge unveränderliche
-Register-Beleg-Datei mit einer Zahl, die ihre eigene Fundmenge halbiert, und in einem anderen die
-Umschrift des eigenen Abnahmekriteriums. Der Schaden ist nicht die Rollen-Formalie, sondern der
-fehlende zweite Blick vor einem Merge, der Artefakte einfriert.
+**Warum der Planner — und was diese Sektion hinzufügt.** Neu ist der **Commit-Zuschnitt**,
+den §3.8 für die zwei Architect-Artefakte führt und den für den Abschluss keine Quelle
+führt — ohne ihn ist die Rollen-Grenze im Nachhinein an nichts ablesbar. Die Sektion
+füllt damit eine Lücke, statt von der Baseline abzuweichen; deshalb steht zu ihr **kein**
+Eintrag im Adaptions-Block ([`MR-000`](harness/conventions.md#mr-000--baseline-aussage)).
 
 **Cutoff — ab dieser Sektion, kein Nachrüsten.** Gebunden ist der Abschluss, der geschrieben wird;
 der Bestand ist kein Arbeitsauftrag. **Geltungsbereich: dieses Repo.** Was ein emittiertes Repo an
@@ -495,19 +400,6 @@ nennt, braucht deshalb keine fünfte Runde.
 **Was sie nicht erweitert.** Keine der Aufnahme-Grenzen für die `ignore-refs`-Paare in
 [`.d-check.yml`](.d-check.yml): jedes weitere Paar bleibt eine Senkung nach §3.5 mit eigener ADR.
 Und in **änderbaren** Artefakten bleibt der Pfad der richtige Zeiger; der Move zieht ihn nach.
-
-**Begründung (gemessen, nicht postuliert):** Vier namentlich geschnittene Referenz-Ventile stehen
-heute in der Gate-Config, jedes mit eigener ADR, jedes aus demselben Generator; der Zähler des
-Beobachtungs-Registers steht bei **3** —
-
-```sh
-grep -c '^  - in: ' .d-check.yml                                                                              # 4
-ls docs/plan/planning/observations/BEO-ALL/vorgeschriebener-ortswechsel-macht-adresse-tot/evidence/*.md | wc -l  # 3
-```
-
-**Keine Erwartungswerte** — beide Zahlen wandern. Teuer ist nicht der Befund, sondern die Runde,
-die er auslöst: eine eigene Entscheidung je Mitglied, weil die Regel den Baum nannte statt der
-Eigenschaft.
 
 **Cutoff — ab dieser Sektion, kein Nachrüsten.** Gebunden ist die Adresse, die geschrieben wird,
 und der Move, der geplant wird; der Bestand ist kein Arbeitsauftrag, und er ist ohnehin
