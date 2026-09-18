@@ -166,6 +166,25 @@ vom 2026-09-16 noch zählte, hat der Sprung-Slice schon entfernt.
   erlaubt. *Anderer Vorgang*, so beauftragt.
 - **Kein Referenz-Ventil (`ignore-refs`) für eine Fundstelle.** *Anderer Vorgang:* Jedes Paar
   ist eine Senkung mit eigener ADR ([`AGENTS.md`](../../../../AGENTS.md) §3.5 und §3.11).
+- **Keine Verbots-Regel, deren Quelle ein Planungs-Artefakt ist.** Der Slice fügt genau **eine**
+  Regel hinzu, und ihre Quelle ist `spec-straten`; `slice`, `welle` und die Beleg-Dateien des
+  Registers bleiben Quellen ohne Regel. *Schicht-Abgrenzung:* Die Achse dieses Slice ist die
+  **Spec**, nicht der Planungs-Baum. Eine Regel wie *„ein Slice nennt keinen Review-Report"*
+  läge auf der anderen Achse und träfe hier den Normalfall statt des Fehlers — gemessen:
+
+  ```sh
+  grep -rlE 'reviews/[0-9]{4}-[0-9]{2}-[0-9]{2}-[^ )`]*\.md' docs/plan/planning --include='slice-*.md' \
+    | grep -vc '/observations/'   # 73
+  grep -rlE 'reviews/[0-9]{4}-[0-9]{2}-[0-9]{2}-[^ )`]*\.md' docs/plan/planning --include='welle-*.md' | wc -l   # 4
+  ```
+
+  **Keine Erwartungswerte.** Gezählt ist die **Fläche**, nicht das Urteil: Ob ein solcher Verweis
+  das Selbst-Zitat des eigenen Reports ist, entscheidet der Dateiname nicht — er trägt Datum,
+  Kennung und Rollen-Suffix in Formen, die sich nicht durchgängig auf den Plan-Namen abbilden
+  lassen. Eine Zahl für „davon Selbst-Zitat" stünde hier als Muster, das kein Kriterium ist
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Die Klassen-Enge aus §1, Schärfung 1 ist von
+  diesem Ausschluss unberührt: Sie ist **Abgrenzung** — welche Datei welcher Klasse gehört —,
+  kein Verbot.
 
 **Keine Mindestzahl.** Ein Slice mit *einem* echten Ausschluss ist besser als
 einer mit vier erfundenen; die vier Klassen sind ein Suchraster, keine
