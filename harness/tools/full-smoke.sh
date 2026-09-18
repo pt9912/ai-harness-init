@@ -138,26 +138,6 @@ chmod 755 "$tmprepo_cpphex"
 # 0700-Mount nicht traversieren. Ein echtes Adopter-Git-Repo hat 0755.
 chmod 755 "$tmprepo"
 
-# DIE ROLLEN-TYPEN LIEGEN IM ZIEL (LH-FA-10 / ADR-0022 Festlegung 3). Sechs Dateien
-# unter .claude/agents/, je eine kanonische Rolle, und jede fuehrt ihren Rollen-Namen im
-# Frontmatter — dieser Name ist der Vertrag zur Rollen-Achse: die Erfassung besetzt sie
-# nur bei einer der sechs, jeder andere Wert ergibt ein leeres Feld.
-#
-# WOZU DIESE PRUEFUNG NEBEN DEM `make gates` DES ZIELS: jener Lauf scannt die Typ-Dateien
-# mit (die emittierte .d-check.yml faehrt links/anchors ueber roots: ["."]) und faellt
-# ueber einem toten relativen Verweis darin. Ueber einem LEEREN .claude/agents/ faellt er
-# nicht — er bliebe gruen und pruefte nichts. Erst die Anwesenheit macht sein Gruen zur
-# Aussage ueber die Typ-Dateien.
-#
-# KEINE EIGENE NAMENSLISTE: die erwarteten Rollen kommen aus der QUELLE dieses Repos
-# (internal/emit/templates/agents/*.md), nicht aus einem hier gepflegten Literal. Ein
-# Uebertragungsfehler, der eine Rolle auf dem Weg zum Ziel verliert, faellt damit auf —
-# die Quelle fuehrt sie weiterhin, das Ziel nicht mehr. Ein leerer Fund unter der Quelle
-# selbst (falscher Pfad, verschobenes Verzeichnis) ist ein eigener Fehler und kein
-# stilles Durchlaufen ueber null Rollen.
-#
-# Aufgerufen fuer BEIDE Bootstrap-Varianten: die Rollen-Sequenz ist sprach-agnostisch,
-# und ein Zahn in nur einer Variante belegte das nicht.
 # DAS ZIEL SAGT, WAS SEIN MITGELIEFERTER BAUM IST — UND WAS ER NICHT VERSPRICHT.
 #
 # Drei Aussagen in der emittierten harness/conventions.md: der Baum ist Kurs-Inhalt und
@@ -235,6 +215,26 @@ baum_aussagen_im_ziel() {
 	echo "full-smoke: Baum-Aussagen im Ziel ($label): drei Aussagen stehen, die Inventur deckt $n Regelbloecke des ZIEL-Baums, und jedes genannte make-Ziel existiert dort."
 }
 
+# DIE ROLLEN-TYPEN LIEGEN IM ZIEL (LH-FA-10 / ADR-0022 Festlegung 3). Sechs Dateien
+# unter .claude/agents/, je eine kanonische Rolle, und jede fuehrt ihren Rollen-Namen im
+# Frontmatter — dieser Name ist der Vertrag zur Rollen-Achse: die Erfassung besetzt sie
+# nur bei einer der sechs, jeder andere Wert ergibt ein leeres Feld.
+#
+# WOZU DIESE PRUEFUNG NEBEN DEM `make gates` DES ZIELS: jener Lauf scannt die Typ-Dateien
+# mit (die emittierte .d-check.yml faehrt links/anchors ueber roots: ["."]) und faellt
+# ueber einem toten relativen Verweis darin. Ueber einem LEEREN .claude/agents/ faellt er
+# nicht — er bliebe gruen und pruefte nichts. Erst die Anwesenheit macht sein Gruen zur
+# Aussage ueber die Typ-Dateien.
+#
+# KEINE EIGENE NAMENSLISTE: die erwarteten Rollen kommen aus der QUELLE dieses Repos
+# (internal/emit/templates/agents/*.md), nicht aus einem hier gepflegten Literal. Ein
+# Uebertragungsfehler, der eine Rolle auf dem Weg zum Ziel verliert, faellt damit auf —
+# die Quelle fuehrt sie weiterhin, das Ziel nicht mehr. Ein leerer Fund unter der Quelle
+# selbst (falscher Pfad, verschobenes Verzeichnis) ist ein eigener Fehler und kein
+# stilles Durchlaufen ueber null Rollen.
+#
+# Aufgerufen fuer BEIDE Bootstrap-Varianten: die Rollen-Sequenz ist sprach-agnostisch,
+# und ein Zahn in nur einer Variante belegte das nicht.
 rollen_typen_im_ziel() {
 	local repo="$1" label="$2" quelle role f n=0
 	quelle="$HIER/../../internal/emit/templates/agents"
