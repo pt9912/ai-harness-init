@@ -284,7 +284,7 @@ dasteht.
   `open/` angelegt). Grund: der Pin trägt `v0.1.1`, und der Träger dieses
   Standes führt das Unterkommando `archive-welle` nicht — am gepinnten Stand
   startet der Aufruf still den Init-Pfad (gemessen, GRENZE der E2E-Stufe);
-  ADR-0058 Festlegung 2 (geglättet) und Folgepflicht 3 machen den
+  [`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md) Festlegung 2 (geglättet) und Folgepflicht 3 machen den
   Release-Schnitt zum Träger der Pin↔Fassung-Kopplung.
 - **Emission berührt sich selbst:** das Werkzeug emittiert einen Fetch **für
   sich selbst** — der Träger des Ziels ist das eigene Binary; ein Fehler in
@@ -325,12 +325,12 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 - **Was hat funktioniert:** Der Fetch-Vertrag hielt in beiden Mess-Ebenen —
   hermetisch (bats, 8 Fälle, Stubs für docker/curl) und am realen Ziel
   (E2E-Stufe `traeger_fetch_im_ziel`: realer Transport im gepinnten Bild,
-  Digest vor der Ablage, Fehlt-Fall Exit 0). Die Festlegungen von ADR-0058
+  Digest vor der Ablage, Fehlt-Fall Exit 0). Die Festlegungen von [`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
   gingen dem Verifier als Constraint-Tabelle durch — keine Abweichung; die
   Pin-Kopplung hängt an der etablierten Klasse (`test/sources-pin.bats`).
 - **Was ging anders als geplant:** Drei Abweichungen, alle als
   Übergabe-Artefakt gezogen, keine still: (1) der Plan-Kopf berief den Fetch
-  auf `LH-QA-03` mit „nur git/make" — der Transport läuft im gepinnten
+  auf [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) mit „nur git/make" — der Transport läuft im gepinnten
   Docker-Bild (F-1, Plan gezogen `ff21ce71`). (2) L2 verlangte den
   `archive-welle`-Aufruf **anschließend** an den Fetch; die Stufe ruft ihn
   **vor** dem Fetch und nach dem Fetch gar nicht — ein Aufruf danach stünde am
@@ -375,7 +375,7 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   Verifier real gefahren).
 - **Drei Paarungen:** Anker — kein Gegenstand: mit diesem Slice wurde nichts
   verkörpert, §7 trägt kein Feld `liegt in` (die Regeln dieses Slices tragen
-  ihre ADR-0058-Festlegungen als IDs). Folge-Slice —
+  ihre [`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)-Festlegungen als IDs). Folge-Slice —
   `slice-release-schnitt-koppelt-pin-und-fassung` existiert als Datei in
   `open/`. Register — die zitierten Register-Pfade existieren und tragen
   nicht leere `evidence/`.

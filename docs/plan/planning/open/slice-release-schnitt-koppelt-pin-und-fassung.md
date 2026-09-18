@@ -29,7 +29,7 @@ Festlegung 2 und Folgepflicht 3 (der Release-Schnitt ist der Träger der
 Kopplung aus Pin und Werkzeug-Fassung — ohne ihn driftet der Pin bei jedem
 Werkzeug-Fortschritt, der ein Unterkommando ändert). Risikoaufkommen:
 Risiko 1 aus
-[`slice-traeger-per-fetch-aus-dem-release`](../../done/slice-traeger-per-fetch-aus-dem-release.md)
+[`slice-traeger-per-fetch-aus-dem-release`](../done/slice-traeger-per-fetch-aus-dem-release.md)
 §6 (Ausgang *eingetreten*).
 
 **Berührte Spec-Stellen:** —
@@ -54,7 +54,7 @@ Sperren führt (`archive-welle` als geführtes Unterkommando), wird gepinnt und
 veröffentlicht; der Träger-Pin (`TRAEGER_TAG` plus die sechs
 `TRAEGER_SHA256_*`-Pins, Makefile und Emissions-Default) zeigt im selben
 Vorgang auf diesen Stand. Ab diesem Stand bricht ein Fassungs-Bruch beim
-Aufruf mit einem Fehler statt still zu starten (ADR-0058 Festlegung 2 in der
+Aufruf mit einem Fehler statt still zu starten ([`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md) Festlegung 2 in der
 geglätteten Fassung): die E2E-Stufe
 (`harness/tools/full-smoke.sh`, Stufe `traeger_fetch_im_ziel`, Abschnitt
 GRENZE) trägt heute den Messbefund „der v0.1.1-Träger führt das Unterkommando
@@ -64,13 +64,13 @@ diesem Slice an genau dieser Stelle zum gemessenen Gelingens-Fall.
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Der Fetch selbst** — **übernommen:**
-  [`slice-traeger-per-fetch-aus-dem-release`](../../done/slice-traeger-per-fetch-aus-dem-release.md)
+  [`slice-traeger-per-fetch-aus-dem-release`](../done/slice-traeger-per-fetch-aus-dem-release.md)
   hat ihn geliefert (Target, Fragment `traeger.mk`, bats- und E2E-Deckung);
   dieser Slice zieht nur den Pin auf den neuen Stand, er baut keinen zweiten
   Fetch-Weg.
 - **Kein Signier-Schritt, keine zweite Asset-Prüfung** — **Bestand bleibt
   bewusst stehen:** der Fetch prüft den **Digest**, nicht die Signatur; die
-  Doku sagt genau das (ADR-0058 Festlegung 1).
+  Doku sagt genau das ([`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md) Festlegung 1).
 - **Kein Stempel-Mechanismus** — **anderer Vorgang, entschieden:** Festlegung 2
   trägt den Fassungs-Fit prozedural (der Release-Schnitt koppelt Pin und
   Fassung im selben Vorgang); eine Stempel-Fläche am Werkzeug wäre neue
@@ -169,11 +169,11 @@ WIP-Limit frei; ein Release-Kanal für den neuen Stand ist erreichbar.
 
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): Der Pin-Nachzug
   wächst über die sieben Variablen hinaus — Fragment-Struktur, Target-Form
-  oder Prerequisite-Verhältnis (ADR-0058 Festlegung 3) geraten inhaltlich
+  oder Prerequisite-Verhältnis ([`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md) Festlegung 3) geraten inhaltlich
   unter die Hand. Dann Emission als eigenen Posten schneiden.
 - `in-progress` → `open` (blockiert — Carveout?): Kein Release-Kanal für den
   neuen Stand erreichbar — der Pin hätte kein Ziel; oder ein Asset der
-  Matrix fehlt dauerhaft (LH-QA-04).
+  Matrix fehlt dauerhaft ([`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)).
 
 ## 5. Closure-Trigger
 

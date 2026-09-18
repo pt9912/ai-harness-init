@@ -10,6 +10,6 @@ Bildes gegengelesen. Gefunden vom Review (F-2, MEDIUM, Runde 1
 `docs/reviews/2026-09-18-slice-traeger-per-fetch-aus-dem-release-runde-1.md`);
 die Abweichung ist nicht still — der Messbefund trägt am Lieferort (GRENZE),
 und die Nachzieh-Adresse ist benannt: der Release-Schnitt
-(`slice-release-schnitt-koppelt-pin-und-fassung`, ADR-0058 Festlegung 2 in der
+(`slice-release-schnitt-koppelt-pin-und-fassung`, [`ADR-0058`](../../../../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md) Festlegung 2 in der
 geglätteten Fassung, Folgepflicht 3). Der laut-Bruch gilt erst ab einem Pin,
 dessen Stand die Sperren im Dispatch führt.
