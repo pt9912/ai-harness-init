@@ -2791,8 +2791,8 @@ fi
 # entstehen aus git, und `Datei(en) geprueft` schreibt das Doku-Gate im Klon — keine der
 # vier Zeilen entsteht durch Interpolation eines Markers.
 for satz in 'der frische Klon traegt lokal keinen core.hooksPath' \
-            'selbstpruefung: ROT — ein Commit OHNE Kennung faellt am Traeger' \
-            'selbstpruefung: GRUEN — ein Commit MIT Kennung geht durch' \
+            'selbstpruefung: ROT — die Message [' \
+            'selbstpruefung: GRUEN — die Message [' \
             'Datei(en) geprüft'; do
 	if ! grep -qF -- "$satz" <<<"$selbst_out"; then
 		echo "full-smoke: FEHLER — sprachlos: die Selbstpruefung belegt den Ausgang '$satz' nicht — ein Lauf, der nur einen der zwei Commit-Ausgaenge beobachtet, loest die Zusage nicht ein (LH-FA-11)." >&2
@@ -2802,11 +2802,22 @@ for satz in 'der frische Klon traegt lokal keinen core.hooksPath' \
 done
 
 # (b) DER MARKER-LAUF, GEMESSEN AN DER SPUR DES GEFAHRENEN KOMMANDOS. Die Vorlage druckt
-# die AUSGABE des Gate-Schritts, nicht nur ihre eigene Ankuendigung — und die zwei
-# Kommandos hinterlassen verschiedene Spuren: `make baseline-verify` schreibt
-# `Integritaet + Vollstaendigkeit`, `make gates` zusaetzlich die Zeile des Doku-Gates und
-# den Gate-Nachweis. Eine Zusicherung, die nur die Zeile `Gate=[…]` liest, faende den
-# gesetzten Wert auch dann, wenn die Vorlage ihn ignorierte: dort steht die Variable.
+# die AUSGABE des Gate-Schritts, nicht nur ihre eigene Ankuendigung. Eine Zusicherung, die
+# die Zeile `Gate=[…]` liest, faende den gesetzten Wert auch dann, wenn die Vorlage ihn
+# ignorierte: dort steht die Variable.
+#
+# ZWEI ZUSICHERUNGEN, UND IHRE REICHWEITEN SIND VERSCHIEDEN — die dritte, die hier stand
+# (`record-gates`), fehlte auch der Belegung und konnte darum unter keiner Mutation rot
+# werden:
+#   `Integritaet + Vollstaendigkeit` steht in BEIDEN Kommandos, weil `make gates` das
+#     `baseline-verify` mitfaehrt. Sie unterscheidet sie nicht; sie faengt den
+#     uebersprungenen Gate-Schritt — eine Vorlage, die gar nichts faehrt.
+#   `Datei(en) geprueft` schreibt allein das Doku-Gate, das nur in `make gates` haengt.
+#     Sie ist die EINE unterscheidende Zusicherung.
+#
+# GRENZE: beide haengen am Wortlaut fremder Ausgaben (baseline-verify und d-check). Ein
+# Sprung ihrer Fassungen nimmt der Stufe die Zaehne, ohne sie rot zu faerben; kein Sensor
+# hier liest, ob diese zwei Zeichenketten noch entstehen.
 marker_out=""
 marker_rc=0
 marker_out="$( make --no-print-directory -C "$tmprepo_selbst" selbstpruefung SELBSTPRUEFUNG_GATE='make baseline-verify' 2>&1 )" || marker_rc=$?
@@ -2821,13 +2832,11 @@ if ! grep -qF -- 'Integritaet + Vollstaendigkeit' <<<"$marker_out"; then
 	printf '%s\n' "$marker_out" >&2
 	exit 1
 fi
-for verboten in 'Datei(en) geprüft' 'record-gates'; do
-	if grep -qF -- "$verboten" <<<"$marker_out"; then
-		echo "full-smoke: FEHLER — sprachlos: der Lauf mit gesetztem Gate-Marker traegt weiter die Spur '$verboten' der Belegung — der gesetzte Wert hat den Lauf dann nicht gelenkt, sondern nur danebengestanden (LH-FA-02)." >&2
-		printf '%s\n' "$marker_out" >&2
-		exit 1
-	fi
-done
+if grep -qF -- 'Datei(en) geprüft' <<<"$marker_out"; then
+	echo "full-smoke: FEHLER — sprachlos: der Lauf mit gesetztem Gate-Marker traegt weiter die Spur 'Datei(en) geprüft' der Belegung — das Doku-Gate haengt allein in make gates, der gesetzte Wert hat den Lauf also nicht gelenkt, sondern nur danebengestanden (LH-FA-02)." >&2
+	printf '%s\n' "$marker_out" >&2
+	exit 1
+fi
 
 # (c) DER TRAEGER-MARKER, GEGEN EINE ANDERE VORHANDENE DATEI GESETZT. Er nennt den Hook,
 # der aufhaelt; zeigt er woandershin, waehrend der Aktivierungsschritt seinen eigenen in
@@ -2850,8 +2859,8 @@ if ! grep -qF -- 'ist nicht der Traeger, den der Aktivierungsschritt in Betrieb 
 fi
 
 echo "full-smoke: Selbstpruefung im Ziel (sprachlos): beide Commit-Ausgaenge in einem Lauf, und die zwei gesetzten Marker lenken:"
-grep -F -- 'selbstpruefung: ROT —' <<<"$selbst_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
-grep -F -- 'selbstpruefung: GRUEN —' <<<"$selbst_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
+grep -F -- 'selbstpruefung: ROT — die Message [' <<<"$selbst_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
+grep -F -- 'selbstpruefung: GRUEN — die Message [' <<<"$selbst_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
 grep -F -- 'Integritaet + Vollstaendigkeit' <<<"$marker_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
 grep -F -- 'ist nicht der Traeger, den der Aktivierungsschritt in Betrieb nimmt' <<<"$traeger_out" | sed -n '1p' | sed 's/^/full-smoke:   /'
 

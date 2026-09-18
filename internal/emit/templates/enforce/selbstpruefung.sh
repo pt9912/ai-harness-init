@@ -29,11 +29,21 @@
 #
 # DIESE DATEI IST KONVERGENT (ADR-0007 Festlegung 3): jeder Lauf des Werkzeugs
 # schreibt sie kanonisch neu. Ein Edit an ihr ist danach still weg — deshalb
-# sind die fuenf Stellen oben Variablen. Eine DAUERHAFTE Vorgabe gehoert in
-# das Makefile des Repos (dort, wo dieses Ziel eingebunden wird) oder in die
-# Umgebung, nicht in diese Datei und nicht in das Fragment daneben, das
-# derselben Klasse folgt. Der Traeger unter .githooks/ ist der eine Pfad mit
-# der anderen Klasse (skip-if-present, ADR-0054): er gehoert dem Repo.
+# sind die fuenf Stellen oben Variablen. DASSELBE GILT FUER DAS ROOT-Makefile:
+# es ist der generierte Aggregator und wird ebenso kanonisch neu geschrieben;
+# eine Vorgabe darin ueberlebt den naechsten Bootstrap nicht.
+#
+# WO EINE DAUERHAFTE VORGABE TRAEGT: in einem EIGENEN Fragment unter
+# harness/mk/ mit einem Namen, den dieses Werkzeug nicht schreibt — der
+# Aggregator bindet es ueber `include harness/mk/*.mk` mit ein, und kein Lauf
+# entfernt, was er nicht selbst angelegt hat. Vorgeschlagen:
+# harness/mk/vorgaben.mk mit einer Zeile je Marker, in der Form
+#   SELBSTPRUEFUNG_GATE = <kommando>
+# Das einfache `=` gewinnt unabhaengig von der Include-Reihenfolge: steht es
+# vorher, greift das `?=` daneben nicht mehr; steht es nachher, ueberschreibt
+# es dessen Belegung. Wer keinen dauerhaften Ort braucht, setzt am Aufruf.
+# Der Traeger unter .githooks/ ist der eine Pfad, den dieses Werkzeug an einen
+# belegten Ort nicht schreibt (skip-if-present, ADR-0054): er gehoert dem Repo.
 #
 # DIE GRENZE. Geprueft sind der Traeger und die zwei Commit-Ausgaenge. NICHT
 # geprueft ist, ob der Traeger jeden Commit-Pfad erreicht: `git commit
@@ -166,7 +176,7 @@ for fall in rot gruen; do
 		if [ "$nun_head" != "$vorher_head" ]; then
 			fehler "der Traeger meldet den Abbruch, der Commit ist aber entstanden (HEAD bewegt sich von $vorher_head nach $nun_head)."
 		fi
-		echo "selbstpruefung: ROT — ein Commit OHNE Kennung faellt am Traeger (Exit $rc) und HEAD steht unveraendert. Meldung des Traegers:"
+		echo "selbstpruefung: ROT — die Message [$msg] faellt am Traeger (Exit $rc) und HEAD steht unveraendert. Meldung des Traegers:"
 		printf '%s\n' "$out" | sed -n '1,3p' | sed 's/^/selbstpruefung:   /'
 	else
 		if [ "$rc" -ne 0 ]; then
@@ -177,7 +187,7 @@ for fall in rot gruen; do
 		if [ "$betreff" != "$msg" ]; then
 			fehler "der Commit '$msg' meldet Erfolg, HEAD traegt aber '$betreff' — der Durchgang ist nicht belegt."
 		fi
-		echo "selbstpruefung: GRUEN — ein Commit MIT Kennung geht durch, HEAD traegt: $betreff"
+		echo "selbstpruefung: GRUEN — die Message [$msg] geht durch, HEAD traegt: $betreff"
 	fi
 done
 

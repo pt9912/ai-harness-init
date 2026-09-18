@@ -8,13 +8,19 @@
 #
 # DIESE DATEI IST KONVERGENT (ADR-0007 Festlegung 3): jeder Lauf des Werkzeugs
 # schreibt sie kanonisch neu, und ein Edit an den Belegungen unten ist danach
-# still weg. Sie sind darum die VORGABE, nicht der Setz-Ort. Gesetzt wird am
-# Aufruf
+# still weg. Sie sind darum die VORGABE, nicht der Setz-Ort. Dasselbe gilt fuer
+# das Root-Makefile: es ist der generierte Aggregator und wird ebenso neu
+# geschrieben. Gesetzt wird am Aufruf
 #   make selbstpruefung SELBSTPRUEFUNG_GATE='make baseline-verify'
-# oder dauerhaft im Makefile des Repos — dort, wo dieses Fragment eingebunden
-# wird, und vor dem `include`, damit die `?=` hier nicht mehr greifen. Der
-# Traeger unter .githooks/ ist der eine Pfad mit der anderen Klasse
-# (skip-if-present, ADR-0054): er gehoert dem Repo und bleibt unberuehrt.
+# oder dauerhaft in einem EIGENEN Fragment unter harness/mk/ mit einem Namen,
+# den dieses Werkzeug nicht schreibt — etwa harness/mk/vorgaben.mk:
+#   SELBSTPRUEFUNG_GATE = make baseline-verify
+# Der Aggregator bindet es ueber `include harness/mk/*.mk` mit ein, und kein
+# Lauf entfernt, was er nicht selbst angelegt hat. Das einfache `=` gewinnt
+# unabhaengig von der Include-Reihenfolge: steht es vorher, greift das `?=`
+# unten nicht mehr; steht es nachher, ueberschreibt es dessen Belegung. Der
+# Traeger unter .githooks/ ist der eine Pfad, den dieses Werkzeug an einen
+# belegten Ort nicht schreibt (skip-if-present, ADR-0054): er gehoert dem Repo.
 #
 # ABHAENGIGKEIT. git, make und coreutils; was das Gate-Kommando braucht,
 # bringt es selbst mit.

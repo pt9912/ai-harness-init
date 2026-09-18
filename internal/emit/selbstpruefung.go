@@ -23,6 +23,16 @@ const (
 
 	// SelbstpruefungMkPath ist der Zielort des Fragments, das das Kommando definiert.
 	SelbstpruefungMkPath = "harness/mk/selbstpruefung.mk"
+
+	// SelbstpruefungVorgabeOrt ist der Ort, den beide Koepfe fuer eine DAUERHAFTE
+	// Marker-Vorgabe nennen: ein eigenes Fragment des Adopters, das der Aggregator ueber
+	// `include harness/mk/*.mk` mitnimmt und das kein Lauf dieses Werkzeugs schreibt.
+	//
+	// WARUM NICHT DAS ROOT-Makefile: es ist der generierte Aggregator und wird kanonisch
+	// neu geschrieben (Makefile in makefile.go schreibt ueber writeFileMode). Eine Vorgabe
+	// darin ist nach dem naechsten Bootstrap still weg — dieselbe Klasse, gegen die die
+	// Marker ueberhaupt Variablen sind.
+	SelbstpruefungVorgabeOrt = "harness/mk/vorgaben.mk"
 )
 
 const (

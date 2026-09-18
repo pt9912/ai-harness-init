@@ -213,3 +213,41 @@ func TestSelbstpruefung_EinEditIstNachDemNaechstenLaufWiederDieAusgelieferteFass
 		}
 	}
 }
+
+// TestSelbstpruefung_DerGenannteVorgabeOrtWirdVonKeinemLaufGeschrieben haelt die zweite
+// Haelfte der Klassen-Zusage: die Koepfe nennen einen Ort fuer eine DAUERHAFTE
+// Marker-Vorgabe, und der traegt nur, wenn kein Lauf des Werkzeugs ihn anfasst.
+//
+// GEMESSEN WIRD DER ORT, NICHT EIN WORT: der genannte Pfad wird gegen die Pfad-Mengen
+// gehalten, die ein Lauf schreibt. Ein Kopf, der stattdessen das Root-Makefile oder eine
+// der zwei eigenen Dateien naennte, faellt hier — genau die Klasse, die der Kopf erklaert.
+//
+// GRENZE: geprueft sind die Mengen, die dieses Paket kennt (Durchsetzungsschicht,
+// Commands, Rollen-Typen, Aggregator). Die Code-Gate-Fragmente, die das Sprach-Skelett
+// unter harness/mk/ ablegt, tragen den Namen ihres Moduls und stehen in keiner von
+// ihnen; ein Adopter, der sein Modul so nennt wie diesen Ort, kollidiert mit ihnen, und
+// das faengt kein Test hier.
+func TestSelbstpruefung_DerGenannteVorgabeOrtWirdVonKeinemLaufGeschrieben(t *testing.T) {
+	dir := selbstpruefungZiel(t)
+	for _, rel := range []string{emit.SelbstpruefungPath, emit.SelbstpruefungMkPath} {
+		text := mustReadString(t, filepath.Join(dir, filepath.FromSlash(rel)))
+		if !strings.Contains(text, emit.SelbstpruefungVorgabeOrt) {
+			t.Errorf("%s nennt %s nicht als Ort der dauerhaften Vorgabe — ohne einen tragenden Ort steht die Vorgabe in einer Datei, die der naechste Lauf neu schreibt",
+				rel, emit.SelbstpruefungVorgabeOrt)
+		}
+	}
+
+	geschrieben := append([]string{emit.MakefilePath}, emit.EnforcePaths()...)
+	geschrieben = append(geschrieben, emit.CommandPaths()...)
+	geschrieben = append(geschrieben, emit.AgentPaths()...)
+	for _, p := range geschrieben {
+		if p == emit.SelbstpruefungVorgabeOrt {
+			t.Errorf("%s wird von einem Lauf geschrieben — eine Vorgabe dort ist nach dem naechsten Bootstrap weg, und die Koepfe nennen sie trotzdem als dauerhaften Ort",
+				emit.SelbstpruefungVorgabeOrt)
+		}
+	}
+	// Vorbedingung: eine leere Menge liesse die Schleife oben still gruen.
+	if len(geschrieben) < 2 {
+		t.Fatalf("die gelesene Menge geschriebener Pfade traegt %d Eintraege — der Abgleich prueft dann nichts", len(geschrieben))
+	}
+}
