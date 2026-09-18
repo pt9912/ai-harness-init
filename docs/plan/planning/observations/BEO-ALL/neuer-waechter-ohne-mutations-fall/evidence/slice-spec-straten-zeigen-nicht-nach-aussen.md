@@ -27,5 +27,5 @@ Rest als nicht blockierend geführt. Benannt, nicht geschlossen.
 **Geschärfte Kategorie (Vorschlag des Reviews, nicht beschlossen):** *ein gelisteter Fall muss seine
 Zusicherung binden; nimmt man ihr den Zahn, muss er grün werden.* Ihr Zielort liegt außerhalb dieses
 Vorgangs — `AGENTS.md` §3.6 gehört dem Architect
-([`AGENTS.md`](../../../../../../AGENTS.md) §3.8), eine Zeile in `.harness/skills/reviewer.md` der
+([`AGENTS.md`](../../../../../../../AGENTS.md) §3.8), eine Zeile in `.harness/skills/reviewer.md` der
 Rolle, die sie ausführt. Der Beleg gehört hierher, die Regel dorthin.

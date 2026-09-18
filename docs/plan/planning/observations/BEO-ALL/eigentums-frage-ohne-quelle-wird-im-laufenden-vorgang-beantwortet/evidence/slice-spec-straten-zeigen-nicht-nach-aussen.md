@@ -4,9 +4,9 @@
 `spec/spezifikation.md`, eine Fundstelle und den Frische-Marker in `spec/architecture.md` —, und
 keine Quelle benennt die Rolle, die das darf:
 
-- [`AGENTS.md`](../../../../../../AGENTS.md) §3.8 grenzt die Architect-Zuordnung ausdrücklich auf
+- [`AGENTS.md`](../../../../../../../AGENTS.md) §3.8 grenzt die Architect-Zuordnung ausdrücklich auf
   `AGENTS.md` §3 und den Adaptions-Block ein und lässt die Frage für die Straten offen
-  ([ADR-0015](../../../../adr/0015-rollen-eigentum-an-norm-artefakten.md) §Kontext trägt die Abwägung).
+  ([ADR-0015](../../../../../adr/0015-rollen-eigentum-an-norm-artefakten.md) §Kontext trägt die Abwägung).
 - Die Adresse liegt in `open/`:
   `slice-151-spec-straten-haben-eine-schreibende-rolle`, Kopf `Verantwortlich: — bis zur
   Priorisierung`.
@@ -19,5 +19,5 @@ Der laufende Vorgang hat sie damit durch **Tun** beantwortet: der Implementer ha
 geschrieben. Der Plan verlangt die Änderung und nennt keine Rolle — eine Pflicht ist keine
 Zuständigkeit. Der Vorgang ist die **dritte** Belegdatei dieses Verzeichnisses, und damit erreicht
 der Zähler die Schwelle, an die
-[ADR-0048](../../../../adr/0048-eigentum-haengt-am-vorgang-nicht-an-der-datei.md) ihren fünften
+[ADR-0048](../../../../../adr/0048-eigentum-haengt-am-vorgang-nicht-an-der-datei.md) ihren fünften
 Re-Evaluierungs-Trigger hängt.

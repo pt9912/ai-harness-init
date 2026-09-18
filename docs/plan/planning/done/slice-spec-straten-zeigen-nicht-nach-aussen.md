@@ -479,9 +479,9 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   Begründung und Beleg stehen an jedem Risiko; die vier entfallenen tragen keinen Register-Beleg,
   der eingetretene (4) und der Befund zu 5 je einen.
 
-- **Drei Paarungen** (nach dem `git mv` gefahren): **Anker** — kein Eintrag dieses Vorgangs trägt
-  das Feld `liegt in`; der Lerneintrag ist eine benannte Spec-Lücke und damit ohne Feld verkörpert,
-  also kein Gegenstand der Paarung. **Folge-Slice** — beide genannten Kennungen liegen als Dateien
+- **Drei Paarungen** (nach dem `git mv` gefahren): **Anker** — kein Eintrag dieses Vorgangs
+  deklariert einen Zielort; der Lerneintrag ist eine benannte Spec-Lücke und damit ohne Feld
+  verkörpert, also kein Gegenstand der Paarung. **Folge-Slice** — beide genannten Kennungen liegen als Dateien
   im Planning-Lifecycle (`open/`). **Register** — jeder genannte Eintrag existiert als Verzeichnis,
   und jeder in diesem Vorgang entstandene Beleg steht in einem solchen. **Rot, und darum benannt:**
   Zwei Einträge tragen kein nicht-leeres `evidence/` —
