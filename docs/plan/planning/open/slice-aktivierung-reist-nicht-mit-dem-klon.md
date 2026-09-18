@@ -254,6 +254,17 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 rein additiv gegenüber dem, was heute läuft. Dazu die zwei gewöhnlichen Bedingungen: der Slice ist
 priorisiert (`Verantwortlich:` gesetzt) und das WIP-Limit frei.
 
+**Der Zuschnitt von DoD (1) wird beim `open → next` neu gezogen** — zwei seiner drei Lagen sind
+geliefert. [slice-das-ziel-prueft-seine-durchsetzung-selbst](../done/slice-das-ziel-prueft-seine-durchsetzung-selbst.md)
+belegt in seiner Emitter-Stufe und in der ersten Ausgabezeile der emittierten Vorlage bereits, dass
+der Träger mit dem Klon reist (a) und dass `core.hooksPath` im frischen Klon leer bleibt (b); ein
+Akzeptanzkriterium von
+[`LH-FA-11`](../../../../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren)
+verlangt genau das, und das Lastenheft steht über einer Abgrenzung im Slice-Plan. **Nicht**
+geliefert ist Lage (c) — der Commit **ohne** Kennung, der im **unaktivierten** Klon durchgeht: die
+Gegenrichtung, die nur dieser Slice fährt. Wer den Punkt unverändert übernimmt, liefert eine Zusage
+zum zweiten Mal; die zwei übrigen Liefer-Punkte sind unberührt.
+
 **Reihenfolge — und sie ist keine Abhängigkeit, sondern eine Serialisierung.**
 [slice-commit-traeger-wird-skip-if-present](../done/slice-commit-traeger-wird-skip-if-present.md) führt
 dieselben zwei Dateien in seinem §3 (das Aktivierungs-Fragment — Kopf **und Fehlermeldung** — und
