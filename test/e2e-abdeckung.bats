@@ -248,12 +248,22 @@ EOF
   # fehlende Spec-Datei im Ziel kein Befund ist; unsere bricht davor schon ab, weil das
   # Lastenheft dieses Repos liegen muss. Genau diese eine Zeile wird herausgerechnet —
   # steht in der emittierten Fassung eine zweite Abweichung, faellt der Vergleich.
-  sed -n '/^slug_fuer() {/,/^}/p' "$ERZEUGER" > "$TMP/slug-hier.txt"
-  sed -n '/^slug_fuer() {/,/^}/p' "$(emittiert)" | grep -v 'spec_da' > "$TMP/slug-dort.txt"
+  sed -n '/^titel_fuer() {/,/^}/p' "$ERZEUGER" > "$TMP/slug-hier.txt"
+  sed -n '/^titel_fuer() {/,/^}/p' "$(emittiert)" | grep -v 'spec_da' > "$TMP/slug-dort.txt"
   [ "$(grep -c 'spec_da' "$ERZEUGER")" -eq 0 ]
-  [ "$(sed -n '/^slug_fuer() {/,/^}/p' "$(emittiert)" | grep -c 'spec_da')" -eq 1 ]
-  [ "$(wc -l < "$TMP/slug-hier.txt")" -ge 15 ]
+  [ "$(sed -n '/^titel_fuer() {/,/^}/p' "$(emittiert)" | grep -c 'spec_da')" -eq 1 ]
+  [ "$(wc -l < "$TMP/slug-hier.txt")" -ge 9 ]
   cmp -s "$TMP/slug-hier.txt" "$TMP/slug-dort.txt"
+
+  # slug_fuer und titel_rein woertlich gleich: die eine bildet ab, die andere entscheidet,
+  # ob die Abbildung ueberhaupt gilt. Eine Fassung, die hier abweicht, schriebe Verweise,
+  # die die andere nicht schriebe.
+  for fn in slug_fuer titel_rein; do
+    sed -n "/^$fn() {/,/^}/p" "$ERZEUGER" > "$TMP/$fn-hier.txt"
+    sed -n "/^$fn() {/,/^}/p" "$(emittiert)" > "$TMP/$fn-dort.txt"
+    [ "$(wc -l < "$TMP/$fn-hier.txt")" -ge 4 ]
+    cmp -s "$TMP/$fn-hier.txt" "$TMP/$fn-dort.txt"
+  done
 }
 
 @test "emittiert: die mitgelieferte Selbstpruefung traegt eine Stufe mit ihrer Deklaration, und die Zelle bleibt ohne geratene Kennung" {
@@ -412,6 +422,60 @@ EOF
   run bash "$ERZEUGER" tools/harness/mein-e2e.sh docs/user/unsere.md spec/lastenheft.md
   [ "$status" -ne 0 ]
   printf '%s' "$output" | grep -qF 'nicht sicher abzuleiten'
+  printf '%s' "$output" | grep -qF 'Link ohne Ziel'
+  [ ! -f docs/user/unsere.md ]
+}
+
+@test "anker: eine Ueberschrift mit Inline-Syntax bekommt keinen Verweis — eine ohne bekommt ihn" {
+  # DAS KRITERIUM SITZT AUF DER ROHZEILE, nicht auf dem Slug: der Anker entsteht aus dem
+  # GERENDERTEN Text, die Ableitung liest die Rohzeile. Wo Markdown beim Rendern etwas
+  # wegnimmt, geht sie mit LAUTER ERLAUBTEN ZEICHEN daneben — slug_sicher findet daran
+  # nichts.
+  #
+  # DIE KLASSEN SIND GEMESSEN, nicht vermutet (Ziel-Repo, je eine Ueberschrift, danach
+  # das Doku-Gate des Ziels ueber der geschriebenen Sicht): Link und Bild fallen mit
+  # `anchor-missing`, Code-Span, Hervorhebung und HTML nicht. Die beiden Richtungen
+  # stehen darum hier nebeneinander — HTML ist der PRUEFSTEIN gegen eine zu breite Regel.
+  mkdir -p "$TMP/roh/tools/harness" "$TMP/roh/spec" "$TMP/roh/docs/user"
+  cd "$TMP/roh"
+  cat > tools/harness/mein-e2e.sh <<'EOF'
+#!/usr/bin/env bash
+e2e_abdeckung() { :; }
+echo "selbstpruefung: eins ..."
+e2e_abdeckung "RQ-1" "link" "eins"
+echo "selbstpruefung: zwei ..."
+e2e_abdeckung "RQ-2" "bild" "zwei"
+echo "selbstpruefung: drei ..."
+e2e_abdeckung "RQ-5" "html" "drei"
+echo "selbstpruefung: vier ..."
+e2e_abdeckung "RQ-6" "schlicht" "vier"
+EOF
+  {
+    printf '### RQ-1 — [Zitat](../README.md) im Titel\n\nText.\n\n'
+    printf '### RQ-2 — ![Bild](../README.md) im Titel\n\nText.\n\n'
+    printf '### RQ-5 — HTML <sup>hoch</sup> im Titel\n\nText.\n\n'
+    printf '### RQ-6 — schlicht und ohne Syntax\n\nText.\n'
+  } > spec/lastenheft.md
+  # Die Ausgangslage belegen: alle vier Ueberschriften liegen, jede Kennung loest auf.
+  [ "$(grep -c '^### RQ-' spec/lastenheft.md)" -eq 4 ]
+
+  run env E2E_ABDECKUNG_QUELLE=tools/harness/mein-e2e.sh bash "$(emittiert)"
+  [ "$status" -eq 0 ]
+  # ROT-RICHTUNG: Link und Bild bekommen einen Code-Span, keinen Verweis.
+  [ "$(grep -c '^| `RQ-1` |' docs/user/e2e-abdeckung.md)" -eq 1 ]
+  [ "$(grep -c '^| `RQ-2` |' docs/user/e2e-abdeckung.md)" -eq 1 ]
+  printf '%s' "$output" | grep -qF 'Markdown-Inline-Syntax'
+  printf '%s' "$output" | grep -qF '2 ohne Verweis'
+  # GRUEN-RICHTUNG, und sie ist die Haelfte, die eine zu breite Regel kaputtmacht:
+  # HTML im Titel ist KEIN Treffer — das Doku-Gate leitet dort gleich ab.
+  grep -qF '[`RQ-5`](../../spec/lastenheft.md#rq-5--html-suphochsup-im-titel)' docs/user/e2e-abdeckung.md
+  grep -qF '[`RQ-6`](../../spec/lastenheft.md#rq-6--schlicht-und-ohne-syntax)' docs/user/e2e-abdeckung.md
+
+  # UNSERE FASSUNG bricht ueber derselben Ueberschrift ab, statt den Code-Span zu setzen.
+  sed -i 's@^echo "selbstpruefung: @echo "full-smoke: @' tools/harness/mein-e2e.sh
+  run bash "$ERZEUGER" tools/harness/mein-e2e.sh docs/user/unsere.md spec/lastenheft.md
+  [ "$status" -ne 0 ]
+  printf '%s' "$output" | grep -qF 'Markdown-Inline-Syntax'
   printf '%s' "$output" | grep -qF 'Link ohne Ziel'
   [ ! -f docs/user/unsere.md ]
 }

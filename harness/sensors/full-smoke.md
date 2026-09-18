@@ -88,8 +88,9 @@ durchzuwinken, und das wäre die Schwellen-Senkung, die [`AGENTS.md`](../../AGEN
 ein ADR bindet.
 
 Abgedeckt ist **jeder Abschnitt, der ein Bild anfordern kann** — ein Kriterium, keine
-Fundstellen-Liste; die mechanische Abgrenzung, ihre Gleichung und die vier Formen, die
+Fundstellen-Liste; die mechanische Abgrenzung, ihre Gleichung und die fünf Formen, die
 nachprüfbar **kein** Bild anfordern (Trockenlauf, `make span-clean`, der Hook-Wrapper,
+`make help`,
 `make e2e-abdeckung` im Ziel) stehen
 im Kopf von `harness/tools/full-smoke.sh`. Die Ausgangs-Muster, ihre Messung und ihre weiteren
 Grenzen (Paketquellen der C++-Kette fallen in den Baum-Fall) stehen im Kopf von

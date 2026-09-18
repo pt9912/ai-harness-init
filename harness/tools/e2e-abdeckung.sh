@@ -95,6 +95,11 @@ spec="$HIER/../../$LASTENHEFT_REL"
 # ein Test die Anker-Ableitung ueber einer Ueberschrift, die dieses Lastenheft nicht
 # fuehrt, ohne es anzufassen. Der Pfad gilt dann fuer BEIDES — das Nachschlagen und den
 # geschriebenen Link —, sonst zeigte der Verweis auf eine andere Datei als die gelesene.
+# VORBEDINGUNG, und sie ist eng: der Pfad loest fuers Nachschlagen gegen das ARBEITS-
+# VERZEICHNIS auf, fuer den Link gegen den ORT DER SICHT. Beides faellt nur zusammen,
+# wenn der Aufruf aus der Wurzel des Repos kommt und <spec> relativ zu ihr steht — die
+# Aufrufform, die auch <quelle> und <ziel> voraussetzen. Fuer den regulaeren Lauf ohne
+# drittes Argument gilt das nicht: dort liegt die Spec-Datei ueber HIER fest.
 if [ "$#" -eq 3 ]; then
 	spec="$3"
 	LASTENHEFT_REL="$3"
@@ -118,9 +123,8 @@ fi
 # einer Ueberschrift mit Umlaut traegt ihn). Beide Regeln sind auf die Ueberschriften
 # des Lastenhefts gemessen; das Modul `anchors` von `make docs-check` prueft das
 # Ergebnis gegen die realen Anker und faerbt einen Fehlgriff rot.
-slug_fuer() {
-	local titel
-	titel="$(awk -v k="$1" '
+titel_fuer() {
+	awk -v k="$1" '
 		/^### / {
 			t = $0
 			sub(/^### /, "", t)
@@ -128,7 +132,34 @@ slug_fuer() {
 			sub(/[[:space:]].*$/, "", kurz)
 			if (kurz == k) { print t; exit }
 		}
-	' "$spec")"
+	' "$spec"
+}
+
+# titel_rein <titel> — sagt, ob die ROHZEILE schon ihr eigener gerenderter Text ist.
+#
+# WARUM DIE FRAGE AN DIE ROHZEILE GEHOERT UND NICHT AN DEN SLUG: der Anker entsteht aus
+# dem GERENDERTEN Text der Ueberschrift, diese Ableitung liest die Rohzeile. Wo beide
+# gleich lauten, trifft sie; wo Markdown beim Rendern etwas wegnimmt, geht sie daneben —
+# und zwar mit lauter erlaubten Zeichen, an denen slug_sicher nichts findet.
+#
+# GEMESSEN, NICHT VERMUTET (Ziel-Repo, je eine Ueberschrift pro Klasse, danach das
+# Doku-Gate des Ziels ueber der geschriebenen Sicht): Link `[t](u)` und Bild `![a](s)`
+# fallen mit `anchor-missing`; Code-Span, Hervorhebung (`*`/`**`) und HTML (`<sup>`)
+# leitet das Gate GLEICH ab und meldet nichts. Die zwei, die fallen, tragen beide eckige
+# Klammern — und die stehen in keiner Ueberschrift, die schlicht gemeint ist. Geprueft
+# wird darum auf '[' und ']': das trifft Inline-Link, Bild, Referenz- und Kurzform in
+# einem, ohne Markdown zu parsen. Eine eckige Klammer, die keine Verweis-Syntax ist,
+# kostet einen Verweis und behauptet nichts Falsches.
+titel_rein() {
+	case "$1" in
+	*'['* | *']'*) return 1 ;;
+	esac
+	return 0
+}
+
+# slug_fuer <titel> — der Anker-Slug AUS DER UEBERSCHRIFT selbst.
+slug_fuer() {
+	local titel="$1"
 	[ -n "$titel" ] || return 0
 	printf '%s' "$titel" \
 		| tr '[:upper:]' '[:lower:]' \
@@ -262,7 +293,12 @@ while IFS=: read -r start _rest; do
 		fi
 		links=""
 		for k in $kennungen; do
-			slug="$(slug_fuer "$k")"
+			ueber="$(titel_fuer "$k")"
+			if [ -n "$ueber" ] && ! titel_rein "$ueber"; then
+				echo "e2e-abdeckung: FEHLER — die Ueberschrift der Kennung $k traegt Markdown-Inline-Syntax: [$ueber]. Ihr gerenderter Text lautet anders als die Rohzeile, aus der diese Ableitung liest; die Kennungsspalte bekaeme einen Link ohne Ziel ($quelle:$rufzeile)." >&2
+				exit 1
+			fi
+			slug="$(slug_fuer "$ueber")"
 			if [ -z "$slug" ]; then
 				echo "e2e-abdeckung: FEHLER — die deklarierte Kennung $k hat keine Ueberschrift in $spec; die Kennungsspalte bekaeme einen Link ohne Ziel ($quelle:$rufzeile)." >&2
 				exit 1

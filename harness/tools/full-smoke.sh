@@ -34,12 +34,13 @@ HIER="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Die Menge, ueber der es gilt, ist mechanisch abgegrenzt — ein Abschnitt fuehrt seinen
 # eigenen Exit-Code:
 #   (A) grep -cE '\|\| [a-z_0-9]+=\$\?$' harness/tools/full-smoke.sh
-# Vier Formen darin fordern KEIN Bild an, und zwar nachpruefbar: der Trockenlauf (make -n
+# Fuenf Formen darin fordern KEIN Bild an, und zwar nachpruefbar: der Trockenlauf (make -n
 # fuehrt kein Rezept aus), make span-clean (sein Rezept im Ziel ist rm -rf plus echo), der
 # Hook-Wrapper (ein Shell-Skript, das das Host-Binaer startet und docker nicht nennt) und
 # make e2e-abdeckung (sein Rezept im Ziel ist bash + coreutils ueber dem Quelltext eines
-# Skripts; es nennt docker nicht):
-#   (B) … | grep -cE ' -n |span-clean|bash "\$wrapper"| e2e-abdeckung '
+# Skripts; es nennt docker nicht) und make help (sein Rezept ist ein grep ueber den
+# Makefiles des Ziels, es nennt docker ebenso wenig):
+#   (B) … | grep -cE ' -n |span-clean|bash "\$wrapper"| e2e-abdeckung | help 2>&1'
 # Der Rest teilt sich in make-Stufen und Aufrufe des Werkzeugs:
 #   (C) … | grep -c 'tmpbin/ai-harness-init'
 # JEDE make-Stufe dieser Restmenge traegt eine Einordnung, dazu die zwei Werkzeug-Aufrufe,
@@ -2925,8 +2926,16 @@ fi
 # findet niemand. Gelesen wird die AUSGABE des Ziels, nicht das Rezept: das Muster des
 # Hilfe-Rezepts entscheidet, welche Ziele es trifft, und eine Ziffer im Namen hat es
 # schon einmal fallen lassen. Der Schwester-Eintrag `selbstpruefung` steht daneben in
-# derselben Pruefung, damit ein leerer Index nicht als Treffer durchgeht.
-hilfe_out="$( make --no-print-directory -C "$tmprepo_selbst" help 2>&1 )" || true
+# derselben Pruefung — nicht gegen einen leeren Index (der fiele schon am ersten
+# Eintrag), sondern als GEGENPROBE: er traegt keine Ziffer und stand auch vor der
+# Verengung des Hilfe-Musters da. Faellt nur der eine, ist es genau die Ziffer.
+hilfe_rc=0
+hilfe_out="$( make --no-print-directory -C "$tmprepo_selbst" help 2>&1 )" || hilfe_rc=$?
+if [ "$hilfe_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — sprachlos: make help des Ziels ist NICHT Exit 0 (Exit $hilfe_rc) — ohne Index gibt es keine Aussage ueber ihn." >&2
+	printf '%s\n' "$hilfe_out" >&2
+	exit 1
+fi
 for eintrag in e2e-abdeckung selbstpruefung; do
 	if ! grep -qE "^[[:space:]]*${eintrag}[[:space:]]" <<<"$hilfe_out"; then
 		echo "full-smoke: FEHLER — sprachlos: make help des Ziels fuehrt [$eintrag] nicht — ein Kommando, das in keinem Index des Ziels steht, findet der Adopter nicht." >&2

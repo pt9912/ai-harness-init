@@ -37,11 +37,19 @@
 #
 # DIE KENNUNGEN GEHOEREN DIESEM REPO. Der Erzeuger kennt kein Kennungs-SCHEMA: er
 # schlaegt jede deklarierte Kennung als erstes Wort einer `### `-Ueberschrift in der
-# Spec-Datei nach und leitet den Anker aus DIESER Ueberschrift ab. Loest eine Kennung
-# dort nicht auf — oder liegt die Spec-Datei gar nicht —, steht sie als CODE-SPAN ohne
-# Link, und der Lauf sagt, welche. Das ist die Wahl gegen einen Verweis, der ins Leere
-# zeigt: ein toter Link faerbt ein Doku-Gate rot und behauptet dabei eine Stelle, die es
-# nicht gibt; ein Code-Span behauptet nichts.
+# Spec-Datei nach und leitet den Anker aus DIESER Ueberschrift ab.
+#
+# EIN VERWEIS ENTSTEHT NUR, WO DIE ABLEITUNG TRAEGT — drei Lagen fuehren stattdessen zum
+# CODE-SPAN, und der Lauf nennt je Kennung, welche:
+#   (1) es gibt keine solche Ueberschrift (oder die Spec-Datei liegt gar nicht);
+#   (2) die Rohzeile der Ueberschrift traegt Markdown-Inline-Syntax, deren GERENDERTER
+#       Text anders lautet — der Anker entstuende daneben (titel_rein);
+#   (3) im abgeleiteten Slug bleibt ein Zeichen stehen, das diese Ableitung nicht kennt,
+#       waehrend der Markdown-Anker es fallen laesst (slug_sicher).
+# Das ist die Wahl gegen einen Verweis, der ins Leere zeigt: ein toter Link faerbt ein
+# Doku-Gate rot und behauptet dabei eine Stelle, die es nicht gibt; ein Code-Span
+# behauptet nichts. Zugesagt ist damit die Sicht auf die DEKLARIERTE Zuordnung — nicht,
+# dass jede Kennung einen Verweis bekommt.
 #
 # UND EINE STUFE DARF NOCH KEINE KENNUNG HABEN. Steht im ersten Argument der Deklaration
 # allein ein Gedankenstrich, heisst das: dieses Repo fuehrt fuer diese Stufe (noch) keine
@@ -121,10 +129,9 @@ fi
 # Die Abbildung ist die des Markdown-Ankers: kleinschreiben, Leerzeichen zu '-', und
 # Satzzeichen fallen weg. Geloescht werden genau die ASCII-Satzzeichen AUSSER '-' und
 # '_'; alles ab 0x80 BLEIBT STEHEN, damit ein Umlaut im Slug erhalten bleibt.
-slug_fuer() {
-	local titel
+titel_fuer() {
 	[ "$spec_da" -eq 1 ] || return 0
-	titel="$(awk -v k="$1" '
+	awk -v k="$1" '
 		/^### / {
 			t = $0
 			sub(/^### /, "", t)
@@ -132,7 +139,34 @@ slug_fuer() {
 			sub(/[[:space:]].*$/, "", kurz)
 			if (kurz == k) { print t; exit }
 		}
-	' "$spec")"
+	' "$spec"
+}
+
+# titel_rein <titel> — sagt, ob die ROHZEILE schon ihr eigener gerenderter Text ist.
+#
+# WARUM DIE FRAGE AN DIE ROHZEILE GEHOERT UND NICHT AN DEN SLUG: der Anker entsteht aus
+# dem GERENDERTEN Text der Ueberschrift, diese Ableitung liest die Rohzeile. Wo beide
+# gleich lauten, trifft sie; wo Markdown beim Rendern etwas wegnimmt, geht sie daneben —
+# und zwar mit lauter erlaubten Zeichen, an denen slug_sicher nichts findet.
+#
+# GEMESSEN, NICHT VERMUTET (Ziel-Repo, je eine Ueberschrift pro Klasse, danach das
+# Doku-Gate des Ziels ueber der geschriebenen Sicht): Link `[t](u)` und Bild `![a](s)`
+# fallen mit `anchor-missing`; Code-Span, Hervorhebung (`*`/`**`) und HTML (`<sup>`)
+# leitet das Gate GLEICH ab und meldet nichts. Die zwei, die fallen, tragen beide eckige
+# Klammern — und die stehen in keiner Ueberschrift, die schlicht gemeint ist. Geprueft
+# wird darum auf '[' und ']': das trifft Inline-Link, Bild, Referenz- und Kurzform in
+# einem, ohne Markdown zu parsen. Eine eckige Klammer, die keine Verweis-Syntax ist,
+# kostet einen Verweis und behauptet nichts Falsches.
+titel_rein() {
+	case "$1" in
+	*'['* | *']'*) return 1 ;;
+	esac
+	return 0
+}
+
+# slug_fuer <titel> — der Anker-Slug AUS DER UEBERSCHRIFT selbst.
+slug_fuer() {
+	local titel="$1"
 	[ -n "$titel" ] || return 0
 	printf '%s' "$titel" \
 		| tr '[:upper:]' '[:lower:]' \
@@ -288,21 +322,29 @@ while IFS=: read -r start _rest; do
 			continue
 		fi
 		for k in $kennungen; do
-			slug="$(slug_fuer "$k")"
+			# KEIN LINK OHNE ZIEL: die Kennung steht als Code-Span da. Der Lauf zaehlt sie
+			# und nennt sie unten — still waere das eine Abdeckung, die einen Verweis
+			# behauptet, den sie nicht hat. DREI GRUENDE fuehren hierher, und der Hinweis
+			# nennt den zutreffenden: es gibt keine Ueberschrift; ihre Rohzeile traegt
+			# Markdown-Inline-Syntax, deren gerenderter Text anders lautet; oder aus ihr
+			# ist der Anker nicht sicher abzuleiten.
+			ueber="$(titel_fuer "$k")"
+			slug=""
+			grund=""
+			if [ -z "$ueber" ]; then
+				grund="sie hat keine \`### \`-Ueberschrift in $spec"
+			elif ! titel_rein "$ueber"; then
+				grund="ihre Ueberschrift traegt Markdown-Inline-Syntax ([$ueber]); deren gerenderter Text lautet anders als die Rohzeile, aus der diese Ableitung liest"
+			else
+				slug="$(slug_fuer "$ueber")"
+				if ! slug_sicher "$slug"; then
+					grund="ihr Anker ist aus der Ueberschrift nicht sicher abzuleiten: [$slug] traegt ein Zeichen, das diese Ableitung nicht kennt, waehrend der Markdown-Anker es fallen laesst"
+				fi
+			fi
 			if [ -n "$links" ]; then
 				links="$links, "
 			fi
-			if [ -z "$slug" ] || ! slug_sicher "$slug"; then
-				# KEIN LINK OHNE ZIEL: die Kennung steht als Code-Span da. Der Lauf zaehlt
-				# sie und nennt sie unten — still waere das eine Abdeckung, die einen
-				# Verweis behauptet, den sie nicht hat. ZWEI GRUENDE fuehren hierher, und
-				# der Hinweis nennt den zutreffenden: es gibt keine Ueberschrift, oder aus
-				# ihr ist der Anker nicht sicher abzuleiten.
-				if [ -z "$slug" ]; then
-					grund="sie hat keine \`### \`-Ueberschrift in $spec"
-				else
-					grund="ihr Anker ist aus der Ueberschrift nicht sicher abzuleiten: [$slug] traegt ein Zeichen, das diese Ableitung nicht kennt, waehrend der Markdown-Anker es fallen laesst"
-				fi
+			if [ -n "$grund" ]; then
 				links="${links}\`$k\`"
 				ohne_link=$((ohne_link + 1))
 				echo "e2e-abdeckung: Hinweis — die Kennung $k bekommt keinen Verweis ($quelle:$rufzeile): $grund. Sie steht als Code-Span ohne Verweis."
