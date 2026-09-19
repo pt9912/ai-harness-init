@@ -168,6 +168,19 @@ Schicht: | `internal/span/emit.go` + `internal/span/lock_unix.go` +
 Span-Sperre tragen je-OS-Dateien, sonst bauen windows-amd64/arm64 nicht
 ([`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)) |
 
+**Verfeinert durch die Mechanik der neuen Entscheidung
+([`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md),
+Proposed —
+das Übergabe-Artefakt, das dieser Slice als Constraint liest):** die
+Digest-Spiegelung fällt aus der Emission, der Pin im Fragment trägt nur den Tag,
+und der Fetch-Helfer verifiziert gegen die `SHA256SUMS` desselben Releases:
+| `harness/tools/traeger-fetch.sh` + emittierter Zwilling | update | zwei Modi
+aus einer byte-gleichen Fassung — Dogfood verifiziert gegen den Makefile-Pin
+(zwei Kanäle), Ziel gegen den Manifest-Eintrag; ein teilweise exportierter
+Digest-Pin bricht, statt still in den Manifest-Kanal zu fallen
+([`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
+Festlegung 1 und 3) |
+
 ## 4. Trigger
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`

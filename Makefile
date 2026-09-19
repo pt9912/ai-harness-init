@@ -33,19 +33,22 @@ BASELINE_TAG ?= v6.9.0
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
 BASELINE_ZIP_SHA256 ?= 8a4e0aaf597a9c67404cb7a350a6fba992f0c98195e011e025c073660ee55cce
 
-# Traeger-Fetch-Pins (ADR-0058 Festlegung 1, LH-QA-02): Release-Tag und sha256 der
-# sechs Assets der Plattform-Matrix (LH-QA-04). KANONISCHE Pin-Stelle — die KANONISCHE
-# Form ist dasselbe Muster wie das Baseline-Paar oben: das emittierte Fragment des
-# Ziels spiegelt dieselben Werte als ueberschreibbare Variablen, und
-# test/traeger-fetch.bats haelt jede Stelle gegen dieses Paar. Netz nur am Target
-# traeger-fetch (kein Gate, nicht in gates).
-TRAEGER_TAG ?= v0.2.0
-TRAEGER_SHA256_LINUX_AMD64 ?= 0a5851f40be317aa42394678253de99bfd1267a84218b85900b59f8031a42f5b
-TRAEGER_SHA256_LINUX_ARM64 ?= e09fbcbf5a5872cb6b07d8ffc337f91f0d6645cdd8b60401ea806a083516f615
-TRAEGER_SHA256_DARWIN_AMD64 ?= 2922d8b016215b6192434ffd311c50ce1b330ff25d62279d42dea25543b7c42e
-TRAEGER_SHA256_DARWIN_ARM64 ?= 08ecf5b9c3f38d863871177f0ded59594faa4f56022f99592a28e3a66fc6520f
-TRAEGER_SHA256_WINDOWS_AMD64 ?= 128485955fe3127f1572a358fbd52dd99954518aff5379802d7ddab806274b54
-TRAEGER_SHA256_WINDOWS_ARM64 ?= 7ac98297bd5286b38f13a454c22a55eb84df13903238691cc5cb7fd55be013f7
+# Traeger-Fetch-Pins (ADR-0058 Festlegung 1, Dogfood-Haelfte; ADR-0059 Festlegung 3,
+# LH-QA-02): Release-Tag und sha256 der sechs Assets der Plattform-Matrix (LH-QA-04).
+# Diese Stelle ist NICHT embedded — die Werte sind zur Schnitt-Zeit schreibbar, ohne
+# die Binary zu bewegen; der Dogfood-Fetch verifiziert gegen sie (zwei Kanaele: Makefile
+# in git, Asset ueber den Release-Kanal). Das emittierte Fragment des Ziels fuehrt nur
+# den Tag; sein Fetch verifiziert gegen die SHA256SUMS desselben Releases
+# (ADR-0059 Festlegung 1), und die Kopplung Makefile-Digests↔SHA256SUMS haelt der
+# Release-Schnitt (Folgepflicht 2 — wo ein Lauf das Release erreicht; im netzlosen Gate
+# unpruefbar, benannt). Netz nur am Target traeger-fetch (kein Gate, nicht in gates).
+TRAEGER_TAG ?= v0.2.1
+TRAEGER_SHA256_LINUX_AMD64 ?= da4589f6f052bf6d046c6efe56cc9dd649aa833fad9688b48fcd5879e1d68f6a
+TRAEGER_SHA256_LINUX_ARM64 ?= 8afe23081a8a03b2dbc71132469f020c62d81874cd4b57e545e381a5aef0dfba
+TRAEGER_SHA256_DARWIN_AMD64 ?= 78cbd7a2486d8cdae10417d4c0d6c66cdec793ab5cd745adcb26f973837f65b1
+TRAEGER_SHA256_DARWIN_ARM64 ?= d8b8c7a2cb11c937ba2ad2fa788bcb99d97e0ab9e0f27c2f02d0a649d3574aa8
+TRAEGER_SHA256_WINDOWS_AMD64 ?= b8353e27f708f3a94eef01ee1a536c02d06162f176e8d2c308226e27332d7f86
+TRAEGER_SHA256_WINDOWS_ARM64 ?= 8529f10d6853e91b9033314f0f3d2ab3926a6512c798adc0a5e2bc71058fe860
 TRAEGER_CARRIER ?= .harness/state/bin/ai-harness-init
 export TRAEGER_TAG TRAEGER_SHA256_LINUX_AMD64 TRAEGER_SHA256_LINUX_ARM64 TRAEGER_SHA256_DARWIN_AMD64 TRAEGER_SHA256_DARWIN_ARM64 TRAEGER_SHA256_WINDOWS_AMD64 TRAEGER_SHA256_WINDOWS_ARM64 TRAEGER_CARRIER
 

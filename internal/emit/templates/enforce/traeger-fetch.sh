@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # traeger-fetch.sh — legt den Traeger per Fetch aus dem gepinnten Release ab
-# (ADR-0058 Festlegung 1 und 3). EIN KOMMANDO, KEIN GATE: es prueft nichts am Baum,
+# (ADR-0058 Festlegung 1 und 3; Verifizierung gegen die SHA256SUMS des Releases,
+# ADR-0059 Festlegung 1). EIN KOMMANDO, KEIN GATE: es prueft nichts am Baum,
 # haengt an keiner gates-Kette und steht in keiner Prerequisite-Kette — der Fehlt-Fall
 # der Konsumenten (archive-welle, span-report u. a.) bleibt unangetastet
 # (ADR-0058 Festlegung 3 und Folgepflicht 5). Es braucht Netz an genau diesem Aufruf
@@ -11,15 +12,21 @@
 # Image — der Host braucht weiter nur git, docker, make (LH-QA-03); ein curl/wget in
 # der Befehlsposition waere eine vierte Abhaengigkeit.
 #
-# FAIL-CLOSED AN DREI STELLEN, alle VOR der Ablage: fehlt der Release-Pin, fehlt der
-# sha256-Pin seiner Plattform (die Kopplung Makefile/Fragment hat eine Stelle stehen
-# lassen — dieselbe Klasse wie test/sources-pin.bats), oder weicht der Digest des
-# geholten Assets ab, bricht der Lauf, ohne den Traeger abzulegen. Der Digest wird vor
-# der Ablage verifiziert; eine abgebrochene Ablage hinterlaesst keinen halben Traeger
-# (LH-QA-02).
+# FAIL-CLOSED, alle VOR der Ablage: fehlt der Release-Pin, fehlt bei TEILWEISE
+# exportierten Digest-Pins der eigene der Plattform (die Kopplung hat eine Stelle
+# stehen lassen — dieselbe Klasse wie test/sources-pin.bats), fehlt das Asset im
+# Manifest, oder weicht der Digest des geholten Assets ab, bricht der Lauf, ohne den
+# Traeger abzulegen (LH-QA-02).
 #
-# DIE PINS LEBEN IM MAKEFILE BEZW. IM EMITTIERTEN Fragment (TRAEGER_TAG,
-# TRAEGER_SHA256_*, exportiert) — dieses Skript fuehrt keinen zweiten Bestand davon;
+# WOHER DER ERWARTETE DIGEST KOMMT (ADR-0059 Festlegung 1 und 3): sind
+# TRAEGER_SHA256_*-Variablen exportiert, verifiziert der Lauf gegen den eigenen
+# Makefile-Pin — zwei Kanaele, das Makefile reist in git, das Asset ueber den
+# Release-Kanal (Dogfood-Haeifte von ADR-0058 Festlegung 1). Ist KEINE gesetzt,
+# laedt der Lauf die SHA256SUMS desselben Releases und verifiziert gegen den
+# Manifest-Eintrag des gewaehlten Assets — Manifest und Asset reisen ueber denselben
+# Kanal (die Grenze: ein gemeinsamer Ersatz beider geht durch, kein Signier-Schritt).
+# Die Teilweise-exportierte Kopplung bricht, statt still in den Manifest-Kanal zu
+# fallen. Dieses Skript fuehrt keinen zweiten Bestand der Pins;
 # test/traeger-fetch.bats haelt beide Stellen gegen das Makefile-Paar.
 set -euo pipefail
 
@@ -74,12 +81,19 @@ if [ "$plat" = "windows" ]; then
 	esac
 fi
 
-# Der Pin seiner Plattform: die Kopplung exportiert die sechs Werte; fehlt der
-# eigene, ist eine Pin-Stelle stehen geblieben — der Lauf bricht, BEVOR er anfaengt.
+# Der erwartete Digest: eigener Pin der Plattform, oder Manifest-Eintrag. Sind
+# Digest-Pins TEILWEISE exportiert und fehlt der eigene, ist eine Pin-Stelle stehen
+# geblieben — der Lauf bricht, BEVOR er anfaengt, statt still gegen das Manifest zu
+# verifizieren (ADR-0059 Festlegung 3: die Dogfood-Haelfte bleibt am Makefile-Pin).
 sha_var="TRAEGER_SHA256_${plat_u}_${arch_u}"
 sha="${!sha_var:-}"
-if [ -z "$sha" ]; then
-	echo "traeger-fetch: $sha_var ist nicht gesetzt — der sha256-Pin seiner Plattform fehlt; die Kopplung traegt die sechs Werte (ADR-0058 Festlegung 1, LH-QA-02)." >&2
+teilweise=""
+for p in LINUX_AMD64 LINUX_ARM64 DARWIN_AMD64 DARWIN_ARM64 WINDOWS_AMD64 WINDOWS_ARM64; do
+	name="TRAEGER_SHA256_$p"
+	if [ -n "${!name:-}" ]; then teilweise=ja; fi
+done
+if [ -z "$sha" ] && [ -n "$teilweise" ]; then
+	echo "traeger-fetch: $sha_var ist nicht gesetzt, aber andere Digest-Pins sind es — eine Pin-Stelle der Kopplung fehlt; der Lauf bricht, statt still gegen das Manifest zu verifizieren (ADR-0058 Festlegung 1, ADR-0059 Festlegung 3, LH-QA-02)." >&2
 	exit 2
 fi
 tag="${TRAEGER_TAG:-}"
@@ -88,6 +102,7 @@ if [ -z "$tag" ]; then
 	exit 2
 fi
 url="https://github.com/pt9912/ai-harness-init/releases/download/${tag}/${asset}"
+sums_url="https://github.com/pt9912/ai-harness-init/releases/download/${tag}/SHA256SUMS"
 
 mkdir -p "$(dirname "$carrier")"
 carrier_abs="$(cd "$(dirname "$carrier")" && pwd)/$(basename "$carrier")"
@@ -101,13 +116,26 @@ carrier_abs="$(cd "$(dirname "$carrier")" && pwd)/$(basename "$carrier")"
 #
 # Verifiziert wird VOR der Ablage: eine Digest-Abweichung bricht ab, ohne den Traeger
 # zu legen — unter der geschwächten Zusicherung (Abweichung bricht, Traeger bleibt
-# liegen) bleibt der Negative-Fall von test/traeger-fetch.bats rot.
+# liegen) bleibt der Negative-Fall von test/traeger-fetch.bats rot. Im Manifest-Modus
+# laedt das Payload SHA256SUMS und den Asset-Eintrag daraus; ein fehlender Eintrag
+# bricht laut und legt nichts ab (ADR-0059 Festlegung 1).
 payload="$(cat <<'ENDE'
 set -eu
+erwartet="$TRAEGER_SHA256"
+quelle="Pin"
+if [ -z "$erwartet" ]; then
+	curl -fsSL -o /tmp/traeger-sums "$TRAEGER_SUMS_URL"
+	erwartet="$(awk -v a="$TRAEGER_ASSET" '$2 == a { print $1; exit }' /tmp/traeger-sums)"
+	if [ -z "$erwartet" ]; then
+		echo "traeger-fetch: $TRAEGER_ASSET fehlt im Manifest (SHA256SUMS) — der Manifest-Eintrag seiner Plattform fehlt; der Lauf legt nichts ab (ADR-0059 Festlegung 1, LH-QA-04)." >&2
+		exit 1
+	fi
+	quelle="SHA256SUMS"
+fi
 curl -fsSL -o /tmp/traeger-asset "$TRAEGER_URL"
 ist="$(sha256sum /tmp/traeger-asset)" && ist="${ist%% *}"
-if [ "$ist" != "$TRAEGER_SHA256" ]; then
-	echo "traeger-fetch: Digest-Abweichung — ist $ist, erwartet $TRAEGER_SHA256. Der Traeger wird nicht abgelegt." >&2
+if [ "$ist" != "$erwartet" ]; then
+	echo "traeger-fetch: Digest-Abweichung — ist $ist, erwartet $erwartet (aus $quelle). Der Traeger wird nicht abgelegt." >&2
 	exit 1
 fi
 cp /tmp/traeger-asset "$TRAEGER_CARRIER_ABS"
@@ -119,6 +147,8 @@ docker run --rm \
 	--user "$(id -u):$(id -g)" \
 	-e TRAEGER_URL="$url" \
 	-e TRAEGER_SHA256="$sha" \
+	-e TRAEGER_SUMS_URL="$sums_url" \
+	-e TRAEGER_ASSET="$asset" \
 	-e TRAEGER_CARRIER_ABS="$carrier_abs" \
 	-v "$(dirname "$carrier_abs"):$(dirname "$carrier_abs")" \
 	"$TRAEGER_IMAGE" sh -c "$payload"

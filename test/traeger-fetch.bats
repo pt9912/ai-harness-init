@@ -4,23 +4,33 @@
 #
 # HERMETISCH: kein Docker, kein Netz, kein Download — die zwei Grenzen des Transports
 # (docker-Daemon, curl im Bild) sind im bats-Image durch Stubs ersetzt, und ALLES
-# DAHINTER laeuft real: das Skript entscheidet Plattform, Asset, Pin und Ablageort, und
-# das Payload des Transport-Bilds — Verifizierung VOR Ablage, Ablage erst nach dem
-# Digest — wird als derselbe String gefahren, den der echte Lauf dem gepinnten Bild
-# uebergibt (dieselbe Bauart wie test/commit-msg-hook.bats: der Aufruf laeuft ueber den
-# Hook, ohne git). Dass auch die Grenzen real sind, misst die E2E-Stufe in
-# harness/tools/full-smoke.sh am gebootstrappten Ziel (traeger_fetch_im_ziel).
+# DAHINTER laeuft real: das Skript entscheidet Plattform, Asset, Digest-Quelle und
+# Ablageort, und das Payload des Transport-Bilds — Verifizierung VOR Ablage, Ablage
+# erst nach dem Digest — wird als derselbe String gefahren, den der echte Lauf dem
+# gepinnten Bild uebergibt (dieselbe Bauart wie test/commit-msg-hook.bats: der Aufruf
+# laeuft ueber den Hook, ohne git). Dass auch die Grenzen real sind, misst die E2E-Stufe
+# in harness/tools/full-smoke.sh am gebootstrappten Ziel (traeger_fetch_im_ziel).
 #
-# DIE KOPPLUNG (ADR-0058 Festlegung 1, Klasse test/sources-pin.bats): die kanonische
-# Pin-Stelle ist das Makefile-Paar (TRAEGER_TAG + die sechs sha256 der Assets, LH-QA-04);
-# das emittierte Fragment spiegelt dieselben Werte als ueberschreibbare Variablen. Ein
-# Sprung, der eine Stelle stehen laesst, faerbt hier rot.
+# DIE KOPPLUNG (ADR-0058 Festlegung 1, Dogfood-Haelfte; ADR-0059 Festlegung 2 und
+# Folgepflicht 2, Klasse test/sources-pin.bats): die kanonische Pin-Stelle ist das
+# Makefile-Paar (TRAEGER_TAG + die sechs sha256 der Assets, LH-QA-04) — NICHT embedded,
+# zur Schnitt-Zeit schreibbar, ohne die Binary zu bewegen. Das emittierte Fragment
+# fuehrt NUR den Tag: das Binary traegt keinen Wert, der vom Bau-Ergebnis abhaengt;
+# sein Fetch verifiziert gegen die SHA256SUMS desselben Releases (ADR-0059 Festlegung 1).
+# Die Kopplung Makefile-Digests↔SHA256SUMS haelt der Release-Schnitt — wo ein Lauf das
+# Release erreicht (CI mit Netz); im netzlosen Gate unpruefbar, benannt.
 #
 # ROT-GEGENPROBEN (AGENTS.md 3.6), je Fall der benannte Grund:
-#   - Umgeht die Verifizierung den Digest (Abweichung bricht, Traeger bleibt liegen),
-#     faerbt der Negative-Fall rot — der Fall verdreht den Pin gegen dasselbe Asset und
-#     braucht keinen zweiten Download.
-#   - Faellt eine Pin-Stelle im Makefile oder Fragment weg, faerbt die Kopplung rot.
+#   - Umgeht die Verifizierung den Digest — gegen den Makefile-Pin oder gegen den
+#     Manifest-Eintrag (Abweichung bricht, Traeger bleibt liegen) —, faerbt der
+#     Negative-Fall rot; der Fall verdreht den Pin bzw. das Manifest gegen dasselbe
+#     Asset und braucht keinen echten Download.
+#   - Traegt das emittierte Fragment einen Digest-Wert, faerbt der Fragment-Fall rot —
+#     das Binary duerfte dann einen Wert fuehren, der vom Bau-Ergebnis abhaengt
+#     (ADR-0059 Festlegung 2, die Selbstreferenz-Wand).
+#   - Laesst die Kopplung im Dogfood eine Digest-Stelle stehen, waehrend andere
+#     exportiert sind, faerbt der Teilweise-Fall rot — der Lauf bricht, statt still
+#     in den Manifest-Kanal zu fallen (ADR-0059 Festlegung 3).
 #   - Haengt der Fetch als Prerequisite an archive-welle oder an GATE_CHECKS, faerbt
 #     der Fehlt-Fall-Zahn rot — die Zusage "Exit 0, nennt das Fehlende, schreibt
 #     nichts" wuerde still zu einem Netz-Download-Versuch (ADR-0058 Festlegung 3).
@@ -63,7 +73,8 @@ ENDE
   cat >"$SHIM/curl" <<'ENDE'
 #!/usr/bin/env bash
 # Stub des Downloads (bats-Image ohne Netz): legt die Fixture an die Stelle, an die
-# der echte Lauf das Asset laedt, und protokolliert den angeforderten URL.
+# der echte Lauf das Asset laedt, und protokolliert den angeforderten URL. Ein URL
+# auf SHA256SUMS legt das Manifest ab, alles andere das Asset.
 set -eu
 dest=""
 src=""
@@ -75,7 +86,10 @@ while [ $# -gt 0 ]; do
   esac
 done
 printf '%s\n' "$src" >>"$TRAEGER_SHIM_LOG"
-cp "$TRAEGER_SHIM_FIXTURE" "$dest"
+case "$src" in
+  */SHA256SUMS) cp "$TRAEGER_SHIM_SUMS" "$dest" ;;
+  *) cp "$TRAEGER_SHIM_FIXTURE" "$dest" ;;
+esac
 ENDE
   chmod 0755 "$SHIM/docker" "$SHIM/curl"
   export PATH="$SHIM:$PATH"
@@ -87,6 +101,11 @@ ENDE
   chmod 0755 "$TMP/fixture"
   export TRAEGER_SHIM_FIXTURE="$TMP/fixture"
   FIXTURE_SHA="$(sha256sum "$TMP/fixture" | awk '{print $1}')"
+  # Manifest-Fixture: ein Eintrag je Asset der Faelle unten, alle gegen dieselbe
+  # Fixture-Datei — der Happy-Fall im Manifest-Modus verifiziert gegen sie.
+  printf '%s  ai-harness-init-linux-amd64\n%s  ai-harness-init-windows-amd64.exe\n%s  ai-harness-init-linux-arm64\n' \
+    "$FIXTURE_SHA" "$FIXTURE_SHA" "$FIXTURE_SHA" >"$TMP/sums"
+  export TRAEGER_SHIM_SUMS="$TMP/sums"
 }
 
 # pin_wert <datei> <name> — liest eine Pin-Zeile `NAME ?= wert`.
@@ -94,17 +113,19 @@ pin_wert() {
   grep "^$2" "$1" | head -1 | sed 's/.*=[ ]*//'
 }
 
-@test "pin-kopplung: Makefile und emittiertes Fragment tragen dieselben Pin-Werte (ADR-0058 Festlegung 1)" {
-  # Die Pin-Stellen sind da und tragen 64 Hex-Zeichen — eine Stelle ohne Wert waere
-  # still gruen (LH-QA-01).
-  [ "$(pin_wert "$MK" 'TRAEGER_TAG')" = "v0.2.0" ]
-  [ "$(pin_wert "$FRAG" 'TRAEGER_TAG')" = "v0.2.0" ]
+@test "pin-kopplung: der Tag haelt an beiden Stellen, das Fragment fuehrt keinen Digest (ADR-0059 Festlegung 2 und Folgepflicht 3)" {
+  # Eine Stelle ohne Wert waere still gruen (LH-QA-01); ein Digest im Fragment
+  # bettete einen Wert ins Binary, der vom Bau-Ergebnis abhaengt — die
+  # Selbstreferenz-Wand aus ADR-0059.
+  [ "$(pin_wert "$MK" 'TRAEGER_TAG')" = "v0.2.1" ]
+  [ "$(pin_wert "$FRAG" 'TRAEGER_TAG')" = "v0.2.1" ]
+  [ "$(grep -c 'TRAEGER_SHA256' "$FRAG")" -eq 0 ]
+  # Die Dogfood-Haelfte traegt weiter: sechs Einzeldigests, je 64 Hex (ADR-0059
+  # Festlegung 3 — zwei Kanaele).
   for p in LINUX_AMD64 LINUX_ARM64 DARWIN_AMD64 DARWIN_ARM64 WINDOWS_AMD64 WINDOWS_ARM64; do
     mk="$(pin_wert "$MK" "TRAEGER_SHA256_$p")"
-    fr="$(pin_wert "$FRAG" "TRAEGER_SHA256_$p")"
-    [ -n "$mk" ] && [ -n "$fr" ]
-    [ "${#mk}" -eq 64 ] && [ "${#fr}" -eq 64 ]
-    [ "$mk" = "$fr" ]
+    [ -n "$mk" ]
+    [ "${#mk}" -eq 64 ]
   done
 }
 
@@ -115,9 +136,10 @@ pin_wert() {
   grep -q 'TRAEGER_IMAGE:-curlimages/curl@sha256:' "$SKRIPT"
 }
 
-@test "happy: der Fetch legt den Traeger ab, ausfuehrbar und lauffaehig, Digest verifiziert" {
-  run env TRAEGER_TAG=v0.2.0 \
-    TRAEGER_SHA256_LINUX_AMD64="$FIXTURE_SHA" \
+@test "happy im Ziel-Modus: ohne Digest-Pin verifiziert der Lauf gegen die SHA256SUMS und legt den Traeger ab, lauffaehig" {
+  # Manifest und Asset kommen vom selben Release — zwei Transport-Aufrufe, und der
+  # Asset-Digest steht im Manifest-Eintrag (ADR-0059 Festlegung 1).
+  run env TRAEGER_TAG=v0.2.1 \
     TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
     bash "$SKRIPT"
   [ "$status" -eq 0 ]
@@ -128,31 +150,70 @@ pin_wert() {
   run "$TMP/ablage/ai-harness-init"
   [ "$status" -eq 0 ]
   [ "$output" = "traeger-echo-ok" ]
-  # Genau EIN Transport-Aufruf, und er fragt das Asset des gepinnten Tags an.
-  [ "$(grep -c . "$TRAEGER_SHIM_LOG")" -eq 1 ]
-  grep -qF 'releases/download/v0.2.0/ai-harness-init-linux-amd64' "$TRAEGER_SHIM_LOG"
+  # Genau zwei Transport-Aufrufe: das Manifest und das Asset, beide vom gepinnten Tag.
+  [ "$(grep -c . "$TRAEGER_SHIM_LOG")" -eq 2 ]
+  grep -qF 'releases/download/v0.2.1/SHA256SUMS' "$TRAEGER_SHIM_LOG"
+  grep -qF 'releases/download/v0.2.1/ai-harness-init-linux-amd64' "$TRAEGER_SHIM_LOG"
 }
 
-@test "negative: Digest-Abweichung bricht fail-closed, ohne den Traeger zu legen (kein zweiter Download)" {
+@test "happy im Dogfood-Modus: mit exportiertem Pin verifiziert der Lauf gegen den Makefile-Pin (zwei Kanaele, ADR-0059 Festlegung 3)" {
+  run env TRAEGER_TAG=v0.2.1 \
+    TRAEGER_SHA256_LINUX_AMD64="$FIXTURE_SHA" \
+    TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
+    bash "$SKRIPT"
+  [ "$status" -eq 0 ]
+  printf '%s' "$output" | grep -qF 'Digest verifiziert'
+  [ -x "$TMP/ablage/ai-harness-init" ]
+  # Genau EIN Transport-Aufruf — das Asset; das Manifest wird im Pin-Modus nicht
+  # angefragt (dieselbe Zusage wie vor ADR-0059).
+  [ "$(grep -c . "$TRAEGER_SHIM_LOG")" -eq 1 ]
+  ! grep -qF 'SHA256SUMS' "$TRAEGER_SHIM_LOG"
+  grep -qF 'releases/download/v0.2.1/ai-harness-init-linux-amd64' "$TRAEGER_SHIM_LOG"
+}
+
+@test "negative im Ziel-Modus: eine Abweichung vom Manifest-Eintrag bricht fail-closed, ohne den Traeger zu legen" {
+  # Das Manifest nennt einen fremden Digest, das gelieferte Asset hasht zur Fixture —
+  # dieselbe Klasse wie ein gegen das gemessene Manifest falsch hochgeladenes Asset
+  # (ADR-0059 Festlegung 1).
+  fremd="$(printf 'f%.0s' $(seq 64))"
+  printf '%s  ai-harness-init-linux-amd64\n' "$fremd" >"$TMP/sums-fremd"
+  run env TRAEGER_TAG=v0.2.1 \
+    TRAEGER_SHIM_SUMS="$TMP/sums-fremd" \
+    TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
+    bash "$SKRIPT"
+  [ "$status" -ne 0 ]
+  # Die Meldung nennt die behauptete Ursache und ihre Quelle, nicht irgendeine
+  # (AGENTS.md 3.6).
+  printf '%s' "$output" | grep -qF 'Digest-Abweichung'
+  printf '%s' "$output" | grep -qF 'SHA256SUMS'
+  [ ! -e "$TMP/ablage/ai-harness-init" ]
+  # Das Asset laedt der Lauf EINMAL — Manifest einmal, Asset einmal, kein zweiter
+  # Versuch.
+  asset_aufrufe="$(grep -cF 'ai-harness-init-linux-amd64' "$TRAEGER_SHIM_LOG")"
+  [ "$asset_aufrufe" -eq 1 ]
+}
+
+@test "negative im Dogfood-Modus: Digest-Abweichung vom Pin bricht fail-closed, ohne den Traeger zu legen (kein zweiter Download)" {
   # Der Pin ist VERDREHT gegen dasselbe Asset — der Lauf laedt EINMAL und legt
-  # nichts ab; der Träger des richtigen Laufs bliebe unangetastet.
+  # nichts ab; der Traeger des richtigen Laufs bliebe unangetastet.
   verdreht="$(printf '0%.0s' $(seq 64))"
-  run env TRAEGER_TAG=v0.2.0 \
+  run env TRAEGER_TAG=v0.2.1 \
     TRAEGER_SHA256_LINUX_AMD64="$verdreht" \
     TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
     bash "$SKRIPT"
   [ "$status" -ne 0 ]
   # Die Meldung nennt die behauptete Ursache, nicht irgendeine (AGENTS.md 3.6).
   printf '%s' "$output" | grep -qF 'Digest-Abweichung'
+  printf '%s' "$output" | grep -qF 'Pin'
   [ ! -e "$TMP/ablage/ai-harness-init" ]
   # Kein zweiter Download: derselbe Aufruf hat den Transport genau einmal gefahren.
   [ "$(grep -c . "$TRAEGER_SHIM_LOG")" -eq 1 ]
 }
 
-@test "fail-closed vor dem Transport: fehlt der sha256-Pin seiner Plattform, bricht der Lauf, ohne den Transport zu rufen" {
+@test "fail-closed vor dem Transport: fehlt bei TEILWEISE exportierten Pins der eigene der Plattform, bricht der Lauf, ohne den Transport zu rufen (ADR-0059 Festlegung 3)" {
   # Der Ablageort wird auf ein Verzeichnis gesetzt, das NUR der Transport haette
   # anlegen duerfen — nach dem Lauf darf es nicht existieren.
-  run env TRAEGER_TAG=v0.2.0 \
+  run env TRAEGER_TAG=v0.2.1 \
     TRAEGER_SHA256_DARWIN_AMD64="$FIXTURE_SHA" \
     TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
     bash "$SKRIPT"
@@ -163,16 +224,14 @@ pin_wert() {
 }
 
 @test "fail-closed vor dem Transport: unbekannte Plattform und Architektur brechen laut (Asset-Matrix, LH-QA-04)" {
-  run env TRAEGER_TAG=v0.2.0 \
-    TRAEGER_SHA256_LINUX_AMD64="$FIXTURE_SHA" \
+  run env TRAEGER_TAG=v0.2.1 \
     TRAEGER_OS=SunOS \
     TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
     bash "$SKRIPT"
   [ "$status" -eq 2 ]
   printf '%s' "$output" | grep -qF 'unbekannte Plattform'
   [ "$(grep -c . "$TRAEGER_SHIM_LOG")" -eq 0 ]
-  run env TRAEGER_TAG=v0.2.0 \
-    TRAEGER_SHA256_LINUX_AMD64="$FIXTURE_SHA" \
+  run env TRAEGER_TAG=v0.2.1 \
     TRAEGER_ARCH=sparc64 \
     TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
     bash "$SKRIPT"
@@ -181,21 +240,19 @@ pin_wert() {
 }
 
 @test "plattform-matrix: das windows-Asset traegt .exe, und der Traeger liegt als ai-harness-init.exe (LH-QA-04)" {
-  run env TRAEGER_TAG=v0.2.0 \
-    TRAEGER_SHA256_WINDOWS_AMD64="$FIXTURE_SHA" \
+  run env TRAEGER_TAG=v0.2.1 \
     TRAEGER_OS='MINGW64_NT-10.0' \
-    TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
+    TRAEGER_CARRIER="$TMP/ablage/ai-harness-init.exe" \
     bash "$SKRIPT"
   [ "$status" -eq 0 ]
-  grep -qF 'releases/download/v0.2.0/ai-harness-init-windows-amd64.exe' "$TRAEGER_SHIM_LOG"
+  grep -qF 'releases/download/v0.2.1/ai-harness-init-windows-amd64.exe' "$TRAEGER_SHIM_LOG"
   [ -x "$TMP/ablage/ai-harness-init.exe" ]
-  run env TRAEGER_TAG=v0.2.0 \
-    TRAEGER_SHA256_LINUX_ARM64="$FIXTURE_SHA" \
+  run env TRAEGER_TAG=v0.2.1 \
     TRAEGER_ARCH=aarch64 \
     TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
     bash "$SKRIPT"
   [ "$status" -eq 0 ]
-  grep -qF 'releases/download/v0.2.0/ai-harness-init-linux-arm64' "$TRAEGER_SHIM_LOG"
+  grep -qF 'releases/download/v0.2.1/ai-harness-init-linux-arm64' "$TRAEGER_SHIM_LOG"
 }
 
 @test "fehlt-fall: der Fetch ist kein Prerequisite und kein Automatismus (ADR-0058 Festlegung 3)" {
