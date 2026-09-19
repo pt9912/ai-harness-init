@@ -1515,7 +1515,7 @@ archivierung_im_ziel "$tmprepo" "golang"
 
 # --- Traeger-Fetch: der frische Klon holt den Traeger aus dem gepinnten Release ------
 echo "full-smoke: Traeger-Fetch — frischer Klon ohne Traeger, Fetch aus dem gepinnten Release (ADR-0058) ..."
-e2e_abdeckung "LH-FA-01 LH-QA-02 LH-QA-03" "Der frische Klon holt den Traeger per Fetch aus dem gepinnten Release — sha256 vor der Ablage verifiziert, Transport im gepinnten Bild" "ohne den Traeger zu legen"
+e2e_abdeckung "LH-FA-01 LH-QA-02 LH-QA-03" "Der frische Klon holt den Traeger per Fetch aus dem gepinnten Release — sha256 vor der Ablage verifiziert, Transport im gepinnten Bild, und der gefetchte Traeger fuehrt den Konsumenten-Aufruf (Vollzug) und den laut-Bruch" "ohne den Traeger zu legen"
 #
 # WAS DIE STUFE DAVOR NICHT SIEHT: der Traeger liegt gitignored — der Bootstrap-Lauf
 # legt ihn im Bootstrap-Ziel ab, aber ein FRISCHER KLON dieses Ziels hat ihn nicht
@@ -1532,18 +1532,25 @@ e2e_abdeckung "LH-FA-01 LH-QA-02 LH-QA-03" "Der frische Klon holt den Traeger pe
 #       ausfuehrbar, der Digest war vor der Ablage verifiziert (LH-QA-02, LH-QA-04),
 #   (c) der Negative-Fall bricht fail-closed: der verdrehte sha256-Pin laesst denselben
 #       Aufruf das Asset EINMAL laden und bricht ab, ohne den Traeger zu legen; der
-#       abgelegte Traeger bleibt unangetastet (LH-QA-02).
+#       abgelegte Traeger bleibt unangetastet (LH-QA-02),
+#   (d) der Gelingens-Fall des Konsumenten-Aufrufs: der gefetchte Traeger fuehrt das
+#       Unterkommando, das das Fragment ruft — die Archivierung laeuft real und meldet
+#       den Vollzug (ADR-0033 Festlegung 4),
+#   (e) der laut-Bruch: ein Aufruf, dessen Unterkommando der Traeger nicht fuehrt,
+#       bricht mit einem Fehler statt still zu starten (ADR-0058 Festlegung 2).
 #
-# GRENZE, GEMESSEN AM ASSET: die Stufe misst den Fetch gegen den gepinnten
-# Release-Stand. Der Traeger von v0.1.1 fuehrt das Unterkommando archive-welle nicht —
-# der Konsumenten-Teil ("archive-welle laeuft mit dem gefetchten Traeger") ist hier
-# NICHT messbar, solange der gepinnte Stand hinter dem Baum liegt; der Aufruf
-# `archive-welle WELLE=...` an den v0.1.1-Traeger startet dort den Init-Pfad
-# (Bootstrap-Versuch) statt laut zu brechen — der laut-Bruch aus ADR-0058 Festlegung 2
-# gilt fuer Traeger ab der Sperre im Dispatch, nicht fuer den gepinnten Stand. Die
-# Kopplung Pin zu Werkzeug-Fassung traegt der Release-Schnitt (ADR-0058 Festlegung 2,
-# Folgepflicht 3); mit einem gepinnten Stand, der das Unterkommando fuehrt, gehoert
-# dieser Teil an genau diese Stelle.
+# GRENZE, GEMESSEN AM ASSET: der gepinnte Release-Stand v0.2.0 fuehrt das Unterkommando
+# archive-welle UND die Sperre im Dispatch — deshalb sind (d) und (e) hier messbar. Ein
+# Traeger ohne diese zwei, der v0.1.1-Stand, startet in derselben Lage still den
+# Init-Pfad: der Konsumenten-Aufruf dort laeuft in den Bootstrap-Versuch, und ein
+# unbekanntes Unterkommando endet lautlos. Die Kopplung Pin zu Werkzeug-Fassung traegt
+# der Release-Schnitt (ADR-0058 Festlegung 2, Folgepflicht 3): er schneidet den Stand,
+# dessen Dispatch das Unterkommando fuehrt, und pinnt ihn im selben Vorgang — der Pin
+# bleibt damit vor jedem Fassungs-Bruch, solange er mit jedem Werkzeug-Fortschritt am
+# Unterkommando nachgezogen wird. Diese Stufe misst den laut-Bruch am Aufruf, nicht an
+# einem Kommentar; das Verhalten eines Traegers ohne die Sperren misst sie nicht — das
+# gepinnte Release waere dafuer der Ort, und die Sperre im Dispatch ist dort nicht
+# ersatzweise auszuschalten.
 #
 # NUR HIER MESSBAR: kein Go-Test faehrt `make` mit Netz, und der hermetische bats-Zahn
 # (test/traeger-fetch.bats) ersetzt die Grenzen docker/curl durch Stubs — dass auch
@@ -1640,6 +1647,91 @@ traeger_fetch_im_ziel() {
 		exit 1
 	fi
 	echo "full-smoke: ohne den Traeger zu legen ($kennung): der verdrehte sha256-Pin bricht den Fetch nach EINMAL Laden laut, nennt die Digest-Abweichung, und der liegende Traeger bleibt unangetastet."
+
+	# (d) DER GELINGENS-FALL DES KONSUMENTEN-AUFRUFS: der gefetchte Traeger fuehrt das
+	# Unterkommando, das das Fragment ruft. Gemessen wird ein REALER Vollzug — dieselbe
+	# Bauart wie die Archivierungs-Stufe oben: geschlossene Welle im Klon, dann der
+	# Aufruf; er committet selbst, darum traegt der Klon eine Identitaet.
+	local welle_fetch="welle-fetch"
+	local done_fetch="$klon/docs/plan/planning/done"
+	mkdir -p "$done_fetch"
+	cat >"$done_fetch/$welle_fetch.md" <<'SMOKEEOF'
+# Welle welle-fetch: E2E des Traeger-Fetch
+
+**Verantwortlich:** full-smoke.
+
+## 1. Welle-Ziel
+
+Nur fuer den E2E des Traeger-Fetch angelegt.
+SMOKEEOF
+	cat >"$done_fetch/$welle_fetch-results.md" <<'SMOKEEOF'
+# welle-fetch-results: E2E des Traeger-Fetch
+
+**Abschluss:** 2026-01-01
+
+## Geliefert
+
+Nur fuer den E2E des Traeger-Fetch angelegt.
+SMOKEEOF
+	cat >"$done_fetch/slice-997-fetch-smoke.md" <<'SMOKEEOF'
+# Slice slice-997: E2E des Traeger-Fetch
+
+**Welle:** welle-fetch
+
+## 1. Ziel
+
+Nur fuer den E2E des Traeger-Fetch angelegt.
+SMOKEEOF
+	git -C "$klon" -c user.email=full-smoke@example.invalid -c user.name=full-smoke add -A
+	git -C "$klon" -c user.email=full-smoke@example.invalid -c user.name=full-smoke \
+		commit -q -m "Traeger-Fetch-Smoke: geschlossene Welle (full-smoke)"
+	git -C "$klon" config user.email full-smoke@example.invalid
+	git -C "$klon" config user.name full-smoke
+	local gel="" gel_rc=0 gel_flach=""
+	gel="$( make --no-print-directory -C "$klon" archive-welle WELLE="$welle_fetch" 2>&1 )" || gel_rc=$?
+	gel_flach="$(tr -s '[:space:]' ' ' <<<"$gel")"
+	if [ "$gel_rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: der Konsumenten-Aufruf endet mit Exit $gel_rc — der gefetchte Traeger aus dem gepinnten Release fuehrt das Unterkommando nicht, und der Aufruf faellt statt in den laut-Bruch (ADR-0058 Festlegung 2). Ausgabe:" >&2
+		printf '%s\n' "$gel" >&2
+		einordnen "make archive-welle mit dem gefetchten Traeger ($kennung)" "$gel"
+		exit 1
+	fi
+	if ! grep -qF -- "archive-welle ok: $welle_fetch" <<<"$gel_flach"; then
+		echo "full-smoke: FEHLER — $kennung: der Konsumenten-Aufruf endete mit 0, meldet aber keinen Vollzug — der gefetchte Traeger ist damit nicht gelaufen (rot aus falschem Grund?). Ausgabe:" >&2
+		printf '%s\n' "$gel" >&2
+		exit 1
+	fi
+	if [ ! -f "$done_fetch/$welle_fetch/archiv.zip" ]; then
+		echo "full-smoke: FEHLER — $kennung: der Vollzug wird gemeldet, aber $welle_fetch/archiv.zip fehlt — der gefetchte Traeger hat die Operation nicht abgelegt (ADR-0033 Festlegung 3)." >&2
+		exit 1
+	fi
+	echo "full-smoke: Konsumenten-Aufruf ($kennung): make archive-welle archiviert $welle_fetch mit dem aus dem gepinnten Release gefetchten Traeger — Vollzug gemeldet, Archiv mit Stubs gelegt."
+
+	# (e) DER LAUT-BRUCH: ein Aufruf, dessen Unterkommando der Traeger nicht fuehrt,
+	# bricht mit einem Fehler statt still zu starten (ADR-0058 Festlegung 2). Der
+	# vertippte Name trifft den Dispatch nicht und endet an der Sperre des Init-Pfads
+	# — der Bootstrap-Versuch, den ein Traeger ohne die Sperre hier still laufen
+	# liesse, passiert nicht.
+	local bruch="" bruch_rc=0 bruch_flach=""
+	bruch="$( "$klon/$carrier" archive-well "$welle_fetch" 2>&1 )" || bruch_rc=$?
+	bruch_flach="$(tr -s '[:space:]' ' ' <<<"$bruch")"
+	if [ "$bruch_rc" -eq 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: der Aufruf mit einem Unterkommando, das der Traeger nicht fuehrt, endete mit 0 — der laut-Bruch haelt nicht, der Init-Pfad startete still (ADR-0058 Festlegung 2). Ausgabe:" >&2
+		printf '%s\n' "$bruch" >&2
+		einordnen "Traeger-Aufruf mit unbekanntem Unterkommando ($kennung)" "$bruch"
+		exit 1
+	fi
+	if ! grep -qF -- 'unbekanntes Argument' <<<"$bruch_flach"; then
+		echo "full-smoke: FEHLER — $kennung: der Bruch nennt nicht das unbekannte Argument — die Meldung traegt nicht die behauptete Ursache (AGENTS.md 3.6). Ausgabe:" >&2
+		printf '%s\n' "$bruch" >&2
+		exit 1
+	fi
+	if [ -n "$(git -C "$klon" status --porcelain)" ]; then
+		echo "full-smoke: FEHLER — $kennung: der laut-Bruch hat in den Klon geschrieben — die Sperre endet laut, ohne anzufassen (AGENTS.md 3.6):" >&2
+		git -C "$klon" status --porcelain >&2
+		exit 1
+	fi
+	echo "full-smoke: laut-Bruch ($kennung): ein Unterkommando, das der Traeger nicht fuehrt, bricht den Aufruf mit der Argument-Sperre statt still zu starten, und nichts ist geschrieben."
 }
 
 traeger_fetch_im_ziel "$tmprepo" "golang"
@@ -3191,7 +3283,7 @@ echo "full-smoke: OK — IDEMPOTENT (slice-038): 2. Init-Lauf Exit 0, README (sk
 echo "full-smoke: OK — ROLLEN-TYPEN (slice-097/LH-FA-10): 6 kanonische Typen unter .claude/agents/ in BEIDEN Bootstrap-Varianten, je mit ihrem Namen im Kopf; das make gates des Ziels laeuft ueber ihnen gruen; der 2. Init-Lauf laesst einen adopter-geaenderten Typ unberuehrt (skip-if-present)."
 echo "full-smoke: OK — FELDLISTE (slice-098/LH-FA-10): $FELDLISTE_REL liegt in BEIDEN Bootstrap-Varianten im geprueften Doku-Bereich, fuehrt die drei stehenden Grenz-Saetze und deckt jeden Feldnamen der real geschriebenen Span-Zeile; ein toter Verweis darin faerbt das docs-check des Ziels rot (Ortswahl belegt); ein 2. Init-Lauf heilt eine von Hand geaenderte Fassung (konvergent, die einzige Zusage des Dokuments ueber sich selbst)."
 echo "full-smoke: OK — ARCHIVIERUNG IM ZIEL (ADR-0033 Festlegung 4 und 5): make archive-welle ist kein Gate und steht in keiner gates-Kette; ein Name daneben, den kein Fragment fuehrt, endet laut statt still; die zwei Sperren [untergrenze] und [haenger] halten den Aufruf auf, ueber demselben Bestand ohne sie laeuft die Operation real (Archiv + Stubs aus der vendored Vorlage), und ohne Traeger meldet das Kommando die Abwesenheit mit Exit 0."
-echo "full-smoke: OK — TRAEGER-FETCH IM ZIEL (ADR-0058): im frischen Klon eines gebootstrappten Repos bleibt der Fehlt-Fall der Konsumenten unangetastet (Exit 0, nennt das Fehlende, schreibt nichts — der Fetch ist kein Prerequisite); make traeger-fetch legt den Traeger per Fetch aus dem gepinnten Release real ab, ausfuehrbar, den Digest vor der Ablage verifiziert (Transport im gepinnten Bild, kein curl auf dem Host, LH-QA-03); ein verdrehter sha256-Pin bricht denselben Aufruf nach einmal Laden laut mit der Digest-Abweichung und laesst den liegenden Traeger unangetastet. Die Konsumenten-Haelfte (archive-welle laeuft mit dem gefetchten Traeger) misst diese Stufe NICHT — der gepinnte Stand v0.1.1 fuehrt das Unterkommando nicht; der Release-Schnitt traegt die Kopplung (ADR-0058 Festlegung 2, Folgepflicht 3)."
+echo "full-smoke: OK — TRAEGER-FETCH IM ZIEL (ADR-0058): im frischen Klon eines gebootstrappten Repos bleibt der Fehlt-Fall der Konsumenten unangetastet (Exit 0, nennt das Fehlende, schreibt nichts — der Fetch ist kein Prerequisite); make traeger-fetch legt den Traeger per Fetch aus dem gepinnten Release real ab, ausfuehrbar, den Digest vor der Ablage verifiziert (Transport im gepinnten Bild, kein curl auf dem Host, LH-QA-03); ein verdrehter sha256-Pin bricht denselben Aufruf nach einmal Laden laut mit der Digest-Abweichung und laesst den liegenden Traeger unangetastet; der gefetchte Traeger fuehrt den Konsumenten-Aufruf real — die Archivierung laeuft ueber einer geschlossenen Welle und meldet den Vollzug mit Archiv und Stubs; und ein Unterkommando, das der Traeger nicht fuehrt, bricht den Aufruf laut mit der Argument-Sperre statt still in den Init-Pfad zu starten (ADR-0058 Festlegung 2) — der v0.1.1-Stand ohne diese Sperren startete in derselben Lage still, die Kopplung Pin zu Werkzeug-Fassung traegt der Release-Schnitt (Festlegung 2, Folgepflicht 3)."
 echo "full-smoke: OK — LIFECYCLE-WECHSEL IM ZIEL: make slice-mv ist kein Gate und steht in keiner gates-Kette; der Aufruf bewegt den Slice, legt den reinen Move als eigenen Commit an (0 insertions/0 deletions gegen den Verweis-Nachzug getrennt) und zieht beide Richtungen nach — den eingehenden Praefix-Verweis der Nachbar-Datei und das praefixlose Geschwister-Ziel in der bewegten Datei; eine ADR bleibt nach der Repo-Politik des Fragments unberuehrt; ueber einem unsauberen Arbeitsbaum bricht der Aufruf ab, nennt es und bewegt nichts; ohne jeden Verweis bleibt es beim einen Move-Commit; und ohne das Werkzeug bricht das Ziel laut ab, statt still auf ein fehlendes Programm zu zeigen."
 echo "full-smoke: OK — COMMIT-KENNUNG IM ZIEL: .githooks/commit-msg liegt ausfuehrbar im Ziel und reist mit dem Klon, seine Aktivierung nicht — make hooks-install setzt core.hooksPath und ist kein Gate (steht in keiner gates-Kette); danach faellt ein Commit OHNE Kennung mit der Meldung der Pruefung und entsteht nicht, einer MIT Kennung geht durch, und git commit --no-verify umgeht den Traeger; die Reichweite (Umgehung, Anwesenheit-statt-Wahrheit, die von keinem Commit-Waechter pruefbare zweite Haelfte der Zusage, die mitgenommenen Werkzeug-Commits) steht im Ziel geschrieben."
 echo "full-smoke: OK — KLASSE DES COMMIT-TRAEGERS (ADR-0054 Festlegung 1 und 3): der Traeger liegt skip-if-present und die Pruefung daneben konvergent — ein FREIER Pfad bekommt den Traeger des Werkzeugs (er liegt ausfuehrbar im Ziel und ruft die Pruefung daneben), ein BELEGTER bleibt Byte fuer Byte unberuehrt und der Lauf nennt Pfad und mitgelieferte Pruefung; die Drift der Pruefung heilte der naechste Lauf, die des Traegers blieb stehen."
