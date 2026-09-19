@@ -44,7 +44,7 @@ der Spec-Text beschreibt den Output, den der Generator nach dem Vollzug legt.
 (CLI · API · Messaging)"* und *„`internal/adapters/outbound/<typ>/<area>/` Port-Implementierung
 (Persistenz · Notify · …)"* werden zu `driving`/`driven`; (ii) die **flachen** `ports`-Ordner der
 drei Ebenen bekommen die `inbound`/`outbound`-Gliederung; (iii) die Kanten-Menge über der einen Ports- und der einen Adapter-Schicht
-wird durch das Referenz-Kanten-Set ersetzt — `driving_adapters→ports` kommt, die `adapters→app`-
+wird durch das Referenz-Kanten-Set ersetzt — `driving_adapters→ports_inbound` kommt, die `driving_adapters→app`-
 Kante fällt in der Teilung (Festlegung 4). Alles andere jener Festlegung bindet unverändert fort:
 die Schichten-Tragung (`domain`, `application` als vertikale Use-Case-Slices mit
 `command`/`query`/`handler`/`validator`/`result`), die **inward-only-Logik**, der
@@ -267,10 +267,10 @@ Regeln dieser Sektion: **mindestens drei Optionen mit Pro/Contra** — „nichts
   ist die kanonische Quelle, Tool-als-Quelle): die Ordner-Namen, die Ports-Achse oder die
   Kanten-Menge sind gegen die Referenz neu zu wägen, und der Abstand zwischen Kurs und Emission
   ist zu schließen oder zu benennen.
-- **Wenn das hexslice-Gate die `port-direction-mismatch`-Grading einschaltet** — der Moment, in
-  dem eine Ports-Schicht ihre Richtung tragen kann (ein single-direction Slice, oder der
-  a-check scopet das Richtungs-Segment weg): dann wird die Adapter-Hälfte aus Festlegung 3
-  enforceable, und die Inert-Entscheidung ist neu zu fassen.
+- **Wenn der portScope-Fix sich zurücknimmt oder das Grading wieder infrage gestellt wird** (ein
+  a-check-Downgrade oder ein Config-Drift): die Richtung aus Festlegung 3 verliert ihren lebenden
+  Träger — sie ist mit a-check v0.20.0 gesetzt und nicht opt-in, und ein Zurück auf die Inert-
+  Form wäre eine Neufassung mit eigenem Beleg.
 - **Wenn die `adapters→app`-Kante gebraucht wird** — ein Adapter importiert einen Slice direkt:
   sie kommt **im selben Commit** (die Referenz-Formel), und der Abstand zur Referenz-Form ist neu
   zu benennen.
