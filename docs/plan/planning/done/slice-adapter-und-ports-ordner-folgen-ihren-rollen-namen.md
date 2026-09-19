@@ -327,7 +327,7 @@ dasteht.
   Folgepflicht 3 ist unvollständig: die Prosa-Stellen tragen die neue Form
   (`spec/architecture.md:172-177`, `:218-220`), die Zelle
   (`spec/architecture.md:97`) nicht (gemessen, Verifikation V-3). —
-  **Ausgang:** *eingetreten* → Architect-Posten (§3.8), Adresse: `ADR-0060`
+  **Ausgang:** *eingetreten* → Architect-Posten (§3.8), Adresse: [`ADR-0060`](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
   Folgepflicht 3, Zelle `spec/architecture.md:97`.
 - **Der Zahn-Kommentar behauptet einen Rot-Beleg, den es nicht gibt** —
   `internal/gen/archgate_test.go:227-232` verweist auf eine Listedung, die es
@@ -357,7 +357,7 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   CLI-Adapter-Port inbound") ist beantwortet: erfüllt — der Port liegt im
   Baum, der treibende Adapter importiert ihn, die Config deklariert die neuen
   Kanten; die Verfeinerung 1 wurde übergangen, nicht still — die Lieferung
-  ist die Erweiterung gegen sie, getragen vom `Accepted` `ADR-0060`.
+  ist die Erweiterung gegen sie, getragen vom `Accepted` [`ADR-0060`](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md).
 - **Was ging anders als geplant:** der Plan schneidete zuerst das falsche
   Layout (Fundstellen im hexslice-Renderer, §1 schloss hexslice aus, zwei
   `Accepted`-ADRs widersprachen) — der Implementer blockierte, statt zu
@@ -379,7 +379,7 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   (Die drei stummen Mutations-Fälle und der Zahn-Kommentar folgen der
   re-geschnittenen Config-Form) — ist eine Datei in `open/`.
 - **Risiken aus §6:** jedes mit genau einem Ausgang — Bestand → *entfallen*
-  (ADR-0060 trägt die Heilung), Rollen-Kommentare → *entfallen* (im Baum
+  ([`ADR-0060`](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md) trägt die Heilung), Rollen-Kommentare → *entfallen* (im Baum
   geprüft), C++-Namespaces → *entfallen* (Test hält die vier Stellen),
   Zielordner-Kante → *entfallen* (Slice geschlossen), falsches Layout →
   *entfallen* ([`ADR-0060`](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)), Mutations-Fälle → *weiter offen* (Folge-Slice),
