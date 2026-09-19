@@ -1,4 +1,5 @@
 # MR-053 — Ein Eintrag datiert seine Werkzeug-Aussage, statt den lebenden Pin zu führen
+> **ÜBERHOLT: die Zeile `d-check:` der §Baseline samt dem Zitat ihrer Setzung 1 → [`MR-070`](../conventions.md#mr-070--die-baseline-trägt-den-pin-nicht-als-kopie--der-zustand-steht-am-ort-des-gegenstands).** Die Setzung bindet fort: der lebende Pin hat einen Ort — `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`), per go-Test gekoppelt `internal/emit/emit.go` — und kein Eintrag dieses Blocks ist er; der Ort steht am Gegenstand, nicht in der §Baseline.
 
 - **Datum:** 2026-09-05
 - **Wirksamkeits-Anlass:** slice-187.
