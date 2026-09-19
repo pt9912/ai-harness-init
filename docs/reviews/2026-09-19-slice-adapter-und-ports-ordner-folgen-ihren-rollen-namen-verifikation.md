@@ -1,7 +1,7 @@
 # Verifikation: slice-adapter-und-ports-ordner-folgen-ihren-rollen-namen
 
 **Rolle:** Verifier (Modul 11) · **Datum:** 2026-09-19 · **Kopf:** `387b5210`
-**Eingabe:** Slice-Plan (`docs/plan/planning/in-progress/slice-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md`) · [ADR-0060](../plan/adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md) (`Accepted`) · [ADR-0009](../plan/adr/0009-hexslice-arch-realisierung.md) mit dem Index-Zusatz an seiner Zeile. Geprüft wurde gegen Plan und ADRs — **nicht** gegen die Review-Reports (Rollen-Trennung, Modul 8).
+**Eingabe:** Slice-Plan (`docs/plan/planning/done/slice-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md`) · [ADR-0060](../plan/adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md) (`Accepted`) · [ADR-0009](../plan/adr/0009-hexslice-arch-realisierung.md) mit dem Index-Zusatz an seiner Zeile. Geprüft wurde gegen Plan und ADRs — **nicht** gegen die Review-Reports (Rollen-Trennung, Modul 8).
 
 **Sensor-Basis dieses Laufs (selbst gefahren):** `make full-smoke` → EXIT 0; `make test` → EXIT 0; `make e2e-abdeckung` → exit 0, `git diff --stat docs/user/e2e-abdeckung.md` → leer. **Nicht wiederholt** (am Kopf gemessen): `make gates` grün, `make docs-check` 1753/0. `make mutate` **nicht gefahren** (nächtliche Stufe, ~50 min) — die Zähne sind statisch gegen ihre Muster gemessen (Befund V-1).
 
