@@ -10,9 +10,9 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Konvention:** AI-Harness-Kurs
 - **Stand:** `v6.9.0`
 - **Regelwerk + Templates:** committet vendored unter
-  `.harness/baseline/v6.9.0/` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); Regelwerks-Stand laut
-  `regelwerk/README.md`: **Kurs-Welle 137 · 2026-09-16**
-  (`sed -n '3p' .harness/baseline/v6.9.0/regelwerk/README.md`).
+  `.harness/baseline/v6.9.0/` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); der Regelwerks-Stand
+  steht im vendored Baum selbst — `regelwerk/README.md` trägt ihn
+  (`sed -n '3p' .harness/baseline/v6.9.0/regelwerk/README.md` liest ihn).
 - **d-check:** der lebende Pin steht in `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`) und, per
   go-Test daran gekoppelt, in `internal/emit/emit.go`; dass kein Eintrag dieses Blocks eine
   zweite Fassung führt, setzt
