@@ -116,7 +116,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1 — Adapter-Ordner:** das hexslice-Skelett beider
+- [x] **Liefer-Punkt 1 — Adapter-Ordner:** das hexslice-Skelett beider
       Renderer legt seine Adapter unter `driving`/`driven` an — Go
       (`internal/gen/golang.go`: Skelett-Pfaden `:83-85`,
       Composition-Root-Imports `:450-452`, Kopf `:47`) und C++
@@ -127,35 +127,35 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Namensraum. Rote Gegenprobe: legt das Skeleton `inbound` an, färbt der
       Renderer-Test (`internal/gen/hexslice_test.go:36-38`,
       `internal/gen/cpp_test.go:182-184`/`:240-242`) rot.
-- [ ] **Liefer-Punkt 2 — Ports-Gliederung:** die flachen `ports`-Ordner
+- [x] **Liefer-Punkt 2 — Ports-Gliederung:** die flachen `ports`-Ordner
       bekommen `ports/{inbound,outbound}/` nach der Rollen-Zuordnung, die
       [`ADR-0060`](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
       Festlegung 2 trägt — der Repository-Port outbound, der CLI-Adapter-Port
       inbound. Rote Gegenprobe: ein Port ohne inbound/outbound-Zuordnung
       färbt den Renderer-Test rot — die Zuordnung ist an der Stelle geprüft,
       an der die Ordner entstehen, nicht in einem Kommentar.
-- [ ] **Liefer-Punkt 3 — Arch-Gate-Config wandert mit:** der Glob und die
+- [x] **Liefer-Punkt 3 — Arch-Gate-Config wandert mit:** der Glob und die
       Rollen-Zuordnungen tragen die neuen Ordner, und der Rot-Beleg steht
       gegen den Gate-Test (`internal/gen/archgate_test.go:91-93`) — der
       Punkt, an dem der Fix in die geprüfte Schicht wirkt. Rote Gegenprobe:
       hält die Config am alten Glob (`internal/adapters/**`), färbt der
       archgate-Test rot — das Skelett ist nicht mehr dort, wo der Gate
       prüft.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist (das
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist (das
       Skelett-Layout im Handbuch bzw. der Nutzer-Doku, falls er es nennt).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen
       Brownfield-Bootstrap und führt die Register-Datei nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschritten — neues
+- [x] Beobachtungs-Register (`../observations/`) fortgeschritten — neues
       Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen
       `evidence/`; **kein Zähler wird gesetzt**, er folgt aus den Dateien.
       Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7
       notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
       Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der
@@ -287,17 +287,20 @@ dasteht.
 - **Bestand gebootstrappter Ziele trägt das alte Skelett** — ein Ziel, das
   `v0.2.1` gebootstrapped hat, führt `adapters/{inbound,outbound}`; sein
   Arch-Gate prüft die alten Ordner, während künftige Bootstraps die neuen
-  anlegen. Ausgang: weiter offen → Sichtung bei der Closure; eingetreten →
-  Folge-Slice (Bestands-Migration oder Doku-Hinweis am Fetch).
+  anlegen. — **Ausgang:** *entfallen* →
+  [`ADR-0060`](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
+  trägt die Heilung eines Bestands-Ziels (die Heilung eines Ziels ist ein
+  Re-Lauf, kein zweiter Fetch-Weg).
 - **Die Rollen-Zuordnung steht in Code-Kommentaren** — die Gliederung zieht in
   den Baum, und die Kommentar-Aussagen (Repository-Port outbound,
   „erfüllt den Area-Port durch VERERBUNG") müssen mit der neuen Struktur
-  konsistent bleiben. Ausgang: entfallen, wenn das Review die Zuordnung im
-  Baum gegen die Kommentare geprüft hat; sonst weiter offen → Sichtung.
+  konsistent bleiben. — **Ausgang:** *entfallen* → die Zuordnung ist im Baum
+  geprüft (Verifikation: die drei Achsen erfüllt, die Config deklariert die
+  neuen Kanten; der C++-Kommentar trägt die Kopplung wörtlich weiter).
 - **Die C++-Namespaces sind vier Stellen** — (:299, :309, :332, :339) samt
   Kopf; eine übersehene Stelle bricht erst im C++-Build des Ziel-Skeletts.
-  Gegenbeispiel ist `internal/gen/cpp_test.go` — Ausgang: entfallen, wenn der
-  Test die vier Stellen hält; sonst weiter offen.
+  — **Ausgang:** *entfallen* → der C++-Test hält die vier Stellen
+  (Verifikation: Achse 1 erfüllt am C++-Renderer mit eigener Messung).
 - **Der Zielordner-Slice rührt denselben Träger-Kreis** — sein Dispatch-Griff
   und dieser Renderer-Fix berühren die Aufruf-Ebene. — **Ausgang:**
   *entfallen* → der Zielordner-Slice ist geschlossen; die Kante hat sich mit
@@ -308,6 +311,29 @@ dasteht.
   (Proposed, gepusht) trägt die Ports-Achse (Festlegung 2) und entscheidet
   den Ziel-Layout-Schnitt: hexslice ist der Gegenstand; der Blocker des
   Übergangs ist entfallen.
+- **Drei gelistete Mutations-Fälle sind stumm** — die Config-Re-Schnitte
+  änderten die Literale, auf deren Muster die Fälle **68, 71, 96** ihre sed
+  fahren; alle drei sind No-Ops, `make mutate` würde dort BEFUND melden
+  (gemessen, [Verifikations-Report](../../../../docs/reviews/2026-09-19-slice-adapter-und-ports-ordner-folgen-ihren-rollen-namen-verifikation.md)
+  V-1, statisch gegen ihre Muster). — **Ausgang:** *weiter offen* →
+  `slice-stumme-mutations-faelle-folgen-der-config-form` (Datei in `open/`).
+- **Das Handbuch weist den Adopter auf einen Layer nach, den die Config nicht
+  führt** — `docs/user/benutzerhandbuch.md:298` verweist auf „unter `ports`";
+  der pausierte Nachzug trägt die Stelle, seine Menge wächst auf fünf Posten.
+  — **Ausgang:** *weiter offen* → der Nachzug-Slice nennt die Stelle neu
+  (Adresse: `benutzerhandbuch.md:298`, Richtung `ports_inbound`/`ports_outbound`).
+- **Die `ARC-009`-Zelle trägt die neuen Ordner nicht** —
+  [`ADR-0060`](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
+  Folgepflicht 3 ist unvollständig: die Prosa-Stellen tragen die neue Form
+  (`spec/architecture.md:172-177`, `:218-220`), die Zelle
+  (`spec/architecture.md:97`) nicht (gemessen, Verifikation V-3). —
+  **Ausgang:** *eingetreten* → Architect-Posten (§3.8), Adresse: `ADR-0060`
+  Folgepflicht 3, Zelle `spec/architecture.md:97`.
+- **Der Zahn-Kommentar behauptet einen Rot-Beleg, den es nicht gibt** —
+  `internal/gen/archgate_test.go:227-232` verweist auf eine Listedung, die es
+  nicht gibt; der Rot-Beleg selbst steht (Runde 2, Rot-Probe (c)) —
+  gemessen, Verifikation V-4. — **Ausgang:** *weiter offen* →
+  `slice-stumme-mutations-faelle-folgen-der-config-form` (mit V-1).
 
 ## 7. Closure-Notiz
 
@@ -323,17 +349,43 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu
-  angelegt, Beleg
-  `evidence/slice-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md` |
-  `evidence/slice-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md` in
-  `BEO-<KUERZEL>/<slug>/` ergänzt — Zähler steht damit bei <N>x | keine
-  Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
+- **Was hat funktioniert:** der Blocker-Zug nach `open` mit nachgetragenem
+  Grund, der Re-Schnitt auf die gemessene Layout-Achse mit
+  [`ADR-0060`](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
+  als tragender Mechanik — der Verifier trägt alle drei Achsen mit eigenen
+  Messungen (kein DoD-Bruch), und der DoD-Konflikt (Plan §2 „der
+  CLI-Adapter-Port inbound") ist beantwortet: erfüllt — der Port liegt im
+  Baum, der treibende Adapter importiert ihn, die Config deklariert die neuen
+  Kanten; die Verfeinerung 1 wurde übergangen, nicht still — die Lieferung
+  ist die Erweiterung gegen sie, getragen vom `Accepted` `ADR-0060`.
+- **Was ging anders als geplant:** der Plan schneidete zuerst das falsche
+  Layout (Fundstellen im hexslice-Renderer, §1 schloss hexslice aus, zwei
+  `Accepted`-ADRs widersprachen) — der Implementer blockierte, statt zu
+  bauen, und der Lifecycle-Zug ging nach `open`. Die Ursache trägt
+  `BEO-ALL/dod-testzeile-verortet-verhalten-in-der-falschen-stufe` als
+  zweiter Beleg.
+- **Steering-Loop-Eintrag:** geschärfte Regel für die Plan-Anlage: „die
+  Plan-Anlage misst das Ziel-Layout, bevor sie Fundstellen schneidet" —
+  gezählt, nicht verkörpert; die Klasse
+  `BEO-ALL/dod-testzeile-verortet-verhalten-in-der-falschen-stufe` trägt 2×,
+  die Verkörperung fällt dem Lese-Schritt zu, wenn die Klasse 3× erreicht
+  (kein `liegt in`-Feld — kein Zielort vor der Verkörperung).
+- **Beobachtungs-Register (`../observations/`):** keine Beobachtung
+  angefallen — der bestehende Beleg
+  (`BEO-ALL/dod-testzeile-verortet-verhalten-in-der-falschen-stufe/evidence/slice-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md`)
+  trägt diesen Vorgang bereits (Zählerstand 2×); die Zählregel „ein Vorgang
+  zählt einmal" legt keinen zweiten Beleg an.
+- **Folge-Slices:** `slice-stumme-mutations-faelle-folgen-der-config-form`
+  (Die drei stummen Mutations-Fälle und der Zahn-Kommentar folgen der
+  re-geschnittenen Config-Form) — ist eine Datei in `open/`.
+- **Risiken aus §6:** jedes mit genau einem Ausgang — Bestand → *entfallen*
+  (ADR-0060 trägt die Heilung), Rollen-Kommentare → *entfallen* (im Baum
+  geprüft), C++-Namespaces → *entfallen* (Test hält die vier Stellen),
+  Zielordner-Kante → *entfallen* (Slice geschlossen), falsches Layout →
+  *entfallen* (ADR-0060), Mutations-Fälle → *weiter offen* (Folge-Slice),
+  Handbuch-Adresse → *weiter offen* (Nachzug, fünf Posten), `ARC-009`-Zelle →
+  *eingetreten* (Architect-Posten, ADR-0060 Folgepflicht 3),
+  Zahn-Kommentar → *weiter offen* (Folge-Slice, mit V-1).
 - **Drei Paarungen:** Anker · Folge-Slice · Register, Ergebnis
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
