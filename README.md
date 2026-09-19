@@ -14,11 +14,15 @@ Nacharbeit. Für Teams, die den Prozess nicht von Hand zusammenkopieren wollen.
 Repo netzunabhängig). Eine Go-Installation ist nicht nötig, alles läuft in Docker. Die ausführliche
 Schritt-für-Schritt-Anleitung steht im [Benutzerhandbuch](docs/user/benutzerhandbuch.md).
 
-**Ein Repo aufsetzen** — in ein frisch mit `git init` angelegtes Verzeichnis:
+**Ein Repo aufsetzen** — der Zielordner als Argument benennt das frisch mit `git init`
+angelegte Verzeichnis; der Aufruf läuft aus jedem Verzeichnis:
 
 ```bash
-ai-harness-init --lang go --name "Mein Projekt"
+ai-harness-init <zielordner> --lang go --name "Mein Projekt"
 ```
+
+Ohne Zielordner bricht der Aufruf mit dem Usage-Text ab, statt still das Verzeichnis
+einzurichten, in dem er steht.
 
 Danach läuft dort `make gates` **out-of-the-box grün**: Prozess-Regeln, Vorlagen, Prüfungen und ein
 lauffähiges Go-Grundgerüst sind eingerichtet, nichts ist nachzuarbeiten. Ohne `--lang` entsteht ein

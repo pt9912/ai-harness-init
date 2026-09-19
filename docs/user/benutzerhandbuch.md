@@ -157,7 +157,7 @@ So setzen Sie ein neues Projekt in unter einer Minute auf:
 ```bash
 mkdir mein-projekt && cd mein-projekt
 git init
-ai-harness-init --lang go --name "Mein Projekt"
+ai-harness-init <zielordner> --lang go --name "Mein Projekt"
 ```
 
 Anschließend prüfen Sie, dass alles grün ist:
@@ -194,21 +194,17 @@ Dieser Abschnitt beschreibt die häufigsten Aufgaben Schritt für Schritt.
 
 **Vorgehen**
 
-1. Wechseln Sie in Ihr Projektverzeichnis:
+1. Führen Sie das Werkzeug mit Zielordner, Sprache und Projektnamen aus — der
+   Zielordner als Argument benennt das zu einrichtende Git-Repo, der Aufruf läuft
+   darum aus jedem Verzeichnis:
 
    ```bash
-   cd mein-projekt
-   ```
-
-2. Führen Sie das Werkzeug mit Sprache und Projektnamen aus:
-
-   ```bash
-   ai-harness-init --lang go --name "Mein Projekt"
+   ai-harness-init <zielordner> --lang go --name "Mein Projekt"
    ```
 
 **Ergebnis:** Das Verzeichnis enthält jetzt Regelwerk, Vorlagen, Prüf-Konfiguration und ein Go-Grundgerüst (siehe [Was wird angelegt](#6-was-wird-angelegt)). Der Platzhalter für den Projektnamen ist durch „Mein Projekt“ ersetzt.
 
-**Hinweise:** Der Aufruf braucht **einmalig** Netzwerk (Regelwerk-Download). `--lang` ist **optional** — ohne Sprache setzt das Werkzeug ein rein dokumentgeführtes Repository auf (siehe [Ohne Sprache aufsetzen](#ohne-sprache-aufsetzen-doc-only)). Den Aufruf können Sie gefahrlos wiederholen (siehe [Ein Repository erneut aufsetzen](#ein-repository-erneut-aufsetzen-idempotent)).
+**Hinweise:** Der Aufruf braucht **einmalig** Netzwerk (Regelwerk-Download). `<zielordner>` ist **Pflicht** — ohne ihn bricht der Aufruf mit dem Usage-Text ab, statt still das Verzeichnis einzurichten, in dem er steht; das Ziel muss ein bestehendes Git-Repo sein (`.git` vorhanden), sonst bricht er ebenfalls ab. `--lang` ist **optional** — ohne Sprache setzt das Werkzeug ein rein dokumentgeführtes Repository auf (siehe [Ohne Sprache aufsetzen](#ohne-sprache-aufsetzen-doc-only)). Den Aufruf können Sie gefahrlos wiederholen (siehe [Ein Repository erneut aufsetzen](#ein-repository-erneut-aufsetzen-idempotent)).
 
 ### Ohne Projektnamen aufsetzen
 
@@ -217,7 +213,7 @@ Dieser Abschnitt beschreibt die häufigsten Aufgaben Schritt für Schritt.
 **Vorgehen**
 
 ```bash
-ai-harness-init --lang go
+ai-harness-init <zielordner> --lang go
 ```
 
 **Ergebnis:** Das Repository wird aufgesetzt, aber der Platzhalter `<Projektname>` bleibt in den Vorlagen stehen. Sie können ihn später von Hand ersetzen. `--name` ist optional.
@@ -229,7 +225,7 @@ ai-harness-init --lang go
 **Vorgehen**
 
 ```bash
-ai-harness-init --name "Mein Projekt"
+ai-harness-init <zielordner> --name "Mein Projekt"
 ```
 
 **Ergebnis:** Das Repository erhält Regelwerk, Vorlagen, Prüf-Konfiguration und die automatischen Schutz-Hooks (Command-Guard) — **aber kein Sprach-Grundgerüst**. `make gates` läuft dokument-only grün (Dokumentations-Prüfung + Regelwerk-Verifikation), ohne Kompilier-/Test-/Linter-Schritt. Ein Sprachmodul fügen Sie später mit `add-lang` hinzu (siehe unten).
@@ -324,7 +320,7 @@ make gates
 **Vorgehen** — einfach denselben Aufruf wiederholen:
 
 ```bash
-ai-harness-init --lang go --name "Mein Projekt"
+ai-harness-init <zielordner> --lang go --name "Mein Projekt"
 ```
 
 **Ergebnis:** Der Lauf ist **idempotent** (Exit-Code 0). Die werkzeug-eigene Infrastruktur (Prüf-Konfiguration, Hooks, die zentrale `Makefile`, Regelwerk) wird auf den Soll-Stand **aufgefrischt**, den dieses Programm mitbringt — das heilt Abweichungen, holt aber **denselben** Kurs-Stand wie beim ersten Lauf. **Von Ihnen gefüllte Dateien** — die Dokumente unter `spec/`, `README.md`, `AGENTS.md`, Ihr Quellcode im Grundgerüst (`go.mod`, `cmd/app/main.go` …) — bleiben **unangetastet**.
@@ -338,7 +334,7 @@ ai-harness-init --lang go --name "Mein Projekt"
 **Vorgehen**
 
 ```bash
-COURSE_TAG=v3.5.2 ai-harness-init --lang go --name "Mein Projekt"
+COURSE_TAG=v3.5.2 ai-harness-init <zielordner> --lang go --name "Mein Projekt"
 ```
 
 **Ergebnis:** Das Regelwerk wird vom angegebenen Kurs-Stand geholt. Ohne die Variable wird der im Werkzeug festgelegte, geprüfte Stand verwendet.
@@ -352,7 +348,7 @@ COURSE_TAG=v3.5.2 ai-harness-init --lang go --name "Mein Projekt"
 **Vorgehen**
 
 ```bash
-SKEL_GO_VERSION=1.26.4 ai-harness-init --lang go --name "Mein Projekt"
+SKEL_GO_VERSION=1.26.4 ai-harness-init <zielordner> --lang go --name "Mein Projekt"
 ```
 
 **Ergebnis:** Das erzeugte Grundgerüst (`Dockerfile`, `go.mod`) verwendet die angegebene Go-Version. Ohne die Variable gilt die festgelegte Standard-Version.
@@ -398,7 +394,7 @@ Alle Umgebungsvariablen sind **optional**. Ohne sie gelten festgelegte, reproduz
 Beispiel mit mehreren Variablen:
 
 ```bash
-COURSE_TAG=v3.5.2 SKEL_GO_VERSION=1.26.4 ai-harness-init --lang go --name "Mein Projekt"
+COURSE_TAG=v3.5.2 SKEL_GO_VERSION=1.26.4 ai-harness-init <zielordner> --lang go --name "Mein Projekt"
 ```
 
 ---
@@ -409,7 +405,7 @@ Der Bootstrap läuft in **Phasen**: Ein **Aufsetzen ohne Sprache** legt die doku
 
 ### Phase 1 — Aufsetzen ohne Sprache (dokument-only)
 
-`ai-harness-init --name "Mein Projekt"` (ohne `--lang`) legt die sprach-unabhängige Basis an (leere Prozess-Ordner werden mit einer `.gitkeep`-Datei gehalten, damit `git` sie behält):
+`ai-harness-init <zielordner> --name "Mein Projekt"` (ohne `--lang`) legt die sprach-unabhängige Basis an (leere Prozess-Ordner werden mit einer `.gitkeep`-Datei gehalten, damit `git` sie behält):
 
 ```text
 mein-projekt/
@@ -455,7 +451,7 @@ Alle Fehler von `ai-harness-init` beginnen auf der Fehlerausgabe mit `Fehler:` u
 **Lösung:** Verwenden Sie eine der aufgelisteten Sprachen. Derzeit sind das `go` und `cpp`:
 
 ```bash
-ai-harness-init --lang cpp
+ai-harness-init <zielordner> --lang cpp
 ```
 
 ### Fehler: `kein Aggregator (Makefile) — zuerst ai-harness-init (Init) im Repo laufen lassen`
@@ -465,7 +461,7 @@ ai-harness-init --lang cpp
 **Lösung:** Setzen Sie das Repository zuerst auf (mit oder ohne Sprache), dann `add-lang`:
 
 ```bash
-ai-harness-init --name "Mein Projekt"
+ai-harness-init <zielordner> --name "Mein Projekt"
 ai-harness-init add-lang go apps/api
 ```
 

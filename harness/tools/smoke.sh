@@ -37,7 +37,7 @@ echo "smoke: 1/5 natives Release-Binary auf den Host extrahieren (make artifact)
 make artifact DEST="$tmpbin" GO_VERSION="$GO_VERSION"
 
 echo "smoke: 2/5 Bootstrap (--lang go): Doc-Gate + Templates + Skelett-Generierung (lokal) ..."
-( cd "$tmprepo" && "$tmpbin/ai-harness-init" --lang go --name smoke )
+( "$tmpbin/ai-harness-init" "$tmprepo" --lang go --name smoke )
 
 echo "smoke: 3/5 Skelett an den Ziel-Root verdrahtet? (slice-004b) + Templates emittiert? (slice-022b) ..."
 if [ ! -f "$tmprepo/Makefile" ] || [ ! -f "$tmprepo/go.mod" ]; then

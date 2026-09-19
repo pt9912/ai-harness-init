@@ -34,12 +34,20 @@ import (
 const usage = `ai-harness-init — bootstrappt ein Git-Repo mit dem AI-Harness-Prozess.
 
 Verwendung:
-  ai-harness-init [--lang <sprache>] [--arch <arch>] [--name <name>]
+  ai-harness-init [--lang <sprache>] [--arch <arch>] [--name <name>] <zielordner>
   ai-harness-init add-lang <sprache> <pfad> [--arch <arch>]
   ai-harness-init span-emit
   ai-harness-init span-report [<ablageort>]
   ai-harness-init archive-welle [--vorschau] <welle-id>
   ai-harness-init vendor-baseline <tag> <sha256>
+
+<zielordner> ist das Git-Repo, das der Init-Bootstrap einrichtet — er loest sein
+Ziel aus DIESEM Argument, nie aus dem Arbeitsverzeichnis. Das Standard-flag-Paket
+parst Flags nur vor dem ersten Positionsargument: Flags stehen darum vor dem
+Zielordner. Ohne Argument bricht der Lauf LAUT mit dieser Usage ab (Exit 2,
+fail-closed) — er startet keinen stillen Init-Pfad gegen das Repo, in dem er
+steht. Der Zielordner muss ein bestehendes Git-Repo sein; alles andere bricht
+ebenfalls laut (Exit 2), bevor etwas geschrieben wird.
 
 Der Init-Lauf ist IDEMPOTENT (ADR-0007): ein zweiter Lauf ist Exit 0 — tool-eigene
 Infrastruktur wird kanonisch neu geschrieben (heilt Drift), adopter-gefuellte Dateien
@@ -113,19 +121,29 @@ type sources struct {
 	archMK emit.PrintMK
 }
 
-// run parst die Argumente und liefert den Exit-Code. Ein-/Ausgabe, Zielverzeichnis
-// und die Netz-Quellen sind injiziert, damit die Fehler- und Emit-Pfade ohne
-// Prozess-Exit, ohne CWD-Mutation und ohne Netz testbar sind. Exit-Codes:
-// 0 = Erfolg, 2 = Aufruf-/Argument-Fehler (Usage), 1 = Emit-Fehler zur Laufzeit.
+// run parst die Argumente und liefert den Exit-Code. Ein-/Ausgabe, das
+// Arbeitsverzeichnis des add-lang-Zweigs und die Netz-Quellen sind injiziert, damit
+// die Fehler- und Emit-Pfade ohne Prozess-Exit, ohne CWD-Mutation und ohne Netz
+// testbar sind. Exit-Codes: 0 = Erfolg, 2 = Aufruf-/Argument-Fehler (Usage),
+// 1 = Emit-Fehler zur Laufzeit.
+//
+// DER INIT-PFAD LOEST SEIN ZIEL AUS DEM ARGUMENT, NICHT AUS targetDir (LH-FA-01):
+// der erste Positionsargument IST der Zielordner, und bootstrap() richtet das
+// Git-Repo dort ein. Ohne Positionsargument bricht der Lauf laut mit der Usage ab
+// (fail-closed) — es gibt keinen Default mehr, der still aufs Arbeitsverzeichnis
+// faellt. targetDir ist damit der Kanal des add-lang-Zweigs: `add-lang` richtet
+// sein Modul am bereits gebootstrappten Repo des Arbeitsverzeichnisses ein; fuer
+// den Init-Pfad bleibt der Parameter unbenutzt, und run() nimmt ihn nur noch
+// fuer add-lang entgegen.
 //
 // GRENZE: vier Unterkommandos erreichen diese Funktion nicht — die zwei der
 // ERFASSUNG (`span-emit`, `span-report`), `archive-welle` und
 // `vendor-baseline`; main() zweigt sie vorher ab. Fuer den Schreiber ist die
-// Stelle tragend (seine Klemme muss den ganzen Prozess ueberdecken), fuer die
-// drei anderen ist sie es nicht: sie loesen ihre Repo-Wurzel selbst auf, statt
-// das targetDir dieser Funktion zu nehmen. Wer run() direkt mit einem ihrer
-// Namen ruft, bekommt Exit 2 — hier ist der Name ein Positionsargument, und
-// der Init-Pfad nimmt keines.
+// Stelle tragend (seine Klemme muss den ganzen Prozess ueberdecken). Fuer die
+// drei anderen loesen ihre Repo-Wurzel sich selbst auf — `add-lang` nimmt das
+// injizierte Arbeitsverzeichnis. Wer run() direkt mit einem der vier Namen ruft,
+// bekommt Exit 2 — hier ist der Name ein Positionsargument, und mehr als eines
+// ist ein Aufruf-Fehler.
 func run(args []string, targetDir string, src sources, stdout, stderr io.Writer) int {
 	// Subkommando-Dispatch (slice-037): `add-lang <sprache> <pfad>` ist der wiederholbare
 	// Mono-Repo-Pfad; alles andere ist der Default-Init. Die Unterscheidung steht VOR dem
@@ -153,30 +171,57 @@ func run(args []string, targetDir string, src sources, stdout, stderr io.Writer)
 		return 2
 	}
 
-	// ZUSAGE: der Init-Pfad nimmt Flags und sonst nichts. Was fs.Parse als
-	// Positionsargument stehen laesst, endet hier mit Exit 2, und bootstrap()
-	// unten laeuft nicht. Das ist die Sperre fuer den vertippten
-	// Unterkommando-Namen: `archive-well` trifft den switch in main() nicht und
-	// kommt hier an, und dahinter legt bootstrap() ein Repo im
-	// Arbeitsverzeichnis an — mit Exit 0, also ununterscheidbar von einem
-	// gelungenen Aufruf. Die Aufrufer, die solche Namen aus einer zweiten Quelle
-	// beziehen, sind das Makefile-Ziel `archive-welle` und die Hooks in
-	// `.claude/settings.json`; beide Quellen haelt
-	// test/unterkommando-kopplung.bats an den Dispatch in main(). Am Hook-Kanal
-	// ist der Exit 2 von hier zugleich der Wert, mit dem ein Hook blockiert — die
+	// ZIELORDNER (LH-FA-01): der erste Positionsargument IST das Ziel-Repo, das der
+	// Init-Bootstrap einrichtet; sein Ziel loest sich aus DEM Argument, nie aus dem
+	// Arbeitsverzeichnis. OHNE Positionsargument bricht der Lauf LAUT mit der Usage
+	// ab (Exit 2, fail-closed) — er faellt NICHT aufs Arbeitsverzeichnis zurueck und
+	// startet keinen stillen Init-Pfad gegen das Repo, in dem der Traeger steht:
+	// der Defekt der Register-Beobachtung
+	// ohne-argument-startet-das-werkzeug-den-init-pfad (BEO-ALL) ist hier
+	// geschlossen. TestRun_OhneZielordnerBrichtLaut haelt die Meldung und die
+	// Leere des Ziels, TestUnfallVektor_OhneArgumentImRepoWurzel den Vektor am
+	// Prozess.
+	//
+	// MEHR ALS EIN Positionsargument ist ein Aufruf-Fehler, und die Meldung nennt
+	// das Token. Das ist die Sperre fuer den vertippten Unterkommando-Namen in der
+	// Form mit Extra-Argument (`archive-welle` ohne e, plus welle-id): der Name
+	// trifft den switch in main() nicht und kommt hier als zweites Positionsargument
+	// an. Die Sperre fuer die Form OHNE Extra-Argument lebt im Git-Repo-Check unten
+	// — ein vertippter Name ohne Extra-Argument ist dort kein bestehendes Git-Repo
+	// und bricht ebenso laut, nichts geschrieben. Die Aufrufer, die solche Namen aus
+	// einer zweiten Quelle beziehen, sind das Makefile-Ziel `archive-welle` und die
+	// Hooks in `.claude/settings.json`; beide Quellen haelt
+	// test/unterkommando-kopplung.bats an den Dispatch in main(). Am Hook-Kanal ist
+	// der Exit 2 von hier zugleich der Wert, mit dem ein Hook blockiert — die
 	// Klemme aus ADR-0011 Festlegung 6 sitzt in spanEmit() und liegt dahinter
-	// (s. den Block in main()).
-	// Gedeckt von TestInitPfadNimmtKeinPositionsargument (netzlos, direkt an
-	// run()) und TestSubkommandoRouting_UnbekannterNameSchreibtNicht (der
-	// Traeger als Prozess in einem leeren Verzeichnis);
-	// test/mutations/253-archive-welle-go-init-pfad-positionsargument.sh nimmt
-	// sie weg.
+	// (s. den Block in main()). Gedeckt von TestInitPfadNimmtKeinPositionsargument;
+	// test/mutations/253-archive-welle-go-init-pfad-positionsargument.sh nimmt die
+	// Mehrfach-Sperre weg.
 	//
 	// ABGRENZUNG: der Name wird nicht auf Aehnlichkeit zu einem bekannten
-	// geprueft und keiner erraten. Die Meldung nennt das Token und druckt die
-	// Usage, die jedes Unterkommando fuehrt (TestUsageNenntAlleVierUnterkommandos).
-	if fs.NArg() > 0 {
-		fmt.Fprintf(stderr, "Fehler: unbekanntes Argument %q — der Init-Pfad nimmt nur Flags; Unterkommandos siehe unten\n", fs.Arg(0))
+	// geprueft und keiner erraten. Ein einzelnes Positionsargument wird als
+	// Zielordner gelesen — ein Name, der wie ein Unterkommando aussieht, ist damit
+	// ein gueltiger Zielordner-Name; die Meldung des Mehrfach-Falls nennt das Token
+	// und druckt die Usage, die jedes Unterkommando fuehrt
+	// (TestUsageNenntAlleVierUnterkommandos).
+	if fs.NArg() == 0 {
+		fmt.Fprintln(stderr, "Fehler: kein Zielordner angegeben — der Init-Bootstrap loest sein Ziel aus dem Argument, nicht aus dem Arbeitsverzeichnis.")
+		fmt.Fprint(stderr, usage)
+		return 2
+	}
+	if fs.NArg() > 1 {
+		fmt.Fprintf(stderr, "Fehler: unbekanntes Argument %q — der Init-Pfad nimmt den Zielordner und sonst nur Flags; Unterkommandos siehe unten\n", fs.Arg(0))
+		fmt.Fprint(stderr, usage)
+		return 2
+	}
+
+	// Der Zielordner muss ein bestehendes Git-Repo sein (LH-FA-01): der Bootstrap
+	// richtet ein Git-Repo ein, kein freies Verzeichnis. Fail-closed VOR jedem
+	// Schreibzugriff — ein Nicht-Repo bricht laut mit Exit 2, und der Lauf
+	// beruehrt das Ziel nicht.
+	ziel := fs.Arg(0)
+	if !istGitRepo(ziel) {
+		fmt.Fprintf(stderr, "Fehler: Zielordner %q ist kein bestehendes Git-Repo (fehlendes oder unlesbares .git) — der Init-Bootstrap braucht eines.\n", ziel)
 		fmt.Fprint(stderr, usage)
 		return 2
 	}
@@ -187,7 +232,16 @@ func run(args []string, targetDir string, src sources, stdout, stderr io.Writer)
 	// das Code-Layout des Skeletts (Default flat = byte-identisch); ohne --lang ist es
 	// mangels Skelett inert. Unbekannte Sprache/Architektur und unbekannte Flags liefern
 	// weiter Exit 2 (via bootstrap/Parse).
-	return bootstrap(targetDir, *lang, *name, *arch, src, stdout, stderr)
+	return bootstrap(ziel, *lang, *name, *arch, src, stdout, stderr)
+}
+
+// istGitRepo meldet, ob dir die Wurzel eines bestehenden Git-Repos ist: ein
+// Verzeichnis, das einen .git-Eintrag traegt — Verzeichnis oder Datei, denn ein
+// Worktree fuehrt .git als Datei. Netzlos, ohne git-Aufruf, fail-closed Richtung
+// "kein Repo": ein unlesbarer oder fehlender Eintrag ist kein Repo.
+func istGitRepo(dir string) bool {
+	_, err := os.Stat(filepath.Join(dir, ".git"))
+	return err == nil
 }
 
 const addLangUsage = `ai-harness-init add-lang <sprache> <pfad> [--arch <arch>]
@@ -521,12 +575,14 @@ func main() {
 	// Prozesses (ADR-0022 Festlegung 2: ein Traeger, zwei Unterkommandos; der Hook
 	// dieses Repos ruft denselben Einstiegspunkt wie ein Zielrepo). Die Stelle ist
 	// tragend, nicht Stil: `span-emit` traegt seine Klemme selbst (ADR-0011
-	// Festlegung 6), und was VOR ihr liegt, deckt sie nicht. ZWEI Zweige liegen
-	// davor, und an einem Hook ist jeder von beiden ein Beobachter, der ueber den
-	// Lauf mitentscheidet: der os.Getwd()-Zweig unten endet mit einer Zeile auf
-	// stderr und Exit 1, und die Sperre in run() endet bei einem Positionsargument
-	// mit der Usage auf stderr und Exit 2 — dem Wert, mit dem ein Hook blockiert.
-	// Erreichbar ist die zweite ueber einen Namen, den dieser switch nicht fuehrt:
+	// Festlegung 6), und was VOR ihr liegt, deckt sie nicht. DREI Zweige liegen
+	// davor, und an einem Hook ist jeder von ihnen ein Beobachter, der ueber den
+	// Lauf mitentscheidet: der os.Getwd()-Zweig des add-lang-Falls endet mit einer
+	// Zeile auf stderr und Exit 1, die Mehrfach-Sperre in run() endet bei mehr als
+	// einem Positionsargument mit der Usage auf stderr und Exit 2, und der
+	// Git-Repo-Check dahinter bricht an einem Ziel ohne .git ebenfalls mit Exit 2 —
+	// dem Wert, mit dem ein Hook blockiert. Erreichbar sind die letzten beiden ueber
+	// einen Namen, den dieser switch nicht fuehrt:
 	// `.claude/settings.json` nennt `span-emit` aus zweiter Quelle und ruft den
 	// Traeger direkt, ohne das Wrapper-Skript, das ein emittiertes Repo bekommt.
 	// Die Namensgleichheit haelt test/unterkommando-kopplung.bats (der Fall ueber
@@ -535,8 +591,10 @@ func main() {
 	// test/mutations/258-span-emit-hook-ohne-unterkommando.sh (Name ganz weg) und
 	// test/mutations/260-span-emit-hook-name-mit-ziffer.sh (Name um ein Zeichen
 	// verlaengert, dessen Praefix ein gueltiger Name bleibt).
-	// Vor dem Flag-Parsing steht der Zweig wie `add-lang` (run()): beide tragen
-	// Positionsargumente, der Init nur Flags.
+	// Vor dem Flag-Parsing steht der add-lang-Zweig in run(): beide tragen
+	// Positionsargumente — der Init seinen Zielordner, add-lang sein Paar aus
+	// Sprache und Modul-Pfad —, darum dispatcht der switch beide Namen VOR dem
+	// Flag-Parsing.
 	//
 	// Ein Zahn bewacht hier genau eine Eigenschaft, und das ist das ROUTING: zeigt
 	// `span-emit` auf die Auswertung, faellt TestClampSurvivesBrokenPayload. Der Fall
@@ -549,12 +607,13 @@ func main() {
 	// span-check laeuft aus einem lesbaren Arbeitsverzeichnis, in dem os.Getwd() nie
 	// scheitert. Ein Zahn dafuer braeuchte einen Lauf des gebauten Binaers gegen ein
 	// GELOESCHTES Arbeitsverzeichnis — Kandidat, kein Bestand.
-	// Der dritte und der vierte Zweig — `archive-welle` (ADR-0033 Festlegung 1)
-	// und `vendor-baseline` — stehen im selben switch, aber NICHT aus demselben
-	// Grund: sie tragen keine Klemme, und ihre Position ist frei. Sie stehen
-	// hier, weil sie wie `span-report` ihre Repo-Wurzel selbst aufloesen und
-	// das targetDir von run() nicht brauchen — `vendor-baseline` legt den
-	// eigenen vendored Baum dieses Repos an, nicht den eines Zielrepos.
+	// Der Fuenfte Zweig ist `add-lang`: er loest als EINZIGER Zweig das
+	// Arbeitsverzeichnis auf — sein Modul-Pfad verortet sich am bereits
+	// gebootstrappten Repo des Arbeitsverzeichnisses, <pfad> ist der Modul-Pfad,
+	// nicht das Ziel. Der Init-Pfad loest sein Ziel NICHT aus dem
+	// Arbeitsverzeichnis: sein Ziel kommt aus dem Argument, und ohne Argument
+	// bricht run() laut ab. Die Faelle oben tragen ihre Klemmen selbst; was
+	// dahinter liegt, decken sie nicht.
 	if len(os.Args) > 1 {
 		switch os.Args[1] {
 		case "span-emit":
@@ -566,18 +625,32 @@ func main() {
 			os.Exit(archiveWelle(os.Args[2:], os.Stdout, os.Stderr))
 		case "vendor-baseline":
 			os.Exit(vendorBaseline(os.Args[2:], os.Stdout, os.Stderr))
+		case "add-lang":
+			wd, err := os.Getwd()
+			if err != nil {
+				fmt.Fprintln(os.Stderr, "Fehler: Arbeitsverzeichnis nicht bestimmbar:", err)
+				os.Exit(1)
+			}
+			os.Exit(run(os.Args[1:], wd, initSources(), os.Stdout, os.Stderr))
 		}
 	}
 
-	wd, err := os.Getwd()
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "Fehler: Arbeitsverzeichnis nicht bestimmbar:", err)
-		os.Exit(1)
-	}
-	src := sources{
+	// ZIEL-AUFLOESUNG AUS DEM ARGUMENT (LH-FA-01): os.Args[1] ist hier der
+	// Zielordner des Init-Bootstraps — oder es fehlt, und dann endet der Lauf in
+	// run() LAUT mit der Usage und Exit 2 (fail-closed). Der Init-Pfad richtet
+	// keinen stillen Lauf gegen das Repo ein, in dem der Traeger steht — derselbe
+	// Defekt, den die Register-Beobachtung
+	// ohne-argument-startet-das-werkzeug-den-init-pfad (BEO-ALL) traegt. Der
+	// Fall zum Aufruf ist TestUnfallVektor_OhneArgumentImRepoWurzel.
+	os.Exit(run(os.Args[1:], "", initSources(), os.Stdout, os.Stderr))
+}
+
+// initSources baut die Netz-Quellen des Init-Bootstraps an EINER Stelle — der
+// add-lang-Zweig und der Init-Pfad in main() teilen denselben Satz.
+func initSources() sources {
+	return sources{
 		baseline:    fetch.DownloadBaseline,
 		baselineSHA: envOr("BASELINE_SHA256", fetch.DefaultBaselineSHA256),
 		archMK:      emit.DockerPrintMK,
 	}
-	os.Exit(run(os.Args[1:], wd, src, os.Stdout, os.Stderr))
 }

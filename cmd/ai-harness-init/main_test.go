@@ -9,6 +9,7 @@ import (
 	"errors"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -77,6 +78,35 @@ func testSources(t *testing.T) sources {
 	return sources{baseline: asset, baselineSHA: sum, archMK: archMKFixture()}
 }
 
+// gitRepo legt ein temporaeres, leeres Git-Repo an. Der Zielordner des
+// Init-Bootstraps ist ein bestehendes Git-Repo (LH-FA-01), und der Check dafuer
+// ist Bestandteil der run()-Sperren — die Init-Faelle richten darum echte
+// Git-Repos ein, nicht freie Verzeichnisse.
+func gitRepo(t *testing.T) string {
+	t.Helper()
+	dir := t.TempDir()
+	cmd := exec.Command("git", "init", "-q", dir)
+	if out, err := cmd.CombinedOutput(); err != nil {
+		t.Fatalf("git init %s: %v\n%s", dir, err, out)
+	}
+	return dir
+}
+
+// dirEntries liest die Namen eines Verzeichnisses; die Unveraendertheit eines
+// stehenden Repos misst sie vor und nach dem Aufruf.
+func dirEntries(t *testing.T, dir string) []string {
+	t.Helper()
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		t.Fatalf("verzeichnis lesen %s: %v", dir, err)
+	}
+	namen := make([]string, 0, len(entries))
+	for _, e := range entries {
+		namen = append(namen, e.Name())
+	}
+	return namen
+}
+
 // TestRun deckt die Arg-Parser-Pfade von LH-FA-01 ab (Exit-Codes + korrekter Stream).
 // Der erfolgreiche Bootstrap ruft `docker run <d-check>` (Doc-Gate) — kein Unit-Fall;
 // er wird in Tier 2 (`make smoke`) verifiziert. Diese Fälle kehren vor dem Fetch/Emit zurück.
@@ -125,9 +155,9 @@ func TestRun(t *testing.T) {
 // hier hiesse, das alte --lang-Refuse ist zurueck. Rot-Gegenbeispiel: test/mutations/41
 // macht hasLang immer true -> sprachlos laeuft gen.Generate("") -> UnknownLangError -> Exit 2.
 func TestRun_SprachlosKeinExit2(t *testing.T) {
-	dir := t.TempDir()
+	dir := gitRepo(t)
 	var out, errb bytes.Buffer
-	code := run([]string{}, dir, testSources(t), &out, &errb) // KEIN --lang
+	code := run([]string{dir}, dir, testSources(t), &out, &errb) // Zielordner aus dem Argument, KEIN --lang
 	// Der Kern (slice-035): KEIN Exit 2 (das alte --lang-Refuse ist gefallen). Der Lauf
 	// laeuft sprach-agnostisch weiter und scheitert erst netzlos an DocGate (docker,
 	// im Test nicht vorhanden) -> Exit 1 — NICHT an einem --lang-Refuse. Seit slice-038
@@ -143,8 +173,9 @@ func TestRun_SprachlosKeinExit2(t *testing.T) {
 
 // TestRun_UnknownLang: unbekannte Sprache -> Exit 2 (Fetch-first, netzlos via Fixture).
 func TestRun_UnknownLang(t *testing.T) {
+	ziel := gitRepo(t)
 	var out, errb bytes.Buffer
-	code := run([]string{"--lang", "rust"}, t.TempDir(), testSources(t), &out, &errb)
+	code := run([]string{"--lang", "rust", ziel}, ziel, testSources(t), &out, &errb)
 	if code != 2 {
 		t.Errorf("Exit-Code = %d, want 2 (unbekannte Sprache)", code)
 	}
@@ -160,9 +191,9 @@ func TestRun_UnknownLang(t *testing.T) {
 // (wire.Place laeuft erst in Phase 3, nach DocGate, also hier nie).
 func TestRun_SkelGoVersionOverride(t *testing.T) {
 	t.Setenv("SKEL_GO_VERSION", "1.29.9")
-	dir := t.TempDir()
+	dir := gitRepo(t)
 	var out, errb bytes.Buffer
-	run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb)
+	run([]string{"--lang", "go", dir}, dir, testSources(t), &out, &errb)
 	df, err := os.ReadFile(filepath.Join(dir, ".harness", "skeleton", "Dockerfile"))
 	if err != nil {
 		t.Fatalf("generiertes Dockerfile lesen: %v", err)
@@ -177,9 +208,9 @@ func TestRun_SkelGoVersionOverride(t *testing.T) {
 // Beweist, dass skelVersion je Sprache den richtigen Env-Namen bildet — nicht mehr Go-fest.
 func TestRun_SkelCppVersionOverride(t *testing.T) {
 	t.Setenv("SKEL_CPP_VERSION", "22.04")
-	dir := t.TempDir()
+	dir := gitRepo(t)
 	var out, errb bytes.Buffer
-	run([]string{"--lang", "cpp"}, dir, testSources(t), &out, &errb)
+	run([]string{"--lang", "cpp", dir}, dir, testSources(t), &out, &errb)
 	df, err := os.ReadFile(filepath.Join(dir, ".harness", "skeleton", "Dockerfile"))
 	if err != nil {
 		t.Fatalf("generiertes cpp-Dockerfile lesen: %v", err)
@@ -197,9 +228,9 @@ func TestRun_SkelCppVersionOverride(t *testing.T) {
 // (Phase 2). Deshalb liegt die gefetchte templates/-Wurzel bereits im Ziel, und
 // templatesDir muss genau dorthin zeigen.
 func TestTemplatesDir_ZeigtAufDieGefetchteQuelle(t *testing.T) {
-	dir := t.TempDir()
+	dir := gitRepo(t)
 	var out, errb bytes.Buffer
-	run([]string{"--lang", "go"}, dir, testSources(t), &out, &errb)
+	run([]string{"--lang", "go", dir}, dir, testSources(t), &out, &errb)
 	// Die Baseline liegt jetzt im Ziel. Genau dorthin muss templatesDir zeigen —
 	// und dort muss der Wurzel-Anker liegen, den emit.Templates prueft.
 	src := templatesDir(dir, fetch.DefaultTag)
@@ -507,7 +538,8 @@ func TestRun_AddLangArchMixed(t *testing.T) {
 // Baseline-Fetch/Emit -> netzloser Unit-Fall.
 func TestRun_InitUnknownArch(t *testing.T) {
 	var out, errb bytes.Buffer
-	if code := run([]string{"--lang", "go", "--arch", "onion"}, t.TempDir(), testSources(t), &out, &errb); code != 2 {
+	ziel := gitRepo(t)
+	if code := run([]string{"--lang", "go", "--arch", "onion", ziel}, ziel, testSources(t), &out, &errb); code != 2 {
 		t.Fatalf("Init --arch onion exit %d, want 2: %q", code, errb.String())
 	}
 }
@@ -590,15 +622,24 @@ func TestRun_AddLangExcessArg(t *testing.T) {
 }
 
 // TestInitPfadNimmtKeinPositionsargument misst die Sperre in run() dort, wo sie
-// netzlos und eindeutig ist: ein Argument, das kein Flag ist, ist ein
-// Aufruf-Fehler (Exit 2), und das Zielverzeichnis bleibt leer.
+// netzlos und eindeutig ist: ein Vertippter Unterkommando-Name mit Extra-Argument
+// ist ein Aufruf-Fehler (Exit 2), der das Token nennt, und das Zielverzeichnis
+// bleibt leer.
 //
 // Der gemessene Eingang ist ein VERTIPPTER Unterkommando-Name. Er trifft weder
 // den switch in main() noch den add-lang-Zweig, kommt als Positionsargument bei
-// fs.Parse an — und ohne die Sperre laeuft dahinter der Bootstrap, der in das
-// Arbeitsverzeichnis SCHREIBT. Die Namen der drei Faelle sind die drei
-// Unterkommandos des Traegers, je um einen Buchstaben gekuerzt; sie stehen fuer
-// jeden Namen, den ein Aufrufer aus einer zweiten Quelle bezieht.
+// fs.Parse an — und ohne die Mehrfach-Sperre laege hinter dem ersten das Ziel des
+// Init-Bootstraps. Die Namen der drei Faelle sind die drei Unterkommandos des
+// Traegers, je um einen Buchstaben gekuerzt; sie stehen fuer jeden Namen, den ein
+// Aufrufer aus einer zweiten Quelle bezieht.
+//
+// DIE MEHRFACH-FORM ist der gemessene Fall: der Init-Pfad nimmt den Zielordner
+// und sonst nur Flags, mehr als ein Positionsargument ist der Fehler. Die
+// zweiteilige Sperre darunter: die Form OHNE Extra-Argument bricht am
+// Git-Repo-Check (ein vertippter Name ist dort kein bestehendes Git-Repo) —
+// derselbe Test misst sie mit und haelt die Meldung dagegen; unter einer
+// Mutation, die die Mehrfach-Sperre inert stellt, waere der Name sonst als
+// Zielordner gelesen worden und die Meldung eine andere.
 //
 // Die Verzeichnis-Pruefung ist die tragende: Exit 2 allein bekaeme man auch von
 // einem Bootstrap, der unterwegs scheitert.
@@ -611,6 +652,9 @@ func TestInitPfadNimmtKeinPositionsargument(t *testing.T) {
 			code := run([]string{arg, "welle-10"}, dir, testSources(t), &out, &errb)
 			if code != 2 {
 				t.Fatalf("Exit %d fuer %q, want 2 (Aufruf-Fehler) — der Name ist in run() ein Positionsargument, und dahinter liegt der schreibende Init-Pfad; stderr: %q", code, arg, errb.String())
+			}
+			if !strings.Contains(errb.String(), "unbekanntes Argument") {
+				t.Errorf("stderr nennt den Mehrfach-Fall nicht (unbekanntes Argument): %q", errb.String())
 			}
 			if !strings.Contains(errb.String(), arg) {
 				t.Errorf("stderr nennt das Token %q nicht: %q", arg, errb.String())
@@ -627,5 +671,176 @@ func TestInitPfadNimmtKeinPositionsargument(t *testing.T) {
 				t.Fatalf("Zielverzeichnis nach dem Aufruf = %v, want leer — der Aufruf ist in den schreibenden Init-Pfad durchgefallen", namen)
 			}
 		})
+		t.Run(arg+"-ohne-extra-argument", func(t *testing.T) {
+			dir := t.TempDir()
+			var out, errb bytes.Buffer
+			code := run([]string{arg}, dir, testSources(t), &out, &errb)
+			if code != 2 {
+				t.Fatalf("Exit %d fuer %q, want 2 — der vertippte Name ist kein bestehendes Git-Repo und bricht am Git-Repo-Check, laut; stderr: %q", code, arg, errb.String())
+			}
+			if !strings.Contains(errb.String(), "kein bestehendes Git-Repo") {
+				t.Errorf("stderr faellt am Git-Repo-Check aus: %q", errb.String())
+			}
+			eintraege, err := os.ReadDir(dir)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(eintraege) != 0 {
+				namen := make([]string, 0, len(eintraege))
+				for _, e := range eintraege {
+					namen = append(namen, e.Name())
+				}
+				t.Fatalf("Zielverzeichnis nach dem Aufruf = %v, want leer — der Aufruf ist in den schreibenden Init-Pfad durchgefallen", namen)
+			}
+		})
 	}
+}
+
+// TestRun_OhneZielordnerBrichtLaut misst die Leer-Argument-Sperre (LH-FA-01,
+// Register-Beobachtung ohne-argument-startet-das-werkzeug-den-init-pfad):
+// ohne Positionsargument endet der Init-Pfad LAUT mit der Usage (Exit 2,
+// fail-closed) und beruehrt kein Verzeichnis. Rot-Gegenprobe: faellt der Zweig
+// auf den stillen Init-Pfad zurueck, bootstrappt der Lauf das Ziel — die
+// Meldung und die Verzeichnis-Pruefung faerben rot
+// (test/mutations/377-init-argumentlos-stiller-init.sh am Prozess, Fall
+// TestUnfallVektor_OhneArgumentImRepoWurzel).
+func TestRun_OhneZielordnerBrichtLaut(t *testing.T) {
+	dir := t.TempDir()
+	var out, errb bytes.Buffer
+	code := run([]string{}, dir, testSources(t), &out, &errb)
+	if code != 2 {
+		t.Fatalf("Exit %d ohne Zielordner, want 2 (fail-closed) — der Init-Pfad faellt still auf das Arbeitsverzeichnis zurueck; stderr: %q", code, errb.String())
+	}
+	if !strings.Contains(errb.String(), "kein Zielordner") {
+		t.Errorf("stderr nennt den fehlenden Zielordner nicht: %q", errb.String())
+	}
+	if !strings.Contains(errb.String(), "Verwendung:") {
+		t.Errorf("stderr fuehrt die Usage nicht: %q", errb.String())
+	}
+	if out.Len() > 0 {
+		t.Errorf("stdout nicht leer: %q", out.String())
+	}
+	if n := len(dirEntries(t, dir)); n != 0 {
+		t.Fatalf("Zielverzeichnis nach dem Aufruf = %d Eintraege, want 0 — der Aufruf schreibt", n)
+	}
+}
+
+// TestRun_KeinGitRepoZielBrichtLaut misst die Ziel-Pruefung: ein Zielordner ohne
+// .git ist kein Bootstrap-Ziel (LH-FA-01), bricht laut mit Exit 2 und wird
+// nicht angefasst.
+func TestRun_KeinGitRepoZielBrichtLaut(t *testing.T) {
+	ziel := t.TempDir() // kein .git
+	var out, errb bytes.Buffer
+	code := run([]string{ziel}, ziel, testSources(t), &out, &errb)
+	if code != 2 {
+		t.Fatalf("Exit %d fuer Ziel ohne .git, want 2 (Aufruf-Fehler); stderr: %q", code, errb.String())
+	}
+	if !strings.Contains(errb.String(), "kein bestehendes Git-Repo") {
+		t.Errorf("stderr nennt den fehlenden Git-Repo-Status nicht: %q", errb.String())
+	}
+	if out.Len() > 0 {
+		t.Errorf("stdout nicht leer: %q", out.String())
+	}
+	if n := len(dirEntries(t, ziel)); n != 0 {
+		t.Fatalf("Ziel ohne .git nach dem Aufruf = %d Eintraege, want 0 — der Lauf schreibt", n)
+	}
+}
+
+// TestZielordner_AusDemArgument belegt die Ziel-Aufloesung (LH-FA-01): der
+// Bootstrap richtet das Repo unter dem ARGUMENT ein, nicht unter dem injizierten
+// targetDir — der Parameter ist fuer den Init-Pfad unbenutzt (der add-lang-Zweig
+// nimmt ihn, TestRun_AddLang* decken ihn). Der Lauf holt die Baseline-Fixture in
+// das Ziel und scheitert netzlos an DocGate (docker fehlt in der Stufe, Exit 1);
+// die Baseline liegt trotzdem unter dem Zielordner aus dem Argument, und das
+// injizierte Verzeichnis bleibt unangetastet. Rot-Gegenprobe: loest der Init-Pfad
+// sein Ziel wieder aus targetDir, faerbt die Baseline-Pruefung rot.
+func TestZielordner_AusDemArgument(t *testing.T) {
+	ziel := gitRepo(t)
+	injiziert := t.TempDir()
+	var out, errb bytes.Buffer
+	code := run([]string{ziel}, injiziert, testSources(t), &out, &errb)
+	if _, err := os.Stat(filepath.Join(ziel, ".harness", "baseline", fetch.DefaultTag)); err != nil {
+		t.Errorf("Baseline nicht unter dem Zielordner aus dem Argument (%s): %v", ziel, err)
+	}
+	if n := len(dirEntries(t, injiziert)); n != 0 {
+		t.Errorf("das injizierte targetDir wurde angefasst (%d Eintraege), want 0", n)
+	}
+	if code == 2 {
+		t.Errorf("Exit 2 — der Zielordner aus dem Argument wurde nicht als Ziel genommen; stderr: %q", errb.String())
+	}
+}
+
+// TestUnfallVektor_OhneArgumentImRepoWurzel misst den Unfall-Vektor am PROZESS,
+// nicht geerbt aus der Unfall-Erinnerung (Slice-Plan §5): der Aufruf, der den
+// Unfall fuhr — Traeger ohne Argument, gestanden im Repo-Wurzel-Verzeichnis eines
+// Git-Repos —, endet laut (Exit 2, Usage auf stderr, stdout leer) und OHNE
+// Schaden: das stehende Repo bleibt unangetastet. Vor dem Feature legte derselbe
+// Aufruf einen Bootstrap im stehenden Repo an (Register-Beobachtung
+// BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad).
+//
+// Rot-Gegenprobe 1 (stiller Init-Pfad zurueck, test/mutations/377): der Aufruf
+// bootstrappt das stehende Repo — die Verzeichnis-Pruefung faerbt rot.
+// Rot-Gegenprobe 2 (geschwaechte Zusicherung: bricht, aber schreibt): der Zweig
+// druckt die Usage und bootstrappt TROTZDEM — Exit-Code und Meldung stimmen, und
+// die Verzeichnis-Pruefung bleibt rot. Beide von Hand gefahren.
+func TestUnfallVektor_OhneArgumentImRepoWurzel(t *testing.T) {
+	bin := filepath.Join(t.TempDir(), "ai-harness-init")
+	// "." — der Test laeuft IM Paketverzeichnis; der Bau baut genau dieses Command.
+	build := exec.Command("go", "build", "-o", bin, ".")
+	if out, err := build.CombinedOutput(); err != nil {
+		t.Fatalf("go build: %v\n%s", err, out)
+	}
+	repo := gitRepo(t)
+	if err := os.WriteFile(filepath.Join(repo, "Makefile"), []byte("include harness/mk/*.mk\n"), 0o644); err != nil {
+		t.Fatalf("Bestand im stehenden Repo anlegen: %v", err)
+	}
+	vorher := dirEntries(t, repo)
+	var out, errb bytes.Buffer
+	cmd := exec.Command(bin)
+	cmd.Dir = repo
+	cmd.Stdout = &out
+	cmd.Stderr = &errb
+	err := cmd.Run()
+	exitCode := 0
+	if err != nil {
+		var ee *exec.ExitError
+		if !errors.As(err, &ee) {
+			t.Fatalf("Prozess: %v", err)
+		}
+		exitCode = ee.ExitCode()
+	}
+	if exitCode != 2 {
+		t.Errorf("Exit %d ohne Argument, want 2 (fail-closed); stderr: %q", exitCode, errb.String())
+	}
+	if !strings.Contains(errb.String(), "kein Zielordner") {
+		t.Errorf("stderr nennt den fehlenden Zielordner nicht: %q", errb.String())
+	}
+	if !strings.Contains(errb.String(), "Verwendung:") {
+		t.Errorf("stderr fuehrt die Usage nicht: %q", errb.String())
+	}
+	if out.Len() > 0 {
+		t.Errorf("stdout nicht leer: %q", out.String())
+	}
+	nach := dirEntries(t, repo)
+	if !sameEntries(vorher, nach) {
+		t.Fatalf("das stehende Repo wurde angefasst: vorher %v, nachher %v — der Unfall fuhr wieder", vorher, nach)
+	}
+}
+
+// sameEntries vergleicht zwei Verzeichnis-Bestaende als Mengen der Namen.
+func sameEntries(a, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	zaehler := make(map[string]int, len(a))
+	for _, n := range a {
+		zaehler[n]++
+	}
+	for _, n := range b {
+		zaehler[n]--
+		if zaehler[n] < 0 {
+			return false
+		}
+	}
+	return true
 }
