@@ -1,6 +1,6 @@
 # ADR-0060: Die Adapter- und Ports-Ordner des hexslice-Skeletts folgen ihren Rollen-Namen — `driving`/`driven`, die Ports gegliedert
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-19
 
@@ -287,6 +287,7 @@ Regeln dieser Sektion: **mindestens drei Optionen mit Pro/Contra** — „nichts
 | 2026-09-19 | **Proposed** | Architect-Lauf zur hexslice-Skeleton-Struktur, ausgelöst durch die Setzung des Auftraggebers (der ADR-0009-Autor) — die Ordner folgen ihren Rollen-Namen, die Ports tragen die Gliederung statt flach zu liegen. Die Teil-Ablösung von [ADR-0009](0009-hexslice-arch-realisierung.md) Festlegung 2 ist auf die zwei Gegenstände geschnitten |
 | 2026-09-19 | **Überarbeitet, weiter Proposed** | Reviewer-Runde 1 zum blockierten Fix-Slice, Befund F-1 (HIGH, merge-blockierend am Accept-Übergang): Festlegung 2 (inbound materialisiert) und Festlegung 4 (fünf Kanten verbatim) konkurrierten, und die kanonische Referenz löst den Konflikt in der Gegenrichtung. Ende-zu-Ende gemessen (`lab/examples/go`): das Kanten-Set, die abwesende `driving_adapters→app`-Kante, der Port-Import des treibenden Adapters, die Ports-Gliederung und die inert bleibende `direction:`-Hälfte. Festlegungen 2, 3 und 4 sind gegen die Referenz neu geschnitten; der Supersedes-Gegenstand trägt die Kanten-Menge als dritten Gegenstand. Der Accept-Übergang geht gegen einen neuen Review-Lauf |
 | 2026-09-19 | **Überarbeitet, weiter Proposed** | Reviewer-Runde 2 (Commit `936b1d84`), Befund F-1 (HIGH, am Accept-Übergang): die emittierte Config deckt die **v0.20.0**-Referenz exakt — 6 Layer, `direction:` auf Port- und Adapter-Schichten, 6 Kanten — und konkurriert mit den Festlegungen 3/4 der ersten Fassung, die am Referenz-Stand vor der Anpassung geschnitten waren; die portScope-Ablehnung (Option C) ist von derselben Anpassung aufgelöst. Festlegungen 3 und 4 sind gegen die v0.20.0-Referenz neu geschnitten; die Zeitlinie (Re-Schnitt `929f288e` → Referenz-Anpassung → `34c9e446`) steht in §Kontext. **Der Accept-Beleg ist nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 die erneute Runde derselben prüfenden Rolle** — die Runde 2 hat blockiert und kann ihn nicht tragen; der Übergang folgt auf sie |
+| 2026-09-19 | **Accepted** | Beleg nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 ist die Reviewer-Runde `2026-09-19-adr-0060-accept-nachrunde-runde-4` — die erneute Runde derselben prüfenden Rolle nach der blockierenden Runde 3, erster Lauf nach den zwei Fixes, Report ohne blockierenden Befund; der LOW der Runde 4 (die zwei Namens-Stellen) ist im Inhalts-Commit davor gezogen. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes ADR-0060`. |
 
 **Acceptance-Trigger:** Diese Entscheidung wird `Accepted`, wenn eine Reviewer-Runde sie gegen
 [ADR-0009](0009-hexslice-arch-realisierung.md),
