@@ -127,7 +127,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1 — Prozedur:** `releasing.md` existiert und
+- [x] **Liefer-Punkt 1 — Prozedur:** `releasing.md` existiert und
       trägt die Prozedur in der Form, die die Rang-6-Zuordnung trägt:
       Assets bauen (`make release-artifacts`), Digests messen, `SHA256SUMS`
       erzeugen und als siebtes Asset publizieren, Tag-Kopplung im selben
@@ -144,7 +144,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       HTTP 404 auf die SUMS-URL) ist **benannte Lücke, nicht gemessen** — ihr
       Konstruktions-Weg wäre ein Release ohne SUMS-Asset, und ein solches
       trägt kein existierendes Release.
-- [ ] **Liefer-Punkt 2 — Verdrahtung:** die Datei ist adressierbar —
+- [x] **Liefer-Punkt 2 — Verdrahtung:** die Datei ist adressierbar —
       [`harness/README.md`](../../../../README.md) §Source precedence führt
       Rang 6 als Verzeichnis `docs/user/` (Ziel-Form geprüft: keine
       Datei-Liste nötig); die Berührungs-Stellen im Handbuch sind als Adresse
@@ -154,7 +154,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       `target-missing` — die Mechanik, die jeden fehlenden Link in diesem
       Planungs-Tree bricht; die grüne Richtung wird von jedem Lauf dieses
       Plans belegt.
-- [ ] **Liefer-Punkt 3 — Belegbasis-Abschnitt:** `releasing.md` trägt einen
+- [x] **Liefer-Punkt 3 — Belegbasis-Abschnitt:** `releasing.md` trägt einen
       Abschnitt, der die Klasse benennt — ein ge-tagter/gepushter Stand ohne
       Gates-Beleg — mit den drei Fundstellen als Anker (siehe §1), in der
       Zustandsform ([`AGENTS.md`](../../../../AGENTS.md) §3.7: Zustand und
@@ -163,25 +163,35 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       als Pfad oder Kennung, der nicht auflöst, färbt `make docs-check` rot —
       Grenze: die Zustandsform selbst ist keinem Sensor unterworfen; sie wird
       vom Review geprüft, nicht vom Gate.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update für die Release-Prozedur, falls ein öffentlicher Vertrag
+- [x] Doku-Update für die Release-Prozedur, falls ein öffentlicher Vertrag
       berührt ist (Liefer-Punkt 2).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen
       Brownfield-Bootstrap und führt die Register-Datei nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschritten — neues
+- [x] Beobachtungs-Register (`../observations/`) fortgeschritten — neues
       Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen
       `evidence/`; **kein Zähler wird gesetzt**, er folgt aus den Dateien.
       Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7
       notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
       Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der
       nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+
+**Belege der Häkchen (Closure):** die drei Liefer-Punkte — Verifikations-Report
+([`docs/reviews/2026-09-19-slice-releasing-doku-traegt-den-release-vorgang-verifikation.md`](../../../../docs/reviews/2026-09-19-slice-releasing-doku-traegt-den-release-vorgang-verifikation.md),
+je Abschnitt „Liefer-Punkt N …: erfüllt"); `make gates` grün — der
+aufgezeichnete Lauf am Verifikations-Kopf `ce64c4a0` (Stop-Hook-Zustand) und
+der Closure-Lauf dieser Closure (Working-Tree-Hash-Nachweis über
+`make record-gates`); Review — der Report der Runde 1
+([`docs/reviews/2026-09-19-slice-releasing-doku-traegt-den-release-vorgang-runde-1.md`](../../../../docs/reviews/2026-09-19-slice-releasing-doku-traegt-den-release-vorgang-runde-1.md)),
+nicht merge-blockierend; die Closure-Häkchen darunter — §6 und §7 dieser
+Datei.
 
 ## 3. Plan (vor Code)
 
@@ -249,9 +259,14 @@ dasteht.
 
 - **Die zwei Disziplin-Zeilen sind Prozedur ohne Sensor** — kein Gate hält
   sie; ein Release-Lauf kann beide überspringen, und die Datei wäre trotzdem
-  grün. Ausgang: weiter offen → Sichtung bei der Closure; erreicht die Klasse
-  dabei die Schwelle, weist §7 (Folge-Slice: ein Sensor, der den Tag gegen den
-  Gates-Beleg hält, oder Carveout).
+  grün. — **Ausgang:** *weiter offen* → die Klasse ins
+  [Beobachtungs-Register](../observations/BEO-ALL/prozedur-zeile-traegt-disziplin-ohne-sensor/observation.md)
+  (neu angelegt in diesem Vorgang, Stand *offen*, 1×, Beleg
+  `evidence/slice-releasing-doku-traegt-den-release-vorgang.md`) — die Klasse
+  „eine Prozedur-Zeile trägt die Disziplin, kein Sensor fängt ihren Bruch"
+  steht unter der Schwelle; ein Wächter für die Schritt-Folge wäre Regel-Arbeit
+  des Architects ([`AGENTS.md`](../../../../AGENTS.md) §3.8) und bekommt seine
+  Adresse im Lese-Schritt, wenn die Klasse die Schwelle erreicht.
 - **Die Klasse ist dreimal gefallen und trägt keinen Register-Eintrag** — die
   Zählregel „ein Vorgang zählt einmal" verlangt die Fund→Vorgang-Zuordnung;
   sie ist im
@@ -262,13 +277,21 @@ dasteht.
 - **Die tragenden ADRs sind Proposed** — trägt die Datei die Festlegungen von
   [`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
   und [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md),
-  kippt eine davon, driftet die Datei gegen ihren Grund. Ausgang: weiter offen
-  bis zum Accept; der Accept fällt mit der Closure des jeweiligen Slices.
+  kippt eine davon, driftet die Datei gegen ihren Grund. — **Ausgang:**
+  *entfallen* → beide tragenden ADRs tragen `**Status:** Accepted` (gemessen
+  je Datei, Zeile 3, mit `grep -m1 '^\*\*Status'
+  docs/plan/adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md
+  docs/plan/adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md`);
+  die Befund-Lage, die dieses Risiko trug, besteht nicht mehr.
 - **Der pausierte Handbuch-Nachzug verliert seine Adresse** — verschieben sich
   die Berührungs-Stellen im
   [`benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md), zeigt die
-  Pause ins Leere. Ausgang: weiter offen → der Nachzug-Slice nennt die Stellen
-  neu; bis dahin trägt Liefer-Punkt 2 die aktuelle Adresse.
+  Pause ins Leere. — **Ausgang:** *weiter offen* → die Adresse des pausierten
+  Nachzugs ist §1 dieses Plans (Out-of-Scope, *Bestand bleibt bewusst
+  stehen*); die aktuellen Berührungs-Stellen trägt `releasing.md` (Schritt 5,
+  Start-Prüfung; Grenze mit ihrem ADR-Anker-Paar). Der Nachzug liegt nicht als
+  Slice-Datei — eine Kennung für ihn wird nicht erfunden; er bekommt seine
+  Adresse bei seiner eigenen Anlage.
 
 ## 7. Closure-Notiz
 
@@ -284,17 +307,72 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu
-  angelegt, Beleg `evidence/slice-releasing-doku-traegt-den-release-vorgang.md` |
-  `evidence/slice-releasing-doku-traegt-den-release-vorgang.md` in
-  `BEO-<KUERZEL>/<slug>/` ergänzt — Zähler steht damit bei <N>x | keine
-  Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** Anker · Folge-Slice · Register, Ergebnis
+- **Was hat funktioniert:** Die Prozedur steht am Ort des Vorgangs:
+  `releasing.md` trägt die sieben Schritte samt der zwei Disziplin-Zeilen als
+  harte Schritte (Schritte 4 und 6, in der Schritt-Folge, keine Box daneben),
+  die Belegbasis benennt die Klasse „ein ge-tagter/gepushter Stand trägt
+  keinen Gates-Beleg" mit den drei Fundstellen als Anker in der Zustandsform,
+  und die Grenze (kein Signier-Schritt) trägt
+  [`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
+  und
+  [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
+  als ihren Grund. Die drei Liefer-Punkte sind im Verifikations-Report Punkt
+  für Punkt belegt, kein DoD-Bruch; das Review der Runde 1 ist nicht
+  merge-blockierend.
+- **Was ging anders als geplant:** Die Plan-Korrekturen trafen den Plan, nicht
+  die Lieferung, und sind gezogen: die Fundstelle 3 des Plans verwechselte die
+  Pin-Commit-Position `77471f53` mit der Tag-Position `28337be5`; die erste
+  Disziplin-Position des Plans setzte eine Publikations-Reihenfolge voraus,
+  die die Mechanik nicht führt — der tag-getriebene Lauf publiziert erst nach
+  dem Push, die Datei hält die Semantik der Position (Schritt 4 vor Schritt
+  5); die V-1-Gegenprobe stand als „gemessen … HTTP 404, curl-Exit 22" ohne
+  auflösbaren Beleg und ist auf die gemessene Abweichungs-Klasse
+  (`test/traeger-fetch.bats:174`) zurückgenommen — die Fehlt-Form steht als
+  benannte Lücke, nicht gemessen; die Start-Prüfung adressiert den
+  [`benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md)
+  §Systemanforderungen. Die Grenz-Zeile der Belegbasis trug einen
+  Abwesenheits-Halbsatz (F-1) — gezogen `ce64c4a0`.
+- **Steering-Loop-Eintrag:** die benannte Spec-Lücke des Vorläufers
+  `slice-release-schnitt-koppelt-pin-und-fassung` (dessen §7: der
+  Release-Vorgang liegt in keinem Artefakt) ist mit der Lieferung geschlossen —
+  der Vorgang liegt in `releasing.md`. Die Form, die die zwei
+  Disziplin-Zeilen tragen (harte Schritte in der Schritt-Folge statt Box), ist
+  die Lernform dieses Slices; würde aus ihr eine Regel — ein Wächter für die
+  Schritt-Folge oder eine Vorlagen-Regel für Prozedur-Pläne —, wäre das
+  Regel-Arbeit des Architects, nicht Closure
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8): die Klasse hängt am
+  Beobachtungs-Register-Eintrag unten und bekommt ihren Ausgang im
+  Lese-Schritt, wenn sie die Schwelle erreicht; bis dahin ist kein
+  Folge-Vorgang geschnitten.
+- **Beobachtungs-Register (`../observations/`):**
+  [`BEO-ALL/prozedur-zeile-traegt-disziplin-ohne-sensor/`](../observations/BEO-ALL/prozedur-zeile-traegt-disziplin-ohne-sensor/observation.md)
+  neu angelegt, Beleg
+  `evidence/slice-releasing-doku-traegt-den-release-vorgang.md` — die Klasse
+  „eine Prozedur-Zeile trägt die Disziplin, kein Sensor fängt ihren Bruch"
+  trägt ihre Kennung (1×). Kein neuer Beleg für
+  `BEO-ALL/ge-tagter-stand-traegt-keinen-gates-beleg` — die drei Fundstellen
+  liegen im Vorgang `slice-release-schnitt-koppelt-pin-und-fassung`, derselbe
+  Vorgang, der den bestehenden Beleg trägt (1×, unverändert); die zwei
+  Übergaben des Laufs (V-1, die planseitigen INFO-Posten) sind planseitig
+  gezogen und tragen keinen Eintrag. Lese-Schritt: kein Eintrag erreichte mit
+  diesem Vorgang die 3×-Schwelle.
+- **Folge-Slices:** keine — die zwei offenen Ausgänge tragen ihre Orte (der
+  Register-Eintrag oben; die Adresse des pausierten Handbuch-Nachzugs steht in
+  §1, Out-of-Scope), und keine Schwelle verlangt einen Folge-Slice.
+- **Risiken aus §6:** die zwei Disziplin-Zeilen *weiter offen* → Register ·
+  Fund→Vorgang-Zuordnung *entfallen* (Klassen-Beleg) · tragende ADRs
+  *entfallen* (beide `**Status:** Accepted`) · pausierter Handbuch-Nachzug
+  *weiter offen* → Adresse in §1 — siehe §6.
+- **Drei Paarungen:** Anker — kein Eintrag in §7 trägt das Feld `liegt in`
+  (die Spec-Lücke ist mit der Lieferung selbst geschlossen, ihre Adresse ist
+  `releasing.md`, Liefer-Punkt 1); die Paarung hat kein Objekt. ·
+  Folge-Slice — keine Kennung genannt; die Paarung hat kein Objekt. ·
+  Register — die in §6 und §7 genannten Beobachtungen existieren als
+  Verzeichnisse (`BEO-ALL/ge-tagter-stand-traegt-keinen-gates-beleg`,
+  `BEO-ALL/prozedur-zeile-traegt-disziplin-ohne-sensor`,
+  `BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad`), jedes trägt
+  mindestens einen Beleg; geprüft im Paarungs-Lauf der Closure nach dem
+  `git mv`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
