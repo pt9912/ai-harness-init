@@ -66,7 +66,7 @@ diese Liste ist der Lauf nicht reproduzierbar):
 | Rest-Referenzen der gebrochenen Form | `sha256sum -c dist` steht außerhalb `docs/reviews/` nirgends im Baum — die alte Form lebt nur noch in den Zeitdokumenten der Runden 1–2 |
 | Commit-Form `f2d51ddb` | Rolle Implementation in der Message, eigene Kennungen (`ADR-0059`, `LH-QA-04`), ein Commit; die Message-Behauptungen (Ruheort, Aufrufer, Menge in beide Richtungen, GNU/BusyBox-Grenze) decken sich mit dem gemessenen Zustand — ausgenommen die „dieselbe Pruefung"-Stelle (M-1) |
 | Plan §3 zur SUMS-Mechanik | geprüft, ohne Befund — der Plan-Text („reisende SUMS, fail-closed vor dem Upload, die Prüfung liest nur das Verzeichnis") deckt sich mit dem Zustand nach dem Commit |
-| GRENZE-Notiz im Skript-Kopf | geprüft, ohne Befund — Indikativ über die echte Grenze (GNU ohne `--strict`: Warnung, Exit 0 — durch die eigene GNU-Probe bestätigt; `--strict` fehlt im bats-Bild), die Form-Haltung am Skript folgt daraus, der `-c`-Lauf trägt den Inhalt |
+| GRENZE-Notiz im Skript-Kopf | geprüft, ohne Befund — Indikativ über die echte Grenze: GNU hält eine improper Zeile ohne `--strict` als Warnung durch (Exit 0), und `--strict` fehlt im bats-Bild — durch die eigene GNU-Probe bestätigt; die Form-Haltung am Skript folgt daraus, der Lauf über `sha256sum -c` trägt den Inhalt |
 
 ## Summary
 
