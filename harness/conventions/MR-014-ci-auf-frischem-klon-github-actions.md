@@ -1,4 +1,5 @@
 # MR-014 — CI auf frischem Klon (GitHub Actions)
+> **ÜBERHOLT: der Verbotssatz *„Ein Inline-Prüfblock in der YAML bleibt verboten"* im Nachtrag 2026-07-25 zu Setzung 1, für Jobs, die bewusst nicht auschecken → [`MR-069`](../conventions.md#mr-069--ein-job-der-bewusst-nicht-auscheckt-trägt-seine-prüfung-inline).** Die Regelform der Setzung — eine Quelle je Check; ein versioniertes, von `shell-lint` gedecktes Artefakt, das der Workflow-Step ruft — bindet fort und gilt für jeden checkout-führenden Job.
 
 - **Datum:** 2026-07-20
 - **Geltungsbereich:** `.github/workflows/ci.yml` (neu), `Makefile` (`ACTIONLINT_IMAGE`,
