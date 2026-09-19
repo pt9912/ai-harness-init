@@ -322,13 +322,16 @@ docker_stub() {
 
 @test "release: der publish-Job haelt die reisende SUMS fail-closed VOR dem Upload (ADR-0059 Folgepflicht 1)" {
   local wf="$REPO/.github/workflows/release.yml"
-  # Die Pruefung laeuft am Ruheort der SUMS (cd dist): die Manifest-Zeilen tragen
-  # die blossen Dateinamen, und relativ zur Workspace-Wurzel loesen sie ins Leere —
-  # der gebrochenen Form zusaetze sie still, obwohl beide coreutils-Fassungen sie
-  # mit Exit 1 beantworten.
+  # Der Schritt haelt dieselben drei wie der verify-Modus des Helfers: die FORM je
+  # Zeile (GNU haelt eine improper Zeile ohne --strict als Warnung durch — die
+  # Form-Haltung haengt darum nicht am -c-Lauf), die MENGE in beide Richtungen, und
+  # den INHALT am Ruheort der SUMS (cd dist — die Manifest-Zeilen tragen die
+  # blossen Dateinamen, relativ zur Workspace-Wurzel loesen sie ins Leere).
+  grep -qF "grep -cvE '^[0-9a-f]{64}  [^ ].*\$' dist/SHA256SUMS" "$wf"
+  grep -qF 'dist/SHA256SUMS | sort' "$wf"
   grep -qF 'cd dist && sha256sum -c SHA256SUMS' "$wf"
-  # Die Reihenfolge ist die Zusage: die Verifizierung liegt vor dem ersten Upload —
-  # ein Bruch dort veroeffentlicht nichts.
+  # Die Reihenfolge ist die Zusage: die Haltung liegt vor dem ersten Upload — ein
+  # Bruch dort veroeffentlicht nichts.
   local verify upload
   verify="$(grep -nF 'cd dist && sha256sum -c SHA256SUMS' "$wf" | cut -d: -f1)"
   upload="$(grep -nE 'gh release (upload|create)' "$wf" | head -1 | cut -d: -f1)"
