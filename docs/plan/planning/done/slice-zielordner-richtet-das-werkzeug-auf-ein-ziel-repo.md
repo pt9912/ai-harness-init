@@ -277,7 +277,7 @@ dasteht.
   Stellen (je `<zielordner>` am Ende, Flags davor, die gebrochene Form 0× —
   Nachzug-Prüfung der Review-Runde 2); die Adressen-Frage des pausierten
   Nachzugs trägt
-  [`slice-releasing-doku-traegt-den-release-vorgang`](../open/slice-releasing-doku-traegt-den-release-vorgang.md)
+  [`slice-releasing-doku-traegt-den-release-vorgang`](../next/slice-releasing-doku-traegt-den-release-vorgang.md)
   in seinem eigenen §6.
 - **Rest-Vektoren am Dispatch bleiben ungemessen** — der laut-Bruch deckt
   unbekannte Unterkommandos, die Usage-Deckung das fehlende Argument;
