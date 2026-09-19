@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/pt9912/ai-harness-init/internal/emit"
 	"github.com/pt9912/ai-harness-init/internal/gen"
 )
 
@@ -26,7 +27,7 @@ func genHexslice(t *testing.T) string {
 func archGlobs(t *testing.T, cfg string) map[string][]string {
 	t.Helper()
 	globRe := regexp.MustCompile(`"([^"]+)"`)
-	layerRe := regexp.MustCompile(`^  ([a-z]+):$`)
+	layerRe := regexp.MustCompile(`^  ([a-z_]+):$`)
 	out := map[string][]string{}
 	layer := ""
 	inLayers := false
@@ -62,7 +63,8 @@ func archGlobs(t *testing.T, cfg string) map[string][]string {
 //	(a) jede Produktions-Go-Datei ausserhalb des Composition Root faellt unter mindestens
 //	    einen Schicht-Glob — eine ungedeckte Datei waere ein Loch im Pruefbereich;
 //	(b) der SPEZIFISCHSTE (laengste) Glob bestimmt die gemeinte Schicht — die Port-Globs
-//	    liegen bewusst INNERHALB der Slice (…/greet/ports/** unter …/greet/**), und genau
+//	    liegen bewusst INNERHALB der Slice (…/greet/ports/outbound/** unter
+//	    …/greet/**), und genau
 //	    diese Verschachtelung traegt die port-locality-Regel;
 //	(c) jeder deklarierte Glob ist fuer mindestens eine reale Datei der spezifischste —
 //	    ein Glob, den nie eine Datei trifft, ist der stille Rest, aus dem ein Gate ueber
@@ -82,15 +84,14 @@ func TestArchGateConfig_MatchesSkeleton(t *testing.T) {
 	// aus der Config abgeleitet, sonst pruefte der Test die Config gegen sich selbst.
 	want := map[string]string{
 		"internal/hexagon/domain/example/greeting.go":                       "domain",
-		"internal/hexagon/application/example/ports/outbound/greeting_repository.go": "ports",
-		"internal/hexagon/application/example/greet/ports/outbound/notifier.go":      "ports",
-		"internal/hexagon/application/example/greet/command.go":                      "app",
-		"internal/hexagon/application/example/greet/result.go":                       "app",
+		"internal/hexagon/application/example/greet/ports/inbound/greet.go":              "ports_inbound",
+		"internal/hexagon/application/example/greet/ports/outbound/notifier.go":          "ports_outbound",
+		"internal/hexagon/application/example/ports/outbound/greeting_repository.go": "ports_outbound",
 		"internal/hexagon/application/example/greet/validator.go":                    "app",
 		"internal/hexagon/application/example/greet/handler.go":                      "app",
-		"internal/adapters/driving/cli/example/cli.go":                               "driving",
-		"internal/adapters/driven/memory/example/repository.go":                      "driven",
-		"internal/adapters/driven/notify/stdout.go":                                  "driven",
+		"internal/adapters/driving/cli/example/cli.go":                               "driving_adapters",
+		"internal/adapters/driven/memory/example/repository.go":                      "driven_adapters",
+		"internal/adapters/driven/notify/stdout.go":                                  "driven_adapters",
 	}
 	hits := map[string]int{}
 	seen := map[string]bool{}
@@ -178,7 +179,7 @@ func TestArchGateConfig_EdgesMatchSkeleton(t *testing.T) {
 // archEdges zieht die deklarierten Kanten als Menge "from->to" aus der Config.
 func archEdges(t *testing.T, cfg string) map[string]bool {
 	t.Helper()
-	re := regexp.MustCompile(`\{from:\s*([a-z]+),\s*to:\s*([a-z]+)\}`)
+	re := regexp.MustCompile(`\{from:\s*([a-z_]+),\s*to:\s*([a-z_]+)\}`)
 	out := map[string]bool{}
 	for _, m := range re.FindAllStringSubmatch(cfg, -1) {
 		out[m[1]+"->"+m[2]] = true
@@ -221,6 +222,33 @@ func matchGlob(glob, rel string) bool {
 		return false
 	}
 	return strings.HasPrefix(rel, prefix+"/")
+}
+
+// TestArchImagePin_CouplesToDirectionPorts (LH-QA-02): die emittierte Config traegt
+// `direction:` auf den Port-Schichten — eine Form, die erst a-check v0.20.0 dekodiert;
+// eine a-check-Fassung vor dieser Form bricht mit Exit 2 ueber dem unbekannten
+// Schluessel. Der Default-Pin haelt deshalb an derselben Fassung wie die Config-Form:
+// faellt er dahinter zurueck, bricht das emittierte Gate beim ersten Lauf. Rot-
+// Gegenbeispiel: test/mutations setzt den Pin auf die Vorgaenger-Fassung.
+func TestArchImagePin_CouplesToDirectionPorts(t *testing.T) {
+	if !strings.HasSuffix(emit.DefaultArchImage, ":v0.20.0") {
+		t.Errorf("DefaultArchImage = %q, want die Fassung, die direction auf Port-Schichten dekodiert", emit.DefaultArchImage)
+	}
+	if emit.DefaultArchDigest == "" || !strings.HasPrefix(emit.DefaultArchDigest, "sha256:") {
+		t.Errorf("DefaultArchDigest = %q, digest-gepinnt statt Tag", emit.DefaultArchDigest)
+	}
+	for lang, want := range map[string]string{
+		"go":  "direction: inbound",
+		"cpp": "direction: inbound",
+	} {
+		cfg, ok := gen.ArchGateConfig(lang, "hexslice")
+		if !ok {
+			t.Fatalf("%s+hexslice traegt keine Arch-Gate-Config", lang)
+		}
+		if !strings.Contains(cfg, want) {
+			t.Errorf("%s-Config ohne %q — die Pin-Kopplung haelt an einer Config-Form, die es nicht gibt", lang, want)
+		}
+	}
 }
 
 // TestArchGateConfig_OnlyLayered (slice-046, LH-QA-01): nur eine schichten-tragende,

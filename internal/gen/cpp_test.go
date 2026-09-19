@@ -182,8 +182,8 @@ func TestGenerate_CppHexsliceProfile_FileSet(t *testing.T) {
 		"src/adapters/driven/memory/example/repository.hpp",
 		"src/adapters/driven/notify/stdout.hpp",
 		"src/adapters/driving/cli/example/cli.hpp",
-		"src/hexagon/application/example/greet/command.hpp",
 		"src/hexagon/application/example/greet/handler.hpp",
+		"src/hexagon/application/example/greet/ports/inbound/greet.hpp",
 		"src/hexagon/application/example/greet/ports/outbound/notifier.hpp",
 		"src/hexagon/application/example/ports/outbound/greeting_repository.hpp",
 		"src/hexagon/domain/example/greeting.hpp",
@@ -233,13 +233,13 @@ func TestArchGateConfig_CppMatchesSkeleton(t *testing.T) {
 	globs := archGlobs(t, cfg)
 	want := map[string]string{
 		"src/hexagon/domain/example/greeting.hpp":                       "domain",
-		"src/hexagon/application/example/ports/outbound/greeting_repository.hpp": "ports",
-		"src/hexagon/application/example/greet/ports/outbound/notifier.hpp":      "ports",
-		"src/hexagon/application/example/greet/command.hpp":                      "app",
+		"src/hexagon/application/example/greet/ports/inbound/greet.hpp":              "ports_inbound",
+		"src/hexagon/application/example/greet/ports/outbound/notifier.hpp":          "ports_outbound",
+		"src/hexagon/application/example/ports/outbound/greeting_repository.hpp": "ports_outbound",
 		"src/hexagon/application/example/greet/handler.hpp":                      "app",
-		"src/adapters/driving/cli/example/cli.hpp":                               "driving",
-		"src/adapters/driven/memory/example/repository.hpp":                      "driven",
-		"src/adapters/driven/notify/stdout.hpp":                                  "driven",
+		"src/adapters/driving/cli/example/cli.hpp":                               "driving_adapters",
+		"src/adapters/driven/memory/example/repository.hpp":                      "driven_adapters",
+		"src/adapters/driven/notify/stdout.hpp":                                  "driven_adapters",
 	}
 	seen := map[string]bool{}
 	for _, rel := range walkRel(t, genCppArch(t, "hexslice")) {
@@ -272,11 +272,11 @@ func TestArchGateConfig_CppMatchesSkeleton(t *testing.T) {
 // streicht, faerbt das Arch-Gate des generierten Skeletts rot.
 func TestArchGateConfig_CppAllowsAdapterToPorts(t *testing.T) {
 	cfg, _ := gen.ArchGateConfig("cpp", "hexslice")
-	if !strings.Contains(cfg, "{from: driven,  to: ports}") {
-		t.Error("cpp-Config ohne driven->ports-Kante: der erbende getriebene Adapter faerbt a-check rot")
+	if !strings.Contains(cfg, "{from: driven_adapters,  to: ports_outbound}") {
+		t.Error("cpp-Config ohne driven_adapters->ports_outbound-Kante: der erbende getriebene Adapter faerbt a-check rot")
 	}
 	goCfg, _ := gen.ArchGateConfig("go", "hexslice")
-	for _, kante := range []string{"{from: driving, to: ports}", "{from: driven, to: ports}"} {
+	for _, kante := range []string{"{from: driving_adapters, to: ports_outbound}", "{from: driven_adapters,  to: ports_outbound}"} {
 		if strings.Contains(goCfg, kante) {
 			t.Errorf("go-Config traegt %s — die strukturelle Erfuellung braucht sie nicht", kante)
 		}

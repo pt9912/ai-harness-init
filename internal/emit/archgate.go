@@ -16,10 +16,13 @@ import (
 // DefaultArchImage ist die per Default gepinnte a-check-Tag-Referenz, DefaultArchDigest
 // der zugehoerige Pin (LH-QA-02). Beide sind per Env (A_CHECK_IMAGE/A_CHECK_DIGEST)
 // bewusst ueberschreibbar; die Semantik (Digest sticht Tag) ist dieselbe wie beim
-// Doc-Gate. Der Digest ist gegen die Registry verifiziert (v0.15.0, slice-046 Schritt 0).
+// Doc-Gate. Der Digest ist gegen die Registry verifiziert: docker pull auf den Tag,
+// docker image inspect auf dessen RepoDigests (v0.20.0 — die emittierte Config traegt
+// `direction:` auf den Port-Schichten, eine Form, die erst diese Fassung dekodiert;
+// TestArchImagePin_CouplesToDirectionPorts haelt beide Stellen gegeneinander).
 const (
-	DefaultArchImage  = "ghcr.io/pt9912/a-check:v0.15.0"
-	DefaultArchDigest = "sha256:6425c93a9a4359ef28c4da231a2d1db6f421fdaa8f96877ac89d201827c42d09"
+	DefaultArchImage  = "ghcr.io/pt9912/a-check:v0.20.0"
+	DefaultArchDigest = "sha256:e8208764b119c606c92f82722813386277a65b12812d23b6107ea7a14dc25da1"
 )
 
 // ArchConfigName ist der Dateiname der Schicht-Config IM MODUL (bei <pfad>="." also

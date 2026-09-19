@@ -45,8 +45,9 @@ func goScaffolding(version string) map[string]string {
 // Test-Rolle -> nil (main.go ist trivial). hexSlice (slice-045a, ADR-0009): die vier
 // Schicht-Rollen + der Composition Root rendern in die kanonischen Verzeichnisse
 // (internal/hexagon/{domain,application}, internal/adapters/{driving,driven}, cmd/app).
-// Die Import-Richtungen sind inward-only (app->domain, app->ports, ports->domain,
-// driving->app, driven->domain); die getriebenen Adapter (driven) erfuellen die Ports
+// Die Import-Richtungen sind inward-only (app->domain, app->ports_inbound,
+// app->ports_outbound, ports_outbound->domain, driving_adapters->ports_inbound,
+// driven_adapters->domain); die getriebenen Adapter (driven) erfuellen die Ports
 // strukturell (kein Import), verdrahtet im Composition Root.
 //
 // hexagonal (slice-058, ADR-0010): die vier Schicht-Rollen + ein EIGENER Composition Root
@@ -67,16 +68,15 @@ func goRole(r codeRole) map[string]string {
 		}
 	case rolePorts:
 		return map[string]string{
-			"internal/hexagon/application/example/ports/outbound/greeting_repository.go": goHexAreaPort,
+			"internal/hexagon/application/example/greet/ports/inbound/greet.go":          goHexInboundPort,
 			"internal/hexagon/application/example/greet/ports/outbound/notifier.go":      goHexSlicePort,
+			"internal/hexagon/application/example/ports/outbound/greeting_repository.go": goHexAreaPort,
 		}
 	case roleAppSlice:
 		return map[string]string{
-			"internal/hexagon/application/example/greet/command.go":     goHexCommand,
-			"internal/hexagon/application/example/greet/result.go":      goHexResult,
-			"internal/hexagon/application/example/greet/validator.go":   goHexValidator,
-			"internal/hexagon/application/example/greet/handler.go":     goHexHandler,
+			"internal/hexagon/application/example/greet/handler.go":      goHexHandler,
 			"internal/hexagon/application/example/greet/handler_test.go": goHexHandlerTest,
+			"internal/hexagon/application/example/greet/validator.go":    goHexValidator,
 		}
 	case roleAdapters:
 		return map[string]string{
@@ -218,9 +218,9 @@ func TestNewGreeting(t *testing.T) {
 `
 
 // goHexAreaPort — Business-Area-Port (Port-Schicht: importiert nur die Domain).
-const goHexAreaPort = `// Package ports deklariert die Business-Area-Ports der example-Area (Port-Schicht:
+const goHexAreaPort = `// Package outbound deklariert die Business-Area-Ports der example-Area (Port-Schicht:
 // importiert nur die Domain).
-package ports
+package outbound
 
 import "app/internal/hexagon/domain/example"
 
@@ -233,9 +233,9 @@ type GreetingRepository interface {
 `
 
 // goHexSlicePort — slice-lokaler Port (Port-Schicht: importiert nur die Domain).
-const goHexSlicePort = `// Package ports deklariert die slice-lokalen Ports der greet-Use-Case (Port-Schicht:
-// importiert nur die Domain).
-package ports
+const goHexSlicePort = `// Package outbound deklariert den slice-lokalen Outbound-Port der greet-Use-Case
+// (Port-Schicht: importiert nur die Domain).
+package outbound
 
 import "app/internal/hexagon/domain/example"
 
@@ -246,71 +246,87 @@ type Notifier interface {
 }
 `
 
-// goHexCommand — Application-Slice: die Eingabe (traegt das Package-Kommentar).
-const goHexCommand = `// Package greet ist die greet-Use-Case-Slice (Application-Schicht: importiert Domain
-// und Ports, nie Adapter).
-package greet
+// goHexInboundPort — der inbound-Port der greet-Use-Case (Use-Case-Entrypoint): das
+// Port-Paket traegt Eingabe-/Ausgabe-Typen und das Interface, damit ein driving
+// Adapter am Port haengt und nie an der Slice (driving_adapters -> ports_inbound).
+const goHexInboundPort = `// Package inbound deklariert den inbound-Port der greet-Use-Case: den Vertrag,
+// ueber den die Welt die Use-Case ruft. Das Port-Paket importiert nichts — der
+// Vertrag steht in schlichten Typen und haelt beide Seiten draussen.
+package inbound
 
-// Command ist die Eingabe der greet-Use-Case.
+// Command ist die Eingabe der greet-Use-Case: rohe, adapter-neutrale Daten; der
+// Handler der Slice wandelt sie in Domain-Objekte.
 type Command struct {
 	// Message ist der rohe Gruss-Text.
 	Message string
 }
-`
-
-// goHexResult — Application-Slice: die Ausgabe.
-const goHexResult = `package greet
 
 // Result ist die Ausgabe der greet-Use-Case.
 type Result struct {
 	// Message ist der bestaetigte Gruss-Text.
 	Message string
 }
+
+// Greet ist der inbound-Port der greet-Use-Case. Ein driving Adapter ruft ihn;
+// der Handler der Slice implementiert ihn.
+type Greet interface {
+	// Handle fuehrt die Use-Case aus.
+	Handle(cmd Command) (Result, error)
+}
 `
 
 // goHexValidator — Application-Slice: Roh-Eingabe -> Domain (app -> domain).
 const goHexValidator = `package greet
 
-import "app/internal/hexagon/domain/example"
+import (
+	"app/internal/hexagon/application/example/greet/ports/inbound"
+	"app/internal/hexagon/domain/example"
+)
 
-// Validate wandelt die Roh-Eingabe in ein Domain-Greeting (app -> domain).
-func Validate(cmd Command) (example.Greeting, error) {
+// Validate wandelt die Port-Eingabe in ein Domain-Greeting (app -> domain).
+func Validate(cmd inbound.Command) (example.Greeting, error) {
 	return example.NewGreeting(cmd.Message)
 }
 `
 
-// goHexHandler — Application-Slice: der Use-Case-Handler (app -> domain, app -> ports).
-const goHexHandler = `package greet
+// goHexHandler — Application-Slice: der Use-Case-Handler implementiert den inbound-
+// Port (app -> ports_inbound) und konsumiert seine outbound-Ports (app -> ports_outbound).
+const goHexHandler = `// Package greet ist die greet-Use-Case-Slice (Application-Schicht: importiert die
+// Domain und ihre Ports, nie Adapter).
+package greet
 
 import (
-	areaports "app/internal/hexagon/application/example/ports/outbound"
-	sliceports "app/internal/hexagon/application/example/greet/ports/outbound"
+	"app/internal/hexagon/application/example/greet/ports/inbound"
+	"app/internal/hexagon/application/example/greet/ports/outbound"
+	areaoutbound "app/internal/hexagon/application/example/ports/outbound"
 )
 
-// Handler fuehrt die greet-Use-Case aus (app -> domain, app -> ports).
+// Handler fuehrt die greet-Use-Case aus und implementiert den inbound-Port
+// (app -> ports_inbound); seine Beduerfnisse traegt er als outbound-Ports.
 type Handler struct {
-	repo     areaports.GreetingRepository
-	notifier sliceports.Notifier
+	repo     areaoutbound.GreetingRepository
+	notifier outbound.Notifier
 }
 
 // NewHandler verdrahtet den Handler mit seinen Ports.
-func NewHandler(repo areaports.GreetingRepository, notifier sliceports.Notifier) *Handler {
+func NewHandler(repo areaoutbound.GreetingRepository, notifier outbound.Notifier) *Handler {
 	return &Handler{repo: repo, notifier: notifier}
 }
 
-// Handle validiert die Eingabe zu einem Domain-Greeting und persistiert/annonciert es.
-func (h *Handler) Handle(cmd Command) (Result, error) {
+// Handle implementiert den inbound-Port: validiert die Eingabe zu einem
+// Domain-Greeting und persistiert/annonciert es.
+func (h *Handler) Handle(cmd inbound.Command) (inbound.Result, error) {
 	greeting, err := Validate(cmd)
 	if err != nil {
-		return Result{}, err
+		return inbound.Result{}, err
 	}
 	if err := h.repo.Save(greeting); err != nil {
-		return Result{}, err
+		return inbound.Result{}, err
 	}
 	if err := h.notifier.Notify(greeting); err != nil {
-		return Result{}, err
+		return inbound.Result{}, err
 	}
-	return Result{Message: greeting.Message}, nil
+	return inbound.Result{Message: greeting.Message}, nil
 }
 `
 
@@ -321,6 +337,7 @@ import (
 	"testing"
 
 	"app/internal/hexagon/application/example/greet"
+	"app/internal/hexagon/application/example/greet/ports/inbound"
 	"app/internal/hexagon/domain/example"
 )
 
@@ -334,7 +351,7 @@ func (stubNotifier) Notify(example.Greeting) error { return nil }
 
 func TestHandlerHandle(t *testing.T) {
 	h := greet.NewHandler(stubRepo{}, stubNotifier{})
-	res, err := h.Handle(greet.Command{Message: "hi"})
+	res, err := h.Handle(inbound.Command{Message: "hi"})
 	if err != nil {
 		t.Fatalf("unerwarteter Fehler: %v", err)
 	}
@@ -344,32 +361,33 @@ func TestHandlerHandle(t *testing.T) {
 }
 `
 
-// goHexDrivingCLI — treibender Adapter (driving): ruft die Use-Case (driving -> app).
-const goHexDrivingCLI = `// Package cli ist der treibende CLI-Adapter (driving) der example-Area (ruft die
-// Use-Case; Adapter-Schicht -> Application).
+// goHexDrivingCLI — treibender Adapter (driving): er haengt am inbound-Port der
+// Use-Case (driving_adapters -> ports_inbound), nie an der Slice selbst.
+const goHexDrivingCLI = `// Package cli ist der treibende CLI-Adapter (driving) der example-Area: er haengt
+// an den inbound-Ports der Slices, nie an den Slices selbst.
 package cli
 
 import (
 	"fmt"
 	"io"
 
-	"app/internal/hexagon/application/example/greet"
+	"app/internal/hexagon/application/example/greet/ports/inbound"
 )
 
-// Runner treibt die greet-Use-Case von der Kommandozeile (adapter -> app).
+// Runner treibt die greet-Use-Case von der Kommandozeile ueber ihren inbound-Port.
 type Runner struct {
-	handler *greet.Handler
+	usecase inbound.Greet
 	out     io.Writer
 }
 
-// NewRunner verdrahtet den CLI-Adapter mit dem Handler und der Ausgabe.
-func NewRunner(handler *greet.Handler, out io.Writer) *Runner {
-	return &Runner{handler: handler, out: out}
+// NewRunner verdrahtet den CLI-Adapter mit dem inbound-Port und der Ausgabe.
+func NewRunner(usecase inbound.Greet, out io.Writer) *Runner {
+	return &Runner{usecase: usecase, out: out}
 }
 
-// Run fuehrt die Use-Case aus und schreibt das Ergebnis.
+// Run fuehrt die Use-Case ueber den inbound-Port aus und schreibt das Ergebnis.
 func (r *Runner) Run(message string) error {
-	res, err := r.handler.Handle(greet.Command{Message: message})
+	res, err := r.usecase.Handle(inbound.Command{Message: message})
 	if err != nil {
 		return err
 	}
@@ -502,18 +520,27 @@ const goHexArchConfig = `# .a-check.yml — Architektur-Gate (HexSlice = hexagon
 #
 # Streng dekodiert: ein unbekannter Schluessel ist Exit 2.
 #
-# Die Slice-Globs (.../greet/**) und Port-Globs (.../ports/**) tragen bewusst
-# literale Verzeichnis-Praefixe. Nur daran haengen die beiden Vertical-Slice-
-# Regeln: lateral-slice (eine Slice importiert keine andere derselben Schicht)
-# und port-locality (ein slice-lokaler Port bleibt in seiner Slice). Ein
+# Die Slice-Globs (.../greet/**) und Port-Globs (.../ports/<richtung>/**) tragen
+# bewusst literale Verzeichnis-Praefixe. Nur daran haengen die beiden Vertical-
+# Slice-Regeln: lateral-slice (eine Slice importiert keine andere derselben
+# Schicht) und port-locality (ein slice-lokaler Port bleibt in seiner Slice). Ein
 # Wildcard-in-der-Mitte (.../**/ports/**) traegt keinen solchen Praefix und
 # liesse beide Regeln still inert.
+#
+# Der Port-Glob endet an der Richtung, die dieselbe Schicht deklariert
+# (…/ports/outbound/**). Erst seit a-check v0.20.0 ist diese Form lebendig:
+# portScope schneidet die deklarierte Richtung aus dem Glob-Praefix mit ab —
+# zuvor verengte ein Richtungs-Glob den Geltungsbereich auf ".../ports" und
+# port-locality meldete bei einem echten Uebergreifen nichts. Behalte jede
+# Port-Glob-Endung auf ihrer Richtung: die Schicht deklariert sie, und der
+# a-check-Adivsory meldet einen Port-Glob, dessen abgeleiteter Bereich den
+# app-Baum nicht mehr erreicht.
 #
 # DIESE DATEI IST DEINE: sie wird beim Re-Bootstrap nicht ueberschrieben, also
 # waechst sie nur, wenn du sie pflegst. Zwei Faelle:
 #   - Area/Slice UMBENANNT  -> die Globs mitziehen.
 #   - Slice HINZUGEFUEGT    -> je einen app-Glob (.../<neue-slice>/**) und, falls
-#     sie einen slice-lokalen Port hat, einen ports-Glob (.../<neue-slice>/ports/**)
+#     sie Ports traegt, je einen ports-Glob (.../<neue-slice>/ports/<richtung>/**)
 #     ERGAENZEN. Vergisst du es, faellt der neue Code unter keine Schicht: importiert
 #     er eine (Domain/Ports), meldet a-check wrong-direction und faellt — importiert
 #     er keine, bleibt er still gruen und ungeprueft. Verlass dich also nicht darauf,
@@ -527,39 +554,54 @@ layers:
   domain:
     globs: ["internal/hexagon/domain/**"]
     role: domain
-  ports:
+  ports_inbound:
     globs:
-      - "internal/hexagon/application/example/greet/ports/**"   # use-case-lokal
-      - "internal/hexagon/application/example/ports/**"         # business-area-geteilt
+      - "internal/hexagon/application/example/greet/ports/inbound/**"   # use-case-lokal
     role: port
-  # Die Port-Globs enden am "ports"-Segment, bewusst NICHT an der Richtung
-  # darunter: die Gliederung (ports/inbound, ports/outbound) liegt UNTER dem
-  # Glob, damit port-locality ihren Geltungsbereich aus dem Glob-Praefix
-  # ableitet — ein Glob auf ports/outbound/** verengte den Bereich auf
-  # ".../greet/ports" und liesse die Regel still inert.
+    direction: inbound      # von der Use-Case angeboten; ein driving Adapter ruft ihn
+  ports_outbound:
+    globs:
+      - "internal/hexagon/application/example/greet/ports/outbound/**"   # use-case-lokal
+      - "internal/hexagon/application/example/ports/outbound/**"         # business-area-geteilt
+    role: port
+    direction: outbound     # von der Use-Case gebraucht; ein driven Adapter erfuellt ihn
   app:
     globs:
       - "internal/hexagon/application/example/greet/**"         # Slice: greet
     role: app
-  driving:
+  driving_adapters:
     globs: ["internal/adapters/driving/**"]
     role: adapter
-  driven:
+    direction: driving      # ruft den Anwendungskern
+  driven_adapters:
     globs: ["internal/adapters/driven/**"]
     role: adapter
+    direction: driven       # wird vom Anwendungskern gerufen
 
 # Erlaubte gerichtete Abhaengigkeiten (nur nach innen). Ein Cross-Layer-Import
 # ohne passende Kante ist ein Befund (wrong-direction).
 edges:
-  - {from: app,     to: domain}
-  - {from: app,     to: ports}
-  - {from: ports,   to: domain}
-  - {from: driving, to: app}      # die treibende Seite ruft die Use-Case
-  - {from: driven,  to: domain}   # die getriebene Seite bildet auf/von Domain-Objekten ab
-# Keine driven->ports-Kante: die getriebenen Adapter ERFUELLEN die Ports ueber
-# Go-Interface-Erfuellung (strukturell, kein Import); verdrahtet wird im
-# Composition Root (cmd/**). Auch keine driving->ports-Kante: der treibende
-# Adapter ruft die Use-Case direkt (driving -> app).
+  - {from: app,              to: domain}
+  - {from: app,              to: ports_inbound}    # die Slice importiert ihren inbound-Port
+  - {from: app,              to: ports_outbound}   # die Slice importiert ihre outbound-Ports
+  - {from: ports_outbound,   to: domain}
+  - {from: driving_adapters, to: ports_inbound}    # der treibende Adapter spricht die inbound-Ports
+  - {from: driven_adapters,  to: domain}           # Adapter bilden auf/von Domain-Objekten ab
+# Bewusst abwesend:
+# * Keine driven_adapters->ports_outbound-Kante: die getriebenen Adapter ERFUELLEN
+#   die Ports ueber Go-Interface-Erfuellung (strukturell, kein Import); verdrahtet
+#   wird im Composition Root (cmd/**). Der treibende Adapter ist der Gegenfall: er
+#   importiert den inbound-Port, weil der Port die Request-/Result-Typen traegt,
+#   die er baut und liest.
+# * Keine ports_inbound->domain-Kante: kein inbound-Port importiert die Domain —
+#   der Vertrag steht in schlichten Typen und haelt beide Seiten draussen.
+# * Keine driving_adapters->app-Kante: der treibende Adapter erreicht die Use-Case
+#   ausschliesslich ueber ihre inbound-Ports. Die Kante gehoert in denselben Commit
+#   wie ein treibender Adapter, der eine Slice direkt importiert.
+#
+# port-direction-mismatch ist hier lebendig: ein driving Adapter an einem inbound-
+# Port ist das Paar (driving <-> inbound), ein driven Adapter an einem inbound-Port
+# ist ein Befund — die Richtung wird per Injektion verifiziert, nicht deklariert.
 
 # Der Composition Root verdrahtet Adapter und Slices — von den Schichtregeln befreit.
 composition_root: ["cmd/**"]

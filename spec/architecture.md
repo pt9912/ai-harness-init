@@ -167,11 +167,14 @@ byte-identisch). `--lang <X>` beim Init ist die One-Shot-Kurzform (Init + ein
   Manifeste, Lint-Config) ist **arch-invariant** und immer präsent (sonst bräche der
   Code-Gate-Lauf), das **Code-Layout** ist arch-gegatet (`flat` = ein Entry-Point wie
   heute; `hexslice` = `domain`/`application` (Use-Case-Slices mit
-  `command`/`handler`/`validator`/`result`/`ports`)/`ports` (gegliedert nach
-  `inbound`/`outbound`)/`adapters` (`driving`/`driven`)
+  `handler`/`validator` und ihren `ports`; der inbound-Port trägt den
+  Request-/Result-Vertrag, den der treibende Adapter spricht)/`ports`
+  (gegliedert nach `inbound`/`outbound`)/`adapters` (`driving`/`driven`)
   + Composition Root `cmd/`, samt Tests je Schicht). Die a-check-Config bildet diese
-  Schichten ab: fünf Layer (`domain`/`app`/`ports`/`driving`/`driven`), inward-only-Kanten
-  (`app→domain`, `app→ports`, `ports→domain`, `driving→app`, `driven→domain`) und
+  Schichten ab: sechs Layer (`domain`/`ports_inbound`/`ports_outbound`/`app`/`driving_adapters`/`driven_adapters`), inward-only-Kanten
+  (`app→domain`, `app→ports_inbound`, `app→ports_outbound`, `ports_outbound→domain`,
+  `driving_adapters→ports_inbound`, `driven_adapters→domain`; C++ zusätzlich
+  `driven_adapters→ports_outbound` — die Vererbungs-Erfüllung) und
   `cmd/**` als Composition Root (a-check-exempt, verdrahtet die Ports strukturell). Das
   **Architektur-Gate** (a-check, per-Tool-Fragment wie das Doc-Gate) wird **nur bei
   einem schichten-tragenden Layout** emittiert; bei `flat` liegt kein `.a-check.yml`/

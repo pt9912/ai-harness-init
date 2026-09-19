@@ -213,6 +213,24 @@ Aussagen-Berührung steht hier gar nicht.
   realen Import benutzt (Gate-Test-Eigenschaft (b)). Die Rot-Gegenprobe des
   Plans (Config hält den breiten Glob `internal/adapters/**`) färbt dann am
   Gate-Test rot: die Schicht-Namen in der Erwartung sind die neuen.
+- **Verfeinerung 3 (Gemessen an der Referenz, 2026-09-19):** die
+  Referenz-Anpassung des Auftraggebers trägt die Arch-Gate-Form an a-check
+  v0.20.0 — die Port-Schichten sind gesplittet
+  (`ports_inbound`/`ports_outbound` mit je `direction:`), die
+  Adapter-Schichten heißen `driving_adapters`/`driven_adapters`, der Port-Glob
+  endet an der Richtung (der `portScope`-Fix macht die Form lebendig), und die
+  Kanten-Menge ist die der Referenz — inklusive `driving_adapters→ports_inbound`
+  und der drei bewusst abwesenden Kanten mit ihrem Grund als Kommentar. Der
+  Skelett-Vertrag folgt: die Slice trägt einen inbound-Port (das Port-Paket
+  trägt Request/Result und das Interface; command/result ziehen aus der Slice
+  in den Port), der treibende Adapter spricht ihn und nie die Slice selbst —
+  `driving_adapters→app` entfällt. Übergabe an Review/Planner: die
+  Kanten-Menge folgt damit der Referenz und nicht mehr dem Wortlaut von
+  [ADR-0060](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
+  Festlegung 4 (fünf Kanten verbatim); die normative Aufarbeitung des ADR
+  ist Architect-Arbeit, nicht Teil dieses Laufs. Der a-check-Pin wandert auf
+  v0.20.0 samt Digest (Registry-verifiziert) — Kopplung am neuen
+  `TestArchImagePin_CouplesToDirectionPorts`.
 
 ## 4. Trigger
 
