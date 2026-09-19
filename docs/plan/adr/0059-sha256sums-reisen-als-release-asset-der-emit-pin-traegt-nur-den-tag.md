@@ -1,6 +1,6 @@
 # ADR-0059: Die Prüfsummen reisen als SHA256SUMS neben die Assets — der emittierte Pin trägt nur den Tag
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-19
 
@@ -276,6 +276,7 @@ Regeln dieser Sektion: **mindestens drei Optionen mit Pro/Contra** — „nichts
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-19 | **Proposed** | Architect-Lauf zum `v0.2.1`-Schnitt, ausgelöst durch die Selbstreferenz-Wand: das `v0.2.0`-Binary bettet Digests ein, die nicht zu seinen eigenen Assets passen (Ende-zu-Ende gemessen: Tag-Baum, Asset-Hash, eingebetteter Wert). Die Emissions-Hälfte von [ADR-0058](0058-traeger-per-fetch-aus-dem-gepinnten-release.md) Festlegung 1 wird als Teil-Ablösung gezogen; die Dogfood-Hälfte trägt und bleibt. Der Acceptance-Trigger steht unten |
+| 2026-09-19 | **Accepted** | Beleg nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 ist die Reviewer-Runde `2026-09-19-adr-0059-accept-nachrunde` — die Accept-Nachrunde meldete ready for Accept nach drei Fixes im `Proposed`-Fenster (F-1 die binäre Sonde, F-2 der Index-Zusatz samt seiner Folgepflicht, F-3 der Kopplungs-Ort). **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes ADR-0059`. |
 
 **Acceptance-Trigger:** Diese Entscheidung wird `Accepted`, wenn eine Reviewer-Runde sie gegen
 [ADR-0058](0058-traeger-per-fetch-aus-dem-gepinnten-release.md),
