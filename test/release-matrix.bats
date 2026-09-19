@@ -322,11 +322,15 @@ docker_stub() {
 
 @test "release: der publish-Job haelt die reisende SUMS fail-closed VOR dem Upload (ADR-0059 Folgepflicht 1)" {
   local wf="$REPO/.github/workflows/release.yml"
-  grep -qF 'sha256sum -c dist/SHA256SUMS' "$wf"
+  # Die Pruefung laeuft am Ruheort der SUMS (cd dist): die Manifest-Zeilen tragen
+  # die blossen Dateinamen, und relativ zur Workspace-Wurzel loesen sie ins Leere —
+  # der gebrochenen Form zusaetze sie still, obwohl beide coreutils-Fassungen sie
+  # mit Exit 1 beantworten.
+  grep -qF 'cd dist && sha256sum -c SHA256SUMS' "$wf"
   # Die Reihenfolge ist die Zusage: die Verifizierung liegt vor dem ersten Upload —
   # ein Bruch dort veroeffentlicht nichts.
   local verify upload
-  verify="$(grep -nF 'sha256sum -c dist/SHA256SUMS' "$wf" | cut -d: -f1)"
+  verify="$(grep -nF 'cd dist && sha256sum -c SHA256SUMS' "$wf" | cut -d: -f1)"
   upload="$(grep -nE 'gh release (upload|create)' "$wf" | head -1 | cut -d: -f1)"
   [ -n "$verify" ] && [ -n "$upload" ]
   [ "$verify" -lt "$upload" ]
@@ -348,6 +352,21 @@ docker_stub() {
   printf 'z' >>"$dir/ai-harness-init-linux-amd64"
   run bash "$REPO/harness/tools/release-sums.sh" verify "$dir"
   [ "$status" -ne 0 ]
+  # Vollstaendigkeit in beide Richtungen: ein Asset ohne Zeile und eine Zeile ohne
+  # Asset sind derselbe Defekt (ADR-0059 Festlegung 1: eine Zeile je Asset).
+  printf 'x' >"$dir/ai-harness-init-linux-amd64"
+  printf 'y' >"$dir/ai-harness-init-windows-amd64.exe"
+  printf 'w' >"$dir/ai-harness-init-darwin-arm64"
+  run bash "$REPO/harness/tools/release-sums.sh" verify "$dir"
+  [ "$status" -ne 0 ]
+  printf '%s' "$output" | grep -qF 'Menge der Eintraege'
+  rm "$dir/ai-harness-init-darwin-arm64"
+  # Eine improper Zeile bricht — GNU haelt sie ohne --strict als Warnung durch, die
+  # Form-Haltung haengt darum am Skript, nicht am -c-Lauf.
+  printf 'unformatiert  ai-harness-init-darwin-arm64\n' >>"$dir/SHA256SUMS"
+  run bash "$REPO/harness/tools/release-sums.sh" verify "$dir"
+  [ "$status" -ne 0 ]
+  printf '%s' "$output" | grep -qF 'ausserhalb der Form'
   # Fehlt die SUMS, bricht der Lauf, statt sechs Assets still zu publizieren — die
   # Klasse „Akt ohne Mechanik" (ADR-0059 Folgepflicht 1).
   rm "$dir/SHA256SUMS"

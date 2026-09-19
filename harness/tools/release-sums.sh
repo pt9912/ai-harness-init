@@ -7,18 +7,27 @@
 #                   `make release-artifacts` ruft sie nach dem Bau; die SUMS reist
 #                   damit im selben DEST wie die Assets, die sie beschreibt.
 #   verify <dir>    haelt die Dateien in <dir> gegen das reisende Manifest,
-#                   fail-closed: fehlt die SUMS, fehlt ein Eintrag, oder weicht
-#                   eine Datei ab, bricht der Lauf — dieselbe Disziplin wie die
-#                   Verifizierung vor der Ablage im Fetch (ADR-0059 Festlegung 1),
-#                   hier auf der Publikations-Seite.
+#                   fail-closed: fehlt die SUMS, weicht eine Zeile in ihrer Form
+#                   ab, ist die Menge der Eintraege nicht die Menge der Assets,
+#                   oder weicht eine Datei ab, bricht der Lauf — dieselbe
+#                   Disziplin wie die Verifizierung vor der Ablage im Fetch
+#                   (ADR-0059 Festlegung 1), hier auf der Publikations-Seite.
 #
 # KEIN GATE: das Skript prueft nichts am Baum, haengt an keiner gates-Kette und
-# steht in keiner Prerequisite-Kette. Es braucht nichts ausser coreutils; der
-# Aufruf im publish-Job ist der eine, der die reisende SUMS gegen die
-# heruntergeladenen Artefakte haelt, BEVOR etwas hochgeladen wird.
+# steht in keiner Prerequisite-Kette. Es braucht nichts ausser coreutils.
 #
-# AUFRUFE: das Rezept release-artifacts (generate) und der publish-Job der
-# Release-Workflow (verify) — test/release-matrix.bats haelt beide Stellen.
+# GRENZE, benannt statt verschwiegen: GNU sha256sum haelt eine improper Zeile ohne
+# --strict als Warnung durch (Exit 0), und --strict ist in der BusyBox-Fassung des
+# bats-Bilds nicht vorhanden — die Zeilen-FORM haelt darum dieser Lauf selbst (je
+# Zeile), nicht der -c-Lauf. Der -c-Lauf traegt den INHALT: fehlende Dateien und
+# abweichende Digests brechen in beiden coreutils-Fassungen.
+#
+# AUFRUFE: das Rezept release-artifacts (generate) und der manuelle Schnitt vor
+# seinem gh release create (verify). Der publish-Job der Release-Workflow fuehrt
+# die Haltung NICHT ueber diesen Ort — er checkt bewusst nicht aus, das Skript
+# liegt ihm also nicht vor; dort laeuft dieselbe Pruefung als eine Zeile coreutils
+# am Ruheort der SUMS (cd dist && sha256sum -c SHA256SUMS). Beide Stellen haelt
+# test/release-matrix.bats.
 set -euo pipefail
 
 modus="${1:-}"
@@ -64,12 +73,30 @@ verify)
 		echo "release-sums: $sums fehlt — der Schnitt haette die SUMS neben die Binaries gelegt (ADR-0059 Folgepflicht 1); ohne sie wird nichts publiziert." >&2
 		exit 1
 	}
-	# Jede gelistete Datei muss da sein — sha256sum -c bricht an fehlenden und an
-	# abweichenden; die Liste selbst wird vorher gegen Leereintraege gehalten.
-	if ! grep -qE '^[0-9a-f]{64}  [^ ].*$' "$sums"; then
-		echo "release-sums: $sums traegt keine gueltige Zeile (<sha256>  <name>) — ein leeres oder fremdes Manifest wird nicht publiziert." >&2
+	# Zeilen-FORM, je Zeile (siehe GRENZE im Kopf): eine improper Zeile ist ein Bruch,
+	# keine Warnung.
+	formfehler="$(grep -cvE '^[0-9a-f]{64}  [^ ].*$' "$sums" || true)"
+	if [ "$formfehler" -ne 0 ]; then
+		echo "release-sums: $sums traegt $formfehler Zeile(n) ausserhalb der Form <sha256>  <name> — ein improper Manifest wird nicht publiziert." >&2
 		exit 1
 	fi
+	# VOLLSTAENDIGKEIT in beide Richtungen: die Asset-Menge im Verzeichnis und die
+	# Menge der Manifest-Eintraege muessen identisch sein — ein Asset ohne Zeile und
+	# eine Zeile ohne Asset sind derselbe Defekt (ADR-0059 Festlegung 1: eine Zeile
+	# je Asset).
+	shopt -s nullglob
+	asset_dateien=("$dir"/ai-harness-init-*)
+	shopt -u nullglob
+	assets="$(printf '%s\n' "${asset_dateien[@]##*/}" | sort)"
+	eintraege="$(awk '{print $2}' "$sums" | sort)"
+	if [ "$assets" != "$eintraege" ]; then
+		echo "release-sums: die Menge der Eintraege in $sums ist nicht die Menge der Assets in $dir — ein Asset ohne Zeile oder eine Zeile ohne Asset; es wird nichts publiziert." >&2
+		printf '%s\n' "  Assets: $assets" >&2
+		printf '%s\n' "  Eintraege: $eintraege" >&2
+		exit 1
+	fi
+	# Der -c-Lauf traegt den INHALT: abweichende Digests brechen in beiden
+	# coreutils-Fassungen.
 	(
 		cd "$dir"
 		sha256sum -c SHA256SUMS

@@ -121,11 +121,13 @@ jobs:
           path: dist
       # Die reisende SUMS haelt die Artefakte fail-closed, BEVOR etwas hochgeladen
       # wird (ADR-0059 Folgepflicht 1): fehlt sie oder weicht eine Datei ab, wird
-      # nichts publiziert. Der Schritt steht bewusst im Job und nicht hinter einem
-      # Checkout: dieser Job checkt absichtlich nicht aus (F-1) — die Pruefung liest
-      # nur das Verzeichnis, das der Artifact-Download gelegt hat.
+      # nichts publiziert. Die Pruefung laeuft am Ruheort der SUMS (cd dist): die
+      # Manifest-Zeilen tragen die blossen Dateinamen, und relativ zur
+      # Workspace-Wurzel loesen sie ins Leere. Der Schritt steht bewusst im Job und
+      # nicht hinter einem Checkout: dieser Job checkt absichtlich nicht aus, die
+      # Pruefung liest nur das Verzeichnis, das der Artifact-Download gelegt hat.
       - name: SHA256SUMS gegen die Artefakte halten
-        run: sha256sum -c dist/SHA256SUMS
+        run: cd dist && sha256sum -c SHA256SUMS
       - name: Artefakte ans Release haengen
         env:
           GH_TOKEN: ${{ github.token }}
