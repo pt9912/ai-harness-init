@@ -17,10 +17,16 @@ repo-weites Mehr über sie hinaus existiert nicht.
 **Bezug:**
 [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)
 (die Arch-Gate-Config wandert mit — der Glob und die Rollen-Zuordnungen sind
-der Punkt, an dem der Fix in die geprüfte Schicht wirkt);
+der Punkt, an dem der Fix in die geprüfte Schicht wirkt),
+[`ADR-0060`](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
+(Proposed — seine Festlegung 2 schärft
+[`ADR-0009`](../../adr/0009-hexslice-arch-realisierung.md) Festlegung 2 in
+zwei Gegenständen: die Adapter-Ordner-Namen folgen
+`driving`/`driven`, die Ports werden gegliedert);
 Setzung des Auftraggebers vom 2026-09-19: drei Achsen, beide Renderer in
-einem Vorgang — der Fix-Slice wartet in `open/` auf den Zielordner-Slice
-(Prio 1).
+einem Vorgang; mit [`ADR-0060`](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
+ist der Ziel-Layout-Schnitt entschieden — hexslice ist der Gegenstand —
+Prio 1 nach dem Zielordner-Slice.
 
 **Berührte Spec-Stellen:** —
 
@@ -39,31 +45,37 @@ des Lastenhefts, auf den Slice-Plan angewandt); die vier Klassen des
 Ausschlusses stehen in **eben diesem Abschnitt** des Baseline-Regelwerks,
 zusammen mit der Begründungs-Pflicht je Punkt.
 
-**Ziel:** Das hexagonal-Skelett beider Renderer richtet sich auf seine eigenen
-Rollen-Namen — drei Achsen in einem Vorgang:
+**Ziel:** Das hexslice-Skelett beider Renderer richtet sich auf seine eigenen
+Rollen-Namen — drei Achsen in einem Vorgang; hexslice ist der Gegenstand, weil
+[`ADR-0060`](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
+die Struktur dort entscheidet:
 
 1. **Adapter-Ordner:** `inbound`/`outbound` → `driving`/`driven` — Go
-   (`internal/gen/golang.go`: die Skelett-Pfade, die Composition-Root-Imports,
-   der Arch-Gate-Glob `internal/adapters/**` und der Kopf) und C++
-   (`internal/gen/cpp.go`: die Skelett-Pfade samt Namespaces in den drei
-   Quelldateien und der Kopf). Die Rollen-Namen existieren bereits
+   (`internal/gen/golang.go`: die Skelett-Pfade `:83-85`, die
+   Composition-Root-Imports `:450-452`, die Gate-Config
+   `internal/adapters/**` `:539-540` und der Kopf `:47`) und C++
+   (`internal/gen/cpp.go`: die Skelett-Pfade `:75-77` samt Namespaces in den
+   drei Quelldateien `:299`/`:309`/`:332`/`:339` und der Kopf `:38`). Die
+   Rollen-Namen existieren bereits
    (`grep -n 'hexagonal-driving\|hexagonal-driven' internal/gen/arch.go` →
-   Zeilen 50 und 54: `hexagonal-driven` / `hexagonal-driving`) — der Fix
-   richtet das Skeleton auf seine eigenen Rollen-Namen, statt einen zweiten
-   Namensraum daneben zu legen.
+   Zeilen 50 und 54) — der Fix richtet das Skeleton auf seine eigenen
+   Rollen-Namen, statt einen zweiten Namensraum daneben zu legen.
 2. **Ports-Gliederung:** die flachen `ports`-Ordner bekommen
-   `ports/{inbound,outbound}/` nach derselben Rollen-Zuordnung — der
-   Repository-Port ist outbound (der C++-Kommentar sagt es wörtlich:
-   „erfuellt den Area-Port durch VERERBUNG", `grep -n 'erfuellt den Area-Port' internal/gen/cpp.go`
-   → Zeile 339), der CLI-Adapter treibt die Use-Case und braucht einen
-   inbound-Port. Die Gliederung existiert heute nur in Code-Kommentaren, nicht
-   im Baum.
+   `ports/{inbound,outbound}/` nach der Rollen-Zuordnung —
+   [`ADR-0060`](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
+   Festlegung 2 trägt sie (die `direction:`-Dimension des Arch-Gates bleibt
+   leer als Entscheidung; die Ordner-Gliederung kommt in den Baum).
 3. **Die Arch-Gate-Config wandert mit** — der Glob und die Rollen-Zuordnungen
    — mit Rot-Beleg gegen den Gate-Test: das ist der Punkt, an dem der Fix in
    die geprüfte Schicht wirkt.
 
-Die `internal/gen/{hexagonal_test,archgate_test,hexslice_test,cpp_test}.go`
-tragen die `inbound`/`outbound`-Erwartungen — jede Achse zieht ihren Test mit.
+Die Tests tragen die `inbound`/`outbound`-Erwartungen —
+`internal/gen/hexslice_test.go:36-38`, `internal/gen/cpp_test.go:182-184` und
+`:240-242`, `internal/gen/archgate_test.go:91-93` (die Runde-1-Messung nannte
+sie als die Erwartungen, die der Plan „unberührt" ließ und die der Diff
+berühren muss); dazu die hexslice-Stufen im Voll-E2E,
+`harness/tools/full-smoke.sh:2261/:2338/:2376/:2461`, die die Skeleton-Pfade
+fahren.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
@@ -72,19 +84,19 @@ tragen die `inbound`/`outbound`-Erwartungen — jede Achse zieht ihren Test mit.
   wie es geschnitten ist. Ein Re-Publish würde die Tag-Kopplung
   ([`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
   Festlegung 2) für denselben Stand zweimal vollziehen.
-- **Keine a-check-Regel-Änderung** — **Bestand bleibt bewusst stehen:** die
-  Rollen-Namen existieren, nur die Ordner folgen ihnen; der Fix ändert keine
-  Gate-Schwelle und keine Regel des Arch-Gates, er richtet die Ordner und
-  ihre Config auf dieselben Namen.
 - **Kein zweiter Fetch-Weg** — **Bestand bleibt bewusst stehen:** der Fetch
   ([`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
   Festlegung 1, [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
   Festlegung 3) bleibt, wo er steht; der Renderer-Fix rührt den Skeleton-Output,
   nicht den Träger-Weg.
-- **Die `hexslice`-Layouts bleiben unberührt** — **Schicht-Abgrenzung:** der
-  Fix trifft das **hexagonal**-Layout; `flat` und `hexslice` bauen ihre
-  Ordner, wie sie stehen — ein Griff an ihrem Skelett wäre ein zweiter
-  Vorgang mit eigener Deckung.
+- **Keine a-check-Regel-Änderung** — **Bestand bleibt bewusst stehen:** die
+  Rollen existieren, die Kanten-Menge bleibt
+  ([`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)/[`ADR-0060`](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
+  tragen die Mechanik); der Fix richtet die Ordner und ihre Config auf
+  dieselben Namen.
+- **Die Ports-Achse ist normativ entschieden** — [`ADR-0060`](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
+  Festlegung 2 trägt sie (die `direction:`-Dimension bleibt leer); kein
+  zweiter Vorgang für die Ordner-Gliederung.
 
 **Keine Mindestzahl.** Ein Slice mit *einem* echten Ausschluss ist besser als
 einer mit vier erfundenen; die vier Klassen sind ein Suchraster, keine
@@ -104,26 +116,29 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1 — Adapter-Ordner:** das hexagonal-Skelett beider
+- [ ] **Liefer-Punkt 1 — Adapter-Ordner:** das hexslice-Skelett beider
       Renderer legt seine Adapter unter `driving`/`driven` an — Go
-      (`internal/gen/golang.go`: Skelett-Pfade, Composition-Root-Imports,
-      Arch-Gate-Glob, Kopf) und C++ (`internal/gen/cpp.go`: Skelett-Pfade,
-      Namespaces in den drei Quelldateien, Kopf); die Rollen-Namen kommen aus
-      `internal/gen/arch.go` (`hexagonal-driving`/`hexagonal-driven`), es
-      entsteht kein zweiter Namensraum. Rote Gegenprobe: legt das Skeleton
-      `inbound` an, färbt der Renderer-Test (`internal/gen/hexagonal_test.go`,
-      `internal/gen/cpp_test.go`) rot.
+      (`internal/gen/golang.go`: Skelett-Pfaden `:83-85`,
+      Composition-Root-Imports `:450-452`, Kopf `:47`) und C++
+      (`internal/gen/cpp.go`: Skelett-Pfaden `:75-77`, Namespaces in den
+      drei Quelldateien `:299`/`:309`/`:332`/`:339`, Kopf `:38`); die
+      Rollen-Namen kommen aus `internal/gen/arch.go`
+      (`hexagonal-driving`/`hexagonal-driven`), es entsteht kein zweiter
+      Namensraum. Rote Gegenprobe: legt das Skeleton `inbound` an, färbt der
+      Renderer-Test (`internal/gen/hexslice_test.go:36-38`,
+      `internal/gen/cpp_test.go:182-184`/`:240-242`) rot.
 - [ ] **Liefer-Punkt 2 — Ports-Gliederung:** die flachen `ports`-Ordner
-      bekommen `ports/{inbound,outbound}/` nach derselben Rollen-Zuordnung —
-      der Repository-Port outbound, der CLI-Adapter-Port inbound. Rote
-      Gegenprobe: ein Port ohne inbound/outbound-Zuordnung färbt den
-      Renderer-Test rot — die Zuordnung ist an der Stelle geprüft, an der die
-      Ordner entstehen, nicht in einem Kommentar.
+      bekommen `ports/{inbound,outbound}/` nach der Rollen-Zuordnung, die
+      [`ADR-0060`](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
+      Festlegung 2 trägt — der Repository-Port outbound, der CLI-Adapter-Port
+      inbound. Rote Gegenprobe: ein Port ohne inbound/outbound-Zuordnung
+      färbt den Renderer-Test rot — die Zuordnung ist an der Stelle geprüft,
+      an der die Ordner entstehen, nicht in einem Kommentar.
 - [ ] **Liefer-Punkt 3 — Arch-Gate-Config wandert mit:** der Glob und die
       Rollen-Zuordnungen tragen die neuen Ordner, und der Rot-Beleg steht
-      gegen den Gate-Test (`internal/gen/archgate_test.go`) — der Punkt, an
-      dem der Fix in die geprüfte Schicht wirkt. Rote Gegenprobe: hält die
-      Config am alten Glob (`internal/adapters/**`), färbt der
+      gegen den Gate-Test (`internal/gen/archgate_test.go:91-93`) — der
+      Punkt, an dem der Fix in die geprüfte Schicht wirkt. Rote Gegenprobe:
+      hält die Config am alten Glob (`internal/adapters/**`), färbt der
       archgate-Test rot — das Skelett ist nicht mehr dort, wo der Gate
       prüft.
 - [ ] `make gates` grün.
@@ -155,12 +170,13 @@ Aussagen-Berührung steht hier gar nicht.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `internal/gen/golang.go` | update | Achse 1 (Skelett-Pfade, Composition-Root-Imports, Arch-Gate-Glob, Kopf) und Achse 2 (Ports-Gliederung) |
-| `internal/gen/cpp.go` | update | dieselben zwei Achsen — Skelett-Pfade, Namespaces in den drei Quelldateien, Kopf, Ports-Gliederung |
-| `internal/gen/hexagonal_test.go` | update | die `inbound`/`outbound`-Erwartungen folgen auf `driving`/`driven` samt Ports-Gliederung |
-| `internal/gen/cpp_test.go` | update | dieselben Erwartungen am C++-Renderer |
-| `internal/gen/archgate_test.go` | update | der Glob und die Rollen-Zuordnungen — Rot-Beleg gegen den Gate-Test (Achse 3) |
-| `internal/gen/hexslice_test.go` | update | die Deckung, dass das `hexslice`-Layout unberührt bleibt |
+| `internal/gen/golang.go` | update | Achse 1 (Skelett-Pfaden `:83-85`, Composition-Root-Imports `:450-452`, Gate-Config `internal/adapters/**` `:539-540`, Kopf `:47`) und Achse 2 (Ports-Gliederung) |
+| `internal/gen/cpp.go` | update | dieselben zwei Achsen — Skelett-Pfaden `:75-77`, Namespaces `:299`/`:309`/`:332`/`:339`, Kopf `:38`, Ports-Gliederung |
+| `internal/gen/hexslice_test.go` | update | die `inbound`/`outbound`-Erwartungen `:36-38` folgen auf `driving`/`driven` samt Ports-Gliederung |
+| `internal/gen/cpp_test.go` | update | dieselben Erwartungen `:182-184`/`:240-242` am C++-Renderer |
+| `internal/gen/archgate_test.go` | update | der Glob und die Rollen-Zuordnungen `:91-93` — Rot-Beleg gegen den Gate-Test (Achse 3) |
+| `harness/tools/full-smoke.sh` | update | die hexslice-Stufen `:2261`/`:2338`/`:2376`/`:2461` fahren die Skeleton-Pfade — sie ziehen mit |
+| `docs/user/e2e-abdeckung.md` | update | regeneriert via `make e2e-abdeckung`, wenn eine Stufen-Deklaration sich ändert — nicht hand-edited |
 
 **Ansatz als Liste, wo eine Zeile pro Datei nicht trägt:**
 
@@ -214,7 +230,7 @@ Lerneintrag; ohne ihn ist der Slice nur abgelegt.
 
 DoD mit den roten Gegenproben der drei Achsen belegt, und der
 Arch-Gate-Rot-Beleg steht gegen den Gate-Test (nicht gegen einen
-Kommentarlauf): das hexagonal-Skelett beider Renderer liegt unter den
+Kommentarlauf): das hexslice-Skelett beider Renderer liegt unter den
 Rollen-Namen, und der Gate prüft genau diese Ordner.
 
 ## 6. Risiken und offene Punkte
@@ -239,23 +255,15 @@ dasteht.
   Gegenbeispiel ist `internal/gen/cpp_test.go` — Ausgang: entfallen, wenn der
   Test die vier Stellen hält; sonst weiter offen.
 - **Der Zielordner-Slice rührt denselben Träger-Kreis** — sein Dispatch-Griff
-  und dieser Renderer-Fix berühren die Aufruf-Ebene; die Reihenfolge
-  (Zielordner-Slice zuerst, Prio 1) hält die Kante. Ausgang: weiter offen →
-  Sichtung bei der Closure dieses Slices.
+  und dieser Renderer-Fix berühren die Aufruf-Ebene. — **Ausgang:**
+  *entfallen* → der Zielordner-Slice ist geschlossen; die Kante hat sich mit
+  seinem Abschluss erledigt.
 - **Der Plan schneidet das falsche Layout** — gemessen im Implementer-Lauf
-  (§4, Grund nachgetragen): Fundstellen im hexslice-Renderer, hexagonal
-  bereits rollen-konform, Ports-Achse gegen zwei `Accepted`-ADRs. —
-  **Ausgang:** *eingetreten* → **Übergabe an den Architect und den
-  Auftraggeber, beide mit Adresse an dieser Plandatei:** die **Ports-Achse**
-  ist normativ
-  ([`ADR-0010`](../../adr/0010-hexagonal-arch-realisierung.md) und
-  [`ADR-0009`](../../adr/0009-hexslice-arch-realisierung.md)
-  Festlegung 2 — eine Folge-ADR mit `Supersedes` oder die Achse gestrichen;
-  §3.4, Architekt entscheidet) — und der **Ziel-Layout-Schnitt** (wird der
-  Fix an hexslice gebaut oder an hexagonal, das C++ nicht rendert) ist die
-  Frage an den Auftraggeber. Die Setzung „richtig ist driving und driven"
-  trifft das Layout, dessen Ordner die `Accepted`-ADRs pinnen — die
-  Auslegung ist keine Plan-Arbeit (§3.8).
+  (§4, Grund nachgetragen). — **Ausgang:** *entfallen* →
+  [`ADR-0060`](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
+  (Proposed, gepusht) trägt die Ports-Achse (Festlegung 2) und entscheidet
+  den Ziel-Layout-Schnitt: hexslice ist der Gegenstand; der Blocker des
+  Übergangs ist entfallen.
 
 ## 7. Closure-Notiz
 
@@ -307,13 +315,15 @@ Gate-Zuordnung). Sie ist nicht zu grob — die Modus-Deklaration in
 
 **Vorgelagert — offene Beobachtungen sichten:** Register durchgegangen am
 2026-09-19 (`ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l` →
-**146**), Verzeichnisse unter `BEO-ALL/`. Treffer für die Sub-Area: keine —
-kein Eintrag trägt die Renderer-Skelett-Klasse (Adapter-Ordner,
-Ports-Gliederung, Arch-Gate-Glob); der nächste Eintrag in der Nähe,
-`BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`
-(Zählerstand 2×), trägt eine andere Klasse (Zusage-vs-Gelingens-Zweig), und
-dieser Plan schreibt ihn nicht hoch. Keine Treffer sind ebenfalls eine Antwort
-und werden notiert.
+**151**), Verzeichnisse unter `BEO-ALL/`. Treffer für die Sub-Area:
+`BEO-ALL/dod-testzeile-verortet-verhalten-in-der-falschen-stufe` —
+**Zählerstand 2×**; ihr zweiter Beleg trägt genau den Defekt, den der
+Re-Schnitt dieses Plans korrigiert (Fundstellen in der falschen Layout-Achse).
+Der Eintrag erreicht mit dieser Berührung nicht 3× — dieser Plan schreibt den
+Zähler nicht hoch. `BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`
+(2×) trägt eine andere Klasse (Zusage-vs-Gelingens-Zweig) und wird nicht
+hochgeschrieben. Keine weiteren Treffer für die Renderer-Skelett-Klasse —
+notiert.
 
 **Modus-Begründungsblock:** alle berührten Sub-Areas GF (`*` steht in der
 Modus-Deklaration als Greenfield); kein BF/Hybrid-Block.
