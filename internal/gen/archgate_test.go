@@ -228,8 +228,10 @@ func matchGlob(glob, rel string) bool {
 // `direction:` auf den Port-Schichten — eine Form, die erst a-check v0.20.0 dekodiert;
 // eine a-check-Fassung vor dieser Form bricht mit Exit 2 ueber dem unbekannten
 // Schluessel. Der Default-Pin haelt deshalb an derselben Fassung wie die Config-Form:
-// faellt er dahinter zurueck, bricht das emittierte Gate beim ersten Lauf. Rot-
-// Gegenbeispiel: test/mutations setzt den Pin auf die Vorgaenger-Fassung.
+// faellt er dahinter zurueck, bricht das emittierte Gate beim ersten Lauf — genau
+// diese Kopplung haelt der Zahn unten fest: ein Pin unterhalb der Fassung faerbt
+// ihn mit der Pin-Meldung rot. Einen Mutations-Fall dafuer traegt der kuratierte
+// Satz nicht; der Gegenbeispiel-Nachweis liegt als Hand-Messung vor.
 func TestArchImagePin_CouplesToDirectionPorts(t *testing.T) {
 	if !strings.HasSuffix(emit.DefaultArchImage, ":v0.20.0") {
 		t.Errorf("DefaultArchImage = %q, want die Fassung, die direction auf Port-Schichten dekodiert", emit.DefaultArchImage)
