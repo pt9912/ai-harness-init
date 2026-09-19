@@ -98,7 +98,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1 — Release-Schnitt:** Ein Release-Stand, dessen
+- [x] **Liefer-Punkt 1 — Release-Schnitt:** Ein Release-Stand, dessen
       Unterkommando-Dispatch `archive-welle` führt, ist geschnitten und als
       Release mit den sechs Plattform-Assets und der `SHA256SUMS` als siebtem
       Asset veröffentlicht — die SUMS erzeugt und publiziert die
@@ -110,7 +110,13 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Asset der Matrix, färbt der Matrix-Test rot; fehlt die `SHA256SUMS` im
       Release, bricht der Ziel-Fetch laut ab (gemessen am Ziel-Fetch: HTTP
       404) — dieselbe Lücke, an der der Tag-CI des `v0.2.1`-Schnitts brach.
-- [ ] **Liefer-Punkt 2 — Pin-Nachzug:** `TRAEGER_TAG` und die sechs
+      **Beleg:** Release `v0.2.1` mit sieben Assets (`gh release view v0.2.1
+      --json assets` → `assets: 7`), die `SHA256SUMS` byte-identisch zum
+      `make release-artifacts`-Bau, die drei Zähne in
+      `test/release-matrix.bats` — Verifikations-Report
+      (`../../reviews/2026-09-19-slice-release-schnitt-koppelt-pin-und-fassung-verifikation.md`)
+      §1/§2.
+- [x] **Liefer-Punkt 2 — Pin-Nachzug:** `TRAEGER_TAG` und die sechs
       `TRAEGER_SHA256_*`-Pins zeigen im Makefile und im Emissions-Default auf
       den neuen Stand, fail-closed gekoppelt (dieselbe Kopplungs-Klasse wie
       `test/sources-pin.bats`; der Kopplungs-Test ist Fall 1 in
@@ -118,34 +124,50 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Digest-Pins vom realen Asset ab, bricht der Negative-Fall des
       bats-Tests fail-closed — unter der geschwächten Zusicherung (Abweichung
       bricht, aber der Träger bleibt liegen) bleibt der zweite Negative-Fall
-      rot.
-- [ ] **Liefer-Punkt 3 — der laut-Bruch wird am Ziel messbar:** die E2E-Stufe
+      rot. **Beleg:** `grep -nE '^TRAEGER_(TAG|SHA256)' Makefile` → `:45–51`,
+      das Fragment trägt nur den Tag (`grep -c 'TRAEGER_SHA256'
+      internal/emit/templates/enforce/traeger.mk` → 0), der Kopplungs-Test ist
+      Fall 1 in `test/traeger-fetch.bats:116`, und alle sechs SUMS-Zeilen des
+      Releases == die Makefile-Pins — Verifikations-Report §1/§2.
+- [x] **Liefer-Punkt 3 — der laut-Bruch wird am Ziel messbar:** die E2E-Stufe
       misst am realen Ziel den Gelingens-Fall des Konsumenten-Aufrufs mit dem
       gefetchten Träger und den laut-Bruch an einem Träger, der die Sperren
       nicht führt; die GRENZE-Stelle in `full-smoke.sh` trägt danach den
       gemessenen Zustand, nicht mehr die Grenze des gepinnten Standes.
       Rote Gegenprobe: kehrt die Stufe den laut-Bruch in einen stillen
       Init-Pfad-Start zurück, färbt der Fall rot — gemessen am Aufruf, nicht
-      an einem Kommentar.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+      an einem Kommentar. **Beleg:** `make full-smoke` exit 0, Stufe 4 mit den
+      fünf Fällen (a)–(e) am realen Ziel; die GRENZE-Stelle trägt den
+      gemessenen Zustand (V-1 gezogen, `9eea0cc2`) — Verifikations-Report
+      §1/§3.
+- [x] `make gates` grün. **Beleg:** der Lauf des Verifikations-Reports
+      (Kopf `28337be5`, Nachweis `.harness/state/gates-passed.diffsha`) und
+      die Tag-CI; wiederholt grün über dem Closure- und `done/`-Stand (§7).
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist (Pin-Stand in
-      der Werkzeuge-Zeile, E2E-Sicht regeneriert).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen
+      **Beleg:** drei Runden
+      (`2026-09-18-…-runde-{1,2,3}.md`, Commits `918d76dc`, `7c071065`,
+      `8b6a5149`); Runde 3: kein blockierender Befund.
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist (Pin-Stand in
+      der Werkzeuge-Zeile, E2E-Sicht regeneriert). **Beleg:** Werkzeuge-Zeile
+      mit Pin-Stand (`harness/README.md:80`), E2E-Sicht erzeugt
+      (`make e2e-abdeckung`, Stufe-4-Zeile) — Verifikations-Report §2.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag. — diese Datei §7.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen
       Brownfield-Bootstrap und führt die Register-Datei nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschritten — neues
+- [x] Beobachtungs-Register (`../observations/`) fortgeschritten — neues
       Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen
       `evidence/`; **kein Zähler wird gesetzt**, er folgt aus den Dateien.
       Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7
-      notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
-      weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
+      notiert. **Vollzug:** ein Eintrag neu angelegt, zwei Belege ergänzt —
+      siehe §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
+      weiter offen). — siehe §6, je genau einer.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
       Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der
       nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+      **Ergebnis:** §7, der Paarungs-Lauf läuft nach dem `git mv`.
 
 ## 3. Plan (vor Code)
 
@@ -236,21 +258,42 @@ dasteht.
 
 - **Release-Kanal außerhalb des Repos:** das Schneiden und Veröffentlichen des
   Stands läuft über einen Kanal, den dieser Slice nicht steuert (GitHub
-  Release); schlägt er fehl, blockiert der Pin-Nachzug. — **Ausgang:** *offen*
+  Release); schlägt er fehl, blockiert der Pin-Nachzug. — **Ausgang:**
+  *entfallen* — die Blockade-Lage trat nicht ein: der Schnitt ist vollzogen
+  (Release `v0.2.1` mit sieben Assets, die `SHA256SUMS` als siebtes, die
+  SUMS-Zeilen == die `TRAEGER_SHA256_*`-Pins des Makefile an allen sechs
+  Plattformen, Release-Workflow und CI am Tag grün — Verifikations-Report §1
+  unter `docs/reviews/`), und der Pin-Nachzug steht (`TRAEGER_TAG ?= v0.2.1`,
+  Makefile `:45–51`).
 - **Emission berührt sich selbst:** die sieben Pin-Werte liegen doppelt
   (Makefile und Emissions-Default); driftet eine Seite, bricht die Kopplung
   erst im Ziel. Gegenbeispiel ist der Kopplungs-Test (Fall 1 in
   `test/traeger-fetch.bats`, Klasse `test/sources-pin.bats`). — **Ausgang:**
-  *offen*
+  *entfallen* — die Doppelführung der sieben Werte besteht nicht mehr:
+  `ADR-0059` Festlegung 1 zog die Digest-Spiegelung aus der Emission, der
+  Fragment-Pin trägt nur den Tag (`grep -c 'TRAEGER_SHA256'
+  internal/emit/templates/enforce/traeger.mk` → 0), die sechs Digest-Pins
+  stehen allein im Makefile. Die Rest-Kopplung (der Tag an beiden Stellen)
+  hält der Kopplungs-Test hermetisch im `make test`-Gate (Fall 1 in
+  `test/traeger-fetch.bats:116`; die Folgepflicht 2 von `ADR-0059` nennt nach
+  der Nachrunde F-3 die richtige Test-Datei) — Abweichung bricht lokal, nicht
+  erst im Ziel.
 - **Der Bootstrap-Unfall in diesem Lauf:** ein Träger-Aufruf ohne Argument
   fiel in den Init-Pfad und fuhr einen Bootstrap-Lauf gegen das Repo, in dem
   er steht — konvergente Makefile-Ersetzung, Strays; die beschädigte Fassung
   wurde im Pin-Commit committet und trägt den Release-Tag `v0.2.0`. —
-  **Ausgang:** *eingetreten* → die Restaurierung (`e34ef1de`, append-only über
-  dem Tag-Grund, kein Force-Push) trägt den Schaden; die
-  [Register-Beobachtung](../observations/BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad/observation.md)
-  `BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad` trägt die Klasse
-  (Stand *offen*, 1×)
+  **Ausgang:** *weiter offen* → die Klasse ins
+  [Beobachtungs-Register](../observations/BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad/observation.md)
+  (`BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad`, Stand *offen*,
+  1×, Beleg `evidence/slice-release-schnitt-koppelt-pin-und-fassung.md`) —
+  der Unfall trat im Vorgang ein, und der Schaden ist mit der Restaurierung
+  (`e34ef1de`, append-only über dem Tag-Grund, kein Force-Push) im Slice-Diff
+  getragen; kein Carveout und kein Folge-Slice, weil kein Schaden über diesen
+  Slice hinaus offengeliegen hat. Der laut-Bruch deckt das fehlende Argument
+  am Stand `v0.2.1` (der gepinnte Träger führt die Argument-Sperre, die
+  E2E-Stufe misst ihn am Ziel, Fall (e) des Verifikations-Reports); die
+  Klasse bleibt über die Alt-Stände (`v0.2.0`, `v0.1.1`) erreichbar und steht
+  darum weiter offen im Register.
 - **Die Übergabe-Kennung „Plan-L2-Wortlaut" aus den Review-Runden löst in
   keinem Artefakt dieses Slices auf** (Runde 1 und 2, je gemessen per
   `grep`) — sie meint den F-2-Befund des
@@ -275,16 +318,71 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu
-  angelegt, Beleg `evidence/slice-release-schnitt-koppelt-pin-und-fassung.md` |
-  `evidence/slice-release-schnitt-koppelt-pin-und-fassung.md` in `BEO-<KUERZEL>/<slug>/`
-  ergänzt — Zähler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+- **Was hat funktioniert:** Der Schnitt koppelt Pin und Fassung im selben
+  Vorgang: Release `v0.2.1` trägt sieben Assets, die `SHA256SUMS` ist das
+  Erzeugnis der Mechanik (`harness/tools/release-sums.sh generate`,
+  byte-identisch zum `make release-artifacts`-Bau), und die sechs SUMS-Zeilen
+  sind die `TRAEGER_SHA256_*`-Pins des Makefile an allen sechs Plattformen
+  (Verifikations-Report §1). Die Selbstreferenz-Wand ist strukturell
+  geschlossen: ein Pin im emittierten Fragment trägt keinen Bau-abhängigen
+  Wert — der Digest eines Assets hängt am Pin-Wert, den das Asset selbst
+  enthielte —; die Auflösung trägt `ADR-0059` (`Accepted`, Umschlag
+  `ca0b5254`, Beleg-Kennung `2026-09-19-adr-0059-accept-nachrunde` nach
+  `ADR-0040` Festlegung 2): der Fragment-Pin trägt nur den Tag, die
+  Verifikation läuft über die `SHA256SUMS` desselben Releases. `ADR-0058`
+  bleibt in Kraft, ihre Emissions-Hälfte von Festlegung 1 über den
+  Index-Zusatz abgelöst.
+- **Was ging anders als geplant:** Der Schnitterlauf brach an der
+  Plattform-Matrix (`syscall.Flock` ohne Build-Tag — die Span-Spaltung ging
+  dem Pin-Commit voraus), die SUMS-Mechanik wuchs zur Vorgangs-Mechanik
+  (`ADR-0059` Folgepflicht 1), und der Bootstrap-Unfall fiel in den Init-Pfad
+  (Risiko 3). Der Schnitt wurde auf der ungeprüften Zwischenstufe geschnitten
+  — der Tag `v0.2.1` liegt vor Accept und Closure; die Verifikation meldete
+  V-1 (veraltete Pin-Nummer in der GRENZE-Stelle, gezogen `9eea0cc2`) und V-2
+  (die fehlende-`SHA256SUMS`-Klasse bricht per Konstruktion, ohne
+  hermetischen Zahn — benannte Lücke, keine Pflicht aus dem DoD). Die
+  wiederkehrende Finding-Klasse des Reviews („Fail-closed-Grenze der
+  Manifest-Form unbenannt", zwei Instanzen — Runde 2 N-4, Runde 3 M-1) ist in
+  beiden Hälften geschlossen: das Skript hält Form und Menge in beide
+  Richtungen, der Job trägt dieselben drei am Ruheort der SUMS.
+- **Steering-Loop-Eintrag:** benannte Spec-Lücke — der Release-Vorgang (Assets
+  bauen, Digests messen, `SHA256SUMS` erzeugen und als siebtes Asset
+  publizieren, Pin ziehen, Gates am Tag-Baum vor dem Tag-Push, CI am Tag
+  abwarten, bevor der Schnitt vollzogen gemeldet wird) liegt in keinem
+  Artefakt; seine Adresse ist
+  [`slice-releasing-doku-traegt-den-release-vorgang`](../open/slice-releasing-doku-traegt-den-release-vorgang.md)
+  (Datei in `open/`). Die geschärfte Regel der Selbstreferenz-Wand steht in
+  `ADR-0059` — die ADR trägt ihre eigene Kennung, kein zweiter Anker.
+- **Beobachtungs-Register (`../observations/`):**
+  `BEO-ALL/ge-tagter-stand-traegt-keinen-gates-beleg/` neu angelegt, Beleg
+  `evidence/slice-release-schnitt-koppelt-pin-und-fassung.md` — die Klasse
+  „ein ge-tagter/gepushter Stand trägt keinen Gates-Beleg" trägt ihre
+  Kennung: drei Fundstellen, alle im selben Vorgang, darum ein Beleg (die
+  Zählregel misst Wiederholung über Vorgänge, nicht die Zahl der Funde;
+  Fundstellen 1 und 2 sind im Beleg-Kontext des Unfall-Belegs benannt, die
+  dritte ist der `v0.2.1`-Tag auf der ungeprüften Zwischenstufe);
+  `evidence/slice-release-schnitt-koppelt-pin-und-fassung.md` in
+  `BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/` ergänzt.
+  Lese-Schritt: kein Eintrag erreicht mit diesem Vorgang neu die
+  3×-Schwelle — `BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad`
+  1×, der neue Eintrag 1×,
+  `BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch` trägt
+  seinen Ausgang (*geplant*, Kennung
+  `slice-ortswechsel-zieht-sein-zustandsfeld-nach`).
+- **Folge-Slices:**
+  [`slice-releasing-doku-traegt-den-release-vorgang`](../open/slice-releasing-doku-traegt-den-release-vorgang.md)
+  (`releasing.md` trägt den Release-Vorgang) — ist eine Datei in `open/`.
+- **Risiken aus §6:** Risiko 1 *entfallen* (Schnitt vollzogen) · Risiko 2
+  *entfallen* (Doppelführung durch `ADR-0059` gezogen, Rest-Kopplung
+  hermetisch gebunden) · Risiko 3 *weiter offen* → Register · Risiko 4
+  *entfallen* (vollzogen in `slice-traeger-per-fetch-aus-dem-release`) —
+  siehe §6.
+- **Drei Paarungen:** Anker — kein Eintrag in §7 trägt das Feld `liegt in`;
+  die geschärfte Regel steht in `ADR-0059` (Kennung, kein Zielort-Anker), die
+  Paarung hat kein Objekt. · Folge-Slice — die genannte Datei existiert im
+  Planning-Lifecycle (`open/`). · Register — die in §6 und §7 genannten
+  Einträge existieren als Verzeichnisse, jedes trägt mindestens einen Beleg;
+  geprüft im Paarungs-Lauf der Closure nach dem `git mv`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
