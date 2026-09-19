@@ -100,10 +100,16 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
 - [ ] **Liefer-Punkt 1 — Release-Schnitt:** Ein Release-Stand, dessen
       Unterkommando-Dispatch `archive-welle` führt, ist geschnitten und als
-      Release mit den sechs Plattform-Assets veröffentlicht (Matrix nach
+      Release mit den sechs Plattform-Assets und der `SHA256SUMS` als siebtem
+      Asset veröffentlicht — die SUMS erzeugt und publiziert die
+      Prozedur-Mechanik (publish-Job bzw. Rezept), nicht ein Akt von Hand
+      ([`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
+      Folgepflicht 1; Matrix nach
       [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix),
       gehalten von `test/release-matrix.bats`). Rote Gegenprobe: fehlt ein
-      Asset der Matrix, färbt der Matrix-Test rot.
+      Asset der Matrix, färbt der Matrix-Test rot; fehlt die `SHA256SUMS` im
+      Release, bricht der Ziel-Fetch laut ab (gemessen am Ziel-Fetch: HTTP
+      404) — dieselbe Lücke, an der der Tag-CI des `v0.2.1`-Schnitts brach.
 - [ ] **Liefer-Punkt 2 — Pin-Nachzug:** `TRAEGER_TAG` und die sechs
       `TRAEGER_SHA256_*`-Pins zeigen im Makefile und im Emissions-Default auf
       den neuen Stand, fail-closed gekoppelt (dieselbe Kopplungs-Klasse wie
@@ -150,8 +156,9 @@ Aussagen-Berührung steht hier gar nicht.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| Release-Pipeline (Workflow bzw. Release-Vorgang) | update | schneidet den Stand, dessen Dispatch `archive-welle` führt, und veröffentlicht die sechs Assets |
+| Release-Pipeline (Workflow bzw. Release-Vorgang) | update | schneidet den Stand, dessen Dispatch `archive-welle` führt, und veröffentlicht die sechs Assets; ihre publish-Mechanik erzeugt und publiziert die `SHA256SUMS` als siebtes Asset — die SUMS entsteht heute in keinem Artefakt des Schnitts (weder `release-artifacts`-Rezept noch publish-Job von `.github/workflows/release.yml` erzeugt sie, sie wurde von Hand hochgeladen), [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md) Folgepflicht 1 verlangt sie als Mechanik |
 | `Makefile` (`TRAEGER_TAG`, `TRAEGER_SHA256_*`) | update | der Pin zeigt auf den neuen Stand |
+| `Makefile` (Restaurierung) | refactor | die durch den Bootstrap-Unfall beschädigte Fassung ist restauriert (`e34ef1de`, append-only über dem Tag-Grund, kein Force-Push; `git show --shortstat e34ef1de` → 2 Dateien, 489 insertions(+), 24 deletions(-)) — der Plan führte die Datei nur als Pin-Update; diese Zeile beschreibt den Diff-Umfang, den der Diff hat |
 | `internal/emit/templates/enforce/traeger.mk` bzw. die Pin-Default-Stelle der Emission | update | dieselben sieben Werte, fail-closed gekoppelt |
 | `test/traeger-fetch.bats` | update | Kopplungs- und Negative-Fälle am neuen Stand; Rote Gegenprobe Liefer-Punkt 2 |
 | `harness/tools/full-smoke.sh` (Stufe `traeger_fetch_im_ziel`) | update | GRENZE-Stelle wird zum gemessenen Gelingens-Fall; laut-Bruch als Negative (Liefer-Punkt 3) |
@@ -225,6 +232,15 @@ dasteht.
   erst im Ziel. Gegenbeispiel ist der Kopplungs-Test (Fall 1 in
   `test/traeger-fetch.bats`, Klasse `test/sources-pin.bats`). — **Ausgang:**
   *offen*
+- **Der Bootstrap-Unfall in diesem Lauf:** ein Träger-Aufruf ohne Argument
+  fiel in den Init-Pfad und fuhr einen Bootstrap-Lauf gegen das Repo, in dem
+  er steht — konvergente Makefile-Ersetzung, Strays; die beschädigte Fassung
+  wurde im Pin-Commit committet und trägt den Release-Tag `v0.2.0`. —
+  **Ausgang:** *eingetreten* → die Restaurierung (`e34ef1de`, append-only über
+  dem Tag-Grund, kein Force-Push) trägt den Schaden; die
+  [Register-Beobachtung](../observations/BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad/observation.md)
+  `BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad` trägt die Klasse
+  (Stand *offen*, 1×)
 
 ## 7. Closure-Notiz
 
