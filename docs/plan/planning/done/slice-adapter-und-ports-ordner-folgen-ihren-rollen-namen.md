@@ -382,9 +382,9 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   (ADR-0060 trägt die Heilung), Rollen-Kommentare → *entfallen* (im Baum
   geprüft), C++-Namespaces → *entfallen* (Test hält die vier Stellen),
   Zielordner-Kante → *entfallen* (Slice geschlossen), falsches Layout →
-  *entfallen* (ADR-0060), Mutations-Fälle → *weiter offen* (Folge-Slice),
+  *entfallen* ([`ADR-0060`](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)), Mutations-Fälle → *weiter offen* (Folge-Slice),
   Handbuch-Adresse → *weiter offen* (Nachzug, fünf Posten), `ARC-009`-Zelle →
-  *eingetreten* (Architect-Posten, ADR-0060 Folgepflicht 3),
+  *eingetreten* (Architect-Posten, [`ADR-0060`](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md) Folgepflicht 3),
   Zahn-Kommentar → *weiter offen* (Folge-Slice, mit V-1).
 - **Drei Paarungen:** (a) Anker — kein Pflichtfeld: der Lerneintrag ist gezählt, nicht verkörpert (kein `liegt in`-Feld, keine Anker-Paarung ausgelöst); (b) Folge-Slice — `slice-stumme-mutations-faelle-folgen-der-config-form` existiert als Datei in `open/` (geprüft nach dem Move); (c) Register — `BEO-ALL/dod-testzeile-verortet-verhalten-in-der-falschen-stufe` trägt zwei Belege, jede genannte Beobachtung löst auf
 
