@@ -1,4 +1,4 @@
-# Slice slice-releasing-doku-traegt-den-release-vorgang: `docs/user/releasing.md` trägt den Release-Vorgang
+# Slice slice-releasing-doku-traegt-den-release-vorgang: `releasing.md` trägt den Release-Vorgang
 
 **Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese
 Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
@@ -30,7 +30,7 @@ Festlegung 2 (die Tag-Kopplung: Pin und Fassung im selben Vorgang),
 (jede Zahl in der neuen Datei trägt ihr Kommando im selben Absatz),
 [Register-Beleg](../observations/BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad/evidence/slice-release-schnitt-koppelt-pin-und-fassung.md)
 (trägt zwei der drei Fundstellen der Klasse);
-Setzung des Auftraggebers vom 2026-09-19: `docs/user/releasing.md` trägt den
+Setzung des Auftraggebers vom 2026-09-19: `releasing.md` trägt den
 Release-Vorgang, der Release-Text einzelner Releases folgt der Stand-Form, und
 die zwei Disziplin-Zeilen (Gates am Tag-Baum vor dem Tag-Push · CI am Tag
 abwarten, bevor der Schnitt vollzogen gemeldet wird) sind harte Schritte der
@@ -53,7 +53,7 @@ des Lastenhefts, auf den Slice-Plan angewandt); die vier Klassen des
 Ausschlusses stehen in **eben diesem Abschnitt** des Baseline-Regelwerks,
 zusammen mit der Begründungs-Pflicht je Punkt.
 
-**Ziel:** Der Release-Vorgang liegt in einem Artefakt: `docs/user/releasing.md`
+**Ziel:** Der Release-Vorgang liegt in einem Artefakt: `releasing.md`
 trägt die Prozedur des Release-Schnitts — Assets bauen (`make release-artifacts`,
 [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)), Digests
 messen, `SHA256SUMS` erzeugen und als siebtes Asset publizieren
@@ -122,7 +122,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1 — Prozedur:** `docs/user/releasing.md` existiert und
+- [ ] **Liefer-Punkt 1 — Prozedur:** `releasing.md` existiert und
       trägt die Prozedur in der Form, die die Rang-6-Zuordnung trägt:
       Assets bauen (`make release-artifacts`), Digests messen, `SHA256SUMS`
       erzeugen und als siebtes Asset publizieren, Tag-Kopplung im selben
@@ -183,7 +183,7 @@ Aussagen-Berührung steht hier gar nicht.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `docs/user/releasing.md` | neu | die Prozedur (Liefer-Punkt 1) samt Belegbasis-Abschnitt (Liefer-Punkt 3) — Rang 6, Operations/Releasing |
+| `releasing.md` | neu | die Prozedur (Liefer-Punkt 1) samt Belegbasis-Abschnitt (Liefer-Punkt 3) — Rang 6, Operations/Releasing |
 | `harness/README.md` | prüfen, kein Inhalt-Zwang | Liefer-Punkt 2 — die Rang-6-Zeile trägt das Verzeichnis bereits; eine Änderung nur, falls die Ziel-Form eine trägt, die sie nicht hat |
 
 **Ansatz als Liste, wo eine Zeile pro Datei nicht trägt:**
