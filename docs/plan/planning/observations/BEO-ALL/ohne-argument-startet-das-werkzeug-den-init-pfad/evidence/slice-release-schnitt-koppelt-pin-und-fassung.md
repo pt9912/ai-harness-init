@@ -6,7 +6,7 @@ den Init-Pfad und fuhr einen Bootstrap-Lauf gegen das Repo, in dem er steht.
 **Klasse:** Der Dispatch führt seine Unterkommando-Fälle und keinen
 Default-Zweig — ein Aufruf ohne Argument startet den Init-Pfad still, statt
 laut abzuweisen. Der laut-Bruch von
-[`ADR-0058`](../../../../../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
+[`ADR-0058`](../../../../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
 Festlegung 2 deckt ein **unbekanntes** Unterkommando, nicht das **fehlende**
 Argument: Die Schadensvektor-Lücke bleibt auch nach `v0.2.0` offen.
 
