@@ -214,7 +214,7 @@ byte-identisch). `--lang <X>` beim Init ist die One-Shot-Kurzform (Init + ein
   den **Lint**-Gate.
 - **Die Kanten-Menge ist sprach-abhängig, das Layout nicht.** Wie ein Outbound-Adapter
   seinen Port erfüllt, entscheidet die Sprache: **strukturell** (Go: Interface-Erfüllung
-  ohne Import → keine `adapters→ports`-Kante) oder **durch Vererbung** (C++: der Adapter
+  ohne Import → keine `driven→ports`-Kante (die emittierten Configs nennen die geteilte Schicht)) oder **durch Vererbung** (C++: der Adapter
   bindet den Port-Header ein → die Kante ist **erforderlich**). Die a-check-Config eines
   Sprach-Renderers bildet dessen reale Erfüllungs-Form ab; eine Kante aus einer anderen
   Sprache zu übernehmen oder zu streichen, färbt das Gate des generierten Skeletts rot.
