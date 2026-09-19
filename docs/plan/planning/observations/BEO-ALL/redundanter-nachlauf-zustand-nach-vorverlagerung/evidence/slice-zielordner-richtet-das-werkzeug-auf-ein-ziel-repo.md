@@ -1,0 +1,2 @@
+**Vorgang:** slice-zielordner-richtet-das-werkzeug-auf-ein-ziel-repo
+**Fund:** Review-Runde 2 F-9 — die Vorverlagerung der Git-Init-Anlage (F-2-Fix) lässt fünf Nachlauf-Zeilen `git init -q` in `harness/tools/full-smoke.sh` stehen (395, 2092, 2487, 2530, 3040); der tragende Kommentar sitzt an der Nachlauf-Zeile, nicht an der Vorlauf-Blase (128–144).

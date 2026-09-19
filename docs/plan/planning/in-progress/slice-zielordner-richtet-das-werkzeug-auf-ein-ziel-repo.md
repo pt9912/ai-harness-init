@@ -113,21 +113,27 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1 — Dispatch mit Zielordner:** Der Init-Dispatch nimmt
+- [x] **Liefer-Punkt 1 — Dispatch mit Zielordner:** Der Init-Dispatch nimmt
       einen Zielordner entgegen — Flags vor dem ersten Positionsargument, das
       Ziel als letztes Positionsargument (`ai-harness-init [--lang …]
       <zielordner>`), denn `flag` liest Flags nur vor dem ersten
       Positionsargument — und löst sein Ziel aus dem Argument; ohne Argument
       endet der Init-Pfad laut mit dem Usage-Text (fail-closed), ein
       Zielordner, der kein Git-Repo ist, bricht laut.
-      Test: `test/zielordner.bats` (Happy: Ziel-Repo gebootstrapped ohne
-      CWD-Abhängigkeit · Negative: argumentlos → Usage · kein-Git-Repo-Ziel →
-      laut); der Kopf des bats-Files schreibt die Deckungs-Teilung
-      ausgeschrieben — der Unfall-Vektor liegt in der Go-Stufe
-      `TestUnfallVektor_OhneArgumentImRepoWurzel`, nicht im bats-Lauf. Rote
-      Gegenprobe: kehrt der leer-Argument-Zweig zum stillen Init-Pfad-Start
-      zurück, färbt der Negative-Fall des bats-Tests rot — gemessen am
+      Test: die Go-Stufe trägt das Verhalten — `TestZielordner_AusDemArgument`
+      (Happy: Ziel-Repo gebootstrapped ohne CWD-Abhängigkeit),
+      `TestRun_OhneZielordnerBrichtLaut` (argumentlos → Usage),
+      `TestRun_KeinGitRepoZielBrichtLaut` (kein-Git-Repo-Ziel → laut);
+      `test/zielordner.bats` trägt die Struktur-Deckung, sein Kopf schreibt
+      die Deckungs-Teilung ausgeschrieben — der Unfall-Vektor liegt in der
+      Go-Stufe `TestUnfallVektor_OhneArgumentImRepoWurzel`, nicht im
+      bats-Lauf. Rote Gegenprobe: kehrt der leer-Argument-Zweig zum stillen
+      Init-Pfad-Start zurück, färbt der Go-Fall der Leer-Sperre rot —
+      gelistet als `test/mutations/377-init-argumentlos-stiller-init.sh`
+      (expect `TestUnfallVektor_OhneArgumentImRepoWurzel`), gemessen am
       Aufruf, nicht geerbt aus der Unfall-Erinnerung.
+      **Beleg:** Verifikations-Report, DoD L1 (Prozess-Messungen 1–3; rote
+      Gegenprobe 377, eigene Messung).
 - [ ] **Liefer-Punkt 2 — der Unfall-Vektor ist zugenommen:** der Aufruf, der
       den Unfall fuhr (Träger ohne Argument, gestanden im Repo-Wurzel-
       Verzeichnis), endet ohne Schaden — laut, mit dem Usage-Text, ohne dass
@@ -136,6 +142,9 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       ohne Argument, Wurzel-Verzeichnis) und prüft: nichts geschrieben, laut
       gebrochen. Rote Gegenprobe: unter der geschwächten Zusicherung (bricht,
       aber schreibt) muss der zweite Unfall-Fall rot bleiben.
+      **Beleg:** Verifikations-Report, DoD L2 (Messung 1 am realen Träger;
+      377 rot — eigene Messung, 378 rot in der Gate-Umgebung der Runde 2,
+      Grenze V-1 charakterisiert).
 - [ ] **Liefer-Punkt 3 — Deckung:** die vier Dispatch-Fälle
       (`span-emit`, `span-report`, `archive-welle`, `vendor-baseline`) bleiben
       unberührt — ihre Festlegungen
@@ -148,25 +157,38 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Zielordner-Verhalten, färbt der bestehende Fall dieses Unterkommandos
       rot (`make span-check` bzw. der bats-Deckungs-Fall) — die vier bleiben,
       wo sie waren, oder der Lauf bricht.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+      **Beleg:** Verifikations-Report, DoD L3 (Vorher/Nachher-Lektüre des
+      Switches, `git show 0acdf385^:cmd/ai-harness-init/main.go`; die
+      konditionale Gegenprobe blieb ungefahren, weil ihr Auslöser nicht
+      existiert — Grenze benannt).
+- [x] `make gates` grün. **Beleg:** der Lauf des Verifikations-Reports am
+      Kopf `4ce1aa9a` (übernommen); der Closure-Lauf dieser Sitzung
+      bestätigt nach dem Move.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update für die neue Aufruf-Form, falls ein öffentlicher Vertrag
-      berührt ist (der Zielordner ist öffentliche Oberfläche).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen
+      **Beleg:** Runde 1 (drei HIGH, gezogen) und Runde 2 (frei für
+      Verifikation und Closure), beide unter `docs/reviews/`.
+- [x] Doku-Update für die neue Aufruf-Form, falls ein öffentlicher Vertrag
+      berührt ist (der Zielordner ist öffentliche Oberfläche). **Beleg:**
+      `README.md:21` und 11 Handbuch-Stellen tragen die neue Form
+      (Nachzug-Prüfung der Runde 2); die Spec trägt CR 0.22.0 (`4ce1aa9a`).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag. **Beleg:** diese Datei §7.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen
       Brownfield-Bootstrap und führt die Register-Datei nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschritten — neues
+- [x] Beobachtungs-Register (`../observations/`) fortgeschritten — neues
       Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen
       `evidence/`; **kein Zähler wird gesetzt**, er folgt aus den Dateien.
       Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7
-      notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
-      weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
+      notiert. **Beleg:** drei Verzeichnisse neu angelegt (§7); für
+      `BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad` keine
+      Beobachtung angefallen (§7).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
+      weiter offen). **Beleg:** §6, je genau ein Ausgang; §7 fasst zusammen.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
       Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der
       nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+      **Beleg:** Ergebnis in §7; der Paarungs-Lauf läuft nach dem `git mv`.
 
 ## 3. Plan (vor Code)
 
@@ -178,7 +200,7 @@ Aussagen-Berührung steht hier gar nicht.
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `cmd/ai-harness-init/main.go` | update | Zielordner-Argument am Dispatch; ohne Argument Usage-Text, fail-closed; Ziel-Auflösung löst die CWD-Zentralität (Zeilen 572/582) ab |
-| `test/zielordner.bats` | neu | Happy/Negative/Deckung — nach Liefer-Punkt 1 und 3; der Kopf schreibt die Deckungs-Teilung ausgeschrieben: der Unfall-Vektor liegt in der Go-Stufe, rote Gegenproben am Aufruf gemessen |
+| `test/zielordner.bats` | neu | Struktur-Deckung — nach Liefer-Punkt 1 und 3; das Verhalten liegt in der Go-Stufe, der Kopf des Files schreibt die Deckungs-Teilung ausgeschrieben: der Unfall-Vektor liegt in der Go-Stufe, rote Gegenproben am Aufruf gemessen |
 | `TestUnfallVektor_OhneArgumentImRepoWurzel` (Go-Stufe, `cmd/ai-harness-init/`) | neu | der Unfall-Vektor als Go-Test — hermetisch am Aufruf (Liefer-Punkt 2) |
 | `docs/user/benutzerhandbuch.md` | prüfen, kein Inhalt-Zwang | die Aufruf-Form ist öffentliche Oberfläche — Update nur an der Aufruf-Stelle, wenn der Vertrag sie trägt; der pausierte Nachzug nennt die Stellen neu (§6) |
 
@@ -239,21 +261,45 @@ dasteht.
   CWD-Annahme; nach dem Feature driftet ihre Zusage gegen die neue
   Dispatch-Form. Ausgang: weiter offen → Sichtung bei der Closure;
   eingetreten → Folge-Slice, der die Aufruf-Formen der Emission nachzieht.
+  — **Ausgang:** *entfallen* — die Bedingung besteht nicht: die Emission
+  ruft den Träger in der Init-Form 0×
+  (`grep -rn 'ai-harness-init' internal/emit/templates/agents/
+  internal/emit/templates/commands/` → leer); die Fragmente rufen ihn nur
+  als Unterkommando (`SPAN_CARRIER`/`ARCHIV_CARRIER`/`TRAEGER_CARRIER`,
+  `grep -rn 'TRAEGER_CARRIER' internal/emit/templates/ | grep -v '?='` →
+  nur Fetch-/Ablage-Mechanik), und die Zielordner-Form betrifft allein den
+  Init-Dispatch.
 - **Das Handbuch nennt den Aufruf ohne Zielordner** — der pausierte
   Handbuch-Nachzug trägt die Adresse; die neue Aufruf-Form verschiebt die
   Berührungs-Stellen. Ausgang: weiter offen → der Nachzug-Slice nennt die
   neue Form an derselben Adresse.
+  — **Ausgang:** *entfallen* — das Handbuch trägt die neue Form an 11
+  Stellen (je `<zielordner>` am Ende, Flags davor, die gebrochene Form 0× —
+  Nachzug-Prüfung der Review-Runde 2); die Adressen-Frage des pausierten
+  Nachzugs trägt
+  [`slice-releasing-doku-traegt-den-release-vorgang`](../open/slice-releasing-doku-traegt-den-release-vorgang.md)
+  in seinem eigenen §6.
 - **Rest-Vektoren am Dispatch bleiben ungemessen** — der laut-Bruch deckt
   unbekannte Unterkommandos, die Usage-Deckung das fehlende Argument;
   falsch-positionierte Argumente und unbekannte Flags sind die nächsten
   Kandidaten derselben Klasse. Ausgang: weiter offen → Sichtung bei der
   Closure; erreicht die Klasse die Schwelle, weist §7.
+  — **Ausgang:** *weiter offen* → Register —
+  `BEO-ALL/rest-vektoren-am-dispatch-bleiben-ungemessen` (neu angelegt,
+  Beleg `evidence/slice-zielordner-richtet-das-werkzeug-auf-ein-ziel-repo.md`);
+  der Rest-Vektor ist nicht gemessen (Verifikations-Report, §Spec-Lücken:
+  die Sperren decken Leer- und Mehrfach-Fall und das fehlende `.git`, nicht
+  falsch positionierte Argumente und unbekannte Flags).
 - **Die tragenden Festlegungen sind Proposed** — kippt
   [`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
   oder [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
   in seinen Festlegungen 2/3, driftet der Dispatch-Entwurf gegen seinen Grund.
   Ausgang: weiter offen bis zum Accept; der Accept fällt mit der Closure des
   jeweiligen Slices.
+  — **Ausgang:** *entfallen* — die Bedingung besteht nicht mehr: beide ADRs
+  tragen `Accepted` (`grep -nE '^## Status|^\*\*Status'
+  docs/plan/adr/0058-*.md docs/plan/adr/0059-*.md` → je `**Status:** Accepted`);
+  der Accept fiel mit der Closure der jeweiligen Slices.
 
 ## 7. Closure-Notiz
 
@@ -269,17 +315,84 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu
-  angelegt, Beleg `evidence/slice-zielordner-richtet-das-werkzeug-auf-ein-ziel-repo.md` |
-  `evidence/slice-zielordner-richtet-das-werkzeug-auf-ein-ziel-repo.md` in
-  `BEO-<KUERZEL>/<slug>/` ergänzt — Zähler steht damit bei <N>x | keine
-  Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** Anker · Folge-Slice · Register, Ergebnis
+- **Was hat funktioniert:** Der Schnitt schließt zwei Zustände mit einem
+  Griff: Der Dispatch nimmt den Zielordner entgegen (`fs.Parse` stoppt am
+  ersten Positionsargument, drei Sperren vor `bootstrap()`), der
+  argumentlose Aufruf endet laut mit dem Usage-Text (fail-closed) — der
+  Unfall-Vektor ist am realen Träger gemessen (Verifikations-Report,
+  Messung 1: Exit 2, stdout leer, das stehende Repo unverändert), und die
+  roten Gegenproben sind rot gesehen (377 eigene Messung; 378 in der
+  Gate-Umgebung der Runde 2). Die Deckungs-Teilung (Verhalten in der
+  Go-Stufe, Struktur-Deckung im bats-Lauf) steht ausgeschrieben im Kopf von
+  `test/zielordner.bats` — dieselbe Verortung trägt der Plan seit
+  `a247fc89` (LP2, §3) und mit dieser Closure LP1 nach.
+- **Was ging anders als geplant:** Der bats-File führt keinen Happy- und
+  keinen Negative-Verhaltensfall — die Verortung im Plan-Text war halb
+  überholt (Runde 1 F-4 zog LP2 und §3, LP1 blieb; V-2, hier gezogen). Der
+  Diff berührt 11 Dateien gegen 3 in der §3-Tabelle — mechanische Folge der
+  neuen Aufruf-Form, von Runde 1 F-8 und Runde 2 als keine Grenzverletzung
+  eingestuft. Der 378-Zahn bindet nur in einer Umgebung mit Netz (V-1 —
+  die Grenze trägt der gelistete Zahn selbst, `# verify: test-go`; in einer
+  netzlosen test-Go-Umgebung schweigt der Verzeichnis-Zahn, während 377
+  netzlos bindet). Commit `0acdf385` trägt die Rolle als „Rolle
+  Implementation" statt „Rolle Implementer" (V-3) — Zeitdokument. Die Spec
+  trug die alte Aufruf-Form — der CR `0.22.0` (Commit `4ce1aa9a`) zog
+  Lastenheft und Architektur-Ablauf auf die tragende Form; der Anlass steht
+  hier (Setzung des Auftraggebers vom 2026-09-19: die fehlende
+  Zielordner-Form ist Rauschen am Werkzeug und wird zur Fähigkeit), die
+  Historie des Lastenhefts trägt die Setzung
+  ([`MR-042`](../../../../harness/conventions/MR-042-der-anlass-einer-lastenheft-aenderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz.md),
+  [`MR-015`](../../../../harness/conventions/MR-015-change-request-bei-personalunion-von-auftraggeber-und-entwickler.md)).
+  F-9 (LOW, Runde 2) bleibt mit Träger offen — Register unten.
+- **Steering-Loop-Eintrag:** benannte Spec-Lücke — die Argument-Semantik
+  des Init-Dispatch über die drei Sperren hinaus (ein einzelnes
+  Positionsargument, das zufällig ein bestehendes Git-Repo benennt, wird als
+  Zielordner gelesen; falsch positionierte Argumente und unbekannte Flags
+  tragen keine Sperre) ist in keinem Spec-Stratum festgelegt — der
+  Code-Kommentar dokumentiert die Abgrenzung, kein Test misst sie (gemessen:
+  die Spec trägt die Usage-Form und die laut-Zusage des CR `0.22.0`, nicht
+  die Rest-Vektoren). Ihre Adresse ist das Beobachtungs-Register
+  (`BEO-ALL/rest-vektoren-am-dispatch-bleiben-ungemessen`, unten); eine
+  Kennung im Vertrags-Stratum würde sie ein CR des Auftraggebers füllen —
+  hier nicht vollzogen.
+- **Beobachtungs-Register (`../observations/`):** drei Verzeichnisse neu
+  angelegt, Beleg je
+  `evidence/slice-zielordner-richtet-das-werkzeug-auf-ein-ziel-repo.md` —
+  `BEO-ALL/rest-vektoren-am-dispatch-bleiben-ungemessen/` (Risiko-Ausgang
+  §6, Risiko 3) · `BEO-ALL/dod-testzeile-verortet-verhalten-in-der-falschen-stufe/`
+  (Finding-Klasse F-4/V-2, zwei Funde im selben Vorgang — ein Beleg) ·
+  `BEO-ALL/redundanter-nachlauf-zustand-nach-vorverlagerung/` (F-9, Runde 2).
+  Lese-Schritt:
+  [`BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad`](../observations/BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad/observation.md)
+  bleibt **offen** — der Zähler folgt aus den Dateien und ist unverändert
+  (`ls docs/plan/planning/observations/BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad/evidence/ | wc -l`
+  → 1), kein neuer Beleg: der Defekt trat in diesem Vorgang nicht wieder
+  auf, er wurde behoben. *Verkörpert* scheidet aus: die Klasse bleibt über
+  die Alt-Stände erreichbar — `v0.2.0`/`v0.1.1` und der aktuell gepinnte
+  `v0.2.1` tragen die Fähigkeit nicht (kein Re-Publish, §1-Ausschluss), der
+  laut-Bruch
+  ([`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
+  Festlegung 2) deckt dort nur das unbekannte Unterkommando — und
+  `cmd/ai-harness-init/main.go` trägt keinen Anker `seit slice-<Kennung>`;
+  einen zu setzen wäre Produkt-Code. Kein Eintrag erreicht mit diesem
+  Vorgang neu die 3×-Schwelle.
+- **Folge-Slices:** keine — der Ausgang jedes offenen Punkts ist das
+  Beobachtungs-Register (drei neue Einträge oben); die Verkörperung der
+  F-4/V-2-Klasse als Plan-Form-Regel wäre Architektur-Arbeit
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8) und wird erst ab 3× fällig
+  (Lese-Schritt).
+- **Risiken aus §6:** Risiko 1 *entfallen* (die Emission ruft den Träger in
+  der Init-Form 0× — gemessen, siehe §6) · Risiko 2 *entfallen* (das
+  Handbuch trägt die neue Form an 11 Stellen, gebrochene Form 0× —
+  Nachzug-Prüfung der Runde 2) · Risiko 3 *weiter offen* → Register
+  (`BEO-ALL/rest-vektoren-am-dispatch-bleiben-ungemessen`) · Risiko 4
+  *entfallen* (beide ADRs tragen `Accepted`, gemessen) — siehe §6.
+- **Drei Paarungen:** Anker — kein Eintrag in §7 trägt das Feld `liegt in`;
+  die benannte Spec-Lücke trägt kein Zielort-Feld, die Paarung hat kein
+  Objekt. · Folge-Slice — kein Folge-Slice genannt, die Paarung hat kein
+  Objekt. · Register — die in §6 und §7 genannten Einträge existieren als
+  Verzeichnisse, jedes trägt mindestens einen Beleg; geprüft im
+  Paarungs-Lauf der Closure nach dem `git mv`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

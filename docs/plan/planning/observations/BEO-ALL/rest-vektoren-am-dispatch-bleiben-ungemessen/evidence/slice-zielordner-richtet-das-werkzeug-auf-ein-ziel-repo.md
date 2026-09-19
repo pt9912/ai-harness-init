@@ -1,0 +1,2 @@
+**Vorgang:** slice-zielordner-richtet-das-werkzeug-auf-ein-ziel-repo
+**Fund:** §6 Risiko 3 ging weiter offen — die Sperren decken Leer- und Mehrfach-Fall und das fehlende `.git`; falsch positionierte Argumente und unbekannte Flags blieben ungemessen (Verifikations-Report, §Spec-Lücken).

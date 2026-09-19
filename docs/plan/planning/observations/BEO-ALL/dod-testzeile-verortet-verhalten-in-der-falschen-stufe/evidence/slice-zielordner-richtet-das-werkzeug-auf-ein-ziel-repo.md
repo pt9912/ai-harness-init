@@ -1,0 +1,2 @@
+**Vorgang:** slice-zielordner-richtet-das-werkzeug-auf-ein-ziel-repo
+**Fund:** Die Finding-Klasse trat in diesem Vorgang zweimal auf — Review-Runde 1 F-4 (LP1/LP2/§3 verorteten Verhalten im bats-Lauf, Träger Go-Stufe; gezogen `a247fc89`) und Verifikation V-2 (LP1 blieb stehen; gezogen in der Closure) — zwei Funde im selben Vorgang, ein Beleg.
