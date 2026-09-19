@@ -35,7 +35,7 @@ func cppScaffolding(version string) map[string]string {
 // die Test-Rolle traegt den netzlosen CTest-Satz unter tests/ (ADR-0008: Tests folgen
 // dem Code-Layout, nicht der Gerueestung). hexSlice (slice-053, ADR-0009): die vier
 // Schicht-Rollen + der Composition Root rendern in die kanonischen Verzeichnisse
-// (src/hexagon/{domain,application}, src/adapters/{inbound,outbound}, src/main.cpp).
+// (src/hexagon/{domain,application}, src/adapters/{driving,driven}, src/main.cpp).
 //
 // Die Schichten sind HEADER-ONLY, und das ist eine Design-Entscheidung, keine
 // Bequemlichkeit: die arch-invariante CMakeLists uebersetzt genau eine
@@ -62,8 +62,8 @@ func cppRole(r codeRole) map[string]string {
 		return map[string]string{"src/hexagon/domain/example/greeting.hpp": cppHexDomain}
 	case rolePorts:
 		return map[string]string{
-			"src/hexagon/application/example/ports/greeting_repository.hpp": cppHexAreaPort,
-			"src/hexagon/application/example/greet/ports/notifier.hpp":      cppHexSlicePort,
+			"src/hexagon/application/example/ports/outbound/greeting_repository.hpp": cppHexAreaPort,
+			"src/hexagon/application/example/greet/ports/outbound/notifier.hpp":      cppHexSlicePort,
 		}
 	case roleAppSlice:
 		return map[string]string{
@@ -72,9 +72,9 @@ func cppRole(r codeRole) map[string]string {
 		}
 	case roleAdapters:
 		return map[string]string{
-			"src/adapters/inbound/cli/example/cli.hpp":            cppHexInboundCLI,
-			"src/adapters/outbound/memory/example/repository.hpp": cppHexOutboundRepo,
-			"src/adapters/outbound/notify/stdout.hpp":             cppHexOutboundNotify,
+			"src/adapters/driving/cli/example/cli.hpp":            cppHexDrivingCLI,
+			"src/adapters/driven/memory/example/repository.hpp": cppHexDrivenRepo,
+			"src/adapters/driven/notify/stdout.hpp":             cppHexDrivenNotify,
 		}
 	case roleCompositionRoot:
 		return map[string]string{
@@ -145,7 +145,7 @@ int main() {
 //
 // Inward-only, mit der sprach-bedingten Abweichung, die spec/architecture.md §5 setzt:
 // C++ erfuellt einen Port durch Vererbung, includiert ihn also — daher die
-// `adapters -> ports`-Kante, die die Go-Fassung nicht hat. Durchgesetzt wird das von
+// `driven -> ports`-Kante, die die Go-Fassung nicht hat. Durchgesetzt wird das von
 // TestArchGateConfig_CppAllowsAdapterToPorts, nicht von diesem Kommentar.
 
 // cppHexDomain — Domain-Schicht: importiert nur die Standardbibliothek, nie eine
@@ -185,12 +185,12 @@ class Greeting {
 
 // cppHexAreaPort — Business-Area-Port: importiert nur die Domain.
 const cppHexAreaPort = `// Port-Schicht (Business-Area der example-Area): importiert nur die Domain.
-#ifndef HEXAGON_APPLICATION_EXAMPLE_PORTS_GREETING_REPOSITORY_HPP
-#define HEXAGON_APPLICATION_EXAMPLE_PORTS_GREETING_REPOSITORY_HPP
+#ifndef HEXAGON_APPLICATION_EXAMPLE_PORTS_OUTBOUND_GREETING_REPOSITORY_HPP
+#define HEXAGON_APPLICATION_EXAMPLE_PORTS_OUTBOUND_GREETING_REPOSITORY_HPP
 
 #include "src/hexagon/domain/example/greeting.hpp"
 
-namespace hexagon::application::example::ports {
+namespace hexagon::application::example::ports::outbound {
 
 // GreetingRepository persistiert Greetings (Outbound-Port; ein Adapter ERBT von ihm und
 // verdrahtet wird im Composition Root).
@@ -200,19 +200,19 @@ class GreetingRepository {
     virtual bool save(const domain::example::Greeting& greeting) = 0;
 };
 
-}  // namespace hexagon::application::example::ports
+}  // namespace hexagon::application::example::ports::outbound
 
-#endif  // HEXAGON_APPLICATION_EXAMPLE_PORTS_GREETING_REPOSITORY_HPP
+#endif  // HEXAGON_APPLICATION_EXAMPLE_PORTS_OUTBOUND_GREETING_REPOSITORY_HPP
 `
 
 // cppHexSlicePort — slice-lokaler Port der greet-Use-Case: importiert nur die Domain.
 const cppHexSlicePort = `// Port-Schicht (slice-lokal, greet): importiert nur die Domain.
-#ifndef HEXAGON_APPLICATION_EXAMPLE_GREET_PORTS_NOTIFIER_HPP
-#define HEXAGON_APPLICATION_EXAMPLE_GREET_PORTS_NOTIFIER_HPP
+#ifndef HEXAGON_APPLICATION_EXAMPLE_GREET_PORTS_OUTBOUND_NOTIFIER_HPP
+#define HEXAGON_APPLICATION_EXAMPLE_GREET_PORTS_OUTBOUND_NOTIFIER_HPP
 
 #include "src/hexagon/domain/example/greeting.hpp"
 
-namespace hexagon::application::example::greet::ports {
+namespace hexagon::application::example::greet::ports::outbound {
 
 // Notifier annonciert ein Greeting (slice-lokaler Outbound-Port).
 class Notifier {
@@ -221,9 +221,9 @@ class Notifier {
     virtual bool notify(const domain::example::Greeting& greeting) = 0;
 };
 
-}  // namespace hexagon::application::example::greet::ports
+}  // namespace hexagon::application::example::greet::ports::outbound
 
-#endif  // HEXAGON_APPLICATION_EXAMPLE_GREET_PORTS_NOTIFIER_HPP
+#endif  // HEXAGON_APPLICATION_EXAMPLE_GREET_PORTS_OUTBOUND_NOTIFIER_HPP
 `
 
 // cppHexCommand — Eingabe-Typ der greet-Slice (App-Schicht, importiert nichts).
@@ -254,8 +254,8 @@ const cppHexHandler = `// Application-Schicht (Use-Case-Slice greet): app -> dom
 #include <string>
 
 #include "src/hexagon/application/example/greet/command.hpp"
-#include "src/hexagon/application/example/greet/ports/notifier.hpp"
-#include "src/hexagon/application/example/ports/greeting_repository.hpp"
+#include "src/hexagon/application/example/greet/ports/outbound/notifier.hpp"
+#include "src/hexagon/application/example/ports/outbound/greeting_repository.hpp"
 #include "src/hexagon/domain/example/greeting.hpp"
 
 namespace hexagon::application::example::greet {
@@ -263,8 +263,8 @@ namespace hexagon::application::example::greet {
 // Aliase, weil "ports" hier zweideutig waere: innerhalb dieser Slice loest der Name auf
 // den SLICE-LOKALEN Port-Namensraum auf, nie auf den der Business-Area. Dieselbe
 // Unterscheidung, die der Go-Renderer mit den Import-Aliasen areaports/sliceports macht.
-namespace areaports = hexagon::application::example::ports;
-namespace sliceports = hexagon::application::example::greet::ports;
+namespace areaports = hexagon::application::example::ports::outbound;
+namespace sliceports = hexagon::application::example::greet::ports::outbound;
 
 // Handler fuehrt die greet-Use-Case aus: validieren, persistieren, annoncieren.
 class Handler {
@@ -295,10 +295,10 @@ class Handler {
 #endif  // HEXAGON_APPLICATION_EXAMPLE_GREET_HANDLER_HPP
 `
 
-// cppHexInboundCLI — Inbound-Adapter: treibt die Use-Case (adapters -> app).
-const cppHexInboundCLI = `// Adapter-Schicht (inbound, CLI): treibt die Use-Case — adapters -> app.
-#ifndef ADAPTERS_INBOUND_CLI_EXAMPLE_CLI_HPP
-#define ADAPTERS_INBOUND_CLI_EXAMPLE_CLI_HPP
+// cppHexDrivingCLI — treibender Adapter (driving): ruft die Use-Case (driving -> app).
+const cppHexDrivingCLI = `// Adapter-Schicht (driving, CLI): ruft die Use-Case — driving -> app.
+#ifndef ADAPTERS_DRIVING_CLI_EXAMPLE_CLI_HPP
+#define ADAPTERS_DRIVING_CLI_EXAMPLE_CLI_HPP
 
 #include <ostream>
 #include <string>
@@ -306,7 +306,7 @@ const cppHexInboundCLI = `// Adapter-Schicht (inbound, CLI): treibt die Use-Case
 #include "src/hexagon/application/example/greet/command.hpp"
 #include "src/hexagon/application/example/greet/handler.hpp"
 
-namespace adapters::inbound::cli::example {
+namespace adapters::driving::cli::example {
 
 // Runner treibt die greet-Use-Case von der Kommandozeile.
 class Runner {
@@ -329,29 +329,29 @@ class Runner {
     std::ostream& out_;
 };
 
-}  // namespace adapters::inbound::cli::example
+}  // namespace adapters::driving::cli::example
 
-#endif  // ADAPTERS_INBOUND_CLI_EXAMPLE_CLI_HPP
+#endif  // ADAPTERS_DRIVING_CLI_EXAMPLE_CLI_HPP
 `
 
-// cppHexOutboundRepo — Outbound-Adapter: ERBT vom Area-Port (adapters -> ports, die
-// Kante, die die Go-Config nicht braucht) und mappt auf Domain-Objekte.
-const cppHexOutboundRepo = `// Adapter-Schicht (outbound, in-memory): erfuellt den Area-Port durch VERERBUNG —
-// in C++ ist das ein Import (adapters -> ports), anders als bei Gos struktureller
+// cppHexDrivenRepo — getriebener Adapter (driven): ERBT vom Area-Port (driven -> ports,
+// die Kante, die die Go-Config nicht braucht) und mappt auf Domain-Objekte.
+const cppHexDrivenRepo = `// Adapter-Schicht (driven, in-memory): erfuellt den Area-Port durch VERERBUNG —
+// in C++ ist das ein Import (driven -> ports), anders als bei Gos struktureller
 // Interface-Erfuellung.
-#ifndef ADAPTERS_OUTBOUND_MEMORY_EXAMPLE_REPOSITORY_HPP
-#define ADAPTERS_OUTBOUND_MEMORY_EXAMPLE_REPOSITORY_HPP
+#ifndef ADAPTERS_DRIVEN_MEMORY_EXAMPLE_REPOSITORY_HPP
+#define ADAPTERS_DRIVEN_MEMORY_EXAMPLE_REPOSITORY_HPP
 
 #include <string>
 #include <vector>
 
-#include "src/hexagon/application/example/ports/greeting_repository.hpp"
+#include "src/hexagon/application/example/ports/outbound/greeting_repository.hpp"
 #include "src/hexagon/domain/example/greeting.hpp"
 
-namespace adapters::outbound::memory::example {
+namespace adapters::driven::memory::example {
 
 // Repository haelt Greetings im Speicher (Test-/Start-Adapter, netzlos).
-class Repository final : public hexagon::application::example::ports::GreetingRepository {
+class Repository final : public hexagon::application::example::ports::outbound::GreetingRepository {
   public:
     bool save(const hexagon::domain::example::Greeting& greeting) override {
         saved_.push_back(greeting.message());
@@ -364,25 +364,25 @@ class Repository final : public hexagon::application::example::ports::GreetingRe
     std::vector<std::string> saved_;
 };
 
-}  // namespace adapters::outbound::memory::example
+}  // namespace adapters::driven::memory::example
 
-#endif  // ADAPTERS_OUTBOUND_MEMORY_EXAMPLE_REPOSITORY_HPP
+#endif  // ADAPTERS_DRIVEN_MEMORY_EXAMPLE_REPOSITORY_HPP
 `
 
-// cppHexOutboundNotify — Outbound-Adapter auf den slice-lokalen Port.
-const cppHexOutboundNotify = `// Adapter-Schicht (outbound, stdout): erfuellt den slice-lokalen Notifier-Port.
-#ifndef ADAPTERS_OUTBOUND_NOTIFY_STDOUT_HPP
-#define ADAPTERS_OUTBOUND_NOTIFY_STDOUT_HPP
+// cppHexDrivenNotify — getriebener Adapter (driven) auf den slice-lokalen Port.
+const cppHexDrivenNotify = `// Adapter-Schicht (driven, stdout): erfuellt den slice-lokalen Notifier-Port.
+#ifndef ADAPTERS_DRIVEN_NOTIFY_STDOUT_HPP
+#define ADAPTERS_DRIVEN_NOTIFY_STDOUT_HPP
 
 #include <ostream>
 
-#include "src/hexagon/application/example/greet/ports/notifier.hpp"
+#include "src/hexagon/application/example/greet/ports/outbound/notifier.hpp"
 #include "src/hexagon/domain/example/greeting.hpp"
 
-namespace adapters::outbound::notify {
+namespace adapters::driven::notify {
 
 // Writer annonciert ein Greeting auf einem Ausgabe-Stream.
-class Writer final : public hexagon::application::example::greet::ports::Notifier {
+class Writer final : public hexagon::application::example::greet::ports::outbound::Notifier {
   public:
     explicit Writer(std::ostream& out) : out_(out) {}
 
@@ -395,9 +395,9 @@ class Writer final : public hexagon::application::example::greet::ports::Notifie
     std::ostream& out_;
 };
 
-}  // namespace adapters::outbound::notify
+}  // namespace adapters::driven::notify
 
-#endif  // ADAPTERS_OUTBOUND_NOTIFY_STDOUT_HPP
+#endif  // ADAPTERS_DRIVEN_NOTIFY_STDOUT_HPP
 `
 
 // cppHexMain — Composition Root: verdrahtet Adapter, Ports und Use-Case-Slice. Er ist
@@ -407,16 +407,16 @@ const cppHexMain = `// Command app — vom ai-harness-init generiertes hexSlice-
 // verdrahtet Adapter, Ports und Use-Case-Slices (a-check-exempt).
 #include <iostream>
 
-#include "src/adapters/inbound/cli/example/cli.hpp"
-#include "src/adapters/outbound/memory/example/repository.hpp"
-#include "src/adapters/outbound/notify/stdout.hpp"
+#include "src/adapters/driving/cli/example/cli.hpp"
+#include "src/adapters/driven/memory/example/repository.hpp"
+#include "src/adapters/driven/notify/stdout.hpp"
 #include "src/hexagon/application/example/greet/handler.hpp"
 
 int main() {
-    adapters::outbound::memory::example::Repository repo;
-    adapters::outbound::notify::Writer notifier(std::cout);
+    adapters::driven::memory::example::Repository repo;
+    adapters::driven::notify::Writer notifier(std::cout);
     const hexagon::application::example::greet::Handler handler(repo, notifier);
-    const adapters::inbound::cli::example::Runner runner(handler, std::cout);
+    const adapters::driving::cli::example::Runner runner(handler, std::cout);
     return runner.run("Hallo vom generierten hexSlice-Skelett.") ? 0 : 1;
 }
 `
@@ -427,8 +427,8 @@ const cppHexTest = `// Minimaler netzloser Test (kein externes Framework) ueber 
 #include <cstdlib>
 #include <sstream>
 
-#include "src/adapters/outbound/memory/example/repository.hpp"
-#include "src/adapters/outbound/notify/stdout.hpp"
+#include "src/adapters/driven/memory/example/repository.hpp"
+#include "src/adapters/driven/notify/stdout.hpp"
 #include "src/hexagon/application/example/greet/handler.hpp"
 #include "src/hexagon/domain/example/greeting.hpp"
 
@@ -437,9 +437,9 @@ int main() {
         return EXIT_FAILURE;  // leere Nachricht muss die Domain-Invariante verletzen
     }
 
-    adapters::outbound::memory::example::Repository repo;
+    adapters::driven::memory::example::Repository repo;
     std::ostringstream sink;
-    adapters::outbound::notify::Writer notifier(sink);
+    adapters::driven::notify::Writer notifier(sink);
     const hexagon::application::example::greet::Handler handler(repo, notifier);
 
     const auto result = handler.handle({"hi"});
@@ -464,7 +464,7 @@ add_test(NAME app_test COMMAND app_test)
 
 // cppHexArchConfig — die `.a-check.yml` des hexSlice-C++-Moduls (slice-053, LH-FA-07).
 // MODUL-relativ (der Gate-Lauf mountet das Modul-Verzeichnis). Der eine substanzielle
-// Unterschied zur Go-Fassung ist die `adapters -> ports`-Kante: C++ erfuellt einen Port
+// Unterschied zur Go-Fassung ist die `driven -> ports`-Kante: C++ erfuellt einen Port
 // durch VERERBUNG, also mit einem Include — waehrend Go ihn strukturell erfuellt.
 const cppHexArchConfig = `# .a-check.yml — Architektur-Gate (HexSlice = hexagonal + vertical slice),
 # emittiert von ai-harness-init. Bildet die Schichten des generierten hexSlice-
@@ -504,26 +504,34 @@ layers:
       - "src/hexagon/application/example/greet/ports/**"   # use-case-lokal
       - "src/hexagon/application/example/ports/**"         # business-area-geteilt
     role: port
+  # Die Port-Globs enden am "ports"-Segment, bewusst NICHT an der Richtung
+  # darunter: die Gliederung (ports/inbound, ports/outbound) liegt UNTER dem
+  # Glob, damit port-locality ihren Geltungsbereich aus dem Glob-Praefix
+  # ableitet — ein Glob auf ports/outbound/** verengt den Bereich und laesst
+  # die Regel still inert.
   app:
     globs:
       - "src/hexagon/application/example/greet/**"         # Slice: greet
     role: app
-  adapters:
-    globs: ["src/adapters/**"]
+  driving:
+    globs: ["src/adapters/driving/**"]
+    role: adapter
+  driven:
+    globs: ["src/adapters/driven/**"]
     role: adapter
 
 # Erlaubte gerichtete Abhaengigkeiten (nur nach innen). Ein Cross-Layer-Import
 # ohne passende Kante ist ein Befund (wrong-direction).
 edges:
-  - {from: app,      to: domain}
-  - {from: app,      to: ports}
-  - {from: ports,    to: domain}
-  - {from: adapters, to: app}      # der Inbound-Adapter treibt die Use-Case
-  - {from: adapters, to: domain}   # Adapter mappen auf/von Domain-Objekten
-  - {from: adapters, to: ports}    # C++-SPEZIFISCH: der Outbound-Adapter ERBT vom
-                                   # Port und includiert ihn deshalb. Die Go-Fassung
-                                   # hat diese Kante bewusst NICHT (strukturelle
-                                   # Interface-Erfuellung ohne Import).
+  - {from: app,     to: domain}
+  - {from: app,     to: ports}
+  - {from: ports,   to: domain}
+  - {from: driving, to: app}      # die treibende Seite ruft die Use-Case
+  - {from: driven,  to: domain}   # die getriebene Seite bildet auf/von Domain-Objekten ab
+  - {from: driven,  to: ports}    # C++-SPEZIFISCH: der getriebene Adapter ERBT vom
+                                  # Port und includiert ihn deshalb. Die Go-Fassung
+                                  # hat diese Kante bewusst NICHT (strukturelle
+                                  # Interface-Erfuellung ohne Import).
 
 # Der Composition Root verdrahtet Adapter und Slices — von den Schichtregeln befreit.
 composition_root: ["src/main.cpp"]

@@ -2258,7 +2258,7 @@ if [ "$hexadd_rc" -ne 0 ]; then
 fi
 for rel in apps/hex/internal/hexagon/domain/example/greeting.go \
            apps/hex/internal/hexagon/application/example/greet/handler.go \
-           apps/hex/internal/adapters/inbound/cli/example/cli.go \
+           apps/hex/internal/adapters/driving/cli/example/cli.go \
            apps/hex/cmd/app/main.go harness/mk/apps-hex.mk; do
 	if [ ! -e "$tmprepo_doc/$rel" ]; then
 		echo "full-smoke: FEHLER — add-lang --arch hexslice dropte $rel nicht (Arch-Achse kaputt, slice-045b)." >&2
@@ -2335,7 +2335,7 @@ hexdomain="$tmprepo_doc/apps/hex/internal/hexagon/domain/example/greeting.go"
 cp "$hexdomain" "$hexdomain.orig"
 # Import in die Adapter-Schicht einschmuggeln (blank import: kompiliert, verletzt aber die
 # Richtung) — der sed haengt ihn an die vorhandene errors-Import-Zeile.
-sed -i 's|^import "errors"$|import (\n\t"errors"\n\n\t_ "app/internal/adapters/outbound/notify"\n)|' "$hexdomain"
+sed -i 's|^import "errors"$|import (\n\t"errors"\n\n\t_ "app/internal/adapters/driven/notify"\n)|' "$hexdomain"
 teeth_rc=0
 teeth_out="$( make -C "$tmprepo_doc" a-check-apps-hex 2>&1 )" || teeth_rc=$?
 mv "$hexdomain.orig" "$hexdomain"
@@ -2373,7 +2373,7 @@ echo "full-smoke: add-lang cpp apps/cpphex --arch hexslice (Arch-Achse, zweite S
 for rel in apps/cpphex/src/hexagon/domain/example/greeting.hpp \
            apps/cpphex/src/hexagon/application/example/greet/handler.hpp \
            apps/cpphex/src/hexagon/application/example/ports/greeting_repository.hpp \
-           apps/cpphex/src/adapters/outbound/memory/example/repository.hpp \
+           apps/cpphex/src/adapters/driven/memory/example/repository.hpp \
            apps/cpphex/src/main.cpp apps/cpphex/tests/test_greet.cpp \
            apps/cpphex/.a-check.yml harness/mk/apps-cpphex.mk harness/mk/arch-apps-cpphex.mk; do
 	if [ ! -e "$tmprepo_doc/$rel" ]; then
@@ -2458,7 +2458,7 @@ grep -F -- 'bugprone-branch-clone' <<<"$cpplint_out" | sed -n '1,2s/^/full-smoke
 cpparch_layer="$tmprepo_doc/apps/cpphex/src/hexagon/domain/example/greeting.hpp"
 cp "$cpparch_layer" "$cpparch_layer.orig"
 # Der Include steht modul-root-relativ — nur diese Form loest a-check auf (slice-053).
-sed -i '1i #include "src/adapters/outbound/notify/stdout.hpp"' "$cpparch_layer"
+sed -i '1i #include "src/adapters/driven/notify/stdout.hpp"' "$cpparch_layer"
 cpparch_rc=0
 cpparch_out="$( make -C "$tmprepo_doc" a-check-apps-cpphex 2>&1 )" || cpparch_rc=$?
 mv "$cpparch_layer.orig" "$cpparch_layer"

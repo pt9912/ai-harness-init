@@ -179,13 +179,13 @@ func TestGenerate_CppHexsliceProfile_FileSet(t *testing.T) {
 		".clang-tidy",
 		"CMakeLists.txt",
 		"Dockerfile",
-		"src/adapters/inbound/cli/example/cli.hpp",
-		"src/adapters/outbound/memory/example/repository.hpp",
-		"src/adapters/outbound/notify/stdout.hpp",
+		"src/adapters/driven/memory/example/repository.hpp",
+		"src/adapters/driven/notify/stdout.hpp",
+		"src/adapters/driving/cli/example/cli.hpp",
 		"src/hexagon/application/example/greet/command.hpp",
 		"src/hexagon/application/example/greet/handler.hpp",
-		"src/hexagon/application/example/greet/ports/notifier.hpp",
-		"src/hexagon/application/example/ports/greeting_repository.hpp",
+		"src/hexagon/application/example/greet/ports/outbound/notifier.hpp",
+		"src/hexagon/application/example/ports/outbound/greeting_repository.hpp",
 		"src/hexagon/domain/example/greeting.hpp",
 		"src/main.cpp",
 		"tests/CMakeLists.txt",
@@ -233,13 +233,13 @@ func TestArchGateConfig_CppMatchesSkeleton(t *testing.T) {
 	globs := archGlobs(t, cfg)
 	want := map[string]string{
 		"src/hexagon/domain/example/greeting.hpp":                       "domain",
-		"src/hexagon/application/example/ports/greeting_repository.hpp": "ports",
-		"src/hexagon/application/example/greet/ports/notifier.hpp":      "ports",
-		"src/hexagon/application/example/greet/command.hpp":             "app",
-		"src/hexagon/application/example/greet/handler.hpp":             "app",
-		"src/adapters/inbound/cli/example/cli.hpp":                      "adapters",
-		"src/adapters/outbound/memory/example/repository.hpp":           "adapters",
-		"src/adapters/outbound/notify/stdout.hpp":                       "adapters",
+		"src/hexagon/application/example/ports/outbound/greeting_repository.hpp": "ports",
+		"src/hexagon/application/example/greet/ports/outbound/notifier.hpp":      "ports",
+		"src/hexagon/application/example/greet/command.hpp":                      "app",
+		"src/hexagon/application/example/greet/handler.hpp":                      "app",
+		"src/adapters/driving/cli/example/cli.hpp":                               "driving",
+		"src/adapters/driven/memory/example/repository.hpp":                      "driven",
+		"src/adapters/driven/notify/stdout.hpp":                                  "driven",
 	}
 	seen := map[string]bool{}
 	for _, rel := range walkRel(t, genCppArch(t, "hexslice")) {
@@ -266,17 +266,19 @@ func TestArchGateConfig_CppMatchesSkeleton(t *testing.T) {
 }
 
 // TestArchGateConfig_CppAllowsAdapterToPorts (slice-053): die cpp-Config MUSS die
-// adapters->ports-Kante tragen — in C++ erfuellt ein Outbound-Adapter seinen Port durch
+// driven->ports-Kante tragen — in C++ erfuellt ein getriebener Adapter seinen Port durch
 // VERERBUNG und includiert ihn deshalb. Die Go-Fassung hat die Kante bewusst nicht
 // (strukturelle Interface-Erfuellung). Wer sie fuer ein Copy-Paste-Versehen haelt und
 // streicht, faerbt das Arch-Gate des generierten Skeletts rot.
 func TestArchGateConfig_CppAllowsAdapterToPorts(t *testing.T) {
 	cfg, _ := gen.ArchGateConfig("cpp", "hexslice")
-	if !strings.Contains(cfg, "{from: adapters, to: ports}") {
-		t.Error("cpp-Config ohne adapters->ports-Kante: der erbende Outbound-Adapter faerbt a-check rot")
+	if !strings.Contains(cfg, "{from: driven,  to: ports}") {
+		t.Error("cpp-Config ohne driven->ports-Kante: der erbende getriebene Adapter faerbt a-check rot")
 	}
 	goCfg, _ := gen.ArchGateConfig("go", "hexslice")
-	if strings.Contains(goCfg, "{from: adapters, to: ports}") {
-		t.Error("go-Config traegt adapters->ports — die strukturelle Erfuellung braucht sie nicht")
+	for _, kante := range []string{"{from: driving, to: ports}", "{from: driven, to: ports}"} {
+		if strings.Contains(goCfg, kante) {
+			t.Errorf("go-Config traegt %s — die strukturelle Erfuellung braucht sie nicht", kante)
+		}
 	}
 }

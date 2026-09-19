@@ -408,7 +408,7 @@ func TestRun_AddLangArchHexslice(t *testing.T) {
 	for _, rel := range []string{
 		"apps/hex/internal/hexagon/domain/example/greeting.go",
 		"apps/hex/internal/hexagon/application/example/greet/handler.go",
-		"apps/hex/internal/adapters/inbound/cli/example/cli.go",
+		"apps/hex/internal/adapters/driving/cli/example/cli.go",
 		"apps/hex/cmd/app/main.go", "apps/hex/go.mod",
 	} {
 		if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel))); err != nil {

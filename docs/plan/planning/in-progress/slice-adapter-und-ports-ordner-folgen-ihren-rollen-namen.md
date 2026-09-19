@@ -187,6 +187,32 @@ Aussagen-Berührung steht hier gar nicht.
 - Die Ports-Gliederung zieht die Zuordnung aus den Code-Kommentaren in den
   Baum — der Kommentar („erfüllt den Area-Port durch VERERBUNG") bleibt als
   Kopplungs-Aussage stehen und wird mit der Struktur konsistent geprüft.
+- **Verfeinerung 1 (Gemessen am Ist, 2026-09-19):** die zwei Ports des
+  Skeletts sind nach der Rollen-Zuordnung **beide outbound** (der
+  Repository-Port und der Notifier-Port werden je von einem driven Adapter
+  erfüllt — Interface-Erfüllung statt Import) und rücken unter
+  `ports/outbound/`. Ein adapter-konsumierter inbound-Port — die Form der
+  Referenz — verlangt einen `adapters→ports`-Import: genau die Kante, deren
+  **Fehlen** [ADR-0060](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
+  Festlegung 4 verbatim bindet (und ein Port-Interface über die Slice-eigenen
+  Command/Result-Typen verlangte `ports→app`). Die Gliederung materialisiert
+  sich darum für die Ports, die das Skelett trägt; die inbound-Hälfte der
+  Ordner-Form bleibt Struktur. Übergabe an Review/Planner: der Plan-Text
+  „der CLI-Adapter-Port inbound" benennt einen Port, den das Skelett vor und
+  nach dem Fix nicht trägt — die Kanten-Bindung entscheidet das, nicht dieser
+  Lauf.
+- **Verfeinerung 2 (Gemessen am Ist, 2026-09-19):** die Gate-Config teilt die
+  Adapter-Schicht in `driving`/`driven` (Schichtnamen mit `role: adapter`, je
+  explizitem Glob — die Namens-Form des hexagonal-Configs dieses Renderers).
+  Die **fünf erlaubten Kanten-Richtungen** aus
+  [`ADR-0009`](../../adr/0009-hexslice-arch-realisierung.md) Festlegung 2
+  binden unverändert fort — sie stehen unter den neuen Schicht-Namen:
+  `driving→app`, `driven→domain` (Go), dazu C++-spezifisch `driven→ports`
+  (die Vererbungs-Erfüllung). Keine `driven→ports`-Kante in Go, keine
+  `driving→ports`-Kante in beiden; jede deklarierte Kante wird von einem
+  realen Import benutzt (Gate-Test-Eigenschaft (b)). Die Rot-Gegenprobe des
+  Plans (Config hält den breiten Glob `internal/adapters/**`) färbt dann am
+  Gate-Test rot: die Schicht-Namen in der Erwartung sind die neuen.
 
 ## 4. Trigger
 

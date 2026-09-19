@@ -273,13 +273,13 @@ ai-harness-init add-lang go apps/api --arch hexagonal
 
 **Ergebnis — zusätzlich zum flachen Fall:**
 
-- der Code liegt in Schichten. Bei `hexagonal`: `internal/hexagon/core/…` (Fachlogik **und** Anwendungsfall), `internal/hexagon/port/…` (die Schnittstellen nach außen — bewusst **ohne** eigene Importe), `internal/adapter/driven/…` (was der Kern benutzt: Datenbank, Datei, Fremdsystem), `internal/adapter/driving/…` (was den Kern antreibt: CLI, HTTP), dazu `cmd/<binary>/main.go` als Verdrahtungs-Punkt. Bei `hexslice`: `internal/hexagon/domain/…`, `internal/hexagon/application/<bereich>/<use-case>/…` (mit eigenen `ports/`), `internal/adapters/{inbound,outbound}/…`, ebenfalls mit `cmd/<binary>/main.go`;
+- der Code liegt in Schichten. Bei `hexagonal`: `internal/hexagon/core/…` (Fachlogik **und** Anwendungsfall), `internal/hexagon/port/…` (die Schnittstellen nach außen — bewusst **ohne** eigene Importe), `internal/adapter/driven/…` (was der Kern benutzt: Datenbank, Datei, Fremdsystem), `internal/adapter/driving/…` (was den Kern antreibt: CLI, HTTP), dazu `cmd/<binary>/main.go` als Verdrahtungs-Punkt. Bei `hexslice`: `internal/hexagon/domain/…`, `internal/hexagon/application/<bereich>/<use-case>/…` (mit eigenen `ports/`, gegliedert nach `inbound`/`outbound`), `internal/adapters/{driving,driven}/…`, ebenfalls mit `cmd/<binary>/main.go`;
 - **das Architektur-Gate wird mitgeliefert**: `<pfad>/.a-check.yml` (die Schicht-Regeln) und `a-check.mk` (der Prüf-Baustein). `make gates` fährt es ab sofort mit.
 
 Das Architektur-Gate prüft die **Abhängigkeitsrichtung**: Importe zeigen nur nach innen. Ein Verstoß — etwa ein Import aus der Domain in einen Adapter — lässt `make gates` **rot** werden, mit Datei und Zeile:
 
 ```text
-internal/hexagon/domain/example/greeting.go:8: core-impurity: Kern importiert app/internal/adapters/outbound/notify
+internal/hexagon/domain/example/greeting.go:8: core-impurity: Kern importiert app/internal/adapters/driven/notify
 ```
 
 Bei `hexagonal` greifen zwei Regeln, die **unabhängig von den erlaubten Richtungen** gelten und darum auch von keiner zusätzlichen Kante aufgehoben werden. Beide sind an einem echten Lauf gemessen, nicht behauptet:
@@ -434,7 +434,7 @@ Schon hier läuft `make gates` **grün** — dokument-only (Dokumentations-Prüf
 
 Am Wurzelverzeichnis (`--lang go` bzw. `add-lang go .`) liegen sie neben den Basis-Dateien; in einem **Mono-Repo** (mehrere `add-lang`-Läufe mit verschiedenen `<pfad>`) je Modul ein solcher Satz unter seinem `<pfad>`, auch mit gemischten Sprachen. Erst mit einem Sprachmodul fährt `make gates` **zusätzlich** die Code-Gates (lint/build/test in Docker).
 
-Mit einer geschichteten Bauform sieht der Code-Teil anders aus (die Bau-Dateien bleiben gleich): statt eines einzelnen Einstiegspunkts entstehen Schichten — bei `hexslice` `internal/hexagon/{domain,application}` und `internal/adapters/{inbound,outbound}`, bei `hexagonal` `internal/hexagon/{core,port}` und `internal/adapter/{driven,driving}` —, dazu `cmd/<binary>/main.go` und **plus** das Architektur-Gate `<pfad>/.a-check.yml` und `a-check.mk`. Bei `flat` (dem Standard) entsteht keines von beidem. Siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch).
+Mit einer geschichteten Bauform sieht der Code-Teil anders aus (die Bau-Dateien bleiben gleich): statt eines einzelnen Einstiegspunkts entstehen Schichten — bei `hexslice` `internal/hexagon/{domain,application}` und `internal/adapters/{driving,driven}`, bei `hexagonal` `internal/hexagon/{core,port}` und `internal/adapter/{driven,driving}` —, dazu `cmd/<binary>/main.go` und **plus** das Architektur-Gate `<pfad>/.a-check.yml` und `a-check.mk`. Bei `flat` (dem Standard) entsteht keines von beidem. Siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch).
 
 Die Dateien mit der Endung `.template.md` unter `.harness/baseline/` sind **Vorlagen**: Sie kopieren sie bei Bedarf und füllen sie aus (z. B. für eine neue Architektur-Entscheidung). Die Prozess-Regeln erklären, wann welche Vorlage zum Einsatz kommt.
 

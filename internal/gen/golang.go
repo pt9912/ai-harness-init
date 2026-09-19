@@ -44,7 +44,7 @@ func goScaffolding(version string) map[string]string {
 // goRole rendert eine Code-Rolle als Go-Datei(en). Flach: Entry-Point -> cmd/app/main.go,
 // Test-Rolle -> nil (main.go ist trivial). hexSlice (slice-045a, ADR-0009): die vier
 // Schicht-Rollen + der Composition Root rendern in die kanonischen Verzeichnisse
-// (internal/hexagon/{domain,application}, internal/adapters/{inbound,outbound}, cmd/app).
+// (internal/hexagon/{domain,application}, internal/adapters/{driving,driven}, cmd/app).
 // Die Import-Richtungen sind inward-only (app->domain, app->ports, ports->domain,
 // adapters->app, adapters->domain); Outbound-Adapter erfuellen die Ports strukturell
 // (kein Import), verdrahtet im Composition Root.
@@ -67,8 +67,8 @@ func goRole(r codeRole) map[string]string {
 		}
 	case rolePorts:
 		return map[string]string{
-			"internal/hexagon/application/example/ports/greeting_repository.go": goHexAreaPort,
-			"internal/hexagon/application/example/greet/ports/notifier.go":      goHexSlicePort,
+			"internal/hexagon/application/example/ports/outbound/greeting_repository.go": goHexAreaPort,
+			"internal/hexagon/application/example/greet/ports/outbound/notifier.go":      goHexSlicePort,
 		}
 	case roleAppSlice:
 		return map[string]string{
@@ -80,9 +80,9 @@ func goRole(r codeRole) map[string]string {
 		}
 	case roleAdapters:
 		return map[string]string{
-			"internal/adapters/inbound/cli/example/cli.go":            goHexInboundCLI,
-			"internal/adapters/outbound/memory/example/repository.go": goHexOutboundRepo,
-			"internal/adapters/outbound/notify/stdout.go":             goHexOutboundNotify,
+			"internal/adapters/driving/cli/example/cli.go":            goHexDrivingCLI,
+			"internal/adapters/driven/memory/example/repository.go": goHexDrivenRepo,
+			"internal/adapters/driven/notify/stdout.go":             goHexDrivenNotify,
 		}
 	case roleCompositionRoot:
 		return map[string]string{"cmd/app/main.go": goHexMain}
@@ -283,8 +283,8 @@ func Validate(cmd Command) (example.Greeting, error) {
 const goHexHandler = `package greet
 
 import (
-	areaports "app/internal/hexagon/application/example/ports"
-	sliceports "app/internal/hexagon/application/example/greet/ports"
+	areaports "app/internal/hexagon/application/example/ports/outbound"
+	sliceports "app/internal/hexagon/application/example/greet/ports/outbound"
 )
 
 // Handler fuehrt die greet-Use-Case aus (app -> domain, app -> ports).
@@ -344,9 +344,9 @@ func TestHandlerHandle(t *testing.T) {
 }
 `
 
-// goHexInboundCLI — Inbound-Adapter (adapter -> app).
-const goHexInboundCLI = `// Package cli ist der Inbound-CLI-Adapter der example-Area (treibt die Use-Case;
-// Adapter-Schicht -> Application).
+// goHexDrivingCLI — treibender Adapter (driving): ruft die Use-Case (driving -> app).
+const goHexDrivingCLI = `// Package cli ist der treibende CLI-Adapter (driving) der example-Area (ruft die
+// Use-Case; Adapter-Schicht -> Application).
 package cli
 
 import (
@@ -378,10 +378,10 @@ func (r *Runner) Run(message string) error {
 }
 `
 
-// goHexOutboundRepo — Outbound-Adapter, erfuellt den GreetingRepository-Port
-// strukturell (adapter -> domain; kein Port-Import).
-const goHexOutboundRepo = `// Package memory ist ein In-Memory-Outbound-Adapter der example-Area (erfuellt den
-// GreetingRepository-Port strukturell; verdrahtet im Composition Root).
+// goHexDrivenRepo — getriebener Adapter (driven), erfuellt den GreetingRepository-Port
+// strukturell (driven -> domain; kein Port-Import).
+const goHexDrivenRepo = `// Package memory ist ein getriebener In-Memory-Adapter (driven) der example-Area
+// (erfuellt den GreetingRepository-Port strukturell; verdrahtet im Composition Root).
 package memory
 
 import "app/internal/hexagon/domain/example"
@@ -408,10 +408,10 @@ func (r *Repository) Count() int {
 }
 `
 
-// goHexOutboundNotify — Outbound-Adapter, erfuellt den Notifier-Port strukturell
-// (adapter -> domain; kein Port-Import).
-const goHexOutboundNotify = `// Package notify ist ein Outbound-Adapter, der Greetings auf einen io.Writer annonciert
-// (erfuellt den Notifier-Port strukturell; verdrahtet im Composition Root).
+// goHexDrivenNotify — getriebener Adapter (driven), erfuellt den Notifier-Port
+// strukturell (driven -> domain; kein Port-Import).
+const goHexDrivenNotify = `// Package notify ist ein getriebener Adapter (driven), der Greetings auf einen io.Writer
+// annonciert (erfuellt den Notifier-Port strukturell; verdrahtet im Composition Root).
 package notify
 
 import (
@@ -447,9 +447,9 @@ package main
 import (
 	"os"
 
-	cli "app/internal/adapters/inbound/cli/example"
-	memory "app/internal/adapters/outbound/memory/example"
-	"app/internal/adapters/outbound/notify"
+	cli "app/internal/adapters/driving/cli/example"
+	memory "app/internal/adapters/driven/memory/example"
+	"app/internal/adapters/driven/notify"
 	"app/internal/hexagon/application/example/greet"
 )
 
@@ -532,25 +532,34 @@ layers:
       - "internal/hexagon/application/example/greet/ports/**"   # use-case-lokal
       - "internal/hexagon/application/example/ports/**"         # business-area-geteilt
     role: port
+  # Die Port-Globs enden am "ports"-Segment, bewusst NICHT an der Richtung
+  # darunter: die Gliederung (ports/inbound, ports/outbound) liegt UNTER dem
+  # Glob, damit port-locality ihren Geltungsbereich aus dem Glob-Praefix
+  # ableitet — ein Glob auf ports/outbound/** verengte den Bereich auf
+  # ".../greet/ports" und liesse die Regel still inert.
   app:
     globs:
       - "internal/hexagon/application/example/greet/**"         # Slice: greet
     role: app
-  adapters:
-    globs: ["internal/adapters/**"]
+  driving:
+    globs: ["internal/adapters/driving/**"]
+    role: adapter
+  driven:
+    globs: ["internal/adapters/driven/**"]
     role: adapter
 
 # Erlaubte gerichtete Abhaengigkeiten (nur nach innen). Ein Cross-Layer-Import
 # ohne passende Kante ist ein Befund (wrong-direction).
 edges:
-  - {from: app,      to: domain}
-  - {from: app,      to: ports}
-  - {from: ports,    to: domain}
-  - {from: adapters, to: app}      # der Inbound-Adapter treibt die Use-Case
-  - {from: adapters, to: domain}   # Adapter mappen auf/von Domain-Objekten
-# Keine adapters->ports-Kante: Outbound-Adapter ERFUELLEN die Ports ueber
+  - {from: app,     to: domain}
+  - {from: app,     to: ports}
+  - {from: ports,   to: domain}
+  - {from: driving, to: app}      # die treibende Seite ruft die Use-Case
+  - {from: driven,  to: domain}   # die getriebene Seite bildet auf/von Domain-Objekten ab
+# Keine driven->ports-Kante: die getriebenen Adapter ERFUELLEN die Ports ueber
 # Go-Interface-Erfuellung (strukturell, kein Import); verdrahtet wird im
-# Composition Root (cmd/**).
+# Composition Root (cmd/**). Auch keine driving->ports-Kante: der treibende
+# Adapter ruft die Use-Case direkt (driving -> app).
 
 # Der Composition Root verdrahtet Adapter und Slices — von den Schichtregeln befreit.
 composition_root: ["cmd/**"]

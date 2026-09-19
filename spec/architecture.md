@@ -167,10 +167,11 @@ byte-identisch). `--lang <X>` beim Init ist die One-Shot-Kurzform (Init + ein
   Manifeste, Lint-Config) ist **arch-invariant** und immer präsent (sonst bräche der
   Code-Gate-Lauf), das **Code-Layout** ist arch-gegatet (`flat` = ein Entry-Point wie
   heute; `hexslice` = `domain`/`application` (Use-Case-Slices mit
-  `command`/`handler`/`validator`/`result`/`ports`)/`ports`/`adapters` (`inbound`/`outbound`)
+  `command`/`handler`/`validator`/`result`/`ports`)/`ports` (gegliedert nach
+  `inbound`/`outbound`)/`adapters` (`driving`/`driven`)
   + Composition Root `cmd/`, samt Tests je Schicht). Die a-check-Config bildet diese
-  Schichten ab: vier Layer (`domain`/`app`/`ports`/`adapters`), inward-only-Kanten
-  (`app→domain`, `app→ports`, `ports→domain`, `adapters→app`, `adapters→domain`) und
+  Schichten ab: fünf Layer (`domain`/`app`/`ports`/`driving`/`driven`), inward-only-Kanten
+  (`app→domain`, `app→ports`, `ports→domain`, `driving→app`, `driven→domain`) und
   `cmd/**` als Composition Root (a-check-exempt, verdrahtet die Ports strukturell). Das
   **Architektur-Gate** (a-check, per-Tool-Fragment wie das Doc-Gate) wird **nur bei
   einem schichten-tragenden Layout** emittiert; bei `flat` liegt kein `.a-check.yml`/

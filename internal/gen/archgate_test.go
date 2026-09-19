@@ -82,15 +82,15 @@ func TestArchGateConfig_MatchesSkeleton(t *testing.T) {
 	// aus der Config abgeleitet, sonst pruefte der Test die Config gegen sich selbst.
 	want := map[string]string{
 		"internal/hexagon/domain/example/greeting.go":                       "domain",
-		"internal/hexagon/application/example/ports/greeting_repository.go": "ports",
-		"internal/hexagon/application/example/greet/ports/notifier.go":      "ports",
-		"internal/hexagon/application/example/greet/command.go":             "app",
-		"internal/hexagon/application/example/greet/result.go":              "app",
-		"internal/hexagon/application/example/greet/validator.go":           "app",
-		"internal/hexagon/application/example/greet/handler.go":             "app",
-		"internal/adapters/inbound/cli/example/cli.go":                      "adapters",
-		"internal/adapters/outbound/memory/example/repository.go":           "adapters",
-		"internal/adapters/outbound/notify/stdout.go":                       "adapters",
+		"internal/hexagon/application/example/ports/outbound/greeting_repository.go": "ports",
+		"internal/hexagon/application/example/greet/ports/outbound/notifier.go":      "ports",
+		"internal/hexagon/application/example/greet/command.go":                      "app",
+		"internal/hexagon/application/example/greet/result.go":                       "app",
+		"internal/hexagon/application/example/greet/validator.go":                    "app",
+		"internal/hexagon/application/example/greet/handler.go":                      "app",
+		"internal/adapters/driving/cli/example/cli.go":                               "driving",
+		"internal/adapters/driven/memory/example/repository.go":                      "driven",
+		"internal/adapters/driven/notify/stdout.go":                                  "driven",
 	}
 	hits := map[string]int{}
 	seen := map[string]bool{}
