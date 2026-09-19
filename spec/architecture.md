@@ -118,7 +118,7 @@ sequenceDiagram
     participant U as Adopter
     participant C as CLI Init
     participant R as Kurs-Release
-    U->>C: ai-harness-init --name X   [ohne Sprache]
+    U->>C: ai-harness-init --name "X" <zielordner>   [ohne Sprache]
     C->>R: Regelwerk + Templates holen, gepinnt
     C->>C: idempotent ablegen — konvergent / skip-if-present
     C->>C: Gate-Fragmente + Aggregator, Guard mit Boden, Commands/Skills
