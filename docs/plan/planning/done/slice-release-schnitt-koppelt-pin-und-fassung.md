@@ -350,7 +350,7 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   publizieren, Pin ziehen, Gates am Tag-Baum vor dem Tag-Push, CI am Tag
   abwarten, bevor der Schnitt vollzogen gemeldet wird) liegt in keinem
   Artefakt; seine Adresse ist
-  [`slice-releasing-doku-traegt-den-release-vorgang`](../next/slice-releasing-doku-traegt-den-release-vorgang.md)
+  [`slice-releasing-doku-traegt-den-release-vorgang`](../in-progress/slice-releasing-doku-traegt-den-release-vorgang.md)
   (Datei in `open/`). Die geschärfte Regel der Selbstreferenz-Wand steht in
   [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md) — die ADR trägt ihre eigene Kennung, kein zweiter Anker.
 - **Beobachtungs-Register (`../observations/`):**
@@ -370,7 +370,7 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   seinen Ausgang (*geplant*, Kennung
   `slice-ortswechsel-zieht-sein-zustandsfeld-nach`).
 - **Folge-Slices:**
-  [`slice-releasing-doku-traegt-den-release-vorgang`](../next/slice-releasing-doku-traegt-den-release-vorgang.md)
+  [`slice-releasing-doku-traegt-den-release-vorgang`](../in-progress/slice-releasing-doku-traegt-den-release-vorgang.md)
   (`releasing.md` trägt den Release-Vorgang) — ist eine Datei in `open/`.
 - **Risiken aus §6:** Risiko 1 *entfallen* (Schnitt vollzogen) · Risiko 2
   *entfallen* (Doppelführung durch [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md) gezogen, Rest-Kopplung
