@@ -199,7 +199,7 @@ Lerneintrag; ohne ihn ist der Slice nur abgelegt.
 
 DoD mit den roten Gegenproben der drei Achsen belegt, und der
 Arch-Gate-Rot-Beleg steht gegen den Gate-Test (nicht gegen einen
-Kommentarlauf): das hexagonal-Skelegt beider Renderer liegt unter den
+Kommentarlauf): das hexagonal-Skelett beider Renderer liegt unter den
 Rollen-Namen, und der Gate prüft genau diese Ordner.
 
 ## 6. Risiken und offene Punkte
