@@ -166,7 +166,7 @@ Pin-Commit voraus — sie ist Vorbedingung von Liefer-Punkt 1, nicht eine zweite
 Schicht: | `internal/span/emit.go` + `internal/span/lock_unix.go` +
 `internal/span/lock_windows.go` | update/neu | die zwei POSIX-Syscalls der
 Span-Sperre tragen je-OS-Dateien, sonst bauen windows-amd64/arm64 nicht
-(LH-QA-04) |
+([`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)) |
 
 ## 4. Trigger
 
