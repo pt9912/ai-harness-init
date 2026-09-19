@@ -114,7 +114,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       --json assets` → `assets: 7`), die `SHA256SUMS` byte-identisch zum
       `make release-artifacts`-Bau, die drei Zähne in
       `test/release-matrix.bats` — Verifikations-Report
-      ([Verifikations-Report](../../reviews/2026-09-19-slice-release-schnitt-koppelt-pin-und-fassung-verifikation.md))
+      ([Verifikations-Report](../../../reviews/2026-09-19-slice-release-schnitt-koppelt-pin-und-fassung-verifikation.md))
       §1/§2.
 - [x] **Liefer-Punkt 2 — Pin-Nachzug:** `TRAEGER_TAG` und die sechs
       `TRAEGER_SHA256_*`-Pins zeigen im Makefile und im Emissions-Default auf
