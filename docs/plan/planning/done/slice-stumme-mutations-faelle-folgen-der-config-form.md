@@ -143,7 +143,7 @@ auf den drei Fällen.
   Mutations-Fälle prüfen ihre Ziel-Stellen) — ist eine Datei in `open/`.
 - **Risiken aus §6:** nächtlicher Lauf → *entfallen* (dynamischer Beleg,
   Runde 1).
-- **Drei Paarungen:** Anker · Folge-Slice · Register, Ergebnis
+- **Drei Paarungen:** (a) Anker — kein Pflichtfeld: der Lerneintrag ist gezählt, nicht verkörpert (kein `liegt in`-Feld, keine Anker-Paarung ausgelöst); (b) Folge-Slice — `slice-mutations-faelle-pruefen-ihre-ziel-stellen` existiert als Datei in `open/` (geprüft nach dem Move); (c) Register — `BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet` trägt fünf Belege, darunter den Beleg dieses Vorgangs, und trägt den Ausgang *geplant* mit der Kennung, die auflöst
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
