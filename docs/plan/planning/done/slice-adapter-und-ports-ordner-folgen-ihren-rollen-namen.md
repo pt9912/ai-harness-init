@@ -157,7 +157,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
       Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der
       nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
@@ -386,7 +386,7 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   Handbuch-Adresse → *weiter offen* (Nachzug, fünf Posten), `ARC-009`-Zelle →
   *eingetreten* (Architect-Posten, ADR-0060 Folgepflicht 3),
   Zahn-Kommentar → *weiter offen* (Folge-Slice, mit V-1).
-- **Drei Paarungen:** Anker · Folge-Slice · Register, Ergebnis
+- **Drei Paarungen:** (a) Anker — kein Pflichtfeld: der Lerneintrag ist gezählt, nicht verkörpert (kein `liegt in`-Feld, keine Anker-Paarung ausgelöst); (b) Folge-Slice — `slice-stumme-mutations-faelle-folgen-der-config-form` existiert als Datei in `open/` (geprüft nach dem Move); (c) Register — `BEO-ALL/dod-testzeile-verortet-verhalten-in-der-falschen-stufe` trägt zwei Belege, jede genannte Beobachtung löst auf
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
