@@ -117,7 +117,11 @@ release-artifacts: ## Alle Release-Binaries der Plattform-Matrix nach DEST=<dir>
 			--target build -t "$$tag" . ; \
 		bash harness/tools/artifact-copy.sh "$$tag" "$(DEST)" "ai-harness-init-$$os-$$arch$$ext"; \
 	done
-	@echo "release-artifacts: OK — $(words $(RELEASE_PLATFORMS)) Binaries in $(DEST)"
+# Die SHA256SUMS entsteht am selben Ort wie die Assets, die sie beschreibt
+# (ADR-0059 Folgepflicht 1): das Rezept legt sie ins DEST, und sie reist mit den
+# Binaries — in den publish-Job hinein und von dort als siebtes Asset heraus.
+	@bash harness/tools/release-sums.sh generate "$(DEST)"
+	@echo "release-artifacts: OK — $(words $(RELEASE_PLATFORMS)) Binaries + SHA256SUMS in $(DEST)"
 
 compile: ## Schnelles Compile-Feedback (Dockerfile compile-Stage, ohne Tests/Lint) — Docker-only; NICHT in gates
 	docker build --build-arg GO_VERSION=$(GO_VERSION) --target compile -t ai-harness-init:compile .

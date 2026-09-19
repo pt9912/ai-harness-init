@@ -310,3 +310,49 @@ docker_stub() {
   [ "$ok_img" -eq 1 ]
   [ "$ok_src" -eq 1 ]
 }
+
+# ADR-0059 Folgepflicht 1: die SUMS entsteht am selben Ort wie die Assets, die sie
+# beschreibt — im Rezept, nicht als Akt von Hand am Release. Ein Schnitt, der die
+# Erzeugung aus dem Rezept nimmt, faerbt diesen Fall rot.
+@test "release: das Rezept erzeugt die SHA256SUMS am selben Ort wie die Assets (ADR-0059 Folgepflicht 1)" {
+  grep -qF 'release-sums.sh generate "$(DEST)"' "$MK"
+  # Die Zusage steht in der Ziel-Zeile selbst, nicht daneben in Prosa.
+  grep -qF 'Binaries + SHA256SUMS in $(DEST)' "$MK"
+}
+
+@test "release: der publish-Job haelt die reisende SUMS fail-closed VOR dem Upload (ADR-0059 Folgepflicht 1)" {
+  local wf="$REPO/.github/workflows/release.yml"
+  grep -qF 'sha256sum -c dist/SHA256SUMS' "$wf"
+  # Die Reihenfolge ist die Zusage: die Verifizierung liegt vor dem ersten Upload —
+  # ein Bruch dort veroeffentlicht nichts.
+  local verify upload
+  verify="$(grep -nF 'sha256sum -c dist/SHA256SUMS' "$wf" | cut -d: -f1)"
+  upload="$(grep -nE 'gh release (upload|create)' "$wf" | head -1 | cut -d: -f1)"
+  [ -n "$verify" ] && [ -n "$upload" ]
+  [ "$verify" -lt "$upload" ]
+}
+
+# Der Mechanik-Ort selbst, beide Modi hermetisch gefahren: generate schreibt, verify
+# haelt — und bricht an Abweichung, fehlendem Eintrag und fehlendem Manifest.
+@test "release: release-sums.sh erzeugt die SUMS und haelt die Assets dagegen, fail-closed (ADR-0059 Festlegung 1)" {
+  local dir
+  dir="$(mktemp -d)"
+  printf 'x' >"$dir/ai-harness-init-linux-amd64"
+  printf 'y' >"$dir/ai-harness-init-windows-amd64.exe"
+  run bash "$REPO/harness/tools/release-sums.sh" generate "$dir"
+  [ "$status" -eq 0 ]
+  [ "$(wc -l <"$dir/SHA256SUMS")" -eq 2 ]
+  run bash "$REPO/harness/tools/release-sums.sh" verify "$dir"
+  [ "$status" -eq 0 ]
+  # Ein beschädigtes Asset bricht — dieselbe Klasse wie ein im Transport verdrehtes.
+  printf 'z' >>"$dir/ai-harness-init-linux-amd64"
+  run bash "$REPO/harness/tools/release-sums.sh" verify "$dir"
+  [ "$status" -ne 0 ]
+  # Fehlt die SUMS, bricht der Lauf, statt sechs Assets still zu publizieren — die
+  # Klasse „Akt ohne Mechanik" (ADR-0059 Folgepflicht 1).
+  rm "$dir/SHA256SUMS"
+  run bash "$REPO/harness/tools/release-sums.sh" verify "$dir"
+  [ "$status" -ne 0 ]
+  printf '%s' "$output" | grep -qF 'Folgepflicht 1'
+  rm -rf "$dir"
+}

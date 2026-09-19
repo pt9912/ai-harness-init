@@ -188,6 +188,16 @@ Digest-Pin bricht, statt still in den Manifest-Kanal zu fallen
 ([`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
 Festlegung 1 und 3) |
 
+**Verfeinert durch die SUMS-Mechanik** (Folgepflicht 1 — die Erzeugung und die
+Publikations-Prüfung sind Vorgang, nicht Akt von Hand): |
+`harness/tools/release-sums.sh` (neu), `Makefile`-Rezept
+`release-artifacts`, publish-Job der Release-Workflow | update/neu | das Rezept
+schreibt die `SHA256SUMS` ins `DEST` — sie reist mit den Binaries in den Job und
+als siebtes Asset heraus; der Job hält die heruntergeladenen Artefakte gegen die
+reisende SUMS, fail-closed vor dem Upload (die Prüfung liest nur das
+Download-Verzeichnis, der Job checkt bewusst nicht aus); die drei Zähne tragen
+`test/release-matrix.bats` |
+
 ## 4. Trigger
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
