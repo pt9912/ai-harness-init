@@ -1,7 +1,7 @@
 # Verifikation: `slice-release-schnitt-koppelt-pin-und-fassung` — DoD-/ADR-Konformität und Plan-vs-Code-Diff
 
 **Rolle:** Verifier (Modul 11), frischer Kontext — keine Beteiligung an Implementation, Review oder
-Plan dieses Slices. **Gegenstand:** „Bauen wir es richtig?" — der Code gegen Plan (`docs/plan/planning/in-progress/slice-release-schnitt-koppelt-pin-und-fassung.md`)
+Plan dieses Slices. **Gegenstand:** „Bauen wir es richtig?" — der Code gegen Plan (`docs/plan/planning/done/slice-release-schnitt-koppelt-pin-und-fassung.md`)
 und die zwei ADRs ([`ADR-0058`](../../docs/plan/adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
 `Accepted`, [`ADR-0059`](../../docs/plan/adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
 `Proposed`). Der Review — drei Runden, Reports unter `docs/reviews/` — ist **nicht** Gegenstand
