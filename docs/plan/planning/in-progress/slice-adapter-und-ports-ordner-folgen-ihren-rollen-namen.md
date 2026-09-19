@@ -191,6 +191,21 @@ Prio 1) hat den WIP-Slot frei gegeben, WIP-Limit frei.
   `internal/gen/arch.go` werden umbenannt oder superseded, bevor die Ordner
   folgen — der Fix hätte keinen Ziel-Namen.
 
+**Grund nachgetragen beim Übergang `in-progress` → `open` (2026-09-19):** die
+Ursache fällt unter keinen der beiden vorab benannten Trigger — gemessen im
+Implementer-Lauf (Übergabe): die Fundstellen des Plans (Skelett-Pfade,
+Composition-Root-Imports, Namespaces, Gate-Glob) liegen im **hexslice**-
+Renderer, den §1 ausdrücklich ausschließt; das **hexagonal**-Layout ist
+bereits rollen-konform (`internal/gen/golang.go` rendert
+`internal/adapter/{driven,driving}`, Gate-Globs in derselben Datei,
+`internal/gen/hexagonal_test.go` trägt es), und C++ rendert kein hexagonal
+(`internal/gen/gen.go` → `cpp: {archFlat, archHexslice}`); die Ports-Gliederung
+widerspricht zwei `Accepted`-ADRs ([`ADR-0010`](../../adr/0010-hexagonal-arch-realisierung.md)
+— die `direction:`-Dimension bleibt als Entscheidung ungenutzt — und
+[`ADR-0009`](../../adr/0009-hexslice-arch-realisierung.md) Festlegung 2 — die
+Struktur ist verbatim zu emittieren). Der Plan ist nicht implementierbar, ohne
+dass die normative Entscheidung (§6) fällt — blockiert auf sie.
+
 ## 5. Closure-Trigger
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
@@ -227,6 +242,20 @@ dasteht.
   und dieser Renderer-Fix berühren die Aufruf-Ebene; die Reihenfolge
   (Zielordner-Slice zuerst, Prio 1) hält die Kante. Ausgang: weiter offen →
   Sichtung bei der Closure dieses Slices.
+- **Der Plan schneidet das falsche Layout** — gemessen im Implementer-Lauf
+  (§4, Grund nachgetragen): Fundstellen im hexslice-Renderer, hexagonal
+  bereits rollen-konform, Ports-Achse gegen zwei `Accepted`-ADRs. —
+  **Ausgang:** *eingetreten* → **Übergabe an den Architect und den
+  Auftraggeber, beide mit Adresse an dieser Plandatei:** die **Ports-Achse**
+  ist normativ
+  ([`ADR-0010`](../../adr/0010-hexagonal-arch-realisierung.md) und
+  [`ADR-0009`](../../adr/0009-hexslice-arch-realisierung.md)
+  Festlegung 2 — eine Folge-ADR mit `Supersedes` oder die Achse gestrichen;
+  §3.4, Architekt entscheidet) — und der **Ziel-Layout-Schnitt** (wird der
+  Fix an hexslice gebaut oder an hexagonal, das C++ nicht rendert) ist die
+  Frage an den Auftraggeber. Die Setzung „richtig ist driving und driven"
+  trifft das Layout, dessen Ordner die `Accepted`-ADRs pinnen — die
+  Auslegung ist keine Plan-Arbeit (§3.8).
 
 ## 7. Closure-Notiz
 
