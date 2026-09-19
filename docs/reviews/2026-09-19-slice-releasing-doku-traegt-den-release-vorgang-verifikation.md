@@ -3,7 +3,7 @@
 **Rolle:** Verifier (Modul 11), frischer Kontext. **Datum:** 2026-09-19.
 **Frage:** Trägt `docs/user/releasing.md` die Prozedur, die Plan und die zwei ADRs verlangen?
 
-**Eingabe:** der Slice-Plan `docs/plan/planning/in-progress/slice-releasing-doku-traegt-den-release-vorgang.md`,
+**Eingabe:** der Slice-Plan `docs/plan/planning/done/slice-releasing-doku-traegt-den-release-vorgang.md`,
 `ADR-0059` (`Accepted`), `ADR-0058` (`Accepted`). Prüfgegenstand sind Plan und ADRs — nicht der
 Review-Bericht der Runde 1.
 
