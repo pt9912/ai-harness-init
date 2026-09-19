@@ -53,9 +53,10 @@ Ausschlusses stehen in **eben diesem Abschnitt** des Baseline-Regelwerks,
 zusammen mit der Begründungs-Pflicht je Punkt.
 
 **Ziel:** Das Werkzeug richtet sich von außen auf ein Ziel-Repo: Der
-Init-Dispatch nimmt einen Zielordner entgegen —
-`ai-harness-init [<zielordner>] [--lang …]` oder eine gleichwertige Form — und
-löst sein Ziel aus dem Argument, nicht aus dem Arbeitsverzeichnis. Ohne
+Init-Dispatch nimmt einen Zielordner entgegen — Flags vor dem ersten
+Positionsargument, das Ziel als letztes Positionsargument
+(`ai-harness-init [--lang …] <zielordner>`) — und löst sein Ziel aus dem
+Argument, nicht aus dem Arbeitsverzeichnis. Ohne
 Argument endet der Init-Pfad **laut mit dem Usage-Text, fail-closed** — kein
 stiller Bootstrap-Lauf gegen das Repo, in dem er steht. Die zwei gemessenen
 Belege des Anlasses: der Dispatch führt vier Fälle und keinen Default-Zweig
@@ -113,25 +114,28 @@ gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst —
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
 - [ ] **Liefer-Punkt 1 — Dispatch mit Zielordner:** Der Init-Dispatch nimmt
-      einen Zielordner entgegen (`ai-harness-init [<zielordner>] [--lang …]`
-      oder eine gleichwertige Form) und löst sein Ziel aus dem Argument; ohne
-      Argument endet der Init-Pfad laut mit dem Usage-Text (fail-closed), ein
+      einen Zielordner entgegen — Flags vor dem ersten Positionsargument, das
+      Ziel als letztes Positionsargument (`ai-harness-init [--lang …]
+      <zielordner>`), denn `flag` liest Flags nur vor dem ersten
+      Positionsargument — und löst sein Ziel aus dem Argument; ohne Argument
+      endet der Init-Pfad laut mit dem Usage-Text (fail-closed), ein
       Zielordner, der kein Git-Repo ist, bricht laut.
       Test: `test/zielordner.bats` (Happy: Ziel-Repo gebootstrapped ohne
       CWD-Abhängigkeit · Negative: argumentlos → Usage · kein-Git-Repo-Ziel →
-      laut). Rote Gegenprobe: kehrt der leer-Argument-Zweig zum stillen
-      Init-Pfad-Start zurück, färbt der Negative-Fall des bats-Tests rot —
-      gemessen am Aufruf, nicht geerbt aus der Unfall-Erinnerung.
+      laut); der Kopf des bats-Files schreibt die Deckungs-Teilung
+      ausgeschrieben — der Unfall-Vektor liegt in der Go-Stufe
+      `TestUnfallVektor_OhneArgumentImRepoWurzel`, nicht im bats-Lauf. Rote
+      Gegenprobe: kehrt der leer-Argument-Zweig zum stillen Init-Pfad-Start
+      zurück, färbt der Negative-Fall des bats-Tests rot — gemessen am
+      Aufruf, nicht geerbt aus der Unfall-Erinnerung.
 - [ ] **Liefer-Punkt 2 — der Unfall-Vektor ist zugenommen:** der Aufruf, der
       den Unfall fuhr (Träger ohne Argument, gestanden im Repo-Wurzel-
       Verzeichnis), endet ohne Schaden — laut, mit dem Usage-Text, ohne dass
-      das stehende Repo angefasst wird. Test: der Unfall-Vektor-Fall in
-      `test/zielordner.bats` fährt den Vektor nach
-      [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
-      Festlegung 4 im gepinnten Docker-Bild (Träger ohne Argument,
-      Wurzel-Verzeichnis) und prüft: nichts geschrieben, laut gebrochen.
-      Rote Gegenprobe: unter der geschwächten Zusicherung (bricht, aber
-      schreibt) muss der zweite Unfall-Fall rot bleiben.
+      das stehende Repo angefasst wird. Test: die Go-Stufe
+      `TestUnfallVektor_OhneArgumentImRepoWurzel` fährt den Vektor (Träger
+      ohne Argument, Wurzel-Verzeichnis) und prüft: nichts geschrieben, laut
+      gebrochen. Rote Gegenprobe: unter der geschwächten Zusicherung (bricht,
+      aber schreibt) muss der zweite Unfall-Fall rot bleiben.
 - [ ] **Liefer-Punkt 3 — Deckung:** die vier Dispatch-Fälle
       (`span-emit`, `span-report`, `archive-welle`, `vendor-baseline`) bleiben
       unberührt — ihre Festlegungen
@@ -174,7 +178,8 @@ Aussagen-Berührung steht hier gar nicht.
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `cmd/ai-harness-init/main.go` | update | Zielordner-Argument am Dispatch; ohne Argument Usage-Text, fail-closed; Ziel-Auflösung löst die CWD-Zentralität (Zeilen 572/582) ab |
-| `test/zielordner.bats` | neu | Happy/Negative/Unfall-Vektor/Deckung — nach Liefer-Punkt 1–3; rote Gegenproben am Aufruf gemessen |
+| `test/zielordner.bats` | neu | Happy/Negative/Deckung — nach Liefer-Punkt 1 und 3; der Kopf schreibt die Deckungs-Teilung ausgeschrieben: der Unfall-Vektor liegt in der Go-Stufe, rote Gegenproben am Aufruf gemessen |
+| `TestUnfallVektor_OhneArgumentImRepoWurzel` (Go-Stufe, `cmd/ai-harness-init/`) | neu | der Unfall-Vektor als Go-Test — hermetisch am Aufruf (Liefer-Punkt 2) |
 | `docs/user/benutzerhandbuch.md` | prüfen, kein Inhalt-Zwang | die Aufruf-Form ist öffentliche Oberfläche — Update nur an der Aufruf-Stelle, wenn der Vertrag sie trägt; der pausierte Nachzug nennt die Stellen neu (§6) |
 
 **Ansatz als Liste, wo eine Zeile pro Datei nicht trägt:**
@@ -218,8 +223,9 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 Lerneintrag; ohne ihn ist der Slice nur abgelegt.
 
 DoD mit den roten Gegenproben der drei Liefer-Punkte belegt, und der
-Unfall-Vektor ist am gepinnten Träger gemessen (nicht geerbt): ohne Argument,
-im Repo-Wurzel-Verzeichnis, endet der Aufruf laut und ohne Schaden.
+Unfall-Vektor ist in der Go-Stufe `TestUnfallVektor_OhneArgumentImRepoWurzel`
+gemessen (nicht geerbt): ohne Argument, im Repo-Wurzel-Verzeichnis, endet der
+Aufruf laut und ohne Schaden.
 
 ## 6. Risiken und offene Punkte
 
