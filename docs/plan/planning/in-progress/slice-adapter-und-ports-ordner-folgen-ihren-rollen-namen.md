@@ -74,7 +74,7 @@ Die Tests tragen die `inbound`/`outbound`-Erwartungen —
 `:240-242`, `internal/gen/archgate_test.go:91-93` (die Runde-1-Messung nannte
 sie als die Erwartungen, die der Plan „unberührt" ließ und die der Diff
 berühren muss); dazu die hexslice-Stufen im Voll-E2E,
-`harness/tools/full-smoke.sh:2261/:2338/:2376/:2461`, die die Skeleton-Pfade
+`harness/tools/full-smoke.sh` (Zeilen 2261/2338/2376/2461), die die Skeleton-Pfade
 fahren.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
