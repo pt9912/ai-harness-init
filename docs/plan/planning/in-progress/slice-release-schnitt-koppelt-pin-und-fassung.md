@@ -251,6 +251,15 @@ dasteht.
   [Register-Beobachtung](../observations/BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad/observation.md)
   `BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad` trägt die Klasse
   (Stand *offen*, 1×)
+- **Die Übergabe-Kennung „Plan-L2-Wortlaut" aus den Review-Runden löst in
+  keinem Artefakt dieses Slices auf** (Runde 1 und 2, je gemessen per
+  `grep`) — sie meint den F-2-Befund des
+  [Verifikations-Reports](../../../../docs/reviews/2026-09-18-slice-traeger-per-fetch-aus-dem-release-verifikation.md)
+  von [`slice-traeger-per-fetch-aus-dem-release`](../done/slice-traeger-per-fetch-aus-dem-release.md)
+  (L2-Wortlaut „anschließend" zur Reihenfolge des `archive-welle`-Aufrufs in
+  der E2E-Stufe) und ist dort vollzogen. — **Ausgang:** *entfallen* →
+  vollzogen in `slice-traeger-per-fetch-aus-dem-release`, Commit `ff21ce71`;
+  sie betrifft den Plan dieses Slices nicht.
 
 ## 7. Closure-Notiz
 
