@@ -2,9 +2,9 @@
 # files: internal/emit/templates.go
 # expect: TestTemplates_RoadmapGateSafe
 #
-# Der NeutralizeRoadmap-Aufruf faellt weg -> die emittierte Roadmap traegt wieder
-# den broken ../done/welle-NN-results.md-Link (der dritte Befund aus slice-024s
-# Voll-Smoke). Der if-Rumpf bleibt leer, aber roadmapTemplate wird weiter in der
-# Bedingung genutzt -> kompiliert.
+# Der NeutralizeRoadmap-Aufruf faellt weg: die geloeschte case-Zeile hinterlaesst einen
+# leeren case-Fall, der in das gemeinsame `return body, nil` am Funktionsende laeuft
+# (roadmapTemplate bleibt in der Bedingung genutzt -> kompiliert). Die emittierte
+# Roadmap traegt danach wieder den broken ../done/welle-NN-results.md-Link.
 set -euo pipefail
-sed -i '/body = NeutralizeRoadmap(body)/d' internal/emit/templates.go
+sed -i '/return NeutralizeRoadmap(body), nil/d' internal/emit/templates.go

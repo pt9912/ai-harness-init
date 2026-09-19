@@ -231,7 +231,8 @@ func matchGlob(glob, rel string) bool {
 // faellt er dahinter zurueck, bricht das emittierte Gate beim ersten Lauf — genau
 // diese Kopplung haelt der Zahn unten fest: ein Pin unterhalb der Fassung faerbt
 // ihn mit der Pin-Meldung rot. Einen Mutations-Fall dafuer traegt der kuratierte
-// Satz nicht; der Gegenbeispiel-Nachweis liegt als Hand-Messung vor.
+// Satz nicht; die rot faerbende Aenderung ist der Pin-Wert selbst und faerbt
+// diesen Test.
 func TestArchImagePin_CouplesToDirectionPorts(t *testing.T) {
 	if !strings.HasSuffix(emit.DefaultArchImage, ":v0.20.0") {
 		t.Errorf("DefaultArchImage = %q, want die Fassung, die direction auf Port-Schichten dekodiert", emit.DefaultArchImage)
