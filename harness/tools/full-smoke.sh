@@ -2372,7 +2372,7 @@ echo "full-smoke: add-lang cpp apps/cpphex --arch hexslice (Arch-Achse, zweite S
 ( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang cpp apps/cpphex --arch hexslice )
 for rel in apps/cpphex/src/hexagon/domain/example/greeting.hpp \
            apps/cpphex/src/hexagon/application/example/greet/handler.hpp \
-           apps/cpphex/src/hexagon/application/example/ports/greeting_repository.hpp \
+           apps/cpphex/src/hexagon/application/example/ports/outbound/greeting_repository.hpp \
            apps/cpphex/src/adapters/driven/memory/example/repository.hpp \
            apps/cpphex/src/main.cpp apps/cpphex/tests/test_greet.cpp \
            apps/cpphex/.a-check.yml harness/mk/apps-cpphex.mk harness/mk/arch-apps-cpphex.mk; do
