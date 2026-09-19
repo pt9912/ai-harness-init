@@ -25,7 +25,7 @@ das **fehlende** Argument — der Unfall-Vektor lag außerhalb seiner Deckung)
 und Festlegung 3 (eigenes Fragment, eigenes Target, kein Prerequisite —
 bleiben unberührt),
 [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
-Festlegung 3 (eigenes Fragment `harness/mk/traeger.mk` mit eigenem Target
+Festlegung 3 (eigenes Fragment `traeger.mk` (im emittierten Ziel, eigener Target-Name) mit eigenem Target
 `traeger-fetch`, kein Prerequisite — bleibt unberührt),
 [Register-Beobachtung](../observations/BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad/observation.md)
 `BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad` (der Unfall, 1×,
@@ -81,7 +81,7 @@ dieselbe Richtung, kein separater Schutz-Slice.
   Festlegung 2) für denselben Stand zweimal vollziehen.
 - **Keine Emissions-Struktur-Änderung** — **Schicht-Abgrenzung:** die
   Vorlagen-Klassifikation bleibt; der Pin, das Fragment
-  (`harness/mk/traeger.mk`, [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
+  (`traeger.mk` (im emittierten Ziel, eigener Target-Name), [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
   Festlegung 3) und die Target-Form bleiben, wo sie stehen. Bewegt die
   Ziel-Logik ein Fragment, ist das ein §6-Risiko mit eigenem Ausgang, kein
   stiller Griff.
