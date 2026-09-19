@@ -46,8 +46,8 @@ func goScaffolding(version string) map[string]string {
 // Schicht-Rollen + der Composition Root rendern in die kanonischen Verzeichnisse
 // (internal/hexagon/{domain,application}, internal/adapters/{driving,driven}, cmd/app).
 // Die Import-Richtungen sind inward-only (app->domain, app->ports, ports->domain,
-// adapters->app, adapters->domain); Outbound-Adapter erfuellen die Ports strukturell
-// (kein Import), verdrahtet im Composition Root.
+// driving->app, driven->domain); die getriebenen Adapter (driven) erfuellen die Ports
+// strukturell (kein Import), verdrahtet im Composition Root.
 //
 // hexagonal (slice-058, ADR-0010): die vier Schicht-Rollen + ein EIGENER Composition Root
 // rendern in die Pfade der gelebten Familien-Konvention (internal/hexagon/{core,port},
