@@ -99,7 +99,8 @@ Drei Fundstellen der Klasse:
    traf nach der Veröffentlichung ein.
 
 Grenze: die Zustandsform dieses Abschnitts prüft das Review, kein Gate —
-kein Sensor der Gate-Kette liest diese Datei.
+`make docs-check` liest diese Datei wie jede andere; ihre Fundstellen-Links
+reisen in seinem Lauf mit.
 
 ## Grenze
 
