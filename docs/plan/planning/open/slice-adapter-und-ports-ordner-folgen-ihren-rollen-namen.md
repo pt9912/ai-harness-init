@@ -178,7 +178,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`): Implementer übernimmt, der Zielordner-Slice
-([`slice-zielordner-richtet-das-werkzeug-auf-ein-ziel-repo`](../in-progress/slice-zielordner-richtet-das-werkzeug-auf-ein-ziel-repo.md),
+([`slice-zielordner-richtet-das-werkzeug-auf-ein-ziel-repo`](../done/slice-zielordner-richtet-das-werkzeug-auf-ein-ziel-repo.md),
 Prio 1) hat den WIP-Slot frei gegeben, WIP-Limit frei.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**

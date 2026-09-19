@@ -6,7 +6,7 @@ Runden unter `docs/reviews/` vor; beide sind hier nur Eingabe der Rollen-Abfolge
 kein Prüfgegenstand).
 
 **Eingabe:** Slice-Plan
-`docs/plan/planning/in-progress/slice-zielordner-richtet-das-werkzeug-auf-ein-ziel-repo.md`
+`docs/plan/planning/done/slice-zielordner-richtet-das-werkzeug-auf-ein-ziel-repo.md`
 (Verortung von `a247fc89`, Flags-vor-Ziel-Form) · [ADR-0058](../plan/adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
 (`Accepted`) · [ADR-0059](../plan/adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
 (`Accepted`) · der Code-Stand am Kopf `4ce1aa9a`.
