@@ -1539,7 +1539,7 @@ e2e_abdeckung "LH-FA-01 LH-QA-02 LH-QA-03" "Der frische Klon holt den Traeger pe
 #   (e) der laut-Bruch: ein Aufruf, dessen Unterkommando der Traeger nicht fuehrt,
 #       bricht mit einem Fehler statt still zu starten (ADR-0058 Festlegung 2).
 #
-# GRENZE, GEMESSEN AM ASSET: der gepinnte Release-Stand v0.2.0 fuehrt das Unterkommando
+# GRENZE, GEMESSEN AM ASSET: der gepinnte Release-Stand fuehrt das Unterkommando
 # archive-welle UND die Sperre im Dispatch — deshalb sind (d) und (e) hier messbar. Ein
 # Traeger ohne diese zwei, der v0.1.1-Stand, startet in derselben Lage still den
 # Init-Pfad: der Konsumenten-Aufruf dort laeuft in den Bootstrap-Versuch, und ein
