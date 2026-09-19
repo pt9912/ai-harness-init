@@ -204,7 +204,7 @@ Regeln dieser Sektion: **mindestens drei Optionen mit Pro/Contra** — „nichts
 
 | Option | Pro | Contra |
 |---|---|---|
-| **A — Ordner folgen den Rollen-Namen, Ports gegliedert mit materialisiertem inbound-Port, Referenz-Kanten-Set (gewählt)** | die gemessene Referenz-Form: der treibende Adapter konsumiert den Port, den der Kern exponiert — keine Use-Case-Importe, keine Kante auf Vorrat; ein Namensraum: Ordner und Gate-Zuordnung lesen dieselben Konstanten; die Kanten-Menge trägt die Port-Kante, die die Materialisierung braucht | ein Umbau des Renderer-Outputs über beide Sprachen samt Tests und Gate-Config; ein Ziel, das aus dem alten Release gebootstrappt wurde, trägt die alten Ordner bis zum Re-Lauf; die `adapters→app`-Kante fällt — ein Adopter, der einen Slice direkt importieren will, trägt sie in demselben Commit nach |
+| **A — Ordner folgen den Rollen-Namen, Ports gegliedert mit materialisiertem inbound-Port, Referenz-Kanten-Set (gewählt)** | die gemessene Referenz-Form: der treibende Adapter konsumiert den Port, den der Kern exponiert — keine Use-Case-Importe, keine Kante auf Vorrat; ein Namensraum: Ordner und Gate-Zuordnung lesen dieselben Konstanten; die Kanten-Menge trägt die Port-Kante, die die Materialisierung braucht | ein Umbau des Renderer-Outputs über beide Sprachen samt Tests und Gate-Config; ein Ziel, das aus dem alten Release gebootstrappt wurde, trägt die alten Ordner bis zum Re-Lauf; die `driving_adapters→app`-Kante fällt — ein Adopter, der einen Slice direkt importieren will, trägt sie in demselben Commit nach |
 | B — inbound-Port materialisieren, Kanten-Menge von ADR-0009 verbatim fortbinden | die Port-Datei existiert im Baum | unerfüllbar — genau die Konkurrenz, die F-1 mißt: ein materialisierter inbound-Port verlangt die fehlende Kante; das Gate meldete `wrong-direction` am ersten echten Import, und die Doku verspräche einen Import, der vom Gate verworfen wird |
 | C — die Ports als gegrade Schichten — **seit dem Re-Schnitt getragen** (Festlegung 3) | die Form ist mit a-check v0.20.0 lebendig geworden: der portScope-Fix löst den Port-Locality-Scoping-Grund auf, mit dem die erste Fassung sie verworfen hatte; der `port-direction-mismatch` läuft per Injektion verifiziert — die Ablehnung der ersten Fassung ist hiermit zurückgenommen |
 | D — bei `inbound`/`outbound` bleiben, Ports flach | keine Änderung; der Bestand läuft | zwei Namensräume für dieselbe Familie; die Ports-Semantik bliebe Kommentar; der blockierte Fix-Slice bliebe stehen, und der Upstream-Nachzug des ADR-0009-Autors driftet gegen die Emission |
@@ -271,7 +271,7 @@ Regeln dieser Sektion: **mindestens drei Optionen mit Pro/Contra** — „nichts
   a-check-Downgrade oder ein Config-Drift): die Richtung aus Festlegung 3 verliert ihren lebenden
   Träger — sie ist mit a-check v0.20.0 gesetzt und nicht opt-in, und ein Zurück auf die Inert-
   Form wäre eine Neufassung mit eigenem Beleg.
-- **Wenn die `adapters→app`-Kante gebraucht wird** — ein Adapter importiert einen Slice direkt:
+- **Wenn die `driving_adapters→app`-Kante gebraucht wird** — ein Adapter importiert einen Slice direkt:
   sie kommt **im selben Commit** (die Referenz-Formel), und der Abstand zur Referenz-Form ist neu
   zu benennen.
 - **Wenn die Rollen-Namen im Bestand sich ändern** (`internal/gen/arch.go`) — dann folgen die
