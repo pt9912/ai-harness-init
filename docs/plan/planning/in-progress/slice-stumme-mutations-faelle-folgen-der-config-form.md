@@ -65,26 +65,26 @@ einer mit vier erfundenen.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Ziel-Form: Slice — **≤ 3 Liefer-Punkte**; mehr heißt: der Slice ist zu groß.
 
-- [ ] **Liefer-Punkt 1 — die drei Fälle fahren wieder rot:** die sed-Muster
+- [x] **Liefer-Punkt 1 — die drei Fälle fahren wieder rot:** die sed-Muster
       der Fälle 68, 71, 96 treffen die re-geschnittene Config-Form; die
       Mutation färbt ihren benannten Wächter rot. Rote Gegenprobe: bis zum
       Umschnitt meldet `make mutate` die drei als BEFUND — gemessen
       (Verifikation V-1, statisch); der Umschnitt dreht die Meldung um.
-- [ ] **Liefer-Punkt 2 — der Zahn-Kommentar trägt den Beleg, den es gibt:**
+- [x] **Liefer-Punkt 2 — der Zahn-Kommentar trägt den Beleg, den es gibt:**
       `internal/gen/archgate_test.go:227-232` behauptet keine Listedung mehr,
       die es nicht gibt — er trägt den tatsächlichen Rot-Beleg (Runde 2,
       Rot-Probe (c), exakte Meldung) oder einen Fall, der ihn trägt. Grenze:
       Kommentar-Behauptungen sind keinem Sensor unterworfen — die Form prüft
       das Review, nicht ein Gate.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen
       Brownfield-Bootstrap und führt die Register-Datei nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschritten — oder
+- [x] Beobachtungs-Register (`../observations/`) fortgeschritten — oder
       „keine Beobachtung angefallen" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang; die drei Paarungen sind
+- [x] Jedes Risiko aus §6 trägt einen Ausgang; die drei Paarungen sind
       getragen.
 
 ## 3. Plan (vor Code)
@@ -110,18 +110,40 @@ auf den drei Fällen.
 ## 6. Risiken und offene Punkte
 
 - **Der nächtliche Lauf bestätigt die Stummheit erst nach dem Umschnitt** —
-  die statische Messung (Verifikation V-1) deckt die Muster, nicht den Lauf.
-  Ausgang: weiter offen → der nächtliche `mutate`-Lauf nach dem Umschnitt.
+  die statische Messung deckt die Muster, nicht den Lauf. — **Ausgang:**
+  *entfallen* → die Zähne sind dynamisch gemessen (Runde 1, Wegwerf-Klon:
+  die drei gezogenen Fälle fahren rot am benannten Wächter); der nächtliche
+  Lauf meldet jetzt nur die drei F-1-Fälle, die der Folge-Slice zieht.
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <…>
-- **Drei Paarungen:** <…>
+- **Was hat funktioniert:** der Umschnitt auf die re-geschnittene Config-Form
+  — Runde 1 zählt 362 greifen · 3 stumm · 0 defekt über den Bestand, und die
+  drei gezogenen Fälle fahren rot am benannten Wächter, statisch und
+  dynamisch im Wegwerf-Klon.
+- **Was ging anders als geplant:** der Umschnitt erfasste nur die vom
+  Config-Re-Schnitt getragenen Fälle — der Zensus über alle 365 fand die drei
+  Bestand-Fundstellen (29, 275, 114), die dieselbe Defekt-Klasse an anderen
+  Zielen tragen; sie sind Bestand, nicht vom Umschnitt getragen (F-1), und
+  der Kommentar-Schlussform-Rest (F-2) blieb stehen. Beide sind Übergaben an
+  den Folge-Slice.
+- **Steering-Loop-Eintrag:** geschärfte Regel für die Fall-Anlage: „die
+  Fall-Anlage misst ihr sed-Muster gegen den Quell-Bestand, nicht gegen die
+  Fassung der letzten Fassung" — die Klasse
+  `BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet` trägt
+  5×; ihr Ausgang steht im Register auf *geplant* mit der Kennung des
+  Folge-Slices, der sie schreibt. Kein `liegt in`-Feld — der Zielort
+  entsteht mit der Verkörperung, nicht mit der Zuweisung.
+- **Beobachtungs-Register (`../observations/`):** neuer Beleg
+  `evidence/slice-stumme-mutations-faelle-folgen-der-config-form.md` in
+  `BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet/` —
+  Zähler steht damit bei 5×; die zwei Fundmengen (68/71/96 und 29/275/114)
+  liegen im selben Vorgang — ein Beleg, benannt, nicht doppelt gezählt.
+- **Folge-Slices:** `slice-mutations-faelle-pruefen-ihre-ziel-stellen` (Die
+  Mutations-Fälle prüfen ihre Ziel-Stellen) — ist eine Datei in `open/`.
+- **Risiken aus §6:** nächtlicher Lauf → *entfallen* (dynamischer Beleg,
+  Runde 1).
+- **Drei Paarungen:** Anker · Folge-Slice · Register, Ergebnis
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
