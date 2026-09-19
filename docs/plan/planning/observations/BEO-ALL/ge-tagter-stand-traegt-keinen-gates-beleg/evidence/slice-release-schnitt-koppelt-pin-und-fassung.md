@@ -8,7 +8,7 @@ Abschnitt Schaden). (2) Die zwei Pushes nach dem ersten rot — gepushte
 Zwischenstände ohne eigenen geprüften Stand an der Spitze (dieselbe Datei,
 Abschnitt CI-Lage). (3) Der `v0.2.1`-Tag (`28337be5`): geschnitten und
 veröffentlicht auf der ungeprüften Zwischenstufe — vor dem Accept von
-`ADR-0059` (`ca0b5254`) und vor der Closure; der Gates-Beleg des Baums lag
+[`ADR-0059`](../../../../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md) (`ca0b5254`) und vor der Closure; der Gates-Beleg des Baums lag
 lokal (`.harness/state/gates-passed.diffsha`, gitignored) und reist nicht
 mit dem Tag, die CI-Meldung traf nach der Veröffentlichung ein.
 

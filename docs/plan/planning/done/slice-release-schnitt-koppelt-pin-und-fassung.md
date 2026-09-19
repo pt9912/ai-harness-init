@@ -114,7 +114,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       --json assets` → `assets: 7`), die `SHA256SUMS` byte-identisch zum
       `make release-artifacts`-Bau, die drei Zähne in
       `test/release-matrix.bats` — Verifikations-Report
-      (`../../reviews/2026-09-19-slice-release-schnitt-koppelt-pin-und-fassung-verifikation.md`)
+      ([Verifikations-Report](../../reviews/2026-09-19-slice-release-schnitt-koppelt-pin-und-fassung-verifikation.md))
       §1/§2.
 - [x] **Liefer-Punkt 2 — Pin-Nachzug:** `TRAEGER_TAG` und die sechs
       `TRAEGER_SHA256_*`-Pins zeigen im Makefile und im Emissions-Default auf
@@ -270,12 +270,12 @@ dasteht.
   erst im Ziel. Gegenbeispiel ist der Kopplungs-Test (Fall 1 in
   `test/traeger-fetch.bats`, Klasse `test/sources-pin.bats`). — **Ausgang:**
   *entfallen* — die Doppelführung der sieben Werte besteht nicht mehr:
-  `ADR-0059` Festlegung 1 zog die Digest-Spiegelung aus der Emission, der
+  [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md) Festlegung 1 zog die Digest-Spiegelung aus der Emission, der
   Fragment-Pin trägt nur den Tag (`grep -c 'TRAEGER_SHA256'
   internal/emit/templates/enforce/traeger.mk` → 0), die sechs Digest-Pins
   stehen allein im Makefile. Die Rest-Kopplung (der Tag an beiden Stellen)
   hält der Kopplungs-Test hermetisch im `make test`-Gate (Fall 1 in
-  `test/traeger-fetch.bats:116`; die Folgepflicht 2 von `ADR-0059` nennt nach
+  `test/traeger-fetch.bats:116`; die Folgepflicht 2 von [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md) nennt nach
   der Nachrunde F-3 die richtige Test-Datei) — Abweichung bricht lokal, nicht
   erst im Ziel.
 - **Der Bootstrap-Unfall in diesem Lauf:** ein Träger-Aufruf ohne Argument
@@ -326,16 +326,16 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   (Verifikations-Report §1). Die Selbstreferenz-Wand ist strukturell
   geschlossen: ein Pin im emittierten Fragment trägt keinen Bau-abhängigen
   Wert — der Digest eines Assets hängt am Pin-Wert, den das Asset selbst
-  enthielte —; die Auflösung trägt `ADR-0059` (`Accepted`, Umschlag
+  enthielte —; die Auflösung trägt [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md) (`Accepted`, Umschlag
   `ca0b5254`, Beleg-Kennung `2026-09-19-adr-0059-accept-nachrunde` nach
-  `ADR-0040` Festlegung 2): der Fragment-Pin trägt nur den Tag, die
-  Verifikation läuft über die `SHA256SUMS` desselben Releases. `ADR-0058`
+  [`ADR-0040`](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2): der Fragment-Pin trägt nur den Tag, die
+  Verifikation läuft über die `SHA256SUMS` desselben Releases. [`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
   bleibt in Kraft, ihre Emissions-Hälfte von Festlegung 1 über den
   Index-Zusatz abgelöst.
 - **Was ging anders als geplant:** Der Schnitterlauf brach an der
   Plattform-Matrix (`syscall.Flock` ohne Build-Tag — die Span-Spaltung ging
   dem Pin-Commit voraus), die SUMS-Mechanik wuchs zur Vorgangs-Mechanik
-  (`ADR-0059` Folgepflicht 1), und der Bootstrap-Unfall fiel in den Init-Pfad
+  ([`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md) Folgepflicht 1), und der Bootstrap-Unfall fiel in den Init-Pfad
   (Risiko 3). Der Schnitt wurde auf der ungeprüften Zwischenstufe geschnitten
   — der Tag `v0.2.1` liegt vor Accept und Closure; die Verifikation meldete
   V-1 (veraltete Pin-Nummer in der GRENZE-Stelle, gezogen `9eea0cc2`) und V-2
@@ -352,7 +352,7 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   Artefakt; seine Adresse ist
   [`slice-releasing-doku-traegt-den-release-vorgang`](../open/slice-releasing-doku-traegt-den-release-vorgang.md)
   (Datei in `open/`). Die geschärfte Regel der Selbstreferenz-Wand steht in
-  `ADR-0059` — die ADR trägt ihre eigene Kennung, kein zweiter Anker.
+  [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md) — die ADR trägt ihre eigene Kennung, kein zweiter Anker.
 - **Beobachtungs-Register (`../observations/`):**
   `BEO-ALL/ge-tagter-stand-traegt-keinen-gates-beleg/` neu angelegt, Beleg
   `evidence/slice-release-schnitt-koppelt-pin-und-fassung.md` — die Klasse
@@ -373,12 +373,12 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   [`slice-releasing-doku-traegt-den-release-vorgang`](../open/slice-releasing-doku-traegt-den-release-vorgang.md)
   (`releasing.md` trägt den Release-Vorgang) — ist eine Datei in `open/`.
 - **Risiken aus §6:** Risiko 1 *entfallen* (Schnitt vollzogen) · Risiko 2
-  *entfallen* (Doppelführung durch `ADR-0059` gezogen, Rest-Kopplung
+  *entfallen* (Doppelführung durch [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md) gezogen, Rest-Kopplung
   hermetisch gebunden) · Risiko 3 *weiter offen* → Register · Risiko 4
   *entfallen* (vollzogen in `slice-traeger-per-fetch-aus-dem-release`) —
   siehe §6.
 - **Drei Paarungen:** Anker — kein Eintrag in §7 trägt das Feld `liegt in`;
-  die geschärfte Regel steht in `ADR-0059` (Kennung, kein Zielort-Anker), die
+  die geschärfte Regel steht in [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md) (Kennung, kein Zielort-Anker), die
   Paarung hat kein Objekt. · Folge-Slice — die genannte Datei existiert im
   Planning-Lifecycle (`open/`). · Register — die in §6 und §7 genannten
   Einträge existieren als Verzeichnisse, jedes trägt mindestens einen Beleg;
