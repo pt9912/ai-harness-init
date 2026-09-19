@@ -125,9 +125,13 @@ tmpbin="$(mktemp -d)"
 # unten: das d-check-Modul mountet sie read-only in einen Nicht-Root-Container.
 tmpklon="$(mktemp -d)"
 tmprepo="$(mktemp -d)"
+git init -q "$tmprepo"
 tmprepo_doc="$(mktemp -d)"
+git init -q "$tmprepo_doc"
 tmprepo_hex="$(mktemp -d)"
+git init -q "$tmprepo_hex"
 tmprepo_cpphex="$(mktemp -d)"
+git init -q "$tmprepo_cpphex"
 tmprepo_traeger="$(mktemp -d)"
 # EIGENES ZIEL FUER DIE SELBSTPRUEFUNG, weil sie einen KLON ihres Ziels faehrt und darin
 # dessen Gate-Kette: gelesen wird damit der committete Stand, nicht das Arbeitsverzeichnis.
@@ -137,6 +141,7 @@ tmprepo_traeger="$(mktemp -d)"
 # ihr Klon waere darum nie gruen, und das Rot kaeme aus dem Fixture statt aus dem
 # Pruefgegenstand.
 tmprepo_selbst="$(mktemp -d)"
+git init -q "$tmprepo_selbst"
 cleanup() { rm -rf "$tmpbin" "$tmpklon" "$tmprepo" "$tmprepo_doc" "$tmprepo_hex" "$tmprepo_cpphex" "$tmprepo_selbst" "$tmprepo_traeger"; }
 trap cleanup EXIT
 # Aus demselben Grund wie bei den uebrigen Zielen: der Klon dieses Ziels wird von
@@ -369,7 +374,7 @@ echo "full-smoke: 2/3 Bootstrap (--lang go --name full-smoke) in ein leeres tmp-
 # Arbeitsverzeichnis des Laufs ist nicht das Ziel — die Ziel-Aufloesung aus dem
 # Argument (LH-FA-01) wird hier am echten Lauf gemessen.
 init_rc=0
-init_out="$( "$tmpbin/ai-harness-init" "$tmprepo" --lang go --name full-smoke 2>&1 )" || init_rc=$?
+init_out="$( "$tmpbin/ai-harness-init" --lang go --name full-smoke "$tmprepo" 2>&1 )" || init_rc=$?
 printf '%s\n' "$init_out"
 if [ "$init_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — der Bootstrap (--lang go) ist NICHT Exit 0 (Exit $init_rc)." >&2
@@ -2076,7 +2081,7 @@ fi
 # tmp-Repo (der --lang-go-Lauf oben bleibt der One-Shot).
 echo "full-smoke: doc-only Bootstrap (OHNE --lang) in ein zweites tmp-Repo ..."
 	e2e_abdeckung "LH-FA-01 LH-FA-10" "Dieselbe Harness ohne Sprachskelett; die zweite Bootstrap-Variante" "die Rollen-Typen sind sprach-agnostisch und UNBEDINGT"
-( "$tmpbin/ai-harness-init" "$tmprepo_doc" --name full-smoke-doc )
+( "$tmpbin/ai-harness-init" --name full-smoke-doc "$tmprepo_doc" )
 # slice-097, zweite Variante: die Rollen-Typen sind sprach-agnostisch und UNBEDINGT —
 # sie haengen an keinem Laufzeit-Ausgang. Auch hier vor dem Gate-Lauf.
 baum_aussagen_im_ziel "$tmprepo_doc" "sprachlos"
@@ -2478,7 +2483,7 @@ grep -E 'core-impurity|wrong-direction' <<<"$cpparch_out" | sed -n '1,2s/^/full-
 # eigenstaendig zu belegen; die Mono-Repo-Module oben mounten nur ihr Unterverzeichnis.
 echo "full-smoke: Root-Modul-Bootstrap (--lang go --arch hexslice) in ein viertes tmp-Repo (slice-046) ..."
 	e2e_abdeckung "LH-FA-07 LH-QA-01" "Das geschichtete Modul am Repo-Root statt unter einem Modulpfad" "Root-Modul (--arch hexslice) ohne"
-( "$tmpbin/ai-harness-init" "$tmprepo_hex" --lang go --arch hexslice --name full-smoke-hex )
+( "$tmpbin/ai-harness-init" --lang go --arch hexslice --name full-smoke-hex "$tmprepo_hex" )
 git init -q "$tmprepo_hex"
 for rel in .a-check.yml a-check.mk harness/mk/arch-go.mk internal/hexagon/domain/example/greeting.go; do
 	if [ ! -e "$tmprepo_hex/$rel" ]; then
@@ -2521,7 +2526,7 @@ fi
 # Mono-Repo-Fall. Der Pfad war plausibel korrekt und ungeprueft — dieser Block prueft ihn.
 echo "full-smoke: Root-Modul-Bootstrap (--lang cpp --arch hexslice) in ein fuenftes tmp-Repo (slice-054) ..."
 	e2e_abdeckung "LH-FA-07 LH-QA-02" "Dasselbe am Root in der zweiten Sprache, mit gesetztem Image-Override" "cpp-Root-Modul (--arch hexslice) ohne"
-( "$tmpbin/ai-harness-init" "$tmprepo_cpphex" --lang cpp --arch hexslice --name full-smoke-cpphex )
+( "$tmpbin/ai-harness-init" --lang cpp --arch hexslice --name full-smoke-cpphex "$tmprepo_cpphex" )
 git init -q "$tmprepo_cpphex"
 for rel in .a-check.yml a-check.mk harness/mk/arch-cpp.mk src/hexagon/domain/example/greeting.hpp src/main.cpp; do
 	if [ ! -e "$tmprepo_cpphex/$rel" ]; then
@@ -2734,7 +2739,7 @@ printf '\n# adopter-drift\n' >> "$tmprepo/tools/harness/commit-msg-traceability.
 # Beleg dafuer, dass der Satz im emittierten Text zutrifft.
 printf '\n<!-- von Hand geaendert -->\n' >> "$tmprepo/$FELDLISTE_REL"  # konvergent: MUSS geheilt werden
 idem_rc=0
-( "$tmpbin/ai-harness-init" "$tmprepo" --lang go --name full-smoke ) || idem_rc=$?
+( "$tmpbin/ai-harness-init" --lang go --name full-smoke "$tmprepo" ) || idem_rc=$?
 if [ "$idem_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — 2. Init-Lauf ist NICHT Exit 0 (nicht idempotent, slice-038). rc=$idem_rc" >&2
 	exit 1
@@ -2797,7 +2802,7 @@ chmod 755 "$tmprepo_doc/.githooks/commit-msg"
 echo "full-smoke: kein Prune — sprachloser 2. Init-Lauf am Mono-Repo, add-lang-Fragmente muessen ueberleben ..."
 	e2e_abdeckung "LH-FA-06 LH-QA-01" "Die Aktivierung greift: ein Commit ohne Kennung faellt, einer mit geht durch" "sprachloser Re-Lauf ueberschrieb den liegenden Commit-Traeger"
 prune_rc=0
-prune_out="$( "$tmpbin/ai-harness-init" "$tmprepo_doc" --name full-smoke-doc 2>&1 )" || prune_rc=$?
+prune_out="$( "$tmpbin/ai-harness-init" --name full-smoke-doc "$tmprepo_doc" 2>&1 )" || prune_rc=$?
 printf '%s\n' "$prune_out"
 if [ "$prune_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — sprachloser 2. Init-Lauf ist NICHT Exit 0 (nicht idempotent, slice-038). rc=$prune_rc" >&2
@@ -3026,7 +3031,7 @@ echo "full-smoke: Selbstpruefung im Ziel — das Ziel klont sich selbst, aktivie
 # Vertreter dieser Kette ist. Der Stand, den der Klon sieht, ist der committete: er
 # entsteht hier in einem Zug aus dem Bootstrap.
 selbst_init_rc=0
-selbst_init_out="$( "$tmpbin/ai-harness-init" "$tmprepo_selbst" --name full-smoke-selbst 2>&1 )" || selbst_init_rc=$?
+selbst_init_out="$( "$tmpbin/ai-harness-init" --name full-smoke-selbst "$tmprepo_selbst" 2>&1 )" || selbst_init_rc=$?
 if [ "$selbst_init_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — sprachlos: der Bootstrap des Selbstpruefungs-Ziels ist NICHT Exit 0 (Exit $selbst_init_rc)." >&2
 	printf '%s\n' "$selbst_init_out" >&2

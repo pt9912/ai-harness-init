@@ -194,7 +194,7 @@ func run(args []string, targetDir string, src sources, stdout, stderr io.Writer)
 	// test/unterkommando-kopplung.bats an den Dispatch in main(). Am Hook-Kanal ist
 	// der Exit 2 von hier zugleich der Wert, mit dem ein Hook blockiert — die
 	// Klemme aus ADR-0011 Festlegung 6 sitzt in spanEmit() und liegt dahinter
-	// (s. den Block in main()). Gedeckt von TestInitPfadNimmtKeinPositionsargument;
+	// (s. den Block in main()). Gedeckt von TestInitPfadNimmtDenZielordnerUndSonstNurFlags;
 	// test/mutations/253-archive-welle-go-init-pfad-positionsargument.sh nimmt die
 	// Mehrfach-Sperre weg.
 	//

@@ -416,7 +416,7 @@ func TestSubkommandoRouting_ArchiveWelleFaelltNichtInDenInitPfad(t *testing.T) {
 // Der Fall faehrt den Traeger als PROZESS in einem leeren Repo und misst genau
 // das, was ein Aufrufer sieht: Exit-Code, stdout und den Bestand des
 // Arbeitsverzeichnisses. Der Unterschied zu
-// TestInitPfadNimmtKeinPositionsargument ist der Eingang, nicht die Zusage —
+// TestInitPfadNimmtDenZielordnerUndSonstNurFlags ist der Eingang, nicht die Zusage —
 // dort kommt der Name als Argument-Feld an run(), hier ueber die Kommandozeile
 // eines echten Prozesses; und diese Strecke ist die, die das Makefile-Ziel
 // `archive-welle` faehrt.

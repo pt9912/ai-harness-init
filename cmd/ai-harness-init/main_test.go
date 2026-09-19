@@ -621,7 +621,7 @@ func TestRun_AddLangExcessArg(t *testing.T) {
 	}
 }
 
-// TestInitPfadNimmtKeinPositionsargument misst die Sperre in run() dort, wo sie
+// TestInitPfadNimmtDenZielordnerUndSonstNurFlags misst die Sperre in run() dort, wo sie
 // netzlos und eindeutig ist: ein Vertippter Unterkommando-Name mit Extra-Argument
 // ist ein Aufruf-Fehler (Exit 2), der das Token nennt, und das Zielverzeichnis
 // bleibt leer.
@@ -644,7 +644,7 @@ func TestRun_AddLangExcessArg(t *testing.T) {
 // Die Verzeichnis-Pruefung ist die tragende: Exit 2 allein bekaeme man auch von
 // einem Bootstrap, der unterwegs scheitert.
 // Gegenbeispiel: test/mutations/253-archive-welle-go-init-pfad-positionsargument.sh.
-func TestInitPfadNimmtKeinPositionsargument(t *testing.T) {
+func TestInitPfadNimmtDenZielordnerUndSonstNurFlags(t *testing.T) {
 	for _, arg := range []string{"archive-well", "span-repor", "add-lan"} {
 		t.Run(arg, func(t *testing.T) {
 			dir := t.TempDir()
@@ -782,7 +782,8 @@ func TestZielordner_AusDemArgument(t *testing.T) {
 // bootstrappt das stehende Repo — die Verzeichnis-Pruefung faerbt rot.
 // Rot-Gegenprobe 2 (geschwaechte Zusicherung: bricht, aber schreibt): der Zweig
 // druckt die Usage und bootstrappt TROTZDEM — Exit-Code und Meldung stimmen, und
-// die Verzeichnis-Pruefung bleibt rot. Beide von Hand gefahren.
+// die Verzeichnis-Pruefung bleibt rot. Der gelistete Zahn ist
+// test/mutations/378-init-argumentlos-bricht-aber-schreibt.sh.
 func TestUnfallVektor_OhneArgumentImRepoWurzel(t *testing.T) {
 	bin := filepath.Join(t.TempDir(), "ai-harness-init")
 	// "." — der Test laeuft IM Paketverzeichnis; der Bau baut genau dieses Command.

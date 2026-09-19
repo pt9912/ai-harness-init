@@ -18,7 +18,7 @@ Schritt-für-Schritt-Anleitung steht im [Benutzerhandbuch](docs/user/benutzerhan
 angelegte Verzeichnis; der Aufruf läuft aus jedem Verzeichnis:
 
 ```bash
-ai-harness-init <zielordner> --lang go --name "Mein Projekt"
+ai-harness-init --lang go --name "Mein Projekt" <zielordner>
 ```
 
 Ohne Zielordner bricht der Aufruf mit dem Usage-Text ab, statt still das Verzeichnis

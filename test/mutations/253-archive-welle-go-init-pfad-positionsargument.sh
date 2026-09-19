@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # files: cmd/ai-harness-init/main.go
-# expect: TestInitPfadNimmtKeinPositionsargument
+# expect: TestInitPfadNimmtDenZielordnerUndSonstNurFlags
 # verify: test-go
 #
 # STELLT DIE MEHRFACH-SPERRE DES INIT-PFADS INERT: mehr als ein Positionsargument

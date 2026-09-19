@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
 # files: harness/tools/full-smoke.sh
-# expect: die sprachlose Variante wird nicht mehr geprueft
+# expect: full-smoke: FEHLER — sprachlos: harness/conventions.md fehlt im Ziel — die drei Aussagen ueber den mitgelieferten Baum haetten keinen Ort.
 # verify: full-smoke
 #
 # VERTAUSCHT DAS ZIEL IM ZWEITEN DER ZWEI VARIANTEN-AUFRUFE.
 #
 # baum_aussagen_im_ziel steht einmal und wird zweimal gerufen — fuer das Ziel mit `--lang go`
 # und fuer das sprachlose. Der Operand schickt den zweiten Aufruf auf ein Verzeichnis, unter
-# dem keine emittierte harness/conventions.md liegt: der Aufruf faellt dort mit seiner eigenen
-# Meldung, statt still durchzulaufen.
+# dem keine emittierte harness/conventions.md liegt: die conventions-Assertion faengt das
+# falsch-gzielte Ziel mit ihrer benannten Meldung, statt still durchzulaufen. An einem
+# Ziel ohne .git bricht der Init-Bootstrap davor laut an der Git-Repo-Sperre (fehlendes
+# oder unlesbares .git) — der Bootstrap braucht ein bestehendes Git-Repo, das sprachlose
+# Ziel traegt sein `git init -q` an der Ziel-Anlage.
 #
 # WAS DAS MISST: dass der ZWEITE Aufruf ueberhaupt Zaehne hat. Der erste faengt jeden Defekt
 # des Emit, und solange nur er rot gesehen ist, belegt nichts, dass die sprachlose Variante

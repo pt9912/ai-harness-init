@@ -27,6 +27,7 @@ set -euo pipefail
 GO_VERSION="${GO_VERSION:-1.27.0}"
 tmpbin="$(mktemp -d)"
 tmprepo="$(mktemp -d)"
+git init -q "$tmprepo"
 cleanup() { rm -rf "$tmpbin" "$tmprepo"; }
 trap cleanup EXIT
 # mktemp -d liefert 0700; der d-check-Container laeuft als Nicht-Root und kann den
@@ -37,7 +38,7 @@ echo "smoke: 1/5 natives Release-Binary auf den Host extrahieren (make artifact)
 make artifact DEST="$tmpbin" GO_VERSION="$GO_VERSION"
 
 echo "smoke: 2/5 Bootstrap (--lang go): Doc-Gate + Templates + Skelett-Generierung (lokal) ..."
-( "$tmpbin/ai-harness-init" "$tmprepo" --lang go --name smoke )
+( "$tmpbin/ai-harness-init" --lang go --name smoke "$tmprepo" )
 
 echo "smoke: 3/5 Skelett an den Ziel-Root verdrahtet? (slice-004b) + Templates emittiert? (slice-022b) ..."
 if [ ! -f "$tmprepo/Makefile" ] || [ ! -f "$tmprepo/go.mod" ]; then
