@@ -216,7 +216,7 @@ Regeln dieser Sektion: **mindestens drei Optionen mit Pro/Contra** — „nichts
   Schnitt, der die neue Emission trägt (`v0.2.1`); die SUMS des gepinnten Tags ist der
   Prüfgegenstand des Ziel-Fetches.
 - **Folgepflicht 2 — die Pin-Kopplung wird neu geschnitten.** Aus drei Beinen werden zwei: das
-  Makefile-Tag hält gegen das Fragment-Tag (Text-Kopplung, Test-Klasse `test/sources-pin.bats`),
+  Makefile-Tag hält gegen das Fragment-Tag (Text-Kopplung, Test-Klasse `test/traeger-fetch.bats` (Zeilen 118–128)),
   und die Makefile-Digests halten gegen die `SHA256SUMS` des gepinnten Tags — wo ein Lauf das
   Release erreicht (CI mit Netz); im netzlosen Gate unprüfbar, benannt. Die Digest-Beine
   „Emitter-Default" und „Fragment-Default" aus [ADR-0058](0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
@@ -234,11 +234,23 @@ Regeln dieser Sektion: **mindestens drei Optionen mit Pro/Contra** — „nichts
   `v0.2.1` schreibt das konvergente Fragment kanonisch neu, und das Ziel fetcht gegen die
   `SHA256SUMS` seines gepinnten Tags.
 
+- **Folgepflicht 6 — der Index-Zusatz an der
+  [ADR-0058](0058-traeger-per-fetch-aus-dem-gepinnten-release.md)-Zeile wird im selben Commit wie
+  der Accept-Übergang gesetzt** (Form-Vorbild:
+  [ADR-0032](0032-eingefrorene-referenz-folgt-ihrem-rumpf.md) Folgepflicht 2,
+  [ADR-0055](0055-abgeschaffte-kennung-verlaesst-die-fitness-function-als-teil-abloesung.md)): die
+  Zelle trägt den Umfang der Ablösung (die Emissions-Hälfte von Festlegung 1) und die revidierende
+  ADR. Vor dem Übergang gesetzt, führt der Index einen Zusatz an einem `Proposed`-Artefakt, dem
+  der Übergang noch fehlt — gemessen (F-2). Dieser Zug trägt den Übergang und den Zusatz in
+  einem Commit; für künftige Teil-Ablösungen gilt: der Zusatz steht erst mit dem
+  Übergangs-Commit.
+
+
 ## Fitness Function (falls maschinell prüfbar)
 
 | Tooling | Regel | Make-Target |
 |---|---|---|
-| `make test` (bats) | **Der emittierte Pin trägt nur den Tag:** die Fragment-Vorlage führt keine Digest-Variablen — `grep -c 'TRAEGER_SHA256' internal/emit/templates/enforce/traeger.mk` → **0** nach dem Vollzug | `make test` |
+| Release-Asset-Lese-Lauf (kein Gate — die Sonde liest das veröffentlichte Binary, derselbe Lese-Zug wie in §Kontext) | **Das Binary trägt keinen Bau-abhängigen Wert und den Tag:** die Zuweisungs-Form der Digests — `grep -oaE 'TRAEGER_SHA256[A-Z_]*=[0-9a-f]{64}' <Binary>` → **0** —, die `TRAEGER_TAG`-Zuweisungs-Zeile steht (**1**, value-frei: der Tag ist die Release-Entscheidung, nicht ein gemessener Wert), und bare Treffer der Fetch-Logik sind kein Verstoß — sie tragen Variablennamen ohne Zuweisung, gemessen: **5** solche Namen im eingebetteten Text (`grep -oaE 'TRAEGER_SHA256[A-Z_]*' <Binary> | wc -l`). Die Vorlagen-Sonde (`grep -c 'TRAEGER_SHA256' internal/emit/templates/enforce/traeger.mk` → **0**) bleibt die Vor-Bau-Stufe: die Wand lebt im Binary, und die `v0.2.0`-Vorlage war korrekt, während ihr Binary nicht war (§Kontext) | — |\
 | `make test` (bats) | **Der Ziel-Fetch ist fail-closed gegen das Manifest:** eine Abweichung des Assets von seinem `SHA256SUMS`-Eintrag bricht ohne Ablage; der Fehlt-Fall bleibt Exit 0 mit Meldung, die das Fehlende nennt | `make test` |
 | `make test` (bats) | **Der Dogfood-Fetch bleibt fail-closed gegen den Makefile-Pin** — zwei Kanäle, unverändert | `make test` |
 | `make full-smoke` | **E2E am realen Ziel, unverändert in der Kette, neu im Prüfgegenstand:** frischer Klon ohne Träger → `traeger-fetch` → Manifest-Verifizierung → `archive-welle` läuft | `make full-smoke` |
