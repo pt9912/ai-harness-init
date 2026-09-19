@@ -63,15 +63,20 @@ Tag-Kopplung im selben Vorgang
 Festlegung 2), Release-Text nach Stand-Form (Zustand und Beleg als
 auflösbarer Anker, keine Chronik), Start-Prüfung auf allen sechs Dateien
 (die Zusagen des
-[`benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) §Erstellung
-eines Release), und die Grenze: kein Signier-Schritt — die Datei sagt sie,
-sie baut sie nicht. Zwei Zeilen stehen als **harte Schritte der Prozedur**,
+[`benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md#systemanforderungen)),
+und die Grenze: kein Signier-Schritt — die Datei sagt sie, sie baut sie nicht;
+sie trägt
+[`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)/[`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
+als ihren Grund, keine Handbuch-Adresse. Zwei Zeilen stehen als **harte Schritte der Prozedur**,
 nicht als Box daneben: Gates am Tag-Baum vor dem Tag-Push; CI am Tag abwarten,
 bevor der Schnitt vollzogen gemeldet wird.
 
 **Die Klasse hinter den zwei Zeilen, mit ihren drei Fundstellen** — ein
 ge-tagter/gepushter Stand trug keinen Gates-Beleg. Sie sind die Belegbasis des
-Abschnitts in `releasing.md` (Liefer-Punkt 3), nicht Chronik im Prozedur-Text:
+Abschnitts in `releasing.md` (Liefer-Punkt 3), nicht Chronik im Prozedur-Text;
+alle drei Fundstellen liegen im Vorgang des
+[Register-Belegs](../observations/BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad/evidence/slice-release-schnitt-koppelt-pin-und-fassung.md)
+— ein Beleg, nicht drei:
 
 1. Die roten Pushes nach dem ersten beim `v0.2.0`-Vorfall — der
    [Register-Beleg](../observations/BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad/evidence/slice-release-schnitt-koppelt-pin-und-fassung.md)
@@ -79,8 +84,8 @@ Abschnitts in `releasing.md` (Liefer-Punkt 3), nicht Chronik im Prozedur-Text:
    Push".
 2. Der Tag `v0.2.0` lag auf der beschädigten Baum-Fassung — derselbe Beleg,
    Abschnitt **Schaden**.
-3. Der Tag `v0.2.1` liegt auf `77471f53`
-   (`git rev-parse --short v0.2.1` → `77471f53`); am Tag-Baum fiel
+3. Der Tag `v0.2.1` liegt auf `28337be5`
+   (`git rev-parse --short v0.2.1` → `28337be5`); am Tag-Baum fiel
    `make docs-check` rot, der CI-Lauf am Tag-Commit bricht FAILURE, und der
    Release-Workflow blieb grün, weil er `docs-check` nicht fährt.
 
@@ -132,9 +137,13 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Rote Gegenproben: fehlt ein Matrix-Asset, färbt
       `test/release-matrix.bats` rot (die Matrix ist die Zusage hinter der
       Asset-Bau-Zeile); fehlt die `SHA256SUMS` im Release, bricht der
-      Ziel-Fetch laut ab (gemessen am Ziel-Fetch: HTTP 404, curl-Exit 22 —
-      dieselbe Zusage, die [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
-      an den Fetch bindet).
+      Ziel-Fetch laut ab — die Abweichungs-Klasse (SUMS vorhanden, Digest
+      weicht ab) misst `test/traeger-fetch.bats:174`, dieselbe Zusage, die
+      [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
+      an den Fetch bindet; die Fehlt-Klasse (ein Release **ohne** SUMS-Asset,
+      HTTP 404 auf die SUMS-URL) ist **benannte Lücke, nicht gemessen** — ihr
+      Konstruktions-Weg wäre ein Release ohne SUMS-Asset, und ein solches
+      trägt kein existierendes Release.
 - [ ] **Liefer-Punkt 2 — Verdrahtung:** die Datei ist adressierbar —
       [`harness/README.md`](../../../../README.md) §Source precedence führt
       Rang 6 als Verzeichnis `docs/user/` (Ziel-Form geprüft: keine
@@ -189,7 +198,9 @@ Aussagen-Berührung steht hier gar nicht.
 **Ansatz als Liste, wo eine Zeile pro Datei nicht trägt:**
 
 - Die zwei Disziplin-Zeilen stehen **in der Schritt-Folge** der Prozedur —
-  zwischen Asset-Publikation und Tag-Push, und zwischen Tag-Push und der
+  an den Positionen, die die Datei trägt: die erste als Schritt 4, vor dem
+  Schritt, der Tag-Push **und** Asset-Publikation zusammen trägt (der
+  tag-getriebene Lauf publiziert erst nach dem Push), die zweite vor der
   Meldung des vollzogenen Schnitts — nicht als Hinweis-Box daneben; ein
   Schritt, der übersprungen werden kann, ist keine Disziplin-Zeile.
 - Die Start-Prüfung übernimmt die Zusagen des Handbuchs (auf allen sechs
@@ -242,11 +253,12 @@ dasteht.
   dabei die Schwelle, weist §7 (Folge-Slice: ein Sensor, der den Tag gegen den
   Gates-Beleg hält, oder Carveout).
 - **Die Klasse ist dreimal gefallen und trägt keinen Register-Eintrag** — die
-  Zählregel „ein Vorgang zählt einmal" verlangt die Fund→Vorgang-Zuordnung
-  (Fundstellen 1 und 2 liegen im Vorgang des
-  [Register-Belegs](../observations/BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad/evidence/slice-release-schnitt-koppelt-pin-und-fassung.md),
-  Fundstelle 3 im `v0.2.1`-Schnitt); dieser Slice plant die Zuordnung nicht.
-  Ausgang: weiter offen → Sichtung bei der Closure.
+  Zählregel „ein Vorgang zählt einmal" verlangt die Fund→Vorgang-Zuordnung;
+  sie ist im
+  [Klassen-Beleg](../observations/BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad/evidence/slice-release-schnitt-koppelt-pin-und-fassung.md)
+  entschieden: alle drei Fundstellen liegen im selben Vorgang — ein Beleg,
+  nicht drei. — **Ausgang:** *entfallen* → die Zuordnung trägt der
+  Klassen-Beleg; dieses Risiko ist planseitig überholt.
 - **Die tragenden ADRs sind Proposed** — trägt die Datei die Festlegungen von
   [`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
   und [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md),
@@ -310,14 +322,15 @@ die Modus-Deklaration in `harness/conventions.md` führt `*` namentlich.
 2026-09-19 (`ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l` →
 **146**), Verzeichnisse unter `BEO-ALL/`. Treffer für die Sub-Area:
 `BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad` — **Zählerstand
-1×**; sein Beleg trägt zwei der drei Fundstellen der Klasse, die dieser Slice
-in `releasing.md` benennt — derselbe Vorgang ist Beleg-Kontext, nicht
+1×**; sein Beleg trägt alle drei Fundstellen der Klasse, die dieser Slice
+in `releasing.md` benennt (ein Beleg, nicht drei — die Zuordnung trägt der
+Klassen-Beleg) — derselbe Vorgang ist Beleg-Kontext, nicht
 Beobachtungs-Klasse. `BEO-ALL/kennung-traegt-den-stand-den-ein-release-ueberholt`
 — **Zählerstand 1×**; angrenzend (eine Kennung trägt den Stand, den ein Release
 überholt), aber nicht die fehlende-Gates-Beleg-Klasse. Kein Eintrag trägt die
 Klasse selbst, und keiner erreicht mit dieser Berührung 2× — der Zähler wird
 durch diesen Plan nicht hochgeschrieben; die Fund→Vorgang-Zuordnung der drei
-Fundstellen steht als Risiko in §6.
+Fundstellen trägt der Klassen-Beleg (§6, Ausgang *entfallen*).
 
 **Modus-Begründungsblock:** alle berührten Sub-Areas GF (`*` steht in der
 Modus-Deklaration als Greenfield); kein BF/Hybrid-Block.
