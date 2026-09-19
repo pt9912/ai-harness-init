@@ -134,7 +134,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Aufruf, nicht geerbt aus der Unfall-Erinnerung.
       **Beleg:** Verifikations-Report, DoD L1 (Prozess-Messungen 1–3; rote
       Gegenprobe 377, eigene Messung).
-- [ ] **Liefer-Punkt 2 — der Unfall-Vektor ist zugenommen:** der Aufruf, der
+- [x] **Liefer-Punkt 2 — der Unfall-Vektor ist zugenommen:** der Aufruf, der
       den Unfall fuhr (Träger ohne Argument, gestanden im Repo-Wurzel-
       Verzeichnis), endet ohne Schaden — laut, mit dem Usage-Text, ohne dass
       das stehende Repo angefasst wird. Test: die Go-Stufe
@@ -145,7 +145,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       **Beleg:** Verifikations-Report, DoD L2 (Messung 1 am realen Träger;
       377 rot — eigene Messung, 378 rot in der Gate-Umgebung der Runde 2,
       Grenze V-1 charakterisiert).
-- [ ] **Liefer-Punkt 3 — Deckung:** die vier Dispatch-Fälle
+- [x] **Liefer-Punkt 3 — Deckung:** die vier Dispatch-Fälle
       (`span-emit`, `span-report`, `archive-welle`, `vendor-baseline`) bleiben
       unberührt — ihre Festlegungen
       ([`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
