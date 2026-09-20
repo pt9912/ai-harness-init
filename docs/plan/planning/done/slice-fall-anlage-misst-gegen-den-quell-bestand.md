@@ -138,7 +138,7 @@ Anker — die Anker-Paarung der Register-Seite löst auf.
   Fall-Anlage misst ihr sed-Muster gegen den Quell-Bestand, nicht gegen die
   Fassung der letzten Fassung" — verkörpert als
   [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)
-  — liegt in `harness/conventions/MR-071-die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand.md`.
+  — liegt in [harness/conventions/MR-071-die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand.md](../../../../harness/conventions/MR-071-die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand.md).
   Herkunft: `seit slice-fall-anlage-misst-gegen-den-quell-bestand`.
 - **Beobachtungs-Register (`../observations/`):** keine Beobachtung
   angefallen — der Ausgang von
