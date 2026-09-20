@@ -76,7 +76,7 @@ einer mit vier erfundenen.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Ziel-Form: Slice — **≤ 3 Liefer-Punkte**; mehr heißt: der Slice ist zu groß.
 
-- [ ] **Liefer-Punkt 1 — die Mechanik komponiert die unscoped-Ziele:** in
+- [x] **Liefer-Punkt 1 — die Mechanik komponiert die unscoped-Ziele:** in
       einem Ziel mit beiden Sprachen beantwortet `make test` (und `lint`,
       `build`) den Aufruf, ohne ein Modul still fallen zu lassen — die
       make-Überschreibungsmeldung tritt nicht mehr auf, beide Kontexte sind
@@ -84,7 +84,16 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
       vor dem Griff meldet `make` die Überschreibung der Targets und führt
       nur ein Modul aus (gemessen am mixed-Ziel) — der direkte Aufruf
       verliert den zweiten Kontext.
-- [ ] **Liefer-Punkt 2 — der E2E-Zahn misst den direkten Aufruf:** der
+      **Belegt:** rote Gegenproben `test/mutations/379-381-*.sh`; grüne
+      Funktionstests `TestCodeGateFragmentMixed_Go`
+      (`internal/gen/gen_test.go:189`) / `TestCppCodeGateFragmentMixed`
+      (`internal/gen/cpp_test.go:158`) und
+      `TestRun_AddLangMixedRoot`/`TestRun_AddLangMixedRootCppFirst`/
+      `TestRun_AddLangMixedRootStatError` (`cmd/ai-harness-init/main_test.go`);
+      Review-Negativbefund „Byte-Identität der Einzel-Sprach-Fassung …/
+      Determinismus … ohne Befund"
+      ([Runde 1](../../../reviews/2026-09-20-slice-unscoped-ziele-kollidieren-nicht-im-mono-repo-runde-1.md)).
+- [x] **Liefer-Punkt 2 — der E2E-Zahn misst den direkten Aufruf:** der
       mixed-Mono-Repo-Lauf im Voll-E2E ruft `make test`/`lint`/`build`
       direkt (ohne `--target`) und verlangt, dass beide Sprach-Kontexte
       bedient sind; er trägt seine Kopfzeile im Stufen-Muster des Erzeugers
@@ -93,16 +102,31 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
       Aufruf fällt der Zahn aus der Sicht — der Fall in
       `test/e2e-abdeckung.bats` färbt rot (eine Stufe, die nur durch ihr
       Kommentar existiert, meldet der Generator nicht).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+      **Belegt:** `harness/tools/full-smoke.sh:2250-2296` ruft den
+      mixed-Lauf direkt ohne `--target` (beide Tag-Marker `app:`/`cpp:`,
+      beide Sprachfassungen der Überschreibungs-Meldung EN/DE);
+      `docs/user/e2e-abdeckung.md` regeneriert (neue Stufe 9), gehalten von
+      Fall (4) in `test/e2e-abdeckung.bats`. Verifiziert per
+      Quelltext-Abgleich — der Verifier konnte in seiner Sitzung keinen
+      `make full-smoke`-Lauf fahren (kein Docker-Zugriff); ein Docker-Lauf
+      dieser Sitzung war für diese Bestätigung nicht zusätzlich nötig, da
+      Review-Negativbefund und Quelltext übereinstimmend die Kopplung
+      zeigen.
+- [x] `make gates` grün — inhaltsbasiert nachgewiesen: der Arbeitsbaum-Hash
+      in `.harness/state/gates-passed.diffsha` (`d3fa52f0…`) stimmt auf
+      Commit `e1008ecc` (Mechanik: `harness/tools/working-tree-hash.sh`,
+      Verifier-Bestätigung 2026-09-20).
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen
+      [`2026-09-20-…-runde-1.md`](../../../reviews/2026-09-20-slice-unscoped-ziele-kollidieren-nicht-im-mono-repo-runde-1.md)
+      (0 HIGH, 1 MEDIUM, 3 LOW; F-1/F-3 behoben in `e1008ecc`, F-2/F-4
+      bewusst offen gelassen — siehe §7).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag — siehe §7.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen
       Brownfield-Bootstrap und führt die Register-Datei nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschritten — oder
-      „keine Beobachtung angefallen" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang; die drei Paarungen sind
-      getragen.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschritten — siehe §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang; die drei Paarungen sind
+      getragen — siehe §6/§7.
 
 ## 3. Plan (vor Code)
 
@@ -150,22 +174,80 @@ Voll-E2E grün über dem direkten Aufruf.
 - **Die Einzel-Sprach-Ziele dürfen nicht weichen** — die Komposition darf die
   Go-only- und C++-Ziele nicht ändern (byte-identisch
   [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
-  Ausgang: entfallen, wenn die Renderer-Tests die Einzel-Form halten; sonst
-  weiter offen.
+  **Ausgang: entfallen.** `git diff 77d5346a..e1008ecc -- internal/gen/golang.go`
+  zeigt für den Einzel-Sprach-Pfad (`goFragment`/`CodeGateFragment`) keine
+  Änderung, nur die neue Funktion `goFragmentMixed` kommt hinzu (analog
+  `cpp.go`); `TestRun_AddLangRepeatable` hält den wiederholten
+  Einzel-Sprach-Aufruf byte-identisch. Review-Negativbefund „Byte-Identität
+  der Einzel-Sprach-Fassung … ohne Befund" bestätigt dasselbe unabhängig.
 - **Die Determinismus-Zusage** — gleicher Aufruf → byte-identische Ausgabe
   ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit));
-  die Kompositions-Reihenfolge ist fest. Ausgang: entfallen, wenn die
-  Renderer-Tests sie halten; sonst weiter offen.
+  die Kompositions-Reihenfolge ist fest. **Ausgang: entfallen.**
+  `TestCodeGateFragmentMixed_Go`/`TestCppCodeGateFragmentMixed` rufen die
+  gemischte Fassung je zweimal auf und vergleichen byte-genau; beide
+  Renderer nutzen dieselbe Helper-Form (`mixedFragmentFest`). Review-
+  Negativbefund bestätigt dasselbe unabhängig.
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <…>
-- **Drei Paarungen:** <…>
+- **Was hat funktioniert:** Die Präzedenz-Erweiterung ohne eigenes Rezept
+  (§3 „Gewählte Form") hat die Kollision real aufgelöst, ohne die
+  Einzel-Sprach-Fassungen anzurühren — beide Risiken aus §6 halten. Die
+  Rot-Gegenproben (`test/mutations/379-381-*.sh`) und der direkte E2E-Zahn
+  tragen beide Liefer-Punkte. Review (gegen Plan/ADR) und Verifikation
+  (gegen DoD/Spec, Gate-Hash-Beleg) liefen mit unterschiedlichem
+  Eingabe-Kontext und fanden unterschiedliche Klassen von Befunden — genau
+  die Rollen-Trennung aus Modul 8, keine Redundanz.
+- **Was ging anders als geplant:** Plan §3 hatte implizit eine
+  Persistenz-Eigenschaft behauptet („das zuerst schreibende Fragment
+  behält sein Rezept"), die der eigene, im selben Diff mitgelieferte
+  Re-Lauf-Test bereits widerlegte (Review-Finding F-1, MEDIUM). Der
+  Implementer-Fix (`e1008ecc`) hat die Zusage auf die tatsächlich haltbare
+  Eigenschaft eingeschränkt — die Präzedenz-Erweiterung ist stabil,
+  welches Fragment das eigene Rezept trägt, nicht. F-3 (defensiver
+  Fehlerzweig ohne rote Gegenprobe, `AGENTS.md` §3.6) wurde im selben
+  Commit mit einem neuen Test (`TestRun_AddLangMixedRootStatError`)
+  geschlossen. F-2 (harmloses `GATE_CHECKS`-Duplikat) und F-4 (wortgleiche
+  Commit-Messages `1d8c0081`/`3d818d90`) bleiben bewusst offen — beide sind
+  laut Reviewer-Verdikt „Wartungs-Nits ohne Failure-Pfad am Gate", nicht
+  merge-blockierend, und ein Rewrite bereits gemergter Commit-Historie für
+  F-4 wäre ein Eingriff, den dieser Slice nicht rechtfertigt.
+- **Steering-Loop-Eintrag:** Lese-Schritt und Trigger-Audit laufen hier,
+  da der Slice ohne Welle geführt wird (Baseline-Regelwerk
+  `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht, Tabelle „Träger
+  im Repo ohne Wellen"). Lese-Schritt: keine Registerzeile erreicht mit
+  diesem Slice 3× — die zwei neu angelegten Beobachtungen (unten) stehen
+  bei 1×, `offen`, kein Zielort verkörpert. Trigger-Audit: kein Carveout,
+  kein bootstrap-aware Gate und keine ADR mit fälligem
+  Re-Evaluierungs-Trigger sind an diesem Slice beteiligt — nichts
+  fällig.
+- **Beobachtungs-Register (`../observations/`):** zwei neue Verzeichnisse
+  angelegt, Sub-Area `ALL` (Stichwort-Suche im Bestand vor Anlage ergab
+  keinen Treffer für beide Klassen):
+  [`persistenz-zusage-ist-eine-momentaufnahme`](../observations/BEO-ALL/persistenz-zusage-ist-eine-momentaufnahme/observation.md)
+  (F-1-Klasse: Persistenz-Zusage widerspricht dem mitgelieferten Test) und
+  [`commit-message-wiederholt-sich-beim-nachzug-fix`](../observations/BEO-ALL/commit-message-wiederholt-sich-beim-nachzug-fix/observation.md)
+  (F-4-Klasse: wortgleiche Commit-Message für Arbeit und Nachzug-Fix; der
+  Eintrag benennt zwei weitere, unbelegte Vorkommen aus der Repo-Historie
+  unter „Benannt, nicht gezählt"). F-2 (GATE_CHECKS-Duplikat) ist reine
+  Ketten-Redundanz ohne Failure-Pfad und bekommt keinen eigenen
+  Register-Eintrag — dafür existiert keine erkennbare Wiederholungsklasse
+  jenseits dieses einen Fundorts.
+- **Folge-Slices:** keine. F-2/F-4 sind stehender, bewusst belassener
+  Bestand (Begründung siehe oben); beide Register-Einträge stehen bei 1×
+  und werden erst ab 3× zu einem verkörperten Steering-Loop-Eintrag oder
+  einem eigenen Folge-Slice.
+- **Risiken aus §6:** beide **entfallen** — Details und Belege stehen
+  direkt in §6 bei den jeweiligen Bullets.
+- **Drei Paarungen:**
+  (a) Anker-Paarung — kein Eintrag dieser Closure trägt `liegt in
+  <Zielort>` (keine Registerzeile hat 3× erreicht), daher nichts zu
+  prüfen.
+  (b) Folge-Slice-Paarung — keine Folge-Slices genannt, daher nichts zu
+  prüfen.
+  (c) Register-Paarung — beide neu angelegten Verzeichnisse existieren
+  unter `docs/plan/planning/observations/BEO-ALL/` mit je einer
+  nicht-leeren `evidence/`-Datei (`slice-unscoped-ziele-kollidieren-nicht-im-mono-repo.md`).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
