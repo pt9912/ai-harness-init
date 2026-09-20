@@ -21,7 +21,7 @@ Zielordner-Slice gezogen hat, zusammen ziehen: der Zielordner-Parameter am
 Werkzeug-Dispatch, die `SHA256SUMS`-Emission im Release-Lauf, die
 Release-Prozedur in `releasing.md`, die Skeleton-Struktur (Adapter- und
 Ports-Ordner unter ihren Rollen-Namen), die Fall-Anlage-Regel
-([`MR-071`](../../harness/conventions/MR-071-die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand.md)),
+([`MR-071`](../../../harness/conventions/MR-071-die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand.md)),
 die Mono-Repo-Komposition der unscoped Targets, der Handbuch-Nachzug und die
 Tap-Verteilung. Die **Belegbasis** sind die sieben geschlossenen Slices in
 `done/`: `slice-zielordner-richtet-das-werkzeug-auf-ein-ziel-repo`,
@@ -64,13 +64,13 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| slice-unscoped-ziele-kollidieren-nicht-im-mono-repo | Die unscoped-Ziele kollidieren nicht im gemischten Mono-Repo | LH-FA-04 |
-| slice-benutzerhandbook-nachzug-traegt-fuenf-posten | Der Handbuch-Nachzug trägt die fünf Posten | LH-FA-01 |
-| slice-tap-verteilt-die-release-assets | Das Tap verteilt die Release-Assets | LH-QA-04 |
-| slice-waechter-der-erfassungsschicht-decken-was-sie-sagen | Die Wächter der Erfassungsschicht decken, was sie sagen | LH-FA-10 |
-| slice-lifecycle-werkzeuge-tragen-die-kennung | Die Lifecycle-Werkzeuge tragen die Kennung | LH-QA-01 |
-| slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt | Emitter-Aussagen über den Vorlagensatz sind gedeckt | LH-FA-12 |
-| slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang | Verweise auf Review-Reports bekommen ihren Ausgang | LH-QA-01 |
+| slice-unscoped-ziele-kollidieren-nicht-im-mono-repo | Die unscoped-Ziele kollidieren nicht im gemischten Mono-Repo | [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
+| slice-benutzerhandbook-nachzug-traegt-fuenf-posten | Der Handbuch-Nachzug trägt die fünf Posten | [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
+| slice-tap-verteilt-die-release-assets | Das Tap verteilt die Release-Assets | [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) |
+| slice-waechter-der-erfassungsschicht-decken-was-sie-sagen | Die Wächter der Erfassungsschicht decken, was sie sagen | [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
+| slice-lifecycle-werkzeuge-tragen-die-kennung | Die Lifecycle-Werkzeuge tragen die Kennung | [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt | Emitter-Aussagen über den Vorlagensatz sind gedeckt | [`LH-FA-12`](../../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren) |
+| slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang | Verweise auf Review-Reports bekommen ihren Ausgang | [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 
 ## 5. Abhängigkeiten
 
