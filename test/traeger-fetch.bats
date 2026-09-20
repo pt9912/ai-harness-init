@@ -139,7 +139,11 @@ pin_wert() {
 @test "happy im Ziel-Modus: ohne Digest-Pin verifiziert der Lauf gegen die SHA256SUMS und legt den Traeger ab, lauffaehig" {
   # Manifest und Asset kommen vom selben Release — zwei Transport-Aufrufe, und der
   # Asset-Digest steht im Manifest-Eintrag (ADR-0059 Festlegung 1).
+  # Plattform fest verdrahtet (statt uname des Bats-Hosts): sonst waere der Fall auf
+  # einem arm64-Host nicht hermetisch — die Assertion unten nennt das amd64-Asset.
   run env TRAEGER_TAG=v0.2.1 \
+    TRAEGER_OS=Linux \
+    TRAEGER_ARCH=x86_64 \
     TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
     bash "$SKRIPT"
   [ "$status" -eq 0 ]
@@ -157,7 +161,11 @@ pin_wert() {
 }
 
 @test "happy im Dogfood-Modus: mit exportiertem Pin verifiziert der Lauf gegen den Makefile-Pin (zwei Kanaele, ADR-0059 Festlegung 3)" {
+  # Plattform fest verdrahtet (statt uname des Bats-Hosts) — derselbe Grund wie im
+  # Ziel-Modus-Fall darueber: der Pin- und der Asset-Name unten sind LINUX_AMD64.
   run env TRAEGER_TAG=v0.2.1 \
+    TRAEGER_OS=Linux \
+    TRAEGER_ARCH=x86_64 \
     TRAEGER_SHA256_LINUX_AMD64="$FIXTURE_SHA" \
     TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
     bash "$SKRIPT"
@@ -177,7 +185,11 @@ pin_wert() {
   # (ADR-0059 Festlegung 1).
   fremd="$(printf 'f%.0s' $(seq 64))"
   printf '%s  ai-harness-init-linux-amd64\n' "$fremd" >"$TMP/sums-fremd"
+  # Plattform fest verdrahtet (statt uname des Bats-Hosts) — die Fixture-Zeile oben
+  # und die Assertion unten nennen das amd64-Asset.
   run env TRAEGER_TAG=v0.2.1 \
+    TRAEGER_OS=Linux \
+    TRAEGER_ARCH=x86_64 \
     TRAEGER_SHIM_SUMS="$TMP/sums-fremd" \
     TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
     bash "$SKRIPT"
@@ -197,7 +209,10 @@ pin_wert() {
   # Der Pin ist VERDREHT gegen dasselbe Asset — der Lauf laedt EINMAL und legt
   # nichts ab; der Traeger des richtigen Laufs bliebe unangetastet.
   verdreht="$(printf '0%.0s' $(seq 64))"
+  # Plattform fest verdrahtet (statt uname des Bats-Hosts) — der Pin unten ist LINUX_AMD64.
   run env TRAEGER_TAG=v0.2.1 \
+    TRAEGER_OS=Linux \
+    TRAEGER_ARCH=x86_64 \
     TRAEGER_SHA256_LINUX_AMD64="$verdreht" \
     TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
     bash "$SKRIPT"
@@ -213,7 +228,11 @@ pin_wert() {
 @test "fail-closed vor dem Transport: fehlt bei TEILWEISE exportierten Pins der eigene der Plattform, bricht der Lauf, ohne den Transport zu rufen (ADR-0059 Festlegung 3)" {
   # Der Ablageort wird auf ein Verzeichnis gesetzt, das NUR der Transport haette
   # anlegen duerfen — nach dem Lauf darf es nicht existieren.
+  # Plattform fest verdrahtet (statt uname des Bats-Hosts): die fehlende Pin-Stelle
+  # unten ist LINUX_AMD64, waehrend DARWIN_AMD64 gesetzt ist.
   run env TRAEGER_TAG=v0.2.1 \
+    TRAEGER_OS=Linux \
+    TRAEGER_ARCH=x86_64 \
     TRAEGER_SHA256_DARWIN_AMD64="$FIXTURE_SHA" \
     TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
     bash "$SKRIPT"
@@ -240,14 +259,18 @@ pin_wert() {
 }
 
 @test "plattform-matrix: das windows-Asset traegt .exe, und der Traeger liegt als ai-harness-init.exe (LH-QA-04)" {
+  # Plattform fest verdrahtet (statt uname des Bats-Hosts) — die Assertion nennt das
+  # amd64-Windows-Asset.
   run env TRAEGER_TAG=v0.2.1 \
     TRAEGER_OS='MINGW64_NT-10.0' \
+    TRAEGER_ARCH=x86_64 \
     TRAEGER_CARRIER="$TMP/ablage/ai-harness-init.exe" \
     bash "$SKRIPT"
   [ "$status" -eq 0 ]
   grep -qF 'releases/download/v0.2.1/ai-harness-init-windows-amd64.exe' "$TRAEGER_SHIM_LOG"
   [ -x "$TMP/ablage/ai-harness-init.exe" ]
   run env TRAEGER_TAG=v0.2.1 \
+    TRAEGER_OS=Linux \
     TRAEGER_ARCH=aarch64 \
     TRAEGER_CARRIER="$TMP/ablage/ai-harness-init" \
     bash "$SKRIPT"
