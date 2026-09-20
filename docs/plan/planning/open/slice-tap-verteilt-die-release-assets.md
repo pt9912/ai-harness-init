@@ -104,7 +104,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 ## 4. Trigger
 
 **Start** (`next` → `in-progress`): nach dem Handbuch-Nachzug
-([`slice-benutzerhandbuch-nachzug-traegt-fuenf-posten`](../open/slice-benutzerhandbuch-nachzug-traegt-fuenf-posten.md) —
+([`slice-benutzerhandbuch-nachzug-traegt-fuenf-posten`](../in-progress/slice-benutzerhandbuch-nachzug-traegt-fuenf-posten.md) —
 drei Abhängigkeiten: das Tap-Repo (Auftraggeber-Commit) steht, der
 Workflow-Schritt und der Handbuch-Weg sind frei), Implementer übernimmt,
 WIP-Limit frei.
