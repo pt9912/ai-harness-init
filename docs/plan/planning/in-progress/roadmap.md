@@ -18,6 +18,7 @@ nicht hier.
 
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
 - [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
+- [welle-v021-faehigkeit — die v0.2.1-Fähigkeit](../welle-v021-faehigkeit.md)
 
 ## Nächste Wellen
 
