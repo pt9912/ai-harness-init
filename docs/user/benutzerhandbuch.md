@@ -1,7 +1,7 @@
 # Benutzerhandbuch: ai-harness-init
 
 **Handbuch-Version:** 1.14
-**Software-Stand:** `v0.2.1` — **vorgefertigte Programme für sechs Plattformen** (linux · macos · windows × amd64 · arm64), seit `v0.1.0`. Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat`, `hexagonal` oder `hexslice`; bei den beiden geschichteten kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp` (C++; weitere folgen), beide auch mit `hexslice`; `hexagonal` liefert heute der Go-Renderer. Seit `v0.1.1` (Juli) kamen vier Betriebs-Operationen hinzu (siehe [Betriebs-Operationen](#betriebs-operationen)), und die geschichtete Bauform benennt Adapter- und Ports-Ordner nach ihren Rollen (`driving`/`driven`, `ports_inbound`/`ports_outbound` — siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch)).
+**Software-Stand:** `v0.2.1` — **vorgefertigte Programme für sechs Plattformen** (linux · macos · windows × amd64 · arm64), seit `v0.1.0`. Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat`, `hexagonal` oder `hexslice`; bei den beiden geschichteten kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp` (C++; weitere folgen), beide auch mit `hexslice`; `hexagonal` liefert heute der Go-Renderer. Seit `v0.1.1` (Juli) kamen vier Betriebs-Operationen hinzu (siehe [Betriebs-Operationen](#betriebs-operationen)). Im aktuellen Quellstand ([`ADR-0060`](../plan/adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md), `Accepted`) benennt die geschichtete Bauform Adapter- und Ports-Ordner nach ihren Rollen (`driving`/`driven`, `ports_inbound`/`ports_outbound` — siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch)); das veröffentlichte `v0.2.1` liefert dafür noch die vorherige Form, die Rollen-Namen kommen mit dem nächsten Release-Schnitt.
 **Stand:** 2026-09-20
 **Verantwortlich:** ai-harness-init-Team (pt9912)
 
@@ -295,7 +295,7 @@ Die erste sagt: der **Kern** sieht keinen Adapter — er kennt nur seine Ports. 
 
 **Die treibende Seite wird bei `hexagonal` bewusst mitgeprüft** — strenger, als es verbreitete Vorlagen tun, die sie als reinen Verdrahtungs-Bereich freistellen. Der Grund: ein zu strenger Standard meldet sich beim **ersten** Lauf und kostet Sie eine Zeile; ein zu lascher meldet sich **nie** und lässt einen Bereich still ungeprüft. Wollen Sie die Freistellung, tragen Sie in **Ihrer** `.a-check.yml` `"internal/adapter/driving/**"` unter `composition_root` ein — eine Zeile, in einer Datei, die das Werkzeug nie überschreibt.
 
-**Wichtig für die Pflege:** `.a-check.yml` gehört Ihnen — ein erneutes Aufsetzen überschreibt sie nicht. Bei `hexslice` gilt: legen Sie einen **weiteren** Use-Case-Schnitt an, tragen Sie ihn dort nach (je ein Eintrag unter `app` und, falls er eigene Ports hat, unter `ports_inbound` bzw. `ports_outbound` — je nach Richtung, mit eigenem `direction:`). Vergessen Sie es, fällt der neue Code unter keine Schicht: importiert er eine, meldet das Gate `wrong-direction` — importiert er keine, bleibt er unbemerkt ungeprüft. Bei `hexagonal` wachsen neue Dateien in die bestehenden vier Schichten hinein; nachzutragen ist erst, wenn Sie ein **neues** Schicht-Verzeichnis anlegen.
+**Wichtig für die Pflege:** `.a-check.yml` gehört Ihnen — ein erneutes Aufsetzen überschreibt sie nicht. Bei `hexslice` gilt: legen Sie einen **weiteren** Use-Case-Schnitt an, tragen Sie ihn dort nach (je ein Eintrag unter `app` und, falls er eigene Ports hat, unter `ports_inbound` bzw. `ports_outbound` — je nach Richtung, mit eigenem `direction:`). Diese Rollen-Form ist der aktuelle Quellstand ([`ADR-0060`](../plan/adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md), `Accepted`); wer das veröffentlichte `v0.2.1` heruntergeladen hat, trägt dort noch die flache `ports`-Schicht ohne `direction:` — die neue Form kommt mit dem nächsten Release-Schnitt, nicht über einen Re-Publish von `v0.2.1`. Vergessen Sie es, fällt der neue Code unter keine Schicht: importiert er eine, meldet das Gate `wrong-direction` — importiert er keine, bleibt er unbemerkt ungeprüft. Bei `hexagonal` wachsen neue Dateien in die bestehenden vier Schichten hinein; nachzutragen ist erst, wenn Sie ein **neues** Schicht-Verzeichnis anlegen.
 
 **Grenzen:** `--arch hexslice` liefert für **beide** Zielsprachen, `--arch hexagonal` derzeit nur der **Go**-Renderer. Eine Sprache, deren Renderer die gewählte Bauform nicht kennt (heute `cpp` mit `hexagonal`), endet mit Exit 2 und nennt die Bauformen, die **diese** Sprache kann — statt still ein Grundgerüst ohne Schichten anzulegen; eine unbekannte Bauform ebenso, mit Nennung der verfügbaren Werte.
 
@@ -315,9 +315,9 @@ make gates
 
 **Ein bereits aufgesetztes Repository geklont — kein eigener `ai-harness-init`-Lauf.** Haben Sie ein Repository geklont, das jemand anderes (oder eine CI) bereits aufgesetzt hat, brauchen Sie keinen eigenen Lauf: `make gates` funktioniert unverändert, denn die Gates prüfen nur Docker und den versionierten Inhalt.
 
-**Was dabei fehlt:** Der **Träger** — die `ai-harness-init`-Programmdatei selbst, die das Repository für die vier [Betriebs-Operationen](#betriebs-operationen) (`archive-welle`, `span-report`, `span-clean`, `traeger-fetch`) braucht — liegt in einem **gitignorierten** Zustands-Bereich (`.harness/state/bin/`) und reist deshalb **nicht** mit einem Klon. `make gates` bleibt davon unberührt, aber `make archive-welle`/`make span-report`/`make span-clean` melden nach einem frischen Klon: *„der Traeger liegt nicht … dieses Repo … nicht"* — kein Fehler, kein rotes Gate, nur eine Aussage über den fehlenden Träger.
+**Was dabei fehlt:** Der **Träger** — die `ai-harness-init`-Programmdatei selbst, die das Repository für drei der vier [Betriebs-Operationen](#betriebs-operationen) (`archive-welle`, `span-report`, `traeger-fetch`) braucht — liegt in einem **gitignorierten** Zustands-Bereich (`.harness/state/bin/`) und reist deshalb **nicht** mit einem Klon. `make gates` bleibt davon unberührt, ebenso `make span-clean`, das den Träger gar nicht anfasst. `make archive-welle`/`make span-report` melden nach einem frischen Klon: *„der Traeger liegt nicht … dieses Repo … nicht"* — kein Fehler, kein rotes Gate, nur eine Aussage über den fehlenden Träger.
 
-**Wie der Träger zurückkommt:** `make traeger-fetch` holt ihn aus dem gepinnten Release nach — **einmalig** Netzwerk für diesen Aufruf, danach funktionieren die drei übrigen Betriebs-Operationen.
+**Wie der Träger zurückkommt:** `make traeger-fetch` holt ihn aus dem gepinnten Release nach — **einmalig** Netzwerk für diesen Aufruf, danach funktionieren `archive-welle` und `span-report` ebenfalls.
 
 ### Ein Repository erneut aufsetzen (idempotent)
 
@@ -361,18 +361,18 @@ SKEL_GO_VERSION=1.26.4 ai-harness-init --lang go --name "Mein Projekt" <zielordn
 
 ### Betriebs-Operationen
 
-**Voraussetzung:** Ein aufgesetztes Repository. Docker läuft — jede der vier Operationen ruft den mitgelieferten **Träger** (die `ai-harness-init`-Programmdatei im gitignorierten Zustands-Bereich `.harness/state/bin/`) auf, `traeger-fetch` ausgenommen, das ihn erst dorthin legt.
+**Voraussetzung:** Ein aufgesetztes Repository. Docker braucht nur `traeger-fetch` — der Transport läuft im gepinnten Bild. Die drei übrigen rufen den bereits abgelegten **Träger** (die `ai-harness-init`-Programmdatei im gitignorierten Zustands-Bereich `.harness/state/bin/`) direkt auf; `span-clean` braucht weder den Träger noch Docker, es räumt nur den lokalen Erfassungs-Bestand weg.
 
-Alle vier sind **keine Gates**: `make gates` fährt keine von ihnen mit, und jede meldet fehlenden Träger, statt rot zu färben (siehe [Ein bereits aufgesetztes Repository geklont](#das-aufgesetzte-repository-prüfen)).
+Alle vier sind **keine Gates**: `make gates` fährt keine von ihnen mit. `archive-welle` und `span-report` melden fehlenden Träger, statt rot zu färben (siehe [Ein bereits aufgesetztes Repository geklont](#das-aufgesetzte-repository-prüfen)); `traeger-fetch` legt ihn bei Bedarf erst ab; `span-clean` prüft den Träger gar nicht — sein Rezept löscht bedingungslos.
 
 | Kommando | Tut was |
 |---|---|
-| `make traeger-fetch` | Holt den Träger aus dem gepinnten Release nach und legt ihn im Zustands-Bereich ab. Braucht **einmalig** Netzwerk für diesen Aufruf; danach nicht mehr. Die drei folgenden Operationen setzen ihn voraus. |
+| `make traeger-fetch` | Holt den Träger aus dem gepinnten Release nach und legt ihn im Zustands-Bereich ab. Braucht **einmalig** Netzwerk für diesen Aufruf; danach nicht mehr. `archive-welle` und `span-report` setzen ihn voraus. |
 | `make archive-welle WELLE=<welle-id>` | Archiviert die Zeitdokumente einer geschlossenen Welle (Slice-Dateien, Welle-Plan, Review-Reports) und committet den Vorgang im versionierten Baum. Fehlt der Träger, schreibt das Kommando nichts und sagt das. |
 | `make span-report` | Zeigt eine Token-Bilanz je Rolle aus dem lokalen Erfassungs-Bestand — ein reiner, netzloser Bericht. Fehlt der Träger, meldet das Kommando das als Aussage über den Leser, nicht über den Bestand. |
 | `make span-clean` | Entfernt den lokalen Erfassungs-Bestand. Läuft nur auf **ausdrücklichen** Aufruf; kein Automatismus räumt ihn sonst auf. |
 
-**Ergebnis:** Ein frischer Klon hat den Träger nicht (er ist gitignoriert); `make traeger-fetch` legt ihn ab, danach funktionieren die drei übrigen Operationen ohne weiteres Netzwerk.
+**Ergebnis:** Ein frischer Klon hat den Träger nicht (er ist gitignoriert); `make traeger-fetch` legt ihn ab, danach funktionieren `archive-welle` und `span-report` ohne weiteres Netzwerk. `span-clean` funktioniert unabhängig davon, mit oder ohne Träger.
 
 ---
 
