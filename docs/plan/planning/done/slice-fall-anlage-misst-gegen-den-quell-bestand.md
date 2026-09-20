@@ -127,10 +127,10 @@ Anker — die Anker-Paarung der Register-Seite löst auf.
   der `sed`-Anker je Fall gegen den Quell-Bestand), die drei Fundmengen, die
   Grenze und die Auflösungs-Trigger, und keine Kopf-Marke.
 - **Was ging anders als geplant:** die Lifecycle-Claims des Slices waren
-  zweigelokal — der Architektur-Lauf schrieb `MR-071`, ohne den
+  zweigelokal — der Architektur-Lauf schrieb [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand), ohne den
   `open → in-progress`-Move zu tragen; die Claims wurden nachgeholt
   (Verantwortlich: Architect, die zwei Moves), bevor die Closure lief. Die
-  Herkunfts-Anker-Form trägt `MR-071` in der MR-Form — das Feld
+  Herkunfts-Anker-Form trägt [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand) in der MR-Form — das Feld
   „Wirksamkeits-Anlass" nennt den 5×-Übertritt dieses Register-Eintrags
   blank ([`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt));
   die `seit slice-`-Form steht am MR-Zielort nicht.
