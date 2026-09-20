@@ -21,7 +21,7 @@ Ventil, das mehr stumm schaltet als den benannten Fall, erzeugt ein stilles Grü
 **Berührte Spec-Stellen:** `—`. Der Slice entscheidet eine Prozess-Frage; er schreibt keine
 Spec-Stelle.
 
-**Verantwortlich:** `—`
+**Verantwortlich:** Implementer (pt9912)
 
 **Autor:** Planner. **Datum:** 2026-09-12.
 
