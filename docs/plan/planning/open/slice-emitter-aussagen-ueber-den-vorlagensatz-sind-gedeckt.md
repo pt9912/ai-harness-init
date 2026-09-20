@@ -39,7 +39,7 @@ setzt die geltende Lesart der Zahl in
 **Berührte Spec-Stellen:** [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
 — der Slice **liest** sie als Vertrag und hält den Code dagegen; geschrieben wird sie hier nicht.
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912)
 
 **Autor:** Planner. **Datum:** 2026-09-17.
 
