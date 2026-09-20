@@ -69,27 +69,27 @@ einer mit vier erfundenen.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Ziel-Form: Slice — **≤ 3 Liefer-Punkte**; mehr heißt: der Slice ist zu groß.
 
-- [ ] **Liefer-Punkt 1 — die drei Zähne treffen wieder:** die sed-Muster der
+- [x] **Liefer-Punkt 1 — die drei Zähne treffen wieder:** die sed-Muster der
       Fälle 29, 275, 114 treffen den Quell-Bestand; die Mutation greift und
       färbt ihren benannten Wächter rot; `make mutate` meldet keinen BEFUND
       auf den drei Fällen. Rote Gegenprobe: bis zum Umschnitt meldet der Lauf
       die drei als BEFUND (gemessen, Verifikation: `MUTATE-EXIT=2`,
       Bedingung 2); der Umschnitt dreht die Meldung um.
-- [ ] **Liefer-Punkt 2 — die Kommentar-Schlussform trägt ihre Herkunft
+- [x] **Liefer-Punkt 2 — die Kommentar-Schlussform trägt ihre Herkunft
       auflösbar oder gar nicht:** `internal/gen/archgate_test.go:233-234`
       behauptet keine Beleg-Existenz mehr ohne auflösbaren Ort
       ([`AGENTS.md`](../../../../AGENTS.md) §3.7). Grenze:
       Kommentar-Behauptungen sind keinem Sensor unterworfen — die Form prüft
       das Review, nicht ein Gate.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen
       Brownfield-Bootstrap und führt die Register-Datei nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschritten — oder
+- [x] Beobachtungs-Register (`../observations/`) fortgeschritten — oder
       „keine Beobachtung angefallen" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang; die drei Paarungen sind
+- [x] Jedes Risiko aus §6 trägt einen Ausgang; die drei Paarungen sind
       getragen.
 
 ## 3. Plan (vor Code)
@@ -117,18 +117,43 @@ auf den drei Fällen.
 ## 6. Risiken und offene Punkte
 
 - **Der nächtliche Lauf bestätigt das Greifen erst nach dem Umschnitt** — der
-  dynamische Beleg kommt vom Wegwerf-Klon (Runde 1). Ausgang: weiter offen →
-  der nächtliche `mutate`-Lauf nach dem Umschnitt.
+  dynamische Beleg kommt vom Wegwerf-Klon (Runde 1). — **Ausgang:**
+  *entfallen* → der reale Lauf der Verifikation liefert den dynamischen
+  Beleg: 365 ok, 0 Befunde, die drei Fälle OK am benannten Wächter.
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <…>
-- **Drei Paarungen:** <…>
+- **Was hat funktioniert:** die drei Zähne treffen wieder — Neumuster je 1,
+  Alt-Formen 0, je Zahn real rot am benannten Wächter (dynamisch, je Fall
+  eigener Wegwerf-Klon, Runde 1), und der reale `make mutate`-Lauf meldet
+  **365 ok, 0 Befunde**.
+- **Was ging anders als geplant:** der Register-Ausgang (*geplant*) löste
+  ins Leere — die Verkörperung war an „Liefer-Punkt 2 und 3 dieses Plans"
+  verankert, §2 trägt die Regel nicht (Verifikation F-1, MEDIUM). Die
+  Closure dreht den Ausgang auf die Kennung des Architektur-Slices, der die
+  Regel schreibt. Der F-2-Rest (Commit-Message nennt zum Fall 114 den Ort
+  nicht — `internal/span/lock_unix.go:25` trägt `syscall.Rmdir` innerhalb
+  `removeStaleDir` weiter) ist eingefroren: die Message ist gepusht; die
+  Klasse (Aussage ohne Ort liest sich weiter als Paket-Aussage) trägt der
+  Lese-Schritt.
+- **Steering-Loop-Eintrag:** geschärfte Regel für die Fall-Anlage: „die
+  Fall-Anlage misst ihr sed-Muster gegen den Quell-Bestand, nicht gegen die
+  Fassung der letzten Fassung" — die Klasse
+  `BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet` trägt
+  5×; ihr Ausgang steht im Register auf *geplant* mit der Kennung
+  `slice-fall-anlage-misst-gegen-den-quell-bestand` — der Architektur-Zug
+  der Closure (Planner → Architect → Planner, §3.8). Kein `liegt in`-Feld —
+  der Zielort entsteht mit der Verkörperung, nicht mit der Zuweisung.
+- **Beobachtungs-Register (`../observations/`):** keine Beobachtung
+  angefallen — der bestehende Eintrag trägt die F-1-Fundstellen (29, 275,
+  114) als Bestand-Fund dieses Vorgangs; die Zählregel „ein Vorgang zählt
+  einmal" legt keinen zweiten Beleg an (Zählerstand 5×).
+- **Folge-Slices:** `slice-fall-anlage-misst-gegen-den-quell-bestand` (Die
+  Fall-Anlage misst ihr sed-Muster gegen den Quell-Bestand) — ist eine Datei
+  in `open/`.
+- **Risiken aus §6:** nächtlicher Lauf → *entfallen* (realer Lauf,
+  Verifikation).
+- **Drei Paarungen:** Anker · Folge-Slice · Register, Ergebnis
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
