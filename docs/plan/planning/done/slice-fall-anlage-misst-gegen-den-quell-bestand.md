@@ -147,7 +147,7 @@ Anker — die Anker-Paarung der Register-Seite löst auf.
   dieses Slices.
 - **Folge-Slices:** keine — die drei Fundmengen sind geheilt (68/71/96 im
   Vorgänger, 29/275/114 im Vor-Vorgänger); die Regel ist verkörpert.
-- **Risiken aus §6:** MR-Form-Grenze → *weiter offen* (trägt `MR-071` selbst).
+- **Risiken aus §6:** MR-Form-Grenze → *weiter offen* (trägt [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand) selbst).
 - **Drei Paarungen:** Anker · Folge-Slice · Register, Ergebnis
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
