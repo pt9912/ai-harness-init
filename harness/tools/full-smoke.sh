@@ -2254,7 +2254,6 @@ mixedinit_rc=0
 mixedinit_out="$( cd "$tmprepo_mixed" && "$tmpbin/ai-harness-init" --lang go --name full-smoke-mixed "$tmprepo_mixed" 2>&1 )" || mixedinit_rc=$?
 if [ "$mixedinit_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — der Bootstrap ins gemischte Root-Ziel ist NICHT Exit 0 (Exit $mixedinit_rc)." >&2
-	einordnen "Bootstrap --lang go ins gemischte Root-Ziel" "$mixedinit_out"
 	exit 1
 fi
 ( cd "$tmprepo_mixed" && "$tmpbin/ai-harness-init" add-lang cpp . )
@@ -2274,22 +2273,23 @@ for ziel in test lint build; do
 		exit 1
 	fi
 	# Beide Sprach-Fragmente MUessen gelaufen sein: die Recipe-Echo-Zeile des Go-Kontexts
-	# UND die des C++-Kontexts — waere ein Rezept wieder ueberschrieben, stuende nur eins
-	# da (LH-QA-01, der direkte Aufruf verliert den zweiten Kontext nicht mehr).
+	# (Image app:) UND die des C++-Kontexts (Tag cpp:) — waere ein Rezept wieder
+	# ueberschrieben, stuende nur eins da (LH-QA-01, der direkte Aufruf verliert den
+	# zweiten Kontext nicht mehr). Die Marker sind die Recipe-Echo-Zeilen; der
+	# build-arg-Namen wechseln je Ziel (lint faedelt GOLANGCI_LINT_VERSION), der
+	# Ziel-/Tag-Anteil ist in allen drei Rezepten derselbe.
 	mixed_missing=""
-	for marker in "--build-arg GO_VERSION" "--build-arg CXX_VERSION" "--target $ziel -t app:" "--target $ziel -t cpp:"; do
+	for marker in "--target $ziel -t app:" "--target $ziel -t cpp:"; do
 		grep -qF -- "$marker" <<<"$mixed_out" || mixed_missing="$mixed_missing [$marker]"
 	done
 	if [ -n "$mixed_missing" ]; then
 		echo "full-smoke: FEHLER — make $ziel am gemischten Root ohne Beleg fuer:$mixed_missing — ein Kontext fiel heraus." >&2
-		einordnen "make $ziel am gemischten Root — Beleg fehlt" "$mixed_out"
 		exit 1
 	fi
 	# UND die Ueberschreibung ist weg: die make-Meldung erscheint in der Locale des Laufs —
 	# beide Woertlichkeiten geprueft.
 	if grep -qE 'overriding recipe for target|Rezept für das Ziel' <<<"$mixed_out"; then
 		echo "full-smoke: FEHLER — make $ziel meldet am gemischten Root eine Rezept-Ueberschreibung (Komposition kaputt)." >&2
-		einordnen "make $ziel am gemischten Root — Ueberschreibungsmeldung" "$mixed_out"
 		exit 1
 	fi
 done
