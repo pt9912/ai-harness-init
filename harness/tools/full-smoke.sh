@@ -2252,7 +2252,8 @@ echo "full-smoke: gemischter Root — make test/lint/build direkt bedient beide 
 mixedinit_rc=0
 mixedinit_out="$( cd "$tmprepo_mixed" && "$tmpbin/ai-harness-init" --lang go --name full-smoke-mixed "$tmprepo_mixed" 2>&1 )" || mixedinit_rc=$?
 if [ "$mixedinit_rc" -ne 0 ]; then
-	echo "full-smoke: FEHLER — der Bootstrap ins gemischte Root-Ziel ist NICHT Exit 0 (Exit $mixedinit_rc)." >&2
+	echo "full-smoke: FEHLER — der Bootstrap ins gemischte Root-Ziel ist NICHT Exit 0 (Exit $mixedinit_rc). Ausgabe:" >&2
+	printf '%s\n' "$mixedinit_out" >&2
 	exit 1
 fi
 ( cd "$tmprepo_mixed" && "$tmpbin/ai-harness-init" add-lang cpp . )
