@@ -1,8 +1,8 @@
 # Benutzerhandbuch: ai-harness-init
 
-**Handbuch-Version:** 1.13
-**Software-Stand:** `v0.1.1` — **vorgefertigte Programme für sechs Plattformen** (linux · macos · windows × amd64 · arm64), seit `v0.1.0`. Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat`, `hexagonal` oder `hexslice`; bei den beiden geschichteten kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp` (C++; weitere folgen), beide auch mit `hexslice`; `hexagonal` liefert heute der Go-Renderer.
-**Stand:** 2026-09-05
+**Handbuch-Version:** 1.14
+**Software-Stand:** `v0.2.1` — **vorgefertigte Programme für sechs Plattformen** (linux · macos · windows × amd64 · arm64), seit `v0.1.0`. Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat`, `hexagonal` oder `hexslice`; bei den beiden geschichteten kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp` (C++; weitere folgen), beide auch mit `hexslice`; `hexagonal` liefert heute der Go-Renderer. Seit `v0.1.1` (Juli) kamen vier Betriebs-Operationen hinzu (siehe [Betriebs-Operationen](#betriebs-operationen)), und die geschichtete Bauform benennt Adapter- und Ports-Ordner nach ihren Rollen (`driving`/`driven`, `ports_inbound`/`ports_outbound` — siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch)).
+**Stand:** 2026-09-20
 **Verantwortlich:** ai-harness-init-Team (pt9912)
 
 ---
@@ -72,7 +72,7 @@ Eine lokale Go-Installation ist **nicht** nötig — alles läuft über Docker.
 
 ### Das Werkzeug bereitstellen
 
-Es gibt **zwei Wege**. Empfohlen ist der **Download** — ab `v0.1.0` liegen fertige Programme für sechs Plattformen bereit. Den Bau aus dem Quellcode brauchen Sie nur, wenn Sie einen Stand **ohne** Versions-Kennzeichnung verwenden wollen.
+Es gibt **zwei Wege**. Empfohlen ist der **Download** — ab `v0.1.0` liegen fertige Programme für sechs Plattformen bereit; **aktuell ausgeliefert wird `v0.2.1`**. Den Bau aus dem Quellcode brauchen Sie nur, wenn Sie einen Stand **ohne** Versions-Kennzeichnung verwenden wollen.
 
 #### Weg A — fertiges Programm herunterladen (empfohlen)
 
@@ -295,7 +295,7 @@ Die erste sagt: der **Kern** sieht keinen Adapter — er kennt nur seine Ports. 
 
 **Die treibende Seite wird bei `hexagonal` bewusst mitgeprüft** — strenger, als es verbreitete Vorlagen tun, die sie als reinen Verdrahtungs-Bereich freistellen. Der Grund: ein zu strenger Standard meldet sich beim **ersten** Lauf und kostet Sie eine Zeile; ein zu lascher meldet sich **nie** und lässt einen Bereich still ungeprüft. Wollen Sie die Freistellung, tragen Sie in **Ihrer** `.a-check.yml` `"internal/adapter/driving/**"` unter `composition_root` ein — eine Zeile, in einer Datei, die das Werkzeug nie überschreibt.
 
-**Wichtig für die Pflege:** `.a-check.yml` gehört Ihnen — ein erneutes Aufsetzen überschreibt sie nicht. Bei `hexslice` gilt: legen Sie einen **weiteren** Use-Case-Schnitt an, tragen Sie ihn dort nach (je ein Eintrag unter `app` und, falls er eigene Ports hat, unter `ports`). Vergessen Sie es, fällt der neue Code unter keine Schicht: importiert er eine, meldet das Gate `wrong-direction` — importiert er keine, bleibt er unbemerkt ungeprüft. Bei `hexagonal` wachsen neue Dateien in die bestehenden vier Schichten hinein; nachzutragen ist erst, wenn Sie ein **neues** Schicht-Verzeichnis anlegen.
+**Wichtig für die Pflege:** `.a-check.yml` gehört Ihnen — ein erneutes Aufsetzen überschreibt sie nicht. Bei `hexslice` gilt: legen Sie einen **weiteren** Use-Case-Schnitt an, tragen Sie ihn dort nach (je ein Eintrag unter `app` und, falls er eigene Ports hat, unter `ports_inbound` bzw. `ports_outbound` — je nach Richtung, mit eigenem `direction:`). Vergessen Sie es, fällt der neue Code unter keine Schicht: importiert er eine, meldet das Gate `wrong-direction` — importiert er keine, bleibt er unbemerkt ungeprüft. Bei `hexagonal` wachsen neue Dateien in die bestehenden vier Schichten hinein; nachzutragen ist erst, wenn Sie ein **neues** Schicht-Verzeichnis anlegen.
 
 **Grenzen:** `--arch hexslice` liefert für **beide** Zielsprachen, `--arch hexagonal` derzeit nur der **Go**-Renderer. Eine Sprache, deren Renderer die gewählte Bauform nicht kennt (heute `cpp` mit `hexagonal`), endet mit Exit 2 und nennt die Bauformen, die **diese** Sprache kann — statt still ein Grundgerüst ohne Schichten anzulegen; eine unbekannte Bauform ebenso, mit Nennung der verfügbaren Werte.
 
@@ -312,6 +312,12 @@ make gates
 **Ergebnis:** Alle Prüfungen laufen durch (Exit-Code 0). Dazu gehören die Dokumentations-Prüfung und die Go-Prüfungen (Kompilieren, Test, Linter). Ein grüner Lauf bestätigt: Das Repository ist aufsetzbereit und korrekt verdrahtet.
 
 **Hinweise:** `make gates` nutzt Docker. Läuft Docker nicht, schlägt die Prüfung mit einer Docker-Fehlermeldung fehl — kein Fehler des Repositorys.
+
+**Ein bereits aufgesetztes Repository geklont — kein eigener `ai-harness-init`-Lauf.** Haben Sie ein Repository geklont, das jemand anderes (oder eine CI) bereits aufgesetzt hat, brauchen Sie keinen eigenen Lauf: `make gates` funktioniert unverändert, denn die Gates prüfen nur Docker und den versionierten Inhalt.
+
+**Was dabei fehlt:** Der **Träger** — die `ai-harness-init`-Programmdatei selbst, die das Repository für die vier [Betriebs-Operationen](#betriebs-operationen) (`archive-welle`, `span-report`, `span-clean`, `traeger-fetch`) braucht — liegt in einem **gitignorierten** Zustands-Bereich (`.harness/state/bin/`) und reist deshalb **nicht** mit einem Klon. `make gates` bleibt davon unberührt, aber `make archive-welle`/`make span-report`/`make span-clean` melden nach einem frischen Klon: *„der Traeger liegt nicht … dieses Repo … nicht"* — kein Fehler, kein rotes Gate, nur eine Aussage über den fehlenden Träger.
+
+**Wie der Träger zurückkommt:** `make traeger-fetch` holt ihn aus dem gepinnten Release nach — **einmalig** Netzwerk für diesen Aufruf, danach funktionieren die drei übrigen Betriebs-Operationen.
 
 ### Ein Repository erneut aufsetzen (idempotent)
 
@@ -352,6 +358,21 @@ SKEL_GO_VERSION=1.26.4 ai-harness-init --lang go --name "Mein Projekt" <zielordn
 ```
 
 **Ergebnis:** Das erzeugte Grundgerüst (`Dockerfile`, `go.mod`) verwendet die angegebene Go-Version. Ohne die Variable gilt die festgelegte Standard-Version.
+
+### Betriebs-Operationen
+
+**Voraussetzung:** Ein aufgesetztes Repository. Docker läuft — jede der vier Operationen ruft den mitgelieferten **Träger** (die `ai-harness-init`-Programmdatei im gitignorierten Zustands-Bereich `.harness/state/bin/`) auf, `traeger-fetch` ausgenommen, das ihn erst dorthin legt.
+
+Alle vier sind **keine Gates**: `make gates` fährt keine von ihnen mit, und jede meldet fehlenden Träger, statt rot zu färben (siehe [Ein bereits aufgesetztes Repository geklont](#das-aufgesetzte-repository-prüfen)).
+
+| Kommando | Tut was |
+|---|---|
+| `make traeger-fetch` | Holt den Träger aus dem gepinnten Release nach und legt ihn im Zustands-Bereich ab. Braucht **einmalig** Netzwerk für diesen Aufruf; danach nicht mehr. Die drei folgenden Operationen setzen ihn voraus. |
+| `make archive-welle WELLE=<welle-id>` | Archiviert die Zeitdokumente einer geschlossenen Welle (Slice-Dateien, Welle-Plan, Review-Reports) und committet den Vorgang im versionierten Baum. Fehlt der Träger, schreibt das Kommando nichts und sagt das. |
+| `make span-report` | Zeigt eine Token-Bilanz je Rolle aus dem lokalen Erfassungs-Bestand — ein reiner, netzloser Bericht. Fehlt der Träger, meldet das Kommando das als Aussage über den Leser, nicht über den Bestand. |
+| `make span-clean` | Entfernt den lokalen Erfassungs-Bestand. Läuft nur auf **ausdrücklichen** Aufruf; kein Automatismus räumt ihn sonst auf. |
+
+**Ergebnis:** Ein frischer Klon hat den Träger nicht (er ist gitignoriert); `make traeger-fetch` legt ihn ab, danach funktionieren die drei übrigen Operationen ohne weiteres Netzwerk.
 
 ---
 
@@ -566,6 +587,7 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vo
 
 | Handbuch-Version | Stand | Änderung |
 |---|---|---|
+| 1.14 | 2026-09-20 | Fünf pausierte Nachzug-Posten aufgeholt (Setzung des Auftraggebers vom 2026-09-20). **Software-Stand** auf `v0.2.1` gehoben, mit Verweis auf die neuen Betriebs-Operationen und die Ports-Rollen-Form. **Neuer Abschnitt „Betriebs-Operationen"** (§4) beschreibt `traeger-fetch`, `archive-welle`, `span-report`, `span-clean` — die vier trugen bis hierher keine Adresse im Handbuch. **„Das aufgesetzte Repository prüfen"** (§4) trägt jetzt den Klon-Fall: ein geklontes, bereits aufgesetztes Repository hat den Träger nicht (gitignoriert), `make gates` bleibt davon unberührt, `make traeger-fetch` holt ihn nach. **Die Ports-Form** (§4, „Ein geschichtetes Grundgerüst wählen") nennt jetzt `ports_inbound`/`ports_outbound` mit `direction:` statt der flachen `ports`-Schicht ([Verifikations-Report](../reviews/2026-09-19-slice-adapter-und-ports-ordner-folgen-ihren-rollen-namen-verifikation.md) V-2). Die **Zielordner-Form** der Aufruf-Beispiele war bereits mit `slice-zielordner-richtet-das-werkzeug-auf-ein-ziel-repo` nachgezogen — keine Änderung nötig. |
 | 1.13 | 2026-09-05 | Die drei mitgelieferten Rollen-Anweisungssätze unter `.claude/commands/` (`/plan-welle`, `/close-welle`, `/implement-slice`) beschreiben das **Beobachtungs-Register** jetzt so, wie der mitgelieferte Regelwerks-Stand es führt: je Beobachtung ein **Verzeichnis** unter `docs/plan/planning/observations/` statt einer Tabellenzeile, ein Beleg ist eine Datei unter `evidence/`, und einen Zähler pflegt niemand — er ist die Zahl dieser Dateien. Betroffen sind genau diese drei Dateien des aufgesetzten Repositories; am übrigen Bestand ändert sich nichts. Das Register **selbst** legt der Bootstrap nicht an — seit es ein Verzeichnis je Beobachtung ist, gibt es keine stehende Register-Datei mehr, und das erste Verzeichnis entsteht mit der ersten Beobachtung. |
 | 1.12 | 2026-09-03 | Der mitgelieferte Regelwerks-Stand ist `v5.18.0`. Für das aufgesetzte Repository ändert sich **keine sichtbare Datei**: der vendored Vorlagen-Satz gewinnt zwei wiederkehrende Vorlagen (`archiv-stub-slice`, `archiv-stub-welle`), und wiederkehrende Vorlagen werden aus `.harness/baseline/` **referenziert**, nicht ins Repository kopiert. Die Abschluss-Zeile im Beispielablauf nennt jetzt den neuen Stand. |
 | 1.11 | 2026-09-02 | Der mitgelieferte Regelwerks-Stand ist `v5.12.0`. Für das aufgesetzte Repository heißt das eine sichtbare Datei mehr: das **Beobachtungs-Register** (`docs/plan/planning/observations.md`) — der stehende Zähler des Steering Loops, mit dem jedes Repository leer beginnt. Die Ordner-Übersicht in §6 nennt es jetzt. |
