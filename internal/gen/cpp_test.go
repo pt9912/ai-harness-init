@@ -152,44 +152,15 @@ func TestCppCodeGateFragment_ScopedSubdir(t *testing.T) {
 	}
 }
 
-// TestCppCodeGateFragmentMixed: die gemischte Root-Fassung traegt modul-scoped Targets
-// und haengt die unscoped Ziele test/lint/build NUR als Praezedenz-Erweiterung an. Die
-// Erweiterungs-Zeilen tragen kein Rezept (ein zweites Rezept fuer dasselbe Target waere
-// wieder die Ueberschreibung, die diese Fassung abloest), und GATE_CHECKS haengt die
-// UNSCOPED Namen an, nicht die scoped — record-gates dedupliziert Praezedenz-Listen und
-// faehrt jedes Ziel einmal, die scoped Namen waeren doppelt gelaufen.
+// TestCppCodeGateFragmentMixed: die gemischte Root-Fassung des cpp-Renderers traegt die
+// gemeinsame Form (mixedFragmentFest, gehalten in gen_test.go) und determiniert — zwei
+// Laeufe byte-identisch (LH-QA-02).
 func TestCppCodeGateFragmentMixed(t *testing.T) {
 	mk, err := gen.CodeGateFragmentMixed("cpp", ".", gen.DefaultCppVersion)
 	if err != nil {
 		t.Fatalf("CodeGateFragmentMixed(cpp, .): %v", err)
 	}
-	for _, want := range []string{
-		"test-cpp:", "lint-cpp:", "build-cpp:",
-		"test: test-cpp", "lint: lint-cpp", "build: build-cpp",
-		"GATE_CHECKS += test lint build",
-		"--target test -t cpp:test .",
-	} {
-		if !strings.Contains(mk, want) {
-			t.Errorf("gemischtes cpp-Fragment enthaelt %q nicht:\n%s", want, mk)
-		}
-	}
-	// Die Erweiterungs-Zeile traegt kein Rezept: die naechste Zeile beginnt nicht mit TAB.
-	for _, ziel := range []string{"test: test-cpp", "lint: lint-cpp", "build: build-cpp"} {
-		i := strings.Index(mk, ziel+"\n")
-		if i < 0 {
-			t.Errorf("Erweiterung %q fehlt:\n%s", ziel, mk)
-			continue
-		}
-		if strings.HasPrefix(mk[i+len(ziel)+1:], "\t") {
-			t.Errorf("Erweiterung %q traegt ein Rezept — zweites Rezept fuer dasselbe Target waere die Ueberschreibung:\n%s", ziel, mk)
-		}
-	}
-	// Die scoped Namen stehen nicht an GATE_CHECKS — sie sind ueber die unscoped Ziele
-	// erreichbar, ein zweiter Posten liefe doppelt.
-	if strings.Contains(mk, "GATE_CHECKS += test-cpp") || strings.Contains(mk, "GATE_CHECKS += lint-cpp") {
-		t.Errorf("gemischtes cpp-Fragment haengt die scoped Namen an GATE_CHECKS (Doppel-Lauf in record-gates):\n%s", mk)
-	}
-	// Determinismus (LH-QA-02): zwei Laeufe byte-identisch.
+	mixedFragmentFest(t, mk, "cpp", []string{"--target test -t cpp:test ."})
 	wieder, err := gen.CodeGateFragmentMixed("cpp", ".", gen.DefaultCppVersion)
 	if err != nil {
 		t.Fatalf("CodeGateFragmentMixed(cpp, .), zweiter Lauf: %v", err)

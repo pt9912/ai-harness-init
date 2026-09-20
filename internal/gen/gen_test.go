@@ -147,44 +147,52 @@ func TestCodeGateFragment_ScopedSubdir(t *testing.T) {
 	}
 }
 
-// TestCodeGateFragmentMixed_Go: die gemischte Root-Fassung traegt modul-scoped Targets
-// und haengt die unscoped Ziele test/lint/build NUR als Praezedenz-Erweiterung an. Die
-// Erweiterungs-Zeilen tragen kein Rezept (ein zweites Rezept fuer dasselbe Target waere
-// wieder die Ueberschreibung, die diese Fassung abloest), und GATE_CHECKS haengt die
-// UNSCOPED Namen an, nicht die scoped — record-gates dedupliziert Praezedenz-Listen und
-// faehrt jedes Ziel einmal, die scoped Namen waeren doppelt gelaufen.
+// mixedFragmentFest haelt die gemeinsamen Erwartungen der gemischten Root-Fassung beider
+// Renderer fest: modul-scoped Targets (<ziel>-<module>), die unscoped Ziele test/lint/build
+// NUR als Praezedenz-Erweiterung ohne eigenes Rezept (ein zweites Rezept fuer dasselbe
+// Target waere wieder die Ueberschreibung, die diese Fassung abloest), und GATE_CHECKS an
+// den unscoped Namen, nicht an den scoped — record-gates dedupliziert Praezedenz-Listen
+// und faehrt jedes Ziel einmal, die scoped Namen waeren doppelt gelaufen. Die
+// sprach-spezifischen Teile (Modul-Suffix, Image-Tags) kommen als Parameter.
+func mixedFragmentFest(t *testing.T, frag, module string, tags []string) {
+	t.Helper()
+	for _, ziel := range []string{"test", "lint", "build"} {
+		suffix := ziel + "-" + module + ":"
+		if !strings.Contains(frag, suffix) {
+			t.Errorf("gemischtes Fragment enthaelt %q nicht:\n%s", suffix, frag)
+		}
+		ext := ziel + ": " + ziel + "-" + module
+		i := strings.Index(frag, ext+"\n")
+		if i < 0 {
+			t.Errorf("Erweiterung %q fehlt:\n%s", ext, frag)
+			continue
+		}
+		if strings.HasPrefix(frag[i+len(ext)+1:], "\t") {
+			t.Errorf("Erweiterung %q traegt ein Rezept — zweites Rezept fuer dasselbe Target waere die Ueberschreibung:\n%s", ext, frag)
+		}
+	}
+	if !strings.Contains(frag, "GATE_CHECKS += test lint build") {
+		t.Errorf("gemischtes Fragment haengt die unscoped Namen nicht an GATE_CHECKS:\n%s", frag)
+	}
+	if strings.Contains(frag, "GATE_CHECKS += test-"+module) || strings.Contains(frag, "GATE_CHECKS += lint-"+module) {
+		t.Errorf("gemischtes Fragment haengt die scoped Namen an GATE_CHECKS (Doppel-Lauf in record-gates):\n%s", frag)
+	}
+	for _, m := range tags {
+		if !strings.Contains(frag, m) {
+			t.Errorf("gemischtes Fragment enthaelt %q nicht:\n%s", m, frag)
+		}
+	}
+}
+
+// TestCodeGateFragmentMixed_Go: die gemischte Root-Fassung des Go-Renderers traegt die
+// gemeinsame Form (mixedFragmentFest) und determiniert — zwei Laeufe byte-identisch
+// (LH-QA-02).
 func TestCodeGateFragmentMixed_Go(t *testing.T) {
 	mk, err := gen.CodeGateFragmentMixed("go", ".", gen.DefaultGoVersion)
 	if err != nil {
 		t.Fatalf("CodeGateFragmentMixed(go, .): %v", err)
 	}
-	for _, want := range []string{
-		"test-go:", "lint-go:", "build-go:",
-		"test: test-go", "lint: lint-go", "build: build-go",
-		"GATE_CHECKS += test lint build",
-		"--target test -t go:test .",
-	} {
-		if !strings.Contains(mk, want) {
-			t.Errorf("gemischtes Go-Fragment enthaelt %q nicht:\n%s", want, mk)
-		}
-	}
-	// Die Erweiterungs-Zeile traegt kein Rezept: die naechste Zeile beginnt nicht mit TAB.
-	for _, ziel := range []string{"test: test-go", "lint: lint-go", "build: build-go"} {
-		i := strings.Index(mk, ziel+"\n")
-		if i < 0 {
-			t.Errorf("Erweiterung %q fehlt:\n%s", ziel, mk)
-			continue
-		}
-		if strings.HasPrefix(mk[i+len(ziel)+1:], "\t") {
-			t.Errorf("Erweiterung %q traegt ein Rezept — zweites Rezept fuer dasselbe Target waere die Ueberschreibung:\n%s", ziel, mk)
-		}
-	}
-	// Die scoped Namen stehen nicht an GATE_CHECKS — sie sind ueber die unscoped Ziele
-	// erreichbar, ein zweiter Posten liefe doppelt.
-	if strings.Contains(mk, "GATE_CHECKS += test-go") || strings.Contains(mk, "GATE_CHECKS += lint-go") {
-		t.Errorf("gemischtes Go-Fragment haengt die scoped Namen an GATE_CHECKS (Doppel-Lauf in record-gates):\n%s", mk)
-	}
-	// Determinismus (LH-QA-02): zwei Laeufe byte-identisch.
+	mixedFragmentFest(t, mk, "go", []string{"--target test -t go:test ."})
 	wieder, err := gen.CodeGateFragmentMixed("go", ".", gen.DefaultGoVersion)
 	if err != nil {
 		t.Fatalf("CodeGateFragmentMixed(go, .), zweiter Lauf: %v", err)
