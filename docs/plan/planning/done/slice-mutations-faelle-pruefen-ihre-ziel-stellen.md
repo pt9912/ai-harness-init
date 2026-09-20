@@ -153,7 +153,7 @@ auf den drei Fällen.
   in `open/`.
 - **Risiken aus §6:** nächtlicher Lauf → *entfallen* (realer Lauf,
   Verifikation).
-- **Drei Paarungen:** Anker · Folge-Slice · Register, Ergebnis
+- **Drei Paarungen:** (a) Anker — kein Pflichtfeld: der Lerneintrag ist gezählt, nicht verkörpert (kein `liegt in`-Feld, keine Anker-Paarung ausgelöst); (b) Folge-Slice — `slice-fall-anlage-misst-gegen-den-quell-bestand` existiert als Datei in `open/` (geprüft nach dem Move); (c) Register — `BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet` trägt fünf Belege und den Ausgang *geplant* mit der auflösenden Kennung des Architektur-Slices
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
