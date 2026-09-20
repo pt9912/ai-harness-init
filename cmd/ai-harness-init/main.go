@@ -351,7 +351,7 @@ func wireLang(targetDir, skelDir, path, lang, version, arch string, archMK emit.
 	if err := wire.Place(skelDir, filepath.Join(targetDir, filepath.FromSlash(path))); err != nil {
 		return err
 	}
-	frag, err := gen.CodeGateFragment(lang, path, version)
+	frag, err := codeGateFragmentFor(targetDir, path, lang, version)
 	if err != nil {
 		return err
 	}
@@ -393,6 +393,36 @@ func cleanRel(path string) string {
 		return "."
 	}
 	return filepath.ToSlash(filepath.Clean(path))
+}
+
+// codeGateFragmentFor liefert den Fragment-Inhalt fuer lang am Zielpfad. Am Root in der
+// gemischten Fassung, sobald ein zweites Sprach-Fragment am Root liegt
+// (harness/mk/<andere>.mk): die unscoped Ziele test/lint/build bekommen dort nur
+// Praezedenz-Erweiterungen ohne eigenes Rezept, das Rezept bleibt bei dem Fragment, das
+// sie am Root zuerst geschrieben hat, und make test/lint/build bedient beide
+// Sprach-Kontexte ohne Rezept-Ueberschreibung. Ohne zweites Root-Fragment die Root- bzw.
+// Subdir-Fassung wie bisher; ein Stat-Fehler ausser Nicht-Existenz bricht ab, statt die
+// Fassung still zu waehlen.
+func codeGateFragmentFor(targetDir, path, lang, version string) (string, error) {
+	frag, err := gen.CodeGateFragment(lang, path, version)
+	if err != nil {
+		return "", err
+	}
+	if cleanRel(path) != "." {
+		return frag, nil
+	}
+	for _, other := range gen.FragmentLangs() {
+		if other == lang {
+			continue
+		}
+		switch _, statErr := os.Stat(filepath.Join(targetDir, "harness", "mk", other+".mk")); {
+		case statErr == nil:
+			return gen.CodeGateFragmentMixed(lang, path, version)
+		case !errors.Is(statErr, fs.ErrNotExist):
+			return "", fmt.Errorf("harness/mk/%s.mk pruefen: %w", other, statErr)
+		}
+	}
+	return frag, nil
 }
 
 // bootstrap fuehrt die Kette in drei Phasen aus (Ueberblick im Package-Doc): (1) Skelett

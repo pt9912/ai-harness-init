@@ -133,6 +133,8 @@ git init -q "$tmprepo_hex"
 tmprepo_cpphex="$(mktemp -d)"
 git init -q "$tmprepo_cpphex"
 tmprepo_traeger="$(mktemp -d)"
+tmprepo_mixed="$(mktemp -d)"
+git init -q "$tmprepo_mixed"
 # EIGENES ZIEL FUER DIE SELBSTPRUEFUNG, weil sie einen KLON ihres Ziels faehrt und darin
 # dessen Gate-Kette: gelesen wird damit der committete Stand, nicht das Arbeitsverzeichnis.
 # Die uebrigen Ziele tragen absichtlich committete Smoke-Artefakte, deren Drift ein
@@ -142,13 +144,16 @@ tmprepo_traeger="$(mktemp -d)"
 # Pruefgegenstand.
 tmprepo_selbst="$(mktemp -d)"
 git init -q "$tmprepo_selbst"
-cleanup() { rm -rf "$tmpbin" "$tmpklon" "$tmprepo" "$tmprepo_doc" "$tmprepo_hex" "$tmprepo_cpphex" "$tmprepo_selbst" "$tmprepo_traeger"; }
+cleanup() { rm -rf "$tmpbin" "$tmpklon" "$tmprepo" "$tmprepo_doc" "$tmprepo_hex" "$tmprepo_cpphex" "$tmprepo_selbst" "$tmprepo_traeger" "$tmprepo_mixed"; }
 trap cleanup EXIT
 # Aus demselben Grund wie bei den uebrigen Zielen: der Klon dieses Ziels wird von
 # d-check read-only gemountet, und der Container laeuft als Nicht-Root.
 chmod 755 "$tmprepo_selbst"
 chmod 755 "$tmpklon"
 chmod 755 "$tmprepo_doc"
+# Auch das gemischte Root-Ziel (unscoped-Ziele) wird beim Bootstrap von d-check
+# read-only gemountet — dieselbe 0755-Pflicht.
+chmod 755 "$tmprepo_mixed"
 # Das Root-Modul-Ziel (slice-046) wird von a-check als read-only Mount gelesen — wie die
 # anderen Ziele braucht es 0755 (ein echtes Adopter-Repo hat das).
 chmod 755 "$tmprepo_hex"
@@ -2235,6 +2240,59 @@ if ! printf '%s' "$cppguard_out" | grep -q '"decision": "block"'; then
 	echo "full-smoke: FEHLER — Guard blockt 'cmake' nach add-lang cpp NICHT (blocked/cpp kaputt, slice-039). Ausgabe: [$cppguard_out]" >&2
 	exit 1
 fi
+
+# Der GEMISCHTE ROOT (LH-FA-04/LH-QA-01): zwei Sprach-Fragmente am selben Root
+# (harness/mk/go.mk + harness/mk/cpp.mk). Vor der Komposition definierten beide die
+# unscoped Targets test/lint/build: make meldete die Rezept-Ueberschreibung und die letzte
+# Include-Definition gewann — ein Kontext fiel still heraus. Die gemischte Fassung
+# komponiert: ein Fragment traegt die unscoped Rezepte, das andere modul-scoped Targets
+# plus Praezedenz-Erweiterung. Der direkte Aufruf (`make <ziel>` OHNE --target, OHNE gates)
+# bedient beide Sprach-Fragmente — und die Ueberschreibungsmeldung tritt nicht mehr auf.
+echo "full-smoke: gemischter Root — make test/lint/build direkt bedient beide Sprach-Fragmente ..."
+	e2e_abdeckung "LH-FA-04 LH-QA-01" "Der direkte Aufruf am gemischten Root bedient beide Sprach-Kontexte" "ein Kontext fiel heraus"
+mixedinit_rc=0
+mixedinit_out="$( cd "$tmprepo_mixed" && "$tmpbin/ai-harness-init" --lang go --name full-smoke-mixed "$tmprepo_mixed" 2>&1 )" || mixedinit_rc=$?
+if [ "$mixedinit_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — der Bootstrap ins gemischte Root-Ziel ist NICHT Exit 0 (Exit $mixedinit_rc)." >&2
+	einordnen "Bootstrap --lang go ins gemischte Root-Ziel" "$mixedinit_out"
+	exit 1
+fi
+( cd "$tmprepo_mixed" && "$tmpbin/ai-harness-init" add-lang cpp . )
+for rel in Dockerfile go.mod harness/mk/go.mk harness/mk/cpp.mk tools/harness/blocked/cpp; do
+	if [ ! -e "$tmprepo_mixed/$rel" ]; then
+		echo "full-smoke: FEHLER — das gemischte Root-Ziel traegt $rel nicht (add-lang cpp . kaputt)." >&2
+		exit 1
+	fi
+done
+for ziel in test lint build; do
+	mixed_rc=0
+	mixed_out="$( make -C "$tmprepo_mixed" "$ziel" 2>&1 )" || mixed_rc=$?
+	printf '%s\n' "$mixed_out"
+	if [ "$mixed_rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — make $ziel am gemischten Root ist NICHT Exit 0 (Komposition kaputt)." >&2
+		einordnen "make $ziel am gemischten Root (direkter Aufruf)" "$mixed_out"
+		exit 1
+	fi
+	# Beide Sprach-Fragmente MUessen gelaufen sein: die Recipe-Echo-Zeile des Go-Kontexts
+	# UND die des C++-Kontexts — waere ein Rezept wieder ueberschrieben, stuende nur eins
+	# da (LH-QA-01, der direkte Aufruf verliert den zweiten Kontext nicht mehr).
+	mixed_missing=""
+	for marker in "--build-arg GO_VERSION" "--build-arg CXX_VERSION" "--target $ziel -t app:" "--target $ziel -t cpp:"; do
+		grep -qF -- "$marker" <<<"$mixed_out" || mixed_missing="$mixed_missing [$marker]"
+	done
+	if [ -n "$mixed_missing" ]; then
+		echo "full-smoke: FEHLER — make $ziel am gemischten Root ohne Beleg fuer:$mixed_missing — ein Kontext fiel heraus." >&2
+		einordnen "make $ziel am gemischten Root — Beleg fehlt" "$mixed_out"
+		exit 1
+	fi
+	# UND die Ueberschreibung ist weg: die make-Meldung erscheint in der Locale des Laufs —
+	# beide Woertlichkeiten geprueft.
+	if grep -qE 'overriding recipe for target|Rezept für das Ziel' <<<"$mixed_out"; then
+		echo "full-smoke: FEHLER — make $ziel meldet am gemischten Root eine Rezept-Ueberschreibung (Komposition kaputt)." >&2
+		einordnen "make $ziel am gemischten Root — Ueberschreibungsmeldung" "$mixed_out"
+		exit 1
+	fi
+done
 
 # slice-045b (LH-FA-04 Arch-Achse / ADR-0009): add-lang go apps/hex --arch hexslice dropt
 # das GESCHICHTETE hexSlice-Skelett (domain/application/ports/adapters + cmd), und `make -j

@@ -89,6 +89,16 @@ func TestCodeGateFragment_TargetsMatchStages(t *testing.T) {
 			}
 		}
 	}
+	// Die gemischte Root-Fassung ruft dieselben Stages.
+	mkm, err := gen.CodeGateFragmentMixed("go", ".", gen.DefaultGoVersion)
+	if err != nil {
+		t.Fatalf("CodeGateFragmentMixed(go, .): %v", err)
+	}
+	for _, m := range regexp.MustCompile(`--target (\w+)`).FindAllStringSubmatch(mkm, -1) {
+		if !stages[m[1]] {
+			t.Errorf("gemischtes Fragment ruft `--target %s`, aber Dockerfile hat keine Stage `AS %s` (halluziniertes Gate)", m[1], m[1])
+		}
+	}
 }
 
 // TestCodeGateFragment_Root (slice-034/035/037): die Root-Fassung (<pfad>=".") haengt
@@ -134,6 +144,53 @@ func TestCodeGateFragment_ScopedSubdir(t *testing.T) {
 		if strings.Contains(mk, forbidden) {
 			t.Errorf("modul-scoped Fragment traegt unscoped Target %q (Mono-Repo-Kollisionsrisiko):\n%s", forbidden, mk)
 		}
+	}
+}
+
+// TestCodeGateFragmentMixed_Go: die gemischte Root-Fassung traegt modul-scoped Targets
+// und haengt die unscoped Ziele test/lint/build NUR als Praezedenz-Erweiterung an. Die
+// Erweiterungs-Zeilen tragen kein Rezept (ein zweites Rezept fuer dasselbe Target waere
+// wieder die Ueberschreibung, die diese Fassung abloest), und GATE_CHECKS haengt die
+// UNSCOPED Namen an, nicht die scoped — record-gates dedupliziert Praezedenz-Listen und
+// faehrt jedes Ziel einmal, die scoped Namen waeren doppelt gelaufen.
+func TestCodeGateFragmentMixed_Go(t *testing.T) {
+	mk, err := gen.CodeGateFragmentMixed("go", ".", gen.DefaultGoVersion)
+	if err != nil {
+		t.Fatalf("CodeGateFragmentMixed(go, .): %v", err)
+	}
+	for _, want := range []string{
+		"test-go:", "lint-go:", "build-go:",
+		"test: test-go", "lint: lint-go", "build: build-go",
+		"GATE_CHECKS += test lint build",
+		"--target test -t go:test .",
+	} {
+		if !strings.Contains(mk, want) {
+			t.Errorf("gemischtes Go-Fragment enthaelt %q nicht:\n%s", want, mk)
+		}
+	}
+	// Die Erweiterungs-Zeile traegt kein Rezept: die naechste Zeile beginnt nicht mit TAB.
+	for _, ziel := range []string{"test: test-go", "lint: lint-go", "build: build-go"} {
+		i := strings.Index(mk, ziel+"\n")
+		if i < 0 {
+			t.Errorf("Erweiterung %q fehlt:\n%s", ziel, mk)
+			continue
+		}
+		if strings.HasPrefix(mk[i+len(ziel)+1:], "\t") {
+			t.Errorf("Erweiterung %q traegt ein Rezept — zweites Rezept fuer dasselbe Target waere die Ueberschreibung:\n%s", ziel, mk)
+		}
+	}
+	// Die scoped Namen stehen nicht an GATE_CHECKS — sie sind ueber die unscoped Ziele
+	// erreichbar, ein zweiter Posten liefe doppelt.
+	if strings.Contains(mk, "GATE_CHECKS += test-go") || strings.Contains(mk, "GATE_CHECKS += lint-go") {
+		t.Errorf("gemischtes Go-Fragment haengt die scoped Namen an GATE_CHECKS (Doppel-Lauf in record-gates):\n%s", mk)
+	}
+	// Determinismus (LH-QA-02): zwei Laeufe byte-identisch.
+	wieder, err := gen.CodeGateFragmentMixed("go", ".", gen.DefaultGoVersion)
+	if err != nil {
+		t.Fatalf("CodeGateFragmentMixed(go, .), zweiter Lauf: %v", err)
+	}
+	if wieder != mk {
+		t.Errorf("gemischtes Go-Fragment unterscheidet sich zwischen zwei Laeufen")
 	}
 }
 

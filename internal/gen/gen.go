@@ -217,6 +217,45 @@ func CodeGateFragment(lang, path, version string) (string, error) {
 	return build(ModuleName(path, lang), cleanPath(path), version), nil
 }
 
+// CodeGateFragmentMixed liefert den Inhalt des Code-Gate-Fragments fuer lang am
+// GEMISCHTEN Root: ein zweites Sprach-Fragment liegt am Root (harness/mk/<andere>.mk),
+// darum tragen die unscoped Ziele test/lint/build hier modul-scoped Targets plus
+// Praezedenz-Erweiterungen ohne eigenes Rezept — make haengt die Praezedenz-Listen
+// mehrerer Regeln zusammen, das Rezept bleibt bei dem Fragment, das die unscoped Targets
+// am Root zuerst geschrieben hat, und make test/lint/build bedient beide Sprach-Kontexte.
+// Eine Sprache ohne Fragment-Builder liefert *UnknownLangError — dieselbe Liste wie
+// CodeGateFragment, damit add-lang fail-fast dieselbe Diagnose gibt.
+func CodeGateFragmentMixed(lang, path, version string) (string, error) {
+	build, ok := fragmentsMixed()[lang]
+	if !ok {
+		return "", &UnknownLangError{Lang: lang, Available: SupportedLangs()}
+	}
+	return build(ModuleName(path, lang), cleanPath(path), version), nil
+}
+
+// fragmentsMixed bildet Sprache -> Builder der gemischten Root-Fassung (Modul-Name,
+// Build-Kontext, Toolchain-Version -> Fragment-Inhalt).
+func fragmentsMixed() map[string]func(modul, context, version string) string {
+	return map[string]func(string, string, string) string{
+		"go":  goFragmentMixed,
+		"cpp": cppFragmentMixed,
+	}
+}
+
+// FragmentLangs liefert die Sprachen mit Code-Gate-Fragment, sortiert — die Menge, deren
+// Root-Fragment (harness/mk/<lang>.mk) einen gemischten Root anzeigt. Getrennt von
+// SupportedLangs, weil eine Sprache Profil ohne Fragment-Builder tragen kann; fuer deren
+// harness/mk/<lang>.mk waere ein Stat-Hit ein Nutzer-Fragment, kein Anzeige eines zweiten
+// Sprach-Fragments.
+func FragmentLangs() []string {
+	langs := make([]string, 0, len(fragments()))
+	for l := range fragments() {
+		langs = append(langs, l)
+	}
+	sort.Strings(langs)
+	return langs
+}
+
 // fragments bildet Sprache -> Code-Gate-Fragment-Builder (Modul-Name, Build-Kontext,
 // Toolchain-Version -> Fragment-Inhalt). Getrennt von profiles(), weil das Fragment
 // <pfad>-aware ist (Kontext/Scoping), das Skelett aber ortsunabhaengig.

@@ -99,6 +99,14 @@ func cppFragment(modul, context, version string) string {
 	return renderCppScoped(cppScopedMkFragmentTmpl, modul, context, version)
 }
 
+// cppFragmentMixed liefert die gemischte Root-Fassung des C++-Code-Gate-Fragments: ein
+// zweites Sprach-Fragment liegt am Root (harness/mk/<andere>.mk), darum tragen die
+// unscoped Ziele test/lint/build hier nur Praezedenz-Erweiterungen ohne eigenes Rezept
+// (cppMixedMkFragmentTmpl) — make haengt die Praezedenz-Listen zusammen.
+func cppFragmentMixed(modul, context, version string) string {
+	return renderCppScoped(cppMixedMkFragmentTmpl, modul, context, version)
+}
+
 // renderCpp setzt die ubuntu-Version in ein cpp-Template ein ({{CXX_VERSION}}). Eigener
 // Renderer, weil cpp nur EINEN Versions-Platzhalter hat (kein golangci-Pin wie go).
 func renderCpp(tmpl, version string) string {
@@ -671,6 +679,41 @@ build: ## C++-Binary bauen (Dockerfile build-Stage) — Docker-only
 	docker build --build-arg CXX_VERSION=$(CXX_VERSION) --target build -t $(IMAGE):build .
 
 GATE_CHECKS += lint build test
+`
+
+// cppMixedMkFragmentTmpl — die C++-Fassung fuer den GEMISCHTEN Root (harness/mk/cpp.mk,
+// wenn ein zweites Sprach-Fragment am Root liegt): modul-scoped Targets ({{MODULE}}),
+// Build-Kontext {{CONTEXT}}, und die unscoped Ziele test/lint/build NUR als Praezedenz-
+// Erweiterung ohne eigenes Rezept — make haengt die Praezedenz-Listen mehrerer Regeln
+// zusammen, das Rezept bleibt bei dem Fragment, das die unscoped Targets am Root zuerst
+// geschrieben hat, und make test/lint/build bedient beide Sprach-Kontexte ohne
+// Rezept-Ueberschreibung. GATE_CHECKS haengt die UNSCOPED Namen an (record-gates
+// dedupliziert Praezedenz-Listen); die scoped Namen stehen NICHT daneben — sonst liefe
+// der C++-Kontext in gates doppelt.
+const cppMixedMkFragmentTmpl = `# harness/mk/{{MODULE}}.mk — C++-Code-Gate-Fragment (Modul {{MODULE}}), generiert von
+# ai-harness-init. Gates als Dockerfile-Stages (Docker-only, ADR-0003); modul-scoped
+# Targets, Build-Kontext {{CONTEXT}} — ein zweites Sprach-Fragment liegt am Root, darum
+# traegt dieses Fragment die unscoped Ziele test/lint/build nur als Praezedenz-Erweiterung
+# ohne eigenes Rezept: make haengt Praezedenz-Listen mehrerer Regeln zusammen, das Rezept
+# bleibt bei dem Fragment, das sie am Root zuerst geschrieben hat.
+CXX_VERSION ?= {{CXX_VERSION}}
+
+.PHONY: test lint build test-{{MODULE}} lint-{{MODULE}} build-{{MODULE}}
+
+test-{{MODULE}}: ## C++-Tests Modul {{MODULE}} (ctest, test-Stage) — Docker-only
+	docker build --build-arg CXX_VERSION=$(CXX_VERSION) --target test -t {{MODULE}}:test {{CONTEXT}}
+
+lint-{{MODULE}}: ## C++-Lint Modul {{MODULE}} (clang-tidy, lint-Stage) — Docker-only
+	docker build --build-arg CXX_VERSION=$(CXX_VERSION) --target lint -t {{MODULE}}:lint {{CONTEXT}}
+
+build-{{MODULE}}: ## C++-Binary Modul {{MODULE}} bauen (build-Stage) — Docker-only
+	docker build --build-arg CXX_VERSION=$(CXX_VERSION) --target build -t {{MODULE}}:build {{CONTEXT}}
+
+test: test-{{MODULE}}
+lint: lint-{{MODULE}}
+build: build-{{MODULE}}
+
+GATE_CHECKS += test lint build
 `
 
 // cppScopedMkFragmentTmpl — die MODUL-SCOPED Fassung fuer ein Mono-Repo-Submodul unter

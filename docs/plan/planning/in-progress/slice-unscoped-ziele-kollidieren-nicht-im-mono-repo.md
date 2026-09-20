@@ -110,9 +110,25 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 |---|---|---|
 | `internal/gen/golang.go` | update | die unscoped Targets `:969/:972/:975` — Komposition oder Scoping |
 | `internal/gen/cpp.go` | update | dieselben Targets `:664/:667/:670` |
+| `cmd/ai-harness-init/main.go` | update | (Verfeinerung) die Wahl der Fassung liegt am Aufrufer: `wireLang` erkennt am Root das zweite Sprach-Fragment (`harness/mk/<andere>.mk`) und nimmt die gemischte Fassung; Subdir bleibt, wie es ist |
 | `harness/tools/full-smoke.sh` | update | der mixed-Lauf misst den direkten Aufruf (Liefer-Punkt 2) |
 | `docs/user/e2e-abdeckung.md` | update | regeneriert via `make e2e-abdeckung` — nicht hand-edited |
 | Renderer-Tests | update | die Erwartungen an die komponierte Form je Renderer |
+
+**Gewählte Form (Komposition am Bestand):** die Einzel-Sprach-Ziele bleiben — am Root,
+wo nur ein Sprach-Fragment liegt, ist die unscoped Fassung byte-identisch unverändert.
+Liegt am Root ein zweites Sprach-Fragment, kommt das Fragment in der **gemischten
+Fassung**: modul-scoped Targets (`test-go`/`test-cpp`, Kontext Root) plus die unscoped
+Ziele `test`/`lint`/`build` **nur als Präzedenz-Erweiterung ohne eigenes Rezept** — make
+hängt Präzedenz-Listen mehrerer Regeln zusammen, das Rezept bleibt bei dem Fragment, das
+die unscoped Targets am Root zuerst geschrieben hat. `GATE_CHECKS` hängt die **unscoped**
+Namen an (die Aggregator-Kette komponiert über `record-gates: $(GATE_CHECKS)` und
+dedupliziert die Präzedenz-Liste); die scoped Namen stehen nicht daneben, sonst liefe der
+Kontext in `record-gates` doppelt. Grund gegen `::`-Rezepte (Doppel-Doppelpunkt in beiden
+Fassungen): die Einzel-Sprach-Ziele blieben nur in der Wirkung, nicht in der Form
+unverändert, und die Zusage der Renderer-Tests an die Einzel-Form (Risiko §6) hält so an
+der bestehenden Fassung fest; der Präzedenz-Anhang ist dieselbe Mechanik, die der
+Aggregator für `GATE_CHECKS` ohnehin fährt.
 
 ## 4. Trigger
 

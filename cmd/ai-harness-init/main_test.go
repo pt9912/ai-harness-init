@@ -343,6 +343,77 @@ func TestRun_AddLangRoot(t *testing.T) {
 	}
 }
 
+// TestRun_AddLangMixedRoot: am gemischten Root — ein zweites Sprach-Fragment liegt unter
+// harness/mk/ — kommt das neue Fragment in der gemischten Fassung (modul-scoped Targets +
+// unscoped Praezedenz-Erweiterung OHNE eigenes Rezept); das zuerst geschriebene Fragment
+// behaelt die unscoped Rezepte. Rot-Gegenbeispiel: waere das zweite Fragment ebenfalls
+// unscoped, meldete make die Rezept-Ueberschreibung und die letzte Definition gewaenne —
+// ein Kontext faelle still heraus (der direkte Aufruf am gemischten Root misst es im
+// Voll-E2E). Der Re-Lauf des zuerst geschriebenen Fragments waehlt danach ebenfalls die
+// gemischte Fassung — die Praezedenz-Erweiterung des anderen bleibt, und die unscoped
+// Ziele komponieren ohne Rezept-Konflikt.
+func TestRun_AddLangMixedRoot(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	if code := run([]string{"add-lang", "go", "."}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("add-lang go . exit %d: %q", code, errb.String())
+	}
+	gomk := readFile(t, filepath.Join(dir, filepath.FromSlash("harness/mk/go.mk")))
+	if !strings.Contains(gomk, "\ntest: ##") {
+		t.Errorf("das alleinige Root-Fragment soll die unscoped Rezepte tragen:\n%s", gomk)
+	}
+	if code := run([]string{"add-lang", "cpp", "."}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("add-lang cpp . exit %d: %q", code, errb.String())
+	}
+	gomk = readFile(t, filepath.Join(dir, filepath.FromSlash("harness/mk/go.mk")))
+	cppmk := readFile(t, filepath.Join(dir, filepath.FromSlash("harness/mk/cpp.mk")))
+	if !strings.Contains(gomk, "\ntest: ##") {
+		t.Errorf("das zuerst geschriebene Fragment soll die unscoped Rezepte weiter tragen:\n%s", gomk)
+	}
+	if !strings.Contains(cppmk, "test: test-cpp") || !strings.Contains(cppmk, "GATE_CHECKS += test lint build") {
+		t.Errorf("das zweite Root-Fragment soll die gemischte Fassung tragen:\n%s", cppmk)
+	}
+	if strings.Contains(cppmk, "\ntest: ##") {
+		t.Errorf("die gemischte Fassung traegt ein eigenes unscoped Rezept (Ueberschreibung):\n%s", cppmk)
+	}
+	// Konvergenz: der Re-Lauf des zuerst geschriebenen Fragments liest denselben Zustand
+	// (ein zweites Root-Fragment liegt) und schreibt die gemischte Fassung — die
+	// Erweiterung des anderen bleibt, kein Rezept-Konflikt entsteht.
+	if code := run([]string{"add-lang", "go", "."}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("add-lang go . Re-Lauf exit %d: %q", code, errb.String())
+	}
+	gomk = readFile(t, filepath.Join(dir, filepath.FromSlash("harness/mk/go.mk")))
+	if !strings.Contains(gomk, "test: test-go") || strings.Contains(gomk, "\ntest: ##") {
+		t.Errorf("der Re-Lauf soll die gemischte Fassung schreiben (Erweiterung ohne Rezept):\n%s", gomk)
+	}
+	cppmk = readFile(t, filepath.Join(dir, filepath.FromSlash("harness/mk/cpp.mk")))
+	if !strings.Contains(cppmk, "test: test-cpp") {
+		t.Errorf("die Erweiterung des anderen Fragments fehlt nach dem Re-Lauf:\n%s", cppmk)
+	}
+}
+
+// TestRun_AddLangMixedRootCppFirst: dieselbe Wahl in umgekehrter Reihenfolge — das zuerst
+// geschriebene cpp-Fragment behaelt die unscoped Rezepte, das spaeter kommende go-Fragment
+// kommt in der gemischten Fassung. Die Wahl haengt am Root-Zustand, nicht an der Sprache.
+func TestRun_AddLangMixedRootCppFirst(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	if code := run([]string{"add-lang", "cpp", "."}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("add-lang cpp . exit %d: %q", code, errb.String())
+	}
+	if code := run([]string{"add-lang", "go", "."}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("add-lang go . exit %d: %q", code, errb.String())
+	}
+	cppmk := readFile(t, filepath.Join(dir, filepath.FromSlash("harness/mk/cpp.mk")))
+	gomk := readFile(t, filepath.Join(dir, filepath.FromSlash("harness/mk/go.mk")))
+	if !strings.Contains(cppmk, "\ntest: ##") {
+		t.Errorf("das zuerst geschriebene cpp-Fragment soll die unscoped Rezepte tragen:\n%s", cppmk)
+	}
+	if !strings.Contains(gomk, "test: test-go") || strings.Contains(gomk, "\ntest: ##") {
+		t.Errorf("das spaeter kommende go-Fragment soll die gemischte Fassung tragen:\n%s", gomk)
+	}
+}
+
 // TestRun_AddLangRepeatable (slice-037, Mono-Repo-Kern): zwei add-lang-Aufrufe (apps/api +
 // apps/web) legen ZWEI Module an; das geteilte blocked/go wird beim zweiten Lauf NICHT
 // clobbert und ist KEIN Fehler (skip-if-present). Rot-Gegenbeispiel: macht blocked

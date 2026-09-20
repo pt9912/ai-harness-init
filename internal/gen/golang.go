@@ -119,6 +119,14 @@ func goFragment(modul, context, version string) string {
 	return renderScoped(goScopedMkFragmentTmpl, modul, context, version)
 }
 
+// goFragmentMixed liefert die gemischte Root-Fassung des Go-Code-Gate-Fragments: ein
+// zweites Sprach-Fragment liegt am Root (harness/mk/<andere>.mk), darum tragen die
+// unscoped Ziele test/lint/build hier nur Praezedenz-Erweiterungen ohne eigenes Rezept
+// (goMixedMkFragmentTmpl) — make haengt die Praezedenz-Listen zusammen.
+func goFragmentMixed(modul, context, version string) string {
+	return renderScoped(goMixedMkFragmentTmpl, modul, context, version)
+}
+
 // renderScoped setzt Modul-Name, Build-Kontext, version + golangci-Pin in das
 // modul-scoped Fragment-Template ein (Einzelpass, strings.Replacer — die Muster
 // ueberlappen nicht).
@@ -976,6 +984,41 @@ build: ## Go-Binary bauen (Dockerfile build-Stage) — Docker-only
 	docker build --build-arg GO_VERSION=$(GO_VERSION) --target build -t $(IMAGE):build .
 
 GATE_CHECKS += lint build test
+`
+
+// goMixedMkFragmentTmpl — die Go-Fassung fuer den GEMISCHTEN Root (harness/mk/go.mk, wenn
+// ein zweites Sprach-Fragment am Root liegt): modul-scoped Targets ({{MODULE}}), Build-Kontext
+// {{CONTEXT}}, und die unscoped Ziele test/lint/build NUR als Praezedenz-Erweiterung ohne
+// eigenes Rezept — make haengt die Praezedenz-Listen mehrerer Regeln zusammen, das Rezept
+// bleibt bei dem Fragment, das die unscoped Targets am Root zuerst geschrieben hat, und
+// make test/lint/build bedient beide Sprach-Kontexte ohne Rezept-Ueberschreibung. GATE_CHECKS
+// haengt die UNSCOPED Namen an (record-gates dedupliziert Praezedenz-Listen); die scoped
+// Namen stehen NICHT daneben — sonst liefe der Go-Kontext in gates doppelt.
+const goMixedMkFragmentTmpl = `# harness/mk/{{MODULE}}.mk — Go-Code-Gate-Fragment (Modul {{MODULE}}), generiert von
+# ai-harness-init. Go-Gates als Dockerfile-Stages (Docker-only, ADR-0003); modul-scoped
+# Targets, Build-Kontext {{CONTEXT}} — ein zweites Sprach-Fragment liegt am Root, darum
+# traegt dieses Fragment die unscoped Ziele test/lint/build nur als Praezedenz-Erweiterung
+# ohne eigenes Rezept: make haengt Praezedenz-Listen mehrerer Regeln zusammen, das Rezept
+# bleibt bei dem Fragment, das sie am Root zuerst geschrieben hat.
+GO_VERSION ?= {{GO_VERSION}}
+GOLANGCI_LINT_VERSION ?= {{GOLANGCI_VERSION}}
+
+.PHONY: test lint build test-{{MODULE}} lint-{{MODULE}} build-{{MODULE}}
+
+test-{{MODULE}}: ## Go-Unit-Tests Modul {{MODULE}} (test-Stage) — Docker-only
+	docker build --no-cache-filter test --build-arg GO_VERSION=$(GO_VERSION) --target test -t {{MODULE}}:test {{CONTEXT}}
+
+lint-{{MODULE}}: ## Go-Lint Modul {{MODULE}} (golangci-lint, lint-Stage) — Docker-only
+	docker build --build-arg GOLANGCI_LINT_VERSION=$(GOLANGCI_LINT_VERSION) --target lint -t {{MODULE}}:lint {{CONTEXT}}
+
+build-{{MODULE}}: ## Go-Binary Modul {{MODULE}} bauen (build-Stage) — Docker-only
+	docker build --build-arg GO_VERSION=$(GO_VERSION) --target build -t {{MODULE}}:build {{CONTEXT}}
+
+test: test-{{MODULE}}
+lint: lint-{{MODULE}}
+build: build-{{MODULE}}
+
+GATE_CHECKS += test lint build
 `
 
 // goScopedMkFragmentTmpl — das MODUL-SCOPED Go-Code-Gate-Fragment (harness/mk/<modul>.mk)
