@@ -24,6 +24,13 @@ import (
 // (pretooluse-command-guard.sh + extract-command.awk, slice-032). EnforcePaths und
 // der reale Emit koppeln denselben Bestand: der Pre-Flight (cmd Phase 3) sieht
 // dieselbe Menge wie der Emit (Phase 4), sonst Teil-Bootstrap-Luecke.
+// AUSGESPROCHENE GRENZE (AGENTS.md §3.6): kein eigener Mutations-Fall fuer die
+// `want`-Aufzaehlung. Jeder ihrer Eintraege hat einen dedizierten Waechter, der denselben
+// Pfad ueber emit.EnforceFile() liest (z. B. TestEnforce_EmitsGateFragment fuer
+// harness/mk/enforce.mk, TestEnforce_ErfassungLiegtMitDemTraeger fuer den Traeger-Pfad,
+// TestEnforce_HistoryRangeGuardZaehltDieRangeMitGit fuer den Vorlauf-Waechter): ein
+// Eingriff, der einen Eintrag aus enforceFiles() entfernt, reisst IMMER den dedizierten
+// Test mit — diese Aufzaehlung bindet an keinen von ihnen eindeutig.
 func TestEnforce_EmitsAllMechanicFiles(t *testing.T) {
 	dir := t.TempDir()
 	if err := emit.Enforce(dir, io.Discard); err != nil {
@@ -145,6 +152,13 @@ func TestEnforce_GuardBakedFloorAndUnion(t *testing.T) {
 // TestBlockedFragment_Drops (slice-037): BlockedFragment mit gen-Profil schreibt
 // tools/harness/blocked/<lang> mit der Sprach-Toolchain; eine Sprache OHNE Profil (leer)
 // ist ein no-op (sprachlos greift der gebackene Guard-Boden allein).
+//
+// AUSGESPROCHENE GRENZE (AGENTS.md §3.6): kein eigener Mutations-Fall. Ein Eingriff, der
+// den Inhalt von blocked/go veraendert oder leert, reisst zugleich
+// TestBlockedFragment_CoversAllGenProfiles (nicht-leer je gen-Profil) und/oder
+// TestBlockedFragment_Convergent (kanonischer Re-Lauf) — beide pruefen dieselbe
+// Schreibfunktion an derselben Stelle. Ein Fall, der hier binden soll, bindet an einen der
+// beiden nicht mehr eindeutig.
 func TestBlockedFragment_Drops(t *testing.T) {
 	dir := t.TempDir()
 	if err := emit.BlockedFragment(dir, "go"); err != nil {
@@ -597,7 +611,17 @@ func TestEnforce_KeineErfassungOhneTraeger(t *testing.T) {
 // Wrapper, der woanders sucht, schwiege dauerhaft — und schweigen ist genau seine
 // erlaubte Betriebsart, der Ausfall bliebe also unsichtbar.
 //
-// Rot-Gegenbeispiel: test/mutations/159 nimmt der Ziel-Adresse die Windows-Endung.
+// DIE ERWARTUNG STEHT FEST, NICHT ABGELEITET: fruehere Fassungen bildeten die erwarteten
+// Namen aus emit.CarrierPath(image) und pruefften dann, ob der Wrapper sie enthaelt — das
+// mass nur Selbstkonsistenz, weil "ai-harness-init" als Teilstring auch dann noch im
+// Wrapper stuende, wenn CarrierPath die ".exe"-Endung verloeren wuerde (der Substring
+// "ai-harness-init" bleibt in "ai-harness-init.exe" ohnehin gefunden). Hier steht die
+// erwartete Liste FEST, und CarrierPath wird zusaetzlich GLEICHHEITS-geprueft statt nur
+// als Substring-Lieferant benutzt: bricht die Ableitung, faellt dieser Test unabhaengig
+// vom Wrapper-Inhalt.
+//
+// Rot-Gegenbeispiel: test/mutations/159 nimmt der Ziel-Adresse die Windows-Endung — davor
+// blieb dieser Test gruen, danach faellt er an der Gleichheitspruefung.
 func TestEnforce_WrapperSuchtDenAblageort(t *testing.T) {
 	wrapper := string(emit.EnforceFile(".claude/hooks/span-emit.sh"))
 	if wrapper != "" {
@@ -613,10 +637,15 @@ func TestEnforce_WrapperSuchtDenAblageort(t *testing.T) {
 	}
 	wrapper = mustReadString(t, filepath.Join(dir, filepath.FromSlash(".claude/hooks/span-emit.sh")))
 	// BEIDE Namen, die CarrierPath erzeugen kann — der Wrapper laeuft auch dort, wo das
-	// Bild `.exe` heisst (LH-QA-04).
-	for _, image := range []string{"/pfad/ai-harness-init", "/pfad/ai-harness-init.exe"} {
-		if rel := emit.CarrierPath(image); !strings.Contains(wrapper, path.Base(rel)) {
-			t.Errorf("der Wrapper sucht %q nicht — der Emitter legt den Traeger genau dorthin:\n%s", path.Base(rel), wrapper)
+	// Bild `.exe` heisst (LH-QA-04). Die erwarteten Basisnamen sind FEST verdrahtet, nicht
+	// aus CarrierPath abgeleitet (siehe Funktionskommentar).
+	for i, image := range []string{"/pfad/ai-harness-init", "/pfad/ai-harness-init.exe"} {
+		want := []string{"ai-harness-init", "ai-harness-init.exe"}[i]
+		if got := path.Base(emit.CarrierPath(image)); got != want {
+			t.Errorf("CarrierPath(%q) liefert Basisname %q, erwartet %q — der Wrapper sucht dann am falschen Namen vorbei", image, got, want)
+		}
+		if !strings.Contains(wrapper, want) {
+			t.Errorf("der Wrapper sucht %q nicht — der Emitter legt den Traeger genau dorthin:\n%s", want, wrapper)
 		}
 	}
 	if !strings.Contains(wrapper, "/.harness/state/bin") {
