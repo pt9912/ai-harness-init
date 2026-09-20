@@ -414,6 +414,29 @@ func TestRun_AddLangMixedRootCppFirst(t *testing.T) {
 	}
 }
 
+// TestRun_AddLangMixedRootStatError (F-3, AGENTS.md §3.6): codeGateFragmentFor bricht ab,
+// wenn das Pruefen des ANDEREN Sprach-Fragments einen Stat-Fehler liefert, der nicht
+// Nicht-Existenz ist — statt die Fassung still zu waehlen. Rot-Gegenbeispiel: liegt
+// harness/mk als REGULAERE DATEI statt als Verzeichnis vor, liefert os.Stat auf
+// harness/mk/cpp.mk einen ENOTDIR-Fehler (kein fs.ErrNotExist); `add-lang go .` muss
+// darauf mit Exit != 0 und der Meldung "harness/mk/cpp.mk pruefen" abbrechen.
+func TestRun_AddLangMixedRootStatError(t *testing.T) {
+	dir := initializedRepo(t)
+	if err := os.MkdirAll(filepath.Join(dir, "harness"), 0o755); err != nil {
+		t.Fatalf("harness/ anlegen: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "harness", "mk"), []byte("keine Verzeichnis-Fassung"), 0o644); err != nil {
+		t.Fatalf("harness/mk als Datei anlegen: %v", err)
+	}
+	var out, errb bytes.Buffer
+	if code := run([]string{"add-lang", "go", "."}, dir, testSources(t), &out, &errb); code == 0 {
+		t.Fatalf("add-lang go . soll bei Stat-Fehler != ErrNotExist abbrechen, exit 0: stdout=%q stderr=%q", out.String(), errb.String())
+	}
+	if !strings.Contains(errb.String(), "harness/mk/cpp.mk pruefen") {
+		t.Errorf("Fehlermeldung nennt nicht die gepruefte Datei:\n%s", errb.String())
+	}
+}
+
 // TestRun_AddLangRepeatable (slice-037, Mono-Repo-Kern): zwei add-lang-Aufrufe (apps/api +
 // apps/web) legen ZWEI Module an; das geteilte blocked/go wird beim zweiten Lauf NICHT
 // clobbert und ist KEIN Fehler (skip-if-present). Rot-Gegenbeispiel: macht blocked

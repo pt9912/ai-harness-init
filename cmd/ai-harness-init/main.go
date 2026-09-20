@@ -398,11 +398,12 @@ func cleanRel(path string) string {
 // codeGateFragmentFor liefert den Fragment-Inhalt fuer lang am Zielpfad. Am Root in der
 // gemischten Fassung, sobald ein zweites Sprach-Fragment am Root liegt
 // (harness/mk/<andere>.mk): die unscoped Ziele test/lint/build bekommen dort nur
-// Praezedenz-Erweiterungen ohne eigenes Rezept, das Rezept bleibt bei dem Fragment, das
-// sie am Root zuerst geschrieben hat, und make test/lint/build bedient beide
-// Sprach-Kontexte ohne Rezept-Ueberschreibung. Ohne zweites Root-Fragment die Root- bzw.
-// Subdir-Fassung wie bisher; ein Stat-Fehler ausser Nicht-Existenz bricht ab, statt die
-// Fassung still zu waehlen.
+// Praezedenz-Erweiterungen ohne eigenes Rezept, und make test/lint/build bedient beide
+// Sprach-Kontexte ohne Rezept-Ueberschreibung. Geprueft wird bei jedem Aufruf nur, ob am
+// Root JETZT ein anderes Sprach-Fragment liegt — welches der beiden Fragmente das eigene
+// Rezept traegt, haengt damit vom Verlauf der add-lang-Aufrufe ab, nicht davon, wer zuerst
+// geschrieben hat. Ohne zweites Root-Fragment die Root- bzw. Subdir-Fassung wie bisher;
+// ein Stat-Fehler ausser Nicht-Existenz bricht ab, statt die Fassung still zu waehlen.
 func codeGateFragmentFor(targetDir, path, lang, version string) (string, error) {
 	frag, err := gen.CodeGateFragment(lang, path, version)
 	if err != nil {

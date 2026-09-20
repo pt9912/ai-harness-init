@@ -221,8 +221,10 @@ func CodeGateFragment(lang, path, version string) (string, error) {
 // GEMISCHTEN Root: ein zweites Sprach-Fragment liegt am Root (harness/mk/<andere>.mk),
 // darum tragen die unscoped Ziele test/lint/build hier modul-scoped Targets plus
 // Praezedenz-Erweiterungen ohne eigenes Rezept — make haengt die Praezedenz-Listen
-// mehrerer Regeln zusammen, das Rezept bleibt bei dem Fragment, das die unscoped Targets
-// am Root zuerst geschrieben hat, und make test/lint/build bedient beide Sprach-Kontexte.
+// mehrerer Regeln zusammen, und make test/lint/build bedient beide Sprach-Kontexte ohne
+// Rezept-Ueberschreibung. Welches der beiden Fragmente das eigene Rezept traegt, haengt
+// vom Verlauf der add-lang-Aufrufe ab, nicht davon, wer zuerst geschrieben hat — der
+// Aufrufer prueft bei jedem Aufruf nur, ob JETZT ein anderes Fragment am Root liegt.
 // Eine Sprache ohne Fragment-Builder liefert *UnknownLangError — dieselbe Liste wie
 // CodeGateFragment, damit add-lang fail-fast dieselbe Diagnose gibt.
 func CodeGateFragmentMixed(lang, path, version string) (string, error) {

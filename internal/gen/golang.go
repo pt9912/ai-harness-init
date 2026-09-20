@@ -989,17 +989,18 @@ GATE_CHECKS += lint build test
 // goMixedMkFragmentTmpl — die Go-Fassung fuer den GEMISCHTEN Root (harness/mk/go.mk, wenn
 // ein zweites Sprach-Fragment am Root liegt): modul-scoped Targets ({{MODULE}}), Build-Kontext
 // {{CONTEXT}}, und die unscoped Ziele test/lint/build NUR als Praezedenz-Erweiterung ohne
-// eigenes Rezept — make haengt die Praezedenz-Listen mehrerer Regeln zusammen, das Rezept
-// bleibt bei dem Fragment, das die unscoped Targets am Root zuerst geschrieben hat, und
-// make test/lint/build bedient beide Sprach-Kontexte ohne Rezept-Ueberschreibung. GATE_CHECKS
-// haengt die UNSCOPED Namen an (record-gates dedupliziert Praezedenz-Listen); die scoped
-// Namen stehen NICHT daneben — sonst liefe der Go-Kontext in gates doppelt.
+// eigenes Rezept — make haengt die Praezedenz-Listen mehrerer Regeln zusammen, und
+// make test/lint/build bedient beide Sprach-Kontexte ohne Rezept-Ueberschreibung. Welches
+// der beiden Fragmente das eigene Rezept traegt, haengt vom Verlauf der add-lang-Aufrufe ab,
+// nicht davon, wer zuerst geschrieben hat. GATE_CHECKS haengt die UNSCOPED Namen an
+// (record-gates dedupliziert Praezedenz-Listen); die scoped Namen stehen NICHT daneben —
+// sonst liefe der Go-Kontext in gates doppelt.
 const goMixedMkFragmentTmpl = `# harness/mk/{{MODULE}}.mk — Go-Code-Gate-Fragment (Modul {{MODULE}}), generiert von
 # ai-harness-init. Go-Gates als Dockerfile-Stages (Docker-only, ADR-0003); modul-scoped
 # Targets, Build-Kontext {{CONTEXT}} — ein zweites Sprach-Fragment liegt am Root, darum
 # traegt dieses Fragment die unscoped Ziele test/lint/build nur als Praezedenz-Erweiterung
-# ohne eigenes Rezept: make haengt Praezedenz-Listen mehrerer Regeln zusammen, das Rezept
-# bleibt bei dem Fragment, das sie am Root zuerst geschrieben hat.
+# ohne eigenes Rezept: make haengt Praezedenz-Listen mehrerer Regeln zusammen. Welches
+# Fragment das eigene Rezept traegt, haengt vom Verlauf der add-lang-Aufrufe ab.
 GO_VERSION ?= {{GO_VERSION}}
 GOLANGCI_LINT_VERSION ?= {{GOLANGCI_VERSION}}
 

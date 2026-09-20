@@ -117,11 +117,13 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 
 **Gewählte Form (Komposition am Bestand):** die Einzel-Sprach-Ziele bleiben — am Root,
 wo nur ein Sprach-Fragment liegt, ist die unscoped Fassung byte-identisch unverändert.
-Liegt am Root ein zweites Sprach-Fragment, kommt das Fragment in der **gemischten
-Fassung**: modul-scoped Targets (`test-go`/`test-cpp`, Kontext Root) plus die unscoped
-Ziele `test`/`lint`/`build` **nur als Präzedenz-Erweiterung ohne eigenes Rezept** — make
-hängt Präzedenz-Listen mehrerer Regeln zusammen, das Rezept bleibt bei dem Fragment, das
-die unscoped Targets am Root zuerst geschrieben hat. `GATE_CHECKS` hängt die **unscoped**
+Liegt am Root ein zweites Sprach-Fragment, kommt das (gerade geschriebene) Fragment in
+der **gemischten Fassung**: modul-scoped Targets (`test-go`/`test-cpp`, Kontext Root) plus
+die unscoped Ziele `test`/`lint`/`build` **nur als Präzedenz-Erweiterung ohne eigenes
+Rezept** — make hängt Präzedenz-Listen mehrerer Regeln zusammen. Geprüft wird je Aufruf
+nur, ob am Root *jetzt* ein anderes Sprach-Fragment liegt; welches der beiden Fragmente
+das eigene Rezept trägt, hängt damit vom Verlauf der `add-lang`-Aufrufe ab, nicht davon,
+wer zuerst geschrieben hat. `GATE_CHECKS` hängt die **unscoped**
 Namen an (die Aggregator-Kette komponiert über `record-gates: $(GATE_CHECKS)` und
 dedupliziert die Präzedenz-Liste); die scoped Namen stehen nicht daneben, sonst liefe der
 Kontext in `record-gates` doppelt. Grund gegen `::`-Rezepte (Doppel-Doppelpunkt in beiden
