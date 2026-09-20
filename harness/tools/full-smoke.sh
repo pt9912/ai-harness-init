@@ -2242,12 +2242,11 @@ if ! printf '%s' "$cppguard_out" | grep -q '"decision": "block"'; then
 fi
 
 # Der GEMISCHTE ROOT (LH-FA-04/LH-QA-01): zwei Sprach-Fragmente am selben Root
-# (harness/mk/go.mk + harness/mk/cpp.mk). Vor der Komposition definierten beide die
-# unscoped Targets test/lint/build: make meldete die Rezept-Ueberschreibung und die letzte
-# Include-Definition gewann — ein Kontext fiel still heraus. Die gemischte Fassung
-# komponiert: ein Fragment traegt die unscoped Rezepte, das andere modul-scoped Targets
-# plus Praezedenz-Erweiterung. Der direkte Aufruf (`make <ziel>` OHNE --target, OHNE gates)
-# bedient beide Sprach-Fragmente — und die Ueberschreibungsmeldung tritt nicht mehr auf.
+# (harness/mk/go.mk + harness/mk/cpp.mk). Die gemischte Fassung komponiert: ein Fragment
+# traegt die unscoped Rezepte, das andere modul-scoped Targets plus Praezedenz-
+# Erweiterung — ohne eigenen Rezept-Konflikt am selben Ziel-Namen. Der direkte Aufruf
+# (`make <ziel>` OHNE --target, OHNE gates) bedient beide Sprach-Fragmente, und die
+# Ueberschreibungsmeldung bleibt aus.
 echo "full-smoke: gemischter Root — make test/lint/build direkt bedient beide Sprach-Fragmente ..."
 	e2e_abdeckung "LH-FA-04 LH-QA-01" "Der direkte Aufruf am gemischten Root bedient beide Sprach-Kontexte" "ein Kontext fiel heraus"
 mixedinit_rc=0
@@ -3341,6 +3340,7 @@ echo "full-smoke: OK — emittierter Command-Guard greift: 'go build' geblockt, 
 echo "full-smoke: OK — Guard-Boden GEBACKEN + blocked/*-Union: --lang go blockt go+pip, sprachlos nur pip (Boden), fail-safe nach geleertem blocked/ (slice-036/ADR-0007 NEU-H1)."
 echo "full-smoke: OK — add-lang WIEDERHOLBAR (Mono-Repo): apps/api + apps/web koexistieren, make -j gates faehrt beide modul-scoped Go-Gates, Guard blockt go danach (slice-037/LH-FA-04)."
 echo "full-smoke: OK — ZWEITE SPRACHE (slice-039): add-lang cpp apps/engine koexistiert mit den Go-Modulen, make -j gates faehrt die REALEN C++-Gates (cmake/ctest/clang-tidy in Docker), Guard blockt cmake danach (blocked/cpp)."
+echo "full-smoke: OK — GEMISCHTER ROOT (unscoped-Ziele/LH-FA-04): make test/lint/build direkt am Root mit go.mk + cpp.mk bedient beide Sprach-Fragmente (Tag-Marker app: und cpp:), keine Rezept-Ueberschreibungsmeldung, und die drei Aufrufe sind Exit 0."
 echo "full-smoke: OK — ARCH-ACHSE (slice-045b/ADR-0009): add-lang go apps/hex --arch hexslice dropt das hexSlice-Layout, make -j gates UEBERSETZT+LINTET den Schichten-Code real (apps-hex build/lint); cpp+hexslice ist fail-fast Exit 2 (sprach×arch-Support, INFO-1)."
 echo "full-smoke: OK — ARCH-GATE KONDITIONAL (slice-046/LH-FA-07): --arch hexslice dropt .a-check.yml + a-check.mk + arch-Fragment und make gates FAEHRT a-check real (Modul-scoped apps/hex und am Root); flache Module bekommen keines (LH-QA-01); ein verbotener Domain->Adapter-Import faerbt das Gate rot (Zaehne belegt)."
 echo "full-smoke: OK — ARCH-GATE ROBUST (slice-046, Review F-1/F-2): ZWEI hexSlice-Module koexistieren (kein doppelter include, kein 'overriding recipe', beide Gates laufen), und mit gesetztem A_CHECK_IMAGE (Adopter-Override) bleibt das Gate verdrahtet und gruen."
