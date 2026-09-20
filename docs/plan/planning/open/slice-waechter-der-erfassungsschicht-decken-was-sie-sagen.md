@@ -25,7 +25,7 @@ heißt: ein Fall in `test/mutations/`).
 **Berührte Spec-Stellen:** — Gegenstand sind Wächter und ein Aufräum-Fragment; keine Spec-Stelle
 wird geschrieben.
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912)
 
 **Autor:** Planner. **Datum:** 2026-09-17.
 
