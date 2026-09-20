@@ -148,7 +148,7 @@ Anker — die Anker-Paarung der Register-Seite löst auf.
 - **Folge-Slices:** keine — die drei Fundmengen sind geheilt (68/71/96 im
   Vorgänger, 29/275/114 im Vor-Vorgänger); die Regel ist verkörpert.
 - **Risiken aus §6:** MR-Form-Grenze → *weiter offen* (trägt [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand) selbst).
-- **Drei Paarungen:** (a) Anker — das Pflichtfeld `liegt in` steht in §7, der Zielort existiert (Link auf die `MR-071`-Datei) und trägt die Herkunft in der MR-Form (Wirksamkeits-Anlass: der 5×-Übertritt dieses Eintrags, blank nach `MR-028`); die `seit slice-`-Form steht am MR-Zielort nicht — benannt in §7; (b) Folge-Slice — keine genannt; (c) Register — `BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet` trägt fünf Belege und den Ausgang *verkörpert* mit Zielort und Anker
+- **Drei Paarungen:** (a) Anker — das Pflichtfeld `liegt in` steht in §7, der Zielort existiert (Link auf die [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)-Datei) und trägt die Herkunft in der MR-Form (Wirksamkeits-Anlass: der 5×-Übertritt dieses Eintrags, blank nach `MR-028`); die `seit slice-`-Form steht am MR-Zielort nicht — benannt in §7; (b) Folge-Slice — keine genannt; (c) Register — `BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet` trägt fünf Belege und den Ausgang *verkörpert* mit Zielort und Anker.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
