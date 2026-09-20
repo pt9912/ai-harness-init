@@ -28,7 +28,7 @@ die zugelassenen Formen),
 
 **Berührte Spec-Stellen:** — Der Slice baut Werkzeug-Fähigkeiten; er schreibt keine Spec-Stelle.
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912)
 
 **Autor:** Planner. **Datum:** 2026-09-17.
 
