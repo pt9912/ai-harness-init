@@ -92,14 +92,14 @@ Zielsetzung: Was nicht ausdrücklich ausgeschlossen ist, dehnt die Welle, bis
 der Closure-Trigger unerreichbar wird.
 
 - **Kein Re-Publish von `v0.2.1`** — die Tag-Kopplung
-  ([`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
+  ([`ADR-0058`](../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
   Festlegung 2) würde für denselben Stand zweimal vollziehen; der nächste
   Release-Schnitt trägt die Fähigkeit.
 - **Keine hexslice-Berührung** — die ist geschlossen
-  ([`ADR-0060`](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
+  ([`ADR-0060`](../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
   `Accepted` trägt die Struktur); ein Griff wäre ein zweiter Vorgang.
 - **Kein zweiter Fetch-Weg** — der Fetch
-  ([`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
+  ([`ADR-0058`](../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
   Festlegung 1) bleibt der Träger-Weg; die Tap-Verteilung ersetzt keinen
   Fetch.
 - **Kein Release-Schnitt in dieser Welle** — der Release-Schnitt ist
