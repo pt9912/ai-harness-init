@@ -24,7 +24,7 @@ Register-Beobachtung
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** —
+**Verantwortlich:** Architect (pt9912)
 
 **Autor:** Planner. **Datum:** 2026-09-20.
 
