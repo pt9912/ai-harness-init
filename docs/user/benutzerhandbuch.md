@@ -315,7 +315,7 @@ make gates
 
 **Ein bereits aufgesetztes Repository geklont — kein eigener `ai-harness-init`-Lauf.** Haben Sie ein Repository geklont, das jemand anderes (oder eine CI) bereits aufgesetzt hat, brauchen Sie keinen eigenen Lauf: `make gates` funktioniert unverändert, denn die Gates prüfen nur Docker und den versionierten Inhalt.
 
-**Was dabei fehlt:** Der **Träger** — die `ai-harness-init`-Programmdatei selbst, die das Repository für drei der vier [Betriebs-Operationen](#betriebs-operationen) (`archive-welle`, `span-report`, `traeger-fetch`) braucht — liegt in einem **gitignorierten** Zustands-Bereich (`.harness/state/bin/`) und reist deshalb **nicht** mit einem Klon. `make gates` bleibt davon unberührt, ebenso `make span-clean`, das den Träger gar nicht anfasst. `make archive-welle`/`make span-report` melden nach einem frischen Klon: *„der Traeger liegt nicht … dieses Repo … nicht"* — kein Fehler, kein rotes Gate, nur eine Aussage über den fehlenden Träger.
+**Was dabei fehlt:** Der **Träger** — die `ai-harness-init`-Programmdatei selbst, die das Repository für zwei der vier [Betriebs-Operationen](#betriebs-operationen) (`archive-welle`, `span-report`) braucht — liegt in einem **gitignorierten** Zustands-Bereich (`.harness/state/bin/`) und reist deshalb **nicht** mit einem Klon. `make gates` bleibt davon unberührt, ebenso `make span-clean`, das den Träger gar nicht anfasst. `make archive-welle`/`make span-report` melden nach einem frischen Klon: *„der Traeger liegt nicht … dieses Repo … nicht"* — kein Fehler, kein rotes Gate, nur eine Aussage über den fehlenden Träger.
 
 **Wie der Träger zurückkommt:** `make traeger-fetch` holt ihn aus dem gepinnten Release nach — **einmalig** Netzwerk für diesen Aufruf, danach funktionieren `archive-welle` und `span-report` ebenfalls.
 
@@ -361,7 +361,7 @@ SKEL_GO_VERSION=1.26.4 ai-harness-init --lang go --name "Mein Projekt" <zielordn
 
 ### Betriebs-Operationen
 
-**Voraussetzung:** Ein aufgesetztes Repository. Docker braucht nur `traeger-fetch` — der Transport läuft im gepinnten Bild. Die drei übrigen rufen den bereits abgelegten **Träger** (die `ai-harness-init`-Programmdatei im gitignorierten Zustands-Bereich `.harness/state/bin/`) direkt auf; `span-clean` braucht weder den Träger noch Docker, es räumt nur den lokalen Erfassungs-Bestand weg.
+**Voraussetzung:** Ein aufgesetztes Repository. Docker braucht nur `traeger-fetch` — der Transport läuft im gepinnten Bild. Von den drei übrigen rufen `archive-welle` und `span-report` den bereits abgelegten **Träger** (die `ai-harness-init`-Programmdatei im gitignorierten Zustands-Bereich `.harness/state/bin/`) direkt auf; `span-clean` braucht weder den Träger noch Docker, es räumt nur den lokalen Erfassungs-Bestand weg.
 
 Alle vier sind **keine Gates**: `make gates` fährt keine von ihnen mit. `archive-welle` und `span-report` melden fehlenden Träger, statt rot zu färben (siehe [Ein bereits aufgesetztes Repository geklont](#das-aufgesetzte-repository-prüfen)); `traeger-fetch` legt ihn bei Bedarf erst ab; `span-clean` prüft den Träger gar nicht — sein Rezept löscht bedingungslos.
 
