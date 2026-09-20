@@ -32,6 +32,20 @@ Tap-Verteilung. Die **Belegbasis** sind die sieben geschlossenen Slices in
 `slice-mutations-faelle-pruefen-ihre-ziel-stellen`,
 `slice-fall-anlage-misst-gegen-den-quell-bestand`.
 
+### Maschinen-Wechsel
+
+**Was mit `git` reist:** die Historie — Code, Pläne, die `done/`-Slices, das
+Beobachtungs-Register, ADRs, MR-Einträge, diese Welle-Datei; ein frischer
+Klon trägt den Stand. **Was maschinen-lokal bleibt** (gitignored):
+`.harness/state/gates-passed.diffsha` (der Stop-Hook-Stempel) und
+`.harness/state/bin/ai-harness-init` (der Träger). Der Stop-Hook bricht auf
+dem frischen Klon fail-closed ab — kein Gates-Lauf deckt den Klon; die
+Behebung ist einmal `make gates`. Der Träger meldet laut, wenn er fehlt, und
+`make traeger-fetch` holt ihn aus dem Release. **Der laufende Agent-Zug
+stirbt mit der Session:** der Mono-Repo-Implementier-Lauf ist in-flight —
+vor dem Maschinen-Wechsel committet und pusht er; der neue Klon läuft einmal
+`make gates`, und die Kette läuft weiter.
+
 ## 2. Trigger (Welle startet)
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
