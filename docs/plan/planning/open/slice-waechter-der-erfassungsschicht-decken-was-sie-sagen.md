@@ -9,8 +9,9 @@ aus `open/` oder `next/` nach `done/` — §7 nennt in der Zeile `Gegenstand:`
 Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 (§Ein Slice, dessen Gegenstand ein anderer übernimmt).
 
-**Welle:** ohne Welle. Nach dem Test aus Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine
-Welle braucht beobachtet keine Closure-Bedingung mehr, als diese DoD belegt.
+**Welle:** [welle-v021-faehigkeit](../welle-v021-faehigkeit.md) — Mitglied laut
+deren §4 (Slices in dieser Welle); die Welle bündelt die Belegbasis-Kette und trägt
+über diese DoD hinaus den repo-weiten `make full-smoke`-Beleg als Closure-Bedingung.
 
 **Bezug:**
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) (ein
