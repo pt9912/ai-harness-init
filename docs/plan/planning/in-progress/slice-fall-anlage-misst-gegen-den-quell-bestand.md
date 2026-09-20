@@ -63,7 +63,7 @@ einer mit vier erfundenen.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Ziel-Form: Slice — **≤ 3 Liefer-Punkte**.
 
-- [ ] **Liefer-Punkt 1 — der `MR`-Eintrag steht:** der Architect schreibt den
+- [x] **Liefer-Punkt 1 — der `MR`-Eintrag steht:** der Architect schreibt den
       Eintrag im Adaptions-Block (Index-Zeile, Datei unter
       `harness/conventions/`, §3.8-Form — eigener Commit, nur
       Architect-Artefakte, Rolle in der Message); er trägt die Regel, ihre
@@ -72,20 +72,20 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
       Gegenprobe: trägt der Eintrag keinen Herkunfts-Anker, färbt
       `make docs-check` (Modul-Deckung der Konvention-Regeln) rot — Grenze:
       die Anker-Form prüft kein Sensor, das Review prüft sie.
-- [ ] **Liefer-Punkt 2 — der Register-Ausgang dreht auf *verkörpert*:**
+- [x] **Liefer-Punkt 2 — der Register-Ausgang dreht auf *verkörpert*:**
       `state.md` trägt den Zielort und den Herkunfts-Anker auf einer Zeile
       (`liegt in <MR>`-Form, Anker-Paarung a). Rot: fehlt der Zielort oder der
       Anker in der Datei, bricht die Paarung — die Prüfung ist die
       Anker-Paarung der Closure, kein eigener Sensor.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen
       Brownfield-Bootstrap und führt die Register-Datei nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschritten — oder
+- [x] Beobachtungs-Register (`../observations/`) fortgeschritten — oder
       „keine Beobachtung angefallen" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang; die drei Paarungen sind
+- [x] Jedes Risiko aus §6 trägt einen Ausgang; die drei Paarungen sind
       getragen.
 
 ## 3. Plan (vor Code)
@@ -113,18 +113,42 @@ Anker — die Anker-Paarung der Register-Seite löst auf.
 
 - **Die MR-Form trägt die Grenze, die die Regel nicht löst** — ein
   MR-Eintrag ist Deklaration, kein Sensor; die Anlage-Form wird vom Lauf
-  gehalten, der sie schreibt, und vom Review danach. Ausgang: weiter offen →
-  Sichtung bei der Closure.
+  gehalten, der sie schreibt, und vom Review danach. — **Ausgang:** *weiter
+  offen* → die Grenze trägt
+  [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)
+  selbst („kein Sensor hält die Anlage"); die Sichtung liest sie bei der
+  nächsten Closure.
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <…>
-- **Drei Paarungen:** <…>
+- **Was hat funktioniert:** der Architektur-Zug der Closure lief in einem
+  eigenen Kontext und einem eigenen Commit — [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)
+  trägt die Regel, den Geltungsbereich (die Anlage neuer Mutations-Fälle,
+  der `sed`-Anker je Fall gegen den Quell-Bestand), die drei Fundmengen, die
+  Grenze und die Auflösungs-Trigger, und keine Kopf-Marke.
+- **Was ging anders als geplant:** die Lifecycle-Claims des Slices waren
+  zweigelokal — der Architektur-Lauf schrieb `MR-071`, ohne den
+  `open → in-progress`-Move zu tragen; die Claims wurden nachgeholt
+  (Verantwortlich: Architect, die zwei Moves), bevor die Closure lief. Die
+  Herkunfts-Anker-Form trägt `MR-071` in der MR-Form — das Feld
+  „Wirksamkeits-Anlass" nennt den 5×-Übertritt dieses Register-Eintrags
+  blank ([`MR-028`](../../../../harness/conventions.md#mr-028--der-wirksamkeits-anlass-steht-im-eintrag-blank-statt-verlinkt));
+  die `seit slice-`-Form steht am MR-Zielort nicht.
+- **Steering-Loop-Eintrag:** geschärfte Regel für die Fall-Anlage: „die
+  Fall-Anlage misst ihr sed-Muster gegen den Quell-Bestand, nicht gegen die
+  Fassung der letzten Fassung" — verkörpert als
+  [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)
+  — liegt in `harness/conventions/MR-071-die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand.md`.
+  Herkunft: `seit slice-fall-anlage-misst-gegen-den-quell-bestand`.
+- **Beobachtungs-Register (`../observations/`):** keine Beobachtung
+  angefallen — der Ausgang von
+  `BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet` dreht
+  auf *verkörpert* (Zählerstand 5×); die Verkörperung ist der Gegenstand
+  dieses Slices.
+- **Folge-Slices:** keine — die drei Fundmengen sind geheilt (68/71/96 im
+  Vorgänger, 29/275/114 im Vor-Vorgänger); die Regel ist verkörpert.
+- **Risiken aus §6:** MR-Form-Grenze → *weiter offen* (trägt `MR-071` selbst).
+- **Drei Paarungen:** Anker · Folge-Slice · Register, Ergebnis
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
