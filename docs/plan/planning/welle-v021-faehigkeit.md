@@ -79,7 +79,7 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 | Slice | Titel | Bezug |
 |---|---|---|
 | slice-unscoped-ziele-kollidieren-nicht-im-mono-repo | Die unscoped-Ziele kollidieren nicht im gemischten Mono-Repo | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
-| slice-benutzerhandbook-nachzug-traegt-fuenf-posten | Der Handbuch-Nachzug trägt die fünf Posten | [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
+| slice-benutzerhandbuch-nachzug-traegt-fuenf-posten | Der Handbuch-Nachzug trägt die fünf Posten | [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
 | slice-tap-verteilt-die-release-assets | Das Tap verteilt die Release-Assets | [`LH-QA-04`](../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) |
 | slice-waechter-der-erfassungsschicht-decken-was-sie-sagen | Die Wächter der Erfassungsschicht decken, was sie sagen | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
 | slice-lifecycle-werkzeuge-tragen-die-kennung | Die Lifecycle-Werkzeuge tragen die Kennung | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |

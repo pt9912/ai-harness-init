@@ -5,9 +5,9 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** ohne Welle. Nach dem Test aus Baseline-Regelwerk `modul-06-roadmap.md`
-§Wann Arbeit eine Welle braucht beobachtet keine Closure-Bedingung mehr als
-diese DoD — die fünf nachgezogenen Posten sind Belege der Liefer-Punkte selbst.
+**Welle:** [welle-v021-faehigkeit](../welle-v021-faehigkeit.md) — Mitglied laut
+deren §4 (Slices in dieser Welle); die Welle bündelt die Belegbasis-Kette und trägt
+über diese DoD hinaus den repo-weiten `make full-smoke`-Beleg als Closure-Bedingung.
 
 **Bezug:**
 [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)
