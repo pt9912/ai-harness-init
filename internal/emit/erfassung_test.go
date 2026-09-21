@@ -29,6 +29,14 @@ const (
 // steht, begruendet ihn und wird hier nicht mitbehauptet.
 const wachstumsSatz = "OHNE DIESEN AUFRUF WAECHST DER BESTAND UNBEGRENZT."
 
+// keinGateMarke ist die EINE Schreibweise, die eine Gate-Tabellen-Zeile ueber
+// span-report/span-clean traegt, um kein Sensor-Anspruch zu sein (modul-13-quality-gates.md
+// §Hard Rule, Baseline-Kanon: "`kein Gate` in der Zeile selbst"). Die Konstante steht an
+// GENAU EINER Stelle und wird sowohl fuer die Pruefung als auch fuer die Meldung benutzt —
+// eine zweite, wortgleiche Schreibweise im Errorf koennte gegen die Pruefung driften, und
+// wer der Meldung folgt, muesste dann trotzdem scheitern.
+const keinGateMarke = "kein Gate"
+
 // erfassungsFragment faehrt einen echten Emit in ein frisches Verzeichnis und liefert den
 // Inhalt des abgelegten Fragments. GELESEN wird von der Platte: die Zusage gilt der Datei
 // im Ziel, nicht dem Rueckgabewert einer Funktion.
@@ -89,6 +97,11 @@ func regelnIn(text string) (map[string][]string, []string) {
 // GRENZE: `d-check.mk` entsteht erst zur Bootstrap-Zeit (`d-check --print-mk`) und
 // fehlt; aus ihm traegt die Menge allein die GATE_CHECKS-Kante des Doc-Gate-Fragments.
 // Der reale Lauf ueber dem gebootstrappten Ziel steht in harness/tools/full-smoke.sh.
+//
+// ZWEITE GRENZE: das Arch-Gate-Fragment (emit.ArchGateMkPath, ueber emit.ArchGate) fehlt
+// ebenso — es entsteht nur fuer ein schichten-tragendes Layout, und dieser Emit ist
+// flach (kein solches Layout, siehe erfassungsFragment). TestErfassung_KeinArchGateInZielQuellen
+// haelt diese Grenze gegen den tatsaechlich gelesenen Satz.
 func makeQuellenDesZiels(t *testing.T) map[string]string {
 	t.Helper()
 	quellen, err := emit.InitFragments()
@@ -467,6 +480,27 @@ func TestErfassung_NichtInDerGatesKette(t *testing.T) {
 	}
 }
 
+// archGateFragmentPraefix ist der Pfad-Anfang, unter dem emit.ArchGate ein Arch-Gate-Fragment
+// ablegt (emit.ArchGateMkPath). makeQuellenDesZiels traegt diesen Pfad NIE, weil der hier
+// gefahrene Emit flach ist — das ist die zweite GRENZE ihres Funktionskommentars.
+const archGateFragmentPraefix = "harness/mk/arch-"
+
+// TestErfassung_KeinArchGateInZielQuellen haelt die zweite GRENZE von makeQuellenDesZiels
+// gegen den TATSAECHLICH gelesenen Satz fest, statt sie nur im Funktionskommentar zu
+// behaupten: kommt eine Quelle dazu, deren Pfad archGateFragmentPraefix traegt, faellt
+// dieser Test — die Grenze ist dann veraltet und muss im Kommentar nachgezogen werden,
+// statt still zu verrotten.
+//
+// Rot-Gegenbeispiel: test/mutations/187-archgate-quelle-ungemeldet.sh.
+func TestErfassung_KeinArchGateInZielQuellen(t *testing.T) {
+	quellen := makeQuellenDesZiels(t)
+	for _, pfad := range sortierteSchluessel(quellen) {
+		if strings.HasPrefix(pfad, archGateFragmentPraefix) {
+			t.Errorf("die gelesene Ziel-Quellen-Menge traegt %q — die zweite GRENZE im Kommentar von makeQuellenDesZiels ist damit veraltet und muss nachgezogen werden", pfad)
+		}
+	}
+}
+
 // TestErfassung_NichtImHookPfad haelt DoD (3)(b) fest: die Hook-Konfiguration des Ziels
 // und seine Hook-Skripte nennen weder Bericht noch Aufraeum-Kommando. Ein Bericht im
 // Hook-Pfad macht aus einem Leser einen Blockierer und bricht die fail-open-Klemme aus
@@ -500,7 +534,7 @@ func TestErfassung_NichtImHookPfad(t *testing.T) {
 // TestErfassung_KeinEintragInDenGateTabellen haelt DoD (3)(c) fest: keine Zeile einer
 // emittierten Gate-Tabelle behauptet Bericht oder Aufraeum-Kommando als Sensor. Ein
 // Eintrag dort BEHAUPTET einen Sensor — das Ziel fuehrt eine Zeile, die ausdruecklich
-// KEIN Gate sagt, oder gar keine.
+// die Marke keinGateMarke traegt, oder gar keine.
 //
 // Die Richtung ist neu geworden, nicht schon immer da: mit dem Fragment sind die zwei
 // Ziele init-invariant, und emit.NeutralizeMakeClaims laesst eine Nennung darum stehen,
@@ -529,8 +563,8 @@ func TestErfassung_KeinEintragInDenGateTabellen(t *testing.T) {
 				if !strings.Contains(line, "make "+ziel) {
 					continue
 				}
-				if !strings.Contains(line, "kein Gate") {
-					t.Errorf("%s fuehrt %q in einer Gate-Tabelle, ohne KEIN GATE zu sagen: %q", rel, "make "+ziel, strings.TrimSpace(line))
+				if !strings.Contains(line, keinGateMarke) {
+					t.Errorf("%s fuehrt %q in einer Gate-Tabelle, ohne %q zu sagen: %q", rel, "make "+ziel, keinGateMarke, strings.TrimSpace(line))
 				}
 			}
 		}

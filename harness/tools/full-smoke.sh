@@ -1051,8 +1051,10 @@ mv "$spans_doc.orig" "$spans_doc"
 #       weist KEINE Bilanz aus und nennt den GRUND seiner Leere,
 #   (c) das Fragment sagt, was es nicht zusagt: ohne Aufruf waechst der Bestand
 #       unbegrenzt,
-#   (d) `make span-clean` entfernt den Bestand, und danach meldet der Leser die LEERE
-#       DES BESTANDS — nicht dieselbe Meldung wie in (b).
+#   (d) `make span-clean` entfernt den Bestand und meldet das GETANE — ueber einem
+#       Bestand ebenso wie im zweiten Lauf ueber der bereits geraeumten Leere —, und
+#       danach meldet der Leser die LEERE DES BESTANDS — nicht dieselbe Meldung wie in
+#       (b).
 #
 # Rot-Gegenbeispiel: test/mutations/176 nimmt den Grund-Satz aus der Ausgabe.
 leser_und_aufraeumen_im_ziel() {
@@ -1129,12 +1131,31 @@ leser_und_aufraeumen_im_ziel() {
 		exit 1
 	fi
 
-	# (d) Aufraeumen — ausdruecklich, und danach ist der Bestand weg.
+	# (d) Aufraeumen — ausdruecklich, und danach ist der Bestand weg. Das Ziel meldet, was
+	# es GETAN hat: die zwei Laeufe unten pruefen dieselbe Meldung je einmal ueber einem
+	# Bestand und ueber der bereits geraeumten Leere.
 	local clean_out="" clean_rc=0
 	clean_out="$( make --no-print-directory -C "$repo" span-clean 2>&1 )" || clean_rc=$?
 	if [ "$clean_rc" -ne 0 ] || [ -e "$spans" ]; then
 		echo "full-smoke: FEHLER — $kennung: make span-clean endet mit Exit $clean_rc oder laesst den Bestand liegen (slice-099):" >&2
 		printf '%s\n' "$clean_out" >&2
+		exit 1
+	fi
+	if ! grep -qF -- "entfernt" <<<"$clean_out"; then
+		echo "full-smoke: FEHLER — $kennung: make span-clean meldet nicht, was es getan hat (slice-leser-und-aufraeum-waechter-decken-was-sie-sagen). Ausgabe:" >&2
+		printf '%s\n' "$clean_out" >&2
+		exit 1
+	fi
+	local clean_out2="" clean_rc2=0
+	clean_out2="$( make --no-print-directory -C "$repo" span-clean 2>&1 )" || clean_rc2=$?
+	if [ "$clean_rc2" -ne 0 ] || [ -e "$spans" ]; then
+		echo "full-smoke: FEHLER — $kennung: der zweite span-clean-Lauf ueber bereits leerem Bestand endet mit Exit $clean_rc2 oder legt den Bestand wieder an (slice-leser-und-aufraeum-waechter-decken-was-sie-sagen):" >&2
+		printf '%s\n' "$clean_out2" >&2
+		exit 1
+	fi
+	if ! grep -qF -- "entfernt" <<<"$clean_out2"; then
+		echo "full-smoke: FEHLER — $kennung: der zweite span-clean-Lauf ueber bereits leerem Bestand meldet nicht, was er getan hat (slice-leser-und-aufraeum-waechter-decken-was-sie-sagen). Ausgabe:" >&2
+		printf '%s\n' "$clean_out2" >&2
 		exit 1
 	fi
 	local leer="" leer_rc2=0
