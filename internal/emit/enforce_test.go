@@ -611,14 +611,13 @@ func TestEnforce_KeineErfassungOhneTraeger(t *testing.T) {
 // Wrapper, der woanders sucht, schwiege dauerhaft — und schweigen ist genau seine
 // erlaubte Betriebsart, der Ausfall bliebe also unsichtbar.
 //
-// DIE ERWARTUNG STEHT FEST, NICHT ABGELEITET: fruehere Fassungen bildeten die erwarteten
-// Namen aus emit.CarrierPath(image) und pruefften dann, ob der Wrapper sie enthaelt — das
-// mass nur Selbstkonsistenz, weil "ai-harness-init" als Teilstring auch dann noch im
-// Wrapper stuende, wenn CarrierPath die ".exe"-Endung verloeren wuerde (der Substring
-// "ai-harness-init" bleibt in "ai-harness-init.exe" ohnehin gefunden). Hier steht die
-// erwartete Liste FEST, und CarrierPath wird zusaetzlich GLEICHHEITS-geprueft statt nur
-// als Substring-Lieferant benutzt: bricht die Ableitung, faellt dieser Test unabhaengig
-// vom Wrapper-Inhalt.
+// DIE ERWARTUNG STEHT FEST, NICHT ABGELEITET: die erwarteten Basisnamen sind FEST
+// verdrahtet, nicht aus emit.CarrierPath(image) abgeleitet. Ein Test, der seine Erwartung
+// aus derselben Funktion holt, an die er koppeln soll, misst nur Selbstkonsistenz — der
+// Substring "ai-harness-init" bliebe im Wrapper auch dann gefunden, wenn CarrierPath die
+// ".exe"-Endung verloere. CarrierPath wird zusaetzlich GLEICHHEITS-geprueft statt nur als
+// Substring-Lieferant benutzt: bricht die Ableitung, faellt dieser Test unabhaengig vom
+// Wrapper-Inhalt.
 //
 // Rot-Gegenbeispiel: test/mutations/159 nimmt der Ziel-Adresse die Windows-Endung — davor
 // blieb dieser Test gruen, danach faellt er an der Gleichheitspruefung.

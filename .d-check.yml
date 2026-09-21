@@ -302,7 +302,7 @@ ignore-refs:
   # GRENZE, keine Regel: EXTENSIONAL GESCHLOSSEN auf genau diese drei Quell-Baeume und diesen
   # einen `refs`-Wert (ADR-0039 Festlegung 3). Ein vierter Baum, ein anderer `refs`-Wert und jede
   # Verbreiterung sind eine neue Senkung nach AGENTS.md 3.5 und brauchen ihre eigene ADR.
-  # Deckung: 33
+  # Deckung: 34
   - in: "docs/reviews/**"
     refs: [".harness/baseline/**"]
   # Deckung: 4
