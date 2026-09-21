@@ -85,6 +85,7 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 | slice-lifecycle-werkzeuge-tragen-die-kennung | Die Lifecycle-Werkzeuge tragen die Kennung | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt | Emitter-Aussagen über den Vorlagensatz sind gedeckt | [`LH-FA-12`](../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren) |
 | slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang | Verweise auf Review-Reports bekommen ihren Ausgang | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| slice-leser-und-aufraeum-waechter-decken-was-sie-sagen | Der Leser- und der Aufräum-Wächter treffen ihre Meldung und sagen ihre Menge | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
 
 ## 5. Abhängigkeiten
 
