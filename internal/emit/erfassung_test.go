@@ -2,6 +2,7 @@ package emit_test
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"io/fs"
 	"os"
@@ -32,21 +33,12 @@ const wachstumsSatz = "OHNE DIESEN AUFRUF WAECHST DER BESTAND UNBEGRENZT."
 // keinGateMarke ist die EINE Schreibweise, die eine Gate-Tabellen-Zeile ueber
 // span-report/span-clean traegt, um kein Sensor-Anspruch zu sein (modul-13-quality-gates.md
 // §Hard Rule, Baseline-Kanon: "`kein Gate` in der Zeile selbst"). Die Konstante steht an
-// GENAU EINER Stelle und wird sowohl fuer die Pruefung als auch fuer die Meldung benutzt.
-//
-// Zwei getrennte Aussagen, nicht eine: Die PRUEFUNG unten (strings.Contains gegen
-// keinGateMarke) maß schon vor dieser Konstante nur "kein Gate" (klein) und misst
-// weiterhin nur das — daran aendert die Konstante nichts, es lag keine Laufzeit-
-// Diskrepanz zwischen Pruefung und Wirkung vor. Was vorher abwich, war ausschliesslich
-// der ERRORF-TEXT: eine zweite, davon unabhaengig getippte Kopie ("KEIN GATE",
-// Grossschreibung), die zufaellig dieselbe Zeile traf und nur beim naechsten Auseinander-
-// laufen der beiden Stellen aufgefallen waere. Die Konstante macht dieses kuenftige
-// Auseinanderlaufen baulich unmoeglich (eine Quelle statt zwei) statt es testweise zu
-// fangen — dafuer gibt es keinen eigenen rot->gruen-Beleg im Sinne von AGENTS.md §3.6,
-// weil sich am PASS/FAIL-Verhalten von TestErfassung_KeinEintragInDenGateTabellen nichts
-// aendert, das rot werden koennte. test/mutations/182-bericht-in-der-gate-tabelle.sh
-// bleibt gueltiger Beleg fuer die BREITERE Zusage dieses Tests ("ein Eintrag ohne die
-// Marke bleibt nicht unentdeckt") — nicht fuer diese Konsolidierung selbst.
+// GENAU EINER Stelle und wird in gateTabellenZeileBefund sowohl fuer die Pruefung als auch
+// fuer die Meldung benutzt — eine Zeile, die die Konstante traegt, bleibt darum ohne
+// Befund. TestErfassung_ZeileMitDerMarkeBleibtOhneBefund haelt genau das mit einem echten
+// Rot-Beleg fest: test/mutations/394-keingatemarke-pruefung-und-meldung-getrennt.sh trennt
+// Pruefung und Meldung testweise wieder in zwei unabhaengige Literale (der Zustand vor
+// 3147fe59) und faellt dort rot.
 const keinGateMarke = "kein Gate"
 
 // erfassungsFragment faehrt einen echten Emit in ein frisches Verzeichnis und liefert den
@@ -552,11 +544,19 @@ func TestErfassung_NichtImHookPfad(t *testing.T) {
 // Ziele init-invariant, und emit.NeutralizeMakeClaims laesst eine Nennung darum stehen,
 // die es vorher zu `<make-target>` gemacht haette. Genau diese Luecke misst der Waechter.
 //
-// GRENZE, benannt: gemessen wird der Emit ueber der Fixture courseSet(); ein Eintrag im
-// REALEN vendored Vorlagen-Satz faellt hier nicht auf. Die Fixture haelt
-// test/courseset-fixture.bats am realen Satz fest — nach DATEIBESTAND, nicht nach Inhalt.
+// GRENZE, benannt: gemessen wird der Emit ueber der Fixture courseSet(); ein Eintrag in
+// den vendored KURS-Vorlagen (Templates()/RootReadme(), von courseSet() nachgebildet)
+// faellt HIER nicht auf. Fuer Commands()/Agents()/FieldList() gilt die Grenze nicht — sie
+// lesen go:embed, keine Fixture, und dieser Test scannt ihre reale Ausgabe bereits mit.
+// Die verbleibende Luecke haelt
+// test/courseset-fixture.bats @"fixture: kein Eintrag im REALEN Vorlagen-Satz behauptet
+// span-report/span-clean als Sensor" DIREKT gegen den realen vendored Satz fest —
+// dieselbe Pruef-Bedingung, gegen die echten Dateien statt gegen die Fixture.
 //
-// Rot-Gegenbeispiel: test/mutations/182-bericht-in-der-gate-tabelle.sh.
+// Rot-Gegenbeispiel: test/mutations/182-bericht-in-der-gate-tabelle.sh (fuer diesen
+// Go-Test); der Rot-Beleg fuer den realen Satz ist haendisch gefuehrt (siehe der
+// bats-Test selbst) — eine dauerhafte Mutation auf .harness/baseline/ widerspraeche
+// dessen SHA256SUMS-Integritaetspruefung (MR-007).
 func TestErfassung_KeinEintragInDenGateTabellen(t *testing.T) {
 	dir := emitDokumentSatz(t, claimSet(t))
 
@@ -575,8 +575,8 @@ func TestErfassung_KeinEintragInDenGateTabellen(t *testing.T) {
 				if !strings.Contains(line, "make "+ziel) {
 					continue
 				}
-				if !strings.Contains(line, keinGateMarke) {
-					t.Errorf("%s fuehrt %q in einer Gate-Tabelle, ohne %q zu sagen: %q", rel, "make "+ziel, keinGateMarke, strings.TrimSpace(line))
+				if befund := gateTabellenZeileBefund(rel, ziel, line); befund != "" {
+					t.Error(befund)
 				}
 			}
 		}
@@ -587,6 +587,37 @@ func TestErfassung_KeinEintragInDenGateTabellen(t *testing.T) {
 	}
 	if zeilen == 0 {
 		t.Fatalf("keine einzige Gate-Tabellen-Zeile erkannt — der Waechter misst nichts")
+	}
+}
+
+// gateTabellenZeileBefund ist die EINE Pruef-Stelle hinter
+// TestErfassung_KeinEintragInDenGateTabellen: eine Zeile, die "make "+ziel nennt, aber
+// nicht die Marke keinGateMarke traegt, ist ein Befund; sonst liefert sie "". Ausgelagert,
+// damit TestErfassung_ZeileMitDerMarkeBleibtOhneBefund dieselbe Pruef-Stelle haelt statt
+// sie zu duplizieren — nur so trifft ein Mutations-Fall, der Pruefung und Meldung wieder
+// auf zwei unabhaengige Literale trennt, ueberhaupt etwas, das rot werden kann.
+func gateTabellenZeileBefund(rel, ziel, line string) string {
+	if !strings.Contains(line, keinGateMarke) {
+		return fmt.Sprintf("%s fuehrt %q in einer Gate-Tabelle, ohne %q zu sagen: %q", rel, "make "+ziel, keinGateMarke, strings.TrimSpace(line))
+	}
+	return ""
+}
+
+// TestErfassung_ZeileMitDerMarkeBleibtOhneBefund haelt DoD (2) dieses Slice mit einem
+// echten Rot-Beleg fest: eine Gate-Tabellen-Zeile, die GENAU die Schreibweise traegt, die
+// die Meldung von gateTabellenZeileBefund verlangt (die Konstante keinGateMarke), bleibt
+// ohne Befund — wer der Meldung folgt, kommt ins Gruen. Vor 3147fe59 waren Pruefung und
+// Meldung an zwei unabhaengig getippten Literalen aufgehaengt; eine Zeile mit der (damals)
+// von der Meldung verlangten Schreibweise waere dort trotzdem als Befund gemeldet worden,
+// sobald die beiden Literale auseinanderliefen.
+//
+// Rot-Gegenbeispiel: test/mutations/394-keingatemarke-pruefung-und-meldung-getrennt.sh
+// (trennt Pruefung und Meldung in gateTabellenZeileBefund wieder in zwei unabhaengige
+// Literale).
+func TestErfassung_ZeileMitDerMarkeBleibtOhneBefund(t *testing.T) {
+	line := "| `make " + zielBericht + "` | Beispiel | " + keinGateMarke + " |"
+	if befund := gateTabellenZeileBefund("test.md", zielBericht, line); befund != "" {
+		t.Errorf("Zeile mit der Marke %q wird trotzdem als Befund gewertet: %s", keinGateMarke, befund)
 	}
 }
 

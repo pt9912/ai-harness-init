@@ -323,6 +323,43 @@ fixture_formen() {
 # Satz UND die Emit-Regel, und keiner in `make gates` hat beides (die go-test-Stufe
 # sieht .harness/ nicht, s. .dockerignore; diese Stufe sieht die Regel nicht).
 # Diese Reste sieht allein `make smoke`, ausserhalb von `make gates`.
+# gate_zeilen_ohne_marke liest aus einer Datei jede Tabellen-Zeile, die "make
+# span-report" oder "make span-clean" nennt, aber nicht die Marke "kein Gate" traegt —
+# dieselbe Pruef-Bedingung wie internal/emit/erfassung_test.go:gateTabellenZeileBefund
+# (TestErfassung_KeinEintragInDenGateTabellen), hier direkt gegen den REALEN vendored
+# Satz statt gegen die Fixture courseSet().
+gate_zeilen_ohne_marke() {
+  grep -E '^[[:space:]]*\|.*make (span-report|span-clean)' "$1" | grep -v 'kein Gate' || true
+}
+
+# Schliesst die im Kommentar von TestErfassung_KeinEintragInDenGateTabellen benannte
+# GRENZE: der Go-Test sieht fuer die vendored KURS-Vorlagen (Templates()/RootReadme())
+# nur die Fixture courseSet(), nie den realen Baum — dieser bats-Test haelt genau den
+# realen Baum fest, aus demselben Grund wie die drei Tests oben (.dockerignore schliesst
+# .harness/ aus der go-test-Stage aus, test-bats mountet den vollen Checkout). Fuer
+# Commands()/Agents()/FieldList() (go:embed, kein courseSet()-Ersatz) traegt bereits der
+# Go-Test den realen Bestand; hier geht es um die vendored KURS-Vorlagen, die
+# courseSet() nachbildet.
+#
+# Rot-Beleg (haendisch gefuehrt, nicht als Mutations-Fall: der Baum ist committet
+# vendored und SHA256SUMS-integritaetsgeprueft, MR-007 — eine dauerhafte Mutation
+# darauf waere ein zweiter, konkurrierender Vendoring-Zustand): eine Zeile
+# "| \`make span-report\` | Beispiel |" ohne die Marke, in eine reale Vorlage
+# eingefuegt, faellt gegen dieses Skript rot; nach Ruecknahme (git checkout) wieder
+# gruen. Beide Laeufe fuer diesen Slice durchgefuehrt, siehe Closure-Notiz/Commit.
+@test "fixture: kein Eintrag im REALEN Vorlagen-Satz behauptet span-report/span-clean als Sensor" {
+  [ -d "$REAL" ] || { echo "vendored templates/ fehlt: $REAL"; return 1; }
+  local f treffer
+  while IFS= read -r f; do
+    treffer="$(gate_zeilen_ohne_marke "$f")"
+    [ -z "$treffer" ] || {
+      echo "DRIFT: $f behauptet span-report/span-clean als Sensor, ohne 'kein Gate' zu sagen:"
+      echo "$treffer"
+      return 1
+    }
+  done < <(find "$REAL" -type f -name '*.md')
+}
+
 @test "fixture: courseSet() fuehrt jede Platzhalter-Pfad-Form des realen Satzes" {
   [ -d "$REAL" ] || { echo "vendored templates/ fehlt: $REAL"; return 1; }
   local real fix fehlend form
