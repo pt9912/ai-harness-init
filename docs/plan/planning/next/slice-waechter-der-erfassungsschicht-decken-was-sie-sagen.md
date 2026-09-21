@@ -186,7 +186,10 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       echt (Kommentar nennt jetzt nur den geltenden Zustand, keine Chronik) statt nur umformuliert.
 - [x] `make gates` grün. Vom Verifier inhaltsbasiert bestätigt (Gate-Hash `ed98487a…` stimmt exakt
       auf HEAD `fcc6438c`). Vom Planner bei dieser Closure erneut selbst gefahren (2026-09-21) auf
-      dem Stand nach den Closure-Eintragungen — Hash und Recipe-Kette siehe §7.
+      Commit `780c9b51` (Stand nach den Closure-Eintragungen) — alle Recipes bis `span-check`
+      durchlaufen (`record-gates` bricht bei jedem roten Prerequisite vor dem Hash-Schreiben ab,
+      Mechanik: `Makefile:record-gates`), Hash `ad33060c69c9f2e0…` in
+      `.harness/state/gates-passed.diffsha`.
 - [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8). Report:
