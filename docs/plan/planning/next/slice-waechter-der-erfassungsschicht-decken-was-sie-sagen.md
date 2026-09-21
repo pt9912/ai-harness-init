@@ -163,7 +163,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 **Ein Liefer-Punkt**, mit dem Kommando, das ihn **rot** färbt
 ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 
-- [ ] **(1) Jede Zusage des Träger- und Feldlisten-Bestands trägt ihren `test/mutations/`-Fall
+- [x] **(1) Jede Zusage des Träger- und Feldlisten-Bestands trägt ihren `test/mutations/`-Fall
       oder ihre an der Assertion ausgesprochene Grenze mit Grund — und kein Wächter bezieht seine
       Erwartung aus der Funktion, die ihn rot färben soll.** Nach dem Lauf liefert das
       `comm`-Kommando aus §1 genau die zwei Namen, für die eine Grenze ausgesprochen ist, und
@@ -174,20 +174,32 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Wächter rot; nimmt man die Assertion heraus, die er binden soll, meldet derselbe Lauf einen
       Befund. Für `TestEnforce_WrapperSuchtDenAblageort` zusätzlich: `test/mutations/159`
       angewendet — vor dem Fix blieb der Wächter grün, danach fällt er.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+      **Belegt:** Initiale Lieferung in `ad7eba8f` (Wrapper-Fix, zwei Fallgrenzen mit
+      Assertions-Kommentar, zehn neue Fälle 382–393). Review-Report
+      [2026-09-21](../../../reviews/2026-09-21-slice-waechter-der-erfassungsschicht-decken-was-sie-sagen.md)
+      fand F-1 HIGH (Kommentar über `TestEnforce_WrapperSuchtDenAblageort` chronikte eine abgelöste
+      Fassung statt den geltenden Zustand zu nennen, AGENTS.md §3.7) und F-2 LOW (Scope-Beschreibung
+      nannte den mitgelieferten Fall 393 nicht explizit); F-1 behoben in `fcc6438c`, F-2 als
+      Präzisions-Lücke ohne Codeproblem akzeptiert (Beleg: Folge-Slice-Plan hat den Fall bereits
+      korrekt mitgerechnet). Der Verifier hat unabhängig bestätigt: `comm`-Ergebnis stimmt exakt,
+      `test/mutations/159` reißt den Wächter nach dem Fix wie gefordert, der F-1-Fix ist inhaltlich
+      echt (Kommentar nennt jetzt nur den geltenden Zustand, keine Chronik) statt nur umformuliert.
+- [x] `make gates` grün. Vom Verifier inhaltsbasiert bestätigt (Gate-Hash `ed98487a…` stimmt exakt
+      auf HEAD `fcc6438c`). Vom Planner bei dieser Closure erneut selbst gefahren (2026-09-21) auf
+      dem Stand nach den Closure-Eintragungen — Hash und Recipe-Kette siehe §7.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
-      Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: voraussichtlich leer — berührt sind Testcode, Mutations-Fälle und höchstens
-      Kommentare an Assertions; kein emittiertes Artefakt und keine Schnittstelle. Ändert sich der
-      Text des Aufräum-Ziels für einen Adopter sichtbar, bekommt
-      [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md) seine Zeile — dieser
-      Punkt betrifft inzwischen nur noch den Folge-Slice, der das Aufräum-Ziel trägt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+      Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8). Report:
+      [2026-09-21](../../../reviews/2026-09-21-slice-waechter-der-erfassungsschicht-decken-was-sie-sagen.md)
+      (1 HIGH F-1 behoben, 1 LOW F-2 akzeptiert; merge-blockierend: nein nach dem Fix).
+- [x] Doku-Update: entfällt wie geplant — berührt sind ausschließlich Testcode, Mutations-Fälle und
+      Kommentare an Assertions; kein emittiertes Artefakt, keine Schnittstelle,
+      [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md) unverändert.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag — siehe §7.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — siehe §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen) — siehe §6.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft — siehe §7.
 
 ## 3. Plan (vor Code)
 
@@ -276,16 +288,32 @@ dasteht.
    `in-progress` → `next` mit Neuschnitt nach den drei Beständen (§4); Folge-Slice
    `slice-leser-und-aufraeum-waechter-decken-was-sie-sagen` trägt den Rest. Für den jetzt
    reduzierten Umfang (Träger + Feldliste) besteht das Risiko nicht mehr fort.
-2. **Ein Fall reißt mehrere Wächter zugleich** und bindet damit keinen. *Absehbar:* entfallen,
-   wenn für jeden Wächter entweder ein bindender Eingriff oder eine ausgesprochene Grenze
-   dasteht — für den Träger- und Feldlisten-Bestand durch das gemessene `comm`-Ergebnis (§1)
-   gestützt; endgültiger Ausgang bei der Closure dieses reduzierten Slice.
-3. **Die ausgesprochene Grenze wird zur bequemen Antwort.** *Absehbar:* entfallen, wenn die Zahl
-   der Grenzen im Report je einzeln begründet ist — für diesen Bestand zwei Grenzen, beide mit
-   Kommentar-Beleg an der Assertion; endgültiger Ausgang bei der Closure.
+2. **Ein Fall reißt mehrere Wächter zugleich** und bindet damit keinen. **Entfallen.** Das
+   `comm`-Kommando aus §1 liefert nach `ad7eba8f` exakt zwei Namen — deckungsgleich mit den zwei
+   ausgesprochenen Grenzen; jeder der übrigen acht Wächter hat einen eigenen bindenden Fall
+   (382–393), keiner davon reißt einen zweiten mit. Der Verifier hat das `comm`-Ergebnis
+   unabhängig nachgerechnet (Review-Negativbefund „§2 DoD (1) … geprüft, ohne Befund"). Getragen
+   durch die bereits verkörperte Regel [`AGENTS.md`](../../../../AGENTS.md) §3.6 — Register-Eintrag
+   [`zusage-ohne-herstellbares-gegenbeispiel`](../observations/BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel/observation.md)
+   (Stand bereits `verkörpert` vor dieser Closure): Dieser Slice **wendet** die Regel an, statt eine
+   neue Instanz des Problems zu sein — kein neuer Beleg in diesem Register-Eintrag nötig.
+3. **Die ausgesprochene Grenze wird zur bequemen Antwort.** **Entfallen.** Die zwei ausgesprochenen
+   Grenzen (`TestBlockedFragment_Drops`, `TestEnforce_EmitsAllMechanicFiles`) tragen je einen
+   eigenen, individuell begründeten Kommentar direkt an der Assertion — keine pauschale Formel
+   (Review-Negativbefund bestätigt das unabhängig). Getragen durch dieselbe bereits verkörperte
+   Regel wie Risiko 2, aus demselben Grund kein neuer Registerbeleg.
 4. **Der neue `test-go`-Fall nimmt dem bestehenden `full-smoke`-Fall die Zähne**, weil beide
-   dieselbe Eigenschaft messen. *Absehbar:* entfallen, wenn beide Fälle nebeneinander bestehen und
-   je eine andere Eigenschaft im Kopf nennen; endgültiger Ausgang bei der Closure.
+   dieselbe Eigenschaft messen. **Entfallen.** Fall 393
+   (`test/mutations/393-zeilen-zaehlt-erst-nach-dem-parsen.sh`) deckt
+   `TestAggregiere_ZeilenZaehltAuchUnlesbare` in `internal/report/report_test.go` — eine
+   `make test-go`-Zusage über die **Reihenfolge**, in der `internal/report/report.go` `b.Zeilen`
+   erhöht (erst nach erfolgreichem Parsen, nicht davor). Geprüft: Die einzigen `span-report`-Zähne
+   in `harness/tools/full-smoke.sh` (rund um Zeile 1140–1207) messen Nachrichtentext am
+   **emittierten Ziel-Repo** — „Kein Bestand:" bei geräumtem Bestand, „der Traeger liegt nicht" /
+   „das ist KEINE Aussage über den Bestand" bei fehlendem Träger —, nicht die interne
+   Zählreihenfolge unlesbarer Zeilen im eigenen `internal/report`-Paket dieses Repos. Zwei
+   unabhängige Eigenschaften an zwei unabhängigen Beständen (emittiertes Ziel-Repo vs. dieses
+   Repos eigenes `internal/report`), keine Entwaffnung.
 
 ## 7. Closure-Notiz
 
@@ -302,20 +330,66 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Gegenstand:** <übernommen von `slice-<Kennung>` | entfallen: <Grund>>
-  *(nur beim Ausgang ohne Arbeit; sonst Zeile löschen)*
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-kennung-a>, <slice-kennung-b>, <slice-kennung-c> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-<Kennung>.md` | `evidence/slice-<Kennung>.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+- **Was hat funktioniert:** Die Rückführung mit Neuschnitt (§4, eingetreten 2026-09-20) hat einen
+  Drei-Bestand-Slice, der eine Review-Sitzung sprengte, auf den bereits vollständig gelieferten
+  Träger- und Feldlisten-Anteil reduziert, statt den Rest nachträglich zu rechtfertigen — die in §4
+  *vorab* benannte Bedingung traf exakt ein und wurde am gemessenen `comm`-Ergebnis (§1) verifiziert,
+  bevor der Schnitt vollzogen wurde. Für den reduzierten Slice hat danach die Rollen-Trennung
+  Implementer → Reviewer → Verifier gefangen, was ein einzelner Kontext wahrscheinlich übersehen
+  hätte: F-1 (HIGH) ist ein Kommentar, der `AGENTS.md` §3.6 (Zusage mit rot gesehenem
+  Gegenbeispiel) korrekt erfüllt, dabei aber §3.7 verletzt (er erzählt eine abgelöste Code-Fassung
+  statt den geltenden Zustand zu nennen) — eine Verletzung, die kein Gate fängt
+  (`make comment-claims` prüft nur die Existenz eines genannten Sensors und nimmt `_test.go` ohnehin
+  aus seinem Prüfbereich aus) und die der Implementer-Kontext, der den Kommentar selbst schrieb, im
+  Self-Review kaum gefunden hätte. Der Verifier hat den Fix danach unabhängig als inhaltlich echt
+  bestätigt (Kommentar nennt jetzt nur den geltenden Zustand), nicht nur als Umformulierung.
+- **Was ging anders als geplant:** §6 sah für Risiko 2–4 nur eine *„Absehbar"*-Einschätzung mit
+  Verweis auf die Closure vor; die Belege dafür (comm-Ergebnis, Grenz-Kommentare, Unabhängigkeit von
+  Fall 393 gegenüber den `full-smoke`-Zähnen) standen zum Planungszeitpunkt noch nicht geprüft da.
+  Diese Closure trägt sie nach (§6) — kein neuer Befund, aber ein Schritt, der im ursprünglichen
+  Plan als reine Formalität unterschätzt war: die Prüfung von Risiko 4 (Fall 393 vs.
+  `full-smoke`-Zahn) brauchte einen eigenständigen Blick in `harness/tools/full-smoke.sh`, den keine
+  der bisherigen Runden geleistet hatte.
+- **Steering-Loop-Eintrag:** Kein neuer. §8 hat bereits vor dieser Closure geprüft, dass keiner der
+  berührten Register-Einträge mit diesem Slice erstmals 3× erreicht; diese Closure bestätigt das
+  unverändert — zwei der drei berührten Einträge
+  ([`zusage-ohne-herstellbares-gegenbeispiel`](../observations/BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel/observation.md),
+  [`mutations-fall-wird-von-berechtigter-aenderung-entwaffnet`](../observations/BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet/observation.md))
+  sind bereits `verkörpert` (seit früheren Wellen/Slices) und dieser Slice wendet ihre Regeln nur
+  an, ohne einen neuen Beleg zu erzeugen; der dritte
+  ([`lokaler-full-smoke-scheitert-auf-macos-host`](../observations/BEO-ALL/lokaler-full-smoke-scheitert-auf-macos-host/observation.md))
+  steht nach diesem Beleg bei 1×.
+- **Beobachtungs-Register (`../observations/`):** `evidence/slice-waechter-der-erfassungsschicht-decken-was-sie-sagen.md`
+  in
+  [`BEO-ALL/lokaler-full-smoke-scheitert-auf-macos-host/`](../observations/BEO-ALL/lokaler-full-smoke-scheitert-auf-macos-host/)
+  neu angelegt — erster abgeschlossener Vorgang, der auf diese Randbedingung stößt; Zähler steht
+  damit bei 1×. Geprüft und bewusst **nicht** auf `gelöst` gesetzt: Der zwischenzeitlich gepushte
+  Fix `b9809fc1` trägt einen additiven, für den Host cross-kompilierenden Pfad
+  (`make full-smoke-host`/`make smoke-host`), ändert aber laut eigener Commit-Aussage den
+  byte-identischen Default-Pfad (`make full-smoke`/`make smoke`) nicht — und für `make mutate`,
+  das dieser Slice als CI-Ersatz genau in diesem Closure-Trigger (§5) braucht, existiert gar kein
+  Host-Pfad. Die Beobachtung ist für zwei ihrer drei benannten Ziele gemildert, für ihr drittes
+  (und für den unveränderten Default der ersten beiden) trifft sie weiter zu — `state.md`
+  dokumentiert das als Stand, nicht als Chronik.
+- **Folge-Slices:** `slice-leser-und-aufraeum-waechter-decken-was-sie-sagen` (`open/`) — trägt den
+  Leser-/Aufräum-Bestand (`internal/emit/erfassung_test.go`, `internal/report/report_test.go`,
+  `internal/emit/templates/enforce/erfassung.mk`) samt DoD 2 und DoD 3, aus der Neuschneidung dieses
+  Slice hervorgegangen (§1/§4).
+- **Risiken aus §6:** vier, jedes mit genau einem Ausgang — Risiko 1 *eingetreten* (Rückführung mit
+  Neuschnitt), Risiko 2 *entfallen* (comm-Ergebnis deckungsgleich, kein Fall reißt zwei Wächter),
+  Risiko 3 *entfallen* (zwei individuell begründete Grenz-Kommentare), Risiko 4 *entfallen* (Fall
+  393 und die `full-smoke`-`span-report`-Zähne messen unabhängige Eigenschaften an unabhängigen
+  Beständen) — Details je bei §6.
+- **Drei Paarungen** (Repo ohne Wellen-Betrieb, hier geprüft):
+  (a) **Anker-Paarung** — kein Eintrag dieser Closure trägt `liegt in <Zielort>` (kein
+  Register-Eintrag erreicht mit diesem Slice erstmals 3×), daher nichts zu prüfen.
+  (b) **Folge-Slice-Paarung** — `slice-leser-und-aufraeum-waechter-decken-was-sie-sagen` existiert
+  als Datei in `open/` (`ls docs/plan/planning/open/slice-leser-und-aufraeum-waechter-decken-was-sie-sagen.md`).
+  (c) **Register-Paarung** — das neu angelegte Verzeichnis
+  `docs/plan/planning/observations/BEO-ALL/lokaler-full-smoke-scheitert-auf-macos-host/` existiert
+  mit einer nicht-leeren `evidence/` (jetzt ein Eintrag); die beiden bereits verkörperten
+  Register-Einträge, auf die Risiko 2/3 sich stützen, existieren unverändert mit nicht-leerer
+  `evidence/`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
