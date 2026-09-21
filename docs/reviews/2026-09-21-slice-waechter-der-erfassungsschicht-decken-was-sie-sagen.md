@@ -1,7 +1,7 @@
 # Review-Report: slice-waechter-der-erfassungsschicht-decken-was-sie-sagen — 2026-09-21
 
 **Review-Art:** Code — Diff geprüft gegen den (auf einen Liefer-Punkt reduzierten) Slice-Plan
-`docs/plan/planning/next/slice-waechter-der-erfassungsschicht-decken-was-sie-sagen.md` §1/§2 sowie
+`docs/plan/planning/done/slice-waechter-der-erfassungsschicht-decken-was-sie-sagen.md` §1/§2 sowie
 gegen den realen Test-/Mutations-Bestand (Modul 10 §Drei Review-Arten). Der Plan wurde durch die
 in §4 vorab benannte und am 2026-09-20 eingetretene Rückführung mit Neuschnitt auf genau den
 Träger- und Feldlisten-Bestand reduziert; dieser Commit ist der bereits vollständig gelieferte Teil
