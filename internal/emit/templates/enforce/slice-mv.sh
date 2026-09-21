@@ -67,6 +67,20 @@ set -euo pipefail
 PLANNING="docs/plan/planning"
 LIFECYCLE="open next in-progress done"
 
+# psed_i — portables `sed -i`: BSD-sed (macOS) verlangt nach `-i` zwingend eine eigene
+# Backup-Extension als naechstes Token (auch leer) und verschluckt sonst das naechste
+# Argument dafuer — ein blosses `sed -i -E SCRIPT FILE` (Extension = "-E", -E greift
+# nicht) scheitert dort mit "\1 not defined in the RE", auf GNU-sed nicht. Kein -i:
+# Ausgabe in eine temporaere Datei, dann verschieben — identisches Verhalten auf GNU
+# und BSD. Aufruf wie `sed -i`: optionale Flags, dann SCRIPT, dann FILE als letztes
+# Argument.
+psed_i() {
+  local tmp
+  tmp="$(mktemp -p "${TMPDIR:-/tmp}")"
+  sed "$@" >"$tmp"
+  mv "$tmp" "${!#}"
+}
+
 # REPO-POLITIK (s. Kopf): die `git grep`-Pathspecs, die der EINGEHEND-Nachzug
 # NICHT durchsucht — whitespace-getrennt, eine Angabe je Eintrag. Die Vorgabe
 # ist aus dem mitemittierten Regelwerk abgeleitet (Fremdtext und die Hard Rule
@@ -114,7 +128,7 @@ eingehend_ausgenommene_pfade() {
 rewrite_incoming_in_file() {  # $1=datei $2=base $3=from $4=to
   local file="$1" base="$2" from="$3" to="$4" esc_base
   esc_base="$(re_escape "$base")"
-  sed -i -E "s#(^|[^A-Za-z0-9_-])$from/$esc_base#\\1$to/$base#g" "$file"
+  psed_i -E "s#(^|[^A-Za-z0-9_-])$from/$esc_base#\\1$to/$base#g" "$file"
 }
 
 # EINGEHEND, PRAEFIXLOS: jeder Markdown-Link "](<base>)" oder "](<base>#…)" in
@@ -131,7 +145,7 @@ rewrite_incoming_bare_in_file() {  # $1=datei $2=base $3=to
   local file="$1" base="$2" to="$3" esc_base count
   esc_base="$(re_escape "$base")"
   count="$( { grep -oE "[]]\\(${esc_base}[)#]" "$file" 2>/dev/null || true; } | wc -l)"
-  sed -i -E "s|[]]\\($esc_base([)#])|](../$to/$base\\1|g" "$file"
+  psed_i -E "s|[]]\\($esc_base([)#])|](../$to/$base\\1|g" "$file"
   printf '%d\n' "$((count))"
 }
 
@@ -150,7 +164,7 @@ rewrite_outgoing_bare_in_file() {  # $1=datei $2=from
     [ -n "$t" ] || continue
     [ -f "$PLANNING/$from/$t" ] || continue
     esc_t="$(re_escape "$t")"
-    sed -i -E "s#\\]\\($esc_t\\)#](../$from/$t)#g" "$file"
+    psed_i -E "s#\\]\\($esc_t\\)#](../$from/$t)#g" "$file"
     count=$((count + 1))
   done < <(grep -ohE '\]\(slice-[0-9a-z][^)/]*\)' "$file" 2>/dev/null \
              | sed -E 's/^\]\(//; s/\)$//' | sort -u)

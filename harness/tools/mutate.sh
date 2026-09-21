@@ -394,8 +394,10 @@ isolation_key() {
 # prepare_prerun_log legt das Verzeichnis fuer das Protokoll des Gruen-Vorlaufs an und
 # liefert den Pfad der Log-Datei darin — dasselbe mktemp-Muster, das run_case fuer sein
 # Sensor-Log benutzt, und dieselbe Ortsregel wie isolation_path: ein Ziel UNTER dem Repo
-# faellt fail-closed. Wohin `mktemp -d` zeigt, entscheidet $TMPDIR; im Repo laege das
-# Protokoll ungetrackt im Working Tree und verschoebe mitten im Lauf den
+# faellt fail-closed. Wohin `mktemp -d -p "${TMPDIR:-/tmp}"` zeigt, entscheidet $TMPDIR
+# explizit — ein blosses `mktemp -d` ignoriert $TMPDIR auf BSD-mktemp (macOS) und legt
+# immer unter dem System-Default (/var/folders/…) an, unabhaengig vom gesetzten Wert.
+# Im Repo laege das Protokoll ungetrackt im Working Tree und verschoebe mitten im Lauf den
 # MR-003-Nachweis-Stempel, den harness/tools/working-tree-hash.sh ueber getrackte UND
 # untrackte Dateien rechnet.
 #
@@ -404,7 +406,7 @@ isolation_key() {
 # dass der EXIT-trap des gesourcten Treibers das Messobjekt vorher wegraeumt.
 prepare_prerun_log() {
   local dir
-  dir="$(mktemp -d)" || return 1
+  dir="$(mktemp -d -p "${TMPDIR:-/tmp}")" || return 1
   case "$dir" in
     "$REPO" | "$REPO"/*)
       echo "mutate: ABBRUCH — das Vorlauf-Protokoll laege im Repo ($dir)." >&2
@@ -660,7 +662,7 @@ run_case() {
   done < <(printf '%s\n' "$files" | tr ' ' '\n' | sed '/^$/d')
 
   # Sichern (Bedingung 1-4 duerfen den Baum nie veraendert zuruecklassen).
-  BACKUP="$(mktemp -d)"
+  BACKUP="$(mktemp -d -p "${TMPDIR:-/tmp}")"
   ( cd "$WORK" && tar -cf "$BACKUP/files.tar" "${file_list[@]}" )
   # Fuer Bedingung 2 zaehlt der INHALT, nicht die Metadaten: `sed -i` (wie zuvor
   # `perl -pi`) schreibt die Datei auch dann neu, wenn keine Substitution greift —
@@ -1577,7 +1579,7 @@ main() {
     echo "  Ohne ihn liefe der Lauf ohne den Beleg, dass der Host-Baum unberuehrt bleibt." >&2
     exit 1
   fi
-  ISO_ROOT="$(mktemp -d)"
+  ISO_ROOT="$(mktemp -d -p "${TMPDIR:-/tmp}")"
   RUN_DIR="$ISO_ROOT/run"
   mkdir -p "$RUN_DIR"
   # Deskriptor 3 ist die Fortschritts-Ausgabe des Laufs. Die Worker leiten stdout und

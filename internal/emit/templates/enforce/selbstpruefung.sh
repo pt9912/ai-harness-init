@@ -130,7 +130,7 @@ echo "selbstpruefung: Quelle=[$quelle] (der Klon traegt den Stand von HEAD)"
 echo "selbstpruefung: Traeger, Aktivierung, die zwei Commit-Ausgaenge und das Gate-Kommando im frischen Klon ..."
 e2e_abdeckung "—" "Der Traeger der Commit-Kennung greift im frischen Klon, und das Gate-Kommando laeuft dort gruen" "der frische Klon traegt lokal keinen core.hooksPath"
 
-arbeit="$(mktemp -d)"
+arbeit="$(mktemp -d -p "${TMPDIR:-/tmp}")"
 trap 'rm -rf "$arbeit"' EXIT
 # mktemp -d liefert 0700. Laeuft das Gate-Kommando in einem Container als
 # Nicht-Root, kann er einen 0700-Pfad nicht traversieren.

@@ -20,6 +20,34 @@ set -euo pipefail
 
 HIER="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# psed_i — portables `sed -i`: BSD-sed (macOS) verlangt nach `-i` zwingend eine eigene
+# Backup-Extension als naechstes Token (auch leer) und verschluckt sonst das naechste
+# Argument dafuer — ein blosses `sed -i SCRIPT FILE` (Extension = FILE, FILE fehlt als
+# Ziel) oder `sed -i -E SCRIPT FILE` (Extension = "-E", -E greift nicht) scheitert dort
+# mit "extra characters"/"\1 not defined in the RE", auf GNU-sed nicht. Kein -i: Ausgabe
+# in eine temporaere Datei, dann verschieben — identisches Verhalten auf GNU und BSD.
+# Aufruf wie `sed -i`: optionale Flags, dann SCRIPT, dann FILE als letztes Argument.
+psed_i() {
+	local tmp
+	tmp="$(mktemp -p "${TMPDIR:-/tmp}")"
+	sed "$@" >"$tmp"
+	mv "$tmp" "${!#}"
+}
+
+# MAKE_JFLAGS — die parallelen Gate-Laeufe puffern ihre Ausgabe je Target
+# (--output-sync=target/-Otarget), sonst zerhackt ein langer Docker-Build (z. B. der
+# apt-Lauf des C++-Bildes) die Recipe-Echo-Zeilen ANDERER paralleler Targets, und der
+# Marker-Grep der jeweiligen Stufe faende seine Zeile nicht mehr. -Otarget ist ein
+# GNU-Make-4.0-Feature; macOS liefert mit den Xcode Command Line Tools GNU Make 3.81
+# aus (GPLv2-Einfrierung) und lehnt das Flag als unbekannte Kurzoptionen ab (-O, -a, …).
+# Ohne Output-Sync bleibt der Lauf FUNKTIONAL unveraendert (semantik-neutral laut
+# Ursprungs-Kommentar) — nur die Ausgabe kann interleaven, was auf einem 3.81-Host in
+# Kauf genommen wird, statt den ganzen Zahn dort abzubrechen.
+MAKE_JFLAGS=(-j)
+if make --version 2>/dev/null | head -1 | grep -qE 'GNU Make ([4-9]|[0-9]{2,})\.'; then
+	MAKE_JFLAGS=(-j -Otarget)
+fi
+
 # einordnen sagt fuer einen fehlgeschlagenen Abschnitt, welcher der zwei Ausgaenge
 # vorliegt: eine ausgehende Anfrage nach einem gepinnten Artefakt blieb unbeantwortet
 # (LEITUNG) oder der gepruefte Baum ist rot (BAUM). Der Aufruf steht NEBEN der
@@ -119,21 +147,21 @@ e2e_abdeckung() {
 }
 
 GO_VERSION="${GO_VERSION:-1.27.0}"
-tmpbin="$(mktemp -d)"
+tmpbin="$(mktemp -d -p "${TMPDIR:-/tmp}")"
 # Elternverzeichnis der zwei Klone, die der Vorlauf-Waechter-Abschnitt derselben Quelle
 # anlegt (flach und vollstaendig). chmod 755 aus demselben Grund wie beim tmprepo-Root
 # unten: das d-check-Modul mountet sie read-only in einen Nicht-Root-Container.
-tmpklon="$(mktemp -d)"
-tmprepo="$(mktemp -d)"
+tmpklon="$(mktemp -d -p "${TMPDIR:-/tmp}")"
+tmprepo="$(mktemp -d -p "${TMPDIR:-/tmp}")"
 git init -q "$tmprepo"
-tmprepo_doc="$(mktemp -d)"
+tmprepo_doc="$(mktemp -d -p "${TMPDIR:-/tmp}")"
 git init -q "$tmprepo_doc"
-tmprepo_hex="$(mktemp -d)"
+tmprepo_hex="$(mktemp -d -p "${TMPDIR:-/tmp}")"
 git init -q "$tmprepo_hex"
-tmprepo_cpphex="$(mktemp -d)"
+tmprepo_cpphex="$(mktemp -d -p "${TMPDIR:-/tmp}")"
 git init -q "$tmprepo_cpphex"
-tmprepo_traeger="$(mktemp -d)"
-tmprepo_mixed="$(mktemp -d)"
+tmprepo_traeger="$(mktemp -d -p "${TMPDIR:-/tmp}")"
+tmprepo_mixed="$(mktemp -d -p "${TMPDIR:-/tmp}")"
 git init -q "$tmprepo_mixed"
 # EIGENES ZIEL FUER DIE SELBSTPRUEFUNG, weil sie einen KLON ihres Ziels faehrt und darin
 # dessen Gate-Kette: gelesen wird damit der committete Stand, nicht das Arbeitsverzeichnis.
@@ -142,7 +170,7 @@ git init -q "$tmprepo_mixed"
 # Repo-Politik des Fragments unberuehrt, mitsamt ihrem Verweis auf den bewegten Slice);
 # ihr Klon waere darum nie gruen, und das Rot kaeme aus dem Fixture statt aus dem
 # Pruefgegenstand.
-tmprepo_selbst="$(mktemp -d)"
+tmprepo_selbst="$(mktemp -d -p "${TMPDIR:-/tmp}")"
 git init -q "$tmprepo_selbst"
 cleanup() { rm -rf "$tmpbin" "$tmpklon" "$tmprepo" "$tmprepo_doc" "$tmprepo_hex" "$tmprepo_cpphex" "$tmprepo_selbst" "$tmprepo_traeger" "$tmprepo_mixed"; }
 trap cleanup EXIT
@@ -356,17 +384,22 @@ feldliste_deckt_die_zeile() {
 	echo "full-smoke: Feldliste deckt die Zeile ($label): alle $gemessen Feldnamen der geschriebenen Span-Zeile haben ihre Zeile in $FELDLISTE_REL."
 }
 
-echo "full-smoke: 1/3 natives Release-Binary auf den Host extrahieren (make artifact) ..."
+# ARTIFACT_TARGET waehlt, WIE das Binary auf den Host kommt: `artifact` (Default,
+# byte-identisch, slice-048/LH-QA-04) oder `artifact-host` (fuer den Host
+# cross-kompiliert — additiv, fuer Hosts, deren Kernel/Architektur vom Docker-
+# Build-Image abweicht; s. Makefile `full-smoke-host`).
+ARTIFACT_TARGET="${SMOKE_ARTIFACT_TARGET:-artifact}"
+echo "full-smoke: 1/3 natives Release-Binary auf den Host extrahieren (make $ARTIFACT_TARGET) ..."
 	e2e_abdeckung "LH-FA-01" "Produkt-Traeger liegt auf dem Host; ohne ihn laeuft kein Ziel-Bootstrap" "das Release-Binary kam nicht auf den Host"
 # Die Ausgabe wird EINGEFANGEN und danach gedruckt, statt zu stroemen: nur eingefangen
 # steht sie der Einordnung zur Verfuegung. Unter pipefail traegt der Zuweisungs-Exit
 # den Exit der make-Stufe.
 artefakt_rc=0
-artefakt_out="$( make artifact DEST="$tmpbin" GO_VERSION="$GO_VERSION" 2>&1 )" || artefakt_rc=$?
+artefakt_out="$( make "$ARTIFACT_TARGET" DEST="$tmpbin" GO_VERSION="$GO_VERSION" 2>&1 )" || artefakt_rc=$?
 printf '%s\n' "$artefakt_out"
 if [ "$artefakt_rc" -ne 0 ]; then
-	echo "full-smoke: FEHLER — make artifact ist NICHT Exit 0: das Release-Binary kam nicht auf den Host (Exit $artefakt_rc)." >&2
-	einordnen "make artifact (Host-Bau und Extraktion des Release-Binaers)" "$artefakt_out"
+	echo "full-smoke: FEHLER — make $ARTIFACT_TARGET ist NICHT Exit 0: das Release-Binary kam nicht auf den Host (Exit $artefakt_rc)." >&2
+	einordnen "make $ARTIFACT_TARGET (Host-Bau und Extraktion des Release-Binaers)" "$artefakt_out"
 	exit 1
 fi
 
@@ -763,21 +796,27 @@ vorlauf_waechter_im_ziel() {
 	# d-check.mk der laute Abbruch, ueber dem unverfaelschten das Gruen aus (e) fuer
 	# doc-immutable und der Modul-Lauf fuer doc-commits.
 	cp "$voll/d-check.mk" "$voll/d-check.mk.orig"
-	sed -i -E 's/^(doc-immutable|doc-commits):/doc-ohne-definition-\1:/' "$voll/d-check.mk"
+	psed_i -E 's/^(doc-immutable|doc-commits):/doc-ohne-definition-\1:/' "$voll/d-check.mk"
 	vorbindung_ohne_zieldefinition "$voll" doc-immutable "$kennung"
 	vorbindung_ohne_zieldefinition "$voll" doc-commits "$kennung"
 	# Zweiter Auslöser derselben Klasse: die Ziel-Zeile bleibt, ihr Rezept geht — an BEIDEN
 	# Zielen, denn die Probe ist EINE Quelle und beide Aufrufer lesen sie.
 	cp "$voll/d-check.mk.orig" "$voll/d-check.mk"
-	sed -i '/^doc-immutable:/{n;d}' "$voll/d-check.mk"
+	psed_i '/^doc-immutable:/{
+n
+d
+}' "$voll/d-check.mk"
 	vorbindung_ohne_zieldefinition "$voll" doc-immutable "$kennung"
 	cp "$voll/d-check.mk.orig" "$voll/d-check.mk"
-	sed -i '/^doc-commits:/{n;d}' "$voll/d-check.mk"
+	psed_i '/^doc-commits:/{
+n
+d
+}' "$voll/d-check.mk"
 	vorbindung_ohne_zieldefinition "$voll" doc-commits "$kennung"
 	# Drittens die Randlage: dasselbe verfaelschte d-check.mk OHNE das Probe-Werkzeug im PATH.
 	# Ein unbekannter Ausgang darf nicht in den permissiven Zweig fallen.
 	cp "$voll/d-check.mk.orig" "$voll/d-check.mk"
-	sed -i -E 's/^(doc-immutable|doc-commits):/doc-ohne-definition-\1:/' "$voll/d-check.mk"
+	psed_i -E 's/^(doc-immutable|doc-commits):/doc-ohne-definition-\1:/' "$voll/d-check.mk"
 	vorbindung_ohne_probewerkzeug "$voll" doc-immutable "$kennung"
 	# Viertens die Zusage gegen den Aufruf: DOC_GATE_ZIEL=da auf der Kommandozeile setzt die
 	# Entscheidung nicht ausser Kraft.
@@ -828,7 +867,7 @@ modul_zahn_alte_module_gruen() {
 	local repo="$1" kennung="$2"
 	local out="" rc=0
 	cp "$repo/.d-check.yml" "$repo/.d-check.yml.zahn-bak"
-	sed -i 's/^modules: \[links, anchors, ids, matrix, spans\]$/modules: [links, anchors]/' "$repo/.d-check.yml"
+	psed_i 's/^modules: \[links, anchors, ids, matrix, spans\]$/modules: [links, anchors]/' "$repo/.d-check.yml"
 	out="$( make -C "$repo" docs-check 2>&1 )" || rc=$?
 	mv "$repo/.d-check.yml.zahn-bak" "$repo/.d-check.yml"
 	if [ "$rc" -ne 0 ]; then
@@ -844,7 +883,7 @@ matrix_doc="$tmprepo/spec/lastenheft.md"
 matrix_adr="$tmprepo/docs/plan/adr/9999-smoke-zahn.md"
 cp "$matrix_doc" "$matrix_doc.orig"
 printf '# ADR-9999: Smoke-Zahn\n\n**Status:** Accepted\n\n## Kontext\n\nSmoke.\n' >"$matrix_adr"
-sed -i '5a\
+psed_i '5a\
 \
 Siehe [ADR-9999](../docs/plan/adr/9999-smoke-zahn.md) fuer Kontext.
 ' "$matrix_doc"
@@ -871,7 +910,7 @@ rm -f "$matrix_adr"
 # (order:/direction: no-downward auf der spec-straten-Klasse).
 matrixdown_doc="$tmprepo/spec/lastenheft.md"
 cp "$matrixdown_doc" "$matrixdown_doc.orig"
-sed -i '5a\
+psed_i '5a\
 \
 Siehe [spec/spezifikation.md](spezifikation.md) fuer Details (Abwaertslink, Zahn).
 ' "$matrixdown_doc"
@@ -898,7 +937,7 @@ mv "$matrixdown_doc.orig" "$matrixdown_doc"
 # spec-straten -> adr oben deckt nur den Abwaerts-Fall; diese hier deckt jedes andere Ziel.
 matrixaussen_doc="$tmprepo/spec/lastenheft.md"
 cp "$matrixaussen_doc" "$matrixaussen_doc.orig"
-sed -i '5a\
+psed_i '5a\
 \
 Siehe [README](../README.md) fuer den Ueberblick (Referenz nach aussen, Zahn).
 ' "$matrixaussen_doc"
@@ -924,7 +963,7 @@ mv "$matrixaussen_doc.orig" "$matrixaussen_doc"
 # klickbaren Verweis auch in Prosa.
 ids_doc="$tmprepo/spec/lastenheft.md"
 cp "$ids_doc" "$ids_doc.orig"
-sed -i '5a\
+psed_i '5a\
 \
 Siehe ADR-9998 fuer Kontext (bare Kennung, kein Link).
 ' "$ids_doc"
@@ -952,7 +991,7 @@ mv "$ids_doc.orig" "$ids_doc"
 # ihre eigenen Kennungen blank. Die Klasse aussen deckt Referenzen, nicht Kennungen.
 matrixmr_doc="$tmprepo/spec/lastenheft.md"
 cp "$matrixmr_doc" "$matrixmr_doc.orig"
-sed -i '5a\
+psed_i '5a\
 \
 Siehe MR-001 fuer die Abweichung (bare Kennung, kein Link).
 ' "$matrixmr_doc"
@@ -1574,6 +1613,25 @@ traeger_fetch_im_ziel() {
 	local skript="$repo/tools/harness/traeger-fetch.sh"
 	local carrier=".harness/state/bin/ai-harness-init"
 	local klon="$tmprepo_traeger"
+	# Plattform-spezifischer Pin-Name des HOST — dieselbe Zuordnung wie in
+	# harness/tools/traeger-fetch.sh (os/arch -> TRAEGER_SHA256_<PLAT>_<ARCH>). Der
+	# Negative-Fall unten muss GENAU DIESEN Namen verdrehen, sonst verifiziert der Fetch
+	# gegen den unveraenderten, richtigen Pin und der Fall ist wirkungslos.
+	local ts_os="" ts_arch="" ts_plat="" ts_a="" ts_pin_var=""
+	ts_os="$(uname -s)"
+	ts_arch="$(uname -m)"
+	case "$ts_os" in
+	Linux) ts_plat="LINUX" ;;
+	Darwin) ts_plat="DARWIN" ;;
+	MINGW* | MSYS* | CYGWIN*) ts_plat="WINDOWS" ;;
+	*) ts_plat="LINUX" ;;
+	esac
+	case "$ts_arch" in
+	x86_64 | amd64) ts_a="AMD64" ;;
+	aarch64 | arm64) ts_a="ARM64" ;;
+	*) ts_a="AMD64" ;;
+	esac
+	ts_pin_var="TRAEGER_SHA256_${ts_plat}_${ts_a}"
 
 	if [ ! -f "$frag" ]; then
 		echo "full-smoke: FEHLER — $kennung: das Fragment des Traeger-Fetch liegt nicht im Ziel (harness/mk/traeger.mk, ADR-0058 Festlegung 3)." >&2
@@ -1641,7 +1699,7 @@ traeger_fetch_im_ziel() {
 	local vor="" nach="" verdreht="" neg="" neg_rc=0 neg_flach=""
 	vor="$(sha256sum "$klon/$carrier" | awk '{print $1}')"
 	verdreht="0000000000000000000000000000000000000000000000000000000000000000"
-	neg="$( make --no-print-directory -C "$klon" traeger-fetch TRAEGER_SHA256_LINUX_AMD64="$verdreht" 2>&1 )" || neg_rc=$?
+	neg="$( make --no-print-directory -C "$klon" traeger-fetch "$ts_pin_var=$verdreht" 2>&1 )" || neg_rc=$?
 	neg_flach="$(tr -s '[:space:]' ' ' <<<"$neg")"
 	if [ "$neg_rc" -eq 0 ]; then
 		echo "full-smoke: FEHLER — $kennung: der verdrehte sha256-Pin endete mit 0 — die Digest-Verifizierung haelt den Pin nicht fail-closed (ADR-0058 Festlegung 1, LH-QA-02). Ausgabe:" >&2
@@ -2216,7 +2274,7 @@ cpp_rc=0
 # Progress, der ohne Output-Sync die make-Recipe-Echo-Zeilen ANDERER Targets zerhackt
 # (der Marker-Grep unten faende die Recipe-Zeile dann nicht). -Otarget puffert je Target
 # und gibt sie zusammenhaengend aus — semantik-neutral, nur die Ausgabe-Reihenfolge.
-cpp_out="$( make -j -Otarget -C "$tmprepo_doc" gates 2>&1 )" || cpp_rc=$?
+cpp_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || cpp_rc=$?
 printf '%s\n' "$cpp_out"
 if [ "$cpp_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates nach add-lang cpp ist NICHT Exit 0 (C++-Gate kaputt, slice-039)." >&2
@@ -2338,7 +2396,7 @@ if [ -e "$tmprepo_doc/apps/onion/CMakeLists.txt" ]; then
 	exit 1
 fi
 hex_rc=0
-hex_out="$( make -j -Otarget -C "$tmprepo_doc" gates 2>&1 )" || hex_rc=$?
+hex_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || hex_rc=$?
 printf '%s\n' "$hex_out"
 if [ "$hex_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates nach add-lang --arch hexslice ist NICHT Exit 0 (hexSlice-Code uebersetzt/lintet nicht, slice-045b)." >&2
@@ -2393,7 +2451,7 @@ hexdomain="$tmprepo_doc/apps/hex/internal/hexagon/domain/example/greeting.go"
 cp "$hexdomain" "$hexdomain.orig"
 # Import in die Adapter-Schicht einschmuggeln (blank import: kompiliert, verletzt aber die
 # Richtung) — der sed haengt ihn an die vorhandene errors-Import-Zeile.
-sed -i 's|^import "errors"$|import (\n\t"errors"\n\n\t_ "app/internal/adapters/driven/notify"\n)|' "$hexdomain"
+psed_i 's|^import "errors"$|import (\n\t"errors"\n\n\t_ "app/internal/adapters/driven/notify"\n)|' "$hexdomain"
 teeth_rc=0
 teeth_out="$( make -C "$tmprepo_doc" a-check-apps-hex 2>&1 )" || teeth_rc=$?
 mv "$hexdomain.orig" "$hexdomain"
@@ -2440,7 +2498,7 @@ for rel in apps/cpphex/src/hexagon/domain/example/greeting.hpp \
 	fi
 done
 cpphex_rc=0
-cpphex_out="$( make -j -Otarget -C "$tmprepo_doc" gates 2>&1 )" || cpphex_rc=$?
+cpphex_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || cpphex_rc=$?
 printf '%s\n' "$cpphex_out"
 if [ "$cpphex_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates nach add-lang cpp --arch hexslice ist NICHT Exit 0 (C++-hexSlice uebersetzt/lintet nicht, slice-053)." >&2
@@ -2490,7 +2548,7 @@ cp "$cpplint_layer" "$cpplint_layer.orig"
 # der Befund kommt also wirklich vom Linter und nicht vom Compiler. Eingefuegt vor der
 # schliessenden Namensraum-Zeile — reines sed, kein python/jq (LH-QA-03: das Repo kommt
 # mit bash + git + docker aus).
-sed -i 's|^}  // namespace hexagon::domain::example$|inline bool full_smoke_probe(bool b) { if (b) { return true; } else { return true; } }\n\n}  // namespace hexagon::domain::example|' "$cpplint_layer"
+psed_i 's|^}  // namespace hexagon::domain::example$|inline bool full_smoke_probe(bool b) { if (b) { return true; } else { return true; } }\n\n}  // namespace hexagon::domain::example|' "$cpplint_layer"
 cpplint_rc=0
 cpplint_out="$( make -C "$tmprepo_doc" lint-apps-cpphex 2>&1 )" || cpplint_rc=$?
 mv "$cpplint_layer.orig" "$cpplint_layer"
@@ -2516,7 +2574,11 @@ grep -F -- 'bugprone-branch-clone' <<<"$cpplint_out" | sed -n '1,2s/^/full-smoke
 cpparch_layer="$tmprepo_doc/apps/cpphex/src/hexagon/domain/example/greeting.hpp"
 cp "$cpparch_layer" "$cpparch_layer.orig"
 # Der Include steht modul-root-relativ — nur diese Form loest a-check auf (slice-053).
-sed -i '1i #include "src/adapters/driven/notify/stdout.hpp"' "$cpparch_layer"
+# Backslash-Fortsetzungsform statt `1i text` — GNU-sed akzeptiert beides, BSD-sed
+# (macOS) nur die klassische Form ("command i expects \ followed by text" sonst).
+psed_i '1i\
+#include "src/adapters/driven/notify/stdout.hpp"
+' "$cpparch_layer"
 cpparch_rc=0
 cpparch_out="$( make -C "$tmprepo_doc" a-check-apps-cpphex 2>&1 )" || cpparch_rc=$?
 mv "$cpparch_layer.orig" "$cpparch_layer"
@@ -2593,7 +2655,7 @@ for rel in .a-check.yml a-check.mk harness/mk/arch-cpp.mk src/hexagon/domain/exa
 	fi
 done
 cpproot_rc=0
-cpproot_out="$( make -j -Otarget -C "$tmprepo_cpphex" gates 2>&1 )" || cpproot_rc=$?
+cpproot_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_cpphex" gates 2>&1 )" || cpproot_rc=$?
 printf '%s\n' "$cpproot_out"
 if [ "$cpproot_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates am cpp-Root-Modul ist NICHT Exit 0 (Include-Pfad am Root? Schicht-Config falsch verortet? slice-054)." >&2
@@ -2641,7 +2703,7 @@ for rel in apps/hex2/.a-check.yml harness/mk/arch-apps-hex2.mk; do
 	fi
 done
 two_rc=0
-two_out="$( make -j -Otarget -C "$tmprepo_doc" gates 2>&1 )" || two_rc=$?
+two_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || two_rc=$?
 if [ "$two_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates mit ZWEI hexSlice-Modulen ist NICHT Exit 0 (doppelter include? slice-046/Review F-2). rc=$two_rc" >&2
 	printf '%s\n' "$two_out" >&2
@@ -2711,7 +2773,7 @@ if [ -e "$tmprepo_doc/apps/cpphexagonal/CMakeLists.txt" ]; then
 	exit 1
 fi
 hexagonal_rc=0
-hexagonal_out="$( make -j -Otarget -C "$tmprepo_doc" gates 2>&1 )" || hexagonal_rc=$?
+hexagonal_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || hexagonal_rc=$?
 if [ "$hexagonal_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates mit dem hexagonalen Modul ist NICHT Exit 0 (Schichten-Code uebersetzt/lintet nicht, slice-058)." >&2
 	printf '%s\n' "$hexagonal_out" >&2
@@ -2732,7 +2794,7 @@ fi
 # Regel-NAMEN, sonst waere „rot" auch aus einem Compile-Fehler erklaerbar.
 hexcore="$tmprepo_doc/apps/hexagonal/internal/hexagon/core/greeting.go"
 cp "$hexcore" "$hexcore.orig"
-sed -i 's|^import "errors"$|import (\n\t"errors"\n\n\t_ "app/internal/adapter/driven/memory"\n)|' "$hexcore"
+psed_i 's|^import "errors"$|import (\n\t"errors"\n\n\t_ "app/internal/adapter/driven/memory"\n)|' "$hexcore"
 impurity_rc=0
 impurity_out="$( make -C "$tmprepo_doc" a-check-apps-hexagonal 2>&1 )" || impurity_rc=$?
 mv "$hexcore.orig" "$hexcore"
@@ -2755,7 +2817,7 @@ grep -F -- 'app-impurity' <<<"$impurity_out" | sed -n '1,2s/^/full-smoke:   /p'
 # Layouts und KEINE Kante: kein Kanten-Waechter faengt sie, eine Kante hoebe sie nicht auf.
 hexdriving="$tmprepo_doc/apps/hexagonal/internal/adapter/driving/cli/cli.go"
 cp "$hexdriving" "$hexdriving.orig"
-sed -i 's|^\t"app/internal/hexagon/core"$|\t"app/internal/hexagon/core"\n\t_ "app/internal/adapter/driven/memory"|' "$hexdriving"
+psed_i 's|^\t"app/internal/hexagon/core"$|\t"app/internal/hexagon/core"\n\t_ "app/internal/adapter/driven/memory"|' "$hexdriving"
 lateral_rc=0
 lateral_out="$( make -C "$tmprepo_doc" a-check-apps-hexagonal 2>&1 )" || lateral_rc=$?
 mv "$hexdriving.orig" "$hexdriving"

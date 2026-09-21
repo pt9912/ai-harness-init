@@ -52,7 +52,7 @@ TRAEGER_SHA256_WINDOWS_ARM64 ?= 8529f10d6853e91b9033314f0f3d2ab3926a6512c798adc0
 TRAEGER_CARRIER ?= .harness/state/bin/ai-harness-init
 export TRAEGER_TAG TRAEGER_SHA256_LINUX_AMD64 TRAEGER_SHA256_LINUX_ARM64 TRAEGER_SHA256_DARWIN_AMD64 TRAEGER_SHA256_DARWIN_ARM64 TRAEGER_SHA256_WINDOWS_AMD64 TRAEGER_SHA256_WINDOWS_ARM64 TRAEGER_CARRIER
 
-.PHONY: help gates record-gates test test-bats test-go lint build compile artifact release-artifacts smoke full-smoke shell-lint ci-lint comment-claims history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle traeger-fetch vendor-baseline
+.PHONY: help gates record-gates test test-bats test-go lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle traeger-fetch vendor-baseline
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
@@ -86,9 +86,28 @@ build: ## Go-Binary cross-compilieren (Dockerfile build-Stage, gepinntes Image) 
 # Build und Copy entkoppelt (kein --output-Fusion). Kein OCI-Image als Vertriebsmittel
 # (ADR-0003); die Smokes lassen die Binary auf dem Host laufen (sie ruft selbst docker).
 # Der Container wird immer aufgeraeumt (trap), auch wenn `docker cp` scheitert.
+#
+# BYTE-IDENTISCH, ABSICHTLICH (slice-048, LH-QA-04): kein TARGET_OS/TARGET_ARCH hier —
+# die build-Stage kompiliert dann fuer die Plattform des Build-Images (heute: Linux),
+# nicht fuer den Host. Auf einem Linux-Host faellt das zusammen; auf macOS/Windows nicht
+# (Docker baut dort ohnehin nie fuer den Host-Kernel) — `smoke`/`full-smoke` sind dort
+# LT LH-QA-04 nicht als grün zugesagt. Fuer einen lokal LAUFFAEHIGEN Smoke auf so einem
+# Host: `artifact-host` + `make smoke-host`/`full-smoke-host` (additiv, ruehrt dieses
+# Ziel nicht an).
 artifact: build ## Natives Release-Binary auf den Host ziehen (DEST=<dir>) — für die Smokes, Docker-only
 	@test -n "$(DEST)" || { echo "artifact: DEST=<dir> ist Pflicht (Zielverzeichnis)"; exit 2; }
 	@bash harness/tools/artifact-copy.sh ai-harness-init:build "$(DEST)" ai-harness-init
+
+# WIE `artifact`, aber fuer den HOST cross-kompiliert (wie `host-bin`) statt den
+# byte-identischen Default-Pfad zu nehmen (LH-QA-04, s. o.) — additiv, fuer lokale
+# Smokes auf einem Host, dessen Kernel/Architektur vom Docker-Build-Image abweicht
+# (macOS, Windows, ein abweichendes CPU-Arch). Rührt `artifact`/`build` nicht an.
+artifact-host: ## Wie artifact, aber fuer den HOST cross-kompiliert (DEST=<dir>) — additiv, für lokale Smokes auf Nicht-Linux-Hosts
+	@test -n "$(DEST)" || { echo "artifact-host: DEST=<dir> ist Pflicht (Zielverzeichnis)"; exit 2; }
+	docker build --build-arg GO_VERSION=$(GO_VERSION) \
+		--build-arg TARGET_OS=$(HOST_OS) --build-arg TARGET_ARCH=$(HOST_ARCH) \
+		--target build -t ai-harness-init:artifact-host .
+	@bash harness/tools/artifact-copy.sh ai-harness-init:artifact-host "$(DEST)" ai-harness-init
 
 # Plattform-Matrix (LH-QA-04): ein natives Binary je GOOS/GOARCH, cross-kompiliert
 # im GEPINNTEN Image (kein Host-Toolchain, ADR-0003). Die Liste ist eine Variable,
@@ -134,11 +153,23 @@ compile: ## Schnelles Compile-Feedback (Dockerfile compile-Stage, ohne Tests/Lin
 smoke: ## Emit-Smoke: Doc-Gate in tmp-Repo emittieren + emittiertes docs-check real gruen (Host-Docker) — NICHT in gates
 	@GO_VERSION='$(GO_VERSION)' bash harness/tools/smoke.sh
 
+# WIE `smoke`, aber mit einem fuer den HOST cross-kompilierten Binary (`artifact-host`
+# statt `artifact`) — additiv, LH-QA-04/slice-048 unberuehrt (s. `artifact`). Fuer einen
+# lokal LAUFFAEHIGEN Smoke auf einem Host, dessen Kernel/Architektur vom Docker-Build-
+# Image abweicht (macOS, Windows, abweichendes CPU-Arch).
+smoke-host: ## Wie smoke, mit einem fuer den HOST cross-kompilierten Binary — additiv, für Nicht-Linux-Devhosts
+	@SMOKE_ARTIFACT_TARGET=artifact-host GO_VERSION='$(GO_VERSION)' bash harness/tools/smoke.sh
+
 # Bootstrappt ein tmp-Repo und faehrt dort den zusammengefuehrten `make gates`
 # (docs-check + Go-Gates in einem Lauf, MR-010) — der Happy-Path aus Nutzersicht
 # (LH-FA-01). Host-Docker und ggf. Netz-Pull, deshalb NICHT in gates (LH-QA-01).
 full-smoke: ## Voll-E2E: Bootstrap in tmp-Repo -> dort make gates out-of-the-box gruen (Host-Docker) — NICHT in gates
 	@GO_VERSION='$(GO_VERSION)' bash harness/tools/full-smoke.sh
+
+# WIE `full-smoke`, aber mit einem fuer den HOST cross-kompilierten Binary — additiv,
+# LH-QA-04/slice-048 unberuehrt (s. `artifact`/`smoke-host`).
+full-smoke-host: ## Wie full-smoke, mit einem fuer den HOST cross-kompilierten Binary — additiv, für Nicht-Linux-Devhosts
+	@SMOKE_ARTIFACT_TARGET=artifact-host GO_VERSION='$(GO_VERSION)' bash harness/tools/full-smoke.sh
 
 # Die Abdeckungs-Tabelle liest den TEXT von harness/tools/full-smoke.sh — kein Docker,
 # kein E2E-Lauf, deshalb auch hostlaeufig. KEIN GATE (LH-QA-01): die Tabelle aendert

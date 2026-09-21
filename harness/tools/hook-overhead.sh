@@ -128,7 +128,7 @@ fi
 }
 
 stream="hookoverhead$$"
-tmp="$(mktemp -d)"
+tmp="$(mktemp -d -p "${TMPDIR:-/tmp}")"
 trap 'rm -rf "$tmp" "$SPANS_DIR/$stream.jsonl" "$SPANS_DIR/$stream.seq" "$SPANS_DIR/.$stream.lock"' EXIT
 
 # --- Payload-Folge aus den echten Spans bauen --------------------------------

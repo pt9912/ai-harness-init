@@ -25,8 +25,13 @@
 set -euo pipefail
 
 GO_VERSION="${GO_VERSION:-1.27.0}"
-tmpbin="$(mktemp -d)"
-tmprepo="$(mktemp -d)"
+# ARTIFACT_TARGET waehlt, WIE das Binary auf den Host kommt: `artifact` (Default,
+# byte-identisch, slice-048/LH-QA-04) oder `artifact-host` (fuer den Host
+# cross-kompiliert — additiv, fuer Hosts, deren Kernel/Architektur vom Docker-
+# Build-Image abweicht; s. Makefile `smoke-host`).
+ARTIFACT_TARGET="${SMOKE_ARTIFACT_TARGET:-artifact}"
+tmpbin="$(mktemp -d -p "${TMPDIR:-/tmp}")"
+tmprepo="$(mktemp -d -p "${TMPDIR:-/tmp}")"
 git init -q "$tmprepo"
 cleanup() { rm -rf "$tmpbin" "$tmprepo"; }
 trap cleanup EXIT
@@ -34,8 +39,8 @@ trap cleanup EXIT
 # 0700-Mount nicht traversieren. Ein echtes Adopter-Git-Repo hat 0755.
 chmod 755 "$tmprepo"
 
-echo "smoke: 1/5 natives Release-Binary auf den Host extrahieren (make artifact) ..."
-make artifact DEST="$tmpbin" GO_VERSION="$GO_VERSION"
+echo "smoke: 1/5 natives Release-Binary auf den Host extrahieren (make $ARTIFACT_TARGET) ..."
+make "$ARTIFACT_TARGET" DEST="$tmpbin" GO_VERSION="$GO_VERSION"
 
 echo "smoke: 2/5 Bootstrap (--lang go): Doc-Gate + Templates + Skelett-Generierung (lokal) ..."
 ( "$tmpbin/ai-harness-init" --lang go --name smoke "$tmprepo" )

@@ -168,7 +168,10 @@ targets:
   authority: harness/README.md
   exempt-targets:
     - smoke
+    - smoke-host
     - full-smoke
+    - full-smoke-host
+    - artifact-host
     - e2e-abdeckung
     - mutate
     - span-clean
