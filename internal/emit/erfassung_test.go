@@ -32,9 +32,21 @@ const wachstumsSatz = "OHNE DIESEN AUFRUF WAECHST DER BESTAND UNBEGRENZT."
 // keinGateMarke ist die EINE Schreibweise, die eine Gate-Tabellen-Zeile ueber
 // span-report/span-clean traegt, um kein Sensor-Anspruch zu sein (modul-13-quality-gates.md
 // §Hard Rule, Baseline-Kanon: "`kein Gate` in der Zeile selbst"). Die Konstante steht an
-// GENAU EINER Stelle und wird sowohl fuer die Pruefung als auch fuer die Meldung benutzt —
-// eine zweite, wortgleiche Schreibweise im Errorf koennte gegen die Pruefung driften, und
-// wer der Meldung folgt, muesste dann trotzdem scheitern.
+// GENAU EINER Stelle und wird sowohl fuer die Pruefung als auch fuer die Meldung benutzt.
+//
+// Zwei getrennte Aussagen, nicht eine: Die PRUEFUNG unten (strings.Contains gegen
+// keinGateMarke) maß schon vor dieser Konstante nur "kein Gate" (klein) und misst
+// weiterhin nur das — daran aendert die Konstante nichts, es lag keine Laufzeit-
+// Diskrepanz zwischen Pruefung und Wirkung vor. Was vorher abwich, war ausschliesslich
+// der ERRORF-TEXT: eine zweite, davon unabhaengig getippte Kopie ("KEIN GATE",
+// Grossschreibung), die zufaellig dieselbe Zeile traf und nur beim naechsten Auseinander-
+// laufen der beiden Stellen aufgefallen waere. Die Konstante macht dieses kuenftige
+// Auseinanderlaufen baulich unmoeglich (eine Quelle statt zwei) statt es testweise zu
+// fangen — dafuer gibt es keinen eigenen rot->gruen-Beleg im Sinne von AGENTS.md §3.6,
+// weil sich am PASS/FAIL-Verhalten von TestErfassung_KeinEintragInDenGateTabellen nichts
+// aendert, das rot werden koennte. test/mutations/182-bericht-in-der-gate-tabelle.sh
+// bleibt gueltiger Beleg fuer die BREITERE Zusage dieses Tests ("ein Eintrag ohne die
+// Marke bleibt nicht unentdeckt") — nicht fuer diese Konsolidierung selbst.
 const keinGateMarke = "kein Gate"
 
 // erfassungsFragment faehrt einen echten Emit in ein frisches Verzeichnis und liefert den
