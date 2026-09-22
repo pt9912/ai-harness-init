@@ -1,4 +1,4 @@
-# Slice slice-lifecycle-werkzeuge-tragen-die-kennung: Archiv-Stub, Vorschau und Werkzeug-Commits nennen ihre Vorgänge bei der Kennung, die dieses Repo führt
+# Slice slice-lifecycle-werkzeuge-tragen-die-kennung: Archiv-Stub und Vorschau nennen ihre Vorgänge bei der Kennung, die dieses Repo führt
 
 **Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese
 Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
@@ -144,36 +144,36 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 **Zwei Liefer-Punkte**, jeder mit dem Kommando, das ihn **rot** färbt
 ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 
-- [ ] **(1) `Hervorgegangen:` erkennt die heutige Register-Kennung und baut einen Link, der
+- [x] **(1) `Hervorgegangen:` erkennt die heutige Register-Kennung und baut einen Link, der
       auflöst.** Eine Closure-Notiz, die `BEO-<KUERZEL>/<slug>` nennt, erscheint im Stub; das
       Linkziel existiert im Arbeitsbaum. Ob die abgelöste dreistellige Form daneben erkannt bleibt,
       ist eine Entscheidung dieses Slice und wird im Doc-Kommentar der Funktion begründet.
       **Rot:** `make test` — die Erwartung in `stub_test.go` und `anwenden_test.go` steht auf der
       heutigen Kennung; der Ausdruck auf die alte Form zurückgesetzt färbt sie rot. Der Zahn misst
       damit die **Eigenschaft**, nicht die abgelöste Form.
-- [ ] **(2) Jeder am ruhenden Baum beobachtbare Ausgang des schreibenden Laufs trägt eine Kennung
+- [x] **(2) Jeder am ruhenden Baum beobachtbare Ausgang des schreibenden Laufs trägt eine Kennung
       und erscheint in der Vorschau.** Beide in §1 gemessenen Stellen sind gemeint. Vorschau und
       schreibender Lauf lesen **dieselbe** Bedingung, statt sie zweimal zu führen; für einen echten
       Welle-Schlüssel erscheint der neue Ausgang **nicht** (dort trägt `planSperre` den Fall
       bereits).
       **Rot:** ein `test/mutations/`-Fall, der dem neuen Ausgang die Bedingung nimmt — die Vorschau
       meldet dann wieder zu wenig —, mit dem fallenden Wächter in seiner `# expect:`-Zeile.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] **Doku-Update — teils Ergänzung, teils Streichung.** Die Prosa in
+- [x] **Doku-Update — teils Ergänzung, teils Streichung.** Die Prosa in
       [`harness/README.md`](../../../../harness/README.md#traceability) §Traceability nennt die
       Werkzeug-Klasse nicht mehr als offen, sobald sie es nicht mehr ist; und die zwei Stellen, die
       den Ausgang ohne Kennung heute in Prosa erklären — der `ABGRENZUNG`-Block in
       [`internal/archive/vorschau.go`](../../../../internal/archive/vorschau.go) und §Grenze Punkt
       7 in [`harness/sensors/archive-welle.md`](../../../../harness/sensors/archive-welle.md) —
       fallen mit ihrem Gegenstand weg ([`AGENTS.md`](../../../../AGENTS.md) §3.7).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). **Dieses Repo führt Wellen-Betrieb** — der Träger ist die nächste Welle-Closure, hier nicht geprüft.
 
 ## 3. Plan (vor Code)
 
@@ -254,11 +254,17 @@ dasteht.
    Kennung schon vor diesem Slice); die davon zu unterscheidende Erkennungs-Seite gehörte zu DoD (3)
    und ist mit dessen Rücknahme an den Sibling zurückgegangen.
 3. **Die Bedingung aus (2) wird an zwei Stellen geschrieben statt an einer**, und die zwei laufen
-   erneut auseinander. *Absehbar:* entfallen, wenn ein Test je Richtung über einem synthetischen
-   Baum beide Stellen gegen dieselbe Quelle hält.
+   erneut auseinander. — **Ausgang: entfallen.** `internal/archive/vorschau.go` und
+   `internal/archive/anwenden.go` lesen beide dieselbe Quelle,
+   `internal/archive/collect.go` `EinPlanVorhanden()`; kein zweiter Ausdruck läuft dem ersten
+   hinterher. Gehalten von `test/mutations/395-archive-welle-go-kein-schreib-pfad-verloren.sh`.
 4. **Der Stub erkennt die alte Form nicht mehr, und ein Altbestands-Stub verliert seine Zeile.**
-   *Absehbar:* entfallen, wenn die Entscheidung aus (1) im Doc-Kommentar begründet ist und ein
-   Test die gewählte Richtung hält.
+   — **Ausgang: entfallen.** Die Entscheidung — die vor
+   [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
+   gültige dreistellige Form
+   `BEO-NNN` wird nicht mehr erkannt — steht im Doc-Kommentar an `beoRE`
+   (`internal/archive/stub.go`) begründet und ist von `TestHervorgegangenBautAnkerLinks` (heutige
+   Form) und `TestHervorgegangenAlteDreistelligeFormBleibtUnerkannt` (die Grenze) gedeckt.
 
 ## 7. Closure-Notiz
 
@@ -275,20 +281,56 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Gegenstand:** <übernommen von `slice-<Kennung>` | entfallen: <Grund>>
-  *(nur beim Ausgang ohne Arbeit; sonst Zeile löschen)*
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-kennung-a>, <slice-kennung-b>, <slice-kennung-c> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-<Kennung>.md` | `evidence/slice-<Kennung>.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+**Rolle:** Planner · **Datum:** 2026-09-22.
+
+- **Was hat funktioniert:** Der Slice-Plan war für die zwei verbliebenen Liefer-Punkte präzise
+  vorstrukturiert: Die Ausgangsmessung in §1 ((a) und (b)) benannte die Fehlerrichtung — still
+  statt laut — schon vor der Umsetzung, und beide DoD-Rot-Belege (`make test` gegen die
+  Erwartung in `stub_test.go`/`anwenden_test.go`, ein `test/mutations/`-Fall gegen den neuen
+  Ausgang) trugen direkt in die Umsetzung, ohne Nacharbeit am Plan. Verifikation hat beide
+  DoD-Punkte bestätigt.
+- **Was ging anders als geplant:** DoD (3) der ersten Fassung war scope-falsch — Erkennungs-Arbeit,
+  die zwei bereits geschriebene Planner-Dokumente (das absorbierte, bereits geschlossene
+  `slice-werkzeug-commits-tragen-eine-kennung` §4, und der weiterhin offene Sibling
+  `slice-kennungs-erkennung-traegt-die-zugelassenen-formen`) einem anderen Slice zuwiesen. Der
+  Konflikt lief als Sequenz nach Modul 8 §Konflikt-Pfad: Reviewer-HIGH-1
+  ([`docs/reviews/2026-09-22-slice-lifecycle-werkzeuge-tragen-die-kennung.md`](../../../reviews/2026-09-22-slice-lifecycle-werkzeuge-tragen-die-kennung.md))
+  → Architect-Verdikt (a) DoD (3) zurücknehmen → Implementer-Rücknahme `c360a2cd` →
+  Planner-Neuschnitt `3f811f66`, zwei Liefer-Punkte verbleiben. Der eigentliche Lerneintrag liegt
+  eine Ebene tiefer: Zwei Planner-Dokumente hatten die Scope-Grenze bereits **explizit** gezogen
+  (Start-Bedingung bzw. eigener Gegenstand), und der Implementer-Lauf hat sie trotzdem
+  überschritten — begründet mit einem Ausschluss des **eigenen** Plans, der nur die Formfrage
+  beantwortete, nicht die Zuständigkeitsfrage. Für diese Klasse führt das Register bereits einen
+  passenden, noch nicht verkörperten Eintrag (siehe unten); ein neuer Eintrag entsteht dafür
+  nicht.
+- **Steering-Loop-Eintrag:** **gezählt, nicht verkörpert** — kein Zielort, darum **kein**
+  `liegt in`-Feld. Mit diesem Slice wurde keine Regel neu verkörpert; die zwei gelieferten
+  Liefer-Punkte schließen die Erkennungs-Seite von zwei absorbierten Vorgängen (Archiv-Stub,
+  Vorschau/schreibender Lauf), ohne selbst eine neue Guide- oder Sensor-Aussage zu setzen.
+- **Beobachtungs-Register (`../observations/`):** Die vier in §8 gesichteten Einträge bleiben, wie
+  dort dokumentiert, **unbewegt** durch diesen Slice — drei (`commit-message-ohne-traceability-kennung`,
+  `lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`,
+  `verweis-nachzug-schreibt-in-eingefrorenes-artefakt`) waren nur wegen des inzwischen
+  zurückgenommenen DoD (3) berührt und sind mit dessen Rücknahme wieder unberührt;
+  `verweise-brechen-beim-ortswechsel` bleibt bei seinem bestehenden Zielort
+  (`make slice-mv`, bereits verkörpert) — DoD 1 liefert innerhalb dieses bereits verkörperten
+  Rahmens (Archiv-Stub-Linkziel), ohne eine neue Wiederholung derselben Beobachtung zu sein. Keiner
+  der vier bekommt eine neue Beleg-Datei aus diesem Slice.
+  Eine **neue** Beleg-Datei geht an einen fünften, in §8 nicht gelisteten Eintrag: die
+  Scope-Überschreitung aus „Was ging anders als geplant" trifft die bestehende Klasse
+  [`BEO-ALL/plan-bedingung-im-ausfuehrenden-kontext-umgedeutet`](../observations/BEO-ALL/plan-bedingung-im-ausfuehrenden-kontext-umgedeutet/observation.md)
+  — `evidence/slice-lifecycle-werkzeuge-tragen-die-kennung.md` neu angelegt, Zähler steht damit bei
+  **2×**, weiter unter der Schwelle, Stand bleibt `offen`.
+- **Folge-Slices:** keine neuen. `slice-kennungs-erkennung-traegt-die-zugelassenen-formen`
+  (unverändert in `open/`) bleibt Träger der Erkennungs-Seite, wie vor diesem Slice.
+- **Risiken aus §6:** alle vier tragen **Ausgang: entfallen** — (1) und (2) mit der Rücknahme von
+  DoD (3) (Commit `c360a2cd`, Neuschnitt `3f811f66`); (3) und (4) mit der Umsetzung selbst, siehe
+  §6 (Mutations-Fall `test/mutations/395-archive-welle-go-kein-schreib-pfad-verloren.sh` bzw. der
+  Doc-Kommentar an `beoRE` mit `TestHervorgegangenBautAnkerLinks`/
+  `TestHervorgegangenAlteDreistelligeFormBleibtUnerkannt`).
+- **Drei Paarungen:** Dieses Repo führt Wellen-Betrieb (drei offene Wellen, §Offene Wellen der
+  Roadmap); sie prüft die nächste Welle-Closure — auch für diesen wellenlosen Slice
+  (`modul-06-roadmap.md` §Wann Arbeit eine Welle braucht, Tabelle *Träger im Repo ohne Wellen*).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
