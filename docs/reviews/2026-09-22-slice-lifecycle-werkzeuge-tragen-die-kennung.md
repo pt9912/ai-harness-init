@@ -2,7 +2,7 @@
 
 **Rolle:** Reviewer · **Datum:** 2026-09-22
 **Commit-Bereich:** `84db94b3..HEAD` (ein Implementer-Commit `59650366`)
-**Plan:** [`docs/plan/planning/in-progress/slice-lifecycle-werkzeuge-tragen-die-kennung.md`](../plan/planning/in-progress/slice-lifecycle-werkzeuge-tragen-die-kennung.md)
+**Plan:** [`docs/plan/planning/done/slice-lifecycle-werkzeuge-tragen-die-kennung.md`](../plan/planning/done/slice-lifecycle-werkzeuge-tragen-die-kennung.md)
 **Bezug:** [`ADR-0053`](../plan/adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md),
 [`ADR-0034`](../plan/adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md),
 [`MR-057`](../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer),
@@ -25,7 +25,7 @@ Diff des Commits `59650366`, `AGENTS.md` §3.
   (Ausschluss-Disziplin) · [`MR-059`](../../harness/conventions.md#mr-059) Setzung 2
 - **pfad:** `harness/tools/commit-msg-traceability.sh:59-68`,
   `internal/emit/templates/enforce/commit-msg-traceability.sh:57`, `.d-check.yml:487-493`;
-  Plan-Diff in `docs/plan/planning/in-progress/slice-lifecycle-werkzeuge-tragen-die-kennung.md`
+  Plan-Diff in `docs/plan/planning/done/slice-lifecycle-werkzeuge-tragen-die-kennung.md`
   §3 (Zeilen zu `commit-msg-traceability.sh`/`.d-check.yml`)
 - **befund:**
   DoD (3) erweitert die **Erkennung** in `commit-msg-traceability.sh` und `.d-check.yml` um den
@@ -163,7 +163,7 @@ künftigen Archivieren) explizit.
 
 **Aber:** Mindestens zwei **lebende** (nicht eingefrorene) Slice-Pläne führen noch die veraltete
 Platzhalter-Notation `BEO-<NNN>` in ihrem §7-Regelhinweis — unter anderem die hier geprüfte Datei
-selbst (`docs/plan/planning/in-progress/slice-lifecycle-werkzeuge-tragen-die-kennung.md` §7:
+selbst (`docs/plan/planning/done/slice-lifecycle-werkzeuge-tragen-die-kennung.md` §7:
 „vorhandene `BEO-<NNN>` **zitieren** statt neu formulieren") und
 `docs/plan/planning/next/slice-218-harness-einstieg-behaelt-seine-index-form.md:231`. Das ist
 Boilerplate-Prosa (kein tatsächlich zitierter Kennungs-Wert, den `Hervorgegangen()` verarbeiten
@@ -250,7 +250,7 @@ inklusive `test/mutations/395…`, `build`, `comment-claims`, `host-bin`, `span-
 - **kategorie:** LOW
 - **quelle:** Maintainability / AGENTS.md §3.7 (angrenzend, nicht direkt verletzt — Prosa, kein
   Zustandsfeld)
-- **pfad:** `docs/plan/planning/in-progress/slice-lifecycle-werkzeuge-tragen-die-kennung.md:242-244`
+- **pfad:** `docs/plan/planning/done/slice-lifecycle-werkzeuge-tragen-die-kennung.md:242-244`
   (§7 dieser Datei selbst), `docs/plan/planning/next/slice-218-harness-einstieg-behaelt-seine-index-form.md:231`
 - **befund:** Mehrere lebende, nicht eingefrorene Slice-Pläne zitieren in ihrem §7-Regelhinweis
   weiterhin die vor `ADR-0034`/`slice-177` gültige Notation `BEO-<NNN>`, obwohl die tatsächliche
