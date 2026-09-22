@@ -37,8 +37,7 @@ const wachstumsSatz = "OHNE DIESEN AUFRUF WAECHST DER BESTAND UNBEGRENZT."
 // fuer die Meldung benutzt — eine Zeile, die die Konstante traegt, bleibt darum ohne
 // Befund. TestErfassung_ZeileMitDerMarkeBleibtOhneBefund haelt genau das mit einem echten
 // Rot-Beleg fest: test/mutations/394-keingatemarke-pruefung-und-meldung-getrennt.sh trennt
-// Pruefung und Meldung testweise wieder in zwei unabhaengige Literale (der Zustand vor
-// 3147fe59) und faellt dort rot.
+// Pruefung und Meldung testweise in zwei unabhaengige Literale und faellt dort rot.
 const keinGateMarke = "kein Gate"
 
 // erfassungsFragment faehrt einen echten Emit in ein frisches Verzeichnis und liefert den
@@ -606,10 +605,9 @@ func gateTabellenZeileBefund(rel, ziel, line string) string {
 // TestErfassung_ZeileMitDerMarkeBleibtOhneBefund haelt DoD (2) dieses Slice mit einem
 // echten Rot-Beleg fest: eine Gate-Tabellen-Zeile, die GENAU die Schreibweise traegt, die
 // die Meldung von gateTabellenZeileBefund verlangt (die Konstante keinGateMarke), bleibt
-// ohne Befund — wer der Meldung folgt, kommt ins Gruen. Vor 3147fe59 waren Pruefung und
-// Meldung an zwei unabhaengig getippten Literalen aufgehaengt; eine Zeile mit der (damals)
-// von der Meldung verlangten Schreibweise waere dort trotzdem als Befund gemeldet worden,
-// sobald die beiden Literale auseinanderliefen.
+// ohne Befund — wer der Meldung folgt, kommt ins Gruen. Pruefung und Meldung lesen
+// dieselbe Konstante; eine Zeile mit deren Schreibweise kann darum nicht als Befund
+// gemeldet werden, ohne dass die Konstante selbst getroffen wird.
 //
 // Rot-Gegenbeispiel: test/mutations/394-keingatemarke-pruefung-und-meldung-getrennt.sh
 // (trennt Pruefung und Meldung in gateTabellenZeileBefund wieder in zwei unabhaengige
