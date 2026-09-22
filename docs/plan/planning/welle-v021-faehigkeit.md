@@ -84,8 +84,13 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 | slice-waechter-der-erfassungsschicht-decken-was-sie-sagen | Die Wächter der Erfassungsschicht decken, was sie sagen | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
 | slice-lifecycle-werkzeuge-tragen-die-kennung | Die Lifecycle-Werkzeuge tragen die Kennung | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt | Emitter-Aussagen über den Vorlagensatz sind gedeckt | [`LH-FA-12`](../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren) |
-| slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang | Verweise auf Review-Reports bekommen ihren Ausgang | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | slice-leser-und-aufraeum-waechter-decken-was-sie-sagen | Der Leser- und der Aufräum-Wächter treffen ihre Meldung und sagen ihre Menge | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
+
+**Nicht Mitglied:** `slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang` trägt in seinem
+eigenen Kopf „**Welle:** ohne Welle" mit Begründung — sein Closure-Trigger fordert nichts, was
+seine DoD nicht schon belegt (kein repo-weiter Beleg, kein Replay). Die Aufnahme in diese Tabelle
+war ein Widerspruch zu dieser Festlegung und ist zurückgenommen; die Korrektur steht im Drift-Log
+der Roadmap (`docs/plan/planning/in-progress/roadmap.md` §Historische Trigger-Verschiebungen).
 
 ## 5. Abhängigkeiten
 
