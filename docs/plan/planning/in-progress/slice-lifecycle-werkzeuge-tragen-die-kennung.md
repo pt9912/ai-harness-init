@@ -169,8 +169,11 @@ Aussagen-Berührung steht hier gar nicht.
 |---|---|---|
 | [`internal/archive/stub.go`](../../../../internal/archive/stub.go) | update | Kennungs-Erkennung und Linkziel von `Hervorgegangen:` |
 | [`internal/archive/vorschau.go`](../../../../internal/archive/vorschau.go) · [`internal/archive/anwenden.go`](../../../../internal/archive/anwenden.go) | update | die Bedingung steht einmal, der Ausgang trägt eine Kennung |
-| [`harness/tools/slice-mv.sh`](../../../../harness/tools/slice-mv.sh) | update | Betreffzeile von Move- und Nachzug-Commit |
-| `internal/archive` (Archiv-Commits) | update | Betreffzeile der zwei Werkzeug-Commits, Kennung der Welle |
+| [`harness/tools/slice-mv.sh`](../../../../harness/tools/slice-mv.sh) | keine Änderung | `$base` trägt die bewegte Slice-Kennung bereits — der Betreff braucht keine neue Zeile, die **Erkennung** dieser Kennung fehlte (siehe die beiden folgenden Zeilen) |
+| `internal/archive` (Archiv-Commits) | keine Änderung | `b.Welle` trägt die Welle-Kennung bereits, aus demselben Grund |
+| [`harness/tools/commit-msg-traceability.sh`](../../../../harness/tools/commit-msg-traceability.sh) | update | die Kennungs-Menge erkennt den freien Slug ([`MR-059`](../../../../harness/conventions.md#mr-059--jede-kennungs-erkennung-trägt-die-zugelassenen-formen-die-fundliste-steht-im-vorgang) Setzung 1) für `slice-` und `welle-` zusätzlich zur Nummernform — ohne diese Erkennung liefe DoD 3 nie durch, da `$base`/`b.Welle` für eine benannte Kennung schon heute keine Ziffer trägt; die Erweiterung bleibt **innerhalb** der von [`MR-059`](../../../../harness/conventions.md#mr-059--jede-kennungs-erkennung-trägt-die-zugelassenen-formen-die-fundliste-steht-im-vorgang) bereits erklärten Menge (§1 Ausschluss 1) |
+| [`.d-check.yml`](../../../../.d-check.yml) | update | dieselbe Kennungs-Menge, zweite Fassung (Kopplung, [`ADR-0053`](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) §Der zweite Kanal) |
+| [`test/commit-msg-hook.bats`](../../../../test/commit-msg-hook.bats) | update | die Kopplungs-Probe `kopplung: jedes Muster aus .d-check.yml wird angenommen` braucht für die drei neuen Muster je ein passendes Beispiel-Token |
 | [`test/mutations/`](../../../../test/mutations) | neu | ein Fall für den neuen Ausgang aus DoD 2 |
 
 **Optional: Ansatz als Liste, wenn eine Zeile pro Datei nicht trägt** — z. B.

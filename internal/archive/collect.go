@@ -144,6 +144,17 @@ func (b Bestand) Slices() []string {
 	return out
 }
 
+// EinPlanVorhanden sagt, ob genau ein Welle-Plan vorliegt — die EINE Bedingung,
+// die sowohl Anwenden() als auch sperren() lesen. Vor slice-lifecycle-werkzeuge-
+// tragen-die-kennung fuehrten beide Seiten sie getrennt: unter
+// AltbestandSchluessel liess sperren() (welleGebunden == false) die Pruefung
+// aus, waehrend Anwenden() sie unveraendert weiter verlangte — "Sperren: keine"
+// behauptete dann einen Lauf, der am Traeger doch mit einem Laufzeit-Fehler
+// abgebrochen waere.
+func (b Bestand) EinPlanVorhanden() bool {
+	return len(b.Plaene) == 1
+}
+
 // Bewegte sind die Basenamen der Dateien, die der schreibende Lauf nach
 // done/<welle-id>/ zoege: die eingesammelten Slices und der Welle-Plan. Sie sind
 // der Eingang des Verweis-Funds.

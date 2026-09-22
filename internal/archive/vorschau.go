@@ -57,12 +57,7 @@ func Vorschau(root, welleID, porcelain string, dateien []string) (Bericht, error
 //
 // ABGRENZUNG: das sind die am RUHENDEN Baum beobachtbaren. Der Ausgang ueber eine
 // verletzte Stub-Form entsteht erst zwischen den zwei Commits und steht in keiner
-// Vorschau; das fehlende Wellen-Argument faengt der Aufrufer vor dem Lauf ab. Fuer
-// AltbestandSchluessel gilt ein dritter Fall: Anwenden verlangt weiterhin genau
-// einen Welle-Plan (len(b.Plaene) != 1) und traegt den Fall von keinem Plan nicht.
-// "Sperren: keine" sagt fuer diesen Schluessel darum nicht, dass der schreibende
-// Lauf durchlaeuft — ADR-0041 Folgepflicht 1 hebt fuer ihn nur die vier Ausgaenge
-// dieser Funktion auf, nicht die Plan-Pruefung in Anwenden.
+// Vorschau; das fehlende Wellen-Argument faengt der Aufrufer vor dem Lauf ab.
 //
 // BETRIEBSART: traegt der Schluessel AltbestandSchluessel (ADR-0041
 // Festlegung 2), hebt diese Funktion vier welle- bzw. untergrenzen-gebundene
@@ -97,6 +92,18 @@ func sperren(b Bestand, porcelain string, haenger []string) []Sperre {
 			})
 		}
 		out = append(out, planSperre(b)...)
+	} else if !b.EinPlanVorhanden() {
+		// AltbestandSchluessel hat nie einen Welle-Plan (ADR-0041 Festlegung 2)
+		// — planSperre() ist fuer diesen Zweig aufgehoben. Anwenden() verlangt
+		// die Bedingung trotzdem unveraendert (dieselbe Quelle, EinPlanVorhanden):
+		// ohne diesen Zweig meldete die Vorschau "Sperren: keine", waehrend der
+		// schreibende Lauf am Laufzeit-Fehler abbraeche.
+		out = append(out, Sperre{
+			Kennung: "kein-schreib-pfad",
+			Grund: fmt.Sprintf("Anwenden verlangt weiterhin genau einen Welle-Plan (%d vorhanden) — der Schluessel %s hat nie einen",
+				len(b.Plaene), AltbestandSchluessel),
+			Zeilen: []string{"dieser Schluessel ist auf den schreibenden Pfad noch nicht anwendbar (harness/sensors/archive-welle.md §Grenze)"},
+		})
 	}
 	if len(b.Slices()) == 0 {
 		out = append(out, Sperre{

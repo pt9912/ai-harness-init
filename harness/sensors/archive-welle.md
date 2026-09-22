@@ -32,7 +32,7 @@ dabei nichts: der Schalter hält den Aufruf nach der Vorprüfung an. Erreicht wi
 Träger, `.harness/state/bin/ai-harness-init archive-welle --vorschau <welle-id>`; ein eigenes
 `make`-Ziel hat er nicht. Er ist keine zweite Fassung der Operation, sondern derselbe Code: die
 Vorschau ist die Vorprüfung des schreibenden Laufs, und was sie an Sperren nennt, sind genau die
-Ausgänge, an denen er abbricht — mit der in §Grenze Punkt 7 benannten Ausnahme.
+Ausgänge, an denen er abbricht.
 
 `<welle-id>` kann auch der Schlüssel `altbestand` sein
 ([`ADR-0041`](../../docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md)
@@ -93,14 +93,11 @@ genau einen Lauf.
    bindet den ersten Archiv-Move zusätzlich daran, dass beide Träger `docs/plan/adr/` ausnehmen
    (Folgepflicht 1); beide Träger führen den Ausschluss (§Grenze Punkt 3, `slice-mv`-Sensor), diese
    Bedingung ist damit erfüllt — `haenger` bleibt die verbleibende, eigenständige Frage.
-7. **Und selbst ohne `haenger` trägt der schreibende Pfad diesen Schlüssel heute nicht.**
+7. **Unter `altbestand` ohne Welle-Plan trägt die Vorprüfung eine eigene Sperre.**
    `internal/archive/anwenden.go` verlangt unverändert genau einen Welle-Plan
-   (`len(b.Plaene) != 1`); `Einsammeln` liefert für `altbestand` null Pläne. Meldet die Vorprüfung
-   „Sperren: keine", bricht ein schreibender Lauf über diesen Schlüssel trotzdem mit einem
-   Laufzeit-Fehler ab — die Betriebsart aus Punkt 6 hebt die vier Ausgänge dieser Vorprüfung auf
-   ([`ADR-0041`](../../docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md)
-   Folgepflicht 1), die Plan-Prüfung in `Anwenden` gehört nicht dazu. Diese Datei baut die
-   Betriebsart, sie vollzieht sie nicht.
+   (`Bestand.EinPlanVorhanden`); `Einsammeln` liefert für `altbestand` null Pläne. Vorschau und
+   Anwenden lesen dieselbe Bedingung — die Kennung `kein-schreib-pfad` (§Sperren) steht darum genau
+   dann, wenn der schreibende Lauf über diesen Schlüssel mit einem Laufzeit-Fehler abbräche.
 
 ## Ausgabe und Ausgänge
 
@@ -119,10 +116,11 @@ die vier Einsammel-Zahlen (Mitglieder · wellenlos · fremd · Review-Reports), 
 ## Sperren
 
 Fail-closed, geprüft **bevor** der Lauf etwas anfasst — dieselbe Vorprüfung, die `--vorschau`
-ausgibt. Am ruhenden Baum sind es acht (`grep -c 'Kennung: "' internal/archive/vorschau.go`, kein
+ausgibt. Am ruhenden Baum sind es neun (`grep -c 'Kennung: "' internal/archive/vorschau.go`, kein
 Erwartungswert). Unter dem Schlüssel `altbestand` (§Vertrag) fehlen die vier mit `†` markierten —
-die übrigen vier, `haenger` eingeschlossen, stehen unverändert. Jede Zeile nennt die Kennung, wie
-sie die Abbruch-Meldung führt:
+die übrigen fünf, `haenger` eingeschlossen, stehen unverändert; `kein-schreib-pfad` **†† tritt
+umgekehrt nur dort auf** (§Grenze Punkt 7). Jede Zeile nennt die Kennung, wie sie die
+Abbruch-Meldung führt:
 
 - `unsauber` — `git status --porcelain` meldet Änderungen → committen oder verwerfen
 - `archiviert` — `done/<welle-id>/archiv.zip` existiert bereits → keine zweite Archivierung
@@ -136,6 +134,9 @@ sie die Abbruch-Meldung führt:
   Vorgang archivieren, bevor die erste Welle läuft
 - `haenger` — ein noch referenziertes Zeitdokument würde bewegt oder gelöscht → den Verweis lösen
   oder den betroffenen Vorgang aus dieser Welle herausnehmen
+- `kein-schreib-pfad` **††** — nur unter `altbestand`: `Anwenden` verlangt weiterhin genau einen
+  Welle-Plan, und dieser Schlüssel hat nie einen → Altbestand ist auf den schreibenden Pfad noch
+  nicht anwendbar
 
 Zwei Ausgänge stehen daneben, weil sie am ruhenden Baum nicht beobachtbar sind: das fehlende
 `WELLE=` fängt der Aufrufer vorher ab, und eine verletzte Stub-Form bricht **zwischen** den zwei

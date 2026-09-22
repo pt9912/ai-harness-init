@@ -198,7 +198,21 @@ func WelleDatum(inhalt string) string {
 	return "—"
 }
 
-var beoRE = regexp.MustCompile(`BEO-[0-9]{3}`)
+// beoRE trifft die Register-Kennung, die dieses Repo heute fuehrt:
+// `BEO-<KUERZEL>/<slug>` (ADR-0034 Festlegung 3) — <KUERZEL> aus der
+// Modus-Deklaration (Grossbuchstaben), <slug> lowercase Kebab-Case. Die vor
+// ADR-0034 gefuehrte dreistellige Form `BEO-NNN` wird NICHT MEHR erkannt: das
+// Register selbst kennt sie nicht mehr, ein aufgeloester Nachfolgepfad laesst
+// sich aus drei Ziffern nicht rekonstruieren, und ein aus der Luft gegriffener
+// Link waere schlechter als das bare Fehlen der Zeile — dieselbe Abwaegung, die
+// adrDatei() fuer eine ADR ohne Datei trifft. Historische Closure-Notizen in
+// done/ (eingefroren, AGENTS.md §3.11) tragen die alte Form weiter; faellt eine
+// solche Welle dereinst unter archive-welle, verliert ihr Stub die Zeile still
+// — derselbe Ausgang, den Risiko 4 des auslösenden Slice als "entfallen"
+// vorsieht, wenn diese Entscheidung hier steht. Gedeckt von
+// TestHervorgegangenBautAnkerLinks (heutige Form) und
+// TestHervorgegangenAlteDreistelligeFormBleibtUnerkannt (die Grenze).
+var beoRE = regexp.MustCompile(`BEO-[A-Z]+/[a-z0-9]+(?:-[a-z0-9]+)*`)
 var adrRE = regexp.MustCompile(`ADR-[0-9]{4}`)
 
 // sliceRE trifft eine nummerierte Slice-Kennung (slice-NNN) oder eine
@@ -253,7 +267,13 @@ func Hervorgegangen(root, inhalt, welleID string) string {
 	verbund := strings.Join(zeilen, "\n")
 	var teile []string
 	for _, id := range eindeutig(beoRE.FindAllString(verbund, -1)) {
-		teile = append(teile, "[`"+id+"`](../../observations.md)")
+		// Der Link wird aus der Kennung selbst gebaut, nicht aus einem festen
+		// Pfad: `BEO-<KUERZEL>/<slug>` TRAEGT ihren Ort im Register bereits, der
+		// Stub liegt zwei Ebenen unter docs/plan/planning/. Ob das Verzeichnis
+		// existiert, prueft diese Funktion nicht — dieselbe Grenze wie bei der
+		// Folge-Slice-Aufloesung: ein Existenz-Guard ist hier so wenig gebaut wie
+		// dort (Funktionskopf, GRENZE).
+		teile = append(teile, "[`"+id+"`](../../observations/"+id+"/observation.md)")
 	}
 	for _, id := range eindeutig(adrRE.FindAllString(verbund, -1)) {
 		if datei := adrDatei(root, id); datei != "" {

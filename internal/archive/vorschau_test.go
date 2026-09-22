@@ -225,6 +225,37 @@ func TestAltbestandSperrtBeiKeinSlice(t *testing.T) {
 	}
 }
 
+// TestAltbestandOhneEinenPlanTraegtKeinSchreibPfad haelt DoD (2) aus
+// slice-lifecycle-werkzeuge-tragen-die-kennung: Anwenden() verlangt
+// unveraendert genau einen Welle-Plan; unter AltbestandSchluessel gibt es nie
+// einen. Vorher meldete die Vorschau das NICHT ("Sperren: keine"), obwohl der
+// schreibende Lauf am Laufzeit-Fehler abgebrochen waere — dieselbe
+// Fehlerrichtung wie bei (a): still statt laut.
+func TestAltbestandOhneEinenPlanTraegtKeinSchreibPfad(t *testing.T) {
+	root := t.TempDir()
+	done := filepath.Join(root, "docs", "plan", "planning", "done")
+	schreibe(t, filepath.Join(done, "slice-100-a.md"), "# Slice slice-100: A\n\n**Welle:** ohne Welle.\n")
+
+	b := vorschauVon(t, root, "altbestand", "")
+	if !hatSperre(b, "kein-schreib-pfad") {
+		t.Fatalf("Sperre 'kein-schreib-pfad' fehlt unter 'altbestand' ohne Welle-Plan: %v", kennungen(b))
+	}
+}
+
+// TestVorschauEchteWelleTraegtKeinSchreibPfadNicht: fuer eine echte
+// Welle-Kennung deckt planSperre() denselben Fall bereits — der neue Ausgang
+// bleibt dort stumm, sonst meldete die Vorschau dieselbe Ursache doppelt.
+func TestVorschauEchteWelleTraegtKeinSchreibPfadNicht(t *testing.T) {
+	root := t.TempDir()
+	done := filepath.Join(root, "docs", "plan", "planning", "done")
+	schreibe(t, filepath.Join(done, "slice-100-a.md"), "# Slice slice-100: A\n\n**Welle:** welle-10.\n")
+
+	b := vorschauVon(t, root, "welle-10", "")
+	if hatSperre(b, "kein-schreib-pfad") {
+		t.Fatalf("Sperre 'kein-schreib-pfad' darf unter einer echten Welle nicht stehen (planSperre deckt sie bereits): %v", kennungen(b))
+	}
+}
+
 func TestAltbestandSperrtBeiBereitsArchiviert(t *testing.T) {
 	root := t.TempDir()
 	done := filepath.Join(root, "docs", "plan", "planning", "done")

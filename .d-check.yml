@@ -487,6 +487,9 @@ commits:
     - 'LH-[A-Z]{2}-\d{2}'
     - 'MR-\d{3}'
     - 'slice-\d+'
+    - 'slice-[a-z][a-z0-9]*(-[a-z0-9]+)+'
+    - 'welle-\d+'
+    - 'welle-[a-z][a-z0-9]*(-[a-z0-9]+)+'
   exempt-pattern: '^(Merge |Revert )'
 # sources (opt-in, NETZ, seit d-check v0.51.0): Content-Pin des Baseline-Assets gegen
 # Upstream-Drift (MR-013) — der tool-gelieferte Ersatz fuer den Eigenbau (curl+sha256sum)

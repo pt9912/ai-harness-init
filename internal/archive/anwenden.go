@@ -86,7 +86,7 @@ func ZuStagen(b Bestand, nachgezogen []string) []string {
 // `dateien` ist der Suchraum-Eingang des Verweis-Nachzugs (git ls-files); `out`
 // nimmt den Fortschrittstext.
 func Anwenden(root string, b Bestand, dateien []string, g Git, out io.Writer) error {
-	if len(b.Plaene) != 1 {
+	if !b.EinPlanVorhanden() {
 		return fmt.Errorf("genau ein Welle-Plan erwartet, %d vorhanden", len(b.Plaene))
 	}
 	vorlagen, err := VorlagenVerzeichnis(root)

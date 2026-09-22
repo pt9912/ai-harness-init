@@ -203,18 +203,30 @@ func TestHervorgegangenBautAnkerLinks(t *testing.T) {
 
 	inhalt := strings.Join([]string{
 		"## 7. Closure-Notiz",
-		"- **Beobachtungs-Register:** BEO-009 auf 9x erhoeht",
+		"- **Beobachtungs-Register:** BEO-ALL/commit-message-ohne-traceability-kennung auf 9x erhoeht",
 		"- **Folge-Slices:** slice-176 (Titel) — liegt in `open/`; ADR-0033 traegt den Rest",
 		"- **Risiken:** ADR-0099 wird hier nicht als Datei gefuehrt",
 	}, "\n")
 
 	got := archive.Hervorgegangen(root, inhalt, "welle-10")
-	want := "[`BEO-009`](../../observations.md) · [`ADR-0033`](../../../adr/0033-wellen-archivierung.md) · [slice-176](../../open/slice-176-folge.md)"
+	want := "[`BEO-ALL/commit-message-ohne-traceability-kennung`](../../observations/BEO-ALL/commit-message-ohne-traceability-kennung/observation.md) · " +
+		"[`ADR-0033`](../../../adr/0033-wellen-archivierung.md) · [slice-176](../../open/slice-176-folge.md)"
 	if got != want {
 		t.Fatalf("Hervorgegangen =\n%q\nwant\n%q", got, want)
 	}
 	if got := archive.Hervorgegangen(root, "## 7\n- **Was lief anders:** nichts\n", "welle-10"); got != "— keine —" {
 		t.Fatalf("ohne Ausgangs-Zeile = %q, want den Leerwert", got)
+	}
+}
+
+// TestHervorgegangenAlteDreistelligeFormBleibtUnerkannt haelt die im
+// Funktionskopf von beoRE begruendete Entscheidung: die vor ADR-0034 gefuehrte
+// Form `BEO-NNN` wird NICHT mehr erkannt — eine Zeile, die nur sie traegt,
+// liefert den Leerwert statt eines Links, den niemand aufloesen koennte.
+func TestHervorgegangenAlteDreistelligeFormBleibtUnerkannt(t *testing.T) {
+	inhalt := "## 7\n- **Beobachtungs-Register:** BEO-009 auf 9x erhoeht\n"
+	if got := archive.Hervorgegangen(t.TempDir(), inhalt, "welle-10"); got != "— keine —" {
+		t.Fatalf("Hervorgegangen = %q, want den Leerwert (alte Form nicht mehr erkannt)", got)
 	}
 }
 

@@ -75,7 +75,7 @@ const volltextSlice100 = `# Slice slice-100: Der erste Gegenstand
 
 **Rolle:** Planner · **Datum:** 2026-05-05
 
-- **Beobachtungs-Register:** BEO-009 auf 9x erhoeht
+- **Beobachtungs-Register:** BEO-ALL/commit-message-ohne-traceability-kennung auf 9x erhoeht
 - **Folge-Slices:** slice-176 (Nachfolger)
 `
 
@@ -273,7 +273,8 @@ func TestAnwendenSchreibtBeideStubArtenAusDerVorlage(t *testing.T) {
 		"**Archiviert mit:** welle-10 · **Geschlossen:** 2026-05-05\n" +
 		// Der Folge-Slice slice-176 liegt in diesem Baum nirgends — er steht
 		// darum ohne Link statt mit einem toten.
-		"**Hervorgegangen:** [`BEO-009`](../../observations.md) · slice-176\n"
+		"**Hervorgegangen:** [`BEO-ALL/commit-message-ohne-traceability-kennung`]" +
+			"(../../observations/BEO-ALL/commit-message-ohne-traceability-kennung/observation.md) · slice-176\n"
 	if mitglied != wantMitglied {
 		t.Errorf("Slice-Stub (Mitglied) =\n%q\nwant\n%q", mitglied, wantMitglied)
 	}
