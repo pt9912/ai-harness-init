@@ -72,11 +72,9 @@ klassen_kopf() {
 }
 
 # klassen_muster <datei> — dieselben Klassen aus der Zeile `patterns=`: je
-# Alternative der Teil bis einschliesslich des ersten Bindestrichs, dedupliziert
-# — eine Klasse (z.B. "slice-") kann mehr als eine Alternative tragen (Nummer-
-# UND Slug-Form, MR-059 Setzung 1), der Kopf nennt sie trotzdem nur einmal.
+# Alternative der Teil bis einschliesslich des ersten Bindestrichs.
 klassen_muster() {
-  patterns_von "$1" | sed 's/^\([^-]*-\)[^|]*$/\1/' | sort -u
+  patterns_von "$1" | sed 's/^\([^-]*-\)[^|]*$/\1/'
 }
 
 @test "kopplung: die Klassen-Aufzaehlung im Kopf ist die der Zeile patterns=" {

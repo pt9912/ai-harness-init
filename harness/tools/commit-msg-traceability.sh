@@ -3,8 +3,8 @@
 # Traceability-Zusage (AGENTS.md §5, harness/README.md §Traceability).
 #
 # ZUSAGE. Exit 0, wenn die Message mindestens eine Kennung aus der Menge
-# {ADR-, LH-, MR-, slice-, welle-} traegt oder ihr Betreff mit "Merge " bzw.
-# "Revert " beginnt; Exit 1, wenn keines von beidem zutrifft; Exit 2, wenn die Datei fehlt
+# {ADR-, LH-, MR-, slice-} traegt oder ihr Betreff mit "Merge " bzw. "Revert "
+# beginnt; Exit 1, wenn keines von beidem zutrifft; Exit 2, wenn die Datei fehlt
 # oder nicht lesbar ist. Betreff ist die erste nicht-leere Zeile ohne
 # Kommentarzeichen; die Kennung darf auch im Rumpf stehen, eine Kommentarzeile
 # zaehlt dagegen nicht.
@@ -55,15 +55,7 @@ fi
 # Kennung: ERE ueber die ganze Datei, Kommentarzeilen ausgenommen. Der Dialekt
 # ist POSIX-ERE ([0-9] statt \d) — bash kennt die \d-Kurzform des d-check-Moduls
 # nicht, die Uebersetzung steht in test/commit-msg-hook.bats.
-#
-# Die drei slice-/welle-Alternativen mit `(-[a-z0-9]+)+` tragen die benannte
-# Kennungs-Form aus MR-057/MR-059 Setzung 1 (der freie Slug, lowercase
-# Kebab-Case) fuer BEIDE Klassen — sie ist bereits Teil der zugelassenen Menge,
-# nicht neu erfunden. Mindestens EIN zweites Segment ist Pflicht: ein einzelnes
-# Wort nach "slice-"/"welle-" traf sonst schon den Werkzeug-Namen selbst
-# ("slice-mv", "archive-welle") und liesse jede Werkzeug-Commit-Message
-# ungeprueft durch, unabhaengig vom tatsaechlich bewegten Vorgang.
-patterns='(ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3}|slice-[0-9]+|slice-[a-z][a-z0-9]*(-[a-z0-9]+)+|welle-[0-9]+|welle-[a-z][a-z0-9]*(-[a-z0-9]+)+)'
+patterns='(ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3}|slice-[0-9]+)'
 while IFS= read -r line || [ -n "$line" ]; do
   trimmed="${line#"${line%%[![:space:]]*}"}"
   case "$trimmed" in

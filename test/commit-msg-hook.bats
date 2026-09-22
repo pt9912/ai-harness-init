@@ -175,7 +175,7 @@ hook_exempt() {
     [ -n "$p" ] || continue
     e="$(printf '%s' "$p" | sed 's/\\d/[0-9]/g')"
     hit=""
-    for t in ADR-0001 LH-QA-01 MR-001 slice-1 slice-foo-bar welle-1 welle-foo-bar; do
+    for t in ADR-0001 LH-QA-01 MR-001 slice-1; do
       if [[ "$t" =~ ^($e)$ ]]; then hit="$t"; break; fi
     done
     [ -n "$hit" ] || { echo "kein Beispiel-Token fuer das Muster '$p' — Kopplung angefasst?"; return 1; }
