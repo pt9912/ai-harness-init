@@ -25,13 +25,20 @@ HIER="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Argument dafuer — ein blosses `sed -i SCRIPT FILE` (Extension = FILE, FILE fehlt als
 # Ziel) oder `sed -i -E SCRIPT FILE` (Extension = "-E", -E greift nicht) scheitert dort
 # mit "extra characters"/"\1 not defined in the RE", auf GNU-sed nicht. Kein -i: Ausgabe
-# in eine temporaere Datei, dann verschieben — identisches Verhalten auf GNU und BSD.
+# in eine temporaere Datei, dann in die Zieldatei GESCHRIEBEN statt ueber sie verschoben
+# — `mktemp` legt die temporaere Datei mit 0600 an, und `mv` traegt diesen Modus auf das
+# Ziel; ein `d-check`-Container liest als Nicht-Root, und ein derart auf 0600 gefallenes
+# Ziel wird dort unlesbar (secured erst auf einem Host, der Bind-Mount-Rechte real
+# durchsetzt — lokal unter Docker Desktop/Colima maskiert, real unter nativem Linux-CI).
+# `cat >` in die bestehende Zieldatei behaelt deren Inode und damit ihren Modus.
 # Aufruf wie `sed -i`: optionale Flags, dann SCRIPT, dann FILE als letztes Argument.
 psed_i() {
-	local tmp
+	local tmp ziel
 	tmp="$(mktemp -p "${TMPDIR:-/tmp}")"
+	ziel="${!#}"
 	sed "$@" >"$tmp"
-	mv "$tmp" "${!#}"
+	cat "$tmp" >"$ziel"
+	rm -f "$tmp"
 }
 
 # MAKE_JFLAGS — die parallelen Gate-Laeufe puffern ihre Ausgabe je Target

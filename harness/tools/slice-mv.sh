@@ -122,14 +122,19 @@ LIFECYCLE="open next in-progress done"
 # Backup-Extension als naechstes Token (auch leer) und verschluckt sonst das naechste
 # Argument dafuer — ein blosses `sed -i -E SCRIPT FILE` (Extension = "-E", -E greift
 # nicht) scheitert dort mit "\1 not defined in the RE", auf GNU-sed nicht. Kein -i:
-# Ausgabe in eine temporaere Datei, dann verschieben — identisches Verhalten auf GNU
-# und BSD. Aufruf wie `sed -i`: optionale Flags, dann SCRIPT, dann FILE als letztes
-# Argument.
+# Ausgabe in eine temporaere Datei, dann in die Zieldatei GESCHRIEBEN statt ueber sie
+# verschoben — `mktemp` legt die temporaere Datei mit 0600 an, und `mv` traegt diesen
+# Modus auf das Ziel; ein `d-check`-Container liest als Nicht-Root, und ein derart auf
+# 0600 gefallenes Ziel wird dort unlesbar. `cat >` in die bestehende Zieldatei behaelt
+# deren Inode und damit ihren Modus. Aufruf wie `sed -i`: optionale Flags, dann SCRIPT,
+# dann FILE als letztes Argument.
 psed_i() {
-  local tmp
+  local tmp ziel
   tmp="$(mktemp -p "${TMPDIR:-/tmp}")"
+  ziel="${!#}"
   sed "$@" >"$tmp"
-  mv "$tmp" "${!#}"
+  cat "$tmp" >"$ziel"
+  rm -f "$tmp"
 }
 
 usage() {
