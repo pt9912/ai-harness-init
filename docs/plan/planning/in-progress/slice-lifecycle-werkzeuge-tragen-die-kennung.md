@@ -44,11 +44,17 @@ des Lastenhefts, auf den Slice-Plan angewandt); die vier Klassen des
 Ausschlusses stehen in **eben diesem Abschnitt** des Baseline-Regelwerks,
 zusammen mit der Begründungs-Pflicht je Punkt.
 
-**Ziel:** Die drei Stellen, an denen die Lifecycle-Werkzeuge dieses Repos eine Kennung führen,
+**Ziel:** Die zwei Stellen, an denen die Lifecycle-Werkzeuge dieses Repos eine Kennung führen,
 führen die Kennung, die dieses Repo **heute** führt: Der Archiv-Stub erkennt die Register-Kennung
-`BEO-<KUERZEL>/<slug>` und baut daraus einen Link, der auflöst; jeder am ruhenden Baum
+`BEO-<KUERZEL>/<slug>` und baut daraus einen Link, der auflöst; und jeder am ruhenden Baum
 beobachtbare Ausgang des schreibenden Archiv-Laufs trägt eine Kennung und erscheint in der
-Vorschau; und die Commit-Messages der eigenen Werkzeuge nennen den Vorgang, den sie abschließen.
+Vorschau.
+
+**Nicht mehr Gegenstand dieses Slice: die Commit-Messages der eigenen Werkzeuge.** Das war DoD (3)
+der ersten Fassung — per Architect-Verdikt zu HIGH-1 aus
+[`docs/reviews/2026-09-22-slice-lifecycle-werkzeuge-tragen-die-kennung.md`](../../../reviews/2026-09-22-slice-lifecycle-werkzeuge-tragen-die-kennung.md)
+zurückgenommen (Commit `c360a2cd`); Begründung und Verbleib unter §Verhältnis zu
+`slice-werkzeug-commits-tragen-eine-kennung` unten.
 
 **Übernimmt:** `slice-188-archiv-stub-kennt-die-register-verzeichnis-form`,
 `slice-220-plan-ausgang-traegt-eine-kennung`, `slice-werkzeug-commits-tragen-eine-kennung`.
@@ -57,6 +63,18 @@ Vorschau; und die Commit-Messages der eigenen Werkzeuge nennen den Vorgang, den 
 Werkzeug dieses Repos einen Vorgang anspricht —, dieselbe Fehlerrichtung (die Kennung fällt durch
 oder fehlt, statt laut zu brechen) und denselben Bestand: `internal/archive/` und die Skripte, die
 es aufrufen. Getrennt geschnitten fassen sie dasselbe Paket dreimal nacheinander an.
+
+**Verhältnis zu `slice-werkzeug-commits-tragen-eine-kennung` nach der Rücknahme von DoD (3).** Der
+`Übernimmt:`-Vermerk oben bleibt unverändert: Der abgeschlossene Slice ordnete seinen Gegenstand —
+dass die vier Werkzeug-Commits die Kennung im Betreff **tragen** — hierher zu, und diese
+Schreib-Seite war bereits erfüllt, bevor dieser Slice begann (`slice-mv.sh` schreibt `$base`,
+`internal/archive` schreibt `b.Welle` seit Commit `004335cc` in den Betreff). Offen blieb für den
+absorbierten Slice die davon zu unterscheidende zweite Seite: dass die **Erkennung**
+(`commit-msg-traceability.sh`, `.d-check.yml`) die geschriebene Kennung auch **sieht** — das war der
+Gegenstand des jetzt zurückgenommenen DoD (3). Dieser Gegenstand bleibt bei
+[`slice-kennungs-erkennung-traegt-die-zugelassenen-formen`](../open/slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md),
+unverändert in `open/`; dieser Slice nimmt ihn **nicht** per `Übernimmt:` auf, und der Sibling-Plan
+selbst wird durch diese Klarstellung nicht geändert.
 
 **Die Ausgangslage, gemessen statt geschätzt** — **keine Erwartungswerte**
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
@@ -97,6 +115,12 @@ jede Rolle bei jedem Lifecycle-Wechsel fährt.
 - **Die Archivierung des Altbestands wird nicht gefahren.** Ob und wie geschlossene Wellen
   nachträglich archiviert werden, ist eine Planungs-Entscheidung und ein **anderer Vorgang**;
   hier wird nur der Ausgang benannt, an dem der schreibende Lauf heute abbricht.
+- **Die Erkennung bereits zugelassener Kennungs-Formen in `commit-msg-traceability.sh`/
+  `.d-check.yml` wird nicht erweitert.** Ein Folge-Slice übernimmt es —
+  [`slice-kennungs-erkennung-traegt-die-zugelassenen-formen`](../open/slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md)
+  (offen), der die Fundliste und den Rot-Beleg je Form führt
+  ([`MR-059`](../../../../harness/conventions.md#mr-059) Setzung 2/3). *Ein Folge-Slice übernimmt
+  es* — Klasse 1.
 
 **Keine Mindestzahl.** Ein Slice mit *einem* echten Ausschluss ist besser als
 einer mit vier erfundenen; die vier Klassen sind ein Suchraster, keine
@@ -117,7 +141,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-**Drei Liefer-Punkte**, jeder mit dem Kommando, das ihn **rot** färbt
+**Zwei Liefer-Punkte**, jeder mit dem Kommando, das ihn **rot** färbt
 ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 
 - [ ] **(1) `Hervorgegangen:` erkennt die heutige Register-Kennung und baut einen Link, der
@@ -134,12 +158,6 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       bereits).
       **Rot:** ein `test/mutations/`-Fall, der dem neuen Ausgang die Bedingung nimmt — die Vorschau
       meldet dann wieder zu wenig —, mit dem fallenden Wächter in seiner `# expect:`-Zeile.
-- [ ] **(3) Die Commit-Messages der eigenen Werkzeuge tragen im Betreff die Kennung des Vorgangs,
-      den sie abschließen** — beim Lifecycle-Move und beim Verweis-Nachzug die des bewegten Slice,
-      bei den Archiv-Commits die der Welle —, in einer Form, die die Erkennung dieses Repos trägt.
-      **Rot:** vor dem Fix und **nach** `make hooks-install` endet ein `make slice-mv` am Träger und
-      hinterlässt einen gestagten Rename ohne Commit; die **gelesene** Meldung nennt den Grund.
-      Nach dem Fix läuft derselbe Aufruf durch, und der Commit trägt die Kennung im Betreff.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -169,8 +187,6 @@ Aussagen-Berührung steht hier gar nicht.
 |---|---|---|
 | [`internal/archive/stub.go`](../../../../internal/archive/stub.go) | update | Kennungs-Erkennung und Linkziel von `Hervorgegangen:` |
 | [`internal/archive/vorschau.go`](../../../../internal/archive/vorschau.go) · [`internal/archive/anwenden.go`](../../../../internal/archive/anwenden.go) | update | die Bedingung steht einmal, der Ausgang trägt eine Kennung |
-| [`harness/tools/slice-mv.sh`](../../../../harness/tools/slice-mv.sh) | update | Betreffzeile von Move- und Nachzug-Commit |
-| `internal/archive` (Archiv-Commits) | update | Betreffzeile der zwei Werkzeug-Commits, Kennung der Welle |
 | [`test/mutations/`](../../../../test/mutations) | neu | ein Fall für den neuen Ausgang aus DoD 2 |
 
 **Optional: Ansatz als Liste, wenn eine Zeile pro Datei nicht trägt** — z. B.
@@ -178,8 +194,11 @@ eine Schnittstellenänderung über viele gleichrangige Dateien mit derselben
 Begründung, oder ein Ansatz, der sich nicht auf eine Datei herunterbrechen
 lässt. Ergänzt die Tabelle, ersetzt sie nicht:
 
-- Reihenfolge: zuerst (3), weil ohne Kennung in der Werkzeug-Message jeder eigene Lifecycle-Wechsel
-  dieses Slice am Träger bricht, sobald `make hooks-install` gelaufen ist; danach (1) und (2).
+- Reihenfolge: (1) und (2) sind unabhängig, keine verlangt die andere zuerst. Die frühere Zeile
+  `harness/tools/slice-mv.sh`/`internal/archive` (Archiv-Commits) und die Reihenfolge-Begründung
+  "zuerst (3)" entfielen mit der Rücknahme von DoD (3) (Architect-Verdikt HIGH-1) — beide Dateien
+  bleiben unverändert, weil `$base`/`b.Welle` die Kennung bereits vor diesem Slice in den Betreff
+  schrieben.
 
 ## 4. Trigger
 
@@ -193,11 +212,14 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): Der Ausgang aus (2) verlangt, die
-  Bedingung an einer dritten Stelle zusammenzuführen, oder (3) verlangt eine neue Kennungs-Form.
-  Dann wird neu geschnitten statt in diesem Slice zu wachsen.
-- `in-progress` → `open` (blockiert — Carveout?): Die Werkzeug-Message kann die Kennung des
-  Vorgangs nicht kennen, weil der Aufrufer sie nicht übergibt — dann fehlt eine Schnittstelle, und
-  die gehört vor die Arbeit.
+  Bedingung an einer dritten Stelle zusammenzuführen. Dann wird neu geschnitten statt in diesem
+  Slice zu wachsen.
+- `in-progress` → `open` (blockiert — Carveout?): **entfällt mit DoD (3).** Die ursprüngliche
+  Bedingung ("die Werkzeug-Message kann die Kennung des Vorgangs nicht kennen") betraf
+  ausschließlich die jetzt zurückgenommene Werkzeug-Message-Erweiterung (Architect-Verdikt HIGH-1).
+  Für die verbleibenden zwei Liefer-Punkte ist keine Blocker-Bedingung vorab erkennbar; träte doch
+  eine ein, gilt die allgemeine Regel aus Baseline-Regelwerk `modul-05-planning-harness.md` §Trigger
+  je Lifecycle-Übergang unverändert.
 
 ## 5. Closure-Trigger
 
@@ -206,9 +228,8 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Closure- und Lerneintrag-Regeln — zwei beobachtbare Kriterien **und** ein
 Lerneintrag; ohne ihn ist der Slice nur abgelegt.
 
-1. `make gates` ist grün, und ein `make slice-mv` auf einem Klon **mit** `make hooks-install` läuft
-   durch; sein Commit trägt die Kennung im Betreff.
-2. Die drei Rot-Belege aus §2 stehen mit gelesener Ausgabe im Umsetzungs-Commit.
+1. `make gates` ist grün.
+2. Die zwei Rot-Belege aus §2 stehen mit gelesener Ausgabe im Umsetzungs-Commit.
 
 Dazu ein **Lerneintrag** in einer der drei Formen (§7).
 
@@ -220,12 +241,18 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **einen** Ausgang, und kein Slice geht nach `done/`, während eines ohne Ausgang
 dasteht.
 
-1. **Der eigene Lifecycle-Wechsel bricht am Träger, bevor (3) gebaut ist.** *Absehbar:* entfallen,
-   wenn (3) zuerst gebaut wird (§3); sonst eingetreten mit einem gestagten Rename ohne Commit als
-   Symptom.
-2. **Die Kennung des Vorgangs steht dem Werkzeug nicht zur Verfügung.** *Absehbar:* entfallen,
-   wenn Move und Nachzug die bewegte Slice-Kennung ohnehin als Argument führen; sonst
-   Rückführung nach §4.
+1. **Der eigene Lifecycle-Wechsel bricht am Träger, bevor (3) gebaut ist.** — **Ausgang: entfallen.**
+   DoD (3) ist nach Architect-Verdikt zu HIGH-1
+   (`docs/reviews/2026-09-22-slice-lifecycle-werkzeuge-tragen-die-kennung.md`) aus diesem Slice
+   entfernt (Commit `c360a2cd`); der Gegenstand — dass die Erkennung eine vom Werkzeug bereits
+   geschriebene Kennung auch sieht — bleibt beim Sibling
+   `slice-kennungs-erkennung-traegt-die-zugelassenen-formen` (unverändert in `open/`). Das Risiko
+   besteht dort fort, nicht mehr in diesem Slice.
+2. **Die Kennung des Vorgangs steht dem Werkzeug nicht zur Verfügung.** — **Ausgang: entfallen**,
+   aus demselben Grund wie (1): Die Schreib-Seite war zum Zeitpunkt der Übernahme von
+   `slice-werkzeug-commits-tragen-eine-kennung` bereits erfüllt (`$base`/`b.Welle` trugen die
+   Kennung schon vor diesem Slice); die davon zu unterscheidende Erkennungs-Seite gehörte zu DoD (3)
+   und ist mit dessen Rücknahme an den Sibling zurückgegangen.
 3. **Die Bedingung aus (2) wird an zwei Stellen geschrieben statt an einer**, und die zwei laufen
    erneut auseinander. *Absehbar:* entfallen, wenn ein Test je Richtung über einem synthetischen
    Baum beide Stellen gegen dieselbe Quelle hält.
@@ -278,9 +305,9 @@ ist allein der Modus-Begründungsblock am Ende; deshalb nennt der Titel beide
 Hälften.
 
 **Vorgelagert — Sub-Area-Wahl prüfen:** Berührt sind `internal/archive/` und `test/mutations/` in
-`*` sowie `harness/tools/` (`TOOLS`) für den Skript-Träger des Lifecycle-Wechsels. `.codex/`
-(`CODEX`) ist nicht berührt. Beide berührten Sub-Areas erfüllen das Inklusionskriterium;
-ausdifferenziert wird nichts.
+`*` (`ALL`). `harness/tools/` (`TOOLS`) ist mit der Rücknahme von DoD (3) (Architect-Verdikt
+HIGH-1) nicht mehr berührt — `slice-mv.sh` bleibt unverändert (§3). `.codex/` (`CODEX`) ist
+ebenfalls nicht berührt. Die berührte Sub-Area erfüllt das Inklusionskriterium.
 
 **Vorgelagert — offene Beobachtungen sichten:** Alle Einträge des Registers führen die Sub-Area
 `*`; gesichtet ist nach Gegenstand. Den Zähler liefert
@@ -289,10 +316,10 @@ Eintrags; keine der Zahlen ist ein Erwartungswert.
 
 | Eintrag | Zähler | Stand | Berührung durch diesen Slice |
 |---|---|---|---|
-| [`commit-message-ohne-traceability-kennung`](../observations/BEO-ALL/commit-message-ohne-traceability-kennung/observation.md) | 4 | verkörpert | DoD 3 in einem Satz |
-| [`lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`](../observations/BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/observation.md) | 20 | geplant | der Lifecycle-Wechsel ist der Aufruf, an dem DoD 3 gemessen wird |
+| [`commit-message-ohne-traceability-kennung`](../observations/BEO-ALL/commit-message-ohne-traceability-kennung/observation.md) | 4 | verkörpert | entfällt mit DoD (3) — nicht mehr berührt (Architect-Verdikt HIGH-1) |
+| [`lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`](../observations/BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/observation.md) | 20 | geplant | entfällt mit DoD (3) — nicht mehr berührt (Architect-Verdikt HIGH-1) |
 | [`verweise-brechen-beim-ortswechsel`](../observations/BEO-ALL/verweise-brechen-beim-ortswechsel/observation.md) | 6 | verkörpert | DoD 1 — das Linkziel des Stubs muss auflösen |
-| [`verweis-nachzug-schreibt-in-eingefrorenes-artefakt`](../observations/BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt/observation.md) | 14 | verkörpert | der Nachzug-Commit aus DoD 3 ist derselbe Vorgang |
+| [`verweis-nachzug-schreibt-in-eingefrorenes-artefakt`](../observations/BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt/observation.md) | 14 | verkörpert | entfällt mit DoD (3) — nicht mehr berührt (Architect-Verdikt HIGH-1) |
 
 Keiner der vier erreicht **mit diesem Slice** erstmals 3×; ein eigener Folge-Slice entsteht daraus
 nicht.
