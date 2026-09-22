@@ -22,7 +22,7 @@ angelegt — der Runde-1-Report selbst, erst mit diesem Commit committet).
 
 - Runde-1-Report (siehe oben) — F-1 (HIGH), F-2 (LOW) und die Fixture-Grenze-Empfehlung im
   Wortlaut
-- Slice-Plan `docs/plan/planning/in-progress/slice-leser-und-aufraeum-waechter-decken-was-sie-sagen.md`
+- Slice-Plan `docs/plan/planning/done/slice-leser-und-aufraeum-waechter-decken-was-sie-sagen.md`
   §6 Risiken (insb. Risiko 3), §2 DoD (2)/(3)
 - `AGENTS.md` §3.6 (kein Beleg ohne rot gesehenes Gegenbeispiel), §3.7 (Kommentar beschreibt, was
   da ist — kein Vorgang, der die Stelle erzeugt hat), Baseline-Regelwerk Modul 11 §Bewusstes

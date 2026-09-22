@@ -1,7 +1,7 @@
 # Review-Report: slice-leser-und-aufraeum-waechter-decken-was-sie-sagen — 2026-09-22
 
 **Review-Art:** Code — Diff geprüft gegen den Slice-Plan
-`docs/plan/planning/in-progress/slice-leser-und-aufraeum-waechter-decken-was-sie-sagen.md`
+`docs/plan/planning/done/slice-leser-und-aufraeum-waechter-decken-was-sie-sagen.md`
 (vollständig gelesen — §1 Ziel/Abgrenzung, §2 DoD, §4 Trigger, §6 Risiken) sowie gegen den
 realen Test-/Mutations-/Emit-Bestand (Modul 10 §Drei Review-Arten). Vier der fünf Prüf-Claims
 dieses Laufs wurden nicht nur gelesen, sondern **hermetisch im gepinnten Docker-Image

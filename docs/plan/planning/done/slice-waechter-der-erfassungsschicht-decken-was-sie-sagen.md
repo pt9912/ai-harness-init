@@ -387,7 +387,7 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   (a) **Anker-Paarung** — kein Eintrag dieser Closure trägt `liegt in <Zielort>` (kein
   Register-Eintrag erreicht mit diesem Slice erstmals 3×), daher nichts zu prüfen.
   (b) **Folge-Slice-Paarung** — `slice-leser-und-aufraeum-waechter-decken-was-sie-sagen` existiert
-  als Datei in `open/` (`ls docs/plan/planning/in-progress/slice-leser-und-aufraeum-waechter-decken-was-sie-sagen.md`).
+  als Datei in `open/` (`ls docs/plan/planning/done/slice-leser-und-aufraeum-waechter-decken-was-sie-sagen.md`).
   (c) **Register-Paarung** — das neu angelegte Verzeichnis
   `docs/plan/planning/observations/BEO-ALL/lokaler-full-smoke-scheitert-auf-macos-host/` existiert
   mit einer nicht-leeren `evidence/` (jetzt ein Eintrag); die beiden bereits verkörperten
