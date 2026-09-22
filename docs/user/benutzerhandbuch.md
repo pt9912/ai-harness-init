@@ -1,8 +1,8 @@
 # Benutzerhandbuch: ai-harness-init
 
-**Handbuch-Version:** 1.14
+**Handbuch-Version:** 1.15
 **Software-Stand:** `v0.2.1` — **vorgefertigte Programme für sechs Plattformen** (linux · macos · windows × amd64 · arm64), seit `v0.1.0`. Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat`, `hexagonal` oder `hexslice`; bei den beiden geschichteten kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp` (C++; weitere folgen), beide auch mit `hexslice`; `hexagonal` liefert heute der Go-Renderer. Seit `v0.1.1` (Juli) kamen vier Betriebs-Operationen hinzu (siehe [Betriebs-Operationen](#betriebs-operationen)). Im aktuellen Quellstand ([`ADR-0060`](../plan/adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md), `Accepted`) benennt die geschichtete Bauform Adapter- und Ports-Ordner nach ihren Rollen (`driving`/`driven`, `ports_inbound`/`ports_outbound` — siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch)); das veröffentlichte `v0.2.1` liefert dafür noch die vorherige Form, die Rollen-Namen kommen mit dem nächsten Release-Schnitt.
-**Stand:** 2026-09-20
+**Stand:** 2026-09-22
 **Verantwortlich:** ai-harness-init-Team (pt9912)
 
 ---
@@ -72,7 +72,7 @@ Eine lokale Go-Installation ist **nicht** nötig — alles läuft über Docker.
 
 ### Das Werkzeug bereitstellen
 
-Es gibt **zwei Wege**. Empfohlen ist der **Download** — ab `v0.1.0` liegen fertige Programme für sechs Plattformen bereit; **aktuell ausgeliefert wird `v0.2.1`**. Den Bau aus dem Quellcode brauchen Sie nur, wenn Sie einen Stand **ohne** Versions-Kennzeichnung verwenden wollen.
+Es gibt **drei Wege**. Empfohlen ist der **Download** — ab `v0.1.0` liegen fertige Programme für sechs Plattformen bereit; **aktuell ausgeliefert wird `v0.2.1`**. Den Bau aus dem Quellcode brauchen Sie nur, wenn Sie einen Stand **ohne** Versions-Kennzeichnung verwenden wollen. Der dritte Weg — über ein **Homebrew-Tap** — trägt heute erst die Hälfte: die Formel reist bereits als Release-Asset, das Tap-Repository selbst steht noch aus (siehe Weg C).
 
 #### Weg A — fertiges Programm herunterladen (empfohlen)
 
@@ -145,6 +145,12 @@ Sie bauen das Programm einmalig selbst — das geschieht komplett in Docker, Sie
 Im Ordner **bin** liegt das ausführbare Programm `ai-harness-init`. Kopieren Sie es bei Bedarf an eine Stelle auf Ihrem Pfad (zum Beispiel nach `~/.local/bin`), damit Sie es überall unter dem kurzen Namen aufrufen können.
 
 > **Hinweis:** Weg B baut den Stand, den Sie geklont haben (Schritt 1 holt den aktuellen Entwicklungsstand, nicht die veröffentlichte Version) — die Angaben hier beziehen sich darauf. `make artifact DEST=./bin` verlangt die Angabe `DEST`. Ohne sie bricht der Befehl mit einer klaren Meldung ab. Den Zielordner müssen Sie **nicht** vorher anlegen — er wird erstellt, falls er fehlt.
+
+#### Weg C — über ein Homebrew-Tap (macOS, Linux)
+
+Für macOS und Linux ist eine dritte Verteilung vorgesehen: ein **Homebrew-Tap**, über das Sie das Programm mit `brew install` bekämen, ohne die Release-Seite zu öffnen. Windows trägt dieser Weg nicht — Homebrew kennt keine Windows-Pakete.
+
+Von dieser dritten Verteilung steht heute die **Zulieferung**: Jeder Release-Schnitt legt neben den sechs Programm-Dateien und der `SHA256SUMS` eine **Homebrew-Formel** (`ai-harness-init.rb`) als weiteres Release-Asset ab — ihr Skeleton liegt versioniert im Quellcode unter `harness/tools/homebrew-formula.rb.tmpl` und wird je Schnitt mit dessen Version und den vier dafür relevanten Plattform-Prüfsummen befüllt (Linux/macOS × Intel-AMD/ARM). Das **Tap-Repository** selbst — der Ort, an dem `brew` eine Formel nachschlägt — ist kein Bestandteil dieses Projekts und steht noch aus; ohne dieses Repository gibt es keinen `brew install`-Befehl. Bis dahin bleiben Weg A und Weg B die verfügbaren Wege.
 
 ---
 
@@ -587,6 +593,7 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vo
 
 | Handbuch-Version | Stand | Änderung |
 |---|---|---|
+| 1.15 | 2026-09-22 | **Dritter Verteil-Weg — Weg C, Homebrew-Tap** (`slice-tap-verteilt-die-release-assets`, [`LH-QA-04`](../../spec/lastenheft.md#lh-qa-04--plattform-matrix)): Jeder Release-Schnitt legt jetzt die Homebrew-Formel `ai-harness-init.rb` als weiteres Release-Asset ab (Skeleton `harness/tools/homebrew-formula.rb.tmpl`, befüllt mit Version und den vier brew-relevanten Plattform-Prüfsummen). Der Abschnitt „Das Werkzeug bereitstellen" trägt jetzt drei statt zwei Wege — Weg C benennt ausdrücklich, dass das Tap-**Repository** noch aussteht und `brew install` deshalb noch nicht funktioniert. |
 | 1.14 | 2026-09-20 | Fünf pausierte Nachzug-Posten aufgeholt (Setzung des Auftraggebers vom 2026-09-20). **Software-Stand** auf `v0.2.1` gehoben, mit Verweis auf die neuen Betriebs-Operationen und die Ports-Rollen-Form. **Neuer Abschnitt „Betriebs-Operationen"** (§4) beschreibt `traeger-fetch`, `archive-welle`, `span-report`, `span-clean` — die vier trugen bis hierher keine Adresse im Handbuch. **„Das aufgesetzte Repository prüfen"** (§4) trägt jetzt den Klon-Fall: ein geklontes, bereits aufgesetztes Repository hat den Träger nicht (gitignoriert), `make gates` bleibt davon unberührt, `make traeger-fetch` holt ihn nach. **Die Ports-Form** (§4, „Ein geschichtetes Grundgerüst wählen") nennt jetzt `ports_inbound`/`ports_outbound` mit `direction:` statt der flachen `ports`-Schicht ([Verifikations-Report](../reviews/2026-09-19-slice-adapter-und-ports-ordner-folgen-ihren-rollen-namen-verifikation.md) V-2). Die **Zielordner-Form** der Aufruf-Beispiele war bereits mit `slice-zielordner-richtet-das-werkzeug-auf-ein-ziel-repo` nachgezogen — keine Änderung nötig. |
 | 1.13 | 2026-09-05 | Die drei mitgelieferten Rollen-Anweisungssätze unter `.claude/commands/` (`/plan-welle`, `/close-welle`, `/implement-slice`) beschreiben das **Beobachtungs-Register** jetzt so, wie der mitgelieferte Regelwerks-Stand es führt: je Beobachtung ein **Verzeichnis** unter `docs/plan/planning/observations/` statt einer Tabellenzeile, ein Beleg ist eine Datei unter `evidence/`, und einen Zähler pflegt niemand — er ist die Zahl dieser Dateien. Betroffen sind genau diese drei Dateien des aufgesetzten Repositories; am übrigen Bestand ändert sich nichts. Das Register **selbst** legt der Bootstrap nicht an — seit es ein Verzeichnis je Beobachtung ist, gibt es keine stehende Register-Datei mehr, und das erste Verzeichnis entsteht mit der ersten Beobachtung. |
 | 1.12 | 2026-09-03 | Der mitgelieferte Regelwerks-Stand ist `v5.18.0`. Für das aufgesetzte Repository ändert sich **keine sichtbare Datei**: der vendored Vorlagen-Satz gewinnt zwei wiederkehrende Vorlagen (`archiv-stub-slice`, `archiv-stub-welle`), und wiederkehrende Vorlagen werden aus `.harness/baseline/` **referenziert**, nicht ins Repository kopiert. Die Abschluss-Zeile im Beispielablauf nennt jetzt den neuen Stand. |

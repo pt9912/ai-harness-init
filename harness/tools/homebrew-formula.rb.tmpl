@@ -1,0 +1,43 @@
+# ai-harness-init.rb — Homebrew-Formel-Skeleton (slice-tap-verteilt-die-release-assets,
+# LH-QA-04). Formularseitig: dieselbe Kopplung wie SHA256SUMS nach ADR-0059 — das
+# Formular reist als Release-Asset, kein Wert reist im Binary. Die sechs markierten
+# Platzhalter-Felder unten werden im Release-Workflow je Schnitt aus der SHA256SUMS
+# desselben Schnitts befuellt (.github/workflows/release.yml, Job `artifacts`) und
+# ersetzen keinen Wert im Binary — dieses Skeleton bleibt dabei unveraendert. Vier
+# Plattformen, nicht sechs: Homebrew traegt Windows nicht.
+class AiHarnessInit < Formula
+  desc "Bootstrap-Werkzeug fuer den AI-Harness-Prozess"
+  homepage "https://github.com/pt9912/ai-harness-init"
+  version "__VERSION__"
+  license "MIT"
+
+  on_macos do
+    on_arm do
+      url "https://github.com/pt9912/ai-harness-init/releases/download/__TAG__/ai-harness-init-darwin-arm64"
+      sha256 "__SHA256_DARWIN_ARM64__"
+    end
+    on_intel do
+      url "https://github.com/pt9912/ai-harness-init/releases/download/__TAG__/ai-harness-init-darwin-amd64"
+      sha256 "__SHA256_DARWIN_AMD64__"
+    end
+  end
+
+  on_linux do
+    on_arm do
+      url "https://github.com/pt9912/ai-harness-init/releases/download/__TAG__/ai-harness-init-linux-arm64"
+      sha256 "__SHA256_LINUX_ARM64__"
+    end
+    on_intel do
+      url "https://github.com/pt9912/ai-harness-init/releases/download/__TAG__/ai-harness-init-linux-amd64"
+      sha256 "__SHA256_LINUX_AMD64__"
+    end
+  end
+
+  def install
+    bin.install Dir["ai-harness-init-*"].first => "ai-harness-init"
+  end
+
+  test do
+    system "#{bin}/ai-harness-init", "--help"
+  end
+end
