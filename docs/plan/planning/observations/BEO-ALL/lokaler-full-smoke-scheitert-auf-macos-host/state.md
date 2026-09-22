@@ -1,4 +1,4 @@
-**Stand:** offen (1×)
+**Stand:** offen (2×)
 
 Für `make full-smoke`/`make smoke` besteht zusätzlich ein additiver, für den Host
 cross-kompilierender Pfad (`make full-smoke-host`/`make smoke-host`, Ziele in `Makefile`), der auf

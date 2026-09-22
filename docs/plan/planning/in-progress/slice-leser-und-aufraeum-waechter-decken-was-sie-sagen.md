@@ -118,13 +118,18 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 **Drei Liefer-Punkte**, jeder mit dem Kommando, das ihn **rot** färbt
 ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 
-- [ ] **(1) Jede Zusage des Leser-Bestands trägt ihren `test/mutations/`-Fall oder ihre an der
+- [x] **(1) Jede Zusage des Leser-Bestands trägt ihren `test/mutations/`-Fall oder ihre an der
       Assertion ausgesprochene Grenze mit Grund — und kein Wächter bezieht seine Erwartung aus der
       Funktion, die ihn rot färben soll.** Nach dem Lauf liefert das `comm`-Kommando aus §1 genau
       die Namen, für die eine Grenze ausgesprochen ist, und keinen weiteren.
       **Rot:** `make mutate` — jeder neue Fall erscheint als `ok` mit seinem erwarteten Wächter
       rot; nimmt man die Assertion heraus, die er binden soll, meldet derselbe Lauf einen Befund.
-- [ ] **(2) Jede Meldung dieses Bestands trifft ihren Treffer — wer ihr folgt, kommt ins Grün.**
+      **Belegt:** Commit `3147fe59` liefert die Konstante `keinGateMarke`, `TestErfassung_KeinArchGateInZielQuellen`
+      und Fall 187. Review-Runde 1
+      ([2026-09-22](../../../reviews/2026-09-22-slice-leser-und-aufraeum-waechter-decken-was-sie-sagen.md))
+      hat DoD (1) unabhängig nachgerechnet: `comm` liefert `0`, keine Selbstbezugs-Stelle
+      (Negativbefunde). Kein Fund gegen DoD (1) in beiden Runden.
+- [x] **(2) Jede Meldung dieses Bestands trifft ihren Treffer — wer ihr folgt, kommt ins Grün.**
       Die Gate-Tabellen-Meldung nennt genau die Schreibweise, die der Wächter akzeptiert (oder der
       Wächter akzeptiert die genannte), und das Aufräum-Ziel meldet, **was es getan hat**, statt
       was es getan hätte.
@@ -133,7 +138,18 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Meldung recht hat, und der Wächter fällt, sobald sie es nicht tut; für das Aufräum-Ziel ein
       zweiter Lauf über bereits leerem Zustand im Zahn von
       [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh).
-- [ ] **(3) Wo ein Wächter eine Menge nicht sieht, sagt er es in der Meldung — und die Stufe je
+      **Belegt:** Commit `3147fe59` lieferte den `full-smoke.sh`-Zahn (zweiter `span-clean`-Lauf)
+      und einen ersten, nicht-diskriminierenden Beleg über den bestehenden Fall 182. Review-Runde 1
+      fand F-1 HIGH (Fall 182 misst die Meldungs-Treffer-Eigenschaft nicht — fällt identisch gegen
+      Vor- und Nach-Fix-Fassung) und F-2 LOW (der `full-smoke.sh`-Zahn selbst trägt keinen eigenen
+      Rot-Beleg im Commit). Commit `e03908fe` behebt F-1: `gateTabellenZeileBefund` hält Prüfung und
+      Meldung an einer Stelle, neuer Fall `test/mutations/394` trennt sie testweise wieder und
+      diskriminiert real (Review-Runde 2, Punkt A, selbst im gepinnten Image rot/grün reproduziert).
+      Commit `a147be2b` korrigiert den Kommentar über dem neuen Test (F-3 aus Runde 2, §3.7) auf den
+      geltenden Zustand im Indikativ und entfernt den rohen Commit-Hash (F-4). F-2 bleibt als
+      benannte, nicht blockierende Lücke offen — siehe unten „F-2 (Runde 1) — Behandlung" und
+      Beobachtungs-Register.
+- [x] **(3) Wo ein Wächter eine Menge nicht sieht, sagt er es in der Meldung — und die Stufe je
       Fall hängt an der Eigenschaft, nicht an der Nachbarschaft.** Betroffen sind die
       Fixture-Grenze des Gate-Tabellen-Wächters und die Menge der Ziel-Quellen ohne das
       konditionale Arch-Gate-Fragment; wer für einen Fall die teure Stufe wählt, schreibt in den
@@ -141,19 +157,57 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       **Rot:** ein Go-Test, der die **benannte** Grenze gegen den tatsächlich gelesenen Satz hält
       und fällt, sobald eine Quelle dazukommt, die die Grenze nicht führt; dazu ein
       `test/mutations/`-Fall mit `# verify: test-go`, der genau diese Quelle hinzufügt.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+      **Belegt:** Commit `3147fe59` liefert den Arch-Gate-Fragment-Teil vollständig
+      (`TestErfassung_KeinArchGateInZielQuellen`, Fall 187, Review-Runde 1 ohne Befund real im
+      gepinnten Image reproduziert). Für die Fixture-Grenze des Gate-Tabellen-Wächters hatte
+      Commit `3147fe59` zunächst nur eine Kommentar-Behauptung ohne Sensor geliefert; Review-Runde 1
+      hat das als „technisch unmöglich für einen Go-Test, aber nicht als Kategorie unmöglich"
+      eingeordnet und einen Folge-Slice empfohlen. Commit `e03908fe` liefert stattdessen einen
+      echten Sensor — einen neuen Fall in
+      [`test/courseset-fixture.bats`](../../../../test/courseset-fixture.bats), der die Grenze
+      direkt gegen den **realen** vendorten Vorlagensatz hält (der Docker-Build-Kontext der
+      Go-Test-Stage schließt `.harness/` per `.dockerignore` aus, bats mountet den vollen Checkout).
+      Review-Runde 2 (Punkt B) hat den Sensor selbst verifiziert: grün auf unverändertem Baum, rot
+      bei einer real eingefügten unmarkierten Zeile in der committeten Vorlage, danach sauber
+      zurückgesetzt (Checksumme, `git status`, `make baseline-verify` geprüft). Damit ist die
+      Fixture-Grenze real geschlossen, nicht nur ausgesprochen.
+- [x] `make gates` grün. Gate-Hash `fefa8d94a2ab4b3aecd31a88154e6f41a2c529ebec43b2d577f1d4b4a880cc99`
+      in `.harness/state/gates-passed.diffsha` deckt HEAD `a147be2b` (Stand nach Runde-2-Fix, vor
+      dieser Closure). Vom Planner bei dieser Closure erneut selbst gefahren — Ergebnis und Hash der
+      Closure-Commits siehe Commit-Historie dieses Slice in `git log`.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
-      Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: voraussichtlich leer — berührt sind Testcode, Mutations-Fälle und höchstens
-      Kommentare an Assertions; kein emittiertes Artefakt und keine Schnittstelle. Ändert sich der
-      Text des Aufräum-Ziels für einen Adopter sichtbar, bekommt
-      [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md) seine Zeile.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+      Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8). Zwei Reports: Runde 1
+      [2026-09-22](../../../reviews/2026-09-22-slice-leser-und-aufraeum-waechter-decken-was-sie-sagen.md)
+      (1 HIGH F-1, 1 LOW F-2, F-1 blockierend) und Runde 2
+      [2026-09-22](../../../reviews/2026-09-22-slice-leser-und-aufraeum-waechter-decken-was-sie-sagen-runde-2.md)
+      (1 HIGH F-3, 1 LOW F-4, F-3 blockierend; F-1/Fixture-Grenze aus Runde 1 als geschlossen
+      bestätigt). Beide Runden-Befunde inhaltlich behoben (`a147be2b`); F-2 aus Runde 1 bleibt als
+      benannte, nicht blockierende Lücke (siehe unten).
+- [x] Doku-Update: entfällt wie geplant — berührt sind ausschließlich Testcode, Mutations-Fälle,
+      ein bats-Fall und Kommentare an Assertions; kein emittiertes Artefakt, keine Schnittstelle,
+      [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md) unverändert (der Text des
+      Aufräum-Ziels selbst ändert sich für einen Adopter nicht).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag — siehe §7.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — siehe §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen) — siehe §6.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft — siehe §7.
+
+**F-2 (Runde 1) — Behandlung, statt Verschleppung.** Der zweite `span-clean`-Lauf-Zahn in
+`harness/tools/full-smoke.sh` (Zeilen 1150–1157) trägt — anders als der Nachbar-Zahn direkt darüber
+— keinen eigenen `test/mutations/`-Fall, der ihn als „Rot-Gegenbeispiel" bindet: Der Verifier hat
+den Fund als nicht-blockierend eingestuft, aber offen belassen, weil bisher nur isoliert und
+unpersistiert geprüft wurde, dass er aus dem richtigen Grund rot liefe. Statt das kommentarlos
+weiterzuschieben: Der Gegenstand ist derselbe wie die verkörperte Beobachtung
+[`neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md) —
+ein neuer Prüfschritt ohne bindenden Fall in `test/mutations/`. Da diese Regel bereits verkörpert
+ist (`AGENTS.md` §3.6) und der zusätzliche Aufwand eines `# verify: full-smoke`-Falls (der einen
+vollen `full-smoke`-Lauf braucht, der auf diesem Host strukturell nicht läuft, siehe
+`lokaler-full-smoke-scheitert-auf-macos-host`) den Rahmen dieses Slice sprengen würde, wird die
+Lücke hier bewusst **nicht** geschlossen, sondern als weiteres Auftreten der bestehenden
+Beobachtung eingetragen (Beleg unten, §7) — benannt statt verschwiegen, nicht blockierend laut
+beiden Rollen (Reviewer Runde 1, Verifier).
 
 ## 3. Plan (vor Code)
 
@@ -228,19 +282,50 @@ dasteht.
 1. **Der Leser-Bestand plus drei Liefer-Punkte sprengt wieder die Review-Sitzung.** Derselbe
    Größenregel-Kante wie beim Ursprungs-Slice, jetzt eine Ebene kleiner. *Absehbar:* entfallen,
    wenn ein Report den vollständigen Bestand durchgeht; sonst eingetreten mit Rückführung nach §4.
+   **Eingetreten.** Der Ursprungs-Slice `slice-waechter-der-erfassungsschicht-decken-was-sie-sagen`
+   hatte genau diesen Bestand (Träger + Feldliste + Leser, drei Liefer-Punkte) am 2026-09-20 nach
+   `next` zurückgeführt, weil ein Report nicht in einer Sitzung durch den vollständigen
+   Drei-Bestand kam; dieser Slice ist der dabei abgetrennte Rest (Leser-Bestand, §1). Für **diesen**
+   reduzierten Umfang selbst ist das Risiko nicht erneut eingetreten: Beide Review-Runden
+   ([2026-09-22 Runde 1](../../../reviews/2026-09-22-slice-leser-und-aufraeum-waechter-decken-was-sie-sagen.md),
+   [Runde 2](../../../reviews/2026-09-22-slice-leser-und-aufraeum-waechter-decken-was-sie-sagen-runde-2.md))
+   kamen vollständig durch den Bestand dieses Slice, ohne weitere Rückführung.
 2. **Ein Fall reißt mehrere Wächter zugleich** und bindet damit keinen. *Absehbar:* entfallen,
    wenn für jeden Wächter entweder ein bindender Eingriff oder eine ausgesprochene Grenze
    dasteht.
+   **Entfallen.** Das `comm`-Kommando aus §1 liefert nach dem finalen Stand weiterhin `0`
+   Fälle-ohne-Bindung außerhalb der ausgesprochenen Grenzen (Review-Runde 1, Negativbefund); jeder
+   neue Fall (187, 394) bindet genau einen Wächter, keiner reißt einen zweiten mit.
 3. **Die ausgesprochene Grenze wird zur bequemen Antwort.** *Absehbar:* entfallen, wenn die Zahl
    der Grenzen im Report je einzeln begründet ist; sonst weiter offen ins Register.
+   **Entfallen — nicht durch eine Abgrenzung, sondern weil die Grenze real geschlossen wurde.**
+   Ursprünglich hätte dieses Risiko für die Fixture-Grenze des Gate-Tabellen-Wächters gedroht
+   „bequem" zu werden (eine reine Kommentar-Behauptung ohne Sensor, wie Commit `3147fe59` sie
+   zunächst lieferte). Review-Runde 1 hat dem widersprochen und einen echten Sensor verlangt statt
+   der Abgrenzung; Commit `e03908fe` liefert ihn (neuer Fall in `test/courseset-fixture.bats` gegen
+   den realen vendorten Baum). Review-Runde 2 (Punkt B) und der Verifier bestätigen unabhängig: die
+   Lücke ist geschlossen, weil ein echter, verifizierter Sensor entstanden ist — nicht, weil eine
+   Abgrenzung sie bequem für erledigt erklärt hätte. Damit ist die Bedingung, vor der dieses Risiko
+   warnt, nicht eingetreten.
 4. **Der neue `test-go`-Fall nimmt dem bestehenden `full-smoke`-Fall die Zähne**, weil beide
    dieselbe Eigenschaft messen. *Absehbar:* entfallen, wenn beide Fälle nebeneinander bestehen und
    je eine andere Eigenschaft im Kopf nennen.
+   **Entfallen.** Geprüft für alle neu entstandenen Fälle: Fall 394 (`test-go`) deckt, dass
+   `gateTabellenZeileBefund` Prüfung und Meldung an einer Konstante hält — eine Eigenschaft von
+   `internal/emit/erfassung_test.go` selbst. Der einzige benachbarte `full-smoke.sh`-Zahn zur
+   Gate-Tabellen-Meldung (Zeilen rund um 1075, „gates-Kette des Ziels nennt span-report/span-clean")
+   misst eine andere Eigenschaft: dass die **emittierte** Gate-Kette eines Ziel-Repos
+   `span-report`/`span-clean` nicht unmarkiert führt — ein Test am emittierten Ziel-Repo, nicht an
+   diesem Repos eigenem `internal/emit`-Paket. Der neue zweite-`span-clean`-Lauf-Zahn (Zeilen
+   1150–1157) misst wiederum eine dritte Eigenschaft (Idempotenz des Aufräum-Ziels über bereits
+   leerem Bestand). Keine Überschneidung, keine Entwaffnung.
 5. **`make mutate` ist auf dem lokalen macOS-Devhost strukturell rot** (Exec-format-Fehler des
    Linux-Trägers, siehe
    [`lokaler-full-smoke-scheitert-auf-macos-host`](../observations/BEO-ALL/lokaler-full-smoke-scheitert-auf-macos-host/observation.md)).
    *Absehbar:* entfallen, sobald der CI-Lauf (`workflow_dispatch`) den Closure-Trigger aus §5
    Punkt 1 trägt; sonst weiter offen ins Register (bereits eingetragen).
+   **Weiter offen** — der CI-Lauf ist für diese Closure nicht angefordert worden; die Randbedingung
+   besteht unverändert fort. Weiterer Beleg im Register (§7), Zähler jetzt 2×.
 
 ## 7. Closure-Notiz
 
@@ -257,20 +342,66 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Gegenstand:** <übernommen von `slice-<Kennung>` | entfallen: <Grund>>
-  *(nur beim Ausgang ohne Arbeit; sonst Zeile löschen)*
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-kennung-a>, <slice-kennung-b>, <slice-kennung-c> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-<Kennung>.md` | `evidence/slice-<Kennung>.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+- **Was hat funktioniert:** Die Drei-Runden-Rollen-Trennung (Implementer → Verifier/Reviewer →
+  Implementer → Reviewer, wiederholt) hat zweimal hintereinander real substantielle Lücken
+  gefangen, die die Selbsteinschätzung des Implementer-Laufs allein nicht gefangen hätte: Ein
+  Verifier hat den ersten Fix-Versuch (`603e279e`) zurückgewiesen, weil DoD (2) einen eigenen,
+  diskriminierenden `test/mutations/`-Fall verlangt und keine bloße Begründung, warum keiner nötig
+  sei. Der zweite Fix-Versuch (`e03908fe`) hat DoD (2) real geschlossen (Fall 394, im gepinnten
+  Image rot/grün reproduziert) und zusätzlich DoD (3)s Fixture-Grenze — ursprünglich fälschlich als
+  „technisch unmöglich" eingestuft — durch einen echten `test/courseset-fixture.bats`-Sensor
+  geschlossen. Review-Runde 2 hat trotzdem einen neuen Fund gemacht (F-3 HIGH): Der Kommentar über
+  dem neuen Test in `e03908fe` narrativierte wieder den abwesenden Vorzustand im Konjunktiv statt
+  den geltenden Zustand im Indikativ zu nennen — dieselbe Fehlerklasse, die der Vorgänger-Review vom
+  2026-09-21 bereits einmal fing und die Runde-1-Review für den (anderen) Commit `3147fe59`
+  ausdrücklich als „nicht wiederholt" bestätigt hatte. Diese Bestätigung galt nie für `e03908fe`, da
+  der Kommentar dort neu entstand — ein Beleg dafür, dass §3.7-Disziplin pro Commit neu geprüft
+  werden muss, nicht einmalig pro Slice.
+- **Was ging anders als geplant:** Drei Implementer-Runden statt einer (`3147fe59`, `603e279e`,
+  `e03908fe`, `a147be2b`) und zwei Review-Runden statt einer waren nötig — der ursprüngliche
+  Trigger-Text (§5) sah nur „ein" Closure-Kriterium vor und unterschätzte, dass DoD (2)s
+  Rot-Kriterium einen echten diskriminierenden Fall verlangt, nicht nur „irgendein" Rot. Die DoD
+  (3)-Fixture-Grenze war im Plan als „Folge-Slice oder ausgesprochene Grenze" offengelassen und
+  wurde stattdessen real geschlossen — eine dritte, im Plan nicht vorgesehene Option, die erst
+  Review-Runde 1 durch den Verweis auf das bereits im Bestand gelebte `test/courseset-fixture.bats`-
+  Muster sichtbar machte.
+- **Steering-Loop-Eintrag:** Kein neuer verkörperter Eintrag. Zwei berührte Register-Einträge sind
+  bereits `verkörpert` (`AGENTS.md` §3.6/§3.7 seit früheren Wellen/Slices) und dieser Slice wendet
+  ihre Regeln nur an bzw. liefert ein weiteres reales Auftreten — das Muster bestätigt sich weiter,
+  kein neuer Handlungsbedarf, nur Beleg. Für `neuer-waechter-ohne-mutations-fall` ebenso: bereits
+  verkörpert, F-2 (Runde 1) ist ein weiteres Auftreten derselben, bereits verkörperten Regel, kein
+  neuer Zielort nötig.
+- **Beobachtungs-Register (`../observations/`):** drei Fortschreibungen.
+  (1) `evidence/slice-leser-und-aufraeum-waechter-decken-was-sie-sagen.md` in
+  [`BEO-ALL/lokaler-full-smoke-scheitert-auf-macos-host/`](../observations/BEO-ALL/lokaler-full-smoke-scheitert-auf-macos-host/)
+  ergänzt — Zähler steht damit bei 2×.
+  (2) `evidence/slice-leser-und-aufraeum-waechter-decken-was-sie-sagen.md` in
+  [`BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle/`](../observations/BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle/)
+  neu angelegt (F-3, Runde 2) — Eintrag bereits `verkörpert`, kein neuer Zielort, nur Beleg.
+  (3) `evidence/slice-leser-und-aufraeum-waechter-decken-was-sie-sagen.md` in
+  [`BEO-ALL/neuer-waechter-ohne-mutations-fall/`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/)
+  neu angelegt (F-2, Runde 1: der zweite `span-clean`-Lauf-Zahn hat keinen bindenden
+  `test/mutations/`-Fall) — Eintrag bereits `verkörpert`, kein neuer Zielort, nur Beleg.
+- **Folge-Slices:** keine neuen. `slice-110-erfassungs-waechter-fall-meldung-grenze` war bereits
+  vor diesem Slice übernommen (§1 `Übernimmt:`) und ist mit dieser Closure vollständig geliefert.
+- **Risiken aus §6:** fünf, jedes mit genau einem Ausgang — Risiko 1 *eingetreten* (Rückführung des
+  Ursprungs-Slice; für den reduzierten Umfang dieses Slice selbst nicht erneut eingetreten),
+  Risiko 2 *entfallen* (`comm` liefert weiterhin 0, kein Fall reißt zwei Wächter), Risiko 3
+  *entfallen* (die Fixture-Grenze wurde real durch einen neuen Sensor geschlossen, nicht durch eine
+  bequeme Abgrenzung), Risiko 4 *entfallen* (Fall 394 und die beiden `full-smoke`-Zähne messen drei
+  unabhängige Eigenschaften, keine Entwaffnung), Risiko 5 *weiter offen* (Register, Zähler jetzt 2×)
+  — Details je bei §6.
+- **Drei Paarungen** (Repo ohne Wellen-Betrieb, hier geprüft):
+  (a) **Anker-Paarung** — kein Eintrag dieser Closure trägt `liegt in <Zielort>` (kein
+  Register-Eintrag erreicht mit diesem Slice erstmals 3×, alle drei berührten Einträge sind bereits
+  länger `verkörpert`), daher nichts zu prüfen.
+  (b) **Folge-Slice-Paarung** — dieser Slice erzeugt keinen neuen Folge-Slice; der übernommene
+  `slice-110-erfassungs-waechter-fall-meldung-grenze` ist mit dieser Closure vollständig geliefert,
+  nicht weitergereicht.
+  (c) **Register-Paarung** — alle drei berührten Verzeichnisse
+  (`lokaler-full-smoke-scheitert-auf-macos-host`, `kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle`,
+  `neuer-waechter-ohne-mutations-fall`) existieren unverändert mit nicht-leerer `evidence/` (je ein
+  neuer Eintrag hinzugefügt).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
