@@ -65,7 +65,7 @@ einer mit vier erfundenen.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Ziel-Form: Slice — **≤ 3 Liefer-Punkte**; mehr heißt: der Slice ist zu groß.
 
-- [ ] **Liefer-Punkt 1 — der Workflow-Upload-Schritt lädt die Formel je
+- [x] **Liefer-Punkt 1 — der Workflow-Upload-Schritt lädt die Formel je
       Release:** der Release-Workflow lädt die Formel als weiteres Asset im
       selben Vorgang wie die sechs Plattform-Assets und die `SHA256SUMS`
       (dieselbe Kopplung wie
@@ -75,21 +75,21 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
       die Formel, färbt der Abzug rot — gemessen am Abzug gegen ein Release
       ohne Formel-Asset (Konstruktion: das Formel-Asset entsteht erst mit
       diesem Slice).
-- [ ] **Liefer-Punkt 2 — der Formel-Nachzug je Release und der Handbuch-Weg
+- [x] **Liefer-Punkt 2 — der Formel-Nachzug je Release und der Handbuch-Weg
       3:** die Formel-Quelle steht formularseitig (Skeleton-Template), der
       Nachzug fährt je Release, und der Handbuch-Weg 3 nennt das Tap als
       dritten Verteil-Weg (Adresse: Zeile 73). Rote Gegenprobe: nennt der
       Weg ein Release ohne Formel-Asset, färbt `make docs-check` rot — jede
       genannte Adresse löst.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen
       Brownfield-Bootstrap und führt die Register-Datei nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschritten — oder
+- [x] Beobachtungs-Register (`../observations/`) fortgeschritten — oder
       „keine Beobachtung angefallen" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang; die drei Paarungen sind
+- [x] Jedes Risiko aus §6 trägt einen Ausgang; die drei Paarungen sind
       getragen.
 
 ## 3. Plan (vor Code)
@@ -120,21 +120,64 @@ Formel liegt im Release, der Handbuch-Weg nennt sie).
 ## 6. Risiken und offene Punkte
 
 - **Das Tap-Repo ist Auftraggeber-Commit** — ohne es bricht der Abzug; der
-  Slice blockiert auf die Voraussetzung. Ausgang: weiter offen → die
-  Sichtung liest die Abhängigkeit bei der nächsten Closure.
+  Slice blockiert auf die Voraussetzung. **Ausgang: entfallen** — die
+  Scoping-Entscheidung (Tap-Repo = Auftraggeber-Verantwortung) stand bereits
+  vor Slice-Start fest (Setzung vom 2026-09-20, siehe Kopf); das physische
+  Repo bleibt bewusst außerhalb dieses Slice (§1-Ausschluss) und wird vom
+  Handbuch selbst als ausstehend benannt (`benutzerhandbuch.md`, Weg C, Zeile
+  ~153). Der Slice trägt nur die Verdrahtung zu ihm (Upload-Schritt,
+  Formel-Nachzug) und hat diesen Teil geliefert; das Risiko, das den
+  physischen Repo-Aufbau betraf, wird durch die Setzung selbst gegenstandslos
+  — es ist keine Aussage darüber, dass das Repo existiert.
 - **Der Handbuch-Weg hängt am Nachzug** — läuft der Handbuch-Nachzug zuerst,
-  trägt der Weg 3 eine Adresse, die erst mit diesem Slice wahr wird. Ausgang:
-  weiter offen → Sichtung.
+  trägt der Weg 3 eine Adresse, die erst mit diesem Slice wahr wird.
+  **Ausgang: entfallen** — `slice-benutzerhandbuch-nachzug-traegt-fuenf-posten`
+  liegt in `done/` und lief laut §4-Trigger bereits vor diesem Slice; die
+  Reihenfolge-Voraussetzung war beim Slice-Start bereits erfüllt.
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <…>
-- **Drei Paarungen:** <…>
+- **Was hat funktioniert:** Die Asset-Kopplung nach dem Muster von
+  `ADR-0059` (Formel reist als weiteres Release-Asset im selben
+  Upload-Schritt wie die sechs Plattform-Assets und `SHA256SUMS`) ließ sich
+  ohne neue Mechanik übernehmen; die rote Gegenprobe für Liefer-Punkt 2
+  (falscher Pfad im Handbuch → `docs-check` rot) wurde real gezogen und
+  zurückgesetzt. Review lief ohne HIGH-Finding, Negativbefunde decken
+  Umfangs-Treue, Sequenzierung, Platzhalter-Vollständigkeit und die
+  §1-Abgrenzung.
+- **Was ging anders als geplant:** Der Fail-Closed-Guard im neuen
+  Workflow-Schritt (Abbruch vor dem Formel-Schreiben, wenn ein
+  Plattform-Digest in `SHA256SUMS` fehlt) trug im ersten Durchgang keinen
+  für **ihn** dokumentierten Rot-Beleg — die im DoD genannten roten
+  Gegenproben (HTTP-404 gegen `v0.2.1`, `docs-check`-Pfadfehler) prüfen
+  andere Fehlerbilder (Review-Finding F-1, MEDIUM). Der Nachzug
+  (`1f156fed`) hat den Guard-Rot-Beleg nachgetragen und mit einem
+  `test/release-matrix.bats`-Fall dauerhaft gesichert.
+- **Steering-Loop-Eintrag:** Fail-Closed-Logik, die inline in einem
+  Workflow-Schritt (`run:`-Block) entsteht, bekommt ihren Rot-Beleg leicht
+  vergessen, weil die DoD-Gegenproben für den *Liefer-Punkt* geschrieben
+  werden, nicht für jede einzelne Zusage, die der Schritt nebenbei trägt
+  (AGENTS.md §3.6). Gelernte Lektion für künftige Workflow-Slices: eine
+  Fail-Closed-Prüfung gehört von Anfang an in ein eigenes, testbares Skript
+  statt inline in den Workflow-Schritt — dann zieht ein Bats-Fall den
+  Rot-Beleg mit, statt ihn im Review nachzutragen. Diese Lektion steht hier
+  als Erwähnung; ein Registereintrag entsteht nicht — die Beobachtungen
+  wurden gegen `docs/plan/planning/observations/BEO-ALL/` geprüft (Muster
+  „inline Workflow-Logik ohne Rot-Beleg"), kein bestehender Eintrag deckt
+  genau dieses Muster, und es ist bislang ein Einzelfall (dieser Slice).
+  Tritt dasselbe Muster in einem weiteren Slice auf, ist es beim zweiten
+  Auftreten als neue Beobachtung anzulegen.
+- **Beobachtungs-Register (`../observations/`):** keine neue Beobachtung
+  angelegt (siehe Steering-Loop-Eintrag oben) — Sichtung am 2026-09-20 (§8)
+  hatte bereits keine Treffer für die Tap-Verteil-Klasse; die einzige neue
+  Erkenntnis (F-1-Muster) bleibt unter der Schwelle einer Registeranlage.
+- **Folge-Slices:** keine.
+- **Risiken aus §6:** beide *entfallen* (siehe §6 oben, mit Begründung).
+- **Drei Paarungen:** (a) Anker-Paarung — kein Eintrag mit `liegt in
+  <Zielort>` in diesem §7, daher kein Gegenstand der Paarung. (b)
+  Folge-Slice-Paarung — kein Folge-Slice genannt, daher kein Gegenstand der
+  Paarung. (c) Register-Paarung — kein neuer Registerverweis in diesem §7,
+  daher kein Gegenstand der Paarung.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
