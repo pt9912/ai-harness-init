@@ -137,7 +137,7 @@ Setzung 2).
 
 - **Der Ausgang der eingehenden Verweise auf Review-Reports** — er ist die **Vorbedingung** jeder
   ersten Archivierung und liegt bei
-  [slice-216](../open/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md). Der Lauf
+  [slice-216](../in-progress/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md). Der Lauf
   oben nennt sie als zweite Sperre (`[haenger]`, 44 Fundstellen); ein Slice, der beides trägt,
   entschiede zwei Fragen mit verschiedenen Alternativen-Mengen.
 - **Der Einzel-Slice-Modus des Werkzeugs** — er hat mit dem Befund oben seinen Gegenstand
@@ -236,7 +236,7 @@ Bis zum Tausch ist `v5.18.0` der Ist-Maßstab
 ([`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 2), und die Regel,
 die hier entschieden wird, steht erst danach im vendored Baum — eine ADR, die einen Text zitiert,
 der netzlos nicht vorliegt, hätte keine belegbare Quelle. **Keine zweite Bedingung tritt hinzu:**
-[slice-216](../open/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md) ist
+[slice-216](../in-progress/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md) ist
 Vorbedingung der ersten **Archivierung**, nicht dieser **Entscheidung**.
 
 **Vollzogene Rückführung `in-progress` → `next` — der Grund, den Modul 5 im Nachhinein verlangt:**
@@ -245,7 +245,7 @@ dieses Slice hat in diesem Repo keinen Gegenstand** (§1: die Träger-Tabelle gi
 Wellen, dieses fährt Wellen, und die Welle-Closure sammelt die wellenlosen Slices bereits ein),
 **und die verbliebene Altbestand-Hälfte sitzt auf einer Vorbedingung auf**, die eine eigene
 Entscheidung mit eigener Alternativen-Menge ist. Der Schnitt trennt beide: die Vorbedingung liegt
-als [slice-216](../open/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md) in
+als [slice-216](../in-progress/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md) in
 `open/`, der Altbestand bleibt hier und ist die DoD in §2.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
@@ -318,7 +318,7 @@ dasteht.
   erst bei der Archivierung: Der Verweis-Nachzug des `git mv` nach `done/` schreibt in **vier**
   eingefrorene Zeitdokumente unter `done/` (13 Fundstellen) und in **zwei** Rollen-Reports unter
   `docs/reviews/`; die Kommandos stehen im Beleg. **Eine Adresse hat der Eintrag nicht** —
-  [slice-216](../open/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md) schließt
+  [slice-216](../in-progress/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md) schließt
   diese Norm-Frage in seinem §1 ausdrücklich aus, und einen Ausgang zuzuweisen ist der
   **Lese-Schritt**, der in diesem Repo der Welle-Closure gehört (§7).
 - **Die neue ADR steht auf `Proposed` und bindet keinen Durchgang.** Zwei Slice-Kennungen in
@@ -432,7 +432,7 @@ Backticks).
   `state.md` weist die Frage dem **Architect** zu,
   [`ADR-0041`](../../adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md) Festlegung 4
   bindet den Vollzug der Archivierung daran, und
-  [slice-216](../open/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md) **trägt sie
+  [slice-216](../in-progress/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md) **trägt sie
   nicht** — sein §1 schließt sie ausdrücklich aus. Der Eintrag braucht eine eigene Adresse; sie zu
   vergeben ist Lese-Schritt und nicht Sache dieser Closure.
 - **Trigger-Audit:** Drei Artefaktklassen, alle drei geprüft. **Carveout** — zwei liegen aktiv

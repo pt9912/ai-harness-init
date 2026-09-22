@@ -19,7 +19,7 @@ Panne — genau darum liegt die Frage beim Architect und nicht beim bewegenden L
 **Diese Closure hat die Frage nicht entschieden, und sie hatte auch keine Adresse:**
 [`ADR-0041`](../../../../../adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md)
 Festlegung 4 bindet den Vollzug der Archivierung an ihren Ausgang, und
-[slice-216](../../../../open/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md)
+[slice-216](../../../../in-progress/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md)
 schließt sie in seinem §1 ausdrücklich aus (*„dieselbe Berührung, anderer Gegenstand: Dort wird ein
 Artefakt geschrieben, hier bricht ein Verweis"*). Der Eintrag steht damit über der Schwelle und
 ohne Träger.
