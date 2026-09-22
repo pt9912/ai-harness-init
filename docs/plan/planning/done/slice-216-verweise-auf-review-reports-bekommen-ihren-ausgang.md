@@ -261,10 +261,14 @@ Backticks).
   von 345 Report-Verweisen bei Planung auf 171 von 520 bei Verifikation, die
   `[haenger]`-Fundstellen von 44 auf 58) — Risiko 3 aus §6 bestätigte sich konkret. Die ADR wurde
   daraufhin einmal nachgezogen (`522acc0f`, Reviewer-Finding F-1/F-3), aber dieser Nachzug traf
-  zunächst nur die ADR selbst, nicht den parallelen Adaptions-Eintrag `MR-072`, der dieselbe
-  Entscheidung und dieselbe Messung dokumentiert. Der Verifier fand die Abweichung; ein weiterer
-  Commit (`c619f314`) zog `MR-072` nach. **Zwei Norm-Artefakte zur selben Entscheidung sind damit
-  ein eigenes Synchronisations-Risiko**, das kein bestehender Sensor hält: `MR-025`/`MR-051`
+  zunächst nur die ADR selbst, nicht den parallelen Adaptions-Eintrag
+  [`MR-072`](../../../../harness/conventions.md#mr-072--ein-review-report-bekommt-beim-archivieren-einen-stub-entgegen-dem-wortlaut-der-ziel-form),
+  der dieselbe Entscheidung und dieselbe Messung dokumentiert. Der Verifier fand die Abweichung;
+  ein weiterer Commit (`c619f314`) zog
+  [`MR-072`](../../../../harness/conventions.md#mr-072--ein-review-report-bekommt-beim-archivieren-einen-stub-entgegen-dem-wortlaut-der-ziel-form)
+  nach. **Zwei Norm-Artefakte zur selben Entscheidung sind damit ein eigenes
+  Synchronisations-Risiko**, das kein bestehender Sensor hält:
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)/[`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)
   prüfen die Form einer Zahl je Kommando, nicht die Übereinstimmung zwischen zwei Kommandos in
   zwei Dateien.
 - **Steering-Loop-Eintrag:** Kein neuer — die Beobachtung ist mit diesem Slice ihr erstes

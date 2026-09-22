@@ -47,7 +47,7 @@ beim Archivieren geschieht, nicht über eine Anforderung oder eine technische Fe
 ### Was die Entscheidung auslöst
 
 Der Slice-Plan
-[`slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang`](../planning/in-progress/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md)
+[`slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang`](../planning/done/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md)
 stellt eine reine Architektur-Frage, die die adoptierte Baseline `v6.9.0` bereits einmal
 entschieden hat — mit einer Annahme, die der Bestand dieses Repos widerlegt.
 `modul-06-roadmap.md` §Wellen-Closure-Prozedur, Schritt 4, verbatim: *„Review-Reports bekommen
