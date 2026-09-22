@@ -68,7 +68,7 @@ lesen kann; sonst prüft der Test seine eigene Nachbildung
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Der Archiv-Move selbst.** Zwei eigenständige Fragen stehen davor und nehmen die Sendung an: die
-  `[haenger]`-Sperre ([slice-216](../in-progress/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md))
+  `[haenger]`-Sperre ([slice-216](../done/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md))
   und die `Anwenden`-Lücke ([slice-220](../done/slice-220-plan-ausgang-traegt-eine-kennung.md)). Dieser
   Slice hebt allein die **normative** Sperre aus Festlegung 5.
 - **Die zwei `ignore-refs`-Paare.** Festlegung 3 weist sie dem Lauf zu, der den Move vollzieht —
@@ -295,7 +295,7 @@ Backticks).
   Erwartungswerte. **Kein neuer Eintrag hat mit diesem Slice 3× erreicht.**
 - **Folge-Slices:** keiner. Die zwei Fragen, die §1 ausdrücklich vor den Archiv-Move stellt, haben
   ihre Adressen bereits und sind Dateien in `open/`:
-  [slice-216](../in-progress/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md) (die
+  [slice-216](../done/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md) (die
   `[haenger]`-Sperre) und
   [slice-220](../done/slice-220-plan-ausgang-traegt-eine-kennung.md) (die `Anwenden`-Lücke). Was
   dieser Slice hebt, ist allein die normative Sperre; ein dritter Slice entstünde nur aus einem

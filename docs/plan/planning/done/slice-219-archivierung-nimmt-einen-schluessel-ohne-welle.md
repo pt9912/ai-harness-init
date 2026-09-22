@@ -92,12 +92,12 @@ schreibenden Lauf gegen eine Entscheidung, die nicht gefallen ist.
 
 - **Der schreibende Lauf über `altbestand`** — er ist an eine Vorbedingung gebunden, die dieser
   Slice nicht auflöst: die `[haenger]`-Sperre und die Entscheidung dahinter
-  ([slice-216](../in-progress/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md)). Dieser Slice
+  ([slice-216](../done/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md)). Dieser Slice
   macht den Lauf **darstellbar**, nicht **zulässig**; wer beides in einen Slice nähme, entschiede
   eine Norm-Frage im Implementations-Kontext.
 - **Der Ausgang der eingehenden Verweise auf Review-Reports** — ein anderer Vorgang mit eigener
   Alternativen-Menge, geschnitten als
-  [slice-216](../in-progress/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md), und eine Norm-Frage
+  [slice-216](../done/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md), und eine Norm-Frage
   des Architect, keine Werkzeug-Arbeit.
 - **Der Prüfbereich der `closure`-Fähigkeit des Doku-Gates** — er ist
   [`ADR-0041`](../../adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md) Folgepflicht 3
@@ -213,7 +213,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **Start** (`next` → `in-progress`): keine weitere Bedingung —
 [`ADR-0041`](../../adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md) liegt `Accepted`,
 und ihre Folgepflicht 1 ist der Auftrag. Der Slice ist **einzeln lieferbar**: Er wartet nicht auf
-[slice-216](../in-progress/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md), weil er den
+[slice-216](../done/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md), weil er den
 schreibenden Lauf gerade nicht eröffnet.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
@@ -375,7 +375,7 @@ Backticks).
   Welle-Plan **tragen** soll. Das braucht
   [`ADR-0041`](../../adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md) Festlegung 1
   (*der wellenlose Altbestand **wird archiviert***), und heute trägt es kein Vorgang — weder
-  [slice-216](../in-progress/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md), der die
+  [slice-216](../done/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md), der die
   Norm-Frage und damit `haenger` löst, noch Festlegung 4, die allein den **Vollzug** an jene Frage
   bindet, noch Folgepflicht 1, die nach ihrem Wortlaut an den Ausgängen der Vorprüfung endet. Nach
   slice-220 steht diese Frage als **benannte Sperre im Lauf** statt als Kommentar im Code, und

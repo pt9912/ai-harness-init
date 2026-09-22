@@ -87,7 +87,7 @@ genau einen Lauf.
    [`ADR-0041`](../../docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md)
    Festlegung 4 und darf nicht mit aufgehoben werden. Der schreibende Lauf über `altbestand` bleibt
    gesperrt: `haenger` hält, bis die Verweise auf verschwindende Review-Reports ihren Ausgang haben
-   ([slice-216](../../docs/plan/planning/in-progress/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md)).
+   ([slice-216](../../docs/plan/planning/done/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md)).
    Die normative Sperre aus
    [`ADR-0042`](../../docs/plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 5
    bindet den ersten Archiv-Move zusätzlich daran, dass beide Träger `docs/plan/adr/` ausnehmen
