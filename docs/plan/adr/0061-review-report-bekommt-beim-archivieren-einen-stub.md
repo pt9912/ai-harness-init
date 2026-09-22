@@ -18,10 +18,10 @@ Ventil für Report-Ziele **nicht** und nennt den Grund),
 hält `haenger` als Sperre des ersten Archiv-Moves; diese Entscheidung löst den Report-Anteil dieser
 Sperre auf),
 [ADR-0042](0042-verweis-nachzug-im-eingefrorenen-artefakt.md) (**Accepted** — trennt die eigene
-Frage ausdrücklich von dieser: *„hier bricht ein Verweis, weil sein Ziel ersatzlos verschwindet;
-[in ADR-0042] wird ein Artefakt geschrieben, weil sein Ziel umzieht"*; keine ihrer fünf
-Festlegungen wird berührt),
-[`AGENTS.md`](../../../AGENTS.md) §3.4 (Accepted-ADRs unveränderlich — einer der neun Fundorte, die
+Frage ausdrücklich von dieser: aus ADR-0042s eigener Sicht bricht dort (bei dieser Frage) ein
+Verweis, weil sein Ziel ersatzlos verschwindet, während hier ein Artefakt geschrieben wird, weil
+sein Ziel umzieht; keine ihrer fünf Festlegungen wird berührt),
+[`AGENTS.md`](../../../AGENTS.md) §3.4 (Accepted-ADRs unveränderlich — einer der zehn Fundorte, die
 Alternative *auflösen* träfe), §3.5 (Gate-Senkung nur per ADR — geprüft und **nicht** gebraucht,
 weil kein Referenz-Ventil entsteht), §3.8 (Hard Rules und Adaptions-Block schreibt der Architect —
 bindet den Eintrag, den diese Entscheidung auslöst),
@@ -59,45 +59,45 @@ Der Bestand widerspricht der Report-Hälfte messbar:
 ```sh
 for r in docs/reviews/*.md; do rb="${r##*/}"; \
   git grep -lF -e "]($rb)" -- ':!.harness/baseline' | grep -vxF "$r" | sed "s|.*|$rb|"; \
-done | sort -u | wc -l     # 144 Report-Dateien sind Ziel eines Links
-ls docs/reviews/*.md | wc -l   # 345
+done | sort -u | wc -l     # 171 Report-Dateien sind Ziel eines Links
+ls docs/reviews/*.md | wc -l   # 520
 ```
 
 **Keine Erwartungswerte** ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-Setzung 2). 42 % des Report-Bestands sind Ziel eines eingehenden Links — die Voraussetzung der
+Setzung 2). 33 % des Report-Bestands sind Ziel eines eingehenden Links — die Voraussetzung der
 Ziel-Form (*niemand zeigt einzeln auf einen Report*) trägt hier nicht.
 
 **Der erste Archiv-Lauf bricht daran, gemessen und nicht erwartet.** Die Vorschau
 (`make host-bin`, dann `archive-welle --vorschau welle-13`) meldet die Sperre `[haenger]` mit
-**44** Fundstellen — Quellen, die den Lauf überleben, während ihr Ziel im Archiv verschwindet:
+**58** Fundstellen — Quellen, die den Lauf überleben, während ihr Ziel im Archiv verschwindet:
 
 ```text
-#  22 docs/reviews (Reports, die diese Welle nicht einsammelt)
+#  35 docs/reviews (Reports, die diese Welle nicht einsammelt)
 #  11 docs/plan/planning/open (offene Slice-Pläne)
 #   3 docs/plan/adr (zwei Dateien, beide Accepted)
 #   2 harness/conventions · 2 docs/plan/planning/done · 2 docs/plan/carveouts/done
-#   1 spec/lastenheft.md (Rang 1) · 1 observations/…/evidence (ab Merge eingefroren)
+#   1 spec/lastenheft.md (Rang 1) · 2 observations/…/evidence (ab Merge eingefroren)
 ```
 
 Diese Entscheidung beantwortet den Report-**Ziel**-Anteil dieser Sperre — unabhängig davon, in
 welchem Baum die referenzierende Quelle liegt. Was mit Slice-/Welle-**Zielen** derselben Sperre
 geschieht (der Pfad-Nachzug bei ihrem Umzug von flach nach `done/<welle-id>/`), ist bereits
 entschieden ([ADR-0042](0042-verweis-nachzug-im-eingefrorenen-artefakt.md)) und nicht Gegenstand
-hier — jene Entscheidung nennt den Unterschied selbst: *„hier bricht ein Verweis, weil sein Ziel
-ersatzlos verschwindet"* (diese Frage) gegen *„hier wird ein Artefakt geschrieben, weil sein Ziel
-umzieht"* (ADR-0042).
+hier — jene Entscheidung nennt den Unterschied selbst, aus ihrer eigenen Sicht: Dort (bei dieser
+Frage) bricht ein Verweis, weil sein Ziel ersatzlos verschwindet; hier (in ADR-0042 selbst) wird
+ein Artefakt geschrieben, weil sein Ziel umzieht.
 
 ### Vier Alternativen, mit Preis
 
-**a) Auflösen** — jeden der 144 Verweise umschreiben oder entfernen. **Scheitert an neun der 44
+**a) Auflösen** — jeden der 171 Verweise umschreiben oder entfernen. **Scheitert an zehn der 58
 Fundstellen**, die in Artefakten liegen, die niemand mehr überschreibt oder die über dem Plan
 rangieren: zwei `Accepted`-ADRs (3 Fundstellen), ein aufgelöster Carveout (2), ein append-only
-`harness/conventions/`-Eintrag (2), eine ab Merge eingefrorene Evidence-Datei (1) und
+`harness/conventions/`-Eintrag (2), zwei ab Merge eingefrorene Evidence-Dateien (2) und
 [`spec/lastenheft.md`](../../../spec/lastenheft.md) selbst (1), Rang 1 der Source Precedence. Für
 sie hieße *„auflösen"*: das eingefrorene Artefakt **schreiben** — genau das, was
 [`AGENTS.md`](../../../AGENTS.md) §3.4 und §3.11 verbieten. Notiert im Register als
 `BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt` (12× zum Zeitpunkt der Slice-Planung).
-Selbst für die übrigen 35 Fundstellen bliebe es ein Urteil je Stelle über 144 Dateien — keine davon
+Selbst für die übrigen 48 Fundstellen bliebe es ein Urteil je Stelle über 171 Dateien — keine davon
 mechanisch.
 
 **b) Stub entgegen dem Wortlaut der Ziel-Form** — der Report bekommt beim Archivieren, wie Slice
@@ -117,7 +117,7 @@ die eine eigene Begründungslast trägt. Notiert im Register als
 **d) Report-Bestand von der Archivierung ausnehmen** — `docs/reviews/` wird nie archiviert, bleibt
 für immer flach. Die Archivierung erreicht ihr Ziel (Repo-Verschlankung,
 [ADR-0041](0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md)) für die mengenmäßig größte
-Zeitdokument-Klasse nie — heute **345** Dateien und wachsend.
+Zeitdokument-Klasse nie — heute **520** Dateien und wachsend.
 
 ### Was heute gemessen ist, und warum es b) trägt
 
@@ -126,13 +126,13 @@ Reviews einer Welle in `b.Reviews` und entfernt sie vollständig aus dem Arbeits
 (`g.Rm(b.Reviews)`), ohne einen Rest an ihrer Stelle zu hinterlassen — anders als bei Slice und
 Welle, deren Stub genau an ihrer alten Adresse liegen bleibt.
 
-**2. Ein Stub am unveränderten Pfad braucht keinen einzigen der 144 Verweise anzufassen.** Anders
+**2. Ein Stub am unveränderten Pfad braucht keinen einzigen der 171 Verweise anzufassen.** Anders
 als bei Slice/Welle-Stubs, die beim Archivieren von `docs/plan/planning/done/` nach
 `docs/plan/planning/done/<welle-id>/` **umziehen** und darum einen Pfad-Nachzug brauchen
 ([ADR-0042](0042-verweis-nachzug-im-eingefrorenen-artefakt.md)), liegen Reports heute schon flach
 unter `docs/reviews/` und bleiben es: Der Stub tritt an dieselbe Adresse, jeder bestehende Link —
 in einer Nachbar-Review, einem offenen Slice-Plan, einer `Accepted`-ADR, `spec/lastenheft.md` —
-löst unverändert auf. Für die neun Fundstellen in eingefrorenen/rang-höheren Artefakten (Alternative
+löst unverändert auf. Für die zehn Fundstellen in eingefrorenen/rang-höheren Artefakten (Alternative
 a's Preis) heißt das: **kein Byte wird dort angefasst**, weil nichts nachgezogen werden muss.
 
 **3. Kein Referenz-Ventil wird gebraucht.** Löst jede Adresse weiterhin auf, entfällt der Grund für
@@ -152,7 +152,7 @@ einem Mess-Kommando — bleibt offen, wie sie es für Slice-Stubs bereits ist
 ([ADR-0042](0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 4): benannt, nicht
 geschlossen, und diese Entscheidung erweitert sie nicht.
 
-**5. 122 der 144 Fundstellen sind Report-zu-Report-Verweise** — bereits von
+**5. 122 der 171 Fundstellen sind Report-zu-Report-Verweise** — bereits von
 [ADR-0033](0033-wellen-archivierung-als-unterkommando.md) §Kontext gemessen (*„Ein Wächter, der
 `docs/reviews/**` aus seinem Suchraum nähme, wäre für 122 Report-Dateien blind, die heute auf einen
 anderen Report zeigen"*) und der Grund, warum jene Entscheidung `docs/reviews/**` bewusst **nicht**
@@ -209,17 +209,17 @@ der schreibt.
   ihrer Festlegungen wird berührt.
 - **Sie baut nichts.** Stub-Vorlage, Go-Code und Tests sind Implementer-Artefakte
   ([`AGENTS.md`](../../../AGENTS.md) §3.8).
-- **Sie schreibt kein einziges der 144 bestehenden Verweise um.** Das ist der Kern des Preises:
+- **Sie schreibt kein einziges der 171 bestehenden Verweise um.** Das ist der Kern des Preises:
   Alternative b) braucht — anders als a) — keine Umsetzung im referenzierenden Bestand.
 
 ## Verglichene Alternativen
 
 | Option | Pro | Contra |
 |---|---|---|
-| A — Auflösen: alle 144 Verweise umschreiben/entfernen | Kein zusätzliches Artefakt, keine Adaption | Scheitert an 9 Fundstellen in `Accepted`-ADRs, einem aufgelösten Carveout, einem append-only-Konventionseintrag, einer eingefrorenen Evidence-Datei und `spec/lastenheft.md` — dort hieße es, das eingefrorene Artefakt zu schreiben, verboten nach [`AGENTS.md`](../../../AGENTS.md) §3.4/§3.11. Für die übrigen 135 ein Urteil je Fundstelle ohne Match |
-| **B — Stub am unveränderten Pfad (gewählt)** | Löst alle 44 Hänger-Fundstellen des Report-Anteils ohne einen der 144 Verweise anzufassen — auch die neun in eingefrorenen Artefakten bleiben unberührt, weil nichts nachgezogen werden muss; kein Ventil, keine Senkung nach §3.5; vierte Anwendung einer bereits etablierten Mechanik (Slice-/Welle-Stub); 0 Anker-Links gemessen, die brächen | Widerspricht dem Wortlaut der Ziel-Form direkt, braucht einen Adaptions-Block-Eintrag; die Stub-Vorlage ist repo-eigen statt vendored, weil der Kurs die Klasse nicht führt; drei Gegenformen (Zustandssatz, Mess-Operand, künftiger Anker) bleiben ungelöst, wie bei Slice-Stubs bereits |
+| A — Auflösen: alle 171 Verweise umschreiben/entfernen | Kein zusätzliches Artefakt, keine Adaption | Scheitert an 10 Fundstellen in `Accepted`-ADRs, einem aufgelösten Carveout, einem append-only-Konventionseintrag, zwei eingefrorenen Evidence-Dateien und `spec/lastenheft.md` — dort hieße es, das eingefrorene Artefakt zu schreiben, verboten nach [`AGENTS.md`](../../../AGENTS.md) §3.4/§3.11. Für die übrigen 161 ein Urteil je Fundstelle ohne Match |
+| **B — Stub am unveränderten Pfad (gewählt)** | Löst alle 58 Hänger-Fundstellen des Report-Anteils ohne einen der 171 Verweise anzufassen — auch die zehn in eingefrorenen Artefakten bleiben unberührt, weil nichts nachgezogen werden muss; kein Ventil, keine Senkung nach §3.5; vierte Anwendung einer bereits etablierten Mechanik (Slice-/Welle-Stub); 0 Anker-Links gemessen, die brächen | Widerspricht dem Wortlaut der Ziel-Form direkt, braucht einen Adaptions-Block-Eintrag; die Stub-Vorlage ist repo-eigen statt vendored, weil der Kurs die Klasse nicht führt; drei Gegenformen (Zustandssatz, Mess-Operand, künftiger Anker) bleiben ungelöst, wie bei Slice-Stubs bereits |
 | C — Referenz-Ventil (`ignore-refs` über `docs/reviews/**`) | Macht den Verweis gate-sicher ohne Umsetzung im Bestand | Nimmt der Adresse die Auskunftsfähigkeit dauerhaft; ein Ventil über ein ganzes Verzeichnis ist breiter als jedes der fünf bestehenden Paare (die je ein benanntes Ziel tragen) und schaltete jede künftige tote Report-Adresse mit stumm, nicht nur die archivierten — Senkung nach §3.5 mit eigener, hier ungedeckter Begründungslast |
-| D — `docs/reviews/` nie archivieren | Kein Eingriff in `internal/archive/`, kein neuer Adaptions-Eintrag | Die Archivierung erreicht ihr Ziel für die größte Zeitdokument-Klasse (345 Dateien, wachsend) nie — [ADR-0041](0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md) bliebe für `docs/reviews/` dauerhaft ohne Wirkung |
+| D — `docs/reviews/` nie archivieren | Kein Eingriff in `internal/archive/`, kein neuer Adaptions-Eintrag | Die Archivierung erreicht ihr Ziel für die größte Zeitdokument-Klasse (520 Dateien, wachsend) nie — [ADR-0041](0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md) bliebe für `docs/reviews/` dauerhaft ohne Wirkung |
 
 ## Konsequenzen
 
@@ -243,7 +243,7 @@ der schreibt.
   — Kriterium 1 (*„Der fail-closed-Wächter gegen einen lebenden Verweis auf einen zu löschenden
   Review-Report schließt `docs/reviews/**` nicht aus"*) verliert mit dieser Entscheidung seinen
   Gegenstand für Report-**Ziele** und bleibt für Slice-/Welle-Ziele unverändert bestehen. Eigener
-  Folge-Slice (Titel-Vorschlag unten), **kein** Nachzug der 144 bestehenden Verweise.
+  Folge-Slice (Titel-Vorschlag unten), **kein** Nachzug der 171 bestehenden Verweise.
 - **Folgepflicht (Architect, in diesem Lauf erledigt):** Adaptions-Block-Eintrag für die Abweichung
   von der Ziel-Form.
 
