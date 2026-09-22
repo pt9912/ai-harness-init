@@ -3,6 +3,7 @@ package emit_test
 import (
 	"io/fs"
 	"os"
+	"path"
 	"path/filepath"
 	"regexp"
 	"sort"
@@ -1046,5 +1047,111 @@ func TestTemplates_NeuerPlatzhalterLinkOhneCodeaenderung(t *testing.T) {
 	}
 	if !strings.Contains(string(got), "<begriff>") {
 		t.Errorf("der Link-Text der neuen Vorlage fehlt im Ziel — die Zeile wurde geloescht statt entschaerft:\n%s", got)
+	}
+}
+
+// TestDispositionen_DeckenBezugsmengeVollstaendigUndDisjunkt ist der Waechter
+// aus ADR-0057 Festlegung 1. Er haelt die vier Dispositionen
+// isRecurring/isDerivativeIndex/isBrownfieldOnly/Singleton gegen die
+// Bezugsmenge emit.inScope ueber dem vendored templates/-Baum (hier
+// courseSet(), von test/courseset-fixture.bats gegen den realen Satz
+// gehalten) in zwei Richtungen: Vollstaendigkeit (jede Vorlage der
+// Bezugsmenge steht in GENAU einer der vier Mengen — eine in keiner faerbt
+// rot mit Pfad und Ausschnitt) und Disjunktheit (keine in zwei — jede Menge
+// wird EINZELN ausgewertet, nicht ueber die kurzschliessende ||-Kette des
+// Dispatchs in planTemplates). Zusaetzlich: jede der vier Dispositionen
+// traegt eine nicht-leere, LH-FA-02-gebundene Aussage in
+// dispositionsAussagen.
+func TestDispositionen_DeckenBezugsmengeVollstaendigUndDisjunkt(t *testing.T) {
+	// singletonBezugsmenge ist die vierte Disposition aus ADR-0057
+	// Festlegung 1 — im Dispatch von planTemplates der stille Default
+	// ("wer hier eine Vorlage nicht eintraegt, entscheidet Singleton"),
+	// hier eine BENANNTE Liste im Pruefbereich dieses Waechters. Sie
+	// fuehrt die zehn Singleton-Vorlagen, die courseSet() traegt
+	// (Zaehlung: 24 in-scope minus 11 wiederkehrend minus 2 derivative
+	// Indexe minus 1 brownfield-only, test/courseset-fixture.bats haelt
+	// die 24 gegen den realen Satz). Das tool-autorierte, nicht aus src
+	// gelesene Beobachtungs-Register (observationsReadme) ist keine
+	// Vorlage dieser Bezugsmenge und steht darum nicht hier.
+	singletonBezugsmenge := map[string]bool{
+		"AGENTS.template.md":                                true,
+		"spec/lastenheft.template.md":                        true,
+		"spec/architecture.template.md":                      true,
+		"spec/spezifikation.template.md":                     true,
+		"harness/README.template.md":                         true,
+		"harness/conventions.template.md":                    true,
+		"docs/plan/planning/README.template.md":               true,
+		".harness/skills/reviewer.template.md":                true,
+		".harness/skills/closure-note-reviewer.template.md":   true,
+		"docs/plan/planning/roadmap.template.md":              true,
+	}
+	// dispositionsAussagen ordnet jede der vier Dispositionen aus
+	// ADR-0057 Festlegung 1 einer Aussage in LH-FA-02 zu. isRecurring,
+	// isDerivativeIndex und der Singleton-Default zitieren LH-FA-02
+	// woertlich; isBrownfieldOnly traegt stattdessen den benannten
+	// Befund samt Adressat, den der Kopfkommentar von isBrownfieldOnly
+	// selbst fuehrt ("GRENZE: LH-FA-02 fuehrt diese Disposition nicht")
+	// — LH-FA-02 ist Rang 1 und wird von einem Werkzeug-Slice nicht
+	// fortgeschrieben (MR-036).
+	dispositionsAussagen := map[string]string{
+		"isRecurring": `LH-FA-02: "Wiederkehrende** Vorlagen (...) werden referenziert, ` +
+			`nicht co-located dupliziert"`,
+		"isDerivativeIndex": `LH-FA-02: "Derivative Index-Sichten (...) sind ` +
+			`Fuelle-wenn-Inhalt-da"`,
+		"Singleton (Default)": `LH-FA-02: "Singletons (authored-once: ...) werden ` +
+			`zu gestempelten .md-Zielen"`,
+		"isBrownfieldOnly": `KEIN LH-FA-02-Beleg — benannter Befund, Adressat: Change ` +
+			`Request (MR-036); LH-FA-02 fuehrt diese Disposition nicht (templates.go, ` +
+			`Kopfkommentar isBrownfieldOnly, GRENZE)`,
+	}
+	if len(dispositionsAussagen) != 4 {
+		t.Fatalf("dispositionsAussagen fuehrt %d Eintraege, erwartet 4 (isRecurring, isDerivativeIndex, isBrownfieldOnly, Singleton (Default))", len(dispositionsAussagen))
+	}
+	for name, aussage := range dispositionsAussagen {
+		if strings.TrimSpace(aussage) == "" {
+			t.Errorf("Weiche %q hat keine zugeordnete Aussage", name)
+		}
+	}
+
+	var bezugsmenge []string
+	err := fs.WalkDir(courseSet(), ".", func(rel string, d fs.DirEntry, walkErr error) error {
+		if walkErr != nil {
+			return walkErr
+		}
+		if !d.IsDir() && emit.InScope(rel) {
+			bezugsmenge = append(bezugsmenge, rel)
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatalf("Bezugsmenge (emit.InScope ueber courseSet()) lesen: %v", err)
+	}
+	if len(bezugsmenge) == 0 {
+		t.Fatal("Bezugsmenge leer — courseSet() oder emit.InScope gebrochen?")
+	}
+
+	for _, rel := range bezugsmenge {
+		base := path.Base(rel)
+		treffer := map[string]bool{
+			"isRecurring":         emit.IsRecurring(base),
+			"isDerivativeIndex":   emit.IsDerivativeIndex(rel),
+			"isBrownfieldOnly":    emit.IsBrownfieldOnly(rel),
+			"Singleton (Default)": singletonBezugsmenge[rel],
+		}
+		var mitglied []string
+		for name, ok := range treffer {
+			if ok {
+				mitglied = append(mitglied, name)
+			}
+		}
+		sort.Strings(mitglied)
+		switch len(mitglied) {
+		case 0:
+			t.Errorf("%s: in keiner der vier Dispositionen (Bezugsmenge: emit.InScope ueber courseSet(), %d Vorlagen)", rel, len(bezugsmenge))
+		case 1:
+			// vollstaendig und disjunkt
+		default:
+			t.Errorf("%s: in mehreren Dispositionen zugleich: %s (Bezugsmenge: emit.InScope ueber courseSet(), %d Vorlagen)", rel, strings.Join(mitglied, ", "), len(bezugsmenge))
+		}
 	}
 }
