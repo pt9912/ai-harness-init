@@ -58,30 +58,11 @@ jobs:
       # Homebrew-Formel reist als weiteres Asset desselben Vorgangs — dieselbe
       # Kopplung wie die SHA256SUMS-Erzeugung im Rezept darueber (ADR-0059
       # Folgepflicht 1), nur fuer vier statt sechs Plattformen (Homebrew traegt
-      # Windows nicht). Das Skeleton liegt versioniert im Repo
-      # (harness/tools/homebrew-formula.rb.tmpl); nur die Platzhalter werden aus
-      # der SHA256SUMS dieses Schnitts befuellt, kein Wert reist im Binary. Fail
-      # closed: fehlt ein Plattform-Eintrag, bricht dieser Schritt VOR dem
-      # Schreiben — sonst publizierte der naechste Schritt eine Formel mit
-      # leerem Digest, unbemerkt bis zum ersten Tap-Abzug.
+      # Windows nicht). Die Mechanik liegt in harness/tools/homebrew-formula-fill.sh
+      # (test/release-matrix.bats deckt sie direkt), nicht inline hier — dieselbe
+      # Bauart wie release-sums.sh.
       - name: Homebrew-Formel aus dem Skeleton befuellen
-        run: |
-          set -euo pipefail
-          tag="${GITHUB_REF_NAME}"
-          version="${tag#v}"
-          digest() { awk -v n="ai-harness-init-$1" '$2 == n {print $1}' dist/SHA256SUMS; }
-          for plat in darwin-amd64 darwin-arm64 linux-amd64 linux-arm64; do
-            d="$(digest "$plat")"
-            [ -n "$d" ] || { echo "homebrew-formel: kein SHA256SUMS-Eintrag fuer ai-harness-init-$plat — Abbruch vor dem Schreiben." >&2; exit 1; }
-          done
-          sed \
-            -e "s/__VERSION__/${version}/g" \
-            -e "s/__TAG__/${tag}/g" \
-            -e "s/__SHA256_DARWIN_AMD64__/$(digest darwin-amd64)/g" \
-            -e "s/__SHA256_DARWIN_ARM64__/$(digest darwin-arm64)/g" \
-            -e "s/__SHA256_LINUX_AMD64__/$(digest linux-amd64)/g" \
-            -e "s/__SHA256_LINUX_ARM64__/$(digest linux-arm64)/g" \
-            harness/tools/homebrew-formula.rb.tmpl >dist/ai-harness-init.rb
+        run: harness/tools/homebrew-formula-fill.sh "${GITHUB_REF_NAME}" dist/SHA256SUMS harness/tools/homebrew-formula.rb.tmpl dist/ai-harness-init.rb
       - name: Inventar zeigen (Beleg im Lauf-Log, nicht nur Exit 0)
         run: ls -l dist
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

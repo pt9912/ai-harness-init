@@ -378,3 +378,40 @@ docker_stub() {
   printf '%s' "$output" | grep -qF 'Folgepflicht 1'
   rm -rf "$dir"
 }
+
+# --- slice-tap-verteilt-die-release-assets: homebrew-formula-fill.sh ------------------
+
+@test "release: homebrew-formula-fill.sh bricht fail-closed VOR dem Schreiben, wenn ein Plattform-Digest fehlt" {
+  local dir
+  dir="$(mktemp -d)"
+  # Nur drei der vier brew-relevanten Plattformen — linux-arm64 fehlt.
+  printf 'aaaa000000000000000000000000000000000000000000000000000000000  ai-harness-init-darwin-amd64\n' >"$dir/SHA256SUMS"
+  printf 'bbbb000000000000000000000000000000000000000000000000000000000  ai-harness-init-darwin-arm64\n' >>"$dir/SHA256SUMS"
+  printf 'cccc000000000000000000000000000000000000000000000000000000000  ai-harness-init-linux-amd64\n' >>"$dir/SHA256SUMS"
+  run bash "$REPO/harness/tools/homebrew-formula-fill.sh" v0.2.1 "$dir/SHA256SUMS" "$REPO/harness/tools/homebrew-formula.rb.tmpl" "$dir/ai-harness-init.rb"
+  [ "$status" -ne 0 ]
+  printf '%s' "$output" | grep -qF 'linux-arm64'
+  [ ! -e "$dir/ai-harness-init.rb" ]
+  rm -rf "$dir"
+}
+
+@test "release: homebrew-formula-fill.sh befuellt alle sechs Platzhalter aus der SHA256SUMS" {
+  local dir
+  dir="$(mktemp -d)"
+  printf 'aaaa000000000000000000000000000000000000000000000000000000000  ai-harness-init-darwin-amd64\n' >"$dir/SHA256SUMS"
+  printf 'bbbb000000000000000000000000000000000000000000000000000000000  ai-harness-init-darwin-arm64\n' >>"$dir/SHA256SUMS"
+  printf 'cccc000000000000000000000000000000000000000000000000000000000  ai-harness-init-linux-amd64\n' >>"$dir/SHA256SUMS"
+  printf 'dddd000000000000000000000000000000000000000000000000000000000  ai-harness-init-linux-arm64\n' >>"$dir/SHA256SUMS"
+  # Ein fuenftes, nicht-brew-relevantes Asset (windows) darf mitreisen, ohne gebraucht
+  # zu werden — die Formel liest nur die vier Plattformen, die sie kennt.
+  printf 'eeee000000000000000000000000000000000000000000000000000000000  ai-harness-init-windows-amd64.exe\n' >>"$dir/SHA256SUMS"
+  run bash "$REPO/harness/tools/homebrew-formula-fill.sh" v0.2.1 "$dir/SHA256SUMS" "$REPO/harness/tools/homebrew-formula.rb.tmpl" "$dir/ai-harness-init.rb"
+  [ "$status" -eq 0 ]
+  [ -f "$dir/ai-harness-init.rb" ]
+  # Kein Platzhalter bleibt stehen.
+  ! grep -qE '__[A-Z_]+__' "$dir/ai-harness-init.rb"
+  grep -qF 'version "0.2.1"' "$dir/ai-harness-init.rb"
+  grep -qF 'download/v0.2.1/ai-harness-init-darwin-arm64' "$dir/ai-harness-init.rb"
+  grep -qF 'sha256 "bbbb000000000000000000000000000000000000000000000000000000000"' "$dir/ai-harness-init.rb"
+  rm -rf "$dir"
+}
