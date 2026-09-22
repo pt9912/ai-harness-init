@@ -20,9 +20,6 @@ nicht hier.
 - [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
 - [welle-v021-faehigkeit — die v0.2.1-Fähigkeit](../welle-v021-faehigkeit.md)
 
-**Nichts in Arbeit.** — [`in-progress/`](../in-progress) trägt keinen Slice
-(`ls docs/plan/planning/in-progress/slice-*.md` → kein Treffer).
-
 ## Nächste Wellen
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
