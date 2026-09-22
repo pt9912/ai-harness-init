@@ -138,7 +138,8 @@ Formel liegt im Release, der Handbuch-Weg nennt sie).
 ## 7. Closure-Notiz
 
 - **Was hat funktioniert:** Die Asset-Kopplung nach dem Muster von
-  `ADR-0059` (Formel reist als weiteres Release-Asset im selben
+  [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
+  (Formel reist als weiteres Release-Asset im selben
   Upload-Schritt wie die sechs Plattform-Assets und `SHA256SUMS`) ließ sich
   ohne neue Mechanik übernehmen; die rote Gegenprobe für Liefer-Punkt 2
   (falscher Pfad im Handbuch → `docs-check` rot) wurde real gezogen und
