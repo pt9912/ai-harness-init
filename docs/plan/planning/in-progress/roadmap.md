@@ -18,7 +18,6 @@ nicht hier.
 
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
 - [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
-- [welle-v021-faehigkeit — die v0.2.1-Fähigkeit](../welle-v021-faehigkeit.md)
 
 **Nichts in Arbeit.** — [`in-progress/`](../in-progress) trägt keinen Slice
 (`ls docs/plan/planning/in-progress/slice-*.md` → kein Treffer).
@@ -122,9 +121,11 @@ Ergebnis-Notiz, keine Nummernfolge.
 | [welle-14-re-baseline](../done/welle-14-re-baseline.md) | 2026-09-03 | [welle-14-results.md](../done/welle-14-results.md) |
 | [welle-15-re-baseline](../done/welle-15-re-baseline.md) | 2026-09-05 | [welle-15-results.md](../done/welle-15-results.md) |
 | [welle-emittierte-werkzeuge](../done/welle-emittierte-werkzeuge.md) | 2026-09-15 | [welle-emittierte-werkzeuge-results.md](../done/welle-emittierte-werkzeuge-results.md) |
+| [welle-v021-faehigkeit](../done/welle-v021-faehigkeit.md) | 2026-09-23 | [welle-v021-faehigkeit-results.md](../done/welle-v021-faehigkeit-results.md) |
 
 Die Tabelle ist nach Wellen-Nummer sortiert, nicht nach Abschluss-Datum; `welle-10` schloss nach
-`welle-12`, und `welle-emittierte-werkzeuge` steht am Ende, weil ihre Kennung keine Nummer trägt
+`welle-12`, und `welle-emittierte-werkzeuge` sowie `welle-v021-faehigkeit` stehen am Ende, weil
+ihre Kennungen keine Nummer tragen
 ([`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)).
 Die Lücken sind keine Auslassung: `welle-09` und `welle-11` sind geschnitten und nicht
 geschlossen — ihr Zustand steht oben unter *Offene Wellen*.

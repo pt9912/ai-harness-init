@@ -132,6 +132,6 @@ Regeln dieser Sektion: Baseline-Regelwerk `grundlagen-traceability.md`
 beiden Zeiger unten sind so zu schreiben, wie sie vom Ruheort `done/` auflösen,
 nicht vom Schreibort.
 
-Ergebnis: <Zeiger auf `welle-v021-faehigkeit-results.md`, Geschwister im
-Ruheort `done/`>
-Zähler: <Zeiger aufs Beobachtungs-Register, eine Ebene über dem Ruheort>
+Ergebnis: [`welle-v021-faehigkeit-results.md`](welle-v021-faehigkeit-results.md) — Geschwister im
+Ruheort `done/`.
+Zähler: [`../observations/`](../observations) (Verzeichnis-Form) — eine Ebene über dem Ruheort.
