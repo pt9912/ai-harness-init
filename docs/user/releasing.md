@@ -75,8 +75,15 @@ und lädt nichts hoch. Die Schritt-Folge:
    [`LH-QA-04`](../../spec/lastenheft.md#lh-qa-04--plattform-matrix); fehlt die
    Formel, bricht der Tap-Abzug laut —
    `gh release view <tag> --json assets --jq '.assets | length'`
-   → `8`). Der Release-Text entsteht mit `--generate-notes`; Ergänzungen an
-   ihm folgen der Stand-Form (Schritt 7). Der manuelle Weg —
+   → `8`). `--generate-notes` liefert allein die Zeile *Full Changelog* —
+   keine Änderungsbeschreibung. Sie schreibt der Schnitt selbst, in der
+   Stand-Form (Schritt 7) und in der Gliederung der Vorgänger-Releases:
+   Titelzeile, **Stand** (was das Programm dieses Releases kann und was das
+   Handbuch beschreibt), **Assets** (Menge, Prüfsummen, Start-Smoke),
+   **Grenze** (was das Release nicht zusagt), am Ende die Zeile *Full
+   Changelog*. Gesetzt wird der Text nach der Publikation mit
+   `gh release edit <tag> --notes-file <datei>`; `gh release view <tag>
+   --json body --jq .body` zeigt ihn. Der manuelle Weg —
    `gh release create <tag> <dir>/*` nach dem `verify`-Modus von Schritt 3 —
    fährt dieselbe Haltung vor der Publikation.
 
@@ -85,9 +92,12 @@ und lädt nichts hoch. Die Schritt-Folge:
    die Meldung des vollzogenen Schnitts geht erst, wenn der `ci`-Lauf
    eingetroffen ist.
 
-7. **Meldung des vollzogenen Schnitts.** Die Meldung — und jede Ergänzung am
-   Release-Text — trägt die Stand-Form: Zustand und Beleg als auflösbarer
-   Anker (Tag, Asset-Menge, Prüfsummen, Läufe), keine Chronik.
+7. **Meldung des vollzogenen Schnitts.** Die Meldung — und der Release-Text
+   aus Schritt 5 samt jeder Ergänzung — trägt die Stand-Form: Zustand und
+   Beleg als auflösbarer Anker (Tag, Asset-Menge, Prüfsummen, Läufe), keine
+   Chronik. Die Meldung geht erst, wenn der Release-Text die
+   Änderungsbeschreibung trägt: ein Release, dessen Seite nur *Full
+   Changelog* zeigt, ist nicht vollzogen gemeldet.
 
 ## Belegbasis
 
