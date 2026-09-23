@@ -1,7 +1,4 @@
-**Stand:** offen
-
-Ein Wächter besteht nicht: Kein Modul aus `modules:` der
-[`.d-check.yml`](../../../../../../.d-check.yml) liest Commits oder Rollen-Zuordnungen, und
-`make mutate` kennt für einen Commit-Zuschnitt keine Fehlschlag-Form — dieselbe Lage, die
-[`AGENTS.md`](../../../../../../AGENTS.md) §3.8 und §3.10 für ihren eigenen Commit-Zuschnitt
-feststellen. Träger ist der Rollen-Wechsel vor der Änderung und das Review danach.
+**Stand:** geplant — Kennung `ADR-0062` (Proposed; die allgemeine Regel ist geschrieben, ihre
+Bindung trägt der Acceptance-Trigger der ADR — mit dem Accept wird derselbe Ausgang `verkörpert`:
+Zielort die ADR, der Anker `· seit welle-v021-faehigkeit` trägt sie selbst in Festlegung 1.
+Empfehlung und Begründung: ADR-0062 §Konsequenzen).
