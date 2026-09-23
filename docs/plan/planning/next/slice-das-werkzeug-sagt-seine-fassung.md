@@ -22,7 +22,7 @@ Fassungs-Angabe der Bedienoberfläche wird hier **nicht** geschrieben; berührt 
 Release-Bau-Rezept-Bestand ([`MR-048`](../../../../harness/conventions.md#mr-048--der-reproduzierbarkeits-anker-ist-die-rezept-form-die-emittierten-skelette-pinnen-per-tag)
 Rezept-Form).
 
-**Verantwortlich:** — (steht bei `open` → `next` offen)
+**Verantwortlich:** Implementer (pt9912)
 
 **Autor:** Planner. **Datum:** 2026-09-23.
 
@@ -52,12 +52,12 @@ Einbau eines `version`-Flags als den Anlass, den Stempel neu zu wägen — genau
   Festlegung 3) ändern sich nicht — **Schicht-Abgrenzung**.
 - **Kein Signier-Schritt.** Die Grenze steht in
   [`docs/user/releasing.md`](../../../../docs/user/releasing.md) §Grenze — **anderer Vorgang**.
-- **Der Pin trägt weiter nur den Tag.** Der Zahn an der Selbstreferenz-Wand
-  (`test/traeger-fetch.bats`, Fall 320) bewacht die **Pin**-Achse und bleibt; der
+- **Der Pin trägt weiter nur den Tag.** Der Zahn an der Selbstreferenz-Wand (der
+  pin-kopplung-Test in `test/traeger-fetch.bats`) bewacht die **Pin**-Achse und bleibt; der
   Fassungs-Stempel im Binary ist die **Binary**-Achse, die
   [`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md) neu ordnet.
 - **Kein zweiter Weg in die Formel-Nachzug-Form.** Die Formel liest die Fassung weiter aus dem
-  Release (Festlegung 2 von [`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md)).
+  Release (Festlegung 3 von [`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md)).
 
 ## 2. Definition of Done
 
@@ -122,7 +122,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`): [`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md)
-liegt angelegt (`Proposed`) und trägt die zwei Festlegungen; WIP-Limit frei; Implementer
+liegt angelegt (`Proposed`) und trägt die drei Festlegungen; WIP-Limit frei; Implementer
 übernimmt.
 
 **Rückführungen — vorab benennen:**
