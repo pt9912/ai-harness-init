@@ -65,40 +65,40 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Ziel-Form: Slice — **≤ 3 Liefer-Punkte**, jeder mit dem Kommando, das ihn
 **rot** färbt ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 
-- [ ] **(1) `ai-harness-init --version` meldet die Fassung oder ihren Fehlt-Fall laut.** Mit
+- [x] **(1) `ai-harness-init --version` meldet die Fassung oder ihren Fehlt-Fall laut.** Mit
       Injektion: die Fassung des Tags, unter dem gebaut wurde ([`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md) Festlegung 1). Ohne
       Injektion (Quell-Bau): der Fehlt-Fall in klarem Wortlaut, Exit 2 — nicht leer, nicht der
       Pin-Wert des Builds. Die Semantik bindet [`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md)
       Festlegung 1 und 2.
       **Rot:** `test/mutations/` — der Fall ohne Injektion (das Werkzeug meldet den Fehlt-Fall)
       und der Fall mit abweichender Fassung.
-- [ ] **(2) Der Release-Bau injiziert die Fassung.** `make release-artifacts` und die
+- [x] **(2) Der Release-Bau injiziert die Fassung.** `make release-artifacts` und die
       `artifact`-Ziele fahren den `ldflags`-Injektions-Schritt aus `TRAEGER_TAG`
       ([`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md) Festlegung 1); die
       byte-identische Eigenschaft des Default-Pfads ([`MR-048`](../../../../harness/conventions.md#mr-048--der-reproduzierbarkeits-anker-ist-die-rezept-form-die-emittierten-skelette-pinnen-per-tag))
       bleibt für denselben Tag bestehen (gleiche Injektion, gleiche Bytes).
       **Rot:** `make mutate` — die Injektion entfernt oder auf einen falschen Operanden
       gestellt → der Wächter fällt.
-- [ ] **(3) Doku-Nachzug.** Das Handbuch trägt in Weg A, B und C, wie die Fassung erkannt wird
+- [x] **(3) Doku-Nachzug.** Das Handbuch trägt in Weg A, B und C, wie die Fassung erkannt wird
       (`--version` am Werkzeug; die Formel und der Digest gegen die `SHA256SUMS` bleiben die
       zwei Beleg-Wege neben dem Flag) — [`AGENTS.md`](../../../../AGENTS.md) §3.7
       (Ist-Zustand, keine Chronik).
       **Rot:** `make gates` — `docs-check` hält die Referenzen.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: der Weg-C-Abschnitt trägt die Fassungs-Erkennung (Liefer-Punkt 3); der
+- [x] Doku-Update: der Weg-C-Abschnitt trägt die Fassungs-Erkennung (Liefer-Punkt 3); der
       Release-Text des nächsten Schnitts nennt das Flag — Vorbedingung (§4), nicht Gegenstand
       dieses Slice.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt
       die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis
       `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zähler wird
       gesetzt**, er folgt aus den Dateien.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo führt
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo führt
       Wellen-Betrieb; der Träger ist die nächste Welle-Closure.
 
 ## 3. Plan (vor Code)
@@ -170,13 +170,47 @@ Dazu ein **Lerneintrag** in einer der drei Formen (§7).
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Das Beobachtungs-Register · `grundlagen-traceability.md` §Herkunfts-Anker.
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang>
-- **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — der Träger ist die nächste Welle-Closure.
+**Rolle:** Planner · **Datum:** 2026-09-23.
+
+- **Was hat funktioniert:** Die Reihenfolge aus §3 trug — der Release-Bau zuerst sagte, was die
+  Injektion überhaupt setzen kann, und die Leerstelle der Expansion
+  (`${TRAEGER_VERSION:+ …}`) hielt die byte-identische Eigenschaft des Default-Pfads, ohne dass
+  der Verweigerungswert erfunden werden musste. Der Reviewer-Nachzug auf die Festlegung-1-Hälfte
+  *„übergeben, nicht Pin-Default"* produzierte den fünften Fall samt Wächter im selben Slice —
+  die Lücke war im ersten Lauf offen gelegt, nicht still verputzt.
+- **Was ging anders als geplant:** Die Dispatch-Ebene liegt unter
+  [`cmd/ai-harness-init/`](../../../../cmd/ai-harness-init/), nicht unter `internal/` — der Plan
+  listete die falsche Ebene; der Implementer trug die Ist-Messung in §3 nach, der Planner
+  bestätigt sie hier als zutreffend (Review F-6 / Verifier V-2). Der Reviewer fand die
+  Default-Hälfte ungewacht (F-2, MEDIUM) — gezogen mit dem fünften Fall
+  (`test/mutations/403-fassungs-pin-default.sh`) und dem Wächter *„TRAEGER_VERSION trägt keinen
+  Default im Makefile"*. Der Formel-Skelett-Satz (*„kein Wert reist im Binary"*) ist seit
+  [`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md) Festlegung 1 überbreit (F-3) —
+  er liegt außerhalb der §1-Abgrenzung (emittierte Ebene) und geht als Folge-Slice (unten).
+- **Steering-Loop-Eintrag:** **gezählt, nicht verkörpert** — kein Zielort, darum **kein**
+  `liegt in`-Feld. Das Flag und die Injektion folgen
+  [`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md) (Festlegungen 1–3) und
+  [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) — beide tragen
+  bereits IDs, der Herkunfts-Anker kommt nicht dazu.
+- **Beobachtungs-Register (`../observations/`):** Zwei Beleg-Dateien aus diesem Slice, beide in
+  bestehenden Einträgen, beide weiter unter bzw. mit zugewiesenem Ausgang:
+  [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
+  (die Formel-Skelett-Zusage blieb stehen, Beleg `evidence/slice-das-werkzeug-sagt-seine-fassung.md`)
+  und
+  [`zusage-nennt-zwei-kanten-der-sensor-deckt-eine`](../observations/BEO-ALL/zusage-nennt-zwei-kanten-der-sensor-deckt-eine/observation.md)
+  (die Default-Hälfte trug keinen Wächter, Beleg `evidence/slice-das-werkzeug-sagt-seine-fassung.md`).
+  Der Lese-Schritt weist keinen Ausgang zu: kein Eintrag erreichte mit diesem Slice 3×.
+- **Folge-Slices:** [`slice-formel-skelett-nennt-die-fassungs-ausnahme`](../open/slice-formel-skelett-nennt-die-fassungs-ausnahme.md)
+  (neu in `open/`) — der Skelett-Satz nennt die eine Fassungs-Ausnahme; der einzige Restposten
+  der Review-Findings (F-3), außerhalb der §1-Abgrenzung dieses Slices.
+- **Risiken aus §6:** alle drei tragen **Ausgang: entfallen** — (1) der Bau ohne Kontext meldet
+  den Fehlt-Fall, nicht den Pin-Stand (Verifier, live gemessen); (2) die leere Injektion lässt
+  den `ldflags`-String exakt `-s -w` (hermetisch gemessen), der Byte-Vergleich bleibt an den
+  artifact/smoke-Zähnen; (3) Formel und `SHA256SUMS` im Diff unberührt, das Flag ist der dritte,
+  belegende Ort.
+- **Drei Paarungen:** Dieses Repo führt Wellen-Betrieb; sie prüft die nächste Welle-Closure —
+  auch für diesen wellenlosen Slice (`modul-06-roadmap.md` §Wann Arbeit eine Welle braucht,
+  Tabelle *Träger im Repo ohne Wellen*).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
