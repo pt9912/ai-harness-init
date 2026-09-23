@@ -1,8 +1,7 @@
 # Benutzerhandbuch: ai-harness-init
 
-**Handbuch-Version:** 1.15
-**Software-Stand:** `v0.2.1` — **vorgefertigte Programme für sechs Plattformen** (linux · macos · windows × amd64 · arm64), seit `v0.1.0`. Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat`, `hexagonal` oder `hexslice`; bei den beiden geschichteten kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp` (C++; weitere folgen), beide auch mit `hexslice`; `hexagonal` liefert heute der Go-Renderer. Seit `v0.1.1` (Juli) kamen vier Betriebs-Operationen hinzu (siehe [Betriebs-Operationen](#betriebs-operationen)). Im aktuellen Quellstand ([`ADR-0060`](../plan/adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md), `Accepted`) benennt die geschichtete Bauform Adapter- und Ports-Ordner nach ihren Rollen (`driving`/`driven`, `ports_inbound`/`ports_outbound` — siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch)); das veröffentlichte `v0.2.1` liefert dafür noch die vorherige Form, die Rollen-Namen kommen mit dem nächsten Release-Schnitt.
-**Stand:** 2026-09-22
+**Software-Stand:** `v0.2.2` — **vorgefertigte Programme für sechs Plattformen** (linux · macos · windows × amd64 · arm64). Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat`, `hexagonal` oder `hexslice`; bei den beiden geschichteten kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp`, beide auch mit `hexslice`; `hexagonal` liefert heute der Go-Renderer. Vier Betriebs-Operationen beschreibt [Betriebs-Operationen](#betriebs-operationen). Die geschichtete Bauform benennt Adapter- und Ports-Ordner nach ihren Rollen ([`ADR-0060`](../plan/adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md), `Accepted`: `driving`/`driven`, `ports_inbound`/`ports_outbound` — siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch)); das veröffentlichte `v0.2.2` trägt diese Form.
+**Stand:** 2026-09-23
 **Verantwortlich:** ai-harness-init-Team (pt9912)
 
 ---
@@ -21,7 +20,6 @@
 8. [Häufige Fragen (FAQ)](#8-häufige-fragen-faq)
 9. [Glossar](#9-glossar)
 10. [Anhang](#10-anhang)
-11. [Änderungshistorie](#11-änderungshistorie)
 
 ---
 
@@ -72,7 +70,7 @@ Eine lokale Go-Installation ist **nicht** nötig — alles läuft über Docker.
 
 ### Das Werkzeug bereitstellen
 
-Es gibt **drei Wege**. Empfohlen ist der **Download** — ab `v0.1.0` liegen fertige Programme für sechs Plattformen bereit; **aktuell ausgeliefert wird `v0.2.1`**. Den Bau aus dem Quellcode brauchen Sie nur, wenn Sie einen Stand **ohne** Versions-Kennzeichnung verwenden wollen. Der dritte Weg — über ein **Homebrew-Tap** — trägt heute erst die Hälfte: die Formel reist bereits als Release-Asset, das Tap-Repository selbst steht noch aus (siehe Weg C).
+Es gibt **drei Wege**. Empfohlen ist der **Download** — fertige Programme für sechs Plattformen; **aktuell ausgeliefert wird `v0.2.2`**. Den Bau aus dem Quellcode brauchen Sie nur, wenn Sie einen Stand **ohne** Versions-Kennzeichnung verwenden wollen. Für macOS und Linux steht der dritte Weg über das **Homebrew-Tap** bereit (siehe [Weg C](#weg-c--über-ein-homebrew-tap-macos-linux)).
 
 #### Weg A — fertiges Programm herunterladen (empfohlen)
 
@@ -148,9 +146,14 @@ Im Ordner **bin** liegt das ausführbare Programm `ai-harness-init`. Kopieren Si
 
 #### Weg C — über ein Homebrew-Tap (macOS, Linux)
 
-Für macOS und Linux ist eine dritte Verteilung vorgesehen: ein **Homebrew-Tap**, über das Sie das Programm mit `brew install` bekämen, ohne die Release-Seite zu öffnen. Windows trägt dieser Weg nicht — Homebrew kennt keine Windows-Pakete.
+Das Tap-Repository [`pt9912/homebrew-ai-harness-init`](https://github.com/pt9912/homebrew-ai-harness-init) trägt die Formel `ai-harness-init`; sie wird je Release-Schnitt aus dem Formel-Asset desselben Schnitts nachgezogen — ihr Skeleton liegt versioniert im Quellcode unter `harness/tools/homebrew-formula.rb.tmpl` und wird je Schnitt mit dessen Version und den vier dafür relevanten Plattform-Prüfsummen befüllt (Linux/macOS × Intel-AMD/ARM).
 
-Von dieser dritten Verteilung steht heute die **Zulieferung**: Jeder Release-Schnitt legt neben den sechs Programm-Dateien und der `SHA256SUMS` eine **Homebrew-Formel** (`ai-harness-init.rb`) als weiteres Release-Asset ab — ihr Skeleton liegt versioniert im Quellcode unter `harness/tools/homebrew-formula.rb.tmpl` und wird je Schnitt mit dessen Version und den vier dafür relevanten Plattform-Prüfsummen befüllt (Linux/macOS × Intel-AMD/ARM). Das **Tap-Repository** selbst — der Ort, an dem `brew` eine Formel nachschlägt — ist kein Bestandteil dieses Projekts und steht noch aus; ohne dieses Repository gibt es keinen `brew install`-Befehl. Bis dahin bleiben Weg A und Weg B die verfügbaren Wege.
+```sh
+brew tap pt9912/ai-harness-init https://github.com/pt9912/homebrew-ai-harness-init
+brew install ai-harness-init
+```
+
+Windows trägt dieser Weg nicht — Homebrew kennt keine Windows-Pakete.
 
 ---
 
@@ -301,7 +304,7 @@ Die erste sagt: der **Kern** sieht keinen Adapter — er kennt nur seine Ports. 
 
 **Die treibende Seite wird bei `hexagonal` bewusst mitgeprüft** — strenger, als es verbreitete Vorlagen tun, die sie als reinen Verdrahtungs-Bereich freistellen. Der Grund: ein zu strenger Standard meldet sich beim **ersten** Lauf und kostet Sie eine Zeile; ein zu lascher meldet sich **nie** und lässt einen Bereich still ungeprüft. Wollen Sie die Freistellung, tragen Sie in **Ihrer** `.a-check.yml` `"internal/adapter/driving/**"` unter `composition_root` ein — eine Zeile, in einer Datei, die das Werkzeug nie überschreibt.
 
-**Wichtig für die Pflege:** `.a-check.yml` gehört Ihnen — ein erneutes Aufsetzen überschreibt sie nicht. Bei `hexslice` gilt: legen Sie einen **weiteren** Use-Case-Schnitt an, tragen Sie ihn dort nach (je ein Eintrag unter `app` und, falls er eigene Ports hat, unter `ports_inbound` bzw. `ports_outbound` — je nach Richtung, mit eigenem `direction:`). Diese Rollen-Form ist der aktuelle Quellstand ([`ADR-0060`](../plan/adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md), `Accepted`); wer das veröffentlichte `v0.2.1` heruntergeladen hat, trägt dort noch die flache `ports`-Schicht ohne `direction:` — die neue Form kommt mit dem nächsten Release-Schnitt, nicht über einen Re-Publish von `v0.2.1`. Vergessen Sie es, fällt der neue Code unter keine Schicht: importiert er eine, meldet das Gate `wrong-direction` — importiert er keine, bleibt er unbemerkt ungeprüft. Bei `hexagonal` wachsen neue Dateien in die bestehenden vier Schichten hinein; nachzutragen ist erst, wenn Sie ein **neues** Schicht-Verzeichnis anlegen.
+**Wichtig für die Pflege:** `.a-check.yml` gehört Ihnen — ein erneutes Aufsetzen überschreibt sie nicht. Bei `hexslice` gilt: legen Sie einen **weiteren** Use-Case-Schnitt an, tragen Sie ihn dort nach (je ein Eintrag unter `app` und, falls er eigene Ports hat, unter `ports_inbound` bzw. `ports_outbound` — je nach Richtung, mit eigenem `direction:`). Diese Rollen-Form ist der veröffentlichte Stand: wer das `v0.2.2` heruntergeladen hat, trägt dort die Rollen-Form mit `direction:`. Vergessen Sie es, fällt der neue Code unter keine Schicht: importiert er eine, meldet das Gate `wrong-direction` — importiert er keine, bleibt er unbemerkt ungeprüft. Bei `hexagonal` wachsen neue Dateien in die bestehenden vier Schichten hinein; nachzutragen ist erst, wenn Sie ein **neues** Schicht-Verzeichnis anlegen.
 
 **Grenzen:** `--arch hexslice` liefert für **beide** Zielsprachen, `--arch hexagonal` derzeit nur der **Go**-Renderer. Eine Sprache, deren Renderer die gewählte Bauform nicht kennt (heute `cpp` mit `hexagonal`), endet mit Exit 2 und nennt die Bauformen, die **diese** Sprache kann — statt still ein Grundgerüst ohne Schichten anzulegen; eine unbekannte Bauform ebenso, mit Nennung der verfügbaren Werte.
 
@@ -536,7 +539,7 @@ Ja — der Aufruf ist **idempotent** (Exit-Code 0). Ein zweiter Lauf frischt die
 Mit `ai-harness-init add-lang <sprache> <pfad>`. Der Befehl ist wiederholbar; mehrere Aufrufe mit verschiedenen Pfaden ergeben ein Mono-Repo. Siehe [Ein Sprachmodul hinzufügen](#ein-sprachmodul-hinzufügen-add-lang).
 
 **Gibt es ein fertiges Download-Binary?**
-Ja, ab `v0.1.0` — für sechs Plattformen (Linux, macOS, Windows × Intel/AMD und ARM). Das ist der empfohlene Weg, siehe [Installation](#2-installation-und-zugriff). Den Bau aus dem Quellcode brauchen Sie nur für einen Stand ohne Versions-Kennzeichnung.
+Ja — für sechs Plattformen (Linux, macOS, Windows × Intel/AMD und ARM). Das ist der empfohlene Weg, siehe [Installation](#2-installation-und-zugriff). Den Bau aus dem Quellcode brauchen Sie nur für einen Stand ohne Versions-Kennzeichnung.
 
 **Verändert `ai-harness-init` meine bestehenden Dateien?**
 Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vorhandene Dateien dieser Art werden nie überschrieben. Die **werkzeug-eigene** Infrastruktur (Prüf-Konfiguration, Hooks, Regelwerk) wird bei jedem Lauf neu auf den Soll-Stand geschrieben; hatten Sie eine solche Datei von Hand geändert, wird die Änderung beim Re-Lauf überschrieben.
@@ -574,7 +577,7 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vo
 
 ### Grenzen und Hinweise
 
-* Im Quellcode-Repository liegt **kein** eingecheckt vorliegendes Binary und kein `run`-Ziel. Fertige Programme gibt es **an den Releases** (ab `v0.1.0`); wer aus dem Quellcode baut, arbeitet gegen den Repo-Stand und hat dann keine Versions-Kennzeichnung.
+* Im Quellcode-Repository liegt **kein** eingecheckt vorliegendes Binary und kein `run`-Ziel. Fertige Programme gibt es **an den Releases**; wer aus dem Quellcode baut, arbeitet gegen den Repo-Stand und hat dann keine Versions-Kennzeichnung.
 * Der erste Lauf benötigt Netzwerk; danach ist das Repository netzunabhängig.
 * `ai-harness-init` und die Prüfungen im Zielrepository benötigen Docker.
 * Voreingestellte Versionen (Kurs-Stand, Go-Version, Prüf-Image) sind festgelegt und reproduzierbar; Abweichungen nur über die Umgebungsvariablen aus [Konfiguration](#5-konfiguration).
@@ -586,26 +589,3 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vo
 * Lizenz: MIT.
 
 ---
-
-## 11. Änderungshistorie
-
-> **Wo Versions-Aussagen hingehören.** Der Rumpf dieses Handbuchs beschreibt den **Ist-Stand**. Aussagen der Form „**ab** Version X gibt es Y" bleiben dort — sie sind eine Fähigkeits-Angabe mit Gültigkeitsgrenze, die Sie beim Lesen brauchen. Aussagen der Form „**in** Version X war es noch anders" gehören **hierher**: sie wachsen mit jeder Korrektur weiter und verdrängen sonst den Ist-Stand aus dem Fließtext.
-
-| Handbuch-Version | Stand | Änderung |
-|---|---|---|
-| 1.15 | 2026-09-22 | **Dritter Verteil-Weg — Weg C, Homebrew-Tap** (`slice-tap-verteilt-die-release-assets`, [`LH-QA-04`](../../spec/lastenheft.md#lh-qa-04--plattform-matrix)): Jeder Release-Schnitt legt jetzt die Homebrew-Formel `ai-harness-init.rb` als weiteres Release-Asset ab (Skeleton `harness/tools/homebrew-formula.rb.tmpl`, befüllt mit Version und den vier brew-relevanten Plattform-Prüfsummen). Der Abschnitt „Das Werkzeug bereitstellen" trägt jetzt drei statt zwei Wege — Weg C benennt ausdrücklich, dass das Tap-**Repository** noch aussteht und `brew install` deshalb noch nicht funktioniert. |
-| 1.14 | 2026-09-20 | Fünf pausierte Nachzug-Posten aufgeholt (Setzung des Auftraggebers vom 2026-09-20). **Software-Stand** auf `v0.2.1` gehoben, mit Verweis auf die neuen Betriebs-Operationen und die Ports-Rollen-Form. **Neuer Abschnitt „Betriebs-Operationen"** (§4) beschreibt `traeger-fetch`, `archive-welle`, `span-report`, `span-clean` — die vier trugen bis hierher keine Adresse im Handbuch. **„Das aufgesetzte Repository prüfen"** (§4) trägt jetzt den Klon-Fall: ein geklontes, bereits aufgesetztes Repository hat den Träger nicht (gitignoriert), `make gates` bleibt davon unberührt, `make traeger-fetch` holt ihn nach. **Die Ports-Form** (§4, „Ein geschichtetes Grundgerüst wählen") nennt jetzt `ports_inbound`/`ports_outbound` mit `direction:` statt der flachen `ports`-Schicht ([Verifikations-Report](../reviews/2026-09-19-slice-adapter-und-ports-ordner-folgen-ihren-rollen-namen-verifikation.md) V-2). Die **Zielordner-Form** der Aufruf-Beispiele war bereits mit `slice-zielordner-richtet-das-werkzeug-auf-ein-ziel-repo` nachgezogen — keine Änderung nötig. |
-| 1.13 | 2026-09-05 | Die drei mitgelieferten Rollen-Anweisungssätze unter `.claude/commands/` (`/plan-welle`, `/close-welle`, `/implement-slice`) beschreiben das **Beobachtungs-Register** jetzt so, wie der mitgelieferte Regelwerks-Stand es führt: je Beobachtung ein **Verzeichnis** unter `docs/plan/planning/observations/` statt einer Tabellenzeile, ein Beleg ist eine Datei unter `evidence/`, und einen Zähler pflegt niemand — er ist die Zahl dieser Dateien. Betroffen sind genau diese drei Dateien des aufgesetzten Repositories; am übrigen Bestand ändert sich nichts. Das Register **selbst** legt der Bootstrap nicht an — seit es ein Verzeichnis je Beobachtung ist, gibt es keine stehende Register-Datei mehr, und das erste Verzeichnis entsteht mit der ersten Beobachtung. |
-| 1.12 | 2026-09-03 | Der mitgelieferte Regelwerks-Stand ist `v5.18.0`. Für das aufgesetzte Repository ändert sich **keine sichtbare Datei**: der vendored Vorlagen-Satz gewinnt zwei wiederkehrende Vorlagen (`archiv-stub-slice`, `archiv-stub-welle`), und wiederkehrende Vorlagen werden aus `.harness/baseline/` **referenziert**, nicht ins Repository kopiert. Die Abschluss-Zeile im Beispielablauf nennt jetzt den neuen Stand. |
-| 1.11 | 2026-09-02 | Der mitgelieferte Regelwerks-Stand ist `v5.12.0`. Für das aufgesetzte Repository heißt das eine sichtbare Datei mehr: das **Beobachtungs-Register** (`docs/plan/planning/observations.md`) — der stehende Zähler des Steering Loops, mit dem jedes Repository leer beginnt. Die Ordner-Übersicht in §6 nennt es jetzt. |
-| 1.10 | 2026-07-28 | **Dritte Bauform `--arch hexagonal`** (heute für **Go**): die drei klassischen Schichten — Kern, importfreie Ports, getriebene und treibende Adapter — ohne Use-Case-Schnitte. Der Abschnitt „Ein geschichtetes Grundgerüst wählen" führt jetzt eine Wahl-Tabelle (wann welche Bauform), nennt die beiden Regeln, die **unabhängig von den erlaubten Richtungen** greifen (`app-impurity`, `lateral-adapter`) samt echter Fehlermeldung, und sagt ausdrücklich, dass die **treibende Seite strenger geprüft** wird als in verbreiteten Vorlagen — samt der einen Zeile, mit der Sie das lockern. Reihenfolge wie in 1.9: der Text kam **nach** den Sensoren — erst als beide Regeln im Voll-E2E-Smoke real rot gesehen waren. |
-| 1.9 | 2026-07-27 | `--arch hexslice` liefert jetzt auch der **C++**-Renderer: `add-lang cpp <pfad> --arch hexslice` legt ein geschichtetes Modul an, statt wie bis dahin mit Exit 2 abzulehnen. Der Kopf und der Abschnitt „Eine Bauform wählen" sagen das jetzt. Der Satz fiel bewusst **nach** den Sensoren, nicht mit dem Renderer: erst als der Voll-E2E-Smoke belegt hatte, dass ein verbotener Schicht-Import das Architektur-Gate rot färbt und ein Fehler in einer Schicht-Datei den Build, beschreibt die Doku die Fähigkeit. |
-| 1.8 | 2026-07-27 | Drei Aussagen korrigiert, die beschrieben, was das Werkzeug **nicht** tut. (1) „arbeitet in **einem** Schritt" — bis 1.7 stand das im Bedienkonzept, obwohl der Bootstrap seit 1.1 **phasiert** ist (Init sprach-agnostisch, Sprachmodul per `add-lang`); `--lang` beim Init ist die Kurzform für beide Schritte. (2) „zieht ein neueres Regelwerk nach" — an **vier** Stellen im Handbuch und einer im `README.md`. Der Re-Lauf frischt auf den Stand auf, den das **Programm mitbringt**; die Kurs-Version ist darin gepinnt, ein neuerer Stand kommt mit einem neueren Programm oder bewusst über `COURSE_TAG`. (3) Neuer Windows-Hinweis, symmetrisch zum macOS-Quarantäne-Hinweis: die Programme sind **nicht signiert**, der erste Start kann deshalb mit einer Warnung unterbrochen werden. Alle drei fand ein Mensch beim Lesen, kein Sensor. |
-| 1.7 | 2026-07-26 | Regel, wo Versions-Aussagen hingehören, als Kasten über dieser Tabelle verankert — sie stand bis dahin nur in einer Commit-Message. Zwei Folgen davon: der Rückblick „(frühere Versionen kannten das)" im Re-Lauf-Abschnitt ist hierher gewandert (gemeint war der Wegfall von `--force` und Kollisions-Abbruch), und Weg B benennt jetzt, dass er den **geklonten Entwicklungsstand** baut, nicht die veröffentlichte Version. |
-| 1.6 | 2026-07-26 | `make artifact DEST=<ordner>` legt den Zielordner jetzt selbst an. Bis einschließlich `v0.1.0` brach der Befehl mit `invalid output path: directory … does not exist` ab, wenn der Ordner fehlte — obwohl die Anleitung genau diesen Aufruf vorschreibt (von einem Nutzer gemeldet). Der Hinweis im Installations-Abschnitt sagt das jetzt; die Versions-Abgrenzung steht hier statt im Fließtext. |
-| 1.5 | 2026-07-26 | **Erstes Release `v0.1.0`**: fertige Programme für sechs Plattformen (Linux · macOS · Windows × Intel/AMD · ARM) sind der empfohlene Weg; §2 in Weg A (Download) und Weg B (aus dem Quellcode bauen) geteilt, mit Dateitabelle, Suchpfad-Hinweis und macOS-Quarantäne-Hinweis. Neuer Kasten „Was wo geprüft wird": der vollständige Durchlauf läuft auf Linux/Intel-AMD, beim Release wird auf allen sechs Dateien nur der **Start** geprüft. FAQ, Anhang und Systemanforderungen nachgezogen; FAQ-Sprachliste um `cpp` korrigiert. |
-| 1.4 | 2026-07-25 | **Bauform `--arch`** (slice-045b/046): `hexslice` erzeugt ein geschichtetes Grundgerüst und liefert das **Architektur-Gate** (`.a-check.yml` + `a-check.mk`) mit, `flat` (Standard) nicht. Neuer Aufgaben-Abschnitt samt Pflege-Hinweis für zusätzliche Use-Case-Schnitte, Optionstabelle, `add-lang`-Signatur, `A_CHECK_IMAGE`/`A_CHECK_DIGEST` und Phase-2-Beschreibung nachgezogen. Nachzug: das Handbuch kannte die Achse seit zwei Slices nicht. |
-| 1.3 | 2026-07-23 | Zweite Zielsprache **C++** (slice-039): `--lang cpp` und `add-lang cpp <pfad>` erzeugen ein CMake-Grundgerüst (Dockerfile-Stages build/test/lint mit CMake + CTest + clang-tidy, netzloser Test). Optionstabelle, `SKEL_CPP_VERSION`, Sprach-Datei-Liste, Fehlermeldung und FAQ nachgezogen. Gemischt-sprachige Mono-Repos möglich. |
-| 1.2 | 2026-07-23 | Sprach-Review gegen den Benutzerhandbuch-Standard: Entwicklerbegriffe geglättet (Aggregator → zentrale `Makefile`, Durchsetzung → Schutz-Hooks, Doc-Chain → Projekt-Dokumente, „skip-if-present“/„kanonisch“/„vendored“ plain); die in der Werkzeug-Ausgabe sichtbaren Begriffe (Aggregator, Durchsetzung, Prüf-Baustein) ins Glossar aufgenommen; Sicherheits- und Versions-Hinweis im Anhang ergänzt. |
-| 1.1 | 2026-07-23 | Phasierter Bootstrap (welle-05): `--lang` optional (dokument-only Init), neues `add-lang`-Subkommando (Mono-Repo), idempotenter Re-Lauf. `--force` entfernt; Kollisions-Abbruch-Verhalten und die zugehörigen Fehler/FAQ/Exit-Codes ersetzt. |
-| 1.0 | 2026-07-22 | Erste Fassung. Deckt den vollständigen Bootstrap (`--lang go`), Konfiguration, Fehlerbehebung, FAQ und Glossar ab. |
