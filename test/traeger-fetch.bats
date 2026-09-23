@@ -117,8 +117,8 @@ pin_wert() {
   # Eine Stelle ohne Wert waere still gruen (LH-QA-01); ein Digest im Fragment
   # bettete einen Wert ins Binary, der vom Bau-Ergebnis abhaengt — die
   # Selbstreferenz-Wand aus ADR-0059.
-  [ "$(pin_wert "$MK" 'TRAEGER_TAG')" = "v0.2.2" ]
-  [ "$(pin_wert "$FRAG" 'TRAEGER_TAG')" = "v0.2.2" ]
+  [ "$(pin_wert "$MK" 'TRAEGER_TAG')" = "v0.2.3" ]
+  [ "$(pin_wert "$FRAG" 'TRAEGER_TAG')" = "v0.2.3" ]
   [ "$(grep -c 'TRAEGER_SHA256' "$FRAG")" -eq 0 ]
   # Die Dogfood-Haelfte traegt weiter: sechs Einzeldigests, je 64 Hex (ADR-0059
   # Festlegung 3 — zwei Kanaele).
