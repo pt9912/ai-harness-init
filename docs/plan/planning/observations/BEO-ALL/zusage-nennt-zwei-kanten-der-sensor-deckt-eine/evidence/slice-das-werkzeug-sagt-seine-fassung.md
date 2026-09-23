@@ -1,5 +1,5 @@
 **Vorgang:** slice-das-werkzeug-sagt-seine-fassung
-**Fund:** Festlegung 1 von [`ADR-0063`](../../../../../../docs/plan/adr/0063-das-werkzeug-sagt-seine-fassung.md)
+**Fund:** Festlegung 1 von [`ADR-0063`](../../../../../../plan/adr/0063-das-werkzeug-sagt-seine-fassung.md)
 trägt zwei Hälften — die Injektion liest den **übergebenen** Wert, und sie liest ihn **nie aus
 dem Pin-Default**. Die vier Mutations-Fälle deckten die erste Hälfte und die Fehlerrichtungen;
 die Default-Hälfte trug keinen Wächter — ein späteres `TRAEGER_VERSION ?= $(TRAEGER_TAG)` hätte

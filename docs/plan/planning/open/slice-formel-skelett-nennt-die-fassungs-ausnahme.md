@@ -9,8 +9,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 nichts, was die DoD darunter nicht ohnehin belegt.
 
 **Bezug:** [`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md) (Festlegung 1 lässt
-genau einen Wert ins Binary reisen — die Fassung), [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix),
-[`MR-024`](../../../../harness/conventions.md#mr-024--d-check-pin-v0620-structure-verfugbar).
+genau einen Wert ins Binary reisen — die Fassung), [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix).
 
 **Berührte Spec-Stellen:** — (Doku-Satz am Skelett).
 
@@ -26,7 +25,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Ziel-Form: Slice.
 
 **Ziel:** Der Kopf-Kommentar des Formel-Skeletts
-([`internal/emit/templates/homebrew-formula.rb.tmpl`](../../../../internal/emit/templates/homebrew-formula.rb.tmpl))
+([`harness/tools/homebrew-formula.rb.tmpl`](../../../../harness/tools/homebrew-formula.rb.tmpl))
 behauptet *„kein Wert reist im Binary"* — überbreit seit
 [`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md) Festlegung 1 (die Fassung reist
 per `ldflags` in jedes Release-Binary). Der Satz trägt die Ausnahme: *kein Wert reist im Binary
@@ -60,7 +59,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
       bleibt; sonst eigener Report.
 - [ ] Closure-Notiz mit Lerneintrag.
 - [ ] Beobachtungs-Register fortgeschrieben — der Eintrag
-      [`BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-zu-erwartenden-fundstellen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
+      [`BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
       trägt den Ausgang dieses Vorkommens.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang.
 - [ ] Die drei Paarungen — dieses Repo führt Wellen-Betrieb; der Träger ist die nächste
@@ -72,7 +71,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `grundlagen-bootstrap.md`.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| [`internal/emit/templates/homebrew-formula.rb.tmpl`](../../../../internal/emit/templates/homebrew-formula.rb.tmpl) | update | der Kopf-Kommentar nennt die eine Ausnahme statt der breiten Aussage |
+| [`harness/tools/homebrew-formula.rb.tmpl`](../../../../harness/tools/homebrew-formula.rb.tmpl) | update | der Kopf-Kommentar nennt die eine Ausnahme statt der breiten Aussage |
 
 ## 4. Trigger
 
@@ -113,7 +112,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`.
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`.
 
-**Vorgelagert — Sub-Area-Wahl prüfen:** Berührt ist `internal/emit/templates/` — in `*`. Die
+**Vorgelagert — Sub-Area-Wahl prüfen:** Berührt ist `harness/tools/` — in `*`. Die
 berührte Sub-Area erfüllt das Inklusionskriterium.
 
 **Vorgelagert — offene Beobachtungen sichten:** Der Eintrag
