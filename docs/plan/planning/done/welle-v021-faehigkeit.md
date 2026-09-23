@@ -21,7 +21,7 @@ Zielordner-Slice gezogen hat, zusammen ziehen: der Zielordner-Parameter am
 Werkzeug-Dispatch, die `SHA256SUMS`-Emission im Release-Lauf, die
 Release-Prozedur in `releasing.md`, die Skeleton-Struktur (Adapter- und
 Ports-Ordner unter ihren Rollen-Namen), die Fall-Anlage-Regel
-([`MR-071`](../../../harness/conventions/MR-071-die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand.md)),
+([`MR-071`](../../../../harness/conventions/MR-071-die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand.md)),
 die Mono-Repo-Komposition der unscoped Targets, der Handbuch-Nachzug und die
 Tap-Verteilung. Die **Belegbasis** sind die sieben geschlossenen Slices in
 `done/`: `slice-zielordner-richtet-das-werkzeug-auf-ein-ziel-repo`,
@@ -78,13 +78,13 @@ Lifecycle-Verzeichnis und wird hier **nicht** gespiegelt.
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| slice-unscoped-ziele-kollidieren-nicht-im-mono-repo | Die unscoped-Ziele kollidieren nicht im gemischten Mono-Repo | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
-| slice-benutzerhandbuch-nachzug-traegt-fuenf-posten | Der Handbuch-Nachzug trägt die fünf Posten | [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
-| slice-tap-verteilt-die-release-assets | Das Tap verteilt die Release-Assets | [`LH-QA-04`](../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) |
-| slice-waechter-der-erfassungsschicht-decken-was-sie-sagen | Die Wächter der Erfassungsschicht decken, was sie sagen | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
-| slice-lifecycle-werkzeuge-tragen-die-kennung | Die Lifecycle-Werkzeuge tragen die Kennung | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
-| slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt | Emitter-Aussagen über den Vorlagensatz sind gedeckt | [`LH-FA-12`](../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren) |
-| slice-leser-und-aufraeum-waechter-decken-was-sie-sagen | Der Leser- und der Aufräum-Wächter treffen ihre Meldung und sagen ihre Menge | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
+| slice-unscoped-ziele-kollidieren-nicht-im-mono-repo | Die unscoped-Ziele kollidieren nicht im gemischten Mono-Repo | [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
+| slice-benutzerhandbuch-nachzug-traegt-fuenf-posten | Der Handbuch-Nachzug trägt die fünf Posten | [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
+| slice-tap-verteilt-die-release-assets | Das Tap verteilt die Release-Assets | [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) |
+| slice-waechter-der-erfassungsschicht-decken-was-sie-sagen | Die Wächter der Erfassungsschicht decken, was sie sagen | [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
+| slice-lifecycle-werkzeuge-tragen-die-kennung | Die Lifecycle-Werkzeuge tragen die Kennung | [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt | Emitter-Aussagen über den Vorlagensatz sind gedeckt | [`LH-FA-12`](../../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren) |
+| slice-leser-und-aufraeum-waechter-decken-was-sie-sagen | Der Leser- und der Aufräum-Wächter treffen ihre Meldung und sagen ihre Menge | [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
 
 **Nicht Mitglied:** `slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang` trägt in seinem
 eigenen Kopf „**Welle:** ohne Welle" mit Begründung — sein Closure-Trigger fordert nichts, was
@@ -112,14 +112,14 @@ Zielsetzung: Was nicht ausdrücklich ausgeschlossen ist, dehnt die Welle, bis
 der Closure-Trigger unerreichbar wird.
 
 - **Kein Re-Publish von `v0.2.1`** — die Tag-Kopplung
-  ([`ADR-0058`](../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
+  ([`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
   Festlegung 2) würde für denselben Stand zweimal vollziehen; der nächste
   Release-Schnitt trägt die Fähigkeit.
 - **Keine hexslice-Berührung** — die ist geschlossen
-  ([`ADR-0060`](../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
+  ([`ADR-0060`](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
   `Accepted` trägt die Struktur); ein Griff wäre ein zweiter Vorgang.
 - **Kein zweiter Fetch-Weg** — der Fetch
-  ([`ADR-0058`](../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
+  ([`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
   Festlegung 1) bleibt der Träger-Weg; die Tap-Verteilung ersetzt keinen
   Fetch.
 - **Kein Release-Schnitt in dieser Welle** — der Release-Schnitt ist

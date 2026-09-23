@@ -9,7 +9,7 @@ aus `open/` oder `next/` nach `done/` — §7 nennt in der Zeile `Gegenstand:`
 Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 (§Ein Slice, dessen Gegenstand ein anderer übernimmt).
 
-**Welle:** [welle-v021-faehigkeit](../welle-v021-faehigkeit.md) — Mitglied laut
+**Welle:** [welle-v021-faehigkeit](welle-v021-faehigkeit.md) — Mitglied laut
 deren §4 (Slices in dieser Welle); die Welle bündelt die Belegbasis-Kette und trägt
 über diese DoD hinaus den repo-weiten `make full-smoke`-Beleg als Closure-Bedingung.
 
