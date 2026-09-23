@@ -14,26 +14,39 @@ Der Schnitt läuft tag-getrieben: der Release-Workflow
 sechs Runnern und publiziert; ein `workflow_dispatch`-Lauf baut und startet
 und lädt nichts hoch. Die Schritt-Folge:
 
-1. **Assets bauen und die Prüfsummen erzeugen.** `make release-artifacts
-   DEST=dist` baut die sechs Binaries der Plattform-Matrix — `linux/amd64`,
-   `linux/arm64`, `darwin/amd64`, `darwin/arm64`, `windows/amd64`,
-   `windows/arm64`
+1. **Den Tag in der Vorlage setzen, dann die Assets bauen und die
+   Prüfsummen erzeugen.** Zuerst zeigen `TRAEGER_TAG` in
+   `internal/emit/templates/enforce/traeger.mk` und der Tag-Wert in
+   `test/traeger-fetch.bats` auf den Tag, der geschnitten wird. Die Vorlage
+   ist im Binary eingebettet: ein Bau vor diesem Zug trägt den Tag des
+   vorigen Schnitts, und seine Digests sind nicht die der Binaries, die der
+   Release-Workflow am Tag baut. Dann baut `make release-artifacts DEST=dist
+   TRAEGER_VERSION=<tag>` die sechs Binaries der Plattform-Matrix —
+   `linux/amd64`, `linux/arm64`, `darwin/amd64`, `darwin/arm64`,
+   `windows/amd64`, `windows/arm64`
    ([`LH-QA-04`](../../spec/lastenheft.md#lh-qa-04--plattform-matrix)) — und
    erzeugt im selben Lauf die `SHA256SUMS` im selben Verzeichnis
    (`harness/tools/release-sums.sh`, Modus `generate`;
    [`ADR-0059`](../plan/adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
-   Festlegung 1).
+   Festlegung 1). `TRAEGER_VERSION` ist der Wert, den der Release-Workflow am
+   Tag übergibt und den `--version` meldet
+   ([`ADR-0063`](../plan/adr/0063-das-werkzeug-sagt-seine-fassung.md)
+   Festlegung 1); ohne ihn baut der Lauf ein anderes Binary als der
+   Workflow.
 
 2. **Digests messen und den Pin ziehen.** Die `SHA256SUMS`-Zeilen sind die
    gemessenen Digests der sechs Assets; der Pin trägt Version und Digest,
    fail-closed gekoppelt
    ([`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)):
    `TRAEGER_TAG` und die sechs `TRAEGER_SHA256_*`-Werte stehen im Makefile,
-   die emittierte Vorlage (`internal/emit/templates/enforce/traeger.mk`)
-   trägt den Tag. Beides gehört in den Commit, den der Tag tragen wird —
-   der Pin zeigt im selben Vorgang auf den geschnittenen Stand
+   die emittierte Vorlage trägt den Tag (Schritt 1). Das Makefile ist nicht
+   eingebettet, seine Werte folgen dem Bau. Alles gehört in den Commit, den
+   der Tag tragen wird — der Pin zeigt im selben Vorgang auf den
+   geschnittenen Stand
    ([`ADR-0058`](../plan/adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
-   Festlegung 2).
+   Festlegung 2). Dass die gemessenen Digests die des Workflows sind, belegt
+   nach der Publikation `make traeger-fetch`: es hält das veröffentlichte
+   Asset gegen den Pin.
 
 3. **Die Assets gegen die Prüfsummen halten.**
    `bash harness/tools/release-sums.sh verify <dir>` — fehlt die
