@@ -145,3 +145,17 @@ hinaus.
 - `make full-smoke` → EXIT 0 (Lauf vom 2026-09-23; 35 `full-smoke: OK`-Stufen,
   `grep -c 'full-smoke: OK'` über das Protokoll des Laufs) — der repo-weite
   Beleg, den keine einzelne Slice-DoD trägt.
+- **Die drei Paarungen** (Schritt 3, zum Schluss — sie prüfen die gerade
+  entstandenen Einträge). **(a) Anker-Paarung:** nicht ausgelöst — kein Eintrag
+  des Lese-Schritts trägt das Pflichtfeld `liegt in <Zielort>`; der Ausgang ist
+  `geplant`, gezählt nicht verkörpert. **(b) Folge-Slice-Paarung:** **drei**
+  genannt (`slice-141-co-001-aufloesung-ist-vorher-entschieden`,
+  `slice-113-co-001-ist-faellig`, `slice-151-spec-straten-haben-eine-schreibende-rolle`),
+  **drei** liegen als Dateien im Planning-Lifecycle (`next/`, `open/`, `open/`).
+  **(c) Register-Paarung:** jede genannte Beobachtung existiert als Verzeichnis
+  ([`BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`](../observations/BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet/observation.md)),
+  und jede Registerzeile trägt mindestens einen Beleg; die Umkehrung *„jede
+  Zeile ist irgendwo zitiert"* wird nicht geprüft. **Kein Rot.**
+- **Schritt 4 — Archivierung — nicht ausgeführt** (steht oben unter *Was ging
+  anders als geplant*; die Vorschau endet an der stehenden Sperre
+  `[untergrenze]`, dieselbe Lage wie bei der vorangehenden Welle-Closure).
