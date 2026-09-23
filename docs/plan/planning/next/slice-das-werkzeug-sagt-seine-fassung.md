@@ -66,7 +66,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **rot** färbt ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 
 - [ ] **(1) `ai-harness-init --version` meldet die Fassung oder ihren Fehlt-Fall laut.** Mit
-      Injektion: die Fassung des Tags, unter dem gebaut wurde (`ADR-0063` Festlegung 1). Ohne
+      Injektion: die Fassung des Tags, unter dem gebaut wurde ([`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md) Festlegung 1). Ohne
       Injektion (Quell-Bau): der Fehlt-Fall in klarem Wortlaut, Exit 2 — nicht leer, nicht der
       Pin-Wert des Builds. Die Semantik bindet [`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md)
       Festlegung 1 und 2.
@@ -156,7 +156,7 @@ Dazu ein **Lerneintrag** in einer der drei Formen (§7).
    `make artifact` ohne gesetzten Kontext fällt in den Fehlt-Fall.
 2. **Die Injektion bricht die byte-identische Eigenschaft des Default-Pfads.** *Absehbar:*
    entfallen — die Identität bleibt für denselben Injektions-Wert (der Pin-Wert ist je Bau
-   gleich); der Zahn an `MR-048` bewacht weiter den Vergleich, [`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md)
+   gleich); der Zahn an [`MR-048`](../../../../harness/conventions.md#mr-048--der-reproduzierbarkeits-anker-ist-die-rezept-form-die-emittierten-skelette-pinnen-per-tag) bewacht weiter den Vergleich, [`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md)
    Festlegung 3 trägt die Abgrenzung.
 3. **Die Formel-Nachzug-Form liest die Fassung zweifach** (Formel `version`-Feld und Binary).
    *Absehbar:* entfallen — der Fetch und die Formel bleiben die zwei Kanäle
