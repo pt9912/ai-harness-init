@@ -55,11 +55,14 @@ und lädt nichts hoch. Die Schritt-Folge:
    Plattform startet. Mehr nicht." — die Zusagen stehen im
    [Handbuch](benutzerhandbuch.md#systemanforderungen)) und publiziert: der
    publish-Job hält die `SHA256SUMS` gegen die Assets, bevor er lädt, und
-   hängt die sieben Assets ans Release — sechs Binaries und die
-   `SHA256SUMS` als siebtes Asset
-   ([`ADR-0059`](../plan/adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
-   Festlegung 1; `gh release view <tag> --json assets --jq '.assets | length'`
-   → `7`). Der Release-Text entsteht mit `--generate-notes`; Ergänzungen an
+   hängt die acht Assets ans Release — sechs Binaries, die `SHA256SUMS` als
+   siebtes Asset ([`ADR-0059`](../plan/adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
+   Festlegung 1) und die Homebrew-Formel als achtes Asset, gefüllt aus dem
+   Formel-Skelett je Release (die Tap-Verteilung,
+   [`LH-QA-04`](../../spec/lastenheft.md#lh-qa-04--plattform-matrix); fehlt die
+   Formel, bricht der Tap-Abzug laut —
+   `gh release view <tag> --json assets --jq '.assets | length'`
+   → `8`). Der Release-Text entsteht mit `--generate-notes`; Ergänzungen an
    ihm folgen der Stand-Form (Schritt 7). Der manuelle Weg —
    `gh release create <tag> <dir>/*` nach dem `verify`-Modus von Schritt 3 —
    fährt dieselbe Haltung vor der Publikation.
