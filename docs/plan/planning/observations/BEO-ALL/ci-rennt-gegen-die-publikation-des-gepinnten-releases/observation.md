@@ -5,8 +5,9 @@
 Ein Commit, der `TRAEGER_TAG` auf eine noch unveröffentlichte Fassung zieht und denselben Stand als
 Tag pusht, triggert zwei Workflows nebeneinander: der `ci`-Lauf fährt im `full-smoke` den
 `traeger-fetch` aus dem **gepinnten** Release, während der `release`-Lauf seine Assets erst noch
-publiziert — die Anfrage 404t, und der Fetch fällt fail-closed (`ADR-0058` Festlegung 2: laut-Bruch
-statt stiller Ausweichung). Der Schnitt-Commit ist damit bis zur Publikation **unerreichbar grün**;
+publiziert — die Anfrage 404t, und der Fetch fällt fail-closed
+([`ADR-0058`](../../../../../plan/adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
+Festlegung 2: laut-Bruch statt stiller Ausweichung). Der Schnitt-Commit ist damit bis zur Publikation **unerreichbar grün**;
 die erste Lage der Klasse, denn `v0.2.1` wurde geschnitten, bevor der Fetch-Schritt in
 `full-smoke` lag.
 
