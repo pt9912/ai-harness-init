@@ -151,7 +151,7 @@ Das Tap-Repository [`pt9912/homebrew-ai-harness-init`](https://github.com/pt9912
 ```sh
 brew tap pt9912/ai-harness-init https://github.com/pt9912/homebrew-ai-harness-init
 brew trust pt9912/ai-harness-init
-brew install ai-harness-init
+brew install pt9912/ai-harness-init/ai-harness-init
 ```
 
 Homebrew lädt Formeln aus einem Fremd-Tap nur nach ausdrücklicher Freigabe: fehlt die Freigabe, bricht der Laden mit *„Refusing to load formula … from untrusted tap"* ab — `brew trust pt9912/ai-harness-init` gibt sie.
