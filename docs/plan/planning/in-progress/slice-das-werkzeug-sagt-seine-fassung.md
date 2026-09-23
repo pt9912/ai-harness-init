@@ -112,6 +112,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `grundlagen-bootstrap.md`
 | [`Makefile`](../../../../Makefile), [`Dockerfile`](../../../../Dockerfile), [`.github/workflows/release.yml`](../../../../.github/workflows/release.yml) | update | **eine Ursache, drei Stellen:** der Injektions-Schritt — die Bau-Rezepte reichen `TRAEGER_VERSION` an die build-Stage durch, der Stage-Operand setzt ihn nur bei gesetztem Wert ein (leer bleibt der `ldflags`-String byte-identisch), der Workflow übergibt den Tag-Ref denselben Wert wie den Pin-Zug |
 | [`test/release-matrix.bats`](../../../../test/release-matrix.bats) | update | die drei Kopplungs-Wächter zur Injektion (Stage-Operand, Rezept-Durchreichung, keine Default-Zuweisung von `TRAEGER_VERSION` im Makefile — die Fassung kommt aus dem übergebenen Kontext, nie aus dem Pin-Default) — dieselbe Linie wie die übrigen Rezept-Kopplungen dort |
 | [`test/mutations/`](../../../../test/mutations) | neu | fünf Fälle — Fehlt-Fall entstärkt, gemeldeter Wert weicht ab, Injektion am Bau entfernt, Rezepte ohne Durchreichung, Pin-Default eingeführt |
+| [`.golangci.yml`](../../../../.golangci.yml) | update | die zentrale Lint-Ausnahme für die `fassung`-Variable (`AGENTS.md` §3.2 — der `-X`-Einhängepunkt ist notwendig eine Paket-Variable) |
 | [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) | update | Weg A/B/C: die Fassungs-Erkennung (Ist-Zustand) |
 
 Reihenfolge: der Release-Bau zuerst (Liefer-Punkt 2) — er sagt, was die Injektion überhaupt
