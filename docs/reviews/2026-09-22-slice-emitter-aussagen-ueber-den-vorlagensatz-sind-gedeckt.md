@@ -2,7 +2,7 @@
 
 **Rolle:** Reviewer · **Datum:** 2026-09-22
 **Commit-Bereich:** `6c261398..HEAD` (ein Implementer-Commit `fa125cf8`)
-**Plan:** [`docs/plan/planning/in-progress/slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt.md`](../plan/planning/in-progress/slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt.md)
+**Plan:** [`docs/plan/planning/done/slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt.md`](../plan/planning/done/slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt.md)
 **Bezug:** [`LH-FA-02`](../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3),
 [`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6),
 [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit),
@@ -49,7 +49,7 @@ Diff `6c261398..HEAD` (`internal/emit/templates.go`, `internal/emit/templates_te
   lebt in §3 des Slice-Plans, nicht im Chat-Verlauf … kein separates Artefakt entsteht neu"; "Nimmt
   der Lauf etwas mit, das §1 ausschließt, ist das eine Plan-Änderung und gehört vor den Code, nicht
   in den Bericht danach")
-- **pfad:** `internal/emit/export_test.go` (neu); `docs/plan/planning/in-progress/slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt.md`
+- **pfad:** `internal/emit/export_test.go` (neu); `docs/plan/planning/done/slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt.md`
   §3 (unverändert — führt nur `templates.go`, `templates_test.go`, `test/mutations/`)
 - **befund:** §3 des Slice-Plans listet drei Dateien/Komponenten; `internal/emit/export_test.go`
   steht dort nicht, obwohl es Teil des Diffs ist. Die Abweichung ist real (neue Datei, erstes
