@@ -19,13 +19,13 @@ funktionierte · was anders lief. Mit ID-Bezug, wo es einen gibt.
 gezogen hat, zusammen ziehen. Alle sieben Slices der Welle (§4 des Welle-Plans) liegen in `done/`
 (`ls docs/plan/planning/done/ | grep -cE "zielordner|release-schnitt|releasing|adapter-und-ports|stumme-mutations|mutations-faelle-pruefen|fall-anlage|unscoped|benutzerhandbuch|tap-verteilt|waechter-der-erfassung|lifecycle-werkzeuge|emitter-aussagen|leser-und-aufraeum"` → **13** — die sieben Belegbasis-Slices aus §1 und die sieben Mitglieder der Tabelle, zwei Slices doppelt gezählt, keine Erwartungswerte):
 
-- [`slice-unscoped-ziele-kollidieren-nicht-im-mono-repo`](slice-unscoped-ziele-kollidieren-nicht-im-mono-repo.md) — [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)
-- [`slice-benutzerhandbuch-nachzug-traegt-fuenf-posten`](slice-benutzerhandbuch-nachzug-traegt-fuenf-posten.md) — [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)
-- [`slice-tap-verteilt-die-release-assets`](slice-tap-verteilt-die-release-assets.md) — [`LH-QA-04`](../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)
-- [`slice-waechter-der-erfassungsschicht-decken-was-sie-sagen`](slice-waechter-der-erfassungsschicht-decken-was-sie-sagen.md) — [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)
-- [`slice-lifecycle-werkzeuge-tragen-die-kennung`](slice-lifecycle-werkzeuge-tragen-die-kennung.md) — [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
-- [`slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt`](slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt.md) — [`LH-FA-12`](../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren)
-- [`slice-leser-und-aufraeum-waechter-decken-was-sie-sagen`](slice-leser-und-aufraeum-waechter-decken-was-sie-sagen.md) — [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)
+- [`slice-unscoped-ziele-kollidieren-nicht-im-mono-repo`](slice-unscoped-ziele-kollidieren-nicht-im-mono-repo.md) — [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)
+- [`slice-benutzerhandbuch-nachzug-traegt-fuenf-posten`](slice-benutzerhandbuch-nachzug-traegt-fuenf-posten.md) — [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)
+- [`slice-tap-verteilt-die-release-assets`](slice-tap-verteilt-die-release-assets.md) — [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)
+- [`slice-waechter-der-erfassungsschicht-decken-was-sie-sagen`](slice-waechter-der-erfassungsschicht-decken-was-sie-sagen.md) — [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)
+- [`slice-lifecycle-werkzeuge-tragen-die-kennung`](slice-lifecycle-werkzeuge-tragen-die-kennung.md) — [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
+- [`slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt`](slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt.md) — [`LH-FA-12`](../../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren)
+- [`slice-leser-und-aufraeum-waechter-decken-was-sie-sagen`](slice-leser-und-aufraeum-waechter-decken-was-sie-sagen.md) — [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)
 
 Jeder der sieben trägt seine DoD-Belege in seiner eigenen Datei in `done/`; der
 repo-weite Beleg steht unten unter *Verifikation*.
@@ -81,12 +81,12 @@ die daraus schon gezogen wurde.
   2026-09-14) liegt vor der letzten Welle-Closure und stand bei deren Lese-Schritt
   unter der Schwelle; der Übertritt über 3× fiel mit dem zweiten und dritten
   Beleg (2026-09-17, 2026-09-18) in das Fenster dieser Welle. Die Präzisierung
-  steht in `ADR-0062` §Kontext; das Audit dieser Welle bleibt der richtige Träger.
-- **Die Audit-Formel zu `ADR-0057` Trigger 2 ist präzisiert:** der Sprung
+  steht in [`ADR-0062`](../../adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md) §Kontext; das Audit dieser Welle bleibt der richtige Träger.
+- **Die Audit-Formel zu [`ADR-0057`](../../adr/0057-wiederkehrende-vorlagen-menge-bindet-als-eigenschaft.md) Trigger 2 ist präzisiert:** der Sprung
   `v6.8.0` → `v6.9.0` (2026-09-16) ist **eingetreten**; der Trigger verlangt
   zusätzlich eine Vorlagen-Art außerhalb der vier Mengen, und die fehlt — die
-  Template-Pfadlisten sind über den Vendor-Commit identisch (28 = 28, `diff`
-  leer). Sprung eingetreten, kein Vorlagen-Delta — Trigger 2 nicht gefeuert.
+  Template-Pfadlisten sind über den Vendor-Commit identisch (`diff` leer).
+  Sprung eingetreten, kein Vorlagen-Delta — Trigger 2 nicht gefeuert.
 
 ## Steering-Loop-Einträge
 
@@ -98,11 +98,11 @@ und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der Backticks; die
 **Spec-Lücke** trägt statt `liegt in` ihre `LH-*`-ID — das ist kein Versehen).
 
 - **[`BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`](../observations/BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet/observation.md)**
-  — die allgemeine Eigentums-Regel ist entschieden: `ADR-0062`
+  — die allgemeine Eigentums-Regel ist entschieden: [`ADR-0062`](../../adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md)
   (*Eigentums-Frage ohne Quelle wird im laufenden Vorgang nicht beantwortet*),
   `Proposed`, drei Festlegungen, **kein `Supersedes`** — die vier Instanz-ADRs
-  (`ADR-0015`, `ADR-0024`, `ADR-0028`, `ADR-0048`) bleiben in Kraft. Der
-  Ausgang im Register ist **`geplant`**, Kennung `ADR-0062` — mit dem Accept
+  ([`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md), [`ADR-0024`](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md), [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md), [`ADR-0048`](../../adr/0048-eigentum-haengt-am-vorgang-nicht-an-der-datei.md)) bleiben in Kraft. Der
+  Ausgang im Register ist **`geplant`**, Kennung [`ADR-0062`](../../adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md) — mit dem Accept
   (Acceptance-Trigger der ADR, eigene Reviewer-Runde) wird derselbe Ausgang
   **`verkörpert`**; der Anker `· seit welle-v021-faehigkeit` trägt die ADR
   selbst. Kein `liegt in`-Feld: Der Eintrag ist **gezählt, nicht verkörpert** —
@@ -130,7 +130,7 @@ Keine neuen. Die zwei `CO-001`-Ausgänge aus dem Trigger-Audit stehen unverände
 `slice-113-co-001-ist-faellig` in `open/` (verlängert, nicht aufgelöst). Die zwei
 weiterhin offenen Eigentums-Fragen (`docs/plan/planning/README.md`, Spec-Straten —
 [`slice-151-spec-straten-haben-eine-schreibende-rolle`](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md)
-in `open/`) fallen unter `ADR-0062` Festlegung 2 **erst ab deren Annahme**; bis
+in `open/`) fallen unter [`ADR-0062`](../../adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md) Festlegung 2 **erst ab deren Annahme**; bis
 dahin beantwortet die ADR sie nicht.
 
 ## Verifikation
