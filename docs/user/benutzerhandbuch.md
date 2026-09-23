@@ -115,6 +115,8 @@ Liegt der Ordner in Ihrem Suchpfad, ist das Programm unter dem kurzen Namen `ai-
 
 Welche Fassung das Programm trägt, meldet `ai-harness-init --version` — die Fassung des Releases, aus dem Sie geladen haben; der Digest bleibt der eindeutige Beleg gegen die `SHA256SUMS` desselben Releases.
 
+Trägt ein Programm keine Fassung — etwa ein Bau ohne Release-Injektion —, meldet `ai-harness-init --version` `ai-harness-init: keine Fassung injiziert — dieser Bau traegt keinen geschnittenen Tag; die Fassung kommt nur mit einem Release-Bau.` und bricht mit **Exit 2** ab.
+
 #### Weg B — aus dem Quellcode bauen
 
 Sie bauen das Programm einmalig selbst — das geschieht komplett in Docker, Sie brauchen dafür keine Go-Installation.
@@ -146,7 +148,7 @@ Im Ordner **bin** liegt das ausführbare Programm `ai-harness-init`. Kopieren Si
 
 > **Hinweis:** Weg B baut den Stand, den Sie geklont haben (Schritt 1 holt den aktuellen Entwicklungsstand, nicht die veröffentlichte Version) — die Angaben hier beziehen sich darauf. `make artifact DEST=./bin` verlangt die Angabe `DEST`. Ohne sie bricht der Befehl mit einer klaren Meldung ab. Den Zielordner müssen Sie **nicht** vorher anlegen — er wird erstellt, falls er fehlt.
 
-> **Hinweis:** Dieser Bau trägt **keine** Fassung: `ai-harness-init --version` meldet das laut und bricht mit **Exit 2** ab. Die Fassungs-Kennzeichnung gehört zum Release-Bau (Weg A und Weg C) — am Quell-Bau ist der Fehlt-Fall der dokumentierte Zustand.
+> **Hinweis:** Dieser Bau trägt **keine** Fassung: `ai-harness-init --version` meldet `ai-harness-init: keine Fassung injiziert — dieser Bau traegt keinen geschnittenen Tag; die Fassung kommt nur mit einem Release-Bau.` und bricht mit **Exit 2** ab. Die Fassungs-Kennzeichnung gehört zum Release-Bau (Weg A und Weg C) — am Quell-Bau ist der Fehlt-Fall der dokumentierte Zustand.
 
 #### Weg C — über ein Homebrew-Tap (macOS, Linux)
 

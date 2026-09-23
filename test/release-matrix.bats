@@ -18,6 +18,8 @@
 #   5. Die build-Stage injiziert die Fassung nur bei gesetztem Wert (ADR-0063
 #      Festlegung 1) — der Default-Pfad (leer) bleibt byte-identisch.
 #   6. Die Bau-Rezepte reichen TRAEGER_VERSION an die build-Stage durch.
+#   7. TRAEGER_VERSION traegt keinen Default im Makefile — die Fassung kommt
+#      aus dem uebergebenen Kontext, nie aus dem Pin-Default.
 
 setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
@@ -135,6 +137,21 @@ mk_platforms() {
       return 1
     fi
   done
+}
+
+# Die andere Haelfte der Uebergeben-nicht-Default-Semantik (ADR-0063 Festlegung
+# 1): TRAEGER_VERSION hat im Makefile KEINE Default-Zuweisung mit Wert — der
+# Pin-Stand ist der des letzten Schnitts, nicht der des Bau-Moments. Mit einem
+# Default injizierte jeder Bau, auch der Quell-Bau ohne Release-Kontext, und der
+# Fehlt-Fall waere unerreichbar. Der Test haelt die ABWESENHEIT (fail-closed in
+# eine Richtung); die Anwesenheit der Durchreichung haelt der Test darueber.
+@test "release: TRAEGER_VERSION traegt keinen Default im Makefile" {
+  local treffer
+  treffer="$(grep -E '^TRAEGER_VERSION[[:space:]]*[-?+:!]*=[[:space:]]*[^[:space:]]' "$MK" || true)"
+  if [ -n "$treffer" ]; then
+    echo "TRAEGER_VERSION hat eine Default-Zuweisung — die Fassung kommt aus dem uebergebenen Kontext, nie aus dem Pin-Default; ein Bau ohne uebergebenen Wert injiziert nicht, sonst waere der Fehlt-Fall unerreichbar: $treffer" >&2
+    return 1
+  fi
 }
 
 # DEST ist Pflicht: ohne Zielverzeichnis liefe das Recipe ins Leere bzw. schriebe

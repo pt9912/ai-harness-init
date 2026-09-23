@@ -19,10 +19,11 @@ var fassung string
 // versionFehltMeldung ist der dokumentierte Wortlaut des Fehlt-Falls (ADR-0063
 // Festlegung 2): eine Meldung ueber den Zustand des Binary, kein Fehler des
 // Repos — dieselbe Lesart wie der Fehlt-Fall des Traegers, nur mit dem Exit, den
-// die Festlegung setzt. Der Wortlaut ist der Anker der Skriptbarkeit; unter der
-// geschwaechten Zusage (leere Ausgabe, Pin-Wert statt Meldung, Exit 0) faellt
-// TestVersionFehltFallIstLaut rot.
-const versionFehltMeldung = "ai-harness-init: keine Fassung injiziert — dieser Bau traegt keinen geschnittenen Tag (Bau ohne Release-Injektion, ADR-0063 Festlegung 2)."
+// die Festlegung setzt. Der Wortlaut ist der Anker der Skriptbarkeit und steht
+// verbatim im Handbuch (Weg A und Weg B); er nennt dem Installierer den Zustand
+// ohne repo-interne Referenz. Unter der geschwaechten Zusage (leere Ausgabe,
+// Pin-Wert statt Meldung, Exit 0) faellt TestVersionFehltFallIstLaut rot.
+const versionFehltMeldung = "ai-harness-init: keine Fassung injiziert — dieser Bau traegt keinen geschnittenen Tag; die Fassung kommt nur mit einem Release-Bau."
 
 // runVersion meldet die Fassung des Binaries oder ihren Fehlt-Fall (ADR-0063
 // Festlegung 2): mit Injektion den Tag auf stdout und Exit 0, ohne Injektion den

@@ -110,8 +110,8 @@ Regeln dieser Sektion: Baseline-Regelwerk `grundlagen-bootstrap.md`
 |---|---|---|
 | [`cmd/ai-harness-init/`](../../../../cmd/ai-harness-init/) (`version.go` neu · `main.go` update · `version_test.go` neu) | neu + update | die Dispatch-Ebene liegt hier, nicht unter `internal/` (Ist-Messung): `--version` als geführter Ausgang vor dem Flag-Parsen, Fehlt-Fall-Wortlaut mit Exit 2, die Fassungs-Variable als Einhängepunkt des `ldflags -X`, dazu die zwei Wächter |
 | [`Makefile`](../../../../Makefile), [`Dockerfile`](../../../../Dockerfile), [`.github/workflows/release.yml`](../../../../.github/workflows/release.yml) | update | **eine Ursache, drei Stellen:** der Injektions-Schritt — die Bau-Rezepte reichen `TRAEGER_VERSION` an die build-Stage durch, der Stage-Operand setzt ihn nur bei gesetztem Wert ein (leer bleibt der `ldflags`-String byte-identisch), der Workflow übergibt den Tag-Ref denselben Wert wie den Pin-Zug |
-| [`test/release-matrix.bats`](../../../../test/release-matrix.bats) | update | die zwei Kopplungs-Wächter zur Injektion (Stage-Operand, Rezept-Durchreichung) — dieselbe Linie wie die übrigen Rezept-Kopplungen dort |
-| [`test/mutations/`](../../../../test/mutations) | neu | vier Fälle — Fehlt-Fall entstärkt, gemeldeter Wert weicht ab, Injektion am Bau entfernt, Rezepte ohne Durchreichung |
+| [`test/release-matrix.bats`](../../../../test/release-matrix.bats) | update | die drei Kopplungs-Wächter zur Injektion (Stage-Operand, Rezept-Durchreichung, keine Default-Zuweisung von `TRAEGER_VERSION` im Makefile — die Fassung kommt aus dem übergebenen Kontext, nie aus dem Pin-Default) — dieselbe Linie wie die übrigen Rezept-Kopplungen dort |
+| [`test/mutations/`](../../../../test/mutations) | neu | fünf Fälle — Fehlt-Fall entstärkt, gemeldeter Wert weicht ab, Injektion am Bau entfernt, Rezepte ohne Durchreichung, Pin-Default eingeführt |
 | [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) | update | Weg A/B/C: die Fassungs-Erkennung (Ist-Zustand) |
 
 Reihenfolge: der Release-Bau zuerst (Liefer-Punkt 2) — er sagt, was die Injektion überhaupt
