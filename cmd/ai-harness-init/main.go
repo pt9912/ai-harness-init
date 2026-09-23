@@ -40,6 +40,7 @@ Verwendung:
   ai-harness-init span-report [<ablageort>]
   ai-harness-init archive-welle [--vorschau] <welle-id>
   ai-harness-init vendor-baseline <tag> <sha256>
+  ai-harness-init --version
 
 <zielordner> ist das Git-Repo, das der Init-Bootstrap einrichtet — er loest sein
 Ziel aus DIESEM Argument, nie aus dem Arbeitsverzeichnis. Das Standard-flag-Paket
@@ -63,6 +64,13 @@ Init-Flags:
                 Fehlermeldung bei einer nicht getragenen Kombination.
   --name        Projektname (optional)
   -h, --help    diese Hilfe anzeigen
+
+Fassungs-Auskunft:
+  ai-harness-init --version
+  Meldet die Fassung des geschnittenen Tags, die der Release-Bau per ldflags
+  injiziert hat. Ein Bau ohne Injektion — der Quell-Bau, ein plain go build —
+  meldet den Fehlt-Fall laut mit Exit 2: nicht leer, nicht der Pin-Stand des
+  Makefiles (ADR-0063 Festlegung 2).
 
 Subkommando add-lang <sprache> <pfad>:
   Fuegt einem bereits gebootstrappten Repo ein Sprachmodul hinzu (WIEDERHOLBAR, Mono-Repo):
@@ -125,7 +133,8 @@ type sources struct {
 // Arbeitsverzeichnis des add-lang-Zweigs und die Netz-Quellen sind injiziert, damit
 // die Fehler- und Emit-Pfade ohne Prozess-Exit, ohne CWD-Mutation und ohne Netz
 // testbar sind. Exit-Codes: 0 = Erfolg, 2 = Aufruf-/Argument-Fehler (Usage),
-// 1 = Emit-Fehler zur Laufzeit.
+// 1 = Emit-Fehler zur Laufzeit; `--version` ohne Injektion endet ebenfalls mit 2 —
+// eine Meldung ueber den Zustand des Binary, keine Usage (ADR-0063 Festlegung 2).
 //
 // DER INIT-PFAD LOEST SEIN ZIEL AUS DEM ARGUMENT, NICHT AUS targetDir (LH-FA-01):
 // der erste Positionsargument IST der Zielordner, und bootstrap() richtet das
@@ -150,6 +159,19 @@ func run(args []string, targetDir string, src sources, stdout, stderr io.Writer)
 	// Flag-Parsing, weil add-lang Positionsargumente traegt, der Init nur Flags.
 	if len(args) > 0 && args[0] == "add-lang" {
 		return runAddLang(args[1:], targetDir, src, stdout, stderr)
+	}
+
+	// FAESSUNGS-AUSKUNFT (ADR-0063 Festlegung 2): `--version` allein ist ein
+	// gefuehrter Ausgang im Dispatch, kein Fall im Init-Pfad — er startet keinen
+	// Bootstrap und verlangt keinen Zielordner. Die Form ist exakt, beides die
+	// Schraegstrich-Fassungen des std-flag-Pakets: mit einem weiteren Argument
+	// faellt `--version` durchs Flag-Parsen und bricht am unbekannten Flag laut
+	// (Exit 2) — der Name wird nicht erraten, dieselbe Abgrenzung wie bei den
+	// Unterkommando-Namen weiter unten. Ohne Injektion meldet der Ausgang den
+	// Fehlt-Fall laut mit Exit 2 statt still zu starten
+	// (TestVersionFehltFallIstLaut).
+	if len(args) == 1 && (args[0] == "--version" || args[0] == "-version") {
+		return runVersion(stdout, stderr)
 	}
 
 	fs := flag.NewFlagSet("ai-harness-init", flag.ContinueOnError)

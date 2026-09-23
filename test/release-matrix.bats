@@ -15,6 +15,9 @@
 #   4. ... und der Default-Pfad (`make build`) reicht KEINE durch — nur so bleibt
 #      das bestehende Artefakt byte-identisch, woran artifact/smoke/full-smoke
 #      haengen.
+#   5. Die build-Stage injiziert die Fassung nur bei gesetztem Wert (ADR-0063
+#      Festlegung 1) — der Default-Pfad (leer) bleibt byte-identisch.
+#   6. Die Bau-Rezepte reichen TRAEGER_VERSION an die build-Stage durch.
 
 setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
@@ -107,6 +110,31 @@ mk_platforms() {
     echo "build-Recipe reicht TARGET_ARCH durch: $rezept" >&2
     return 1
   fi
+}
+
+# --- Fassungs-Injektion (ADR-0063 Festlegung 1) ------------------------------
+# Der reale Bau mit Injektion ist Sache des Release-Laufs; geprueft wird wie oben
+# die KOPPLUNG. Die Form des Operanden ist tragend, nicht kosmetisch: `${VAR:+ …}`
+# setzt den ldflags-Operanden nur bei GESETZTEM Wert — leer fehlt er, und der
+# Default-Pfad bleibt byte-identisch. Ein fester Wert im Operanden waere eine
+# Funktion des Bau-Ergebnisses, ein anderer Operand (z. B. TARGET_OS) der falsche
+# Wert.
+
+@test "release: die build-Stage injiziert die Fassung aus dem uebergebenen Wert" {
+  grep -q '^ARG TRAEGER_VERSION=' "$DF"
+  grep -qF -- '-ldflags="-s -w${TRAEGER_VERSION:+ -X main.fassung=${TRAEGER_VERSION}}"' "$DF"
+}
+
+@test "release: die Bau-Rezepte reichen TRAEGER_VERSION an die build-Stage" {
+  local ziel rezept
+  for ziel in build artifact-host host-bin release-artifacts; do
+    rezept="$(sed -n "/^$ziel:/,/^$/p" "$MK")"
+    [ -n "$rezept" ]
+    if ! grep -qF -- '--build-arg TRAEGER_VERSION="$(TRAEGER_VERSION)"' <<<"$rezept"; then
+      echo "Rezept $ziel reicht TRAEGER_VERSION nicht durch" >&2
+      return 1
+    fi
+  done
 }
 
 # DEST ist Pflicht: ohne Zielverzeichnis liefe das Recipe ins Leere bzw. schriebe

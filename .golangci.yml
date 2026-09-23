@@ -172,3 +172,13 @@ linters:
       - linters:
           - testpackage
         path: cmd/
+
+      # Why: der Einhängepunkt der Fassungs-Injektion (ADR-0063 Festlegung 1) —
+      # der Release-Bau trägt den Tag per `ldflags -X main.fassung` ein, und der
+      # Linker nimmt einen `-X`-Wert nur an einer Paket-Variablen an, die als
+      # leere Zeichenkette initialisiert ist. Eine Konstante oder eine
+      # Funktion-lokale Variable nimmt er nicht an.
+      - linters:
+          - gochecknoglobals
+        path: cmd/ai-harness-init/version\.go$
+        text: ^fassung is a global variable

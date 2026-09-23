@@ -54,6 +54,14 @@ jobs:
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - run: make release-artifacts DEST=dist
+        env:
+          # Fassungs-Injektion (ADR-0063 Festlegung 1): der Tag, den der Pin-Zug
+          # vor dem Bau gesetzt hat — derselbe Wert, derselben Schnitt. LEER bei
+          # einem Nicht-Tag-Ref (workflow_dispatch auf einem Zweig): dann
+          # injiziert der Bau nicht, und die Binary meldet auf --version den
+          # Fehlt-Fall laut (ADR-0063 Festlegung 2); der Start-Smoke ruft
+          # --version nicht.
+          TRAEGER_VERSION: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
       # Tap-Verteilung (slice-tap-verteilt-die-release-assets, LH-QA-04): die
       # Homebrew-Formel reist als weiteres Asset desselben Vorgangs — dieselbe
       # Kopplung wie die SHA256SUMS-Erzeugung im Rezept darueber (ADR-0059

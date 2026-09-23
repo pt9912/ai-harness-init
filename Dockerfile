@@ -85,6 +85,15 @@ RUN golangci-lint run ./...
 FROM deps AS build
 ARG TARGET_OS=
 ARG TARGET_ARCH=
+# Fassungs-Injektion (ADR-0063 Festlegung 1): TRAEGER_VERSION traegt den Tag, den
+# der Release-Workflow uebergibt — derselbe Wert wie der Pin-Zug, denselben
+# Schnitt. LEER gelassen injiziert der Bau NICHT, und die Binary meldet auf
+# --version den Fehlt-Fall laut (ADR-0063 Festlegung 2). Die Leerstelle der
+# Expansion ist tragend: ohne Wert lautet der ldflags-String exakt "-s -w" — der
+# Default-Pfad bleibt byte-identisch (gleiche Injektion, gleiche Bytes,
+# ADR-0063 Festlegung 3); ein leeres "-X main.fassung=" statt des fehlenden
+# Operanden wuerde die buildinfo des Bau-Ergebnisses aendern.
+ARG TRAEGER_VERSION=
 COPY . .
 RUN CGO_ENABLED=0 GOOS=${TARGET_OS} GOARCH=${TARGET_ARCH} \
-    go build -trimpath -ldflags="-s -w" -o /out/ai-harness-init ./cmd/ai-harness-init
+    go build -trimpath -ldflags="-s -w${TRAEGER_VERSION:+ -X main.fassung=${TRAEGER_VERSION}}" -o /out/ai-harness-init ./cmd/ai-harness-init

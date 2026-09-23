@@ -113,6 +113,8 @@ Es gibt **drei Wege**. Empfohlen ist der **Download** — fertige Programme für
 
 Liegt der Ordner in Ihrem Suchpfad, ist das Programm unter dem kurzen Namen `ai-harness-init` aufrufbar. **Das Handbuch verwendet ab hier diesen kurzen Aufruf** — das gilt für beide Wege.
 
+Welche Fassung das Programm trägt, meldet `ai-harness-init --version` — die Fassung des Releases, aus dem Sie geladen haben; der Digest bleibt der eindeutige Beleg gegen die `SHA256SUMS` desselben Releases.
+
 #### Weg B — aus dem Quellcode bauen
 
 Sie bauen das Programm einmalig selbst — das geschieht komplett in Docker, Sie brauchen dafür keine Go-Installation.
@@ -144,9 +146,13 @@ Im Ordner **bin** liegt das ausführbare Programm `ai-harness-init`. Kopieren Si
 
 > **Hinweis:** Weg B baut den Stand, den Sie geklont haben (Schritt 1 holt den aktuellen Entwicklungsstand, nicht die veröffentlichte Version) — die Angaben hier beziehen sich darauf. `make artifact DEST=./bin` verlangt die Angabe `DEST`. Ohne sie bricht der Befehl mit einer klaren Meldung ab. Den Zielordner müssen Sie **nicht** vorher anlegen — er wird erstellt, falls er fehlt.
 
+> **Hinweis:** Dieser Bau trägt **keine** Fassung: `ai-harness-init --version` meldet das laut und bricht mit **Exit 2** ab. Die Fassungs-Kennzeichnung gehört zum Release-Bau (Weg A und Weg C) — am Quell-Bau ist der Fehlt-Fall der dokumentierte Zustand.
+
 #### Weg C — über ein Homebrew-Tap (macOS, Linux)
 
 Das Tap-Repository [`pt9912/homebrew-ai-harness-init`](https://github.com/pt9912/homebrew-ai-harness-init) trägt die Formel `ai-harness-init`; sie wird je Release-Schnitt aus dem Formel-Asset desselben Schnitts nachgezogen — ihr Skeleton liegt versioniert im Quellcode unter `harness/tools/homebrew-formula.rb.tmpl` und wird je Schnitt mit dessen Version und den vier dafür relevanten Plattform-Prüfsummen befüllt (Linux/macOS × Intel-AMD/ARM).
+
+Homebrew lädt das fertige Programm desselben Releases herunter und installiert es — die Fassung reist mit: `ai-harness-init --version` meldet sie; der Digest bleibt der eindeutige Beleg gegen die `SHA256SUMS` desselben Releases.
 
 ```sh
 brew tap pt9912/ai-harness-init https://github.com/pt9912/homebrew-ai-harness-init

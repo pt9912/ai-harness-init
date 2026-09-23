@@ -78,8 +78,17 @@ test-go: ## Nur die Go-Unit-Tests (Dockerfile test-Stage) — Docker-only
 lint: ## Go-Lint (golangci-lint, Dockerfile lint-Stage, gepinntes Image) — Docker-only (ADR-0003)
 	docker build --no-cache-filter lint --build-arg GO_VERSION=$(GO_VERSION) --build-arg GOLANGCI_LINT_VERSION=$(GOLANGCI_LINT_VERSION) --target lint -t ai-harness-init:lint .
 
+# Fassungs-Injektion (ADR-0063 Festlegung 1): TRAEGER_VERSION traegt den Tag,
+# unter dem der Bau laeuft; der Release-Workflow uebergibt denselben Wert wie den
+# Pin-Zug (github.ref_name am Tag-Ref). KEIN Default an dieser Stelle: der
+# Pin-Stand des Makefiles ist der des letzten Schnitts, nicht der des Bau-Moments
+# — ihn zu injizieren waere die erfundene Zahl. Leere Variable heisst: keine
+# Injektion; das Binary meldet auf --version den Fehlt-Fall laut (ADR-0063
+# Festlegung 2). Die Rezepte unten reichen die Variable an die build-Stage durch;
+# der Default-Pfad (leer) bleibt byte-identisch, denn der ldflags-Operand fehlt
+# dann im Bau, statt einen leeren Wert zu setzen.
 build: ## Go-Binary cross-compilieren (Dockerfile build-Stage, gepinntes Image) — Docker-only (ADR-0003)
-	docker build --build-arg GO_VERSION=$(GO_VERSION) --target build -t ai-harness-init:build .
+	docker build --build-arg GO_VERSION=$(GO_VERSION) --build-arg TRAEGER_VERSION="$(TRAEGER_VERSION)" --target build -t ai-harness-init:build .
 
 # Natives Release-Binary auf den Host ziehen (DEST=<dir>). Baut EINMAL (Prereq build,
 # taggt ai-harness-init:build) und KOPIERT dann GETRENNT aus einem Wegwerf-Container —
@@ -106,6 +115,7 @@ artifact-host: ## Wie artifact, aber fuer den HOST cross-kompiliert (DEST=<dir>)
 	@test -n "$(DEST)" || { echo "artifact-host: DEST=<dir> ist Pflicht (Zielverzeichnis)"; exit 2; }
 	docker build --build-arg GO_VERSION=$(GO_VERSION) \
 		--build-arg TARGET_OS=$(HOST_OS) --build-arg TARGET_ARCH=$(HOST_ARCH) \
+		--build-arg TRAEGER_VERSION="$(TRAEGER_VERSION)" \
 		--target build -t ai-harness-init:artifact-host .
 	@bash harness/tools/artifact-copy.sh ai-harness-init:artifact-host "$(DEST)" ai-harness-init
 
@@ -131,8 +141,9 @@ release-artifacts: ## Alle Release-Binaries der Plattform-Matrix nach DEST=<dir>
 		[ "$$os" = "windows" ] && ext=".exe"; \
 		tag="ai-harness-init:build-$$os-$$arch"; \
 		echo "release-artifacts: $$os/$$arch ..."; \
-		docker build --no-cache-filter build --build-arg GO_VERSION=$(GO_VERSION) \
+			docker build --no-cache-filter build --build-arg GO_VERSION=$(GO_VERSION) \
 			--build-arg TARGET_OS="$$os" --build-arg TARGET_ARCH="$$arch" \
+			--build-arg TRAEGER_VERSION="$(TRAEGER_VERSION)" \
 			--target build -t "$$tag" . ; \
 		bash harness/tools/artifact-copy.sh "$$tag" "$(DEST)" "ai-harness-init-$$os-$$arch$$ext"; \
 	done
@@ -373,6 +384,7 @@ HOST_ARCH := $(shell uname -m | sed -e 's/^x86_64$$/amd64/' -e 's/^aarch64$$/arm
 host-bin: ## Traeger (Produkt-Binary) fuer die HOST-Plattform in den Zustands-Bereich legen — Docker-only (ADR-0003)
 	docker build --build-arg GO_VERSION=$(GO_VERSION) \
 		--build-arg TARGET_OS=$(HOST_OS) --build-arg TARGET_ARCH=$(HOST_ARCH) \
+		--build-arg TRAEGER_VERSION="$(TRAEGER_VERSION)" \
 		--target build -t ai-harness-init:host .
 	@bash harness/tools/artifact-copy.sh ai-harness-init:host "$(dir $(HOST_BIN))" "$(notdir $(HOST_BIN))"
 
