@@ -142,7 +142,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 **Drei Liefer-Punkte**, jeder mit dem Kommando, das ihn **rot** färbt
 ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 
-- [ ] **(1) Ein Wächter führt vier Dispositionen positiv und hält sie gegen die Bezugsmenge, über
+- [x] **(1) Ein Wächter führt vier Dispositionen positiv und hält sie gegen die Bezugsmenge, über
       die der Emitter selbst läuft** —
       [`ADR-0057`](../../adr/0057-wiederkehrende-vorlagen-menge-bindet-als-eigenschaft.md)
       Festlegung 1. Die Bezugsmenge ist `emit.inScope` über dem vendored `templates/`-Baum, also
@@ -164,13 +164,13 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       `isRecurring`, (c) ein Name in `isRecurring` wird gegen einen anderen **aus der Bezugsmenge**
       getauscht: dann fällt der Wächter zweifach — an Vollständigkeit und an Disjunktheit — und
       **nicht an einer Zahl**, denn die Kardinalität bleibt gleich.
-- [ ] **(2) Jede Weiche, die über die Emit-Disposition einer Vorlage entscheidet, ist einer Aussage
+- [x] **(2) Jede Weiche, die über die Emit-Disposition einer Vorlage entscheidet, ist einer Aussage
       in [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)
       zugeordnet** — vollständig über die Weichen, nicht über die auffälligen. Der Nenner ist das
       Kommando (b) aus §1 plus die Voreinstellung *Singleton*, keine Zahl in diesem Plan. Wo keine
       Aussage deckt, steht das als benannter Befund **mit Adressat**, nicht als Lücke.
       **Rot:** derselbe Go-Test — er fällt, sobald eine Weiche ohne zugeordnete Aussage dasteht.
-- [ ] **(3) Die drei Proben sind gegen den geltenden Vorlagensatz gefahren, und die Zusage daneben
+- [x] **(3) Die drei Proben sind gegen den geltenden Vorlagensatz gefahren, und die Zusage daneben
       trägt genau ihr Ergebnis.** Jede nennt den Stand, gegen den sie lief, und die Ausgabe, die
       sie lieferte — leer oder nicht; jeder Operand in den Kommentar-Kommandos löst auf
       (`[ -e ]` über den genannten Pfaden), und `git grep -c` auf den abgelösten Tag liefert `0`.
@@ -180,19 +180,19 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       **Rot:** `make gates` — der Lauf nennt den abgelösten Tag nicht mehr; das Gegenbeispiel ist
       der Kommentar mit dem alten Operanden, dessen Nachfahren einen Fehler liefert statt der
       zugesagten leeren Ausgabe.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: berührt ist ein Vertrag — er ist **Vorbedingung** (§4) und wird hier nicht
+- [x] Doku-Update: berührt ist ein Vertrag — er ist **Vorbedingung** (§4) und wird hier nicht
       geschrieben. Gegenstand dieses Slice sind Wächter und Doc-Kommentare an unexportierten
       Funktionen; weder ein `make`-Ziel noch ein Sensor-Vertrag noch eine emittierte Vorlage
       ändert sich.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). **Dieses Repo führt Wellen-Betrieb** — der Träger ist die nächste Welle-Closure, hier nicht geprüft.
 
 ## 3. Plan (vor Code)
 
@@ -311,20 +311,54 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Gegenstand:** <übernommen von `slice-<Kennung>` | entfallen: <Grund>>
-  *(nur beim Ausgang ohne Arbeit; sonst Zeile löschen)*
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-kennung-a>, <slice-kennung-b>, <slice-kennung-c> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-<Kennung>.md` | `evidence/slice-<Kennung>.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+**Rolle:** Planner · **Datum:** 2026-09-23.
+
+- **Was hat funktioniert:** Die Reihenfolge aus §3 trug: Die Proben zuerst (Schritt (3) vor dem
+  Wächter) lieferten die Gegenprobe — gegen den abgelösten Tag liefern die Kommandos einen Fehler
+  statt der zugesagten leeren Ausgabe, ehe der Wächter gebaut war —, und der Wächter leitet seine
+  Bezugsmenge aus `emit.inScope` ab, so dass keiner seiner drei Rot-Fälle an einer Zahl hängt.
+  Fall (c) aus DoD 1 fiel wie vorhergesagt **zweifach** — an Vollständigkeit und Disjunktheit —
+  und entlastet damit Risiko 3 aus §6.
+- **Was ging anders als geplant:** §3 des Plans führt drei Dateien; der Lauf nahm
+  `internal/emit/export_test.go` hinzu und legte die Abweichung nur in der Commit-Message offen —
+  Reviewer-Finding MEDIUM-1
+  ([`docs/reviews/2026-09-22-slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt.md`](../../../reviews/2026-09-22-slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt.md)).
+  Verifier V-1: reine Sichtbarkeits-Brücke, keine §1-Verletzung, kein zusätzlicher Liefer-Punkt —
+  die Pflicht, eine Plan-Verfeinerung in §3 zu schreiben statt in den Bericht, geht als neue
+  Beobachtung ins Register (unten). Der Reviewer sah die Mutationsfälle 397/398 wegen Budgets nur
+  aus der Test-Logik (LOW-1); der Verifier hat beide nacheilend rot gesehen
+  ([`docs/reviews/2026-09-23-slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt-verify.md`](../../../reviews/2026-09-23-slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt-verify.md))
+  — die Lücke ist innerhalb dieses Closures-Zyklus geschlossen, ein Register-Eintrag entsteht dafür
+  nicht: Prozess wie geplant, kein wiederkehrender Defekt des Repos.
+- **Steering-Loop-Eintrag:** **gezählt, nicht verkörpert** — kein Zielort, darum **kein**
+  `liegt in`-Feld. Der Wächter aus DoD 1 folgt
+  [`ADR-0057`](../../adr/0057-wiederkehrende-vorlagen-menge-bindet-als-eigenschaft.md) Festlegung 1
+  und [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) — beide
+  tragen bereits IDs, der Herkunfts-Anker kommt nicht dazu (Geltungsbereich eng).
+- **Beobachtungs-Register (`../observations/`):** Die vier in §8 gesichteten Einträge bleiben
+  unbewegt — keine Beleg-Datei aus diesem Slice. Zwei Einträge kommen neu hinzu, beide in
+  `BEO-ALL/`:
+  [`plan-abweichung-landet-im-commit-bericht-statt-im-plan`](../observations/BEO-ALL/plan-abweichung-landet-im-commit-bericht-statt-im-plan/observation.md)
+  — die MEDIUM-1-Klasse, Beleg `evidence/slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt.md`,
+  Zähler steht damit bei 1×, Stand `offen`;
+  [`vertragliche-aufzaehlung-trifft-den-bestand-nicht`](../observations/BEO-ALL/vertragliche-aufzaehlung-trifft-den-bestand-nicht/observation.md)
+  — der Ausgang von Risiko 1 aus §6 (*weiter offen* → Beobachtungs-Register), Beleg
+  `evidence/slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt.md`, Zähler 1×, Stand
+  `offen`. Der Lese-Schritt weist keinen Ausgang zu: Kein Eintrag erreicht mit diesem Slice 3×.
+- **Folge-Slices:** keine neuen.
+- **Risiken aus §6:** (1) **weiter offen** → Beobachtungs-Register
+  (`vertragliche-aufzaehlung-trifft-den-bestand-nicht`, 1×) — ein Slice kann Rang 1 nicht
+  schreiben; (2) **entfallen** — alle Proben liefern gegen `v6.9.0` die zugesagte leere Ausgabe,
+  gegen den abgelösten Tag einen Fehler statt leer (beide Richtungen vom Verifier selbst gefahren);
+  (3) **entfallen** — Fall (c) aus DoD 1 (`test/mutations/398-disposition-tausch-gleiche-kardinalitaet.sh`)
+  fällt zweifach an Vollständigkeit und Disjunktheit, ein Zähl-Test bliebe dort grün; (4)
+  **entfallen** — DoD 3 liest den Stand aus
+  [`harness/conventions.md`](../../../../harness/conventions.md) §Baseline (`v6.9.0`), nicht aus
+  dem Plan; (5) **entfallen** — der Ausgang steht in
+  [`ADR-0057`](../../adr/0057-wiederkehrende-vorlagen-menge-bindet-als-eigenschaft.md) Festlegung 4.
+- **Drei Paarungen:** Dieses Repo führt Wellen-Betrieb (drei offene Wellen, §Offene Wellen der
+  Roadmap); sie prüft die nächste Welle-Closure — auch für diesen wellenlosen Slice
+  (`modul-06-roadmap.md` §Wann Arbeit eine Welle braucht, Tabelle *Träger im Repo ohne Wellen*).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
