@@ -122,6 +122,19 @@ lauf() {
   run env TAG="$tag" "$@" bash "$SKRIPT" "$modus"
 }
 
+# nirgends <muster> <datei>... — gelingt nur, wenn keine der Dateien das Muster traegt.
+# Ein Fund (grep 0) und ein Fehler von grep (2) brechen. Ein `!` vor grep mitten im Fall
+# bricht unter `set -e` nicht, darum steht hier der Status.
+nirgends() {
+  local muster="$1" rc=0 treffer
+  shift
+  treffer="$(grep -lF -- "$muster" "$@")" || rc=$?
+  if [ "$rc" -ne 1 ]; then
+    echo "nirgends: grep Status $rc (0 = Fund, 2 = Fehler) fuer '$muster'; Fund in: $treffer" >&2
+    return 1
+  fi
+}
+
 docker_aufrufe() { grep -c . "$STUB_LOG_DOCKER" || true; }
 tap_lesungen() { grep -c '/contents/' "$STUB_LOG_CURL" || true; }
 digest() { sha256sum "$1" | awk '{print $1}'; }
@@ -280,6 +293,22 @@ digest() { sha256sum "$1" | awk '{print $1}'; }
   [[ "$output" == *"Tag-Form falsch"* ]]
 }
 
+@test "tag-form: jedes Zeichen ausserhalb von [0-9A-Za-z.-] im Vorab- oder Build-Feld, ein leeres Feld und ein Praefix vor dem v enden mit Exit 2 und der Meldung der Tag-Form, ohne docker" {
+  # Die Tags gehen nicht durch die Feldform-Stufe (Vorab-Zweig oder Kern gueltig): nur die
+  # Tag-Form haelt sie auf. Zeichenmenge, Anfangs- und Endanker sind je Tag ein Zahn.
+  for t in 'v1.0.0-rc$(touch${IFS}marker)' 'v1.0.0-rc;x' 'v1.0.0-rc$(id)' 'v1.0.0-rc.1+b;x' 'v1.0.0+b$(id)' \
+    'v1.0.0-rc x' 'v1.0.0+b`id`' 'v1.0.0-' 'v1.0.0+' 'v1.0.0-rc+' 'xv1.0.0' 'x-v1.0.0-rc.1' ' v1.0.0' 'v1.0.0-rc.1
+x'; do
+    : >"$STUB_LOG_DOCKER"
+    lauf check "$t"
+    echo "Tag $(printf %q "$t"): Exit $status, Ausgabe: $output"
+    [ "$status" -eq 2 ]
+    [[ "$output" == *"Tag-Form falsch"* ]]
+    [ ! -e "$CWD/marker" ]
+    [ "$(docker_aufrufe)" -eq 0 ]
+  done
+}
+
 @test "feldform: fuehrende Null und mehr als 9 Stellen im Kern enden mit Exit 2 und der Meldung der Feldform, ohne docker" {
   for t in v01.0.0 v1.0.08 v1.0.1234567890 v01.0.0-rc.1; do
     : >"$STUB_LOG_DOCKER"
@@ -298,12 +327,15 @@ digest() { sha256sum "$1" | awk '{print $1}'; }
   rezept="$(awk '/^tap-check:/ {f=1; next} f && /^\t/ {print; next} f {exit}' "$MK")"
   [ -n "$rezept" ]
   [[ "$rezept" == *"tap-nachzug.sh check"* ]]
-  ! grep -qE '\$\(TAG\)|\$\{TAG\}' <<<"$rezept"
+  [[ "$rezept" != *'$(TAG)'* ]]
+  [[ "$rezept" != *'${TAG}'* ]]
 }
 
 @test "kein gate: tap-check steht weder in gates noch in record-gates" {
   grep -q '^tap-check:' "$MK"
-  ! grep -E '^(gates|record-gates):' "$MK" | grep -q 'tap-check'
+  zeilen="$(grep -E '^(gates|record-gates):' "$MK")"
+  [ "$(grep -c . <<<"$zeilen")" -eq 2 ]
+  [[ "$zeilen" != *tap-check* ]]
 }
 
 @test "token: ein Sentinel-Token steht in keiner Argumentliste und keiner Ausgabe, der Header liegt in einer 0600-Datei, die nach dem Lauf fehlt" {
@@ -311,9 +343,12 @@ digest() { sha256sum "$1" | awk '{print $1}'; }
   lauf check v0.2.3 TAP_TOKEN="$S"
   [ "$status" -eq 0 ]
   [[ "$output" != *"$S"* ]]
-  ! grep -qF "$S" "$STUB_LOG_CURL" "$STUB_LOG_DOCKER"
+  nirgends "$S" "$STUB_LOG_CURL" "$STUB_LOG_DOCKER"
   grep -q -- '-H @' "$STUB_LOG_CURL"
-  [ "$(cat "$STUB_LOG_HDR")" = "modus=600 bearer=1" ]
+  # Jede Kopfdatei, die curl bekommen hat, ist 0600 und traegt den Bearer; wie viele Lesungen
+  # es waren, ist Sache der Cache-Fenster-Faelle.
+  [ -s "$STUB_LOG_HDR" ]
+  [ "$(grep -vcx 'modus=600 bearer=1' "$STUB_LOG_HDR" || true)" = 0 ]
   [ ! -e "$(cat "$STUB_HDR_PATH")" ]
   [ -z "$(ls -A "$TMP/work")" ]
 }
@@ -325,7 +360,7 @@ digest() { sha256sum "$1" | awk '{print $1}'; }
   [[ "$output" == *"Tap nicht lesbar"* ]]
   [[ "$output" != *"$S"* ]]
   [[ "$output" != *"abgelehnt"* ]]
-  ! grep -qF "$S" "$STUB_LOG_CURL" "$STUB_LOG_DOCKER"
+  nirgends "$S" "$STUB_LOG_CURL" "$STUB_LOG_DOCKER"
   [ ! -e "$(cat "$STUB_HDR_PATH")" ]
   [ -z "$(ls -A "$TMP/work")" ]
 }
@@ -333,7 +368,7 @@ digest() { sha256sum "$1" | awk '{print $1}'; }
 @test "token: ohne Token liest der Lauf anonym, ohne Kopfdatei" {
   lauf check v0.2.3
   [ "$status" -eq 0 ]
-  ! grep -q -- '-H @' "$STUB_LOG_CURL"
+  nirgends '-H @' "$STUB_LOG_CURL"
   [ ! -s "$STUB_LOG_HDR" ]
 }
 
@@ -378,7 +413,12 @@ digest() { sha256sum "$1" | awk '{print $1}'; }
 
 @test "nutzlast: die Datei ist ein POSIX-sh-Skript und ruft nur Programme des Bild-Bestands" {
   head -1 "$NUTZLAST" | grep -qx '#!/bin/sh'
+  code="$(grep -v '^#' "$NUTZLAST")"
+  [ -n "$code" ]
   for p in jq bash git gh python3; do
-    ! grep -qE "(^|[^[:alnum:]_./-])$p( |$)" <(grep -v '^#' "$NUTZLAST")
+    if grep -qE "(^|[^[:alnum:]_./-])$p( |$)" <<<"$code"; then
+      echo "die Nutzlast ruft $p, das das Bild nicht traegt" >&2
+      return 1
+    fi
   done
 }
