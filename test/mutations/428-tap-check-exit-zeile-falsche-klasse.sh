@@ -8,4 +8,4 @@
 # ist damit falsch. Rot faerbt der Fall, der die Klasse je Lauf liest; der Lauf mit Exit 1
 # bleibt gruen.
 set -euo pipefail
-sed -i "/^\t\tprintf .tap-%s: Exit %s/s|\"[\$]rc\" >&2\$|1 >\&2|" harness/tools/tap-nachzug.sh
+sed -i '/^\t\tmelde "tap-.*: Exit [$]rc"$/s|Exit [$]rc"$|Exit 1"|' harness/tools/tap-nachzug.sh

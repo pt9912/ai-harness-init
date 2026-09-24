@@ -12,14 +12,20 @@
 # nichts (LH-QA-03).
 #
 # EXIT DES SKRIPTS: 0 gleich oder Vorab-Tag, 1 Formel-Unterschied (Nutzlast), 2 nicht ausfuehrbar
-# (Aufruf, Tag-Form, Feldform, Pin, Asset oder Tap nicht lesbar, Modus sync, interner Fehler).
-# 1 endet nur aus dem Vergleich der Nutzlast; ein Kommando dieses Skripts, das mit 1 scheitert,
-# ist ein interner Fehler und endet mit Exit 2.
+# (Aufruf, Tag-Form, Feldform, Pin, Asset oder Tap nicht lesbar, Modus sync, interner Fehler,
+# docker ohne Ergebnis der Nutzlast). 1 endet nur aus dem Ergebnis "Unterschied" der Nutzlast:
+# sie meldet es mit dem eigenen Status 10, den docker mit seinen eigenen Fehlern (1, 125 bis
+# 127) nicht belegt. Jeder andere Status des docker-Aufrufs ausserhalb von 0, 2 und 10
+# (auch 1: der Daemon ist nicht erreichbar) und jedes Kommando dieses Skripts, das mit 1 oder
+# einem Status ab 3 scheitert, endet mit Exit 2.
 #
-# EXIT-ZEILE: bei jedem Ende mit Exit ungleich 0 ist die letzte stderr-Zeile
-# `tap-<modus>: Exit <N>`, <N> der Exit dieses Skripts; bei Exit 0 fehlt sie. Sie traegt die
-# Klasse auch dort, wo der Prozess-Exit sie nicht traegt: `make` endet bei jedem Fehlschlag
-# mit 2, in einer sprachabhaengigen Zeile (`Error N`, `Fehler N`).
+# EXIT-ZEILE: bei Exit 1 und Exit 2 dieses Skripts ist die letzte stderr-Zeile DES SKRIPTS
+# `tap-<modus>: Exit <N>`, <N> der Exit dieses Skripts; bei Exit 0 fehlt sie, und sie steht
+# genau einmal. Sie traegt die Klasse auch dort, wo der Prozess-Exit sie nicht traegt: `make`
+# endet bei jedem Fehlschlag mit 2 und schreibt danach seine eigene, sprachabhaengige Zeile
+# (`Error N`, `Fehler N`); ueber `make` ist die Zeile des Skripts damit die vorletzte der
+# Ausgabe. Nicht zugesagt ist sie bei einem Signal an dieses Skript. Eine stderr, die sich nicht
+# beschreiben laesst, aendert den Exit nicht: die Zeile fehlt dann, die Klasse bleibt.
 #
 # DER TAG IST EINGABE AUS EINER NICHT VERTRAUENSWUERDIGEN QUELLE: er kommt als
 # Umgebungsvariable TAG an, nie als Text einer Kommandozeile, und wird nur gegen
@@ -39,9 +45,14 @@ TAP_WAIT="${TAP_WAIT:-65}"
 modus="${1:-}"
 unterschied=nein
 
+# melde <text> schreibt eine Zeile auf stderr; ein Schreibfehler aendert den Exit nicht.
+melde() {
+	printf '%s\n' "$1" >&2 || :
+}
+
 # beende <rc> legt die Exit-Klasse fest und schreibt die Exit-Zeile; fehler() und der EXIT-Trap
-# (mit dem Status des Endes) rufen es. 1 gilt nur, wenn die Nutzlast ihn gemeldet hat
-# (unterschied=ja); jedes andere Ende ausserhalb von 0 und 2 ist ein interner Fehler und
+# (mit dem Status des Endes) rufen es. 1 gilt nur, wenn die Nutzlast den Unterschied gemeldet
+# hat (unterschied=ja); jedes andere Ende ausserhalb von 0 und 2 ist ein interner Fehler und
 # wird Exit 2.
 beende() {
 	local rc="$1"
@@ -50,24 +61,24 @@ beende() {
 	0 | 2) ;;
 	1)
 		if [ "$unterschied" != ja ]; then
-			printf 'tap-%s: interner Fehler des Skripts (ein Kommando endete mit 1) — es wurde nichts verglichen\n' "${modus:-nachzug}" >&2
+			melde "tap-${modus:-nachzug}: interner Fehler des Skripts (ein Kommando endete mit 1) — es wurde nichts verglichen"
 			rc=2
 		fi
 		;;
 	*)
-		printf 'tap-%s: interner Fehler des Skripts (Exit %s) — es wurde nichts verglichen\n' "${modus:-nachzug}" "$rc" >&2
+		melde "tap-${modus:-nachzug}: interner Fehler des Skripts (Exit $rc) — es wurde nichts verglichen"
 		rc=2
 		;;
 	esac
 	if [ "$rc" -ne 0 ]; then
-		printf 'tap-%s: Exit %s\n' "${modus:-nachzug}" "$rc" >&2
+		melde "tap-${modus:-nachzug}: Exit $rc"
 	fi
 	exit "$rc"
 }
 trap 'beende "$?"' EXIT
 
 fehler() {
-	printf 'tap-%s: %s\n' "${modus:-nachzug}" "$1" >&2
+	melde "tap-${modus:-nachzug}: $1"
 	beende 2
 }
 
@@ -120,8 +131,10 @@ nutzlast="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/tap-nachzug-nutzlast.sh"
 asset_url="https://github.com/pt9912/ai-harness-init/releases/download/${tag}/ai-harness-init.rb"
 tap_url="https://api.github.com/repos/pt9912/homebrew-ai-harness-init/contents/Formula/ai-harness-init.rb"
 
-# Ein Ende ausserhalb von 0, 1 und 2 kommt nicht aus der Nutzlast (docker nicht
-# startbar, Bild nicht ladbar) und ist ein nicht ausfuehrbarer Lauf, nie ein Unterschied.
+# Die Nutzlast endet mit 0 (gleich), 10 (Formel-Unterschied) oder 2 (nicht ausfuehrbar).
+# Jeder andere Status stammt nicht aus ihrem Vergleich — docker nicht erreichbar (1), nicht
+# startbar, Bild nicht ladbar, Nutzlast abgebrochen — und ist ein nicht ausfuehrbarer Lauf,
+# nie ein Unterschied.
 rc=0
 docker run --rm \
 	-e TAP_MODE="$modus" \
@@ -134,7 +147,7 @@ docker run --rm \
 	"$TAP_IMAGE" sh /nutzlast/tap-nachzug-nutzlast.sh || rc=$?
 case "$rc" in
 0) exit 0 ;;
-1)
+10)
 	unterschied=ja
 	exit 1
 	;;

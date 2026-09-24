@@ -144,6 +144,9 @@ nirgends() {
   fi
 }
 
+# exit_zeilen — Zahl der Exit-Zeilen `tap-<modus>: Exit <N>` in $stderr des letzten lauf_getrennt.
+exit_zeilen() { grep -c '^tap-[a-z]*: Exit ' <<<"$stderr" || true; }
+
 docker_aufrufe() { grep -c . "$STUB_LOG_DOCKER" || true; }
 tap_lesungen() { grep -c '/contents/' "$STUB_LOG_CURL" || true; }
 digest() { sha256sum "$1" | awk '{print $1}'; }
@@ -405,11 +408,18 @@ x'; do
   [ "$(docker_aufrufe)" -eq 0 ]
 }
 
-@test "transport: ein Bild, das nicht laeuft (docker Exit 125), endet mit Exit 2 statt 1" {
-  lauf check v0.2.3 STUB_DOCKER_EXIT=125
-  [ "$status" -eq 2 ]
-  [[ "$output" == *"Transport im Bild ist nicht gelaufen"* ]]
-  [[ "$output" == *"nichts verglichen"* ]]
+@test "transport: ein docker-Aufruf ohne Ergebnis der Nutzlast (Status 1, 3, 125, 127) endet mit Exit 2 statt 1, mit der Meldung des Transports" {
+  # Status 1 ist der Ausgang des docker-Clients bei nicht erreichbarem Daemon; die Nutzlast
+  # lief dann nicht. Klasse 1 kommt allein aus dem Ergebnis "Unterschied" der Nutzlast.
+  for s in 1 3 125 127; do
+    lauf_getrennt check v0.2.3 STUB_DOCKER_EXIT="$s"
+    echo "docker Status $s: Exit $status, stderr: $stderr"
+    [ "$status" -eq 2 ]
+    [[ "$stderr" == *"Transport im Bild ist nicht gelaufen (docker Exit $s)"* ]]
+    [[ "$stderr" == *"nichts verglichen"* ]]
+    [[ "$stderr" != *"Formel-Unterschied"* ]]
+    [ "${stderr_lines[-1]}" = "tap-check: Exit 2" ]
+  done
 }
 
 @test "aufruf: ohne TAG endet der Lauf mit Exit 2 und nennt die Variable" {
@@ -432,40 +442,71 @@ x'; do
   done
 }
 
-@test "exit-zeile: bei Exit 1 und Exit 2 ist die letzte stderr-Zeile tap-<modus>: Exit <N>, bei Exit 0 fehlt sie" {
+@test "exit-zeile: bei Exit 1 und Exit 2 ist die letzte stderr-Zeile des Skripts tap-<modus>: Exit <N> und steht genau einmal, bei Exit 0 fehlt sie" {
   # Exit 1: der Formel-Unterschied der Nutzlast.
   formel 0.2.2 >"$TMP/tap022"
   lauf_getrennt check v0.2.3 STUB_TAP_1="$TMP/tap022"
   [ "$status" -eq 1 ]
   [ "${stderr_lines[-1]}" = "tap-check: Exit 1" ]
-  # Exit 2 aus fuenf Herkuenften: Nutzlast (Tap nicht lesbar), Host (Tag-Form, Pin,
-  # docker nicht gelaufen) und der Modus sync.
+  [ "$(exit_zeilen)" -eq 1 ]
+  # Exit 2 aus sechs Herkuenften: Nutzlast (Tap nicht lesbar), Host (Tag-Form, Pin,
+  # docker nicht gelaufen: Status 125 und 1) und der Modus sync.
   lauf_getrennt check v0.2.3 STUB_TAP_CODE=403
   [ "$status" -eq 2 ]
   [ "${stderr_lines[-1]}" = "tap-check: Exit 2" ]
+  [ "$(exit_zeilen)" -eq 1 ]
   lauf_getrennt check 'v1.0.0;x'
   [ "$status" -eq 2 ]
   [ "${stderr_lines[-1]}" = "tap-check: Exit 2" ]
+  [ "$(exit_zeilen)" -eq 1 ]
   lauf_getrennt check v0.2.3 TAP_IMAGE=curlimages/curl:latest
   [ "$status" -eq 2 ]
   [ "${stderr_lines[-1]}" = "tap-check: Exit 2" ]
+  [ "$(exit_zeilen)" -eq 1 ]
   lauf_getrennt check v0.2.3 STUB_DOCKER_EXIT=125
   [ "$status" -eq 2 ]
   [ "${stderr_lines[-1]}" = "tap-check: Exit 2" ]
+  [ "$(exit_zeilen)" -eq 1 ]
+  lauf_getrennt check v0.2.3 STUB_DOCKER_EXIT=1
+  [ "$status" -eq 2 ]
+  [ "${stderr_lines[-1]}" = "tap-check: Exit 2" ]
+  [ "$(exit_zeilen)" -eq 1 ]
   lauf_getrennt sync v0.2.3
   [ "$status" -eq 2 ]
   [ "${stderr_lines[-1]}" = "tap-sync: Exit 2" ]
-  # Genau eine Exit-Zeile je Lauf.
-  [ "$(grep -c '^tap-sync: Exit ' <<<"$stderr")" -eq 1 ]
+  [ "$(exit_zeilen)" -eq 1 ]
   # Exit 0 (gleich, Vorab-Tag): keine Exit-Zeile, auch nicht auf stdout.
   lauf_getrennt check v0.2.3
   [ "$status" -eq 0 ]
+  [ "$(exit_zeilen)" -eq 0 ]
   [[ "$stderr" != *"Exit"* ]]
   [[ "$output" != *": Exit "* ]]
   lauf_getrennt check v1.0.0-rc.1
   [ "$status" -eq 0 ]
+  [ "$(exit_zeilen)" -eq 0 ]
   [[ "$stderr" != *"Exit"* ]]
   [[ "$output" != *": Exit "* ]]
+}
+
+@test "stderr nicht beschreibbar: der Exit bleibt die Klasse des Skripts, nur die Zeile fehlt" {
+  # Zugesagt ist die Klasse, nicht die Zeile: ein Schreibfehler auf stderr macht aus Exit 2
+  # weder 1 noch etwas anderes. Geschlossen (&-) und voll (/dev/full) sind zwei Formen.
+  printf 'pwd() { return 127; }\n' >"$TMP/defekt.sh"
+  cd "$CWD"
+  for ziel in '/dev/full' '&-'; do
+    # Exit 2 in fehler(): falsche Tag-Form.
+    run bash -c 'TAG="$1" exec bash "$2" check 2>'"$ziel" _ 'v1.0.0;x' "$SKRIPT"
+    echo "Ziel $ziel, Tag-Form: Exit $status"
+    [ "$status" -eq 2 ]
+    # Exit 2 aus dem EXIT-Trap: ein Kommando des Skripts endet mit Status 127.
+    run bash -c 'TAG="$1" BASH_ENV="$3" exec bash "$2" check 2>'"$ziel" _ v0.2.3 "$SKRIPT" "$TMP/defekt.sh"
+    echo "Ziel $ziel, Status 127: Exit $status"
+    [ "$status" -eq 2 ]
+    # Exit 2 aus dem docker-Zweig: der Transport ist nicht gelaufen.
+    run bash -c 'TAG="$1" STUB_DOCKER_EXIT=125 exec bash "$2" check 2>'"$ziel" _ v0.2.3 "$SKRIPT"
+    echo "Ziel $ziel, docker 125: Exit $status"
+    [ "$status" -eq 2 ]
+  done
 }
 
 @test "interner fehler: scheitert mktemp in der Nutzlast, endet der Lauf mit Exit 2 statt 1 und meldet keinen Unterschied" {
@@ -477,8 +518,51 @@ x'; do
   [[ "$stderr" == *"interner Fehler der Nutzlast"* ]]
   [[ "$stderr" == *"nichts verglichen"* ]]
   [[ "$stderr" != *"Formel-Unterschied"* ]]
+  [[ "$stderr" != *"Transport im Bild"* ]]
   [ "${stderr_lines[-1]}" = "tap-check: Exit 2" ]
   [ "$(docker_aufrufe)" -eq 1 ]
+}
+
+# nutzlast_direkt <stub-status> — die Nutzlast ohne Host-Skript, mit einem mktemp, das mit dem
+# Status endet: $status ist ihr Exit, $stderr ihre Meldung.
+nutzlast_direkt() {
+  mkdir -p "$TMP/mktemp-$1"
+  printf '#!/bin/sh\nexit %s\n' "$1" >"$TMP/mktemp-$1/mktemp"
+  chmod 0755 "$TMP/mktemp-$1/mktemp"
+  cd "$CWD"
+  run --separate-stderr env PATH="$TMP/mktemp-$1:$PATH" TAP_MODE=check TAP_TAG=v0.2.3 TAP_WAIT=0 \
+    TAP_ASSET_URL=https://x.invalid/releases/download/v0.2.3/a TAP_URL=https://x.invalid/contents/a \
+    sh "$NUTZLAST"
+}
+
+@test "interner fehler: ein Kommando der Nutzlast mit Status 1 oder ab 3 endet mit Exit 2 statt dem Status" {
+  for s in 1 3 127; do
+    nutzlast_direkt "$s"
+    echo "mktemp Status $s: Exit $status, stderr: $stderr"
+    [ "$status" -eq 2 ]
+    [[ "$stderr" == *"interner Fehler der Nutzlast"* ]]
+    [[ "$stderr" == *"nichts verglichen"* ]]
+  done
+}
+
+@test "interner fehler: ein Kommando der Nutzlast mit dem Status des Unterschieds (10) endet mit Exit 2, ohne dass der Vergleich es gemeldet hat" {
+  nutzlast_direkt 10
+  [ "$status" -eq 2 ]
+  [[ "$stderr" == *"interner Fehler der Nutzlast (ein Kommando endete mit 10)"* ]]
+}
+
+@test "unterschied: die Nutzlast meldet den Formel-Unterschied mit Status 10, nur er" {
+  # Das Host-Skript bildet 10 auf seinen Exit 1 ab; der Status, den docker selbst liefert (1), ist es nicht.
+  cd "$CWD"
+  formel 0.2.2 >"$TMP/tap022"
+  run env PATH="$TMP/bin:$PATH" TAP_MODE=check TAP_TAG=v0.2.3 TAP_WAIT=0 STUB_TAP_1="$TMP/tap022" \
+    TAP_ASSET_URL=https://x.invalid/releases/download/v0.2.3/a TAP_URL=https://x.invalid/contents/a \
+    sh "$NUTZLAST"
+  [ "$status" -eq 10 ]
+  run env PATH="$TMP/bin:$PATH" TAP_MODE=check TAP_TAG=v0.2.3 TAP_WAIT=0 \
+    TAP_ASSET_URL=https://x.invalid/releases/download/v0.2.3/a TAP_URL=https://x.invalid/contents/a \
+    sh "$NUTZLAST"
+  [ "$status" -eq 0 ]
 }
 
 @test "interner fehler: liefert cmp in der Nutzlast Status 2, endet der Lauf mit Exit 2 statt 1 und meldet keinen Unterschied" {
@@ -499,6 +583,16 @@ x'; do
   lauf_getrennt check v0.2.3 BASH_ENV="$TMP/defekt.sh"
   [ "$status" -eq 2 ]
   [[ "$stderr" == *"interner Fehler des Skripts"* ]]
+  [[ "$stderr" == *"nichts verglichen"* ]]
+  [ "${stderr_lines[-1]}" = "tap-check: Exit 2" ]
+  [ "$(docker_aufrufe)" -eq 0 ]
+}
+
+@test "interner fehler: scheitert ein Kommando des Skripts selbst mit einem Status ab 3, endet der Lauf mit Exit 2 statt dem Status, ohne docker" {
+  printf 'pwd() { return 127; }\n' >"$TMP/defekt.sh"
+  lauf_getrennt check v0.2.3 BASH_ENV="$TMP/defekt.sh"
+  [ "$status" -eq 2 ]
+  [[ "$stderr" == *"interner Fehler des Skripts (Exit 127)"* ]]
   [[ "$stderr" == *"nichts verglichen"* ]]
   [ "${stderr_lines[-1]}" = "tap-check: Exit 2" ]
   [ "$(docker_aufrufe)" -eq 0 ]

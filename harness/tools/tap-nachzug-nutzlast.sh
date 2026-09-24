@@ -8,11 +8,14 @@
 # EINGABE (Umgebung, vom Host-Skript gesetzt): TAP_MODE, TAP_TAG, TAP_ASSET_URL,
 # TAP_URL, TAP_WAIT; optional TAP_TOKEN.
 #
-# ZUSAGE (ADR-0064 Festlegung 2), pro Exit-Klasse:
+# ZUSAGE (ADR-0064 Festlegung 2), pro Exit-Status der Nutzlast; das Host-Skript bildet 0 auf
+# seinen Exit 0, 10 auf seinen Exit 1 und jeden anderen Status auf seinen Exit 2 ab:
 #   0  die Formel am Tap-Kopf hat dieselben Bytes wie das Asset des Tags
-#   1  Formel-Unterschied, auch nach dem zweiten Lesen nach TAP_WAIT Sekunden — und nur
+#   10 Formel-Unterschied, auch nach dem zweiten Lesen nach TAP_WAIT Sekunden — und nur
 #      dieser Fall: ein Kommando, das scheitert (mktemp, Schreiben der Kopfdatei, cmp mit
-#      Status 2), endet als Exit 2 mit der Meldung des internen Fehlers
+#      Status 2), endet als Exit 2 mit der Meldung des internen Fehlers. Der Status 10 ist
+#      der Unterschied und sonst nichts: der Status von docker selbst (1, 125 bis 127) ist
+#      es nicht.
 #   2  nicht ausfuehrbar: Asset oder Tap nicht lesbar, interner Fehler — nie als
 #      Unterschied gemeldet
 # Der Vergleich ist byte-genau ueber Dateien (cmp), nicht ueber Shell-Variablen: eine
@@ -29,8 +32,9 @@ LC_ALL=C
 export LC_ALL
 
 # beende <rc> raeumt auf und legt die Exit-Klasse fest; fehler() und der EXIT-Trap (mit dem
-# Status des Endes) rufen es. 1 gilt nur, wenn der Vergleich es gesetzt hat (unterschied=ja);
-# jedes andere Ende ausserhalb von 0 und 2 ist ein interner Fehler und wird Exit 2.
+# Status des Endes) rufen es. 10 gilt nur, wenn der Vergleich es gesetzt hat (unterschied=ja);
+# jedes andere Ende ausserhalb von 0 und 2 — auch ein Kommando, das mit 1 scheitert — ist ein
+# interner Fehler und wird Exit 2.
 work=""
 unterschied=nein
 beende() {
@@ -39,9 +43,9 @@ beende() {
 	if [ -n "$work" ]; then rm -rf "$work" || :; fi
 	case "$rc" in
 	0 | 2) ;;
-	1)
+	10)
 		if [ "$unterschied" != ja ]; then
-			printf 'tap-%s: interner Fehler der Nutzlast (ein Kommando endete mit 1) — es wurde nichts verglichen\n' "${TAP_MODE:-nachzug}" >&2
+			printf 'tap-%s: interner Fehler der Nutzlast (ein Kommando endete mit 10) — es wurde nichts verglichen\n' "${TAP_MODE:-nachzug}" >&2
 			rc=2
 		fi
 		;;
@@ -92,7 +96,7 @@ lese_tap() {
 	esac
 }
 
-# gleich: 0 gleich, 1 verschieden; cmp mit einem anderen Status als 0 und 1 (es konnte
+# gleich: Status 0 gleich, 1 verschieden; cmp mit einem anderen Status als 0 und 1 (es konnte
 # nicht lesen) ist ein interner Fehler und endet mit Exit 2, nie als Unterschied.
 gleich() {
 	cmp_rc=0
@@ -153,4 +157,4 @@ fi
 printf 'tap-%s: Formel-Unterschied — Tag %s, Asset sha256 %s, Tap-Kopf sha256 %s; erste abweichende Zeile (zweites Lesen) %s\n' \
 	"$TAP_MODE" "$TAP_TAG" "$(digest "$work/asset")" "$(digest "$work/tap")" "$(erste_abweichung "$work/asset" "$work/tap")" >&2
 unterschied=ja
-exit 1
+exit 10
