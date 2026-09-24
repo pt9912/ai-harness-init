@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # files: harness/tools/tap-nachzug.sh
-# expect: stderr nicht beschreibbar: der Exit bleibt die Klasse des Skripts
+# expect: stderr nicht beschreibbar: ein Schreibfehler des Skripts aendert seinen Exit nicht
 # verify: test-bats
 #
 # LAESST EINEN SCHREIBFEHLER AUF STDERR DEN EXIT AENDERN: melde faengt das Scheitern von printf

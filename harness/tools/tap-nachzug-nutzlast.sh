@@ -18,6 +18,10 @@
 #      es nicht.
 #   2  nicht ausfuehrbar: Asset oder Tap nicht lesbar, interner Fehler — nie als
 #      Unterschied gemeldet
+# Der Status 10 ist ein privates Protokoll zwischen dieser Datei und dem Host-Skript, das seine
+# Herkunft nicht prueft. Ein docker-Aufruf, der selbst mit 10 endet (ein Stub, ein Wrapper), wird
+# dort als Formel-Unterschied gemeldet — mit Exit 1, ohne die Digests und die abweichende Zeile
+# dieser Datei, allein mit der Exit-Zeile des Host-Skripts.
 # Der Vergleich ist byte-genau ueber Dateien (cmp), nicht ueber Shell-Variablen: eine
 # Variable verliert den Endzeilenumbruch.
 #

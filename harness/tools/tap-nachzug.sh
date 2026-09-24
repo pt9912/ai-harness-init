@@ -13,19 +13,31 @@
 #
 # EXIT DES SKRIPTS: 0 gleich oder Vorab-Tag, 1 Formel-Unterschied (Nutzlast), 2 nicht ausfuehrbar
 # (Aufruf, Tag-Form, Feldform, Pin, Asset oder Tap nicht lesbar, Modus sync, interner Fehler,
-# docker ohne Ergebnis der Nutzlast). 1 endet nur aus dem Ergebnis "Unterschied" der Nutzlast:
-# sie meldet es mit dem eigenen Status 10, den docker mit seinen eigenen Fehlern (1, 125 bis
-# 127) nicht belegt. Jeder andere Status des docker-Aufrufs ausserhalb von 0, 2 und 10
-# (auch 1: der Daemon ist nicht erreichbar) und jedes Kommando dieses Skripts, das mit 1 oder
-# einem Status ab 3 scheitert, endet mit Exit 2.
+# docker ohne Ergebnis der Nutzlast). 1 endet nur aus dem Ergebnis "Unterschied" der Nutzlast.
+# Jeder andere Status des docker-Aufrufs ausserhalb von 0, 2 und 10 (auch 1: der Daemon ist
+# nicht erreichbar) und jedes Kommando dieses Skripts, das mit 1 oder einem Status ab 3
+# scheitert, endet mit Exit 2.
 #
-# EXIT-ZEILE: bei Exit 1 und Exit 2 dieses Skripts ist die letzte stderr-Zeile DES SKRIPTS
-# `tap-<modus>: Exit <N>`, <N> der Exit dieses Skripts; bei Exit 0 fehlt sie, und sie steht
-# genau einmal. Sie traegt die Klasse auch dort, wo der Prozess-Exit sie nicht traegt: `make`
-# endet bei jedem Fehlschlag mit 2 und schreibt danach seine eigene, sprachabhaengige Zeile
-# (`Error N`, `Fehler N`); ueber `make` ist die Zeile des Skripts damit die vorletzte der
-# Ausgabe. Nicht zugesagt ist sie bei einem Signal an dieses Skript. Eine stderr, die sich nicht
-# beschreiben laesst, aendert den Exit nicht: die Zeile fehlt dann, die Klasse bleibt.
+# STATUS-KANAL ZUR NUTZLAST: sie meldet den Formel-Unterschied mit ihrem eigenen Status 10, den
+# docker mit seinen eigenen Fehlern (1, 125 bis 127) nicht belegt; dieses Skript bildet 0 auf
+# Exit 0, 10 auf Exit 1 und alles andere auf Exit 2 ab. Die Herkunft des Status prueft es nicht:
+# ein docker-Aufruf, der selbst mit 10 endet (ein Stub, ein Wrapper), gilt als Formel-Unterschied
+# und endet mit Exit 1, ohne Digests und ohne Meldung der Nutzlast — die einzige Ausgabe ist die
+# Exit-Zeile. Der Status 10 ist ein privates Protokoll dieser zwei Dateien, kein Vertrag.
+#
+# EXIT-ZEILE (ADR-0066): bei Exit 1 und Exit 2 DIESES SKRIPTS ist die letzte stderr-Zeile des
+# Skripts `tap-<modus>: Exit <N>`, <modus> der beim Aufruf uebergebene Modus, <N> der Exit des
+# Skripts; bei Exit 0 fehlt sie, und sie steht genau einmal. Sie traegt die Klasse auch dort, wo
+# der Prozess-Exit sie nicht traegt: `make` endet bei jedem Fehlschlag mit 2 und schreibt danach
+# seine eigene Meldung (`Error N`, `Fehler N`), die die Klasse als Ziffer nennt; ihr Wortlaut
+# haengt an der Locale, sie ist kein Vertrag. Bei `make <ziel>` aus dem Wurzelverzeichnis ist die
+# Zeile des Skripts die vorletzte der Ausgabe; unter `make -C` und unter einem umschliessenden
+# `make` folgen weitere Zeilen — gelesen wird die Zeile, nicht ihre Position.
+# Nicht zugesagt ist die Zeile bei einem Signal an dieses Skript, bei einer stderr, die sich
+# nicht beschreiben laesst, und bei fehlendem oder unbekanntem Modus. Ein Schreibfehler auf
+# stderr aendert den Exit dieses Skripts nicht (melde); ist die stderr auch im Bild nicht
+# beschreibbar, endet der docker-Client mit Status 1 statt mit dem der Nutzlast, und ein
+# Formel-Unterschied endet als Klasse 2, nie als ein Unterschied, der keiner ist.
 #
 # DER TAG IST EINGABE AUS EINER NICHT VERTRAUENSWUERDIGEN QUELLE: er kommt als
 # Umgebungsvariable TAG an, nie als Text einer Kommandozeile, und wird nur gegen

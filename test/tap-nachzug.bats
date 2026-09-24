@@ -488,9 +488,11 @@ x'; do
   [[ "$output" != *": Exit "* ]]
 }
 
-@test "stderr nicht beschreibbar: der Exit bleibt die Klasse des Skripts, nur die Zeile fehlt" {
-  # Zugesagt ist die Klasse, nicht die Zeile: ein Schreibfehler auf stderr macht aus Exit 2
-  # weder 1 noch etwas anderes. Geschlossen (&-) und voll (/dev/full) sind zwei Formen.
+@test "stderr nicht beschreibbar: ein Schreibfehler des Skripts aendert seinen Exit nicht, nur die Zeile fehlt" {
+  # Zugesagt ist der Exit des Skripts, nicht die Zeile: ein Schreibfehler seiner eigenen Ausgabe
+  # macht aus Exit 2 weder 1 noch etwas anderes. Geschlossen (&-) und voll (/dev/full) sind zwei
+  # Formen. Nicht gedeckt: eine stderr, die im Bild nicht beschreibbar ist — docker ist hier ein
+  # Stub, der reale Client endet dort mit Status 1 statt mit dem der Nutzlast (ADR-0066).
   printf 'pwd() { return 127; }\n' >"$TMP/defekt.sh"
   cd "$CWD"
   for ziel in '/dev/full' '&-'; do
@@ -502,7 +504,7 @@ x'; do
     run bash -c 'TAG="$1" BASH_ENV="$3" exec bash "$2" check 2>'"$ziel" _ v0.2.3 "$SKRIPT" "$TMP/defekt.sh"
     echo "Ziel $ziel, Status 127: Exit $status"
     [ "$status" -eq 2 ]
-    # Exit 2 aus dem docker-Zweig: der Transport ist nicht gelaufen.
+    # Exit 2 aus dem docker-Zweig: docker endet mit 125, ohne Ergebnis der Nutzlast.
     run bash -c 'TAG="$1" STUB_DOCKER_EXIT=125 exec bash "$2" check 2>'"$ziel" _ v0.2.3 "$SKRIPT"
     echo "Ziel $ziel, docker 125: Exit $status"
     [ "$status" -eq 2 ]
