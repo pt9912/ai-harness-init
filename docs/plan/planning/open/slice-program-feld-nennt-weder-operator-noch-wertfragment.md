@@ -39,7 +39,7 @@ darum kein Lastenheft-Thema)
 *„erstes Token nach übersprungenen `NAME=WERT`-Präfixen"*) — sie beschreibt die heutige Mechanik
 wörtlich und wandert mit. `SPEC-021` (`program`, `argc`) bleibt wahr und wird nur gegengelesen.
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-24.
 
@@ -108,8 +108,8 @@ bricht die Erkennung ab: **nichts** wird ausgegeben (`ok=false`, wie beim `=`-Re
 | `(A=b; cmd)` | **nichts** | bleibt, wie heute (`(A=b;` ist keine Zuweisung, enthält `=`) |
 
 **`argc` behält seine Bedeutung:** die Felder **nach** dem Programm bis Zeilenende. Für
-`A=b && cmd x y` ist es 2. Eine segment-begrenzte Bedeutung setzt `slice-204` (s. u.); wer als
-zweiter landet, gleicht an.
+`A=b && cmd x y` ist es 2. Eine segment-begrenzte Bedeutung setzt `slice-204` (s. u.), der danach
+startet und sie dann anpasst.
 
 **Verworfen: ein kleiner Shell-Tokenizer** (Anführungszeichen- und Klammer-Tiefe), der `SHA=$(git rev-parse HEAD) && gh api`
 zu `gh` auflöste. Er ist eine andere Größe — Fehlgriffe in Sonderformen (Here-Doc, `${…}`,
@@ -129,13 +129,13 @@ repariert (§6).
 **Nachbarschaft: `slice-204` schreibt an derselben Funktion und derselben Spec-Zeile.**
 [slice-204](../next/slice-204-das-programm-feld-nennt-das-programm.md) (`next/`) lässt
 `commandProgram()` **Navigations-Segmente** (`cd`, `set`) überspringen und setzt `argc` auf das
-gewählte Segment; er berührt `SPEC-021` und `SPEC-031`. Beide Slices sind lieferbar, ohne auf den
-anderen zu warten, aber **gleichzeitig** angefasst erzeugen sie einen Konflikt in derselben
-Funktion, demselben Test und derselben Spec-Zeile. Dieser Slice führt den Begriff *Segment ohne
-Programm* für Zuweisungen ein; slice-204 verallgemeinert ihn auf `cd`/`set`. **Die Reihenfolge
-(dieser zuerst · gefaltet in slice-204) ist vor `open → next` zu entscheiden** (§4).
-`Übernimmt:` steht nicht: ein Übernehmen ginge an slice-204 vorbei, der den Gegenstand `cd`/`set`
-führt und nicht geschlossen ist.
+gewählte Segment; er berührt `SPEC-021` und `SPEC-031`. Beide ändern dieselbe Funktion, denselben
+Test und dieselbe Spec-Zeile. Dieser Slice führt den Begriff *Segment ohne Programm* für
+Zuweisungen ein; slice-204 verallgemeinert ihn auf `cd`/`set`. **Die Reihenfolge ist entschieden:
+dieser Slice zuerst** (Auftraggeber-Entscheidung 2026-09-24); slice-204 startet erst, wenn dieser in
+`done/` liegt, und ist dazu umgeschnitten (nur `cd`/`set`, `argc`, die Spec-Zeilen). `Übernimmt:`
+steht nicht: ein Übernehmen ginge an slice-204 vorbei, der den Gegenstand `cd`/`set` führt und
+nicht geschlossen ist.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
@@ -276,15 +276,15 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`): Der Slice ist priorisiert, `Verantwortlich:` ist gesetzt, das
-WIP-Limit des Rolleninhabers ist frei. **Vorher entschieden — vor `open → next`, nicht im
-Lauf:** die Reihenfolge zu
+WIP-Limit des Rolleninhabers ist frei. **Entschieden — vor `open → next`, nicht im Lauf:** die
+Reihenfolge zu
 [slice-204](../next/slice-204-das-programm-feld-nennt-das-programm.md), der dieselbe Funktion,
-denselben Test und `SPEC-031` ändert. Zwei Wege: **(a)** dieser Slice zuerst, slice-204 baut auf
-dem Begriff *Segment ohne Programm* auf und gleicht `argc` an; **(b)** die zwei Gegenstände
-werden in **einem** Slice geführt, und einer der beiden geht als *übernommen* nach `done/`
-(Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
-übernimmt — dann trägt der Nehmer `Übernimmt:`). Diese Entscheidung ist **nicht** Sache dieses
-Plans: sie verschiebt den Schnitt zweier Slices.
+denselben Test und `SPEC-031` ändert. Gewählt ist **(a)**: dieser Slice zuerst, slice-204 baut auf
+dem Begriff *Segment ohne Programm* auf und gleicht `argc` an (Auftraggeber-Entscheidung
+2026-09-24). Die Alternative **(b)** — beide Gegenstände in **einem** Slice, einer der beiden als
+*übernommen* nach `done/` (Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice, dessen
+Gegenstand ein anderer übernimmt) — ist verworfen: sie verschöbe den Schnitt zweier Slices, und
+der erste liefert einzeln. slice-204 trägt die Reihenfolge als eigenen Start-Trigger.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
@@ -294,8 +294,9 @@ Plans: sie verschiebt den Schnitt zweier Slices.
 - `in-progress` → `open` (blockiert — Carveout?): `SPEC-031` lässt sich ohne eine Entscheidung
   über das Rollen-Eigentum am Spec-Stratum nicht schreiben — dann wartet der Slice auf
   [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md), und **das** ist der
-  Blocker, nicht der Code. Ebenso, wenn slice-204 während der Arbeit beansprucht wird und die
-  Reihenfolge aus dem Start-Punkt nicht mehr trägt.
+  Blocker, nicht der Code. Ebenso, wenn slice-204 während der Arbeit beansprucht wird — sein
+  Start-Trigger verlangt diesen Slice in `done/`, und ein Anspruch davor trüge die Reihenfolge
+  aus dem Start-Punkt nicht mehr.
 
 ## 5. Closure-Trigger
 
@@ -335,9 +336,9 @@ dasteht.
   Feld mit verschiedener Regel; ein Leser, der über die Zeit vergleicht, sieht einen Sprung, der
   keine Verhaltensänderung ist. Kein Feld trägt die Fassung. — **Ausgang:** <offen>
 - **Zwei Slices schreiben an einer Funktion.** slice-204 und dieser Slice ändern `commandProgram()`,
-  denselben Test und `SPEC-031`; eine Reihenfolge ist im Plan nicht entschieden (§4 Start). Zwei
-  Pläne über denselben Gegenstand sind im Repo schon einmal aufgetreten und einer davon wurde
-  ohne Lieferung stillgelegt. — **Ausgang:** <offen>
+  denselben Test und `SPEC-031`; die Reihenfolge ist entschieden (dieser zuerst, §4 Start) und
+  slice-204 trägt sie als Start-Trigger. Zwei Pläne über denselben Gegenstand sind im Repo schon
+  einmal aufgetreten und einer davon wurde ohne Lieferung stillgelegt. — **Ausgang:** <offen>
 - **Für das berührte Spec-Stratum benennt keine Quelle eine schreibende Rolle.** Der Slice ändert
   eine Zeile in Rang 2 der Source Precedence, ohne dass gesagt ist, wer das darf. Adresse:
   [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md). — **Ausgang:** <offen>
@@ -387,7 +388,7 @@ gibt nichts aus). Die Klassen, die diesen Slice **über seine Arbeitsweise** ber
 | [`zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md) | 17× | geplant | der Kommentar über `commandProgram()` nennt heute **einen** Wächter; nach dem Slice sind es mehr — der Kommentar zieht mit (Liefer-Punkt 1, dritter Haken) |
 | [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md) | 32× | geplant | drei Aussagen stehen neben der geänderten Mechanik: `SPEC-031` (wandert mit, Liefer-Punkt 3), der Funktionskommentar (wandert mit) und der Fragetext in `fieldlist.go` (**bleibt**, §1: `slice-109` führt ihn) |
 | [`vollstaendigkeits-zusage-misst-falsche-ebene`](../observations/BEO-ALL/vollstaendigkeits-zusage-misst-falsche-ebene/observation.md) | 3× | verkörpert | die Ebenen-Aussage im Kopf (Dogfood **und** emittiert, über den Träger statt über eine Vorlage) |
-| [`plan-entsteht-vor-dem-verdikt-ueber-seinen-gegenstand`](../observations/BEO-ALL/plan-entsteht-vor-dem-verdikt-ueber-seinen-gegenstand/observation.md) | 1× | offen | ein zweiter Plan über `commandProgram()` neben `slice-204`; die Reihenfolge ist deshalb im Start-Punkt (§4) vorab zu entscheiden, statt im Lauf |
+| [`plan-entsteht-vor-dem-verdikt-ueber-seinen-gegenstand`](../observations/BEO-ALL/plan-entsteht-vor-dem-verdikt-ueber-seinen-gegenstand/observation.md) | 1× | offen | ein zweiter Plan über `commandProgram()` neben `slice-204`; die Reihenfolge ist im Start-Punkt (§4) vorab entschieden, statt im Lauf |
 
 Alle Bezeichnungen sind **zitiert**, nicht neu formuliert; dieser Slice weist keinem Eintrag einen
 Ausgang zu und erhöht keinen vorab — das Register schreibt die Closure.
