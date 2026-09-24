@@ -16,7 +16,8 @@
 # docker ohne Ergebnis der Nutzlast). 1 endet nur aus dem Ergebnis "Unterschied" der Nutzlast.
 # Jeder andere Status des docker-Aufrufs ausserhalb von 0, 2 und 10 (auch 1: der Daemon ist
 # nicht erreichbar) und jedes Kommando dieses Skripts, das mit 1 oder einem Status ab 3
-# scheitert, endet mit Exit 2.
+# scheitert, endet mit Exit 2. Ein Ende durch ein Signal ist keine dieser Klassen: der Prozess
+# endet mit 128 plus der Signalnummer (143 bei SIGTERM, 129 bei SIGHUP) und ohne Ausgabe.
 #
 # STATUS-KANAL ZUR NUTZLAST: sie meldet den Formel-Unterschied mit ihrem eigenen Status 10, den
 # docker mit seinen eigenen Fehlern (1, 125 bis 127) nicht belegt; dieses Skript bildet 0 auf
@@ -34,10 +35,12 @@
 # Zeile des Skripts die vorletzte der Ausgabe; unter `make -C` und unter einem umschliessenden
 # `make` folgen weitere Zeilen — gelesen wird die Zeile, nicht ihre Position.
 # Nicht zugesagt ist die Zeile bei einem Signal an dieses Skript, bei einer stderr, die sich
-# nicht beschreiben laesst, und bei fehlendem oder unbekanntem Modus. Ein Schreibfehler auf
-# stderr aendert den Exit dieses Skripts nicht (melde); ist die stderr auch im Bild nicht
-# beschreibbar, endet der docker-Client mit Status 1 statt mit dem der Nutzlast, und ein
-# Formel-Unterschied endet als Klasse 2, nie als ein Unterschied, der keiner ist.
+# nicht beschreiben laesst, und bei fehlendem oder unbekanntem Modus; bei einem Signal fehlt
+# neben der Zeile auch die Klasse (oben). Ein Schreibfehler auf stderr aendert den Exit dieses
+# Skripts nicht (melde). Ist die stderr des aufrufenden docker-Clients nicht beschreibbar und
+# schreibt der Container auf seine stderr, endet der Client mit Status 1 statt mit dem der
+# Nutzlast, und ein Formel-Unterschied endet als Klasse 2, nie als ein Unterschied, der keiner
+# ist; eine im Container nicht beschreibbare stderr aendert den Status des Clients nicht.
 #
 # DER TAG IST EINGABE AUS EINER NICHT VERTRAUENSWUERDIGEN QUELLE: er kommt als
 # Umgebungsvariable TAG an, nie als Text einer Kommandozeile, und wird nur gegen
