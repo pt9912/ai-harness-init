@@ -30,7 +30,7 @@ den die Änderung beide Ebenen erreicht),
 [`MR-019`](../../../../harness/conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence)
 (das Technik-Stratum ist Rang 2 und **ohne Vertragsänderung fortschreibbar** — die zwei
 Spec-Zeilen sind darum kein Lastenheft-Thema),
-[slice-program-feld-nennt-weder-operator-noch-wertfragment](../next/slice-program-feld-nennt-weder-operator-noch-wertfragment.md)
+[slice-program-feld-nennt-weder-operator-noch-wertfragment](../in-progress/slice-program-feld-nennt-weder-operator-noch-wertfragment.md)
 (**Voraussetzung**: führt den Begriff *Segment ohne Programm* für Zuweisungen und die Wert-Grenze
 ein, auf denen dieser Slice aufbaut — §1, §4)
 
@@ -62,7 +62,7 @@ mit `program` die Antwort auf *„Welches Programm lief?"*; der Wert antwortet i
 `Bash`-Spans mit einem Shell-Konstrukt statt mit einem Programm.
 
 **Aufbau auf dem ersten Slice — was er liefert und was hier bleibt.**
-[slice-program-feld-nennt-weder-operator-noch-wertfragment](../next/slice-program-feld-nennt-weder-operator-noch-wertfragment.md)
+[slice-program-feld-nennt-weder-operator-noch-wertfragment](../in-progress/slice-program-feld-nennt-weder-operator-noch-wertfragment.md)
 ist **Voraussetzung** (Weg A: er wird zuerst umgesetzt). Er liefert: Zuweisungen bilden ein
 **Segment ohne Programm**, ein Operator als eigenes Feld beendet es, ein Wert mit nicht bestimmbarem
 Rand lässt `program` **ganz** entfallen (fail-closed), und `SPEC-031` nennt das. Dieser Slice
@@ -106,7 +106,7 @@ dieselbe Mechanik eine Ebene höher: Die Funktion überspringt bereits etwas (f�
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Keine Zuweisungs-, Operator- und Wert-Grenze.** Sie gehört
-  [slice-program-feld-nennt-weder-operator-noch-wertfragment](../next/slice-program-feld-nennt-weder-operator-noch-wertfragment.md)
+  [slice-program-feld-nennt-weder-operator-noch-wertfragment](../in-progress/slice-program-feld-nennt-weder-operator-noch-wertfragment.md)
   und ist dort Liefer-Punkt 1 — **ein Vorgänger-Slice, der den Gegenstand führt**: wer sie hier noch
   einmal baute, hätte zwei Pläne über denselben Gegenstand, und der zweite wäre ein Konflikt in
   derselben Funktion. Dieser Slice nimmt sie als gegeben; sein Start hängt daran (§4).
@@ -240,7 +240,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 
 **Start** (`next` → `in-progress`): Der Slice ist priorisiert, `Verantwortlich:` ist gesetzt, das
 WIP-Limit des Rolleninhabers ist frei — **und
-[slice-program-feld-nennt-weder-operator-noch-wertfragment](../next/slice-program-feld-nennt-weder-operator-noch-wertfragment.md)
+[slice-program-feld-nennt-weder-operator-noch-wertfragment](../in-progress/slice-program-feld-nennt-weder-operator-noch-wertfragment.md)
 liegt in `done/`.** Beobachtbar (ein anderer Mensch liest es an der Verzeichnis-Position) und kein
 Ergebnis dieses Slice. Der Grund ist die Reihenfolge, nicht Vorsicht: beide ändern
 `commandProgram()`, denselben Test und `SPEC-031`; dieser baut auf dem Begriff *Segment ohne
