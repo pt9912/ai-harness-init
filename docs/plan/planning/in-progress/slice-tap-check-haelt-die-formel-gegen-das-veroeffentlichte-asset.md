@@ -71,7 +71,9 @@ zusammen mit der Begründungs-Pflicht je Punkt.
 **Ziel:** `make tap-check TAG=<tag>` hält `Formula/ai-harness-init.rb` am Kopf des Default-Branch
 des Tap **byte-genau** gegen das veröffentlichte Asset `ai-harness-init.rb` des Tags und meldet das
 Ergebnis in drei Exit-Klassen — 0 gleich (oder der benannte Nicht-Gegenstand Vorab-Tag), 1
-Formel-Unterschied auch nach der Wiederholung des Lesens, 2 nicht ausführbar. Lesend, im
+Formel-Unterschied auch nach der Wiederholung des Lesens, 2 nicht ausführbar — der Exit des
+**Skripts**. Über `make` endet der Prozess bei jedem Fehlschlag mit Exit 2 (GNU Make 4.3); die
+Klasse des Skripts steht dann in dessen letzter stderr-Zeile `tap-check: Exit <N>`. Lesend, im
 digest-gepinnten Transport-Bild, kein Gate.
 
 **Der Befund, an dem der Schnitt hängt.** Am Schnitt `v0.2.3` stand das Tap nach der Publikation
@@ -115,7 +117,9 @@ des Tags* — wobei die Schnittstelle einen Stand liefern kann, der bis zu 60 s 
 **nicht** zu: Installierbarkeit (`brew install`, `brew audit`) · dass das Asset richtig gefüllt ist
 (das hält die Füll-Prüfung in `test/release-matrix.bats`) · die übrigen Dateien des Tap und
 irgendeinen Zustand nach dem Aufruf · Herkunft (es gibt keinen Signier-Schritt) · das Lese-Limit der
-Schnittstelle (ein erschöpftes Limit endet als Exit 2, nie als 1) · den lokalen Weg gegen die
+Schnittstelle (ein erschöpftes Limit endet als Skript-Exit 2, nie als 1) · **den Prozess-Exit von
+`make`** (jeder Fehlschlag endet dort mit 2; der Exit-Vertrag der ADR gilt für den Ablauf des
+Skripts, und über `make` trägt die Zeile `tap-check: Exit <N>` die Klasse) · den lokalen Weg gegen die
 Auswertung des Aufrufers (make wertet `TAG=…` samt `$(shell …)` aus, bevor ein Skript läuft; die
 Formprüfung schützt den Env-Weg der CI, nicht die Tastatur) · das Token gegenüber dem Docker-Daemon.
 **Und der Schreib-Pfad am realen Tap ist nicht Gegenstand dieses Slice — er hat keinen.** Die
@@ -139,7 +143,9 @@ hermetischen Fälle fahren Stubs (eine Fixture); der reale Beleg dieses Slice is
   Er führt heute die Kontrolle als eigenen Liefer-Punkt 2 und das Verdikt als Liefer-Punkt 3; die
   Kontrolle liefert dieser Slice, das Verdikt trägt [ADR-0064](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md). **Umgeschnitten wird er vom Planner,
   bevor er `next/` wird** — die Prozedur nennt `make tap-check` als ihren Beleg und kommt deshalb
-  nach diesem Slice.
+  nach diesem Slice. **Übergabe an ihn, nicht Gegenstand hier:** der Wortlaut der Prozedur für den
+  Formel-Unterschied ist *„`tap-check` rot mit der Zeile `tap-check: Exit 1`"* — der Prozess-Exit
+  von `make` trennt die Klassen nicht (Liefer-Punkt 1), die Zeile trägt sie.
 - **Der Bezug [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) der
   Tap-Verteilung in Workflow-Kopf und Prozedur** (Folgepflicht 6) — *es wäre ein anderer Vorgang:*
   ob das Tap eine Anforderung wird oder der Bezug entfällt, entscheidet der Auftraggeber außerhalb
@@ -172,20 +178,27 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
 - [ ] **Liefer-Punkt 1 — das Werkzeug.** Ein versioniertes Skript unter `harness/tools/` mit dem
       Modus `check` (jeder andere Modus endet mit Exit 2 und sagt, dass er nicht implementiert
-      ist) und seiner POSIX-`sh`-Nutzlast als eigener Datei, die im digest-gepinnten Transport-Bild
+      ist), der bei **jedem** Ende mit Exit ≠ 0 als letzte stderr-Zeile `tap-<modus>: Exit <N>`
+      schreibt (`<N>` ist der Exit des Skripts; die Zeile trägt die Klasse, die der Prozess-Exit
+      von `make` nicht trägt), und seiner POSIX-`sh`-Nutzlast als eigener Datei, die im digest-gepinnten Transport-Bild
       läuft (Pin-Prüfung wie in `traeger-fetch.sh`; der Digest steht als eigene Vorgabe **byte-gleich**
       zu `TRAEGER_IMAGE`); das Ziel `make tap-check TAG=<tag>` (das Rezept trägt keine
       make-Referenz auf den Tag, der Tag reist als Umgebungsvariable; **kein Gate** — nicht in
       `gates`, nicht in `record-gates`); die Zeile in `harness/README.md` §Werkzeuge mit `kein Gate`
       und der Eintrag in `targets.exempt-targets` der `.d-check.yml` (exakt, kein Glob) — ohne ihn
-      färbt das Doku-Gate im ersten Lauf rot. Die Nutzlast ruft nur Programme des Bestands, den
+      färbt das Doku-Gate im ersten Lauf rot; Makefile-Kommentar und README-Zeile nennen die Zeile
+      `tap-<modus>: Exit <N>` als Träger der Klasse, nicht make's locale-abhängige Meldung
+      (`Error N`/`Fehler N`). Die Nutzlast ruft nur Programme des Bestands, den
       [ADR-0064](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md) §Lage im Bild gemessen hat (kein `jq`, kein `bash`, kein `git`, kein `gh`); ein
       Programm außerhalb ist eine Entscheidung (§4 Rückführung), keine Nebenwirkung.
 - [ ] **Liefer-Punkt 2 — der hermetische Nachweis.** `bats`-Fälle in `make test`, ohne Netz und ohne
       Container: Stubs für Asset, Tap-Stand, `curl` und `docker`; Quellen und Wartezeit der
-      Wiederholung sind injizierbar; die Nutzlast läuft als eigene Datei. **Was die Fälle halten**
+      Wiederholung sind injizierbar; die Nutzlast läuft als eigene Datei. **Jede Exit-Angabe der
+      Fälle nennt den Exit des Skripts.** **Was die Fälle halten**
       (die Zeilen der Fitness Function der ADR, die `check` betreffen — je Eigenschaft, nicht je
-      Nummer):
+      Nummer): die Exit-Zeile — bei Exit 1 und bei Exit 2 ist die **letzte** stderr-Zeile
+      `tap-check: Exit 1` bzw. `tap-check: Exit 2`, bei Exit 0 fehlt sie; ein Fall wird rot, wenn
+      sie fehlt oder die falsche Klasse nennt ·
       Vergleich: gleich → 0 mit Tag, Tap-Kopf und Digest (auch mit einem Nicht-ASCII-Byte und ohne Endzeilenumbruch) · verschieden auch nach der Wiederholung →
       1 mit beiden Digests und der ersten abweichenden Zeile **des zweiten Lesens** (dazu der
       Vorfall hermetisch nachgestellt: Asset von `v0.2.3` als Quelle, Bytes von `v0.2.2` als
@@ -210,15 +223,19 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 - [ ] **Liefer-Punkt 3 — die Zähne und der reale Rot-Beleg.** (a) Je Zahn des `check` ein
       Mutations-Fall in `test/mutations/`, der den benannten `bats`-Fall aus dem behaupteten Grund
       rot färbt: Vorab-Regel, Abschneiden des Metadatums vor der Prüfung, Wiederholung des Lesens,
-      Sofort-Gleich ohne Wartezeit, Tag-Formprüfung, Feldform, Pin-Prüfung, Token als Argument.
+      Sofort-Gleich ohne Wartezeit, Tag-Formprüfung, Feldform, Pin-Prüfung, Token als Argument,
+      Exit-Zeile (entfernt; falsche Klasse).
       Der `sed`-Anker jedes Falls ist am **heutigen** Quell-Bestand gemessen, nachdem das Skript
       existiert ([`MR-071`](../../../../harness/conventions.md#mr-071)). (b) **Der Rot-Beleg am
-      realen Zustand, kein Gate:** `make tap-check TAG=v0.2.2` endet gegen den Tap-Kopf mit Exit 1
-      (nach der Wiederholung des Lesens), die Meldung nennt beide Digests, und die erste
-      abweichende Zeile ist die `version`-Zeile; `make tap-check TAG=v0.2.3` endet mit Exit 0. **Der
-      Beleg ist datiert:** er gilt für den Tap-Stand am Tag der Messung und wandert mit jedem
-      Schnitt — grün ist dann der Tag, den das Tap trägt. Die Ausgabe ist gelesen: Exit 1 ist ein
-      Formel-Unterschied, nicht ein Lesefehler (Exit 2).
+      realen Zustand, kein Gate:** `bash harness/tools/tap-nachzug.sh check` mit `TAG=v0.2.2`
+      endet gegen den Tap-Kopf mit Skript-Exit 1 (nach der Wiederholung des Lesens) und der Meldung
+      des Formel-Unterschieds — beide Digests, die erste abweichende Zeile ist die `version`-Zeile —,
+      nicht mit Exit 2; über `make tap-check TAG=v0.2.2` endet der Prozess mit Exit 2, und die
+      Klasse steht in der Skript-Zeile `tap-check: Exit 1` sowie in der make-Zeile `Error 1`
+      (`Fehler 1` in der deutschen Locale). Gegen `v0.2.3` endet beides mit Exit 0. **Der Beleg ist
+      datiert:** er gilt für den Tap-Stand am Tag der Messung und wandert mit jedem Schnitt — grün
+      ist dann der Tag, den das Tap trägt. Die Ausgabe ist gelesen: Exit 1 ist ein
+      Formel-Unterschied, nicht ein Lesefehler.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -288,8 +305,8 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 Lerneintrag; ohne ihn ist der Slice nur abgelegt.
 
 Zwei beobachtbare Kriterien: (1) `make test` ist grün mit den Fällen aus Liefer-Punkt 2, und der
-Bericht trägt den realen Rot-Beleg aus Liefer-Punkt 3 mit gelesener Meldung (Exit 1 gegen `v0.2.2`,
-Exit 0 gegen den Tag, den das Tap trägt); (2) `make gates` ist grün mit der README-Zeile und dem
+Bericht trägt den realen Rot-Beleg aus Liefer-Punkt 3 mit gelesener Meldung (Skript-Exit 1 und
+Zeile `tap-check: Exit 1` gegen `v0.2.2`, Exit 0 gegen den Tag, den das Tap trägt); (2) `make gates` ist grün mit der README-Zeile und dem
 `exempt-targets`-Eintrag (das Modul `targets` prüft beide Richtungen). Dazu der Lerneintrag in
 einer der drei Formen.
 
@@ -315,7 +332,7 @@ Die Ausgänge setzt die Closure; bis dahin steht hinter jedem Risiko `Ausgang: o
   Wartezeit, nie ein falsches Gleich. Dieser Slice schreibt nie; das Fenster trifft ihn nur bei einem
   Aufruf kurz nach einem Nachzug des Auftraggebers. — **Ausgang:** offen bis Closure.
 - **Das anonyme Lese-Limit.** Wiederholte Läufe des realen Belegs können es erschöpfen; das endet als
-  Exit 2 *„Tap nicht lesbar"*, nie als 1 — ein Rot des Belegs aus diesem Grund ist kein Befund am
+  Skript-Exit 2 *„Tap nicht lesbar"*, nie als 1 — ein Rot des Belegs aus diesem Grund ist kein Befund am
   Vergleich. — **Ausgang:** offen bis Closure.
 - **Die Kopplung an die Vorab-Regel des `publish`-Jobs ist an dessen Textform gebunden.** Ändert sich
   die Form der Regel dort, muss der Fall laut brechen statt still grün zu bleiben (Liefer-Punkt 2:
