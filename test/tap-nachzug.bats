@@ -1,4 +1,5 @@
 #!/usr/bin/env bats
+bats_require_minimum_version 1.5.0
 # tap-nachzug.bats — Zaehne fuer `make tap-check` (ADR-0064, LH-QA-02): das Skript
 # harness/tools/tap-nachzug.sh und seine Nutzlast harness/tools/tap-nachzug-nutzlast.sh.
 #
@@ -120,6 +121,14 @@ lauf() {
   local modus="$1" tag="$2"; shift 2
   cd "$CWD"
   run env TAG="$tag" "$@" bash "$SKRIPT" "$modus"
+}
+
+# lauf_getrennt <modus> <tag> [VAR=wert ...] — wie lauf, aber stdout und stderr getrennt:
+# $output ist stdout, ${stderr_lines[@]} die Zeilen von stderr.
+lauf_getrennt() {
+  local modus="$1" tag="$2"; shift 2
+  cd "$CWD"
+  run --separate-stderr env TAG="$tag" "$@" bash "$SKRIPT" "$modus"
 }
 
 # nirgends <muster> <datei>... — gelingt nur, wenn keine der Dateien das Muster traegt.
@@ -421,4 +430,76 @@ x'; do
       return 1
     fi
   done
+}
+
+@test "exit-zeile: bei Exit 1 und Exit 2 ist die letzte stderr-Zeile tap-<modus>: Exit <N>, bei Exit 0 fehlt sie" {
+  # Exit 1: der Formel-Unterschied der Nutzlast.
+  formel 0.2.2 >"$TMP/tap022"
+  lauf_getrennt check v0.2.3 STUB_TAP_1="$TMP/tap022"
+  [ "$status" -eq 1 ]
+  [ "${stderr_lines[-1]}" = "tap-check: Exit 1" ]
+  # Exit 2 aus fuenf Herkuenften: Nutzlast (Tap nicht lesbar), Host (Tag-Form, Pin,
+  # docker nicht gelaufen) und der Modus sync.
+  lauf_getrennt check v0.2.3 STUB_TAP_CODE=403
+  [ "$status" -eq 2 ]
+  [ "${stderr_lines[-1]}" = "tap-check: Exit 2" ]
+  lauf_getrennt check 'v1.0.0;x'
+  [ "$status" -eq 2 ]
+  [ "${stderr_lines[-1]}" = "tap-check: Exit 2" ]
+  lauf_getrennt check v0.2.3 TAP_IMAGE=curlimages/curl:latest
+  [ "$status" -eq 2 ]
+  [ "${stderr_lines[-1]}" = "tap-check: Exit 2" ]
+  lauf_getrennt check v0.2.3 STUB_DOCKER_EXIT=125
+  [ "$status" -eq 2 ]
+  [ "${stderr_lines[-1]}" = "tap-check: Exit 2" ]
+  lauf_getrennt sync v0.2.3
+  [ "$status" -eq 2 ]
+  [ "${stderr_lines[-1]}" = "tap-sync: Exit 2" ]
+  # Genau eine Exit-Zeile je Lauf.
+  [ "$(grep -c '^tap-sync: Exit ' <<<"$stderr")" -eq 1 ]
+  # Exit 0 (gleich, Vorab-Tag): keine Exit-Zeile, auch nicht auf stdout.
+  lauf_getrennt check v0.2.3
+  [ "$status" -eq 0 ]
+  [[ "$stderr" != *"Exit"* ]]
+  [[ "$output" != *": Exit "* ]]
+  lauf_getrennt check v1.0.0-rc.1
+  [ "$status" -eq 0 ]
+  [[ "$stderr" != *"Exit"* ]]
+  [[ "$output" != *": Exit "* ]]
+}
+
+@test "interner fehler: scheitert mktemp in der Nutzlast, endet der Lauf mit Exit 2 statt 1 und meldet keinen Unterschied" {
+  mkdir "$TMP/kaputt-mktemp"
+  printf '#!/bin/sh\necho "mktemp: kaputt" >&2\nexit 1\n' >"$TMP/kaputt-mktemp/mktemp"
+  chmod 0755 "$TMP/kaputt-mktemp/mktemp"
+  lauf_getrennt check v0.2.3 PATH="$TMP/kaputt-mktemp:$PATH"
+  [ "$status" -eq 2 ]
+  [[ "$stderr" == *"interner Fehler der Nutzlast"* ]]
+  [[ "$stderr" == *"nichts verglichen"* ]]
+  [[ "$stderr" != *"Formel-Unterschied"* ]]
+  [ "${stderr_lines[-1]}" = "tap-check: Exit 2" ]
+  [ "$(docker_aufrufe)" -eq 1 ]
+}
+
+@test "interner fehler: liefert cmp in der Nutzlast Status 2, endet der Lauf mit Exit 2 statt 1 und meldet keinen Unterschied" {
+  mkdir "$TMP/kaputt-cmp"
+  printf '#!/bin/sh\nexit 2\n' >"$TMP/kaputt-cmp/cmp"
+  chmod 0755 "$TMP/kaputt-cmp/cmp"
+  lauf_getrennt check v0.2.3 PATH="$TMP/kaputt-cmp:$PATH"
+  [ "$status" -eq 2 ]
+  [[ "$stderr" == *"cmp Exit 2"* ]]
+  [[ "$stderr" == *"nichts verglichen"* ]]
+  [[ "$stderr" != *"Formel-Unterschied"* ]]
+  [ "${stderr_lines[-1]}" = "tap-check: Exit 2" ]
+}
+
+@test "interner fehler: scheitert ein Kommando des Skripts selbst, endet der Lauf mit Exit 2 statt 1, ohne docker" {
+  # BASH_ENV legt eine pwd-Funktion vor, die scheitert: das Skript ruft pwd fuer den Pfad der Nutzlast.
+  printf 'pwd() { return 1; }\n' >"$TMP/defekt.sh"
+  lauf_getrennt check v0.2.3 BASH_ENV="$TMP/defekt.sh"
+  [ "$status" -eq 2 ]
+  [[ "$stderr" == *"interner Fehler des Skripts"* ]]
+  [[ "$stderr" == *"nichts verglichen"* ]]
+  [ "${stderr_lines[-1]}" = "tap-check: Exit 2" ]
+  [ "$(docker_aufrufe)" -eq 0 ]
 }

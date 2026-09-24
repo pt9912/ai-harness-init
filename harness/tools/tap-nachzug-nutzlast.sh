@@ -2,7 +2,7 @@
 # tap-nachzug-nutzlast.sh — die POSIX-sh-Nutzlast von harness/tools/tap-nachzug.sh.
 # Sie laeuft im digest-gepinnten Transport-Bild (ADR-0064 Festlegung 5, ADR-0058
 # Festlegung 4), nie auf dem Host, und ruft nur Programme des Bild-Bestands: curl,
-# cmp, sha256sum, sed, awk, mktemp, sleep und Shell-Builtins. Ein jq, bash, git oder gh
+# cmp, sha256sum, awk, mktemp, sleep, rm und Shell-Builtins. Ein jq, bash, git oder gh
 # gibt es dort nicht.
 #
 # EINGABE (Umgebung, vom Host-Skript gesetzt): TAP_MODE, TAP_TAG, TAP_ASSET_URL,
@@ -10,8 +10,11 @@
 #
 # ZUSAGE (ADR-0064 Festlegung 2), pro Exit-Klasse:
 #   0  die Formel am Tap-Kopf hat dieselben Bytes wie das Asset des Tags
-#   1  Formel-Unterschied, auch nach dem zweiten Lesen nach TAP_WAIT Sekunden
-#   2  nicht ausfuehrbar: Asset oder Tap nicht lesbar — nie als Unterschied gemeldet
+#   1  Formel-Unterschied, auch nach dem zweiten Lesen nach TAP_WAIT Sekunden — und nur
+#      dieser Fall: ein Kommando, das scheitert (mktemp, Schreiben der Kopfdatei, cmp mit
+#      Status 2), endet als Exit 2 mit der Meldung des internen Fehlers
+#   2  nicht ausfuehrbar: Asset oder Tap nicht lesbar, interner Fehler — nie als
+#      Unterschied gemeldet
 # Der Vergleich ist byte-genau ueber Dateien (cmp), nicht ueber Shell-Variablen: eine
 # Variable verliert den Endzeilenumbruch.
 #
@@ -25,9 +28,33 @@ umask 077
 LC_ALL=C
 export LC_ALL
 
-work="$(mktemp -d)"
-trap 'rm -rf "$work"' EXIT
+# beende <rc> raeumt auf und legt die Exit-Klasse fest; fehler() und der EXIT-Trap (mit dem
+# Status des Endes) rufen es. 1 gilt nur, wenn der Vergleich es gesetzt hat (unterschied=ja);
+# jedes andere Ende ausserhalb von 0 und 2 ist ein interner Fehler und wird Exit 2.
+work=""
+unterschied=nein
+beende() {
+	rc="$1"
+	trap - EXIT
+	if [ -n "$work" ]; then rm -rf "$work" || :; fi
+	case "$rc" in
+	0 | 2) ;;
+	1)
+		if [ "$unterschied" != ja ]; then
+			printf 'tap-%s: interner Fehler der Nutzlast (ein Kommando endete mit 1) — es wurde nichts verglichen\n' "${TAP_MODE:-nachzug}" >&2
+			rc=2
+		fi
+		;;
+	*)
+		printf 'tap-%s: interner Fehler der Nutzlast (Exit %s) — es wurde nichts verglichen\n' "${TAP_MODE:-nachzug}" "$rc" >&2
+		rc=2
+		;;
+	esac
+	exit "$rc"
+}
+trap 'beende "$?"' EXIT
 trap 'exit 2' HUP INT TERM
+work="$(mktemp -d)"
 
 hdr=""
 if [ -n "${TAP_TOKEN:-}" ]; then
@@ -38,7 +65,7 @@ unset TAP_TOKEN
 
 fehler() {
 	printf 'tap-%s: %s\n' "$TAP_MODE" "$1" >&2
-	exit 2
+	beende 2
 }
 
 # hole_asset legt das Asset des Tags nach $work/asset.
@@ -65,18 +92,30 @@ lese_tap() {
 	esac
 }
 
+# gleich: 0 gleich, 1 verschieden; cmp mit einem anderen Status als 0 und 1 (es konnte
+# nicht lesen) ist ein interner Fehler und endet mit Exit 2, nie als Unterschied.
+gleich() {
+	cmp_rc=0
+	cmp -s "$work/asset" "$work/tap" || cmp_rc=$?
+	case "$cmp_rc" in
+	0) return 0 ;;
+	1) return 1 ;;
+	*) fehler "der Vergleich lief nicht (cmp Exit $cmp_rc) — es wurde nichts verglichen" ;;
+	esac
+}
+
 # vergleiche: 0 gleich, 1 ungleich auch nach dem zweiten Lesen. Gleich schon im ersten
 # Lesen endet ohne Wartezeit; eine Ungleichheit wird einmal nach TAP_WAIT Sekunden
 # erneut gelesen (Cache-Fenster der Schnittstelle, ADR-0064 Festlegung 2). Die Einheit
 # liegt hier einmal.
 vergleiche() {
 	lese_tap
-	if cmp -s "$work/asset" "$work/tap"; then
+	if gleich; then
 		return 0
 	fi
 	sleep "$TAP_WAIT"
 	lese_tap
-	if cmp -s "$work/asset" "$work/tap"; then
+	if gleich; then
 		return 0
 	fi
 	return 1
@@ -113,4 +152,5 @@ if vergleiche; then
 fi
 printf 'tap-%s: Formel-Unterschied — Tag %s, Asset sha256 %s, Tap-Kopf sha256 %s; erste abweichende Zeile (zweites Lesen) %s\n' \
 	"$TAP_MODE" "$TAP_TAG" "$(digest "$work/asset")" "$(digest "$work/tap")" "$(erste_abweichung "$work/asset" "$work/tap")" >&2
+unterschied=ja
 exit 1

@@ -8,4 +8,4 @@
 # nicht ausfuehrbar. Rot faerbt der Fall, dessen docker-Stub mit 125 endet und der Exit 2
 # und die Meldung liest.
 set -euo pipefail
-sed -i 's|^\*) fehler "der Transport im Bild|*) exit 1 ; fehler "der Transport im Bild|' harness/tools/tap-nachzug.sh
+sed -i 's|^\*) fehler "der Transport im Bild|*) unterschied=ja ; exit 1 ; fehler "der Transport im Bild|' harness/tools/tap-nachzug.sh

@@ -9,4 +9,4 @@
 # Rot faerbt der Fall "sofort gleich": er liest die Zahl der Lese-Aufrufe und das
 # Wartezeit-Protokoll.
 set -euo pipefail
-sed -i '0,\|^\tif cmp -s "[$]work/asset" "[$]work/tap"; then$|s||\tif false; then|' harness/tools/tap-nachzug-nutzlast.sh
+sed -i '0,\|^\tif gleich; then$|s||\tif false; then|' harness/tools/tap-nachzug-nutzlast.sh

@@ -12,7 +12,14 @@
 # nichts (LH-QA-03).
 #
 # EXIT DES SKRIPTS: 0 gleich oder Vorab-Tag, 1 Formel-Unterschied (Nutzlast), 2 nicht ausfuehrbar
-# (Aufruf, Tag-Form, Feldform, Pin, Asset oder Tap nicht lesbar, Modus sync).
+# (Aufruf, Tag-Form, Feldform, Pin, Asset oder Tap nicht lesbar, Modus sync, interner Fehler).
+# 1 endet nur aus dem Vergleich der Nutzlast; ein Kommando dieses Skripts, das mit 1 scheitert,
+# ist ein interner Fehler und endet mit Exit 2.
+#
+# EXIT-ZEILE: bei jedem Ende mit Exit ungleich 0 ist die letzte stderr-Zeile
+# `tap-<modus>: Exit <N>`, <N> der Exit dieses Skripts; bei Exit 0 fehlt sie. Sie traegt die
+# Klasse auch dort, wo der Prozess-Exit sie nicht traegt: `make` endet bei jedem Fehlschlag
+# mit 2, in einer sprachabhaengigen Zeile (`Error N`, `Fehler N`).
 #
 # DER TAG IST EINGABE AUS EINER NICHT VERTRAUENSWUERDIGEN QUELLE: er kommt als
 # Umgebungsvariable TAG an, nie als Text einer Kommandozeile, und wird nur gegen
@@ -30,10 +37,38 @@ TAP_IMAGE="${TAP_IMAGE:-curlimages/curl@sha256:463eaf6072688fe96ac64fa623fe73e1d
 TAP_WAIT="${TAP_WAIT:-65}"
 
 modus="${1:-}"
+unterschied=nein
+
+# beende <rc> legt die Exit-Klasse fest und schreibt die Exit-Zeile; fehler() und der EXIT-Trap
+# (mit dem Status des Endes) rufen es. 1 gilt nur, wenn die Nutzlast ihn gemeldet hat
+# (unterschied=ja); jedes andere Ende ausserhalb von 0 und 2 ist ein interner Fehler und
+# wird Exit 2.
+beende() {
+	local rc="$1"
+	trap - EXIT
+	case "$rc" in
+	0 | 2) ;;
+	1)
+		if [ "$unterschied" != ja ]; then
+			printf 'tap-%s: interner Fehler des Skripts (ein Kommando endete mit 1) — es wurde nichts verglichen\n' "${modus:-nachzug}" >&2
+			rc=2
+		fi
+		;;
+	*)
+		printf 'tap-%s: interner Fehler des Skripts (Exit %s) — es wurde nichts verglichen\n' "${modus:-nachzug}" "$rc" >&2
+		rc=2
+		;;
+	esac
+	if [ "$rc" -ne 0 ]; then
+		printf 'tap-%s: Exit %s\n' "${modus:-nachzug}" "$rc" >&2
+	fi
+	exit "$rc"
+}
+trap 'beende "$?"' EXIT
 
 fehler() {
 	printf 'tap-%s: %s\n' "${modus:-nachzug}" "$1" >&2
-	exit 2
+	beende 2
 }
 
 case "$modus" in
@@ -98,6 +133,11 @@ docker run --rm \
 	-v "$nutzlast:/nutzlast/tap-nachzug-nutzlast.sh:ro" \
 	"$TAP_IMAGE" sh /nutzlast/tap-nachzug-nutzlast.sh || rc=$?
 case "$rc" in
-0 | 1 | 2) exit "$rc" ;;
+0) exit 0 ;;
+1)
+	unterschied=ja
+	exit 1
+	;;
+2) exit 2 ;;
 *) fehler "der Transport im Bild ist nicht gelaufen (docker Exit $rc) — es wurde nichts verglichen" ;;
 esac

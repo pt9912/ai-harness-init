@@ -478,8 +478,9 @@ traeger-fetch: ## Traeger aus dem gepinnten Release nachholen (braucht Netz, Tra
 # Haelt die Formel am Kopf des Default-Branch des Tap byte-genau gegen das Asset des
 # Tags (ADR-0064 Festlegung 1 und 2): Exit 0 gleich oder Vorab-Tag, 1 Formel-Unterschied,
 # 2 nicht ausfuehrbar — der Exit des Skripts; make selbst endet bei jedem Fehlschlag
-# mit 2 und nennt den des Skripts in der Zeile "Fehler N". Lesend, Transport im gepinnten
-# Bild; braucht Netz an genau diesem Aufruf. KEIN Gate und in keiner Prerequisite-Kette.
+# mit 2. Die Klasse des Skripts steht in dessen letzter stderr-Zeile "tap-check: Exit <N>"
+# (bei Exit 0 fehlt sie). Lesend, Transport im gepinnten Bild; braucht Netz an genau
+# diesem Aufruf. KEIN Gate und in keiner Prerequisite-Kette.
 # Der Tag reist als Umgebungsvariable TAG (make exportiert Kommandozeilen-Variablen),
 # das Rezept nennt ihn nicht.
 tap-check: ## Tap-Formel gegen das Asset des Tags halten (TAG=<tag>, braucht Netz, Transport im gepinnten Bild) — NICHT in gates
