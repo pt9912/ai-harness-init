@@ -1,6 +1,6 @@
 # ADR-0065: Die emittierte Konfiguration folgt der Kennungs-Form des Regelwerks — Präfix-Token für Slice und Welle, die Welle-Regel der Spec-Straten, eine deklarierte Erweiterung für den Adaptions-Block und eine Commit-Menge in den Formen des Regelwerks
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-24
 
@@ -428,6 +428,7 @@ Entscheidung des Auftraggebers.**
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-24 | Proposed | Architect-Lauf zum Auftrag des Auftraggebers, die emittierte Konfiguration dem Regelwerk `v6.9.0` anzugleichen |
+| 2026-09-24 | **Accepted** | Beleg nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 ist die Reviewer-Runde `2026-09-24-adr-0065-emittierte-kennungs-form-runde-3` — sie meldet annahmefähig, kein HIGH und kein MEDIUM, der MEDIUM der Runde 2 (Folgepflicht 2) behoben; die Annahme selbst hat der Auftraggeber am 2026-09-24 erteilt. Der Accept-Commit fasst nach Folgepflicht 2 den Adaptions-Block nicht an. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes ADR-0065`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
