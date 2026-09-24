@@ -250,7 +250,7 @@ die Zusage; jede Zeile ist ein Fall in `internal/span/span_test.go`.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — **kein Zähler wird gesetzt**, er
       folgt aus den Dateien.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieser Slice läuft
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieser Slice läuft
       **ohne Welle**, sie werden also hier geprüft, nach dem `git mv`.
 
 ## 3. Plan (vor Code)
@@ -468,7 +468,15 @@ Geschrieben von der Rolle Planner in frischem Kontext
   erfüllt; er wird nicht bewegt, Priorisierung ist eine eigene Entscheidung).
 - **Risiken aus §6:** je ein Ausgang, siehe §6 (entfallen · weiter offen · weiter offen · entfallen ·
   eingetreten).
-- **Drei Paarungen:** Ergebnis steht nach dem `git mv`, im Häkchen-Commit.
+- **Drei Paarungen** (ohne Wellen-Betrieb hier, nach dem `git mv` gelesen). (a) *Anker:* §7 trägt
+  kein Feld `liegt in`, weil mit diesem Slice keine Regel verkörpert wurde; die benannte Spec-Lücke
+  trägt keines. Kein Gegenstand der Paarung. (b) *Folge-Slice:* `slice-151` in `open/`, `slice-109` und
+  `slice-204` in `next/` — je eine Datei im Planning-Lifecycle
+  (`ls docs/plan/planning/open/slice-151-* docs/plan/planning/next/slice-109-* docs/plan/planning/next/slice-204-* | wc -l`
+  → 3). (c) *Register:* jedes in §6, §7 und §8 genannte Verzeichnis existiert und trägt mindestens
+  einen Beleg (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l` je Verzeichnis,
+  kleinster Wert 1). `make docs-check` meldet nach dem Roadmap-Ruhe-Marker keinen Befund; den Lauf
+  liefert der Übergabe-Bericht, nicht diese Datei.
 
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
