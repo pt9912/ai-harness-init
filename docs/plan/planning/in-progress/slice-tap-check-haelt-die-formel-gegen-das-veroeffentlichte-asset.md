@@ -35,8 +35,11 @@ ist digest-gepinnt),
 Festlegung 4; die Schritte, die `sync` allein trägt, bleiben beim Folge-Schnitt; die Exit-Klassen
 lesen sich als die des Skripts, siehe die nächste Zeile),
 [ADR-0066](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md) (**Proposed** — die Klassen 0, 1 und 2 sind der Exit des **Skripts**; über `make` endet
-jeder Fehlschlag mit Prozess-Exit 2, und die Klasse trägt die letzte stderr-Zeile **des Skripts**
-`tap-<modus>: Exit <N>`, genau einmal, bei Exit 1 und 2, nicht bei Exit 0; [ADR-0064](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md) selbst bleibt
+jeder Fehlschlag mit Prozess-Exit 2, die Klasse steht dort als Ziffer in der Meldung von `make`
+(`Error N`/`Fehler N`, der Wortlaut hängt an der Locale; die Meldung ist kein Vertrag), und
+vertraglich trägt sie die letzte stderr-Zeile **des Skripts** `tap-<modus>: Exit <N>`, genau einmal,
+bei Exit 1 und 2, nicht bei Exit 0 — sie ist locale- und positionsfrei; die Teil-Ablösung trifft
+drei Stellen von [ADR-0064](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md), deren Trigger 1 bindet fort, und die Datei selbst bleibt
 unverändert),
 [ADR-0058](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md) (**Accepted** —
 Festlegung 4: Transport im gepinnten Bild, Netz nur an genau diesem Aufruf),
@@ -78,10 +81,12 @@ des Tap **byte-genau** gegen das veröffentlichte Asset `ai-harness-init.rb` des
 Ergebnis in drei Exit-Klassen — 0 gleich (oder der benannte Nicht-Gegenstand Vorab-Tag), 1
 Formel-Unterschied auch nach der Wiederholung des Lesens, 2 nicht ausführbar — der Exit des
 **Skripts** ([ADR-0066](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md)). Über `make` endet der Prozess bei jedem Fehlschlag mit Exit 2 (GNU Make
-4.3); die Klasse des Skripts steht dann in der letzten stderr-Zeile **des Skripts**
-`tap-check: Exit <N>`. Die Zeile ist über `make` nicht die letzte der Ausgabe: ihr folgt die Meldung
-von `make` (`make: *** … Fehler N`), die Skript-Zeile ist dort die vorletzte. Lesend, im
-digest-gepinnten Transport-Bild, kein Gate.
+4.3); die Klasse des Skripts steht dort als Ziffer in der Meldung von `make`
+(`make: *** … Error N`, in der deutschen Locale `Fehler N`) — ablesbar, aber kein Vertrag — und
+vertraglich in der letzten stderr-Zeile **des Skripts** `tap-check: Exit <N>`. Gelesen wird die
+Zeile selbst, nicht ihre Position: bei `make tap-check` aus dem Wurzelverzeichnis ist sie die
+vorletzte Zeile der Ausgabe (ihr folgt die Meldung von `make`); unter `make -C <dir>` und unter einem
+umschließenden `make` folgen weitere Zeilen. Lesend, im digest-gepinnten Transport-Bild, kein Gate.
 
 **Der Befund, an dem der Schnitt hängt.** Am Schnitt `v0.2.3` stand das Tap nach der Publikation
 noch auf `0.2.2`; der Auftraggeber hat den Nachzug von Hand gepusht. Es gibt weder ein Ziel noch ein
@@ -126,10 +131,15 @@ des Tags* — wobei die Schnittstelle einen Stand liefern kann, der bis zu 60 s 
 irgendeinen Zustand nach dem Aufruf · Herkunft (es gibt keinen Signier-Schritt) · das Lese-Limit der
 Schnittstelle (ein erschöpftes Limit endet als Skript-Exit 2, nie als 1) · **den Prozess-Exit von
 `make`** (jeder Fehlschlag endet dort mit 2; der Exit-Vertrag der ADR gilt für den Ablauf des
-Skripts, und über `make` trägt die letzte stderr-Zeile des Skripts `tap-check: Exit <N>` die Klasse) ·
-**die Exit-Zeile bei einem Signal an das Host-Skript** (etwa während des `docker`-Aufrufs) **und bei
-nicht beschreibbarem stderr** — dort ist sie weder zugesagt noch verboten; ein Skript, das sie dort
-hält, bricht den Plan nicht, eines, das sie dort nicht hält, auch nicht · den lokalen Weg gegen die
+Skripts, und über `make` trägt die Zeile des Skripts `tap-check: Exit <N>` die Klasse; die Ziffer in
+der Meldung von `make` nennt sie ebenfalls, ihr Wortlaut hängt an der Locale und sie ist kein
+Vertrag) · **die Exit-Zeile bei einem Signal an das Host-Skript** (etwa während des
+`docker`-Aufrufs), **bei nicht beschreibbarem stderr und bei fehlendem oder unbekanntem Modus**
+(erreichbar nur im Direktaufruf; die Ziele setzen den Modus fest) — dort ist sie weder zugesagt noch
+verboten; ein Skript, das sie dort hält, bricht den Plan nicht, eines, das sie dort nicht hält, auch
+nicht · **die Klasse 1 bei nicht beschreibbarem stderr im Bild:** der `docker`-Client endet dort mit
+Status 1 statt mit dem der Nutzlast, ein Formel-Unterschied endet als Klasse 2 — die sichere
+Richtung, nie ein Unterschied, der keiner ist; zugesagt ist sie nicht · den lokalen Weg gegen die
 Auswertung des Aufrufers (make wertet `TAG=…` samt `$(shell …)` aus, bevor ein Skript läuft; die
 Formprüfung schützt den Env-Weg der CI, nicht die Tastatur) · das Token gegenüber dem Docker-Daemon.
 **Und der Schreib-Pfad am realen Tap ist nicht Gegenstand dieses Slice — er hat keinen.** Die
@@ -155,8 +165,18 @@ hermetischen Fälle fahren Stubs (eine Fixture); der reale Beleg dieses Slice is
   bevor er `next/` wird** — die Prozedur nennt `make tap-check` als ihren Beleg und kommt deshalb
   nach diesem Slice. **Übergabe an ihn, nicht Gegenstand hier:** der Wortlaut der Prozedur für den
   Formel-Unterschied ist *„`tap-check` rot mit der Zeile `tap-check: Exit 1`"* — der Prozess-Exit
-  von `make` trennt die Klassen nicht (Liefer-Punkt 1), die Zeile des Skripts trägt sie; ihr folgt
-  über `make` die Meldung von `make`.
+  von `make` trennt die Klassen nicht (Liefer-Punkt 1), die Zeile des Skripts trägt sie und ist der
+  Vertrag; die Ziffer in der Meldung von `make` ist keiner. Die Prozedur liest die Zeile, nicht ihre
+  Position.
+- **Der Status-Kanal zwischen Nutzlast und Host-Skript** (die Nutzlast meldet den Formel-Unterschied
+  mit einem eigenen Status, das Host-Skript bildet ihn auf Klasse 1 ab) — *Bestand unterhalb der
+  ADR:* er ist nicht Vertrag und steht in keiner DoD-Zeile. Skript-Kopf und Nutzlast-Kopf nennen ihn
+  samt seiner Restmenge (ein `docker`-Aufruf, der selbst mit diesem Status endet, wird als
+  Formel-Unterschied ohne Digests gemeldet) — das ist Implementer-Arbeit dieses Slice. Der
+  `sync`-Schnitt zieht ihn mit, sobald er einen Status jenseits von 0, 2 und dem des Unterschieds
+  oder ein Ergebnis einführt, das Klasse 1 aus einer anderen Quelle als dem Vergleich trägt
+  (Re-Evaluierungs-Trigger 3 von
+  [ADR-0066](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md)).
 - **Der Bezug [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) der
   Tap-Verteilung in Workflow-Kopf und Prozedur** (Folgepflicht 6) — *es wäre ein anderer Vorgang:*
   ob das Tap eine Anforderung wird oder der Bezug entfällt, entscheidet der Auftraggeber außerhalb
@@ -191,10 +211,14 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Modus `check` (jeder andere Modus endet mit Exit 2 und sagt, dass er nicht implementiert
       ist), der bei Exit 1 und bei Exit 2 **des Skripts** als letzte stderr-Zeile **des Skripts**
       `tap-<modus>: Exit <N>` schreibt, genau einmal, bei Exit 0 nicht (`<N>` ist der Exit des
-      Skripts; die Zeile trägt die Klasse, die der Prozess-Exit von `make` nicht trägt; über `make`
-      folgt ihr die Meldung von `make`). **Grenze der Zusage:** bei einem Signal an das Host-Skript
-      und bei nicht beschreibbarem stderr ist die Zeile weder zugesagt noch verboten; der Plan
-      verlangt dort nichts. Ein Exit **des `docker`-Aufrufs** mit Status 1 ist kein Formel-Unterschied
+      Skripts; die Zeile trägt die Klasse, die der Prozess-Exit von `make` nicht trägt; `<modus>`
+      ist der Modus, mit dem das Skript aufgerufen wurde; über `make <ziel>` aus dem
+      Wurzelverzeichnis folgt ihr die Meldung von `make`, unter `-C` oder einem umschließenden
+      `make` weitere Zeilen — gelesen wird die Zeile, nicht ihre Position). **Grenze der Zusage:**
+      bei einem Signal an das Host-Skript, bei nicht beschreibbarem stderr und bei fehlendem oder
+      unbekanntem Modus ist die Zeile weder zugesagt noch verboten; der Plan verlangt dort nichts,
+      und bei nicht beschreibbarem stderr im Bild kann ein Formel-Unterschied als Klasse 2 statt 1
+      enden (die sichere Richtung). Ein Exit **des `docker`-Aufrufs** mit Status 1 ist kein Formel-Unterschied
       (Klasse 1 kommt allein aus dem Vergleich der Nutzlast) und endet als Exit 2. Dazu die
       POSIX-`sh`-Nutzlast als eigener Datei, die im digest-gepinnten Transport-Bild
       läuft (Pin-Prüfung wie in `traeger-fetch.sh`; der Digest steht als eigene Vorgabe **byte-gleich**
@@ -203,8 +227,8 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       `gates`, nicht in `record-gates`); die Zeile in `harness/README.md` §Werkzeuge mit `kein Gate`
       und der Eintrag in `targets.exempt-targets` der `.d-check.yml` (exakt, kein Glob) — ohne ihn
       färbt das Doku-Gate im ersten Lauf rot; Makefile-Kommentar und README-Zeile nennen die Zeile
-      `tap-<modus>: Exit <N>` als Träger der Klasse, nicht make's locale-abhängige Meldung
-      (`Error N`/`Fehler N`). Die Nutzlast ruft nur Programme des Bestands, den
+      `tap-<modus>: Exit <N>` als vertraglichen Träger der Klasse, nicht make's locale-abhängige Meldung
+      (`Error N`/`Fehler N`, deren Ziffer die Klasse zwar nennt, aber kein Vertrag ist). Die Nutzlast ruft nur Programme des Bestands, den
       [ADR-0064](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md) §Lage im Bild gemessen hat (kein `jq`, kein `bash`, kein `git`, kein `gh`); ein
       Programm außerhalb ist eine Entscheidung (§4 Rückführung), keine Nebenwirkung.
 - [ ] **Liefer-Punkt 2 — der hermetische Nachweis.** `bats`-Fälle in `make test`, ohne Netz und ohne
@@ -214,8 +238,8 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       halten** (die Zeilen der Fitness Function der ADR, die `check` betreffen — je Eigenschaft,
       nicht je Nummer): die Exit-Zeile — bei Exit 1 und bei Exit 2 ist die **letzte** stderr-Zeile
       **des Skripts** `tap-check: Exit 1` bzw. `tap-check: Exit 2` und steht genau einmal, bei
-      Exit 0 fehlt sie; ein Fall wird rot, wenn sie fehlt, die falsche Klasse nennt, bei Exit 0
-      erscheint oder doppelt steht ·
+      Exit 0 fehlt sie (Modus `sync`: `tap-sync: Exit 2`); ein Fall wird rot, wenn sie fehlt, die
+      falsche Klasse nennt, bei Exit 0 erscheint oder doppelt steht ·
       Vergleich: gleich → 0 mit Tag, Tap-Kopf und Digest (auch mit einem Nicht-ASCII-Byte und ohne Endzeilenumbruch) · verschieden auch nach der Wiederholung →
       1 mit beiden Digests und der ersten abweichenden Zeile **des zweiten Lesens** (dazu der
       Vorfall hermetisch nachgestellt: Asset von `v0.2.3` als Quelle, Bytes von `v0.2.2` als
@@ -255,8 +279,9 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       nicht mit Exit 2, und seine letzte stderr-Zeile ist `tap-check: Exit 1`; über
       `make tap-check TAG=v0.2.2` endet der Prozess mit Exit 2, die Klasse steht in der Zeile des
       Skripts `tap-check: Exit 1`, und ihr folgt die Meldung von `make` mit `Error 1` (`Fehler 1` in
-      der deutschen Locale) — die Skript-Zeile ist dort die **vorletzte** Zeile der Ausgabe, nicht
-      die letzte. Gegen `v0.2.3` endet beides mit Exit 0. **Der Beleg ist
+      der deutschen Locale; die Ziffer ist kein Vertrag) — bei `make tap-check` aus dem
+      Wurzelverzeichnis ist die Skript-Zeile die **vorletzte** Zeile der Ausgabe, nicht die letzte;
+      gelesen wird die Zeile, nicht ihre Position. Gegen `v0.2.3` endet beides mit Exit 0. **Der Beleg ist
       datiert:** er gilt für den Tap-Stand am Tag der Messung und wandert mit jedem Schnitt — grün
       ist dann der Tag, den das Tap trägt. Die Ausgabe ist gelesen: Exit 1 ist ein
       Formel-Unterschied, nicht ein Lesefehler.
@@ -331,8 +356,9 @@ Lerneintrag; ohne ihn ist der Slice nur abgelegt.
 
 Zwei beobachtbare Kriterien: (1) `make test` ist grün mit den Fällen aus Liefer-Punkt 2, und der
 Bericht trägt den realen Rot-Beleg aus Liefer-Punkt 3 mit gelesener Meldung (Skript-Exit 1 und
-letzte stderr-Zeile des Skripts `tap-check: Exit 1` gegen `v0.2.2`, über `make` als vorletzte Zeile
-vor der Meldung von `make`; Exit 0 gegen den Tag, den das Tap trägt); (2) `make gates` ist grün mit der README-Zeile und dem
+letzte stderr-Zeile des Skripts `tap-check: Exit 1` gegen `v0.2.2`, über `make` aus dem
+Wurzelverzeichnis als vorletzte Zeile vor der Meldung von `make`; Exit 0 gegen den Tag, den das Tap
+trägt); (2) `make gates` ist grün mit der README-Zeile und dem
 `exempt-targets`-Eintrag (das Modul `targets` prüft beide Richtungen). Dazu der Lerneintrag in
 einer der drei Formen.
 
@@ -364,7 +390,8 @@ Die Ausgänge setzt die Closure; bis dahin steht hinter jedem Risiko `Ausgang: o
   die Form der Regel dort, muss der Fall laut brechen statt still grün zu bleiben (Liefer-Punkt 2:
   *„schlägt fehl, wenn er die Regel dort nicht findet"*). — **Ausgang:** offen bis Closure.
 - **[ADR-0066](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md) steht auf `Proposed`.** Die Ebene der Exit-Klassen und der Wortlaut der Zeile
-  `tap-<modus>: Exit <N>` binden erst mit dem Accept; ändert sich dabei ein Wortlaut, ziehen Skript-Kopf,
+  `tap-<modus>: Exit <N>` binden erst mit dem Accept; der Konsistenz-Review ist eingearbeitet, die
+  zweite Runde und der Accept stehen aus. Ändert sich dabei ein Wortlaut, ziehen Skript-Kopf,
   Makefile-Kommentar, README-Zeile, Fälle und dieser Plan nach. — **Ausgang:** offen bis Closure.
 - **Der Slice ist größer als eine Review-Sitzung.** Zwei Schichten (Werkzeug, Test) und drei
   Liefer-Punkte; die Rückführung steht in §4. — **Ausgang:** offen bis Closure.
