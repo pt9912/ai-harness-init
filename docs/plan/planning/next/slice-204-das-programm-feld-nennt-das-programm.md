@@ -348,7 +348,7 @@ Setzung 2, gelesen am gemergten Stand vom 2026-09-24). Diesen Vorgang betreffen:
 | `neuer-waechter-ohne-mutations-fall` | 12× | verkörpert | die neue Zusage braucht ihren Fall in `test/mutations/`, sonst ist sie unbewacht |
 | `zusage-nennt-sensor-der-form-nicht-sieht` | 17× | geplant | der Funktionskopf nennt seinen Geltungsbereich; wird die Segment-Regel ergänzt, ohne den Kommentar mitzunehmen, ist es genau diese Klasse — Adresse `slice-181` |
 | `vollstaendigkeits-zusage-misst-falsche-ebene` | 3× | verkörpert | die Ebenen-Aussage im Kopf (Dogfood **und** emittiert, über den Träger statt über eine Vorlage) ist genau die Stelle, an der diese Klasse auftritt |
-| `zahl-ohne-kommando-trifft-ihren-gegenstand-nicht` | 16× | verkörpert | die Regel steht (`MR-025`): jede Zahl dieses Plans steht neben dem Kommando, das genau sie ausgibt |
+| `zahl-ohne-kommando-trifft-ihren-gegenstand-nicht` | 16× | verkörpert | die Regel steht ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)): jede Zahl dieses Plans steht neben dem Kommando, das genau sie ausgibt |
 | `plan-entsteht-vor-dem-verdikt-ueber-seinen-gegenstand` | 1× | offen | **unmittelbar** — zwei Pläne über `commandProgram()`; die Reihenfolge ist entschieden (erster Slice zuerst, §4) und dieser Plan ist an ihn angeschnitten, statt neben ihm zu stehen |
 
 **Sechs Einträge tragen einen Ausgang** (`anweisungssatz-eigentum-ohne-quelle`,
