@@ -137,9 +137,12 @@ Vertrag) · **die Exit-Zeile bei einem Signal an das Host-Skript** (etwa währen
 `docker`-Aufrufs), **bei nicht beschreibbarem stderr und bei fehlendem oder unbekanntem Modus**
 (erreichbar nur im Direktaufruf; die Ziele setzen den Modus fest) — dort ist sie weder zugesagt noch
 verboten; ein Skript, das sie dort hält, bricht den Plan nicht, eines, das sie dort nicht hält, auch
-nicht · **die Klasse 1 bei nicht beschreibbarem stderr im Bild:** der `docker`-Client endet dort mit
-Status 1 statt mit dem der Nutzlast, ein Formel-Unterschied endet als Klasse 2 — die sichere
-Richtung, nie ein Unterschied, der keiner ist; zugesagt ist sie nicht · den lokalen Weg gegen die
+nicht · **bei einem Signal auch die Klasse:** der Prozess endet mit 128 plus der Signalnummer und ohne
+jede Ausgabe, ein solches Ende ist keine der drei Klassen · **die Klasse 1 bei nicht beschreibbarer
+stderr des aufrufenden `docker`-Clients:** schreibt der Container auf diese stderr, endet der Client
+mit Status 1 statt mit dem der Nutzlast, ein Formel-Unterschied endet als Klasse 2 — die sichere
+Richtung, nie ein Unterschied, der keiner ist; zugesagt ist sie nicht (eine stderr, die im Container
+nicht beschreibbar ist, ist eine andere Lage) · den lokalen Weg gegen die
 Auswertung des Aufrufers (make wertet `TAG=…` samt `$(shell …)` aus, bevor ein Skript läuft; die
 Formprüfung schützt den Env-Weg der CI, nicht die Tastatur) · das Token gegenüber dem Docker-Daemon.
 **Und der Schreib-Pfad am realen Tap ist nicht Gegenstand dieses Slice — er hat keinen.** Die
@@ -216,9 +219,11 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Wurzelverzeichnis folgt ihr die Meldung von `make`, unter `-C` oder einem umschließenden
       `make` weitere Zeilen — gelesen wird die Zeile, nicht ihre Position). **Grenze der Zusage:**
       bei einem Signal an das Host-Skript, bei nicht beschreibbarem stderr und bei fehlendem oder
-      unbekanntem Modus ist die Zeile weder zugesagt noch verboten; der Plan verlangt dort nichts,
-      und bei nicht beschreibbarem stderr im Bild kann ein Formel-Unterschied als Klasse 2 statt 1
-      enden (die sichere Richtung). Ein Exit **des `docker`-Aufrufs** mit Status 1 ist kein Formel-Unterschied
+      unbekanntem Modus ist die Zeile weder zugesagt noch verboten; der Plan verlangt dort nichts.
+      Bei einem Signal ist auch die Klasse nicht zugesagt (der Prozess endet mit 128 plus der
+      Signalnummer und ohne Ausgabe, keine der drei Klassen); der Plan verlangt dazu keine Härtung.
+      Ist die stderr des aufrufenden `docker`-Clients nicht beschreibbar und schreibt der Container
+      auf sie, kann ein Formel-Unterschied als Klasse 2 statt 1 enden (die sichere Richtung). Ein Exit **des `docker`-Aufrufs** mit Status 1 ist kein Formel-Unterschied
       (Klasse 1 kommt allein aus dem Vergleich der Nutzlast) und endet als Exit 2. Dazu die
       POSIX-`sh`-Nutzlast als eigener Datei, die im digest-gepinnten Transport-Bild
       läuft (Pin-Prüfung wie in `traeger-fetch.sh`; der Digest steht als eigene Vorgabe **byte-gleich**
@@ -390,8 +395,10 @@ Die Ausgänge setzt die Closure; bis dahin steht hinter jedem Risiko `Ausgang: o
   die Form der Regel dort, muss der Fall laut brechen statt still grün zu bleiben (Liefer-Punkt 2:
   *„schlägt fehl, wenn er die Regel dort nicht findet"*). — **Ausgang:** offen bis Closure.
 - **[ADR-0066](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md) steht auf `Proposed`.** Die Ebene der Exit-Klassen und der Wortlaut der Zeile
-  `tap-<modus>: Exit <N>` binden erst mit dem Accept; der Konsistenz-Review ist eingearbeitet, die
-  zweite Runde und der Accept stehen aus. Ändert sich dabei ein Wortlaut, ziehen Skript-Kopf,
+  `tap-<modus>: Exit <N>` binden erst mit dem Accept. Stand: zwei Review-Runden der ADR liegen vor
+  (`2026-09-25-adr-0066-exit-klassen-des-tap-werkzeugs-runde-2`: Empfehlung unbedingt an der
+  Substanz), die Darstellungspunkte der Runde 2 sind eingearbeitet, der Accept steht aus
+  (Entscheidung des Auftraggebers). Ändert sich bei ihm ein Wortlaut, ziehen Skript-Kopf,
   Makefile-Kommentar, README-Zeile, Fälle und dieser Plan nach. — **Ausgang:** offen bis Closure.
 - **Der Slice ist größer als eine Review-Sitzung.** Zwei Schichten (Werkzeug, Test) und drei
   Liefer-Punkte; die Rückführung steht in §4. — **Ausgang:** offen bis Closure.
