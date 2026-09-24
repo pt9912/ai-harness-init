@@ -242,28 +242,38 @@ func filePath(in ToolInput) string {
 
 // commandProgram zieht das PROGRAMM aus einer Kommandozeile — nicht schlicht das
 // erste Feld. Eine Zeile darf mit Zuweisungen beginnen, und deren WERTE sind oft
-// genau das, was nie ins Log darf (gemessen: `GITHUB_TOKEN=ghp_… gh pr create` landete
-// sonst verbatim als "program"). Die Funktion nennt ein Programm oder NICHTS:
+// genau das, was nie ins Log darf (`GITHUB_TOKEN=ghp_… gh pr create`). Eine Zeile mit
+// Zuweisung nennt ein Programm oder NICHTS; eine Zeile ohne Zuweisung nennt ihr erstes
+// Wort (SPEC-021).
+//   - Die Zerlegung trennt an Leerzeichen, Tab und Zeilenende, den Wortgrenzen der
+//     Shell. Jedes andere Zeichen, auch ein Unicode-Leerraum oder `\r`, bleibt Teil
+//     seines Wortes; so zerfaellt ein Wert nie in ein Bruchstueck, das die Shell als
+//     Teil des Werts fuehrt.
 //   - Zuweisungen (`NAME=WERT`) bilden ein Segment ohne Programm. Ein Operator als
 //     eigenes Feld (`&&`, `;`, `|`, `&`) beendet es; das Programm ist das erste Wort
 //     des naechsten Segments. `||` und ein Operator ohne vorausgehende Zuweisung geben
 //     nichts aus: nach `A=b || cmd` laeuft cmd nie.
-//   - Die Zerlegung schneidet an Leerraum. Ein Wert, dessen Rand sie so nicht sicher
-//     findet (Anfuehrungszeichen, Befehlssubstitution, Klammern, Backslash, Operatoren
-//     im Wert), gibt nichts aus — sonst stuende ein Wert-Bruchstueck im Feld. Ein
-//     einzelnes `;` am Wertende ist der Segment-Schluss (`A=b; cmd`).
+//   - Ein Wert, dessen Rand die Zerlegung nicht sicher findet (Anfuehrungszeichen,
+//     Befehlssubstitution, Klammern, Backslash, Operatoren im Wert), gibt nichts aus.
+//     Ein einzelnes `;` am Wertende ist der Segment-Schluss (`A=b; cmd`).
+//   - Nach einer Zuweisung nennt ein Wort, das mit einem Shell-Metazeichen oder einem
+//     Redirect beginnt (`namesProgram`), kein Programm: nichts.
 //   - Bleibt nach den Zuweisungen etwas mit `=` uebrig, wird ebenfalls nichts ausgegeben.
 //
-// argc zaehlt die Felder NACH dem Programm bis zum Zeilenende.
+// Grenze: Here-Doc-Koerper, `$(( ))` und verschachtelte Substitution erkennt die Zerlegung
+// nicht als solche; sie stehen nur dann nicht im Feld, wenn eine der Regeln oben greift.
+//
+// argc zaehlt die Woerter NACH dem Programm bis zum Zeilenende.
 // Bewacht von TestCommandProgramSkipsAssignments (Zuweisungen, argc),
-// TestCommandProgramNamesAProgramNotAnOperator (Segment-Grenze) und
-// TestCommandProgramNeverEmitsAssignmentValueFragments (Wert-Grenze, Wert-Schutz).
+// TestCommandProgramNamesAProgramNotAnOperator (Segment-Grenze, Metazeichen),
+// TestCommandProgramNeverEmitsAssignmentValueFragments (Wert-Grenze, Wert-Schutz) und
+// TestCommandProgramWithholdsProgramForEachUnsureValueChar (jedes Randzeichen einzeln).
 func commandProgram(cmd string) (string, int, bool) {
-	// strings.Fields verwirft fuehrenden Leerraum, statt ein leeres erstes Feld zu
-	// erzeugen (gemessen: "  ls -l" ergab sonst argc 2 statt 1).
-	fields := strings.Fields(cmd)
+	fields := splitWords(cmd)
 	// assigned: das laufende Segment trug bisher nur Zuweisungen und nennt kein Programm.
 	assigned := false
+	// sawAssignment: die Zeile trug bis hierher mindestens eine Zuweisung.
+	sawAssignment := false
 	for i, f := range fields {
 		switch {
 		case isSegmentEnd(f):
@@ -278,13 +288,37 @@ func commandProgram(cmd string) (string, int, bool) {
 				return "", 0, false
 			}
 			assigned = !strings.HasSuffix(f, ";")
+			sawAssignment = true
 		case strings.Contains(f, "="):
+			return "", 0, false
+		case sawAssignment && !namesProgram(f):
 			return "", 0, false
 		default:
 			return f, len(fields) - i - 1, true
 		}
 	}
 	return "", 0, false
+}
+
+// splitWords zerlegt an Leerzeichen, Tab und Zeilenende und liefert keine leeren Woerter:
+// fuehrender Leerraum erzeugt kein leeres erstes Feld.
+func splitWords(cmd string) []string {
+	return strings.FieldsFunc(cmd, func(r rune) bool { return r == ' ' || r == '\t' || r == '\n' })
+}
+
+// shellMetaStart sind die Zeichen, mit denen ein Wort kein Programm nennt: Operatoren,
+// Redirects, Gruppen, Kommentar und Negation.
+const shellMetaStart = "|&;()<>#!{}"
+
+// namesProgram sagt, ob das Wort `field` (nicht leer) ein Programm nennen kann. Es beginnt
+// weder mit einem Zeichen aus shellMetaStart noch mit einer Ziffernfolge vor `<` oder `>`
+// (`2>&1`).
+func namesProgram(field string) bool {
+	if strings.IndexByte(shellMetaStart, field[0]) >= 0 {
+		return false
+	}
+	rest := strings.TrimLeft(field, "0123456789")
+	return rest == "" || (rest[0] != '<' && rest[0] != '>')
 }
 
 // isSegmentEnd nennt die Operatoren, die ein Segment als eigenes Feld beenden. `||` steht

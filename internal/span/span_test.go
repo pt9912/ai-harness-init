@@ -200,6 +200,26 @@ func TestCommandProgramNamesAProgramNotAnOperator(t *testing.T) {
 		{"&& cmd", "", 0},
 		{"A=b && && cmd", "", 0},
 		{"(A=b; cmd)", "", 0},
+		// Nach einer Zuweisung ist ein Wort, das mit einem Shell-Metazeichen oder einem
+		// Redirect beginnt, kein Programm.
+		{"A=b |& cmd", "", 0},
+		{"A=b ;; cmd", "", 0},
+		{"A=b >f cmd", "", 0},
+		{"A=b > f cmd", "", 0},
+		{"A=b 2>&1 cmd", "", 0},
+		{"A=b 12>f cmd", "", 0},
+		{"A=b 3<f cmd", "", 0},
+		{"A=b ! cmd", "", 0},
+		{"A=b (cmd", "", 0},
+		{"A=b { cmd", "", 0},
+		{"A=b } cmd", "", 0},
+		{"A=b && >f cmd", "", 0},
+		{"A=b && (cmd", "", 0},
+		// Ein Programm mit fuehrender Ziffer ist eines.
+		{"A=b 7z x", "7z", 1},
+		// Die Shell trennt Woerter nur an Leerzeichen, Tab und Zeilenende: ein
+		// Unicode-Leerraum gehoert zum Wort, argc zaehlt darum dieselben Felder.
+		{"A=b\u00a0SECRET cmd x", "cmd", 1},
 	}
 	for _, tc := range cases {
 		t.Run(tc.cmd, func(t *testing.T) {
@@ -245,6 +265,20 @@ func TestCommandProgramNeverEmitsAssignmentValueFragments(t *testing.T) {
 		{"TOKEN=SECRETVALUE && gh pr create", "gh"},
 		{"TOKEN=SECRETVALUE; gh pr create", "gh"},
 		{"A=1 TOKEN=SECRETVALUE B=2 gh pr create", "gh"},
+		// Ein Leerraum, den die Shell nicht als Wortgrenze kennt, haelt das Wort zusammen:
+		// der Wert samt Anhang wird uebersprungen, ein Bruchstueck wird nie Programm.
+		{"A=b\u00a0SECRET cmd", "cmd"},
+		{"A=b\u2003SECRET cmd", "cmd"},
+		{"A=b\u3000SECRET cmd", "cmd"},
+		{"A=b\u0085SECRET cmd", "cmd"},
+		{"A=b\rSECRET cmd", "cmd"},
+		{"A=b\vSECRET cmd", "cmd"},
+		{"A=b\fSECRET cmd", "cmd"},
+		// Literale hinter einer Zuweisung sind kein Programm.
+		{"A=b <<<SECRET cat", ""},
+		{"A=b #SECRET cmd", ""},
+		{"A=b # SECRET", ""},
+		{"A=b && #SECRET cmd", ""},
 	}
 	for _, tc := range cases {
 		t.Run(tc.cmd, func(t *testing.T) {
@@ -258,6 +292,25 @@ func TestCommandProgramNeverEmitsAssignmentValueFragments(t *testing.T) {
 			hasProgram := strings.Contains(line, `"program"`)
 			if hasProgram != (tc.program != "") {
 				t.Fatalf("program-Feld im Span = %v, erwartet %v fuer %q: %s", hasProgram, tc.program != "", tc.cmd, line)
+			}
+		})
+	}
+}
+
+// TestCommandProgramWithholdsProgramForEachUnsureValueChar haelt fest: jedes Zeichen, an dem
+// die Zerlegung den Rand eines Zuweisungs-Werts nicht sicher findet, haelt fuer sich allein
+// das program zurueck. Der Wert traegt je Fall genau EIN solches Zeichen und keinen
+// Leerraum; ein Zeichen, das die Menge verliesse, liesse `cmd` als Programm durch.
+func TestCommandProgramWithholdsProgramForEachUnsureValueChar(t *testing.T) {
+	for _, c := range []string{`"`, `'`, "`", `\`, "(", ")", "{", "}", ";", "&", "|", "<", ">"} {
+		cmd := "A=x" + c + "y cmd z"
+		t.Run(cmd, func(t *testing.T) {
+			line := bashSpanLine(t, cmd)
+			if d := span.Derive(span.Payload{Tool: "Bash", Input: span.ToolInput{Command: cmd}}); d.Program != "" || d.HasArgc {
+				t.Errorf("Derive: program = %q (argc %v) fuer %q, erwartet: nichts", d.Program, d.HasArgc, cmd)
+			}
+			if strings.Contains(line, `"program"`) || strings.Contains(line, `"argc"`) {
+				t.Fatalf("erwartet: kein program/argc im Span fuer %q, geschrieben: %s", cmd, line)
 			}
 		})
 	}
