@@ -392,14 +392,33 @@ Geschrieben von der Rolle Planner in frischem Kontext
   richtigen Grund (erwartet `cmd`, bekommt nichts, Meldung nennt Zeile und Erwartung); die wörtliche
   Aussage ist nur im realen Vorzustand herstellbar und dort vom Verifier gesehen. Die Zusage ist
   gehalten, der DoD-Wortlaut ist enger als der Zustand nach der Nacharbeit.
-- **Gegenprobe zu Liefer-Punkt 2, Haken 3, gesagt, was sie ist.** Belegt ist die Richtung
-  *Quelltext geschwächt → benannter Test rot, mit der Meldung, die die behauptete Ursache nennt*: 404
-  rot in `TestCommandProgramNamesAProgramNotAnOperator`, 405 rot in
-  `TestCommandProgramNeverEmitsAssignmentValueFragments` (`Wert oder Wert-Bruchstueck im Span fuer
-  "TOKEN=\"abc SECRET\" gh pr create"`), 406 bis 408 je im benannten Test, jeder der fünf Anker trifft
-  im Quell-Bestand genau eine Stelle (`grep -c` → 1). **Nicht gefahren** ist die
-  Formulierung des DoD-Haken wörtlich (die Zusicherung im Test abschwächen und sehen, dass der Fall
-  dann grün wird); der Verifier hat sie durch die Ursachen-Lesung der Meldung ersetzt.
+- **Gegenprobe zu Liefer-Punkt 2, Haken 3 — gefahren, der Haken trägt.** Beide Richtungen sind je
+  Fall 404 bis 408 gesehen: *Quelltext geschwächt → Test rot, mit der Meldung, die die behauptete
+  Ursache nennt* (404 rot in `TestCommandProgramNamesAProgramNotAnOperator`, 405 rot in
+  `TestCommandProgramNeverEmitsAssignmentValueFragments` mit `Wert oder Wert-Bruchstueck im Span fuer
+  "TOKEN=\"abc SECRET\" gh pr create"`) und *Mutation aktiv, die geschützten Zeilen aus allen roten
+  Testfunktionen entfernt → `make test-go` grün*, also fängt kein anderer Zweig die Mutation ab. Jeder
+  der fünf Anker trifft im Quell-Bestand genau eine Stelle. Beleg ist der Gegenprobe-Bericht des
+  Verifiers (frischer Kontext, Arbeitskopie außerhalb des Repo-Baums),
+  `docs/reviews/2026-09-24-slice-program-feld-nennt-weder-operator-noch-wertfragment-gegenprobe.md`,
+  Tabelle *Fälle 404 bis 408*. Was der Bericht dazu trägt:
+  - **Fall 408** färbt allein die drei Ziffer-Redirect-Zeilen (`2>&1`, `12>f`, `3<f`) rot; `>f` und
+    `<<<x` bleiben unter der Mutation grün, weil `shellMetaStart` sie fängt. Der Zahn ist die
+    Ziffernregel, nicht Fall 407.
+  - **Tabellentest F-3:** für `)`, `}`, `<`, `>`, `&` und `|` aus `unsureValueChars` gilt beides —
+    Zeichen aus der Konstante entfernt → genau der eigene Subtest rot, Listeneintrag zusätzlich
+    entfernt → grün. Die fünf übrigen einfach vorkommenden Zeichen (`(`, `{`, `;`, `'`, Backtick)
+    binden ihren eigenen Subtest ebenfalls; bei ihnen deckt daneben ein Subtest in
+    `…NeverEmitsAssignmentValueFragments` dasselbe Zeichen mit.
+  - **Nicht gefahren:** die Zeichen `"` und `\` aus F-3 (beide stehen mehrfach in der Konstante) und
+    die Gegenprobe mit **nur** dem benannten Test abgeschwächt; letztere ist aus den Rot-Läufen
+    abgeleitet.
+  - **Bei 404 bis 407 färbt die Mutation zwei Testfunktionen rot**, das `# expect:` nennt eine. Die
+    Gegenprobe wird darum erst grün, wenn in beiden die geschützten Zeilen fehlen; ein Rest-Rot nach
+    Abschwächen des benannten Tests allein ist derselbe Zweig im Nachbar-Test, kein anderer. Die
+    Beobachtung steht im Register,
+    [`mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere`](../observations/BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere/observation.md)
+    (1×, `offen`).
 - **`make mutate` am Endstand (Closure-Trigger 1).** Stand `d7fc646672f4`, sauberer Baum, kein
   Code-Diff zu `fb1ca361`; Kommando `make mutate MUTATE_JOBS=8`; Ausgabe `mutate: 396 ok, 0
   Befund(e)`, Dauer 1822 s; zum Vergleich mit vier Arbeitern 3039 s. Ausgabe-Zeile zur Schranke:
@@ -418,8 +437,9 @@ Geschrieben von der Rolle Planner in frischem Kontext
 - **Nicht am DoD, aber benannt (Reviewer F-6 bis F-9).** F-6: die Wortgrenze gilt jetzt auch für
   Zeilen **ohne** Zuweisung (`make\r` → `program="make\r"`, `argc` 0; Träger-Messung des Verifiers);
   der Plan verlangt nirgends, dass diese Zeilen unverändert bleiben, und `SkipsAssignments` bleibt
-  grün und unverändert. F-7: entfällt `&` oder `)` aus `shellMetaStart`, bleibt die Suite grün (`<`, `>`
-  sind äquivalente Mutanten). F-8: „Programm oder nichts" ist weiter als der Code für Wörter mit `$(`,
+  grün und unverändert. F-7: entfällt `&` oder `)` aus `shellMetaStart`, bleibt die Suite grün; `<` und `>` sind **in `shellMetaStart`** äquivalente
+  Mutanten (die Ziffernregel in `namesProgram` deckt dieselben Wörter), **in `unsureValueChars`
+  nicht** — dort bindet allein der Tabellentest sie (Gegenprobe oben). F-8: „Programm oder nichts" ist weiter als der Code für Wörter mit `$(`,
   `"` oder Backtick in Programm-Position. F-9: der Tabellentest hat keinen eigenen Fall. Alle vier
   stehen im Register, keiner ist ein Folge-Slice; wer die Wortgrenze für Zeilen ohne Zuweisung
   zurücknehmen will, schneidet ihn selbst. F-5 (`SPEC-021` *erstes Token* gegen `SPEC-031` *erstes Wort
@@ -452,7 +472,11 @@ Geschrieben von der Rolle Planner in frischem Kontext
   (F-2 und F-8 als **ein** Vorgang, Zähler 18×, Stand `geplant`) und
   [`neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md)
   (F-9, Zähler 13×, Stand `verkörpert`). **Lese-Schritt:** keine Beobachtung erreicht mit diesem Slice
-  neu 3×; die beiden ergänzten stehen über der Schwelle und tragen ihren Ausgang schon.
+  neu 3×; die beiden ergänzten stehen über der Schwelle und tragen ihren Ausgang schon. Aus der
+  Gegenprobe kommt ein weiteres neues Verzeichnis dazu,
+  [`mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere`](../observations/BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere/observation.md)
+  (1×, `offen`); der Stand je Zeichenmenge (`unsureValueChars` gegen `shellMetaStart`) steht in der
+  `state.md` von `zeichenmenge-mitglied-ohne-eigenen-zahn` (1×, `offen`).
 - **Die zwei Beobachtungsstellen aus §8 — kein dritter Beleg.**
   [`mutations-fall-deckt-den-lauten-statt-den-stillen-pfad`](../observations/BEO-ALL/mutations-fall-deckt-den-lauten-statt-den-stillen-pfad/observation.md)
   bleibt bei 2×: Fall 405 (und 406) trifft den **stillen** Pfad — entfällt die Wert-Prüfung, bricht
