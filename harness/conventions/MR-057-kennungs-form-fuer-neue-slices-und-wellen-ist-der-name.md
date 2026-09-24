@@ -2,6 +2,7 @@
 
 > **ÜBERHOLT: die Zahl neben dem `grep -c 'slice-NNN'`-Kommando im Feld `Löst auf` → [`MR-058`](../conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen).** Das Kommando, die Aussage daneben und alle drei Setzungen dieses Eintrags gelten fort; gestrichen ist allein der Betrag.
 > **ÜBERHOLT: die namentliche Fundmenge samt ihrem Kommando im Feld `Grenze` → [`MR-059`](../conventions.md#mr-059--jede-kennungs-erkennung-trägt-die-zugelassenen-formen-die-fundliste-steht-im-vorgang).** Die Eigenschaft, die jene Stelle setzt, gilt fort und steht dort ausgeschrieben; die Setzungen 1 bis 3, der Geltungsbereich und der Auflösungs-Trigger dieses Eintrags bleiben unberührt.
+> **ÜBERHOLT: der Satz der Grenze, die emittierte Ebene „bleibe außen vor" → [`ADR-0065`](../../docs/plan/adr/0065-emittierte-kennungs-form-folgt-dem-regelwerk.md).** Die Entscheidung über die Kennungs-Form, die ein Zielrepo bekommt, steht dort; die Setzungen 1 bis 3, der Geltungsbereich und der Auflösungs-Trigger dieses Eintrags bleiben unberührt.
 
 - **Datum:** 2026-09-13
 - **Wirksamkeits-Anlass:** slice-225 — der Architect-Teil. Wirksam wird die Deklaration mit dem
