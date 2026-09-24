@@ -1,7 +1,7 @@
 # Gegenprobe-Bericht: slice-program-feld-nennt-weder-operator-noch-wertfragment — 2026-09-24
 
 **Rolle:** Verifier (Modul 8/11), gezielte Nach-Verifikation nach
-[`modul-11-verification.md`](../../.harness/baseline/v6.9.0/regelwerk/modul-11-verification.md)
+`modul-11-verification.md` der adoptierten Baseline
 §Bewusstes Brechen für DoD-Testbehauptungen. Frage: *Bindet jeder Zahn seine Zusicherung?*
 
 **Gegenstand:** DoD Liefer-Punkt 2, Haken 3 des geschlossenen Slice
