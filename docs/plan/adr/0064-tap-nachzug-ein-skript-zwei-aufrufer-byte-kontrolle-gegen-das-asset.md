@@ -1,6 +1,6 @@
 # ADR-0064: Der Tap-Nachzug ist ein Werkzeug — ein Skript mit zwei Aufrufern (Release-Job und `make`-Ziel), ein eng geschnittenes Zugangsgeheimnis im Umgebungs-Secret, und eine Kontrolle, die Byte-Gleichheit gegen das veröffentlichte Asset hält
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-24
 
@@ -635,6 +635,7 @@ Accept-Zeile der §Geschichte nennt ihn als **Kennung**, nicht als Pfad-Link (eb
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-24 | **Proposed** | Architect-Lauf, ausgelöst durch den Befund am Schnitt `v0.2.3` und die Setzung des Auftraggebers vom 2026-09-24 (Variante C: ein Werkzeug zieht die Formel je Release nach). Ausgeformt: ein Skript mit zwei Aufrufern (Release-Job und `make`-Ziel), Token auf ein Repo und `Contents` beschränkt als Umgebungs-Secret an `v*`-Tags, Byte-Kontrolle gegen das veröffentlichte Asset, Vorwärts-Schutz am Tap-Stand, Fehlschlag laut mit wartender Meldung. Der Acceptance-Trigger steht oben |
+| 2026-09-24 | **Accepted** | Beleg nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 ist die Reviewer-Runde `2026-09-24-adr-0064-tap-nachzug-runde-3` — sie meldet annahmefähig, kein HIGH und kein MEDIUM, die sieben Befunde der Runde 2 behoben; die Annahme selbst hat der Auftraggeber am 2026-09-24 erteilt. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes ADR-0064`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
