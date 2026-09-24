@@ -52,7 +52,7 @@ TRAEGER_SHA256_WINDOWS_ARM64 ?= c02def0979cad6d8e10dedf24240b98f57feaae40b46f4d0
 TRAEGER_CARRIER ?= .harness/state/bin/ai-harness-init
 export TRAEGER_TAG TRAEGER_SHA256_LINUX_AMD64 TRAEGER_SHA256_LINUX_ARM64 TRAEGER_SHA256_DARWIN_AMD64 TRAEGER_SHA256_DARWIN_ARM64 TRAEGER_SHA256_WINDOWS_AMD64 TRAEGER_SHA256_WINDOWS_ARM64 TRAEGER_CARRIER
 
-.PHONY: help gates record-gates test test-bats test-go lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle traeger-fetch vendor-baseline
+.PHONY: help gates record-gates test test-bats test-go lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle traeger-fetch tap-check vendor-baseline
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
@@ -474,6 +474,16 @@ archive-welle: host-bin ## Zeitdokumente einer geschlossenen Welle archivieren (
 # benennen (ADR-0058 Festlegung 3 und 5). Braucht Netz an genau diesem Aufruf.
 traeger-fetch: ## Traeger aus dem gepinnten Release nachholen (braucht Netz, Transport im gepinnten Bild) — NICHT in gates
 	@bash harness/tools/traeger-fetch.sh
+
+# Haelt die Formel am Kopf des Default-Branch des Tap byte-genau gegen das Asset des
+# Tags (ADR-0064 Festlegung 1 und 2): Exit 0 gleich oder Vorab-Tag, 1 Formel-Unterschied,
+# 2 nicht ausfuehrbar — der Exit des Skripts; make selbst endet bei jedem Fehlschlag
+# mit 2 und nennt den des Skripts in der Zeile "Fehler N". Lesend, Transport im gepinnten
+# Bild; braucht Netz an genau diesem Aufruf. KEIN Gate und in keiner Prerequisite-Kette.
+# Der Tag reist als Umgebungsvariable TAG (make exportiert Kommandozeilen-Variablen),
+# das Rezept nennt ihn nicht.
+tap-check: ## Tap-Formel gegen das Asset des Tags halten (TAG=<tag>, braucht Netz, Transport im gepinnten Bild) — NICHT in gates
+	@bash harness/tools/tap-nachzug.sh check
 
 # Legt den vendored Baum DIESES Repos (.harness/baseline/$(BASELINE_TAG)/) aus
 # dem VERIFIZIERTEN Release-Asset an, statt ihn von Hand aus einem fremden
