@@ -27,8 +27,12 @@ Lastenhefts und keine `ARC-*`-Zeile ändert sich.
 und dort **genau einen Gegenstand** — die Lesart eines `Exit 1` als **Prozess-Exit eines
 `make`-Ziels** an drei wörtlich genannten Stellen:
 
-1. §Fitness Function, Zeile *„Rot-Beleg am realen Zustand"*: `make tap-check` gegen das Asset von
-   `v0.2.2` → *„Exit 1"*;
+1. §Fitness Function, Zeile *„Rot-Beleg am realen Zustand"*, **beide Zellen**, soweit sie den Exit
+   eines `make`-Aufrufs nennen: die Zusage-Zelle (*„fängt einen Formel-Unterschied als Exit 1 mit der
+   Meldung des Unterschieds (nicht 2)"*) und die Fall-Zelle (`make tap-check` gegen das Asset von
+   `v0.2.2` → *„Exit 1 (nach der Wiederholung des Lesens)"*). Über `make` ist die Zusage-Zelle die
+   schärfere Falschheit, denn der Prozess-Exit ist dort 2; ihr *„Gleichheit als 0"* und das
+   *„Exit 0"* der Fall-Zelle gegen `v0.2.3` sind über `make` wahr und bleiben;
 2. Festlegung 6: *„ein Exit 1 der Prozedur ist erst nach dieser Wiederholung ein
    Formel-Unterschied"*;
 3. §Konsequenzen, Negativ: *„ein echter Unterschied endet danach mit Exit 1"*.
@@ -39,8 +43,9 @@ sieben Festlegungen von ADR-0064, ihre drei Klassen samt Schwellen (Wiederholung
 Vorwärts-Schutz, Feldform, Token-Umgang), der Regel-Gehalt aller Zeilen ihrer Fitness-Tabelle, ihr
 Rot-Beleg als **Beleg** (gegen `v0.2.2` ein Formel-Unterschied, gegen `v0.2.3` Gleichheit), ihre
 Trigger und ihre Grenze. **Auch Re-Evaluierungs-Trigger 1** (*„am roten Job `tap` mit Exit 2 aus der
-Anmeldung"*) bindet fort und ist nicht Teil der Ablösung: über `make` ist er wörtlich wahr (der
-Job-Schritt endet bei jedem Fehlschlag mit 2). Dass dieser Exit die Anmeldung als Ursache nennt,
+Anmeldung"*) bindet fort und ist nicht Teil der Ablösung: er setzt einen Job-Schritt voraus, der ein
+`make`-Ziel fährt, und für diesen Schritt ist er wörtlich wahr, denn ein `make`-Rezept endet bei jedem
+Fehlschlag mit 2 (Messung in §Kontext). Dass dieser Exit die Anmeldung als Ursache nennt,
 liest der Job nie am Exit, sondern an der Meldung des Skripts — auch ohne `make` tragen alle
 Ursachen der Klasse 2 denselben Exit. Diese Entscheidung ändert keine Klasse; sie nennt die Ebene, auf
 der die Klassen gelten, und den Träger, über den sie durch `make` hindurch als Vertrag lesbar sind.
@@ -124,7 +129,8 @@ Stellen einen Exit eines `make`-Aufrufs nennt, ist die Klasse des Skripts gemein
 von GNU Make, gemessen in §Kontext, keine Zusage des Werkzeugs). Ein
 Aufruf des Skripts **ohne `make`** (`bash harness/tools/tap-nachzug.sh check` mit `TAG=<tag>` in der
 Umgebung) trägt die Klasse als Prozess-Exit. Der Rot-Beleg der Fitness Function liest dort den
-Prozess-Exit des Skripts; über `make` liest er die Zeile aus Festlegung 2.
+Prozess-Exit des Skripts; über `make` liest er die Zeile aus Festlegung 2. Ein Ende durch ein Signal
+ist keine der drei Klassen (§Nicht zugesagt).
 
 **2. Die Klasse über `make` trägt die letzte stderr-Zeile des Skripts.** Bei Skript-Exit 1 und 2
 schreibt das Skript als **letzte Zeile seiner stderr** `tap-<modus>: Exit <N>`; `<modus>` ist der
@@ -143,8 +149,12 @@ herbeiführt (ein Signal an den Host-Prozess während des `docker`-Aufrufs), bei
 beschreibbar ist, und bei einem Aufruf ohne Modus oder mit einem unbekannten Modus (`tap-nachzug: Exit 2`
 bzw. `tap-<Argument>: Exit 2`; erreichbar nur im Direktaufruf, die Ziele setzen den Modus fest). Ein
 Skript, das sie dort hält, bricht diese Entscheidung nicht; ein Skript, das sie dort nicht hält, auch
-nicht. **Bei nicht beschreibbarer stderr ist auch die Klasse nicht zugesagt:** schreibt der Container
-auf eine stderr, die sich nicht beschreiben lässt, endet der `docker`-Client mit 1 statt mit dem Status
+nicht. **Bei einem Signal fehlt neben der Zeile auch die Klasse:** der Prozess endet mit 128 plus der
+Signalnummer und ohne jede Ausgabe, keine der drei Klassen ist gemeint (`docker` als Stub, der `sleep 4`
+ausführt, im `PATH`; `TAG=v0.2.2 bash harness/tools/tap-nachzug.sh check 2>err.txt & kill -TERM $!;
+wait $!; echo "exit=$?"; wc -c < err.txt` → `exit=143`, `0` Bytes). **Bei nicht beschreibbarer stderr
+ist auch die Klasse nicht zugesagt:** schreibt der Container
+auf die stderr des `docker`-Clients, die sich nicht beschreiben lässt, endet dieser mit 1 statt mit dem Status
 der Nutzlast (`docker run --rm <Bild> sh -c 'echo x >&2; exit 10' 2>/dev/full; echo "status=$?"` →
 `status=1`, mit `2>/dev/null` `status=10`); ein Formel-Unterschied endet dort als Klasse 2 — die
 sichere Richtung, nie ein Unterschied, der keiner ist. Der Prozess-Exit von `make` trennt nur `0` von
@@ -158,15 +168,19 @@ sichere Richtung, nie ein Unterschied, der keiner ist. Der Prozess-Exit von `mak
 | B — eine Zeile in der §Geschichte von ADR-0064 | mechanisch zulässig: `exclude-sections: [Geschichte]` nimmt den Abschnitt aus dem Kern ([`harness/sensors/adr-immutable.md`](../../../harness/sensors/adr-immutable.md)) | der Sensor nimmt den Abschnitt aus, damit die Fortschreibung nicht rot färbt — nicht als Ort für eine Festlegung: die Datei sagt selbst, ein Absatz dort statt in einer Folge-ADR bleibe **unbewacht**; und der Schlusssatz von ADR-0064 verweist Schärfungen auf eine neue ADR |
 | C — ein Eintrag im Glossar von `harness/conventions.md` | die ADR bleibt unberührt | die Datei hat in der Source Precedence ([`AGENTS.md`](../../../AGENTS.md) §2) keinen Rang; der Leser der ADR als Constraint liest den Glossar nicht; ein Träger der Klasse ist eine Festlegung des Vertrags, keine Lesehilfe |
 | D — das Rezept so ändern, dass der Prozess-Exit von `make` die Klasse trägt | keine Zeile nötig | nicht herstellbar: GNU Make bildet den Fehlschlag auf 2 ab (Messung in §Kontext); ein Rezept, das den Fehlschlag verschluckt, machte das Ziel für den Job grün |
-| **E — Teil-`Supersedes` auf die drei Stellen, Klasse des Skripts, Träger `tap-<modus>: Exit <N>` (gewählt)** | trifft genau den unhaltbaren Wortlaut; der Rest von ADR-0064 bleibt unberührt; der Träger ist ein Text, den Skript und Prozedur teilen, locale-frei, positionsfrei und von einem Fall gehalten | eine Folge-ADR für eine Ebenen-Frage; ein zweiter Text neben der Meldung von `make`, die dieselbe Klasse als Ziffer nennt; der Zusatz an der Status-Zelle von ADR-0064 kommt erst mit dem Accept |
-| F — die Ziffer der `make`-Meldung (`Fehler N`/`Error N`) als Träger lesen; die Klasse des Skripts wie in E | kein Text im Skript, kein Fall, keine Zeile; die Ziffer ist heute der Exit des Skripts (Messung in §Kontext) und für einen Menschen lesbar; die Ebenen-Festlegung 1 bliebe dieselbe | die Meldung eines Fremdwerkzeugs wäre Vertrag: ihr Wortlaut hängt an der Locale (`Fehler`/`Error`, gemessen) und das Format ist keine Zusage von `make` und von keinem Fall dieses Repos gehalten; die Zeile mit der Klasse steht nicht an fester Stelle — unter `-C` folgt ihr eine Zeile, unter einem umschließenden `make` ist die letzte Meldung die des äußeren mit `Fehler 2` und die Klasse steht nur in der des inneren (gemessen); die Ziffer ist der Status des Rezept-Kommandos und trägt die Klasse nur, solange das Kommando das Skript allein ist; ein Direktaufruf ohne `make` hat keine Meldung, er trägt die Klasse im Prozess-Exit |
+| **E — Teil-`Supersedes` auf die drei Stellen, Klasse des Skripts, Träger `tap-<modus>: Exit <N>` (gewählt)** | trifft genau den unhaltbaren Wortlaut; der Rest von ADR-0064 bleibt unberührt; der Träger ist ein Text, den Skript und Prozedur teilen, locale-frei, positionsfrei und von einem Fall gehalten, der im bats-Image läuft | eine Folge-ADR für eine Ebenen-Frage; ein zweiter Text neben der Meldung von `make`, die dieselbe Klasse als Ziffer nennt; der Zusatz an der Status-Zelle von ADR-0064 kommt erst mit dem Accept |
+| F — die Ziffer der `make`-Meldung (`Fehler N`/`Error N`) als Träger lesen; die Klasse des Skripts wie in E | kein Text im Skript, keine Zeile; die Ziffer ist heute der Exit des Skripts (Messung in §Kontext) und für einen Menschen lesbar; die Ebenen-Festlegung 1 bliebe dieselbe | die Meldung eines Fremdwerkzeugs wäre Vertrag: ihr Wortlaut hängt an der Locale (`Fehler`/`Error`, gemessen) und das Format ist keine Zusage von `make`; das bats-Image, in dem `make test` die Fälle fährt, trägt kein `make` — ein Fall, der die Ziffer liest, ist dort nicht haltbar (Messung unten); die Zeile mit der Klasse steht nicht an fester Stelle — unter `-C` folgt ihr eine Zeile, unter einem umschließenden `make` ist die letzte Meldung die des äußeren mit `Fehler 2` und die Klasse steht nur in der des inneren (gemessen); die Ziffer ist der Status des Rezept-Kommandos und trägt die Klasse nur, solange das Kommando das Skript allein ist; ein Direktaufruf ohne `make` hat keine Meldung, er trägt die Klasse im Prozess-Exit |
 
 **Warum E trotz F trägt.** F ist billiger und für einen lesenden Menschen ausreichend; gegen F spricht
 nicht, dass die Ziffer falsch wäre, sondern dass der Prozedur-Schritt und der Job **einen Text lesen,
-den das Repo hält**, und dass ein Zusagen-Text, dessen Wortlaut und Stelle die Locale, die
-`make`-Version und die Umgebung des Aufrufers bestimmen, nicht rot werden kann, wenn er bricht
-([`AGENTS.md`](../../../AGENTS.md) §3.6). E kostet eine Zeile im Skript und ihre Zähne, die im Werkzeug
-schon stehen; die Begründung der Festlegung ist damit die **Festigkeit des Vertrags**, nicht eine
+den das Repo hält**. Ein Fall, der die Ziffer läse, wäre dort baubar, wo `make` verfügbar ist; die
+Fälle des Werkzeugs laufen im gepinnten bats-Image (`BATS_IMAGE`, `grep -n '^BATS_IMAGE' Makefile`), und
+das trägt kein `make`: `docker run --rm --pull=never --entrypoint sh <BATS_IMAGE> -c 'command -v make;
+echo "exit=$?"; make --version'` → `exit=127` und `sh: make: not found`. Die Zeile ist dort mit Stubs
+hermetisch haltbar, die Meldung von `make` nicht — und ein Vertrag ohne haltenden Fall bricht ungesehen
+([`AGENTS.md`](../../../AGENTS.md) §3.6). Dazu bestimmen Locale, `make`-Version und Umgebung des Aufrufers
+Wortlaut und Stelle der Meldung. E kostet eine Zeile im Skript und ihre Zähne, die im Werkzeug schon
+stehen; die Begründung der Festlegung ist damit die **Festigkeit des Vertrags**, nicht eine
 Unlesbarkeit der Klasse über `make`.
 
 ## Konsequenzen
@@ -183,7 +197,8 @@ Unlesbarkeit der Klasse über `make`.
   Makefile-Kommentar, README-Zeile, Plan des liefernden Slice), nennen den Exit des **Skripts** und die
   Zeile als Träger der Klasse über `make`; wo sie einen Exit nennen, nennen sie die Ebene; wo sie die
   Position der Zeile nennen, nennen sie die Bedingung (*über `make <ziel>` aus dem Wurzelverzeichnis die
-  vorletzte Zeile der Ausgabe*).
+  vorletzte Zeile der Ausgabe*); wo sie die Nicht-Zusage bei einem Signal nennen, nennen sie neben der
+  Zeile die Klasse (*ein Ende durch ein Signal ist keine der drei Klassen*).
 - **Folgepflicht 2 — die Prozedur** ([`docs/user/releasing.md`](../../user/releasing.md), Folgepflicht 3
   von ADR-0064) liest die Klasse an der Zeile: *„`tap-check` rot mit der Zeile `tap-check: Exit 1`"* ist
   ein Formel-Unterschied, `tap-check: Exit 2` nicht ausführbar.
@@ -211,11 +226,24 @@ sie nicht mehr hält.
 - **Wenn ein Ende ohne die Zeile zweimal eine Klasse falsch gelesen hat** *(beobachtbar an einem roten
   Lauf, dessen Klasse der Leser aus einer fehlenden Zeile falsch schloss)*: die Nicht-Zusage bei Signal
   und nicht beschreibbarer stderr trägt nicht.
-
 - **Wenn ein Ergebnis der Nutzlast außerhalb von „gleich", „Unterschied" und „nicht ausführbar" entsteht
   oder ein zweiter Aufrufer der Nutzlast die Klasse aus ihr statt aus dem Skript liest** *(beobachtbar am
   Schnitt, der den Modus `sync` implementiert)*: die Klasse des Skripts ist dort nicht mehr der Exit, den
   es aus dem Vergleich herleitet; neu zu wägen sind Festlegung 1 und der Träger für diese Klasse.
+
+**Wer diese Trigger beobachtet — und wer nicht.** Ein Sensor, der eine dieser Bedingungen liest, besteht
+nicht: die Module des Doku-Gates halten keinen Trigger gegen den Zustand, den er beschreibt
+(`grep -n '^modules:' .d-check.yml`). Der Träger ist das
+**Trigger-Audit der ADR-Klasse** bei der Closure (Baseline-Regelwerk `modul-06-roadmap.md`
+§Wellen-Closure-Prozedur Schritt 2; ohne Wellen-Betrieb bei jeder Slice-Closure, Tabelle *Träger im
+Repo ohne Wellen*). **Trigger 3** hat damit einen Anlass: die Closure des Slice, der den Modus `sync`
+implementiert, trägt die Frage in ihrem Audit; ein Sensor darüber besteht nicht, und eine Closure, die
+das Audit auslässt, wird nicht erwischt. **Trigger 1 und Trigger 2 haben keinen Anlass:** sie hängen an
+einem neuen Aufrufer und an einem roten Lauf, den keine Closure zwingend berührt — **benannt, nicht
+geschlossen**. Wer sie bemerkt, trägt sie als Beobachtung ins Register; diese Route hat nur eine
+Closure, ein Lauf außerhalb einer Closure hat keine. Für Trigger 2 ist die Lücke begrenzt: ein Schritt,
+der `tap-check` fährt, bleibt bei einem Signal, bei nicht beschreibbarer stderr und bei fehlendem Modus
+rot; der Fehlgriff ist ein Lesen als Klasse 2, nie ein Grün.
 
 ### Der Acceptance-Trigger
 
