@@ -210,8 +210,16 @@ dort mit der Aussage, `SPEC-*`/`ARC-*` zählten *„fortlaufend je Datei"* ohne 
 Eine Form mit Segment (`SPEC-FA-042`) führt das Regelwerk für sie nicht; sie ist von einer Vertrags-Kennung mit Segment
 nicht zu unterscheiden, und ein Ausschluss wäre ein Lookahead, den weder POSIX-ERE noch der Dialekt des
 `commits`-Moduls kennt: Die Menge nimmt sie an, und die Grenze sagt es. Ebenso trägt kein Muster eine Wortgrenze rechts
-vom Zahlenteil: sie bräuchte eine Alternative im Muster (`([^0-9]|$)`), und die Kopplung an `commits.id-patterns`
-trennt die Menge an jedem `|` — ein verschachteltes `|` bräche sie.
+vom Zahlenteil. Sie ließe sich ohne Lookahead als optionaler Rest bis Zeilenende ausdrücken
+(`ADR-[0-9]{4}([^0-9].*)?$`; gemessen mit `[[ =~ ]]`: nimmt `ADR-0004`, `ADR-0004: x` und `ADR-0004,x` an, lehnt
+`ADR-00041` ab), und die Kopplung an `commits.id-patterns` verträgt diese Form: `hook_patterns` in
+`test/commit-msg-hook.bats` trennt die Menge an jedem `|`, und die Gruppe enthält keines; ein `|` **in** einer Gruppe
+(`([^0-9]|$)`) bräche die Kopplung. Die Menge führt sie trotzdem nicht: Trügen die vier Zahlen-Muster (ADR, CO, MR,
+Vertrag) den Rest `([^0-9].*)?$`, lehnte sie von den neun Fehl-Akzeptanzen unten drei ab (`CO-1234`, `HSM-FA-1234`,
+`EN-ISO-9001`, gemessen mit `[[ =~ ]]` über die so verlängerte Gruppe) und ließe sechs stehen, deren Zahlenteil dort
+endet, wo er soll und die aus anderem Grund falsch sind (`SPEC-FA-042`, `BEO-ALL-001`, `RC-AB-12`, `AES-CB-128`,
+`slice-mv`, `anti-slice-mv`). Der Gewinn ist klein gegen vier Muster mit Zeilenende-Anker und Rest; die Fehl-Akzeptanz
+steht in der Grenze.
 
 **Diese Liste ist die Wahrheit, die Prosa folgt ihr.** Gemessen mit `[[ =~ ]]` in bash über die Gruppe der sechs
 Muster:
@@ -294,8 +302,10 @@ der Commit-Prüfung ein Fall, der die Menge bindet — eine Mutation, die sie sc
   Neutralisierung (hängt an den Token aus Festlegung 1). **Zur Commit-Prüfung gehört, was an ihrem heutigen Wortlaut
   hängt:** die Klassen-Liste im Kopfkommentar der Prüfung, die Beschreibung der Menge im Sensor-Text von
   `make commit-msg-check`, die Zeile zu Werkzeug-Commits in `harness/README.md` §Traceability und die Mutations-Fälle,
-  die die `patterns=`-Zeile oder die Klassen-Liste an ihrem Wortlaut verankern
-  (`grep -l 'commit-msg-traceability' test/mutations/*.sh | wc -l` → **6**; die Zahl wandert). Ein Fall, dessen
+  deren Anker oder Erwartung am Wortlaut der `patterns=`-Zeile oder an der Klassen-Liste im Kopf der Prüfung hängen.
+  Die Kandidaten liefert `grep -l 'commit-msg-traceability' test/mutations/*.sh` als Obermenge: sie nennt jeden Fall,
+  der die Prüfung berührt, auch einen, dessen Anker von der Zeile unabhängig ist (ein `sed`, das `^patterns=.*$`
+  ersetzt); welche am Wortlaut hängen, liest der Nachzug am Anker und an der Erwartung des Falls. Ein Fall, dessen
   Anker die neue Zeile nicht mehr trifft, bindet nichts, bis er nachgezogen ist
   ([`MR-071`](../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand));
   die Fälle werden über ihre Eigenschaft gefunden, nicht über eine Nummer. Die Baseline verlangt höchstens drei
