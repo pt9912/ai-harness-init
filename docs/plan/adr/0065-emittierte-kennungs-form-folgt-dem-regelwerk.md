@@ -141,22 +141,33 @@ Festlegung nimmt ihn nicht aus. Sein Ausweg ist je Klasse verschieden:
 allen drei Straten-Zeilen.
 (b) Die Regeln `{from: adaptionsblock, to: slice, allow: false}` und `{from: adaptionsblock, to: welle,
 allow: false}` treten als **Erweiterung ohne Deckung im Text des Regelwerks** hinzu; die Matrix-Tabelle führt den
-Adaptions-Block nicht. Der Grund, der im Ziel gilt, steht im vendorten Text: *„Einträge werden nie überschrieben"*
-(`grundlagen-harness-dateien.md`, Zeile Adaptions-Block der Tabelle in §harness/conventions.md als
-Konventionsspeicher). Ein Slice- oder Welle-Name in einem Eintrag ist damit eine Adresse in einem Artefakt, das
-sich nicht nachziehen lässt — die Lage, die die Matrix für die ADR-Zeile mit ❌ (Welle) und Kontext-mit-Marker (Slice)
-ordnet. Das ist ein Analogieschluss, keine Aussage des Regelwerks. Die Ausnahme läuft über denselben Zeilen-Marker wie
-bei `adr → slice/welle`; der Marker ist die Zeilen-Markierung des Werkzeugs für das, was das Regelwerk für die
-ADR-Zeile verlangt: *„Der Autor markiert den zulässigen Zeiger in seiner Zeile"* (§Referenz-Richtung (SDP),
-*Mechanisierbar — über den umgekehrten Default*; den Marker-Namen führt die Vorlage `.d-check.yml` der Baseline, nicht
-der Text des Regelwerks: `grep -rl 'status-provenance' .harness/baseline/v6.9.0/regelwerk | wc -l` → **0**,
-`grep -rl 'status-provenance' .harness/baseline/v6.9.0/templates | wc -l` → **1**). Für Ausnahmen
-gilt dort: *„die Ausnahme wird am Ort deklariert"*.
-**Die Kosten stehen hier:** das Regelwerk lässt den Adaptions-Block das Herkunfts-Anker-Muster tragen
+Adaptions-Block nicht, und das Regelwerk lässt ihn das Herkunfts-Anker-Muster tragen
 (`grundlagen-traceability.md` §Herkunfts-Anker: *„Der Adaptions-Block trägt das Muster bereits über sein Feld
-Begründung."*). Jede Zeile mit `seit slice-<Kennung>` ist mit den zwei Regeln rot, bis sie den Marker trägt. Ein
-frisch emittiertes Ziel trägt keine solche Zeile (Kommando im Kontext); die Kosten fallen an, sobald ein Adopter dem
-Regelwerk folgt. Der Kommentar der Vorlage nennt die Regeln als Erweiterung und sagt, warum und was sie kosten.
+Begründung."*).
+**Was 2(b) trägt, ist eine Analogie und sonst nichts.** Der Adaptions-Block ist wie eine ADR ein Norm-Artefakt
+([`AGENTS.md`](../../../AGENTS.md) §3.8: *„beide sind normativ wie eine ADR, nur ohne deren Immutabilität"* — die Aussage steht im Briefing dieses
+Repos, nicht im Regelwerk). Für die ADR-Zeile ordnet die Matrix Slice als Kontext, der nur zeigt, *„wo
+verifiziert/entstanden, nie warum entschieden"*, und Welle mit ❌; dahinter stehen zwei der tragenden Regeln
+(`grundlagen-referenz-richtung.md` §Referenz-Richtung (SDP), *„Tragende Regeln"*): *„Alles Richtung Slice oder zwischen
+Slices ist Planungskontext, keine Spezifikation"* und *„Welle und Roadmap stehen außerhalb der normativen Klammer"*.
+Eine Planungs-Kennung in einem Eintrag des Adaptions-Blocks ist dieselbe Kante, aus einem Norm-Artefakt hinaus in die
+Planung; die Regeln halten die zwei Norm-Artefakte gleich. Die Ausnahme läuft über denselben Zeilen-Marker wie bei
+`adr → slice/welle`; der Marker ist die Zeilen-Markierung des Werkzeugs für das, was das Regelwerk für die ADR-Zeile
+verlangt: *„Der Autor markiert den zulässigen Zeiger in seiner Zeile"* (§Referenz-Richtung (SDP), *Mechanisierbar —
+über den umgekehrten Default*; den Marker-Namen führt die Vorlage `.d-check.yml` der Baseline, nicht der Text des
+Regelwerks: `grep -rl 'status-provenance' .harness/baseline/v6.9.0/regelwerk | wc -l` → **0**,
+`grep -rl 'status-provenance' .harness/baseline/v6.9.0/templates | wc -l` → **1**). Für Ausnahmen gilt dort: *„die
+Ausnahme wird am Ort deklariert"*.
+**Was 2(b) nicht trägt, ist ein Wächter gegen tote Adressen.** Ein Slice- oder Welle-Name wandert beim Umzug nicht
+(`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer übernimmt: *„Die Kennung bleibt Adresse —
+einen Hop länger"*), und ein Pfad in einem Eintrag des Blocks lässt sich nachziehen
+(`grundlagen-traceability.md` §Herkunfts-Anker, Ruheort-Regel, Gegenrichtung für den Adaptions-Eintrag:
+*„Der `git mv` zieht die Pfad-Berichtigung nach sich, als eigener Commit nach dem Umzug. Der Wächter ist die
+Existenzprüfung des Links."*). Die Regeln fangen den Namen, nicht das Rotten.
+**Die Kosten stehen hier:** Jede Zeile mit `seit slice-<Kennung>` ist mit den zwei Regeln rot, bis sie den Marker
+trägt — obwohl das Regelwerk dem Block dieses Muster zuschreibt. Ein frisch emittiertes Ziel trägt keine solche Zeile
+(Kommando im Kontext); die Kosten fallen an, sobald ein Adopter dem Regelwerk folgt. Der Kommentar der Vorlage nennt
+die Regeln als Erweiterung und sagt, warum und was sie kosten.
 (c) **Bedingung, nicht Vorbehalt:** (b) geht erst in die Vorlage, wenn der grüne Start hält — am frisch
 emittierten Ziel sind die Fundstellen im emittierten Adaptions-Block markiert oder umformuliert (die
 Platzhalter-Zeilen der Vorlage über eine Neutralisierung nach dem Vorbild der bestehenden, den Satz des Emitters
@@ -186,17 +197,38 @@ welle-[a-z0-9]                      Welle, Name oder Nummer
 ```
 
 Die Muster für ADR und Vertrag folgen §ID-Schema und §Vergabe. `MR-`, `CO-`, `slice-` und `welle-` sind die
-**Setzung dieses Werkzeugs** (`MR-` und `slice-` stehen schon heute in der Menge): Sie stützt sich auf die ID-Liste der
-Vorlage `conventions.template.md`, nicht auf den Traceability-Constraint, der unter anderem Requirement-ID und ADR-ID nennt.
-`SPEC-`, `ARC-`, `BEO-` und `RC-` fehlen mit Absicht (*„Die Klammer trägt die Anforderungs-ID, nicht jede Kennung"*,
-`grundlagen-source-precedence.md` §ID-Schema als Klammer).
+**Setzung dieses Werkzeugs**, nicht eine Ableitung aus dem Traceability-Constraint, der unter anderem Requirement-ID
+und ADR-ID nennt. `MR-` und `slice-` stehen schon heute in der Menge; `CO-<NNN>`, `slice-<Kennung>` und `MR-<NNN>`
+stehen in der ID-Liste der Vorlage `conventions.template.md` (§MR-000, Feld Adaption). `welle-` steht dort **nicht**
+als Kennung dieser Liste, sondern nur als Dateifamilie in der Klammer zum Bereichssegment; es stützt sich auf die
+Matrix-Spalte Welle (Festlegung 1) und den Namensraum aus §Vergabe (*„Welle- und Slice-Kennungen sind Namen, nicht
+Nummern"*).
+`SPEC-`, `ARC-`, `BEO-` und `RC-` führen kein eigenes Muster (*„Die Klammer trägt die Anforderungs-ID, nicht jede
+Kennung"*, `grundlagen-source-precedence.md` §ID-Schema als Klammer). Ihre **flachen** Formen — die einzigen, die das
+Regelwerk für sie führt (`SPEC-<NNN>`, `ARC-<NNN>` in §ID-Schema; `BEO-<NNN>`, `RC-<NNN>` in `conventions.template.md`,
+dort mit der Aussage, `SPEC-*`/`ARC-*` zählten *„fortlaufend je Datei"* ohne Bereichssegment) — lehnt die Menge ab.
+Eine Form mit Segment (`SPEC-FA-042`) führt das Regelwerk für sie nicht; sie ist von einer Vertrags-Kennung mit Segment
+nicht zu unterscheiden, und ein Ausschluss wäre ein Lookahead, den weder POSIX-ERE noch der Dialekt des
+`commits`-Moduls kennt: Die Menge nimmt sie an, und die Grenze sagt es. Ebenso trägt kein Muster eine Wortgrenze rechts
+vom Zahlenteil: sie bräuchte eine Alternative im Muster (`([^0-9]|$)`), und die Kopplung an `commits.id-patterns`
+trennt die Menge an jedem `|` — ein verschachteltes `|` bräche sie.
 
-**Diese Liste ist die Wahrheit, die Prosa folgt ihr.** Sie **nimmt an:** `ADR-0004`, `ADR-IDX-0004`,
-`CO-AUTH-002`, `HSM-FA-03`, `HSM-FA-IDX-003`, `HSM-LESE-004`, `slice-42`, `slice-mv-verweise`,
-`welle-cache-warmup`. Sie **lehnt ab:** eine Message ohne Kennung, `ADR-4`, `SHA-256`, `UTF-8`, `SPEC-042`, den
-Platzhalter `slice-<Kennung>` und eine Kennung nur in einer Kommentarzeile. Ihre **Fehl-Akzeptanz** steht in der
-Grenze. Geprüft bleibt die **Anwesenheit**, nicht die Wahrheit. Ein Ziel mit einer Klasse außerhalb der Menge setzt
-`HOOKS_DIR` auf sein eigenes Hook-Verzeichnis (Route der mitgelieferten Prüfung, unverändert).
+**Diese Liste ist die Wahrheit, die Prosa folgt ihr.** Gemessen mit `[[ =~ ]]` in bash über die Gruppe der sechs
+Muster:
+
+```sh
+P='(ADR-[A-Z-]*[0-9]{4}|CO-[A-Z-]*[0-9]{3}|MR-[0-9]{3}|[A-Z]{2,}-[A-Z-]*[A-Z]-[0-9]{2,3}|slice-[a-z0-9]|welle-[a-z0-9])'
+for s in <Zeichenfolge>...; do [[ "$s" =~ $P ]] && echo "angenommen $s" || echo "abgelehnt $s"; done
+```
+
+Sie **nimmt an:** `ADR-0004`, `ADR-IDX-0004`, `CO-AUTH-002`, `HSM-FA-03`, `HSM-FA-IDX-003`, `HSM-LESE-004`,
+`LH-FA-BUILD-008`, `slice-42`, `slice-mv-verweise`, `welle-cache-warmup`. Sie **lehnt ab:** eine Message ohne Kennung,
+`ADR-4`, `SHA-256`, `UTF-8`, die flachen Struktur-Formen `SPEC-042`, `ARC-042`, `RC-042` und `BEO-042`, den Platzhalter
+`slice-<Kennung>` und eine Kennung nur in einer Kommentarzeile. Sie **nimmt an, obwohl keine Kennung gemeint ist**
+(Fehl-Akzeptanz, gemessen, in der Grenze): `SPEC-FA-042`, `BEO-ALL-001`, `RC-AB-12`, `AES-CB-128`, `EN-ISO-9001`,
+`CO-1234`, `HSM-FA-1234`, `slice-mv`, `anti-slice-mv`. Geprüft bleibt die **Anwesenheit**, nicht die Wahrheit. Ein Ziel
+mit einer Klasse außerhalb der Menge setzt `HOOKS_DIR` auf sein eigenes Hook-Verzeichnis (Route der mitgelieferten
+Prüfung, unverändert).
 
 **Die Dogfood-Fassung zieht mit, samt dem `commits:`-Block der eigenen `.d-check.yml`** — die Kopplung fordert
 Mengen-Gleichheit aller drei Fassungen (emittierte Prüfung, Dogfood-Prüfung, `commits.id-patterns` im `\d`-Dialekt).
@@ -238,11 +270,12 @@ der Commit-Prüfung ein Fall, der die Menge bindet — eine Mutation, die sie sc
 | B — Ziffern- **und** Namens-Muster nebeneinander (`slice-(\d{3}\|[a-z][a-z0-9-]*)`) | die Nummern-Form ist ausdrücklich benannt | dieselbe Menge wie das Präfix, komplizierter, und beim ersten Slug mit Ziffer am Anfang falsch |
 | **C — Präfix (gewählt)** | Wortlaut des Gate-Satzes; deckt beide Formen; ein Muster | Fehlalarm bei Wörtern wie `slice-mv`; in den Spec-Straten ist der Marker ein Umgehen, das nur der Reviewer fängt |
 | D — Adaptions-Block-Regeln ohne Marker | härteste Form | rot bei jedem Herkunfts-Anker, den das Regelwerk dem Block zuschreibt |
-| E — Adaptions-Block-Regeln gar nicht | kein Eingriff in den emittierten Block; keine Neutralisierung, kein Nachzug-Rot; die Vorlage bleibt beim Regelwerk | der Block trägt, wie eine ADR, eingefrorene Adressen; die Lücke bleibt |
-| **F — mit Marker, unter der Bedingung 2(c) (gewählt)** | dieselbe Ausnahme-Form wie bei der ADR; hält die zwei eingefrorenen Artefaktklassen gleich | Erweiterung ohne Deckung im Text; der Marker je Herkunfts-Anker-Zeile; Eingriff in den emittierten Text; der Marker ist nicht Ziel-spezifisch |
+| E — Adaptions-Block-Regeln gar nicht | kein Eingriff in den emittierten Block; keine Neutralisierung, kein Nachzug-Rot; die Vorlage bleibt beim Regelwerk | der Block trägt, wie eine ADR, Planungs-Kennungen im Norm-Text; die Lücke bleibt |
+| **F — mit Marker, unter der Bedingung 2(c) (gewählt)** | dieselbe Ausnahme-Form wie bei der ADR; hält die zwei Norm-Artefakte gleich (Analogie, kein Wächter gegen tote Adressen) | Erweiterung ohne Deckung im Text; der Marker je Herkunfts-Anker-Zeile; Eingriff in den emittierten Text; der Marker ist nicht Ziel-spezifisch |
 | G — Commit-Menge aus `.d-check.yml` lesen | eine Deklaration für beide | zweiter Parser, anderer Regex-Dialekt, die Prüfung liest heute bewusst keine Doku-Gate-Konfiguration |
 | H — Commit-Menge in einer Adopter-Datei | pro Ziel anpassbar | neue Artefaktklasse; die Route `HOOKS_DIR` deckt den Fall bereits |
 | I — das Werkzeug-Wort `slice-mv` aus der Menge ausnehmen | ein Betreff, der nur das Werkzeug nennt, zählt nicht als Kennung | ERE und der `\d`-Dialekt des `commits`-Moduls kennen keinen Ausschluss: die Menge wäre eine verschachtelte Zeichen-Alternative statt eines Präfixes, die drei Fassungen gingen auseinander oder die Kopplung fiele; **gemessen trennt es einen Betreff von 3366** (Kommando in der Grenze) |
+| J — beim Accept `MR-057` markieren oder einen Adaptions-Eintrag schreiben, der seine Grenze zur emittierten Ebene ablöst | der Adaptions-Block trüge den Zustand der Entscheidung | die Marke nach [`MR-032`](../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger) zeigt auf einen Eintrag, nicht auf eine ADR; ein Eintrag müsste eine Aussage ablösen, die nicht fällt (Folgepflicht 2) — Marke und Eintrag ohne Gegenstand, dazu ein weiterer Norm-Commit |
 
 ## Konsequenzen
 
@@ -258,19 +291,37 @@ der Commit-Prüfung ein Fall, der die Menge bindet — eine Mutation, die sie sc
   Adopter, der dem Regelwerk folgt, einen Marker je Herkunfts-Anker-Zeile.
 - Folgepflicht 1 — **Liefer-Gegenstand:** die Konfigurations-Vorlage (Festlegungen 1, 2(a), 3), die Commit-Prüfung
   samt Dogfood-Fassung, `commits:`-Block und den Kopplungs-Tests (Festlegung 4) und die Erweiterung 2(b) mit
-  Neutralisierung (hängt an den Token aus Festlegung 1). Die Baseline verlangt höchstens drei Liefer-Punkte je Slice;
-  der Schnitt gehört dem Planner. Er gleicht dabei ab, was ein offener Vorgang zur Kennung in Werkzeug-Messages schon
-  führt.
-- Folgepflicht 2 — **Kopf-Marke am Eintrag zur Namens-Form.** Beim Accept-Übergang, im selben Commit wie die
-  Statuszeile, trägt
-  [`MR-057`](../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
-  eine Kopf-Marke nach
-  [`MR-032`](../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
-  auf zwei Stellen, die diese Entscheidung ablöst: den Satz der Grenze, die emittierte Ebene bleibe außen vor, und den
-  Ausschluss der emittierten Ebene im Geltungsbereich; die Setzungen 1 bis 3 bleiben unberührt. Vor dem Accept trägt
-  der Eintrag keine: [`MR-032`](../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger) setzt die Marke mit einem ablösenden **Eintrag** desselben Blocks, eine ADR als Ziel ist
-  dort ohne Präzedenzfall und wird erst mit `Accepted` ein Nachfolger. Wird die ADR nicht angenommen, entsteht keine
-  Marke, und die Grenze des Eintrags gilt weiter.
+  Neutralisierung (hängt an den Token aus Festlegung 1). **Zur Commit-Prüfung gehört, was an ihrem heutigen Wortlaut
+  hängt:** die Klassen-Liste im Kopfkommentar der Prüfung, die Beschreibung der Menge im Sensor-Text von
+  `make commit-msg-check`, die Zeile zu Werkzeug-Commits in `harness/README.md` §Traceability und die Mutations-Fälle,
+  die die `patterns=`-Zeile oder die Klassen-Liste an ihrem Wortlaut verankern
+  (`grep -l 'commit-msg-traceability' test/mutations/*.sh | wc -l` → **6**; die Zahl wandert). Ein Fall, dessen
+  Anker die neue Zeile nicht mehr trifft, bindet nichts, bis er nachgezogen ist
+  ([`MR-071`](../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand));
+  die Fälle werden über ihre Eigenschaft gefunden, nicht über eine Nummer. Die Baseline verlangt höchstens drei
+  Liefer-Punkte je Slice; der Schnitt gehört dem Planner. Er gleicht dabei ab, was ein offener Vorgang zur Kennung in
+  Werkzeug-Messages schon führt.
+- Folgepflicht 2 — **der Adaptions-Block bleibt beim Accept unberührt.** Der Accept-Commit fasst Status, ADR-Index und
+  die Geschichte-Zeile dieser Datei an, sonst nichts; `MR-057` bekommt keine Kopf-Marke, und kein neuer Eintrag löst
+  ihn ab. Der Grund liegt in den Regeln der Einträge selbst: Die Marke ist der Zustandsträger einer **abgelösten
+  Aussage** und fällig, wenn ein späterer **Eintrag** eine Aussage namentlich ablöst
+  ([`MR-032`](../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
+  Setzung 4); ihr Ziel ist die Anker-Adresse dieses Eintrags (Setzung 1); und die Instrumente Marke und Aufhebung
+  nehmen `docs/plan/adr/` aus ihrem Geltungsbereich aus
+  ([`MR-032`](../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger),
+  [`MR-020`](../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf),
+  [`MR-046`](../../../harness/conventions.md#mr-046--die-verzeichnis-position-ist-binär-und-trägt-die-kopf-marke-nicht)).
+  **Keine Aussage von `MR-057` fällt:** sein Ausschluss der emittierten Ebene und sein Satz, was ein Zielrepo an
+  Kennungs-Form bekomme, entscheide *„der Slice, der die Tool-Ebene entscheidet"*, sagen, dass der Eintrag diese Ebene
+  nicht bindet und ein anderer Vorgang sie entscheidet; dieser Vorgang ist diese Entscheidung. Dasselbe sagt
+  [`MR-059`](../../../harness/conventions.md#mr-059--jede-kennungs-erkennung-trägt-die-zugelassenen-formen-die-fundliste-steht-im-vorgang)
+  Setzung 4. Die Grenze, die den Vertrag gegenüber Zielrepos nennt, ist bereits abgelöst. **Akzeptiertes Negativ:**
+  der Eintrag nennt den Slice als entscheidenden Vorgang, die Entscheidung liegt hier und der Slice liefert sie — eine
+  Wortlaut-Differenz, keine fallende Aussage; ein Leser des Eintrags wird durch sie zu keiner falschen Handlung geführt,
+  weil die ADR im Index steht, und eine Marke, die keine Aussage überholt, bezeichnete einen Zustand, den es nicht gibt.
+  Ändert eine spätere Entscheidung eine Aussage des Eintrags, gilt der Weg der Einträge
+  ([`MR-032`](../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
+  Setzung 3), nicht diese Folgepflicht.
 
 ### Grenze
 
@@ -285,13 +336,24 @@ der Commit-Prüfung ein Fall, der die Menge bindet — eine Mutation, die sie sc
   fängt niemand. Drei haben keine Regel: ADR → Carveout, ADR → Roadmap, Slice → Roadmap (`aussen` hat nur die Spec-Straten
   als Quelle, und die ADR-Zeile darf legitim in Code und `harness/` linken). Der Gate-Text des Regelwerks nennt nur
   `ADR-` und `slice-`; das ist hier nicht enger, und nicht weiter.
-- **Die Commit-Prüfung prüft die Anwesenheit.** Das freie Vertrags-Präfix nimmt jede Zeichenfolge dieser Form an
-  (`AES-CB-128`), `slice-`/`welle-` jedes Wort dieser Form, auch ohne Wortgrenze davor. **Ein Werkzeug-Betreff, der nur
-  `slice-mv` trägt, zählt als Kennung.** Gemessen am Bestand (Betreffzeilen, eine Obergrenze der Ablehnungen: die
-  Prüfung liest auch den Rumpf): `git log --format=%s | grep -c '^slice-mv:'` → **608**; davon ohne Kennung nach der
+- **Die Commit-Prüfung prüft die Anwesenheit eines Kennungs-Musters, nicht die Wahrheit und nicht die Klasse.**
+  Muster 4 nimmt jede Zeichenfolge der Form `<GROSSBUCHSTABEN>-<Segmente>-<zwei bis drei Ziffern>` an: eine
+  Vertrags-Kennung mit Segment, aber ebenso `SPEC-FA-042` und `BEO-ALL-001` (Formen, die das Regelwerk für Struktur-IDs
+  nicht führt) und Fremd-Bezeichnungen wie `AES-CB-128` und `EN-ISO-9001`. Kein Muster trägt eine Wortgrenze: der
+  Zahlenteil endet nirgends (`CO-1234`, `HSM-FA-1234` treffen über die ersten Ziffern), und `slice-`/`welle-` treffen
+  jedes Wort dieser Form, auch ohne Wortgrenze davor (`anti-slice-mv`).
+- **Ein Betreff `slice-mv: …` passiert die Prüfung über das Präfix allein**, auch wenn hinter dem Doppelpunkt kein
+  Slice-Name steht: die Menge unterscheidet das Werkzeug-Wort nicht vom Namen. Das ist keine Ausnahme-Zeile — die Form,
+  die [ADR-0053](0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) Festlegung 4 als Senkung benennt (*„eine
+  Zeile, die `slice-mv:`-Messages von der Prüfung nimmt, wäre eine Senkung der Durchsetzung"*) —, sie hat aber für
+  diese Klasse dieselbe Wirkung: die Prüfung hält für `slice-mv:`-Betreffe keine Kennungs-Zusage; dass ein
+  Werkzeug-Commit eine Kennung trägt, hängt für sie am Kandidaten aus ADR-0053 Festlegung 4, nicht an der Prüfung. **Diese
+  Entscheidung ist die Senkung im Sinn von [`AGENTS.md`](../../../AGENTS.md) §3.5**, benannt statt umgangen; der
+  Bestand ist Kontext, keine Aufhebung. Gemessen (Betreffzeilen, eine Obergrenze der Ablehnungen: die Prüfung liest
+  auch den Rumpf): `git log --format=%s | grep -c '^slice-mv:'` → **608**; davon ohne Kennung nach der
   bisherigen Menge `git log --format=%s | grep '^slice-mv:' | grep -vcE 'ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3}|slice-[0-9]+'` →
   **190**; davon nennen `git log --format=%s | grep '^slice-mv:' | grep -vE 'ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3}|slice-[0-9]+' | sed 's/^slice-mv://' | grep -cE 'slice-[a-z0-9]|welle-[a-z0-9]'` → **189** hinter dem
-  Präfix den bewegten Slice und tragen damit eine Kennung im Sinn von §Vergabe. Wie viele Betreffzeilen erst das Wort
+  Präfix den bewegten Slice; einer nennt keinen und gilt allein über das Wort. Wie viele Betreffzeilen erst das Wort
   `slice-mv` annimmt, zeigt der Unterschied zweier Läufe über alle Betreffzeilen ohne Merge/Revert, die die bisherige
   Menge ablehnt: mit dem Wort angenommen
   `git log --format=%s | grep -vE '^(Merge|Revert) ' | grep -vE 'ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3}|slice-[0-9]+' | grep -cE 'slice-[a-z0-9]|welle-[a-z0-9]'`
@@ -314,7 +376,7 @@ der Commit-Prüfung ein Fall, der die Menge bindet — eine Mutation, die sie sc
 | Go-Test über die eingebettete Vorlage | die Positionen der Festlegungen 1 bis 3 stehen in der Vorlage, die Ziffern-Form nicht | `make test` |
 | bats über die emittierte Prüfung | die Annahme-/Ablehnungs-Liste aus Festlegung 4; die drei Fassungen (emittiert, Dogfood, `commits`-Block) bleiben mengengleich | `make test` |
 | End-to-End im frischen Ziel | grüner Start; je Regel ein rotes Gegenbeispiel mit gelesener Meldung; die Prüfung an einem Commit | `make full-smoke` |
-| Mutations-Fall je Zahn | Präfix, Regel `spec-straten → welle`, Marker-Ausnahme, je ein Muster der Commit-Menge | `make mutate` (kein Gate) |
+| Mutations-Fall je Zahn | Präfix, Regel `spec-straten → welle`, Marker-Ausnahme, je ein Muster der Commit-Menge; dazu die nachgezogenen Fälle auf der Prüfung (Folgepflicht 1) | `make mutate` (kein Gate) |
 
 Vorbilder für die Anlage der Mutations-Fälle sind die, die die emittierte Matrix bereits angreifen
 (`grep -l 'internal/emit/templates/d-check.yml' test/mutations/*.sh | wc -l` → **11**); `failure_form()` in
