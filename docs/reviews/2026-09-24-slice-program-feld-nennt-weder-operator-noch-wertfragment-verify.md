@@ -3,7 +3,7 @@
 **Rolle:** Verifier (Modul 8/11) — Frage: *Bauen wir es richtig?* gegen Plan, DoD und Spec. Nicht die
 Frage des Reviewers (Diff gegen Plan, ADR, Hard Rules) und nicht die des Validators.
 
-**Gegenstand:** `docs/plan/planning/in-progress/slice-program-feld-nennt-weder-operator-noch-wertfragment.md`
+**Gegenstand:** `docs/plan/planning/done/slice-program-feld-nennt-weder-operator-noch-wertfragment.md`
 am Stand `main` = `1e3b83b3`; Implementer-Commits `2efaa979` und `fb1ca361`, Reviewer-Reports Runde 1
 (`68f35541`) und Runde 2 (`1e3b83b3`, freigabefähig). Nichts gepusht. Der Slice ist **nicht** geschlossen;
 dieser Bericht setzt kein DoD-Häkchen und ändert weder Slice noch Code noch ADR (`AGENTS.md` §3.10).

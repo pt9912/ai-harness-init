@@ -8,7 +8,7 @@ der Verifier).
 `internal/span/span_test.go`, `test/mutations/404-*.sh`, `test/mutations/405-*.sh`,
 `spec/spezifikation.md` (`SPEC-031`).
 
-**Plan-Bezug:** `docs/plan/planning/in-progress/slice-program-feld-nennt-weder-operator-noch-wertfragment.md`
+**Plan-Bezug:** `docs/plan/planning/done/slice-program-feld-nennt-weder-operator-noch-wertfragment.md`
 (§1 Verhaltenstabelle und Ausschlüsse, §2 nur als Referenz, §6 Risiken, §7 leer).
 
 **Skill:** `.harness/skills/reviewer.md` @ Version 2.0.0 (2026-09-13)

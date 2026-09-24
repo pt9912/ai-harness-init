@@ -9,7 +9,7 @@ der Verifier). Die Runde-1-Datei
 `namesProgram`), `internal/span/span_test.go`, `test/mutations/406-*.sh`, `407-*.sh`, `408-*.sh`,
 `spec/spezifikation.md` (`SPEC-031`).
 
-**Plan-Bezug:** `docs/plan/planning/in-progress/slice-program-feld-nennt-weder-operator-noch-wertfragment.md`
+**Plan-Bezug:** `docs/plan/planning/done/slice-program-feld-nennt-weder-operator-noch-wertfragment.md`
 (§1 Ziel und Verhaltenstabelle, §6 Risiken; unverändert durch `fb1ca361`).
 
 **Skill:** `.harness/skills/reviewer.md` @ Version 2.0.0 · **Modell:** Sonnet 5 · **Datum:** 2026-09-24
