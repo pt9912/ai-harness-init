@@ -193,44 +193,44 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
 **Liefer-Punkt 1 — `commandProgram()` nennt ein Programm oder nichts.** Die Tabelle aus §1 ist
 die Zusage; jede Zeile ist ein Fall in `internal/span/span_test.go`.
 
-- [ ] Die Fälle der Tabelle sind Tests, **benannt nach der Eigenschaft**, die sie messen (etwa
+- [x] Die Fälle der Tabelle sind Tests, **benannt nach der Eigenschaft**, die sie messen (etwa
       `TestCommandProgramNamesAProgramNotAnOperator` und
       `TestCommandProgramNeverEmitsAssignmentValueFragments`), und sie laufen über `span.Derive`
       **und** über den Weg, den der Träger benutzt (`span.Build` bis zur serialisierten Zeile in
       `internal/span/emit.go`): Die Zusage betrifft das **Feld im Strom**, nicht die Funktion.
       `TestCommandProgramSkipsAssignments` bleibt **grün und unverändert** — die bestehende Zusage
       wird nicht umgeschrieben, um die neue zu ermöglichen.
-- [ ] **Was bricht die Zusage, und ist es rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6):
+- [x] **Was bricht die Zusage, und ist es rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6):
       (a) *Operator wird nicht übersprungen* (das heutige Verhalten) → `A=b && cmd x` liefert
       `&&`; der Test nennt Fall und erwartetes `cmd`. (b) *Die Wert-Prüfung fehlt* →
       `TOKEN="abc SECRET" gh pr create` liefert `SECRET"`; der Test nennt den Fall und weist das
       Bruchstück **im serialisierten Span** nach. (c) `TOKEN=x && gh …` schreibt den Wert nie —
       der Schutz des Kommentars über der Funktion bleibt: Bruchstück **und** Wert kommen in keiner
       Ausgabe vor. Jedes einmal gegen die reale Mutation rot, nicht gegen eine nachgebaute.
-- [ ] Der Kommentar über `commandProgram()` beschreibt, was die Funktion **jetzt** zusagt
+- [x] Der Kommentar über `commandProgram()` beschreibt, was die Funktion **jetzt** zusagt
       (Segment-Grenze, Wert-Grenze, `argc`) und nennt seine Wächter beim Namen — nicht mehr allein
       `TestCommandProgramSkipsAssignments`.
 
 **Liefer-Punkt 2 — Zwei Fälle in `test/mutations/` binden die Zusage** (nächste freie Nummern;
 `ls test/mutations | sort -n | tail -1` nennt die letzte).
 
-- [ ] Ein Fall nimmt der **Segment-Grenze** die Zähne (Mutation: der Operator wird nicht
+- [x] Ein Fall nimmt der **Segment-Grenze** die Zähne (Mutation: der Operator wird nicht
       übersprungen), ein Fall der **Wert-Grenze** (Mutation: die Prüfung auf einen nicht
       bestimmbaren Wert entfällt). Beide tragen `# files: internal/span/span.go` und
       `# expect:` den Namen des Tests aus Liefer-Punkt 1.
-- [ ] Das `sed`-Muster jedes Falls ist **nach** der Implementierung gegen den Quell-Bestand
+- [x] Das `sed`-Muster jedes Falls ist **nach** der Implementierung gegen den Quell-Bestand
       gemessen, nicht gegen die Fassung vor dem Slice
       ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)):
       es trifft **genau eine** Stelle, und die Mutation färbt **die Zeile des erwarteten Tests**
       rot. Ein Fall, der bei geschwächter Zusicherung noch rot wird, deckt einen anderen Zweig —
       die Gegenprobe steht in der Closure-Notiz.
-- [ ] Der Fall der Wert-Grenze trifft den **stillen** Pfad: entfällt die Prüfung, bricht nichts,
+- [x] Der Fall der Wert-Grenze trifft den **stillen** Pfad: entfällt die Prüfung, bricht nichts,
       und das Programm wird nur falsch. `make mutate` läuft mit den zwei neuen Fällen und meldet
       `0 Befund(e)`.
 
 **Liefer-Punkt 3 — `SPEC-031` beschreibt die neue Mechanik.**
 
-- [ ] Die `Bash`-Zeile in [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder)
+- [x] Die `Bash`-Zeile in [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder)
       §5 nennt: übersprungene Zuweisungs-Segmente, den Wert, dessen Rand nicht bestimmbar ist
       (dann **kein** Feld), und die unveränderte Bedeutung von `argc`. `SPEC-021` ist gegengelesen
       und bleibt wahr. Das Technik-Stratum ist ohne Vertragsänderung fortschreibbar
@@ -242,14 +242,14 @@ die Zusage; jede Zeile ist ein Fall in `internal/span/span_test.go`.
 
 **Pro Slice konstant — zählt nicht in die drei:**
 
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow ([`AGENTS.md`](../../../../AGENTS.md) §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — **kein Zähler wird gesetzt**, er
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — **kein Zähler wird gesetzt**, er
       folgt aus den Dateien.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieser Slice läuft
       **ohne Welle**, sie werden also hier geprüft, nach dem `git mv`.
 
@@ -327,26 +327,148 @@ dasteht.
   Anführungszeichen-Werten (`SHA=$(git rev-parse HEAD) && gh api …`) tragen danach **kein**
   `program` mehr statt eines Bruchstücks; ein Leser des Stroms zählt sie nicht mehr unter einem
   Programm. Die Größenordnung ist am Bestand beziffert (116 Bruchstücke, §1), der Preis ist gewollt.
-  — **Ausgang:** <offen>
+  — **Ausgang:** *entfallen* — kein Ereignis mehr, das eintreten könnte: der Preis ist die geplante
+  Folge der fail-closed-Wahl und steht als Zusage in der Tabelle von §1 und in `SPEC-031`; die Tests
+  `TestCommandProgramNamesAProgramNotAnOperator` und
+  `TestCommandProgramNeverEmitsAssignmentValueFragments` halten ihn. Der Zuwachs über die Tabelle
+  hinaus (Wörter mit Metazeichen oder Redirect nach einer Zuweisung tragen ebenfalls kein `program`)
+  steht in `SPEC-031`. Die Frage, ob ein Leser den Sprung über die Zeit erkennt, trägt das
+  dritte Risiko.
 - **Die Wert-Prüfung kann zu grob oder zu fein greifen.** Zu fein: ein Wert-Rand, den die Prüfung
   für bestimmbar hält und der es nicht ist (`A=x\ y cmd`, `${A:-x y}`), und ein Bruchstück
   gelangt doch ins Log — der Fall, gegen den der Slice steht. Die Fälle der Tabelle sind eine
-  Stichprobe, keine Vollständigkeits-Aussage. — **Ausgang:** <offen>
+  Stichprobe, keine Vollständigkeits-Aussage. — **Ausgang:** *weiter offen* — Beobachtungs-Register,
+  [`BEO-ALL/shell-nachbau-ohne-tokenizer-deckt-nicht-jede-eingabe-klasse`](../observations/BEO-ALL/shell-nachbau-ohne-tokenizer-deckt-nicht-jede-eingabe-klasse/observation.md).
+  Die Instanz, die das Risiko beschrieb, ist **eingetreten und im Slice geschlossen**
+  (Unicode-Leerraum im Wert, Operator- und Redirect-Wörter nach der Zuweisung); offen bleibt die
+  Stichprobe selbst — Wörter mit `$(`, `"` oder Backtick in Programm-Position sind weiter
+  `program`.
 - **Der Bestand mischt danach zwei Bedeutungen.** Spans vor und nach diesem Slice tragen dasselbe
   Feld mit verschiedener Regel; ein Leser, der über die Zeit vergleicht, sieht einen Sprung, der
-  keine Verhaltensänderung ist. Kein Feld trägt die Fassung. — **Ausgang:** <offen>
+  keine Verhaltensänderung ist. Kein Feld trägt die Fassung. — **Ausgang:** *weiter offen* — Beobachtungs-Register,
+  [`BEO-ALL/span-feld-bedeutung-wechselt-ohne-fassungs-angabe`](../observations/BEO-ALL/span-feld-bedeutung-wechselt-ohne-fassungs-angabe/observation.md).
 - **Zwei Slices schreiben an einer Funktion.** slice-204 und dieser Slice ändern `commandProgram()`,
   denselben Test und `SPEC-031`; die Reihenfolge ist entschieden (dieser zuerst, §4 Start) und
   slice-204 trägt sie als Start-Trigger. Zwei Pläne über denselben Gegenstand sind im Repo schon
-  einmal aufgetreten und einer davon wurde ohne Lieferung stillgelegt. — **Ausgang:** <offen>
+  einmal aufgetreten und einer davon wurde ohne Lieferung stillgelegt. — **Ausgang:** *entfallen* — die Reihenfolge ist
+  eingehalten und die Kollision nicht eingetreten: slice-204 lag während der Arbeit in `next/`,
+  unbeansprucht; das Risiko endet mit dem `git mv` dieses Slice, der den Start-Trigger von slice-204
+  erfüllt.
 - **Für das berührte Spec-Stratum benennt keine Quelle eine schreibende Rolle.** Der Slice ändert
   eine Zeile in Rang 2 der Source Precedence, ohne dass gesagt ist, wer das darf. Adresse:
-  [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md). — **Ausgang:** <offen>
+  [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md). — **Ausgang:**
+  *eingetreten* — Folge-Slice `slice-151`, eine Datei in `open/`: der Slice hat `SPEC-031` ohne
+  benannte Quelle für die schreibende Rolle geändert und daraus keine Zuständigkeit abgeleitet; die
+  Frage bleibt bei `slice-151`, und `slice-151` nimmt sie an, denn er führt genau diese Frage.
 
 ## 7. Closure-Notiz
 
-<!-- Wird bei der Closure gefüllt — Planner, nicht der Lauf, der die Arbeit tat
-(AGENTS.md §3.10). -->
+Geschrieben von der Rolle Planner in frischem Kontext
+([`AGENTS.md`](../../../../AGENTS.md) §3.10), nach Review (Runde 1 und 2) und Verifikation.
+
+- **Was hat funktioniert:** Der Rot-Beleg trug an den Stellen, an denen er gefahren wurde. Der
+  Reviewer schickte eine Eingabe-Stichprobe über die **unveränderte** Funktion und fand so den HIGH (F-1), den die
+  Tabelle des Plans nicht enthielt; der Verifier fuhr die drei Gegenbeispiele (a)(b)(c) gegen den
+  **realen Vorzustand** (`span.go` vor dem Slice, Tests danach: rot in den drei neuen Tests,
+  `TestCommandProgramSkipsAssignments` grün) und gegen reale Mutationen, mit gelesener Meldung. Die
+  Zusage hält an der **geschriebenen Zeile**: die Tests prüfen `SECRET` in der ganzen Zeile, nicht nur
+  im Feld. Für `A=b && ls` schreibt der gebaute Träger `"program":"ls","argc":0`, für
+  `TOKEN="abc SECRET" gh pr create` weder `program` noch `argc` noch `SECRET` (Verifier, Träger aus
+  der Dockerfile-`build`-Stage, `span-emit` in einem Temp-Repo — Closure-Trigger 2 ist damit an der
+  Zeile gemessen).
+- **Was ging anders als geplant — gebaut, aber nicht geplant.** Fünf Fälle statt zwei in
+  `test/mutations/` (404 bis 408; der Plan verlangte zwei), der Tabellentest
+  `TestCommandProgramWithholdsProgramForEachUnsureValueChar`, die Funktionen `splitWords`,
+  `namesProgram` und `shellMetaStart` (mehr Verhalten als die Tabelle von §1: Wortgrenze nur
+  Leerzeichen, Tab und Zeilenende für **jede** Zeile; ein Wort mit Metazeichen oder Redirect nach einer
+  Zuweisung ist kein Programm) und eine längere `SPEC-031`-Zeile. Ursache sind die Befunde der Runde 1:
+  F-1 (HIGH: `strings.Fields` teilt an Unicode-Leerraum, den die Shell nicht trennt), F-2 (MEDIUM:
+  „Programm oder nichts" trug für Operator- und Redirect-Wörter nicht), F-3 (LOW: sechs Zeichen der
+  Wert-Menge ohne eigenen Zahn). §3 nennt diese Teile nicht; sie sind Plan-Delta, kein Verstoß gegen
+  eine Ausschluss-Grenze aus §1 (kein Tokenizer, kein `internal/emit/`, `argc` unverändert).
+- **Wortlaut-Differenz zur DoD (Verifier V-2).** Liefer-Punkt 1, Haken 2 (a) sagt, die Mutation
+  „liefert `&&`". Seit `namesProgram` (Nacharbeit zu F-2) fängt eine zweite Sperre das Feld `&&` ab:
+  die Mutation von Fall 404 liefert **nichts** statt `&&`. Der Test bindet die Segment-Grenze aus dem
+  richtigen Grund (erwartet `cmd`, bekommt nichts, Meldung nennt Zeile und Erwartung); die wörtliche
+  Aussage ist nur im realen Vorzustand herstellbar und dort vom Verifier gesehen. Die Zusage ist
+  gehalten, der DoD-Wortlaut ist enger als der Zustand nach der Nacharbeit.
+- **Gegenprobe zu Liefer-Punkt 2, Haken 3, gesagt, was sie ist.** Belegt ist die Richtung
+  *Quelltext geschwächt → benannter Test rot, mit der Meldung, die die behauptete Ursache nennt*: 404
+  rot in `TestCommandProgramNamesAProgramNotAnOperator`, 405 rot in
+  `TestCommandProgramNeverEmitsAssignmentValueFragments` (`Wert oder Wert-Bruchstueck im Span fuer
+  "TOKEN=\"abc SECRET\" gh pr create"`), 406 bis 408 je im benannten Test, jeder der fünf Anker trifft
+  im Quell-Bestand genau eine Stelle (`grep -c` → 1). **Nicht gefahren** ist die
+  Formulierung des DoD-Haken wörtlich (die Zusicherung im Test abschwächen und sehen, dass der Fall
+  dann grün wird); der Verifier hat sie durch die Ursachen-Lesung der Meldung ersetzt.
+- **`make mutate` am Endstand (Closure-Trigger 1).** Stand `d7fc646672f4`, sauberer Baum, kein
+  Code-Diff zu `fb1ca361`; Kommando `make mutate MUTATE_JOBS=8`; Ausgabe `mutate: 396 ok, 0
+  Befund(e)`, Dauer 1822 s; zum Vergleich mit vier Arbeitern 3039 s. Ausgabe-Zeile zur Schranke:
+  `mutate: untere Schranke jeder Parallelisierung = laengster Einzelfall: 167.12 s
+  (370-selbstpruefung-ohne-fallenden-commit); Fall-Arbeit gesamt 13234.0 s`. Der Beleg gilt für diesen
+  Stand; der Schlüssel hängt an allen Dateien außer dem Zustands-Bereich und `.git`, die Closure-Commits
+  entwerten ihn ([`ADR-0035`](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)),
+  und der Lauf wurde nicht wiederholt. `make gates`: Stempel am Stand vor dem Verifikationsbericht
+  deckungsgleich (`914455120302`, Verifier), Code seit `fb1ca361` unverändert; der Lauf über den
+  letzten Closure-Commit steht in der Übergabe an den Auftraggeber, nicht in dieser Datei.
+- **Das Rot-Beleg-Verfahren gegen die DoD-Zusagen.** (a) und (b) siehe oben. (c)
+  `TOKEN=x && gh …` schreibt den Wert nie: der Verifier setzte im `default`-Zweig `fields[0]` statt des
+  Programms — rot in `TestCommandProgramNeverEmitsAssignmentValueFragments` (`Wert oder Wert-Bruchstueck
+  im Span fuer "TOKEN=SECRETVALUE && gh pr create"`) und in den Segment-Tests. Diese Mutation ist kein
+  Fall in `test/mutations/`.
+- **Nicht am DoD, aber benannt (Reviewer F-6 bis F-9).** F-6: die Wortgrenze gilt jetzt auch für
+  Zeilen **ohne** Zuweisung (`make\r` → `program="make\r"`, `argc` 0; Träger-Messung des Verifiers);
+  der Plan verlangt nirgends, dass diese Zeilen unverändert bleiben, und `SkipsAssignments` bleibt
+  grün und unverändert. F-7: entfällt `&` oder `)` aus `shellMetaStart`, bleibt die Suite grün (`<`, `>`
+  sind äquivalente Mutanten). F-8: „Programm oder nichts" ist weiter als der Code für Wörter mit `$(`,
+  `"` oder Backtick in Programm-Position. F-9: der Tabellentest hat keinen eigenen Fall. Alle vier
+  stehen im Register, keiner ist ein Folge-Slice; wer die Wortgrenze für Zeilen ohne Zuweisung
+  zurücknehmen will, schneidet ihn selbst. F-5 (`SPEC-021` *erstes Token* gegen `SPEC-031` *erstes Wort
+  nach Zuweisungen*) ist im Plan benannt und geht an slice-109, der die Feldliste führt — nicht als
+  Beleg gezählt.
+- **Steering-Loop-Eintrag (Form: benannte Spec-Lücke).** `SPEC-031`
+  ([`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5) zählt
+  `;` unter den Zeichen mit unbestimmbarem Wert-Rand und **schweigt zu einem einzelnen `;` am
+  Wertende**: `A=b; cmd x` liefert in Code (`valueEdgeKnown` schneidet ein Suffix-`;` ab), Plan-Tabelle
+  und Test `cmd`; ein Leser der Spec-Zeile folgert nichts. Die Zeile ist an dieser Stelle **enger als der
+  Code** (Verifier V-3). Dieser Lauf schreibt die Spec-Zeile nicht um: `spec/` ist Rang 2, und für das
+  Stratum benennt keine Quelle eine schreibende Rolle
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8, *„wo keine Quelle sie benennt, bleibt die Frage offen"*);
+  die Rollen-Frage hat die Adresse `slice-151`. Die Korrektur selbst ist Spec-Text und hat noch keinen
+  Slice; das Übergabe-Artefakt ist diese Zeile und das Register-Verzeichnis
+  [`spec-zeile-enger-als-der-code-den-sie-beschreibt`](../observations/BEO-ALL/spec-zeile-enger-als-der-code-den-sie-beschreibt/observation.md).
+  Die Zeile ist eine Spec-Lücke, keine verkörperte Regel: kein `liegt in`.
+- **Beobachtungs-Register (`../observations/`):** neu angelegt, je Beleg
+  `evidence/slice-program-feld-nennt-weder-operator-noch-wertfragment.md` — Zähler steht damit bei 1×
+  (gelesen am 2026-09-24 mit `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`
+  je Verzeichnis, [`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)):
+  [`shell-nachbau-ohne-tokenizer-deckt-nicht-jede-eingabe-klasse`](../observations/BEO-ALL/shell-nachbau-ohne-tokenizer-deckt-nicht-jede-eingabe-klasse/observation.md)
+  (F-1, F-2, F-8), [`geteilte-funktion-traegt-die-grenzaenderung-in-die-nachbar-zeilen`](../observations/BEO-ALL/geteilte-funktion-traegt-die-grenzaenderung-in-die-nachbar-zeilen/observation.md)
+  (F-6), [`zeichenmenge-mitglied-ohne-eigenen-zahn`](../observations/BEO-ALL/zeichenmenge-mitglied-ohne-eigenen-zahn/observation.md)
+  (F-3, F-7), [`span-feld-bedeutung-wechselt-ohne-fassungs-angabe`](../observations/BEO-ALL/span-feld-bedeutung-wechselt-ohne-fassungs-angabe/observation.md)
+  (Risiko 3), [`mutate-beleg-verfaellt-mit-jedem-commit-und-jedem-nachsehen-lauf`](../observations/BEO-ALL/mutate-beleg-verfaellt-mit-jedem-commit-und-jedem-nachsehen-lauf/observation.md)
+  (V-1), [`spec-zeile-enger-als-der-code-den-sie-beschreibt`](../observations/BEO-ALL/spec-zeile-enger-als-der-code-den-sie-beschreibt/observation.md)
+  (F-4, V-3). **Ergänzt** in vorhandenen Verzeichnissen, je eine Evidence-Datei:
+  [`zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md)
+  (F-2 und F-8 als **ein** Vorgang, Zähler 18×, Stand `geplant`) und
+  [`neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md)
+  (F-9, Zähler 13×, Stand `verkörpert`). **Lese-Schritt:** keine Beobachtung erreicht mit diesem Slice
+  neu 3×; die beiden ergänzten stehen über der Schwelle und tragen ihren Ausgang schon.
+- **Die zwei Beobachtungsstellen aus §8 — kein dritter Beleg.**
+  [`mutations-fall-deckt-den-lauten-statt-den-stillen-pfad`](../observations/BEO-ALL/mutations-fall-deckt-den-lauten-statt-den-stillen-pfad/observation.md)
+  bleibt bei 2×: Fall 405 (und 406) trifft den **stillen** Pfad — entfällt die Wert-Prüfung, bricht
+  nichts, und der Test färbt sich an der geschriebenen Zeile rot (Verifier).
+  [`mutations-fall-zeigt-auf-falsche-datei`](../observations/BEO-ALL/mutations-fall-zeigt-auf-falsche-datei/observation.md)
+  bleibt bei 2×: `# files:` trifft in allen fünf Fällen `internal/span/span.go`, und die
+  `sed`-Anker treffen je genau eine Stelle. `plan-entsteht-vor-dem-verdikt-ueber-seinen-gegenstand`
+  bekommt keinen Beleg: die Reihenfolge war vorab entschieden, und die Kollision trat nicht ein
+  (§6, viertes Risiko).
+- **Folge-Slices:** keine neu geschnitten. Adressen, die die Sendung annehmen: `slice-151` (Rolle für
+  das Spec-Stratum, `open/`), `slice-109` (Feldliste, `next/`), `slice-204` (`cd`/`set` und `argc`,
+  `next/` — sein Start-Trigger *„der erste Slice liegt in `done/`"* ist mit dem `git mv` dieses Slice
+  erfüllt; er wird nicht bewegt, Priorisierung ist eine eigene Entscheidung).
+- **Risiken aus §6:** je ein Ausgang, siehe §6 (entfallen · weiter offen · weiter offen · entfallen ·
+  eingetreten).
+- **Drei Paarungen:** Ergebnis steht nach dem `git mv`, im Häkchen-Commit.
 
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
