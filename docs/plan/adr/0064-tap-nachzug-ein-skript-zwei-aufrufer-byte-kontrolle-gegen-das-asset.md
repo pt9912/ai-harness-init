@@ -10,8 +10,9 @@
 [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (die Kontrolle hält das Tap
 gegen das **veröffentlichte** Asset, nicht gegen eine lokal erzeugte Kopie; das Transport-Bild ist
 digest-gepinnt),
-[`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (die Laufzeit des Tools
-braucht „nur **git + docker**"; dieses Werkzeug ist ein `make`-Ziel des Repos und führt für den Host
+[`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) („die Laufzeit beim Bootstrap
+braucht nur **git + docker** (keine Host-Sprachlaufzeit, kein Paketmanager)"; dieses Werkzeug ist ein
+`make`-Ziel des Repos, kein Bootstrap-Schritt, und führt für den Host
 nichts ein, was die Rezepte des Repos nicht schon voraussetzen — `make` und die `bash`, unter der
 z. B. `make traeger-fetch` läuft),
 [ADR-0058](0058-traeger-per-fetch-aus-dem-gepinnten-release.md) (**Accepted** — Festlegung 4:
@@ -141,9 +142,10 @@ das Tap und das jüngste Release wandern mit jedem Schnitt.
   Ein Vergleich des Tap-Stands mit dem Tag, der ein leeres oder nicht dezimales Feld ungeprüft in
   diese Arithmetik gibt, ist damit offen: ein leeres Feld gälte als `0.0.0`.
 
-- **Die Contents-API hat ein Cache-Fenster.** Die Kopfzeile des Lese-Pfads nennt `max-age=60`, anonym
-  öffentlich, mit Anmeldung privat; ein Lesen kurz nach einem Schreiben kann den Stand davor
-  liefern:
+- **Die Contents-API nennt ein Cache-Fenster.** Die Kopfzeile des Lese-Pfads nennt `max-age=60`, anonym
+  öffentlich, mit Anmeldung privat. Ein Lesen, das nach einem Schreiben den Stand davor liefert, ist
+  **nicht beobachtet**; die Wiederholung in Festlegung 2 folgt aus der Kopfzeile, nicht aus einem
+  beobachteten Fall:
 
   ```sh
   docker run --rm --pull=never --entrypoint sh <Bild> -c "curl -sI -H 'Accept: application/vnd.github.raw' \
@@ -223,7 +225,12 @@ Reihenfolge der übrigen bleibt:
   (`printf '%s\n' "$$TAG"` als Rezept, gemessen mit GNU Make 4.3 an einer Wegwerf-Datei). Die
   Formprüfung sieht in beiden Wegen das, **was im Skript ankommt** — im Env-Weg den Tag selbst, im
   lokalen Weg den Wert nach der make-Expansion —, und prüft dieses. Ein Ergebnis der Expansion, das
-  der Form genügt, ist ein gültiger Tag; der Tippende ist der Auftraggeber.
+  der Form genügt, ist ein gültiger Tag; der Tippende ist der Auftraggeber. **Die Expansion selbst fängt
+  die Formprüfung nicht ab:** make wertet den Kommandozeilen-Wert samt make-Funktionen aus, bevor ein
+  Skript läuft, und führt ein `$(shell …)` im Wert selbst aus (`make t TAG='v1.0.0$(shell echo X > marker)y'`
+  mit dem Rezept `printf '%s\n' "$$TAG"`, GNU Make 4.3, Wegwerf-Verzeichnis: legt `marker` an und reicht
+  `v1.0.0y` durch; derselbe Wert als Umgebungsvariable des Aufrufers kommt byte-genau an und legt
+  nichts an). Der lokale Weg trägt damit die Ausführung durch den Aufrufer selbst (§Grenze).
 - **Formprüfung vor jeder Verwendung** (Schritt a, auf dem Host, vor `docker`): `v<K>.<K>.<K>`,
   danach optional ein Pre-Release-Feld (`-…`) und ein Build-Feld (`+…`), beide **nicht leer** und nur
   aus `[0-9A-Za-z.-]`. Jedes `<K>` genügt der **Feldform**: `0` oder eine Ziffernfolge **ohne
@@ -256,12 +263,17 @@ und in `targets.exempt-targets` der [`.d-check.yml`](../../../.d-check.yml) (exa
   GitHub-Schnittstelle (Contents-API), **nicht** über einen zwischengespeicherten Roh-Pfad und nicht
   aus einem lokalen Klon. Das Lesen führt das Token mit, wenn es gesetzt ist (kein Rate-Limit-Rot auf
   einem geteilten Runner), und bleibt sonst anonym.
-- **Das Cache-Fenster der Schnittstelle (§Lage) trägt eine Wiederholung.** Ein Lesen kurz nach einem
-  Schreiben kann den Stand davor liefern — im Regelfall als falsches **Ungleich**. Darum gilt für
-  `check` und für die Nachkontrolle (Schritt g): **eine Ungleichheit wird einmal nach 65 s erneut
-  gelesen** (das Fenster von 60 s plus 5 s), und **Exit 1 entsteht nur, wenn auch das zweite Lesen
-  ungleich ist**. Gleich schon beim ersten Lesen endet ohne Wartezeit. Die Wartezeit ist für den Test
-  injizierbar (Festlegung 5). In `sync` (Schritt e) gibt es diese Wiederholung nicht: ein alter Stand
+- **Das Cache-Fenster der Schnittstelle (§Lage) trägt eine Wiederholung.** Die Kopfzeile nennt
+  `max-age=60`; dass ein Lesen nach einem Schreiben den Stand davor liefert, ist nicht beobachtet. Die
+  Wiederholung ist Vorsorge gegen ein falsches **Ungleich**, nicht die Antwort auf einen beobachteten
+  Fall. Für `check` und für die Nachkontrolle (Schritt g) gilt: **eine Ungleichheit wird einmal nach
+  65 s erneut gelesen** — 65 s sind das Fenster von 60 s plus 5 s Reserve, und die Reserve ist eine Wahl
+  dieser Entscheidung —, und **Exit 1 entsteht nur, wenn auch das zweite Lesen ungleich ist**. Die
+  Meldung des Exit 1 nennt die Digests und die erste abweichende Zeile **des zweiten Lesens**; ändert
+  sich der Tap-Stand zwischen den Lesungen, entscheidet das zweite. Hält ein Speicher den Stand länger
+  als 65 s, endet der Lauf mit Exit 1, ohne dass die Formeln sich unterscheiden — die sichere Richtung:
+  ein Tap wird nicht als gleich gemeldet, das es nicht ist. Gleich schon beim ersten Lesen endet ohne
+  Wartezeit. Die Wartezeit ist für den Test injizierbar (Festlegung 5). In `sync` (Schritt e) gibt es diese Wiederholung nicht: ein alter Stand
   führt dort — auch im Vorwärts-Schutz (Schritt d) — höchstens zu einem Schreiben, das gegen den
   gelesenen Blob-Stand scheitert (Schritt f) und mit Exit 2 endet, ohne das Tap zu verändern; der
   Wiederholungslauf ist konvergent.
@@ -270,8 +282,15 @@ und in `targets.exempt-targets` der [`.d-check.yml`](../../../.d-check.yml) (exa
   | Exit | Bedeutung | Meldung |
   |---|---|---|
   | 0 | gleich — oder ein benannter Nicht-Gegenstand (Vorab-Tag) | nennt Tag, Tap-Kopf und den Digest, den beide tragen; bei einem Vorab-Tag *„Vorab-Tag, Tap bleibt"* |
-  | 1 | **Formel-Unterschied**, auch nach der Wiederholung des Lesens | nennt beide Digests und die erste abweichende Zeile |
-  | 2 | **nicht ausführbar** — Tag-Form oder Feldform falsch, Asset nicht auffindbar, Tap nicht lesbar (auch: keine Formel-Datei, `version`-Zeile fehlt oder genügt der Feldform nicht), Anmeldung fehlt oder abgelehnt, Vorwärts-Schutz, Ausgang des Schreibens ungewiss, Aufruf falsch | nennt, was nicht erreicht wurde; **nie** als Unterschied |
+  | 1 | **Formel-Unterschied**, auch nach der Wiederholung des Lesens | nennt beide Digests und die erste abweichende Zeile, gelesen im zweiten Lesen |
+  | 2 | **nicht ausführbar** — Tag-Form oder Feldform falsch, Asset nicht auffindbar, Tap nicht lesbar (auch: keine Formel-Datei, erschöpftes Lese-Limit der Schnittstelle), Aufruf falsch; nur in `sync`: Anmeldung fehlt oder abgelehnt, `version`-Zeile fehlt, mehrfach oder außerhalb der Feldform (Schritt d), Vorwärts-Schutz, Ausgang des Schreibens ungewiss | nennt, was nicht erreicht wurde; **nie** als Unterschied |
+
+  **Die `version`-Zeile ist nur in `sync` Gegenstand.** Ihre Lesbarkeit gehört zum Vorwärts-Schutz
+  (Schritt d, Festlegung 3): in `sync` endet eine fehlende, mehrfache oder der Feldform nicht genügende
+  Zeile mit Exit 2 und ohne Schreibzugriff, auch wenn die Bytes gleich wären — Schritt d geht
+  Schritt e voraus. `check` kennt Schritt d nicht und liest die Zeile nicht als Feld: bei gleichen Bytes
+  endet er mit Exit 0, bei ungleichen mit Exit 1, gleich, wie die Zeile aussieht; sie ist dort eine
+  Zeile unter den Bytes des Vergleichs.
 
   Ein Lesefehler ist damit nie 1 und nie 0: ein Rot, das aus einem Netzfehler kommt, sagt das, und
   ein Grün entsteht nur aus zwei gelesenen, gleichen Dateien — oder aus der ausgesprochenen
@@ -366,9 +385,10 @@ Umgebungs-Secret, und nie in einer Kommandozeile.**
   die Rezepte des Repos): Eingaben lesen, Tag-Form und Feldform prüfen, Pin-Prüfung des Bildes,
   Schritt b, Vorab-Regel (Schritt c), `docker run`. Der Host trägt **kein** `gh`, `jq`, `curl` und
   `base64` — über `git`, `docker`, `make` und `bash` hinaus braucht er nichts
-  ([`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) nennt für die Laufzeit
-  des Tools „git + docker"; `make` und `bash` sind die Voraussetzung der Rezepte des Repos, nicht
-  dieses Werkzeugs).
+  ([`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) sagt: „die Laufzeit beim
+  Bootstrap braucht nur **git + docker** (keine Host-Sprachlaufzeit, kein Paketmanager)"; das Werkzeug
+  ist ein Ziel dieses Repos, kein Bootstrap-Schritt, und `make` und `bash` sind die Voraussetzung der
+  Rezepte des Repos, nicht dieses Werkzeugs).
 - **Im Bild** läuft eine **POSIX-`sh`-Nutzlast** über `curl`, `base64`, `cmp`, `sha256sum`, `sha1sum`,
   `sed`, `awk`, `wc`, `grep`, `sleep` und die Builtins: Asset und Tap-Stand holen, Feldform,
   Vorwärts-Schutz und Vergleich, Schreiben, Nachkontrolle. Skalare Felder der Schnittstelle
@@ -400,8 +420,8 @@ Vorab-Tag endet er mit Exit 0 und der Meldung des Nicht-Gegenstands, Festlegung 
 Wiederholungslauf des Jobs und der lokale Aufruf von `make tap-nachzug` sind **konvergent**
 (Festlegung 3). Der `tap-check` der Prozedur ist ein **vom Job unabhängiger Beleg**: er hält auch
 dann, wenn der Job grün endete und nichts geschrieben hat. **Er läuft unmittelbar nach dem Job und
-liest anonym, wo der Aufrufer kein Token exportiert hat** — die Prozedur verlangt keines. Steht der
-Job-Push noch im Cache-Fenster der Schnittstelle, liest er einmal den Stand davor: darum wartet er bei
+liest anonym, wo der Aufrufer kein Token exportiert hat** — die Prozedur verlangt keines. Läge der
+Job-Push noch im Cache-Fenster der Schnittstelle (§Lage: nicht beobachtet), läse er den Stand davor: darum wartet er bei
 Ungleichheit **einmal 65 s** und liest erneut (Festlegung 2); ein Exit 1 der Prozedur ist erst nach
 dieser Wiederholung ein Formel-Unterschied, und ein Aufruf, der nichts als Gleichheit findet, endet
 ohne Wartezeit.
@@ -446,8 +466,9 @@ kostet eine `make`-Zeile über demselben Skript und öffnet den Ausfallweg, der 
 - **Negativ:** eine Vertrauensgrenze, die der Workflow bisher nicht überschritt — wer ein `v*`-Tag
   pushen kann, erreicht das Token (siehe §Grenze); ein Token mit Ablaufdatum ist zu erneuern; eine
   Umgebung samt Regel ist zu pflegen; ein Fehlschlag des Jobs lässt das Release veröffentlicht und
-  das Tap veraltet, bis der Ausfallweg gelaufen ist; eine echte Abweichung kostet den `tap-check` der
-  Prozedur 65 s Wartezeit vor dem Exit 1.
+  das Tap veraltet, bis der Ausfallweg gelaufen ist; jede Ungleichheit im ersten Lesen kostet 65 s Wartezeit — eine
+  echte Abweichung ebenso wie ein cache-bedingtes falsches Ungleich, im `tap-check` der Prozedur wie in der
+  Nachkontrolle nach dem Schreiben; ein echter Unterschied endet danach mit Exit 1.
 - **Folgepflicht 1 — das Werkzeug:** Skript samt Nutzlast, die zwei `make`-Ziele, die zwei Zeilen in
   [`harness/README.md`](../../../harness/README.md) §Werkzeuge (`kein Gate`), **beide Ziele als Einträge
   in `targets.exempt-targets` der [`.d-check.yml`](../../../.d-check.yml)** (die Liste ist exakt; ohne
@@ -494,7 +515,7 @@ Schnittstelle einen Stand liefern kann, der bis zu 60 s alt ist (Festlegung 2). 
 - **die übrigen Dateien des Tap** (README, weitere Formeln) und **keinen Zustand nach dem Aufruf** —
   ein späterer Push ins Tap ist nicht Gegenstand.
 - **Vorab-Tags und ältere Releases** — die Vorab-Regel und der Vorwärts-Schutz aus Festlegung 3
-  benennen sie als Nicht-Gegenstand. Der Vorwärts-Schutz vergleicht den Kern `major.minor.patch`; eine
+  benennen sie als Nicht-Gegenstand. Der Vorwärts-Schutz (nur `sync`) vergleicht den Kern `major.minor.patch`; eine
   Formel, deren `version`-Zeile fehlt, mehrfach steht oder der Feldform nicht genügt, wird nicht
   angerührt (Exit 2) und ist von Hand zu heilen.
 - **ein Tap ohne Formel-Datei.** Der Nachzug schreibt nur über eine vorhandene Datei (Exit 2); den
@@ -503,6 +524,13 @@ Schnittstelle einen Stand liefern kann, der bis zu 60 s alt ist (Festlegung 2). 
   Verbindungsabbruch nach dem Senden weiß der Lauf nicht, ob das Tap geschrieben wurde; *„Tap
   unverändert"* sagt er nur bei einer ausdrücklichen Ablehnung. Die Nachkontrolle des Auftraggebers
   (`make tap-check`) entscheidet.
+- **den lokalen Weg gegen die Auswertung des Aufrufers.** `make tap-check TAG=<tag>` und
+  `make tap-nachzug TAG=<tag>` werten den Kommandozeilen-Wert in make aus, bevor die Formprüfung läuft
+  (Festlegung 1): ein `$(shell …)` im Wert führt der Aufruf selbst aus. Die Formprüfung schützt den
+  Env-Weg der CI, nicht die Tastatur des Aufrufers; der Tippende ist der Auftraggeber.
+- **das Lese-Limit der Schnittstelle.** Der anonyme Lese-Pfad der Kontrolle unterliegt einem Limit (die
+  Kopfzeile `x-ratelimit-limit` nennt es); ein erschöpftes Limit endet als *„Tap nicht lesbar"* mit
+  Exit 2, nie mit 1.
 - **Herkunft.** Es gibt keinen Signier-Schritt
   ([ADR-0058](0058-traeger-per-fetch-aus-dem-gepinnten-release.md) benennt die Grenze): ein Asset,
   das ersetzt wurde, wird nachgezogen wie das echte.
@@ -545,9 +573,10 @@ der aus einer anderen Ursache kommt, färbt den Fall sonst nicht rot.
 |---|---|---|
 | Vergleich: gleich → 0; verschieden (auch nach der Wiederholung) → 1 mit beiden Digests und der ersten abweichenden Zeile; nicht lesbar → 2 | vier Fälle: gleich; verschieden; Tap unlesbar bzw. Asset unlesbar; Tap **ohne** Formel-Datei (404) in `sync` → 2, Schreibzähler 0 | jeder Fehler endet als Exit 1 → der Lese-Fall wird rot; ein Tap ohne Datei gälte als „ungleich" und würde beschrieben → der Datei-fehlt-Fall wird rot |
 | Cache-Fenster: Ungleichheit wird in `check` und in der Nachkontrolle einmal erneut gelesen, Exit 1 nur bei zweiter Ungleichheit; Gleichheit im ersten Lesen wartet nicht | Stub liefert beim ersten Lesen den alten, beim zweiten den neuen Stand → Exit 0, zwei Lese-Aufrufe; beide Male alt → Exit 1; sofort gleich → ein Lese-Aufruf; Wartezeit im Test auf 0 gesetzt | Wiederholung entfernt → der Alt-dann-neu-Fall endet 1 und wird rot; immer zweimal lesen → der Ein-Lese-Aufruf-Fall wird rot |
+| `sync` wiederholt das Lesen nicht: bei ungleichem erstem Lesen genau ein Lese-Aufruf des Tap-Kopfs bis zum Schreiben (Schritt e) | Stub liefert beim ersten Lesen den alten, danach den neuen Stand und zählt die Lese-Aufrufe des Tap-Kopfs; Wartezeit im Test auf 0 → Lese-Aufrufe bis zum Schreibaufruf = 1, Schreibaufrufe = 1 | Wiederholung auch in Schritt e eingebaut → ein zweiter Lese-Aufruf vor dem Schreiben (der Stub liefert dann den neuen Stand, `sync` schriebe nicht) → der Fall wird rot |
 | Idempotenz: bei Gleichheit kein Schreibzugriff | Stub zählt Schreibaufrufe | das Skript schreibt immer → der Fall wird rot |
 | Vorwärts-Schutz nach Tap-Stand: Tag-Kern kleiner als der Kern der `version`-Zeile → 2 ohne Schreibzugriff; Gleichstand läuft weiter | Tap `0.2.3`, Tag `v0.1.2` — der ältere Stabil-Tag, den `releases/latest` als jüngstes erstelltes Release meldete; Gegenprobe: Tap `0.2.9`, Tag `v0.2.10` schreibt (numerisch je Feld); **Gleichstand:** Tap `0.2.3` (Bytes verschieden vom Asset), Tag `v0.2.3` → Schreibaufruf 1, Nachkontrolle 0 | Vergleich lexikografisch, oder Schutz entfernt → einer der zwei ersten Fälle wird rot; Schutz mit `<=` statt `<` → der Gleichstands-Fall wird rot |
-| Lesbarkeit der `version`-Zeile: fehlt, mehrfach oder außerhalb der Feldform → 2 mit einer Meldung, die die `version`-Zeile nennt, kein Schreibzugriff, **nie** `0.0.0` | Tap ohne `version`-Zeile, Tag `v0.2.3`; Tap mit zwei `version`-Zeilen; Tap `0.08.3`; Tap `0.2.99999999999999999999`; Tap `0.2` — je Exit 2, Meldung nennt die `version`-Zeile, Schreibzähler 0 | leere Extraktion als `0` gelesen → der Fall „ohne Zeile" schreibt (Zähler 1) und wird rot; Feldform-Prüfung entfernt → `0.08.3` bricht mit dem Syntaxfehler der Shell, die Meldungs-Prüfung wird rot; das 20-stellige Feld läuft über, die Meldung ist nicht die der Zeile → rot |
+| Lesbarkeit der `version`-Zeile in `sync`: fehlt, mehrfach oder außerhalb der Feldform → 2 mit einer Meldung, die die `version`-Zeile nennt, kein Schreibzugriff, **nie** `0.0.0`; in `check` nicht Gegenstand — gleiche Bytes → 0 | Tap ohne `version`-Zeile, Tag `v0.2.3`; Tap mit zwei `version`-Zeilen; Tap `0.08.3`; Tap `0.2.99999999999999999999`; Tap `0.2` — je Exit 2, Meldung nennt die `version`-Zeile, Schreibzähler 0; dazu `check` mit Tap = Asset und einer `version`-Zeile außerhalb der Feldform → Exit 0 | leere Extraktion als `0` gelesen → der Fall „ohne Zeile" schreibt (Zähler 1) und wird rot; Feldform-Prüfung entfernt → `0.08.3` bricht mit dem Syntaxfehler der Shell, die Meldungs-Prüfung wird rot; das 20-stellige Feld läuft über, die Meldung ist nicht die der Zeile → rot; Lesbarkeits-Prüfung auch in `check` → der `check`-Fall endet mit 2 und wird rot |
 | Vorab-Tag: 0 mit *„Vorab-Tag, Tap bleibt"* in **beiden** Modi, ohne Netz-Zugriff; die Regel von Skript und `publish`-Job entscheidet dieselben Tags gleich | Tag-Liste aus dem `publish`-Job gelesen: `v1.0.0-RC`, `v1.0.0-rc.1+x`, stabil `v1.0.0+build-1` | Vorab-Regel nur in `sync` → der `check`-Fall wird rot; Metadatum nicht zuerst abgeschnitten → der `+build-1`-Fall wird rot |
 | Tag-Eingabe: eine Form oder Feldform außerhalb der Liste → 2, bevor ein Container oder das Netz berührt wird | **Env-Weg:** Tag `v1.0.0$(touch${IFS}marker)` und `v1.0.0;x` (beide als Git-Ref anlegbar: `git check-ref-format refs/tags/<tag>` → Exit 0); **lokaler Weg:** `make tap-check TAG='v1.0.0$$(id)'` (make reicht `v1.0.0$(id)` durch); **Feldform:** `v01.0.0`, `v1.0.08`, `v1.0.1234567890` (10 Stellen), auch als Vorab-Tag `v01.0.0-rc.1` → je Exit 2, Marker-Datei fehlt, kein `docker`-Aufruf (Stub zählt) | Formprüfung entfernt → Marker/Aufruf-Zähler wird rot; Feldform entfernt → die Feldform-Fälle werden rot (Aufruf-Zähler); Schritt c vor Schritt a → der Vorab-Feldform-Fall wird rot |
 | Übergabe ohne Text: das Rezept trägt keine make-Referenz auf den Tag; der `run:`-Text des Jobs `tap` enthält kein `${{` | Textfall über die Rezeptzeilen von `tap-check` und `tap-nachzug` (kein `$(TAG)`, kein `${TAG}`) und über den `run:`-Text | `$(TAG)` in einer Rezeptzeile → der Rezept-Textfall wird rot; `${{ github.ref_name }}` im `run:` → der Job-Textfall wird rot |
