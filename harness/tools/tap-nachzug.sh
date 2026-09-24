@@ -144,9 +144,10 @@ asset_url="https://github.com/pt9912/ai-harness-init/releases/download/${tag}/ai
 tap_url="https://api.github.com/repos/pt9912/homebrew-ai-harness-init/contents/Formula/ai-harness-init.rb"
 
 # Die Nutzlast endet mit 0 (gleich), 10 (Formel-Unterschied) oder 2 (nicht ausfuehrbar).
-# Jeder andere Status stammt nicht aus ihrem Vergleich — docker nicht erreichbar (1), nicht
-# startbar, Bild nicht ladbar, Nutzlast abgebrochen — und ist ein nicht ausfuehrbarer Lauf,
-# nie ein Unterschied.
+# Jeder andere Status stammt nicht aus ihrem Ergebnis — docker nicht erreichbar (1), nicht
+# startbar, Bild nicht ladbar, Nutzlast abgebrochen, Stream-Fehler des Clients — und ist ein
+# nicht ausfuehrbarer Lauf, nie ein Unterschied; ob der Vergleich dabei gelaufen ist, ist
+# unbekannt.
 rc=0
 docker run --rm \
 	-e TAP_MODE="$modus" \
@@ -164,5 +165,5 @@ case "$rc" in
 	exit 1
 	;;
 2) exit 2 ;;
-*) fehler "der Transport im Bild ist nicht gelaufen (docker Exit $rc) — es wurde nichts verglichen" ;;
+*) fehler "der Transport im Bild endete ohne Ergebnis der Nutzlast (docker Exit $rc) — das Ergebnis des Vergleichs ist unbekannt" ;;
 esac

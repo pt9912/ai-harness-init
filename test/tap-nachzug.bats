@@ -408,15 +408,15 @@ x'; do
   [ "$(docker_aufrufe)" -eq 0 ]
 }
 
-@test "transport: ein docker-Aufruf ohne Ergebnis der Nutzlast (Status 1, 3, 125, 127) endet mit Exit 2 statt 1, mit der Meldung des Transports" {
+@test "transport: ein docker-Aufruf ohne Ergebnis der Nutzlast (Status 1, 3, 125, 127, 137, 143) endet mit Exit 2 statt 1, mit einer Meldung, die kein Ergebnis des Vergleichs behauptet" {
   # Status 1 ist der Ausgang des docker-Clients bei nicht erreichbarem Daemon; die Nutzlast
   # lief dann nicht. Klasse 1 kommt allein aus dem Ergebnis "Unterschied" der Nutzlast.
-  for s in 1 3 125 127; do
+  for s in 1 3 125 127 137 143; do
     lauf_getrennt check v0.2.3 STUB_DOCKER_EXIT="$s"
     echo "docker Status $s: Exit $status, stderr: $stderr"
     [ "$status" -eq 2 ]
-    [[ "$stderr" == *"Transport im Bild ist nicht gelaufen (docker Exit $s)"* ]]
-    [[ "$stderr" == *"nichts verglichen"* ]]
+    [[ "$stderr" == *"Transport im Bild endete ohne Ergebnis der Nutzlast (docker Exit $s)"* ]]
+    [[ "$stderr" == *"Ergebnis des Vergleichs ist unbekannt"* ]]
     [[ "$stderr" != *"Formel-Unterschied"* ]]
     [ "${stderr_lines[-1]}" = "tap-check: Exit 2" ]
   done
