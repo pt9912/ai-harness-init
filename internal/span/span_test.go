@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"testing"
@@ -148,6 +149,115 @@ func TestCommandProgramSkipsAssignments(t *testing.T) {
 			}
 			if strings.Contains(d.Program, "SECRET") {
 				t.Fatalf("Geheimnis im Span: %q", d.Program)
+			}
+		})
+	}
+}
+
+// bashSpanLine schreibt eine Bash-Kommandozeile durch den Weg des Traegers (Emit: Parse,
+// Build, Append) und gibt die geschriebene Zeile zurueck — die Zusage betrifft das Feld
+// im Strom, nicht die Rueckgabe einer Funktion.
+func bashSpanLine(t *testing.T, cmd string) string {
+	t.Helper()
+	payload, err := json.Marshal(map[string]any{
+		"tool_name":  "Bash",
+		"session_id": "s1",
+		"tool_input": map[string]string{"command": cmd},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	root := newRoot(t)
+	emit(t, root, string(payload))
+	b, err := os.ReadFile(filepath.Join(root, span.Dir, "s1.jsonl"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(b)
+}
+
+// TestCommandProgramNamesAProgramNotAnOperator haelt fest: das Feld `program` nennt das
+// Programm, das nach den Zuweisungen laeuft, oder nichts — nie einen Shell-Operator.
+// Jede Zeile laeuft ueber Derive UND ueber die geschriebene Zeile.
+func TestCommandProgramNamesAProgramNotAnOperator(t *testing.T) {
+	cases := []struct {
+		cmd     string
+		program string // "" heisst: kein program-Feld
+		argc    int
+	}{
+		{"A=b && cmd x", "cmd", 1},
+		{"A=b ; cmd x", "cmd", 1},
+		{"A=b | cmd x", "cmd", 1},
+		{"A=b & cmd x", "cmd", 1},
+		{"A=b; cmd x", "cmd", 1},
+		{"A=b && cmd x y", "cmd", 2},
+		{"A=1 B=2 && make gates", "make", 1},
+		{"A=b && C=d && make", "make", 0},
+		{"TOKEN=x && gh pr create", "gh", 2},
+		{"A=b || cmd", "", 0},
+		{"A=b &&", "", 0},
+		{"A=b ;", "", 0},
+		{"&& cmd", "", 0},
+		{"A=b && && cmd", "", 0},
+		{"(A=b; cmd)", "", 0},
+	}
+	for _, tc := range cases {
+		t.Run(tc.cmd, func(t *testing.T) {
+			d := span.Derive(span.Payload{Tool: "Bash", Input: span.ToolInput{Command: tc.cmd}})
+			line := bashSpanLine(t, tc.cmd)
+			if d.Program != tc.program {
+				t.Errorf("Derive: program = %q, erwartet %q (Zeile %q)", d.Program, tc.program, tc.cmd)
+			}
+			if tc.program == "" {
+				if d.HasArgc || strings.Contains(line, `"program"`) || strings.Contains(line, `"argc"`) {
+					t.Fatalf("erwartet: kein program/argc im Span fuer %q, geschrieben: %s", tc.cmd, line)
+				}
+				return
+			}
+			if d.Argc != tc.argc {
+				t.Errorf("Derive: argc = %d, erwartet %d (Zeile %q)", d.Argc, tc.argc, tc.cmd)
+			}
+			want := `"program":"` + tc.program + `","argc":` + strconv.Itoa(tc.argc)
+			if !strings.Contains(line, want) {
+				t.Errorf("Zeile %q: erwartet %s im Span, geschrieben: %s", tc.cmd, want, line)
+			}
+		})
+	}
+}
+
+// TestCommandProgramNeverEmitsAssignmentValueFragments haelt fest: weder ein Bruchstueck
+// noch der Wert eines Zuweisungs-Werts steht in irgendeinem Feld der geschriebenen Zeile.
+// Ein Wert, dessen Rand die Zerlegung an Leerraum nicht sicher findet, gibt kein program
+// aus; ein sicherer Wert wird uebersprungen und nie ausgegeben.
+func TestCommandProgramNeverEmitsAssignmentValueFragments(t *testing.T) {
+	cases := []struct {
+		cmd     string
+		program string // "" heisst: kein program-Feld
+	}{
+		{`TOKEN="abc SECRET" gh pr create`, ""},
+		{`TOKEN='abc SECRET' gh pr create`, ""},
+		{`A="x && SECRET" cmd`, ""},
+		{"T=$(date SECRET); make", ""},
+		{"A=`x SECRET` cmd", ""},
+		{`A=x\ SECRET cmd`, ""},
+		{`A=${A:-x SECRET} cmd`, ""},
+		{`A=x;SECRET cmd`, ""},
+		{"TOKEN=SECRETVALUE && gh pr create", "gh"},
+		{"TOKEN=SECRETVALUE; gh pr create", "gh"},
+		{"A=1 TOKEN=SECRETVALUE B=2 gh pr create", "gh"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.cmd, func(t *testing.T) {
+			line := bashSpanLine(t, tc.cmd)
+			if strings.Contains(line, "SECRET") {
+				t.Fatalf("Wert oder Wert-Bruchstueck im Span fuer %q: %s", tc.cmd, line)
+			}
+			if got := span.Derive(span.Payload{Tool: "Bash", Input: span.ToolInput{Command: tc.cmd}}).Program; got != tc.program {
+				t.Errorf("Derive: program = %q, erwartet %q (Zeile %q)", got, tc.program, tc.cmd)
+			}
+			hasProgram := strings.Contains(line, `"program"`)
+			if hasProgram != (tc.program != "") {
+				t.Fatalf("program-Feld im Span = %v, erwartet %v fuer %q: %s", hasProgram, tc.program != "", tc.cmd, line)
 			}
 		})
 	}

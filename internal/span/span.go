@@ -243,23 +243,65 @@ func filePath(in ToolInput) string {
 // commandProgram zieht das PROGRAMM aus einer Kommandozeile — nicht schlicht das
 // erste Feld. Eine Zeile darf mit Zuweisungen beginnen, und deren WERTE sind oft
 // genau das, was nie ins Log darf (gemessen: `GITHUB_TOKEN=ghp_… gh pr create` landete
-// sonst verbatim als "program"). Fuehrende NAME=WERT-Praefixe werden
-// uebersprungen; bleibt danach etwas mit `=` uebrig, wird GAR NICHTS ausgegeben.
-// Bewacht von TestCommandProgramSkipsAssignments.
+// sonst verbatim als "program"). Die Funktion nennt ein Programm oder NICHTS:
+//   - Zuweisungen (`NAME=WERT`) bilden ein Segment ohne Programm. Ein Operator als
+//     eigenes Feld (`&&`, `;`, `|`, `&`) beendet es; das Programm ist das erste Wort
+//     des naechsten Segments. `||` und ein Operator ohne vorausgehende Zuweisung geben
+//     nichts aus: nach `A=b || cmd` laeuft cmd nie.
+//   - Die Zerlegung schneidet an Leerraum. Ein Wert, dessen Rand sie so nicht sicher
+//     findet (Anfuehrungszeichen, Befehlssubstitution, Klammern, Backslash, Operatoren
+//     im Wert), gibt nichts aus — sonst stuende ein Wert-Bruchstueck im Feld. Ein
+//     einzelnes `;` am Wertende ist der Segment-Schluss (`A=b; cmd`).
+//   - Bleibt nach den Zuweisungen etwas mit `=` uebrig, wird ebenfalls nichts ausgegeben.
+//
+// argc zaehlt die Felder NACH dem Programm bis zum Zeilenende.
+// Bewacht von TestCommandProgramSkipsAssignments (Zuweisungen, argc),
+// TestCommandProgramNamesAProgramNotAnOperator (Segment-Grenze) und
+// TestCommandProgramNeverEmitsAssignmentValueFragments (Wert-Grenze, Wert-Schutz).
 func commandProgram(cmd string) (string, int, bool) {
 	// strings.Fields verwirft fuehrenden Leerraum, statt ein leeres erstes Feld zu
 	// erzeugen (gemessen: "  ls -l" ergab sonst argc 2 statt 1).
 	fields := strings.Fields(cmd)
+	// assigned: das laufende Segment trug bisher nur Zuweisungen und nennt kein Programm.
+	assigned := false
 	for i, f := range fields {
-		if isAssignment(f) {
-			continue
-		}
-		if strings.Contains(f, "=") {
+		switch {
+		case isSegmentEnd(f):
+			if !assigned {
+				return "", 0, false
+			}
+			assigned = false
+		case f == "||":
 			return "", 0, false
+		case isAssignment(f):
+			if !valueEdgeKnown(f) {
+				return "", 0, false
+			}
+			assigned = !strings.HasSuffix(f, ";")
+		case strings.Contains(f, "="):
+			return "", 0, false
+		default:
+			return f, len(fields) - i - 1, true
 		}
-		return f, len(fields) - i - 1, true
 	}
 	return "", 0, false
+}
+
+// isSegmentEnd nennt die Operatoren, die ein Segment als eigenes Feld beenden. `||` steht
+// nicht dabei: es bricht die Erkennung ab.
+func isSegmentEnd(field string) bool {
+	return field == "&&" || field == ";" || field == "|" || field == "&"
+}
+
+// unsureValueChars sind die Zeichen, an denen die Zerlegung an Leerraum den Rand eines
+// Zuweisungs-Werts nicht sicher findet.
+const unsureValueChars = "\"'`\\(){};&|<>"
+
+// valueEdgeKnown sagt, ob der Wert der Zuweisung `field` ein einzelnes Feld ist. Ein
+// einzelnes `;` am Ende gehoert nicht zum Wert.
+func valueEdgeKnown(field string) bool {
+	value := strings.TrimSuffix(field[strings.Index(field, "=")+1:], ";")
+	return !strings.ContainsAny(value, unsureValueChars)
 }
 
 func isAssignment(field string) bool {
