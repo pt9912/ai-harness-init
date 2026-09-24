@@ -199,7 +199,7 @@ welle-[a-z0-9]                      Welle, Name oder Nummer
 Die Muster für ADR und Vertrag folgen §ID-Schema und §Vergabe. `MR-`, `CO-`, `slice-` und `welle-` sind die
 **Setzung dieses Werkzeugs**, nicht eine Ableitung aus dem Traceability-Constraint, der unter anderem Requirement-ID
 und ADR-ID nennt. `MR-` und `slice-` stehen schon heute in der Menge; `CO-<NNN>`, `slice-<Kennung>` und `MR-<NNN>`
-stehen in der ID-Liste der Vorlage `conventions.template.md` (§MR-000, Feld Adaption). `welle-` steht dort **nicht**
+stehen in der ID-Liste der Vorlage `conventions.template.md` (Eintrag der Adoptions-Erklärung, Feld Adaption). `welle-` steht dort **nicht**
 als Kennung dieser Liste, sondern nur als Dateifamilie in der Klammer zum Bereichssegment; es stützt sich auf die
 Matrix-Spalte Welle (Festlegung 1) und den Namensraum aus §Vergabe (*„Welle- und Slice-Kennungen sind Namen, nicht
 Nummern"*).
@@ -275,7 +275,7 @@ der Commit-Prüfung ein Fall, der die Menge bindet — eine Mutation, die sie sc
 | G — Commit-Menge aus `.d-check.yml` lesen | eine Deklaration für beide | zweiter Parser, anderer Regex-Dialekt, die Prüfung liest heute bewusst keine Doku-Gate-Konfiguration |
 | H — Commit-Menge in einer Adopter-Datei | pro Ziel anpassbar | neue Artefaktklasse; die Route `HOOKS_DIR` deckt den Fall bereits |
 | I — das Werkzeug-Wort `slice-mv` aus der Menge ausnehmen | ein Betreff, der nur das Werkzeug nennt, zählt nicht als Kennung | ERE und der `\d`-Dialekt des `commits`-Moduls kennen keinen Ausschluss: die Menge wäre eine verschachtelte Zeichen-Alternative statt eines Präfixes, die drei Fassungen gingen auseinander oder die Kopplung fiele; **gemessen trennt es einen Betreff von 3366** (Kommando in der Grenze) |
-| J — beim Accept `MR-057` markieren oder einen Adaptions-Eintrag schreiben, der seine Grenze zur emittierten Ebene ablöst | der Adaptions-Block trüge den Zustand der Entscheidung | die Marke nach [`MR-032`](../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger) zeigt auf einen Eintrag, nicht auf eine ADR; ein Eintrag müsste eine Aussage ablösen, die nicht fällt (Folgepflicht 2) — Marke und Eintrag ohne Gegenstand, dazu ein weiterer Norm-Commit |
+| J — beim Accept [`MR-057`](../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer) markieren oder einen Adaptions-Eintrag schreiben, der seine Grenze zur emittierten Ebene ablöst | der Adaptions-Block trüge den Zustand der Entscheidung | die Marke nach [`MR-032`](../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger) zeigt auf einen Eintrag, nicht auf eine ADR; ein Eintrag müsste eine Aussage ablösen, die nicht fällt (Folgepflicht 2) — Marke und Eintrag ohne Gegenstand, dazu ein weiterer Norm-Commit |
 
 ## Konsequenzen
 
@@ -302,7 +302,7 @@ der Commit-Prüfung ein Fall, der die Menge bindet — eine Mutation, die sie sc
   Liefer-Punkte je Slice; der Schnitt gehört dem Planner. Er gleicht dabei ab, was ein offener Vorgang zur Kennung in
   Werkzeug-Messages schon führt.
 - Folgepflicht 2 — **der Adaptions-Block bleibt beim Accept unberührt.** Der Accept-Commit fasst Status, ADR-Index und
-  die Geschichte-Zeile dieser Datei an, sonst nichts; `MR-057` bekommt keine Kopf-Marke, und kein neuer Eintrag löst
+  die Geschichte-Zeile dieser Datei an, sonst nichts; [`MR-057`](../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer) bekommt keine Kopf-Marke, und kein neuer Eintrag löst
   ihn ab. Der Grund liegt in den Regeln der Einträge selbst: Die Marke ist der Zustandsträger einer **abgelösten
   Aussage** und fällig, wenn ein späterer **Eintrag** eine Aussage namentlich ablöst
   ([`MR-032`](../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
@@ -311,7 +311,7 @@ der Commit-Prüfung ein Fall, der die Menge bindet — eine Mutation, die sie sc
   ([`MR-032`](../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger),
   [`MR-020`](../../../harness/conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf),
   [`MR-046`](../../../harness/conventions.md#mr-046--die-verzeichnis-position-ist-binär-und-trägt-die-kopf-marke-nicht)).
-  **Keine Aussage von `MR-057` fällt:** sein Ausschluss der emittierten Ebene und sein Satz, was ein Zielrepo an
+  **Keine Aussage von [`MR-057`](../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer) fällt:** sein Ausschluss der emittierten Ebene und sein Satz, was ein Zielrepo an
   Kennungs-Form bekomme, entscheide *„der Slice, der die Tool-Ebene entscheidet"*, sagen, dass der Eintrag diese Ebene
   nicht bindet und ein anderer Vorgang sie entscheidet; dieser Vorgang ist diese Entscheidung. Dasselbe sagt
   [`MR-059`](../../../harness/conventions.md#mr-059--jede-kennungs-erkennung-trägt-die-zugelassenen-formen-die-fundliste-steht-im-vorgang)
