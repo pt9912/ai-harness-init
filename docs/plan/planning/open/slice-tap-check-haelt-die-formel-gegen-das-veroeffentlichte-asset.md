@@ -53,7 +53,7 @@ Vertragstext führt kein Tap, und [ADR-0064](../../adr/0064-tap-nachzug-ein-skri
 **Berührte Spec-Stellen:** — (der Slice berührt keine Spec-Stelle; Gegenstand ist ein
 Werkzeug dieses Repos).
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-24.
 
