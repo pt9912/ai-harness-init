@@ -135,7 +135,7 @@ hermetischen Fälle fahren Stubs (eine Fixture); der reale Beleg dieses Slice is
   außerhalb des Repos ([ADR-0064](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md) Festlegung 4); dieser Slice hat keine Vorbedingung dieser Art.
 - **Der Prozedur-Schritt in [`docs/user/releasing.md`](../../../user/releasing.md)** (Folgepflicht 3)
   **und der Wortlaut von Weg C im Handbuch** (Folgepflicht 5) — Adresse ist der offene Slice
-  [slice-tap-nachzug-ist-schritt-der-release-prozedur](slice-tap-nachzug-ist-schritt-der-release-prozedur.md).
+  [slice-tap-nachzug-ist-schritt-der-release-prozedur](../open/slice-tap-nachzug-ist-schritt-der-release-prozedur.md).
   Er führt heute die Kontrolle als eigenen Liefer-Punkt 2 und das Verdikt als Liefer-Punkt 3; die
   Kontrolle liefert dieser Slice, das Verdikt trägt [ADR-0064](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md). **Umgeschnitten wird er vom Planner,
   bevor er `next/` wird** — die Prozedur nennt `make tap-check` als ihren Beleg und kommt deshalb
