@@ -411,13 +411,19 @@ x'; do
 @test "transport: ein docker-Aufruf ohne Ergebnis der Nutzlast (Status 1, 3, 125, 127, 137, 143) endet mit Exit 2 statt 1, mit einer Meldung, die kein Ergebnis des Vergleichs behauptet" {
   # Status 1 ist der Ausgang des docker-Clients bei nicht erreichbarem Daemon; die Nutzlast
   # lief dann nicht. Klasse 1 kommt allein aus dem Ergebnis "Unterschied" der Nutzlast.
+  # Die Meldung nennt den Status und sagt, dass das Ergebnis unbekannt ist; jede Aussage ueber
+  # einen Zustand des Vergleichs ("verglichen", "Formel-Unterschied") steht nirgends in ihr —
+  # geprueft ueber nirgends() auf einer Datei, weil ein `!` vor einem Test mitten im Fall unter
+  # `set -e` nicht bricht.
   for s in 1 3 125 127 137 143; do
     lauf_getrennt check v0.2.3 STUB_DOCKER_EXIT="$s"
     echo "docker Status $s: Exit $status, stderr: $stderr"
     [ "$status" -eq 2 ]
     [[ "$stderr" == *"Transport im Bild endete ohne Ergebnis der Nutzlast (docker Exit $s)"* ]]
     [[ "$stderr" == *"Ergebnis des Vergleichs ist unbekannt"* ]]
-    [[ "$stderr" != *"Formel-Unterschied"* ]]
+    printf '%s\n' "$stderr" >"$TMP/stderr-$s"
+    nirgends 'Formel-Unterschied' "$TMP/stderr-$s"
+    nirgends 'verglichen' "$TMP/stderr-$s"
     [ "${stderr_lines[-1]}" = "tap-check: Exit 2" ]
   done
 }
@@ -491,8 +497,10 @@ x'; do
 @test "stderr nicht beschreibbar: ein Schreibfehler des Skripts aendert seinen Exit nicht, nur die Zeile fehlt" {
   # Zugesagt ist der Exit des Skripts, nicht die Zeile: ein Schreibfehler seiner eigenen Ausgabe
   # macht aus Exit 2 weder 1 noch etwas anderes. Geschlossen (&-) und voll (/dev/full) sind zwei
-  # Formen. Nicht gedeckt: eine stderr, die im Bild nicht beschreibbar ist — docker ist hier ein
-  # Stub, der reale Client endet dort mit Status 1 statt mit dem der Nutzlast (ADR-0066).
+  # Formen. Nicht gedeckt: eine nicht beschreibbare stderr des aufrufenden docker-Clients bei einem
+  # Container, der auf seine stderr schreibt — docker ist hier ein Stub, der reale Client endet
+  # dort mit Status 1 statt mit dem der Nutzlast (ADR-0066); eine im Container nicht beschreibbare
+  # stderr aendert seinen Status nicht.
   printf 'pwd() { return 127; }\n' >"$TMP/defekt.sh"
   cd "$CWD"
   for ziel in '/dev/full' '&-'; do
