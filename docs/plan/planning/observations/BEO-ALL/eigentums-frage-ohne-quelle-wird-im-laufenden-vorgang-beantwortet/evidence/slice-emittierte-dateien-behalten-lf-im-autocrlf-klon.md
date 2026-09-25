@@ -1,0 +1,2 @@
+**Vorgang:** slice-emittierte-dateien-behalten-lf-im-autocrlf-klon
+**Fund:** Der Implementer entfernte die Ruhe-Marker-Zeile der Roadmap (*Nichts in Arbeit.*) im Claim-Commit `7a031289` (`git show 7a031289 -- docs/plan/planning/in-progress/roadmap.md` löscht die drei Zeilen) und vermerkte die Wiederherstellung als Teil des Abschlusses; der Planner stellt sie bei der Closure wieder her. Keine Quelle benennt die schreibende Rolle dieser Zeile, und der Review führt dieselbe Form als bereits geführt. Der Stand der Beobachtung bleibt `geplant`.

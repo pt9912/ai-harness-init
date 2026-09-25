@@ -202,7 +202,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 **Liefer-Punkte (drei, in dieser Reihenfolge — der Messweg zuerst, damit das Gegenbeispiel rot
 gesehen wird, bevor es etwas zu heilen gibt):**
 
-- [ ] **1 · Messweg.** Eine neue Stufe in `harness/tools/full-smoke.sh` — Kopfzeile der Form
+- [x] **1 · Messweg.** Eine neue Stufe in `harness/tools/full-smoke.sh` — Kopfzeile der Form
       `echo "full-smoke: …"` **und** ein `e2e_abdeckung`-Aufruf mit den Kennungen
       [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) und
       [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), sonst fällt sie
@@ -229,7 +229,7 @@ gesehen wird, bevor es etwas zu heilen gibt):**
       Laut-Ausfall:** im gewöhnlichen autocrlf-Klon fällt der Guard laut aus (Exit 2), und still ist nur
       der Mischzustand aus Setzung 1 — kein Wort „still" für den gewöhnlichen Klon in Kopfzeile,
       Meldungen und `e2e_abdeckung`-Text.
-- [ ] **2 · Emission.** Die genesteten `.gitattributes` mit der Zeile aus Setzung 1 in den fünf
+- [x] **2 · Emission.** Die genesteten `.gitattributes` mit der Zeile aus Setzung 1 in den fünf
       Verzeichnissen aus Setzung 2, je Eintrag mit der Klasse aus Setzung 3 in `enforceFiles()`; die drei
       skip-if-present-Einträge tragen eine Meldung, die den Pfad **und** die Aussage nennt, was dann
       gilt. Zwei neue Go-Tests, gemessen an einem Emit, der die Wortliste unter `blocked/` und die
@@ -254,7 +254,7 @@ gesehen wird, bevor es etwas zu heilen gibt):**
       ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), Boundary). Dazu Fälle in
       `test/mutations/`: ein Eintrag entfällt bzw. die Zeile trägt `eol=crlf` bzw. einen Endungs-Glob →
       Test (a) färbt rot; die Meldung verliert die Aussage → Test (b) färbt rot.
-- [ ] **3 · Dogfood.** Die Wurzel-`.gitattributes` dieses Repos mit der Zeile aus Setzung 1 — Konfiguration
+- [x] **3 · Dogfood.** Die Wurzel-`.gitattributes` dieses Repos mit der Zeile aus Setzung 1 — Konfiguration
       und Lieferung dieses Slice, keine dritte Schicht; die Renormalisierung im Ziel ist nicht
       Gegenstand. Beleg —
       vorher und nachher dasselbe Kommando: `git ls-files --eol | awk '{print $1,$2}' | sort | uniq -c`
@@ -266,17 +266,17 @@ gesehen wird, bevor es etwas zu heilen gibt):**
 
 **Konstante Pflichten (zählen nicht mit):**
 
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: [`docs/user/e2e-abdeckung.md`](../../../user/e2e-abdeckung.md) aus `make e2e-abdeckung`
+- [x] Doku-Update: [`docs/user/e2e-abdeckung.md`](../../../user/e2e-abdeckung.md) aus `make e2e-abdeckung`
       regeneriert; [`harness/sensors/full-smoke.md`](../../../../harness/sensors/full-smoke.md), falls es
       die Stufen aufzählt; die Klassen-Tabelle bzw. Inventur der Emission
       (`internal/emit/baumaussage.go`), soweit sie die neuen Pfade nennen muss.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -350,12 +350,12 @@ dasteht.
   Ausführungsbit), bleibt unbelegt; die Grenze der Messmethode aus
   [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) gilt unverändert —
   **Ausgang:** weiter offen → `BEO-ALL/messung-ersetzt-die-zielplattform-durch-ihren-git-filter`
-  (Neuanlage bei der Closure, Beleg `evidence/slice-emittierte-dateien-behalten-lf-im-autocrlf-klon.md`).
+  (Verzeichnis angelegt, Beleg `evidence/slice-emittierte-dateien-behalten-lf-im-autocrlf-klon.md`).
 - **Die Wurzel-Dateien des Adopters (`Makefile`, `d-check.mk`, `a-check.mk`, `.d-check.yml`,
   `Dockerfile`) bleiben ohne Attribut, und ob ein Windows-`make` oder BuildKit an CRLF bricht, ist
   ungemessen** (unter GNU Make 4.3 bricht das `Makefile` nicht, §1). Die Stufe gibt die Restmenge aus —
   **Ausgang:** weiter offen → `BEO-ALL/emittierte-wurzel-dateien-ohne-zeilenenden-attribut`
-  (Neuanlage bei der Closure; der Zähler folgt aus den Dateien unter `evidence/`).
+  (Verzeichnis angelegt; der Zähler folgt aus den Dateien unter `evidence/`).
 - **`text=auto` stuft eine emittierte Skript-Datei als binär ein und lässt sie mit CRLF stehen.**
   **Ausgang:** entfallen — die Stufe zählt CR-Bytes und führt `.githooks/commit-msg` über seine
   Shebang-Zeile, beides an den realen Bytes; eine als binär eingestufte Datei färbte sie rot, und ihr
@@ -381,8 +381,131 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-*Wird bei der Closure vom Planner geschrieben, nicht vom Lauf, der den Slice baut
-([`AGENTS.md`](../../../../AGENTS.md) §3.10). Bis dahin stehen die Ausgänge der Risiken in §6.*
+Geschrieben von der Rolle Planner in frischem Kontext
+([`AGENTS.md`](../../../../AGENTS.md) §3.10), nach dem Review
+(`docs/reviews/2026-09-25-slice-emittierte-dateien-behalten-lf-im-autocrlf-klon.md`, 0 HIGH · 1 MEDIUM · 2 LOW · 4 INFO)
+und der Verifikation
+(`docs/reviews/2026-09-25-verify-slice-emittierte-dateien-behalten-lf-im-autocrlf-klon.md`, Verdikt *bestätigt* für alle
+drei Liefer-Punkte). Die Häkchen der DoD stehen, soweit der Verifikationsbericht die Deckung belegt; die Ausgänge der
+Risiken stehen in §6.
+
+- **Was hat funktioniert:** Der Messweg stand vor der Emission und hatte damit einen Stand, an dem das Rot gesehen wurde
+  (`46730987` vor `1b482a15`). Der Verifier hat das Rot **erneut** gelesen, nicht übernommen: im autocrlf-Klon ohne die fünf
+  `.gitattributes` trugen `.harness` 58, `.claude/hooks` 3, `.githooks` 1, `harness/mk` 11 und `tools/harness` 11 Dateien
+  CR, der Kontrollklon mit gesetztem `core.autocrlf=false` und der Klon mit Emission je 0; die Meldungen
+  `/usr/bin/env: »bash\r“: Datei oder Verzeichnis nicht gefunden` (Exit 127) und `set: pipefail: Ungültiger Optionsname`
+  (Exit 2) nennen die Datei. Zwei Teilzustände tragen die Zusage *„das Rot nennt die CR-tragende Datei"*: nur
+  `.claude/hooks` ohne Emission → die Stufe nennt die drei Hook-Dateien; Endungs-Glob `*.sh` statt `*` → sie nennt die
+  Wortliste `tools/harness/blocked/go` **und** den stillen Fall (`der Command-Guard blockt 'staticcheck' … nicht`, Exit 0).
+  Der Guard als dritter Konsument ist eine Verschärfung gegenüber dem Plan (`commit-msg`, `baseline-verify`): ohne ihn wäre
+  der Mischzustand aus §1 Setzung 1 unsichtbar. Die Restmenge außerhalb der fünf Verzeichnisse gibt die Stufe aus
+  (28 Dateien mit CR im Ziel, Momentaufnahme des Verifiers, kein Erwartungswert).
+- **Was ging anders als geplant:** (1) Der Eigenschafts-Test (a) fragt `git check-attr eol` nach dem **Wert** je Pfad, statt
+  die Zeile zu suchen (`613f63d5`): er misst die Wirkung aller Zeilen in git-Reihenfolge, und der Fall 451 — eine später
+  angehängte `*.sh eol=crlf` — ist **gebaut, nicht geplant** und trägt: die Zeilen-Suche hätte ihn nicht gesehen. (2) Die
+  Einträge stehen in `internal/emit/zeilenenden.go` und werden von `enforceFiles()` angehängt, nicht in `enforce.go`; die
+  Klasse je Pfad steht damit an einer Stelle, aber nicht dort, wo §3 des Plans sie nannte. (3) Der Plan sagt, die
+  Klassen-Kopplung `TestEnforce_IdempotenzKlasseJePfad` trage die neuen Pfade; sie trägt die **Menge**, nicht die Klasse
+  gegen [`ADR-0067`](../../adr/0067-emittierte-zeilenenden-ein-attribut-je-verzeichnis-mit-interpreter-konsument.md)
+  Festlegung 3 — die Klassen-Treue hält der neue Meldungs-Test aus eigener Aufzählung (Fälle 449 und 450, Gegenproben
+  gefahren). Die DoD-Formulierung bleibt stehen, sie ist nicht Sache der ausführenden Rolle
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.10). (4) Die Fälle 446 bis 451 tragen den Modus `100755` wie ihre 42 Vorgänger
+  (`f0cc6432`).
+- **Review-Findings und ihr Verbleib:** MEDIUM-1 (vier Kommentare begründen im Konjunktiv über die verworfene Alternative,
+  [`AGENTS.md`](../../../../AGENTS.md) §3.7), LOW-1 (der Test prüfte die Anwesenheit einer Zeile statt ihrer Wirkung) und
+  LOW-2 (Modus der Fälle) sind im Slice behoben (`10561b46`, `613f63d5`, `f0cc6432`). **INFO-2** (im Test-Ziel fehlt
+  `a-check.mk`; die Wurzel-Ausnahme greift über die Wurzel-Regel) bleibt stehen, kein Bruch der Zusage. **Offen bleiben**
+  drei Punkte, die keinen DoD-Punkt berühren und im Register geführt sind: LOW-V1 (die Aussage-Schleife in
+  `TestZeilenenden_BelegterPfadBleibtUndWirdGemeldet` prüft `path.Dir(rel) + "/"` gegen eine Zeile, die `rel` selbst
+  trägt; eine Meldung, deren Aussagesatz ein falsches Verzeichnis nennt, lässt den Test grün — Sonde des Verifiers, rc 0),
+  LOW-V2 bzw. INFO-1 (die Klassen-Kopplung liest die Klasse aus der Aufzählung, die sie prüft) und INFO-3 (die Zusage im
+  Vorlagen-Kommentar, sie gelte unabhängig von einer `.gitattributes` in der Wurzel, ist am Ziel von Hand gemessen —
+  Adopter-Wurzel `* text eol=crlf`, die genesteten Zeilen gewinnen — und wird von keinem Sensor gehalten). **Eine
+  Korrektur von LOW-V1 ist nicht Teil dieser Closure** ([`AGENTS.md`](../../../../AGENTS.md) §3.10: Code fasst der Abschluss
+  nicht an); ob ein Folge-Slice sie trägt, ist Entscheidung des Auftraggebers, und bis dahin ist der Kommentar an dieser
+  Assertion die Zusage ohne rotes Gegenbeispiel ([`AGENTS.md`](../../../../AGENTS.md) §3.6). **INFO-4:** das Handbuch nennt
+  die Zeilenenden der Emission nicht, keine seiner Aussagen wird falsch; das Update gehört in den Release-Schnitt, dieser
+  Abschluss fasst es nicht an.
+- **Messung aus Liefer-Punkt 3** (Wegwerf-Klons von `HEAD` und `bd76d800`, `core.autocrlf=false`; Momentaufnahme des
+  Verifiers, **keine Erwartungswerte**, sie ist kein Gate):
+  `git ls-files --eol | awk '{print $1,$2}' | sort | uniq -c` vorher **2590** `i/lf w/lf`, **11** `i/none w/none`, **2**
+  `i/-text w/-text`, nachher **2601** `i/lf w/lf` bei gleichen übrigen Zeilen — die elf neuen Dateien sind die Lieferung des
+  Slice, **kein Bestand ändert seine Zeilenenden-Spalten**, die zwei `i/-text` bleiben;
+  `git add --renormalize . && git diff --cached --name-only | grep -vc '^\.gitattributes$'` → **0** (die verworfene
+  Alternative `* text eol=lf` → **2**, beide PNG); im Klon von `HEAD` mit `-c core.autocrlf=true` liefert
+  `grep -c $'\r'` **0** in `SHA256SUMS` (Plan: heute 54) und **0** in `pretooluse-command-guard.sh` (Plan: heute 119),
+  `bash harness/tools/baseline-verify.sh` endet mit `OK — 54 Dateien`, und die zwei PNG tragen in Arbeitsbaum, Klon und Stand
+  `bd76d800` denselben sha256.
+- **`make mutate` — Teilmessung, kein voller Lauf.** Für diesen Stand gibt es **keinen** vollständigen Lauf und damit keinen
+  grünen. Gemessen ist: ein Lauf mit `MUTATE_JOBS=6` über die damals 439 Fälle wurde nach **151 `ok` und 0 Befunden**
+  kontrolliert abgebrochen (`ABGEBROCHEN, keine vollstaendige Messung`; die Zahl 151 hat der Verifier als Behauptung
+  übernommen, nicht nachgeprüft); der Verifier hat **25** Fälle einzeln emuliert (Kopie von `HEAD`, Skript des Falls, Anker
+  trifft, `make test-go`, erwarteter Test rot aus dem behaupteten Grund), alle **ok** — die sechs neuen Fälle 446 bis 451
+  und 19 bestehende, bisher nicht gefahrene. Die Emulation ersetzt den Treiber nicht: Isolation, Fingerabdruck und die
+  Bedingungen 5 und 6 des Treibers sind nicht gemessen. **Von niemandem gefahren sind 13 Fälle**, deren `# expect:` ein Test
+  aus `enforce_test.go` oder `baumaussage_test.go` ist, deren `# files:` aber keine der geänderten Dateien nennt: **31, 32,
+  39, 42, 43, 162, 326, 361, 364, 368, 369, 383, 384**; eine Verschiebung ihres Ankers ist nicht zu erwarten (die Änderung an
+  beiden Testdateien sind zwei Listen-Erwartungen und zwei gepinnte Bestände), aber unbelegt. Der Beleg-Slot nach
+  [`ADR-0035`](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md) ist **nicht geschrieben**, die ADR
+  bleibt `Proposed`; der nächtliche Lauf (`mutate.yml`) ist der Träger der 13 Fälle. Gezählt:
+  `ls test/mutations/*.sh | wc -l` → **439**, `ls test/mutations/44[6-9]-* test/mutations/45[01]-* | wc -l` → **6** Zähne dieses
+  Slice (gemessen 2026-09-25, keine Erwartungswerte). Gegenproben (grün heißt *bindet*): 446, 447, 448, 451 binden an die
+  Wert-Assertion `wert[rel] != "lf"`; 449 bindet an die Aussage-Strings; 450 ist von drei Assertions getragen — Redundanz,
+  keine Lücke, die Gegenprobe ist dort nicht sauber isolierbar.
+- **`make gates`:** Lauf am Stand `0154abe0` (vor der Closure), Exit 0; Stempel `.harness/state/gates-passed.diffsha` und
+  `bash harness/tools/working-tree-hash.sh` gleich (`533b32c1…9230`). Der Lauf über den Closure-Stand steht in der Übergabe an
+  den Auftraggeber, nicht in dieser Datei. `make e2e-abdeckung` steht unverändert (22 Stufen, 22 Deklarationen); die Stufe
+  trägt `LH-FA-01` und `LH-FA-06`, nicht `LH-QA-04`.
+- **Adressen vor dem Move ([`AGENTS.md`](../../../../AGENTS.md) §3.11):** beide Adress-Formen gemessen —
+  `git grep -nE '(in-progress|done)/slice-emittierte-dateien-behalten-lf-im-autocrlf-klon'` außerhalb der Plandatei →
+  **kein Treffer**; `git grep -nE '\]\(slice-emittierte-dateien-behalten-lf-im-autocrlf-klon'` → **kein Treffer**. Die einzige
+  Pfad-Nennung eines eingefrorenen Artefakts trägt `open/` und ist eine Tatsachenaussage über den damaligen Stand
+  (`docs/reviews/2026-09-24-slice-program-feld-nennt-weder-operator-noch-wertfragment-verify.md`); der Move von
+  `in-progress/` nach `done/` trifft sie nicht. Die Reviews und der Bericht nennen die Kennung, keinen Pfad.
+- **Steering-Loop-Eintrag (Form: neuer Sensor; kein Zielort-Feld, weil keine Regel an einem Zielort verkörpert wurde).** Der
+  Sensor ist die `full-smoke`-Stufe `zeilenenden_im_klon` mit Eintrag in der Abdeckungs-Sicht, der Eigenschafts-Test
+  `TestZeilenenden_JederKonsumentLiegtUnterEinerZeile` (Wirkung statt Zeile, Menge aus dem emittierten Baum), der
+  Meldungs-Test `TestZeilenenden_BelegterPfadBleibtUndWirdGemeldet` und die Fälle 446 bis 451. **Was der Slice geschärft
+  hat:** ein Eigenschafts-Test fragt das Werkzeug, das die Eigenschaft *entscheidet* (`git check-attr`), statt die Datei nach
+  der Zeile zu durchsuchen, die sie vermutlich herstellt — der Fall 451 färbt nur die erste Form rot. **Die benannten
+  Grenzen bleiben Grenzen:** die Stufe belegt den Smudge-Filter von git unter Linux, keinen Windows-Lauf
+  ([`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix), Grenze der Messmethode); die Wurzel-Dateien des
+  Adopters bleiben ohne Attribut; ein voller `make full-smoke` wurde für diesen Stand nicht gefahren (die Stufe lief einzeln,
+  mit und ohne Emission).
+- **Beobachtungs-Register (`../observations/`):** je Beleg
+  `evidence/slice-emittierte-dateien-behalten-lf-im-autocrlf-klon.md`; Zähler gelesen am 2026-09-25 mit
+  `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`
+  ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)).
+  **Neu angelegt (je 1×, `offen`):**
+  [`messung-ersetzt-die-zielplattform-durch-ihren-git-filter`](../observations/BEO-ALL/messung-ersetzt-die-zielplattform-durch-ihren-git-filter/observation.md)
+  und
+  [`emittierte-wurzel-dateien-ohne-zeilenenden-attribut`](../observations/BEO-ALL/emittierte-wurzel-dateien-ohne-zeilenenden-attribut/observation.md)
+  (die zwei Risiken aus §6 mit Ausgang *weiter offen*) sowie
+  [`erwartung-stammt-aus-dem-geprueften-gegenstand`](../observations/BEO-ALL/erwartung-stammt-aus-dem-geprueften-gegenstand/observation.md)
+  (LOW-V1 und LOW-V2 bzw. INFO-1 — zwei Funde, **ein** Vorgang, ein Beleg; vorher geprüft: keine bestehende Beobachtung
+  trägt die Klasse — `zusicherung-ueber-der-leeren-menge-wahr` ist eine Negation über der leeren Menge und
+  `weite-assertion-verdeckt-die-bindung-der-engen` zwei Assertions verschiedener Weite, beides andere Mechanismen).
+  **Ergänzt, je eine Evidence-Datei:**
+  [`kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle`](../observations/BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle/observation.md)
+  (**17×**, `verkörpert`; MEDIUM-1, die Klausel im Konjunktiv über die verworfene Alternative, die §3.7 als *falsch* führt) und
+  [`eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`](../observations/BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet/observation.md)
+  (**6×**, Stand `geplant` unverändert; der Ruhe-Marker der Roadmap wurde beim Claim abermals von der ausführenden Rolle
+  entfernt und wird hier vom Planner wiederhergestellt).
+  **Nicht erhöht, mit Begründung:**
+  [`emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`](../observations/BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/observation.md)
+  bleibt bei **2×** — die Fehlerrichtung dieses Eintrags ist *im Ziel liegt, was hier steht*; INFO-3 ist eine Zusage, die am
+  Ziel **wahr** ist (Verifier: von Hand gemessen, genestete Zeilen gewinnen gegen eine Adopter-Wurzel) und nur von keinem
+  Sensor gehalten wird, und INFO-1 ist ein Test-Befund, keine emittierte Aussage. Beides zählt hier nicht. **Benannt, nicht
+  eingetragen:** INFO-3 (emittierte Kommentar-Zusage, nur von Hand gemessen) und LOW-2 (Angleichung an *„den Bestand"* ohne
+  benannten Maßstab, im Slice behoben) haben keinen Eintrag im Register bekommen — beide sind Einzelfunde ohne bestehende
+  Klasse, und ob sie eine eigene Beobachtung tragen, entscheidet der Auftraggeber. `mutate-beleg-verfaellt-mit-jedem-commit-und-jedem-nachsehen-lauf`
+  (3×, `offen`) bekommt keinen Beleg: hier fehlt der Lauf, nicht sein Baum-Stand. Register-Umfang:
+  `ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l` → **176** (vorher 173; gemessen 2026-09-25).
+- **Übergaben:** Frage an den **Architect** — gehört `docs/reviews/**` in die Ausnahmeliste von `make slice-mv`
+  (`SLICE_MV_AUSGENOMMENE_PFADE`), da der Nachzug eingefrorene Zeitdokumente umschreiben kann
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.11)? Bei diesem Move trat es nicht auf (Messung oben). An den **Auftraggeber:**
+  Folge-Slice für LOW-V1, Register-Eintrag für INFO-3 und LOW-2, nächtlicher `make mutate` für die 13 Fälle und den
+  Beleg-Slot, Handbuch im Release-Schnitt.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
