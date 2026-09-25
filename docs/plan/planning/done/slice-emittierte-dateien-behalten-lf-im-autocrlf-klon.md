@@ -277,7 +277,7 @@ gesehen wird, bevor es etwas zu heilen gibt):**
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -501,6 +501,16 @@ Risiken stehen in §6.
   Klasse, und ob sie eine eigene Beobachtung tragen, entscheidet der Auftraggeber. `mutate-beleg-verfaellt-mit-jedem-commit-und-jedem-nachsehen-lauf`
   (3×, `offen`) bekommt keinen Beleg: hier fehlt der Lauf, nicht sein Baum-Stand. Register-Umfang:
   `ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l` → **176** (vorher 173; gemessen 2026-09-25).
+- **Die drei Paarungen, nach dem `git mv` geprüft (2026-09-25):** (a) *Anker* — diese Sektion trägt kein Feld `liegt in
+  <Zielort>` (die Form ist *neuer Sensor*, keine verkörperte Regel), die Paarung hat keinen Gegenstand; (b) *Folge-Slice* —
+  keine Kennung eines Folge-Slice genannt (die Frage nach einem Folge-Slice für LOW-V1 liegt beim Auftraggeber), kein Gegenstand;
+  (c) *Register* — die sechs in §7 genannten Beobachtungen existieren als Verzeichnis, jede mit nicht leerem `evidence/`
+  (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l` → 6 · 1 · 2 · 1 · 17 · 1, in der Reihenfolge
+  *eigentums-frage* · *emittierte-wurzel-dateien* · *emittierte-zusage* · *erwartung-stammt* · *kommentar-nennt* ·
+  *messung-ersetzt*). Die zweite Hälfte von (c) über das ganze Register meldet vier Verzeichnisse ohne Datei unter `evidence/`
+  (`ci-rennt-gegen-die-publikation-des-gepinnten-releases`, `cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+  `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`, `planungs-bestand-waechst-schneller-als-er-abgebaut-wird`); keines
+  gehört zu diesem Slice, sie gehen als Befund an den Auftraggeber.
 - **Übergaben:** Frage an den **Architect** — gehört `docs/reviews/**` in die Ausnahmeliste von `make slice-mv`
   (`SLICE_MV_AUSGENOMMENE_PFADE`), da der Nachzug eingefrorene Zeitdokumente umschreiben kann
   ([`AGENTS.md`](../../../../AGENTS.md) §3.11)? Bei diesem Move trat es nicht auf (Messung oben). An den **Auftraggeber:**
