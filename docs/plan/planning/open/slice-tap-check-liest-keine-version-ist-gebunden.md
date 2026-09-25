@@ -28,7 +28,7 @@ Feld; §Fitness Function: jede Zusage mit dem Gegenbeispiel, das sie brechen lä
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-25.
 
@@ -192,7 +192,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 eingefrorenes Artefakt diese Datei als Pfad nennt — über beide Adress-Formen (Code-Span-Pfad und
 Markdown-Link). Der Befund am Tag des Schnitts: kein Artefakt nennt sie
 (`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-tap-check-liest-keine-version-ist-gebunden\.md|open/slice-tap-check-liest-keine-version-ist-gebunden|\]\(slice-tap-check-liest-keine-version-ist-gebunden' . | grep -v 'planning/open/slice-tap-check-liest-keine-version-ist-gebunden.md' | wc -l`
-→ **0**, gemessen 2026-09-25); der Lauf, der die Datei bewegt, misst neu.
+→ **0**, gemessen 2026-09-25 und vor dem Move erneut: **0**); die Kennung steht allein in der Datei des Nachbar-Slice `slice-tap-nachzug-sync-schreibt-die-formel-ins-tap` (`open/`, änderbar) als Text, in keinem eingefrorenen Artefakt.
 
 **Start** (`next` → `in-progress`): `Verantwortlich:` gesetzt, WIP-Limit frei. Keine Abhängigkeit: der Slice
 braucht weder `sync` noch ein Ziel; die Nutzlast, gegen die er den Anker misst, besteht
