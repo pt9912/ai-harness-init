@@ -515,7 +515,7 @@ func TestEnforce_ErfassungLiegtMitDemTraeger(t *testing.T) {
 	}
 
 	// (b) Der Wrapper: der VOLLE Bestand unter dem Praefix gegen die erwartete Liste.
-	want := []string{"pretooluse-command-guard.sh", "span-emit.sh", "stop-require-gates.sh"}
+	want := []string{".gitattributes", "pretooluse-command-guard.sh", "span-emit.sh", "stop-require-gates.sh"}
 	if got := captureHookInventory(t, dir); !reflect.DeepEqual(got, want) {
 		t.Errorf(".claude/hooks/ traegt %v, erwartet %v", got, want)
 	}
@@ -587,7 +587,7 @@ func TestEnforce_KeineErfassungOhneTraeger(t *testing.T) {
 	}
 
 	// Kein Wrapper — wieder der VOLLE Bestand, nicht eine Stichprobe.
-	want := []string{"pretooluse-command-guard.sh", "stop-require-gates.sh"}
+	want := []string{".gitattributes", "pretooluse-command-guard.sh", "stop-require-gates.sh"}
 	if got := captureHookInventory(t, dir); !reflect.DeepEqual(got, want) {
 		t.Errorf(".claude/hooks/ traegt ohne Traeger %v, erwartet %v", got, want)
 	}

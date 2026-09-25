@@ -88,7 +88,7 @@ type enforceFile struct {
 // Adopters, und ein Ziel, das dort seine eigene Zusage fuehrt, behaelt sie (ADR-0054
 // Festlegung 1 und 2).
 func enforceFiles() []enforceFile {
-	return []enforceFile{
+	files := []enforceFile{
 		{src: "templates/enforce/working-tree-hash.sh", dst: "tools/harness/working-tree-hash.sh", mode: 0o755, class: Konvergent},
 		{src: "templates/enforce/record-gates.sh", dst: "tools/harness/record-gates.sh", mode: 0o755, class: Konvergent},
 		{src: "templates/enforce/stop-require-gates.sh", dst: ".claude/hooks/stop-require-gates.sh", mode: 0o755, class: Konvergent},
@@ -154,6 +154,9 @@ func enforceFiles() []enforceFile {
 		e2eAbdeckungFile(),
 		e2eAbdeckungMkFile(),
 	}
+	// Die Zeilenenden-Attribute der fuenf Verzeichnisse mit Interpreter- oder
+	// Byte-Konsument; die Klasse je Pfad und die Meldung traegt zeilenenden.go.
+	return append(files, zeilenendenFiles()...)
 }
 
 // carrierDir ist der Ablageort des Traegers im Ziel: der gitignorierte Zustands-Bereich,

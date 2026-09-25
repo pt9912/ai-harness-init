@@ -62,6 +62,7 @@ func TestTraegerInventur_KeineZelleBehauptetEineAbwesenheitDieDerEmitWiderlegt(t
 	// Der gepinnte Bestand je Praefix, an dem eine Zelle Abwesenheit behauptet.
 	gepinnt := map[string][]string{
 		"tools/harness/": {
+			"tools/harness/.gitattributes",
 			"tools/harness/baseline-verify.sh",
 			"tools/harness/commit-msg-traceability.sh",
 			"tools/harness/e2e-abdeckung.sh",
@@ -74,6 +75,7 @@ func TestTraegerInventur_KeineZelleBehauptetEineAbwesenheitDieDerEmitWiderlegt(t
 			"tools/harness/working-tree-hash.sh",
 		},
 		"harness/mk/": {
+			"harness/mk/.gitattributes",
 			"harness/mk/archivierung.mk",
 			"harness/mk/baseline.mk",
 			"harness/mk/doc-gate.mk",
