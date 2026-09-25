@@ -243,7 +243,7 @@ nach [`AGENTS.md`](../../../../AGENTS.md) §3.11 und
 eingefrorenes Artefakt diese Datei als Pfad nennt — über beide Adress-Formen. **Der Befund steht:** kein
 Artefakt nennt sie als Pfad. Der Code-Span-Pfad und der Markdown-Link (`open/<Kennung>`,
 `<Kennung>.md`, `](<Kennung>`) treffen im Repo außerhalb `.harness/baseline` und außer dieser Datei
-nichts (`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-tap-nachzug-ist-schritt-der-release-prozedur\.md|open/slice-tap-nachzug-ist-schritt-der-release-prozedur|\]\(slice-tap-nachzug-ist-schritt-der-release-prozedur' . | grep -v 'planning/in-progress/slice-tap-nachzug-ist-schritt-der-release-prozedur.md' | wc -l`
+nichts (`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-tap-nachzug-ist-schritt-der-release-prozedur\.md|open/slice-tap-nachzug-ist-schritt-der-release-prozedur|\]\(slice-tap-nachzug-ist-schritt-der-release-prozedur' . | grep -v 'planning/done/slice-tap-nachzug-ist-schritt-der-release-prozedur.md' | wc -l`
 → **0**); die Kennung steht in zwei eingefrorenen Dateien als Text
 (`grep -rlI --exclude-dir=.git --exclude-dir=.harness slice-tap-nachzug-ist-schritt-der-release-prozedur .`).
 Der Link in `done/slice-tap-check-…` ist auf die Kennung reduziert; die Entscheidung liegt damit vor dem
