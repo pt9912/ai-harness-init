@@ -1,0 +1,5 @@
+# Zeilenenden dieses Repos: jede erkannte Textdatei wird mit LF ausgecheckt, unabhaengig von
+# core.autocrlf. Der vendored Baum unter .harness/baseline/ wird byte-genau von SHA256SUMS gehalten,
+# und die Skripte unter .claude/hooks/ und harness/tools/ liest bash. `text=auto` laesst Dateien,
+# die git als binaer erkennt (die PNG unter docs/user/images/), unberuehrt (ADR-0067).
+* text=auto eol=lf
