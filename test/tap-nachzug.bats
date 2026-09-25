@@ -259,6 +259,21 @@ digest() { sha256sum "$1" | awk '{print $1}'; }
   [ "$status" -eq 0 ]
 }
 
+@test "check liest keine Version: ungleiche Bytes mit groesserer Tap-Version enden mit Exit 1, Formel-Unterschied und der Zeile tap-check: Exit 1" {
+  # Gebunden ist diese eine Form: das Tap traegt eine GROESSERE version-Zeile als der Tag und
+  # ungleiche Bytes. Eine kleinere Tap-Version (Fall "vorfall nachgestellt") und eine gleiche
+  # version-Zeile bei sonst ungleichen Bytes sind andere Formen und nicht Gegenstand dieses Falls.
+  formel 0.2.4 >"$TMP/tap024"
+  [ "$(digest "$TMP/asset")" != "$(digest "$TMP/tap024")" ]
+  lauf_getrennt check v0.2.3 STUB_TAP_1="$TMP/tap024"
+  echo "Exit $status, stdout: $output, stderr: $stderr"
+  [ "$status" -eq 1 ]
+  [[ "$stderr" == *"Formel-Unterschied"* ]]
+  [[ "$stderr" == *"Tap [  version \"0.2.4\"]"* ]]
+  [ "${stderr_lines[-1]}" = "tap-check: Exit 1" ]
+  [ "$(tap_lesungen)" -eq 2 ]
+}
+
 @test "vorab-tag: Exit 0 mit Vorab-Tag, Tap bleibt — ohne docker und ohne curl" {
   for t in v1.0.0-RC v1.0.0-rc.1+x v1.0.0-rc.1; do
     : >"$STUB_LOG_DOCKER"; : >"$STUB_LOG_CURL"
