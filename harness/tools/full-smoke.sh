@@ -3072,6 +3072,150 @@ echo "full-smoke: Kennungs-Form der emittierten .d-check.yml — gruener Start j
 	e2e_abdeckung "LH-FA-01 LH-FA-03 LH-QA-01" "Die emittierte Doku-Gate-Konfiguration erkennt einen benannten Slice und eine Welle: gruener Start je Sprache und Architektur, je Position ein rotes Gegenbeispiel mit Gegenprobe" "kennungs_form_im_ziel"
 kennungs_form_im_ziel
 
+# ADR-0067 Festlegung 1 und 5: ein Klon mit core.autocrlf=true traegt in den Verzeichnissen der
+# Emission, in denen ein Interpreter oder die Byte-Pruefung Dateien liest, kein CR. Gemessen
+# wird an zwei echten Klonen desselben committeten Ziels; der Kontrollklon setzt
+# core.autocrlf=false AUSDRUECKLICH, er erbt es nicht vom Runner.
+#
+# GRENZE: die Stufe liest git, nicht das Werkzeug. Sie belegt, was der Smudge-Filter von git
+# mit den abgelegten Bytes tut, und sagt nichts ueber einen Windows-Lauf (LH-QA-04, Grenze der
+# Messmethode).
+#
+# DREI KONSUMENTEN, JE AN DEN REALEN BYTES: der git-eigene Traeger laeuft ueber seine
+# Shebang-Zeile, die Byte-Pruefung des vendored Baums (baseline-verify) hat ihre Pruefsummen,
+# und der Command-Guard liest seine Wortliste blocked/go — er trifft `staticcheck` als LETZTES
+# Wort der Liste, das ein haftendes CR als erstes verliert. Im gewoehnlichen autocrlf-Klon
+# faellt der Guard laut aus (Exit 2), weil er selbst CRLF traegt; ein Guard mit LF und eine
+# Wortliste mit CRLF ist der Mischzustand, den nur ein Endungs-Glob erzeugt.
+#
+# Die RESTMENGE — Dateien mit CR ausserhalb der fuenf Verzeichnisse, im Ziel die Wurzel-Dateien
+# des Adopters — wird ausgegeben und nicht zugesagt.
+ZEILENENDEN_VERZEICHNISSE=(.harness .claude/hooks .githooks harness/mk tools/harness)
+
+# zeilenenden_cr_dateien <klon> — die Pfade (relativ zum Klon) aller Textdateien mit CR.
+zeilenenden_cr_dateien() {
+	( cd "$1" && { grep -rlI $'\r' --exclude-dir=.git . || true; } | sed 's|^\./||' | sort )
+}
+
+# zeilenenden_konsumenten <klon> <label> <msg-dir> — faehrt die drei Konsumenten im Klon; jedes
+# Rot nennt den Konsumenten und seine Ausgabe.
+zeilenenden_konsumenten() {
+	local klon="$1" label="$2" w="$3"
+	local out="" rc=0 bad=0
+	rc=0
+	out="$( cd "$klon" && ./.githooks/commit-msg "$w/msg-mit" 2>&1 )" || rc=$?
+	if [ "$rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — Zeilenenden ($label): .githooks/commit-msg laeuft nicht ueber seine Shebang-Zeile (Exit $rc) — die Datei traegt CR in der ersten Zeile. Ausgabe:" >&2
+		printf '%s\n' "$out" >&2
+		bad=1
+	fi
+	rc=0
+	out="$( cd "$klon" && ./.githooks/commit-msg "$w/msg-ohne" 2>&1 )" || rc=$?
+	if [ "$rc" -ne 1 ] || ! grep -qF -- 'keine Traceability-Kennung' <<<"$out"; then
+		echo "full-smoke: FEHLER — Zeilenenden ($label): .githooks/commit-msg lehnt eine Message ohne Kennung nicht mit der Meldung der Pruefung ab (Exit $rc) — sie lief nicht bis zu tools/harness/commit-msg-traceability.sh. Ausgabe:" >&2
+		printf '%s\n' "$out" >&2
+		bad=1
+	fi
+	rc=0
+	out="$( cd "$klon" && bash tools/harness/baseline-verify.sh 2>&1 )" || rc=$?
+	if [ "$rc" -ne 0 ] || ! grep -qF -- ' OK ' <<<"$out"; then
+		echo "full-smoke: FEHLER — Zeilenenden ($label): bash tools/harness/baseline-verify.sh endet nicht mit OK (Exit $rc) — die Byte-Pruefung des vendored Baums oder das Skript selbst traegt CR. Ausgabe:" >&2
+		printf '%s\n' "$out" >&2
+		bad=1
+	fi
+	rc=0
+	out="$( cd "$klon" && printf '%s' '{"tool_name":"Bash","tool_input":{"command":"staticcheck ./..."}}' | bash .claude/hooks/pretooluse-command-guard.sh 2>&1 )" || rc=$?
+	if ! grep -qF -- '"decision": "block"' <<<"$out"; then
+		echo "full-smoke: FEHLER — Zeilenenden ($label): der Command-Guard blockt 'staticcheck' (letztes Wort von tools/harness/blocked/go) nicht (Exit $rc) — Guard oder Wortliste tragen CR. Ausgabe:" >&2
+		printf '%s\n' "$out" >&2
+		bad=1
+	fi
+	return "$bad"
+}
+
+zeilenenden_im_klon() {
+	local w="" repo="" kc="" kf="" d="" liste="" alle="" n="" rest="" wurzel="" out="" rot=0
+	local git_id=(-c user.name=full-smoke -c user.email=full-smoke@example.invalid -c commit.gpgsign=false)
+	w="$(mktemp -d -p "$tmprepo_kf")"
+	chmod 755 "$w"
+	repo="$w/ziel"
+	kc="$w/autocrlf"
+	kf="$w/kontrolle"
+	git init -q "$repo"
+	if ! out="$( "$tmpbin/ai-harness-init" --lang go --name zeilenenden "$repo" 2>&1 )"; then
+		echo "full-smoke: FEHLER — Zeilenenden: der Bootstrap (--lang go) ist NICHT Exit 0." >&2
+		printf '%s\n' "$out" >&2
+		exit 1
+	fi
+	# Das Ziel wird mit LF committet: die Emission schreibt CR-frei, und der Bootstrap-Repo
+	# selbst konvertiert nichts.
+	git -C "$repo" config core.autocrlf false
+	git -C "$repo" add -A
+	git -C "$repo" "${git_id[@]}" commit -q --no-verify -m "Bootstrap fuer die Zeilenenden-Stufe"
+	git clone -q --no-hardlinks -c core.autocrlf=false "$repo" "$kf"
+	git clone -q --no-hardlinks -c core.autocrlf=true "$repo" "$kc"
+	printf 'Bezug: ADR-0067\n' >"$w/msg-mit"
+	printf 'Betreff ohne Kennung\n' >"$w/msg-ohne"
+
+	# VORBEDINGUNG: der gesetzte Wert gilt im Klon, die fuenf Verzeichnisse tragen Dateien, und
+	# der autocrlf-Klon traegt CR an einer Datei, die die Emission nicht deckt (Wurzel-Makefile).
+	# Ohne sie waere "kein CR" eine Aussage ueber einen Klon, der nie CR bekommen kann.
+	if [ "$(git -C "$kc" config --get core.autocrlf)" != "true" ] || [ "$(git -C "$kf" config --get core.autocrlf)" != "false" ]; then
+		echo "full-smoke: FEHLER — Zeilenenden: core.autocrlf steht im Klon nicht wie gesetzt (autocrlf-Klon: $(git -C "$kc" config --get core.autocrlf), Kontrolle: $(git -C "$kf" config --get core.autocrlf))." >&2
+		exit 1
+	fi
+	for d in "${ZEILENENDEN_VERZEICHNISSE[@]}"; do
+		n="$(find "$kc/$d" -type f 2>/dev/null | wc -l)"
+		if [ "$n" -eq 0 ]; then
+			echo "full-smoke: FEHLER — Zeilenenden: $d traegt im Klon keine Datei — die Stufe misst dort nichts." >&2
+			exit 1
+		fi
+	done
+	wurzel="$(grep -c $'\r' "$kc/Makefile" || true)"
+	if [ "$wurzel" -eq 0 ]; then
+		echo "full-smoke: FEHLER — Zeilenenden: das Wurzel-Makefile traegt im autocrlf-Klon kein CR — der Klon bekommt nie CR, und ein Klon ohne CR in den fuenf Verzeichnissen belegte nichts." >&2
+		exit 1
+	fi
+
+	# (a) DIE KONTROLLE: kein CR in keinem Verzeichnis, und die drei Konsumenten laufen. Faellt sie,
+	# liegt der Fehler im Fixture, nicht im Pruefgegenstand.
+	alle="$(zeilenenden_cr_dateien "$kf")"
+	if [ -n "$alle" ]; then
+		echo "full-smoke: FEHLER — Zeilenenden: der Kontrollklon (core.autocrlf=false) traegt CR in:" >&2
+		printf '%s\n' "$alle" >&2
+		exit 1
+	fi
+	zeilenenden_konsumenten "$kf" "Kontrolle core.autocrlf=false" "$w" || exit 1
+
+	# (b) DER AUTOCRLF-KLON: jede Datei mit CR wird genannt und die drei Konsumenten laufen; das
+	# Rot sammelt beide Befunde, statt nach dem ersten zu enden.
+	alle="$(zeilenenden_cr_dateien "$kc")"
+	for d in "${ZEILENENDEN_VERZEICHNISSE[@]}"; do
+		liste="$(awk -v p="$d/" 'index($0, p) == 1' <<<"$alle")"
+		if [ -n "$liste" ]; then
+			echo "full-smoke: FEHLER — Zeilenenden: der Klon mit core.autocrlf=true traegt CR in $d ($(wc -l <<<"$liste") Datei(en)); die Zeile '* text=auto eol=lf' fehlt dort oder traegt eol=crlf. Erste Dateien:" >&2
+			sed -n '1,10p' <<<"$liste" | sed 's/^/full-smoke:   /' >&2
+			rot=1
+		fi
+	done
+	zeilenenden_konsumenten "$kc" "autocrlf-Klon core.autocrlf=true" "$w" || rot=1
+	if [ "$rot" -ne 0 ]; then
+		exit 1
+	fi
+
+	# (d) DIE RESTMENGE wird ausgegeben, nicht verschwiegen.
+	rest="$(printf '%s\n' "$alle" | sed '/^$/d')"
+	n="$(sed '/^$/d' <<<"$rest" | wc -l)"
+	echo "full-smoke: Zeilenenden: in den fuenf Verzeichnissen ($(printf '%s ' "${ZEILENENDEN_VERZEICHNISSE[@]}")) kein CR im autocrlf-Klon, Kontrollklon (core.autocrlf=false) ebenso; Restmenge ausserhalb: $n Datei(en) mit CR (nicht zugesagt), je oberstem Pfad-Segment:"
+	if [ "$n" -gt 0 ]; then
+		cut -d/ -f1 <<<"$rest" | sort | uniq -c | sed 's/^ *//; s/^/full-smoke:   /'
+	fi
+}
+
+echo "full-smoke: Zeilenenden — ein Klon mit core.autocrlf=true traegt in den Verzeichnissen der Emission kein CR (Skripte, Fragmente, Hooks, Pruefsummen), gemessen an zwei echten Klonen mit ausdruecklich gesetztem Kontrollklon ..."
+	e2e_abdeckung "LH-FA-01 LH-FA-06" "Ein Klon mit core.autocrlf=true traegt in den Verzeichnissen der Emission kein CR: der git-eigene Traeger laeuft ueber seine Shebang-Zeile, die Byte-Pruefung des vendored Baums endet mit OK, der Command-Guard blockt das letzte Wort seiner Wortliste; die Kontrolle mit core.autocrlf=false traegt keines" "zeilenenden_im_klon"
+zeilenenden_im_klon
+
 # slice-038 (ADR-0007 Idempotenz-Klassifikation): ein ZWEITER Init-Lauf ist IDEMPOTENT
 # (Exit 0 statt Kollisions-Refuse). Konvergente Dateien (tool-Infra) werden kanonisch neu
 # geschrieben (heilen Drift); skip-if-present-Dateien (Adopter-Boden) bleiben unberuehrt.
@@ -3655,3 +3799,4 @@ echo "full-smoke: OK — COMMIT-KENNUNG IM ZIEL: .githooks/commit-msg liegt ausf
 echo "full-smoke: OK — KLASSE DES COMMIT-TRAEGERS (ADR-0054 Festlegung 1 und 3): der Traeger liegt skip-if-present und die Pruefung daneben konvergent — ein FREIER Pfad bekommt den Traeger des Werkzeugs (er liegt ausfuehrbar im Ziel und ruft die Pruefung daneben), ein BELEGTER bleibt Byte fuer Byte unberuehrt und der Lauf nennt Pfad und mitgelieferte Pruefung; die Drift der Pruefung heilte der naechste Lauf, die des Traegers blieb stehen."
 echo "full-smoke: OK — SELBSTPRUEFUNG IM ZIEL (LH-FA-11): das gebootstrappte Repo faehrt make selbstpruefung ueber einem frischen Klon seiner selbst — der Klon traegt keinen core.hooksPath, der Aktivierungsschritt setzt ihn, danach faellt ein Commit OHNE Kennung (HEAD unbewegt) und geht einer MIT Kennung durch, und das Gate-Kommando laeuft im Klon gruen; beide Ausgaenge stehen in EINEM Lauf, das Kommando haengt an keiner gates-Kette des Ziels, und ein am Aufruf gesetzter Marker lenkt den Gate-Schritt (LH-FA-02)."
 echo "full-smoke: OK — E2E-ABDECKUNG IM ZIEL: das gebootstrappte Repo erzeugt mit make e2e-abdeckung die Sicht ueber seine eigenen E2E-Stufen — eine Zeile aus der einen Stufe der mitgelieferten Selbstpruefung, mit dem Gedankenstrich statt einer geratenen Kennung und dem Ort in tools/harness/selbstpruefung.sh; es steht in make help des Ziels (dem einen Index, den ein gebootstrapptes Repo von sich aus fuehrt) und haengt an keiner gates-Kette (LH-QA-01), der zweite Lauf meldet unveraendert, ein am Aufruf gesetzter Ziel-Marker lenkt die geschriebene Datei (LH-FA-02), und eine Stufe ohne Deklaration faerbt den Erzeuger rot."
+echo "full-smoke: OK — ZEILENENDEN IM KLON (ADR-0067): ein Klon des committeten Ziels mit core.autocrlf=true traegt in .harness, .claude/hooks, .githooks, harness/mk und tools/harness kein CR — der git-eigene Traeger laeuft ueber seine Shebang-Zeile, bash tools/harness/baseline-verify.sh endet mit OK, und der Command-Guard blockt das letzte Wort seiner Wortliste; der Kontrollklon mit ausdruecklich gesetztem core.autocrlf=false traegt in denselben Verzeichnissen keines und laesst dieselben Konsumenten laufen; die Restmenge ausserhalb der fuenf Verzeichnisse wird ausgegeben, nicht zugesagt. Gemessen ist der Smudge-Filter von git unter Linux, kein Windows-Lauf (LH-QA-04, Grenze der Messmethode)."
