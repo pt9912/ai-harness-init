@@ -200,7 +200,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 - [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Register-Datei nicht.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert. Erwartet sind Belege für die vier in §8 benannten Einträge — ob sie zählen, urteilt die Closure.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -450,7 +450,18 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   und Vorwärts-Schutz (`prozedur-zeile-traegt-disziplin-ohne-sensor`), Handarbeit als Übergangszustand
   (`bedingung-ohne-traeger-im-lauf-den-sie-bindet`; gegenüber dem Plan geändert, Begründung in §6). Keines
   ist *eingetreten*.
-- **Drei Paarungen:** folgen nach dem Move; ihr Ergebnis steht unten.
+- **Drei Paarungen** (nach dem Move gegen `done/` geprüft, 2026-09-25): (a) *Anker* — kein Eintrag trägt
+  das Feld `liegt in <Zielort>`, die Paarung hat keinen Gegenstand. (b) *Folge-Slice* — der `sync`-Schnitt
+  und der Job-Slice sind als Adressen ohne Kennung genannt und nicht als Datei behauptet, die Paarung hat
+  keinen Gegenstand; der verkürzte Verweis `slice-tap-check-…` in §6 Frage 2 ist kein Folge-Slice.
+  (c) *Register* — die sieben genannten Beobachtungen existieren als Verzeichnis mit nicht leerem
+  `evidence/` (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence | wc -l` → 3, 7, 1, 2, 14, 2, 32
+  in der Reihenfolge `bedingung-ohne-traeger-…`, `eigentums-frage-…`, `prozedur-wiedergabe-…`,
+  `prozedur-zeile-…`, `verweis-nachzug-schreibt-in-eingefrorenes-artefakt`, `vorhandene-faehigkeit-…`,
+  `zusage-neben-geaenderter-ableitung-…`); das Register führt 177 Verzeichnisse
+  (`ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l`; keine Erwartungswerte). Der Move schrieb
+  allein die Zeile dieser Datei um, die ihren eigenen Pfad zitiert; kein Zeitdokument
+  (`docs/reviews/**`, andere Dateien unter `done/`) wurde berührt.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
