@@ -128,17 +128,25 @@ und lädt nichts hoch. Die Schritt-Folge:
      Nachzug entfällt.
    - **1** — Formel-Unterschied auch nach dem zweiten Lesen: die Ausgabe
      nennt beide Digests und die erste abweichende Zeile.
-   - **2** — nicht ausführbar: es wurde nichts verglichen, die Ausgabe nennt
-     die Ursache. Beispiele sind eine falsche Tag- oder Feldform, ein nicht
-     auffindbares Asset (HTTP 404), ein Tap, das sich nicht lesen lässt, ein
-     nicht erreichbarer Docker-Daemon; die Aufzählung ist nicht
-     abschließend.
+   - **2** — nicht ausführbar: ein Ergebnis des Vergleichs liegt nicht vor,
+     die Ausgabe nennt die Ursache. Beispiele sind eine falsche Tag- oder
+     Feldform (`Tag-Form falsch`, `Feldform falsch`), ein nicht auffindbares
+     Asset (HTTP 404) und ein Tap, das sich nicht lesen lässt (jeweils
+     `es wurde nichts verglichen`) sowie ein Transport, der ohne Ergebnis
+     endet, etwa bei einem nicht erreichbaren Docker-Daemon (`das Ergebnis
+     des Vergleichs ist unbekannt`); die Aufzählung ist nicht abschließend.
 
    Über `make` endet jeder Fehlschlag mit Prozess-Exit 2, der Prozess-Exit
    trennt dort nur 0 von ungleich 0. Die Klasse trägt die Zeile des Skripts
    `tap-check: Exit <N>` — bei Exit 1 und 2 steht sie genau einmal, bei
    Exit 0 fehlt sie; gelesen wird die Zeile, nicht ihre Position in der
-   Ausgabe. Bei Ungleichheit liest der Aufruf einmal nach 65 s erneut, weil
+   Ausgabe. Nicht zugesagt ist die Zeile bei einem Ende durch ein Signal
+   (dort fehlt auch die Klasse: der Prozess endet mit 128 plus der
+   Signalnummer, keine der drei Klassen ist gemeint), bei nicht
+   beschreibbarer stderr und bei fehlendem oder unbekanntem Modus, den nur
+   ein Aufruf des Skripts ohne das Make-Ziel erreicht
+   ([`ADR-0066`](../plan/adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md)
+   Festlegung 2, §Nicht zugesagt). Bei Ungleichheit liest der Aufruf einmal nach 65 s erneut, weil
    die Schnittstelle einen bis zu 60 s alten Stand liefern kann
    ([`ADR-0064`](../plan/adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
    Festlegung 2); ein Exit 1 ist der Befund nach dieser Wiederholung. Ein
@@ -149,12 +157,18 @@ und lädt nichts hoch. Die Schritt-Folge:
    Fremd-Taps ist eine eigene Bedingung des Nutzers, das
    [Handbuch](benutzerhandbuch.md#weg-c--über-ein-homebrew-tap-macos-linux)
    nennt sie —, nicht, dass das Asset richtig gefüllt ist, und keinen
-   Zustand nach dem Aufruf. Sie vergleicht Bytes, keine Versionen: die Skripte
-   des Vergleichs enthalten das Wort `version` nicht
-   (`grep -ci version harness/tools/tap-nachzug.sh harness/tools/tap-nachzug-nutzlast.sh`
-   → `0` je Datei), und nach dem Nachzug eines älteren Tags endet die
-   Kontrolle gegen genau diesen Tag mit Exit 0. Der Vorwärts-Schutz liegt
-   allein bei der Vorbedingung oben.
+   Zustand nach dem Aufruf. Sie vergleicht Bytes, keine Versionen: der Vergleich
+   liest keine `version`-Zeile, und nach dem Nachzug eines älteren Tags endet
+   die Kontrolle gegen genau diesen Tag mit Exit 0. Die Eigenschaft hält der
+   bats-Fall `version-zeile: in check kein Gegenstand …`
+   (`grep -n 'version-zeile: in check' test/tap-nachzug.bats`): gleiche Bytes
+   enden mit Exit 0, auch mit einer `version`-Zeile außerhalb der Feldform und
+   ohne jede `version`-Zeile. Das Kommando
+   `grep -ci version harness/tools/tap-nachzug.sh harness/tools/tap-nachzug-nutzlast.sh`
+   zählt das Wort in den Skripten (→ `0` je Datei) und ist eine Näherung an
+   diese Eigenschaft: ein Kommentar mit dem Wort färbt es rot, ohne dass sie
+   bricht; ein Versions-Vergleich ohne das Wort bleibt grün. Der
+   Vorwärts-Schutz liegt allein bei der Vorbedingung oben.
 
 8. **Meldung des vollzogenen Schnitts.** Die Meldung geht erst, wenn
    `make tap-check TAG=<tag>` (Schritt 7) mit Exit 0 endet, und sie trägt
