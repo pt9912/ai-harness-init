@@ -103,7 +103,7 @@ entlang der **Positionen** (Token und Regel · `ids`-Muster und Klasse `adr`), j
 nicht entlang der Schicht (§4).
 
 **Die Überschneidung mit dem offenen Slice zur Kennungs-Erkennung, eingeordnet.**
-[slice-kennungs-erkennung-traegt-die-zugelassenen-formen](slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md)
+[slice-kennungs-erkennung-traegt-die-zugelassenen-formen](../open/slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md)
 ist **Dogfood**: [`MR-059`](../../../../harness/conventions.md#mr-059) Setzung 4 nimmt die emittierte
 Ebene aus, und seine Fundliste liest die Werkzeuge dieses Repos samt `commits.id-patterns` der
 eigenen `.d-check.yml`. **Dieser Slice berührt keine dieser Stellen** — allein die eingebettete
