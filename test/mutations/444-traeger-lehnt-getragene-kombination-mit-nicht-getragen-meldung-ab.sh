@@ -12,8 +12,9 @@
 #
 # WARUM `full-smoke` DIE SCHMALSTE AUSREICHENDE STUFE IST: die Stufe (kennungs_form_im_ziel)
 # liest die Liste je Kombination aus der Meldung des gebauten Traegers; kein Go-Test fuehrt
-# diese Stufe, und `cpp hexagonal` ist die einzige Kombination, die sonst keine Stufe
-# bootstrappt. Ohne den Vergleich der Architektur mit der Liste derselben Meldung bliebe der
-# Lauf unter dieser Mutation gruen. Der Preis des Modus steht im Kopf von harness/tools/mutate.sh.
+# diese Stufe, und die Meldung zu `cpp hexagonal` liest sonst keine Stufe (die des dritten
+# Layouts prueft dort nur den Exit 2). Ohne den Vergleich der Architektur mit der Liste
+# derselben Meldung bliebe der Lauf unter dieser Mutation gruen. Der Preis des Modus steht im
+# Kopf von harness/tools/mutate.sh.
 set -euo pipefail
 sed -i 's|Available: archsForLang(lang)}|Available: append(archsForLang(lang), arch)}|' internal/gen/gen.go
