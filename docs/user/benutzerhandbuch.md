@@ -200,7 +200,7 @@ Das bedeutet: Regelwerk und Vorlagen liegen im Repository, die Prüfungen sind v
 
 `ai-harness-init` arbeitet in **getrennten Schritten** und ist **idempotent**. Getrennt heißt: **Init** legt die sprach-agnostische Harness an, das **Sprachmodul** kommt als eigener Schritt dazu (`add-lang`, wiederholbar). `--lang` beim Init ist die **Kurzform**, die beide Schritte in einem Aufruf erledigt — nicht ein einziger, unteilbarer Vorgang.
 
-Idempotent heißt: Sie können denselben Aufruf gefahrlos wiederholen. Bei einem zweiten Lauf wird die **werkzeug-eigene Infrastruktur** (Prüf-Konfiguration, Hooks, Regelwerk) auf den Soll-Stand aufgefrischt, den **dieses Programm mitbringt** — das heilt Abweichungen. Es **hebt Sie nicht auf einen neueren Kurs-Stand**: die Kurs-Version ist im Programm fest eingebaut, ein zweiter Lauf desselben Programms holt denselben Stand. Einen neueren Stand bekommen Sie mit einem **neueren Programm** — oder bewusst über [eine andere Kurs-Version](#eine-andere-kurs-version-verwenden). **Von Ihnen gefüllte Dateien** (Ihre Projekt-Dokumente, `README.md`, Ihr Quellcode) bleiben **unangetastet**. Es gibt **keinen** Kollisions-Abbruch und **kein** `--force` — der Re-Lauf ist der normale, sichere Weg, ein Repository zu **reparieren**.
+Idempotent heißt: Sie können denselben Aufruf gefahrlos wiederholen. Bei einem zweiten Lauf werden die **kanonischen Teile** der Infrastruktur — das Regelwerk samt Vorlagen, die zentrale `Makefile` mit ihren Bausteinen, die Hook-Skripte unter `.claude/hooks/` — auf den Soll-Stand neu geschrieben, den **dieses Programm mitbringt**; das heilt Abweichungen. Es **hebt Sie nicht auf einen neueren Kurs-Stand**: die Kurs-Version ist im Programm fest eingebaut, ein zweiter Lauf desselben Programms holt denselben Stand. Einen neueren Stand bekommen Sie mit einem **neueren Programm** — oder bewusst über [eine andere Kurs-Version](#eine-andere-kurs-version-verwenden). **Was Sie anpassen dürfen oder füllen** — die Prüf-Konfiguration `.d-check.yml`, die Rollen-Anweisungen unter `.claude/agents/` und `.claude/commands/`, Ihre Projekt-Dokumente, `README.md`, Ihr Quellcode — schreibt der Lauf nur, wenn es **fehlt**, und lässt es sonst **unangetastet** (die vollständige Aufteilung steht unter [Ein Repository erneut aufsetzen](#ein-repository-erneut-aufsetzen-idempotent)). Es gibt **keinen** Kollisions-Abbruch und **kein** `--force` — der Re-Lauf ist der normale, sichere Weg, ein Repository zu **reparieren**.
 
 ---
 
@@ -341,7 +341,7 @@ make gates
 
 ### Ein Repository erneut aufsetzen (idempotent)
 
-**Voraussetzung:** Sie wollen ein bereits aufgesetztes Verzeichnis reparieren — etwa nach einem abgebrochenen Lauf oder nachdem eine werkzeug-eigene Datei versehentlich verändert wurde. (Auf einen **neueren Kurs-Stand** hebt Sie dieser Lauf **nicht**; dafür siehe [Eine andere Kurs-Version verwenden](#eine-andere-kurs-version-verwenden).)
+**Voraussetzung:** Sie wollen ein bereits aufgesetztes Verzeichnis reparieren — etwa nach einem abgebrochenen Lauf oder nachdem eine mitgelieferte Datei fehlt oder versehentlich verändert wurde. (Auf einen **neueren Kurs-Stand** hebt Sie dieser Lauf **nicht**; dafür siehe [Eine andere Kurs-Version verwenden](#eine-andere-kurs-version-verwenden).)
 
 **Vorgehen** — einfach denselben Aufruf wiederholen:
 
@@ -349,9 +349,16 @@ make gates
 ai-harness-init --lang go --name "Mein Projekt" <zielordner>
 ```
 
-**Ergebnis:** Der Lauf ist **idempotent** (Exit-Code 0). Die werkzeug-eigene Infrastruktur (Prüf-Konfiguration, Hooks, die zentrale `Makefile`, Regelwerk) wird auf den Soll-Stand **aufgefrischt**, den dieses Programm mitbringt — das heilt Abweichungen, holt aber **denselben** Kurs-Stand wie beim ersten Lauf. **Von Ihnen gefüllte Dateien** — die Dokumente unter `spec/`, `README.md`, `AGENTS.md`, Ihr Quellcode im Grundgerüst (`go.mod`, `cmd/app/main.go` …) — bleiben **unangetastet**.
+**Ergebnis:** Der Lauf ist **idempotent** (Exit-Code 0). Er behandelt die Dateien in zwei Klassen; beide holen **denselben** Kurs-Stand wie beim ersten Lauf:
 
-**Hinweise:** Es gibt **kein** `--force` und **keinen** Kollisions-Abbruch. Wollen Sie eine von Ihnen bearbeitete werkzeug-eigene Datei bewusst auf den Ausgangsstand zurücksetzen, löschen Sie sie vor dem Re-Lauf — dann wird sie neu geschrieben. **Nicht jede werkzeug-eigene Datei wird aufgefrischt:** eine vorhandene `.d-check.yml` und drei der fünf `.gitattributes` bleiben unberührt (siehe [Zeilenenden und Kennungs-Form der Prüf-Konfiguration](#zeilenenden-und-kennungs-form-der-prüf-konfiguration)).
+| Klasse | Dateien | Beim erneuten Aufsetzen |
+|---|---|---|
+| **kanonisch** | das Regelwerk samt Vorlagen unter `.harness/baseline/`, die Skills unter `.harness/skills/`, die zentrale `Makefile` mit `d-check.mk` und den Bausteinen unter `harness/mk/`, die Skripte unter `tools/harness/`, `.claude/settings.json` und die Hook-Skripte unter `.claude/hooks/` | wird jedes Mal auf den Soll-Stand neu geschrieben, den dieses Programm mitbringt — eine von Hand geänderte Datei ist danach wieder die mitgelieferte <!-- d-check:ignore (die Pfade entstehen erst im aufgesetzten Repository) --> |
+| **nur bei fehlender Datei** | die Prüf-Konfiguration `.d-check.yml`, `.golangci.yml`, das `Dockerfile`, die Rollen-Anweisungen unter `.claude/agents/` und `.claude/commands/`, `.githooks/commit-msg`, drei der fünf `.gitattributes`; dazu **Ihre gefüllten Dateien** — die Dokumente unter `spec/`, `README.md`, `AGENTS.md`, `harness/conventions.md`, Ihr Quellcode im Grundgerüst (`go.mod`, `cmd/app/main.go` …) | wird nur an einem freien Pfad geschrieben; eine vorhandene Datei bleibt **unangetastet** |
+
+Bei `.githooks/commit-msg` und den drei `.gitattributes` nennt der Lauf zusätzlich die Datei und die Folge (siehe [Zeilenenden und Kennungs-Form der Prüf-Konfiguration](#zeilenenden-und-kennungs-form-der-prüf-konfiguration)); für die übrigen Dateien der zweiten Klasse bleibt er still.
+
+**Hinweise:** Es gibt **kein** `--force` und **keinen** Kollisions-Abbruch. Wollen Sie eine Datei der zweiten Klasse — etwa Ihre angepasste `.d-check.yml` — bewusst auf den Ausgangsstand zurücksetzen, löschen Sie sie vor dem Re-Lauf; dann wird sie neu geschrieben. Bei einer Datei der ersten Klasse ist das nicht nötig.
 
 ### Eine andere Kurs-Version verwenden
 
@@ -492,7 +499,7 @@ Bei einem erneuten Aufsetzen unterscheiden sich die fünf in einem Punkt:
 | `.harness/`, `tools/harness/` | wird jedes Mal neu geschrieben — eine von Hand geänderte Datei ist danach wieder die mitgelieferte |
 | `harness/mk/`, `.claude/hooks/`, `.githooks/` | eine vorhandene Datei bleibt unberührt; der Lauf nennt Verzeichnis und Folge: „Trägt sie die Zeile `* text=auto eol=lf` nicht, tragen die Dateien in `<verzeichnis>/` im Klon mit core.autocrlf=true CRLF." <!-- d-check:ignore (die Pfade entstehen erst im aufgesetzten Repository) --> |
 
-**Kennungs-Form der `.d-check.yml`.** Die mitgelieferte Prüf-Konfiguration der Dokumentation kennt Slices und Welle-Pläne als **Namen**: die Klassen `slice` und `welle` tragen die Präfix-Token `slice-` und `welle-`, und die Regel `spec-straten → welle` verbietet einer Spec-Datei, eine Welle-Datei zu nennen — ebenso wie eine Architektur-Entscheidung, einen Slice, den Adaptions-Block oder etwas außerhalb der Spec. Das Kennungs-Muster der Architektur-Entscheidungen nimmt ein **optionales Bereichs-Segment** (`ADR-<Nummer>` ebenso wie `ADR-<Bereich>-<Nummer>`, die Nummer vierstellig) und verlangt für beide einen Link; die Klasse `adr` deckt neben `docs/plan/adr/[0-9]*.md` auch `docs/plan/adr/[A-Z]*-[0-9]*.md`. Ein frisch aufgesetztes Repository meldet mit `make docs-check` `0 Befund(e)`; eine blanke Kennung mit Bereichs-Segment im Fließtext färbt es rot (`id-unlinked`), ebenso ein Link aus `spec/architecture.md` auf eine Datei `welle-<name>.md` (`matrix-forbidden`).
+**Kennungs-Form der `.d-check.yml`.** Die mitgelieferte Prüf-Konfiguration der Dokumentation kennt Slices und Welle-Pläne als **Namen**: die Klassen `slice` und `welle` tragen die Präfix-Token `slice-` und `welle-`, und die Regel `spec-straten → welle` verbietet einer Spec-Datei, eine Welle-Datei zu nennen — ebenso wie eine Architektur-Entscheidung, einen Slice, den Adaptions-Block oder etwas außerhalb der Spec. Das Kennungs-Muster der Architektur-Entscheidungen nimmt ein **optionales Bereichs-Segment** (`ADR-<Nummer>` ebenso wie `ADR-<Bereich>-<Nummer>`, die Nummer vierstellig) und verlangt für beide einen Link; die Klasse `adr` deckt neben `docs/plan/adr/[0-9]*.md` auch `docs/plan/adr/[A-Z]*-[0-9]*.md`. Ein frisch aufgesetztes Repository meldet mit `make docs-check` `0 Befund(e)`; eine blanke Kennung mit Bereichs-Segment im Fließtext färbt es rot (`id-unlinked`), ebenso ein Link aus `spec/architecture.md` auf eine Datei `welle-<name>.md` (`matrix-forbidden`). Diese Form trägt die Datei, die der Lauf an einem freien Pfad schreibt; eine vorhandene `.d-check.yml` ändert ein erneutes Aufsetzen nicht (siehe [Ein Repository erneut aufsetzen](#ein-repository-erneut-aufsetzen-idempotent)).
 
 Die `.d-check.yml` gehört Ihnen, sobald sie da ist: eine vorhandene Datei bleibt beim erneuten Aufsetzen **unberührt, ohne Meldung** — auch ein Repository, das mit einer früheren Fassung des Programms aufgesetzt wurde, behält seine. Diese Positionen tragen Sie dann von Hand nach: die Präfix-Token `slice-` und `welle-`, die Regel `{from: spec-straten, to: welle, allow: false}`, das Muster `ADR-([A-Z]+-)?\d{4}` im Block `ids` und den Glob `docs/plan/adr/[A-Z]*-[0-9]*.md` in der Klasse `adr`.
 
@@ -563,7 +570,7 @@ Nein. Sowohl das Bauen des Werkzeugs als auch die Prüfungen im aufgesetzten Rep
 Nein, nur **einmalig** beim ersten Aufsetzen (Regelwerk-Download). Danach arbeitet Ihr Repository netzunabhängig.
 
 **Kann ich denselben Ordner mehrfach aufsetzen?**
-Ja — der Aufruf ist **idempotent** (Exit-Code 0). Ein zweiter Lauf frischt die werkzeug-eigene Infrastruktur auf und lässt Ihre eigenen Dateien unangetastet. Genau so **reparieren** Sie ein Repository. Auf einen neueren Kurs-Stand hebt Sie der Re-Lauf **nicht** — die Kurs-Version steckt im Programm; dafür brauchen Sie ein neueres Programm oder [eine andere Kurs-Version](#eine-andere-kurs-version-verwenden).
+Ja — der Aufruf ist **idempotent** (Exit-Code 0). Ein zweiter Lauf schreibt die kanonischen Teile der Infrastruktur neu und lässt alles unangetastet, was Sie anpassen dürfen oder gefüllt haben — die Prüf-Konfiguration `.d-check.yml` eingeschlossen. Genau so **reparieren** Sie ein Repository. Auf einen neueren Kurs-Stand hebt Sie der Re-Lauf **nicht** — die Kurs-Version steckt im Programm; dafür brauchen Sie ein neueres Programm oder [eine andere Kurs-Version](#eine-andere-kurs-version-verwenden).
 
 **Wie füge ich eine zweite Sprache oder ein weiteres Modul hinzu?**
 Mit `ai-harness-init add-lang <sprache> <pfad>`. Der Befehl ist wiederholbar; mehrere Aufrufe mit verschiedenen Pfaden ergeben ein Mono-Repo. Siehe [Ein Sprachmodul hinzufügen](#ein-sprachmodul-hinzufügen-add-lang).
@@ -572,7 +579,7 @@ Mit `ai-harness-init add-lang <sprache> <pfad>`. Der Befehl ist wiederholbar; me
 Ja — für sechs Plattformen (Linux, macOS, Windows × Intel/AMD und ARM). Das ist der empfohlene Weg, siehe [Installation](#2-installation-und-zugriff). Den Bau aus dem Quellcode brauchen Sie nur für einen Stand ohne Versions-Kennzeichnung.
 
 **Verändert `ai-harness-init` meine bestehenden Dateien?**
-Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vorhandene Dateien dieser Art werden nie überschrieben. Die **werkzeug-eigene** Infrastruktur (Prüf-Konfiguration, Hooks, Regelwerk) wird bei jedem Lauf neu auf den Soll-Stand geschrieben; hatten Sie eine solche Datei von Hand geändert, wird die Änderung beim Re-Lauf überschrieben.
+Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vorhandene Dateien dieser Art werden nie überschrieben; ebenso bleiben die anpassbaren mitgelieferten Dateien wie die Prüf-Konfiguration `.d-check.yml` unberührt, solange sie vorhanden sind. Die **kanonischen** Teile (Regelwerk, `Makefile` mit Bausteinen, Hook-Skripte unter `.claude/hooks/`) werden bei jedem Lauf neu auf den Soll-Stand geschrieben; hatten Sie dort eine Datei von Hand geändert, wird die Änderung beim Re-Lauf überschrieben. Welche Datei in welche Klasse fällt, steht unter [Ein Repository erneut aufsetzen](#ein-repository-erneut-aufsetzen-idempotent).
 
 ---
 
@@ -584,7 +591,7 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vo
 | **Gate** | Eine automatische Prüfung, die grün (bestanden) oder rot (fehlgeschlagen) ist. `make gates` fährt alle Gates. |
 | **Bootstrap** | Das Aufsetzen eines Repositorys mit dem Harness — das, was `ai-harness-init` tut. Wiederholbar (idempotent). |
 | **`add-lang`** | Das Subkommando, das einem aufgesetzten Repository ein Sprachmodul hinzufügt — wiederholbar (Mono-Repo). |
-| **idempotent** | Ein wiederholter Aufruf hinterlässt denselben Zustand: werkzeug-eigene Dateien werden auf den Soll-Stand aufgefrischt, Ihre gefüllten Dateien bleiben unberührt (kein Kollisions-Abbruch, kein `--force`). |
+| **idempotent** | Ein wiederholter Aufruf hinterlässt denselben Zustand: die kanonischen Teile der Infrastruktur werden neu auf den Soll-Stand geschrieben, anpassbare mitgelieferte und Ihre gefüllten Dateien bleiben unberührt (kein Kollisions-Abbruch, kein `--force`). |
 | **Regelwerk / Baseline** | Der festgelegte Kurs-Stand aus Prozess-Regeln und Vorlagen, den das Werkzeug in Ihr Repository legt. |
 | **Grundgerüst (Skelett)** | Das minimale, lauffähige Sprach-Layout (bei `go`: `Dockerfile`, `Makefile`, `go.mod`, Beispiel-Code), das die Prüfungen bedienen. |
 | **Doc-Gate** | Die Dokumentations-Prüfung (Ziel `make docs-check`): prüft Verweise, Anker und Kennungen in den Markdown-Dateien. |
