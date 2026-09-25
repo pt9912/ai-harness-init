@@ -1,7 +1,7 @@
 # Benutzerhandbuch: ai-harness-init
 
-**Software-Stand:** `v0.2.3` — **vorgefertigte Programme für sechs Plattformen** (linux · macos · windows × amd64 · arm64). Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat`, `hexagonal` oder `hexslice`; bei den beiden geschichteten kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp`, beide auch mit `hexslice`; `hexagonal` liefert heute der Go-Renderer. Vier Betriebs-Operationen beschreibt [Betriebs-Operationen](#betriebs-operationen). Die geschichtete Bauform benennt Adapter- und Ports-Ordner nach ihren Rollen ([`ADR-0060`](../plan/adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md), `Accepted`: `driving`/`driven`, `ports_inbound`/`ports_outbound` — siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch)); das veröffentlichte `v0.2.3` trägt diese Form.
-**Stand:** 2026-09-23
+**Software-Stand:** `v0.2.4` — **vorgefertigte Programme für sechs Plattformen** (linux · macos · windows × amd64 · arm64). Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat`, `hexagonal` oder `hexslice`; bei den beiden geschichteten kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp`, beide auch mit `hexslice`; `hexagonal` liefert heute der Go-Renderer. Vier Betriebs-Operationen beschreibt [Betriebs-Operationen](#betriebs-operationen). Die geschichtete Bauform benennt Adapter- und Ports-Ordner nach ihren Rollen ([`ADR-0060`](../plan/adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md), `Accepted`: `driving`/`driven`, `ports_inbound`/`ports_outbound` — siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch)); das veröffentlichte `v0.2.4` trägt diese Form.
+**Stand:** 2026-09-25
 **Verantwortlich:** ai-harness-init-Team (pt9912)
 
 ---
@@ -70,7 +70,7 @@ Eine lokale Go-Installation ist **nicht** nötig — alles läuft über Docker.
 
 ### Das Werkzeug bereitstellen
 
-Es gibt **drei Wege**. Empfohlen ist der **Download** — fertige Programme für sechs Plattformen; **aktuell ausgeliefert wird `v0.2.3`**. Den Bau aus dem Quellcode brauchen Sie nur, wenn Sie einen Stand **ohne** Versions-Kennzeichnung verwenden wollen. Für macOS und Linux steht der dritte Weg über das **Homebrew-Tap** bereit (siehe [Weg C](#weg-c--über-ein-homebrew-tap-macos-linux)).
+Es gibt **drei Wege**. Empfohlen ist der **Download** — fertige Programme für sechs Plattformen; **aktuell ausgeliefert wird `v0.2.4`**. Den Bau aus dem Quellcode brauchen Sie nur, wenn Sie einen Stand **ohne** Versions-Kennzeichnung verwenden wollen. Für macOS und Linux steht der dritte Weg über das **Homebrew-Tap** bereit (siehe [Weg C](#weg-c--über-ein-homebrew-tap-macos-linux)).
 
 #### Weg A — fertiges Programm herunterladen (empfohlen)
 
@@ -315,7 +315,7 @@ Die erste sagt: der **Kern** sieht keinen Adapter — er kennt nur seine Ports. 
 
 **Die treibende Seite wird bei `hexagonal` bewusst mitgeprüft** — strenger, als es verbreitete Vorlagen tun, die sie als reinen Verdrahtungs-Bereich freistellen. Der Grund: ein zu strenger Standard meldet sich beim **ersten** Lauf und kostet Sie eine Zeile; ein zu lascher meldet sich **nie** und lässt einen Bereich still ungeprüft. Wollen Sie die Freistellung, tragen Sie in **Ihrer** `.a-check.yml` `"internal/adapter/driving/**"` unter `composition_root` ein — eine Zeile, in einer Datei, die das Werkzeug nie überschreibt.
 
-**Wichtig für die Pflege:** `.a-check.yml` gehört Ihnen — ein erneutes Aufsetzen überschreibt sie nicht. Bei `hexslice` gilt: legen Sie einen **weiteren** Use-Case-Schnitt an, tragen Sie ihn dort nach (je ein Eintrag unter `app` und, falls er eigene Ports hat, unter `ports_inbound` bzw. `ports_outbound` — je nach Richtung, mit eigenem `direction:`). Diese Rollen-Form ist der veröffentlichte Stand: wer das `v0.2.3` heruntergeladen hat, trägt dort die Rollen-Form mit `direction:`. Vergessen Sie es, fällt der neue Code unter keine Schicht: importiert er eine, meldet das Gate `wrong-direction` — importiert er keine, bleibt er unbemerkt ungeprüft. Bei `hexagonal` wachsen neue Dateien in die bestehenden vier Schichten hinein; nachzutragen ist erst, wenn Sie ein **neues** Schicht-Verzeichnis anlegen.
+**Wichtig für die Pflege:** `.a-check.yml` gehört Ihnen — ein erneutes Aufsetzen überschreibt sie nicht. Bei `hexslice` gilt: legen Sie einen **weiteren** Use-Case-Schnitt an, tragen Sie ihn dort nach (je ein Eintrag unter `app` und, falls er eigene Ports hat, unter `ports_inbound` bzw. `ports_outbound` — je nach Richtung, mit eigenem `direction:`). Diese Rollen-Form ist der veröffentlichte Stand: wer das `v0.2.4` heruntergeladen hat, trägt dort die Rollen-Form mit `direction:`. Vergessen Sie es, fällt der neue Code unter keine Schicht: importiert er eine, meldet das Gate `wrong-direction` — importiert er keine, bleibt er unbemerkt ungeprüft. Bei `hexagonal` wachsen neue Dateien in die bestehenden vier Schichten hinein; nachzutragen ist erst, wenn Sie ein **neues** Schicht-Verzeichnis anlegen.
 
 **Grenzen:** `--arch hexslice` liefert für **beide** Zielsprachen, `--arch hexagonal` derzeit nur der **Go**-Renderer. Eine Sprache, deren Renderer die gewählte Bauform nicht kennt (heute `cpp` mit `hexagonal`), endet mit Exit 2 und nennt die Bauformen, die **diese** Sprache kann — statt still ein Grundgerüst ohne Schichten anzulegen; eine unbekannte Bauform ebenso, mit Nennung der verfügbaren Werte.
 
@@ -351,7 +351,7 @@ ai-harness-init --lang go --name "Mein Projekt" <zielordner>
 
 **Ergebnis:** Der Lauf ist **idempotent** (Exit-Code 0). Die werkzeug-eigene Infrastruktur (Prüf-Konfiguration, Hooks, die zentrale `Makefile`, Regelwerk) wird auf den Soll-Stand **aufgefrischt**, den dieses Programm mitbringt — das heilt Abweichungen, holt aber **denselben** Kurs-Stand wie beim ersten Lauf. **Von Ihnen gefüllte Dateien** — die Dokumente unter `spec/`, `README.md`, `AGENTS.md`, Ihr Quellcode im Grundgerüst (`go.mod`, `cmd/app/main.go` …) — bleiben **unangetastet**.
 
-**Hinweise:** Es gibt **kein** `--force` und **keinen** Kollisions-Abbruch. Wollen Sie eine von Ihnen bearbeitete werkzeug-eigene Datei bewusst auf den Ausgangsstand zurücksetzen, löschen Sie sie vor dem Re-Lauf — dann wird sie neu geschrieben.
+**Hinweise:** Es gibt **kein** `--force` und **keinen** Kollisions-Abbruch. Wollen Sie eine von Ihnen bearbeitete werkzeug-eigene Datei bewusst auf den Ausgangsstand zurücksetzen, löschen Sie sie vor dem Re-Lauf — dann wird sie neu geschrieben. **Nicht jede werkzeug-eigene Datei wird aufgefrischt:** eine vorhandene `.d-check.yml` und drei der fünf `.gitattributes` bleiben unberührt (siehe [Zeilenenden und Kennungs-Form der Prüf-Konfiguration](#zeilenenden-und-kennungs-form-der-prüf-konfiguration)).
 
 ### Eine andere Kurs-Version verwenden
 
@@ -476,6 +476,25 @@ Schon hier läuft `make gates` **grün** — dokument-only (Dokumentations-Prüf
 Am Wurzelverzeichnis (`--lang go` bzw. `add-lang go .`) liegen sie neben den Basis-Dateien; in einem **Mono-Repo** (mehrere `add-lang`-Läufe mit verschiedenen `<pfad>`) je Modul ein solcher Satz unter seinem `<pfad>`, auch mit gemischten Sprachen. Erst mit einem Sprachmodul fährt `make gates` **zusätzlich** die Code-Gates (lint/build/test in Docker).
 
 Mit einer geschichteten Bauform sieht der Code-Teil anders aus (die Bau-Dateien bleiben gleich): statt eines einzelnen Einstiegspunkts entstehen Schichten — bei `hexslice` `internal/hexagon/{domain,application}` und `internal/adapters/{driving,driven}`, bei `hexagonal` `internal/hexagon/{core,port}` und `internal/adapter/{driven,driving}` —, dazu `cmd/<binary>/main.go` und **plus** das Architektur-Gate `<pfad>/.a-check.yml` und `a-check.mk`. Bei `flat` (dem Standard) entsteht keines von beidem. Siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch).
+
+### Zeilenenden und Kennungs-Form der Prüf-Konfiguration
+
+**Zeilenenden.** Das Aufsetzen legt in fünf Verzeichnissen je eine `.gitattributes` mit der einen Zeile `* text=auto eol=lf` an — dort, wo ein Interpreter oder die Byte-Prüfung des Regelwerks die Dateien liest und ein CR am Zeilenende sie bricht. Die Zeile legt LF fest, unabhängig von `core.autocrlf` und von einer `.gitattributes` in der Wurzel Ihres Repositorys; ein Klon mit `core.autocrlf=true` trägt in diesen Verzeichnissen kein CR. Die Wurzel bekommt keine `.gitattributes`: Ihre Dateien dort schreibt git nach Ihrer eigenen Einstellung. Die fünf Dateien listet, im aufgesetzten Repository ausgeführt:
+
+```bash
+find . -name .gitattributes -not -path './.harness/baseline/*' | wc -l    # 5
+```
+
+Bei einem erneuten Aufsetzen unterscheiden sich die fünf in einem Punkt:
+
+| Verzeichnis | Beim erneuten Aufsetzen |
+|---|---|
+| `.harness/`, `tools/harness/` | wird jedes Mal neu geschrieben — eine von Hand geänderte Datei ist danach wieder die mitgelieferte |
+| `harness/mk/`, `.claude/hooks/`, `.githooks/` | eine vorhandene Datei bleibt unberührt; der Lauf nennt Verzeichnis und Folge: „Trägt sie die Zeile `* text=auto eol=lf` nicht, tragen die Dateien in `<verzeichnis>/` im Klon mit core.autocrlf=true CRLF." <!-- d-check:ignore (die Pfade entstehen erst im aufgesetzten Repository) --> |
+
+**Kennungs-Form der `.d-check.yml`.** Die mitgelieferte Prüf-Konfiguration der Dokumentation kennt Slices und Welle-Pläne als **Namen**: die Klassen `slice` und `welle` tragen die Präfix-Token `slice-` und `welle-`, und die Regel `spec-straten → welle` verbietet einer Spec-Datei, eine Welle-Datei zu nennen — ebenso wie eine Architektur-Entscheidung, einen Slice, den Adaptions-Block oder etwas außerhalb der Spec. Das Kennungs-Muster der Architektur-Entscheidungen nimmt ein **optionales Bereichs-Segment** (`ADR-<Nummer>` ebenso wie `ADR-<Bereich>-<Nummer>`, die Nummer vierstellig) und verlangt für beide einen Link; die Klasse `adr` deckt neben `docs/plan/adr/[0-9]*.md` auch `docs/plan/adr/[A-Z]*-[0-9]*.md`. Ein frisch aufgesetztes Repository meldet mit `make docs-check` `0 Befund(e)`; eine blanke Kennung mit Bereichs-Segment im Fließtext färbt es rot (`id-unlinked`), ebenso ein Link aus `spec/architecture.md` auf eine Datei `welle-<name>.md` (`matrix-forbidden`).
+
+Die `.d-check.yml` gehört Ihnen, sobald sie da ist: eine vorhandene Datei bleibt beim erneuten Aufsetzen **unberührt, ohne Meldung** — auch ein Repository, das mit einer früheren Fassung des Programms aufgesetzt wurde, behält seine. Diese Positionen tragen Sie dann von Hand nach: die Präfix-Token `slice-` und `welle-`, die Regel `{from: spec-straten, to: welle, allow: false}`, das Muster `ADR-([A-Z]+-)?\d{4}` im Block `ids` und den Glob `docs/plan/adr/[A-Z]*-[0-9]*.md` in der Klasse `adr`.
 
 Die Dateien mit der Endung `.template.md` unter `.harness/baseline/` sind **Vorlagen**: Sie kopieren sie bei Bedarf und füllen sie aus (z. B. für eine neue Architektur-Entscheidung). Die Prozess-Regeln erklären, wann welche Vorlage zum Einsatz kommt.
 
