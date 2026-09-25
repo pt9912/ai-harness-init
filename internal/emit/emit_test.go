@@ -32,11 +32,22 @@ func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 	// pruefte eine andere Stelle als die, ueber die sie spricht.
 	var letzteKlasse string
 	inClasses := false
+	// idsADR haelt das ADR-Muster innerhalb des ids:-Blocks — nur dort, denn der Kommentar
+	// der Vorlage nennt link-policy: always ebenfalls, und ein Contains ueber die ganze
+	// Datei bliebe bei link-policy: never auf dieser Zeile erfuellt.
+	var idsADR string
+	inIDs := false
 	for _, line := range strings.Split(yml, "\n") {
 		if strings.HasPrefix(line, "codepaths:") {
 			t.Errorf("codepaths unkommentiert aktiv im frischen Repo (halluziniertes Gate): %q", line)
 		}
+		if line != "" && line[0] != ' ' && line[0] != '#' {
+			inIDs = strings.HasPrefix(line, "ids:")
+		}
 		trimmed := strings.TrimSpace(line)
+		if inIDs && strings.HasPrefix(trimmed, "- {regex: 'ADR-") {
+			idsADR = trimmed
+		}
 		switch trimmed {
 		case "classes:":
 			inClasses = true
@@ -56,8 +67,8 @@ func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 	if !sawPrefixPattern {
 		t.Errorf("das auskommentierte Requirement-Muster von ids fehlt ganz (kein <PREFIX> mehr in der Vorlage):\n%s", yml)
 	}
-	if !strings.Contains(yml, "link-policy: always") {
-		t.Errorf("das ADR-Muster von ids traegt nicht link-policy: always:\n%s", yml)
+	if !strings.Contains(idsADR, "link-policy: always") {
+		t.Errorf("das ADR-Muster von ids traegt nicht link-policy: always (Zeile: %q):\n%s", idsADR, yml)
 	}
 	if !strings.Contains(yml, "{from: adr, to: slice, allow: false}") || !strings.Contains(yml, "{from: adr, to: welle, allow: false}") {
 		t.Errorf("die beiden neuen matrix-Regeln (adr->slice, adr->welle) fehlen:\n%s", yml)
@@ -112,8 +123,10 @@ func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 // Ziffern-Form kommt ausserhalb der Klassen-Zeilen nirgends vor. Er liest die Vorlage, nicht
 // das Verhalten im Ziel; das Verhalten belegt die full-smoke-Stufe der Kennungs-Form.
 //
-// Jede Zusicherung urteilt ueber genau eine Stelle, damit eine Mutation genau eine
-// Zusicherung faerbt: die Token je Klasse (token_slice, token_welle), die Zahl der Token
+// Jede Zusicherung urteilt ueber genau eine Stelle; die acht Faelle 435 bis 442 faerben
+// darum je genau einen Unterfall, eine Mutation ausserhalb der Faelle kann mehrere faerben
+// (ein Token ganz weg faerbt token_slice und token_menge). Die Stellen: die Token je Klasse
+// (token_slice, token_welle), die Zahl der Token
 // (token_menge), je erwartete Regel eine Zusicherung, die Regeln ausserhalb der Liste
 // (regel_menge), das ids-Muster, die Klasse adr und die Ziffern-Form in allen uebrigen Zeilen.
 // Rot-Gegenbeispiele: test/mutations/435-emittierte-token-slice-kehrt-in-die-ziffern-form-zurueck.sh,
