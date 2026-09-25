@@ -39,7 +39,7 @@ weiter, und dieser Slice trägt ihn nicht fort (§1).
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-25.
 
@@ -240,11 +240,14 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **Vor `open` → `next`** (Priorisierung, Entscheidung des Auftraggebers): der bewegende Lauf misst
 nach [`AGENTS.md`](../../../../AGENTS.md) §3.11 und
 [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Festlegung 4, ob ein
-eingefrorenes Artefakt diese Datei als Pfad nennt — über beide Adress-Formen. **Der Befund steht:**
-[`slice-tap-check-haelt-die-formel-gegen-das-veroeffentlichte-asset`](../done/slice-tap-check-haelt-die-formel-gegen-das-veroeffentlichte-asset.md)
-trägt einen Markdown-Link auf den `open/`-Pfad dieser Datei (§1), und der Move bräche ihn
-(`grep -rnE 'slice-tap-nachzug-ist-schritt-der-release-prozedur(\.md)?' docs harness .claude --include='*.md'`
-nennt ihn und vier Kennungs-Nennungen). Die Entscheidung gehört **vor** den Move (§6 Frage 2).
+eingefrorenes Artefakt diese Datei als Pfad nennt — über beide Adress-Formen. **Der Befund steht:** kein
+Artefakt nennt sie als Pfad. Der Code-Span-Pfad und der Markdown-Link (`open/<Kennung>`,
+`<Kennung>.md`, `](<Kennung>`) treffen im Repo außerhalb `.harness/baseline` und außer dieser Datei
+nichts (`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-tap-nachzug-ist-schritt-der-release-prozedur\.md|open/slice-tap-nachzug-ist-schritt-der-release-prozedur|\]\(slice-tap-nachzug-ist-schritt-der-release-prozedur' . | grep -v 'planning/open/slice-tap-nachzug-ist-schritt-der-release-prozedur.md' | wc -l`
+→ **0**); die Kennung steht in zwei eingefrorenen Dateien als Text
+(`grep -rlI --exclude-dir=.git --exclude-dir=.harness slice-tap-nachzug-ist-schritt-der-release-prozedur .`).
+Der Link in `done/slice-tap-check-…` ist auf die Kennung reduziert; die Entscheidung liegt damit vor dem
+Move (§6 Frage 2).
 
 **Start** (`next` → `in-progress`): `Verantwortlich:` gesetzt, WIP-Limit frei, Frage 2 aus §6
 entschieden. Der Stand der Entscheidungen, an denen die Arbeit hing, ist gemessen:
@@ -306,7 +309,9 @@ dasteht.
    [`BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt`](../observations/BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt/observation.md)),
    oder die Adresse wird eine Kennung. Ein Paar in `ignore-refs` der [`.d-check.yml`](../../../../.d-check.yml)
    wäre eine Senkung nach [`AGENTS.md`](../../../../AGENTS.md) §3.5 und braucht eine ADR. **Übergabe an
-   den Architect, wenn der bewegende Lauf keinen der ersten zwei Wege trägt.**
+   den Architect, wenn der bewegende Lauf keinen der ersten zwei Wege trägt.** **Entschieden:** der
+   zweite Weg — die Adresse in `done/slice-tap-check-…` ist die Kennung, der Move zieht dort nichts nach
+   (§4, Messung über beide Adress-Formen).
 
 **Risiken:**
 
