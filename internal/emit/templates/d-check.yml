@@ -10,7 +10,7 @@ scan:
 modules: [links, anchors, ids, matrix, spans]
 ids:
   patterns:
-    - {regex: 'ADR-\d{4}', target: docs/plan/adr/, link-policy: always}
+    - {regex: 'ADR-([A-Z]+-)?\d{4}', target: docs/plan/adr/, link-policy: always}
     # Requirement-Praefix gehoert dem Adopter (er ist in einem frischen Ziel nicht
     # bekannt) — Muster setzen und aktivieren, sobald spec/lastenheft.md eigene
     # Kennungen fuehrt: {regex: '<PREFIX>-[A-Z]{2}-\d{2}', target: spec/lastenheft.md, link-policy: always}
@@ -18,26 +18,47 @@ ids:
 # codepaths:
 #   roots: [spec, docs, harness]
 # Herkunft der Positionen in diesem Block, gemessen gegen die Baseline-Vorlage
-# (.harness/baseline/<tag>/templates/.d-check.yml). order:/direction: auf
-# spec-straten, token: 'slice-\d{3}' auf der slice-Klasse und die Regel
-# {from: adr, to: slice} stehen dort im auskommentierten matrix-Block und
-# gehen mit. Vier Positionen gehen darueber hinaus: die welle-Klasse samt
-# token: 'welle-\d{2}' und die Regel {from: adr, to: welle} decken ein
-# drittes Lifecycle-Artefakt neben adr und slice, das die Vorlage noch nicht
-# fuehrt; exclude-sections traegt dafuer nur Geschichte, nicht Historie/
-# "7. Historie": Die ADR-Vorlage fuehrt in ihrem Geschichte-Abschnitt eine
-# Verweis-Spalte, deren erste Zeile eine Slice-Datei nennt — legitime
-# rueckwaertige Provenance, die {from: adr, to: slice} sonst faelschlich
-# faengt. Die Historie-Abschnitte der Spec-Straten-Vorlagen tragen keine
-# solche Ausnahme: ihre eigene Decken-Regel verbietet dort jeden ADR-/
-# Slice-Verweis ebenso wie ausserhalb der Historie, die Spalte "Verweis"
-# fuehrt nur den externen Change Request.
+# (.harness/baseline/<tag>/templates/.d-check.yml) und gegen die Matrix-Tabelle in
+# grundlagen-referenz-richtung.md. order:/direction: auf spec-straten und die Regel
+# {from: adr, to: slice} stehen dort im auskommentierten matrix-Block und gehen mit.
+# Die Baseline-Vorlage fuehrt fuer die slice-Klasse ein token: in der Ziffern-Form;
+# hier steht das Praefix slice-, weil grundlagen-source-precedence.md §Vergabe Slice-
+# und Welle-Kennungen als Namen setzt: das Praefix faengt den Namen und die Nummer.
+# Fuenf Positionen gehen darueber hinaus:
+# Die welle-Klasse samt dem Praefix welle- und die Regeln {from: adr, to: welle} und
+# {from: spec-straten, to: welle}: Die Matrix-Tabelle setzt die Spalte Welle in der
+# ADR-Zeile und in allen drei Straten-Zeilen; die Klasse steht vor aussen, also faengt
+# aussen eine Welle-Datei nicht, und die Regel aus spec-straten ist die einzige Deckung.
+# Das Praefix welle- ist die Setzung dieser Vorlage aus der Spalte Welle; der Gate-Text
+# des Regelwerks nennt nur ADR- und slice-. exclude-sections traegt nur Geschichte,
+# nicht Historie/"7. Historie": Die ADR-Vorlage fuehrt in ihrem Geschichte-Abschnitt
+# eine Verweis-Spalte, deren erste Zeile eine Slice-Datei nennt — legitime
+# rueckwaertige Provenance, die {from: adr, to: slice} sonst faelschlich faengt. Die
+# Historie-Abschnitte der Spec-Straten-Vorlagen tragen keine solche Ausnahme: ihre
+# eigene Decken-Regel verbietet dort jeden ADR-/Slice-Verweis ebenso wie ausserhalb der
+# Historie, die Spalte "Verweis" fuehrt nur den externen Change Request.
 # Die dritte ist die Klasse aussen als letzte Klasse samt der Regel aus spec-straten
 # und dem exempt-paths-Block darunter: Sie schliesst die Referenz-Richtung nach
 # aussen statt nur nach unten — ein Spec-Stratum nennt kein Artefakt ausserhalb der
 # Spec. Die vierte ist die Klasse adaptionsblock samt token: 'MR-\d{3}' und ihrer
 # Regel aus spec-straten: Sie faengt die Kennung des Adaptions-Blocks auch dort, wo
-# sie blank im Fliesstext steht statt als Link.
+# sie blank im Fliesstext steht statt als Link. Die fuenfte ist die Bereichs-Form der
+# ADR-Kennung: das ids-Muster nimmt ein optionales Segment (ADR-IDX-0004, so nennt
+# §Vergabe die Form), und die adr-Klasse nimmt neben [0-9]*.md die Dateien mit
+# Bereichs-Praefix auf; README.md traegt kein Segment und bleibt draussen.
+# Das Praefix ist ein Fehlalarm fuer jedes Wort dieser Form (slice-mv, slice-lokal):
+# die Vorlage nimmt ihn in Kauf. Der Ausweg ist je Klasse verschieden. In einer ADR
+# nimmt der Zeilen-Marker <!-- d-check:status-provenance --> die Zeile aus. Der Marker
+# ist nicht Ziel-spezifisch: er nimmt die Zeile fuer Slice und Welle zugleich aus. In
+# einem Spec-Stratum hilft Umformulieren, denn das Regelwerk kennt dort keine
+# ausgenommene Sektion; der Marker wirkt dort mechanisch ebenfalls und ist dann ein
+# Umgehen, das nur der Reviewer faengt.
+# Diese Datei wird nur an einem freien Pfad geschrieben: ein Ziel mit vorhandener
+# .d-check.yml behaelt seine Fassung und bekommt keine dieser Positionen. Der Nachzug
+# ist Handarbeit nach dieser Liste — die Praefix-Token slice- und welle-, die Regel
+# {from: spec-straten, to: welle}, das segment-tolerante ids-Muster fuer ADR und der
+# Bereichs-Praefix-Glob der adr-Klasse; die Regeln mit dem Adaptions-Block als Quelle
+# fuehrt die Vorlage nicht.
 # Eine Position bleibt bewusst hinter der Vorlage zurueck:
 # token: 'ADR-\d{4}' auf der adr-Klasse geht NICHT mit — das
 # ids-Modul deckt die blosse Kennung bereits ueber link-policy: always ab
@@ -49,9 +70,9 @@ ids:
 matrix:
   classes:
     - {name: spec-straten, paths: [spec/lastenheft.md, spec/spezifikation.md, spec/architecture.md], order: [spec/lastenheft.md, spec/spezifikation.md, spec/architecture.md], direction: no-downward}
-    - {name: adr, paths: ["docs/plan/adr/[0-9]*.md"]}
-    - {name: slice, paths: ["docs/plan/planning/**/slice-*.md"], token: 'slice-\d{3}'}
-    - {name: welle, paths: ["docs/plan/planning/**/welle-*.md"], token: 'welle-\d{2}'}
+    - {name: adr, paths: ["docs/plan/adr/[0-9]*.md", "docs/plan/adr/[A-Z]*-[0-9]*.md"]}
+    - {name: slice, paths: ["docs/plan/planning/**/slice-*.md"], token: 'slice-'}
+    - {name: welle, paths: ["docs/plan/planning/**/welle-*.md"], token: 'welle-'}
     # Das Kennungs-Muster faengt die blosse MR-Kennung im Fliesstext, die kein
     # Link-Sensor sieht. Begrenzend ist die Regel darunter, nicht die Klassifikation:
     # Gefangen wird die Kennung nur in einer Quelle der Klasse spec-straten. Die
@@ -68,6 +89,7 @@ matrix:
   rules:
     - {from: spec-straten, to: adr, allow: false}
     - {from: spec-straten, to: slice, allow: false}
+    - {from: spec-straten, to: welle, allow: false}
     - {from: spec-straten, to: adaptionsblock, allow: false}
     - {from: spec-straten, to: aussen, allow: false}
     # Eine Accepted-ADR nennt eine Slice-/Welle-Kennung nur als deklarierte Provenance

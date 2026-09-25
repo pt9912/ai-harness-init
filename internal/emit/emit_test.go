@@ -56,8 +56,8 @@ func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 	if !sawPrefixPattern {
 		t.Errorf("das auskommentierte Requirement-Muster von ids fehlt ganz (kein <PREFIX> mehr in der Vorlage):\n%s", yml)
 	}
-	if !strings.Contains(yml, "regex: 'ADR-\\d{4}'") || !strings.Contains(yml, "link-policy: always") {
-		t.Errorf("das ADR-Muster von ids fehlt oder traegt nicht link-policy: always:\n%s", yml)
+	if !strings.Contains(yml, "link-policy: always") {
+		t.Errorf("das ADR-Muster von ids traegt nicht link-policy: always:\n%s", yml)
 	}
 	if !strings.Contains(yml, "{from: adr, to: slice, allow: false}") || !strings.Contains(yml, "{from: adr, to: welle, allow: false}") {
 		t.Errorf("die beiden neuen matrix-Regeln (adr->slice, adr->welle) fehlen:\n%s", yml)
@@ -102,6 +102,137 @@ func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 	if !strings.Contains(yml, "exclude-sections: [Geschichte]") {
 		t.Errorf("exclude-sections traegt nicht genau [Geschichte]:\n%s", yml)
 	}
+}
+
+// TestDCheckConfig_KennungsForm haelt die Kennungs-Form der eingebetteten .d-check.yml fest
+// (LH-FA-03): Praefix-Token auf den Klassen slice und welle, die Regel spec-straten -> welle,
+// das segment-tolerante ADR-Muster von ids und die Klasse adr mit dem Bereichs-Praefix-Glob.
+// Der Test bindet die MENGE der Token und der Regeln der matrix, nicht die Namen einzelner
+// Zeilen: jede erwartete Regel steht in der Liste, keine weitere steht daneben, und die
+// Ziffern-Form kommt ausserhalb der Klassen-Zeilen nirgends vor. Er liest die Vorlage, nicht
+// das Verhalten im Ziel; das Verhalten belegt die full-smoke-Stufe der Kennungs-Form.
+//
+// Jede Zusicherung urteilt ueber genau eine Stelle, damit eine Mutation genau eine
+// Zusicherung faerbt: die Token je Klasse (token_slice, token_welle), die Zahl der Token
+// (token_menge), je erwartete Regel eine Zusicherung, die Regeln ausserhalb der Liste
+// (regel_menge), das ids-Muster, die Klasse adr und die Ziffern-Form in allen uebrigen Zeilen.
+// Rot-Gegenbeispiele: test/mutations/435-emittierte-token-slice-kehrt-in-die-ziffern-form-zurueck.sh,
+// test/mutations/436-emittierte-token-welle-kehrt-in-die-ziffern-form-zurueck.sh,
+// test/mutations/437-emittierte-matrix-regel-spec-straten-zu-welle-fehlt.sh,
+// test/mutations/438-emittiertes-ids-muster-adr-verliert-das-segment.sh,
+// test/mutations/439-emittierte-adr-klasse-verliert-den-bereichs-praefix.sh,
+// test/mutations/440-emittierte-ziffern-form-steht-im-kommentar.sh,
+// test/mutations/441-emittierte-matrix-fuehrt-ein-weiteres-token.sh,
+// test/mutations/442-emittierte-matrix-fuehrt-eine-weitere-regel.sh.
+func TestDCheckConfig_KennungsForm(t *testing.T) {
+	yml := emit.DCheckConfig()
+	klassen := map[string]string{}
+	var klassenZeilen, regelZeilen, idsMuster []string
+	abschnitt := ""
+	for _, line := range strings.Split(yml, "\n") {
+		trimmed := strings.TrimSpace(line)
+		switch {
+		case strings.HasPrefix(line, "ids:"):
+			abschnitt = "ids"
+		case trimmed == "classes:":
+			abschnitt = "classes"
+		case trimmed == "rules:":
+			abschnitt = "rules"
+		case strings.HasPrefix(line, "  status:"):
+			abschnitt = ""
+		}
+		switch {
+		case abschnitt == "ids" && strings.HasPrefix(trimmed, "- {regex: "):
+			idsMuster = append(idsMuster, trimmed)
+		case abschnitt == "classes" && strings.HasPrefix(trimmed, "- {name: "):
+			name := strings.TrimSuffix(strings.SplitN(strings.TrimPrefix(trimmed, "- {name: "), ",", 2)[0], "}")
+			klassen[name] = trimmed
+			klassenZeilen = append(klassenZeilen, trimmed)
+		case abschnitt == "rules" && strings.HasPrefix(trimmed, "- {from: "):
+			regelZeilen = append(regelZeilen, trimmed)
+		}
+	}
+
+	t.Run("token_slice", func(t *testing.T) {
+		if !strings.HasSuffix(klassen["slice"], "token: 'slice-'}") {
+			t.Errorf("die Klasse slice traegt nicht das Praefix-Token slice-: %q", klassen["slice"])
+		}
+	})
+	t.Run("token_welle", func(t *testing.T) {
+		if !strings.HasSuffix(klassen["welle"], "token: 'welle-'}") {
+			t.Errorf("die Klasse welle traegt nicht das Praefix-Token welle-: %q", klassen["welle"])
+		}
+	})
+	t.Run("token_menge", func(t *testing.T) {
+		// Drei Klassen tragen ein token: slice, welle und adaptionsblock. Die Zahl haengt nicht
+		// am Wert eines Tokens, sondern an der Menge der Klassen, die eines tragen.
+		n := 0
+		for _, z := range klassenZeilen {
+			if strings.Contains(z, "token: ") {
+				n++
+			}
+		}
+		if n != 3 {
+			t.Errorf("%d Klassen tragen ein token: statt drei (slice, welle, adaptionsblock):\n%s", n, strings.Join(klassenZeilen, "\n"))
+		}
+	})
+
+	erwartet := []string{
+		"{from: spec-straten, to: adr, allow: false}",
+		"{from: spec-straten, to: slice, allow: false}",
+		"{from: spec-straten, to: welle, allow: false}",
+		"{from: spec-straten, to: adaptionsblock, allow: false}",
+		"{from: spec-straten, to: aussen, allow: false}",
+		"{from: adr, to: slice, allow: false}",
+		"{from: adr, to: welle, allow: false}",
+	}
+	vorhanden := map[string]bool{}
+	for _, z := range regelZeilen {
+		vorhanden[strings.TrimPrefix(z, "- ")] = true
+	}
+	regelName := strings.NewReplacer("{from: ", "", ", to: ", "_", ", allow: false}", "", "-", "_")
+	for _, regel := range erwartet {
+		t.Run("regel_"+regelName.Replace(regel), func(t *testing.T) {
+			if !vorhanden[regel] {
+				t.Errorf("die matrix-Regel %s fehlt:\n%s", regel, strings.Join(regelZeilen, "\n"))
+			}
+		})
+	}
+	t.Run("regel_menge", func(t *testing.T) {
+		gelistet := map[string]bool{}
+		for _, regel := range erwartet {
+			gelistet[regel] = true
+		}
+		for _, z := range regelZeilen {
+			if !gelistet[strings.TrimPrefix(z, "- ")] {
+				t.Errorf("die matrix fuehrt eine Regel ausserhalb der Liste: %s", z)
+			}
+		}
+	})
+
+	t.Run("ids_muster_adr", func(t *testing.T) {
+		if len(idsMuster) != 1 || !strings.HasPrefix(idsMuster[0], `- {regex: 'ADR-([A-Z]+-)?\d{4}', target: docs/plan/adr/,`) {
+			t.Errorf("ids traegt nicht genau das segment-tolerante ADR-Muster: %q", idsMuster)
+		}
+	})
+	t.Run("adr_klasse_bereichs_praefix", func(t *testing.T) {
+		want := `- {name: adr, paths: ["docs/plan/adr/[0-9]*.md", "docs/plan/adr/[A-Z]*-[0-9]*.md"]}`
+		if klassen["adr"] != want {
+			t.Errorf("die Klasse adr traegt nicht genau die zwei Globs (Ziffern und Bereichs-Praefix, README.md bleibt draussen): %q", klassen["adr"])
+		}
+	})
+	t.Run("keine_ziffern_form", func(t *testing.T) {
+		// Die Klassen-Zeilen urteilen token_slice und token_welle; hier stehen alle uebrigen
+		// Zeilen, Kommentare eingeschlossen.
+		for _, line := range strings.Split(yml, "\n") {
+			if strings.HasPrefix(strings.TrimSpace(line), "- {name: ") {
+				continue
+			}
+			if strings.Contains(line, `slice-\d`) || strings.Contains(line, `welle-\d`) {
+				t.Errorf("die Ziffern-Form von Slice oder Welle steht in der Vorlage: %q", line)
+			}
+		}
+	})
 }
 
 // TestDefaultDigest_MatchesCanonical haelt DoD-3/LH-QA-02 fest: der Default-Pin des
