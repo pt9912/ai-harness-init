@@ -164,15 +164,20 @@ und lädt nichts hoch. Die Schritt-Folge:
    Zustand nach dem Aufruf. Sie vergleicht Bytes (`cmp -s` in `gleich()` von
    `harness/tools/tap-nachzug-nutzlast.sh`), keine Versionen, und nach dem
    Nachzug eines älteren Tags endet die Kontrolle gegen genau diesen Tag mit
-   Exit 0, weil die Bytes gleich sind. Gebunden ist davon, was der bats-Fall
-   `version-zeile: in check kein Gegenstand …` misst
-   (`grep -n 'version-zeile: in check' test/tap-nachzug.bats`): gleiche Bytes
+   Exit 0, weil die Bytes gleich sind. Gebunden ist davon, was zwei bats-Fälle
+   messen (`grep -n 'version-zeile: in check' test/tap-nachzug.bats`,
+   `grep -n 'check liest keine Version' test/tap-nachzug.bats`): gleiche Bytes
    enden mit Exit 0, auch mit einer `version`-Zeile außerhalb der Feldform und
-   ohne jede `version`-Zeile. **Nicht gebunden** ist, dass der Vergleich keine
-   Version liest: ein Vergleich, der bei ungleichen Bytes die `version`-Zeilen
-   liest und bei größerer Tap-Version mit Exit 0 endet, färbt keinen der Fälle von
-   `test/tap-nachzug.bats` (`grep -c '^@test' test/tap-nachzug.bats` → `37`);
-   der Zahn fehlt. Das Kommando
+   ohne jede `version`-Zeile; ungleiche Bytes mit **größerer** Tap-Version
+   enden mit Exit 1, der Meldung des Formel-Unterschieds und der Zeile
+   `tap-check: Exit 1`. Der Fall `check liest keine Version …` hat einen
+   Mutations-Fall (`test/mutations/452-tap-check-liest-versionen-bei-ungleichen-bytes.sh`):
+   ein Vergleich, der bei ungleichen Bytes die `version`-Zeilen liest und bei
+   größerer Tap-Version mit Exit 0 endet, färbt ihn. **Nicht gebunden** ist
+   jede andere Form der Versions-Lektüre: eine kleinere Tap-Version und eine
+   gleiche `version`-Zeile bei sonst ungleichen Bytes sind nicht Gegenstand
+   dieses Falls, der eine Form misst; die Datei trägt `38` Fälle
+   (`grep -c '^@test' test/tap-nachzug.bats`). Das Kommando
    `grep -ci version harness/tools/tap-nachzug.sh harness/tools/tap-nachzug-nutzlast.sh`
    zählt das Wort in den Skripten (→ `0` je Datei) und ist eine Näherung an
    die Eigenschaft: ein Kommentar mit dem Wort färbt es rot, ohne dass sie
