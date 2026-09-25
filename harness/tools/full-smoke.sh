@@ -178,8 +178,12 @@ git init -q "$tmprepo_mixed"
 # ihr Klon waere darum nie gruen, und das Rot kaeme aus dem Fixture statt aus dem
 # Pruefgegenstand.
 tmprepo_selbst="$(mktemp -d -p "${TMPDIR:-/tmp}")"
+# Elternverzeichnis der frischen Ziele des Kennungs-Form-Abschnitts (kennungs_form_im_ziel);
+# d-check mountet jedes Ziel read-only in einen Nicht-Root-Container, darum 0755.
+tmprepo_kf="$(mktemp -d -p "${TMPDIR:-/tmp}")"
+chmod 755 "$tmprepo_kf"
 git init -q "$tmprepo_selbst"
-cleanup() { rm -rf "$tmpbin" "$tmpklon" "$tmprepo" "$tmprepo_doc" "$tmprepo_hex" "$tmprepo_cpphex" "$tmprepo_selbst" "$tmprepo_traeger" "$tmprepo_mixed"; }
+cleanup() { rm -rf "$tmpbin" "$tmpklon" "$tmprepo" "$tmprepo_doc" "$tmprepo_hex" "$tmprepo_cpphex" "$tmprepo_selbst" "$tmprepo_traeger" "$tmprepo_mixed" "$tmprepo_kf"; }
 trap cleanup EXIT
 # Aus demselben Grund wie bei den uebrigen Zielen: der Klon dieses Ziels wird von
 # d-check read-only gemountet, und der Container laeuft als Nicht-Root.
@@ -2863,6 +2867,151 @@ fi
 echo "full-smoke: hexagonal-Zahn 2 belegt (driving -> driven faerbt a-check als lateral-adapter rot, danach zurueckgenommen):"
 grep -F -- 'lateral-adapter' <<<"$lateral_out" | sed -n '1,2s/^/full-smoke:   /p'
 
+# DIE KENNUNGS-FORM DER EMITTIERTEN .d-check.yml LIEGT IM ZIEL (LH-FA-03, ADR-0065).
+#
+# Der Go-Test der Vorlage (internal/emit/emit_test.go) bindet die POSITIONEN — die Menge
+# der Token und der Regeln der matrix, das ids-Muster, die Klasse adr. Ob ein frisch
+# gebootstrapptes Ziel mit ihnen gruen startet und ob sie im Ziel rot faerben, entscheidet
+# nur ein echter docs-check dort. Zwei Aussagen:
+#   (a) DER GRUENE START je Sprache und Architektur, die das Werkzeug traegt (eine
+#       Kombination, die die Sprache nicht traegt, endet mit Exit 2 und ist kein Fall):
+#       docs-check des frischen Ziels meldet `0 Befund(e)`, und die emittierten Spec-Dateien
+#       tragen keine Zeile mit `slice-` oder `welle-`.
+#   (b) JE POSITION EIN ROTES GEGENBEISPIEL mit gelesener Meldung (die Regel benannt, nicht
+#       irgendein Befund) UND seine GEGENPROBE: unter der Fassung der Position ohne die
+#       Aenderung bleibt dasselbe Gegenbeispiel GRUEN — sonst belegte der Fall nur, dass
+#       irgendein Befund entsteht, nicht dass erst die Position ihn findet.
+# Die Ziele sind frisch und gehoeren diesem Abschnitt: er haengt an keinem Zustand, den eine
+# fruehere Stufe hinterlaesst.
+# kf_docs_check <ziel> [einordnen] — der EINE docs-check-Aufruf dieses Abschnitts. Wer Gruen
+# erwartet, uebergibt `einordnen`: ein Rot nennt dann seinen Ausgang (LEITUNG oder BAUM). Wer
+# Rot erwartet, uebergibt nichts — ein erwartetes Rot ist kein Ausfall und traegt keinen.
+kf_docs_check() {
+	kf_rc=0
+	kf_out="$( make -C "$1" docs-check 2>&1 )" || kf_rc=$?
+	if [ "${2:-}" = "einordnen" ] && [ "$kf_rc" -ne 0 ]; then
+		einordnen "make docs-check im Ziel (Kennungs-Form)" "$kf_out"
+	fi
+}
+kf_adr() {
+	printf '# Probe\n\n**Status:** Accepted\n\n## Kontext\n\n%s\n' "$2" >"$1"
+}
+kf_gegenbeispiel() {
+	local ziel="$1" name="$2" meldung="$3" schwaechung="$4"
+	kf_docs_check "$ziel"
+	if [ "$kf_rc" -eq 0 ]; then
+		echo "full-smoke: FEHLER — Kennungs-Gegenbeispiel $name laesst docs-check im Ziel GRUEN: die Position der emittierten .d-check.yml ist nicht wirksam (ADR-0065/AGENTS.md §3.6)." >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+	if ! grep -qE -- "$meldung" <<<"$kf_out"; then
+		echo "full-smoke: FEHLER — Kennungs-Gegenbeispiel $name: docs-check im Ziel rot, aber ohne die Meldung [$meldung] (rot aus falschem Grund?). Ausgabe:" >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+	echo "full-smoke: Kennungs-Gegenbeispiel $name belegt (faerbt docs-check im Ziel rot):"
+	grep -E -- "$meldung" <<<"$kf_out" | sed -n '1,2s/^/full-smoke:   /p'
+	cp "$ziel/.d-check.yml" "$ziel/.d-check.yml.kf-bak"
+	psed_i "$schwaechung" "$ziel/.d-check.yml"
+	if cmp -s "$ziel/.d-check.yml" "$ziel/.d-check.yml.kf-bak"; then
+		rm -f "$ziel/.d-check.yml.kf-bak"
+		echo "full-smoke: FEHLER — Kennungs-Gegenprobe $name: die Schwaechung [$schwaechung] aendert die .d-check.yml des Ziels nicht — die Gegenprobe wuerde die Position nicht abschalten." >&2
+		exit 1
+	fi
+	kf_docs_check "$ziel" einordnen
+	mv "$ziel/.d-check.yml.kf-bak" "$ziel/.d-check.yml"
+	if [ "$kf_rc" -ne 0 ] || ! grep -qF -- ', 0 Befund(e)' <<<"$kf_out"; then
+		echo "full-smoke: FEHLER — Kennungs-Gegenprobe $name: dasselbe Gegenbeispiel faerbt docs-check auch ohne die Position rot — der Fall belegt nicht, dass ERST die Position es findet (ADR-0065/AGENTS.md §3.6)." >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+	echo "full-smoke: Kennungs-Gegenprobe $name belegt (ohne die Position bleibt dasselbe Gegenbeispiel gruen, danach zurueckgenommen)."
+}
+kennungs_form_im_ziel() {
+	local eintrag sprache arch label dir n ziel="" out rc q="'"
+	# Sprache|Architektur je Fall; die leere Sprache ist der sprachlose Bootstrap.
+	for eintrag in "|" "go|flat" "go|hexagonal" "go|hexslice" "cpp|flat" "cpp|hexslice"; do
+		sprache="${eintrag%%|*}"
+		arch="${eintrag#*|}"
+		label="${sprache:-sprachlos}${arch:+ $arch}"
+		dir="$(mktemp -d -p "$tmprepo_kf")"
+		chmod 755 "$dir"
+		git init -q "$dir"
+		rc=0
+		if [ -z "$sprache" ]; then
+			out="$( "$tmpbin/ai-harness-init" --name kf "$dir" 2>&1 )" || rc=$?
+		else
+			out="$( "$tmpbin/ai-harness-init" --lang "$sprache" --arch "$arch" --name kf "$dir" 2>&1 )" || rc=$?
+		fi
+		if [ "$rc" -ne 0 ]; then
+			echo "full-smoke: FEHLER — gruener Start der Kennungs-Form ($label): der Bootstrap ist NICHT Exit 0 (Exit $rc)." >&2
+			printf '%s\n' "$out" >&2
+			exit 1
+		fi
+		kf_docs_check "$dir" einordnen
+		if [ "$kf_rc" -ne 0 ] || ! grep -qF -- ', 0 Befund(e)' <<<"$kf_out"; then
+			echo "full-smoke: FEHLER — gruener Start der Kennungs-Form ($label): docs-check des frischen Ziels meldet nicht '0 Befund(e)' (Exit $kf_rc)." >&2
+			printf '%s\n' "$kf_out" >&2
+			exit 1
+		fi
+		n="$( cat "$dir"/spec/*.md | grep -cE '(slice|welle)-' || true )"
+		if [ "$n" != "0" ]; then
+			echo "full-smoke: FEHLER — gruener Start der Kennungs-Form ($label): die emittierten Spec-Dateien tragen $n Zeile(n) mit slice- oder welle-." >&2
+			exit 1
+		fi
+		echo "full-smoke: gruener Start der Kennungs-Form ($label): docs-check '0 Befund(e)', Spec-Dateien ohne slice-/welle-."
+		if [ -z "$ziel" ]; then ziel="$dir"; fi
+	done
+
+	local adr="$ziel/docs/plan/adr/0001-probe.md" adr_bereich="$ziel/docs/plan/adr/IDX-0004-probe.md"
+	local spec="$ziel/spec/lastenheft.md"
+	cp "$spec" "$spec.kf-orig"
+	# (1) ein benannter Slice-Name in einer ADR: das Praefix slice- auf der Klasse slice.
+	kf_adr "$adr" "Verifiziert in slice-lokal-probe."
+	kf_gegenbeispiel "$ziel" "slice-Name in einer ADR" 'matrix-forbidden.*adr → slice \(slice-\)' \
+		"s/token: ${q}slice-${q}}/token: ${q}slice-\\\\d{3}${q}}/"
+	# (2) ein Welle-Name in einer ADR: das Praefix welle- auf der Klasse welle.
+	kf_adr "$adr" "Eingeplant in welle-cache-warmup."
+	kf_gegenbeispiel "$ziel" "welle-Name in einer ADR" 'matrix-forbidden.*adr → welle \(welle-\)' \
+		"s/token: ${q}welle-${q}}/token: ${q}welle-\\\\d{2}${q}}/"
+	# (6) der Ausweg: dieselbe Zeile mit dem Marker nimmt Slice- UND Welle-Name aus.
+	kf_adr "$adr" "Verifiziert in slice-lokal-probe, eingeplant in welle-cache-warmup. <!-- d-check:status-provenance -->"
+	kf_docs_check "$ziel" einordnen
+	if [ "$kf_rc" -ne 0 ] || ! grep -qF -- ', 0 Befund(e)' <<<"$kf_out"; then
+		echo "full-smoke: FEHLER — Kennungs-Ausweg: der Zeilen-Marker nimmt die ADR-Zeile mit Slice- und Welle-Name nicht aus (Exit $kf_rc)." >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+	echo "full-smoke: Kennungs-Ausweg belegt (dieselbe ADR-Zeile mit dem Marker: '0 Befund(e)' fuer Slice- und Welle-Name zugleich)."
+	rm -f "$adr"
+	# (3) ein Welle-Name in einer Spec-Datei: die Regel spec-straten -> welle.
+	psed_i '5a\
+\
+Die Welle welle-cache-warmup nennt dies.
+' "$spec"
+	kf_gegenbeispiel "$ziel" "welle-Name in einer Spec-Datei" 'matrix-forbidden.*spec-straten → welle \(welle-\)' \
+		"/{from: spec-straten, to: welle, allow: false}/d"
+	cp "$spec.kf-orig" "$spec"
+	# (4) ADR-<Bereich>-<NNNN> blank im Text: das segment-tolerante ids-Muster.
+	psed_i '5a\
+\
+Siehe ADR-IDX-0004 fuer Kontext.
+' "$spec"
+	kf_gegenbeispiel "$ziel" "ADR-Kennung mit Bereichssegment" 'ADR-IDX-0004.*id-unlinked' \
+		"s|regex: ${q}ADR-[^${q}]*${q}|regex: ${q}ADR-\\\\d{4}${q}|"
+	cp "$spec.kf-orig" "$spec"
+	# (5) eine Datei mit Bereichs-Praefix unter docs/plan/adr/: der Glob der Klasse adr.
+	kf_adr "$adr_bereich" "Verifiziert in slice-lokal-probe."
+	kf_gegenbeispiel "$ziel" "Bereichs-Datei unter docs/plan/adr/" 'IDX-0004-probe.md:[0-9]+.*matrix-forbidden.*adr → slice' \
+		's|, "docs/plan/adr/\[A-Z\]\*-\[0-9\]\*.md"||'
+	rm -f "$adr_bereich" "$spec.kf-orig"
+}
+
+# ADR-0065 Festlegung 6 (ii)/(iii): die Kennungs-Form der emittierten .d-check.yml im Ziel.
+echo "full-smoke: Kennungs-Form der emittierten .d-check.yml — gruener Start je Sprache und Architektur, je Position ein rotes Gegenbeispiel samt Gegenprobe ..."
+	e2e_abdeckung "LH-FA-01 LH-FA-03 LH-QA-01" "Die emittierte Doku-Gate-Konfiguration erkennt einen benannten Slice und eine Welle: gruener Start je Sprache und Architektur, je Position ein rotes Gegenbeispiel mit Gegenprobe" "kennungs_form_im_ziel"
+kennungs_form_im_ziel
+
 # slice-038 (ADR-0007 Idempotenz-Klassifikation): ein ZWEITER Init-Lauf ist IDEMPOTENT
 # (Exit 0 statt Kollisions-Refuse). Konvergente Dateien (tool-Infra) werden kanonisch neu
 # geschrieben (heilen Drift); skip-if-present-Dateien (Adopter-Boden) bleiben unberuehrt.
@@ -3358,7 +3507,7 @@ if ! grep -qF -- '| Spec-Kennung | Kurzbeschreibung | Stufe | Ort |' "$abd_ziel"
 	cat "$abd_ziel" >&2
 	exit 1
 fi
-# (a2) DAS KOMMANDO STEHT IM INDEX DES ZIELS. `make help` ist der eine Index, den ein
+# (a2) DAS KOMMANDO STEHT IM INDEX DES ZIELS. `make help` ist der eine Index, den eine
 # gebootstrapptes Repo von sich aus fuehrt — ein Werkzeug, das dort nicht erscheint,
 # findet niemand. Gelesen wird die AUSGABE des Ziels, nicht das Rezept: das Muster des
 # Hilfe-Rezepts entscheidet, welche Ziele es trifft, und eine Ziffer im Namen hat es
