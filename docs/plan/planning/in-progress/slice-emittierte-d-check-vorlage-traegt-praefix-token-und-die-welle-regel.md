@@ -156,6 +156,12 @@ umgeschnitten wird.
   [`MR-054`](../../../../harness/conventions.md#mr-054) lässt die Aufnahme nicht zu; das „nicht enger" in
   [ADR-0065](../../adr/0065-emittierte-kennungs-form-folgt-dem-regelwerk.md) §Grenze gilt für Kennungen.
   Auch diese Grenze steht als Kommentar-Satz (Liefer-Punkt 2).
+- **Ein Träger-seitiger Vertrag für die Liste der Sprachen und Architekturen** (eine maschinenlesbare
+  Ausgabe statt des Wortlauts einer Fehlermeldung) — *Schicht-Abgrenzung:* er änderte den Träger
+  (`cmd/`, `internal/gen/`), dieser Slice berührt allein Vorlage, Test und E2E. Die Stufe liest die
+  Meldung und schlägt fail-closed an; die Grenze steht in Liefer-Punkt 3 (a) und §6. Ob ein Vertrag
+  nötig ist, ist eine Entscheidung des Architect; dieser Slice schneidet ihn nicht, und Größe und
+  Schichten bleiben (drei Liefer-Punkte, zwei Schichten).
 - **Das Regelwerk selbst** — *es wäre ein anderer Vorgang:* der Widerspruch zwischen dem Text von
   §Vergabe und den Vorlagen des Regelwerks und die Auslassung von `welle-` im Gate-Text sind Sache des
   Kurses, eines fremden Repos.
@@ -230,11 +236,28 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Kombination, die die Sprache nicht trägt, endet mit Exit 2 und ist kein Fall). Der Beleg der ADR
       (`cat spec/*.md | grep -cE '(slice|welle)-'` im Ziel → 0) misst den sprach-agnostischen Lauf
       allein; die Läufe mit Sprache werden **gemessen, nicht angenommen**. *Was „je Sprache und
-      Architektur, die das Werkzeug trägt" bindet:* die Kombinations-Liste der Stufe ist an die Quelle
-      gekoppelt, die das Werkzeug dafür führt (`langArchs()` in `internal/gen/gen.go`); ist sie fest
-      geschrieben, steht das als Grenze im Beschreibungstext der Stufe, und die Zusage lautet dann auf den
-      gemessenen Stand. **Bricht, wenn** `langArchs()` eine Kombination aufnimmt, die die Stufe nicht fährt:
-      mit Kopplung wird die Stufe rot, ohne sie bleibt sie grün und sagt mehr, als sie misst. (b) *Je Regel und Muster ein
+      Architektur, die das Werkzeug trägt" bindet:* die Kombinationen der Stufe sind **aus dem Träger
+      abgeleitet, nicht geschrieben.** Die Stufe liest die Sprachen aus der Fehlermeldung `unbekannte
+      Sprache …; verfuegbar: …` und die Architekturen aus `unbekannte Architektur …; verfuegbar: …`
+      (`SupportedLangs()` und `SupportedArchs()` in `internal/gen/`; die zweite ist der Union aus
+      `langArchs()`) und fährt jede Sprache gegen jede Architektur; endet eine Kombination mit Exit 2 und
+      der Meldung `unbekannte Architektur`, ist sie vom Träger nicht getragen und kein Fall. Die Stufe
+      **schlägt fail-closed an** (Exit 1), wenn eine der beiden Meldungen keine Namen nennt oder eine
+      genannte Sprache in keiner Kombination grün anläuft. **Bricht, wenn** eine Sprache oder Architektur,
+      die das Werkzeug trägt, in diesen zwei Meldungen fehlt, oder die Meldungen einen Namen nennen, den die
+      Stufe nicht fährt — dann sagt die Stufe mehr, als sie misst. **Belegt** (Implementer, Scratchpad-Träger
+      und Shim; der Verifier wiederholt beides): ein Träger, dessen `langArchs()` um `cpp hexagonal`
+      ergänzt ist, wird mit einer Kombination mehr gefahren, als die frühere feste Liste führte — die
+      Ableitung folgt der Quelle, ohne dass die Stufe geändert wird; ein Shim, der `verfuegbar: ` in der
+      Meldung ändert, endet die Stufe mit Exit 1 und Meldung, statt mit weniger Kombinationen grün zu
+      bleiben. **Nicht belegt:** eine Meldung, die ihr Format behält und einen Namen auslässt, den der
+      Träger trägt (die Ableitung liefert dann zu wenig Kombinationen ohne Fehler, solange jede genannte
+      Sprache grün anläuft), und eine Sprache, die der Träger trägt und `SupportedLangs()` nicht nennt.
+      **Grenze:** Der Wortlaut einer Fehlermeldung des Trägers ist die Quelle der Stufe, und kein Vertrag
+      hält ihn (`grep -rn 'verfuegbar: ' --include='*_test.go' internal cmd | wc -l` → **0**, gemessen
+      2026-09-25, kein Erwartungswert); fail-closed ist die Stufe gegen eine Umbenennung, nicht gegen eine
+      Änderung des Inhalts bei gleichem Format. Sie steht als Grenze hier und in §6; ein Träger-seitiger
+      Vertrag ist §1 ausgeschlossen. (b) *Je Regel und Muster ein
       rotes Gegenbeispiel, mit gelesener Meldung* (die Regel benannt, nicht irgendeine), als
       `full-smoke`-Stufe **mit Stufen-Kopfzeile** — sonst fällt sie aus `make e2e-abdeckung`, dessen
       erzeugte Datei nachgezogen wird: ein benannter Slice-Name in einer ADR · ein Welle-Name in einer
@@ -247,7 +270,10 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       bzw. ohne den Glob **grün** — sonst belegt der Fall nur, dass *irgendein* Befund entsteht, nicht
       dass erst die Änderung ihn findet. (c) *Je Zahn ein Mutations-Fall* in `test/mutations/`:
       Präfix zurück in die Ziffern-Form (je Klasse), die Regel `spec-straten → welle` gestrichen, das
-      `ids`-Muster ohne Segment, der Glob ohne Bereichs-Präfix; der `sed`-Anker jedes Falls am
+      `ids`-Muster ohne Segment, der Glob ohne Bereichs-Präfix, und die Link-Pflicht des ADR-Musters
+      (`link-policy: always` auf der ADR-Zeile von `ids` abgeschaltet — die Zusicherung im Go-Test
+      liest dort nur diese Zeile, nicht die Datei, deren Kommentar den Ausdruck ebenfalls nennt); der
+      `sed`-Anker jedes Falls am
       **heutigen** Quell-Bestand gemessen ([`MR-071`](../../../../harness/conventions.md#mr-071)).
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
@@ -346,9 +372,18 @@ Die Ausgänge setzt die Closure; bis dahin steht hinter jedem Risiko `Ausgang: o
   und der Verifier liest den Wortlaut. Wer die Sonde (`## Geschichte` mit einem Slice-Namen in
   `spec/lastenheft.md` des Ziels → kein Befund) im Verifier-Lauf nicht reproduziert, hat den Grund für
   *entfallen* nicht. — **Ausgang:** offen bis Closure.
-- **Die Kombinations-Liste des grünen Starts driftet von `langArchs()`.** Kommt ein Layout oder eine
-  Sprache hinzu, bleibt eine fest geschriebene Liste grün; Liefer-Punkt 3 (a) verlangt Kopplung oder die
-  benannte Grenze. — **Ausgang:** offen bis Closure.
+- **Die Kombinationen des grünen Starts weichen von dem ab, was der Träger trägt.** Die Stufe leitet sie
+  aus zwei Fehlermeldungen des Trägers ab (Liefer-Punkt 3 (a)); kommt ein Layout oder eine Sprache hinzu,
+  wird sie gefahren, ohne dass die Stufe sich ändert. Der Träger der Aussage ist die Ableitung samt ihrem
+  fail-closed-Anschlag; der Verifier wiederholt die zwei Sonden des Implementers (Scratchpad-Träger mit
+  einer Kombination mehr in `langArchs()` · Shim, der `verfuegbar: ` ändert) und liest die Meldung.
+  — **Ausgang:** offen bis Closure.
+- **Der Wortlaut der Träger-Fehlermeldung ist die Quelle der Ableitung, und kein Vertrag hält ihn.** Eine
+  Änderung des Inhalts bei gleichem Format (ein Name fehlt in der Liste) lässt die Stufe grün und
+  schmaler; das Format selbst fängt sie. Ein Träger-seitiger Vertrag (eine maschinenlesbare Quelle der
+  Liste am Träger) wäre Änderung an `cmd/` und `internal/gen/`, nicht an diesem Slice (§1). — **Ausgang:**
+  offen bis Closure; ob er den Weg *eingetreten* (Folge-Slice, dessen Kennung dann vergeben wird, nach
+  Entscheidung des Architect), *entfallen* oder *weiter offen* (Register) nimmt, urteilt die Closure.
 - **Der Fehlalarm des Präfixes** (`slice-mv`, `slice-lokal`) trifft ein Ziel, das die Wörter in einer
   ADR oder Spec nennt; die ADR nimmt ihn in Kauf und nennt den Ausweg je Klasse. Meldet ein Ziel einen
   Fall, den weder Umformulieren noch Marker löst, ist der Re-Evaluierungs-Trigger 4 der ADR erreicht —
