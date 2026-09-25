@@ -94,6 +94,9 @@ Frage, die dieser Plan nicht entscheidet.
 **Größe, und warum Liefer-Punkt 3 nicht herausgeschnitten ist.** Drei Liefer-Punkte, zwei Schichten
 (Emission und Test/E2E). Die Vorlage selbst ist ein kleiner Eingriff; das Volumen liegt im Beleg, und
 jedes Stück ist eine Wiederholung einer vorhandenen Form (`full-smoke`-Zahn, `test/mutations/`-Fall).
+Die zwei benannten Grenzen der Vorlage (Ausschlüsse unten) sind Inhalt des Kommentars aus Liefer-Punkt 2
+und Inhalt des Berichts aus Liefer-Punkt 1; sie sind keine Lieferung neben den drei, und Größe und
+Schichten ändern sich nicht.
 **Schnitte man Liefer-Punkt 3 heraus, lieferte der Slice Positionen ohne das rot gesehene
 Gegenbeispiel, das
 [ADR-0065](../../adr/0065-emittierte-kennungs-form-folgt-dem-regelwerk.md) Festlegung 6 als
@@ -138,6 +141,21 @@ umgeschnitten wird.
   stehen:* das Präfix gehört dem Adopter und ist im frischen Ziel nicht bekannt
   ([`MR-054`](../../../../harness/conventions.md#mr-054) Setzung 3); die Vorlage führt sie weiter als
   begründeten Kommentar.
+- **Der Ausweg über `exclude-sections` für Spec-Straten** (ein Abschnitt `Geschichte` in einer Spec-Datei
+  nimmt Slice- und Welle-Token aus) — *Bestand bleibt bewusst stehen:* die Zeile ist Bestand der Vorlage
+  und wird von [ADR-0065](../../adr/0065-emittierte-kennungs-form-folgt-dem-regelwerk.md) nirgends
+  festgelegt; `exclude-sections` ist in d-check `v0.77.0` nur auf der Ebene der `matrix` und damit für alle
+  Klassen zugleich setzbar (je Klasse oder je Regel: Schemafehler), sie global zu entfernen färbt die
+  Geschichte-Zeile der ADR-Vorlage der Baseline rot und kostet jeden Adopter einen Marker; die emittierten
+  Spec-Vorlagen führen den Abschnitt nicht (ihre Überschrift ist `7. Historie`), der grüne Start ist nicht
+  berührt. Eine je Klasse setzbare Ausnahme wäre eine Anforderung an d-check, ein fremdes Repo, und
+  Handlung des Auftraggebers. Die Grenze steht als Kommentar-Satz in der Vorlage (Liefer-Punkt 2), als
+  Grenze und nicht als Zusage.
+- **Das bare `ADR-` ohne Nummer als Muster** — *Bestand bleibt bewusst stehen:* das Token färbt den
+  frischen Start rot (Wörter wie `ADR-Bezüge` in den emittierten Spec-Vorlagen), und
+  [`MR-054`](../../../../harness/conventions.md#mr-054) lässt die Aufnahme nicht zu; das „nicht enger" in
+  [ADR-0065](../../adr/0065-emittierte-kennungs-form-folgt-dem-regelwerk.md) §Grenze gilt für Kennungen.
+  Auch diese Grenze steht als Kommentar-Satz (Liefer-Punkt 2).
 - **Das Regelwerk selbst** — *es wäre ein anderer Vorgang:* der Widerspruch zwischen dem Text von
   §Vergabe und den Vorlagen des Regelwerks und die Auslassung von `welle-` im Gate-Text sind Sache des
   Kurses, eines fremden Repos.
@@ -172,7 +190,15 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Rangfolge innerhalb der Straten · neun die Spalten ADR, Slice, Welle der drei Straten-Zeilen ·
       eine ADR → Welle mit Marker · sechs, die nur `aussen` fängt · drei ohne Regel). **Ein Widerspruch
       zu dieser Zählung ist ein Befund an den Architect** (Folge-ADR, [`AGENTS.md`](../../../../AGENTS.md)
-      §3.4), kein stilles Nachziehen. Ablage: siehe §1 *Wo die Zell-Messung lebt*.
+      §3.4), kein stilles Nachziehen. **Ein Vorbehalt gegen die Spalte „Regel" einer Zellgruppe ist kein
+      Widerspruch zur Zählung,** solange die Zuordnung der Zellen stimmt: der Ausweg, den
+      `exclude-sections` für einen Abschnitt `Geschichte` in einer Spec-Datei lässt, und das bare `ADR-`
+      ohne Nummer, das keine Regel fängt (das `ids`-Muster verlangt vier Ziffern). Die Messung ist erfüllt,
+      wenn beide als **Grenze der Messung** im Bericht stehen — die Zählung 22 = 3 · 9 · 1 · 6 · 3 ist
+      eine Stellen-Messung an zwei Stellen
+      ([`MR-055`](../../../../harness/conventions.md#mr-055)) und sagt nichts über das Verhalten der
+      Vorlage im Ziel für eine Spec-Datei mit `## Geschichte` oder für ein bares `ADR-`. Die Messung ist
+      keine Eigenschaft der Vorlage. Ablage: siehe §1 *Wo die Zell-Messung lebt*.
 - [ ] **Liefer-Punkt 2 — die Vorlage.** `internal/emit/templates/d-check.yml`: Token `slice-` auf der
       Klasse `slice` und `welle-` auf der Klasse `welle` (die Vorlage führt keine Ziffern-Form mehr) ·
       die Regel `{from: spec-straten, to: welle, allow: false}` · das `ids`-Muster für ADR
@@ -181,7 +207,19 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       · der Herkunfts-Kommentar in **Zustandsform** ([`AGENTS.md`](../../../../AGENTS.md) §3.7): er nennt
       die Positions-Liste für den Nachzug eines bestehenden Ziels, den Fehlalarm des Präfixes als in Kauf
       genommen samt Ausweg je Klasse (ADR: der Zeilen-Marker; Spec-Straten: Umformulieren — der Marker
-      ist dort ein Umgehen, das nur der Reviewer fängt) und dass der Marker nicht Ziel-spezifisch ist.
+      ist dort ein Umgehen, das nur der Reviewer fängt) und dass der Marker nicht Ziel-spezifisch ist —
+      dazu **zwei benannte Grenzen der Vorlage:** `exclude-sections` gilt für alle Klassen zugleich und
+      nimmt einen Abschnitt `Geschichte` in einer Spec-Datei von Slice- und Welle-Token aus (nur der
+      Reviewer fängt es), und das bare `ADR-` ist keine Regel. Der Kommentar-Satz steht direkt hinter dem
+      `exclude-sections`-Absatz, in Zustandsform und ASCII, im Wortlaut: *„exclude-sections gilt in d-check
+      fuer alle Klassen zugleich; je Klasse oder je Regel ist es nicht setzbar. Ein Abschnitt Geschichte in
+      einer Spec-Datei nimmt dort Slice- und Welle-Token aus, was das Regelwerk fuer die Spec-Straten nicht
+      vorsieht. Die emittierten Spec-Vorlagen fuehren keinen solchen Abschnitt (ihre Ueberschrift ist 7.
+      Historie); wo ein Adopter ihn anlegt, faengt ihn nur der Reviewer. Die blosse Zeichenfolge ADR- ohne
+      Nummer faengt keine Regel: sie steht als Wort in den emittierten Spec-Vorlagen, und das ids-Muster
+      verlangt vier Ziffern."* Der Satz erweitert die Zusage über den Emitter nicht und ist kein
+      Liefer-Punkt neben diesem. **Bricht, wenn** er fehlt oder eine der zwei Grenzen als Zusage (statt als
+      Grenze) formuliert; das prüft der Verifier am Wortlaut.
       **Seine Aussagen über das Ziel halten den Zweig des Emitters:** ein bestehendes Ziel bekommt die
       Änderung nicht. Ein Go-Test bindet die Positionen an die eingebettete Vorlage — er misst die
       **Menge** der Token und der Regeln der `matrix`, nicht die Namen der neuen Zeilen, und die
@@ -191,7 +229,12 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       und Architektur, die das Werkzeug trägt (`--lang` mit `--arch flat|hexagonal|hexslice`; eine
       Kombination, die die Sprache nicht trägt, endet mit Exit 2 und ist kein Fall). Der Beleg der ADR
       (`cat spec/*.md | grep -cE '(slice|welle)-'` im Ziel → 0) misst den sprach-agnostischen Lauf
-      allein; die Läufe mit Sprache werden **gemessen, nicht angenommen**. (b) *Je Regel und Muster ein
+      allein; die Läufe mit Sprache werden **gemessen, nicht angenommen**. *Was „je Sprache und
+      Architektur, die das Werkzeug trägt" bindet:* die Kombinations-Liste der Stufe ist an die Quelle
+      gekoppelt, die das Werkzeug dafür führt (`langArchs()` in `internal/gen/gen.go`); ist sie fest
+      geschrieben, steht das als Grenze im Beschreibungstext der Stufe, und die Zusage lautet dann auf den
+      gemessenen Stand. **Bricht, wenn** `langArchs()` eine Kombination aufnimmt, die die Stufe nicht fährt:
+      mit Kopplung wird die Stufe rot, ohne sie bleibt sie grün und sagt mehr, als sie misst. (b) *Je Regel und Muster ein
       rotes Gegenbeispiel, mit gelesener Meldung* (die Regel benannt, nicht irgendeine), als
       `full-smoke`-Stufe **mit Stufen-Kopfzeile** — sonst fällt sie aus `make e2e-abdeckung`, dessen
       erzeugte Datei nachgezogen wird: ein benannter Slice-Name in einer ADR · ein Welle-Name in einer
@@ -293,7 +336,19 @@ Die Ausgänge setzt die Closure; bis dahin steht hinter jedem Risiko `Ausgang: o
   Form `slice-…` oder `welle-…` tragen, das die neuen Token als Befund lesen. — **Ausgang:** offen
   bis Closure.
 - **Die Messung widerspricht der Zählung der ADR** (drei · neun · eine · sechs · drei). Die ADR ist
-  unveränderlich; der Weg ist ein Befund an den Architect (§4). — **Ausgang:** offen bis Closure.
+  unveränderlich; der Weg ist ein Befund an den Architect (§4). Ein Vorbehalt gegen die Spalte „Regel"
+  bei stimmender Zuordnung der Zellen ist Grenze, kein Widerspruch (Liefer-Punkt 1). — **Ausgang:** offen
+  bis Closure.
+- **Die Vorlage trägt zwei benannte Blindflecke** — ein Abschnitt `Geschichte` in einer Spec-Datei nimmt
+  dort Slice- und Welle-Token aus, und das bare `ADR-` fängt keine Regel; beide sind Grenzen (§1), keine
+  Zusagen. Der Ausgang *entfallen* ist erst zulässig, wenn der Kommentar-Satz aus Liefer-Punkt 2 in der
+  Vorlage steht; bis dahin trägt ihn nur dieser Plan. Träger ist der Satz in der vorgegebenen Fassung,
+  und der Verifier liest den Wortlaut. Wer die Sonde (`## Geschichte` mit einem Slice-Namen in
+  `spec/lastenheft.md` des Ziels → kein Befund) im Verifier-Lauf nicht reproduziert, hat den Grund für
+  *entfallen* nicht. — **Ausgang:** offen bis Closure.
+- **Die Kombinations-Liste des grünen Starts driftet von `langArchs()`.** Kommt ein Layout oder eine
+  Sprache hinzu, bleibt eine fest geschriebene Liste grün; Liefer-Punkt 3 (a) verlangt Kopplung oder die
+  benannte Grenze. — **Ausgang:** offen bis Closure.
 - **Der Fehlalarm des Präfixes** (`slice-mv`, `slice-lokal`) trifft ein Ziel, das die Wörter in einer
   ADR oder Spec nennt; die ADR nimmt ihn in Kauf und nennt den Ausweg je Klasse. Meldet ein Ziel einen
   Fall, den weder Umformulieren noch Marker löst, ist der Re-Evaluierungs-Trigger 4 der ADR erreicht —
