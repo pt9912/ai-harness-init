@@ -52,15 +52,19 @@ mit Regel-Name, Datei und Zeile. Bei `flat` wird keines angelegt: dort gäbe es 
 `hexagonal` und `hexslice` sind **eigene** Layouts, keine zwei Strenge-Grade desselben. Details im
 [Benutzerhandbuch](docs/user/benutzerhandbuch.md).
 
-**Denselben Aufruf gefahrlos wiederholen.** Ein zweiter Lauf ist idempotent: das Werkzeug frischt
-seine eigenen Dateien auf den Stand auf, den es **selbst mitbringt** (repariert Abweichungen), und
-lässt die selbst gefüllten Dateien — Dokumente, `README.md`, Quellcode — unberührt. Kein `--force`,
-kein Abbruch bei vorhandenen Dateien. Ein **neuerer** Regelwerks-Stand kommt nicht durch den
+**Denselben Aufruf gefahrlos wiederholen.** Ein zweiter Lauf ist idempotent: die **kanonischen
+Teile** der Infrastruktur (Regelwerk, `Makefile` mit Bausteinen, Skripte) schreibt das Werkzeug auf
+den Stand neu, den es **selbst mitbringt** (repariert Abweichungen); alles Übrige legt es nur an,
+wo die Datei fehlt — Ihre gefüllten Dateien (Dokumente, `README.md`, Quellcode) und anpassbare
+mitgelieferte wie die Prüf-Konfiguration `.d-check.yml` bleiben unberührt. Kein `--force`, kein
+Abbruch bei vorhandenen Dateien. Die Aufteilung Datei für Datei steht im
+[Benutzerhandbuch](docs/user/benutzerhandbuch.md#ein-repository-erneut-aufsetzen-idempotent). Ein
+**neuerer** Regelwerks-Stand kommt nicht durch den
 Re-Lauf, sondern mit einem neueren Programm (oder bewusst über `COURSE_TAG`) — die Kurs-Version ist
 im Programm gepinnt.
 
-**Das Werkzeug beschaffen.** Ab `v0.1.0` liegen fertige Programme für sechs Plattformen
-(linux · macos · windows × amd64 · arm64) am
+**Das Werkzeug beschaffen.** Fertige Programme für sechs Plattformen
+(linux · macos · windows × amd64 · arm64) liegen am
 [GitHub-Release](https://github.com/pt9912/ai-harness-init/releases/latest) — herunterladen,
 ausführbar machen, fertig. Wer einen Stand **ohne** Versions-Kennzeichnung braucht, baut einmalig
 aus dem Quellcode; das geschieht komplett in Docker:
