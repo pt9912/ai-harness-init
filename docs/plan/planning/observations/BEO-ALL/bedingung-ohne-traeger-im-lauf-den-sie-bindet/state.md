@@ -1,1 +1,1 @@
-**Stand:** offen
+**Stand:** offen — Schwelle erreicht (`ls docs/plan/planning/observations/BEO-ALL/bedingung-ohne-traeger-im-lauf-den-sie-bindet/evidence/*.md | wc -l` → 3, gelesen 2026-09-25, keine Erwartung). Der Ausgang steht aus: `geplant` braucht die Kennung einer Datei im Planning-Lifecycle, und der Schnitt für `sync` besteht als Datei nicht; `verkörpert` braucht ein Norm-Artefakt, das der Architect schreibt.

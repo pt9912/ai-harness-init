@@ -139,7 +139,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1 — der Nachzug ist ein Schritt der Prozedur, und die Meldung hängt an ihm:**
+- [x] **Liefer-Punkt 1 — der Nachzug ist ein Schritt der Prozedur, und die Meldung hängt an ihm:**
       [`docs/user/releasing.md`](../../../user/releasing.md) führt den Nachzug als **Schritt 7**, nach
       der Wartestelle für die CI (Schritt 6); die Meldung des vollzogenen Schnitts wird **Schritt 8**.
       Der Schritt nennt:
@@ -164,7 +164,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       [`BEO-ALL/prozedur-zeile-traegt-disziplin-ohne-sensor`](../observations/BEO-ALL/prozedur-zeile-traegt-disziplin-ohne-sensor/observation.md);
       die Zusage ist auf *die Prozedur nennt den Schritt und macht die Meldung von ihm abhängig*
       eingeschränkt, nicht auf *der Nachzug geschieht*.
-- [ ] **Liefer-Punkt 2 — der Beleg trägt Wortlaut und Grenze der Kontrolle:** der Schritt nennt
+- [x] **Liefer-Punkt 2 — der Beleg trägt Wortlaut und Grenze der Kontrolle:** der Schritt nennt
       `make tap-check TAG=<tag>` als Beleg und gibt die Klassen so wieder, wie das Skript sie
       liefert ([`ADR-0066`](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md)):
       Exit des **Skripts** 0 gleich (oder Vorab-Tag: *„Vorab-Tag, Tap bleibt"* — für ihn entfällt der
@@ -186,20 +186,20 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Die Prozedur zitiert darum die Klasse und das Wort, nicht die Digest-Zeile als Vertrag.
       **Deckung, benannt:** kein Test und kein Gate hält `releasing.md` gegen die Ausgabe des Skripts; ändert sich
       der Wortlaut, bleibt die Prozedur grün und falsch — Träger ist der Review dieses Slice.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: der Wortlaut von Weg C im Handbuch ist gegen den Schritt geprüft und nur bei
+- [x] Doku-Update: der Wortlaut von Weg C im Handbuch ist gegen den Schritt geprüft und nur bei
       Abweichung nachgezogen. Die Messung: der Satz sagt *„je Release-Schnitt … nachgezogen"*, der
       Schritt nimmt Vorab-Tags aus (*„Tap bleibt"*). Ob der Satz dadurch für Vorab-Tags falsch
       ist, urteilt der Implementer am veröffentlichten Bestand
       (`gh release list --json tagName,isPrerelease`); ein `harness/README.md`-Eintrag entsteht nicht — die
       Zeile für `make tap-check` besteht (`grep -n 'make tap-check' harness/README.md`).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Register-Datei nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert. Erwartet sind Belege für die vier in §8 benannten Einträge — ob sie zählen, urteilt die Closure.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Register-Datei nicht.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert. Erwartet sind Belege für die vier in §8 benannten Einträge — ob sie zählen, urteilt die Closure.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -318,21 +318,27 @@ dasteht.
 - **Der Nachzug wird trotz Schritt übersprungen** — die Prozedur nennt den Schritt, kein Gate hält die
   Folge. Was der Schritt leistet, ist ein zweiter Halt: die Meldung des Schnitts verlangt einen
   Beleg, der ohne Nachzug nicht entsteht (Exit 1). **Ausgang:** weiter offen →
-  `BEO-ALL/prozedur-zeile-traegt-disziplin-ohne-sensor` (mit diesem Slice ein weiterer Beleg).
+  `BEO-ALL/prozedur-zeile-traegt-disziplin-ohne-sensor` (Beleg angelegt, Zähler in §7).
 - **Die Kontrolle prüft weniger, als ihr Name sagt** — Byte-Gleichheit sagt nichts über
   Installierbarkeit, über die Füllung des Assets und über einen älteren Tag. **Ausgang:** entfallen — die
   Zusage ist auf Byte-Gleichheit eingeschränkt, und die Grenze steht im Text des Schritts
-  (Liefer-Punkt 2).
+  (Liefer-Punkt 2); der Verifier fuhr die zitierten Aussagen gegen das Skript, drei Überdehnungen des
+  Wortlauts (Klasse 2, Kommando `grep -ci version`, Ausnahmen der Exit-Zeile) sind gezogen und stehen als
+  Beleg im Register (§7).
 - **Die Handarbeit ist ein Übergangszustand ohne Träger** — die Füllung der Formel besteht als
   Code, ihr Einstieg ins Tap besteht nicht, und bis `sync` und der Job stehen fährt ein Lauf den Nachzug
   von Hand nach. **Ausgang:** weiter offen →
-  `BEO-ALL/vorhandene-faehigkeit-ohne-traeger-wird-von-hand-nachgebaut` (siehe §8, ob dieser Slice
-  ihn auf 3× hebt; dann ist der Folge-Slice der `sync`-Schnitt).
+  `BEO-ALL/bedingung-ohne-traeger-im-lauf-den-sie-bindet` (Beleg angelegt, Zähler in §7). Der Eintrag
+  `vorhandene-faehigkeit-ohne-traeger-wird-von-hand-nachgebaut` trägt den Fall nicht: der Schreib-Pfad
+  besteht nicht (der Modus `sync` endet mit Exit 2), und kein Lauf baute in diesem Slice etwas von Hand
+  nach; was offen bleibt, ist der Umbau des Schritts, sobald der Träger besteht.
 - **Die Handarbeit hat keinen Vorwärts-Schutz** — ein Nachzug eines älteren Tags stellte das Tap auf
   eine Formel zurück, die kein zugesagter Weg mehr ausliefert, und `tap-check` gegen genau diesen Tag
   meldet Exit 0. Der Schutz steht im Werkzeug ([`ADR-0064`](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
   Festlegung 3 d, nur `sync`) und im Schritt als Satz. **Ausgang:** weiter offen →
-  `BEO-ALL/bedingung-ohne-traeger-im-lauf-den-sie-bindet` (siehe §8).
+  `BEO-ALL/prozedur-zeile-traegt-disziplin-ohne-sensor` (Beleg angelegt, Zähler in §7): der Satz steht in
+  der Prozedur, die der Lauf liest — die Bedingung hat damit einen Träger im Eingang —, und was fehlt, ist
+  ein Sensor, der ihren Bruch fängt.
 - **Die Kontrolle liest einen veralteten Stand** — die Schnittstelle nennt ein Cache-Fenster von 60 s.
   **Ausgang:** entfallen — das Skript wiederholt das Lesen bei Ungleichheit einmal nach 65 s
   ([`ADR-0064`](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
@@ -341,8 +347,8 @@ dasteht.
 
 ## 7. Closure-Notiz
 
-Wird bei der Closure vom Planner in frischem Kontext geschrieben
-([`AGENTS.md`](../../../../AGENTS.md) §3.10), nicht vom Lauf, der den Slice baut.
+Geschrieben von der Rolle Planner in frischem Kontext
+([`AGENTS.md`](../../../../AGENTS.md) §3.10), nach Review und Verifikation.
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Das Beobachtungs-Register (vorhandene `BEO-<NNN>` **zitieren** statt neu
@@ -356,15 +362,95 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** — (eine der drei Formen: geschärfte Regel · neuer
-  Sensor · benannte Spec-Lücke; Kandidat: ein Träger für die Schritt-Folge einer
-  Prozedur, siehe §6 Risiko 1)
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
-- **Drei Paarungen:** —
+- **Was hat funktioniert:** Der Schnitt hielt: zwei Liefer-Punkte, eine Schicht (Nutzer-Doku), ein Review
+  und eine Verifikation. Die Reihenfolge des Plans trug — erst der reale Lauf, dann der zitierte Wortlaut.
+  Der Verifier fuhr am 2026-09-25 `make tap-check TAG=v0.2.3` gegen den Tap-Stand `0.2.4` (Exit 1 nach
+  66 s, Zeile `tap-check: Exit 1` genau einmal, Prozess-Exit 2 über `make`) und `TAG=v0.2.4` (Exit 0),
+  dazu die Klasse 2 an fünf Fällen und die Vorab-Tags ohne Docker-Aufruf; die Ausgabe stimmt mit dem
+  Wortlaut des Schritts überein. Jede lebende Nennung einer Schritt-Nummer zeigt auf den Schritt, den sie
+  meint (`grep -rnE 'Schritte? [0-9]' docs/user/releasing.md`), und `(Schritt 7)` in Schritt 5 ist
+  `(Schritt 8)`. **Ergebnis-Fakten** (gemessen 2026-09-25, keine Erwartungswerte):
+  `grep -nE '^[0-9]+\. \*\*' docs/user/releasing.md | wc -l` → **8** Schritte;
+  `git diff --stat 57287b64..6df654f5 -- docs/user/releasing.md` → **90** Einfügungen, **7** Löschungen.
+- **Was ging anders als geplant:** Der Review (0 HIGH, 0 MEDIUM, 5 LOW, 2 INFO) las den Commit `8441a755`.
+  Danach zog der Implementer die fünf LOW in `7f6c1f8d` und die Verifier-Vorbehalte F-1 bis F-3 in
+  `6df654f5`. **Keinen der zwei Commits hat ein Reviewer gelesen; den Verifier deckt allein `7f6c1f8d`:**
+  sein Bericht steht auf diesem Stand und fuhr dessen Aussagen, `6df654f5` entstand erst aus seinen
+  Vorbehalten. Eine Nachrunde ist nicht gelaufen und wird nicht behauptet. Was der Planner an `6df654f5`
+  gelesen und gefahren hat, ist keine Verifikation: der Diff zeigt die Klasse 2 auf *„ein Ergebnis des
+  Vergleichs liegt nicht vor"* mit den zwei Meldungen des Skripts, die Ausnahmen der Exit-Zeile und das
+  Kommando `grep -ci version …` als Näherung neben dem bats-Fall; `grep -ci version` über die zwei Skripte
+  → `0` je Datei, `grep -c 'version-zeile: in check' test/tap-nachzug.bats` → **1** (beide gemessen
+  2026-09-25). Nicht gefahren ist die Wortlaut-Behauptung zu [ADR-0066](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md)
+  in Schritt 7 gegen die ADR. Der Plan (§3) führte `roadmap.md` nicht; der Claim-Commit `dce20611`
+  entfernte den Ruhe-Marker, und der Planner stellt ihn in diesem Abschluss wieder her.
+- **Doku-Update — Handbuch Weg C bleibt unverändert.** Der Satz *„je Release-Schnitt … nachgezogen"* ist am
+  Ist-Zustand wahr: `gh release list --json tagName,isPrerelease` nennt sieben veröffentlichte Releases
+  (`v0.1.0` bis `v0.2.4`), alle mit `isPrerelease` false (Verifier, 2026-09-25); Schritt 7 nimmt allein
+  Vorab-Tags aus. Der Satz kippt mit dem ersten veröffentlichten Vorab-Tag (Review R1-6). Ein Träger dafür
+  besteht nicht — das Handbuch-Update gehört zum Release-Schnitt, nicht zu diesem Slice — und ein Sensor
+  ebenso wenig.
+- **Steering-Loop-Eintrag (Form: benannte Spec-Lücke).** [ADR-0064](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
+  (`Accepted`) führt in Folgepflicht 3 den Schritt der Prozedur in seiner Form **mit** Job — Ergebnis des
+  Jobs, `tap-check` als Beleg, lokaler Ausfallweg —, und in den Folgepflichten 1 und 2 das Werkzeug und den
+  Job. Keine der drei nennt, welcher Vorgang den Schritt vom Zustand **ohne** Job auf den **mit** Job
+  umbaut, und die vier Aussagen, die dabei falsch werden (Handgriff, einziges Tap-Ziel, kein Vorwärts-Schutz
+  von Hand, `grep -ci version`), stehen in keinem Artefakt, das der Lauf von `sync` liest. Die Lücke ist hier
+  benannt, nicht in der ADR geschrieben: eine `Accepted`-ADR ist unveränderlich
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.4), ihre Ergänzung ist Sache des Architect. Kein `liegt in`: mit
+  diesem Slice wurde keine Regel an einem Zielort verkörpert. **Keinen Sensor gibt es:** kein Test und kein
+  Gate hält `docs/user/releasing.md` gegen die Ausgabe des Skripts oder gegen die Zusage der ADR; Träger ist
+  der Review, und der Verifier, der die Aussagen fährt.
+- **Beobachtungs-Register (`../observations/`):** je Beleg
+  `evidence/slice-tap-nachzug-ist-schritt-der-release-prozedur.md`; Zähler gelesen am 2026-09-25 mit
+  `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`
+  ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)).
+  **Ergänzt:**
+  [`prozedur-zeile-traegt-disziplin-ohne-sensor`](../observations/BEO-ALL/prozedur-zeile-traegt-disziplin-ohne-sensor/observation.md)
+  (Schritt 7, Schritt 8 und der Satz des Vorwärts-Schutzes sind Prozedur-Zeilen ohne Sensor; **2×**, `offen`),
+  [`bedingung-ohne-traeger-im-lauf-den-sie-bindet`](../observations/BEO-ALL/bedingung-ohne-traeger-im-lauf-den-sie-bindet/observation.md)
+  (die vier alternden Aussagen, deren Umbau allein in Berichten steht; **3×**, siehe Lese-Schritt) und
+  [`eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`](../observations/BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet/observation.md)
+  (der Ruhe-Marker im Claim-Commit `dce20611`; **7×**, Stand `geplant` unverändert; Frage 1 aus §6 ist
+  **kein** Beleg — die Prozedur nennt keine Rolle und kein Lauf führte den Nachzug aus). **Neu angelegt
+  (1×, `offen`):**
+  [`prozedur-wiedergabe-eines-werkzeug-vertrags-reicht-weiter-als-die-quelle`](../observations/BEO-ALL/prozedur-wiedergabe-eines-werkzeug-vertrags-reicht-weiter-als-die-quelle/observation.md)
+  — die fünf Wiedergabe-Funde des Reviews und des Verifiers (R1-1, R1-2, F-1, F-2, F-3) sind ein Vorgang;
+  keine der zwei Nachbarklassen trägt sie (Gate-Prüfumfang, falscher Aufruf). **Nicht gezählt:**
+  [`vorhandene-faehigkeit-ohne-traeger-wird-von-hand-nachgebaut`](../observations/BEO-ALL/vorhandene-faehigkeit-ohne-traeger-wird-von-hand-nachgebaut/observation.md)
+  bleibt bei **2×**. Der Slice nannte den Fall nah, nicht deckungsgleich; das Urteil *dieselbe
+  Beobachtung?* fällt gegen die Definition: dort führt ein Lauf einen Vorgang von Hand aus, obwohl der
+  Code den Weg als Fähigkeit führt, nur ohne Einstieg. Hier besteht der Schreib-Pfad nicht (der Modus
+  `sync` endet mit Exit 2 *„nicht implementiert"*), und in diesem Slice hat kein Lauf etwas von Hand
+  nachgebaut — der Slice beschreibt Handarbeit, die der Auftraggeber schon vorher fuhr.
+  [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
+  bleibt unberührt: die vier Aussagen werden erst mit dem Schnitt für `sync` falsch, ein Fix hat sie noch nicht
+  stehen lassen. Die Finding-Klasse *Stand-Form-Klammer erfasst zwei Artefakte mit verschiedenem
+  Entstehungs-Zeitpunkt* (R1-5) trägt keine Wiederkehr und bleibt in der Summary-Zeile des Reports.
+  **Lese-Schritt:** `bedingung-ohne-traeger-im-lauf-den-sie-bindet` erreicht mit diesem Slice **3×**. Der
+  Ausgang ist nicht zuweisbar: `geplant` braucht die Kennung einer Datei im Planning-Lifecycle, und der
+  Schnitt für `sync` besteht als Datei nicht; `verkörpert` braucht ein Norm-Artefakt, das der Architect
+  schreibt. Der Eintrag steht `offen` über der Schwelle, sein `state.md` nennt den Grund; das ist bis zum
+  nächsten Lese-Schritt oder zum Schnitt des `sync`-Slice zulässig. Übergabe an den Architect: ob und wie
+  die Bedingung *„der Umbau des Schritts steht im Eingang des Laufs, der ihn auslöst"* als Regel oder als
+  Ergänzung der Folgepflichten der ADR verkörpert wird; der Planner schreibt sie nicht. `eigentums-frage-…`
+  liegt über der Schwelle und trägt ihren Ausgang schon.
+- **Adressen vor dem Move ([`AGENTS.md`](../../../../AGENTS.md) §3.11):** kein eingefrorenes Artefakt nennt den
+  Slice als Pfad. Das Kommando aus §4 trifft außerhalb der Plan-Datei allein eine Zeile des
+  Verifikations-Reports, die den Dateinamen des Review-Reports nennt (dessen Name trägt die Kennung, gemessen
+  2026-09-25); ein Pfad des Slice steht dort nicht.
+- **Folge-Slices:** *Adressen, keine Anlage in dieser Closure.* Der `sync`-Schnitt (Modus `sync`, Ziel
+  `make tap-nachzug`) — **noch ohne Kennung und ohne Datei**; §1 (*Ausdrücklich NICHT*, erster Punkt) ist
+  seine Adresse, und er trägt den Umbau von Schritt 7, dessen vier Aussagen das Register nennt. Der
+  Job-Slice (Release-Job `tap`, Umgebung, Secret) — **noch ohne Kennung**, nach `sync`. Beide vergibt der
+  Planner beim Schnitt; der Auftraggeber priorisiert.
+- **Risiken aus §6:** fünf, je ein Ausgang — *entfallen* mit Grund: Grenze der Kontrolle (Zusage auf
+  Byte-Gleichheit eingeschränkt, Grenze im Text), Cache-Fenster (Wiederholung des Lesens nach 65 s,
+  vom Verifier mit `TAP_WAIT=3` gegen den Default gemessen); *weiter offen → Register:* Schritt übersprungen
+  und Vorwärts-Schutz (`prozedur-zeile-traegt-disziplin-ohne-sensor`), Handarbeit als Übergangszustand
+  (`bedingung-ohne-traeger-im-lauf-den-sie-bindet`; gegenüber dem Plan geändert, Begründung in §6). Keines
+  ist *eingetreten*.
+- **Drei Paarungen:** folgen nach dem Move; ihr Ergebnis steht unten.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
