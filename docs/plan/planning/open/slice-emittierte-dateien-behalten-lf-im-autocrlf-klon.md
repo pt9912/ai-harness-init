@@ -25,20 +25,24 @@ Durchsetzungs-Mechanik, deren Skripte der Klon mit LF braucht),
 Dateien byte-identisch, skip-if-present-Dateien unberührt),
 [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (jede Zahl dieses Plans
 steht neben dem Kommando, das sie ausgibt),
+[`ADR-0067`](../../adr/0067-emittierte-zeilenenden-ein-attribut-je-verzeichnis-mit-interpreter-konsument.md)
+(**Accepted** — die Entscheidung, deren Vorgang dieser Slice ist: Menge, Zeile, Klasse je Pfad, Meldung
+und Aussage-Reichweite),
 [`ADR-0007`](../../adr/0007-bootstrap-phasen.md) (die zwei Idempotenz-Klassen und ihre Tabelle),
-[`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md) (die Klasse eines Pfades in
-einem Verzeichnis, das dem Adopter gehört),
+[`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md) (die Bedeutung von
+skip-if-present: freier Pfad wird geschrieben, belegter bleibt unberührt und der Lauf nennt ihn),
 [`MR-055`](../../../../harness/conventions.md#mr-055--eine-stellen-messung-trägt-keine-folgerung-über-eine-eigenschaft)
-(aus einer Messung an einer Stelle folgt nichts über eine Eigenschaft — bindet die Klassen-Setzung
-für die drei Pfade außerhalb der Tabelle).
+(aus einer Messung an einer Stelle folgt nichts über eine Eigenschaft — der Grund, warum die Klasse für
+`.claude/hooks/` nicht aus der Tabelle gelesen wird).
 
 **Berührte Spec-Stellen:** — . Keine Spec-Stelle nennt `.harness/.gitignore` oder die Zeilenenden
 emittierter Dateien (`grep -n '\.harness/\.gitignore' spec/*.md` → leer); die Emission ändert eine
-Eigenschaft, die die Spec nicht beschreibt. Ob [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) einen Satz zur Zeilenenden-Grenze braucht,
-ist eine Spec-Frage für den Architect und wird in §1 als Übergabepunkt geführt, nicht hier
-entschieden.
+Eigenschaft, die die Spec nicht beschreibt. [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)
+bekommt keinen Satz und keinen Change Request; die Grenze der Messmethode gilt unverändert
+([`ADR-0067`](../../adr/0067-emittierte-zeilenenden-ein-attribut-je-verzeichnis-mit-interpreter-konsument.md)
+Festlegung 5).
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-24.
 
@@ -59,86 +63,106 @@ Ausschlusses stehen in **eben diesem Abschnitt** des Baseline-Regelwerks,
 zusammen mit der Begründungs-Pflicht je Punkt.
 
 **Ziel:** Ein Klon eines gebootstrappten Repos, den Git mit `core.autocrlf=true` auscheckt (das ist
-die Standardeinstellung von Git for Windows), trägt in den Dateien, die das Werkzeug in eigenen
-Verzeichnissen ablegt, LF statt CRLF — belegt von einer `full-smoke`-Stufe, die ohne die Emission rot
-ist. Dieses Repo trägt dieselbe Zeile in seiner Wurzel.
+die Standardeinstellung von Git for Windows), trägt in den Dateien, die das Werkzeug in den Verzeichnissen
+aus Setzung 2 ablegt, LF statt CRLF — soweit die Datei mit LF im Index liegt und, in den drei
+skip-if-present-Verzeichnissen, der Pfad frei war
+([`ADR-0067`](../../adr/0067-emittierte-zeilenenden-ein-attribut-je-verzeichnis-mit-interpreter-konsument.md)
+Festlegung 5). Belegt ist das von einer `full-smoke`-Stufe, die ohne die Emission rot ist. Dieses Repo
+trägt dieselbe Zeile in seiner Wurzel.
 
-**Die gemessene Lage** (Stand 2026-09-24; **keine Erwartungswerte**, die Zahlen wandern mit dem
+**Die gemessene Lage** (Stand 2026-09-25; **keine Erwartungswerte**, die Zahlen wandern mit dem
 Bestand — [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)):
 
 - **Kein Träger existiert.** `git ls-files | grep -icE 'gitattributes|editorconfig'` → **0**.
-- **Der Index ist LF.** `git ls-files --eol | awk '{print $1,$2}' | sort | uniq -c` → **2470**
+- **Der Index ist LF.** `git ls-files --eol | awk '{print $1,$2}' | sort | uniq -c` → **2590**
   `i/lf w/lf`, **11** `i/none w/none`, **2** `i/-text w/-text` (die zwei PNG unter
   `docs/user/images/`) und **10** ohne Angabe (`git ls-files -s | grep -c '^120000'` → **10**, die
   Symlinks). Die Quelle ist CR-frei: `git grep -lI $'\r' | wc -l` → **0**. Eine emittierte Datei, die
   bewusst CRLF trägt, gibt es damit nicht — die Umkehrung, nach der der Auftrag fragt, ist leer.
-- **Die CR entstehen im Klon, nicht im Bootstrap.** Rot gesehen an diesem Repo, mit
+- **Die CR entstehen im Klon, nicht im Bootstrap.** An diesem Repo, mit
   `T=$(mktemp -d); git clone -q --no-hardlinks -c core.autocrlf=true . "$T/k"`:
-  `grep -rlI $'\r' --exclude-dir=.git "$T/k" | wc -l` → **2470**, `grep -c $'\r'
+  `grep -rlI $'\r' --exclude-dir=.git "$T/k" | wc -l` → **2590**, `grep -c $'\r'
   "$T/k/.harness/baseline/v6.9.0/SHA256SUMS"` → **54** und `grep -c $'\r'
   "$T/k/.claude/hooks/pretooluse-command-guard.sh"` → **119**. Wer ein Repo bootstrappt, committet LF
   (die Vorlagen sind CR-frei); wer es danach klont — der zweite Entwickler, ein Windows-Runner —,
   bekommt CRLF.
-- **Was daran bricht, ist gemessen für Bash-Skripte, nicht für alles.** Eine Datei mit
-  `#!/usr/bin/env bash\r` endet mit `env` meldet `bash\r` nicht gefunden (Probe in einem
-  tmp-Verzeichnis, Linux). Ein Makefile mit CRLF läuft unter GNU Make 4.3 in den drei geprobten
-  Formen — Variablenzuweisung, `include`, Rezept —; ein Windows-`make` und BuildKit über einem
-  `Dockerfile` sind **nicht** gemessen.
+- **Was daran bricht, ist gemessen für drei Konsumenten, nicht für alles.** Ein Bash-Skript über
+  seine Shebang-Zeile (`#!/usr/bin/env bash\r` → `bash\r` nicht gefunden), die Byte-Prüfung des
+  vendored Baums (`SHA256SUMS`) und eine Wortliste, die ein Skript einliest
+  ([`ADR-0067`](../../adr/0067-emittierte-zeilenenden-ein-attribut-je-verzeichnis-mit-interpreter-konsument.md)
+  §Kontext, mit den Kommandos). Ein Makefile mit CRLF läuft unter GNU Make 4.3 in den geprobten Formen;
+  ein Windows-`make` und BuildKit über einem `Dockerfile` sind **nicht** gemessen.
+- **Das Fehlerbild des Guards hat zwei Zustände.** Im gewöhnlichen autocrlf-Klon trägt auch der Guard
+  CRLF und fällt **laut** aus (Exit 2 bei jedem Aufruf); **still** ist allein der Mischzustand, den eine
+  Adopter-Wurzel mit Endungs-Glob erzeugt (Guard LF, `blocked/<sprache>` CRLF: die Wortliste verliert
+  ihr letztes Wort). Die Emission hält beide Zustände aus dem Klon heraus; der Messweg zählt dafür
+  CR-Bytes je Verzeichnis.
 - **Die Alternative `* text eol=lf` ist rot gesehen.** In einem Wegwerf-Klon ohne `autocrlf` legt
   `git add --renormalize . && git diff --cached --name-only | grep -vc '^\.gitattributes$'` mit
   `* text eol=lf` → **2** Blobs um (beide PNG), mit `* text=auto eol=lf` → **0**.
 
-**Setzungen des Planners** — jede mit dem, was passieren müsste, damit sie bricht:
+**Setzungen des Planners** — jede mit dem, was passieren müsste, damit sie bricht. Menge, Zeile und
+Klasse je Pfad entscheidet
+[`ADR-0067`](../../adr/0067-emittierte-zeilenenden-ein-attribut-je-verzeichnis-mit-interpreter-konsument.md);
+steht eine Aussage dieser Liste anders als dort, gilt die ADR.
 
-1. **Die Form ist `* text=auto eol=lf`.** `text=auto` lässt Dateien, die Git als binär erkennt,
-   in Ruhe — der Beleg oben; `eol=lf` legt dann das Auschecken jeder erkannten Textdatei fest,
-   unabhängig von `core.autocrlf`. Bricht, wenn Git eine Skript-Datei als binär einstuft (NUL-Byte):
-   sie bekäme keinen LF-Zwang, und die Stufe misst den realen Bestand statt der Heuristik.
-2. **Die Verzeichnis-Menge kommt aus dem Emissions-Code, nicht aus einer Aufzählung.** Sie ist die
-   Menge der Verzeichnisse aller `dst` in `enforceFiles()` und `captureFiles()`
-   (`internal/emit/enforce.go`) plus `.harness/`. Gelesen am Stand dieses Plans sind das
-   `tools/harness/`, harness/mk/, `.claude/hooks/`, `.githooks/` und `.harness/` — der letzte ist
-   der Ort des Vorbilds, das das Werkzeug schon schreibt (`.harness/.gitignore`, Klasse konvergent).
-   Der Implementer leitet die Menge im ersten Lauf neu ab; ein Verzeichnis, das dabei hinzukommt,
-   ändert den Plan (§4, Rückführung).
-3. **Die Klassen** ([`ADR-0007`](../../adr/0007-bootstrap-phasen.md)-Vokabular, Setzung mit
-   **Übergabepunkt an den Architect**): konvergent
-   für `.harness/`, `tools/harness/`, harness/mk/ und `.claude/hooks/` — das Werkzeug bestimmt dort,
-   was liegt; **skip-if-present mit Meldung** für `.githooks/` — der Name ist von `git` fixiert, das
-   Verzeichnis gehört dem Repo, und der Träger daneben ist aus demselben Grund skip-if-present
-   ([`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md) Festlegung 2 und 3).
-   **Nur `tools/harness/` und `.harness/` sind von der Tabelle in
-   [`ADR-0007`](../../adr/0007-bootstrap-phasen.md) gedeckt**; bei harness/mk/ und `.claude/hooks/`
-   nennt sie Globs (`harness/mk/*.mk`, `.claude/hooks/*.sh`), die `.gitattributes` nicht trifft, und
-   [`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md) Festlegung 4 lässt die `.claude/`-Zeilen ausdrücklich ungewogen
-   ([`MR-055`](../../../../harness/conventions.md#mr-055--eine-stellen-messung-trägt-keine-folgerung-über-eine-eigenschaft)).
-   Bricht, wenn ein Adopter an einem der vier Pfade schon eine eigene Datei führt: dann heilt der
-   konvergente Lauf sie auf die Werkzeug-Fassung — für harness/mk/ und `tools/harness/` ist das
-   die Klasse jeder Datei dort, für `.claude/hooks/` ist es die Frage an den Architect.
+1. **Die Form ist `* text=auto eol=lf`, verzeichnisweit mit `*` und nicht mit Endungs-Globs.**
+   `text=auto` lässt Dateien, die Git als binär erkennt, in Ruhe — der Beleg oben; `eol=lf` legt dann
+   das Auschecken jeder erkannten Textdatei fest, unabhängig von `core.autocrlf`. `*` statt `*.sh`:
+   `blocked/<sprache>` und `commit-msg` tragen keine Endung, und ein Endungs-Glob erzeugt den stillen
+   Mischzustand (Guard LF, Wortliste CRLF;
+   [`ADR-0067`](../../adr/0067-emittierte-zeilenenden-ein-attribut-je-verzeichnis-mit-interpreter-konsument.md)
+   Festlegung 2). Bricht, wenn Git eine Skript-Datei als binär einstuft (NUL-Byte): sie bekäme keinen
+   LF-Zwang, und die Stufe misst den realen Bestand statt der Heuristik — **oder** wenn die emittierte
+   Zeile ein Endungs-Glob trägt: dann liegt die Wortliste ohne Zwang, und der Eigenschafts-Test aus
+   Liefer-Punkt 2 färbt rot.
+2. **Die Verzeichnis-Menge ist das Kriterium aus
+   [`ADR-0067`](../../adr/0067-emittierte-zeilenenden-ein-attribut-je-verzeichnis-mit-interpreter-konsument.md)
+   Festlegung 1, keine Ableitung aus den Emissions-Einträgen:** ein Verzeichnis unterhalb der Wurzel des
+   Ziels, in dem das Werkzeug eine Datei mit Interpreter- oder Byte-Konsument ablegt — ein Bash-Skript,
+   ein awk-Programm, eine Wortliste, die ein Skript einliest, die Byte-Prüfung `SHA256SUMS` —, oder ein
+   make-Fragment, dessen Rezepte Shell-Zeilen tragen (**Vorsorge**, kein gemessener Bruch). Heute
+   sind das `tools/harness/`, harness/mk/, `.claude/hooks/`, `.githooks/` und `.harness/`. Nicht in der
+   Menge: `.claude/` selbst und die Wurzel des Ziels (`Makefile`, `d-check.mk`, `a-check.mk`) — die
+   Wurzel ist eine benannte Ausnahme vom Kriterium. Aus den Verzeichnissen aller `dst` in
+   `enforceFiles()` ließe sich die Menge nicht ableiten (das ergäbe `.claude` statt `.claude/hooks`), und
+   die Wortlisten unter `blocked/` sowie der vendored Baum unter `.harness/` entstehen außerhalb von
+   `enforceFiles()` (`add-lang`, `internal/fetch/baseline.go`). Bricht, wenn die Anwendung des Kriteriums
+   auf den vollständigen Emit ein Verzeichnis ergibt, das oben nicht steht (§4, Rückführung).
+3. **Die Klassen folgen dem Boden** ([`ADR-0007`](../../adr/0007-bootstrap-phasen.md)-Vokabular;
+   [`ADR-0067`](../../adr/0067-emittierte-zeilenenden-ein-attribut-je-verzeichnis-mit-interpreter-konsument.md)
+   Festlegung 3, dort die Herkunft je Zeile): **konvergent** für `.harness/` und `tools/harness/` — das
+   Werkzeug bestimmt dort, was liegt, und die Tabelle führt beide als tool-eigene Infrastruktur;
+   **skip-if-present mit Meldung** für das make-Fragment-Verzeichnis harness/mk/, `.claude/hooks/` und
+   `.githooks/` — dort trägt der Adopter oder ein fremdes Werkzeug den Namensraum mit (Zweifelsregel der
+   Tabelle; [`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md) Festlegung 3 für
+   die Bedeutung). Die Meldung an einem belegten Pfad nennt den Pfad **und** die Aussage, was dann gilt:
+   steht die Zeile dort nicht, tragen die Dateien des Verzeichnisses im Klon mit `core.autocrlf=true`
+   CRLF. Bricht, wenn der zweite Lauf über einer belegten skip-if-present-Datei sie ändert oder schweigt,
+   oder wenn ein konvergenter Pfad nach einer Verstellung nicht auf die Werkzeug-Fassung zurückkehrt
+   (die Klassen-Kopplung je Pfad aus Liefer-Punkt 2).
 4. **Dieses Repo bekommt eine Wurzel-Datei, keine genesteten.** Die Wurzel gehört hier dem Repo
-   (Ebene: Dogfood); sie deckt `.claude/hooks/`, `harness/tools/`, `.githooks/`, den vendored Baum
-   `.harness/baseline/` (byte-genau gehalten von `SHA256SUMS`) und das `Makefile` mit einer Zeile.
-   Die genesteten Dateien der Emission gehören dem emittierten Ziel; im Dogfood-Layout gäbe es
-   harness/mk/ und `tools/harness/` nicht einmal.
-
-**Übergabepunkt an den Architect** (vor dem Start, §4): das Verdikt zu den Klassen aus Setzung 3, in
-der Form, die er wählt (ADR nach dem Muster von [`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md),
-oder ein Eintrag im Adaptions-Block); und
-die Spec-Frage, ob [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) in der Grenze der Messmethode einen Satz zu diesem Fall bekommt (der
-Start-Smoke belegt das Binary, der Bootstrap-Voll-Smoke läuft nur unter Linux; hier kommt ein dritter
-Nachweis hinzu, der unter Linux **den Smudge-Filter** von Git prüft, nicht Windows).
+   (Ebene: Dogfood, Konfiguration); sie deckt `.claude/hooks/`, `harness/tools/`, `.githooks/`, den
+   vendored Baum `.harness/baseline/` (byte-genau gehalten von `SHA256SUMS`) und das `Makefile` mit einer
+   Zeile. Die genesteten Dateien der Emission gehören dem emittierten Ziel; im Dogfood-Layout gäbe es
+   harness/mk/ und `tools/harness/` nicht einmal. Bricht, wenn die Zeile einen Blob umlegt: das
+   Kommando aus Liefer-Punkt 3 nennt dann die Datei.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Die Wurzel-`.gitattributes` des Adopters, und damit `Makefile`, `d-check.mk`, `a-check.mk`,
   `.d-check.yml`, `Dockerfile` im Ziel** — *Bestand bleibt bewusst stehen.* Eine genestete Datei
-  erreicht die Wurzel nicht, und die Wurzel gehört dem Adopter ([`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md) Festlegung 2). Gemessen ist
-  für das `Makefile` unter GNU Make 4.3 **kein** Bruch (oben), für ein Windows-`make` und für
-  BuildKit nichts; eine Wurzel-Zeile ohne diese Messung wäre eine Zusage ohne Gegenbeispiel. **Die
-  Option „skip-if-present-Zeile in der Wurzel" ist geprüft und nicht gewählt:** sie wäre der Fall von
-  `.d-check.yml` — eine Datei, die das Werkzeug beim ersten Lauf schreibt und danach nie heilt, so
-  dass die Zeile mit der Werkzeug-Fassung driftet. Die Restmenge wird von der Stufe **ausgegeben**
-  (§2, Liefer-Punkt 1), nicht zugesagt; Ausgang in §6.
+  erreicht die Wurzel nicht, und die Wurzel gehört dem Adopter; die genesteten Dateien gewinnen
+  umgekehrt gegen eine Adopter-Wurzel, sodass deren Zeilen die Verzeichnisse der Emission nicht
+  aufheben ([`ADR-0067`](../../adr/0067-emittierte-zeilenenden-ein-attribut-je-verzeichnis-mit-interpreter-konsument.md)
+  Festlegung 5). Gemessen ist für das `Makefile` unter GNU Make 4.3 **kein** Bruch (oben), für ein
+  Windows-`make` und für BuildKit nichts; eine Wurzel-Zeile ohne diese Messung wäre eine Zusage ohne
+  Gegenbeispiel. **Die Option „eine Datei in der Wurzel des Ziels" ist gewogen und nicht gewählt:** eine
+  skip-if-present-Datei dort schützte ein Ziel mit eigener Wurzel-Datei gar nicht, und ein Marker-Block
+  schriebe in eine Adopter-Datei
+  ([`ADR-0067`](../../adr/0067-emittierte-zeilenenden-ein-attribut-je-verzeichnis-mit-interpreter-konsument.md)
+  Alternative D). Die Restmenge wird von der Stufe **ausgegeben** (§2, Liefer-Punkt 1), nicht
+  zugesagt; Ausgang in §6.
 - **Ein Windows-Volllauf** — *anderer Vorgang / Grenze der Messmethode.* Die Runner tragen keine
   Linux-Container ([`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix), Grenze
   der Messmethode); die Stufe belegt, was `core.autocrlf=true` mit den Bytes macht, nicht dass ein
@@ -151,6 +175,11 @@ Nachweis hinzu, der unter Linux **den Smudge-Filter** von Git prüft, nicht Wind
 - **Bereits mit CRLF ausgecheckte Arbeitsbäume in Adopter-Repos** — *Bestand, Sache des Adopters.*
   Die Attribute wirken beim nächsten Checkout; ein vorhandener Arbeitsbaum behält seine CRLF bis dahin
   (`git add --renormalize .` ist sein Vorgang, das Werkzeug fasst keinen fremden Arbeitsbaum an).
+- **Eine Datei, die ein Adopter mit CRLF im Index führt** — *Bestand, Sache des Adopters.* Sie bleibt
+  trotz `text=auto eol=lf` CRLF; die Zusage aus dem Ziel gilt für eine Datei, die mit LF im Index liegt,
+  und der Messweg committet LF, weil die Emission CR-frei schreibt
+  ([`ADR-0067`](../../adr/0067-emittierte-zeilenenden-ein-attribut-je-verzeichnis-mit-interpreter-konsument.md)
+  §Konsequenzen, akzeptiertes Negativ).
 
 **Keine Mindestzahl.** Ein Slice mit *einem* echten Ausschluss ist besser als
 einer mit vier erfundenen; die vier Klassen sind ein Suchraster, keine
@@ -174,29 +203,60 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 gesehen wird, bevor es etwas zu heilen gibt):**
 
 - [ ] **1 · Messweg.** Eine neue Stufe in `harness/tools/full-smoke.sh` — Kopfzeile der Form
-      `echo "full-smoke: …"` **und** ein `e2e_abdeckung`-Aufruf mit den Kennungen [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)
-      und [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren), sonst fällt sie
+      `echo "full-smoke: …"` **und** ein `e2e_abdeckung`-Aufruf mit den Kennungen
+      [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) und
+      [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), sonst fällt sie
       aus der Sicht ([`docs/user/e2e-abdeckung.md`](../../../user/e2e-abdeckung.md), die
       `make e2e-abdeckung` erzeugt; die Lücken-Richtung *Stufe ohne Deklaration* färbt den Erzeuger
-      rot). Sie bootstrappt in ein tmp-Repo, committet, klont einmal mit `-c core.autocrlf=true` und
-      einmal mit `-c core.autocrlf=false` **(Kontrollklon — ausdrücklich gesetzt, nicht vom Runner geerbt)** und zählt Dateien mit CR unter der Verzeichnis-Menge aus
-      Setzung 2. Belegt: (a) der Kontrollklon trägt keine — die Stufe kann nicht aus falschem Grund
-      rot sein; (b) der autocrlf-Klon trägt keine, und `.githooks/commit-msg` läuft dort über seine
-      Shebang-Zeile; (c) **rot gesehen vor Punkt 2** — ohne die Emission trägt der autocrlf-Klon
-      CR-Dateien, und der Shebang-Lauf scheitert mit `bash\r`, die Meldung nennt die Datei; (d) die
-      **Restmenge** (Dateien mit CR nach dem Fix, im Ziel die Wurzel-Dateien des Adopters) gibt die
-      Stufe aus, statt sie zu verschweigen. Was die Zusage bricht: eine der Emissions-Zeilen fehlt
-      oder trägt `eol=crlf` — das Rot muss die CR-tragende Datei nennen (Meldung lesen, nicht nur den
-      Exit-Code).
-- [ ] **2 · Emission.** Die genesteten `.gitattributes` mit der Zeile aus Setzung 1 in den Verzeichnissen
-      aus Setzung 2, je Eintrag mit ausgewiesener Klasse in `enforceFiles()` (Klassen nach dem
-      Verdikt des Architect, Setzung 3). Ein Go-Test hält die Verzeichnis-Menge der emittierten
-      Textdateien gegen die Menge der Verzeichnisse mit `.gitattributes` (Differenz allein über eine
-      benannte Ausnahmeliste) — rot gesehen durch Streichen eines Eintrags **und** durch die Zeile
-      `eol=crlf`; dazu ein Fall in `test/mutations/`. Ein zweiter `init`-Lauf heilt eine von Hand
-      geänderte konvergente Datei und lässt die skip-if-present-Datei unberührt
-      ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), Boundary).
-- [ ] **3 · Dogfood.** Die Wurzel-`.gitattributes` dieses Repos mit der Zeile aus Setzung 1. Beleg —
+      rot). **Nicht [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix):** keine Stufe
+      nennt sie heute (`grep -c 'LH-QA-0[4]' docs/user/e2e-abdeckung.md` → **0**), und eine Linux-Stufe in
+      der Zeile der Windows-Anforderung läse sich als Windows-Beleg, den die Stufe nicht liefert.
+      [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) trägt die
+      Skripte der Durchsetzungsschicht (`tools/harness/`, Hooks, git-eigener Träger), deren Bytes die
+      Stufe hält, [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) den Bootstrap, den
+      sie fährt. Sie bootstrappt in ein tmp-Repo, committet, klont einmal mit `-c core.autocrlf=true` und
+      einmal mit `-c core.autocrlf=false` **(Kontrollklon — ausdrücklich gesetzt, nicht vom Runner
+      geerbt)** und zählt Dateien mit CR unter der Verzeichnis-Menge aus Setzung 2. Belegt:
+      (a) der Kontrollklon trägt keine — die Stufe kann nicht aus falschem Grund rot sein; (b) der
+      autocrlf-Klon trägt keine, `.githooks/commit-msg` läuft dort über seine Shebang-Zeile, und
+      `bash tools/harness/baseline-verify.sh` endet mit `OK` (die Byte-Prüfung des vendored Baums; als
+      Beleg des dritten Konsumenten gewählt, ohne einen Liefer-Punkt mehr); (c) **rot gesehen vor
+      Punkt 2** — ohne die Emission trägt der autocrlf-Klon CR-Dateien, und der Shebang-Lauf scheitert
+      mit `bash\r`, die Meldung nennt die Datei; (d) die **Restmenge** (Dateien mit CR nach dem Fix, im
+      Ziel die Wurzel-Dateien des Adopters) gibt die Stufe aus, statt sie zu verschweigen. Was die Zusage
+      bricht: eine der Emissions-Zeilen fehlt oder trägt `eol=crlf` — das Rot muss die CR-tragende Datei
+      nennen (Meldung lesen, nicht nur den Exit-Code). **Die Stufe beschreibt ihren Gegenstand als
+      Laut-Ausfall:** im gewöhnlichen autocrlf-Klon fällt der Guard laut aus (Exit 2), und still ist nur
+      der Mischzustand aus Setzung 1 — kein Wort „still" für den gewöhnlichen Klon in Kopfzeile,
+      Meldungen und `e2e_abdeckung`-Text.
+- [ ] **2 · Emission.** Die genesteten `.gitattributes` mit der Zeile aus Setzung 1 in den fünf
+      Verzeichnissen aus Setzung 2, je Eintrag mit der Klasse aus Setzung 3 in `enforceFiles()`; die drei
+      skip-if-present-Einträge tragen eine Meldung, die den Pfad **und** die Aussage nennt, was dann
+      gilt. Zwei neue Go-Tests, gemessen an einem Emit, der die Wortliste unter `blocked/` und die
+      Dateien unter `.harness/` enthält:
+      **(a) Eigenschaft statt Verzeichnis-Liste** — für jede emittierte Datei mit Interpreter- oder
+      Byte-Konsument (Shebang-Zeile, Endung `.sh`/`.awk`/`.mk`, Wortliste unter `blocked/`, Datei unter
+      `.harness/`, Datei unter `.githooks/`) liegt in einem Vorfahr-Verzeichnis unterhalb der Wurzel eine
+      emittierte `.gitattributes`, die die Zeile `* text=auto eol=lf` trägt; die Wurzel-Dateien
+      (`Makefile`, `d-check.mk`, `a-check.mk`) sind die benannte Ausnahme
+      ([`ADR-0067`](../../adr/0067-emittierte-zeilenenden-ein-attribut-je-verzeichnis-mit-interpreter-konsument.md)
+      Festlegung 1 und Fitness-Zeile 1). Der Test liest den emittierten Baum und leitet die erwartete
+      Menge **nicht** aus der Verzeichnis-Liste ab, die die Emission liest — ein Test, der die Quelle
+      gegen sich selbst hält, kann unter keiner Mutation rot werden
+      ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Rot gesehen durch Streichen eines Eintrags, durch
+      `eol=crlf` **und** durch einen Endungs-Glob statt `*`. **(b) Meldungsinhalt je
+      skip-if-present-Pfad** — an einem belegten Pfad (fremder Inhalt ohne `eol=lf`) nennt die Meldung des
+      Laufs den Pfad und die Aussage aus Setzung 3; rot gesehen durch eine Meldung, die nur den Pfad
+      nennt. Die bestehende Klassen-Kopplung `TestEnforce_IdempotenzKlasseJePfad` läuft über
+      `PathClass`/`EnforcePaths()` und trägt die neuen Pfade, sobald sie in der Aufzählung stehen —
+      kein dritter neuer Test. Ein zweiter `init`-Lauf heilt die konvergenten Dateien (`.harness/`,
+      `tools/harness/`) und lässt die drei skip-if-present-Dateien unberührt und nennt sie
+      ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), Boundary). Dazu Fälle in
+      `test/mutations/`: ein Eintrag entfällt bzw. die Zeile trägt `eol=crlf` bzw. einen Endungs-Glob →
+      Test (a) färbt rot; die Meldung verliert die Aussage → Test (b) färbt rot.
+- [ ] **3 · Dogfood.** Die Wurzel-`.gitattributes` dieses Repos mit der Zeile aus Setzung 1 — Konfiguration
+      und Lieferung dieses Slice, keine dritte Schicht; die Renormalisierung im Ziel ist nicht
+      Gegenstand. Beleg —
       vorher und nachher dasselbe Kommando: `git ls-files --eol | awk '{print $1,$2}' | sort | uniq -c`
       unverändert (die zwei `i/-text` bleiben), im Wegwerf-Klon
       `git add --renormalize . && git diff --cached --name-only | grep -vc '^\.gitattributes$'` →
@@ -228,12 +288,12 @@ Aussagen-Berührung steht hier gar nicht.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `harness/tools/full-smoke.sh` | update | Punkt 1: neue Stufe (Kopfzeile + `e2e_abdeckung`), Kontrollklon, Shebang-Lauf, Restmenge — [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) |
+| `harness/tools/full-smoke.sh` | update | Punkt 1: neue Stufe (Kopfzeile + `e2e_abdeckung` mit [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) und [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)), Kontrollklon, Shebang-Lauf, Byte-Prüfung, Restmenge |
 | `docs/user/e2e-abdeckung.md` | update (erzeugt) | `make e2e-abdeckung`; den Inhalt hält `test/e2e-abdeckung.bats` |
 | `internal/emit/templates/enforce/gitattributes` | neu | eine Vorlage, die Zeile aus Setzung 1; dot-lose Quelle wie `gitignore` (`all:templates/enforce`) |
-| `internal/emit/enforce.go` | update | fünf Einträge in `enforceFiles()` mit ausgewiesener Klasse; die Klasse eines Eintrags steht nur dort |
-| `internal/emit/enforce_test.go` (o. ä.) | update | Punkt 2: Verzeichnis-Menge gegen `.gitattributes`-Menge, Ausnahmeliste benannt; die bestehende Klassen-Kopplung (`PathClass`) trägt die neuen Pfade mit |
-| `test/mutations/` | neu | ein Fall: Eintrag streichen bzw. Zeile auf `eol=crlf` — erwartet rot färbender Test benannt; Anker gegen den Quell-Bestand gemessen ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)) |
+| `internal/emit/enforce.go` | update | fünf Einträge in `enforceFiles()` mit ausgewiesener Klasse und, für die drei skip-if-present-Einträge, der Meldung nach Setzung 3; die Klasse eines Eintrags steht nur dort |
+| `internal/emit/enforce_test.go` (o. ä.) | update | Punkt 2: Eigenschafts-Test (a) und Meldungs-Test (b); die bestehende Klassen-Kopplung (`PathClass`) trägt die neuen Pfade mit |
+| `test/mutations/` | neu | Fälle: Eintrag streichen, Zeile auf `eol=crlf` bzw. Endungs-Glob → Test (a); Meldung ohne Aussage → Test (b) — erwartet rot färbender Test je Fall benannt; Anker gegen den Quell-Bestand gemessen ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)) |
 | `.gitattributes` (Wurzel) | neu | Punkt 3: dieselbe Zeile, Wurzel gehört hier dem Repo |
 
 - **Reihenfolge im Lauf:** Punkt 1 committen und rot sehen (der Lauf bootstrappt mit dem Träger, den
@@ -252,21 +312,20 @@ Aussagen-Berührung steht hier gar nicht.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): Das Verdikt des Architect zu den Klassen aus §1 Setzung 3
-liegt als Artefakt vor (ADR oder Adaptions-Eintrag, in einem eigenen Commit, [`AGENTS.md`](../../../../AGENTS.md)
-§3.8), und das Verzeichnis `in-progress/` trägt keinen anderen Slice (WIP-Limit 1). Beobachtbar: das
-Artefakt liegt im gemergten Stand; ohne es beginnt Punkt 2 mit einer Klasse, die niemand entschieden
-hat.
+**Start** (`next` → `in-progress`): [`ADR-0067`](../../adr/0067-emittierte-zeilenenden-ein-attribut-je-verzeichnis-mit-interpreter-konsument.md)
+steht auf `Accepted`, und das Verzeichnis `in-progress/` trägt keinen anderen Slice (WIP-Limit 1).
+Beobachtbar: der Status-Kopf der ADR im gemergten Stand und ein `ls docs/plan/planning/in-progress/`
+ohne Slice-Datei.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
-- `in-progress` → `next` (zu groß, zurück zur Zerlegung): die Ableitung der Verzeichnis-Menge (§1
-  Setzung 2) ergibt mehr als die fünf genannten Verzeichnisse — etwa weil das Sprachskelett
-  (`internal/gen/`) Dateien mit Interpreter-Konsument trägt — **oder** die Stufe braucht mehr als die
-  eine Kontroll-/autocrlf-Klon-Struktur, um rot zu werden.
-- `in-progress` → `open` (blockiert — Carveout?): das Verdikt des Architect verlangt einen
-  Wurzel-Eintrag im Ziel (die Option aus dem ersten Ausschluss in §1) — das ist ein anderer Schnitt
-  mit anderer Klasse, kein Nachtrag dieses Slice.
+- `in-progress` → `next` (zu groß, zurück zur Zerlegung): die Anwendung des Kriteriums (§1 Setzung 2)
+  auf den vollständigen Emit ergibt mehr als die fünf genannten Verzeichnisse — etwa weil das
+  Sprachskelett (`internal/gen/`) Dateien mit Interpreter-Konsument trägt — **oder** die Stufe braucht
+  mehr als die eine Kontroll-/autocrlf-Klon-Struktur, um rot zu werden.
+- `in-progress` → `open` (blockiert — Carveout?): eine Messung am Ziel widerlegt eine Aussage der ADR —
+  etwa dass die genestete Zeile gegen eine Adopter-Wurzel gewinnt (Festlegung 2) — dann ist es eine
+  Folge-ADR mit `Supersedes`, kein Nachtrag dieses Slice.
 
 ## 5. Closure-Trigger
 
@@ -301,6 +360,12 @@ dasteht.
   **Ausgang:** entfallen — die Stufe zählt CR-Bytes und führt `.githooks/commit-msg` über seine
   Shebang-Zeile, beides an den realen Bytes; eine als binär eingestufte Datei färbte sie rot, und ihr
   Rot nennt die Datei (Liefer-Punkt 1, Zusage und Gegenbeispiel).
+- **Die Meldung an einem belegten skip-if-present-Pfad erscheint auch über der eigenen Datei des
+  ersten Laufs** (der Lauf unterscheidet nicht, wessen Datei liegt). **Ausgang:** entfallen — kein
+  Risiko dieses Slice, sondern das benannte, akzeptierte Negativ der Entscheidung
+  ([`ADR-0067`](../../adr/0067-emittierte-zeilenenden-ein-attribut-je-verzeichnis-mit-interpreter-konsument.md)
+  Festlegung 4: benannt, nicht verhindert; eine Byte-Gleichheits-Ausnahme wäre ein neuer Pfad im
+  Writer für drei Zeilen Ausgabe).
 
 ## 7. Closure-Notiz
 
@@ -345,7 +410,7 @@ berührt. Beide deklarierten Sub-Areas sind GF.
 (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`, **keine
 Erwartungswerte** —
 [`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)
-Setzung 2, gelesen am gemergten Stand vom 2026-09-24). Kein Eintrag nennt Zeilenenden,
+Setzung 2, gelesen am gemergten Stand vom 2026-09-25). Kein Eintrag nennt Zeilenenden,
 `.gitattributes` oder `autocrlf` (`grep -rliE 'crlf|zeilenende|autocrlf|gitattributes'
 docs/plan/planning/observations/BEO-ALL --include=observation.md` → leer) — die Fragestellung ist
 neu. Diese Einträge betreffen den Vorgang:
@@ -357,9 +422,9 @@ neu. Diese Einträge betreffen den Vorgang:
 | `mess-rezept-setzt-unbenannte-host-konfiguration-voraus` | 2× | offen | **unmittelbar** — `core.autocrlf` ist Host-Konfiguration: der Kontrollklon setzt sie ausdrücklich (`-c core.autocrlf=false`) statt sie vom Runner zu erben |
 | `beleg-faehrt-den-behaupteten-pfad-nicht` | 1× | offen | die Stufe muss den behaupteten Pfad fahren (echter Klon mit Smudge-Filter, echter Shebang-Lauf), nicht ein Muster über Dateinamen |
 | `byte-gleichheit-als-aussage-ueber-die-regel-gelesen` | 2× | offen | Liefer-Punkt 3 vergleicht Bytes vor und nach; er sagt etwas über die Bytes, nicht über die Regel |
-| `emittierter-stand-laeuft-dem-dogfood-voraus` | 1× | offen | Dogfood und Emission tragen dieselbe Zeile an verschiedenen Orten; kein Modul hält die beiden Fassungen zusammen — benannt, hier nicht geschlossen |
+| `emittierter-stand-laeuft-dem-dogfood-voraus` | 2× | offen | Dogfood und Emission tragen dieselbe Zeile an verschiedenen Orten; kein Modul hält die beiden Fassungen zusammen — benannt, hier nicht geschlossen |
 | `lokaler-full-smoke-scheitert-auf-macos-host` | 2× | offen | die Stufe läuft unter Linux/CI wie jede andere `full-smoke`-Stufe; ein lokaler macOS-Lauf bleibt ihr verwehrt |
-| `neuer-waechter-ohne-mutations-fall` | 12× | verkörpert | Liefer-Punkt 2 trägt seinen Fall in `test/mutations/` |
+| `neuer-waechter-ohne-mutations-fall` | 13× | verkörpert | Liefer-Punkt 2 trägt seinen Fall in `test/mutations/` |
 | `zusage-ohne-herstellbares-gegenbeispiel` | 3× | verkörpert | der Messweg steht vor der Emission, damit das Rot gesehen wird |
 | `emittierte-vorlagen-klassifikation-ohne-traeger` | 3× | geplant | nur mittelbar — sie fragt, ob ein Ort im Ziel entsteht; hier ist der Ort fest, nur seine Klasse ist offen |
 
