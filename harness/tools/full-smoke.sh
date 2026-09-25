@@ -2874,7 +2874,11 @@ grep -F -- 'lateral-adapter' <<<"$lateral_out" | sed -n '1,2s/^/full-smoke:   /p
 # gebootstrapptes Ziel mit ihnen gruen startet und ob sie im Ziel rot faerben, entscheidet
 # nur ein echter docs-check dort. Zwei Aussagen:
 #   (a) DER GRUENE START je Sprache und Architektur, die das Werkzeug traegt (eine
-#       Kombination, die die Sprache nicht traegt, endet mit Exit 2 und ist kein Fall):
+#       Kombination, die die Sprache nicht traegt, endet mit Exit 2 und ist kein Fall).
+#       Die Kombinationen kommen aus dem Traeger selbst — die Sprachen und Architekturen, die
+#       seine Fehlermeldungen nennen, jede gegen jede —:
+#       eine neue Sprache oder Architektur wird gefahren, ohne dass die Stufe sich aendert.
+#       Was der docs-check dort prueft:
 #       docs-check des frischen Ziels meldet `0 Befund(e)`, und die emittierten Spec-Dateien
 #       tragen keine Zeile mit `slice-` oder `welle-`.
 #   (b) JE POSITION EIN ROTES GEGENBEISPIEL mit gelesener Meldung (die Regel benannt, nicht
@@ -2927,10 +2931,37 @@ kf_gegenbeispiel() {
 	fi
 	echo "full-smoke: Kennungs-Gegenprobe $name belegt (ohne die Position bleibt dasselbe Gegenbeispiel gruen, danach zurueckgenommen)."
 }
+# kf_liste <Fehlerausgabe> — die Namen hinter `verfuegbar: ` in der Fehlermeldung des
+# Traegers, ein Name je Zeile. Die Meldung ist die Quelle, die das Werkzeug selbst fuehrt
+# (UnknownLangError, UnknownArchError in internal/gen/gen.go): eine neue Sprache oder
+# Architektur erscheint dort, ohne dass diese Stufe geaendert wird.
+kf_liste() {
+	sed -n 's/.*verfuegbar: //p' <<<"$1" | tr ',' '\n' | tr -d ' ' | sed '/^$/d'
+}
 kennungs_form_im_ziel() {
 	local eintrag sprache arch label dir n ziel="" out rc q="'"
-	# Sprache|Architektur je Fall; die leere Sprache ist der sprachlose Bootstrap.
-	for eintrag in "|" "go|flat" "go|hexagonal" "go|hexslice" "cpp|flat" "cpp|hexslice"; do
+	local probe sprachen archs lang_out arch_out gefahren=0 getragen="" namen=""
+	local -a faelle=("|")
+	# Die Kombinationen kommen aus dem Traeger: jede Sprache, die er nennt, gegen jede
+	# Architektur, die er nennt. Eine Kombination, die die Sprache nicht traegt, endet mit
+	# Exit 2 und der Meldung "unbekannte Architektur" und ist kein Fall; die leere Sprache ist
+	# der sprachlose Bootstrap.
+	probe="$(mktemp -d -p "$tmprepo_kf")"
+	git init -q "$probe"
+	lang_out="$( "$tmpbin/ai-harness-init" --lang kf-unbekannt --name kf "$probe" 2>&1 )" || true
+	arch_out="$( "$tmpbin/ai-harness-init" --lang go --arch kf-unbekannt --name kf "$probe" 2>&1 )" || true
+	sprachen="$(kf_liste "$lang_out")"
+	archs="$(kf_liste "$arch_out")"
+	if [ -z "$sprachen" ] || [ -z "$archs" ]; then
+		echo "full-smoke: FEHLER — Kennungs-Form: der Traeger nennt in seiner Fehlermeldung keine Sprachen oder keine Architekturen (Muster 'verfuegbar: ') — die Kombinationen des gruenen Starts sind nicht ableitbar. Sprachen: [$lang_out] Architekturen: [$arch_out]" >&2
+		exit 1
+	fi
+	while IFS= read -r sprache; do
+		while IFS= read -r arch; do
+			faelle+=("$sprache|$arch")
+		done <<<"$archs"
+	done <<<"$sprachen"
+	for eintrag in "${faelle[@]}"; do
 		sprache="${eintrag%%|*}"
 		arch="${eintrag#*|}"
 		label="${sprache:-sprachlos}${arch:+ $arch}"
@@ -2943,11 +2974,16 @@ kennungs_form_im_ziel() {
 		else
 			out="$( "$tmpbin/ai-harness-init" --lang "$sprache" --arch "$arch" --name kf "$dir" 2>&1 )" || rc=$?
 		fi
+		if [ "$rc" -eq 2 ] && [ -n "$sprache" ] && grep -qF -- "unbekannte Architektur \"$arch\"" <<<"$out"; then
+			echo "full-smoke: Kennungs-Form ($label): vom Traeger nicht getragen (Exit 2, unbekannte Architektur) — kein Fall."
+			continue
+		fi
 		if [ "$rc" -ne 0 ]; then
 			echo "full-smoke: FEHLER — gruener Start der Kennungs-Form ($label): der Bootstrap ist NICHT Exit 0 (Exit $rc)." >&2
 			printf '%s\n' "$out" >&2
 			exit 1
 		fi
+		gefahren=$((gefahren + 1))
 		kf_docs_check "$dir" einordnen
 		if [ "$kf_rc" -ne 0 ] || ! grep -qF -- ', 0 Befund(e)' <<<"$kf_out"; then
 			echo "full-smoke: FEHLER — gruener Start der Kennungs-Form ($label): docs-check des frischen Ziels meldet nicht '0 Befund(e)' (Exit $kf_rc)." >&2
@@ -2961,7 +2997,18 @@ kennungs_form_im_ziel() {
 		fi
 		echo "full-smoke: gruener Start der Kennungs-Form ($label): docs-check '0 Befund(e)', Spec-Dateien ohne slice-/welle-."
 		if [ -z "$ziel" ]; then ziel="$dir"; fi
+		getragen+="${sprache:-sprachlos} "
+		namen+="($label) "
 	done
+	# Jede Sprache, die der Traeger nennt, traegt mindestens eine Architektur: sonst hat die
+	# Ableitung oben die Kombinationen verfehlt, statt sie zu fahren.
+	while IFS= read -r sprache; do
+		if ! grep -qF -- " $sprache " <<<" $getragen"; then
+			echo "full-smoke: FEHLER — Kennungs-Form: fuer die Sprache $sprache lief keine Kombination gruen an — die Ableitung der Kombinationen aus dem Traeger ist verfehlt." >&2
+			exit 1
+		fi
+	done <<<"$sprachen"
+	echo "full-smoke: Kennungs-Form: $gefahren Kombinationen gefahren (sprachlos und je Sprache und Architektur, die der Traeger nennt und traegt): $namen"
 
 	local adr="$ziel/docs/plan/adr/0001-probe.md" adr_bereich="$ziel/docs/plan/adr/IDX-0004-probe.md"
 	local spec="$ziel/spec/lastenheft.md"
