@@ -107,6 +107,38 @@ func dirEntries(t *testing.T, dir string) []string {
 	return namen
 }
 
+// TestHelp_NenntDieZweiKlassenDesReLaufs haelt die Aussage der Hilfe ueber den Re-Lauf gegen
+// die Klassifikation, die Enforce faehrt: die kanonischen Teile werden neu geschrieben, jede
+// andere Datei — die Pruef-Konfiguration .d-check.yml eingeschlossen — nur an einem freien
+// Pfad angelegt. Die Aufteilung lautet "kanonisch gegen jede andere Datei", nicht "tool-eigen
+// gegen adopter-gefuellt": die Formel "heilt Drift), adopter-gefuellte" steht nicht in der
+// Hilfe. Der Pfad .githooks/commit-msg gehoert zur zweiten Klasse; emit.PathClass nennt seine.
+func TestHelp_NenntDieZweiKlassenDesReLaufs(t *testing.T) {
+	var out, errb bytes.Buffer
+	if code := run([]string{"--help"}, t.TempDir(), testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("--help Exit %d, stderr %q", code, errb.String())
+	}
+	help := strings.Join(strings.Fields(out.String()), " ")
+
+	for _, want := range []string{
+		"Die kanonischen Teile der Infrastruktur",
+		"auf den mitgelieferten Stand neu geschrieben",
+		"jede andere Datei",
+		".d-check.yml",
+		"nur an einem freien Pfad angelegt und bleibt sonst unberuehrt",
+	} {
+		if !strings.Contains(help, want) {
+			t.Errorf("die Hilfe nennt %q nicht:\n%s", want, out.String())
+		}
+	}
+	if strings.Contains(help, "heilt Drift), adopter-gefuellte") {
+		t.Errorf("die Hilfe traegt die ersetzte Zwei-Klassen-Aussage (tool-eigen gegen adopter-gefuellt):\n%s", out.String())
+	}
+	if got := emit.PathClass(".githooks/commit-msg"); got != emit.SkipIfPresent {
+		t.Errorf("Klasse von .githooks/commit-msg = %v, die Hilfe fuehrt sie unter \"nur an einem freien Pfad\" (skip-if-present)", got)
+	}
+}
+
 // TestRun deckt die Arg-Parser-Pfade von LH-FA-01 ab (Exit-Codes + korrekter Stream).
 // Der erfolgreiche Bootstrap ruft `docker run <d-check>` (Doc-Gate) — kein Unit-Fall;
 // er wird in Tier 2 (`make smoke`) verifiziert. Diese Fälle kehren vor dem Fetch/Emit zurück.

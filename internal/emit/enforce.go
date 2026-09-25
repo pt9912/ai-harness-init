@@ -245,9 +245,9 @@ func BlockedFragmentForLang(lang string) string { return blockedByLang()[lang] }
 // Liste nennt die Pfade, die ein Lauf anfasst, nicht die, die er ueberschreibt — welche
 // Klasse ein Pfad traegt, sagt PathClass.
 //
-// SPRACH-AGNOSTISCH: das blocked/<lang>-Fragment gehoert NICHT hierher — es ist
-// skip-if-present (Mono-Repo-Wiederverwendung, mehrere Module gleicher Sprache) und wird von
-// add-lang via BlockedFragment gedroppt, nicht von diesem Emit.
+// SPRACH-AGNOSTISCH: das blocked/<lang>-Fragment gehoert NICHT hierher — es ist konvergent
+// (ein zweites add-lang derselben Sprache schreibt byte-identisch) und wird von add-lang via
+// BlockedFragment gedroppt, nicht von diesem Emit.
 //
 // UNBEDINGT (ADR-0022 Festlegung 5): der Hook-Wrapper aus captureFiles() gehoert
 // ebenfalls nicht hierher. Diese Menge entsteht bei jedem Lauf; jene nur, wenn der

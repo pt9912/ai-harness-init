@@ -50,9 +50,13 @@ fail-closed) — er startet keinen stillen Init-Pfad gegen das Repo, in dem er
 steht. Der Zielordner muss ein bestehendes Git-Repo sein; alles andere bricht
 ebenfalls laut (Exit 2), bevor etwas geschrieben wird.
 
-Der Init-Lauf ist IDEMPOTENT (ADR-0007): ein zweiter Lauf ist Exit 0 — tool-eigene
-Infrastruktur wird kanonisch neu geschrieben (heilt Drift), adopter-gefuellte Dateien
-(Doc-Chain, README, Skelett-Code) bleiben unberuehrt. Kein --force noetig, kein Refuse.
+Der Init-Lauf ist IDEMPOTENT (ADR-0007): ein zweiter Lauf ist Exit 0. Die kanonischen
+Teile der Infrastruktur (Regelwerk, Makefile mit Bausteinen, Skripte, Hook-Skripte)
+werden auf den mitgelieferten Stand neu geschrieben; jede andere Datei — die
+Pruef-Konfiguration .d-check.yml, .golangci.yml, das Dockerfile, die Rollen-Anweisungen,
+die Doc-Chain, README, Skelett-Code — wird nur an einem freien Pfad angelegt und bleibt
+sonst unberuehrt. Kein --force noetig, kein Refuse. Die Aufteilung Datei fuer Datei steht
+im Benutzerhandbuch, Abschnitt "Ein Repository erneut aufsetzen".
 
 Init-Flags:
   --lang        Zielsprache (optional; ohne → sprach-agnostischer Init, doc-only-Gate).
