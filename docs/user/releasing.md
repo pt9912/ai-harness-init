@@ -131,8 +131,9 @@ und lädt nichts hoch. Die Schritt-Folge:
    - **2** — nicht ausführbar: ein Ergebnis des Vergleichs liegt nicht vor,
      die Ausgabe nennt die Ursache. Beispiele sind eine falsche Tag- oder
      Feldform (`Tag-Form falsch`, `Feldform falsch`), ein nicht auffindbares
-     Asset (HTTP 404) und ein Tap, das sich nicht lesen lässt (jeweils
-     `es wurde nichts verglichen`) sowie ein Transport, der ohne Ergebnis
+     Asset (HTTP 404) und ein Tap, das sich nicht lesen lässt — die beiden
+     letzten tragen den Satz `es wurde nichts verglichen`, die Form-Meldungen
+     nicht — sowie ein Transport, der ohne Ergebnis
      endet, etwa bei einem nicht erreichbaren Docker-Daemon (`das Ergebnis
      des Vergleichs ist unbekannt`); die Aufzählung ist nicht abschließend.
 
@@ -141,9 +142,12 @@ und lädt nichts hoch. Die Schritt-Folge:
    `tap-check: Exit <N>` — bei Exit 1 und 2 steht sie genau einmal, bei
    Exit 0 fehlt sie; gelesen wird die Zeile, nicht ihre Position in der
    Ausgabe. Nicht zugesagt ist die Zeile bei einem Ende durch ein Signal
-   (dort fehlt auch die Klasse: der Prozess endet mit 128 plus der
-   Signalnummer, keine der drei Klassen ist gemeint), bei nicht
-   beschreibbarer stderr und bei fehlendem oder unbekanntem Modus, den nur
+   (dort fehlt auch die Klasse: der Prozess-Exit ist 128 plus die
+   Signalnummer, wenn das Signal das Skript im Direktaufruf oder `make`
+   selbst trifft, und 2, wenn es das Skript unter `make` trifft; keine der
+   drei Klassen ist gemeint), bei nicht beschreibbarer stderr (dort ist
+   auch die Klasse nicht zugesagt: ein Formel-Unterschied kann als Klasse 2
+   enden) und bei fehlendem oder unbekanntem Modus, den nur
    ein Aufruf des Skripts ohne das Make-Ziel erreicht
    ([`ADR-0066`](../plan/adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md)
    Festlegung 2, §Nicht zugesagt). Bei Ungleichheit liest der Aufruf einmal nach 65 s erneut, weil
@@ -157,16 +161,21 @@ und lädt nichts hoch. Die Schritt-Folge:
    Fremd-Taps ist eine eigene Bedingung des Nutzers, das
    [Handbuch](benutzerhandbuch.md#weg-c--über-ein-homebrew-tap-macos-linux)
    nennt sie —, nicht, dass das Asset richtig gefüllt ist, und keinen
-   Zustand nach dem Aufruf. Sie vergleicht Bytes, keine Versionen: der Vergleich
-   liest keine `version`-Zeile, und nach dem Nachzug eines älteren Tags endet
-   die Kontrolle gegen genau diesen Tag mit Exit 0. Die Eigenschaft hält der
-   bats-Fall `version-zeile: in check kein Gegenstand …`
+   Zustand nach dem Aufruf. Sie vergleicht Bytes (`cmp -s` in `gleich()` von
+   `harness/tools/tap-nachzug-nutzlast.sh`), keine Versionen, und nach dem
+   Nachzug eines älteren Tags endet die Kontrolle gegen genau diesen Tag mit
+   Exit 0, weil die Bytes gleich sind. Gebunden ist davon, was der bats-Fall
+   `version-zeile: in check kein Gegenstand …` misst
    (`grep -n 'version-zeile: in check' test/tap-nachzug.bats`): gleiche Bytes
    enden mit Exit 0, auch mit einer `version`-Zeile außerhalb der Feldform und
-   ohne jede `version`-Zeile. Das Kommando
+   ohne jede `version`-Zeile. **Nicht gebunden** ist, dass der Vergleich keine
+   Version liest: ein Vergleich, der bei ungleichen Bytes die `version`-Zeilen
+   liest und bei größerer Tap-Version mit Exit 0 endet, färbt keinen der Fälle von
+   `test/tap-nachzug.bats` (`grep -c '^@test' test/tap-nachzug.bats` → `37`);
+   der Zahn fehlt. Das Kommando
    `grep -ci version harness/tools/tap-nachzug.sh harness/tools/tap-nachzug-nutzlast.sh`
    zählt das Wort in den Skripten (→ `0` je Datei) und ist eine Näherung an
-   diese Eigenschaft: ein Kommentar mit dem Wort färbt es rot, ohne dass sie
+   die Eigenschaft: ein Kommentar mit dem Wort färbt es rot, ohne dass sie
    bricht; ein Versions-Vergleich ohne das Wort bleibt grün. Der
    Vorwärts-Schutz liegt allein bei der Vorbedingung oben.
 
