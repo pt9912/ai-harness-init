@@ -33,7 +33,7 @@ Damit ist die Verifikation **grün mit einer Auflage an den Planner**: vor der C
 
 | Sensor | Ergebnis |
 |---|---|
-| `git diff --stat fb1ca361 HEAD -- internal spec test harness` | leer — seit `fb1ca361` kam nur Doku dazu (`git diff --name-only 2efaa979~1 HEAD` nennt außerhalb von `internal/span/`, `spec/`, `test/mutations/404–408` nur `docs/reviews/*` und `docs/plan/planning/next/slice-emittierte-dateien-behalten-lf-im-autocrlf-klon.md`, einen fremden Slice) |
+| `git diff --stat fb1ca361 HEAD -- internal spec test harness` | leer — seit `fb1ca361` kam nur Doku dazu (`git diff --name-only 2efaa979~1 HEAD` nennt außerhalb von `internal/span/`, `spec/`, `test/mutations/404–408` nur `docs/reviews/*` und `docs/plan/planning/open/slice-emittierte-dateien-behalten-lf-im-autocrlf-klon.md`, einen fremden Slice) |
 | `make test-go` | `ok  …/internal/span`, Exit 0 |
 | Working-Tree-Stempel: `cut -c1-12 .harness/state/gates-passed.diffsha` gegen `bash harness/tools/working-tree-hash.sh` | beide `914455120302` — der Stempel deckte den Baum **vor** diesem Bericht (Nachlauf: Ende des Berichts) |
 | Fälle 404, 405, 406, 407, 408 einzeln in der Kopie (`bash test/mutations/<n>-*.sh`, dann Docker-`test`-Stage) | je rot, s. §Bewusstes Brechen |
