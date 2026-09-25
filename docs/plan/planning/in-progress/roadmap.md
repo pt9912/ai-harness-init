@@ -19,9 +19,6 @@ nicht hier.
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
 - [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
 
-**Nichts in Arbeit.** — [`in-progress/`](../in-progress) trägt keinen Slice
-(`ls docs/plan/planning/in-progress/slice-*.md` → kein Treffer).
-
 ## Nächste Wellen
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
