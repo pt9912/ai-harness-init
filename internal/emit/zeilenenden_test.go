@@ -9,6 +9,7 @@ import (
 	"io"
 	"io/fs"
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
 	"strings"
@@ -19,15 +20,16 @@ import (
 )
 
 // zeilenendenZeile ist die eine Zeile, die jede emittierte .gitattributes traegt (ADR-0067
-// Festlegung 2). Sie steht hier als eigene Zeichenkette: ein Test, der die Zeile aus der
-// Emission liest, hielte die Quelle gegen sich selbst.
+// Festlegung 2). Sie steht hier als eigene Zeichenkette, unabhaengig von der Emission: der
+// Test haelt die Emission gegen diese Zeile.
 const zeilenendenZeile = "* text=auto eol=lf"
 
 // zeilenendenEmit legt die Ausgaenge des Werkzeugs ab, die ohne Docker und Netz entstehen:
 // die Durchsetzungsschicht, die Wortlisten unter blocked/ beider Sprachen, das
 // Verifikations-Skript samt Fragment und einen vendored Baum mit seiner Pruefsummen-Datei.
-// Die Wurzel-Dateien (Makefile, d-check.mk) legt der Test selbst daneben, damit die
-// benannte Ausnahme der Wurzel etwas zu befreien hat.
+// Die Wurzel-Dateien (Makefile, d-check.mk, a-check.mk) legt der Test selbst daneben; die
+// beiden .mk-Dateien erfuellen das Konsumenten-Kriterium und tragen die benannte Ausnahme der
+// Wurzel.
 func zeilenendenEmit(t *testing.T) string {
 	t.Helper()
 	dir := t.TempDir()
@@ -64,7 +66,7 @@ func zeilenendenEmit(t *testing.T) string {
 		hex.EncodeToString(summe[:]), assetFetch); err != nil {
 		t.Fatalf("Baseline: %v", err)
 	}
-	for _, wurzel := range []string{"Makefile", "d-check.mk"} {
+	for _, wurzel := range []string{"Makefile", "d-check.mk", "a-check.mk"} {
 		if err := os.WriteFile(filepath.Join(dir, wurzel), []byte("all:\n\t@true\n"), 0o644); err != nil {
 			t.Fatalf("%s schreiben: %v", wurzel, err)
 		}
@@ -107,24 +109,66 @@ func zeilenendenTraegtDieZeile(t *testing.T, pfad string) bool {
 	return false
 }
 
+// zeilenendenEolWert fragt git, welchen eol-Wert es jedem der Pfade im Baum unter dir zuweist:
+// `git check-attr eol` wertet die .gitattributes des Arbeitsbaums so, wie ein Klon sie wertet —
+// die Wirkung aller Zeilen in der Reihenfolge, in der git sie anwendet, nicht die Anwesenheit
+// einer Zeile. Die Antwort ist "lf", "crlf", "unspecified" oder ein anderer Wert; fehlt einem
+// Pfad die Antwort, bricht der Test ab. Das Test-Image traegt git (Dockerfile, Stage `test`);
+// fehlt es, bricht der Test ab, statt zu bestehen.
+func zeilenendenEolWert(t *testing.T, dir string, rels []string) map[string]string {
+	t.Helper()
+	git := func(stdin string, args ...string) string {
+		var stdout, stderr bytes.Buffer
+		cmd := exec.Command("git", append([]string{"-C", dir}, args...)...)
+		cmd.Env = append(os.Environ(), "GIT_CONFIG_GLOBAL=/dev/null", "GIT_CONFIG_NOSYSTEM=1")
+		cmd.Stdin = strings.NewReader(stdin)
+		cmd.Stdout, cmd.Stderr = &stdout, &stderr
+		if err := cmd.Run(); err != nil {
+			t.Fatalf("git %s: %v: %s", strings.Join(args, " "), err, stderr.String())
+		}
+		return stdout.String()
+	}
+	git("", "init", "-q")
+	out := git(strings.Join(rels, "\x00")+"\x00", "check-attr", "-z", "--stdin", "eol")
+	felder := strings.Split(strings.TrimSuffix(out, "\x00"), "\x00")
+	if len(felder) != 3*len(rels) {
+		t.Fatalf("git check-attr liefert %d Felder fuer %d Pfade (erwartet 3 je Pfad):\n%q", len(felder), len(rels), out)
+	}
+	wert := map[string]string{}
+	for i := 0; i < len(felder); i += 3 {
+		wert[felder[i]] = felder[i+2]
+	}
+	for _, rel := range rels {
+		if _, ok := wert[rel]; !ok {
+			t.Fatalf("git check-attr nennt keinen eol-Wert fuer %s:\n%q", rel, out)
+		}
+	}
+	return wert
+}
+
 // Rot-Gegenbeispiele: test/mutations/446-zeilenenden-eintrag-entfaellt.sh (ein Verzeichnis
 // verliert seine .gitattributes), test/mutations/447-zeilenenden-zeile-eol-crlf.sh (die Zeile
-// legt CRLF fest) und test/mutations/448-zeilenenden-zeile-endungs-glob.sh (die Zeile erfasst
-// nur `*.sh`).
+// legt CRLF fest), test/mutations/448-zeilenenden-zeile-endungs-glob.sh (die Zeile erfasst
+// nur `*.sh`) und test/mutations/451-zeilenenden-spaetere-zeile-ueberstimmt.sh (eine spaetere
+// Zeile setzt eol=crlf).
 //
 // TestZeilenenden_JederKonsumentLiegtUnterEinerZeile haelt die EIGENSCHAFT und nicht die
-// Verzeichnis-Liste der Emission (ADR-0067 Festlegung 1, Fitness-Zeile 1): fuer jede emittierte
-// Datei mit Interpreter- oder Byte-Konsument unterhalb der Wurzel liegt in einem
-// Vorfahr-Verzeichnis, das nicht die Wurzel ist, eine emittierte .gitattributes mit der Zeile
-// `* text=auto eol=lf`. Die erwartete Menge kommt aus dem emittierten Baum und dem Kriterium,
-// nicht aus der Liste, die die Emission liest.
+// Verzeichnis-Liste der Emission (ADR-0067 Festlegung 1, Fitness-Zeile 1): jede emittierte Datei
+// mit Interpreter- oder Byte-Konsument unterhalb der Wurzel bekommt von git den Wert eol=lf. Die
+// erwartete Menge kommt aus dem emittierten Baum und dem Kriterium, nicht aus der Liste, die die
+// Emission liest; der Wert kommt von git und deckt damit jede Zeile jeder emittierten
+// .gitattributes, nicht nur die eine Zeile der Vorlage.
 //
 // AUSNAHME, benannt: die Datei liegt in der Wurzel des Ziels (Makefile, d-check.mk, a-check.mk).
 // Die Wurzel gehoert dem Adopter; die Ausnahme gilt nur dort — dieselbe Endung in einem
 // Unterverzeichnis faellt unter das Kriterium.
 //
-// VORBEDINGUNG: jede der sechs Klassen von Konsumenten ist im emittierten Baum vertreten. Ueber
-// einer Klasse ohne Vertreter waere ihre Richtung still gruen.
+// GRENZE: git wertet die Dateien des Arbeitsbaums im Test-Ziel; eine .gitattributes in der Wurzel
+// des Adopters und core.autocrlf liegen ausserhalb des Test-Ziels (die Stufe `zeilenenden_im_klon`
+// in harness/tools/full-smoke.sh fuehrt den Klon mit core.autocrlf=true).
+//
+// VORBEDINGUNG: jede der sechs Klassen von Konsumenten ist im emittierten Baum vertreten; eine
+// Klasse ohne Vertreter misst nichts, und der Test bricht dann ab, statt ueber ihr zu bestehen.
 func TestZeilenenden_JederKonsumentLiegtUnterEinerZeile(t *testing.T) {
 	dir := zeilenendenEmit(t)
 	vertreten := map[string]int{}
@@ -170,13 +214,10 @@ func TestZeilenenden_JederKonsumentLiegtUnterEinerZeile(t *testing.T) {
 			t.Fatalf("der emittierte Baum traegt keinen Konsumenten unter %s — die Richtung dieser Klasse misst nichts", klasse)
 		}
 	}
+	wert := zeilenendenEolWert(t, dir, konsumenten)
 	for _, rel := range konsumenten {
-		gedeckt := false
-		for d := path.Dir(rel); d != "." && !gedeckt; d = path.Dir(d) {
-			gedeckt = zeilenendenTraegtDieZeile(t, filepath.Join(dir, filepath.FromSlash(d), ".gitattributes"))
-		}
-		if !gedeckt {
-			t.Errorf("%s hat einen Interpreter- oder Byte-Konsumenten, aber kein Vorfahr-Verzeichnis unterhalb der Wurzel traegt eine emittierte .gitattributes mit %q — im Klon mit core.autocrlf=true liegt die Datei mit CRLF", rel, zeilenendenZeile)
+		if wert[rel] != "lf" {
+			t.Errorf("%s hat einen Interpreter- oder Byte-Konsumenten, aber git weist ihr eol=%s zu (verlangt: lf) — die emittierten .gitattributes legen sie nicht mit %q auf LF fest, und im Klon mit core.autocrlf=true liegt die Datei dann mit CRLF", rel, wert[rel], zeilenendenZeile)
 		}
 	}
 }
@@ -192,8 +233,8 @@ func TestZeilenenden_JederKonsumentLiegtUnterEinerZeile(t *testing.T) {
 // CRLF. Die zwei konvergenten Pfade kehren nach einer Verstellung auf die Fassung des Werkzeugs
 // zurueck und melden nichts. Ein freier skip-if-present-Pfad wird geschrieben und schweigt.
 //
-// Die Klassen stehen hier als eigene Aufzaehlung: sie sind die Festlegung der ADR, und ein Test,
-// der sie aus PathClass liest, hielte die Klasse gegen sich selbst.
+// Die Klassen stehen hier als eigene Aufzaehlung, unabhaengig von PathClass: sie sind die
+// Festlegung der ADR, und der Test haelt die Klasse je Pfad gegen diese Festlegung.
 func TestZeilenenden_BelegterPfadBleibtUndWirdGemeldet(t *testing.T) {
 	skip := []string{"harness/mk/.gitattributes", ".claude/hooks/.gitattributes", ".githooks/.gitattributes"}
 	konvergent := []string{".harness/.gitattributes", "tools/harness/.gitattributes"}

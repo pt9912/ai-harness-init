@@ -4,7 +4,7 @@
 #
 # DIE ZEILE ERFASST NUR `*.sh`: die Skripte liegen mit LF, die Wortlisten unter blocked/<sprache>
 # und der git-eigene Traeger `commit-msg` (beide ohne Endung) mit CRLF — der Mischzustand, in dem
-# der Command-Guard sein letztes Listenwort verliert, ohne eine Meldung zu geben. Der Test verlangt
-# `*` als Muster.
+# der Command-Guard sein letztes Listenwort verliert und keine Meldung gibt. Der Test verlangt von
+# git den Wert eol=lf fuer jede Datei mit Konsument, auch fuer die ohne Endung.
 set -euo pipefail
 sed -i 's|^\* text=auto eol=lf$|*.sh text=auto eol=lf|' internal/emit/templates/enforce/gitattributes
