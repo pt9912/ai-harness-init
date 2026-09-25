@@ -190,7 +190,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1 (erster) — die Zell-für-Zell-Messung.** Alle ❌-Zellen der Matrix-Tabelle in
+- [x] **Liefer-Punkt 1 (erster) — die Zell-für-Zell-Messung.** Alle ❌-Zellen der Matrix-Tabelle in
       `grundlagen-referenz-richtung.md` des vendored Regelwerks `v6.9.0`
       (`R=.harness/baseline/v6.9.0/regelwerk; sed -n '/^| Dokument ↓/,/^| \*\*Roadmap/p' $R/grundlagen-referenz-richtung.md | grep -o '❌' | wc -l`
       → **22**, gemessen 2026-09-24, kein Erwartungswert) und der Gate-Text (§Prüfung, *„Maschineller
@@ -209,7 +209,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       ([`MR-055`](../../../../harness/conventions.md#mr-055)) und sagt nichts über das Verhalten der
       Vorlage im Ziel für eine Spec-Datei mit `## Geschichte` oder für ein bares `ADR-`. Die Messung ist
       keine Eigenschaft der Vorlage. Ablage: siehe §1 *Wo die Zell-Messung lebt*.
-- [ ] **Liefer-Punkt 2 — die Vorlage.** `internal/emit/templates/d-check.yml`: Token `slice-` auf der
+- [x] **Liefer-Punkt 2 — die Vorlage.** `internal/emit/templates/d-check.yml`: Token `slice-` auf der
       Klasse `slice` und `welle-` auf der Klasse `welle` (die Vorlage führt keine Ziffern-Form mehr) ·
       die Regel `{from: spec-straten, to: welle, allow: false}` · das `ids`-Muster für ADR
       segment-tolerant (`ADR-([A-Z]+-)?\d{4}`) · die Klasse `adr` mit dem Pfad
@@ -234,7 +234,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Änderung nicht. Ein Go-Test bindet die Positionen an die eingebettete Vorlage — er misst die
       **Menge** der Token und der Regeln der `matrix`, nicht die Namen der neuen Zeilen, und die
       Ziffern-Form darf nirgends mehr stehen.
-- [ ] **Liefer-Punkt 3 — die Erprobung im Ziel.** (a) *Grüner Start:* das frisch gebootstrappte Ziel
+- [x] **Liefer-Punkt 3 — die Erprobung im Ziel.** (a) *Grüner Start:* das frisch gebootstrappte Ziel
       fährt `make docs-check` mit `0 Befund(e)` — sprach-agnostisch (ohne `--lang`) **und** je Sprache
       und Architektur, die das Werkzeug trägt (`--lang` mit `--arch flat|hexagonal|hexslice`; eine
       Kombination, die die Sprache nicht trägt, endet mit Exit 2 und der Meldung `unbekannte
@@ -314,19 +314,19 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       (`grep -c 'Available: archsForLang(lang)}' internal/gen/gen.go` → **1** ·
       `grep -c '; verfuegbar: %s", e.Lang,' internal/gen/gen.go` → **1**, gemessen 2026-09-25, kein
       Erwartungswert).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: die emittierte Konfiguration ist ein öffentlicher Vertrag; Nutzerdoku, die sie
+- [x] Doku-Update: die emittierte Konfiguration ist ein öffentlicher Vertrag; Nutzerdoku, die sie
       beschreibt, ist gegen den Ist-Stand geprüft
       (`grep -rn 'slice-\\d\|welle-\\d' docs/user README.md` → leer, gemessen 2026-09-24) und nur bei
       Abweichung nachgezogen; `docs/user/e2e-abdeckung.md` ist erzeugt (`make e2e-abdeckung`), nicht
       von Hand geschrieben.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Register-Datei nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Register-Datei nicht.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -393,24 +393,22 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **einen** Ausgang, und kein Slice geht nach `done/`, während eines ohne Ausgang
 dasteht.
 
-Die Ausgänge setzt die Closure; bis dahin steht hinter jedem Risiko `Ausgang: offen bis Closure`.
+Die Ausgänge stehen hinter jedem Risiko; die Beobachtungs-Verzeichnisse liegen unter [`../observations/`](../observations).
 
 - **Der grüne Start bricht an einer Form, die die ADR nicht gemessen hat.** Ihr Beleg
   (`cat spec/*.md | grep -cE '(slice|welle)-'` im Ziel → 0) gilt für den sprach-agnostischen Lauf;
   emittierte ADR-, Planungs- und Skelett-Texte der Läufe mit `--lang`/`--arch` können ein Wort der
-  Form `slice-…` oder `welle-…` tragen, das die neuen Token als Befund lesen. — **Ausgang:** offen
-  bis Closure.
+  Form `slice-…` oder `welle-…` tragen, das die neuen Token als Befund lesen. — **Ausgang: entfallen.** Der grüne Start hält in allen sechs Kombinationen (sprachlos, cpp flat, cpp hexslice, go flat, go hexagonal, go hexslice): `0 Befund(e)` und Spec-Dateien ohne `slice-` und `welle-`; `cpp hexagonal` trägt der Träger nicht. Der Verifier fuhr die Stufe gegen den gebauten Träger (Verifikationsbericht §4.4).
 - **Die Messung widerspricht der Zählung der ADR** (drei · neun · eine · sechs · drei). Die ADR ist
   unveränderlich; der Weg ist ein Befund an den Architect (§4). Ein Vorbehalt gegen die Spalte „Regel"
-  bei stimmender Zuordnung der Zellen ist Grenze, kein Widerspruch (Liefer-Punkt 1). — **Ausgang:** offen
-  bis Closure.
+  bei stimmender Zuordnung der Zellen ist Grenze, kein Widerspruch (Liefer-Punkt 1). — **Ausgang: entfallen.** Die Zählung 22 = 3 · 9 · 1 · 6 · 3 stimmt (Verifikationsbericht §2, Zell-Messung des Review-Reports); kein Befund an den Architect. Die zwei Vorbehalte gegen die Spalte „Regel“ (`exclude-sections`, bares `ADR-`) stehen als Grenze im Kommentar-Satz der Vorlage.
 - **Die Vorlage trägt zwei benannte Blindflecke** — ein Abschnitt `Geschichte` in einer Spec-Datei nimmt
   dort Slice- und Welle-Token aus, und das bare `ADR-` fängt keine Regel; beide sind Grenzen (§1), keine
   Zusagen. Der Ausgang *entfallen* ist erst zulässig, wenn der Kommentar-Satz aus Liefer-Punkt 2 in der
   Vorlage steht; bis dahin trägt ihn nur dieser Plan. Träger ist der Satz in der vorgegebenen Fassung,
   und der Verifier liest den Wortlaut. Wer die Sonde (`## Geschichte` mit einem Slice-Namen in
   `spec/lastenheft.md` des Ziels → kein Befund) im Verifier-Lauf nicht reproduziert, hat den Grund für
-  *entfallen* nicht. — **Ausgang:** offen bis Closure.
+  *entfallen* nicht. — **Ausgang: entfallen.** Der Kommentar-Satz steht direkt hinter dem `exclude-sections`-Absatz der Vorlage im vorgegebenen Wortlaut (ASCII, beide Grenzen als Grenze formuliert), und die Sonde `## Geschichte` mit einem Slice-Namen in `spec/spezifikation.md` des Ziels → `0 Befund(e)` ist im Verifier-Lauf reproduziert (Verifikationsbericht §4.3). Die Grenze besteht fort und ist in §7 als benannte Lücke gegenüber [ADR-0065](../../adr/0065-emittierte-kennungs-form-folgt-dem-regelwerk.md) geführt.
 - **Die Kombinationen des grünen Starts weichen von dem ab, was der Träger trägt.** Die Stufe leitet sie
   aus zwei Fehlermeldungen des Trägers ab (Liefer-Punkt 3 (a)) und vergleicht die abgelehnte Architektur
   mit der `verfuegbar:`-Liste derselben Meldung; kommt ein Layout oder eine Sprache hinzu, wird sie
@@ -420,32 +418,30 @@ Die Ausgänge setzt die Closure; bis dahin steht hinter jedem Risiko `Ausgang: o
   mit einer Kombination mehr in `langArchs()` · Shim, der `verfuegbar: ` ändert · Shim, der `go --arch
   flat` mit einer Liste ablehnt, die `flat` nennt → Exit 1) und liest die Meldung; dieselbe Ablehnung mit
   einer Liste ohne `flat` bleibt grün und ist die benannte Grenze, kein Erwartungswert der Sonde. `make
-  mutate` fährt die Fälle 444 und 445 am endgültigen Baum. — **Ausgang:** offen bis Closure.
+  mutate` fährt die Fälle 444 und 445 am endgültigen Baum. — **Ausgang: entfallen.** Die Ableitung aus den zwei Meldungen des Trägers und der Vergleich der abgelehnten Architektur mit der Liste derselben Meldung tragen; die Sonden des Implementers und des Reviewers hat der Verifier wiederholt und die Meldungen gelesen (Scratchpad-Träger mit `cpp hexagonal` in `langArchs()` → 7 Kombinationen; Shim `verfuegbar: ` → Exit 1; Shim `go --arch flat` mit Liste `flat, hexagonal, hexslice` → Exit 1; Verifikationsbericht §4.5). Die Fälle 444 und 445 stehen im Bestand der `make mutate`-Läufe als `ok` (§7). Dieselbe Ablehnung mit einer Liste ohne `flat` bleibt grün und ist die Grenze des nächsten Risikos.
 - **Der Wortlaut der Träger-Fehlermeldung ist die Quelle der Ableitung, und ihr Format hält kein Vertrag.**
   Die Inhalte der Listen halten Go-Tests über `Available` (Sprachliste, Union, Liste von `cpp`; die Liste
   von `go` nicht); das Format — Marker, Trenner, Zeilenform — hält kein Test, und eine in sich stimmige
   Fehlmeldung des Trägers (getragene Kombination abgelehnt, Liste ohne die Architektur) ist aus der
   Meldung allein von einer echten Ablehnung nicht zu unterscheiden. Ein Träger-seitiger Vertrag (eine
   maschinenlesbare Quelle der Liste am Träger) wäre Änderung an `cmd/` und `internal/gen/`, nicht an diesem
-  Slice (§1). — **Ausgang:** offen bis Closure; ob er den Weg *eingetreten* (Folge-Slice, dessen Kennung
-  dann vergeben wird, nach Entscheidung des Architect), *entfallen* oder *weiter offen* (Register) nimmt,
-  urteilt die Closure.
+  Slice (§1). — **Ausgang: weiter offen → Register**, [`sensor-leitet-aus-dem-meldungs-wortlaut-des-traegers-ab-ohne-format-halter`](../observations/BEO-ALL/sensor-leitet-aus-dem-meldungs-wortlaut-des-traegers-ab-ohne-format-halter/observation.md) (1×, `offen`). Der Verifier bestätigt die Grenze an der Sonde: Eine in sich stimmige Fehlmeldung (`go --arch flat` abgelehnt, Liste `hexagonal, hexslice`) endet mit Exit 0 und fünf Kombinationen. Ein Träger-seitiger Vertrag ist Entscheidung des Architect; eine Kennung wird hier nicht vergeben.
 - **Der Fehlalarm des Präfixes** (`slice-mv`, `slice-lokal`) trifft ein Ziel, das die Wörter in einer
   ADR oder Spec nennt; die ADR nimmt ihn in Kauf und nennt den Ausweg je Klasse. Meldet ein Ziel einen
   Fall, den weder Umformulieren noch Marker löst, ist der Re-Evaluierungs-Trigger 4 der ADR erreicht —
-  dieser Slice schneidet ihn nicht. — **Ausgang:** offen bis Closure.
+  dieser Slice schneidet ihn nicht. — **Ausgang: entfallen.** Kein Lauf dieses Slice hat einen Fehlalarm gemeldet, den weder Umformulieren noch Marker löst (grüner Start in sechs Kombinationen; Ausweg-Fall: dieselbe ADR-Zeile mit Marker → `0 Befund(e)`, Verifikationsbericht §4.4). Der Fehlalarm ist von der ADR in Kauf genommen und trägt ihren Re-Evaluierungs-Trigger 4; das Risiko gehört der ADR, nicht mehr diesem Slice.
 - **Ein Zahn deckt einen anderen Zweig.** Ein Gegenbeispiel, das schon unter der alten Konfiguration
   rot ist, belegt nicht, dass erst die Änderung es findet; die Gegenrichtung in Liefer-Punkt 3 (b) ist
-  die Probe. — **Ausgang:** offen bis Closure.
+  die Probe. — **Ausgang: entfallen.** Die Gegenrichtung trägt: dasselbe Gegenbeispiel bleibt mit der Ziffern-Form, ohne die Regel, ohne den Glob und ohne das Segment im Muster grün (Verifikationsbericht §4.4), und die Gegenproben zu den Fällen 435 und 443 (Zusicherung geschwächt bzw. auf die ganze Datei gestellt → Test grün) zeigen, dass die Zusicherung das Rot trägt (§4.6).
 - **Der Herkunfts-Kommentar sagt über das Ziel mehr, als der Emitter dort tut** (ein bestehendes Ziel
   bekommt die Änderung nicht). Liefer-Punkt 2 bindet die Aussagen an den Zweig des Emitters. —
-  **Ausgang:** offen bis Closure.
+  **Ausgang: entfallen.** Der Verifier fand die Aussagen des Herkunfts-Kommentars gegen den Zweig des Emitters stimmig: Ein Ziel mit vorhandener `.d-check.yml` bleibt byte-gleich (Sonde, Verifikationsbericht §3). Der Zähler von [`emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`](../observations/BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/observation.md) bleibt bei 2×, es gibt kein drittes Auftreten.
 - **Ein Fall bindet weniger, als sein Name sagt** — die drei Klassen aus §8 (eine `!`-Negation mitten
   im `bats`-Fall, eine weite Assertion über einer engen, eine Zusage ohne eigenen Mutations-Fall). Der
   Slice führt sie nicht als Liefer-Punkt; der Träger ist die Gegenprobe je Zahn und die Lesung der
-  Meldung im Review. — **Ausgang:** offen bis Closure.
+  Meldung im Review. — **Ausgang: weiter offen → Register.** Eine der drei Klassen ist in abgeschwächter Form aufgetreten — die Zusage über den skip-if-present-Pfad der Datei hängt am generischen Mechanismus und hat keinen eigenen Fall: [`zusage-mit-bats-bindung-ohne-eigenen-mutations-fall`](../observations/BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall/observation.md) (2×, `offen`). Die Negation mitten im `bats`-Fall und die weite Assertion über einer engen sind an den neuen Fällen nicht aufgetreten (der Slice legt keinen `bats`-Fall an, der Go-Test hält je Unterfall eine Assertion); ihre Einträge [`negation-mitten-im-bats-fall-ohne-wirkung`](../observations/BEO-ALL/negation-mitten-im-bats-fall-ohne-wirkung/observation.md) und [`weite-assertion-verdeckt-die-bindung-der-engen`](../observations/BEO-ALL/weite-assertion-verdeckt-die-bindung-der-engen/observation.md) bleiben bei 1×.
 - **Der Slice ist größer als eine Review-Sitzung.** Der Schnitt entlang der Positionen steht in §4.
-  — **Ausgang:** offen bis Closure.
+  — **Ausgang: entfallen.** Die Rückführung `in-progress → next` ist nicht eingetreten: Die drei Liefer-Punkte und die zwei Schichten hielten (Verifikationsbericht §8), zwei Review-Runden. Gewachsen ist der Umfang innerhalb der Liefer-Punkte — Ableitung der Kombinationen aus dem Träger, Vergleich mit der Liste, die Fälle 444 und 445 —, kein vierter Liefer-Punkt.
 
 ## 7. Closure-Notiz
 
@@ -461,16 +457,146 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-Leer bis zur Closure; sie schreibt der Planner im frischen Kontext
-([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+Geschrieben von der Rolle Planner in frischem Kontext
+([`AGENTS.md`](../../../../AGENTS.md) §3.10), nach zwei Review-Runden
+(`docs/reviews/2026-09-25-slice-emittierte-d-check-vorlage-traegt-praefix-token-und-die-welle-regel.md`,
+`docs/reviews/2026-09-25-slice-emittierte-d-check-vorlage-traegt-praefix-token-und-die-welle-regel-runde-2.md`)
+und Verifikation
+(`docs/reviews/2026-09-25-verify-slice-emittierte-d-check-vorlage-traegt-praefix-token-und-die-welle-regel.md`).
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
-- **Drei Paarungen:** —
+- **Was hat funktioniert:** Die Zell-Messung bestätigt die Zählung der ADR:
+  `R=.harness/baseline/v6.9.0/regelwerk; sed -n '/^| Dokument ↓/,/^| \*\*Roadmap/p' $R/grundlagen-referenz-richtung.md | grep -o '❌' | wc -l`
+  → **22** = 3 · 9 · 1 · 6 · 3 (Rang innerhalb der Straten · Spalten ADR, Slice, Welle der drei Straten-Zeilen ·
+  ADR → Welle · nur `aussen` fängt · ohne Regel), gemessen 2026-09-25, kein Erwartungswert; vor der Änderung der
+  Vorlage 3 · 6 · 1 · 6 · **6** — die drei Welle-Zellen der Spec-Straten hatten keine Regel. Die Zahl ist eine
+  **Stellen-Messung** an zwei Stellen (Matrix-Tabelle und Gate-Text des Regelwerks gegen die eingebettete Vorlage,
+  [`MR-055`](../../../../harness/conventions.md#mr-055)); das Verhalten im Ziel ist an je einer Sonde je Zellgruppe
+  nachgemessen, **nicht** an jeder der 22 Zellen — von den drei Rang-Zellen ist eine sondiert, die zwei anderen teilen
+  dieselbe Zeile `direction: no-downward`; die drei Lücken (ADR → Carveout, ADR → Roadmap, Slice → Roadmap) sind im Ziel
+  real (`0 Befund(e)`). Der grüne Start hält in sechs Kombinationen (sprachlos · `cpp flat` · `cpp hexslice` ·
+  `go flat` · `go hexagonal` · `go hexslice`; `cpp hexagonal` trägt der Träger nicht), fünf Gegenbeispiele werden mit gelesener
+  Regel rot und je mit der Gegenprobe grün (Ziffern-Form, ohne Regel, ohne Segment, ohne Glob), und der Ausweg über den
+  Zeilen-Marker endet mit `0 Befund(e)`. Der Go-Test bindet die **Menge** der Token und der Regeln, die Fälle 435 bis 445
+  färben je die benannte Position rot; die Gegenproben zu 435 und 443 (Zusicherung geschwächt bzw. auf die ganze Datei
+  gestellt → Test grün) zeigen, dass die Zusicherung das Rot trägt (Verifikationsbericht §2, §4.4 bis §4.6).
+- **Was ging anders als geplant:** (1) Die Kombinationen des grünen Starts sind **aus den Meldungen des Trägers
+  abgeleitet**, nicht als feste Liste geschrieben, und die Stufe vergleicht die abgelehnte Architektur mit der
+  `verfuegbar:`-Liste derselben Meldung; der Abnahme-Wortlaut wurde nach dem Vergleich der abgelehnten Architektur mit der
+  Liste vom Planner nachgezogen (`753820c4`, `ae6b6f7f`, `06f883e3`), nicht von der ausführenden Rolle
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.10). (2) Die Fälle 444 und 445 sind Zähne der zwei Zusagen der Stufe und
+  mutieren den Träger nur in der Kopie. (3) Die Vorlage trägt den Kommentar-Satz mit den zwei Grenzen (Liefer-Punkt 2),
+  und der Fall 443 bindet die Link-Pflicht des ADR-Musters an die Zeile, nicht an die Datei. (4) **Die Zähne 440 bis 442**
+  (Ziffern-Form nirgends, Menge der Token, Menge der Regeln) stehen im Doc-Kommentar des Go-Tests, in der Aufzählung von
+  Liefer-Punkt 3 (c) nicht; sie sind Zähne der Zusage aus Liefer-Punkt 2, kein Scope-Zuwachs, und der Verifier hat sie in
+  der Kopie rot gesehen (Verifikationsbericht §4.6, §8).
+- **Die Grenzen der Vorlage** (benannt, nicht geschlossen): `exclude-sections` gilt in d-check am gepinnten Stand für alle
+  Klassen zugleich, je Klasse oder je Regel ist es nicht setzbar; ein Abschnitt `Geschichte` in einer Spec-Datei nimmt dort
+  Slice- und Welle-Token aus (Sonde im Ziel: `0 Befund(e)`; unter `## 7. Historie` dagegen zwei Befunde), und der Marker im
+  Spec-Stratum wirkt mechanisch — beides fängt allein der Reviewer. Das bare `ADR-` ohne Nummer fängt keine Regel (Sonde
+  `Siehe ADR- und ADR-12` → `0 Befund(e)`). Beide Grenzen stehen als Grenze im Kommentar-Satz der Vorlage. Eine je Klasse
+  setzbare Ausnahme wäre eine **Anforderung an d-check**, ein fremdes Repo, und **Handlung des Auftraggebers**; hier steht
+  sie nur als Text, an d-check ist nichts geändert.
+- **`make mutate`-Beleg — kein einzelner grüner Lauf, sondern die Vereinigung zweier Läufe am selben Baum.** Baum:
+  Working-Tree-Hash `8221ba8bcfc81980c3416ae4caebd846300582b912cefc14a76db0ad8fb9a361`
+  (`bash harness/tools/working-tree-hash.sh`, vom Verifier vor und nach beiden Läufen gemessen; die Zeitstempel der Logs
+  06:54 und 07:35 liegen nach dem letzten Commit um 06:12; den Hash *zwischen* den Läufen misst niemand nach). Lauf 1:
+  `mutate: 425 ok, 8 Befund(e)` — alle acht (Fälle 105 und 236 bis 242) mit derselben Ursache, `DeadlineExceeded … docker.io/docker/dockerfile:1.7 … net/http: timeout`
+  beim Bild-Bau, das Urteil des Falls wurde nie erreicht. Lauf 2: `mutate: 432 ok, 1 Befund(e)` — Fall 212,
+  `container is marked for removal and cannot be started` (Docker-Daemon, Exit 125). Die Vereinigung der `ok`-Mengen deckt
+  alle Fälle (`ls test/mutations/*.sh | wc -l` → **433**, gemessen 2026-09-25); der Verifier hat die Mengen aus den Logs neu
+  abgeleitet, `comm` in beide Richtungen ohne Rest, und jeder der neun Fälle mit Befund ist im anderen Lauf `ok`. Die neun
+  mutieren nichts, was der Slice geändert hat (`git diff --stat 0abb97ac..HEAD -- internal cmd Makefile` nennt allein
+  `internal/emit/emit_test.go` und `internal/emit/templates/d-check.yml`). Ein dritter Lauf wurde abgebrochen
+  (`ABGEBROCHEN, keine vollstaendige Messung`) und trägt weder Beleg noch Gegenbeleg. **Der Verifier hat `make mutate`
+  nicht gefahren** (Auftrag); die Formulierung der DoD *„der Verifier fährt ihn“* ist damit nicht wörtlich erfüllt, der Beleg
+  ist die Auswertung der Logs. **Was ein einzelner grüner Lauf zusätzlich zeigte** — kein Wechselspiel paralleler Worker, der
+  Beleg-Slot nach [ADR-0035](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md) (die Schlüsseldatei
+  `.harness/state/mutate-passed.key` besteht nicht, gemessen 2026-09-25) und die vollständige Zeit-Bilanz —, sind
+  Eigenschaften des **Laufs**, nicht der Zähne; für die Frage dieses Slice (bindet jeder Zahn aus dem richtigen Grund?)
+  trägt die Vereinigung, mehr behauptet dieser Beleg nicht. **Der Baum hat sich seitdem bewegt:** Hash zu Beginn der
+  Closure `b2c5c6d0737f493695da222f5a3e9b866f702c0a86a5b24cc47945a7d625089e`; der Unterschied ist der Verifikationsbericht
+  (`git diff --name-only 06f883e3..HEAD` → allein dieser Bericht), und `git diff --stat 06f883e3..HEAD -- internal cmd harness test Makefile .d-check.yml`
+  ist leer — der Prüfgegenstand ist unverändert, die Schlüssel-Gleichheit ist damit nicht belegt.
+- **CI:** Der `ci`-Lauf 36036245381 am Commit `d235b24d` endete im Job `full-smoke` rot; die Ursache am Baseline-Fetch, `HTTP 500`,
+  ist die Angabe des Auftraggebers (das Log war mir nicht lesbar); ein späterer Lauf am Commit `4c0e0f1f` ist grün
+  (Lauf 36085391934). Ohne abgeschlossenen Vorgang zählt das nicht, es ist **benannt, nicht gezählt** in
+  [`sensor-lauf-endet-rot-an-der-infrastruktur-bevor-der-fall-urteilt`](../observations/BEO-ALL/sensor-lauf-endet-rot-an-der-infrastruktur-bevor-der-fall-urteilt/observation.md);
+  ein Vermerk in `ci-rennt-gegen-die-publikation-des-gepinnten-releases` gehört nicht dorthin — dort ist die Ursache ein 404
+  vor der Publikation, hier ein Server-Fehler.
+- **Handoff-Zahlen, je mit ihrem Kommando** (gemessen 2026-09-25, keine Erwartungswerte):
+  `ls test/mutations/4{35..45}-*.sh | wc -l` → **11** Zähne dieses Slice;
+  `ls test/mutations/*.sh | wc -l` → **433**;
+  `ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l` → **173** Verzeichnisse im Register.
+- **`make gates`:** Stempel `.harness/state/gates-passed.diffsha` = `b2c5c6d0…089e` und `bash harness/tools/working-tree-hash.sh`
+  gleich am Stand vor der Closure (Lauf des Verifiers); der Lauf über den Closure-Stand steht in der Übergabe an den
+  Auftraggeber, nicht in dieser Datei.
+- **Adressen vor dem Move ([`AGENTS.md`](../../../../AGENTS.md) §3.11):** kein eingefrorenes Artefakt nennt den Slice als
+  Pfad — `git grep -nE '(open|next|in-progress|done)/slice-emittierte-d-check-vorlage|\]\(slice-emittierte-d-check-vorlage'`
+  → kein Treffer (gemessen 2026-09-25); die Reviews und der Bericht nennen die Kennung, keinen Pfad.
+- **Steering-Loop-Eintrag (Form: benannte Spec-Lücke, daneben ein neuer Sensor).** *Die Lücke:*
+  [ADR-0065](../../adr/0065-emittierte-kennungs-form-folgt-dem-regelwerk.md) (`Accepted`) sagt für die Spec-Straten
+  *Umformulieren, keine ausgenommene Sektion* zu; die emittierte Vorlage hält das für einen Abschnitt `Geschichte` nicht, weil
+  `exclude-sections` nur für alle Klassen zugleich setzbar ist. Sie steht benannt am Kommentar-Satz der Vorlage, in §1 dieses
+  Plans und hier; **entschieden** ist sie nicht — die ADR ist unveränderlich ([`AGENTS.md`](../../../../AGENTS.md) §3.4, §3.8),
+  und ob eine Folge-ADR die Zusage einschränkt oder d-check die Ausnahme je Klasse bekommt, ist Entscheidung des Architect
+  bzw. Handlung des Auftraggebers. *Der Sensor:* die `full-smoke`-Stufe `kennungs_form_im_ziel` mit Kopfzeile und Eintrag in
+  der Abdeckungs-Sicht, der Go-Test `TestDCheckConfig_KennungsForm` und die Zähne 435 bis 445. Kein Zielort-Feld: mit diesem
+  Slice ist keine Regel an einem Zielort verkörpert worden.
+- **Beobachtungs-Register (`../observations/`):** je Beleg
+  `evidence/slice-emittierte-d-check-vorlage-traegt-praefix-token-und-die-welle-regel.md`; Zähler gelesen am 2026-09-25 mit
+  `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`
+  ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)).
+  **Neu angelegt (je 1×, `offen`):**
+  [`sensor-leitet-aus-dem-meldungs-wortlaut-des-traegers-ab-ohne-format-halter`](../observations/BEO-ALL/sensor-leitet-aus-dem-meldungs-wortlaut-des-traegers-ab-ohne-format-halter/observation.md)
+  (der Wortlaut der Träger-Meldung ist die Quelle der Ableitung, ihr Format hält kein Test) und
+  [`sensor-lauf-endet-rot-an-der-infrastruktur-bevor-der-fall-urteilt`](../observations/BEO-ALL/sensor-lauf-endet-rot-an-der-infrastruktur-bevor-der-fall-urteilt/observation.md)
+  (kein vorhandener Eintrag trägt die Ursache Registry oder Daemon; der CI-Lauf oben ist dort benannt, nicht gezählt).
+  **Ergänzt, je eine Evidence-Datei:**
+  [`emittierter-stand-laeuft-dem-dogfood-voraus`](../observations/BEO-ALL/emittierter-stand-laeuft-dem-dogfood-voraus/observation.md)
+  (**2×**, `offen`; die Vorlage ist mit diesem Slice **entschieden** strenger als die eigene `.d-check.yml` — gezählt ist der
+  Zustand ohne Wächter, nicht seine Ursache),
+  [`zusage-mit-bats-bindung-ohne-eigenen-mutations-fall`](../observations/BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall/observation.md)
+  (**2×**, `offen`; die Zusage über den skip-if-present-Pfad der Datei hängt am generischen Mechanismus und hat keinen
+  eigenen Fall — die Bindung ist *schwächer* als die der ersten Lage, die Zuordnung ist ein Urteil und in der Evidence-Datei
+  so geführt),
+  [`mutate-beleg-verfaellt-mit-jedem-commit-und-jedem-nachsehen-lauf`](../observations/BEO-ALL/mutate-beleg-verfaellt-mit-jedem-commit-und-jedem-nachsehen-lauf/observation.md)
+  (**3×**, `offen`; der Beleg gilt für einen Baum vor den Doku-Commits der folgenden Rollen) und
+  [`eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`](../observations/BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet/observation.md)
+  (**5×**, Stand `geplant` unverändert; der Ruhe-Marker der Roadmap). **Nicht erhöht:**
+  [`emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`](../observations/BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/observation.md)
+  bleibt bei 2× — die Aussagen des Herkunfts-Kommentars stimmen gegen den Zweig des Emitters (Review und Verifier);
+  [`neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md)
+  bleibt bei 13× (die neuen Positionen tragen die Fälle 435 bis 445);
+  [`negation-mitten-im-bats-fall-ohne-wirkung`](../observations/BEO-ALL/negation-mitten-im-bats-fall-ohne-wirkung/observation.md)
+  und [`weite-assertion-verdeckt-die-bindung-der-engen`](../observations/BEO-ALL/weite-assertion-verdeckt-die-bindung-der-engen/observation.md)
+  bleiben bei 1× — der Slice legt keinen `bats`-Fall an, und der Go-Test hält je Unterfall eine Assertion;
+  [`zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`](../observations/BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor/observation.md)
+  bleibt bei 2× (Vorlage und eigene Konfiguration unterscheiden sich deklariert). **Lese-Schritt:**
+  `mutate-beleg-verfaellt-mit-jedem-commit-und-jedem-nachsehen-lauf` **erreicht mit diesem Slice 3×** und steht `offen`; der
+  Ausgang wird vom Lese-Schritt zugewiesen — *verkörpert* braucht einen Zielort, *geplant* die Kennung eines Slice, und keines
+  von beidem schreibt dieser Lauf; das ist zulässig und vorübergehend bis zum nächsten Lese-Schritt (Baseline-Regelwerk
+  `modul-06-roadmap.md` §Beobachtungs-Register). **Keine Regel getragen haben** die Finding-Klassen der Review-Runden, die
+  nirgends als Beobachtung stehen (etwa *Ausnahme-Sektion nimmt eine Klasse aus, die die Zusage nicht benennt*, *Menge im E2E
+  hartverdrahtet ohne Kopplung an die Quelle*, *Zusage der E2E-Ableitung ohne dauerhaften Zahn*): kein Eintrag ohne benannte
+  Wiederkehr — sie bleiben in den Summary-Zeilen der Reports.
+- **Folge-Slices:** *Adressen, keine Anlage in dieser Closure.* (1) Die **Commit-Prüfung** zu [ADR-0065](../../adr/0065-emittierte-kennungs-form-folgt-dem-regelwerk.md) Festlegung 4 (Dogfood-Prüfung,
+  `commits:`-Block, `patterns=`) — ein Folge-Schnitt **ohne Kennung und ohne Datei**; §1 (*Ausdrücklich NICHT*, erster Punkt) ist
+  seine Adresse. Der offene Slice `slice-kennungs-erkennung-traegt-die-zugelassenen-formen` (Datei in `open/`) gehört zu diesem
+  Schnitt; ob der Schnitt ihn aufnimmt oder er umgeschnitten wird, entscheidet der Planner beim Schnitt, nicht hier. (2) Die
+  Regeln `adaptionsblock → slice` und `adaptionsblock → welle` samt Neutralisierung (Festlegung 2(b)) — ein Folge-Schnitt
+  **ohne Kennung und ohne Datei**; §1 (zweiter Punkt) ist seine Adresse. (3) Der **Träger-seitige Vertrag** für die Listen der
+  Sprachen und Architekturen — Entscheidung des Architect, keine Kennung; bis dahin steht die Grenze als Beobachtung im
+  Register. (4) Die **Anforderung an d-check** (`exclude-sections` je Klasse) — Handlung des Auftraggebers.
+- **Risiken aus §6:** zehn, je ein Ausgang — *entfallen* mit Grund: grüner Start, Zählung der Messung, zwei benannte Blindflecke,
+  Kombinationen des grünen Starts, Fehlalarm des Präfixes, ein Zahn deckt einen anderen Zweig, Herkunfts-Kommentar,
+  Slice-Größe; *weiter offen → Register:* Wortlaut der Träger-Meldung
+  (`sensor-leitet-aus-dem-meldungs-wortlaut-des-traegers-ab-ohne-format-halter`) und *ein Fall bindet weniger, als sein Name
+  sagt* (`zusage-mit-bats-bindung-ohne-eigenen-mutations-fall`). Keines ist *eingetreten*.
+- **Drei Paarungen:** Dieses Repo führt Wellen-Betrieb; sie prüft die nächste Welle-Closure — auch für diesen wellenlosen Slice
+  (`modul-06-roadmap.md` §Wann Arbeit eine Welle braucht, Tabelle *Träger im Repo ohne Wellen*). Der Slice trägt keinen Eintrag
+  mit dem Pflichtfeld der Anker-Paarung (ohne Gegenstand); der einzige genannte Folge-Slice mit Datei ist
+  `slice-kennungs-erkennung-traegt-die-zugelassenen-formen`; jede genannte Beobachtung ist ein Verzeichnis mit nicht leerem
+  `evidence/`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

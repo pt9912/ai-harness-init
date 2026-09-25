@@ -1,0 +1,2 @@
+**Vorgang:** slice-emittierte-d-check-vorlage-traegt-praefix-token-und-die-welle-regel
+**Fund:** Der Implementer entfernte die Ruhe-Marker-Zeile der Roadmap (*Nichts in Arbeit.*) im Claim-Commit `56bcaaad` (`git show 56bcaaad -- docs/plan/planning/in-progress/roadmap.md` löscht die zwei Zeilen) und vermerkte die Wiederherstellung als Teil des Abschlusses; der Planner stellt sie bei der Closure wieder her. Keine Quelle benennt die schreibende Rolle dieser Zeile, der Review führt dieselbe Form als bereits geführt. Der Stand der Beobachtung bleibt `geplant`.
