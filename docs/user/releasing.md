@@ -92,22 +92,29 @@ und lädt nichts hoch. Die Schritt-Folge:
    die Meldung des vollzogenen Schnitts geht erst, wenn der `ci`-Lauf
    eingetroffen ist.
 
-7. **Die Formel ins Tap nachziehen und gegen das Asset halten.** Der
-   Release-Workflow legt die Formel als Asset ab und schreibt sie nicht ins
-   Tap; der Nachzug ist Handarbeit, und ein Ziel dafür besteht nicht
-   (`grep -nE '^[a-z-]*tap[a-z-]*:' Makefile` nennt allein `tap-check`).
+7. **Die Formel ins Tap nachziehen und gegen das Asset halten.** Der Nachzug
+   ist ein Handgriff dieses Schritts; das einzige Tap-Ziel im Makefile ist
+   `tap-check` (`grep -nE '^[a-z-]*tap[a-z-]*:' Makefile`).
    *Quelle* ist das veröffentlichte Formel-Asset desselben Tags, keine lokal
    gefüllte Kopie: `gh release download <tag> --pattern ai-harness-init.rb`.
    *Handlung:* die Datei als `Formula/ai-harness-init.rb`
    ins Tap (`pt9912/homebrew-ai-harness-init`) legen, in einem Commit, dessen
    Message den Tag nennt, und auf den Default-Branch pushen. *Voraussetzung:*
-   Push-Recht auf das Tap und Netz. *Vorbedingung:* der Tag ist nicht älter
+   Push-Recht auf das Tap und Netz; der Commit setzt auf dem aktuellen Kopf
+   des Default-Branch auf (eine Arbeitskopie, die ihn nicht trägt, wird zuerst
+   nachgezogen). *Vorbedingung:* der Tag ist nicht älter
    als die `version`-Zeile der Formel am Tap-Kopf (verglichen wird der Kern
    `major.minor.patch`, numerisch je Feld; gleich oder größer geht durch,
    [`ADR-0064`](../plan/adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
-   Festlegung 3 d). Ein Nachzug von Hand hat diesen Schutz nicht; der Satz
-   trägt ihn. Für einen Vorab-Tag (SemVer-Präfix `-`) entfällt der Nachzug:
-   das Tap folgt dem jüngsten stabilen Schnitt.
+   Festlegung 3 d). Den Stand liefert die Datei `Formula/ai-harness-init.rb`
+   am Kopf des Default-Branch, bevor sie ersetzt wird:
+   `gh api -H 'Accept: application/vnd.github.raw' repos/pt9912/homebrew-ai-harness-init/contents/Formula/ai-harness-init.rb | grep -n version`
+   nennt die Zeile. Ein Nachzug von Hand hat diesen Schutz nicht; der Satz
+   trägt ihn. Für einen Vorab-Tag entfällt der Nachzug: das Tap folgt dem
+   jüngsten stabilen Schnitt. Vorab ist ein Tag, dessen Teil vor einem
+   `+<Build>` ein `-` enthält (`v0.3.0-rc.1`, ebenso `v1.0.0-rc.1+x`); ein
+   `-` allein im Build-Metadatum (`v1.0.0+build-1`) macht den Tag nicht zum
+   Vorab-Tag, der Nachzug gilt.
 
    *Beleg:* `make tap-check TAG=<tag>` hält die Formel am Kopf des
    Default-Branch des Tap byte-genau gegen das Asset des Tags; es liest nur
@@ -117,11 +124,15 @@ und lädt nichts hoch. Die Schritt-Folge:
    Festlegung 1):
 
    - **0** — gleich: die Ausgabe nennt das Wort `gleich`, den Tag und den
-     Digest; oder Vorab-Tag: `Vorab-Tag, Tap bleibt`, und der Nachzug
-     entfällt.
+     Digest; oder Vorab-Tag (Regel oben): `Vorab-Tag, Tap bleibt`, und der
+     Nachzug entfällt.
    - **1** — Formel-Unterschied auch nach dem zweiten Lesen: die Ausgabe
      nennt beide Digests und die erste abweichende Zeile.
-   - **2** — nicht ausführbar: Aufruf, Tag-Form, Asset oder Tap nicht lesbar.
+   - **2** — nicht ausführbar: es wurde nichts verglichen, die Ausgabe nennt
+     die Ursache. Beispiele sind eine falsche Tag- oder Feldform, ein nicht
+     auffindbares Asset (HTTP 404), ein Tap, das sich nicht lesen lässt, ein
+     nicht erreichbarer Docker-Daemon; die Aufzählung ist nicht
+     abschließend.
 
    Über `make` endet jeder Fehlschlag mit Prozess-Exit 2, der Prozess-Exit
    trennt dort nur 0 von ungleich 0. Die Klasse trägt die Zeile des Skripts
@@ -138,18 +149,24 @@ und lädt nichts hoch. Die Schritt-Folge:
    Fremd-Taps ist eine eigene Bedingung des Nutzers, das
    [Handbuch](benutzerhandbuch.md#weg-c--über-ein-homebrew-tap-macos-linux)
    nennt sie —, nicht, dass das Asset richtig gefüllt ist, und keinen
-   Zustand nach dem Aufruf. Den Vorwärts-Schutz hält sie nicht: der Vergleich
-   liest keine `version`-Zeile, und nach dem Nachzug eines älteren Tags endet
-   die Kontrolle gegen genau diesen Tag mit Exit 0.
+   Zustand nach dem Aufruf. Sie vergleicht Bytes, keine Versionen: die Skripte
+   des Vergleichs enthalten das Wort `version` nicht
+   (`grep -ci version harness/tools/tap-nachzug.sh harness/tools/tap-nachzug-nutzlast.sh`
+   → `0` je Datei), und nach dem Nachzug eines älteren Tags endet die
+   Kontrolle gegen genau diesen Tag mit Exit 0. Der Vorwärts-Schutz liegt
+   allein bei der Vorbedingung oben.
 
 8. **Meldung des vollzogenen Schnitts.** Die Meldung geht erst, wenn
    `make tap-check TAG=<tag>` (Schritt 7) mit Exit 0 endet, und sie trägt
-   dessen Ausgabezeile als Beleg. Die Meldung — und der Release-Text aus
-   Schritt 5 samt jeder Ergänzung — trägt die Stand-Form: Zustand und Beleg
-   als auflösbarer Anker (Tag, Asset-Menge, Prüfsummen, Läufe, die Zeile von
-   `tap-check`), keine Chronik. Die Meldung geht erst, wenn der Release-Text
-   die Änderungsbeschreibung trägt: ein Release, dessen Seite nur *Full
-   Changelog* zeigt, ist nicht vollzogen gemeldet.
+   dessen Ausgabezeile als Beleg. Die Meldung trägt die Stand-Form: Zustand
+   und Beleg als auflösbarer Anker (Tag, Asset-Menge, Prüfsummen, Läufe, die
+   Zeile von `tap-check`), keine Chronik. Der Release-Text aus Schritt 5
+   samt jeder Ergänzung trägt dieselbe Stand-Form mit den Belegen, die zum
+   Zeitpunkt seiner Fassung vorliegen (Tag, Asset-Menge, Prüfsummen,
+   Start-Smoke); die Zeile von `tap-check` entsteht erst in Schritt 7 und
+   steht in der Meldung. Die Meldung geht außerdem erst, wenn der
+   Release-Text die Änderungsbeschreibung trägt: ein Release, dessen Seite
+   nur *Full Changelog* zeigt, ist nicht vollzogen gemeldet.
 
 ## Belegbasis
 
