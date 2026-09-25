@@ -77,7 +77,7 @@ und lädt nichts hoch. Die Schritt-Folge:
    `gh release view <tag> --json assets --jq '.assets | length'`
    → `8`). `--generate-notes` liefert allein die Zeile *Full Changelog* —
    keine Änderungsbeschreibung. Sie schreibt der Schnitt selbst, in der
-   Stand-Form (Schritt 7) und in der Gliederung der Vorgänger-Releases:
+   Stand-Form (Schritt 8) und in der Gliederung der Vorgänger-Releases:
    Titelzeile, **Stand** (was das Programm dieses Releases kann und was das
    Handbuch beschreibt), **Assets** (Menge, Prüfsummen, Start-Smoke),
    **Grenze** (was das Release nicht zusagt), am Ende die Zeile *Full
@@ -92,11 +92,63 @@ und lädt nichts hoch. Die Schritt-Folge:
    die Meldung des vollzogenen Schnitts geht erst, wenn der `ci`-Lauf
    eingetroffen ist.
 
-7. **Meldung des vollzogenen Schnitts.** Die Meldung — und der Release-Text
-   aus Schritt 5 samt jeder Ergänzung — trägt die Stand-Form: Zustand und
-   Beleg als auflösbarer Anker (Tag, Asset-Menge, Prüfsummen, Läufe), keine
-   Chronik. Die Meldung geht erst, wenn der Release-Text die
-   Änderungsbeschreibung trägt: ein Release, dessen Seite nur *Full
+7. **Die Formel ins Tap nachziehen und gegen das Asset halten.** Der
+   Release-Workflow legt die Formel als Asset ab und schreibt sie nicht ins
+   Tap; der Nachzug ist Handarbeit, und ein Ziel dafür besteht nicht
+   (`grep -nE '^[a-z-]*tap[a-z-]*:' Makefile` nennt allein `tap-check`).
+   *Quelle* ist das veröffentlichte Formel-Asset desselben Tags, keine lokal
+   gefüllte Kopie: `gh release download <tag> --pattern ai-harness-init.rb`.
+   *Handlung:* die Datei als `Formula/ai-harness-init.rb`
+   ins Tap (`pt9912/homebrew-ai-harness-init`) legen, in einem Commit, dessen
+   Message den Tag nennt, und auf den Default-Branch pushen. *Voraussetzung:*
+   Push-Recht auf das Tap und Netz. *Vorbedingung:* der Tag ist nicht älter
+   als die `version`-Zeile der Formel am Tap-Kopf (verglichen wird der Kern
+   `major.minor.patch`, numerisch je Feld; gleich oder größer geht durch,
+   [`ADR-0064`](../plan/adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
+   Festlegung 3 d). Ein Nachzug von Hand hat diesen Schutz nicht; der Satz
+   trägt ihn. Für einen Vorab-Tag (SemVer-Präfix `-`) entfällt der Nachzug:
+   das Tap folgt dem jüngsten stabilen Schnitt.
+
+   *Beleg:* `make tap-check TAG=<tag>` hält die Formel am Kopf des
+   Default-Branch des Tap byte-genau gegen das Asset des Tags; es liest nur
+   und schreibt nichts, braucht Netz an genau diesem Aufruf und läuft in
+   keiner Gate-Kette. Die Klasse ist der Exit des **Skripts**
+   ([`ADR-0066`](../plan/adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md)
+   Festlegung 1):
+
+   - **0** — gleich: die Ausgabe nennt das Wort `gleich`, den Tag und den
+     Digest; oder Vorab-Tag: `Vorab-Tag, Tap bleibt`, und der Nachzug
+     entfällt.
+   - **1** — Formel-Unterschied auch nach dem zweiten Lesen: die Ausgabe
+     nennt beide Digests und die erste abweichende Zeile.
+   - **2** — nicht ausführbar: Aufruf, Tag-Form, Asset oder Tap nicht lesbar.
+
+   Über `make` endet jeder Fehlschlag mit Prozess-Exit 2, der Prozess-Exit
+   trennt dort nur 0 von ungleich 0. Die Klasse trägt die Zeile des Skripts
+   `tap-check: Exit <N>` — bei Exit 1 und 2 steht sie genau einmal, bei
+   Exit 0 fehlt sie; gelesen wird die Zeile, nicht ihre Position in der
+   Ausgabe. Bei Ungleichheit liest der Aufruf einmal nach 65 s erneut, weil
+   die Schnittstelle einen bis zu 60 s alten Stand liefern kann
+   ([`ADR-0064`](../plan/adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
+   Festlegung 2); ein Exit 1 ist der Befund nach dieser Wiederholung. Ein
+   Aufruf, der beim ersten Lesen Gleichheit findet, wartet nicht.
+
+   *Grenze:* die Kontrolle sagt Byte-Gleichheit zum Zeitpunkt des Lesens
+   zu. Sie sagt nicht zu, dass `brew install` läuft — das Vertrauen des
+   Fremd-Taps ist eine eigene Bedingung des Nutzers, das
+   [Handbuch](benutzerhandbuch.md#weg-c--über-ein-homebrew-tap-macos-linux)
+   nennt sie —, nicht, dass das Asset richtig gefüllt ist, und keinen
+   Zustand nach dem Aufruf. Den Vorwärts-Schutz hält sie nicht: der Vergleich
+   liest keine `version`-Zeile, und nach dem Nachzug eines älteren Tags endet
+   die Kontrolle gegen genau diesen Tag mit Exit 0.
+
+8. **Meldung des vollzogenen Schnitts.** Die Meldung geht erst, wenn
+   `make tap-check TAG=<tag>` (Schritt 7) mit Exit 0 endet, und sie trägt
+   dessen Ausgabezeile als Beleg. Die Meldung — und der Release-Text aus
+   Schritt 5 samt jeder Ergänzung — trägt die Stand-Form: Zustand und Beleg
+   als auflösbarer Anker (Tag, Asset-Menge, Prüfsummen, Läufe, die Zeile von
+   `tap-check`), keine Chronik. Die Meldung geht erst, wenn der Release-Text
+   die Änderungsbeschreibung trägt: ein Release, dessen Seite nur *Full
    Changelog* zeigt, ist nicht vollzogen gemeldet.
 
 ## Belegbasis
