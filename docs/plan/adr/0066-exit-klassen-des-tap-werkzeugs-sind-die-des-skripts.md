@@ -1,6 +1,6 @@
 # ADR-0066: Die Exit-Klassen des Tap-Werkzeugs sind die des Skripts — `make` endet jeden Fehlschlag mit 2, und die Klasse trägt die letzte stderr-Zeile des Skripts
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-24
 
@@ -263,6 +263,7 @@ Auftraggebers.**
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-24 | **Proposed** | Architect-Lauf: die drei Stellen von ADR-0064, die einen `make`-Exit 1 nennen, sind mit GNU Make nicht herstellbar (Messung in §Kontext); die Klasse des Skripts und ihr Träger über `make` sind die Festlegungen. Der Acceptance-Trigger steht oben |
+| 2026-09-25 | **Accepted** | Beleg nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 ist die Reviewer-Runde `2026-09-25-adr-0066-exit-klassen-des-tap-werkzeugs-runde-2` — sie meldet annahmefähig an der Substanz, kein HIGH und kein MEDIUM; die Annahme selbst hat der Auftraggeber am 2026-09-25 erteilt. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes ADR-0066`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
