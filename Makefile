@@ -485,7 +485,10 @@ traeger-fetch: ## Traeger aus dem gepinnten Release nachholen (braucht Netz, Tra
 # Ausgabe, unter make -C und unter einem umschliessenden make folgen weitere Zeilen.
 # Nicht zugesagt ist die Zeile bei einem Signal, bei nicht beschreibbarer stderr und bei
 # fehlendem oder unbekanntem Modus (ADR-0066); bei einem Signal fehlt auch die Klasse: der
-# Prozess endet mit 128 plus der Signalnummer, keine der drei Klassen. Lesend, Transport im gepinnten Bild;
+# Prozess-Exit ist 128 plus die Signalnummer, wenn das Signal das Skript im Direktaufruf oder
+# make selbst trifft, und 2, wenn es das Skript unter make trifft; keine der drei Klassen.
+# Bei nicht beschreibbarer stderr ist auch die Klasse nicht zugesagt: ein Formel-Unterschied
+# kann als Klasse 2 enden. Lesend, Transport im gepinnten Bild;
 # braucht Netz an genau diesem Aufruf. KEIN Gate und in keiner Prerequisite-Kette.
 # Der Tag reist als Umgebungsvariable TAG (make exportiert Kommandozeilen-Variablen),
 # das Rezept nennt ihn nicht.
