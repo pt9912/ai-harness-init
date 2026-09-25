@@ -1,6 +1,6 @@
 # ADR-0067: Die Zeilenenden der emittierten Dateien — ein Git-Attribut je Verzeichnis mit Interpreter-Konsument, die Klasse folgt dem Boden
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-25
 
@@ -160,6 +160,7 @@ Regeln dieser Sektion: **mindestens drei Optionen mit Pro/Contra** — „nichts
 |---|---|---|
 | 2026-09-25 | **Proposed** | Architect-Lauf zur Klasse und zur Erfassungsmenge der emittierten `.gitattributes`, ausgelöst vom Slice `slice-emittierte-dateien-behalten-lf-im-autocrlf-klon`. Die Messungen in §Kontext stehen neben ihren Kommandos |
 | 2026-09-25 | Proposed überarbeitet | Review Runde 1 und Review Runde 2 zu dieser ADR |
+| 2026-09-25 | **Accepted** | Die Datei trägt **keinen** Acceptance-Trigger ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1); als Bestätigung nach den vier MEDIUM der ersten Runde trägt die Reviewer-Runde `2026-09-25-adr-0067-emittierte-zeilenenden-runde-2` (0 HIGH, 0 MEDIUM, Empfehlung „unbedingt an der Substanz"), die Festlegung 2 verlangt. Sie prüfte die Fassung vor den sechs LOW-Punkten; die Differenz zur angenommenen Fassung ist Wortlaut und Vollständigkeit (Alternative G, eine Fitness-Zeile, engere Formulierungen) ohne Änderung der Entscheidung. Die Annahme hat der Auftraggeber am 2026-09-25 erteilt und die Wahl der fünf Verzeichnisse einschließlich des make-Fragment-Verzeichnisses als Vorsorge bestätigt. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes ADR-0067`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
