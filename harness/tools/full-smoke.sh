@@ -2874,7 +2874,9 @@ grep -F -- 'lateral-adapter' <<<"$lateral_out" | sed -n '1,2s/^/full-smoke:   /p
 # gebootstrapptes Ziel mit ihnen gruen startet und ob sie im Ziel rot faerben, entscheidet
 # nur ein echter docs-check dort. Zwei Aussagen:
 #   (a) DER GRUENE START je Sprache und Architektur, die das Werkzeug traegt (eine
-#       Kombination, die die Sprache nicht traegt, endet mit Exit 2 und ist kein Fall).
+#       Kombination, die die Sprache nicht traegt, endet mit Exit 2 und der Meldung
+#       "unbekannte Architektur", deren Liste `verfuegbar:` sie nicht nennt, und ist kein Fall;
+#       nennt die Liste sie, lehnt der Traeger eine getragene Kombination ab: Exit 1).
 #       Die Kombinationen kommen aus dem Traeger selbst — die Sprachen und Architekturen, die
 #       seine Fehlermeldungen nennen, jede gegen jede —:
 #       eine neue Sprache oder Architektur wird gefahren, ohne dass die Stufe sich aendert.
@@ -2940,12 +2942,13 @@ kf_liste() {
 }
 kennungs_form_im_ziel() {
 	local eintrag sprache arch label dir n ziel="" out rc q="'"
-	local probe sprachen archs lang_out arch_out gefahren=0 getragen="" namen=""
+	local probe sprachen archs lang_out arch_out gefahren=0 getragen="" namen="" verfuegbar
 	local -a faelle=("|")
 	# Die Kombinationen kommen aus dem Traeger: jede Sprache, die er nennt, gegen jede
 	# Architektur, die er nennt. Eine Kombination, die die Sprache nicht traegt, endet mit
-	# Exit 2 und der Meldung "unbekannte Architektur" und ist kein Fall; die leere Sprache ist
-	# der sprachlose Bootstrap.
+	# Exit 2 und der Meldung "unbekannte Architektur", deren Liste `verfuegbar:` die
+	# Architektur nicht nennt, und ist kein Fall; die leere Sprache ist der sprachlose
+	# Bootstrap.
 	probe="$(mktemp -d -p "$tmprepo_kf")"
 	git init -q "$probe"
 	lang_out="$( "$tmpbin/ai-harness-init" --lang kf-unbekannt --name kf "$probe" 2>&1 )" || true
@@ -2975,7 +2978,17 @@ kennungs_form_im_ziel() {
 			out="$( "$tmpbin/ai-harness-init" --lang "$sprache" --arch "$arch" --name kf "$dir" 2>&1 )" || rc=$?
 		fi
 		if [ "$rc" -eq 2 ] && [ -n "$sprache" ] && grep -qF -- "unbekannte Architektur \"$arch\"" <<<"$out"; then
-			echo "full-smoke: Kennungs-Form ($label): vom Traeger nicht getragen (Exit 2, unbekannte Architektur) — kein Fall."
+			# Die Meldung nennt in `verfuegbar:` die Architekturen, die der Traeger fuer diese
+			# Sprache traegt: steht die abgelehnte Architektur dort, lehnt er eine getragene
+			# Kombination ab, und das ist ein Fehler statt eines Nicht-Falls; ist die Liste
+			# nicht lesbar, ist die Ablehnung nicht einzuordnen.
+			verfuegbar="$(kf_liste "$out")"
+			if [ -z "$verfuegbar" ] || grep -qxF -- "$arch" <<<"$verfuegbar"; then
+				echo "full-smoke: FEHLER — Kennungs-Form ($label): der Traeger lehnt die Kombination mit Exit 2 und 'unbekannte Architektur' ab, obwohl seine Meldung die Architektur nicht als nicht getragen ausweist (Liste hinter 'verfuegbar: ' leer oder nennt sie selbst) — eine getragene Kombination waere sonst als kein Fall verschluckt. Ausgabe:" >&2
+				printf '%s\n' "$out" >&2
+				exit 1
+			fi
+			echo "full-smoke: Kennungs-Form ($label): vom Traeger nicht getragen (Exit 2, unbekannte Architektur, nicht in der Liste 'verfuegbar: ') — kein Fall."
 			continue
 		fi
 		if [ "$rc" -ne 0 ]; then
