@@ -3077,8 +3077,8 @@ kennungs_form_im_ziel
 # wird an zwei echten Klonen desselben committeten Ziels; der Kontrollklon setzt
 # core.autocrlf=false AUSDRUECKLICH, er erbt es nicht vom Runner.
 #
-# GRENZE: die Stufe liest git, nicht das Werkzeug. Sie belegt, was der Smudge-Filter von git
-# mit den abgelegten Bytes tut, und sagt nichts ueber einen Windows-Lauf (LH-QA-04, Grenze der
+# GRENZE: die Stufe liest git, nicht das Werkzeug. Sie faehrt den Smudge-Filter von git ueber
+# den abgelegten Bytes und sagt nichts ueber einen Windows-Lauf (LH-QA-04, Grenze der
 # Messmethode).
 #
 # DREI KONSUMENTEN, JE AN DEN REALEN BYTES: der git-eigene Traeger laeuft ueber seine
