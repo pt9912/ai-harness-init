@@ -3102,29 +3102,25 @@ zeilenenden_cr_dateien() {
 zeilenenden_konsumenten() {
 	local klon="$1" label="$2" w="$3"
 	local out="" rc=0 bad=0
-	rc=0
-	out="$( cd "$klon" && ./.githooks/commit-msg "$w/msg-mit" 2>&1 )" || rc=$?
+	if out="$( cd "$klon" && ./.githooks/commit-msg "$w/msg-mit" 2>&1 )"; then rc=0; else rc=$?; fi
 	if [ "$rc" -ne 0 ]; then
 		echo "full-smoke: FEHLER — Zeilenenden ($label): .githooks/commit-msg laeuft nicht ueber seine Shebang-Zeile (Exit $rc) — die Datei traegt CR in der ersten Zeile. Ausgabe:" >&2
 		printf '%s\n' "$out" >&2
 		bad=1
 	fi
-	rc=0
-	out="$( cd "$klon" && ./.githooks/commit-msg "$w/msg-ohne" 2>&1 )" || rc=$?
+	if out="$( cd "$klon" && ./.githooks/commit-msg "$w/msg-ohne" 2>&1 )"; then rc=0; else rc=$?; fi
 	if [ "$rc" -ne 1 ] || ! grep -qF -- 'keine Traceability-Kennung' <<<"$out"; then
 		echo "full-smoke: FEHLER — Zeilenenden ($label): .githooks/commit-msg lehnt eine Message ohne Kennung nicht mit der Meldung der Pruefung ab (Exit $rc) — sie lief nicht bis zu tools/harness/commit-msg-traceability.sh. Ausgabe:" >&2
 		printf '%s\n' "$out" >&2
 		bad=1
 	fi
-	rc=0
-	out="$( cd "$klon" && bash tools/harness/baseline-verify.sh 2>&1 )" || rc=$?
+	if out="$( cd "$klon" && bash tools/harness/baseline-verify.sh 2>&1 )"; then rc=0; else rc=$?; fi
 	if [ "$rc" -ne 0 ] || ! grep -qF -- ' OK ' <<<"$out"; then
 		echo "full-smoke: FEHLER — Zeilenenden ($label): bash tools/harness/baseline-verify.sh endet nicht mit OK (Exit $rc) — die Byte-Pruefung des vendored Baums oder das Skript selbst traegt CR. Ausgabe:" >&2
 		printf '%s\n' "$out" >&2
 		bad=1
 	fi
-	rc=0
-	out="$( cd "$klon" && printf '%s' '{"tool_name":"Bash","tool_input":{"command":"staticcheck ./..."}}' | bash .claude/hooks/pretooluse-command-guard.sh 2>&1 )" || rc=$?
+	if out="$( cd "$klon" && printf '%s' '{"tool_name":"Bash","tool_input":{"command":"staticcheck ./..."}}' | bash .claude/hooks/pretooluse-command-guard.sh 2>&1 )"; then rc=0; else rc=$?; fi
 	if ! grep -qF -- '"decision": "block"' <<<"$out"; then
 		echo "full-smoke: FEHLER — Zeilenenden ($label): der Command-Guard blockt 'staticcheck' (letztes Wort von tools/harness/blocked/go) nicht (Exit $rc) — Guard oder Wortliste tragen CR. Ausgabe:" >&2
 		printf '%s\n' "$out" >&2
