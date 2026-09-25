@@ -391,7 +391,7 @@ Risiken stehen in §6.
 
 - **Was hat funktioniert:** Der Messweg stand vor der Emission und hatte damit einen Stand, an dem das Rot gesehen wurde
   (`46730987` vor `1b482a15`). Der Verifier hat das Rot **erneut** gelesen, nicht übernommen: im autocrlf-Klon ohne die fünf
-  `.gitattributes` trugen `.harness` 58, `.claude/hooks` 3, `.githooks` 1, `harness/mk` 11 und `tools/harness` 11 Dateien
+  `.gitattributes` trugen `.harness` 58, `.claude/hooks` 3, `.githooks` 1, harness/mk/ 11 und `tools/harness` 11 Dateien
   CR, der Kontrollklon mit gesetztem `core.autocrlf=false` und der Klon mit Emission je 0; die Meldungen
   `/usr/bin/env: »bash\r“: Datei oder Verzeichnis nicht gefunden` (Exit 127) und `set: pipefail: Ungültiger Optionsname`
   (Exit 2) nennen die Datei. Zwei Teilzustände tragen die Zusage *„das Rot nennt die CR-tragende Datei"*: nur
@@ -455,7 +455,7 @@ Risiken stehen in §6.
 - **`make gates`:** Lauf am Stand `0154abe0` (vor der Closure), Exit 0; Stempel `.harness/state/gates-passed.diffsha` und
   `bash harness/tools/working-tree-hash.sh` gleich (`533b32c1…9230`). Der Lauf über den Closure-Stand steht in der Übergabe an
   den Auftraggeber, nicht in dieser Datei. `make e2e-abdeckung` steht unverändert (22 Stufen, 22 Deklarationen); die Stufe
-  trägt `LH-FA-01` und `LH-FA-06`, nicht `LH-QA-04`.
+  trägt [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) und [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren), nicht [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix).
 - **Adressen vor dem Move ([`AGENTS.md`](../../../../AGENTS.md) §3.11):** beide Adress-Formen gemessen —
   `git grep -nE '(in-progress|done)/slice-emittierte-dateien-behalten-lf-im-autocrlf-klon'` außerhalb der Plandatei →
   **kein Treffer**; `git grep -nE '\]\(slice-emittierte-dateien-behalten-lf-im-autocrlf-klon'` → **kein Treffer**. Die einzige
