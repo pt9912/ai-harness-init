@@ -543,7 +543,7 @@ Geschrieben von der Rolle Planner in frischem Kontext
   Meldung als Zusage zitiert*, *Kommentar-Liste weicht vom Code ab*, *Prozess-Zustand im Plan-Fließtext
   überholt*): kein Eintrag ohne benannte Wiederkehr — sie bleiben in den Summary-Zeilen der Reports.
 - **Folge-Slices:** *Adressen, keine Anlage in dieser Closure.*
-  (1) `slice-tap-nachzug-ist-schritt-der-release-prozedur` (liegt in `open/`) — der Planner schneidet ihn um,
+  (1) `slice-tap-nachzug-ist-schritt-der-release-prozedur` (Datei in `open/`) — der Planner schneidet ihn um,
   bevor er `next/` wird: die Kontrolle liefert dieser Slice, der Prozedur-Wortlaut für den Formel-Unterschied
   ist *„`tap-check` rot mit der Zeile `tap-check: Exit 1`"* (die Zeile, nicht ihre Position), dazu
   `docs/user/releasing.md`; der Stand von [ADR-0066](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md) ist Prüfpunkt des Umschnitts (§6).
