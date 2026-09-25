@@ -3155,7 +3155,8 @@ zeilenenden_im_klon() {
 
 	# VORBEDINGUNG: der gesetzte Wert gilt im Klon, die fuenf Verzeichnisse tragen Dateien, und
 	# der autocrlf-Klon traegt CR an einer Datei, die die Emission nicht deckt (Wurzel-Makefile).
-	# Ohne sie waere "kein CR" eine Aussage ueber einen Klon, der nie CR bekommen kann.
+	# Das Wurzel-Makefile traegt im autocrlf-Klon CR: der Klon bekommt CR, und "kein CR" in
+	# den fuenf Verzeichnissen ist damit eine Aussage ueber die Emission.
 	if [ "$(git -C "$kc" config --get core.autocrlf)" != "true" ] || [ "$(git -C "$kf" config --get core.autocrlf)" != "false" ]; then
 		echo "full-smoke: FEHLER — Zeilenenden: core.autocrlf steht im Klon nicht wie gesetzt (autocrlf-Klon: $(git -C "$kc" config --get core.autocrlf), Kontrolle: $(git -C "$kf" config --get core.autocrlf))." >&2
 		exit 1
@@ -3169,7 +3170,7 @@ zeilenenden_im_klon() {
 	done
 	wurzel="$(grep -c $'\r' "$kc/Makefile" || true)"
 	if [ "$wurzel" -eq 0 ]; then
-		echo "full-smoke: FEHLER — Zeilenenden: das Wurzel-Makefile traegt im autocrlf-Klon kein CR — der Klon bekommt nie CR, und ein Klon ohne CR in den fuenf Verzeichnissen belegte nichts." >&2
+		echo "full-smoke: FEHLER — Zeilenenden: das Wurzel-Makefile traegt im autocrlf-Klon kein CR — der Klon bekommt nie CR, und ein Klon ohne CR in den fuenf Verzeichnissen sagt nichts ueber die Emission." >&2
 		exit 1
 	fi
 
