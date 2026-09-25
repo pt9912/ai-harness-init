@@ -210,7 +210,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1 — das Werkzeug.** Ein versioniertes Skript unter `harness/tools/` mit dem
+- [x] **Liefer-Punkt 1 — das Werkzeug.** Ein versioniertes Skript unter `harness/tools/` mit dem
       Modus `check` (jeder andere Modus endet mit Exit 2 und sagt, dass er nicht implementiert
       ist), der bei Exit 1 und bei Exit 2 **des Skripts** als letzte stderr-Zeile **des Skripts**
       `tap-<modus>: Exit <N>` schreibt, genau einmal, bei Exit 0 nicht (`<N>` ist der Exit des
@@ -236,7 +236,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       (`Error N`/`Fehler N`, deren Ziffer die Klasse zwar nennt, aber kein Vertrag ist). Die Nutzlast ruft nur Programme des Bestands, den
       [ADR-0064](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md) §Lage im Bild gemessen hat (kein `jq`, kein `bash`, kein `git`, kein `gh`); ein
       Programm außerhalb ist eine Entscheidung (§4 Rückführung), keine Nebenwirkung.
-- [ ] **Liefer-Punkt 2 — der hermetische Nachweis.** `bats`-Fälle in `make test`, ohne Netz und ohne
+- [x] **Liefer-Punkt 2 — der hermetische Nachweis.** `bats`-Fälle in `make test`, ohne Netz und ohne
       Container: Stubs für Asset, Tap-Stand, `curl` und `docker`; Quellen und Wartezeit der
       Wiederholung sind injizierbar; die Nutzlast läuft als eigene Datei. **Jede Exit-Angabe der
       Fälle nennt den Exit des Skripts** — die Fälle fahren das Skript ohne `make`. **Was die Fälle
@@ -269,7 +269,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Meldung** (sie nennt die Ursache der Zusage, nicht einen Syntaxfehler der Shell). **Jeder
       Fall wird einmal unter der Schwächung rot gesehen, die die ADR in ihrer Fitness Function
       nennt, und die Ausgabe gelesen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
-- [ ] **Liefer-Punkt 3 — die Zähne und der reale Rot-Beleg.** (a) Je Zahn des `check` ein
+- [x] **Liefer-Punkt 3 — die Zähne und der reale Rot-Beleg.** (a) Je Zahn des `check` ein
       Mutations-Fall in `test/mutations/`, der den benannten `bats`-Fall aus dem behaupteten Grund
       rot färbt: Vorab-Regel, Abschneiden des Metadatums vor der Prüfung, Wiederholung des Lesens,
       Sofort-Gleich ohne Wartezeit, Tag-Formprüfung, Feldform, Pin-Prüfung, Token als Argument,
@@ -290,17 +290,17 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       datiert:** er gilt für den Tap-Stand am Tag der Messung und wandert mit jedem Schnitt — grün
       ist dann der Tag, den das Tap trägt. Die Ausgabe ist gelesen: Exit 1 ist ein
       Formel-Unterschied, nicht ein Lesefehler.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: [`harness/README.md`](../../../../harness/README.md) §Werkzeuge (Teil von
+- [x] Doku-Update: [`harness/README.md`](../../../../harness/README.md) §Werkzeuge (Teil von
       Liefer-Punkt 1); das Handbuch und `docs/user/releasing.md` bleiben dem Prozedur-Slice (§1).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Register-Datei nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Register-Datei nicht.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -374,59 +374,196 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **einen** Ausgang, und kein Slice geht nach `done/`, während eines ohne Ausgang
 dasteht.
 
-Die Ausgänge setzt die Closure; bis dahin steht hinter jedem Risiko `Ausgang: offen bis Closure`.
+Die Ausgänge stehen hinter jedem Risiko; die Beobachtungs-Verzeichnisse liegen unter
+[`../observations/`](../observations).
 
 - **Ein Byte, das die Shell nicht heil trägt, macht ein falsches Gleich oder Ungleich.** Endzeilenumbruch,
   Nicht-ASCII-Byte: ein Vergleich über eine Shell-Variable statt über Dateien verliert sie. Der Fall
   *gleich* trägt darum eine Formel mit Nicht-ASCII-Byte und ohne Endzeilenumbruch (Liefer-Punkt 2).
-  — **Ausgang:** offen bis Closure.
+  — **Ausgang: entfallen.** Der Vergleich läuft über Dateien (`cmp`, `harness/tools/tap-nachzug-nutzlast.sh`),
+  nicht über Variablen; der Fall *gleich* trägt die Bytes (Nicht-ASCII, ohne Endzeilenumbruch; Verifier §2),
+  und zwei Zähne mutieren den Vergleichsweg: 419 (der Endzeilenumbruch geht verloren) und 425 (Status 2 von
+  `cmp` gilt als Unterschied). Beide stehen im Lauf `422 ok`; der Bericht des Verifiers führt sie nicht
+  einzeln auf.
 - **Die Stubs sind eine Fixture.** Sie bilden `curl`, Kopfzeilen und Antwortform nach; ob das reale
   Tap und die Download-Adresse des Assets dieselbe Form liefern (Weiterleitung, `Accept`-Kopf,
   404-Form), hält allein der reale Beleg aus Liefer-Punkt 3 — und der gilt für den Zustand am Tag
-  der Messung. — **Ausgang:** offen bis Closure.
+  der Messung. — **Ausgang: weiter offen → Register**,
+  [`waechter-misst-die-fixture-statt-der-realen-quelle`](../observations/BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/observation.md).
+  Der reale Beleg vom 2026-09-25 (Tap `0.2.3`) bestätigt die Form für diesen Tag; er wandert mit jedem
+  Schnitt.
 - **Das Cache-Fenster der Schnittstelle** (`max-age=60`, [ADR-0064](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md) §Lage): dass ein Lesen nach einem
   Schreiben den Stand davor liefert, ist nicht beobachtet; ein falsches Ungleich kostet 65 s
   Wartezeit, nie ein falsches Gleich. Dieser Slice schreibt nie; das Fenster trifft ihn nur bei einem
-  Aufruf kurz nach einem Nachzug des Auftraggebers. — **Ausgang:** offen bis Closure.
+  Aufruf kurz nach einem Nachzug des Auftraggebers. — **Ausgang: weiter offen → Register**, dieselbe
+  Beobachtung, dieselbe Evidence-Datei: das Fenster ist eine Eigenschaft der realen Quelle, die nur
+  eine Stub-Folge alt → neu nachstellt.
 - **Das anonyme Lese-Limit.** Wiederholte Läufe des realen Belegs können es erschöpfen; das endet als
   Skript-Exit 2 *„Tap nicht lesbar"*, nie als 1 — ein Rot des Belegs aus diesem Grund ist kein Befund am
-  Vergleich. — **Ausgang:** offen bis Closure.
+  Vergleich. — **Ausgang: weiter offen → Register**, dieselbe Beobachtung: die Klasse (Exit 2, nie 1) hält
+  der Stub-Fall, die Antwort der realen Schnittstelle bei erschöpftem Limit ist nie beobachtet.
 - **Die Kopplung an die Vorab-Regel des `publish`-Jobs ist an dessen Textform gebunden.** Ändert sich
   die Form der Regel dort, muss der Fall laut brechen statt still grün zu bleiben (Liefer-Punkt 2:
-  *„schlägt fehl, wenn er die Regel dort nicht findet"*). — **Ausgang:** offen bis Closure.
+  *„schlägt fehl, wenn er die Regel dort nicht findet"*). — **Ausgang: entfallen.** Der Verifier ersetzte
+  die Regel in `release.yml` durch `*-rc*)`: der Fall `vorab-tag: die Regel …` wurde rot an der Zählung
+  der Regel-Zeile (Bericht §4) — er bricht laut. Der Zähler von
+  [`zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`](../observations/BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor/observation.md)
+  bleibt bei 2×: beide Paare (Bild-Digest, Vorab-Regel) tragen einen vergleichenden Fall.
 - **[ADR-0066](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md) steht auf `Proposed`.** Die Ebene der Exit-Klassen und der Wortlaut der Zeile
-  `tap-<modus>: Exit <N>` binden erst mit dem Accept. Stand: zwei Review-Runden der ADR liegen vor
-  (`2026-09-25-adr-0066-exit-klassen-des-tap-werkzeugs-runde-2`: Empfehlung unbedingt an der
-  Substanz), die Darstellungspunkte der Runde 2 sind eingearbeitet, der Accept steht aus
-  (Entscheidung des Auftraggebers). Ändert sich bei ihm ein Wortlaut, ziehen Skript-Kopf,
-  Makefile-Kommentar, README-Zeile, Fälle und dieser Plan nach. — **Ausgang:** offen bis Closure.
+  `tap-<modus>: Exit <N>` binden erst mit dem Accept, einer Handlung des Auftraggebers. Ändert sich bei
+  ihm ein Wortlaut, ziehen Skript-Kopf, Makefile-Kommentar, README-Zeile, Fälle und dieser Plan nach.
+  — **Ausgang: weiter offen → Register**,
+  [`bedingung-ohne-traeger-im-lauf-den-sie-bindet`](../observations/BEO-ALL/bedingung-ohne-traeger-im-lauf-den-sie-bindet/observation.md)
+  (2×, `offen`). **Träger des Nachzugs:** heute hat er keinen Wächter; die Stellen stehen in der
+  Evidence-Datei dieser Beobachtung, und der Umschnitt des Prozedur-Slice
+  (`slice-tap-nachzug-ist-schritt-der-release-prozedur`, siehe §7 *Folge-Slices*) durch den Planner nimmt
+  den Stand der Entscheidung als Prüfpunkt auf. Einen Nachzug führt der Implementer auf Auftrag des
+  Planners aus (Modul 8, Übergabe Planner → Implementer).
 - **Der Slice ist größer als eine Review-Sitzung.** Zwei Schichten (Werkzeug, Test) und drei
-  Liefer-Punkte; die Rückführung steht in §4. — **Ausgang:** offen bis Closure.
+  Liefer-Punkte; die Rückführung steht in §4. — **Ausgang: entfallen.** Die Rückführung
+  `in-progress → next` ist nicht eingetreten, die drei Liefer-Punkte hielten (Verifier §5: keine
+  DoD-Verletzung). Gewachsen ist der Umfang **innerhalb** der Liefer-Punkte — Status-10-Kanal, Abbildung
+  interner Fehler der Nutzlast, Zahlprüfung von `TAP_WAIT` (Verifier §6), vier Review-Runden —, kein
+  vierter Liefer-Punkt.
 
 ## 7. Closure-Notiz
 
-Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
-§Das Beobachtungs-Register (vorhandene `BEO-<NNN>` **zitieren** statt neu
-formulieren — sonst zählt das Register zwei Namen getrennt) ·
-`grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln (das
-Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
-wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
-Backticks). Ging der Gegenstand an einen anderen Slice oder entfiel er, trägt
-diese Sektion die Zeile `Gegenstand:` mit Kennung oder Grund und jedes Risiko
-aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
-(`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
-übernimmt).
+Geschrieben von der Rolle Planner in frischem Kontext
+([`AGENTS.md`](../../../../AGENTS.md) §3.10), nach Review (Runde 1 bis 4) und Verifikation.
 
-Leer bis zur Closure; sie schreibt der Planner im frischen Kontext
-([`AGENTS.md`](../../../../AGENTS.md) §3.10).
-
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
-- **Drei Paarungen:** —
+- **Was hat funktioniert:** Die Zähne trugen an den Stellen, an denen sie gefahren wurden. Der Review
+  fand in Runde 1 zwei HIGH in der Suite selbst — das Token als zusätzliches Argument der
+  Nutzlast ließ keinen Fall rot werden, weil eine Negation mitten im Fall wirkungslos ist — und in Runde 2
+  einen HIGH, den kein Fall trug (ein Exit 1 des `docker`-Aufrufs selbst wurde als Formel-Unterschied
+  gemeldet); Runde 4 endete ohne HIGH und MEDIUM. Der Verifier fuhr den realen Rot-Beleg selbst, die
+  Transport-Klassen mit dem realen `docker` und die Token-Sonde; die Zähne 409 bis 434 wandte er nach seiner
+  Aussage je in einer Scratchpad-Kopie an, die Tabelle des Berichts führt Meldung und Gegenprobe für die dort
+  genannten Klassen (Bericht §3 und §4; grün heißt: die Zusicherung bindet).
+- **Die Ebene, auf der der Exit-Vertrag gilt:** das **Skript**, nicht `make`
+  ([ADR-0066](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md), `Proposed`). Über
+  `make` endet jeder Fehlschlag mit Prozess-Exit 2 (GNU Make 4.3, vom Verifier gemessen); die Klasse trägt
+  die letzte stderr-Zeile des Skripts `tap-check: Exit <N>`, genau einmal, bei Exit 1 und 2 — über
+  `make tap-check` aus dem Wurzelverzeichnis die **vorletzte** Zeile, ihr folgt die Meldung von `make`.
+  Gelesen wird die Zeile, nicht ihre Position.
+- **Realer Rot-Beleg (Liefer-Punkt 3 (b)) — vom Verifier gefahren, datiert 2026-09-25, Tap `0.2.3`,
+  ohne `TAP_TOKEN`** (Bericht §3.1): `TAG=v0.2.2 bash harness/tools/tap-nachzug.sh check` → Skript-Exit 1
+  nach der Wiederholung des Lesens (65 s), Digest des Assets `9071e698…4089`, Digest des Tap-Kopfs
+  `a5a1c165…da1f2`, erste abweichende Zeile des zweiten Lesens Zeile 11 (`version "0.2.2"` gegen
+  `version "0.2.3"`), letzte stderr-Zeile `tap-check: Exit 1`. `make tap-check TAG=v0.2.2` → Prozess-Exit 2,
+  die Zeile des Skripts als vorletzte Zeile, dahinter `make: *** [Makefile:493: tap-check] Fehler 1` (deutsche
+  Locale; die Ziffer ist kein Vertrag). `v0.2.3` endet über Skript und `make` mit Exit 0. Die Ausgabe ist
+  gelesen: Exit 1 ist ein Formel-Unterschied, kein Lesefehler. **Der Beleg gilt für den Tap-Stand am Tag der
+  Messung** und wandert mit jedem Schnitt. `make tap-check TAG='v1.0.0$(id)'` (einfaches `$`) endet
+  ebenfalls mit Exit 2, aber im Transport (Asset nicht auffindbar) statt in der Formprüfung: `make`
+  wertet das Argument vor dem Skript aus — die im Plan benannte Grenze; die Form `v1.0.0$$(id)` endet in der
+  Formprüfung (Bericht §3.1).
+- **`make mutate` (Closure-Trigger 2 der Zähne):** Lauf-Zeile `mutate: 422 ok, 0 Befund(e)`, Kommando
+  `make mutate`; die Fall-Zahl der Zeile ist die der Dateien (`ls test/mutations/*.sh | wc -l` → **422**,
+  gemessen 2026-09-25), davon die Fälle dieses Slice `ls test/mutations/4{09..34}-*.sh | wc -l` → **26**.
+  **Baum-Stand:** Commit `90be56c9` (00:44), Lauf laut Schlüsseldatei `.harness/state/mutate-passed.key` um
+  01:25; zwischen beiden liegt kein Commit (`git log --format='%h %ad' --date=format:%H:%M -n 3` nennt
+  `40c99693` 01:57, `90be56c9` 00:44, `37fd1e61` 00:44). Der Arbeitsbaum zum Zeitpunkt des Laufs ist nicht
+  eigens belegt. **Nach dem Lauf sind nur der Verifikationsbericht und die Closure-Artefakte
+  hinzugekommen:** `git diff --name-only 90be56c9..HEAD` → allein
+  `docs/reviews/2026-09-25-verify-slice-tap-check-haelt-die-formel-gegen-das-veroeffentlichte-asset.md`,
+  und `git diff --stat 90be56c9..HEAD -- harness test Makefile .d-check.yml` ist leer — kein Prüfgegenstand
+  hat sich geändert, darum kein zweiter voller Lauf. Der Schlüssel selbst ist damit nicht neu berechnet
+  (`isolation_key_files` in `harness/tools/mutate.sh` nimmt alles außer `.harness/state` und `.git`; der
+  Bericht und diese Closure ändern ihn) — der Restzweifel des Verifiers (V-1, Ü-2) bleibt benannt und ist
+  eine Beobachtung im Register.
+- **Handoff-Zahlen, je mit ihrem Kommando** (gemessen 2026-09-25, keine Erwartungswerte):
+  `grep -c '^@test' test/tap-nachzug.bats` → **37** Fälle (im Bild ohne Netz vom Verifier grün gefahren:
+  0 `not ok`); `ls test/mutations/4{09..34}-*.sh | wc -l` → **26** Zähne;
+  `ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l` → **171** Verzeichnisse im Register.
+- **Was ging anders als geplant — gebaut, aber nicht geplant.** Der Status-10-Kanal zwischen Nutzlast und
+  Host-Skript samt seiner Restmenge (ein `docker`-Aufruf, der selbst mit 10 endet, gilt als Formel-Unterschied
+  ohne Digests; vom Verifier gemessen, im Skript-Kopf und in §1 benannt), die Abbildung interner Fehler der
+  Nutzlast auf Klasse 2 (`mktemp`, `cmp` mit Status 2, Kommando mit Status 1 oder ab 3) und die Zahlprüfung
+  von `TAP_WAIT` (Verifier §6). Ursache: die Befunde der Runden 1 bis 3. Der Abnahme-Wortlaut wurde nach den
+  Runden vom Planner nachgezogen (`bfae848f`, `0f6d569c`), nicht von der ausführenden Rolle
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.10). Zähne über die Aufzählung der DoD hinaus: 418 bis 420, 424 bis
+  426 und 434 (Verifier §2). Die Eingabe-Form der Plan-DoD für den lokalen Weg ist `v1.0.0$$(id)`; das einfache
+  `$` fällt unter die benannte Grenze der Auswertung durch `make` (V-3, oben).
+- **Zur Klausel *jeder Fall wird einmal unter der Schwächung rot gesehen* (Liefer-Punkt 2).** Getragen ist sie
+  für die 26 Zähne (Lauf `422 ok`) und für die Sonden, die der Verifier zusätzlich fuhr (Token, Vorab-Kopplung,
+  Negativ-Assertion des Transport-Falls, Tag-Form, Exit-Zeile, Bericht §4). **Nicht einzeln gegen die 37 Fälle
+  abgezählt** ist, welche Fälle ohne Zahn und ohne Sonde des Verifiers bleiben; der Haken 2 stützt sich auf
+  das Gesamturteil des Verifiers (*bestätigt, keine DoD-Verletzung*), nicht auf eine Liste je Fall.
+- **`make gates` (Closure-Trigger 2):** Stempel `9308974eb29a…` am Stand `90be56c9` deckungsgleich
+  (Verifier §1, `bash harness/tools/working-tree-hash.sh` gegen `.harness/state/gates-passed.diffsha`), Code
+  seither unverändert (siehe oben); der Lauf über den Closure-Stand steht in der Übergabe an den
+  Auftraggeber, nicht in dieser Datei.
+- **Adressen vor dem Move (`AGENTS.md` §3.11):** kein eingefrorenes Artefakt nennt den Slice als Pfad —
+  `git grep -nE 'in-progress/slice-tap-check|slice-tap-check-haelt-die-formel-gegen-das-veroeffentlichte-asset\.md'`
+  außerhalb der Plan-Datei selbst → kein Treffer (gemessen 2026-09-25); die Reviews und Berichte nennen die
+  Kennung, keinen Pfad.
+- **Steering-Loop-Eintrag (Form: benannte Spec-Lücke).** Die Fitness-Zeile *Rot-Beleg* der
+  [ADR-0064](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
+  (`Accepted`) sagt für `make tap-check` gegen `v0.2.2` Exit 1 zu; über `make` endet der Prozess mit Exit 2.
+  Die Lücke ist an ihrer Stelle benannt — in
+  [ADR-0066](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md) (`Proposed`; Klasse gleich
+  Exit des Skripts, Träger über `make` die Zeile des Skripts, Teil-Ablösung der drei betroffenen Stellen) und in
+  Skript-Kopf, Makefile-Kommentar und README-Zeile. Dieser Lauf schreibt die ADR nicht um
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.4, §3.8); die Lücke bleibt eine Lücke, bis der Auftraggeber die
+  ADR annimmt. Die Klasse dahinter — *eine Exit-Zusage für `make <ziel>`, am Skript gemessen* — steht als
+  Beobachtung im Register
+  ([`exit-zusage-aus-anderem-aufruf-abgeleitet`](../observations/BEO-ALL/exit-zusage-aus-anderem-aufruf-abgeleitet/observation.md),
+  2×, `offen`). Kein `liegt in`: es wurde mit diesem Slice keine Regel an einem Zielort verkörpert.
+- **Beobachtungs-Register (`../observations/`):** je Beleg
+  `evidence/slice-tap-check-haelt-die-formel-gegen-das-veroeffentlichte-asset.md`; Zähler gelesen am
+  2026-09-25 mit `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`
+  ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)).
+  **Neu angelegt (je 1×, `offen`):**
+  [`negation-mitten-im-bats-fall-ohne-wirkung`](../observations/BEO-ALL/negation-mitten-im-bats-fall-ohne-wirkung/observation.md)
+  (Runde 1; der Bestand von 46 `!`-Zeilen in 15 anderen `bats`-Dateien ist **benannt, nicht gezählt** —
+  wie viele davon mitten im Fall stehen und wirkungslos sind, ist nicht gemessen),
+  [`zusage-mit-bats-bindung-ohne-eigenen-mutations-fall`](../observations/BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall/observation.md)
+  (der Wortlaut der `*)`-Meldung hängt allein an der Fall-Assertion; die Nachbarn
+  `neuer-waechter-ohne-mutations-fall` und `zeichenmenge-mitglied-ohne-eigenen-zahn` decken die Ebene nicht) und
+  [`weite-assertion-verdeckt-die-bindung-der-engen`](../observations/BEO-ALL/weite-assertion-verdeckt-die-bindung-der-engen/observation.md)
+  (Verifier V-2). **Ergänzt, je eine Evidence-Datei:**
+  [`eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`](../observations/BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet/observation.md)
+  (der Ruhe-Marker der Roadmap; Zähler 4×, Stand `geplant` unverändert),
+  [`waechter-misst-die-fixture-statt-der-realen-quelle`](../observations/BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/observation.md)
+  (Zähler 2×, `offen`; trägt die drei Risiken Fixture, Cache-Fenster und Lese-Limit als **eine**
+  Gelegenheit),
+  [`exit-zusage-aus-anderem-aufruf-abgeleitet`](../observations/BEO-ALL/exit-zusage-aus-anderem-aufruf-abgeleitet/observation.md)
+  (2×, `offen`),
+  [`mutate-beleg-verfaellt-mit-jedem-commit-und-jedem-nachsehen-lauf`](../observations/BEO-ALL/mutate-beleg-verfaellt-mit-jedem-commit-und-jedem-nachsehen-lauf/observation.md)
+  (2×, `offen`) und
+  [`bedingung-ohne-traeger-im-lauf-den-sie-bindet`](../observations/BEO-ALL/bedingung-ohne-traeger-im-lauf-den-sie-bindet/observation.md)
+  (der Nachzug bei einem Accept von [ADR-0066](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md); 2×, `offen`). **Nicht erhöht:**
+  [`zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`](../observations/BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor/observation.md)
+  bleibt bei 2× — beide Paare tragen einen vergleichenden Fall (Kopplungsfälle `pin-kopplung:` und
+  `vorab-tag: die Regel …`, Verifier §5) — und
+  [`neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md)
+  (der Slice nennt seine Fälle 409 bis 434). **Lese-Schritt:** keine Beobachtung erreicht mit diesem Slice
+  neu 3×; `eigentums-frage-…` steht über der Schwelle und trägt ihren Ausgang schon. **Keine Regel getragen
+  haben** die Finding-Klassen der Review-Runden, die nirgends als Beobachtung stehen (etwa *Locale-abhängige
+  Meldung als Zusage zitiert*, *Kommentar-Liste weicht vom Code ab*, *Prozess-Zustand im Plan-Fließtext
+  überholt*): kein Eintrag ohne benannte Wiederkehr — sie bleiben in den Summary-Zeilen der Reports.
+- **Folge-Slices:** *Adressen, keine Anlage in dieser Closure.*
+  (1) `slice-tap-nachzug-ist-schritt-der-release-prozedur` (liegt in `open/`) — der Planner schneidet ihn um,
+  bevor er `next/` wird: die Kontrolle liefert dieser Slice, der Prozedur-Wortlaut für den Formel-Unterschied
+  ist *„`tap-check` rot mit der Zeile `tap-check: Exit 1`"* (die Zeile, nicht ihre Position), dazu
+  `docs/user/releasing.md`; der Stand von [ADR-0066](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md) ist Prüfpunkt des Umschnitts (§6).
+  (2) Der `sync`-Schnitt (Modus `sync`, `make tap-nachzug`) — **noch ohne Kennung und ohne Datei:** §1
+  (*Ausdrücklich NICHT*, erster Punkt) ist seine Adresse; er zieht drei Zusagen aus `check` mit: den
+  Status-10-Kanal samt Restmenge (Re-Evaluierungs-Trigger 3 von [ADR-0066](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md)), die Exit-Zeile mit `tap-sync:`
+  und den Vergleich, der nur **einmal** im Code steht (Schritt g ist `check` erneut).
+  (3) Der Job-Slice (Release-Job `tap`, Umgebung samt Tag-Regel, Secret `TAP_TOKEN`) — **noch ohne Kennung**,
+  nach `sync`; Anlage von Umgebung und Secret ist Handlung des Auftraggebers (§1, zweiter Punkt).
+  Die Frage nach der schreibenden Rolle des Ruhe-Markers ist keine Slice-Arbeit, sondern eine
+  Architect-Frage; ihr Träger ist das Register (`eigentums-frage-…`).
+- **Risiken aus §6:** sieben, je ein Ausgang — *entfallen* mit Grund: Byte-Treue, Vorab-Kopplung,
+  Slice-Größe; *weiter offen → Register:* Fixture, Cache-Fenster und Lese-Limit
+  (`waechter-misst-die-fixture-statt-der-realen-quelle`), [ADR-0066](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md)
+  (`bedingung-ohne-traeger-im-lauf-den-sie-bindet`). Keines ist *eingetreten*.
+- **Drei Paarungen:** Dieses Repo führt Wellen-Betrieb; sie prüft die nächste Welle-Closure — auch für
+  diesen wellenlosen Slice (`modul-06-roadmap.md` §Wann Arbeit eine Welle braucht, Tabelle *Träger im Repo
+  ohne Wellen*). Der Slice trägt keinen Eintrag mit `liegt in` (Anker-Paarung ohne Gegenstand); der
+  Folge-Slice mit Datei ist `slice-tap-nachzug-ist-schritt-der-release-prozedur`; jede genannte Beobachtung
+  ist ein Verzeichnis mit nicht leerem `evidence/`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
