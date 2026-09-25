@@ -51,7 +51,7 @@ Kommando, das sie liefert).
 **Berührte Spec-Stellen:** — (der Slice berührt keine Spec-Stelle des Vertrags; Gegenstand ist der
 Inhalt einer emittierten Konfigurationsdatei).
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-24.
 
@@ -234,7 +234,7 @@ Aussagen-Berührung steht hier gar nicht.
 | `internal/emit/emit_test.go` | update | Liefer-Punkt 2: der Go-Test der Vorlage (`TestDCheckConfig_EntschiedeneModulListe` steht dort) bekommt die Menge der Token und der Regeln |
 | `harness/tools/full-smoke.sh` | update | Liefer-Punkt 3: grüner Start je Sprache und Architektur, die Stufen mit Kopfzeile und die Zähne im Ziel |
 | `docs/user/e2e-abdeckung.md` | update (erzeugt) | `make e2e-abdeckung` — den Inhalt der erzeugten Datei hält ein Fall in `test/e2e-abdeckung.bats` |
-| `test/mutations/` <!-- d-check:ignore (geplante Dateien) --> | neu | Liefer-Punkt 3 (c): die Zähne; Nummern im Anschluss an die höchste **vergebene** (`ls -1 test/mutations/*.sh \| sed -n 's#.*/\([0-9]*\)-.*#\1#p' \| sort -n \| tail -1` → **408**, gemessen 2026-09-24, kein Erwartungswert) |
+| `test/mutations/` <!-- d-check:ignore (geplante Dateien) --> | neu | Liefer-Punkt 3 (c): die Zähne; Nummern im Anschluss an die höchste **zum Anlagezeitpunkt vergebene** — der Implementer liest sie dort (`ls -1 test/mutations/*.sh \| sed -n 's#.*/\([0-9]*\)-.*#\1#p' \| sort -n \| tail -1`), sie steht hier nicht; andere Läufe vergeben Nummern zwischen Schnitt und Anlage |
 | Bericht der Zell-Messung | kein Bestandsprodukt | Liefer-Punkt 1: Handoff des Implementers, siehe §1 |
 
 - **Reihenfolge:** Messung des Ist-Stands → Vorlage samt Go-Test (`make test`, netzlos) → grüner Start je
@@ -304,6 +304,10 @@ Die Ausgänge setzt die Closure; bis dahin steht hinter jedem Risiko `Ausgang: o
 - **Der Herkunfts-Kommentar sagt über das Ziel mehr, als der Emitter dort tut** (ein bestehendes Ziel
   bekommt die Änderung nicht). Liefer-Punkt 2 bindet die Aussagen an den Zweig des Emitters. —
   **Ausgang:** offen bis Closure.
+- **Ein Fall bindet weniger, als sein Name sagt** — die drei Klassen aus §8 (eine `!`-Negation mitten
+  im `bats`-Fall, eine weite Assertion über einer engen, eine Zusage ohne eigenen Mutations-Fall). Der
+  Slice führt sie nicht als Liefer-Punkt; der Träger ist die Gegenprobe je Zahn und die Lesung der
+  Meldung im Review. — **Ausgang:** offen bis Closure.
 - **Der Slice ist größer als eine Review-Sitzung.** Der Schnitt entlang der Positionen steht in §4.
   — **Ausgang:** offen bis Closure.
 
@@ -355,11 +359,11 @@ ist die Frage der Deklaration und nicht dieses Slice — er liest sie als vorhan
 Sensor).
 
 **Vorgelagert — offene Beobachtungen sichten:** Das Register
-(`ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l` → **168**, gemessen 2026-09-24, kein
-Erwartungswert) ist nach Verzeichnisname durchgegangen; Sub-Area ist überall `*`. Die Zähler-Stände
-unten sind die Zahl der Dateien unter dem `evidence/` des Eintrags
-(`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence | wc -l`, gemessen 2026-09-24). Treffer
-nach Sachbezug:
+(`ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l` → **171**, gemessen 2026-09-25 bei der
+Priorisierung, kein Erwartungswert) ist nach Verzeichnisname durchgegangen; Sub-Area ist überall `*`.
+Die Zähler-Stände unten sind die Zahl der Dateien unter dem `evidence/` des Eintrags
+(`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence | wc -l`, gemessen 2026-09-25; die vier
+zuerst genannten Stände stehen gegenüber dem Schnitt unverändert). Treffer nach Sachbezug:
 
 - [`emittierter-stand-laeuft-dem-dogfood-voraus`](../observations/BEO-ALL/emittierter-stand-laeuft-dem-dogfood-voraus/observation.md)
   — **1×**. Die Vorlage ist mit diesem Slice **absichtlich** strenger als die eigene `.d-check.yml`
@@ -374,6 +378,22 @@ nach Sachbezug:
 - [`zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`](../observations/BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor/observation.md)
   — **2×**, nach Urteil **berührt, nicht erhöht:** Vorlage und eigene Konfiguration unterscheiden sich
   deklariert, ihre Gleichheit wird nicht behauptet.
+
+- [`negation-mitten-im-bats-fall-ohne-wirkung`](../observations/BEO-ALL/negation-mitten-im-bats-fall-ohne-wirkung/observation.md)
+  — **1×**, `offen`. Berührt, sobald der Slice einen `bats`-Fall anlegt oder anfasst (der Fall in
+  `test/e2e-abdeckung.bats` für die erzeugte Datei; kein neuer Fall ist geplant): eine `!`-Negation,
+  die nicht das letzte Kommando des Falls ist, bindet nichts. Kein Sensor meldet die Klasse; Träger
+  ist das Review, das jede Negation gegen ihre Stellung im Fall liest.
+- [`weite-assertion-verdeckt-die-bindung-der-engen`](../observations/BEO-ALL/weite-assertion-verdeckt-die-bindung-der-engen/observation.md)
+  — **1×**, `offen`. Berührt durch Liefer-Punkt 3 (c) und den Go-Test aus Liefer-Punkt 2: hält ein Test
+  eine Position mit einer weiten **und** einer engen Assertion, fängt die weite jede Mutation, die die
+  enge fangen soll. Die Gegenprobe je Zahn (Liefer-Punkt 3 (b), beide Richtungen) ist der Träger.
+- [`zusage-mit-bats-bindung-ohne-eigenen-mutations-fall`](../observations/BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall/observation.md)
+  — **1×**, `offen`. Berührt: der Herkunfts-Kommentar (Liefer-Punkt 2) und die Meldungs-Lesung der
+  Gegenbeispiele sind Zusagen, die an einer Assertion hängen können, ohne dass ein Fall in
+  `test/mutations/` sie führt. Liefer-Punkt 3 (c) führt je Zahn einen Fall; die Zusagen darüber hinaus
+  bleiben Urteil des Reviews. **Ein dritter Treffer** einer der drei Klassen durch diesen Slice hebt
+  sie über die Schwelle — ob die Closure ihn zählt, ist ihr Urteil.
 
 Andere Einträge nach Namenslesung nicht berührt (Urteil, kein Sensor).
 
