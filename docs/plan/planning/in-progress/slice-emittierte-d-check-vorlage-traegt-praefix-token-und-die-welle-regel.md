@@ -96,7 +96,9 @@ Frage, die dieser Plan nicht entscheidet.
 jedes Stück ist eine Wiederholung einer vorhandenen Form (`full-smoke`-Zahn, `test/mutations/`-Fall).
 Die zwei benannten Grenzen der Vorlage (Ausschlüsse unten) sind Inhalt des Kommentars aus Liefer-Punkt 2
 und Inhalt des Berichts aus Liefer-Punkt 1; sie sind keine Lieferung neben den drei, und Größe und
-Schichten ändern sich nicht.
+Schichten ändern sich nicht. Die zwei Fälle zur Ableitung der Kombinationen (Liefer-Punkt 3 (c)) liegen
+in `test/mutations/` und mutieren den Träger nur in der Kopie: sie sind Zähne desselben Liefer-Punkts,
+keine vierte Lieferung, und der Träger bleibt im Bestand unberührt (Schichten: Emission und Test/E2E).
 **Schnitte man Liefer-Punkt 3 heraus, lieferte der Slice Positionen ohne das rot gesehene
 Gegenbeispiel, das
 [ADR-0065](../../adr/0065-emittierte-kennungs-form-folgt-dem-regelwerk.md) Festlegung 6 als
@@ -159,7 +161,9 @@ umgeschnitten wird.
 - **Ein Träger-seitiger Vertrag für die Liste der Sprachen und Architekturen** (eine maschinenlesbare
   Ausgabe statt des Wortlauts einer Fehlermeldung) — *Schicht-Abgrenzung:* er änderte den Träger
   (`cmd/`, `internal/gen/`), dieser Slice berührt allein Vorlage, Test und E2E. Die Stufe liest die
-  Meldung und schlägt fail-closed an; die Grenze steht in Liefer-Punkt 3 (a) und §6. Ob ein Vertrag
+  Meldung und schlägt fail-closed an; die Grenze steht in Liefer-Punkt 3 (a) und §6. Die **Inhalte** der
+  Listen halten Go-Tests über `Available` der Fehlertypen (Sprachliste, Union und die Liste von `cpp`);
+  allein das **Format** der Meldung hat keinen Halter. Ob ein Vertrag
   nötig ist, ist eine Entscheidung des Architect; dieser Slice schneidet ihn nicht, und Größe und
   Schichten bleiben (drei Liefer-Punkte, zwei Schichten).
 - **Das Regelwerk selbst** — *es wäre ein anderer Vorgang:* der Widerspruch zwischen dem Text von
@@ -233,31 +237,53 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 - [ ] **Liefer-Punkt 3 — die Erprobung im Ziel.** (a) *Grüner Start:* das frisch gebootstrappte Ziel
       fährt `make docs-check` mit `0 Befund(e)` — sprach-agnostisch (ohne `--lang`) **und** je Sprache
       und Architektur, die das Werkzeug trägt (`--lang` mit `--arch flat|hexagonal|hexslice`; eine
-      Kombination, die die Sprache nicht trägt, endet mit Exit 2 und ist kein Fall). Der Beleg der ADR
+      Kombination, die die Sprache nicht trägt, endet mit Exit 2 und der Meldung `unbekannte
+      Architektur`, deren Liste `verfuegbar:` die Architektur nicht nennt, und ist kein Fall). Der Beleg der ADR
       (`cat spec/*.md | grep -cE '(slice|welle)-'` im Ziel → 0) misst den sprach-agnostischen Lauf
       allein; die Läufe mit Sprache werden **gemessen, nicht angenommen**. *Was „je Sprache und
       Architektur, die das Werkzeug trägt" bindet:* die Kombinationen der Stufe sind **aus dem Träger
       abgeleitet, nicht geschrieben.** Die Stufe liest die Sprachen aus der Fehlermeldung `unbekannte
       Sprache …; verfuegbar: …` und die Architekturen aus `unbekannte Architektur …; verfuegbar: …`
       (`SupportedLangs()` und `SupportedArchs()` in `internal/gen/`; die zweite ist der Union aus
-      `langArchs()`) und fährt jede Sprache gegen jede Architektur; endet eine Kombination mit Exit 2 und
-      der Meldung `unbekannte Architektur`, ist sie vom Träger nicht getragen und kein Fall. Die Stufe
-      **schlägt fail-closed an** (Exit 1), wenn eine der beiden Meldungen keine Namen nennt oder eine
-      genannte Sprache in keiner Kombination grün anläuft. **Bricht, wenn** eine Sprache oder Architektur,
-      die das Werkzeug trägt, in diesen zwei Meldungen fehlt, oder die Meldungen einen Namen nennen, den die
-      Stufe nicht fährt — dann sagt die Stufe mehr, als sie misst. **Belegt** (Implementer, Scratchpad-Träger
-      und Shim; der Verifier wiederholt beides): ein Träger, dessen `langArchs()` um `cpp hexagonal`
-      ergänzt ist, wird mit einer Kombination mehr gefahren, als die frühere feste Liste führte — die
-      Ableitung folgt der Quelle, ohne dass die Stufe geändert wird; ein Shim, der `verfuegbar: ` in der
-      Meldung ändert, endet die Stufe mit Exit 1 und Meldung, statt mit weniger Kombinationen grün zu
-      bleiben. **Nicht belegt:** eine Meldung, die ihr Format behält und einen Namen auslässt, den der
-      Träger trägt (die Ableitung liefert dann zu wenig Kombinationen ohne Fehler, solange jede genannte
-      Sprache grün anläuft), und eine Sprache, die der Träger trägt und `SupportedLangs()` nicht nennt.
-      **Grenze:** Der Wortlaut einer Fehlermeldung des Trägers ist die Quelle der Stufe, und kein Vertrag
-      hält ihn (`grep -rn 'verfuegbar: ' --include='*_test.go' internal cmd | wc -l` → **0**, gemessen
-      2026-09-25, kein Erwartungswert); fail-closed ist die Stufe gegen eine Umbenennung, nicht gegen eine
-      Änderung des Inhalts bei gleichem Format. Sie steht als Grenze hier und in §6; ein Träger-seitiger
-      Vertrag ist §1 ausgeschlossen. (b) *Je Regel und Muster ein
+      `langArchs()`) und fährt jede Sprache gegen jede Architektur. **Der Träger nennt in der Meldung
+      `unbekannte Architektur` bei einer Sprache mit gültigem Namen die Architekturen dieser Sprache**
+      (`archsForLang()`; `cpp --arch hexagonal` → `verfuegbar: flat, hexslice`), **bei einem unbekannten
+      Architekturnamen die Union** (`SupportedArchs()`). Endet eine Kombination mit Exit 2 und der Meldung
+      `unbekannte Architektur "<arch>"`, gilt sie als vom Träger nicht getragen und ist kein Fall **nur
+      dann, wenn die `verfuegbar:`-Liste derselben Meldung die abgelehnte Architektur nicht nennt**; nennt
+      sie diese selbst oder ist sie leer, lehnt der Träger eine getragene Kombination ab (oder die Meldung
+      ist nicht einzuordnen), und die Stufe endet mit Exit 1. Die Stufe **schlägt fail-closed an**
+      (Exit 1), wenn eine der beiden Meldungen keine Namen nennt oder eine genannte Sprache in keiner
+      Kombination grün anläuft. **Bricht, wenn** eine Sprache oder Architektur, die das Werkzeug trägt, in
+      diesen zwei Meldungen fehlt, die Meldungen einen Namen nennen, den die Stufe nicht fährt, oder die
+      Stufe eine Ablehnung als kein Fall verbucht, deren Liste die abgelehnte Architektur selbst nennt —
+      dann sagt die Stufe mehr, als sie misst. **Gegenbeispiel (rot zu sehen):** der Träger lehnt eine
+      getragene Kombination mit `unbekannte Architektur` und einer Liste ab, die die Architektur selbst
+      nennt → Stufe rot (Exit 1); ohne den Vergleich mit der Liste bliebe sie grün. **Belegt**
+      (Implementer, Scratchpad-Träger, Shim und mutierte Kopie; der Verifier wiederholt es): ein Träger,
+      dessen `langArchs()` um `cpp hexagonal` ergänzt ist, wird mit einer Kombination mehr gefahren, als die
+      frühere feste Liste führte — die Ableitung folgt der Quelle, ohne dass die Stufe geändert wird; ein
+      Shim, der `verfuegbar: ` in der Meldung ändert, endet die Stufe mit Exit 1 und Meldung, statt mit
+      weniger Kombinationen grün zu bleiben; ein Shim, der `go --arch flat` mit Exit 2 und einer Liste
+      ablehnt, die `flat` nennt, endet die Stufe mit Exit 1, und der Fall 444 färbt die Stufe in einer
+      mutierten Kopie über `make full-smoke` rot (Exit 2 mit der erwarteten Zeile), während der Code ohne
+      den Vergleich unter derselben Mutation grün bleibt. **Nicht belegt:** eine in sich stimmige
+      Fehlmeldung — der Träger lehnt eine getragene Kombination mit Exit 2 und einer Liste ab, die die
+      Architektur nicht nennt (etwa `go --arch flat` abgelehnt mit `verfuegbar: hexagonal, hexslice`) —, sie
+      ist aus der Meldung allein von einer echten Ablehnung nicht zu unterscheiden und bleibt grün (die
+      Kombination fehlt dann im Lauf); eine Liste, die einen Namen auslässt, den kein Go-Test über
+      `Available` hält (die Liste von `go`), sie liefert weniger Kombinationen ohne Fehler, solange jede
+      genannte Sprache grün anläuft; eine Sprache, die der Träger trägt und `SupportedLangs()` nicht
+      nennt; und der Fall 445 über einen vollständigen `full-smoke`-Lauf (er ist über die Stufen-Sonde mit
+      mutiertem Träger belegt, Gegenprobe: feste Listen bleiben grün; `make mutate` fährt ihn am
+      endgültigen Baum). **Grenze:** Der Wortlaut einer Fehlermeldung des Trägers ist die Quelle der Stufe.
+      Die **Inhalte** der Listen halten Go-Tests über `Available` der Fehlertypen — die Sprachliste
+      (`TestGenerate_UnknownLang`), die Union (`TestGenerateArch_UnknownArch`) und die Liste von `cpp`
+      (`TestGenerateArch_LangSpecificArchRejected`); die Liste von `go` hält kein Test über `Available`.
+      Das **Format** der Meldung hält kein Test (`grep -rn 'verfuegbar: ' --include='*_test.go' internal cmd
+      | wc -l` → **0**, gemessen 2026-09-25, kein Erwartungswert): fail-closed ist die Stufe gegen eine
+      Umbenennung des Markers (Fall 445), nicht gegen eine in sich stimmige Fehlmeldung des Trägers. Sie steht
+      als Grenze hier und in §6; ein Träger-seitiger Vertrag ist §1 ausgeschlossen. (b) *Je Regel und Muster ein
       rotes Gegenbeispiel, mit gelesener Meldung* (die Regel benannt, nicht irgendeine), als
       `full-smoke`-Stufe **mit Stufen-Kopfzeile** — sonst fällt sie aus `make e2e-abdeckung`, dessen
       erzeugte Datei nachgezogen wird: ein benannter Slice-Name in einer ADR · ein Welle-Name in einer
@@ -272,9 +298,22 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Präfix zurück in die Ziffern-Form (je Klasse), die Regel `spec-straten → welle` gestrichen, das
       `ids`-Muster ohne Segment, der Glob ohne Bereichs-Präfix, und die Link-Pflicht des ADR-Musters
       (`link-policy: always` auf der ADR-Zeile von `ids` abgeschaltet — die Zusicherung im Go-Test
-      liest dort nur diese Zeile, nicht die Datei, deren Kommentar den Ausdruck ebenfalls nennt); der
-      `sed`-Anker jedes Falls am
-      **heutigen** Quell-Bestand gemessen ([`MR-071`](../../../../harness/conventions.md#mr-071)).
+      liest dort nur diese Zeile, nicht die Datei, deren Kommentar den Ausdruck ebenfalls nennt). **Die
+      zwei Zusagen der Stufe nach (a) tragen je einen Fall, weil sie Zusagen des Plans sind:** der
+      Vergleich der abgelehnten Architektur mit der Liste derselben Meldung (Fall 444: die Liste der
+      Meldung `unbekannte Architektur` nennt die abgelehnte Architektur selbst → die Stufe endet mit
+      Exit 1) und die Ableitung der Sprachen aus der Träger-Meldung statt aus festen Listen (Fall 445: der
+      Marker `verfuegbar: ` der Sprachliste wechselt → die Stufe endet mit Exit 1). Beide mutieren den
+      Träger in der Kopie und lassen ihn im Bestand unverändert; Erwartungs-Stufe ist `full-smoke`
+      (`# verify: full-smoke`), weil kein Go-Test die Stufe führt. Der Fall 444 ist mit Rot, Gegenprobe
+      und `make full-smoke` in einer mutierten Kopie belegt; der Fall 445 über die Stufen-Sonde, nicht
+      über einen vollständigen `full-smoke`-Lauf — **`make mutate` am endgültigen Baum trägt den Beleg
+      beider**, der Verifier fährt ihn. Der `sed`-Anker jedes Falls ist am
+      **heutigen** Quell-Bestand gemessen ([`MR-071`](../../../../harness/conventions.md#mr-071)); für 444
+      und 445 trifft er in `internal/gen/gen.go` je eine Stelle
+      (`grep -c 'Available: archsForLang(lang)}' internal/gen/gen.go` → **1** ·
+      `grep -c '; verfuegbar: %s", e.Lang,' internal/gen/gen.go` → **1**, gemessen 2026-09-25, kein
+      Erwartungswert).
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -373,17 +412,24 @@ Die Ausgänge setzt die Closure; bis dahin steht hinter jedem Risiko `Ausgang: o
   `spec/lastenheft.md` des Ziels → kein Befund) im Verifier-Lauf nicht reproduziert, hat den Grund für
   *entfallen* nicht. — **Ausgang:** offen bis Closure.
 - **Die Kombinationen des grünen Starts weichen von dem ab, was der Träger trägt.** Die Stufe leitet sie
-  aus zwei Fehlermeldungen des Trägers ab (Liefer-Punkt 3 (a)); kommt ein Layout oder eine Sprache hinzu,
-  wird sie gefahren, ohne dass die Stufe sich ändert. Der Träger der Aussage ist die Ableitung samt ihrem
-  fail-closed-Anschlag; der Verifier wiederholt die zwei Sonden des Implementers (Scratchpad-Träger mit
-  einer Kombination mehr in `langArchs()` · Shim, der `verfuegbar: ` ändert) und liest die Meldung.
-  — **Ausgang:** offen bis Closure.
-- **Der Wortlaut der Träger-Fehlermeldung ist die Quelle der Ableitung, und kein Vertrag hält ihn.** Eine
-  Änderung des Inhalts bei gleichem Format (ein Name fehlt in der Liste) lässt die Stufe grün und
-  schmaler; das Format selbst fängt sie. Ein Träger-seitiger Vertrag (eine maschinenlesbare Quelle der
-  Liste am Träger) wäre Änderung an `cmd/` und `internal/gen/`, nicht an diesem Slice (§1). — **Ausgang:**
-  offen bis Closure; ob er den Weg *eingetreten* (Folge-Slice, dessen Kennung dann vergeben wird, nach
-  Entscheidung des Architect), *entfallen* oder *weiter offen* (Register) nimmt, urteilt die Closure.
+  aus zwei Fehlermeldungen des Trägers ab (Liefer-Punkt 3 (a)) und vergleicht die abgelehnte Architektur
+  mit der `verfuegbar:`-Liste derselben Meldung; kommt ein Layout oder eine Sprache hinzu, wird sie
+  gefahren, ohne dass die Stufe sich ändert, und eine getragene Kombination, die der Träger mit einer
+  Liste ablehnt, die sie selbst nennt, endet mit Exit 1. Der Träger der Aussage ist die Ableitung samt
+  Vergleich und fail-closed-Anschlag; der Verifier wiederholt die Sonden des Implementers (Scratchpad-Träger
+  mit einer Kombination mehr in `langArchs()` · Shim, der `verfuegbar: ` ändert · Shim, der `go --arch
+  flat` mit einer Liste ablehnt, die `flat` nennt → Exit 1) und liest die Meldung; dieselbe Ablehnung mit
+  einer Liste ohne `flat` bleibt grün und ist die benannte Grenze, kein Erwartungswert der Sonde. `make
+  mutate` fährt die Fälle 444 und 445 am endgültigen Baum. — **Ausgang:** offen bis Closure.
+- **Der Wortlaut der Träger-Fehlermeldung ist die Quelle der Ableitung, und ihr Format hält kein Vertrag.**
+  Die Inhalte der Listen halten Go-Tests über `Available` (Sprachliste, Union, Liste von `cpp`; die Liste
+  von `go` nicht); das Format — Marker, Trenner, Zeilenform — hält kein Test, und eine in sich stimmige
+  Fehlmeldung des Trägers (getragene Kombination abgelehnt, Liste ohne die Architektur) ist aus der
+  Meldung allein von einer echten Ablehnung nicht zu unterscheiden. Ein Träger-seitiger Vertrag (eine
+  maschinenlesbare Quelle der Liste am Träger) wäre Änderung an `cmd/` und `internal/gen/`, nicht an diesem
+  Slice (§1). — **Ausgang:** offen bis Closure; ob er den Weg *eingetreten* (Folge-Slice, dessen Kennung
+  dann vergeben wird, nach Entscheidung des Architect), *entfallen* oder *weiter offen* (Register) nimmt,
+  urteilt die Closure.
 - **Der Fehlalarm des Präfixes** (`slice-mv`, `slice-lokal`) trifft ein Ziel, das die Wörter in einer
   ADR oder Spec nennt; die ADR nimmt ihn in Kauf und nennt den Ausweg je Klasse. Meldet ein Ziel einen
   Fall, den weder Umformulieren noch Marker löst, ist der Re-Evaluierungs-Trigger 4 der ADR erreicht —
