@@ -3507,7 +3507,7 @@ if ! grep -qF -- '| Spec-Kennung | Kurzbeschreibung | Stufe | Ort |' "$abd_ziel"
 	cat "$abd_ziel" >&2
 	exit 1
 fi
-# (a2) DAS KOMMANDO STEHT IM INDEX DES ZIELS. `make help` ist der eine Index, den eine
+# (a2) DAS KOMMANDO STEHT IM INDEX DES ZIELS. `make help` ist der eine Index, den ein
 # gebootstrapptes Repo von sich aus fuehrt — ein Werkzeug, das dort nicht erscheint,
 # findet niemand. Gelesen wird die AUSGABE des Ziels, nicht das Rezept: das Muster des
 # Hilfe-Rezepts entscheidet, welche Ziele es trifft, und eine Ziffer im Namen hat es
