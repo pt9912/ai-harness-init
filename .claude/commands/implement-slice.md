@@ -117,6 +117,19 @@ schreiben dort fort, und es entsteht kein zweites Artefakt.
 ## Pre-completion-Checkliste (Modul 9, Schritt 8 — letzte Handlung der Implementation-Rolle)
 
 17. Doku, ADR-Index und README aktualisieren, falls ein öffentlicher Vertrag berührt ist.
+    **Gibt Prozedur- oder Nutzer-Doku den Vertrag eines Werkzeugs wieder — Exit-Klassen,
+    Meldungs-Wortlaut, Zahl, Wartezeit, „genau einmal", Reichweite einer Zusage —, zeigt jede
+    Aussage auf die Quelle, die sie trägt (Skript, ADR-Festlegung, gefahrener Lauf), und geht nicht
+    weiter als diese.** Die Quelle ist im selben Lauf zeilenweise gelesen: eine Aufzählung gilt nur
+    dort als abschließend, wo die Quelle sie so führt; eine Regel steht in der Form der Quelle, nicht
+    in einer Kurzform, die eine zugelassene Eingabe anders entscheidet; ein Meldungs-Wortlaut steht
+    für genau die Klasse, die das Skript so meldet; eine Zusage nennt die Ausnahmen der Quelle mit,
+    und ein Absatz über ein Signal, eine Ausnahme oder eine Grenze sagt, was die Quelle dazu sagt;
+    ein Kommando, das eine Eigenschaft belegen soll, belegt sie für jede Datei, die es nennt. Was
+    nur gelesen und nicht gefahren ist, steht als gelesen. Kein Gate hält die Prozedur gegen die
+    Ausgabe des Skripts — die Zeile trägt das Lesen, bevor die Meldung „fertig" geht
+    (`AGENTS.md` §3.6: die Zusage auf das einschränken, was die Quelle hält)
+    (seit slice-tap-nachzug-sync-schreibt-die-formel-ins-tap)
 18. Die Pre-completion-Checkliste laufen: die DoD Punkt für Punkt **behaupten** und die
     **Sensor-Belege** anhängen — `make gates` **und die Nicht-Gate-Sensoren, die den Slice
     betreffen**: einen neuen oder geänderten Wächter belegt die Runde **einzeln** — die Mutation
