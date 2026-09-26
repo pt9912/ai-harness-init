@@ -168,7 +168,7 @@ Abbruch-Meldung führt:
 
 Zwei Ausgänge stehen daneben, weil sie am ruhenden Baum nicht beobachtbar sind: das fehlende
 `WELLE=` fängt der Aufrufer vorher ab, und ein Fehler des Inhalts-Schritts bricht **zwischen** den
-zwei Commits ab und nennt den Rückweg (`git reset --hard HEAD~1 && git clean -fd -- done/<welle-id>`).
+zwei Commits ab und nennt den Rückweg (`git reset --hard HEAD~1 && git clean -fd -- docs/plan/planning/done/<welle-id>`).
 `Anwenden` verpackt jeden Fehler dieses Schritts in `NachCommit1Fehler` — die verletzte Stub-Form
 ebenso wie ein Schreibfehler des Verweis-Nachzugs, der eine Datei halbgeschrieben zurücklassen
 kann; der Nachzug schreibt an Ort und Stelle und macht kein Rollback, und schon nachgezogene
