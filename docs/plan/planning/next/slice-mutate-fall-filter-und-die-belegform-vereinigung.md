@@ -17,7 +17,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 kein repo-weiter Beleg über die Slice-DoDs hinaus, kein Replay; damit fehlt das *Mehr*, an dem sich
 eine Welle entscheidet (Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht).
 Der Schwester-Slice
-[slice-mutate-beleg-gilt-ueber-rollen-dokumente-und-ist-ohne-lauf-lesbar](slice-mutate-beleg-gilt-ueber-rollen-dokumente-und-ist-ohne-lauf-lesbar.md)
+[slice-mutate-beleg-gilt-ueber-rollen-dokumente-und-ist-ohne-lauf-lesbar](../open/slice-mutate-beleg-gilt-ueber-rollen-dokumente-und-ist-ohne-lauf-lesbar.md)
 ist einzeln lieferbar und bildet mit diesem kein Bündel.
 
 **Ebene: Dogfood, nicht emittiert.** `harness/tools/mutate.sh` ist Werkzeug **dieses** Repos
@@ -100,7 +100,7 @@ Infrastruktur sein, um die es geht —, und er meldet seinen Befund laut über E
 - **Die Ursache der Infrastruktur-Rots** (Registry-Zeitüberschreitung, Daemon-Zustand) — *sie liegt
   außerhalb des Repos*; die Beobachtung nennt sie als Ursache jenseits eines Wächters.
 - **Die Beleg-Prüfung ohne Lauf und die Verengung der Bezugsmenge** — *ein Folge-Slice übernimmt es:*
-  [slice-mutate-beleg-gilt-ueber-rollen-dokumente-und-ist-ohne-lauf-lesbar](slice-mutate-beleg-gilt-ueber-rollen-dokumente-und-ist-ohne-lauf-lesbar.md)
+  [slice-mutate-beleg-gilt-ueber-rollen-dokumente-und-ist-ohne-lauf-lesbar](../open/slice-mutate-beleg-gilt-ueber-rollen-dokumente-und-ist-ohne-lauf-lesbar.md)
   führt beides; die Reihenfolge der beiden Slices ist frei.
 
 **Keine Mindestzahl.** Ein Slice mit *einem* echten Ausschluss ist besser als
@@ -215,7 +215,7 @@ einem anderen Slice; die Annahme von
 **Adress-Messung vor dem Move** ([`AGENTS.md`](../../../../AGENTS.md) §3.11): kein eingefrorenes
 Artefakt (`docs/plan/adr/**`, `docs/reviews/**`, `done/**`) nennt diese Datei als Pfad, weder mit
 `open/` als Code-Span noch als Markdown-Link
-(`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-mutate-fall-filter-und-die-belegform-vereinigung\.md|open/slice-mutate-fall-filter-und-die-belegform-vereinigung|\]\(slice-mutate-fall-filter-und-die-belegform-vereinigung' . | grep -v 'planning/open/slice-mutate-fall-filter-und-die-belegform-vereinigung.md' | wc -l`
+(`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-mutate-fall-filter-und-die-belegform-vereinigung\.md|open/slice-mutate-fall-filter-und-die-belegform-vereinigung|\]\(slice-mutate-fall-filter-und-die-belegform-vereinigung' . | grep -v 'planning/next/slice-mutate-fall-filter-und-die-belegform-vereinigung.md' | wc -l`
 → **2**, gemessen 2026-09-26). Beide Treffer stehen im Schwester-Slice in `open/`, einem änderbaren
 Artefakt: `make slice-mv` zieht den präfixlosen Link dort nach.
 
