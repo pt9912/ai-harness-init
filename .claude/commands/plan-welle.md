@@ -73,6 +73,18 @@ eine Antwort** und werden in §8 notiert; trägt die Ablage nur ihre `README.md`
 genau das — nicht *„geprüft"* und nicht gar nichts. Gelesen wird der **gemergte** Stand: das
 Register ist beim Lesen so alt wie der letzte Merge.
 
+**Eine Bedingung, die ein Geber-Artefakt an einen Lauf richtet, der noch nicht existiert, steht im
+Slice-Plan dieses Laufs.** Gemeint sind ein Punkt unter *„Ausdrücklich NICHT"* mit Folge-Schnitt, ein
+Risiko-Ausgang, eine Übergabe eines Review- oder Verifikations-Berichts und eine Folgepflicht einer ADR.
+Der Geber wandert bei seiner Closure nach `done/` und liegt danach in keinem Eingang; der Plan ist das
+Artefakt, das der Lauf liest — die Bedingung steht darum in §1 oder §3 des Plans, der sie trägt. Ein
+Folge-Schnitt ohne Datei ist keine Adresse (Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form:
+Slice, §1 Klasse 1): hängt eine Bedingung an ihm, legt der Planner beim Schließen des Gebers die Datei in
+`open/` an (per `cp` aus dem Template) und trägt die Bedingung dort ein. **Grenze:** Ein Wächter existiert
+nicht — die Zeile ist Feedforward, ihr Bruch färbt kein Gate. Tritt die Klasse nach dieser Zeile erneut
+ein, ist die Trägerschaft der Befund und nicht die Wiederholung; die nächste Stufe ist dann eine Hard Rule
+(Architect, `AGENTS.md` §3.8). · seit slice-tap-nachzug-sync-schreibt-die-formel-ins-tap
+
 6. Existiert ein Slice der Welle noch nicht, ihn **per `cp` aus `slice.template.md`** anlegen
    (`docs/plan/planning/open/slice-<NN>-<titel>.md`), dann füllen. Nie hand-authoren.
 
