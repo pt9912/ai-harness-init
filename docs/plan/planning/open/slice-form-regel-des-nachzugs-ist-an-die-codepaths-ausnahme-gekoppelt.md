@@ -135,7 +135,9 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **Start** (`next` → `in-progress`): `slice-lifecycle-move-schreibt-in-reports-nur-die-link-form` **und**
 `slice-archive-welle-schreibt-in-reports-nur-die-link-form` liegen in `done/`
 (`ls docs/plan/planning/done | grep -c -e slice-lifecycle-move-schreibt-in-reports-nur-die-link-form -e slice-archive-welle-schreibt-in-reports-nur-die-link-form`
-gibt 2 aus) — kein Ergebnis dieses Slice, also ein zulässiger Start-Trigger.
+gibt 2 aus) — kein Ergebnis dieses Slice, also ein zulässiger Start-Trigger. Der erste Träger
+(`slice-lifecycle-move-schreibt-in-reports-nur-die-link-form`) liegt in `done/`, der zweite in `open/`; das Kommando
+gibt am 2026-09-26 **1** aus, der Trigger ist damit zur Hälfte eingetreten.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 

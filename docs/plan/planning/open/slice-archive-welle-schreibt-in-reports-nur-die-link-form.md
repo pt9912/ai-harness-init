@@ -54,7 +54,7 @@ Festlegung 1). Die Erkennung ist syntaktisch, keine Span- oder Fence-Erkennung.
 - **Der Nachzug von `make slice-mv` (Shell)** — ein Folge-Slice übernimmt ihn:
   `slice-lifecycle-move-schreibt-in-reports-nur-die-link-form`. Zweite Sprache, eigene Test-Ebene;
   keiner der beiden Träger wartet auf den anderen, und beide zusammen sprengten das Größenmaß
-  (§3, Größenurteil). Bis der zweite Träger folgt, gilt der Übergang aus
+  (§3, Größenurteil). Der Shell-Träger liegt in `done/`; bis dieser Slice schließt, gilt der Übergang aus
   [`ADR-0070`](../../adr/0070-der-verweis-nachzug-schreibt-in-docs-reviews-nur-die-link-form.md)
   Festlegung 5.
 - **Der Kopplungs-Test gegen `.d-check.yml`** — ein Folge-Slice übernimmt ihn:
