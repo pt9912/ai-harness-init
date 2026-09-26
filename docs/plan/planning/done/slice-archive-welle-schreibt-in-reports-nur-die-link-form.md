@@ -171,7 +171,7 @@ und der Kopplungs-Slice laufen unabhängig.
 **Adress-Messung vor dem Move** ([`AGENTS.md`](../../../../AGENTS.md) §3.11): kein eingefrorenes
 Artefakt nennt diese Datei als Pfad, weder mit `open/` als Code-Span noch als Markdown-Link; die
 Geschwister und das Register nennen sie bei der Kennung
-(`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-archive-welle-schreibt-in-reports-nur-die-link-form\.md|(open|next|in-progress|done)/slice-archive-welle-schreibt-in-reports-nur-die-link-form|\]\(slice-archive-welle-schreibt-in-reports-nur-die-link-form' . | grep -v 'planning/in-progress/slice-archive-welle-schreibt-in-reports-nur-die-link-form.md' | wc -l`
+(`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-archive-welle-schreibt-in-reports-nur-die-link-form\.md|(open|next|in-progress|done)/slice-archive-welle-schreibt-in-reports-nur-die-link-form|\]\(slice-archive-welle-schreibt-in-reports-nur-die-link-form' . | grep -v 'planning/done/slice-archive-welle-schreibt-in-reports-nur-die-link-form.md' | wc -l`
 → **1**, gemessen 2026-09-26). Der eine Treffer ist ein Falsch-Treffer des ersten Zweigs: der Dateiname
 als Muster eines Zähl-Kommandos in der Closure-Notiz des Geschwisters
 `slice-lifecycle-move-schreibt-in-reports-nur-die-link-form` (`done/`), ohne Verzeichnis-Präfix und
