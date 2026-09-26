@@ -8,9 +8,10 @@ aktiviert (`grep -c structure .d-check.yml` → **0**, Exit 1 —
 passend. Keines der Module aus `modules:` der
 [`.d-check.yml`](../../../../../../.d-check.yml) prüft heute die Sektionsfolge einer Datei.
 
-**Ohne Beleg, in der Form, die die Ablage verlangt.** Das einzige Vorkommen steht unter *Benannt,
-nicht gezählt*, und kein abgeschlossener Vorgang trägt es. `slice-114` misst die Abweichung in §1,
-liegt aber in `next/`. Seine Closure legt den ersten Beleg an, wenn er schließt. Die Einstiegs-Datei
-führt inzwischen die acht Abschnitte (`grep -c '^## ' harness/README.md` → 8, kein
-Erwartungswert). Ob ein Verzeichnis ohne Beleg bis dahin stehen darf, entscheidet
-`slice-beleglose-register-eintraege-bekommen-eine-lesart`.
+**Ohne Beleg — ein Befund der Register-Paarung (c), keine Ausnahme**
+([`ADR-0069`](../../../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)).
+Das einzige Vorkommen steht unter *Benannt, nicht gezählt*, und kein abgeschlossener Vorgang trägt es.
+**Weg zum Beleg:** `slice-114` misst die Abweichung in §1, liegt aber in `next/`; seine Closure legt den
+ersten Beleg an, wenn er schließt. Trifft die Aussage nach dessen Closure nicht mehr zu, ist der Weg
+`gestrichen` mit Begründung. Die Einstiegs-Datei führt inzwischen die acht Abschnitte
+(`grep -c '^## ' harness/README.md` → 8, kein Erwartungswert).

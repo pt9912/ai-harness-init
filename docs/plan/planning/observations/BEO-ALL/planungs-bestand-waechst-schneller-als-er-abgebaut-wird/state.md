@@ -5,8 +5,10 @@ Ein Wächter besteht nicht: Kein Modul aus `modules:` der
 Kommandos in der `observation.md` sind ein Bericht, den ein Mensch liest — kein Sensor, der urteilt.
 Träger ist der Lauf, der plant: Er entscheidet je Befund über die dritte Route, die nichts anlegt.
 
-**Ohne Beleg, und nicht aus Versehen.** Die Beobachtung ist eine Aussage über den Bestand und
-trägt kein Auftreten in einem abgeschlossenen Vorgang; ihre `observation.md` nennt den Grund unter
-*Benannt, nicht gezählt*. Die Register-Paarung (c) ist für diesen Eintrag rot und bleibt es benannt.
-Ob ein Verzeichnis ohne Beleg stehen darf, entscheidet
-`slice-beleglose-register-eintraege-bekommen-eine-lesart`.
+**Ohne Beleg — ein Befund der Register-Paarung (c), keine Ausnahme**
+([`ADR-0069`](../../../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+Festlegung 4). Die `observation.md` begründet den fehlenden Beleg damit, dass ein Beleg je Closure
+Closures zählte; dieser Grund trägt keine Ausnahme, und der Rumpf bleibt unverändert. **Weg zum Beleg:**
+jeder abgeschlossene Vorgang, den die Klasse nach dem Urteil des Planners tatsächlich traf, legt
+`evidence/<vorgangs-id>.md`; trifft sie nahezu jede Closure, ist die 3×-Schwelle die Antwort des
+Registers.
