@@ -1,17 +1,28 @@
-**Stand:** offen
+**Stand:** gestrichen
 
-Ein Wächter besteht nicht, obwohl das Werkzeug ihn trüge: Das d-check-Modul `structure` prüft
-Struktur-Invarianten innerhalb eines Dokuments und ist im gepinnten Bild verfügbar, aber nicht
-aktiviert (`grep -c structure .d-check.yml` → **0**, Exit 1 —
-[`MR-024`](../../../../../../harness/conventions.md#mr-024--d-check-pin-v0620-structure-verfügbar)
-§Zweck). Ob es genau diese Gliederung halten könnte, ist **ungemessen**; verfügbar heißt nicht
-passend. Keines der Module aus `modules:` der
-[`.d-check.yml`](../../../../../../.d-check.yml) prüft heute die Sektionsfolge einer Datei.
+**Begründung — die Ursache ist entfallen, am lebenden Baum gemessen.** Die Beobachtung sagt, die
+Einstiegs-Datei führe weniger Sektionen als die Pflichtgliederung und lasse `## Safety and scope boundaries`
+aus, und `## Sensors` laufe als Fließtext um eine kleine Tabelle. Beides trifft nicht mehr zu (Kommandos gegen
+den lebenden Baum und die Vorlage des vendored Stands `v6.9.0`, keine Erwartungswerte):
 
-**Ohne Beleg — ein Befund der Register-Paarung (c), keine Ausnahme**
-([`ADR-0069`](../../../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)).
-Das einzige Vorkommen steht unter *Benannt, nicht gezählt*, und kein abgeschlossener Vorgang trägt es.
-**Weg zum Beleg:** `slice-114` misst die Abweichung in §1, liegt aber in `next/`; seine Closure legt den
-ersten Beleg an, wenn er schließt. Trifft die Aussage nach dessen Closure nicht mehr zu, ist der Weg
-`gestrichen` mit Begründung. Die Einstiegs-Datei führt inzwischen die acht Abschnitte
-(`grep -c '^## ' harness/README.md` → 8, kein Erwartungswert).
+```sh
+grep -c '^## ' harness/README.md                                                    # 8
+grep -c '^## ' .harness/baseline/v6.9.0/templates/harness/README.template.md        # 8
+grep -c '^## Safety and scope boundaries' harness/README.md                         # 1
+awk '/^## Sensors/{f=1;next} /^## /{f=0} f' harness/README.md | wc -l              # 55 Zeilen der Sektion
+awk '/^## Sensors/{f=1;next} /^## /{f=0} f && /^\|/' harness/README.md | wc -l      # davon 40 Tabellenzeilen
+```
+
+Acht Sektionen stehen gegen acht der Vorlage; zwei tragen einen abweichenden Namen
+(`## Guides (Feedforward)` gegen `## Guides (Feedforward-Quellen)`, `## Traceability` gegen
+`## Traceability rules`), keine fehlt. `## Sensors` ist tabellengetragen.
+
+**Grenze der Streichung, benannt.** Ein Wächter besteht nicht: die einzige Regel des Moduls `structure` in der
+[`.d-check.yml`](../../../../../../.d-check.yml) hält `docs/plan/planning/done/slice-*.md`
+(`awk '/^structure:/{f=1;next} /^[a-z]/{f=0} f' .d-check.yml | grep -c 'files:'` → 1), keine Regel hält die
+Sektionsfolge der `harness/README.md`. Die Streichung sagt, dass **diese Aussage** nicht mehr zutrifft — nicht,
+dass die Sektionsfolge nicht erneut abweichen kann; ein neues Vorkommen wäre ein neues Auftreten mit eigenem
+Beleg. Was an der Datei von der Vorlage abweicht, ist heute die **Masse**, nicht die Gliederung:
+`## Traceability` misst 101 Zeilen gegen 6 der Vorlage
+(`awk '/^## Traceability/{f=1;next} /^## /{f=0} f' <datei> | wc -l`), Gegenstand von
+`slice-114` (liegt in `next/`), nicht dieser Beobachtung.
