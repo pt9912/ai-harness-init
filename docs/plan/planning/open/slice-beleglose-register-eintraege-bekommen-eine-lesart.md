@@ -28,8 +28,16 @@ Slice, der die Tool-Ebene entscheidet — die zwei Ebenen tragen verschiedene Ve
 seinen Ausgang bekommt),
 [`AGENTS.md`](../../../../AGENTS.md) §3.8 (die Rolle, der eine Norm-Aussage gehört),
 [ADR-0034](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
-(Festlegung 3 — die Kennung **ist** der Pfad `BEO-<KUERZEL>/<slug>`; Festlegung 4 — die Beleg-Regel
-*ein Vorgang zählt einmal*),
+(Festlegung 3 — die Kennung **ist** der Pfad `BEO-<KUERZEL>/<slug>`; Festlegung 4 ist der
+Migrations-Commit und trägt die Beleg-Regel nicht),
+das Baseline-Regelwerk
+[`modul-06-roadmap.md`](../../../../.harness/baseline/v6.9.0/regelwerk/modul-06-roadmap.md#das-beobachtungs-register-modul-6)
+§Das Beobachtungs-Register (die Beleg-Regel *ein Vorgang zählt einmal — und was keinen hat, zählt gar nicht*;
+die maschinelle Hälfte der Paarung (c)) und die
+[Register-README](../observations/README.md) (Absatz *Ein Vorgang zählt einmal*),
+[ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+(**Proposed** — der Vorschlag des Architect zur Lesart-Frage, die dieser Slice trägt; der Slice nennt sie als
+Bezug und nimmt sie nicht als angenommen),
 [ADR-0049](../../adr/0049-ausgang-traegt-die-benannte-luecke.md) (Festlegung 2 — hat eine Klasse
 keinen Zielort, schneidet der Lese-Schritt einen Träger; das ist der Schnitt),
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) (eine
