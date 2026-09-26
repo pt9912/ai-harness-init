@@ -38,7 +38,7 @@ den Quell-Bestand).
 **Berührte Spec-Stellen:** — (der Slice berührt keine Spec-Stelle; Gegenstand ist ein Werkzeug
 dieses Repos).
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912).
 <!-- BEDIENHINWEIS: Verantwortlich hält die Arbeit — der Rolleninhaber der
 Implementer-Rolle, gesetzt beim Übergang open→next (Baseline-Regelwerk
 modul-05-planning-harness.md §Lifecycle als State Machine). Der Autor schrieb
@@ -74,7 +74,7 @@ Zeitüberschreitungen beim Bild-Bau) und `432 ok, 1 Befund(e)` (ein Container �
 kein einzelner Lauf war grün, die Vereinigung der `ok`-Mengen deckte alle Fälle
 (`ls docs/plan/planning/observations/BEO-ALL/sensor-lauf-endet-rot-an-der-infrastruktur-bevor-der-fall-urteilt/evidence | wc -l`
 → 1, unter der Schwelle). Der Sensor führt keinen Fall-Filter; wer *einen* Befund nachsehen will,
-fährt den ganzen Satz erneut (`ls test/mutations/*.sh | wc -l` → 433; keine Erwartungswerte). Ein
+fährt den ganzen Satz erneut (`ls test/mutations/*.sh | wc -l` → 440; keine Erwartungswerte). Ein
 Nachsehen-Lauf zerstört dabei einen stehenden Beleg: `main()` löscht den Slot bedingungslos, sobald
 der Lauf nicht übersprungen wird (`grep -n '^  clear_belief$' harness/tools/mutate.sh` → 1559; die
 Zeile wandert) — auch ein Nachsehen ohne Absicht, einen Beleg zu widerlegen.
@@ -211,6 +211,13 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 `Verantwortlich:`; kein anderer Slice liegt in `in-progress/` (WIP-Limit). Keine Vorbedingung aus
 einem anderen Slice; die Annahme von
 [ADR-0035](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md) ist keine.
+
+**Adress-Messung vor dem Move** ([`AGENTS.md`](../../../../AGENTS.md) §3.11): kein eingefrorenes
+Artefakt (`docs/plan/adr/**`, `docs/reviews/**`, `done/**`) nennt diese Datei als Pfad, weder mit
+`open/` als Code-Span noch als Markdown-Link
+(`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-mutate-fall-filter-und-die-belegform-vereinigung\.md|open/slice-mutate-fall-filter-und-die-belegform-vereinigung|\]\(slice-mutate-fall-filter-und-die-belegform-vereinigung' . | grep -v 'planning/open/slice-mutate-fall-filter-und-die-belegform-vereinigung.md' | wc -l`
+→ **2**, gemessen 2026-09-26). Beide Treffer stehen im Schwester-Slice in `open/`, einem änderbaren
+Artefakt: `make slice-mv` zieht den präfixlosen Link dort nach.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
