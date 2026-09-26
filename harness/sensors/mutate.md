@@ -40,7 +40,7 @@ bleibt still grün — Existenz und Eindeutigkeit sind geprüft, Richtigkeit ist
 
 | Exit | Bedeutung |
 |---|---|
-| 0 | jeder Fall färbte seinen Wächter rot (`mutate: <n> ok, 0 Befund(e)`), oder ein Beleg über demselben Prüfgegenstand lag vor und kein Fall lief (`mutate: Beleg fuer Pruefgegenstand … liegt vor`) |
+| 0 | jeder Fall färbte seinen Wächter rot (`mutate: <n> ok, 0 Befund(e)`), oder ein Beleg über demselben Prüfgegenstand lag vor und kein Fall lief (`mutate: Beleg fuer Pruefgegenstand … liegt vor`), oder jeder gewählte Fall eines Teillaufs färbte seinen Wächter rot (`mutate: TEILLAUF <n> von <total> — kein Beleg …`) |
 | 1 | mindestens ein Befund (`mutate: BEFUND  <fall>  <grund>` je Fund, Summe in `mutate: <n> ok, <m> Befund(e)`), oder eine Sperre griff |
 | 130 | ein Signal beendete den Lauf; berichtet ist, was bis dahin gemessen war, gekennzeichnet `ABGEBROCHEN` |
 
@@ -54,6 +54,8 @@ beendet, mit 2.
 - `mutate: ABBRUCH — MUTATE_JOBS ist keine Worker-Zahl >= 1` → eine ganze Zahl ab 1 setzen.
 - `mutate: ABBRUCH — MUTATE_STALL_SECONDS ist keine Sekundenzahl >= 1` → eine ganze Zahl ab 1
   setzen.
+- `mutate: ABBRUCH — MUTATE_CASES …` — ein leerer Wert (gesetzt, ohne Namen), ein unbekannter
+  oder ein doppelt genannter Name → die Namen berichtigen (§Teillauf).
 - `mutate: … fehlt` bzw. `mutate: keine Faelle in …` — `test/mutations/` fehlt oder ist leer; ein
   leeres Set ist kein grüner Lauf.
 - `mutate: ABBRUCH — Fingerabdruck der Mutations-Ziele nicht berechenbar.` — unter anderem, wenn
@@ -70,6 +72,54 @@ folgende greift während des Laufs:
 - Stille über `MUTATE_STALL_SECONDS` hinweg (kein Worker zieht oder schließt einen Fall ab) → Lauf
   bricht selbst ab und wird rot; ein hängender Sensor ist sonst von einem langsamen nicht zu
   unterscheiden.
+
+## Teillauf
+
+`make mutate MUTATE_CASES='<fall> <fall> …'` fährt nur die genannten Fälle. Ein Name ist der
+Fall-Name, wie ihn `mutate: BEFUND  <fall>` nennt, mehrere sind durch Leerzeichen getrennt; die
+Reihenfolge der Ausgabe ist die sortierte des Verzeichnisses. Ein leerer Wert (gesetzt, ohne
+Namen), ein unbekannter und ein doppelt genannter Name enden mit
+`mutate: ABBRUCH — MUTATE_CASES …` und dem Namen, bevor eine Isolationskopie entsteht
+(Skript 1, über `make` 2; `select_cases` in `harness/tools/mutate.sh`). Die Vollständigkeits-Prüfung
+gilt über der gewählten Menge.
+
+**Der Beleg-Slot bleibt unberührt.** Der Slot trägt die Aussage „der letzte **volle** Lauf über
+diesem Prüfgegenstand war grün"; nur ein voller Lauf schreibt sie, nur ein voller Lauf löscht sie.
+Ein Teillauf fährt auch dann, wenn ein Beleg zum aktuellen Schlüssel steht (der Filter ist eine
+ausdrückliche Anfrage), schreibt den Slot nie — auch bei grünem Ausgang nicht —, löscht ihn nie —
+auch bei einem Befund nicht — und führt die Sofort-Entwertung nicht aus. Ein Befund im Teillauf
+widerlegt den Slot nicht von selbst; er steht im Exit und in der Ausgabe dieses Laufs.
+
+**Die Ausgabe sagt, was der Lauf nicht ist:** die Zeile `mutate: TEILLAUF <n> von <total> — kein
+Beleg …` (auch bei einem Befund), der Prüfgegenstand-Schlüssel (`mutate: Pruefgegenstand <hash>`,
+oder `nicht berechenbar`) und die Namen der `ok`-Fälle. Die Kosten des Teillaufs nennt sein eigener
+Bericht (`report_times`); Isolationskopie und Grün-Vorlauf fallen je Worker an, gespart wird der
+Fall-Anteil. Gehalten wird das von `test/mutate-driver.bats` (Blöcke „Teillauf: MUTATE_CASES") und
+den Fällen 453 bis 457 in `test/mutations/`.
+
+## Zwei Läufe, eine Aussage
+
+Ein voller Lauf, der Bilder baut und Container startet, kann an der Infrastruktur enden
+(Registry-Zeitüberschreitung, Daemon-Zustand), bevor der Fall urteilt. Ein Bericht darf dann die
+Vereinigung von Hauptlauf und Teillauf als Aussage tragen — **nur wenn** alle drei Bedingungen
+gelten:
+
+1. **Beide Läufe nennen denselben Prüfgegenstand-Schlüssel** (`mutate: Pruefgegenstand <hash>`).
+   Nennt einer keinen oder einen anderen, sind es zwei Aussagen über zwei Bäume.
+2. **Jeder nicht-`ok` Fall des Hauptlaufs trägt eine gelesene Ursache, die nicht dem Fall
+   entstammt** — Rot aus dem falschen Grund: die Fehler-Form passt nicht zum erwarteten Wächter,
+   die Meldung nennt die Infrastruktur —, **und** ist im Teillauf `ok`. Ein Fall, dessen Befund
+   sein eigener ist (`blieb GRUEN`, `rot, aber … falscher Grund` am Wächter selbst, Mutation griff
+   nicht), gehört nicht in die Vereinigung.
+3. **Die Aussage steht im Bericht, nie im Slot.** Der Slot bleibt ein Beleg des vollen Laufs;
+   die Vereinigung schreibt ihn nicht.
+
+**Grenze:** die Vereinigung sagt etwas über den Ausschnitt jedes der zwei Läufe und ihre
+Schnittmenge, nicht über einen einzelnen grünen Vollauf. Der Docker-Cache-Rest aus
+[`ADR-0035`](../../docs/plan/adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
+Festlegung 4 gilt weiter (Cache-Zustand und Host-Werkzeuge deckt kein Schlüssel). Kein Doku-Modul
+hält den Inhalt dieser Regel — sie ist Prosa; der Träger ist die Rolle, die den Beleg liest
+(Verifier), und sie liest die Ausgabe beider Läufe, nicht den Slot.
 
 ## Bindung
 
