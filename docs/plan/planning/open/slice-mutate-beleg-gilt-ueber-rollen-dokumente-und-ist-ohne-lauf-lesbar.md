@@ -238,6 +238,20 @@ Ansatz als Liste:
   `harness/sensors/mutate.md` (§Zwei Läufe, eine Aussage) liest diese Zeile. Verengt Liefer-Punkt 1 die
   Bezugsmenge, ändert sich der Wert der Zeile, nicht ihre Form. Ob die Meldung des Schalters (Liefer-Punkt 2)
   den Schlüssel in derselben Zeilenform nennt, entscheidet der Implementer; kein Liefer-Punkt ändert sich.
+- **Hinweis für den Schreiber von `harness/sensors/mutate.md` (Stand 2026-09-26; Zustandsaussage, kein Liefer-Punkt).**
+  Der Architect hat Bedingung 2 in §Zwei Läufe, eine Aussage als zu weit gefasst gemessen: *„Jeder Fall, der in
+  einem der beiden Läufe nicht `ok` ist, trägt dort eine gelesene Ursache …"* liest sich beim Teillauf auf jeden
+  Fall, den der Teillauf gar nicht auswählte — dort ist er nicht `ok`, aber auch nicht gefahren, und eine
+  gelesene Ursache hat er nicht. Gemeint ist *gefahren und nicht `ok`*. Wortlaut-Vorschlag, wörtlich aus dem
+  Verdikt (`docs/reviews/2026-09-26-architect-verdikt-sammelauftrag-register-und-adr-0035.md`, Abschnitt zur
+  Belegform-Vereinigung): *„2. Jeder Fall, der in einem der beiden Läufe **gefahren wurde und nicht `ok` ist**,
+  trägt dort eine gelesene Ursache, die nicht dem Fall entstammt, und ist im anderen Lauf gefahren und `ok`. Ein
+  Fall, den ein Teillauf nicht auswählte, ist dort nicht gefahren und nicht Gegenstand dieser Bedingung. Ein
+  Fall, dessen Befund sein eigener ist (…), und ein Fall, der in keinem der beiden Läufe `ok` ist, gehören nicht in
+  die Vereinigung."* Im Absatz *Grenze* ein Satz: *„Sie ändert keinen Exit und keinen Slot; der Exit jedes der
+  beiden Läufe bleibt, wie er war."* Keine Quelle benennt die schreibende Rolle des Sensor-Docs; der Planner
+  schreibt es nicht, und dieser Hinweis ist das Übergabe-Artefakt an den, der es fasst — hier, weil der Slice die
+  Datei ohnehin anfasst. Bis dahin liest der Verifier Bedingung 2 in der gemeinten Fassung.
 
 ## 4. Trigger
 
