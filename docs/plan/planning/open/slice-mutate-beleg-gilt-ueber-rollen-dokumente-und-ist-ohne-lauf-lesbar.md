@@ -17,7 +17,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 kein repo-weiter Beleg über die Slice-DoDs hinaus, kein Replay; damit fehlt das *Mehr*, an dem sich
 eine Welle entscheidet (Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht).
 Der Schwester-Slice
-[slice-mutate-fall-filter-und-die-belegform-vereinigung](../in-progress/slice-mutate-fall-filter-und-die-belegform-vereinigung.md)
+[slice-mutate-fall-filter-und-die-belegform-vereinigung](../done/slice-mutate-fall-filter-und-die-belegform-vereinigung.md)
 ist einzeln lieferbar und bildet mit diesem kein Bündel.
 
 **Ebene: Dogfood, nicht emittiert.** `harness/tools/mutate.sh` ist Werkzeug **dieses** Repos
@@ -95,7 +95,7 @@ Baum: `git ls-files docs/reviews | wc -l` → 547, `git ls-files docs/plan/plann
 
 - **Ein Fall-Filter und die Regel, wann zwei Läufe zusammen Aussage sind** — *ein Folge-Slice
   übernimmt es:*
-  [slice-mutate-fall-filter-und-die-belegform-vereinigung](../in-progress/slice-mutate-fall-filter-und-die-belegform-vereinigung.md)
+  [slice-mutate-fall-filter-und-die-belegform-vereinigung](../done/slice-mutate-fall-filter-und-die-belegform-vereinigung.md)
   führt Filter und Vereinigung; er ist einzeln lieferbar und braucht nichts aus diesem Slice.
 - **Ein Auto-Retry** — *es wäre eine Änderung des Verdikts, kein Ausgang:* ein Retry-Muster, das
   einen roten Fall wiederholt, verdeckt den echten Befund, und eine Muster-Liste hat keine Zähne, die

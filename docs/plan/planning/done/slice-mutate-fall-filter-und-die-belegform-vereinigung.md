@@ -225,7 +225,7 @@ einem anderen Slice; die Annahme von
 **Adress-Messung vor dem Move** ([`AGENTS.md`](../../../../AGENTS.md) §3.11): kein eingefrorenes
 Artefakt (`docs/plan/adr/**`, `docs/reviews/**`, `done/**`) nennt diese Datei als Pfad, weder mit
 `open/` als Code-Span noch als Markdown-Link
-(`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-mutate-fall-filter-und-die-belegform-vereinigung\.md|open/slice-mutate-fall-filter-und-die-belegform-vereinigung|\]\(slice-mutate-fall-filter-und-die-belegform-vereinigung' . | grep -v 'planning/in-progress/slice-mutate-fall-filter-und-die-belegform-vereinigung.md' | wc -l`
+(`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-mutate-fall-filter-und-die-belegform-vereinigung\.md|open/slice-mutate-fall-filter-und-die-belegform-vereinigung|\]\(slice-mutate-fall-filter-und-die-belegform-vereinigung' . | grep -v 'planning/done/slice-mutate-fall-filter-und-die-belegform-vereinigung.md' | wc -l`
 → **2**, gemessen 2026-09-26). Beide Treffer stehen im Schwester-Slice in `open/`, einem änderbaren
 Artefakt: `make slice-mv` zieht den präfixlosen Link dort nach.
 
