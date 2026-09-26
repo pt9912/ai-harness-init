@@ -175,16 +175,18 @@ tragende Befund, nicht der Betrag 3304.
      rotes Teilergebnis und ein grüner Exit. Bei einem deterministischen Sensor über einer Eingabe,
      die der Schlüssel deckt, gibt es diese zwei Verdikte nicht; gibt es sie doch, variiert etwas
      **außerhalb** des Schlüssels (Docker-Cache-Zustand, Host-Werkzeuge) oder der Fall flackert.
-     Das ist **der Rest aus Festlegung 4 in der Form, in der er sich zeigt**, und er hat denselben
+     Das ist, soweit die Ursache außerhalb des Schlüssels liegt, **der Rest aus Festlegung 4 in der
+     Form, in der er sich zeigt**; ein flackernder Fall gehört nicht zu ihm. Beide haben denselben
      Träger, `MUTATE_FORCE`: wer den Befund des Teillaufs für echt hält, erzwingt den vollen Lauf.
      Er fällt damit weder unter Festlegung 1 (die Verdikt-Funktion bleibt unberührt: jeder gefahrene
      Fall urteilt wie zuvor) noch unter Festlegung 2 (die Deckung der **Menge** — die Kopie — ist
      gezeigt; was ihr fehlt, steht in Festlegung 4). Er ist aber eine **Lockerung der Strenge**
-     gegenüber der Alternative (i) unten, und [`AGENTS.md`](../../../AGENTS.md) §3.5 verlangt für
+     gegenüber der Alternative E unten, und [`AGENTS.md`](../../../AGENTS.md) §3.5 verlangt für
      eine solche eine ADR: diese Festlegung ist sie, mit dem Preis der Gegenwahl (ein voller Lauf
      je rotem Nachsehen), der Grenze (er entsteht nur über unverändertem Schlüssel — jede
-     Baumänderung entwertet den Slot ohnehin — und der Bediener hat den Befund des Teillaufs vor
-     sich) und dem Trigger 4 unten. Die Übersprung-Meldung nennt den roten Teillauf nicht; dafür
+     Baumänderung entwertet den Slot ohnehin; ob der Kontext, der danach den vollen Aufruf fährt, den Befund des Teillaufs kennt, ist
+     **nicht** zugesagt — über die Grenze zwischen Implementer und Verifier trägt ihn weder die
+     Meldung noch der Slot, er bleibt der benannte Rest, den Trigger 4 beobachtet) und dem Trigger 4 unten. Die Übersprung-Meldung nennt den roten Teillauf nicht; dafür
      müsste ein Teillauf einen Merker neben dem Slot schreiben, einen zweiten Zustand, den diese
      ADR nicht einführt.
 
@@ -221,7 +223,7 @@ Die Zeilen A bis D tragen die Festlegungen 1 bis 4, die Zeilen E bis G die Festl
 | B — **Reine Anwendung von [`MR-050`](../../../harness/conventions.md#mr-050--zwei-gate-ziele-fahren-ohne---no-cache-filter-weil-ihr-cache-schlüssel-den-prüfgegenstand-deckt), Schlüssel = `working-tree-hash.sh`** | Kein neuer Beschluss nötig; der Träger steht schon, und ein Commit ohne Inhaltsänderung ließe den Beleg gültig | Das Kriterium fällt **negativ** aus: der Schlüssel ist eine echte Teilmenge des Gelesenen (Messung in §Kontext), und die Differenz wächst still mit jedem `.gitignore`-Eintrag. Der Slice lieferte eine Deckungs-Zusage, die von Anfang an nicht hält |
 | C — **Übersprung ganz ablehnen** | Kein neuer Weg ins stille Grün; der Sensor bleibt, was er ist | Verwirft eine Wiederverwendung, die unter benannter Deckung nachweislich zulässig ist, und erklärt nebenbei den Gate-Nachweis dieses Repos für unzulässig. Der Preis (ein voller Sensor-Lauf je Fall, mehrere hundert Fälle) bleibt an einer Stelle stehen, an der er DoD-Verify und Closure mehrfach trifft |
 | **D — Deckung als Kriterium, Kopie als Bezugsmenge, Rest benannt (gewählt)** | Trifft den wirklichen Fehlermodus ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) statt eines Etiketts; eine Definition statt zweier, damit die Drift von §Kontext strukturell verschwindet; der nicht schließbare Rest steht im Ausschalter und in der Meldung statt in einem Vorbehalt | Teurer als B: der Schlüssel wird gebaut, nicht wiederverwendet. Und er verliert den Nebengewinn, den `working-tree-hash.sh` mitbrächte — deckt die Kopie `.git` mit ab, stirbt der Beleg bei jedem Commit; wird `.git` ausgenommen, ist das eine deklarierte Ausnahme und keine Deckung. Diesen Ausgleich muss die Umsetzung sichtbar treffen, nicht stillschweigend |
-| E — **der Teillauf löscht den Slot bei einem Befund** | fail-closed; schließt den Rest aus Festlegung 5, sobald ein Befund vorliegt; ein Slot ist nie zugleich mit einem roten Ergebnis über demselben Schlüssel sichtbar | Jedes rote Nachsehen über unverändertem Prüfgegenstand entwertet einen Beleg, den nur ein voller Lauf neu verdient — ein voller Lauf je Nachsehen. Das Argument *„ein Befund an der Infrastruktur ist vom Befund des Falls nicht zu unterscheiden"* trägt sie nicht: es gilt für den vollen Lauf ebenso; der Unterschied ist der Preis. Sie schließt den Rest nur für den sichtbaren Fall, nicht für Flackern ohne Teillauf (Festlegung 4) |
+| E — **der Teillauf löscht den Slot bei einem Befund** | fail-closed; schließt den Rest aus Festlegung 5, sobald ein Befund vorliegt; ein Slot ist nie zugleich mit einem roten Ergebnis über demselben Schlüssel sichtbar | Jedes rote Nachsehen über unverändertem Prüfgegenstand entwertet einen Beleg, den nur ein voller Lauf neu verdient — ein voller Lauf je Nachsehen. Das Argument *„ein Befund an der Infrastruktur ist vom Befund des Falls nicht zu unterscheiden"* trägt sie nicht: es gilt für den vollen Lauf ebenso; der Unterschied ist der Preis. Sie schließt den Rest nur für den sichtbaren Fall, nicht für den Rest aus Festlegung 4 ohne Teillauf |
 | F — **der Teillauf schreibt den Slot bei grünem Ausgang** | Ein grüner Nachsehen-Lauf würde wieder verwertbar | Der Slot behauptete einen vollen Lauf, den es nicht gab: die falsche Aussage aus Festlegung 2, [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) eine Ebene tiefer |
 | **G — der Teillauf berührt den Slot nie (gewählt)** | Der Slot bleibt eine Aussage über genau einen Lauf-Typ; kein Nachsehen kostet einen Beleg; der Rest hat seinen Ausschalter und seinen Trigger | Der Rest aus Festlegung 5: ein roter Teillauf über unverändertem Schlüssel neben einem stehenden grünen Beleg, den ein unerzwungener voller Aufruf ausgibt — eine Lockerung gegenüber E, die diese ADR trägt (Festlegung 5, Trigger 4) |
 
@@ -297,7 +299,7 @@ Nicht permanent. Vier beobachtbare Bedingungen, jede einzeln auslösend:
    prüfen, ob die Festlegungen 1, 2 und 4 als allgemeine Regel taugen oder ob Festlegung 3 (die
    Bezugsmenge) je Sensor eine eigene Entscheidung bleibt.
 4. **Ein Teillauf mit Befund über einem Prüfgegenstand mit stehendem Beleg, und der Befund erweist
-   sich im vollen Lauf als echt** *(beobachtbar an zwei Läufen, die der Verifier liest: ein
+   sich im vollen Lauf als echt** *(beobachtbar an zwei Läufen, die ein Lauf liest, der beide Berichte vor sich hat: ein
    Teillauf mit `BEFUND` bei stehendem Beleg, danach ein erzwungener voller Lauf, der denselben Fall
    rot färbt)*. Dann ist der Rest aus Festlegung 5 kein Rauschen, sondern ein Weg ins stille Grün,
    und die Alternative E — ein Teillauf mit Befund löscht den Slot — ist mit dieser Evidenz neu zu
@@ -326,6 +328,7 @@ des Auftraggebers.**
 | 2026-09-04 | **Proposed** | Architect-Verdikt auf zwei Fragen, die ein Planner-Plan ausdrücklich übergeben hat (Start-Trigger des Slice, `slice-180` — Kennung ohne Adresse nach [ADR-0030](0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Festlegung 3). Beide Antworten weichen von den angebotenen Optionen ab: die erste, weil §3.5 die Verdikt-Funktion regelt und ein Übersprung sie nicht anfasst; die zweite, weil das Deckungs-Kriterium aus [`MR-050`](../../../harness/conventions.md#mr-050--zwei-gate-ziele-fahren-ohne---no-cache-filter-weil-ihr-cache-schlüssel-den-prüfgegenstand-deckt) für den vorgeschlagenen Schlüssel **negativ** ausfällt. Tragend ist die Mengen-Messung in §Kontext, gefahren gegen den Arbeitsbaum am Tag des Entscheids |
 | 2026-09-26 | **Proposed, geschärft** | Architect-Lauf, Status unverändert: Festlegung 5 (der Teillauf berührt den Beleg-Slot nie) und die Fitness-Zeile des Teillaufs; die Fitness-Zeile des vollen Laufs nennt ihren Gegenstand; der Acceptance-Trigger steht neu; Verdikt `2026-09-26-architect-verdikt-sammelauftrag-register-und-adr-0035` |
 | 2026-09-26 | **Proposed, korrigiert** | Architect-Lauf zum Konsistenz-Review `2026-09-26-review-adr-0035-0068-0069-konsistenz`, Status unverändert: der Grund des Nicht-Löschens in Festlegung 5 ist der Preis, der Rest ist eingeordnet und trägt Trigger 4; die Abwägung steht in §Verglichene Alternativen (E bis G); die Lage-Messungen sind aktualisiert; die Fitness-Zeile des Teillaufs nennt den dritten Fall; Verdikt `2026-09-26-architect-verdikt-korrektur-adr-0035-0068-0069` |
+| 2026-09-26 | **Proposed, korrigiert** | Architect-Lauf zur Kurzrunde `2026-09-26-review-kurzrunde-adr-0035-f5-und-adr-0069-f2`, Status unverändert: der Verweis der Festlegung 5 nennt die Alternative E; die Grenze des Rests sagt nicht mehr zu, dass der Bediener den Befund des Teillaufs kennt (über die Kontext-Grenze bleibt er benannter Rest mit Trigger 4); ein flackernder Fall gehört nicht zum Rest aus Festlegung 4; Trigger 4 nennt keinen bestimmten Leser der zwei Läufe |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
