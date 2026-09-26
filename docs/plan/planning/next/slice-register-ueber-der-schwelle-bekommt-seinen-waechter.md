@@ -183,6 +183,19 @@ mischt den Nachzug mit einer unfertigen Regel.
 einer zweiten Quelle; ein Sensor, der eine Liste erwarteter Einträge führt, wäre die zweite Fassung,
 die driftet.
 
+**Was „die Zahl aus `evidence/`" heißt (Stand 2026-09-26; Zustandsaussage, kein Liefer-Punkt).** Gezählt werden
+**Dateien** unter `evidence/*.md`, nicht das Verzeichnis: ein leeres `evidence/` führt `git` nicht, und ein
+Sensor, der die Existenz des Verzeichnisses als Beleg zählt, hält es für eines. Auf dieser Platte tragen zwei der
+vier Verzeichnisse ohne `evidence/*.md` ein leeres `evidence/`, die beiden anderen keines
+(`for d in docs/plan/planning/observations/BEO-ALL/*/; do [ "$(ls "$d"evidence/*.md 2>/dev/null | wc -l)" = 0 ] && echo "$d $([ -d "$d"evidence ] && echo leer || echo fehlt)"; done`
+→ vier Zeilen, zwei mit `leer`, zwei mit `fehlt`, gelesen 2026-09-26, keine Erwartung).
+Hinweis des Architect ([ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md) Folgepflicht 2, `Proposed`): der Wächter zählt die Dateien. Die Zählschleifen
+in §1 nutzen `ls "$d"evidence | wc -l` und zählen damit Einträge, nicht `*.md`-Dateien — die zwei Formen
+stimmen auf dem heutigen Bestand überein (kein Verzeichnis, in dem sie sich unterscheiden), sie unterscheiden sich
+aber bei einer Nicht-Markdown-Datei in `evidence/`.
+Ob das den Liefer-Punkt zum Zähler verschiebt, urteilt der Implementer an der Sonde; der Planner ändert die
+DoD nicht.
+
 ## 4. Trigger
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
@@ -310,7 +323,7 @@ Setzung 2); alle führen dieselbe Sub-Area `*`. **Acht Einträge** berühren die
 | `register-paarung-ohne-gate-modul` | 1× | offen | §1 — die maschinelle Hälfte der Register-Deckung; dieser Sensor ist der nächste Anlauf |
 | `ausgang-nennt-traeger-der-nicht-traegt` | 2× | offen | §6 Risiko 1 — genau die Grenze, die dieser Sensor nicht schließen kann |
 | `beleg-nach-dem-ausgang-findet-keinen-leser` | 2× | offen | §1 — was **nach** einem Ausgang gilt; nicht sein Gegenstand |
-| `unbelegter-register-eintrag-faellt-durch-die-paarung` | 1× | offen | §3 — die Beleg-Hälfte; der Sensor liest `evidence/`, er urteilt nicht über sie |
+| `unbelegter-register-eintrag-faellt-durch-die-paarung` | 3× (gelesen 2026-09-26, Kommando unten) | geplant | §3 — die Beleg-Hälfte; der Sensor zählt Dateien unter `evidence/*.md`, er urteilt nicht über sie |
 | `neuer-waechter-ohne-mutations-fall` | 6× | offen | §3 — der neue Wächter gehört in `test/mutations/`, sonst ist er unbewacht |
 | `sichtungs-schritt-zitiert-falschen-zaehler-stand` | 3× | verkörpert | §2 Liefer-Punkt (2) — der Zähler-Stand trägt Kommando und Maß |
 | `rotierender-pruef-gegenstand-ohne-ort` | 1× | offen | §6 Risiko 3 — der Bestand bewegt sich unter dem Sensor |
@@ -325,8 +338,10 @@ for s in zaehler-label-nennt-falsche-einheit register-paarung-ohne-gate-modul \
 done
 ```
 
-**Keiner der acht erreicht mit diesem Slice 3×** — fünf stehen bei 1× oder 2×, drei bereits
-darüber. **Ein eigener Folge-Slice entsteht aus der Sichtung also nicht.**
+**Die Zeile zur Beleg-Frage ist auf den Stand vom 2026-09-26 gezogen** (das Kommando oben liefert Zähler und
+Stand aller acht Zeilen); die übrigen sieben Zeilen stehen am Stand der Sichtung und sind nicht nachgemessen.
+**Keiner der acht erreicht mit diesem Slice 3×** — vier stehen bei 1× oder 2×, vier bereits darüber (mit der
+gezogenen Zeile). **Ein eigener Folge-Slice entsteht aus der Sichtung also nicht.**
 
 **Modus-Begründungsblock — Umfang.** Alle berührten Sub-Areas sind Greenfield; der Block trägt
 zwei Sub-Areas.
