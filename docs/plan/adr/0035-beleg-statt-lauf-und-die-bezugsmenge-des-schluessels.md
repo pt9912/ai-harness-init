@@ -21,6 +21,8 @@ Mal an und legt seine **Beweisrichtung** fest),
 (der inhaltsbasierte Nachweis und sein Zweck — der Gate-Nachweis, nicht ein zweiter Sensor),
 [ADR-0013](0013-technik-stratum-als-zielort.md) (der Zielort technischer Festlegungen — hier
 ausdrücklich **nicht** entschieden, §Was hier nicht entschieden ist),
+[ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) (der Beleg des
+Accept-Übergangs — §Der Acceptance-Trigger),
 [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) (eine Abweichung von der
 Baseline schuldet einen Eintrag — diese Entscheidung ist keine, §Konsequenzen),
 [`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
@@ -88,7 +90,7 @@ tragende Befund, nicht der Betrag 3304.
 
 ## Entscheidung
 
-**Vier Festlegungen.**
+**Fünf Festlegungen.**
 
 1. **Ein Beleg-Übersprung ist keine Schwellen-Senkung.** [`AGENTS.md`](../../../AGENTS.md) §3.5
    greift auf die **Verdikt-Funktion**: eine Senkung sagt über *derselben* Eingabe grün, wo sie
@@ -144,6 +146,28 @@ tragende Befund, nicht der Betrag 3304.
    den Beleg-Stand und den benannten Rest und behauptet **keine** Fall-Zahl. Der Ausschalter ist
    kein Komfort, sondern der Teil der Zusage, der den Rest sichtbar hält.
 
+5. **Der Beleg-Slot gehört dem vollen Lauf; ein Teillauf berührt ihn nicht.** Ein Lauf, der nur
+   einen Ausschnitt des Fall-Satzes fährt (`MUTATE_CASES`), beantwortet weniger, als der Slot
+   behauptet: der Slot sagt *„der letzte **volle** Lauf über diesem Prüfgegenstand war grün"*.
+   Darum **übergeht** ein Teillauf einen stehenden Beleg nie — der Filter ist eine ausdrückliche
+   Anfrage —, **schreibt** ihn nie, auch bei grünem Ausgang nicht (ein grüner Ausschnitt wäre die
+   falsche Aussage aus Festlegung 2), und **löscht** ihn nie, auch bei einem Befund nicht. Der
+   Befund eines Teillaufs steht in dessen Exit und Ausgabe; er widerlegt den Slot nicht von
+   selbst, weil ein Befund an der Infrastruktur (Registry-Zeitüberschreitung, Daemon-Zustand) in
+   der Exit-Form von einem Befund des Falls nicht zu unterscheiden ist, und ein löschender Teillauf
+   jedes Nachsehen zu dem Vorgang machte, der den Beleg verfallen lässt. **Der Rest steht daneben
+   und wird nicht geschlossen:** nach einem Teillauf mit Befund über unverändertem Prüfgegenstand
+   kann ein nachfolgender, nicht erzwungener voller Aufruf den stehenden Beleg ausgeben; wer den
+   Befund des Teillaufs für echt hält, erzwingt den vollen Lauf (`MUTATE_FORCE`, Festlegung 4).
+   Für den **vollen** Lauf gilt unverändert: ein Befund hinterlässt keinen Beleg.
+
+   Verglichen für Festlegung 5: *(i) der Teillauf löscht bei einem Befund* — fail-closed, aber
+   jedes Nachsehen entwertet einen Beleg, dessen Prüfgegenstand sich nicht bewegt hat; *(ii) der
+   Teillauf schreibt bei grünem Ausgang* — der Slot behauptete einen vollen Lauf, den es nicht
+   gab (Festlegung 2, die falsche Aussage); *(iii) der Teillauf berührt den Slot nie (gewählt)* —
+   der Slot bleibt eine Aussage über genau einen Lauf-Typ, und der benannte Rest hat seinen
+   Ausschalter.
+
 ## Was hier nicht entschieden ist
 
 - **Wo eine Stellschraube dieses Treibers lebt.** [ADR-0013](0013-technik-stratum-als-zielort.md)
@@ -157,6 +181,12 @@ tragende Befund, nicht der Betrag 3304.
   hieße, eine Deckung ohne Messung zu behaupten, was Festlegung 2 gerade verbietet.
 - **Ob der Übersprung sich lohnt.** Das ist eine Nutzen-Frage und Planungs-Arbeit. Diese ADR sagt,
   unter welcher Bedingung er zulässig ist, nicht dass er gebaut werden muss.
+- **Ob ein Bericht die Aussage mehrerer Läufe tragen darf.** Die Zusammensetzung zweier Läufe über
+  demselben Prüfgegenstand zu einer Aussage im Bericht ist eine Lese-Regel des Sensors und kein
+  Beleg-Übersprung: sie ändert weder Exit noch Slot und lässt jeden Fall die Verdikt-Funktion
+  durchlaufen, die Festlegung 1 unberührt lässt. Sie steht im Sensor-Dokument; diese ADR trägt sie
+  nicht und bindet sie nicht. Dass ein voller Lauf seinen Prüfgegenstand-Schlüssel auch bei einem
+  Befund nennt, ist Ausgabe-Form des Werkzeugs, keine Festlegung.
 
 ## Verglichene Alternativen
 
@@ -179,6 +209,8 @@ tragende Befund, nicht der Betrag 3304.
 - **Negativ:** Der Rest aus Festlegung 4 bleibt bestehen. Ein Beleg über unverändertem
   Prüfgegenstand konserviert ein Verdikt, dessen Docker-Cache-Anteil niemand adressiert;
   `MUTATE_FORCE` macht ihn behebbar, nicht abwesend.
+- **Negativ:** Der Rest aus Festlegung 5 bleibt bestehen. Ein Befund eines Teillaufs entwertet den
+  Beleg nicht; wer ihn für echt hält, erzwingt den vollen Lauf.
 - **Kein Eintrag im Adaptions-Speicher.** Eine Abweichung von der Baseline liegt nicht vor:
   `make mutate` hat in der adoptierten Fassung kein Gegenstück, von dem abgewichen werden könnte,
   und der inhaltsbasierte Nachweis ist deren eigene Design-Eigenschaft 2
@@ -199,14 +231,23 @@ tragende Befund, nicht der Betrag 3304.
 |---|---|---|
 | bats (`test/mutate-driver.bats`) | Jeder Pfad, den `prepare_isolation` in die Kopie legt, geht **entweder** in den Schlüssel ein **oder** steht in der deklarierten Ausnahmeliste derselben Definition. Ein dritter Fall ist rot. Der Test rechnet die Mengen aus der Definition, die der Lauf benutzt — er baut sie nicht nach | `make test` (in `make gates`) |
 | `test/mutations/` (ein neuer Fall) | Eine Mutation, die einen Pfad aus dem Schlüssel nimmt, ohne ihn in die Ausnahmeliste zu setzen, färbt den Wächter darüber rot | `make mutate` |
-| `test/mutate-driver.bats` | Ein Lauf mit mindestens einem Befund hinterlässt keinen Beleg — der Schreibpunkt liegt hinter der Bedingung, unter der `main()` seinen Exit-Status bildet | `make test` (in `make gates`) |
+| `test/mutate-driver.bats` | Ein **voller** Lauf mit mindestens einem Befund hinterlässt keinen Beleg — der Schreibpunkt liegt hinter der Bedingung, unter der `main()` seinen Exit-Status bildet | `make test` (in `make gates`) |
+| `test/mutate-driver.bats` (die Fälle *„ein Teillauf schreibt den Beleg-Slot nie"* und *„ein Teillauf mit Befund laesst einen stehenden Beleg byte-gleich stehen"*) | Ein **Teillauf** (`MUTATE_CASES`) hinterlässt bei grünem Ausgang keinen Beleg und lässt einen stehenden Beleg auch bei einem Befund byte-gleich stehen (Festlegung 5). Schwächung, unter der die Fälle rot werden: die Sofort-Entwertung läuft auch im Teillauf → der zweite Fall färbt sich rot; der Teillauf ruft am Ende den Schreibpunkt des vollen Laufs → der erste Fall (und der zweite) färben sich rot | `make test` (in `make gates`) |
+
+**Rot gesehen** (Architect-Lauf am 2026-09-26, in Kopien des Baums, `bats` im gepinnten Bild des
+Makefiles, Filter auf die fünf Teillauf-Fälle): die Zeile `[ -n "$partial" ] || clear_belief`
+ohne ihre Bedingung färbt *„…laesst einen stehenden Beleg byte-gleich stehen"* rot; `report_partial`
+um einen Aufruf von `finalize_belief` ergänzt färbt *„…schreibt den Beleg-Slot nie"* und den
+Befund-Fall rot; der unveränderte Baum ist über alle fünf Fälle grün.
 
 **Was kein Wächter hält, und das gehört dazu.** Ob eine deklarierte Ausnahme **berechtigt** ist,
 prüft nichts — die Regel oben prüft, dass sie *dasteht*, nicht dass sie trägt. Den Rest aus
-Festlegung 4 prüft ebenfalls nichts: ein Docker-Cache-Zustand hat keine Fehlschlag-Form. Und kein
+Festlegung 4 prüft ebenfalls nichts: ein Docker-Cache-Zustand hat keine Fehlschlag-Form. Ebenso
+den Rest aus Festlegung 5: dass ein unerzwungener voller Aufruf nach einem Teillauf mit Befund den
+Beleg ausgibt, ist die benannte Folge der Entscheidung, kein Fehlschlag. Und kein
 Modul des Doku-Gates liest ein Shell-Skript oder ein Make-Rezept
 (`grep -m1 '^modules:' .d-check.yml` führt `links, anchors, ids, matrix, codepaths, spans`). Träger
-dieser drei Lücken sind die Re-Evaluierungs-Trigger unten, geprüft im Trigger-Audit der Closure.
+dieser Lücken sind die Re-Evaluierungs-Trigger unten, geprüft im Trigger-Audit der Closure.
 
 ## Re-Evaluierungs-Trigger
 
@@ -222,11 +263,26 @@ Nicht permanent. Drei beobachtbare Bedingungen, jede einzeln auslösend:
    prüfen, ob die Festlegungen 1, 2 und 4 als allgemeine Regel taugen oder ob Festlegung 3 (die
    Bezugsmenge) je Sensor eine eigene Entscheidung bleibt.
 
+### Der Acceptance-Trigger
+
+Diese Entscheidung steht auf `Proposed`; bis dahin ist sie ein Architect-Verdikt und als solches das
+Übergabe-Artefakt, das der Implementer als Constraint liest. Sie wird `Accepted`, **wenn eine
+Reviewer-Runde sie gegen
+[`MR-050`](../../../harness/conventions.md#mr-050--zwei-gate-ziele-fahren-ohne---no-cache-filter-weil-ihr-cache-schlüssel-den-prüfgegenstand-deckt),
+[`MR-003`](../../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)
+und [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) auf Konsistenz geprüft hat
+und ihr Report ohne blockierenden Befund an der **Substanz** der fünf Festlegungen in `docs/reviews/`
+liegt.** Ein blockierender Befund an der **Darstellung** wird behoben und hindert die Annahme nicht.
+Der Beleg ist eine Runde der prüfenden Rolle; die Accept-Zeile der §Geschichte nennt ihn als
+**Kennung**, nicht als Pfad-Link (ADR-0040 Festlegung 1). **Die Annahme selbst ist die Entscheidung
+des Auftraggebers.**
+
 ## Geschichte
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-04 | **Proposed** | Architect-Verdikt auf zwei Fragen, die ein Planner-Plan ausdrücklich übergeben hat (Start-Trigger des Slice, `slice-180` — Kennung ohne Adresse nach [ADR-0030](0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Festlegung 3). Beide Antworten weichen von den angebotenen Optionen ab: die erste, weil §3.5 die Verdikt-Funktion regelt und ein Übersprung sie nicht anfasst; die zweite, weil das Deckungs-Kriterium aus [`MR-050`](../../../harness/conventions.md#mr-050--zwei-gate-ziele-fahren-ohne---no-cache-filter-weil-ihr-cache-schlüssel-den-prüfgegenstand-deckt) für den vorgeschlagenen Schlüssel **negativ** ausfällt. Tragend ist die Mengen-Messung in §Kontext, gefahren gegen den Arbeitsbaum am Tag des Entscheids |
+| 2026-09-26 | **Proposed, geschärft** | Architect-Lauf, Status unverändert: Festlegung 5 (der Teillauf berührt den Beleg-Slot nie) und die Fitness-Zeile des Teillaufs; die Fitness-Zeile des vollen Laufs nennt ihren Gegenstand; der Acceptance-Trigger steht neu; Verdikt `2026-09-26-architect-verdikt-sammelauftrag-register-und-adr-0035` |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
