@@ -1,4 +1,4 @@
-# ADR-0068: Der Nachzug nennt den Zustand des Tap nur, soweit die Antwort der Schnittstelle ihn trägt — die Menge der Ablehnungen ist eine benannte Setzung, und nach einem vollzogenen Schreiben sagt jede Meldung, dass geschrieben ist
+# ADR-0068: Der Nachzug nennt den Zustand des Tap nur, soweit die Antwort der Schnittstelle ihn trägt — die Menge der Ablehnungen ist eine benannte Setzung, und eine Nachkontrolle, die nach dem Schreiben nicht lesen kann, sagt, dass geschrieben ist
 
 **Status:** Proposed
 
@@ -30,8 +30,8 @@ Accept-Übergangs),
 Festlegung 3 und löst keine ihrer Festlegungen ab: das *„ausdrücklich abgelehnt (Antwort der
 Schnittstelle: Anmeldung, Schutz des Branches, Konflikt)"* und das *„ohne Antwort … ungewiss"* der ADR
 bleiben wörtlich wahr. Die Entscheidung legt fest, was die ADR offen lässt — den Status, der weder das
-eine noch das andere ist, und die Meldung nach einem vollzogenen Schreiben. Der Status von ADR-0064 im
-ADR-Index bekommt darum keinen Zusatz (anders als bei
+eine noch das andere ist, und die Meldung der Nachkontrolle nach einem vollzogenen Schreiben. Der Status
+von ADR-0064 im ADR-Index bekommt darum keinen Zusatz (anders als bei
 [ADR-0066](0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md), die drei Stellen ablöst).
 
 **Regeln:** Baseline-Regelwerk `modul-04-adrs.md`
@@ -73,9 +73,20 @@ grep -nE 'exit (0|10|2)\b|beende 2' harness/tools/tap-nachzug-nutzlast.sh
 
 Der Fall `sync abgelehnt` in `test/tap-nachzug.bats` bindet beide Listen (*„Tap unverändert"* nur für
 401, 403 und 409; jede andere oder keine Antwort meldet *„Ausgang ungewiss"* und nie *„unverändert"*), der
-Fall `sync teilerfolg` die Meldung nach einem vollzogenen Schreiben. Beide Zuordnungen sind im Code
-gebunden und in der Prozedur für das Werkzeug wiedergegeben; **die Norm nennt sie nicht.** Ein Leser der
-ADR als Constraint kann nicht unterscheiden, ob die Menge Absicht oder Zufall ist.
+Fall `sync teilerfolg` die Meldung der Nachkontrolle nach einem vollzogenen Schreiben, wenn das Lesen des
+Tap scheitert. Beide Zuordnungen sind im Code gebunden und in der Prozedur für das Werkzeug wiedergegeben;
+**die Norm nennt sie nicht.** Ein Leser der ADR als Constraint kann nicht unterscheiden, ob die Menge
+Absicht oder Zufall ist.
+
+**Was der Code nach dem Schreiben nicht über `nicht_lesbar()` führt.** Hat der Schreibaufruf mit 200
+geantwortet (`geschrieben=ja`), gibt es außer dem unlesbaren Tap drei weitere Wege zu Exit 2, an denen die
+Meldung den Vollzug nicht nennt und kein Fall sie bindet (`harness/tools/tap-nachzug-nutzlast.sh`: die
+Funktion `gleich`, der Zweig `*)` in `beende`, der Trap `trap 'exit 2' HUP INT TERM`):
+
+- `cmp` endet mit einem Status ≥ 2: *„der Vergleich lief nicht (cmp Exit N) — es wurde nichts verglichen"*;
+- ein Kommando der Nutzlast scheitert (etwa das Berechnen eines Digests): *„interner Fehler der Nutzlast …
+  es wurde nichts verglichen"*;
+- ein Signal (HUP, INT, TERM): Exit 2, keine Meldung.
 
 ### Was die Wahl trägt
 
@@ -84,13 +95,15 @@ ihr Status auch bei einem Vollzug entstehen kann. Eine Meldung *„Ausgang ungew
 den Zustand und nennt das Werkzeug, das ihn entscheidet — `make tap-check`, das auch ohne Token liest.
 Beide enden mit Exit 2; die Klasse ändert an der Wahl nichts.
 
-Die Kosten sind ungleich verteilt, und die Verteilung entscheidet: **die Enge kostet einen lesenden
-Aufruf**, den die Prozedur ohnehin verlangt — die Meldung des vollzogenen Schnitts hängt an
-`make tap-check`
+Die Kosten sind für einen Status **außerhalb** der Menge aus Festlegung 2 ungleich verteilt, und die
+Verteilung entscheidet: **die Enge kostet einen lesenden Aufruf**, den die Prozedur ohnehin verlangt — die
+Meldung des vollzogenen Schnitts hängt an `make tap-check`
 ([ADR-0064](0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
 Festlegung 6), der Zustand des Tap wird am Tap gelesen, nicht an der Meldung des Schreibens. Eine **zu
 weite** Zusage kostet eine Meldung, der der Bediener glaubt und die nicht stimmt. Ohne Messung am realen
-Tap fehlt jeder Grund, die Zusage zu weiten.
+Tap fehlt jeder Grund, die Zusage zu weiten. Für 401, 403 und 409 selbst trägt die Annahme aus Festlegung 2:
+bricht sie, sagt *„Tap unverändert"* Falsches — das ist die Grenze der Zusage (§Grenze, erster Punkt), keine
+Kostenverteilung.
 
 ## Entscheidung
 
@@ -98,7 +111,8 @@ Tap fehlt jeder Grund, die Zusage zu weiten.
 ihn trägt, und schließen damit die drei Lagen aus §Kontext, ohne eine Klasse einzuführen und ohne eine
 Festlegung von ADR-0064 abzulösen.** Drei Festlegungen.
 
-**1. Der Grundsatz.** Eine Meldung von `sync`, die den Zustand des Tap nennt, ist eine von vier:
+**1. Der Grundsatz.** Eine Meldung von `sync`, die den Zustand des Tap aus der Antwort der Schnittstelle
+bildet, ist eine von vier:
 
 - *unverändert* — die Schnittstelle hat das Schreiben ausdrücklich abgelehnt (Festlegung 2);
 - *bereits erfolgt* — der Schreibaufruf wurde mit HTTP 200 beantwortet (Festlegung 3);
@@ -111,6 +125,8 @@ nennt `make tap-check TAG=<tag>`. Der Exit ist in allen vier Fällen der des Skr
 [ADR-0064](0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md) Festlegung 2 und
 [ADR-0066](0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md) Festlegung 1 (2 bei nicht
 ausführbar); es entsteht **kein vierter Status der Nutzlast** und keine vierte Klasse des Skripts.
+**Nicht Teil der vier sind die Wege nach dem Schreiben, die keine Antwort der Schnittstelle bilden** —
+Festlegung 3, zweiter Absatz.
 
 **2. Die Ablehnungs-Menge ist eine Setzung.** *„Tap unverändert"* sagt `sync` nur bei **HTTP 401**
 (Anmeldung), **403** (Anmeldung oder Schutz des Branches) und **409** (Konflikt gegen den Blob-Stand).
@@ -123,16 +139,29 @@ einen Schutz des Branches einen anderen Status nennt, ist offen. Eine **Erweiter
 Beleg eine Antwort des realen Tap (Status und Ursache), die keinen Vollzug bedeuten kann, und ist eine
 Änderung dieser Festlegung.
 
-**3. Nach dem Vollzug sagt jede Meldung, dass geschrieben ist.** Hat der Schreibaufruf mit HTTP 200
-geantwortet und ist die Nachkontrolle danach weder *gleich* (Exit 0) noch *Unterschied* (Exit 1) —
-das Tap ist aus **irgendeinem** Grund nicht lesbar —, sagt die Meldung, dass das Schreiben bereits erfolgt
-ist, dass unbekannt bleibt, ob das Tap die Bytes des Assets trägt, und nennt `make tap-check TAG=<tag>`.
-Sie sagt **nicht**, es sei nichts verglichen worden, ohne den Vollzug zu nennen: *„nichts verglichen"* ohne
+**3. Die Nachkontrolle nach dem Vollzug sagt, dass geschrieben ist, wenn sie nicht lesen kann.** Hat der
+Schreibaufruf mit HTTP 200 geantwortet und kann die Nachkontrolle das Tap **nicht lesen** (das Lesen endet
+mit jedem Status außer 200 oder ohne Antwort), sagt die Meldung, dass das Schreiben bereits erfolgt ist,
+dass unbekannt bleibt, ob das Tap die Bytes des Assets trägt, und nennt `make tap-check TAG=<tag>`. Sie sagt
+**nicht**, es sei nichts verglichen worden, ohne den Vollzug zu nennen: *„nichts verglichen"* ohne
 diesen Zusatz liest ein Bediener als *„nichts geschehen"*. Die Klasse bleibt 2 — ein unlesbares Tap ist
 kein Unterschied
 ([ADR-0064](0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md) Festlegung 2). Ein
 200 des Schreibaufrufs ist das Wort der Schnittstelle, nicht der Beleg der Bytes; den Beleg führt die
 Nachkontrolle bzw. `make tap-check`.
+
+**Der benannte Rest: die Wege nach dem Schreiben, die der Code nicht über die Meldung des unlesbaren Tap
+führt.** Die drei Wege aus §Kontext (`cmp` Exit ≥ 2, interner Fehler der Nutzlast, Signal) enden nach dem
+Vollzug mit Exit 2 und — soweit sie eine Meldung tragen — mit *„nichts verglichen"*, ohne den Vollzug zu
+nennen; ein Signal meldet nichts. Die Festlegung erstreckt sich **nicht** auf sie, aus drei Gründen:
+[`AGENTS.md`](../../../AGENTS.md) §3.6 verlangt, die Zusage auf das einzuschränken, was der Code hält; die
+Ausdehnung verlangte eine Änderung an `fehler()`, an `beende` und am Signal-Pfad und drei neue Fälle, von
+denen der Signal-Fall hermetisch kaum zu binden ist; und der Weg ist gefahrarm: kein Ausgang ist je
+*„unverändert"*, der Exit bleibt 2 (nie Grün), und ein weiterer Lauf des Werkzeugs liest und vergleicht
+**vor** jedem Schreiben (`sync_lauf`: `lese_tap` und `gleich` stehen vor `schreibe`), meldet bei
+geschriebenen Bytes *„gleich"* und schreibt nichts erneut — der Bediener, der *„nichts verglichen"* als
+*„nichts geschehen"* liest, wiederholt den Lauf und bekommt den Vollzug genannt. Der Rest ist **benannt,
+nicht geschlossen**; Trigger 3 unten nennt, wann er zu schließen ist.
 
 **Was hier NICHT entschieden ist:** welchen Status das reale Tap für eine Ablehnung nennt (Festlegung 2
 benennt die Annahme, sie misst nicht); welche Rolle den Nachzug fährt
@@ -145,24 +174,32 @@ Release-Job und der Wortlaut der Prozedur.
 |---|---|---|
 | A — nichts tun; die Zuordnung bleibt im Code und in den Fällen | kein Text an der Norm; der Code tut heute das Richtige und ist gebunden | die Norm lässt drei Lagen offen; ein späterer Umbau kann *„unverändert"* auf weitere Status ausdehnen, ohne dass eine Festlegung ihn als Verstoß liest; die Menge steht ohne Aussage, ob sie gemessen oder gesetzt ist |
 | B — weitere 4xx (404, 422, 429 oder alle) nach *„unverändert"* | weniger überflüssige Nachkontrollen; eine Meldung mit klarerer Ursache | die Ursache hinter 404, 422 und 429 ist am realen Tap ungemessen; ein Status, der auch bei einem Vollzug entstehen kann, machte die Zusage falsch; der Gewinn — ein gesparter lesender Aufruf — steht in keinem Verhältnis zu einer falschen Zustandsaussage |
-| C — jede Antwort außer 200 meldet *„ungewiss"*, auch 401, 403 und 409 | eine Regel ohne Menge, nichts zu messen | [ADR-0064](0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md) Festlegung 3 sagt für die ausdrückliche Ablehnung *„Tap unverändert"*; ein abgelaufenes Token (401) ist der häufigste Ausgang und trägt die belastbare Aussage; C nähme sie |
+| C — jede Antwort außer 200 meldet *„ungewiss"*, auch 401, 403 und 409 | eine Regel ohne Menge, nichts zu messen | [ADR-0064](0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md) Festlegung 3 sagt für die ausdrückliche Ablehnung *„Tap unverändert"*; ein abgelaufenes Token (401) trägt die belastbare Aussage — dass es im Betrieb eine naheliegende Ursache ist, ist eine Annahme, ihre Häufigkeit ungemessen wie die Menge —, und C nähme sie |
 | D — die Zuordnung steht nur in der Prozedur | die Prozedur nennt sie schon | die Prozedur ist Nutzer-Doku und trägt Ist-Zustand, keine Festlegung; der Implementer liest sie nicht als Constraint; eine Norm-Lücke bliebe eine |
-| **E — eine Schärfung ohne `Supersedes`: der Grundsatz, die Menge als benannte Setzung, die Meldung nach dem Vollzug (gewählt)** | trifft genau die drei Lagen; löst nichts ab; die Setzung ist als solche benannt und hat ihren Beleg-Weg; der Code und seine Fälle sind schon so gebaut | eine ADR für eine Ebene, die der Code bereits hält; die Menge in einer ADR heißt: eine gemessene Erweiterung ist eine Folge-ADR |
+| F — Festlegung 3 gilt für **jeden** Weg nach dem Schreiben, die Nutzlast zieht nach | die Zusage *„jede Meldung nach dem Vollzug"* stünde ohne Rest; ein Signal-Ende ohne Meldung ist geschlossen | eine Änderung an `fehler()`, an `beende` und am Signal-Pfad (der Zustand `geschrieben` muss in jedem Ausgang nach dem Schreiben die Meldung tragen, auch im Trap) und drei neue Fälle — `cmp` und der Nutzlast-Fehler über einen Stub, das Signal hermetisch kaum; der Gewinn gilt einem Weg, der ohne Vorfall ist und dessen Folge ein wiederholter Lauf auffängt (Festlegung 3, benannter Rest) |
+| **E — eine Schärfung ohne `Supersedes`: der Grundsatz, die Menge als benannte Setzung, die Meldung der Nachkontrolle bei unlesbarem Tap, der Rest benannt (gewählt)** | trifft genau die drei Lagen; löst nichts ab; die Setzung ist als solche benannt und hat ihren Beleg-Weg; der Code und seine Fälle halten schon, was die Festlegungen sagen, und die Zusage reicht nicht weiter als der Code | eine ADR für eine Ebene, die der Code bereits hält; die Menge in einer ADR heißt: eine gemessene Erweiterung ist eine Folge-ADR; der Rest aus Festlegung 3 bleibt stehen, bis Trigger 3 eintritt |
 
 **Warum E und nicht A.** A wäre die kleinere Handlung, und der Code hält die Zuordnung. Gegen A spricht,
 dass die Setzung dann **unbenannt** bliebe: ein Bediener oder Implementer erführe nirgends, dass 401, 403
 und 409 eine Annahme sind und dass jede Erweiterung einen Beleg des realen Tap braucht. Die Norm kostet
 einen Absatz.
 
+**Warum E und nicht F.** F ist die sauberere Zusage und die größere Handlung: sie fasst den Fehlerpfad der
+Nutzlast an, um Wege zu schließen, die im Betrieb nie beobachtet sind und deren Folge harmlos ist. E sagt,
+was der Code hält, und nennt, was er nicht hält; der Trigger holt F nach, wenn ein Weg real auftritt.
+
 ## Konsequenzen
 
-- **Positiv:** eine Meldung von `sync` sagt nie mehr über das Tap, als die Antwort trägt; die Setzung ist
-  benannt und an einen Beleg gebunden; die Meldung nach einem vollzogenen Schreiben lässt keinen Bediener
-  einen Teilerfolg als *„nichts geschehen"* lesen; keine Klasse und kein Status der Nutzlast kommt hinzu.
+- **Positiv:** eine Meldung von `sync`, die den Zustand aus der Antwort bildet, sagt nie mehr über das Tap,
+  als die Antwort trägt — mit der Menge aus Festlegung 2 als benannter Setzung; die Setzung ist an einen
+  Beleg gebunden; die Meldung der Nachkontrolle bei unlesbarem Tap lässt keinen Bediener einen Teilerfolg
+  als *„nichts geschehen"* lesen; keine Klasse und kein Status der Nutzlast kommt hinzu.
 - **Negativ:** bei einer Ablehnung mit einem Status außerhalb der Menge kostet die Meldung *„ungewiss"*
   einen überflüssigen `make tap-check` — eine gesparte Nachkontrolle wäre die sichere Richtung nicht mehr;
   die Menge ist bis zum ersten realen Nachzug **ungemessen**; die Menge in einer ADR macht ihre
   gemessene Erweiterung zu einer Folge-ADR.
+- **Negativ:** drei Wege nach dem Schreiben (`cmp` Exit ≥ 2, interner Fehler der Nutzlast, Signal) nennen
+  den Vollzug nicht; kein Fall bindet sie. Die Zusage von Festlegung 3 reicht nicht bis zu ihnen.
 - **Folgepflicht 1 — kein Nachrüsten.** Lebende Artefakte, die die Zuordnung nennen (die Prozedur, die
   Köpfe von Skript und Nutzlast, der Kommentar am Ziel), nennen sie **als Setzung**, wo sie die Menge
   nennen. Der Bestand ist kein Arbeitsauftrag; wer die Stelle ohnehin anfasst, zieht sie nach.
@@ -171,13 +208,18 @@ einen Absatz.
 
 ### Grenze
 
-Die Festlegungen sagen zu: **welche Aussage über den Zustand des Tap eine Meldung von `sync` trägt.** Sie
-sagen **nicht** zu:
+Die Festlegungen sagen zu: **welche Aussage über den Zustand des Tap eine Meldung von `sync` trägt, die
+ihn aus der Antwort der Schnittstelle bildet.** Sie sagen **nicht** zu:
 
 - **den Status der realen Schnittstelle.** Dass 401, 403 und 409 die Ursachen *Anmeldung, Schutz,
-  Konflikt* tragen, ist die Annahme aus Festlegung 2; der erste reale Nachzug misst sie.
+  Konflikt* tragen, ist die Annahme aus Festlegung 2; der erste reale Nachzug misst sie. **Bricht sie, ist
+  *„Tap unverändert"* für den betroffenen Status falsch** — die Zusage *„nie eine falsche Zustandsaussage"*
+  gilt für die Menge unter dieser Annahme, nicht für ihren Rand.
 - **dass ein 200 den Vollzug der richtigen Bytes bedeutet.** Es ist das Wort der Schnittstelle; den Beleg
   führt die Nachkontrolle bzw. `make tap-check`.
+- **die Meldungen der drei Wege nach dem Schreiben, die keine Antwort der Schnittstelle bilden** (`cmp`
+  Exit ≥ 2, interner Fehler der Nutzlast, Signal): sie nennen den Vollzug nicht (Festlegung 3, benannter
+  Rest).
 - **die Meldungen des Modus `check`.** Er schreibt nicht; *„nach dem Vollzug"* kommt dort nicht vor.
 - **einen Bediener, der die Meldung nicht liest.** Die Norm bindet, was das Werkzeug sagt.
 
@@ -191,8 +233,9 @@ gebunden, nicht neu geschrieben.
 | Zusage | Fall (`bats`, hermetisch; `curl`-Stub) | Rot unter der Schwächung |
 |---|---|---|
 | *„Tap unverändert"* nur bei 401, 403 und 409; jeder andere Status und keine Antwort meldet *„Ausgang des Schreibens ungewiss"* mit `make tap-check`, nie *„unverändert"*; Exit 2 und die Zeile `tap-sync: Exit 2` genau einmal | `sync abgelehnt` in `test/tap-nachzug.bats` (401, 403, 409 · 000, 500, 502, 201, 204, 404, 422, 429) | 404, 422 und 429 in den Ablehnungs-Zweig der Nutzlast aufgenommen → der Fall wird rot (die Aussage `Ausgang des Schreibens ungewiss` fällt); der ungewiss-Zweig meldet zusätzlich *„unverändert"* → rot |
-| Nach einem 200 des Schreibaufrufs sagt jede Meldung der Nachkontrolle mit unlesbarem Tap, dass das Schreiben bereits erfolgt ist, und nennt `make tap-check`; vor dem Schreiben bleibt es bei *„nichts verglichen"*; Exit 2 | `sync teilerfolg` in `test/tap-nachzug.bats` (Lesecode nach dem Schreiben 404, 401, 403, 429, 500, keine Antwort) | der Zweig für den vollzogenen Zustand entfällt → der Fall wird rot (die Aussage *„das Schreiben ist bereits erfolgt"* fehlt, die Meldung lautet *„… es wurde nichts verglichen"*); die Meldung nach dem Vollzug trägt zusätzlich *„nichts verglichen"* → rot |
+| Nach einem 200 des Schreibaufrufs sagt jede Meldung der Nachkontrolle, die das Tap nicht lesen kann, dass das Schreiben bereits erfolgt ist, und nennt `make tap-check`; vor dem Schreiben bleibt es bei *„nichts verglichen"*; Exit 2 | `sync teilerfolg` in `test/tap-nachzug.bats` (Lesecode nach dem Schreiben 404, 401, 403, 429, 500, keine Antwort) | der Zweig für den vollzogenen Zustand entfällt → der Fall wird rot (die Aussage *„das Schreiben ist bereits erfolgt"* fehlt, die Meldung lautet *„… es wurde nichts verglichen"*); die Meldung nach dem Vollzug trägt zusätzlich *„nichts verglichen"* → rot |
 | Keine neue Klasse: die Nutzlast endet mit genau den Status 0, 10 und 2 | `grep -nE 'exit (0\|10\|2)\b\|beende 2' harness/tools/tap-nachzug-nutzlast.sh` (Sichtprüfung; kein Gate) und die Fälle, die den Exit lesen | — (kein Sensor; benannt, nicht geschlossen) |
+| Die drei Wege nach dem Schreiben (`cmp` Exit ≥ 2, interner Fehler der Nutzlast, Signal) nennen den Vollzug **nicht** — das ist der Ist-Zustand, kein Versprechen | kein Fall | — (kein Sensor; der Rest ist benannt, nicht geschlossen — Trigger 3) |
 
 **Rot gesehen** im Architect-Lauf dieser Entscheidung, in einer Kopie des Baums, `bats` im gepinnten
 Bild: die erste Schwächung (Zweig `404 | 422 | 429` mit *„Tap unverändert"* vor dem `*)`-Zweig) färbt
@@ -208,8 +251,15 @@ erfolgt"* fällt und die Ausgabe zeigt *„… es wurde nichts verglichen"*. Der
   ([ADR-0064](0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
   Re-Evaluierungs-Trigger 2 — der Schutz ist dann erstmals am realen Tap herstellbar): die Menge aus
   Festlegung 2 ist gegen den gemessenen Status neu zu wägen.
-- **Wenn eine Meldung von `sync` den Zustand des Tap in einer fünften Form nennt** *(beobachtbar an einer
-  Meldung, die keiner der vier Formen aus Festlegung 1 entspricht)*: der Grundsatz trägt nicht.
+- **Wenn eine Meldung von `sync`, die den Zustand des Tap aus der Antwort bildet, ihn in einer fünften Form
+  nennt** *(beobachtbar an einer Meldung, die keiner der vier Formen aus Festlegung 1 entspricht)*: der
+  Grundsatz trägt nicht.
+- **Wenn ein Weg nach dem Schreiben im realen Betrieb auftritt, dessen Meldung den Vollzug nicht nennt**
+  *(beobachtbar an einem Lauf, dessen Ausgabe `interner Fehler der Nutzlast` oder `der Vergleich lief nicht`
+  nennt und dessen nachfolgender `make tap-check` das Tap als geschrieben zeigt, oder an einem Signal-Ende
+  nach `HTTP 200`)*: der Rest aus Festlegung 3 ist geschlossen — Alternative F, Code-Folge in der Nutzlast:
+  der Zustand `geschrieben` steht in jeder Meldung nach dem Schreiben, auch in `fehler()`, in `beende` und im
+  Signal-Pfad, mit je einem Fall.
 
 **Wer diese Trigger beobachtet — und wer nicht.** Ein Sensor, der eine dieser Bedingungen liest, besteht
 nicht. **Trigger 1 hat einen Anlass:** der erste reale Nachzug ist der Beleg der Zuordnung
@@ -217,7 +267,8 @@ nicht. **Trigger 1 hat einen Anlass:** der erste reale Nachzug ist der Beleg der
 liest — der Auftraggeber oder ein Lauf, der die Ausgabe sieht —, trägt einen Status außerhalb der Menge als
 Beobachtung ins Register; diese Route hat nur eine Closure, ein Lauf außerhalb einer Closure hat keine —
 **benannt, nicht geschlossen**. Die Lücke ist begrenzt: der Fehlgriff ist ein überflüssiger lesender
-Aufruf, nie eine falsche Zustandsaussage und nie ein Grün.
+Aufruf für einen Status außerhalb der Menge und nie ein Grün; innerhalb der Menge bricht nur die Annahme
+aus Festlegung 2 die Zusage (§Grenze, erster Punkt).
 
 ### Der Acceptance-Trigger
 
@@ -237,6 +288,7 @@ Runde der prüfenden Rolle; die Accept-Zeile der §Geschichte nennt ihn als **Ke
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-26 | **Proposed** | Architect-Lauf: die Zuordnung der Antworten der Schnittstelle beim Schreiben und die Meldung nach einem vollzogenen Schreiben, beide aus der Review- und Verifikations-Runde der Umsetzung des Modus `sync`. Der Acceptance-Trigger steht oben |
+| 2026-09-26 | **Proposed, korrigiert** | Architect-Lauf zum Konsistenz-Review `2026-09-26-review-adr-0035-0068-0069-konsistenz`, Status unverändert: Festlegung 3 gilt für die Nachkontrolle bei unlesbarem Tap, die drei Wege nach dem Schreiben stehen als benannter Rest mit Trigger 3; die Häufigkeitsbehauptung zu 401 entfällt; die Zusage *„nie eine falsche Zustandsaussage"* nennt ihre Reichweite; Verdikt `2026-09-26-architect-verdikt-korrektur-adr-0035-0068-0069` |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit

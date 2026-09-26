@@ -60,11 +60,27 @@ ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l                        
 ```
 
 Vier von 180 Verzeichnissen tragen keinen Beleg; jedes nennt sein Vorkommen unter *„Benannt, nicht
-gezählt"* und sagt selbst, dass die Paarung für es rot ist. Die Paarung wird heute **von Hand**
-gefahren — kein Modul der Doku-Gate-Konfiguration liest das Register
-(`grep -m1 '^modules:' .d-check.yml` führt `links, anchors, ids, matrix, codepaths, spans`) —, und
-eine Closure hat das Rot bisher als *„Ausnahme in der Closure-Notiz"* benannt. Diese Ausnahme steht in
-keiner Norm.
+gezählt"*, und zwei von ihnen sagen selbst, dass die Paarung für sie rot ist
+(`grep -rl 'Paarung' <die vier Verzeichnisse> | wc -l` → **2**, beide `state.md`). Die Paarung wird
+heute **von Hand** gefahren — die Doku-Gate-Konfiguration hält ihre zweite Hälfte nicht:
+`make docs-check` bleibt über einem Register mit einem fünften Verzeichnis ohne `evidence/` grün, und
+der Block `planning:` der `.d-check.yml` führt keinen `observations`-Schlüssel:
+
+```sh
+K=$(mktemp -d); git archive HEAD | tar -x -C "$K"
+mkdir "$K/docs/plan/planning/observations/BEO-ALL/sonde"
+cp docs/plan/planning/observations/BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab/{observation,state}.md \
+   "$K/docs/plan/planning/observations/BEO-ALL/sonde/"
+docker run --rm --network none -v "$K:/repo:ro" \
+  "ghcr.io/pt9912/d-check@$(sed -n 's/^DCHECK_DIGEST ?= //p' d-check.mk)" | tail -1   # d-check: <N> Datei(en) geprüft, 0 Befund(e)
+awk '/^planning:/{f=1} f&&/^[a-z]/&&!/^planning:/{f=0} f' .d-check.yml | grep -c observations  # 0
+```
+
+Die Sonde liegt außerhalb des Repos; der unveränderte Baum meldet dieselbe Bilanz mit zwei Dateien weniger
+(`0 Befund(e)`). Die Fähigkeit `observations` des Moduls `planning` steht in
+`harness/sensors/docs-check.md` als verfügbar und nicht aktiviert; ob sie aktiviert die zweite Hälfte hielte,
+ist ungemessen (§Was hier nicht entschieden ist). Eine Closure hat das Rot bisher als *„Ausnahme in der
+Closure-Notiz"* benannt. Diese Ausnahme steht in keiner Norm.
 
 ### Was die zwei Lesarten sind
 
@@ -90,6 +106,14 @@ Abschnitt hängt, nähme darum 58 belegte Verzeichnisse mit und würde bei ihnen
 Überschrift nicht. Ein unterscheidendes Merkmal müsste ein **neues Feld** sein (etwa ein Stand
 *„ohne Beleg"*), das die Ziel-Form der Baseline nicht führt.
 
+**Und das Template der Baseline stützt (a) an zwei Stellen.** Der Abschnitt gehört dort zum Rumpf **jeder**
+`observation.md` (*„Benannt, nicht gezählt — <Vorkommen ohne abgeschlossenen Vorgang …>. Weglassen, wenn
+keine."*), und die Vorlage sagt zum Verzeichnis: *„Erfinde keine Belege: Ein Verzeichnis entsteht beim
+ERSTauftreten einer echten Beobachtung, nicht beim Adoptieren dieser Vorlage."*
+(`sed -n 25,62p .harness/baseline/v6.9.0/templates/docs/plan/planning/observation.template.md`) — das
+Verzeichnis entsteht mit der Beobachtung, der Abschnitt ist ein Teil von ihr, und ein Beleg wird nicht
+erfunden, damit die Paarung grün wird.
+
 ## Entscheidung
 
 **Wir wählen (a): die Baseline gilt wörtlich, ein Verzeichnis ohne Beleg ist ein Befund der
@@ -101,18 +125,29 @@ einen Beleg. Es gibt **keine zweite Sorte Verzeichnis**: keinen *„Eintrag ohne
 Form, eigenem Stand oder eigener Marke. Ein Verzeichnis, dessen einziges Vorkommen unter *„Benannt,
 nicht gezählt"* steht, ist ein Eintrag, dem sein Beleg **noch fehlt** — kein Eintrag anderer Art.
 
-**2. Die Paarung (c), zweite Hälfte, kennt keine Ausnahme.** Jedes Verzeichnis ohne nicht leeres
-`evidence/*.md` ist ein **Befund**; es gibt keine Liste, keinen Marker und keine Klasse, die ihn
-ausnimmt. Ein Befund ist **keine Senkung** nach [`AGENTS.md`](../../../AGENTS.md) §3.5: er ändert
-keine Schwelle, er benennt einen Bestand. Zwei Maßstäbe, nicht verwechselt:
+**2. Die Paarung (c), zweite Hälfte, kennt keine Ausnahme — und ihr Umfang ist das ganze Register,
+auch im Closure-Schritt.** Jedes Verzeichnis ohne nicht leeres `evidence/*.md` ist ein **Befund**; es
+gibt keine Liste, keinen Marker und keine Klasse, die ihn ausnimmt. Ein Befund ist **keine Senkung**
+nach [`AGENTS.md`](../../../AGENTS.md) §3.5: er ändert keine Schwelle, er benennt einen Bestand.
 
-- **Als Closure-Schritt** prüft die Paarung — nach dem Baseline-Wortlaut — *„die gerade
-  entstandenen Einträge"*; ein Bestands-Verzeichnis, das die Closure weder angelegt noch berührt hat,
-  ist dort **nicht** ihr Gegenstand.
-- **Als Bestandsprüfung** (ein Lauf von Hand, später ein Wächter) urteilt sie über **jedes**
-  Verzeichnis, und ihr Ergebnis nennt die Verzeichnisse **namentlich**. Es sagt *„rot"* mit Namen —
-  nicht *„getragen, mit Ausnahme"* und nicht *„formal rot"* ohne Namen. Wer die Paarung fährt und
-  Befunde findet, behauptet sie nicht als getragen.
+*Der Baseline-Wortlaut*, der den Umfang trägt, ist an beiden Stellen universal: *„jede Registerzeile
+trägt mindestens einen Beleg"* (Closure-Schritt 3, Paarung (c)) und *„ob **jedes** Verzeichnis ein nicht
+leeres `evidence/` hat"* (§Das Beobachtungs-Register). Der Satz *„erst jetzt, weil sie die gerade
+entstandenen Einträge prüfen; in Schritt 2 gäbe es sie noch nicht"* begründet den **Zeitpunkt** der
+Paarungen im Ablauf — nach den Schritten, die die Einträge erzeugen —, nicht den Umfang der zweiten Hälfte
+von (c): gebunden an die Closure ist die **erste** Hälfte (die *„in einer Closure-Notiz oder einem
+Risiko-Ausgang genannte"* Beobachtung), die zweite nennt jede Registerzeile. Ein Umfang *„nur die von
+dieser Closure angelegten oder berührten Verzeichnisse"* steht dort nicht.
+
+*Die Folge:* die Paarung als Closure-Schritt und die Bestandsprüfung (ein Lauf von Hand, später ein
+Wächter) sind **ein** Maßstab, kein Doppelmaßstab. Eine Closure, die die Paarung fährt, prüft die zweite
+Hälfte über **das ganze Register** und **nennt jedes Verzeichnis ohne Beleg namentlich** als Befund — nicht
+*„getragen, mit Ausnahme"*, nicht *„formal rot"* ohne Namen und nicht nur die Verzeichnisse, die sie selbst
+angelegt oder berührt hat. Wer die Paarung fährt und Befunde findet, behauptet sie nicht als getragen.
+
+*Der Preis:* bis der Bestand getilgt ist, trägt jede Closure eine Zeile mit den Namen (heute vier, das
+Kommando steht in §Kontext) und das Rot der zweiten Hälfte bleibt in jeder Closure sichtbar. Das ist die
+Zusage, die die Ausnahme ersetzt, und kein Nebeneffekt.
 
 **3. Der Befund geht durch einen Beleg — und durch nichts sonst.** Er endet, wenn ein
 abgeschlossener Vorgang das Vorkommen trifft und seine Kennung als Datei unter `evidence/` liegt
@@ -128,7 +163,13 @@ nach der Baseline **Wiederholung über Vorgänge hinweg** (*„Ein Vorgang zähl
 Klasse nahezu jede Closure, hat sie Belege, und die 3×-Schwelle greift — das ist die Antwort des
 Registers auf diese Lage. **Welche Vorgänge die Klasse tatsächlich trafen, urteilt der Planner je
 Vorgang** (*„Mensch urteilt, Maschine prüft Deckung"*); die Entscheidung schließt keinen Weg und
-schreibt keinen vor.
+schreibt keinen vor. **Ein Eintrag im Bestand nennt diesen Einwand als seinen Grund:** die
+`observation.md` von `BEO-ALL/planungs-bestand-waechst-schneller-als-er-abgebaut-wird` begründet ihren
+fehlenden Beleg wörtlich damit. Die Festlegung widerspricht diesem Rumpf; der Rumpf bleibt (unveränderlich,
+[ADR-0034](0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)), und ab dem
+Accept gilt für die Ablage diese Festlegung. Der Eintrag ist einer der vier aus §Kontext. Trigger 1 löst
+für ihn nicht aus: er verlangt das Urteil des Planners, dass die Klasse **keinen** Vorgang trifft, und der
+Rumpf sagt das Gegenteil (*„nahezu jede Closure"*) — für ihn gilt der Weg über Belege nach dieser Festlegung.
 
 **Was hier NICHT entschieden ist:**
 
@@ -140,9 +181,10 @@ schreibt keinen vor.
   dieser Entscheidung (Cutoff unten).
 - **Die Ausgangs-Regel** ([ADR-0049](0049-ausgang-traegt-die-benannte-luecke.md)) und die
   Verzeichnis-Form ([ADR-0034](0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)).
-- **Ob das Modul `planning.observations` des gepinnten Doku-Gate-Werkzeugs die zweite Hälfte hält.**
-  Sein Prüfgegenstand ist die Existenz von `observation.md` zu einer zitierten Kennung; ob es ein
-  leeres `evidence/` meldet, ist **ungemessen**, und diese Entscheidung sagt darüber nichts.
+- **Ob die Fähigkeit `planning.observations` des gepinnten Doku-Gate-Werkzeugs, aktiviert, die zweite
+  Hälfte hält.** Sie ist heute nicht aktiviert (§Kontext); ihr Prüfgegenstand ist die Existenz von
+  `observation.md` zu einer zitierten Kennung, und ob sie ein leeres `evidence/` meldet, ist
+  **ungemessen**. Diese Entscheidung sagt darüber nichts.
 
 ## Verglichene Alternativen
 
@@ -150,9 +192,10 @@ schreibt keinen vor.
 |---|---|---|
 | A — nichts tun; die Closure benennt das Rot als „Ausnahme in der Closure-Notiz" weiter | keine Norm-Arbeit | die Ausnahme steht in keiner Norm, hat keine Grenze und keinen Träger; jede Closure erfindet ihren Wortlaut neu, und ein künftiger Wächter fände eine Ausnahme vor, die niemand entschieden hat — das Gate gegen einen Widerspruch statt einer Deckung |
 | B — (b): eine Ausnahme mit Form für „benannt, nicht gezählt"-Einträge | ein belegloses Verzeichnis wäre ein zulässiger Zustand; kein Dauer-Rot | die Überschrift trennt nicht (62 tragen sie, 58 davon mit Beleg, §Kontext); ein **neues Feld** wäre nötig, das die Ziel-Form der Baseline nicht führt; die Ausnahme nimmt der Paarung eine Prüfung, die die Baseline **unbedingt** formuliert — eine Lockerung nach §3.5 (ADR) **und** eine Abweichung nach [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) (Eintrag im Adaptions-Block) |
-| C — beleglose Verzeichnisse verbieten; ein Vorkommen ohne Vorgang wird nicht registriert | die Paarung bliebe grün | ein Vorkommen ohne Vorgang hätte **keinen** Ort — der Befund, den ein Lauf außerhalb einer Closure macht, verschwände spurlos; die Baseline sagt das Gegenteil (*„gehört trotzdem in den Eintrag"*) |
+| C — beleglose Verzeichnisse verbieten; ein Vorkommen ohne Vorgang wird nicht registriert | die Paarung bliebe grün; das Template sagt *„Erfinde keine Belege: Ein Verzeichnis entsteht beim ERSTauftreten einer echten Beobachtung"* — kein Verzeichnis entstünde ohne Beleg | ein Vorkommen ohne Vorgang hätte **keinen** Ort — der Befund, den ein Lauf außerhalb einer Closure macht, verschwände spurlos; die Baseline sagt das Gegenteil (*„gehört trotzdem in den Eintrag"*), und das Template führt den Abschnitt *„Benannt, nicht gezählt"* im Rumpf **jeder** `observation.md` — es verlangt einen Ort für das Vorkommen, nicht dessen Verbot. Das Erfinde-Verbot trifft den **Beleg** (Festlegung 3), nicht das Verzeichnis |
 | D — den Vorgang der Aufnahme als Beleg zulassen | kein Verzeichnis bliebe beleglos | eine Kennung als Dateiname wäre kein Auftreten mehr, sondern die Buchung des Eintrags selbst; der Zähler zählte die Verwaltung der Klasse — die falsche Aussage, gegen die die formgebundene Beleg-Regel steht |
-| **E — (a): die Baseline wörtlich, der Befund benannt, der Beleg als einziger Weg (gewählt)** | keine Abweichung, keine Lockerung, kein neues Feld; der Befund hat einen Namen, eine Form der Meldung und einen Tilgungsweg; die Paarung urteilt gegen dieselbe Regel, die die Baseline schreibt | ein Bestands-Rot bleibt bis zum Beleg **sichtbar**: ein Wächter für die zweite Hälfte kann erst grün werden, wenn der Bestand getilgt ist; das ist der Preis der Ehrlichkeit, nicht ein Fehler der Wahl |
+| F — die Paarung im Closure-Schritt prüft nur die *„gerade entstandenen Einträge"* | die Closure-Notiz bliebe kurz; nur die von der Closure berührten Verzeichnisse würden genannt | liest den Zeitpunkt-Grund der Baseline (*„erst jetzt, weil sie die gerade entstandenen Einträge prüfen"*) als Umfang der zweiten Hälfte, die die Baseline universal führt (*„jede Registerzeile"*); eine Closure könnte die Hälfte als getragen abhaken, ohne die vier Verzeichnisse zu nennen — die *„Ausnahme in der Closure-Notiz"*, die diese Entscheidung beenden will, unter anderem Namen |
+| **E — (a): die Baseline wörtlich, der Befund benannt, der Beleg als einziger Weg (gewählt)** | keine Abweichung, keine Lockerung, kein neues Feld; der Befund hat einen Namen, eine Form der Meldung und einen Tilgungsweg; die Paarung urteilt gegen dieselbe Regel, die die Baseline schreibt — im Closure-Schritt wie in der Bestandsprüfung | ein Bestands-Rot bleibt bis zum Beleg **sichtbar** und steht als Zeile in jeder Closure: ein Wächter für die zweite Hälfte kann erst grün werden, wenn der Bestand getilgt ist; das ist der Preis der Ehrlichkeit, nicht ein Fehler der Wahl |
 
 **Warum E und nicht A.** A ist die kleinere Handlung, und sie hält den Betrieb. Gegen A spricht, dass
 die Ausnahme dann **unbenannt** bliebe — ohne Grenze, ohne Träger, ohne Aussage, wann sie endet — und
@@ -164,8 +207,9 @@ ein späterer Wächter sie als Normalzustand erbte.
   behauptet nichts, was sie nicht hält; ein späterer Wächter über der zweiten Hälfte hat eine Regel
   ohne Liste, gegen die er urteilt.
 - **Negativ:** das Rot bleibt, bis der Beleg da ist — für eine Klasse, die keinen Vorgang trifft,
-  **unbegrenzt** (Re-Evaluierungs-Trigger 1). Ein Wächter, der die zweite Hälfte fährt, ist bis zur
-  Tilgung des Bestands nicht verdrahtbar.
+  **unbegrenzt** (Re-Evaluierungs-Trigger 1). Jede Closure trägt bis dahin die Zeile mit den Namen
+  (Festlegung 2). Ein Wächter, der die zweite Hälfte fährt, ist bis zur Tilgung des Bestands nicht
+  verdrahtbar.
 - **Kein Eintrag im Adaptions-Speicher.** Eine Abweichung von der Baseline liegt nicht vor: die
   Entscheidung liest die Paarung so, wie die Baseline sie **unbedingt** formuliert, und nimmt ihr
   nichts. Die Wahl (b) hätte einen Eintrag verlangt — sie ist der Grund, warum keiner entsteht
@@ -173,24 +217,26 @@ ein späterer Wächter sie als Normalzustand erbte.
   Abweichungen).
 - **Folgepflicht 1 — der Ort der Register-Regel.** Die Register-Ablage trägt die Lesart dort, wo sie
   die Beleg-Regel führt (der Absatz *„Ein Vorgang zählt einmal"* ihrer `README.md`): ein Verzeichnis
-  ohne Beleg ist ein Befund der Paarung, kein Eintrag eigener Art; die Meldung ist namentlich.
+  ohne Beleg ist ein Befund der Paarung, kein Eintrag eigener Art; die Meldung ist namentlich und
+  erstreckt sich im Closure-Schritt auf das ganze Register.
   Das ist Arbeit des Planners, nicht dieser Entscheidung.
 - **Folgepflicht 2 — kein Sensor liest die Existenz von `evidence/`.** Ein Sensor über dem Register
   zählt **Dateien** unter `evidence/`, nicht das Verzeichnis: ein leeres oder nur eine Nicht-`.md`-Datei
   tragendes `evidence/` ist ein Befund (Fitness Function unten, beide Fälle gesehen).
 - **Cutoff — ab dieser Entscheidung, kein Nachrüsten.** Gebunden ist die Meldung, die geschrieben
   wird, und das Verzeichnis, das angelegt wird. Der Bestand aus §Kontext ist kein Arbeitsauftrag; er
-  geht durch Belege, wenn Vorgänge ihn treffen.
+  geht durch Belege, wenn Vorgänge ihn treffen. Das Nennen der Namen in der Closure ist keine Tilgung.
 
 ## Fitness Function
 
-Keine maschinelle Durchsetzung: **ein Wächter existiert nicht** — kein Modul der Doku-Gate-Konfiguration
-liest das Register, und ein Sensor darauf ist nicht gebaut. Benannt, nicht geschlossen; die Prüfung
-ist ein Kommando, das ein Lauf fährt.
+Keine maschinelle Durchsetzung: **ein Wächter existiert nicht** — keine aktivierte Regel der
+Doku-Gate-Konfiguration hält die zweite Hälfte (die Sonde in §Kontext bleibt grün über einem fünften
+Verzeichnis ohne `evidence/`), und ein Sensor darauf ist nicht gebaut. Benannt, nicht geschlossen; die
+Prüfung ist ein Kommando, das ein Lauf fährt.
 
 | Tooling | Regel | Make-Target |
 |---|---|---|
-| Shell-Schleife (Kommando in §Kontext; von Hand, in der Bestandsprüfung der Paarung) | Sie meldet **jedes** Verzeichnis ohne `evidence/*.md` — namentlich, ohne Ausnahmeliste | kein Target (`kein Gate`) |
+| Shell-Schleife (Kommando in §Kontext; von Hand, in der Bestandsprüfung der Paarung und im Closure-Schritt) | Sie meldet **jedes** Verzeichnis ohne `evidence/*.md` — namentlich, ohne Ausnahmeliste | kein Target (`kein Gate`) |
 
 **Rot gesehen** im Architect-Lauf dieser Entscheidung, in einer Kopie des Registers (Stand am
 Tag des Entscheids): die Schleife meldet vier Verzeichnisse; ein hinzugefügtes Verzeichnis mit
@@ -236,6 +282,7 @@ des Auftraggebers.**
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-26 | **Proposed** | Architect-Lauf: die Lesart der Beleg-Regel und der Register-Paarung (c), übergeben von einem Planner-Plan, der sie als Norm-Frage der Register-Form benannte. Der Acceptance-Trigger steht oben; Verdikt `2026-09-26-architect-verdikt-sammelauftrag-register-und-adr-0035` |
+| 2026-09-26 | **Proposed, korrigiert** | Architect-Lauf zum Konsistenz-Review `2026-09-26-review-adr-0035-0068-0069-konsistenz`, Status unverändert: Festlegung 2 hat einen Maßstab (die zweite Hälfte von (c) gilt im Closure-Schritt über das ganze Register, der Zeitpunkt-Satz der Baseline ist kein Umfang); die Aussage zum Doku-Gate ist gemessen; das Template stützt die Wahl; der Rumpf des Eintrags `planungs-bestand-waechst-schneller-als-er-abgebaut-wird` ist genannt; Verdikt `2026-09-26-architect-verdikt-korrektur-adr-0035-0068-0069` |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
