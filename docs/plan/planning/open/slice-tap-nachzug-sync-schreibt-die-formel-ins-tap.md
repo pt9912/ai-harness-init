@@ -115,11 +115,14 @@ Eigentums-Frage.
   (§2, Liefer-Punkt 1); der erste reale Nachzug ist Handlung des Auftraggebers und Beleg des Schreib-Pfads
   ([`ADR-0064`](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
   §Grenze).
-- **Der Zahn dafür, dass `check` keine Version liest** —
-  **Folge-Slice `slice-tap-check-liest-keine-version-ist-gebunden`** (Datei in `open/`): ein `bats`-Fall und ein
-  Mutations-Fall für `check`, und der Satz *„der Zahn fehlt"* in Schritt 7. Die Adresse nimmt den Punkt an
-  (dort Liefer-Punkt 1 bis 3). Dieser Slice schreibt die vier alternden Aussagen um; **den Satz über den
-  fehlenden Zahn ändert er nicht** und nimmt den Absatz an seinem Start in dem Stand, in dem er liegt (§3).
+- **Der Zahn dafür, dass `check` keine Version liest** — **geliefert von
+  `slice-tap-check-liest-keine-version-ist-gebunden`** (in `done/`): ein `bats`-Fall in
+  `test/tap-nachzug.bats` und der Mutations-Fall
+  `test/mutations/452-tap-check-liest-versionen-bei-ungleichen-bytes.sh` für `check`; der Absatz *Grenze* in
+  Schritt 7 trägt seither die zwei Fälle, die er bindet, und die Zahl neben
+  `grep -c '^@test' test/tap-nachzug.bats`. Dieser Slice schreibt die vier alternden Aussagen um, **ändert die
+  Aussagen über den Zahn nicht** und nimmt den Absatz an seinem Start in dem Stand, in dem er liegt (§3); fügt
+  er Fälle hinzu, misst er die Zahl neu.
 - **Das Handbuch, Weg C** — **anderer Vorgang:** die Nutzer-Doku trägt den Ist-Zustand, ihr Update gehört zum
   Release-Schnitt; *„je Release-Schnitt … nachgezogen"* wird mit dem Job wahr, nicht mit dem Ziel.
 - **Der Bezug [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) der Tap-Verteilung in
@@ -245,8 +248,8 @@ Aussagen-Berührung steht hier gar nicht.
 - **Der Stand von Schritt 7 wird an der Basis gemessen, nicht aus diesem Plan übernommen:** die Wortlaute der
   vier Aussagen stehen hier als Beschreibung; der Implementer liest `docs/user/releasing.md` an seinem Start
   (`grep -nE 'Handgriff|einzige Tap-Ziel|grep -ci version|Vorwärts-Schutz' docs/user/releasing.md`) und nimmt
-  den Absatz *Grenze* in dem Stand, in dem er liegt — trägt er dann den Satz über den fehlenden Zahn nicht mehr,
-  hat `slice-tap-check-liest-keine-version-ist-gebunden` ihn geändert, und der Umbau baut darauf auf.
+  den Absatz *Grenze* in dem Stand, in dem er liegt — er trägt seit `slice-tap-check-liest-keine-version-ist-gebunden`
+  zwei Fälle mit ihren Namen und die Zahl neben `grep -c '^@test' test/tap-nachzug.bats`, und der Umbau baut darauf auf.
 - **Nummern:** Schritt 7 bleibt Schritt 7; die Nennungen einer Schritt-Nummer in `releasing.md`
   (`grep -nE 'Schritte? [0-9]' docs/user/releasing.md`) und im Zustandsfeld von
   `BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases` bleiben wahr. Die Messung über beide Adress-Formen
@@ -446,7 +449,7 @@ Erwartungswerte). Gesucht nach Tap, Release, Prozedur, Eigentum, Zusage, Bedingu
   nicht (§3, Nummern).
 - Gesichtet, kein Treffer für diesen Gegenstand: `negation-mitten-im-bats-fall-ohne-wirkung` (**1×**; die Regel
   gilt für die neuen Fälle: keine Negation mitten im Fall), `doku-zusage-nennt-den-test-dessen-fall-nur-einen-ausschnitt-misst`
-  (**1×**; betrifft den Nachbar-Slice `slice-tap-check-liest-keine-version-ist-gebunden`).
+  (**2×**, gemessen 2026-09-26 nach dem Abschluss des Nachbar-Slice `slice-tap-check-liest-keine-version-ist-gebunden`, der den zweiten Beleg trug).
 
 **Modus-Begründungsblock — Umfang.** Pflicht, sobald mindestens eine berührte
 Sub-Area BF oder Hybrid ist — einer pro Sub-Area. Bei reinem GF genügt der
