@@ -1,10 +1,12 @@
 package archive_test
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/pt9912/ai-harness-init/internal/archive"
 )
@@ -45,7 +47,7 @@ func TestVerweisFundDreiFormenInIhremSuchraum(t *testing.T) {
 	root := t.TempDir()
 	done := filepath.Join(root, "docs", "plan", "planning", "done")
 	// docs/reviews steht fuer "ueberall, auch weit ausserhalb von done/" —
-	// ADR-0033 Abnahme-Kriterium 1 haelt diesen Baum ausdruecklich IM Suchraum
+	// ADR-0070 Festlegung 2 haelt diesen Baum IM Suchraum des Nachzugs
 	// (anders als docs/plan/adr, s. TestVerweisFundUndNachziehenUebergehenAcceptedADR).
 	schreibe(t, filepath.Join(root, "docs", "reviews", "2026-09-01-x.md"),
 		"Siehe [slice-100](../planning/done/slice-100-a.md).\n")
@@ -234,7 +236,7 @@ func TestNachziehenSchreibtGenauDortWoVerweisFundZaehlt(t *testing.T) {
 // eine Accepted-ADR unter docs/plan/adr traegt nach dem Nachzug denselben
 // Inhalt, obwohl sie denselben Praefix-Verweis traegt wie ein gleichzeitig
 // vorhandener Review-Report, der weiterhin gezaehlt und umgehaengt wird
-// (ADR-0033 Abnahme-Kriterium 1: docs/reviews/** bleibt drin).
+// (ADR-0070 Festlegung 2: docs/reviews/** bleibt drin).
 func TestVerweisFundUndNachziehenUebergehenAcceptedADR(t *testing.T) {
 	root := t.TempDir()
 	adr := "docs/plan/adr/0033-x.md"
@@ -283,5 +285,196 @@ func TestVerweisFundUndNachziehenUebergehenAcceptedADR(t *testing.T) {
 	}
 	if !strings.Contains(string(reportInhalt), "](done/welle-10/slice-100-a.md)") {
 		t.Fatalf("Review-Report nicht nachgezogen: %s", reportInhalt)
+	}
+}
+
+// bt setzt in den Fixtures unten das Zeichen "§" zu einem Backtick um — ein
+// Raw-String kann selbst keinen tragen.
+func bt(s string) string { return strings.NewReplacer("§", "`").Replace(s) }
+
+// reportLinks und reportRest bilden EINE Datei unter docs/reviews/: reportLinks
+// traegt vier Links auf die bewegte Datei (einen mit Anker, zwei davon neben
+// einem Link auf eine fremde Datei in einer Zeile) — %[1]s ist das Segment, das
+// der Nachzug vor den Dateinamen setzt —, reportRest die vier Nicht-Link-Formen:
+// reiner Pfad-Span, Operand in einem Kommando-Span, Pfad im Code-Block, Pfad im
+// Fliesstext.
+const (
+	reportLinks = "Link: [a](../planning/done/%[1]sslice-100-a.md) und [x](../planning/done/%[1]sslice-100-a.md#ziel).\n" +
+		"Drei in einer Zeile: [a](../planning/done/%[1]sslice-100-a.md) [f](../planning/done/slice-999-fremd.md) [b](../planning/done/%[1]sslice-100-a.md)\n"
+	reportRest = "Span: §done/slice-100-a.md§\n" +
+		"Span voll: §docs/plan/planning/done/slice-100-a.md§\n" +
+		"Operand: §git show HEAD:docs/plan/planning/done/slice-100-a.md§\n" +
+		"Fliesstext: siehe docs/plan/planning/done/slice-100-a.md im Bericht.\n" +
+		"§§§sh\ncat docs/plan/planning/done/slice-100-a.md\n§§§\n"
+)
+
+func reportBaum(t *testing.T) (root string, dateien []string) {
+	t.Helper()
+	root = t.TempDir()
+	schreibe(t, filepath.Join(root, "docs", "reviews", "2026-09-01-x.md"),
+		bt(fmt.Sprintf(reportLinks, "")+reportRest))
+	schreibe(t, filepath.Join(root, "docs", "plan", "planning", "done", "slice-100-a.md"), "# Slice slice-100: A\n")
+	return root, []string{
+		"docs/reviews/2026-09-01-x.md",
+		"docs/plan/planning/done/slice-100-a.md",
+	}
+}
+
+// TestNachziehenUnterReviewsSchreibtNurDieLinkForm ist ADR-0070 Fitness-Zeile 1:
+// in einer Datei unter docs/reviews/ sind alle Link-Ziele nachgezogen, und der
+// reine Pfad-Span, der Operand, der Code-Block und der Fliesstext sind Byte fuer
+// Byte gleich. Die Zaehl-Seite (VerweisFund, die Vorschau) nennt dieselbe Zahl,
+// die die Ersetz-Seite schreibt.
+//
+// Gegenbeispiele: test/mutations/467-archive-welle-go-reports-verlieren-die-form-regel.sh
+// (die Regel entfaellt, jede Form ist umgeschrieben),
+// 468-archive-welle-go-reports-verlieren-den-link-nachzug.sh (die Links bleiben
+// auf dem alten Ort), 470-archive-welle-go-zaehl-seite-laeuft-auseinander.sh.
+func TestNachziehenUnterReviewsSchreibtNurDieLinkForm(t *testing.T) {
+	root, dateien := reportBaum(t)
+	gezaehlt, err := archive.VerweisFund(root, dateien, []string{"slice-100-a.md"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	geschrieben, err := archive.Nachziehen(root, dateien, []string{"slice-100-a.md"}, "welle-10")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Vier Links auf die bewegte Datei stehen in der Datei; der fremde nicht.
+	want := []archive.Fund{{Datei: "docs/reviews/2026-09-01-x.md", Praefix: 4}}
+	if fmt.Sprint(gezaehlt) != fmt.Sprint(want) {
+		t.Errorf("VerweisFund = %+v, want %+v", gezaehlt, want)
+	}
+	if fmt.Sprint(geschrieben) != fmt.Sprint(gezaehlt) {
+		t.Errorf("Nachziehen = %+v, VerweisFund = %+v — Zaehl- und Ersetz-Seite laufen auseinander", geschrieben, gezaehlt)
+	}
+
+	b, err := os.ReadFile(filepath.Join(root, "docs", "reviews", "2026-09-01-x.md"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	wantInhalt := bt(fmt.Sprintf(reportLinks, "welle-10/") + reportRest)
+	if string(b) != wantInhalt {
+		t.Errorf("Report nach dem Nachzug:\n%s\nwant:\n%s", b, wantInhalt)
+	}
+}
+
+// TestNachziehenUnterReviewsSchreibtEineDateiOhneLinkNicht: eine Datei unter
+// docs/reviews/, die die Adresse nur als Span, Operand, Block und Fliesstext
+// traegt, ist kein Fund und wird nicht angefasst — auch ihr Zeitstempel bleibt.
+func TestNachziehenUnterReviewsSchreibtEineDateiOhneLinkNicht(t *testing.T) {
+	root := t.TempDir()
+	rel := "docs/reviews/2026-09-02-y.md"
+	p := filepath.Join(root, filepath.FromSlash(rel))
+	schreibe(t, p, bt(reportRest))
+	alt := time.Date(2001, 1, 2, 3, 4, 5, 0, time.UTC)
+	if err := os.Chtimes(p, alt, alt); err != nil {
+		t.Fatal(err)
+	}
+
+	funde, err := archive.VerweisFund(root, []string{rel}, []string{"slice-100-a.md"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	geschrieben, err := archive.Nachziehen(root, []string{rel}, []string{"slice-100-a.md"}, "welle-10")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(funde) != 0 || len(geschrieben) != 0 {
+		t.Errorf("VerweisFund = %+v, Nachziehen = %+v, want beide leer", funde, geschrieben)
+	}
+	st, err := os.Stat(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !st.ModTime().Equal(alt) {
+		t.Errorf("Datei ohne Link-Treffer angefasst: ModTime %v, want %v", st.ModTime(), alt)
+	}
+}
+
+// TestNachziehenUnterReviewsErsetztLinkSyntaxImCodeSpanMit ist ADR-0070
+// Fitness-Zeile 2, die Span-Haelfte der Grenze: die Regel liest kein Markdown,
+// Link-Syntax als Zitat in einem Code-Span steht hinter "](" und wird ersetzt.
+// Faellt der Test, weil ein Traeger eine Kontext-Erkennung bekam, ist das
+// Re-Evaluierungs-Trigger 6 der ADR — Festlegung 1 ist dann per Folge-ADR zu
+// aendern, der Fall nicht stillschweigend umzudrehen. Ein Link mit Titel und die
+// Spitzklammer-Form enden nicht unmittelbar an ")" oder "#" und bleiben stehen.
+func TestNachziehenUnterReviewsErsetztLinkSyntaxImCodeSpanMit(t *testing.T) {
+	root := t.TempDir()
+	rel := "docs/reviews/2026-09-03-z.md"
+	schreibe(t, filepath.Join(root, filepath.FromSlash(rel)), bt(
+		"Zitat: §[a](../planning/done/slice-100-a.md)§\n"+
+			"Titel: [t](../planning/done/slice-100-a.md \"titel\")\n"+
+			"Spitze: [s](<../planning/done/slice-100-a.md>)\n"))
+
+	if _, err := archive.Nachziehen(root, []string{rel}, []string{"slice-100-a.md"}, "welle-10"); err != nil {
+		t.Fatal(err)
+	}
+	b, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(rel)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := bt("Zitat: §[a](../planning/done/welle-10/slice-100-a.md)§\n" +
+		"Titel: [t](../planning/done/slice-100-a.md \"titel\")\n" +
+		"Spitze: [s](<../planning/done/slice-100-a.md>)\n")
+	if string(b) != want {
+		t.Errorf("Report nach dem Nachzug:\n%s\nwant:\n%s", b, want)
+	}
+}
+
+// TestNachziehenInDoneErsetztJedeForm ist ADR-0070 Fitness-Zeile 5: in einer
+// Datei unter docs/plan/planning/done/ sind Link, reiner Pfad-Span und Operand
+// weiter nachgezogen — die Form-Regel gilt nur fuer docs/reviews/.
+// Gegenbeispiel: test/mutations/469-archive-welle-go-form-regel-greift-in-done.sh.
+func TestNachziehenInDoneErsetztJedeForm(t *testing.T) {
+	root := t.TempDir()
+	rel := "docs/plan/planning/done/welle-09-results.md"
+	schreibe(t, filepath.Join(root, filepath.FromSlash(rel)), bt(
+		"Link: [a](../done/slice-100-a.md)\n"+
+			"Span: §docs/plan/planning/done/slice-100-a.md§\n"+
+			"Operand: §git show HEAD:docs/plan/planning/done/slice-100-a.md§\n"))
+
+	if _, err := archive.Nachziehen(root, []string{rel}, []string{"slice-100-a.md"}, "welle-10"); err != nil {
+		t.Fatal(err)
+	}
+	b, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(rel)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := bt("Link: [a](../done/welle-10/slice-100-a.md)\n" +
+		"Span: §docs/plan/planning/done/welle-10/slice-100-a.md§\n" +
+		"Operand: §git show HEAD:docs/plan/planning/done/welle-10/slice-100-a.md§\n")
+	if string(b) != want {
+		t.Errorf("Ergebnisnotiz nach dem Nachzug:\n%s\nwant:\n%s", b, want)
+	}
+}
+
+// TestPraefixLinkAnDerWortgrenze: die Link-Fassung hat dieselbe Wortgrenze wie
+// ZaehlePraefix und endet an ")" oder "#"; ein zweiter Lauf trifft das
+// nachgezogene Ziel nicht mehr.
+func TestPraefixLinkAnDerWortgrenze(t *testing.T) {
+	faelle := []struct {
+		inhalt string
+		want   int
+	}{
+		{"[a](done/slice-100-a.md)", 1},
+		{"[a](../../planning/done/slice-100-a.md#x)", 1},
+		{"[a](sibling-done/slice-100-a.md)", 0},
+		{"[a](done/slice-100-anders.md)", 0},
+		{"[a](done/slice-100-a.md.bak)", 0},
+		{"done/slice-100-a.md ohne Link-Klammer", 0},
+	}
+	for _, f := range faelle {
+		if got := archive.ZaehlePraefixLink(f.inhalt, "slice-100-a.md"); got != f.want {
+			t.Errorf("ZaehlePraefixLink(%q) = %d, want %d", f.inhalt, got, f.want)
+		}
+	}
+	neu, n := archive.ErsetzePraefixLink("[a](../done/slice-100-a.md)", "slice-100-a.md", "welle-10")
+	if n != 1 || neu != "[a](../done/welle-10/slice-100-a.md)" {
+		t.Fatalf("ErsetzePraefixLink = %q, %d", neu, n)
+	}
+	if _, n2 := archive.ErsetzePraefixLink(neu, "slice-100-a.md", "welle-11"); n2 != 0 {
+		t.Errorf("zweiter Lauf ersetzt das nachgezogene Ziel erneut (%d)", n2)
 	}
 }
