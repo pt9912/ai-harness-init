@@ -1,6 +1,6 @@
 # ADR-0068: Der Nachzug nennt den Zustand des Tap nur, soweit die Antwort der Schnittstelle ihn trägt — die Menge der Ablehnungen ist eine benannte Setzung, und eine Nachkontrolle, die nach dem Schreiben nicht lesen kann, sagt, dass geschrieben ist
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-26
 
@@ -310,6 +310,7 @@ Runde der prüfenden Rolle; die Accept-Zeile der §Geschichte nennt ihn als **Ke
 | 2026-09-26 | **Proposed** | Architect-Lauf: die Zuordnung der Antworten der Schnittstelle beim Schreiben und die Meldung nach einem vollzogenen Schreiben, beide aus der Review- und Verifikations-Runde der Umsetzung des Modus `sync`. Der Acceptance-Trigger steht oben |
 | 2026-09-26 | **Proposed, korrigiert** | Architect-Lauf zum Konsistenz-Review `2026-09-26-review-adr-0035-0068-0069-konsistenz`, Status unverändert: Festlegung 3 gilt für die Nachkontrolle bei unlesbarem Tap, die drei Wege nach dem Schreiben stehen als benannter Rest mit Trigger 3; die Häufigkeitsbehauptung zu 401 entfällt; die Zusage *„nie eine falsche Zustandsaussage"* nennt ihre Reichweite; Verdikt `2026-09-26-architect-verdikt-korrektur-adr-0035-0068-0069` |
 | 2026-09-26 | **Proposed, korrigiert** | Architect-Lauf zur Kurzrunde `2026-09-26-review-kurzrunde-adr-0068`, Status unverändert: Trigger 1 zitiert die Meldung, die der Code schreibt; die Wiederholungs-Zusage des benannten Rests nennt das Cache-Fenster als ihre Bedingung, und die Begründung *„gefahrarm"* steht als ungebunden; die Einschränkung in §Grenze führt den Wortlaut der Konsequenz; *„kein Fall"* gilt für die Lage nach einem 200 des Schreibaufrufs; Trigger 4 nennt den Bruch der Annahme innerhalb der Menge (der einzige neue Norm-Inhalt: ein Re-Evaluierungs-Trigger, keine Festlegung); die Alternative E steht vor F |
+| 2026-09-26 | **Accepted** | Beleg nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2: die Konsistenz-Runde `2026-09-26-review-adr-0035-0068-0069-konsistenz` (0 HIGH, ein MEDIUM R-68-1, Empfehlung „ja nach Korrektur") und, als erneute Runde der prüfenden Rolle nach dessen Auflösung, die Kurzrunde `2026-09-26-review-kurzrunde-adr-0068` (0 HIGH, 0 MEDIUM, Empfehlung „ja nach Korrektur"; sie prüfte die Fassung vor den sechs Punkten K-68-1 bis K-68-6, die Differenz zur angenommenen Fassung ist Wortlaut und ein Re-Evaluierungs-Trigger — Trigger 1 zitiert die Meldung des Codes, die Wiederholungs-Zusage des benannten Rests nennt das Cache-Fenster als Bedingung, die Einschränkung der Grenze führt den Wortlaut der Konsequenz, *„kein Fall"* gilt für die Lage nach einem 200 des Schreibaufrufs, Trigger 4 nennt den Bruch der Annahme innerhalb der Menge, Alternative E steht vor F — ohne Änderung der Entscheidung). Die Annahme hat der Auftraggeber am 2026-09-26 erteilt. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes ADR-0068`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
