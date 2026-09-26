@@ -312,6 +312,62 @@ EOF
   [ "$(grep -c 'next/slice-999-x\.md' probe.md)" -eq 5 ]
 }
 
+# Die Faelle zum Ausfall des Schreibens fahren die Aufrufform aus main(): unter
+# `||`, wo `set -e` im Funktionsrumpf nicht gilt. Das gepinnte bats-Image laeuft als
+# root, ein Dateimodus scheidet als Ausfall aus; der Ausfall ist ein Wrapper
+# vor dem echten Werkzeug im PATH. `sed_scheitert` laesst jeden `sed -E` (die
+# Ersetzungen) scheitern, `cat_scheitert` jeden `cat`.
+
+sed_scheitert() {
+  mkdir -p "$TMP/bin"
+  printf '#!/bin/sh\ncase "$1" in -E) exit 1 ;; esac\nexec %s "$@"\n' "$(command -v sed)" > "$TMP/bin/sed"
+  chmod +x "$TMP/bin/sed"
+}
+
+cat_scheitert() {
+  mkdir -p "$TMP/bin"
+  printf '#!/bin/sh\nexit 1\n' > "$TMP/bin/cat"
+  chmod +x "$TMP/bin/cat"
+}
+
+@test "psed_i: scheitert der sed, bleibt die Zieldatei unveraendert und der Status ist 2 — auch unter ||, wo set -e nicht gilt" {
+  load_functions "$DOGFOOD"
+  cd "$TMP"
+  printf 'Link: [a](../open/slice-999-x.md)\n' > ziel.md
+  cp ziel.md vorher.md
+  sed_scheitert
+  st=0
+  ( PATH="$TMP/bin:$PATH"; psed_i -E 's/open/next/' ziel.md ) || st=$?
+  [ "$st" -eq 2 ] || { echo "Status: $st"; return 1; }
+  [ "$(cat ziel.md)" = "$(cat vorher.md)" ] || { echo "Zieldatei veraendert:"; cat ziel.md; return 1; }
+}
+
+@test "psed_i: scheitert das Zurueckschreiben, ist der Status 2" {
+  load_functions "$DOGFOOD"
+  cd "$TMP"
+  printf 'Link: [a](../open/slice-999-x.md)\n' > ziel.md
+  cat_scheitert
+  st=0
+  ( PATH="$TMP/bin:$PATH"; psed_i -E 's/open/next/' ziel.md ) || st=$?
+  [ "$st" -eq 2 ] || { echo "Status: $st"; return 1; }
+}
+
+@test "docs/reviews und done: scheitert die Ersetzung, endet der Nachzug mit Status 2 und die Datei bleibt unveraendert (Aufrufform aus main(), ohne die 0-Byte-Datei)" {
+  load_functions "$DOGFOOD"
+  cd "$TMP"
+  mkdir -p docs/reviews docs/plan/planning/done
+  form_probe docs/reviews/probe.md
+  form_probe docs/plan/planning/done/probe.md
+  cp docs/reviews/probe.md vorher.md
+  sed_scheitert
+  for datei in docs/reviews/probe.md docs/plan/planning/done/probe.md; do
+    st=0
+    ( PATH="$TMP/bin:$PATH"; rewrite_incoming_nach_baum "$datei" "slice-999-x.md" "open" "next" ) || st=$?
+    [ "$st" -eq 2 ] || { echo "Status fuer $datei: $st"; return 1; }
+    [ "$(cat "$datei")" = "$(cat vorher.md)" ] || { echo "$datei veraendert:"; cat "$datei"; return 1; }
+  done
+}
+
 @test "eingehend_ausgenommene_pfade: .harness/baseline und docs/plan/adr drin, docs/reviews NICHT (ADR-0042 Festlegung 2, ADR-0070 Festlegung 2)" {
   for fassung in "${FASSUNGEN[@]}"; do
   load_functions "$fassung"

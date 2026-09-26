@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -147,5 +148,49 @@ func TestSliceMvEchtSchreibtInReportsNurDieLinkForm(t *testing.T) {
 	}
 	if n := strings.Count(string(done), "next/slice-900-x.md"); n != 5 {
 		t.Errorf("done/: %d von 5 Formen nachgezogen:\n%s", n, done)
+	}
+}
+
+// TestSliceMvEchtBrichtBeiGescheiterterErsetzungAb faehrt main() als echten
+// bash-Prozess, waehrend jeder `sed -E` (die Ersetzungen) scheitert: der Lauf
+// endet mit Status 2 und der Meldung, nennt den Move-Commit als einzigen neuen
+// Commit, und keine getrackte Datei ist veraendert — insbesondere keine auf
+// 0 Byte gekuerzt. Der Test trifft die Verdrahtung in main(), den Status der
+// Ersetzung auszuwerten statt zu uebergehen; test/slice-mv.bats sieht sie nicht,
+// weil es main() nie ruft.
+//
+// Gegenbeispiel: test/mutations/463-slice-mv-psed-i-schreibt-nach-gescheitertem-sed.sh
+// nimmt psed_i die Sperre vor dem Zurueckschreiben, und
+// test/mutations/465-slice-mv-main-uebergeht-den-gescheiterten-nachzug.sh nimmt
+// main() die Auswertung des Status.
+func TestSliceMvEchtBrichtBeiGescheiterterErsetzungAb(t *testing.T) {
+	root := sliceMvRepo(t)
+
+	sed, err := exec.LookPath("sed")
+	if err != nil {
+		t.Fatalf("sed nicht gefunden: %v", err)
+	}
+	bin := t.TempDir()
+	wrapper := "#!/bin/sh\ncase \"$1\" in -E) exit 1 ;; esac\nexec " + sed + " \"$@\"\n"
+	if err := os.WriteFile(filepath.Join(bin, "sed"), []byte(wrapper), 0o700); err != nil {
+		t.Fatal(err)
+	}
+
+	cmd := exec.Command("bash", filepath.Join(root, "harness/tools/slice-mv.sh"), "slice-900", "next")
+	cmd.Dir = root
+	cmd.Env = append(os.Environ(), "PATH="+bin+string(os.PathListSeparator)+os.Getenv("PATH"))
+	out, err := cmd.CombinedOutput()
+	var ee *exec.ExitError
+	if !errors.As(err, &ee) || ee.ExitCode() != 2 {
+		t.Fatalf("erwartet Exit 2, ist %v\n%s", err, out)
+	}
+	if !strings.Contains(string(out), "Nachzug in ") || !strings.Contains(string(out), "gescheitert") {
+		t.Errorf("die Meldung nennt den gescheiterten Nachzug nicht:\n%s", out)
+	}
+	if n := gitLauf(t, root, "rev-list", "--count", "HEAD"); n != "2" {
+		t.Errorf("erwartet Ausgangsstand plus Move-Commit (2 Commits), sind %s", n)
+	}
+	if st := gitLauf(t, root, "status", "--porcelain"); st != "" {
+		t.Errorf("eine getrackte Datei ist veraendert (0-Byte-Kuerzung):\n%s", st)
 	}
 }

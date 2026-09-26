@@ -137,14 +137,20 @@ LIFECYCLE="open next in-progress done"
 # Modus auf das Ziel; ein `d-check`-Container liest als Nicht-Root, und ein derart auf
 # 0600 gefallenes Ziel wird dort unlesbar. `cat >` in die bestehende Zieldatei behaelt
 # deren Inode und damit ihren Modus. Aufruf wie `sed -i`: optionale Flags, dann SCRIPT,
-# dann FILE als letztes Argument.
+# dann FILE als letztes Argument. Scheitert der `sed`, laeuft das Zurueckschreiben nicht
+# und die Zieldatei bleibt unveraendert; scheitert er oder das Zurueckschreiben, ist der
+# Status 2. Der Status steht explizit, nicht ueber `set -e`: unter einem `||` gilt `-e`
+# im ganzen Funktionsrumpf nicht. test/slice-mv.bats bindet beide Ausfaelle.
 psed_i() {
   local tmp ziel
-  tmp="$(mktemp -p "${TMPDIR:-/tmp}")"
+  tmp="$(mktemp -p "${TMPDIR:-/tmp}")" || return 2
   ziel="${!#}"
-  sed "$@" >"$tmp"
-  cat "$tmp" >"$ziel"
-  rm -f "$tmp"
+  if sed "$@" >"$tmp" && cat "$tmp" >"$ziel"; then
+    rm -f "$tmp"
+  else
+    rm -f "$tmp"
+    return 2
+  fi
 }
 
 usage() {
@@ -256,7 +262,7 @@ rewrite_incoming_links_in_file() {  # $1=datei $2=base $3=from $4=to
   esc_base="$(re_escape "$base")"
   ziel="(\\]\\(([^)#]*[^A-Za-z0-9_)#-])?)$from/$esc_base"
   count="$( { grep -oE "${ziel}[)#]" "$file" 2>/dev/null || true; } | wc -l)"
-  psed_i -E "s@${ziel}([)#])@\\1$to/$base\\3@g" "$file"
+  psed_i -E "s@${ziel}([)#])@\\1$to/$base\\3@g" "$file" || return 2
   printf '%d\n' "$((count))"
 }
 
@@ -266,12 +272,13 @@ rewrite_incoming_links_in_file() {  # $1=datei $2=base $3=from $4=to
 # liefert. Endet mit 0, wenn die Datei zum Nachzug gehoert; unter docs/reviews/
 # endet es mit 1, wenn kein Link ersetzt wurde — eine Datei, die den Pfad nur
 # als Code-Span, Operand, Block oder Fliesstext traegt, bleibt unveraendert und
-# faellt nicht in den Inhalts-Commit.
+# faellt nicht in den Inhalts-Commit. Endet es mit 2, ist die Ersetzung
+# gescheitert (psed_i); main() bricht dann ab.
 rewrite_incoming_nach_baum() {  # $1=datei $2=base $3=from $4=to
   local n
   case "$1" in
     docs/reviews/*)
-      n="$(rewrite_incoming_links_in_file "$@")"
+      n="$(rewrite_incoming_links_in_file "$@")" || return 2
       [ "$n" -gt 0 ] ;;
     *) rewrite_incoming_in_file "$@" ;;
   esac
@@ -341,11 +348,17 @@ main() {
   local -a in_pathspec=()
   while IFS= read -r p; do in_pathspec+=("$p"); done < <(eingehend_ausgenommene_pfade)
 
-  local in_count=0 rf
+  local in_count=0 rf rc
   local -a touched=()
   while IFS= read -r rf; do
     [ -n "$rf" ] || continue
-    rewrite_incoming_nach_baum "$rf" "$base" "$from" "$TO" || continue
+    rc=0
+    rewrite_incoming_nach_baum "$rf" "$base" "$from" "$TO" || rc=$?
+    if [ "$rc" -gt 1 ]; then
+      echo "slice-mv: Nachzug in $rf gescheitert (Status $rc) — Abbruch; der Move-Commit steht, der Nachzug ist nicht committet" >&2
+      exit 2
+    fi
+    [ "$rc" -eq 0 ] || continue
     touched+=("$rf")
     in_count=$((in_count + 1))
   done < <(git grep -l -F -e "$from/$base" -- "${in_pathspec[@]}" 2>/dev/null || true)
