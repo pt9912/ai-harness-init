@@ -1,0 +1,2 @@
+**Vorgang:** slice-lifecycle-move-schreibt-in-reports-nur-die-link-form
+**Fund:** Der Implementer entfernte die Ruhe-Marker-Zeile der Roadmap (*Nichts in Arbeit.*) im Commit `9840d434`, der den Slice in `in-progress/` beansprucht (`git show 9840d434 -- docs/plan/planning/in-progress/roadmap.md` löscht drei Zeilen); der Planner stellt sie bei der Closure wieder her. Keine Quelle benennt die schreibende Rolle dieser Zeile — derselbe Vorgang wie in den Slices davor. Der Stand der Beobachtung bleibt `geplant`.
