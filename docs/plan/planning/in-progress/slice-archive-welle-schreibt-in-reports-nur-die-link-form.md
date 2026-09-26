@@ -100,7 +100,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1 — die Form-Regel im Träger.** Der Nachzug in `internal/archive` (die Ersetzung
+- [x] **Liefer-Punkt 1 — die Form-Regel im Träger.** Der Nachzug in `internal/archive` (die Ersetzung
       in `internal/archive/refs.go`) ersetzt in einer Datei unter `docs/reviews/` die Adresse nur
       hinter `](` (bis `)` oder `#`); jede andere Pfad-Adresse dort bleibt Byte für Byte. Die
       Zähl-Seite (`Fund` und die Vorschau) und die Ersetz-Seite folgen derselben Regel. *Bricht,
@@ -109,7 +109,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Politik B, an einem Move `+2` `target-missing` gemessen), oder der Träger nur den
       unmittelbaren Backtick-Kontext ausnimmt (er besteht den reinen Span-Fall und bricht Operand,
       Block und Fließtext).
-- [ ] **Liefer-Punkt 2 — die Tests, die sie halten.** Ein Go-Test in `internal/archive`: (a) **eine**
+- [x] **Liefer-Punkt 2 — die Tests, die sie halten.** Ein Go-Test in `internal/archive`: (a) **eine**
       Datei unter `docs/reviews/` trägt einen Link auf die bewegte Datei und vier Nicht-Link-Formen
       (reiner Pfad-Span, Operand in einem Kommando-Span, Pfad im Code-Block, Pfad im Fließtext):
       der Link ist nachgezogen, die vier Formen sind Byte für Byte gleich. (b) Link-Syntax als
@@ -123,15 +123,15 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Form-Regel auf einen zweiten Baum ausgedehnt wird; (d) ein Fall nur eine Hälfte bindet. Jedes
       dieser Rot ist einmal gesehen und in seiner Meldung gelesen
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
-- [ ] **Liefer-Punkt 3 — die Sensor-Doku.** `harness/sensors/archive-welle.md` nennt die Form-Regel
+- [x] **Liefer-Punkt 3 — die Sensor-Doku.** `harness/sensors/archive-welle.md` nennt die Form-Regel
       in seiner Grenze, samt der zwei benannten Lücken (Code-Block-Zitat, Referenz-Definition).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -212,26 +212,25 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **einen** Ausgang, und kein Slice geht nach `done/`, während eines ohne Ausgang
 dasteht.
 
-Die Ausgänge stehen als Vorschau da; gesetzt werden sie bei der Closure.
+Jedes Risiko trägt seinen Ausgang; die Belege stehen in §7 (Zeile *Risiken aus §6*).
 
 - **Der Anker des neuen Mutations-Falls liegt verschoben** — das Muster trifft die Fassung der
   letzten Lektüre, nicht den Quell-Bestand
   ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)).
-  **Ausgang:** *entfallen*, wenn der Anker gegen `internal/archive/refs.go` am Stand der
-  Implementation gemessen und der Fall an genau der behaupteten Mutation rot gesehen ist; sonst
-  *eingetreten* und im Slice behoben.
+  **Ausgang:** *entfallen* — jeder Anker der Fälle 467 bis 473 trifft am Stand der Verifikation genau
+  eine Stelle in `internal/archive/refs.go`, und jeder Fall färbt an der behaupteten Mutation rot.
 - **Ein Regex-Träger besteht alle Fälle und bricht die Byte-Gleich-Zusage** — er nimmt nur den
   unmittelbaren Backtick-Kontext aus (Fitness-Zeile 1 der ADR, Gegenbeispiel). Der Fall mit vier
-  Nicht-Link-Formen in **einer** Datei ist der Wächter dagegen. **Ausgang:** *entfallen*, wenn die
-  Gegenprobe (Träger mit nur dem Backtick-Kontext) den Fall rot färbt; sonst *eingetreten*: der Fall
-  wird im Slice nachgeschärft.
+  Nicht-Link-Formen in **einer** Datei ist der Wächter dagegen. **Ausgang:** *entfallen* — die
+  Gegenprobe (Träger mit nur dem Backtick-Kontext) färbt den Fall in Review und Verifikation je rot.
 - **Zähl- und Ersetz-Seite laufen auseinander** — zählt `ZaehlePraefix` in `docs/reviews/` weiter den
   Pfad-Span, meldet die Vorschau Verweise, die der Nachzug nicht mehr schreibt. **Ausgang:**
-  *entfallen*, wenn ein Test beide Seiten über derselben Datei vergleicht; sonst *eingetreten* und
-  im Slice behoben.
+  *entfallen* — ein Test vergleicht beide Seiten über derselben Datei gegen ein Literal, und Fall 470
+  färbt rot.
 - **Das Link-Zitat im Code-Span wird mitersetzt** — die Grenze der ADR, im Bestand inert (Kommando in
-  der ADR). **Ausgang:** *weiter offen* als benannte Grenze in der Sensor-Doku; Träger ist Trigger 6
-  der ADR, kein Register-Eintrag, solange kein Nachzug eine solche Zeile umschreibt.
+  der ADR). **Ausgang:** *weiter offen* — Register-Eintrag
+  [`link-zitat-im-code-span-wird-vom-nachzug-mitersetzt`](../observations/BEO-ALL/link-zitat-im-code-span-wird-vom-nachzug-mitersetzt/observation.md);
+  Träger der Neu-Bewertung ist Trigger 6 der ADR, benannt in der Sensor-Doku.
 
 ## 7. Closure-Notiz
 
@@ -250,13 +249,135 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 Wird bei der Closure vom Planner geschrieben
 ([`AGENTS.md`](../../../../AGENTS.md) §3.10), nicht vom Implementer; die Zeilen folgen der Vorlage.
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
-- **Drei Paarungen:** —
+Geschrieben von der Rolle Planner in frischem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10), nach Review und
+Verifikation. Alle Kommandos gemessen am 2026-09-26 am Stand `f982adb8`, keine Erwartungswerte
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)).
+
+- **Was hat funktioniert:** Der Schnitt hielt: drei Liefer-Punkte, zwei Schichten, keine der beiden Rückführungen
+  aus §4 ausgelöst. Der Verifier (Stand `335edffe`) bestätigte Liefer-Punkt 1 und 2. Die Fälle `467` bis `473` färben
+  je den benannten Test aus dem behaupteten Grund rot; in der Gegenprobe (Zusicherung im benannten Test entfernt,
+  Mutation aktiv) wurden `469`, `471`, `472` und `473` grün, die Zusicherungen binden also; beide Einzel-Klassen-Mutanten
+  von `472` (nur die erste, nur die zweite Zeichenklasse ohne `\n`) sind rot; ein Träger, der nur den unmittelbaren
+  Backtick-Kontext ausnimmt, färbt den Fall mit **einer** Datei und vier Nicht-Link-Formen rot (Review am Stand `5d7a1de2`
+  und Verifier je gefahren). Closure-Trigger 2 in einer Kopie von `git archive` außerhalb des Repos: in `docs/reviews/`
+  29 geänderte Zeilenpaare, 0 Abweichungen außerhalb der Link-Ziele, kein neues `target-missing`. **Ergebnis-Fakten:**
+  `ls test/mutations/*.sh | wc -l` → **461**;
+  `git diff --shortstat 2427de2b..f982adb8 -- internal test harness/sensors` → **10** Dateien, **538** Einfügungen,
+  **12** Löschungen.
+- **Was ging anders als geplant:** Der Review (Runde 1, Stand `5d7a1de2`; 0 HIGH, 1 MEDIUM, 2 LOW, 3 INFO) fand R-1: die
+  Zeilengrenze der Link-Regel ist im Doc-Kommentar zugesagt und von keinem Test gehalten (`\n` aus beiden Zeichenklassen:
+  Suite grün); R-2 dieselbe Klasse für die Verzeichnisgrenze; R-3 den Rang-Zeiger im Kopf von `VerweisFund`; R-6 den
+  Schreibfehler als Ausgang zwischen den zwei Commits, in der Sensor-Doku nicht genannt. Der Implementer zog sie in
+  `fc638444` (zwei Go-Tests, Kommentare), `a038a349` (Fälle `472`, `473`) und `335edffe` (Sensor-Doku). **Gebaut, nicht
+  geplant:** sieben Fälle statt *eines* Falls (§3: `467` und `468` sind der geplante, `469` bis `473` sind Zähne für
+  Zusagen der Kommentare), sieben Tests statt drei, in der Sensor-Doku der Vertragssatz im Kopf und der Schreibfehler als
+  Ausgang. Der Verifier wertete das als größer als geplant, nicht außerhalb des Gegenstands, **und der Planner schließt
+  sich an.** **Wer was gelesen hat:** der Review las bis `5d7a1de2`; `fc638444`, `a038a349` und `335edffe` hat nur der
+  Verifier gelesen und gefahren; `f982adb8` (eine Zeile der Sensor-Doku, die Rückweg-Kommandozeile zu V-1) hat **weder ein
+  Reviewer noch der Verifier** gelesen — der Planner las den Diff und fuhr `make gates` (Exit 0) über diesen Stand. Eine
+  Nachrunde ist nicht gelaufen und wird nicht behauptet; das Häkchen *Review durchgeführt* bestätigt Runde 1 samt gezogenen
+  Findings. **Liefer-Punkt 3 trägt mit Vorbehalt:** der Verifier fand V-1 (die Doku nannte `git clean -fd -- done/<welle-id>`,
+  aus der Repo-Wurzel kein Pfad); die Zeile ist nachgezogen, aber der Doku-Text ist an **keinen** Test gebunden — der Test
+  des Fehlerpfads prüft nur die `git reset`-Hälfte (Register, unten).
+- **Mutate: Teilmessung, keine Gesamtaussage.** Real gefahren ist
+  `make mutate MUTATE_JOBS=1 MUTATE_CASES='240 467 468 469 470 471 472 473'` (Verifier, Stand `335edffe`, die vollen
+  Fall-Namen): `8 ok, 0 Befund(e)`, `TEILLAUF 8 von 461 — kein Beleg`; der Beleg-Slot `.harness/state/mutate-passed.key`
+  war vorher wie nachher nicht vorhanden. **Nicht gefahren:** ein voller `make mutate`; der Beleg-Slot von
+  [`ADR-0035`](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md) ist nicht geschrieben. Eine Aussage
+  über das grüne Ganze trägt diese Closure nicht.
+- **Nicht gemessen:** der Schreibfehler-Pfad des Nachzugs (`os.WriteFile` bricht ab, die Datei kann halbgeschrieben
+  bleiben): gelesen, von Review, Verifier und Planner nicht gefahren — das Testbild läuft als root, ein Dateimodus löst dort
+  keinen Fehler aus; die Sensor-Doku sagt es mit diesem Grund, und der Ausgang mit verletzter Stub-Form ist gefahren
+  (`TestAnwendenBrichtBeiVerletzterStubFormAb`). Die Maskierung `QuoteMeta(base)` in der Link-Regel trägt **keinen** Zahn
+  (Schwächung grün im Review; der Verifier fuhr sie nicht), für die Namen dieses Repos ohne Wirkung. Die Meldungen der
+  Fälle `469` und `470` hat der Verifier nicht selbst gelesen (Treiber-Urteil rot mit dem erwarteten Test); der Review las
+  sie. Die Wirkung eines Ziels hinter dem Zeilenumbruch auf `make docs-check` ist nicht gefahren. **Die Politik-D-Messung
+  lief nur in einer Kopie mit hergestellten Vorbedingungen:** `archive-welle` auf `welle-11-traeger-aussage` ist auf dem
+  Repo-Stand gesperrt (Hänger-Wächter, Exit 3; die Sensor-Doku nennt das selbst); die Kopie bog 56 Verweise um, legte den
+  Welle-Plan nach `done/`, kopierte eine Ergebnisnotiz und legte ein `archiv.zip` an, danach schrieb der Lauf zwei Commits.
+  Das ist nicht der Vorgang, den die Sensor-Doku für dieses Repo freigibt. Im Gesamtlauf der Kopie stand außerdem ein neues
+  `target-missing` in einer `Accepted`-ADR (kein Nachzug dort,
+  [`ADR-0042`](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 2). **Closure-Trigger 2 ist damit
+  bestätigt mit Vorbehalt:** er gilt für den Baum `docs/reviews/`, nicht für den Gesamtlauf und nicht am Repo-Stand.
+- **Steering-Loop-Eintrag (Form: neuer Sensor).** Der Träger `archive-welle` führt die Form-Regel, und sie ist gemessen
+  statt behauptet: die Go-Tests `TestNachziehenUnterReviewsSchreibtNurDieLinkForm`,
+  `TestNachziehenUnterReviewsSchreibtEineDateiOhneLinkNicht`, `TestNachziehenUnterReviewsErsetztLinkSyntaxImCodeSpanMit`,
+  `TestNachziehenInDoneErsetztJedeForm`, `TestPraefixLinkAnDerWortgrenze`,
+  `TestNachziehenUnterReviewsUeberquertKeineZeilengrenze` und
+  `TestNachziehenUnterReviewsGiltNurFuerDasVerzeichnisNichtFuerSeinenPraefix` in `internal/archive/refs_test.go`, und die
+  Mutations-Fälle `467` bis `473`, von denen `467`/`468` je eine Hälfte einer Datei binden, `469` den zweiten Baum, `470`
+  die Zähl-Seite, `471` die Link-Grenze, `472` die Zeilengrenze, `473` die Verzeichnisgrenze. **Kein Zielort-Feld und
+  kein Herkunfts-Anker:** die Regel ist eine Setzung von
+  [`ADR-0070`](../../adr/0070-der-verweis-nachzug-schreibt-in-docs-reviews-nur-die-link-form.md) (`Accepted`) und trägt
+  ihre eigene Kennung; die Paarung (a) hätte nichts, gegen das sie prüft. **Grenzen des Sensors, benannt:** das Zitat im
+  Code-Block ist ungebunden (Trigger 6 der ADR); das Link-Zitat im Code-Span bindet der Test als *„wird mitersetzt"*; die
+  Referenz-Definition meldet kein Gate (Trigger 7 hängt an einem `git grep`); Klammern im Ziel und ein Ziel hinter dem
+  Zeilenumbruch nennt die Sensor-Doku nicht; der Schreibfehler-Pfad ist ungefahren; die Maskierung des Namens ist ohne
+  Zahn; ein Kopplungs-Test gegen `.d-check.yml` führt dieses Werkzeug noch nicht (der dritte Slice der Liste, `open/`).
+  **Der Übergang aus [`ADR-0070`](../../adr/0070-der-verweis-nachzug-schreibt-in-docs-reviews-nur-die-link-form.md)
+  Festlegung 5 endet mit dieser Closure:** beide Träger führen die Form-Regel (`make slice-mv` seit
+  `slice-lifecycle-move-schreibt-in-reports-nur-die-link-form`, `archive-welle` mit diesem Slice); ein Norm-Text ändert
+  daran nichts, und eine ADR-Änderung ist nicht nötig ([`AGENTS.md`](../../../../AGENTS.md) §3.4). Die Zustandsaussagen,
+  die den Übergang als laufend nennen, zieht der Planner nach dem Move nach (Register-Zustände und Kopplungs-Slice).
+- **Beobachtungs-Register (`../observations/`):** je Beleg `evidence/slice-archive-welle-schreibt-in-reports-nur-die-link-form.md`;
+  Zähler gelesen mit `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`
+  ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)).
+  **Neu angelegt (1×, `offen`):**
+  [`zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel`](../observations/BEO-ALL/zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel/observation.md)
+  (R-1, R-2, R-5 Teil b — ein Vorgang zählt einmal),
+  [`kommentar-begruendet-die-gemeinsame-liste-nur-fuer-einen-ihrer-leser`](../observations/BEO-ALL/kommentar-begruendet-die-gemeinsame-liste-nur-fuer-einen-ihrer-leser/observation.md)
+  (R-4) und
+  [`nachzug-raender-am-doku-gate-ohne-melder-oder-ohne-nennung`](../observations/BEO-ALL/nachzug-raender-am-doku-gate-ohne-melder-oder-ohne-nennung/observation.md)
+  (V-3, V-4). **Neu angelegt mit zwei Belegen (2×, `offen`):**
+  [`regel-rand-ohne-benannte-luecke`](../observations/BEO-ALL/regel-rand-ohne-benannte-luecke/observation.md)
+  (R-5 Teil a und V-5 hier; dazu ein Beleg für den Shell-Träger `slice-lifecycle-move-schreibt-in-reports-nur-die-link-form`,
+  dessen Review sie als R-2 führte — seine Closure trug den Fund nicht ein, er ist hier nachgetragen) und
+  [`link-zitat-im-code-span-wird-vom-nachzug-mitersetzt`](../observations/BEO-ALL/link-zitat-im-code-span-wird-vom-nachzug-mitersetzt/observation.md)
+  (der Ausgang *weiter offen* des Risikos 4, hier und beim Shell-Träger — auch dort nachgetragen).
+  **Ergänzt:**
+  [`zitierte-ausgabe-weicht-vom-literal-ab`](../observations/BEO-ALL/zitierte-ausgabe-weicht-vom-literal-ab/observation.md)
+  (**2×**, `offen`; V-1) und
+  [`eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`](../observations/BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet/observation.md)
+  (**12×**, Stand `geplant` unverändert; der Vorgang ist der Claim-Commit `cc5de0d9`, der den Ruhe-Marker der Roadmap
+  entfernte; der Planner stellt ihn mit dieser Closure wieder her).
+  **Dieselbe Beobachtung? — je Kandidat begründet, Urteil des Planners.** *V-1* in `zitierte-ausgabe-…`: die Doku zitiert
+  eine Kommandozeile, die das Werkzeug ausgibt, und weicht vom Literal ab — dort ist es eine Meldung; wer sie stattdessen
+  in
+  [`prozedur-wiedergabe-eines-werkzeug-vertrags-reicht-weiter-als-die-quelle`](../observations/BEO-ALL/prozedur-wiedergabe-eines-werkzeug-vertrags-reicht-weiter-als-die-quelle/observation.md)
+  (**3×**, `verkörpert`) einordnet, lässt `zitierte-ausgabe-…` bei 1×. *R-1* nicht in
+  [`zeichenmenge-mitglied-ohne-eigenen-zahn`](../observations/BEO-ALL/zeichenmenge-mitglied-ohne-eigenen-zahn/observation.md)
+  (1×) und nicht in
+  [`zusage-mit-bats-bindung-ohne-eigenen-mutations-fall`](../observations/BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall/observation.md)
+  (4×, `verkörpert` für die Klasse): die Begründung steht in der neuen Beobachtung unter *Benannt, nicht gezählt*; wer
+  R-1 der ersten zuordnet, hebt sie auf 2×. *R-4* nicht in
+  [`ausnahmeliste-nur-auf-form-geprueft`](../observations/BEO-ALL/ausnahmeliste-nur-auf-form-geprueft/observation.md)
+  (4×, `geplant`): dort geht es um die Berechtigung eines Eintrags, hier um den Grund für den zweiten Leser. **Nicht
+  eingetragen, mit Grund:** R-3 (Rang-Zeiger im Kopf von `VerweisFund`) und R-6 (Schreibfehler nicht in der Sensor-Doku)
+  sind im Vorgang behoben, der Review nennt zu keinem eine frühere Instanz; V-2 (Modus der Fall-Dateien) ist INFO ohne
+  Befund. Der Shell-Träger trug außerdem R-3 (*Regel-Ausprägung ohne Fall*, INFO) — keine Instanz der neuen Beobachtung,
+  weil kein Kommentar etwas zusagt; seine Closure hat sie nicht eingetragen, und diese trägt sie nicht nach.
+  **Lese-Schritt:** mit diesem Slice erreicht **kein** Eintrag erstmals die Schwelle **3×**; die Einträge über der Schwelle,
+  die er berührt (`eigentums-frage-…`), tragen ihren Ausgang (`geplant`). Alle Einträge des Registers mit `evidence/` ab drei
+  Dateien tragen einen Ausgang, keiner steht über der Schwelle auf `offen`. Ein Norm-Artefakt des Architect entsteht daraus
+  nicht; eine Übergabe an den Architect ist nicht fällig.
+- **Folge-Slices:** keiner neu. R-4 geht nicht in
+  `slice-form-regel-des-nachzugs-ist-an-die-codepaths-ausnahme-gekoppelt`: dessen Gegenstand ist die Zeile
+  `exempt-paths` in `.d-check.yml`, nicht die Go-Liste `AusgenommenePfade()` in `internal/archive/scan.go` — zwei verschiedene
+  Ausnahmelisten —, und ein Kommentar in `scan.go` brächte dem Test-Slice eine zweite Schicht. Träger ist der Rolleninhaber,
+  der `scan.go` ändert (Register). Der Kopplungs-Slice bleibt in `open/` mit seinen zwei Liefer-Punkten; sein Start-Trigger
+  (beide Träger in `done/`) ist mit dem Move dieser Closure erfüllt, seine Zustandsaussage zieht der Planner nach dem Move nach.
+- **Risiken aus §6:** vier, je ein Ausgang — *entfallen* mit Grund: die ersten drei (Anker, Regex-Träger, Zähl- und
+  Ersetz-Seite); *weiter offen:* das Link-Zitat im Code-Span, als Register-Eintrag
+  `link-zitat-im-code-span-wird-vom-nachzug-mitersetzt` mit Träger Trigger 6 der ADR. Keines ist *eingetreten*. Dass der
+  Ausgang *entfallen* trägt, ist gelesen: zu jedem der drei gibt es einen Rot-Beleg einer Rolle, die nicht der Implementer ist.
+- **Adressen vor dem Move ([`AGENTS.md`](../../../../AGENTS.md) §3.11):** das Kommando aus §4 zählt außerhalb dieser Datei am
+  2026-09-26, nach Anlage der Register-Belege, **1** Zeile; es ist derselbe Falsch-Treffer wie in §4 (der Dateiname als
+  Muster eines Zähl-Kommandos in der Closure-Notiz des Geschwisters in `done/`, ohne Verzeichnis-Präfix, kein Verweis). Der
+  Lifecycle-Zweig allein — `(open|next|in-progress|done)/<Kennung>` als Code-Span und `](<Kennung>` beziehungsweise
+  `](…/<Kennung>.md)` als Markdown-Link — trifft außerhalb dieser Datei **0** Zeilen. Kein eingefrorenes Artefakt nennt den
+  Slice als Pfad; die Reports, der Kopplungs-Slice und das Register nennen die Kennung. Der Move hat keinen Verweis
+  nachzuziehen.
+- **Drei Paarungen:** werden nach dem Move geprüft (Planner); das Ergebnis steht an dieser Stelle.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

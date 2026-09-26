@@ -1,0 +1,2 @@
+**Vorgang:** slice-archive-welle-schreibt-in-reports-nur-die-link-form
+**Fund:** Der Review (R-4, INFO) und die Verifikation lasen den Kommentar an `AusgenommenePfade()` in `internal/archive/scan.go` (unverändert im Diff): er begründet `docs/reviews/**` außerhalb der Liste allein mit dem Abnahme-Kriterium des Hänger-Wächters; der zweite Leser der Liste, der Nachzug, steht dort nicht, obwohl die Entscheidung des Slice den Grund für ihn führt. Nicht behoben — die Änderung gehört in keinen Code dieses Slice, und die Datei ist seine Grenze.

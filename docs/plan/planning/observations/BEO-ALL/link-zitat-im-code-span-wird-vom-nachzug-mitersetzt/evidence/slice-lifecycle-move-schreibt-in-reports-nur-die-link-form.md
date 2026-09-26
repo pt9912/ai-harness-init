@@ -1,0 +1,2 @@
+**Vorgang:** slice-lifecycle-move-schreibt-in-reports-nur-die-link-form
+**Fund:** Das Risiko *„das Link-Zitat im Code-Span wird mitersetzt"* aus §6 des Vorgangs ging mit dem Ausgang *weiter offen* in die Closure, getragen als benannte Grenze der Sensor-Doku von `make slice-mv` und vom Trigger 6 der Entscheidung; ein Register-Eintrag entstand damals nicht. Der bats-Fall 16 bindet die Span-Hälfte als *„wird mitersetzt"*. Mit der Closure des Geschwisters `slice-archive-welle-schreibt-in-reports-nur-die-link-form` nachgetragen.

@@ -1,0 +1,2 @@
+**Vorgang:** slice-archive-welle-schreibt-in-reports-nur-die-link-form
+**Fund:** Der Implementer entfernte die Ruhe-Marker-Zeile der Roadmap (*Nichts in Arbeit.*) im Commit `cc5de0d9`, der den Slice in `in-progress/` beansprucht (`git show cc5de0d9 -- docs/plan/planning/in-progress/roadmap.md` löscht drei Zeilen); der Planner stellt sie bei der Closure wieder her. Keine Quelle benennt die schreibende Rolle dieser Zeile — derselbe Vorgang wie in den Slices davor. Der Stand der Beobachtung bleibt `geplant`.

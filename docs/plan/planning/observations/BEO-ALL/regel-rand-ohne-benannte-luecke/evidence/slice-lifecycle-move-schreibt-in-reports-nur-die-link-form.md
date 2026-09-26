@@ -1,0 +1,2 @@
+**Vorgang:** slice-lifecycle-move-schreibt-in-reports-nur-die-link-form
+**Fund:** Der Review dieses Vorgangs (R-2, INFO) fuhr den Titel-Link (`](ziel "titel")`) und die Spitzklammer-Form (`](<ziel>)`): die Regel lässt beide stehen, `make docs-check` meldet `target-missing`, und die Sensor-Doku nannte sie unter ihren gemessenen Grenzen nicht. Im Vorgang nachgetragen (Commit `52417dea`); die Closure dieses Vorgangs hat den Fund nicht ins Register eingetragen, er ist mit der Closure des Geschwisters `slice-archive-welle-schreibt-in-reports-nur-die-link-form` nachgetragen.

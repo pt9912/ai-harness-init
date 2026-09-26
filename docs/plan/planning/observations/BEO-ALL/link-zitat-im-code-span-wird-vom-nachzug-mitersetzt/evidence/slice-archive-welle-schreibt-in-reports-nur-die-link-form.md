@@ -1,0 +1,2 @@
+**Vorgang:** slice-archive-welle-schreibt-in-reports-nur-die-link-form
+**Fund:** Das Risiko *„das Link-Zitat im Code-Span wird mitersetzt"* aus §6 dieses Vorgangs ging mit dem Ausgang *weiter offen* in die Closure: die Span-Hälfte bindet `TestNachziehenUnterReviewsErsetztLinkSyntaxImCodeSpanMit` als *„wird mitersetzt"*, die Sensor-Doku `harness/sensors/archive-welle.md` nennt die Grenze, das Zitat im Code-Block ist ungebunden. Trigger 6 der Entscheidung bleibt der Träger.

@@ -1,0 +1,2 @@
+**Vorgang:** slice-archive-welle-schreibt-in-reports-nur-die-link-form
+**Fund:** Die Verifikation fuhr den Nachzug in einer Kopie von `git archive` außerhalb des Repos und las `make docs-check` danach: eine tote Referenz-Definition samt Gebrauch erzeugt keinen Befund (V-3), und ein Link mit Anker auf den umgezogenen Slice meldet `anchor-missing`, weil der gekürzte Stub die Überschriften des Volltexts nicht trägt (V-4) — ein `target-missing` bleibt aus. Die Sensor-Doku `harness/sensors/archive-welle.md` nennt die zweite Wirkung nicht; nicht behoben.
