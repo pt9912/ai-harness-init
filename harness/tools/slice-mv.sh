@@ -42,6 +42,15 @@
 # anwesender Diff im automatischen Move- oder Inhalts-Commit. Ein Verstoss
 # bricht den Aufruf vor dem ersten `git mv` (main(), erste Pruefung).
 #
+# ABBRUCH. Scheitert die Ersetzung in einer Datei (psed_i), endet das Werkzeug
+# mit Status 2 und einer Meldung. Je scheiternde Datei gilt: sie bleibt
+# byte-gleich. Der Move-Commit steht; einen Nachzug-Commit gibt es nicht. Nicht
+# zugesagt ist der Arbeitsbaum als Ganzes: Dateien, die die Schleife VOR dem
+# Ausfall schon nachgezogen hat, bleiben umgeschrieben und ungestaged liegen
+# (`git restore .` stellt sie her). Gebunden ist der Ausfall an der ersten
+# Datei (TestSliceMvEchtBrichtBeiGescheiterterErsetzungAb); ein Ausfall an
+# einer spaeteren Datei bindet kein Test.
+#
 # BELEG (DoD (2) im Slice-Plan slice-144, fuer den heutigen Zwei-Commit-Stand
 # nach 8737ca7 — "es lief" reicht der DoD nicht). Eigener Scratch-Clone,
 # sauberer Checkout, echter Move mit beiden Richtungen zugleich (slice-069,
@@ -116,7 +125,11 @@
 #     Markdown: Link-Syntax, die als Zitat in einem Code-Span steht, wird
 #     mitersetzt (test/slice-mv.bats bindet diese Span-Haelfte); fuer das Zitat
 #     in einem Code-Block bindet kein Fall die Grenze, und die Referenz-Definition
-#     "[name]: ziel" ist nicht Teil der Regel (ADR-0070 Festlegung 1). Die Regel
+#     "[name]: ziel" ist nicht Teil der Regel (ADR-0070 Festlegung 1); ebenso
+#     wenig ein Link mit Titel ("](ziel "titel")") und die Spitzklammer-Form
+#     ("](<ziel>)"): die Adresse endet dort nicht unmittelbar an ")" oder "#",
+#     der Nachzug laesst sie stehen, und `docs-check` meldet den Rest als
+#     target-missing. Die Regel
 #     besteht, solange .d-check.yml unter codepaths `docs/reviews/**` ausnimmt
 #     (ADR-0070 Trigger 1).
 #
@@ -354,6 +367,9 @@ main() {
     [ -n "$rf" ] || continue
     rc=0
     rewrite_incoming_nach_baum "$rf" "$base" "$from" "$TO" || rc=$?
+    # Abbruch bei gescheiterter Ersetzung: je Datei bleibt sie byte-gleich;
+    # frueher nachgezogene Dateien bleiben ungestaged im Arbeitsbaum (Skriptkopf,
+    # ABBRUCH). Die Meldung nennt nur die scheiternde Datei.
     if [ "$rc" -gt 1 ]; then
       echo "slice-mv: Nachzug in $rf gescheitert (Status $rc) — Abbruch; der Move-Commit steht, der Nachzug ist nicht committet" >&2
       exit 2
