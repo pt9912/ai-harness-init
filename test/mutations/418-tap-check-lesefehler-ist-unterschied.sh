@@ -9,4 +9,4 @@
 # Rot faerbt der Fall, der Exit 2 und die Meldung "Tap nicht lesbar" fuer 000, 403, 429
 # und 500 liest.
 set -euo pipefail
-sed -i 's|^\t\*) fehler "Tap nicht lesbar (HTTP|\t*) unterschied=ja ; exit 10 ; fehler "Tap nicht lesbar (HTTP|' harness/tools/tap-nachzug-nutzlast.sh
+sed -i 's|^\t\*) nicht_lesbar "Tap nicht lesbar (HTTP|\t*) unterschied=ja ; exit 10 ; nicht_lesbar "Tap nicht lesbar (HTTP|' harness/tools/tap-nachzug-nutzlast.sh
