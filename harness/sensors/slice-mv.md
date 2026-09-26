@@ -86,7 +86,11 @@ steht, wird mitersetzt. Diese Span-Hälfte bindet ein Fall in `test/slice-mv.bat
 in einem Code-Block bindet kein Fall die Grenze, und die Referenz-Definition `[name]: ziel` ist
 nicht Teil der Regel — beides benannte Lücken
 ([`ADR-0070`](../../docs/plan/adr/0070-der-verweis-nachzug-schreibt-in-docs-reviews-nur-die-link-form.md)
-Festlegung 1, Trigger 6 und 7). Die Regel besteht, solange `.d-check.yml` unter `codepaths`
+Festlegung 1, Trigger 6 und 7). Ebenso außerhalb der Regel liegen ein Link mit Titel
+(`](ziel "titel")`) und die Spitzklammer-Form (`](<ziel>)`): die Adresse endet dort nicht
+unmittelbar an `)` oder `#`, der Nachzug lässt sie stehen — laut, nicht still: ein unterbliebener
+Nachzug färbt `make docs-check` mit `target-missing` (gefahren an einem Report mit je einem Link
+in den drei Formen, alle drei auf einen nicht vorhandenen Pfad). Die Regel besteht, solange `.d-check.yml` unter `codepaths`
 `docs/reviews/**` ausnimmt (Trigger 1); ein Kopplungs-Test dafür führt dieses Werkzeug noch nicht.
 
 **Die präfixlose Ersetzung ist ohne Repository gedeckt:** `test/slice-mv.bats` ruft sie in beiden
@@ -107,7 +111,26 @@ Dateiinhalt fest, eine Datei unter `done/` denselben Bestand mit jeder Form nach
 (Form-Regel entfällt), `460-slice-mv-reports-verlieren-den-link-nachzug.sh` (Link-Nachzug
 entfällt), `461-slice-mv-form-regel-greift-in-done.sh` (Regel auf `done/` ausgedehnt) und
 `462-slice-mv-main-umgeht-den-pfad-zweig.sh` (`main()` ruft den Zweig nicht) färben je den Test
-rot, der ihn bindet.
+rot, der ihn bindet; `466-slice-mv-link-regel-ueberquert-die-link-grenze.sh` färbt den Fall mit
+mehreren Links in einer Zeile, den kein Fall mit einem Link je Zeile ersetzt.
+
+**Scheitert die Ersetzung, bricht der Lauf ab und die Datei bleibt, wie sie war.** `psed_i` schreibt
+nur zurück, wenn der `sed` gelungen ist, und endet bei einem Ausfall des `sed` oder des
+Zurückschreibens mit Status 2 — explizit, nicht über `set -e`, das unter einem `||` im
+Funktionsrumpf nicht gilt; `rewrite_incoming_nach_baum` reicht die 2 weiter, und `main()` bricht
+darauf mit einer Meldung ab (der Move-Commit steht, der Nachzug ist nicht committet). Gedeckt ist
+das in zwei Stufen: drei Fälle in `test/slice-mv.bats` lassen `sed` bzw. `cat` per PATH-Wrapper
+scheitern und lesen Status und Dateiinhalt (das Image läuft als root, ein Dateimodus schiede als
+Ausfall aus), und `TestSliceMvEchtBrichtBeiGescheiterterErsetzungAb` (`make test-go`) fährt
+`main()` als echten Prozess. Die Fälle `463-slice-mv-psed-i-schreibt-nach-gescheitertem-sed.sh`,
+`464-slice-mv-psed-i-verschweigt-ein-gescheitertes-zurueckschreiben.sh` und
+`465-slice-mv-main-uebergeht-den-gescheiterten-nachzug.sh` in `test/mutations/` färben je den Test
+rot, der es bindet. **Grenze:** die Zusage „Datei unverändert" gilt für den Ausfall des `sed`; bricht
+das Zurückschreiben selbst mittendrin ab, ist die Datei nicht mehr, wie sie war. Die zwei
+Ersetzungen `rewrite_incoming_bare_in_file` und `rewrite_outgoing_bare_in_file` reichen den Status
+von `psed_i` nicht weiter — sie kürzen die Datei nicht mehr, melden aber Erfolg (gefahren für die
+erste: Status 0, Zähler 1, Datei unverändert; für die zweite gelesen). Die emittierte Fassung
+führt diese Härtung von `psed_i` nicht.
 
 Details und Beleg stehen im Kopf von `harness/tools/slice-mv.sh`, Abschnitt BELEG.
 
