@@ -478,3 +478,72 @@ func TestPraefixLinkAnDerWortgrenze(t *testing.T) {
 		t.Errorf("zweiter Lauf ersetzt das nachgezogene Ziel erneut (%d)", n2)
 	}
 }
+
+// TestNachziehenUnterReviewsUeberquertKeineZeilengrenze ist die Zeilen-Haelfte der
+// Grenze von praefixLinkRE: ein "](" am Zeilenende und eine Adresse, die erst in
+// einer spaeteren Zeile beginnt (mitten in der Zeile und am Zeilenanfang), sind
+// kein Link-Ziel und bleiben Byte fuer Byte; der eine echte Link am Ende der
+// Datei ist nachgezogen, die Menge der Treffer ist also nicht leer.
+// Gegenbeispiel: test/mutations/472-archive-welle-go-link-regel-ueberquert-die-zeilengrenze.sh.
+func TestNachziehenUnterReviewsUeberquertKeineZeilengrenze(t *testing.T) {
+	root := t.TempDir()
+	rel := "docs/reviews/2026-09-04-w.md"
+	umbruch := "Umbruch: [a](\n" +
+		"Pfad docs/plan/planning/done/slice-100-a.md) im Fliesstext.\n" +
+		"Zeilenanfang: [b](\n" +
+		"done/slice-100-a.md) am Zeilenanfang.\n"
+	link := "Link: [c](../planning/done/%sslice-100-a.md)\n"
+	schreibe(t, filepath.Join(root, filepath.FromSlash(rel)), umbruch+fmt.Sprintf(link, ""))
+
+	if n := archive.ZaehlePraefixLink(umbruch+fmt.Sprintf(link, ""), "slice-100-a.md"); n != 1 {
+		t.Errorf("ZaehlePraefixLink = %d, want 1 (nur der Link in einer Zeile)", n)
+	}
+	geschrieben, err := archive.Nachziehen(root, []string{rel}, []string{"slice-100-a.md"}, "welle-10")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if want := []archive.Fund{{Datei: rel, Praefix: 1}}; fmt.Sprint(geschrieben) != fmt.Sprint(want) {
+		t.Errorf("Nachziehen = %+v, want %+v", geschrieben, want)
+	}
+	b, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(rel)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if want := umbruch + fmt.Sprintf(link, "welle-10/"); string(b) != want {
+		t.Errorf("Report nach dem Nachzug:\n%s\nwant:\n%s", b, want)
+	}
+}
+
+// TestNachziehenUnterReviewsGiltNurFuerDasVerzeichnisNichtFuerSeinenPraefix: die
+// Link-Form-Regel bindet an das Verzeichnis docs/reviews/, nicht an einen Pfad,
+// der nur mit "docs/reviews" beginnt. Ein Geschwister-Verzeichnis dieses
+// Praefixes bekommt jede Form, docs/reviews/ nur den Link.
+// Gegenbeispiel: test/mutations/473-archive-welle-go-report-baum-endet-nicht-am-verzeichnis.sh.
+func TestNachziehenUnterReviewsGiltNurFuerDasVerzeichnisNichtFuerSeinenPraefix(t *testing.T) {
+	root := t.TempDir()
+	inhalt := bt("Link: [a](../planning/done/slice-100-a.md)\n" +
+		"Span: §docs/plan/planning/done/slice-100-a.md§\n")
+	report := "docs/reviews/2026-09-05-r.md"
+	nachbar := "docs/reviews-alt/2026-09-05-n.md"
+	schreibe(t, filepath.Join(root, filepath.FromSlash(report)), inhalt)
+	schreibe(t, filepath.Join(root, filepath.FromSlash(nachbar)), inhalt)
+
+	if _, err := archive.Nachziehen(root, []string{report, nachbar}, []string{"slice-100-a.md"}, "welle-10"); err != nil {
+		t.Fatal(err)
+	}
+	want := map[string]string{
+		report: bt("Link: [a](../planning/done/welle-10/slice-100-a.md)\n" +
+			"Span: §docs/plan/planning/done/slice-100-a.md§\n"),
+		nachbar: bt("Link: [a](../planning/done/welle-10/slice-100-a.md)\n" +
+			"Span: §docs/plan/planning/done/welle-10/slice-100-a.md§\n"),
+	}
+	for rel, w := range want {
+		b, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(rel)))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if string(b) != w {
+			t.Errorf("%s nach dem Nachzug:\n%s\nwant:\n%s", rel, b, w)
+		}
+	}
+}

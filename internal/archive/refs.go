@@ -37,7 +37,11 @@ func ZaehlePraefix(inhalt, base string) int {
 // imReportBaum sagt, ob eine repo-relative Datei unter docs/reviews/ liegt — dem
 // Baum, in dem der Nachzug nur die Link-Form schreibt (ADR-0070 Festlegung 1).
 // Die Zaehl-Seite (fundIn) und die Ersetz-Seite (ersetzeIn) fragen diese eine
-// Stelle.
+// Stelle. Die Grenze ist das Verzeichnis, nicht der Namens-Praefix: ein Pfad unter
+// docs/reviews-alt/ liegt ausserhalb. Gedeckt von
+// TestNachziehenUnterReviewsGiltNurFuerDasVerzeichnisNichtFuerSeinenPraefix;
+// test/mutations/473-archive-welle-go-report-baum-endet-nicht-am-verzeichnis.sh
+// nimmt den Schraegstrich weg.
 func imReportBaum(datei string) bool {
 	return strings.HasPrefix(filepath.ToSlash(datei), reviewsDir+"/")
 }
@@ -49,6 +53,10 @@ func imReportBaum(datei string) bool {
 // ZaehlePraefix (der Bindestrich zaehlt als Wortzeichen); zwischen "](" und
 // "done/" liegt hoechstens Text derselben Zeile ohne ")" und "#" — die Regel
 // ueberquert weder eine Link-Grenze noch eine Zeilengrenze.
+// Gedeckt: die Link-Grenze von TestNachziehenUnterReviewsSchreibtNurDieLinkForm
+// (test/mutations/471-archive-welle-go-link-regel-ueberquert-die-link-grenze.sh),
+// die Zeilengrenze von TestNachziehenUnterReviewsUeberquertKeineZeilengrenze
+// (test/mutations/472-archive-welle-go-link-regel-ueberquert-die-zeilengrenze.sh).
 func praefixLinkRE(base string) *regexp.Regexp {
 	return regexp.MustCompile(`(\]\((?:[^)#\n]*[^A-Za-z0-9_)#\n-])?)` + doneName + `/` + regexp.QuoteMeta(base) + `([)#])`)
 }
@@ -96,7 +104,9 @@ func ZaehleAufsteigend(inhalt, base string) int {
 // `dateien` ist der rohe Suchraum-Eingang des Aufrufers, `bewegte` sind
 // Basenamen (Bestand.Bewegte). Der Suchraum ist SuchraumNachzug, nicht
 // Suchraum: eine Accepted-ADR unter `docs/plan/adr` traegt hier keinen Fund
-// (ADR-0042 Festlegung 2) — `docs/reviews/**` bleibt darin, s. Haenger.
+// (ADR-0042 Festlegung 2). `docs/reviews/**` bleibt darin, weil der Nachzug dort
+// die Link-Form nachzieht (ADR-0070 Festlegung 2); ADR-0033 Abnahme-Kriterium 1
+// begruendet den Suchraum des Haenger-Waechters.
 //
 // DIE DREI FORMEN HABEN VERSCHIEDENE SUCHRAEUME, und das ist keine Sparsamkeit,
 // sondern die Aufloesungs-Regel von Markdown: die Praefix-Form ankert am Literal
