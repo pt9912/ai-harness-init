@@ -1641,11 +1641,11 @@ main() {
   # ist ein ROTER oder unvollstaendiger Versuch, und der naechste, unerzwungene Aufruf muss
   # ihn als solchen sehen, nicht den STEHENGEBLIEBENEN Beleg eines FRUEHEREN gruenen Laufs
   # erben. Es gibt nur EINEN Beleg-Slot (BELIEF) — nicht einen je Schluessel —, darum wird
-  # hier bedingungslos geloescht, unabhaengig davon, ob belief_key berechenbar war oder ob
-  # er zum aktuellen Baum passte: ein Beleg gilt erst wieder, wenn DIESER Lauf ihn neu verdient
-  # hat. Sensor: test/mutations/263 (bricht den Gruen-Vorlauf-Analogon-Fall ab und verlangt,
-  # dass der naechste Aufruf wieder voll faehrt statt "unveraendert" zu melden).
-  # Ein Teillauf entwertet nicht: seine Aussage reicht nicht bis zum Slot (s. TEILLAUF im Kopf).
+  # hier in jedem VOLLEN Lauf geloescht, unabhaengig davon, ob belief_key berechenbar war oder
+  # ob er zum aktuellen Baum passte: ein Beleg gilt erst wieder, wenn DIESER Lauf ihn neu verdient
+  # hat. Ein Teillauf ist davon ausgenommen und loescht nie: seine Aussage reicht nicht bis zum
+  # Slot (s. TEILLAUF im Kopf). Sensor: test/mutations/263 (bricht den Gruen-Vorlauf-Analogon-Fall
+  # ab und verlangt, dass der naechste Aufruf wieder voll faehrt statt "unveraendert" zu melden).
   [ -n "$partial" ] || clear_belief
 
   # ISOLATION: den Baum EINMAL nach ausserhalb des Repos kopieren. Ab hier trifft

@@ -1212,9 +1212,10 @@ vollauf() {
   rm -rf "$TL_ROOT"
 }
 
-# Ein Name mit `/` ist nie ein Fall-Name. Ohne den Zweig loeste `../mutations/01-ok` gegen
-# `<Fall-Verzeichnis>/<name>.sh` zu einer echten Datei auf; die Meldung mit dem Punkt am Ende
-# ist die dieses Zweigs, die der Datei-Pruefung endet auf `(keine Datei …)`.
+# Ein Name mit `/` ist nie ein Fall-Name: der Pfad-Zweig von select_cases weist auch
+# `../mutations/01-ok` ab, das gegen `<Fall-Verzeichnis>/<name>.sh` zu einer echten Datei
+# aufloest. Die Meldung mit dem Punkt am Ende ist die dieses Zweigs, die der Datei-Pruefung
+# endet auf `(keine Datei …)`.
 @test "driver: MUTATE_CASES mit Pfad-Form ist kein Fall-Name und bricht ab, bevor kopiert wird" {
   teillauf_fake
   printf 'stehender-beleg\n' >"$TL_FAKE/.harness/state/mutate-passed.key"
@@ -1231,7 +1232,8 @@ vollauf() {
 }
 
 # Gegenprobe der Sperren-Tests: der Protokoll-Wrapper sieht die Kopie, die ein Teillauf nach
-# der Pruefung anlegt — ohne diesen Test bewiese ein leeres Protokoll nichts.
+# der Pruefung anlegt — erst damit belegt ein leeres Protokoll der Sperren-Tests, dass dort
+# nicht kopiert wurde.
 @test "driver: die Probe sieht die Isolationskopie, die ein gueltiger Teillauf anlegt" {
   teillauf_fake
   teillauf '01-ok'
