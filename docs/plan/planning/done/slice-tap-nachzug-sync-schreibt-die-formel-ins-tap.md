@@ -272,7 +272,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Festlegung 4, ob ein
 eingefrorenes Artefakt diese Datei als Pfad nennt — über beide Adress-Formen (Code-Span-Pfad und
 Markdown-Link). Der Befund am Tag des Schnitts: kein Artefakt nennt sie
-(`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-tap-nachzug-sync-schreibt-die-formel-ins-tap\.md|open/slice-tap-nachzug-sync-schreibt-die-formel-ins-tap|\]\(slice-tap-nachzug-sync-schreibt-die-formel-ins-tap' . | grep -v 'planning/in-progress/slice-tap-nachzug-sync-schreibt-die-formel-ins-tap.md' | wc -l`
+(`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-tap-nachzug-sync-schreibt-die-formel-ins-tap\.md|open/slice-tap-nachzug-sync-schreibt-die-formel-ins-tap|\]\(slice-tap-nachzug-sync-schreibt-die-formel-ins-tap' . | grep -v 'planning/done/slice-tap-nachzug-sync-schreibt-die-formel-ins-tap.md' | wc -l`
 → **0**, gemessen 2026-09-25; vor dem Move erneut: **1**). Der eine Treffer ist ein Verzeichnis-Glob
 (`ls docs/plan/planning/*/slice-tap-nachzug-sync-schreibt-die-formel-ins-tap.md`) in der Closure-Notiz des
 Vorgänger-Slice in `done/`: er ist an kein Lifecycle-Verzeichnis gebunden, bleibt nach dem Move wahr und wird vom
@@ -499,7 +499,7 @@ Geschrieben von der Rolle Planner in frischem Kontext
   Norm-Artefakt des Architect; Übergabe. `eigentums-frage-…` trägt ihren Ausgang schon.
 - **Adressen vor dem Move ([`AGENTS.md`](../../../../AGENTS.md) §3.11):** kein eingefrorenes Artefakt nennt den
   Slice als Pfad. Das Kommando aus §4 trifft außerhalb dieser Datei eine Zeile in `done/`
-  (`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-tap-nachzug-sync-schreibt-die-formel-ins-tap\.md|(open|next|in-progress)/slice-tap-nachzug-sync-schreibt-die-formel-ins-tap|\]\(slice-tap-nachzug-sync-schreibt-die-formel-ins-tap' . | grep -v 'planning/in-progress/slice-tap-nachzug-sync-schreibt-die-formel-ins-tap.md' | wc -l`
+  (`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-tap-nachzug-sync-schreibt-die-formel-ins-tap\.md|(open|next|in-progress)/slice-tap-nachzug-sync-schreibt-die-formel-ins-tap|\]\(slice-tap-nachzug-sync-schreibt-die-formel-ins-tap' . | grep -v 'planning/done/slice-tap-nachzug-sync-schreibt-die-formel-ins-tap.md' | wc -l`
   → **1**, gemessen 2026-09-26): der Verzeichnis-Glob in der Closure-Notiz des Vorgängers, der an kein
   Lifecycle-Verzeichnis gebunden ist. Reports, Verdikt und ADR nennen die Kennung ohne Pfad.
 - **Folge-Slices:** zwei, beide als Datei in `open/` angelegt (Kennungen, keine Pfade): `slice-release-job-tap-nachzug-und-schritt-7-folgt`
