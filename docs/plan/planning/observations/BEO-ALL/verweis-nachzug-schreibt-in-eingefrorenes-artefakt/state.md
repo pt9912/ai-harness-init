@@ -8,9 +8,11 @@ führen seit `slice-221` beide Träger (`make slice-mv` und `archive-welle`). F�
 `docs/reviews/` schneidet
 [`ADR-0070`](../../../../../../docs/plan/adr/0070-der-verweis-nachzug-schreibt-in-docs-reviews-nur-die-link-form.md)
 Festlegung 1 die Reichweite: der Nachzug schreibt dort nur die Adresse in Link-Form, die drei
-übrigen Bäume behalten ihn in jeder Form; die Träger führen diese Form-Regel, sobald
+übrigen Bäume behalten ihn in jeder Form; beide Träger führen diese Form-Regel:
 `slice-lifecycle-move-schreibt-in-reports-nur-die-link-form` und
-`slice-archive-welle-schreibt-in-reports-nur-die-link-form` geschlossen sind. Ein zweiter
+`slice-archive-welle-schreibt-in-reports-nur-die-link-form` liegen in `done/`
+(`ls docs/plan/planning/done | grep -c -e slice-lifecycle-move-schreibt-in-reports-nur-die-link-form -e slice-archive-welle-schreibt-in-reports-nur-die-link-form`
+→ 2). Ein zweiter
 Herkunfts-Anker steht nicht: Was aus einer ADR folgt, trägt bereits eine ID (Baseline-Regelwerk
 `grundlagen-traceability.md` §Herkunfts-Anker, Geltungsbereich).
 

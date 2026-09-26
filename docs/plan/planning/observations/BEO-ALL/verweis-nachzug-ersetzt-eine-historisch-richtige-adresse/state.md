@@ -10,17 +10,19 @@ Pfad-Adresse — reiner Span, Operand, Block, Fließtext — bleibt Byte für By
 gilt Festlegung 4 der ersten Zielort-ADR unverändert. Ein zweiter Herkunfts-Anker steht nicht: Was aus einer
 ADR folgt, trägt bereits eine ID; der Zielort trägt hier seine eigene Kennung.
 
-**Umsetzung in den Trägern: geplant.** `slice-lifecycle-move-schreibt-in-reports-nur-die-link-form`
+**Umsetzung in den Trägern: geliefert.** `slice-lifecycle-move-schreibt-in-reports-nur-die-link-form`
 (`make slice-mv`) und `slice-archive-welle-schreibt-in-reports-nur-die-link-form` (`archive-welle`)
-führen die Form-Regel; `slice-form-regel-des-nachzugs-ist-an-die-codepaths-ausnahme-gekoppelt`
-hält ihre Kopplung an `codepaths.exempt-paths`. Bis die Träger sie führen, gilt der Übergang aus
-Festlegung 5 der ADR-Entscheidung zur `docs/reviews/`-Reichweite: eine von Hand wiederhergestellte Code-Span-Adresse bleibt zulässig.
+führen die Form-Regel und liegen in `done/`
+(`ls docs/plan/planning/done | grep -c -e slice-lifecycle-move-schreibt-in-reports-nur-die-link-form -e slice-archive-welle-schreibt-in-reports-nur-die-link-form`
+→ 2); `slice-form-regel-des-nachzugs-ist-an-die-codepaths-ausnahme-gekoppelt` (`open/`)
+hält ihre Kopplung an `codepaths.exempt-paths`. Der Übergang aus Festlegung 5 der
+ADR-Entscheidung zur `docs/reviews/`-Reichweite ist mit den zwei Trägern beendet.
 
 **Grenze der Verkörperung, benannt.** Der Zielort nennt sie selbst (§Fitness Function): „diese
 Entscheidung behauptet den Wächter dafür nicht" — `make docs-check` meldet über dem umgeschriebenen
 wie über dem ursprünglichen Stand dasselbe. Träger bleibt der Lauf, der die Mess-Aussage schreibt:
 er wählt eine Form ohne Pfad-Literal oder trägt den Nachzug seiner eigenen Zahlen nach. Für
-`docs/reviews/` hält das Werkzeug die Regel, sobald die Träger die Form-Regel führen. Ihre Grenzen
+`docs/reviews/` halten beide Träger die Regel. Ihre Grenzen
 stehen im Zielort: das Link-Zitat im Code-Span wird mitersetzt (Trigger 6), die Referenz-Definition
 ist nicht Teil der Regel (Trigger 7), und die Operand-Form in `done/` bleibt ersetzt. Die Regel hängt
 an `codepaths.exempt-paths` für `docs/reviews/**` in der `.d-check.yml`; ein Wächter für diese

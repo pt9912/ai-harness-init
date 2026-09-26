@@ -132,7 +132,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -377,7 +377,39 @@ Verifikation. Alle Kommandos gemessen am 2026-09-26 am Stand `f982adb8`, keine E
   `](…/<Kennung>.md)` als Markdown-Link — trifft außerhalb dieser Datei **0** Zeilen. Kein eingefrorenes Artefakt nennt den
   Slice als Pfad; die Reports, der Kopplungs-Slice und das Register nennen die Kennung. Der Move hat keinen Verweis
   nachzuziehen.
-- **Drei Paarungen:** werden nach dem Move geprüft (Planner); das Ergebnis steht an dieser Stelle.
+- **Der Move, gemessen (`make slice-mv` nach `done/`, 2026-09-26):** zwei Commits, der reine Move (`0058e861`, keine
+  Zeile geändert) und der Nachzug (`b92915aa`), der **genau eine** Datei mit **einer** Zeile änderte — diese Datei selbst
+  (der Ausschluss-Pfad im Kommando aus §4). Weder ein Report noch eine ADR wurde berührt
+  (`git diff --name-only 0058e861~1..HEAD -- docs/reviews docs/plan/adr | wc -l` → **0**). **Der reale Move lief über den
+  Shell-Träger, nicht über `archive-welle`:** die Form-Regel dieses Slice ist am realen Lauf ungeübt — kein Report nannte
+  die Adresse, und `archive-welle` ist auf eine Welle dieses Repos noch nicht anwendbar (Sensor-Doku). Sie ist allein
+  durch die Tests, die Fälle und die Kopie-Messung des Verifiers gedeckt. Der Start-Trigger des Kopplungs-Slice
+  (`ls docs/plan/planning/done | grep -c -e slice-lifecycle-move-schreibt-in-reports-nur-die-link-form -e slice-archive-welle-schreibt-in-reports-nur-die-link-form`)
+  gibt mit diesem Move **2** aus.
+- **Drei Paarungen (nach dem Move geprüft, 2026-09-26):** (a) *Anker:* der Eintrag trägt kein Zielort-Feld (siehe
+  *Steering-Loop-Eintrag*), es gibt nichts zu paaren — benannt, nicht als grün behauptet. (b) *Folge-Slice:* beide in §1
+  und §7 genannten Kennungen bestehen als Dateien im Planning-Lifecycle, der Shell-Träger in `done/`, der Kopplungs-Slice in
+  `open/`
+  (`ls docs/plan/planning/open docs/plan/planning/next docs/plan/planning/in-progress docs/plan/planning/done | grep -c -e '^slice-lifecycle-move-schreibt-in-reports-nur-die-link-form.md$' -e '^slice-form-regel-des-nachzugs-ist-an-die-codepaths-ausnahme-gekoppelt.md$'`
+  → **2**). (c) *Register, beide Hälften:* **Hälfte 1 getragen** — jede in §6, §7 und §8 genannte Beobachtung besteht als
+  Verzeichnis mit nicht leerem `evidence/` (**14** Kennungen aus `grep -o 'observations/BEO-ALL/[a-z0-9-]*' <diese Datei> | sort -u`;
+  zwei weitere Treffer des Musters sind keine Kennung: das nackte Verzeichnis und das Glob-Muster `verweis-nachzug-*` in §8;
+  Zähler gelesen 2026-09-26: 4, 12, 1, 2, 1, 3, 2, 2, 6, 14, 1, 2, 1, 4).
+  **Register-Paarung (c), zweite Hälfte: 4 Verzeichnisse ohne Beleg, namentlich
+  `ci-rennt-gegen-die-publikation-des-gepinnten-releases`,
+  `cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+  `einstiegs-datei-weicht-von-der-pflichtgliederung-ab` und
+  `planungs-bestand-waechst-schneller-als-er-abgebaut-wird`; nicht als getragen behauptet**
+  ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md) Festlegung 2;
+  `for d in docs/plan/planning/observations/BEO-ALL/*/; do n=$(ls "$d"evidence/*.md 2>/dev/null | wc -l); [ "$n" -eq 0 ] && echo "$d"; done`
+  → vier Namen). Sie bestanden vor diesem Slice, und keines wurde von ihm angelegt oder berührt
+  (`git diff --name-only 2427de2b..HEAD | grep -cE 'ci-rennt-gegen|cpp-skelett|einstiegs-datei-weicht|planungs-bestand-waechst'`
+  → **0**); der Befund endet erst mit dem Beleg eines abgeschlossenen Vorgangs. **Das Häkchen der letzten DoD-Zeile ist
+  mit dieser Ausnahme gesetzt:** das Repo führt Wellen-Betrieb, und das Häkchen sagt dort, dass die nächste
+  Welle-Closure die Paarungen prüft, nicht, dass sie ganz getragen sind (`.d-check.yml`, Kommentar zur
+  `structure`-Regel für `done/`); ungehakt färbte die Zeile `make docs-check` rot
+  (`section-open-tasks-marker-missing`) und verlangte eine `Gegenstand:`-Zeile, die für einen gelieferten Slice
+  falsch wäre. Die zweite Hälfte von (c) bleibt eine benannte Ausnahme und ist kein getragener Punkt.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
