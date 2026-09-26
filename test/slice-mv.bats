@@ -282,6 +282,21 @@ EOF
   [ "$ist" = "$erwartet" ] || { echo "Ist-Bestand weicht ab:"; echo "$ist"; return 1; }
 }
 
+@test "docs/reviews: mehrere Links in einer Zeile werden je fuer sich nachgezogen, auch ein Link unmittelbar hinter einem Code-Span — ein fremder Link derselben Zeile bleibt" {
+  load_functions "$DOGFOOD"
+  cd "$TMP"
+  mkdir -p docs/reviews
+  printf '%s\n' '[a](../open/slice-999-x.md) und [b](../open/slice-999-x.md#anker) und [c](../open/slice-998-y.md)' \
+    '`x`[j](../open/slice-999-x.md)' > docs/reviews/mehrfach.md
+  run rewrite_incoming_links_in_file docs/reviews/mehrfach.md "slice-999-x.md" "open" "next"
+  [ "$status" -eq 0 ]
+  [ "$output" = "3" ] || { echo "Zaehler: $output"; return 1; }
+  erwartet='[a](../next/slice-999-x.md) und [b](../next/slice-999-x.md#anker) und [c](../open/slice-998-y.md)
+`x`[j](../next/slice-999-x.md)'
+  ist="$(cat docs/reviews/mehrfach.md)"
+  [ "$ist" = "$erwartet" ] || { echo "Ist-Bestand weicht ab:"; echo "$ist"; return 1; }
+}
+
 @test "docs/reviews: Link-Syntax als Zitat in einem Code-Span wird mitersetzt, der reine Pfad daneben nicht (benannte Grenze, ADR-0070 Festlegung 1 — bekommt ein Traeger eine Kontext-Erkennung, faellt dieser Fall: Trigger 6 der ADR)" {
   load_functions "$DOGFOOD"
   cd "$TMP"
