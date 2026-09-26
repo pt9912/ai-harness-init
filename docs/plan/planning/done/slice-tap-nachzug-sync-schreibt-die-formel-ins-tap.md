@@ -224,7 +224,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 - [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Register-Datei nicht.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert. Erwartet: Belege für die in §8 benannten Einträge — ob sie zählen, urteilt die Closure.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -522,7 +522,32 @@ Geschrieben von der Rolle Planner in frischem Kontext
   gegen eine nachgebildete Schnittstelle (`zusage-ohne-herstellbares-gegenbeispiel`), `sync` ohne Mutations-Fälle
   (`zusage-mit-bats-bindung-…`, mit einer Folge-Slice-Datei) und Schritt 7 beim Job-Schnitt
   (`bedingung-ohne-traeger-…`, mit der Datei des Job-Slice). Keines ist *eingetreten*.
-- **Drei Paarungen:** folgen nach dem Move; ihr Ergebnis steht unten.
+- **Drei Paarungen** (nach dem Move gegen `done/` geprüft, 2026-09-26): (a) *Anker* — das Feld
+  `liegt in <Zielort>` steht einmal in dieser Notiz, der Zielort `.claude/commands/plan-welle.md` existiert ab
+  Repo-Wurzel, und die Datei trägt `seit slice-tap-nachzug-sync-schreibt-die-formel-ins-tap`
+  (`grep -c 'seit slice-tap-nachzug-sync-schreibt-die-formel-ins-tap' .claude/commands/plan-welle.md` → 1);
+  dieselbe Zeile steht als Anker im `state.md` von `bedingung-ohne-traeger-im-lauf-den-sie-bindet`. (b)
+  *Folge-Slice* — die zwei genannten Folge-Slices existieren als Datei im Planning-Lifecycle, beide in `open/`
+  (`ls docs/plan/planning/open/slice-release-job-tap-nachzug-und-schritt-7-folgt.md docs/plan/planning/open/slice-sync-waechter-tragen-mutations-faelle.md`);
+  die Kennung `slice-153` aus §8 steht in der Namens-Form mit Suffix als Datei in `open/`
+  (`ls docs/plan/planning/open/slice-153-*`). (c) *Register* — jede in dieser Notiz, in §6 und §8 genannte
+  Beobachtung existiert als Verzeichnis, und jede trägt ein nicht leeres `evidence/`
+  (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence | wc -l`) **mit einer Ausnahme, die vor diesem Slice
+  besteht:** `ci-rennt-gegen-die-publikation-des-gepinnten-releases` führt ein leeres `evidence/`
+  (`0`; §8 nennt sie mit *„0× Belege"*, ihr Zustandsfeld nennt `releasing.md` Schritt 6). Die Paarung ist für
+  diesen Eintrag rot; der Slice hat das Verzeichnis nicht angelegt und nicht angefasst, und die Lücke ist eine
+  Übergabe (§7, Register-Hygiene) und kein Beleg dieses Vorgangs. Die übrigen Verzeichnisse führen **3, 3, 3, 7, 9,
+  1, 2, 2, 2, 3, 32** Dateien (`prozedur-wiedergabe-…`, `zusage-mit-bats-…`, `bedingung-ohne-traeger-…`,
+  `abnahme-kriterium-…`, `eigentums-frage-…`, `zusage-ueber-jeden-aufruf-…`, `prozedur-zeile-…`,
+  `exit-zusage-…`, `vorhandene-faehigkeit-…`, `zusage-ohne-herstellbares-gegenbeispiel`,
+  `zusage-neben-geaenderter-ableitung-…`; dazu `weite-assertion-…` mit 1); das Register führt 179 Verzeichnisse
+  (`ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l`; keine Erwartungswerte). Der Move schrieb allein
+  zwei Zeilen dieser Datei um, die ihren eigenen Pfad zitieren; kein Zeitdokument (`docs/reviews/**`, ADRs, andere
+  Dateien unter `done/`) wurde berührt (`git diff --name-only` über den Move nennt allein diese Datei).
+- **Register-Hygiene (Übergabe an den Planner des nächsten Slice):** der leere `evidence/`-Ordner von
+  `ci-rennt-gegen-die-publikation-des-gepinnten-releases` bricht die zweite Hälfte der Register-Paarung für
+  jeden Slice, der ihn nennt; Ausgang offen — entweder ein Beleg, oder der Eintrag steht `gestrichen` mit Grund.
+  Beides ist Sache des Slice, der den Eintrag berührt.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
