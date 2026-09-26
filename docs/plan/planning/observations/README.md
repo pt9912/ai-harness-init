@@ -59,6 +59,12 @@ for d in docs/plan/planning/observations/BEO-ALL/*/; do
 
 Ein Wächter dafür existiert nicht; das Kommando ist ein Lauf von Hand.
 
+**Das Kästchen der Paarungs-Zeile** (in der DoD jedes Slice-Plans: *„Die drei Paarungen … sind
+getragen"*) ist gesetzt, wenn die Paarung gefahren ist und ihr Ergebnis — bei Befund mit den Namen —
+in §7 steht; es sagt nicht, dass sie grün ist. Im Repo mit Wellen prüft die Welle-Closure sie
+erneut ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+Festlegung 2).
+
 **Ab 3× trägt `state.md` genau einen von drei Ausgängen** — eine geschlossene Menge, kein
 Freitext:
 
