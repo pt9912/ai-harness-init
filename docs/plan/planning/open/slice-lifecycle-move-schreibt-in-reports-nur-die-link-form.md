@@ -27,7 +27,7 @@ Der Verweis zeigt **aufwärts**: Die Spec nennt diesen Slice nie
 (Baseline-Regelwerk `grundlagen-referenz-richtung.md`
 §Referenz-Richtung (SDP), `grundlagen-source-precedence.md` §ID-Schema als Klammer).
 
-**Verantwortlich:** `—` bis zur Priorisierung.
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-26.
 
@@ -174,6 +174,12 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **Start** (`next` → `in-progress`): der Slice ist priorisiert und sein Rolleninhaber gesetzt. Keine
 Abhängigkeit von den zwei Geschwistern: `slice-archive-welle-schreibt-in-reports-nur-die-link-form`
 und der Kopplungs-Slice laufen unabhängig.
+
+**Adress-Messung vor dem Move** ([`AGENTS.md`](../../../../AGENTS.md) §3.11): kein Artefakt außerhalb
+dieser Datei nennt sie als Pfad, weder mit `open/` als Code-Span noch als Markdown-Link; die
+Geschwister und das Register nennen sie bei der Kennung
+(`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-lifecycle-move-schreibt-in-reports-nur-die-link-form\.md|(open|next|in-progress|done)/slice-lifecycle-move-schreibt-in-reports-nur-die-link-form|\]\(slice-lifecycle-move-schreibt-in-reports-nur-die-link-form' . | grep -v 'planning/open/slice-lifecycle-move-schreibt-in-reports-nur-die-link-form.md' | wc -l`
+→ **0**, gemessen 2026-09-26). Der Move hat damit keinen Verweis nachzuziehen.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
