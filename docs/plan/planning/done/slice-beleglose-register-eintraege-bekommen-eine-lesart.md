@@ -341,8 +341,29 @@ Backticks).
   geprüft werden (`harness/sensors/slice-mv.md` §Grenze); ein Rückbau ließe zwei tote Links und ein
   rotes Doku-Gate. Die Frage dahinter — eine Ergebnis-Notiz nennt einen Träger, den der Prozess
   bewegt, als Pfad — ist benannt und an den Architect gemeldet, hier nicht entschieden.
-- **Drei Paarungen:** dieses **Repo** fährt Wellen — die Prüfung nach dem `git mv` gegen `done/` steht im
-  Nachtrag.
+- **Drei Paarungen** (nach dem Move gegen `done/` von Hand geprüft, 2026-09-26; ein Wächter dafür
+  existiert nicht): **(a) Anker** — §7 trägt kein Feld `liegt in <Zielort>` (der Zielort ist eine ADR, siehe
+  Steering-Loop-Eintrag); die Paarung hat für diesen Slice keinen Gegenstand und ist **nicht** als getragen
+  behauptet. **(b) Folge-Slice** — keiner genannt; der Nachbar
+  `slice-register-ueber-der-schwelle-bekommt-seinen-waechter` besteht als Datei im Planning-Lifecycle
+  (`ls docs/plan/planning/*/slice-register-ueber-der-schwelle-bekommt-seinen-waechter.md`, Treffer in
+  `next/`). **(c) Register, erste Hälfte** — die in §7 genannte Beobachtung
+  `BEO-ALL/unbelegter-register-eintrag-faellt-durch-die-paarung` existiert als Verzeichnis und trägt ein
+  nicht leeres `evidence/` (Kommando in §7 → 3). **(c) Register, zweite Hälfte: 4 Verzeichnisse ohne
+  Beleg, namentlich `ci-rennt-gegen-die-publikation-des-gepinnten-releases`,
+  `cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+  `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`,
+  `planungs-bestand-waechst-schneller-als-er-abgebaut-wird`; nicht als getragen behauptet**
+  (`for d in docs/plan/planning/observations/BEO-ALL/*/; do n=$(ls "$d"evidence/*.md 2>/dev/null | wc -l); [ "$n" -eq 0 ] && echo "$d"; done`;
+  das Register führt 180 Verzeichnisse, `ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l`;
+  keine Erwartungswerte). Nennen ist keine Tilgung: der Befund endet mit dem Beleg eines abgeschlossenen
+  Vorgangs, und die Stilllegung dieses Slice ist keiner. Die DoD-Zeile *„Die drei Paarungen … sind
+  getragen"* bleibt darum **ungehakt**: wahr ist sie für (b) und die erste Hälfte von (c), nicht für
+  (a) und nicht für die zweite Hälfte von (c).
+- **Was der Move berührte:** neben der Datei selbst allein die zwei Links in der Ergebnis-Notiz
+  `welle-emittierte-werkzeuge-results.md` (`git diff --name-status 857ee1f3..7b4d54f5` nennt den Rename dieser
+  Datei und diese eine Ergebnis-Notiz; die Zeilen tauschen `../open/` gegen `../done/` im Link-Ziel).
+  Keine ADR und kein Report unter `docs/reviews/` wurde berührt.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
