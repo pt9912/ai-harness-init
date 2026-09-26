@@ -22,8 +22,10 @@
 #      version-Zeile der Tap-Formel fehlt, steht mehrfach oder genuegt der Feldform nicht, der
 #      Tag ist aelter als der Tap-Stand (Vorwaerts-Schutz), das Schreiben ist ausdruecklich
 #      abgelehnt (HTTP 401, 403, 409: Meldung "Tap unveraendert") oder sein Ausgang ist
-#      ungewiss (keine Antwort, jeder andere Status: Meldung "Ausgang ungewiss") — nie als
-#      Unterschied gemeldet
+#      ungewiss (keine Antwort, jeder andere Status: Meldung "Ausgang ungewiss"), oder das Tap
+#      ist nach einem erfolgten Schreiben (HTTP 200) fuer die Nachkontrolle nicht lesbar
+#      (Meldung "das Schreiben ist bereits erfolgt", Ergebnis offen) — nie als Unterschied
+#      gemeldet
 # Der Status 10 ist ein privates Protokoll zwischen dieser Datei und dem Host-Skript, das seine
 # Herkunft nicht prueft. Ein docker-Aufruf, der selbst mit 10 endet (ein Stub, ein Wrapper), wird
 # dort als Formel-Unterschied gemeldet — mit Exit 1, ohne die Digests und die abweichende Zeile
@@ -54,6 +56,7 @@ export LC_ALL
 # interner Fehler und wird Exit 2.
 work=""
 unterschied=nein
+geschrieben=nein
 beende() {
 	rc="$1"
 	trap - EXIT
@@ -97,6 +100,16 @@ hole_asset() {
 	fi
 }
 
+# nicht_lesbar <ursache> endet mit Exit 2. Vor dem Schreiben sagt die Meldung, dass nichts
+# verglichen wurde; nach dem Schreiben (geschrieben=ja, die Nachkontrolle) sagt sie, dass das
+# Schreiben bereits erfolgt ist und ob das Tap die Bytes des Assets traegt, unbekannt bleibt.
+nicht_lesbar() {
+	if [ "$geschrieben" = ja ]; then
+		fehler "$1 — das Schreiben ist bereits erfolgt (HTTP 200), nur die Nachkontrolle konnte nicht lesen; ob das Tap die Bytes des Assets trägt, ist unbekannt — Ergebnis mit make tap-check TAG=$TAP_TAG prüfen"
+	fi
+	fehler "$1 — es wurde nichts verglichen"
+}
+
 # lese_tap legt die Formel am Kopf des Default-Branch des Tap nach $work/tap; jeder
 # andere Ausgang als eine gelesene Datei endet mit Exit 2 und gibt nur den Statuscode aus.
 lese_tap() {
@@ -107,9 +120,9 @@ lese_tap() {
 	code="$(curl "$@" "$TAP_URL")" || code=000
 	case "$code" in
 	200) ;;
-	404) fehler "Tap nicht lesbar: keine Formel-Datei am Kopf des Default-Branch (HTTP 404) — es wurde nichts verglichen" ;;
-	401 | 403 | 429) fehler "Tap nicht lesbar: die Schnittstelle lehnt das Lesen ab (HTTP $code: Anmeldung oder Lese-Limit) — es wurde nichts verglichen" ;;
-	*) fehler "Tap nicht lesbar (HTTP $code) — es wurde nichts verglichen" ;;
+	404) nicht_lesbar "Tap nicht lesbar: keine Formel-Datei am Kopf des Default-Branch (HTTP 404)" ;;
+	401 | 403 | 429) nicht_lesbar "Tap nicht lesbar: die Schnittstelle lehnt das Lesen ab (HTTP $code: Anmeldung oder Lese-Limit)" ;;
+	*) nicht_lesbar "Tap nicht lesbar (HTTP $code)" ;;
 	esac
 }
 
@@ -259,6 +272,7 @@ sync_lauf() {
 		exit 0
 	fi
 	schreibe
+	geschrieben=ja
 	if vergleiche; then
 		printf 'tap-%s: nachgezogen — Tag %s, Formula/ai-harness-init.rb geschrieben und nachkontrolliert, sha256 %s\n' "$TAP_MODE" "$TAP_TAG" "$(digest "$work/asset")"
 		exit 0

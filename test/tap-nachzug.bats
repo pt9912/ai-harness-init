@@ -22,7 +22,8 @@ bats_require_minimum_version 1.5.0
 #
 # Stub-Protokolle: STUB_LOG_DOCKER (eine Zeile je docker-Aufruf), STUB_LOG_CURL (eine
 # Zeile je curl-Aufruf, seine Argumentliste), STUB_LOG_SLEEP (eine Zeile je Wartezeit),
-# STUB_LOG_HDR (Modus und Bearer-Marke jeder `-H @<Datei>`-Kopfdatei), STUB_HDR_PATH
+# STUB_LOG_HDR (Modus und Bearer-Marke jeder `-H @<Datei>`-Kopfdatei), STUB_LOG_HDR_PUT (dieselbe
+# Zeile, nur fuer die Kopfdateien des Schreibaufrufs `-X PUT`), STUB_HDR_PATH
 # (ihr Pfad, fuer die Frage, ob sie nach dem Lauf fehlt).
 
 setup() {
@@ -37,11 +38,11 @@ setup() {
   mkdir -p "$CWD" "$TMP/work" "$TMP/bin"
   export TMPDIR="$TMP/work"
   export STUB_LOG_DOCKER="$TMP/docker.log" STUB_LOG_CURL="$TMP/curl.log"
-  export STUB_LOG_SLEEP="$TMP/sleep.log" STUB_LOG_HDR="$TMP/hdr.log"
+  export STUB_LOG_SLEEP="$TMP/sleep.log" STUB_LOG_HDR="$TMP/hdr.log" STUB_LOG_HDR_PUT="$TMP/hdr-put.log"
   export STUB_HDR_PATH="$TMP/hdr.path" STUB_COUNT="$TMP/tapzaehler"
   export STUB_LOG_SHA="$TMP/sha.log" STUB_BODY="$TMP/body.json" STUB_WRITTEN="$TMP/geschrieben"
   export STUB_APPLIED="$TMP/angewendet"
-  : >"$STUB_LOG_DOCKER"; : >"$STUB_LOG_CURL"; : >"$STUB_LOG_SLEEP"; : >"$STUB_LOG_HDR"; : >"$STUB_LOG_SHA"
+  : >"$STUB_LOG_DOCKER"; : >"$STUB_LOG_CURL"; : >"$STUB_LOG_SLEEP"; : >"$STUB_LOG_HDR"; : >"$STUB_LOG_HDR_PUT"; : >"$STUB_LOG_SHA"
   export TAP_WAIT=0
   unset TAP_TOKEN
   SENTINEL="TOKSENTINEL-9f3a71c2"
@@ -78,7 +79,8 @@ ENDE
 # STUB_TAP_1), Code STUB_TAP_CODE; 000 ist ein Verbindungsfehler (Exit 7).
 # Schreiben (`-X PUT` an die Contents-Adresse): Code STUB_PUT_CODE (Vorgabe 200; 000 ist
 # keine Antwort, Exit 7); der Body wandert nach STUB_BODY, der mitgesandte Stand nach
-# STUB_LOG_SHA, der dekodierte Inhalt nach STUB_WRITTEN; bei Code 200 und STUB_PUT_APPLY=1
+# STUB_LOG_SHA, der dekodierte Inhalt nach STUB_WRITTEN; nach einem Schreibaufruf (STUB_WRITTEN
+# liegt vor) tragen die Lesevorgaenge den Code STUB_TAP_CODE_NACH_PUT, sofern gesetzt; bei Code 200 und STUB_PUT_APPLY=1
 # liefern die folgenden Lesevorgaenge den geschriebenen Inhalt (STUB_APPLIED). Die Antwort
 # traegt STUB_ECHO, damit ein Fall pruefen kann, dass keine Antwort ausgegeben wird.
 set -eu
@@ -98,7 +100,9 @@ while [ $# -gt 0 ]; do
 done
 for h in "${hdrs[@]}"; do
   bearer=0; grep -q '^Authorization: Bearer ' "$h" && bearer=1
-  printf 'modus=%s bearer=%s\n' "$(stat -c %a "$h")" "$bearer" >>"$STUB_LOG_HDR"
+  zeile="modus=$(stat -c %a "$h") bearer=$bearer"
+  printf '%s\n' "$zeile" >>"$STUB_LOG_HDR"
+  if [ "$method" = PUT ]; then printf '%s\n' "$zeile" >>"$STUB_LOG_HDR_PUT"; fi
   printf '%s' "$h" >"$STUB_HDR_PATH"
 done
 case "$url" in
@@ -120,6 +124,7 @@ case "$url" in
       f="$STUB_TAP_1"; [ "$n" -gt 1 ] && [ -n "${STUB_TAP_2:-}" ] && f="$STUB_TAP_2"
       [ -f "$STUB_APPLIED" ] && f="$STUB_APPLIED"
       code="${STUB_TAP_CODE:-200}"
+      if [ -f "$STUB_WRITTEN" ] && [ -n "${STUB_TAP_CODE_NACH_PUT:-}" ]; then code="$STUB_TAP_CODE_NACH_PUT"; fi
       if [ "$code" = 200 ]; then cp "$f" "$dest"
       else printf '{"message":"abgelehnt","echo":"%s"}' "${STUB_ECHO:-}" >"$dest"; fi
     fi
@@ -185,7 +190,7 @@ lauf_sync() {
 
 # zuruecksetzen — Protokolle und Stub-Zustand leeren, fuer Faelle mit mehreren Laeufen.
 zuruecksetzen() {
-  : >"$STUB_LOG_DOCKER"; : >"$STUB_LOG_CURL"; : >"$STUB_LOG_SLEEP"; : >"$STUB_LOG_HDR"; : >"$STUB_LOG_SHA"
+  : >"$STUB_LOG_DOCKER"; : >"$STUB_LOG_CURL"; : >"$STUB_LOG_SLEEP"; : >"$STUB_LOG_HDR"; : >"$STUB_LOG_HDR_PUT"; : >"$STUB_LOG_SHA"
   rm -f "$STUB_COUNT" "$STUB_APPLIED" "$STUB_BODY" "$STUB_WRITTEN"
 }
 
@@ -766,8 +771,8 @@ nutzlast_direkt() {
 }
 
 @test "sync vorwaerts-schutz: ein Tag mit kleinerem Kern als der Tap-Stand endet mit Exit 2 ohne Schreibaufruf, numerisch je Feld" {
-  # Tap 0.2.3 gegen den aelteren Stabil-Tag v0.1.2; Tap 0.10.0 gegen v0.9.0 (lexikografisch waere
-  # 0.9.0 spaeter); Tap 1.0.0 gegen v0.9.9.
+  # Tap 0.2.3 gegen den aelteren Stabil-Tag v0.1.2; Tap 0.10.0 gegen v0.9.0 (numerisch je Feld ist 0.10.0
+  # spaeter als 0.9.0); Tap 1.0.0 gegen v0.9.9.
   for paar in 0.2.3:v0.1.2 0.10.0:v0.9.0 1.0.0:v0.9.9 0.2.3:v0.2.2; do
     zuruecksetzen
     formel "${paar%%:*}" >"$TMP/tap"
@@ -841,6 +846,8 @@ nutzlast_direkt() {
     nirgends 'TAP_TOKEN=' "$STUB_LOG_DOCKER"
     [ -s "$STUB_LOG_HDR" ]
     [ "$(grep -vcx 'modus=600 bearer=1' "$STUB_LOG_HDR" || true)" = 0 ]
+    # Der Schreibaufruf traegt den Zugangs-Header als Kopfdatei (0600, Bearer); sein Token steht nach den Zeilen oben in keiner Argumentliste.
+    [ "$(cat "$STUB_LOG_HDR_PUT")" = 'modus=600 bearer=1' ]
     [ ! -e "$(cat "$STUB_HDR_PATH")" ]
     [ -z "$(ls -A "$TMP/work")" ]
   done
@@ -934,4 +941,29 @@ nutzlast_direkt() {
   [ "$(schreibaufrufe)" -eq 1 ]
   [ "$(lesungen_gesamt)" -eq 3 ]
   [ "$(cat "$STUB_LOG_SLEEP")" = "0" ]
+}
+
+@test "sync teilerfolg: ist das Tap nach einem erfolgreichen Schreiben nicht lesbar, endet der Lauf mit Exit 2, sagt dass das Schreiben bereits erfolgt ist und nennt make tap-check — vor dem Schreiben bleibt es bei nichts verglichen" {
+  formel 0.2.2 >"$TMP/tapalt"
+  # Vor dem Schreiben: kein Schreibaufruf, die Meldung sagt, dass nichts verglichen wurde.
+  lauf_sync v0.2.3 STUB_TAP_1="$TMP/tapalt" STUB_TAP_CODE=404
+  echo "vor dem Schreiben: Exit $status, stderr: $stderr"
+  [ "$status" -eq 2 ]
+  [ "$(schreibaufrufe)" -eq 0 ]
+  [[ "$stderr" == *"es wurde nichts verglichen"* ]]
+  [[ "$stderr" != *"bereits erfolgt"* ]]
+  # Nach dem Schreiben (HTTP 200): jede Lesung der Nachkontrolle, die scheitert.
+  for code in 404 401 403 429 500 000; do
+    zuruecksetzen
+    lauf_sync v0.2.3 STUB_TAP_1="$TMP/tapalt" STUB_PUT_CODE=200 STUB_TAP_CODE_NACH_PUT="$code"
+    echo "Lesecode nach dem Schreiben $code: Exit $status, stderr: $stderr"
+    [ "$status" -eq 2 ]
+    [ "$(schreibaufrufe)" -eq 1 ]
+    [[ "$stderr" == *"das Schreiben ist bereits erfolgt"* ]]
+    [[ "$stderr" == *"make tap-check TAG=v0.2.3"* ]]
+    printf '%s\n' "$stderr" >"$TMP/stderr-$code"
+    nirgends 'nichts verglichen' "$TMP/stderr-$code"
+    [ "${stderr_lines[-1]}" = "tap-sync: Exit 2" ]
+    [ "$(exit_zeilen)" -eq 1 ]
+  done
 }
