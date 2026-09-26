@@ -44,6 +44,17 @@ hält [`test/commit-msg-hook.bats`](../../test/commit-msg-hook.bats) gegen die L
   Ein in Anführungszeichen gesetzter Pfad, der eine Shell-Variable enthält, bleibt dauerhaft
   unexpandiert — kein Rateversuch, keine Shell-Expansion. Fehlt die Message-Datei aus einem
   anderen Grund (etwa weil sie erst nach dem Hook-Lauf entsteht), greift der Hook ebenfalls nicht.
+- **Zwei Formen erkennt der Matcher nicht: ein Argument zwischen `git` und `commit`, und ein
+  am Flag angehängter Wert.** Er verlangt `git`, Leerraum und `commit` unmittelbar
+  hintereinander, und hinter `-F`/`--file` ein `=` oder Leerraum. Gefahren mit
+  `bash .claude/hooks/pretooluse-commit-msg-guard.sh --match '<befehl>'`: `git -C . commit -F msg.txt`,
+  `git -c user.name=x commit -F msg.txt`, `git --no-pager commit -F msg.txt`,
+  `git commit -Fmsg.txt` und `git commit -qFmsg.txt` liefern Exit 1 und keine Ausgabe — der Hook
+  prüft die Message-Datei dieser Aufrufe nicht. Die Gegenproben `git commit -F msg.txt` und
+  `git commit --file=msg.txt` liefern Exit 0 und `msg.txt`. Diese Aufrufe erreicht der zweite
+  Träger, sobald er aktiviert ist ([`harness/README.md`](../README.md) §Traceability). Kein Fall in
+  [`test/commit-msg-guard.bats`](../../test/commit-msg-guard.bats) fährt eine der fünf Formen, und
+  die Aufzählung ist nicht als vollständig zugesagt.
 - **Nur wörtliches `git commit …` im Bash-Tool-Kommando.** Ein Commit, der **innerhalb** eines
   anderen Skripts oder Binaries läuft (etwa `harness/tools/slice-mv.sh`, aufgerufen über
   `make slice-mv`), erscheint dem Hook als `make slice-mv …` und wird nie geprüft, unabhängig von
