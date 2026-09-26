@@ -105,7 +105,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1 — der `bats`-Fall:** `test/tap-nachzug.bats` trägt einen Fall, dessen Name die
+- [x] **Liefer-Punkt 1 — der `bats`-Fall:** `test/tap-nachzug.bats` trägt einen Fall, dessen Name die
       Eigenschaft nennt (`check liest keine Version …`): Asset und Tap tragen **ungleiche Bytes**, die
       `version`-Zeile des Tap ist **größer** als die des Tags, `check` endet mit Exit 1, die Ausgabe nennt
       *Formel-Unterschied*, die letzte stderr-Zeile des Skripts ist `tap-check: Exit 1` (gelesen wird die
@@ -115,7 +115,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       auf das Gebundene eingeschränkt:** gebunden ist *ungleiche Bytes, größere Tap-Version → Exit 1*; jede andere
       Form der Versions-Lektüre (kleinere Tap-Version, gleiche Version bei sonst ungleichen Bytes) bindet der Fall
       nicht, und der Name sagt es nicht anders.
-- [ ] **Liefer-Punkt 2 — der Mutations-Fall samt Gegenprobe:** ein Fall in `test/mutations/` (Nummer, Name und
+- [x] **Liefer-Punkt 2 — der Mutations-Fall samt Gegenprobe:** ein Fall in `test/mutations/` (Nummer, Name und
       Modus nach [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)
       am Anlage-Ort gemessen, nicht aus diesem Plan übernommen) wendet die Mutation aus Liefer-Punkt 1 an
       (`# files:` die Nutzlast, `# verify: test-bats`, `# expect:` der Name des neuen `bats`-Falls). Der Fall
@@ -128,7 +128,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       **Rot, wenn:** der Anker die Stelle nicht mehr trifft (`sed` ohne Wirkung) — der Fall wird gegen den
       **heutigen** Quell-Bestand der Nutzlast gemessen, auch wenn `slice-tap-nachzug-sync-schreibt-die-formel-ins-tap`
       sie vorher verändert hat.
-- [ ] **Liefer-Punkt 3 — der Text trägt nur, was gebunden ist:** in
+- [x] **Liefer-Punkt 3 — der Text trägt nur, was gebunden ist:** in
       [`docs/user/releasing.md`](../../../user/releasing.md) Schritt 7 (*Grenze*) ersetzt der Satz über den
       fehlenden Zahn (`grep -n 'der Zahn fehlt' docs/user/releasing.md`) die Aussage durch die, die Fall und
       Mutations-Fall aus Liefer-Punkt 1 und 2 tragen — mit der Einschränkung aus Liefer-Punkt 1 und dem
@@ -138,18 +138,18 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       `grep -n 'der Zahn fehlt' docs/user/releasing.md` nach dem Slice noch trifft, obwohl beide Fälle
       stehen. **Deckung, benannt:** kein Test und kein Gate hält `releasing.md` gegen die Fälle, die sie
       nennt — die Klasse führt das Register (§8); Träger ist der Review dieses Slice.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: entfällt über Liefer-Punkt 3 hinaus — `harness/README.md`, Handbuch und Makefile-Kommentar
+- [x] Doku-Update: entfällt über Liefer-Punkt 3 hinaus — `harness/README.md`, Handbuch und Makefile-Kommentar
       berühren die Eigenschaft nicht — der Implementer liest die Zeile `make tap-check` in
       `harness/README.md` und den Kommentar des Ziels im Makefile gegen sie; nennt eine von beiden sie,
       wird sie dort nachgezogen und der Punkt steht in §7.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Register-Datei nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert. Erwartet: die Fälle, die der Review dieses Slice findet, und die Frage, ob die Zusage-Klasse aus §8 (`doku-zusage-nennt-den-test-…`) mit diesem Slice ihren Ausgang trägt.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Register-Datei nicht.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert. Erwartet: die Fälle, die der Review dieses Slice findet, und die Frage, ob die Zusage-Klasse aus §8 (`doku-zusage-nennt-den-test-…`) mit diesem Slice ihren Ausgang trägt.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -230,26 +230,33 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **einen** Ausgang, und kein Slice geht nach `done/`, während eines ohne Ausgang
 dasteht.
 
-Kein Risiko trägt hier schon seinen Ausgang; er wird bei der Closure zugewiesen, die Kandidaten stehen dabei.
+Jedes Risiko trägt genau einen Ausgang, zugewiesen bei der Closure (2026-09-26); die Belege stehen in §7.
 
 - **Der Anker der Mutation ist nach `slice-tap-nachzug-sync-schreibt-die-formel-ins-tap` verschoben** — der
   Slice für `sync` erweitert die Nutzlast an der Stelle, an der `gleich()` liegt; ein früher angelegter
-  `sed`-Anker trifft dann die falsche oder keine Zeile. **Ausgang:** Kandidat *weiter offen* →
+  `sed`-Anker trifft dann die falsche oder keine Zeile. **Ausgang:** *weiter offen* →
   [`BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet`](../observations/BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet/observation.md)
-  (die Regel steht als
-  [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand));
-  *eingetreten* wäre ein Folge-Slice mit Kennung, wenn der Anker schon bei der Anlage nicht trifft.
+  (verkörpert als
+  [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand);
+  ein neuer Beleg entsteht nicht, das Risiko ist bei der Anlage nicht eingetreten: der Anker trifft
+  genau eine Zeile, und die Nutzlast ist seit Slice-Beginn unverändert — Belege in §7). Offen bleibt die
+  spätere Änderung durch den Slice für `sync`, der noch in `open/` liegt.
 - **Der Fall bindet nur die eine gemessene Form** (größere Tap-Version, ungleiche Bytes). Eine andere Form der
   Versions-Lektüre (kleinere Tap-Version, gleiche Version bei sonst ungleichen Bytes) färbt ihn nicht.
-  **Ausgang:** Kandidat *entfallen* — die Zusage in Text und Name ist auf die gebundene Form eingeschränkt
-  ([`AGENTS.md`](../../../../AGENTS.md) §3.6: *die Zusage auf das einschränken, was der Code hält*); *weiter offen*,
-  wenn der Review eine zweite Form als zusagenswert nennt →
-  [`BEO-ALL/doku-zusage-nennt-den-test-dessen-fall-nur-einen-ausschnitt-misst`](../observations/BEO-ALL/doku-zusage-nennt-den-test-dessen-fall-nur-einen-ausschnitt-misst/observation.md).
+  **Ausgang:** *entfallen* — die Zusage in Fallkommentar, Fall-Name und Text ist auf die gebundene Form
+  eingeschränkt ([`AGENTS.md`](../../../../AGENTS.md) §3.6: *die Zusage auf das einschränken, was der Code
+  hält*), und die Form, die die Suite tatsächlich nicht färbt (größere Tap-Version bei weiteren abweichenden
+  Zeilen), steht in `docs/user/releasing.md` als *nicht gebunden*. Kein Review hat eine zweite Form als
+  zusagenswert gefordert; einen Folge-Slice für sie gibt es nicht. Den Text-Fund des Reviews trägt die
+  Klasse
+  [`BEO-ALL/doku-zusage-nennt-den-test-dessen-fall-nur-einen-ausschnitt-misst`](../observations/BEO-ALL/doku-zusage-nennt-den-test-dessen-fall-nur-einen-ausschnitt-misst/observation.md)
+  (Beleg in §7).
 - **Die Mutation färbt mehrere Fälle**, und der Fall nennt nur einen (`# expect:` nimmt einen Namen). Der
-  Treiber prüft, ob der genannte Name unter den roten steht. **Ausgang:** Kandidat *entfallen* — die
-  Gegenprobe aus Liefer-Punkt 2 trennt den neuen Fall von den anderen; die Klasse führt
+  Treiber prüft, ob der genannte Name unter den roten steht. **Ausgang:** *entfallen* — nicht eingetreten:
+  die Mutation färbt genau einen Fall (`not ok 13`), und die Gegenprobe aus Liefer-Punkt 2 trennt ihn von
+  den anderen (Belege in §7). Ein Beleg entsteht bei
   [`BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere`](../observations/BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere/observation.md)
-  (Zähler in §8), ein Beleg wird dort nur eingetragen, wenn sie hier eintritt.
+  nicht.
 
 ## 7. Closure-Notiz
 
@@ -266,7 +273,101 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-Wird bei der Closure geschrieben — von der Rolle Planner in frischem Kontext (AGENTS.md §3.10), nach Review und Verifikation, in der Form der Regeln oben.
+Geschrieben von der Rolle Planner in frischem Kontext
+([`AGENTS.md`](../../../../AGENTS.md) §3.10), nach Review und Verifikation.
+
+- **Was hat funktioniert:** Der Schnitt hielt: drei Liefer-Punkte, zwei Schichten (Test, Nutzer-Doku), kein
+  Produkt-Code (`git diff 3be0f3c4..HEAD --stat -- harness .claude Makefile internal` ist leer, Verifier).
+  Die Reihenfolge des Plans trug — der Fall vor dem Zahn, der Zahn rot gelesen, dann der Text. Der Zahn bindet:
+  Mutation 452 färbt genau den neuen Fall aus dem behaupteten Grund (`not ok 13`, `Exit 0 … gleich` statt
+  Formel-Unterschied); ohne den Fall bleibt dieselbe Mutation über ganz `test/` grün (kein anderer Fall deckt
+  die Stelle); auf die kleinere Version geschwächt bleibt sie ebenfalls grün — grün heißt bindet. Der Anker
+  trifft am heutigen Bestand genau eine Zeile. **Ergebnis-Fakten** (gemessen 2026-09-26, keine
+  Erwartungswerte): `grep -c '^@test' test/tap-nachzug.bats` → **38**;
+  `git ls-files 'test/mutations/*tap-check*' | wc -l` → **27**;
+  `grep -n 'der Zahn fehlt' docs/user/releasing.md | wc -l` → **0**;
+  `git diff --stat 3be0f3c4..HEAD -- test docs/user/releasing.md | tail -1` → **3** Dateien, **50**
+  Einfügungen, **8** Löschungen.
+- **Was ging anders als geplant:** Der Review (0 HIGH, 1 MEDIUM, 1 LOW, 3 INFO) las `cf186c0c` und `026c1aff` und
+  fand in Schritt 7 (*Grenze*) zwei Zusagen, die weiter reichten als die Suite bindet — *„nicht gebunden"* über
+  Formen, die andere Fälle färben (R1-1), und einen Allsatz über die Mutations-Form (R1-2) — dieselbe Klasse wie
+  die Instanz, die der Slice heilte, jetzt in der Gegenrichtung. Der Implementer zog R1-1 bis R1-3 in
+  `e873b633`. **Diesen Commit hat kein Reviewer gelesen;** der Verifier fuhr jede Aussage in *Grenze* selbst
+  gegen Läufe, auch die Aussage *„nicht gebunden"* samt einer Fixture, unter der die überlebende Mutation
+  feuert. Eine Nachrunde des Reviews ist nicht gelaufen und wird nicht behauptet. Der Plan (§3) führte
+  `roadmap.md` nicht; der Implementer entfernte den Ruhe-Marker im Claim-Commit `7551a7c4`, der Planner stellt
+  ihn in diesem Abschluss wieder her.
+- **`make mutate` — Teilmessung, kein voller Lauf.** Nicht gefahren ist `make mutate` selbst (kein Gate, es
+  läuft nächtlich), und nicht gemessen sind die Auflösung von `# files:` durch den Treiber und der
+  Beleg-Slot des Treibers, der nicht geschrieben ist. Gemessen ist: die 27 Fälle der `tap-check`-Familie sind
+  einzeln in Kopien emuliert (Anker von Hand angewandt, `test/tap-nachzug.bats` im bats-Bild des Makefiles);
+  jeder färbt einen Fall mit seinem `# expect:`-Text rot, `452` genau einen. Das ist **nicht** der Lauf des
+  Treibers: der fährt `# verify: test-bats` über ganz `test/`, die Ganz-Suite-Gegenprobe ist allein für `452`
+  gefahren, nicht für die 26 Altfälle.
+- **Doku-Update — entfällt über Liefer-Punkt 3 hinaus.** Die Zeile `make tap-check` in
+  [`harness/README.md`](../../../../harness/README.md) und der Kommentar des Ziels im `Makefile` berühren die
+  Eigenschaft nicht (`git diff 3be0f3c4..HEAD --name-only` nennt keine der beiden Dateien, Verifier).
+- **Steering-Loop-Eintrag (Form: neuer Sensor).** Der Zahn ist der Fall `check liest keine Version: ungleiche
+  Bytes …` in `test/tap-nachzug.bats` samt dem Mutations-Fall
+  `test/mutations/452-tap-check-liest-versionen-bei-ungleichen-bytes.sh`: er färbt den Fall rot, wenn der
+  Vergleich der Nutzlast die `version`-Zeilen liest und bei größerer Tap-Version, deren Zeile allein abweicht,
+  mit Exit 0 endet. Gebunden ist **eine** Form; der Text von Schritt 7 nennt sie und benennt die Formen, die die
+  Suite über andere Fälle bindet oder nicht färbt. Kein `liegt in`: der Zahn entstand aus einer Zusage
+  ([`ADR-0064`](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
+  §Fitness Function), nicht als aus dem 3×-Übertritt verkörperte Regel. **Keinen Sensor für den Text gibt es:**
+  kein Test und kein Gate hält `docs/user/releasing.md` gegen die Fälle, die sie nennt; Träger ist der Review
+  und der Verifier, der die Aussagen fährt. Zwei Grenzen des Zahns selbst: die Assertions von Fall 13 hinter
+  dem Exit-Vergleich (Meldung, Tap-Version, Zeile `tap-check: Exit 1`, zwei Lesungen) haben unter dieser
+  Mutation keinen eigenen Zahn (Verifier V-2; die Zählung der Lesungen bindet Mutation `411`), und die
+  Fall-Namen in `releasing.md` sind kurze Wörter, deren Auffindbarkeit kein Gate hält (Verifier V-1:
+  `grep -n 'vorfall nachgestellt' test/tap-nachzug.bats` trifft zwei Zeilen, den Fall und einen Kommentar). Die
+  Klasse *„die Assertion, die die Mutation nicht erreicht"* führt
+  [`weite-assertion-verdeckt-die-bindung-der-engen`](../observations/BEO-ALL/weite-assertion-verdeckt-die-bindung-der-engen/observation.md)
+  (**1×**); hier **nicht gezählt** — der Plan sagt keine Bindung dieser Assertions zu, und ein verdeckter
+  Zahn liegt nicht vor.
+- **Beobachtungs-Register (`../observations/`):** je Beleg
+  `evidence/slice-tap-check-liest-keine-version-ist-gebunden.md`; Zähler gelesen am 2026-09-26 mit
+  `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`
+  ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)).
+  **Ergänzt:**
+  [`doku-zusage-nennt-den-test-dessen-fall-nur-einen-ausschnitt-misst`](../observations/BEO-ALL/doku-zusage-nennt-den-test-dessen-fall-nur-einen-ausschnitt-misst/observation.md)
+  (R1-1 und R1-2 sind **ein** Vorgang; **2×**, `offen`) und
+  [`eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`](../observations/BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet/observation.md)
+  (der Ruhe-Marker im Claim-Commit `7551a7c4`; Stand `geplant` unverändert). **Nicht erhöht:**
+  [`zusage-mit-bats-bindung-ohne-eigenen-mutations-fall`](../observations/BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall/observation.md)
+  bleibt bei **2×** — der Fall `452` ist der Mutations-Fall dieser Zusage;
+  [`prozedur-wiedergabe-eines-werkzeug-vertrags-reicht-weiter-als-die-quelle`](../observations/BEO-ALL/prozedur-wiedergabe-eines-werkzeug-vertrags-reicht-weiter-als-die-quelle/observation.md)
+  bleibt bei **2×** — keine Aussage in *Grenze* reicht weiter als der Sensor, der sie deckt (Verifier);
+  [`mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere`](../observations/BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere/observation.md)
+  und
+  [`mutations-fall-wird-von-berechtigter-aenderung-entwaffnet`](../observations/BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet/observation.md)
+  bleiben unberührt (kein Eintritt). Die übrigen Finding-Klassen des Reviews (*Zahl neben Kommando ohne die
+  Aussage, die sie stützt*, *zwei offene Slices berühren denselben Absatz*) tragen keine Wiederkehr und bleiben
+  in der Summary-Zeile des Reports; `zahl-neben-nie-gefahrenem-kommando` trifft R1-3 nicht — das Kommando war
+  gefahren. **Lese-Schritt:** kein Eintrag erreicht mit diesem Slice **3×**; `doku-zusage-…` steht bei 2× unter
+  der Schwelle, sein `state.md` nennt weiter den Review des Textes als Träger. Der Eintrag
+  `bedingung-ohne-traeger-im-lauf-den-sie-bindet` steht seit dem vorigen Abschluss über der Schwelle und ist von
+  diesem Slice unberührt; sein Ausgang bleibt beim Auftraggeber und beim Architect (die Datei des `sync`-Slice
+  besteht inzwischen, ob sie den Ausgang `geplant` trägt, ist Urteil und wird hier nicht gefällt).
+- **Adressen vor dem Move ([`AGENTS.md`](../../../../AGENTS.md) §3.11):** kein eingefrorenes Artefakt nennt den
+  Slice als Pfad. Das Kommando aus §4 trifft außerhalb der Plan-Datei allein zwei Zeilen des
+  Verifikations-Reports, die den Dateinamen des Review-Reports nennen (dessen Name trägt die Kennung, gemessen
+  2026-09-26); ein Pfad des Slice steht dort nicht.
+- **Berührungspunkt mit dem Nachbar-Slice.** `slice-tap-nachzug-sync-schreibt-die-formel-ins-tap` (`open/`)
+  nannte den Satz *„der Zahn fehlt"* als Gegenstand dieses Slice und ein *„Datei in `open/`"*; beides ist
+  nach diesem Abschluss überholt. Die Zustandssätze dort zieht der Planner in einem eigenen Commit nach;
+  Liefer-Punkte und DoD des Nachbarn bleiben unberührt. Der Absatz *Grenze* trägt seither zwei Fälle und die
+  Zahl **38**, und die Zahl wandert mit jedem neuen Fall in `test/tap-nachzug.bats`.
+- **Folge-Slices:** keiner. Der `sync`-Schnitt `slice-tap-nachzug-sync-schreibt-die-formel-ins-tap` ist ein
+  Nachbar, kein Folge-Slice dieses Abschlusses (§1 nennt ihn als Adresse für den Modus `sync`). Die Form
+  *„größere Tap-Version bei weiteren abweichenden Zeilen"* hat keinen Slice; ein Fall dafür (der Verifier fuhr
+  ihn in einer Kopie, unter der die überlebende Mutation feuert) ist nicht geplant und nicht zugesagt.
+- **Risiken aus §6:** drei, je ein Ausgang — *weiter offen → Register:* Anker verschoben
+  (`mutations-fall-wird-von-berechtigter-aenderung-entwaffnet`, verkörpert als
+  [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand),
+  kein neuer Beleg); *entfallen* mit Grund: Fall bindet nur eine Form (Zusage eingeschränkt, Grenze im Text),
+  Mutation färbt mehrere Fälle (`452` färbt genau einen). Keines ist *eingetreten*.
+- **Drei Paarungen:** folgen nach dem Move; ihr Ergebnis steht unten.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
