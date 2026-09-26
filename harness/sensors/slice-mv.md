@@ -75,7 +75,8 @@ Fünf gemessene Grenzen (Skriptkopf `harness/tools/slice-mv.sh`): es zieht Pfade
 Zustandssätze; Welle-Plan-Dateien (Tiefenwechsel beim Closure-Move) bleiben außen vor; die
 präfixlose Eingehend-Ersetzung erkennt allein den Markdown-Link in flachen Geschwistern und liest
 kein Markdown — eine andere Schreibweise desselben Verweises (ein Link mit vorangestelltem Punkt-Segment,
-ein Link in spitzen Klammern, eine Referenz-Definition) bleibt stehen, und steht die Link-Syntax
+ein Link mit Titel, ein Link in spitzen Klammern, ein Link mit der Adresse hinter dem Zeilenumbruch,
+eine Referenz-Definition) bleibt stehen, und steht die Link-Syntax
 selbst mit genau diesem Namen in einem Code-Span oder Code-Block, wird sie mitersetzt; und die
 zweite Namensform
 aus [`MR-057`](../conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
@@ -87,10 +88,22 @@ in einem Code-Block bindet kein Fall die Grenze, und die Referenz-Definition `[n
 nicht Teil der Regel — beides benannte Lücken
 ([`ADR-0070`](../../docs/plan/adr/0070-der-verweis-nachzug-schreibt-in-docs-reviews-nur-die-link-form.md)
 Festlegung 1, Trigger 6 und 7). Ebenso außerhalb der Regel liegen ein Link mit Titel
-(`](ziel "titel")`) und die Spitzklammer-Form (`](<ziel>)`): die Adresse endet dort nicht
-unmittelbar an `)` oder `#`, der Nachzug lässt sie stehen — laut, nicht still: ein unterbliebener
-Nachzug färbt `make docs-check` mit `target-missing` (gefahren an einem Report mit je einem Link
-in den drei Formen, alle drei auf einen nicht vorhandenen Pfad). Die Regel besteht, solange `.d-check.yml` unter `codepaths`
+(`](ziel "titel")`), die Spitzklammer-Form (`](<ziel>)`) und ein Ziel mit Klammern vor dem Segment
+(`](../(x)/open/slice.md)`) oder dahinter (`](…/slice.md(1))`): die Adresse endet dort nicht
+unmittelbar an `)` oder `#`, der Nachzug lässt sie stehen — gefahren gegen den Shell-Träger an
+einem Report je Form, alle vier Formen unverändert. Laut, nicht still ist das für Titel,
+Spitzklammer und Klammern vor dem Segment: ein unterbliebener Nachzug färbt `make docs-check` mit
+`target-missing` (gefahren an einem Report mit je einem Link in diesen drei Formen auf einen nicht
+vorhandenen Pfad; für die Klammern hinter dem Segment nicht gefahren). **Still ist er für ein Ziel
+hinter dem Zeilenumbruch** (`](` am Zeilenende, die Adresse in der Folgezeile) und für die
+Referenz-Definition: der Nachzug lässt beide stehen, und `make docs-check` schweigt — gefahren an
+einem Report mit beiden Formen auf einen nicht vorhandenen Pfad, 0 Befunde für diese Zeilen; das
+Ziel, das der Wechsel verlässt, bleibt in diesen zwei Formen ungemeldet. Dasselbe gilt für den
+präfixlosen Geschwister-Link mit dem Ziel hinter dem Zeilenumbruch (gefahren an einer Slice-Datei
+im Ausgangsverzeichnis); für den präfixlosen Link mit Titel meldet das Gate `target-missing`
+(gefahren). Keine dieser Formen bindet ein Fall: weder `test/slice-mv.bats` noch
+`TestSliceMvEchtSchreibtInReportsNurDieLinkForm` fahren sie, und das Verhalten des Gates ist am
+gepinnten d-check gemessen. Die Regel besteht, solange `.d-check.yml` unter `codepaths`
 `docs/reviews/**` ausnimmt (Trigger 1); diese Kopplung hält `test/codepaths-reviews-ausnahme.bats` — die **Zeile** unter `codepaths:` in
 einer einzeiligen Flow-Liste mit doppelten Anführungszeichen, nicht die Wahrheit der Gate-Begründung —, und je
 ein Fall in `test/mutations/` bindet den Blockanfang (`474-codepaths-reviews-ausnahme-entfaellt`) und das
