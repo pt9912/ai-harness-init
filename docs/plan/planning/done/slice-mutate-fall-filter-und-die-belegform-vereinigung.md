@@ -169,7 +169,7 @@ mit gelesener Meldung ([`AGENTS.md`](../../../../AGENTS.md) §3.6), nicht nur al
 - [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Register-Datei nicht.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -381,9 +381,9 @@ Verifikation. Alle Kommandos gemessen am 2026-09-26, keine Erwartungswerte
   Übersprung mit Filter, unbekannter Name still, Schlüssel im vollen Lauf), der nachgezogene Anker von 263 und die Tests 58 bis 68 in
   `test/mutate-driver.bats`, darunter die PATH-Wrapper-Sonde für *„keine Isolationskopie"*. **Kein Sensor hält die Vereinigungsregel:** sie steht als
   Prosa in `harness/sensors/mutate.md` §Zwei Läufe, eine Aussage; kein Doku-Modul liest ihren Inhalt, der Träger ist die Rolle, die den Beleg liest
-  (der Verifier). Ein Feld `liegt in` mit Herkunfts-Anker steht hier **nicht**: der Zielort trägt kein `seit slice-…`, und die Regel entstand nicht aus einem
+  (der Verifier). Ein Zielort-Feld mit Herkunfts-Anker steht hier **nicht**: der Zielort trägt kein `seit slice-…`, und die Regel entstand nicht aus einem
   3×-Übertritt (die auslösende Beobachtung steht bei 1×) — die Paarung (a) hätte nichts, gegen das sie prüft, und der §5 dieses Plans hatte sie als
-  `liegt in` angesagt. Ob der Zielort den Anker bekommen soll, ist eine Übergabe (unten), keine Behauptung.
+  Zielort angesagt. Ob der Zielort den Anker bekommen soll, ist eine Übergabe (unten), keine Behauptung.
 - **Beobachtungs-Register (`../observations/`):** je Beleg `evidence/slice-mutate-fall-filter-und-die-belegform-vereinigung.md`; Zähler gelesen mit
   `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`
   ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)).
@@ -424,7 +424,15 @@ Verifikation. Alle Kommandos gemessen am 2026-09-26, keine Erwartungswerte
   `zusicherung-ueber-der-leeren-menge-wahr` (3×, Urteil des Planners) und ob `zusage-mit-bats-bindung-…` die Instanz allein trägt; (4) ob die Vereinigungsregel in
   `harness/sensors/mutate.md` einen Herkunfts-Anker bekommt. *An einen Reviewer:* `4504191a` und `4760a5f4`. *An den Auftraggeber:* der Accept von
   [`ADR-0035`](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md); ein voller `make mutate` am Endstand, der den Beleg-Slot schreibt.
-- **Drei Paarungen:** folgen nach dem Move; ihr Ergebnis steht unten.
+- **Drei Paarungen (nach dem Move geprüft, 2026-09-26):** (a) *Anker:* der Eintrag trägt kein Zielort-Feld (siehe *Steering-Loop-Eintrag*), es gibt nichts zu
+  paaren — benannt, nicht als grün behauptet. (b) *Folge-Slice:* die einzige genannte Kennung, `slice-mutate-beleg-gilt-ueber-rollen-dokumente-und-ist-ohne-lauf-lesbar`,
+  besteht als Datei in `open/`. (c) *Register, beide Hälften:* **Hälfte 1 getragen** — jede in §6 und §7 genannte Beobachtung besteht als Verzeichnis mit nicht leerem
+  `evidence/` (neun geprüft; Zähler gelesen 2026-09-26: 1, 10, 17, 3, 2, 1, 1, 4, 3). **Hälfte 2 formal rot, und das Häkchen ist mit dieser Ausnahme gesetzt:**
+  vier Verzeichnisse tragen kein `evidence/`
+  (`for d in docs/plan/planning/observations/BEO-ALL/*/; do n=$(ls "$d"evidence/*.md 2>/dev/null | wc -l); [ "$n" -eq 0 ] && echo "$d"; done | wc -l` → **4**);
+  sie bestanden vor diesem Slice, und keines wurde von ihm angelegt oder berührt (`git diff --name-only 1b9f159b^..HEAD | grep -cE 'ci-rennt-gegen|cpp-skelett|einstiegs-datei-weicht|planungs-bestand-waechst'`
+  → 0). Die Lesart entscheidet `slice-beleglose-register-eintraege-bekommen-eine-lesart` (`open/`); die Norm dazu steht beim Architect aus. **Der Move berührte kein Zeitdokument:**
+  die zwei `slice-mv`-Commits ändern allein diese Datei und den Schwester-Slice in `open/`, keine ADR, keinen Report, keine Datei in `done/` außer dieser.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
