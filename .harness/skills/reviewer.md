@@ -1,6 +1,6 @@
 # Reviewer-Skill — ai-harness-init
 
-**Version:** 2.0.0 · **Datum:** 2026-09-13 ·
+**Version:** 2.1.0 · **Datum:** 2026-09-26 ·
 **Baseline:** Agents-Regelwerk v6.7.2 (Kurs-Welle 134), Modul 10 §Ziel-Form: Reviewer-Skill
 (Kontext-Eingang · Klassifikation · „Was dieser Skill NICHT macht" · Output-Schema mit
 Negativbefund-Pflicht · Pflege).
@@ -95,6 +95,24 @@ Wartungsfalle (hart verdrahteter Wert); Ketten-Duplikate in Make-Targets.
 
 **INFO** — dokumentationswürdige, aber undokumentierte Annahme; bewusste
 Won't-Fix-Designnotiz.
+
+**LOW/INFO mit Eskalation** — ein Fall, dessen Stufe die Wirkung setzt:
+
+- **Grenzen-Aufzählung einer erkennenden Regel ohne Formen-Probe** — eine Regel, die
+  syntaktisch erkennt (Muster über Markdown, YAML, Pfade, Kommandozeilen), nennt in einer
+  Doku, einem Test-Kopf oder einer Meldung ihre Grenzen als Liste oder Zahl („fünf Grenzen",
+  „vier Ränder"). Der Reviewer fährt die Formen der Sprache, über die die Regel spricht,
+  selbst — bei Markdown-Links Titel, Spitzklammer-Ziel, Klammern im Ziel, Ziel hinter dem
+  Zeilenumbruch, Referenz-Definition; bei YAML Block- statt Flow-Liste, andere
+  Quotierung, anderer Schlüssel-Ort — und hält jedes Ergebnis gegen die genannte
+  Aufzählung; er liest die Liste nicht nur. Die Negativbefund-Zeile eines Diffs, der eine
+  solche Aufzählung anlegt oder ändert, nennt die gefahrenen Formen; eine Form, die nur
+  gelesen wurde, steht als „gelesen, nicht gefahren". Eine gefahrene Form, die in der
+  Aufzählung fehlt: INFO; LOW, wenn eine Meldung oder Anleitung aus der Lücke in die Irre
+  schickt; HIGH, wenn kein Gate die Folge meldet (Stilles-Grün-Pfad, s. o.). Gilt für
+  Aufzählungen, die der Diff anlegt oder ändert, nicht für den Bestand. Kein Gate fängt das;
+  Träger ist dieser Review ([`AGENTS.md`](../../AGENTS.md) §3.6)
+  (seit slice-form-regel-des-nachzugs-ist-an-die-codepaths-ausnahme-gekoppelt)
 
 **Kontext-Eskalation:** dieselbe Beobachtung im Gate-/Sicherheitspfad steigt eine
 Stufe. Streit über eine Kategorisierung ⇒ Regel hier schärfen (§Pflege).
