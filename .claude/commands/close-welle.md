@@ -74,6 +74,16 @@ Wellen-Closure), Modul 7 (Carveouts), Modul 5 (Lifecycle). Bei Konflikt gilt der
    *„Die drei Paarungen … sind getragen"* weist diese Prüfung im Repo mit Wellen-Betrieb der
    Welle-Closure zu (Modul 6 §Wann Arbeit eine Welle braucht). Das Ergebnis steht in der
    Results-Notiz. Rot heißt in allen drei Fällen: etwas wurde versprochen und nicht angelegt.
+   **Die zweite Hälfte von (c) gilt über das ganze Register**, nicht über die Verzeichnisse, die
+   diese Closure angelegt oder berührt hat, und kennt keine Ausnahme
+   ([ADR-0069](../../docs/plan/adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+   Festlegung 2). Die Results-Notiz trägt dafür eine Zeile: *„Register-Paarung (c), zweite Hälfte:
+   N Verzeichnisse ohne Beleg, namentlich <Liste>; nicht als getragen behauptet."* — N und die
+   Namen liefert
+   `for d in docs/plan/planning/observations/BEO-ALL/*/; do n=$(ls "$d"evidence/*.md 2>/dev/null | wc -l); [ "$n" -eq 0 ] && echo "$d"; done`
+   (keine Erwartungswerte; gezählt werden Dateien `evidence/*.md`, ein leeres oder nur mit einer
+   Nicht-`.md`-Datei gefülltes `evidence/` ist ein Befund). Nennen ist keine Tilgung: der Befund
+   endet mit dem Beleg eines abgeschlossenen Vorgangs.
 5. **Schritt 4 — Zeitdokumente der Welle archivieren.** Ihre Slice-Dateien, ihr Plan und die
    Review-Reports dieser Slices wandern nach `done/<welle-id>/archiv.zip`; an der Stelle von Slice
    und Plan bleibt je ein gekürzter Stub, die **Ergebnisnotiz bleibt vollständig und flach**,
