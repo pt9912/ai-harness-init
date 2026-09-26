@@ -63,6 +63,17 @@ Dateien.
   `codepaths` einen Pfad-Span in einem Report tatsächlich nicht prüft; das wäre ein Lauf des
   Doku-Gates gegen eine konstruierte Probe, und die Aussage ist in der ADR als Messung geführt, für
   die kein Sensor existiert.
+- **Die Gegenrichtung: ob die Form-Regel in den Trägern noch steht** — der Test hält die **Bedingung**
+  (die Zeile), nicht die Implikation *Regel ⇒ Zeile*. Fällt die Zeile, färbt er rot, gleichgültig ob
+  die Träger die Regel noch führen; das ist gewollt, denn dann greift Re-Evaluierungs-Trigger 1 der
+  ADR (die Regel ist zu streichen, ein Folge-ADR-Vorgang), und ein grüner Test darüber wäre ein
+  stilles Grün. Seine Meldung nennt deshalb die Zeile **und** den Trigger. Die Träger-Seite halten die
+  Fälle in `test/slice-mv.bats` und in `internal/archive` (`docs/reviews` ist **nicht** in
+  `eingehend_ausgenommene_pfade` in `harness/tools/slice-mv.sh` und nicht in `AusgenommenePfade()` in
+  `internal/archive/scan.go` — Bestand, dort gebunden, kein Gegenstand dieses Slice).
+- **Die emittierte Fassung** (`internal/emit/templates/enforce/slice-mv.sh`) — sie führt die Form-Regel
+  nicht und liest ihre Ausnahmen aus `SLICE_MV_AUSGENOMMENE_PFADE`; der Test gilt dem Dogfood-Repo und
+  wird nicht emittiert (Schicht-Abgrenzung; `harness/sensors/slice-mv.md` §Im gebootstrappten Ziel).
 - **Trigger 2 der ADR (`links` bekommt für `docs/reviews/**` eine Ausnahme)** — die ADR verlangt
   dafür keinen Fall (Fitness-Zeile 6 nennt nur die `codepaths`-Zeile), und eine Zusage ohne rot
   gesehenes Gegenbeispiel wäre [`AGENTS.md`](../../../../AGENTS.md) §3.6 verletzt.
@@ -90,8 +101,11 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       tragen andere Blöcke `docs/reviews/**` in eigenen `exempt-paths`-Zeilen, und der Fall bindet
       allein die unter `codepaths:`. *Bricht, wenn:* die Zeile unter `codepaths:` entfällt und die
       Form-Regel bleibt — der Test färbt rot, und seine Meldung nennt die `codepaths`-Zeile
-      (Rot ist gesehen **und** die Meldung gelesen); eine andere `exempt-paths`-Zeile mit
-      `docs/reviews/**` zu entfernen lässt ihn grün.
+      (Rot ist gesehen **und** die Meldung gelesen, und sie nennt neben der Zeile den
+      Re-Evaluierungs-Trigger 1 der ADR); eine andere `exempt-paths`-Zeile mit
+      `docs/reviews/**` zu entfernen lässt ihn grün, ebenso das Entfernen oder Ändern der
+      Kommentarzeile im Block — und die Zeile als **Kommentar** zu setzen statt zu entfernen färbt
+      ihn rot.
 - [ ] **Liefer-Punkt 2 — der Mutations-Fall, der ihn bindet.** Ein Fall in `test/mutations/` entfernt
       die Zeile unter `codepaths:` in einer Kopie und erwartet genau diesen Test rot. *Bricht, wenn:*
       der Fall auch bei einer Mutation rot bliebe, die eine **andere** Zeile trifft (dann deckt ein
@@ -126,6 +140,19 @@ Aussagen-Berührung steht hier gar nicht.
   genannt, mit
   [`ADR-0070`](../../adr/0070-der-verweis-nachzug-schreibt-in-docs-reviews-nur-die-link-form.md) als
   Rang-Zeiger.
+- **Schicht und Lauf.** Ein bats-Fall in `test/` (Text gegen Text, kein Container-Aufruf, netzlos)
+  läuft in `make test-bats`, damit in `make test` und `make gates`; eine Go-Test-Fassung entfällt,
+  weil beide Seiten der Kopplung Text sind und die Go-Liste nicht Gegenstand ist (§1). Die Wahl der
+  Abschnitts-Erkennung — Werkzeug und Muster — bleibt beim Implementer; gebunden ist, was sie liefern
+  muss: nur Zeilen unter dem Top-Level-Schlüssel `codepaths:` bis zum nächsten Top-Level-Schlüssel
+  (`vcs:` am Stand der Planung), **Kommentarzeilen ausgenommen**.
+- **Gemessen am Baum (2026-09-26, keine Erwartungswerte).** Die Zielzeile steht genau einmal, mit
+  zwei Zeichen Einrückung: `grep -c '^  exempt-paths: \["docs/reviews/\*\*"\]$' .d-check.yml` gibt 1
+  aus. Vier weitere Zeilen der Datei tragen `exempt-paths` **und** `docs/reviews/**` — drei unter
+  `ids` (mit `CHANGELOG.md`), eine unter `matrix` mit eigener Liste — und die **Kommentarzeile**
+  darüber, im Block `codepaths:` selbst, nennt beide Wörter ebenfalls
+  (`grep -n 'exempt-paths' .d-check.yml | grep 'reviews'` zählt sechs Zeilen). Ein Muster über die
+  ganze Datei oder über den Block ohne Kommentar-Ausschluss bliebe bei entfernter Zeile grün.
 
 ## 4. Trigger
 
@@ -170,9 +197,14 @@ dasteht.
 Die Ausgänge stehen als Vorschau da; gesetzt werden sie bei der Closure.
 
 - **Der Test greift die falsche Zeile** — eine andere `exempt-paths`-Zeile mit `docs/reviews/**`
-  (unter `ids` oder einem anderen Block) hielte ihn grün, wenn die unter `codepaths:` entfällt.
+  (unter `ids`, `matrix` oder einem anderen Block) **oder die Kommentarzeile im Block `codepaths:`**
+  hielte ihn grün, wenn die Zeile unter `codepaths:` entfällt.
   **Ausgang:** *entfallen*, wenn die Gegenprobe — die Zeile unter `codepaths:` entfernt — ihn rot
-  färbt und eine andere Zeile entfernt ihn grün lässt.
+  färbt und eine andere Zeile entfernt ihn grün lässt; und die Schärfe ist gebunden, wenn der
+  Test in einer Kopie **geschwächt** (Muster über die ganze Datei statt über den Block) bei
+  **entfernter** Zeile **grün** bleibt — grün heißt hier: die Block-Bindung ist es, die ihn rot
+  gefärbt hat, und der Mutations-Fall meldet an dieser Kopie `BEFUND`. Färbt er den geschwächten Test
+  dagegen rot, deckt ein anderer Zweig ihn, und der Zahn ist unbewacht.
 - **Der Anker des Mutations-Falls liegt verschoben**
   ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)).
   **Ausgang:** *entfallen*, wenn der Anker gegen `.d-check.yml` am Stand der Implementation
@@ -241,6 +273,19 @@ Sie steht über der Schwelle und ist `verkörpert` (Zielort:
 [`ADR-0042`](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md)); mit diesem Slice tritt
 kein Eintrag erstmals über 3×. Ein Wächter für die Kopplung ist genau die Lücke, die ihr Stand als
 Grenze der Verkörperung nennt; dieser Slice schließt sie.
+
+Die übrigen Einträge der Sub-Area `*`, die dieselbe Fläche berühren, sind gelesen (Stand 2026-09-26,
+Zähler wie oben je `ls …/<slug>/evidence/*.md | wc -l`, keine Erwartungswerte). Kein Eintrag erreicht
+mit diesem Slice erstmals 3×:
+
+| Eintrag | Zähler | Stand | Bezug zu diesem Slice |
+|---|---|---|---|
+| `ausnahmeliste-nur-auf-form-geprueft` | 4 | geplant (`slice-ausnahmeliste-bekommt-ihre-berechtigungs-pruefung`) | verwandt: der Test hält eine deklarierte Ausnahme gegen ihre Begründung, nur diese eine Zeile; die allgemeine Prüfung der Berechtigung ist dort, nicht hier |
+| `gate-zusage-in-prosa-reicht-weiter-als-ihr-pruefumfang` | 2 | offen | trifft die Formulierung: der Test hält **die Zeile**, nicht die Wahrheit der Gate-Begründung — §1 nennt es, und Testname wie Kommentar tragen es ebenso |
+| `zusage-mit-bats-bindung-ohne-eigenen-mutations-fall` | 4 | verkörpert (`AGENTS.md` §3.6) für die Klasse | Liefer-Punkt 2 ist genau der Fall, den die Klasse verlangt |
+| `regel-rand-ohne-benannte-luecke` | 2 | offen | berührt die Sensor-Doku, nicht diesen Test |
+| `kommentar-begruendet-die-gemeinsame-liste-nur-fuer-einen-ihrer-leser` | 1 | offen | betrifft `internal/archive/scan.go`; dieser Slice fasst die Datei nicht an, sein Zähler bewegt sich nicht |
+| `nachzug-raender-am-doku-gate-ohne-melder-oder-ohne-nennung` | 1 | offen | betrifft die Referenz-Definition; kein Gegenstand hier (§1, Trigger 7 der ADR) |
 
 **Modus-Begründungsblock — Umfang.** Pflicht, sobald mindestens eine berührte
 Sub-Area BF oder Hybrid ist — einer pro Sub-Area. Bei reinem GF genügt der

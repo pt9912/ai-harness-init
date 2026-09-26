@@ -14,8 +14,9 @@ ADR folgt, trägt bereits eine ID; der Zielort trägt hier seine eigene Kennung.
 (`make slice-mv`) und `slice-archive-welle-schreibt-in-reports-nur-die-link-form` (`archive-welle`)
 führen die Form-Regel und liegen in `done/`
 (`ls docs/plan/planning/done | grep -c -e slice-lifecycle-move-schreibt-in-reports-nur-die-link-form -e slice-archive-welle-schreibt-in-reports-nur-die-link-form`
-→ 2); `slice-form-regel-des-nachzugs-ist-an-die-codepaths-ausnahme-gekoppelt` (`open/`)
-hält ihre Kopplung an `codepaths.exempt-paths`. Der Übergang aus Festlegung 5 der
+→ 2); `slice-form-regel-des-nachzugs-ist-an-die-codepaths-ausnahme-gekoppelt` führt ihre
+Kopplung an `codepaths.exempt-paths` als Gegenstand und hat sie nicht geliefert (er liegt nicht in
+`done/`). Der Übergang aus Festlegung 5 der
 ADR-Entscheidung zur `docs/reviews/`-Reichweite ist mit den zwei Trägern beendet.
 
 **Grenze der Verkörperung, benannt.** Der Zielort nennt sie selbst (§Fitness Function): „diese
