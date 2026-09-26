@@ -112,6 +112,7 @@ for t in docs/plan/planning/done docs/reviews; do
   git grep -noE '\]\([^)#]*/(open|next|in-progress)/[^)#]*\)' -- "$t" | wc -l           # Markdown-Link-Vorkommen
   git grep -noE '`[^`]*(open|next|in-progress)/slice-[^`]*`' -- "$t" | wc -l            # Code-Span-Vorkommen
 done
+# Stand f8d33b38 (spätere Reports zählen mit; das Kommando liefert am jeweiligen Stand die Zahl):
 # docs/plan/planning/done  527 Links · 59 Code-Spans
 # docs/reviews              55 Links · 610 Code-Spans
 git grep -lE '`[^`]*(open|next|in-progress)/slice-[^`]*`' -- docs/reviews | wc -l       # 213 Dateien
@@ -172,7 +173,7 @@ Verzeichnis-Präfix und geschwister-relativ."* **Beide Formen** sind dort zwei S
 Pfades, nicht Link gegen Code-Span; die Stelle sagt über die Form des Umfelds nichts. Diese
 Entscheidung liest sie und weicht nicht von ihr ab: Die Link-Form bleibt in beiden Schreibweisen
 vollständig nachgezogen. Ob ein Pfad in einem Code-Span ein *Verweis* ist, lässt die Stelle offen;
-die Entscheidung nimmt für den Baum `docs/reviews/` die enge Lesart (ein Verweis ist ein Link). Eine
+die Entscheidung nimmt für den Baum `docs/reviews/` die enge Lesart (ein Verweis ist ein Link) — **die Einordnung hängt an dieser Lesart**: liest der Kurs die Stelle einmal weiter, ist der Eintrag fällig. Eine
 Abweichung, die [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) mit einem
 Eintrag belegte, besteht darum nicht — dieselbe Einordnung wie in
 [ADR-0042](0042-verweis-nachzug-im-eingefrorenen-artefakt.md), die ebenfalls keinen Eintrag führt.
@@ -224,6 +225,11 @@ Markdown (§Kontext), und die Regel verlangt keine Kontext-Erkennung. Daraus fol
   (zeilenweises `sed`, Go-Regex), mit der Kopplung der Liste `KERN` aus `test/slice-mv.bats`, für
   eine Menge von 9 inerten Vorkommen (§Kontext). Sie wird nicht zugesagt; Re-Evaluierungs-Trigger 6
   hält, wann sie neu zu bewerten ist.
+  **Gebunden ist nur die Span-Hälfte:** Fitness-Zeile 2 fährt den Span-Fall. Für den Code-Block bindet
+  kein Fall die Grenze — sein Bestand ist 0 (`Block 0` hinter dem Kommando in §Kontext, Absatz *Die
+  Träger lesen kein Markdown*), und eine Zusage über ihn hätte kein rot gesehenes Gegenbeispiel
+  ([`AGENTS.md`](../../../AGENTS.md) §3.6). Benannte Lücke wie die Referenz-Definition; Trigger 6 gilt
+  für Span und Block.
 - **Die Referenz-Definition `[name]: ziel` ist nicht Teil der Regel.** Bestand: 0
   (`git grep -nE '^\[[^]]+\]:[[:space:]]*\S*(open|next|in-progress)/' -- docs/reviews | wc -l` →
   **0**), und keine Fitness-Zeile bindet sie; eine Zusage über sie hätte kein rot gesehenes
@@ -257,16 +263,35 @@ trennen, und nur eine gilt für beide Bäume.
   Nachzug nennt einen Ort, an dem der Vorgang nie stattfand. Das gälte in `done/` ebenso wie in
   `docs/reviews/**`.
 - **Die Gate-Begründung trägt nur für den reinen Pfad-Span in `done/`.** Dort sieht `codepaths` die
-  Form (gemessen, §Kontext), und sie nicht nachzuziehen hieße, sie stumm zu schalten — eine Senkung
-  nach §3.5, gegen die [ADR-0042](0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 1
-  das Nachziehen gewogen hat. In `docs/reviews/**` gibt es dieses Kostenargument nicht:
-  `codepaths.exempt-paths` nimmt den Baum aus, und nicht zu schreiben fügt keine Blindheit hinzu. Das
-  ist ein **Kostenargument, kein Prinzip**, und für den Operand im Kommando-Span und den Code-Block
-  in `done/` trägt es **nicht** (beide bleiben ohne Nachzug grün).
+  Form (gemessen, §Kontext). Der Nachzug unterbleibt → `codepaths` färbt `make docs-check` rot
+  (`codepath-missing`) → stumm würde es erst durch das Ventil (`ignore-refs`), das der rote Lauf
+  erzwingt, und das ist eine Senkung nach §3.5, gegen die
+  [ADR-0042](0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 1 (*„Die Alternative wäre
+  nicht ‚weniger schreiben', sondern ‚weniger prüfen'"*) das Nachziehen gewogen hat; diese
+  Kostenabwägung deckt die Position für die Teilmenge. In `docs/reviews/**` gibt es das
+  Kostenargument nicht: `codepaths.exempt-paths` nimmt den Baum aus, und nicht zu schreiben fügt
+  keine Blindheit hinzu. Für den Operand im Kommando-Span und den Code-Block in `done/` trägt es
+  **nicht** (beide bleiben ohne Nachzug grün).
+- **Die Gate-Begründung ist kein Maßstab des Baums — und gegen die Alternativen von ADR-0042 steht
+  sie an einer Stelle.** [ADR-0042](0042-verweis-nachzug-im-eingefrorenen-artefakt.md) schließt die
+  Gate-Sichtbarkeit als **Kriterium** aus: Alternative A führt als Contra, dass ohne Entscheidung
+  *„die **Sichtbarkeit für das Gate** statt die Eigenschaft des Artefakts"* entschiede, was ein
+  Nachzug anfasst, und Alternative D (Pro) setzt dagegen *„Das Kriterium ist die **Aussage**, nicht
+  die Gate-Sichtbarkeit"*. Die Tatsache-Begründung (erster Punkt) ist dieses Kriterium und trägt für
+  beide Bäume. Dass `done/` den reinen Pfad-Span dennoch weiter schreibt, folgt **nicht** aus dem
+  Kriterium, sondern aus der Kostenabwägung von Festlegung 1 — und diese deckt die Position nur als
+  Preis für die Teilmenge, den jene ADR für ein gate-geprüftes Nachziehen in Kauf nahm, nicht als
+  Maßstab je Baum. Die Entscheidung unterscheidet die Bäume damit an einem Punkt nach
+  Gate-Sichtbarkeit — der Wirkung, die Alternative A dem Nichtstun vorhält — und löst das nicht auf,
+  sondern benennt es im nächsten Punkt. Ein **Kostenargument, kein Prinzip.**
 - **Die Restungleichbehandlung ist damit benannt.** Die Operand-Form in `done/` bleibt
   bei [ADR-0042](0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 4, Gegenform 2 — der
   Nachzug schreibt sie weiter, obwohl die Tatsache-Begründung dagegen spräche; 42 Spans dieser
-  Klasse stehen dort (Kommando in §Kontext, Näherung). Sie mitzunehmen verlangte, im Träger den reinen
+  Klasse stehen dort (Kommando in §Kontext, Näherung). Das ist **nicht** die Menge der fünf
+  Fundstellen, die Gegenform 2 nennt (dort der Operand im Code-**Block**, Messung 5 von
+  [ADR-0042](0042-verweis-nachzug-im-eingefrorenen-artefakt.md)): hier zählt die Näherung die
+  Code-Spans mit Leerzeichen; beide stehen unter derselben Gegenform, und keine ist die andere. Sie
+  mitzunehmen verlangte, im Träger den reinen
   Pfad-Span vom Kommando-Span zu trennen — **eine Kontext-Erkennung**, dieselbe, die Festlegung 1 für
   das Zitat verwirft, und die Trennung *„Adresse ja, aussagetragende Adresse nein"*, die
   [ADR-0042](0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Alternative E verwirft. Träger der
@@ -325,7 +350,7 @@ entfällt, sobald der Träger die Form-Regel führt.**
   auf den alten Ort, und kein Gate sieht es — das ist der Zustand, den
   [`codepaths.exempt-paths`](../../../.d-check.yml) für den Baum schon heute deklariert, nur ohne
   dass der Nachzug ihn bisher mitgetragen hätte. Trigger 5 hält, wann *„Chronik"* nicht mehr trägt.
-- **Negativ:** Ein Link-Zitat innerhalb eines Code-Spans in `docs/reviews/**` wird vom Nachzug
+- **Negativ:** Ein Link-Zitat innerhalb eines Code-Spans oder Code-Blocks in `docs/reviews/**` wird vom Nachzug
   mitersetzt (Festlegung 1). Der Bestand ist inert; der Zustand ist benannt, nicht behoben.
 - **Negativ:** Die Operand-Form in `done/` behält den Nachzug, den die Tatsache-Begründung für
   `docs/reviews/**` verwirft (Festlegung 3).
@@ -380,7 +405,7 @@ Gegenbeispiel, das rot werden muss** ([`AGENTS.md`](../../../AGENTS.md) §3.6):
 | Tooling | Zusage | Rot ist zu sehen, wenn |
 |---|---|---|
 | bats (`test/slice-mv.bats`) · Go-Test in `internal/archive` | in **einer** Datei unter `docs/reviews/` wird der Link auf den bewegten Slice nachgezogen, und **vier** Nicht-Link-Formen bleiben Byte für Byte: der reine Pfad-Span, der Operand in einem Kommando-Span, der Pfad im Code-Block, der Pfad im Fließtext | die Form-Regel entfällt (dann ist die Adresse umgeschrieben — Politik A) **oder** der Link-Nachzug entfällt (dann ist der Link tot — Politik B, gemessen **+2** `target-missing`) **oder** ein Träger nimmt nur den **unmittelbaren Backtick-Kontext** aus: er besteht den reinen Pfad-Span und bricht Operand, Block und Fließtext. Ein Fall mit nur dem reinen Span lässt ihn grün |
-| bats · Go-Test | die Grenze ist gemessen, nicht behauptet: Link-Syntax als Zitat in einem Code-Span unter `docs/reviews/` wird mitersetzt | ein Träger bekommt eine Kontext-Erkennung — der Fall fällt, und das ist Re-Evaluierungs-Trigger 6: Festlegung 1 ist dann per Folge-ADR zu ändern, der Fall nicht stillschweigend umzudrehen |
+| bats · Go-Test | die Grenze ist gemessen, nicht behauptet: Link-Syntax als Zitat in einem Code-Span unter `docs/reviews/` wird mitersetzt (nur die Span-Hälfte der Grenze — für den Code-Block bindet kein Fall, Festlegung 1) | ein Träger bekommt eine Kontext-Erkennung — der Fall fällt, und das ist Re-Evaluierungs-Trigger 6: Festlegung 1 ist dann per Folge-ADR zu ändern, der Fall nicht stillschweigend umzudrehen |
 | `make mutate` (Fall je Träger, `test/mutations/`) | beide Mutationen färben je einen Fall rot | der Fall bindet **beide** Hälften einer Datei (Link und Nicht-Link-Form nebeneinander): ein Fall mit nur einer Hälfte bleibt bei der geschwächten Regel grün |
 | `make docs-check` | nach dem Move löst jeder nachgezogene Link auf | der Nachzug in `docs/reviews/` unterbleibt (Politik B) |
 | bats | in `docs/plan/planning/done/` wird jede Form weiter ersetzt — Link, reiner Pfad-Span und Operand in einer Datei | die Form-Regel wird auf einen zweiten Baum ausgedehnt (dann sind reiner Span und Operand in `done/` stehen geblieben). **Das Gate-Rot dazu hält kein Sensor:** `codepath-missing` für den reinen Pfad-Span in `done/` ist an einer konstruierten Probe gefahren (§Kontext), an keinem realen Move |
@@ -388,7 +413,7 @@ Gegenbeispiel, das rot werden muss** ([`AGENTS.md`](../../../AGENTS.md) §3.6):
 
 **Nicht gebaut, und hier benannt.** Die **Zustandsaussage neben dem Link** bleibt ein Urteil
 ([ADR-0042](0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 4). Die **Referenz-Definition**
-hat keinen Bestand und keinen Fall (Festlegung 1, Trigger 7). Die **Gate-Aussage zu `done/`** hat
+hat keinen Bestand und keinen Fall (Festlegung 1, Trigger 7); ebenso die **Block-Hälfte der Grenze** (Festlegung 1, Trigger 6). Die **Gate-Aussage zu `done/`** hat
 keinen Sensor (Zeile 5).
 
 ## Re-Evaluierungs-Trigger
@@ -410,7 +435,7 @@ keinen Sensor (Zeile 5).
    Ort, den sie nennt, nicht deuten *(am Bericht des Laufs ablesbar)*: dann trägt *„Chronik, nicht
    Verweis"* für diese Form nicht, und die Frage, ob der Nachzug sie mit einer Zustandsmarke
    mitführen soll, ist neu.
-6. **Wenn ein Move eine Zitat-Zeile mit Link-Syntax im Code-Span in `docs/reviews/**` umschreibt, die
+6. **Wenn ein Move eine Zitat-Zeile mit Link-Syntax im Code-Span oder Code-Block in `docs/reviews/**` umschreibt, die
    einen beweglichen Träger nennt** *(am Diff des Nachzug-Commits ablesbar, `git show -U0`)*, **oder
    wenn ein Träger eine Kontext-Erkennung bekommt**: dann ist die Grenze aus Festlegung 1 nicht mehr
    inert bzw. aufgehoben, und Festlegung 1 samt der Operand-Form in `done/` (Festlegung 3) ist per
@@ -438,6 +463,7 @@ liegt beim Auftraggeber.
 |---|---|---|
 | 2026-09-26 | **Proposed** | Architect-Lauf zu zwei Fragen des Auftraggebers; das Verdikt trägt die Begründung, das Skript der Kopien-Probe und die Gegenwahl je Frage |
 | 2026-09-26 | **Proposed, korrigiert** | Architect-Lauf zum Konsistenz-Review `2026-09-26-review-adr-0070-konsistenz`, Status unverändert: die Gate-Zusage für `done/` gilt für den reinen Pfad-Span und ist als konstruierte Probe gemessen; die Begründung des Baum-Unterschieds ist getrennt (Tatsache baum-unabhängig, Gate nur für den reinen Span, Restungleichbehandlung der Operand-Form benannt); die Form-Regel ist an der Link-Syntax `](` geschnitten, das Link-Zitat im Span ist benannte Grenze mit Trigger, die Referenz-Definition benannte Lücke; Baseline-Einordnung, Index-Folgepflicht, Kopplungs-Test und Trigger ergänzt; Verdikt `2026-09-26-architect-verdikt-korrektur-adr-0070` |
+| 2026-09-26 | **Proposed, korrigiert** | Architect-Lauf zur Kurzrunde `2026-09-26-review-kurzrunde-adr-0070`, Status unverändert; Darstellung und Deckung, kein neuer Norm-Inhalt: die Gate-Begründung in Festlegung 3 nennt die volle Kette (Nachzug unterbleibt, `codepaths` rot, stumm erst durch das Ventil) und die Stellen von ADR-0042, gegen die sie steht (Alternative A und D) und die sie deckt (Festlegung 1, *„weniger prüfen"*), samt Abgrenzung der 42 Spans gegen die fünf Fundstellen von Gegenform 2; die Code-Block-Hälfte der Grenze steht als benannte Lücke (Bestand 0) mit Trigger 6, Fitness-Zeile 2 bindet den Span; die Zählung in §Kontext trägt ihren Stand; die Baseline-Einordnung nennt ihre Lesart |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
