@@ -1,6 +1,6 @@
 # ADR-0069: Ein Verzeichnis des Beobachtungs-Registers ohne Beleg ist ein Befund der Register-Paarung und keine Ausnahme — „benannt, nicht gezählt" ist ein Abschnitt des belegten Eintrags
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-26
 
@@ -284,6 +284,7 @@ des Auftraggebers.**
 | 2026-09-26 | **Proposed** | Architect-Lauf: die Lesart der Beleg-Regel und der Register-Paarung (c), übergeben von einem Planner-Plan, der sie als Norm-Frage der Register-Form benannte. Der Acceptance-Trigger steht oben; Verdikt `2026-09-26-architect-verdikt-sammelauftrag-register-und-adr-0035` |
 | 2026-09-26 | **Proposed, korrigiert** | Architect-Lauf zum Konsistenz-Review `2026-09-26-review-adr-0035-0068-0069-konsistenz`, Status unverändert: Festlegung 2 hat einen Maßstab (die zweite Hälfte von (c) gilt im Closure-Schritt über das ganze Register, der Zeitpunkt-Satz der Baseline ist kein Umfang); die Aussage zum Doku-Gate ist gemessen; das Template stützt die Wahl; der Rumpf des Eintrags `planungs-bestand-waechst-schneller-als-er-abgebaut-wird` ist genannt; Verdikt `2026-09-26-architect-verdikt-korrektur-adr-0035-0068-0069` |
 | 2026-09-26 | **Proposed, korrigiert** | Architect-Lauf zur Kurzrunde `2026-09-26-review-kurzrunde-adr-0035-f5-und-adr-0069-f2`, Status unverändert: die Pro-Zelle der Alternative F nennt ihre stärkste Textstütze (der Baseline-Satz hat die Paarungen zum Subjekt); die Entscheidung bleibt |
+| 2026-09-26 | **Accepted** | Beleg nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2: die Konsistenz-Runde `2026-09-26-review-adr-0035-0068-0069-konsistenz` (0 HIGH, zwei MEDIUM R-69-1 und R-69-2, Empfehlung „ja nach Korrektur") und, als erneute Runde der prüfenden Rolle nach deren Auflösung, die Kurzrunde `2026-09-26-review-kurzrunde-adr-0035-f5-und-adr-0069-f2` (0 HIGH, 0 MEDIUM, Empfehlung „ja"; sie prüfte die Fassung vor dem LOW-Punkt K69-1, die Differenz zur angenommenen Fassung ist die Pro-Zelle der Alternative F ohne Änderung der Entscheidung). Die Annahme hat der Auftraggeber am 2026-09-26 erteilt. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes ADR-0069`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit

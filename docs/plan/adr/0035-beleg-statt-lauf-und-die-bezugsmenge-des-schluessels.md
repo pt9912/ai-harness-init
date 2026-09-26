@@ -1,6 +1,6 @@
 # ADR-0035: Ein Sensor darf einen Beleg statt eines Laufs ausgeben — seine Bezugsmenge ist der Prüfgegenstand, nicht der Arbeitsbaum
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-04
 
@@ -329,6 +329,7 @@ des Auftraggebers.**
 | 2026-09-26 | **Proposed, geschärft** | Architect-Lauf, Status unverändert: Festlegung 5 (der Teillauf berührt den Beleg-Slot nie) und die Fitness-Zeile des Teillaufs; die Fitness-Zeile des vollen Laufs nennt ihren Gegenstand; der Acceptance-Trigger steht neu; Verdikt `2026-09-26-architect-verdikt-sammelauftrag-register-und-adr-0035` |
 | 2026-09-26 | **Proposed, korrigiert** | Architect-Lauf zum Konsistenz-Review `2026-09-26-review-adr-0035-0068-0069-konsistenz`, Status unverändert: der Grund des Nicht-Löschens in Festlegung 5 ist der Preis, der Rest ist eingeordnet und trägt Trigger 4; die Abwägung steht in §Verglichene Alternativen (E bis G); die Lage-Messungen sind aktualisiert; die Fitness-Zeile des Teillaufs nennt den dritten Fall; Verdikt `2026-09-26-architect-verdikt-korrektur-adr-0035-0068-0069` |
 | 2026-09-26 | **Proposed, korrigiert** | Architect-Lauf zur Kurzrunde `2026-09-26-review-kurzrunde-adr-0035-f5-und-adr-0069-f2`, Status unverändert: der Verweis der Festlegung 5 nennt die Alternative E; die Grenze des Rests sagt nicht mehr zu, dass der Bediener den Befund des Teillaufs kennt (über die Kontext-Grenze bleibt er benannter Rest mit Trigger 4); ein flackernder Fall gehört nicht zum Rest aus Festlegung 4; Trigger 4 nennt keinen bestimmten Leser der zwei Läufe |
+| 2026-09-26 | **Accepted** | Beleg nach [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2: die Konsistenz-Runde `2026-09-26-review-adr-0035-0068-0069-konsistenz` (0 HIGH, ein MEDIUM R-35-1, Empfehlung „ja nach Korrektur") und, als erneute Runde der prüfenden Rolle nach dessen Auflösung, die Kurzrunde `2026-09-26-review-kurzrunde-adr-0035-f5-und-adr-0069-f2` (0 HIGH, 0 MEDIUM, Empfehlung „ja nach Korrektur"; sie prüfte die Fassung vor den zwei LOW-Punkten, die Differenz zur angenommenen Fassung ist Wortlaut — ein Bezeichner, die Grenze des Rests, Trigger 4 ohne bestimmten Leser — ohne Änderung der Entscheidung). Die Annahme hat der Auftraggeber am 2026-09-26 erteilt. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes ADR-0035`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
