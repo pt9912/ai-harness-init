@@ -1159,13 +1159,44 @@ if grep -q mutiert datei.txt 2>/dev/null; then echo "not ok 1 erwartet-x"; exit 
 exit 0
 STUB
   chmod +x "$TL_ROOT/bin/make"
+  tl_probe mktemp cp tar
   TL_KEY="$(bash -c "source '$TL_FAKE/harness/tools/mutate.sh' 2>/dev/null || true; isolation_key")"
   [ -n "$TL_KEY" ]
+}
+
+# tl_probe legt fuer jedes Programm <1…> einen Wrapper auf dem Stub-PATH an, der den Aufruf in
+# $TL_ROOT/probe.log protokolliert und an das echte Programm weiterreicht. Mit dem Protokoll
+# ist eine Isolationskopie (mktemp, cp, tar) auch dann sichtbar, wenn der Treiber sie beim
+# Ausstieg wieder wegraeumt.
+tl_probe() {
+  local c real
+  for c in "$@"; do
+    real="$(command -v "$c")"
+    printf '%s\n' '#!/usr/bin/env bash' "echo \"$c \$*\" >>'$TL_ROOT/probe.log'" "exec '$real' \"\$@\"" \
+      >"$TL_ROOT/bin/$c"
+    chmod +x "$TL_ROOT/bin/$c"
+  done
+}
+
+# tl_ohne_kopie ist wahr, wenn der Treiber weder mktemp noch cp noch tar gerufen hat; sonst
+# nennt es die Aufrufe auf Deskriptor 3.
+tl_ohne_kopie() {
+  if [ -s "$TL_ROOT/probe.log" ]; then
+    echo "vor der Pruefung wurde kopiert oder ein Verzeichnis angelegt; Aufrufe:" >&3
+    cat "$TL_ROOT/probe.log" >&3
+    return 1
+  fi
 }
 
 teillauf() {
   # $1: Wert von MUTATE_CASES; der Treiber laeuft mit einem Worker im Stub-PATH.
   run env "PATH=$TL_ROOT/bin:$PATH" MUTATE_JOBS=1 "TMPDIR=$TL_ROOT/tmp" "MUTATE_CASES=$1" \
+    bash "$TL_FAKE/harness/tools/mutate.sh"
+}
+
+# vollauf faehrt den Treiber ohne MUTATE_CASES: den vollen Lauf ueber allen Faellen des Fake-Repos.
+vollauf() {
+  run env "PATH=$TL_ROOT/bin:$PATH" MUTATE_JOBS=1 "TMPDIR=$TL_ROOT/tmp" \
     bash "$TL_FAKE/harness/tools/mutate.sh"
 }
 
@@ -1175,8 +1206,38 @@ teillauf() {
   teillauf '01-ok gibt-es-nicht'
   [ "$status" -eq 1 ]
   grep -qF "mutate: ABBRUCH — MUTATE_CASES nennt einen unbekannten Fall: 'gibt-es-nicht'" <<<"$output"
+  tl_ohne_kopie
   [ -z "$(ls -A "$TL_ROOT/tmp")" ]
   [ "$(cat "$TL_FAKE/.harness/state/mutate-passed.key")" = "stehender-beleg" ]
+  rm -rf "$TL_ROOT"
+}
+
+# Ein Name mit `/` ist nie ein Fall-Name. Ohne den Zweig loeste `../mutations/01-ok` gegen
+# `<Fall-Verzeichnis>/<name>.sh` zu einer echten Datei auf; die Meldung mit dem Punkt am Ende
+# ist die dieses Zweigs, die der Datei-Pruefung endet auf `(keine Datei …)`.
+@test "driver: MUTATE_CASES mit Pfad-Form ist kein Fall-Name und bricht ab, bevor kopiert wird" {
+  teillauf_fake
+  printf 'stehender-beleg\n' >"$TL_FAKE/.harness/state/mutate-passed.key"
+  teillauf '../mutations/01-ok'
+  [ "$status" -eq 1 ]
+  if ! grep -qF "mutate: ABBRUCH — MUTATE_CASES nennt einen unbekannten Fall: '../mutations/01-ok'." <<<"$output"; then
+    echo "die Meldung des Pfad-Zweigs fehlt; die Ausgabe lautet:" >&3
+    echo "$output" | grep 'MUTATE_CASES' >&3 || echo "(keine Zeile mit MUTATE_CASES)" >&3
+    false
+  fi
+  tl_ohne_kopie
+  [ "$(cat "$TL_FAKE/.harness/state/mutate-passed.key")" = "stehender-beleg" ]
+  rm -rf "$TL_ROOT"
+}
+
+# Gegenprobe der Sperren-Tests: der Protokoll-Wrapper sieht die Kopie, die ein Teillauf nach
+# der Pruefung anlegt — ohne diesen Test bewiese ein leeres Protokoll nichts.
+@test "driver: die Probe sieht die Isolationskopie, die ein gueltiger Teillauf anlegt" {
+  teillauf_fake
+  teillauf '01-ok'
+  [ "$status" -eq 0 ]
+  [ "$(grep -c '^mktemp ' "$TL_ROOT/probe.log")" -ge 1 ]
+  [ "$(grep -c '^tar ' "$TL_ROOT/probe.log")" -ge 1 ]
   rm -rf "$TL_ROOT"
 }
 
@@ -1187,6 +1248,7 @@ teillauf() {
     teillauf "$v"
     [ "$status" -eq 1 ]
     grep -qF 'mutate: ABBRUCH — MUTATE_CASES ist gesetzt, nennt aber keinen Fall' <<<"$output"
+    tl_ohne_kopie
     [ -z "$(ls -A "$TL_ROOT/tmp")" ]
   done
   rm -rf "$TL_ROOT"
@@ -1197,6 +1259,7 @@ teillauf() {
   teillauf '01-ok 02-befund 01-ok'
   [ "$status" -eq 1 ]
   grep -qF "mutate: ABBRUCH — MUTATE_CASES nennt '01-ok' mehrfach" <<<"$output"
+  tl_ohne_kopie
   [ -z "$(ls -A "$TL_ROOT/tmp")" ]
   rm -rf "$TL_ROOT"
 }
@@ -1232,6 +1295,7 @@ teillauf() {
   teillauf '01-ok 02-befund'
   [ "$status" -eq 1 ]
   grep -qE 'BEFUND +02-befund' <<<"$output"
+  grep -qF 'mutate: TEILLAUF 2 von 3 — kein Beleg' <<<"$output"
   cmp "$TL_ROOT/vorher.key" "$TL_FAKE/.harness/state/mutate-passed.key"
   rm -rf "$TL_ROOT"
 }
@@ -1248,6 +1312,39 @@ teillauf() {
     false
   fi
   grep -qF "mutate: Pruefgegenstand $TL_KEY" <<<"$output"
-  grep -qF 'mutate: ok-Faelle: 01-ok' <<<"$output"
+  grep -qxF 'mutate: ok-Faelle: 01-ok' <<<"$output"
+  tl_case 04-zweiter-ok datei.txt erwartet-x
+  teillauf '01-ok 04-zweiter-ok'
+  [ "$status" -eq 0 ]
+  grep -qxF 'mutate: ok-Faelle: 01-ok 04-zweiter-ok' <<<"$output"
+  rm -rf "$TL_ROOT"
+}
+
+# Der volle Lauf nennt seinen Schluessel — auch mit Befund, den einen Lauf, dessen Ausgabe die
+# Vereinigungsregel (harness/sensors/mutate.md) als Hauptlauf liest.
+@test "driver: ein voller Lauf mit Befund nennt den Pruefgegenstand-Schluessel und hinterlaesst keinen Beleg" {
+  teillauf_fake
+  printf 'stehender-beleg\n' >"$TL_FAKE/.harness/state/mutate-passed.key"
+  vollauf
+  [ "$status" -eq 1 ]
+  grep -qE 'BEFUND +02-befund' <<<"$output"
+  if ! grep -qxF "mutate: Pruefgegenstand $TL_KEY" <<<"$output"; then
+    echo "die Ausgabe des vollen Laufs nennt den Schluessel nicht; sie lautet:" >&3
+    echo "$output" | grep -i 'Pruefgegenstand\|Befund(e)' >&3 || echo "(keine Zeile mit Pruefgegenstand)" >&3
+    false
+  fi
+  [ ! -e "$TL_FAKE/.harness/state/mutate-passed.key" ]
+  rm -rf "$TL_ROOT"
+}
+
+@test "driver: ein gruener voller Lauf nennt den Pruefgegenstand-Schluessel und schreibt ihn als Beleg" {
+  teillauf_fake
+  rm "$TL_FAKE/test/mutations/02-befund.sh" "$TL_FAKE/test/mutations/03-ungewaehlt.sh"
+  TL_KEY="$(bash -c "source '$TL_FAKE/harness/tools/mutate.sh' 2>/dev/null || true; isolation_key")"
+  vollauf
+  [ "$status" -eq 0 ]
+  grep -qE 'mutate: 1 ok, 0 Befund' <<<"$output"
+  grep -qxF "mutate: Pruefgegenstand $TL_KEY" <<<"$output"
+  [ "$(cat "$TL_FAKE/.harness/state/mutate-passed.key")" = "$TL_KEY" ]
   rm -rf "$TL_ROOT"
 }

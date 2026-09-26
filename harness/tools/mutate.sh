@@ -81,7 +81,8 @@
 # einer je Schluessel: ein Lauf ueber einem ANDEREN Pruefgegenstand entwertet ihn (siehe
 # clear_belief), auch wenn der vorige Schluessel nie widerlegt wurde — kehrt der Baum
 # danach zu diesem frueheren, tatsaechlich gruenen Stand zurueck, faehrt der naechste
-# Lauf trotzdem wieder voll.
+# Lauf trotzdem wieder voll. Ein voller Lauf, der den Fall-Satz faehrt, nennt seinen Schluessel
+# nach dem Bericht (report_key) — auch bei einem Befund, der den Slot leert.
 #
 # TEILLAUF (MUTATE_CASES): `MUTATE_CASES='<fall> <fall> …'` faehrt nur die genannten Faelle;
 # ein Name ist der Fall-Name, wie ihn `mutate: BEFUND  <fall>` nennt, mehrere sind durch
@@ -620,8 +621,8 @@ failure_form() {
 # liefert die gewaehlten Namen zeilenweise auf stdout. Exit 1 mit einer Meldung, die den
 # Namen nennt, bei einem leeren Wert (gesetzt, aber ohne Namen), einem unbekannten Namen
 # (keine Datei `<name>.sh` dort; ein Name mit `/` ist nie ein Fall-Name) und einem doppelt
-# genannten Namen — nichts davon wird uebergangen: ein still verkleinerter Lauf waere ein
-# Gruen ueber weniger Faellen, als der Aufrufer angefragt hat.
+# genannten Namen. Jeder dieser Faelle bricht ab: der Filter verkleinert den Lauf nie still,
+# ein Gruen steht fuer genau die angefragten Faelle.
 select_cases() {
   local cases_dir="$1" spec="$2" name seen=" "
   local -a wanted=()
@@ -1523,14 +1524,23 @@ report_times() {
 # Befund — `kein Beleg` ist die Aussage ueber den Lauf, nicht ueber sein Ergebnis.
 report_partial() {
   local n="$1" all="$2" key="$3" ok
-  ok="$(collect_status "$n" | awk -F'\t' '$3 == "OK" { printf "%s ", $2 }')"
+  ok="$(collect_status "$n" | awk -F'\t' '$3 == "OK" { printf "%s%s", (c++ ? " " : ""), $2 }')"
   echo "mutate: TEILLAUF $n von $all — kein Beleg (der Beleg-Slot bleibt unberuehrt)."
-  if [ -n "$key" ]; then
-    echo "mutate: Pruefgegenstand $key"
+  report_key "$key"
+  echo "mutate: ok-Faelle: ${ok:-keine}"
+}
+
+# report_key nennt den Pruefgegenstand-Schluessel <1> dieses Laufs (leer: nicht berechenbar) —
+# die Zeile, an der ein Bericht zwei Laeufe als denselben Pruefgegenstand erkennt
+# (harness/sensors/mutate.md, „Zwei Laeufe, eine Aussage"). Ein Teillauf ruft sie in
+# report_partial, ein voller Lauf nach seinem Bericht, auch bei einem Befund; der
+# Beleg-Uebersprung nennt den Schluessel in seiner eigenen Meldung.
+report_key() {
+  if [ -n "$1" ]; then
+    echo "mutate: Pruefgegenstand $1"
   else
     echo "mutate: Pruefgegenstand nicht berechenbar (kein Schluessel)"
   fi
-  echo "mutate: ok-Faelle: ${ok:-keine}"
 }
 
 # Hauptteil gekapselt, damit test/mutate-driver.bats die Funktionen SOURCEN
@@ -1814,6 +1824,7 @@ main() {
   if [ -n "$partial" ]; then
     report_partial "$total" "$all_total" "$belief_key"
   else
+    report_key "$belief_key"
     finalize_belief "$belief_key"
   fi
   [ "$fail_count" -eq 0 ]
