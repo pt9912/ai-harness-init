@@ -14,9 +14,10 @@ ADR folgt, trägt bereits eine ID; der Zielort trägt hier seine eigene Kennung.
 (`make slice-mv`) und `slice-archive-welle-schreibt-in-reports-nur-die-link-form` (`archive-welle`)
 führen die Form-Regel und liegen in `done/`
 (`ls docs/plan/planning/done | grep -c -e slice-lifecycle-move-schreibt-in-reports-nur-die-link-form -e slice-archive-welle-schreibt-in-reports-nur-die-link-form`
-→ 2); `slice-form-regel-des-nachzugs-ist-an-die-codepaths-ausnahme-gekoppelt` führt ihre
-Kopplung an `codepaths.exempt-paths` als Gegenstand und hat sie nicht geliefert (er liegt nicht in
-`done/`). Der Übergang aus Festlegung 5 der
+→ 2); `slice-form-regel-des-nachzugs-ist-an-die-codepaths-ausnahme-gekoppelt` liefert ihre
+Kopplung an `codepaths.exempt-paths` und liegt in `done/`
+(`ls docs/plan/planning/done | grep -c slice-form-regel-des-nachzugs-ist-an-die-codepaths-ausnahme-gekoppelt`
+→ 1). Der Übergang aus Festlegung 5 der
 ADR-Entscheidung zur `docs/reviews/`-Reichweite ist mit den zwei Trägern beendet.
 
 **Grenze der Verkörperung, benannt.** Der Zielort nennt sie selbst (§Fitness Function): „diese
@@ -26,6 +27,9 @@ er wählt eine Form ohne Pfad-Literal oder trägt den Nachzug seiner eigenen Zah
 `docs/reviews/` halten beide Träger die Regel. Ihre Grenzen
 stehen im Zielort: das Link-Zitat im Code-Span wird mitersetzt (Trigger 6), die Referenz-Definition
 ist nicht Teil der Regel (Trigger 7), und die Operand-Form in `done/` bleibt ersetzt. Die Regel hängt
-an `codepaths.exempt-paths` für `docs/reviews/**` in der `.d-check.yml`; ein Wächter für diese
-Kopplung existiert nicht, bis der Kopplungs-Slice geschlossen ist — Träger ist bis dahin die Rolle,
-die den Move plant.
+an `codepaths.exempt-paths` für `docs/reviews/**` in der `.d-check.yml`; diese Kopplung hält
+`test/codepaths-reviews-ausnahme.bats` (läuft in `make gates`), und die Mutations-Fälle
+`474-codepaths-reviews-ausnahme-entfaellt` und `475-codepaths-reviews-ausnahme-wandert-in-einen-nachbar-block`
+binden Blockanfang und Blockende seiner Abschnitts-Erkennung. Der Wächter hält die **Zeile** in einer einzeiligen
+Flow-Liste mit doppelten Anführungszeichen, nicht die Wahrheit der Gate-Begründung und nicht die Implikation
+*Regel ⇒ Zeile*; Träger für Trigger 1 der ADR bleibt der Folge-ADR-Vorgang, den seine Meldung nennt.

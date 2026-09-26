@@ -118,7 +118,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -329,9 +329,37 @@ Verifikation. Alle Kommandos gemessen am 2026-09-26 am Stand `2dbc76c6`, keine E
   (`grep -c '^vcs:$' .d-check.yml` → 1), und beide Fälle sind an der behaupteten Mutation rot gesehen (Teillauf `2 ok`). (c) *Der Test bewacht eine Regel,
   die kein Träger führt* — **entfallen**: der Start-Trigger verlangte beide Träger, und das Kommando aus §4 gibt **2** aus. Dass jeder Ausgang trägt, ist
   gelesen: (a) und (b) an je einem Rot-Beleg einer fremden Rolle, (c) an einem Kommando, das am Baum nachzählt.
-- **Adressen vor dem Move ([`AGENTS.md`](../../../../AGENTS.md) §3.11):** wird nach dem Move ergänzt.
-- **Der Move, gemessen:** wird nach dem Move ergänzt.
-- **Drei Paarungen:** werden nach dem Move geprüft und ergänzt.
+- **Adressen vor dem Move ([`AGENTS.md`](../../../../AGENTS.md) §3.11):** über beide Adress-Formen gemessen, außerhalb dieser Datei, am 2026-09-26 nach
+  Anlage der Register-Belege: die Code-Span-Form `(open|next|in-progress|done)/<Kennung>`
+  (`git grep -nE "(open|next|in-progress|done)/<Kennung>" -- . ':!<diese Datei>' | wc -l` → **0**) und die Markdown-Link-Form
+  `](…<Kennung>[.md])` mit und ohne Verzeichnis-Präfix (`git grep -nE "\]\([^)]*<Kennung>(\.md)?[)#]" -- . ':!<diese Datei>' | wc -l` →
+  **0**). Der Dateiname als Token trifft **2** Zeilen (`git grep -nE "<Kennung>\.md" -- . ':!<diese Datei>' | wc -l`): es sind die
+  Muster der Zähl-Kommandos in den Closure-Notizen der zwei Träger-Slices in `done/`, `'^<Kennung>.md$'` ohne Verzeichnis-Präfix — kein
+  Verweis, derselbe Falsch-Treffer wie beim Geschwister. Kein eingefrorenes Artefakt nennt den Slice als Pfad; die Reports und das
+  Register nennen die Kennung. Der Move hat keinen Verweis nachzuziehen.
+- **Der Move, gemessen (`make slice-mv` nach `done/`, 2026-09-26):** ein Commit, der reine Move (`1a21a8e4`, 0 Zeilen geändert); der
+  Werkzeug-Lauf meldet *„Kein Verweis zu ziehen — kein zweiter Commit nötig"* (eingehend 0, ausgehend 0). Weder ein Report noch eine ADR noch
+  die Baseline wurde berührt (`git diff --name-only 2798f289..1a21a8e4 -- docs/reviews docs/plan/adr .harness/baseline | wc -l` → **0**). Die
+  Form-Regel des Nachzugs unter `docs/reviews/` ist am realen Lauf **ungeübt**: kein Report nannte den Pfad, und der Lauf schrieb dort nichts um.
+- **Drei Paarungen (nach dem Move geprüft, 2026-09-26):** (a) *Anker:* der Eintrag trägt kein Zielort-Feld (siehe *Steering-Loop-Eintrag*), es gibt
+  nichts zu paaren — benannt, nicht als grün behauptet. (b) *Folge-Slice:* die in §1 und §8 genannten Slice-Kennungen bestehen als Dateien im
+  Planning-Lifecycle — beide Träger in `done/`, `slice-ausnahmeliste-bekommt-ihre-berechtigungs-pruefung` je einmal
+  (`grep -oE 'slice-[a-z0-9][a-z0-9-]*' <diese Datei> | sort -u`, je Kennung `ls docs/plan/planning/{open,next,in-progress,done} | grep -cx "<Kennung>.md"`
+  → 1, 1, 1; das vierte Token `slice-mv` ist ein Kommando-Name und keine Kennung); §7 nennt keinen Folge-Slice. (c) *Register, beide Hälften:*
+  **Hälfte 1 getragen** — jede in §7 und §8 genannte Beobachtung besteht als Verzeichnis mit nicht leerem `evidence/` (**8** Kennungen; Zähler gelesen
+  2026-09-26: 3, 6, 2, 4, 4, 2, 1, 1). **Register-Paarung (c), zweite Hälfte: 4 Verzeichnisse ohne Beleg, namentlich
+  `ci-rennt-gegen-die-publikation-des-gepinnten-releases`, `cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+  `einstiegs-datei-weicht-von-der-pflichtgliederung-ab` und `planungs-bestand-waechst-schneller-als-er-abgebaut-wird`; nicht als getragen
+  behauptet** ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md) Festlegung 2;
+  `for d in docs/plan/planning/observations/BEO-ALL/*/; do n=$(ls "$d"evidence/*.md 2>/dev/null | wc -l); [ "$n" -eq 0 ] && echo "$d"; done` →
+  vier Namen). Sie bestanden vor diesem Slice, und keines wurde von ihm angelegt oder berührt
+  (`git diff --name-only 6125fe55~1..HEAD | grep -cE 'ci-rennt-gegen|cpp-skelett|einstiegs-datei-weicht|planungs-bestand-waechst'` → **0**);
+  der Befund endet erst mit dem Beleg eines abgeschlossenen Vorgangs. **Das Häkchen der letzten DoD-Zeile ist mit dieser Ausnahme gesetzt:**
+  das Repo führt Wellen-Betrieb, und das Häkchen sagt dort, dass die nächste Welle-Closure die Paarungen prüft, nicht, dass sie ganz getragen
+  sind (`.d-check.yml`, Kommentar zur `structure`-Regel für `done/`); ungehakt färbte die Zeile `make docs-check` rot
+  (`section-open-tasks-marker-missing`) und verlangte eine `Gegenstand:`-Zeile, die für einen gelieferten Slice falsch wäre. Die zweite Hälfte
+  von (c) bleibt eine benannte Ausnahme und ist kein getragener Punkt; die Frage, wie ein Slice mit ihr korrekt schließt, ist damit weiter
+  offen und hier nicht neu gelöst.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
