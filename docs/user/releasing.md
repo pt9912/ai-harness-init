@@ -98,7 +98,9 @@ und lädt nichts hoch. Die Schritt-Folge:
    desselben Tags — keine lokal gefüllte Kopie — als Formel-Datei ins Tap
    (`pt9912/homebrew-ai-harness-init`), in einem Commit, dessen Message den Tag
    nennt, auf den Default-Branch. Es schreibt nur, wenn die Bytes abweichen, und
-   kontrolliert danach wie `make tap-check`. *Voraussetzung:* Netz an genau
+   kontrolliert danach wie `make tap-check`; der Schreib-Pfad ist gegen eine
+   nachgebildete Schnittstelle belegt, am realen Tap belegt ihn erst ein realer
+   Nachzug (*Grenze*). *Voraussetzung:* Netz an genau
    diesem Aufruf und ein Token mit Schreibrecht auf das Tap; Anlage und Ablage
    des Tokens liegen außerhalb dieser Prozedur
    ([`ADR-0064`](../plan/adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
@@ -136,9 +138,14 @@ und lädt nichts hoch. Die Schritt-Folge:
      401, 403 oder 409); `Ausgang des Schreibens ungewiss` mit dem Verweis auf
      `make tap-check TAG=<tag>` (keine Antwort der Schnittstelle oder eine
      andere Antwort als 200, 401, 403 und 409) — dann kann das Tap geschrieben
-     sein, und der Beleg unten entscheidet, nicht der Fehlschlag; dazu die
-     Ursachen, die auch `tap-check` nennt (Tag- oder Feldform, Asset oder Tap
-     nicht lesbar, Transport ohne Ergebnis).
+     sein, und der Beleg unten entscheidet, nicht der Fehlschlag; `das
+     Schreiben ist bereits erfolgt` mit dem Verweis auf `make tap-check
+     TAG=<tag>` (das Schreiben endete mit 200, die Nachkontrolle konnte das Tap
+     nicht lesen, etwa mit HTTP 404 oder ohne Antwort) — das Tap ist dann
+     geschrieben, ob es die Bytes des Assets trägt, ist offen, und der Beleg
+     unten entscheidet; dazu die Ursachen, die auch `tap-check` nennt (Tag- oder
+     Feldform, Asset oder Tap vor dem Schreiben nicht lesbar, Transport ohne
+     Ergebnis).
 
    *Beleg:* `make tap-check TAG=<tag>` hält die Formel am Kopf des
    Default-Branch des Tap byte-genau gegen das Asset des Tags; es liest nur
@@ -209,12 +216,14 @@ und lädt nichts hoch. Die Schritt-Folge:
    `cache-fenster: die Wartezeit` (je `grep -n` auf den Fall-Namen in
    `test/tap-nachzug.bats`). **Nicht gebunden** ist ein Vergleich, der eine
    größere Tap-Version als gleich gelten lässt, sobald außer der `version`-Zeile
-   weitere Zeilen abweichen: keiner der `52` Fälle
+   weitere Zeilen abweichen: keiner der `53` Fälle
    (`grep -c '^@test' test/tap-nachzug.bats`) wird von ihm rot. Dass `check` die
    `version`-Zeile nicht liest, binden diese Fälle und kein Wortzähler: das Kommando
    `grep -ci version harness/tools/tap-nachzug.sh harness/tools/tap-nachzug-nutzlast.sh`
-   liefert mit dem Modus `sync` je Datei mehr als `0`, weil `sync` die Zeile für den
-   Vorwärts-Schutz liest, und ist für `check` keine Näherung an die Eigenschaft. Der
+   liefert für beide Dateien mehr als `0` und ist für `check` keine Näherung an die
+   Eigenschaft — der Treffer im Host-Skript ist ein Wort im Kopfkommentar
+   (`grep -ni version harness/tools/tap-nachzug.sh`), die Treffer der Nutzlast stehen in
+   Kommentaren und Code von `sync`, das die Zeile für den Vorwärts-Schutz liest. Der
    Vorwärts-Schutz ist eine Eigenschaft von `sync`: ein älterer Tag endet mit Exit 2 vor
    dem Schreibzugriff (`grep -n 'sync vorwaerts-schutz' test/tap-nachzug.bats`). Die
    Wächter von `sync` tragen `bats`-Fälle und keinen Fall in `test/mutations/`; ihre
