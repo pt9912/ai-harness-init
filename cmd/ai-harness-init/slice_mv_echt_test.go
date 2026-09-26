@@ -17,16 +17,18 @@ const sliceMvSkript = "../../harness/tools/slice-mv.sh"
 // sliceMvFormenProbe traegt den bewegten Pfad in fuenf Formen, je einmal: Link,
 // reiner Pfad-Span, Operand in einem Kommando-Span, Code-Block, Fliesstext.
 // Sie liegt in einem Review-Report und in einer Datei unter done/.
-var sliceMvFormenProbe = strings.Join([]string{
-	"Link: [Slice](../plan/planning/open/slice-900-x.md#7-closure-notiz)",
-	"Span: `docs/plan/planning/open/slice-900-x.md`",
-	"Operand: `git show 1a2b3c4:docs/plan/planning/open/slice-900-x.md`",
-	"```sh",
-	"cat docs/plan/planning/open/slice-900-x.md",
-	"```",
-	"Fliesstext: Der Slice lag in docs/plan/planning/open/slice-900-x.md und wurde bewegt.",
-	"",
-}, "\n")
+func sliceMvFormenProbe() string {
+	return strings.Join([]string{
+		"Link: [Slice](../plan/planning/open/slice-900-x.md#7-closure-notiz)",
+		"Span: `docs/plan/planning/open/slice-900-x.md`",
+		"Operand: `git show 1a2b3c4:docs/plan/planning/open/slice-900-x.md`",
+		"```sh",
+		"cat docs/plan/planning/open/slice-900-x.md",
+		"```",
+		"Fliesstext: Der Slice lag in docs/plan/planning/open/slice-900-x.md und wurde bewegt.",
+		"",
+	}, "\n")
+}
 
 // sliceMvRepo baut das kleinste Repo, an dem main() von slice-mv.sh die
 // EINGEHEND-Ausnahme fuer docs/plan/adr real durchlaeuft: eine Slice-Datei in
@@ -45,8 +47,8 @@ func sliceMvRepo(t *testing.T) string {
 	schreibeDatei(t, root, "docs/reviews/2026-01-01-x.md",
 		"# Review\n\nBeleg: [Slice](../plan/planning/open/slice-900-x.md)\n")
 
-	schreibeDatei(t, root, "docs/reviews/2026-01-02-formen.md", sliceMvFormenProbe)
-	schreibeDatei(t, root, "docs/plan/planning/done/slice-901-y.md", sliceMvFormenProbe)
+	schreibeDatei(t, root, "docs/reviews/2026-01-02-formen.md", sliceMvFormenProbe())
+	schreibeDatei(t, root, "docs/plan/planning/done/slice-901-y.md", sliceMvFormenProbe())
 
 	skript, err := os.ReadFile(sliceMvSkript)
 	if err != nil {
@@ -130,7 +132,7 @@ func TestSliceMvEchtSchreibtInReportsNurDieLinkForm(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	erwartetReport := strings.Replace(sliceMvFormenProbe,
+	erwartetReport := strings.Replace(sliceMvFormenProbe(),
 		"[Slice](../plan/planning/open/slice-900-x.md#7", "[Slice](../plan/planning/next/slice-900-x.md#7", 1)
 	if string(report) != erwartetReport {
 		t.Errorf("Report: nur der Link darf nachgezogen sein (ADR-0070 Festlegung 1).\nist:\n%s\nerwartet:\n%s", report, erwartetReport)
