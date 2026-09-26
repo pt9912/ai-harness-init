@@ -91,7 +91,10 @@ Festlegung 1, Trigger 6 und 7). Ebenso außerhalb der Regel liegen ein Link mit 
 unmittelbar an `)` oder `#`, der Nachzug lässt sie stehen — laut, nicht still: ein unterbliebener
 Nachzug färbt `make docs-check` mit `target-missing` (gefahren an einem Report mit je einem Link
 in den drei Formen, alle drei auf einen nicht vorhandenen Pfad). Die Regel besteht, solange `.d-check.yml` unter `codepaths`
-`docs/reviews/**` ausnimmt (Trigger 1); ein Kopplungs-Test dafür führt dieses Werkzeug noch nicht.
+`docs/reviews/**` ausnimmt (Trigger 1); diese Kopplung hält `test/codepaths-reviews-ausnahme.bats` — die **Zeile** unter `codepaths:` in
+einer einzeiligen Flow-Liste mit doppelten Anführungszeichen, nicht die Wahrheit der Gate-Begründung —, und je
+ein Fall in `test/mutations/` bindet den Blockanfang (`474-codepaths-reviews-ausnahme-entfaellt`) und das
+Blockende (`475-codepaths-reviews-ausnahme-wandert-in-einen-nachbar-block`) der Abschnitts-Erkennung.
 
 **Die präfixlose Ersetzung ist ohne Repository gedeckt:** `test/slice-mv.bats` ruft sie in beiden
 Fassungen auf und hält den ganzen Dateiinhalt einer Probe fest — die ersetzten Links, dazu

@@ -116,8 +116,11 @@ genau einen Lauf.
    der Nachzug lässt ihn stehen und `make docs-check` meldet den Rest — gelesen (`links` prüft
    `docs/reviews/**`, §Kontext derselben ADR), für diese zwei Formen nicht gefahren. Die Regel
    besteht, solange `codepaths.exempt-paths` in [`.d-check.yml`](../../.d-check.yml)
-   `docs/reviews/**` ausnimmt (Trigger 1 derselben ADR); ein Kopplungs-Test dafür führt dieses
-   Werkzeug nicht. Gedeckt
+   `docs/reviews/**` ausnimmt (Trigger 1 derselben ADR); diese Kopplung hält
+   `test/codepaths-reviews-ausnahme.bats` — die **Zeile** unter `codepaths:`, nicht die Wahrheit der
+   Gate-Begründung —, gebunden von den Fällen `474-codepaths-reviews-ausnahme-entfaellt` und
+   `475-codepaths-reviews-ausnahme-wandert-in-einen-nachbar-block` in `test/mutations/`; der Test gehört
+   keinem der beiden Werkzeuge. Gedeckt
    ist die Regel von `TestNachziehenUnterReviewsSchreibtNurDieLinkForm` (die Link-Form nachgezogen,
    vier Nicht-Link-Formen Byte für Byte, Zähl- und Ersetz-Seite gleich) und
    `TestNachziehenInDoneErsetztJedeForm` (jede Form unter `done/`); die Zeilengrenze der Regel hält
