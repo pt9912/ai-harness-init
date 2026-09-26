@@ -150,7 +150,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 - [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Register-Datei nicht.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert. Erwartet: die Fälle, die der Review dieses Slice findet, und die Frage, ob die Zusage-Klasse aus §8 (`doku-zusage-nennt-den-test-…`) mit diesem Slice ihren Ausgang trägt.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -367,7 +367,18 @@ Geschrieben von der Rolle Planner in frischem Kontext
   [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand),
   kein neuer Beleg); *entfallen* mit Grund: Fall bindet nur eine Form (Zusage eingeschränkt, Grenze im Text),
   Mutation färbt mehrere Fälle (`452` färbt genau einen). Keines ist *eingetreten*.
-- **Drei Paarungen:** folgen nach dem Move; ihr Ergebnis steht unten.
+- **Drei Paarungen** (nach dem Move gegen `done/` geprüft, 2026-09-26): (a) *Anker* — kein Eintrag trägt
+  das Feld `liegt in <Zielort>`, die Paarung hat keinen Gegenstand. (b) *Folge-Slice* — kein Folge-Slice ist
+  genannt; der Nachbar `slice-tap-nachzug-sync-schreibt-die-formel-ins-tap` besteht als Datei im
+  Planning-Lifecycle (`ls docs/plan/planning/*/slice-tap-nachzug-sync-schreibt-die-formel-ins-tap.md`).
+  (c) *Register* — die sieben genannten Beobachtungen existieren als Verzeichnis mit nicht leerem
+  `evidence/` (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence | wc -l` → 2, 8, 2, 2, 1, 5, 1 in
+  der Reihenfolge `doku-zusage-…`, `eigentums-frage-…`, `zusage-mit-bats-bindung-…`, `prozedur-wiedergabe-…`,
+  `mutations-fall-nennt-…`, `mutations-fall-wird-…`, `weite-assertion-…`); das Register führt 178
+  Verzeichnisse (`ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l`; keine Erwartungswerte). Der Move
+  schrieb allein die Zeile dieser Datei um, die ihren eigenen Pfad zitiert; kein Zeitdokument
+  (`docs/reviews/**`, andere Dateien unter `done/`) wurde berührt
+  (`git diff --name-status ace95a02..HEAD` nennt allein den Rename dieser Datei).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
