@@ -271,7 +271,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md) Festlegung 4, ob ein
 eingefrorenes Artefakt diese Datei als Pfad nennt — über beide Adress-Formen (Code-Span-Pfad und
 Markdown-Link). Der Befund am Tag des Schnitts: kein Artefakt nennt sie
-(`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-tap-nachzug-sync-schreibt-die-formel-ins-tap\.md|open/slice-tap-nachzug-sync-schreibt-die-formel-ins-tap|\]\(slice-tap-nachzug-sync-schreibt-die-formel-ins-tap' . | grep -v 'planning/next/slice-tap-nachzug-sync-schreibt-die-formel-ins-tap.md' | wc -l`
+(`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-tap-nachzug-sync-schreibt-die-formel-ins-tap\.md|open/slice-tap-nachzug-sync-schreibt-die-formel-ins-tap|\]\(slice-tap-nachzug-sync-schreibt-die-formel-ins-tap' . | grep -v 'planning/in-progress/slice-tap-nachzug-sync-schreibt-die-formel-ins-tap.md' | wc -l`
 → **0**, gemessen 2026-09-25; vor dem Move erneut: **1**). Der eine Treffer ist ein Verzeichnis-Glob
 (`ls docs/plan/planning/*/slice-tap-nachzug-sync-schreibt-die-formel-ins-tap.md`) in der Closure-Notiz des
 Vorgänger-Slice in `done/`: er ist an kein Lifecycle-Verzeichnis gebunden, bleibt nach dem Move wahr und wird vom
