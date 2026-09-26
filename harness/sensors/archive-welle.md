@@ -107,14 +107,25 @@ genau einen Lauf.
    (`ErsetzePraefixLink` in `internal/archive/refs.go`); die Vorschau zählt mit derselben Regel
    (`ZaehlePraefixLink`). Ein Pfad im Code-Span, als Operand in einem Kommando-Span, im Code-Block
    oder im Fließtext bleibt Byte für Byte, und eine Datei ohne Link-Treffer wird nicht geschrieben
-   und steht nicht im Blast-Radius. In jedem anderen Baum gilt jede Form. Vier Ränder, alle
-   permanent: die Erkennung liest kein Markdown — Link-Syntax, die als Zitat in einem Code-Span
-   steht, wird mitersetzt (`TestNachziehenUnterReviewsErsetztLinkSyntaxImCodeSpanMit` bindet diese
-   Span-Hälfte); für das Zitat in einem Code-Block bindet kein Fall die Grenze; die
-   Referenz-Definition `[name]: ziel` ist nicht Teil der Regel; und ein Link mit Titel
-   (`](ziel "titel")`) oder in Spitzklammern (`](<ziel>)`) endet nicht unmittelbar an `)` oder `#`,
-   der Nachzug lässt ihn stehen und `make docs-check` meldet den Rest — gelesen (`links` prüft
-   `docs/reviews/**`, §Kontext derselben ADR), für diese zwei Formen nicht gefahren. Die Regel
+   und steht nicht im Blast-Radius. In jedem anderen Baum gilt jede Form. Die Ränder sind
+   permanent, und die Aufzählung nennt die Formen, die gelesen oder gefahren sind — sie ist nicht
+   als vollständig zugesagt: die Erkennung liest kein Markdown — Link-Syntax, die als Zitat in
+   einem Code-Span steht, wird mitersetzt (`TestNachziehenUnterReviewsErsetztLinkSyntaxImCodeSpanMit`
+   bindet diese Span-Hälfte); für das Zitat in einem Code-Block bindet kein Fall die Grenze; die
+   Referenz-Definition `[name]: ziel` ist nicht Teil der Regel, und `make docs-check` meldet sie
+   nicht; ein Link mit Titel (`](ziel "titel")`), ein Link in Spitzklammern (`](<ziel>)`) und ein
+   Link mit Klammern vor dem Segment (`](../(x)/done/slice.md)`) treffen die Regel nicht — die
+   Adresse endet dort nicht unmittelbar an `)` oder `#`, oder eine `)` steht vor ihr. Der Nachzug
+   lässt jeden der drei stehen, und `make docs-check` meldet jeden als `target-missing` (gefahren
+   an einem Report mit je einem Link in diesen drei Formen auf einen nicht vorhandenen Pfad).
+   Titel und Spitzklammer hält der eben genannte Test stehen; für die Klammern vor dem Segment
+   bindet kein Fall die Grenze. Ein Ziel hinter dem Zeilenumbruch (`](` am Zeilenende, die Adresse
+   in der Folgezeile) ist kein Link-Ziel der Regel
+   (`TestNachziehenUnterReviewsUeberquertKeineZeilengrenze` hält das), der Nachzug lässt es
+   stehen — und `make docs-check` schweigt dazu (gefahren an einem Report mit diesem Link auf
+   einen nicht vorhandenen Pfad: 0 Befunde für diese Zeilen): ein Ziel, das nach dem Nachzug nicht
+   mehr auflöst, bleibt in dieser Form ungemeldet. Das Verhalten des Gates ist am gepinnten
+   d-check gemessen, und kein Fall hält es. Die Regel
    besteht, solange `codepaths.exempt-paths` in [`.d-check.yml`](../../.d-check.yml)
    `docs/reviews/**` ausnimmt (Trigger 1 derselben ADR); diese Kopplung hält
    `test/codepaths-reviews-ausnahme.bats` — die **Zeile** unter `codepaths:`, nicht die Wahrheit der
