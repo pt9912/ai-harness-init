@@ -1,19 +1,23 @@
 #!/usr/bin/env bash
-# tap-nachzug.sh — haelt die Tap-Formel gegen das veroeffentlichte Asset (ADR-0064,
-# LH-QA-02). Ein Skript mit Modus-Argument: `check` ist der lesende Modus und kein Gate
-# (Netz an genau diesem Aufruf, in keiner gates-Kette); `sync` ist nicht implementiert
-# und endet mit Exit 2.
+# tap-nachzug.sh — haelt die Tap-Formel gegen das veroeffentlichte Asset und zieht sie
+# nach (ADR-0064, LH-QA-02). Ein Skript mit Modus-Argument: `check` ist der lesende Modus,
+# `sync` schreibt die Formel des Tags ins Tap; beide sind kein Gate (Netz an genau diesem
+# Aufruf, in keiner gates-Kette), `sync` braucht TAP_TOKEN in der Umgebung des Aufrufers.
 #
-# ABLAUF (ADR-0064 Festlegung 1, Schritte des Modus check): a Tag-Form und Feldform,
-# c Vorab-Tag, e Vergleich. Die Entscheidungen a und c laufen hier auf dem Host, vor
-# jedem docker-Aufruf; Lesen und Vergleichen (Schritt e) laeuft in der POSIX-sh-Nutzlast
+# ABLAUF (ADR-0064 Festlegung 1): a Tag-Form und Feldform, b Zugangsgeheimnis (nur sync),
+# c Vorab-Tag, d Vorwaerts-Schutz (nur sync), e Vergleich, f Schreiben (nur sync), g
+# Nachkontrolle (nur sync). Die Entscheidungen a, b und c laufen hier auf dem Host, vor
+# jedem docker-Aufruf; die Schritte d bis g laufen in der POSIX-sh-Nutzlast
 # harness/tools/tap-nachzug-nutzlast.sh im digest-gepinnten Transport-Bild
 # (ADR-0058 Festlegung 4). Der Host braucht ueber git, docker, make und bash hinaus
 # nichts (LH-QA-03).
 #
-# EXIT DES SKRIPTS: 0 gleich oder Vorab-Tag, 1 Formel-Unterschied (Nutzlast), 2 nicht ausfuehrbar
-# (Aufruf, Tag-Form, Feldform, Pin, Asset oder Tap nicht lesbar, Modus sync, interner Fehler,
-# docker ohne Ergebnis der Nutzlast). 1 endet nur aus dem Ergebnis "Unterschied" der Nutzlast.
+# EXIT DES SKRIPTS: 0 gleich, nachgezogen oder Vorab-Tag, 1 Formel-Unterschied (Nutzlast; in
+# sync: die Nachkontrolle nach dem Schreiben), 2 nicht ausfuehrbar (Aufruf, Tag-Form,
+# Feldform, Pin, Asset oder Tap nicht lesbar, interner Fehler, docker ohne Ergebnis der
+# Nutzlast; nur in sync: TAP_TOKEN fehlt, version-Zeile nicht lesbar, Vorwaerts-Schutz,
+# Schreiben abgelehnt oder mit ungewissem Ausgang). 1 endet nur aus dem Ergebnis
+# "Unterschied" der Nutzlast.
 # Jeder andere Status des docker-Aufrufs ausserhalb von 0, 2 und 10 (auch 1: der Daemon ist
 # nicht erreichbar) und jedes Kommando dieses Skripts, das mit 1 oder einem Status ab 3
 # scheitert, endet mit Exit 2. Ein Ende durch ein Signal ist keine dieser Klassen: der Prozess
@@ -47,6 +51,11 @@
 # Formen geprueft und als -e-Wert durchgereicht, nie ausgewertet. Beim lokalen Aufruf
 # `make tap-check TAG=…` wertet make den Wert aus, bevor dieses Skript laeuft; die
 # Formpruefung sieht den Wert nach dieser Auswertung.
+#
+# TOKEN (ADR-0064 Festlegung 4): TAP_TOKEN reist als Umgebungsvariable und wird an docker mit
+# `-e TAP_TOKEN` durchgereicht, nie mit Wert; kein Kommando dieses Skripts nennt ihn, und das
+# Skript laeuft ohne `set -x`. Fehlt er in sync, endet der Lauf mit Exit 2 vor jedem
+# docker-Aufruf und jedem Netz-Zugriff, auch fuer einen Vorab-Tag (Schritt b geht Schritt c voraus).
 #
 # TRANSPORT-BILD: der Digest steht hier als eigene Vorgabe, byte-gleich mit TRAEGER_IMAGE
 # in harness/tools/traeger-fetch.sh; test/tap-nachzug.bats haelt beide Stellen gleich.
@@ -97,10 +106,11 @@ fehler() {
 	beende 2
 }
 
+ziel=tap-check
 case "$modus" in
 check) ;;
-sync) fehler "der Modus sync ist nicht implementiert — dieses Skript fuehrt nur check (ADR-0064 Festlegung 1)" ;;
-*) fehler "Aufruf: tap-nachzug.sh check (Tag in der Umgebungsvariable TAG)" ;;
+sync) ziel=tap-nachzug ;;
+*) fehler "Aufruf: tap-nachzug.sh check|sync (Tag in der Umgebungsvariable TAG)" ;;
 esac
 
 case "$TAP_IMAGE" in
@@ -114,7 +124,7 @@ esac
 
 tag="${TAG:-}"
 if [ -z "$tag" ]; then
-	fehler "die Umgebungsvariable TAG ist nicht gesetzt — Aufruf: make tap-check TAG=<tag>"
+	fehler "die Umgebungsvariable TAG ist nicht gesetzt — Aufruf: make $ziel TAG=<tag>"
 fi
 
 # Schritt a: Tag-Form, danach Feldform der drei Kernfelder (ADR-0064 Festlegung 1).
@@ -131,6 +141,12 @@ for k in "$k1" "$k2" "$k3"; do
 		fehler "Feldform falsch: $(printf '%q' "$tag") — jedes Kernfeld ist 0 oder eine Ziffernfolge ohne fuehrende Null von hoechstens 9 Stellen"
 	fi
 done
+
+# Schritt b: das Zugangsgeheimnis, nur in sync, vor der Vorab-Regel und vor jedem
+# Netz-Zugriff. Die Meldung nennt den lokalen Ausfallweg; ein leerer Wert gilt als fehlend.
+if [ "$modus" = sync ] && [ -z "${TAP_TOKEN:-}" ]; then
+	fehler "TAP_TOKEN ist nicht gesetzt — der Nachzug braucht das Zugangsgeheimnis in der Umgebung des Aufrufers; Ausfallweg: make tap-nachzug TAG=<tag> mit TAP_TOKEN in der Umgebung"
+fi
 
 # Schritt c: Vorab-Tag. Das Build-Metadatum wird zuerst abgeschnitten; dieselbe Regel
 # steht im publish-Job von .github/workflows/release.yml, test/tap-nachzug.bats haelt
