@@ -1,16 +1,19 @@
-**Stand:** geplant
+**Stand:** verkörpert
 
-Kennung: [`slice-beleglose-register-eintraege-bekommen-eine-lesart`](../../../open/slice-beleglose-register-eintraege-bekommen-eine-lesart.md)
-— trägt die Entscheidung, welche der zwei Lesarten gilt (*„benannt, nicht gezählt"* als Abschnitt
-**innerhalb** eines belegten Eintrags, oder als **eigenständiger** Eintrag mit einer Ausnahme in der
-Paarung), samt der Form, an der ein Leser die zwei unterscheidet. Die Frage ist Norm-Arbeit und
-gehört nach [`AGENTS.md`](../../../../../../AGENTS.md) §3.8 der Rolle, die den Norm-Text schreibt.
+Zielort: [`ADR-0069`](../../../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+Festlegungen 1 bis 4 (`Accepted`) — die Lesart *„benannt, nicht gezählt" ist ein Abschnitt des belegten
+Eintrags, ein Verzeichnis ohne Beleg ein Befund der Paarung (c), keine Ausnahme* — und die
+[Register-README](../../README.md), Absätze *Ein Verzeichnis ohne Beleg ist ein Befund der
+Register-Paarung (c)* und *Die zweite Hälfte von (c)*. **Die Regel folgt aus einer ADR**, darum trägt
+der Zielort an dieser Stelle seine eigene Kennung und keinen Herkunfts-Anker `seit …`
+(`grep -c 'adr/0069-beleglose' docs/plan/planning/observations/README.md` → 1, kein Erwartungswert).
 
-**Grenze der Verkörperung, benannt.** Die Klasse hat **keinen Zielort**: die zwei Regeln, die sich an
-ihr treffen — die Beleg-Regel der Register-Ablage und die maschinelle Hälfte der Paarung (c) —,
-stehen beide, und ihr Widerspruch steht nirgends entschieden. Bis zur Entscheidung meldet die
-Paarung den Fund und wird von Hand gefahren; ein Modul dafür führt die
-[`.d-check.yml`](../../../../../../.d-check.yml) nicht
-([`BEO-ALL/register-paarung-ohne-gate-modul`](../register-paarung-ohne-gate-modul/observation.md)).
-Träger bis dahin ist der Lauf, der die Paarung fährt: er benennt den Fund, statt ihn als grün zu
-zählen.
+**Grenze der Verkörperung, benannt.** Ein Wächter existiert nicht: kein Modul aus `modules:` der
+[`.d-check.yml`](../../../../../../.d-check.yml) hält die zweite Hälfte von (c), und `make docs-check` bleibt
+über einem weiteren Verzeichnis ohne `evidence/*.md` grün
+([`ADR-0069`](../../../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+§Kontext). Träger ist der Lauf, der die Paarung fährt: die Results-Notiz der Wellen-Closure trägt die
+Zeile mit N und den Namen der Verzeichnisse ohne Beleg
+(`.claude/commands/close-welle.md`, Abschnitt der drei Paarungen); die Namen liefert das Kommando in der
+Register-README. Ein Wächter ist erst verdrahtbar, wenn der Bestand durch Belege getilgt ist, nicht durch eine
+Ausnahmeliste (Re-Evaluierungs-Trigger 2 derselben ADR).
