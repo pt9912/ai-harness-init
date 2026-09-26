@@ -12,8 +12,8 @@
 # selbst, nie main() — und das gepinnte bats-Image fuehrt kein git. Der Go-Test
 # faehrt main() als echten Prozess ueber ein Repo.
 #
-# Der Anker ist die Zeile, die rewrite_incoming_nach_baum "$rf" mit `|| continue`
+# Der Anker ist die Zeile, die rewrite_incoming_nach_baum "$rf" mit `|| rc=$?`
 # ruft — eindeutig
 # (grep -c 'rewrite_incoming_nach_baum "\x24rf"' harness/tools/slice-mv.sh -> 1).
 set -euo pipefail
-sed -i 's~rewrite_incoming_nach_baum "[$]rf" "[$]base" "[$]from" "[$]TO" || continue~rewrite_incoming_in_file "\x24rf" "\x24base" "\x24from" "\x24TO"~' harness/tools/slice-mv.sh
+sed -i 's~rewrite_incoming_nach_baum "[$]rf" "[$]base" "[$]from" "[$]TO" || rc=[$]?~rewrite_incoming_in_file "\x24rf" "\x24base" "\x24from" "\x24TO" || rc=\x24?~' harness/tools/slice-mv.sh
