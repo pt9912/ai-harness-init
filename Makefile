@@ -52,7 +52,7 @@ TRAEGER_SHA256_WINDOWS_ARM64 ?= 0f48a82e2b34a7070e95c5317d2d71372d871d11fd73e19a
 TRAEGER_CARRIER ?= .harness/state/bin/ai-harness-init
 export TRAEGER_TAG TRAEGER_SHA256_LINUX_AMD64 TRAEGER_SHA256_LINUX_ARM64 TRAEGER_SHA256_DARWIN_AMD64 TRAEGER_SHA256_DARWIN_ARM64 TRAEGER_SHA256_WINDOWS_AMD64 TRAEGER_SHA256_WINDOWS_ARM64 TRAEGER_CARRIER
 
-.PHONY: help gates record-gates test test-bats test-go lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle traeger-fetch tap-check vendor-baseline
+.PHONY: help gates record-gates test test-bats test-go lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle traeger-fetch tap-check tap-nachzug vendor-baseline
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
@@ -494,6 +494,23 @@ traeger-fetch: ## Traeger aus dem gepinnten Release nachholen (braucht Netz, Tra
 # das Rezept nennt ihn nicht.
 tap-check: ## Tap-Formel gegen das Asset des Tags halten (TAG=<tag>, braucht Netz, Transport im gepinnten Bild) — NICHT in gates
 	@bash harness/tools/tap-nachzug.sh check
+
+# Zieht die Formel des Tags ins Tap nach (ADR-0064 Festlegung 1 und 3): schreibt die Bytes
+# des veroeffentlichten Assets, nur vorwaerts und idempotent, und kontrolliert danach.
+# SCHREIBEND: braucht TAP_TOKEN in der Umgebung des Aufrufers; ohne ihn endet der Lauf mit
+# Exit 2 vor jedem Netz-Zugriff. Exit des Skripts: 0 gleich oder nachgezogen (oder
+# Vorab-Tag), 1 Formel-Unterschied in der Nachkontrolle, 2 nicht ausfuehrbar (Vorwaerts-Schutz,
+# Ablehnung und "Ausgang ungewiss" eingeschlossen); make selbst endet bei jedem Fehlschlag
+# mit 2 (ADR-0066 Festlegung 1). Die Klasse des Skripts steht in der letzten stderr-Zeile
+# DES SKRIPTS "tap-sync: Exit <N>" (bei Exit 0 fehlt sie); bei make <ziel> aus dem
+# Wurzelverzeichnis ist sie die vorletzte Zeile der Ausgabe. Nicht zugesagt ist die Zeile bei
+# einem Signal (dort fehlt auch die Klasse), bei nicht beschreibbarer stderr und bei
+# fehlendem oder unbekanntem Modus (ADR-0066). Braucht Netz an genau diesem Aufruf,
+# Transport im gepinnten Bild. KEIN Gate und in keiner Prerequisite-Kette.
+# Tag und Token reisen als Umgebungsvariablen (make exportiert Kommandozeilen-Variablen);
+# das Rezept nennt keines von beiden.
+tap-nachzug: ## Formel des Tags ins Tap nachziehen (TAG=<tag>, TAP_TOKEN in der Umgebung, braucht Netz, Transport im gepinnten Bild) — NICHT in gates
+	@bash harness/tools/tap-nachzug.sh sync
 
 # Legt den vendored Baum DIESES Repos (.harness/baseline/$(BASELINE_TAG)/) aus
 # dem VERIFIZIERTEN Release-Asset an, statt ihn von Hand aus einem fremden
