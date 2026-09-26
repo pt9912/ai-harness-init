@@ -92,29 +92,53 @@ und lädt nichts hoch. Die Schritt-Folge:
    die Meldung des vollzogenen Schnitts geht erst, wenn der `ci`-Lauf
    eingetroffen ist.
 
-7. **Die Formel ins Tap nachziehen und gegen das Asset halten.** Der Nachzug
-   ist ein Handgriff dieses Schritts; das einzige Tap-Ziel im Makefile ist
-   `tap-check` (`grep -nE '^[a-z-]*tap[a-z-]*:' Makefile`).
-   *Quelle* ist das veröffentlichte Formel-Asset desselben Tags, keine lokal
-   gefüllte Kopie: `gh release download <tag> --pattern ai-harness-init.rb`.
-   *Handlung:* die Datei als `Formula/ai-harness-init.rb`
-   ins Tap (`pt9912/homebrew-ai-harness-init`) legen, in einem Commit, dessen
-   Message den Tag nennt, und auf den Default-Branch pushen. *Voraussetzung:*
-   Push-Recht auf das Tap und Netz; der Commit setzt auf dem aktuellen Kopf
-   des Default-Branch auf (eine Arbeitskopie, die ihn nicht trägt, wird zuerst
-   nachgezogen). *Vorbedingung:* der Tag ist nicht älter
-   als die `version`-Zeile der Formel am Tap-Kopf (verglichen wird der Kern
-   `major.minor.patch`, numerisch je Feld; gleich oder größer geht durch,
+7. **Die Formel ins Tap nachziehen und gegen das Asset halten.**
+   *Handlung:* `make tap-nachzug TAG=<tag>` mit `TAP_TOKEN` in der Umgebung des
+   Aufrufers. Das Ziel schreibt die Bytes des veröffentlichten Formel-Assets
+   desselben Tags — keine lokal gefüllte Kopie — als Formel-Datei ins Tap
+   (`pt9912/homebrew-ai-harness-init`), in einem Commit, dessen Message den Tag
+   nennt, auf den Default-Branch. Es schreibt nur, wenn die Bytes abweichen, und
+   kontrolliert danach wie `make tap-check`. *Voraussetzung:* Netz an genau
+   diesem Aufruf und ein Token mit Schreibrecht auf das Tap; Anlage und Ablage
+   des Tokens liegen außerhalb dieser Prozedur
+   ([`ADR-0064`](../plan/adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
+   Festlegung 4), und die Prozedur nennt keine ausführende Rolle. Ohne
+   `TAP_TOKEN` endet der Aufruf mit Exit 2 vor jedem Netz-Zugriff.
+   *Schutz des Werkzeugs:* der Tag ist nicht älter als die `version`-Zeile der
+   Formel am Tap-Kopf (verglichen wird der Kern `major.minor.patch`, numerisch
+   je Feld; gleich oder größer geht durch,
    [`ADR-0064`](../plan/adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
-   Festlegung 3 d). Den Stand liefert die Datei `Formula/ai-harness-init.rb`
-   am Kopf des Default-Branch, bevor sie ersetzt wird:
-   `gh api -H 'Accept: application/vnd.github.raw' repos/pt9912/homebrew-ai-harness-init/contents/Formula/ai-harness-init.rb | grep -n version`
-   nennt die Zeile. Ein Nachzug von Hand hat diesen Schutz nicht; der Satz
-   trägt ihn. Für einen Vorab-Tag entfällt der Nachzug: das Tap folgt dem
-   jüngsten stabilen Schnitt. Vorab ist ein Tag, dessen Teil vor einem
-   `+<Build>` ein `-` enthält (`v0.3.0-rc.1`, ebenso `v1.0.0-rc.1+x`); ein
-   `-` allein im Build-Metadatum (`v1.0.0+build-1`) macht den Tag nicht zum
-   Vorab-Tag, der Nachzug gilt.
+   Festlegung 3 d). Ein älterer Tag endet mit Exit 2 und der Zeile
+   `tap-sync: Exit 2`, ohne dass ein Schreibzugriff stattfand; eine
+   `version`-Zeile, die fehlt, mehrfach vorkommt oder der Feldform nicht
+   genügt, endet ebenso und ist von Hand zu heilen. Für einen Vorab-Tag
+   entfällt der Nachzug: das Tap folgt dem jüngsten stabilen Schnitt. Vorab ist
+   ein Tag, dessen Teil vor einem `+<Build>` ein `-` enthält (`v0.3.0-rc.1`,
+   ebenso `v1.0.0-rc.1+x`); ein `-` allein im Build-Metadatum
+   (`v1.0.0+build-1`) macht den Tag nicht zum Vorab-Tag, der Nachzug gilt.
+
+   Die Klasse von `make tap-nachzug` ist der Exit des **Skripts**
+   ([`ADR-0066`](../plan/adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md)
+   Festlegung 1); über `make` trägt sie die Zeile `tap-sync: Exit <N>` (bei
+   Exit 0 fehlt sie):
+
+   - **0** — die Ausgabe nennt `gleich` (das Tap trägt schon die Bytes des
+     Assets, es wurde nichts geschrieben) oder `nachgezogen` (geschrieben und
+     nachkontrolliert), jeweils mit Tag und Digest; oder `Vorab-Tag, Tap bleibt`
+     (Regel oben).
+   - **1** — `Formel-Unterschied nach dem Schreiben`: die Nachkontrolle liest
+     auch nach dem zweiten Lesen andere Bytes; die Ausgabe nennt beide Digests
+     und die erste abweichende Zeile.
+   - **2** — nicht ausführbar, die Ausgabe nennt die Ursache:
+     `TAP_TOKEN ist nicht gesetzt`; `Vorwärts-Schutz` (der Tag ist älter als
+     der Tap-Stand); eine `version`-Zeile, die fehlt, mehrfach vorkommt oder der
+     Feldform nicht genügt; `Schreiben abgelehnt` mit `Tap unverändert` (HTTP
+     401, 403 oder 409); `Ausgang des Schreibens ungewiss` mit dem Verweis auf
+     `make tap-check TAG=<tag>` (keine Antwort der Schnittstelle oder eine
+     andere Antwort als 200, 401, 403 und 409) — dann kann das Tap geschrieben
+     sein, und der Beleg unten entscheidet, nicht der Fehlschlag; dazu die
+     Ursachen, die auch `tap-check` nennt (Tag- oder Feldform, Asset oder Tap
+     nicht lesbar, Transport ohne Ergebnis).
 
    *Beleg:* `make tap-check TAG=<tag>` hält die Formel am Kopf des
    Default-Branch des Tap byte-genau gegen das Asset des Tags; es liest nur
@@ -139,7 +163,7 @@ und lädt nichts hoch. Die Schritt-Folge:
 
    Über `make` endet jeder Fehlschlag mit Prozess-Exit 2, der Prozess-Exit
    trennt dort nur 0 von ungleich 0. Die Klasse trägt die Zeile des Skripts
-   `tap-check: Exit <N>` — bei Exit 1 und 2 steht sie genau einmal, bei
+   `tap-check: Exit <N>` (bei `make tap-nachzug`: `tap-sync: Exit <N>`) — bei Exit 1 und 2 steht sie genau einmal, bei
    Exit 0 fehlt sie; gelesen wird die Zeile, nicht ihre Position in der
    Ausgabe. Nicht zugesagt ist die Zeile bei einem Ende durch ein Signal
    (dort fehlt auch die Klasse: der Prozess-Exit ist 128 plus die
@@ -161,9 +185,10 @@ und lädt nichts hoch. Die Schritt-Folge:
    Fremd-Taps ist eine eigene Bedingung des Nutzers, das
    [Handbuch](benutzerhandbuch.md#weg-c--über-ein-homebrew-tap-macos-linux)
    nennt sie —, nicht, dass das Asset richtig gefüllt ist, und keinen
-   Zustand nach dem Aufruf. Sie vergleicht Bytes (`cmp -s` in `gleich()` von
-   `harness/tools/tap-nachzug-nutzlast.sh`), keine Versionen, und nach dem
-   Nachzug eines älteren Tags endet die Kontrolle gegen genau diesen Tag mit
+   Zustand nach dem Aufruf. Die Kontrolle (`tap-check`) vergleicht Bytes (`cmp -s` in `gleich()` von
+   `harness/tools/tap-nachzug-nutzlast.sh`) und liest kein Versionsfeld; nur `sync` liest die
+   `version`-Zeile, für den Vorwärts-Schutz. Ist das Tap (etwa von Hand)
+   auf die Bytes eines älteren Tags gestellt, endet die Kontrolle gegen genau diesen Tag mit
    Exit 0, weil die Bytes gleich sind. Gebunden ist davon, was zwei bats-Fälle
    messen (`grep -n 'version-zeile: in check' test/tap-nachzug.bats`,
    `grep -n 'check liest keine Version' test/tap-nachzug.bats`): gleiche Bytes
@@ -184,13 +209,17 @@ und lädt nichts hoch. Die Schritt-Folge:
    `cache-fenster: die Wartezeit` (je `grep -n` auf den Fall-Namen in
    `test/tap-nachzug.bats`). **Nicht gebunden** ist ein Vergleich, der eine
    größere Tap-Version als gleich gelten lässt, sobald außer der `version`-Zeile
-   weitere Zeilen abweichen: keiner der `38` Fälle
-   (`grep -c '^@test' test/tap-nachzug.bats`) wird von ihm rot. Das Kommando
+   weitere Zeilen abweichen: keiner der `52` Fälle
+   (`grep -c '^@test' test/tap-nachzug.bats`) wird von ihm rot. Dass `check` die
+   `version`-Zeile nicht liest, binden diese Fälle und kein Wortzähler: das Kommando
    `grep -ci version harness/tools/tap-nachzug.sh harness/tools/tap-nachzug-nutzlast.sh`
-   zählt das Wort in den Skripten (→ `0` je Datei) und ist eine Näherung an
-   die Eigenschaft: ein Kommentar mit dem Wort färbt es rot, ohne dass sie
-   bricht; ein Versions-Vergleich ohne das Wort bleibt grün. Der
-   Vorwärts-Schutz liegt allein bei der Vorbedingung oben.
+   liefert mit dem Modus `sync` je Datei mehr als `0`, weil `sync` die Zeile für den
+   Vorwärts-Schutz liest, und ist für `check` keine Näherung an die Eigenschaft. Der
+   Vorwärts-Schutz ist eine Eigenschaft von `sync`: ein älterer Tag endet mit Exit 2 vor
+   dem Schreibzugriff (`grep -n 'sync vorwaerts-schutz' test/tap-nachzug.bats`). Die
+   Wächter von `sync` tragen `bats`-Fälle und keinen Fall in `test/mutations/`; ihre
+   Haltbarkeit hält kein `make mutate`. Der Schreib-Pfad läuft in diesen Fällen gegen eine
+   nachgebildete Schnittstelle; am realen Tap belegt ihn erst ein realer Nachzug.
 
 8. **Meldung des vollzogenen Schnitts.** Die Meldung geht erst, wenn
    `make tap-check TAG=<tag>` (Schritt 7) mit Exit 0 endet, und sie trägt
