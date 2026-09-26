@@ -33,6 +33,32 @@ erzwingt hier das Dateisystem, nicht die Disziplin. Ein Vorkommen **ohne** abges
 bekommt keine Datei unter `evidence/` und bewegt den Zähler nicht; es gehört trotzdem in
 `observation.md` unter „Benannt, nicht gezählt" — *benannt, nicht gezählt*.
 
+**Ein Verzeichnis ohne Beleg ist ein Befund der Register-Paarung (c), keine Ausnahme**
+([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+Festlegungen 1 bis 3). „Benannt, nicht gezählt" ist ein **Abschnitt im belegten Eintrag** der
+Klasse; eine zweite Sorte Verzeichnis mit eigener Form, eigenem Stand oder eigener Marke gibt es
+nicht. Steht das einzige Vorkommen einer Klasse dort, ist der Eintrag einer, dem sein Beleg **noch
+fehlt**. Der Befund endet, wenn ein abgeschlossener Vorgang das Vorkommen trifft und seine Kennung
+als Datei unter `evidence/` liegt; ein Beleg wird nicht erfunden, und ein Vorgang, der die
+Beobachtung nur verwaltet, ist kein Auftreten. Eine Klasse, deren Vorkommen eine Aussage über den
+Bestand ist, ist keine Ausnahme (Festlegung 4): welche Vorgänge sie trafen, urteilt der Planner je
+Vorgang.
+
+**Die zweite Hälfte von (c) — jedes Verzeichnis trägt ein nicht leeres `evidence/` — gilt im
+Closure-Schritt über das ganze Register**, nicht über die Verzeichnisse, die die Closure angelegt
+oder berührt hat. Gezählt werden **Dateien** `evidence/*.md`, nicht das Verzeichnis, und die
+Closure nennt jedes Verzeichnis ohne eine solche Datei namentlich; sie behauptet die Hälfte dann
+nicht als getragen. Das Kommando liefert Zahl und Namen (keine Erwartungswerte, der Bestand wandert
+mit jeder Closure —
+[`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)):
+
+```sh
+for d in docs/plan/planning/observations/BEO-ALL/*/; do
+  n=$(ls "$d"evidence/*.md 2>/dev/null | wc -l); [ "$n" -eq 0 ] && echo "$d"; done
+```
+
+Ein Wächter dafür existiert nicht; das Kommando ist ein Lauf von Hand.
+
 **Ab 3× trägt `state.md` genau einen von drei Ausgängen** — eine geschlossene Menge, kein
 Freitext:
 
