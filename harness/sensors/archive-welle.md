@@ -25,7 +25,9 @@ einschließlich untrackter Dateien, weil der Inhalts-Commit der Wave-Self-Close-
 setzt **zwei getrennte Commits** (Hard Rule 3.3): zuerst der reine `git mv` nach
 `done/<welle-id>/`, danach Archiv, Stubs und Verweis-Nachzug, gestagt über benannte Pfade statt
 über den ganzen Baum. Der Nachzug läuft in drei Formen — mit Verzeichnis-Präfix,
-geschwister-relativ und aufsteigend (`](../../<datei>)` in den Dateien unter `done/<welle-x>/`).
+geschwister-relativ und aufsteigend (`](../../<datei>)` in den Dateien unter `done/<welle-x>/`);
+die Präfix-Form schreibt er unter `docs/reviews/` nur als Ziel eines Markdown-Links (§Grenze
+Punkt 8), in jedem anderen Baum in jeder Form.
 
 `ai-harness-init archive-welle --vorschau <welle-id>` sagt, was derselbe Lauf täte, und schreibt
 dabei nichts: der Schalter hält den Aufruf nach der Vorprüfung an. Erreicht wird er über denselben
@@ -98,6 +100,30 @@ genau einen Lauf.
    (`Bestand.EinPlanVorhanden`); `Einsammeln` liefert für `altbestand` null Pläne. Vorschau und
    Anwenden lesen dieselbe Bedingung — die Kennung `kein-schreib-pfad` (§Sperren) steht darum genau
    dann, wenn der schreibende Lauf über diesen Schlüssel mit einem Laufzeit-Fehler abbräche.
+
+8. **Unter `docs/reviews/` schreibt der Nachzug die Adresse nur als Ziel eines Markdown-Links**
+   ([`ADR-0070`](../../docs/plan/adr/0070-der-verweis-nachzug-schreibt-in-docs-reviews-nur-die-link-form.md)
+   Festlegung 1): die Adresse muss unmittelbar hinter `](` stehen und bis `)` oder `#` reichen
+   (`ErsetzePraefixLink` in `internal/archive/refs.go`); die Vorschau zählt mit derselben Regel
+   (`ZaehlePraefixLink`). Ein Pfad im Code-Span, als Operand in einem Kommando-Span, im Code-Block
+   oder im Fließtext bleibt Byte für Byte, und eine Datei ohne Link-Treffer wird nicht geschrieben
+   und steht nicht im Blast-Radius. In jedem anderen Baum gilt jede Form. Vier Ränder, alle
+   permanent: die Erkennung liest kein Markdown — Link-Syntax, die als Zitat in einem Code-Span
+   steht, wird mitersetzt (`TestNachziehenUnterReviewsErsetztLinkSyntaxImCodeSpanMit` bindet diese
+   Span-Hälfte); für das Zitat in einem Code-Block bindet kein Fall die Grenze; die
+   Referenz-Definition `[name]: ziel` ist nicht Teil der Regel; und ein Link mit Titel
+   (`](ziel "titel")`) oder in Spitzklammern (`](<ziel>)`) endet nicht unmittelbar an `)` oder `#`,
+   der Nachzug lässt ihn stehen und `make docs-check` meldet den Rest — gelesen (`links` prüft
+   `docs/reviews/**`, §Kontext derselben ADR), für diese zwei Formen nicht gefahren. Die Regel
+   besteht, solange `codepaths.exempt-paths` in [`.d-check.yml`](../../.d-check.yml)
+   `docs/reviews/**` ausnimmt (Trigger 1 derselben ADR); ein Kopplungs-Test dafür führt dieses
+   Werkzeug nicht. Gedeckt
+   ist die Regel von `TestNachziehenUnterReviewsSchreibtNurDieLinkForm` (die Link-Form nachgezogen,
+   vier Nicht-Link-Formen Byte für Byte, Zähl- und Ersetz-Seite gleich) und
+   `TestNachziehenInDoneErsetztJedeForm` (jede Form unter `done/`); die Mutationen dazu liegen als
+   `test/mutations/467-archive-welle-go-reports-verlieren-die-form-regel.sh` bis
+   `test/mutations/471-archive-welle-go-link-regel-ueberquert-die-link-grenze.sh`. Der
+   Hänger-Wächter (Punkt 3) liest `docs/reviews/**` unverändert vollständig.
 
 ## Ausgabe und Ausgänge
 
