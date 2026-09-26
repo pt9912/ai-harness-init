@@ -146,7 +146,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1 — der Modus `sync` in Skript und Nutzlast:** `harness/tools/tap-nachzug.sh sync` läuft die
+- [x] **Liefer-Punkt 1 — der Modus `sync` in Skript und Nutzlast:** `harness/tools/tap-nachzug.sh sync` läuft die
       Schritte b bis g von
       [`ADR-0064`](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
       Festlegung 3 in der Aufteilung von Festlegung 5 (Host: Eingaben, Tag-Form, Feldform, Pin, Schritt b,
@@ -177,7 +177,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       **Rot-Beleg am realen Zustand, lesend (kein Gate):** `env -u TAP_TOKEN make tap-nachzug TAG=<Tag des Tap>`
       endet mit Prozess-Exit 2, die Ausgabe nennt das Ziel als Ausfallweg und trägt `tap-sync: Exit 2`, ohne
       dass ein Container startete; `make tap-check TAG=<Tag des Tap>` endet weiter mit Exit 0.
-- [ ] **Liefer-Punkt 2 — das Ziel `make tap-nachzug` und seine drei Träger:** das Rezept im `Makefile` ruft
+- [x] **Liefer-Punkt 2 — das Ziel `make tap-nachzug` und seine drei Träger:** das Rezept im `Makefile` ruft
       `bash harness/tools/tap-nachzug.sh sync` ohne make-Referenz auf den Tag und auf das Token (beide reisen als
       Umgebungsvariable; `make` selbst exportiert `TAG` von der Kommandozeile), steht in keiner
       Prerequisite-Kette und nicht in `gates` und `record-gates`, und sein Kommentar nennt Netz, Token und die
@@ -186,10 +186,11 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Zeile `make tap-nachzug` in [`harness/README.md`](../../../../harness/README.md) §Werkzeuge trägt `kein Gate`
       und die Bindung, und `targets.exempt-targets` der [`.d-check.yml`](../../../../.d-check.yml) führt das Ziel
       exakt (kein Glob). Ein `bats`-Fall liest die Rezeptzeilen von `tap-nachzug` (kein `$(TAG)`, kein `${TAG}`).
-      **Rot, wenn:** die README-Zeile oder der Eintrag fehlt — `make docs-check` färbt sich in beiden Fällen
-      (`targets`); die Gegenprobe ist, den Eintrag testweise zu entfernen und die Meldung zu lesen. `make gates`
-      fährt das Ziel **nicht**.
-- [ ] **Liefer-Punkt 3 — der Umbau von Schritt 7 in `docs/user/releasing.md`:** die Handlung des Schritts ist der
+      **Rot, wenn:** die README-Zeile **und** der Eintrag fehlen — `make docs-check` färbt sich dann (`targets`,
+      Meldung `gate-undocumented`); die Gegenprobe ist, beide testweise zu entfernen und die Meldung zu lesen. Jeder
+      Träger allein lässt das Gate grün, weil Zeile und Eintrag einander als Deklaration genügen; dass jeder
+      einzeln steht, halten der Review und der Verifier, kein Sensor. `make gates` fährt das Ziel **nicht**.
+- [x] **Liefer-Punkt 3 — der Umbau von Schritt 7 in `docs/user/releasing.md`:** die Handlung des Schritts ist der
       Aufruf `make tap-nachzug TAG=<tag>` mit `TAP_TOKEN` in der Umgebung des Aufrufers (Anlage und Ablage des
       Tokens sind Handlung des Auftraggebers außerhalb der Prozedur; **keine Rolle** als Ausführende, §6
       Frage 1); der Beleg bleibt `make tap-check TAG=<tag>`. **Die vier Aussagen, die mit `sync` falsch
@@ -209,20 +210,20 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       der Ausgabe des Skripts entspricht. **Deckung, benannt:** kein Test und kein Gate hält `releasing.md` gegen
       die Ausgabe des Skripts; Träger sind der Review und der Verifier, der die Aussagen fährt
       ([`BEO-ALL/prozedur-zeile-traegt-disziplin-ohne-sensor`](../observations/BEO-ALL/prozedur-zeile-traegt-disziplin-ohne-sensor/observation.md)).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: die README-Zeile und der Umbau von Schritt 7 sind Liefer-Punkt 2 und 3; das Handbuch
+- [x] Doku-Update: die README-Zeile und der Umbau von Schritt 7 sind Liefer-Punkt 2 und 3; das Handbuch
       (Weg C) bleibt unberührt (§1), sein Wortlaut wird gegen den Ist-Zustand gelesen und in §7 vermerkt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag; sie trägt das **Trigger-Audit der ADR-Klasse** für
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag; sie trägt das **Trigger-Audit der ADR-Klasse** für
       [`ADR-0066`](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md) (dritter
       Re-Evaluierungs-Trigger: entsteht mit `sync` ein Ergebnis der Nutzlast außerhalb von *gleich*,
       *Unterschied*, *nicht ausführbar*, oder liest ein zweiter Aufrufer die Klasse aus der Nutzlast statt aus
       dem Skript?) — das Verdikt ist Architect-Arbeit, die Frage stellt der Planner.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Register-Datei nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert. Erwartet: Belege für die in §8 benannten Einträge — ob sie zählen, urteilt die Closure.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Register-Datei nicht.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert. Erwartet: Belege für die in §8 benannten Einträge — ob sie zählen, urteilt die Closure.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -348,34 +349,42 @@ dasteht.
    aus der ADR liest. Der Plan legt sie nicht fest; als Ausgangslage für die Klärung: *„Tap unverändert"* sagt
    das Werkzeug nur, wo die Schnittstelle es ausdrücklich abgelehnt hat — jede andere Antwort endet in
    *„Ausgang ungewiss"*, die sichere Richtung, denn diese Meldung nennt `make tap-check`.
+   **Stand der Closure:** vom Architect beantwortet — die Zuordnung des Codes (200 → Nachkontrolle; 401, 403 und 409
+   → *„Tap unverändert"*; alles andere und keine Antwort → *„Ausgang ungewiss"*) steht als **Setzung** in
+   [`ADR-0068`](../../adr/0068-der-nachzug-nennt-den-zustand-des-tap-nur-soweit-die-antwort-ihn-traegt.md)
+   (`Proposed`; die Annahme der ADR steht beim Auftraggeber, der Slice wartete nicht darauf).
+   **Frage 1 bleibt unbeantwortet** — ihre Adresse ist unverändert.
 
 **Risiken:**
 
-Kein Risiko trägt hier schon seinen Ausgang; er wird bei der Closure zugewiesen, die Kandidaten stehen dabei.
+Jedes Risiko trägt einen Ausgang, zugewiesen bei der Closure am 2026-09-26; keines ist *eingetreten*.
 
 - **Der Slice ist für eine Review-Sitzung zu groß** — drei Liefer-Punkte, zwei Schichten, aber das Gewicht liegt
-  in Liefer-Punkt 1. **Ausgang:** Kandidat *eingetreten* → Folge-Slice mit Kennung (Naht in §4); *entfallen*,
-  wenn der Review ihn in einer Sitzung trägt.
+  in Liefer-Punkt 1. **Ausgang:** *entfallen* — der Review trug den Diff in einer Runde (0 HIGH, 1 MEDIUM, 3 LOW,
+  3 INFO), und der Verifier fand kein Anzeichen für einen Rückgang nach `next/`. Vorbehalt: die drei Commits
+  nach dem Review hat nur der Verifier gelesen (§7).
 - **Der Schreib-Pfad ist nur gegen eine nachgebildete Schnittstelle geprüft.** Ein Stub bildet Antwortform und
-  Statuscodes nach; ob das reale Tap dieselbe Form liefert, misst allein ein realer Nachzug. **Ausgang:**
-  Kandidat *weiter offen* →
+  Statuscodes nach; ob das reale Tap dieselbe Form liefert, misst allein ein realer Nachzug. **Ausgang:** *weiter
+  offen* →
   [`BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel`](../observations/BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel/observation.md)
   (verkörpert in [`AGENTS.md`](../../../../AGENTS.md) §3.6: die Zusage auf das einschränken, was der Code hält —
-  Liefer-Punkt 1 tut es); der erste reale Nachzug ist der Beleg, nicht dieser Slice.
+  Liefer-Punkt 1 und der Absatz *Handlung* in Schritt 7 tun es); der erste reale Nachzug ist der Beleg, nicht
+  dieser Slice. Das Register führt keinen neuen Beleg: kein Vorgang brach die Regel.
 - **`sync` bleibt ohne Mutations-Fälle, bis der Folge-Schnitt (§1) besteht.** Die Zähne sind `bats`-Fälle, einmal
-  rot gesehen; ihre Haltbarkeit hält kein `make mutate`. **Ausgang:** Kandidat *weiter offen* →
+  rot gesehen; ihre Haltbarkeit hält kein `make mutate`. **Ausgang:** *weiter offen* →
   [`BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall`](../observations/BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall/observation.md)
-  (**2×**, gelesen 2026-09-25; dieser Slice wäre ein weiterer Beleg, wenn die Closure ihn als dieselbe
-  Beobachtung urteilt — Urteil beim Schreiben des Belegs).
+  — mit diesem Slice **3×** (Beleg angelegt, Zähler in §7), Stand *geplant*: der Folge-Schnitt ist als Datei
+  angelegt (`slice-sync-waechter-tragen-mutations-faelle`).
 - **Ein Lauf schreibt ins reale Tap, bevor die Eigentums-Frage beantwortet ist** — etwa der Verifier, der den
-  Schreib-Pfad *real* belegen will. **Ausgang:** Kandidat *entfallen*, solange §2 (Liefer-Punkt 1) den Beleg als
-  lesend und den Schreib-Pfad als Handlung des Auftraggebers führt; *weiter offen* →
-  [`BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`](../observations/BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet/observation.md),
-  wenn er eintritt (ein weiterer Beleg der Klasse, keine Entscheidung).
+  Schreib-Pfad *real* belegen will. **Ausgang:** *entfallen* — kein Lauf hat es getan: der Verifier las das Tap
+  (`make tap-check`) und rief `make tap-nachzug` ohne Token auf (Exit 2 vor jedem Netz-Zugriff), der Implementer
+  und der Reviewer schrieben nicht. §2 führt den Schreib-Pfad als Handlung des Auftraggebers.
 - **Schritt 7 wird mit dem Job-Schnitt erneut falsch**, wenn dessen Umbau (§1, erster Punkt) nicht im Eingang
-  des Laufs steht, der den Job-Slice schneidet. **Ausgang:** Kandidat *weiter offen* →
-  [`BEO-ALL/bedingung-ohne-traeger-im-lauf-den-sie-bindet`](../observations/BEO-ALL/bedingung-ohne-traeger-im-lauf-den-sie-bindet/observation.md);
-  Träger dafür ist heute allein §1 dieser Datei, die nach `done/` wandert — ein Sensor besteht nicht.
+  des Laufs steht, der den Job-Slice schneidet. **Ausgang:** *weiter offen* →
+  [`BEO-ALL/bedingung-ohne-traeger-im-lauf-den-sie-bindet`](../observations/BEO-ALL/bedingung-ohne-traeger-im-lauf-den-sie-bindet/observation.md)
+  — die Adresse hat jetzt eine Datei: `slice-release-job-tap-nachzug-und-schritt-7-folgt` (`open/`) trägt die
+  Bedingungen in seinem §1; der Eintrag ist mit dieser Closure im Anweisungssatz der Planner-Rolle verkörpert,
+  und ein Sensor besteht nicht (Grenze im `state.md` des Eintrags).
 
 ## 7. Closure-Notiz
 
@@ -392,7 +401,128 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-Wird bei der Closure geschrieben — von der Rolle Planner in frischem Kontext (AGENTS.md §3.10), nach Review und Verifikation, in der Form der Regeln oben.
+Geschrieben von der Rolle Planner in frischem Kontext
+([`AGENTS.md`](../../../../AGENTS.md) §3.10), nach Review und Verifikation und nach dem Verdikt des Architect.
+
+- **Was hat funktioniert:** Der Schnitt hielt: drei Liefer-Punkte, zwei Schichten, ein Review in einer Runde
+  (0 HIGH, 1 MEDIUM, 3 LOW, 3 INFO) und eine Verifikation ohne HIGH. Der Verifier fuhr am 2026-09-26 den Rot-Beleg
+  am realen Zustand, lesend: `env -u TAP_TOKEN make tap-nachzug TAG=v0.2.4` endete mit Prozess-Exit 2, nannte den
+  Ausfallweg und trug `tap-sync: Exit 2` genau einmal; `make tap-check TAG=v0.2.4` endete mit Exit 0, und
+  `make tap-check TAG=v0.2.3` mit Exit 1 (erste abweichende Zeile die `version`-Zeile). Dass kein Container
+  startete, ist aus der Reihenfolge im Skript geschlossen und durch die Schwächung *„Token-Nachweis am Host
+  entfernt"* belegt; ein Container-Zähler am realen Lauf wurde nicht gemessen. **Ergebnis-Fakten** (gemessen
+  2026-09-26, keine Erwartungswerte): `grep -c '^@test' test/tap-nachzug.bats` → **53**;
+  `git diff --shortstat 3256c64d..c45140c1` → **11** Dateien, **844** Einfügungen, **98** Löschungen;
+  `grep -ln sync test/mutations/*.sh | wc -l` → **0**. Der Schreib-Pfad am realen Tap ist **nicht** gefahren und
+  nirgends als bewiesen behauptet: die Fälle laufen gegen einen `curl`-Stub, der erste reale Nachzug des
+  Auftraggebers ist sein Beleg.
+- **Was ging anders als geplant:** Der Review las den Commit `bced82b9` und fand R-1 (MEDIUM: der Header am
+  Schreibaufruf war ungebunden, eine Schwächung überlebte), R-2 (die Meldung nach einem vollzogenen Schreiben mit
+  unlesbarem Tap), R-3 (Wortzähler-Begründung), R-4 (Konjunktiv im Kommentar) und drei INFO. Der Implementer zog
+  R-1, R-2 und R-4 in `bb583255`, den Anker von Fall 418 in `0d057bbe` und R-2, R-3 und R-6a in `c45140c1`.
+  **Diese drei Commits hat kein Reviewer gelesen; nur der Verifier** las und fuhr sie (16 Schwächungen und vier
+  Gegenproben in Scratchpad-Kopien). Eine zweite Reviewer-Runde ist nicht gelaufen und wird nicht behauptet; das
+  Häkchen *Review durchgeführt* bestätigt die Runde 1 mit ihren gezogenen Findings. **`make mutate` ist nicht als
+  Ganzes gefahren:** gemessen ist eine Teilmenge — die 27 Bestandsfälle, die `tap-nachzug` berühren, je einzeln am
+  HEAD-Stand emuliert, alle färben mit ihrem `# expect:`-Text; **kein** `sync`-eigener Fall besteht (0 Dateien,
+  siehe oben), und ein Beleg-Slot ist nicht geschrieben. `make full-smoke` ist nicht gemessen.
+- **Planner-Korrektur an der Abnahme (Liefer-Punkt 2).** Die DoD sagte *„`make docs-check` färbt sich in beiden
+  Fällen"*. Der Verifier maß in vier Kopien (V-1): Eintrag allein entfernt → Exit 0; README-Zeile allein entfernt →
+  Exit 0; beides → Exit 2 mit `gate-undocumented`. Die Zusage war breiter als der Sensor, und der Code war richtig.
+  Die ausführende Rolle schreibt ihr Abnahmekriterium nicht um; der Planner hat den Wortlaut **auf das Gemessene**
+  gesetzt (das Gate färbt sich, wenn **beide** Träger fehlen; jeder einzeln steht durch Review und Verifier, kein
+  Sensor bindet ihn) und das Häkchen danach gesetzt. Die Aussage in Folgepflicht 1 von
+  [`ADR-0064`](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
+  (*„ohne Eintrag färbt das Doku-Gate im ersten Lauf rot"*) bleibt: der Architect hält sie für die Begründung der
+  Pflicht, nicht für eine Zusage, die ein Lauf trägt — ein akzeptiertes Negativ, kein Folge-ADR.
+- **Doku-Update — Handbuch Weg C bleibt unverändert.** Der Satz *„je Release-Schnitt … nachgezogen"* ist mit dem
+  Ziel nur als Handlung des Aufrufers wahr; mit dem Job als Regelweg wird er wahr
+  (`slice-release-job-tap-nachzug-und-schritt-7-folgt`, angelegt), belegt erst mit dem ersten Tag-Lauf. Ein Träger
+  dafür besteht nicht — das Handbuch-Update gehört zum Release-Schnitt.
+- **Steering-Loop-Eintrag (Form: geschärfte Regel).** Die Bedingung, dass der Umbau einer Aussage im Eingang des
+  Laufs steht, der ihn auslöst, steht als Zeile im Anweisungssatz der Planner-Rolle, geschrieben vom Planner nach
+  dem Verdikt des Architect (Frage 4); Original ist das Baseline-Regelwerk `modul-05-planning-harness.md`
+  §Ziel-Form: Slice, §1 Klasse 1. liegt in `.claude/commands/plan-welle.md §Slices bereitstellen`
+  · seit slice-tap-nachzug-sync-schreibt-die-formel-ins-tap. **Grenze:** ein Wächter existiert nicht — die Zeile
+  ist Feedforward; **kein Wächter hält `docs/user/releasing.md` gegen die Ausgabe des Skripts** (R-3, V-2 und V-3
+  fanden nur der Review und der Verifier). Tritt die Klasse nach der Zeile erneut ein, ist die Trägerschaft der
+  Befund und die Hard Rule der nächste Schritt (Architect, `AGENTS.md` §3.8). **Zusätzlich benannt, nicht
+  geschrieben:** die Norm-Lücke zu R-2 und R-5 (die Meldung nach einem vollzogenen Schreiben, die Ablehnungs-Menge)
+  hat der Architect als Setzung in
+  [`ADR-0068`](../../adr/0068-der-nachzug-nennt-den-zustand-des-tap-nur-soweit-die-antwort-ihn-traegt.md)
+  formuliert — **`Proposed`**; die Annahme steht beim Auftraggeber nach einer Reviewer-Runde, und dieser Abschluss
+  stützt sich nicht auf sie.
+- **Trigger-Audit der ADR-Klasse (dritter Re-Evaluierungs-Trigger von
+  [`ADR-0066`](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md)):** **nicht eingetreten** —
+  Verdikt des Architect vom 2026-09-26 zu diesem Slice (Kennung `architect-verdikt-slice-tap-nachzug-sync-schreibt-die-formel-ins-tap`,
+  Frage 1). Die Nutzlast beendet mit genau drei Status (0, 10, 2; `grep -nE 'exit (0|10|2)\b|beende 2' harness/tools/tap-nachzug-nutzlast.sh`),
+  die neuen Ausgänge von `sync` sind Status 2 mit eigener Meldung, und der einzige produktive Leser der Nutzlast ist
+  `harness/tools/tap-nachzug.sh`. Trigger 1 derselben ADR (*„ein Aufrufer braucht die Klasse am Prozess-Exit"*) hat
+  mit dem Release-Job einen neuen möglichen Anlass; die Frage steht im Eingang des Laufs, der den Job schneidet
+  (§1 des Slice `slice-release-job-tap-nachzug-und-schritt-7-folgt`). Carveouts und Reifestufen berührt der Slice
+  nicht.
+- **Beobachtungs-Register (`../observations/`):** je Beleg
+  `evidence/slice-tap-nachzug-sync-schreibt-die-formel-ins-tap.md`; Zähler gelesen am 2026-09-26 mit
+  `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`
+  ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)).
+  **Ergänzt:**
+  [`prozedur-wiedergabe-eines-werkzeug-vertrags-reicht-weiter-als-die-quelle`](../observations/BEO-ALL/prozedur-wiedergabe-eines-werkzeug-vertrags-reicht-weiter-als-die-quelle/observation.md)
+  (R-3, V-3; **3×**),
+  [`zusage-mit-bats-bindung-ohne-eigenen-mutations-fall`](../observations/BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall/observation.md)
+  (die `sync`-eigenen Zusagen; **3×**),
+  [`abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt`](../observations/BEO-ALL/abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt/observation.md)
+  (V-1; **7×**, verkörpert in [`AGENTS.md`](../../../../AGENTS.md) §3.10) und
+  [`eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`](../observations/BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet/observation.md)
+  (der Ruhe-Marker im Claim-Commit `5effdc6f`; **9×**, Stand `geplant` unverändert; §6 Frage 1 ist **kein**
+  Beleg). **Neu angelegt (1×, `offen`):**
+  [`zusage-ueber-jeden-aufruf-bindet-nicht-den-aufruf-der-sie-traegt`](../observations/BEO-ALL/zusage-ueber-jeden-aufruf-bindet-nicht-den-aufruf-der-sie-traegt/observation.md)
+  (R-1: die Assertion über *jede* Kopfdatei ließ die Schwächung am Schreibaufruf überleben). **Nicht gezählt:**
+  [`weite-assertion-verdeckt-die-bindung-der-engen`](../observations/BEO-ALL/weite-assertion-verdeckt-die-bindung-der-engen/observation.md)
+  (**1×**; dort färbt die weite Assertion die Mutation, hier färbte nichts),
+  [`prozedur-zeile-traegt-disziplin-ohne-sensor`](../observations/BEO-ALL/prozedur-zeile-traegt-disziplin-ohne-sensor/observation.md)
+  (**2×**; kein Schritt wurde übersprungen, und die Wortlaut-Funde zählen unter *prozedur-wiedergabe* — dieselbe
+  Fund-Menge unter zwei Namen wäre ein künstlicher dritter Beleg),
+  [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
+  (**32×**; die vier Aussagen wurden im selben Slice gezogen, ein Fix ließ keine stehen) und
+  [`zusage-ohne-herstellbares-gegenbeispiel`](../observations/BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel/observation.md)
+  (der Schreib-Pfad ist auf das Gehaltene eingeschränkt, die Regel wurde nicht gebrochen). Die Vorkommen
+  R-2 und R-5 sind durch den Architect in
+  [`ADR-0068`](../../adr/0068-der-nachzug-nennt-den-zustand-des-tap-nur-soweit-die-antwort-ihn-traegt.md) gefasst und
+  führen keinen eigenen Eintrag.
+  **Lese-Schritt:** mit diesem Slice erreichen **drei** Einträge die Schwelle **3×**.
+  `bedingung-ohne-traeger-im-lauf-den-sie-bindet` (3× seit dem Vorgänger-Slice) bekommt den Ausgang
+  *verkörpert* — Zielort `.claude/commands/plan-welle.md`, Anker `seit slice-tap-nachzug-sync-schreibt-die-formel-ins-tap`,
+  Grenze *„Ein Wächter existiert nicht"* im `state.md`. `zusage-mit-bats-bindung-ohne-eigenen-mutations-fall` bekommt
+  *geplant* mit der Kennung `slice-sync-waechter-tragen-mutations-faelle` — **für die Instanz**; ob das die Klasse
+  trägt oder eine Regel verlangt, ist Übergabe an den Architect. `prozedur-wiedergabe-…` bleibt `offen` über der
+  Schwelle: `geplant` braucht einen Slice, der die Regel oder den Sensor schreibt (keiner besteht), `verkörpert` ein
+  Norm-Artefakt des Architect; Übergabe. `eigentums-frage-…` trägt ihren Ausgang schon.
+- **Adressen vor dem Move ([`AGENTS.md`](../../../../AGENTS.md) §3.11):** kein eingefrorenes Artefakt nennt den
+  Slice als Pfad. Das Kommando aus §4 trifft außerhalb dieser Datei eine Zeile in `done/`
+  (`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-tap-nachzug-sync-schreibt-die-formel-ins-tap\.md|(open|next|in-progress)/slice-tap-nachzug-sync-schreibt-die-formel-ins-tap|\]\(slice-tap-nachzug-sync-schreibt-die-formel-ins-tap' . | grep -v 'planning/in-progress/slice-tap-nachzug-sync-schreibt-die-formel-ins-tap.md' | wc -l`
+  → **1**, gemessen 2026-09-26): der Verzeichnis-Glob in der Closure-Notiz des Vorgängers, der an kein
+  Lifecycle-Verzeichnis gebunden ist. Reports, Verdikt und ADR nennen die Kennung ohne Pfad.
+- **Folge-Slices:** zwei, beide als Datei in `open/` angelegt (Kennungen, keine Pfade): `slice-release-job-tap-nachzug-und-schritt-7-folgt`
+  (der Job `tap` samt Umbau von Schritt 7, den Bedingungen des Gebers und der Frage von Trigger 1; **Umgebung und
+  Secret `TAP_TOKEN` bleiben Handlung des Auftraggebers** und sind Start-Bedingung dort) und
+  `slice-sync-waechter-tragen-mutations-faelle` (die `sync`-eigenen Zähne und der Absatz *Grenze*). **Verantwortlich**
+  ist offen; der Auftraggeber priorisiert.
+- **Vermerke aus Review und Verifikation:** V-2 (*„die Wächter von `sync`"* meint die `sync`-eigenen; gemeinsame
+  Wächter färben `sync`-Fälle mit) geht an den Mutations-Slice (Liefer-Punkt 3); V-3 (der Vorab-Satz gilt ohne
+  `TAP_TOKEN` nicht) und R-6b (der Satz *„die Prozedur nennt keine ausführende Rolle"* spricht über die eigene
+  Abwesenheit) gehen an den Job-Slice (§1); R-6c ist V-3; R-6a ist gezogen.
+- **Übergaben:** *An den Architect:* (1) trägt `geplant` für `zusage-mit-bats-bindung-…` die Instanz allein, oder
+  braucht die Klasse eine Regel; (2) der Ausgang für `prozedur-wiedergabe-…` (3×); (3) die Reviewer-Runde für
+  [`ADR-0068`](../../adr/0068-der-nachzug-nennt-den-zustand-des-tap-nur-soweit-die-antwort-ihn-traegt.md) vor der
+  Annahme. *An den Auftraggeber:* der Accept von
+  [`ADR-0068`](../../adr/0068-der-nachzug-nennt-den-zustand-des-tap-nur-soweit-die-antwort-ihn-traegt.md); der erste reale Nachzug samt gelesener Ausgabe (Beleg
+  des Schreib-Pfads und der Setzung); Umgebung und Secret, sobald der Job-Slice priorisiert wird.
+- **Risiken aus §6:** fünf, je ein Ausgang — *entfallen* mit Grund: die Größe (der Review trug den Diff in einer
+  Runde), ein Schreiben ins reale Tap (kein Lauf hat es getan); *weiter offen → Register:* der Schreib-Pfad nur
+  gegen eine nachgebildete Schnittstelle (`zusage-ohne-herstellbares-gegenbeispiel`), `sync` ohne Mutations-Fälle
+  (`zusage-mit-bats-bindung-…`, mit einer Folge-Slice-Datei) und Schritt 7 beim Job-Schnitt
+  (`bedingung-ohne-traeger-…`, mit der Datei des Job-Slice). Keines ist *eingetreten*.
+- **Drei Paarungen:** folgen nach dem Move; ihr Ergebnis steht unten.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

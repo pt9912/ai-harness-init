@@ -1,5 +1,3 @@
-**Stand:** offen
+**Stand:** offen — Schwelle erreicht (`ls docs/plan/planning/observations/BEO-ALL/prozedur-wiedergabe-eines-werkzeug-vertrags-reicht-weiter-als-die-quelle/evidence/*.md | wc -l` → 3, gelesen 2026-09-26, keine Erwartung). Der Ausgang steht aus: `geplant` verlangt die Kennung eines Slice, der die Regel oder den Sensor schreibt — keiner besteht —, und `verkörpert` ein Norm-Artefakt mit Zielort und Herkunfts-Anker, das der Architect schreibt. Übergabe an den Architect: ob und wo die Klasse eine Regel oder einen Sensor bekommt; Kandidat ist der Verifier-Lauf, der die Wiedergabe gegen das Skript fährt, der heute in keinem Artefakt der Prozedur als Schritt steht.
 
-Unterhalb der Schwelle; `offen` ist hier der Normalzustand und kein Ausgang. Ein Wächter besteht nicht:
-kein Test und kein Gate hält `docs/user/releasing.md` gegen die Ausgabe des Skripts oder gegen die
-Zusage seiner ADR. Träger ist der Review des Schritts und der Verifier, der die Aussagen fährt.
+Ein Wächter besteht nicht: kein Test und kein Gate hält `docs/user/releasing.md` gegen die Ausgabe des Skripts oder gegen die Zusage seiner ADR. Träger ist der Review des Schritts und der Verifier, der die Aussagen fährt.

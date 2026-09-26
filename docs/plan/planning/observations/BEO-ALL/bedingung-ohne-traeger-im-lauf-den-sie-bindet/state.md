@@ -1,1 +1,18 @@
-**Stand:** offen — Schwelle erreicht (`ls docs/plan/planning/observations/BEO-ALL/bedingung-ohne-traeger-im-lauf-den-sie-bindet/evidence/*.md | wc -l` → 3, gelesen 2026-09-25, keine Erwartung). Die dritte Instanz — der Umbau von Schritt 7 in `docs/user/releasing.md` mit dem Modus `sync` — hat einen Träger im Eingang des Laufs, der ihn auslöst: `slice-tap-nachzug-sync-schreibt-die-formel-ins-tap` (`open/`) trägt den Umbau als Liefer-Punkt 3. Das ist ein Träger der **Instanz**, kein Ausgang der **Klasse**: `geplant` verlangt die Kennung eines Slice, der die **Regel schreibt** — dieser erfüllt die Bedingung einmal, er verkörpert sie nicht; `verkörpert` braucht ein Norm-Artefakt mit Zielort und Herkunfts-Anker. Der Ausgang steht aus. Übergabe: ob und wo die Bedingung *„der Umbau einer Aussage steht im Eingang des Laufs, der ihn auslöst"* als Regel steht — als Hard Rule oder Folgepflicht (Architect) oder als Zeile im Anweisungssatz der Rolle, die schneidet (Planner) —, entscheidet die Rolle, die das Norm-Artefakt schreibt; der Planner-Lauf, der `sync` schnitt, hat sie nicht geschrieben.
+**Stand:** verkörpert
+
+Zielort: [`.claude/commands/plan-welle.md`](../../../../../../.claude/commands/plan-welle.md) — die Zeile
+*„Eine Bedingung, die ein Geber-Artefakt an einen Lauf richtet, der noch nicht existiert, steht im Slice-Plan
+dieses Laufs"* im Abschnitt *Slices bereitstellen*, mit dem Herkunfts-Anker
+`· seit slice-tap-nachzug-sync-schreibt-die-formel-ins-tap`
+(`grep -c 'seit slice-tap-nachzug-sync-schreibt-die-formel-ins-tap' .claude/commands/plan-welle.md` → 1). Der
+Anweisungssatz gehört der Rolle, die ihn ausführt: die Zeile schreibt der Planner; das Original ist das
+Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form: Slice, §1 Klasse 1 (*„Ein Folge-Slice übernimmt es —
+mit Kennung"*).
+
+**Grenze der Verkörperung, benannt.** Ein Wächter existiert nicht: die Zeile ist Feedforward und instruiert den
+Planner-Lauf, der schneidet und schließt; kein Modul des Doku-Gates liest, ob ein Slice-Plan die Bedingungen
+seines Gebers trägt, und `make mutate` kennt dafür keine Fehlschlag-Form. Träger ist der Planner an Schnitt und
+Closure. **Eskalation:** tritt die Klasse nach der Zeile erneut ein, ist die Trägerschaft der Befund und nicht die
+Wiederholung; die nächste Stufe ist eine Hard Rule (Architect, `AGENTS.md` §3.8). Die erste Instanz, an der die
+Zeile greift: die Bedingungen des Job-Schnitts stehen in §1 des Slice
+`slice-release-job-tap-nachzug-und-schritt-7-folgt`, angelegt bei der Closure ihres Gebers.
