@@ -17,7 +17,8 @@
 # Emissions-Vorlage (internal/emit/templates/enforce/slice-mv.sh) vor. Zwei
 # Pruefungen tragen die Kopplung, und die zweite traegt sie breiter:
 #   (1) jeder Fall unten faehrt BEIDE Fassungen — das deckt die Entscheidungen,
-#       die ein Fall ausloest;
+#       die ein Fall ausloest; ausgenommen sind die Faelle zur Form-Regel unter
+#       docs/reviews/ (ADR-0070), s. dort;
 #   (2) der Kopplungs-Fall am Dateiende vergleicht die RUEMPFE der Funktionen
 #       in KERN — das deckt auch eine einseitig entfernte
 #       Entscheidung, die kein Fall trifft (etwa das /g-Flag des Eingehend-sed).
@@ -204,7 +205,114 @@ EOF
   done
 }
 
-@test "eingehend_ausgenommene_pfade: .harness/baseline und docs/plan/adr drin, docs/reviews NICHT (ADR-0042 Festlegung 2, ADR-0033 Abnahme-Kriterium 1)" {
+# Die Faelle zur Form-Regel unter docs/reviews/ (ADR-0070 Festlegung 1) fahren nur
+# die Dogfood-Fassung: die Regel gilt fuer dieses Repo, und die emittierte Fassung
+# fuehrt weder rewrite_incoming_links_in_file noch rewrite_incoming_nach_baum.
+# Beide liegen ausserhalb der Liste KERN. Die Proben tragen den bewegten Pfad in
+# fuenf Formen — Link, reiner Pfad-Span, Operand in einem Kommando-Span, Code-Block,
+# Fliesstext — in EINER Datei, je einmal.
+
+form_probe() {  # $1=datei
+  cat > "$1" <<'EOF'
+Link: [Slice](../plan/planning/open/slice-999-x.md#7-closure-notiz)
+Span: `docs/plan/planning/open/slice-999-x.md`
+Operand: `git show 1a2b3c4:docs/plan/planning/open/slice-999-x.md`
+```sh
+cat docs/plan/planning/open/slice-999-x.md
+```
+Fliesstext: Der Slice lag in docs/plan/planning/open/slice-999-x.md und wurde bewegt.
+EOF
+}
+
+@test "docs/reviews: der Link auf den bewegten Slice wird nachgezogen, die vier Nicht-Link-Formen (Span, Operand, Block, Fliesstext) bleiben Byte fuer Byte (ADR-0070 Fitness 1)" {
+  load_functions "$DOGFOOD"
+  cd "$TMP"
+  mkdir -p docs/reviews
+  form_probe docs/reviews/probe.md
+  run rewrite_incoming_nach_baum docs/reviews/probe.md "slice-999-x.md" "open" "next"
+  [ "$status" -eq 0 ]
+  erwartet='Link: [Slice](../plan/planning/next/slice-999-x.md#7-closure-notiz)
+Span: `docs/plan/planning/open/slice-999-x.md`
+Operand: `git show 1a2b3c4:docs/plan/planning/open/slice-999-x.md`
+```sh
+cat docs/plan/planning/open/slice-999-x.md
+```
+Fliesstext: Der Slice lag in docs/plan/planning/open/slice-999-x.md und wurde bewegt.'
+  ist="$(cat docs/reviews/probe.md)"
+  [ "$ist" = "$erwartet" ] || { echo "Ist-Bestand weicht ab:"; echo "$ist"; return 1; }
+}
+
+@test "docs/reviews: eine Datei ohne Link auf den Slice bleibt unveraendert und gehoert nicht zum Nachzug (Status 1)" {
+  load_functions "$DOGFOOD"
+  cd "$TMP"
+  mkdir -p docs/reviews
+  printf '%s\n' '`docs/plan/planning/open/slice-999-x.md` und open/slice-999-x.md' > docs/reviews/nur-span.md
+  cp docs/reviews/nur-span.md vorher.md
+  run rewrite_incoming_nach_baum docs/reviews/nur-span.md "slice-999-x.md" "open" "next"
+  [ "$status" -eq 1 ]
+  [ "$(cat docs/reviews/nur-span.md)" = "$(cat vorher.md)" ]
+}
+
+@test "docs/reviews: jede Link-Tiefe, mit und ohne Anker und mit Code-Span als Link-Text, wird nachgezogen — verklebtes Wort, laengerer Name und anderes Verzeichnis bleiben" {
+  load_functions "$DOGFOOD"
+  cd "$TMP"
+  mkdir -p docs/reviews
+  cat > docs/reviews/tiefen.md <<'EOF'
+[a](../../docs/plan/planning/open/slice-999-x.md)
+[b](../open/slice-999-x.md)
+[c](open/slice-999-x.md)
+[`slice-999-x`](../open/slice-999-x.md#anker)
+[d](../sibling-open/slice-999-x.md)
+[e](../open/slice-999-x.mdx)
+[f](../done/slice-999-x.md)
+[g](../open/slice-998-y.md)
+EOF
+  run rewrite_incoming_links_in_file docs/reviews/tiefen.md "slice-999-x.md" "open" "next"
+  [ "$status" -eq 0 ]
+  [ "$output" = "4" ] || { echo "Zaehler: $output"; return 1; }
+  erwartet='[a](../../docs/plan/planning/next/slice-999-x.md)
+[b](../next/slice-999-x.md)
+[c](next/slice-999-x.md)
+[`slice-999-x`](../next/slice-999-x.md#anker)
+[d](../sibling-open/slice-999-x.md)
+[e](../open/slice-999-x.mdx)
+[f](../done/slice-999-x.md)
+[g](../open/slice-998-y.md)'
+  ist="$(cat docs/reviews/tiefen.md)"
+  [ "$ist" = "$erwartet" ] || { echo "Ist-Bestand weicht ab:"; echo "$ist"; return 1; }
+}
+
+@test "docs/reviews: Link-Syntax als Zitat in einem Code-Span wird mitersetzt, der reine Pfad daneben nicht (benannte Grenze, ADR-0070 Festlegung 1 — bekommt ein Traeger eine Kontext-Erkennung, faellt dieser Fall: Trigger 6 der ADR)" {
+  load_functions "$DOGFOOD"
+  cd "$TMP"
+  mkdir -p docs/reviews
+  printf '%s\n' '`[a](../plan/planning/open/slice-999-x.md)` und `docs/plan/planning/open/slice-999-x.md`' > docs/reviews/zitat.md
+  run rewrite_incoming_nach_baum docs/reviews/zitat.md "slice-999-x.md" "open" "next"
+  [ "$status" -eq 0 ]
+  erwartet='`[a](../plan/planning/next/slice-999-x.md)` und `docs/plan/planning/open/slice-999-x.md`'
+  [ "$(cat docs/reviews/zitat.md)" = "$erwartet" ] || { echo "Ist-Bestand:"; cat docs/reviews/zitat.md; return 1; }
+}
+
+@test "done: jede Form wird weiter ersetzt — Link, reiner Pfad-Span, Operand, Block und Fliesstext derselben Datei (ADR-0070 Fitness 5, die Form-Regel gilt nur unter docs/reviews/)" {
+  load_functions "$DOGFOOD"
+  cd "$TMP"
+  mkdir -p docs/plan/planning/done
+  form_probe docs/plan/planning/done/probe.md
+  run rewrite_incoming_nach_baum docs/plan/planning/done/probe.md "slice-999-x.md" "open" "next"
+  [ "$status" -eq 0 ]
+  ! grep -q 'open/slice-999-x\.md' docs/plan/planning/done/probe.md
+  [ "$(grep -c 'next/slice-999-x\.md' docs/plan/planning/done/probe.md)" -eq 5 ]
+}
+
+@test "docs/reviews: dieselbe Probe unter dem Ersetzer fuer jede Form faerbt alle fuenf Vorkommen um (Kontrolle: die Probe trennt Link-Form von den vier anderen)" {
+  load_functions "$DOGFOOD"
+  cd "$TMP"
+  form_probe probe.md
+  rewrite_incoming_in_file probe.md "slice-999-x.md" "open" "next"
+  [ "$(grep -c 'next/slice-999-x\.md' probe.md)" -eq 5 ]
+}
+
+@test "eingehend_ausgenommene_pfade: .harness/baseline und docs/plan/adr drin, docs/reviews NICHT (ADR-0042 Festlegung 2, ADR-0070 Festlegung 2)" {
   for fassung in "${FASSUNGEN[@]}"; do
   load_functions "$fassung"
   run eingehend_ausgenommene_pfade

@@ -19,7 +19,8 @@
 # bewegt den Slice per `git mv` und committet den reinen Move SOFORT als
 # eigenen Commit (Hard Rule 3.3: kein Byte Inhalt veraendert, die
 # Rename-Erkennung greift). Danach zieht es reale Verweise nach — EINGEHEND
-# (jede Praefix-Form auf die bewegte Datei, repo-weit, dazu die praefixlose
+# (jede Praefix-Form auf die bewegte Datei, repo-weit — unter docs/reviews/ nur
+# als Ziel eines Markdown-Links, ADR-0070 Festlegung 1 —, dazu die praefixlose
 # Link-Form aus den Geschwistern im Ausgangsverzeichnis) UND AUSGEHEND
 # (praefixlose Ziele INNERHALB der bewegten Datei, die nach dem Wechsel ins
 # falsche Verzeichnis zeigen; getroffen wird eine nummerierte wie eine
@@ -77,7 +78,7 @@
 # Verbindung zur Liste weg (Pathspec-Uebergabe im `git grep`-Aufruf unten
 # entfernt) und faerbt genau diesen Test rot.
 #
-# GRENZEN (gemessen, nicht vermutet — vier Stück):
+# GRENZEN (gemessen, nicht vermutet — fünf Stück):
 # (1) Das Werkzeug zieht PFADE nach, keine ZUSTANDSSÄTZE. Eine Zeile "In
 #     Arbeit: <slice>" bleibt nach dem Wechsel stehen; ihr Verweis wird
 #     richtig, ihre Aussage falsch. Welcher Satz einen Zustand behauptet, ist
@@ -109,6 +110,15 @@
 #     nicht: ein Ziel "](slice-ADR-0042-nachzug.md)" bleibt unerkannt und
 #     zeigt nach dem Wechsel ins falsche Verzeichnis. Dieselbe Grenze steht in
 #     internal/archive/stub.go bei sliceRE.
+# (5) Unter docs/reviews/ ersetzt rewrite_incoming_links_in_file die Adresse nur
+#     hinter "](" (bis ")" oder "#"); ein Pfad im Code-Span, als Operand, im
+#     Code-Block oder im Fliesstext bleibt Byte fuer Byte. Die Regel liest kein
+#     Markdown: Link-Syntax, die als Zitat in einem Code-Span steht, wird
+#     mitersetzt (test/slice-mv.bats bindet diese Span-Haelfte); fuer das Zitat
+#     in einem Code-Block bindet kein Fall die Grenze, und die Referenz-Definition
+#     "[name]: ziel" ist nicht Teil der Regel (ADR-0070 Festlegung 1). Die Regel
+#     besteht, solange .d-check.yml unter codepaths `docs/reviews/**` ausnimmt
+#     (ADR-0070 Trigger 1).
 #
 # KOPPLUNG. Wer $LIFECYCLE erweitert (ein fünftes Verzeichnis), muss auch
 # harness/README.md §Sensors und diesen Kopf nachziehen — beide zählen die
@@ -143,7 +153,8 @@ Aufruf: make slice-mv SLICE=slice-<Kennung>[-kurztitel[.md]] TO=<open|next|in-pr
 
   Bewegt den Slice per `git mv`, committet den reinen Move sofort, und zieht
   danach die Verweise nach — repo-weit eingehend (jede gemessene Präfix-Form,
-  dazu präfixlose Links aus den Geschwistern im Ausgangsverzeichnis)
+  unter docs/reviews/ nur als Ziel eines Markdown-Links, dazu präfixlose Links
+  aus den Geschwistern im Ausgangsverzeichnis)
   und innerhalb der Datei selbst ausgehend (präfixlose Ziele, die nach dem
   Wechsel ins falsche Verzeichnis zeigen); fielen Verweise an, committet es
   sie getrennt vom Move. Verlangt einen sauberen Arbeitsbaum. Grenzen: siehe
@@ -167,8 +178,9 @@ re_escape() {
 # ADR-0042 Festlegung 2: eine Accepted-ADR bekommt keinen Byte-Nachzug — der
 # Go-Traeger zieht dieselbe Grenze in internal/archive/scan.go
 # (AusgenommenePfadeNachzug). `docs/reviews` steht ABSICHTLICH NICHT darin
-# (ADR-0033 Abnahme-Kriterium 1): Review-Reports sind reale, von `docs-check`
-# gepruefte Verweisziele.
+# (ADR-0070 Festlegung 2): Review-Reports sind reale, von `docs-check`
+# gepruefte Verweisziele, und ihr Nachzug schreibt nur die Link-Form
+# (rewrite_incoming_nach_baum).
 eingehend_ausgenommene_pfade() {
   printf '%s\n' ':!.harness/baseline' ':!docs/plan/adr'
 }
@@ -231,6 +243,40 @@ rewrite_outgoing_bare_in_file() {  # $1=datei $2=from
   printf '%d\n' "$count"
 }
 
+# EINGEHEND, NUR LINK-FORM (ADR-0070 Festlegung 1): "$from/$base" in $file wird
+# zu "$to/$base" nur dort, wo die Adresse unmittelbar hinter "](" steht und bis
+# ")" oder "#" reicht — an derselben Wortgrenze wie rewrite_incoming_in_file.
+# Ein Pfad im Code-Span, als Operand, im Code-Block oder im Fliesstext steht
+# nicht hinter "](" und bleibt Byte fuer Byte. Die Regel liest kein Markdown:
+# Link-Syntax, die als Zitat in einem Code-Span oder Code-Block steht, wird
+# mitersetzt (Grenze 5 im Skriptkopf). Gibt die Anzahl ersetzter Links auf
+# stdout aus.
+rewrite_incoming_links_in_file() {  # $1=datei $2=base $3=from $4=to
+  local file="$1" base="$2" from="$3" to="$4" esc_base ziel count
+  esc_base="$(re_escape "$base")"
+  ziel="(\\]\\(([^)#]*[^A-Za-z0-9_)#-])?)$from/$esc_base"
+  count="$( { grep -oE "${ziel}[)#]" "$file" 2>/dev/null || true; } | wc -l)"
+  psed_i -E "s@${ziel}([)#])@\\1$to/$base\\3@g" "$file"
+  printf '%d\n' "$((count))"
+}
+
+# EINGEHEND, je nach Baum: unter docs/reviews/ gilt die Link-Form
+# (rewrite_incoming_links_in_file), in jedem anderen Baum jede Form
+# (rewrite_incoming_in_file). Der Pfad ist repo-relativ, wie `git grep` ihn
+# liefert. Endet mit 0, wenn die Datei zum Nachzug gehoert; unter docs/reviews/
+# endet es mit 1, wenn kein Link ersetzt wurde — eine Datei, die den Pfad nur
+# als Code-Span, Operand, Block oder Fliesstext traegt, bleibt unveraendert und
+# faellt nicht in den Inhalts-Commit.
+rewrite_incoming_nach_baum() {  # $1=datei $2=base $3=from $4=to
+  local n
+  case "$1" in
+    docs/reviews/*)
+      n="$(rewrite_incoming_links_in_file "$@")"
+      [ "$n" -gt 0 ] ;;
+    *) rewrite_incoming_in_file "$@" ;;
+  esac
+}
+
 main() {
   local SLICE="${1:-}" TO="${2:-}"
   [ -n "$SLICE" ] && [ -n "$TO" ] || { usage; exit 2; }
@@ -287,9 +333,11 @@ main() {
   # ids.*.exempt-paths (die Zeitdokumente sind von der Inline-Code-Pfadpflicht
   # und der ID-Linkpflicht befreit) — aber links/anchors tragen keine solche
   # Ausnahme und prüfen jeden echten Markdown-Link dort wie überall sonst.
-  # Ein Verweis auf die bewegte Datei bricht dort also genauso wie in
-  # docs/plan/planning/done/**, und beide werden darum mitgezogen; nur der
-  # Pfad ändert sich, die umgebende Aussage bleibt Zeitdokument (Grenze 1).
+  # Ein Link auf die bewegte Datei bricht dort also genauso wie in
+  # docs/plan/planning/done/**; rewrite_incoming_nach_baum zieht ihn darum nach,
+  # in docs/reviews/** aber nur ihn — jede andere Adress-Form bleibt Byte für
+  # Byte (ADR-0070 Festlegung 1), in den übrigen Bäumen gilt jede Form. Nur
+  # der Pfad ändert sich, die umgebende Aussage bleibt Zeitdokument (Grenze 1).
   local -a in_pathspec=()
   while IFS= read -r p; do in_pathspec+=("$p"); done < <(eingehend_ausgenommene_pfade)
 
@@ -297,7 +345,7 @@ main() {
   local -a touched=()
   while IFS= read -r rf; do
     [ -n "$rf" ] || continue
-    rewrite_incoming_in_file "$rf" "$base" "$from" "$TO"
+    rewrite_incoming_nach_baum "$rf" "$base" "$from" "$TO" || continue
     touched+=("$rf")
     in_count=$((in_count + 1))
   done < <(git grep -l -F -e "$from/$base" -- "${in_pathspec[@]}" 2>/dev/null || true)
