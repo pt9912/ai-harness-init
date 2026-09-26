@@ -96,7 +96,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1 — der Kopplungs-Test.** Ein bats-Fall hält die Zeile
+- [x] **Liefer-Punkt 1 — der Kopplungs-Test.** Ein bats-Fall hält die Zeile
       `exempt-paths: ["docs/reviews/**"]` **unter `codepaths:`** in `.d-check.yml`; in dieser Datei
       tragen andere Blöcke `docs/reviews/**` in eigenen `exempt-paths`-Zeilen, und der Fall bindet
       allein die unter `codepaths:`. *Bricht, wenn:* die Zeile unter `codepaths:` entfällt und die
@@ -106,18 +106,18 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       `docs/reviews/**` zu entfernen lässt ihn grün, ebenso das Entfernen oder Ändern der
       Kommentarzeile im Block — und die Zeile als **Kommentar** zu setzen statt zu entfernen färbt
       ihn rot.
-- [ ] **Liefer-Punkt 2 — der Mutations-Fall, der ihn bindet.** Ein Fall in `test/mutations/` entfernt
+- [x] **Liefer-Punkt 2 — der Mutations-Fall, der ihn bindet.** Ein Fall in `test/mutations/` entfernt
       die Zeile unter `codepaths:` in einer Kopie und erwartet genau diesen Test rot. *Bricht, wenn:*
       der Fall auch bei einer Mutation rot bliebe, die eine **andere** Zeile trifft (dann deckt ein
       anderer Zweig ihn, und der Zahn ist unbewacht); Anker gegen den Quell-Bestand gemessen
       ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -231,13 +231,107 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 Wird bei der Closure vom Planner geschrieben
 ([`AGENTS.md`](../../../../AGENTS.md) §3.10), nicht vom Implementer; die Zeilen folgen der Vorlage.
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
-- **Drei Paarungen:** —
+Geschrieben von der Rolle Planner in frischem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10), nach Review und
+Verifikation. Alle Kommandos gemessen am 2026-09-26 am Stand `2dbc76c6`, keine Erwartungswerte
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)).
+
+- **Was hat funktioniert:** Der Schnitt hielt: zwei Liefer-Punkte, eine Schicht, keine der beiden Rückführungen aus §4
+  ausgelöst; die Abschnitts-Erkennung ließ sich ohne Parser als `awk` binden. Der Verifier (Stand `85643b3b`) bestätigte
+  Liefer-Punkt 1 und 2 und fuhr das Rot selbst: `test/codepaths-reviews-ausnahme.bats` färbt bei entfernter Zeile unter
+  `codepaths:` rot, die Meldung nennt die Zeile und Trigger 1 der ADR; bei entfernter Zeile in `ids` oder `matrix`, bei
+  entfernten Kommentarzeilen und bei einer legitimen Erweiterung der Liste bleibt er grün; die Zeile als Kommentar färbt ihn
+  rot. Beide Gegenproben unter `make mutate` (Test geschwächt: Muster über die ganze Datei · Block-Ende gestrichen) melden
+  `BEFUND`, die Zähne binden also die behauptete Grenze. Ergebnis-Fakten:
+  `git diff --shortstat 6125fe55~1..85643b3b -- test` → **3** Dateien, **97** Einfügungen;
+  `ls test/mutations/*.sh | wc -l` → **463**.
+- **Was ging anders als geplant:** Der Review (Stand `c3e274d9`; 0 HIGH, 1 MEDIUM, 1 LOW, 1 INFO) fand R-1: die Abschnitts-Erkennung
+  sagte im Kommentar zwei Grenzen zu, Block-Ende und Kommentar-Filter, und Fall `474` band nur die Start-Grenze (entfiel das
+  Block-Ende, blieb der Fall `ok`); R-2: das Muster hält genau die einzeilige Flow-Liste, äquivalentes YAML färbt rot, und die
+  Meldung nannte dann Trigger 1 für eine Ausnahme, die nicht gefallen ist; R-3 (INFO): zwei Ränder des Musters ohne Fall. Der
+  Implementer zog R-1 und R-2 in `22d24bfa` (Fall `475`, Zeile unter `vcs:` statt unter `codepaths:`) und `85643b3b` (Formgrenze
+  im Test-Kopf, Meldung mit beiden Ursachen, Zusage zum Filter auf das Gehaltene eingeschränkt). **Gebaut, nicht geplant:** ein
+  zweiter Mutations-Fall (§3 nennt einen); der Verifier wertete das als gleiche Art, gleiche Schicht, keine Ausweitung der
+  Abnahme, **und der Planner schließt sich an.** **Wer was gelesen hat:** der Review las bis `c3e274d9`; `22d24bfa` und `85643b3b`
+  hat **kein Reviewer** gelesen, der Verifier hat sie gemessen (V-2), der Planner hat beide Diffs gelesen. **Entscheidung zur
+  Nachrunde: keine erneute Reviewer-Runde.** Der Nachrunden-Diff besteht aus Test-Kommentar und Meldungstext (`85643b3b`)
+  und einem Mutations-Fall im Muster der Fälle `470` bis `474` (`22d24bfa`); er berührt keinen Träger-Code und keine Norm. R-1
+  war MEDIUM und nicht blockierend, und die Prüfung, die ein zweiter Reviewer führte — den Fall gegen die behauptete Mutation
+  und die geschwächte Fassung fahren —, hat der Verifier mit beiden Gegenproben unter `make mutate` und gelesener Meldung bereits
+  geleistet. Das Häkchen *Review durchgeführt* bestätigt Runde 1 samt gezogenen Findings; ein zweiter Review-Report besteht nicht
+  und wird nicht behauptet. **Liefer-Punkt 2 trägt über den Wortlaut hinaus:** Fall `475` ist der Zahn zum Block-Ende, Fall `474`
+  der zum Blockanfang.
+- **Mutate: Teilmessung, keine Gesamtaussage.** Real gefahren ist
+  `make mutate MUTATE_JOBS=1 MUTATE_CASES='474-codepaths-reviews-ausnahme-entfaellt 475-codepaths-reviews-ausnahme-wandert-in-einen-nachbar-block'`
+  (Verifier, Stand `85643b3b`): `2 ok, 0 Befund(e)`, `TEILLAUF 2 von 463 — kein Beleg`; der Beleg-Slot
+  `.harness/state/mutate-passed.key` ist vorher wie nachher nicht vorhanden
+  (`ls .harness/state/mutate-passed.key` → nicht vorhanden). **Nicht gefahren:** ein voller `make mutate`; der Beleg-Slot von
+  [`ADR-0035`](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md) ist nicht geschrieben. Eine Aussage über das grüne Ganze
+  trägt diese Closure nicht.
+- **Nicht gemessen, benannt:** **Fall `475` bewacht eine latente Lage** — im Bestand steht nach `codepaths:` keine
+  `exempt-paths`-Zeile (`sed -n '/^vcs:/,$p' .d-check.yml | grep -c 'exempt-paths'` gibt für den Bestand 0, die Zeile unter
+  `vcs:` entsteht erst in der Mutation); der Test färbt am unveränderten Bestand nicht. **Der Kommentar-Filter der
+  Block-Erkennung hat keinen Fall** und ist einzeln nicht bindbar (das Muster der Zusicherung deckt dieselbe Lage); die Zusage im
+  Kommentar ist auf das Gehaltene eingeschränkt. **Die Ränder aus R-3** (eine `exempt-paths`-Zeile unter einem Unterschlüssel von
+  `codepaths:`, der `#`-Ausschluss in der Klammer) sind vom Reviewer gemessen und vom Verifier nur gelesen; kein Fall hält sie.
+  **Die Wahrheit der Gate-Begründung** — dass `codepaths` einen Pfad-Span in einem Report tatsächlich nicht prüft — ist nicht Gegenstand
+  (§1) und nicht gefahren; die ADR führt sie als Messung. Einfache Anführungszeichen, unquotierter Wert und mehrzeilige Flow-Liste hat
+  der Reviewer gefahren, der Verifier nicht; die Gegenprobe *Block-Ende gestrichen* gegen Fall `474` ist nur im bats-Lauf gefahren,
+  nicht unter `make mutate`.
+- **Steering-Loop-Eintrag (Form: neuer Sensor).** Die Kopplung zwischen der Form-Regel des Nachzugs und der Zeile unter `codepaths:` ist
+  gemessen statt vorausgesetzt: `test/codepaths-reviews-ausnahme.bats` hält die Zeile, die Fälle `474` (Blockanfang) und `475`
+  (Blockende) binden die Abschnitts-Erkennung. Der Sensor schließt die Lücke, die der Zustand der Beobachtung
+  [`verweis-nachzug-ersetzt-eine-historisch-richtige-adresse`](../observations/BEO-ALL/verweis-nachzug-ersetzt-eine-historisch-richtige-adresse/state.md)
+  als Grenze der Verkörperung nannte. **Kein Zielort-Feld und kein Herkunfts-Anker:** der Sensor trägt die Kennung seiner Quelle
+  ([`ADR-0070`](../../adr/0070-der-verweis-nachzug-schreibt-in-docs-reviews-nur-die-link-form.md) Folgepflicht 4, Fitness-Zeile 6) selbst; die Paarung (a) hätte nichts, gegen
+  das sie prüft. **Grenzen des Sensors, benannt:** er hält die **Zeile**, nicht die Wahrheit der Gate-Begründung; er hält die
+  Schreibform (einzeilige Flow-Liste, doppelte Anführungszeichen), nicht die Aussage; er hält die **Bedingung**, nicht die
+  Implikation *Regel ⇒ Zeile*; er ist ein Test gegen die Config dieses Repos und wird nicht emittiert.
+  **Die geschärfte Regel aus dem Verifier-Vorschlag ist nicht verkörpert, und der Planner verkörpert sie nicht:** *ein Test, der eine
+  Zeile an einen Abschnitt bindet, trägt für die Abschnitts-Erkennung je Grenze (Start, Ende) einen Mutations-Fall; die Gegenprobe zum
+  Ende ist die Verschiebung in den Nachbar-Abschnitt, nicht das ersatzlose Entfernen.* Gelesen ist, was schon steht:
+  [`AGENTS.md`](../../../../AGENTS.md) §3.6 verlangt zu jeder Zusage das rot gesehene Gegenbeispiel, nennt aber weder die Grenze eines
+  Abschnitts noch die Verschiebung als Gegenprobe (`sed -n '/^### 3\.6/,/^### 3\.7/p' AGENTS.md | grep -c 'Abschnitt'` → 0), und der
+  Reviewer-Skill führt die MEDIUM-Zeile *Zusicherung über einer Menge, die leer sein kann*, die eine andere Lücke trifft. Die Regel
+  steht damit im Register (unten, 2×) und nicht in einem Norm-Artefakt; Hard Rules und Reviewer-Skill schreiben Architect bzw. Reviewer
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
+- **Beobachtungs-Register (`../observations/`):** je Beleg
+  `evidence/slice-form-regel-des-nachzugs-ist-an-die-codepaths-ausnahme-gekoppelt.md`; Zähler gelesen mit
+  `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`
+  ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)).
+  **Zwei Belege, keine neue Beobachtung, beide `offen`:**
+  [`zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel`](../observations/BEO-ALL/zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel/observation.md)
+  (**2×**; R-1 und V-1 — ein Vorgang zählt einmal: der Kommentar sagt Block-Ende und Filter zu, der Fall bindet nur den Anfang) und
+  [`regel-rand-ohne-benannte-luecke`](../observations/BEO-ALL/regel-rand-ohne-benannte-luecke/observation.md)
+  (**3×**; R-2 und R-3 — ein Vorgang zählt einmal: die Formgrenze und zwei Ränder des Musters standen nicht im Kommentar).
+  **Dieselbe Beobachtung? — je Kandidat begründet, Urteil des Planners.** *R-1* nicht in
+  [`zusage-mit-bats-bindung-ohne-eigenen-mutations-fall`](../observations/BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall/observation.md)
+  (4×, `verkörpert` für die Klasse), obwohl der Reviewer es nahelegt: dort hängt die Zusage allein an einer Assertion ohne Fall, hier sagt ein
+  **Kommentar** eine Grenze zu, und der Fall bindet die eine Hälfte — die Beschreibung von `zusage-im-doc-kommentar-…` trifft die Lage
+  wörtlich; wer R-1 der verkörperten Klasse zuordnet, hebt sie auf 5× (Ausgang unverändert) und lässt jene bei 1×. *V-1* (Zusage von zwei
+  redundanten Mechanismen gedeckt, einzeln nicht bindbar) nicht als eigene Beobachtung: es betrifft dieselbe Zusage (der Filter im
+  Kommentar) und ist im Vorgang behoben, ein Vorgang zählt einmal. *R-2 und R-3* in `regel-rand-…`: dessen Fehlerrichtung — *die genannte
+  Grenze ist vollständig* — trifft, der Rand hier ist ein Muster gegen YAML statt eine Link-Regel gegen Markdown, und der Ort der
+  ungenannten Grenze ein Test-Kommentar statt einer Sensor-Doku; wer das als andere Klasse liest, lässt `regel-rand-…` bei 2× und legt eine
+  neue Beobachtung mit 1× an. *V-2* (Nachrunde ohne Reviewer-Lauf) und *V-3* (latente Lage) sind Befunde der Stufe INFO ohne frühere
+  Instanz und nicht eingetragen. **Lese-Schritt:** mit diesem Slice erreicht **`regel-rand-ohne-benannte-luecke`** erstmals **3×**
+  (`ls docs/plan/planning/observations/BEO-ALL/regel-rand-ohne-benannte-luecke/evidence/*.md | wc -l` → 3); ihr Ausgang steht aus, weil
+  die Verkörperung Architect-Arbeit ist (Rolle Planner → Architect → Planner, Modul 8): **Übergabe an den Architect, nicht verkörpert und
+  nicht zugewiesen.** Alle anderen Einträge mit `evidence/` ab drei Dateien tragen einen Ausgang
+  (`for d in docs/plan/planning/observations/BEO-ALL/*/; do n=$(ls "$d"evidence/*.md 2>/dev/null | wc -l); [ "$n" -ge 3 ] && ! grep -qhE '^\*\*Stand:\*\* (verkörpert|geplant|gestrichen)' "$d"state.md "$d"observation.md && echo "$d"; done`
+  nennt nur diesen Eintrag).
+- **Folge-Slices:** keiner. Der Ausgang von `regel-rand-ohne-benannte-luecke` ist Sache des Architect und entsteht aus dem Lese-Schritt, nicht aus
+  diesem Slice.
+- **Risiken aus §6:** drei, je ein Ausgang, keines *eingetreten*. (a) *Der Test greift die falsche Zeile* — **entfallen**: die Gegenprobe (Zeile unter
+  `codepaths:` entfernt) färbt rot, das Entfernen einer der vier anderen `exempt-paths`-Zeilen und der Kommentarzeilen lässt grün, der geschwächte Test
+  (Muster über die ganze Datei) bleibt bei entfernter Zeile grün und `make mutate` meldet an dieser Kopie `BEFUND`; belegt von Reviewer **und** Verifier
+  je einzeln, also von zwei Rollen, die nicht der Implementer sind. (b) *Der Anker des Mutations-Falls liegt verschoben* — **entfallen**: der Anker der
+  Zeile steht im Quell-Bestand genau einmal (`grep -c '^  exempt-paths: \["docs/reviews/\*\*"\]$' .d-check.yml` → 1), der Anker `vcs:` von Fall `475` ebenso
+  (`grep -c '^vcs:$' .d-check.yml` → 1), und beide Fälle sind an der behaupteten Mutation rot gesehen (Teillauf `2 ok`). (c) *Der Test bewacht eine Regel,
+  die kein Träger führt* — **entfallen**: der Start-Trigger verlangte beide Träger, und das Kommando aus §4 gibt **2** aus. Dass jeder Ausgang trägt, ist
+  gelesen: (a) und (b) an je einem Rot-Beleg einer fremden Rolle, (c) an einem Kommando, das am Baum nachzählt.
+- **Adressen vor dem Move ([`AGENTS.md`](../../../../AGENTS.md) §3.11):** wird nach dem Move ergänzt.
+- **Der Move, gemessen:** wird nach dem Move ergänzt.
+- **Drei Paarungen:** werden nach dem Move geprüft und ergänzt.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
