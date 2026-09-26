@@ -114,18 +114,26 @@ entfällt), `461-slice-mv-form-regel-greift-in-done.sh` (Regel auf `done/` ausge
 rot, der ihn bindet; `466-slice-mv-link-regel-ueberquert-die-link-grenze.sh` färbt den Fall mit
 mehreren Links in einer Zeile, den kein Fall mit einem Link je Zeile ersetzt.
 
-**Scheitert die Ersetzung, bricht der Lauf ab und die Datei bleibt, wie sie war.** `psed_i` schreibt
+**Scheitert die Ersetzung, bricht der Lauf ab; die scheiternde Datei bleibt, wie sie war.** `psed_i` schreibt
 nur zurück, wenn der `sed` gelungen ist, und endet bei einem Ausfall des `sed` oder des
 Zurückschreibens mit Status 2 — explizit, nicht über `set -e`, das unter einem `||` im
 Funktionsrumpf nicht gilt; `rewrite_incoming_nach_baum` reicht die 2 weiter, und `main()` bricht
-darauf mit einer Meldung ab (der Move-Commit steht, der Nachzug ist nicht committet). Gedeckt ist
+darauf mit einer Meldung ab (der Move-Commit steht, der Nachzug ist nicht committet). Die Zusage
+gilt **je scheiternde Datei**, nicht für den Arbeitsbaum: Dateien, die die Schleife vor dem Ausfall
+schon nachgezogen hat, bleiben umgeschrieben und ungestaged liegen (`git restore .` stellt sie
+her), und ein zweiter `make slice-mv` verweigert dann auf dem unsauberen Baum. Gedeckt ist
 das in zwei Stufen: drei Fälle in `test/slice-mv.bats` lassen `sed` bzw. `cat` per PATH-Wrapper
 scheitern und lesen Status und Dateiinhalt (das Image läuft als root, ein Dateimodus schiede als
 Ausfall aus), und `TestSliceMvEchtBrichtBeiGescheiterterErsetzungAb` (`make test-go`) fährt
 `main()` als echten Prozess. Die Fälle `463-slice-mv-psed-i-schreibt-nach-gescheitertem-sed.sh`,
 `464-slice-mv-psed-i-verschweigt-ein-gescheitertes-zurueckschreiben.sh` und
 `465-slice-mv-main-uebergeht-den-gescheiterten-nachzug.sh` in `test/mutations/` färben je den Test
-rot, der es bindet. **Grenze:** die Zusage „Datei unverändert" gilt für den Ausfall des `sed`; bricht
+rot, der es bindet. **Grenze:** der Ausfall an einer **späteren** Datei ist nicht gebunden — der
+Go-Test lässt jeden `sed -E` scheitern, also fällt schon die erste Datei; gefahren ist der spätere
+Ausfall im Verifier-Report zum Slice `slice-lifecycle-move-schreibt-in-reports-nur-die-link-form`
+(ein PATH-Wrapper, der `sed -E` nur für einen Report scheitern ließ: Exit 2, ein Commit, mehrere
+getrackte Dateien im Arbeitsbaum geändert). Und die
+Zusage „Datei unverändert" gilt für den Ausfall des `sed`; bricht
 das Zurückschreiben selbst mittendrin ab, ist die Datei nicht mehr, wie sie war. Die zwei
 Ersetzungen `rewrite_incoming_bare_in_file` und `rewrite_outgoing_bare_in_file` reichen den Status
 von `psed_i` nicht weiter — sie kürzen die Datei nicht mehr, melden aber Erfolg (gefahren für die
