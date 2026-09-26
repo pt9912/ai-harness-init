@@ -232,6 +232,12 @@ Ansatz als Liste:
 - Der Schalter liest denselben `isolation_key()` und denselben `$BELIEF` wie der Übersprung in
   `main()`; eine zweite Berechnung wäre eine zweite Definition des Schlüssels
   ([ADR-0035](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md) Festlegung 3).
+- **Bestand aus dem Schwester-Slice (Stand 2026-09-26).** Der Treiber nennt den Prüfgegenstand-Schlüssel in
+  jedem Lauf, der bis zu seinem Bericht kommt, als Zeile `mutate: Pruefgegenstand <hash>` — im Teillauf und im
+  vollen Lauf, auch mit Befund (`grep -n 'report_key' harness/tools/mutate.sh`); Bedingung 1 der Regel in
+  `harness/sensors/mutate.md` (§Zwei Läufe, eine Aussage) liest diese Zeile. Verengt Liefer-Punkt 1 die
+  Bezugsmenge, ändert sich der Wert der Zeile, nicht ihre Form. Ob die Meldung des Schalters (Liefer-Punkt 2)
+  den Schlüssel in derselben Zeilenform nennt, entscheidet der Implementer; kein Liefer-Punkt ändert sich.
 
 ## 4. Trigger
 
