@@ -210,7 +210,7 @@ Fall einen **Schnitt**, keine Auslegung:
 
 | Beobachtung | Zähler | Träger |
 |---|---|---|
-| `BEO-ALL/unbelegter-register-eintrag-faellt-durch-die-paarung` | 3× | [`slice-beleglose-register-eintraege-bekommen-eine-lesart`](../open/slice-beleglose-register-eintraege-bekommen-eine-lesart.md) |
+| `BEO-ALL/unbelegter-register-eintrag-faellt-durch-die-paarung` | 3× | [`slice-beleglose-register-eintraege-bekommen-eine-lesart`](../done/slice-beleglose-register-eintraege-bekommen-eine-lesart.md) |
 
 **Zwei Adressen aus Norm-Text sind im selben Zug zu Plandateien geworden** — sie lösten vorher nur
 dort auf, und die Folge-Slice-Paarung fällt über eine genannte Kennung ohne Datei:
@@ -243,7 +243,7 @@ ohne angelegt ist dieselbe Klasse wie ein halluziniertes Gate.
 
 **Drei Träger, aus diesem Lauf geschnitten** (jeder liegt in `open/`):
 
-- [`slice-beleglose-register-eintraege-bekommen-eine-lesart`](../open/slice-beleglose-register-eintraege-bekommen-eine-lesart.md)
+- [`slice-beleglose-register-eintraege-bekommen-eine-lesart`](../done/slice-beleglose-register-eintraege-bekommen-eine-lesart.md)
   (Architect) — der Träger des einzigen `geplant`-Ausgangs dieses Lese-Schritts.
 - [`slice-kennungs-erkennung-traegt-die-zugelassenen-formen`](../open/slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md)
   — die Fundliste aus [`MR-059`](../../../../harness/conventions.md#mr-059) Setzung 2.
