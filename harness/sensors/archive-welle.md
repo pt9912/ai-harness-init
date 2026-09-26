@@ -120,9 +120,11 @@ genau einen Lauf.
    Werkzeug nicht. Gedeckt
    ist die Regel von `TestNachziehenUnterReviewsSchreibtNurDieLinkForm` (die Link-Form nachgezogen,
    vier Nicht-Link-Formen Byte für Byte, Zähl- und Ersetz-Seite gleich) und
-   `TestNachziehenInDoneErsetztJedeForm` (jede Form unter `done/`); die Mutationen dazu liegen als
-   `test/mutations/467-archive-welle-go-reports-verlieren-die-form-regel.sh` bis
-   `test/mutations/471-archive-welle-go-link-regel-ueberquert-die-link-grenze.sh`. Der
+   `TestNachziehenInDoneErsetztJedeForm` (jede Form unter `done/`); die Zeilengrenze der Regel hält
+   `TestNachziehenUnterReviewsUeberquertKeineZeilengrenze`, die Verzeichnisgrenze
+   `TestNachziehenUnterReviewsGiltNurFuerDasVerzeichnisNichtFuerSeinenPraefix`. Die Mutationen dazu
+   liegen als `test/mutations/467-archive-welle-go-reports-verlieren-die-form-regel.sh` bis
+   `test/mutations/473-archive-welle-go-report-baum-endet-nicht-am-verzeichnis.sh`. Der
    Hänger-Wächter (Punkt 3) liest `docs/reviews/**` unverändert vollständig.
 
 ## Ausgabe und Ausgänge
@@ -165,8 +167,16 @@ Abbruch-Meldung führt:
   nicht anwendbar
 
 Zwei Ausgänge stehen daneben, weil sie am ruhenden Baum nicht beobachtbar sind: das fehlende
-`WELLE=` fängt der Aufrufer vorher ab, und eine verletzte Stub-Form bricht **zwischen** den zwei
-Commits ab und nennt den Rückweg (`git reset --hard HEAD~1 && git clean -fd`).
+`WELLE=` fängt der Aufrufer vorher ab, und ein Fehler des Inhalts-Schritts bricht **zwischen** den
+zwei Commits ab und nennt den Rückweg (`git reset --hard HEAD~1 && git clean -fd -- done/<welle-id>`).
+`Anwenden` verpackt jeden Fehler dieses Schritts in `NachCommit1Fehler` — die verletzte Stub-Form
+ebenso wie ein Schreibfehler des Verweis-Nachzugs, der eine Datei halbgeschrieben zurücklassen
+kann; der Nachzug schreibt an Ort und Stelle und macht kein Rollback, und schon nachgezogene
+Dateien liegen bis zum Rückweg umgeschrieben im Baum. `git reset --hard HEAD~1` verwirft die
+Änderungen getrackter Dateien und stellt sie damit wieder her (gelesen, für diesen Pfad nicht
+gefahren). Gefahren ist der Ausgang der verletzten Stub-Form
+(`TestAnwendenBrichtBeiVerletzterStubFormAb`); der Schreibfehler-Pfad nicht: das Testbild läuft
+als root, ein Dateimodus löst dort keinen Schreibfehler aus.
 
 ## Bindung
 
