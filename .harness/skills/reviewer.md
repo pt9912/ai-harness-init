@@ -77,6 +77,17 @@ bewusst kurz (Ergänzungs-Kanal, nicht Hauptkanal).
 - fehlende Negativtests bei neuem öffentlichen Vertrag
 - Reproduzierbarkeits-Risiko
   ([`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit))
+- **Zusicherung über einer Menge, die leer sein kann** — spricht ein Test oder
+  Wächter über eine Menge, die er sich selbst besorgt (Ausgabe einer Extraktions-
+  oder Filterfunktion, Inhalt eines Verzeichnisses, das ein Aufräum-Trap leert,
+  ein Bestand, der derzeit keinen Treffer trägt), und belegt er nirgends, dass
+  diese Menge nicht leer ist? Eine Negation (`! grep`, `-z`, „es entsteht nichts")
+  über der leeren Menge ist grün, ohne etwas gemessen zu haben. Belastbar ist sie
+  mit einer Sonde im selben Test, die zeigt, dass die geprüfte Menge bei einem
+  gültigen Lauf nicht leer ist (Positiv-Beleg, Gegenfall über der nicht leeren
+  Menge); fehlt sie, kann der Test unter keiner Mutation rot werden, die die Menge
+  wegfallen lässt oder leert ([`AGENTS.md`](../../AGENTS.md) §3.6). Kein Gate
+  fängt das  (seit slice-mutate-fall-filter-und-die-belegform-vereinigung)
 - Wiederholung eines Musters, das schon zweimal LOW war
 
 **LOW** (nice-to-fix) — Doku-Drift (Prosa-Listen, veraltete Beispiele); latente
