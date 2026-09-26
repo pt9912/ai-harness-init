@@ -30,8 +30,7 @@ seinen Ausgang bekommt),
 [ADR-0034](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md)
 (Festlegung 3 — die Kennung **ist** der Pfad `BEO-<KUERZEL>/<slug>`; Festlegung 4 ist der
 Migrations-Commit und trägt die Beleg-Regel nicht),
-das Baseline-Regelwerk
-[`modul-06-roadmap.md`](../../../../.harness/baseline/v6.9.0/regelwerk/modul-06-roadmap.md#das-beobachtungs-register-modul-6)
+das Baseline-Regelwerk `modul-06-roadmap.md`
 §Das Beobachtungs-Register (die Beleg-Regel *ein Vorgang zählt einmal — und was keinen hat, zählt gar nicht*;
 die maschinelle Hälfte der Paarung (c)) und die
 [Register-README](../observations/README.md) (Absatz *Ein Vorgang zählt einmal*),
