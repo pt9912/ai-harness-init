@@ -137,7 +137,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -381,10 +381,46 @@ Verifikation. Alle Kommandos gemessen am 2026-09-26 am Stand `7c4f8312`, keine E
 - **Risiken aus §6:** fünf, je ein Ausgang — *entfallen* mit Grund: die ersten vier (Anker, Regex-Träger,
   Verdrahtung, `KERN`-Kopplung); *weiter offen:* das Link-Zitat im Code-Span, als benannte Grenze der Sensor-Doku
   mit Träger Trigger 6 der ADR, kein Register-Eintrag. Keines ist *eingetreten*.
-- **Adressen vor dem Move ([`AGENTS.md`](../../../../AGENTS.md) §3.11):** das Kommando aus §4 trifft außerhalb dieser
-  Datei am 2026-09-26 **0** Zeilen; kein eingefrorenes Artefakt nennt den Slice als Pfad, die Reports und das
-  Register nennen die Kennung. Was der Move tat, steht in der Zeile *Drei Paarungen*.
-- **Drei Paarungen:** werden nach dem Move geprüft (Planner); das Ergebnis steht an dieser Stelle.
+- **Adressen vor dem Move ([`AGENTS.md`](../../../../AGENTS.md) §3.11):** das Kommando aus §4 zählte außerhalb dieser
+  Datei vor dem Anlegen der Register-Belege **0** Zeilen und am Move-Tag **3**: sein erster Zweig
+  `<Kennung>\.md` trifft auch den Dateinamen eines Reports, und die drei neuen Evidence-Dateien nennen die zwei
+  Reports in Code-Spans (`docs/reviews/2026-09-26-…-<Kennung>.md`). Das sind ortsfeste Report-Pfade, keine
+  Lifecycle-Adresse: der Lifecycle-Zweig allein (`(open|next|in-progress|done)/<Kennung>` und `](<Kennung>`) trifft
+  außerhalb dieser Datei **0** Zeilen (2026-09-26, am Stand nach dem Move). Kein eingefrorenes Artefakt nennt den
+  Slice als Pfad; die Reports und das Register nennen die Kennung. Der Zweig `<Kennung>\.md` ist für einen Plan, den
+  ein Register-Beleg oder ein Report bei seinem Report-Namen zitiert, zu breit; ein Nachzug daran gehört in eine
+  Bearbeitung des Kommandos, nicht in diese Closure.
+- **Der Move, gemessen (`make slice-mv` nach `done/`, 2026-09-26):** zwei Commits, der reine Move (`5eb95e9b`, keine
+  Zeile geändert) und der Nachzug (`a1ec56e4`), der **genau eine** Datei mit **einer** Zeile änderte — diese Datei
+  selbst (der Ausschluss-Pfad im Kommando aus §4). Weder ein Report noch eine ADR wurde berührt
+  (`git diff --name-only 5eb95e9b^..HEAD -- docs/reviews docs/plan/adr | wc -l` → **0**). **Das ist die erste
+  reale Anwendung der Regel nach dem Accept von
+  [`ADR-0070`](../../adr/0070-der-verweis-nachzug-schreibt-in-docs-reviews-nur-die-link-form.md), und sie übt die
+  Form-Regel nur im Negativen:** kein Report nannte die Adresse, es gab in `docs/reviews/` nichts umzuschreiben. Die
+  positive Übung (zwei Link-Ziele umgeschrieben, fünf Nicht-Link-Vorkommen unverändert) bleibt die Messung des
+  Verifiers an `slice-071-bilanz-nennt-ihren-bestand`. Frage 2 der Verdikt-Reihe (*was geschieht beim ersten realen
+  Move?*) ist damit beantwortet: nichts Falsches, aber auch keine neue Evidenz für die Regel.
+- **Drei Paarungen (nach dem Move geprüft, 2026-09-26):** (a) *Anker:* der Eintrag trägt kein Zielort-Feld (siehe
+  *Steering-Loop-Eintrag*), es gibt nichts zu paaren — benannt, nicht als grün behauptet. (b) *Folge-Slice:* beide
+  genannten Kennungen bestehen als Dateien in `open/`
+  (`ls docs/plan/planning/open | grep -c -e '^slice-archive-welle-schreibt-in-reports-nur-die-link-form.md$' -e '^slice-form-regel-des-nachzugs-ist-an-die-codepaths-ausnahme-gekoppelt.md$'`
+  → **2**). (c) *Register, beide Hälften:* **Hälfte 1 getragen** — jede in §6 und §7 genannte Beobachtung besteht als
+  Verzeichnis mit nicht leerem `evidence/` (neun geprüft; Zähler gelesen 2026-09-26: 1, 1, 1, 11, 2, 1, 3, 1, 32).
+  **Register-Paarung (c), zweite Hälfte: 4 Verzeichnisse ohne Beleg, namentlich
+  `ci-rennt-gegen-die-publikation-des-gepinnten-releases`,
+  `cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+  `einstiegs-datei-weicht-von-der-pflichtgliederung-ab` und
+  `planungs-bestand-waechst-schneller-als-er-abgebaut-wird`; nicht als getragen behauptet**
+  ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md) Festlegung 2;
+  `for d in docs/plan/planning/observations/BEO-ALL/*/; do n=$(ls "$d"evidence/*.md 2>/dev/null | wc -l); [ "$n" -eq 0 ] && echo "$d"; done`
+  → vier Namen). Sie bestanden vor diesem Slice, und keines wurde von ihm angelegt oder berührt
+  (`git diff --name-only bc96ec5a..HEAD | grep -cE 'ci-rennt-gegen|cpp-skelett|einstiegs-datei-weicht|planungs-bestand-waechst'`
+  → **0**); der Befund endet erst mit dem Beleg eines abgeschlossenen Vorgangs. **Das Häkchen der letzten DoD-Zeile ist
+  mit dieser Ausnahme gesetzt:** das Repo führt Wellen-Betrieb, und das Häkchen sagt dort, dass die nächste
+  Welle-Closure die Paarungen prüft, nicht, dass sie ganz getragen sind (`.d-check.yml`, Kommentar zur
+  `structure`-Regel für `done/`); ungehakt färbte die Zeile `make docs-check` rot
+  (`section-open-tasks-marker-missing`) und verlangte eine `Gegenstand:`-Zeile, die für einen gelieferten Slice
+  falsch wäre. Die zweite Hälfte von (c) bleibt eine benannte Ausnahme und ist kein getragener Punkt.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
