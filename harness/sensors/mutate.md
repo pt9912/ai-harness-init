@@ -101,24 +101,29 @@ den Fällen 453 bis 458 in `test/mutations/`.
 
 Ein voller Lauf, der Bilder baut und Container startet, kann an der Infrastruktur enden
 (Registry-Zeitüberschreitung, Daemon-Zustand), bevor der Fall urteilt. Ein Bericht darf dann die
-Vereinigung von Hauptlauf und Teillauf als Aussage tragen — **nur wenn** alle drei Bedingungen
-gelten:
+Vereinigung der `ok`-Mengen zweier Läufe als Aussage tragen — Hauptlauf und Teillauf, oder zwei
+volle Läufe am identischen Baum —, **nur wenn** alle drei Bedingungen gelten:
 
 1. **Beide Läufe nennen denselben Prüfgegenstand-Schlüssel** (`mutate: Pruefgegenstand <hash>`).
    Ein Teillauf nennt die Zeile in seiner Ausgabe, ein voller Lauf nach seinem Bericht — auch
-   mit Befund. Endet der volle Lauf vorher (Sperre, Grün-Vorlauf, Signal), steht keine Zeile da,
-   und es gibt keinen Hauptlauf im Sinne dieser Regel. Nennt einer keinen oder einen anderen
-   Schlüssel, sind es zwei Aussagen über zwei Bäume.
-2. **Jeder nicht-`ok` Fall des Hauptlaufs trägt eine gelesene Ursache, die nicht dem Fall
-   entstammt** — Rot aus dem falschen Grund: die Fehler-Form passt nicht zum erwarteten Wächter,
-   die Meldung nennt die Infrastruktur —, **und** ist im Teillauf `ok`. Ein Fall, dessen Befund
-   sein eigener ist (`blieb GRUEN`, `rot, aber … falscher Grund` am Wächter selbst, Mutation griff
-   nicht), gehört nicht in die Vereinigung.
+   mit Befund und auch dann, wenn ein Worker wegen eines roten Grün-Vorlaufs in seiner Kopie
+   abbricht (`main` läuft danach bis zum Bericht weiter; kein Test hält die Zeile für diesen
+   Zweig). Endet der volle Lauf vor seinem Bericht, steht keine Zeile da, und es gibt keinen
+   Hauptlauf im Sinne dieser Regel: bei einer Sperre, beim Grün-Vorlauf vor dem Fork
+   (`make test-go`) und bei einem Signal (der `ABGEBROCHEN`-Bericht nennt keinen Schlüssel; im
+   Code gelesen, nicht gefahren). Nennt einer der Läufe keinen oder einen anderen Schlüssel,
+   sind es zwei Aussagen über zwei Bäume.
+2. **Jeder Fall, der in einem der beiden Läufe nicht `ok` ist, trägt dort eine gelesene Ursache,
+   die nicht dem Fall entstammt, und ist im anderen Lauf `ok`.** Rot aus dem falschen Grund: die
+   Fehler-Form passt nicht zum erwarteten Wächter, die Meldung nennt die Infrastruktur. Ein Fall,
+   dessen Befund sein eigener ist (`blieb GRUEN`, `rot, aber … falscher Grund` am Wächter selbst,
+   Mutation griff nicht), und ein Fall, der in keinem der beiden Läufe `ok` ist, gehören nicht in
+   die Vereinigung.
 3. **Die Aussage steht im Bericht, nie im Slot.** Der Slot bleibt ein Beleg des vollen Laufs;
    die Vereinigung schreibt ihn nicht.
 
-**Grenze:** die Vereinigung sagt etwas über den Ausschnitt jedes der zwei Läufe und ihre
-Schnittmenge, nicht über einen einzelnen grünen Vollauf. Der Docker-Cache-Rest aus
+**Grenze:** die Vereinigung sagt etwas über den Ausschnitt jedes der zwei Läufe und über die
+Vereinigung ihrer `ok`-Mengen, nicht über einen einzelnen grünen Vollauf. Der Docker-Cache-Rest aus
 [`ADR-0035`](../../docs/plan/adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
 Festlegung 4 gilt weiter (Cache-Zustand und Host-Werkzeuge deckt kein Schlüssel). Kein Doku-Modul
 hält den Inhalt dieser Regel — sie ist Prosa; der Träger ist die Rolle, die den Beleg liest
