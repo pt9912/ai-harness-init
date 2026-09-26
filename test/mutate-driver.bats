@@ -1125,3 +1125,129 @@ FALL
   grep -qF "unbekannter '# verify:" <<<"$output"
   rm -rf "$fake"
 }
+
+# --- Teillauf: MUTATE_CASES ----------------------------------------------------
+# Der Filter und der Beleg-Slot werden am ECHTEN main() gemessen — der Treiber laeuft als
+# eigener Prozess gegen ein kleines Fake-Repo, `make` ist ein Stub auf $PATH (kein Docker).
+# Repo, Stub und TMPDIR liegen unter EINER Wurzel, aber nur das Repo unter `repo/`: der
+# Schluessel des Belegs deckt alles im Repo, und die Isolation darf nicht darin liegen.
+# Der Stub faerbt `make test` rot, sobald `datei.txt` „mutiert" traegt; der Fall 01-ok
+# mutiert diese Datei (ok), 02-befund mutiert `andere.txt` (der Stub bleibt gruen, also
+# Befund), 03-ungewaehlt ist nur da, um ein Verkleinern des Laufs sichtbar zu machen.
+# tl_case legt einen Fall <1> an, der <2> mutiert und dessen Waechter <3> heisst.
+tl_case() {
+  printf '%s\n' '#!/usr/bin/env bash' "# files: $2" "# expect: $3" '# verify: test' \
+    'set -euo pipefail' "sed -i 's/inhalt/mutiert/' $2" >"$TL_FAKE/test/mutations/$1.sh"
+}
+
+teillauf_fake() {
+  TL_ROOT="$(mktemp -d)"
+  TL_FAKE="$TL_ROOT/repo"
+  mkdir -p "$TL_FAKE"/{harness/tools,test/mutations,.harness/state} "$TL_ROOT/bin" "$TL_ROOT/tmp"
+  cp "$DRIVER" "$TL_FAKE/harness/tools/mutate.sh"
+  tl_case 01-ok datei.txt erwartet-x
+  tl_case 02-befund andere.txt erwartet-y
+  tl_case 03-ungewaehlt datei.txt erwartet-z
+  printf 'inhalt\n' >"$TL_FAKE/datei.txt"
+  printf 'inhalt\n' >"$TL_FAKE/andere.txt"
+  cat >"$TL_ROOT/bin/make" <<'STUB'
+#!/usr/bin/env bash
+for a in "$@"; do
+  if [ "$a" = "-n" ]; then echo "docker build ."; exit 0; fi
+done
+if grep -q mutiert datei.txt 2>/dev/null; then echo "not ok 1 erwartet-x"; exit 1; fi
+exit 0
+STUB
+  chmod +x "$TL_ROOT/bin/make"
+  TL_KEY="$(bash -c "source '$TL_FAKE/harness/tools/mutate.sh' 2>/dev/null || true; isolation_key")"
+  [ -n "$TL_KEY" ]
+}
+
+teillauf() {
+  # $1: Wert von MUTATE_CASES; der Treiber laeuft mit einem Worker im Stub-PATH.
+  run env "PATH=$TL_ROOT/bin:$PATH" MUTATE_JOBS=1 "TMPDIR=$TL_ROOT/tmp" "MUTATE_CASES=$1" \
+    bash "$TL_FAKE/harness/tools/mutate.sh"
+}
+
+@test "driver: MUTATE_CASES mit unbekanntem Namen bricht ab, nennt den Namen, kopiert nichts" {
+  teillauf_fake
+  printf 'stehender-beleg\n' >"$TL_FAKE/.harness/state/mutate-passed.key"
+  teillauf '01-ok gibt-es-nicht'
+  [ "$status" -eq 1 ]
+  grep -qF "mutate: ABBRUCH — MUTATE_CASES nennt einen unbekannten Fall: 'gibt-es-nicht'" <<<"$output"
+  [ -z "$(ls -A "$TL_ROOT/tmp")" ]
+  [ "$(cat "$TL_FAKE/.harness/state/mutate-passed.key")" = "stehender-beleg" ]
+  rm -rf "$TL_ROOT"
+}
+
+@test "driver: MUTATE_CASES gesetzt, aber leer, bricht ab statt den vollen Lauf zu fahren" {
+  teillauf_fake
+  local v
+  for v in "" "   "; do
+    teillauf "$v"
+    [ "$status" -eq 1 ]
+    grep -qF 'mutate: ABBRUCH — MUTATE_CASES ist gesetzt, nennt aber keinen Fall' <<<"$output"
+    [ -z "$(ls -A "$TL_ROOT/tmp")" ]
+  done
+  rm -rf "$TL_ROOT"
+}
+
+@test "driver: MUTATE_CASES mit doppeltem Namen bricht ab und nennt den Namen" {
+  teillauf_fake
+  teillauf '01-ok 02-befund 01-ok'
+  [ "$status" -eq 1 ]
+  grep -qF "mutate: ABBRUCH — MUTATE_CASES nennt '01-ok' mehrfach" <<<"$output"
+  [ -z "$(ls -A "$TL_ROOT/tmp")" ]
+  rm -rf "$TL_ROOT"
+}
+
+# Der Filter ist eine ausdrueckliche Anfrage: er faehrt auch dann, wenn der Beleg zum
+# AKTUELLEN Schluessel steht — der Uebersprung greift nur ohne Filter. Gemessen wird, dass
+# der Fall lief (seine ok-Zeile) und nur er (03 steht nicht in der Ausgabe).
+@test "driver: ein Teillauf faehrt trotz stehendem Beleg zum aktuellen Schluessel" {
+  teillauf_fake
+  printf '%s\n' "$TL_KEY" >"$TL_FAKE/.harness/state/mutate-passed.key"
+  teillauf '01-ok'
+  [ "$status" -eq 0 ]
+  [ "$(grep -cF 'Kein Fall-Lauf' <<<"$output")" -eq 0 ]
+  grep -qE 'mutate: ok +01-ok ' <<<"$output"
+  [ "$(grep -cF '03-ungewaehlt' <<<"$output")" -eq 0 ]
+  rm -rf "$TL_ROOT"
+}
+
+@test "driver: ein Teillauf schreibt den Beleg-Slot nie" {
+  teillauf_fake
+  [ ! -e "$TL_FAKE/.harness/state/mutate-passed.key" ]
+  teillauf '01-ok'
+  [ "$status" -eq 0 ]
+  grep -qE 'mutate: 1 ok, 0 Befund' <<<"$output"
+  [ ! -e "$TL_FAKE/.harness/state/mutate-passed.key" ]
+  rm -rf "$TL_ROOT"
+}
+
+@test "driver: ein Teillauf mit Befund laesst einen stehenden Beleg byte-gleich stehen" {
+  teillauf_fake
+  printf 'stehender-beleg\nzweite-zeile\n' >"$TL_FAKE/.harness/state/mutate-passed.key"
+  cp "$TL_FAKE/.harness/state/mutate-passed.key" "$TL_ROOT/vorher.key"
+  teillauf '01-ok 02-befund'
+  [ "$status" -eq 1 ]
+  grep -qE 'BEFUND +02-befund' <<<"$output"
+  cmp "$TL_ROOT/vorher.key" "$TL_FAKE/.harness/state/mutate-passed.key"
+  rm -rf "$TL_ROOT"
+}
+
+# `TEILLAUF … kein Beleg` ist die Zeile, die ein Leser statt eines Belegs zitieren koennte;
+# der Test liest die AUSGABE eines gruenen Teillaufs und nennt bei Rot, was dort stand.
+@test "driver: die Ausgabe eines gruenen Teillaufs sagt kein Beleg, nennt Schluessel und ok-Faelle" {
+  teillauf_fake
+  teillauf '01-ok'
+  [ "$status" -eq 0 ]
+  if ! grep -qF 'mutate: TEILLAUF 1 von 3 — kein Beleg' <<<"$output"; then
+    echo "die Ausgabe nennt kein 'TEILLAUF 1 von 3 — kein Beleg'; sie lautet:" >&3
+    echo "$output" | grep -i 'teillauf\|beleg' >&3 || echo "(keine Zeile mit Teillauf oder Beleg)" >&3
+    false
+  fi
+  grep -qF "mutate: Pruefgegenstand $TL_KEY" <<<"$output"
+  grep -qF 'mutate: ok-Faelle: 01-ok' <<<"$output"
+  rm -rf "$TL_ROOT"
+}

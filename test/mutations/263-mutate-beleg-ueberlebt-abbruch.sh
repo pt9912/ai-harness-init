@@ -11,7 +11,8 @@
 # unerzwungene Aufruf meldet faelschlich "unveraendert", Exit 0.
 #
 # Anker ohne literales Dollar (SC2016, wie die uebrigen Faelle in diesem Verzeichnis):
-# `  clear_belief` allein auf einer Zeile ist eindeutig der neue Aufruf in main(),
-# `clear_belief()` (die Definition, zwei Zeilen davor mit Klammern) bleibt unberuehrt.
+# die Zeile mit `|| clear_belief` (zwei Leerzeichen Einrueckung) ist eindeutig der Aufruf in
+# main() -- er steht hinter der Teillauf-Bedingung --, `clear_belief()` (die Definition,
+# zwei Zeilen davor mit Klammern) bleibt unberuehrt.
 set -euo pipefail
-sed -i '/^  clear_belief$/d' harness/tools/mutate.sh
+sed -i '/^  \[ -n .* || clear_belief$/d' harness/tools/mutate.sh

@@ -83,6 +83,19 @@
 # danach zu diesem frueheren, tatsaechlich gruenen Stand zurueck, faehrt der naechste
 # Lauf trotzdem wieder voll.
 #
+# TEILLAUF (MUTATE_CASES): `MUTATE_CASES='<fall> <fall> …'` faehrt nur die genannten Faelle;
+# ein Name ist der Fall-Name, wie ihn `mutate: BEFUND  <fall>` nennt, mehrere sind durch
+# Leerzeichen getrennt. Ein unbekannter, ein leerer (gesetzt, ohne Namen) und ein doppelt
+# genannter Name enden mit ABBRUCH und dem Namen, bevor eine Isolationskopie entsteht
+# (select_cases). Der Beleg-Slot gehoert dem VOLLEN Lauf: ein Teillauf uebergeht ihn nie
+# (der Filter ist eine ausdrueckliche Anfrage, auch bei passendem Schluessel), schreibt ihn
+# nie (kein finalize_belief), loescht ihn nie (keine Sofort-Entwertung) und sagt in seiner
+# Ausgabe `TEILLAUF <n> von <total> — kein Beleg` samt Schluessel und ok-Faellen
+# (report_partial). Ein Teillauf mit Befund laesst einen stehenden Beleg stehen: der Slot
+# sagt „der letzte VOLLE Lauf war gruen", das bleibt eine Aussage ueber jenen Lauf; der
+# Befund steht im Exit und in der Ausgabe des Teillaufs. Sensor: test/mutate-driver.bats
+# „driver: ein Teillauf schreibt den Beleg-Slot nie".
+#
 # NICHT in `make gates` — der Grund ist die LAUFZEIT: je Fall ein voller Sensor-Lauf,
 # und die Fall-Menge waechst mit jedem bewachten Waechter. Was der Lauf HEUTE kostet,
 # sagt er selbst am Ende (`report_times`), statt es hier als Zahl zu behaupten, die mit
@@ -601,6 +614,42 @@ failure_form() {
     ci-lint) printf '%s' ':[0-9]+:[0-9]+:' ;;          # actionlint file:line:col: (nur bei Fehler)
     *)       return 1 ;;
   esac
+}
+
+# select_cases prueft den Wert <2> von MUTATE_CASES gegen die Fall-Dateien unter <1> und
+# liefert die gewaehlten Namen zeilenweise auf stdout. Exit 1 mit einer Meldung, die den
+# Namen nennt, bei einem leeren Wert (gesetzt, aber ohne Namen), einem unbekannten Namen
+# (keine Datei `<name>.sh` dort; ein Name mit `/` ist nie ein Fall-Name) und einem doppelt
+# genannten Namen — nichts davon wird uebergangen: ein still verkleinerter Lauf waere ein
+# Gruen ueber weniger Faellen, als der Aufrufer angefragt hat.
+select_cases() {
+  local cases_dir="$1" spec="$2" name seen=" "
+  local -a wanted=()
+  IFS=$' \t\n' read -r -d '' -a wanted <<<"$spec" || true
+  if [ "${#wanted[@]}" -eq 0 ]; then
+    echo "mutate: ABBRUCH — MUTATE_CASES ist gesetzt, nennt aber keinen Fall (gelesen: '$spec')." >&2
+    return 1
+  fi
+  for name in "${wanted[@]}"; do
+    case "$name" in
+      */* | "")
+        echo "mutate: ABBRUCH — MUTATE_CASES nennt einen unbekannten Fall: '$name'." >&2
+        return 1
+        ;;
+    esac
+    if [ ! -f "$cases_dir/$name.sh" ]; then
+      echo "mutate: ABBRUCH — MUTATE_CASES nennt einen unbekannten Fall: '$name' (keine Datei $cases_dir/$name.sh)." >&2
+      return 1
+    fi
+    case "$seen" in
+      *" $name "*)
+        echo "mutate: ABBRUCH — MUTATE_CASES nennt '$name' mehrfach." >&2
+        return 1
+        ;;
+    esac
+    seen="$seen$name "
+    printf '%s\n' "$name"
+  done
 }
 
 # show_tail zeigt die letzten Zeilen des Sensor-Logs $1 eingerueckt auf stderr. Das Log
@@ -1468,6 +1517,22 @@ report_times() {
   '
 }
 
+# report_partial ist die Schlusszeile eines Teillaufs: <1> gewaehlte Faelle von <2> Faellen im
+# Verzeichnis, Schluessel <3> des Pruefgegenstands (leer: nicht berechenbar) und die Namen der
+# ok-Faelle aus den gueltigen Statuszeilen (collect_status). Sie steht auch bei einem
+# Befund — `kein Beleg` ist die Aussage ueber den Lauf, nicht ueber sein Ergebnis.
+report_partial() {
+  local n="$1" all="$2" key="$3" ok
+  ok="$(collect_status "$n" | awk -F'\t' '$3 == "OK" { printf "%s ", $2 }')"
+  echo "mutate: TEILLAUF $n von $all — kein Beleg (der Beleg-Slot bleibt unberuehrt)."
+  if [ -n "$key" ]; then
+    echo "mutate: Pruefgegenstand $key"
+  else
+    echo "mutate: Pruefgegenstand nicht berechenbar (kein Schluessel)"
+  fi
+  echo "mutate: ok-Faelle: ${ok:-keine}"
+}
+
 # Hauptteil gekapselt, damit test/mutate-driver.bats die Funktionen SOURCEN
 # kann, ohne den ganzen Lauf auszuloesen. Ohne die Kapselung fuehrt jedes
 # `source` den Gruen-Vorlauf und die Mutations-Schleife aus — mein erster
@@ -1516,6 +1581,16 @@ main() {
 
   [ -d "$CASES_DIR" ] || { echo "mutate: $CASES_DIR fehlt" >&2; exit 1; }
 
+  # TEILLAUF: `${MUTATE_CASES+x}` unterscheidet „gesetzt, aber leer" von „nicht gesetzt" —
+  # ein leerer Wert ist eine Anfrage ohne Namen und bricht ab (select_cases), er faellt
+  # nicht auf den vollen Lauf zurueck. Die Pruefung steht vor Beleg-Schluessel,
+  # Sofort-Entwertung und jeder Isolationskopie: ein Abbruch hier beruehrt den Slot nicht.
+  local partial="" selected=""
+  if [ -n "${MUTATE_CASES+x}" ]; then
+    partial=1
+    selected="$(select_cases "$CASES_DIR" "$MUTATE_CASES")" || exit 1
+  fi
+
   # BELEG STATT LAUF (ADR-0035): belief_key traegt den Schluessel des LAUFENDEN Baums
   # durch main() — fuer den Vergleich hier UND fuer finalize_belief am Ende. Berechnet
   # einmal, VOR jeder Isolations-Kopie, weil er den Baum-Zustand festhalten soll, den
@@ -1535,9 +1610,13 @@ main() {
   # Bedingungen 1-5.
   local belief_key=""
   if ! belief_key="$(isolation_key)"; then
-    echo "mutate: Schluessel nicht berechenbar — Beleg-Uebersprung fuer diesen Lauf deaktiviert." >&2
+    if [ -n "$partial" ]; then
+      echo "mutate: Schluessel nicht berechenbar — der Teillauf nennt keinen Pruefgegenstand." >&2
+    else
+      echo "mutate: Schluessel nicht berechenbar — Beleg-Uebersprung fuer diesen Lauf deaktiviert." >&2
+    fi
     belief_key=""
-  elif [ -z "${MUTATE_FORCE:-}" ] && [ -f "$BELIEF" ] && [ "$(cat "$BELIEF" 2>/dev/null)" = "$belief_key" ]; then
+  elif [ -z "$partial" ] && [ -z "${MUTATE_FORCE:-}" ] && [ -f "$BELIEF" ] && [ "$(cat "$BELIEF" 2>/dev/null)" = "$belief_key" ]; then
     echo "mutate: Beleg fuer Pruefgegenstand $belief_key liegt vor (.harness/state/mutate-passed.key, $(date -r "$BELIEF" '+%Y-%m-%d %H:%M:%S')) — seit dem letzten vollstaendig gruenen Lauf unveraendert. Kein Fall-Lauf."
     echo "mutate: MUTATE_FORCE=1 erzwingt einen vollen Lauf; ungedeckt bleiben Docker-Cache-Zustand und Host-Werkzeuge (ADR-0035 Festlegung 4)."
     exit 0
@@ -1556,7 +1635,8 @@ main() {
   # er zum aktuellen Baum passte: ein Beleg gilt erst wieder, wenn DIESER Lauf ihn neu verdient
   # hat. Sensor: test/mutations/263 (bricht den Gruen-Vorlauf-Analogon-Fall ab und verlangt,
   # dass der naechste Aufruf wieder voll faehrt statt "unveraendert" zu melden).
-  clear_belief
+  # Ein Teillauf entwertet nicht: seine Aussage reicht nicht bis zum Slot (s. TEILLAUF im Kopf).
+  [ -n "$partial" ] || clear_belief
 
   # ISOLATION: den Baum EINMAL nach ausserhalb des Repos kopieren. Ab hier trifft
   # keine Mutation mehr den Host-Baum — parallele Gate-/Test-Laeufe in diesem Repo
@@ -1571,6 +1651,18 @@ main() {
     # einen Rechen-Fehler statt der wahren Ursache.
     echo "mutate: keine Faelle in $CASES_DIR — ein leeres Set ist kein gruener Lauf" >&2
     exit 1
+  fi
+  # Der Filter wirkt auf die Fall-LISTE, nicht auf die Worker: was danach `total` heisst, ist
+  # die Zahl der gewaehlten Faelle, und die Vollstaendigkeit (merge_report) misst gegen sie.
+  # Die Reihenfolge bleibt die sortierte des Verzeichnisses, nicht die der Anfrage.
+  local all_total="${#cases[@]}" cf
+  if [ -n "$partial" ]; then
+    local -a chosen=()
+    for cf in "${cases[@]}"; do
+      if grep -qxF "$(basename "$cf" .sh)" <<<"$selected"; then chosen+=("$cf"); fi
+    done
+    cases=("${chosen[@]}")
+    echo "mutate: MUTATE_CASES waehlt ${#cases[@]} von $all_total Faellen — Teillauf."
   fi
 
   local host_after
@@ -1719,7 +1811,11 @@ main() {
 
   report_times "$total"
   echo "mutate: $pass_count ok, $fail_count Befund(e)"
-  finalize_belief "$belief_key"
+  if [ -n "$partial" ]; then
+    report_partial "$total" "$all_total" "$belief_key"
+  else
+    finalize_belief "$belief_key"
+  fi
   [ "$fail_count" -eq 0 ]
 }
 
