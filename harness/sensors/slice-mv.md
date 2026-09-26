@@ -57,7 +57,12 @@ Datei, repo-weit außer `.harness/baseline/**` (unveränderter Fremdtext) und `d
 (eine `Accepted`-ADR bekommt keinen Byte-Nachzug —
 [`ADR-0042`](../../docs/plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 2) —
 `docs/plan/planning/done/**` **und** `docs/reviews/**` sind **nicht** ausgenommen, ihre
-Verweise sind reale, von `docs-check` geprüfte Links. Dazu ersetzt es **eingehend** den
+Verweise sind reale, von `docs-check` geprüfte Links. In `done/` gilt der Nachzug in jeder Form;
+unter `docs/reviews/**` ersetzt er die Adresse **nur als Ziel eines Markdown-Links**
+(unmittelbar hinter `](`, bis `)` oder `#`) — ein Pfad im reinen Code-Span, als Operand in einem
+Kommando, im Code-Block und im Fließtext bleibt Byte für Byte
+([`ADR-0070`](../../docs/plan/adr/0070-der-verweis-nachzug-schreibt-in-docs-reviews-nur-die-link-form.md)
+Festlegung 1). Dazu ersetzt es **eingehend** den
 präfixlosen Markdown-Link auf die bewegte Datei, auch mit Anker, in den getrackten Dateien, die flach
 im Ausgangsverzeichnis liegen: er bekommt `../<neues-verzeichnis>/` vorangestellt, unter derselben
 Ausnahmeliste. **Ausgehend** hängt präfixlosen Zielen
@@ -66,7 +71,7 @@ Geschwister-Slice referenzieren, `../<altes-verzeichnis>/` an — eine nummerier
 (`slice-NNN…`) trifft das Fundmuster ebenso wie eine benannte (`slice-<slug>`, ein Slug aus
 Kleinbuchstaben, Ziffern und Bindestrich).
 
-Vier gemessene Grenzen (Skriptkopf `harness/tools/slice-mv.sh`): es zieht Pfade nach, keine
+Fünf gemessene Grenzen (Skriptkopf `harness/tools/slice-mv.sh`): es zieht Pfade nach, keine
 Zustandssätze; Welle-Plan-Dateien (Tiefenwechsel beim Closure-Move) bleiben außen vor; die
 präfixlose Eingehend-Ersetzung erkennt allein den Markdown-Link in flachen Geschwistern und liest
 kein Markdown — eine andere Schreibweise desselben Verweises (ein Link mit vorangestelltem Punkt-Segment,
@@ -75,7 +80,14 @@ selbst mit genau diesem Namen in einem Code-Span oder Code-Block, wird sie miter
 zweite Namensform
 aus [`MR-057`](../conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
 Setzung 1 — das Präfix eines vorhandenen Ankers (`LH-*`, `ADR-*`, `CO-*`), in diesem Repo
-großgeschrieben — trifft die Zeichenklasse des Fundmusters nicht.
+großgeschrieben — trifft die Zeichenklasse des Fundmusters nicht; und die Form-Regel unter
+`docs/reviews/**` liest ebenfalls kein Markdown: Link-Syntax, die als Zitat in einem Code-Span
+steht, wird mitersetzt. Diese Span-Hälfte bindet ein Fall in `test/slice-mv.bats`; für das Zitat
+in einem Code-Block bindet kein Fall die Grenze, und die Referenz-Definition `[name]: ziel` ist
+nicht Teil der Regel — beides benannte Lücken
+([`ADR-0070`](../../docs/plan/adr/0070-der-verweis-nachzug-schreibt-in-docs-reviews-nur-die-link-form.md)
+Festlegung 1, Trigger 6 und 7). Die Regel besteht, solange `.d-check.yml` unter `codepaths`
+`docs/reviews/**` ausnimmt (Trigger 1); ein Kopplungs-Test dafür führt dieses Werkzeug noch nicht.
 
 **Die präfixlose Ersetzung ist ohne Repository gedeckt:** `test/slice-mv.bats` ruft sie in beiden
 Fassungen auf und hält den ganzen Dateiinhalt einer Probe fest — die ersetzten Links, dazu
@@ -84,6 +96,18 @@ längeren Namen mit demselben Anfang.
 `test/mutations/363-slice-mv-eingehend-verliert-geschwister-ersetzung.sh` nimmt ihr das `sed` und
 färbt diesen Fall rot. Welche Dateien `main()` ihr übergibt, fährt keine bats-Stufe; das misst die
 Tabelle unter §Kanten.
+
+**Die Form-Regel unter `docs/reviews/` ist in zwei Stufen gedeckt.** `test/slice-mv.bats` ruft
+`rewrite_incoming_nach_baum` (den Zweig je Baum) und `rewrite_incoming_links_in_file` (die Regel
+selbst) in der Dogfood-Fassung auf: eine Datei unter `docs/reviews/` mit dem Link und den vier
+Nicht-Link-Formen (reiner Pfad-Span, Operand, Code-Block, Fließtext) hält den ganzen
+Dateiinhalt fest, eine Datei unter `done/` denselben Bestand mit jeder Form nachgezogen.
+`TestSliceMvEchtSchreibtInReportsNurDieLinkForm` (`make test-go`) fährt `main()` als echten Prozess
+über dieselbe Probe. Die Fälle `test/mutations/459-slice-mv-reports-verlieren-die-form-regel.sh`
+(Form-Regel entfällt), `460-slice-mv-reports-verlieren-den-link-nachzug.sh` (Link-Nachzug
+entfällt), `461-slice-mv-form-regel-greift-in-done.sh` (Regel auf `done/` ausgedehnt) und
+`462-slice-mv-main-umgeht-den-pfad-zweig.sh` (`main()` ruft den Zweig nicht) färben je den Test
+rot, der ihn bindet.
 
 Details und Beleg stehen im Kopf von `harness/tools/slice-mv.sh`, Abschnitt BELEG.
 
@@ -161,7 +185,10 @@ Funktionen der Liste `KERN` in `test/slice-mv.bats`: `make test-bats` vergleicht
 `harness/tools/slice-mv.sh` und der emittierten Fassung, weißraum-normalisiert — die eingehende
 Ersetzung trifft damit im Ziel dieselben Präfix-Formen wie hier. Die Skript-Köpfe und alles
 Übrige vergleicht er nicht — die zwei Dateien sind nicht als Ganzes gleich, und die Zusage gilt
-den Ersetzungs-Regeln, nicht der Gleichheit. Die Zwei-Commit-Sequenz fährt diese Stufe nicht: der
+den Ersetzungs-Regeln, nicht der Gleichheit. Die Form-Regel unter `docs/reviews/` liegt
+außerhalb der Liste `KERN`: die emittierte Fassung führt sie nicht, ihr Nachzug ersetzt dort wie
+zuvor jede Form (die Regel gilt für dieses Repo,
+[`ADR-0070`](../../docs/plan/adr/0070-der-verweis-nachzug-schreibt-in-docs-reviews-nur-die-link-form.md)). Die Zwei-Commit-Sequenz fährt diese Stufe nicht: der
 Vergleich ruft die Funktionen ohne Repository auf, und der Ablauf mit `git` gehört ins Ziel, wo
 `make full-smoke` ihn trägt. Gefahren wird die Kette über der `--lang-go`-Variante des
 Bootstraps; dass Fragment und Skript auch sprachlos unter denselben Pfaden liegen, hält
