@@ -36,8 +36,7 @@ das Baseline-Regelwerk
 die maschinelle Hälfte der Paarung (c)) und die
 [Register-README](../observations/README.md) (Absatz *Ein Vorgang zählt einmal*),
 [ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
-(**Proposed** — der Vorschlag des Architect zur Lesart-Frage, die dieser Slice trägt; der Slice nennt sie als
-Bezug und nimmt sie nicht als angenommen),
+(**Accepted** — die Entscheidung der Lesart-Frage, die dieser Slice trug),
 [ADR-0049](../../adr/0049-ausgang-traegt-die-benannte-luecke.md) (Festlegung 2 — hat eine Klasse
 keinen Zielort, schneidet der Lese-Schritt einen Träger; das ist der Schnitt),
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) (eine
@@ -157,11 +156,11 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow ([`AGENTS.md`](../../../../AGENTS.md) §6), kein Self-Review (Modul 8).
 - [ ] Doku-Update: **das ist Liefer-Punkt (1)** — der Träger der Regel ist die Register-Regel selbst.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — **kein Zähler wird gesetzt**, er
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — **kein Zähler wird gesetzt**, er
       folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7
       notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne**
       Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für
       Slices ohne Wellen-Zugehörigkeit).
@@ -245,15 +244,32 @@ dasteht.
   Fall aus ihrer Prüfung — das ist eine Lockerung nach
   [`AGENTS.md`](../../../../AGENTS.md) §3.5 und braucht die ADR (Liefer-Punkt (1) verlangt sie
   ausdrücklich). **Gegenmittel im Plan:** die Antwort (b) ist ausdrücklich ADR-pflichtig. —
-  **Ausgang:** <…>
+  **Ausgang: entfallen.** Die Antwort ist (a), nicht (b):
+  [ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  wählt *„die Baseline gilt wörtlich, ein Verzeichnis ohne Beleg ist ein Befund der Paarung"* und
+  schafft keine Ausnahme (Festlegung 2 — *„kennt keine Ausnahme"*); die Ausnahme-Form ist dort die
+  verworfene Alternative B. Damit nimmt die Paarung keinen Fall aus ihrer Prüfung, es liegt keine
+  Lockerung nach [`AGENTS.md`](../../../../AGENTS.md) §3.5 vor, und ein Adaptions-Eintrag entsteht
+  nicht (§Konsequenzen derselben ADR).
 - **(2) Die Entscheidung fällt am Wortlaut statt am Bestand.** Beide Lesarten hängen daran, wie viele
   Einträge heute ohne Beleg stehen; wer die Menge nicht misst, entscheidet über einen Bestand, den er
-  nicht gesehen hat. **Gegenmittel im Plan:** §1 nennt das Kommando. — **Ausgang:** <…>
+  nicht gesehen hat. **Gegenmittel im Plan:** §1 nennt das Kommando. —
+  **Ausgang: entfallen.**
+  [ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  §Kontext misst den Bestand mit Kommandos, bevor sie entscheidet: die Verzeichnisse ohne Beleg (Kommando und Namen in §7) und, ob die
+  Überschrift *„Benannt, nicht gezählt"* ein beleglos-Merkmal trägt (sie trennt nicht: die Mehrzahl der
+  Verzeichnisse, die sie tragen, hat Belege). Die Entscheidung fiel am Bestand, nicht am Wortlaut allein.
 - **(3) Der Sensor über der Schwelle wird vor dieser Entscheidung gebaut.** Dann prüft er eine Form,
   die niemand entschieden hat, und die Ausnahme für (b) fehlt in ihm. **Gegenmittel im Plan:**
   [slice-register-ueber-der-schwelle-bekommt-seinen-waechter](../next/slice-register-ueber-der-schwelle-bekommt-seinen-waechter.md)
   führt in §1 *„Keine Entscheidung über den Ausgang selbst"* und startet erst danach. —
-  **Ausgang:** <…>
+  **Ausgang: entfallen.** Die Entscheidung liegt vor
+  ([ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md),
+  `Accepted`), und der Sensor ist nicht gebaut: der Wächter-Slice liegt in `next/`, `in-progress/`
+  trägt keinen Slice (`ls docs/plan/planning/in-progress/ | grep -c '^slice-'` → 0; keine Erwartung).
+  Was der Wächter nach der Entscheidung prüft, bindet dieselbe ADR: Folgepflicht 2 (er zählt Dateien `evidence/*.md`) und
+  Re-Evaluierungs-Trigger 2 (der Bestand wird durch Belege getilgt, nicht durch eine Ausnahmeliste im
+  Wächter).
 
 ## 7. Closure-Notiz
 
@@ -265,14 +281,68 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register:** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** dieses **Repo** fährt Wellen — Anker, Folge-Slice und Register prüft die
-  nächste Welle-Closure, auch für diesen Slice ohne Wellen-Zugehörigkeit.
+- **Gegenstand:** entfallen: die Lesart der Beleg-Regel ist durch
+  [ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  entschieden (mit Gegenposition in den Alternativen B, C, D, F und dem Beleg des Accept-Übergangs;
+  die Register-README trägt sie).
+- **Liefer-Punkte:** Der Liefer-Punkt der DoD bleibt leer, denn geliefert hat dieser Slice nichts.
+  Leer bleiben auch der Gate-Lauf, der Review-Report und das Doku-Update, weil alle drei an einer
+  Lieferung dieses Slice hängen; die Entscheidung trägt ihren eigenen Review (die Konsistenz-Runde
+  und die Kurzrunde, die die ADR als Accept-Beleg nennt), die Register-README ihren eigenen
+  Doku-Commit.
+- **Was hat funktioniert:** Der Slice hielt die Lesart-Frage als benannte Adresse: neun Dateien in
+  `done/` nennen seine Kennung als Träger der Entscheidung
+  (`git grep -l -E 'slice-beleglose-register-eintraege-bekommen-eine-lesar[t]' -- docs/plan/planning/done | wc -l`
+  → 9, keine Erwartung), und die Frage wurde nirgends stillschweigend mitentschieden. Die ADR nennt
+  ihre Gegenposition, misst den Bestand mit Kommando und benennt, was sie nicht entscheidet.
+- **Was ging anders als geplant:** Nicht dieser Slice hat die Entscheidung getragen, sondern ein
+  Sammelauftrag an den Architect (Verdikt `2026-09-26-architect-verdikt-sammelauftrag-register-und-adr-0035`,
+  Frage 4; Korrektur `2026-09-26-architect-verdikt-korrektur-adr-0035-0068-0069`, R-69-1). Der Slice
+  durchlief `in-progress/` nicht, blieb in `open/` und verlor seinen Gegenstand. Die Anker-Regel des
+  Slice-Kriteriums 2 (`seit slice-<Kennung>`) passt darum nicht: siehe nächster Punkt.
+- **Steering-Loop-Eintrag (Form: geschärfte Regel).** Die Regel *„ein Verzeichnis ohne Beleg ist ein
+  Befund der Paarung (c), keine Ausnahme; die zweite Hälfte von (c) gilt im Closure-Schritt über das
+  ganze Register und nennt jedes beleglose Verzeichnis namentlich"* steht in
+  [ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  Festlegungen 1 bis 4 und in der [Register-README](../observations/README.md) (die Absätze
+  *Ein Verzeichnis ohne Beleg ist ein Befund der Register-Paarung (c)* und *Die zweite Hälfte von (c)*).
+  **Das Feld `liegt in` ist nicht gesetzt**, weil der Zielort eine ADR ist: was aus einer ADR folgt, trägt
+  deren Kennung als Herkunft und keinen Anker `seit slice-<Kennung>` (Baseline-Regelwerk
+  `grundlagen-traceability.md` §Herkunfts-Anker, Geltungsbereich). Die Anker-Paarung (a) hat für diesen
+  Eintrag darum keinen Gegenstand und wird hier **nicht** als getragen behauptet. Das Kriterium 2 aus §5
+  ist in seinem ersten Teil erfüllt (die Datei, die die Beleg-Regel führt, nennt die Lesart), in seinem
+  zweiten nicht in der geforderten Form (ein Anker `seit slice-<Kennung>` steht dort nicht, und für eine
+  Regel aus einer ADR ist er die falsche Herkunft). Auslöser ist
+  [`BEO-ALL/unbelegter-register-eintrag-faellt-durch-die-paarung`](../observations/BEO-ALL/unbelegter-register-eintrag-faellt-durch-die-paarung/observation.md)
+  (`ls docs/plan/planning/observations/BEO-ALL/unbelegter-register-eintrag-faellt-durch-die-paarung/evidence/*.md | wc -l`
+  → 3, keine Erwartung; Stand `verkörpert`). **Grenze:** ein Wächter existiert nicht — kein Modul der
+  Doku-Gate-Konfiguration hält die zweite Hälfte von (c); Träger ist der Lauf, der die Paarung fährt.
+- **Beobachtungs-Register:** keine Beobachtung angefallen. Dieser Abschluss trifft die Klasse nicht: er
+  verwaltet die Beobachtung nur, und ein Vorgang, der das tut, ist nach Festlegung 3 der ADR kein
+  Auftreten und legt keine Datei unter `evidence/` an. Kein Zähler wird gesetzt. Kein Register-Eintrag
+  nennt diesen Slice als Träger mehr
+  (`grep -rl 'slice-beleglose-register-eintraege-bekommen-eine-lesart' docs/plan/planning/observations | wc -l`
+  → 0, keine Erwartung); der Ausgang der Auslöser-Beobachtung steht in deren `state.md`.
+- **Folge-Slices:** keiner. Der Wächter-Slice
+  [slice-register-ueber-der-schwelle-bekommt-seinen-waechter](../next/slice-register-ueber-der-schwelle-bekommt-seinen-waechter.md)
+  ist ein Nachbar, kein Folge-Slice dieses Abschlusses; seine Zustandssätze zur ADR sind auf
+  `Accepted` und `verkörpert` gezogen, DoD und Liefer-Punkte sind unberührt.
+- **Risiken aus §6:** drei, je ein Ausgang — alle *entfallen* mit Begründung (§6): (1) die Antwort ist (a),
+  eine Ausnahme entsteht nicht; (2) die Entscheidung misst den Bestand mit Kommando; (3) die
+  Entscheidung liegt vor, der Sensor ist nicht gebaut. Keines ist *eingetreten*, keines *weiter offen*.
+- **Adressen vor dem Move ([`AGENTS.md`](../../../../AGENTS.md) §3.11):** die Kennung dieses Slice steht in
+  der ADR und in den Verdikten nicht als Pfad (`git grep -n 'slice-beleglose-register-eintraege-bekommen-eine-lesar[t]' -- docs/plan/adr | wc -l`
+  → 0; in `docs/reviews/` nennt sie ein Verdikt als Kennung im Code-Span, ohne Pfad). **Ein eingefrorenes
+  Artefakt nennt sie als Pfad:** die Ergebnis-Notiz `welle-emittierte-werkzeuge-results.md` in `done/`
+  trägt zwei Markdown-Links mit dem Ziel in `open/`
+  (`git grep -c -E 'open/slice-beleglose-register-eintraege-bekommen-eine-lesar[t]' -- docs` → 2 in dieser
+  einen Datei; keine Erwartung). **Entscheidung vor dem Move:** der Nachzug des Werkzeugs zieht diese
+  zwei Links mit, weil `done/**` nicht zu seinen Ausnahmen gehört und die Links von `docs-check`
+  geprüft werden (`harness/sensors/slice-mv.md` §Grenze); ein Rückbau ließe zwei tote Links und ein
+  rotes Doku-Gate. Die Frage dahinter — eine Ergebnis-Notiz nennt einen Träger, den der Prozess
+  bewegt, als Pfad — ist benannt und an den Architect gemeldet, hier nicht entschieden.
+- **Drei Paarungen:** dieses **Repo** fährt Wellen — die Prüfung nach dem `git mv` gegen `done/` steht im
+  Nachtrag.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
@@ -292,8 +362,10 @@ liegt repo-weit, ihre Regel steht in
 ihre Leser sind die Rollen dieses Repos.
 
 **Vorgelagert — offene Beobachtungen sichten:** Das Register ist durchgegangen; **der Gegenstand
-dieses Slice ist selbst ein Eintrag über der Schwelle** und trägt inzwischen einen Ausgang
-(`geplant`, dieser Träger). Drei Nachbarn derselben Fläche, gemessen
+dieses Slice ist selbst ein Eintrag über der Schwelle** und trägt einen Ausgang
+(`verkörpert`, Zielort
+[ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)).
+Drei Nachbarn derselben Fläche, gemessen
 ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)
 Setzung 2):
 
