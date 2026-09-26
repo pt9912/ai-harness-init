@@ -95,7 +95,7 @@ Beleg …` (auch bei einem Befund), der Prüfgegenstand-Schlüssel (`mutate: Pru
 oder `nicht berechenbar`) und die Namen der `ok`-Fälle. Die Kosten des Teillaufs nennt sein eigener
 Bericht (`report_times`); Isolationskopie und Grün-Vorlauf fallen je Worker an, gespart wird der
 Fall-Anteil. Gehalten wird das von `test/mutate-driver.bats` (Blöcke „Teillauf: MUTATE_CASES") und
-den Fällen 453 bis 457 in `test/mutations/`.
+den Fällen 453 bis 458 in `test/mutations/`.
 
 ## Zwei Läufe, eine Aussage
 
@@ -105,7 +105,10 @@ Vereinigung von Hauptlauf und Teillauf als Aussage tragen — **nur wenn** alle 
 gelten:
 
 1. **Beide Läufe nennen denselben Prüfgegenstand-Schlüssel** (`mutate: Pruefgegenstand <hash>`).
-   Nennt einer keinen oder einen anderen, sind es zwei Aussagen über zwei Bäume.
+   Ein Teillauf nennt die Zeile in seiner Ausgabe, ein voller Lauf nach seinem Bericht — auch
+   mit Befund. Endet der volle Lauf vorher (Sperre, Grün-Vorlauf, Signal), steht keine Zeile da,
+   und es gibt keinen Hauptlauf im Sinne dieser Regel. Nennt einer keinen oder einen anderen
+   Schlüssel, sind es zwei Aussagen über zwei Bäume.
 2. **Jeder nicht-`ok` Fall des Hauptlaufs trägt eine gelesene Ursache, die nicht dem Fall
    entstammt** — Rot aus dem falschen Grund: die Fehler-Form passt nicht zum erwarteten Wächter,
    die Meldung nennt die Infrastruktur —, **und** ist im Teillauf `ok`. Ein Fall, dessen Befund
