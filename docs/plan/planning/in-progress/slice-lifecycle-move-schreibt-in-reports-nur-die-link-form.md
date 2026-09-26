@@ -178,7 +178,7 @@ und der Kopplungs-Slice laufen unabhängig.
 **Adress-Messung vor dem Move** ([`AGENTS.md`](../../../../AGENTS.md) §3.11): kein Artefakt außerhalb
 dieser Datei nennt sie als Pfad, weder mit `open/` als Code-Span noch als Markdown-Link; die
 Geschwister und das Register nennen sie bei der Kennung
-(`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-lifecycle-move-schreibt-in-reports-nur-die-link-form\.md|(open|next|in-progress|done)/slice-lifecycle-move-schreibt-in-reports-nur-die-link-form|\]\(slice-lifecycle-move-schreibt-in-reports-nur-die-link-form' . | grep -v 'planning/next/slice-lifecycle-move-schreibt-in-reports-nur-die-link-form.md' | wc -l`
+(`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-lifecycle-move-schreibt-in-reports-nur-die-link-form\.md|(open|next|in-progress|done)/slice-lifecycle-move-schreibt-in-reports-nur-die-link-form|\]\(slice-lifecycle-move-schreibt-in-reports-nur-die-link-form' . | grep -v 'planning/in-progress/slice-lifecycle-move-schreibt-in-reports-nur-die-link-form.md' | wc -l`
 → **0**, gemessen 2026-09-26). Der Move hat damit keinen Verweis nachzuziehen.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
