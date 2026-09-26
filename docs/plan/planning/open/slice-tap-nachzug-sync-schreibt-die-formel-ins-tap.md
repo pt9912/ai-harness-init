@@ -35,7 +35,7 @@ Anlass seines dritten Re-Evaluierungs-Triggers),
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-09-25.
 
@@ -272,7 +272,11 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 eingefrorenes Artefakt diese Datei als Pfad nennt — über beide Adress-Formen (Code-Span-Pfad und
 Markdown-Link). Der Befund am Tag des Schnitts: kein Artefakt nennt sie
 (`grep -rnI --exclude-dir=.git --exclude-dir=.harness -E 'slice-tap-nachzug-sync-schreibt-die-formel-ins-tap\.md|open/slice-tap-nachzug-sync-schreibt-die-formel-ins-tap|\]\(slice-tap-nachzug-sync-schreibt-die-formel-ins-tap' . | grep -v 'planning/open/slice-tap-nachzug-sync-schreibt-die-formel-ins-tap.md' | wc -l`
-→ **0**, gemessen 2026-09-25); der Lauf, der die Datei bewegt, misst neu.
+→ **0**, gemessen 2026-09-25; vor dem Move erneut: **1**). Der eine Treffer ist ein Verzeichnis-Glob
+(`ls docs/plan/planning/*/slice-tap-nachzug-sync-schreibt-die-formel-ins-tap.md`) in der Closure-Notiz des
+Vorgänger-Slice in `done/`: er ist an kein Lifecycle-Verzeichnis gebunden, bleibt nach dem Move wahr und wird vom
+Werkzeug nicht ersetzt; die übrigen Nennungen der Kennung in `done/`, `docs/reviews/**` und dem Register sind Text
+ohne Pfad-Adresse. Kein eingefrorenes Artefakt nennt die Datei mit ihrem Ort `open/` als Pfad.
 
 **Start** (`next` → `in-progress`): `Verantwortlich:` gesetzt, WIP-Limit frei, §6 Frage 2 (Antworten der
 Schnittstelle jenseits von *Anmeldung, Schutz, Konflikt*) vom Architect beantwortet **oder** vom Implementer
@@ -409,10 +413,10 @@ Hälften.
 [`harness/conventions.md`](../../../../harness/conventions.md) führt beide als eigene Zeilen (`*`, `harness/tools/`),
 beide Greenfield; beide erfüllen die Schwelle ≥ 2 von 3 Achsen, keine Zerlegung ist nötig.
 
-**Vorgelagert — offene Beobachtungen sichten:** Register gelesen am 2026-09-25 auf dem lokalen Stand (fünf
-Commits vor `origin/main`, nichts gepusht; das Register ist beim Lesen so alt wie der letzte Merge). Sub-Area
+**Vorgelagert — offene Beobachtungen sichten:** Register gelesen am 2026-09-25 und vor dem Move am 2026-09-26 erneut auf dem
+lokalen Stand (nichts gepusht; das Register ist beim Lesen so alt wie der letzte Merge). Sub-Area
 aller Einträge ist `*`. Die Zähler-Stände sind die Zahl der Dateien unter dem `evidence/` des Eintrags
-(`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence | wc -l`, gemessen 2026-09-25, keine
+(`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence | wc -l`, gemessen 2026-09-26, keine
 Erwartungswerte). Gesucht nach Tap, Release, Prozedur, Eigentum, Zusage, Bedingung, Stub, Token. **Treffer:**
 
 - [`BEO-ALL/bedingung-ohne-traeger-im-lauf-den-sie-bindet`](../observations/BEO-ALL/bedingung-ohne-traeger-im-lauf-den-sie-bindet/observation.md)
@@ -420,7 +424,7 @@ Erwartungswerte). Gesucht nach Tap, Release, Prozedur, Eigentum, Zusage, Bedingu
   dieser Plan trägt ihn als Liefer-Punkt 3 in seinem Eingang. Dass eine Instanz einen Träger hat, ist kein
   Ausgang der Klasse; Stand und Übergabe stehen in `state.md` des Eintrags.
 - [`BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`](../observations/BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet/observation.md)
-  — **7×**, über der Schwelle, Ausgang *geplant* mit Kennung
+  — **8×**, über der Schwelle, Ausgang *geplant* mit Kennung
   [`ADR-0062`](../../adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md)
   (`Proposed`, zurückgestellt). §6 Frage 1 trägt die Adresse; sie bewegt den Ausgang nicht.
 - [`BEO-ALL/prozedur-zeile-traegt-disziplin-ohne-sensor`](../observations/BEO-ALL/prozedur-zeile-traegt-disziplin-ohne-sensor/observation.md)
