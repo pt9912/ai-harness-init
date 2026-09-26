@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # files: harness/tools/slice-mv.sh
-# expect: eingehend_ausgenommene_pfade: .harness/baseline und docs/plan/adr drin, docs/reviews NICHT (ADR-0042 Festlegung 2, ADR-0033 Abnahme-Kriterium 1)
+# expect: eingehend_ausgenommene_pfade: .harness/baseline und docs/plan/adr drin, docs/reviews NICHT (ADR-0042 Festlegung 2, ADR-0070 Festlegung 2)
 # verify: test-bats
 #
 # ADR-0042 Festlegung 2: nimmt `':!docs/plan/adr'` wieder aus der
