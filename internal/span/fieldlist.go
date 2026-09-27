@@ -145,10 +145,9 @@ const limitCounters = "**Die Verbrauchs-Zähler kommen aus der Mechanik des Agen
 	"Mechanik. Ein Bestand ohne Zähler ist deshalb der Normalfall und kein Defekt.\n"
 
 const limitStore = "**Über den Bestand ist nichts zugesagt.** Er ist **gitignored**, aber **nicht\n" +
-	"verschlüsselt** und **nicht zugriffsbeschränkt**: wer dieses Arbeitsverzeichnis lesen kann,\n" +
-	"liest ihn. Und **Pfadnamen sind nicht als unkritisch zugesagt** — sie stehen als `path` in der\n" +
-	"Zeile, und ein Pfad kann selbst die Aussage sein, die niemand teilen wollte. Wer den Bestand\n" +
-	"weitergibt, gibt beides weiter.\n"
+	"verschlüsselt** und **nicht zugriffsbeschränkt**. Und **Pfadnamen sind nicht als unkritisch\n" +
+	"zugesagt** — sie stehen als `path` in der Zeile, und ein Pfad kann selbst die Aussage sein, die\n" +
+	"niemand teilen wollte. Wer den Bestand weitergibt, gibt beides weiter.\n"
 
 // limits liefert die drei Grenz-Saetze in ihrer Reihenfolge im Dokument.
 func limits() []string { return []string{limitAgentGuard(), limitCounters, limitStore} }
