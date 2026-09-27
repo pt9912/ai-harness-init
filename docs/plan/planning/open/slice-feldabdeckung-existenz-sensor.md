@@ -34,7 +34,7 @@ Struktur-/Konsistenz-Regel zwischen zwei Artefakten).
 **Berührte Spec-Stellen:** [`spec/spezifikation.md` §5](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder)
 — der Sensor liest die Tabelle, ändert sie nicht.
 
-**Verantwortlich:** — (noch nicht priorisiert; blockiert, siehe §4 Trigger — `ADR-0071` ist
+**Verantwortlich:** — (noch nicht priorisiert; blockiert, siehe §4 Trigger — [`ADR-0071`](../../adr/0071-kopplung-feldliste-spec-ist-existenz-abgleich.md) ist
 `Proposed`, nicht `Accepted`).
 
 **Autor:** Planner. **Datum:** 2026-09-27.
@@ -46,7 +46,7 @@ Struktur-/Konsistenz-Regel zwischen zwei Artefakten).
 **Ziel:** Ein Skript/Make-Target hält jedes `{Field: "X"}`-Literal in
 `internal/span/fieldlist.go` (`SchemaNotes()`) gegen ein Token `` `X` `` in der §5-Tabelle von
 `spec/spezifikation.md` — und umgekehrt jedes Feld-Token der Tabelle gegen ein Literal im Träger.
-Beide Richtungen fail-closed bei unbekannter Zeilenform (analog `LH-QA-01`). Geprüft wird
+Beide Richtungen fail-closed bei unbekannter Zeilenform (analog [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Geprüft wird
 ausschließlich **Existenz**, nicht Wortlaut, Detailgrad oder Kernaussage.
 
 **Gate, nicht bloßes Werkzeug — begründet:** Der Existenz-Abgleich ist eine deterministische,
@@ -63,7 +63,7 @@ liefe.
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Wortlaut- oder Kernaussage-Angleichung zwischen Träger und Spec §5** — bleibt bewusst offen.
-  `ADR-0071` §Konsequenzen benennt das als **akzeptiertes Negativ**; ein Sensor dafür ist teuer
+  [`ADR-0071`](../../adr/0071-kopplung-feldliste-spec-ist-existenz-abgleich.md) §Konsequenzen benennt das als **akzeptiertes Negativ**; ein Sensor dafür ist teuer
   (inferentiell, Modul 11) und ohne belegten Schadensfall über die zwei bisher von Menschen
   gefundenen Abweichungen hinaus. *Bestand bleibt bewusst stehen* — Träger ist die Sichtung bei
   künftiger Slice-Planung, kein Gate (`BEO-ALL/feldnotiz-traeger-und-spec-koennen-in-der-kernaussage-abweichen-ohne-sensor`).
@@ -81,11 +81,11 @@ liefe.
 
 - [ ] **(1) Bidirektionaler Existenz-Sensor gebaut.** Skript/Make-Target prüft beide Richtungen
       (Träger → Spec, Spec → Träger), bricht fail-closed bei unbekannter Zeilenform ab
-      (`LH-QA-01`), und läuft grün über dem heutigen Bestand (0 Befunde bei 26 Spec-Zeilen /
+      ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)), und läuft grün über dem heutigen Bestand (0 Befunde bei 26 Spec-Zeilen /
       32 Feldern).
 - [ ] **(2) `make gates` grün**, inklusive des neuen Ziels.
 - [ ] **(3) Doku-Update:** [`harness/README.md`](../../../../harness/README.md) §Sensors trägt den
-      neuen Eintrag (Target, Vertrag, Bindung `ADR-0071`/`LH-FA-10`).
+      neuen Eintrag (Target, Vertrag, Bindung [`ADR-0071`](../../adr/0071-kopplung-feldliste-spec-ist-existenz-abgleich.md)/[`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)).
 
 Standard-Punkte der Vorlage gelten unverändert: Review-Report, Closure-Notiz mit
 Steering-Loop-Lerneintrag, Beobachtungs-Register fortgeschrieben, jedes Risiko aus §6 trägt einen
@@ -95,14 +95,14 @@ Ausgang, die drei Paarungen getragen.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `harness/tools/feldabdeckung-check.sh` (Name vom Implementer bestätigt) | neu | der Existenz-Sensor selbst |
+| `harness/tools/feldabdeckung-check.sh` (Name vom Implementer bestätigt) <!-- d-check:ignore (geplante Datei) --> | neu | der Existenz-Sensor selbst |
 | `Makefile` | update | neues Ziel, in `gates` aufgenommen |
 | [`harness/README.md`](../../../../harness/README.md) §Sensors | update | Liefer-Punkt (3) |
 | Testdatei unter `test/` (bats, Konvention dieses Repos) | neu | Happy (heutiger Bestand grün) · Boundary (ein Feld nur auf einer Seite → rot) · Negative (unbekannte Zeilenform → fail-closed) |
 
 ## 4. Trigger
 
-**Start** (`open` → `next` → `in-progress`): **`ADR-0071` ist `Accepted`.** Bis dahin hat dieser
+**Start** (`open` → `next` → `in-progress`): **[`ADR-0071`](../../adr/0071-kopplung-feldliste-spec-ist-existenz-abgleich.md) ist `Accepted`.** Bis dahin hat dieser
 Slice keinen bindenden ADR-Bezug (Architect-Verdikt §Was offen bleibt: *„der Folge-Slice hat bis
 zur Annahme keinen bindenden ADR-Bezug"*) und bleibt in `open/` liegen, unabhängig vom
 WIP-Limit-Stand.
@@ -112,7 +112,7 @@ WIP-Limit-Stand.
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): wenn sich zeigt, dass fail-closed bei
   unbekannter Zeilenform einen Parser mit mehr als einer eigenen Grammatik-Klasse verlangt (mehr
   als: Feld-Literal-Form im Go-Quelltext, Tabellenzeilen-Form in Markdown).
-- `in-progress` → `open` (blockiert): wenn `ADR-0071` vor Abschluss dieses Slice doch nicht
+- `in-progress` → `open` (blockiert): wenn [`ADR-0071`](../../adr/0071-kopplung-feldliste-spec-ist-existenz-abgleich.md) vor Abschluss dieses Slice doch nicht
   angenommen, sondern durch eine andere Lesart ersetzt wird — dann trägt der neue ADR-Bezug einen
   anderen Sensor-Scope, und dieser Slice-Plan ist nicht mehr aktuell.
 
@@ -129,10 +129,10 @@ Steering-Loop-Eintrag; jedes Risiko aus §6 trägt einen Ausgang.
   **Ausgang:** wird bei Closure dieses Slice zugewiesen.
 - **Der Sensor deckt nur die Existenz-Teilmenge**, nicht die Kernaussage-Teilmenge — ein Leser
   könnte den grünen Sensor als vollständige Deckung der Kopplungsfrage lesen, obwohl
-  `ADR-0071` §Konsequenzen das ausdrücklich als offenes Negativ benennt. **Gegenmittel im Plan:**
+  [`ADR-0071`](../../adr/0071-kopplung-feldliste-spec-ist-existenz-abgleich.md) §Konsequenzen das ausdrücklich als offenes Negativ benennt. **Gegenmittel im Plan:**
   §1 und die Doku-Zeile in `harness/README.md` nennen die Grenze explizit. — **Ausgang:** wird bei
   Closure dieses Slice zugewiesen.
-- **Der Sensor wird als Gate verdrahtet, bevor `ADR-0071` `Accepted` ist**, und prüft dann eine
+- **Der Sensor wird als Gate verdrahtet, bevor [`ADR-0071`](../../adr/0071-kopplung-feldliste-spec-ist-existenz-abgleich.md) `Accepted` ist**, und prüft dann eine
   Form, die niemand entschieden hat. **Gegenmittel im Plan:** §4 Trigger startet erst nach
   Annahme. — **Ausgang:** wird bei Closure dieses Slice zugewiesen.
 

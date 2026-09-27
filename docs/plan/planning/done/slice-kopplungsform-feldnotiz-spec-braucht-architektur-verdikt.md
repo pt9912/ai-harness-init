@@ -141,8 +141,8 @@ Ein slice-eigener Punkt (Baseline-Regelwerk `modul-05-planning-harness.md`
 
 - [x] **(1) Frage A/B aus slice-109 §1 ist mit einem ADR-Bezug beantwortet**
       **— erfüllt mit einer `Proposed`-, nicht `Accepted`-ADR:** Der Wortlaut verlangt „mit einem
-      ADR-Bezug beantwortet", nicht „mit einer `Accepted`-ADR"; `ADR-0071` trifft die Entscheidung
-      neu und ist damit der verlangte Bezug. Die **Annahme** von `ADR-0071` bleibt eine offene
+      ADR-Bezug beantwortet", nicht „mit einer `Accepted`-ADR"; [`ADR-0071`](../../adr/0071-kopplung-feldliste-spec-ist-existenz-abgleich.md) trifft die Entscheidung
+      neu und ist damit der verlangte Bezug. Die **Annahme** von [`ADR-0071`](../../adr/0071-kopplung-feldliste-spec-ist-existenz-abgleich.md) bleibt eine offene
       Handlung des Auftraggebers ([`AGENTS.md`](../../../../AGENTS.md) §3.4) und bindet erst den
       Folge-Slice (siehe dort §4 Trigger), nicht diesen DoD-Punkt.
       — entweder bestätigt [`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md)
@@ -233,7 +233,7 @@ entsteht als eigener Planungs-Zug, nicht als Teil dieser Closure).
   Beobachtungs-Register.** Das Verdikt (§4 Risiko 4) adressiert die erste Hälfte nur
   **teilweise**: Der benannte Existenz-Sensor ([slice-feldabdeckung-existenz-sensor](../open/slice-feldabdeckung-existenz-sensor.md))
   deckt, sobald gebaut, die Teilmenge *„ein Feld fehlt komplett auf einer Seite"*, nicht die
-  Kernaussage-Teilmenge — bewusst als akzeptiertes Negativ in `ADR-0071` §Konsequenzen benannt.
+  Kernaussage-Teilmenge — bewusst als akzeptiertes Negativ in [`ADR-0071`](../../adr/0071-kopplung-feldliste-spec-ist-existenz-abgleich.md) §Konsequenzen benannt.
   Die zweite Hälfte — Zuordnung zur bestehenden Beobachtung
   [`zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`](../observations/BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor/observation.md) —
   ist **entschieden, nicht mehr offen**: Das Verdikt urteilt **NICHT dieselbe Beobachtung**
@@ -254,14 +254,14 @@ entsteht als eigener Planungs-Zug, nicht als Teil dieser Closure).
   Wortlaut-Angleichung verlangt und der teure zweite Schnitt strukturell entfällt.
 - **Was ging anders als geplant:** DoD (1) ist mit einer **`Proposed`-**, nicht
   `Accepted`-ADR erfüllt — der Wortlaut verlangt nur „mit einem ADR-Bezug beantwortet", die
-  Annahme von `ADR-0071` bleibt eine offene Handlung des Auftraggebers. Der bindende ADR-Bezug
+  Annahme von [`ADR-0071`](../../adr/0071-kopplung-feldliste-spec-ist-existenz-abgleich.md) bleibt eine offene Handlung des Auftraggebers. Der bindende ADR-Bezug
   des Folge-Slice hängt daran (dort §4 Trigger). Außerdem bestätigte das Verdikt **keine** der
   drei im Slice vorgezeichneten Lesarten unverändert, sondern wählte eine vierte (Option E,
   bidirektionaler Existenz-Abgleich) — der Slice hatte die Optionsmenge nicht vollständig
   vorweggenommen.
 - **Steering-Loop-Eintrag (Form: neuer Sensor, geplant — nicht verkörpert).** Die Regel *„die
   Kopplung zwischen Feldliste im Träger und Spec §5 ist ein bidirektionaler Existenz-Abgleich,
-  keine Wortgleichheit, keine Erzeugung"* steht in `ADR-0071` (Proposed). Ihre Verkörperung als
+  keine Wortgleichheit, keine Erzeugung"* steht in [`ADR-0071`](../../adr/0071-kopplung-feldliste-spec-ist-existenz-abgleich.md) (Proposed). Ihre Verkörperung als
   Sensor ist mit [slice-feldabdeckung-existenz-sensor](../open/slice-feldabdeckung-existenz-sensor.md)
   benannt, aber weder die ADR angenommen noch der Sensor gebaut — **kein** `liegt in`-Feld, weil
   nichts verkörpert ist (Baseline-Regelwerk `grundlagen-traceability.md` §Herkunfts-Anker: das
@@ -276,7 +276,7 @@ entsteht als eigener Planungs-Zug, nicht als Teil dieser Closure).
   divergieren, sollen aber in der Kernaussage übereinstimmen).
 - **Folge-Slices:** [slice-feldabdeckung-existenz-sensor](../open/slice-feldabdeckung-existenz-sensor.md)
   (Bidirektionaler Existenz-Abgleich zwischen Feldliste im Träger und Spec §5) — ist eine Datei in
-  `open/`, blockiert bis `ADR-0071` `Accepted` ist (dort §4 Trigger).
+  `open/`, blockiert bis [`ADR-0071`](../../adr/0071-kopplung-feldliste-spec-ist-existenz-abgleich.md) `Accepted` ist (dort §4 Trigger).
 - **Risiken aus §6:** vier, je ein Ausgang — drei *entfallen* mit Begründung (Risiko 1 zirkuläre
   Kopplung vermieden, Risiko 2 vierte Spalte unverändert, Risiko 3 Wortlaut-Frage gelöst statt
   angeglichen), eines *weiter offen* → Beobachtungs-Register (Risiko 4, erste Hälfte —
