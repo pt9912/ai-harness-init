@@ -40,6 +40,25 @@ func TestSpanReport_LeererBestandIstKeinFehler(t *testing.T) {
 	}
 }
 
+// Ein Ablageort, der als ARGUMENT genannt wird und nicht existiert, ist die
+// CLI-Eintrittsebene des Realrisikos aus dem Slice-Plan §1: "Der Ablageort ist ein
+// Argument, also ein Wert, den ein Aufrufer vertippen kann." spanReport() ist der
+// volle Aufrufweg (spanDir -> report.Aggregiere -> report.Schreibe); ein Test allein
+// gegen internal/report deckt diesen Weg nicht, weil er ihn nie durchlaeuft
+// (slice-071 DoD (1)).
+func TestSpanReport_NichtExistierenderPfadAlsArgumentMeldetSichAlsFehlend(t *testing.T) {
+	t.Parallel()
+	pfad := filepath.Join(t.TempDir(), "existiert-nicht")
+
+	var out, errOut strings.Builder
+	if code := spanReport([]string{pfad}, &out, &errOut); code != 0 {
+		t.Fatalf("Exit = %d, erwartet 0; stderr: %s", code, errOut.String())
+	}
+	if !strings.Contains(out.String(), "existiert nicht") {
+		t.Fatalf("ein nicht existierender Ablageort als Argument meldet sich nicht als fehlend; Ausgabe:\n%s", out.String())
+	}
+}
+
 // TestSpanDir_OhneArgumentDerAblageortDerWurzel belegt den Wechsel vom Container auf
 // den Host (ADR-0022 Festlegung 2): ohne Argument liest der Bericht den Ablageort
 // unter der Repo-Wurzel des Arbeitsverzeichnisses — denselben, an den das
