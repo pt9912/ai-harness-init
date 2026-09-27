@@ -345,6 +345,8 @@ func TestCommandProgramSkipsNavigationSegments(t *testing.T) {
 		{"cd /x | make", "cd"},
 		{"cd /x & make", "cd"},
 		{"set -e", "set"},
+		// Ein Operator ohne Leerraum ist kein eigenes Feld: das Segment endet dort nicht.
+		{"cd /x&&make gates", "cd"},
 		// Nach dem uebersprungenen Segment gelten die Regeln des Segments ohne Programm:
 		// ein Wort, das kein Programm nennt, gibt nichts aus.
 		{"cd /x && && make", ""},
