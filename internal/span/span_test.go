@@ -317,106 +317,132 @@ func TestCommandProgramWithholdsProgramForEachUnsureValueChar(t *testing.T) {
 }
 
 // TestCommandProgramSkipsNavigationSegments haelt fest: ein fuehrendes Navigations-Segment
-// (`cd`, `set`), das `&&` oder `;` abtrennt, nennt kein Programm, und das Programm ist das
-// erste Wort des naechsten Segments. Bleibt nichts uebrig oder laeuft das Folge-Segment nur
-// bei Fehlschlag oder in einer Pipe, bleibt das Navigations-Segment das Programm. Jede
-// Zeile laeuft ueber Derive UND ueber die geschriebene Zeile.
+// (`cd`, `set`) auf EINER Zeile, das `&&` oder ein Feld auf `;` abtrennt und dessen Woerter
+// alle schlicht sind, nennt kein Programm, und das Programm ist das erste Wort des naechsten
+// Segments. Bleibt nichts uebrig, bleibt das Navigations-Segment das Programm. Die
+// Wert-Grenze der Zuweisungen gilt dahinter unveraendert: ein sicherer Wert steht nie im Span,
+// ein Wert mit nicht bestimmbarem Rand laesst program und argc ganz entfallen. Jede Zeile
+// laeuft ueber Derive UND ueber die geschriebene Zeile.
 func TestCommandProgramSkipsNavigationSegments(t *testing.T) {
 	cases := []struct {
 		cmd     string
-		program string // "" heisst: kein program-Feld
+		program string   // "" heisst: kein program-Feld
+		argc    int      // -1: nicht geprueft
+		leaks   []string // Woerter, die in keinem Feld der geschriebenen Zeile stehen
 	}{
-		{"cd /x && make gates", "make"},
-		{"set -e; make gates", "make"},
-		{"cd /x; make gates", "make"},
-		{"cd; make", "make"},
-		{"cd a && cd b && make", "make"},
-		{"cd a; set -e; make x y", "make"},
-		{"cd /x >/dev/null 2>&1 && make", "make"},
-		{"A=1 cd /x && make", "make"},
-		{"cd /x && A=1 make gates", "make"},
-		// Ohne folgendes Segment, bei `||`, `|` und `&` bleibt das Navigations-Segment das Programm.
-		{"cd /x", "cd"},
-		{"cd /x &&", "cd"},
-		{"cd /x ;", "cd"},
-		{"cd /x;", "cd"},
-		{"cd a && cd b", "cd"},
-		{"cd /x || exit 1", "cd"},
-		{"cd /x | make", "cd"},
-		{"cd /x & make", "cd"},
-		{"set -e", "set"},
+		{"cd /x && make gates", "make", 1, nil},
+		{"cd /x && make gates now", "make", 2, nil},
+		{"set -e; make gates", "make", 1, nil},
+		{"cd /x; make gates", "make", 1, nil},
+		{"cd; make", "make", 0, nil},
+		{"cd a && cd b && make", "make", 0, nil},
+		{"cd a; set -e; make x y", "make", 2, nil},
+		{"cd /x >/dev/null 2>&1 && make", "make", 0, nil},
+		{"A=1 cd /x && make", "make", 0, nil},
+		{"cd /x && A=1 make gates", "make", 1, nil},
+		// Schlichte Woerter im Navigations-Segment: Buchstaben, Ziffern und `_-./~=+,:@%^*?[]$>`
+		// sowie jedes Nicht-ASCII-Zeichen.
+		{"cd ../x-y_z.d && make", "make", 0, nil},
+		{"cd ~/x && make", "make", 0, nil},
+		{"cd $HOME/x && make", "make", 0, nil},
+		{"cd /tmp/ü && make", "make", 0, nil},
+		{"cd /x/* && make", "make", 0, nil},
+		{"set -euo pipefail; make", "make", 0, nil},
+		// Ein Zeilenende am Rand macht die Zeile nicht mehrzeilig.
+		{"cd /x && make\n", "make", 0, nil},
+		{"\ncd /x && make", "make", 0, nil},
+		// Ohne folgendes Segment bleibt das Navigations-Segment das Programm.
+		{"cd /x", "cd", -1, nil},
+		{"cd /x &&", "cd", -1, nil},
+		{"cd /x ;", "cd", -1, nil},
+		{"cd /x;", "cd", -1, nil},
+		{"cd a && cd b", "cd", -1, nil},
+		{"set -e", "set", -1, nil},
 		// Ein Operator ohne Leerraum ist kein eigenes Feld: das Segment endet dort nicht.
-		{"cd /x&&make gates", "cd"},
+		{"cd /x&&make gates", "cd", -1, nil},
 		// Nach dem uebersprungenen Segment gelten die Regeln des Segments ohne Programm:
 		// ein Wort, das kein Programm nennt, gibt nichts aus.
-		{"cd /x && && make", ""},
-		{"cd /x && (make)", ""},
-		{"cd /x && >f make", ""},
+		{"cd /x && && make", "", -1, nil},
+		{"cd /x && (make)", "", -1, nil},
+		{"cd /x && >f make", "", -1, nil},
+		// Werte hinter dem uebersprungenen Segment.
+		{"cd /x && TOKEN=abc gh pr create", "gh", 2, []string{"TOKEN", "abc"}},
+		{"set -e; TOKEN=abc gh pr create", "gh", 2, []string{"TOKEN", "abc"}},
+		{"cd /x && A=1 TOKEN=abc B=2 gh pr create", "gh", 2, []string{"TOKEN", "abc"}},
+		{`cd /x && TOKEN="abc def" gh pr create`, "", -1, []string{"TOKEN", "abc", "def"}},
+		{`cd /x; TOKEN='abc def' gh pr create`, "", -1, []string{"TOKEN", "abc", "def"}},
+		{"cd /x && T=$(date def) make", "", -1, []string{"def"}},
+		{"cd /x && A=b || cmd", "", -1, nil},
 	}
 	for _, tc := range cases {
 		t.Run(tc.cmd, func(t *testing.T) {
 			d := span.Derive(span.Payload{Tool: "Bash", Input: span.ToolInput{Command: tc.cmd}})
 			line := bashSpanLine(t, tc.cmd)
-			if d.Program != tc.program {
-				t.Errorf("Derive: program = %q, erwartet %q (Zeile %q)", d.Program, tc.program, tc.cmd)
-			}
-			hasProgram := strings.Contains(line, `"program":"`+tc.program+`"`)
-			if tc.program == "" {
-				hasProgram = strings.Contains(line, `"program"`)
-				if hasProgram || d.HasArgc {
-					t.Fatalf("erwartet: kein program/argc im Span fuer %q, geschrieben: %s", tc.cmd, line)
-				}
-				return
-			}
-			if !hasProgram {
-				t.Errorf("Zeile %q: erwartet program %q im Span, geschrieben: %s", tc.cmd, tc.program, line)
-			}
-		})
-	}
-}
-
-// TestCommandProgramNeverEmitsValueBehindNavigation haelt fest: die Wert-Grenze der
-// Zuweisungen gilt hinter einem uebersprungenen Navigations-Segment unveraendert. Ein
-// sicherer Wert steht nie im Span, ein Wert mit nicht bestimmbarem Rand laesst program
-// und argc ganz entfallen.
-func TestCommandProgramNeverEmitsValueBehindNavigation(t *testing.T) {
-	cases := []struct {
-		cmd     string
-		program string // "" heisst: kein program-Feld
-	}{
-		{"cd /x && TOKEN=abc gh pr create", "gh"},
-		{"set -e; TOKEN=abc gh pr create", "gh"},
-		{"cd /x && A=1 TOKEN=abc B=2 gh pr create", "gh"},
-		{`cd /x && TOKEN="abc def" gh pr create`, ""},
-		{`cd /x; TOKEN='abc def' gh pr create`, ""},
-		{"cd /x && T=$(date def) make", ""},
-		{"cd /x && A=b || cmd", ""},
-	}
-	for _, tc := range cases {
-		t.Run(tc.cmd, func(t *testing.T) {
-			line := bashSpanLine(t, tc.cmd)
-			for _, leak := range []string{"TOKEN", "abc", "def"} {
+			for _, leak := range tc.leaks {
 				if strings.Contains(line, leak) {
 					t.Fatalf("Wert oder Wert-Bruchstueck %q im Span fuer %q: %s", leak, tc.cmd, line)
 				}
 			}
-			if got := span.Derive(span.Payload{Tool: "Bash", Input: span.ToolInput{Command: tc.cmd}}).Program; got != tc.program {
-				t.Errorf("Derive: program = %q, erwartet %q (Zeile %q)", got, tc.program, tc.cmd)
+			if d.Program != tc.program {
+				t.Errorf("Derive: program = %q, erwartet %q (Zeile %q)", d.Program, tc.program, tc.cmd)
 			}
-			if hasProgram := strings.Contains(line, `"program"`); hasProgram != (tc.program != "") {
-				t.Fatalf("program-Feld im Span = %v, erwartet %v fuer %q: %s", hasProgram, tc.program != "", tc.cmd, line)
+			if tc.program == "" {
+				if strings.Contains(line, `"program"`) || d.HasArgc {
+					t.Fatalf("erwartet: kein program/argc im Span fuer %q, geschrieben: %s", tc.cmd, line)
+				}
+				return
+			}
+			if !strings.Contains(line, `"program":"`+tc.program+`"`) {
+				t.Errorf("Zeile %q: erwartet program %q im Span, geschrieben: %s", tc.cmd, tc.program, line)
+			}
+			if tc.argc >= 0 && d.Argc != tc.argc {
+				t.Errorf("Derive: argc = %d, erwartet %d (Zeile %q)", d.Argc, tc.argc, tc.cmd)
 			}
 		})
 	}
 }
 
-// TestCommandProgramKeepsNavigationWhenItsEdgeIsUnsure haelt fest: enthaelt ein
-// Navigations-Segment ein Zeichen, an dem die Zerlegung an Leerraum sein Ende nicht sicher
-// findet, wird es nicht uebersprungen — `&&` in Anfuehrungszeichen trennt kein Segment, und
-// ein Stueck des Arguments wuerde sonst zum Programm. Das Programm ist dann `cd`.
+// TestCommandProgramKeepsNavigationWhenItsEdgeIsUnsure haelt fest: ein Navigations-Segment
+// wird nur uebersprungen, wenn JEDES seiner Woerter schlicht ist. Jedes ASCII-Zeichen ausser
+// den schlichten (`plainNavigationChars`) haelt das Segment als Programm: Anfuehrungszeichen,
+// Backslash, Klammern, Kommentar, Redirect-Quelle, Operator und Steuerzeichen. Dazu die Formen,
+// in denen ein Bruchstueck eines Kommentars, eines Here-Doc-Koerpers oder eines Arguments
+// sonst hinter dem Segment als Programm stuende. Jede Zeile laeuft ueber Derive UND ueber die
+// geschriebene Zeile.
 func TestCommandProgramKeepsNavigationWhenItsEdgeIsUnsure(t *testing.T) {
-	for _, c := range []string{`"`, `'`, "`", `\`, "(", ")", "{", "}"} {
-		cmd := "cd x" + c + "y && make"
+	const plainNavigationChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$%*+,-./:=>?@[]^_~"
+	var cmds []string
+	for c := 1; c < 128; c++ {
+		if c == '\t' || c == '\n' || c == ' ' || strings.ContainsRune(plainNavigationChars, rune(c)) {
+			continue
+		}
+		cmds = append(cmds, "cd x"+string(rune(c))+"y && make")
+	}
+	cmds = append(cmds,
+		// Operatoren, die das Segment nicht als `&&` oder Feld auf `;` beenden.
+		"cd /x || exit 1; make",
+		"cd /x | make; echo z",
+		"cd /x & make; echo z",
+		// Operatoren ohne Leerraum: das Ende steht mitten im Wort.
+		"cd /x;make && echo x",
+		"cd /x&&make gates && echo x",
+		"cd /x >f&&make",
+		// Kommentar, Redirect-Quelle, Here-String, Prozess-Substitution: ein Wort dahinter
+		// bleibt aus dem Feld.
+		"cd /x # note; SECRETWORD",
+		"cd a#b; SECRETWORD",
+		"cd /x #; SECRETWORD",
+		"cd /x <<<a; SECRETWORD",
+		"cd /x <f; SECRETWORD",
+		"cd <(echo a; SECRETWORD) && make",
+		"cd /x && cd /y # c; SECRETWORD",
+		// Anfuehrungszeichen und Substitution schliessen `&&` in ein Argument ein.
+		`cd "a && SECRETWORD" && make`,
+		`set -- 'a && SECRETWORD'; make`,
+		"cd $(echo a && SECRETWORD) && make",
+		"cd $'a; SECRETWORD' && make",
+	)
+	for _, cmd := range cmds {
 		t.Run(cmd, func(t *testing.T) {
 			line := bashSpanLine(t, cmd)
 			if d := span.Derive(span.Payload{Tool: "Bash", Input: span.ToolInput{Command: cmd}}); d.Program != "cd" {
@@ -425,42 +451,87 @@ func TestCommandProgramKeepsNavigationWhenItsEdgeIsUnsure(t *testing.T) {
 			if !strings.Contains(line, `"program":"cd"`) {
 				t.Fatalf("erwartet program cd im Span fuer %q, geschrieben: %s", cmd, line)
 			}
+			if strings.Contains(line, "SECRETWORD") {
+				t.Fatalf("Bruchstueck im Span fuer %q: %s", cmd, line)
+			}
 		})
 	}
-	for _, cmd := range []string{`cd "a && SECRET" && make`, `set -- 'a && SECRET'; make`, "cd $(echo a && SECRET) && make"} {
-		t.Run(cmd, func(t *testing.T) {
-			line := bashSpanLine(t, cmd)
-			if strings.Contains(line, "SECRET") {
-				t.Fatalf("Bruchstueck eines Arguments im Span fuer %q: %s", cmd, line)
+}
+
+// TestCommandProgramKeepsNavigationOnMultilineCommands haelt fest: enthaelt die
+// Kommandozeile ein Zeilenende zwischen zwei Woertern, wird kein Navigations-Segment
+// uebersprungen — ein Wort einer Folgezeile, eines Here-Doc-Koerpers oder eines Kommentars
+// wird nie Programm. Das Navigations-Segment bleibt das Programm; ein Zeilenende am Rand
+// (`cd /x && make` mit abschliessendem Zeilenende) zaehlt nicht. Jede Zeile laeuft ueber
+// Derive UND ueber die geschriebene Zeile.
+func TestCommandProgramKeepsNavigationOnMultilineCommands(t *testing.T) {
+	cases := []struct {
+		cmd     string
+		program string
+	}{
+		{"cd /x\ncat <<EOF\nline;\nSECRETWORD\nEOF", "cd"},
+		{"cd /x\necho hi; SECRETWORD", "cd"},
+		{"cd /x\n\necho hi; SECRETWORD", "cd"},
+		{"cd /x <<-EOF\n\tline;\n\tSECRETWORD\n\tEOF", "cd"},
+		{"cd /x;\nSECRETWORD", "cd"},
+		{"cd /x &&\nSECRETWORD z", "cd"},
+		{"cd /x &&\nmake", "cd"},
+		{"cd /x\nmake", "cd"},
+		{"cd /x && cd /y\nSECRETWORD", "cd"},
+		{"cd /x\r\nmake", "cd"},
+		{"set -e\nSECRETWORD", "set"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.cmd, func(t *testing.T) {
+			line := bashSpanLine(t, tc.cmd)
+			if strings.Contains(line, "SECRETWORD") {
+				t.Fatalf("Wort einer Folgezeile im Span fuer %q: %s", tc.cmd, line)
+			}
+			if got := span.Derive(span.Payload{Tool: "Bash", Input: span.ToolInput{Command: tc.cmd}}).Program; got != tc.program {
+				t.Errorf("Derive: program = %q, erwartet %q (Zeile %q)", got, tc.program, tc.cmd)
+			}
+			if !strings.Contains(line, `"program":"`+tc.program+`"`) {
+				t.Fatalf("erwartet program %q im Span fuer %q, geschrieben: %s", tc.program, tc.cmd, line)
 			}
 		})
 	}
 }
 
 // TestCommandArgcEndsWithItsSegment haelt fest: argc zaehlt die Woerter nach dem
-// Programm bis zum Ende seines Segments — ein Operator als eigenes Feld oder ein Feld, das
-// auf `;` endet und noch mitzaehlt — und nicht bis zum Zeilenende. Jede Zeile laeuft ueber
-// Derive UND ueber die geschriebene Zeile.
+// Programm bis zum Ende seines Segments — ein Operator als eigenes Feld, ein Feld, das auf
+// `;` endet und noch mitzaehlt, oder das Ende der Zeile — und nicht bis zum Ende der
+// Kommandozeile. Endet schon das Programm-Feld auf `;` oder mit der Zeile, ist argc 0. Ein
+// Backslash als eigenes Wort vor dem Zeilenende setzt die Zeile fort und zaehlt nicht mit.
+// Jede Zeile laeuft ueber Derive UND ueber die geschriebene Zeile.
 func TestCommandArgcEndsWithItsSegment(t *testing.T) {
 	cases := []struct {
-		cmd  string
-		argc int
+		cmd     string
+		argc    int
+		program string // "" heisst: nicht geprueft
 	}{
-		{"cd /x && make gates", 1},
-		{"set -e; make gates", 1},
-		{"make gates && echo x", 1},
-		{"make gates || echo x", 1},
-		{"make gates | tee log", 1},
-		{"make gates & echo x", 1},
-		{"make gates ; echo x y", 1},
-		{"make gates; echo x y", 1},
-		{"make gates && echo x || echo y", 1},
-		{"make gates 2>&1 | tail -5", 2},
-		{"make ; echo x", 0},
-		{"ls -l /tmp", 2},
+		{"make gates && echo x", 1, "make"},
+		{"make gates || echo x", 1, "make"},
+		{"make gates | tee log", 1, "make"},
+		{"make gates & echo x", 1, "make"},
+		{"make gates ; echo x y", 1, "make"},
+		{"make gates; echo x y", 1, "make"},
+		{"make gates && echo x || echo y", 1, "make"},
+		{"make gates 2>&1 | tail -5", 2, "make"},
+		{"make ; echo x", 0, "make"},
+		{"ls -l /tmp", 2, "ls"},
+		// Das Programm-Feld selbst endet auf `;`: das Segment ist zu Ende.
+		{"make; echo x y", 0, ""},
+		// Das Ende der Zeile beendet das Segment.
+		{"make gates\necho x y", 1, "make"},
+		{"make\necho x y", 0, "make"},
+		{"A=b\nmake gates\necho x y", 1, "make"},
+		// Ein einzelner Backslash vor dem Zeilenende setzt die Zeile fort.
+		{"make gates \\\n x y", 3, "make"},
+		{"A=b \\\nmake gates", 1, "make"},
 		// Grenze: ohne Leerraum ist der Operator kein eigenes Feld, das Segment-Ende wird
-		// nicht gefunden, und argc zaehlt bis zum Zeilenende.
-		{"make gates&&echo x", 2},
+		// nicht gefunden, und argc zaehlt bis zum naechsten Operator-Feld oder Zeilenende.
+		{"make gates&&echo x", 2, "make"},
+		{"cd /x;make && echo x", 1, "cd"},
 	}
 	for _, tc := range cases {
 		t.Run(tc.cmd, func(t *testing.T) {
@@ -469,9 +540,31 @@ func TestCommandArgcEndsWithItsSegment(t *testing.T) {
 			if !d.HasArgc || d.Argc != tc.argc {
 				t.Errorf("Derive: argc = %d (gesetzt %v), erwartet %d (Zeile %q)", d.Argc, d.HasArgc, tc.argc, tc.cmd)
 			}
+			if tc.program != "" && d.Program != tc.program {
+				t.Errorf("Derive: program = %q, erwartet %q (Zeile %q)", d.Program, tc.program, tc.cmd)
+			}
 			want := `"argc":` + strconv.Itoa(tc.argc)
 			if !strings.Contains(line, want) {
 				t.Errorf("Zeile %q: erwartet %s im Span, geschrieben: %s", tc.cmd, want, line)
+			}
+		})
+	}
+}
+
+// TestCommandProgramFirstWordKeepsItsGluedRest haelt die Grenze fest, die die Zerlegung an
+// Leerraum nicht schliesst: das Feld `program` ist das erste Wort, wie es dasteht. Haengt
+// ein Operator ohne Leerraum daran, steht er samt Rest im Wort; eine Klammer davor bleibt
+// stehen. Was hier steht, ist Ist-Verhalten, keine Zusage ueber ein Programm.
+func TestCommandProgramFirstWordKeepsItsGluedRest(t *testing.T) {
+	cases := []struct{ cmd, program string }{
+		{"make; echo x y", "make;"},
+		{"make;ls x", "make;ls"},
+		{"(cd /x && make)", "(cd"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.cmd, func(t *testing.T) {
+			if got := span.Derive(span.Payload{Tool: "Bash", Input: span.ToolInput{Command: tc.cmd}}).Program; got != tc.program {
+				t.Errorf("Derive: program = %q, erwartet %q (Zeile %q)", got, tc.program, tc.cmd)
 			}
 		})
 	}
