@@ -112,19 +112,22 @@ genau einen Lauf.
    als vollständig zugesagt: die Erkennung liest kein Markdown — Link-Syntax, die als Zitat in
    einem Code-Span steht, wird mitersetzt (`TestNachziehenUnterReviewsErsetztLinkSyntaxImCodeSpanMit`
    bindet diese Span-Hälfte); für das Zitat in einem Code-Block bindet kein Fall die Grenze; die
-   Referenz-Definition `[name]: ziel` ist nicht Teil der Regel, und `make docs-check` meldet sie
-   nicht; ein Link mit Titel (`](ziel "titel")`), ein Link in Spitzklammern (`](<ziel>)`) und ein
-   Link mit Klammern vor dem Segment (`](../(x)/done/slice.md)`) treffen die Regel nicht — die
-   Adresse endet dort nicht unmittelbar an `)` oder `#`, oder eine `)` steht vor ihr. Der Nachzug
-   lässt jeden der drei stehen, und `make docs-check` meldet jeden als `target-missing` (gefahren
-   an einem Report mit je einem Link in diesen drei Formen auf einen nicht vorhandenen Pfad).
-   Titel und Spitzklammer hält der eben genannte Test stehen; für die Klammern vor dem Segment
-   bindet kein Fall die Grenze. Ein Ziel hinter dem Zeilenumbruch (`](` am Zeilenende, die Adresse
-   in der Folgezeile) ist kein Link-Ziel der Regel
+   Referenz-Definition `[name]: ziel` ist nicht Teil der Regel — der Nachzug lässt sie stehen —,
+   und `make docs-check` meldet sie als `target-missing`, falls ihr Ziel nicht auflöst (gefahren an
+   einem Report mit diesem Link auf einen nicht vorhandenen Pfad: ein Befund auf der
+   Definitions-Zeile). Ein Link mit Titel (`](ziel "titel")`), ein Link in Spitzklammern
+   (`](<ziel>)`) und ein Link mit Klammern vor dem Segment (`](../(x)/done/slice.md)`) treffen die
+   Regel nicht — die Adresse endet dort nicht unmittelbar an `)` oder `#`, oder eine `)` steht vor
+   ihr. Der Nachzug lässt jeden der drei stehen, und `make docs-check` meldet jeden als
+   `target-missing` (gefahren an einem Report mit je einem Link in diesen drei Formen auf einen
+   nicht vorhandenen Pfad). Titel und Spitzklammer hält der eben genannte Test stehen; für die
+   Klammern vor dem Segment bindet kein Fall die Grenze. Ein Ziel hinter dem Zeilenumbruch (`](`
+   am Zeilenende, die Adresse in der Folgezeile) ist kein Link-Ziel der Regel
    (`TestNachziehenUnterReviewsUeberquertKeineZeilengrenze` hält das), der Nachzug lässt es
-   stehen — und `make docs-check` schweigt dazu (gefahren an einem Report mit diesem Link auf
-   einen nicht vorhandenen Pfad: 0 Befunde für diese Zeilen): ein Ziel, das nach dem Nachzug nicht
-   mehr auflöst, bleibt in dieser Form ungemeldet. Das Verhalten des Gates ist am gepinnten
+   stehen — und `make docs-check` meldet es als `target-missing`, falls das Ziel nicht auflöst
+   (gefahren an einem Report mit diesem Link auf einen nicht vorhandenen Pfad: ein Befund): ein
+   Ziel, das nach dem Nachzug nicht mehr auflöst, bleibt in dieser Form vom Nachzug selbst
+   unkorrigiert, aber vom Gate gemeldet. Das Verhalten des Gates ist am gepinnten
    d-check gemessen, und kein Fall hält es. Die Regel
    besteht, solange `codepaths.exempt-paths` in [`.d-check.yml`](../../.d-check.yml)
    `docs/reviews/**` ausnimmt (Trigger 1 derselben ADR); diese Kopplung hält

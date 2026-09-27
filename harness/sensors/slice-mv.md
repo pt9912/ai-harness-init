@@ -92,16 +92,13 @@ Festlegung 1, Trigger 6 und 7). Ebenso außerhalb der Regel liegen ein Link mit 
 (`](../(x)/open/slice.md)`) oder dahinter (`](…/slice.md(1))`): die Adresse endet dort nicht
 unmittelbar an `)` oder `#`, der Nachzug lässt sie stehen — gefahren gegen den Shell-Träger an
 einem Report je Form, alle vier Formen unverändert. Laut, nicht still ist das für Titel,
-Spitzklammer und Klammern vor dem Segment: ein unterbliebener Nachzug färbt `make docs-check` mit
-`target-missing` (gefahren an einem Report mit je einem Link in diesen drei Formen auf einen nicht
-vorhandenen Pfad; für die Klammern hinter dem Segment nicht gefahren). **Still ist er für ein Ziel
-hinter dem Zeilenumbruch** (`](` am Zeilenende, die Adresse in der Folgezeile) und für die
-Referenz-Definition: der Nachzug lässt beide stehen, und `make docs-check` schweigt — gefahren an
-einem Report mit beiden Formen auf einen nicht vorhandenen Pfad, 0 Befunde für diese Zeilen; das
-Ziel, das der Wechsel verlässt, bleibt in diesen zwei Formen ungemeldet. Dasselbe gilt für den
-präfixlosen Geschwister-Link mit dem Ziel hinter dem Zeilenumbruch (gefahren an einer Slice-Datei
-im Ausgangsverzeichnis); für den präfixlosen Link mit Titel meldet das Gate `target-missing`
-(gefahren). Keine dieser Formen bindet ein Fall: weder `test/slice-mv.bats` noch
+Spitzklammer, Klammern vor dem Segment, ein Ziel hinter dem Zeilenumbruch (`](` am Zeilenende, die
+Adresse in der Folgezeile) und die Referenz-Definition: ein unterbliebener Nachzug färbt
+`make docs-check` mit `target-missing` (gefahren an einem Report mit je einem Link in diesen fünf
+Formen auf einen nicht vorhandenen Pfad; für die Klammern hinter dem Segment nicht gefahren).
+Dasselbe gilt für den präfixlosen Geschwister-Link mit dem Ziel hinter dem Zeilenumbruch (gefahren
+an einer Slice-Datei im Ausgangsverzeichnis); für den präfixlosen Link mit Titel meldet das Gate
+`target-missing` (gefahren). Keine dieser Formen bindet ein Fall: weder `test/slice-mv.bats` noch
 `TestSliceMvEchtSchreibtInReportsNurDieLinkForm` fahren sie, und das Verhalten des Gates ist am
 gepinnten d-check gemessen. Die Regel besteht, solange `.d-check.yml` unter `codepaths`
 `docs/reviews/**` ausnimmt (Trigger 1); diese Kopplung hält `test/codepaths-reviews-ausnahme.bats` — die **Zeile** unter `codepaths:` in
