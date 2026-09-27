@@ -139,7 +139,12 @@ Implementer, der sonst eine Sensor-Architektur "nebenbei" im Diff entscheidet.
 Ein slice-eigener Punkt (Baseline-Regelwerk `modul-05-planning-harness.md`
 §Ziel-Form: ≤ 3).
 
-- [ ] **(1) Frage A/B aus slice-109 §1 ist mit einem ADR-Bezug beantwortet**
+- [x] **(1) Frage A/B aus slice-109 §1 ist mit einem ADR-Bezug beantwortet**
+      **— erfüllt mit einer `Proposed`-, nicht `Accepted`-ADR:** Der Wortlaut verlangt „mit einem
+      ADR-Bezug beantwortet", nicht „mit einer `Accepted`-ADR"; `ADR-0071` trifft die Entscheidung
+      neu und ist damit der verlangte Bezug. Die **Annahme** von `ADR-0071` bleibt eine offene
+      Handlung des Auftraggebers ([`AGENTS.md`](../../../../AGENTS.md) §3.4) und bindet erst den
+      Folge-Slice (siehe dort §4 Trigger), nicht diesen DoD-Punkt.
       — entweder bestätigt [`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md)
       eine der drei Lesarten (erzeugt / verglichen wortgleich / verglichen
       auf Kernaussage), oder eine Folge-ADR (`supersedes` bzw. ergänzend,
@@ -201,37 +206,84 @@ entsteht als eigener Planungs-Zug, nicht als Teil dieser Closure).
   vergleicht zwei Ausgaben derselben Funktion — dieselbe Bauart, die
   [slice-096](../done/slice-096-traeger-liegt-im-ziel.md) §7 schon einmal
   gemessen hat. Das Verdikt muss benennen, **an welchen zwei verschiedenen
-  Artefakten** ein Vergleich hängt. — **Ausgang:** weiter offen: geht als
-  Kriterium in dieselbe Architect-Übergabe ein, kein eigenständiges Risiko
-  mehr, sobald das Verdikt vorliegt; bis dahin **weiter offen** →
-  Beobachtungs-Register (§7 dieses Slice trägt den Beleg beim Closure).
+  Artefakten** ein Vergleich hängt. — **Ausgang: entfallen.** Das Verdikt (§4 Risiko 1)
+  adressiert es durch die Wahl selbst: Option E kombiniert **nicht** „erzeugt" mit einem
+  nachgelagerten Vergleich, sondern hängt an zwei echt unabhängigen, von Hand gepflegten
+  Artefakten (`fieldlist.go`, `spec/spezifikation.md` §5) plus einem dritten, dem Skript selbst,
+  das keines der beiden erzeugt — genau die Bauart, die [slice-096](../done/slice-096-traeger-liegt-im-ziel.md)
+  §7 als zirkulär entlarvt hat, bleibt vermieden.
 - **Die vierte Spalte von §5 ist der teuerste Teil und der leiseste.** Sie
   bindet je Zeile einen Wächter, und kein Gate hält sie
   ([`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)).
   Eine Erzeugung, die sie überschreibt, löscht eine Bindung, die niemand
-  vermisst. — **Ausgang:** weiter offen → Beobachtungs-Register, als
-  Kostenfaktor der Architect-Übergabe benannt.
+  vermisst. — **Ausgang: entfallen.** Das Verdikt (§4 Risiko 2) lehnt Option 1 („erzeugt") ab;
+  der gewählte Existenz-Sensor generiert nichts und überschreibt nichts, die vierte Spalte bleibt
+  exakt, was sie heute ist — von Hand gepflegt, ungebunden ([`MR-021`](../../../../harness/conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
+  unverändert, im Verdikt §0/§5 selbst nachgemessen).
 - **Der Wortlaut zweier Fassungen anzugleichen heißt, einen davon zu
   wählen.** Die Fassung im Träger geht ins Repo des Adopters, die in §5 ist
   für uns. Wer sie zusammenzieht, schreibt entweder Adopter-Sprache in ein
-  normatives Dokument oder Repo-Sprache in ein fremdes. — **Ausgang:**
-  weiter offen → Beobachtungs-Register; das ist der Kern der Architect-Frage
-  selbst, kein Nebenrisiko.
+  normatives Dokument oder Repo-Sprache in ein fremdes. — **Ausgang: entfallen.** Das Verdikt
+  (§4 Risiko 3) löst es, statt es weiter offen zu lassen: Es wird **keiner** der beiden Wortlaute
+  an den anderen angeglichen — die Kopplung bindet Existenz, nicht Formulierung; beide Register
+  (Adopter-terse im Träger, Rang-2-normativ in §5) bleiben unangetastet.
 - **`make gates` sieht den Gegenstand nur zum Teil.** Der Doku-Gate prüft
   Kennungen, Anker und Pfade; zwei Fassungen derselben Aussage sind grün,
-  unabhängig davon, ob sie dieselbe Aussage tragen. — **Ausgang:** weiter
-  offen → Beobachtungs-Register. Ob dies dieselbe Beobachtung ist wie
-  [`zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`](../observations/BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor/observation.md)
-  (Stand 2026-09-27: `ls docs/plan/planning/observations/BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor/evidence/*.md | wc -l`
-  → **2** Belege, unter der Schwelle 3×) ist ein Urteil, das
-  dieser Slice nicht vorwegnimmt — dort geht es um eine Regel, die zweimal
-  als *Code* liegt (Dogfood-Fassung/Emissions-Vorlage), hier um eine Frage,
-  die zweimal als *Prosa* liegt (Träger/Spec). Wer diesen Slice schließt,
-  entscheidet das explizit, statt es implizit mitzuzählen.
+  unabhängig davon, ob sie dieselbe Aussage tragen. — **Ausgang: weiter offen →
+  Beobachtungs-Register.** Das Verdikt (§4 Risiko 4) adressiert die erste Hälfte nur
+  **teilweise**: Der benannte Existenz-Sensor ([slice-feldabdeckung-existenz-sensor](../open/slice-feldabdeckung-existenz-sensor.md))
+  deckt, sobald gebaut, die Teilmenge *„ein Feld fehlt komplett auf einer Seite"*, nicht die
+  Kernaussage-Teilmenge — bewusst als akzeptiertes Negativ in `ADR-0071` §Konsequenzen benannt.
+  Die zweite Hälfte — Zuordnung zur bestehenden Beobachtung
+  [`zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`](../observations/BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor/observation.md) —
+  ist **entschieden, nicht mehr offen**: Das Verdikt urteilt **NICHT dieselbe Beobachtung**
+  (dort sollen zwei Fassungen identisch sein, hier dürfen sie in Form und Detailgrad divergieren
+  und sollen nur in der Kernaussage übereinstimmen — eine dritte, eigene Fehlerrichtung). Diese
+  Closure legt darum eine **neue** Beobachtung an statt einen dritten Beleg an die bestehende zu
+  hängen: [`feldnotiz-traeger-und-spec-koennen-in-der-kernaussage-abweichen-ohne-sensor`](../observations/BEO-ALL/feldnotiz-traeger-und-spec-koennen-in-der-kernaussage-abweichen-ohne-sensor/observation.md)
+  (1×, unter der Schwelle; Beleg `evidence/slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt.md`).
 
 ## 7. Closure-Notiz
 
-<!-- Erst nach Abschluss füllen. -->
+- **Was hat funktioniert:** Der Zuschnitt trug — der Slice lieferte ausschließlich die
+  Architektur-Frage, ohne einen Umsetzungs-Slice vorwegzunehmen (§1: *„Ein hier vorab
+  geschnittener Umsetzungs-Slice hätte eine Existenzberechtigung, die von der noch offenen
+  Antwort abhängt"*). Das Verdikt beantwortet alle vier Risiken aus §6 einzeln und benennt den
+  Umsetzungsaufwand korrekt als **einen** Folge-Slice, nicht zwei — anders als das im Slice
+  selbst benannte Vorbild („Dann sind es zwei Slices") befürchtete, weil Option E keine
+  Wortlaut-Angleichung verlangt und der teure zweite Schnitt strukturell entfällt.
+- **Was ging anders als geplant:** DoD (1) ist mit einer **`Proposed`-**, nicht
+  `Accepted`-ADR erfüllt — der Wortlaut verlangt nur „mit einem ADR-Bezug beantwortet", die
+  Annahme von `ADR-0071` bleibt eine offene Handlung des Auftraggebers. Der bindende ADR-Bezug
+  des Folge-Slice hängt daran (dort §4 Trigger). Außerdem bestätigte das Verdikt **keine** der
+  drei im Slice vorgezeichneten Lesarten unverändert, sondern wählte eine vierte (Option E,
+  bidirektionaler Existenz-Abgleich) — der Slice hatte die Optionsmenge nicht vollständig
+  vorweggenommen.
+- **Steering-Loop-Eintrag (Form: neuer Sensor, geplant — nicht verkörpert).** Die Regel *„die
+  Kopplung zwischen Feldliste im Träger und Spec §5 ist ein bidirektionaler Existenz-Abgleich,
+  keine Wortgleichheit, keine Erzeugung"* steht in `ADR-0071` (Proposed). Ihre Verkörperung als
+  Sensor ist mit [slice-feldabdeckung-existenz-sensor](../open/slice-feldabdeckung-existenz-sensor.md)
+  benannt, aber weder die ADR angenommen noch der Sensor gebaut — **kein** `liegt in`-Feld, weil
+  nichts verkörpert ist (Baseline-Regelwerk `grundlagen-traceability.md` §Herkunfts-Anker: das
+  Feld steht nur, wenn mit diesem Slice wirklich etwas verkörpert wurde). Auslöser ist die
+  Architekturfrage aus [slice-109](../done/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md)
+  §1 (Frage A/B), kein 3×-Register-Eintrag.
+- **Beobachtungs-Register (`../observations/`):** `BEO-ALL/feldnotiz-traeger-und-spec-koennen-in-der-kernaussage-abweichen-ohne-sensor/`
+  neu angelegt, Beleg `evidence/slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt.md`
+  — Zähler steht bei 1×. Empfehlung des Architect-Verdikts (§4 Risiko 4) befolgt: **kein** dritter
+  Beleg an `zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`, weil die Fehlerrichtung
+  eine andere ist (dort: zwei Fassungen sollen identisch sein; hier: zwei Fassungen dürfen in Form
+  divergieren, sollen aber in der Kernaussage übereinstimmen).
+- **Folge-Slices:** [slice-feldabdeckung-existenz-sensor](../open/slice-feldabdeckung-existenz-sensor.md)
+  (Bidirektionaler Existenz-Abgleich zwischen Feldliste im Träger und Spec §5) — ist eine Datei in
+  `open/`, blockiert bis `ADR-0071` `Accepted` ist (dort §4 Trigger).
+- **Risiken aus §6:** vier, je ein Ausgang — drei *entfallen* mit Begründung (Risiko 1 zirkuläre
+  Kopplung vermieden, Risiko 2 vierte Spalte unverändert, Risiko 3 Wortlaut-Frage gelöst statt
+  angeglichen), eines *weiter offen* → Beobachtungs-Register (Risiko 4, erste Hälfte —
+  Doku-Gate-Blindheit für die Kernaussage-Achse bleibt bestehen; die zweite Hälfte des Risikos,
+  die Register-Zuordnungsfrage, ist mit der neuen Beobachtung oben entschieden, nicht mehr offen).
+- **Drei Paarungen:** <nach dem Move gegen `done/` zu messen — folgt in einem separaten Commit,
+  Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form: Slice, Vorlage §7-Reihenfolge>.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
