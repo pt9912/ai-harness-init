@@ -46,7 +46,7 @@ Aufwärts-Deklaration: wer diese ADR ändert, zieht diese Spec-Stelle nach.
 [`ADR-0013`](0013-technik-stratum-als-zielort.md) hat entschieden, **wo** die Feldtabelle lebt
 (`spec/spezifikation.md` §5) — nicht, **wie** sie sich zu ihrem Gegenstand verhält: der
 Feldnotiz je Feld im Träger (`internal/span/fieldlist.go`, `SchemaNotes()`). Diese Frage stand
-ursprünglich in [slice-109](../planning/in-progress/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md)
+ursprünglich in [slice-109](../planning/done/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md)
 §1 als "Frage A/B" und wurde am 2026-09-27 in einen eigenen Slice ausgelagert
 (`slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt`), weil sie eine
 Sensor-Architektur-Entscheidung ist (Baseline-Regelwerk `modul-08-agentenrollen.md`
@@ -129,7 +129,7 @@ unentschieden — das ist eine bewusste Grenze, kein Versehen, und sie steht unt
 - **Negativ, benannt statt verschwiegen:** eine falsche oder überziehende Behauptung in einer
   **existierenden** Zeile (Spec behauptet mehr über den Träger, als er tut, oder umgekehrt) bleibt
   vom neuen Sensor ungesehen. Das ist dieselbe Klasse, die
-  [slice-109](../planning/in-progress/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md) für
+  [slice-109](../planning/done/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md) für
   zwei konkrete Sätze bereits von Hand gefunden und behoben hat — die Existenz-Kopplung ersetzt
   diese Handarbeit nicht, sie fängt nur eine andere, komplementäre Fehlerklasse (fehlende statt
   falscher Zeile). Träger dieser Lücke ist die Sichtung bei künftiger Slice-Planung (Baseline-Regelwerk
