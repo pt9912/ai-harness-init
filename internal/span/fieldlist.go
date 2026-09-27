@@ -91,7 +91,7 @@ func SchemaNotes() []Note {
 		{Field: "path", Question: "Was wurde gelesen oder geschrieben? — der Pfad, nie der Inhalt, und nur bei namentlich geführten Datei-Werkzeugen"},
 		{Field: "bytes", Question: "Wie groß ist die geschriebene Datei? — aus dem Dateisystem, nie aus der Payload"},
 		{Field: "sha256_16", Question: "Hat sich der Inhalt geändert? — ein Fingerabdruck-Präfix aus dem Dateisystem, nie der Inhalt selbst"},
-		{Field: "program", Question: "Welches Programm lief? — das erste Token der Kommandozeile, nie die Zeile"},
+		{Field: "program", Question: "Welches Programm lief? — das erste Wort des ausgeführten Segments, nie das der ganzen Kommandozeile"},
 		{Field: "argc", Question: "Wie viele Argumente hatte es? — die Anzahl, nie die Argumente"},
 		{Field: "duration_ms", Question: "Wie lange dauerte der Aufruf, wie der Hook ihn sieht?"},
 		{Field: "result_bytes", Question: "Wie groß war das Ergebnis? — die Länge, nie der Inhalt"},

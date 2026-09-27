@@ -146,6 +146,33 @@ func TestFieldList_TabelleTraegtJedesErfassteFeldEinmal(t *testing.T) {
 	}
 }
 
+// TestFeldliste_ProgramNotizWidersprichtSpecNichtMehr haelt DoD (2) aus
+// slice-109-feldliste-jede-aussage-hat-ihre-quelle: die program-Notiz behauptete "das erste
+// Token der Kommandozeile, nie die Zeile" — seit slice-204-das-programm-feld-nennt-das-programm
+// nachweislich falsch (`cd /x && make gates` liefert `program="make"`, nicht das erste Token
+// der ganzen Zeile; die geltende Regel steht in spec/spezifikation.md, Zeile SPEC-021: das
+// erste Wort des AUSGEFUEHRTEN SEGMENTS, nie der ganzen Kommandozeile). Der Waechter sucht die
+// widerlegte Formulierung im program-Note-Text und faellt, solange sie dort steht.
+//
+// Rot faerbt ihn test/mutations/488-feldliste-program-notiz-widerlegt.sh (setzt den Note-Text
+// auf den alten, widerlegten Wortlaut zurueck).
+func TestFeldliste_ProgramNotizWidersprichtSpecNichtMehr(t *testing.T) {
+	var frage string
+	var gefunden bool
+	for _, n := range span.SchemaNotes() {
+		if n.Field == "program" {
+			frage = n.Question
+			gefunden = true
+		}
+	}
+	if !gefunden {
+		t.Fatalf("SchemaNotes traegt keinen Eintrag fuer das Feld program")
+	}
+	if strings.Contains(frage, "das erste Token der Kommandozeile") {
+		t.Errorf("die program-Notiz behauptet noch die von slice-204-das-programm-feld-nennt-das-programm widerlegte Regel: %q", frage)
+	}
+}
+
 // TestRenderFieldList_FeldOhneEintragBrichtAb misst den Abbruch selbst — die Mechanik, auf
 // der der konstruktive Ausschluss der Drift ruht. Sie wird hier mit SYNTHETISCHEN Eingaben
 // gefahren: der echte Schema-Stand ist heilig, und ein Waechter, der ihn braeuchte, koennte
