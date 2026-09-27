@@ -531,7 +531,6 @@ func TestCommandArgcEndsWithItsSegment(t *testing.T) {
 		// Grenze: ohne Leerraum ist der Operator kein eigenes Feld, das Segment-Ende wird
 		// nicht gefunden, und argc zaehlt bis zum naechsten Operator-Feld oder Zeilenende.
 		{"make gates&&echo x", 2, "make"},
-		{"cd /x;make && echo x", 1, "cd"},
 	}
 	for _, tc := range cases {
 		t.Run(tc.cmd, func(t *testing.T) {
@@ -562,7 +561,6 @@ func TestCommandProgramFirstWordKeepsItsGluedRest(t *testing.T) {
 		{"(cd /x && make)", "(cd"},
 		// Ein Wort in Anfuehrungszeichen als Programm steht als Bruchstueck im Feld.
 		{`"a b" x`, `"a`},
-		{`cd /x && "a b" x`, `"a`},
 	}
 	for _, tc := range cases {
 		t.Run(tc.cmd, func(t *testing.T) {

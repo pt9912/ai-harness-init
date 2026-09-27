@@ -7,8 +7,7 @@
 # des Segments (1), fuer jede Zeile mit Operator hinter dem Programm (SPEC-021).
 #
 # ROT WIRD DIE TABELLE DER ARGC-GRENZE: jede Zeile mit Operator meldet Fall und erwartetes
-# argc; `# expect:` nennt sie. Die Navigations-Tests erwarten kein argc und bleiben gruen;
-# das Feld auf `;` als Segment-Ende steht in derselben Funktion und ist von dieser Mutation
-# nicht getroffen.
+# argc; `# expect:` nennt sie. Das Feld auf `;` und das Zeilenende als Segment-Ende stehen in
+# `closesSegment` und sind von dieser Mutation nicht getroffen (Faelle 480 und 481).
 set -euo pipefail
 sed -i 's@^\t\tif isSegmentEnd(f) || f == "||" {$@\t\tif false {@' internal/span/span.go
