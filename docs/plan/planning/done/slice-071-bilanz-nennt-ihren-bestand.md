@@ -160,10 +160,11 @@ Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 
       **Rot:** ein Go-Test auf die erzeugte Zeile, der fällt, sobald die Bezugsmenge aus ihr
       verschwindet **oder** über die gezählte Menge hinausgreift; dazu ein `test/mutations/`-Fall,
       der sie entfernt.
-- [ ] `make gates` grün, `make mutate` ohne Befund. **Teilweise:** `make gates` grün (§7); `make
-      mutate` lief nur als Teillauf über den fünf neuen Fällen (491–495, `5 ok, 0 Befund(e)`,
-      Beleg-Slot `.harness/state/mutate-passed.key` nicht vorhanden) — kein voller Lauf, dieser
-      Punkt bleibt bewusst uneingehakt (§7).
+**Standard-Punkt „`make gates` grün, `make mutate` ohne Befund" — teilweise, nicht als
+Checkbox geführt, damit kein Häkchen mehr behauptet, als real geprüft ist.** `make gates` grün
+(§7, diese Closure). `make mutate` lief nur als Teillauf über den fünf neuen Fällen (491–495,
+`5 ok, 0 Befund(e)`), Beleg-Slot `.harness/state/mutate-passed.key` weder vor noch nach dem Lauf
+vorhanden — kein voller `make mutate`, keine Aussage über das grüne Ganze.
 - [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist. Keiner berührt — `Makefile` und
       `spec/spezifikation.md` unverändert (Verifikations-Bericht).
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -341,12 +342,32 @@ keine Erwartungswerte
     [`BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere`](../observations/BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere/observation.md)
     (4. Beleg dieser Closure; Klasse bereits seit `slice-fall-406-trifft-die-umgebaute-zerlegung`
     bei 3×, Architect-Übergabe unverändert offen, von dieser Closure nicht neu ausgelöst).
-- **Register-Paarung (c), zweite Hälfte — wird nach dem Move gemessen** (Paarung setzt auf
-  `done/`-Pfaden auf; Nachtrag folgt im Move-Anschluss-Commit).
+- **Die drei Paarungen — nach dem Move gemessen.** (a) Anker-Paarung: §7 dieses Slice trägt kein
+  `liegt in <Zielort>`-Feld (`grep -c 'liegt in' docs/plan/planning/done/slice-071-bilanz-nennt-ihren-bestand.md`
+  → 0) — nichts verkörpert, nichts zu paaren. (b) Folge-Slice-Paarung: keine neue Folge-Slice-ID
+  aus dieser Closure; die im §6-Ausgang 3 genannten, bereits existierenden Kennungen lösen im
+  Planning-Lifecycle auf (`docs/plan/planning/open/slice-077-verlorener-lauf-sichtbar.md`,
+  `docs/plan/planning/open/slice-079-exit-code-vertrag.md`). (c) Register-Paarung: alle vier neu
+  berührten Verzeichnisse (drei neue, ein fortgeschriebenes) tragen mindestens einen Beleg; die
+  zweite Hälfte (jedes Verzeichnis im ganzen Register trägt ein nicht leeres `evidence/`) bleibt
+  unverändert bei vier beleglosen Verzeichnissen
+  (`for d in docs/plan/planning/observations/BEO-ALL/*/; do n=$(ls "$d"evidence/*.md 2>/dev/null | wc -l); [ "$n" -eq 0 ] && echo "$d"; done`
+  → `ci-rennt-gegen-die-publikation-des-gepinnten-releases`,
+  `cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+  `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`,
+  `planungs-bestand-waechst-schneller-als-er-abgebaut-wird`; unverändert von dieser Closure, nicht
+  als getragen behauptet, per [`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  ein Befund der Paarung, keine Ausnahme). Der Verweis-Nachzug des Moves selbst deckte 14
+  eingehende Referenzen (Commit `ab2a8edc`, davon 2 Link-Formen in `docs/reviews/`, 1 Code-Span in
+  `done/slice-die-bilanz-sagt-worueber-sie-gerechnet-hat.md` — außerhalb des
+  [`ADR-0070`](../../adr/0070-der-verweis-nachzug-schreibt-in-docs-reviews-nur-die-link-form.md)-Carveouts,
+  darum vom Nachzug mitgenommen), 0 ausgehende.
 - **Offene Risiken (§6):** drei Ausgänge — 1 *weiter offen → Register* (Zahn bindet konstruierten
   Pfad, nicht den realen Fehlgriff), 2 *entfallen* (Streuung der Summe — Wiederholung der
-  DoD-3-/ADR-0012-Abgrenzung), 3 *entfallen* (Abgrenzungsliste — jeder Punkt hat bereits eine
-  Adresse: ADR-0021, `slice-077`, `slice-079`). Details direkt bei den Risiken in §6.
+  DoD-3-/[`ADR-0012`](../../adr/0012-haupt-kontext-ohne-token-bilanz.md)-Abgrenzung), 3 *entfallen*
+  (Abgrenzungsliste — jeder Punkt hat bereits eine Adresse:
+  [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md), `slice-077`,
+  `slice-079`). Details direkt bei den Risiken in §6.
 
 ## 8. Sub-Area-Modus-Begründung
 
