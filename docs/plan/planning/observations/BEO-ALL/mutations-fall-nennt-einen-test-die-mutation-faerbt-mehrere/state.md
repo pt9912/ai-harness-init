@@ -19,3 +19,14 @@ Belege dieser Klasse bereits einzeln festgestellt haben, ohne dass sie bisher no
 Unterhalb der Schwelle war `offen` der Normalzustand; ab diesem Beleg ist es eine **zulässige,
 vorübergehende** Lage bis zum nächsten Lese-Schritt mit Architect-Verdikt (README dieser Ablage,
 §Ab 3× trägt `state.md` genau einen von drei Ausgängen).
+
+**Vierter Beleg, Übergabe an den Architect unverändert fällig.** Ein weiterer abgeschlossener
+Vorgang hat einen vierten Beleg angelegt
+(`ls docs/plan/planning/observations/BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere/evidence/*.md | wc -l`
+→ 4, gelesen 2026-09-27, keine Erwartung): `slice-071-bilanz-nennt-ihren-bestand`. Die Klasse griff
+hier prospektiv — Implementer und Verifier erkannten die fehlende Exklusivität von Mutations-Fall
+495 selbst und werteten sie zutreffend als kein Finding (`make mutate` verlangt keine
+Exklusivität, nur die Anwesenheit des genannten Fehlschlags) —, das ändert aber nichts an der seit
+`slice-fall-406-trifft-die-umgebaute-zerlegung` offenen Übergabe: ob die Klasse einen Zielort
+bekommt oder als benannte Lücke verkörpert wird, entscheidet weiterhin der Architect, nicht diese
+Closure.
