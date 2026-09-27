@@ -438,7 +438,7 @@ func TestCommandProgramKeepsNavigationWhenItsEdgeIsUnsure(t *testing.T) {
 		"cd /x && cd /y # c; SECRETWORD",
 		// Anfuehrungszeichen und Substitution schliessen `&&` in ein Argument ein.
 		`cd "a && SECRETWORD" && make`,
-		`set -- 'a && SECRETWORD'; make`,
+		`cd -- 'a && SECRETWORD'; make`,
 		"cd $(echo a && SECRETWORD) && make",
 		"cd $'a; SECRETWORD' && make",
 	)
@@ -560,6 +560,9 @@ func TestCommandProgramFirstWordKeepsItsGluedRest(t *testing.T) {
 		{"make; echo x y", "make;"},
 		{"make;ls x", "make;ls"},
 		{"(cd /x && make)", "(cd"},
+		// Ein Wort in Anfuehrungszeichen als Programm steht als Bruchstueck im Feld.
+		{`"a b" x`, `"a`},
+		{`cd /x && "a b" x`, `"a`},
 	}
 	for _, tc := range cases {
 		t.Run(tc.cmd, func(t *testing.T) {

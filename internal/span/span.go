@@ -248,7 +248,8 @@ func filePath(in ToolInput) string {
 //   - Die Zerlegung trennt an Leerzeichen, Tab und Zeilenende, den Wortgrenzen der
 //     Shell. Jedes andere Zeichen, auch ein Unicode-Leerraum oder `\r`, bleibt Teil
 //     seines Wortes; so zerfaellt ein Wert nie in ein Bruchstueck, das die Shell als
-//     Teil des Werts fuehrt.
+//     Teil des Werts fuehrt. Ein einzelner Backslash vor dem Zeilenende setzt die Zeile
+//     fort und ist kein Wort.
 //   - Zuweisungen (`NAME=WERT`) bilden ein Segment ohne Programm. Ein Operator als
 //     eigenes Feld (`&&`, `;`, `|`, `&`) beendet es; das Programm ist das erste Wort
 //     des naechsten Segments. `||` und ein Operator ohne vorausgehende Zuweisung geben
@@ -259,30 +260,40 @@ func filePath(in ToolInput) string {
 //   - Nach einer Zuweisung nennt ein Wort, das mit einem Shell-Metazeichen oder einem
 //     Redirect beginnt (`namesProgram`), kein Programm: nichts.
 //   - Bleibt nach den Zuweisungen etwas mit `=` uebrig, wird ebenfalls nichts ausgegeben.
-//   - Ein fuehrendes Navigations-Segment (`cd`, `set`), das `&&` oder ein Feld auf `;`
-//     abtrennt, ist wie eine Zuweisung ein Segment ohne Programm; das Programm ist das
-//     erste Wort des naechsten Segments, und fuer dieses gelten dieselben Regeln (Wert-Rand,
-//     `namesProgram`). Folgt kein Segment, oder folgt `||`, `|` oder `&`, bleibt das
-//     Navigations-Segment das Programm. Enthaelt es ein Zeichen aus navigationUnsureChars,
-//     findet die Zerlegung sein Ende nicht sicher, und es bleibt ebenfalls das Programm:
-//     `&&` in Anfuehrungszeichen trennt kein Segment.
+//   - Ein fuehrendes Navigations-Segment (`cd`, `set`) ist wie eine Zuweisung ein Segment
+//     ohne Programm, wenn drei Bedingungen zugleich gelten: die Kommandozeile traegt kein
+//     Zeilenende zwischen zwei Woertern (singleLine), jedes Wort des Segments ist schlicht
+//     (plainNavigationWord), und `&&` oder ein Feld auf `;` trennt es ab, mit einem Feld
+//     dahinter. Das Programm ist dann das erste Wort des naechsten Segments, und fuer dieses
+//     gelten dieselben Regeln (Wert-Rand, `namesProgram`). Trifft eine Bedingung nicht zu —
+//     kein Folge-Segment, `||`, `|`, `&`, ein Operator im Wort, ein Zeichen ausserhalb der
+//     schlichten, ein Zeilenende zwischen Woertern —, bleibt das Navigations-Segment das
+//     Programm. Hinter einem Navigations-Segment wird so kein Wort eines Kommentars, eines
+//     Here-Doc-Koerpers oder einer Folgezeile zum Programm.
 //
-// Grenze: Here-Doc-Koerper, `$(( ))` und verschachtelte Substitution erkennt die Zerlegung
-// nicht als solche; sie stehen nur dann nicht im Feld, wenn eine der Regeln oben greift.
-// Ein Operator ohne Leerraum (`a&&b`) ist kein eigenes Feld: ein Navigations-Segment endet
-// dort nicht, und argc zaehlt bis zum naechsten Operator-Feld oder Zeilenende.
+// Grenzen: Ein Operator ohne Leerraum (`a&&b`, `a;b`) ist kein eigenes Feld. Ein
+// Navigations-Segment mit einem solchen Wort bleibt das Programm; das Programm-Feld selbst
+// nennt das erste Wort samt anhaengendem Rest (`make;`, `make;ls`), ein Wort in
+// Anfuehrungszeichen als Bruchstueck (`"a b" x` nennt `"a`), und argc zaehlt bis zum
+// naechsten Operator-Feld, Feld auf `;` oder Zeilenende. Hinter einer Zuweisung nennt das
+// Feld das erste Wort, wo es steht, auch auf einer Folgezeile; `$(( ))` und verschachtelte
+// Substitution erkennt die Zerlegung nicht als solche. Bewacht ist die Grenze des
+// Programm-Felds von TestCommandProgramFirstWordKeepsItsGluedRest.
 //
 // argc zaehlt die Woerter NACH dem Programm bis zum Ende seines Segments (segmentArgc).
 // Bewacht von TestCommandProgramSkipsAssignments (Zuweisungen, argc),
 // TestCommandProgramNamesAProgramNotAnOperator (Segment-Grenze, Metazeichen),
 // TestCommandProgramNeverEmitsAssignmentValueFragments (Wert-Grenze, Wert-Schutz),
 // TestCommandProgramWithholdsProgramForEachUnsureValueChar (jedes Randzeichen einzeln),
-// TestCommandProgramSkipsNavigationSegments (Navigations-Grenze),
-// TestCommandProgramNeverEmitsValueBehindNavigation (Wert-Grenze hinter Navigation),
-// TestCommandProgramKeepsNavigationWhenItsEdgeIsUnsure (Rand-Zeichen im Navigations-Segment)
-// und TestCommandArgcEndsWithItsSegment (argc-Grenze).
+// TestCommandProgramSkipsNavigationSegments (Navigations-Grenze, Wert-Schutz dahinter),
+// TestCommandProgramKeepsNavigationWhenItsEdgeIsUnsure (jedes unschlichte Zeichen und jede
+// Form, in der ein Bruchstueck sonst Programm wuerde),
+// TestCommandProgramKeepsNavigationOnMultilineCommands (mehrzeilige Kommandozeilen)
+// und TestCommandArgcEndsWithItsSegment (argc-Grenze, Zeilenende, Zeilenfortsetzung).
 func commandProgram(cmd string) (string, int, bool) {
-	fields := splitWords(cmd)
+	w := splitWords(cmd)
+	fields := w.fields
+	singleLine := w.singleLine()
 	// assigned: das laufende Segment trug bisher nur Zuweisungen und nennt kein Programm.
 	assigned := false
 	// skipped: die Zeile trug bis hierher mindestens ein Segment ohne Programm
@@ -309,76 +320,159 @@ func commandProgram(cmd string) (string, int, bool) {
 		case skipped && !namesProgram(f):
 			return "", 0, false
 		default:
-			if next, ok := skipNavigation(fields, i); ok {
-				i = next - 1
-				skipped = true
-				continue
+			if singleLine {
+				if next, ok := skipNavigation(fields, i); ok {
+					i = next - 1
+					skipped = true
+					continue
+				}
 			}
-			return f, segmentArgc(fields, i), true
+			return f, segmentArgc(w, i), true
 		}
 	}
 	return "", 0, false
 }
-
-// navigationUnsureChars sind die Zeichen, an denen die Zerlegung an Leerraum das Ende eines
-// Navigations-Segments nicht sicher findet: Anfuehrungszeichen, Backslash, Befehlssubstitution
-// und Klammern koennen `&&` oder `;` in ein Argument einschliessen. Operatoren und Redirects
-// gehoeren nicht dazu; `cd /x >/dev/null 2>&1 && cmd` ist ein gewoehnliches Segment.
-const navigationUnsureChars = "\"'`\\(){}"
 
 // isNavigation nennt die Programme, deren Segment ein Kommando vorbereitet.
 func isNavigation(word string) bool {
 	return word == "cd" || word == "set"
 }
 
+// plainNavigationChars sind die ASCII-Zeichen ausser Buchstaben und Ziffern, die ein
+// schlichtes Wort tragen darf: ein Wort aus ihnen ist ein Wort der Shell, das weder ein
+// Segment beendet noch etwas einschliesst oder einleitet.
+const plainNavigationChars = "$%*+,-./:=>?@[]^_~"
+
+// plainNavigationWord sagt, ob jedes Zeichen des Wortes schlicht ist: ein Buchstabe, eine
+// Ziffer, ein Zeichen aus plainNavigationChars, ein `&` unmittelbar hinter `>` (`2>&1`)
+// oder ein Nicht-ASCII-Zeichen. Jedes andere ASCII-Zeichen macht das Wort unschlicht:
+// Anfuehrungszeichen, Backslash, Klammern und Klammer-Ausdruecke, `#`, `<`, `|`, `;`, `!`,
+// ein anderes `&` und jedes Steuerzeichen. An ihnen findet die Zerlegung an Leerraum das
+// Ende des Segments nicht sicher: `&&` in Anfuehrungszeichen trennt kein Segment, ein `#`
+// beginnt einen Kommentar, ein `<<` einen Here-Doc-Koerper.
+func plainNavigationWord(word string) bool {
+	var prev rune
+	for _, r := range word {
+		switch {
+		case r >= 0x80:
+		case r >= 'a' && r <= 'z', r >= 'A' && r <= 'Z', r >= '0' && r <= '9':
+		case strings.ContainsRune(plainNavigationChars, r):
+		case r == '&' && prev == '>':
+		default:
+			return false
+		}
+		prev = r
+	}
+	return true
+}
+
 // skipNavigation sagt, ob das Segment ab fields[i] ein Navigations-Segment ist, das `&&`
 // oder ein Feld auf `;` abtrennt und dem noch ein Feld folgt; dann ist next der Index des
-// ersten Feldes des Folge-Segments. Alles andere — kein Navigations-Wort, `||`, `|` oder
-// `&` als Ende, kein Ende, nichts danach, ein Zeichen aus navigationUnsureChars — sagt
-// false: das Segment bleibt das Programm.
+// ersten Feldes des Folge-Segments. Alles andere — kein Navigations-Wort, ein unschlichtes
+// Wort (dazu gehoeren `||`, `|` und `&` als Feld), kein Ende, nichts danach — sagt false:
+// das Segment bleibt das Programm.
 func skipNavigation(fields []string, i int) (next int, ok bool) {
 	if !isNavigation(strings.TrimSuffix(fields[i], ";")) {
 		return 0, false
 	}
 	for j := i; j < len(fields); j++ {
 		f := fields[j]
-		switch {
-		case strings.ContainsAny(f, navigationUnsureChars):
-			return 0, false
-		case f == "&&" || strings.HasSuffix(f, ";"):
+		if f == "&&" {
 			return j + 1, j+1 < len(fields)
-		case f == "||" || f == "|" || f == "&":
+		}
+		body := strings.TrimSuffix(f, ";")
+		if !plainNavigationWord(body) {
 			return 0, false
+		}
+		if body != f {
+			return j + 1, j+1 < len(fields)
 		}
 	}
 	return 0, false
 }
 
+// closesSegment sagt, ob das Feld k sein Segment schliesst: es endet auf `;` oder steht am
+// Ende seiner Zeile.
+func closesSegment(w words, k int) bool {
+	return strings.HasSuffix(w.fields[k], ";") || w.eol[k]
+}
+
 // segmentArgc zaehlt die Woerter nach dem Programm bei fields[i] bis zum Ende seines
 // Segments: ein Operator als eigenes Feld (`&&`, `||`, `;`, `|`, `&`) beendet es und zaehlt
-// nicht mit, ein Feld auf `;` beendet es und zaehlt noch mit. Endet das Programm-Feld selbst
-// auf `;`, ist das Segment zu Ende und argc 0.
-func segmentArgc(fields []string, i int) int {
-	if strings.HasSuffix(fields[i], ";") {
+// nicht mit, ein Feld, das ein Segment schliesst (closesSegment), beendet es und zaehlt
+// noch mit. Schliesst das Programm-Feld selbst sein Segment, ist argc 0.
+func segmentArgc(w words, i int) int {
+	if closesSegment(w, i) {
 		return 0
 	}
 	n := 0
-	for _, f := range fields[i+1:] {
+	for k := i + 1; k < len(w.fields); k++ {
+		f := w.fields[k]
 		if isSegmentEnd(f) || f == "||" {
 			break
 		}
 		n++
-		if strings.HasSuffix(f, ";") {
+		if closesSegment(w, k) {
 			break
 		}
 	}
 	return n
 }
 
+// words ist eine zerlegte Kommandozeile.
+type words struct {
+	fields []string
+	// eol[k]: zwischen fields[k] und dem naechsten Wort steht ein Zeilenende.
+	eol []bool
+}
+
+// singleLine sagt, ob kein Zeilenende zwischen zwei Woertern steht. Ein Zeilenende vor dem
+// ersten und hinter dem letzten Wort zaehlt nicht.
+func (w words) singleLine() bool {
+	for k := 0; k+1 < len(w.eol); k++ {
+		if w.eol[k] {
+			return false
+		}
+	}
+	return true
+}
+
+// lineContinuation ist das Wort, das mit dem Zeilenende zusammen die Zeile fortsetzt.
+const lineContinuation = "\\"
+
 // splitWords zerlegt an Leerzeichen, Tab und Zeilenende und liefert keine leeren Woerter:
-// fuehrender Leerraum erzeugt kein leeres erstes Feld.
-func splitWords(cmd string) []string {
-	return strings.FieldsFunc(cmd, func(r rune) bool { return r == ' ' || r == '\t' || r == '\n' })
+// fuehrender Leerraum erzeugt kein leeres erstes Feld. Es merkt sich, hinter welchem Wort
+// ein Zeilenende steht; ein einzelner Backslash vor dem Zeilenende entfaellt und laesst die
+// Zeile weiterlaufen.
+func splitWords(cmd string) words {
+	var w words
+	start := -1
+	for i := 0; i < len(cmd); i++ {
+		c := cmd[i]
+		if c != ' ' && c != '\t' && c != '\n' {
+			if start < 0 {
+				start = i
+			}
+			continue
+		}
+		if start >= 0 {
+			field := cmd[start:i]
+			start = -1
+			if field == lineContinuation && c == '\n' {
+				continue
+			}
+			w.fields = append(w.fields, field)
+			w.eol = append(w.eol, false)
+		}
+		if c == '\n' && len(w.eol) > 0 {
+			w.eol[len(w.eol)-1] = true
+		}
+	}
+	if start >= 0 {
+		w.fields = append(w.fields, cmd[start:])
+		w.eol = append(w.eol, false)
+	}
+	return w
 }
 
 // shellMetaStart sind die Zeichen, mit denen ein Wort kein Programm nennt: Operatoren,
