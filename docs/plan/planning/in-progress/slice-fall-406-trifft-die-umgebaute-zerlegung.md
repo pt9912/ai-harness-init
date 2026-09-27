@@ -76,7 +76,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 Liefer-Punkt; die übrigen Zeilen sind die fünf konstanten Closure-Pflichten
 und zählen nicht mit.
 
-- [ ] **(1)** Fall 406 — mit aktualisiertem `sed`-Anker gegen die heutige
+- [x] **(1)** Fall 406 — mit aktualisiertem `sed`-Anker gegen die heutige
       `words`-Struct-Zerlegung
       ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand):
       der Anker misst gegen den Quell-Bestand,
@@ -88,17 +88,18 @@ und zählen nicht mit.
       Mutation angewandt → rot mit `TestCommandProgramNeverEmitsAssignmentValueFragments`;
       Mutation nicht angewandt (Grün-Vorlauf) → grün.
 - [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — bevorzugt
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — bevorzugt
       als weiterer Beleg in
       `BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet/evidence/`
       (Zähler stünde danach bei 6×; siehe §6 zur Einordnung). Kein Zähler wird
       gesetzt, er folgt aus den Dateien.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
+- [ ] `make gates` grün.
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
       Repo ohne Wellen-Betrieb hier geprüft.
 
@@ -156,7 +157,10 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
   `failure_form`-Erwartung des Treibers). Das ist kein Risiko außerhalb der
   normalen Implementierungsarbeit — die Verifikation selbst ist DoD (1) —,
   wird hier aber benannt, damit ein Implementer, der den Vorschlag ungeprüft
-  übernimmt, nicht überrascht wird.
+  übernimmt, nicht überrascht wird. — **Ausgang:** *entfallen* — der Anker
+  wurde real geprüft (Implementer-Lauf, unabhängig wiederholt von Reviewer
+  und Verifier je in eigenem, isoliertem Lauf), traf sofort auf Anhieb und
+  ohne Nachbesserung; kein Rest-Risiko.
 - **Diese Entwaffnung ist keine neue Beobachtungs-Klasse, sondern eine
   weitere Instanz einer bereits verkörperten.** Geprüft: der Mutations-Fall
   406 wurde am 2026-09-24 (Commit `fb1ca361`) korrekt gegen den damaligen
@@ -176,7 +180,10 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
   driftete nachträglich, wie die Regel selbst als strukturelle Grenze
   benennt („Die Regel verlagert die Prüfung auf die Anlage, nicht auf den
   Lauf"). Es besteht daher kein Bedarf für eine neue, eigene Beobachtung —
-  nur für einen weiteren Beleg an der bestehenden.
+  nur für einen weiteren Beleg an der bestehenden. — **Ausgang:** *entfallen*
+  — bestätigt durch die Historie: kein neuer Registereintrag nötig, nur ein
+  weiterer Beleg an der bestehenden, bereits verkörperten Klasse (siehe §7,
+  Register-Fortschreibung).
 - **Der eigene Auflösungs-Trigger dieser Regel rückt näher, ist aber noch
   nicht erreicht.**
   [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)
@@ -184,12 +191,89 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
   der Regel wiederkehrt — ein neuer Beleg im Register-Eintrag, drei weitere
   Vorgänge". Mit diesem Slice stünde der Zähler bei 6× (5× + dieser Beleg) —
   das ist der erste von drei weiteren Vorgängen seit der Verkörperung, nicht
-  der dritte. Kein Handlungsbedarf über den Register-Eintrag hinaus.
+  der dritte. Kein Handlungsbedarf über den Register-Eintrag hinaus. —
+  **Ausgang:** *entfallen* — der Beleg ist mit diesem Slice an der
+  bestehenden, verkörperten Klasse ergänzt (jetzt 6×, 1 von 3 weiteren
+  Vorkommen seit MR-071); MR-071s eigener Auflösungs-Trigger ist damit
+  weiterhin nicht erreicht, und die Fortschreibung des Registers trägt das
+  Risiko vollständig — kein zusätzlicher, separater Registereintrag nötig.
 
 ## 7. Closure-Notiz
 
-<!-- wird beim Übergang nach done/ von einem frischen Planner-Kontext gefüllt
-(AGENTS.md §3.10) — nicht Teil dieses Anlage-Laufs. -->
+Geschrieben von der Rolle Planner in frischem Kontext
+([`AGENTS.md`](../../../../AGENTS.md) §3.10), nach Review (Commit `f3f3c828`) und Verifikation
+(Commit `89fd0b79`).
+
+- **Kontext — CI-Release-Blocker.** Dieser Slice ist ein reaktiver Notfall-Fix: `make mutate`
+  meldete in GitHub CI „Patch veraltet" für Fall 406, weil ein späterer, berechtigter Commit
+  (`92f03d31`, Nachrunde slice-204) den `sed`-Anker entwaffnet hatte. Der Lauf blockierte einen
+  `mutate`-Durchgang, der für ein mögliches Release gedacht war. Das ist Kontext für die Eile dieses
+  Slice, keine Norm dieser Notiz.
+- **Was hat funktioniert.** Der Planner-Vorschlag aus §3 (die Bedingung um `&& c < 0x80` erweitern)
+  traf beim Implementer auf Anhieb: Rot-vor-Grün am Produktionscode, dreifach unabhängig gesehen —
+  Implementer-Lauf, Reviewer-Lauf, Verifier-Lauf, jeder in eigener isolierter Scratch-Kopie, keiner
+  im Arbeitsbaum. Der MR-071-Anker (`grep -c` gegen den heutigen Quell-Bestand) traf beide Male
+  eindeutig eine Stelle. Weder `internal/span/span.go` noch `internal/span/span_test.go` wurden
+  angerührt (Plan §1 eingehalten, von allen drei Rollen unabhängig per `git diff --stat` bestätigt).
+- **F-1 (MEDIUM, Reviewer/Verifier) — Entscheidung: lassen, nicht nachbessern.** Die Mutation färbt
+  neben dem im `# expect:`-Kopf genannten `TestCommandProgramNeverEmitsAssignmentValueFragments`
+  auch `TestCommandProgramNamesAProgramNotAnOperator` mit (Gegenprobe mit ausgeschriebener
+  Polarität, von Reviewer und Verifier je unabhängig gefahren: nur der benannte Test übersprungen,
+  Mutation aktiv → bleibt rot über dem zweiten Test). Dagegen abgewogen: (1) Der `# expect:`-Kopf
+  beansprucht keine Exklusivität — er nennt einen Test, der rot werden **muss**, nicht den einzigen,
+  der rot werden **darf**; `harness/tools/mutate.sh` prüft laut eigener Meldungsform nur, ob der
+  genannte Test in der roten Ausgabe steht. (2) Beide Rollen haben den Befund ausdrücklich als
+  **nicht merge-blockierend** eingestuft. (3) Die Klasse ist mit diesem Beleg zum **dritten** Mal
+  aufgetreten (siehe Register-Fortschreibung unten) — das ist die vom Regelwerk vorgesehene Reaktion
+  auf eine wiederkehrende Beobachtung (3×-Schwelle, Modul 6), nicht ein Fall, den ein einzelner
+  Slice im Vorbeigehen still mitkorrigiert. Eine Nachbesserung hieße entweder den Fall 406 enger zu
+  fassen (Aufsplitten in zwei Fälle je Test) oder `make mutate` selbst um eine
+  Exklusivitäts-Prüfung zu erweitern — beides sind Änderungen mit eigenem Entwurfsraum (welche
+  Fälle bekommen künftig eine Exklusivitäts-Zusage? bricht ein schärferer Treiber heute grüne,
+  historisch gewachsene Fälle?), keine lokal begrenzten Patches, und §1 dieses Slice schließt genau
+  das aus („Kein genereller Wächter gegen sed-Anker-Drift … Dieser Slice liefert höchstens den
+  nächsten Beleg"). Der Slice selbst ist ein Notfall-Fix für einen CI-Release-Blocker — eine
+  zusätzliche, unabgestimmte Verzögerung für eine als nicht-blockierend eingestufte Systemfrage ist
+  hier die falsche Priorität. Die richtige Route ist die normative: der 3×-Übertritt geht mit
+  zugewiesenem „offen, Übergabe an den Architect" in dieses Closure (siehe Register-Fortschreibung),
+  und die Architect-Entscheidung entscheidet über Zielort/Verkörperung oder benannte Lücke — nicht
+  dieser Slice.
+- **V-1 (LOW, Verifier) — Lerneintrag (Form: geschärfte Sichtungs-Disziplin).** Die
+  §8-Sichtungszeile dieses Slice-Plans behauptete „Kein weiterer Treffer … zu `internal/span/`
+  spezifisch", obwohl `mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere` zu diesem
+  Zeitpunkt bereits 2× belegt war — beide Belege aus Arbeit an `internal/span/`, einer davon Fall 406
+  selbst namentlich nennend (`docs/reviews/2026-09-24-slice-program-feld-nennt-weder-operator-noch-wertfragment-gegenprobe.md`
+  Zeile 53). Der Sichtungs-Schritt hatte den **einen** einschlägigen Treffer
+  (`mutations-fall-wird-von-berechtigter-aenderung-entwaffnet`) korrekt notiert und den zweiten,
+  ebenso einschlägigen, übersehen — nicht falsch gezählt, sondern schlicht nicht gefunden. Modul 6
+  verlangt „Keine Treffer sind ebenfalls eine Antwort und werden notiert"; hier lag ein Treffer vor
+  und wurde als „kein Treffer" notiert. Die Lehre: Der Sichtungs-Schritt braucht mehr als eine
+  Stichwort-Suche nach der zuerst gefundenen einschlägigen Klasse — er muss **alle** Verzeichnisse
+  mit erkennbarem Bezug zur berührten Datei/Funktion durchgehen, nicht nur bis zum ersten Treffer.
+  Diese Lücke ist neu und eigenständig registriert (siehe unten), statt sie unter der bereits
+  verkörperten Nachbarklasse `sichtungs-schritt-zitiert-falschen-zaehler-stand` (falscher Zähler,
+  nicht fehlender Treffer — andere Fehlerrichtung) mitzuzählen.
+- **Register-Fortschreibung (`../observations/`).** Zwei bestehende Verzeichnisse um je einen Beleg
+  ergänzt:
+  [`mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere`](../observations/BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere/observation.md)
+  (F-1) — Zähler jetzt **3×**, **3×-Übertritt erreicht**. Ausgang: **offen, mit Übergabe an den
+  Architect** — der Lese-Schritt (diese Slice-Closure, Repo ohne Wellen-Betrieb) erkennt den
+  Übertritt, weist aber keinen der drei Ausgänge selbst zu: Verkörperung ist eine
+  Architect-Entscheidung (`modul-08-agentenrollen.md` §Rollen-Sequenz für eine Welle, Schritt 3b).
+  Details der Übergabe stehen in `state.md` der Beobachtung. Und
+  [`mutations-fall-wird-von-berechtigter-aenderung-entwaffnet`](../observations/BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet/observation.md)
+  (Entwaffnung durch berechtigte Änderung) — Zähler jetzt **6×**; Ausgang unverändert
+  **verkörpert** (MR-071); MR-071s eigener Auflösungs-Trigger (drei weitere Vorkommen seit der
+  Verkörperung) steht bei 1 von 3, noch nicht erreicht. Eine neue Beobachtung angelegt:
+  [`sichtungs-schritt-uebersieht-treffenden-registereintrag`](../observations/BEO-ALL/sichtungs-schritt-uebersieht-treffenden-registereintrag/observation.md)
+  (V-1, 1×, `offen` — unterhalb der Schwelle, Normalzustand).
+- **Folge-Slices:** keine neu geschnitten. Die F-1-Systemfrage (Exklusivitäts-Zusage von
+  Mutations-Fällen) geht über den 3×-Übertritt an den Architect, nicht als eigener Slice — die
+  Architect-Entscheidung kann selbst einen Folge-Slice adressieren, das ist nicht Sache dieses
+  Laufs.
+- **Risiken aus §6:** je ein Ausgang, siehe §6 (entfallen · entfallen · entfallen).
+- **Drei Paarungen** (ohne Wellen-Betrieb hier, nach dem `git mv` gelesen) — Ergebnis in einem
+  eigenen Commit nach dem Move, wie in dieser Ablage üblich (AGENTS.md §3.3).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
