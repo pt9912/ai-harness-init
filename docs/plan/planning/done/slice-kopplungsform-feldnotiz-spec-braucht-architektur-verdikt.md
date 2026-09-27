@@ -282,8 +282,29 @@ entsteht als eigener Planungs-Zug, nicht als Teil dieser Closure).
   angeglichen), eines *weiter offen* → Beobachtungs-Register (Risiko 4, erste Hälfte —
   Doku-Gate-Blindheit für die Kernaussage-Achse bleibt bestehen; die zweite Hälfte des Risikos,
   die Register-Zuordnungsfrage, ist mit der neuen Beobachtung oben entschieden, nicht mehr offen).
-- **Drei Paarungen:** <nach dem Move gegen `done/` zu messen — folgt in einem separaten Commit,
-  Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form: Slice, Vorlage §7-Reihenfolge>.
+- **Drei Paarungen** (nach dem Move gegen `done/` von Hand geprüft, 2026-09-27; ein Wächter dafür
+  existiert nicht): **(a) Anker** — §7 trägt kein Feld `liegt in <Zielort>` (nichts wurde mit
+  diesem Slice verkörpert, siehe Steering-Loop-Eintrag oben); die Paarung hat für diesen Slice
+  keinen Gegenstand und ist **nicht** als getragen behauptet. **(b) Folge-Slice** — genannt:
+  `slice-feldabdeckung-existenz-sensor` existiert als Datei im Planning-Lifecycle
+  (`ls docs/plan/planning/*/slice-feldabdeckung-existenz-sensor.md` → Treffer in `open/`).
+  **(c) Register, erste Hälfte** — die neu angelegte Beobachtung
+  `BEO-ALL/feldnotiz-traeger-und-spec-koennen-in-der-kernaussage-abweichen-ohne-sensor` existiert
+  als Verzeichnis und trägt ein nicht leeres `evidence/`
+  (`ls docs/plan/planning/observations/BEO-ALL/feldnotiz-traeger-und-spec-koennen-in-der-kernaussage-abweichen-ohne-sensor/evidence/*.md | wc -l`
+  → 1). **(c) Register, zweite Hälfte: 4 Verzeichnisse ohne Beleg, unverändert gegenüber der
+  letzten Messung, namentlich `ci-rennt-gegen-die-publikation-des-gepinnten-releases`,
+  `cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+  `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`,
+  `planungs-bestand-waechst-schneller-als-er-abgebaut-wird`; nicht als getragen behauptet**
+  (`for d in docs/plan/planning/observations/BEO-ALL/*/; do n=$(ls "$d"evidence/*.md 2>/dev/null | wc -l); [ "$n" -eq 0 ] && echo "$d"; done`;
+  das Register führt 193 Verzeichnisse,
+  `ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l`; keine Erwartungswerte). Nennen ist
+  keine Tilgung: dieser Slice liefert keinen Beleg für sie.
+  Wahr ist die DoD-Zeile damit für (b) und die erste Hälfte von (c), nicht für (a) und nicht für
+  die zweite Hälfte von (c) — dieser Slice führt keine eigene Paarungs-DoD-Zeile in §2 (die
+  Standard-Vorlage-Einschränkung dort nennt sie nicht namentlich), das Ergebnis steht deshalb hier,
+  nicht als Häkchen.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
