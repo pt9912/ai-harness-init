@@ -10,7 +10,7 @@
 [`AGENTS.md`](../../AGENTS.md) §3.6.
 
 Geprüft gegen den Slice-Plan
-[`slice-071-bilanz-nennt-ihren-bestand.md`](../plan/planning/in-progress/slice-071-bilanz-nennt-ihren-bestand.md)
+[`slice-071-bilanz-nennt-ihren-bestand.md`](../plan/planning/done/slice-071-bilanz-nennt-ihren-bestand.md)
 (§2 DoD, drei Punkte mit Rot-Kriterium) und gegen den Review-Report
 [`2026-09-27-review-slice-071-bilanz-nennt-ihren-bestand.md`](2026-09-27-review-slice-071-bilanz-nennt-ihren-bestand.md)
 (Commit `f408950f`: 0 HIGH, 1 MEDIUM, 1 LOW). Alle Formen wurden in einer isolierten

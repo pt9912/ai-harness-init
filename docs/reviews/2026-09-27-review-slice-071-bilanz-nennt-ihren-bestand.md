@@ -11,7 +11,7 @@
 [`AGENTS.md`](../../AGENTS.md) §3.6.
 
 Geprüft gegen den Plan
-[`slice-071-bilanz-nennt-ihren-bestand.md`](../plan/planning/in-progress/slice-071-bilanz-nennt-ihren-bestand.md)
+[`slice-071-bilanz-nennt-ihren-bestand.md`](../plan/planning/done/slice-071-bilanz-nennt-ihren-bestand.md)
 (§1 Ziel, §2 DoD, §3 Plan, §6 Risiken). Alle Formen wurden in einer isolierten Scratch-Kopie
 (`git archive 10e54f68` + eigenes `git init`) gefahren, nie im Arbeitsbaum des Repos.
 
