@@ -161,7 +161,7 @@ func TestSchreibe_SammelpostenAnteilStehtDrin(t *testing.T) {
 	// MitZaehlern/Zeilen gesetzt, weil eine Bilanz nur ueber einem Bestand MIT
 	// Verbrauchs-Zaehlern ausgewiesen wird — ohne sie meldete die Ausgabe zu Recht
 	// ihre Leere, und dieser Zahn traefe den falschen Zweig.
-	text := report.Schreibe(report.Bilanz{Sammelposten: 50, Gesamt: 200, Verteilt: true, MitZaehlern: 1, Zeilen: 4})
+	text := report.Schreibe(report.Bilanz{Sammelposten: 50, Gesamt: 200, Verteilt: true, AgentLaeufe: 1, MitZaehlern: 1, Zeilen: 4})
 	if !strings.Contains(text, "Sammelposten:") {
 		t.Fatalf("Sammelposten-Zeile fehlt:\n%s", text)
 	}
@@ -256,6 +256,122 @@ func TestSchreibe_LeererBestandNenntSeineLeere(t *testing.T) {
 	}
 }
 
+// ZAHN (slice-071 DoD (1)): ein FEHLENDER Ablageort wird als solcher erkannt — nicht
+// nur als "keine Zeile gelesen".
+// Dauer-Sensor: test/mutations/491-report-ablageort-fehlt-nicht-erkannt.sh
+func TestAggregiere_FehlenderAblageortWirdErkannt(t *testing.T) {
+	t.Parallel()
+	dir := filepath.Join(t.TempDir(), "existiert-nicht")
+
+	b, err := report.Aggregiere(dir)
+	if err != nil {
+		t.Fatalf("Aggregiere: %v", err)
+	}
+	if !b.AblageortFehlt {
+		t.Fatalf("AblageortFehlt = false, erwartet true fuer %q", dir)
+	}
+	if b.Zeilen != 0 {
+		t.Fatalf("Zeilen = %d, erwartet 0", b.Zeilen)
+	}
+}
+
+// Ein VORHANDENER, aber leerer Ablageort ist NICHT derselbe Fall wie ein fehlender —
+// die Gegenprobe zum Zahn oben.
+func TestAggregiere_VorhandenerLeererAblageortIstKeinFehlenderAblageort(t *testing.T) {
+	t.Parallel()
+	b, err := report.Aggregiere(t.TempDir())
+	if err != nil {
+		t.Fatalf("Aggregiere: %v", err)
+	}
+	if b.AblageortFehlt {
+		t.Fatalf("AblageortFehlt = true fuer einen vorhandenen, leeren Ablageort")
+	}
+}
+
+// ZAHN (slice-071 DoD (1)): ein FEHLENDER Ablageort meldet sich ANDERS als ein
+// vorhandener, leerer — und keiner der beiden nennt eine Traeger-Ursache, die in
+// diesem Zustand nicht zutreffen kann (das Programm laeuft schon, sonst gaebe es diese
+// Zeile nicht; span-clean nimmt den Bestand, nicht das Programm).
+// Dauer-Sensor: test/mutations/491-report-ablageort-fehlt-nicht-erkannt.sh,
+// test/mutations/492-report-traeger-ursache-zurueckgeschrieben.sh
+func TestSchreibe_FehlenderAblageortMeldetSichAndersAlsLeerer(t *testing.T) {
+	t.Parallel()
+	fehlt := report.Schreibe(report.Bilanz{Zeilen: 0, AblageortFehlt: true})
+	leer := report.Schreibe(report.Bilanz{Zeilen: 0, AblageortFehlt: false})
+
+	if !strings.Contains(fehlt, "existiert nicht") {
+		t.Errorf("der fehlende Ablageort sagt nicht, dass er nicht existiert:\n%s", fehlt)
+	}
+	if strings.Contains(fehlt, "existiert, gelesen") {
+		t.Errorf("der fehlende Ablageort traegt die Meldung des vorhandenen, leeren:\n%s", fehlt)
+	}
+	if !strings.Contains(leer, "existiert, gelesen") {
+		t.Errorf("der vorhandene, leere Ablageort sagt nicht, dass er existiert:\n%s", leer)
+	}
+	if strings.Contains(leer, "existiert nicht") {
+		t.Errorf("der vorhandene, leere Ablageort traegt die Meldung des fehlenden:\n%s", leer)
+	}
+	for _, text := range []string{fehlt, leer} {
+		for _, verboten := range []string{"frischer Klon", "Aufraeum-Lauf"} {
+			if strings.Contains(text, verboten) {
+				t.Errorf("die Leere-Meldung nennt eine Traeger-Ursache, die hier nicht zutreffen kann (%q):\n%s", verboten, text)
+			}
+		}
+	}
+}
+
+// ZAHN (slice-071 DoD (2)): Zeilen > 0 OHNE einen einzigen Agenten-Lauf ist eine eigene
+// Lage — die Mechanik des Agenten-Werkzeugs traegt hier keine Schuld, weil kein
+// Agenten-Aufruf lief, dessen Zaehler fehlen koennten. Der Grund-Satz zur Mechanik
+// bleibt dort, wo er traegt: ueber einem Bestand MIT Agenten-Laeufen und ohne Zaehler.
+// Dauer-Sensor: test/mutations/493-report-lage-ohne-agent-lauf-zusammengelegt.sh
+func TestSchreibe_BestandOhneAgentLaufMeldetEigeneLage(t *testing.T) {
+	t.Parallel()
+	ohneAgent := report.Schreibe(report.Bilanz{Zeilen: 3, AgentLaeufe: 0})
+	mitAgent := report.Schreibe(report.Bilanz{Zeilen: 3, AgentLaeufe: 2, MitZaehlern: 0})
+
+	// Distinktes Fragment von grundDerZaehler statt "Mechanik des Agenten-Werkzeugs":
+	// die neue Meldung NENNT diesen Ausdruck selbst, um ihn ausdruecklich zu
+	// verneinen — ein Substring-Check darauf traefe faelschlich auf beide Texte.
+	if strings.Contains(ohneAgent, "der Normalfall und kein Defekt") {
+		t.Errorf("ohne Agenten-Lauf traegt die Meldung trotzdem den Mechanik-Grund-Satz:\n%s", ohneAgent)
+	}
+	if !strings.Contains(ohneAgent, "Keine Bilanz:") {
+		t.Errorf("der Bestand ohne Agenten-Lauf sagt nicht, dass er keine Bilanz ausweist:\n%s", ohneAgent)
+	}
+	if !strings.Contains(mitAgent, "der Normalfall und kein Defekt") {
+		t.Errorf("mit Agenten-Laeufen und ohne Zaehler fehlt der Mechanik-Grund-Satz:\n%s", mitAgent)
+	}
+}
+
+// ZAHN (slice-071 DoD (3)): die Bestandszeile nennt, WAS sie zaehlt — die
+// verschiedenen session-Werte der LESBAREN Zeilen — und greift dabei nicht ueber die
+// gezaehlte Menge hinaus (keine zweite Zahl, keine Angabe ueber den ganzen Ablageort).
+// Dauer-Sensor: test/mutations/494-report-bestandszeile-bezugsmenge-entfernt.sh
+func TestSchreibe_BestandsZeileNenntIhreBezugsmenge(t *testing.T) {
+	t.Parallel()
+	text := report.Schreibe(report.Bilanz{
+		Sitzungen: 3, Von: "2026-01-01T00:00:00Z", Bis: "2026-01-02T00:00:00Z",
+		AgentLaeufe: 1, MitZaehlern: 1,
+	})
+	var zeile string
+	for _, z := range strings.Split(text, "\n") {
+		if strings.HasPrefix(z, "Bestand:") {
+			zeile = z
+			break
+		}
+	}
+	if zeile == "" {
+		t.Fatalf("keine Bestandszeile in der Ausgabe:\n%s", text)
+	}
+	if !strings.Contains(zeile, "session-Werte") {
+		t.Errorf("die Bestandszeile nennt ihre Bezugsmenge nicht (session-Werte):\n%s", zeile)
+	}
+	if !strings.Contains(zeile, "lesbaren") {
+		t.Errorf("die Bestandszeile grenzt sich nicht auf die lesbaren Zeilen ein:\n%s", zeile)
+	}
+}
+
 // Der Bestand zaehlt JEDE nicht-leere Zeile, auch die unlesbare: gemessen wird, ob
 // ueberhaupt erfasst wurde. Ohne diese Lesart meldete ein Bestand aus lauter kaputten
 // Zeilen "kein Bestand" — und der Leser gaebe einem fehlenden Traeger die Schuld an
@@ -317,7 +433,7 @@ func TestAggregiere_SpawnSpanZaehltNichtAlsToolCall(t *testing.T) {
 // Dauer-Sensor: test/mutations/148-report-unverteilt-als-verteilt.sh
 func TestSchreibe_UnverteilterSammelpostenStehtAusserhalb(t *testing.T) {
 	t.Parallel()
-	text := report.Schreibe(report.Bilanz{Sammelposten: 150, Gesamt: 0, Verteilt: false, MitZaehlern: 1, Zeilen: 4})
+	text := report.Schreibe(report.Bilanz{Sammelposten: 150, Gesamt: 0, Verteilt: false, AgentLaeufe: 1, MitZaehlern: 1, Zeilen: 4})
 	if strings.Contains(text, "anteilig nach Tool-Calls verteilt") {
 		t.Fatalf("behauptet eine Verteilung, die nicht stattfand:\n%s", text)
 	}

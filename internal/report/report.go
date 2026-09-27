@@ -49,11 +49,15 @@ type Bilanz struct {
 	Von         string
 	Bis         string
 	// Zeilen ist die Zahl der nicht-leeren Zeilen des Bestands — auch der nicht
-	// lesbaren. Sie unterscheidet zwei Leeren, die sonst gleich aussehen: einen
-	// Bestand OHNE ZEILE (es wurde nichts erfasst) von einem Bestand mit Zeilen und
-	// ohne Verbrauchs-Zaehler. Nur die zweite Leere hat ihren Grund in der Mechanik
-	// des Agenten-Werkzeugs; die erste kommt von einem Traeger, der nicht liegt.
+	// lesbaren. Sie unterscheidet die drei Leeren, die sonst gleich aussehen: einen
+	// FEHLENDEN Ablageort (AblageortFehlt), einen VORHANDENEN, aber leeren Ablageort,
+	// und einen Bestand MIT Zeilen und ohne Verbrauchs-Zaehler — nur die dritte hat
+	// ihren Grund in der Mechanik des Agenten-Werkzeugs (slice-071 DoD (1)/(2)).
 	Zeilen int
+	// AblageortFehlt ist wahr, wenn der Ablageort beim Lesen nicht existierte —
+	// unterschieden vom Fall, dass er existiert und leer ist. Beide fuehren zu
+	// Zeilen == 0 und sehen sonst gleich aus (slice-071 DoD (1)).
+	AblageortFehlt bool
 }
 
 // TraegtZaehler ist wahr, wenn mindestens ein Subagenten-Lauf des Bestands
@@ -78,6 +82,17 @@ func (b Bilanz) SammelpostenAnteil() float64 {
 // angehaengter Strom, und ein halb geschriebener Eintrag am Ende ist kein Grund,
 // die ganze Rechnung zu verweigern.
 func Aggregiere(dir string) (Bilanz, error) {
+	var b Bilanz
+	// VOR dem Glob geprueft: filepath.Glob meldet ueber einem fehlenden Verzeichnis
+	// weder Treffer noch Fehler — ununterscheidbar vom vorhandenen, leeren Ablageort,
+	// waere hier nichts festgestellt (slice-071 DoD (1)).
+	if _, err := os.Stat(dir); err != nil {
+		if !os.IsNotExist(err) {
+			return Bilanz{}, err
+		}
+		b.AblageortFehlt = true
+	}
+
 	dateien, err := filepath.Glob(filepath.Join(dir, "*.jsonl"))
 	if err != nil {
 		return Bilanz{}, err
@@ -85,7 +100,6 @@ func Aggregiere(dir string) (Bilanz, error) {
 	sort.Strings(dateien)
 
 	var (
-		b         Bilanz
 		direkt    = map[string]int64{}
 		toolCalls = map[string]int64{}
 		sitzungen = map[string]struct{}{}
@@ -293,25 +307,45 @@ const grundDerZaehler = "Die Verbrauchs-Zaehler kommen aus der Mechanik des Agen
 // eigenem Bestand laufen. Rot-Gegenbeispiel: test/mutations/176-leser-grund-satz-weg.sh.
 func leereDerZaehler() string { return keineBilanz + grundDerZaehler }
 
-// leereDesBestands meldet einen Bestand OHNE JEDE ZEILE — und sagt ausdruecklich, dass
-// das keine Aussage ueber die Verbrauchs-Zaehler ist.
-//
-// DIE UNTERSCHEIDUNG IST DER PUNKT: ohne Zeile gibt es nichts, was Zaehler tragen
-// koennte. Wer beide Leeren gleich meldete, gaebe der Mechanik des Agenten-Werkzeugs die
-// Schuld an einer Leere, die von einem Traeger kommt, der nicht liegt — im zweiten Fall
-// waere die Meldung schlicht falsch.
-// Bewacht von TestSchreibe_LeererBestandNenntSeineLeere.
-const leereDesBestands = "Kein Bestand: gelesen wurde keine Zeile.\n" +
-	"Das ist KEINE Aussage ueber die Verbrauchs-Zaehler, sondern ueber die Erfassung: sie laeuft\n" +
-	"ueber ein Programm im gitignorierten Zustands-Bereich — ein frischer Klon hat es nicht, und\n" +
-	"ein Aufraeum-Lauf nimmt es weg. Liegt es, entsteht die erste Zeile beim naechsten\n" +
-	"Werkzeug-Aufruf.\n"
+// leereDesAblageorts meldet, dass der ABLAGEORT SELBST NICHT EXISTIERT — die erste der
+// drei Leeren (slice-071 DoD (1)). Sie nennt KEINE Ursache fuer den Traeger: ob das
+// Programm liegt, ist beim Aufruf dieses Codes bereits entschieden — fehlte es, haette
+// das emittierte Fragment eine Ebene hoeher seine eigene Meldung gedruckt und dieses
+// Programm nie gestartet (internal/emit/templates/enforce/erfassung.mk); und
+// `span-clean` nimmt den BESTAND, nicht das Programm. Beide Traeger-Ursachen gehoeren
+// darum in die Meldung des Fragments, nicht in diese.
+// Bewacht von TestSchreibe_FehlenderAblageortMeldetSichAndersAlsLeerer.
+const leereDesAblageorts = "Kein Bestand: der Ablageort existiert nicht — gelesen wurde keine Zeile.\n" +
+	"Das ist KEINE Aussage ueber die Verbrauchs-Zaehler, sondern ueber die Erfassung: der Ort, an\n" +
+	"dem sie schreibt, ist noch nicht angelegt. Der naechste Werkzeug-Aufruf legt ihn an.\n"
+
+// leereDesBestands meldet einen VORHANDENEN Ablageort OHNE JEDE ZEILE — die zweite der
+// drei Leeren, unterschieden vom fehlenden Ablageort oben (slice-071 DoD (1)) und vom
+// Bestand mit Zeilen und ohne Verbrauchs-Zaehler weiter unten.
+// Bewacht von TestSchreibe_LeererBestandNenntSeineLeere,
+// TestSchreibe_FehlenderAblageortMeldetSichAndersAlsLeerer.
+const leereDesBestands = "Kein Bestand: der Ablageort existiert, gelesen wurde aber keine Zeile.\n" +
+	"Das ist KEINE Aussage ueber die Verbrauchs-Zaehler, sondern ueber die Erfassung: der naechste\n" +
+	"Werkzeug-Aufruf legt die erste Zeile an.\n"
+
+// keineBilanzOhneAgentLauf meldet einen Bestand MIT Zeilen, aber OHNE EINEN EINZIGEN
+// AGENTEN-LAUF — eine eigene Lage (slice-071 DoD (2)). Die Mechanik-Begruendung von
+// leereDerZaehler() passt hier nicht: sie erklaert fehlende Zaehler EINES Agenten-Laufs,
+// und hier lief keiner, dessen Zaehler fehlen koennten.
+// Bewacht von TestSchreibe_BestandOhneAgentLaufMeldetEigeneLage.
+const keineBilanzOhneAgentLauf = keineBilanz +
+	"Es lief kein Agenten-Aufruf, dessen Zaehler fehlen koennten — das ist keine Aussage ueber die\n" +
+	"Mechanik des Agenten-Werkzeugs, sondern darueber, dass hier ueberhaupt kein Agent lief.\n"
 
 // Schreibe gibt die Bilanz als Text aus — die ABDECKUNG ZUERST, danach die Lage.
 //
-// DREI LAGEN, DREI AUSGABEN, und die Unterscheidung ist selbst die Aussage:
-//   - kein Bestand         -> es wurde nichts erfasst; ueber die Zaehler sagt das nichts,
-//   - Bestand ohne Zaehler -> KEINE Bilanz, und der Grund steht dabei,
+// FUENF LAGEN, FUENF AUSGABEN, und die Unterscheidung ist selbst die Aussage
+// (slice-071 DoD (1)/(2)):
+//   - Ablageort existiert nicht    -> es wurde nichts erfasst; ueber die Zaehler sagt
+//     das nichts, und ueber das Programm auch nicht (das entscheidet eine Ebene hoeher),
+//   - Ablageort existiert, ist leer -> dieselbe Nicht-Aussage, anderer Grund,
+//   - Bestand mit Zeilen, ohne Agenten-Lauf -> KEINE Bilanz, kein Mechanik-Grund,
+//   - Bestand mit Agenten-Laeufen, ohne Zaehler -> KEINE Bilanz, MIT Mechanik-Grund,
 //   - Bestand mit Zaehlern -> die Bilanz.
 //
 // Drei Angaben tragen die Ausgabe unabhaengig von den Rollen-Zeilen, und jede sagt
@@ -326,17 +360,33 @@ func Schreibe(b Bilanz) string {
 	sb.WriteString(kopf(b))
 
 	if b.Sitzungen > 0 {
-		fmt.Fprintf(&sb, "Bestand: %d Sitzung(en), %s bis %s\n", b.Sitzungen, b.Von, b.Bis)
+		// Gezaehlt werden die verschiedenen session-Werte der LESBAREN Zeilen — eine
+		// Menge ueber den Span-Feldern, nicht ueber der Summe (slice-071 DoD (3)). Die
+		// Angabe steht NEBEN der Zahl, nicht in einer Fussnote.
+		fmt.Fprintf(&sb, "Bestand: %d Sitzung(en) — verschiedene session-Werte der lesbaren Zeilen, %s bis %s\n",
+			b.Sitzungen, b.Von, b.Bis)
 	}
 	sb.WriteString("\n")
 
 	// Ohne Zaehler wird KEINE Bilanz ausgewiesen — keine Rollen-Zeile, keine groesste
 	// Rolle, kein Sammelposten. Eine Zeile mit einer Null ueber leerem Grund ist eine
 	// Rechnung, die nicht stattgefunden hat (LH-FA-10 §Leser).
-	// Bewacht von TestSchreibe_OhneZaehlerKeineBilanz.
+	// Die Reihenfolge ist tragend: AblageortFehlt zuerst (sonst faellt der Fall unter
+	// Zeilen == 0 mit dem vorhandenen, leeren Ablageort zusammen), AgentLaeufe == 0 vor
+	// TraegtZaehler() (sonst faellt der Fall darunter, ist aber trivial auch "ohne
+	// Zaehler").
+	// Bewacht von TestSchreibe_OhneZaehlerKeineBilanz,
+	// TestSchreibe_FehlenderAblageortMeldetSichAndersAlsLeerer,
+	// TestSchreibe_BestandOhneAgentLaufMeldetEigeneLage.
 	switch {
+	case b.Zeilen == 0 && b.AblageortFehlt:
+		sb.WriteString(leereDesAblageorts)
+		return sb.String()
 	case b.Zeilen == 0:
 		sb.WriteString(leereDesBestands)
+		return sb.String()
+	case b.AgentLaeufe == 0:
+		sb.WriteString(keineBilanzOhneAgentLauf)
 		return sb.String()
 	case !b.TraegtZaehler():
 		sb.WriteString(leereDerZaehler())
