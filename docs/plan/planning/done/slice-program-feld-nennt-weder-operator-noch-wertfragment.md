@@ -114,7 +114,7 @@ startet und sie dann anpasst.
 **Verworfen: ein kleiner Shell-Tokenizer** (Anführungszeichen- und Klammer-Tiefe), der `SHA=$(git rev-parse HEAD) && gh api`
 zu `gh` auflöste. Er ist eine andere Größe — Fehlgriffe in Sonderformen (Here-Doc, `${…}`,
 verschachtelte Substitution) sind hier kein Schönheitsfehler, sondern ein Leck —, und
-[slice-204](../next/slice-204-das-programm-feld-nennt-das-programm.md) benennt in seiner Rückführung
+[slice-204](../in-progress/slice-204-das-programm-feld-nennt-das-programm.md) benennt in seiner Rückführung
 dieselbe Weggabelung. Der Preis der fail-closed-Wahl ist beziffert (die 116 fallen auf *nichts* statt
 auf ein Bruchstück) und ist eine Verkleinerung des Nenners, kein falscher Zähler.
 
@@ -127,7 +127,7 @@ liest das Feld **nicht**. Die Folge — der Bestand mischt zwei Bedeutungen — 
 repariert (§6).
 
 **Nachbarschaft: `slice-204` schreibt an derselben Funktion und derselben Spec-Zeile.**
-[slice-204](../next/slice-204-das-programm-feld-nennt-das-programm.md) (`next/`) lässt
+[slice-204](../in-progress/slice-204-das-programm-feld-nennt-das-programm.md) (`next/`) lässt
 `commandProgram()` **Navigations-Segmente** (`cd`, `set`) überspringen und setzt `argc` auf das
 gewählte Segment; er berührt `SPEC-021` und `SPEC-031`. Beide ändern dieselbe Funktion, denselben
 Test und dieselbe Spec-Zeile. Dieser Slice führt den Begriff *Segment ohne Programm* für
@@ -278,7 +278,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **Start** (`next` → `in-progress`): Der Slice ist priorisiert, `Verantwortlich:` ist gesetzt, das
 WIP-Limit des Rolleninhabers ist frei. **Entschieden — vor `open → next`, nicht im Lauf:** die
 Reihenfolge zu
-[slice-204](../next/slice-204-das-programm-feld-nennt-das-programm.md), der dieselbe Funktion,
+[slice-204](../in-progress/slice-204-das-programm-feld-nennt-das-programm.md), der dieselbe Funktion,
 denselben Test und `SPEC-031` ändert. Gewählt ist **(a)**: dieser Slice zuerst, slice-204 baut auf
 dem Begriff *Segment ohne Programm* auf und gleicht `argc` an (Auftraggeber-Entscheidung
 2026-09-24). Die Alternative **(b)** — beide Gegenstände in **einem** Slice, einer der beiden als
