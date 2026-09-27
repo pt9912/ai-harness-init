@@ -1,6 +1,6 @@
 # Reviewer-Skill — ai-harness-init
 
-**Version:** 2.1.0 · **Datum:** 2026-09-26 ·
+**Version:** 2.2.0 · **Datum:** 2026-09-27 ·
 **Baseline:** Agents-Regelwerk v6.7.2 (Kurs-Welle 134), Modul 10 §Ziel-Form: Reviewer-Skill
 (Kontext-Eingang · Klassifikation · „Was dieser Skill NICHT macht" · Output-Schema mit
 Negativbefund-Pflicht · Pflege).
@@ -113,6 +113,17 @@ Won't-Fix-Designnotiz.
   Aufzählungen, die der Diff anlegt oder ändert, nicht für den Bestand. Kein Gate fängt das;
   Träger ist dieser Review ([`AGENTS.md`](../../AGENTS.md) §3.6)
   (seit slice-form-regel-des-nachzugs-ist-an-die-codepaths-ausnahme-gekoppelt)
+- **Mehrteilige Regel-Zusage im Kommentar ohne Mutations-Deckung je Teil** — ein Kommentar oder eine
+  referenzierte Spec-Zeile sagt einer Regel mehrere Grenzen in einem Satz zu (z. B. „überquert weder
+  Link- noch Zeilengrenze", „endet am Verzeichnis", „bricht die Fortsetzung nur vor dem
+  Zeilenende"). Der Reviewer prüft für **jede genannte Teil-Grenze einzeln**, ob ein Mutations-Fall
+  oder Test sie bindet — dass irgendein Fall zur Zusage existiert, genügt nicht: die Suite kann für
+  eine Hälfte grün bleiben, während die andere gebunden ist. Eine Teil-Grenze ohne eigenen,
+  bindenden Fall: INFO; LOW, wenn die ungebundene Hälfte praktisch erreichbar ist (Whitespace,
+  Maskierung, Sonderzeichen); HIGH, wenn kein Gate die Folge meldet (Stilles-Grün-Pfad). Gilt für
+  Zusagen, die der Diff anlegt oder ändert, nicht für den Bestand. Kein Gate fängt das; Träger ist
+  dieser Review ([`AGENTS.md`](../../AGENTS.md) §3.6)
+  (seit slice-204-das-programm-feld-nennt-das-programm)
 
 **Kontext-Eskalation:** dieselbe Beobachtung im Gate-/Sicherheitspfad steigt eine
 Stufe. Streit über eine Kategorisierung ⇒ Regel hier schärfen (§Pflege).
