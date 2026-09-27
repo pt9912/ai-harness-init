@@ -15,7 +15,7 @@ gegen die Formen der Sprache, über die sie spricht — die Menge der Formen ist
 Träger ist der Review, der die Formen fährt; die Zeile deckt Aufzählungen, die ein Diff anlegt oder ändert,
 nicht den Bestand. Die Autor-Seite bleibt offen: solange der Lauf, der die Aufzählung schreibt, keine
 Formen-Probe fährt, findet erst der Review die Lücke. Das Vorkommen an `harness/sensors/commit-msg-check.md`
-steht in `observation.md` unter *Benannt, nicht gezählt* und bewegt den Zähler nicht.
+steht unten unter *Benannt, nicht gezählt* und bewegt den Zähler nicht.
 
 **Vierter Beleg, Eskalation fällig.** Ein abgeschlossener Vorgang nach der Zeile hat einen vierten Beleg angelegt
 (`ls docs/plan/planning/observations/BEO-ALL/regel-rand-ohne-benannte-luecke/evidence/*.md | wc -l` → 4, gelesen 2026-09-27,
@@ -23,3 +23,18 @@ keine Erwartung): `slice-204-das-programm-feld-nennt-das-programm`. Die Zeile ha
 Lücken der Aufzählung —, und die Autor-Seite blieb offen: der Lauf, der die Aufzählung schrieb, fuhr die Formen nicht. Der
 nächste Schritt ist eine Falsch/Richtig-Zeile in [`AGENTS.md`](../../../../../../AGENTS.md) §3.6 (Architect, §3.8); geschrieben
 ist sie nicht.
+
+## Benannt, nicht gezählt
+
+Ein Vorkommen ohne abgeschlossenen Vorgang: `harness/sensors/commit-msg-check.md` nennt in seiner
+Grenze `-F -` und den `-m`-Aufruf, aber zwei weitere Formen eines `git commit`-Aufrufs nicht, die der
+Matcher des Hooks `.claude/hooks/pretooluse-commit-msg-guard.sh` nicht erkennt — `git commit -Fmsg.txt`
+(Wert am Flag angehängt) und `git -C . commit -F msg.txt` (Option zwischen `git` und `commit`):
+
+```sh
+bash .claude/hooks/pretooluse-commit-msg-guard.sh --match 'git commit -Fmsg.txt'        # Exit 1, keine Ausgabe
+bash .claude/hooks/pretooluse-commit-msg-guard.sh --match 'git -C . commit -F msg.txt'  # Exit 1, keine Ausgabe
+bash .claude/hooks/pretooluse-commit-msg-guard.sh --match 'git commit -F msg.txt'       # Exit 0, msg.txt (Gegenprobe)
+```
+
+Das Vorkommen entstand außerhalb einer Slice-Closure und bewegt keinen Zähler.
