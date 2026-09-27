@@ -32,7 +32,7 @@ unabhängige Korrekturen (unverändert unten) mit einer dritten, viel größeren
 die Frage je Feld im Träger und die Zeile in [`spec/spezifikation.md`](../../../../spec/spezifikation.md)
 §5 überhaupt gekoppelt werden (die vormalige "Frage A/B"). Diese dritte Frage ist jetzt als eigener
 Slice
-[`slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt`](../in-progress/slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt.md)
+[`slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt`](../done/slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt.md)
 ausgelagert (§1 nennt die Begründung). Dieser Slice bleibt bestehen und liefert **nur** die zwei
 Korrekturen, die von jener Frage unabhängig sind — siehe die geschärfte DoD in §2.
 
@@ -110,20 +110,20 @@ tatsächlich geltende Regel steht bereits korrekt in
 
 **Aus dieser Instanz folgt kein Vorgriff auf die Kopplungsfrage.** Dieser Slice entscheidet
 **nicht**, ob `SchemaNotes()` künftig aus `spec/spezifikation.md` erzeugt oder gegen sie verglichen
-wird ([`slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt`](../in-progress/slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt.md)
+wird ([`slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt`](../done/slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt.md)
 übernimmt diese Frage); er korrigiert nur den heute falschen Satz an seiner einen Stelle, so wie
 jede andere faktische Korrektur an diesem Dokument auch ohne Kopplungsmechanismus möglich ist.
 
 **Übernimmt:** *(keine Zeile — dieser Slice übernimmt keinen fremden Gegenstand; er gibt selbst
 einen Teil seines ursprünglichen Gegenstands an
-[`slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt`](../in-progress/slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt.md)
+[`slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt`](../done/slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt.md)
 ab, siehe §Neuplanung im Kopf.)*
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Ob und wie die 32 Feld-Fragen zwischen Träger und Spec §5 gekoppelt werden** — ein Folge-Slice
   übernimmt es:
-  [`slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt`](../in-progress/slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt.md).
+  [`slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt`](../done/slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt.md).
   Begründung: eine Stichprobe zeigte substantielle, teils strukturelle Divergenz in einem großen
   Teil der 26 Spec-Zeilen — die Wahl der Sensor-Schicht (erzeugt / wortgleich verglichen /
   auf Kernaussage verglichen) ist eine Architektur-Entscheidung
@@ -199,7 +199,7 @@ andere offene Arbeit muss vorher schließen.
   ohne einen Blick auf die noch offene Kopplungsfrage nicht stabil ist (z. B. weil jede
   denkbare terse Fassung von einer künftigen `commandProgram()`-Änderung sofort wieder veraltet).
   Dann wartet dieser Punkt auf das Verdikt aus
-  [`slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt`](../in-progress/slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt.md).
+  [`slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt`](../done/slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt.md).
 
 ## 5. Closure-Trigger
 
@@ -398,7 +398,7 @@ keine Erwartungswerte
   `done/slice-204-das-programm-feld-nennt-das-programm.md`,
   `open/slice-program-feld-nennt-weder-operator-noch-wertfragment.md`,
   `done/welle-12-results.md`,
-  `in-progress/slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt.md` und, per
+  `done/slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt.md` und, per
   [ADR-0070](../../adr/0070-der-verweis-nachzug-schreibt-in-docs-reviews-nur-die-link-form.md) in
   Link-Form, `docs/reviews/2026-09-27-verdikt-kopplungsform-feldnotiz-spec.md`. 0 ausgehende
   Umhängungen (der Slice trägt kein präfixloses Geschwister-Ziel), 0 präfixlos aus `in-progress/`.
