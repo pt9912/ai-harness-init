@@ -7,5 +7,7 @@ gelesen 2026-09-27, keine Erwartung), der 3×-Übertritt ist unverändert mit de
 `evidence/slice-stumme-mutations-faelle-folgen-der-config-form.md` erreicht. Neuester Beleg:
 `slice-fall-406-trifft-die-umgebaute-zerlegung` (Fall 406, entwaffnet durch die berechtigte
 `splitWords`-Umstellung auf einen `words`-Struct, Commit `92f03d31`) — 1 von 3 weiteren
-Vorkommen seit der Verkörperung, MR-071s eigener Auflösungs-Trigger ist damit noch nicht
+Vorkommen seit der Verkörperung, der eigene Auflösungs-Trigger von
+[`MR-071`](../../../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)
+ist damit noch nicht
 erreicht.

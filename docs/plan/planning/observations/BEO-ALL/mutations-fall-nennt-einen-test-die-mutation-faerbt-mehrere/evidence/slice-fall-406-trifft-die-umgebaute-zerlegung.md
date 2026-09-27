@@ -7,6 +7,8 @@ Exit 2, jetzt über `TestCommandProgramNamesAProgramNotAnOperator/A=b_SECRET_cmd
 Reviewer (F-1) und Verifier (eigene, unabhängige Gegenprobe) je in ihrem eigenen Lauf. Derselbe
 Fall war bereits Gegenstand des zweiten Belegs dieser Klasse
 (`evidence/slice-program-feld-nennt-weder-operator-noch-wertfragment.md`, „Fälle 404 bis 407")
-— der `sed`-Anker wechselte zwischenzeitlich (MR-071-Reparatur dieses Slice), die gebundene
+— der `sed`-Anker wechselte zwischenzeitlich
+([`MR-071`](../../../../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)-Reparatur
+dieses Slice), die gebundene
 Zwei-Test-Eigenschaft selbst blieb unverändert bestehen. Dritter Vorgang dieser Klasse,
 3×-Übertritt.

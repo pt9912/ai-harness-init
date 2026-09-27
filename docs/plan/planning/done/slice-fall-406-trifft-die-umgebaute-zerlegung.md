@@ -87,7 +87,6 @@ und zählen nicht mit.
       Fehlschlag-Ausgabe. Gegenprobe mit ausgeschriebener Polarität (§3.6):
       Mutation angewandt → rot mit `TestCommandProgramNeverEmitsAssignmentValueFragments`;
       Mutation nicht angewandt (Grün-Vorlauf) → grün.
-- [ ] `make gates` grün.
 - [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
@@ -99,8 +98,8 @@ und zählen nicht mit.
       gesetzt, er folgt aus den Dateien.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
-- [ ] `make gates` grün.
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
+- [x] `make gates` grün.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
       Repo ohne Wellen-Betrieb hier geprüft.
 
 ## 3. Plan (vor Code)
@@ -194,9 +193,11 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
   der dritte. Kein Handlungsbedarf über den Register-Eintrag hinaus. —
   **Ausgang:** *entfallen* — der Beleg ist mit diesem Slice an der
   bestehenden, verkörperten Klasse ergänzt (jetzt 6×, 1 von 3 weiteren
-  Vorkommen seit MR-071); MR-071s eigener Auflösungs-Trigger ist damit
-  weiterhin nicht erreicht, und die Fortschreibung des Registers trägt das
-  Risiko vollständig — kein zusätzlicher, separater Registereintrag nötig.
+  Vorkommen seit
+  [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand));
+  dessen eigener Auflösungs-Trigger ist damit weiterhin nicht erreicht, und
+  die Fortschreibung des Registers trägt das Risiko vollständig — kein
+  zusätzlicher, separater Registereintrag nötig.
 
 ## 7. Closure-Notiz
 
@@ -212,8 +213,9 @@ Geschrieben von der Rolle Planner in frischem Kontext
 - **Was hat funktioniert.** Der Planner-Vorschlag aus §3 (die Bedingung um `&& c < 0x80` erweitern)
   traf beim Implementer auf Anhieb: Rot-vor-Grün am Produktionscode, dreifach unabhängig gesehen —
   Implementer-Lauf, Reviewer-Lauf, Verifier-Lauf, jeder in eigener isolierter Scratch-Kopie, keiner
-  im Arbeitsbaum. Der MR-071-Anker (`grep -c` gegen den heutigen Quell-Bestand) traf beide Male
-  eindeutig eine Stelle. Weder `internal/span/span.go` noch `internal/span/span_test.go` wurden
+  im Arbeitsbaum. Der
+  [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)-Anker
+  (`grep -c` gegen den heutigen Quell-Bestand) traf beide Male eindeutig eine Stelle. Weder `internal/span/span.go` noch `internal/span/span_test.go` wurden
   angerührt (Plan §1 eingehalten, von allen drei Rollen unabhängig per `git diff --stat` bestätigt).
 - **F-1 (MEDIUM, Reviewer/Verifier) — Entscheidung: lassen, nicht nachbessern.** Die Mutation färbt
   neben dem im `# expect:`-Kopf genannten `TestCommandProgramNeverEmitsAssignmentValueFragments`
@@ -263,8 +265,10 @@ Geschrieben von der Rolle Planner in frischem Kontext
   Details der Übergabe stehen in `state.md` der Beobachtung. Und
   [`mutations-fall-wird-von-berechtigter-aenderung-entwaffnet`](../observations/BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet/observation.md)
   (Entwaffnung durch berechtigte Änderung) — Zähler jetzt **6×**; Ausgang unverändert
-  **verkörpert** (MR-071); MR-071s eigener Auflösungs-Trigger (drei weitere Vorkommen seit der
-  Verkörperung) steht bei 1 von 3, noch nicht erreicht. Eine neue Beobachtung angelegt:
+  **verkörpert**
+  ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand));
+  dessen eigener Auflösungs-Trigger (drei weitere Vorkommen seit der Verkörperung) steht bei
+  1 von 3, noch nicht erreicht. Eine neue Beobachtung angelegt:
   [`sichtungs-schritt-uebersieht-treffenden-registereintrag`](../observations/BEO-ALL/sichtungs-schritt-uebersieht-treffenden-registereintrag/observation.md)
   (V-1, 1×, `offen` — unterhalb der Schwelle, Normalzustand).
 - **Folge-Slices:** keine neu geschnitten. Die F-1-Systemfrage (Exklusivitäts-Zusage von
@@ -272,8 +276,26 @@ Geschrieben von der Rolle Planner in frischem Kontext
   Architect-Entscheidung kann selbst einen Folge-Slice adressieren, das ist nicht Sache dieses
   Laufs.
 - **Risiken aus §6:** je ein Ausgang, siehe §6 (entfallen · entfallen · entfallen).
-- **Drei Paarungen** (ohne Wellen-Betrieb hier, nach dem `git mv` gelesen) — Ergebnis in einem
-  eigenen Commit nach dem Move, wie in dieser Ablage üblich (AGENTS.md §3.3).
+- **Drei Paarungen** (ohne Wellen-Betrieb hier, nach dem `git mv` gelesen). (a) *Anker:* §7 trägt
+  kein Feld `liegt in` — mit diesem Slice wurde keine Regel verkörpert, der 3×-Übertritt ist an den
+  Architect übergeben. Kein Gegenstand der Paarung. (b) *Folge-Slice:* keiner genannt. Kein
+  Gegenstand der Paarung. (c) *Register:* jedes in §6, §7 und §8 genannte Verzeichnis existiert und
+  trägt mindestens einen Beleg
+  (`ls docs/plan/planning/observations/BEO-ALL/{mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere,mutations-fall-wird-von-berechtigter-aenderung-entwaffnet,sichtungs-schritt-uebersieht-treffenden-registereintrag}/evidence/*.md | wc -l`
+  → 10, kleinster Wert je Verzeichnis 1) — erste Hälfte getragen. Zweite Hälfte, über das ganze
+  Register (`for d in docs/plan/planning/observations/BEO-ALL/*/; do n=$(ls "$d"evidence/*.md
+  2>/dev/null | wc -l); [ "$n" -eq 0 ] && echo "$d"; done`, gelesen 2026-09-27, keine Erwartung):
+  **4** Verzeichnisse ohne Beleg —
+  `ci-rennt-gegen-die-publikation-des-gepinnten-releases`,
+  `cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+  `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`,
+  `planungs-bestand-waechst-schneller-als-er-abgebaut-wird` — unverändert gegenüber dem in
+  [ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  gemessenen Bestand; Befund der Register-Paarung, kein Verstoß dieses Slice
+  ([ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  Festlegung 2), namentlich benannt und nicht als getragen behauptet. `make docs-check`
+  meldet nach dem Roadmap-Ruhe-Marker keinen Befund; den Lauf liefert der Übergabe-Bericht, nicht
+  diese Datei.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
