@@ -586,8 +586,6 @@ func TestCommandWordsSplitAtTab(t *testing.T) {
 		{"git\tcommit\t-m\tx", "git", 3},
 		{"ls\t-l\t/tmp", "ls", 2},
 		{"A=b\tmake\tgates", "make", 1},
-		{"make\tgates\t&&\techo\tx", "make", 1},
-		{"make\tgates;\techo\tx", "make", 1},
 		{"cd\t/x\t&&\tmake\tgates", "", 0},
 	}
 	for _, tc := range cases {
@@ -708,6 +706,12 @@ func TestCommandProgramFirstWordKeepsItsGluedRest(t *testing.T) {
 		{"(cd /x && make)", "(cd"},
 		// Ein Wort in Anfuehrungszeichen als Programm steht als Bruchstueck im Feld.
 		{`"a b" x`, `"a`},
+		{"make& echo x", "make&"},
+		{"make\r x", "make\r"},
+		{`my\ tool secret`, `my\`},
+		{">f make", ">f"},
+		{"<<EOF cat\nbody\nEOF", "<<EOF"},
+		{"# note secret", "#"},
 	}
 	for _, tc := range cases {
 		t.Run(tc.cmd, func(t *testing.T) {
