@@ -316,6 +316,165 @@ func TestCommandProgramWithholdsProgramForEachUnsureValueChar(t *testing.T) {
 	}
 }
 
+// TestCommandProgramSkipsNavigationSegments haelt fest: ein fuehrendes Navigations-Segment
+// (`cd`, `set`), das `&&` oder `;` abtrennt, nennt kein Programm, und das Programm ist das
+// erste Wort des naechsten Segments. Bleibt nichts uebrig oder laeuft das Folge-Segment nur
+// bei Fehlschlag oder in einer Pipe, bleibt das Navigations-Segment das Programm. Jede
+// Zeile laeuft ueber Derive UND ueber die geschriebene Zeile.
+func TestCommandProgramSkipsNavigationSegments(t *testing.T) {
+	cases := []struct {
+		cmd     string
+		program string // "" heisst: kein program-Feld
+	}{
+		{"cd /x && make gates", "make"},
+		{"set -e; make gates", "make"},
+		{"cd /x; make gates", "make"},
+		{"cd; make", "make"},
+		{"cd a && cd b && make", "make"},
+		{"cd a; set -e; make x y", "make"},
+		{"cd /x >/dev/null 2>&1 && make", "make"},
+		{"A=1 cd /x && make", "make"},
+		{"cd /x && A=1 make gates", "make"},
+		// Ohne folgendes Segment, bei `||`, `|` und `&` bleibt das Navigations-Segment das Programm.
+		{"cd /x", "cd"},
+		{"cd /x &&", "cd"},
+		{"cd /x ;", "cd"},
+		{"cd /x;", "cd"},
+		{"cd a && cd b", "cd"},
+		{"cd /x || exit 1", "cd"},
+		{"cd /x | make", "cd"},
+		{"cd /x & make", "cd"},
+		{"set -e", "set"},
+		// Nach dem uebersprungenen Segment gelten die Regeln des Segments ohne Programm:
+		// ein Wort, das kein Programm nennt, gibt nichts aus.
+		{"cd /x && && make", ""},
+		{"cd /x && (make)", ""},
+		{"cd /x && >f make", ""},
+	}
+	for _, tc := range cases {
+		t.Run(tc.cmd, func(t *testing.T) {
+			d := span.Derive(span.Payload{Tool: "Bash", Input: span.ToolInput{Command: tc.cmd}})
+			line := bashSpanLine(t, tc.cmd)
+			if d.Program != tc.program {
+				t.Errorf("Derive: program = %q, erwartet %q (Zeile %q)", d.Program, tc.program, tc.cmd)
+			}
+			hasProgram := strings.Contains(line, `"program":"`+tc.program+`"`)
+			if tc.program == "" {
+				hasProgram = strings.Contains(line, `"program"`)
+				if hasProgram || d.HasArgc {
+					t.Fatalf("erwartet: kein program/argc im Span fuer %q, geschrieben: %s", tc.cmd, line)
+				}
+				return
+			}
+			if !hasProgram {
+				t.Errorf("Zeile %q: erwartet program %q im Span, geschrieben: %s", tc.cmd, tc.program, line)
+			}
+		})
+	}
+}
+
+// TestCommandProgramNeverEmitsValueBehindNavigation haelt fest: die Wert-Grenze der
+// Zuweisungen gilt hinter einem uebersprungenen Navigations-Segment unveraendert. Ein
+// sicherer Wert steht nie im Span, ein Wert mit nicht bestimmbarem Rand laesst program
+// und argc ganz entfallen.
+func TestCommandProgramNeverEmitsValueBehindNavigation(t *testing.T) {
+	cases := []struct {
+		cmd     string
+		program string // "" heisst: kein program-Feld
+	}{
+		{"cd /x && TOKEN=abc gh pr create", "gh"},
+		{"set -e; TOKEN=abc gh pr create", "gh"},
+		{"cd /x && A=1 TOKEN=abc B=2 gh pr create", "gh"},
+		{`cd /x && TOKEN="abc def" gh pr create`, ""},
+		{`cd /x; TOKEN='abc def' gh pr create`, ""},
+		{"cd /x && T=$(date def) make", ""},
+		{"cd /x && A=b || cmd", ""},
+	}
+	for _, tc := range cases {
+		t.Run(tc.cmd, func(t *testing.T) {
+			line := bashSpanLine(t, tc.cmd)
+			for _, leak := range []string{"TOKEN", "abc", "def"} {
+				if strings.Contains(line, leak) {
+					t.Fatalf("Wert oder Wert-Bruchstueck %q im Span fuer %q: %s", leak, tc.cmd, line)
+				}
+			}
+			if got := span.Derive(span.Payload{Tool: "Bash", Input: span.ToolInput{Command: tc.cmd}}).Program; got != tc.program {
+				t.Errorf("Derive: program = %q, erwartet %q (Zeile %q)", got, tc.program, tc.cmd)
+			}
+			if hasProgram := strings.Contains(line, `"program"`); hasProgram != (tc.program != "") {
+				t.Fatalf("program-Feld im Span = %v, erwartet %v fuer %q: %s", hasProgram, tc.program != "", tc.cmd, line)
+			}
+		})
+	}
+}
+
+// TestCommandProgramKeepsNavigationWhenItsEdgeIsUnsure haelt fest: enthaelt ein
+// Navigations-Segment ein Zeichen, an dem die Zerlegung an Leerraum sein Ende nicht sicher
+// findet, wird es nicht uebersprungen — `&&` in Anfuehrungszeichen trennt kein Segment, und
+// ein Stueck des Arguments wuerde sonst zum Programm. Das Programm ist dann `cd`.
+func TestCommandProgramKeepsNavigationWhenItsEdgeIsUnsure(t *testing.T) {
+	for _, c := range []string{`"`, `'`, "`", `\`, "(", ")", "{", "}"} {
+		cmd := "cd x" + c + "y && make"
+		t.Run(cmd, func(t *testing.T) {
+			line := bashSpanLine(t, cmd)
+			if d := span.Derive(span.Payload{Tool: "Bash", Input: span.ToolInput{Command: cmd}}); d.Program != "cd" {
+				t.Errorf("Derive: program = %q, erwartet \"cd\" (Zeile %q)", d.Program, cmd)
+			}
+			if !strings.Contains(line, `"program":"cd"`) {
+				t.Fatalf("erwartet program cd im Span fuer %q, geschrieben: %s", cmd, line)
+			}
+		})
+	}
+	for _, cmd := range []string{`cd "a && SECRET" && make`, `set -- 'a && SECRET'; make`, "cd $(echo a && SECRET) && make"} {
+		t.Run(cmd, func(t *testing.T) {
+			line := bashSpanLine(t, cmd)
+			if strings.Contains(line, "SECRET") {
+				t.Fatalf("Bruchstueck eines Arguments im Span fuer %q: %s", cmd, line)
+			}
+		})
+	}
+}
+
+// TestCommandArgcEndsWithItsSegment haelt fest: argc zaehlt die Woerter nach dem
+// Programm bis zum Ende seines Segments — ein Operator als eigenes Feld oder ein Feld, das
+// auf `;` endet und noch mitzaehlt — und nicht bis zum Zeilenende. Jede Zeile laeuft ueber
+// Derive UND ueber die geschriebene Zeile.
+func TestCommandArgcEndsWithItsSegment(t *testing.T) {
+	cases := []struct {
+		cmd  string
+		argc int
+	}{
+		{"cd /x && make gates", 1},
+		{"set -e; make gates", 1},
+		{"make gates && echo x", 1},
+		{"make gates || echo x", 1},
+		{"make gates | tee log", 1},
+		{"make gates & echo x", 1},
+		{"make gates ; echo x y", 1},
+		{"make gates; echo x y", 1},
+		{"make gates && echo x || echo y", 1},
+		{"make gates 2>&1 | tail -5", 2},
+		{"make ; echo x", 0},
+		{"ls -l /tmp", 2},
+		// Grenze: ohne Leerraum ist der Operator kein eigenes Feld, das Segment-Ende wird
+		// nicht gefunden, und argc zaehlt bis zum Zeilenende.
+		{"make gates&&echo x", 2},
+	}
+	for _, tc := range cases {
+		t.Run(tc.cmd, func(t *testing.T) {
+			d := span.Derive(span.Payload{Tool: "Bash", Input: span.ToolInput{Command: tc.cmd}})
+			line := bashSpanLine(t, tc.cmd)
+			if !d.HasArgc || d.Argc != tc.argc {
+				t.Errorf("Derive: argc = %d (gesetzt %v), erwartet %d (Zeile %q)", d.Argc, d.HasArgc, tc.argc, tc.cmd)
+			}
+			want := `"argc":` + strconv.Itoa(tc.argc)
+			if !strings.Contains(line, want) {
+				t.Errorf("Zeile %q: erwartet %s im Span, geschrieben: %s", tc.cmd, want, line)
+			}
+		})
+	}
+}
+
 // TestReadToolGetsPathOnly haelt fest: ein Fingerabdruck auf
 // einem GELESENEN Pfad waere ein Bestaetigungs-Orakel ohne Incident-Frage.
 func TestReadToolGetsPathOnly(t *testing.T) {
