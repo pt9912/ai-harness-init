@@ -156,6 +156,17 @@ func TestFieldList_TabelleTraegtJedesErfassteFeldEinmal(t *testing.T) {
 //
 // Rot faerbt ihn test/mutations/488-feldliste-program-notiz-widerlegt.sh (setzt den Note-Text
 // auf den alten, widerlegten Wortlaut zurueck).
+//
+// Die geltende Notiz sagt ZWEI Grenzen in einem Satz zu — "das erste Wort des
+// ausgefuehrten Segments" (positive Haelfte) UND "nie das der ganzen Kommandozeile"
+// (Verneinungs-Haelfte). Die Pruefung oben bindet nur den vollstaendigen Ruecksprung
+// auf den alten Wortlaut; die zwei Assertions darunter binden jede Haelfte EINZELN
+// (Reviewer-Skill "Mehrteilige Regel-Zusage im Kommentar ohne Mutations-Deckung je
+// Teil", seit slice-109-feldliste-jede-aussage-hat-ihre-quelle). Rot faerben sie
+// test/mutations/489-feldliste-program-notiz-verneinung-verliert.sh (Verneinungs-Haelfte
+// entfernt, positive Haelfte bleibt stehen) bzw.
+// test/mutations/490-feldliste-program-notiz-positive-haelfte-falsch.sh (positive
+// Haelfte verfaelscht, Verneinungs-Haelfte bleibt stehen).
 func TestFeldliste_ProgramNotizWidersprichtSpecNichtMehr(t *testing.T) {
 	var frage string
 	var gefunden bool
@@ -170,6 +181,12 @@ func TestFeldliste_ProgramNotizWidersprichtSpecNichtMehr(t *testing.T) {
 	}
 	if strings.Contains(frage, "das erste Token der Kommandozeile") {
 		t.Errorf("die program-Notiz behauptet noch die von slice-204-das-programm-feld-nennt-das-programm widerlegte Regel: %q", frage)
+	}
+	if !strings.Contains(frage, "erste Wort des ausgeführten Segments") {
+		t.Errorf("die program-Notiz nennt nicht mehr die positive Haelfte (erstes Wort des AUSGEFUEHRTEN Segments): %q", frage)
+	}
+	if !strings.Contains(frage, "nie das der ganzen Kommandozeile") {
+		t.Errorf("die program-Notiz nennt nicht mehr die Verneinungs-Haelfte (nie das der GANZEN Kommandozeile): %q", frage)
 	}
 }
 
