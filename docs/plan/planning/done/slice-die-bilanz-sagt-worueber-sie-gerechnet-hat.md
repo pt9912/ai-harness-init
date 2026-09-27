@@ -65,7 +65,7 @@ Liefer-Punkte, (1) und (3) im gleichen Wortlaut; **keine Erwartungswerte**
 Setzung 2):
 
 ```sh
-grep -cE '^- \[ \] \*\*\(' docs/plan/planning/next/slice-071-bilanz-nennt-ihren-bestand.md              # 3
+grep -cE '^- \[ \] \*\*\(' docs/plan/planning/in-progress/slice-071-bilanz-nennt-ihren-bestand.md              # 3
 grep -cE '^- \[ \] \*\*\(' docs/plan/planning/done/slice-die-bilanz-sagt-worueber-sie-gerechnet-hat.md  # 3
 ```
 
