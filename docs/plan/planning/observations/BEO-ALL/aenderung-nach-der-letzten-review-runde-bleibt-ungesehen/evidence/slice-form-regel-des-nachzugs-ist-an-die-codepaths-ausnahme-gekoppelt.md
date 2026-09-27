@@ -1,0 +1,2 @@
+**Vorgang:** slice-form-regel-des-nachzugs-ist-an-die-codepaths-ausnahme-gekoppelt
+**Fund:** Der Review las bis `c3e274d9`; `22d24bfa` (Mutations-Fall 475) und `85643b3b` (Test-Kopf, Meldungstext, Zusage zum Filter) hat kein Reviewer gelesen, der Verifier hat sie gemessen (dessen V-2), der Planner hat beide Diffs gelesen. Der Planner entschied keine erneute Runde; die Closure-Notiz des Vorgangs nennt sie und behauptet keinen zweiten Report.

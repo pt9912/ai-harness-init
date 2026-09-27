@@ -1,8 +1,11 @@
 **Stand:** offen
 
-Unterhalb der Schwelle (2×, `ls docs/plan/planning/observations/BEO-ALL/zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel/evidence/*.md | wc -l`,
-gelesen 2026-09-26, keine Erwartung); `offen` ist hier der Normalzustand und kein Ausgang. Die zweite Instanz
-ist die Abschnitts-Erkennung des Kopplungs-Tests `test/codepaths-reviews-ausnahme.bats`: Start-Grenze
+Schwelle erreicht, Ausgang steht aus
+(`ls docs/plan/planning/observations/BEO-ALL/zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel/evidence/*.md | wc -l`
+→ 3, gelesen 2026-09-27, keine Erwartung): der dritte Vorgang ist `slice-204-das-programm-feld-nennt-das-programm` (die Tab-Wortgrenze
+und die Fortsetzungs-Bedingung von `splitWords`, das Programm-Feld auf `;` in `segmentArgc`: Kommentar und `SPEC-031` sagen jede Grenze
+zu, die Fälle banden je eine Hälfte). Der Ausgang ist Sache des Architect; `offen` ist bis dahin vorübergehend und kein Ausgang.
+Die zweite Instanz ist die Abschnitts-Erkennung des Kopplungs-Tests `test/codepaths-reviews-ausnahme.bats`: Start-Grenze
 und Block-Ende sind je durch einen Mutations-Fall gebunden (`474`, `475`), der Kommentar-Filter steht ohne
 Fall und ist im Kommentar als solcher genannt. In der ersten Instanz sind die
 Zeilengrenze und die Verzeichnisgrenze je durch einen Go-Test und einen Mutations-Fall gebunden; die

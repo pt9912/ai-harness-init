@@ -1,0 +1,2 @@
+**Vorgang:** slice-archive-welle-schreibt-in-reports-nur-die-link-form
+**Fund:** Der Review las bis `5d7a1de2`; `fc638444` (zwei Go-Tests, Kommentare), `a038a349` (Fälle 472 und 473) und `335edffe` (Sensor-Doku) hat nur der Verifier gelesen und gefahren, `f982adb8` (eine Zeile der Sensor-Doku) weder ein Reviewer noch der Verifier. Der Planner las den Diff und fuhr `make gates`; eine Nachrunde ist nicht gelaufen, und die Closure-Notiz des Vorgangs behauptet keine.

@@ -154,24 +154,24 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 dem Zuweisungs-Segment des ersten Slice; Fälle und Mutations-Fall sind die Form derselben
 Lieferung, nicht zusätzlicher Umfang.
 
-- [ ] **Vier Gegenbeispiele, je einmal rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6),
+- [x] **Vier Gegenbeispiele, je einmal rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6),
       jedes über `span.Derive` **und** über den serialisierten Span (`span.Build` bis zur Zeile in
       `internal/span/emit.go`):
-  - [ ] `cd /x && make gates` → `make` (ohne diesen Slice: `cd`) · `set -e; make gates` → `make`.
-  - [ ] `cd /x && TOKEN=abc gh pr create` → `gh`, und **weder `TOKEN` noch `abc` stehen in der
+  - [x] `cd /x && make gates` → `make` (ohne diesen Slice: `cd`) · `set -e; make gates` → `make`.
+  - [x] `cd /x && TOKEN=abc gh pr create` → `gh`, und **weder `TOKEN` noch `abc` stehen in der
         geschriebenen Zeile**. Das ist das **wichtigste** Kriterium: Die Verbesserung darf das Loch
         nicht öffnen, das der Kommentar über der Funktion nennt (`GITHUB_TOKEN=ghp_… gh pr create`
         landete sonst verbatim als `program`). Der Schutz selbst ist die Wert-Grenze des ersten
         Slice; dieser Fall belegt, dass sie **hinter einem übersprungenen Navigations-Segment**
         gilt — die Komposition, nicht die Prüfung.
-  - [ ] `cd /x && TOKEN="abc def" gh pr create` → **nichts** (Wert-Rand nicht bestimmbar, wie
+  - [x] `cd /x && TOKEN="abc def" gh pr create` → **nichts** (Wert-Rand nicht bestimmbar, wie
         beim ersten Slice, jetzt nach einem Navigations-Segment).
-  - [ ] Die Ränder des Übersprungs: `cd /x` allein und `cd /x &&` → `cd` · `cd /x || exit 1` →
+  - [x] Die Ränder des Übersprungs: `cd /x` allein und `cd /x &&` → `cd` · `cd /x || exit 1` →
         `cd` · `cd a && cd b && make` → `make` (§1: das Navigations-Segment bleibt das Programm,
         wenn nichts folgt oder das Folge-Segment nur bei Fehlschlag läuft).
   - `TestCommandProgramSkipsAssignments` und die Tests des ersten Slice bleiben **grün und
     unverändert** — die bestehende Zusage wird nicht umgeschrieben, um die neue zu ermöglichen.
-- [ ] Ein Fall in `test/mutations/` nimmt der **Navigations-Grenze** die Zähne (Mutation: `cd`/`set`
+- [x] Ein Fall in `test/mutations/` nimmt der **Navigations-Grenze** die Zähne (Mutation: `cd`/`set`
       werden nicht übersprungen). Er trifft die Segment-Grenze, nicht nur den Happy Path; sein
       `sed`-Muster ist **nach** der Implementierung gegen den Quell-Bestand gemessen
       ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)).
@@ -179,25 +179,25 @@ Lieferung, nicht zusätzlicher Umfang.
 
 **Liefer-Punkt 2 — `argc` zählt die Argumente des gewählten Segments.**
 
-- [ ] `argc` ist gesetzt, nicht mitgeschleift: Felder **nach dem Programm bis zum Ende seines
+- [x] `argc` ist gesetzt, nicht mitgeschleift: Felder **nach dem Programm bis zum Ende seines
       Segments** (Operator-Feld oder ein Feld, das auf `;` endet) statt bis Zeilenende. Für
       `cd /x && make gates` ist `argc` 1 (`gates`), nicht 4 — und für `make gates && echo x` ist
       es 1, nicht 3: **die Bedeutung ändert sich für jede Zeile mit Operator**, nicht nur für
       Navigations-Zeilen. Jeder dieser Fälle ist ein Test mit rot gesehener Mutation (Segment-Ende
       wird nicht gesucht → `argc` läuft bis Zeilenende).
-- [ ] Ein Fall in `test/mutations/` bindet die `argc`-Grenze; sein Wächter ist der Test dieses
+- [x] Ein Fall in `test/mutations/` bindet die `argc`-Grenze; sein Wächter ist der Test dieses
       Liefer-Punkts, nicht der aus Liefer-Punkt 1 — ein Fall, der bei geschwächter Zusicherung noch
       rot wird, deckt einen anderen Zweig, und die Gegenprobe steht in der Closure-Notiz.
 
 **Liefer-Punkt 3 — die Spec nennt die neue Mechanik, und die Eigentumsfrage ist benannt.**
 
-- [ ] `SPEC-021` (`argc`: segment-begrenzt) und `SPEC-031` (die `Bash`-Zeile: Navigations-Segmente
+- [x] `SPEC-021` (`argc`: segment-begrenzt) und `SPEC-031` (die `Bash`-Zeile: Navigations-Segmente
       zusätzlich zu den Zuweisungs-Segmenten des ersten Slice) in
       [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder)
       §5 sind nachgezogen. Das Technik-Stratum ist ohne Vertragsänderung fortschreibbar
       ([`MR-019`](../../../../harness/conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence));
       das Lastenheft wird **nicht** angefasst.
-- [ ] **Die offene Eigentumsfrage ist benannt, nicht entschieden.** Der Lauf, der die Spec-Zeilen
+- [x] **Die offene Eigentumsfrage ist benannt, nicht entschieden.** Der Lauf, der die Spec-Zeilen
       schreibt, hält in §7 fest, dass für dieses Stratum **keine Quelle** eine schreibende Rolle
       benennt, und nennt [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md)
       als deren Adresse. Er leitet daraus **keine** Zuständigkeit ab — eine aus Zweckmäßigkeit
@@ -205,14 +205,14 @@ Lieferung, nicht zusätzlicher Umfang.
 
 **Pro Slice konstant — zählt nicht in den einen:**
 
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow ([`AGENTS.md`](../../../../AGENTS.md) §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register ([`../observations/`](../observations/)) fortgeschrieben — **kein
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register ([`../observations/`](../observations/)) fortgeschrieben — **kein
       Zähler wird gesetzt**, er folgt aus den Dateien.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieser Slice läuft
       **ohne Welle**, sie werden also hier geprüft, nach dem `git mv`.
 
@@ -290,28 +290,222 @@ dasteht.
   den Rest der Zeile über einen zweiten Weg, an der Wert-Prüfung vorbei, landet ein Token-Wert
   wieder im Log — der Fall, dessen Behebung der Kommentar über der Funktion dokumentiert. Die
   Kompositions-Fälle in §2 (Liefer-Punkt 1, zweites und drittes Gegenbeispiel) sind dieser
-  Wächter. — **Ausgang:** <offen>
+  Wächter. — **Ausgang:** *weiter offen* — Beobachtungs-Register,
+  [`BEO-ALL/shell-nachbau-ohne-tokenizer-deckt-nicht-jede-eingabe-klasse`](../observations/BEO-ALL/shell-nachbau-ohne-tokenizer-deckt-nicht-jede-eingabe-klasse/observation.md).
+  Die Instanz, die das Risiko beschrieb, ist **eingetreten und im Slice geschlossen**: hinter einem
+  `cd` erreichten Wörter aus Kommentar, Here-Doc-Körper und Folgezeile das Feld `program`
+  (Review Runde 1, H-1). Die zwei Kompositions-Fälle aus §2 tragen — am gebauten Träger steht weder
+  `TOKEN` noch `abc` in der geschriebenen Zeile. Offen bleibt die Klasse, die keine Tabelle
+  vollständig hält: `A=b "secret token" x` nennt ohne Navigation weiter `"secret`.
 - **`&&` und `;` sind Text, nicht Struktur.** Innerhalb von Anführungszeichen, in einem
   `find -exec`-Ausdruck oder in einer Subshell trennen sie kein Segment; ohne Leerraum
   (`a&&b`) sind sie kein eigenes Feld und das Segment-Ende wird nicht gefunden — `argc` zählt dann
   zu viel. Eine Übersprung-Regel kann hier danebengreifen — die Rückführung in §4 nimmt den Fall
-  auf. — **Ausgang:** <offen>
+  auf. — **Ausgang:** *weiter offen* — Beobachtungs-Register,
+  [`BEO-ALL/regel-rand-ohne-benannte-luecke`](../observations/BEO-ALL/regel-rand-ohne-benannte-luecke/observation.md).
+  Das Risiko ist **eingetreten und im Slice aufgefangen**: die Regel überspringt ein Navigations-Segment
+  nur bei einer Zeile und schlichten Wörtern, jeder nicht bestimmbare Rand lässt `cd` stehen oder das
+  Feld entfallen; die Rückführung nach §4 ist nicht gezogen (§7). Offen bleiben die Ränder, die die
+  Aufzählung nicht nennt — die Länge eines Worts, das erste Wort eines Strings hinter einer
+  Zuweisung — und der Preis (`cd "$DIR" && make` bleibt `cd`).
 - **Der Bestand mischt danach zwei Bedeutungen — an zwei Feldern.** Spans vor und nach diesem Slice
   tragen `program` **und** `argc` mit verschiedener Regel; `argc` ändert sich für **jede** Zeile mit
   Operator, nicht nur für Navigations-Zeilen (§2, Liefer-Punkt 2). Ein Leser, der über die Zeit
   vergleicht, sieht einen Sprung, der keine Verhaltensänderung ist. Kein Feld trägt die Fassung.
-  — **Ausgang:** <offen>
+  — **Ausgang:** *weiter offen* — Beobachtungs-Register,
+  [`BEO-ALL/span-feld-bedeutung-wechselt-ohne-fassungs-angabe`](../observations/BEO-ALL/span-feld-bedeutung-wechselt-ohne-fassungs-angabe/observation.md).
+  Das Risiko ist eingetreten; die Folge trägt der Eintrag, und kein Leser bricht (Review Runde 1, I-3).
 - **Der erste Slice liefert den Begriff anders, als dieser ihn voraussetzt.** §1 setzt *Segment ohne
   Programm*, Operator als eigenes Feld und die Wert-Grenze voraus. Weicht die Umsetzung ab, trägt der
-  Aufbau nicht (Rückführung in §4). — **Ausgang:** <offen>
+  Aufbau nicht (Rückführung in §4). — **Ausgang:** *entfallen* — der Vorgänger-Slice liegt in `done/`,
+  und seine Tests bleiben grün und unverändert: der Diff dieses Slice löscht **0** Zeilen in
+  `internal/span/span_test.go`
+  (`git diff 5acbc97d~1..ed4eedcf -- internal/span/span_test.go | grep -c '^-[^-]'`), und `make test-go`
+  ist am Stand des Verifiers grün.
 - **Für das berührte Spec-Stratum benennt keine Quelle eine schreibende Rolle.** Der Slice ändert
   zwei Zeilen in Rang 2 der Source Precedence, ohne dass gesagt ist, wer das darf. Adresse:
-  [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md). — **Ausgang:** <offen>
+  [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md). — **Ausgang:**
+  *eingetreten* — Folge-Slice `slice-151`, eine Datei in `open/`: der Slice hat `SPEC-021` und
+  `SPEC-031` ohne benannte Quelle für die schreibende Rolle geändert und daraus keine Zuständigkeit
+  abgeleitet; die Frage bleibt bei `slice-151`, und `slice-151` nimmt sie an, denn er führt genau diese
+  Frage.
 
 ## 7. Closure-Notiz
 
-<!-- Wird bei der Closure gefüllt — Planner, nicht der Lauf, der die Arbeit tat
-(AGENTS.md §3.10). -->
+Geschrieben von der Rolle Planner in frischem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10), nach zwei Review-Runden
+und Verifikation. Alle Kommandos gemessen am 2026-09-27 am Stand `62a7b27d`, keine Erwartungswerte
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)).
+
+- **Was hat funktioniert:** Liefer-Punkt 1 und 2 sind vom Verifier bestätigt und selbst gefahren: `cd /x && make gates` nennt `make`
+  mit `argc` 1, `cd /x && TOKEN=abc gh pr create` nennt `gh` ohne `TOKEN` und `abc` in der geschriebenen Zeile (Träger real
+  gebaut, `span-emit` gegen fünf Payloads, Closure-Trigger 2), `cd /x && TOKEN="abc def" gh pr create` nennt nichts. Die zwölf Fälle
+  476 bis 487 (`ls test/mutations | grep -cE '^(47[6-9]|48[0-7])-'` → 12) tragen je einen Test als einzigen Träger der Mutation: Kontrolle rot,
+  Gegenprobe (der benannte Test übersprungen) grün, für alle zwölf vom Verifier gefahren. Der Verifier schwächte den Code
+  danach 84 Mal (45 Erweiterungen und 18 Verkürzungen der Whitelist, 21 weitere Schwächungen) und fuhr 147 Formen gegen drei Stände
+  von `internal/span/span.go`: keine Schwächung blieb grün außer den benannten äquivalenten, und in keiner Form erreichte ein Wort
+  eines Kommentars, Here-Doc-Körpers, einer Folgezeile oder eines Zuweisungs-Werts das Feld hinter einem Navigations-Segment. Die
+  Suite löscht **0** Zeilen der bestehenden Tests
+  (`git diff 5acbc97d~1..ed4eedcf -- internal/span/span_test.go | grep -c '^-[^-]'`).
+- **Was ging anders als geplant:** Der Plan sah eine Funktion, zwei Spec-Zeilen und zwei Fälle vor. Gebaut sind neun Funktionen und Typen
+  in `internal/span/span.go` (+201/−16), `internal/span/span_test.go` +406
+  (`git diff --numstat 5acbc97d~1..ed4eedcf -- internal/span/span.go internal/span/span_test.go`), zwölf Fälle und `SPEC-031` von
+  1174 auf 3821 Byte (`grep '^| .SPEC-031.' spec/spezifikation.md | wc -c`; Vorzustand `git show 5acbc97d~1:spec/spezifikation.md | grep '^| .SPEC-031.' | wc -c`).
+  Ursache sind die Befunde: Review Runde 1 (Stand `490f2daa`; 1 HIGH, 2 MEDIUM, 1 LOW, 4 INFO) fand H-1 — Wörter aus Kommentar,
+  Here-Doc-Körper und Folgezeile erreichten `program` hinter einem `cd`, der Weg, den
+  [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) sperrt —, Runde 2 (Stand `e1ad8ccf`; kein HIGH, 2 MEDIUM, 2 LOW, 3 INFO) fand
+  Tab-Wortgrenze und Fortsetzungs-Bedingung ungebunden und `cd /x && "secret token" x` → `"secret`, der Verifier zwei weitere Ränder
+  (V-2, V-3, unten). **Gebaut, nicht geplant:** die Whitelist statt einer Regel, die Einzeiligkeit, das Zeilenende als Grenze von
+  `argc`, das schlichte Wort am Programm-Wort, zehn Fälle mehr; der Verifier wertete das als größer als geplant und innerhalb des
+  Gegenstands, **und der Planner schließt sich an** — Abgrenzung und Schichten (kein `internal/emit/`, keine Vorlage, kein `span-report`)
+  hielten (`git diff --stat 5acbc97d~1..HEAD` nennt außer den Reports, der Roadmap und dem Slice nur `internal/span/span.go`,
+  `internal/span/span_test.go`, `spec/spezifikation.md` und die Fälle).
+- **Entscheidung 1 — der Schnitt trug nicht, und zwar an der Prüfbarkeit.** Gegen
+  Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form: Slice: **drei** Liefer-Punkte (konform), **zwei** Schichten,
+  Produkt-Code und Spec-Stratum (konform), *in einer Review-Sitzung prüfbar* — **nicht** getragen: es brauchte zwei Review-Runden
+  und den Verifier, und jede Runde fand die nächste Rand-Klasse derselben Textsprache. Die Rückführungs-Bedingung in §4
+  (*„die Segment-Trennung lässt sich nicht textuell ziehen … eine tragfähige Fassung verlangt eine Zerlegung der Zeile statt einer
+  Übersprung-Regel"*) ist **berührt und dem Wortlaut nach nicht eingetreten**: das Ergebnis ist eine Übersprung-Regel, die an 147
+  gefahrenen Formen trägt, weil sie im Zweifel `cd` stehen lässt oder das Feld entfallen lässt — auf Kosten des Nutzens. Das ist ein
+  **Fehler des Plans**, nicht des Laufs: die Bedingung nannte eine Lösungsform (die Zerlegung) und kein beobachtbares Signal, und
+  ein HIGH über Datenabfluss in Runde 1 (H-1) war der Zeitpunkt, an dem der Planner hätte entscheiden müssen — `in_progress → next`
+  oder eine engere Regel —, ein Zeitpunkt, den der Lauf nicht vorsah. Der Slice bleibt geschlossen: die Lieferung trägt (Verifier),
+  und ein Rückführen verwürfe sie. **Was das für den nächsten Slice der Klasse *erkennende Regel über Shell-Text* heißt** — ein
+  Vorschlag an den Planner, der ihn schneidet, keine Regel: (1) der Plan trägt eine **Formen-Probe** vor dem Schnitt — die
+  Rand-Formen der Textsprache (Kommentar, Here-Doc, Zeilenende, Anführungszeichen, Substitution, Tab, Fortsetzung) mit ihrem Ergebnis
+  am Vorzustand —, und der Schnitt folgt aus der Zahl der Formen, die die Regel zerlegen muss; (2) der Plan **beziffert den Preis** der
+  fail-closed-Linie oder weist ihn als ungemessen aus, mit dem Träger einer Datenbasis; (3) die Rückführungs-Bedingung nennt ein
+  **beobachtbares Signal** — ein HIGH über Datenabfluss in einer Runde oder eine zweite Runde mit neuer Rand-Klasse —, nicht eine
+  Lösungsform. Der Träger ist die Beobachtung
+  [`erkennende-regel-ueber-text-waechst-ueber-ihren-schnitt`](../observations/BEO-ALL/erkennende-regel-ueber-text-waechst-ueber-ihren-schnitt/observation.md)
+  (2×), die der Sichtungs-Schritt in §8 des nächsten Plans über eine solche Regel liest; als Norm-Text ist sie nicht geschrieben.
+- **Wer was gelesen hat, und Entscheidung 2 — keine dritte Reviewer-Runde.** Runde 1 las bis `490f2daa`, Runde 2 bis `e1ad8ccf`. Danach liegen
+  sechs Commits, die **kein Reviewer** gelesen hat: `658b2138` und `588397a4` (Tests), `aa905f04` (`internal/span/span.go`, der Zweig
+  `case navigated && !plainNavigationWord(f)`), `ac09c100` (Fälle 483 bis 487), `ead7fa0f` und `ed4eedcf` (`SPEC-031`). Der Verifier hat sie
+  gemessen — Schwächung des Zweigs rot, die fünf Fälle binden, 101 Formen ohne Fragment im Feld, die HEAD-Tests gegen `e1ad8ccf` rot in
+  einem Test mit 15 Teilfällen —, das ist **keine** Review-Runde: der Reviewer prüft den Diff gegen Plan, ADR und Hard Rules, der
+  Verifier gegen DoD und Spec. **Die Hard Rules verlangen keine dritte Runde**; [`ADR-0040`](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md)
+  Festlegung 2 (die Bestätigung einer Behebung ist die Runde einer **anderen** Rolle, nicht die Nachmessung des Kontexts, der sie schrieb)
+  gilt für den Accept-Übergang einer ADR; ihr Grund trägt hier durch den Verifier, der die Behebungen der Runde 2 gemessen hat, nicht durch
+  einen Reviewer. Abgewogen: *für* eine Runde spricht, dass der Zweig sicherheitsrelevant ist und dass jede frühere Runde die
+  nächste Rand-Klasse fand. *Dagegen* spricht, dass der Zweig den **kleinsten Schließungs-Vorschlag** der Runde 2 (L-2: hinter einem
+  übersprungenen Segment nur ein Wort nehmen, das `plainNavigationWord` besteht) umsetzt, dass er nur in die fail-closed-Richtung wirkt
+  (er lässt das Feld entfallen, er nennt nichts Zusätzliches), dass der Verifier ihn mit mehr Formen und Schwächungen gefahren hat, als
+  Runde 2 fuhr, und dass die Runden konvergieren (H-1 in Runde 1, kein HIGH in Runde 2, kein HIGH und kein MEDIUM beim Verifier).
+  **Entscheidung: keine dritte Runde**, und das Häkchen *Review durchgeführt* bestätigt Runde 1 und Runde 2 samt den gezogenen Findings —
+  **ein Report über die sechs Commits besteht nicht und wird nicht behauptet.** Die Wahl, dass die Whitelist am Programm-Wort dieselbe ist
+  wie am Segment, hat damit **kein Reviewer bewertet**; sie ist vom Verifier nur gemessen. Wer sie für tragend hält, öffnet eine Runde als
+  Übergabe, bevor der nächste Slice dieselbe Funktion anfasst. Die Klasse steht im Register
+  ([`aenderung-nach-der-letzten-review-runde-bleibt-ungesehen`](../observations/BEO-ALL/aenderung-nach-der-letzten-review-runde-bleibt-ungesehen/observation.md),
+  3×, siehe unten).
+- **Mutate: Teilmessung, keine Gesamtaussage.** Real gefahren ist der Teillauf
+  `make mutate MUTATE_JOBS=1 MUTATE_CASES=<476 bis 487>` (Verifier, Stand `ed4eedcf`): `12 ok, 0 Befund(e)`, `TEILLAUF 12 von 475 — kein Beleg`
+  (`ls test/mutations/*.sh | wc -l` → 475); der Beleg-Slot `.harness/state/mutate-passed.key` ist vorher wie nachher nicht vorhanden
+  (`ls .harness/state/mutate-passed.key` → nicht vorhanden). **Nicht gefahren:** ein voller `make mutate`; der Nachtlauf `mutate.yml`
+  trägt ihn. Der Closure-Trigger 1 (*„`make mutate` meldet `0 Befund(e)`"*) ist damit **für die zwölf Fälle** erfüllt, nicht für das
+  Ganze.
+- **Grenzen der Lieferung, benannt — nicht behoben.** **V-2:** `program` hat keine Längengrenze; `cd /x && ` und ein Wort aus 1 000 000
+  Zeichen nennt alle 1 000 000 Zeichen, hinter Navigation neu erreichbar, ohne Navigation und im Vorzustand ebenso; es ist ein
+  schlichtes Wort in Befehlsposition, kein Wert (LOW). **V-3:** das erste Wort eines Strings ist ohne Navigation erreichbar
+  (`A=b "secret token" x` → `"secret`, `"secret token" x` → `"secret`), weil die Schlichtheits-Prüfung nur hinter einem
+  Navigations-Segment gilt; `SPEC-031` und der Kommentar nennen es für Formen ohne Navigation, für die Zuweisung nicht ausdrücklich
+  (LOW). **V-4:** die Zeichenliste der Whitelist steht in `SPEC-031` als handgeschriebene Kopie, und kein Sensor hält sie gegen den
+  Code; die Fälle 486 und 487 binden den Code gegen die erwartete Menge im Test, nicht gegen die Spec-Zeile, und der Satz *„Bewacht
+  von … Fälle 486 und 487"* ist breiter als sein Sensor (LOW). Der Ausgang aller drei ist das Register (unten); ein Folge-Slice ist
+  nicht geschnitten. **Der Preis der Whitelist:** `cd "$DIR" && make` bleibt `cd`, `cd /x && "$TOOL" x` und `cd /x && make; echo z`
+  nennen **nichts**, `cd /x && make` mit einem Zeilenende irgendwo bleibt `cd`, jede mehrzeilige Zeile mit Navigation nennt `cd`
+  (Verifier, Formen-Probe). **Der Nutzen ist nicht beziffert (V-5):** die Spans tragen nur `program` und `argc`, nie die Zeile; ob die
+  **38 %** aus §1 fallen, zeigt erst ein Strom über die Zeit, und die Formen, die die Regel nicht auflöst, sind bekannt, ihr
+  Anteil nicht. `TestCommandProgramFirstWordKeepsItsGluedRest` (die Grenze des Programm-Felds ohne Navigation) trägt keinen Fall; eine
+  Schwächung färbt ihn, aber `make mutate` bewacht ihn nicht — Ist-Verhalten, nicht Zusage.
+- **Spec-Stratum, Eigentumsfrage (Liefer-Punkt 3, zweiter Punkt).** Für [`spec/spezifikation.md`](../../../../spec/spezifikation.md) (Rang 2 der
+  Source Precedence) benennt **keine Quelle** eine schreibende Rolle: [`AGENTS.md`](../../../../AGENTS.md) §3.8 weist nur Hard Rules und
+  Adaptions-Block dem Architect zu und lässt jede andere Frage ausdrücklich offen. `SPEC-021` und `SPEC-031` hat ein Lauf mit der Rolle
+  Implementer geschrieben (die Commit-Messages nennen sie); daraus wird **keine** Zuständigkeit abgeleitet — eine aus Zweckmäßigkeit
+  abgeleitete Rolle wäre genau der Befund, den [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md) auflösen soll.
+  Die Adresse ist `slice-151` (`open/`). **Querlage, benannt:** der Wortlaut des Punktes legt diese Zeile in §7 in die Hand *„des Laufs, der
+  die Spec-Zeilen schreibt"*; §3.10 legt §7 in die Hand des Planners, ausdrücklich nicht in die des ausführenden Laufs. Der Implementer hat §7
+  richtig leer gelassen (Verifier); die Zeile steht hier, vom Planner, und das Häkchen meint die **Zeile in §7**, nicht die Autorschaft
+  des Laufs. Der Plan-Wortlaut stammt vom 2026-09-08 und wird nicht umgeschrieben. **Liefer-Punkt 3, erster Punkt, trägt mit Vorbehalt:**
+  `SPEC-021` und `SPEC-031` sind nachgezogen und der Wortlaut ist am Code gelesen (V-4 nimmt die Liste aus, siehe oben); das Lastenheft ist
+  unberührt.
+- **Steering-Loop-Eintrag (Form: neuer Sensor).** Die Rand-Menge einer erkennenden Regel über Shell-Text ist gemessen statt vorausgesetzt:
+  `TestCommandProgramKeepsNavigationWhenItsEdgeIsUnsure` fährt jedes ASCII-Zeichen ab 0 gegen die Whitelist der schlichten Zeichen — die
+  Formen-Probe als Test statt als Einmal-Lauf —, und die Fälle 476 bis 487 binden je eine Grenze (Navigations-Segment, Segment-Ende, unsicherer
+  Rand, Einzeiligkeit, Tab, Backslash-Fortsetzung, Programm hinter Navigation, NUL, `%`). **Kein Zielort-Feld und kein Herkunfts-Anker:** der
+  Sensor trägt die Kennung seiner Quelle nicht in einer Regel-Zeile; die Paarung (a) hätte nichts, gegen das sie prüft. **Grenzen des Sensors,
+  benannt:** er hält die **Zeichen** der Menge, nicht Formen, die keine Zeichen sind (Länge, Struktur eines Kommentars); er hält den Code gegen
+  die erwartete Menge **im Test**, nicht gegen `SPEC-031`; er ist ein Go-Test gegen dieses Repo und wird nicht emittiert; die `sed`-Anker der
+  zwölf Fälle sind Einzelzeilen im Quell-Bestand
+  ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand), vom Verifier gemessen).
+  **Die geschärfte Regel ist nicht verkörpert, und der Planner verkörpert sie nicht:** *eine Regel, die Text an Leerraum zerlegt und daraus ein
+  Feld liest, führt für ihr Wort dieselbe Schlichtheits-Prüfung wie für ihr Segment, und der Plan trägt die Formen-Probe vor dem Schnitt.* Sie
+  steht im Register, nicht in einem Norm-Artefakt; Hard Rules und Reviewer-Skill schreiben Architect bzw. Reviewer
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
+- **Beobachtungs-Register (`../observations/`):** je Beleg `evidence/slice-204-das-programm-feld-nennt-das-programm.md`; Zähler gelesen mit
+  `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`
+  ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)).
+  Ein Vorgang zählt einmal je Beobachtung; die Zuordnung ist je Kandidat ein **Urteil des Planners** und hier begründet.
+  **Erstmals über der Schwelle, zwei Übergaben an den Architect:** (1)
+  [`zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel`](../observations/BEO-ALL/zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel/observation.md)
+  **3×** (Tab-Wortgrenze, Fortsetzungs-Bedingung, Programm-Feld auf `;`: Kommentar und Spec sagen jede Grenze zu, die Fälle banden je eine
+  Hälfte); (2)
+  [`aenderung-nach-der-letzten-review-runde-bleibt-ungesehen`](../observations/BEO-ALL/aenderung-nach-der-letzten-review-runde-bleibt-ungesehen/observation.md)
+  **3×**, **neu angelegt** — kein Verzeichnis führte die Klasse (`ls docs/plan/planning/observations/BEO-ALL | grep -c 'review-runde'` → 1,
+  das neue), und **die zwei früheren Vorgänge sind nachgetragen**, weil ihre Closure-Notizen dieselbe Lage wörtlich nennen
+  (`slice-archive-welle-schreibt-in-reports-nur-die-link-form`: vier Commits nach dem Review, einer ohne jeden Leser;
+  `slice-form-regel-des-nachzugs-ist-an-die-codepaths-ausnahme-gekoppelt`: zwei) und ein abgeschlossener Vorgang mit dem Auftreten einen
+  Beleg trägt; **wer sie nicht als Auftreten dieser Klasse liest, löscht die zwei Dateien unter `evidence/` und lässt den Eintrag bei 1×.**
+  **Vierter Beleg, Eskalation:**
+  [`regel-rand-ohne-benannte-luecke`](../observations/BEO-ALL/regel-rand-ohne-benannte-luecke/observation.md) **4×** (`verkörpert`): die Zeile des
+  Reviewer-Skills hat an diesem Diff gegriffen — der Review fand die Lücken der Aufzählung — und die Autor-Seite blieb offen; der
+  Eskalationsschritt laut `state.md` ist eine Falsch/Richtig-Zeile in [`AGENTS.md`](../../../../AGENTS.md) §3.6, **Architect-Arbeit (§3.8), nicht
+  geschrieben und nicht zugewiesen.** **Je ein Beleg, unter der Schwelle:**
+  [`zeichenmenge-mitglied-ohne-eigenen-zahn`](../observations/BEO-ALL/zeichenmenge-mitglied-ohne-eigenen-zahn/observation.md) (2×: Operator-Guards und
+  Sweep), [`mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere`](../observations/BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere/observation.md)
+  (2×: Fall 476 und die Entflechtung in der Nachrunde 2),
+  [`span-feld-bedeutung-wechselt-ohne-fassungs-angabe`](../observations/BEO-ALL/span-feld-bedeutung-wechselt-ohne-fassungs-angabe/observation.md) (2×;
+  jetzt auch `argc`), [`shell-nachbau-ohne-tokenizer-deckt-nicht-jede-eingabe-klasse`](../observations/BEO-ALL/shell-nachbau-ohne-tokenizer-deckt-nicht-jede-eingabe-klasse/observation.md)
+  (2×: H-1 und die Ränder der Runde 2). **Neu, 2×:**
+  [`erkennende-regel-ueber-text-waechst-ueber-ihren-schnitt`](../observations/BEO-ALL/erkennende-regel-ueber-text-waechst-ueber-ihren-schnitt/observation.md)
+  — der zweite Beleg ist der Vorgänger-Slice `slice-program-feld-nennt-weder-operator-noch-wertfragment` (fünf Fälle statt zwei, drei Funktionen
+  außerhalb von §3, zwei Runden), dessen Closure-Notiz das Plan-Delta nennt. **Über der Schwelle mit bestehendem Ausgang, je ein Beleg dazu:**
+  [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
+  (`geplant`; der emittierte Feldtext `internal/span/fieldlist.go` Zeile 94 sagt *„das erste Token der Kommandozeile"*, `SPEC-021` sagt jetzt *„das
+  erste Wort des ausgeführten Segments"*) und
+  [`zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md) (`geplant`; V-4 — die
+  Beobachtung führt Skript- und Funktionsköpfe, die Spec-Zeile ist dieselbe Fehlerrichtung an einer weiteren Fläche, und wer sie anders zuordnet,
+  streicht die eine Datei). **Nicht als Beleg gezählt:** V-5 (Nutzen nicht beziffert) — ein Vorkommen ohne Beobachtung, das ein Bestand nicht
+  trägt; wer es messen will, braucht eine Datenbasis, und die Spans tragen die Zeile nicht: kein Nachtrag in diesem Slice.
+  **Lese-Schritt:** `for d in docs/plan/planning/observations/BEO-ALL/*/; do n=$(ls "$d"evidence/*.md 2>/dev/null | wc -l); [ "$n" -ge 3 ] && ! grep -qhE '^\*\*Stand:\*\* (verkörpert|geplant|gestrichen)' "$d"state.md "$d"observation.md && echo "$d"; done`
+  nennt genau die zwei Einträge (1) und (2); sie tragen bis zum Architect `offen`, was zwischen zwei Lese-Schritten zulässig ist
+  ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md) gilt der zweiten Hälfte von (c), nicht dieser Lage).
+- **Folge-Slices:** keiner geschnitten. `slice-151` (`open/`) führt die Eigentumsfrage. Die Wortlaut-Kopplung des emittierten Feldtexts
+  (`fieldlist.go` Zeile 94) führt **Frage A** von
+  [slice-109](../next/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md) (*„die Frage je Feld steht zweimal, und die zwei Fassungen driften"*, alle
+  Felder des Trägers); dessen Plan nennt die `program`-Zeile nicht und wird **nicht** ergänzt — jede Antwort auf Frage A gleicht den Wortlaut je Feld ab,
+  und eine hineingeschriebene Instanz wäre eine Zustandsaussage, die mit dem ersten Nachzug veraltet. V-2 (Längengrenze) und V-4 (Spec-Kopie) sind
+  Register-Belege und keine Slices: beide hätten **einen** Liefer-Punkt in **einer** Schicht, aber kein Konsument wartet auf sie und keine Adresse
+  fehlt (V-4 ist Beleg der Beobachtung `zusage-nennt-sensor-der-form-nicht-sieht`, deren Ausgang `geplant` an `slice-181` hängt; ob
+  dieser Slice die Spec-Zeile trägt, ist nicht geprüft).
+- **Übergaben, nicht erledigt:** (a) **Architect** — die zwei 3×-Einträge und die Eskalation von `regel-rand-ohne-benannte-luecke` (oben); (b) **Zeitdokument** —
+  in `done/slice-program-feld-nennt-weder-operator-noch-wertfragment.md` steht hinter einem nachgezogenen Link weiter *„(`next/`)"*; die Datei ist ein Zeitdokument
+  ([`ADR-0042`](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 1) und wird nicht angefasst; (c) **Implementer** — `internal/span/fieldlist.go` Zeile 94,
+  über `slice-109`.
+- **Risiken aus §6:** fünf, je ein Ausgang. (1) *Navigations-Überspringen umgeht die Wert-Grenze* — **weiter offen**, Register
+  `shell-nachbau-ohne-tokenizer-…`; die Instanz (H-1) ist eingetreten und im Slice geschlossen. (2) *`&&` und `;` sind Text* — **weiter offen**, Register
+  `regel-rand-ohne-benannte-luecke`; eingetreten und aufgefangen. (3) *Der Bestand mischt zwei Bedeutungen* — **weiter offen**, Register
+  `span-feld-bedeutung-wechselt-ohne-fassungs-angabe`. (4) *Der erste Slice liefert den Begriff anders* — **entfallen**, belegt am Diff (0 gelöschte Zeilen). (5) *Kein
+  Rollen-Eigentum am Spec-Stratum* — **eingetreten**, Folge-Slice `slice-151`. Dass jeder Ausgang trägt, ist gelesen: (1) bis (3) an je einem
+  Register-Verzeichnis mit Beleg dieses Vorgangs, (4) an einem Kommando, (5) an der Adresse.
+- **Adressen vor dem Move ([`AGENTS.md`](../../../../AGENTS.md) §3.11):** über beide Adress-Formen gemessen, außerhalb dieser Datei, am 2026-09-27:
+  die Code-Span-Form `(open|next|in-progress|done)/<Kennung>` (`git grep -lE "(open|next|in-progress|done)/<Kennung>" -- . ':!<diese Datei>'`) trifft **3** Dateien —
+  `done/slice-program-feld-nennt-weder-operator-noch-wertfragment.md`, `done/slice-span-programm-nennt-das-programm.md` und `open/slice-205-der-strom-traegt-die-zug-grenze.md` —
+  und die Markdown-Link-Form `](…<Kennung>[.md])` (`git grep -lE "\]\([^)]*<Kennung>(\.md)?[)#]" -- . ':!<diese Datei>'`) **2** davon (die erste und die dritte). In `docs/reviews`,
+  `docs/plan/adr` und `.harness/baseline` treffen beide Formen **0** Dateien (`git grep -lE "<beide Muster>" -- docs/reviews docs/plan/adr .harness/baseline | wc -l` → 0):
+  die Reports nennen den Slice bei der Kennung. **Entscheidung vor dem Move:** die zwei Zeitdokumente unter `done/` und die lebende `slice-205` in `open/` nennen den Pfad; der Nachzug
+  ersetzt dort eine Adresse und ändert keine Aussage
+  ([`ADR-0042`](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 1, dieselbe Form wie der Nachzug beim Claim-Move, der dieselben drei Dateien schrieb);
+  eine `Accepted`-ADR und die Baseline bekommen keinen Byte-Nachzug, und keine nennt den Slice als Pfad.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
