@@ -213,7 +213,7 @@ Lieferung, nicht zusätzlicher Umfang.
 - [x] Beobachtungs-Register ([`../observations/`](../observations/)) fortgeschrieben — **kein
       Zähler wird gesetzt**, er folgt aus den Dateien.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieser Slice läuft
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieser Slice läuft
       **ohne Welle**, sie werden also hier geprüft, nach dem `git mv`.
 
 ## 3. Plan (vor Code)
@@ -506,6 +506,27 @@ und Verifikation. Alle Kommandos gemessen am 2026-09-27 am Stand `62a7b27d`, kei
   ersetzt dort eine Adresse und ändert keine Aussage
   ([`ADR-0042`](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 1, dieselbe Form wie der Nachzug beim Claim-Move, der dieselben drei Dateien schrieb);
   eine `Accepted`-ADR und die Baseline bekommen keinen Byte-Nachzug, und keine nennt den Slice als Pfad.
+- **Der Move, gemessen (`make slice-mv` nach `done/`, 2026-09-27):** zwei Commits, wie Hard Rule 3.3 sie trennt — der reine Move (`86841db5`, 0 Zeilen
+  geändert) und der Verweis-Nachzug (`1097ea25`, drei Dateien, je Pfad-Adresse ersetzt: `done/slice-program-feld-nennt-weder-operator-noch-wertfragment.md`,
+  `done/slice-span-programm-nennt-das-programm.md`, `open/slice-205-der-strom-traegt-die-zug-grenze.md`; `git show --stat` je Commit gelesen). Weder ein Report noch eine ADR noch die
+  Baseline wurde berührt (`git diff --name-only 2026c1ac..HEAD -- docs/reviews docs/plan/adr .harness/baseline | wc -l` → **0**). Der Satz *„(`next/`)"* hinter einem Link in
+  `done/slice-program-feld-nennt-weder-operator-noch-wertfragment.md` ist Zustandsprosa, die der Nachzug nicht erreicht (Grenze 1 von `make slice-mv`); er bleibt.
+- **Drei Paarungen (nach dem Move geprüft, 2026-09-27):** (a) *Anker:* der Eintrag trägt kein Zielort-Feld (siehe *Steering-Loop-Eintrag*), das Feld
+  `liegt in` steht in keiner Zeile dieser Sektion — es gibt nichts zu paaren; benannt, nicht als grün behauptet. (b) *Folge-Slice:* jede in dieser Datei genannte Slice-Kennung besteht
+  als Datei im Planning-Lifecycle (`grep -oE 'slice-[a-z0-9][a-z0-9-]*[a-z0-9]' <diese Datei> | sort -u`, je Kennung
+  `ls docs/plan/planning/{open,next,in-progress,done} | grep -cE "^<Kennung>(-.*)?\.md$"` → je **1**, 13 Kennungen): die Folge-Slices `slice-151` (`open/`) und `slice-109` (`next/`), die
+  Nachbarn `slice-181` (`open/`) und `slice-205` (`open/`), der Vorgänger und die zwei Vorgänge der nachgetragenen Belege (`done/`); `slice-mv` ist ein Kommando-Name und kommt in
+  keiner Form vor, die das Muster fände. (c) *Register, beide Hälften:* **Hälfte 1 getragen** — jede in dieser Datei genannte Beobachtung besteht als Verzeichnis mit nicht
+  leerem `evidence/` (**10** Kennungen; Zähler gelesen 2026-09-27: 3, 2, 2, 4, 2, 2, 2, 3, 33, 19 — `for s in $(grep -oE 'observations/BEO-ALL/[a-z0-9-]+/observation.md' <diese Datei> | sed -E 's#observations/BEO-ALL/([a-z0-9-]+)/observation.md#\1#' | sort -u); do ls docs/plan/planning/observations/BEO-ALL/$s/evidence/*.md | wc -l; done`).
+  **Register-Paarung (c), zweite Hälfte: 4 Verzeichnisse ohne Beleg, namentlich `ci-rennt-gegen-die-publikation-des-gepinnten-releases`,
+  `cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`, `einstiegs-datei-weicht-von-der-pflichtgliederung-ab` und
+  `planungs-bestand-waechst-schneller-als-er-abgebaut-wird`; nicht als getragen behauptet**
+  ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md) Festlegung 2;
+  `for d in docs/plan/planning/observations/BEO-ALL/*/; do n=$(ls "$d"evidence/*.md 2>/dev/null | wc -l); [ "$n" -eq 0 ] && echo "$d"; done` → vier Namen, dieselben vier wie
+  vor diesem Slice). Keines wurde von ihm angelegt oder berührt
+  (`git diff --name-only 62a7b27d..HEAD | grep -cE 'ci-rennt-gegen|cpp-skelett|einstiegs-datei-weicht|planungs-bestand-waechst'` → **0**); der Befund endet erst mit dem Beleg eines
+  abgeschlossenen Vorgangs. **Das Häkchen der letzten DoD-Zeile ist so gesetzt, wie die Register-README das Kästchen liest:** die Paarung ist gefahren und ihr Ergebnis steht mit den
+  Namen in §7; das Kästchen sagt nicht, dass sie grün ist, und die zweite Hälfte von (c) bleibt ein Befund. Im Repo mit Wellen prüft die nächste Welle-Closure sie erneut.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
