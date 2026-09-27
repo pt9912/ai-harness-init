@@ -324,12 +324,13 @@ func TestCommandProgramWithholdsProgramForEachUnsureValueChar(t *testing.T) {
 // ein Wert mit nicht bestimmbarem Rand laesst program und argc ganz entfallen. Jede Zeile
 // laeuft ueber Derive UND ueber die geschriebene Zeile.
 func TestCommandProgramSkipsNavigationSegments(t *testing.T) {
-	cases := []struct {
+	type navigationCase struct {
 		cmd     string
 		program string   // "" heisst: kein program-Feld
 		argc    int      // -1: nicht geprueft
 		leaks   []string // Woerter, die in keinem Feld der geschriebenen Zeile stehen
-	}{
+	}
+	cases := []navigationCase{
 		{"cd /x && make gates", "make", 1, nil},
 		{"cd /x && make gates now", "make", 2, nil},
 		{"set -e; make gates", "make", 1, nil},
@@ -373,6 +374,18 @@ func TestCommandProgramSkipsNavigationSegments(t *testing.T) {
 		{`cd /x; TOKEN='abc def' gh pr create`, "", -1, []string{"TOKEN", "abc", "def"}},
 		{"cd /x && T=$(date def) make", "", -1, []string{"def"}},
 		{"cd /x && A=b || cmd", "", -1, nil},
+		// Hinter dem Segment nennt das Feld ein schlichtes Wort: einen Pfad, den Namen einer
+		// Variable (nie ihren Wert).
+		{"cd /x && ./tool x", "./tool", 1, nil},
+		{"cd /x && /usr/bin/env x", "/usr/bin/env", 1, nil},
+		{"cd /x && $TOOL x", "$TOOL", 1, nil},
+		{"cd /x && FOO=bar make", "make", 0, []string{"FOO", "bar"}},
+	}
+	// Jedes Zeichen aus plainNavigationChars ist in einem Wort des Segments schlicht: das
+	// Segment wird uebersprungen. Die Menge ist die erwartete Zusage, nicht eine Kopie der
+	// Konstante des Codes — faellt ein Zeichen dort heraus, faellt seine Zeile.
+	for _, c := range plainNavigationChars {
+		cases = append(cases, navigationCase{"cd x" + string(c) + "y && make", "make", 0, nil})
 	}
 	for _, tc := range cases {
 		t.Run(tc.cmd, func(t *testing.T) {
@@ -402,18 +415,43 @@ func TestCommandProgramSkipsNavigationSegments(t *testing.T) {
 	}
 }
 
+// plainNavigationChars sind die ASCII-Zeichen ausser Buchstaben und Ziffern, die ein Wort
+// eines Navigations-Segments schlicht lassen: die erwartete Zusage, gegen die die Tabellen
+// und der Sweep messen. Sie steht hier fuer sich und ist keine Kopie, die dem Code folgt —
+// aendert sich die Menge im Code, faellt eine Zeile.
+const plainNavigationChars = "$%*+,-./:=>?@[]^_~"
+
+// plainProgram sagt, ob jedes Zeichen von s schlicht ist: ein Buchstabe, eine Ziffer, ein
+// Zeichen aus plainNavigationChars, ein `&` unmittelbar hinter `>` oder ein Nicht-ASCII-Zeichen.
+func plainProgram(s string) bool {
+	var prev rune
+	for _, r := range s {
+		switch {
+		case r >= 0x80, r >= 'a' && r <= 'z', r >= 'A' && r <= 'Z', r >= '0' && r <= '9':
+		case strings.ContainsRune(plainNavigationChars, r):
+		case r == '&' && prev == '>':
+		default:
+			return false
+		}
+		prev = r
+	}
+	return true
+}
+
 // TestCommandProgramKeepsNavigationWhenItsEdgeIsUnsure haelt fest: ein Navigations-Segment
-// wird nur uebersprungen, wenn JEDES seiner Woerter schlicht ist. Jedes ASCII-Zeichen ausser
-// den schlichten (`plainNavigationChars`) haelt das Segment als Programm: Anfuehrungszeichen,
-// Backslash, Klammern, Kommentar, Redirect-Quelle, Operator und Steuerzeichen. Dazu die Formen,
-// in denen ein Bruchstueck eines Kommentars, eines Here-Doc-Koerpers oder eines Arguments
-// sonst hinter dem Segment als Programm stuende. Jede Zeile laeuft ueber Derive UND ueber die
-// geschriebene Zeile.
+// wird nur uebersprungen, wenn JEDES seiner Woerter schlicht ist. Jedes ASCII-Zeichen von 0 bis
+// 127 ausser Leerzeichen, Tab, Zeilenende und den schlichten (`plainNavigationChars`, Buchstaben,
+// Ziffern) haelt das Segment als Programm: Anfuehrungszeichen, Backslash, Klammern, Kommentar,
+// Redirect-Quelle, Operator und Steuerzeichen einschliesslich NUL. Dazu die Formen, in denen ein
+// Bruchstueck eines Kommentars, eines Here-Doc-Koerpers oder eines Arguments sonst hinter dem
+// Segment als Programm stuende. Die Gegenrichtung — jedes schlichte Zeichen laesst das Segment
+// uebersprungen — haelt TestCommandProgramSkipsNavigationSegments. Jede Zeile laeuft ueber
+// Derive UND ueber die geschriebene Zeile.
 func TestCommandProgramKeepsNavigationWhenItsEdgeIsUnsure(t *testing.T) {
-	const plainNavigationChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$%*+,-./:=>?@[]^_~"
+	const alnum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	var cmds []string
-	for c := 1; c < 128; c++ {
-		if c == '\t' || c == '\n' || c == ' ' || strings.ContainsRune(plainNavigationChars, rune(c)) {
+	for c := 0; c < 128; c++ {
+		if c == '\t' || c == '\n' || c == ' ' || strings.ContainsRune(alnum+plainNavigationChars, rune(c)) {
 			continue
 		}
 		cmds = append(cmds, "cd x"+string(rune(c))+"y && make")
@@ -492,6 +530,115 @@ func TestCommandProgramKeepsNavigationOnMultilineCommands(t *testing.T) {
 			}
 			if !strings.Contains(line, `"program":"`+tc.program+`"`) {
 				t.Fatalf("erwartet program %q im Span fuer %q, geschrieben: %s", tc.program, tc.cmd, line)
+			}
+		})
+	}
+}
+
+// TestCommandProgramBehindNavigationIsAPlainWord haelt fest: hinter einem uebersprungenen
+// Navigations-Segment steht als program ein schlichtes Wort oder nichts — nie das Bruchstueck
+// eines Strings, einer Substitution, eines maskierten Leerzeichens oder ein Wort mit
+// anhaengendem Operator. Die Zeilen tragen kein erwartetes Programm, sondern die Eigenschaft:
+// jedes Zeichen des Feldes ist schlicht, und das Wort SECRETWORD steht in keinem Feld der
+// geschriebenen Zeile. Jede Zeile laeuft ueber Derive UND ueber die geschriebene Zeile.
+func TestCommandProgramBehindNavigationIsAPlainWord(t *testing.T) {
+	cmds := []string{
+		`cd /x && "SECRETWORD token" x`,
+		`cd /x && 'SECRETWORD token' x`,
+		`cd /x && $(SECRETWORD cmd) x`,
+		"cd /x && `SECRETWORD cmd` x",
+		`cd /x && a\ SECRETWORD`,
+		`cd /x && "SECRETWORD"`,
+		`cd /x; "SECRETWORD token" x`,
+		`set -e; "SECRETWORD token" x`,
+		`cd /x && cd /y && "SECRETWORD token" x`,
+		`cd /x && FOO=bar "SECRETWORD token" x`,
+		`cd /x && FOO=bar 'SECRETWORD token' x`,
+		"cd /x && make; echo SECRETWORD",
+		"cd /x && make& echo SECRETWORD",
+		"cd /x && make\r SECRETWORD",
+		"cd /x && make;SECRETWORD",
+	}
+	for _, cmd := range cmds {
+		t.Run(cmd, func(t *testing.T) {
+			line := bashSpanLine(t, cmd)
+			if d := span.Derive(span.Payload{Tool: "Bash", Input: span.ToolInput{Command: cmd}}); !plainProgram(d.Program) {
+				t.Errorf("Derive: program = %q ist nicht schlicht (Zeile %q)", d.Program, cmd)
+			}
+			if strings.Contains(line, "SECRETWORD") {
+				t.Fatalf("Bruchstueck im Span fuer %q: %s", cmd, line)
+			}
+		})
+	}
+}
+
+// TestCommandWordsSplitAtTab haelt fest: ein Tab trennt Woerter wie ein Leerzeichen. Ein
+// Tab zwischen Programm und Argumenten macht die Zeile nicht zu EINEM Wort, das als program im
+// Span stuende; jede Zeile traegt darum das Programm als erstes Wort und die Argumente als
+// argc. Die Zeile mit Navigations-Segment traegt die Eigenschaft: im Feld steht kein Tab.
+// Jede Zeile laeuft ueber Derive UND ueber die geschriebene Zeile.
+func TestCommandWordsSplitAtTab(t *testing.T) {
+	cases := []struct {
+		cmd     string
+		program string // "" heisst: nur die Eigenschaft, kein Tab im Feld
+		argc    int
+	}{
+		{"git\tcommit\t-m\tx", "git", 3},
+		{"ls\t-l\t/tmp", "ls", 2},
+		{"A=b\tmake\tgates", "make", 1},
+		{"make\tgates\t&&\techo\tx", "make", 1},
+		{"make\tgates;\techo\tx", "make", 1},
+		{"cd\t/x\t&&\tmake\tgates", "", 0},
+	}
+	for _, tc := range cases {
+		t.Run(tc.cmd, func(t *testing.T) {
+			d := span.Derive(span.Payload{Tool: "Bash", Input: span.ToolInput{Command: tc.cmd}})
+			line := bashSpanLine(t, tc.cmd)
+			if strings.ContainsRune(d.Program, '\t') || strings.Contains(line, `\t`) {
+				t.Fatalf("Tab im Feld fuer %q: program %q, geschrieben: %s", tc.cmd, d.Program, line)
+			}
+			if tc.program == "" {
+				return
+			}
+			if d.Program != tc.program || d.Argc != tc.argc {
+				t.Errorf("Derive: program %q argc %d, erwartet %q %d (Zeile %q)", d.Program, d.Argc, tc.program, tc.argc, tc.cmd)
+			}
+			want := `"program":"` + tc.program + `","argc":` + strconv.Itoa(tc.argc)
+			if !strings.Contains(line, want) {
+				t.Errorf("Zeile %q: erwartet %s im Span, geschrieben: %s", tc.cmd, want, line)
+			}
+		})
+	}
+}
+
+// TestCommandBackslashBeforeBlankIsAWord haelt fest: nur ein Backslash vor dem ZEILENENDE
+// setzt die Zeile fort. Steht ein einzelner Backslash vor einem Leerzeichen, ist er ein
+// Wort — die Shell liest `\ ` als maskiertes Leerzeichen —, und das Wort dahinter
+// wird weder Programm noch verschwindet der Backslash aus argc. Jede Zeile laeuft ueber Derive
+// UND ueber die geschriebene Zeile.
+func TestCommandBackslashBeforeBlankIsAWord(t *testing.T) {
+	cases := []struct {
+		cmd     string
+		program string
+		argc    int
+	}{
+		{"A=b \\ SECRETWORD", `\`, 1},
+		{"A=b \\ \\ SECRETWORD", `\`, 2},
+		{"make gates \\ x y", "make", 4},
+	}
+	for _, tc := range cases {
+		t.Run(tc.cmd, func(t *testing.T) {
+			d := span.Derive(span.Payload{Tool: "Bash", Input: span.ToolInput{Command: tc.cmd}})
+			line := bashSpanLine(t, tc.cmd)
+			if strings.Contains(line, "SECRETWORD") {
+				t.Fatalf("Wort hinter einem Backslash im Span fuer %q: %s", tc.cmd, line)
+			}
+			if d.Program != tc.program || d.Argc != tc.argc {
+				t.Errorf("Derive: program %q argc %d, erwartet %q %d (Zeile %q)", d.Program, d.Argc, tc.program, tc.argc, tc.cmd)
+			}
+			want := `"argc":` + strconv.Itoa(tc.argc)
+			if !strings.Contains(line, want) {
+				t.Errorf("Zeile %q: erwartet %s im Span, geschrieben: %s", tc.cmd, want, line)
 			}
 		})
 	}
