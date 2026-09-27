@@ -199,6 +199,17 @@ Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontex
     keine Welle-Plan-Dateien, präfixlose Eingehend-Form nur als Link aus flachen Geschwistern). `make docs-check`
     danach prüft den Rest. Ein rotes Gate erreicht `done/` **nur** mit dokumentiertem Carveout
     (Modul 7), nie als stilles Rot.
+24a. **Liegen Commits nach dem letzten Reviewer-Report vor** (Tests, Produktcode, Mutations-Fälle,
+     Sensor-Doku — nicht nur Vorbereitung der Closure selbst), benennt die Closure-Notiz sie
+     einzeln mit Hash und Kurzbeschreibung und trifft eine von zwei Entscheidungen, mit
+     Begründung: eine weitere Reviewer-Runde über genau diesen Rest — oder eine begründete
+     Entscheidung dagegen (etwa: der Verifier hat die Commits gemessen und gefahren, die Änderung
+     setzt nur einen bereits vom Review benannten Schließungs-Vorschlag um, die Runden
+     konvergieren in der Schwere). Ein Häkchen *Review durchgeführt*, das eine frühere Runde
+     bestätigt, bestätigt **nicht** stillschweigend Commits danach — Reviewer und Verifier prüfen
+     verschiedene Fragen (Plan/ADR/Hard-Rules gegen DoD/Spec), und die erste Frage stellt an den
+     Nachrunden-Diff sonst niemand. Kein Gate fängt das; Träger ist diese Closure
+     (`AGENTS.md` §3.10; seit slice-204-das-programm-feld-nennt-das-programm)
 25. **Das Beobachtungs-Register fortschreiben** (`docs/plan/planning/observations/`, Modul 6) —
     der **Schreib**-Schritt, und er hängt an der Closure, nicht an der Implementation. Für jede
     Beobachtung aus §7: führt das Register die Klasse schon, dann die vorhandene Kennung
