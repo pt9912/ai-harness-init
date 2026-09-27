@@ -15,7 +15,7 @@ und ihr Umfeld (Bezug, Schärft, Fitness-Function-Zeilen 449/450), `Accepted`;
 vollständig; [`MR-010`](../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert);
 Baseline-Regelwerk `modul-11-verification.md` §Fitness Function ohne Standard-Tool;
 `modul-08-agentenrollen.md` §Rollen-Regeln; `modul-05-planning-harness.md` §4 (Rückführungs-Vorbild);
-§1 von [`slice-109`](../plan/planning/in-progress/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md)
+§1 von [`slice-109`](../plan/planning/done/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md)
 (Herkunft der Frage); §6/§7 von
 [`slice-096`](../plan/planning/done/slice-096-traeger-liegt-im-ziel.md) (Präzedenz zirkuläre
 Kopplung); `observation.md`/`state.md`/beide `evidence/*.md` von

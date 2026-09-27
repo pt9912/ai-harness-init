@@ -159,7 +159,7 @@ nicht geschlossen ist.
   `internal/emit/`, ist der Slice aus seiner Schicht gelaufen.
 - **Keine Änderung der Feldliste.** Der Fragetext in `internal/span/fieldlist.go` (*„das erste Token
   der Kommandozeile"*) ist auch heute ungenau (er kennt die Zuweisungen nicht); die Feldliste
-  gehört [slice-109](../in-progress/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md) — **anderer
+  gehört [slice-109](../done/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md) — **anderer
   Vorgang**, und der Zeiger nimmt die Sendung an, denn slice-109 führt die Aussagen der Feldliste.
 - **Keine Entscheidung über das Rollen-Eigentum an den Spec-Straten.** Wer
   [`spec/spezifikation.md`](../../../../spec/spezifikation.md) schreiben darf, benennt **keine**
