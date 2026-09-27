@@ -1058,16 +1058,20 @@ mv "$spans_doc.orig" "$spans_doc"
 # VIER SCHRITTE, VIER AUSSAGEN:
 #   (a) das `gates` des Ziels haengt an keinem der beiden Ziele — gemessen an SEINER
 #       Kette (make -n), nicht an unserer Vorstellung davon,
-#   (b) ueber dem eben geschriebenen Bestand nennt der Leser seine ABDECKUNG ZUERST,
-#       weist KEINE Bilanz aus und nennt den GRUND seiner Leere,
+#   (b) ueber dem Bestand aus dem Bash-Span UND einem zweiten, eigens erzeugten
+#       Agenten-Span ohne Zaehler (slice-071 DoD (2)) nennt der Leser seine ABDECKUNG
+#       ZUERST, weist KEINE Bilanz aus und nennt den GRUND seiner Leere — den
+#       Mechanik-Satz traegt hier genau die Lage MIT Agenten-Lauf, nicht die aus dem
+#       Bash-Span allein,
 #   (c) das Fragment sagt, was es nicht zusagt: ohne Aufruf waechst der Bestand
 #       unbegrenzt,
 #   (d) `make span-clean` entfernt den Bestand und meldet das GETANE — ueber einem
 #       Bestand ebenso wie im zweiten Lauf ueber der bereits geraeumten Leere —, und
-#       danach meldet der Leser die LEERE DES BESTANDS — nicht dieselbe Meldung wie in
-#       (b).
+#       danach meldet der Leser, dass der Ablageort NICHT EXISTIERT (slice-071
+#       DoD (1)) — nicht dieselbe Meldung wie in (b).
 #
-# Rot-Gegenbeispiel: test/mutations/176 nimmt den Grund-Satz aus der Ausgabe.
+# Rot-Gegenbeispiel: test/mutations/176 nimmt den Grund-Satz aus der Ausgabe;
+# test/mutations/491-494 pruefen die drei slice-071-Lagen auf Go-Test-Ebene.
 leser_und_aufraeumen_im_ziel() {
 	local repo="$1" kennung="$2"
 	local spans="$repo/.harness/state/spans"
@@ -1091,6 +1095,23 @@ leser_und_aufraeumen_im_ziel() {
 	# (b) Der Leser ueber dem echten Bestand des Ziels.
 	if [ -z "$(find "$spans" -name '*.jsonl' -type f 2>/dev/null | head -n 1)" ]; then
 		echo "full-smoke: FEHLER — $kennung: kein Bestand im Ziel, bevor der Leser laeuft — dieser Zahn misst dann den leeren Fall (slice-099)." >&2
+		exit 1
+	fi
+	# slice-071 DoD (2): der GRUND-Satz gilt NUR ueber einem Bestand MIT Agenten-Laeufen
+	# und ohne Zaehler. Der Bash-Span oben allein traegt keinen Agenten-Lauf (tool !=
+	# Agent) und waere jetzt die ANDERE, neu abgetrennte Lage (kein Agent lief). Ein
+	# zweiter, echter Hook-Aufruf mit `tool_name":"Agent"` und OHNE `tool_response`
+	# legt genau den Fall an, den der Grund-Satz beschreibt: ein echter Agenten-Lauf,
+	# dessen Zaehler die Mechanik nicht liefert. Ohne diesen Zusatz misst dieser
+	# Schritt die Lage, die DoD (2) gerade abtrennt, statt die, die den Satz noch
+	# traegt (harness/mk/erfassung.mk lebt davon unberuehrt: der Grund-Satz steht
+	# dort, nicht hier).
+	local wrapper="$repo/.claude/hooks/span-emit.sh"
+	local agent_payload="{\"hook_event_name\":\"PostToolUse\",\"tool_name\":\"Agent\",\"tool_use_id\":\"tu_fs_agent\",\"session_id\":\"${kennung}agent\"}"
+	local agent_out="" agent_rc=0
+	agent_out="$( cd "$repo" && CLAUDE_PROJECT_DIR="$repo" bash "$wrapper" <<<"$agent_payload" )" || agent_rc=$?
+	if [ "$agent_rc" -ne 0 ] || [ -n "$agent_out" ]; then
+		echo "full-smoke: FEHLER — $kennung: der zweite Erfassungs-Hook (Agent, ohne Zaehler) endete mit Exit $agent_rc oder schrieb auf stdout — [$agent_out] (slice-071)." >&2
 		exit 1
 	fi
 	local bericht="" bericht_rc=0
@@ -1184,6 +1205,15 @@ leser_und_aufraeumen_im_ziel() {
 	fi
 	if ! grep -qF -- "Kein Bestand:" <<<"$leerflach"; then
 		echo "full-smoke: FEHLER — $kennung: ueber dem geraeumten Bestand meldet der Leser nicht dessen Leere (slice-099):" >&2
+		printf '%s\n' "$leer" >&2
+		exit 1
+	fi
+	# slice-071 DoD (1): NACH span-clean existiert der Ablageort selbst nicht mehr
+	# (rm -rf) — das ist die ERSTE der drei Leeren, nicht die zweite (vorhanden, aber
+	# leer). Beide teilen das Literal "Kein Bestand:"; erst dieser Satz unterscheidet
+	# sie im Text.
+	if ! grep -qF -- "existiert nicht" <<<"$leerflach"; then
+		echo "full-smoke: FEHLER — $kennung: nach span-clean sagt der Leser nicht, dass der Ablageort nicht EXISTIERT — er meldet dann die Lage eines vorhandenen, leeren Ablageorts (slice-071 DoD (1)):" >&2
 		printf '%s\n' "$leer" >&2
 		exit 1
 	fi
