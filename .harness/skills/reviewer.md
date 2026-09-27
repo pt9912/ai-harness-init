@@ -1,6 +1,6 @@
 # Reviewer-Skill — ai-harness-init
 
-**Version:** 2.2.0 · **Datum:** 2026-09-27 ·
+**Version:** 2.3.0 · **Datum:** 2026-09-27 ·
 **Baseline:** Agents-Regelwerk v6.7.2 (Kurs-Welle 134), Modul 10 §Ziel-Form: Reviewer-Skill
 (Kontext-Eingang · Klassifikation · „Was dieser Skill NICHT macht" · Output-Schema mit
 Negativbefund-Pflicht · Pflege).
@@ -124,6 +124,25 @@ Won't-Fix-Designnotiz.
   Zusagen, die der Diff anlegt oder ändert, nicht für den Bestand. Kein Gate fängt das; Träger ist
   dieser Review ([`AGENTS.md`](../../AGENTS.md) §3.6)
   (seit slice-204-das-programm-feld-nennt-das-programm)
+- **Mutations-Fall nennt einen Test, die Mutation färbt mehrere** — der `# expect:`-Kopf eines
+  neuen oder geänderten Falls nennt einen Test; `make mutate` prüft nur, ob dieser Test unter der
+  Mutation rot wird, nicht, ob er der einzige ist (`harness/tools/mutate.sh`: `grep -qF --
+  "$expect"` gegen die gefilterte Fehlerausgabe, keine Exklusivitäts-Prüfung). Der Reviewer fährt
+  für jeden neuen oder geänderten Fall die Gegenprobe mit ausgeschriebener Polarität — `t.Skip(...)`
+  **ausschließlich** im benannten Test, Mutation weiterhin angewandt — und liest, ob die Suite grün
+  wird (der benannte Test bindet allein) oder rot bleibt (ein zweiter Test bindet dieselbe
+  Quell-Stelle mit). Bleibt sie rot, trennt er zwei Fragen: Bindet der neue oder geänderte Test
+  etwas, das kein mitgefärbter Test bindet (kein Befund — struktureller Nebeneffekt einer
+  gemeinsamen Stelle, etwa einer einzelnen Ausgabe-Senke für mehrere Erfolgsfälle), oder dupliziert
+  er nur, was der mitgefärbte Test bereits allein bindet (LOW — `# expect:` zeigt auf einen
+  überflüssigen oder falsch gewählten Test, der Fall trägt nichts Eigenes bei)? Behauptet der
+  Fall-Kopf selbst Exklusivität („und nur sie", „ausschließlich"), die die Gegenprobe widerlegt:
+  mindestens LOW, unabhängig vom Redundanz-Ausgang — die Behauptung selbst ist falsch (§3.7). Gilt
+  für Fälle, die der Diff anlegt oder ändert, nicht für den Bestand. Kein Gate fängt das — eine
+  Exklusivitäts-Prüfung im Treiber bräuchte für jeden Fall eine vollständige „das UND NUR das darf
+  rot werden"-Zusicherung und träfe legitimes Mitfärben (gemeinsame Ausgabe-Senke) systematisch als
+  falschen Befund; Träger ist dieser Review ([`AGENTS.md`](../../AGENTS.md) §3.6)
+  (seit slice-fall-406-trifft-die-umgebaute-zerlegung)
 
 **Kontext-Eskalation:** dieselbe Beobachtung im Gate-/Sicherheitspfad steigt eine
 Stufe. Streit über eine Kategorisierung ⇒ Regel hier schärfen (§Pflege).
