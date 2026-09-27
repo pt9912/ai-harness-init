@@ -481,7 +481,7 @@ und Verifikation. Alle Kommandos gemessen am 2026-09-27 am Stand `62a7b27d`, kei
   ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md) gilt der zweiten Hälfte von (c), nicht dieser Lage).
 - **Folge-Slices:** keiner geschnitten. `slice-151` (`open/`) führt die Eigentumsfrage. Die Wortlaut-Kopplung des emittierten Feldtexts
   (`fieldlist.go` Zeile 94) führt **Frage A** von
-  [slice-109](../next/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md) (*„die Frage je Feld steht zweimal, und die zwei Fassungen driften"*, alle
+  [slice-109](../in-progress/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md) (*„die Frage je Feld steht zweimal, und die zwei Fassungen driften"*, alle
   Felder des Trägers); dessen Plan nennt die `program`-Zeile nicht und wird **nicht** ergänzt — jede Antwort auf Frage A gleicht den Wortlaut je Feld ab,
   und eine hineingeschriebene Instanz wäre eine Zustandsaussage, die mit dem ersten Nachzug veraltet. V-2 (Längengrenze) und V-4 (Spec-Kopie) sind
   Register-Belege und keine Slices: beide hätten **einen** Liefer-Punkt in **einer** Schicht, aber kein Konsument wartet auf sie und keine Adresse

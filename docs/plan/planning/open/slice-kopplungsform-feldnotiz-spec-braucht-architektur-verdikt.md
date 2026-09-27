@@ -52,7 +52,7 @@ für die Umsetzung. **Dieser Slice liefert selbst keine Code- oder
 Spec-Änderung.**
 
 **Herkunft der Frage:** Ursprünglich Teil von
-[slice-109](../next/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md) §1
+[slice-109](../in-progress/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md) §1
 ("Die Frage vor dem Code: wer leitet von wem ab", Frage A/B). slice-109
 bleibt bestehen und liefert die zwei kleinen, von dieser Frage unabhängigen
 Korrekturen (Zutat-Satz, `program`-Notiz); dieser Slice übernimmt **nicht**
