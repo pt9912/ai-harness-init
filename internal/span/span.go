@@ -270,15 +270,23 @@ func filePath(in ToolInput) string {
 //     schlichten, ein Zeilenende zwischen Woertern —, bleibt das Navigations-Segment das
 //     Programm. Hinter einem Navigations-Segment wird so kein Wort eines Kommentars, eines
 //     Here-Doc-Koerpers oder einer Folgezeile zum Programm.
+//   - Hinter einem uebersprungenen Navigations-Segment nennt das Feld nur ein schlichtes Wort
+//     (plainNavigationWord); jedes andere — ein Wort in Anfuehrungszeichen, eine Substitution,
+//     ein maskiertes Leerzeichen, ein Wort mit anhaengendem Operator — laesst program und argc
+//     entfallen.
 //
 // Grenzen: Ein Operator ohne Leerraum (`a&&b`, `a;b`) ist kein eigenes Feld. Ein
-// Navigations-Segment mit einem solchen Wort bleibt das Programm; das Programm-Feld selbst
-// nennt das erste Wort samt anhaengendem Rest (`make;`, `make;ls`), ein Wort in
-// Anfuehrungszeichen als Bruchstueck (`"a b" x` nennt `"a`), und argc zaehlt bis zum
-// naechsten Operator-Feld, Feld auf `;` oder Zeilenende. Hinter einer Zuweisung nennt das
-// Feld das erste Wort, wo es steht, auch auf einer Folgezeile; `$(( ))` und verschachtelte
-// Substitution erkennt die Zerlegung nicht als solche. Bewacht ist die Grenze des
-// Programm-Felds von TestCommandProgramFirstWordKeepsItsGluedRest.
+// Navigations-Segment mit einem solchen Wort bleibt das Programm. Ohne Navigations-Segment
+// nennt das Programm-Feld das erste Wort, wie es dasteht: samt anhaengendem Rest (`make;`,
+// `make&`, `make;ls`, `make\r`), ein Wort in Anfuehrungszeichen als Bruchstueck (`"a b" x`
+// nennt `"a`), ein maskiertes Leerzeichen als Wortende (`my\ tool` nennt `my\`), einen
+// Redirect, einen Here-Doc-Operator oder ein Kommentar-Zeichen als Wort (`>f make` nennt
+// `>f`, `<<EOF cat` nennt `<<EOF`, `# note` nennt `#`). Gebunden sind diese Formen als
+// Ist-Verhalten, nicht als Zusage ueber ein Programm. Hinter einer Zuweisung nennt das Feld
+// das erste Wort, wo es steht, auch auf einer Folgezeile; ein schlichtes Wort hinter einem
+// Navigations-Segment nennt den Namen einer Variable (`$TOOL`), nie ihren Wert. `$(( ))` und
+// verschachtelte Substitution erkennt die Zerlegung nicht als solche. Die Grenze des
+// Programm-Felds bewacht TestCommandProgramFirstWordKeepsItsGluedRest.
 //
 // argc zaehlt die Woerter NACH dem Programm bis zum Ende seines Segments (segmentArgc).
 // Bewacht von TestCommandProgramSkipsAssignments (Zuweisungen, argc),
@@ -288,8 +296,11 @@ func filePath(in ToolInput) string {
 // TestCommandProgramSkipsNavigationSegments (Navigations-Grenze, Wert-Schutz dahinter),
 // TestCommandProgramKeepsNavigationWhenItsEdgeIsUnsure (jedes unschlichte Zeichen und jede
 // Form, in der ein Bruchstueck sonst Programm wuerde),
-// TestCommandProgramKeepsNavigationOnMultilineCommands (mehrzeilige Kommandozeilen)
-// und TestCommandArgcEndsWithItsSegment (argc-Grenze, Zeilenende, Zeilenfortsetzung).
+// TestCommandProgramKeepsNavigationOnMultilineCommands (mehrzeilige Kommandozeilen),
+// TestCommandProgramBehindNavigationIsAPlainWord (das Feld hinter Navigation ist schlicht),
+// TestCommandWordsSplitAtTab (Tab als Wortgrenze), TestCommandBackslashBeforeBlankIsAWord
+// (Backslash vor Leerzeichen) und TestCommandArgcEndsWithItsSegment (argc-Grenze, Zeilenende,
+// Zeilenfortsetzung).
 func commandProgram(cmd string) (string, int, bool) {
 	w := splitWords(cmd)
 	fields := w.fields
@@ -299,6 +310,8 @@ func commandProgram(cmd string) (string, int, bool) {
 	// skipped: die Zeile trug bis hierher mindestens ein Segment ohne Programm
 	// (Zuweisung oder uebersprungenes Navigations-Segment).
 	skipped := false
+	// navigated: unter den uebersprungenen Segmenten war ein Navigations-Segment.
+	navigated := false
 	for i := 0; i < len(fields); i++ {
 		f := fields[i]
 		switch {
@@ -319,11 +332,14 @@ func commandProgram(cmd string) (string, int, bool) {
 			return "", 0, false
 		case skipped && !namesProgram(f):
 			return "", 0, false
+		case navigated && !plainNavigationWord(f):
+			return "", 0, false
 		default:
 			if singleLine {
 				if next, ok := skipNavigation(fields, i); ok {
 					i = next - 1
 					skipped = true
+					navigated = true
 					continue
 				}
 			}
