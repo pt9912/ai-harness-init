@@ -293,7 +293,7 @@ dasteht.
   Implementer und unabhängig vom Reviewer bestätigt).
 - **Die Strenge-Bilanz zeigt eine Senkung an einem der neun aktiven Module** (unwahrscheinlich,
   da beide neuen Prüfungen zusätzlich melden, nicht weniger — aber ungemessen bis L2 läuft).
-  **Ausgang: entfallen** — die MR-063-Gegenmessung (9 von 9 aktiven Modulen) zeigt reine Erweiterung:
+  **Ausgang: entfallen** — die [`MR-063`](../../../../harness/conventions.md#mr-063)-Gegenmessung (9 von 9 aktiven Modulen) zeigt reine Erweiterung:
   byte-identische Befundmengen über beide Digests auf allen drei Stufen (Commit `77bf81f7`,
   bestätigt in der Reviewer-Nachrunde).
 - **Der emittierte Default-Pin läuft dem Dogfood-Pin auseinander** (L1 vergessen an einer der zwei
@@ -335,7 +335,7 @@ der Eintrag bleibt **lokal bis zur Review-Runde**
 
 **Was hat funktioniert:** Der Ein-Schritt-Sprung über drei Releases (statt des eigenen
 Ein-Release-je-Eintrag-Musters) hat den vollen Werkzeug-Zustand in einem Adaptions-Eintrag
-(`MR-073`) gebündelt, ohne dass die zwei ausgelassenen Releases (`v0.77.0` bereits gepinnt,
+([`MR-073`](../../../../harness/conventions.md#mr-073)) gebündelt, ohne dass die zwei ausgelassenen Releases (`v0.77.0` bereits gepinnt,
 `v0.78.0` ohne Gegenstand) an Nachweisqualität verloren. Digest, Fragment-Diff und Kopplungstests
 sind zweifach unabhängig belegt (Implementer und Reviewer), und die zwei betroffenen Sensor-Dateien
 (`slice-mv.md`, `archive-welle.md`) sind auf den real gemessenen Ist-Zustand gezogen, mit
@@ -343,8 +343,8 @@ Vorher/Nachher-Gegenprobe gegen den alten Digest.
 
 **Was ging anders als geplant:** Zwei Nachträge waren nötig, die beide vom Reviewer gefunden wurden,
 nicht vor der Übergabe: (1) Der erste Umsetzungs-Commit trug nur eine Teilmessung der
-MR-063-Strenge-Bilanz (2 von 9 Modulen) statt der vollständigen, wie sie das Vorgänger-Muster
-(`MR-068`) selbst vorgibt — nachgetragen in einer zweiten Implementer-Runde (F-1). (2) Der
+[`MR-063`](../../../../harness/conventions.md#mr-063)-Strenge-Bilanz (2 von 9 Modulen) statt der vollständigen, wie sie das Vorgänger-Muster
+([`MR-068`](../../../../harness/conventions.md#mr-068)) selbst vorgibt — nachgetragen in einer zweiten Implementer-Runde (F-1). (2) Der
 Adaptions-Eintrag behauptete, die Quell-Differenz bewege „nur" zwei Dateien, während ein
 vollständiger `git diff --numstat` eine dritte (`anchors.go`, harmlose Ausnahme) zeigte — vom
 Architect korrigiert, nachdem der Reviewer es in der Nachrunde selbst nachgefahren hatte (F-2).
@@ -359,7 +359,7 @@ Beobachtungs-Register unten).
 
 **Steering-Loop-Eintrag:** **benannte Spec-Lücke, in drei Teilen — jeweils unterhalb der Schwelle,
 kein neuer Zielort aus diesem Slice.**
-1. Kein Wächter hält eine Werkzeug-Nachweispflicht (hier: MR-063-Vollständigkeit) vor dem Commit
+1. Kein Wächter hält eine Werkzeug-Nachweispflicht (hier: [`MR-063`](../../../../harness/conventions.md#mr-063)-Vollständigkeit) vor dem Commit
    gegen das etablierte Vorgänger-Muster — Beobachtung
    `BEO-ALL/strenge-bilanz-eines-pin-sprungs-fehlt-im-umsetzungs-commit` (neu, 1×, offen).
 2. Kein Wächter hält eine als abschließend formulierte Datei-Mengen-Aussage gegen den vollständigen
