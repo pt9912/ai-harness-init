@@ -13,9 +13,9 @@ ein Schnitt; kein zweiter Slice wartet auf ihn. **(2) Gemeinsames Closure-Kriter
 denkbare wäre die Abschrift seiner eigenen DoD. **(3) Auslöser reaktiv oder gewollt?** Reaktiv:
 zwei gemessen unrichtige Zutaten (§1). Kein Fähigkeits-Sprung — der
 Adopter bekommt dasselbe Dokument an derselben Stelle. **Auch nicht in
-[welle-12](../done/welle-12-erfassungsschicht-emittieren.md):** deren Zeilen *„Redaktion"* und
+[welle-12](welle-12-erfassungsschicht-emittieren.md):** deren Zeilen *„Redaktion"* und
 *„Benannte Grenze"* sind mit
-[slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md) geliefert und bleiben
+[slice-098](slice-098-feldliste-ist-ausdruck-des-traegers.md) geliefert und bleiben
 es — dieser Slice ändert den **Wortlaut** zweier Aussagen, nicht die Frage, ob das Kriterium
 erfüllt ist. Nach
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
@@ -98,7 +98,7 @@ führt die **Zutat** zurück, nicht den Satz.
 
 `SchemaNotes()` sagt zum Feld `program`: *„das erste Token der Kommandozeile, nie die Zeile"*
 (`grep -n '{Field: "program"' internal/span/fieldlist.go`). Das ist seit
-[slice-204](../done/slice-204-das-programm-feld-nennt-das-programm.md) nachweislich falsch: `cd
+[slice-204](slice-204-das-programm-feld-nennt-das-programm.md) nachweislich falsch: `cd
 /x && make gates` liefert `program="make"`, nicht das erste Token der ganzen Kommandozeile. Die
 Closure-Notiz von slice-204 §7 weist genau diese Instanz ausdrücklich diesem Slice zu, **ohne** den
 Trägertext selbst zu ändern — Begründung dort: Jede Antwort auf die (jetzt ausgelagerte) Frage
@@ -233,7 +233,7 @@ Spec-Lücke).
   **Wiederablage des Trägers** (*„sobald ein erneuter Lauf des Werkzeugs das Programm wieder
   ablegt"*) und liegt im Vertrag von
   [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 1/5,
-  also bei [slice-096](../done/slice-096-traeger-liegt-im-ziel.md). Wer an diesen Sätzen arbeitet,
+  also bei [slice-096](slice-096-traeger-liegt-im-ziel.md). Wer an diesen Sätzen arbeitet,
   zieht sie **nicht** zusammen: der eine ist eine Zusage über eine Datei, der andere eine Bedingung
   über ein Programm. — **Ausgang (Closure, Planner):** **entfallen**, bestätigt. Verifier-Beleg:
   `grep -c 'erneuter Lauf' harness/erfassung-feldliste.md` → **2**, beide Sätze vom Diff dieses
@@ -295,7 +295,8 @@ keine Erwartungswerte
   Feldliste überhaupt im richtigen Doku-Bereich liegt, real gebaut und emittiert werden kann, real
   eine Feld-Zeile trägt und die drei unveränderten Satzköpfe stehen — ist bereits real geprüft:
   Reviewer UND Verifier haben je unabhängig `make host-bin` in einer eigenen Scratch-Kopie gebaut
-  und `harness/erfassung-feldliste.md` real emittiert und gegrept (deckungsgleiches Ergebnis,
+  und `$p/harness/erfassung-feldliste.md` (im emittierten Ziel) real emittiert und gegrept
+  (deckungsgleiches Ergebnis,
   `grep -c 'Arbeitsverzeichnis lesen kann'` → 0, `grep -c 'nicht zugriffsbeschränkt'` → 1). Ein
   `make full-smoke`-Lauf böte für die zwei geänderten Stellen **keine zusätzliche Prüftiefe** — er
   kostet mehrere Minuten (zwei Bootstrap-Varianten, komplettes Zielrepo) für eine Wiederholung
@@ -318,7 +319,8 @@ keine Erwartungswerte
 - **Beobachtungs-Register (`../observations/`):** zwei neue Verzeichnisse, je mit einer
   `evidence/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md`:
   [`BEO-ALL/geschwister-mutations-faelle-teilen-einen-anker`](../observations/BEO-ALL/geschwister-mutations-faelle-teilen-einen-anker/observation.md)
-  (1×; MR-071-Fragilität, s. u.) und
+  (1×; [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)-Fragilität,
+  s. u.) und
   [`BEO-ALL/terse-feld-notiz-kann-hinter-ihrer-regel-zurueckbleiben`](../observations/BEO-ALL/terse-feld-notiz-kann-hinter-ihrer-regel-zurueckbleiben/observation.md)
   (1×; §6-Risiko 3). Vorher gesichtet: keine passende bestehende Beobachtung für beide Klassen
   (durchsucht: `mutations-fall-wird-von-berechtigter-aenderung-entwaffnet` — beschreibt einen
@@ -343,30 +345,39 @@ keine Erwartungswerte
   ohne Rot — **entfallen** (Negativ-Kette geliefert, geprüft); (2) zwei Sätze, zwei Verträge —
   **entfallen**, bestätigt (Grenze eingehalten); (3) terse Korrektur kann zu kurz greifen —
   **weiter offen → Register** (neue Beobachtung, 1×).
-- **MR-071-Frage (Auftrag, Punkt 4):** Fälle 489/490 teilen einen überlappenden Anker-Teilstring.
+- **[`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)-Frage
+  (Auftrag, Punkt 4):** Fälle 489/490 teilen einen überlappenden Anker-Teilstring.
   Geprüft gegen den Wortlaut von
   [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand):
   Die Regel bindet den Anker **je Fall** gegen den Quell-Bestand („der `sed`-Anker je Fall gegen den
   Quell-Bestand" — Feld *Geltungsbereich*), nicht die Anker zweier Geschwister-Fälle gegeneinander;
   ein Passus, der Nicht-Überlappung zwischen Geschwister-Fällen verlangt, steht dort nicht. Beide
   Fälle sind für sich genommen gegen den heutigen Quell-Bestand eindeutig (`grep -c` = 1, vom
-  Verifier gemessen). **Urteil (Planner): kein Verstoß gegen MR-071** — der Wortlaut ist an dieser
+  Verifier gemessen). **Urteil (Planner): kein Verstoß gegen
+  [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)**
+  — der Wortlaut ist an dieser
   Stelle eindeutig, keine Architect-Frage. Die vom Verifier benannte Fragilität (eine künftige
   Wortlaut-Änderung entwaffnet typischerweise beide Fälle gleichzeitig) ist real und wird **nicht**
   als Norm-Frage, sondern als Beobachtung geführt:
   [`BEO-ALL/geschwister-mutations-faelle-teilen-einen-anker`](../observations/BEO-ALL/geschwister-mutations-faelle-teilen-einen-anker/observation.md).
   Eine engere Auslegung (nicht-überlappende Anker je Geschwister-Fall) wird damit bewusst **nicht**
-  gesetzt — das wäre eine Verschärfung von MR-071 und bräuchte, träfe sie ein drittes Mal, einen
+  gesetzt — das wäre eine Verschärfung von
+  [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)
+  und bräuchte, träfe sie ein drittes Mal, einen
   eigenen Vorgang, nicht diese Closure.
 - **Adressen vor dem Move ([`AGENTS.md`](../../../../AGENTS.md) §3.11):** über beide Adress-Formen
   gemessen — ein `grep` auf den Pfad zwischen Backtick-Zeichen für die Code-Span-Form, ein `grep`
   auf den Pfad hinter `](` für die Markdown-Link-Form, je gegen `docs/reviews/`, `docs/plan/adr/`,
   `.harness/baseline/`. Vier Treffer, drei bereits gedeckt: ein Code-Span in
   `docs/reviews/2026-09-27-verify-slice-109-feldliste-jede-aussage-hat-ihre-quelle.md:195` (Zitat
-  des historischen Wortlauts, per ADR-0070 in `docs/reviews/**` bewusst nicht ersetzt — Pfad im
+  des historischen Wortlauts, per
+  [ADR-0070](../../adr/0070-der-verweis-nachzug-schreibt-in-docs-reviews-nur-die-link-form.md) in
+  `docs/reviews/**` bewusst nicht ersetzt — Pfad im
   Code-Span bleibt dort Byte für Byte); ein Markdown-Link in
   `docs/reviews/2026-09-27-verdikt-kopplungsform-feldnotiz-spec.md:18` (Link-Form, wird vom
-  `slice-mv`-Nachzug automatisch ersetzt, ADR-0070). **Der vierte Fund ist der entscheidungspflichtige:**
+  `slice-mv`-Nachzug automatisch ersetzt,
+  [ADR-0070](../../adr/0070-der-verweis-nachzug-schreibt-in-docs-reviews-nur-die-link-form.md)).
+  **Der vierte Fund ist der entscheidungspflichtige:**
   zwei Markdown-Links in der **`Proposed`**-ADR
   [`0071`](../../adr/0071-kopplung-feldliste-spec-ist-existenz-abgleich.md) (Zeilen 49 und 132), die
   auf den `in-progress/`-Pfad zeigen. `docs/plan/adr/**` ist von der mechanischen
@@ -376,10 +387,47 @@ keine Erwartungswerte
   („Ein Träger, der `docs/plan/adr/` als Pfad ausschneidet, überspringt auch die `Proposed`-ADRs,
   die lebend sind und nachgezogen gehörten … Entsteht sie, zieht der bewegende Lauf die betroffene
   `Proposed`-ADR **von Hand** nach und hält das in seinem Beleg fest") — **Entscheidung vor dem
-  Move:** der Planner zieht die zwei Links in ADR-0071 nach dem `git mv` **von Hand** als eigener,
-  isolierter Commit nach (reine Adress-Ersetzung, kein Inhalt), wie ADR-0042 es vorschreibt.
-- **Der Move, gemessen:** wird nach dem Move ergänzt.
-- **Drei Paarungen:** werden nach dem Move geprüft und ergänzt.
+  Move:** der Planner zieht die zwei Links in
+  [ADR-0071](../../adr/0071-kopplung-feldliste-spec-ist-existenz-abgleich.md) nach dem `git mv`
+  **von Hand** als eigener, isolierter Commit nach (reine Adress-Ersetzung, kein Inhalt), wie
+  [ADR-0042](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) es vorschreibt.
+- **Der Move, gemessen:** `make slice-mv SLICE=slice-109-feldliste-jede-aussage-hat-ihre-quelle TO=done`
+  — zwei Commits: `4e0915c2` (reiner Move, `in-progress/` → `done/`, 0 Insertionen/Deletionen) und
+  `4e034b84` (Inhalt, getrennt vom Move — `AGENTS.md` §3.3), der 6 eingehende Präfix-Verweise in
+  6 Dateien nachzog (`git show --stat 4e034b84`): `done/slice-098-feldliste-ist-ausdruck-des-traegers.md`,
+  `done/slice-204-das-programm-feld-nennt-das-programm.md`,
+  `open/slice-program-feld-nennt-weder-operator-noch-wertfragment.md`,
+  `done/welle-12-results.md`,
+  `open/slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt.md` und, per
+  [ADR-0070](../../adr/0070-der-verweis-nachzug-schreibt-in-docs-reviews-nur-die-link-form.md) in
+  Link-Form, `docs/reviews/2026-09-27-verdikt-kopplungsform-feldnotiz-spec.md`. 0 ausgehende
+  Umhängungen (der Slice trägt kein präfixloses Geschwister-Ziel), 0 präfixlos aus `in-progress/`.
+  Ein dritter, isolierter Commit (`bbe04747`) zog danach die zwei Markdown-Links in der
+  `Proposed`-[ADR-0071](../../adr/0071-kopplung-feldliste-spec-ist-existenz-abgleich.md) von Hand
+  nach (§3.11-Entscheidung oben,
+  [ADR-0042](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 2) — reine
+  Adress-Ersetzung, `git diff` zeigt ausschließlich `in-progress` → `done` in den zwei Link-Zielen.
+- **Drei Paarungen (nach dem Move geprüft):**
+  - **(a) Anker-Paarung:** dieses §7 trägt kein `liegt in <Zielort>`-Feld — kein Norm-Artefakt
+    entsteht aus diesem Slice (s. o., Steering-Loop-Eintrag als benannte Register-Beobachtung, kein
+    Zielort). **Nichts zu paaren.**
+  - **(b) Folge-Slice-Paarung:** §7 nennt keinen Folge-Slice (s. o.). **Nichts zu paaren.**
+  - **(c) Register-Paarung, beide Hälften:** *Erste Hälfte* — jede in dieser Closure-Notiz oder
+    einem Risiko-Ausgang genannte Beobachtung existiert als Verzeichnis: geprüft für
+    `BEO-ALL/geschwister-mutations-faelle-teilen-einen-anker`,
+    `BEO-ALL/terse-feld-notiz-kann-hinter-ihrer-regel-zurueckbleiben` (beide neu, mit Beleg),
+    `BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet` und
+    `BEO-ALL/spec-zeile-enger-als-der-code-den-sie-beschreibt` (beide als *nicht passend* geprüfte
+    Nachbarn, kein Beleg dieser Closure) — alle vier existieren. **Getragen.** *Zweite Hälfte* —
+    jedes Verzeichnis im Register trägt ein nicht leeres `evidence/`:
+    `for d in docs/plan/planning/observations/BEO-ALL/*/; do n=$(ls "$d"evidence/*.md 2>/dev/null | wc -l); [ "$n" -eq 0 ] && echo "$d"; done`
+    → unverändert **4** Verzeichnisse ohne Beleg, namentlich
+    `ci-rennt-gegen-die-publikation-des-gepinnten-releases`,
+    `cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+    `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`,
+    `planungs-bestand-waechst-schneller-als-er-abgebaut-wird` — Befund der Paarung
+    ([ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+    Festlegung 2), **nicht als getragen behauptet.** Keines der vier stammt aus dieser Closure.
 
 ## 8. Sub-Area-Modus-Begründung
 
