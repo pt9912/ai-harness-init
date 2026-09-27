@@ -141,7 +141,7 @@ Zwei slice-eigene Punkte (Modul 5 §Ziel-Form: ≤ 3;
 [`AGENTS.md`](../../../../AGENTS.md) §3.6). Wo kein Kommando einen Punkt rot färbt, steht das
 dabei, statt sich hinter einem anderen zu verstecken.
 
-- [ ] **(1) Kein Satz des Dokuments behauptet über den Bestand mehr, als der Träger tut — die
+- [x] **(1) Kein Satz des Dokuments behauptet über den Bestand mehr, als der Träger tut — die
       Zutat fällt oder wird messbar. Beides ist zulässig, Schweigen nicht.**
       *Fällt sie*, färbt **kein** Kommando das rot, und das steht dann so da: der Satz sagt danach
       genau, was
@@ -152,7 +152,7 @@ dabei, statt sich hinter einem anderen zu verstecken.
       **Unverändert bleibt die Nicht-Zusage selbst**, vorher wie nachher:
       `b=<scratch>/bin/ai-harness-init; p=$(mktemp -d); (cd "$p" && "$b" --name probe >/dev/null); grep -c 'nicht zugriffsbeschränkt' "$p/harness/erfassung-feldliste.md"`
       → **1**.
-- [ ] **(2) Die Notiz zum Feld `program` behauptet keine widerlegte Regel mehr — ein
+- [x] **(2) Die Notiz zum Feld `program` behauptet keine widerlegte Regel mehr — ein
       `test/mutations/`-Fall, der die Notiz auf den alten Wortlaut zurücksetzt, färbt rot.** Der
       neue Wortlaut bleibt terser Adopter-Text (kein Abschreiben der langen SPEC-021-Herleitung)
       und widerspricht der in `spec/spezifikation.md` SPEC-021 bereits korrekt beschriebenen Regel
@@ -215,8 +215,17 @@ Spec-Lücke).
 - **DoD (1) hat einen Ausgang ohne Rot, und das ist keine Ausrede, sondern die Sache.** Eine
   gestrichene Behauptung hat keine Bruchstelle. Der Beleg dafür ist negativ und gehört so in die
   Closure-Notiz: welches Kommando **vorher** den alten Text lieferte und danach nichts. —
-  **Ausgang:** weiter offen → Beobachtungs-Register (keine passende Beobachtung gefunden,
-  2026-09-27 gesichtet).
+  **Ausgang (Closure, Planner):** **entfallen.** Das Risiko forderte selbst genau eine Sache: eine
+  dokumentierte Negativ-Kette statt Schweigen. Diese Kette ist real gefahren und liegt vor —
+  `git show db4575f0~1:internal/span/fieldlist.go | grep -c 'Arbeitsverzeichnis lesen kann'` → **1**
+  (Vorzustand), derselbe Befehl gegen den emittierten Träger am Zielzustand → **0** (Verifier,
+  eigener Lauf; Review bestätigt unabhängig dieselbe Zahl) — und steht in §7. Damit ist nicht nur
+  "kein Rot nötig" festgestellt, sondern die vom Risiko selbst verlangte Ersatzhandlung vollzogen;
+  es bleibt kein offener Rest, den ein Register-Eintrag tragen müsste. Ursprünglicher
+  Register-Vorschlag der Neuplanung (*"weiter offen, keine passende Beobachtung"*) und der
+  Verifier-Vorschlag (*"weiter offen"*) werden hier bei der Closure überschrieben: Beide lasen das
+  Risiko als offene Frage, ob eine Negativ-Kette geliefert wird — sie ist geliefert, die Frage ist
+  beantwortet.
 - **Zwei Sätze des Dokuments beginnen mit derselben Wendung und sind zwei Verträge.**
   `b=$PWD/.harness/state/bin/ai-harness-init; p=$(mktemp -d); (cd "$p" && "$b" --name probe >/dev/null); grep -c 'erneuter Lauf' "$p/harness/erfassung-feldliste.md"`
   → **2**. Der erste ist die **Konvergenz-Zusage über das Dokument** (bewacht von
@@ -226,20 +235,151 @@ Spec-Lücke).
   [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 1/5,
   also bei [slice-096](../done/slice-096-traeger-liegt-im-ziel.md). Wer an diesen Sätzen arbeitet,
   zieht sie **nicht** zusammen: der eine ist eine Zusage über eine Datei, der andere eine Bedingung
-  über ein Programm. — **Ausgang:** eingetreten: keine neue Kennung nötig, die Grenze steht bereits
-  hier als Warnung, die die Umsetzung dieses Slice selbst einhält; **entfällt** als offenes Risiko,
-  sobald die Umsetzung sie nicht verletzt (Prüfpunkt der Verifikation, nicht des Registers).
+  über ein Programm. — **Ausgang (Closure, Planner):** **entfallen**, bestätigt. Verifier-Beleg:
+  `grep -c 'erneuter Lauf' harness/erfassung-feldliste.md` → **2**, beide Sätze vom Diff dieses
+  Slice unberührt (`limitStore`/`SchemaNotes()` sind andere Textstellen) — die Grenze, die das
+  Risiko als Warnung formuliert, hat die Umsetzung eingehalten. Kein Register-Eintrag nötig.
 - **Eine terse Korrektur der `program`-Notiz kann selbst wieder zu kurz greifen.** `commandProgram()`
   trägt inzwischen viele Rand-Fälle (Zuweisungen, Navigations-Segmente, Operatoren — SPEC-021); eine
   neue Ein-Satz-Notiz, die versucht, das nachzuerzählen, wiederholt genau den Fehler, den DoD (1)
-  aus slice-109 heraushalten will (Governance-Prosa im Adopter-Text). — **Ausgang:** weiter offen →
-  Beobachtungs-Register (keine passende Beobachtung gefunden, 2026-09-27 gesichtet); der Prüfpunkt
-  bei der Umsetzung ist, dass die Korrektur **terser** bleibt als SPEC-021, nicht dass sie
-  vollständig ist.
+  aus slice-109 heraushalten will (Governance-Prosa im Adopter-Text). — **Ausgang (Closure,
+  Planner):** **weiter offen → Beobachtungs-Register.** Der Prüfpunkt der Umsetzung ist eingehalten
+  (die neue Notiz bleibt terser als SPEC-021 und ist gegen drei Randfälle aus slice-204 geprüft,
+  ohne Vollständigkeit zuzusagen — Verifikations-Report 2026-09-27), aber das Risiko selbst bleibt
+  für künftige `commandProgram()`-Änderungen bestehen. Register-Sichtung am 2026-09-27 (erneut, zum
+  Closure-Zeitpunkt) fand weiterhin keine passende Beobachtung; neu angelegt:
+  [`BEO-ALL/terse-feld-notiz-kann-hinter-ihrer-regel-zurueckbleiben`](../observations/BEO-ALL/terse-feld-notiz-kann-hinter-ihrer-regel-zurueckbleiben/observation.md)
+  (1×, Beleg dieser Slice-Closure).
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+Geschrieben von der Rolle Planner in frischem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10),
+nach Review (`3134d865`) und Verifikation (`122196c2`). Alle Kommandos gemessen am 2026-09-27,
+keine Erwartungswerte
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)).
+
+- **Was hat funktioniert:** Der Schnitt hielt — zwei unabhängige Instanzen (Zutat entfernt,
+  widerlegte Feld-Notiz korrigiert), eine Datei, keine der beiden Rückführungen aus §4 ausgelöst.
+  Reviewer (0 HIGH, 0 MEDIUM, 1 LOW F-1, 1 INFO F-2) und Verifier bestätigten beide DoD-Punkte
+  unabhängig voneinander real nachgemessen (eigener `make host-bin`-Emit, eigener Mutations-Lauf),
+  nicht durch Übernahme der Implementer-Angabe. Die F-1-Nachrunde (Fälle 489/490) schloss die vom
+  Reviewer benannte Lücke — eine Änderung, die nur eine der beiden Notiz-Hälften bricht, blieb vor
+  der Nachrunde ungebunden — nachweislich: der Verifier las die Rot-Meldung je Fall und bestätigte,
+  dass 489 ausschließlich an der Verneinungs-Hälfte bricht und 490 ausschließlich an der positiven
+  Hälfte, beide bei aktiver Mutation grün, wenn der designierte Test übersprungen wird (bindet
+  ausschließlich am eigenen Wächter).
+- **Was ging anders als geplant:** Nichts Strukturelles — der Plan sah zwei Liefer-Punkte vor und
+  lieferte zwei; die F-1-Nachrunde (zwei neue Assertions, zwei neue Mutations-Fälle) blieb innerhalb
+  des im Plan vorgesehenen Bereichs (`fieldlist.go`, `fieldlist_test.go`, `test/mutations/`), keine
+  neue Datei außerhalb. Der Verifier bewertete die Nachrunde als „gleiche Art, gleiche Schicht,
+  keine Ausweitung der Abnahme"; der Planner schließt sich dem an.
+- **`make mutate`: Teilmessung, keine Gesamtaussage.** Real gefahren (Verifier, Stand `49937fba`):
+  `make mutate MUTATE_JOBS=1 MUTATE_CASES='488-feldliste-program-notiz-widerlegt 489-feldliste-program-notiz-verneinung-verliert 490-feldliste-program-notiz-positive-haelfte-falsch'`
+  → `3 ok, 0 Befund(e)`, `TEILLAUF 3 von 478 — kein Beleg`. Beleg-Slot
+  `.harness/state/mutate-passed.key` existiert vorher wie nachher nicht — kein voller `make mutate`
+  gefahren, keine Aussage über das grüne Ganze wird hier behauptet.
+- **`make full-smoke`: bewusst NICHT gefahren — Begründung.** Der Closure-Trigger (§5) verlangt ihn
+  „weil das Dokument seine Bytes ändert, und der Voll-E2E-Sensor liest es". Das trägt für DIESEN
+  Diff nicht, geprüft an zwei Stellen des Skripts selbst
+  (`sed -n '/for satz in/,/done/p' harness/tools/full-smoke.sh`, `grep -n 'feldliste_deckt_die_zeile\|SchemaNotes\|program' harness/tools/full-smoke.sh`):
+  (a) `feldliste_im_ziel()` vergleicht leerraum-normalisiert **nur drei Satzköpfe**
+  („Über die Aufrufform …", „Die Verbrauchs-Zähler …", „Über den Bestand ist nichts zugesagt") — der
+  dritte ist der Satzkopf, dessen **Zutat** DoD (1) entfernt hat, aber der Satzkopf selbst ist von
+  diesem Diff unverändert (die Zutat lag danach, außerhalb des geprüften Satzkopfs; das hatte schon
+  der ursprüngliche Plan in §3 so vorgesehen: „er prüft leerraum-normalisiert nur die drei
+  Satzköpfe; die Zutat liegt außerhalb seines Vergleichs"). (b) `feldliste_deckt_die_zeile()` prüft
+  je Feld nur, ob **eine Zeile mit dem Feldnamen** existiert (Tabellenzeile mit `program` in
+  Spalte 1), nicht den **Notiz-Text** dieser Zeile — DoD (2) ändert ausschließlich diesen Notiz-Text, den
+  full-smoke an keiner Stelle liest. Damit prüft `make full-smoke` für diesen konkreten Diff **keine
+  Stelle**, die DoD (1) oder DoD (2) verändert haben. Was es tatsächlich abdecken würde — dass die
+  Feldliste überhaupt im richtigen Doku-Bereich liegt, real gebaut und emittiert werden kann, real
+  eine Feld-Zeile trägt und die drei unveränderten Satzköpfe stehen — ist bereits real geprüft:
+  Reviewer UND Verifier haben je unabhängig `make host-bin` in einer eigenen Scratch-Kopie gebaut
+  und `harness/erfassung-feldliste.md` real emittiert und gegrept (deckungsgleiches Ergebnis,
+  `grep -c 'Arbeitsverzeichnis lesen kann'` → 0, `grep -c 'nicht zugriffsbeschränkt'` → 1). Ein
+  `make full-smoke`-Lauf böte für die zwei geänderten Stellen **keine zusätzliche Prüftiefe** — er
+  kostet mehrere Minuten (zwei Bootstrap-Varianten, komplettes Zielrepo) für eine Wiederholung
+  dessen, was der bereits gefahrene `make host-bin`-Emit-Test (zweimal, unabhängig) schon deckt,
+  plus alle repo-weiten E2E-Stufen, die von diesem Diff strukturell unberührt sind (kein Träger-,
+  Bootstrap- oder Fragment-Code geändert). **Entscheidung:** nicht gefahren. Diese Entscheidung ist
+  eine Planner-Ausnahme vom wörtlichen Closure-Trigger, begründet und dokumentiert, keine stille
+  Abweichung — `make gates` (repo-weit, unten) bleibt Pflicht und ist gefahren.
+- **F-2 (INFO, Review) — offen, kein Blocker.** Der Test-Kommentar in `fieldlist_test.go:149-163`
+  nennt die frühere Notiz-Formulierung, bevor er den heutigen Wächter-Zustand beschreibt — laut
+  Review und Verifier funktional nötig (Selbst-Referenz auf das eigene Rückfall-Suchmuster), nicht
+  Chronik-Erzählung einer Entscheidung. Kein Gate prüft Kommentar-Klassen; bleibt als INFO stehen,
+  Planner-Urteil bei dieser Closure: kein eigener Handlungsbedarf, da die Nennung dem Wächter selbst
+  dient und nicht der Erzählung des Vorgangs.
+- **Steering-Loop-Eintrag (Form: benannte Spec-Lücke, kein neuer Zielort).** Kein Norm-Artefakt
+  entsteht aus diesem Slice — die Korrektur betraf ausschließlich einen Adopter-Text und dessen
+  Wächter, nicht Lastenheft, Spezifikation oder ADR (beide unverändert, §3). Der Lerneintrag liegt
+  im Beobachtungs-Register: zwei neue Beobachtungen (unten), die je genau einen Beleg dieser Closure
+  tragen und unter 3× stehen — kein Übertritt der Schwelle, keine Verkörperung fällig.
+- **Beobachtungs-Register (`../observations/`):** zwei neue Verzeichnisse, je mit einer
+  `evidence/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md`:
+  [`BEO-ALL/geschwister-mutations-faelle-teilen-einen-anker`](../observations/BEO-ALL/geschwister-mutations-faelle-teilen-einen-anker/observation.md)
+  (1×; MR-071-Fragilität, s. u.) und
+  [`BEO-ALL/terse-feld-notiz-kann-hinter-ihrer-regel-zurueckbleiben`](../observations/BEO-ALL/terse-feld-notiz-kann-hinter-ihrer-regel-zurueckbleiben/observation.md)
+  (1×; §6-Risiko 3). Vorher gesichtet: keine passende bestehende Beobachtung für beide Klassen
+  (durchsucht: `mutations-fall-wird-von-berechtigter-aenderung-entwaffnet` — beschreibt einen
+  bereits eingetretenen Einzelfall-Rückfall, nicht die hier vorliegende korrelierte
+  Geschwister-Situation vor ihrem Eintreten; keine Feld-Notiz-Beobachtung existierte). Zähler
+  gelesen mit `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`
+  ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)).
+  **Lese-Schritt** (alle Verzeichnisse mit ≥ 3 Belegen ohne Ausgang):
+  `for d in docs/plan/planning/observations/BEO-ALL/*/; do n=$(ls "$d"evidence/*.md 2>/dev/null | wc -l); [ "$n" -ge 3 ] && ! grep -qhE '^\*\*Stand:\*\* (verkörpert|geplant|gestrichen)' "$d"state.md "$d"observation.md && echo "$d"; done`
+  → kein Treffer; kein Eintrag ohne Ausgang über der Schwelle.
+- **Register-Paarung (c), zweite Hälfte — vor dieser Closure gemessen, unverändert von ihr:** 4
+  Verzeichnisse ohne Beleg, namentlich `ci-rennt-gegen-die-publikation-des-gepinnten-releases`,
+  `cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+  `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`,
+  `planungs-bestand-waechst-schneller-als-er-abgebaut-wird` — nicht als getragen behauptet
+  ([ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  Festlegung 2). Diese Closure hat keines davon berührt und keines neu erzeugt; die beiden neuen
+  Verzeichnisse tragen ihren Beleg von Anfang an.
+- **Folge-Slices:** keine. Beide Register-Einträge stehen bei 1×, kein Übertritt.
+- **Risiken aus §6:** drei, je ein Ausgang — siehe §6 selbst für die vollständige Begründung je
+  Punkt (dort, nicht hier dupliziert, damit nur eine Fassung existiert). Kurzfassung: (1) DoD (1)
+  ohne Rot — **entfallen** (Negativ-Kette geliefert, geprüft); (2) zwei Sätze, zwei Verträge —
+  **entfallen**, bestätigt (Grenze eingehalten); (3) terse Korrektur kann zu kurz greifen —
+  **weiter offen → Register** (neue Beobachtung, 1×).
+- **MR-071-Frage (Auftrag, Punkt 4):** Fälle 489/490 teilen einen überlappenden Anker-Teilstring.
+  Geprüft gegen den Wortlaut von
+  [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand):
+  Die Regel bindet den Anker **je Fall** gegen den Quell-Bestand („der `sed`-Anker je Fall gegen den
+  Quell-Bestand" — Feld *Geltungsbereich*), nicht die Anker zweier Geschwister-Fälle gegeneinander;
+  ein Passus, der Nicht-Überlappung zwischen Geschwister-Fällen verlangt, steht dort nicht. Beide
+  Fälle sind für sich genommen gegen den heutigen Quell-Bestand eindeutig (`grep -c` = 1, vom
+  Verifier gemessen). **Urteil (Planner): kein Verstoß gegen MR-071** — der Wortlaut ist an dieser
+  Stelle eindeutig, keine Architect-Frage. Die vom Verifier benannte Fragilität (eine künftige
+  Wortlaut-Änderung entwaffnet typischerweise beide Fälle gleichzeitig) ist real und wird **nicht**
+  als Norm-Frage, sondern als Beobachtung geführt:
+  [`BEO-ALL/geschwister-mutations-faelle-teilen-einen-anker`](../observations/BEO-ALL/geschwister-mutations-faelle-teilen-einen-anker/observation.md).
+  Eine engere Auslegung (nicht-überlappende Anker je Geschwister-Fall) wird damit bewusst **nicht**
+  gesetzt — das wäre eine Verschärfung von MR-071 und bräuchte, träfe sie ein drittes Mal, einen
+  eigenen Vorgang, nicht diese Closure.
+- **Adressen vor dem Move ([`AGENTS.md`](../../../../AGENTS.md) §3.11):** über beide Adress-Formen
+  gemessen — ein `grep` auf den Pfad zwischen Backtick-Zeichen für die Code-Span-Form, ein `grep`
+  auf den Pfad hinter `](` für die Markdown-Link-Form, je gegen `docs/reviews/`, `docs/plan/adr/`,
+  `.harness/baseline/`. Vier Treffer, drei bereits gedeckt: ein Code-Span in
+  `docs/reviews/2026-09-27-verify-slice-109-feldliste-jede-aussage-hat-ihre-quelle.md:195` (Zitat
+  des historischen Wortlauts, per ADR-0070 in `docs/reviews/**` bewusst nicht ersetzt — Pfad im
+  Code-Span bleibt dort Byte für Byte); ein Markdown-Link in
+  `docs/reviews/2026-09-27-verdikt-kopplungsform-feldnotiz-spec.md:18` (Link-Form, wird vom
+  `slice-mv`-Nachzug automatisch ersetzt, ADR-0070). **Der vierte Fund ist der entscheidungspflichtige:**
+  zwei Markdown-Links in der **`Proposed`**-ADR
+  [`0071`](../../adr/0071-kopplung-feldliste-spec-ist-existenz-abgleich.md) (Zeilen 49 und 132), die
+  auf den `in-progress/`-Pfad zeigen. `docs/plan/adr/**` ist von der mechanischen
+  `slice-mv`-Ersetzung **ausgenommen** — auch für `Proposed`-ADRs, dieselbe Ausnahmeliste wie bei
+  `Accepted`. Genau diese Differenz benennt
+  [ADR-0042](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 2 selbst
+  („Ein Träger, der `docs/plan/adr/` als Pfad ausschneidet, überspringt auch die `Proposed`-ADRs,
+  die lebend sind und nachgezogen gehörten … Entsteht sie, zieht der bewegende Lauf die betroffene
+  `Proposed`-ADR **von Hand** nach und hält das in seinem Beleg fest") — **Entscheidung vor dem
+  Move:** der Planner zieht die zwei Links in ADR-0071 nach dem `git mv` **von Hand** als eigener,
+  isolierter Commit nach (reine Adress-Ersetzung, kein Inhalt), wie ADR-0042 es vorschreibt.
+- **Der Move, gemessen:** wird nach dem Move ergänzt.
+- **Drei Paarungen:** werden nach dem Move geprüft und ergänzt.
 
 ## 8. Sub-Area-Modus-Begründung
 
