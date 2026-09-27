@@ -159,12 +159,17 @@
   `spans`, `planning`, `targets`, `structure` — `grep -m1 '^modules:' .d-check.yml`) eine Basis.
   **Schluss: keine Senkung** an einem der neun aktiven Module.
 
-  **Quell-Differenz bestätigt den Schluss.** An den neun aktiven Modulen bewegt sich zwischen
-  `v0.77.0` und `v0.79.0` nur `markdown.go` (die geteilte Link-Extraktion — Lookahead und
-  Referenz-Definitions-Fund, der Gegenstand dieses Sprungs) und `structure.go` (+27, der neue
-  opt-in-Schlüssel `max-lines`, den unser `structure:`-Block nicht setzt); `file.go`/
-  `file_test.go`/`run.go` gehören zum inaktiven Modul `file`, `pins.go`/`sources.go` sind keines
-  unserer neun.
+  **Quell-Differenz bestätigt den Schluss — mit einer Ergänzung gegenüber Commit `21afa8ba`.**
+  An den neun aktiven Modulen bewegt sich zwischen `v0.77.0` und `v0.79.0` `markdown.go` (die
+  geteilte Link-Extraktion — Lookahead und Referenz-Definitions-Fund, der Gegenstand dieses
+  Sprungs), `structure.go` (+27, der neue opt-in-Schlüssel `max-lines`, den unser
+  `structure:`-Block nicht setzt) und `anchors.go` (+3/-0: ein Skip für Referenz-Definitionen —
+  dieselbe in §1 des Slice-Plans bereits benannte Ausnahme, dass `anchors` Referenz-Definitionen
+  nicht behandelt, keine neue Prüfung); `file.go`/`file_test.go`/`run.go` gehören zum inaktiven
+  Modul `file`, `pins.go`/`sources.go` sind keines unserer neun. Die Ergänzung ist inhaltlich
+  harmlos und von der Strenge-Bilanz oben unberührt: Die `anchors`-Sonde deckt `anchor-missing`
+  auf einem Inline-Link, nicht auf einer Referenz-Definition, und der Skip betrifft nur
+  Definitionen — der gemessene Gleichstand bleibt unangetastet.
 - **Emitter-Pin gekoppelt.** `TestDefaultImage_MatchesCanonical` und
   `TestDefaultDigest_MatchesCanonical` lesen `d-check.mk`; die Rot-Bedingung ist zweimal gefahren
   — vom Implementer (`12f30003`, Pin nur in `d-check.mk` bewegt → `make test` Exit 2 mit beiden
