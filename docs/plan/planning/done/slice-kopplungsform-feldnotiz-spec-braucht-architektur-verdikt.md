@@ -110,7 +110,7 @@ Wort-Identität, der dieselbe **Kernaussage** prüft" — verlangt eine
 `modul-11-verification.md` §Fitness Function ohne Standard-Tool, Zeile
 "Doku-Konsistenz-Agent … wenn semantische Prüfung nötig ist"). Welche der
 drei Antworten trägt, hängt an einer Kosten-Nutzen-Abwägung über eine
-Sensor-Schicht — das ist eine Entscheidung, die [`modul-08-agentenrollen.md`](../../../../.harness/baseline/v6.9.0/regelwerk/modul-08-agentenrollen.md)
+Sensor-Schicht — das ist eine Entscheidung, die Baseline-Regelwerk `modul-08-agentenrollen.md`
 §Rollen-Regeln dem Architect zuweist, nicht dem Planner und nicht dem
 Implementer, der sonst eine Sensor-Architektur "nebenbei" im Diff entscheidet.
 
