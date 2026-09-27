@@ -31,9 +31,20 @@ Baseline-Regelwerk `modul-08-agentenrollen.md` §Rollen-Regeln (*"Warum
 Architect und nicht Planner allein: Regel-Verkörperung … sind
 Entscheidungen, keine Planung"*).
 
-**Verantwortlich:** — (noch nicht priorisiert; dieser Slice liegt in `open/`,
-weil ihn kein Implementer beginnen kann, bevor der Architect-Zug unten
-gelaufen ist).
+**Verantwortlich:** Architect. Der Liefergegenstand ist eine **normative** Entscheidung — welche
+der drei vorgezeichneten Lesarten (oder eine vierte) trägt; das Verdikt liegt vor
+([`docs/reviews/2026-09-27-verdikt-kopplungsform-feldnotiz-spec.md`](../../../reviews/2026-09-27-verdikt-kopplungsform-feldnotiz-spec.md)).
+Wem das **Schreiben** gehört, sagt Baseline-Regelwerk `modul-08-agentenrollen.md`
+§Rollen-Regeln (*„Warum Architect und nicht Planner allein: Regel-Verkörperung … sind
+Entscheidungen, keine Planung"*). Dieselbe Zuschnitt-Wahl tragen
+[slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke](../done/slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke.md)
+und
+[slice-beleglose-register-eintraege-bekommen-eine-lesart](../done/slice-beleglose-register-eintraege-bekommen-eine-lesart.md) —
+beide liefen für dieselbe Konstellation (Architect liefert die Norm-Entscheidung, kein Code) den
+vollen Lifecycle `open → next → in-progress → done`; dieser Slice folgt demselben Pfad, anders als
+die separat gemessenen `open → done`-Kanten, die ausschließlich die Stilllegungsform (§Ein Slice,
+dessen Gegenstand ein anderer übernimmt) tragen — hier ist der Gegenstand geliefert, nicht
+übernommen oder entfallen.
 
 **Autor:** Planner. **Datum:** 2026-09-27.
 
