@@ -1,6 +1,8 @@
 **Stand:** offen
 
-Unterhalb der Schwelle; `offen` ist hier der Normalzustand und kein Ausgang. Ein Wächter für die
-Referenz-Definition besteht nicht: das gepinnte Doku-Gate meldet sie nicht, und die Bedingung, unter der
-die Lücke neu zu bewerten ist, hängt in der Entscheidung des Slice an einem `git grep`. Träger ist der
-Lauf, der einen Nachzug in `docs/reviews/` fährt und danach das Doku-Gate gegen den Stand davor liest.
+Die Referenz-Definitions-Hälfte ist nicht mehr ungeklärt: Ab dem gepinnten `v0.79.0` meldet das
+Doku-Gate eine tote Referenz-Definition real als `target-missing` — zweifach gemessen (Implementer
+und Reviewer), Beleg in `slice-d-check-pin-bringt-links-lookahead-und-referenz-definitionen` §7. Die
+zweite Hälfte — ein Anker auf einen umgezogenen Stub fällt auf `anchor-missing`, was die Sensor-Doku
+nicht nennt — bleibt von diesem Sprung unberührt und offen; das bleibt hier der Normalzustand, kein
+Ausgang.

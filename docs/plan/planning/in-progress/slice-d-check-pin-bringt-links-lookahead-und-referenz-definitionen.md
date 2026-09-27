@@ -192,7 +192,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 Drei Liefer-Punkte, jeder mit dem Kommando, das ihn rot färbt
 ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 
-- [ ] **L1 — Der Pin steht auf `v0.79.0`, an beiden gekoppelten Stellen, mit belegtem Digest und
+- [x] **L1 — Der Pin steht auf `v0.79.0`, an beiden gekoppelten Stellen, mit belegtem Digest und
       re-adaptiertem Fragment.** *(Rot-Kommando: `TestDefaultImage_MatchesCanonical` und
       `TestDefaultDigest_MatchesCanonical` (`go test ./internal/emit/...` im gepinnten Image via
       `make test`) schlagen fehl, solange `d-check.mk` und `internal/emit/emit.go` auseinanderlaufen;
@@ -200,7 +200,7 @@ Drei Liefer-Punkte, jeder mit dem Kommando, das ihn rot färbt
       Pull, `docker image inspect`, `docker manifest inspect`; Fragment-Diff
       `diff <(docker run --rm --network none ghcr.io/pt9912/d-check@<digest> --print-mk) d-check.mk`
       nach Hunks gezählt und im Adaptions-Eintrag dokumentiert.)*
-- [ ] **L2 — `make docs-check` ist grün über dem realen Bestand nach dem Sprung, und der
+- [x] **L2 — `make docs-check` ist grün über dem realen Bestand nach dem Sprung, und der
       Adaptions-Eintrag trägt die Strenge-Bilanz (jedes aktive Modul mit Basis) über die Spanne
       `v0.77.0..v0.79.0`.** *(Rot-Kommando: `docker run --rm --network none -v "$(pwd):/repo:ro"
       ghcr.io/pt9912/d-check@<v0.79.0-digest>` gegen den echten Baum — Exit ≠ 0 bei neuen Funden.
@@ -208,7 +208,7 @@ Drei Liefer-Punkte, jeder mit dem Kommando, das ihn rot färbt
       Dateien: entweder real beheben (Link korrigieren) **innerhalb dieses Slice**, falls die Menge
       klein bleibt, oder — falls sie den Slice sprengt — Rückführung `in-progress→next` nach §4, statt
       den Fund zu übergehen.)*
-- [ ] **L3 — Die zwei Sensor-Dateien (`harness/sensors/slice-mv.md`,
+- [x] **L3 — Die zwei Sensor-Dateien (`harness/sensors/slice-mv.md`,
       `harness/sensors/archive-welle.md`) sind auf den neuen Ist-Zustand nachgezogen, falls die zwei
       Formen (Zeilenumbruch-Ziel, Referenz-Definition) jetzt tatsächlich gemeldet werden.**
       *(Rot-Kommando: derselbe Report-Test wie in
@@ -217,15 +217,15 @@ Drei Liefer-Punkte, jeder mit dem Kommando, das ihn rot färbt
       gepinnten `v0.79.0`-Digest gefahren; meldet er jetzt `target-missing`, sind die Sätze „`make
       docs-check` schweigt“/„meldet sie nicht“ falsch und werden korrigiert, mit dem neu gemessenen
       Befund als Beleg.)*
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: über L2/L3 hinaus keines, solange die Gate-Namen gleich bleiben (kein neues
+- [x] Doku-Update: über L2/L3 hinaus keines, solange die Gate-Namen gleich bleiben (kein neues
       Modul aktiviert).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -288,24 +288,28 @@ dasteht.
 
 - **Die zwei neuen `links`-Prüfungen melden neue `target-missing`-Funde an bestehenden Dateien, deren Menge einen
   Slice sprengt.** Der grepbasierte Vorab-Fundgang in §1 fand null Kandidaten, ist aber eine
-  Näherung ohne echte Bracket-/Titel-Delimiter-Semantik. **Ausgang:** <eingetreten:
-  Rückführung nach §4, ggf. Folge-Slice | entfallen: L2 misst 0 neue Funde | weiter offen: →
-  Register>
+  Näherung ohne echte Bracket-/Titel-Delimiter-Semantik. **Ausgang: entfallen** — L2 maß real 0 neue
+  Funde (`make docs-check` gegen den unveränderten Bestand: Exit 0, 2069 Datei(en), 0 Befund(e); vom
+  Implementer und unabhängig vom Reviewer bestätigt).
 - **Die Strenge-Bilanz zeigt eine Senkung an einem der neun aktiven Module** (unwahrscheinlich,
   da beide neuen Prüfungen zusätzlich melden, nicht weniger — aber ungemessen bis L2 läuft).
-  **Ausgang:** <eingetreten: ADR nach §3.5 nötig | entfallen: Bilanz zeigt reine Erweiterung |
-  weiter offen: → Register>
+  **Ausgang: entfallen** — die MR-063-Gegenmessung (9 von 9 aktiven Modulen) zeigt reine Erweiterung:
+  byte-identische Befundmengen über beide Digests auf allen drei Stufen (Commit `77bf81f7`,
+  bestätigt in der Reviewer-Nachrunde).
 - **Der emittierte Default-Pin läuft dem Dogfood-Pin auseinander** (L1 vergessen an einer der zwei
-  Stellen). **Ausgang:** <eingetreten: L1-Kopplungstest fängt es, kein Slice-Risiko mehr | entfallen:
-  beide Stellen im selben Commit | weiter offen: → Register>
-- **Vor dem Start erscheint ein weiterer Release.** **Ausgang:** <eingetreten: Ziel-Tag in Titel und
-  §1 nachziehen | entfallen: `v0.79.0` bleibt der neueste Tag bis zum Start | weiter offen: →
-  Register>
+  Stellen). **Ausgang: entfallen** — beide Stellen (`d-check.mk`, `internal/emit/emit.go`) im selben
+  Commit `12f30003`; `TestDefaultImage_MatchesCanonical`/`TestDefaultDigest_MatchesCanonical` real
+  rot/grün gefahren (Reviewer-Nachvollzug).
+- **Vor dem Start erscheint ein weiterer Release.** **Ausgang: entfallen** — `v0.79.0` blieb der
+  neueste Tag bis zum Start und bis zu dieser Closure
+  (`git -C /Development/d-check for-each-ref --sort=-v:refname 'refs/tags/v0.*'` → `v0.79.0` an
+  erster Stelle, erstellt 2026-09-27).
 - **Die Beobachtung
   [`BEO-ALL/nachzug-raender-am-doku-gate-ohne-melder-oder-ohne-nennung`](../observations/BEO-ALL/nachzug-raender-am-doku-gate-ohne-melder-oder-ohne-nennung/observation.md)
   wird bei der Closure übersehen**, obwohl ihre Referenz-Definitions-Hälfte durch diesen Sprung
-  ggf. gegenstandslos wird. **Ausgang:** <eingetreten: Closure-Lauf strickt sie ohne Begründung |
-  entfallen: Closure-Lauf prüft sie real und trägt Ergebnis in §7 nach | weiter offen: → Register>
+  ggf. gegenstandslos wird. **Ausgang: entfallen** — der Closure-Lauf hat sie real geprüft: die
+  Referenz-Definitions-Hälfte ist mit `v0.79.0` nicht mehr ungeklärt (`state.md` entsprechend
+  aktualisiert), die Anker-auf-Stub-Hälfte bleibt unberührt offen (§7).
 
 ### Übergabe an den Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8)
 
@@ -329,7 +333,86 @@ der Eintrag bleibt **lokal bis zur Review-Runde**
 
 ## 7. Closure-Notiz
 
-<!-- wird bei der Closure gefüllt — nicht Teil dieser Planung. -->
+**Was hat funktioniert:** Der Ein-Schritt-Sprung über drei Releases (statt des eigenen
+Ein-Release-je-Eintrag-Musters) hat den vollen Werkzeug-Zustand in einem Adaptions-Eintrag
+(`MR-073`) gebündelt, ohne dass die zwei ausgelassenen Releases (`v0.77.0` bereits gepinnt,
+`v0.78.0` ohne Gegenstand) an Nachweisqualität verloren. Digest, Fragment-Diff und Kopplungstests
+sind zweifach unabhängig belegt (Implementer und Reviewer), und die zwei betroffenen Sensor-Dateien
+(`slice-mv.md`, `archive-welle.md`) sind auf den real gemessenen Ist-Zustand gezogen, mit
+Vorher/Nachher-Gegenprobe gegen den alten Digest.
+
+**Was ging anders als geplant:** Zwei Nachträge waren nötig, die beide vom Reviewer gefunden wurden,
+nicht vor der Übergabe: (1) Der erste Umsetzungs-Commit trug nur eine Teilmessung der
+MR-063-Strenge-Bilanz (2 von 9 Modulen) statt der vollständigen, wie sie das Vorgänger-Muster
+(`MR-068`) selbst vorgibt — nachgetragen in einer zweiten Implementer-Runde (F-1). (2) Der
+Adaptions-Eintrag behauptete, die Quell-Differenz bewege „nur" zwei Dateien, während ein
+vollständiger `git diff --numstat` eine dritte (`anchors.go`, harmlose Ausnahme) zeigte — vom
+Architect korrigiert, nachdem der Reviewer es in der Nachrunde selbst nachgefahren hatte (F-2).
+Beide Nachträge trafen keine der zwei primären Closure-Trigger-Bedingungen inhaltlich (die
+empirische Gegenmessung blieb in beiden Fällen unberührt), zeigen aber dasselbe Muster: eine
+Vollständigkeits- oder Mengen-Aussage, die erst der Reviewer gegen das reale Kommando hält, statt
+dass der schreibende Lauf es selbst tut. Zusätzlich lief bei der Behebung von F-2 ein
+Rollen-Kollisions-Vorfall: Der Architect amendete den eigenen letzten Commit, traf dabei aber einen
+zwischenzeitlich vom Reviewer gesetzten Commit (HEAD hatte sich zwischen Auftrag und Ausführung
+bewegt) — am Reflog selbst entdeckt und vor dem Push per Reset und Neu-Commit repariert (siehe
+Beobachtungs-Register unten).
+
+**Steering-Loop-Eintrag:** **benannte Spec-Lücke, in drei Teilen — jeweils unterhalb der Schwelle,
+kein neuer Zielort aus diesem Slice.**
+1. Kein Wächter hält eine Werkzeug-Nachweispflicht (hier: MR-063-Vollständigkeit) vor dem Commit
+   gegen das etablierte Vorgänger-Muster — Beobachtung
+   `BEO-ALL/strenge-bilanz-eines-pin-sprungs-fehlt-im-umsetzungs-commit` (neu, 1×, offen).
+2. Kein Wächter hält eine als abschließend formulierte Datei-Mengen-Aussage gegen den vollständigen
+   `diff` — Beobachtung `BEO-ALL/quell-differenz-aussage-behauptet-menge-ohne-gegen-diff` (neu, 1×,
+   offen).
+3. `git commit --amend` committet den Index, nicht die Pfade des eigenen Vorgangs, und reißt einen
+   zwischenzeitlich fremd gesetzten Commit mit — Beobachtung
+   `BEO-ALL/amend-committet-fremde-index-eintraege-mit` erreicht mit diesem Slice ihren **dritten**
+   Beleg. **3× erreicht → Ausgang `geplant`**: Kennung `slice-amend-haelt-den-index-pfadrein` (neu
+   angelegt in `open/`), der die Disziplin oder den Hook baut, den `state.md` bisher als fehlend
+   benannte. Zielort und schreibende Rolle bestätigt der Architect in diesem Folge-Slice (§3.8).
+
+**Beobachtungs-Register (`../observations/`):**
+- `BEO-ALL/strenge-bilanz-eines-pin-sprungs-fehlt-im-umsetzungs-commit` — neu angelegt, 1×, offen
+  (Beleg: dieser Slice, F-1).
+- `BEO-ALL/quell-differenz-aussage-behauptet-menge-ohne-gegen-diff` — neu angelegt, 1×, offen (Beleg:
+  dieser Slice, F-2).
+- `BEO-ALL/amend-committet-fremde-index-eintraege-mit` — dritter Beleg (dieser Slice), 3× erreicht,
+  Ausgang `geplant` → `slice-amend-haelt-den-index-pfadrein` (neu in `open/`).
+- `BEO-ALL/nachzug-raender-am-doku-gate-ohne-melder-oder-ohne-nennung` — `state.md` fortgeschrieben,
+  kein neuer Beleg (Resolution, keine Wiederholung): Die Referenz-Definitions-Hälfte ist mit
+  `v0.79.0` nicht mehr ungeklärt (real gemessen, zweifach). Die Anker-auf-Stub-Hälfte bleibt von
+  diesem Sprung unberührt und offen. Stand bleibt `offen` — die Beobachtung deckt beide Hälften
+  gemeinsam, nur eine davon ist gegenstandslos geworden.
+- Fünf weitere in §8 vorab gesichtete Einträge (`werkzeug-messung-und-gemessener-stand-werden-nicht-zusammengehalten`,
+  `aussage-ueber-das-gepinnte-werkzeug-ohne-blick-in-seinen-stand`,
+  `stellen-messung-als-eigenschaft-ausgegeben`,
+  `senkungs-pruefung-misst-die-menge-statt-des-gate-verhaltens`,
+  `norm-eintrag-friert-vor-seinem-review-ein`) waren als Kontext für die Sub-Area-Sichtung gelesen;
+  dieser Slice hat ihre jeweilige Disziplin eingehalten (Werkzeug-Aussagen datiert, Bilanz zeigt
+  echte Erweiterung statt Gleichstand, Eintrag lokal bis zum Review), ohne selbst einen neuen Beleg
+  zu setzen.
+
+**Risiko-Ausgänge (§6):** alle fünf **entfallen** — L2 maß 0 neue Funde; die Strenge-Bilanz zeigt
+reine Erweiterung, keine Senkung; beide Pin-Stellen liefen im selben Commit; `v0.79.0` blieb bis zur
+Closure der neueste Tag; die Register-Beobachtung wurde real geprüft statt übersehen.
+
+**Folge-Slices:** `slice-amend-haelt-den-index-pfadrein` (neu, `open/`) — Verkörperung der
+3×-Beobachtung zum Amend-Vorfall.
+
+**Risiken aus §6:** alle fünf mit genau einem Ausgang — siehe §6 (alle **entfallen**).
+
+**Drei Paarungen** (Repo ohne Wellen-Betrieb, geprüft nach dem `git mv`):
+- **Anker:** kein `liegt in`-Feld in diesem §7 — nichts wurde mit diesem Slice verkörpert (der
+  Amend-Befund geht als `geplant` in den Folge-Slice, nicht als `verkörpert` in einen Zielort).
+  Nichts zu paaren.
+- **Folge-Slice:** `slice-amend-haelt-den-index-pfadrein` existiert als Datei in `open/`.
+- **Register:** alle vier genannten Beobachtungsverzeichnisse existieren
+  (`strenge-bilanz-eines-pin-sprungs-fehlt-im-umsetzungs-commit`,
+  `quell-differenz-aussage-behauptet-menge-ohne-gegen-diff`,
+  `amend-committet-fremde-index-eintraege-mit`,
+  `nachzug-raender-am-doku-gate-ohne-melder-oder-ohne-nennung`) und jedes trägt mindestens einen
+  Beleg in `evidence/`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

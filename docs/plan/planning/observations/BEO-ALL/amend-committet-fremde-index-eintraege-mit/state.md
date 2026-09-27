@@ -1,12 +1,9 @@
-**Stand:** offen
+**Stand:** geplant
 
-Ein Wächter besteht nicht. `make commit-msg-check` liest eine Commit-**Message**-Datei gegen die
-Traceability-Kennung, `make history-range-guard` prüft eine Commit-**Range** auf Auflösbarkeit — der
-**Index** eines Commits kommt in keinem der beiden vor, und kein Modul aus `modules:` der
-[`.d-check.yml`](../../../../../../.d-check.yml) liest ihn. `make mutate` kennt keine
-Fehlschlag-Form für einen Commit-Zuschnitt.
-
-Träger ist der schreibende Lauf: Er weiß, welche Pfade sein Vorgang angefasst hat, und nur er kann
-seine Commits pfadrein setzen. Ein `pre-commit`-Hook oder eine Pfadspec-Disziplin ist **baubar**;
-gebaut ist keines. Ein Norm-Artefakt, das den Träger festhält, besteht nicht — den Zielort
-schneidet der Lese-Schritt.
+Kennung: `slice-amend-haelt-den-index-pfadrein`. Er baut den Träger, den diese Beobachtung als
+fehlend benennt: `git commit --only <pfad>` als Disziplin in den committenden Rollen-Anweisungssätzen
+oder ein `pre-commit`-Hook, der den Index vor dem Commit gegen die Pfade des eigenen Vorgangs hält.
+Ausgelöst durch den dritten Beleg
+(`slice-d-check-pin-bringt-links-lookahead-und-referenz-definitionen`, 3× erreicht). Träger bis zur
+Verkörperung bleibt der schreibende Lauf: Er kennt seine eigenen Pfade und kann seine Commits
+pfadrein setzen.
