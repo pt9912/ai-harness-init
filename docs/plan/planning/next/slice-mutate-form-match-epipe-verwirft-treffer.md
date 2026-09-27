@@ -100,7 +100,8 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       eine Variable/einen Here-String statt live in die Pipe von `grep -qF` zu laufen (Muster wie
       Zeile 1280–1283) — Semantik bleibt erhalten: kein Treffer oder leeres `$out` bewertet die
       Bedingung weiterhin als „fällt nicht“. **Real rot gesehen** vor dem Fix (der CI-Befund oder
-      eine gleichwertige lokale Nachstellung mit dem alten Code) und **grün** danach (LH-QA-01,
+      eine gleichwertige lokale Nachstellung mit dem alten Code) und **grün** danach
+      ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6),
       AGENTS.md §3.6).
 - [ ] Ein Test/Mutations-Zahn deckt genau den Mehrfachtreffer-Fall: ein `$out` mit **mindestens
       zwei** zur Fehlschlag-Form passenden Zeilen, wobei `$expect` in einer davon steckt, wird
