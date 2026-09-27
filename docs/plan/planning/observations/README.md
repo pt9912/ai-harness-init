@@ -30,8 +30,10 @@ der Ort, an dem ihre Klasse abschließt.
 **Ein Vorgang zählt einmal.** Zwei Funde im selben Slice sind eine Gelegenheit, kein zweites
 Auftreten: Der Zähler misst Wiederholung über Vorgänge hinweg, nicht die Zahl der Funde — das
 erzwingt hier das Dateisystem, nicht die Disziplin. Ein Vorkommen **ohne** abgeschlossenen Vorgang
-bekommt keine Datei unter `evidence/` und bewegt den Zähler nicht; es gehört trotzdem in
-`observation.md` unter „Benannt, nicht gezählt" — *benannt, nicht gezählt*.
+bekommt keine Datei unter `evidence/` und bewegt den Zähler nicht; es gehört trotzdem in den Eintrag
+der Klasse — bei der Erst-Anlage der Beobachtung in `observation.md` (Teil des Anlage-Commits); wird
+es **nach** der Anlage entdeckt, in `state.md`, da `observation.md` ab Anlage unveränderlich bleibt —
+*benannt, nicht gezählt*.
 
 **Ein Verzeichnis ohne Beleg ist ein Befund der Register-Paarung (c), keine Ausnahme**
 ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
