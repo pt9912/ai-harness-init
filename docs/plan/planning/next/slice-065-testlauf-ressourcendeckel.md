@@ -156,26 +156,70 @@ Closure-Notiz mit Steering-Loop-Eintrag.
 
 - **Ein Deckel, der nicht greift, ist schlimmer als keiner** — er behauptet Schutz. Zeile 1
   der Ist-Messung ist der Beleg, dass das hier kein theoretisches Risiko ist. Deshalb
-  verlangt DoD (1) die Messung und nicht die Flag-Zeile.
+  verlangt DoD (1) die Messung und nicht die Flag-Zeile. — **Ausgang:** eingetreten —
+  weitergetragen als DoD (1) in
+  [`slice-go-testlauf-bekommt-einen-ressourcendeckel`](../open/slice-go-testlauf-bekommt-einen-ressourcendeckel.md).
 - **Der zu enge Deckel.** Der Go-Testlauf startet selbst Prozesse (Compiler, Testbinaries,
   der Kind-Prozess aus `cmd/ai-harness-init/span_emit_test.go`). Ein knapper Wert macht den Gate
-  flatterig — und ein flatteriger Gate wird abgeschaltet.
+  flatterig — und ein flatteriger Gate wird abgeschaltet. — **Ausgang:** eingetreten —
+  weitergetragen im Plan-Abschnitt §3 von
+  [`slice-go-testlauf-bekommt-einen-ressourcendeckel`](../open/slice-go-testlauf-bekommt-einen-ressourcendeckel.md).
 - **Die Cache-Zusage ist der eigentliche Arbeitsanteil**, nicht der Deckel. Sie ist heute
   zweistufig belegt; wer nur die Flags umstellt, lässt einen Wächter still ins Leere
-  zeigen.
+  zeigen. — **Ausgang:** eingetreten — weitergetragen als DoD (3) in
+  [`slice-go-testlauf-bekommt-einen-ressourcendeckel`](../open/slice-go-testlauf-bekommt-einen-ressourcendeckel.md).
 - **Der Wächter aus DoD (2) misst eine Umgebungs-Eigenschaft**, keine Code-Eigenschaft: er
   ist grün, weil der Aufrufer den Deckel setzt. Läuft der Testlauf je anders (ohne
-  `make test-go`), schlägt er fehl — das ist beabsichtigt, gehört aber ausgesprochen.
+  `make test-go`), schlägt er fehl — das ist beabsichtigt, gehört aber ausgesprochen. —
+  **Ausgang:** eingetreten — weitergetragen als DoD (2) in
+  [`slice-go-testlauf-bekommt-einen-ressourcendeckel`](../open/slice-go-testlauf-bekommt-einen-ressourcendeckel.md).
 - **Nicht in diesem Slice:** eine Regel, die die gefährliche **Form** verbietet (ein
   `_test.go`, das sich selbst re-exec't, muss in `TestMain` abzweigen). Das wäre ein
   hermetischer Gate neben `make comment-claims` und trifft den Anlass direkter als jeder
   Deckel — aber es ist eine eigene Zusage mit eigenem Wächter. Kandidat für einen
   Folge-Slice; hier bewusst **nicht** mitgenommen, damit der Deckel nicht mit einer
-  Konventions-Prüfung vermischt wird.
+  Konventions-Prüfung vermischt wird. — **Ausgang:** eingetreten — als ausdrücklicher
+  Ausschluss (§1) unverändert weitergetragen in
+  [`slice-go-testlauf-bekommt-einen-ressourcendeckel`](../open/slice-go-testlauf-bekommt-einen-ressourcendeckel.md);
+  weiterhin Kandidat für einen eigenen, noch nicht geschnittenen Folge-Slice.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Gegenstand:** übernommen von zwei Nehmer-Slices, entlang der beiden unabhängig
+lieferbaren Anteile aus §3 dieses Plans getrennt:
+
+- [`slice-go-testlauf-bekommt-einen-ressourcendeckel`](../open/slice-go-testlauf-bekommt-einen-ressourcendeckel.md)
+  — Anteil: Deckel + Wächter + Cache-Zusage + mutate-Vererbung (DoD 1–4 dieses Plans).
+- [`slice-agent-watch-sh-wird-verankert`](../open/slice-agent-watch-sh-wird-verankert.md)
+  — Anteil: Verankerung von `harness/tools/agent-watch.sh` (§3-Zeile dieses Plans).
+
+Der Schnitt dieses Plans überschritt mit fünf Gegenständen (vier DoD-Punkten plus der
+Melder-Verankerung als fünftem, mit dem Umfang wachsendem Gegenstand in §3) die
+Größen-Regel aus Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form: Slice
+(**≤ 3 Liefer-Punkte**) — bereits in §4 dieses Plans als Grund für `next→in-progress`
+**nicht erfüllt** vorab benannt. Der Re-Schnitt zieht die Trennlinie entlang des
+Gegenstands (Deckel vs. Melder), nicht entlang einer Schicht — beide Nehmer-Slices sind
+je für sich lieferbar.
+
+Jedes Risiko aus §6 hat den Ausgang *eingetreten*: Alle vier Risiken sind inhaltlich in
+`slice-go-testlauf-bekommt-einen-ressourcendeckel` §6 erneut aufgenommen — dort mit
+noch offenem Ausgang, dieser Slice reicht sie nur weiter, löst sie nicht auf. Der
+fünfte Punkt (Form-Regel-Kandidat) ist als expliziter Ausschluss im Nehmer-Slice §1
+erhalten.
+
+**Beobachtungs-Register:** neue Evidenz-Datei
+[`slice-065-testlauf-ressourcendeckel.md`](../observations/BEO-ALL/geplanter-slice-wird-nie-gearbeitet/evidence/slice-065-testlauf-ressourcendeckel.md)
+in `BEO-ALL/geplanter-slice-wird-nie-gearbeitet/` (Stand weiterhin `offen`) — derselbe
+Fund wie bei den fünf Gruppierungs-Gebern, die `observation.md` unter *Benannt, nicht
+gezählt* führt, hier aber eine eigene Gelegenheit (Re-Schnitt wegen Größen-Regel, nicht
+Gruppierung eines Go-Slice-Vorrats) und darum eine eigene Evidenz-Datei.
+
+**Lerneintrag:** keine neue Regel — die Beobachtung ist bereits verkörpert
+(`geplanter-slice-wird-nie-gearbeitet`, Baseline-Regelwerk `modul-05-planning-harness.md`
+§Regeln gegen typische Fehlannahmen: *„Wer alle Slices vor der ersten Implementation
+plant, plant tote Slices"*). Dieser Vorgang ist ein weiterer Beleg desselben Musters,
+kein neuer — der Zähler dieses Registereintrags bewegt sich um einen weiteren, von der
+Gruppierungs-Gelegenheit unabhängigen Beleg.
 
 ## 8. Sub-Area-Modus-Begründung
 
