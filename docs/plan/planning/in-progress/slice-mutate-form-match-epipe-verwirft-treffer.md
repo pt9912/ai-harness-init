@@ -96,33 +96,40 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] `harness/tools/mutate.sh` Zeile 808 gehärtet: der erste `grep -E` schreibt sein Ergebnis in
+- [x] `harness/tools/mutate.sh` Zeile 808 gehärtet: der erste `grep -E` schreibt sein Ergebnis in
       eine Variable/einen Here-String statt live in die Pipe von `grep -qF` zu laufen (Muster wie
       Zeile 1280–1283) — Semantik bleibt erhalten: kein Treffer oder leeres `$out` bewertet die
       Bedingung weiterhin als „fällt nicht“. **Real rot gesehen** vor dem Fix (der CI-Befund oder
       eine gleichwertige lokale Nachstellung mit dem alten Code) und **grün** danach
       ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6),
-      AGENTS.md §3.6).
-- [ ] Ein Test/Mutations-Zahn deckt genau den Mehrfachtreffer-Fall: ein `$out` mit **mindestens
+      AGENTS.md §3.6). Dreifach unabhängig reproduziert (Implementer, Reviewer 10/10, Verifier
+      10/10 + reale Mutation), siehe §7.
+- [x] Ein Test/Mutations-Zahn deckt genau den Mehrfachtreffer-Fall: ein `$out` mit **mindestens
       zwei** zur Fehlschlag-Form passenden Zeilen, wobei `$expect` in einer davon steckt, wird
       nach dem Fix als Treffer gewertet. Träger ist der bestehende Rahmen für `mutate.sh` selbst
       (`test/mutate-driver.bats`, ggf. ergänzt um einen neuen `test/mutations/`-Fall) — der
       Implementer prüft zuerst, welcher Rahmen für diese konkrete Zusicherung trägt, bevor er
-      wählt. Vor dem Fix real rot, danach grün (AGENTS.md §3.6).
-- [ ] `harness/sensors/mutate.md` geprüft, ob die behobene Fehlerklasse oder ihre Grenze dort
+      wählt. Vor dem Fix real rot, danach grün (AGENTS.md §3.6). Fall `496-…`, Anker-Eindeutigkeit
+      (MR-071) von Reviewer und Verifier unabhängig bestätigt (genau 1 Treffer).
+- [x] `harness/sensors/mutate.md` geprüft, ob die behobene Fehlerklasse oder ihre Grenze dort
       nachzutragen ist; entweder nachgezogen oder — falls kein bestehender Aussage-Satz betroffen
-      ist — im Slice-Plan begründet, warum kein Nachzug nötig war.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+      ist — im Slice-Plan begründet, warum kein Nachzug nötig war. Kein Nachzug nötig (§3
+      Plan-Ausgabe), von Reviewer und Verifier unabhängig bestätigt (0 Treffer auf
+      „grep“/„Pipe“/„EPIPE“/„Bedingung 4“).
+- [x] `make gates` grün — Stempel `2294c426…` deckt den Stand von `de4ecb13`/`b61df668`
+      (Reviewer- und Verifier-Prüfung); der Baum ist seither unverändert (kein getrackter Diff
+      gegen `HEAD` zum Zeitpunkt der Closure-Prüfung).
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis
       `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zähler wird
       gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort
-      und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieser Slice ist
+      und wird in §7 notiert. Neues Verzeichnis `BEO-TOOLS/live-pipe-unter-pipefail-verwirft-treffer/`
+      angelegt, siehe §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieser Slice ist
       wellenlos, darum hier geprüft, nicht von einer Welle-Closure.
 
 ## 3. Plan (vor Code)
@@ -209,10 +216,19 @@ dasteht.
 - Der Fix ändert die Semantik von Bedingung 4 in einem Grenzfall, den der neue Zahn nicht direkt
   prüft (z. B. `$out` leer oder ganz ohne `--- FAIL:`-Treffer) — die Here-String-Form von
   `grep -qF -- "$expect" <<<"$matched"` muss für ein leeres `$matched` weiterhin „fällt nicht“
-  liefern, nicht fälschlich „trifft“. **Ausgang:** <bei Closure zuweisen>
+  liefern, nicht fälschlich „trifft“. **Ausgang: entfallen** — eigenständig nachgeprüft (nicht die
+  Verifier-Aussage blind übernommen, eigene Reproduktion in einer Scratch-Kopie): Alt-Form
+  (Live-Pipe) und Neu-Form (`form_matched`) liefern für ein 0-Byte-`$out` identisch „fällt nicht“
+  (Exit 1 in beiden Fällen) — kein SIGPIPE möglich, da `grep -E` auf leerer Eingabe ohnehin ohne
+  Ausgabe endet. Die im Risiko benannte Sorge (Semantik-*Änderung*) trifft nicht zu. Die davon
+  getrennte Beobachtung „kein bindender Test für diesen Zweig“ (Reviewer-Finding F-1) ist eine
+  Coverage-, keine Korrektheitsfrage — siehe §7, kein Registereintrag.
 - Der EPIPE-Fehlurteil-Bug ist eine allgemeine Klasse (jede live verkettete `grep … | grep -q`-Pipe
   unter `pipefail` mit einem früh aussteigenden zweiten `grep`); dieser Slice behebt die eine
-  gemessene Stelle, keine künftig neu entstehende. **Ausgang:** <bei Closure zuweisen>
+  gemessene Stelle, keine künftig neu entstehende. **Ausgang: weiter offen** →
+  [`BEO-TOOLS/live-pipe-unter-pipefail-verwirft-treffer`](../observations/BEO-TOOLS/live-pipe-unter-pipefail-verwirft-treffer/observation.md)
+  (neu angelegt, 1×, offen) — Reviewer-Finding F-2 (unveränderte, strukturell verwandte Stelle in
+  `harness/tools/comment-claims.sh:105`) ist der erste Beleg, siehe §7.
 
 ## 7. Closure-Notiz
 
@@ -228,13 +244,67 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-- **Was hat funktioniert:** <wird bei Closure gefüllt>
-- **Was ging anders als geplant:** <wird bei Closure gefüllt>
-- **Steering-Loop-Eintrag:** <wird bei Closure gefüllt>
-- **Beobachtungs-Register (`../observations/`):** <wird bei Closure gefüllt>
-- **Folge-Slices:** <wird bei Closure gefüllt>
-- **Risiken aus §6:** <wird bei Closure gefüllt>
-- **Drei Paarungen:** <wird bei Closure gefüllt>
+- **Was hat funktioniert:** Der reale SIGPIPE-Mechanismus wurde **dreifach unabhängig**
+  reproduziert — Implementer beim Bau des Fixes, Reviewer eigenständig (10/10 Läufe Alt-Form →
+  Exit 141, 10/10 Neu-Form → Exit 0), Verifier eigenständig mit zwei unabhängigen Konstruktionen
+  plus der realen Mutation (`sed`-Anker trifft exakt eine Zeile, Rücknahme des Fixes färbt exakt
+  den neuen Zahn mit Exit 141 rot) — alle drei kommen zum selben Ergebnis. Die Härtung folgt einem
+  im selben Skript bereits vorhandenen, korrekten Muster (Zeile 1280–1283) und führt kein neues
+  Idiom ein. `harness/sensors/mutate.md` war tatsächlich nicht betroffen — die Prüfung war
+  überprüfbar, nicht nur plausibel behauptet.
+- **Was ging anders als geplant:** Die Reproduktion des Bugs lief hermetisch (kein
+  `test/mutations/476-…`-Nachbau nötig, siehe §3 Plan-Ausgabe) und schneller als der volle
+  Go-Testlauf. Die Härtung wurde als eigene Funktion `form_matched()` gezogen statt inline in
+  `run_case()` zu bleiben — eine im Plan bereits als zulässige Implementer-Entscheidung
+  vorgesehene Abweichung, keine Größen- oder Schicht-Überschreitung. Zwischen dem `slice-mv`-Commit
+  und der Implementer-Korrektur widersprach der Ruhe-Marker der Roadmap rund 27 Minuten dem
+  tatsächlichen Verzeichnis-Zustand (Reviewer-Finding F-3) — noch im selben Arbeitsgang selbst
+  korrigiert, kein rotes `docs-check` erreichte damit den Hauptzweig-Endstand. Während der
+  Verifikation zeigte der Werkzeug-Hash kurzzeitig Instabilität durch einen parallel laufenden,
+  thematisch fremden Planungsvorgang (Entwurf eines anderen Slice in `next/`) — inzwischen
+  abgeschlossen (der Baum ist seither wiederholt stabil gemessen) und ohne inhaltlichen Bezug zu
+  diesem Slice.
+- **Steering-Loop-Eintrag:** benannte Beobachtung, **kein** `liegt in`-Feld — mit diesem Slice
+  wird nichts verkörpert. Die behobene Stelle war nicht die einzige ihrer Art im Repo: Der
+  Reviewer fand mit F-2 eine zweite, strukturell verwandte, **unveränderte** Live-Pipe-Stelle
+  (`harness/tools/comment-claims.sh:105`), außerhalb des in §1 bewusst ausgeschlossenen generellen
+  Audits. Damit hat die in §6 als Risiko 2 benannte Sorge — „die Klasse ist allgemein, dieser
+  Slice behebt nur die eine gemessene Stelle" — einen zweiten realen Datenpunkt. Neu angelegt:
+  [`BEO-TOOLS/live-pipe-unter-pipefail-verwirft-treffer`](../observations/BEO-TOOLS/live-pipe-unter-pipefail-verwirft-treffer/observation.md)
+  (Zähler-Stand 1×, offen — die hier behobene Stelle und F-2 liegen im selben Vorgang und zählen
+  nach Modul 6 als **ein** Auftreten, nicht zwei). Erreicht die Klasse 3×, entscheidet der dann
+  fällige Lese-Schritt, ob eine generelle Regel oder ein Audit-Slice folgt; bis dahin bleibt ein
+  genereller Audit bewusst außerhalb des Scopes jedes Einzel-Fixes (§1 dieses Plans).
+- **Beobachtungs-Register (`../observations/`):**
+  - `BEO-TOOLS/live-pipe-unter-pipefail-verwirft-treffer` — neu angelegt, 1×, offen (Beleg: dieser
+    Slice, `evidence/slice-mutate-form-match-epipe-verwirft-treffer.md`; enthält sowohl die hier
+    behobene Stelle als auch den unbehobenen Fund F-2 als Kontext desselben Belegs).
+  - Geprüft, kein zweiter Treffer zur selben Klasse: `BEO-ALL/gate-flaeche-haengt-am-arbeitsbaum`
+    beschreibt einen anderen Mechanismus (Verdopplung der Kandidatenmenge durch einen parallelen
+    Worktree, nicht ein früh aussteigendes zweites `grep`) und bleibt unberührt — bereits in §8
+    des Plans geprüft, hier nur bestätigt.
+  - F-1 (0-Byte-`$out`-Grenzfall, LOW) und F-3 (Ruhe-Marker-Drift, INFO) bekommen **keinen**
+    Registereintrag: beide sind einmalige Funde ohne Wiederholungsmuster. Für F-1 hat der Verifier
+    eigenständig belegt, dass sich das Verhalten für diesen Zweig durch den Fix nicht geändert hat
+    (kein Korrektheitsrisiko, reine Automatisierungs-/Coverage-Lücke, siehe Risiko-Ausgang unten) —
+    festgehalten hier, nicht im Register.
+- **Folge-Slices:** keine. Kein Audit-Slice wird jetzt geschnitten — Zähler-Stand für die Klasse
+  ist 1×, nicht 3× (§1 schließt den generellen Audit ausdrücklich als eigenen Vorgang aus, solange
+  kein dritter Beleg vorliegt).
+- **Risiken aus §6:**
+  - Risiko 1 (Semantik-Änderung im Grenzfall `$out` leer): **entfallen** — eigenständig
+    nachgeprüft, nicht die Verifier-Aussage blind übernommen (eigene Reproduktion in einer
+    Scratch-Kopie: Alt-Form und Neu-Form liefern für 0-Byte-`$out` identisch „fällt nicht"). Siehe
+    §6.
+  - Risiko 2 (allgemeine EPIPE-Klasse): **weiter offen** →
+    `BEO-TOOLS/live-pipe-unter-pipefail-verwirft-treffer` (siehe Register oben). Siehe §6.
+- **Drei Paarungen** (Repo ohne Wellen-Betrieb, geprüft nach dem `git mv`):
+  - **Anker:** kein `liegt in`-Feld in diesem §7 — nichts wurde mit diesem Slice verkörpert.
+    Nichts zu paaren.
+  - **Folge-Slice:** keiner benannt — nichts zu paaren.
+  - **Register:** `BEO-TOOLS/live-pipe-unter-pipefail-verwirft-treffer` existiert als Verzeichnis
+    und trägt genau einen Beleg in `evidence/`
+    (`slice-mutate-form-match-epipe-verwirft-treffer.md`).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
