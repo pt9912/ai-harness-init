@@ -139,5 +139,11 @@ ordnet die Mutationstests der Stufe **Post-integration** zu (`grundlagen-klassif
 §Klassifikation: *„nach Merge : Mutation Tests"*, *„teurer, aber tolerierbar"*); die
 Kostenmessung `49m54s` von `49m58s` eines Pushes
 (`gh api "repos/pt9912/ai-harness-init/actions/jobs/<job-id>/logs"`) stammt aus der Zeit vor
-der Matrix und begründet weiterhin, warum der Lauf nicht im Push-Pfad steht — die Wall-Clock-Zeit
-eines Matrix-Laufs ist ein eigener, noch ausstehender Beleg.
+der Matrix und begründet weiterhin, warum der Lauf nicht im Push-Pfad steht. Der erste reale
+Matrix-Lauf deckte den vollen Fall-Satz in **~36 Minuten** Wall-Clock ab, fünf Shards zwischen
+21 und 37 Minuten je Shard
+(`gh run view 36375725927 --json jobs --jq '.jobs[] | {name,startedAt,completedAt}'`,
+`workflow_dispatch`, 2026-09-28) — außerhalb des im Slice-Plan angepeilten Zielkorridors ~20–25
+Minuten; Ursache ist die ungleiche Verteilung teurer `full-smoke`-Fälle über die Shards bei
+reinem Index-Modulo-Round-Robin
+(`docs/plan/planning/observations/BEO-ALL/mutate-shard-kosten-ungleich-verfehlt-zielkorridor/`).

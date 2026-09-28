@@ -94,7 +94,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] `.github/workflows/mutate.yml` trägt **genau einen** `mutate`-Job mit `strategy.matrix`
+- [x] `.github/workflows/mutate.yml` trägt **genau einen** `mutate`-Job mit `strategy.matrix`
       (kein zweites Workflow-File), `fail-fast: false` — Begründung im Workflow-Kommentar analog
       `release.yml` `start-smoke` („ein Bruch auf einem Shard soll die Befunde der übrigen nicht
       verdecken"). Die Shard-Zuteilung ist **deterministisch** (Round-Robin über die sortierten
@@ -112,7 +112,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       `make gates`) findet die Matrix-Syntax syntax-clean, und die Vereinigung der pro Shard
       gemeldeten Fall-Namen deckt **alle** 484 Fälle **genau einmal** ab (kein Fall doppelt, kein
       Fall fehlend) — Nachweis über die Job-Logs des Laufs (`gh run view <run-id> --log` o. ä.).
-- [ ] `harness/sensors/mutate.md` §Bindung und `harness/README.md` §Sensors/§Werkzeuge geprüft,
+- [x] `harness/sensors/mutate.md` §Bindung und `harness/README.md` §Sensors/§Werkzeuge geprüft,
       ob sie den heutigen Einzel-Job-Zustand explizit nennen (Fundstellen zum Zeitpunkt dieses
       Plans: `harness/sensors/mutate.md` §Bindung — „Nacht-Job `mutate.yml`" +
       `49m54s`-Einzeljob-Zahl; `harness/README.md` §Werkzeuge-Zeile zu `make mutate` nennt aktuell
@@ -122,17 +122,17 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       (Kommando daneben,
       [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert))
       statt der überholten Einzeljob-Zahl.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis
       `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zähler wird
       gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort
       und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieser Slice ist
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieser Slice ist
       wellenlos, darum hier geprüft, nicht von einer Welle-Closure.
 
 ## 3. Plan (vor Code)
@@ -195,24 +195,32 @@ dasteht.
   explizite Angabe — Stand dieses Plans, 2026-09-28) können bei reinem Index-Modulo-Round-Robin
   einzelne Shards ungleich belasten, wenn sich
   teure Fälle zufällig in einer Gruppe häufen, statt die Wall-Clock-Zeit gleichmäßig zu senken. —
-  **Ausgang:** <eingetreten: CO-NNN / slice-<Kennung> | entfallen: Grund | weiter offen: →
-  BEO-NNN im Register>
+  **Ausgang: weiter offen** → real bestätigt (erster Matrix-Lauf, `workflow_dispatch`
+  `36375725927`, 2026-09-28: `full-smoke`-Verteilung 6/4/5/2/2 über 5 Shards, Shard-Laufzeiten
+  21–37 Min) und im Register eingetragen:
+  [`BEO-ALL/mutate-shard-kosten-ungleich-verfehlt-zielkorridor`](../observations/BEO-ALL/mutate-shard-kosten-ungleich-verfehlt-zielkorridor/observation.md).
+  Kein Folge-Slice jetzt (Auftraggeber-Entscheidung: das Register trägt die Beobachtung, bis eine
+  künftige Planung eine kostengewichtete Zuteilung entscheidet).
 - Der gewählte Startwert der Shard-Konstante (5) trifft den Zielkorridor ~20–25 Minuten
   möglicherweise nicht beim ersten Versuch (Overhead durch Checkout/Image-Pull je Shard ist nicht
-  im Vorfeld gemessen). — **Ausgang:** <eingetreten: CO-NNN / slice-<Kennung> | entfallen: Grund |
-  weiter offen: → BEO-NNN im Register>
+  im Vorfeld gemessen). — **Ausgang: weiter offen** → derselbe reale Befund wie oben (der erste
+  Versuch brauchte bis zu 37 Min, außerhalb des Korridors) — dieselbe Ursache, kein zweiter
+  Registereintrag: siehe
+  [`BEO-ALL/mutate-shard-kosten-ungleich-verfehlt-zielkorridor`](../observations/BEO-ALL/mutate-shard-kosten-ungleich-verfehlt-zielkorridor/observation.md).
 - Erhöhte Actions-Minuten (`gh repo view --json visibility` → `PUBLIC`, gemessen 2026-09-28, damit
   für dieses Repo kostenfrei) sind eine Randbedingung, die bei einem künftigen Wechsel auf ein
-  privates Repo neu zu bewerten wäre — heute keine Blockade. — **Ausgang:** <eingetreten: CO-NNN /
-  slice-<Kennung> | entfallen: Grund | weiter offen: → BEO-NNN im Register>
+  privates Repo neu zu bewerten wäre — heute keine Blockade. — **Ausgang: weiter offen** →
+  [`BEO-ALL/mutate-matrix-actions-minuten-bei-privatem-repo`](../observations/BEO-ALL/mutate-matrix-actions-minuten-bei-privatem-repo/observation.md).
 - Die Zuteilungs-Berechnung liest die Fall-Liste zum Checkout-Zeitpunkt jedes Jobs; landet
   zwischen dem Anlegen der Matrix (`SHARD_COUNT` als statischer Wert im YAML) und dem Lauf ein
   Commit, der Fall-Dateien hinzufügt/entfernt, bleibt die Zuteilung innerhalb **eines**
   Workflow-Laufs konsistent (derselbe Checkout für alle Shards desselben Runs), nur über
   Läufe hinweg ändert sich die Verteilung — kein Risiko für die Vollständigkeits-Zusicherung
   eines einzelnen Laufs, aber erwähnenswert für die Interpretation historischer Laufzeiten. —
-  **Ausgang:** <eingetreten: CO-NNN / slice-<Kennung> | entfallen: Grund | weiter offen: →
-  BEO-NNN im Register>
+  **Ausgang: entfallen** — gewolltes, im Plan selbst beschriebenes Verhalten (derselbe Checkout
+  für alle Shards eines Laufs), kein Fehlerpotenzial für die Vollständigkeits-Zusicherung; der
+  reale Matrix-Lauf bestätigt exakt diese Zusicherung (484 Fälle, keine Lücke, keine Dopplung,
+  siehe §7).
 
 ## 7. Closure-Notiz
 
@@ -228,20 +236,65 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-kennung-a>, <slice-kennung-b>, <slice-kennung-c> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg
-  `evidence/slice-mutate-workflow-laeuft-in-parallelen-shards.md` | `evidence/slice-…md` in
-  `BEO-<KUERZEL>/<slug>/` ergänzt — Zähler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <Anker · Folge-Slice · Register, Ergebnis>
+- **Was hat funktioniert:** Der reale `workflow_dispatch`-Lauf (`36375725927`, 2026-09-28)
+  bestätigt die im DoD zugesagte Vollständigkeit unabhängig nachgeprüft: die Job-Logs aller fünf
+  Shards zeigen `mutate: 97 ok, 0 Befund(e)` (Shard 1, 0, 3, 4) bzw. `96 ok, 0 Befund(e)` (Shard
+  2) — Summe 484, deckungsgleich mit `ls test/mutations/*.sh | wc -l`. Die deterministische
+  Zuteilung, der Fehlkonfigurations-Guard und `select_cases()` waren bereits von Implementer,
+  Reviewer und Verifier je eigenständig nachgerechnet; der reale Lauf ist die vierte, jetzt
+  produktive Bestätigung derselben Rechnung. `fail-fast: false` hat sich real bewährt: Der
+  Infrastruktur-Fehlschlag auf Shard 2 (unten) verdeckte die vier grünen Shards nicht.
+- **Was ging anders als geplant:** Die reale Beschleunigung liegt bei grob **3–3,5×** (voller
+  Fall-Satz in ~36 Minuten Wall-Clock gegenüber vormals 1h45m–2h05m), nicht bei der anfangs mit
+  „484 ÷ 5" grob geschätzten Zielgröße nahe 5×, und auch außerhalb des im Plan angepeilten
+  Zielkorridors ~20–25 Minuten. Ursache ist real gemessen, nicht mehr nur vermutet: Die teuren
+  `full-smoke`-Fälle verteilen sich bei reinem Index-Modulo-Round-Robin ungleich (6/4/5/2/2 über
+  die fünf Shards), sodass der langsamste Shard die Wall-Clock-Zeit des gesamten Laufs bestimmt —
+  §6-Risiken 1 und 2 sind derselbe, jetzt eingetretene Befund (Ausgänge dort). Zusätzlich brach der
+  erste Versuch von Shard 2 (`444-traeger-lehnt-getragene-kombination-mit-nicht-getragen-meldung-ab`,
+  Job `108781043281`) mit `BEFUND … falscher Grund` ab — eigenständig im Job-Log nachvollzogen
+  (`gh api repos/pt9912/ai-harness-init/actions/jobs/108781043281/logs`, Zeile 311): Der
+  `full-smoke`-Schritt scheiterte am Docker-Pull von `ubuntu:26.04` mit
+  `502 Bad Gateway` von `registry-1.docker.io` — ein externer, transienter Registry-Ausfall, kein
+  Code-Defekt. `mutate.sh`s Matcher hat korrekt „falscher Grund" gemeldet: Es war tatsächlich der
+  falsche Grund. Der Rerun des einzelnen Jobs (`04:34:46`–`05:12:13` UTC) bestätigt das —
+  identischer Code-Stand, jetzt `ok`. Das Register (`grep -rliE "bad gateway|502|registry.*ausfall|
+  docker.*flake" docs/plan/planning/observations/` → keine Treffer, 2026-09-28) führt kein
+  vergleichbares Muster; ein einzelner, extern verursachter CI-Betriebs-Vorfall ohne erkennbare
+  Wiederholung ist kein Register-Kandidat (anders als ein wiederkehrender Defekt in eigenem Code
+  oder eigener Konfiguration) — hier bewusst **kein** Registereintrag, festgehalten nur in dieser
+  Notiz.
+- **Steering-Loop-Eintrag:** benannte Beobachtung, **kein** `liegt in`-Feld — mit diesem Slice
+  wird nichts verkörpert (kein Register-Eintrag hat mit diesem Beleg 3× erreicht). Zwei neue
+  Beobachtungen sind gezählt, nicht verkörpert: die ungleiche Shard-Kosten-Verteilung, die den
+  Zielkorridor real verfehlt (Zähler-Stand 1×), und die Actions-Minuten-Randbedingung bei einem
+  künftigen privaten Repo (Zähler-Stand 1×). Beide unten im Register.
+- **Beobachtungs-Register (`../observations/`):**
+  - [`BEO-ALL/mutate-shard-kosten-ungleich-verfehlt-zielkorridor`](../observations/BEO-ALL/mutate-shard-kosten-ungleich-verfehlt-zielkorridor/observation.md)
+    — neu angelegt, Beleg `evidence/slice-mutate-workflow-laeuft-in-parallelen-shards.md`, Zähler
+    1×, offen. Trägt §6-Risiken 1 und 2 (derselbe Befund).
+  - [`BEO-ALL/mutate-matrix-actions-minuten-bei-privatem-repo`](../observations/BEO-ALL/mutate-matrix-actions-minuten-bei-privatem-repo/observation.md)
+    — neu angelegt, Beleg `evidence/slice-mutate-workflow-laeuft-in-parallelen-shards.md`, Zähler
+    1×, offen. Trägt §6-Risiko 3.
+  - Der Docker-Hub-`502`-Infrastruktur-Vorfall auf Shard 2 (erster Versuch) bekommt **keinen**
+    Registereintrag: einmaliger, extern verursachter CI-Betriebs-Vorfall ohne Wiederholungsmuster
+    (Register-Sichtung ohne Treffer, siehe oben) und kein Defekt in eigenem Code/eigener
+    Konfiguration — festgehalten oben unter „Was ging anders als geplant".
+- **Folge-Slices:** keiner jetzt geschnitten (Auftraggeber-Entscheidung). Eine kostengewichtete
+  statt reiner Index-Modulo-Zuteilung ist ein möglicher künftiger Gegenstand; bis dahin trägt ihn
+  `BEO-ALL/mutate-shard-kosten-ungleich-verfehlt-zielkorridor` als Adresse für die nächste
+  Planung (§Vorgelagert — offene Beobachtungen sichten, Modul 5).
+- **Risiken aus §6:** Risiko 1 — weiter offen (Register, siehe oben). Risiko 2 — weiter offen
+  (derselbe Registereintrag). Risiko 3 — weiter offen (Register, siehe oben). Risiko 4 —
+  entfallen (gewolltes, beschriebenes Verhalten, real bestätigt). Details je Risiko in §6.
+- **Drei Paarungen** (Repo ohne Wellen-Betrieb, geprüft nach dem `git mv`):
+  - **Anker:** kein `liegt in`-Feld in diesem §7 — nichts wurde mit diesem Slice verkörpert.
+    Nichts zu paaren.
+  - **Folge-Slice:** keiner benannt — nichts zu paaren.
+  - **Register:** `BEO-ALL/mutate-shard-kosten-ungleich-verfehlt-zielkorridor` und
+    `BEO-ALL/mutate-matrix-actions-minuten-bei-privatem-repo` existieren beide als Verzeichnis und
+    tragen je genau einen Beleg in `evidence/`
+    (`slice-mutate-workflow-laeuft-in-parallelen-shards.md`).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
