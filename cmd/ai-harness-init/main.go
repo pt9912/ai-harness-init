@@ -118,6 +118,10 @@ Umgebung (bewusster Opt-in-Override der gepinnten Werte — LH-QA-02):
   A_CHECK_DIGEST    a-check-Digest (sticht den Tag)
   SKEL_<LANG>_VERSION  Toolchain-Version des Skeletts je Sprache (SKEL_GO_VERSION, SKEL_CPP_VERSION;
                        Default gepinnt, deterministisch)
+  AI_HARNESS_INIT_BASELINE_URL_BASE  Basis-URL des Baseline-Fetches (Default: der gepinnte
+                       GitHub-Release-Pfad des Kurses). Nur für Tests/Entwicklung gedacht —
+                       aendert NICHT den sha256-Pin: BASELINE_SHA256 wird unbedingt geprueft,
+                       unabhaengig von der Fetch-Quelle.
 `
 
 // sources buendelt die injizierbare Netz-Quelle des Bootstraps — nur noch die

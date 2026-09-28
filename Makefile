@@ -100,16 +100,12 @@ TEST_MEMORY ?= 1024m
 # die serielle Spur). Ohne `--iidfile` laese `docker run` den zuletzt geschriebenen
 # `-t`-Namen — den eines FREMDEN Workers, wenn dessen Build dazwischen fertig wurde: der
 # Container liefe dann gegen eine andere Mutation als die, die diese Zeile pruefen soll,
-# und das Urteil waere falsch, nicht nur verzoegert (real reproduziert: vier von fuenf
-# `make mutate`-Shards zeigten genau dieses Bild, ein anderer Test als der erwartete fiel;
-# ein isolierter Mikro-Versuch mit vier parallelen `docker build -t`/`docker run
-# <selber-Name>`-Paaren traf denselben ungueltigen Namen in rund 58 % der Faelle, 0 % mit
-# `--iidfile`). Der Ablagepfad liegt bewusst NICHT unter `.harness/state/` — der Ordner
-# ist von der Isolationskopie ausgeschlossen (ISOLATION_EXCLUDES,
-# harness/tools/mutate.sh) und existierte in einer Worker-Kopie darum nicht, eine
-# zusaetzliche `mkdir`-Zeile bräche wiederum plan_self_contained. `/tmp` existiert immer;
-# `$(subst /,_,$(CURDIR))` macht den Namen ohne Verzeichnis-Anlage eindeutig je
-# Worker-Baumkopie (`$(CURDIR)` ist deren Pfad).
+# und das Urteil waere falsch, nicht nur verzoegert. Der Ablagepfad liegt bewusst NICHT
+# unter `.harness/state/` — der Ordner ist von der Isolationskopie ausgeschlossen
+# (ISOLATION_EXCLUDES, harness/tools/mutate.sh) und existierte in einer Worker-Kopie darum
+# nicht, eine zusaetzliche `mkdir`-Zeile bräche wiederum plan_self_contained. `/tmp`
+# existiert immer; `$(subst /,_,$(CURDIR))` macht den Namen ohne Verzeichnis-Anlage
+# eindeutig je Worker-Baumkopie (`$(CURDIR)` ist deren Pfad).
 test-go: ## Nur die Go-Unit-Tests (docker run, Ressourcen-Deckel, kein Mount) — Docker-only
 	docker build --build-arg GO_VERSION=$(GO_VERSION) --iidfile=/tmp/.ai-harness-test-go-$(subst /,_,$(CURDIR)).iid --target test -t ai-harness-init:test .
 	docker run --rm --network none --pids-limit $(TEST_PIDS_LIMIT) --memory $(TEST_MEMORY) "$$(cat /tmp/.ai-harness-test-go-$(subst /,_,$(CURDIR)).iid)" go test -count=1 ./...

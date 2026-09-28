@@ -438,6 +438,7 @@ Alle Umgebungsvariablen sind **optional**. Ohne sie gelten festgelegte, reproduz
 | `DCHECK_DIGEST` | Abweichende Prüfsumme (Digest) des Prüf-Images; sticht die Referenz. |
 | `A_CHECK_IMAGE` | Abweichende Referenz für das Architektur-Prüf-Image (nur bei einer geschichteten Bauform genutzt). |
 | `A_CHECK_DIGEST` | Abweichende Prüfsumme (Digest) des Architektur-Prüf-Images; sticht die Referenz. |
+| `AI_HARNESS_INIT_BASELINE_URL_BASE` | Basis-URL des Baseline-Fetches, statt des gepinnten GitHub-Release-Pfads. Nur für Tests/Entwicklung gedacht. Ändert **nicht** die Prüfsumme: `BASELINE_SHA256` wird unbedingt geprüft, unabhängig von der Fetch-Quelle. |
 
 Beispiel mit mehreren Variablen:
 

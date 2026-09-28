@@ -78,8 +78,9 @@ func baselineTrees() []string { return []string{"regelwerk", "templates"} }
 type AssetFetch func(ctx context.Context, tag string) (io.ReadCloser, error)
 
 // baselineURLBaseOverrideEnv ist ein bewusster Opt-in-Override der Fetch-Basis
-// (LH-QA-02, wie COURSE_TAG/BASELINE_SHA256) und wird NICHT im Nutzer-Handbuch
-// gefuehrt: sein einziger Konsument ist der Prozess-Test
+// (LH-QA-02, wie COURSE_TAG/BASELINE_SHA256), dokumentiert in --help und im
+// Benutzerhandbuch (docs/user/benutzerhandbuch.md §Umgebungsvariablen). Sein
+// einziger Konsument im Testbaum ist der Prozess-Test
 // TestUnfallVektor_OhneArgumentImRepoWurzel (cmd/ai-harness-init). Der
 // `docker run`-Aufruf hinter `make test-go` traegt `--network none`; Docker
 // haelt lo dabei offen. Der Test nutzt genau das: er startet einen lokalen
@@ -87,7 +88,9 @@ type AssetFetch func(ctx context.Context, tag string) (io.ReadCloser, error)
 // Unfall-Vektors sonst unbeobachtbar macht — der produktive Fetch schlaegt
 // unter --network none sofort fehl, bevor ein mutierter Schreibpfad je
 // erreicht wird. Produktion laesst die Variable leer und faehrt den
-// gepinnten Default (seit slice-go-testlauf-bekommt-einen-ressourcendeckel).
+// gepinnten Default; gesetzt wirkt sie NUR auf die Fetch-Quelle, nicht auf
+// die sha256-Pruefung (baselineSHA bleibt in Baseline() unbedingt geprueft,
+// seit slice-go-testlauf-bekommt-einen-ressourcendeckel).
 const baselineURLBaseOverrideEnv = "AI_HARNESS_INIT_BASELINE_URL_BASE"
 
 // DownloadBaseline ist der Produktions-Fetcher: HTTP-GET des Release-Assets.
