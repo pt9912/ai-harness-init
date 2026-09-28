@@ -52,7 +52,7 @@ TRAEGER_SHA256_WINDOWS_ARM64 ?= a348a9d333f191fc6e9a33388ebb01cae3d2819d47821774
 TRAEGER_CARRIER ?= .harness/state/bin/ai-harness-init
 export TRAEGER_TAG TRAEGER_SHA256_LINUX_AMD64 TRAEGER_SHA256_LINUX_ARM64 TRAEGER_SHA256_DARWIN_AMD64 TRAEGER_SHA256_DARWIN_ARM64 TRAEGER_SHA256_WINDOWS_AMD64 TRAEGER_SHA256_WINDOWS_ARM64 TRAEGER_CARRIER
 
-.PHONY: help gates record-gates test test-bats test-go lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle traeger-fetch tap-check tap-nachzug vendor-baseline
+.PHONY: help gates record-gates test test-bats test-go lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle traeger-fetch tap-check tap-nachzug vendor-baseline
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
@@ -436,6 +436,13 @@ HOOK_OVERHEAD_CMD ?= $(HOST_BIN) span-emit
 
 hook-overhead: ## Aufschlag je Tool-Call messen (Median, ADR-0011-Schwelle) — NICHT in gates (Messung, kein Sensor)
 	@bash harness/tools/hook-overhead.sh $(HOOK_OVERHEAD_CMD)
+
+# Beobachtet von aussen und meldet, waehrend Subagenten laufen. NICHT in gates:
+# es laeuft als Dauerschleife ohne Exit-Code-Urteil ueber einen Repo-Zustand,
+# sondern als Melder fuer den Menschen bzw. Agenten, der Subagenten startet. Es
+# kann nichts abbrechen — Grenze und Ausgabeform stehen im Skriptkopf.
+agent-watch: ## Speicher-Melder waehrend Subagenten laufen (WARN=<GB> ABBRUCH=<GB> INTERVALL=<s>, Default 10/16/5) — NICHT in gates
+	@bash harness/tools/agent-watch.sh $(WARN) $(ABBRUCH) $(INTERVALL)
 
 # Bewegt einen Slice-Plan zwischen den Lifecycle-Verzeichnissen und zieht seine
 # Verweise nach — Antwort auf BEO-003 · seit slice-144. NICHT in gates: es

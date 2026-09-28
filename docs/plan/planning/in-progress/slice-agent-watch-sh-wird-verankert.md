@@ -77,13 +77,21 @@ Melder-Verankerung — der andere Anteil, der Ressourcen-Deckel selbst, geht an
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `harness/tools/agent-watch.sh` | lesen, ggf. Kopf ergänzen | Bestand prüfen, bevor verankert wird |
-| `Makefile` | update (neues Ziel) **oder** unverändert, falls kein Gate-Charakter sinnvoll ist | DoD (1) |
-| [`harness/README.md`](../../../../harness/README.md) | update (eine Zeile, Sensors- oder Werkzeuge-Tabelle) | DoD (1) |
-| `test/` | ggf. neu (falls Gate-Charakter) | Abdeckung, falls DoD (1) einen funktionalen Wächter verlangt |
+| `harness/tools/agent-watch.sh` | gelesen, unverändert | Bestand geprüft: Dauerschleife ohne Exit-Code-Urteil über einen Repo-Zustand — kein Gate-Kandidat, Kopf trägt Zweck/Grenze bereits vollständig, kein Ergänzungsbedarf |
+| `Makefile` | update (neues Ziel `agent-watch`, reines Werkzeug, `NICHT in gates`) | DoD (1) |
+| [`harness/README.md`](../../../../harness/README.md) | update (eine Zeile, Werkzeuge-Tabelle, `kein Gate`-Marke) | DoD (1) |
+| `.d-check.yml` | update (zwei Stellen: Kommentar-Aufzählung + `targets.exempt-targets`-Liste) | ohne diesen Eintrag meldet `docs-check` das neue Makefile-Ziel als Gate-Phantom (Richtung 2, §Prosa-Erwähnung ohne Vollständigkeits-Deckung) — in der ursprünglichen Plan-Tabelle nicht vorgesehen, ergibt sich aus der Werkzeug-Wahl |
+| `test/` | entfällt | Charakter ist reines Werkzeug (kein Gate, kein funktionaler Wächter über Repo-Zustand) — kein DoD-Punkt verlangt hier einen Test; shell-lint und comment-claims erfassen das Skript bereits über ihre bestehenden Globs (`harness/tools/*.sh`), ohne Änderung dort |
 
 **Reihenfolge:** erst das Skript lesen und seinen Charakter (Gate vs.
-Werkzeug) feststellen, dann den Träger wählen, dann verankern.
+Werkzeug) feststellen, dann den Träger wählen, dann verankern. **Ergebnis:**
+reines Werkzeug — das Skript läuft als Dauerschleife und trifft nie ein
+Exit-Code-Urteil über einen Repo-Zustand; es beobachtet und meldet, es prüft
+nicht (dieselbe Unterscheidung wie bei `slice-mv`/`hook-overhead`/`span-clean`
+in derselben Werkzeuge-Tabelle). Die Verankerung selbst ist reines Wiring
+(Makefile-Ziel + README-Zeile + `.d-check.yml`-Registrierung) ohne
+Norm-Aussage über die Werkzeug-Landschaft — §1 Ausschluss 3 entfällt damit,
+kein MR-Eintrag.
 
 ## 4. Trigger
 
