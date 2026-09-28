@@ -528,7 +528,7 @@ Geschrieben von der Rolle Planner in frischem Kontext
   (`grep -c 'seit slice-tap-nachzug-sync-schreibt-die-formel-ins-tap' .claude/commands/plan-welle.md` → 1);
   dieselbe Zeile steht als Anker im `state.md` von `bedingung-ohne-traeger-im-lauf-den-sie-bindet`. (b)
   *Folge-Slice* — die zwei genannten Folge-Slices existieren als Datei im Planning-Lifecycle, beide in `open/`
-  (`ls docs/plan/planning/open/slice-release-job-tap-nachzug-und-schritt-7-folgt.md docs/plan/planning/open/slice-sync-waechter-tragen-mutations-faelle.md`);
+  (`ls docs/plan/planning/next/slice-release-job-tap-nachzug-und-schritt-7-folgt.md docs/plan/planning/open/slice-sync-waechter-tragen-mutations-faelle.md`);
   die Kennung `slice-153` aus §8 steht in der Namens-Form mit Suffix als Datei in `open/`
   (`ls docs/plan/planning/open/slice-153-*`). (c) *Register* — jede in dieser Notiz, in §6 und §8 genannte
   Beobachtung existiert als Verzeichnis, und jede trägt ein nicht leeres `evidence/`
