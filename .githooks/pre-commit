@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# pre-commit — der git-eigene Traeger gegen fremde Index-Eintraege in
+# `git commit --amend` (AGENTS.md §3.10, Beobachtungs-Register
+# BEO-ALL/amend-committet-fremde-index-eintraege-mit — seit
+# slice-amend-haelt-den-index-pfadrein). git ruft diesen Hook ohne Argumente
+# auf; Exit ungleich 0 bricht den Commit ab.
+#
+# WARUM ER AM COMMIT HAENGT UND NICHT AN EINER DISZIPLIN-REGEL: er feuert bei
+# jedem `git commit` in diesem Klon, sobald `make hooks-install` gelaufen ist
+# — unabhaengig davon, welche Rolle den Commit ausloest (dieselbe Reichweiten-
+# Abwaegung wie beim `commit-msg`-Traeger, harness/README.md §Traceability).
+#
+# AKTIVIERUNG UND GRENZEN: `core.hooksPath` ist lokale Konfiguration und
+# reist nicht mit dem Klon; `make hooks-install` setzt sie.
+# `git commit --no-verify` umgeht diesen Hook. Die Pruef-Logik selbst und
+# ihre weiteren Grenzen stehen in harness/tools/pre-commit-amend-guard.sh.
+#
+# GEBAUT WIE DER COMMIT-PFAD ES VERLANGT (LH-QA-03): bash und coreutils, kein
+# Docker, kein d-check-Image, kein Netz. Die Pruefung selbst liegt in
+# harness/tools/pre-commit-amend-guard.sh — harness/tools/, damit shell-lint
+# sie deckt.
+set -euo pipefail
+
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+exec bash "$here/../harness/tools/pre-commit-amend-guard.sh" "$@"

@@ -118,14 +118,22 @@ Implementer-Lieferung), nicht als Teil dieses Verdikts.
 
 ## 2. Definition of Done
 
-- [ ] Ein Träger (`.githooks/pre-commit`-Hook, siehe Architect-Verdikt oben) hält `--amend` gegen
+- [x] Ein Träger (`.githooks/pre-commit`-Hook, siehe Architect-Verdikt oben) hält `--amend` gegen
       fremde Index-Einträge ab. *(Rot-Kommando: zwei parallele Vorgänge simulieren — ein eigener
       Commit, danach ein fremder Datei-Stage, dann `--amend` — ohne Träger reißt der Amend den
-      fremden Stand mit; mit Träger schlägt er an oder verhindert das Mitreißen.)*
-- [ ] Zielort und schreibende Rolle bestätigt der Architect (§3.8). — Siehe §1 *Architect-Verdikt*:
+      fremden Stand mit; mit Träger schlägt er an oder verhindert das Mitreißen.)* Real gefahren an
+      einem konstruierten Repo, alle drei Beleg-Muster der Beobachtung nachgestellt (eigener Commit
+      + parallel gestagte fremde Datei + `--amend`; sowie der dritte Beleg — Amend trifft einen
+      zwischenzeitlich fremd gewordenen HEAD): ohne Träger reißt `--amend` die fremde Datei mit
+      (Exit 0, `git show --name-only HEAD` listet sie), mit Träger bricht der Commit ab (Exit 1,
+      HEAD unverändert, fremder Pfad bleibt gestaged) — der Fluchtpunkt
+      `AMEND_EXPECTED_PATHS="<pfad>"` lässt einen bewusst erweiterten Amend durch.
+- [x] Zielort und schreibende Rolle bestätigt der Architect (§3.8). — Siehe §1 *Architect-Verdikt*:
       Träger `.githooks/pre-commit` + `harness/tools/`, schreibende Rolle Implementer, kein
       ADR-Bedarf, MR-Eintrag folgt nach Lieferung (Architect-Übergabe).
-- [ ] `make gates` grün.
+- [x] `make gates` grün. — Working-Tree-Hash `0a22d05ba9feb07ce2e855536ba76ebd96b9432fa792a3704184865f1a05b7ca`
+      (`.harness/state/gates-passed.diffsha`, deckungsgleich mit
+      `bash harness/tools/working-tree-hash.sh`).
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben.
@@ -136,6 +144,9 @@ Implementer-Lieferung), nicht als Teil dieses Verdikts.
 |---|---|---|
 | `.githooks/pre-commit` (neu) + zugehörige Prüfung unter `harness/tools/` | neu | Träger des Hooks — Architect-Verdikt §1, Implementer-Artefakt analog `.githooks/commit-msg` |
 | [`harness/README.md`](../../../../harness/README.md) §Sensors/Werkzeuge oder §Traceability | update | Doku-Pflicht bei neuem Werkzeug/Träger — analog der bestehenden `commit-msg`-Tabelle |
+| `test/pre-commit-amend-guard.bats` + `test/mutations/497-pre-commit-amend-guard-blankoscheck.sh` | neu | Zähne für die reinen Funktionen `has_amend_flag()`/`decide()` (bats-Image ohne `git`, dieselbe Trennung wie `history-range-guard.sh`), plus der rot färbende Mutations-Fall (AGENTS.md §3.6/§19) |
+| `Makefile` (`shell-lint`-Rezept) | update | `.githooks/pre-commit` fehlte in der geprüften Dateiliste — `commit-msg` stand dort schon namentlich |
+| [`docs/plan/planning/in-progress/roadmap.md`](roadmap.md) | update | Ruhe-Marker „Nichts in Arbeit" entfernt — dieser Slice liegt jetzt in `in-progress/` (Plan-Defekt-Rücksprung 16→13, beim `make gates`-Lauf gefunden, `d-check`-Befund `planning-drift`) |
 | `harness/conventions/MR-<NNN>-…` (neu, **nach** Lieferung, Architect) | neu, Folge-Schritt | Dokumentiert die Hook-Erweiterung des Durchsetzungsschicht-Artefakt-Sets — Architect-Verdikt §1 |
 
 ## 4. Trigger

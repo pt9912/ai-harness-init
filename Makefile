@@ -205,7 +205,7 @@ mutate: ## Mutations-Sensor fuer AGENTS 3.6: faerbt jede Mutation ihren Waechter
 # Hook-Namen —, wird darum einzeln genannt statt ueber einen Glob.
 shell-lint: ## Shell-Hooks/-Helfer linten (shellcheck) im gepinnten Image — Docker-only (ADR-0003)
 	docker run --rm -v "$(CURDIR)":/mnt:ro -w /mnt $(SHELLCHECK_IMAGE) \
-		.claude/hooks/*.sh harness/tools/*.sh internal/emit/templates/*.sh internal/emit/templates/enforce/*.sh test/mutations/*.sh .githooks/commit-msg
+		.claude/hooks/*.sh harness/tools/*.sh internal/emit/templates/*.sh internal/emit/templates/enforce/*.sh test/mutations/*.sh .githooks/commit-msg .githooks/pre-commit
 
 # Haelt Kommentar-Behauptungen gegen ihre Sensoren (AGENTS.md 3.6). Hermetisch —
 # reines bash+awk auf dem Arbeitsbaum, kein Docker, kein Netz —, deshalb IN gates.

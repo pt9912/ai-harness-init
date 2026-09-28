@@ -196,6 +196,15 @@ Gemessen wird die ganze Kette am gebootstrappten Ziel von
 [`make full-smoke`](sensors/full-smoke.md): Aktivierung, ein Commit ohne Kennung (der fällt), einer
 mit Kennung (der durchgeht) und die Umgehung.
 
+**Ein zweiter git-eigener Hook liegt neben `commit-msg`: `.githooks/pre-commit`.** Er trägt eine
+andere Zusage — nicht die Commit-Message, sondern der Index vor `git commit --amend`: Reißt der
+Amend Pfade mit, die der amendierte Commit selbst nicht trug, bricht er ab (Fluchtpunkt
+`AMEND_EXPECTED_PATHS` für einen bewusst erweiterten Amend). Beide Hooks teilen sich Aktivierung
+(`make hooks-install`) und Umgehung (`--no-verify`). Seine Prüfung liegt in
+[`harness/tools/pre-commit-amend-guard.sh`](../harness/tools/pre-commit-amend-guard.sh), deren
+Kopfkommentar Zusage, Erkennung und Grenze vollständig trägt — Anlass ist das Beobachtungs-Register
+(`docs/plan/planning/observations/BEO-ALL/amend-committet-fremde-index-eintraege-mit/`, 3 Belege).
+
 ## Safety and scope boundaries
 
 **Der Dogfood-Go-Gate-Stack ist vollständig**: `make lint` / `make build` / `make test` (Go
