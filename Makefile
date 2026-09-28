@@ -441,8 +441,8 @@ hook-overhead: ## Aufschlag je Tool-Call messen (Median, ADR-0011-Schwelle) — 
 # es laeuft als Dauerschleife ohne Exit-Code-Urteil ueber einen Repo-Zustand,
 # sondern als Melder fuer den Menschen bzw. Agenten, der Subagenten startet. Es
 # kann nichts abbrechen — Grenze und Ausgabeform stehen im Skriptkopf.
-agent-watch: ## Speicher-Melder waehrend Subagenten laufen (WARN=<GB> ABBRUCH=<GB> INTERVALL=<s>, Default 10/16/5) — NICHT in gates
-	@bash harness/tools/agent-watch.sh $(WARN) $(ABBRUCH) $(INTERVALL)
+agent-watch: ## Speicher-Melder waehrend Subagenten laufen (WARN=<GB> ABORT=<GB> INTERVAL=<s>, Default 10/16/5) — NICHT in gates
+	@bash harness/tools/agent-watch.sh $(WARN) $(ABORT) $(INTERVAL)
 
 # Bewegt einen Slice-Plan zwischen den Lifecycle-Verzeichnissen und zieht seine
 # Verweise nach — Antwort auf BEO-003 · seit slice-144. NICHT in gates: es
