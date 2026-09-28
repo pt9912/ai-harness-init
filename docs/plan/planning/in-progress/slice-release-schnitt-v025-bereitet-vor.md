@@ -146,10 +146,13 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       ändert keinen; `releasing.md` selbst bleibt unverändert (die Prozedur
       ist bereits vollständig beschrieben, dieser Slice führt sie nur aus).
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register (`../reconciliation.md`) fortgeschrieben,
-      **falls** dieser Slice einen Inventur-Fund auflöst — entfällt: dieses
-      Repo hat keinen Brownfield-Bootstrap und führt die Register-Datei
-      nicht.
+- [ ] Reconciliation-Register fortgeschrieben, **falls** dieser Slice einen
+      Inventur-Fund auflöst — **entfällt:** dieses Repo hat keinen
+      Brownfield-Bootstrap und führt die Register-Datei nicht
+      (`ls docs/plan/planning/reconciliation.md` → nicht vorhanden). Der Pfad
+      steht als **Kommando-Operand**, weil die vendored Vorlage ihn als
+      blanken Inline-Code führt und `codepaths` ihn dann als fehlendes Ziel
+      meldet.
 - [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues
       Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen
       `evidence/`; **kein Zähler wird gesetzt**, er folgt aus den Dateien.
@@ -249,7 +252,8 @@ dasteht.
   Commit, den dieser Slice verifiziert hat | eingetreten: eine erneute
   `make gates`-Verifikation unmittelbar vor dem Tag-Push wird nötig, außerhalb
   der DoD dieses Slice>
-- **d-check-Pin-Sprung (MR-073, `v0.77.0`→`v0.79.0`) liegt kurz vor diesem
+- **d-check-Pin-Sprung ([`MR-073`](../../../../harness/conventions.md#mr-073),
+  `v0.77.0`→`v0.79.0`) liegt kurz vor diesem
   Slice.** Ein neues Modul oder eine neue `structure`-Bedingung könnte
   `docs-check` am Tag-Baum anders bewerten als beim letzten grünen Lauf. —
   **Ausgang:** <entfallen: `make gates` bleibt grün, keine neue Diskrepanz |
