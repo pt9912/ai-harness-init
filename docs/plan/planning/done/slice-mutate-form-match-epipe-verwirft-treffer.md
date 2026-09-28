@@ -110,7 +110,8 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       (`test/mutate-driver.bats`, ggf. ergänzt um einen neuen `test/mutations/`-Fall) — der
       Implementer prüft zuerst, welcher Rahmen für diese konkrete Zusicherung trägt, bevor er
       wählt. Vor dem Fix real rot, danach grün (AGENTS.md §3.6). Fall `496-…`, Anker-Eindeutigkeit
-      (MR-071) von Reviewer und Verifier unabhängig bestätigt (genau 1 Treffer).
+      ([`MR-071`](../../../../harness/conventions.md#mr-071)) von Reviewer und Verifier unabhängig
+      bestätigt (genau 1 Treffer).
 - [x] `harness/sensors/mutate.md` geprüft, ob die behobene Fehlerklasse oder ihre Grenze dort
       nachzutragen ist; entweder nachgezogen oder — falls kein bestehender Aussage-Satz betroffen
       ist — im Slice-Plan begründet, warum kein Nachzug nötig war. Kein Nachzug nötig (§3
