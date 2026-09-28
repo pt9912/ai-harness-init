@@ -132,8 +132,12 @@ hält den Inhalt dieser Regel — sie ist Prosa; der Träger ist die Rolle, die 
 ## Bindung
 
 [`AGENTS.md`](../../AGENTS.md) §3.6; slice-026; kein Gate-Versprechen. Mechanischer Auslöser
-ist der **Nacht-Job** `mutate.yml` (`schedule` + `workflow_dispatch`) — die Klassifikation des
-Regelwerks ordnet die Mutationstests der Stufe **Post-integration** zu
-(`grundlagen-klassifikation.md` §Klassifikation: *„nach Merge : Mutation Tests"*, *„teurer,
-aber tolerierbar"*), und der Lauf kostete `49m54s` von `49m58s` eines Pushes
-(`gh api "repos/pt9912/ai-harness-init/actions/jobs/<job-id>/logs"`).
+ist der **Nacht-Workflow** `mutate.yml` (`schedule` + `workflow_dispatch`), der den Fall-Satz
+als **Matrix aus parallelen Shard-Jobs** fährt (deterministische, index-basierte Zuteilung über
+`MUTATE_CASES`, `fail-fast: false`) statt eines Einzel-Jobs — die Klassifikation des Regelwerks
+ordnet die Mutationstests der Stufe **Post-integration** zu (`grundlagen-klassifikation.md`
+§Klassifikation: *„nach Merge : Mutation Tests"*, *„teurer, aber tolerierbar"*); die
+Kostenmessung `49m54s` von `49m58s` eines Pushes
+(`gh api "repos/pt9912/ai-harness-init/actions/jobs/<job-id>/logs"`) stammt aus der Zeit vor
+der Matrix und begründet weiterhin, warum der Lauf nicht im Push-Pfad steht — die Wall-Clock-Zeit
+eines Matrix-Laufs ist ein eigener, noch ausstehender Beleg.

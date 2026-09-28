@@ -22,6 +22,20 @@
 #
 # CHECKOUT-TIEFE: der eine `actions/checkout` unten bleibt bei der Default-Tiefe 1
 # — `make mutate` loest keinen history-lesenden d-check-Modul-Lauf aus.
+#
+# MATRIX AUS PARALLELEN SHARDS. Ein Workflow-Step vor `make mutate` teilt die
+# sortierten Fall-Namen unter `test/mutations/*.sh` per Index-Modulo deterministisch
+# auf die Shards auf (kein `nproc`- oder Laufzeit-Bezug — derselbe
+# Reproduzierbarkeits-Grundsatz wie beim festen `MUTATE_JOBS`-Default,
+# harness/tools/mutate.sh um Zeile 196-201: zwei Laeufe auf zwei Maschinen sollen in
+# ihrer Wanduhr vergleichbar bleiben) und uebergibt das Ergebnis als `MUTATE_CASES` an
+# den Shard-eigenen `make mutate`-Aufruf; `select_cases()` bricht fail-closed ab,
+# sollte ein berechneter Name nicht existieren. Die Shard-Zahl ist ausschliesslich die
+# Laenge der Liste `matrix.shard` unten — `strategy.job-total` liest sie strukturell
+# aus, kein zweiter Ort haelt denselben Wert. Fuenf Shards zielen auf einen
+# Wall-Clock-Korridor von ~20-25 Minuten fuer den naechtlichen Lauf; die Konstante wird
+# anhand der Wall-Clock-Zeit eines echten Matrix-Laufs ueberprueft und mit Begruendung
+# angepasst, falls sie den Korridor verfehlt (harness/sensors/mutate.md).
 
 name: mutate
 
@@ -41,6 +55,30 @@ concurrency:
 jobs:
   mutate:
     runs-on: ubuntu-24.04
+    # fail-fast: false wie in release.yml start-smoke: ein Bruch auf einem Shard soll
+    # die Befunde der uebrigen Shards nicht verdecken.
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4]
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: Shard-Zuteilung berechnen (deterministisch, Index-Modulo)
+        id: shard
+        # `matrix.shard` (0..4, aus der Liste oben) und `strategy.job-total` (die Laenge
+        # dieser Liste) sind beide strukturell aus der Matrix-Deklaration abgeleitet, nicht
+        # aus Runner-Hardware oder Checkout-Uhrzeit — dieselbe sortierte Namensliste ergibt
+        # bei gleicher Shard-Zahl bei jedem Lauf dieselbe Zuteilung.
+        run: |
+          set -euo pipefail
+          total="${{ strategy.job-total }}"
+          idx="${{ matrix.shard }}"
+          cases="$(cd test/mutations && for f in *.sh; do printf '%s\n' "${f%.sh}"; done | sort | awk -v n="$total" -v i="$idx" '(NR - 1) % n == i { printf "%s ", $0 }')"
+          if [ -z "$cases" ]; then
+            echo "mutate-shard: Shard $idx (von $total) hat keine Faelle zugeteilt bekommen." >&2
+            exit 1
+          fi
+          echo "cases=$cases" >> "$GITHUB_OUTPUT"
       - run: make mutate
+        env:
+          MUTATE_CASES: ${{ steps.shard.outputs.cases }}
