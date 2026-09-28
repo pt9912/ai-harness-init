@@ -114,6 +114,16 @@ und die Regel einmal aufheben, bis der Test fällt.
 unverändert" zusagt, während ein `MkdirAll` davor läuft.
 **Richtig:** die Zusage auf das einschränken, was der Code hält.
 
+**Falsch:** ein Wächter, dessen Fall-Satz vollständig wirkt und der grün bleibt, weil er
+über einer nachgebauten Eingabe läuft — einer Fixture, einem Stub, einem injizierten
+synthetischen Wert —, während die reale Quelle unbeobachtet bleibt, die die Zusage
+eigentlich trägt: ein Makefile-Pin, eine externe Schnittstelle, ein vendored Fremdtext.
+**Richtig:** das bewusste Brechen an der realen Quelle selbst vollziehen — einen echten
+Pin-Wert verfälschen, nicht nur seinen injizierten Stellvertreter —, oder, wo sie für den
+Fall-Satz nicht erreichbar ist, die Lücke benennen statt sie durch den Fixture-Erfolg zu
+verdecken. Kein Sensor hält eine Fixture gegen ihre reale Quelle; Träger bleibt der Lauf,
+der den Wächter schreibt · seit slice-release-schnitt-v025-bereitet-vor.
+
 **Feedback:** `make mutate` (kein Gate; geführt in
 [`harness/README.md`](harness/README.md) §Werkzeuge) fährt ein kuratiertes Set aus
 *(Mutation → erwartet rot färbender Test)* und meldet jeden **gelisteten** Wächter,
