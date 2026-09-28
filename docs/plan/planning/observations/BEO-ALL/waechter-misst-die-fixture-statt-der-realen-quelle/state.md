@@ -1,6 +1,8 @@
-**Stand:** offen
+**Stand:** verkörpert
 
-Kein Sensor meldet die Klasse: `make mutate` urteilt über den Fall-Satz, nicht über die Eingabe,
-gegen die ein Wächter läuft, und kein Modul aus `modules:` der
-[`.d-check.yml`](../../../../../../.d-check.yml) hält eine Fixture gegen ihre reale Quelle. Träger
-ist der Lauf, der den Wächter schreibt, und die Frage danach, welche Eingabe seine Zusage trägt.
+Zielort: [`AGENTS.md`](../../../../../../AGENTS.md) §3.6 — das vierte Falsch/Richtig-Paar: ein
+Wächter, der grün bleibt, weil er über einer nachgebauten Eingabe statt der realen Quelle läuft.
+Herkunfts-Anker: `· seit slice-release-schnitt-v025-bereitet-vor`.
+
+**Grenze der Verkörperung, benannt** — die Zeile selbst trägt sie: Kein Sensor hält eine Fixture
+gegen ihre reale Quelle; Träger bleibt der Lauf, der den Wächter schreibt.
