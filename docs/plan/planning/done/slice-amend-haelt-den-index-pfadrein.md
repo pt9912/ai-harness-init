@@ -148,7 +148,7 @@ Implementer-Lieferung), nicht als Teil dieses Verdikts.
 | [`harness/README.md`](../../../../harness/README.md) §Sensors/Werkzeuge oder §Traceability | update | Doku-Pflicht bei neuem Werkzeug/Träger — analog der bestehenden `commit-msg`-Tabelle |
 | `test/pre-commit-amend-guard.bats` + `test/mutations/497-pre-commit-amend-guard-blankoscheck.sh` | neu | Zähne für die reinen Funktionen `has_amend_flag()`/`decide()` (bats-Image ohne `git`, dieselbe Trennung wie `history-range-guard.sh`), plus der rot färbende Mutations-Fall (AGENTS.md §3.6/§19) |
 | `Makefile` (`shell-lint`-Rezept) | update | `.githooks/pre-commit` fehlte in der geprüften Dateiliste — `commit-msg` stand dort schon namentlich |
-| [`docs/plan/planning/in-progress/roadmap.md`](roadmap.md) | update | Ruhe-Marker „Nichts in Arbeit" entfernt — dieser Slice liegt jetzt in `in-progress/` (Plan-Defekt-Rücksprung 16→13, beim `make gates`-Lauf gefunden, `d-check`-Befund `planning-drift`) |
+| [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | update | Ruhe-Marker „Nichts in Arbeit" entfernt — dieser Slice liegt jetzt in `in-progress/` (Plan-Defekt-Rücksprung 16→13, beim `make gates`-Lauf gefunden, `d-check`-Befund `planning-drift`) |
 | `harness/conventions/MR-<NNN>-…` (neu, **nach** Lieferung, Architect) | neu, Folge-Schritt | Dokumentiert die Hook-Erweiterung des Durchsetzungsschicht-Artefakt-Sets — Architect-Verdikt §1 |
 
 ## 4. Trigger
@@ -200,7 +200,9 @@ DoD vollständig, Review ohne blockierenden Befund, Closure-Notiz geschrieben.
   `slice-174-archivierung-emittieren`,
   `slice-d-check-pin-bringt-links-lookahead-und-referenz-definitionen` — 3×).
   **Offene Übergabe an den Architect:** Die zugehörige Adaptions-Block-Dokumentation
-  (`harness/conventions/MR-<NNN>-…`, analog `MR-002`) ist laut Architect-Verdikt (§1) ein
+  (`harness/conventions/MR-<NNN>-…`, analog
+  [`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks))
+  ist laut Architect-Verdikt (§1) ein
   eigenständiger Folgeschritt **nach** dieser Lieferung und wurde in diesem Slice bewusst nicht
   mitgeliefert — sie ist kein DoD-Punkt dieses Slice. Der Registereintrag
   `BEO-ALL/amend-committet-fremde-index-eintraege-mit` steht deshalb auf `verkörpert` (der Träger
