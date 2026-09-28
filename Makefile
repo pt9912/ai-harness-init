@@ -90,9 +90,29 @@ TEST_MEMORY ?= 1024m
 # Pakete unter warmem Kompilat-Cache "(cached)" ueberspringt (Dockerfile-Stufe warm). `make mutate` erbt
 # diesen Deckel strukturell: seine Faelle mit `# verify: test-go` (und der volle
 # `make test`) rufen genau dieses Ziel.
+#
+# `--iidfile` statt eines gelesenen `-t`-Namens: `make mutate` faehrt mehrere Worker mit
+# je einer eigenen Baumkopie parallel (MUTATE_JOBS), jeder ruft dieses Ziel fuer sich,
+# alle gegen denselben Docker-Daemon. Der `-t`-Name bleibt fuer Menschen (docker images),
+# traegt aber KEIN Urteil mehr — `docker build` und `docker run` je Zeile bleiben so
+# bauartbedingt eigenstaendig lesbar (harness/tools/mutate.sh, plan_self_contained: jede
+# Zeile muss fuer sich mit `docker build`/`docker run` beginnen, sonst faellt der Modus in
+# die serielle Spur). Ohne `--iidfile` laese `docker run` den zuletzt geschriebenen
+# `-t`-Namen — den eines FREMDEN Workers, wenn dessen Build dazwischen fertig wurde: der
+# Container liefe dann gegen eine andere Mutation als die, die diese Zeile pruefen soll,
+# und das Urteil waere falsch, nicht nur verzoegert (real reproduziert: vier von fuenf
+# `make mutate`-Shards zeigten genau dieses Bild, ein anderer Test als der erwartete fiel;
+# ein isolierter Mikro-Versuch mit vier parallelen `docker build -t`/`docker run
+# <selber-Name>`-Paaren traf denselben ungueltigen Namen in rund 58 % der Faelle, 0 % mit
+# `--iidfile`). Der Ablagepfad liegt bewusst NICHT unter `.harness/state/` — der Ordner
+# ist von der Isolationskopie ausgeschlossen (ISOLATION_EXCLUDES,
+# harness/tools/mutate.sh) und existierte in einer Worker-Kopie darum nicht, eine
+# zusaetzliche `mkdir`-Zeile bräche wiederum plan_self_contained. `/tmp` existiert immer;
+# `$(subst /,_,$(CURDIR))` macht den Namen ohne Verzeichnis-Anlage eindeutig je
+# Worker-Baumkopie (`$(CURDIR)` ist deren Pfad).
 test-go: ## Nur die Go-Unit-Tests (docker run, Ressourcen-Deckel, kein Mount) — Docker-only
-	docker build --build-arg GO_VERSION=$(GO_VERSION) --target test -t ai-harness-init:test .
-	docker run --rm --network none --pids-limit $(TEST_PIDS_LIMIT) --memory $(TEST_MEMORY) ai-harness-init:test go test -count=1 ./...
+	docker build --build-arg GO_VERSION=$(GO_VERSION) --iidfile=/tmp/.ai-harness-test-go-$(subst /,_,$(CURDIR)).iid --target test -t ai-harness-init:test .
+	docker run --rm --network none --pids-limit $(TEST_PIDS_LIMIT) --memory $(TEST_MEMORY) "$$(cat /tmp/.ai-harness-test-go-$(subst /,_,$(CURDIR)).iid)" go test -count=1 ./...
 
 # Wirkungs-Waechter des pids-Deckels: internal/resourcecap/resourcecap_test.go startet
 # eine feste Zahl (700) gleichzeitiger Prozesse und erwartet, dass mindestens einer am
@@ -100,10 +120,14 @@ test-go: ## Nur die Go-Unit-Tests (docker run, Ressourcen-Deckel, kein Mount) �
 # `go test ./...` (test-go) heraus — die Last, die sie erzeugt, traefe sonst andere
 # Pakete, die selbst Prozesse starten (echte Interferenz, nicht nur Zeitverlust).
 # Isolierter, eigener Aufruf desselben Deckels — NICHT in gates: er prueft eine
-# Umgebungs-Eigenschaft (haelt der Deckel?), kein Verhalten des Codes.
+# Umgebungs-Eigenschaft (haelt der Deckel?), kein Verhalten des Codes. `--iidfile` aus
+# demselben Grund wie bei test-go (kein gelesener `-t`-Name, `/tmp` statt
+# `.harness/state/` — dieselbe Begruendung dort) — eigener Dateiname, falls beide Ziele
+# je Baumkopie nacheinander liefen, waere ein gemeinsamer Name trotzdem eine unnoetige
+# Kopplung.
 test-go-pids-guard: ## Wirkungs-Waechter fuer den pids-Deckel (DoD 2) — Docker-only, NICHT in gates
-	docker build --build-arg GO_VERSION=$(GO_VERSION) --target test -t ai-harness-init:test .
-	docker run --rm --network none --pids-limit $(TEST_PIDS_LIMIT) --memory $(TEST_MEMORY) ai-harness-init:test go test -tags resourcecap -run TestFesteLastUeberschreitetPidsDeckel -count=1 ./internal/resourcecap/...
+	docker build --build-arg GO_VERSION=$(GO_VERSION) --iidfile=/tmp/.ai-harness-test-go-pids-guard-$(subst /,_,$(CURDIR)).iid --target test -t ai-harness-init:test .
+	docker run --rm --network none --pids-limit $(TEST_PIDS_LIMIT) --memory $(TEST_MEMORY) "$$(cat /tmp/.ai-harness-test-go-pids-guard-$(subst /,_,$(CURDIR)).iid)" go test -tags resourcecap -run TestFesteLastUeberschreitetPidsDeckel -count=1 ./internal/resourcecap/...
 
 lint: ## Go-Lint (golangci-lint, Dockerfile lint-Stage, gepinntes Image) — Docker-only (ADR-0003)
 	docker build --no-cache-filter lint --build-arg GO_VERSION=$(GO_VERSION) --build-arg GOLANGCI_LINT_VERSION=$(GOLANGCI_LINT_VERSION) --target lint -t ai-harness-init:lint .
