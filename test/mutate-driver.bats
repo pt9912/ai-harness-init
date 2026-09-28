@@ -43,6 +43,36 @@ setup() {
   printf -- '--- FAIL: TestIrgendwas (0.00s)\n'        | grep -Eq -- "$form"
 }
 
+# EPIPE-Regression (Bedingung 4): `grep -E | grep -qF` bricht unter pipefail,
+# sobald `grep -qF` beim ERSTEN Treffer aussteigt, waehrend `grep -E` noch
+# weitere zur Form passende Zeilen schreiben will — SIGPIPE liefert dann den
+# Nicht-Null-Exit der Pipe, obwohl der Treffer real da war. Das Log hier traegt
+# absichtlich genug Fehlschlag-Zeilen, um die Pipe-Kapazitaet zu ueberschreiten
+# (sonst schreibt `grep -E` fertig, bevor `grep -qF` schliesst, und die Rennlage
+# bleibt aus).
+@test "driver: form_matched findet den Treffer, auch wenn das Log VIELE passende Zeilen traegt" {
+  local form='--- FAIL:' expect='TestCommandProgramSkipsNavigationSegments' out
+  out="$(mktemp)"
+  {
+    printf -- '--- FAIL: TestCommandProgramSkipsNavigationSegments/erster (0.00s)\n'
+    printf -- '--- FAIL: TestAndererFall/subtest (0.00s)\n%.0s' {1..20000}
+  } >"$out"
+  run bash -c "source '$DRIVER' 2>/dev/null || true; form_matched '$form' '$out' '$expect'"
+  rm -f "$out"
+  [ "$status" -eq 0 ]
+}
+
+# Semantik-Erhalt: ein Log OHNE Treffer der Fehlschlag-Form bleibt "faellt
+# nicht" — die Haertung darf das nicht in ein falsches Gruen kippen.
+@test "driver: form_matched meldet KEINEN Treffer bei einem Log OHNE Fehlschlag-Form" {
+  local form='--- FAIL:' expect='TestIrgendwas' out
+  out="$(mktemp)"
+  printf 'ok 1 alles gut\n' >"$out"
+  run bash -c "source '$DRIVER' 2>/dev/null || true; form_matched '$form' '$out' '$expect'"
+  rm -f "$out"
+  [ "$status" -ne 0 ]
+}
+
 # --- Isolation (slice-047) ----------------------------------------------------
 # Die Kern-Zusage des Treibers ist seit slice-047: "ein Lauf veraendert den
 # Host-Baum nicht". Sie haengt an zwei Eigenschaften, die hier hermetisch (ohne

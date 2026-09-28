@@ -154,6 +154,21 @@ Aussagen-Berührung steht hier gar nicht.
   verwundbare Stelle dieser Art ist (`grep -n '| grep -q' harness/tools/mutate.sh`), da sich der
   Bestand seit der Planung geändert haben könnte.
 
+**Plan-Ausgabe (Schritt 4, umgesetzt):**
+
+- Die Reproduktion lief hermetisch (kein `test/mutations/476-…`-Fall nötig): ein `$out` mit einer
+  Zeile, die `$expect` sofort trifft, gefolgt von genug weiteren zur Fehlschlag-Form passenden
+  Zeilen, um die Pipe-Kapazität zu überschreiten, macht die alte Live-Pipe-Form zuverlässig
+  fälschlich „fällt nicht" — real gesehen vor der Härtung.
+- Die Härtung wurde als eigene Funktion `form_matched()` neben `failure_form()`/`narrow_sensor()`
+  gezogen, statt inline in `run_case()` zu bleiben — damit ist Bedingung 4 selbst per `source`
+  isoliert testbar, im selben Muster wie die bestehenden Tests für `failure_form`.
+  `grep -n '| grep -q' harness/tools/mutate.sh` bestätigt weiterhin genau einen Treffer (die
+  gehärtete `matched="$(… || true)"`-Zeile selbst, kein Live-Pipe-Rest).
+- `harness/sensors/mutate.md` geprüft: die Datei trägt keinen Aussage-Satz über die interne Form
+  von Bedingung 4 (kein Treffer auf „grep“, „Pipe“, „EPIPE“ oder „Bedingung 4" mit Aussagegehalt zu
+  diesem Matcher) — kein Nachzug nötig, da kein bestehender Satz falsch wird oder würde.
+
 ## 4. Trigger
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`

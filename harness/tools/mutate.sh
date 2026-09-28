@@ -598,6 +598,19 @@ narrow_sensor() {
   esac
 }
 
+# form_matched: Bedingung 4 des Sensor-Laufs — traegt die Log-Datei <2> eine zur
+# Fehlschlag-Form <1> passende Zeile, die den erwarteten Namen <3> enthaelt?
+# Here-String statt Live-Pipe: `grep -E | grep -qF` bricht unter pipefail, sobald
+# das fruehzeitig aussteigende `grep -qF` seine Lesepipe schliesst — der noch
+# schreibende `grep -E` erhaelt SIGPIPE und liefert den rechtesten Nicht-Null-Exit
+# der Pipe, obwohl der Treffer real vorhanden war. Das gilt fuer jedes Log mit
+# mehr als einer zur Form passenden Zeile, nicht nur fuer den Einzeltreffer.
+form_matched() {
+  local form="$1" out="$2" expect="$3" matched
+  matched="$(grep -E -- "$form" "$out" || true)"
+  grep -qF -- "$expect" <<<"$matched"
+}
+
 failure_form() {
   case "$1" in
     test)     printf '%s' '--- FAIL:|not ok [0-9]+' ;;  # go test | bats
@@ -805,7 +818,7 @@ run_case() {
   # damit fuer jeden bats-Fall unter allen Bedingungen erfuellt — Bedingung 4 war
   # dort wirkungslos (Review-Befund slice-026 F-1, per Sonde nachgestellt). Erst die
   # Fehlschlag-Form ist eine Aussage — und sie ist je Sensor eine andere.
-  if ! grep -E -- "$form" "$out" | grep -qF -- "$expect"; then
+  if ! form_matched "$form" "$out" "$expect"; then
     report_fail "$name" "rot, aber '$expect' faellt nicht — falscher Grund"
     show_tail "$out"
     restore
