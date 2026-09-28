@@ -240,3 +240,192 @@ Fehlerklasse nicht ein zweites Mal unbenannt bleibt.
 
 **Übergabe:** F-4 geht an den Implementer bzw. in die Slice-Closure §7. Dieser Nachtrag
 ersetzt nicht die Verifikation (Modul 11).
+
+---
+
+## Nachtrag 2 — Zwei Folge-Fixes: Tag-Wettlauf (`99dfbec3`) und Netz-Isolations-Regression (`fa94d667`)
+
+**Gegenstand:**
+- `99dfbec3` "Rolle Implementer: test-go/test-go-pids-guard lesen das Docker-Image ueber --iidfile statt ueber den geteilten -t-Namen"
+- `fa94d667` "Rolle Implementer: Unfall-Vektor-Waechter haelt unter --network none seine Zaehne"
+
+### Methodik (Nachtrag 2)
+
+Real nachgefahren, nicht nur gelesen — inklusive eines eigenen, unabhängigen
+Rot/Grün-Zyklus gegen den realen Baum (nicht nur den Implementer-Beleg gelesen):
+
+- `Makefile` (`test-go`, `test-go-pids-guard`) gelesen: beide Rezepte nutzen jetzt
+  `docker build --iidfile=<eindeutiger Pfad>` + `docker run "$$(cat <Pfad>)" …` statt eines
+  gelesenen `-t ai-harness-init:test`-Namens. Der `-t`-Tag bleibt zusätzlich gesetzt
+  (Mensch-Komfort), trägt aber nachweislich kein Urteil mehr — der `run`-Aufruf liest
+  ausschließlich über die `.iid`-Datei.
+- `make --no-print-directory -n test-go` / `test-go-pids-guard` real gefahren (kein `MAKEFLAGS`-
+  Störeinfluss) und die Ausgabe gegen `harness/tools/mutate.sh`s `plan_self_contained` gelesen:
+  beide Zeilen beginnen nach Abzug führender Variablen-Zuweisungen weiterhin mit
+  `docker build` bzw. `docker run` — die neue `"$$(cat …)"`-Kommandosubstitution steht als
+  drittes+ Wort der `run`-Zeile und ändert die Klassifikation nicht. Damit bleiben beide Modi
+  strukturell `LEICHT` (parallelfähig), wie im Commit behauptet — durch Lektüre der
+  Erkennungsfunktion selbst bestätigt, nicht nur durch die im Commit zitierte
+  `plan_self_contained`-Ausgabe.
+- `docker build --iidfile=<pfad>` gegen ein bereits mit Alt-Inhalt belegtes Pfad-Ziel real
+  gefahren (eigener Wegwerf-Dockerfile): die Datei wird bei jedem erfolgreichen Build
+  überschrieben, kein Anhäng-/Kollisions-Verhalten — ein liegen gebliebener `.iid`-Rest aus
+  einem vorherigen Lauf verfälscht den nächsten `run` nicht.
+- **Eigener Rot/Grün-Zyklus gegen den realen Baum** (nicht nur den Implementer-Bericht
+  übernommen): `test/mutations/378-init-argumentlos-bricht-aber-schreibt.sh` angewandt,
+  `make test-go` real unter `--network none` gefahren → `TestUnfallVektor_OhneArgumentImRepoWurzel`
+  fällt mit exakt der im Fall-Kopf erwarteten Meldung ("das stehende Repo wurde angefasst …
+  der Unfall fuhr wieder"); Mutation zurückgesetzt, `make test-go` erneut gefahren → grün,
+  8/8 Pakete ok. Danach zusätzlich `test/mutations/377-init-argumentlos-stiller-init.sh`
+  angewandt und real gefahren → derselbe Test fällt mit **mehr** roten Assertionen als bei
+  377 zuvor beschrieben (zusätzlich `TestRun_OhneZielordnerBrichtLaut` sowie zwei weitere
+  Prüfzeilen innerhalb von `TestUnfallVektor…`, u. a. eine neue, im Container erwartungsgemäß
+  scheiternde `docker`-Weiterreichung) — keine Regression, strengerer Fang, wie vom
+  Implementer berichtet; Mutation zurückgesetzt, Baum wieder sauber (`git status --short` leer).
+- `internal/fetch/baseline.go` vollständig gelesen: `Baseline()` (Produktionscode, von
+  `main.go:492` mit `src.baselineSHA`/`src.baseline` aufgerufen) prüft den sha256 **immer**
+  gegen das übergebene `wantSHA` — unabhängig davon, ob `fetch` (`AssetFetch`) über den neuen
+  URL-Override umgeleitet wurde oder nicht. Der Override wirkt ausschließlich in
+  `DownloadBaseline()` (welche URL geholt wird), nie im Vergleich selbst.
+- `cmd/ai-harness-init/main_test.go` gelesen: der Testserver liefert das reale Fixture-Asset,
+  `sum` wird aus **genau diesem** Inhalt berechnet und als `BASELINE_SHA256` gesetzt — die
+  SHA-Prüfung ist im Test-Override also nicht umgangen, sondern korrekt gegen den servierten
+  Inhalt geführt.
+- `grep -rn AI_HARNESS_INIT_BASELINE_URL_BASE` über `*.go`/`*.md`: die Variable erscheint
+  ausschließlich in der Konstante, im Test-Kommentar und im Testaufruf selbst — **nicht** in
+  `main.go`s `Usage()`-Block "Umgebung (bewusster Opt-in-Override der gepinnten Werte —
+  LH-QA-02)", der `COURSE_TAG`, `BASELINE_SHA256`, `DCHECK_IMAGE`, `DCHECK_DIGEST`,
+  `A_CHECK_IMAGE`, `A_CHECK_DIGEST`, `SKEL_<LANG>_VERSION` listet, und nicht in
+  `docs/user/` oder `AGENTS.md`.
+- `git status --short` nach allen eigenen Mutations-Anwendungen: leer (Baum sauber
+  zurückgesetzt, keine Nebenwirkung dieses Review-Laufs im Commit-Bestand).
+
+### Prüfung der fünf Punkte
+
+**1. Tag-Race-Fix trägt strukturell.** Bestätigt durch eigene Lektüre von
+`plan_self_contained` (`harness/tools/mutate.sh:1045-1073`) und durch einen realen
+`make -n`-Trockenlauf beider Rezepte: Erkennung bleibt `docker build`/`docker run` je Zeile,
+`LEICHT`/parallelfähig unverändert. Die im Commit referenzierte Busybox-Mikroreproduktion und
+der vierfache `git worktree`-Realnachweis wurden nicht erneut gefahren (kostenintensiv,
+extern reproduziert) — die **strukturelle** Behauptung (Klassifikation bleibt `LEICHT`) wurde
+jedoch unabhängig verifiziert, nicht nur gelesen.
+
+**2. Netz-Isolations-Fix — sicherheitskritisch.** Das Ergebnis ist differenziert:
+
+- **Der SHA-Pin ist NICHT umgangen.** `Baseline()` verifiziert `wantSHA` unbedingt, unabhängig
+  von der Fetch-Quelle; der Test-Override berechnet die erwartete Summe aus dem real
+  servierten Inhalt. Ein Angreifer, der **nur** die URL umleitet, ohne auch `BASELINE_SHA256`
+  zu kontrollieren, erhält einen `SHA256Mismatch` und keinen stillen Erfolg.
+- **`AI_HARNESS_INIT_BASELINE_URL_BASE` ist real ein reiner Opt-in — aber kein reiner
+  Test-Build-Hook.** Er ist nicht hinter einem Build-Tag verborgen, sondern fester Bestandteil
+  von `DownloadBaseline()`, der Funktion, die `main.go:709` als produktiven Fetcher
+  verdrahtet. Jeder, der die Umgebung des Prozesses kontrolliert (Shell, CI-Workflow-`env:`,
+  Wrapper-Skript), kann ihn setzen — dieselbe Voraussetzung, die für die **bereits
+  bestehenden** Overrides `COURSE_TAG`/`BASELINE_SHA256` gilt und die dieses Repo unter
+  LH-QA-02 ausdrücklich als "bewussten Opt-in" akzeptiert. Insofern ist die Behauptung "kein
+  Weg für einen echten Nutzer/Angreifer" streng genommen falsch — richtig ist: **kein neuer
+  Weg über die bestehende Sicherheits-Schranke (den SHA-Pin) hinaus**, aber eine reale
+  Erweiterung der Reichweite eines bereits akzeptierten Override-Mechanismus von "beliebiger
+  Tag/Hash **innerhalb** des fest verdrahteten `github.com/pt9912/ai-harness-course`-Release-
+  Pfads" auf "beliebiger Tag/Hash **von einer beliebigen URL**". Vor diesem Commit hätte ein
+  Angreifer mit Env-Kontrolle zwar `BASELINE_SHA256`/`COURSE_TAG` frei wählen können, aber
+  weiterhin nur Inhalte akzeptiert bekommen, die tatsächlich unter dem fest verdrahteten
+  GitHub-Repo veröffentlicht sind — er bräuchte dafür Schreibzugriff auf ein fremdes Repo. Mit
+  dem neuen Override genügt derselbe Env-Zugriff, um **beliebigen** selbst gehosteten Inhalt
+  unterzuschieben, solange auch der passende Hash mitgesetzt wird. Das ist dieselbe
+  Angreifer-Voraussetzung, aber eine größere Konsequenz bei Erfüllung.
+- **Kommentar korrekt, Dokumentation asymmetrisch.** Der Kommentar auf der Konstante
+  (`internal/fetch/baseline.go:80-91`) beschreibt akkurat, was die Variable ist, ihren
+  einzigen vorgesehenen Konsumenten und das Produktions-Verhalten (leer = gepinnter Default)
+  — AGENTS.md §3.7-konform. Es gibt jedoch **keine** Dokumentations-Pflicht-Verletzung im
+  engen Sinn (keine Spec-/ADR-Stelle verlangt, jeden Override im `--help`-Text zu listen);
+  die Lücke ist eine **Inkonsistenz zum etablierten Muster** dieses Repos: alle bisherigen
+  "bewussten Opt-in-Overrides" (`COURSE_TAG`, `BASELINE_SHA256`, `DCHECK_IMAGE` …) stehen im
+  `Usage()`-Block, dieser — mit identischem Wirkradius auf denselben Fetch-Pfad — bewusst
+  nicht. Ein Audit, der sich auf `ai-harness-init --help` verlässt, um alle
+  vertrauensrelevanten Override-Variablen zu kennen, sieht diese nicht. Das ist der
+  eigentliche, real bestehende Befund (siehe F-6 unten) — nicht ein Bruch des SHA-Pins.
+
+**3. Mutation 378 real nachvollzogen.** Siehe Methodik: eigener Rot/Grün-Zyklus, Meldung
+gelesen (nicht nur Exit-Code) — deckt sich exakt mit dem im Fall-Kopf benannten `expect`.
+
+**4. Mutation 377 plausibilisiert.** Real gefahren (nicht nur gelesen): zusätzliche, vorher
+nicht auftretende Fehlschläge (`TestRun_OhneZielordnerBrichtLaut` sowie zwei weitere
+Prüfzeilen) bestätigen "strengerer Fang, keine Regression".
+
+**5. AGENTS.md §3.6/§3.7 der neuen Kommentare.**
+
+§3.6 (rot gesehenes Gegenbeispiel als **Handlung**) ist für beide Commits real erfüllt — vom
+Implementer laut Commit-Message und von diesem Review unabhängig nachvollzogen (Mutation 378,
+zusätzlich 377).
+
+§3.7 (Kommentar beschreibt, was da ist) ist **nicht durchgehend** erfüllt:
+
+- `internal/fetch/baseline.go:80-91` (Kommentar auf `baselineURLBaseOverrideEnv`): sauber —
+  Zusage, Kopplung (nennt den einzigen Konsumenten-Test), Grenze (Produktionsverhalten) und
+  ein korrekt geformter Herkunfts-Anker (`seit slice-go-testlauf-bekommt-einen-
+  ressourcendeckel`).
+- `Makefile:102-111` (Kommentar auf `test-go`): der Haupttext ist eine gültige
+  Grenze-Beschreibung ("ohne `--iidfile` läse `docker run` den zuletzt geschriebenen
+  `-t`-Namen — … das Urteil wäre falsch, nicht nur verzögert"), **aber** die eingeschobene
+  Klammer "(real reproduziert: vier von fünf `make mutate`-Shards zeigten genau dieses Bild,
+  ein anderer Test als der erwartete fiel; ein isolierter Mikro-Versuch … traf denselben
+  ungültigen Namen in rund 58 % der Fälle, 0 % mit `--iidfile`)" berichtet das **Protokoll
+  eines konkreten Diagnose-Laufs** — exakt die Kommentar-Klasse, die AGENTS.md §3.7 als
+  "Falsch" benennt ("Was hier und heute REAL rot gesehen wurde …" — Perfekt, an einen
+  bestimmten Lauf gebunden). Die Zahl selbst ist zudem intern nicht konsistent: die
+  Commit-Message desselben Commits nennt für die (offenbar identische) Mikro-Reproduktion
+  "143/240 Fehlzuordnungen (~60 %)" — 143/240 ≈ 59,6 %, der Makefile-Kommentar spricht von
+  "rund 58 %". Ob es sich um zwei separate Läufe mit natürlicher Streuung handelt oder um
+  einen Transkriptionsfehler, ist von hier aus nicht entscheidbar — genau das Symptom, das
+  entsteht, wenn Lauf-Protokoll statt Zustand in einem Kommentar landet: die Zahl ist im
+  Diff dupliziert (Commit-Message + Makefile-Kommentar) und kann bei der nächsten
+  Nachmessung auseinanderlaufen, ohne dass ein Gate es bemerkt. Das eigentliche Fehlverhalten
+  ("Angreifer-`docker run` liest den fremden Tag") ist bereits im Hauptsatz ohne Zahlen
+  vollständig und korrekt beschrieben — die Klammer trägt nichts zur Zusage bei, nur Chronik.
+
+### Neue Findings dieser Nachrunde
+
+| ID | Kategorie | Befund | Quelle | Pfad | Verifizierbar | Klasse |
+|---|---|---|---|---|---|---|
+| F-5 | LOW | Der `test-go`-Kommentar trägt eine Klammer-Passage, die das Protokoll eines konkreten Diagnose-Laufs berichtet ("real reproduziert: vier von fünf … Shards …", "rund 58 % der Fälle") statt nur die geltende Zusage/Grenze zu beschreiben — dieselbe Kommentar-Klasse wie das bereits im ersten Review-Lauf gefundene und behobene F-2/F-4 (Chronik statt Zustand), hier als „Protokoll eines Laufs" statt als „abwesender Text". Die zitierte Zahl ist zudem intern inkonsistent mit der Commit-Message desselben Commits (58 % vs. ~60 % für scheinbar dieselbe Messung). Einordnung als LOW konsistent mit der Einordnung von F-2/F-4 in diesem Report für dieselbe Kommentar-Fehlerklasse. | AGENTS.md §3.7 | `Makefile:103-105` | nein — kein Gate prüft Kommentar-Klassen | kommentar-traegt-protokoll-eines-diagnose-laufs |
+| F-6 | MEDIUM | Der neue, produktiv verdrahtete Override `AI_HARNESS_INIT_BASELINE_URL_BASE` (`internal/fetch/baseline.go:91`, gelesen in `DownloadBaseline()`, die `main.go:709` als produktiven Fetcher registriert) fehlt im `main.go`-`Usage()`-Block „Umgebung (bewusster Opt-in-Override der gepinnten Werte — LH-QA-02)", der alle strukturell gleichartigen Geschwister-Overrides (`COURSE_TAG`, `BASELINE_SHA256`, `DCHECK_IMAGE`, `DCHECK_DIGEST`, `A_CHECK_IMAGE`, `A_CHECK_DIGEST`, `SKEL_<LANG>_VERSION`) listet. Der SHA-Pin bleibt unverändert wirksam und wird durch den neuen Override nicht umgangen — aber ein Angreifer mit derselben Env-Kontrolle, die für die bestehenden Overrides bereits als akzeptiertes Risiko geführt wird, kann jetzt zusätzlich die Fetch-**Quelle** frei wählen (vorher: nur Tag/Hash **innerhalb** des fest verdrahteten GitHub-Release-Pfads), was die Konsequenz bei Ausnutzung von „inhaltlich begrenzt" auf „beliebiger selbst gehosteter Inhalt" erweitert. Ein Audit, der sich auf `--help` verlässt, um alle vertrauensrelevanten Overrides zu kennen, übersieht diesen. | AGENTS.md §3.7 (Kommentar korrekt) / Reproduzierbarkeits- und Trust-Boundary-Risiko (LH-QA-02) | `internal/fetch/baseline.go:80-99`, `cmd/ai-harness-init/main.go:90-118` (Usage-Block ohne Eintrag) | ja — `grep AI_HARNESS_INIT_BASELINE_URL_BASE cmd/ai-harness-init/main.go` bleibt leer | undokumentierter-produktiver-fetch-override-asymmetrisch-zu-geschwistern |
+
+### Negativbefunde (Nachtrag 2)
+
+| Bereich | Ergebnis |
+|---|---|
+| `plan_self_contained`-Klassifikation beider neuer Rezepte (`make -n` real + Funktionslektüre) | geprüft, ohne Befund — bleibt `LEICHT` |
+| `--iidfile`-Überschreibverhalten bei vorbelegtem Pfad (reale Docker-Probe) | geprüft, ohne Befund — überschreibt sauber, kein Kollisions-/Anhäng-Risiko |
+| Eigener `.iid`-Dateiname je Rezept (`test-go` vs. `test-go-pids-guard`) gegen Kollision bei sequenziellem Lauf in derselben Baumkopie | geprüft, ohne Befund |
+| SHA256-Pin in `fetch.Baseline()` gegen den URL-Override (Code-Lektüre: `wantSHA`-Vergleich unbedingt) | geprüft, ohne Befund — nicht umgangen |
+| SHA256-Pin im Test-Override (`main_test.go`: Summe aus real serviertem Fixture-Inhalt) | geprüft, ohne Befund — nicht umgangen |
+| Mutation 378 real rot (Fall angewandt) / real grün (zurückgesetzt) gegen `make test-go` unter `--network none` | geprüft, ohne Befund — deckt sich mit dem Implementer-Beleg |
+| Mutation 377 real rot, Vergleich der Fehlschlags-Breite gegen den Implementer-Bericht | geprüft, ohne Befund — strengerer Fang bestätigt, keine Regression |
+| Arbeitsbaum nach allen eigenen Mutations-Anwendungen (`git status --short`) | geprüft, ohne Befund — sauber zurückgesetzt |
+| `AI_HARNESS_INIT_BASELINE_URL_BASE` in `docs/user/`, `AGENTS.md`, `harness/README.md` | geprüft, ohne Befund im positiven Sinn — taucht nirgends auf (Grundlage für F-6, kein zusätzlicher Fund) |
+
+### Aktualisiertes Gesamt-Verdikt (nach Nachtrag 2)
+
+**Merge-blockierend: nein.** Keine HIGH-Findings in `99dfbec3` oder `fa94d667`. Der
+Tag-Wettlauf-Fix trägt strukturell und real geprüft (eigener Rot/Grün-Zyklus für die
+Netz-Isolations-Regression, nicht nur der Implementer-Beleg gelesen). Der sicherheitskritische
+Punkt (Netz-Isolations-Fix / neuer URL-Override) hält die entscheidende Schranke — den
+SHA256-Pin — unangetastet; der reale, benennbare Befund ist die **Dokumentations-Asymmetrie**
+zu den Geschwister-Overrides (F-6, MEDIUM), nicht ein Bruch der Integritätsprüfung. F-5 (LOW)
+ist ein kleiner Kommentar-Form-Fehler, konsistent zur bereits in diesem Report etablierten
+Einordnung derselben Fehlerklasse (F-2/F-4).
+
+Offen vor der Slice-Closure: F-5 (Klammer-Passage aus dem Makefile-Kommentar entfernen, Zahl
+ggf. in der Commit-Message belassen) und F-6 (Override entweder in `main.go`s `Usage()`-Block
+aufnehmen — konsistent mit den Geschwister-Overrides — oder explizit als bewusste Ausnahme mit
+Begründung dort vermerken, damit ein `--help`-Audit ihn nicht übersieht).
+
+**Finding-Klassen dieser Nachrunde:** kommentar-traegt-protokoll-eines-diagnose-laufs ·
+undokumentierter-produktiver-fetch-override-asymmetrisch-zu-geschwistern
+
+**Übergabe:** F-5/F-6 gehen an den Implementer bzw. in die Slice-Closure §7. Dieser Nachtrag
+ersetzt nicht die Verifikation (Modul 11); die sicherheitsrelevante Einordnung von F-6 (real
+kein SHA-Pin-Bruch, aber reale Reichweiten-Erweiterung eines akzeptierten Override-Musters)
+ist für den Verifier/Architect-Kontext hervorgehoben, falls dort eine ADR- oder
+Hard-Rule-Einordnung gewünscht wird.
