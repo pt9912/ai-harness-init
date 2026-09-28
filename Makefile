@@ -201,8 +201,9 @@ mutate: ## Mutations-Sensor fuer AGENTS 3.6: faerbt jede Mutation ihren Waechter
 
 # shellcheck über die harness-eigenen Shell-Hooks/-Helfer. .bats ist
 # ausgenommen (shellcheck parst die @test-Syntax nicht); .awk ist kein Shell.
-# .githooks/commit-msg traegt keine .sh-Endung — git verlangt den nackten
-# Hook-Namen —, wird darum einzeln genannt statt ueber einen Glob.
+# .githooks/commit-msg und .githooks/pre-commit tragen keine .sh-Endung — git
+# verlangt den nackten Hook-Namen —, werden darum einzeln genannt statt ueber
+# einen Glob.
 shell-lint: ## Shell-Hooks/-Helfer linten (shellcheck) im gepinnten Image — Docker-only (ADR-0003)
 	docker run --rm -v "$(CURDIR)":/mnt:ro -w /mnt $(SHELLCHECK_IMAGE) \
 		.claude/hooks/*.sh harness/tools/*.sh internal/emit/templates/*.sh internal/emit/templates/enforce/*.sh test/mutations/*.sh .githooks/commit-msg .githooks/pre-commit
@@ -273,18 +274,20 @@ commit-msg-check: ## Commit-Message-Datei gegen Traceability-Kennung pruefen (MS
 	@test -f "$(MSG)" || { echo "commit-msg-check: MSG=$(MSG) ist keine Datei" >&2; exit 2; }
 	docker run --rm --network none -v "$(CURDIR):/repo:ro" -v "$(abspath $(MSG)):/commit-msg.txt:ro" $(DCHECK_REF) --enable commits --disable links --disable anchors --disable ids --disable matrix --disable external --disable codepaths --disable spans --disable hostpaths --disable diagrams --disable versions --disable pins --disable immutable --disable vcs --disable planning --disable tracked --disable targets --disable citations --disable sources --disable structure --disable workflows --disable reviews --disable mentions --commit-msg /commit-msg.txt
 
-# Aktiviert den git-eigenen Traeger .githooks/commit-msg in DIESEM Klon:
-# `core.hooksPath` ist lokale Konfiguration und reist nicht mit
+# Aktiviert die git-eigenen Traeger .githooks/commit-msg UND .githooks/pre-commit
+# in DIESEM Klon: `core.hooksPath` ist lokale Konfiguration und reist nicht mit
 # (Reproduzierbarkeit, LH-QA-02), der Aufruf stellt sie her. Host-Abhaengigkeit
-# ist git (LH-QA-03) — das Skript selbst laeuft im Commit-Pfad und ruft kein
-# Docker. Die x-Bit-Probe faengt einen Klon, in dem die Datei ihr Ausfuehrrecht
-# verloren hat: git verwirft einen nicht ausfuehrbaren Hook still. NICHT in
-# gates: der Aufruf schreibt lokale Konfiguration, und ein hermetischer
-# Gate-Lauf schreibt nichts.
-hooks-install: ## den git-eigenen commit-msg-Traeger im Klon aktivieren (core.hooksPath) — NICHT in gates
+# ist git (LH-QA-03) — beide Skripte laufen im Commit-Pfad und rufen kein
+# Docker. Die x-Bit-Probe faengt einen Klon, in dem eine der Dateien ihr
+# Ausfuehrrecht verloren hat: git verwirft einen nicht ausfuehrbaren Hook
+# still — je Datei eine eigene Probe, sonst deckt sie nur die zuerst genannte.
+# NICHT in gates: der Aufruf schreibt lokale Konfiguration, und ein
+# hermetischer Gate-Lauf schreibt nichts.
+hooks-install: ## die git-eigenen Traeger commit-msg + pre-commit im Klon aktivieren (core.hooksPath) — NICHT in gates
 	@test -x .githooks/commit-msg || chmod +x .githooks/commit-msg
+	@test -x .githooks/pre-commit || chmod +x .githooks/pre-commit
 	@git config core.hooksPath .githooks
-	@printf '%s\n' "hooks-install: core.hooksPath=$$(git config --get core.hooksPath) — .githooks/commit-msg laeuft ab dem naechsten Commit (Umgehung: git commit --no-verify)."
+	@printf '%s\n' "hooks-install: core.hooksPath=$$(git config --get core.hooksPath) — .githooks/commit-msg und .githooks/pre-commit laufen ab dem naechsten Commit (Umgehung: git commit --no-verify)."
 
 # Verifiziert die vendored Baseline netzlos, in zwei Schritten: `sha256sum -c`
 # über SHA256SUMS fängt geänderte und gelöschte Dateien, ein Vollständigkeits-
