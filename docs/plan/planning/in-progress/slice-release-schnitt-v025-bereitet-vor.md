@@ -99,7 +99,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1 — Vorlage gesetzt, Assets gebaut:** `TRAEGER_TAG` in
+- [x] **Liefer-Punkt 1 — Vorlage gesetzt, Assets gebaut:** `TRAEGER_TAG` in
       `internal/emit/templates/enforce/traeger.mk` und der Tag-Wert in
       `test/traeger-fetch.bats` zeigen auf `v0.2.5`
       ([`releasing.md`](../../../user/releasing.md) §Prozedur Schritt 1).
@@ -114,7 +114,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Rezepts selbst mit Exit ≠ 0. **Beleg:** `grep -n 'TRAEGER_TAG'
       internal/emit/templates/enforce/traeger.mk test/traeger-fetch.bats` →
       beide `v0.2.5`; `ls dist/` → sechs Binaries + `SHA256SUMS`.
-- [ ] **Liefer-Punkt 2 — Assets verifiziert, Pin gezogen:**
+- [x] **Liefer-Punkt 2 — Assets verifiziert, Pin gezogen:**
       `bash harness/tools/release-sums.sh verify dist` hält die gebauten
       Assets gegen die im selben Lauf erzeugte `SHA256SUMS`
       ([`releasing.md`](../../../user/releasing.md) §Prozedur Schritt 3).
@@ -129,7 +129,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       wird. **Beleg:** `grep -nE '^TRAEGER_(TAG|SHA256)' Makefile` → alle
       sieben Werte auf `v0.2.5` bzw. dessen sechs Digests; Exit-Code von
       `release-sums.sh verify dist`.
-- [ ] **Liefer-Punkt 3 — Gates am Tag-Baum:** `make gates` läuft grün auf
+- [x] **Liefer-Punkt 3 — Gates am Tag-Baum:** `make gates` läuft grün auf
       genau dem Commit, der den Tag tragen wird — **vor** jedem Push
       ([`releasing.md`](../../../user/releasing.md) §Prozedur Schritt 4,
       §Belegbasis). Rote Gegenprobe: jeder rote Teil-Gate (`docs-check`,
@@ -138,31 +138,36 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Ursache in seiner eigenen Ausgabe. **Beleg:** `.harness/state/gates-passed.diffsha`
       deckungsgleich mit `bash harness/tools/working-tree-hash.sh` auf dem
       Pin-Commit (derselbe Nachweis-Mechanismus wie beim Stop-Hook).
-- [ ] `make gates` grün. **Beleg:** wie Liefer-Punkt 3 — derselbe Lauf.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün. **Beleg:** wie Liefer-Punkt 3 — derselbe Lauf.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist — dieser Slice
+      **Beleg:** `docs/reviews/2026-09-28-release-schnitt-v025-bereitet-vor.md`
+      (0 HIGH/MEDIUM/LOW, 1 INFO F-1, kein Merge-Block) und
+      `docs/reviews/2026-09-28-verify-release-schnitt-v025-bereitet-vor.md`
+      (DoD erfüllt, 1 MEDIUM V-1, kein Blocker).
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist — dieser Slice
       ändert keinen; `releasing.md` selbst bleibt unverändert (die Prozedur
       ist bereits vollständig beschrieben, dieser Slice führt sie nur aus).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register fortgeschrieben, **falls** dieser Slice einen
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag. — §7.
+- [x] Reconciliation-Register fortgeschrieben, **falls** dieser Slice einen
       Inventur-Fund auflöst — **entfällt:** dieses Repo hat keinen
       Brownfield-Bootstrap und führt die Register-Datei nicht
       (`ls docs/plan/planning/reconciliation.md` → nicht vorhanden). Der Pfad
       steht als **Kommando-Operand**, weil die vendored Vorlage ihn als
       blanken Inline-Code führt und `codepaths` ihn dann als fehlendes Ziel
       meldet.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues
       Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen
       `evidence/`; **kein Zähler wird gesetzt**, er folgt aus den Dateien.
       Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7
-      notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
-      weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
+      notiert. **Vollzug:** ein Beleg ergänzt (V-1) — siehe §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
+      weiter offen). — siehe §6.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
       Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von
       der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+      **Ergebnis:** §7, der Paarungs-Lauf läuft nach dem `git mv`.
 
 ## 3. Plan (vor Code)
 
@@ -228,9 +233,10 @@ dasteht.
   bauten nicht) — seit `v0.2.4` sind plattformnahe Stellen erneut angefasst
   (Span-Erfassung, `program`-Feld hinter Navigationssegmenten/`cd`-Set,
   [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)), ohne dass ein
-  Plattform-Bau dazwischen lief. — **Ausgang:** <eingetreten: der Bau bricht,
-  ein plattformspezifischer Fix wird Teil dieses Slice oder ein Folge-Slice
-  trägt ihn | entfallen: alle sechs Assets bauen im ersten Lauf>
+  Plattform-Bau dazwischen lief. — **Ausgang:** *entfallen* — alle sechs
+  Assets bauten im ersten Lauf (`dist/` trägt alle sechs Binaries + `SHA256SUMS`
+  aus einem zusammenhängenden Bau, Digests vom Verifier eigenständig per
+  `sha256sum` nachgerechnet und deckungsgleich — Verify-Report §1/§2).
 - **CI-Race beim Merge des Pin-Commits auf `main`, bevor der Tag existiert.**
   Landet der Pin-Nachzug (Liefer-Punkt 2) auf `main`, bevor Schritt 5 (Tag-Push,
   außerhalb dieses Slice) gelaufen ist, fragt der `ci`-Lauf im `full-smoke`
@@ -238,9 +244,11 @@ dasteht.
   bekannte Klasse
   [`BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases`](../observations/BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases/observation.md)
   (bisher belegt an der Tag-Push-Form derselben Klasse, `v0.2.2`). — **Ausgang:**
-  <weiter offen: die Struktur-Entscheidung der Beobachtung steht weiter aus,
-  operativer Ausgang bleibt der Re-Run nach Schritt 5 | eingetreten: neues
-  Auftreten wird als `evidence/`-Datei ergänzt>
+  *weiter offen* — kein Tag existiert, nichts wurde gepusht (Sicherheitsgrenze
+  eingehalten), der Fall, den das Risiko beschreibt, konnte in diesem Slice
+  gar nicht eintreten; die Struktur-Entscheidung der referenzierten
+  Beobachtung bleibt unverändert offen, operativer Ausgang bleibt der Re-Run
+  nach dem tatsächlichen Schritt 5 (außerhalb dieses Slice).
 - **Belegbasis-Lücke zwischen Slice-Closure und dem tatsächlichen, separat
   freigegebenen Tag-Push.** Der `make gates`-Beleg dieses Slice
   (`.harness/state/gates-passed.diffsha`) ist lokaler, gitignorierter
@@ -248,16 +256,21 @@ dasteht.
   ([`BEO-ALL/ge-tagter-stand-traegt-keinen-gates-beleg`](../observations/BEO-ALL/ge-tagter-stand-traegt-keinen-gates-beleg/observation.md)).
   Landen zwischen dieser Closure und dem späteren Tag-Push weitere Commits auf
   `main`, ist der verifizierte Stand dieses Slice nicht mehr der Stand, den
-  der Tag trägt. — **Ausgang:** <entfallen: Tag-Push erfolgt auf demselben
-  Commit, den dieser Slice verifiziert hat | eingetreten: eine erneute
-  `make gates`-Verifikation unmittelbar vor dem Tag-Push wird nötig, außerhalb
-  der DoD dieses Slice>
+  der Tag trägt. — **Ausgang:** *eingetreten* — strukturell tritt die Lücke
+  bei jeder Closure ein: Der Verifier-Report-Commit und dieser
+  Closure-Commit selbst fügen nach dem letzten `make gates`-Lauf erneut
+  Dateien hinzu (§3.10 verlangt den Closure-Commit separat vom Arbeits-Stand),
+  der Tag-Push sitzt also strukturell **nicht** auf dem zuletzt geprüften
+  Commit. Konsequenz (außerhalb der DoD dieses Slice, an den Orchestrator):
+  vor dem tatsächlichen Tag-Push ist ein erneuter `make gates`-Lauf auf dem
+  dann finalen Commit fällig.
 - **d-check-Pin-Sprung ([`MR-073`](../../../../harness/conventions.md#mr-073),
   `v0.77.0`→`v0.79.0`) liegt kurz vor diesem
   Slice.** Ein neues Modul oder eine neue `structure`-Bedingung könnte
   `docs-check` am Tag-Baum anders bewerten als beim letzten grünen Lauf. —
-  **Ausgang:** <entfallen: `make gates` bleibt grün, keine neue Diskrepanz |
-  eingetreten: Befund wird im laufenden Slice behoben>
+  **Ausgang:** *eingetreten* — der MR-073-Link fehlte, `docs-check` schlug
+  am Pin-Commit an; behoben im laufenden Slice (Commit `31876391`), danach
+  frisch grün (Verifier: „comment-claims meldete … 0 Befund(e)").
 
 ## 7. Closure-Notiz
 
@@ -269,7 +282,67 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-<!-- Erst nach Abschluss füllen. -->
+- **Was hat funktioniert:** Die vier Vorbereitungs-Schritte liefen sauber
+  durch: Vorlage und Kopplungs-Test auf `v0.2.5`, sechs Plattform-Assets samt
+  `SHA256SUMS` aus einem zusammenhängenden Bau, Pin fail-closed gekoppelt, und
+  `make gates` grün auf dem Pin-Commit. Reviewer und Verifier haben die
+  Sicherheitsgrenze (kein Tag, nichts gepusht) unabhängig voneinander vorab
+  geprüft, bevor sie irgendetwas anderes anfassten — beide Reports bestätigen
+  sie zweifelsfrei. Der Verifier hat alle sechs Digests eigenständig per
+  `sha256sum` nachgerechnet (deckungsgleich) und einen bewussten
+  Mutationstest gegen den realen `Makefile`-Pin gefahren (Modul 11), statt
+  die grüne Test-Suite ungeprüft zu übernehmen — genau die Verifier-Pflicht
+  bei einem korrektheitskritischen DoD-Punkt.
+- **Was ging anders als geplant:** Der ursprüngliche Gate-Stempel war zum
+  Zeitpunkt der Verifikation veraltet (der Reviewer-Report-Commit hatte nach
+  dem letzten `make gates`-Lauf eine neue Datei hinzugefügt); der Verifier hat
+  ihn selbst frisch gezogen. Die DoD-Behauptung zu Liefer-Punkt 2 („weicht
+  einer der sechs Digest-Pins vom Asset ab, bricht der Kopplungs-/
+  Negative-Fall") trägt nicht real: `test/traeger-fetch.bats` liest den
+  realen `Makefile`-Pin-Wert an keiner geprüften Stelle — der Kopplungs-Fall
+  prüft nur Präsenz/Länge, die Dogfood-Fälle injizieren eigene synthetische
+  Digests per `env`-Override. Ein testweise verfälschter realer Pin blieb
+  unter allen zehn bats-Fällen grün (Finding V-1, MEDIUM, kein Blocker — die
+  Pin-*Daten* sind korrekt, eigenständig bestätigt; die Lücke ist die
+  fehlende automatisierte Deckung des realen Werts).
+- **Steering-Loop-Eintrag:** benannte Spec-Lücke / Register-Eskalation ohne
+  Verkörperung in diesem Lauf — siehe Beobachtungs-Register unten. Kein
+  `liegt in`-Feld, weil in diesem Slice nichts verkörpert wurde.
+- **Beobachtungs-Register (`../observations/`):**
+  `evidence/slice-release-schnitt-v025-bereitet-vor.md` in
+  `BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/` ergänzt (Fund:
+  Finding V-1 — derselbe Wächter-Fehler wie in `slice-140` und
+  `slice-tap-check-haelt-die-formel-gegen-das-veroeffentlichte-asset`: ein
+  Test prüft eine nachgebaute/injizierte Eingabe statt der realen Quelle).
+  **Lese-Schritt:** Mit diesem Beleg erreicht der Eintrag **3×**
+  (`slice-140`, `slice-tap-check-haelt-die-formel-gegen-das-veroeffentlichte-asset`,
+  dieser Slice) — die 3×-Schwelle ist überschritten. Die Verkörperung
+  (Steering-Loop-Eintrag mit Zielort, oder ein Folge-Slice) ist laut Modul 8
+  §Rollen-Sequenz für eine Welle (Tabelle *ohne Wellen-Betrieb*) ein
+  Planner→Architect→Planner-Zug, den dieser Closure-Lauf **nicht** ausführen
+  konnte (keine Architect-Rolle in diesem Kontext verfügbar). `state.md`
+  bleibt bewusst bei `offen` stehen, statt einen Ausgang zu erfinden, den
+  keine Architect-Entscheidung trägt — dieselbe Zurückhaltung, mit der der
+  Verifier V-1 selbst nicht als Blocker, sondern als Registerkandidat an den
+  Planner gereicht hat. Eskaliert an den Orchestrator (siehe Planner-Bericht
+  dieses Laufs): Empfehlung, den Rollenwechsel zeitnah nachzuholen, statt
+  einen dedizierten Ad-hoc-Folge-Slice allein für V-1 zu schneiden — die
+  Klasse ist bereits registriert und dreifach belegt, ein Folge-Slice ist
+  eine von zwei möglichen Formen der Verkörperung, keine automatische Folge.
+- **Folge-Slices:** keine mit diesem Slice angelegt.
+- **Risiken aus §6:** Risiko 1 *entfallen* (alle sechs Assets bauten im
+  ersten Lauf) · Risiko 2 *weiter offen* (Struktur-Entscheidung der
+  referenzierten Beobachtung bleibt aus, kein Tag/Push in diesem Slice) ·
+  Risiko 3 *eingetreten* (strukturelle Belegbasis-Lücke, erneuter
+  `make gates`-Lauf vor dem tatsächlichen Tag-Push nötig, außerhalb dieser
+  DoD) · Risiko 4 *eingetreten* (MR-073-Link fehlte, im laufenden Slice
+  behoben, Commit `31876391`) — siehe §6.
+- **Drei Paarungen:** Anker — kein Eintrag in §7 trägt das Feld `liegt in`;
+  die Paarung hat kein Objekt. · Folge-Slice — keiner genannt, keine Prüfung
+  nötig. · Register — der zitierte Eintrag
+  (`BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle`) existiert
+  als Verzeichnis und trägt jetzt drei Belege in `evidence/`; geprüft nach
+  dem `git mv`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
