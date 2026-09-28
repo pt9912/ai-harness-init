@@ -86,3 +86,36 @@ Plan/Closure; F-2 ist nice-to-fix, kein Blocker. Beide Finding-Klassen gehen in 
 Slice-Closure §7 und von dort in den Zähler des Beobachtungs-Registers. Dieser Report ist
 Lauf-Beleg und wird über Läufe hinweg nicht erneut gelesen. Ersetzt keine Verifikation — DoD-/
 Spec-Konformität prüft der Verifier separat (Modul 11).
+
+## Nachtrag — Korrektur-Prüfung (2026-09-28, Commit `5169e773`)
+
+Prüfung, ob die Korrektur F-1/F-2 trägt, ohne neuen Report (kurze Nachrunde, keine neue
+Diff-Fläche außer den drei geänderten Dateien).
+
+**F-1 — geprüft, trägt.** Die Plan-§3-Zeile
+(`docs/plan/planning/in-progress/slice-agent-watch-sh-wird-verankert.md`) nennt jetzt die real
+gemessene Ursache: Richtung 2 (`gate-phantom`) prüft nur die Rezept-Existenz im Makefile und ist
+davon unabhängig trivial erfüllt; Richtung 1 (`gate-undocumented`) verlangt authority-Zeile ODER
+`exempt-targets`-Eintrag, und die im selben Commit hinzugefügte README-Zeile erfüllt das bereits
+allein — der `.d-check.yml`-Eintrag ist redundant, aber nicht schädlich (Gruppe-(a)-Muster). Das
+deckt sich mit dem Modul-Kommentar in `.d-check.yml:135-147` selbst ("in der authority-Datei oder
+in exempt-targets — eine dritte Antwort gibt es nicht") und mit den drei Kombinationen, die dieser
+Report bereits real gefahren hat — keine neue Messung nötig, Textkonsistenz bestätigt. Die
+Commit-Message `81f749af` bleibt wie vom Report empfohlen unangetastet; die Korrektur läuft
+ausschließlich über die Plan-Datei, referenziert diesen Report per Pfad und benennt die alte
+Aussage als falsch statt sie stillschweigend zu ersetzen.
+
+**F-2 — geprüft, trägt.** `git show 5169e773` bestätigt die Angleichung an allen drei Stellen:
+Makefile-Zielkommentar und -Aufruf (`$(ABBRUCH)`→`$(ABORT)`, `$(INTERVALL)`→`$(INTERVAL)`) sowie
+die `harness/README.md`-Tabellenzeile. `harness/tools/agent-watch.sh` bleibt unverändert, wie
+zugesagt — die interne Kopfkommentar-Mischform (`abbruch-GB` vs. `ABORT`) des Skripts selbst war
+nicht Gegenstand des Findings und liegt weiterhin außerhalb des Slice-Scopes (Plan §1
+Ausschluss 2 schließt Schwellenwert-Änderungen am Skript aus).
+
+**Scope-Check.** Diff umfasst genau drei Dateien mit minimalen, punktgenauen Änderungen (4/4
+Zeilen: 1 Plan-Zeile, 2×1 Zeile Makefile, 1 Zeile README). Kein neuer Abschnitt, keine
+Wiedereröffnung des `.d-check.yml`-Eintrags selbst (zu Recht — er war nie der Gegenstand des
+Befunds), keine neuen Findings sichtbar. `make gates` laut Commit-Beleg EXIT 0.
+
+**Aktualisiertes Verdikt: Merge-blockierend — nein.** F-1 ist durch reale Messung gedeckt
+korrigiert, F-2 vollzogen. Kein Rollen-Widerspruch, kein offener Punkt aus diesem Review.
