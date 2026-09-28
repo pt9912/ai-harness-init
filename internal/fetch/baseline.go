@@ -77,9 +77,26 @@ func baselineTrees() []string { return []string{"regelwerk", "templates"} }
 // und Verifikationspfad ohne Netz (Fixture-ZIP) testbar ist.
 type AssetFetch func(ctx context.Context, tag string) (io.ReadCloser, error)
 
+// baselineURLBaseOverrideEnv ist ein bewusster Opt-in-Override der Fetch-Basis
+// (LH-QA-02, wie COURSE_TAG/BASELINE_SHA256) und wird NICHT im Nutzer-Handbuch
+// gefuehrt: sein einziger Konsument ist der Prozess-Test
+// TestUnfallVektor_OhneArgumentImRepoWurzel (cmd/ai-harness-init). Der
+// `docker run`-Aufruf hinter `make test-go` traegt `--network none`; Docker
+// haelt lo dabei offen. Der Test nutzt genau das: er startet einen lokalen
+// Loopback-Server, weil echte Netzerreichbarkeit den Schreib-Nachweis des
+// Unfall-Vektors sonst unbeobachtbar macht — der produktive Fetch schlaegt
+// unter --network none sofort fehl, bevor ein mutierter Schreibpfad je
+// erreicht wird. Produktion laesst die Variable leer und faehrt den
+// gepinnten Default (seit slice-go-testlauf-bekommt-einen-ressourcendeckel).
+const baselineURLBaseOverrideEnv = "AI_HARNESS_INIT_BASELINE_URL_BASE"
+
 // DownloadBaseline ist der Produktions-Fetcher: HTTP-GET des Release-Assets.
 func DownloadBaseline(ctx context.Context, tag string) (io.ReadCloser, error) {
-	url := baselineURLBase + tag + "/" + baselineAsset
+	base := baselineURLBase
+	if v := os.Getenv(baselineURLBaseOverrideEnv); v != "" {
+		base = v
+	}
+	url := base + tag + "/" + baselineAsset
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, fmt.Errorf("baseline-request %s: %w", tag, err)

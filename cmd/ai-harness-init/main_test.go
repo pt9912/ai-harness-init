@@ -8,6 +8,8 @@ import (
 	"encoding/hex"
 	"errors"
 	"io"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -904,6 +906,20 @@ func TestZielordner_AusDemArgument(t *testing.T) {
 // Aufruf einen Bootstrap im stehenden Repo an (Register-Beobachtung
 // BEO-ALL/ohne-argument-startet-das-werkzeug-den-init-pfad).
 //
+// `make test-go` faehrt den `docker run`-Aufruf unter --network none; Docker
+// haelt lo dabei offen (gemessen: docker run --network none + eine
+// Loopback-Verbindung im selben Container gelingt). Der Prozess hier bekommt
+// darum einen LOKALEN Baseline-Fetch (Loopback-Server + die beiden
+// Opt-in-Overrides AI_HARNESS_INIT_BASELINE_URL_BASE/BASELINE_SHA256), statt
+// sich auf echte Netzerreichbarkeit zu verlassen: ohne ihn bricht der
+// produktive Baseline-Download unter --network none sofort am Netz — VOR
+// jedem Schreibzugriff (internal/fetch/baseline.go Baseline(): Fetch vor
+// jedem Schreiben) —, und ein mutierter Aufruf von bootstrap() bliebe
+// folgenlos: die Verzeichnis-Pruefung unten saehe unter der Mutation keinen
+// Unterschied mehr, weil der Schreibpfad gar nicht erreicht wuerde. Im
+// UNMUTIERTEN Pfad bleibt der lokale Server unbenutzt, weil bootstrap() dort
+// nie faellt.
+//
 // Rot-Gegenprobe 1 (stiller Init-Pfad zurueck, test/mutations/377): der Aufruf
 // bootstrappt das stehende Repo — die Verzeichnis-Pruefung faerbt rot.
 // Rot-Gegenprobe 2 (geschwaechte Zusicherung: bricht, aber schreibt): der Zweig
@@ -921,18 +937,37 @@ func TestUnfallVektor_OhneArgumentImRepoWurzel(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(repo, "Makefile"), []byte("include harness/mk/*.mk\n"), 0o644); err != nil {
 		t.Fatalf("Bestand im stehenden Repo anlegen: %v", err)
 	}
+
+	asset, sum := baselineFixture(t)
+	rc, err := asset(context.Background(), fetch.DefaultTag)
+	if err != nil {
+		t.Fatalf("fixture-asset lesen: %v", err)
+	}
+	data, err := io.ReadAll(rc)
+	if err != nil {
+		t.Fatalf("fixture-asset lesen: %v", err)
+	}
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		_, _ = w.Write(data)
+	}))
+	defer srv.Close()
+
 	vorher := dirEntries(t, repo)
 	var out, errb bytes.Buffer
 	cmd := exec.Command(bin)
 	cmd.Dir = repo
+	cmd.Env = append(os.Environ(),
+		"AI_HARNESS_INIT_BASELINE_URL_BASE="+srv.URL+"/",
+		"BASELINE_SHA256="+sum,
+	)
 	cmd.Stdout = &out
 	cmd.Stderr = &errb
-	err := cmd.Run()
+	runErr := cmd.Run()
 	exitCode := 0
-	if err != nil {
+	if runErr != nil {
 		var ee *exec.ExitError
-		if !errors.As(err, &ee) {
-			t.Fatalf("Prozess: %v", err)
+		if !errors.As(runErr, &ee) {
+			t.Fatalf("Prozess: %v", runErr)
 		}
 		exitCode = ee.ExitCode()
 	}
