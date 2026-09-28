@@ -190,7 +190,7 @@ lieferbaren Anteile aus §3 dieses Plans getrennt:
 
 - [`slice-go-testlauf-bekommt-einen-ressourcendeckel`](../next/slice-go-testlauf-bekommt-einen-ressourcendeckel.md)
   — Anteil: Deckel + Wächter + Cache-Zusage + mutate-Vererbung (DoD 1–4 dieses Plans).
-- [`slice-agent-watch-sh-wird-verankert`](../open/slice-agent-watch-sh-wird-verankert.md)
+- [`slice-agent-watch-sh-wird-verankert`](../next/slice-agent-watch-sh-wird-verankert.md)
   — Anteil: Verankerung von `harness/tools/agent-watch.sh` (§3-Zeile dieses Plans).
 
 Der Schnitt dieses Plans überschritt mit fünf Gegenständen (vier DoD-Punkten plus der
