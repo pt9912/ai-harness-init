@@ -268,7 +268,7 @@ dasteht.
   `v0.77.0`→`v0.79.0`) liegt kurz vor diesem
   Slice.** Ein neues Modul oder eine neue `structure`-Bedingung könnte
   `docs-check` am Tag-Baum anders bewerten als beim letzten grünen Lauf. —
-  **Ausgang:** *eingetreten* — der MR-073-Link fehlte, `docs-check` schlug
+  **Ausgang:** *eingetreten* — der [`MR-073`](../../../../harness/conventions.md#mr-073)-Link fehlte, `docs-check` schlug
   am Pin-Commit an; behoben im laufenden Slice (Commit `31876391`), danach
   frisch grün (Verifier: „comment-claims meldete … 0 Befund(e)").
 
@@ -335,7 +335,7 @@ Backticks).
   referenzierten Beobachtung bleibt aus, kein Tag/Push in diesem Slice) ·
   Risiko 3 *eingetreten* (strukturelle Belegbasis-Lücke, erneuter
   `make gates`-Lauf vor dem tatsächlichen Tag-Push nötig, außerhalb dieser
-  DoD) · Risiko 4 *eingetreten* (MR-073-Link fehlte, im laufenden Slice
+  DoD) · Risiko 4 *eingetreten* ([`MR-073`](../../../../harness/conventions.md#mr-073)-Link fehlte, im laufenden Slice
   behoben, Commit `31876391`) — siehe §6.
 - **Drei Paarungen:** Anker — kein Eintrag in §7 trägt das Feld `liegt in`;
   die Paarung hat kein Objekt. · Folge-Slice — keiner genannt, keine Prüfung
