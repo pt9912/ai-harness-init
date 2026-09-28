@@ -26,6 +26,18 @@ setup() {
   [[ "$output" == *"docker run"* ]]
 }
 
+@test "makefile: der Go-Testlauf traegt einen Prozess-Deckel (--pids-limit)" {
+  run grep -A 2 "^test-go:" "$REPO/Makefile"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"--pids-limit"* ]]
+}
+
+@test "makefile: der Go-Testlauf traegt einen Speicher-Deckel (--memory)" {
+  run grep -A 2 "^test-go:" "$REPO/Makefile"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"--memory"* ]]
+}
+
 @test "dockerfile: die test-Stufe fuehrt go test NICHT mehr im Build aus" {
   run grep -A 3 "^FROM warm AS test" "$REPO/Dockerfile"
   [ "$status" -eq 0 ]

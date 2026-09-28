@@ -85,10 +85,9 @@ TEST_PIDS_LIMIT ?= 512
 TEST_MEMORY ?= 1024m
 
 # Kein `-v`: der Quellcode kommt per COPY ins Image (Dockerfile, Stufe test), der
-# Container bekommt kein Host-Mount. `docker run` wird nie gecacht — das traegt jetzt die
-# Ebene, die zuvor `--no-cache-filter test` hielt ("jeder Lauf misst wirklich neu");
-# -count=1 verhindert zusaetzlich, dass go test selbst unveraenderte Pakete unter warmem
-# Kompilat-Cache "(cached)" ueberspringt (Dockerfile-Stufe warm). `make mutate` erbt
+# Container bekommt kein Host-Mount. `docker run` wird nie gecacht — jeder Lauf misst
+# wirklich neu; -count=1 verhindert zusaetzlich, dass go test selbst unveraenderte
+# Pakete unter warmem Kompilat-Cache "(cached)" ueberspringt (Dockerfile-Stufe warm). `make mutate` erbt
 # diesen Deckel strukturell: seine Faelle mit `# verify: test-go` (und der volle
 # `make test`) rufen genau dieses Ziel.
 test-go: ## Nur die Go-Unit-Tests (docker run, Ressourcen-Deckel, kein Mount) — Docker-only
