@@ -32,20 +32,22 @@ RUN mkdir -p "$GOMODCACHE" && go mod download
 # Build nicht — vier Erklaerungen wurden gemessen und ausgeschlossen, die Ursache
 # liegt tiefer (Messreihe in docs/plan/planning/done/slice-057-go-kompilat-cache.md).
 # Eine Schicht dagegen cacht Docker hier nachweislich; sie haengt nur am Basis-Image
-# und an go.mod, waehrend --no-cache-filter nur die test-Stufe neu ausfuehrt.
+# und an go.mod. Die test-Stufe fuehrt den Testlauf selbst nicht mehr aus (s. u.) —
+# ihr Cache-Stand ist darum ohne Wirkung auf die Zusage "jeder Lauf misst wirklich neu".
 FROM deps AS warm
 RUN CGO_ENABLED=0 go build std
 
 # ---- test ------------------------------------------------------------------
-# -count=1 gehoert zum Vorwaermen und ist NICHT redundant: mit warmem Kompilat-Cache
-# wuerde das Test-Werkzeug unveraenderte Pakete mit "(cached)" ueberspringen. Fuer ein
-# Gate waere das eine Zusage, die der Lauf nicht mehr einloest. --no-cache-filter
-# (Makefile) erzwingt, dass die SCHICHT neu ausgefuehrt wird; -count=1, dass die TESTS
-# neu laufen. Zwei Ebenen, nicht eine — test/dockerfile-teststufe.bats prueft es,
-# test/mutations/98 nimmt es weg.
+# Diese Stufe liefert nur den Quellcode ins Image (kein Host-Mount, Docker-only
+# ADR-0003) — der Testlauf selbst passiert per `docker run` (Makefile-Ziel test-go):
+# NUR `docker run` setzt einen wirksamen Prozess-/Speicher-Deckel durch
+# (`docker build --resource`/`--ulimit` nehmen dieselben Werte an, ohne sie
+# durchzusetzen). -count=1 traegt die Zusage "jeder Lauf misst wirklich neu" im
+# Makefile-Rezept: ein `docker run` wird nie gecacht, -count=1 verhindert zusaetzlich,
+# dass go test selbst unveraenderte Pakete "(cached)" ueberspringt.
+# test/dockerfile-teststufe.bats prueft die Zusage, test/mutations/98 nimmt sie weg.
 FROM warm AS test
 COPY . .
-RUN CGO_ENABLED=0 go test -count=1 ./...
 
 # ---- compile ---------------------------------------------------------------
 # Schnelles Compile-Feedback (ohne Tests/Lint).

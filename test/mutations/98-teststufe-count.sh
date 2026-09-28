@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
-# files: Dockerfile
-# expect: dockerfile: die test-Stufe erzwingt die Test-Ausfuehrung (-count=1)
+# files: Makefile
+# expect: makefile: der Go-Testlauf (docker run) erzwingt die Test-Ausfuehrung (-count=1)
 #
-# Entfernt -count=1 aus der test-Stufe. Seit der Vorwaerm-Stufe (slice-057) ist der
-# Kompilat-Cache ueber Builds hinweg warm — ohne -count=1 ueberspringt das Test-Werkzeug
-# unveraenderte Pakete mit "(cached)". Der Lauf bliebe schnell und gruen und meldete
-# gecachte Ergebnisse als bestandene Tests: eine Regression, die wie ein Erfolg aussieht.
-# Vor slice-057 war die Zusage bauartbedingt sicher (kalter Cache je Build), jetzt haengt
-# sie an diesem Flag — und damit an diesem Waechter.
+# Entfernt -count=1 aus dem test-go-Rezept (Makefile). Der Kompilat-Cache der
+# Vorwaerm-Stufe ist ueber Builds hinweg warm — ohne -count=1 ueberspringt das
+# Test-Werkzeug unveraenderte Pakete mit "(cached)". Der Lauf bliebe schnell und gruen
+# und meldete gecachte Ergebnisse als bestandene Tests: eine Regression, die wie ein
+# Erfolg aussieht. Der Testlauf selbst ist ein `docker run` (nie gecacht) statt eines
+# `RUN` im Dockerfile-Build — die Zusage haengt an -count=1 im Makefile-Rezept, und
+# damit an diesem Waechter.
 set -euo pipefail
-sed -i 's/ -count=1 / /' Dockerfile
+sed -i '/^test-go:/,/^$/ s/ -count=1 / /' Makefile

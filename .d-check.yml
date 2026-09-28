@@ -147,10 +147,11 @@ structure:
 # exempt-targets ist EXAKT (kein Glob) und in zwei Gruppen kuratiert:
 #
 # (a) Nicht-Gate-Verifies und Maintenance/CI-Sensoren — kein Gate-Versprechen (wie (b)),
-# jedes Rezept zusaetzlich in harness/README.md namentlich genannt (17 von 21 ueber einen
+# jedes Rezept zusaetzlich in harness/README.md namentlich genannt (19 von 23 ueber einen
 # eigenen `## `-Hilfetext mit der Angabe "NICHT in gates"; span-clean, doc-immutable,
 # doc-commits und record-gates tragen diesen Hilfetext nicht, stehen aber
-# ebenfalls im Fliesstext): smoke, full-smoke, e2e-abdeckung, mutate, span-clean,
+# ebenfalls im Fliesstext): smoke, full-smoke, e2e-abdeckung, mutate,
+# test-go-pids-guard, span-clean,
 # span-report, hook-overhead, agent-watch, slice-mv,
 # archive-welle, vendor-baseline, regelwerk-check, baseline-freshness,
 # history-range-guard, adr-immutable, doc-immutable, doc-commits, record-gates,
@@ -174,6 +175,7 @@ targets:
     - artifact-host
     - e2e-abdeckung
     - mutate
+    - test-go-pids-guard
     - span-clean
     - span-report
     - hook-overhead

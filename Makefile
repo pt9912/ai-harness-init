@@ -52,7 +52,7 @@ TRAEGER_SHA256_WINDOWS_ARM64 ?= a348a9d333f191fc6e9a33388ebb01cae3d2819d47821774
 TRAEGER_CARRIER ?= .harness/state/bin/ai-harness-init
 export TRAEGER_TAG TRAEGER_SHA256_LINUX_AMD64 TRAEGER_SHA256_LINUX_ARM64 TRAEGER_SHA256_DARWIN_AMD64 TRAEGER_SHA256_DARWIN_ARM64 TRAEGER_SHA256_WINDOWS_AMD64 TRAEGER_SHA256_WINDOWS_ARM64 TRAEGER_CARRIER
 
-.PHONY: help gates record-gates test test-bats test-go lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle traeger-fetch tap-check tap-nachzug vendor-baseline
+.PHONY: help gates record-gates test test-bats test-go test-go-pids-guard lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle traeger-fetch tap-check tap-nachzug vendor-baseline
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
@@ -72,8 +72,39 @@ test: test-bats test-go ## Harness-Tests (bats) + Go-Unit-Tests (go test in Dock
 test-bats: ## Nur die Harness-Tests (bats) — Docker-only
 	docker run --rm --network none -v "$(CURDIR)":/code:ro -w /code $(BATS_IMAGE) test/
 
-test-go: ## Nur die Go-Unit-Tests (Dockerfile test-Stage) — Docker-only
-	docker build --no-cache-filter test --build-arg GO_VERSION=$(GO_VERSION) --target test -t ai-harness-init:test .
+# Ressourcen-Deckel des Go-Testlaufs: NUR `docker run --pids-limit`/`--memory` setzen ihn
+# durch — `docker build --resource`/`--ulimit` nehmen dieselben Werte an, ohne sie
+# durchzusetzen. Der reale Bedarf der vollen Suite (alle Pakete, kompiliert und
+# getestet, auf einem 20-Kern-Host) liegt bei rund 190 MB und rund 230 gleichzeitigen
+# Prozessen/Threads; beide Werte hier tragen deutlichen Sicherheitsabstand darueber,
+# damit Compiler, Testbinaries und der re-exec'ende Kind-Prozess aus
+# cmd/ai-harness-init/span_emit_test.go Platz haben, ohne den Deckel wirkungslos weit
+# zu setzen. internal/resourcecap/resourcecap_test.go (make test-go-pids-guard) prueft
+# die Wirkung des pids-Deckels selbst.
+TEST_PIDS_LIMIT ?= 512
+TEST_MEMORY ?= 1024m
+
+# Kein `-v`: der Quellcode kommt per COPY ins Image (Dockerfile, Stufe test), der
+# Container bekommt kein Host-Mount. `docker run` wird nie gecacht — das traegt jetzt die
+# Ebene, die zuvor `--no-cache-filter test` hielt ("jeder Lauf misst wirklich neu");
+# -count=1 verhindert zusaetzlich, dass go test selbst unveraenderte Pakete unter warmem
+# Kompilat-Cache "(cached)" ueberspringt (Dockerfile-Stufe warm). `make mutate` erbt
+# diesen Deckel strukturell: seine Faelle mit `# verify: test-go` (und der volle
+# `make test`) rufen genau dieses Ziel.
+test-go: ## Nur die Go-Unit-Tests (docker run, Ressourcen-Deckel, kein Mount) — Docker-only
+	docker build --build-arg GO_VERSION=$(GO_VERSION) --target test -t ai-harness-init:test .
+	docker run --rm --network none --pids-limit $(TEST_PIDS_LIMIT) --memory $(TEST_MEMORY) ai-harness-init:test go test -count=1 ./...
+
+# Wirkungs-Waechter des pids-Deckels: internal/resourcecap/resourcecap_test.go startet
+# eine feste Zahl (700) gleichzeitiger Prozesse und erwartet, dass mindestens einer am
+# TEST_PIDS_LIMIT scheitert. Der Build-Tag `resourcecap` haelt die Datei aus
+# `go test ./...` (test-go) heraus — die Last, die sie erzeugt, traefe sonst andere
+# Pakete, die selbst Prozesse starten (echte Interferenz, nicht nur Zeitverlust).
+# Isolierter, eigener Aufruf desselben Deckels — NICHT in gates: er prueft eine
+# Umgebungs-Eigenschaft (haelt der Deckel?), kein Verhalten des Codes.
+test-go-pids-guard: ## Wirkungs-Waechter fuer den pids-Deckel (DoD 2) — Docker-only, NICHT in gates
+	docker build --build-arg GO_VERSION=$(GO_VERSION) --target test -t ai-harness-init:test .
+	docker run --rm --network none --pids-limit $(TEST_PIDS_LIMIT) --memory $(TEST_MEMORY) ai-harness-init:test go test -tags resourcecap -run TestFesteLastUeberschreitetPidsDeckel -count=1 ./internal/resourcecap/...
 
 lint: ## Go-Lint (golangci-lint, Dockerfile lint-Stage, gepinntes Image) — Docker-only (ADR-0003)
 	docker build --no-cache-filter lint --build-arg GO_VERSION=$(GO_VERSION) --build-arg GOLANGCI_LINT_VERSION=$(GOLANGCI_LINT_VERSION) --target lint -t ai-harness-init:lint .
