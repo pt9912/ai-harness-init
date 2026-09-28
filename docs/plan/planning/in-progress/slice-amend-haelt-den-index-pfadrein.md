@@ -134,9 +134,11 @@ Implementer-Lieferung), nicht als Teil dieses Verdikts.
 - [x] `make gates` grün. — Working-Tree-Hash `0a22d05ba9feb07ce2e855536ba76ebd96b9432fa792a3704184865f1a05b7ca`
       (`.harness/state/gates-passed.diffsha`, deckungsgleich mit
       `bash harness/tools/working-tree-hash.sh`).
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor. —
+      [`docs/reviews/2026-09-28-slice-amend-haelt-den-index-pfadrein.md`](../../../reviews/2026-09-28-slice-amend-haelt-den-index-pfadrein.md)
+      (0 HIGH, 2 MEDIUM behoben in `c08ad58e`, 3 LOW, 3 INFO — nicht merge-blockierend).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag. — siehe §7.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben. — siehe §7.
 
 ## 3. Plan (vor Code)
 
@@ -167,15 +169,67 @@ DoD vollständig, Review ohne blockierenden Befund, Closure-Notiz geschrieben.
 
 - Der Hook-Weg wirkt nur, wo `make hooks-install` gelaufen ist (dieselbe Grenze wie beim
   `commit-msg`-Träger, [`harness/README.md`](../../../../harness/README.md) §Traceability).
-  **Ausgang:** weiter offen → Register.
-- Die Disziplin-Form wirkt nur, wo der Rollen-Anweisungssatz gelesen wird. **Ausgang:** weiter offen
-  → Register. (Mit dem Architect-Verdikt oben ist die Disziplin-Form ohnehin nicht der gewählte
-  Träger; das Risiko bleibt als benannte Grenze der verworfenen Option stehen, nicht als offener
-  Punkt des gewählten Trägers.)
+  **Ausgang:** weiter offen — neue Registerzeile
+  [`BEO-ALL/traeger-wirkt-nur-nach-lokaler-aktivierung`](../observations/BEO-ALL/traeger-wirkt-nur-nach-lokaler-aktivierung/observation.md)
+  (1. Beleg).
+- Die Disziplin-Form wirkt nur, wo der Rollen-Anweisungssatz gelesen wird. **Ausgang:** entfallen —
+  das gelieferte Artefakt ist der Hook, nicht die Disziplin-Form (Architect-Verdikt §1); das Risiko
+  war an die verworfene Alternative gebunden und trifft das gelieferte Artefakt nicht. Es bleibt hier
+  als benannte Grenze der verworfenen Option stehen, ohne eigenen Registereintrag — es beschreibt
+  keine Eigenschaft dessen, was gebaut wurde.
 
 ## 7. Closure-Notiz
 
-<!-- wird bei der Closure gefüllt — nicht Teil dieser Planung. -->
+- **Was hat funktioniert:** Der Architect-Verdikt lag als Plan-Artefakt vor dem ersten
+  Implementer-Commit vor (Träger, Zielort, schreibende Rolle, ADR-Frage — alle vier vorab
+  entschieden) und wurde im Diff nicht angetastet (Review-Negativbefund). Der DoD-Rot/Grün-Beleg für
+  den korrektheitskritischen Punkt (Träger hält `--amend` ab) wurde real an einem konstruierten
+  Repo gegen alle drei Beleg-Muster der Beobachtung gefahren, nicht nur behauptet. Review fand 0
+  HIGH; beide MEDIUM (F-1, F-2) wurden vom Implementer selbst vor der Verifikation behoben
+  (`c08ad58e`).
+- **Was ging anders als geplant:** Zwei Vollständigkeits-Lücken (F-1: Exec-Bit-Probe in
+  `make hooks-install` nicht auf den neuen Hook nachgezogen; F-2: Werkzeuge-Doku blieb bei der
+  Einzelzweck-Beschreibung von `commit-msg` fixiert) hätten den Träger lautlos unwirksam lassen
+  können, wären sie nicht gefunden worden — derselbe Effekt, gegen den dieser Slice selbst antritt,
+  nur eine Ebene tiefer (ein Nachbar-Mechanismus statt der eigentliche Träger). Beide sind behoben.
+- **Steering-Loop-Eintrag:** neuer git-eigener Träger `.githooks/pre-commit` ergänzt das
+  Durchsetzungsschicht-Artefakt-Set neben `commit-msg` (dieselbe Klasse wie
+  [`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks))
+  — liegt in `.githooks/pre-commit`. Auslöser:
+  `BEO-ALL/amend-committet-fremde-index-eintraege-mit` (Konsistenz-Review 2026-09-15,
+  `slice-174-archivierung-emittieren`,
+  `slice-d-check-pin-bringt-links-lookahead-und-referenz-definitionen` — 3×).
+  **Offene Übergabe an den Architect:** Die zugehörige Adaptions-Block-Dokumentation
+  (`harness/conventions/MR-<NNN>-…`, analog `MR-002`) ist laut Architect-Verdikt (§1) ein
+  eigenständiger Folgeschritt **nach** dieser Lieferung und wurde in diesem Slice bewusst nicht
+  mitgeliefert — sie ist kein DoD-Punkt dieses Slice. Der Registereintrag
+  `BEO-ALL/amend-committet-fremde-index-eintraege-mit` steht deshalb auf `verkörpert` (der Träger
+  existiert und wirkt), nennt die offene Adaptions-Block-Dokumentation aber ausdrücklich in seiner
+  `state.md`. Diese Übergabe hängt an keinem Slice-Plan — sie ist direkte Architect-Schreibarbeit an
+  `harness/conventions.md`/`harness/conventions/` nach `AGENTS.md` §3.8, kein Rollenwechsel, der
+  einen neuen Slice bräuchte.
+- **Beobachtungs-Register (`../observations/`):**
+  - `BEO-ALL/amend-committet-fremde-index-eintraege-mit`: `state.md` von `geplant` auf `verkörpert`
+    gehoben (Zielort `.githooks/pre-commit`, Herkunfts-Anker `· seit
+    slice-amend-haelt-den-index-pfadrein`, im Ziel selbst vom Implementer bereits geschrieben).
+  - `BEO-ALL/traeger-wirkt-nur-nach-lokaler-aktivierung` neu angelegt, Beleg
+    `evidence/slice-amend-haelt-den-index-pfadrein.md` (Risiko 1 aus §6 — Zähler steht bei 1×).
+  - `BEO-ALL/zweiter-fall-eines-mechanismus-laesst-begleitstellen-fixiert` neu angelegt, Beleg
+    `evidence/slice-amend-haelt-den-index-pfadrein.md` (Review-Finding-Klasse F-1/F-2/F-4, in
+    diesem Vorgang als **eine** Gelegenheit gezählt und im selben Slice behoben — Zähler steht bei
+    1×).
+- **Folge-Slices:** keine mit diesem Slice angelegt.
+- **Risiken aus §6:** Risiko 1 (Hook wirkt nur nach `make hooks-install`) *weiter offen* →
+  `BEO-ALL/traeger-wirkt-nur-nach-lokaler-aktivierung` · Risiko 2 (Disziplin-Form wirkt nur wo
+  gelesen) *entfallen* — Begründung siehe §6, die verworfene Alternative wurde nicht gebaut.
+- **Drei Paarungen:** Anker — `.githooks/pre-commit` und
+  `harness/tools/pre-commit-amend-guard.sh` tragen `seit slice-amend-haelt-den-index-pfadrein`
+  wörtlich (vom Implementer bereits geschrieben, geprüft per `grep`), Paarung getragen. ·
+  Folge-Slice — keiner genannt, keine Prüfung nötig. · Register — alle drei zitierten
+  Beobachtungen (`amend-committet-fremde-index-eintraege-mit`,
+  `traeger-wirkt-nur-nach-lokaler-aktivierung`,
+  `zweiter-fall-eines-mechanismus-laesst-begleitstellen-fixiert`) existieren als Verzeichnis und
+  tragen je mindestens einen Beleg unter `evidence/`; geprüft nach dem `git mv`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
