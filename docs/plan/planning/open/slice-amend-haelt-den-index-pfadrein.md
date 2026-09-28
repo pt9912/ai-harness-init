@@ -84,7 +84,7 @@ bindet:
   distilliert keinen Rollen-Ablauf; er ist ein rollenübergreifendes
   Durchsetzungsschicht-Element (Baseline-Regelwerk `modul-13-quality-gates.md` §Guard-Härtung,
   `grundlagen-durchsetzungsschicht.md`), das für jede Rolle gleich greift, egal welche gerade
-  committet. ADR-0028 erreicht ihn nicht — dieselbe Grenze, die die ADR selbst für
+  committet. [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) erreicht ihn nicht — dieselbe Grenze, die die ADR selbst für
   `.claude/agents/*.md` zieht: nicht jedes Artefakt, das eine Rolle berührt, ist ihr
   Anweisungssatz.
 - `AGENTS.md` §3.8 bindet den Architect nur für zwei benannte Artefakte (Hard Rules §3,
