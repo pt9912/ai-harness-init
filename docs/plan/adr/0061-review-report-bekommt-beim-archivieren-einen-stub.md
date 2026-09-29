@@ -48,7 +48,7 @@ beim Archivieren geschieht, nicht über eine Anforderung oder eine technische Fe
 
 Der Slice-Plan
 [`slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang`](../planning/done/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md)
-stellt eine reine Architektur-Frage, die die adoptierte Baseline `v6.9.0` bereits einmal
+stellt eine reine Architektur-Frage, die die adoptierte Baseline `v6.13.0` bereits einmal
 entschieden hat — mit einer Annahme, die der Bestand dieses Repos widerlegt.
 `modul-06-roadmap.md` §Wellen-Closure-Prozedur, Schritt 4, verbatim: *„Review-Reports bekommen
 keinen Stub; sie haben keine Identität jenseits ihres Slice."* Für Slices und Wellen gilt das
@@ -177,7 +177,7 @@ bleibt ohne Nachzug gültig.
 
 **2. Der Stub-Inhalt ist minimal: Überschrift, Archiv-Zeiger, Zustand.** Dieselbe Form wie bei
 Slice/Welle
-([`archiv-stub-slice.template.md`](../../../.harness/baseline/v6.9.0/templates/docs/plan/planning/archiv-stub-slice.template.md)),
+([`archiv-stub-slice.template.md`](../../../.harness/baseline/v6.13.0/templates/docs/plan/planning/archiv-stub-slice.template.md)),
 auf einen Review-Report angewandt. Da die vendored Baseline keine Vorlage für diese Artefaktklasse
 führt (sie sieht die Klasse *„Report-Stub"* nicht vor), entsteht die Form **repo-eigen** unter
 `docs/plan/planning/` als Nachbar-Vorlage der beiden vorhandenen — kein Bruch mit

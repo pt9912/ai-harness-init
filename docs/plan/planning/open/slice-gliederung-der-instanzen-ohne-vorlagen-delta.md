@@ -46,11 +46,11 @@ Bedingung nicht zutrifft. Maßstab ist das Gliederungs-Kriterium in
 
 | Instanz | Vorlage |
 |---|---|
-| `docs/plan/carveouts/README.md` | `.harness/baseline/v6.9.0/templates/docs/plan/carveouts/README.template.md` |
-| `harness/README.md` | `.harness/baseline/v6.9.0/templates/harness/README.template.md` |
-| `README.md` | `.harness/baseline/v6.9.0/templates/project-readme.template.md` |
-| `spec/architecture.md` | `.harness/baseline/v6.9.0/templates/spec/architecture.template.md` |
-| `spec/spezifikation.md` | `.harness/baseline/v6.9.0/templates/spec/spezifikation.template.md` |
+| `docs/plan/carveouts/README.md` | `.harness/baseline/v6.13.0/templates/docs/plan/carveouts/README.template.md` |
+| `harness/README.md` | `.harness/baseline/v6.13.0/templates/harness/README.template.md` |
+| `README.md` | `.harness/baseline/v6.13.0/templates/project-readme.template.md` |
+| `spec/architecture.md` | `.harness/baseline/v6.13.0/templates/spec/architecture.template.md` |
+| `spec/spezifikation.md` | `.harness/baseline/v6.13.0/templates/spec/spezifikation.template.md` |
 
 Die Abweichungen misst der Umsetzungs-Lauf, je Zeile der Tabelle:
 
@@ -59,8 +59,8 @@ diff <(grep '^## ' <vorlage>) <(grep '^## ' <instanz>)
 ```
 
 **Herkunft:** Der Instanz-Durchgang des Sprungs hat die fünf gefunden; der
-[Vorlagen-Bericht zum Tag `v6.9.0`](../../../migrations/v6.9.0.md) führt sie mit „kein Delta;
-Gliederung weicht ab". Keine der fünf Vorlagen ändert sich zwischen `v6.8.0` und `v6.9.0`, die
+[Vorlagen-Bericht zum Tag `v6.13.0`](../../../migrations/v6.13.0.md) führt sie mit „kein Delta;
+Gliederung weicht ab". Keine der fünf Vorlagen ändert sich zwischen `v6.8.0` und `v6.13.0`, die
 Übernahme-Vorgabe des Auftraggebers ist aber **delta-gebunden**
 ([`ADR-0056`](../../adr/0056-ziel-fassung-regiert-den-sprung-v690.md) §Konsequenzen). Deshalb
 gehören die fünf nicht in den Sprung. Für diesen Slice gelten die vier Ausgänge aus §5 a
@@ -151,7 +151,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`): `slice-sprung-auf-v690-wird-vollzogen` liegt in `done/` — erst
-dann ist `v6.9.0` gebucht. Dazu ist das WIP-Limit frei. Für Liefer-Punkt 2 nennt eine Quelle die
+dann ist `v6.13.0` gebucht. Dazu ist das WIP-Limit frei. Für Liefer-Punkt 2 nennt eine Quelle die
 schreibende Rolle der Spec-Straten (§6, Risiko 1).
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
