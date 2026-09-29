@@ -8,7 +8,9 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 ## Baseline
 
 - **Konvention:** AI-Harness-Kurs
-- **Stand:** `v6.9.0`
+- **Stand:** `v6.13.0` — Zielstand-Setzung vollzogen am 2026-09-29; Delta-Nachweis in
+  `slice-sprung-auf-v6130-wird-vollzogen`; regierende Fassung des Sprungs:
+  [`ADR-0072`](../docs/plan/adr/0072-ziel-fassung-regiert-den-sprung-v6130.md)
 - **Regelwerk + Templates:** committet vendored unter
   `.harness/baseline/v6.13.0/` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); der Regelwerks-Stand
   steht im vendored Baum selbst — `regelwerk/README.md` trägt ihn
@@ -214,7 +216,7 @@ der Klassen und Marken dieses Abschnitts.
 | Klasse | Form | Bedeutung | Beispiel |
 |---|---|---|---|
 | Adaptions-Bindung | `MR-<NNN>`, Link auf die Index-Zeile dieser Datei | das Target trägt eine deklarierte Abweichung dieses Repos von der Baseline | `make baseline-verify` → [`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
-| Anforderungs-Bindung | `LH-<FA\|QA>-<NN>`, Link in das Lastenheft | das Target belegt eine Anforderung des Vertrags-Stratums | `make full-smoke` → [`LH-FA-01`](../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
+| Anforderungs-Bindung | `LH-<FA\|QA\|RB>-<NN>`, Link in das Lastenheft | das Target belegt eine Anforderung des Vertrags-Stratums | `make full-smoke` → [`LH-FA-01`](../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
 | Hard-Rule-Bindung | `AGENTS.md` §`<N>` | das Target trägt eine Hard Rule oder Doku-Regel des Briefings | `make comment-claims` → [`AGENTS.md`](../AGENTS.md) §3.6 |
 | Technik-Bindung | `spec/spezifikation.md` §`<N>` | das Target prüft eine Festlegung des Technik-Stratums | `make span-check` → [`spec/spezifikation.md`](../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 |
 

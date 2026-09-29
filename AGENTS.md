@@ -92,7 +92,9 @@ Korrekturen entstehen als neue ADR mit Supersedes, nicht durch
 ### 3.5 Gates nicht ohne ADR lockern
 
 Jede Schwellen-Senkung (Modul-Aktivierung, Strenge) ist ein ADR, kein
-PR-Kommentar.
+PR-Kommentar. Eine befristete Ausnahme für einen Teil (einen Layer, einen
+Pfad) ist keine Senkung, sondern ein Carveout mit Trigger und Folge-Slice;
+die Schwelle selbst bleibt.
 
 ### 3.6 Keine Zusage ohne rot gesehenes Gegenbeispiel
 

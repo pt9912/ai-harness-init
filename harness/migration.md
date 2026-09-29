@@ -48,6 +48,7 @@ Spalte), alle anderen bleiben unangetastet:
 | `v6.5.0` → `v6.7.2` (vollzogen) | Ziel-Fassung `v6.7.2` | [ADR-0044](../docs/plan/adr/0044-ziel-fassung-regiert-den-sprung-v672.md) Festlegung 1 |
 | `v6.7.2` → `v6.8.0` (vollzogen) | Ziel-Fassung `v6.8.0` | [ADR-0047](../docs/plan/adr/0047-ziel-fassung-regiert-den-sprung-v680.md) |
 | `v6.8.0` → `v6.9.0` (vollzogen) | Ziel-Fassung `v6.9.0` | [ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md) |
+| `v6.9.0` → `v6.13.0` (vollzogen) | Ziel-Fassung `v6.13.0` | [ADR-0072](../docs/plan/adr/0072-ziel-fassung-regiert-den-sprung-v6130.md) |
 
 Die Zeile zu `v5.12.0` → `v5.18.0` zitiert
 [ADR-0031](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 1;
@@ -55,12 +56,12 @@ die ADR steht auf **`Proposed`** (ihre eigene §Geschichte) und ist damit nach
 [`AGENTS.md`](../AGENTS.md) §3.4 noch nicht eingefroren — die Zeile hält fest, was sie **heute**
 vorschlägt, nicht, dass die Entscheidung feststeht.
 
-Der aktuell vendored Stand ist `v6.9.0`
-(`ls -1 .harness/baseline/` — kein Erwartungswert, wandert mit jedem Tausch); der Zielstand steht
-auf demselben Tag (§Baseline von [`conventions.md`](conventions.md)), der Baum ist getauscht, und
-damit ist die Zwei-Fassungen-Phase des achten Sprungs geschlossen. Der Sprung ist vollzogen:
-[ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md) §Konsequenzen legt den
-Instanz-Durchgang vor den Vollzug; sein Report ist [`docs/migrations/v6.9.0.md`](../docs/migrations/v6.9.0.md).
+Der aktuell vendored Stand ist `v6.13.0`
+(`ls -1 .harness/baseline/` — kein Erwartungswert, wandert mit jedem Tausch); §Baseline von
+[`conventions.md`](conventions.md) trägt denselben Tag als Zielstand, und damit ist die
+Zwei-Fassungen-Phase des neunten Sprungs geschlossen. Der Sprung ist vollzogen, die regierende
+Fassung ist [ADR-0072](../docs/plan/adr/0072-ziel-fassung-regiert-den-sprung-v6130.md); der Report
+zum Sprung ist [`docs/migrations/v6.13.0.md`](../docs/migrations/v6.13.0.md).
 
 ## 2. Ort und Form der Zielstand-Setzung
 
@@ -94,11 +95,13 @@ Delta-Nachweis-Feld ausweist. Die Festlegung erlaubt **nicht**, einen Durchgang 
 *„Fällt auch dieser aus, wächst die Basis weiter, und die Kosten wachsen mit."* — wörtlich aus der
 Quelle zitiert, nicht als Beschreibung abgeschwächt.
 
-Gemessen am Stand dieses Dokuments trägt die letzte Zeile mit gefülltem Nachweis-Feld `v6.9.0`
-(`grep -o '\*\*auf \`v[0-9.]*\`:\*\* [0-9-]*, Delta-Nachweis[^.;]*' harness/conventions.md` — die
-Zeile mit `Delta-Nachweis in slice-sprung-auf-v690-wird-vollzogen`, kein Erwartungswert). Für einen
-neunten Sprung wäre `v6.9.0` damit die Basis, **solange** kein weiterer Durchgang zwischenzeitlich
-läuft.
+§Baseline trägt die Aufzählung, aus der die Festlegung die Basis liest, **nicht mehr** — sie ist auf
+Zustand und Zeiger zurückgenommen
+([ADR-0072](../docs/plan/adr/0072-ziel-fassung-regiert-den-sprung-v6130.md) §Die Delta-Basis). Für
+den Sprung `v6.9.0` → `v6.13.0` fällt die Frage mit dem vendorten Stand zusammen: Der letzte
+Durchgang lief für `v6.9.0`, und derselbe Stand ist vendored — die Basis ist damit `v6.9.0`. Wie
+künftige Sprünge die Basis zeigen, wenn §Baseline die Aufzählung nicht mehr trägt, ist in
+[ADR-0072](../docs/plan/adr/0072-ziel-fassung-regiert-den-sprung-v6130.md) nicht entschieden.
 
 ## 4. Instanz-Register
 

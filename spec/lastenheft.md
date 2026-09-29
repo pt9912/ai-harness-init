@@ -448,7 +448,7 @@ emittierte Datei zu ändern.
   der Spec des Ziels nicht auf, steht sie als Code-Span ohne Verweis statt als Befund,
   und ob die Stufe die genannte Anforderung wirklich prüft, misst kein Lauf.
 
-## 4. Nichtfunktionale Anforderungen
+## 4. Nichtfunktionale Anforderungen und Randbedingungen
 
 ### LH-QA-01 — Keine halluzinierten Gates (F4, F5, F6)
 
