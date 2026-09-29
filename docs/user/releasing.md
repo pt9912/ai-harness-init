@@ -102,8 +102,9 @@ Die Schritt-Folge:
 
 7. **Die Formel ins Tap nachziehen und gegen das Asset halten.**
    *Regelweg:* der Job `tap` des Release-Workflows
-   (`.github/workflows/release.yml`) fährt `make tap-nachzug TAG=<tag>` am
-   Tag-Commit und endet mit dem Exit des Ziels. Das Ziel schreibt die Bytes
+   (`.github/workflows/release.yml`) fährt `make tap-nachzug` am Tag-Commit —
+   `TAG` reist im Step-`env` des Job-Schritts — und endet mit dem Exit des
+   Ziels. Das Ziel schreibt die Bytes
    des veröffentlichten Formel-Assets
    desselben Tags — keine lokal gefüllte Kopie — als Formel-Datei ins Tap
    (`pt9912/homebrew-ai-harness-init`), in einem Commit, dessen Message den Tag
@@ -115,7 +116,9 @@ Die Schritt-Folge:
    `HOMEBREW_TAP_GITHUB_TOKEN`, im Step-`env` des Job-Schritts auf `TAP_TOKEN`
    gemappt, und Anlage und Ablage des Tokens liegen außerhalb dieser Prozedur
    ([`ADR-0064`](../plan/adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
-   Festlegung 4). *Lokaler Ausfallweg:* `make tap-nachzug TAG=<tag>` mit
+   Festlegung 4; den Ort des Zugangsgeheimnisses am Regelweg setzt
+   [`ADR-0073`](../plan/adr/0073-der-ort-des-tap-zugangsgeheimnisses-ist-das-repo-secret.md)
+   auf das Repo-Secret). *Lokaler Ausfallweg:* `make tap-nachzug TAG=<tag>` mit
    `TAP_TOKEN` in der Umgebung des Aufrufers — für ihn nennt die Prozedur
    keine ausführende Rolle. Ohne `TAP_TOKEN` endet der Aufruf mit Exit 2 vor
    jedem Netz-Zugriff.
