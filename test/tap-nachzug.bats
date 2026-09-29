@@ -967,3 +967,116 @@ nutzlast_direkt() {
     [ "$(exit_zeilen)" -eq 1 ]
   done
 }
+
+# --- Job-Form des Release-Jobs `tap` (ADR-0064 Folgepflicht 2, Fitness-Zeilen
+# "Job-Form" und "uebergabe ohne text", Teil run:) --------------------------------
+#
+# Gelesen wird die Workflow-Datei (Datei-Lektuere, kein Netz, kein Workflow-Lauf):
+# je Zeile der Aufzaehlung ein Fall, und jede Zeile einzeln entfernt — oder das
+# Secret in einem Job-env oder im publish-Job gesetzt, oder eine Verzweigung im
+# run-Text — faerbt ihren Fall rot. Ob das Repo-Secret so wirkt, wie der Job es
+# voraussetzt, ist ausserhalb des Repos: der erste Tag-Lauf ist der Beleg, kein
+# Fall stellt ihn nach.
+
+job_block() {
+  awk -v job="$1" '
+    /^  [A-Za-z][A-Za-z0-9_-]*:$/ { an = ($0 == "  " job ":"); if (an) print; next }
+    an { print }
+  ' "$WF"
+}
+
+tap_run() {
+  job_block tap | grep -E '^[[:space:]]*run:'
+}
+
+@test "job-form: release.yml tragt einen Job tap, der nach publish laeuft" {
+  local block
+  block="$(job_block tap)"
+  [ -n "$block" ]
+  printf '%s\n' "$block" | grep -qE '^    needs: publish$'
+}
+
+@test "job-form: der Job tap tragt dieselbe if-Bedingung wie publish" {
+  local pub tj
+  pub="$(job_block publish | grep -E '^    if: ' || true)"
+  tj="$(job_block tap | grep -E '^    if: ' || true)"
+  [ -n "$pub" ]
+  [ "$pub" = "$tj" ]
+}
+
+@test "job-form: der Job tap tragt keine environment-Sperre" {
+  if job_block tap | grep -qE '^[[:space:]]*environment:'; then
+    echo "der Job tap traegt environment: — die Bindung auf echte Tags tragen needs: publish und der Tag-Trigger" >&2
+    return 1
+  fi
+}
+
+@test "job-form: der Checkout im Job tap tragt persist-credentials: false" {
+  local block
+  block="$(job_block tap)"
+  printf '%s\n' "$block" | grep -qE 'uses: actions/checkout@'
+  printf '%s\n' "$block" | grep -qE 'persist-credentials: false'
+}
+
+@test "job-form: der Job tap begrenzt die Rechte auf contents: read" {
+  local block
+  block="$(job_block tap)"
+  printf '%s\n' "$block" | grep -qE '^    permissions:$'
+  printf '%s\n' "$block" | grep -qE '^      contents: read$'
+  if printf '%s\n' "$block" | grep -q 'contents: write'; then
+    echo "der Job tap tragt contents: write — er laedt nichts hoch und schreibt nichts ans Release" >&2
+    return 1
+  fi
+}
+
+@test "job-form: der Job tap fahrt make tap-nachzug in einem Schritt" {
+  [ "$(tap_run | grep -cE '^[[:space:]]*run: make tap-nachzug$')" -eq 1 ]
+}
+
+@test "job-form: TAP_TOKEN und TAG reisen als Step-env des Jobs tap" {
+  local block
+  block="$(job_block tap)"
+  printf '%s\n' "$block" | grep -qF 'TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}'
+  printf '%s\n' "$block" | grep -qF 'TAG: ${{ github.ref_name }}'
+}
+
+@test "uebergabe ohne text: der run-Text des Jobs tap enthaelt keine Expansion" {
+  local run_zeilen
+  run_zeilen="$(tap_run)"
+  [ -n "$run_zeilen" ]
+  if printf '%s\n' "$run_zeilen" | grep -qF '${{'; then
+    echo "der run-Text des Jobs tap expandiert — Tag und Token reisen im Step-env, nicht im run-Text" >&2
+    return 1
+  fi
+}
+
+@test "job-form: eine Secret-Zufuehrung gibt es nur im Step-env des Jobs tap" {
+  local pub
+  # Genau ein secrets.-Zugriff in der ganzen Datei — der des Step-env im Job tap.
+  [ "$(grep -c 'secrets\.' "$WF")" -eq 1 ]
+  if grep -qE '^env:' "$WF"; then
+    echo "env auf Workflow-Ebene — das Secret reist nur im Step-env des Jobs tap" >&2
+    return 1
+  fi
+  if grep -qE '^    env:' "$WF"; then
+    echo "env auf Job-Ebene — das Secret reist nur im Step-env des Jobs tap" >&2
+    return 1
+  fi
+  pub="$(job_block publish)"
+  if printf '%s\n' "$pub" | grep -q 'secrets\.'; then
+    echo "Secret-Zugriff im publish-Job — das Secret reist nur im Step-env des Jobs tap" >&2
+    return 1
+  fi
+}
+
+@test "job-form: der run-Text des Jobs tap verzweigt nicht auf die Klasse des Ziels" {
+  local run_zeilen muster
+  run_zeilen="$(tap_run)"
+  [ -n "$run_zeilen" ]
+  for muster in 'case ' '$?' '|| true'; do
+    if printf '%s\n' "$run_zeilen" | grep -qF -- "$muster"; then
+      echo "der run-Text verzweigt ($muster) — jedes Nicht-Null des Ziels endet als roter Job" >&2
+      return 1
+    fi
+  done
+}

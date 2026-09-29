@@ -23,11 +23,11 @@
 # workflow_dispatch wie in upstream-drift.yml: der Plattform-Nachweis ist damit VOR
 # einem Tag manuell anstossbar — sonst kaeme das Feedback erst beim Release.
 #
-# CHECKOUT-TIEFE: die zwei `actions/checkout` unten bleiben bei der
+# CHECKOUT-TIEFE: die drei `actions/checkout` unten bleiben bei der
 # Default-Tiefe 1 — `make release-artifacts` baut Binaries, `start-smoke.sh`
-# startet sie; keiner liest `git`-Historie. Begruendung und Gesamtbild
-# (repo-weit acht Checkouts, genau einer mit `fetch-depth: 0`) stehen im Kopf
-# von ci.yml.
+# startet sie, `make tap-nachzug` liest Formel und Asset ueber das Netz; keiner
+# liest `git`-Historie. Begruendung und Gesamtbild (repo-weit neun Checkouts,
+# genau einer mit `fetch-depth: 0`) stehen im Kopf von ci.yml.
 
 name: release
 
@@ -185,3 +185,29 @@ jobs:
           else
             gh release create "$tag" dist/* --generate-notes
           fi
+
+  # Tap-Nachzug (ADR-0064 Folgepflicht 2): ein Tag-Push zieht die Formel des Tags
+  # ohne Handgriff ins Tap nach — dasselbe Ziel wie der lokale Ausfallweg, als
+  # Job. Die Bindung auf echte Tags tragen `needs: publish` und der Tag-Trigger
+  # des Workflows; eine `environment:`-Sperre kommt nicht hinzu. Tag und Token
+  # reisen nur im Step-env des Schritts: TAP_TOKEN ist das Mapping des
+  # Repo-Secrets HOMEBREW_TAP_GITHUB_TOKEN, TAG der Name des Tags — der run-Text
+  # nennt keines von beiden. Er verzweigt auch nicht auf die Klasse des Ziels
+  # (ADR-0066): jedes Nicht-Null endet als roter Job. `make tap-nachzug` liest
+  # beide Werte aus der Umgebung (das Makefile-Rezept nennt sie nicht). Die
+  # bats-Faelle ueber diese Job-Form stehen in test/tap-nachzug.bats.
+  tap:
+    needs: publish
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+      - name: Formel des Tags ins Tap nachziehen
+        env:
+          TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: make tap-nachzug

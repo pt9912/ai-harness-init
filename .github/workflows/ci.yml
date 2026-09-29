@@ -33,8 +33,8 @@
 # vor seinem `make doc-immutable`-Aufruf — sonst meldet eine aufloesbare, aber
 # im flachen Klon leere Range `0 Befund(e)`, Exit 0, statt zu fallen (MR-007
 # Setzung 3, "blind und gruen"). Dieselbe Begruendung (kein History-Lesen)
-# gilt fuer die zwei Checkouts in release.yml und den einen in
-# upstream-drift.yml — repo-weit acht Checkouts, genau einer mit
+# gilt fuer die drei Checkouts in release.yml und den einen in
+# upstream-drift.yml — repo-weit neun Checkouts, genau einer mit
 # `fetch-depth: 0`.
 
 name: ci
