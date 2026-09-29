@@ -6,7 +6,7 @@ Acceptance-Trigger) vor der Annahme verlangt.
 **Gegenstand:** `docs/plan/adr/0072-ziel-fassung-regiert-den-sprung-v6130.md` — Commit
 `1abe98b4`, Status `Proposed`. Die ADR ist die §4-Start-Bedingung des Sprung-Slice
 `slice-sprung-auf-v6130-wird-vollzogen`
-([`../../docs/plan/planning/next/slice-sprung-auf-v6130-wird-vollzogen.md`](../../docs/plan/planning/in-progress/slice-sprung-auf-v6130-wird-vollzogen.md)).
+([`../../docs/plan/planning/next/slice-sprung-auf-v6130-wird-vollzogen.md`](../../docs/plan/planning/done/slice-sprung-auf-v6130-wird-vollzogen.md)).
 
 **Report-Kennung für den Accept-Übergang** ([ADR-0040](../../docs/plan/adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md)
 Festlegung 1: Kennung, kein Pfad-Link): `2026-09-29-adr-0072-konsistenzrunde`

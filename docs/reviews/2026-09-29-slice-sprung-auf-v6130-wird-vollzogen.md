@@ -1,6 +1,6 @@
 # Review: `slice-sprung-auf-v6130-wird-vollzogen`
 
-**Vorgang:** [`slice-sprung-auf-v6130-wird-vollzogen`](../plan/planning/in-progress/slice-sprung-auf-v6130-wird-vollzogen.md) ·
+**Vorgang:** [`slice-sprung-auf-v6130-wird-vollzogen`](../plan/planning/done/slice-sprung-auf-v6130-wird-vollzogen.md) ·
 **Diff:** `b8597a22^..2c54e5a8` (6 Commits, 155 Dateien, +951/−471) ·
 **Regierende Fassung des Sprungs:** [`ADR-0072`](../plan/adr/0072-ziel-fassung-regiert-den-sprung-v6130.md)
 (`Accepted`) · **Reviewer:** unabhängiger Lauf (Modul 10)
