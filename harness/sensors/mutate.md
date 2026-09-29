@@ -7,6 +7,11 @@ meldet jeden Wächter, der dabei **grün** bleibt — die Regel ist sonst nur im
 Feedforward-Quadranten. Kein Gate ([`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6));
 der Grund ist die Laufzeit: je Fall ein voller Sensor-Lauf.
 
+Ohne `MUTATE_CASES` bricht der Lauf ab, bevor Grün-Vorlauf, Isolationskopie oder ein Fall
+läuft — der lokale Vollauf braucht `MUTATE_FORCE=1` als ausdrückliche Zustimmung, und der
+regelmäßige Vollsweep läuft als CI-Workflow (`gh workflow run mutate.yml`), der
+`MUTATE_CASES` je Shard setzt.
+
 ## Grenze — was das Grün nicht abdeckt
 
 **Vor dem Fall-Satz prüft der Lauf einen Beleg**
@@ -51,6 +56,9 @@ beendet, mit 2.
 
 - `mutate: ABBRUCH — ein Lauf ist bereits aktiv (…)` — das Lock-Verzeichnis unter
   `.harness/state/` besteht → den anderen Lauf abwarten; ein verwaistes Lock von Hand entfernen.
+- `mutate: ABBRUCH — ohne MUTATE_CASES faehrt hier kein Vollauf.` — der Lauf startet ohne
+  Fall-Filter → gezielter Teillauf (`MUTATE_CASES='<fall> …'`), Vollsweep als CI-Workflow
+  (`gh workflow run mutate.yml`) oder lokaler Vollauf mit `MUTATE_FORCE=1`.
 - `mutate: ABBRUCH — MUTATE_JOBS ist keine Worker-Zahl >= 1` → eine ganze Zahl ab 1 setzen.
 - `mutate: ABBRUCH — MUTATE_STALL_SECONDS ist keine Sekundenzahl >= 1` → eine ganze Zahl ab 1
   setzen.
@@ -77,7 +85,9 @@ folgende greift während des Laufs:
 
 `make mutate MUTATE_CASES='<fall> <fall> …'` fährt nur die genannten Fälle. Ein Name ist der
 Fall-Name, wie ihn `mutate: BEFUND  <fall>` nennt, mehrere sind durch Leerzeichen getrennt; die
-Reihenfolge der Ausgabe ist die sortierte des Verzeichnisses. Ein leerer Wert (gesetzt, ohne
+Reihenfolge der Ausgabe ist die sortierte des Verzeichnisses. Das Gegenstück ohne Filter — der
+volle Lauf — ist lokal an `MUTATE_FORCE=1` gebunden; ohne beides bricht der Lauf an der
+Vollauf-Sperre ab (§Sperren). Ein leerer Wert (gesetzt, ohne
 Namen), ein unbekannter und ein doppelt genannter Name enden mit
 `mutate: ABBRUCH — MUTATE_CASES …` und dem Namen, bevor eine Isolationskopie entsteht
 (Skript 1, über `make` 2; `select_cases` in `harness/tools/mutate.sh`). Die Vollständigkeits-Prüfung

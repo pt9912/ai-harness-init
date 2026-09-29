@@ -97,6 +97,13 @@
 # Befund steht im Exit und in der Ausgabe des Teillaufs. Sensor: test/mutate-driver.bats
 # „driver: ein Teillauf schreibt den Beleg-Slot nie".
 #
+# VOLLAUF-SPERRE: ohne MUTATE_CASES bricht der Lauf ab, bevor eine Isolationskopie
+# entsteht. Der lokale Vollauf ist damit an MUTATE_FORCE=1 gebunden — die
+# ausdrueckliche Zustimmung, die die Beleg-Mechanik unveraendert laesst — und der
+# regelmaessige Vollsweep laeuft als CI-Workflow (mutate.yml), der MUTATE_CASES je
+# Shard setzt. Sensor: test/mutate-driver.bats „driver: ohne MUTATE_CASES bricht
+# der Lauf ab, bevor kopiert wird".
+#
 # NICHT in `make gates` — der Grund ist die LAUFZEIT: je Fall ein voller Sensor-Lauf,
 # und die Fall-Menge waechst mit jedem bewachten Waechter. Was der Lauf HEUTE kostet,
 # sagt er selbst am Ende (`report_times`), statt es hier als Zahl zu behaupten, die mit
@@ -1603,6 +1610,22 @@ main() {
   fi
 
   [ -d "$CASES_DIR" ] || { echo "mutate: $CASES_DIR fehlt" >&2; exit 1; }
+
+  # VOLLAUF-SPERRE: ohne MUTATE_CASES bricht der Lauf ab, bevor Gruen-Vorlauf,
+  # Isolationskopie oder ein Fall laeuft. Auswege: gezielter Teillauf
+  # (MUTATE_CASES), Vollsweep als CI-Workflow (mutate.yml setzt MUTATE_CASES je
+  # Shard im Step-Umfeld) und der lokale Vollauf mit MUTATE_FORCE=1 — die
+  # ausdrueckliche Zustimmung, die die Beleg-Mechanik unveraendert laesst: nur ein
+  # voller Lauf schreibt den Slot.
+  # Sensor: test/mutate-driver.bats „driver: ohne MUTATE_CASES bricht der Lauf ab,
+  # bevor kopiert wird".
+  if [ -z "${MUTATE_CASES+x}" ] && [ -z "${MUTATE_FORCE:-}" ]; then
+    echo "mutate: ABBRUCH — ohne MUTATE_CASES faehrt hier kein Vollauf." >&2
+    echo "  Gezielter Teillauf:           MUTATE_CASES='<fall> …' make mutate" >&2
+    echo "  Vollsweep als CI-Workflow:    gh workflow run mutate.yml" >&2
+    echo "  Lokaler Vollauf (Zustimmung): MUTATE_FORCE=1 make mutate" >&2
+    exit 1
+  fi
 
   # TEILLAUF: `${MUTATE_CASES+x}` unterscheidet „gesetzt, aber leer" von „nicht gesetzt" —
   # ein leerer Wert ist eine Anfrage ohne Namen und bricht ab (select_cases), er faellt

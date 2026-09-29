@@ -906,18 +906,18 @@ STUB
   cp "$DRIVER" "$root/harness/tools/mutate.sh"
   local bad
   for bad in abc 0 -5 1.5 "3 4"; do
-    run env MUTATE_STALL_SECONDS="$bad" bash "$root/harness/tools/mutate.sh"
+    run env MUTATE_STALL_SECONDS="$bad" MUTATE_FORCE=1 bash "$root/harness/tools/mutate.sh"
     [ "$status" -ne 0 ]
     grep -qF 'keine Sekundenzahl' <<<"$output"
   done
   # Eine LEERE Vorgabe ist keine unsinnige: `${MUTATE_STALL_SECONDS:-900}` behandelt sie wie
   # ungesetzt und faellt auf die Vorgabe des Treibers zurueck — dasselbe Verhalten wie bei
   # MUTATE_JOBS. Der Test haelt das fest, statt es zu bestrafen.
-  run env MUTATE_STALL_SECONDS="" bash "$root/harness/tools/mutate.sh"
+  run env MUTATE_STALL_SECONDS="" MUTATE_FORCE=1 bash "$root/harness/tools/mutate.sh"
   ! grep -qF "keine Sekundenzahl" <<<"$output"
   # Eine gueltige Vorgabe kommt an dieser Schranke VORBEI (sonst prueft der Test nur, dass
   # der Treiber immer abbricht) und faellt erst am fehlenden Fall-Verzeichnis.
-  run env MUTATE_STALL_SECONDS=42 bash "$root/harness/tools/mutate.sh"
+  run env MUTATE_STALL_SECONDS=42 MUTATE_FORCE=1 bash "$root/harness/tools/mutate.sh"
   [ "$status" -ne 0 ]
   ! grep -qF 'keine Sekundenzahl' <<<"$output"
   rm -rf "$root"
@@ -1124,7 +1124,9 @@ FALL
   [ "$status" -eq 1 ]
   [ ! -f "$fake/.harness/state/mutate-passed.key" ]
 
-  run bash "$fake/harness/tools/mutate.sh"
+  # MUTATE_FORCE auch hier: der Lauf soll am unbekannten '# verify:'-Modus abbrechen,
+  # nicht an der Vollauf-Sperre, die ohne MUTATE_CASES davor liegt.
+  run env MUTATE_FORCE=1 bash "$fake/harness/tools/mutate.sh"
   [ "$status" -eq 1 ]
   ! grep -qF 'Kein Fall-Lauf' <<<"$output"
   grep -qF "unbekannter '# verify:" <<<"$output"
@@ -1149,7 +1151,9 @@ FALL
   printf 'inhalt\n' >"$fake/datei.txt"
   printf 'VOELLIG-FALSCHER-SCHLUESSEL\n' >"$fake/.harness/state/mutate-passed.key"
 
-  run bash "$fake/harness/tools/mutate.sh"
+  # MUTATE_FORCE=1: der Lauf soll am SCHLUESSELVERGLEICH des Uebersprungs gemessen werden,
+  # nicht an der Vollauf-Sperre, die ohne MUTATE_CASES davor liegt.
+  run env MUTATE_FORCE=1 bash "$fake/harness/tools/mutate.sh"
   [ "$status" -eq 1 ]
   ! grep -qF 'Kein Fall-Lauf' <<<"$output"
   grep -qF "unbekannter '# verify:" <<<"$output"
@@ -1225,8 +1229,11 @@ teillauf() {
 }
 
 # vollauf faehrt den Treiber ohne MUTATE_CASES: den vollen Lauf ueber allen Faellen des Fake-Repos.
+# MUTATE_FORCE=1 ist die ausdrueckliche Zustimmung zum lokalen Vollauf, die der Treiber
+# ohne MUTATE_CASES verlangt (Vollauf-Sperre in main); sie aendert nichts an dem, was diese
+# Tests messen — Beleg-Slot und Bericht des vollen Laufs.
 vollauf() {
-  run env "PATH=$TL_ROOT/bin:$PATH" MUTATE_JOBS=1 "TMPDIR=$TL_ROOT/tmp" \
+  run env "PATH=$TL_ROOT/bin:$PATH" MUTATE_JOBS=1 "TMPDIR=$TL_ROOT/tmp" MUTATE_FORCE=1 \
     bash "$TL_FAKE/harness/tools/mutate.sh"
 }
 
@@ -1378,5 +1385,33 @@ vollauf() {
   grep -qE 'mutate: 1 ok, 0 Befund' <<<"$output"
   grep -qxF "mutate: Pruefgegenstand $TL_KEY" <<<"$output"
   [ "$(cat "$TL_FAKE/.harness/state/mutate-passed.key")" = "$TL_KEY" ]
+  rm -rf "$TL_ROOT"
+}
+
+# --- Vollauf-Sperre ------------------------------------------------------------
+# Ohne MUTATE_CASES bricht der Lauf ab, bevor Gruen-Vorlauf, Isolationskopie oder ein
+# Fall laeuft. Gefahren wird der Weg des Aufrufers: der Treiber als eigener Prozess mit
+# genau dem Aufruf, den das Makefile-Rezept von `make mutate` stellt (`bash
+# harness/tools/mutate.sh`, MUTATE_JOBS in der Umgebung) — der gepinnte bats-Container
+# traegt kein make, die Rezept-Zeile selbst ist darum nicht Teil dieses Tests. `timeout`
+# begrenzt den Aufruf: greift die Sperre nicht, faehrt er als normaler Vollauf durch,
+# und der Fall faellt an der Assertion statt an einer Haengerei.
+@test "driver: ohne MUTATE_CASES bricht der Lauf ab, bevor kopiert wird" {
+  teillauf_fake
+  printf 'stehender-beleg\n' >"$TL_FAKE/.harness/state/mutate-passed.key"
+  run timeout 60 env "PATH=$TL_ROOT/bin:$PATH" MUTATE_JOBS=1 "TMPDIR=$TL_ROOT/tmp" \
+    bash "$TL_FAKE/harness/tools/mutate.sh"
+  # GNU timeout liefert bei Ablauf 124, BusyBox 143 — im gepinnten Image. Beide waeren
+  # ein Fall, denn der Guard endet mit 1.
+  [ "$status" -eq 1 ]
+  grep -qF 'mutate: ABBRUCH — ohne MUTATE_CASES faehrt hier kein Vollauf.' <<<"$output"
+  grep -qF "MUTATE_CASES='<fall> …'" <<<"$output"
+  grep -qF 'gh workflow run mutate.yml' <<<"$output"
+  grep -qF 'MUTATE_FORCE=1' <<<"$output"
+  tl_ohne_kopie
+  [ -z "$(ls -A "$TL_ROOT/tmp")" ]
+  # Der Abbruch liegt vor Beleg-Entwertung und Isolationskopie — der stehende Beleg
+  # bleibt byte-gleich.
+  [ "$(cat "$TL_FAKE/.harness/state/mutate-passed.key")" = "stehender-beleg" ]
   rm -rf "$TL_ROOT"
 }
