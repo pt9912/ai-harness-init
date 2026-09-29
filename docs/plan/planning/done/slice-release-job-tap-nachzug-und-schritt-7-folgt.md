@@ -253,8 +253,10 @@ Kein Risiko trägt hier schon seinen Ausgang; er wird bei der Closure zugewiesen
   eingeschränkt ([`AGENTS.md`](../../../../AGENTS.md) §3.6), der erste Tag-Lauf ist der Beleg.
 - **Der Job-Schritt verzweigt auf die Klasse des Ziels.** **Ausgang: *entfallen*** — der Fall hält es: der
   Job-Schritt verzweigt nicht (kein `case`, kein `$?`-Vergleich, kein `|| true`), ein Fall der Suite bindet die
-  Abwesenheit und färbt beim Eintritt rot (Verifier-Report, Punkte 1 und 4); ADR-0066 Trigger 1 ist nicht
-  eingetreten (Architect-Verdikt, ADR-0073).
+  Abwesenheit und färbt beim Eintritt rot (Verifier-Report, Punkte 1 und 4);
+  [`ADR-0066`](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md) Trigger 1 ist nicht
+  eingetreten (Architect-Verdikt,
+  [`ADR-0073`](../../adr/0073-der-ort-des-tap-zugangsgeheimnisses-ist-das-repo-secret.md)).
 - **Der Slice ist für eine Review-Sitzung zu groß.** **Ausgang: *entfallen*** — der Review trägt beide
   Liefer-Punkte in einer Sitzung
   ([`../../../reviews/2026-09-29-slice-release-job-tap-nachzug.md`](../../../reviews/2026-09-29-slice-release-job-tap-nachzug.md):
@@ -277,8 +279,11 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 Wird bei der Closure geschrieben — von der Rolle Planner in frischem Kontext (AGENTS.md §3.10), nach Review und
 Verifikation, in der Form der Regeln oben.
 
-**Geliefert:** der Job `tap` in `.github/workflows/release.yml` in der Form von ADR-0064 Folgepflicht 2 in der
-Lesart von ADR-0073 — Repo-Secret im Step-`env`, keine Umgebung, die Fadenkreuz-Bindung tragen `needs: publish`
+**Geliefert:** der Job `tap` in `.github/workflows/release.yml` in der Form von
+[`ADR-0064`](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
+Folgepflicht 2 in der Lesart von
+[`ADR-0073`](../../adr/0073-der-ort-des-tap-zugangsgeheimnisses-ist-das-repo-secret.md) — Repo-Secret im
+Step-`env`, keine Umgebung, die Fadenkreuz-Bindung tragen `needs: publish`
 und der Tag-Trigger —, mit zehn `bats`-Fällen, je Aufzählungs-Zeile einer; und Schritt 7 von
 [`docs/user/releasing.md`](../../../user/releasing.md) nennt den Job als Regelweg und
 `make tap-nachzug TAG=<tag>` mit `TAP_TOKEN` in der Umgebung des Aufrufers als lokalen Ausfallweg, den Beleg
@@ -290,7 +295,9 @@ Commit `459ea58d`: alle Prüfpunkte bestätigt) liegen vor.
 
 **Ergebnis der Frage von
 [`ADR-0066`](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md) Trigger 1
-(Architect-Verdikt, ADR-0073):** nicht eingetreten — der Job-Schritt verzweigt nicht auf die Klasse des Ziels;
+(Architect-Verdikt,
+[`ADR-0073`](../../adr/0073-der-ort-des-tap-zugangsgeheimnisses-ist-das-repo-secret.md)):** nicht eingetreten —
+der Job-Schritt verzweigt nicht auf die Klasse des Ziels;
 jedes Nicht-Null ist ein roter Job, und ein Fall der Suite bindet die Abwesenheit.
 
 **Was funktioniert hat:** §1 trug die alternden Aussagen als Adresse — der Lauf las Schritt 7 an seinem Start und
@@ -298,17 +305,23 @@ zog Handlung, Voraussetzung, Satz zur Rolle und die Grenze; LP2 verlangte, die W
 Workflow statt gegen diesen Plan zu fahren, und Review und Verifier haben genau das gefahren. Die Deckungslücke
 (kein Gate hält `releasing.md` gegen die Quellen) war im Plan benannt, nicht verdeckt.
 
-**Was anders lief:** die Abweichung von ADR-0064 Festlegung 4 war im Plan begründet und test-gebunden, trug sie
+**Was anders lief:** die Abweichung von
+[`ADR-0064`](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
+Festlegung 4 war im Plan begründet und test-gebunden, trug sie
 aber kein lebendes Artefakt — das Fahrzeug der Abweichung von einer `Accepted`-ADR ist das Architect-Verdikt als
 Folge-ADR (Klasse *ADR-Abweichung nur im Plan getragen*, Erstauftreten, Register-Eintrag unten), und es liegt als
-ADR-0073 (`Proposed`, Teil-Supersedes von ADR-0064) vor.
+[`ADR-0073`](../../adr/0073-der-ort-des-tap-zugangsgeheimnisses-ist-das-repo-secret.md) (`Proposed`,
+Teil-Supersedes von
+[`ADR-0064`](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)) vor.
 
 **Steering-Loop-Eintrag (Lerneintrag — geschärfte Regel):** Ein Wächter, der eine Datei liest und je Zusage-Zeile
 einen Fall trägt (hier: zehn `bats`-Fälle über die Job-Form), bekommt seine Rot-Erfahrung als Hand-Nachweis
 **je Fall**, solange kein Mutations-Fall die Klasse fährt — die strukturelle Ableitbarkeit der Rot-Bindung aus
 dem Ausdruck ist eine benannte Lücke, kein Beleg. Zwei der zehn Fälle sind so rot gesehen; die Rot-Meldung ist
 der im Fall gebundene Text, nicht eine generische Fehlform. Die Anlage eines `test/mutations/`-Falls je Klasse —
-die offene Anlage-Frage von MR-071 — ist der Träger, der den Hand-Nachweis auf den Einzelfall begrenzt. Die
+die offene Anlage-Frage von
+[`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)
+— ist der Träger, der den Hand-Nachweis auf den Einzelfall begrenzt. Die
 Verkörperung ist Architect-Arbeit (AGENTS.md §3.8); der Eintrag ist gezählt, nicht verkörpert.
 
 **Verbleibende Lücken mit Trägern:** (1) ob das Repo-Secret so wirkt, wie der Job es voraussetzt, belegt der

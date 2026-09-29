@@ -19,10 +19,7 @@ nicht hier.
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
 - [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
 
-**In Arbeit:** [slice-release-job-tap-nachzug-und-schritt-7-folgt](../done/slice-release-job-tap-nachzug-und-schritt-7-folgt.md) —
-der Release-Job `tap` in `.github/workflows/release.yml` fährt `make tap-nachzug`, und Schritt 7 der
-[Release-Prozedur](../../../user/releasing.md) folgt ihm
-(`ls docs/plan/planning/in-progress/slice-*.md` → ein Treffer).
+**Nichts in Arbeit.**
 
 ## Nächste Wellen
 
