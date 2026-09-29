@@ -109,9 +109,10 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen). — Beleg: §6 dieses Plans.
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
       Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der
-      nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+      nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). —
+      Beleg: §7 dieses Plans.
 
 ## 3. Plan (vor Code)
 
@@ -226,7 +227,10 @@ formulieren — sonst zählt das Register zwei Namen getrennt) ·
 - **Risiken aus §6:** R1 weiter offen → Register (s. o.); R2 entfallen
   (`timeout 60`, Fall 500); R3 entfallen (Workflow-Umfeld am Quelltext
   geprüft).
-- **Drei Paarungen:** <Anker · Folge-Slice · Register, Ergebnis>
+- **Drei Paarungen:** Anker — kein `liegt in`-Feld in §7, nichts zu prüfen ·
+  Folge-Slice — keiner benannt · Register —
+  `BEO-ALL/mutate-beleg-verfaellt-mit-jedem-commit-und-jedem-nachsehen-lauf`
+  existiert mit nicht-leerem `evidence/` (4 Belege).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
