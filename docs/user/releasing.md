@@ -11,8 +11,9 @@ was er vor dem Tag-Push prüft, steht hier — einmal, nicht je Release.
 
 Der Schnitt läuft tag-getrieben: der Release-Workflow
 (`.github/workflows/release.yml`) baut am Tag frisch, startet auf allen
-sechs Runnern und publiziert; ein `workflow_dispatch`-Lauf baut und startet
-und lädt nichts hoch. Die Schritt-Folge:
+sechs Runnern, publiziert und zieht die Formel ins Tap nach (Schritt 7);
+ein `workflow_dispatch`-Lauf baut und startet und lädt nichts hoch.
+Die Schritt-Folge:
 
 1. **Den Tag in der Vorlage setzen, dann die Assets bauen und die
    Prüfsummen erzeugen.** Zuerst zeigen `TRAEGER_TAG` in
@@ -100,19 +101,24 @@ und lädt nichts hoch. Die Schritt-Folge:
    ([`BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases`](../plan/planning/observations/BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases/)).
 
 7. **Die Formel ins Tap nachziehen und gegen das Asset halten.**
-   *Handlung:* `make tap-nachzug TAG=<tag>` mit `TAP_TOKEN` in der Umgebung des
-   Aufrufers. Das Ziel schreibt die Bytes des veröffentlichten Formel-Assets
+   *Regelweg:* der Job `tap` des Release-Workflows
+   (`.github/workflows/release.yml`) fährt `make tap-nachzug TAG=<tag>` am
+   Tag-Commit und endet mit dem Exit des Ziels. Das Ziel schreibt die Bytes
+   des veröffentlichten Formel-Assets
    desselben Tags — keine lokal gefüllte Kopie — als Formel-Datei ins Tap
    (`pt9912/homebrew-ai-harness-init`), in einem Commit, dessen Message den Tag
    nennt, auf den Default-Branch. Es schreibt nur, wenn die Bytes abweichen, und
    kontrolliert danach wie `make tap-check`; der Schreib-Pfad ist gegen eine
    nachgebildete Schnittstelle belegt, am realen Tap belegt ihn erst ein realer
-   Nachzug (*Grenze*). *Voraussetzung:* Netz an genau
-   diesem Aufruf und ein Token mit Schreibrecht auf das Tap; Anlage und Ablage
-   des Tokens liegen außerhalb dieser Prozedur
+   Nachzug (*Grenze*). *Voraussetzung:* Netz an genau diesem Aufruf und ein
+   Token mit Schreibrecht auf das Tap; im Job reist es als Repo-Secret
+   `HOMEBREW_TAP_GITHUB_TOKEN`, im Step-`env` des Job-Schritts auf `TAP_TOKEN`
+   gemappt, und Anlage und Ablage des Tokens liegen außerhalb dieser Prozedur
    ([`ADR-0064`](../plan/adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
-   Festlegung 4), und die Prozedur nennt keine ausführende Rolle. Ohne
-   `TAP_TOKEN` endet der Aufruf mit Exit 2 vor jedem Netz-Zugriff.
+   Festlegung 4). *Lokaler Ausfallweg:* `make tap-nachzug TAG=<tag>` mit
+   `TAP_TOKEN` in der Umgebung des Aufrufers — für ihn nennt die Prozedur
+   keine ausführende Rolle. Ohne `TAP_TOKEN` endet der Aufruf mit Exit 2 vor
+   jedem Netz-Zugriff.
    *Schutz des Werkzeugs:* der Tag ist nicht älter als die `version`-Zeile der
    Formel am Tap-Kopf (verglichen wird der Kern `major.minor.patch`, numerisch
    je Feld; gleich oder größer geht durch,
@@ -121,7 +127,9 @@ und lädt nichts hoch. Die Schritt-Folge:
    `tap-sync: Exit 2`, ohne dass ein Schreibzugriff stattfand; eine
    `version`-Zeile, die fehlt, mehrfach vorkommt oder der Feldform nicht
    genügt, endet ebenso und ist von Hand zu heilen. Für einen Vorab-Tag
-   entfällt der Nachzug: das Tap folgt dem jüngsten stabilen Schnitt. Vorab ist
+   bleibt das Tap stehen — das Ziel endet mit `Vorab-Tag, Tap bleibt`, im
+   Job wie auf dem lokalen Ausfallweg —: das Tap folgt dem jüngsten
+   stabilen Schnitt. Vorab ist
    ein Tag, dessen Teil vor einem `+<Build>` ein `-` enthält (`v0.3.0-rc.1`,
    ebenso `v1.0.0-rc.1+x`); ein `-` allein im Build-Metadatum
    (`v1.0.0+build-1`) macht den Tag nicht zum Vorab-Tag, der Nachzug gilt.
@@ -223,7 +231,7 @@ und lädt nichts hoch. Die Schritt-Folge:
    `cache-fenster: die Wartezeit` (je `grep -n` auf den Fall-Namen in
    `test/tap-nachzug.bats`). **Nicht gebunden** ist ein Vergleich, der eine
    größere Tap-Version als gleich gelten lässt, sobald außer der `version`-Zeile
-   weitere Zeilen abweichen: keiner der `53` Fälle
+   weitere Zeilen abweichen: keiner der `63` Fälle
    (`grep -c '^@test' test/tap-nachzug.bats`) wird von ihm rot. Dass `check` die
    `version`-Zeile nicht liest, binden diese Fälle und kein Wortzähler: das Kommando
    `grep -ci version harness/tools/tap-nachzug.sh harness/tools/tap-nachzug-nutzlast.sh`
