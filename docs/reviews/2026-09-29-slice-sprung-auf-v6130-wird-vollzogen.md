@@ -10,7 +10,7 @@ Geprüft gegen Plan (§1 Ziel/Abgrenzung, §3 Plan, §4 Trigger), ADR-0072,
 [`ADR-0018`](../plan/adr/0018-ziel-fassung-regiert-die-migration.md),
 [`MR-007`](../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache),
 [`MR-033`](../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist),
-[`MR-058`](../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-danach-genommen),
+[`MR-058`](../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen),
 [`MR-063`](../../harness/conventions.md#mr-063--die-gegenmessung-eines-d-check-sprungs-gibt-jedem-aktiven-modul-eine-basis-und-lässt-die-symlinks-stehen),
 [`MR-040`](../../harness/conventions.md#mr-040--drei-ausgänge-für-eine-präsens-aussage-über-den-vendored-baum)
 und [`AGENTS.md`](../../AGENTS.md) §3. DoD-Abhakung ist nicht Gegenstand (Verifier).
@@ -50,7 +50,7 @@ und [`AGENTS.md`](../../AGENTS.md) §3. DoD-Abhakung ist nicht Gegenstand (Verif
   Begleitabsatz behauptet im Präsens „Der aktuell vendored Stand ist `v6.9.0`" — der gemessene
   Baum ist `v6.13.0`; das eigene Kommando (`ls -1 .harness/baseline/`) steht daneben und widerlegt
   die Aussage. Beides: dieselbe Unterlassung der Architect-Buchung wie in Finding 1.
-- `verifizierbar`: ja — `grep -nE '^\| `v6' harness/migration.md` und
+- `verifizierbar`: ja — `grep -nE '^\| .?v6' harness/migration.md` und
   `ls -1 .harness/baseline/`.
 - `klasse`: „Präsens-Aussage über den vendored Baum überlebt den Tausch ohne Ausgang"
 
@@ -77,7 +77,7 @@ und [`AGENTS.md`](../../AGENTS.md) §3. DoD-Abhakung ist nicht Gegenstand (Verif
 
 - `kategorie`: MEDIUM
 - `quelle`: Plan §2 Liefer-Punkt 1 (Nachzugs-Absatz: `.harness/skills/reviewer.md` „bei der
-  Rolle, die sie ausführt" — [`ADR-0028`](../plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrende-rolle.md)),
+  Rolle, die sie ausführt" — [`ADR-0028`](../plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)),
   [`AGENTS.md`](../../AGENTS.md) §3.8 (Commit-Zuschnitt nach schreibender Rolle)
 - `pfad`: Commit `2c54e5a8` (`.harness/skills/reviewer.md`, 2 Links)
 - `befund`: Der Archite-Commit trägt `harness/skills/reviewer.md` mit, obwohl der Plan diesen
