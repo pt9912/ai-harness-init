@@ -501,20 +501,28 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
   DoD 5 angebotene Beleg war ein Alt-Protokoll vom 2026-09-23 — der Verifier fuhr
   `make full-smoke` selbst (DoD 5 desselben Reports); die Klasse steht im Register.
 - **Ergebnis Freshness-Durchgang und Stichprobe (Liefer-Punkt 2):** 71 Einträge gelesen, 6
-  betroffene Einheiten (MR-000 · MR-002 · MR-060 · MR-057/059 · MR-063 · MR-035/056), 65
+  betroffene Einheiten ([`MR-000`](../../../../harness/conventions.md#mr-000) ·
+  [`MR-002`](../../../../harness/conventions.md#mr-002) ·
+  [`MR-060`](../../../../harness/conventions.md#mr-060) ·
+  [`MR-057`](../../../../harness/conventions.md#mr-057)/[`MR-059`](../../../../harness/conventions.md#mr-059) ·
+  [`MR-063`](../../../../harness/conventions.md#mr-063) ·
+  [`MR-035`](../../../../harness/conventions.md#mr-035)/[`MR-056`](../../../../harness/conventions.md#mr-056)), 65
   nicht betroffen; kein Ausgang *widerspricht*, kein *Bezug ist entfallen*. Stichprobe des
-  Verifiers: 3 von 6 Einheiten gegen den Volltext am Tag `v6.13.0` nachgelesen (MR-000, MR-060,
-  MR-063), alle bestätigt. Delta-Inventur je Release im Übergabe-Artefakt (13 Welle-Commits,
-  27 Dateien, 0 neu, 0 entfallen).
+  Verifiers: 3 von 6 Einheiten gegen den Volltext am Tag `v6.13.0` nachgelesen
+  ([`MR-000`](../../../../harness/conventions.md#mr-000),
+  [`MR-060`](../../../../harness/conventions.md#mr-060),
+  [`MR-063`](../../../../harness/conventions.md#mr-063)), alle bestätigt. Delta-Inventur je
+  Release im Übergabe-Artefakt (13 Welle-Commits, 27 Dateien, 0 neu, 0 entfallen).
 - **Steering-Loop-Eintrag:** *geschärfte Regel.* Ein vorgefundenes Protokoll belegt den Stand zum
   Laufzeitpunkt, nie den aktuellen; der Beleg über dem aktuellen Stand ist der frische Lauf. Ein
   `liegt in`-Feld steht hier nicht: nichts ist mit diesem Slice verkörpert — die Verkörperung
   gehört in diesem Repo dem Lese-Schritt der Welle-Closure. Die Beobachtung steht als
   [`BEO-ALL/lauf-beleg-ist-zeitgebunden`](../observations/BEO-ALL/lauf-beleg-ist-zeitgebunden/observation.md)
   im Register (1 Beleg).
-- **Anlass der Lastenheft-Änderung** ([`MR-042`](../../../../harness/conventions.md#mr-042--der-anlass-einer-lastenheft-aenderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz)):
+- **Anlass der Lastenheft-Änderung** ([`MR-042`](../../../../harness/conventions.md#mr-042--der-anlass-einer-lastenheft-änderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz)):
   die §4-Umbenennung („… und Randbedingungen") in `spec/lastenheft.md` ist die Instanz-Umschrift
-  aus dem Register-Durchgang der Ziel-Fassung `v6.13.0` (`spec/lastenheft.template.md` §4) —
+  aus dem Register-Durchgang der Ziel-Fassung `v6.13.0`
+  (`.harness/baseline/v6.13.0/templates/spec/lastenheft.template.md` §4) —
   Form-Nachzug der Vorlage, keine Inhaltsänderung am Vertrag, keine eingefrorene Adresse
   betroffen.
 - **Beobachtungs-Register** (`../observations/`): drei Belege, ein Vorgang zählt je Klasse
