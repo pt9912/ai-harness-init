@@ -65,7 +65,7 @@ liest und das Geber-Artefakt nach `done/` gewandert ist):
 - **Die Aussagen, die dabei altern** — der Lauf liest Schritt 7 an seinem Start
   (`grep -nE 'Handlung|Voraussetzung|Rolle|Grenze' docs/user/releasing.md`) und zieht jede, die der Job falsch
   macht: die **Handlung** (*„`make tap-nachzug TAG=<tag>` mit `TAP_TOKEN` in der Umgebung des Aufrufers"*), die
-  **Voraussetzung** (*„Token mit Schreibrecht"* — im Job trägt es das Umgebungs-Secret), der **Satz zur Rolle**
+  **Voraussetzung** (*„Token mit Schreibrecht"* — im Job trägt es das Repo-Secret im Step-`env`), der **Satz zur Rolle**
   (*„die Prozedur nennt keine ausführende Rolle"*, sobald ein Workflow der Ausführende ist) und im Absatz
   *Grenze* das, was der Job an der Zusage über den Schreib-Pfad ändert. Der Satz dieses Absatzes über die
   Mutations-Fälle von `sync` gehört dem Slice `slice-sync-waechter-tragen-mutations-faelle`.
@@ -80,12 +80,14 @@ liest und das Geber-Artefakt nach `done/` gewandert ist):
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
-- **Anlage der Umgebung samt Tag-Regel und des Secrets `TAP_TOKEN`** — **Handlung des Auftraggebers außerhalb des
-  Repos**
+- **Anlage des Repo-Secrets `HOMEBREW_TAP_GITHUB_TOKEN`** — **Handlung des Auftraggebers außerhalb des Repos**
   ([`ADR-0064`](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md)
-  Festlegung 4); kein Token und kein Secret steht in einem Artefakt dieses Repos. Der Job ist ohne sie lieferbar
-  (seine Bindung ist die Job-Form, nicht das Vorhandensein des Secrets); ohne sie endet der erste Tag-Lauf laut
-  (Schritt b).
+  Festlegung 4), vollzogen am 2026-09-29; auf eine GitHub-Umgebung samt Tag-Regel wird verzichtet — die
+  Fadenkreuz-Bindung des Jobs tragen `needs: publish` und der Tag-Trigger des Workflows (Vorbild: die
+  Release-Job-Kette des Nachbar-Repos d-migrate, als Quelle gelesen, nicht als Kennung zitiert). Kein Token-Wert
+  steht in einem Artefakt dieses Repos; der Secret-Name lebt nur in der Workflow-Datei, als Step-`env`-Mapping auf
+  `TAP_TOKEN`. Der Job ist ohne das Secret lieferbar (seine Bindung ist die Job-Form, nicht das Vorhandensein des
+  Secrets); fehlt es, endet der erste Tag-Lauf laut (Schritt b).
 - **Mutations-Fälle für die Wächter von `sync`** — **`slice-sync-waechter-tragen-mutations-faelle`** (`open/`): ein
   anderer Gegenstand (Skript und Nutzlast, nicht der Workflow), und er nimmt den Satz im Absatz *Grenze*, der die
   Fälle nennt.
@@ -117,17 +119,22 @@ gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst —
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
 - [ ] **Liefer-Punkt 1 — der Job `tap` und sein `bats`-Fall:** `.github/workflows/release.yml` trägt einen Job
-      `tap` mit `needs: publish`, derselben `if`-Bedingung wie `publish`, `environment:`, Checkout des Tags mit
+      `tap` mit `needs: publish`, derselben `if`-Bedingung wie `publish` — ohne `environment:`; die
+      Fadenkreuz-Bindung tragen `needs: publish` und der Tag-Trigger des Workflows —, Checkout des Tags mit
       `persist-credentials: false`, `permissions: contents: read` und einem Schritt `make tap-nachzug`; Tag und
-      Secret stehen nur im Step-`env`, das `run:` enthält kein `${{`, und `TAP_TOKEN` steht in keinem Workflow-
-      oder Job-`env` und nicht im `publish`-Job. Die `bats`-Fälle über die Job-Form sind die Zeile *Job-Form* und
+      Secret-Zuführung stehen nur im Step-`env` des `tap`-Jobs (`TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}`,
+      `TAG: ${{ github.ref_name }}`), das `run:` enthält kein `${{`, und eine Secret-Zuführung gibt es nur in
+      diesem Step-`env` — kein `env` auf Workflow- oder Job-Ebene, kein Secret-Zugriff im `publish`-Job oder in
+      einem weiteren Schritt. Die `bats`-Fälle über die Job-Form sind die Zeile *Job-Form* und
       die Zeile *Übergabe ohne Text* (Teil `run:`) der Fitness Function von
-      [`ADR-0064`](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md) — dort
-      stehen die Schwächungen: **je Zeile der Aufzählung einzeln entfernt bzw. das Secret in Job-`env` oder in
-      `publish` gesetzt färbt den zugehörigen Fall rot; jeder Fall wird einmal rot gesehen, die Ausgabe gelesen.**
+      [`ADR-0064`](../../adr/0064-tap-nachzug-ein-skript-zwei-aufrufer-byte-kontrolle-gegen-das-asset.md) — die
+      Aufzählung ist die dieses Punktes, das `environment:` des ADR-Eintrags entfällt (§1); dort
+      steht die Schwächung je Zeile: **je Zeile der Aufzählung einzeln entfernt bzw. das Secret in einem Job-`env`
+      oder im `publish`-Job gesetzt färbt den zugehörigen Fall rot; jeder Fall wird einmal rot gesehen, die
+      Ausgabe gelesen.**
       Ein Fall hält, dass der Schritt nicht auf die Klasse des Ziels verzweigt (kein `case`, kein `$?`-Vergleich,
-      kein `|| true`). `make ci-lint` ist grün. **Zusage, auf das Gehaltene eingeschränkt:** ob eine
-      GitHub-Umgebung, ihre Tag-Regel und das Secret so wirken, wie der Job es voraussetzt, ist außerhalb des Repos
+      kein `|| true`). `make ci-lint` ist grün. **Zusage, auf das Gehaltene eingeschränkt:** ob das Repo-Secret
+      so wirkt, wie der Job es voraussetzt, ist außerhalb des Repos
       und ohne Tag-Lauf nicht herstellbar; die Fälle lesen die Datei, und der erste Tag-Lauf ist der Beleg.
 - [ ] **Liefer-Punkt 2 — Schritt 7 folgt dem Job:** Schritt 7 von
       [`docs/user/releasing.md`](../../../user/releasing.md) nennt den Job `tap` als Regelweg und
@@ -189,17 +196,17 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 Adress-Formen (Code-Span-Pfad und Markdown-Link). Der Befund am Tag des Schnitts steht im Commit, der die Datei
 anlegt; die Kennung nennen die Closure-Notiz des Vorgängers und die Übergaben seiner Reports als Text.
 
-**Start** (`next` → `in-progress`): `Verantwortlich:` gesetzt, WIP-Limit frei, und die Umgebung samt Tag-Regel und
-das Secret `TAP_TOKEN` sind vom Auftraggeber angelegt. Die Bestätigung ist eine Aussage des Auftraggebers im
-Auftrag und kein Artefakt; **kein Punkt der DoD stützt sich auf sie** — die Bindung des Jobs ist die Job-Form, der
-Beleg des Zusammenspiels der erste Tag-Lauf.
+**Start** (`next` → `in-progress`): `Verantwortlich:` gesetzt, WIP-Limit frei, und das Repo-Secret
+`HOMEBREW_TAP_GITHUB_TOKEN` ist vom Auftraggeber angelegt (2026-09-29); auf eine Umgebung ist verzichtet. Die
+Bestätigung ist eine Aussage des Auftraggebers im Auftrag und kein Artefakt; **kein Punkt der DoD stützt sich auf
+sie** — die Bindung des Jobs ist die Job-Form, der Beleg des Zusammenspiels der erste Tag-Lauf.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): der Review hält beide Liefer-Punkte in einer Sitzung
   nicht für prüfbar. Eine Naht gibt es nicht — der Job ohne den Umbau der Prozedur lässt Schritt 7 falsch, der
   Umbau ohne den Job beschreibt einen Weg, den es nicht gibt —, darum geht der Slice als Ganzes zurück.
-- `in-progress` → `open` (blockiert): die Umgebung oder das Secret fehlt.
+- `in-progress` → `open` (blockiert): das Secret fehlt.
 
 ## 5. Closure-Trigger
 
@@ -212,7 +219,7 @@ und der Review-Report belegt je Zeile der Job-Form die Schwächung, die ihren Fa
 Ausgabe. (2) `make docs-check` und `make gates` sind grün, und jede in Schritt 7 zitierte Klasse, Meldung und
 Job-Form stimmt mit dem Skript und `release.yml` überein. Dazu der Lerneintrag in §7 in einer der drei Formen.
 **Kein Kriterium sagt zu, dass der Job am realen Tag-Lauf gelingt** — dieser Beleg entsteht mit dem ersten
-Tag-Lauf nach Anlage von Umgebung und Secret und steht danach als Beobachtung im Register.
+Tag-Lauf nach Anlage des Repo-Secrets und steht danach als Beobachtung im Register.
 
 ## 6. Risiken und offene Punkte
 
@@ -232,8 +239,8 @@ dasteht.
 
 Kein Risiko trägt hier schon seinen Ausgang; er wird bei der Closure zugewiesen, die Kandidaten stehen dabei.
 
-- **Der Job ist nur als Datei geprüft.** Die Fälle lesen `release.yml`, `make ci-lint` prüft die Syntax; keine
-  Umgebung, Tag-Regel und kein Secret wirken in einem Gate. **Ausgang:** Kandidat *weiter offen* →
+- **Der Job ist nur als Datei geprüft.** Die Fälle lesen `release.yml`, `make ci-lint` prüft die Syntax; kein
+  Secret wirkt in einem Gate. **Ausgang:** Kandidat *weiter offen* →
   [`BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel`](../observations/BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel/observation.md)
   (verkörpert in [`AGENTS.md`](../../../../AGENTS.md) §3.6: die Zusage auf das einschränken, was der Code hält —
   Liefer-Punkt 1 tut es); der erste Tag-Lauf ist der Beleg.
