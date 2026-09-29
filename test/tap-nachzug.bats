@@ -968,8 +968,9 @@ nutzlast_direkt() {
   done
 }
 
-# --- Job-Form des Release-Jobs `tap` (ADR-0064 Folgepflicht 2, Fitness-Zeilen
-# "Job-Form" und "uebergabe ohne text", Teil run:) --------------------------------
+# --- Job-Form des Release-Jobs `tap` (ADR-0064 Folgepflicht 2 in der Lesart von
+# ADR-0073 — Ort: Repo-Secret, keine Umgebung —, Fitness-Zeilen "Job-Form" und
+# "uebergabe ohne text", Teil run:) --------------------------------
 #
 # Gelesen wird die Workflow-Datei (Datei-Lektuere, kein Netz, kein Workflow-Lauf):
 # je Zeile der Aufzaehlung ein Fall, und jede Zeile einzeln entfernt — oder das
