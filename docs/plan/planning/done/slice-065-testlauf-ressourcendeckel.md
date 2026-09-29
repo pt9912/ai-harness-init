@@ -158,21 +158,21 @@ Closure-Notiz mit Steering-Loop-Eintrag.
   der Ist-Messung ist der Beleg, dass das hier kein theoretisches Risiko ist. Deshalb
   verlangt DoD (1) die Messung und nicht die Flag-Zeile. — **Ausgang:** eingetreten —
   weitergetragen als DoD (1) in
-  [`slice-go-testlauf-bekommt-einen-ressourcendeckel`](../in-progress/slice-go-testlauf-bekommt-einen-ressourcendeckel.md).
+  [`slice-go-testlauf-bekommt-einen-ressourcendeckel`](../done/slice-go-testlauf-bekommt-einen-ressourcendeckel.md).
 - **Der zu enge Deckel.** Der Go-Testlauf startet selbst Prozesse (Compiler, Testbinaries,
   der Kind-Prozess aus `cmd/ai-harness-init/span_emit_test.go`). Ein knapper Wert macht den Gate
   flatterig — und ein flatteriger Gate wird abgeschaltet. — **Ausgang:** eingetreten —
   weitergetragen im Plan-Abschnitt §3 von
-  [`slice-go-testlauf-bekommt-einen-ressourcendeckel`](../in-progress/slice-go-testlauf-bekommt-einen-ressourcendeckel.md).
+  [`slice-go-testlauf-bekommt-einen-ressourcendeckel`](../done/slice-go-testlauf-bekommt-einen-ressourcendeckel.md).
 - **Die Cache-Zusage ist der eigentliche Arbeitsanteil**, nicht der Deckel. Sie ist heute
   zweistufig belegt; wer nur die Flags umstellt, lässt einen Wächter still ins Leere
   zeigen. — **Ausgang:** eingetreten — weitergetragen als DoD (3) in
-  [`slice-go-testlauf-bekommt-einen-ressourcendeckel`](../in-progress/slice-go-testlauf-bekommt-einen-ressourcendeckel.md).
+  [`slice-go-testlauf-bekommt-einen-ressourcendeckel`](../done/slice-go-testlauf-bekommt-einen-ressourcendeckel.md).
 - **Der Wächter aus DoD (2) misst eine Umgebungs-Eigenschaft**, keine Code-Eigenschaft: er
   ist grün, weil der Aufrufer den Deckel setzt. Läuft der Testlauf je anders (ohne
   `make test-go`), schlägt er fehl — das ist beabsichtigt, gehört aber ausgesprochen. —
   **Ausgang:** eingetreten — weitergetragen als DoD (2) in
-  [`slice-go-testlauf-bekommt-einen-ressourcendeckel`](../in-progress/slice-go-testlauf-bekommt-einen-ressourcendeckel.md).
+  [`slice-go-testlauf-bekommt-einen-ressourcendeckel`](../done/slice-go-testlauf-bekommt-einen-ressourcendeckel.md).
 - **Nicht in diesem Slice:** eine Regel, die die gefährliche **Form** verbietet (ein
   `_test.go`, das sich selbst re-exec't, muss in `TestMain` abzweigen). Das wäre ein
   hermetischer Gate neben `make comment-claims` und trifft den Anlass direkter als jeder
@@ -180,7 +180,7 @@ Closure-Notiz mit Steering-Loop-Eintrag.
   Folge-Slice; hier bewusst **nicht** mitgenommen, damit der Deckel nicht mit einer
   Konventions-Prüfung vermischt wird. — **Ausgang:** eingetreten — als ausdrücklicher
   Ausschluss (§1) unverändert weitergetragen in
-  [`slice-go-testlauf-bekommt-einen-ressourcendeckel`](../in-progress/slice-go-testlauf-bekommt-einen-ressourcendeckel.md);
+  [`slice-go-testlauf-bekommt-einen-ressourcendeckel`](../done/slice-go-testlauf-bekommt-einen-ressourcendeckel.md);
   weiterhin Kandidat für einen eigenen, noch nicht geschnittenen Folge-Slice.
 
 ## 7. Closure-Notiz (nach `done/`)
@@ -188,7 +188,7 @@ Closure-Notiz mit Steering-Loop-Eintrag.
 **Gegenstand:** übernommen von zwei Nehmer-Slices, entlang der beiden unabhängig
 lieferbaren Anteile aus §3 dieses Plans getrennt:
 
-- [`slice-go-testlauf-bekommt-einen-ressourcendeckel`](../in-progress/slice-go-testlauf-bekommt-einen-ressourcendeckel.md)
+- [`slice-go-testlauf-bekommt-einen-ressourcendeckel`](../done/slice-go-testlauf-bekommt-einen-ressourcendeckel.md)
   — Anteil: Deckel + Wächter + Cache-Zusage + mutate-Vererbung (DoD 1–4 dieses Plans).
 - [`slice-agent-watch-sh-wird-verankert`](../done/slice-agent-watch-sh-wird-verankert.md)
   — Anteil: Verankerung von `harness/tools/agent-watch.sh` (§3-Zeile dieses Plans).
