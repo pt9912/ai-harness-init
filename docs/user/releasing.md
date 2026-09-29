@@ -90,7 +90,14 @@ und lädt nichts hoch. Die Schritt-Folge:
 6. **CI am Tag abwarten, bevor der Schnitt vollzogen gemeldet wird.**
    `gh run list --commit <tag-commit-sha>` nennt die Läufe am Tag-Commit;
    die Meldung des vollzogenen Schnitts geht erst, wenn der `ci`-Lauf
-   eingetroffen ist.
+   eingetroffen ist. Die `ci`-Läufe am Release-Commit fahren **parallel zum
+   Release-Workflow** und holen in ihrem `full-smoke` den Traeger-Fetch am
+   selben Tag — der fällt mit 404, bis der Release-Lauf publiziert hat; ein
+   gemeinsamer Push von `main` und Tag erzeugt den Fall an zwei Läufen
+   (main-Ref und Tag-Ref). Operativer Ausgang ist der Re-Run der gefallenen
+   Jobs nach abgeschlossener Publikation; die Struktur-Entscheidung
+   (begrenzte Wartezeit oder Workflow-Anordnung) steht aus
+   ([`BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases`](../plan/planning/observations/BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases/)).
 
 7. **Die Formel ins Tap nachziehen und gegen das Asset halten.**
    *Handlung:* `make tap-nachzug TAG=<tag>` mit `TAP_TOKEN` in der Umgebung des
