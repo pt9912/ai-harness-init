@@ -4,7 +4,7 @@
 **Kette:** `9a60d52f..34887329` (Tip `34887329`, committet und gepusht). Arbeitsbaum clean.
 **Eingangs-Kontext:** Slice-Plan (`docs/plan/planning/in-progress/slice-mutate-ohne-cases-bricht-ab.md`),
 Review-Report `docs/reviews/2026-09-29-slice-mutate-ohne-cases-bricht-ab.md` (Commit `62fe669a`),
-`AGENTS.md` §3.6/§3.7/§3.9, [ADR-0035](../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md).
+`AGENTS.md` §3.6/§3.7/§3.9, [ADR-0035](../plan/adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md).
 Jede Behauptung unten ist eigener Lauf, nicht Implementer-Bericht.
 
 ---
