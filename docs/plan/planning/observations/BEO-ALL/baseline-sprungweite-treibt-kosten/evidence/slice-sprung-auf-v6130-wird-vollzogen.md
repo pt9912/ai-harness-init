@@ -1,0 +1,2 @@
+**Vorgang:** slice-sprung-auf-v6130-wird-vollzogen
+**Fund:** Der Sprung `v6.9.0` → `v6.13.0` ist die breiteste Minor-Sprungweite bisher — vier Releases in einem Zug, 19 von 26 Regelwerk-Dateien geändert, 71 aktive Adaptions-Einträge gegen das Delta gelesen, der Durchgang als Delta-Walkthrough je Release geführt ([`ADR-0072`](../../../../../../docs/plan/adr/0072-ziel-fassung-regiert-den-sprung-v6130.md) Festlegung 2). Der Aufwand wächst mit der Sprungweite, nicht mit dem Prozess.
