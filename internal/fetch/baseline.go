@@ -45,13 +45,13 @@ import (
 // §Baseline, BASELINE_TAG; LH-QA-02). Per Env (COURSE_TAG) fuer bewussten
 // Opt-in ueberschreibbar. TestDefaultTag_MatchesBaseline koppelt ihn an die
 // einzige Tag-Quelle im Makefile.
-const DefaultTag = "v6.9.0"
+const DefaultTag = "v6.13.0"
 
 // DefaultBaselineSHA256 ist der gepinnte sha256 des Baseline-Assets zu
 // DefaultTag (LH-QA-02). Kanonisch lebt er als BASELINE_ZIP_SHA256 im Makefile;
 // TestDefaultBaselineSHA256_MatchesMakefile koppelt beide fail-closed, damit
 // eine Re-Baseline nicht die eine Haelfte bewegt und die andere vergisst.
-const DefaultBaselineSHA256 = "8a4e0aaf597a9c67404cb7a350a6fba992f0c98195e011e025c073660ee55cce"
+const DefaultBaselineSHA256 = "b5151e77807e2affebb25cfab9be24b88cf43afc42c075db0b982a2ff1052b96"
 
 const (
 	baselineURLBase = "https://github.com/pt9912/ai-harness-course/releases/download/"
