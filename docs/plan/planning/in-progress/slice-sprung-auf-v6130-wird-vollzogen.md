@@ -180,7 +180,22 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
 
 Drei slice-eigene Punkte, einer je Achse aus §1.
 
-- [ ] **1 — Jeder Träger des Tags steht auf `v6.13.0`, und keine lebende Adresse bleibt auf dem
+**Beleg-Zeiger je Häkchen** — Quelle für die Punkte 1–7 ist der
+[`Verifikations-Report`](../../../reviews/2026-09-29-slice-sprung-auf-v6130-wird-vollzogen-verify.md)
+(2026-09-29):
+
+| Punkt | Beleg |
+|---|---|
+| 1 | Verifier-Report DoD 1a–1f; Tausch-Commit `ad5b56d6`, Nachzüge je Eigentümer |
+| 2 | Verifier-Report DoD 2; Übergabe-Artefakt (Freshness-Report, Commit `7f2fb68d`) |
+| 3 | Verifier-Report DoD 3; [`docs/migrations/v6.13.0.md`](../../../migrations/v6.13.0.md), Register-Zuordnung `3ef54b82` |
+| 4 | Verifier-Report DoD 4 (Stempel deckungsgleich über `3ef54b82`); der Abschluss-Lauf nach der Closure deckt die Commits danach |
+| 5 | Verifier-Report DoD 5 — eigener Lauf 2026-09-29, EXIT 0, alle neun `baseline-verify`-Zeilen `v6.13.0 OK` |
+| 6 | Verifier-Report DoD 6; Report `f758e6c0`, Merge-Blocker aufgelöst |
+| 7 | Verifier-Report DoD 7; Architect-Commit `9b10fda9` (`3ef54b82`) |
+| Closure-Notiz · Register · Risiken · Paarungen | diese Closure — §6 und §7 |
+
+- [x] **1 — Jeder Träger des Tags steht auf `v6.13.0`, und keine lebende Adresse bleibt auf dem
       abgelösten Tag.** Sechs Träger-Klassen, eine Eigenschaft. **Rot ist ein halb getauschtes
       Repo nur in zwei Fällen, gezogen bei der Closure:** wenn eine Pin-Stelle von den übrigen
       abweicht und wenn ein Markdown-Link auf einen fehlenden Baum zeigt. **Grün bleibt es**, wenn
@@ -238,7 +253,7 @@ Drei slice-eigene Punkte, einer je Achse aus §1.
       [`.claude/commands/`](../../../../.claude/commands/) und
       [`.harness/skills/reviewer.md`](../../../../.harness/skills/reviewer.md) bei der Rolle, die
       sie ausführt ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)).
-- [ ] **2 — Die Freshness-Review des Adaptions-Blocks ist über alle 71 aktiven Einträge
+- [x] **2 — Die Freshness-Review des Adaptions-Blocks ist über alle 71 aktiven Einträge
       gefahren, jeder betroffene trägt einen der fünf Ausgänge, und die Delta-Inventur je Release
       ist dokumentiert.** Die Frage je Eintrag: Regelt eine der im Sprung geänderten
       Regelwerks-Dateien das, wofür dieser Eintrag angelegt wurde?
@@ -268,7 +283,7 @@ Drei slice-eigene Punkte, einer je Achse aus §1.
       [`harness/conventions.md`](../../../../harness/conventions.md) in der Form von
       [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
       Festlegung 2.
-- [ ] **3 — Der Vorlagen-Bericht zum Tag `v6.13.0` liegt unter `docs/migrations/` vor, in der
+- [x] **3 — Der Vorlagen-Bericht zum Tag `v6.13.0` liegt unter `docs/migrations/` vor, in der
       Report-Form aus [`harness/migration.md`](../../../../harness/migration.md) §5, und hält die
       bestehenden Instanzen.**
 
@@ -291,23 +306,23 @@ Drei slice-eigene Punkte, einer je Achse aus §1.
 
       Der Bericht wird von `docs-check` gescannt; jede `LH-`/`ADR-`/`MR-`-Kennung darin ist ein
       Anker-Link ([`MR-001`](../../../../harness/conventions.md#mr-001)).
-- [ ] `make gates` grün über dem Liefer-Stand, gedeckt durch den Stempel
+- [x] `make gates` grün über dem Liefer-Stand, gedeckt durch den Stempel
       `.harness/state/gates-passed.diffsha`. Nicht gedeckt sind die Commits danach
       (Architect-Buchung, Closure).
-- [ ] `make full-smoke` endet EXIT 0 (Voll-E2E über das gebootstrappte Ziel; der emittierte Satz
+- [x] `make full-smoke` endet EXIT 0 (Voll-E2E über das gebootstrappte Ziel; der emittierte Satz
       erbt den neuen Stand über Liefer-Punkt 1.6).
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: [`harness/conventions.md`](../../../../harness/conventions.md) §Baseline und
+- [x] Doku-Update: [`harness/conventions.md`](../../../../harness/conventions.md) §Baseline und
       §Adoptierte Konventions-Quellen tragen den neuen Stand (**Architect-Commit** aus dem
       Übergabe-Artefakt von Liefer-Punkt 2); [`harness/migration.md`](../../../../harness/migration.md)
       trägt die Sprung-Zeile und die Register-Zuordnung (**Architect-Commit**).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt Wellen (`ls docs/plan/planning/welle-*.md` → **2** Dateien), sie werden deshalb von der nächsten Welle-Closure geprüft, auch für diesen Slice ohne Wellen-Zugehörigkeit.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt Wellen (`ls docs/plan/planning/welle-*.md` → **2** Dateien), sie werden deshalb von der nächsten Welle-Closure geprüft, auch für diesen Slice ohne Wellen-Zugehörigkeit.
 
 ## 3. Plan (vor Code)
 
@@ -412,6 +427,25 @@ dasteht.
 
 Den Ausgang setzt die Closure. *Absehbar* nennt, welcher Ausgang unter welcher Bedingung eintritt.
 
+**Ausgänge der Closure (2026-09-29):**
+
+1. **entfallen** — die Durchgänge sind ohne Rückführung (a) durch: 6 von 71 Einheiten betroffen,
+   jeder mit einem der fünf Ausgänge, kein *widerspricht*, kein *Bezug ist entfallen*. Beleg:
+   [`Verifikations-Report`](../../../reviews/2026-09-29-slice-sprung-auf-v6130-wird-vollzogen-verify.md) DoD 2.
+2. **entfallen** — `test/` trägt keinen Tag, `internal/` nach dem Tausch ebenfalls nicht; der
+   Mess-Tag ist gezogen, die `templates.go`-Proben sind als Adressen geurteilt und mitgezogen
+   (Tausch-Commit `ad5b56d6`).
+3. **entfallen** — der sha256 ist am Release-Asset gemessen, drei Quellen ein Wert, Kontrolle
+   gegen `v6.9.0` byte-gleich; das Kommando steht im Tausch-Commit, die
+   `vendor-baseline`-Sperre als zweites Netz (Verifier-Report DoD 1b).
+4. **weiter offen** — Register
+   [`BEO-ALL/baseline-sprungweite-treibt-kosten`](../observations/BEO-ALL/baseline-sprungweite-treibt-kosten/observation.md),
+   2 Belege, Stand `offen`; bei 3× Lücke mit eigenem Folge-Slice.
+5. **entfallen** — der Zug nach `in-progress/` hat den Ruhe-Marker entfernt (`b8597a22`), der
+   Abschluss-Zug nach `done/` stellt ihn wieder her; beide Züge tragen die Roadmap-Zeile.
+6. **entfallen** — der Tausch-Commit `ad5b56d6` trägt die Gegenmessung auf Nicht-Null-Basis:
+   d-check-Pin unberührt, alle 9 aktiven Module des Doku-Gates behalten Basis und Konfiguration.
+
 1. **Der Adaptions-Block berührt mehr MRs als erwartbar.** 71 Einträge gegen 19 von 26
    geänderte Regelwerk-Dateien; `modul-05`/`modul-06` stehen in jedem Claude-Lauf im Kontext
    (Symlinks), `modul-02` regelt die Prozedur selbst, `modul-13` die Gate-Disziplin — die
@@ -451,12 +485,67 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10). Die
-Notiz entsteht bei der Closure; sie fasst dann zusammen: Was hat funktioniert · was ging anders
-als geplant · das Ergebnis von Freshness-Durchgang und Stichprobe (Liefer-Punkt 2) · den
-Steering-Loop-Eintrag in einer der drei Formen · die Belege im Beobachtungs-Register · das
-Trigger-Audit (Carveout · bootstrap-aware Gate · ADR) · die Folge-Slices und die Ausgänge der
-Risiken aus §6.
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+
+**Rolle:** Planner · **Datum:** 2026-09-29
+
+- **Was hat funktioniert:** Die Drei-Achsen-Trennung aus §1 — Adresse, Adaptions-Eintrag, Vorlage —
+  hat den Durchgang tragfähig gemacht: Alle sechs Träger-Klassen des Tags sind im Tausch-Commit
+  (`ad5b56d6`) und den Eigentümer-Nachzügen auf `v6.13.0` gezogen, ohne dass eine Klasse in eine
+  andere übersetzt wurde. Die fail-closed Kopplungen (drei Pin-Wächter, Mess-Tag-Wächter) haben
+  die bewachte Hälfte der Träger von selbst gehalten; Symlinks und Inline-Pfade bleiben direkte
+  Messungen ([`Verifikations-Report`](../../../reviews/2026-09-29-slice-sprung-auf-v6130-wird-vollzogen-verify.md) DoD 1).
+- **Was ging anders als geplant:** Die Rückführung (b)-Lage aus §4 (Register-Zuordnung vor
+  Liefer-Punkt 3.3) löste sich im Vollzug als Reihenfolge Tausch → Review → Architect-Buchung
+  (`3ef54b82`); der Review-Report hatte sie als Blocker geführt, und sie ist geräumt. Der für
+  DoD 5 angebotene Beleg war ein Alt-Protokoll vom 2026-09-23 — der Verifier fuhr
+  `make full-smoke` selbst (DoD 5 desselben Reports); die Klasse steht im Register.
+- **Ergebnis Freshness-Durchgang und Stichprobe (Liefer-Punkt 2):** 71 Einträge gelesen, 6
+  betroffene Einheiten (MR-000 · MR-002 · MR-060 · MR-057/059 · MR-063 · MR-035/056), 65
+  nicht betroffen; kein Ausgang *widerspricht*, kein *Bezug ist entfallen*. Stichprobe des
+  Verifiers: 3 von 6 Einheiten gegen den Volltext am Tag `v6.13.0` nachgelesen (MR-000, MR-060,
+  MR-063), alle bestätigt. Delta-Inventur je Release im Übergabe-Artefakt (13 Welle-Commits,
+  27 Dateien, 0 neu, 0 entfallen).
+- **Steering-Loop-Eintrag:** *geschärfte Regel.* Ein vorgefundenes Protokoll belegt den Stand zum
+  Laufzeitpunkt, nie den aktuellen; der Beleg über dem aktuellen Stand ist der frische Lauf. Ein
+  `liegt in`-Feld steht hier nicht: nichts ist mit diesem Slice verkörpert — die Verkörperung
+  gehört in diesem Repo dem Lese-Schritt der Welle-Closure. Die Beobachtung steht als
+  [`BEO-ALL/lauf-beleg-ist-zeitgebunden`](../observations/BEO-ALL/lauf-beleg-ist-zeitgebunden/observation.md)
+  im Register (1 Beleg).
+- **Anlass der Lastenheft-Änderung** ([`MR-042`](../../../../harness/conventions.md#mr-042--der-anlass-einer-lastenheft-aenderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz)):
+  die §4-Umbenennung („… und Randbedingungen") in `spec/lastenheft.md` ist die Instanz-Umschrift
+  aus dem Register-Durchgang der Ziel-Fassung `v6.13.0` (`spec/lastenheft.template.md` §4) —
+  Form-Nachzug der Vorlage, keine Inhaltsänderung am Vertrag, keine eingefrorene Adresse
+  betroffen.
+- **Beobachtungs-Register** (`../observations/`): drei Belege, ein Vorgang zählt je Klasse
+  einmal — [`BEO-ALL/baseline-sprungweite-treibt-kosten`](../observations/BEO-ALL/baseline-sprungweite-treibt-kosten/observation.md)
+  (2 Belege, Stand `offen`) ·
+  [`BEO-ALL/tag-tragende-adresse-ueberlebt-den-baseline-tausch-nicht`](../observations/BEO-ALL/tag-tragende-adresse-ueberlebt-den-baseline-tausch-nicht/observation.md)
+  (2 Belege, Stand `offen`) ·
+  [`BEO-ALL/lauf-beleg-ist-zeitgebunden`](../observations/BEO-ALL/lauf-beleg-ist-zeitgebunden/observation.md)
+  (**neu angelegt**, 1 Beleg). Kein Eintrag erreicht 3×.
+- **Trigger-Audit:** Carveouts — kein neuer; CO-001 und CO-002 hängen nicht am Baseline-Stand und
+  sind von diesem Vorgang nicht berührt. Bootstrap-aware Gates — keine berührt. ADR —
+  [`ADR-0072`](../../adr/0072-ziel-fassung-regiert-den-sprung-v6130.md) (`Accepted`); ihr
+  Re-Evaluierungs-Trigger (*der nächste Sprung misst neu*) ist nicht eingetreten. Hard Rules —
+  keine mit Auflösungs-Trigger aus diesem Vorgang.
+- **Folge-Slices:** keine. Die Rest-Lücken der Verifikation tragen ihre bestehenden Träger: die
+  Pin→Asset-Hälfte der Provenienz beruht auf dem Dreifach-Beleg des Übergabe-Artefakts statt
+  eines eigenen Netzlaufs (`make regelwerk-check`); die Freshness-Stichprobe liest 3 von 6
+  Einheiten, die übrigen beruhen auf der Lesung des Übergabe-Laufs; `make full-smoke` belegt den
+  Stand zum Laufzeitpunkt, Träger ist der Lauf (Stop-Hook, CI); der Rollen-Zuschnitt der Commits
+  ist `git`-Lesung — die Lücke ist in [`AGENTS.md`](../../../../AGENTS.md) §3.8 benannt.
+- **Paarungen:** (a) *Anker* — §7 trägt kein `liegt in`-Feld, nichts zu prüfen. (b)
+  *Folge-Slice* — §7 nennt keine Kennung; der in §1 genannte
+  [`slice-offene-plaene-gegen-den-neuen-stand`](../open/slice-offene-plaene-gegen-den-neuen-stand.md)
+  liegt in `open/`. (c) *Register* — alle zitierten Pfade existieren mit nicht leerem
+  `evidence/`; zweite Hälfte über das ganze Register: 4 Verzeichnisse ohne Beleg, namentlich
+  `BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases`,
+  `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+  `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`,
+  `BEO-ALL/planungs-bestand-waechst-schneller-als-er-abgebaut-wird`; nicht als getragen behauptet
+  ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  Festlegung 2).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

@@ -1,0 +1,2 @@
+**Vorgang:** slice-sprung-auf-v6130-wird-vollzogen
+**Fund:** Fuer DoD 5 (`make full-smoke` EXIT 0) wurde ein vorgefundenes Protokoll vom 2026-09-23 als Beleg angeboten — alle neun `baseline-verify`-Zeilen darin meldeten `v6.9.0 OK`; der Verifier wies es als Alt-Log des Vorgaenger-Slices aus und fuhr den Lauf selbst (EXIT 0, alle neun Zeilen `v6.13.0 OK`, `/tmp/full-smoke-verify-20260929.log`). Beleg: `docs/reviews/2026-09-29-slice-sprung-auf-v6130-wird-vollzogen-verify.md` §DoD 5.
