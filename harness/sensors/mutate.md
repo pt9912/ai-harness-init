@@ -7,10 +7,11 @@ meldet jeden Wächter, der dabei **grün** bleibt — die Regel ist sonst nur im
 Feedforward-Quadranten. Kein Gate ([`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6));
 der Grund ist die Laufzeit: je Fall ein voller Sensor-Lauf.
 
-Ohne `MUTATE_CASES` bricht der Lauf ab, bevor Grün-Vorlauf, Isolationskopie oder ein Fall
-läuft — der lokale Vollauf braucht `MUTATE_FORCE=1` als ausdrückliche Zustimmung, und der
-regelmäßige Vollsweep läuft als CI-Workflow (`gh workflow run mutate.yml`), der
-`MUTATE_CASES` je Shard setzt.
+Ohne `MUTATE_CASES` bricht der Lauf ab, bevor Entwertung, Isolationskopie oder ein Fall
+läuft — ausgenommen der Beleg-Übersprung: ein gültiger Beleg entlastet den Aufruf, bevor
+die Sperre fragt (§Grenze). Der lokale Vollauf braucht `MUTATE_FORCE=1` als ausdrückliche
+Zustimmung, und der regelmäßige Vollsweep läuft als CI-Workflow (`gh workflow run
+mutate.yml`), der `MUTATE_CASES` je Shard setzt.
 
 ## Grenze — was das Grün nicht abdeckt
 
@@ -81,13 +82,17 @@ folgende greift während des Laufs:
   bricht selbst ab und wird rot; ein hängender Sensor ist sonst von einem langsamen nicht zu
   unterscheiden.
 
+**Die Sperre sitzt am Treiber, nicht am Rezept.** Die Rezept-Zeile von `make mutate` setzt
+weder `MUTATE_CASES` noch `MUTATE_FORCE`; träte sie eines davon bei, disarmierte das die
+Sperre für den Rezept-Weg lautlos — benannte Grenze, kein Wächter hält sie.
+
 ## Teillauf
 
 `make mutate MUTATE_CASES='<fall> <fall> …'` fährt nur die genannten Fälle. Ein Name ist der
 Fall-Name, wie ihn `mutate: BEFUND  <fall>` nennt, mehrere sind durch Leerzeichen getrennt; die
 Reihenfolge der Ausgabe ist die sortierte des Verzeichnisses. Das Gegenstück ohne Filter — der
 volle Lauf — ist lokal an `MUTATE_FORCE=1` gebunden; ohne beides bricht der Lauf an der
-Vollauf-Sperre ab (§Sperren). Ein leerer Wert (gesetzt, ohne
+Vollauf-Sperre ab (§Sperren), sofern kein Beleg ihn entlastet. Ein leerer Wert (gesetzt, ohne
 Namen), ein unbekannter und ein doppelt genannter Name enden mit
 `mutate: ABBRUCH — MUTATE_CASES …` und dem Namen, bevor eine Isolationskopie entsteht
 (Skript 1, über `make` 2; `select_cases` in `harness/tools/mutate.sh`). Die Vollständigkeits-Prüfung

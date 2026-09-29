@@ -1124,12 +1124,13 @@ FALL
   [ "$status" -eq 1 ]
   [ ! -f "$fake/.harness/state/mutate-passed.key" ]
 
-  # MUTATE_FORCE auch hier: der Lauf soll am unbekannten '# verify:'-Modus abbrechen,
-  # nicht an der Vollauf-Sperre, die ohne MUTATE_CASES davor liegt.
-  run env MUTATE_FORCE=1 bash "$fake/harness/tools/mutate.sh"
+  # Ohne Force: der zweite Lauf misst die unveraenderte Folgelage — der geloeschte
+  # Beleg entlastet nicht, der Lauf faellt an der Vollauf-Sperre statt zu ueberspringen
+  # ('Kein Fall-Lauf' traegt nur der Uebersprung).
+  run bash "$fake/harness/tools/mutate.sh"
   [ "$status" -eq 1 ]
   ! grep -qF 'Kein Fall-Lauf' <<<"$output"
-  grep -qF "unbekannter '# verify:" <<<"$output"
+  grep -qF 'ohne MUTATE_CASES faehrt hier kein Vollauf' <<<"$output"
   rm -rf "$fake"
 }
 
@@ -1151,12 +1152,14 @@ FALL
   printf 'inhalt\n' >"$fake/datei.txt"
   printf 'VOELLIG-FALSCHER-SCHLUESSEL\n' >"$fake/.harness/state/mutate-passed.key"
 
-  # MUTATE_FORCE=1: der Lauf soll am SCHLUESSELVERGLEICH des Uebersprungs gemessen werden,
-  # nicht an der Vollauf-Sperre, die ohne MUTATE_CASES davor liegt.
-  run env MUTATE_FORCE=1 bash "$fake/harness/tools/mutate.sh"
+  # Ohne Force und ohne Filter: genau diese Aufrufform erreicht den Schluesselvergleich,
+  # den der Testname behauptet — ein Force oder eine Sperre davor wuerde ihn
+  # kursschliessen. Der falsche Schluessel entlastet nicht: der Lauf faellt an der
+  # Vollauf-Sperre statt zu ueberspringen ('Kein Fall-Lauf' traegt nur der Uebersprung).
+  run bash "$fake/harness/tools/mutate.sh"
   [ "$status" -eq 1 ]
   ! grep -qF 'Kein Fall-Lauf' <<<"$output"
-  grep -qF "unbekannter '# verify:" <<<"$output"
+  grep -qF 'ohne MUTATE_CASES faehrt hier kein Vollauf' <<<"$output"
   rm -rf "$fake"
 }
 
@@ -1390,12 +1393,13 @@ vollauf() {
 
 # --- Vollauf-Sperre ------------------------------------------------------------
 # Ohne MUTATE_CASES bricht der Lauf ab, bevor Gruen-Vorlauf, Isolationskopie oder ein
-# Fall laeuft. Gefahren wird der Weg des Aufrufers: der Treiber als eigener Prozess mit
-# genau dem Aufruf, den das Makefile-Rezept von `make mutate` stellt (`bash
-# harness/tools/mutate.sh`, MUTATE_JOBS in der Umgebung) — der gepinnte bats-Container
-# traegt kein make, die Rezept-Zeile selbst ist darum nicht Teil dieses Tests. `timeout`
-# begrenzt den Aufruf: greift die Sperre nicht, faehrt er als normaler Vollauf durch,
-# und der Fall faellt an der Assertion statt an einer Haengerei.
+# Fall laeuft — ausgenommen der gueltige Beleg, der den Aufruf entlastet, bevor die
+# Sperre fragt (Test darunter). Gefahren wird der Weg des Aufrufers: der Treiber als
+# eigener Prozess mit genau dem Aufruf, den das Makefile-Rezept von `make mutate`
+# stellt (`bash harness/tools/mutate.sh`, MUTATE_JOBS in der Umgebung) — der gepinnte
+# bats-Container traegt kein make, die Rezept-Zeile selbst ist darum nicht Teil dieses
+# Tests. `timeout` begrenzt den Aufruf: greift die Sperre nicht, faehrt er als normaler
+# Vollauf durch, und der Fall faellt an der Assertion statt an einer Haengerei.
 @test "driver: ohne MUTATE_CASES bricht der Lauf ab, bevor kopiert wird" {
   teillauf_fake
   printf 'stehender-beleg\n' >"$TL_FAKE/.harness/state/mutate-passed.key"
@@ -1408,10 +1412,35 @@ vollauf() {
   grep -qF "MUTATE_CASES='<fall> …'" <<<"$output"
   grep -qF 'gh workflow run mutate.yml' <<<"$output"
   grep -qF 'MUTATE_FORCE=1' <<<"$output"
-  tl_ohne_kopie
+  # Das lesende Listing des Beleg-Schluessels geht in das Probe-Protokoll ein, eine
+  # Isolationskopie allein waere an mktemp sichtbar.
+  [ "$(grep -c '^mktemp ' "$TL_ROOT/probe.log")" -eq 0 ]
   [ -z "$(ls -A "$TL_ROOT/tmp")" ]
   # Der Abbruch liegt vor Beleg-Entwertung und Isolationskopie — der stehende Beleg
-  # bleibt byte-gleich.
+  # bleibt byte-gleich. Der Beleg-Schluessel listet den Baum zuvor nur LESEND (tar -tf),
+  # eine Isolationskopie dagegen braucht ihr ISO_ROOT aus mktemp — daran haelt die Probe
+  # den Unterschied.
+  [ "$(grep -c '^mktemp ' "$TL_ROOT/probe.log")" -eq 0 ]
+  [ -z "$(ls -A "$TL_ROOT/tmp")" ]
   [ "$(cat "$TL_FAKE/.harness/state/mutate-passed.key")" = "stehender-beleg" ]
+  rm -rf "$TL_ROOT"
+}
+
+# Der Beleg-Uebersprung geht der Sperre VOR: ein gueltiger Beleg entlastet den Aufruf,
+# der Lauf endet mit Exit 0, ohne eine Isolationskopie anzulegen. Der Test haelt die
+# REIHENFOLGE — steht die Sperre vor dem Uebersprung, faerbt er rot.
+@test "driver: ein gueltiger Beleg entlastet den Aufruf vor der Vollauf-Sperre" {
+  teillauf_fake
+  printf '%s\n' "$TL_KEY" >"$TL_FAKE/.harness/state/mutate-passed.key"
+  run timeout 60 env "PATH=$TL_ROOT/bin:$PATH" MUTATE_JOBS=1 "TMPDIR=$TL_ROOT/tmp" \
+    bash "$TL_FAKE/harness/tools/mutate.sh"
+  [ "$status" -eq 0 ]
+  grep -qF 'Beleg fuer Pruefgegenstand' <<<"$output"
+  grep -qF 'Kein Fall-Lauf' <<<"$output"
+  # Dieselbe Schwaerche-Grenze wie im Test darueber: das lesende Listing des
+  # Beleg-Schluessels geht in das Probe-Protokoll ein, eine Kopie allein waere an
+  # mktemp sichtbar.
+  [ "$(grep -c '^mktemp ' "$TL_ROOT/probe.log")" -eq 0 ]
+  [ -z "$(ls -A "$TL_ROOT/tmp")" ]
   rm -rf "$TL_ROOT"
 }

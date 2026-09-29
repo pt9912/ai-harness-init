@@ -97,12 +97,15 @@
 # Befund steht im Exit und in der Ausgabe des Teillaufs. Sensor: test/mutate-driver.bats
 # „driver: ein Teillauf schreibt den Beleg-Slot nie".
 #
-# VOLLAUF-SPERRE: ohne MUTATE_CASES bricht der Lauf ab, bevor eine Isolationskopie
-# entsteht. Der lokale Vollauf ist damit an MUTATE_FORCE=1 gebunden — die
-# ausdrueckliche Zustimmung, die die Beleg-Mechanik unveraendert laesst — und der
-# regelmaessige Vollsweep laeuft als CI-Workflow (mutate.yml), der MUTATE_CASES je
-# Shard setzt. Sensor: test/mutate-driver.bats „driver: ohne MUTATE_CASES bricht
-# der Lauf ab, bevor kopiert wird".
+# VOLLAUF-SPERRE: ohne MUTATE_CASES und MUTATE_FORCE bricht der Lauf ab, bevor eine
+# Isolationskopie entsteht — ausgenommen der Beleg-Uebersprung (ADR-0035): ein
+# gueltiger Beleg entlastet den Aufruf, bevor die Sperre fragt. Der lokale Vollauf
+# ist damit an MUTATE_FORCE=1 gebunden — die ausdrueckliche Zustimmung, die die
+# Beleg-Mechanik unveraendert laesst — und der regelmaessige Vollsweep laeuft als
+# CI-Workflow (mutate.yml), der MUTATE_CASES je Shard setzt. Sensor:
+# test/mutate-driver.bats „driver: ohne MUTATE_CASES bricht der Lauf ab, bevor
+# kopiert wird" und „driver: ein gueltiger Beleg entlastet den Aufruf vor der
+# Vollauf-Sperre".
 #
 # NICHT in `make gates` — der Grund ist die LAUFZEIT: je Fall ein voller Sensor-Lauf,
 # und die Fall-Menge waechst mit jedem bewachten Waechter. Was der Lauf HEUTE kostet,
@@ -1611,22 +1614,6 @@ main() {
 
   [ -d "$CASES_DIR" ] || { echo "mutate: $CASES_DIR fehlt" >&2; exit 1; }
 
-  # VOLLAUF-SPERRE: ohne MUTATE_CASES bricht der Lauf ab, bevor Gruen-Vorlauf,
-  # Isolationskopie oder ein Fall laeuft. Auswege: gezielter Teillauf
-  # (MUTATE_CASES), Vollsweep als CI-Workflow (mutate.yml setzt MUTATE_CASES je
-  # Shard im Step-Umfeld) und der lokale Vollauf mit MUTATE_FORCE=1 — die
-  # ausdrueckliche Zustimmung, die die Beleg-Mechanik unveraendert laesst: nur ein
-  # voller Lauf schreibt den Slot.
-  # Sensor: test/mutate-driver.bats „driver: ohne MUTATE_CASES bricht der Lauf ab,
-  # bevor kopiert wird".
-  if [ -z "${MUTATE_CASES+x}" ] && [ -z "${MUTATE_FORCE:-}" ]; then
-    echo "mutate: ABBRUCH — ohne MUTATE_CASES faehrt hier kein Vollauf." >&2
-    echo "  Gezielter Teillauf:           MUTATE_CASES='<fall> …' make mutate" >&2
-    echo "  Vollsweep als CI-Workflow:    gh workflow run mutate.yml" >&2
-    echo "  Lokaler Vollauf (Zustimmung): MUTATE_FORCE=1 make mutate" >&2
-    exit 1
-  fi
-
   # TEILLAUF: `${MUTATE_CASES+x}` unterscheidet „gesetzt, aber leer" von „nicht gesetzt" —
   # ein leerer Wert ist eine Anfrage ohne Namen und bricht ab (select_cases), er faellt
   # nicht auf den vollen Lauf zurueck. Die Pruefung steht vor Beleg-Schluessel,
@@ -1666,6 +1653,25 @@ main() {
     echo "mutate: Beleg fuer Pruefgegenstand $belief_key liegt vor (.harness/state/mutate-passed.key, $(date -r "$BELIEF" '+%Y-%m-%d %H:%M:%S')) — seit dem letzten vollstaendig gruenen Lauf unveraendert. Kein Fall-Lauf."
     echo "mutate: MUTATE_FORCE=1 erzwingt einen vollen Lauf; ungedeckt bleiben Docker-Cache-Zustand und Host-Werkzeuge (ADR-0035 Festlegung 4)."
     exit 0
+  fi
+
+  # VOLLAUF-SPERRE: ein Lauf ohne MUTATE_CASES und ohne MUTATE_FORCE bricht hier ab —
+  # bevor Entwertung, Isolationskopie oder ein Fall laeuft. Der Beleg-Uebersprung geht
+  # ihr VOR: ein gueltiger Beleg entlastet den Aufruf, bevor die Sperre fragt; hier
+  # landen nur Laeufe, die wirklich fahren wuerden. Auswege: gezielter Teillauf
+  # (MUTATE_CASES), Vollsweep als CI-Workflow (mutate.yml setzt MUTATE_CASES je Shard
+  # im Step-Umfeld) und der lokale Vollauf mit MUTATE_FORCE=1 — die ausdrueckliche
+  # Zustimmung, die die Beleg-Mechanik unveraendert laesst: nur ein voller Lauf
+  # schreibt den Slot.
+  # Sensor: test/mutate-driver.bats „driver: ohne MUTATE_CASES bricht der Lauf ab,
+  # bevor kopiert wird" und „driver: ein gueltiger Beleg entlastet den Aufruf vor der
+  # Vollauf-Sperre".
+  if [ -z "${MUTATE_CASES+x}" ] && [ -z "${MUTATE_FORCE:-}" ]; then
+    echo "mutate: ABBRUCH — ohne MUTATE_CASES faehrt hier kein Vollauf." >&2
+    echo "  Gezielter Teillauf:           MUTATE_CASES='<fall> …' make mutate" >&2
+    echo "  Vollsweep als CI-Workflow:    gh workflow run mutate.yml" >&2
+    echo "  Lokaler Vollauf (Zustimmung): MUTATE_FORCE=1 make mutate" >&2
+    exit 1
   fi
 
   # SOFORTIGE ENTWERTUNG (ADR-0035): ab hier laeuft ein ECHTER Versuch,
