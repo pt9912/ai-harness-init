@@ -118,7 +118,10 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1 — der Job `tap` und sein `bats`-Fall:** `.github/workflows/release.yml` trägt einen Job
+- [x] **Liefer-Punkt 1 — der Job `tap` und sein `bats`-Fall:** *(Beleg: Verifier-Report
+      [`../../../reviews/2026-09-29-slice-release-job-tap-nachzug-verify.md`](../../../reviews/2026-09-29-slice-release-job-tap-nachzug-verify.md),
+      Punkte 1–2 — je Aufzählungs-Zeile gemessen, zwei Fälle rot gesehen, Ausgabe gelesen)*
+      `.github/workflows/release.yml` trägt einen Job
       `tap` mit `needs: publish`, derselben `if`-Bedingung wie `publish` — ohne `environment:`; die
       Fadenkreuz-Bindung tragen `needs: publish` und der Tag-Trigger des Workflows —, Checkout des Tags mit
       `persist-credentials: false`, `permissions: contents: read` und einem Schritt `make tap-nachzug`; Tag und
@@ -136,7 +139,8 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       kein `|| true`). `make ci-lint` ist grün. **Zusage, auf das Gehaltene eingeschränkt:** ob das Repo-Secret
       so wirkt, wie der Job es voraussetzt, ist außerhalb des Repos
       und ohne Tag-Lauf nicht herstellbar; die Fälle lesen die Datei, und der erste Tag-Lauf ist der Beleg.
-- [ ] **Liefer-Punkt 2 — Schritt 7 folgt dem Job:** Schritt 7 von
+- [x] **Liefer-Punkt 2 — Schritt 7 folgt dem Job:** *(Beleg: Verifier-Report, Punkt 3 — jede Aussage gegen Skript
+      und Workflow gefahren, Meldungstexte verbatim)* Schritt 7 von
       [`docs/user/releasing.md`](../../../user/releasing.md) nennt den Job `tap` als Regelweg und
       `make tap-nachzug TAG=<tag>` mit `TAP_TOKEN` in der Umgebung des Aufrufers als lokalen Ausfallweg; der Beleg
       bleibt `make tap-check TAG=<tag>`, und die Meldung in Schritt 8 hängt an ihm. **Die Aussagen aus §1 sind
@@ -151,19 +155,22 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Ausgabe des Skripts oder gegen `release.yml`; Träger sind der Review und der Verifier, der die Aussagen
       fährt
       ([`BEO-ALL/prozedur-zeile-traegt-disziplin-ohne-sensor`](../observations/BEO-ALL/prozedur-zeile-traegt-disziplin-ohne-sensor/observation.md)).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün — Beleg: der Closure-Lauf nach dem `git mv` (gezeichneter Stempel in
+      `.harness/state/gates-passed.diffsha`).
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+      ([`../../../reviews/2026-09-29-slice-release-job-tap-nachzug.md`](../../../reviews/2026-09-29-slice-release-job-tap-nachzug.md):
+      F-1 MEDIUM, F-2 LOW, Verdikt nicht merge-blockierend; Auflösung bestätigt im Verifier-Report, Punkt 6)
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: Schritt 7 und 8 sind Liefer-Punkt 2; das Handbuch (Weg C) bleibt unberührt (§1), sein Wortlaut
+- [x] Doku-Update: Schritt 7 und 8 sind Liefer-Punkt 2; das Handbuch (Weg C) bleibt unberührt (§1), sein Wortlaut
       wird gegen den Ist-Zustand gelesen und in §7 vermerkt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag; sie trägt das Ergebnis der Frage von
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag; sie trägt das Ergebnis der Frage von
       [`ADR-0066`](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md) Trigger 1 (§1) — das
       Verdikt ist Architect-Arbeit, die Frage stellt der Planner.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Register-Datei nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Register-Datei nicht.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -240,15 +247,18 @@ dasteht.
 Kein Risiko trägt hier schon seinen Ausgang; er wird bei der Closure zugewiesen, die Kandidaten stehen dabei.
 
 - **Der Job ist nur als Datei geprüft.** Die Fälle lesen `release.yml`, `make ci-lint` prüft die Syntax; kein
-  Secret wirkt in einem Gate. **Ausgang:** Kandidat *weiter offen* →
-  [`BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel`](../observations/BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel/observation.md)
-  (verkörpert in [`AGENTS.md`](../../../../AGENTS.md) §3.6: die Zusage auf das einschränken, was der Code hält —
-  Liefer-Punkt 1 tut es); der erste Tag-Lauf ist der Beleg.
-- **Der Job-Schritt verzweigt auf die Klasse des Ziels.** **Ausgang:** *entfallen*, wenn der Fall es hält;
-  *eingetreten* → Architect
-  ([`ADR-0066`](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md) Trigger 1).
-- **Der Slice ist für eine Review-Sitzung zu groß.** **Ausgang:** *eingetreten* → Rückführung nach `next/` (§4);
-  *entfallen*, wenn der Review ihn in einer Sitzung trägt.
+  Secret wirkt in einem Gate. **Ausgang: *weiter offen*** — ins Beobachtungs-Register:
+  [`BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel`](../observations/BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel/observation.md),
+  Evidence-Datei `slice-release-job-tap-nachzug-und-schritt-7-folgt.md`; die Zusage bleibt auf das Gehaltene
+  eingeschränkt ([`AGENTS.md`](../../../../AGENTS.md) §3.6), der erste Tag-Lauf ist der Beleg.
+- **Der Job-Schritt verzweigt auf die Klasse des Ziels.** **Ausgang: *entfallen*** — der Fall hält es: der
+  Job-Schritt verzweigt nicht (kein `case`, kein `$?`-Vergleich, kein `|| true`), ein Fall der Suite bindet die
+  Abwesenheit und färbt beim Eintritt rot (Verifier-Report, Punkte 1 und 4); ADR-0066 Trigger 1 ist nicht
+  eingetreten (Architect-Verdikt, ADR-0073).
+- **Der Slice ist für eine Review-Sitzung zu groß.** **Ausgang: *entfallen*** — der Review trägt beide
+  Liefer-Punkte in einer Sitzung
+  ([`../../../reviews/2026-09-29-slice-release-job-tap-nachzug.md`](../../../reviews/2026-09-29-slice-release-job-tap-nachzug.md):
+  0 HIGH, Verdikt nicht merge-blockierend).
 
 ## 7. Closure-Notiz
 
@@ -264,7 +274,74 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-Wird bei der Closure geschrieben — von der Rolle Planner in frischem Kontext (AGENTS.md §3.10), nach Review und Verifikation, in der Form der Regeln oben.
+Wird bei der Closure geschrieben — von der Rolle Planner in frischem Kontext (AGENTS.md §3.10), nach Review und
+Verifikation, in der Form der Regeln oben.
+
+**Geliefert:** der Job `tap` in `.github/workflows/release.yml` in der Form von ADR-0064 Folgepflicht 2 in der
+Lesart von ADR-0073 — Repo-Secret im Step-`env`, keine Umgebung, die Fadenkreuz-Bindung tragen `needs: publish`
+und der Tag-Trigger —, mit zehn `bats`-Fällen, je Aufzählungs-Zeile einer; und Schritt 7 von
+[`docs/user/releasing.md`](../../../user/releasing.md) nennt den Job als Regelweg und
+`make tap-nachzug TAG=<tag>` mit `TAP_TOKEN` in der Umgebung des Aufrufers als lokalen Ausfallweg, den Beleg
+`make tap-check TAG=<tag>` (Schritt 8 hängt an ihm). Review
+([`../../../reviews/2026-09-29-slice-release-job-tap-nachzug.md`](../../../reviews/2026-09-29-slice-release-job-tap-nachzug.md):
+F-1 MEDIUM, F-2 LOW, Verdikt nicht merge-blockierend) und Verifikation
+([`../../../reviews/2026-09-29-slice-release-job-tap-nachzug-verify.md`](../../../reviews/2026-09-29-slice-release-job-tap-nachzug-verify.md),
+Commit `459ea58d`: alle Prüfpunkte bestätigt) liegen vor.
+
+**Ergebnis der Frage von
+[`ADR-0066`](../../adr/0066-exit-klassen-des-tap-werkzeugs-sind-die-des-skripts.md) Trigger 1
+(Architect-Verdikt, ADR-0073):** nicht eingetreten — der Job-Schritt verzweigt nicht auf die Klasse des Ziels;
+jedes Nicht-Null ist ein roter Job, und ein Fall der Suite bindet die Abwesenheit.
+
+**Was funktioniert hat:** §1 trug die alternden Aussagen als Adresse — der Lauf las Schritt 7 an seinem Start und
+zog Handlung, Voraussetzung, Satz zur Rolle und die Grenze; LP2 verlangte, die Wiedergaben gegen Skript und
+Workflow statt gegen diesen Plan zu fahren, und Review und Verifier haben genau das gefahren. Die Deckungslücke
+(kein Gate hält `releasing.md` gegen die Quellen) war im Plan benannt, nicht verdeckt.
+
+**Was anders lief:** die Abweichung von ADR-0064 Festlegung 4 war im Plan begründet und test-gebunden, trug sie
+aber kein lebendes Artefakt — das Fahrzeug der Abweichung von einer `Accepted`-ADR ist das Architect-Verdikt als
+Folge-ADR (Klasse *ADR-Abweichung nur im Plan getragen*, Erstauftreten, Register-Eintrag unten), und es liegt als
+ADR-0073 (`Proposed`, Teil-Supersedes von ADR-0064) vor.
+
+**Steering-Loop-Eintrag (Lerneintrag — geschärfte Regel):** Ein Wächter, der eine Datei liest und je Zusage-Zeile
+einen Fall trägt (hier: zehn `bats`-Fälle über die Job-Form), bekommt seine Rot-Erfahrung als Hand-Nachweis
+**je Fall**, solange kein Mutations-Fall die Klasse fährt — die strukturelle Ableitbarkeit der Rot-Bindung aus
+dem Ausdruck ist eine benannte Lücke, kein Beleg. Zwei der zehn Fälle sind so rot gesehen; die Rot-Meldung ist
+der im Fall gebundene Text, nicht eine generische Fehlform. Die Anlage eines `test/mutations/`-Falls je Klasse —
+die offene Anlage-Frage von MR-071 — ist der Träger, der den Hand-Nachweis auf den Einzelfall begrenzt. Die
+Verkörperung ist Architect-Arbeit (AGENTS.md §3.8); der Eintrag ist gezählt, nicht verkörpert.
+
+**Verbleibende Lücken mit Trägern:** (1) ob das Repo-Secret so wirkt, wie der Job es voraussetzt, belegt der
+erste reale Tag-Lauf — Risiko-Ausgang *weiter offen* (§6); (2) der Schreib-Pfad gegen die reale
+Tap-Schnittstelle bleibt ungefahren (§1, Out-of-Scope) — derselbe Tag-Lauf; (3) die Klasse
+[`BEO-ALL/prozedur-wiedergabe-eines-werkzeug-vertrags-reicht-weiter-als-die-quelle`](../observations/BEO-ALL/prozedur-wiedergabe-eines-werkzeug-vertrags-reicht-weiter-als-die-quelle/observation.md)
+ist mit F-2 ein **viertes** Mal eingetreten — nach der Verkörperung (Zielort
+`.claude/commands/implement-slice.md`, Punkt 17). Die Trägerschaft ist damit der Befund; die nächste Stufe ist
+eine Hard Rule — Übergabe an den Architect, die Grenz-Zeile des Register-Eintrags trägt sie.
+
+**Beobachtungs-Register (`../observations/`):**
+`evidence/slice-release-job-tap-nachzug-und-schritt-7-folgt.md` ergänzt in
+[`BEO-ALL/prozedur-wiedergabe-eines-werkzeug-vertrags-reicht-weiter-als-die-quelle`](../observations/BEO-ALL/prozedur-wiedergabe-eines-werkzeug-vertrags-reicht-weiter-als-die-quelle/observation.md)
+— der Ausgang der Zeile steht (*verkörpert*); das Auftreten nach der Verkörperung löst die Eskalation ihrer
+Grenz-Zeile aus (s. o.) · `evidence/slice-release-job-tap-nachzug-und-schritt-7-folgt.md` ergänzt in
+[`BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel`](../observations/BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel/observation.md)
+(Risiko-Ausgang *weiter offen*, §6) · neu angelegt:
+[`BEO-ALL/adr-abweichung-nur-im-plan-getragen`](../observations/BEO-ALL/adr-abweichung-nur-im-plan-getragen/observation.md)
+(Erstauftreten, `offen`). Keine weitere Beobachtung angefallen — die Summary-Zeile des Reviews führt genau zwei
+Finding-Klassen, beide sind oben am Register.
+
+**Handbuch, Weg C:** der Satz in
+[`docs/user/benutzerhandbuch.md`](../../../user/benutzerhandbuch.md), die Formel „wird je Release-Schnitt aus
+dem Formel-Asset desselben Schnitts nachgezogen", liest sich gegen den Ist-Zustand: der Job `tap` vollzieht den
+Nachzug am Tag-Push, der Satz nennt keinen Mechanismus und bleibt wahr; der Beleg des Zusammenspiels ist der
+erste Tag-Lauf. Das Handbuch bleibt unberührt.
+
+**Risiken aus §6:** *weiter offen* (Job nur als Datei geprüft — ins Register) · *entfallen* (Verzweigung — der
+Fall hält die Abwesenheit, Trigger 1 nicht eingetreten) · *entfallen* (Review-Umfang — eine Sitzung, 0 HIGH).
+
+**Drei Paarungen:** Anker — diese Notiz trägt kein `liegt in`-Feld, der Lerneintrag ist gezählt, nicht
+verkörpert; die Paarung hat keinen Gegenstand. Folge-Slice — keiner genannt. Register — die drei genannten
+Einträge existieren mit nicht leerem `evidence/`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
