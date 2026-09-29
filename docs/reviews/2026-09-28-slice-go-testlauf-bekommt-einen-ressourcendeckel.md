@@ -429,3 +429,112 @@ ersetzt nicht die Verifikation (Modul 11); die sicherheitsrelevante Einordnung v
 kein SHA-Pin-Bruch, aber reale Reichweiten-Erweiterung eines akzeptierten Override-Musters)
 ist für den Verifier/Architect-Kontext hervorgehoben, falls dort eine ADR- oder
 Hard-Rule-Einordnung gewünscht wird.
+
+---
+
+## Nachtrag 3 — Nachrunde zu Commit `91acbd7a` (F-5/F-6-Fixes)
+
+**Gegenstand:** `91acbd7a` "Rolle Implementer: F-5/F-6 aus Nachtrag 2 des Reviews
+behoben (slice-go-testlauf-bekommt-einen-ressourcendeckel)" — Implementer-Reaktion
+auf F-5 (LOW) und F-6 (MEDIUM) aus Nachtrag 2 dieses Reports.
+
+### Methodik (Nachtrag 3)
+
+Lesende Nachrunde — kein eigener Gate-Neulauf; Arbeitsbaum clean auf dem geprüften
+Commit (`git status --short` leer, HEAD = `91acbd7a`):
+
+- `git show 91acbd7a` vollständig gelesen: 4 Dateien (`Makefile`,
+  `cmd/ai-harness-init/main.go`, `docs/user/benutzerhandbuch.md`,
+  `internal/fetch/baseline.go`), nur Kommentare, ein Usage-String-Block und eine
+  Tabellenzeile — kein Code-Verhalten geändert, keine Suppression
+  (`//nolint`/`# shellcheck disable`) im Diff.
+- Makefile-Kommentar über `test-go` (`Makefile:97-110`) im Baum gelesen: die
+  Klammer-Passage mit dem Lauf-Protokoll („real reproduziert: vier von fuenf …",
+  „rund 58 %") ist entfernt; keine Zahl und keine Perfekt-Form blieb.
+- Usage-Block (`cmd/ai-harness-init/main.go:118-125`) und Handbuch-Zeile
+  (`docs/user/benutzerhandbuch.md:441` unter `### Umgebungsvariablen`, Zeile 427)
+  gelesen; der `§`-Verweis im baseline.go-Kommentar gegen die reale Überschrift
+  aufgelöst — er löst auf.
+- Kommentar auf der Konstanten (`internal/fetch/baseline.go:80-93`) gegen den
+  realen Bestand verifiziert: `grep -rn AI_HARNESS_INIT_BASELINE_URL_BASE` über
+  `*.go`/`*.md`/`Makefile` nennt genau Konstante samt Kommentar, Prozess-Test
+  (`cmd/ai-harness-init/main_test.go:960`), Usage-Block und Handbuch-Zeile — die
+  korrigierte Behauptung „dokumentiert in --help und im Benutzerhandbuch" trifft
+  zu; die alte Behauptung „wird NICHT im Nutzer-Handbuch gefuehrt" ist weg.
+- §3.6-Bindungstiefe der neu dokumentierten Zusage geprüft:
+  `internal/fetch/baseline_test.go:191`
+  (`TestBaseline_SHA256Mismatch_NothingWritten`) bindet die SHA-Prüfung in
+  `fetch.Baseline()` mit **injiziertem** Fetch — also genau in der Form, die die
+  Zusage „unabhängig von der Fetch-Quelle" auf Unit-Ebene trägt. Die Komposition
+  „URL-Override gesetzt **und** falscher SHA" übt kein Test aus:
+  `TestUnfallVektor_OhneArgumentImRepoWurzel` setzt Override und **passende**
+  Summe (`sum` aus dem real servierten Fixture-Inhalt), kein Test kombiniert
+  Override mit Mismatch.
+
+### Prüfung der beiden Findings
+
+**F-5 (LOW) — behoben.** Der Kommentar beschreibt nur noch die geltende Zusage und
+Grenze: die Kopplung (parallele `mutate`-Worker gegen denselben Daemon, `-t`-Name
+nur für Menschen), das Fehlerbild ohne `--iidfile` im Konjunktiv („der Container
+lief dann gegen eine andere Mutation …") — das ist die Grenze-Klasse, kein
+Lauf-Protokoll — und die Pfad-Begründung (Kopplung an `ISOLATION_EXCLUDES`/
+`plan_self_contained`). Kein „real reproduziert", keine Zahl, kein Perfekt über
+eine konkrete Messung. Die zuvor bemängelte Inkonsistenz (58 % vs. ~60 %) ist
+damit gegenstandslos — die Zahl steht nur noch in der Commit-Message von
+`fb11116f`, wo sie hingehört.
+
+**F-6 (MEDIUM) — behoben.** Drei Prüfpunkte, alle erfüllt:
+
+1. **Usage-Block** (`cmd/ai-harness-init/main.go:121-124`): der Override steht
+   in derselben „Umgebung (bewusster Opt-in-Override der gepinnten Werte —
+   LH-QA-02)"-Liste wie seine Geschwister, mit der Trust-Boundary-Warnung
+   („Nur für Tests/Entwicklung gedacht") und dem klaren Satz, dass
+   `BASELINE_SHA256` „unbedingt geprueft, unabhaengig von der Fetch-Quelle"
+   bleibt. Ein `--help`-Audit übersieht ihn nicht mehr — die in Nachtrag 2
+   benannte Asymmetrie zu `COURSE_TAG`/`DCHECK_IMAGE` & co. ist geschlossen.
+2. **Benutzerhandbuch** (`docs/user/benutzerhandbuch.md:441`): dieselbe Aussage
+   als Tabellenzeile im Abschnitt „Umgebungsvariablen" — Warnung und
+   SHA-Pin-Satz vollständig, ohne Zahl (MR-025 nicht berührt), ohne Pin-Kopie
+   (MR-070 nicht berührt).
+3. **Kommentar auf der Konstanten** (`internal/fetch/baseline.go:80-93`):
+   §3.7-konform — er beschreibt die Stelle, nicht die Geschichte. Die korrigierte
+   Behauptung (dokumentiert in --help und Handbuch) ist wahr, die zwei Klassen
+   Zusage („Produktion laesst die Variable leer und faehrt den gepinnten
+   Default") und Grenze („gesetzt wirkt sie NUR auf die Fetch-Quelle, nicht auf
+   die sha256-Pruefung") sind sauber getragen, und der Herkunfts-Anker
+   `seit slice-go-testlauf-bekommt-einen-ressourcendeckel` ist korrekt geformt.
+
+### Neues Finding dieser Nachrunde
+
+| ID | Kategorie | Befund | Quelle | Pfad | Verifizierbar | Klasse |
+|---|---|---|---|---|---|---|
+| F-7 | INFO | Die neu dokumentierte Trust-Boundary-Zusage („BASELINE_SHA256 wird unbedingt geprueft, unabhaengig von der Fetch-Quelle") ist an der Prüfstelle selbst (`fetch.Baseline()`, `internal/fetch/baseline_test.go:191`, mit injiziertem Fetch) test-gebunden — aber die **Komposition** „URL-Override gesetzt und falscher SHA → Abbruch" übt kein Test aus: der override-setzende Prozess-Test bringt stets die passende Summe mit. Ein künftiger Umbau, der an der Verdrahtung (`cmd/ai-harness-init/main.go`) den Override zum Anlass nimmt, die SHA-Prüfung zu umgehen, würde nirgends rot. Die Zusage selbst ist korrekt (Struktur: Prüfung in `Baseline()` nach und außerhalb des Fetchs; `DownloadBaseline()` baut nur die URL — durch Code-Lektüre in Nachtrag 2 belegt, hier re-bestätigt). Einigkeit nach dem Eskalations-Schema des Skills: Teil-Grenze ohne eigenen bindenden Fall, nicht praktisch über Eingabe-Formen erreichbar — INFO. | AGENTS.md §3.6 | `internal/fetch/baseline_test.go:191`, `cmd/ai-harness-init/main_test.go:960` | ja — ein Test, der Override + falschen SHA kombiniert und `SHA256Mismatch` erwartet, würde es zeigen | sha-pin-zusage-komposition-ungebunden |
+
+### Negativbefunde (Nachtrag 3)
+
+| Bereich | Ergebnis |
+|---|---|
+| F-5-Fundstelle (`Makefile:97-110`): Restbestand an Chronik, Lauf-Protokoll oder Zahl im Kommentar | geprüft, ohne Befund — behoben |
+| Neuer Usage-Eintrag (`main.go:121-124`): Chronik-Freiheit (§3.7), Zustands-Indikativ, keine ungedeckte Zusage außer F-7 | geprüft, ohne Befund |
+| Neue Handbuch-Zeile (`benutzerhandbuch.md:441`): §3.7, MR-025 (Zahlen), MR-033 (Baseline-Tag-Aussage), MR-070 (Pin-Kopie) | geprüft, ohne Befund |
+| Korrigierter baseline.go-Kommentar: Behauptung gegen realen Bestand (both doc sites exist), Klassen-Zuordnung, Herkunfts-Anker-Form | geprüft, ohne Befund |
+| `§`-Verweis „Umgebungsvariablen" im baseline.go-Kommentar löst gegen die reale Überschrift (Zeile 427) auf | geprüft, ohne Befund |
+| Ganz-Diff-Sweep §3.6/§3.7: keine neue Kommentar-Chronik an anderer Stelle, keine Inline-Suppression, kein Verhalten geändert | geprüft, ohne Befund |
+| Scope: 4 Dateien, alle direkt F-5/F-6 zugeordnet, kein Creep | geprüft, ohne Befund |
+| Gate-Neulauf (`make gates`) — in dieser Nachrunde **nicht** gefahren (Lesen-Auftrag); Commit-Message meldet EXIT 0, Baums clean auf dem geprüften Commit | nicht geprüft — Verifier-Domäne (Modul 11) |
+
+### Aktualisiertes Gesamt-Verdikt (nach Nachtrag 3)
+
+**Merge-blockierend: nein.** F-5 und F-6 sind real behoben und an allen drei
+F-6-Stellen (Usage, Handbuch, Konstanten-Kommentar) konsistent geschlossen —
+keine offene Lücke zu den Findings von Nachtrag 2. Die Nachrunde trägt ein
+einziges neues INFO (F-7, Bindungstiefe der dokumentierten SHA-Pin-Zusage), das
+nicht merge-blockierend ist und vor der Slice-Closure als benannte Beobachtung
+bzw. kleiner Folge-Schritt (Kompositionstest Override + falscher SHA) geführt
+werden kann.
+
+**Finding-Klassen dieser Nachrunde:** sha-pin-zusage-komposition-ungebunden
+
+**Übergabe:** F-7 geht in die Slice-Closure §7 bzw. an den Implementer als
+optionalen Folge-Schritt. Dieser Nachtrag ersetzt nicht die Verifikation
+(Modul 11).
