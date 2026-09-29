@@ -33,10 +33,10 @@
   dessen Verdikt nach
   [`MR-039`](../conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
   Setzung 3 hier steht. Die Baseline kennt keine Gegenmessung für einen Pin-Sprung. Nahe liegt
-  [`modul-11-verification.md`](../../.harness/baseline/v6.9.0/regelwerk/modul-11-verification.md#fitness-function-ohne-standard-tool-modul-11)
+  [`modul-11-verification.md`](../../.harness/baseline/v6.13.0/regelwerk/modul-11-verification.md#fitness-function-ohne-standard-tool-modul-11)
   §Fitness Function ohne Standard-Tool: Dort ist der Nachweis je Verstoßklasse ein Break-Test mit
   beiden Sensoren nebeneinander
-  (`grep -c 'Break-Test mit beiden Sensoren' .harness/baseline/v6.9.0/regelwerk/modul-11-verification.md`
+  (`grep -c 'Break-Test mit beiden Sensoren' .harness/baseline/v6.13.0/regelwerk/modul-11-verification.md`
   → **1**). Diese Setzung wendet das auf zwei Digests desselben Werkzeugs an und tritt an keine
   Stelle.
 - **Adaption — Setzung 1, was die Messung leistet.** Die Gegenmessung gibt **jedem** Modul der

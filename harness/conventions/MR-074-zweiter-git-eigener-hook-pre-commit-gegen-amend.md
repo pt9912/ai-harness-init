@@ -8,7 +8,7 @@
   Hook derselben Klasse, die [`MR-002`](../conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks)
   für `commit-msg` bereits einführt — Durchsetzungsschicht-Artefakt
   (Baseline-Regelwerk
-  [`grundlagen-durchsetzungsschicht.md`](../../.harness/baseline/v6.9.0/regelwerk/grundlagen-durchsetzungsschicht.md#das-vollständige-artefakt-set)
+  [`grundlagen-durchsetzungsschicht.md`](../../.harness/baseline/v6.13.0/regelwerk/grundlagen-durchsetzungsschicht.md#das-vollständige-artefakt-set)
   §Das vollständige Artefakt-Set), nur an einer anderen Stelle des Commit-Pfads (Index statt
   Message) und mit einer anderen Zusage. Wie bei [`MR-002`](../conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks)
   ändert kein Teil dieses Eintrags eine Komponenten-/Sequenzsicht oder eine Technik-Festlegung —

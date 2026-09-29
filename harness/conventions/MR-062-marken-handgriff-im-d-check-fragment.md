@@ -23,10 +23,10 @@
   für einen Werkzeug-Pin aus. Gemessen ist die Abweichung am adoptierten Stand `v6.9.0` (nächstes
   Feld).
 - **Ersetzt-Baseline-Regel:**
-  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.9.0/regelwerk/modul-02-harness-bootstrap.md#gate-fragment-d-checkmk-schritt-2)
+  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.13.0/regelwerk/modul-02-harness-bootstrap.md#gate-fragment-d-checkmk-schritt-2)
   §Gate-Fragment `d-check.mk` (Schritt 2) — *„Das Tool pflegt die Recipe-Form (`--network none`,
   Target-Set)"*
-  (`grep -c 'Das Tool pflegt die Recipe-Form' .harness/baseline/v6.9.0/regelwerk/modul-02-harness-bootstrap.md`
+  (`grep -c 'Das Tool pflegt die Recipe-Form' .harness/baseline/v6.13.0/regelwerk/modul-02-harness-bootstrap.md`
   → **1**). Die Marke ändert an jedem Ziel der Menge den Hilfetext und hängt eine Rezept-Zeile an;
   beides ist Recipe-Form, die sonst das Werkzeug pflegt. Derselbe Abschnitt verlangt für eine
   Recipe-Form, die nicht mehr das Werkzeug pflegt, die Deklaration: *„die Abweichung gehört als

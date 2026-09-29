@@ -18,8 +18,8 @@ Netz. Der Baum ist eine **derivative Sicht** auf den Kurs; bei Konflikt gilt die
 kanonische Quelle (§2 und der Kurs selbst, den `regelwerk/README.md` nennt).
 **Lektüre vor dem Workflow (§6): der Index** (`.harness/baseline/<tag>/regelwerk/README.md`)
 **+ das relevante Modul on-demand**, **nicht** der Volltext am Stück — der `regelwerk/`-Baum
-misst am adoptierten Stand `v6.9.0` mehr als das Doppelte von Claudes
-150k-Zeichen-Memory-Limit (`cat .harness/baseline/v6.9.0/regelwerk/*.md | wc -c` → **362419**;
+misst am adoptierten Stand `v6.13.0` mehr als das Doppelte von Claudes
+150k-Zeichen-Memory-Limit (`cat .harness/baseline/v6.13.0/regelwerk/*.md | wc -c` → **376935**;
 **kein Erwartungswert**, die Zahl wandert mit dem Tag. Das Limit selbst ist eine
 Werkzeug-Eigenschaft und hier nicht messbar — erhoben in
 [`MR-004`](harness/conventions.md#mr-004--sessionstart-regelwerk-injektor)).
@@ -31,7 +31,7 @@ injiziert via SessionStart-Hook nur den **Index** (`.codex/hooks.json` →
 **außer** den Modulen unter `.claude/rules/`, die als Symlink in den vendored Baum zeigen
 und dadurch in **jedem** Claude-Lauf im Kontext stehen, ohne gelesen worden zu sein
 (`readlink .claude/rules/*.md | grep -c '\.harness/baseline/'` → **7** von **26**,
-`ls .harness/baseline/v6.9.0/regelwerk/*.md | wc -l`; beide **keine Erwartungswerte**).
+`ls .harness/baseline/v6.13.0/regelwerk/*.md | wc -l`; beide **keine Erwartungswerte**).
 Gezählt sind die Zeiger **in den vendored Baum**; daneben trägt das Verzeichnis
 Zeiger auf repo-eigene Quellen, die keine Baseline-Module sind.
 Ein `@`-Auto-Import besteht nicht — Träger ist das Verzeichnis. Die Menge ist
@@ -141,12 +141,12 @@ prüft, ist ein stilles Grün im Gate — §3.1 eine Ebene tiefer. Die Regel ist
 hier.** Diese Sektion trägt darüber hinaus die drei übrigen Zusage-Klassen, die
 Pflicht **ohne** Kritikalitäts-Filter und beim Zusagenden statt beim Verifier,
 und die Sensor-Hälfte `make mutate`, die das Regelwerk nicht kennt
-(`grep -rl 'make mutate' .harness/baseline/v6.9.0/regelwerk/ | wc -l` → **0**).
+(`grep -rl 'make mutate' .harness/baseline/v6.13.0/regelwerk/ | wc -l` → **0**).
 Die Baseline trägt umgekehrt zwei Dinge, die hier nicht stehen: Das Rot muss die
 **behauptete** Ursache tragen, nicht irgendeine; und fehlt der Rot-Beleg bei
 einem sicherheits- oder korrektheitskritischen DoD-Punkt, trägt ihn der
 **Verifier** nach, statt die grüne Suite ungeprüft zu übernehmen
-(`grep -c 'sicherheits- oder korrektheitskritischen' .harness/baseline/v6.9.0/regelwerk/modul-11-verification.md`
+(`grep -c 'sicherheits- oder korrektheitskritischen' .harness/baseline/v6.13.0/regelwerk/modul-11-verification.md`
 → **1**). Beides bindet über die Baseline und wird hier **nicht** abgeschrieben —
 zwei Fassungen derselben Regel driften.
 

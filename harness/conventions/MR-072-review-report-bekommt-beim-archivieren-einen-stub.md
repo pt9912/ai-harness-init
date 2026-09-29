@@ -16,7 +16,7 @@
   Verweis-Nachzug in Zeitdokumenten ([ADR-0042](../../docs/plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md));
   ein Report-Stub am unveränderten Pfad braucht keinen Nachzug.
 - **Ersetzt-Baseline-Regel:**
-  [`modul-06-roadmap.md`](../../.harness/baseline/v6.9.0/regelwerk/modul-06-roadmap.md#wellen-closure-prozedur-modul-6)
+  [`modul-06-roadmap.md`](../../.harness/baseline/v6.13.0/regelwerk/modul-06-roadmap.md#wellen-closure-prozedur-modul-6)
   §Wellen-Closure-Prozedur (Modul 6), Schritt 4 — *„Review-Reports bekommen keinen Stub; sie haben
   keine Identität jenseits ihres Slice."*
 - **Adaption:** Ein Review-Report bekommt beim Archivieren, wie Slice und Welle, einen gekürzten

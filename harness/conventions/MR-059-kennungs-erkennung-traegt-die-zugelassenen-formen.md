@@ -24,7 +24,7 @@
   zu einer Baseline-Aussage den Tag verlangt, gegen den sie gemessen ist:
 
   ```sh
-  B=.harness/baseline/v6.9.0/regelwerk/grundlagen-source-precedence.md
+  B=.harness/baseline/v6.13.0/regelwerk/grundlagen-source-precedence.md
   grep -c 'Der Name trägt das Präfix eines vorhandenen Ankers' "$B"   # 1
   grep -c 'Erkennung' "$B"                                           # 0  (Exit 1)
   grep -c 'Kein Sensor' "$B"                                         # 1
