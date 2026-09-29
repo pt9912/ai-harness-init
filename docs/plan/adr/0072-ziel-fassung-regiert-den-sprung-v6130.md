@@ -1,6 +1,6 @@
 # ADR-0072: Die Ziel-Fassung regiert auch den Sprung `v6.9.0` → `v6.13.0` — die Prozedur ist über vier Releases byte-gleich, ein Delegate ändert sich ohne Wirkung auf den Durchgang, und der Delta-Walkthrough läuft je Release
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-29
 
@@ -11,7 +11,7 @@
 die Trennung von Prozedur und Ist-Maßstab in Festlegung 2 und die Grenzen in Festlegung 4; ihr
 §*Wer den Zielstand bewegt* behält die Setzung dem Auftraggeber vor),
 [ADR-0056](0056-ziel-fassung-regiert-den-sprung-v690.md) (der vorige Sprung; ihr erster
-Re-Evaluierungs-Trigger ist der Anlass dieser Entscheidung, ihr zweiter ist eingetreten, und ihre
+Re-Evaluierungs-Trigger ist der Anlass dieser Entscheidung, und ihre
 §Konsequenzen verbuchen die Übernahme-Vorgabe in der Form, die hier wiederkehrt),
 [ADR-0047](0047-ziel-fassung-regiert-den-sprung-v680.md) (deren zweiter Re-Evaluierungs-Trigger —
 eine geänderte Prozedur oder ein geänderter Delegat stellt einen inhaltlichen Grund zur Verfügung —
@@ -124,7 +124,7 @@ git -C "$K" show v6.13.0:lab/regelwerk/modul-02-harness-bootstrap.md \
 ```
 
 Damit liegt der zweite Fall von [ADR-0018](0018-ziel-fassung-regiert-die-migration.md)
-Festlegung 3 vor — zum siebten Mal.
+Festlegung 3 vor — zum achten Mal.
 
 ### Stufe (b) — der Prozedur-Abschnitt ist byte-gleich, ein Delegate ändert sich
 
@@ -187,8 +187,8 @@ in der Partition oben**, jedes Mal die Änderungen dieses Abschnitts, und erst d
 **Volltexts** der geänderten Datei am Tag `v6.13.0` entscheidet, was davon an der Stelle gilt.
 Jeder Ausgang an einem Eintrag nennt, aus welchem Release sein Anlass stammt. Die Lesung ist
 Teil der Prozedur (*„Der Review geht durch die Adaptions-Liste"*, Eigenschaft des
-Freshness-Audits), keine zweite Prozedur; sie ordnet nur die Reihenfolge, in der die 19 Dateien
-gelesen werden.
+Freshness-Audits), keine zweite Prozedur; sie ordnet die Reihenfolge, in der die 19 Dateien
+gelesen werden, und setzt die Release-Attribution je Ausgang — mehr nicht.
 
 ### Emittierte Ebene: der Mess-Tag zieht mit, der Inhalt bleibt
 
@@ -219,13 +219,15 @@ der d-check-Pin in `d-check.mk` und `internal/emit/emit.go` bindet an eine **and
 ```sh
 grep -o '\*\*auf `v[0-9.]*`:\*\* [0-9-]*, Delta-Nachweis[^.;]*' harness/conventions.md   # -> leer
 git log --oneline -S 'Delta-Nachweis' -- harness/conventions.md | head -2
-# -> fc340eff Rolle Architect: §Baseline von harness/conventions.md auf Zustand und Zeiger gezogen …
+# -> fc340eff Rolle Architect: §Baseline von harness/conventions.md auf Zustand und Zeiger gezogen (Setzung des Auftraggebers 2026-09-18, verschärft: "Wir brauchen keine Chronik/Forensik in dieser Datei")
+#    31ba5903 Rolle Architect: slice-sprung-auf-v690-wird-vollzogen -- Baseline-Buchung v6.9.0 in harness/conventions.md und harness/migration.md §3 (ADR-0056, ADR-0031, ADR-0043)
 ```
 
 Die Aufzählung, die diese Zeilen trug, steht in §Baseline **nicht mehr** — der Auftraggeber hat
 sie am 2026-09-18 zurückgenommen (§Baseline trägt Zustand und Zeiger, keine Chronik), und
 [`harness/migration.md`](../../../harness/migration.md) §3 zitiert das Kommando mit dem alten
 Ziel. **Für diesen Sprung fällt die Frage trotzdem mit dem vendorten Stand zusammen:** der letzte
+Die zweite Fundstelle ist die Buchung, die das Feld zuletzt trug — die des `v6.9.0`-Sprungs; sie belegt die Lesart des nächsten Absatzes.
 Durchgang lief für `v6.9.0`, und derselbe Stand ist vendored
 (`ls -1 .harness/baseline/` → `v6.9.0`). Die Basis ist damit `v6.9.0`, gleichgültig, welche
 Lesart die Nachfolge der zurückgenommenen Aufzählung regelt. Eine eigene Festlegung zur Basis
@@ -366,7 +368,7 @@ Schnitt als Constraint liest; eingefroren ist sie nicht ([`AGENTS.md`](../../../
 | B — die gepinnte Fassung `v6.9.0` regiert | sie liegt netzlos im Arbeitsbaum, und der Durchgang liefe unter ihr nachweislich gleich | nach dem Tausch trägt kein Pin mehr diesen Tag; die Buchung in §Baseline zeigte auf einen anderen Tag als die regierende Entscheidung. Der Vorteil *netzlos lesbar* ist auf die Zwei-Fassungen-Phase befristet |
 | C — allgemeine Regel *„bei byte-gleicher Prozedur regiert die Ziel-Fassung"* | spart künftige Runden | die Messung, die *byte-gleich* feststellt, ist der Aufwand — die Regel spart nur das Aufschreiben. Sie nähme die Prüfung vorweg, die [ADR-0018](0018-ziel-fassung-regiert-die-migration.md) mit Option C verworfen hat |
 | D — Ziel-Fassung regiert, Durchgang als Momentaufnahme über die Gesamtspanne | spart die Partition-Lesung | bei vier Releases verlöre jeder Ausgang die Attribution, welchem Release sein Anlass stammt — die Lesung des kumulierten Diffs lässt eine Deutung zu, wo die Partition eine Lesung hat. Die breiteste Minor-Sprungweite bisher ist genau der Fall, in dem das trägt |
-| **E — gewählt: Ziel-Fassung `v6.13.0` mit Delta-Walkthrough je Release, ohne allgemeine Regel** | die Klammer trägt, nachdem das Delegat-Delta gegen sie abgewogen ist; Pins und regierende Entscheidung stehen auf demselben Tag; die Attribution der Ausgänge bleibt lesbar | der Durchgang ist der breitste der Reihe (19 Dateien, 71 Einträge, 6 Auto-Kontext-Dateien). Der nächste Sprung erbt die Messpflicht ein achtes Mal |
+| **E — gewählt: Ziel-Fassung `v6.13.0` mit Delta-Walkthrough je Release, ohne allgemeine Regel** | die Klammer trägt, nachdem das Delegat-Delta gegen sie abgewogen ist; Pins und regierende Entscheidung stehen auf demselben Tag; die Attribution der Ausgänge bleibt lesbar | der Durchgang ist der breitste der Reihe (19 Dateien, 71 Einträge, 6 Auto-Kontext-Dateien). Der nächste Sprung erbt die Messpflicht ein neuntes Mal |
 
 ## Konsequenzen
 
@@ -433,8 +435,12 @@ Release-Attribution stimmt, ist ein Urteil über einen Vorgang.
 
 - **Der nächste Sprung steht an** *(feedforward)*: Diese Festlegung gilt **nur** für
   `v6.9.0` → `v6.13.0`, der nächste Sprung misst neu — die Achse zuerst, dann beide Stufen.
-- **Der Zielstand bewegt sich vor dem Vollzug** *(sichtbar in §Baseline)*: Dann verliert diese
-  Festlegung ihr Objekt; wie eine Teil-Ablösung zu schneiden ist, zeigt
+- **Der Zielstand bewegt sich, bevor dieser Sprung vollzogen ist** *(beobachtbar vor dem Vollzug —
+  §Baseline trägt die Setzung erst mit der Buchung: an `make baseline-freshness`, das einen
+  neueren Upstream-Tag als den gepinnten meldet, und an der Weisung des Auftraggebers, die einen
+  anderen Zielstand benennt; kein Gate hält die Setzung gegen diese Festlegung,
+  [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6))*: Dann
+  verliert diese Festlegung ihr Objekt; wie eine Teil-Ablösung zu schneiden ist, zeigt
   [ADR-0056](0056-ziel-fassung-regiert-den-sprung-v690.md) §Re-Evaluierungs-Trigger.
 - **Der Durchgang tut unter der Ziel-Fassung etwas, das die gepinnte nicht vorschreibt** *(sichtbar
   am Report des Durchgangs)*: Dann hält Grund 1 nicht, und die Entscheidung ist neu zu führen,
@@ -453,6 +459,7 @@ Release-Attribution stimmt, ist ein Urteil über einen Vorgang.
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-29 | **Proposed** | Anlass sind der erste Re-Evaluierungs-Trigger von [ADR-0056](0056-ziel-fassung-regiert-den-sprung-v690.md) (*der nächste Sprung misst neu*) und der beauftragte Sprung `v6.9.0` → `v6.13.0`, dessen Sprung-Slice diese Entscheidung als Start-Voraussetzung liest. Die Messungen dieses Laufs: §Kontext |
+| 2026-09-29 | **Accepted** | **Angenommen auf Weisung des Auftraggebers vom 2026-09-29, vollzogen in der Architect-Rolle. Der Acceptance-Trigger ist eingelöst**, und der Beleg, den er verlangt, ist die **Reviewer-Konsistenzrunde vom 2026-09-29 zu ADR-0072** — Kennung `2026-09-29-adr-0072-konsistenzrunde` ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1: Kennung, kein Pfad-Link) —, gefahren in frischem Kontext gegen [ADR-0018](0018-ziel-fassung-regiert-die-migration.md), [ADR-0043](0043-ziel-fassung-regiert-den-sprung-v671.md), [ADR-0047](0047-ziel-fassung-regiert-den-sprung-v680.md), [ADR-0056](0056-ziel-fassung-regiert-den-sprung-v690.md) und [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md). Ihr Verdikt lautet *nicht blockierend*, alle drei benannten Prüfgegenstände sind bestätigt. **Ihr MEDIUM/LOW/INFO sind vor diesem Umschlag behoben, solange die Datei `Proposed` war:** die Beobachtbarkeit des zweiten Re-Evaluierungs-Triggers (F-1), die Zuschreibung beim Bezug auf [ADR-0056](0056-ziel-fassung-regiert-den-sprung-v690.md) — deren zweiter Trigger ist nicht eingetreten, es trägt der erste (F-2) —, die Zählung (F-3), der abgetragene Beleg zur Delta-Basis (F-4) und die Unterbeschreibung der Festlegung 2 (F-5). [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 verlangt eine weitere Runde nur nach einem **blockierenden** Befund. **Benannte Grenze:** behoben hat alles derselbe Lauf, der die Datei schrieb — die reparierte Fassung hat keine Runde bestätigt. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
