@@ -1,0 +1,2 @@
+**Vorgang:** slice-spec-5-entscheidungen-nach-dem-umbau
+**Fund:** [`ADR-0076`](../../../../../adr/0076-ausgaenge-zu-spec-5-luecken-ebene-und-traeger-offener-saetze.md) Festlegung 6 leitet die Schreibrolle für `docs/user/rollen-laeufe.md` aus [`ADR-0015`](../../../../../adr/0015-rollen-eigentum-an-norm-artefakten.md) ab, die für die übrigen Norm-Artefakte nichts sagt (`AGENTS.md` §3.8 ebenso) — die Adresse löst auf, die Stelle trägt die Zuordnung nicht; sie ist eine neue Setzung (Review `docs/reviews/2026-09-30-adr-0076-review.md`, MEDIUM).
