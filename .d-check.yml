@@ -508,7 +508,8 @@ sources:
 # advisory, nicht in modules: und nicht in `make gates`). Der Default-Muster erwartet `FA-<Buchstaben>-<Zahl>`;
 # die Kennungen dieses Repos tragen Zahlen (`LH-FA-01`), ohne den Block sieht die RTM nur die `LH-QA-*`.
 # Coverage: `docs/user/e2e-abdeckung.md` ist der Nachweis fuer Anforderungen, deren Beleg ein E2E-Lauf ist
-# (ohne ADR oder Slice erschienen sie als WAISE); `spec/spezifikation.md` traegt ueber die Spalte `Praezisiert`.
+# (ohne ADR oder Slice erschienen sie als WAISE). Die Spezifikation ist keine Coverage-Quelle: eine Zeile, die
+# eine Anforderung praezisiert, belegt nicht, dass sie erfuellt ist.
 # Grenze: die RTM zaehlt Nennungen, nicht die Pruefung hinter ihnen.
 trace:
   requirements:
@@ -516,5 +517,3 @@ trace:
   coverage:
     - files: [docs/user/e2e-abdeckung.md]
       label: E2E
-    - files: [spec/spezifikation.md]
-      label: Spec
