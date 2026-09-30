@@ -4,6 +4,8 @@
 
 > **ÜBERHOLT: die Spaltenzahl in Punkt 1 der Liste „Was als Delta bleibt" → [`MR-044`](../conventions.md#mr-044--das-technik-stratum-trägt-die-id-spalte-der-ziel-form).** Die Setzung selbst — die `Sensor`-Spalte ist eine Abweichung von der Vorlagen-Form — gilt fort.
 
+> **ÜBERHOLT: die Zuordnung der Abweichungen 1 (Cache-Status) und 2 (PR-Nummer) zu §5 — Zielort-Liste, Punkt *„technische Festlegung …"*, Klammer *„die sechs erklärten Abweichungen"* → [`MR-076`](../conventions.md#mr-076--cache-status-ist-optional-statt-pflicht-weil-die-payload-die-zähler-nicht-für-jeden-lauf-liefert) und [`MR-077`](../conventions.md#mr-077--statt-der-pr-nummer-erfasst-der-span-branch-und-commit).** Diese zwei Abweichungen liegen dort; ihre Festlegung bleibt Zeile in §5. Die Abweichungen 3 bis 6 und alle übrigen Setzungen dieses Eintrags gelten fort.
+
 - **Datum:** 2026-08-02
 - **Geltungsbereich:** [`MR-018`](../conventions.md#mr-018--span-schema-der-telemetrie-erfassung) sowie die
   Abschnitte [3](../../spec/spezifikation.md#3-defaults-und-konstanten) und

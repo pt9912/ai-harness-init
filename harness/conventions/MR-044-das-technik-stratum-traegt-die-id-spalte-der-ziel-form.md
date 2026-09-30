@@ -1,5 +1,7 @@
 # MR-044 — Das Technik-Stratum trägt die ID-Spalte der Ziel-Form
 
+> **ÜBERHOLT: die Spaltenzählung *„§5 zählt fünf Spalten, und nur eine davon weicht ab"* (Punkt *Adaption*) → [`MR-075`](../conventions.md#mr-075--die-spalte-präzisiert-bindet-jede-festlegung-der-spezifikation-an-ihr-lastenheft-element).** Mit der Spalte `Präzisiert` als letzter Spalte weichen zwei Spalten von der Vorlagen-Form ab, `Sensor` und `Präzisiert`; die Zahl der Spalten wächst um eine. Die Setzung, dass die `ID`-Spalte keine Abweichung ist und `Sensor` eine bleibt, gilt fort.
+
 - **Datum:** 2026-09-02
 - **Wirksamkeits-Anlass:** slice-147 — Umsetzung des Form-Diff-Ausgangs aus slice-083 §1.
 - **Geltungsbereich:** [`MR-021`](../conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
