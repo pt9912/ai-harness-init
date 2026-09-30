@@ -162,6 +162,10 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **einen** Ausgang, und kein Slice geht nach `done/`, während eines ohne Ausgang
 dasteht.
 
+- **Kein Lastenheft-Element für viele Zeilen.** — **Ausgang:** eingetreten: `slice-spec-5-wird-nach-adr-0074-umgebaut` trägt das Risiko in seinem §6 samt der Rückführung an den Architect.
+- **Der Tabellenparser aus `slice-feldabdeckung-existenz-sensor` bricht an der neuen Spalte.** — **Ausgang:** eingetreten: `slice-spec-5-wird-nach-adr-0074-umgebaut` trägt es in §6 und hält Kopfzeilen-Präfix und Spalte 2 (Liefer-Punkt 1 c).
+- **Die Spalte bleibt Dekoration**, weil kein Sensor sie hält. — **Ausgang:** eingetreten: `slice-spec-5-wird-nach-adr-0074-umgebaut` trägt es in §6; die Rot-Probe der geleerten Zelle steht dort als Liefer-Punkt 1 d.
+
 ## 7. Closure-Notiz
 
 
@@ -176,6 +180,18 @@ diese Sektion die Zeile `Gegenstand:` mit Kennung oder Grund und jedes Risiko
 aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
+
+- **Was hat funktioniert:** nichts geliefert — der Plan wurde nicht gearbeitet und ohne Lieferung stillgelegt.
+- **Was ging anders als geplant:** Der Auftraggeber hat am 2026-09-30 angeordnet, den Umbau von Spec §5 in *einem* Slice mit *einem* Review und *einer* Verifikation zu führen, statt in den geplanten Blöcken. Der Nehmer trägt den ganzen Gegenstand und die Bedingungen dieses Plans.
+**Gegenstand:** übernommen von `slice-spec-5-wird-nach-adr-0074-umgebaut`.
+
+Der Plan wurde nicht gearbeitet. Sein Gegenstand und seine Bedingungen sind vollständig im Plan des Nehmers geführt. Das Register führt die Gelegenheit unter dem Beleg des ersten Gebers. Die Kennung bleibt damit Adresse für spätere Verweise.
+
+- **Steering-Loop-Eintrag:** geschärfte Regel: Der Zuschnitt in Blöcke wurde vor der Implementation geplant und vor der ersten Zeile des Piloten zusammengezogen — dieselbe Klasse wie *tote Slices* (Baseline-Regelwerk `modul-05-planning-harness.md` §Regeln gegen typische Fehlannahmen). Gezählt, nicht verkörpert (`liegt in` entfällt).
+- **Beobachtungs-Register (`../observations/`):** `BEO-ALL/geplanter-slice-wird-nie-gearbeitet/` — Beleg `evidence/slice-spec-tabellen-tragen-die-lh-bezug-spalte.md` ergänzt; der Zähler steht damit bei 3×, der Ausgang wird beim Lese-Schritt der Planner-Closure zugewiesen (Übergabe im Bericht des Laufs). Der zweite Geber (`slice-spec-5-erfassung-aus-tool-response-steht-als-tabellenzeilen`) trägt dieselbe Gelegenheit und ist im Beleg benannt, nicht gezählt.
+- **Folge-Slices:** `slice-spec-5-wird-nach-adr-0074-umgebaut` (Der Fließtext von Spec §5 wird in einem Zug nach den Klassen der Entscheidung zu §5 umgebaut) — ist eine Datei in `open/`.
+- **Risiken aus §6:** jedes mit genau einem Ausgang — siehe §6.
+- **Drei Paarungen:** Anker · Folge-Slice · Register nach dem `git mv` geprüft (`make docs-check`, `ls docs/plan/planning/*/slice-spec-5-wird-nach-adr-0074-umgebaut.md`).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

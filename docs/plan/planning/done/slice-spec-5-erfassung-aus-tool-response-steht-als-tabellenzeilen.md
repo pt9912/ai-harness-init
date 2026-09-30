@@ -192,6 +192,11 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **einen** Ausgang, und kein Slice geht nach `done/`, während eines ohne Ausgang
 dasteht.
 
+- **Ein Satz ändert beim Umbau seine Bedeutung**, und kein Sensor liest den Wortlaut. — **Ausgang:** eingetreten: `slice-spec-5-wird-nach-adr-0074-umgebaut` trägt es in §6; der Review prüft eine benannte Stichprobe.
+- **Ein Kommentar-Zeiger in einer der 30 Dateien bleibt auf der alten Passage stehen.** — **Ausgang:** eingetreten: `slice-spec-5-wird-nach-adr-0074-umgebaut` trägt es in §6 und als Liefer-Punkt 3 mit dem Zeiger-Kommando.
+- **Der Block ist nicht repräsentativ**, die übrigen Blöcke verlangen ein anderes Rezept. — **Ausgang:** entfallen: der Pilot-Zuschnitt entfällt mit der Auftraggeber-Entscheidung, *ein* Umbau trägt alle Blöcke; es gibt keinen Rest-Block, für den das Rezept repräsentativ sein müsste.
+- **Die Tabellenzeilen werden so lang wie `SPEC-031`.** — **Ausgang:** eingetreten: `slice-spec-5-wird-nach-adr-0074-umgebaut` trägt es in §6.
+
 ## 7. Closure-Notiz
 
 
@@ -206,6 +211,18 @@ diese Sektion die Zeile `Gegenstand:` mit Kennung oder Grund und jedes Risiko
 aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
+
+- **Was hat funktioniert:** nichts geliefert — der Plan wurde nicht gearbeitet und ohne Lieferung stillgelegt.
+- **Was ging anders als geplant:** Der Auftraggeber hat am 2026-09-30 angeordnet, den Umbau von Spec §5 in *einem* Slice mit *einem* Review und *einer* Verifikation zu führen, statt in den geplanten Blöcken. Der Nehmer trägt den ganzen Gegenstand und die Bedingungen dieses Plans.
+**Gegenstand:** übernommen von `slice-spec-5-wird-nach-adr-0074-umgebaut`.
+
+Der Plan wurde nicht gearbeitet. Sein Gegenstand und seine Bedingungen sind vollständig im Plan des Nehmers geführt. Das Register führt die Gelegenheit unter dem Beleg des ersten Gebers. Die Kennung bleibt damit Adresse für spätere Verweise.
+
+- **Steering-Loop-Eintrag:** geschärfte Regel: wie beim ersten Geber derselben Gruppierung. Gezählt, nicht verkörpert (`liegt in` entfällt).
+- **Beobachtungs-Register (`../observations/`):** keine weitere Datei — dieselbe Gelegenheit wie beim ersten Geber (`slice-spec-tabellen-tragen-die-lh-bezug-spalte`), im dortigen Beleg benannt, nicht gezählt.
+- **Folge-Slices:** `slice-spec-5-wird-nach-adr-0074-umgebaut` (Der Fließtext von Spec §5 wird in einem Zug nach den Klassen der Entscheidung zu §5 umgebaut) — ist eine Datei in `open/`.
+- **Risiken aus §6:** jedes mit genau einem Ausgang — siehe §6.
+- **Drei Paarungen:** Anker · Folge-Slice · Register nach dem `git mv` geprüft (`make docs-check`, `ls docs/plan/planning/*/slice-spec-5-wird-nach-adr-0074-umgebaut.md`).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
