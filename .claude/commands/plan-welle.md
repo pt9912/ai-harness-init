@@ -62,6 +62,20 @@ Lies den Adaptions-Block („MR-Block") in `harness/conventions.md`; die planung
 
 ## Slices bereitstellen
 
+**Ein Befund aus Review, Verifikation oder Closure bekommt eine Plan-Datei in `open/` nur mit einem
+Auslöser:** (1) ein Auftrag des Auftraggebers; (2) er blockiert oder verfälscht die laufende Arbeit;
+(3) das Beobachtungs-Register hat ihn auf 3× gehoben; (4) ein bereits geplanter Slice nennt ihn mit
+Kennung als Folge-Slice. **Ohne Auslöser** nimmt er einen der zwei anderen Ausgänge aus Baseline-Regelwerk
+`modul-06-roadmap.md` §Das Beobachtungs-Register: einen Register-Eintrag (`observation.md` und
+`evidence/<vorgangs-id>.md`) oder die ausdrückliche Ablehnung mit Grund in der Closure-Notiz. Eine
+Plan-Datei „bis zur ersten Beanspruchung" ist kein Auslöser: beansprucht wird eine Datei, die es nach
+dieser Regel noch nicht gäbe. **Grenze:** Ein Wächter existiert nicht — ob ein Auslöser vorliegt, ist
+Urteil, und ein Sensor bräuchte ein Pflichtfeld im Slice-Kopf, das die vendorte Vorlage nicht trägt
+([`ADR-0076`](../../docs/plan/adr/0076-ausgaenge-zu-spec-5-luecken-ebene-und-traeger-offener-saetze.md)
+Festlegung 7). Die Regel bindet den Schnitt und ist keine Hard Rule. Erreicht die Klasse ein viertes Mal
+die Schwelle, ist der neue Grund oder die neue Möglichkeit der Trigger.
+· seit slice-spec-5-entscheidungen-nach-dem-umbau
+
 **Vor jedem neuen Slice-Plan: das Beobachtungs-Register sichten** (`docs/plan/planning/observations/README.md`)
 — der **Sichtungs**-Schritt aus Modul 5, *Zwei Schritte vor der Modus-Begründung*, und für alles
 **unter** 3× der einzige Leser: die Welle-Closure liest nur, was die Schwelle erreicht hat. Berührt

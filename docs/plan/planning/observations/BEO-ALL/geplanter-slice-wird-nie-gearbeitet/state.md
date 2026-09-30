@@ -1,3 +1,10 @@
-**Stand:** geplant
+**Stand:** verkörpert
 
-Kennung: `slice-spec-5-entscheidungen-nach-dem-umbau` — dort entscheidet der Architect Zielort und Inhalt der Regel; die Kennung ist die Adresse der Zuweisung, die Regel selbst ist noch nicht beschlossen. Der Lese-Schritt der Stilllegung von `slice-spec-tabellen-tragen-die-lh-bezug-spalte` und `slice-spec-5-erfassung-aus-tool-response-steht-als-tabellenzeilen` (beide durch `slice-spec-5-wird-nach-adr-0074-umgebaut`) hat den Zähler auf 3 gehoben.
+Zielort: [`.claude/commands/plan-welle.md`](../../../../../../.claude/commands/plan-welle.md) §Slices bereitstellen
+(`· seit slice-spec-5-entscheidungen-nach-dem-umbau`) — eine Plan-Datei in `open/` entsteht nur mit einem von vier
+Auslösern; ohne Auslöser bleiben der Register-Eintrag oder die ausdrückliche Ablehnung. Entschieden in
+[`ADR-0076`](../../../../adr/0076-ausgaenge-zu-spec-5-luecken-ebene-und-traeger-offener-saetze.md) Festlegung 7.
+
+**Grenze der Verkörperung, benannt.** Kein Sensor: ob ein Auslöser vorliegt, ist Urteil, und ein Pflichtfeld im
+Slice-Kopf ließe sich in der vendorten Vorlage nicht ergänzen. Träger ist der Anweisungssatz des Planners und die
+Review des Plans.
