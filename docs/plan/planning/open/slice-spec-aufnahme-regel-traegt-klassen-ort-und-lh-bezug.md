@@ -91,7 +91,7 @@ gibt dem Planner den Hinweis, nach dem er die Umbau-Slices schneidet.
    Sache der Spec), und ob §5 als Ganzes ein Lastenheft-Element präzisiert.
    *Ergänzung aus dem Bericht:* Kandidaten mit Bindungsstufe (`einzeln` / `pauschal` / `nahe`) und die
    Zeilen „kein LH gefunden“ (benannte Spec-Lücke) stehen im LH-Vorschlag des Berichts. Die Kandidaten
-   tragen einen Ebenen-Vorbehalt: `LH-FA-10` beschreibt das Verhalten im **Zielrepo**, die Spec-Zeile
+   tragen einen Ebenen-Vorbehalt: [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) beschreibt das Verhalten im **Zielrepo**, die Spec-Zeile
    teils das **dieses** Repos — die ADR entscheidet die Ebenen-Passung der Bindung.
    **Fehlt ein Lastenheft-Element für eine Spec-Zeile, ist das ein Change Request am Lastenheft nach
    [`MR-015`](../../../../harness/conventions.md#mr-015)** — Entscheidung des Auftraggebers; der
