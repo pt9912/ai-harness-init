@@ -32,6 +32,15 @@
 # test/agent-guard.bats, "JEDER Typ in .claude/agents/ laeuft durch"; Dauer-Sensor
 # test/mutations/150-agentguard-rolle-abgewiesen.sh.
 #
+# GRENZEN. Er sieht den Start und entscheidet nicht ueber den Ausgang: ob die Antwort
+# Zaehler traegt, entscheidet er nicht mit. Er kann fehlen, abgeschaltet oder umgangen
+# sein. Der Agent-Guard wird nicht emittiert, und die Verdrahtung des Hooks in
+# .claude/settings.json ist in diesem Repo unbewacht. Im emittierten Repo bewachen
+# TestEnforce_SettingsWiresBothHooks und der PreToolUse-Test in harness/tools/smoke.sh die
+# Verdrahtung des Command-Guards, TestEnforce_EmitsAllMechanicFiles und die
+# Existenz-Schleife derselben harness/tools/smoke.sh das Vorhandensein; Fall 32 ist der
+# Dauer-Sensor der zweiten Verdrahtungs-Pruefung.
+#
 # AUSGABEFORM ist hookSpecificOutput.permissionDecision — die AKTUELLE. Das
 # Top-Level-decision/reason des Nachbar-Guards (pretooluse-command-guard.sh) ist
 # fuer PreToolUse VERALTET und funktioniert nur ueber eine

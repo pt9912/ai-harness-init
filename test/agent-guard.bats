@@ -20,6 +20,11 @@
 # ein lesbarer Typ laeuft durch, auch ein Rollen-Typ · der Fehlmatch, den ein
 # Regex-Griff machen wuerde.
 #
+# Deckt NICHT: die Verdrahtung des Guards in .claude/settings.json und den Ausgang eines
+# Laufs — die Grenzen stehen im Kopf des Guards. Ein `Agent`-Aufruf ohne lesbaren Typ wird
+# abgewiesen (Fall 139), ein Rollen-Typ nicht (Fall 150); die zwei Zusagen zeigen in
+# entgegengesetzte Richtungen und teilen sich keinen Waechter.
+#
 # Der Extraktor liest weiterhin BEIDE Felder, und seine Faelle stehen unveraendert:
 # `run_in_background` ist aus dem Eingabe-Schema von `Agent` verschwunden, aus dem
 # Extraktor nicht. Was der Guard davon liest, ist der Typ.

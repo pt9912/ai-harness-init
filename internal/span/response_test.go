@@ -60,7 +60,7 @@ func mustNotContain(t *testing.T, line string, verboten ...string) {
 // Die Gegenprobe selbst hat keinen Zahn: macht man mustContain wirkungslos, bleibt
 // make test-go gruen, und die Faelle 123 und 127 melden weiter "ok" — sie faerben ihre
 // Waechter ueber die mustNotContain-Haelfte. Unbewacht ist der Waechter dieser
-// Eigenschaft, nicht die Eigenschaft (spec/spezifikation.md §5, Zeile SPEC-084).
+// Eigenschaft, nicht die Eigenschaft.
 func mustContain(t *testing.T, line string, erwartet ...string) {
 	t.Helper()
 	for _, v := range erwartet {
