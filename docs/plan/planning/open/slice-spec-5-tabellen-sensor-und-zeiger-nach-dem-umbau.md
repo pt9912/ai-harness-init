@@ -16,12 +16,13 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) (Arbeits-Bezug),
 [`ADR-0074`](../../adr/0074-spec-5-fliesstext-klassen-ort-und-lh-bezug-spalte.md) (Fitness Zeilen 4 und 5, Festlegung 10),
 [`ADR-0075`](../../adr/0075-begruendungen-zu-spec-5-sammel-adr.md),
+[`ADR-0076`](../../adr/0076-ausgaenge-zu-spec-5-luecken-ebene-und-traeger-offener-saetze.md) (Festlegung 3, Folgepflicht 1),
 [`AGENTS.md`](../../../../AGENTS.md) §3.5 (eine Schärfung braucht keine ADR, nur eine Senkung), §3.6, §3.7.
 
 **Berührte Spec-Stellen:** [§5](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) — die Zeilen
-`SPEC-040`, `SPEC-059`, `SPEC-060`, `SPEC-062` bis `SPEC-065` (Liefer-Punkt 3); der Sensor liest die Tabellen und ändert sie nicht.
+`SPEC-040`, `SPEC-059`, `SPEC-060`, `SPEC-062` bis `SPEC-065` (Liefer-Punkt 3) und die 19 `Lücke`-Zeilen (Liefer-Punkt 4); der Sensor liest die Tabellen und ändert sie nicht.
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912)
 
 **Autor:** Planner. **Datum:** 2026-09-30.
 
@@ -36,7 +37,7 @@ des Lastenhefts, auf den Slice-Plan angewandt); die vier Klassen des
 Ausschlusses stehen in **eben diesem Abschnitt** des Baseline-Regelwerks,
 zusammen mit der Begründungs-Pflicht je Punkt.
 
-**Ziel:** Drei Bedingungen aus der Verifikation des Umbaus von Spec §5
+**Ziel:** Drei Bedingungen aus der Verifikation (dazu Liefer-Punkt 4, der Nachzug der Lücke-Zellen) des Umbaus von Spec §5
 (`docs/reviews/2026-09-30-slice-spec-aufnahme-regel-und-umbau-verifikation.md`, Übergaben B-2, B-3, B-4 und A-6) sind
 erfüllt. Die Bedingung steht in diesem Plan, weil der Lauf, der sie trägt, ihn liest und den Bericht nicht.
 
@@ -74,10 +75,42 @@ grep -c 'unterscheidbar bleibt' spec/spezifikation.md           # 0 — Zitat in
    114, 115, 112 und 154; die Fälle tragen ihren Wächter als `# expect:` auf einen Testnamen. Der Lauf trägt den Namen
    ein — die Wächter-Bilanz (`comm -3` gegen `git show <Vorstand>:spec/spezifikation.md`) wächst dann um benannte Verlagerungen, keine unbenannte.
 
+4. **Liefer-Punkt 4 — der Nachzug der 19 `Lücke`-Zellen** ([`ADR-0076`](../../adr/0076-ausgaenge-zu-spec-5-luecken-ebene-und-traeger-offener-saetze.md)
+   Festlegung 3 und Folgepflicht 1; Lastenheft 0.23.0 trägt das Akzeptanzkriterium *Erfassungs-Umfang* bei
+   [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)). Die Ebene je Zeile steht in der
+   Ebenen-Tabelle der ADR; der Lauf liest sie dort und übernimmt keine Kopie. Bedingungen (die Kennungen misst der Lauf am Kommando unten neu):
+   (a) **Elf Zeilen bekommen den Anker auf [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)
+   statt `Lücke`:** `SPEC-014`, `037`, `045`, `046`, `047`, `054`, `056`, `060`, `063`, `065`, `082`. In `SPEC-047` wird die Zelle
+   gekürzt: der Satz über die Sichtbarkeit des Bruchs der Regel „Rollen-Arbeit läuft als Rolle" ist Prozess-Konvention und gehört nach
+   `docs/user/rollen-laeufe.md` — diese Datei schreibt der Architect, der Lauf berührt sie nicht; trägt sie den Satz nicht, geht die Kürzung
+   als Übergabe an den Planner. Der Zirkel-Vorbehalt bei `SPEC-014` bleibt benannt.
+   (b) **Drei Zeilen (`SPEC-051`, `052`, `053`) bekommen den Anker auf das Akzeptanzkriterium *Erfassungs-Umfang*** (Lastenheft 0.23.0, dasselbe
+   Element [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren); der Lauf prüft, ob das Kriterium einen eigenen Anker trägt, und nimmt sonst den Elementanker `#lh-fa-10--erfassungsschicht-emittieren`).
+   (c) **Fünf Zeilen verlassen die Spezifikation:** `SPEC-040`, `041`, `084`, `085`, `086`. Ihre Zusagen und Grenzen wandern als
+   **Kommentar, nicht als Logik**: `SPEC-041`, `085`, `086` in den Kopfkommentar von `.claude/hooks/pretooluse-agent-guard.sh` und in
+   `test/agent-guard.bats`; `SPEC-084` (Grenze der `mustContain`-Gegenproben) als Kommentar am Helfer, der `mustContain` führt (der Lauf sucht ihn);
+   `SPEC-040` (Betriebsart) steht in `docs/user/rollen-laeufe.md` — diese Datei schreibt der Architect, `SPEC-039` trägt den Hintergrund, eine
+   Messaussage gehört nach `docs/reviews/` (Festlegung 3). Die Kommentare halten [`AGENTS.md`](../../../../AGENTS.md) §3.7 (Zusage, Grenze; kein
+   Verlauf, keine Befund-Kennung). **Die `SPEC`-Kennungen bleiben unbenutzt und werden nie neu vergeben.**
+   **Wächter-Bilanz:** die Namen der Wächter in `SPEC-084`, `085`, `086` (`test/agent-guard.bats`, Fälle 139 und 150, `TestEnforce_SettingsWiresBothHooks`, …)
+   bleiben irgendwo im Repo als Text auffindbar, oder die Bilanz (`comm -3` gegen den Vorstand) führt die Verlagerung **benannt**; eine unbenannte Differenz ist der Befund.
+   **Gegenprobe:** nach dem Nachzug gibt das Kommando aus [`ADR-0076`](../../adr/0076-ausgaenge-zu-spec-5-luecken-ebene-und-traeger-offener-saetze.md) §Fitness Function (Kommando zu Zeile 4)
+   `grep -E '\| Lücke \|$' spec/spezifikation.md | grep -oE '^\| `SPEC-[0-9]+`'` **nichts** aus. **Soll leer, nicht die drei der ADR:** die
+   Change-Request-Gruppe der ADR (`SPEC-051` bis `053`) ist mit Lastenheft 0.23.0 angenommen und trägt den Anker. `grep -c 'Lücke' spec/spezifikation.md`
+   zählt Prosa mit (die Beschreibung der Spalte und die Historie nennen das Wort) und ist darum kein Sensor; der Lauf nennt seinen Wert im Bericht und nur die
+   Tabellen-Form als Soll. **Rot gesehen:** eine der elf Zellen zurück auf `Lücke` — das Kommando listet sie; ein Anker auf ein nicht existierendes Element
+   färbt `make docs-check` rot.
+
+   **Größenregel, begründet verletzt:** dieser Slice trägt vier Liefer-Punkte statt drei. Der Auftraggeber hat angeordnet, mit möglichst wenigen Runden
+   fortzufahren; Liefer-Punkt 4 ist die mechanische Abarbeitung schon entschiedener Zeilen (keine neue Entscheidung, nur Zellen und Kommentare) und
+   liegt in derselben Datei wie Liefer-Punkt 3. **Rückführungs-Bedingung** (`in-progress` → `next`): trägt Liefer-Punkt 4 eine Zeile, deren Ebene der Lauf gegen den
+   Wortlaut der ADR nicht bestätigen kann, oder sprengt er die Review-Sitzung, wird Liefer-Punkt 4 als eigener Slice geschnitten und hier gestrichen.
+
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
-- **Kein Norm-Text.** Folge-ADR, Rolle für `docs/user/rollen-laeufe.md`, Fitness-Zeile 13 und die 19 `Lücke`-Zeilen sind
-  Entscheidungen des Architect: `slice-spec-5-entscheidungen-nach-dem-umbau`.
+- **Kein Norm-Text und keine Entscheidung.** Folge-ADR, Rolle für `docs/user/rollen-laeufe.md`, Fitness-Zeile 13 und die Ebenen der
+  19 `Lücke`-Zeilen sind entschieden ([`ADR-0076`](../../adr/0076-ausgaenge-zu-spec-5-luecken-ebene-und-traeger-offener-saetze.md));
+  dieser Slice zieht nur die Zellen nach. `docs/user/rollen-laeufe.md` schreibt der Architect.
 - **Kein Parser des Existenz-Sensors.** `slice-feldabdeckung-existenz-sensor` liest die Feldtabelle über Kopfzeilen-Präfix und
   Spalte 2; anderer Vorgang, andere Datei.
 - **Keine Änderung an `internal/emit/` und der emittierten Vorlage** — Tool-Ebene, Dogfood gegen emittiert.
@@ -102,6 +135,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 - [ ] **Liefer-Punkt 1 — der Sensor** (bats-Fall, Mutations-Fall oder benannte Übergabe; Rot an der realen Quelle gesehen, Meldung gelesen).
 - [ ] **Liefer-Punkt 2 — der Zeiger** (Kommentar in Fall 131 nachgezogen, Zeiger-Kommando geschärft; Rot gesehen).
 - [ ] **Liefer-Punkt 3 — zwei Zeilen-Bedingungen** (`SPEC-040` mit Belegklasse oder als Sicht mit Träger; die Sensor-Namen in den Zeilen; Wächter-Bilanz ohne unbenannte Differenz).
+- [ ] **Liefer-Punkt 4 — der Nachzug der 19 `Lücke`-Zellen** (elf Zeilen mit Anker auf [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren), drei auf den Erfassungs-Umfang, fünf verlassen die Spezifikation; Kommando zu Zeile 4 der [`ADR-0076`](../../adr/0076-ausgaenge-zu-spec-5-luecken-ebene-und-traeger-offener-saetze.md) gibt nichts aus; Wächter-Bilanz ohne unbenannte Differenz; nur Kommentare, keine Logik).
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -124,7 +158,8 @@ Aussagen-Berührung steht hier gar nicht.
 | `test/` (bats-Fall über `spec/spezifikation.md`) | neu | Liefer-Punkt 1: Kopfzeilen-Zahl gleich Tabellen-Zahl, keine leere letzte Zelle |
 | `test/mutations/` | neu | Liefer-Punkt 1: Fall, der die Spalte streicht oder die Zelle leert |
 | `test/mutations/131-span-werkzeugname-leer.sh` | update | Liefer-Punkt 2: nur Kommentarzeilen |
-| `spec/spezifikation.md` | update | Liefer-Punkt 3: Zeilen `SPEC-040`, `SPEC-059`/`060`/`062`-`065` |
+| `spec/spezifikation.md` | update | Liefer-Punkt 3: Zeilen `SPEC-040`, `SPEC-059`/`060`/`062`-`065`; Liefer-Punkt 4: die 19 `Lücke`-Zellen |
+| `.claude/hooks/pretooluse-agent-guard.sh`, `test/agent-guard.bats`, Helfer der `mustContain`-Gegenproben | update | Liefer-Punkt 4: nur Kommentare (Zusagen und Grenzen von `SPEC-041`, `084`, `085`, `086`) |
 
 - **Reihenfolge im Lauf:** (1) Wächter-Bilanz Vorher sichern; (2) Sensor mit Rot-Probe; (3) Zeiger; (4) Zeilen; (5) Bilanz nachher, `make docs-check`, `make gates`.
 - **Der Sensor liest die reale Spec**, nicht eine nachgebaute Tabelle
@@ -140,6 +175,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
 - `in-progress` → `next` (zu groß): wenn der Zeiger-Sensor (Liefer-Punkt 2) mehr als ein Kommando braucht — dann Liefer-Punkt 2 als eigener Slice.
+- `in-progress` → `next` (Liefer-Punkt 4, vier statt drei Liefer-Punkte, begründet in §1): trägt er eine Zeile, deren Ebene sich am Wortlaut der ADR nicht bestätigen lässt, oder sprengt er die Review-Sitzung, wird er ein eigener Slice.
 - `in-progress` → `open` (blockiert): wenn die bats-Stufe `test/` nicht über die Spec sieht (Mount) oder `make mutate` für die bats-Stufe kein Fehlschlag-Muster führt — Übergabe an den Planner.
 
 ## 5. Closure-Trigger
@@ -148,7 +184,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Closure- und Lerneintrag-Regeln — zwei beobachtbare Kriterien **und** ein
 Lerneintrag; ohne ihn ist der Slice nur abgelegt.
 
-Zwei beobachtbare Kriterien: (1) die Rot-Fälle der Liefer-Punkte 1 und 2 stehen mit ihrer gelesenen Meldung im Report,
+Zwei beobachtbare Kriterien: (1) das Kommando zu Zeile 4 der [`ADR-0076`](../../adr/0076-ausgaenge-zu-spec-5-luecken-ebene-und-traeger-offener-saetze.md) gibt nichts aus; die Rot-Fälle der Liefer-Punkte 1, 2 und 4 stehen mit ihrer gelesenen Meldung im Report,
 Wächter-Bilanz ohne unbenannte Differenz, `make docs-check` ohne Befund; (2) `make gates` grün mit Stempel, der den
 Arbeitsbaum deckt. Dazu der Lerneintrag. Den Abschluss schreibt der Planner ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
 
