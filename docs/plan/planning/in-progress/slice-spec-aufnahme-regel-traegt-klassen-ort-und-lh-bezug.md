@@ -287,22 +287,22 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1 — die ADR.** Sie liegt vor, `Schärft:` nennt die Aufnahme-Regel und §5 als
+- [x] **Liefer-Punkt 1 — die ADR.** *(bedingt bestätigt, Einschränkung in §7)* Sie liegt vor, `Schärft:` nennt die Aufnahme-Regel und §5 als
       Link, und sie beantwortet die Fragen 1 bis 3 mit Festlegungen (4 bis 11: beantwortet oder als
       offen mit Trigger benannt). Ihre Fitness Function nennt **je Festlegung, was rot werden muss**;
       die Rot-Beobachtung liegt im Bericht des Verifiers. Eine Festlegung ohne benanntes
       Gegenbeispiel gilt als nicht fertig ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
-- [ ] **Liefer-Punkt 2 — der ADR-Index** trägt die Zeile (derivativ, Architect,
+- [x] **Liefer-Punkt 2 — der ADR-Index** trägt die Zeile (derivativ, Architect,
       [`ADR-0024`](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update entfällt: die ADR ändert keinen öffentlichen Vertrag; der Spec-Text folgt in den
+- [x] Doku-Update entfällt: die ADR ändert keinen öffentlichen Vertrag; der Spec-Text folgt in den
       Folge-Slices.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -362,12 +362,13 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 dasteht.
 
 - **Die ADR wird vor ihrer Bewährung unveränderlich**; ein Fehlgriff kostet einen Folge-ADR. —
-  **Ausgang:** wird bei der Closure eingetragen (eingetreten / entfallen / weiter offen). Vorkehrung: die
-  Menge steht vorher (Vorgänger-Slice), und die ADR bleibt bis zur Review-Runde lokal.
+  **Ausgang: eingetreten** — Folge-Slice `slice-spec-5-entscheidungen-nach-dem-umbau` (Ausgänge von E1, E3, E4, Fitness-Zeile 13, zwei Begründungen ohne Träger).
 - **`slice-feldabdeckung-existenz-sensor` liest die Tabelle von §5**; eine neue Spalte oder ein
-  geänderter Zeilen-Schnitt berührt seinen Parser. — **Ausgang:** wird bei der Closure eingetragen.
-- **Eine Senkung durch `exempt-paths` wird als Ortsentscheidung getarnt.** — **Ausgang:** wird bei der
-  Closure eingetragen; die ADR muss sie als eigene Festlegung führen ([`AGENTS.md`](../../../../AGENTS.md) §3.5).
+  geänderter Zeilen-Schnitt berührt seinen Parser. — **Ausgang: weiter offen** — Register
+  `BEO-ALL/feldnotiz-traeger-und-spec-koennen-in-der-kernaussage-abweichen-ohne-sensor` (sein Sensor ist der Parser-Slice); die Bedingung
+  (Kopfzeilen-Präfix und Spalte 2) steht im Plan von `slice-feldabdeckung-existenz-sensor`.
+- **Eine Senkung durch `exempt-paths` wird als Ortsentscheidung getarnt.** — **Ausgang: entfallen** — die ADR trägt keine Senkung und führt die
+  Ortsentscheidung als eigene Festlegung ([`AGENTS.md`](../../../../AGENTS.md) §3.5); der Verifier hat `git log 3a5ccf54..HEAD -- .d-check.yml` leer gefunden.
 
 ## 7. Closure-Notiz
 
@@ -384,8 +385,30 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-Wird bei der Closure vom Planner gefüllt ([`AGENTS.md`](../../../../AGENTS.md) §3.10), nicht vom
-Architect-Lauf, der die ADR geschrieben hat.
+**Geliefert:** die Entscheidung zu Klassen, Ort der Messprotokolle und Spalte `Präzisiert` als [`ADR-0074`](../../adr/0074-spec-5-fliesstext-klassen-ort-und-lh-bezug-spalte.md) und die Sammel-ADR [`ADR-0075`](../../adr/0075-begruendungen-zu-spec-5-sammel-adr.md), beide
+`Accepted`, beide im ADR-Index; dazu die Adaptions-Einträge [`MR-075`](../../../../harness/conventions.md#mr-075),
+[`MR-076`](../../../../harness/conventions.md#mr-076), [`MR-077`](../../../../harness/conventions.md#mr-077) und die Kopf-Marken an
+[`MR-021`](../../../../harness/conventions.md#mr-021) und [`MR-044`](../../../../harness/conventions.md#mr-044).
+
+**Verifikation:** `docs/reviews/2026-09-30-slice-spec-aufnahme-regel-und-umbau-verifikation.md` — Verdikt **bedingt bestätigt**. Review der ADR: 0 HIGH, vier MEDIUM, vor der Annahme nachgebessert. Commit-Zuschnitt
+nach [`AGENTS.md`](../../../../AGENTS.md) §3.8 hält bis auf einen Commit (`docs/user/rollen-laeufe.md` unter „Rolle Architect", keine Quelle für die schreibende Rolle).
+
+**Einschränkung zu Liefer-Punkt 1 (Häkchen gesetzt, bedingt):** Rot gesehen hat der Verifier acht von vierzehn Festlegungen (Datum im Fließtext,
+Link nach unten, „Abweichung [1-6]", Anker, Kopfzeilen-Präfix, Fall- und Testnamen im Fließtext, Kernsätze der Sammel-ADR, dazu die leere Zelle als benannte Lücke).
+**Nicht rot gesehen:** die Immutabilität (grün belegt, `make adr-immutable` über beide Ranges; ein Rot war nicht herstellbar), Festlegung 9, 10 und 14; Festlegung 13 misst
+den Gegenwert (Fitness-Zeile verlangt für `START-KONVENTION` den Wert vor dem Umbau, Ist-Wert 0). Diese Festlegungen gelten als **nicht rot gesehen**, nicht als bestätigt.
+Die Nachprobe trägt `slice-spec-5-entscheidungen-nach-dem-umbau`.
+
+**Ausgänge der Risiken:** in §6.
+
+**Register:** keine Beobachtung über den Umbau hinaus; die Einträge dieses Vorgangs stehen in §7 von `slice-spec-5-wird-nach-adr-0074-umgebaut`.
+
+**Folge-Slices** (nur Pläne in `open/`, nicht ausgeführt): `slice-spec-5-entscheidungen-nach-dem-umbau` (Übergaben A-1 bis A-5 und A-7 der Verifikation),
+`slice-spec-5-tabellen-sensor-und-zeiger-nach-dem-umbau` (Übergabe A-6). Übergabe A-8 steht als Bedingung im Plan von `slice-feldabdeckung-existenz-sensor`.
+
+**Lerneintrag (benannte Spec-Lücke):** Zeilen von Spec §5 tragen `Lücke`, weil ihnen kein Lastenheft-Element zugeordnet ist; ob [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) sie als Präzisierung trägt, ist eine
+Ebenen-Frage ohne Sensor (Verifikation, Abschnitt 2.5). Adresse der Entscheidung: `slice-spec-5-entscheidungen-nach-dem-umbau`; ein Change Request nach
+[`MR-015`](../../../../harness/conventions.md#mr-015) bleibt Entscheidung des Auftraggebers.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

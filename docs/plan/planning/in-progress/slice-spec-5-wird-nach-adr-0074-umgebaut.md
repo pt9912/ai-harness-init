@@ -127,7 +127,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1 — Zeilen und Spalte.** Jede Festlegung des Fließtexts (Klasse `a`) steht als Tabellenzeile
+- [x] **Liefer-Punkt 1 — Zeilen und Spalte.** *(bedingt bestätigt, Einschränkung in §7)* Jede Festlegung des Fließtexts (Klasse `a`) steht als Tabellenzeile
       mit `SPEC-<NNN>` ab der nächsten freien Nummer (`grep -oE 'SPEC-[0-9]+' spec/spezifikation.md | sort -u | tail -1`),
       nie neu vergeben; die Spalte `Präzisiert` steht **als letzte** in allen Tabellen mit `SPEC-`-Zeilen (§3,
       Feldtabelle, Werkzeugtabelle, die neue Zusicherungs-Tabelle, §6 falls dort Zeilen stehen) — Wert ist ein
@@ -150,7 +150,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       (d) eine **geleerte** `Präzisiert`-Zelle: ob ein Gate sie meldet, wird gefahren und im Bericht festgehalten;
       bleibt es grün, ist das eine benannte Lücke und der Lerneintrag ein Sensor-Vorschlag;
       (e) ein Link mit erfundenem Anker in einer neuen Zelle → `make docs-check` meldet ihn (`anchors`).
-- [ ] **Liefer-Punkt 2 — die Prosa entfällt.** Begründungen ([`ADR-0075`](../../adr/0075-begruendungen-zu-spec-5-sammel-adr.md) trägt sie: je entfernter Begründung prüft
+- [x] **Liefer-Punkt 2 — die Prosa entfällt.** *(bedingt bestätigt, Einschränkung in §7)* Begründungen ([`ADR-0075`](../../adr/0075-begruendungen-zu-spec-5-sammel-adr.md) trägt sie: je entfernter Begründung prüft
       der Lauf, dass sie in der Tabelle der Sammel-ADR steht, sonst Lücke im Bericht), Messprotokolle (git hält
       sie; nur mit Konsument nach `docs/reviews/`, [`ADR-0074`](../../adr/0074-spec-5-fliesstext-klassen-ort-und-lh-bezug-spalte.md) Festlegung 4), Prozess-Konventionen
       (`START-KONVENTION`-Block; `docs/user/rollen-laeufe.md` trägt sie — Satz-für-Satz-Abgleich im Bericht) und
@@ -169,7 +169,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       eine nackte ADR-Kennung in eine neue Zeile → `make docs-check` rot (`ids`); ein Link auf eine
       Entscheidungs-Datei in die Spec → rot (`matrix`, Klasse `spec-straten`) — jeweils die Meldung gelesen und
       zurückgenommen.
-- [ ] **Liefer-Punkt 3 — Zeiger-Nachzug.** Jede Stelle des Zeiger-Inventars (Bericht §5), die eine entfernte
+- [x] **Liefer-Punkt 3 — Zeiger-Nachzug.** *(bedingt bestätigt, Einschränkung in §7)* Jede Stelle des Zeiger-Inventars (Bericht §5), die eine entfernte
       Passage beim Namen nennt, zeigt auf die neue `SPEC-<NNN>`, eine unveränderte Überschrift oder — für die
       Prozess-Konvention — auf `docs/user/rollen-laeufe.md`. Vorab misst der Lauf je entfernter Passage
       `grep -rn '<Passagen-Name>' docs/plan/adr` und hält den Namen als Text in der Zeile fest, die die Aussage
@@ -180,16 +180,16 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Formulierung stehen (Rot gesehen: ein Zeiger auf eine entfernte Formulierung wird gelistet; die Grenze
       benennt [`ADR-0074`](../../adr/0074-spec-5-fliesstext-klassen-ort-und-lh-bezug-spalte.md): kein Test bricht, der Sensor ist das Inventar). Dass ein **Satz seine Bedeutung behält**,
       hält kein Sensor; der Review prüft Vorher/Nachher an einer benannten Stichprobe.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: die Handbuch-Sicht (`docs/user/`) nennt keine Spalte und keinen entfernten Abschnitt von §5;
+- [x] Doku-Update: die Handbuch-Sicht (`docs/user/`) nennt keine Spalte und keinen entfernten Abschnitt von §5;
       Prüfung `grep -rn 'spezifikation' docs/user | wc -l` steht im Bericht, ein Treffer auf Entferntes wird
       nachgezogen (`rollen-laeufe.md` nur lesen, §1).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -265,23 +265,23 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **einen** Ausgang, und kein Slice geht nach `done/`, während eines ohne Ausgang
 dasteht.
 
-- **Ein Satz ändert beim Umbau seine Bedeutung**, und kein Sensor liest den Wortlaut. — **Ausgang:** wird bei der
-  Closure eingetragen (eingetreten / entfallen / weiter offen).
-- **Ein Kommentar-Zeiger bleibt auf einer entfernten Passage stehen** (49 Stellen, Kommando in §1). —
-  **Ausgang:** wird bei der Closure eingetragen.
-- **Die Zeilen werden so lang wie `SPEC-031`**, statt den Fließtext zu ersetzen. — **Ausgang:** wird bei der
-  Closure eingetragen.
-- **Kein Lastenheft-Element für viele Zeilen** — dann fehlt dem Lastenheft eine Anforderung, oder §5 gehört
-  keiner; mehr als die Hälfte der Zeilen als `Lücke` ist ein Befund für den Architect und keine Fleißarbeit. —
-  **Ausgang:** wird bei der Closure eingetragen.
-- **Die Spalte `Präzisiert` bleibt Dekoration**, weil kein Sensor sie hält (Rot-Probe (d)). — **Ausgang:** wird bei
-  der Closure eingetragen.
-- **Der Tabellenparser von `slice-feldabdeckung-existenz-sensor` bricht an der neuen Spalte oder an der
-  Zusicherungs-Tabelle.** — **Ausgang:** wird bei der Closure eingetragen.
-- **Der Diff ist in einer Review-Sitzung nicht prüfbar** (die bewusst verletzte Größenregel, §1). — **Ausgang:**
-  wird bei der Closure eingetragen.
-- **Die Kernsätze der Sammel-ADR sind eine Auswahl**, kein Vollständigkeits-Sensor; eine Begründung kann ohne
-  Zuordnung entfernt werden. — **Ausgang:** wird bei der Closure eingetragen.
+- **Ein Satz ändert beim Umbau seine Bedeutung**, und kein Sensor liest den Wortlaut. — **Ausgang: eingetreten** — Review F-1, F-2, F-3 und F-5
+  sind im Lauf behoben (vom Verifier gegen den Ist-Text geprüft); der Rest (`SPEC-040`, Schema-Aussage ohne Belegklasse) geht an
+  `slice-spec-5-tabellen-sensor-und-zeiger-nach-dem-umbau`.
+- **Ein Kommentar-Zeiger bleibt auf einer entfernten Passage stehen** (49 Stellen, Kommando in §1). — **Ausgang: eingetreten** —
+  `test/mutations/131-span-werkzeugname-leer.sh` Zeilen 9 bis 11; Folge-Slice `slice-spec-5-tabellen-sensor-und-zeiger-nach-dem-umbau`, Register
+  `BEO-ALL/zeiger-kommando-faengt-zitat-entfernten-wortlauts-nicht`.
+- **Die Zeilen werden so lang wie `SPEC-031`**, statt den Fließtext zu ersetzen. — **Ausgang: entfallen** — `awk 'length($0)>1500{print NR": "length($0)}' spec/spezifikation.md`
+  nennt eine Zeile (146, nach dem Implementer-Bericht die von `SPEC-031`); alle übrigen liegen darunter.
+- **Kein Lastenheft-Element für viele Zeilen** — mehr als die Hälfte als `Lücke` wäre ein Befund für den Architect. — **Ausgang: entfallen** — 19 von 86 Zeilen
+  (Kommandos in §7), unter der Hälfte; die Ebenen-Frage zu einem Teil der 19 trägt `slice-spec-5-entscheidungen-nach-dem-umbau`.
+- **Die Spalte `Präzisiert` bleibt Dekoration**, weil kein Sensor sie hält (Rot-Probe (d)). — **Ausgang: eingetreten** — die Schranke „mindestens 3" hat bei fünf Tabellen keinen Zahn
+  und eine geleerte Zelle bleibt grün; Folge-Slice `slice-spec-5-tabellen-sensor-und-zeiger-nach-dem-umbau` (Liefer-Punkt 1), Register `BEO-ALL/sensor-schranke-wird-durch-tabellenwachstum-unscharf`.
+- **Der Tabellenparser von `slice-feldabdeckung-existenz-sensor` bricht an der neuen Spalte oder an der Zusicherungs-Tabelle.** — **Ausgang: weiter offen** — Register
+  `BEO-ALL/feldnotiz-traeger-und-spec-koennen-in-der-kernaussage-abweichen-ohne-sensor`; die Bedingung steht im Plan des Parsers, der Parser ist ungebaut.
+- **Der Diff ist in einer Review-Sitzung nicht prüfbar** (die bewusst verletzte Größenregel, §1). — **Ausgang: entfallen** — der Review hat alle 86 Zeilen gelesen, der Verifier 13 gegen den
+  Vorher-Text; Bilanzen und Bruchproben trugen (Verifikation, Abschnitte 2.1 und 2.4).
+- **Die Kernsätze der Sammel-ADR sind eine Auswahl**, kein Vollständigkeits-Sensor. — **Ausgang: weiter offen** — Register `BEO-ALL/vollstaendigkeits-kommando-prueft-summe-statt-zuordnung`.
 
 ## 7. Closure-Notiz
 
@@ -297,7 +297,47 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-Wird bei der Closure vom Planner gefüllt ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+**Geliefert:** der Fließtext von Spec §5 steht nach den Klassen von [`ADR-0074`](../../adr/0074-spec-5-fliesstext-klassen-ort-und-lh-bezug-spalte.md): Festlegungen und Zusicherungen als Tabellenzeilen, Spalte `Präzisiert`
+in fünf Tabellen, Begründungen, Messprotokolle und Prozess-Konventionen entfernt, Kommentar-Zeiger nachgezogen. Gemessen im Verifikationsbericht (`docs/reviews/2026-09-30-slice-spec-aufnahme-regel-und-umbau-verifikation.md`, Abschnitt 2.1); zwei
+Zahlen dieser Closure, selbst gefahren:
+
+```sh
+grep -oE '`SPEC-[0-9]+`' spec/spezifikation.md | sort -u | wc -l   # 86
+grep -c '| Lücke |' spec/spezifikation.md                              # 19
+```
+
+**Verifikation:** Verdikt **bedingt bestätigt** (derselbe Bericht); der Review liegt vor (kein HIGH; Nachbesserung gegen den Ist-Text geprüft). Die Wächter-Bilanz hat keine
+unbenannte Differenz; die fünf verlangten Rot-Fälle hat der Verifier selbst gesehen.
+
+**Einschränkungen (Häkchen gesetzt, bedingt):**
+
+- **Liefer-Punkt 1:** Die Schranke „mindestens 3" der `Präzisiert`-Zählung hat bei fünf Tabellen keinen Zahn (Spalte in einer Tabelle streichen: 5 auf 4, grün); die geleerte
+  Zelle bleibt grün, benannte Lücke der ADR. Beides → `slice-spec-5-tabellen-sensor-und-zeiger-nach-dem-umbau`.
+- **Liefer-Punkt 2:** `START-KONVENTION` steht mit 0 gegen Fitness-Zeile 13 von [`ADR-0074`](../../adr/0074-spec-5-fliesstext-klassen-ort-und-lh-bezug-spalte.md) (verlangt den Wert vor dem Umbau); die Prozess-Zustände U14 und U38 und zwei
+  Begründungen der Sammel-ADR haben keinen Träger → `slice-spec-5-entscheidungen-nach-dem-umbau`.
+- **Liefer-Punkt 3:** `test/mutations/131-span-werkzeugname-leer.sh` Zeilen 9 bis 11 zitiert einen entfernten Wortlaut, den das Zeiger-Kommando nicht fasst →
+  `slice-spec-5-tabellen-sensor-und-zeiger-nach-dem-umbau`.
+- **Grenzen der Prüfung:** der Nur-Kommentar-Diff ist rot nur in der Implementer-Probe gesehen (vom Reviewer nachvollzogen, vom Verifier nicht wiederholt); der Sinnerhalt ist
+  eine Stichprobe (13 von 86 Zeilen beim Verifier, alle 86 im Review); die Klassen-Zuordnung je Einheit ist Urteil ohne Sensor. Die Festlegungen 9, 10, 13 und 14 von [`ADR-0074`](../../adr/0074-spec-5-fliesstext-klassen-ort-und-lh-bezug-spalte.md) und
+  ihre Immutabilität sind nicht rot gesehen.
+- **19 Zeilen mit `Lücke`:** ein gebündelter Change Request nach [`MR-015`](../../../../harness/conventions.md#mr-015) ist **nicht** angelegt (Abweichung von §5 (a)
+  dieses Plans): ob [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) einen Teil der Zeilen als Präzisierung trägt, ist eine Ebenen-Entscheidung des Architect, und der Auftrag entsteht erst nach ihr — `slice-spec-5-entscheidungen-nach-dem-umbau`.
+
+**Lebende Adressen:** `slice-074-agent-vor-aufruf-protokoll`, `slice-077-verlorener-lauf-sichtbar` und `slice-078-verdrahtung-hat-waechter` (alle in `open/`) zeigen auf
+`SPEC-039`, `SPEC-041` und `SPEC-086`. Der Start-Trigger von `slice-emittierte-feldliste-traegt-verfuegbarkeit-und-aufbewahrung` (dieser Slice in `done/`) ist mit dem Abschluss erfüllt;
+sein Plan nennt ihn schon so und bleibt unverändert.
+
+**Register:** neu `BEO-ALL/zeiger-kommando-faengt-zitat-entfernten-wortlauts-nicht` und `BEO-ALL/sensor-schranke-wird-durch-tabellenwachstum-unscharf` (je ein Beleg dieses Vorgangs, `offen`);
+ein weiterer Beleg für `BEO-ALL/stellen-messung-als-eigenschaft-ausgegeben` (`SPEC-040`); `BEO-ALL/geplanter-slice-wird-nie-gearbeitet` hat mit der Stilllegung der zwei Geber
+(`slice-spec-tabellen-tragen-die-lh-bezug-spalte`, `slice-spec-5-erfassung-aus-tool-response-steht-als-tabellenzeilen`) 3× erreicht; der Lese-Schritt setzt `geplant` mit
+`slice-spec-5-entscheidungen-nach-dem-umbau` — die Regel ist damit **zugewiesen, nicht beschlossen**. Der zweite Geber steht als Fund derselben Gelegenheit da und bewegt den Zähler nicht.
+
+**Folge-Slices** (nur Pläne in `open/`, nicht ausgeführt): `slice-spec-5-tabellen-sensor-und-zeiger-nach-dem-umbau` (Übergaben B-2, B-3, B-4, A-6),
+`slice-spec-5-entscheidungen-nach-dem-umbau` (Übergaben A-1 bis A-5, A-7); Übergabe A-8 steht als Bedingung im Plan von `slice-feldabdeckung-existenz-sensor`.
+
+**Lerneintrag (neuer Sensor):** ein Sensor, der die Tabellenform von Spec §5 in allen Tabellen hält (Zahl der Kopfzeilen mit `Präzisiert` gleich Zahl der Tabellen mit `SPEC`-Zeilen, keine leere
+letzte Zelle), statt der Schranke „mindestens 3", die mit dem Wachstum der Tabellen unscharf wurde. Träger ist `slice-spec-5-tabellen-sensor-und-zeiger-nach-dem-umbau`; ein Zielort steht noch nicht,
+darum kein `liegt in`. Daneben eine geschärfte Regel als Auftrag an denselben Slice: ein Zeiger-Kommando fasst auch Zitate entfernten Wortlauts.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
