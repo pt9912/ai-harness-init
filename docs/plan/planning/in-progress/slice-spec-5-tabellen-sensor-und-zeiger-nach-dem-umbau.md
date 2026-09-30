@@ -132,18 +132,18 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1 — der Sensor** (bats-Fall, Mutations-Fall oder benannte Übergabe; Rot an der realen Quelle gesehen, Meldung gelesen).
-- [ ] **Liefer-Punkt 2 — der Zeiger** (Kommentar in Fall 131 nachgezogen, Zeiger-Kommando geschärft; Rot gesehen).
-- [ ] **Liefer-Punkt 3 — zwei Zeilen-Bedingungen** (`SPEC-040` mit Belegklasse oder als Sicht mit Träger; die Sensor-Namen in den Zeilen; Wächter-Bilanz ohne unbenannte Differenz).
-- [ ] **Liefer-Punkt 4 — der Nachzug der 19 `Lücke`-Zellen** (elf Zeilen mit Anker auf [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren), drei auf den Erfassungs-Umfang, fünf verlassen die Spezifikation; Kommando zu Zeile 4 der [`ADR-0076`](../../adr/0076-ausgaenge-zu-spec-5-luecken-ebene-und-traeger-offener-saetze.md) gibt nichts aus; Wächter-Bilanz ohne unbenannte Differenz; nur Kommentare, keine Logik).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] **Liefer-Punkt 1 — der Sensor** (bats-Fall, Mutations-Fall oder benannte Übergabe; Rot an der realen Quelle gesehen, Meldung gelesen).
+- [x] **Liefer-Punkt 2 — der Zeiger** (Kommentar in Fall 131 nachgezogen, Zeiger-Kommando geschärft; Rot gesehen).
+- [x] **Liefer-Punkt 3 — zwei Zeilen-Bedingungen** (`SPEC-040` mit Belegklasse oder als Sicht mit Träger; die Sensor-Namen in den Zeilen; Wächter-Bilanz ohne unbenannte Differenz).
+- [x] **Liefer-Punkt 4 — der Nachzug der 19 `Lücke`-Zellen** (elf Zeilen mit Anker auf [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren), drei auf den Erfassungs-Umfang, fünf verlassen die Spezifikation; Kommando zu Zeile 4 der [`ADR-0076`](../../adr/0076-ausgaenge-zu-spec-5-luecken-ebene-und-traeger-offener-saetze.md) gibt nichts aus; Wächter-Bilanz ohne unbenannte Differenz; nur Kommentare, keine Logik).
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: `grep -rn 'spezifikation' docs/user | wc -l` steht im Bericht; ein Treffer auf eine geänderte Zeile wird nachgezogen.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Doku-Update: `grep -rn 'spezifikation' docs/user | wc -l` steht im Bericht; ein Treffer auf eine geänderte Zeile wird nachgezogen.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -213,7 +213,14 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-Wird bei der Closure vom Planner gefüllt ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+- **Zustand:** Liefer-Punkte 1 bis 4 bestätigt im Verifikationsbericht `docs/reviews/2026-09-30-slice-spec-5-nachlauf-verifikation.md` (Fälle 501 bis 503 `3 ok, 0 Befund(e)`, Ursache gelesen; Kommando zu Fitness-Zeile 4 der [`ADR-0076`](../../adr/0076-ausgaenge-zu-spec-5-luecken-ebene-und-traeger-offener-saetze.md) leer; Wächter-Bilanz ohne unbenannte Differenz; `make gates` Exit 0). Review: `docs/reviews/2026-09-30-slice-spec-5-tabellen-sensor-und-zeiger-nach-dem-umbau-review.md`, MEDIUM-1 und LOW-1 nachgezogen (`0a2d4b1e`).
+- **Steering-Loop-Eintrag — neuer Sensor:** `test/spec-tabellenform.bats` (Kopfzeilen-Zahl gleich Tabellen-Zahl, keine leere letzte Zelle; Fälle `test/mutations/501-spec-praezisiert-spalte-gestrichen.sh`, `502-spec-praezisiert-zelle-leer.sh`) und `test/spec-zitate.bats` (Zitat hinter `spezifikation.md` gegen die Spec; Fall `503-spec-zitat-ohne-fundstelle.sh`). Kein `liegt in`: beide Beobachtungen stehen unter 3×, es ist keine Regel verkörpert.
+- **Grenzen, benannt:** die bats-Stufe von `make mutate` bindet nur `not ok [0-9]+`, nicht den Testnamen; die Ursache der drei Fälle hat der Verifier von Hand gelesen. Der Zitat-Sensor fasst nur Zitate hinter „…“ oder `"` bis 250 Byte nach dem Dateinamen; der Bestand trägt kein reales Zitat, belegt ist er durch Fixture und Fall 503.
+- **Beobachtungs-Register:** [`sensor-schranke-wird-durch-tabellenwachstum-unscharf`](../observations/BEO-ALL/sensor-schranke-wird-durch-tabellenwachstum-unscharf/observation.md) und [`zeiger-kommando-faengt-zitat-entfernten-wortlauts-nicht`](../observations/BEO-ALL/zeiger-kommando-faengt-zitat-entfernten-wortlauts-nicht/observation.md) bleiben `offen` (je ein Beleg); der Sensor steht als Gegenmaßnahme. Kein Beleg hinzugefügt, nichts hochgezählt.
+- **Risiken aus §6:**
+  - Sensor zählt Tabellen falsch (Tabelle im Zitat, ohne Kopfzeile) — *weiter offen*: Register [`sensor-schranke-wird-durch-tabellenwachstum-unscharf`](../observations/BEO-ALL/sensor-schranke-wird-durch-tabellenwachstum-unscharf/observation.md); am Bestand 5 von 5, die Randfälle sind nicht gemessen.
+  - Zeiger-Kommando meldet Zitate, die kein Wortlaut der Spec sind — *weiter offen*: Register [`zitat-grep-uebersieht-zeilenumbruch-und-markup`](../observations/BEO-ALL/zitat-grep-uebersieht-zeilenumbruch-und-markup/observation.md); Fehlalarm am Bestand nicht beobachtbar, weil er kein Zitat trägt.
+- **Drei Paarungen:** nach dem `git mv` geprüft.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

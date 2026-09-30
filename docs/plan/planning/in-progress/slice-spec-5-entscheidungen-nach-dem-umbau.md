@@ -93,17 +93,17 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1 — die Folge-ADR** liegt vor, `Schärft:` nennt beide ADRs als Link; Fitness je Festlegung nennt, was rot werden muss; die Rot-Beobachtung liegt im Bericht des Verifiers ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Der ADR-Index trägt die Zeile im selben Commit.
-- [ ] **Liefer-Punkt 2 — zwei Quellen** stehen (Rolle der Datei `docs/user/rollen-laeufe.md`; Zielort und Inhalt der Regel zu `geplanter-slice-wird-nie-gearbeitet`), als ADR-Festlegung oder Adaptions-Eintrag in eigenem Commit ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
-- [ ] **Liefer-Punkt 3 — die benannte Liste** der `Lücke`-Zeilen mit Ebenen-Entscheidung je Zeile steht in der Folge-ADR oder im Bericht des Architect.
-- [ ] `make gates` grün.
+- [x] **Liefer-Punkt 1 — die Folge-ADR** liegt vor, `Schärft:` nennt beide ADRs als Link; Fitness je Festlegung nennt, was rot werden muss; die Rot-Beobachtung liegt im Bericht des Verifiers ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Der ADR-Index trägt die Zeile im selben Commit.
+- [x] **Liefer-Punkt 2 — zwei Quellen** stehen (Rolle der Datei `docs/user/rollen-laeufe.md`; Zielort und Inhalt der Regel zu `geplanter-slice-wird-nie-gearbeitet`), als ADR-Festlegung oder Adaptions-Eintrag in eigenem Commit ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
+- [x] **Liefer-Punkt 3 — die benannte Liste** der `Lücke`-Zeilen mit Ebenen-Entscheidung je Zeile steht in der Folge-ADR oder im Bericht des Architect.
+- [x] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update entfällt, solange die ADR keinen öffentlichen Vertrag ändert; ändert sie einen, steht es im Bericht.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Doku-Update entfällt, solange die ADR keinen öffentlichen Vertrag ändert; ändert sie einen, steht es im Bericht.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -168,7 +168,17 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-Wird bei der Closure vom Planner gefüllt ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+- **Zustand:** Liefer-Punkte 1 bis 3 bestätigt im Verifikationsbericht `docs/reviews/2026-09-30-slice-spec-5-nachlauf-verifikation.md`:
+  Folge-ADR [`ADR-0076`](../../adr/0076-ausgaenge-zu-spec-5-luecken-ebene-und-traeger-offener-saetze.md) (Accepted, `make adr-immutable` ohne Befund), Quellen in Festlegung 6 und 7, Ebenen-Liste in Festlegung 3; der Nachzug der Zellen lief in `slice-spec-5-tabellen-sensor-und-zeiger-nach-dem-umbau`.
+- **Steering-Loop-Eintrag — geschärfte Regel:** eine Plan-Datei in `open/` entsteht nur mit einem von vier Auslösern. liegt in `.claude/commands/plan-welle.md` §Slices bereitstellen (`· seit slice-spec-5-entscheidungen-nach-dem-umbau`). Grenze, benannt: kein Sensor, ob ein Auslöser vorliegt, ist Urteil.
+- **Offen, blockiert den Move:** kein eigener Review-Report zu [`ADR-0076`](../../adr/0076-ausgaenge-zu-spec-5-luecken-ebene-und-traeger-offener-saetze.md) unter `docs/reviews/` (nur Nennung im Review von `slice-spec-5-tabellen-sensor-und-zeiger-nach-dem-umbau` und Verifikation); die DoD-Zeile *Review durchgeführt* bleibt offen.
+- **Change Request nach [`MR-015`](../../../../harness/conventions.md#mr-015):** entfallen. Lastenheft 0.23.0 (Commit `3581f670`) trägt das Kriterium *Erfassungs-Umfang*; `SPEC-051` bis `053` tragen den Anker, der Ist-Stand der `Lücke`-Zeilen ist leer. Kein Auftrag in `open/`.
+- **Übergabe an den Architect, keine Plan-Datei:** Fitness-Zeile 4 der [`ADR-0076`](../../adr/0076-ausgaenge-zu-spec-5-luecken-ebene-und-traeger-offener-saetze.md) nennt `SPEC-051`, `052`, `053`; das Kommando gibt nichts aus. Ob ein Nachtrag nötig ist, entscheidet der Architect (`AGENTS.md` §3.4: Korrektur einer `Accepted`-ADR ist Folge-ADR).
+- **Beobachtungs-Register:** [`geplanter-slice-wird-nie-gearbeitet`](../observations/BEO-ALL/geplanter-slice-wird-nie-gearbeitet/observation.md) hat seinen Ausgang *verkörpert* (`state.md`); kein Beleg hinzugefügt, nichts hochgezählt.
+- **Risiken aus §6:**
+  - Ebenen-Zuordnung bleibt Urteil ohne Sensor — *weiter offen*: Register [`prozedur-zeile-traegt-disziplin-ohne-sensor`](../observations/BEO-ALL/prozedur-zeile-traegt-disziplin-ohne-sensor/observation.md) (kein Beleg aus diesem Vorgang).
+  - Regel zu `geplanter-slice-wird-nie-gearbeitet` bleibt Prosa, Klasse tritt ein viertes Mal ein — *weiter offen*: Register [`geplanter-slice-wird-nie-gearbeitet`](../observations/BEO-ALL/geplanter-slice-wird-nie-gearbeitet/observation.md), Grenze der Prosa-Form in dessen `state.md`.
+- **Drei Paarungen:** nach dem `git mv` geprüft.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
