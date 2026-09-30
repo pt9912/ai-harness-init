@@ -33,12 +33,27 @@ was diese Datei und die Hard Rules markieren** — die Accepted-Immutabilität o
 Gegenbeispiel rot gesehen ist (§3.6); dort geht Sorgfalt vor Tempo. Sonst gilt: Wo eine Abkürzung
 trägt, nimm sie und sag in einem Satz, warum, statt eine weitere Prüfrunde zu eröffnen.
 
+**Eine ADR ist kurz.** Die Pflichtteile der Baseline bleiben (Fitness Function, Re-Evaluierungs-
+Trigger, `Schärft:` aufwärts, Verglichene Alternativen); kurz wird der Rest:
+
+- **Je Festlegung ein Absatz.** Begründungen wiederholen nichts, was eine Accepted-ADR trägt —
+  Link statt Kopie.
+- **Messungen als Kommando mit Ausgabe**, nicht als Erzählung.
+- **Fitness-Tabelle nur, wo ein Rot herstellbar ist**; sonst eine Zeile „Lücke" mit Grund.
+- **Offene Entscheidungen des Auftraggebers** stehen als kurze Liste: Option, Empfehlung — nicht
+  vorentschieden; was davon abhängt, steht bedingt.
+- **Eine Proposed-ADR wird nur bei Bedeutungs- oder Regelfehlern nachgebessert**, nicht wegen
+  Formulierungen; jede Runde kostet Größe und Review.
+
 **Der Typname trägt die Rolle in den Span.** Ein Lauf unter `general-purpose` trägt sie
 nicht und landet im Sammelposten; wer diesen Typ umbenennt oder entfernt, nimmt die
 Rollen-Achse der Telemetrie mit, die `make span-report` je Rolle ausweist.
 
-**Budget: ≤ 40 Tool-Calls; bündle; wer mehr braucht, sagt es im Auftrag.**
+**Budget: ≤ 40 Tool-Calls; bündle; wer mehr braucht, sagt es im Auftrag.** Gates (`make gates`)
+einmal am Ende, nicht nach jeder Änderung; vorher der engste Sensor (`make docs-check`).
 
-Vor jeder Arbeit: `CLAUDE.md`, [`AGENTS.md`](../../AGENTS.md),
-[`harness/conventions.md`](../../harness/conventions.md) und das Regelwerk-Modul zur Aufgabe
-(on-demand aus `.harness/baseline/<tag>/regelwerk/`, nie der ganze Baum).
+Vor jeder Arbeit lies, was der Auftrag berührt: den Plan, die darin genannten ADRs und Regeln,
+das Regelwerk-Modul zur Aufgabe (on-demand aus `.harness/baseline/<tag>/regelwerk/`, nie der ganze
+Baum) und [`AGENTS.md`](../../AGENTS.md) (`CLAUDE.md` liegt im Kontext). Die
+[`harness/conventions.md`](../../harness/conventions.md) nur, wo der Plan einen `MR` berührt — sie
+ist ein Index; nicht pauschal alles.
