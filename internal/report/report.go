@@ -277,7 +277,7 @@ func abdeckungsZeile(b Bilanz) string {
 		b.MitZaehlern, b.AgentLaeufe, b.Zeilen)
 }
 
-// kopf liefert die drei Kopfzeilen — DIE ABDECKUNG ZUERST (LH-FA-10 §Leser: "Die
+// kopf liefert die drei Kopfzeilen — DIE ABDECKUNG ZUERST (LH-FA-17 §Leser: "Die
 // Auswertung nennt ihre Abdeckung zuerst und meldet damit ihre eigene Leere").
 // Die Reihenfolge ist der Vertrag, nicht Geschmack: wer die erste Zeile liest, weiss,
 // worueber die folgenden sprechen. Eine Abdeckung am Ende erreicht den nicht, der nach
@@ -370,7 +370,7 @@ func Schreibe(b Bilanz) string {
 
 	// Ohne Zaehler wird KEINE Bilanz ausgewiesen — keine Rollen-Zeile, keine groesste
 	// Rolle, kein Sammelposten. Eine Zeile mit einer Null ueber leerem Grund ist eine
-	// Rechnung, die nicht stattgefunden hat (LH-FA-10 §Leser).
+	// Rechnung, die nicht stattgefunden hat (LH-FA-17 §Leser).
 	// Die Reihenfolge ist tragend: AblageortFehlt zuerst (sonst faellt der Fall unter
 	// Zeilen == 0 mit dem vorhandenen, leeren Ablageort zusammen), AgentLaeufe == 0 vor
 	// TraegtZaehler() (sonst faellt der Fall darunter, ist aber trivial auch "ohne

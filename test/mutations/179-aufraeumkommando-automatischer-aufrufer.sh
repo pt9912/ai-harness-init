@@ -8,7 +8,7 @@
 #
 # HIER IST DAS GEGENBEISPIEL DIE AUTOMATIK, NICHT DAS FEHLEN. Ein Waechter, der nur
 # prueft, dass es das Ziel gibt, bliebe hier gruen — und ein Adopter verloere seinen
-# Bestand beim Lesen. LH-FA-10 §Aufbewahrung schliesst genau das aus: "eine automatische
+# Bestand beim Lesen. LH-FA-16 §Aufbewahrung schliesst genau das aus: "eine automatische
 # Rotation ist nicht Teil der Zusage — ein Loeschpfad in einem fail-open-Hook ueber
 # fremden Daten waere der teurere Fehlerfall". Der Fehler ist unumkehrbar, und die Kette
 # steht nicht in `gates`: kein Gate-Waechter faellt darueber.

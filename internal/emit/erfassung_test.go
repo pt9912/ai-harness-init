@@ -24,7 +24,7 @@ const (
 	zielClean   = "span-clean"
 )
 
-// wachstumsSatz ist die NICHT-Zusage neben dem Aufraeum-Kommando (LH-FA-10
+// wachstumsSatz ist die NICHT-Zusage neben dem Aufraeum-Kommando (LH-FA-16
 // §Aufbewahrung: "ohne dessen Aufruf waechst der Bestand unbegrenzt, und das Repo sagt
 // es"). EIN Satz, EINE Zusage: was daneben im Fragment ueber die fehlende Rotation
 // steht, begruendet ihn und wird hier nicht mitbehauptet.
@@ -283,7 +283,7 @@ func kommandoWort(seg string) string {
 // TestErfassungFragment_ZielUndNichtZusage haelt DoD (2) von slice-099 fest, erste
 // Haelfte: das Aufraeum-Kommando liegt im Ziel, es entfernt GENAU den Span-Bestand, und
 // daneben steht geschrieben, dass der Bestand ohne seinen Aufruf unbegrenzt waechst
-// (LH-FA-10 §Aufbewahrung, ADR-0022 Festlegung 6 Stueck 2).
+// (LH-FA-16 §Aufbewahrung, ADR-0022 Festlegung 6 Stueck 2).
 //
 // Der Ablageort steht NICHT als abgeschriebener Pfad im Waechter: er wird gegen span.Dir
 // gehalten, denselben Ort, an den der Schreiber anhaengt. Driften die zwei, raeumt das
@@ -367,7 +367,7 @@ func TestErfassungFragment_ZielUndNichtZusage(t *testing.T) {
 // TestErfassungFragment_KeinAutomatischerAufrufer haelt DoD (2) fest, zweite Haelfte —
 // und hier ist das Gegenbeispiel die AUTOMATIK, nicht das Fehlen: ein Loeschpfad, der von
 // selbst laeuft, entfernt fremde Daten ohne Anlass und ist der teurere Fehlerfall
-// (LH-FA-10 §Aufbewahrung).
+// (LH-FA-16 §Aufbewahrung).
 //
 // Gemessen wird ueber JEDE Make-Quelle des Ziels UND jede Datei seines Hook-Pfads: das
 // Aufraeum-Ziel darf ausserhalb seines eigenen Fragments gar nicht vorkommen, und im

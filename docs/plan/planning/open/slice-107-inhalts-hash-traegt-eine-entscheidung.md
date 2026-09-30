@@ -29,7 +29,7 @@ also erfasst dort dieselbe Funktion wie hier. Eine ebenen-verschiedene Schärfe 
 Verhalten desselben Binärs, kein Lese-Unterschied.
 
 **Bezug:**
-[`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) (**Rang 1**,
+[`LH-FA-14`](../../../../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) (**Rang 1**,
 §Redaktion: *„von Argument-Werten wandert nie der Inhalt, sondern eine Ableitung (Pfad, Länge,
 Fingerabdruck)"* — die Anforderung gilt der emittierten Ebene und nennt ihn),
 [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) (**Accepted** — Festlegung 2 und die
@@ -70,7 +70,7 @@ Setzung 2).
 
 | Quelle | Rang | was sie sagt | Kommando |
 |---|---|---|---|
-| [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) §Redaktion | **1** | die Ableitung ist *„(Pfad, Länge, Fingerabdruck)"* — für die **emittierte** Ebene, denn die ist der Gegenstand der Anforderung | `sed -n '/^### .* — Erfassungsschicht emittieren$/,/^## 4\./p' spec/lastenheft.md \| grep -c 'Fingerabdruck'` → **1** |
+| [`LH-FA-14`](../../../../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) §Redaktion | **1** | die Ableitung ist *„(Pfad, Länge, Fingerabdruck)"* — für die **emittierte** Ebene, denn die ist der Gegenstand der Anforderung | `sed -n '/^### .* — Redaktion und Erfassungs-Umfang$/,/^### .* — Rolle der Erfassung$/p' spec/lastenheft.md \| grep -c 'Fingerabdruck'` → **1** |
 | [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 2 | Entscheidung | *„Pfad + Länge; **im Repo zusätzlich** ein Inhalts-Hash"*, und daneben *„Für alles Emittierte gilt die Tabelle unverkürzt und **ohne** Inhalts-Hash"* | `grep -c 'ohne Inhalts-Hash' docs/plan/adr/0011-telemetrie-erfassung-policy.md` → **1** |
 | [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 6 | Entscheidung | der Adopter-Vertrag führt *„abgeleitete Argument-Werte **ohne** Inhalts-Hash"* | `grep -c 'Inhalts-Hash' docs/plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md` → **1** |
 | der laufende Träger | Code | der Fingerabdruck wird für Schreib-Werkzeuge **unbedingt** gesetzt; eine Ebenen-Unterscheidung gibt es nicht | `grep -n 'classFileWrite' internal/span/emit.go` → Zeile **135**; `grep -c 'Ebene' internal/span/emit.go` → **0** |

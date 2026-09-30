@@ -7,7 +7,7 @@
 # zugesagt ist — gitignored, aber nicht verschluesselt, nicht zugriffsbeschraenkt, und
 # Pfadnamen ausdruecklich nicht als unkritisch zugesagt.
 #
-# Von den dreien der Satz mit dem schwaechsten Rueckhalt: LH-FA-10 §Redaktion verlangt
+# Von den dreien der Satz mit dem schwaechsten Rueckhalt: LH-FA-14 §Redaktion verlangt
 # ihn, ADR-0022 Festlegung 6 Stueck 3 verlangt ihn als GESCHRIEBEN — einen stehenden Ort
 # nennt ihm keine der beiden Quellen. Dieser Fall haelt fest, dass der gewaehlte Ort ihn
 # auch traegt.

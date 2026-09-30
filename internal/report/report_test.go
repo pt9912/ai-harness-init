@@ -185,7 +185,7 @@ func TestSchreibe_AbdeckungStehtDrin(t *testing.T) {
 }
 
 // ZAHN 4 (slice-099 DoD (1)): die Abdeckung steht ZUERST — in der ersten Zeile, nicht
-// in einer Fussnote (LH-FA-10 §Leser: "Die Auswertung nennt ihre Abdeckung zuerst und
+// in einer Fussnote (LH-FA-17 §Leser: "Die Auswertung nennt ihre Abdeckung zuerst und
 // meldet damit ihre eigene Leere"). Wer nach der ersten Zahl aufhoert zu lesen, hat
 // dann die Aussage ueber den Nenner gesehen und nicht eine Zahl ohne ihn.
 // Dauer-Sensor: test/mutations/173-leser-abdeckung-nicht-zuerst.sh

@@ -1046,7 +1046,7 @@ grep -E 'span-unclosed' <<<"$spanszahn_out" | sed -n '1,2s/^/full-smoke:   /p'
 modul_zahn_alte_module_gruen "$tmprepo" "spans-Zahn"
 mv "$spans_doc.orig" "$spans_doc"
 
-# slice-099 (LH-FA-10 §Leser und §Aufbewahrung / ADR-0022 Festlegung 8 und 6 Stueck 2):
+# slice-099 (LH-FA-17 §Leser und LH-FA-16 §Aufbewahrung / ADR-0022 Festlegung 8 und 6 Stueck 2):
 # DER LESER LAEUFT IM ZIEL UEBER DESSEN EIGENEM BESTAND, UND DAS AUFRAEUM-KOMMANDO IST DA.
 #
 # Nur ein echter Lauf kann das zeigen. Ein Go-Waechter misst den Text des Fragments; ob
@@ -1127,7 +1127,7 @@ leser_und_aufraeumen_im_ziel() {
 	case "$erste" in
 	Abdeckung:*) ;;
 	*)
-		echo "full-smoke: FEHLER — $kennung: der Leser nennt seine Abdeckung nicht ZUERST; erste Zeile: [$erste] (LH-FA-10 §Leser, slice-099)." >&2
+		echo "full-smoke: FEHLER — $kennung: der Leser nennt seine Abdeckung nicht ZUERST; erste Zeile: [$erste] (LH-FA-17 §Leser, slice-099)." >&2
 		printf '%s\n' "$bericht" >&2
 		exit 1
 		;;
@@ -1159,7 +1159,7 @@ leser_und_aufraeumen_im_ziel() {
 	local fragflach
 	fragflach="$(tr -s '[:space:]' ' ' <"$frag")"
 	if ! grep -qF -- "OHNE DIESEN AUFRUF WAECHST DER BESTAND UNBEGRENZT." <<<"$fragflach"; then
-		echo "full-smoke: FEHLER — $kennung: das Ziel sagt nicht, dass sein Bestand ohne den Aufruf unbegrenzt waechst (LH-FA-10 §Aufbewahrung, slice-099)." >&2
+		echo "full-smoke: FEHLER — $kennung: das Ziel sagt nicht, dass sein Bestand ohne den Aufruf unbegrenzt waechst (LH-FA-16 §Aufbewahrung, slice-099)." >&2
 		exit 1
 	fi
 

@@ -182,7 +182,7 @@ func TestFeldliste_GrenzeVerbrauchsZaehler(t *testing.T) {
 	)
 }
 
-// TestFeldliste_GrenzeUeberDenBestand misst den DRITTEN Satz (LH-FA-10 §Redaktion,
+// TestFeldliste_GrenzeUeberDenBestand misst den DRITTEN Satz (LH-FA-14 §Redaktion,
 // ADR-0022 Festlegung 6 Stueck 3): ueber den Bestand ist nichts zugesagt. Die vier
 // Bestandteile sind vier Aussagen, nicht eine — gitignored, nicht verschluesselt, nicht
 // zugriffsbeschraenkt, und Pfadnamen ausdruecklich nicht als unkritisch zugesagt.
