@@ -34,6 +34,12 @@ hier.
 - **Wer die Rolle nicht anfordert, bekommt `general-purpose`.** Das Feld `agent_role` bleibt
   dann leer und heißt *unbekannt*, nicht *ohne Rolle*; der Lauf fällt in den Sammelposten der
   Token-Bilanz.
+- **Die Bedingung, den Typ per @-Erwähnung anzufordern, trägt keinen Wächter.** Kein Sensor
+  erzwingt sie; sie ruht auf Disziplin. Der Agent-Guard prüft die Lesbarkeit der Aufrufform,
+  nicht die Rolle. Ein Lauf ohne Rollen-Tag wird nicht erkannt, sondern erscheint als Anteil
+  des Sammelpostens im Bericht; dessen Größe ist der Träger der Regel, soweit der Lauf Zähler
+  trägt ([`ADR-0076`](../plan/adr/0076-ausgaenge-zu-spec-5-luecken-ebene-und-traeger-offener-saetze.md)
+  Festlegung 4).
 
 ## Dass Rollen-Arbeit als Rolle läuft
 
