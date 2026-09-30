@@ -24,7 +24,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 **Berührte Spec-Stellen:** — (der Slice ändert keine Spec-Zeile; die Zeilen mit `Lücke` in
 [§5](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) sind sein Gegenstand, nicht sein Edit-Ziel).
 
-**Verantwortlich:** —. Ausführende Rolle: **Architect** ([`AGENTS.md`](../../../../AGENTS.md) §3.8); der Planner schreibt keinen Norm-Text, dieser Plan ist das Übergabe-Artefakt.
+**Verantwortlich:** Architect (pt9912). Ausführende Rolle: **Architect** ([`AGENTS.md`](../../../../AGENTS.md) §3.8); der Planner schreibt keinen Norm-Text, dieser Plan ist das Übergabe-Artefakt.
 
 **Autor:** Planner. **Datum:** 2026-09-30.
 
