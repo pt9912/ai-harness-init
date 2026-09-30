@@ -31,7 +31,39 @@ Unterpunkten) und bei `Bewacht` (dort auch die neun Unterpunkte der Erfassungs-Z
 Einheit. Die 34 Blöcke ergeben **64** Einheiten (Zeilen `U01` bis `U64`) und **10** zweite
 Zeilen für Einheiten, die zwei Klassen tragen (Nummer mit Suffix `b`, gleicher Zeilenbereich, Bytes
 `0`). Der Zeilenbereich einer Einheit reicht bis zur Zeile vor der nächsten Einheit; die
-Leerzeilen zählen zur davorstehenden Einheit, damit die Byte-Summe schließt.
+Leerzeilen zählen zur davorstehenden Einheit, damit die Byte-Summe schließt. Die Tabelle in §3
+führt damit 64 + 10 = **74** Einheiten-Zeilen und die Träger-Zeile `T`, zusammen **75** Zeilen
+(`awk -F'|' '/^\| (U|T)/ && $3 ~ /[0-9]–[0-9]/' <Bericht> | wc -l` → 75; mit `/^\| U[0-9]+ /` statt `/^\| (U|T)/` → 64).
+
+**Abweichung vom Schnitt des Slice-Plans.** Der Plan (§3) legt den Absatz als Einheit fest und den
+Listenpunkt oberster Ebene nur für die zwei Blöcke über 6 KB (ab Zeile 470 und ab Zeile 594). Dieser
+Bericht schneidet feiner; die Abweichung ist eine Übergabe an den Planner, kein Beschluss dieses
+Berichts. Nach dem Plan-Schnitt ergäben sich 41 Einheiten: 32 Absätze der kleineren Blöcke, dazu im
+Block ab 470 der Vorspann und zwei Listenpunkte, im Block ab 594 sechs Listenpunkte:
+
+```sh
+awk 'NR>=470&&NR<=548&&/^[0-9]+\. /' spec/spezifikation.md | wc -l      # 2  Listenpunkte 4 und 5 (dazu der Vorspann: 3 Einheiten)
+awk 'NR>=594&&NR<=717&&/^- /' spec/spezifikation.md | wc -l              # 6  Listenpunkte oberster Ebene
+```
+
+34 − 2 + 3 + 6 = 41. Die Tabelle führt 64 (Differenz 23). Die Einheiten je Block, in dem mehr als
+eine beginnt (Startzeile des Blocks · Einheiten in der Tabelle):
+
+```sh
+awk -F'|' 'NR==FNR{b[++k]=$1;next} $3 ~ /^ [0-9]+–[0-9]+ $/ && $2 ~ /^ U[0-9]+ /{split($3,r,"–"); a=r[1]+0; x=0; for(i=1;i<=k;i++) if(b[i]<=a) x=b[i]; c[x]++} END{for(x in c) if(c[x]>1) print x, c[x]}' \
+  <(awk 'NR>=137&&NR<=718{if($0==""){n=0}else if(!n){print NR;n=1}}' spec/spezifikation.md) <Bericht> | sort -n
+# 149 5 · 201 2 · 303 2 · 372 3 · 470 8 · 550 4 · 594 13
+```
+
+Der Plan-Schnitt hätte davon 3 (Block 470) und 6 (Block 594) verlangt; die Blöcke ab 149, 201, 303,
+372 und 550 (zusammen 16 Einheiten statt 5) und die Unterpunkte in den zwei großen Blöcken (Block
+470: sechs Einheiten für Abweichung 5 statt einer; Block 594: die neun Zusicherungen von `Bewacht`
+als eigene Einheiten) liegen darüber hinaus (8 + 13 + 16 = 37 gegen 3 + 6 + 5 = 14, Differenz 23; die
+übrigen 27 Blöcke tragen je eine Einheit). **Begründung:** Jede dieser Einheiten trägt einen eigenen
+Wächter-Satz (Spalte *gebundene Wächter*) oder eine eigene Klasse; in einem Absatz-Schnitt stünden
+die neun `Bewacht`-Zusicherungen mit ihren Testnamen und Fällen in einer Zeile, und die Zeile für
+Abweichung 5 mit ihren fünf Prüfschritten bekäme genau eine Klasse. Der Schnitt bleibt in einer
+Sitzung prüfbar: 75 Zeilen liegen unter der Rückführungs-Grenze von rund 100 Zeilen (Slice-Plan §4).
 
 **Klassen** (Arbeitshypothese des Slice-Plans, nicht entschieden): `a` Festlegung · `b` Begründung ·
 `c` Messprotokoll · `d` Abweichung von der Baseline · `e` passt in keine. Die Spalte
@@ -54,19 +86,30 @@ zählt alle Zeilen der Klasse (mit den zweiten Zeilen), *Grenzfälle* die davon 
 | e passt in keine | 16 | 1 | 10666 | 23.2 % |
 
 Die 35er-Obergrenze für Messprotokoll (Zeilen mit `gemessen` oder Datum, Kommando oben) verteilt sich
-nach Klasse der Einheit, in der die Zeile steht:
+nach der Klasse der **ersten** Zeile der Einheit, in der die Zeile steht (die zweite Zeile einer
+Einheit mit zwei Klassen bleibt außer Betracht):
 
 ```sh
 grep -nE 'gemessen|20[0-9]{2}-[0-9]{2}-[0-9]{2}' spec/spezifikation.md | awk -F: '$1>=137&&$1<=718{print $1}'   # Zeilennummern
+grep -nE 'gemessen|20[0-9]{2}-[0-9]{2}-[0-9]{2}' spec/spezifikation.md | awk -F: '$1>=137&&$1<=718' | grep -c 'ungemessen'   # 2
 ```
 
-| Klasse der Einheit | a | b | c | d | e |
+| Klasse der Einheit (Erst-Zeile) | a | b | c | d | e |
 |---|---|---|---|---|---|
 | Zeilen mit gemessen/Datum | 4 | 4 | 24 | 0 | 3 |
 
-Von den 35 Zeilen stehen 24 in Einheiten der Klasse `c`; die übrigen stehen in
-Einheiten anderer Klassen (Zusagen oder Begründungen, die das Wort benutzen oder ein Datum als Beleg
-nennen).
+Was die Zählung ausweist und was nicht:
+
+- **Zwei der 35 Treffer sind keine Messung.** Die Zeilen 195 (U08) und 655 (U60) treffen das Muster
+  über das Wort `ungemessen`; sie stehen in der Spalte `e`. Die Messstellen (Zeilen mit `gemessen` als
+  Wort oder einem Datum) sind 33: 4 / 4 / 24 / 0 / 1.
+- **Die Zählung folgt der Erst-Zeile.** Die Zeilen 325 und 330 („gemessen am 2026-08-08“) stehen in
+  U21 (Klasse `a`); ihre zweite Zeile U21b ist `c`. Dasselbe gilt für Zeile 142 (U02, zweite Zeile U02b
+  `c`). Nach beiden Zeilen gezählt tragen 27 der 33 Messstellen die Klasse `c`; U11 und U12 haben `a`
+  bzw. `b` als zweite Zeile, ihre Messstellen (Zeilen 215, 217 bis 219, 227, 238, 239) zählen als `c`.
+- **Der Rest.** 24 stehen in Einheiten der Klasse `c`, die übrigen 11 in Einheiten anderer Klassen
+  (Zusagen, Begründungen oder Wächter-Zuordnungen, die das Wort benutzen oder ein Datum als Beleg
+  nennen; 2 davon sind die `ungemessen`-Zeilen).
 
 ### Vollständigkeit
 
@@ -79,9 +122,47 @@ comm -23 <(grep -oE 'test/mutations/[0-9]+-[a-z0-9-]+\.sh' spec/spezifikation.md
 ```
 
 Die Byte-Summe ist 45889 gegen 45889; beide `comm`-Differenzen sind leer. Die Zeile `T`
-trägt die Wächter der Tabellenzeilen `SPEC-001` bis `SPEC-034` (Zeilen 59–60 und 99–135): 11 der
-24 Testnamen stehen nur dort, nicht im Fließtext. Sie ist Träger, keine klassifizierte Einheit, und
-zählt `0` Bytes.
+trägt die Wächter der Tabellenzeilen `SPEC-001` bis `SPEC-034` (Zeilen 59–60 und 99–135). Sie ist
+Träger, keine klassifizierte Einheit, und zählt `0` Bytes. Was sie in den Namens-Kommandos verdeckt:
+
+```sh
+T=$(awk -F'|' '/^\| T / {print $9}' $F | grep -oE 'Test[A-Z][A-Za-z0-9_]*' | sort -u)
+wc -l <<<"$T"                                                                                # 16  Testnamen in T
+comm -13 <(sed -n '137,718p' spec/spezifikation.md | grep -oE '`Test[A-Za-z0-9_]+`' | tr -d '`' | sort -u) <(echo "$T") | wc -l   # 11  in T, nicht im Fließtext
+comm -12 <(sed -n '137,718p' spec/spezifikation.md | grep -oE '`Test[A-Za-z0-9_]+`' | tr -d '`' | sort -u) <(echo "$T")           # 5  in T und im Fließtext
+awk -F'|' '/^\| T / {print $9}' $F | grep -oE 'Fall [0-9]+' | sort -u | wc -l                 # 27  Fall-Nummern in T
+```
+
+- **Elf Testnamen stehen im Spec-Text nur in der Tabellenzeile `SPEC-031`** (Zeile 132; alle
+  `TestCommand*`) und in keiner `U`-Zeile; für sie trägt allein `T` die Namens-Differenz.
+- **Fünf weitere Testnamen stehen in `T` und in Fließtext-Einheiten:** `TestAgentGetsNoArgumentFields`,
+  `TestFailedAgentCallCapturesNothing`, `TestMandatoryFieldsAlwaysPresent`,
+  `TestResolvedModelIsStructurallyBounded`, `TestSpawnedRoleIsNormalised`. Fehlt die `U`-Zeile, die
+  einen davon nennt, bleibt die Namens-Differenz leer, weil `T` ihn führt: **für diese Namen deckt `T`
+  die Nennung im Fließtext zu** (Bruchprobe unten, letzte Zeile).
+- **Die 27 Fall-Nummern in `T` stehen in der Form `Fall N`.** Das Fall-Dateien-Kommando liest Pfade
+  (`test/mutations/N-….sh`); `T` verdeckt dort nichts. Alle 26 Fall-Dateien des Fließtexts stehen in
+  `U`-Zeilen (`comm` der Fließtext-Pfade gegen die Pfade der `U`-Zeilen → leer).
+- **Was die Vollständigkeit trägt:** die Byte-Summe (jede fehlende Einheit lässt sie fallen) und die
+  Fall-Dateien-Differenz; die Namens-Differenz allein trägt sie **nicht**.
+
+### Bruchprobe
+
+Die Vollständigkeit ist rot gesehen: in einer Kopie des Berichts (nicht im Bericht) werden
+Tabellenzeilen gestrichen und die drei Kommandos aus `### Vollständigkeit` gefahren.
+
+| gestrichen in der Kopie | Byte-Summe (Soll 45889) | Testnamen fehlen | Fall-Dateien fehlen |
+|---|---|---|---|
+| nichts | 45889 | 0 | 0 |
+| `U10` (Zeile der Klassifikationstabelle und Zeile in §6.1; 646 Bytes) | 45243 | 0 | 0 |
+| `U52` | 45292 | 3 (`TestClampSurvivesBrokenPayload`, `TestEmitWritesSpanFromHook`, `TestSubkommandoRouting_ReportSchreibtBilanz`) | 1 (`154-unterkommando-routing-vertauscht.sh`) |
+| `T` | 45889 | 11 (alle `TestCommand*`) | 0 |
+| `U56`, `U57`, `U58`, `U59`, `U61` | 44407 | 0 | 4 (Fälle 128, 129, 132, 135) |
+
+Gelesen: `U10` nennt weder Test noch Fall, nur die Byte-Summe wird rot. `U52` färbt alle drei Kommandos.
+Das Streichen von `T` färbt allein die Namens-Differenz, die Byte-Summe bleibt (`T` zählt 0 Bytes). Die
+letzte Zeile färbt Byte-Summe und Fall-Dateien, die Namens-Differenz bleibt 0, weil `T` die fünf
+Namen führt.
 
 ## 3. Klassifikationstabelle
 
@@ -135,7 +216,7 @@ Einheit beim Namen nennen; `— (kein Zeiger)` heißt, keine Stelle in `internal
 | U32 | 427–433 | Splitting-Regel: anteilig nach Tool-Calls, Rest weitergegeben | a | Festlegung | sicher | 556 | — | Z065, Z095, Z096 |
 | U33 | 434–441 | Splitting-Ausnahme: keine Rolle trägt Tool-Calls, Sammelposten bleibt unverteilt | a | Festlegung | sicher | 651 | — | — (kein Zeiger) |
 | U34 | 442–449 | Warum diese Splitting-Regel und nicht die andere | b | Begründung | sicher | 649 | — | Z095 |
-| U35 | 450–453 | Was die Regel nicht ist: eine Messung | b | Begründung, Grenze | Grenzfall (b/d) | 281 | — | — (kein Zeiger) |
+| U35 | 450–453 | Was die Regel nicht ist: eine Messung | b | Begründung, Grenze | Grenzfall (b/a) | 281 | — | — (kein Zeiger) |
 | U36 | 454–458 | Lesevorschrift: leeres agent_role heißt unbekannt, nie ohne Rolle | a | Festlegung | sicher | 298 | — | Z064, Z069, Z072, Z074, Z076, Z087 |
 | U37 | 459–469 | Prüfreihenfolge: Splitting angewendet · Größe genannt · nie ungeteilt führen | a | Festlegung | sicher | 818 | — | Z066, Z072, Z074, Z087, Z093 |
 | U38 | 470–472 | Nicht gemessen und deshalb offen: Nutzer-Aufruf | c | Grenze | Grenzfall (c/d) | 209 | — | — (kein Zeiger) |
@@ -201,21 +282,29 @@ sich an der gemessenen Menge stellen.
    stehen 6405 (47.4 %) in den Prüfschritten der Abweichungen 5 und 6 (U41, U43–U45, U48, U49), die
    selbst in einer Einheit der Klasse `d` liegen (2998 Bytes in U40, U42, U46, U47, U50). Die Frage:
    hängt die Klasse an der Abweichung als Ganzes oder wird der Prüfschritt abgetrennt?
-5. **Die 35 Zeilen mit „gemessen“ oder Datum** (Risiko 3 des Slice-Plans): 24 stehen in Einheiten der
-   Klasse `c`, 11 in anderen (Zusagen, Begründungen und Wächter-Zuordnungen, die das Wort benutzen oder
-   ein Datum als Beleg nennen). Die Lesung *gemessen/Datum gleich Messprotokoll* trifft also für
-   24 von 35 Zeilen zu.
+5. **Die 35 Zeilen mit „gemessen“ oder Datum** (Risiko 3 des Slice-Plans): nach der Erst-Zeile der
+   Einheit stehen 24 in Einheiten der Klasse `c`, 11 in anderen (Zusagen, Begründungen und
+   Wächter-Zuordnungen, die das Wort benutzen oder ein Datum als Beleg nennen). Zwei der 35 sind
+   `ungemessen` (Zeilen 195, 655), keine Messung; 33 sind Messstellen, davon 24 nach der Erst-Zeile
+   und 27 nach beiden Zeilen einer Einheit mit zwei Klassen in `c` (Zeilen 142, 325, 330: zweite Zeile
+   `c`; Zählregel und Kommandos in §2). Die Lesung *gemessen/Datum gleich Messprotokoll* trifft also
+   für 24 von 35 Zeilen zu (24 von 33 Messstellen).
 6. **Ort der Messprotokolle.** [MR-021](../../harness/conventions.md#mr-021) nennt `docs/reviews/2026-08-02-span-schema-messreihen.md` als
    Ort für datierte Messungen; die Datei liegt im Repo. Ob §5-Messungen dorthin
    wandern, ist Sache der Klassen-Entscheidung.
 7. **Einheit Absatz** (Risiko 1). 10 Einheiten tragen zwei Klassen und stehen als zweite Zeile; die
    zwei Blöcke über 6 KB sind in acht (ab Zeile 470: U38 bis U45) und vierzehn Einheiten (ab Zeile 591:
    U51 bis U64) geschnitten. Der Absatz allein hätte bei diesen 10 Einheiten je eine der zwei Klassen verfehlt.
+   Der Schnitt ist feiner als der des Slice-Plans (64 gegen 41 Einheiten, Ableitung in §1 *Abweichung
+   vom Schnitt des Slice-Plans*): Übergabe an den Planner, ob der feinere Schnitt der Schnitt der
+   Umbau-Slices wird.
 8. **Einzelne Grenzfälle mit Frage.** U30 (kanonische Namen): der Text nennt den Wert selbst eine
    „technische Festlegung“, er steht aber innerhalb von Abweichung 3 · U60: die Grenze (drei von neun
    Listeneinträgen gebunden) steht in der Wächter-Zuordnung · U42: die Beschreibung des Guards steht im
-   Prüfschritt einer Abweichung · U16 und U35: Grenz-Aussagen über eine Kennzahl bzw. über die Regel, die
-   weder Festlegung noch Begründung sind.
+   Prüfschritt einer Abweichung · U16: Grenz-Aussage über eine Kennzahl, weder Festlegung noch Begründung ·
+   U35 (b/a): der Text grenzt die Splitting-Regel ab (sie verteilt Etiketten, sie misst nicht: b) und
+   legt im selben Satz fest, dass die Größe des verteilten Anteils in jedes Ergebnis gehört (a; die
+   Festlegung steht in der Prüfreihenfolge, U37); von der Klasse `d` (Abweichung) sagt der Text nichts.
 
 ## 5. Zeiger-Inventar
 
@@ -440,8 +529,9 @@ Die übrigen Zeilen tragen einen Kandidaten aus den Kriterien von [LH-FA-10](../
   unverändert ([AGENTS.md](../../AGENTS.md) §3.4); die Zeilen stehen hier als Befund für den Umbau.
 - **Grenzen der Zuordnung.** Die Klassifikation der 64 Einheiten und die Zuordnung der 100
   Zeiger stammen aus einem Lauf und einem Kontext; die Urteile über Grenzfälle sind ausdrücklich nicht
-  entschieden. Die Byte-Summe und die Vollständigkeit der Testnamen und Fall-Dateien sind maschinell
-  gedeckt (§2), die Klassen-Zuordnung nicht: kein Sensor hält eine Zeile der Tabelle gegen den Text.
+  entschieden. Die Vollständigkeit ist maschinell gedeckt durch die Byte-Summe und die Fall-Dateien-
+  Differenz; die Namens-Differenz deckt für elf Testnamen allein die Zeile `T` und für fünf weitere
+  verdeckt sie `T` (§2 *Vollständigkeit* und *Bruchprobe*). Die Klassen-Zuordnung ist nicht gedeckt: kein Sensor hält eine Zeile der Tabelle gegen den Text.
   Bei den Zeigern ist ein Kontext von wenigen Zeilen gelesen; eine Stelle mit Einheit `T` oder `—` kann bei
   weiterem Kontext eine Einheit ansprechen.
 - **Spec unverändert.** `git diff --stat -- spec/` liefert 0 Zeilen.
