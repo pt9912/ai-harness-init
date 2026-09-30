@@ -35,7 +35,7 @@ liefert).
 [§Aufnahme-Regel](../../../../spec/spezifikation.md#aufnahme-regel) — gelesen, nicht geändert. Der
 Verweis zeigt aufwärts; die Spec nennt diesen Slice nie.
 
-**Verantwortlich:** — bis zur Priorisierung. Ausführende Rolle, als Setzung des Planners vom
+**Verantwortlich:** Implementer (pt9912). Ausführende Rolle, als Setzung des Planners vom
 Architect im Slice `slice-spec-aufnahme-regel-traegt-klassen-ort-und-lh-bezug` zu bestätigen:
 Implementer-Kontext — der Lauf liest, misst und schreibt einen Bericht, er schreibt keinen
 Norm-Text; Grenzfälle der Klasse gehen als Übergabe-Artefakt an den Architect.
