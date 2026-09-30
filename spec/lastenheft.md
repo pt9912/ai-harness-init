@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.21.0
+**Version:** 0.22.0
 
 **Status:** Draft
 
