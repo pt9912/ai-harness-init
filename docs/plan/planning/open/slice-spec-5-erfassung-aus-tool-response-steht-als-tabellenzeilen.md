@@ -62,6 +62,14 @@ sed -n '311,353p' spec/spezifikation.md | wc -c    # Bytes des zweiten Teilblock
 Die Zeilengrenzen sind Stand der Planung; der Klassifikations-Bericht liefert die für den Lauf
 gültigen, weil die Datei wandert.
 
+**Einheiten-Schnitt.** Der Klassifikationsbericht (Zeitdokument unter `docs/reviews/`) schneidet den
+Fließtext feiner als der Absatz: eigener Wächter-Satz oder eigene Klasse ergibt eine eigene Einheit,
+einzelne Einheiten tragen zwei Klassen. Der Pilot arbeitet nach dem Schnitt des Berichts, nicht nach
+dem Absatz; ob die übrigen Blöcke ebenso geschnitten werden, entscheidet der Planner bei der Closure
+dieses Slice nach dem, was der Pilot gezeigt hat. Klassen, die noch keine ADR trägt, entscheidet der
+Pilot nicht: die Klassen-ADR ist seine Start-Bedingung (§4), geschrieben im Slice
+`slice-spec-aufnahme-regel-traegt-klassen-ort-und-lh-bezug`.
+
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Die übrigen Blöcke von §5.** Vorläufiger Ausgangs-Schnitt für den Planner (nach dem Bericht des

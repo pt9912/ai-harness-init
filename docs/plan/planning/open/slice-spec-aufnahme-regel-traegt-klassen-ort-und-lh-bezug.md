@@ -63,6 +63,16 @@ gibt dem Planner den Hinweis, nach dem er die Umbau-Slices schneidet.
    Spec, betrifft rund 18 KB; der Adaptions-Eintrag [`MR-021`](../../../../harness/conventions.md#mr-021)
    ist bei der Planung nicht gelesen) und *passt in keine*. Die fünf Kommentar-Klassen aus
    [`AGENTS.md`](../../../../AGENTS.md) §3.7 passen nach Befund des Planners nicht als Raster.
+   *Ergänzung aus dem Klassifikationsbericht des Vorgänger-Slice* (Zeitdokument unter `docs/reviews/`,
+   Klassenverteilung in seinem §2): Klasse `d` und Klasse `e` tragen je einen erheblichen Anteil des
+   Fließtexts; Klasse `e` bezeichnet die Spec selbst als unbewacht. Der Bericht markiert Grenzfälle
+   und entscheidet keinen — die Zuordnung jedes markierten Grenzfalls urteilt der Architect am
+   Wortlaut. Die Prozess-Konventionen des Fließtexts (Einheiten `U09`, `U10`, `U13`, `U15` des
+   Berichts) sind gegen die Klassen zu halten.
+   **Auftraggeber-Frage, die der Architect stellt und nicht beantwortet:** Gehört die Abweichung von
+   der Baseline in die Spezifikation ([`MR-021`](../../../../harness/conventions.md#mr-021)) oder ins
+   Konventionsdokument (Aufnahme-Regel, Zeile 21)? Die Spec widerspricht sich hier selbst; die
+   Antwort entscheidet, ob Klasse `d` eine Klasse der Spec bleibt.
 2. **Ort, Konsument und Form der Messprotokolle.** Optionen: entfallen (git hält sie) · Zeitdokument
    unter einem Unterordner von `docs/` (Auftraggeber erwägt das). Jede Option hat vier Randbedingungen,
    die die ADR beantworten muss: ein **Konsument** (sonst kein Artefakt,
@@ -71,10 +81,21 @@ gibt dem Planner den Hinweis, nach dem er die Umbau-Slices schneidet.
    `exempt-paths` in der `.d-check.yml` erweitert werden — das wäre eine Senkung nach
    [`AGENTS.md`](../../../../AGENTS.md) §3.5 und braucht in der ADR eine eigene Festlegung.
    Bestand: `docs/reviews/**` ist bereits ausgenommen (`.d-check.yml`, Zeilen 327 bis 343 und 374).
+   *Ergänzung aus dem Bericht:* das Messprotokoll mischt vier Aussagearten; die ADR sagt, ob alle vier
+   denselben Ort bekommen. [`MR-021`](../../../../harness/conventions.md#mr-021) nennt bereits ein
+   Zeitdokument unter `docs/reviews/` als Ort einer Messreihe — Bestand, an dem die Option gemessen
+   wird, keine Vorentscheidung.
 3. **LH-Bezug-Spalte.** Name (Auftraggeber: „Präzisiert LH-…“), Form der Fundstelle (Anker-Link, die
    link-policy verlangt ihn), Behandlung einer Zeile ohne Lastenheft-Element (benannte Spec-Lücke; eine
    LH-Änderung wäre ein Change Request nach [`MR-015`](../../../../harness/conventions.md#mr-015), nicht
    Sache der Spec), und ob §5 als Ganzes ein Lastenheft-Element präzisiert.
+   *Ergänzung aus dem Bericht:* Kandidaten mit Bindungsstufe (`einzeln` / `pauschal` / `nahe`) und die
+   Zeilen „kein LH gefunden“ (benannte Spec-Lücke) stehen im LH-Vorschlag des Berichts. Die Kandidaten
+   tragen einen Ebenen-Vorbehalt: `LH-FA-10` beschreibt das Verhalten im **Zielrepo**, die Spec-Zeile
+   teils das **dieses** Repos — die ADR entscheidet die Ebenen-Passung der Bindung.
+   **Fehlt ein Lastenheft-Element für eine Spec-Zeile, ist das ein Change Request am Lastenheft nach
+   [`MR-015`](../../../../harness/conventions.md#mr-015)** — Entscheidung des Auftraggebers; der
+   Architect benennt die Lücke und schreibt keine Anforderung.
 4. **Wohin die Begründungen (Klasse b) gehen:** eine Sammel-ADR zu §5 oder je Umbau-Block eine
    schärfende ADR. Das entscheidet, ob ein Umbau-Slice einen Architect-Schritt in der Mitte hat.
 5. **Wer §5 schreibt.** `slice-151-spec-straten-haben-eine-schreibende-rolle` (offen) führt die Frage;
@@ -84,6 +105,15 @@ gibt dem Planner den Hinweis, nach dem er die Umbau-Slices schneidet.
    dessen Tabellenparser zur neuen Spalte verhält.
 7. **Das emittierte Gegenstück** (die Spezifikations-Vorlage im Emit-Baum) ist ein anderer
    Vorgang (Dogfood vs. emittiert); die ADR sagt, ob er entsteht.
+8. **Zwei Zeiger ohne Gegenstück in eingefrorenen ADRs.**
+   [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) (Zeile 214) und
+   [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) (Zeilen 72 und 652) erwarten
+   eine Spec-Passage, die es nicht gibt (Randbefunde im Klassifikationsbericht des Vorgänger-Slice).
+   Beide sind `Accepted` und unveränderlich ([`AGENTS.md`](../../../../AGENTS.md) §3.4); die ADR sagt,
+   ob eine Folge-ADR sie auffängt oder die Lücke als bekannt stehen bleibt.
+9. **Schnitt der Umbau-Slices.** Der Bericht schneidet den Fließtext feiner als der Plan des
+   Vorgänger-Slice (die Abweichung steht in seinem §1); ob die Umbau-Slices dem Einheiten-Schnitt des
+   Berichts folgen, hält die ADR im Schnitt-Hinweis für den Planner fest.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
