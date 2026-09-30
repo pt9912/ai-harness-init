@@ -126,11 +126,26 @@ gibt dem Planner den Hinweis, nach dem er die Umbau-Slices schneidet.
      (a) keine Baseline-Regel-Abweichung sein; Deckung nach (b) gibt es für sie nicht.
    - Der Widerspruch zwischen der Aufnahme-Regel (Zeile 21: die Abweichung von der adoptierten Baseline
      gehört ins Konventionsdokument) und [`MR-021`](../../../../harness/conventions.md#mr-021), das die
-     sechs Abweichungen nach §5 weist (`grep -rn 'erklärten' harness/conventions/ | grep -c 'Abweichungen'`): welcher
+     sechs Abweichungen nach §5 weist (`grep -rn 'erklärten' harness/conventions/ | grep -c 'Abweichungen'` → **1**, Stand dieser Messung, keine Erwartungszahl): welcher
      Text gilt, und welcher wird angepasst (ADR gegen Eintrag; ein Eintrag wird nicht überschrieben).
-   - **Offene Auftraggeber-Frage, hier nicht beantwortet:** ob Modul 15 für den Fall „die Quelle liefert
-     das Feld nicht" zu eng ist. Eine Rückmeldung wäre eine Anforderung an den Kurs, keine Änderung in
-     diesem Repo.
+   - **Rückmeldung des Kurses zu Modul 15 — Eingabe, keine Bestätigung** (der Kurs hat die
+     Spezifikation dieses Repos ausdrücklich nicht gelesen). Sachverhalt: Das Pflicht-Minimum
+     (`modul-15-observability.md` Z. 34, vendored `v6.13.0`) ist eine **Schema-Forderung**;
+     „Abweichung" heißt dort, ein Minimum-Feld nicht ins Schema aufzunehmen oder optional zu machen
+     und das zu begründen. Ob die Quelle den **Wert** liefert, ist eine getrennte Frage: Ein nicht
+     gelieferter Wert ist nach dem Wortlaut keine Abweichung vom Schema; das Feld bleibt Pflicht, der
+     Wert ist ausdrücklich „unbekannt". Der Kurs sieht darin eine Lücke des Moduls und hält eine
+     eigene Kennzeichnung „Quelle liefert das Feld nicht" statt „Abweichung" für richtig.
+     *Folge für diese Frage — Anwendung, nicht geprüft, dem Architect zur Prüfung:* 3, 5 und 6
+     betreffen den Wert und wären im Sinne des Moduls keine Abweichungen (die Feldliste sagt, Pflicht
+     heiße: das Feld steht in jeder Zeile, auch leer; die Fundstelle dieses Wortlauts ist nicht
+     bestimmt — `grep -rn 'Pflicht heißt' spec internal/span harness docs/user` liefert nichts).
+     1 und 2 wären mögliche echte Schema-Abweichungen: 1, weil die Cache-Zähler in der Spezifikation
+     als `Optional` stehen (Tabellenzeile `SPEC-024`, `grep -n 'SPEC-024' spec/spezifikation.md`
+     → Zeile 117, Spalte Pflicht = `Optional`); 2, weil die PR-Nummer nicht im Schema steht und
+     `branch`/`commit` an ihrer Stelle stehen. 4 bleibt Festlegung des Repos ohne Modul-Bezug.
+     Ob dieses Repo die Bezeichnung „Quelle liefert das Feld nicht" bis zu einer Modul-Änderung als
+     eigene Wortwahl führt, entscheidet der Architect.
 2. **Ort, Konsument und Form der Messprotokolle.** Optionen: entfallen (git hält sie) · Zeitdokument
    unter einem Unterordner von `docs/` (Auftraggeber erwägt das). Jede Option hat vier Randbedingungen,
    die die ADR beantworten muss: ein **Konsument** (sonst kein Artefakt,
@@ -173,6 +188,30 @@ gibt dem Planner den Hinweis, nach dem er die Umbau-Slices schneidet.
    Vorgänger-Slice (die Abweichung steht in seinem §1); ob die Umbau-Slices dem Einheiten-Schnitt des
    Berichts folgen, hält die ADR im Schnitt-Hinweis für den Planner fest.
 
+10. **Der Abschnitt „Bewacht" der Spezifikation** (`grep -n 'Bewacht — die Zusicherungen' spec/spezifikation.md`
+    → Zeile 591; Klasse-e-Anteil). *Auftraggeber-Setzung:* Der Abschnitt gehört als Prosa nicht in
+    die Spezifikation. *Vorschlag, dem Architect zur Entscheidung:* die Wächter-Prosa (Test- und
+    Fallnamen) entfällt; jede Zusicherung, die dort steht und in keiner Tabellenzeile vorkommt, wird
+    eine Zeile mit SPEC-Kennung und Sensor-Spalte; wo eine Zusicherung keinen Wächter hat, ist das
+    eine benannte Lücke ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Die Sensor-Spalte ist eine
+    Abweichung von der Vorlagen-Form nach [`MR-021`](../../../../harness/conventions.md#mr-021); ob
+    auch sie fällt, ist eine weitere Entscheidung gegen diesen Eintrag. Vor dem Umbau misst ein
+    Implementer, welche Zuordnungen nur im Fließtext stehen und ob der Test die Zusicherung in Namen
+    oder Kommentar trägt — sonst geht die Zuordnung als Kommentar an den Test, statt verloren.
+    *Gegen-Sachverhalt:* Kein Sensor hält die Richtung Spezifikation → Wächter; der Verifier des
+    Klassifikations-Slice hat gemessen, dass kein Test und kein Sensor den Wortlaut der
+    Spezifikation liest.
+11. **Rest der Klasse e nach dem Umbau, und ein möglicher Ort unter `docs/`.** Was nach dem Umzug
+    der Zusicherungen in Tabellenzeilen und dem Wegfall der Wächter-Prosa aus Klasse e bleibt
+    (Prozess-Konventionen `U09`, `U10`, `U13`, `U15` des Berichts: START-KONVENTION, *DASS
+    Rollen-Arbeit als Rolle läuft*), ist kein Wert, Feld oder Schranke. Mögliche Orte, dem Architect
+    zur Wahl: ein `MR`-Eintrag · ein Abschnitt in [`harness/README.md`](../../../../harness/README.md) ·
+    ein Dokument unter `docs/user/` (Rang 6 der Source Precedence, kein neuer Rang; die Nutzerdoku
+    trägt nur den Ist-Zustand, also geltende Regel statt Messung; die Spezifikation darf dorthin
+    nicht zeigen, die `matrix`-Klasse `spec-straten` verbietet den Weg nach außen). Jeder Ort ist
+    Norm-Text und damit Architect-Arbeit. Sinnvoll nur bei mehreren Blöcken derselben Art; der Rest
+    wird erst nach dem Umbau gemessen (Implementer-Messung im Umbau-Slice).
+
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Kein ADR-Text vom Planner.** Der Rollenwechsel braucht ein Artefakt, keine Vorwegnahme
@@ -204,7 +243,7 @@ gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst —
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
 - [ ] **Liefer-Punkt 1 — die ADR.** Sie liegt vor, `Schärft:` nennt die Aufnahme-Regel und §5 als
-      Link, und sie beantwortet die Fragen 1 bis 3 mit Festlegungen (4 bis 7: beantwortet oder als
+      Link, und sie beantwortet die Fragen 1 bis 3 mit Festlegungen (4 bis 11: beantwortet oder als
       offen mit Trigger benannt). Ihre Fitness Function nennt **je Festlegung, was rot werden muss**;
       die Rot-Beobachtung liegt im Bericht des Verifiers. Eine Festlegung ohne benanntes
       Gegenbeispiel gilt als nicht fertig ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
