@@ -127,9 +127,9 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
 - [ ] Doku-Update: §7 Historie der Spec trägt die Zeile, „Letzte Änderung“ ist gesetzt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -192,16 +192,6 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **einen** Ausgang, und kein Slice geht nach `done/`, während eines ohne Ausgang
 dasteht.
 
-- **Ein Satz ändert beim Umbau seine Bedeutung**, und kein Sensor liest den Wortlaut. — **Ausgang:** wird
-  bei der Closure eingetragen (eingetreten / entfallen / weiter offen).
-- **Ein Kommentar-Zeiger in einer der 30 Dateien bleibt auf der alten Passage stehen** (Zahl mit
-  Kommando in `slice-spec-5-fliesstext-wird-absatz-fuer-absatz-klassifiziert` §1). — **Ausgang:** wird
-  bei der Closure eingetragen.
-- **Der Block ist nicht repräsentativ**, und die übrigen Blöcke (Abweichungen, „Bewacht“-Liste) verlangen
-  ein anderes Rezept. — **Ausgang:** wird bei der Closure eingetragen; der Pilot ist dafür da.
-- **Die Tabellenzeilen werden so lang wie `SPEC-031`**, statt den Fließtext zu ersetzen. — **Ausgang:** wird
-  bei der Closure eingetragen.
-
 ## 7. Closure-Notiz
 
 
@@ -216,8 +206,6 @@ diese Sektion die Zeile `Gegenstand:` mit Kennung oder Grund und jedes Risiko
 aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
-
-Wird bei der Closure vom Planner gefüllt ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

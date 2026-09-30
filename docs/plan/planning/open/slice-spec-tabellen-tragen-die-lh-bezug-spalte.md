@@ -105,9 +105,9 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
 - [ ] Doku-Update: die Handbuch-Sicht (`docs/user/`) nennt keine Spalte von §5; Prüfung per
       `grep -rn 'spezifikation' docs/user | wc -l` steht im Bericht, ein Treffer wird nachgezogen.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -162,13 +162,6 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 **einen** Ausgang, und kein Slice geht nach `done/`, während eines ohne Ausgang
 dasteht.
 
-- **Kein Lastenheft-Element für viele Zeilen** — dann fehlt dem Lastenheft eine Anforderung, oder §5
-  gehört keiner. — **Ausgang:** wird bei der Closure eingetragen (eingetreten / entfallen / weiter offen).
-- **Der Tabellenparser aus `slice-feldabdeckung-existenz-sensor` bricht an der neuen Spalte.** —
-  **Ausgang:** wird bei der Closure eingetragen.
-- **Die Spalte bleibt Dekoration**, weil kein Sensor sie hält (siehe Rot-Probe (ii)). — **Ausgang:** wird
-  bei der Closure eingetragen.
-
 ## 7. Closure-Notiz
 
 
@@ -183,8 +176,6 @@ diese Sektion die Zeile `Gegenstand:` mit Kennung oder Grund und jedes Risiko
 aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
-
-Wird bei der Closure vom Planner gefüllt ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
