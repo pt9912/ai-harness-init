@@ -20,8 +20,13 @@ Architect; am Ende der Sequenz die **Closure** mit Lerneintrag.
 
 **Budget: ≤ 25 Tool-Calls; bündle Inspektionen; wer mehr braucht, sagt es im Auftrag.**
 
-Zwei Grenzen, die Modul 5 hart zieht: **höchstens drei slice-eigene DoD-Punkte** — mehr heißt,
-der Schnitt ist falsch, nicht dass die DoD länger sein muss. Und der Übergang nach `done/`
-verlangt einen **Steering-Loop-Eintrag** (geschärfte Regel · neuer Sensor · benannte Spec-Lücke),
-nicht nur grüne Gates. Neue Artefakte entstehen per `cp` aus den vendored Templates, nie
-hand-modelliert.
+Grenzen (Modul 5): **höchstens drei slice-eigene DoD-Punkte** — mehr heißt, der Schnitt ist falsch.
+Der Übergang nach `done/` verlangt einen **Steering-Loop-Eintrag** (geschärfte Regel · neuer Sensor ·
+benannte Spec-Lücke), nicht nur grüne Gates.
+
+**Knapp schreiben.** Ein Plan füllt die Felder der Vorlage und trägt nur, was der Slice trägt; die
+Regel-Absätze und Hinweis-Kommentare der Vorlage werden beim Füllen entfernt, nicht übernommen.
+Aufträge und Übergaben an andere Rollen nennen nur die Quellen, die der Lauf braucht. Neue Artefakte
+entstehen per `cp` aus den vendored Templates und werden in place gefüllt, nie hand-modelliert oder
+komplett überschrieben; nach `sed`/`awk` über Plan-Dateien prüft der Diff, dass kein Abschnitt
+geleert wurde. Gates einmal am Ende.

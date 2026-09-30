@@ -2,168 +2,135 @@
 
 Argument: $ARGUMENTS
 
-Dieser Command führt die **Planner**-Rolle für *eine* Welle (Modul 6 — Roadmap Engineering). Eine
-Welle ist ein **Bündel von Slices**, das gemeinsam geplant und geschlossen wird. Seit Regelwerk v3.5.0
-ist der Welle-Status die **Verzeichnis-Position**, **kein `Status:`-Feld**: die **eröffnete**
-Welle liegt **flach** in `docs/plan/planning/<welle-id>.md`, bei Closure wandert sie per `git mv` nach
-`done/` (das schließt `/close-welle`). Die Roadmap bleibt Sequenzierungs-Autorität für die
-**Reihenfolge**; den Zustand sagt die Verzeichnis-Position.
+Dieser Command führt die **Planner**-Rolle für *eine* Welle (Modul 6). Der Zustand einer Welle ist
+ihre **Verzeichnis-Position**, kein `Status:`-Feld: die **eröffnete** Welle liegt flach in
+`docs/plan/planning/<welle-id>.md`, bei Closure wandert sie per `git mv` nach `done/`
+(`/close-welle`). Die Roadmap sequenziert; den Zustand sagt die Position.
 
 **Dieser Command vollzieht die Eröffnung — und die verlangt den eingetretenen Start-Trigger.**
 Solange eine Welle in der Vorschau *Nächste Wellen* steht, trägt sie **keine** Datei unter
 `docs/plan/planning/` und **keinen** Zeiger unter *Offene Wellen*; ihre Kennung steht dort
 **unverlinkt** ([ADR-0046](../../docs/plan/adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md)
-Festlegung 1). Ist der Trigger noch nicht eingetreten, endet die Arbeit bei dieser Vorschau-Zeile
-(Welle · Trigger · wichtigste Slices · Aufwand) — Schritt 7, Schritt 8 und Schritt 9 laufen dann
-nicht (Schritt 8 füllt die Datei, die erst Schritt 7 anlegt). Wer die Datei früher anlegt, färbt
-`make docs-check` rot: `wave-preview-exists`, und ohne Zeiger unter *Offene Wellen* zusätzlich
-`wave-drift` — geprüft ist dabei allein die Kopplung *Datei ⟺ Zeiger ⟺ nicht in der Vorschau*,
-nicht der Start-Trigger selbst: Träger dieser Folgepflicht ist der Rollen-Wechsel und kein Sensor
+Festlegung 1). Ist der Trigger noch nicht eingetreten, endet die Arbeit bei der Vorschau-Zeile
+(Welle · Trigger · wichtigste Slices · Aufwand); Schritt 7 bis 9 laufen dann nicht. Wer die Datei früher
+anlegt, färbt `make docs-check` rot (`wave-preview-exists`, ohne Zeiger zusätzlich `wave-drift`) —
+geprüft ist nur die Kopplung *Datei ⟺ Zeiger ⟺ nicht in der Vorschau*, nicht der Start-Trigger: Träger
+dieser Folgepflicht ist der Rollen-Wechsel
 ([ADR-0046](../../docs/plan/adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) §Fitness Function).
 
-Kanonische Quellen (vendored Regelwerk, `.harness/baseline/<tag>/regelwerk/`): Modul 6 (Roadmap),
-Modul 5 (Planning-Lifecycle), Modul 7 (Carveouts). Bei Konflikt gilt der Kurs.
+Quellen: vendored Regelwerk `.harness/baseline/<tag>/regelwerk/`, Modul 6, 5, 7; bei Konflikt gilt
+der Kurs.
 
-## Repo-lokale Adaptionen, die du beachten MUSST (harness/conventions.md — MR-Block)
+## Repo-lokale Regeln (Adaptions-Block in `harness/conventions.md`)
 
-Lies den Adaptions-Block („MR-Block") in `harness/conventions.md`; die planungs-relevanten:
-
-- **Neue Artefakte per `cp` aus den vendored Templates** (`.harness/baseline/<tag>/templates/…`),
-  dann **in-place** ausfüllen — **keine handgeschriebenen Kopien und kein Modellieren auf ein
-  bestehendes Artefakt.** Ein `cp` gefolgt von vollem Überschreiben (`Write`) ist derselbe Verstoß,
-  weil der `cp` verworfen wird. Das gilt für den Welle-Plan (`welle.template.md`) **und** jeden neuen
-  Slice (`slice.template.md`).
-- **Strenges Doc-Gate (d-check).** Jede `LH-`/`ADR-`/`MR-`-Kennung in einer gescannten `.md` muss ein
-  klickbarer Anker-Link sein (link-policy: always) — ein bares Kennungs-Token bricht `docs-check`. Der
-  Welle-Plan wird gescannt.
-- **Docker-only + Gate-Nachweis/Stop-Hook.** Nur `make`-Targets, nie Host-Toolchain. `make gates`
-  endet mit `record-gates`; jede Inhaltsänderung nach einem Gate-Lauf (inkl. Commit) macht den Stempel
-  ungültig → `make gates` erneut laufen.
-- **Commit via Message-Datei** (`git commit -F <datei>`).
+- **`cp` aus dem vendored Template** (`.harness/baseline/<tag>/templates/…`), dann **in place** füllen
+  (Edits). Ein `cp` mit anschließendem vollem `Write` ist derselbe Verstoß. Gilt für Welle-Plan
+  (`welle.template.md`) und jeden Slice (`slice.template.md`).
+- **Plan knapp halten.** Felder der Vorlage füllen; ihre Regel-Absätze („Regeln dieser Sektion"),
+  `> **Template-Hinweis.**`-Blöcke und `<!-- -->`-Kommentare beim Füllen entfernen; nur, was der Slice
+  trägt. Nach `sed`/`awk` über Plan-Dateien den Diff prüfen (kein Abschnitt geleert).
+- **Doc-Gate:** jede `LH-`/`ADR-`/`MR-`-Kennung in einer gescannten `.md` ist ein klickbarer Anker-Link.
+- **Docker-only; Gate-Nachweis:** nur `make`-Targets; jede Inhaltsänderung (auch Commit) nach
+  `make gates` macht den Stempel ungültig.
+- **Commit** via `git commit --only <pfade> -F <datei>`; Rolle „Planner" und eine Kennung in der Message.
+- **Aufträge an andere Rollen** nennen nur die Quellen, die der Lauf braucht.
 
 ## Kontext lesen
 
-1. `CLAUDE.md`, `harness/README.md`, `AGENTS.md`, `harness/conventions.md` lesen.
-2. Den Regelwerk-Index (`.harness/baseline/<tag>/regelwerk/README.md`) und **Modul 6** on-demand lesen
-   (Source Precedence). Nicht den ganzen Baum laden.
-3. Die Roadmap (`docs/plan/planning/in-progress/roadmap.md`) lesen: steht die zu planende Welle schon
-   als Zeile in *Nächste Wellen*? Liegen ihre Slices bereits in `open/`?
+1. `CLAUDE.md`, `harness/README.md`, `AGENTS.md`, `harness/conventions.md`; Regelwerk-Index und
+   **Modul 6** on-demand (nicht den Baum).
+2. Roadmap `docs/plan/planning/in-progress/roadmap.md`: steht die Welle als Zeile in *Nächste Wellen*?
+   Liegen ihre Slices schon in `open/`?
 
 ## Die drei Pflichtteile (Modul 6 — vor dem Schreiben benennen)
 
-4. Eine Welle braucht **minimal drei Bestandteile**, sonst ist sie keine Welle:
-   - **Slice-IDs** (der Inhalt) — welche Slices bündelt sie?
-   - **Trigger** (Welle startet) — eine **beobachtbare Bedingung**, kein Datum. Beobachtbar heißt:
-     *ein anderer Mensch kann ohne Rückfrage sagen, ob er eingetreten ist* (z. B. „Welle X done",
-     „Replay grün"). „Sobald wir Zeit haben" scheitert daran.
-   - **Closure-Kriterien** (Welle schließt) — Aktion, kein Termin (z. B. alle Slices in `done/`,
-     `make gates` grün, ein benannter Smoke). Ein Datum darf als *Schätzung* erscheinen, triggert nie.
-5. Berichten: Welle-ID · Zielmeilenstein · Slice-IDs · Trigger · Closure-Kriterien.
+3. Eine Welle braucht **Slice-IDs** · **Start-Trigger** (beobachtbar: ein anderer Mensch kann ohne
+   Rückfrage sagen, ob er eingetreten ist; kein Datum; **kein Ergebnis dieser Welle** — steht er in
+   ihrer Slice-Liste, ist er falsch platziert) · **Closure-Kriterien** (Aktion, kein Termin; ein Datum
+   darf nur Schätzung sein).
+4. Berichten: Welle-ID · Zielmeilenstein · Slice-IDs · Trigger · Closure-Kriterien.
 
 ## Slices bereitstellen
 
 **Ein Befund aus Review, Verifikation oder Closure bekommt eine Plan-Datei in `open/` nur mit einem
-Auslöser:** (1) ein Auftrag des Auftraggebers; (2) er blockiert oder verfälscht die laufende Arbeit;
+Auslöser:** (1) Auftrag des Auftraggebers; (2) er blockiert oder verfälscht die laufende Arbeit;
 (3) das Beobachtungs-Register hat ihn auf 3× gehoben; (4) ein bereits geplanter Slice nennt ihn mit
-Kennung als Folge-Slice. **Ohne Auslöser** nimmt er einen der zwei anderen Ausgänge aus Baseline-Regelwerk
-`modul-06-roadmap.md` §Das Beobachtungs-Register: einen Register-Eintrag (`observation.md` und
-`evidence/<vorgangs-id>.md`) oder die ausdrückliche Ablehnung mit Grund in der Closure-Notiz. Eine
-Plan-Datei „bis zur ersten Beanspruchung" ist kein Auslöser: beansprucht wird eine Datei, die es nach
-dieser Regel noch nicht gäbe. **Grenze:** Ein Wächter existiert nicht — ob ein Auslöser vorliegt, ist
-Urteil, und ein Sensor bräuchte ein Pflichtfeld im Slice-Kopf, das die vendorte Vorlage nicht trägt
+Kennung als Folge-Slice. **Ohne Auslöser** nimmt er einen der zwei anderen Ausgänge aus
+`modul-06-roadmap.md` §Das Beobachtungs-Register: Register-Eintrag (`observation.md` und
+`evidence/<vorgangs-id>.md`) oder ausdrückliche Ablehnung mit Grund in der Closure-Notiz. Eine
+Plan-Datei „bis zur ersten Beanspruchung" ist kein Auslöser. **Grenze:** Ein Wächter existiert nicht —
+ob ein Auslöser vorliegt, ist Urteil, und ein Sensor bräuchte ein Pflichtfeld im Slice-Kopf, das die
+vendorte Vorlage nicht trägt
 ([`ADR-0076`](../../docs/plan/adr/0076-ausgaenge-zu-spec-5-luecken-ebene-und-traeger-offener-saetze.md)
 Festlegung 7). Die Regel bindet den Schnitt und ist keine Hard Rule. Erreicht die Klasse ein viertes Mal
 die Schwelle, ist der neue Grund oder die neue Möglichkeit der Trigger.
 · seit slice-spec-5-entscheidungen-nach-dem-umbau
 
-**Vor jedem neuen Slice-Plan: das Beobachtungs-Register sichten** (`docs/plan/planning/observations/README.md`)
-— der **Sichtungs**-Schritt aus Modul 5, *Zwei Schritte vor der Modus-Begründung*, und für alles
-**unter** 3× der einzige Leser: die Welle-Closure liest nur, was die Schwelle erreicht hat. Berührt
-eine Sub-Area des neuen Slice einen Eintrag `BEO-<KUERZEL>/<slug>/`, gehört dessen **Zähler-Stand**
-in das Kriterium *Evidenz-/Diskrepanz-Risiko* in §8 des Plans — abgelesen wird er nicht, er ist die
-Zahl der Dateien unter dem `evidence/` des Eintrags. Erreicht der Eintrag **mit diesem Slice** 3×,
-ist er keine Notiz mehr, sondern eine Lücke mit eigenem Folge-Slice. **Keine Treffer sind ebenfalls
-eine Antwort** und werden in §8 notiert; trägt die Ablage nur ihre `README.md`, lautet die Antwort
-genau das — nicht *„geprüft"* und nicht gar nichts. Gelesen wird der **gemergte** Stand: das
-Register ist beim Lesen so alt wie der letzte Merge.
+**Vor jedem neuen Slice-Plan das Beobachtungs-Register sichten**
+(`docs/plan/planning/observations/README.md`; Sichtungs-Schritt, Modul 5) — für alles **unter** 3× der
+einzige Leser. Berührt eine Sub-Area des Slice einen Eintrag `BEO-<KUERZEL>/<slug>/`, gehört dessen
+Zähler-Stand (Zahl der Dateien unter `evidence/`) in das Kriterium *Evidenz-/Diskrepanz-Risiko* in §8;
+erreicht er mit diesem Slice 3×, braucht er einen eigenen Folge-Slice. **Keine Treffer sind eine
+Antwort** und werden in §8 notiert; trägt die Ablage nur ihre `README.md`, lautet sie genau das.
+Gelesen wird der gemergte Stand.
 
 **Eine Bedingung, die ein Geber-Artefakt an einen Lauf richtet, der noch nicht existiert, steht im
-Slice-Plan dieses Laufs.** Gemeint sind ein Punkt unter *„Ausdrücklich NICHT"* mit Folge-Schnitt, ein
-Risiko-Ausgang, eine Übergabe eines Review- oder Verifikations-Berichts und eine Folgepflicht einer ADR.
-Der Geber wandert bei seiner Closure nach `done/` und liegt danach in keinem Eingang; der Plan ist das
-Artefakt, das der Lauf liest — die Bedingung steht darum in §1 oder §3 des Plans, der sie trägt. Ein
-Folge-Schnitt ohne Datei ist keine Adresse (Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form:
-Slice, §1 Klasse 1): hängt eine Bedingung an ihm, legt der Planner beim Schließen des Gebers die Datei in
-`open/` an (per `cp` aus dem Template) und trägt die Bedingung dort ein. **Grenze:** Ein Wächter existiert
-nicht — die Zeile ist Feedforward, ihr Bruch färbt kein Gate. Tritt die Klasse nach dieser Zeile erneut
-ein, ist die Trägerschaft der Befund und nicht die Wiederholung; die nächste Stufe ist dann eine Hard Rule
+Slice-Plan dieses Laufs** — gemeint: ein Punkt unter *„Ausdrücklich NICHT"* mit Folge-Schnitt, ein
+Risiko-Ausgang, eine Übergabe eines Review- oder Verifikations-Berichts, eine Folgepflicht einer ADR.
+Der Geber wandert bei seiner Closure nach `done/`; der Plan ist das Artefakt, das der Lauf liest — die
+Bedingung steht in §1 oder §3 des Plans, der sie trägt. Ein Folge-Schnitt ohne Datei ist keine Adresse
+(`modul-05-planning-harness.md` §Ziel-Form: Slice, Klasse 1): hängt eine Bedingung an ihm, legt der
+Planner beim Schließen des Gebers die Datei in `open/` an (`cp` aus dem Template) und trägt sie dort
+ein. **Grenze:** Ein Wächter existiert nicht — die Zeile ist Feedforward. Tritt die Klasse nach dieser
+Zeile erneut ein, ist die Trägerschaft der Befund; die nächste Stufe ist dann eine Hard Rule
 (Architect, `AGENTS.md` §3.8). · seit slice-tap-nachzug-sync-schreibt-die-formel-ins-tap
 
-6. Existiert ein Slice der Welle noch nicht, ihn **per `cp` aus `slice.template.md`** anlegen
-   (`docs/plan/planning/open/slice-<NN>-<titel>.md`), dann füllen. Nie hand-authoren.
+5. Existiert ein Slice der Welle noch nicht, ihn per `cp` aus `slice.template.md` nach
+   `docs/plan/planning/open/slice-<kennung>-<titel>.md` anlegen und füllen. Nie hand-authoren.
 
 ## Einen Slice stilllegen (`open/` oder `next/` → `done/`)
 
-Gilt, wenn ein Slice beim Bereitstellen seinen Gegenstand an einen anderen abgibt oder der
-Gegenstand entfällt, etwa bei einer Gruppierung (Baseline-Regelwerk `modul-05-planning-harness.md`
-§Ein Slice, dessen Gegenstand ein anderer übernimmt). Die Kante führt an `in-progress/` vorbei.
-**Kein Wächter hält sie** ([`harness/sensors/slice-mv.md`](../../harness/sensors/slice-mv.md)
-§Grenze). Die Prüfungen unten trägt darum dieser Lauf, bis `slice-mv-kanten-nach-done-sind-bewacht`
-geschlossen ist.
+Gilt, wenn ein Slice seinen Gegenstand an einen anderen abgibt oder der Gegenstand entfällt, etwa bei
+einer Gruppierung (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer übernimmt).
+Die Kante führt an `in-progress/` vorbei. **Kein Wächter hält sie**
+([`harness/sensors/slice-mv.md`](../../harness/sensors/slice-mv.md) §Grenze); die Prüfungen unten trägt
+dieser Lauf, bis `slice-mv-kanten-nach-done-sind-bewacht` geschlossen ist.
 
-- **Vorher, im Inhalts-Commit:**
-  - Die Liefer-Punkte der DoD bleiben leer.
-  - §7 trägt die Zeile `Gegenstand:` mit der Kennung des übernehmenden Slice oder mit dem Grund.
-  - Jedes Risiko aus §6 trägt einen Ausgang. Kein Modul prüft das; die Adresse der Lücke ist
-    `slice-risiko-ausgang-hat-einen-sensor`.
+- **Vorher, im Inhalts-Commit:** Liefer-Punkte der DoD bleiben leer; §7 trägt die Zeile `Gegenstand:`
+  mit der Kennung des übernehmenden Slice oder dem Grund; jedes Risiko aus §6 trägt einen Ausgang (kein
+  Modul prüft das; Adresse der Lücke: `slice-risiko-ausgang-hat-einen-sensor`).
 - **Die genannte Kennung löst auf:** `ls docs/plan/planning/*/<kennung>.md` nennt genau eine Datei.
-  **Diese Prüfung ist ein Urteil dieses Laufs, kein Sensor.** Die Ziel-Fassung lässt *Urteil oder
-  eigener Sensor* offen, und dieses Repo wählt das Urteil. Setzung des Planners vom 2026-09-17;
-  sie ist neu zu entscheiden, sobald der gepinnte d-check die Auflösung prüft oder in `done/` eine
-  Kennung steht, die nicht auflöst. Der Auftraggeber hat die Setzung am 2026-09-17 bestätigt und
-  dem Planner zugewiesen. Die Zuständigkeit für eine Norm-Aussage ohne Original lässt
-  [ADR-0028](../../docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
-  Festlegung 2 offen; hier trägt darum die Entscheidung des Auftraggebers.
-- **Der Wechsel:** `make slice-mv SLICE=<kennung> TO=done`, **je Slice einzeln**. Nach jedem
-  Wechsel laufen drei Prüfungen, bevor der nächste beginnt:
-  1. Der Exit-Code ist 0.
-  2. Der Move-Commit ist ein reiner Rename: `git show --numstat --format= -M <commit>` gibt `0 0`
-     aus. Der Move-Commit ist `HEAD~1`, wenn das Werkzeug einen Nachzug-Commit meldet, sonst
-     `HEAD`.
-  3. `make docs-check` meldet keinen Befund.
-
-  **Fällt eine Prüfung, hält die Serie an.** Der Befund wird geklärt, bevor der nächste Slice
-  wandert.
+  **Das ist ein Urteil dieses Laufs, kein Sensor** — Setzung des Planners vom 2026-09-17, vom
+  Auftraggeber am selben Tag bestätigt und dem Planner zugewiesen
+  ([ADR-0028](../../docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) Festlegung 2
+  lässt die Zuständigkeit offen). Neu zu entscheiden, sobald der gepinnte d-check die Auflösung prüft
+  oder in `done/` eine Kennung steht, die nicht auflöst.
+- **Der Wechsel:** `make slice-mv SLICE=<kennung> TO=done`, **je Slice einzeln**. Danach, vor dem
+  nächsten: (1) Exit 0; (2) der Move-Commit ist ein reiner Rename —
+  `git show --numstat --format= -M <commit>` gibt `0 0` (Move-Commit ist `HEAD~1`, wenn das Werkzeug
+  einen Nachzug-Commit meldet, sonst `HEAD`); (3) `make docs-check` ohne Befund. Fällt eine Prüfung,
+  hält die Serie an.
 - **Den Nachzug-Commit lesen:** Hat er in `docs/reviews/**` einen Tree-Operanden (`<sha>:<pfad>`)
-  umgeschrieben, nimmst du diese Hunks per Gegen-Commit zurück. Kein Gate sieht das; das Register
-  führt die Klasse als `verweis-nachzug-bricht-tree-operand`.
+  umgeschrieben, nimmst du diese Hunks per Gegen-Commit zurück (Register-Klasse
+  `verweis-nachzug-bricht-tree-operand`).
 
-## Welle-Plan per cp anlegen und füllen (der Kern-Schritt)
+## Welle-Plan anlegen und füllen
 
-7. **`cp` aus `.harness/baseline/<tag>/templates/docs/plan/planning/welle.template.md` nach
-   `docs/plan/planning/<welle-id>.md`** — flach in `planning/`, kein Lifecycle-Ordner. Provenienz mit
-   `diff -q <template> <ziel>` belegen (byte-identisch, dann füllen).
-8. **In-place füllen** (Edits, **kein** Voll-Überschreiben): den `> **Template-Hinweis.**`-Block
-   strippen, alle Platzhalter ersetzen, die `<!-- -->`-Guidance-Kommentare entfernen. Die
-   **`Lifecycle:`-Note der Vorlage behalten** (Zustand = Verzeichnis-Position, **kein `Status:`-Feld**
-   — v3.5.0), Zielmeilenstein und Verantwortlich/Datum setzen. Die Abschnitte mit den drei
-   Pflichtteilen aus Schritt 4 füllen; Kennungen als Anker-Links.
+6. **`cp`** `welle.template.md` nach `docs/plan/planning/<welle-id>.md` (flach, kein Lifecycle-Ordner);
+   `diff -q <template> <ziel>` belegt die Provenienz.
+7. **In place füllen:** Hinweis-Block und Guidance-Kommentare entfernen, Platzhalter ersetzen; die
+   `Lifecycle:`-Note der Vorlage bleibt (kein `Status:`-Feld); Zielmeilenstein, Verantwortlich, Datum
+   setzen; die drei Pflichtteile aus Schritt 3 füllen, Kennungen als Anker-Links.
 
 ## Roadmap verdrahten und gaten
 
-9. Roadmap fortschreiben — die zwei Wirkungen der Eröffnung, die dort landen: Die Welle-Zeile
-   **verlässt** die Vorschau *Nächste Wellen*, und unter *Offene Wellen* erscheint der Zeiger auf
-   die neue Plan-Datei. Beide gehören mit Schritt 7 in **einen** Commit: Datei, entfallende
-   Vorschau-Zeile und Zeiger sind ein Vorgang, nicht drei
+8. Roadmap fortschreiben: die Welle-Zeile **verlässt** die Vorschau *Nächste Wellen*, unter *Offene
+   Wellen* erscheint der Zeiger auf die Plan-Datei. Datei, entfallende Vorschau-Zeile und Zeiger sind
+   **ein** Commit, ein Vorgang
    ([ADR-0046](../../docs/plan/adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md) Festlegung 1).
-   Die Welle-Verweise der zugehörigen Slices auf die neue Plan-Datei ziehen.
-10. `make gates` laufen lassen (grün). Beim **Anlegen** ist der Welle-Plan **Inhalt** → ein einzelner
-    Commit, hier **kein `git mv`** (die neue Welle entsteht flach, und flach **ist** der Zustand
-    *eröffnet*). Der `git mv` nach `done/` kommt erst bei der **Closure** (`/close-welle`).
-    Commit via `-F`.
+   Die Welle-Verweise der Slices auf die neue Plan-Datei ziehen.
+9. `make gates` **einmal am Ende**. Die Neuanlage ist Inhalt, **kein `git mv`** (flach **ist** der
+   Zustand *eröffnet*); den `git mv` nach `done/` macht `/close-welle`.
 
-**Merke (Modul 6):** Eine Welle endet durch **Closure-Kriterien**, nicht durch ein Datum
-(Welle ≠ Sprint). Ein Trigger ist eine beobachtbare Bedingung, kein Kalendertag. Die fertige Welle
-schließt `/close-welle`.
-
-Gates nicht überspringen. Keine Erfolgsmeldung ohne Command-Ausgabe.
+Eine Welle endet durch Closure-Kriterien, nicht durch ein Datum. Keine Erfolgsmeldung ohne
+Command-Ausgabe.
