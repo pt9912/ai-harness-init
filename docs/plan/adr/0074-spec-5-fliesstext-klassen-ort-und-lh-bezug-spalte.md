@@ -1,6 +1,6 @@
 # ADR-0074: Der Fließtext von Spec §5 wird nach Klassen umgebaut — Festlegung bleibt Tabellenzeile, Begründung geht in eine Sammel-ADR, Messung nach `docs/reviews/` — und die Tabellen tragen die Spalte `Präzisiert`
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-30
 
@@ -499,3 +499,4 @@ awk '/^\| `SPEC-034`/{f=1;next} /^## 6\. Externe/{f=0} f' spec/spezifikation.md 
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-30 | Proposed | Architect-Schritt zur Entscheidung der Klassen, des Ortes der Messprotokolle und der Spalte `Präzisiert` |
+| 2026-09-30 | Accepted | Entscheidung des Auftraggebers; die offenen Entscheidungen E1–E4 sind damit nicht getroffen |
