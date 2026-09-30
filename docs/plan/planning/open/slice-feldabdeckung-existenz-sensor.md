@@ -100,6 +100,11 @@ Ausgang, die drei Paarungen getragen.
 | [`harness/README.md`](../../../../harness/README.md) §Sensors | update | Liefer-Punkt (3) |
 | Testdatei unter `test/` (bats, Konvention dieses Repos) | neu | Happy (heutiger Bestand grün) · Boundary (ein Feld nur auf einer Seite → rot) · Negative (unbekannte Zeilenform → fail-closed) |
 
+- **Bedingung aus der Verifikation von `slice-spec-5-wird-nach-adr-0074-umgebaut`:** der Parser liest die Feldtabelle über den Kopfzeilen-Präfix
+  `| ID | Feld | Pflicht | Incident-Frage | Sensor |` und Spalte 2 ([`ADR-0074`](../../adr/0074-spec-5-fliesstext-klassen-ort-und-lh-bezug-spalte.md)
+  Festlegung 8). Die Spec trägt neben der Feldtabelle weitere Tabellen mit `SPEC`-Zeilen (Zusicherungen, Regeln, Werkzeuge, jede mit eigener
+  Kopfzeile); jede Zeile, die kein Feld ist, in der Feldtabelle färbt ihn rot.
+
 ## 4. Trigger
 
 **Start** (`open` → `next` → `in-progress`): **[`ADR-0071`](../../adr/0071-kopplung-feldliste-spec-ist-existenz-abgleich.md) ist `Accepted`.** Bis dahin hat dieser
