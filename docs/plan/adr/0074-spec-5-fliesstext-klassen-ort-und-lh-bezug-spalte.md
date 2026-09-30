@@ -1,4 +1,4 @@
-# ADR-0074: Der Fließtext von Spec §5 wird nach Klassen umgebaut — Festlegung bleibt Tabellenzeile, Begründung geht in eine Sammel-ADR, Messung nach `docs/reviews/`, echte Abweichung in den Adaptions-Block — und die Tabellen tragen die Spalte `Präzisiert`
+# ADR-0074: Der Fließtext von Spec §5 wird nach Klassen umgebaut — Festlegung bleibt Tabellenzeile, Begründung geht in eine Sammel-ADR, Messung nach `docs/reviews/` — und die Tabellen tragen die Spalte `Präzisiert`
 
 **Status:** Proposed
 
@@ -10,18 +10,18 @@
 [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) (der einzige Träger des
 Span-Schemas im Vertrag; Festlegung 5),
 [`ADR-0013`](0013-technik-stratum-als-zielort.md) (**Accepted** — Festlegung 1 setzt §5 als Zielort,
-Festlegung 2 trennt Festlegung, Begründung und Abweichung, der erste Re-Evaluierungs-Trigger ist hier
-eingetreten; Teil-Revision unten),
+Festlegung 2 trennt Festlegung, Begründung und Abweichung; ihr erster Re-Evaluierungs-Trigger ist für die
+Abweichungen 1 und 2 eingetreten, Festlegung 3),
 [`ADR-0071`](0071-kopplung-feldliste-spec-ist-existenz-abgleich.md) (**Proposed** — bindet die Tabellenform
 der Feldtabelle; Festlegung 8),
-[`ADR-0015`](0015-rollen-eigentum-an-norm-artefakten.md) (Grenze der Rollen-Zuordnung; Festlegung 7 und
-offene Entscheidung 3),
+[`ADR-0015`](0015-rollen-eigentum-an-norm-artefakten.md) (Grenze der Rollen-Zuordnung; hier Festlegung 7),
 [`ADR-0024`](0024-derivatives-register-gehoert-der-rolle-seines-originals.md) (der ADR-Index gehört dem
 Architect),
 [`ADR-0028`](0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) und
 [`ADR-0021`](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) (Zeiger auf Spec-Passagen, die es nicht mehr
 gibt; Festlegung 10),
 [`MR-021`](../../../harness/conventions.md#mr-021) (routet die sechs erklärten Abweichungen nach §5),
+[`MR-044`](../../../harness/conventions.md#mr-044) (zählt die Spalten von §5; Festlegung 5),
 [`MR-015`](../../../harness/conventions.md#mr-015) (Change Request am Lastenheft),
 [`MR-025`](../../../harness/conventions.md#mr-025) (Zahl neben Kommando),
 [`MR-032`](../../../harness/conventions.md#mr-032) (Kopf-Marke für eine Teil-Ablösung),
@@ -34,14 +34,16 @@ und seiner
 (Zeitdokumente in der stehenden Ablage `docs/reviews/`; „Einheit Unn" unten meint eine Zeile seiner
 Klassifikationstabelle)
 
-**Revidiert (Teil-Supersede, wirksam erst mit der Annahme):** von
-[`ADR-0013`](0013-technik-stratum-als-zielort.md) Festlegung 1 nur der Halbsatz, der die *je Abweichung
-geschuldete Begründung* nach §5 legt. Wo die Abweichung eine echte Abweichung von der Baseline ist,
-steht ihre Begründung im Adaptions-Eintrag (Festlegung 3). **Nicht** revidiert: Festlegung 1 im Übrigen
-(Feldtabelle und Schranken leben in §5 und §3), Festlegung 2, Festlegung 3 und alle Folgepflichten. Der
-Weg ist derselbe wie bei [`ADR-0013`](0013-technik-stratum-als-zielort.md) selbst: die Teil-Revision wird
-im ADR-Index an [`ADR-0013`](0013-technik-stratum-als-zielort.md) annotiert, und zwar bei der Annahme,
-nicht vorher — eine `Proposed`-ADR revidiert nichts.
+**Revidiert:** nichts. [`ADR-0013`](0013-technik-stratum-als-zielort.md) sieht den Fall selbst vor: Annahme
+(*„die Feldtabelle und ihre erklärten Abweichungen sind technische Festlegungen dieses Repos und keine
+Abweichungen von der Baseline"*) und erster Re-Evaluierungs-Trigger (*„erweist sich ein Teil des Bestands als
+Abweichung von der Baseline statt als eigene Festlegung, bleibt **dieser** Posten im Adaptions-Block"*) halten
+fest, dass ein solcher Posten im Adaptions-Block liegt und die Entscheidung für den Rest gilt. Festlegung 3
+wendet diesen Trigger an; dafür braucht es keine Revision und keine Index-Annotation. Die Begründungen der
+Abweichungen 3 bis 6 sind nach Festlegung 3 keine „je Abweichung geschuldete Begründung" im Sinn von
+[`ADR-0013`](0013-technik-stratum-als-zielort.md) Festlegung 1; dass eine Begründung in der Entscheidung bleibt,
+sagt deren Festlegung 2. Liest jemand die Einstufung von 3 bis 6 anders, ist das eine Teil-Revision und braucht eine
+Folge-ADR.
 
 **Schärft:**
 [`spec/spezifikation.md §Aufnahme-Regel`](../../../spec/spezifikation.md#aufnahme-regel),
@@ -54,11 +56,15 @@ drei Stellen nach. Die Spec nennt diese ADR nie.
 
 ## Kontext
 
-Der Fließtext von §5 — alles nach der Werkzeug-Tabelle — misst 45889 Byte und ist in 64 Einheiten mit 10 zweiten
-Zeilen klassifiziert (Klassifikationsbericht §1, §3):
+**Stand der Messungen:** die Spec am Commit `3d926f6f` (`git show 3d926f6f:spec/spezifikation.md`; der
+Klassifikationsbericht misst denselben Stand). Die Spec wandert mit jedem Umbau-Schritt, darum adressiert kein
+Kommando dieser ADR sie über Zeilennummern.
+
+Der Fließtext von §5 — alles nach der Werkzeug-Tabelle bis `## 6. Externe Verträge` — misst 45889 Byte und ist
+in 64 Einheiten mit 10 zweiten Zeilen klassifiziert (Klassifikationsbericht §1, §3):
 
 ```sh
-sed -n '137,718p' spec/spezifikation.md | wc -c    # 45889
+git show 3d926f6f:spec/spezifikation.md | awk '/^\| `SPEC-034`/{f=1;next} /^## 6\. Externe/{f=0} f' | tail -n +2 | wc -c   # 45889
 F=docs/reviews/2026-09-30-slice-spec-5-fliesstext-wird-absatz-fuer-absatz-klassifiziert-klassifikation.md
 awk -F'|' '/^\| U[0-9]+b? / {gsub(/ /,"",$5); n[$5]++} END{for(k in n) print k, n[k]}' $F | sort
 # a 21 · b 10 · c 15 · d 12 · e 16   (74 Zeilen; Bytes und Anteile: Bericht §2)
@@ -75,20 +81,21 @@ des Berichts; **alle 16 Zeilen der Klasse `e` sind Wächter-Zuordnungen**
 1. **Die Spec widerspricht sich zur Abweichung.** Die Aufnahme-Regel schließt „die Abweichung von der
    adoptierten Baseline (repo-lokales Konventionsdokument)" aus §5 aus; [`MR-021`](../../../harness/conventions.md#mr-021)
    weist „die sechs erklärten Abweichungen" nach §5, und §5 führt sie. [`ADR-0013`](0013-technik-stratum-als-zielort.md)
-   Festlegung 2 sagt das Gleiche wie die Aufnahme-Regel, und ihre Annahme (*„die erklärten Abweichungen sind
-   keine Abweichungen von der Baseline"*) hat einen Trigger für den Fall, dass sie kippt.
+   Festlegung 2 sagt das Gleiche wie die Aufnahme-Regel; ihre Annahme hat einen Trigger für den Fall, dass sie kippt.
 2. **Die Spec trägt Messprotokolle.** Zwischen dem Kopf und der Historie stehen zwölf Zeilen mit einem Datum
    und 39 mit „gemessen" oder Datum
-   (`sed -n '4,/^## 7\. Historie/p' spec/spezifikation.md | grep -cE '20[0-9]{2}-[0-9]{2}-[0-9]{2}'` → 12;
+   (`git show 3d926f6f:spec/spezifikation.md | sed -n '4,/^## 7\. Historie/p' | grep -cE '20[0-9]{2}-[0-9]{2}-[0-9]{2}'` → 12;
    `… | grep -cE 'gemessen|20[0-9]{2}-[0-9]{2}-[0-9]{2}'` → 39). Die Aufnahme-Regel verlangt „etwas, gegen das
    gemessen werden kann" — nicht die Messung selbst.
 3. **Die Tabellen tragen keine Bindung an den Vertrag.** [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)
-   ist der einzige Träger im Lastenheft; im Bericht (§6) tragen 10 von 34 Tabellenzeilen keinen Kandidaten
-   (`sed -n '470,520p' $F | grep -E '^\| .SPEC-[0-9]+. .*kein LH gefunden' | grep -oE 'SPEC-[0-9]+' | wc -l` → 10).
-4. **Die Wächter-Zuordnung steht doppelt** — in der Spalte `Sensor` der Feldtabelle und als 16 Zeilen Fließtext
-   (23,2 % der Bytes, Bericht §2), die die Spec selbst als unbewacht bezeichnet.
-5. **Der Fließtext trägt Verhaltensregeln für Rollen** (Einheiten U09, U10, U15), die kein Wert, Feld oder
-   Schranke sind.
+   ist der einzige Träger im Lastenheft; im Bericht (§6.2) tragen 10 von 34 Tabellenzeilen keinen Kandidaten
+   (`grep -E '^\| .SPEC-[0-9]+. .*kein LH gefunden' $F | grep -oE 'SPEC-[0-9]+' | wc -l` → 10;
+   `git show 3d926f6f:spec/spezifikation.md | grep -cE '^\| .SPEC-[0-9]+. '` → 34).
+4. **Die Wächter-Zuordnung steht an zwei Orten** — in der Spalte `Sensor` der Feldtabelle und als 16 Zeilen
+   Fließtext (23,2 % der Bytes, Bericht §2), die die Spec selbst als unbewacht bezeichnet. Wie viele Zusicherungen
+   **nur** im Fließtext stehen, ist nicht gemessen (Festlegung 12 misst es vor dem Umbau).
+5. **Der Fließtext trägt Verhaltensregeln für Rollen** (Einheiten U09, U10, U11b, U15), die kein Wert, Feld oder
+   Schranke sind; der Bericht führt sie als Grenzfall der Klassen `a`/`e`.
 
 **Was der Auftraggeber gesetzt hat, und wie diese ADR es behandelt.** Jede Setzung ist geprüft; keine ist
 still geändert.
@@ -96,7 +103,7 @@ still geändert.
 | Setzung | Prüfung | Ergebnis |
 |---|---|---|
 | Abweichungen 3, 5, 6 betreffen den Wert („unbekannt"), keine Abweichung; Verfügbarkeit in die emittierte Feldliste, in der Spec je Fall eine kurze Zeile | `agent_role` ist in der Spec `Pflicht` (`grep -n 'SPEC-010' spec/spezifikation.md`); die Feldliste führt „Pflicht heißt: das Feld steht in jeder Zeile, auch leer" (`grep -n 'heißt: das Feld steht in jeder Zeile' internal/span/fieldlist.go`) | **übernommen** (Festlegung 3) |
-| Abweichungen 1 und 2 nur nach Prüfung mögliche Adaptions-Einträge | 1: Cache-Status ist Teil des Pflicht-Minimums, die Spec führt die Zähler als `Optional` (`SPEC-024`) — „optional machen" ist nach dem Kurs die Abweichung. 2: die PR-Korrelation steht in den Mindestfeldern, die Spec führt `branch`/`commit` statt einer PR-Angabe (`SPEC-014`) | **beide echt**; vorläufig Adaptions-Einträge, hier keiner geschrieben (Festlegung 3, offene Entscheidung 1) |
+| Abweichungen 1 und 2 nur nach Prüfung mögliche Adaptions-Einträge | 1: Cache-Status ist Teil des Pflicht-Minimums, die Spec führt die Zähler als `Optional` (`SPEC-024`) — „optional machen" ist nach dem Kurs die Abweichung. 2: die PR-Korrelation steht in den Mindestfeldern, die Spec führt `branch`/`commit` statt einer PR-Angabe (`SPEC-014`) | **beide echt**; ob ein Eintrag entsteht, entscheidet E1 (Festlegung 3) |
 | Abweichung 4 bleibt eine Tabellenzeile | Das Modul nennt den Emissions-Pfad samt Aufbewahrung ausdrücklich eine Repo-Entscheidung (`modul-15-observability.md`, letzter Punkt von §Span-/Audit-Attribut-Regeln) | **übernommen** |
 | LH-Bezug: erst [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) prüfen; Change Request nur gebündelt und nur für fehlende Anforderungen, sonst benannte Lücke | Festlegung 5 | **übernommen**; kein Change Request jetzt |
 | Messprotokolle: kein neuer Ordner, `docs/reviews/` | `docs/reviews/**` steht in `.d-check.yml` bereits in den `exempt-paths` (`grep -c 'docs/reviews' .d-check.yml` → 9); keine Senkung | **übernommen, mit einer Ergänzung** (Festlegung 4: nur mit Konsument) |
@@ -110,6 +117,11 @@ Entscheidungsgrundlage der Umbau-Schritte; **diese ADR schreibt keinen Spec-Text
 keinen Code** — der Wortlaut folgt in eigenen Schritten mit eigenem Diff
 ([`ADR-0013`](0013-technik-stratum-als-zielort.md), „Diese ADR verschiebt keinen Bestand").
 
+**Was die Annahme nicht vorentscheidet.** Die offenen Entscheidungen E1 bis E4 (unten) bleiben mit allen Optionen
+offen. Jede Festlegung gilt entweder unabhängig von ihrem Ausgang, oder sie trägt die Kennung der Entscheidung
+als Bedingung („falls E1 = A"). Der Ausgang wird nicht in dieser ADR nachgetragen, sondern in einer Folge-ADR
+festgehalten (Re-Evaluierungs-Trigger 4).
+
 ### Festlegung 1 — das Klassenraster
 
 Die Arbeitshypothese des Auftraggebers (Festlegung · Begründung · Messprotokoll) reicht nicht: `d` trägt
@@ -119,33 +131,37 @@ nicht einen Spec-Satz seinem Ort.
 
 | Klasse | Kriterium | Zielort |
 |---|---|---|
-| **Festlegung** (`a`) | ein Wert, Feld, eine Schranke, Regel oder Fassung, **gegen die gemessen werden kann** (Aufnahme-Regel Satz 1) — auch, was das Werkzeug **nicht** liefert | Tabellenzeile mit fortlaufender `SPEC-<NNN>`, `Sensor` und `Präzisiert` |
+| **Festlegung** (`a`) | ein Wert, Feld, eine Schranke, Regel oder Fassung, **gegen die gemessen werden kann** (Aufnahme-Regel Satz 1) — auch, was das Werkzeug **nicht** liefert | Tabellenzeile mit fortlaufender `SPEC-<NNN>` und `Präzisiert`; die Wächter-Zuordnung je Festlegung 12 |
 | **Begründung** (`b`) | *warum* diese Regel und nicht die andere | Sammel-ADR (Festlegung 6), nie in die Spec |
 | **Messprotokoll** (`c`) | eine datierte Messung, ein Verlauf, eine Zählung des Bestands | `docs/reviews/` **oder** entfällt (Festlegung 4), nie in die Spec |
-| **Abweichung** (`d`) | eine **echte** Abweichung von einer Baseline-Regel (Festlegung 3) | Adaptions-Block (`harness/conventions/`); die Festlegung selbst bleibt Zeile |
-| **Prozess-Konvention** (`p`) | wer wann was tut — kein Wert, Feld, keine Schranke | ein Ort außerhalb der Spec (offene Entscheidung 3) |
+| **Abweichung** (`d`) | eine **echte** Abweichung von einer Baseline-Regel (Festlegung 3) | die Festlegung selbst bleibt Zeile; die Abweichung liegt im Adaptions-Block, falls E1 = A — bleibt in §5, falls E1 = B — entfällt, falls E1 = C |
+| **Prozess-Konvention** (`p`) | wer wann was tut — kein Wert, Feld, keine Schranke | ein Ort außerhalb der Spec nach E3; bis zur Entscheidung bleibt sie unverändert in §5 (Festlegung 13) |
 
-Keine Klasse sind: die **Wächter-Zuordnung** (sie ist die Spalte `Sensor` der Zeile, die die Zusicherung trägt —
-Festlegung 12), die **Entstehungs-Erzählung** und der **Prozess-Zustand** (offene Frage, „nicht gemessen",
-wer trägt was). Beide entfallen aus der Spec nach dem Wortlaut von [`MR-021`](../../../harness/conventions.md#mr-021)
-(Posten 5 und 6 der Liste „Was ersatzlos entfällt"); ein Prozess-Zustand geht in den Plan oder das
-Beobachtungs-Register, wenn er sonst spurlos verschwände.
+Keine Klasse sind: die **Wächter-Zuordnung** (Eigenschaft der Zeile, die die Zusicherung trägt — Festlegung 12),
+die **Entstehungs-Erzählung** und der **Prozess-Zustand** (offene Frage, „nicht gemessen", wer trägt was). Beide
+entfallen aus der Spec nach dem Wortlaut von [`MR-021`](../../../harness/conventions.md#mr-021)
+(Posten 5 und 6 der Liste „Was ersatzlos entfällt"); für den Prozess-Zustand gilt R6.
 
 ### Festlegung 2 — Zuordnungsregeln und die 24 Grenzfälle
 
-Die Grenzfälle sind am Wortlaut geurteilt (gelesen: Zeilen 137 bis 590 und 654 bis 680 der Spec — dort stehen
-alle 24). Die 50 nicht markierten Zeilen sind **nicht** neu zugeordnet; der Review hat 18 Einheiten
-stichprobenhaft gegengelesen (Review-Bericht).
+Die Grenzfälle sind am Wortlaut der Spec im Stand `3d926f6f` geurteilt (Fundstellen: Bericht §3, §4). Die übrigen
+50 Zeilen (74 − 24) sind **nicht** neu zugeordnet; der Review hat 18 Einheiten stichprobenhaft gegengelesen
+(Review-Bericht).
 
 - **R1 — der Beleg folgt seiner Aussage.** Eine Zahl oder ein Datum, die eine Begründung stützen, stehen mit ihr in der
   Sammel-ADR; stützen sie eine Festlegung, ist es ein Messprotokoll (`c`) oder sie entfallen.
 - **R2 — die Grenze folgt der Festlegung.** Ein „nicht zugesagt" zu einer Festlegung steht in **deren Zeile**
-  (ein Strich in `Sensor` ist die benannte Lücke, [`AGENTS.md`](../../../AGENTS.md) §3.6); wo keine Zeile
-  dazugehört, ist es ein Prozess-Zustand.
+  (die benannte Lücke, [`AGENTS.md`](../../../AGENTS.md) §3.6: ein Strich in der Zelle des Wächters, falls E4 die Spalte
+  `Sensor` behält, sonst ein Satz in der Zeile); wo keine Zeile dazugehört, ist es ein Prozess-Zustand (R6).
 - **R3 — Rollen-Verhalten ist keine technische Festlegung.** Was ein Rollen-Lauf **tun soll**, ist `p`; seine
-  messbare Wirkung (ein Feld, eine Bericht-Größe) bleibt `a`.
+  messbare Wirkung (ein Feld, eine Bericht-Größe) bleibt `a`. Eine LH-Bindung, die der Bericht an eine solche
+  Einheit hängt (U15: [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) „Benannte Grenze"),
+  geht nicht verloren: die Grenze steht im Lastenheft selbst.
 - **R4 — „die Quelle liefert es nicht" ist keine Abweichung.** Nur eine Abweichung von einer Regel des Moduls ist `d`.
-- **R5 — die Wächter-Zuordnung ist die Spalte `Sensor`.**
+- **R5 — die Wächter-Zuordnung gehört zur Zeile der Zusicherung.** Wie sie dort steht, regeln Festlegung 12 und E4; nie als Fließtext.
+- **R6 — ein Prozess-Zustand verlässt die Spec.** Er bekommt einen Träger nur, wenn er sonst spurlos verschwände
+  **und** wiederkehren kann: der Umbau-Schritt trägt ihn dann ins Beobachtungs-Register ein; sonst nennt sein
+  Bericht ihn als akzeptiertes Negativ mit Grund.
 
 | Einheit | Bericht | Klasse hier | Regel |
 |---|---|---|---|
@@ -154,12 +170,12 @@ stichprobenhaft gegengelesen (Review-Bericht).
 | U05, U30, U35 | a/c · a/d · b/a | **a** — Messwort und Nachbarschaft entfallen | R1, R2, R4 |
 | U07, U11 | c/d · c/a | **c**, Rest **a**: „Hintergrund-Läufe liefern keine Zähler" als eine Zeile | R1, R4 |
 | U09, U10, U11b, U15 | a/e | **p** | R3 |
-| U12b, U13 | b/c · b/a | **b**; bei U13 der Satz „der Guard entscheidet nur die Aufrufform" als **a** | R1, R2 |
-| U14, U38 | c/e · c/d | **Prozess-Zustand** (Freitext-Felder ungemessen; Nutzer-Aufruf offen) | R2 |
+| U12b, U13 | b/c · b/a | **b**; bei U13 der Satz „der Guard entscheidet nur die Aufrufform" als **a** (Bezug: `Lücke`, Festlegung 5) | R1, R2 |
+| U14, U38 | c/e · c/d | **Prozess-Zustand** (Freitext-Felder ungemessen; Nutzer-Aufruf offen); Träger entscheidet der Umbau-Schritt | R6 |
 | U16 | b/a | **a** (die Grenze der Kennzahl gehört in ihre Zeile) | R2 |
-| U42 | d/a | **a** (Guard, `Sensor`: Fälle 139, 150), Begründungsanteil **b** — Abweichung 5 ist keine | R4, R5 |
-| U44 | c/e | **c**; „kein Sensor prüft die Verdrahtung" als Strich in der `Sensor`-Zelle der Guard-Zeile | R1, R2 |
-| U60 | e/c | **a** (neun Zusicherungen, je eine Zeile; sechs ungebunden = sechs Striche) | R2, R5 |
+| U42 | d/a | **a** (Guard, Fälle 139, 150; Bezug: `Lücke`), Begründungsanteil **b** — Abweichung 5 ist keine | R4, R5 |
+| U44 | c/e | **c**; „kein Sensor prüft die Verdrahtung" als benannte Lücke in der Guard-Zeile | R1, R2 |
+| U60 | e/c | **a** (neun Zusicherungen, je eine Zeile; sechs ungebunden = sechs benannte Lücken) | R2, R5 |
 
 Bei einer Einheit mit zwei Klassen wird am **Satz** getrennt; kein Satz trägt zwei Zielorte.
 
@@ -167,8 +183,8 @@ Bei einer Einheit mit zwei Klassen wird am **Satz** getrennt; kein Satz trägt z
 
 | Nr | Einstufung | Ort |
 |---|---|---|
-| 1 Cache-Status | **echte Abweichung** — das Feld ist `Optional`, das Pflicht-Minimum nennt den Cache-Status | Adaptions-Eintrag (vorläufig); `SPEC-024` bleibt Zeile |
-| 2 PR-Nummer | **echte Abweichung** — die PR-Korrelation steht in den Mindestfeldern, im Schema fehlt sie | Adaptions-Eintrag (vorläufig); `SPEC-014` bleibt Zeile |
+| 1 Cache-Status | **echte Abweichung** — das Feld ist `Optional`, das Pflicht-Minimum nennt den Cache-Status | `SPEC-024` bleibt Zeile; die Abweichung nach E1 |
+| 2 PR-Nummer | **echte Abweichung** — die PR-Korrelation steht in den Mindestfeldern, im Schema fehlt sie | `SPEC-014` bleibt Zeile; die Abweichung nach E1 |
 | 3 `agent_role` | keine — das Feld ist `Pflicht`, leer heißt unbekannt (`SPEC-010`) | Zeile |
 | 4 Altbestände | keine Modul-Regel; Repo-Entscheidung über Aufbewahrung | Zeile (`make span-clean`) |
 | 5 Hintergrund-Lauf ohne Verbrauchs-Achse | keine — die Quelle liefert den Wert nicht | Zeile, `Pflicht` bleibt |
@@ -176,10 +192,9 @@ Bei einer Einheit mit zwei Klassen wird am **Satz** getrennt; kein Satz trägt z
 
 - **Zu 1 und 2: echt macht sie die Wahl, nicht der Wert.** Ein Feld `Pflicht` mit leerem Wert wäre
   konform; dieses Repo hat für 1 `Optional` und für 2 kein PR-Feld gewählt. Der Adaptions-Eintrag ist der
-  ehrliche Ort der Wahl; eine Auflösung durch Code (Feld `Pflicht`, leer) ist die Alternative
-  (offene Entscheidung 1, Option C). **Ob ein Eintrag entsteht, ist damit nicht beschlossen** — die
-  Einstufung ist die Prüfung, die der Plan verlangt hat; den Eintrag schreibt der Architect erst nach der
-  Entscheidung, in eigenem Commit ([`AGENTS.md`](../../../AGENTS.md) §3.8), und überholt
+  ehrliche Ort der Wahl (E1 = A); eine Auflösung durch Code ist die Alternative (E1 = C). **Ob ein Eintrag entsteht, ist
+  nicht beschlossen** — die Einstufung ist die Prüfung, die der Plan verlangt hat. Fällt E1 auf A, schreibt der Architect
+  die Einträge in eigenem Commit ([`AGENTS.md`](../../../AGENTS.md) §3.8) und überholt
   [`MR-021`](../../../harness/conventions.md#mr-021) mit einer Kopf-Marke
   ([`MR-032`](../../../harness/conventions.md#mr-032)); der Eintrag wird nicht überschrieben.
 - **Zu 3, 5, 6 die Wortwahl „Quelle liefert das Feld nicht".** Dieses Repo führt sie bis zu einer
@@ -205,9 +220,7 @@ Bei einer Einheit mit zwei Klassen wird am **Satz** getrennt; kein Satz trägt z
   Zeile (`a`), die Messung bleibt Beleg; eine **Nicht-Messung** → R2; sie ist nie ein eigener Absatz.
 - **Die Spec zeigt nicht dorthin.** Die `matrix`-Klasse `spec-straten` verbietet den Weg nach außen
   (`{from: spec-straten, to: aussen, allow: false}` in `.d-check.yml`).
-- **Keine Senkung** ([`AGENTS.md`](../../../AGENTS.md) §3.5): `.d-check.yml` ändert sich nicht; `docs/reviews/**` ist bereits
-  ausgenommen, und die Ausnahme nimmt nichts zusätzlich heraus. *Nicht geprüft:* welches Modul welche der sechs
-  Ausnahme-Zeilen liest.
+- Zur Senkungs-Frage: Festlegung 14.
 
 ### Festlegung 5 — die Spalte `Präzisiert`
 
@@ -218,26 +231,47 @@ Bei einer Einheit mit zwei Klassen wird am **Satz** getrennt; kein Satz trägt z
   (`lastenheft.md#…`). Das Kriterium im Element (Happy Path,
   Redaktion …) hat keinen Anker und steht daher nicht in der Zelle — es würde ohne Sensor altern. **Trägt kein
   Element die Zeile, steht `Lücke`.**
+- **Abweichung von der Vorlagen-Form, und warum sie einen Eintrag braucht.** Die vendored Spezifikations-Vorlage
+  führt in §3 `ID · Name · Wert · Begründung`, in §5 `ID · Span · Pflicht-Attribute · Quelle` und keine Bindung an das
+  Lastenheft in einer Spalte (`.harness/baseline/v6.13.0/templates/spec/spezifikation.template.md`; die Vorlage
+  verlangt „präzisieren ja, erweitern nie" im Kopf, nicht als Spalte). Für die Spalte `Sensor` hat das Repo
+  genau diese Lage als Abweichung von der Vorlagen-Form eingetragen
+  ([`MR-021`](../../../harness/conventions.md#mr-021) Punkt 1, [`MR-044`](../../../harness/conventions.md#mr-044)).
+  `Präzisiert` ist von derselben Art; dieselbe Aussage gilt darum auch hier: **es entsteht ein Adaptions-Eintrag**
+  (Folgepflicht 2), der die Spalte als Abweichung führt und [`MR-044`](../../../harness/conventions.md#mr-044) an der
+  Stelle überholt, die §5 mit „fünf Spalten" zählt (Kopf-Marke, [`MR-032`](../../../harness/conventions.md#mr-032)).
+  Der Eintrag gehört **vor** den Schritt, der die Spalte einführt; diese ADR schreibt ihn nicht. Er hängt an
+  keinem Ausgang von E1 bis E4; E4 betrifft die Spalte `Sensor`, nicht diese.
 - **Prüfung der zehn Zeilen ohne Kandidat** (`SPEC-001`, `002`, `003`, `008`, `014`, `016`, `019`, `026`,
-  `027`, `028`): [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) trägt alle als
-  **Präzisierung**, und zwar über zwei Sätze des Elements — es emittiert den Träger der drei Observability-Blöcke
-  *Span-/Audit-Attribute*, *Token-Attribution* und *Cache-Counter* (Beschreibung), und es verlangt eine
-  „geschlossene Feldliste" (Redaktion) samt „voller Pflicht-Spalte" (Happy Path). Jede der zehn ist ein Feld,
-  eine Schranke oder eine Ableitung dieser Liste. Die Ebenen-Passung: §5 beschreibt den Träger, den das Zielrepo
-  **selbst bekommt** („der Hook dieses Repos ruft denselben Einstiegspunkt, den ein Zielrepo bekommt", Spec §5,
-  Gegenstand) — ein Feld dieses Trägers ist im Ziel dasselbe Feld. Das ist ein **Urteil am Wortlaut**; die
+  `027`, `028`), am Wortlaut von [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren):
+  das Element emittiert den Träger der drei Observability-Blöcke *Span-/Audit-Attribute*, *Token-Attribution* und
+  *Cache-Counter* (Beschreibung) und verlangt eine „geschlossene Feldliste" (Redaktion) samt „voller Pflicht-Spalte"
+  (Happy Path). Was diese Sätze trennen: eine Zeile, die ein **Feld einer der drei Blöcke** oder eine Schranke
+  seines Wertes ist, ist eine Präzisierung des Elements als Ganzem (nicht eines Kriteriums) — hier `SPEC-016`,
+  `019`, `026`, `027`, `028` und `001`, `002` (Schranken zu `model_version`). Die `Pflicht`-Zeilen `SPEC-003`
+  (`seq`) und `008` (`session`, `agent`) tragen zusätzlich die „volle Pflicht-Spalte" des Happy Path. **`SPEC-014`
+  (`branch`, `commit`) ist Kandidat mit Vorbehalt:** die Korrelations-Achsen der Beschreibung nennen Slice, Anforderung,
+  Entscheidung und Rolle, nicht `branch`/`commit`; die Zeile trägt nur über die „volle Pflicht-Spalte", die sie selbst
+  mitdefiniert. Findet der Umbau-Schritt, der die Spalte schreibt, kein Element, das sie ohne diesen Zirkel trägt,
+  steht `Lücke`. Ein Fall, in dem eine Feldzeile `Lücke` ist, ist ein Feld ohne Zugehörigkeit zu einem der drei
+  Blöcke. Ebenen-Passung: §5 beschreibt den Träger, den das Zielrepo **selbst bekommt** („der Hook dieses Repos ruft
+  denselben Einstiegspunkt, den ein Zielrepo bekommt", Spec §5, Gegenstand). Das ist ein **Urteil am Wortlaut**; die
   Verifikation hat nur Schlüsselwörter geprüft (Verifikationsbericht, Liefer-Punkt 3).
-- **Der Ebenen-Test für alles andere:** eine Zeile über den **Träger** (Feld, Wert, Schranke, Auswertungs-Regel,
-  Ereignis-Menge) hat den Bezug oben; eine Zeile über die Verdrahtung **dieses** Repos (Guard, Hook-Einträge,
-  Konvention) hat ihn nicht — sie trägt `Lücke` oder verlässt die Spec (offene Entscheidung 2).
+- **Der Ebenen-Test für alles andere.** Eine Zeile über den **Träger** — Feld, Wert, Schranke, Ableitungs-Regel des
+  Werts — hat den Bezug oben. Eine Zeile über die **Verdrahtung dieses Repos** — welche Ereignisse verdrahtet sind
+  samt Matcher, die Hook-Einträge, der Guard, die Start-Konvention — hat ihn nicht: sie trägt `Lücke` oder verlässt
+  die Spec (E2). Die Ereignis-Menge gehört auf die Verdrahtungs-Seite, weil sie festlegt, welche Hook-Einträge den
+  Träger rufen; was der Träger aus einem gerufenen Ereignis macht, ist Träger-Seite.
 - **`Lücke` ist ein Übergangswert.** Die Aufnahme-Regel verlangt in Satz 2 eine Anforderung, die die Zeile
-  präzisiert; eine Zeile ohne Element erfüllt ihn nicht. Vorläufig (am Wortlaut gelesen) tragen keinen
-  Einschluss die Ereignis-Menge samt `SubagentStart` und „nicht erfasst" (Einheiten U20, U21, U23) und die
-  Strom-Identität (U24); über jede weitere Zeile entscheidet der Umbau-Schritt, der sie schreibt.
+  präzisiert; eine Zeile ohne Element erfüllt ihn nicht. Nach dem Test **sicher** `Lücke`: die verdrahtete
+  Ereignis-Menge samt Matcher (U20) und die Guard-Aussagen (U13, U42). **Offen** — die Ebene ist am Wortlaut nicht
+  entschieden: was `SubagentStart` und „nicht erfasst" für den Träger festlegen (U21, U23), die Strom-Identität
+  (U24), die Guard-Zeile der Werkzeug-Tabelle (U44) und die neun Zusicherungen (U60). Über die offenen und jede
+  weitere Zeile entscheidet der Umbau-Schritt, der sie schreibt; die Größe der Menge, über die E2 entscheidet,
+  steht damit erst nach dem letzten Block fest.
 - **Change Request:** keiner je Zeile. Ob die `Lücke`-Zeilen gebündelt einen Change Request nach
   [`MR-015`](../../../harness/conventions.md#mr-015) bekommen, entscheidet der Auftraggeber **einmal**, nach
-  dem letzten Umbau-Block (offene Entscheidung 2). Der Architect benennt die Lücke und schreibt keine
-  Anforderung.
+  dem letzten Umbau-Block (E2). Der Architect benennt die Lücke und schreibt keine Anforderung.
 - **§5 als Ganzes präzisiert [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)** —
   Ja; die Spalte trägt es je Zeile, der Abschnitt braucht keinen eigenen Satz.
 
@@ -267,7 +301,7 @@ Feldtabelle über ihre Kopfzeile und Spalte 2 (`Feld`). Zwei Bedingungen, damit 
    `| ID | Feld | Pflicht | Incident-Frage | Sensor |` an — der `sed`-Anker aus
    [`ADR-0071`](0071-kopplung-feldliste-spec-ist-existenz-abgleich.md) trifft sie als Präfix
    (`grep -c '^| ID | Feld | Pflicht | Incident-Frage | Sensor |' spec/spezifikation.md` → 1, auch mit angehängter
-   Spalte gegengeprobt).
+   Spalte gegengeprobt). Fällt die Spalte `Sensor` (E4 = B), gilt die Bedingung für die verbleibenden Spalten.
 2. **Die Feldtabelle trägt nur Felder.** Eine Festlegung ohne Feld-Charakter (Positiv-Liste, Splitting-Regel,
    Zusicherung) steht in einer **eigenen** Tabelle mit eigener Kopfzeile. Eine Nicht-Feld-Zeile in der Feldtabelle wäre für den
    Sensor ein Feld ohne Gegenstück im Träger und färbte ihn rot.
@@ -294,36 +328,49 @@ aus Festlegung 3, die dagegen einen Gegenstand hat.
   nennt (`grep -rn '<Passagen-Name>' docs/plan/adr`), und hält den Namen als Text in der Zeile fest, die die
   Aussage übernimmt; entfällt die Aussage, steht die Lücke im Bericht des Schrittes. Kommentar-Zeiger im Code
   zieht er nach ([`AGENTS.md`](../../../AGENTS.md) §3.7); das Zeiger-Inventar des Klassifikationsberichts
-  (§5) ist die Ausgangsmenge (100 Stellen,
-  `grep -rnE 'spezifikation\.md' internal test cmd harness/tools docs/plan/adr | wc -l`).
+  (§5) ist die Ausgangsmenge: 100 Stellen am Stand vor dieser ADR
+  (`git grep -nE 'spezifikation\.md' df1dbbda^ -- internal test cmd harness/tools docs/plan/adr | wc -l`; die ADR selbst
+  nennt den Dateinamen und liegt im gesuchten Baum, ein Lauf gegen den Arbeitsstand liefert mehr).
 
 ### Festlegung 11 — Schnitt-Hinweis für den Planner
 
-- Die Umbau-Schritte schneiden nach **Block** (34 Blöcke, Bericht §1), nicht nach den 74 Einheiten; die Einheit
-  ist das Arbeitsraster **innerhalb** eines Schrittes (Inventar, Byte-Bilanz), nicht sein Zuschnitt. Ein
-  Schritt liefert höchstens drei Punkte: Zeilen, Entfernen der Prosa, Nachzug der Zeiger.
+- Die Umbau-Schritte schneiden nach **Block** (34 Blöcke und 64 Einheiten, Bericht §1 mit Kommando), nicht nach den
+  74 Einheiten; die Einheit ist das Arbeitsraster **innerhalb** eines Schrittes (Inventar, Byte-Bilanz), nicht sein
+  Zuschnitt. Ein Schritt liefert höchstens drei Punkte: Zeilen, Entfernen der Prosa, Nachzug der Zeiger.
 - Vorschlag für die Reihenfolge nach dem Pilot-Block (Werkzeug-Achse und Positiv-Liste): Wächter-Liste
   („Bewacht", mechanisch, 23,2 %) · Abweichungen 2 bis 6 · Abweichung 1 samt Splitting · Start-Konvention. **Start-Bedingungen:**
-  die Sammel-ADR vor jedem Schritt, der Begründung entfernt; die Adaptions-Einträge zu 1 und 2 (falls beschlossen) vor dem
-  Schritt, der die Abweichungen entfernt; die Entscheidung zu offener Entscheidung 3 vor dem Schritt der
-  Start-Konvention. Der Planner schneidet erst nach dem Pilot, was der Pilot gezeigt hat.
+  die Sammel-ADR vor jedem Schritt, der Begründung entfernt; E1 (und ein daraus folgender Adaptions-Eintrag) vor dem
+  Schritt, der die Abweichungen entfernt; der Adaptions-Eintrag zur Spalte `Präzisiert` vor dem Schritt, der sie
+  einführt; E4 vor dem Schritt der Wächter-Liste; E3 vor dem Schritt der Start-Konvention. Der Planner schneidet
+  erst nach dem Pilot, was der Pilot gezeigt hat.
 
 ### Festlegung 12 — der Abschnitt „Bewacht"
 
 - Die Wächter-Prosa (Test- und Fallnamen im Fließtext) entfällt. Jede Zusicherung, die nur dort steht, wird eine Zeile
-  in einer Zusicherungs-Tabelle mit `SPEC-<NNN>`, `Sensor` und `Präzisiert`; ohne Wächter steht ein Strich (R2).
+  in einer Zusicherungs-Tabelle mit `SPEC-<NNN>` und `Präzisiert`. Die Wächter-Zuordnung der Zeile richtet sich nach E4:
+  Spalte `Sensor` mit einem Strich für den fehlenden Wächter (E4 = A, C), oder ein Kommentar am Test und ein
+  Satz zur Lücke in der Zeile (E4 = B).
 - **Vor** dem Umbau misst ein Implementer je Zusicherung, ob der Test oder Fall die Zusage in Namen oder Kommentar
   trägt; wo nur der Fließtext sie führt, geht die Zuordnung als Kommentar an den Test
   ([`AGENTS.md`](../../../AGENTS.md) §3.7), sonst ginge sie verloren.
 - **Gegen-Sachverhalt bleibt benannt:** kein Sensor hält die Richtung Spec → Wächter
-  (die Spec sagt es selbst: „Die Nennung selbst ist unbewacht", §5 vor der Feldtabelle). Die Spalte `Sensor` bleibt
-  Feedforward; ob sie fällt, ist offene Entscheidung 4.
+  (die Spec sagt es selbst: „Die Nennung selbst ist unbewacht", §5 vor der Feldtabelle). Die Spalte `Sensor` bleibt,
+  solange sie besteht, Feedforward.
 
-### Festlegung 13 — der Rest der Klasse `e`
+### Festlegung 13 — die Prozess-Konventionen
 
-Nach dem Umbau bleibt aus `e` nichts außer den Prozess-Konventionen (`p`, R3). Wohin sie gehen, ist offene Entscheidung 3;
-bis dahin bleiben die Blöcke der Start-Konvention **unverändert** in §5. Die Wächter-Zuordnung ist keine eigene
-Klasse und braucht keinen Ort (Festlegung 1).
+Die 16 Zeilen der Klasse `e` sind Wächter-Zuordnungen und gehen in Festlegung 12 auf; sie brauchen keinen eigenen Ort.
+Die vier Einheiten U09, U10, U11b, U15 (Bericht: Klasse `a`, Grenzfall `a`/`e`) sind hier `p` (R3). Wohin `p` geht,
+entscheidet E3; bis dahin bleiben die Blöcke der Start-Konvention **unverändert** in §5.
+
+### Festlegung 14 — keine Senkung
+
+[`AGENTS.md`](../../../AGENTS.md) §3.5 gilt für diese ADR und für jeden Umbau-Schritt: `.d-check.yml` ändert sich
+dadurch nicht. Messprotokolle liegen in `docs/reviews/`, das in den `exempt-paths` bereits steht
+(`grep -n 'docs/reviews' .d-check.yml`); *nicht geprüft:* welches Modul welche dieser Ausnahme-Zeilen liest. E4-C
+(`codepaths.roots` wächst um `test`) ist eine Verschärfung. Jede Aufnahme eines weiteren Pfads oder Paars in
+`exempt-paths` oder `ignore-refs`, die ein Umbau-Schritt als Ortsentscheidung vorschlägt, ist eine Senkung und
+braucht eine eigene ADR.
 
 ### Offene Entscheidungen des Auftraggebers
 
@@ -334,7 +381,7 @@ Sie sind keine Fait accompli. Jede trägt Optionen, die Empfehlung des Architect
 | Option | Pro | Contra |
 |---|---|---|
 | A — **Adaptions-Eintrag** (Empfehlung) | folgt [`ADR-0013`](0013-technik-stratum-als-zielort.md) Festlegung 2 und der Aufnahme-Regel; das Abweichungs-Register bleibt vollständig | zwei Einträge und eine Kopf-Marke an [`MR-021`](../../../harness/conventions.md#mr-021) |
-| B — bleibt in §5 | [`MR-021`](../../../harness/conventions.md#mr-021) gilt wie geschrieben | die Aufnahme-Regel müsste ihren Satz „nicht hierher gehört die Abweichung" aufgeben; die Spec trüge ein Baseline-Delta |
+| B — bleibt in §5 | [`MR-021`](../../../harness/conventions.md#mr-021) gilt wie geschrieben | die Aufnahme-Regel müsste ihren Satz „nicht hierher gehört die Abweichung" aufgeben, und [`ADR-0013`](0013-technik-stratum-als-zielort.md) Festlegung 2 widerspräche dem — beides braucht eine Folge-ADR; die Spec trüge ein Baseline-Delta |
 | C — konform machen (Feld `Pflicht`, leer) | kein Eintrag nötig | Code-Änderung; ein immer leeres PR-Feld; Feldliste zieht nach |
 
 Trigger: vor dem Umbau-Schritt, der die Abweichungen entfernt.
@@ -346,17 +393,18 @@ Trigger: der letzte Umbau-Block ist geschlossen und `grep -c '| Lücke |'` über
 
 **E3 — Ort der Prozess-Konventionen.** (A) ein Dokument unter `docs/user/` (Rang 6; die Nutzerdoku trägt nur
 den Ist-Zustand, also die geltende Regel; die Spec darf dorthin nicht zeigen) — **Empfehlung**, sofern nach dem Umbau mehrere
-Blöcke derselben Art bleiben (der Bericht führt U09, U10, U11b und U15 als Grenzfall a/e); (B) ein Abschnitt in
+Blöcke derselben Art bleiben (U09, U10, U11b, U15); (B) ein Abschnitt in
 [`harness/README.md`](../../../harness/README.md) (Rang 9, gewinnt gegen keine kanonische Quelle); (C) ein Adaptions-Eintrag —
 **ungeeignet**, weil ein Eintrag eine Abweichung registriert und die Konvention keine ist
-([`MR-000`](../../../harness/conventions.md#mr-000)); (D) sie bleibt in der Spec und die Aufnahme-Regel erlaubt `p`.
-Jeder Ort ist Norm-Text; **welche Rolle ihn schreibt, hat keine Quelle** (Festlegung 7). Trigger: vor dem Umbau der
-Start-Konvention.
+([`MR-000`](../../../harness/conventions.md#mr-000)); (D) sie bleibt in der Spec, und die Aufnahme-Regel erlaubt die Klasse `p`
+(die Klassen-Tabelle von Festlegung 1 gälte dann ohne Ort für `p`). Jeder Ort ist Norm-Text; **welche Rolle ihn schreibt, hat
+keine Quelle** (Festlegung 7). Trigger: vor dem Umbau der Start-Konvention.
 
 **E4 — die Spalte `Sensor` gegenüber [`MR-021`](../../../harness/conventions.md#mr-021).** Sie ist eine Abweichung von der
 Vorlagen-Form. (A) bleibt (Empfehlung: keine neue Mechanik, die Nennung ist in Spec und Eintrag als unbewachte
 Feedforward-Spalte offengelegt); (B) fällt, die Zuordnung reist als Kommentar am Test — die Richtung Test → Spec
-wäre bewachbar; (C) bleibt, und `codepaths.roots` wächst um `test` (eine Verschärfung): dann prüfte das Gate die 26 Fall-Datei-Pfade,
+wäre bewachbar; (C) bleibt, und `codepaths.roots` wächst um `test` (eine Verschärfung): dann prüfte das Gate die 26 Fall-Datei-Pfade
+(`git show 3d926f6f:spec/spezifikation.md | grep -oE 'test/mutations/[0-9]+-[a-z0-9-]+\.sh' | sort -u | wc -l` → 26),
 **nicht** die Testnamen; *nicht gemessen*, ob das grün startet. Trigger: vor dem Umbau der Wächter-Liste.
 
 ## Verglichene Alternativen
@@ -390,29 +438,49 @@ gebündelt.
   nicht einer Entscheidung) und Messsätze in ihren Zellen werden nicht rückwirkend geräumt; wer sie ohnehin anfasst,
   zieht sie nach.
 - **Folgepflichten:** (1) Sammel-ADR-Schritt (Architect) vor dem ersten Umbau, der Begründung entfernt;
-  (2) Adaptions-Einträge zu 1 und 2 samt Kopf-Marke an [`MR-021`](../../../harness/conventions.md#mr-021), falls E1 sie beschließt;
+  (2) Adaptions-Eintrag zur Spalte `Präzisiert` samt Kopf-Marke an [`MR-044`](../../../harness/conventions.md#mr-044)
+  (Architect, eigener Commit) vor dem Schritt, der die Spalte einführt; dazu, falls E1 = A, die Einträge zu den
+  Abweichungen 1 und 2 samt Kopf-Marke an [`MR-021`](../../../harness/conventions.md#mr-021);
   (3) Tool-Ebene: Feldliste um die Verfügbarkeits-Aussage zu 3, 5, 6 (und 1, 2, 4, soweit dort etwas fehlt) — der Planner
-  schneidet, eine Kennung existiert nicht; (4) Index-Annotation an [`ADR-0013`](0013-technik-stratum-als-zielort.md) **bei der Annahme**;
-  (5) der Wortlaut der Aufnahme-Regel und die Spalte `Präzisiert` in den drei Tabellen folgen dem Inhalt dieser ADR,
-  geschrieben von dem Schritt, der sie einführt; (6) der Umbau folgt Festlegung 10 und 11.
+  schneidet, eine Kennung existiert nicht;
+  (4) der Wortlaut der Aufnahme-Regel und die Spalte `Präzisiert` in den drei Tabellen folgen dem Inhalt dieser ADR,
+  geschrieben von dem Schritt, der sie einführt; (5) der Umbau folgt Festlegung 10 und 11.
 
 ## Fitness Function (falls maschinell prüfbar)
 
-Das Rot ist je Festlegung benannt; die Rot-Beobachtung liegt bei der Verifikation dieses Schrittes. Wo kein Gate
-existiert, steht das Messkommando, das im Umbau-Schritt als DoD-Punkt läuft — **kein Gate**, keine Senkung.
+Jede Festlegung, die ein Rot tragen kann, hat eine Zeile; wo keines herstellbar ist, steht `keiner` mit der Lücke
+([`AGENTS.md`](../../../AGENTS.md) §3.6). **Rot gesehen ist noch keine der Zeilen**; die Beobachtung liegt bei der
+Verifikation dieses Schrittes bzw. des Umbau-Schritts, der die Festlegung ausführt. Wo kein Gate existiert, steht das
+Messkommando, das im Umbau-Schritt als DoD-Punkt läuft — **kein Gate**, keine Senkung. Die Kommandos messen die Spec im
+Arbeitsstand; die Heute-Werte messen `3d926f6f`.
 
 | Festlegung | Tooling | Regel | rot, wenn |
 |---|---|---|---|
 | 4 Messung nicht in der Spec | Messkommando | `sed -n '4,/^## 7\. Historie/p' spec/spezifikation.md \| grep -cE '20[0-9]{2}-[0-9]{2}-[0-9]{2}'` → nach dem Umbau der Blöcke 0 | heute 12; eine Datumszeile im Fließtext nach dem Umbau |
 | 4 Spec zeigt nicht auf `docs/reviews/` | `make docs-check` (`matrix`) | Link aus der Spec in `docs/reviews/` meldet `matrix-forbidden` | ein Link Spec → Messprotokoll. **Lücke, nicht gefahren:** ein Code-Span-Pfad dorthin trifft `codepaths` (Ziel existiert) und bleibt grün |
-| 3 Abweichung nicht in der Spec | Messkommando | `grep -c 'Abweichung [1-6]' spec/spezifikation.md` → nach dem Umbau der Abweichungs-Blöcke 0 | heute 17 |
+| 3 Abweichung nicht in der Spec (falls E1 = A oder C) | Messkommando | `grep -c 'Abweichung [1-6]' spec/spezifikation.md` → nach dem Umbau nur die Treffer, die Festlegung 10 als erhaltenen Namen begründet | heute 17; mehr Treffer als die vor dem Schritt gemessene Liste (`grep -rn 'Abweichung [1-6]' docs/plan/adr`) |
 | 5 Spalte trägt einen auflösenden Anker | `make docs-check` (`anchors`) | erfundener Anker im Link | ein Link auf `#lh-fa-10--…` mit falschem Slug. **Lücke:** eine leere Zelle meldet kein bekannter Sensor; der Schritt der Spalte fährt es und hält das Ergebnis fest |
+| 5 Spalte ist in jeder der drei Tabellen die letzte | Messkommando | `grep -cE '^\| ID \|.*\| Präzisiert \|$' spec/spezifikation.md` → mindestens 3 (die drei Kopfzeilen) | 0 bis 2: die Spalte fehlt in einer Tabelle oder steht nicht hinten. **Lücke:** `anchors` meldet beides nicht |
+| 5 Anker zeigt auf das richtige Element | — | **keiner** | ein auflösender, aber falscher Anker (z. B. `SPEC-003` auf ein anderes Element als [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)); `anchors` prüft Auflösung, nicht Passung — Träger ist die Review des Schrittes |
+| 5 Adaptions-Eintrag zur Spalte | — | **keiner** | die Spalte steht in der Spec, ein Eintrag fehlt; kein Sensor hält Spec-Form gegen Adaptions-Block — Träger ist die Reihenfolge der Schritte (Festlegung 11) |
+| 6 Begründung nicht in der Spec | — | **keiner** | ein „Warum"-Absatz in §5. Träger ist die Review des Umbau-Schritts; die Klasse `b` steht in seiner Byte-Bilanz |
+| 7 schreibende Rolle bleibt offen | — | **keiner** | ein Lauf trägt den Wortlaut der Aufnahme-Regel ein und beruft sich auf diese ADR als Rollen-Quelle. Eine Nicht-Entscheidung hat kein Gegenbeispiel, das ein Sensor sähe; Träger ist der Rollen-Wechsel vor der Änderung ([`AGENTS.md`](../../../AGENTS.md) §3.8) |
 | 8 Kopfzeile und Spalte 2 bleiben | Messkommando | `grep -c '^| ID | Feld | Pflicht | Incident-Frage | Sensor |' spec/spezifikation.md` → 1 | 0 (Spalte vorn eingefügt oder Kopfzeile umbenannt) |
 | 8 Feldtabelle trägt nur Felder | Existenz-Sensor der Kopplungs-ADR, sobald gebaut | Feld-Token ohne Träger-Literal | eine Nicht-Feld-Zeile in der Feldtabelle; bis der Sensor besteht: Review |
+| 9 Vorlage im Emit-Baum unberührt | Messkommando | `grep -rl 'Präzisiert' internal` → leer | ein Treffer, dass der Umbau die emittierte Vorlage angefasst hat. **Lücke:** der Suchbegriff deckt nur die Spalte, nicht jede Änderung der Vorlage |
 | 10 Zeiger-Nachzug | Messkommando | `grep -rnE 'spezifikation\.md' internal test cmd harness/tools \| wc -l` gegen das Inventar des Berichts | ein Kommentar nennt eine entfernte Passage. **Lücke:** kein Test bricht, der Sensor ist das Inventar |
-| 6 Begründung nicht in der Spec | — | **keiner** | ein „Warum"-Absatz in §5. Träger ist die Review des Umbau-Schritts; die Klasse `b` steht in seiner Byte-Bilanz |
+| 11 Schnitt-Hinweis | — | **keiner** | ein Umbau-Schritt mit mehr als drei Liefer-Punkten; der Hinweis ist ein Vorschlag, Träger ist die Größenregel im Plan-Review |
+| 12 Wächter-Prosa entfällt | Messkommando (Block unter der Tabelle) | nach dem Umbau 0 Zeilen (Tabellenzeilen ausgenommen) | heute 38 (Stand `3d926f6f`); ein Test- oder Fallname im Fließtext nach dem Umbau. **Lücke:** der Anker `SPEC-034` wandert, wenn Zeilen hinzukommen — der Schritt passt ihn an |
+| 13 Start-Konvention bleibt bis E3 | Messkommando | `grep -c 'START-KONVENTION' spec/spezifikation.md` → gleich dem Wert vor dem Umbau | ein Schritt entfernt oder ändert die Start-Konvention vor E3 |
+| 14 keine Senkung | Messkommando | `git log --oneline <Annahme-Commit>..HEAD -- .d-check.yml` → leer oder je Commit mit ADR-Kennung | ein Commit an `exempt-paths`/`ignore-refs` ohne ADR |
 | 1, 2 Klassen-Zuordnung | — | **keiner** | eine falsch zugeordnete Einheit; die Zuordnung ist Urteil, Träger ist der Reviewer |
 | Immutabilität nach Annahme | `make adr-immutable` | Kern einer `Accepted`-ADR über der Range unverändert | eine inhaltliche Änderung an dieser ADR nach `Accepted` |
+
+Kommando zu Festlegung 12 (Fließtext ohne Tabellenzeilen, Test- oder Fallname):
+
+```sh
+awk '/^\| `SPEC-034`/{f=1;next} /^## 6\. Externe/{f=0} f' spec/spezifikation.md | grep -v '^|' | grep -cE 'test/|_test\.go|Fall [0-9]+|\.bats'
+```
 
 ## Re-Evaluierungs-Trigger
 
@@ -421,8 +489,8 @@ existiert, steht das Messkommando, das im Umbau-Schritt als DoD-Punkt läuft —
 - **Wenn der Kurs das Modul 15 um eine Kennzeichnung „Quelle liefert das Feld nicht" ergänzt** *(feedforward — ein
   Baseline-Sprung)*: die Wortwahl aus Festlegung 3 entfällt oder folgt dem Wortlaut des Moduls.
 - **Wenn die schreibende Rolle der Spec-Straten entschieden ist** *(feedforward)*: Festlegung 7 schließt.
-- **Wenn E1 bis E4 entschieden sind** *(feedforward)*: die Festlegungen 3, 5, 12 und 13 werden mit der Entscheidung
-  fortgeschrieben — als Folge-ADR, weil diese ab `Accepted` unveränderlich ist.
+- **Wenn E1 bis E4 entschieden sind** *(feedforward)*: der Ausgang steht in einer Folge-ADR — diese ADR ist ab
+  `Accepted` unveränderlich —, und die bedingten Folgen der Festlegungen 1, 2, 8, 12 und 13 gelten in der entschiedenen Form.
 - **Wenn der Existenz-Sensor gebaut ist und mit der Spalte rot bleibt** *(computational feedback)*: Festlegung 8 ist
   falsch gelesen und wird per Folge-ADR gezogen.
 
