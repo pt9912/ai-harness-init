@@ -10,5 +10,5 @@
 # Die Datei bleibt uebersetzbar: nur eine Kommentarzeile kommt dazu.
 set -euo pipefail
 printf '%s\n' \
-  '// Die Spalte `spawned_role` in spec/spezifikation.md sagt: „unterscheidbar bleibt es am' \
-  '// Pflichtfeld `tool`".' >> internal/span/emit.go
+  '// Die Spalte spawned_role in spec/spezifikation.md sagt: „unterscheidbar bleibt es am' \
+  '// Pflichtfeld tool".' >> internal/span/emit.go

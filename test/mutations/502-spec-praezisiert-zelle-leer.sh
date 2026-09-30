@@ -8,4 +8,4 @@
 # die Zusage der nicht leeren Zelle trifft und nicht die der Spalte (Fall 501). `make
 # docs-check` meldet diese Lage nicht.
 set -euo pipefail
-sed -i '/^| `SPEC-057` /s@| \[LH-FA-10\]([^)]*) |$@|  |@' spec/spezifikation.md
+sed -i '/^| .SPEC-057. /s@| \[LH-FA-10\]([^)]*) |$@|  |@' spec/spezifikation.md
