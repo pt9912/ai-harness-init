@@ -73,6 +73,64 @@ gibt dem Planner den Hinweis, nach dem er die Umbau-Slices schneidet.
    der Baseline in die Spezifikation ([`MR-021`](../../../../harness/conventions.md#mr-021)) oder ins
    Konventionsdokument (Aufnahme-Regel, Zeile 21)? Die Spec widerspricht sich hier selbst; die
    Antwort entscheidet, ob Klasse `d` eine Klasse der Spec bleibt.
+
+   *Messung zu dieser Frage* (Planner, Stand vendored `v6.13.0`; „Konventionsdokument" ist
+   [`harness/conventions.md`](../../../../harness/conventions.md) samt dem Eintrags-Verzeichnis
+   `harness/conventions/`, dem Adaptions-Block). Ausgangspunkt der Menge:
+   `grep -n 'Sechs erklärte Abweichungen' spec/spezifikation.md`; die Nummern sind die der Spec.
+
+   **(a) Die sechs erklärten Abweichungen und die Regel, der die Spec sie zuordnet.** Die Zuordnung
+   (Spalte 3) ist die der Spezifikation, **nicht gegengeprüft**; Spalte 4 ist gemessen mit
+   `grep -n '' .harness/baseline/v6.13.0/regelwerk/modul-15-observability.md`.
+
+   | Nr. | Abweichung | Regel des Moduls 15 (laut Spec) | Regelwerk, Zeile |
+   |---|---|---|---|
+   | 1 | Cache-Status unerreichbar | Pflicht-Minimum | Z. 34 |
+   | 2 | PR-Nummer steht nicht im Span, `branch`/`commit` schon | Mindestfelder eines Tool-Call-Spans | Z. 33 |
+   | 3 | `agent_role` durchweg leer | Pflicht-Minimum | Z. 34 |
+   | 4 | Altbestände werden nicht entfernt | keine Modul-Regel; Entscheidung des Repos über Aufbewahrung | — (Z. 36–37: Emissions-Pfad inkl. Aufbewahrung ist Repo-Entscheidung) |
+   | 5 | Hintergrund-Lauf ohne Verbrauchs-Achse | Token-Attributions-Regeln | Z. 39–49 (Summe je Rolle Z. 41–45, Sammelposten Z. 46–49) |
+   | 6 | Haupt-Kontext ohne Zahl | Token-Attributions-Regeln | Z. 39–49 |
+
+   Z. 34 erlaubt die Abweichung vom Pflicht-Minimum ausdrücklich mit Begründung („jede Abweichung
+   davon begründest du"). Ob das für 2, 5 und 6 ebenso gilt, ist **ungeprüft**: Z. 33 und Z. 41–49
+   enthalten keinen Abweichungs-Satz. Die Cache-Counter-Regeln (ab Z. 51) nennt die Spec für keine
+   der sechs.
+
+   **(b) Abgleich gegen die vom Werkzeug emittierte Feldliste** (`internal/span/fieldlist.go`: die
+   Feldtabelle `SchemaNotes` und die Sätze `limitAgentGuard`, `limitCounters`, `limitStore`; das Zielrepo
+   bekommt sie als werkzeug-erzeugtes Dokument über denselben Einstiegspunkt wie dieses Repo). Gelesen:
+   die Datei ab Zeile 60 und die Anfangsabsätze der sechs Abweichungen.
+
+   | Nr. | Deckung | Was die Feldliste sagt / nicht sagt |
+   |---|---|---|
+   | 3 | gedeckt (Mechanismus) | `limitAgentGuard`: `agent_role` besetzt sich, wenn `agent_type` eine der sechs kanonischen Rollen nennt; „leer heißt unbekannt, nie rollenlos". Nicht gedeckt ist die Messung „heute durchweg leer". |
+   | 5 | gedeckt | `limitCounters`: Zähler erreichen eine Zeile nur, wenn das Werkzeug sie mitliefert; ein Hintergrund-Lauf liefert sie nicht. |
+   | 1 | teilweise | `limitCounters` deckt „Zähler nur, wenn mitgeliefert"; nicht die Unterscheidung Haupt-Kontext (dauerhaft) / Subagent (seit der Vordergrund nicht mehr anforderbar ist). |
+   | 6 | teilweise | wie 1; dass der Haupt-Kontext gar keine Zahl trägt, steht nicht dort. |
+   | 2 | teilweise | `branch`, `commit` stehen als Felder (Abgeleitet aus dem git-Zustand); dass die PR-Nummer bewusst fehlt und warum, steht nicht dort. |
+   | 4 | nicht gedeckt | `limitStore` betrifft Vertraulichkeit des Bestands, nicht Aufbewahrung; `span-clean` erscheint in der Feldliste nicht (`grep -n -i 'span-clean\|aufbewahr' internal/span/fieldlist.go` liefert nichts). Der Vertrag dazu ist ein ausdrückliches Aufräum-Kommando ([`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren), Aufbewahrung). |
+
+   Korrektur an der Vorab-Zuordnung des Auftrags: keine; zu 4 ist ergänzt, dass das emittierte
+   Makefile-Fragment `span-clean` führt (`grep -n 'span-clean' internal/emit/baumaussage.go`), die
+   Feldliste es aber nicht nennt. **Nicht geprüft:** der gerenderte Dokument-Text im Zielrepo (nur die
+   Quelle im Code gelesen); die Wortlaut-Deckung jenseits der genannten Sätze; ob die Tests in
+   `internal/emit/` die Sätze binden.
+
+   **(c) Fragen an den Architect, die daraus folgen.**
+   - Für **jede** der sechs Abweichungen: bleibt die Aussage als Festlegung in der Spezifikation (ohne
+     Messprotokoll) · wandert sie in die emittierte Feldliste (dann Zielrepo-relevant, Code-Änderung,
+     eigener Slice) · wird sie ein Eintrag im Adaptions-Block (Abweichung von einer Baseline-Regel;
+     [`MR-021`](../../../../harness/conventions.md#mr-021) ist dafür zu überholen,
+     [`MR-032`](../../../../harness/conventions.md#mr-032)) · oder entfällt sie? Abweichung 4 kann nach
+     (a) keine Baseline-Regel-Abweichung sein; Deckung nach (b) gibt es für sie nicht.
+   - Der Widerspruch zwischen der Aufnahme-Regel (Zeile 21: die Abweichung von der adoptierten Baseline
+     gehört ins Konventionsdokument) und [`MR-021`](../../../../harness/conventions.md#mr-021), das die
+     sechs Abweichungen nach §5 weist (`grep -rn 'erklärten' harness/conventions/ | grep -c 'Abweichungen'`): welcher
+     Text gilt, und welcher wird angepasst (ADR gegen Eintrag; ein Eintrag wird nicht überschrieben).
+   - **Offene Auftraggeber-Frage, hier nicht beantwortet:** ob Modul 15 für den Fall „die Quelle liefert
+     das Feld nicht" zu eng ist. Eine Rückmeldung wäre eine Anforderung an den Kurs, keine Änderung in
+     diesem Repo.
 2. **Ort, Konsument und Form der Messprotokolle.** Optionen: entfallen (git hält sie) · Zeitdokument
    unter einem Unterordner von `docs/` (Auftraggeber erwägt das). Jede Option hat vier Randbedingungen,
    die die ADR beantworten muss: ein **Konsument** (sonst kein Artefakt,
