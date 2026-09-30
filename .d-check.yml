@@ -504,3 +504,17 @@ sources:
   - url: https://github.com/pt9912/ai-harness-course/releases/download/v6.13.0/lab-regelwerk.zip
     sha256: b5151e77807e2affebb25cfab9be24b88cf43afc42c075db0b982a2ff1052b96
     unpack: none
+# trace: KEIN Modul — steuert nur `--trace`/`--require-complete` (`make doc-trace`/`make doc-complete`,
+# advisory, nicht in modules: und nicht in `make gates`). Der Default-Muster erwartet `FA-<Buchstaben>-<Zahl>`;
+# die Kennungen dieses Repos tragen Zahlen (`LH-FA-01`), ohne den Block sieht die RTM nur die `LH-QA-*`.
+# Coverage: `docs/user/e2e-abdeckung.md` ist der Nachweis fuer Anforderungen, deren Beleg ein E2E-Lauf ist
+# (ohne ADR oder Slice erschienen sie als WAISE); `spec/spezifikation.md` traegt ueber die Spalte `Praezisiert`.
+# Grenze: die RTM zaehlt Nennungen, nicht die Pruefung hinter ihnen.
+trace:
+  requirements:
+    id-pattern: 'LH-(?:FA|QA|RB)-\d+'
+  coverage:
+    - files: [docs/user/e2e-abdeckung.md]
+      label: E2E
+    - files: [spec/spezifikation.md]
+      label: Spec
