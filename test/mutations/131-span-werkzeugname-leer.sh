@@ -6,11 +6,10 @@
 # Payload gefuellt. Das FELD bleibt stehen (`"tool":""` — die Pflicht-Zusage aus Fall 130
 # haelt), aber es traegt nichts mehr.
 #
-# WARUM ES DIESEN FALL BRAUCHT: die Lesevorschrift zu `spawned_role` in
-# spec/spezifikation.md §5 sagt, ein `Agent`-Span OHNE `spawned_role` sei ein Lauf
-# mit unbekannter Rolle und gehoere in den Sammelposten — „unterscheidbar bleibt es am
-# Pflichtfeld `tool`". Diese Unterscheidbarkeit ist die zweite Haelfte der Voraussetzung,
-# die MR-018 bis zum 2026-07-30 dem Zahn 110 zuschrieb (Review-Befund R2-MEDIUM-1).
+# WARUM ES DIESEN FALL BRAUCHT: die Zeile `SPEC-022` (`spawned_role`) in
+# spec/spezifikation.md §5 legt fest, dass ein `Agent`-Span OHNE `spawned_role` ein Lauf
+# mit unbekannter Rolle ist, in den Sammelposten gehoert und am Pflichtfeld `tool`
+# unterscheidbar bleibt; `SPEC-082` fuehrt die Erkennbarkeit als Zusage.
 # Fall 130 belegt die ANWESENHEIT des Feldes, dieser Fall seinen INHALT: ohne den
 # Werkzeug-Namen in der Zeile kann eine Auswertung `Agent`-Spans nicht auswaehlen, und
 # die Bilanz je Rolle verliert genau die Laeufe, die sie zaehlen soll.

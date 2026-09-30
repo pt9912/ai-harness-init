@@ -11,7 +11,7 @@
 # ein `omitempty` an ein PFLICHT-Feld und laesst es lautlos verschwinden; hier nimmt sie
 # es von einem OPTIONALEN und laesst es lautlos erscheinen. Beide Draht-Formen sind in
 # spec/spezifikation.md §5 festgelegt (SPEC-043 und SPEC-083), und beide tragen dieselbe Lesevorschrift (SPEC-044) —
-# der Unterschied zwischen „unbekannt" und „nicht vorhanden". Ein anwesender Zaehler
+# der Unterschied zwischen unbekannt und nicht vorhanden. Ein anwesender Zaehler
 # ohne Messung dreht sie um: der Auswerter sieht eine Messung, wo keine stattfand, und
 # genau das ist die Fehlerform, gegen die ADR-0011 Folgepflicht 4 die Folgenummern
 # eingefuehrt hat.
