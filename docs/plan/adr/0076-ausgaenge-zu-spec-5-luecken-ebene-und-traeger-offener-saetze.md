@@ -1,6 +1,6 @@
 # ADR-0076: Die Ausgänge von E1, E3 und E4 zu Spec §5 stehen fest, die 19 `Lücke`-Zeilen haben eine Ebene, und die offenen Prozess-Sätze haben einen Träger oder ein begründetes Negativ
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-30
 
@@ -261,6 +261,7 @@ grep -E '\| Lücke \|$' spec/spezifikation.md | grep -oE '^\| `SPEC-[0-9]+`' | t
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-30 | Proposed | Architect-Lauf zu den Übergaben A-1 bis A-5 und A-7 der [Verifikation](../../reviews/2026-09-30-slice-spec-aufnahme-regel-und-umbau-verifikation.md). Die Annahme liegt beim Auftraggeber. |
+| 2026-09-30 | Accepted | Entscheidung des Auftraggebers; bestätigt die Ausgänge E1, E3 und E4 und die Lesart von [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) (ein Change Request, Lastenheft 0.23.0) |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
