@@ -138,8 +138,13 @@ gibt dem Planner den Hinweis, nach dem er die Umbau-Slices schneidet.
      eigene Kennzeichnung „Quelle liefert das Feld nicht" statt „Abweichung" für richtig.
      *Folge für diese Frage — Anwendung, nicht geprüft, dem Architect zur Prüfung:* 3, 5 und 6
      betreffen den Wert und wären im Sinne des Moduls keine Abweichungen (die Feldliste sagt, Pflicht
-     heiße: das Feld steht in jeder Zeile, auch leer; die Fundstelle dieses Wortlauts ist nicht
-     bestimmt — `grep -rn 'Pflicht heißt' spec internal/span harness docs/user` liefert nichts).
+     heiße: das Feld steht in jeder Zeile, auch leer). Fundstelle des Wortlauts:
+     `grep -n 'heißt: das Feld steht in jeder Zeile' internal/span/fieldlist.go` → Zeile 188 (im
+     Quelltext mit Markdown-Sternen, `**Pflicht** heißt …`; ein Muster `Pflicht heißt` verfehlt ihn).
+     Der Satz gehört zur Konstante `fieldListHead` (Zeile 160), die `span.FieldList` schreibt
+     (`grep -n 'WriteString(fieldListHead)' internal/span/fieldlist.go`); `internal/emit/fieldlist.go`
+     schreibt deren Ausgabe **verbatim** ins Zielrepo (Kopfkommentar dort: „VERBATIM: geschrieben wird,
+     was span.FieldList liefert"). **Nicht geprüft:** ein gerendertes Dokument im Zielrepo.
      1 und 2 wären mögliche echte Schema-Abweichungen: 1, weil die Cache-Zähler in der Spezifikation
      als `Optional` stehen (Tabellenzeile `SPEC-024`, `grep -n 'SPEC-024' spec/spezifikation.md`
      → Zeile 117, Spalte Pflicht = `Optional`); 2, weil die PR-Nummer nicht im Schema steht und
