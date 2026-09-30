@@ -9,224 +9,138 @@ Planner-Closure (Modul 8). **Rollen-Trennung ist Kontext-Trennung:** die nachgel
 Kontext), nie im Kontext, der den Code schrieb — sonst wiederholt sich derselbe blinde Fleck.
 Keine Rolle springt rückwärts ohne Übergabe-Artefakt (Findings · Folge-ADR · Carveout, Modul 8).
 
-Kanonische Quellen (vendored Regelwerk, `.harness/baseline/<tag>/regelwerk/`): Modul 9
-(Implementierung), Modul 5 (Lifecycle), Modul 8 (Rollen), Modul 10 (Review), Modul 11
-(Verifikation).
+Quellen: vendored Regelwerk `.harness/baseline/<tag>/regelwerk/` — Modul 9 (Implementierung), 5
+(Lifecycle), 8 (Rollen), 10 (Review), 11 (Verifikation), on-demand.
 
-## Repo-lokale Adaptionen, die du beachten MUSST (harness/conventions.md — MR-Block)
+## Repo-lokale Adaptionen (MR-Block in `harness/conventions.md`)
 
-Über das Regelwerk hinaus trägt dieses Repo lokale Adaptionen gegenüber der Baseline. Lies den
-Adaptions-Block („MR-Block") in `harness/conventions.md`; die workflow-relevanten:
-
-- **Docker-only, kein Host-Toolchain.** Jeder Gate und jedes Tool läuft in einem gepinnten
-  Docker-Image; der PreToolUse-Guard blockt Host-`go`/`pip`/`npm`/`golangci-lint` (und prüft
-  Sub-Shell-Strings). Rufe nie einen Host-Toolchain auf — nur die `make`-Targets.
-- **Gate-Nachweis + Stop-Hook.** `make gates` endet mit `record-gates`, das einen Content-Hash des
-  Working Tree stempelt; der Stop-Hook verweigert den Abschluss, solange der aktuelle Tree nicht
-  passt. **Jede Inhaltsänderung nach einem Gate-Lauf — inklusive jedes Commits und jedes `git mv`
-  — macht den Stempel ungültig: `make gates` erneut laufen.** Ein Commit/Move ohne frischen
-  Gate-Lauf lässt den Stop-Hook rot.
-- **Strenges Doc-Gate (d-check).** Jede `LH-`/`ADR-`/`MR-`-Kennung in einer gescannten `.md` muss
-  ein klickbarer Anker-Link sein (link-policy: always) — ein bares Kennungs-Token bricht
-  `docs-check` (`id-unlinked`). `codepaths` verlangt, dass Pfade in Inline-Code existieren: eine
-  *geplante* Datei braucht einen Inline-`d-check:ignore`-Marker, eine *bewusst entfernte* gehört in
-  `ignore-refs`. Spec verweist nie abwärts auf ADR/Slice; ein Verweis auf eine superseded ADR nur
-  via Inline-Code + `d-check:ignore`. `docs/reviews/**` ist ausgenommen (Zeitdokumente).
-- **Neue Artefakte per `cp` aus den vendored Templates** (`.harness/baseline/<tag>/templates/…`),
-  dann ausfüllen — keine handgeschriebenen oder repo-gepflegten Template-Kopien.
-- **Commit via Message-Datei** (`git commit -F <datei>`): der Guard scannt den Command-String,
-  also nie eine Commit-Message inline, die ein geblocktes Tool-Token enthält.
+- **Docker-only** (`AGENTS.md` §3.9): nur `make`-Targets, nie eine Host-Toolchain; der
+  PreToolUse-Guard blockt sie samt Sub-Shell-Strings.
+- **Gate-Nachweis + Stop-Hook.** `make gates` endet mit `record-gates` (Content-Hash des Working
+  Tree); der Stop-Hook verweigert den Abschluss, solange der Tree nicht passt. **Jede
+  Inhaltsänderung nach dem Gate-Lauf — auch Commit und `git mv` — entwertet den Stempel.**
+- **Strenges Doc-Gate (d-check).** Jede `LH-`/`ADR-`/`MR-`-Kennung in einer gescannten `.md` ist
+  ein Anker-Link (`id-unlinked`). Pfade in Inline-Code müssen existieren: *geplante* Datei →
+  Inline-`d-check:ignore`, *bewusst entfernte* → `ignore-refs`. Spec verweist nie abwärts auf
+  ADR/Slice. `docs/reviews/**` ist ausgenommen.
+- **Neue Artefakte per `cp` aus dem vendored Template** (`.harness/baseline/<tag>/templates/…`),
+  dann **in-place** füllen — nie handgeschrieben, keine repo-gepflegte Kopie.
+- **Dateien ändern mit `Edit`**, nicht per `Write` komplett überschreiben (Diff bleibt klein,
+  fremde Änderungen bleiben erhalten).
+- **Commit via Message-Datei** (`git commit --only <pfade> -F <datei>`): der Guard scannt den
+  Command-String, eine Inline-Message mit geblocktem Tool-Token würde blockiert.
 
 ## Kontext lesen (Modul 9, Schritte 1–3)
 
-1. `CLAUDE.md` lesen.
-2. `harness/README.md` lesen.
-3. `AGENTS.md` lesen.
-4. `harness/conventions.md` lesen.
-5. Den Regelwerk-Index (`.harness/baseline/<tag>/regelwerk/README.md`) und das aufgabenrelevante
-   Modul **on-demand** lesen (Source Precedence, committet vendored Baseline). Nicht den ganzen
-   Baum laden.
-6. Die als Argument übergebene Slice-Datei lesen.
-7. Alle referenzierten ADRs und Anforderungen lesen.
-8. Berichten: Slice-ID · LH-IDs · ADR-IDs · betroffene Komponenten · zu laufende Gates.
+`CLAUDE.md` und `AGENTS.md` (§3, §6) sind im Kontext; darüber hinaus nur, was der Lauf braucht —
+nicht pauschal alles:
+
+1. Die Slice-Datei (Argument).
+2. Die im Plan genannten ADRs, Anforderungen und Regeln, dazu die Dateien, die der Diff berührt.
+3. `harness/README.md` §Sensors (welcher Sensor deckt was) und den MR-Block nur dort, wo der Plan
+   ihn berührt; Regelwerk-Index plus das aufgabenrelevante Modul on-demand, nie den Baum.
+4. Berichten (eine Zeile): Slice-ID · LH-/ADR-IDs · Komponenten · zu laufende Sensoren.
 
 ## Nach in-progress eintreten (Modul 5 Lifecycle + Modul 8 Übergabe)
 
-9. Die Implementation erhält den Slice **in `in-progress/`** (Planner→Implementation-Übergabe,
-   Modul 8; `next → in-progress` = „Implementer beginnt", Modul 5). Liegt er noch in `open/`,
-   zuerst dorthin verschieben (`open → next → in-progress`). Jeder Übergang läuft über
-   `make slice-mv SLICE=slice-<Kennung> TO=<next|in-progress>` — es bewegt die Datei per `git mv`,
-   committet den reinen Move **sofort als eigenen Commit** (Hard Rule 3.3: kein Byte Inhalt
-   geändert, die Rename-Erkennung greift) und zieht danach reale Verweise nach: **eingehend** jede
-   gemessene Präfix-Form eines Verweises auf die bewegte Datei, repo-weit, dazu präfixlose Links aus den
-   Geschwistern im Ausgangsverzeichnis; **ausgehend** präfixlose
-   Ziele innerhalb der bewegten Datei selbst. Fielen Verweise an, committet das Skript sie als
-   **zweiten**, vom Move getrennten Commit — sonst bleibt es beim einen Move-Commit. Voraussetzung
-   dafür ist ein sauberer Arbeitsbaum beim Aufruf (Skriptkopf `harness/tools/slice-mv.sh`, Abschnitt
-   VORAUSSETZUNG); ein unsauberer Baum bricht den Aufruf, statt fremde Änderungen mitzureißen. Drei
-   gemessene Grenzen bleiben: es zieht Pfade nach, keine Zustandssätze; Welle-Plan-Dateien
-   (Tiefenwechsel beim Closure-Move) bleiben außen vor; und einen präfixlosen Verweis **auf** die
-   bewegte Datei erkennt es nur als Markdown-Link in den Geschwistern, die flach im
-   Ausgangsverzeichnis liegen (Skriptkopf `harness/tools/slice-mv.sh`, Grenze 3).
-   `make docs-check` nach dem Move zeigt einen etwaigen Rest — von Hand nachziehen, bevor der
-   nächste Schritt startet.
-10. WIP-Limit = 1 pro Implementer (Modul 5): kein paralleles `in-progress/`.
-11. Lifecycle-Rücksprungkanten (Modul 5), falls sich der Slice als falsch erweist: zu groß →
-    `in-progress → next` (zurück zur Zerlegung); blockiert → `in-progress → open` (Carveout,
-    Modul 7). Zurückführen ist Disziplin, kein Scheitern.
+5. Der Slice muss **in `in-progress/`** liegen (Modul 5/8). Liegt er in `open/`/`next/`:
+   `make slice-mv SLICE=slice-<Kennung> TO=<next|in-progress>` — `git mv`, reiner Move als
+   **eigener Commit** (`AGENTS.md` §3.3), danach Verweis-Nachzug als zweiter Commit, falls welche
+   anfielen. Voraussetzung: sauberer Arbeitsbaum; Grenzen (Zustandssätze, Welle-Plan-Dateien,
+   präfixlose Eingehend-Links nur aus flachen Geschwistern) und Rest-Nachzug per `make docs-check`
+   stehen in [`harness/sensors/slice-mv.md`](../../harness/sensors/slice-mv.md).
+6. WIP-Limit 1. Erweist sich der Slice als falsch, führt er zurück (Modul 5): zu groß →
+   `in-progress → next`; blockiert → `in-progress → open` (Carveout, Modul 7) — Disziplin, kein
+   Scheitern.
 
-## Plan vor Code (Modul 9, Schritt 4 — nicht optional)
+## Plan vor Code (Modul 9, Schritt 4)
 
-12. **Den Ist-Zustand gegen den Slice-Plan messen, bevor du editierst** (`grep`/`diff`, nicht
-    `edit`) — Geschwister-Slices lassen Pläne altern (gelöschte Pfade, verschobene
-    Lifecycle-Dateien). Drift zuerst abgleichen; keinen veralteten Plan blind abarbeiten.
-13. Die kleinste sinnvolle Änderung gegen die DoD planen. Erst planen, dann coden.
-    **Die Testdatei-Zeile der Plan-Ausgabe bindet an die Akzeptanzkriterien der in Schritt 3
-    identifizierten Requirement-ID, statt sie zu wiederholen.** Die Zeile zitiert die ID, nicht
-    ihren Text — dieselbe Kennung-statt-Wiederholung-Disziplin wie überall im Korpus. Ohne diese
-    Zeile sagt der Plan nur, *was* sich ändert; mit ihr sagt er zusätzlich, *woran* das Ergebnis
-    gemessen wird — vor dem ersten Diff, nicht erst im Bericht danach.
-    **Betrifft dieselbe Ursache viele gleichrangige Dateien, nennt der Plan sie einmal — nicht pro
-    Datei.** Eine Schnittstellenänderung über viele gleichrangige Aufrufer bekommt eine
-    Begründung, nicht ebenso viele wortgleiche: die Datei-Liste wird zum Muster oder zur
-    Aufzählung ohne Einzel-Begründung. Wortgleiche Begründungen driften beim nächsten Refactor
-    gegeneinander, ein einmal genannter Grund nicht.
-    **Die Plan-Ausgabe in Schritt 4 nennt Out-of-Scope.** Das ist die Schritt-Hälfte einer Regel;
-    ihre Dokument-Hälfte ist §1 *Ziel und Abgrenzung* des Slice-Plans. Der Lauf schreibt fort, was der
-    Plan schon ausschließt — er erfindet die Abgrenzung nicht neu und weitet sie nicht
-    stillschweigend. Nimmt der Lauf etwas mit, das §1 ausschließt, ist das **Planner-Arbeit**, kein
-    Schritt dieses Laufs: die verschobene Out-of-Scope-Grenze ist ein Übergabe-Artefakt an den
-    Planner (`AGENTS.md` §3.10), und die ausführende Rolle schreibt ihr eigenes Abnahmekriterium
-    nicht um. Die Plan-Änderung geht dem Code voraus, keine Zeile im Bericht danach.
+7. **Ist-Zustand gegen den Slice-Plan messen, bevor du editierst** (`grep`/`diff`): Geschwister-
+   Slices lassen Pläne altern. Drift zuerst abgleichen.
+8. Kleinste Änderung gegen die DoD planen. Die Testdatei-Zeile zitiert die Kennung der Anforderung,
+   deren Akzeptanzkriterien das Ergebnis messen — nicht ihren Text. Dieselbe Ursache über viele
+   gleichrangige Dateien: eine Begründung, nicht eine je Datei. **Out-of-Scope** schreibt fort,
+   was §1 des Plans ausschließt; nimmt der Lauf etwas mit, das §1 ausschließt, ist das
+   Planner-Arbeit und Übergabe-Artefakt (`AGENTS.md` §3.10) — die Plan-Änderung geht dem Code
+   voraus. Der Plan lebt in §3 des Slice-Plans (dort fortschreiben), nicht im Chat.
 
 ## Implementieren und gaten (Modul 9, Schritte 5–6)
 
-14. Die kleinste sinnvolle Änderung implementieren.
-15. Zuerst den engsten nützlichen Gate laufen lassen (z. B. eine Testdatei / ein Gate).
-16. `make gates` laufen lassen.
-
-**Plan-Defekt-Rücksprungkanten (Modul 9):** ein roter Sensor (15) oder rotes Gate (16) führt
-zurück zum **Plan** (13) — den Plan verfeinern, nicht den Kontext neu lesen. Ein Rücksprung zu
-Schritt 1 signalisiert einen Kontext-Defekt. Ein struktureller Fehlschnitt (zu groß / blockiert)
-ist eine Lifecycle-Rücksprungkante (11).
-
-**Der Plan lebt in §3 des Slice-Plans, nicht im Chat-Verlauf.** Was Schritt 4 ausgibt, erweitert
-die Datei-Tabelle aus §3 derselben Datei — „Plan verfeinern" (5→4) und „Plan korrigieren" (6→4)
-schreiben dort fort, und es entsteht kein zweites Artefakt.
+9. Implementieren. **Während der Arbeit läuft der engste nützliche Sensor** (eine Testdatei, ein
+   Gate); `make gates` läuft **einmal vor dem Handoff** (`AGENTS.md` §6 Schritt 5/6), nicht nach
+   jeder Stufe.
+10. Ein roter Sensor oder rotes Gate führt zurück zum **Plan** (verfeinern, nicht den Kontext neu
+    lesen); ein Rücksprung zur Kontext-Lektüre signalisiert einen Kontext-Defekt.
 
 ## Pre-completion-Checkliste (Modul 9, Schritt 8 — letzte Handlung der Implementation-Rolle)
 
-17. Doku, ADR-Index und README aktualisieren, falls ein öffentlicher Vertrag berührt ist.
-    **Gibt Prozedur- oder Nutzer-Doku den Vertrag eines Werkzeugs wieder — Exit-Klassen,
-    Meldungs-Wortlaut, Zahl, Wartezeit, „genau einmal", Reichweite einer Zusage —, zeigt jede
-    Aussage auf die Quelle, die sie trägt (Skript, ADR-Festlegung, gefahrener Lauf), und geht nicht
-    weiter als diese.** Die Quelle ist im selben Lauf zeilenweise gelesen: eine Aufzählung gilt nur
-    dort als abschließend, wo die Quelle sie so führt; eine Regel steht in der Form der Quelle, nicht
-    in einer Kurzform, die eine zugelassene Eingabe anders entscheidet; ein Meldungs-Wortlaut steht
-    für genau die Klasse, die das Skript so meldet; eine Zusage nennt die Ausnahmen der Quelle mit,
-    und ein Absatz über ein Signal, eine Ausnahme oder eine Grenze sagt, was die Quelle dazu sagt;
-    ein Kommando, das eine Eigenschaft belegen soll, belegt sie für jede Datei, die es nennt. Was
-    nur gelesen und nicht gefahren ist, steht als gelesen. Kein Gate hält die Prozedur gegen die
-    Ausgabe des Skripts — die Zeile trägt das Lesen, bevor die Meldung „fertig" geht
-    (`AGENTS.md` §3.6: die Zusage auf das einschränken, was die Quelle hält)
-    (seit slice-tap-nachzug-sync-schreibt-die-formel-ins-tap)
-18. Die Pre-completion-Checkliste laufen: die DoD Punkt für Punkt **behaupten** und die
-    **Sensor-Belege** anhängen — `make gates` **und die Nicht-Gate-Sensoren, die den Slice
-    betreffen**: einen neuen oder geänderten Wächter belegt die Runde **einzeln** — die Mutation
-    von Hand fahren, den benannten Test fallen sehen, die Ausgabe lesen; `make smoke`, wenn der
-    Emit-Pfad berührt ist. Den **repo-weiten** Satz fährt `.github/workflows/mutate.yml`
-    (nächtlich und auf Abruf); `make mutate` bleibt der Sensor dieser Stufe (`AGENTS.md` §3.6).
-    Seine Stufe ist **Post-integration**: `v6.13.0` ·
-    `.harness/baseline/v6.13.0/regelwerk/grundlagen-klassifikation.md` §Klassifikation und
-    Steering Loop › Lifecycle-Verteilung — *„nach Merge : Mutation Tests"* · *„teurer, aber
-    tolerierbar"*. Im Push-Pfad kostete der Job `mutate` 49m54s von 49m58s des Laufs
-    `34867767556` (2026-09-14):
-    `gh run view 34867767556 --json jobs --jq '.jobs[] | [.name, .startedAt, .completedAt] | @tsv'`.
-    Modul 11 verlangt genau hier den Lauf: *„der Implementation-Agent
-    läuft `make verify-*` **selbst** vor der ‚fertig'-Meldung"* — ein Sensor, der erst zur
-    Wellen-Closure feuert, ist pro Slice keiner. **Ein nicht gelaufener Sensor ist ein
-    Befund, kein Formfehler:** ihn wegzulassen ist eine Aussage („betrifft diesen Slice
-    nicht"), die begründet werden muss. Kein Gate erzwingt das — der Stop-Hook deckt nur
-    `make gates` (bis slice-027 die CI bringt). Das ist die *Behauptung* der
-    Implementation-Rolle und die *Eingabe* des Verifiers — **nicht** das finale DoD-Urteil
-    (Modul 11: „Behauptung ohne Bestätigung ist die häufigste Verifier-Lücke"; eine DoD-Verletzung
-    ist eine Verifier-only-Klasse, unsichtbar für Review und Tests). Ausgeführte Sensors +
-    Restrisiken berichten.
-19. **Zu jedem neuen oder geänderten Wächter die rot färbende Mutation benennen**
-    (`AGENTS.md` §3.6). Ein grüner Gate-Lauf belegt nur, dass nichts *bricht* — nicht, dass
-    der Wächter greift. Pro Zusage also: *welche Änderung am geprüften Code müsste diesen
-    Test rot machen, und wurde sie einmal gesehen?* Wo die Antwort dauerhaft interessant
-    ist, gehört sie als Fall nach `test/mutations/` (den fährt der repo-weite Satz aus
-    `.github/workflows/mutate.yml` mit); wo sie einmalig ist, in den Bericht. **Keine Antwort
-    ist ein Befund**, kein Formfehler — die Klasse „Zusage greift weiter als Abdeckung" hat vier
-    Rollen-Durchgänge gekostet, bevor sie hier landete.
-20. **Jeden in diesem Lauf neu geschriebenen oder geänderten Kommentar gegen `AGENTS.md` §3.7
-    prüfen** (Code, Konfiguration, Skripte — inklusive `.github/workflows/*.yml`, `Makefile`,
-    Skript-Köpfe). Die Probe: beschreibt der Satz den **Ist-Zustand** (indikativ, auflösbar), oder
-    trägt er eine Slice-Nummer als Begründung, ein „(… , entschieden)" ohne Anker-Form, oder einen
-    Konjunktiv über eine verworfene Alternative bzw. eine noch nicht existierende künftige Änderung
-    (**„sobald Slice X das tut …"**)? Herkunft steht nur als **ein** auflösbares Feld in den dort
-    genannten Formen (`LH-*`, `ADR-*`, `· seit welle-<Kennung>`, wellenlos
-    `· seit slice-<Kennung>`) — alles andere ist Zustand, keine Chronik, und wird vor der Übergabe
-    umformuliert statt mitgeschleift.
+11. Doku, ADR-Index und README aktualisieren, falls ein öffentlicher Vertrag berührt ist. **Gibt
+    Prozedur- oder Nutzer-Doku den Vertrag eines Werkzeugs wieder — Exit-Klassen, Meldungs-
+    Wortlaut, Zahl, Wartezeit, Reichweite einer Zusage —, zeigt jede Aussage auf die Quelle, die
+    sie trägt (Skript, ADR-Festlegung, gefahrener Lauf), und geht nicht weiter als diese.** Die
+    Quelle ist im selben Lauf zeilenweise gelesen: Aufzählungen nur abschließend, wo die Quelle
+    es so führt; Regeln in der Form der Quelle; Ausnahmen der Quelle mitnennen; Gelesenes steht als
+    gelesen, nicht als gefahren. Kein Gate hält die Prozedur gegen die Skript-Ausgabe
+    (`AGENTS.md` §3.6) · seit slice-tap-nachzug-sync-schreibt-die-formel-ins-tap
+12. **Sensor-Belege.** `make gates` einmal (siehe 9) **und die Nicht-Gate-Sensoren, die den Slice
+    betreffen** (`make smoke`, wenn der Emit-Pfad berührt ist). Einen neuen oder geänderten
+    Wächter belegst du **einzeln**: die Mutation von Hand fahren, den benannten Test fallen sehen,
+    die Ausgabe lesen. Den repo-weiten `make mutate`-Satz fährst du nicht — er läuft nächtlich
+    (`.github/workflows/mutate.yml`, Stufe Post-integration, `AGENTS.md` §3.6). Ein nicht
+    gelaufener Sensor ist ein Befund: ihn wegzulassen braucht eine Begründung. Das ist die
+    *Behauptung* der Rolle und die *Eingabe* des Verifiers, nicht das DoD-Urteil.
+13. **Zu jedem neuen oder geänderten Wächter die rot färbende Mutation benennen** (`AGENTS.md`
+    §3.6): welche Änderung am geprüften Code müsste den Test rot machen, und wurde sie gesehen?
+    Dauerhaft interessant → Fall nach `test/mutations/`; einmalig → in den Bericht. Keine Antwort
+    ist ein Befund.
+    **Ein Sensor ist erst fertig, wenn er an der realen Quelle rot gesehen wurde** — nicht an
+    einer nachgebauten Zeile oder Fixture. Trägt der Bestand kein reales Beispiel, steht das im
+    Kopf des Sensors **und** im Bericht, statt nur eine erfundene Zeile zu zeigen.
+14. **Jeden neu geschriebenen oder geänderten Kommentar** (Code, Konfiguration, Skripte, Workflows,
+    Makefile, Skript-Köpfe) gegen `AGENTS.md` §3.7 prüfen: Ist-Zustand im Indikativ, Herkunft
+    höchstens als ein auflösbares Feld (`LH-*`, `ADR-*`, `· seit welle-<Kennung>` bzw.
+    `· seit slice-<Kennung>`); keine Slice-Nummer als Begründung, kein Konjunktiv über
+    Verworfenes oder Künftiges. Vor der Übergabe umformulieren.
 
-Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontexten** (Modul 8).
+## Bericht und Handoff (Modul 8 → 10 → 11)
 
-## Übergaben an nachgelagerte Rollen (Modul 8 → 10 → 11)
+**Der Bericht ist knapp:** Diff-Übersicht · Sensoren mit Ausgabe · rot gesehene Gegenbeispiele ·
+Grenzen und Übergaben. Kein zusätzliches Zeitdokument neben dem Handoff, außer der Plan verlangt
+es. Hier endet die Implementation; die übrigen Rollen laufen in **getrennten Kontexten**
+(Modul 8, kein Selbst-Review).
 
-21. **→ Reviewer (Code-Review, Modul 10):** den Diff + Plan-Verweis an einen **unabhängigen**
-    Reviewer übergeben (`.harness/skills/reviewer.md`, frischer Kontext — kein Selbst-Review). Er
-    kategorisiert Findings (HIGH/MEDIUM/LOW/INFO) in einen Report unter `docs/reviews/` und prüft
-    den Diff gegen **Plan + ADR + Hard Rules** (nicht die DoD). HIGH/MEDIUM auflösen; ein HIGH mit
-    Rollen-Konflikt folgt Modul 8 §Konflikt-Pfad (Sequenz mit Übergabe-Artefakten, nie
-    „herabstufen, weil der Implementer widerspricht").
-22. **→ Verifier (Modul 11):** in getrenntem Kontext die DoD-/Spec-Behauptung und den
-    Plan-vs-Code-Diff **bestätigen**, dazu ADR-Konformität. Das fängt, was Tests übersehen und der
-    Reviewer nicht sieht (DoD-Verletzung).
-23. **→ Validator (Modul 8):** falls der Slice End-Nutzer-Wert liefert, gegen den realen Bedarf
-    validieren („das Richtige bauen"). Meist n/a bei interner Wartung — dann explizit sagen statt
-    still überspringen.
+15. **→ Reviewer (Modul 10):** Diff + Plan-Verweis an einen **unabhängigen** Reviewer
+    (`.harness/skills/reviewer.md`, frischer Kontext). Er prüft gegen Plan + ADR + Hard Rules und
+    schreibt den Report unter `docs/reviews/`. HIGH/MEDIUM auflösen; ein HIGH mit Rollen-Konflikt
+    folgt Modul 8 §Konflikt-Pfad, nie „herabstufen, weil der Implementer widerspricht".
+16. **→ Verifier (Modul 11):** getrennter Kontext bestätigt DoD/Spec-Behauptung, Plan-vs-Code-Diff
+    und ADR-Konformität.
+17. **→ Validator (Modul 8):** nur bei End-Nutzer-Wert gegen den realen Bedarf; sonst „n/a" explizit
+    sagen.
 
 ## Closure — Planner-Rolle (Modul 8 + Modul 5)
 
-24. Erst wenn der Review konform **und** die Verifikation die DoD bestätigt hat, schließt der
-    **Planner**: die Closure-Notiz mit einem **Steering-Loop-Eintrag** schreiben (geschärfte Regel ·
-    neuer Sensor · benannte Spec-Lücke — Modul 5: der `→ done`-Übergang verlangt einen Lerneintrag,
-    nicht nur grüne Gates) und **committen**, dann den Slice `in-progress → done` per
-    `make slice-mv SLICE=slice-<Kennung> TO=done` verschieben — ein Lauf, zwei Commits: zuerst der reine
-    Move, danach — getrennt, nur falls welche anfielen — der Verweis-Nachzug (Hard Rule 3.3,
-    dieselbe Begründung wie in Schritt 9). Dieselben drei Grenzen bleiben (keine Zustandssätze,
-    keine Welle-Plan-Dateien, präfixlose Eingehend-Form nur als Link aus flachen Geschwistern). `make docs-check`
-    danach prüft den Rest. Ein rotes Gate erreicht `done/` **nur** mit dokumentiertem Carveout
-    (Modul 7), nie als stilles Rot.
-24a. **Liegen Commits nach dem letzten Reviewer-Report vor** (Tests, Produktcode, Mutations-Fälle,
-     Sensor-Doku — nicht nur Vorbereitung der Closure selbst), benennt die Closure-Notiz sie
-     einzeln mit Hash und Kurzbeschreibung und trifft eine von zwei Entscheidungen, mit
-     Begründung: eine weitere Reviewer-Runde über genau diesen Rest — oder eine begründete
-     Entscheidung dagegen (etwa: der Verifier hat die Commits gemessen und gefahren, die Änderung
-     setzt nur einen bereits vom Review benannten Schließungs-Vorschlag um, die Runden
-     konvergieren in der Schwere). Ein Häkchen *Review durchgeführt*, das eine frühere Runde
-     bestätigt, bestätigt **nicht** stillschweigend Commits danach — Reviewer und Verifier prüfen
-     verschiedene Fragen (Plan/ADR/Hard-Rules gegen DoD/Spec), und die erste Frage stellt an den
-     Nachrunden-Diff sonst niemand. Kein Gate fängt das; Träger ist diese Closure
-     (`AGENTS.md` §3.10; seit slice-204-das-programm-feld-nennt-das-programm)
-25. **Das Beobachtungs-Register fortschreiben** (`docs/plan/planning/observations/`, Modul 6) —
-    der **Schreib**-Schritt, und er hängt an der Closure, nicht an der Implementation. Für jede
-    Beobachtung aus §7: führt das Register die Klasse schon, dann die vorhandene Kennung
-    `BEO-<KUERZEL>/<slug>` **zitieren** und eine weitere Datei in ihrem `evidence/` anlegen — wer
-    neu formuliert, spaltet eine Klasse in zwei Pfade, und keiner der beiden erreicht je 3×. Sonst
-    ein neues Verzeichnis `BEO-<KUERZEL>/<slug>/` mit `observation.md` und `state.md` anlegen —
-    Kürzel aus der Modus-Deklaration in `harness/conventions.md` **nachschlagen, nicht erfinden**;
-    das Register ist zugleich die Vergabestelle für den `<slug>`-Teil. Der Beleg ist
-    **formgebunden**: `evidence/slice-<Kennung>.md`, kein Freitext, eine Datei je Auftreten. Geschrieben
-    wird er **vor** dem `git mv` — die Slice-Datei liegt dann noch nicht in `done/`, und das ist
-    richtig so, weil Move und Inhalt getrennt committen (Hard Rule 3.3). Der Zähler wird **nicht
-    gesetzt**, er ist die Zahl der Evidence-Dateien und **folgt** aus ihnen. **Bei null
-    Beobachtungen** — der häufigste Fall — bleibt die Ablage unverändert und §7 trägt den Satz
-    *keine Beobachtung angefallen*: das Auslassen ist keine Antwort. Erreicht ein Eintrag **mit
-    diesem Slice** 3× (die Zahl seiner Evidence-Dateien), ist er keine Notiz mehr — er wandert in
-    die Steering-Loop-Einträge der laufenden Welle-Closure (`/close-welle`) und wird zur
-    verkörperten Regel; läuft gerade keine Welle, löst die Slice-Closure den Lese-Schritt selbst
-    aus, und der Herkunfts-Anker lautet dann `seit slice-<Kennung>` statt `seit welle-<Kennung>`.
+Die Closure schreibt nicht dieser Lauf (`AGENTS.md` §3.10), sie steht hier als Übergabe-Kontext.
 
-Gates nicht überspringen. Keine Erfolgsmeldung ohne Command-Ausgabe.
+18. Erst wenn der Review konform **und** die Verifikation die DoD bestätigt hat, schließt der
+    **Planner**: Closure-Notiz mit **Steering-Loop-Eintrag** (geschärfte Regel · neuer Sensor ·
+    benannte Spec-Lücke) committen, dann `make slice-mv SLICE=slice-<Kennung> TO=done` — reiner
+    Move, danach getrennt der Verweis-Nachzug (§3.3; Grenzen wie in Schritt 5); `make docs-check`
+    prüft den Rest. Ein rotes Gate erreicht `done/` nur mit dokumentiertem Carveout (Modul 7).
+19. **Liegen Commits nach dem letzten Reviewer-Report vor** (Tests, Produktcode, Mutations-Fälle,
+    Sensor-Doku), benennt die Closure-Notiz sie einzeln mit Hash und Kurzbeschreibung und
+    entscheidet mit Begründung: weitere Reviewer-Runde über genau diesen Rest — oder begründet
+    dagegen (etwa: der Verifier hat sie gemessen und gefahren, sie setzen nur einen vom Review
+    benannten Schließungs-Vorschlag um). Ein Häkchen *Review durchgeführt* bestätigt nicht
+    stillschweigend Commits danach; kein Gate fängt das (`AGENTS.md` §3.10) ·
+    seit slice-204-das-programm-feld-nennt-das-programm
+20. **Beobachtungs-Register fortschreiben** (`docs/plan/planning/observations/`, Modul 6) — Schreib-
+    Schritt der Closure, **vor** dem `git mv`. Je Beobachtung aus §7: Klasse schon geführt → die
+    Kennung `BEO-<KUERZEL>/<slug>` zitieren und eine Datei `evidence/slice-<Kennung>.md` anlegen
+    (eine je Auftreten); sonst neues Verzeichnis mit `observation.md` und `state.md`, Kürzel aus der
+    Modus-Deklaration in `harness/conventions.md` nachschlagen, nicht erfinden. Der Zähler folgt aus
+    den Evidence-Dateien. Bei null Beobachtungen trägt §7 den Satz *keine Beobachtung angefallen*.
+    Erreicht ein Eintrag 3×, wird er zur verkörperten Regel (Lese-Schritt der Welle-Closure,
+    `/close-welle`; ohne Welle löst ihn diese Closure aus, Anker `seit slice-<Kennung>`).
+
+Keine Erfolgsmeldung ohne Command-Ausgabe.
