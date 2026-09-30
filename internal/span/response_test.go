@@ -326,6 +326,15 @@ func TestResolvedModelIsStructurallyBounded(t *testing.T) {
 // von ihnen aus der Liste streicht, bekommt von `make mutate` keinen Befund. Die
 // normative Fassung dieser Auszaehlung steht in spec/spezifikation.md §5
 // in den Zeilen SPEC-073 bis SPEC-081.
+//
+// PRUEFSTEIN, ob ein Fall einen Eintrag bindet: das KIPPEN, nicht das Rot. Ein
+// Fall bindet einen Eintrag genau dann, wenn das Streichen dieses Eintrags den
+// Fall von "ok" auf Befund kippt; dass seine Mutation den Namen in die
+// Fehlschlag-Zeile schreibt, ist notwendig, nicht hinreichend, denn mustNotContain
+// prueft per strings.Contains und bricht beim ersten Treffer ab. Fuer die zwei
+// Cache-Zaehler ist das Kippen nicht herstellbar, solange "input_tokens" als
+// Teilstring in derselben Liste steht. Die sechs uebrigen omitempty-Kopien sind
+// nicht geschnitten.
 func TestFailedAgentCallCapturesNothing(t *testing.T) {
 	root := newRoot(t)
 	emit(t, root, `{"hook_event_name":"PostToolUseFailure","tool_name":"Agent",
