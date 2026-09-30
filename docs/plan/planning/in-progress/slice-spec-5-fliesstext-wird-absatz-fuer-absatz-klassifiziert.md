@@ -129,7 +129,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1 — Klassifikationstabelle.** Eine Datei unter `docs/reviews/` (Name trägt die
+- [x] **Liefer-Punkt 1 — Klassifikationstabelle.** Eine Datei unter `docs/reviews/` (Name trägt die
       Slice-Kennung) ordnet jede Einheit von §5 nach der Werkzeug-Tabelle genau einer Klasse zu;
       Spalten: Zeilenbereich · Klasse · Sicherheit (sicher / Grenzfall) · Bytes · gebundene
       Wächter · Sensor-Abhängigkeit (liest ein Test, Sensor oder eine ADR die Einheit oder nennt
@@ -137,22 +137,22 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       ersten Kommando in §1, und jeder der 24 Testnamen und 26 Fall-Dateien steht in der Spalte
       „gebundene Wächter“ (beide Differenzen leer). **Rot gesehen:** eine Zeile aus der Tabelle
       streichen — beide Kommandos zeigen den Fehlbetrag; der Vermerk steht im Review-Bericht.
-- [ ] **Liefer-Punkt 2 — Zeiger-Inventar.** Dieselbe Datei listet jede Stelle in `internal/`,
+- [x] **Liefer-Punkt 2 — Zeiger-Inventar.** Dieselbe Datei listet jede Stelle in `internal/`,
       `test/`, `cmd/`, `harness/tools/` und `docs/plan/adr/`, die §5 oder eine benannte Passage
       nennt (Kommando: `grep -rnE 'spezifikation\.md' internal test cmd harness/tools docs/plan/adr`),
       je mit der angesprochenen Einheit; eine Stelle ohne zuordenbare Einheit steht als eigene
       Zeile.
-- [ ] **Liefer-Punkt 3 — LH-Vorschlag.** Je Einheit der Klasse (a) und je Zeile von `SPEC-001` bis
+- [x] **Liefer-Punkt 3 — LH-Vorschlag.** Je Einheit der Klasse (a) und je Zeile von `SPEC-001` bis
       `SPEC-034` ein Kandidat `LH-*` mit Fundstelle im Lastenheft, oder die ausdrückliche Zeile
       „kein LH gefunden“ — sie ist eine **benannte Spec-Lücke**, kein stilles Weglassen.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update entfällt: der Slice ändert keinen öffentlichen Vertrag.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Doku-Update entfällt: der Slice ändert keinen öffentlichen Vertrag.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -215,13 +215,26 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 dasteht.
 
 - **Der Absatz ist die falsche Einheit.** 34 Blöcke, zwei davon über 6 KB; ein Listenpunkt kann
-  seinerseits mehrere Klassen tragen. — **Ausgang:** wird bei der Closure eingetragen (eingetreten /
-  entfallen / weiter offen).
+  seinerseits mehrere Klassen tragen. — **Ausgang:** **eingetreten.** Der Bericht schneidet feiner als der Absatz:
+  `awk -F'|' '/^\| U[0-9]+ / && $3 ~ /[0-9]–[0-9]/' <Bericht> | wc -l` nennt die Einheiten (keine
+  Erwartungswerte), einzelne tragen zwei Klassen. Adresse:
+  `slice-spec-5-erfassung-aus-tool-response-steht-als-tabellenzeilen` — dessen §1 führt den
+  Einheiten-Schnitt des Berichts als Arbeitsgrundlage des Piloten und übergibt den Schnitt der
+  übrigen Blöcke an den Planner bei seiner Closure; der Schnitt-Hinweis der ADR ist Frage 9 in
+  `slice-spec-aufnahme-regel-traegt-klassen-ort-und-lh-bezug`.
 - **Die Klassen-Zuordnung eines Grenzfalls ist ein Urteil über Norm-Text**, das ein
-  Implementer-Kontext nicht fällen soll. — **Ausgang:** wird bei der Closure eingetragen; die Vorkehrung
-  (Grenzfälle markieren und an den Architect übergeben) steht in §1.
+  Implementer-Kontext nicht fällen soll. — **Ausgang:** **eingetreten.** Die Vorkehrung aus §1 hat gehalten: die
+  Grenzfälle sind im Bericht markiert und keiner ist entschieden. Die Zuordnung selbst liegt beim
+  Architect — Adresse: `slice-spec-aufnahme-regel-traegt-klassen-ort-und-lh-bezug`, dessen §1
+  Frage 1 die Grenzfälle, die Klassen `d` und `e` und die Auftraggeber-Frage nach dem Ort der
+  Abweichung von der Baseline führt.
 - **Die 35 Treffer für „gemessen/Datum“ werden als Klasse (c) gelesen**, obwohl ein Teil Zusagen sind.
-  — **Ausgang:** wird bei der Closure eingetragen.
+  — **Ausgang:** **eingetreten.** Nach Erst-Zeile der Einheit liegt der größere Teil der Treffer in
+  Klasse `c`; zwei Treffer sind das Wort `ungemessen` (`grep -c 'ungemessen' spec/spezifikation.md`),
+  und ein Teil der übrigen sind Zusagen — der Bericht weist die Zählregel und ihre Grenzen aus (§2,
+  *Was die Zählung ausweist*). Ob Messprotokolle einen Ort außerhalb der Spec bekommen, entscheidet
+  der Architect — Adresse: `slice-spec-aufnahme-regel-traegt-klassen-ort-und-lh-bezug`, dessen §1
+  Frage 2 die vier Aussagearten des Messprotokolls führt.
 
 ## 7. Closure-Notiz
 
@@ -238,8 +251,54 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-Wird bei der Closure vom Planner gefüllt ([`AGENTS.md`](../../../../AGENTS.md) §3.10), nicht von
-dem Lauf, der die Tabelle geschrieben hat.
+- **Was hat funktioniert:** Die Vollständigkeit ist an zwei unabhängigen Größen gemessen worden —
+  die Byte-Summe gleicht dem Fließtext, die Zeilenbereiche der Einheiten schließen lückenlos von
+  Zeile 137 bis 718 — und jede gestrichene Einheit färbte mindestens eine der beiden rot. Die
+  Bruchprobe ist von Reviewer und Verifier je für sich gefahren worden und stimmt überein. Grenzfälle
+  sind markiert statt geglättet; kein Norm-Text ist entstanden, `spec/`, ADRs, `AGENTS.md` und
+  `harness/conventions*` sind unberührt.
+- **Was ging anders als geplant:** Drei Punkte. Erstens der Einheiten-Schnitt: der Bericht schneidet
+  feiner als der Absatz und führt die Abweichung in seinem §1 (Risiko 1). Zweitens die Reichweite
+  der Vollständigkeits-Zusage: „beide Kommandos zeigen den Fehlbetrag“ gilt nur für eine Zeile, die
+  einen Wächter beim Namen nennt; bei einer Zeile ohne Wächter zeigt allein die Byte-Summe den
+  Fehlbetrag, bei der Träger-Zeile `T` allein die Namens-Differenz. Drittens deckt die Byte-Summe die
+  Summe und nicht die Zuordnung: verschobene Bytes zwischen zwei Einheiten lassen alle Kommandos des
+  Berichts grün; nur die Einzel-Schleife je Einheit meldet sie, und sie ist ein Kommando des
+  Verifiers, kein Gate. Die Roadmap musste beim Übergang nach `in-progress/` ihren Ruhe-Marker
+  wechseln; der Plan-Abschnitt „Plan (vor Code)“ nennt sie nicht.
+- **Steering-Loop-Eintrag — benannte Spec-Lücke:** *Ein großer Teil der Festlegungen von Spec §5
+  hat kein Lastenheft-Element, an das er sich binden ließe.* Gemessen im LH-Vorschlag des Berichts:
+  `awk '/^### 6\.1/,/^### 6\.2/' <Bericht> | grep -c 'kein LH gefunden'` nennt die Einheiten der
+  Klasse `a` ohne Kandidat, `awk '/^### 6\.2/,/^### 6\.3/' <Bericht> | grep -c 'kein LH gefunden'`
+  die Tabellenzeilen `SPEC-001` bis `SPEC-034` ohne Kandidat (13 und 10 gegen 21 Einheiten und 34
+  Zeilen; keine Erwartungswerte); als Träger dient durchgängig
+  [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren). Ob eine Spec-Zeile
+  ohne Lastenheft-Element ein Change Request am Lastenheft nach
+  [`MR-015`](../../../../harness/conventions.md#mr-015) auslöst, entscheidet der Auftraggeber; der
+  Architect benennt nur — festgehalten in Frage 3 von
+  `slice-spec-aufnahme-regel-traegt-klassen-ort-und-lh-bezug`. Kein `liegt in`: mit diesem Slice ist
+  nichts verkörpert worden, der Eintrag ist eine Lücke in einer versionierten Spec.
+- **Beobachtungs-Register (`../observations/`):** `evidence/slice-spec-5-fliesstext-wird-absatz-fuer-absatz-klassifiziert.md`
+  in `BEO-ALL/vollstaendigkeits-zusage-misst-falsche-ebene/` ergänzt — Zähler steht damit bei 4×
+  (`ls docs/plan/planning/observations/BEO-ALL/vollstaendigkeits-zusage-misst-falsche-ebene/evidence | wc -l`).
+  Der Eintrag ist [verkörpert](../observations/BEO-ALL/vollstaendigkeits-zusage-misst-falsche-ebene/state.md);
+  die Prosa-Form wird mit dem vierten Beleg als ausgeschöpft gelesen, und seine `state.md` begründet,
+  warum kein mechanischer Sensor benannt wird (Zeitdokument ohne fortlaufenden Konsumenten, kein
+  Prüfbereich). Der Lerneintrag der Vollständigkeits-Kommandos — die Sammelzeile `T` verdeckt Testnamen,
+  die Summe deckt keine Zuordnung — steht dort als Beleg, nicht als zweite Beobachtung. Die
+  Beobachtungen aus §8 sind nicht berührt; keine erreicht mit diesem Slice die Schwelle.
+- **Folge-Slices:** `slice-spec-aufnahme-regel-traegt-klassen-ort-und-lh-bezug` (Klassen, Ort und
+  LH-Bezug-Spalte, Architect — Datei in `open/`, Fragen aus dem Bericht ergänzt) ·
+  `slice-spec-5-erfassung-aus-tool-response-steht-als-tabellenzeilen` (Pilot-Umbau, Einheiten-Schnitt
+  ergänzt — Datei in `open/`).
+- **Risiken aus §6:** alle drei *eingetreten*, je mit Adresse — siehe §6.
+- **Drei Paarungen:** (a) Anker: kein Feld `liegt in` in diesem §7 — die Paarung hat keinen
+  Gegenstand; (b) Folge-Slice: beide genannten Folge-Slices liegen als Datei im Planning-Lifecycle;
+  (c) Register: das genannte Verzeichnis `BEO-ALL/vollstaendigkeits-zusage-misst-falsche-ebene` existiert
+  und trägt ein nicht leeres `evidence/`. Geprüft nach dem `git mv`.
+
+Den Abschluss schreibt der Planner ([`AGENTS.md`](../../../../AGENTS.md) §3.10), nicht der Lauf,
+der die Tabelle geschrieben hat.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
