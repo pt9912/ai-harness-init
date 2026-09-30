@@ -33,7 +33,7 @@ Tabellenform von §5),
 [§5](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) — die ADR nennt sie in ihrem
 `Schärft:`-Feld; dieser Slice ändert sie nicht.
 
-**Verantwortlich:** — bis zur Priorisierung. Ausführende Rolle: **Architect**
+**Verantwortlich:** Architect (pt9912). Ausführende Rolle: **Architect**
 ([`AGENTS.md`](../../../../AGENTS.md) §3.8, [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md)).
 Der Planner schreibt keinen ADR-Text; dieser Plan ist das Übergabe-Artefakt.
 
