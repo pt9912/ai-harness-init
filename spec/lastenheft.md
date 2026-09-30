@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.23.0
+**Version:** 0.24.0
 
 **Status:** Draft
 
@@ -259,11 +259,14 @@ Verifikation), auf die seine `AGENTS.md` §1 (Source Precedence) zeigt — und l
 **Beschreibung:** Der Bootstrap emittiert ins Zielrepo den **Träger** der
 Observability-Blöcke *Span-/Audit-Attribute*, *Token-Attribution* und
 *Cache-Counter*: Das gebootstrappte Repo schreibt je Werkzeug-Aufruf seiner
-Agenten-Läufe einen **Span** in einen gitignorierten Zustands-Bereich und trägt
-darin die Korrelations-Achsen Slice, Anforderung, Entscheidung und **Rolle**. Die
+Agenten-Läufe einen **Span** in einen gitignorierten Zustands-Bereich. Die
 **Rollen-Typen** unter `.claude/agents/` sind Teil der Emission, nicht ihr Beiwerk —
 ohne sie bliebe das Pflichtfeld `agent.role` dauerhaft leer. Damit erhält der Adopter
-den **Beleg** seiner Läufe, nicht nur ihre Anleitung.
+den **Beleg** seiner Läufe, nicht nur ihre Anleitung. Was der Span trägt, wie er
+redigiert und betrieben wird und wie er gelesen wird, steht in den Anforderungen
+[`LH-FA-13`](../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) bis
+[`LH-FA-17`](../spec/lastenheft.md#lh-fa-17--auswertung-der-erfassung); diese hier trägt
+den Träger und seinen Ablageort.
 
 **Quelle (Tool-als-Quelle — §5).** Wie
 [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) und
@@ -286,29 +289,9 @@ Regelwerk darüber.
 
 - **Happy Path:** Given Bootstrap, then schreibt ein Werkzeug-Aufruf im Zielrepo eine
   Span-Zeile mit der vollen Pflicht-Spalte; ein Lauf ohne Pflichtfeld fällt auf.
-- **Rolle besetzt:** Ein unter einem Rollen-Typ gestarteter Lauf trägt seine Rolle;
-  leer heißt **unbekannt**, nie rollenlos.
-- **Betrieb fail-open, Umfang fail-closed:** Ein sprech-unfähiger Emitter hält keinen
-  Lauf auf; ein nicht namentlich geführtes Werkzeug gibt **nur Name und Status** preis.
-- **Redaktion — was zugesagt ist und was nicht:** Erfasst wird ausschließlich, was in
-  einer geschlossenen, im Zielrepo lesbaren Feldliste steht; von Argument-Werten wandert
-  nie der Inhalt, sondern eine Ableitung (Pfad, Länge, Fingerabdruck).
-  **Ausdrücklich nicht zugesagt** ist, dass Pfadnamen unkritisch sind, und dass der
-  Bestand geschützt ist — er ist gitignored, nicht verschlüsselt und nicht
-  zugriffsbeschränkt.
-- **Aufbewahrung:** Das Zielrepo führt ein **ausdrückliches Aufräum-Kommando**; ohne
-  dessen Aufruf wächst der Bestand unbegrenzt, und das Repo sagt es. Eine **automatische
-  Rotation ist nicht Teil der Zusage** — ein Löschpfad in einem fail-open-Hook über
-  fremden Daten wäre der teurere Fehlerfall.
-- **Leser:** Emittiert werden **Schreiber und Auswertung**. Die Auswertung nennt ihre
-  **Abdeckung zuerst** und meldet damit ihre eigene Leere: solange keine
-  Verbrauchs-Zähler ankommen, trägt sie keine Bilanz — und sagt das, statt eine zu
-  erfinden.
-- **Erfassungs-Umfang:** Der emittierte Träger erfasst den abgeschlossenen Werkzeug-Aufruf,
-  auch den fehlgeschlagenen, und den **Start** eines Rollen-Laufs. Der Start ist die einzige
-  Quelle für einen Lauf, dessen Ergebnis keine Verbrauchs-Zähler trägt. **Nicht erfasst**
-  werden ein vom Guard geblockter Aufruf und das Ende eines Laufs; ein abgebrochener Lauf
-  hinterlässt damit einen Start ohne Ende.
+- **Träger und Ablageort:** Der Träger ist ein Unterkommando des Produkt-Binärs, das der
+  Hook des Zielrepos als Prozess aufruft; der Ablageort der Spans ist ein gitignorierter
+  Pfad, und das Zielrepo prüft ihn real mit `git check-ignore`.
 - **Reproduzierbar ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)):**
   dieselbe Tool-Version → derselbe Träger im Ziel.
 - **Minimal/netzlos ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)):**
@@ -319,6 +302,131 @@ Regelwerk darüber.
   Hook, der auf ein fehlendes Programm zeigt.
 - **Benannte Grenze:** Die emittierte Ebene führt keinen Wächter über die Aufrufform des
   Agenten-Werkzeugs; die Rollen-Achse ruht dort auf Adopter-Disziplin.
+
+### LH-FA-13 — Erfassungs-Schema der Spans
+
+**Beschreibung:** Der Span des emittierten Trägers
+([`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)) trägt eine
+**geschlossene Feldliste**: Pflicht- und Optionalfelder, die Korrelations-Achsen Slice,
+Anforderung, Entscheidung, Rolle sowie Zweig und Stand, und für Subagenten-Läufe Token-
+und Cache-Felder. Die Liste liegt im Zielrepo lesbar.
+
+**Akzeptanzkriterien:**
+
+- **Pflicht- und Optionalfelder:** Jeder Span trägt die Pflichtfelder; ein Pflichtfeld
+  steht auch bei leerem Wert in der Zeile. Optionalfelder stehen nur, wo ihre Quelle sie
+  trägt: Berechtigungs-Modus, Pfad, Größe und Fingerabdruck einer Datei (aus dem
+  Dateisystem, nie aus der Payload), Dauer des Aufrufs, Länge des Ergebnisses (nie sein
+  Inhalt) sowie Programm-Name und Argument-Anzahl (nie die Kommandozeile).
+- **Korrelations-Achsen:** Der Span trägt Slice (aus dem Lifecycle-Verzeichnis),
+  Anforderung und Entscheidung (aus der `Bezug:`-Zeile der Slices) als Listen; ohne Slice
+  sind sie leer und als leer erkennbar. Die Rolle regelt
+  [`LH-FA-15`](../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung).
+- **Zweig und Stand:** Der Span trägt `branch` und `commit`, ohne Netz aus dem git-Zustand
+  des Zielrepos abgeleitet; eine PR-Angabe trägt er nicht. Ist die Ableitung nicht
+  möglich, stehen beide Felder leer da statt zu fehlen.
+- **Token- und Cache-Felder:** Der Span eines Subagenten-Laufs trägt Eingabe- und
+  Ausgabe-Token, Cache-Erstellung und Cache-Lesen, die Gesamtsumme, die Laufzeit, die Zahl
+  der Werkzeug-Aufrufe und die Modell-Bezeichnung — soweit das Ergebnis des Werkzeugs sie
+  trägt. Trägt es einen Zähler nicht (Hintergrund-Lauf), wird er nicht abgeleitet und nicht
+  geschätzt. Die Zähler des Haupt-Kontexts stehen in keiner Payload; der Span trägt für ihn
+  keine Zahl.
+- **Leer heißt unbekannt:** Ein leerer Wert eines Pflichtfelds heißt **unbekannt**; das
+  Pflichtfeld bleibt Pflicht und steht in jedem Span.
+
+### LH-FA-14 — Redaktion und Erfassungs-Umfang
+
+**Beschreibung:** Der emittierte Träger erfasst nur, was eine geschlossene Feldliste
+nennt, und gibt von fremden Werten eine Ableitung preis, nie den Inhalt. Welche Aufrufe
+er erfasst und welche nicht, steht als Kriterium.
+
+**Akzeptanzkriterien:**
+
+- **Umfang fail-closed:** Ein nicht namentlich geführtes Werkzeug gibt **nur Name und
+  Status** preis. Aus dem Ergebnis eines Werkzeugs wird nur erfasst, was eine namentliche
+  Liste nennt, auch aus verschachtelten Schlüsseln nichts Ungelistetes; der Freitext eines
+  Ergebnisses erreicht den Span nie, für jedes Werkzeug gilt nur die Länge. Ein
+  fehlgeschlagener Aufruf hinterlässt Name und Status, keine halbe Zeile mit leeren
+  Zählern.
+- **Redaktion — was zugesagt ist und was nicht:** Erfasst wird ausschließlich, was in
+  einer geschlossenen, im Zielrepo lesbaren Feldliste steht; von Argument-Werten wandert
+  nie der Inhalt, sondern eine Ableitung (Pfad, Länge, Fingerabdruck).
+  **Ausdrücklich nicht zugesagt** ist, dass Pfadnamen unkritisch sind, und dass der
+  Bestand geschützt ist — er ist gitignored, nicht verschlüsselt und nicht
+  zugriffsbeschränkt.
+- **Begrenzter Rohstring:** Die Modell-Bezeichnung ist der einzige Rohstring unter den
+  erfassten Ergebnis-Werten und ist in Länge und Zeichensatz begrenzt; was die Schranke
+  nicht erfüllt, wird verworfen, nicht gekürzt. Weitere Felder der Payload werden nicht
+  still mitgeschrieben.
+- **Erfassungs-Umfang:** Der emittierte Träger erfasst den abgeschlossenen Werkzeug-Aufruf,
+  auch den fehlgeschlagenen, und den **Start** eines Rollen-Laufs. Der Start ist die einzige
+  Quelle für einen Lauf, dessen Ergebnis keine Verbrauchs-Zähler trägt. **Nicht erfasst**
+  werden ein vom Guard geblockter Aufruf und das Ende eines Laufs; ein abgebrochener Lauf
+  hinterlässt damit einen Start ohne Ende.
+
+### LH-FA-15 — Rolle der Erfassung
+
+**Beschreibung:** Jeder Span des emittierten Trägers trägt die Rolle, unter der der Lauf
+lief, soweit sie bekannt ist. Die Rolle kommt aus den Rollen-Typen, die
+[`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) emittiert.
+
+**Akzeptanzkriterien:**
+
+- **Rolle besetzt:** Ein unter einem Rollen-Typ gestarteter Lauf trägt seine Rolle;
+  leer heißt **unbekannt**, nie rollenlos.
+- **Rolle wird abgeleitet:** Die Rolle ist einer der sechs Rollen-Namen Planner,
+  Architect, Implementer, Reviewer, Verifier, Validator (kleingeschrieben); nennt der
+  Agenten-Typ eine Rolle, ist er die Rolle, sonst bleibt das Feld leer — bei
+  `general-purpose` und im Haupt-Kontext. Die Rolle eines gestarteten Subagenten kommt aus
+  dem Ergebnis des Laufs, nicht aus der Anforderung an ihn, und steht nie als
+  `general-purpose` im Span.
+- **Lesevorschrift:** Jede Auswertung liest ein leeres Rollenfeld als **unbekannt**, nie
+  als *ohne Rolle*; ein Span, dessen Rolle fehlt, ist am Werkzeug-Namen als Lauf mit
+  unbekannter Rolle erkennbar.
+
+### LH-FA-16 — Betrieb und Bestand der Erfassung
+
+**Beschreibung:** Der emittierte Träger schreibt je Strom eine geordnete Folge von Spans,
+hält keinen Lauf auf und wächst nur durch den Aufruf, den das Zielrepo dafür führt.
+
+**Akzeptanzkriterien:**
+
+- **Strom und Sequenz:** Ein Strom ist das Paar (Sitzung, Agent), bestimmt durch die
+  Felder, nicht durch den Dateinamen. Die Folgenummer wird je Strom vergeben, steigt
+  monoton und macht eine Lücke für den Leser sichtbar; Nebenläufigkeit vergibt keine
+  Nummer doppelt.
+- **Betrieb fail-open:** Ein sprech-unfähiger Emitter hält keinen Lauf auf; ein kaputter
+  Payload lässt den Emitter nicht scheitern, und der Emitter schreibt nichts auf stdout.
+- **Lock:** Ein liegengebliebenes Lock legt den Strom nicht lautlos still.
+- **Aufbewahrung:** Das Zielrepo führt ein **ausdrückliches Aufräum-Kommando**; ohne
+  dessen Aufruf wächst der Bestand unbegrenzt, und das Repo sagt es. Eine **automatische
+  Rotation ist nicht Teil der Zusage** — ein Löschpfad in einem fail-open-Hook über
+  fremden Daten wäre der teurere Fehlerfall. Der Emitter hängt ausschließlich an und
+  entfernt keinen Altbestand.
+
+### LH-FA-17 — Auswertung der Erfassung
+
+**Beschreibung:** Der Bootstrap emittiert neben dem Schreiber die Auswertung der Spans
+([`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)). Sie sagt,
+worauf ihre Zahlen beruhen, bevor sie Zahlen nennt.
+
+**Akzeptanzkriterien:**
+
+- **Leser:** Emittiert werden **Schreiber und Auswertung**. Die Auswertung nennt ihre
+  **Abdeckung zuerst** und meldet damit ihre eigene Leere: solange keine
+  Verbrauchs-Zähler ankommen, trägt sie keine Bilanz — und sagt das, statt eine zu
+  erfinden.
+- **Abdeckung:** Gedeckt heißt ein Span mit Zählern, nicht ein Span mit irgendeinem
+  erfassten Wert. Eine Token-Bilanz ist eine Bilanz über Subagenten-Läufe; ein Anteil
+  daraus ist ein Anteil an der erfassten Teilmenge, und der Bericht sagt es.
+- **Aufteilung des Sammelpostens:** Ein Span ohne Rollen-Tag wird anteilig nach
+  Werkzeug-Aufrufen auf die Rollen verteilt, die Aufrufe tragen; der Rest der
+  Ganzzahl-Division wird weitergegeben, sodass die Summe der Zuteilungen dem Sammelposten
+  entspricht. Trägt keine Rolle Aufrufe, bleibt der Sammelposten unverteilt, und der
+  Bericht nennt Betrag und Umstand. Den Sammelposten ungeteilt als Rolle zu führen ist
+  nicht zulässig.
+- **Berichtsgröße:** Der Anteil des Sammelpostens steht im Bericht als Größe, nie als
+  bestandene Schwelle.
 
 ### LH-FA-11 — Selbstprüfung der Durchsetzungsschicht emittieren
 
@@ -519,7 +627,7 @@ emittierte Datei zu ändern.
   [`LH-FA-09`](../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren)); Durchsetzung
   ([`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren))
   + Workflow-Commands ([`LH-FA-08`](../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren))
-  + Erfassungsschicht ([`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren))
+  + Erfassungsschicht ([`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren), [`LH-FA-13`](../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) bis [`LH-FA-17`](../spec/lastenheft.md#lh-fa-17--auswertung-der-erfassung))
   + Selbstprüfung ([`LH-FA-11`](../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren))
   + Abdeckungs-Sicht ([`LH-FA-12`](../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren))
   per **Tool-als-Quelle** (generische, aus Dogfood + Kurs-Prozess-Modulen abgeleitete
@@ -562,3 +670,4 @@ emittierte Datei zu ändern.
 | 0.21.0 | 2026-09-18 | CR: **neue [`LH-FA-12`](../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren) E2E-Abdeckungs-Sicht emittieren** — das Ziel erhält den **Erzeuger** einer Sicht über die Stufen seines ziel-eigenen E2E ([`LH-FA-11`](../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren)): ein Kommando des Ziels liest den **Quelltext** des E2E-Skripts und schreibt je Stufe eine Zeile aus der Deklaration, die die Stufe an sich selbst trägt; adaptierbare Marker für Quell-Skript, Kopfzeilen-Wort, Spec-Datei und Zielort ([`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)), beide Lücken-Richtungen fallen laut, an **keiner** Gate-Kette. **Additiv, keine Erweiterung von [`LH-FA-11`](../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren):** dort das E2E, hier die Sicht darüber — und kein Lauf-Beleg, den [`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) trägt, weil der Erzeuger Quelltext liest statt zu fahren. Die Sicht **urteilt nicht** über Lücken ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)); ob eine dort fehlende Anforderung eine ist, urteilt der Leser. §5 mitgezogen. | Angenommener CR — Nutzer-Entscheidung 2026-09-18 |
 | 0.22.0 | 2026-09-19 | CR: **Aufruf-Form um den Zielordner erweitert** — `ai-harness-init` löst sein Ziel aus dem letzten Positionsargument, Flags liegen davor (`ai-harness-init --lang go --name "X" <zielordner>`); ohne Argument endet der Init-Pfad laut mit dem Usage-Text, fail-closed — kein stiller Bootstrap gegen das Repo, in dem er steht. Die zwei Happy-Path-AC von [`LH-FA-01`](../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) und der Ablauf in [`spec/architecture.md`](architecture.md) tragen die Form; die `add-lang`-Semantik (`<pfad>` = Modul-Pfad) bleibt unberührt | Nutzer-Entscheidung 2026-09-19 |
 | 0.23.0 | 2026-09-30 | CR: **Erfassungs-Umfang bei [`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)** — ein Akzeptanzkriterium nennt, was der emittierte Träger erfasst (abgeschlossener Werkzeug-Aufruf, auch der fehlgeschlagene, und der Start eines Rollen-Laufs) und was nicht (geblockter Aufruf, Ende eines Laufs). Die übrigen Kriterien und die Rollen-Achse bleiben unberührt | Nutzer-Entscheidung 2026-09-30 |
+| 0.24.0 | 2026-09-30 | CR: **[`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) geschnitten** — die Erfassungsschicht trägt fünf Anforderungen statt einer: [`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) (Träger, Ablageort), [`LH-FA-13`](../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) (Erfassungs-Schema), [`LH-FA-14`](../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) (Redaktion und Erfassungs-Umfang), [`LH-FA-15`](../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) (Rolle), [`LH-FA-16`](../spec/lastenheft.md#lh-fa-16--betrieb-und-bestand-der-erfassung) (Betrieb und Bestand), [`LH-FA-17`](../spec/lastenheft.md#lh-fa-17--auswertung-der-erfassung) (Auswertung). Die Akzeptanzkriterien wandern in die zuständige Anforderung, Wortlaut soweit möglich unverändert; Kriterien ergänzt. §5 mitgezogen | Nutzer-Entscheidung 2026-09-30 |
