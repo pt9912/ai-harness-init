@@ -202,7 +202,7 @@ gibt dem Planner den Hinweis, nach dem er die Umbau-Slices schneidet.
    470 bis 520; Zeitdokument unter `docs/reviews/`, Kennung
    `slice-spec-5-fliesstext-wird-absatz-fuer-absatz-klassifiziert`). Der Architect prüft **zuerst**, ob
    [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) jede dieser Zeilen
-   als **Präzisierung** trägt (Ebenen-Passung: LH-FA-10 fordert den Träger im Zielrepo, der Bericht nennt
+   als **Präzisierung** trägt (Ebenen-Passung: [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) fordert den Träger im Zielrepo, der Bericht nennt
    die Ebenen-Frage offen). Nur wo eine Zeile eine Anforderung setzt, die im Vertrag fehlt, ist es ein
    Change Request nach [`MR-015`](../../../../harness/conventions.md#mr-015) — dann **gebündelt**,
    Entscheidung des Auftraggebers; der Architect benennt die Lücke und schreibt keine Anforderung. Wo
