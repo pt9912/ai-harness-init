@@ -24,7 +24,8 @@ Die Form ist die Tabellenzeile: jede Festlegung trägt eine `SPEC-<NNN>` und die
 `Präzisiert` als letzte Spalte; eine Zusicherung ist eine Zeile mit ihrem Wächter in
 der Spalte `Sensor` (ein Strich, wo keiner gebunden ist). Eine Zeile über den
 **Träger** — Feld, Wert, Schranke, Ableitungs-Regel eines Werts — hat den Bezug oben;
-eine Zeile über die Verdrahtung dieses Repos hat ihn nicht und trägt `Lücke`. Die
+Verdrahtung, die allein dieses Repo trägt, steht nicht hier; was das Tool ins Zielrepo
+emittiert, ist Träger und hat den Bezug. Die
 Feldtabelle trägt nur Felder; eine Festlegung ohne Feld-Charakter steht in einer
 eigenen Tabelle mit eigener Kopfzeile.
 
@@ -225,3 +226,4 @@ festgelegt ist.
 | 2026-09-18 | §5 trägt keine Referenz nach außen mehr: Die Aussagen über Verbrauchs-Achse, Hooks-Referenz, Guard-Bedingungen und Cache-Zähler stehen ohne Verweis auf Carveout, Review-Report, Nutzer-Doku, Briefing und Adaptions-Block. Der Name der gelesenen Quelle `docs/user/claude-hooks-referenz.md` bleibt als Text stehen, weil die Aussage ohne ihn nicht prüfbar ist; die erklärten Abweichungen selbst bleiben unverändert in §5 |
 | 2026-09-30 | §3 und §5: Die Tabellen tragen die Spalte `Präzisiert` (Anker-Link ins Lastenheft oder `Lücke`); der Fließtext von §5 steht als Tabellenzeilen `SPEC-035` bis `SPEC-086` (Regeln der Erfassung, Zusicherungen mit Sensor). Begründungen, Messprotokolle und Prozess-Konventionen stehen nicht mehr in der Spezifikation; die Aufnahme-Regel nennt diese Klassen. Die Werte der Zeilen `SPEC-001` bis `SPEC-034` bleiben |
 | 2026-09-30 | §5: Jede Zeile mit `Lücke` trägt einen Anker ins Lastenheft; fünf Zeilen (Betriebsart eines Rollen-Laufs, Agent-Guard, Grenze der `mustContain`-Gegenproben, Abweisung ohne Subagent-Typ, Verdrahtung des Guards) stehen nicht mehr hier, weil sie nur dieses Repo betreffen; ihre Zusagen und Grenzen stehen als Kommentar am Guard und am Helfer der Gegenproben. Die Zelle der Berichtsgröße nennt nur noch die Größe |
+| 2026-09-30 | Die Aufnahme-Regel sagt, dass Verdrahtung, die allein dieses Repo trägt, nicht in der Spezifikation steht und dass emittierte Verdrahtung Träger ist; keine Zeile trägt `Lücke`, der Übergangswert bleibt zulässig |

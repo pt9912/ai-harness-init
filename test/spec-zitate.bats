@@ -14,6 +14,18 @@
 # anderen Anfuehrungszeichen, ein Zitat, das weiter als 250 Zeichen hinter dem Dateinamen
 # steht oder die Spezifikation nur ueber `SPEC-<NNN>` nennt, und der Sinn eines Zitats —
 # nur sein Wortlaut. Netzlos, laeuft in `make test`. Docker-only (bats-Image).
+#
+# ZAEHLUNG: Fenster und Zitatgrenzen zaehlen Bytes, nicht Zeichen — das `awk` des
+# bats-Images kennt keine Mehrbyte-Zeichen (ein Umlaut zaehlt doppelt, die 250 sind Bytes).
+# Ein UTF-8-faehiges `awk` (Host) kuerzt `substr(rest, s + 3)` das Zitat um zwei Zeichen;
+# der Sensor ist an das Image-`awk` gebunden und laeuft nur ueber `make test`.
+#
+# BELEGLAGE: Der Bestand traegt heute kein reales Zitat der Spezifikation; die einzige
+# Fundstelle ist der Kommentar des Falls `503-spec-zitat-ohne-fundstelle`, der sich ueber
+# seine `# files:`-Zeile selbst als Zitat der Spezifikation liest. Dass der Sensor ein
+# Zitat erkennt und ein falsches faellt, belegt darum die Fixture des zweiten Tests,
+# unabhaengig vom Bestand; der erste Test prueft den Bestand und meldet die Zahl der
+# gefundenen Zitate, ohne sie zu verlangen (ein Bestand ohne Zitat ist zulaessig).
 
 setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
@@ -55,14 +67,49 @@ zitate() {
   ' "$@"
 }
 
-@test "jedes woertliche Zitat der Spezifikation in einem Kommentar steht in spec/spezifikation.md" {
-  FLACH="$(tr '\n' ' ' <"$REPO/spec/spezifikation.md" | tr -s ' \t' ' ')"
-  fehlt=""
+# ohne_fundstelle <spec-datei> <zitate-ausgabe> — je Zitat, das in der Spezifikation fehlt,
+# eine Zeile "<datei>: <zitat>"; Zeilenumbruch und mehrfacher Leerraum der Spezifikation
+# zaehlen als ein Leerzeichen.
+ohne_fundstelle() {
+  local flach zeile frag fehlt=""
+  flach="$(tr '\n' ' ' <"$1" | tr -s ' \t' ' ')"
   while IFS= read -r zeile; do
     [ -n "$zeile" ] || continue
     frag="${zeile#*: }"
-    grep -qF -- "$frag" <<<"$FLACH" || fehlt="$fehlt
+    grep -qF -- "$frag" <<<"$flach" || fehlt="$fehlt
 $zeile"
-  done < <(cd "$REPO" && mapfile -t DATEIEN < <(find internal cmd test harness/tools -type f \( -name '*.go' -o -name '*.sh' -o -name '*.bats' -o -name '*.awk' \) | sort) && zitate "${DATEIEN[@]}")
+  done <<<"$2"
+  printf '%s' "$fehlt"
+}
+
+@test "jedes woertliche Zitat der Spezifikation in einem Kommentar steht in spec/spezifikation.md" {
+  Z="$(cd "$REPO" && mapfile -t DATEIEN < <(find internal cmd test harness/tools -type f \( -name '*.go' -o -name '*.sh' -o -name '*.bats' -o -name '*.awk' \) | sort) && zitate "${DATEIEN[@]}")"
+  echo "Zitate der Spezifikation im Bestand: $(grep -c . <<<"$Z" || true)"
+  fehlt="$(ohne_fundstelle "$REPO/spec/spezifikation.md" "$Z")"
   [ -z "$fehlt" ] || { echo "Zitat(e) ohne Fundstelle in spec/spezifikation.md:$fehlt"; false; }
+}
+
+@test "der Sensor erkennt ein Zitat ueber zwei Kommentarzeilen, faellt ein falsches und ueberliest Kommentare ohne Dateinamen" {
+  # Fixture: eine Spezifikation mit Zeilenumbruch im Satz und eine Quelldatei mit vier
+  # Kommentaren — zwei Zitate mit Dateinamen (eines wahr ueber den Umbruch, eines falsch
+  # durch Kleinschreibung), ein Zitat ohne den Namen der Spezifikation, ein Zitat hinter
+  # einem Code-Zeilen-Abstand (neuer Block).
+  printf '%s\n' 'Der Wert bleibt am' 'Pflichtfeld tool unterscheidbar.' >"$BATS_TEST_TMPDIR/spec.md"
+  {
+    printf '%s\n' '# spezifikation.md sagt: „Der Wert bleibt am' '# Pflichtfeld tool unterscheidbar".'
+    printf '%s\n' 'x=1'
+    printf '%s\n' '# spezifikation.md sagt: „der wert bleibt" (falsch geschrieben)'
+    printf '%s\n' 'y=2'
+    printf '%s\n' '# Ein Kommentar ohne den Namen: „kein Zitat der Spec".'
+  } >"$BATS_TEST_TMPDIR/quelle.sh"
+  Z="$(zitate "$BATS_TEST_TMPDIR/quelle.sh")"
+  # Menge nicht leer: genau die zwei Zitate mit Dateinamen, das wahre ueber beide Zeilen.
+  [ "$(grep -c . <<<"$Z")" -eq 2 ]
+  grep -qF 'Der Wert bleibt am Pflichtfeld tool unterscheidbar' <<<"$Z"
+  grep -qF 'der wert bleibt' <<<"$Z"
+  ! grep -qF 'kein Zitat der Spec' <<<"$Z"
+  # Verdikt: nur das falsche Zitat fehlt in der Spezifikation.
+  fehlt="$(ohne_fundstelle "$BATS_TEST_TMPDIR/spec.md" "$Z")"
+  [ "$(grep -c . <<<"$fehlt")" -eq 1 ]
+  grep -qF 'der wert bleibt' <<<"$fehlt"
 }

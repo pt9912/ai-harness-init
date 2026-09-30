@@ -58,7 +58,8 @@ tabellen() {
         z = $0; sub(/ \|.*/, "", z); print z
       }
     }' "$SPEC")"
-  n="$(grep -c 'SPEC-' "$SPEC" || true)"
+  # Sonde ueber die geprueften Zeilen: dieselbe Zeilen-Regex wie oben im awk.
+  n="$(grep -cE '^\| `SPEC-[0-9]+` \|' "$SPEC" || true)"
   [ "$n" -ge 1 ]
   [ -z "$leer" ] || { echo "SPEC-Zeile(n) mit leerer letzter Zelle: $leer"; false; }
 }
