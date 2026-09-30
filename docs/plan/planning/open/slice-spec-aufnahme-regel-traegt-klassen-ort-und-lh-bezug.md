@@ -151,14 +151,38 @@ gibt dem Planner den Hinweis, nach dem er die Umbau-Slices schneidet.
      `branch`/`commit` an ihrer Stelle stehen. 4 bleibt Festlegung des Repos ohne Modul-Bezug.
      Ob dieses Repo die Bezeichnung „Quelle liefert das Feld nicht" bis zu einer Modul-Änderung als
      eigene Wortwahl führt, entscheidet der Architect.
-2. **Ort, Konsument und Form der Messprotokolle.** Optionen: entfallen (git hält sie) · Zeitdokument
-   unter einem Unterordner von `docs/` (Auftraggeber erwägt das). Jede Option hat vier Randbedingungen,
-   die die ADR beantworten muss: ein **Konsument** (sonst kein Artefakt,
-   [`MR-025`](../../../../harness/conventions.md#mr-025)); **Form mit Kommando und Ausgabe**; die Spec darf
-   **nicht dorthin zeigen** (die `matrix`-Klasse `spec-straten` verbietet den Weg nach außen); und ob
-   `exempt-paths` in der `.d-check.yml` erweitert werden — das wäre eine Senkung nach
-   [`AGENTS.md`](../../../../AGENTS.md) §3.5 und braucht in der ADR eine eigene Festlegung.
-   Bestand: `docs/reviews/**` ist bereits ausgenommen (`.d-check.yml`, Zeilen 327 bis 343 und 374).
+
+   **Auftraggeber-Setzung zu Frage 1, dem Architect zur Ausführung und Prüfung** (kein Norm-Text):
+   Nicht alle sechs Abweichungen werden Adaptions-Einträge.
+   - **3, 5, 6** betreffen nach der Rückmeldung des Kurses den Wert („unbekannt") und sind im Sinne des
+     Moduls keine Abweichung. Die Aussage zur Verfügbarkeit gehört in die **emittierte Feldliste**
+     (Code-Änderung, eigener Slice, ohne Kennung — der Planner schneidet ihn nach der ADR; er deckt 1, 2
+     und 6, soweit dort Aussagen fehlen, Tabelle (b) Zeilen 1, 2, 6 „teilweise"). In der Spezifikation
+     bleibt je Fall **eine kurze Festlegung als Tabellenzeile** (Feld Pflicht; Wert „unbekannt", wenn die
+     Quelle ihn nicht liefert), ohne Messung und ohne „heute durchweg leer".
+   - **1** (Cache-Zähler stehen als `Optional`, `SPEC-024`) und **2** (PR-Nummer nicht im Schema,
+     `branch`/`commit` an ihrer Stelle) sind **mögliche** echte Schema-Abweichungen: höchstens für diese
+     beiden kommt ein Adaptions-Eintrag in Frage, **erst nach Prüfung durch den Architect**;
+     [`MR-021`](../../../../harness/conventions.md#mr-021) wäre dann zu überholen
+     ([`MR-032`](../../../../harness/conventions.md#mr-032)).
+   - **4** (Altbestände) ist eine Festlegung des Repos und bleibt eine Tabellenzeile in der
+     Spezifikation.
+   - **Der Architect prüft noch:** ob die Feldliste alle Punkte trägt (Tabelle (b) ist nicht Abweichung
+     für Abweichung gegen den Wortlaut gelesen); ob 1 und 2 tatsächlich „echt" sind (die Einstufung ist
+     vorläufig); ob „Quelle liefert das Feld nicht" als eigene Kennzeichnung geführt wird.
+2. **Ort, Konsument und Form der Messprotokolle.** *Auftraggeber-Setzung, dem Architect zur Ausführung
+   und Prüfung:* **kein neuer Ordner.** Ort für datierte Messungen ist `docs/reviews/`
+   (Zeitdokument-Ort). Wo eine Messung als Beleg gebraucht wird (ADR, Sensor), steht sie dort oder in
+   der ADR; der Rest entfällt (git hält ihn). Ob ein Klasse-`c`-Block einen Konsumenten hat, prüft der
+   Umbau je Block. Randbedingungen, die die ADR beantworten muss: ein **Konsument** (sonst kein
+   Artefakt, [`MR-025`](../../../../harness/conventions.md#mr-025)); **Form mit Kommando und Ausgabe**;
+   die Spec darf **nicht dorthin zeigen** (die `matrix`-Klasse `spec-straten` verbietet den Weg nach
+   außen), und kein eingefrorenes Dokument nennt ein wanderndes Artefakt als Pfad
+   ([`AGENTS.md`](../../../../AGENTS.md) §3.11). Eine Erweiterung der `exempt-paths` in der
+   `.d-check.yml` entfällt mit dieser Setzung: `docs/reviews/**` ist bereits ausgenommen
+   (`grep -n 'docs/reviews' .d-check.yml` → Zeilen 311, 327, 331, 343, 374, 387), also keine Senkung
+   nach [`AGENTS.md`](../../../../AGENTS.md) §3.5. *Nicht geprüft:* welches Modul jede der Zeilen ausnimmt und ob
+   der Ausschluss für jedes Modul gilt, das ein Messprotokoll berühren könnte.
    *Ergänzung aus dem Bericht:* das Messprotokoll mischt vier Aussagearten; die ADR sagt, ob alle vier
    denselben Ort bekommen. [`MR-021`](../../../../harness/conventions.md#mr-021) nennt bereits ein
    Zeitdokument unter `docs/reviews/` als Ort einer Messreihe — Bestand, an dem die Option gemessen
@@ -171,9 +195,20 @@ gibt dem Planner den Hinweis, nach dem er die Umbau-Slices schneidet.
    Zeilen „kein LH gefunden“ (benannte Spec-Lücke) stehen im LH-Vorschlag des Berichts. Die Kandidaten
    tragen einen Ebenen-Vorbehalt: [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) beschreibt das Verhalten im **Zielrepo**, die Spec-Zeile
    teils das **dieses** Repos — die ADR entscheidet die Ebenen-Passung der Bindung.
-   **Fehlt ein Lastenheft-Element für eine Spec-Zeile, ist das ein Change Request am Lastenheft nach
-   [`MR-015`](../../../../harness/conventions.md#mr-015)** — Entscheidung des Auftraggebers; der
-   Architect benennt die Lücke und schreibt keine Anforderung.
+   **Auftraggeber-Setzung, dem Architect zur Ausführung und Prüfung:** kein Change Request je Zeile.
+   Die zehn Zeilen ohne LH-Bezug stellt der Bericht fest —
+   `sed -n '470,520p' <Klassifikationsbericht> | grep -E '^\| .SPEC-[0-9]+. .*kein LH gefunden' | grep -oE 'SPEC-[0-9]+'`
+   → `SPEC-001`, `002`, `003`, `008`, `014`, `016`, `019`, `026`, `027`, `028` (Bericht: §6.2, Zeilen
+   470 bis 520; Zeitdokument unter `docs/reviews/`, Kennung
+   `slice-spec-5-fliesstext-wird-absatz-fuer-absatz-klassifiziert`). Der Architect prüft **zuerst**, ob
+   [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) jede dieser Zeilen
+   als **Präzisierung** trägt (Ebenen-Passung: LH-FA-10 fordert den Träger im Zielrepo, der Bericht nennt
+   die Ebenen-Frage offen). Nur wo eine Zeile eine Anforderung setzt, die im Vertrag fehlt, ist es ein
+   Change Request nach [`MR-015`](../../../../harness/conventions.md#mr-015) — dann **gebündelt**,
+   Entscheidung des Auftraggebers; der Architect benennt die Lücke und schreibt keine Anforderung. Wo
+   keine Anforderung dahintersteht, bleibt es eine **benannte Lücke**, kein Change Request.
+   **Offen:** der Inhalt der zehn Zeilen ist vom Planner nicht vollständig gelesen; der Bericht prüft sie
+   nur gegen Schlüsselwörter im Lastenheft (Verifikationsbericht, Zeile 76).
 4. **Wohin die Begründungen (Klasse b) gehen:** eine Sammel-ADR zu §5 oder je Umbau-Block eine
    schärfende ADR. Das entscheidet, ob ein Umbau-Slice einen Architect-Schritt in der Mitte hat.
 5. **Wer §5 schreibt.** `slice-151-spec-straten-haben-eine-schreibende-rolle` (offen) führt die Frage;
@@ -227,6 +262,11 @@ gibt dem Planner den Hinweis, nach dem er die Umbau-Slices schneidet.
 - **Keine Klassifikation einzelner Absätze.** Sie ist die Eingabe aus dem Vorgänger-Slice; die ADR
   nennt die Menge (Zahl mit Kommando), keine Zeile.
 - **Kein emittiertes Gegenstück** (Frage 7) — anderer Vorgang, Tool-Ebene.
+- **Keine Code-Änderung an der emittierten Feldliste** (Frage 1, Setzung) — Tool-Ebene, anderer
+  Vorgang; der Planner schneidet den Slice nach der ADR, eine Kennung existiert noch nicht.
+- **Kein Change Request und kein neuer Ordner für Messprotokolle** (Fragen 2 und 3, Setzungen) — ein
+  Change Request ist Entscheidung des Auftraggebers und nur gebündelt, wo eine Zeile eine im Vertrag
+  fehlende Anforderung setzt; Messungen gehören nach `docs/reviews/` oder in die ADR.
 
 **Keine Mindestzahl.** Ein Slice mit *einem* echten Ausschluss ist besser als
 einer mit vier erfundenen; die vier Klassen sind ein Suchraster, keine
