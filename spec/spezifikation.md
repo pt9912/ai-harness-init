@@ -1,6 +1,6 @@
 # Spezifikation — ai-harness-init
 
-**Status:** Aktiv. **Letzte Änderung:** 2026-09-18.
+**Status:** Aktiv. **Letzte Änderung:** 2026-09-30.
 
 **Bezug zum Lastenheft:** Diese Spezifikation präzisiert die in
 [`spec/lastenheft.md`](lastenheft.md) formulierten Anforderungen (`LH-*`-IDs). Bei
@@ -11,16 +11,30 @@ Konflikt gewinnt das Lastenheft.
 Ein Satz gehört hierher, wenn **alle drei** zutreffen:
 
 1. Er ist eine **technische Festlegung dieses Repos** — ein Wert, ein Feld, eine
-   Schranke, eine Fassung. Etwas, gegen das gemessen werden kann.
+   Schranke, eine Regel, eine Fassung, auch das, was ein Werkzeug **nicht** liefert.
+   Etwas, gegen das gemessen werden kann.
 2. Er ist **ohne Vertragsänderung fortschreibbar**: die Anforderung, die er
-   präzisiert, bleibt beim Fortschreiben unberührt.
+   präzisiert, bleibt beim Fortschreiben unberührt. Die Spalte `Präzisiert` nennt sie
+   als Anker-Link ins Lastenheft; trägt kein Element die Zeile, steht `Lücke` — ein
+   Übergangswert, der die Zeile als Präzisierung ohne Träger sichtbar macht.
 3. Er **wächst mit seinem Gegenstand** — die nächste Zeile seiner Tabelle verdrängt
    keinen anderen Text.
 
+Die Form ist die Tabellenzeile: jede Festlegung trägt eine `SPEC-<NNN>` und die Spalte
+`Präzisiert` als letzte Spalte; eine Zusicherung ist eine Zeile mit ihrem Wächter in
+der Spalte `Sensor` (ein Strich, wo keiner gebunden ist). Eine Zeile über den
+**Träger** — Feld, Wert, Schranke, Ableitungs-Regel eines Werts — hat den Bezug oben;
+eine Zeile über die Verdrahtung dieses Repos hat ihn nicht und trägt `Lücke`. Die
+Feldtabelle trägt nur Felder; eine Festlegung ohne Feld-Charakter steht in einer
+eigenen Tabelle mit eigener Kopfzeile.
+
 Nicht hierher gehören: die **Begründung** einer Entscheidung (sie steht in der
 Entscheidung und zeigt von dort aufwärts hierher), die **Abweichung** von der
-adoptierten Baseline (repo-lokales Konventionsdokument), die **Anforderung**
-([`spec/lastenheft.md`](lastenheft.md)) und die **Komponentensicht**.
+adoptierten Baseline (repo-lokales Konventionsdokument; die Festlegung, an der sie
+hängt, bleibt Zeile), die **Messung** (ein Messprotokoll ist datiert und ein
+Zeitdokument; hier steht die Festlegung, gegen die gemessen wird), die
+**Prozess-Konvention** (wer wann was tut — kein Wert, Feld und keine Schranke), die
+**Anforderung** ([`spec/lastenheft.md`](lastenheft.md)) und die **Komponentensicht**.
 
 Drei Formregeln, weil alle drei von außen gelesen werden:
 
@@ -214,3 +228,4 @@ festgelegt ist.
 | 2026-09-02 | §3, §5 und §6 tragen die `ID`-Spalte mit fortlaufendem `SPEC-<NNN>`; §7 führt keine `ADR`-Spalte mehr |
 | 2026-09-17 | Die Aufnahme-Regel und §5 nennen die Herkunft ihrer Regeln nicht mehr, die Aussagen bleiben. Die Regel zum Sammelposten in §5 steht ohne Zitat und sagt nur noch, dass begründet aufgeteilt wird |
 | 2026-09-18 | §5 trägt keine Referenz nach außen mehr: Die Aussagen über Verbrauchs-Achse, Hooks-Referenz, Guard-Bedingungen und Cache-Zähler stehen ohne Verweis auf Carveout, Review-Report, Nutzer-Doku, Briefing und Adaptions-Block. Der Name der gelesenen Quelle `docs/user/claude-hooks-referenz.md` bleibt als Text stehen, weil die Aussage ohne ihn nicht prüfbar ist; die erklärten Abweichungen selbst bleiben unverändert in §5 |
+| 2026-09-30 | §3 und §5: Die Tabellen tragen die Spalte `Präzisiert` (Anker-Link ins Lastenheft oder `Lücke`); der Fließtext von §5 steht als Tabellenzeilen `SPEC-035` bis `SPEC-086` (Regeln der Erfassung, Zusicherungen mit Sensor). Begründungen, Messprotokolle und Prozess-Konventionen stehen nicht mehr in der Spezifikation; die Aufnahme-Regel nennt diese Klassen. Die Werte der Zeilen `SPEC-001` bis `SPEC-034` bleiben |
