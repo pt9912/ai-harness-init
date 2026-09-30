@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.22.0
+**Version:** 0.23.0
 
 **Status:** Draft
 
@@ -304,6 +304,11 @@ Regelwerk darüber.
   **Abdeckung zuerst** und meldet damit ihre eigene Leere: solange keine
   Verbrauchs-Zähler ankommen, trägt sie keine Bilanz — und sagt das, statt eine zu
   erfinden.
+- **Erfassungs-Umfang:** Der emittierte Träger erfasst den abgeschlossenen Werkzeug-Aufruf,
+  auch den fehlgeschlagenen, und den **Start** eines Rollen-Laufs. Der Start ist die einzige
+  Quelle für einen Lauf, dessen Ergebnis keine Verbrauchs-Zähler trägt. **Nicht erfasst**
+  werden ein vom Guard geblockter Aufruf und das Ende eines Laufs; ein abgebrochener Lauf
+  hinterlässt damit einen Start ohne Ende.
 - **Reproduzierbar ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)):**
   dieselbe Tool-Version → derselbe Träger im Ziel.
 - **Minimal/netzlos ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)):**
@@ -556,3 +561,4 @@ emittierte Datei zu ändern.
 | 0.20.0 | 2026-09-16 | CR: **neue [`LH-FA-11`](../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren) Selbstprüfung der Durchsetzungsschicht emittieren** — das Ziel erhält, als emittiertes Template mit adaptierbaren Markern ([`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)), ein **ziel-eigenes E2E**: frischer Klon des eigenen Repos, Träger aktivieren, Commit **ohne** Kennung scheitert, Commit **mit** Kennung geht durch, `make gates` grün; gemessen im Emitter-Lauf, der es dort einmal durchfährt. **Additiv, keine Erweiterung von [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren):** dort die Durchsetzung, hier ihr Nachweis im Ziel — und nicht die Messung von [`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), die von außen prüft, während das Ziel hier sich selbst fährt. §5 mitgezogen. | Angenommener CR — Nutzer-Entscheidung 2026-09-16 |
 | 0.21.0 | 2026-09-18 | CR: **neue [`LH-FA-12`](../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren) E2E-Abdeckungs-Sicht emittieren** — das Ziel erhält den **Erzeuger** einer Sicht über die Stufen seines ziel-eigenen E2E ([`LH-FA-11`](../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren)): ein Kommando des Ziels liest den **Quelltext** des E2E-Skripts und schreibt je Stufe eine Zeile aus der Deklaration, die die Stufe an sich selbst trägt; adaptierbare Marker für Quell-Skript, Kopfzeilen-Wort, Spec-Datei und Zielort ([`LH-FA-02`](../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3)), beide Lücken-Richtungen fallen laut, an **keiner** Gate-Kette. **Additiv, keine Erweiterung von [`LH-FA-11`](../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren):** dort das E2E, hier die Sicht darüber — und kein Lauf-Beleg, den [`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) trägt, weil der Erzeuger Quelltext liest statt zu fahren. Die Sicht **urteilt nicht** über Lücken ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)); ob eine dort fehlende Anforderung eine ist, urteilt der Leser. §5 mitgezogen. | Angenommener CR — Nutzer-Entscheidung 2026-09-18 |
 | 0.22.0 | 2026-09-19 | CR: **Aufruf-Form um den Zielordner erweitert** — `ai-harness-init` löst sein Ziel aus dem letzten Positionsargument, Flags liegen davor (`ai-harness-init --lang go --name "X" <zielordner>`); ohne Argument endet der Init-Pfad laut mit dem Usage-Text, fail-closed — kein stiller Bootstrap gegen das Repo, in dem er steht. Die zwei Happy-Path-AC von [`LH-FA-01`](../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) und der Ablauf in [`spec/architecture.md`](architecture.md) tragen die Form; die `add-lang`-Semantik (`<pfad>` = Modul-Pfad) bleibt unberührt | Nutzer-Entscheidung 2026-09-19 |
+| 0.23.0 | 2026-09-30 | CR: **Erfassungs-Umfang bei [`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)** — ein Akzeptanzkriterium nennt, was der emittierte Träger erfasst (abgeschlossener Werkzeug-Aufruf, auch der fehlgeschlagene, und der Start eines Rollen-Laufs) und was nicht (geblockter Aufruf, Ende eines Laufs). Die übrigen Kriterien und die Rollen-Achse bleiben unberührt | Nutzer-Entscheidung 2026-09-30 |
