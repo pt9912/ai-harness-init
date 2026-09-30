@@ -7,7 +7,7 @@
 #
 # Damit liest sich eine verteilte Summe wie eine gemessene: der Leser sieht nicht
 # mehr, welcher Anteil der Bilanz auf einer Regel ruht statt auf einer Messung.
-# Genau das verbietet die Pruefreihenfolge in spec/spezifikation.md §5 als Punkt 2,
+# Genau das verbietet die Pruefreihenfolge in spec/spezifikation.md §5 (SPEC-046) als Punkt 2,
 # und der Emitter kann es nicht auffangen — die Zahl entsteht erst hier.
 set -euo pipefail
 sed -i '/Sammelposten: %d Token anteilig nach Tool-Calls/,+1d' internal/report/report.go

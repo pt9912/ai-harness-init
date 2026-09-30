@@ -56,6 +56,11 @@ func mustNotContain(t *testing.T, line string, verboten ...string) {
 // von der Erfassung unabhaengig sind. Ihre Gegenprobe schliesst „kein Span" aus, nicht
 // „keine Erfassung"; das ist fuer ihre Zusage auch richtig (beide messen die ABWESENHEIT
 // von Feldern), aber es ist die schwaechere Aussage.
+//
+// Die Gegenprobe selbst hat keinen Zahn: macht man mustContain wirkungslos, bleibt
+// make test-go gruen, und die Faelle 123 und 127 melden weiter "ok" — sie faerben ihre
+// Waechter ueber die mustNotContain-Haelfte. Unbewacht ist der Waechter dieser
+// Eigenschaft, nicht die Eigenschaft (spec/spezifikation.md §5, Zeile SPEC-084).
 func mustContain(t *testing.T, line string, erwartet ...string) {
 	t.Helper()
 	for _, v := range erwartet {
@@ -228,7 +233,7 @@ func TestAgentGetsNoArgumentFields(t *testing.T) {
 // TestSpawnedRoleIsNormalised: der Wert aus dem ERGEBNIS wird gegen die sechs
 // kanonischen Namen normalisiert, alles andere wird LEER. `general-purpose` ist keine
 // Rolle — eine Ergebniszeile `general-purpose: 62 %` waere genau die erfundene
-// Kostenstelle, die die Lesevorschrift in spec/spezifikation.md §5 verbietet.
+// Kostenstelle, die die Lesevorschrift (SPEC-044 in spec/spezifikation.md §5) verbietet.
 //
 // Geprueft wird der Weg ueber `tool_response.agentType` (nicht RoleFromAgentType
 // selbst — das deckt TestAgentRoleFromKnownTypes): die WIEDERVERWENDUNG ist die
@@ -320,7 +325,7 @@ func TestResolvedModelIsStructurallyBounded(t *testing.T) {
 // uebrigen SECHS prueft dieser Waechter, aber kein Fall bindet sie einzeln: wer einen
 // von ihnen aus der Liste streicht, bekommt von `make mutate` keinen Befund. Die
 // normative Fassung dieser Auszaehlung steht in spec/spezifikation.md §5
-// unter Bewacht, Punkt 8.
+// in den Zeilen SPEC-073 bis SPEC-081.
 func TestFailedAgentCallCapturesNothing(t *testing.T) {
 	root := newRoot(t)
 	emit(t, root, `{"hook_event_name":"PostToolUseFailure","tool_name":"Agent",
@@ -330,7 +335,7 @@ func TestFailedAgentCallCapturesNothing(t *testing.T) {
 	mustContain(t, line, `"tool":"Agent"`, `"status":"error"`, `"event":"PostToolUseFailure"`)
 	// DIE NEUN WERTE NAMENTLICH. Fehlt einer, faellt seine Draht-Form aus der Pruefung:
 	// ein Feld ohne `omitempty` stuende als `"<name>":null` in JEDER Zeile, auch in einem
-	// reinen `Bash`-Span, und kippte die Lesart aus spec/spezifikation.md §5 "unbekannt" gegen "nicht
+	// reinen `Bash`-Span, und kippte die Lesart aus spec/spezifikation.md §5 (SPEC-044) "unbekannt" gegen "nicht
 	// vorhanden" — bei gruenem Gate-Stack.
 	//
 	// Die zwei Cache-Zaehler deckte `"input_tokens"` schon per TEILSTRING ab; sie

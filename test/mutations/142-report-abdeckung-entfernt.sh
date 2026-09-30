@@ -8,7 +8,7 @@
 # Eine nackte Zahl ohne Bezugsmenge liest sich wie Vollstaendigkeit. Genau die
 # Differenz ist die Aussage: ein Agent-Span ohne Zaehler zaehlt in den Bestand,
 # aber nicht in die Bilanz — im Hintergrund ist das der Normalfall (erklaerte
-# Abweichung in spec/spezifikation.md §5). Ohne beide Zahlen sieht der Leser eine
+# Abweichung 5 in spec/spezifikation.md §5, Zeile SPEC-039). Ohne beide Zahlen sieht der Leser eine
 # unvollstaendige Erhebung fuer eine vollstaendige an.
 set -euo pipefail
 sed -i 's@Abdeckung: %d von %d Agent-Laeufen trugen Verbrauchs-Zaehler@Abdeckung: %d Agent-Laeufe trugen Verbrauchs-Zaehler@' internal/report/report.go

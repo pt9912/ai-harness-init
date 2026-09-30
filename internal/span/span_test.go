@@ -1120,7 +1120,7 @@ func TestLeftoverLockDirectoryDoesNotBlock(t *testing.T) {
 }
 
 // TestUnresolvableGitRefStillCarriesFields ist der Worktree-Fall: dort ist `.git` eine
-// DATEI, die Ableitung schlaegt fehl — und spec/spezifikation.md §5 sagt fuer diesen Fall "leer und als
+// DATEI, die Ableitung schlaegt fehl — und spec/spezifikation.md §5 (SPEC-056) sagt fuer diesen Fall "leer und als
 // leer erkennbar" zu. Mit `omitempty` verschwanden die Schluessel stattdessen ganz.
 // Der Unterschied ist der zwischen "unbekannt" und "nicht
 // vorhanden", und genau den soll ein Audit-Schema tragen.

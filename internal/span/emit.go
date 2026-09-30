@@ -173,7 +173,7 @@ func CanonicalRoles() []string {
 
 // RoleFromAgentType fuellt die Rollen-Achse aus Modul 15, SOWEIT sie erreichbar ist.
 // LEER HEISST UNBEKANNT, nicht "rollenlos": eine Rolle gibt es immer, wir kennen sie
-// nur nicht. Die Lesevorschrift dazu steht in spec/spezifikation.md §5 — eine Auswertung, die die leeren
+// nur nicht. Die Lesevorschrift dazu steht in spec/spezifikation.md §5, Zeile SPEC-044 — eine Auswertung, die die leeren
 // Spans als eigene Kostenstelle aufsummiert, erfindet eine, die es nicht gibt.
 //
 // wird ein Subagent unter dem Namen seiner Harness-Rolle gestartet, IST der

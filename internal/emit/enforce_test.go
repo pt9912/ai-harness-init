@@ -521,7 +521,7 @@ func TestEnforce_ErfassungLiegtMitDemTraeger(t *testing.T) {
 	}
 
 	// (c) Der Hook-Eintrag: eine INHALTS-Aussage ueber eine bestehende Datei — die drei
-	// verdrahteten Ereignisse und der Ruf auf den Wrapper (spec/spezifikation.md §5).
+	// verdrahteten Ereignisse und der Ruf auf den Wrapper (SPEC-051 in spec/spezifikation.md §5).
 	settings := mustReadString(t, filepath.Join(dir, filepath.FromSlash(".claude/settings.json")))
 	if !json.Valid([]byte(settings)) {
 		t.Fatalf("die emittierte settings.json ist kein gueltiges JSON:\n%s", settings)

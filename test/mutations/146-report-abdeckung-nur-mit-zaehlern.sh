@@ -7,7 +7,7 @@
 #
 # Die Abdeckung meldete dann immer "N von N", also dauerhaft Vollstaendigkeit,
 # und zwar gerade dann, wenn sie fehlt: ein Hintergrund-Lauf traegt planmaessig
-# keine Zaehler (spec/spezifikation.md §5, Abweichung 5) und verschwaende so aus
+# keine Zaehler (spec/spezifikation.md §5, Zeile SPEC-039, Abweichung 5) und verschwaende so aus
 # beiden Seiten des Bruchs. Die Differenz IST die Aussage; ohne sie liest sich
 # eine unvollstaendige Erhebung wie eine vollstaendige.
 set -euo pipefail

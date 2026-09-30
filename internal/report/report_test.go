@@ -70,7 +70,7 @@ func TestAggregiere_SummiertJeRolle(t *testing.T) {
 
 // Der Sammelposten wird VERTEILT, nicht als eigene Zeile gefuehrt — den ungeteilten
 // Sammelposten als Rolle zu drucken erfindet eine Kostenstelle, die es nicht gibt
-// (spec/spezifikation.md §5, Pruefreihenfolge Punkt 3).
+// (spec/spezifikation.md §5, Zeile SPEC-046, Pruefreihenfolge Punkt 3).
 func TestAggregiere_SammelpostenWirdAnteiligVerteilt(t *testing.T) {
 	t.Parallel()
 	dir := schreibeBestand(t,
@@ -401,7 +401,7 @@ func rolle(t *testing.T, b report.Bilanz, name string) report.Rolle {
 }
 
 // Ein Spawn ist KEIN Tool-Call: `SubagentStart` traegt weder `tool_name` noch
-// `tool_use_id` (spec/spezifikation.md §5) und darf den Schluessel der
+// `tool_use_id` (SPEC-052 in spec/spezifikation.md §5) und darf den Schluessel der
 // Splitting-Regel nicht verschieben.
 // Dauer-Sensor: test/mutations/147-report-spawn-als-toolcall.sh
 func TestAggregiere_SpawnSpanZaehltNichtAlsToolCall(t *testing.T) {

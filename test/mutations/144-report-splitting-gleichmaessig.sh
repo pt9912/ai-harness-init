@@ -5,9 +5,9 @@
 # Verteilt den Sammelposten gleichmaessig auf alle Rollen statt anteilig nach
 # Tool-Calls.
 #
-# Das ist die Festlegung selbst, nicht ihre Umsetzung: spec/spezifikation.md §5
-# legt "anteilig nach Tool-Calls" fest und begruendet, warum die Alternative
-# ausscheidet. Eine Gleichverteilung waere weiterhin eine Verteilung, sie ruhte
+# Das ist die Festlegung selbst, nicht ihre Umsetzung: spec/spezifikation.md §5 (Zeile SPEC-045)
+# legt "anteilig nach Tool-Calls" fest.
+# Eine Gleichverteilung waere weiterhin eine Verteilung, sie ruhte
 # nur auf nichts — und die Ausgabe naehme davon nichts zurueck, weil die
 # Sammelposten-Zeile bloss den ANTEIL nennt, nicht den Schluessel.
 set -euo pipefail

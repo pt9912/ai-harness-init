@@ -9,7 +9,7 @@
 # ist lautlos — die Summe bleibt erhalten, sie wandert nur an die falschen
 # Rollen, und je groesser der rollenlose Anteil, desto staerker verduennt er
 # jede reale Rolle. Die Entscheidung "rollenlose Calls NICHT im Nenner" steht
-# als Teil der Festlegung in spec/spezifikation.md §5.
+# als Teil der Festlegung in spec/spezifikation.md §5 (SPEC-045).
 #
 # Faerbt zusaetzlich TestAggregiere_SammelpostenWirdAnteiligVerteilt rot: auch
 # dessen Bestand traegt rollenlose Calls. Erwartet wird der Fall oben.

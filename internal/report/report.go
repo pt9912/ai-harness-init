@@ -77,7 +77,7 @@ func (b Bilanz) SammelpostenAnteil() float64 {
 // Aggregiere liest jede `*.jsonl` unter dir und rechnet die Bilanz.
 //
 // Gruppiert wird nach den FELDERN, nie nach dem Dateinamen — das verlangt
-// spec/spezifikation.md §5 bindend, weil der Dateiname eine Ableitung ist und sich
+// die Zeile SPEC-054 (Strom) in spec/spezifikation.md §5 bindend, weil der Dateiname eine Ableitung ist und sich
 // aendern darf. Eine kaputte Zeile beendet den Lauf nicht: der Bestand ist ein
 // angehaengter Strom, und ein halb geschriebener Eintrag am Ende ist kein Grund,
 // die ganze Rechnung zu verweigern.
@@ -151,7 +151,7 @@ func verarbeite(b *Bilanz, s span.Span, direkt, toolCalls map[string]int64, sitz
 	// beide tragen. Rollenlose Calls bleiben AUSSEN, sonst verteilte der
 	// Sammelposten teilweise auf sich selbst. Und ein Span OHNE Werkzeug ist kein
 	// Tool-Call: `SubagentStart` feuert je Spawn, traegt weder `tool_name` noch
-	// `tool_use_id` (spec/spezifikation.md §5) und darf einen Schluessel, der
+	// `tool_use_id` (SPEC-052 in spec/spezifikation.md §5) und darf einen Schluessel, der
 	// Tool-Calls zaehlt, nicht verschieben.
 	// Bewacht von TestAggregiere_SpawnSpanZaehltNichtAlsToolCall.
 	if s.AgentRole != "" && s.Tool != "" {
@@ -176,7 +176,7 @@ func verarbeite(b *Bilanz, s span.Span, direkt, toolCalls map[string]int64, sitz
 	}
 
 	// Leeres spawned_role heisst UNBEKANNT, nie "ohne Rolle" (Lesevorschrift in
-	// spec/spezifikation.md §5). Der Lauf wandert deshalb in den Sammelposten und
+	// spec/spezifikation.md §5, Zeile SPEC-044). Der Lauf wandert deshalb in den Sammelposten und
 	// wird verteilt, statt eine eigene Zeile zu bekommen.
 	if s.SpawnedRole == "" {
 		b.Sammelposten += tokens
@@ -187,7 +187,7 @@ func verarbeite(b *Bilanz, s span.Span, direkt, toolCalls map[string]int64, sitz
 
 // verteile wendet die Splitting-Regel an: der Sammelposten geht ANTEILIG NACH
 // TOOL-CALLS auf die realen Rollen. Die Regel selbst steht als Festlegung in
-// spec/spezifikation.md §5 — hier lebt nur ihre Umsetzung.
+// spec/spezifikation.md §5 (Zeile SPEC-045) — hier lebt nur ihre Umsetzung.
 //
 // Traegt keine Rolle Tool-Calls, bleibt der Sammelposten unverteilt; der zweite
 // Rueckgabewert sagt, welcher der beiden Faelle vorliegt.
