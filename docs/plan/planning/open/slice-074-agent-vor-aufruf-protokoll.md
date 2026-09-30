@@ -11,8 +11,8 @@ Setzung 1 geprüft, alle drei Fragen samt Antwort in §3.
 
 **Bezug:**
 [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 —
-Abweichung 5, Prüfschritt 3 (c) stellt die Frage dieses Slice und sagt, warum sie am Bestand
-nicht entscheidbar ist (*„die `PreToolUse`-Payload wird nirgends protokolliert"*); dieser Slice
+`SPEC-039` und `SPEC-041` (Hintergrund-Lauf ohne Verbrauchs-Achse, Agent-Guard) benennen den Gegenstand; die Frage dieses Slice, ob ein Start
+die Payload des Aufrufs trägt, ist am Bestand nicht entscheidbar, weil die `PreToolUse`-Payload nirgends protokolliert wird — dieser Slice
 macht sie entscheidbar, §3. Dasselbe §5
 hält das Span-Schema für **geschlossen** und die erfasste Menge auf den *abgeschlossenen*
 Aufruf begrenzt — das Protokoll dieses Slice ist deshalb **kein Span** und ändert daran nichts,

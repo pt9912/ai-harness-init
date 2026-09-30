@@ -13,10 +13,9 @@ Setzung 1 geprüft, alle drei Fragen samt Antwort in §3.
 [`AGENTS.md`](../../../../AGENTS.md) §3.6 — keine Zusage ohne rot gesehenes Gegenbeispiel; die
 Verdrahtung dieses Repos ist eine Zusage ohne Gegenbeispiel.
 [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 —
-Abweichung 5 (3)(b) hält den Zustand fest und hat ihn ausgezählt: *„Alle fünf gelten dem
-**emittierten** Repo und dessen Command-Guard; für die Verdrahtung **dieses** Repos prüft keine
-etwas. Ein Vorbild samt rot gesehener Mutation gibt es also, einen Sensor nicht."* Dieser Slice
-macht den Satz falsch und zieht ihn mit.
+`SPEC-086` hält den Zustand fest: die Verdrahtung des Guards in `.claude/settings.json` dieses Repos ist nicht bewacht, und die Zeile zählt auf, was das
+emittierte Repo und dessen Command-Guard bewachen. Ein Vorbild samt rot gesehener Mutation gibt es also, einen Sensor für diese Verdrahtung nicht.
+Dieser Slice macht die Zeile falsch und zieht sie mit.
 [`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks) —
 die Mechanik, deren Geltungsbereich `.claude/` ist; sie beschreibt die Verdrahtung, sie bewacht
 sie nicht.
@@ -108,7 +107,7 @@ neue Idee, sondern dieselbe Zusicherung eine Ebene weiter.
 |---|---|---|
 | `test/` (bats) | neu | der Wächter aus DoD (1); dieselbe Klasse wie `test/agent-guard.bats` und `test/guard.bats`, die die Hook-**Skripte** prüfen — hier ihre **Verdrahtung** |
 | `test/mutations/` | neu | die zwei Zähne aus DoD (2), Nummern im Anschluss an die höchste vergebene |
-| [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update | §5 Abweichung 5 (3)(b) sagt heute *„für die Verdrahtung dieses Repos prüft keine etwas"* und zählt fünf Prüfstellen aus. Mit diesem Slice ist der Satz falsch und die Zählung überholt — er wird mitgezogen, nicht danebengestellt |
+| [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update | `SPEC-086` sagt heute, die Verdrahtung des Guards dieses Repos sei nicht bewacht. Mit diesem Slice ist die Zeile falsch — er wird mitgezogen, nicht danebengestellt |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update, **falls** Frage A so ausgeht | nur wenn die Soll-Menge dort als Artefakt lebt; führt der Wächter sie selbst, bleibt [`MR-002`](../../../../harness/conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks) unberührt — eine zweite Liste ist der Defekt, nicht die Lösung |
 
 **Offen, vor dem Code zu entscheiden:**

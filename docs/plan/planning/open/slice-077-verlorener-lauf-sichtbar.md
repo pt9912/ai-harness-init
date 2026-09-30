@@ -11,9 +11,8 @@ Setzung 1 geprüft, alle drei Fragen samt Antwort in §3.
 
 **Bezug:**
 [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 —
-Abweichung 5 (3)(b) hält den Zustand fest, den dieser Slice beendet (*„er kann fehlen,
-abgeschaltet oder umgangen sein, und **kein Sensor dieses Repos prüft, dass er verdrahtet
-ist**"*); dasselbe §5 bindet *gedeckt* an **Zähler** statt an „irgendeinen erfassten Wert" und
+`SPEC-086` hält den Zustand fest, den dieser Slice beendet (die Verdrahtung des Guards in `.claude/settings.json` dieses Repos ist
+nicht bewacht); dasselbe §5 bindet *gedeckt* an **Zähler** statt an „irgendeinen erfassten Wert" und
 nimmt die Achse aus DoD (1) als Festlegung auf.
 [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) (**Accepted**) — die
 Erfassungs-Policy, unter der beide gelesenen Quellen entstehen; Festlegung 2 setzt die
@@ -48,7 +47,7 @@ Auswertung über den Span-Bestand beantworten kann: Zähler und Bezugsmenge steh
 
 **Der Anlass ist zweimal belegt und keine Vorsichtsmaßnahme.**
 [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
-Abweichung 5 (3)(b) hält fest, dass der `PreToolUse`-Guard aus
+`SPEC-086` hält fest, dass der `PreToolUse`-Guard aus
 [slice-060](../done/slice-060-rollen-achse.md) fehlen, abgeschaltet oder umgangen sein kann und
 **kein Sensor** das bemerkt; und
 [slice-074](slice-074-agent-vor-aufruf-protokoll.md) ist aus einem realen Aufruf entstanden, der
@@ -79,7 +78,7 @@ vollständig ist. Zwei Fragen, zwei Zahlen — die zweite ist die, die kein Span
   ist **kein** Befund, solange er (a) noch **läuft** — der Start entsteht beim Beginn, der
   `Agent`-Span erst beim Ende — oder (b) zu einem **Hintergrund**-Lauf gehört, der nach
   [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
-  Abweichung 5 planmäßig keine Zähler trägt. **Ohne diese Ausschlüsse ist die Zahl kein Sensor:**
+  `SPEC-039` planmäßig keine Zähler trägt. **Ohne diese Ausschlüsse ist die Zahl kein Sensor:**
   am 2026-08-08T14:42Z standen **4** Starts gegen **2** zähler-tragende `Agent`-Spans — ohne
   einen einzigen Defekt, allein aus diesen zwei Klassen. Ein Sensor, dessen gesunder Stand nicht
   100 % ist, wird weggesehen.
@@ -154,7 +153,7 @@ Rückführungen:
   Dann trennt ein Re-Schnitt die **Achse** vom **Sensor** — die Achse ist einzeln lieferbar, der
   Sensor nicht.
 - `in-progress` → `open`: falls **keine** Achse messbar ist. Dann ist zuerst zu entscheiden, ob
-  die Lücke aus §5 Abweichung 5 (3)(b) eine erklärte Abweichung bleibt — das ist eine
+  die Lücke aus `SPEC-086` eine erklärte Abweichung bleibt — das ist eine
   Architektur-Entscheidung nach Modul 7, keine Implementierungsfrage.
 
 ## 5. Closure-Trigger
