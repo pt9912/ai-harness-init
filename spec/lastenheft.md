@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.24.1
+**Version:** 0.24.2
 
 **Status:** Draft
 
@@ -300,8 +300,6 @@ Regelwerk darüber.
 - **Kein Halluzinat ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)):**
   kann der Träger nicht emittiert werden, wird begründet **nichts** abgelegt — kein
   Hook, der auf ein fehlendes Programm zeigt.
-- **Benannte Grenze:** Die emittierte Ebene führt keinen Wächter über die Aufrufform des
-  Agenten-Werkzeugs; die Rollen-Achse ruht dort auf Adopter-Disziplin.
 
 ### LH-FA-13 — Erfassungs-Schema der Spans
 
@@ -382,6 +380,8 @@ lief, soweit sie bekannt ist. Die Rolle kommt aus den Rollen-Typen, die
 - **Lesevorschrift:** Jede Auswertung liest ein leeres Rollenfeld als **unbekannt**, nie
   als *ohne Rolle*; ein Span, dessen Rolle fehlt, ist am Werkzeug-Namen als Lauf mit
   unbekannter Rolle erkennbar.
+- **Benannte Grenze:** Die emittierte Ebene führt keinen Wächter über die Aufrufform des
+  Agenten-Werkzeugs; die Rollen-Achse ruht dort auf Adopter-Disziplin.
 
 ### LH-FA-16 — Betrieb und Bestand der Erfassung
 
@@ -671,3 +671,4 @@ emittierte Datei zu ändern.
 | 0.23.0 | 2026-09-30 | CR: **Erfassungs-Umfang bei [`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)** — ein Akzeptanzkriterium nennt, was der emittierte Träger erfasst (abgeschlossener Werkzeug-Aufruf, auch der fehlgeschlagene, und der Start eines Rollen-Laufs) und was nicht (geblockter Aufruf, Ende eines Laufs). Die übrigen Kriterien und die Rollen-Achse bleiben unberührt | Nutzer-Entscheidung 2026-09-30 |
 | 0.24.0 | 2026-09-30 | CR: **[`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) geschnitten** — die Erfassungsschicht trägt fünf Anforderungen statt einer: [`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) (Träger, Ablageort), [`LH-FA-13`](../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) (Erfassungs-Schema), [`LH-FA-14`](../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) (Redaktion und Erfassungs-Umfang), [`LH-FA-15`](../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) (Rolle), [`LH-FA-16`](../spec/lastenheft.md#lh-fa-16--betrieb-und-bestand-der-erfassung) (Betrieb und Bestand), [`LH-FA-17`](../spec/lastenheft.md#lh-fa-17--auswertung-der-erfassung) (Auswertung). Die Akzeptanzkriterien wandern in die zuständige Anforderung, Wortlaut soweit möglich unverändert; Kriterien ergänzt. §5 mitgezogen | Nutzer-Entscheidung 2026-09-30 |
 | 0.24.1 | 2026-10-01 | CR: **Kriterien der Anforderungen [`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) und [`LH-FA-13`](../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) bis [`LH-FA-17`](../spec/lastenheft.md#lh-fa-17--auswertung-der-erfassung) bestätigt, soweit der Schnitt 0.24.0 sie ergänzt hat:** Träger und Ablageort (LH-FA-10); Pflicht- und Optionalfelder, Korrelations-Achsen, Zweig und Stand, Token- und Cache-Felder, Leer heißt unbekannt (LH-FA-13); Begrenzter Rohstring (LH-FA-14); Rolle wird abgeleitet, Lesevorschrift (LH-FA-15); Strom und Sequenz, Lock (LH-FA-16); Abdeckung, Aufteilung des Sammelpostens, Berichtsgröße (LH-FA-17). „Betrieb fail-open, Umfang fail-closed" ist auf LH-FA-16 und LH-FA-14 geteilt. Die Zusage zu den Zählern des Haupt-Kontexts ist auf „der Span trägt für ihn keine Zahl" eingeschränkt | Nutzer-Entscheidung 2026-10-01 |
+| 0.24.2 | 2026-10-01 | CR: **Das Kriterium „Benannte Grenze" zur Rollen-Achse wandert von [`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) nach [`LH-FA-15`](../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung)**, wo die Rolle steht; Wortlaut unverändert | Nutzer-Entscheidung 2026-10-01 |
