@@ -157,7 +157,7 @@ func TestFeldliste_OhneMarkdownLink(t *testing.T) {
 }
 
 // TestFeldliste_GrenzeAufrufform misst den ERSTEN stehenden Grenz-Satz (ADR-0022
-// Festlegung 7, LH-FA-10 §Benannte Grenze): die emittierte Ebene fuehrt keinen Waechter
+// Festlegung 7, LH-FA-15 §Benannte Grenze): die emittierte Ebene fuehrt keinen Waechter
 // ueber die Aufrufform des Agenten-Werkzeugs, und die Richtung gehoert dazu — die
 // Rollen-Achse ruht dort auf Adopter-Disziplin, und ein leeres Feld heisst unbekannt,
 // nie rollenlos.
