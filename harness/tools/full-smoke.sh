@@ -444,7 +444,7 @@ feldliste_im_ziel "$tmprepo" "--lang go"
 git init -q "$tmprepo"
 
 echo "full-smoke: 3/3 im Ziel: make -j gates (der zusammengefuehrte Einstiegspunkt, Fragment-Assembly slice-034) ..."
-	e2e_abdeckung "LH-FA-01 LH-FA-03 LH-FA-06 LH-FA-08 LH-FA-09 LH-FA-10 LH-FA-13 LH-FA-15 LH-FA-16 LH-FA-17 LH-QA-01 LH-QA-03" "Das gates des Ziels laeuft vollstaendig, nicht als stille Teilmenge" "stilles Teilmengen-Gate"
+	e2e_abdeckung "LH-FA-01 LH-FA-03 LH-FA-06 LH-FA-08 LH-FA-09 LH-FA-10 LH-FA-13 LH-FA-15 LH-FA-16 LH-FA-17 LH-QA-01 LH-QA-03" "Das gates des Ziels laeuft vollstaendig, nicht als stille Teilmenge; die Erfassung ist nur teilweise gemessen (LH-FA-13: Pflichtfeld-Schluessel und Feldlisten-Abgleich; LH-FA-15: Rolle besetzt und leer heisst unbekannt, nicht tool_response.agentType, nicht die Lesevorschrift; LH-FA-16: Aufbewahrung und fail-open fuer einen gueltigen Payload; LH-FA-17: nur Abdeckung zuerst)" "stilles Teilmengen-Gate"
 gates_rc=0
 gates_out="$( make -j -C "$tmprepo" gates 2>&1 )" || gates_rc=$?
 printf '%s\n' "$gates_out"
@@ -2264,7 +2264,7 @@ rollen_typen_im_ziel "$tmprepo_doc" "sprachlos"
 feldliste_im_ziel "$tmprepo_doc" "sprachlos"
 git init -q "$tmprepo_doc"
 echo "full-smoke: doc-only im Ziel: make -j gates (docs-check + baseline-verify + record-gates, KEIN Code-Gate) ..."
-	e2e_abdeckung "LH-FA-01 LH-FA-06 LH-FA-10 LH-FA-13 LH-FA-15 LH-FA-16 LH-FA-17 LH-QA-01" "Das sprachlose Ziel faehrt ein reines Doku-Gate, ohne Code-Gate" "sprachloser make gates ist NICHT Exit 0"
+	e2e_abdeckung "LH-FA-01 LH-FA-06 LH-FA-10 LH-FA-13 LH-FA-15 LH-FA-16 LH-FA-17 LH-QA-01" "Das sprachlose Ziel faehrt ein reines Doku-Gate, ohne Code-Gate; die Erfassung ist nur teilweise gemessen (LH-FA-13: Pflichtfeld-Schluessel und Feldlisten-Abgleich; LH-FA-15: Rolle besetzt und leer heisst unbekannt, nicht tool_response.agentType, nicht die Lesevorschrift; LH-FA-16: Aufbewahrung und fail-open fuer einen gueltigen Payload; LH-FA-17: nur Abdeckung zuerst)" "sprachloser make gates ist NICHT Exit 0"
 doc_rc=0
 doc_out="$( make -j -C "$tmprepo_doc" gates 2>&1 )" || doc_rc=$?
 printf '%s\n' "$doc_out"
