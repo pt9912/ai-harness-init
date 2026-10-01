@@ -69,8 +69,11 @@ test: test-bats test-go ## Harness-Tests (bats) + Go-Unit-Tests (go test in Dock
 # Die zwei Stufen sind einzeln aufrufbar, damit `make mutate` je Fall nur die
 # Stufe faehrt, deren Rot er erwartet. `test` bleibt die Summe beider, in
 # derselben Reihenfolge.
-test-bats: ## Nur die Harness-Tests (bats) — Docker-only
-	docker run --rm --network none -v "$(CURDIR)":/code:ro -w /code $(BATS_IMAGE) test/
+# `BATS_TARGET` (Pfad relativ zur Repo-Wurzel) engt den Lauf auf eine Datei ein; der
+# Standard `test/` ist der Lauf von `make test` und `make gates`.
+BATS_TARGET ?= test/
+test-bats: ## Nur die Harness-Tests (bats) — Docker-only; BATS_TARGET=test/<datei>.bats engt auf eine Datei ein
+	docker run --rm --network none -v "$(CURDIR)":/code:ro -w /code $(BATS_IMAGE) "$(BATS_TARGET)"
 
 # Ressourcen-Deckel des Go-Testlaufs: NUR `docker run --pids-limit`/`--memory` setzen ihn
 # durch — `docker build --resource`/`--ulimit` nehmen dieselben Werte an, ohne sie
