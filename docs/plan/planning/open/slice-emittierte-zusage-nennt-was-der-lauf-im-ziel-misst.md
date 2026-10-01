@@ -17,7 +17,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 
 **Verantwortlich:** —
 
-**Autor:** Planner. **Datum:** 2026-10-01. **Auslöser:** Register-Zähler 3× ([`emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`](../observations/BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/observation.md), `plan-welle.md` §Slices bereitstellen, Auslöser 3); dritter Beleg aus [`slice-e2e-belegt-die-rolle-der-erfassung-im-ziel`](../in-progress/slice-e2e-belegt-die-rolle-der-erfassung-im-ziel.md).
+**Autor:** Planner. **Datum:** 2026-10-01. **Auslöser:** Register-Zähler 3× ([`emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`](../observations/BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/observation.md), `plan-welle.md` §Slices bereitstellen, Auslöser 3); dritter Beleg aus [`slice-e2e-belegt-die-rolle-der-erfassung-im-ziel`](../done/slice-e2e-belegt-die-rolle-der-erfassung-im-ziel.md).
 
 ---
 
