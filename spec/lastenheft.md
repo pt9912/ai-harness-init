@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.24.0
+**Version:** 0.24.1
 
 **Status:** Draft
 
@@ -329,8 +329,7 @@ und Cache-Felder. Die Liste liegt im Zielrepo lesbar.
   Ausgabe-Token, Cache-Erstellung und Cache-Lesen, die Gesamtsumme, die Laufzeit, die Zahl
   der Werkzeug-Aufrufe und die Modell-Bezeichnung — soweit das Ergebnis des Werkzeugs sie
   trägt. Trägt es einen Zähler nicht (Hintergrund-Lauf), wird er nicht abgeleitet und nicht
-  geschätzt. Die Zähler des Haupt-Kontexts stehen in keiner Payload; der Span trägt für ihn
-  keine Zahl.
+  geschätzt. Für den Haupt-Kontext trägt der Span keine Zahl.
 - **Leer heißt unbekannt:** Ein leerer Wert eines Pflichtfelds heißt **unbekannt**; das
   Pflichtfeld bleibt Pflicht und steht in jedem Span.
 
@@ -671,3 +670,4 @@ emittierte Datei zu ändern.
 | 0.22.0 | 2026-09-19 | CR: **Aufruf-Form um den Zielordner erweitert** — `ai-harness-init` löst sein Ziel aus dem letzten Positionsargument, Flags liegen davor (`ai-harness-init --lang go --name "X" <zielordner>`); ohne Argument endet der Init-Pfad laut mit dem Usage-Text, fail-closed — kein stiller Bootstrap gegen das Repo, in dem er steht. Die zwei Happy-Path-AC von [`LH-FA-01`](../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) und der Ablauf in [`spec/architecture.md`](architecture.md) tragen die Form; die `add-lang`-Semantik (`<pfad>` = Modul-Pfad) bleibt unberührt | Nutzer-Entscheidung 2026-09-19 |
 | 0.23.0 | 2026-09-30 | CR: **Erfassungs-Umfang bei [`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)** — ein Akzeptanzkriterium nennt, was der emittierte Träger erfasst (abgeschlossener Werkzeug-Aufruf, auch der fehlgeschlagene, und der Start eines Rollen-Laufs) und was nicht (geblockter Aufruf, Ende eines Laufs). Die übrigen Kriterien und die Rollen-Achse bleiben unberührt | Nutzer-Entscheidung 2026-09-30 |
 | 0.24.0 | 2026-09-30 | CR: **[`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) geschnitten** — die Erfassungsschicht trägt fünf Anforderungen statt einer: [`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) (Träger, Ablageort), [`LH-FA-13`](../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) (Erfassungs-Schema), [`LH-FA-14`](../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) (Redaktion und Erfassungs-Umfang), [`LH-FA-15`](../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) (Rolle), [`LH-FA-16`](../spec/lastenheft.md#lh-fa-16--betrieb-und-bestand-der-erfassung) (Betrieb und Bestand), [`LH-FA-17`](../spec/lastenheft.md#lh-fa-17--auswertung-der-erfassung) (Auswertung). Die Akzeptanzkriterien wandern in die zuständige Anforderung, Wortlaut soweit möglich unverändert; Kriterien ergänzt. §5 mitgezogen | Nutzer-Entscheidung 2026-09-30 |
+| 0.24.1 | 2026-10-01 | CR: **Kriterien der Anforderungen [`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) und [`LH-FA-13`](../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) bis [`LH-FA-17`](../spec/lastenheft.md#lh-fa-17--auswertung-der-erfassung) bestätigt, soweit der Schnitt 0.24.0 sie ergänzt hat:** Träger und Ablageort (LH-FA-10); Pflicht- und Optionalfelder, Korrelations-Achsen, Zweig und Stand, Token- und Cache-Felder, Leer heißt unbekannt (LH-FA-13); Begrenzter Rohstring (LH-FA-14); Rolle wird abgeleitet, Lesevorschrift (LH-FA-15); Strom und Sequenz, Lock (LH-FA-16); Abdeckung, Aufteilung des Sammelpostens, Berichtsgröße (LH-FA-17). „Betrieb fail-open, Umfang fail-closed" ist auf LH-FA-16 und LH-FA-14 geteilt. Die Zusage zu den Zählern des Haupt-Kontexts ist auf „der Span trägt für ihn keine Zahl" eingeschränkt | Nutzer-Entscheidung 2026-10-01 |
