@@ -415,7 +415,7 @@ if [ "$artefakt_rc" -ne 0 ]; then
 fi
 
 echo "full-smoke: 2/3 Bootstrap (--lang go --name full-smoke) in ein leeres tmp-Repo ..."
-	e2e_abdeckung "LH-FA-01 LH-FA-10 LH-FA-13 LH-FA-14 LH-FA-15" "Bootstrap in ein leeres Zielverzeichnis, sprachgebunden in einem Lauf" "der Bootstrap (--lang go) ist NICHT Exit 0"
+	e2e_abdeckung "LH-FA-01 LH-FA-10 LH-FA-13" "Bootstrap in ein leeres Zielverzeichnis, sprachgebunden in einem Lauf" "der Bootstrap (--lang go) ist NICHT Exit 0"
 # ERSTER AUFRUF DES WERKZEUGS und damit die erste Anfrage nach dem d-check-Bild: das
 # Werkzeug erzeugt das Doku-Gate-Fragment aus dessen --print-mk-Ausgabe. Auf einem
 # frischen Laeufer liegt das Bild nicht lokal.
@@ -2205,7 +2205,7 @@ fi
 # Durchsetzung, OHNE Skelett — `make gates` ist doc-only gruen. Beweis in einem zweiten
 # tmp-Repo (der --lang-go-Lauf oben bleibt der One-Shot).
 echo "full-smoke: doc-only Bootstrap (OHNE --lang) in ein zweites tmp-Repo ..."
-	e2e_abdeckung "LH-FA-01 LH-FA-10 LH-FA-13 LH-FA-14 LH-FA-15" "Dieselbe Harness ohne Sprachskelett; die zweite Bootstrap-Variante" "die Rollen-Typen sind sprach-agnostisch und UNBEDINGT"
+	e2e_abdeckung "LH-FA-01 LH-FA-10 LH-FA-13" "Dieselbe Harness ohne Sprachskelett; die zweite Bootstrap-Variante" "die Rollen-Typen sind sprach-agnostisch und UNBEDINGT"
 ( "$tmpbin/ai-harness-init" --name full-smoke-doc "$tmprepo_doc" )
 # slice-097, zweite Variante: die Rollen-Typen sind sprach-agnostisch und UNBEDINGT —
 # sie haengen an keinem Laufzeit-Ausgang. Auch hier vor dem Gate-Lauf.
@@ -3247,7 +3247,7 @@ zeilenenden_im_klon
 # (Exit 0 statt Kollisions-Refuse). Konvergente Dateien (tool-Infra) werden kanonisch neu
 # geschrieben (heilen Drift); skip-if-present-Dateien (Adopter-Boden) bleiben unberuehrt.
 echo "full-smoke: Idempotenz — README + Rollen-Typ driften (skip-if-present) + Makefile + Feldliste driften (konvergent), dann 2. Init-Lauf ..."
-	e2e_abdeckung "LH-FA-01 LH-FA-05 LH-FA-10 LH-FA-13" "Ein zweiter Lauf ueberschreibt Adopter-Inhalt nicht und heilt Doku-Drift" "2. Lauf heilte die Makefile-Drift NICHT"
+	e2e_abdeckung "LH-FA-01 LH-FA-05 LH-FA-10" "Ein zweiter Lauf ueberschreibt Adopter-Inhalt nicht und heilt Doku-Drift" "2. Lauf heilte die Makefile-Drift NICHT"
 printf '\n# adopter-gewachsen\n' >> "$tmprepo/README.md"   # skip-if-present: MUSS bleiben
 readme_before="$(cat "$tmprepo/README.md")"
 # slice-097 (ADR-0022 Festlegung 4, ADR-0007 Festlegung 3): ein Rollen-Typ ist ein Text,
