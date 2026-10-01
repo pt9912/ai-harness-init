@@ -23,18 +23,18 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 
 ## 1. Ziel und Abgrenzung
 
-**Ziel:** Die Kurzbeschreibung einer `e2e_abdeckung`-Stufe in `harness/tools/full-smoke.sh` nennt, was der Lauf im Ziel misst und was nicht, statt die ganze Anforderung zu behaupten — zuerst für `LH-FA-15` in den zwei Stufen, die `traeger_im_ziel` rufen; die Regel dazu schreibt der Architect.
+**Ziel:** Die Kurzbeschreibung einer `e2e_abdeckung`-Stufe in `harness/tools/full-smoke.sh` nennt, was der Lauf im Ziel misst und was nicht, statt die ganze Anforderung zu behaupten — zuerst für [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) in den zwei Stufen, die `traeger_im_ziel` rufen; die Regel dazu schreibt der Architect.
 
 **Ausdrücklich NICHT in diesem Slice:**
 
 - Eine ADR — die Regel verschärft [`AGENTS.md`](../../../../AGENTS.md) §3.6 und schwächt keine Schwelle (§3.5 gilt für Senkungen); ob sie als Falsch/Richtig-Paar dort oder als Eintrag im Konventionsspeicher steht, entscheidet der Architect.
-- Neue Messung der drei ungemessenen Kriterienteile von `LH-FA-15` (Rolle aus `tool_response.agentType`, Lesevorschrift, echter `agent_type`) — anderer Vorgang: ein E2E-Lauf sieht keinen Claude-Code-Lauf.
+- Neue Messung der drei ungemessenen Kriterienteile von [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) (Rolle aus `tool_response.agentType`, Lesevorschrift, echter `agent_type`) — anderer Vorgang: ein E2E-Lauf sieht keinen Claude-Code-Lauf.
 - Die Matrix-Zelle *E2E ok* in `make doc-trace` — Werkzeug-Aussage des Doku-Gates, nicht dieses Repos.
 - Andere Stufen und andere Anforderungen — jede weitere Kurzbeschreibung ist ein eigener Beleg im Register.
 
 ## 2. Definition of Done
 
-- [ ] Die Kurzbeschreibungen der zwei Stufen, die `traeger_im_ziel` rufen, nennen die Teilabdeckung von `LH-FA-15` (*Rolle besetzt*, *abgeleitet, erster Teil*; nicht gemessen: Rolle aus `tool_response.agentType`, Lesevorschrift); `make e2e-abdeckung` hat [`docs/user/e2e-abdeckung.md`](../../../user/e2e-abdeckung.md) neu erzeugt. Rot gesehen: die Teilabdeckung aus der Kurzbeschreibung entfernt → ein benannter Fall färbt rot.
+- [ ] Die Kurzbeschreibungen der zwei Stufen, die `traeger_im_ziel` rufen, nennen die Teilabdeckung von [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) (*Rolle besetzt*, *abgeleitet, erster Teil*; nicht gemessen: Rolle aus `tool_response.agentType`, Lesevorschrift); `make e2e-abdeckung` hat [`docs/user/e2e-abdeckung.md`](../../../user/e2e-abdeckung.md) neu erzeugt. Rot gesehen: die Teilabdeckung aus der Kurzbeschreibung entfernt → ein benannter Fall färbt rot.
 - [ ] Die Regel *„eine emittierte Zusage trägt, was der Lauf im Ziel misst, und nennt, was nicht"* steht als Architect-Artefakt in eigenem Commit (Übergabe: dieser Plan); Zielort bestätigt der Architect.
 - [ ] `make gates` grün; Review; Closure-Notiz mit Lerneintrag; Beobachtungs-Register fortgeschrieben; jedes Risiko aus §6 trägt einen Ausgang; die drei Paarungen sind getragen.
 
