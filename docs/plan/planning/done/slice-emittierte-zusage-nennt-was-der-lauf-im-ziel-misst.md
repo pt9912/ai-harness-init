@@ -36,7 +36,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 
 - [x] Die Kurzbeschreibungen der zwei Stufen, die `traeger_im_ziel` rufen, nennen die Teilabdeckung von [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) (*Rolle besetzt*, *abgeleitet, erster Teil*; nicht gemessen: Rolle aus `tool_response.agentType`, Lesevorschrift); `make e2e-abdeckung` hat [`docs/user/e2e-abdeckung.md`](../../../user/e2e-abdeckung.md) neu erzeugt. Rot gesehen: die Teilabdeckung aus der Kurzbeschreibung entfernt → ein benannter Fall färbt rot.
 - [x] Die Regel *„eine emittierte Zusage trägt, was der Lauf im Ziel misst, und nennt, was nicht"* steht als Architect-Artefakt in eigenem Commit (Übergabe: dieser Plan); Zielort bestätigt der Architect.
-- [ ] `make gates` grün; Review; Closure-Notiz mit Lerneintrag; Beobachtungs-Register fortgeschrieben; jedes Risiko aus §6 trägt einen Ausgang; die drei Paarungen sind getragen.
+- [x] `make gates` grün; Review; Closure-Notiz mit Lerneintrag; Beobachtungs-Register fortgeschrieben; jedes Risiko aus §6 trägt einen Ausgang; die drei Paarungen sind getragen.
 
 ## 3. Plan (vor Code)
 
@@ -74,7 +74,7 @@ DoD vollständig, `make gates` grün, Review- und Verifikationsbericht liegen vo
 - **Beobachtungs-Register:** `evidence/slice-emittierte-zusage-nennt-was-der-lauf-im-ziel-misst.md` in `BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/` ergänzt (Stufen 2 und 5 deklarieren `LH-FA-13` ohne Teilabdeckungs-Text, Review F3) — Zähler 4×, Stand bleibt verkörpert.
 - **Folge-Slices:** keine; Stufen 2 und 5 sind Register-Beleg.
 - **Risiken aus §6:** das eine Risiko — *entfallen* (siehe §6).
-- **Drei Paarungen:** nach dem `git mv` zu prüfen.
+- **Drei Paarungen:** nach dem `git mv` geprüft — (a) `liegt in` `AGENTS.md §3.6` trägt den Anker (`grep` Zeile 137) · (b) keine Folge-Slices · (c) Beobachtung existiert, `evidence/` trägt 4 Dateien.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
