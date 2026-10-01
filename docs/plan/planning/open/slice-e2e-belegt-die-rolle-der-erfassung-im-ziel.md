@@ -15,7 +15,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 
 **Berührte Spec-Stellen:** [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) Akzeptanzkriterien *Rolle besetzt* und *Rolle wird abgeleitet* (erster Teil) · `spezifikation.md §5`.
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912)
 
 **Autor:** Planner. **Datum:** 2026-10-01. **Auslöser:** Auftrag des Auftraggebers; Befund der Verifikation ([`2026-10-01-e2e-deklarationen-verifikation.md`](../../../reviews/2026-10-01-e2e-deklarationen-verifikation.md)) — [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) ist die einzige Waise der RTM (`make doc-trace`).
 
