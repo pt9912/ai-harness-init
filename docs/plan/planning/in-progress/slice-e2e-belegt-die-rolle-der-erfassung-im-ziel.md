@@ -38,9 +38,9 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 
 ## 2. Definition of Done
 
-- [ ] Funktion `rolle_im_ziel` in `harness/tools/full-smoke.sh`, aus `traeger_im_ziel` gerufen (beide Bootstrap-Varianten): je emittiertem Rollen-Typ ein Payload, `agent_role` gleich dem Namen; `general-purpose` und ein fremder Typ ergeben `"agent_role":""` — Feld anwesend. Der FEHLER-Zweig nennt [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) und die Zeile.
-- [ ] Die zwei `e2e_abdeckung`-Deklarationen der Stufen, die `traeger_im_ziel` rufen, nennen [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung); `make e2e-abdeckung` hat [`docs/user/e2e-abdeckung.md`](../../../user/e2e-abdeckung.md) neu erzeugt; `make doc-trace` meldet keine Waise.
-- [ ] Rot gesehen, beide Seiten (AGENTS.md §3.6): (a) die Ableitung `RoleFromAgentType` im Emitter verfälscht (gibt stets `""` bzw. den Typ roh zurück) → `rolle_im_ziel` färbt rot mit [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) in der Meldung; (b) die Erwartung der Funktion umgekehrt (fremder Typ erwartet besetzt) → rot. Beleg im Wortlaut der Meldung (`docs/reviews/`-Bericht des Verifiers).
+- [x] Funktion `rolle_im_ziel` in `harness/tools/full-smoke.sh`, aus `traeger_im_ziel` gerufen (beide Bootstrap-Varianten): je emittiertem Rollen-Typ ein Payload, `agent_role` gleich dem Namen; `general-purpose` und ein fremder Typ ergeben `"agent_role":""` — Feld anwesend. Der FEHLER-Zweig nennt [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) und die Zeile.
+- [x] Die zwei `e2e_abdeckung`-Deklarationen der Stufen, die `traeger_im_ziel` rufen, nennen [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung); `make e2e-abdeckung` hat [`docs/user/e2e-abdeckung.md`](../../../user/e2e-abdeckung.md) neu erzeugt; `make doc-trace` meldet keine Waise.
+- [x] Rot gesehen, beide Seiten (AGENTS.md §3.6): (a) die Ableitung `RoleFromAgentType` im Emitter verfälscht (gibt stets `""` bzw. den Typ roh zurück) → `rolle_im_ziel` färbt rot mit [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) in der Meldung; (b) die Erwartung der Funktion umgekehrt (fremder Typ erwartet besetzt) → rot. Beleg im Wortlaut der Meldung (`docs/reviews/`-Bericht des Verifiers).
 - [ ] `make gates` grün; Review; Closure-Notiz mit Lerneintrag; Beobachtungs-Register fortgeschrieben; jedes Risiko aus §6 trägt einen Ausgang; die drei Paarungen sind getragen.
 
 ## 3. Plan (vor Code)
@@ -68,18 +68,18 @@ DoD vollständig, `make gates` grün, Review- und Verifikationsbericht liegen vo
 ## 6. Risiken und offene Punkte
 
 - Ein synthetischer `agent_type` weicht vom echten Hook-Payload ab (kein Claude-Code-Lauf) — **Ausgang:** weiter offen: Register `BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht` (Beleg beim Schließen).
-- Die Deklaration behauptet mehr als die Stufe misst (Verifikation: Stufen messen heute nur den Typ-Namen) — **Ausgang:** entfallen mit der DoD-Zeile 3: Deklaration nennt nur *Rolle besetzt* und *abgeleitet, erster Teil*; die Kurzbeschreibung sagt es, der Verifier prüft sie.
+- Die Deklaration behauptet mehr als die Stufe misst (Verifikation: Stufen messen heute nur den Typ-Namen) — **Ausgang:** weiter offen: Register `BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht` (Kurzbeschreibungen der Stufen 3 und 6 unverändert, `doc-trace` zeigt *E2E ok*; Folge-Slice `slice-emittierte-zusage-nennt-was-der-lauf-im-ziel-misst`).
 - Das Rot (a) setzt einen Träger-Neubau voraus, der in einer Sitzung den Arbeitsbaum verändert — **Ausgang:** entfallen: Rücknahme per `git checkout` vor `make gates`, der Stempel gilt nur für den Endstand.
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register:** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
-- **Drei Paarungen:** —
+- **Zustand:** Liefer-Punkte 1 bis 3 bestätigt im Verifikationsbericht `docs/reviews/2026-10-01-e2e-rolle-verifikation.md` (beide Rot-Seiten vom Verifier selbst gefahren, `make doc-trace` 0 Waisen). DoD-Punkt 4 offen: kein Review-Bericht unter `docs/reviews/` (nur Verifikation); `make gates` im Bericht bestätigt.
+- **Steering-Loop-Eintrag — neuer Sensor:** `rolle_im_ziel` hält die Kette *emittierter Rollen-Typ → abgelegter Träger → `agent_role`*. Gezählt, nicht verkörpert: die Funktion trägt keinen Herkunfts-Anker. Grenzen, benannt: gemessen ist nur die Ableitung im Emitter; Wrapper und Ziel sind in der isolierten Fahrt nachgebaut, die Stufe selbst lief nicht im Docker-E2E; nicht gemessen sind die Rolle aus `tool_response.agentType`, die Lesevorschrift und der echte `agent_type` des Agenten-Werkzeugs.
+- **Review-Finding F1 (Verifikation):** die Deklaration der Stufen 3 und 6 deckt nur *Rolle besetzt* und *abgeleitet, erster Teil*, die Kurzbeschreibung sagt es nicht. Ausgang: Register und Folge-Slice (siehe Risiken).
+- **Beobachtungs-Register:** `evidence/slice-e2e-belegt-die-rolle-der-erfassung-im-ziel.md` in [`emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`](../observations/BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/observation.md) ergänzt, Zähler 3×; Ausgang *geplant* in dessen `state.md`.
+- **Folge-Slices:** [`slice-emittierte-zusage-nennt-was-der-lauf-im-ziel-misst`](../open/slice-emittierte-zusage-nennt-was-der-lauf-im-ziel-misst.md) — Datei in `open/`.
+- **Risiken aus §6:** synthetischer `agent_type` — *weiter offen*, Register (Beleg oben). Teilabdeckung in der Deklaration — *weiter offen*, Register und Folge-Slice. Träger-Neubau — *entfallen*: Rücknahme per `git checkout`, Arbeitsbaum nach der Verifikation sauber.
+- **Drei Paarungen:** nach dem `git mv` geprüft.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
