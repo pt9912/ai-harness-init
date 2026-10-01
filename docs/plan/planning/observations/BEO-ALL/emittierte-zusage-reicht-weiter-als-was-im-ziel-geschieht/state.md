@@ -1,4 +1,4 @@
-**Stand:** geplant
+**Stand:** verkörpert in `AGENTS.md` §3.6 (`seit slice-emittierte-zusage-nennt-was-der-lauf-im-ziel-misst`)
 
 Kennung: [`slice-emittierte-zusage-nennt-was-der-lauf-im-ziel-misst`](../../../in-progress/slice-emittierte-zusage-nennt-was-der-lauf-im-ziel-misst.md) — er lässt die Kurzbeschreibung
 einer E2E-Stufe nennen, was der Lauf im Ziel misst, und übergibt die Regel dazu an den Architect.

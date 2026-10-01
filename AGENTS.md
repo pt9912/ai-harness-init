@@ -126,6 +126,16 @@ Fall-Satz nicht erreichbar ist, die Lücke benennen statt sie durch den Fixture-
 verdecken. Kein Sensor hält eine Fixture gegen ihre reale Quelle; Träger bleibt der Lauf,
 der den Wächter schreibt · seit slice-release-schnitt-v025-bereitet-vor.
 
+**Falsch:** eine emittierte Abdeckungs-Aussage — etwa eine Spec-Kennung in
+`docs/user/e2e-abdeckung.md` —, die die ganze Anforderung nennt, während der Lauf im Ziel
+nur einen Teil misst; die RTM liest sie als „E2E ok".
+**Richtig:** die Aussage nennt, was der Lauf im Ziel misst, und bei Teilmessung die Grenze
+am selben Ort. Den Wortlaut hält allein der Fall in `test/e2e-abdeckung.bats`, der die erzeugte Datei
+byte-gleich gegen die Deklaration hält. **Ein Wächter existiert nicht** für den Rest: kein Sensor
+liest die Kurzbeschreibung gegen den Körper ihrer Stufe, und eine Stufe, die ihre Teilmessung
+nie benannt hat, bleibt unbemerkt. Träger ist der Lauf, der die Deklaration schreibt, und
+der Test, der die erzeugte Datei hält · seit slice-emittierte-zusage-nennt-was-der-lauf-im-ziel-misst.
+
 **Feedback:** `make mutate` (kein Gate; geführt in
 [`harness/README.md`](harness/README.md) §Werkzeuge) fährt ein kuratiertes Set aus
 *(Mutation → erwartet rot färbender Test)* und meldet jeden **gelisteten** Wächter,
