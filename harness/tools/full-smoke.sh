@@ -1276,13 +1276,28 @@ leser_und_aufraeumen_im_ziel() {
 # `general-purpose` und ein fremder Typ (leer = unbekannt, nie rollenlos). Je Payload
 # ein eigener Strom (session_id). Grenze: ein synthetischer Payload zeigt die Ableitung
 # des Emitters, nicht ob das Agenten-Werkzeug `agent_type` so setzt (kein Claude-Code-Lauf
-# im Ziel); Lesevorschrift und die Rolle aus tool_response.agentType messen andere Waechter.
-# Rot-Gegenbeispiel: RoleFromAgentType (internal/span/emit.go) verfaelscht.
+# im Ziel).
+# TEILABDECKUNG von LH-FA-15: gemessen sind "Rolle besetzt" und "leer heisst unbekannt".
+# NICHT gemessen sind die Rolle aus tool_response.agentType und die Lesevorschrift; im E2E
+# traegt sie kein Waechter. Die Ableitung aus agentType deckt allein der Go-Test in
+# internal/span/response_test.go (Pfad tool_response.agentType, nie tool_input.subagent_type).
+# VOLLZAEHLIGKEIT: die Zahl der emittierten Typ-Dateien gleicht der Zahl der Typ-Quellen
+# dieses Repos (internal/emit/templates/agents/*.md, dieselbe Quelle wie
+# rollen_typen_im_ziel), ohne Namen im Skript; ein Ziel mit weniger Typen faellt.
+# Rot-Gegenbeispiel: RoleFromAgentType (internal/span/emit.go) verfaelscht; eine gekuerzte
+# Typ-Liste im Ziel.
 rolle_im_ziel() {
 	local repo="$1" kennung="$2"
 	local wrapper="$repo/.claude/hooks/span-emit.sh"
-	local f name n=0 erwartet typ sess out rc zeile
+	local f name n=0 erwartet typ sess out rc zeile soll=0
 	local -a faelle=()
+	for f in "$HIER/../../internal/emit/templates/agents"/*.md; do
+		[ -f "$f" ] && soll=$((soll + 1))
+	done
+	if [ "$soll" -eq 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: keine Rollen-Typ-Quellen unter internal/emit/templates/agents/ — LH-FA-15 hat keine Soll-Zahl." >&2
+		exit 1
+	fi
 	for f in "$repo"/.claude/agents/*.md; do
 		name="$(sed -n 's/^name:[[:space:]]*//p' "$f" | head -n 1 | tr -d '[:space:]')"
 		if [ -z "$name" ]; then
@@ -1293,6 +1308,10 @@ rolle_im_ziel() {
 	done
 	if [ "${#faelle[@]}" -eq 0 ]; then
 		echo "full-smoke: FEHLER — $kennung: keine Rollen-Typ-Datei unter .claude/agents/ im Ziel — LH-FA-15 (Rolle besetzt) misst sonst den leeren Fall." >&2
+		exit 1
+	fi
+	if [ "${#faelle[@]}" -ne "$soll" ]; then
+		echo "full-smoke: FEHLER — $kennung: LH-FA-15: das Ziel emittiert ${#faelle[@]} Rollen-Typ-Dateien, die Quelle fuehrt $soll — 'jeder emittierte Rollen-Typ' misst sonst eine Teilmenge." >&2
 		exit 1
 	fi
 	faelle+=("general-purpose:" "kein-rollen-typ:")
