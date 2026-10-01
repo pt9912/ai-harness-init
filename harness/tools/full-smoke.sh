@@ -1274,7 +1274,7 @@ leser_und_aufraeumen_im_ziel() {
 # ABGELEGTE Traeger leitet die Rolle im Ziel ab. Typ-Namen kommen aus den im Ziel
 # emittierten Rollen-Typ-Dateien (`name:`), nicht aus einer Liste im Skript; dazu
 # `general-purpose` und ein fremder Typ (leer = unbekannt, nie rollenlos). Je Payload
-# ein eigener Strom (session_id). Grenze: ein synthetischer Payload belegt die Ableitung
+# ein eigener Strom (session_id). Grenze: ein synthetischer Payload zeigt die Ableitung
 # des Emitters, nicht ob das Agenten-Werkzeug `agent_type` so setzt (kein Claude-Code-Lauf
 # im Ziel); Lesevorschrift und die Rolle aus tool_response.agentType messen andere Waechter.
 # Rot-Gegenbeispiel: RoleFromAgentType (internal/span/emit.go) verfaelscht.
