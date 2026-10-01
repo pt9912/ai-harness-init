@@ -34,8 +34,8 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 
 ## 2. Definition of Done
 
-- [ ] Die Kurzbeschreibungen der zwei Stufen, die `traeger_im_ziel` rufen, nennen die Teilabdeckung von [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) (*Rolle besetzt*, *abgeleitet, erster Teil*; nicht gemessen: Rolle aus `tool_response.agentType`, Lesevorschrift); `make e2e-abdeckung` hat [`docs/user/e2e-abdeckung.md`](../../../user/e2e-abdeckung.md) neu erzeugt. Rot gesehen: die Teilabdeckung aus der Kurzbeschreibung entfernt → ein benannter Fall färbt rot.
-- [ ] Die Regel *„eine emittierte Zusage trägt, was der Lauf im Ziel misst, und nennt, was nicht"* steht als Architect-Artefakt in eigenem Commit (Übergabe: dieser Plan); Zielort bestätigt der Architect.
+- [x] Die Kurzbeschreibungen der zwei Stufen, die `traeger_im_ziel` rufen, nennen die Teilabdeckung von [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) (*Rolle besetzt*, *abgeleitet, erster Teil*; nicht gemessen: Rolle aus `tool_response.agentType`, Lesevorschrift); `make e2e-abdeckung` hat [`docs/user/e2e-abdeckung.md`](../../../user/e2e-abdeckung.md) neu erzeugt. Rot gesehen: die Teilabdeckung aus der Kurzbeschreibung entfernt → ein benannter Fall färbt rot.
+- [x] Die Regel *„eine emittierte Zusage trägt, was der Lauf im Ziel misst, und nennt, was nicht"* steht als Architect-Artefakt in eigenem Commit (Übergabe: dieser Plan); Zielort bestätigt der Architect.
 - [ ] `make gates` grün; Review; Closure-Notiz mit Lerneintrag; Beobachtungs-Register fortgeschrieben; jedes Risiko aus §6 trägt einen Ausgang; die drei Paarungen sind getragen.
 
 ## 3. Plan (vor Code)
@@ -62,16 +62,19 @@ DoD vollständig, `make gates` grün, Review- und Verifikationsbericht liegen vo
 ## 6. Risiken und offene Punkte
 
 - Kein Risiko über die Abgrenzung in §1 hinaus erkannt; der Implementer trägt ein, was er findet.
+  **Ausgang:** entfallen: kein Risiko eingetreten; die in Review und Verifikation gefundenen Grenzen stehen in §7 und im Register.
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register:** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
-- **Drei Paarungen:** —
+- **Zustand:** DoD 1 und 2 bestätigt in `docs/reviews/2026-10-01-folge-slice-zusage-verifikation.md`; Review `docs/reviews/2026-10-01-folge-slice-zusage-review.md`; `make gates` Exit 0 am Endstand der Closure.
+- **Was ging anders als geplant:** ergänzt um die Zählprüfung in `rolle_im_ziel` (Commit zur Anzahl der Rollen-Typ-Dateien, aus dem Review des Vorgängers).
+- **Steering-Loop-Eintrag — geschärfte Regel:** Paar „emittierte Abdeckungs-Aussage nennt, was der Lauf im Ziel misst" — liegt in `AGENTS.md §3.6` (Anker `seit slice-emittierte-zusage-nennt-was-der-lauf-im-ziel-misst` steht dort). Auslöser: `BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht` (3×).
+- **Grenzen:** der Fall in `test/e2e-abdeckung.bats` hält die Gleichheit Deklaration ↔ erzeugte Datei, nicht den Inhalt gegen den Stufenkörper (Review F2; „Teilabdeckung entfernt → Fall rot" gilt nur ohne Neuerzeugung). Die Zählprüfung in `rolle_im_ziel` zählt nur die Anzahl; die Namensmenge hält `rollen_typen_im_ziel` davor (F4). Stufe nicht im Docker-E2E gefahren.
+- **Abweichung, benannt:** Architect-Commit `c6badd9b` berührt `state.md` der Beobachtung (Review F1, §3.8/§3.10); der Planner hat den Stand in dieser Closure festgeschrieben: `verkörpert in AGENTS.md §3.6`.
+- **Beobachtungs-Register:** `evidence/slice-emittierte-zusage-nennt-was-der-lauf-im-ziel-misst.md` in `BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/` ergänzt (Stufen 2 und 5 deklarieren `LH-FA-13` ohne Teilabdeckungs-Text, Review F3) — Zähler 4×, Stand bleibt verkörpert.
+- **Folge-Slices:** keine; Stufen 2 und 5 sind Register-Beleg.
+- **Risiken aus §6:** das eine Risiko — *entfallen* (siehe §6).
+- **Drei Paarungen:** nach dem `git mv` zu prüfen.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
