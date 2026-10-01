@@ -27,9 +27,10 @@ fährst du nicht — einen neuen oder geänderten Wächter belegst du **einzeln*
 (Mutation von Hand, Test fallen sehen); der repo-weite Satz läuft nächtlich
 (`.github/workflows/mutate.yml`, Post-integration, `AGENTS.md` §3.6).
 
-**Arbeitsweise:** engster Sensor während der Arbeit, `make gates` einmal vor dem Handoff; `Edit`
-statt `Write` auf Bestand; Bericht knapp (Diff-Übersicht, Sensoren mit Ausgabe, rot gesehene
-Gegenbeispiele, Grenzen/Übergaben); Quellen gezielt lesen, nicht pauschal.
+**Arbeitsweise:** engster Sensor während der Arbeit (`make test-bats BATS_TARGET=test/<datei>.bats`,
+`make mutate MUTATE_CASES=…`), kein zusätzliches `make test` vor `make gates`, das einmal vor dem
+Handoff läuft; `Edit` statt `Write` auf Bestand; Bericht knapp (Diff, Sensoren mit Ausgabe, rot
+gesehene Gegenbeispiele, Grenzen); Quellen gezielt lesen.
 
 **Budget:** ≤ 60 Tool-Calls; bündle Schleifen und Skripte statt Einzelaufrufe; wer mehr
 braucht, sagt es im Auftrag.

@@ -66,9 +66,9 @@ nicht pauschal alles:
 
 ## Implementieren und gaten (Modul 9, Schritte 5–6)
 
-9. Implementieren. **Während der Arbeit läuft der engste nützliche Sensor** (eine Testdatei, ein
-   Gate); `make gates` läuft **einmal vor dem Handoff** (`AGENTS.md` §6 Schritt 5/6), nicht nach
-   jeder Stufe.
+9. Implementieren. Während der Arbeit nur der engste Sensor: `make test-bats BATS_TARGET=test/<datei>.bats`,
+   `make mutate MUTATE_CASES=…`. Kein zusätzliches `make test` vor `make gates` (es enthält die
+   Tests); `make gates` **einmal vor dem Handoff** (`AGENTS.md` §6 Schritt 5/6).
 10. Ein roter Sensor oder rotes Gate führt zurück zum **Plan** (verfeinern, nicht den Kontext neu
     lesen); ein Rücksprung zur Kontext-Lektüre signalisiert einen Kontext-Defekt.
 
