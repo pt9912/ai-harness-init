@@ -15,7 +15,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 
 **Berührte Spec-Stellen:** [`LH-FA-12`](../../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren) — Spalte *Kurzbeschreibung* der erzeugten Sicht.
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912)
 
 **Autor:** Planner. **Datum:** 2026-10-01. **Auslöser:** Register-Zähler 3× ([`emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`](../observations/BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/observation.md), `plan-welle.md` §Slices bereitstellen, Auslöser 3); dritter Beleg aus [`slice-e2e-belegt-die-rolle-der-erfassung-im-ziel`](../done/slice-e2e-belegt-die-rolle-der-erfassung-im-ziel.md).
 
