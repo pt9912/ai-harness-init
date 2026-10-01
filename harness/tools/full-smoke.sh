@@ -1270,6 +1270,52 @@ leser_und_aufraeumen_im_ziel() {
 	echo "full-smoke: Leser + Aufraeum-Kommando im Ziel ($kennung): Abdeckung zuerst, keine Bilanz, Grund genannt; span-clean raeumt; der geraeumte Bestand meldet seine eigene Leere, und ohne Traeger meldet das Ziel den fehlenden Leser."
 }
 
+# LH-FA-15 (Kriterien "Rolle besetzt" und "Rolle wird abgeleitet", erster Teil): der
+# ABGELEGTE Traeger leitet die Rolle im Ziel ab. Typ-Namen kommen aus den im Ziel
+# emittierten Rollen-Typ-Dateien (`name:`), nicht aus einer Liste im Skript; dazu
+# `general-purpose` und ein fremder Typ (leer = unbekannt, nie rollenlos). Je Payload
+# ein eigener Strom (session_id). Grenze: ein synthetischer Payload belegt die Ableitung
+# des Emitters, nicht ob das Agenten-Werkzeug `agent_type` so setzt (kein Claude-Code-Lauf
+# im Ziel); Lesevorschrift und die Rolle aus tool_response.agentType messen andere Waechter.
+# Rot-Gegenbeispiel: RoleFromAgentType (internal/span/emit.go) verfaelscht.
+rolle_im_ziel() {
+	local repo="$1" kennung="$2"
+	local wrapper="$repo/.claude/hooks/span-emit.sh"
+	local f name n=0 erwartet typ sess out rc zeile
+	local -a faelle=()
+	for f in "$repo"/.claude/agents/*.md; do
+		name="$(sed -n 's/^name:[[:space:]]*//p' "$f" | head -n 1 | tr -d '[:space:]')"
+		if [ -z "$name" ]; then
+			echo "full-smoke: FEHLER — $kennung: Rollen-Typ-Datei $f ohne 'name:' — LH-FA-15 (Rolle besetzt) hat keinen Typ-Namen zum Messen." >&2
+			exit 1
+		fi
+		faelle+=("$name:$name")
+	done
+	if [ "${#faelle[@]}" -eq 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: keine Rollen-Typ-Datei unter .claude/agents/ im Ziel — LH-FA-15 (Rolle besetzt) misst sonst den leeren Fall." >&2
+		exit 1
+	fi
+	faelle+=("general-purpose:" "kein-rollen-typ:")
+	for typ in "${faelle[@]}"; do
+		name="${typ%%:*}"
+		erwartet="${typ#*:}"
+		n=$((n + 1))
+		sess="${kennung}rolle$n"
+		out="" rc=0
+		out="$( cd "$repo" && CLAUDE_PROJECT_DIR="$repo" bash "$wrapper" <<<"{\"hook_event_name\":\"PostToolUse\",\"tool_name\":\"Bash\",\"tool_use_id\":\"tu_rolle$n\",\"session_id\":\"$sess\",\"agent_type\":\"$name\",\"tool_input\":{\"command\":\"make gates\"}}" )" || rc=$?
+		if [ "$rc" -ne 0 ] || [ -n "$out" ]; then
+			echo "full-smoke: FEHLER — $kennung: der Erfassungs-Hook mit agent_type=$name endete mit Exit $rc oder schrieb auf stdout [$out] (LH-FA-15)." >&2
+			exit 1
+		fi
+		zeile="$(cat "$repo/.harness/state/spans/$sess.jsonl" 2>/dev/null || true)"
+		if ! grep -qF -- "\"agent_type\":\"$name\"" <<<"$zeile" || ! grep -qF -- "\"agent_role\":\"$erwartet\"" <<<"$zeile"; then
+			echo "full-smoke: FEHLER — $kennung: LH-FA-15: bei agent_type=$name erwartet die Span-Zeile des abgelegten Traegers \"agent_role\":\"$erwartet\" (leer = unbekannt, nie rollenlos) — Zeile: [$zeile]" >&2
+			exit 1
+		fi
+	done
+	echo "full-smoke: Rolle im Ziel ($kennung): $n Payloads ueber den Wrapper — jeder emittierte Rollen-Typ traegt seinen Namen als agent_role, general-purpose und ein fremder Typ ein leeres Feld (LH-FA-15)."
+}
+
 # slice-096 (LH-FA-10 / ADR-0022 Festlegung 1 und 5): DER TRAEGER LIEGT IM ZIEL.
 # Der Nachbau dessen, was `make span-check` fuer den DOGFOOD leistet — am gebootstrappten
 # ZIEL und ueber den Weg, den das Agenten-Werkzeug dort wirklich nimmt:
@@ -1359,6 +1405,8 @@ traeger_im_ziel() {
 	# dem der emittierte Leser laufen soll. Er raeumt am Ende auf; danach ist der
 	# Bestand weg, und der Rest dieser Funktion braucht ihn nicht mehr.
 	leser_und_aufraeumen_im_ziel "$repo" "$kennung"
+	# LH-FA-15: der Leser hat den Bestand geraeumt; die Rolle bekommt eigene Stroeme.
+	rolle_im_ziel "$repo" "$kennung"
 
 	# (e) Ohne Traeger schweigt der Wrapper. Danach zuruecknehmen — der Rest des Smokes
 	# laeuft auf dem heilen Stand (dieselbe Disziplin wie bei den Zaehne-Beweisen unten).
