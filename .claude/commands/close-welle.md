@@ -81,8 +81,9 @@ Kurs.
    **Jeder Ausgang ist fail-closed:** solange kein `docs/plan/planning/done/*/archiv.zip` existiert
    (`ls docs/plan/planning/done/*/archiv.zip 2>/dev/null | wc -l`; kein Erwartungswert), hat *wellenlos
    seit der letzten Closure* keine Untergrenze und der Lauf bricht ab. Die Archivierung des Altbestands
-   ist dann ein eigener Vorgang und braucht eine Entscheidung, die keine Quelle dieses Repos trägt:
-   welche Welle die wellenlosen Slices einsammelt (`modul-06-roadmap.md` Schritt 4). Bricht der Lauf an
+   ist dann ein eigener Vorgang: `archive-welle altbestand` legt das Sammel-Archiv
+   `done/altbestand/archiv.zip` an ([ADR-0041](../../docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md);
+   Sperren in `harness/sensors/archive-welle.md`, `[haenger]` bleibt Sperre). Bricht der Lauf an
    einer Sperre, gehört **das** als Feststellung in die Results-Notiz, und die Welle schließt ohne
    Schritt 4. Vor der Adoption geschlossene Wellen bleiben frei.
    **Im Stub:** `Hervorgegangen:` trägt seine Kennungen als Anker-Links; `.d-check.yml` scannt ab `.`,
