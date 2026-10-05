@@ -39,12 +39,12 @@ seinen eigenen Command und sein `Makefile`; beide bleiben unberührt (§1).
 
 Liefer-Punkte:
 
-- [ ] **L1 — Fragment und Command.** `internal/emit/templates/enforce/archivierung.mk`: der Hilfetext des Ziels (die `##`-Zeile) nennt `WELLE=<welle-id>` und `WELLE=altbestand`; der Kopfkommentar nennt, dass der Schlüssel die wellenlosen Slices unter `done/altbestand/` archiviert und dass ein Träger ohne Schreibpfad ihn mit `[kein-schreib-pfad]` abweist. `internal/emit/templates/commands/close-welle.md` Schritt 4: ohne `done/*/archiv.zip` gilt `[untergrenze]`, der Altbestand-Lauf (`make archive-welle WELLE=altbestand`) kommt vor der ersten Wellen-Archivierung; der Satz nennt den Binärnamen nicht (`TestCommands_NoInternalLeak`).
-- [ ] **L2 — Emit-Tests.** Go-Tests in `internal/emit` halten die Texte aus L1; je Zusage mindestens ein Fall in `test/mutations/`.
+- [x] **L1 — Fragment und Command.** `internal/emit/templates/enforce/archivierung.mk`: der Hilfetext des Ziels (die `##`-Zeile) nennt `WELLE=<welle-id>` und `WELLE=altbestand`; der Kopfkommentar nennt, dass der Schlüssel die wellenlosen Slices unter `done/altbestand/` archiviert und dass ein Träger ohne Schreibpfad ihn mit `[kein-schreib-pfad]` abweist. `internal/emit/templates/commands/close-welle.md` Schritt 4: ohne `done/*/archiv.zip` gilt `[untergrenze]`, der Altbestand-Lauf (`make archive-welle WELLE=altbestand`) kommt vor der ersten Wellen-Archivierung; der Satz nennt den Binärnamen nicht (`TestCommands_NoInternalLeak`).
+- [x] **L2 — Emit-Tests.** Go-Tests in `internal/emit` halten die Texte aus L1; je Zusage mindestens ein Fall in `test/mutations/`.
   - (1) Rot: den Schlüssel aus der `##`-Hilfezeile streichen, während er im Kopfkommentar bleibt — der Test liest die Hilfezeile des Ziels, nicht die Datei, sonst deckt der Kommentar die Mutation.
   - (2) Rot: `altbestand` oder `untergrenze` aus `close-welle.md` streichen — der Test fällt mit Dateinamen und fehlendem Begriff.
   - (3) Rot: den `[kein-schreib-pfad]`-Satz streichen — der Test fällt.
-- [ ] **L3 — E2E-Stufe im Ziel.** `archivierung_im_ziel` in `harness/tools/full-smoke.sh` fährt `make archive-welle WELLE=altbestand` über dem schon angelegten wellenlosen Slice `slice-998-ohne-welle` des temporären Ziels und erwartet `archive-welle ok: altbestand` und `done/altbestand/archiv.zip`; die Stufen-Kopfzeile nennt die neue Aussage, `make e2e-abdeckung` ist nachgeführt.
+- [x] **L3 — E2E-Stufe im Ziel.** `archivierung_im_ziel` in `harness/tools/full-smoke.sh` fährt `make archive-welle WELLE=altbestand` über dem schon angelegten wellenlosen Slice `slice-998-ohne-welle` des temporären Ziels und erwartet `archive-welle ok: altbestand` und `done/altbestand/archiv.zip`; die Stufen-Kopfzeile nennt die neue Aussage, `make e2e-abdeckung` ist nachgeführt.
   - Der Bestand der Stufe enthält schon einen Review-Report, der auf einen verschwindenden zeigt; der Aufbau muss `[haenger]` vor dem Altbestand-Lauf auflösen, sonst sperrt der Lauf (`haenger` bleibt unter dem Schlüssel Sperre).
 
 Fahrbar ohne Docker-E2E und ohne realen Bestand: L1 und L2 vollständig (`make test`, `MUTATE_CASES=<Fälle> make mutate`; `internal/emit` ist ein Go-Test über den Emit-Text). Nicht fahrbar: L3 (`make full-smoke` braucht Docker) und jede Aussage über einen realen Bestand — ein Altbestand im gebootstrappten Ziel entsteht nicht von selbst, die Stufe baut ihn synthetisch. Die Lücken stehen in der Closure-Notiz, nicht verdeckt durch den Fixture-Erfolg (AGENTS.md §3.6):
@@ -55,13 +55,13 @@ Fahrbar ohne Docker-E2E und ohne realen Bestand: L1 und L2 vollständig (`make t
 
 Gate-Läufe und Closure-Pflichten:
 
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), kein Self-Review.
-- [ ] Doku-Update: `docs/user/e2e-abdeckung.md` neu erzeugt (L3); die Nutzerdoku bleibt dem Release-Schnitt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben oder „keine Beobachtung angefallen" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen, von der nächsten Welle-Closure auch für diesen wellenlosen Slice.
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), kein Self-Review.
+- [x] Doku-Update: `docs/user/e2e-abdeckung.md` neu erzeugt (L3); die Nutzerdoku bleibt dem Release-Schnitt.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben oder „keine Beobachtung angefallen" in §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen, von der nächsten Welle-Closure auch für diesen wellenlosen Slice.
 
 ## 3. Plan (vor Code)
 
@@ -90,17 +90,17 @@ DoD vollständig, Review-Report ohne blockierenden Befund, Closure-Notiz mit Ler
 
 - Zwischen diesem Slice und dem Release-Schnitt nennt die Emission einen Schlüssel, den der gepinnte Träger nur als Vorschau kennt — **Ausgang:** weiter offen: → [`BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`](../observations/BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/observation.md) (Milderung: der Text nennt `[kein-schreib-pfad]`, L1)
 - Die Stufe baut ihren Altbestand synthetisch und trifft das Zielrepo eines Adopters mit gewachsenem Bestand nicht — **Ausgang:** weiter offen: → [`BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle`](../observations/BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/observation.md)
-- Der Träger-Slice ändert die Ausgabe-Zeile `archive-welle ok: altbestand`, auf die L3 prüft — **Ausgang:** entfallen, solange der Träger-Slice nicht ändert; geschieht es, ist es eingetreten und führt `in-progress` → `open` (§4)
+- Der Träger-Slice ändert die Ausgabe-Zeile `archive-welle ok: altbestand`, auf die L3 prüft — **Ausgang:** entfallen: der Träger-Slice liegt in `done/`, und L3 hat die Zeile am Stand des Abschlusses gelesen (Verifikation 2026-10-05)
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:**
-- **Was ging anders als geplant:**
-- **Steering-Loop-Eintrag:**
-- **Beobachtungs-Register (`../observations/`):**
-- **Folge-Slices:** Release-Schnitt (F4) — eigener Vorgang, noch keine Datei
-- **Risiken aus §6:**
-- **Drei Paarungen:**
+- **Was hat funktioniert:** L1 bis L3 sind bestätigt: `make mutate` über den Fällen 509 bis 513 `5 ok, 0 Befund(e)`, die Gegenprobe mit geschwächter Zusicherung färbt 509 und 512 (die Zähne binden an Hilfezeile und Begriff), `make full-smoke` Exit 0 mit `archive-welle ok: altbestand`, der Rot-Beleg `WELLE=altbestandd` trifft den vertippten Schlüssel. Review: ein LOW, behoben; Verifikation: keine Findings, `make gates` Exit 0 (Berichte vom 2026-10-05 unter `docs/reviews/`, `emittierte-archivierung-review` und `-verifikation`).
+- **Was ging anders als geplant:** die Stufe legt `slice-997-altbestand` neu an, statt `slice-998-ohne-welle` zu nutzen; ohne Folge.
+- **Steering-Loop-Eintrag:** benannte Lücke, kein neuer Sensor: (1) der gepinnte Träger `v0.2.6` ist nicht gefahren, L3 läuft gegen den Träger aus dem Arbeitsbaum; (2) der Altbestand der Stufe ist synthetisch (ein Slice, kein Review-Report); (3) die Wellen-Sperre, die den Altbestand-Lauf im Ziel vor der ersten Wellen-Archivierung hält, hat keinen eigenen Wächter — der Text in `close-welle.md` nennt sie, ein Lauf misst sie nicht. L2 hält den Wortlaut der Vorlage, nicht dass `make` den Schlüssel an den Träger reicht; das misst allein L3.
+- **Beobachtungs-Register (`../observations/`):** je eine Evidence-Datei zu [`BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle`](../observations/BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/observation.md) (synthetischer Bestand, Arbeitsbaum-Träger) und [`BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`](../observations/BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/observation.md) (Fenster bis zum Release-Schnitt); die übrigen Treffer aus §8 belegt der Slice nicht.
+- **Folge-Slices:** `slice-release-schnitt-v027-liefert-den-altbestand-pfad` (hebt `TRAEGER_TAG`, zieht das Handbuch nach, schließt das Fenster); `archive-slice` ([`ADR-0077`](../../adr/0077-wellenlose-slices-archivieren-bei-der-slice-closure.md)), sobald angenommen. **Lücke:** dieser wellenlose Slice wird bei seiner Closure nicht archiviert, obwohl [`MR-078`](../../../../harness/conventions.md#mr-078--wellenlose-slices-werden-bei-der-eigenen-closure-archiviert) es vorsieht; sein Volltext bleibt in `done/`.
+- **Risiken aus §6:** alle drei mit Ausgang am Risiko (zweimal weiter offen, einmal entfallen).
+- **Drei Paarungen:** Anker: kein `liegt in`-Feld, nichts zu paaren; Folge-Slice: die Release-Schnitt-Datei liegt in `open/`, `archive-slice` ist keine Datei, als Bedingung genannt; Register: die zitierten Pfade existieren.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
