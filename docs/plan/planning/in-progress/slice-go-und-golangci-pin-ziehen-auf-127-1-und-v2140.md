@@ -55,26 +55,26 @@ eine Welle braucht beobachtet keine Closure-Bedingung mehr als diese DoD.
 
 Drei Liefer-Punkte, jeder mit dem Kommando, das ihn rot färbt ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 
-- [ ] **1 — Go steht auf `1.27.1` an jeder Pin-Stelle, mit belegtem Digest.** Makefile `GO_VERSION`,
+- [x] **1 — Go steht auf `1.27.1` an jeder Pin-Stelle, mit belegtem Digest.** Makefile `GO_VERSION`,
       Dockerfile `ARG GO_VERSION` und der `golang`-`@sha256`, `internal/gen/golang.go` `DefaultGoVersion`,
       Fallbacks in `harness/tools/smoke.sh` und `full-smoke.sh`. Der Digest ist der Manifest-Digest
       des Tags `golang:1.27.1`, mit Kommando im Commit. Rot: `make freshness-go` (Exit 1) und
       `TestGoProfile_PinsMatchRepo` bei Halbstand Dockerfile/`DefaultGoVersion`.
-- [ ] **2 — golangci-lint steht auf `v2.14.0` an jeder Pin-Stelle, mit belegtem Digest.** Makefile
+- [x] **2 — golangci-lint steht auf `v2.14.0` an jeder Pin-Stelle, mit belegtem Digest.** Makefile
       `GOLANGCI_LINT_VERSION`, Dockerfile `ARG GOLANGCI_LINT_VERSION` und der `golangci-lint`-`@sha256`,
       `golangciVersion` in `internal/gen/golang.go`. Rot: `make freshness-golangci` und
       `TestGoProfile_PinsMatchRepo`.
-- [ ] **3 — `make lint` und `make gates` laufen unter den neuen Images ohne Befund, ohne Suppression.**
+- [x] **3 — `make lint` und `make gates` laufen unter den neuen Images ohne Befund, ohne Suppression.**
       Brachte v2.14.0 neue Befunde, sind sie im Code behoben; `git diff` enthält kein `//nolint` und
       keine Abschwächung von `.golangci.yml`. Rot: `make lint` (Befund) bzw. `make gates` (Exit ≠ 0).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -141,13 +141,13 @@ Verifikations-Report liegen vor; Closure-Notiz mit Lerneintrag.
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
-- **Drei Paarungen:** —
+- **Was hat funktioniert:** Beide Pins stehen auf `1.27.1`/`v2.14.0` an jeder Stelle des Plans; `make freshness-go` und `-golangci` Exit 0, `make lint` ohne Befund, kein `//nolint`, keine Lockerung. Review ohne Findings; Verifikation bestätigt DoD 1-3 mit selbst hergestelltem Rot (Makefile-Pin → `freshness-go`; `DefaultGoVersion` → `TestGoProfile_PinsMatchRepo`, richtiger Grund) (`docs/reviews/2026-10-05-go-golangci-pin-review.md`, `-verifikation.md`).
+- **Was ging anders als geplant:** nichts; v2.14.0 brachte keine neuen Befunde.
+- **Steering-Loop-Eintrag:** benannte Lücke, kein neuer Sensor: der `@sha256`-Digest im Dockerfile und die Fallbacks in `smoke.sh`/`full-smoke.sh` haben keinen Wächter; der Implementer belegte real, dass ein stehengebliebener alter Digest `make test` grün lässt. Träger bleibt der Lauf, der den Pin zieht.
+- **Beobachtungs-Register (`../observations/`):** neue Beobachtung [`BEO-ALL/pin-digest-ohne-waechter`](../observations/BEO-ALL/pin-digest-ohne-waechter/observation.md) mit einer Evidence-Datei, Stand `offen`. [`BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle`](../observations/BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/observation.md): kein Auftreten (die Lücke ist ein fehlender Wächter an der realen Quelle, keine Fixture); keine Datei.
+- **Folge-Slices:** keine.
+- **Risiken aus §6:** 1 entfallen (v2.14.0 brachte keine Befunde, `make lint` „0 issues.") · 2 weiter offen → Register `BEO-ALL/pin-digest-ohne-waechter` · 3 entfallen (der Lauf zog auf den gemeldeten Stand 1.27.1/v2.14.0, beide Sensoren Exit 0).
+- **Drei Paarungen:** Anker: kein `liegt in`-Feld, nichts zu paaren; Folge-Slice: keiner genannt; Register: der zitierte Pfad existiert.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
