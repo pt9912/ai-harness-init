@@ -91,7 +91,9 @@ Wellen-Closure), Modul 7 (Carveouts), Modul 5 (Lifecycle). Bei Konflikt gilt der
    **Gibt es noch kein `done/*/archiv.zip`, sperrt die Vorprüfung mit `[untergrenze]`:** erst
    `make archive-welle WELLE=altbestand` (die wellenlosen Slices, gesammelt unter
    `done/altbestand/`), dann die erste Wellen-Archivierung. Ein Träger ohne Schreibpfad weist den
-   Schlüssel mit `[kein-schreib-pfad]` ab; dann bleibt der Altbestand, wo er ist.
+   Schlüssel `altbestand` mit `[kein-schreib-pfad]` ab; dann bleibt der Altbestand, wo er ist, und
+   die Sperre für die Wellen-Archivierung besteht fort — ohne `done/*/archiv.zip` gibt es keinen
+   Weg an ihr vorbei.
    <!-- ANPASSEN: der Weg zum Träger ist die repo-spezifische Stelle; nenne hier den deines Repos.
         Der Ziel-NAME `archive-welle` ist es nicht. Er kommt aus einem tool-eigenen Fragment, das
         jeder Bootstrap kanonisch neu schreibt — ein umbenanntes Ziel hält darum nicht, und diese
