@@ -63,7 +63,7 @@ vollstaendig und flach. Verlangt einen sauberen Arbeitsbaum und setzt zwei
 getrennte Commits: zuerst den reinen Move, danach Archiv, Stubs und
 Verweis-Nachzug.
 
-<welle-id> kann der Schluessel `altbestand` sein: das einzelne Sammel-Archiv fuer
+<welle-id> kann der Schluessel altbestand sein: das einzelne Sammel-Archiv fuer
 den wellenlosen Bestand (done/altbestand/archiv.zip, ohne Welle-Plan); er traegt
 genau einen Lauf.
 
