@@ -86,7 +86,12 @@ func ZuStagen(b Bestand, nachgezogen []string) []string {
 // `dateien` ist der Suchraum-Eingang des Verweis-Nachzugs (git ls-files); `out`
 // nimmt den Fortschrittstext.
 func Anwenden(root string, b Bestand, dateien []string, g Git, out io.Writer) error {
-	if !b.EinPlanVorhanden() {
+	altbestand := b.Welle == AltbestandSchluessel
+	if altbestand && len(altbestandFremdesPlanBild(b)) > 0 {
+		return fmt.Errorf("der Schluessel %s hat keinen Welle-Plan, %d Datei(en) '%s*.md' in %s/",
+			b.Welle, len(altbestandFremdesPlanBild(b)), b.Welle, doneDir)
+	}
+	if !altbestand && !b.EinPlanVorhanden() {
 		return fmt.Errorf("genau ein Welle-Plan erwartet, %d vorhanden", len(b.Plaene))
 	}
 	vorlagen, err := VorlagenVerzeichnis(root)
@@ -104,7 +109,7 @@ func Anwenden(root string, b Bestand, dateien []string, g Git, out io.Writer) er
 			return err
 		}
 	}
-	if err := g.Commit("archive-welle: " + b.Welle + "  Zeitdokumente nach " + ziel + "/ (reiner Move)"); err != nil {
+	if err := g.Commit("archive-welle: " + b.Welle + "  Zeitdokumente nach " + ziel + "/ (reiner Move" + kennungSuffix(b) + ")"); err != nil {
 		return err
 	}
 
@@ -113,6 +118,17 @@ func Anwenden(root string, b Bestand, dateien []string, g Git, out io.Writer) er
 		return NachCommit1Fehler{Welle: b.Welle, Ziel: ziel, Ursache: err}
 	}
 	return nil
+}
+
+// kennungSuffix haengt an die Commit-Nachrichten des Schluessels
+// AltbestandSchluessel die Kennung ADR-0041: der Schluessel trifft kein Muster
+// der Traceability-Menge, ein commit-msg-Traeger wiese den Commit sonst ab. Die
+// Nachrichten einer Welle-Kennung bleiben unveraendert.
+func kennungSuffix(b Bestand) string {
+	if b.Welle == AltbestandSchluessel {
+		return ", ADR-0041"
+	}
+	return ""
 }
 
 // NachCommit1Fehler ist ein Fehler, der NACH dem Move-Commit auftrat. Der Baum
@@ -172,13 +188,17 @@ func inhaltsSchritt(root string, b Bestand, dateien []string, vorlagen string, u
 	if err := g.Add(ZuStagen(b, beruehrt)); err != nil {
 		return err
 	}
-	if err := g.Commit("archive-welle: " + b.Welle + "  Archiv, Stubs und Verweis-Nachzug (Inhalt, getrennt vom Move — AGENTS.md §3.3)"); err != nil {
+	if err := g.Commit("archive-welle: " + b.Welle + "  Archiv, Stubs und Verweis-Nachzug (Inhalt, getrennt vom Move — AGENTS.md §3.3" + kennungSuffix(b) + ")"); err != nil {
 		return err
 	}
 
 	groesse, _ := os.Stat(filepath.Join(root, filepath.FromSlash(zipRel)))
 	fmt.Fprintf(out, "archive-welle ok: %s\n", b.Welle)
-	fmt.Fprintf(out, "  Commit 1 (reiner Move): %d Slice(s) + Welle-Plan nach %s/\n", len(b.Slices()), ziel)
+	if len(b.Plaene) > 0 {
+		fmt.Fprintf(out, "  Commit 1 (reiner Move): %d Slice(s) + Welle-Plan nach %s/\n", len(b.Slices()), ziel)
+	} else {
+		fmt.Fprintf(out, "  Commit 1 (reiner Move): %d Slice(s) nach %s/\n", len(b.Slices()), ziel)
+	}
 	bytes := int64(0)
 	if groesse != nil {
 		bytes = groesse.Size()
@@ -196,14 +216,18 @@ func inhaltsSchritt(root string, b Bestand, dateien []string, vorlagen string, u
 // bekommt die Welle-Vorlage, jeder Slice die Slice-Vorlage; Review-Reports
 // bekommen keinen — sie haben keine Identitaet jenseits ihres Slice.
 func schreibeStubs(root string, b Bestand, vorlagen string, umzuege []Umzug, zipRel string) error {
-	planBase := filepath.Base(b.Plaene[0])
-	planNeu := doneDir + "/" + b.Welle + "/" + planBase
-
-	ergebnis, _, err := lies(root, b.Ergebnis)
-	if err != nil {
-		return err
+	// Der Schluessel AltbestandSchluessel hat weder Plan noch Ergebnisnotiz: kein
+	// Welle-Stub, und `Geschlossen:` traegt den Leerwert `—` (WelleDatum ohne Zeile).
+	planBase, planNeu, wDatum := "", "", WelleDatum("")
+	if len(b.Plaene) > 0 {
+		planBase = filepath.Base(b.Plaene[0])
+		planNeu = doneDir + "/" + b.Welle + "/" + planBase
+		ergebnis, _, err := lies(root, b.Ergebnis)
+		if err != nil {
+			return err
+		}
+		wDatum = WelleDatum(ergebnis)
 	}
-	wDatum := WelleDatum(ergebnis)
 
 	for _, u := range umzuege {
 		inhalt, ok, err := lies(root, u.Neu)

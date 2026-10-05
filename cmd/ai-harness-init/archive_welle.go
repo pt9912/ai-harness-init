@@ -63,7 +63,11 @@ vollstaendig und flach. Verlangt einen sauberen Arbeitsbaum und setzt zwei
 getrennte Commits: zuerst den reinen Move, danach Archiv, Stubs und
 Verweis-Nachzug.
 
-  --vorschau    Nur sagen, was der Lauf taete, und nichts schreiben: die drei
+<welle-id> kann der Schluessel `altbestand` sein: das einzelne Sammel-Archiv fuer
+den wellenlosen Bestand (done/altbestand/archiv.zip, ohne Welle-Plan); er traegt
+genau einen Lauf.
+
+  --vorschau   Nur sagen, was der Lauf taete, und nichts schreiben: die drei
                 Einsammel-Klassen (Mitglieder · wellenlos · fremd), die
                 Review-Reports, die Dateien mit einem Verweis auf etwas Bewegtes
                 und die fail-closed-Ausgaenge, an denen der Lauf abbraeche.

@@ -8,8 +8,10 @@ import (
 
 // AltbestandSchluessel ist der Schluessel aus ADR-0041 Festlegung 2: ein
 // einzelnes Sammel-Archiv fuer den wellenlosen Bestand ohne Adressaten, keine
-// Welle-Kennung. Er ist ortsfest und traegt genau einen Lauf; `sperren` hebt
-// fuer ihn die vier welle- bzw. untergrenzen-gebundenen Ausgaenge auf.
+// Welle-Kennung. Er ist ortsfest und traegt genau einen Lauf (ein zweiter
+// bricht an `archiviert` ab); `sperren` hebt fuer ihn die vier welle- bzw.
+// untergrenzen-gebundenen Ausgaenge auf, und `Anwenden` archiviert ihn ohne
+// Welle-Plan.
 const AltbestandSchluessel = "altbestand"
 
 // Sperre ist ein fail-closed-Ausgang, an dem der SCHREIBENDE Lauf abbraeche.
@@ -64,9 +66,12 @@ func Vorschau(root, welleID, porcelain string, dateien []string) (Bericht, error
 // Ausgaenge auf — ergebnisnotiz, kein-plan, mehrdeutiger-plan (alle drei aus
 // planSperre) und untergrenze — weil ein Schluessel ohne Welle weder einen
 // Welle-Plan noch eine Ergebnisnotiz in done/ hat und selbst die Untergrenze
-// setzt, die die laufende Regel danach braucht. unsauber, archiviert,
-// kein-slice und haenger bleiben unveraendert: haenger traegt ADR-0041
-// Festlegung 4 und darf nicht mit aufgehen.
+// setzt, die die laufende Regel danach braucht. An ihre Stelle tritt
+// altbestand-plan, wenn doch eine Datei `altbestand*.md` in done/ liegt.
+// unsauber, archiviert, kein-slice und haenger bleiben unveraendert: haenger
+// traegt ADR-0041 Festlegung 4 und darf nicht mit aufgehen. Der schreibende Lauf
+// liest dieselbe Liste (archiveWelleLauf), eine Sperre beendet ihn vor dem ersten
+// Schreibzugriff.
 func sperren(b Bestand, porcelain string, haenger []string) []Sperre {
 	var out []Sperre
 	if grund := UnsauberGrund(porcelain); grund != "" {
@@ -92,17 +97,16 @@ func sperren(b Bestand, porcelain string, haenger []string) []Sperre {
 			})
 		}
 		out = append(out, planSperre(b)...)
-	} else if !b.EinPlanVorhanden() {
-		// AltbestandSchluessel hat nie einen Welle-Plan (ADR-0041 Festlegung 2)
-		// — planSperre() ist fuer diesen Zweig aufgehoben. Anwenden() verlangt
-		// die Bedingung trotzdem unveraendert (dieselbe Quelle, EinPlanVorhanden):
-		// ohne diesen Zweig meldete die Vorschau "Sperren: keine", waehrend der
-		// schreibende Lauf am Laufzeit-Fehler abbraeche.
+	} else if fremd := altbestandFremdesPlanBild(b); len(fremd) > 0 {
+		// AltbestandSchluessel hat keinen Welle-Plan und keine Ergebnisnotiz
+		// (ADR-0041 Festlegung 2). Eine Datei `altbestand*.md` in done/ wuerde
+		// vom Lauf nicht bewegt und liesse einen Plan zurueck, den der Schluessel
+		// nicht kennt; der Lauf sperrt, statt sie zu ignorieren.
 		out = append(out, Sperre{
-			Kennung: "kein-schreib-pfad",
-			Grund: fmt.Sprintf("Anwenden verlangt weiterhin genau einen Welle-Plan (%d vorhanden) — der Schluessel %s hat nie einen",
-				len(b.Plaene), AltbestandSchluessel),
-			Zeilen: []string{"dieser Schluessel ist auf den schreibenden Pfad noch nicht anwendbar (harness/sensors/archive-welle.md §Grenze)"},
+			Kennung: "altbestand-plan",
+			Grund: fmt.Sprintf("%d Datei(en) '%s*.md' in %s/ — der Schluessel %s hat weder Welle-Plan noch Ergebnisnotiz",
+				len(fremd), AltbestandSchluessel, doneDir, AltbestandSchluessel),
+			Zeilen: fremd,
 		})
 	}
 	if len(b.Slices()) == 0 {
@@ -121,6 +125,16 @@ func sperren(b Bestand, porcelain string, haenger []string) []Sperre {
 			Zeilen: append(append([]string{}, haenger...),
 				"erst den Verweis aufloesen (oder die Referenz im Doku-Gate ausnehmen, mit ADR nach AGENTS.md 3.5)"),
 		})
+	}
+	return out
+}
+
+// altbestandFremdesPlanBild nennt die Dateien in done/, die unter dem Schluessel
+// AltbestandSchluessel ein Welle-Plan oder eine Ergebnisnotiz waeren.
+func altbestandFremdesPlanBild(b Bestand) []string {
+	out := append([]string{}, b.Plaene...)
+	if b.Ergebnis != "" {
+		out = append(out, b.Ergebnis)
 	}
 	return out
 }
