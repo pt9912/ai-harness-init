@@ -28,16 +28,16 @@
 
 Liefer-Punkte (drei, je zwei Ziele):
 
-- [ ] **Tap:** die sensors-Datei von `tap-check` und die sensors-Datei von `tap-nachzug` tragen den Wortlaut der heutigen Zellen; die Zellen führen einen Satz + Link + Bindung.
-- [ ] **Erzeugung und Fetch:** die sensors-Datei von `e2e-abdeckung` und die sensors-Datei von `traeger-fetch` ebenso (Prosa aus „Tut was" **und** aus der Bindungs-Zelle von `e2e-abdeckung`; dort bleiben nur die Klassen-Marken `kein Gate`, die `LH-*`-Links).
-- [ ] **Rest:** die sensors-Datei von `artifact-host` und die sensors-Datei von `test-go-pids-guard` ebenso.
+- [x] **Tap:** die sensors-Datei von `tap-check` und die sensors-Datei von `tap-nachzug` tragen den Wortlaut der heutigen Zellen; die Zellen führen einen Satz + Link + Bindung.
+- [x] **Erzeugung und Fetch:** die sensors-Datei von `e2e-abdeckung` und die sensors-Datei von `traeger-fetch` ebenso (Prosa aus „Tut was" **und** aus der Bindungs-Zelle von `e2e-abdeckung`; dort bleiben nur die Klassen-Marken `kein Gate`, die `LH-*`-Links).
+- [x] **Rest:** die sensors-Datei von `artifact-host` und die sensors-Datei von `test-go-pids-guard` ebenso.
 
 Gemeinsame Messung der drei Punkte (kein Sensor hält sie, **Lücke benannt**: `docs-check` prüft Links und Anker, `targets` Zeilen gegen Rezepte — keiner vergleicht Wortlaut):
 
-- [ ] Wort-für-Wort-Vergleich: Zelltexte der sechs Zeilen vor dem Eingriff in den Scratch-Bereich ziehen; je Datei ist der Wortlaut dort enthalten, ausgenommen die mechanisch angepassten Link-Präfixe (`](../` → `](../../`, `](sensors/x.md)` → `](x.md)`, `](conventions.md` → `](../conventions.md`); Diff nach Normalisierung leer. Kommando und Ergebnis stehen im Bericht.
-- [ ] Rot gesehen: Link einer Zelle auf eine nicht vorhandene Datei gesetzt → `make docs-check` rot (Meldung gelesen); sensors-Datei weggenommen, Link bleibt → rot. Zurückgenommen.
-- [ ] Bindungs-Zählung unverändert: der Messblock in `harness/conventions.md` §Zusatzklassen-Deklaration liefert vor und nach dem Eingriff dieselben Zahlen je Klasse.
-- [ ] `make gates` grün. Review (`.harness/skills/reviewer.md`), Closure-Notiz mit Lerneintrag, Beobachtungs-Register fortgeschrieben, jedes Risiko aus §6 mit Ausgang, die drei Paarungen getragen.
+- [x] Wort-für-Wort-Vergleich: Zelltexte der sechs Zeilen vor dem Eingriff in den Scratch-Bereich ziehen; je Datei ist der Wortlaut dort enthalten, ausgenommen die mechanisch angepassten Link-Präfixe (`](../` → `](../../`, `](sensors/x.md)` → `](x.md)`, `](conventions.md` → `](../conventions.md`); Diff nach Normalisierung leer. Kommando und Ergebnis stehen im Bericht.
+- [x] Rot gesehen: Link einer Zelle auf eine nicht vorhandene Datei gesetzt → `make docs-check` rot (Meldung gelesen); sensors-Datei weggenommen, Link bleibt → rot. Zurückgenommen.
+- [x] Bindungs-Zählung unverändert: der Messblock in `harness/conventions.md` §Zusatzklassen-Deklaration liefert vor und nach dem Eingriff dieselben Zahlen je Klasse.
+- [x] `make gates` grün. Review (`.harness/skills/reviewer.md`), Closure-Notiz mit Lerneintrag, Beobachtungs-Register fortgeschrieben, jedes Risiko aus §6 mit Ausgang, die drei Paarungen getragen.
 
 ## 3. Plan (vor Code)
 
@@ -77,13 +77,13 @@ Reihenfolge: erst die Dateien anlegen (Commit 1), dann die Zellen kürzen (Commi
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** <bei Closure>
-- **Was ging anders als geplant:** <bei Closure>
-- **Steering-Loop-Eintrag:** <bei Closure>
-- **Beobachtungs-Register (`../observations/`):** <bei Closure>
-- **Folge-Slices:** <bei Closure>
-- **Risiken aus §6:** <bei Closure — jedes mit genau einem Ausgang>
-- **Drei Paarungen:** <bei Closure>
+- **Was hat funktioniert:** Die sechs Zellen tragen Satz, Link und Bindung; die sechs Dateien unter `harness/sensors/` tragen den Wortlaut. Review ohne Findings; Verifikation bestätigt alle DoD-Punkte: Wortlaut als Multimenge-Vergleich (anderes Instrument als der Implementer), `make docs-check` rot am gebrochenen Link und an der entfernten Datei (Meldung gelesen), Bindungs-Zählung vor und nach gleich (`docs/reviews/2026-10-05-werkzeug-zellen-review.md`, `-verifikation.md`).
+- **Was ging anders als geplant:** nichts; zwei Ist-Stand-Fehler wanderten mit und wurden nicht korrigiert (Register).
+- **Steering-Loop-Eintrag:** benannte Lücken, kein neuer Sensor: (1) der Wortlaut-Vergleich Zelle gegen Datei ist Handmessung, kein Sensor liest ihn; (2) ob der Zellsatz zur Datei passt (Link, Titel, Satz), hält nur die Review-Lektüre. Träger bleibt der Lauf, der Wortlaut verschiebt.
+- **Beobachtungs-Register (`../observations/`):** neue Beobachtung [`BEO-ALL/werkzeug-zelle-traegt-einen-ist-stand-der-vom-ausgelieferten-abweicht`](../observations/BEO-ALL/werkzeug-zelle-traegt-einen-ist-stand-der-vom-ausgelieferten-abweicht/observation.md) (`traeger-fetch` pinnt `v0.2.1` bei ausgeliefertem `v0.2.7`; `artifact-host` nennt `slice-048`), Stand `offen`. [`BEO-ALL/sensor-schranke-wird-durch-tabellenwachstum-unscharf`](../observations/BEO-ALL/sensor-schranke-wird-durch-tabellenwachstum-unscharf/observation.md): kein Auftreten, weil keine Schranke gebaut wurde; keine Datei.
+- **Folge-Slices:** keine.
+- **Risiken aus §6:** 1 entfallen (Wortlaut-Diff leer, Verifier bestätigt) · 2 entfallen (Review las je Zeile Link und Dateititel, keine Findings) · 3 entfallen (keine Längen-Schranke gebaut; die Urteils-Lücke steht im Steering-Loop-Eintrag) · 4 entfallen (README bleibt, `sensors/` ist stehende Ablage, kein Pfad bewegt sich).
+- **Drei Paarungen:** Anker: kein `liegt in`-Feld, nichts zu paaren; Folge-Slice: keiner genannt; Register: die zitierten Pfade existieren.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
