@@ -73,8 +73,9 @@ genau einen Lauf.
    einander quer über Wellen-Grenzen verlinken. Beides sind eigene Vorgänge, die vor der ersten
    Archivierung liegen — permanent, bis sie einzeln aufgelöst sind. Der Schlüssel `altbestand`
    (§Vertrag) nimmt der Untergrenzen-Hälfte ihren Gegenstand — für ihn gibt es keine Welle-Form, an
-   der `untergrenze` hängen könnte —, ändert an der zweiten Hälfte aber nichts: `haenger` bleibt
-   auch unter diesem Schlüssel stehen.
+   der `untergrenze` hängen könnte; sein Lauf legt `done/altbestand/archiv.zip` an, und danach
+   meldet die Vorschau jeder Welle kein `untergrenze` mehr. An der zweiten Hälfte ändert er
+   nichts: `haenger` bleibt auch unter diesem Schlüssel stehen.
 5. **Vier Grenzen bleiben unabhängig vom Bestand, alle permanent:** der Nachzug hängt Pfade um,
    keine Zustandssätze (ein Satz „liegt in `done/`" wird richtig verlinkt und bleibt ungenau); ein
    eingehender Verweis in Inline-Code ohne Verzeichnis-Segment trägt keine Link-Klammer und wird
@@ -87,19 +88,32 @@ genau einen Lauf.
    dieser Schlüssel weder einen Welle-Plan noch eine Ergebnisnotiz in `done/` hat und mit seinem
    eigenen Archiv selbst die Untergrenze setzt. **`haenger` bleibt davon unberührt:** Er trägt
    [`ADR-0041`](../../docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md)
-   Festlegung 4 und darf nicht mit aufgehoben werden. Der schreibende Lauf über `altbestand` bleibt
-   gesperrt: `haenger` hält, bis die Verweise auf verschwindende Review-Reports ihren Ausgang haben
+   Festlegung 4 und darf nicht mit aufgehoben werden. Der schreibende Lauf über `altbestand` läuft
+   ohne `--vorschau`, sobald keine Sperre steht; am Bestand dieses Repos hält
+   `haenger`, bis die Verweise auf verschwindende Review-Reports ihren Ausgang haben
    ([slice-216](../../docs/plan/planning/done/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md)).
    Die normative Sperre aus
    [`ADR-0042`](../../docs/plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 5
    bindet den ersten Archiv-Move zusätzlich daran, dass beide Träger `docs/plan/adr/` ausnehmen
    (Folgepflicht 1); beide Träger führen den Ausschluss (§Grenze Punkt 3, `slice-mv`-Sensor), diese
    Bedingung ist damit erfüllt — `haenger` bleibt die verbleibende, eigenständige Frage.
-7. **Unter `altbestand` ohne Welle-Plan trägt die Vorprüfung eine eigene Sperre.**
-   `internal/archive/anwenden.go` verlangt unverändert genau einen Welle-Plan
-   (`Bestand.EinPlanVorhanden`); `Einsammeln` liefert für `altbestand` null Pläne. Vorschau und
-   Anwenden lesen dieselbe Bedingung — die Kennung `kein-schreib-pfad` (§Sperren) steht darum genau
-   dann, wenn der schreibende Lauf über diesen Schlüssel mit einem Laufzeit-Fehler abbräche.
+7. **Der Lauf über `altbestand` archiviert ohne Welle-Plan und ohne Ergebnisnotiz.** Eingesammelt
+   werden die wellenlosen Slices (dieselbe Menge, die die Vorschau als „wellenlos" nennt) samt
+   ihren Review-Reports; sie wandern nach `done/altbestand/`, an ihrer Stelle liegt ein Stub
+   (`Welle: ohne Welle`, `Archiviert mit: altbestand`, `Geschlossen:` aus der Closure-Notiz des
+   Slice, sonst der Leerwert `—`, weil der Schlüssel kein Welle-Datum hat). Welle-Pläne,
+   Ergebnisnotizen, Welle-Mitglieder und fremde Slices bleiben flach. Die Commit-Nachrichten dieses
+   Schlüssels nennen
+   [`ADR-0041`](../../docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md), weil
+   der Schlüssel kein Muster der Traceability-Menge trifft; die Nachrichten einer Welle-Kennung
+   tragen keine Kennung. Eine Datei `altbestand*.md` in `done/` — Plan oder Ergebnisnotiz — sperrt
+   mit `altbestand-plan` (§Sperren), statt ignoriert zu werden. Gedeckt von den Fällen
+   `TestArchiveWelleAltbestand…` in `cmd/ai-harness-init/archive_welle_altbestand_test.go` über
+   einem synthetischen Baum; `test/mutations/504` bis `508` nehmen je eine Sperre, die
+   Einsammel-Gleichheit und die Stub-Zeile weg. **Nicht gefahren:** der Lauf am realen Bestand
+   dieses Repos (`haenger` sperrt ihn, §Grenze Punkt 6) und die Stub-Platzhalter gegen die
+   vendored Vorlage — die Fälle laufen über eine nachgebildete Vorlage, die Platzhalter-Kopplung
+   hält `test/archiv-stub-vorlagen.bats`.
 
 8. **Unter `docs/reviews/` schreibt der Nachzug die Adresse nur als Ziel eines Markdown-Links**
    ([`ADR-0070`](../../docs/plan/adr/0070-der-verweis-nachzug-schreibt-in-docs-reviews-nur-die-link-form.md)
@@ -163,7 +177,7 @@ die vier Einsammel-Zahlen (Mitglieder · wellenlos · fremd · Review-Reports), 
 Fail-closed, geprüft **bevor** der Lauf etwas anfasst — dieselbe Vorprüfung, die `--vorschau`
 ausgibt. Am ruhenden Baum sind es neun (`grep -c 'Kennung: "' internal/archive/vorschau.go`, kein
 Erwartungswert). Unter dem Schlüssel `altbestand` (§Vertrag) fehlen die vier mit `†` markierten —
-die übrigen fünf, `haenger` eingeschlossen, stehen unverändert; `kein-schreib-pfad` **†† tritt
+die übrigen vier, `haenger` eingeschlossen, stehen unverändert; `altbestand-plan` **†† tritt
 umgekehrt nur dort auf** (§Grenze Punkt 7). Jede Zeile nennt die Kennung, wie sie die
 Abbruch-Meldung führt:
 
@@ -179,9 +193,8 @@ Abbruch-Meldung führt:
   Vorgang archivieren, bevor die erste Welle läuft
 - `haenger` — ein noch referenziertes Zeitdokument würde bewegt oder gelöscht → den Verweis lösen
   oder den betroffenen Vorgang aus dieser Welle herausnehmen
-- `kein-schreib-pfad` **††** — nur unter `altbestand`: `Anwenden` verlangt weiterhin genau einen
-  Welle-Plan, und dieser Schlüssel hat nie einen → Altbestand ist auf den schreibenden Pfad noch
-  nicht anwendbar
+- `altbestand-plan` **††** — nur unter `altbestand`: eine Datei `altbestand*.md` in `done/` (Plan
+  oder Ergebnisnotiz), die der Lauf nicht bewegt → die Datei entfernen oder umbenennen
 
 Zwei Ausgänge stehen daneben, weil sie am ruhenden Baum nicht beobachtbar sind: das fehlende
 `WELLE=` fängt der Aufrufer vorher ab, und ein Fehler des Inhalts-Schritts bricht **zwischen** den
