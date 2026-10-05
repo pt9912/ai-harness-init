@@ -11,7 +11,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912)
 
 **Autor:** Planner. **Datum:** 2026-10-05.
 
@@ -31,7 +31,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 - Der Einzel-Archiv-Weg für neue wellenlose Slices (`archive-slice`, [`ADR-0077`](../../adr/0077-wellenlose-slices-archivieren-bei-der-slice-closure.md) ist `Proposed`) — eigener, nachfolgender Vorgang; ohne angenommene ADR keine Adresse.
 - Version, Tag und Release-Notiz (F4) — Release-Schnitt nach den Regeln des Trägers, eigener Vorgang.
 
-**Offene Fragen des Änderungswunsches — Vorschläge, Entscheidung des Auftraggebers steht aus** (nicht beschlossen):
+**Fragen des Änderungswunsches — vom Auftraggeber am 2026-10-05 wie vorgeschlagen bestätigt:**
 
 - **F1:** ein Plan `altbestand*.md` in `done/` sperrt den Lauf fail-closed mit eigener Sperre, statt ignoriert zu werden.
 - **F2:** `Geschlossen:` im Stub bleibt der Leerwert `—`; ein Welle-Datum gibt es für den Schlüssel nicht.
