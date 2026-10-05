@@ -42,15 +42,15 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
 Liefer-Punkte:
 
-- [ ] **L1 — Lauf.** `archive-welle altbestand` sammelt, packt, stubt, zieht Verweise nach und committet in zwei Commits.
+- [x] **L1 — Lauf.** `archive-welle altbestand` sammelt, packt, stubt, zieht Verweise nach und committet in zwei Commits.
   - (1) Gleiche Menge wie die Vorschau: Zahl „wellenlos" aus `.harness/state/bin/ai-harness-init archive-welle --vorschau altbestand` = `ls docs/plan/planning/done/altbestand/*.md | wc -l` nach dem Lauf; „Review-Reports" der Vorschau = Review-Reports im Archiv (`unzip -l docs/plan/planning/done/altbestand/archiv.zip | grep -c 'reviews/'`, Muster am Archiv-Layout prüfen).
   - (2) `unzip -l docs/plan/planning/done/altbestand/archiv.zip` listet genau die wellenlosen Slices (unter `done/altbestand/`) und ihre Review-Reports; an der Stelle jedes Slice liegt ein gekürzter Stub (`Welle: ohne Welle`, `Archiviert mit: altbestand`, Archiv-Zeiger, keine Abschnittsüberschrift); Review-Reports ohne Stub entfernt; Verweise nachgezogen; Welle-Plan, Ergebnisnotiz, Welle-Mitglieder und fremde Slices bleiben flach (`git status --porcelain` und `ls docs/plan/planning/done/*.md` vor/nach).
   - (3) Zwei getrennte Commits — der Move-Commit ist ein reiner Rename (`git show --numstat --format= -M HEAD~1` gibt `0 0`); `git status --porcelain` danach leer.
-- [ ] **L2 — Sperren.** Der Lauf bricht mit Exit 3 und schreibt nichts, wenn die Vorprüfung sperrt.
+- [x] **L2 — Sperren.** Der Lauf bricht mit Exit 3 und schreibt nichts, wenn die Vorprüfung sperrt.
   - (4) Ein zweiter `archive-welle altbestand` weist ab: Exit 3, `[archiviert]`, `git status --porcelain` leer, `git rev-parse HEAD` unverändert.
   - (5) `[haenger]` bleibt Sperre: bei einem eingehenden Verweis auf einen verschwindenden Review-Report Exit 3, nichts geschrieben — derselbe Zahn wie Mutationsfall [310](../../../../test/mutations/310-archive-welle-go-altbestand-hebt-haenger-mit-auf.sh) für die Vorschau.
   - F1 (Plan `altbestand*.md` in `done/`) nur, wenn der Auftraggeber sie bestätigt; sonst entfällt der Punkt.
-- [ ] **L3 — Test, Mutationsfall, Dokumentation.** Go-Tests über synthetischen Baum und Git-Mitschreiber für L1/L2; mindestens ein neuer Fall in `test/mutations/`; [`harness/sensors/archive-welle.md`](../../../../harness/sensors/archive-welle.md) §Grenze Punkt 4, 6, 7 und §Sperren beschreiben den Ist-Stand (`kein-schreib-pfad` entfällt als Sperre, sobald der Pfad schreibt).
+- [x] **L3 — Test, Mutationsfall, Dokumentation.** Go-Tests über synthetischen Baum und Git-Mitschreiber für L1/L2; mindestens ein neuer Fall in `test/mutations/`; [`harness/sensors/archive-welle.md`](../../../../harness/sensors/archive-welle.md) §Grenze Punkt 4, 6, 7 und §Sperren beschreiben den Ist-Stand (`kein-schreib-pfad` entfällt als Sperre, sobald der Pfad schreibt).
   - (6) Nach dem Lauf meldet `archive-welle --vorschau <welle-id>` kein `[untergrenze]` mehr (am Baum nach dem Lauf; ohne Docker-E2E nur am synthetischen Baum fahrbar, siehe Rot-Belege).
 
 Rot-Belege (AGENTS.md §3.6), je an der realen Quelle in `internal/archive/`; fahrbar ohne Docker-E2E sind alle über `make test` (Go-Tests, synthetischer Baum) und `make mutate` mit `MUTATE_CASES`:
@@ -63,13 +63,13 @@ Rot-Belege (AGENTS.md §3.6), je an der realen Quelle in `internal/archive/`; fa
 
 Gate-Läufe und Closure-Pflichten:
 
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), kein Self-Review.
-- [ ] Doku-Update: [`harness/sensors/archive-welle.md`](../../../../harness/sensors/archive-welle.md) (L3).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben oder „keine Beobachtung angefallen" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen, von der nächsten Welle-Closure auch für diesen wellenlosen Slice.
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), kein Self-Review.
+- [x] Doku-Update: [`harness/sensors/archive-welle.md`](../../../../harness/sensors/archive-welle.md) (L3).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben oder „keine Beobachtung angefallen" in §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen, von der nächsten Welle-Closure auch für diesen wellenlosen Slice.
 
 ## 3. Plan (vor Code)
 
@@ -96,18 +96,18 @@ DoD vollständig, Review-Report ohne blockierenden Befund, Closure-Notiz mit Ler
 
 ## 6. Risiken und offene Punkte
 
-- Der reale Lauf über den Bestand bleibt bis zum Ausgang der Norm-Frage hinter `haenger` gesperrt; die Tests laufen nur am synthetischen Baum — **Ausgang:** weiter offen: → [`BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall`](../observations/BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall/observation.md) (Fixture ohne reale Quelle; Beleg bei Closure)
-- Commit-Nachricht ohne Kennung bricht am `commit-msg`-Träger eines Zielrepos (F3) — **Ausgang:** weiter offen: → [`BEO-ALL/commit-message-ohne-traceability-kennung`](../observations/BEO-ALL/commit-message-ohne-traceability-kennung/observation.md), falls F3 nicht entschieden wird
+- Der reale Lauf über den Bestand bleibt bis zum Ausgang der Norm-Frage hinter `haenger` gesperrt; die Tests laufen nur am synthetischen Baum — **Ausgang:** weiter offen: → [`BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall`](../observations/BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall/observation.md) (Fixture ohne reale Quelle). Kein Beleg angelegt: der Slice zeigt die Klasse nicht erneut, die Lücke bleibt der reale Bestandslauf hinter `haenger`
+- Commit-Nachricht ohne Kennung bricht am `commit-msg`-Träger eines Zielrepos (F3) — **Ausgang:** weiter offen: → [`BEO-ALL/commit-message-ohne-traceability-kennung`](../observations/BEO-ALL/commit-message-ohne-traceability-kennung/observation.md) — **entfallen:** F3 ist entschieden, beide Commit-Nachrichten des Schlüssels nennen ADR-0041 (Verifikation, L1 (3))
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:**
-- **Was ging anders als geplant:**
-- **Steering-Loop-Eintrag:**
-- **Beobachtungs-Register (`../observations/`):**
-- **Folge-Slices:** `archive-slice` ([`ADR-0077`](../../adr/0077-wellenlose-slices-archivieren-bei-der-slice-closure.md)), sobald angenommen
-- **Risiken aus §6:**
-- **Drei Paarungen:**
+- **Was hat funktioniert:** Lauf, Sperren `haenger`, `archiviert`, `altbestand-plan` (F1) und die Rot-Belege (Fälle 504 bis 508) sind am Mini-Repo bestätigt, der Welle-Pfad ist unverändert. Review: nichts über INFO; Verifikation: alle DoD bestätigt, `make gates` EXIT 0 (Berichte vom 2026-10-05 unter `docs/reviews/`, `altbestand-traeger-review` und `-verifikation`).
+- **Was ging anders als geplant:** Commit `b64b75b1` baut nicht einzeln (Backtick im Raw-String), `c5870254` repariert es; Mutation 395 entfiel, ihre Kopplung hält 508.
+- **Steering-Loop-Eintrag:** benannte Lücke, kein neuer Sensor: der Lauf am realen Bestand (wellenlose Slices; Zahl liefert `--vorschau altbestand`) ist nicht beobachtet, solange `haenger` ihn sperrt; die Tests laufen am synthetischen Baum, die echte Stub-Zeile hält nur `test/archiv-stub-vorlagen.bats`. Nebenbefund: der Review-Report-Match hängt an der Slice-Nummer, ein Slice ohne Nummer in der Kennung sammelt keinen Report ein (Verhalten von ADR-0033).
+- **Beobachtungs-Register (`../observations/`):** eine Evidence-Datei zu [`BEO-ALL/neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md) (Doppel-Guard in `Anwenden` ohne eigenen Zahn); `mutations-fall-deckt-den-lauten-statt-den-stillen-pfad` bleibt bei 2×, der Slice belegt ihn nicht.
+- **Folge-Slices:** `archive-slice` ([`ADR-0077`](../../adr/0077-wellenlose-slices-archivieren-bei-der-slice-closure.md)), sobald angenommen. **Lücke:** dieser wellenlose Slice wird bei seiner Closure nicht archiviert, obwohl [`MR-078`](../../../../harness/conventions.md#mr-078--wellenlose-slices-werden-bei-der-eigenen-closure-archiviert) es vorsieht — `archive-slice` existiert noch nicht; sein Volltext bleibt in `done/`.
+- **Risiken aus §6:** beide mit Ausgang am Risiko (weiter offen · entfallen).
+- **Drei Paarungen:** Anker: kein `liegt in`-Feld, nichts zu paaren; Folge-Slice: `archive-slice` ist keine Datei (ADR-0077 `Proposed`), als Bedingung genannt; Register: der zitierte Pfad existiert.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
