@@ -74,13 +74,9 @@ func altbestandBaum(t *testing.T) string {
 	return root
 }
 
-var zahlRE = func(label string) *regexp.Regexp {
-	return regexp.MustCompile(regexp.QuoteMeta(label) + `\s*(\d+)`)
-}
-
 func zahlAus(t *testing.T, ausgabe, label string) int {
 	t.Helper()
-	m := zahlRE(label).FindStringSubmatch(ausgabe)
+	m := regexp.MustCompile(regexp.QuoteMeta(label) + `\s*(\d+)`).FindStringSubmatch(ausgabe)
 	if m == nil {
 		t.Fatalf("Zeile %q fehlt in der Ausgabe:\n%s", label, ausgabe)
 	}
