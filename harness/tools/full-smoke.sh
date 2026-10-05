@@ -1444,6 +1444,7 @@ traeger_im_ziel() {
 traeger_im_ziel "$tmprepo" "golang"
 
 # --- Archivierung: das gebootstrappte Ziel erreicht das Unterkommando ---------------
+echo "full-smoke: Archivierung im Ziel — Sperren, Vollzug, Fehlt-Fall und Schluessel altbestand ..."
 #
 # WAS DIE GO-STUFE NICHT SIEHT: sie liest den TEXT des emittierten Fragments. Ob ein
 # `make`-Aufruf im gebootstrappten Repo wirklich beim Unterkommando des abgelegten
@@ -1463,7 +1464,9 @@ traeger_im_ziel "$tmprepo" "golang"
 #   (c2) ein Name, den die Anleitung nicht fuehrt, endet laut statt still: der
 #       Adopter, der das Ziel umbenennt und nur die skip-if-present-Anleitung
 #       zieht, faellt hier auf,
-#   (d) ohne Traeger sagt das Kommando das und endet mit 0 — der frische Klon.
+#   (d) ohne Traeger sagt das Kommando das und endet mit 0 — der frische Klon,
+#   (e) der Schluessel `altbestand` erreicht den Traeger und legt altbestand/archiv.zip
+#       an — ueber einem synthetischen Altbestand und dem Traeger aus dem Arbeitsbaum.
 #
 # NUR HIER MESSBAR: kein Go-Test faehrt `make`, und ein Lauf auf dem HOST findet den
 # Traeger eines gebootstrappten Repos nicht.
@@ -1668,6 +1671,40 @@ SMOKEEOF
 	fi
 	echo "full-smoke: Archivierung im Ziel ($kennung): make archive-welle archiviert real — $welle/archiv.zip mit $welle.md und slice-999-archiv-smoke.md als Stubs, der Review-Report des Slice ist fort."
 
+	# (e) DER SCHLUESSEL altbestand erreicht den Traeger. Ein wellenloser Slice kommt
+	# nach der Wellen-Archivierung hinzu; der Lauf unter dem Schluessel legt das
+	# Sammel-Archiv an. Gelesen werden Ausgabe und Archiv (`make` gibt fuer ein
+	# fehlgeschlagenes Rezept immer 2 zurueck). TEILMESSUNG: der Altbestand ist
+	# synthetisch, und der Traeger ist der aus dem Arbeitsbaum gebaute, nicht der
+	# gepinnte Release-Traeger.
+	cat >"$plan_done/slice-997-altbestand.md" <<'SMOKEEOF'
+# Slice slice-997: wellenlos, Altbestand
+
+**Welle:** ohne Welle
+
+## 1. Ziel
+
+Nur fuer den E2E der Wellen-Archivierung angelegt.
+SMOKEEOF
+	git -C "$repo" -c user.email=full-smoke@example.invalid -c user.name=full-smoke add -A
+	git -C "$repo" -c user.email=full-smoke@example.invalid -c user.name=full-smoke \
+		commit -q -m "Archivierungs-Smoke: wellenloser Altbestand (full-smoke)"
+	local alt="" alt_rc=0 alt_flach=""
+	alt="$( make --no-print-directory -C "$repo" archive-welle WELLE=altbestand 2>&1 )" || alt_rc=$?
+	printf '%s\n' "$alt"
+	alt_flach="$(tr -s '[:space:]' ' ' <<<"$alt")"
+	if [ "$alt_rc" -ne 0 ] || ! grep -qF -- "archive-welle ok: altbestand" <<<"$alt_flach"; then
+		echo "full-smoke: FEHLER — $kennung: make archive-welle WELLE=altbestand meldet den Vollzug nicht (Exit $alt_rc) — der Schluessel erreicht den Traeger nicht, oder der Lauf sperrt aus anderem Grund. Ausgabe:" >&2
+		printf '%s\n' "$alt" >&2
+		einordnen "make archive-welle WELLE=altbestand im Ziel ($kennung)" "$alt"
+		exit 1
+	fi
+	if [ ! -f "$plan_done/altbestand/archiv.zip" ]; then
+		echo "full-smoke: FEHLER — $kennung: der Altbestand-Lauf meldet Vollzug, aber altbestand/archiv.zip fehlt." >&2
+		exit 1
+	fi
+	echo "full-smoke: Altbestand im Ziel ($kennung): make archive-welle WELLE=altbestand legt altbestand/archiv.zip an und meldet den Vollzug."
+
 	# (d) OHNE TRAEGER: Meldung, Exit 0, nichts geschrieben. Der Fall des frischen Klons.
 	mv "$carrier" "$carrier.beiseite"
 	local ohne="" ohne_rc=0 ohne_flach=""
@@ -1693,6 +1730,7 @@ SMOKEEOF
 }
 
 archivierung_im_ziel "$tmprepo" "golang"
+e2e_abdeckung "LH-FA-01 LH-QA-01" "Das Ziel archiviert real: Sperren, Vollzug, Fehlt-Fall des Traegers und der Schluessel altbestand (Sammel-Archiv ueber einem synthetischen Altbestand, Traeger aus dem Arbeitsbaum, nicht der gepinnte Release-Traeger)" "WELLE=altbestand"
 
 # --- Traeger-Fetch: der frische Klon holt den Traeger aus dem gepinnten Release ------
 echo "full-smoke: Traeger-Fetch — frischer Klon ohne Traeger, Fetch aus dem gepinnten Release (ADR-0058) ..."
