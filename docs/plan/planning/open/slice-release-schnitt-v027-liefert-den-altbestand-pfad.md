@@ -33,7 +33,7 @@ Auslöser: Auftrag des Auftraggebers („für den emittierten Teil so schnell wi
 
 ## 1. Ziel und Abgrenzung
 
-**Ziel:** Das Release `v0.2.7` ist veröffentlicht und vollzogen gemeldet: Der Träger-Asset trägt den schreibenden Pfad von `archive-welle altbestand` ([`slice-archive-welle-altbestand-hat-einen-schreibenden-pfad`](../done/slice-archive-welle-altbestand-hat-einen-schreibenden-pfad.md)), die emittierte Vorlage nennt den Schlüssel ([`slice-emittierte-archivierung-kennt-den-altbestand`](../next/slice-emittierte-archivierung-kennt-den-altbestand.md)), der Pin zeigt auf den geschnittenen Stand, und das Benutzerhandbuch beschreibt den Ist-Zustand.
+**Ziel:** Das Release `v0.2.7` ist veröffentlicht und vollzogen gemeldet: Der Träger-Asset trägt den schreibenden Pfad von `archive-welle altbestand` ([`slice-archive-welle-altbestand-hat-einen-schreibenden-pfad`](../done/slice-archive-welle-altbestand-hat-einen-schreibenden-pfad.md)), die emittierte Vorlage nennt den Schlüssel ([`slice-emittierte-archivierung-kennt-den-altbestand`](../in-progress/slice-emittierte-archivierung-kennt-den-altbestand.md)), der Pin zeigt auf den geschnittenen Stand, und das Benutzerhandbuch beschreibt den Ist-Zustand.
 
 **Versionswahl:** `v0.2.7` ist der Patch-Schritt nach `v0.2.6` (`git tag --sort=-creatordate | head -1`). Eine ausdrückliche Versionsregel trägt weder [`releasing.md`](../../../user/releasing.md) noch [`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md) oder [`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md) (`grep -n -i 'semver\|versionsregel' docs/user/releasing.md docs/plan/adr/0058* docs/plan/adr/0063*` → leer); die Tag-Wahl ist Entscheidung des Auftraggebers. Wählt er einen anderen Tag, ersetzt der Implementer `v0.2.7` an allen Stellen von §3.
 
@@ -90,7 +90,7 @@ Reihenfolge der Rollen:
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): beide Slices — [`slice-archive-welle-altbestand-hat-einen-schreibenden-pfad`](../done/slice-archive-welle-altbestand-hat-einen-schreibenden-pfad.md) und [`slice-emittierte-archivierung-kennt-den-altbestand`](../next/slice-emittierte-archivierung-kennt-den-altbestand.md) — liegen in `done/` (beobachtbar: beide Dateien unter `docs/plan/planning/done/`, `ls docs/plan/planning/done | grep -c 'altbestand'` ≥ 2, und `git tag --sort=-creatordate | head -1` nennt noch `v0.2.6`). Sonst baute der Schnitt einen Träger ohne den Pfad oder eine Vorlage ohne den Text. `open → next` durch Priorisierung des Auftraggebers; `Verantwortlich:` wird dabei gesetzt.
+**Start** (`next` → `in-progress`): beide Slices — [`slice-archive-welle-altbestand-hat-einen-schreibenden-pfad`](../done/slice-archive-welle-altbestand-hat-einen-schreibenden-pfad.md) und [`slice-emittierte-archivierung-kennt-den-altbestand`](../in-progress/slice-emittierte-archivierung-kennt-den-altbestand.md) — liegen in `done/` (beobachtbar: beide Dateien unter `docs/plan/planning/done/`, `ls docs/plan/planning/done | grep -c 'altbestand'` ≥ 2, und `git tag --sort=-creatordate | head -1` nennt noch `v0.2.6`). Sonst baute der Schnitt einen Träger ohne den Pfad oder eine Vorlage ohne den Text. `open → next` durch Priorisierung des Auftraggebers; `Verantwortlich:` wird dabei gesetzt.
 
 **Rückführungen:**
 
