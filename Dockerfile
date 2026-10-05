@@ -7,11 +7,11 @@
 # GO_VERSION + GOLANGCI_LINT_VERSION sind die Toolchain-Pins dieses Repos; jeder Base-Tag ist
 # per @sha256 auf seinen Manifest-Digest gepinnt (Drift melden make freshness-go/-golangci).
 # Kein Host-go/-golangci-lint (Docker-only, ADR-0003) — die Aufrufe leben hier im Dockerfile, nicht im Bash.
-ARG GO_VERSION=1.27.0
-ARG GOLANGCI_LINT_VERSION=v2.13.1
+ARG GO_VERSION=1.27.1
+ARG GOLANGCI_LINT_VERSION=v2.14.0
 
 # ---- deps ------------------------------------------------------------------
-FROM golang:${GO_VERSION}@sha256:65b6f280bf050ec5af12716857e8ea8439d694dbba8f31ceeb7630670071f2bb AS deps
+FROM golang:${GO_VERSION}@sha256:e0174e51e81218523251d85d248a90d24c3d5e81543b4f07a5d66229397db190 AS deps
 WORKDIR /src
 ENV GOFLAGS="-mod=readonly -buildvcs=false" \
     GOMODCACHE=/go/pkg/mod \
@@ -56,7 +56,7 @@ COPY . .
 RUN CGO_ENABLED=0 go build -o /tmp/ai-harness-init ./cmd/ai-harness-init
 
 # ---- lint ------------------------------------------------------------------
-FROM golangci/golangci-lint:${GOLANGCI_LINT_VERSION}@sha256:d371321370bf2907bd13a8f6f8baff0e0ca7438d76fdf636b281eadf7e2305e3 AS lint
+FROM golangci/golangci-lint:${GOLANGCI_LINT_VERSION}@sha256:ad862ba6b3798cbe0fd9fd7408d498fd74fbd2623a92406b2fd3898faf0bf98f AS lint
 WORKDIR /src
 ENV GOFLAGS="-buildvcs=false"
 COPY --from=deps /go/pkg/mod /go/pkg/mod

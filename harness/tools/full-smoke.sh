@@ -153,7 +153,7 @@ e2e_abdeckung() {
 	echo "full-smoke: Abdeckung der Stufe ab Zeile $start: $kennungen — $kurz (Anker aufgeloest in $quelle:$ort)."
 }
 
-GO_VERSION="${GO_VERSION:-1.27.0}"
+GO_VERSION="${GO_VERSION:-1.27.1}"
 tmpbin="$(mktemp -d -p "${TMPDIR:-/tmp}")"
 # Elternverzeichnis der zwei Klone, die der Vorlauf-Waechter-Abschnitt derselben Quelle
 # anlegt (flach und vollstaendig). chmod 755 aus demselben Grund wie beim tmprepo-Root

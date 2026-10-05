@@ -24,7 +24,7 @@
 # Go-Gates in EINEM Lauf) — das ist slice-024 (LH-FA-01 Happy-Path).
 set -euo pipefail
 
-GO_VERSION="${GO_VERSION:-1.27.0}"
+GO_VERSION="${GO_VERSION:-1.27.1}"
 # ARTIFACT_TARGET waehlt, WIE das Binary auf den Host kommt: `artifact` (Default,
 # byte-identisch, slice-048/LH-QA-04) oder `artifact-host` (fuer den Host
 # cross-kompiliert — additiv, fuer Hosts, deren Kernel/Architektur vom Docker-
