@@ -1,7 +1,7 @@
 # Benutzerhandbuch: ai-harness-init
 
 **Software-Stand:** `v0.2.7` — **vorgefertigte Programme für sechs Plattformen** (linux · macos · windows × amd64 · arm64). Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat`, `hexagonal` oder `hexslice`; bei den beiden geschichteten kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp`, beide auch mit `hexslice`; `hexagonal` liefert heute der Go-Renderer. Vier Betriebs-Operationen beschreibt [Betriebs-Operationen](#betriebs-operationen). Die geschichtete Bauform benennt Adapter- und Ports-Ordner nach ihren Rollen ([`ADR-0060`](../plan/adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md), `Accepted`: `driving`/`driven`, `ports_inbound`/`ports_outbound` — siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch)); das veröffentlichte `v0.2.7` trägt diese Form.
-**Stand:** 2026-09-25
+**Stand:** 2026-10-05
 **Verantwortlich:** ai-harness-init-Team (pt9912)
 
 ---
@@ -395,7 +395,7 @@ Alle vier sind **keine Gates**: `make gates` fährt keine von ihnen mit. `archiv
 | Kommando | Tut was |
 |---|---|
 | `make traeger-fetch` | Holt den Träger aus dem gepinnten Release nach und legt ihn im Zustands-Bereich ab. Braucht **einmalig** Netzwerk für diesen Aufruf; danach nicht mehr. `archive-welle` und `span-report` setzen ihn voraus. |
-| `make archive-welle WELLE=<welle-id>` | Archiviert die Zeitdokumente einer geschlossenen Welle (Slice-Dateien, Welle-Plan, Review-Reports) und committet den Vorgang im versionierten Baum. `WELLE=altbestand` archiviert die wellenlosen Slices samt ihren Review-Reports unter `done/altbestand/`; er ist die Untergrenze vor der ersten Wellen-Archivierung. Fehlt der Träger, schreibt das Kommando nichts und sagt das. |
+| `make archive-welle WELLE=<welle-id>` | Archiviert die Zeitdokumente einer geschlossenen Welle (Slice-Dateien, Welle-Plan, Review-Reports) und committet den Vorgang im versionierten Baum. `WELLE=altbestand` archiviert die wellenlosen Slices samt ihren Review-Reports unter `done/altbestand/`; er ist die Untergrenze vor der ersten Wellen-Archivierung. Die Sperre `haenger` (Verweise auf verschwindende Review-Reports) besteht auch unter `altbestand` fort. Fehlt der Träger, schreibt das Kommando nichts und sagt das. |
 | `make span-report` | Zeigt eine Token-Bilanz je Rolle aus dem lokalen Erfassungs-Bestand — ein reiner, netzloser Bericht. Fehlt der Träger, meldet das Kommando das als Aussage über den Leser, nicht über den Bestand. |
 | `make span-clean` | Entfernt den lokalen Erfassungs-Bestand. Läuft nur auf **ausdrücklichen** Aufruf; kein Automatismus räumt ihn sonst auf. |
 
