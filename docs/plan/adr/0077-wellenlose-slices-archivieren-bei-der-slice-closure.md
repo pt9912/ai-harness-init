@@ -1,6 +1,6 @@
 # ADR-0077: Neue wellenlose Slices werden bei der Slice-Closure einzeln archiviert — der Altbestand bleibt bei ADR-0041
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-10-02
 
@@ -133,6 +133,7 @@ jeweiligen Folge-Slice.
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-10-02 | Proposed | Architect-Lauf |
+| 2026-10-05 | Accepted | Entscheidung des Auftraggebers: Festlegung 1 gilt (Option C), der Altbestand folgt nach dem ersten Einzel-Archiv-Lauf (b), das Ziel bekommt dieselbe Regel |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
