@@ -100,3 +100,20 @@ func TestCommands_SkipIfPresent(t *testing.T) {
 		t.Errorf("implement-slice.md nicht geschrieben (skip-if-present schreibt fehlende): %v", err)
 	}
 }
+
+// TestCommands_CloseWelleNenntAltbestandUndUntergrenze: Schritt 4 des emittierten
+// close-welle nennt den Schluessel altbestand, die Sperre untergrenze und die
+// Ablehnung [kein-schreib-pfad] eines Traegers ohne Schreibpfad.
+//
+// Rot-Gegenbeispiele: test/mutations/511-close-welle-ohne-altbestand.sh,
+// test/mutations/512-close-welle-ohne-untergrenze.sh und
+// test/mutations/513-close-welle-ohne-kein-schreib-pfad.sh.
+func TestCommands_CloseWelleNenntAltbestandUndUntergrenze(t *testing.T) {
+	const rel = ".claude/commands/close-welle.md"
+	s := string(emit.CommandFile(rel))
+	for _, begriff := range []string{"WELLE=altbestand", "[untergrenze]", "[kein-schreib-pfad]"} {
+		if !strings.Contains(s, begriff) {
+			t.Errorf("%s nennt %q nicht", rel, begriff)
+		}
+	}
+}

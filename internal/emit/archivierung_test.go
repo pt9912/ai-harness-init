@@ -158,3 +158,37 @@ func TestArchivierungFragment_TraegtPreisUndMeldung(t *testing.T) {
 		t.Errorf("%s meldet den fehlenden Traeger nicht — dieser Zweig ist der Fall des frischen Klons", emit.ArchivierungMkPath)
 	}
 }
+
+// hilfezeile liefert die `##`-Zeile des Ziels `archive-welle` — die Zeile, die
+// `make help` im Ziel ausgibt. Gelesen wird sie, nicht die Datei: der Kopfkommentar
+// nennt den Schluessel ebenfalls und deckte sonst eine Streichung in der Hilfe.
+func hilfezeile(t *testing.T, frag string) string {
+	t.Helper()
+	for _, zeile := range strings.Split(frag, "\n") {
+		if strings.HasPrefix(zeile, zielArchiv+":") && strings.Contains(zeile, "##") {
+			return zeile
+		}
+	}
+	t.Fatalf("%s traegt keine `##`-Hilfezeile fuer %s", emit.ArchivierungMkPath, zielArchiv)
+	return ""
+}
+
+// TestArchivierungFragment_HilfeNenntDenAltbestandSchluessel: die Hilfezeile des
+// Ziels nennt neben WELLE=<welle-id> den Schluessel WELLE=altbestand, und der
+// Kopfkommentar nennt `[kein-schreib-pfad]`, die Ablehnung eines Traegers ohne
+// Schreibpfad.
+//
+// Rot-Gegenbeispiele: test/mutations/509-archivierungs-fragment-hilfe-ohne-altbestand.sh
+// und test/mutations/510-archivierungs-fragment-ohne-kein-schreib-pfad.sh.
+func TestArchivierungFragment_HilfeNenntDenAltbestandSchluessel(t *testing.T) {
+	frag := archivierungsFragmentMitTraeger(t)
+	hilfe := hilfezeile(t, frag)
+	for _, teil := range []string{"WELLE=<welle-id>", "WELLE=altbestand"} {
+		if !strings.Contains(hilfe, teil) {
+			t.Errorf("die Hilfezeile von %s nennt %q nicht: %s", zielArchiv, teil, hilfe)
+		}
+	}
+	if !strings.Contains(frag, "[kein-schreib-pfad]") {
+		t.Errorf("%s nennt die Ablehnung [kein-schreib-pfad] nicht", emit.ArchivierungMkPath)
+	}
+}
