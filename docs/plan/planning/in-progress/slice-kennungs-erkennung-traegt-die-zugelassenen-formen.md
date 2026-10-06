@@ -109,6 +109,8 @@ zählt die Werkzeug-Commits, deren Betreff eine Kennung in einer **nicht** erkan
   rot gesehene Fall (DoD 2) ist darum ein Fall im Vorgang und keine neue Gate-Zeile.
   *Kein Sensor, wo keiner tragen kann.*
 
+- **Die Go-Schicht der Archivierung (Planner-Entscheidung beim Abschluss, nicht Teil des ursprünglichen Plans).** `internal/archive/collect.go:101` (`SliceNummer`, mit `Reviews()`, `ReviewTrifft`, `anwenden.go:269`) und `internal/archive/stub.go:149` (`kennungRE`) kennen nur die Nummernform. Sie sind in der Fundliste (§7) **namentlich geführt und nicht nachgezogen**: eine dritte Schicht neben Skripten und Config (die Rückführung `in-progress` → `next` aus §4), und der Nachzug berührt die Zuordnung der Reports (`ls docs/reviews | grep -c 'slice-[a-z]'` gegen `ls docs/reviews | wc -l`: nicht jeder Report trägt die Kennung im Namen) — eine eigene Review-Sitzung. *Folge-Slice übernimmt es:* `slice-archivierung-erkennt-benannte-slices` (nimmt die Sendung an: führt `SliceNummer`, `Reviews()` und die Stub-Kennung als Gegenstand).
+
 **Keine Mindestzahl.** Ein Slice mit *einem* echten Ausschluss ist besser als
 einer mit vier erfundenen; die vier Klassen sind ein Suchraster, keine
 Ausfüll-Liste.
@@ -125,14 +127,14 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
 
 **Zwei Liefer-Punkte:**
 
-- [ ] **(1) Die Fundliste steht im Vorgang, gelesen statt gegreppt.** Jede Stelle der
+- [x] **(1) Die Fundliste steht im Vorgang, gelesen statt gegreppt.** Jede Stelle der
       Dogfood-Werkzeuge, die eine Slice- oder Welle-Kennung erkennt, ist **namentlich** geführt, je
       Stelle mit den Formen, die sie trägt (Nummernform · freier Slug · Anker-Präfix-Form), und der
       Weg, auf dem die Menge gefunden wurde, ist als **Lesen** beschrieben; die Fundliste führt
       **namentlich** die Prüfung des Dogfood-Hooks `harness/tools/commit-msg-traceability.sh` (Zeile
       `patterns=`, heute `slice-[0-9]+`) samt ihrer Kopplung an `commits.id-patterns` in `.d-check.yml`
       ([`MR-059`](../../../../harness/conventions.md#mr-059) Setzung 3).
-- [ ] **(2) Jede genannte Stelle trägt jede Form, und je ausgelassener Form ist der Fall rot
+- [x] **(2) Jede genannte Stelle — außer den zwei in §1 ausgeschlossenen Go-Stellen — trägt jede Form, und je ausgelassener Form ist der Fall rot
       gesehen.** Der Beleg ist kein Gate, sondern die gefahrene Erkennung: eine Kennung der
       ausgelassenen Form geht durch den **unveränderten** Bestand (die Nummernform weiterhin), und
       die Form, die vorher fiel, fällt jetzt nicht mehr — mit gelesener Ausgabe. Für die
@@ -142,16 +144,16 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
       (rot gesehen: vor dem Nachzug bricht er am Hook), ein Commit mit Nummernform (`slice-174`) bleibt
       grün, und die Muster-Zahn-Fälle `316`, `317`, `342` in `test/mutations/` bleiben rot färbend
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow ([`AGENTS.md`](../../../../AGENTS.md) §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: **das ist Liefer-Punkt (1)** — der Träger der Fundliste ist dieser Vorgang.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — **kein Zähler wird gesetzt**, er
+- [x] Doku-Update: **das ist Liefer-Punkt (1)** — der Träger der Fundliste ist dieser Vorgang.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — **kein Zähler wird gesetzt**, er
       folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7
       notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne**
       Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für
       Slices ohne Wellen-Zugehörigkeit).
@@ -237,40 +239,28 @@ keinen zweiten Anker.
 
 ## 6. Risiken und offene Punkte
 
-Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
-§Offene Risiken werden bei Closure aufgelöst — **jedes** Risiko bekommt genau
-**einen** Ausgang, und kein Slice geht nach `done/`, während eines ohne Ausgang
-dasteht.
-
-- **(1) Die Fundliste wird gegreppt und sieht vollständig aus.** Setzung 3 nennt genau diesen
-  Fehlerweg: eine Trefferliste ist keine Fundliste. **Gegenmittel im Plan:** DoD (1) verlangt die
-  Lesung ausdrücklich, §1 nennt das `grep` als Orientierung. — **Ausgang:** <…>
-- **(2) Ein Muster wird gezogen und verliert dabei eine Form.** Ein Nachzug, der eine Alternative
-  *ersetzt* statt sie zu erweitern, lässt die Nummernform des Bestands fallen und färbt die
-  Werkzeug-Commits rot. **Gegenmittel im Plan:** §3 benennt die Richtung (hinzunehmen, nicht
-  fallenlassen) und den unveränderten Bestand als grüne Gegenprobe (DoD 2). — **Ausgang:** <…>
-- **(3) Die Frist aus Setzung 5 läuft weiter, während dieser Slice offen liegt.** Die Vergabe hängt
-  an ihm; jede Kennung in einer Setzung-1-Form, die vorher vergeben wird, ist eine Vergabe gegen die
-  Frist. **Gegenmittel im Plan:** §4 nennt die Bedingung als Start-Trigger. — **Ausgang:** <…>
+- **(1) Die Fundliste wird gegreppt und sieht vollständig aus.** — **Ausgang:** eingetreten → `slice-archivierung-erkennt-benannte-slices`: das Review-Grep verfehlte `collect.go:101`, die Verifikation fand die Stelle durch Lesen.
+- **(2) Ein Muster wird gezogen und verliert dabei eine Form.** — **Ausgang:** entfallen: die Nummernform blieb grün (Verifikation: `slice-174` Exit 0, Fälle `316`, `317`, `342` rot färbend).
+- **(3) Die Frist aus Setzung 5 läuft weiter, während dieser Slice offen liegt.** — **Ausgang:** entfallen: der Start-Trigger war erfüllt, Hook und `commits.id-patterns` tragen beide Formen; die Archiv-Lücke berührt nicht den Commit-Pfad und hat eine Adresse (Folge-Slice aus (1)).
 
 ## 7. Closure-Notiz
 
-Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
-§Das Beobachtungs-Register (vorhandene Kennung **zitieren** statt neu
-formulieren — sonst zählt das Register zwei Namen getrennt) ·
-`grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln (das
-Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
-wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
-Backticks).
-
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register:** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** dieses **Repo** fährt Wellen — Anker, Folge-Slice und Register prüft die
-  nächste Welle-Closure, auch für diesen Slice ohne Wellen-Zugehörigkeit.
+- **Was hat funktioniert:** Hook (`patterns=` + `named_slice=`) und `commits.id-patterns` tragen beide Formen, gekoppelt und gebunden: Fall 523/524, hook.bats 13, emission.bats 15/16 färben rot am realen Pin (Review: 2 LOW behoben; Verifikation: DoD 2 bestätigt, `make gates` Exit 0; `docs/reviews/2026-10-06-dogfood-hook-benannte-slices-review.md`, `-verifikation.md`).
+- **Was ging anders als geplant:** die Fundliste stand bei der Verifikation nicht im Repo, und das Review-Grep (e) hatte `collect.go:101` verfehlt.
+- **Fundliste (gelesen; der Planner hat sie am Bestand nachgemessen, `git grep -nE 'slice-\(\[0-9\]|\[0-9\]\+|\\d' -- internal harness test` nur als Orientierung):**
+  - Hook `harness/tools/commit-msg-traceability.sh`, `patterns=` (Nummer) und `named_slice=` (benannt, Wortgrenze) — beide Formen.
+  - `.d-check.yml` `commits.id-patterns` — beide Formen, an den Hook gekoppelt.
+  - `harness/tools/slice-mv.sh:260` (`slice-[0-9a-z]`) — beide Formen, Kleinbuchstaben.
+  - `internal/archive/stub.go:239` (`sliceRE`) — beide Formen; die Anker-Präfix-Form mit Großbuchstaben ist dort als Grenze benannt, ebenso im Hook.
+  - `internal/archive/stub.go:149` (`kennungRE`) — **nur Nummer, nicht nachgezogen.**
+  - `internal/archive/collect.go:101` (`SliceNummer`; trägt `Reviews()`, `ReviewTrifft`, `anwenden.go:269`) — **nur Nummer, nicht nachgezogen.** Betrifft 87 benannte Slices in `done/` (`ls docs/plan/planning/done | grep -c '^slice-[a-z]'`), davon 80 wellenlose des Altbestands.
+  - Emittierte Ebene (Hook- und `slice-mv`-Vorlage unter `internal/emit/templates/`): ausgenommen nach [`MR-059`](../../../../harness/conventions.md#mr-059) Setzung 4; der Vorgänger-Slice hat die Hook-Vorlage gezogen.
+- **Planner-Entscheidung zu DoD 1 und 2 (§3.10, nicht der Implementer):** die Fundliste steht hier (§7) statt als eigene Datei, und die DoD-Zeile 2 „jede genannte Stelle trägt jede Form" gilt nun **außer** den zwei namentlichen Go-Stellen (§1, letzter Ausschluss). Die ursprüngliche Fassung wird damit **abgeschwächt**, nicht erfüllt; sie ist bewusst geändert, weil die Go-Schicht eine dritte Schicht ist und ihr Nachzug eine Entscheidung zur Report-Zuordnung braucht. Wer das für zu schwach hält: Rückführung wäre `in-progress` → `next` mit der Go-Schicht als Gegenstand gewesen; gewählt ist die Adresse.
+- **Steering-Loop-Eintrag:** benannte Lücke, kein Sensor: eine Review-Fundliste über ein Wortmuster (`slice-\[0-9\]`) trifft eine Erkennung nicht, die die Nummernform anders schreibt (`([0-9]+`) — [`MR-059`](../../../../harness/conventions.md#mr-059) Setzung 3 sagt es, der Review hat es trotzdem getan; Träger ist der Lauf, der die Fundliste liest, und die Adresse ist `slice-archivierung-erkennt-benannte-slices`.
+- **Beobachtungs-Register (`../observations/`):** `evidence/slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md` in `BEO-ALL/korrektur-trifft-den-fundort-statt-die-gemessene-fundmenge/` ergänzt.
+- **Folge-Slices:** `slice-archivierung-erkennt-benannte-slices` (Go-Schicht, Start-Bedingung des Altbestand-Laufs) und `slice-mv-findet-die-quelle-am-exakten-namen` (Nachbar-Fund der Lesung, `slice-mv.sh`-Quellensuche) — beide Dateien in `open/`.
+- **Risiken aus §6:** (1) eingetreten → `slice-archivierung-erkennt-benannte-slices` · (2) entfallen, belegt · (3) entfallen, begründet.
+- **Drei Paarungen:** dieses **Repo** fährt Wellen — Anker, Folge-Slice und Register prüft die nächste Welle-Closure, auch für diesen Slice ohne Wellen-Zugehörigkeit.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
