@@ -1,8 +1,8 @@
 # d-check.mk — Doku-Referenz-Gate via d-check. Abgeleitet aus `d-check --print-mk`
-# (v0.79.0) und adaptiert (MR-010/MR-011/MR-012/MR-024/MR-027/MR-052/MR-061/MR-062/MR-064/MR-066):
+# (v0.81.0) und adaptiert (MR-010/MR-011/MR-012/MR-024/MR-027/MR-052/MR-061/MR-062/MR-064/MR-066):
 #   * das Befund-Gate heißt `docs-check` statt `doc-check` (Ziel-Form-/modul-13-
 #     Konsistenz; als EINZIGES Target in `make gates` + AGENTS/README behauptet);
-#   * DCHECK_DIGEST ist auf den v0.79.0-Release-Digest GEPINNT (das Tool liefert es
+#   * DCHECK_DIGEST ist auf den v0.81.0-Release-Digest GEPINNT (das Tool liefert es
 #     leer) — strikte Reproduzierbarkeit (LH-QA-02);
 #   * die advisory-Targets (`doc-trace`/`doc-doctor`/…) bleiben SONST verbatim vom Tool
 #     (`doc-help` ist der eine Handgriff, s. u.) und sind NICHT als Gate behauptet —
@@ -65,7 +65,7 @@
 # Der Digest steht literal, weil `$(DCHECK_REF)` in einem Kommentar keine Shell-Variable ist
 # und wortwoertlich gefahren still `1` liefert:
 #   diff <(docker run --rm --network none \
-#     ghcr.io/pt9912/d-check@sha256:b4b8756b40d3dcd2670a3f83526cb5e5d727d1a850571f73be31edba248abb40 \
+#     ghcr.io/pt9912/d-check@sha256:c6e613428d994acf416077024b0e47e8319af5738cbddab7c609fa2a005c92e5 \
 #     --print-mk) d-check.mk | grep -c '^[0-9]'                                    # 6
 #   1. dieser Adopter-Kopf (das Tool liefert ihn nicht),
 #   2. DCHECK_DIGEST pinnen (das Tool liefert es leer),
@@ -75,8 +75,8 @@
 #      Block hat (Hilfetext-Anhang UND Ausgabe-Zeile `.d-check.yml fuehrt fuer dieses Modul
 #      keinen eigenen Block, …` — der Generator liefert keins von beidem; MR-062). Die Menge
 #      leitet test/doc-block-marke-wiring.bats aus beiden Dateien ab.
-DCHECK_IMAGE ?= ghcr.io/pt9912/d-check:v0.79.0
-DCHECK_DIGEST ?= sha256:b4b8756b40d3dcd2670a3f83526cb5e5d727d1a850571f73be31edba248abb40
+DCHECK_IMAGE ?= ghcr.io/pt9912/d-check:v0.81.0
+DCHECK_DIGEST ?= sha256:c6e613428d994acf416077024b0e47e8319af5738cbddab7c609fa2a005c92e5
 # TRACE_FLAGS: optionale Flags für die RTM-Targets (z. B. --json).
 TRACE_FLAGS ?=
 
