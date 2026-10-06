@@ -15,11 +15,14 @@
 ## 1. Ziel und Abgrenzung
 
 
-**Ziel:** Das emittierte `.d-check.yml` führt `targets` (Target ↔ Tabellenzeile, beide Richtungen) über **alle** Makefiles des Ziels, und der Gate-Index ist zweigeteilt: ein **werkzeug-eigener Teil** (etwa `harness/targets.md` im Ziel <!-- d-check:ignore (der Pfad entsteht erst im gebootstrappten Ziel) -->, vom Bootstrap bei jedem Lauf kanonisch neu geschrieben) führt die emittierten Targets, `harness/README.md` §Sensors die des Adopters; beide sind `authority`. Grüner Start am frischen `--lang go`-Ziel, je ein rotes Gegenbeispiel pro Richtung in `make full-smoke`.
+**Ziel:** Das emittierte `.d-check.yml` führt `targets` (Target ↔ Tabellenzeile, beide Richtungen) über **alle** Makefiles des Ziels, und der Gate-Index ist zweigeteilt: ein **werkzeug-eigener Teil** (`harness/mk/ai-harness-init.md` im Ziel <!-- d-check:ignore (der Pfad entsteht erst im gebootstrappten Ziel) -->, neben den Fragmenten, die er beschreibt, vom Bootstrap bei jedem Lauf kanonisch neu geschrieben) führt die emittierten Targets, `harness/README.md` §Sensors die des Adopters; beide sind `authority`. Grüner Start am frischen `--lang go`-Ziel, je ein rotes Gegenbeispiel pro Richtung in `make full-smoke`.
 
 **Planner-Entscheidung — die Abnahme ist geändert (2026-10-06, Auftraggeber):** Die Stufe 1 (`makefiles: [Makefile]`, `exempt-targets: [help, record-gates]`) ist als Ziel gestrichen; sie ist am frisch emittierten Ziel (Pin d-check `v0.81.0`) widerlegt (§4). An ihre Stelle tritt die Indirektion über den werkzeug-eigenen Teil des Gate-Index; §1, §2 und §3 tragen diese Fassung. Sie setzt zwei Antworten voraus, die nicht in diesem Repo entstehen (Start-Bedingung §4).
 
-**Lage** (Implementer-Messung am frisch emittierten Ziel, Pin `v0.81.0`): `makefiles: [Makefile]` meldet `gate-phantom` für die README-Zeile `make docs-check` (Regel in `d-check.mk`), und `exempt-targets` wirkt nicht auf `gate-phantom`. Variante A `makefiles: [Makefile, d-check.mk]` braucht 14 Ausnahmen, Variante B (Glob über `harness/mk/*.mk`) 27, darunter vier echte Gates — ein Ausnahme-Block in der Größe der Target-Menge. Die Indirektion braucht am Regelwerk eine Erlaubnis für einen zweiteiligen Gate-Index (heute [`modul-13-quality-gates.md`](../../../../.harness/baseline/v6.13.0/regelwerk/modul-13-quality-gates.md#hard-rule-doku-disziplin) §Hard Rule: *„es gibt genau eine"* Autoritäts-Doku; `grundlagen-harness-dateien.md`: *„Der Gate-Index steht einmal"*) und am Werkzeug `targets.authority` als Liste (heute ein einzelner String; `gate-undocumented` misst nur gegen `authority`). Für beides ist je ein Change Request gestellt (Kurs, d-check).
+**Lage** (Implementer-Messung am frisch emittierten Ziel, Pin `v0.81.0`): `makefiles: [Makefile]` meldet `gate-phantom` für die README-Zeile `make docs-check` (Regel in `d-check.mk`), und `exempt-targets` wirkt nicht auf `gate-phantom`. Variante A `makefiles: [Makefile, d-check.mk]` braucht 14 Ausnahmen, Variante B (Glob über `harness/mk/*.mk`) 27, darunter vier echte Gates — ein Ausnahme-Block in der Größe der Target-Menge. Die Indirektion braucht am Regelwerk eine Erlaubnis für einen zweiteiligen Gate-Index (heute [`modul-13-quality-gates.md`](../../../../.harness/baseline/v6.13.0/regelwerk/modul-13-quality-gates.md#hard-rule-doku-disziplin) §Hard Rule: *„es gibt genau eine"* Autoritäts-Doku; `grundlagen-harness-dateien.md`: *„Der Gate-Index steht einmal"*) und am Werkzeug `targets.authority` als Liste (heute ein einzelner String; `gate-undocumented` misst nur gegen `authority`). Beide Antworten liegen vor:
+
+- **Kurs:** der werkzeug-eigene Teil des Gate-Index heißt `harness/mk/<werkzeug>.md` — hier `harness/mk/ai-harness-init.md` <!-- d-check:ignore (der Pfad entsteht erst im gebootstrappten Ziel) --> — und liegt neben den Fragmenten, die er beschreibt; die Eigentumsgrenze ist das Verzeichnis `harness/mk/`. Eine eigene Vorlage gibt es nicht: die Form ist die von `harness/README.md` §Sensors, das Werkzeug erzeugt die Datei. Die Regel steht noch in keiner Kurs-Release.
+- **d-check:** `targets.authority` nimmt ab `v0.82.0` eine Liste — Vereinigung der Dateien; eine Doppelnennung ist kein Befund; eine fehlende Datei oder ein leerer Eintrag endet mit Exit 2; eine leere Liste lässt die Prüfung entfallen; mit einer Datei ist das Ergebnis byte-identisch zum String. Der Glob in `makefiles` steht ab `v0.81.0`. Die Konfiguration im Ziel ist damit `authority: [harness/README.md, harness/mk/ai-harness-init.md]`, `makefiles: [Makefile, "harness/mk/*.mk", d-check.mk]`; Ausnahmen voraussichtlich keine — am Ziel zu messen, nicht anzunehmen.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
@@ -58,14 +61,14 @@
 ## 4. Trigger
 
 
-**Start** (`next` → `in-progress`): Auftrag des Auftraggebers **und** beide Change-Request-Antworten liegen vor — die Kurs-Fassung, die einen zweiteiligen Gate-Index erlaubt, ist adoptiert (`.harness/baseline/<tag>/`), **und** ein d-check-Release mit `targets.authority` als Liste ist im emittierten Default-Pin gepinnt (`grep -n DCHECK internal/emit/emit.go`).
+**Start** (`next` → `in-progress`): Auftrag des Auftraggebers **und** zwei Bedingungen — die Kurs-Release, die den werkzeug-eigenen Index-Teil `harness/mk/<werkzeug>.md` regelt, ist per Baseline-Sprung adoptiert (`.harness/baseline/<tag>/`), **und** der d-check-Pin steht auf `v0.82.0` oder später, im Dogfood und im emittierten Default-Pin (`grep -n DCHECK internal/emit/emit.go d-check.mk`).
 
 **Rückführung `in-progress` → `open` vollzogen (2026-10-06, Blocker):** Die Implementer-Messung am frisch emittierten Ziel (Pin d-check `v0.81.0`) widerlegte die Stufe 1: `makefiles: [Makefile]` meldet `gate-phantom` für die README-Zeile `make docs-check`, `exempt-targets` wirkt nicht auf `gate-phantom`; Variante A braucht 14, Variante B 27 Ausnahmen (§1 Lage). Der Auftraggeber wählt die Indirektion über einen werkzeug-eigenen Index-Teil, die zwei Change Requests voraussetzt; die Abnahme ist darum geändert (§1 Planner-Entscheidung).
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): die Messung einer zweiten Variante (cpp, `--arch`) wird nötig — dann je Variante ein Slice.
-- `in-progress` → `open` (blockiert): eine der beiden CR-Antworten fällt anders aus als vorausgesetzt (Kurs hält den einen Index, oder `authority` bleibt ein String) — dann wird der Schnitt neu gemacht.
+- `in-progress` → `open` (blockiert): die adoptierte Kurs-Release oder der gepinnte d-check trägt eine der beiden Antworten (§1 Lage) anders als zugesagt, oder die Messung am Ziel verlangt doch einen Ausnahme-Block — dann wird der Schnitt neu gemacht.
 
 ## 5. Closure-Trigger
 
