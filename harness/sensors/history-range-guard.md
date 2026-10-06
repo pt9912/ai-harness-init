@@ -96,7 +96,7 @@ die auflösbare, aber leere Range (`git rev-list --count HEAD..HEAD` → **0**, 
 vorab) ohne unauflösbare Vorfahren-Kette vorlegt: `doc-commits` muss dort `0 Befund(e)`, Exit 0
 melden, `doc-immutable` mit `Range-Leerfall`, Exit 2 abbrechen, ohne Modul-Lauf.
 
-Gemessen am frisch emittierten `--lang go`-Ziel unter dem gepinnten `v0.81.0`, `RANGE=HEAD..HEAD`,
+Gemessen am frisch emittierten `--lang go`-Ziel unter `v0.81.0`, `RANGE=HEAD..HEAD`,
 `make -f d-check.mk`, ohne Wächter:
 
 | Aufbau | `doc-immutable` | `doc-commits` |
