@@ -878,7 +878,7 @@ modul_zahn_alte_module_gruen() {
 	local repo="$1" kennung="$2"
 	local out="" rc=0
 	cp "$repo/.d-check.yml" "$repo/.d-check.yml.zahn-bak"
-	psed_i 's/^modules: \[links, anchors, ids, matrix, spans\]$/modules: [links, anchors]/' "$repo/.d-check.yml"
+	psed_i 's/^modules: \[.*\]$/modules: [links, anchors]/' "$repo/.d-check.yml"
 	out="$( make -C "$repo" docs-check 2>&1 )" || rc=$?
 	mv "$repo/.d-check.yml.zahn-bak" "$repo/.d-check.yml"
 	if [ "$rc" -ne 0 ]; then
@@ -3206,6 +3206,84 @@ Siehe ADR-IDX-0004 fuer Kontext.
 echo "full-smoke: Kennungs-Form der emittierten .d-check.yml — gruener Start je Sprache und Architektur, je Position ein rotes Gegenbeispiel samt Gegenprobe ..."
 	e2e_abdeckung "LH-FA-01 LH-FA-03 LH-QA-01" "Die emittierte Doku-Gate-Konfiguration erkennt einen benannten Slice und eine Welle: gruener Start je Sprache und Architektur, je Position ein rotes Gegenbeispiel mit Gegenprobe" "kennungs_form_im_ziel"
 kennungs_form_im_ziel
+
+# Die Zellenlaenge der README-Tabellen im frischen Ziel (LH-QA-01): die emittierte
+# .d-check.yml fuehrt structure mit einer Grenze je Zelle der Spalten Vertrag und Tut was
+# unter "## Sensors (Feedback-Gates)". Gemessen werden (a) der gruene Start am frisch
+# emittierten Ziel, (b) je Spalte ein Zellsatz ueber der Grenze, der docs-check mit der
+# Meldung section-cell-oversized roetet, und (c) die Gegenprobe: ohne Modul und Block bleibt
+# derselbe Zellsatz gruen. GRENZE: gemessen sind nur die zwei Spalten der Vorlagen-README an
+# einem sprachlosen Ziel; ein Ziel mit eigener .d-check.yml (skip-if-present), die Spalte
+# Bindung und Tabellen ausserhalb von "## Sensors" sind nicht gemessen.
+zellenlaenge_im_ziel() {
+	local dir spalte kopf n zeile lang meldung readme
+	dir="$(mktemp -d -p "$tmprepo_kf")"
+	chmod 755 "$dir"
+	git init -q "$dir"
+	"$tmpbin/ai-harness-init" --name zl "$dir" >/dev/null
+	readme="$dir/harness/README.md"
+	kf_docs_check "$dir" einordnen
+	if [ "$kf_rc" -ne 0 ] || ! grep -qF -- ', 0 Befund(e)' <<<"$kf_out"; then
+		echo "full-smoke: FEHLER — gruener Start der Zellenlaenge: docs-check des frischen Ziels meldet nicht '0 Befund(e)' (Exit $kf_rc)." >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+	echo "full-smoke: gruener Start der Zellenlaenge: docs-check im frischen Ziel '0 Befund(e)'."
+	lang="$(printf 'wort %.0s' $(seq 1 46))"
+	for spalte in "Vertrag" "Tut was"; do
+		kopf="$(grep -nF -- "| Target | $spalte |" "$readme" | head -n 1 | cut -d: -f1)"
+		if [ -z "$kopf" ]; then
+			echo "full-smoke: FEHLER — Zellenlaenge: die emittierte harness/README.md traegt keine Tabelle mit der Kopfzeile '| Target | $spalte |'." >&2
+			exit 1
+		fi
+		cp "$readme" "$readme.zl-orig"
+		zeile="| zellen-probe | $lang | — |"
+		if [ "$spalte" = "Tut was" ]; then zeile="| zellen-probe | $lang | kein Gate |"; fi
+		psed_i "$((kopf + 1))a\\
+$zeile
+" "$readme"
+		kf_docs_check "$dir"
+		meldung='section-cell-oversized'
+		if [ "$kf_rc" -eq 0 ]; then
+			echo "full-smoke: FEHLER — Zellenlaenge-Gegenbeispiel ($spalte): ein Zellsatz ueber der Grenze laesst docs-check im Ziel GRUEN: die structure-Regel der emittierten .d-check.yml ist nicht wirksam (AGENTS.md §3.6)." >&2
+			printf '%s\n' "$kf_out" >&2
+			exit 1
+		fi
+		if ! grep -qE -- "$meldung" <<<"$kf_out"; then
+			echo "full-smoke: FEHLER — Zellenlaenge-Gegenbeispiel ($spalte): docs-check im Ziel rot, aber ohne die Meldung [$meldung] (rot aus falschem Grund?). Ausgabe:" >&2
+			printf '%s\n' "$kf_out" >&2
+			exit 1
+		fi
+		echo "full-smoke: Zellenlaenge-Gegenbeispiel ($spalte) belegt (faerbt docs-check im Ziel rot):"
+		grep -E -- "$meldung" <<<"$kf_out" | sed -n '1,2s/^/full-smoke:   /p'
+		cp "$dir/.d-check.yml" "$dir/.d-check.yml.zl-bak"
+		psed_i -e 's/, structure\]$/]/' -e '/^structure:/,$d' "$dir/.d-check.yml"
+		if cmp -s "$dir/.d-check.yml" "$dir/.d-check.yml.zl-bak" || grep -qE '^(structure:|modules:.*structure)' "$dir/.d-check.yml"; then
+			mv "$dir/.d-check.yml.zl-bak" "$dir/.d-check.yml"
+			echo "full-smoke: FEHLER — Zellenlaenge-Gegenprobe ($spalte): die Schwaechung nimmt structure nicht aus der .d-check.yml des Ziels." >&2
+			exit 1
+		fi
+		kf_docs_check "$dir" einordnen
+		mv "$dir/.d-check.yml.zl-bak" "$dir/.d-check.yml"
+		if [ "$kf_rc" -ne 0 ] || ! grep -qF -- ', 0 Befund(e)' <<<"$kf_out"; then
+			echo "full-smoke: FEHLER — Zellenlaenge-Gegenprobe ($spalte): derselbe Zellsatz faerbt docs-check auch ohne structure rot — der Fall belegt nicht, dass ERST die Regel ihn findet (AGENTS.md §3.6)." >&2
+			printf '%s\n' "$kf_out" >&2
+			exit 1
+		fi
+		echo "full-smoke: Zellenlaenge-Gegenprobe ($spalte) belegt (ohne structure bleibt derselbe Zellsatz gruen, danach zurueckgenommen)."
+		mv "$readme.zl-orig" "$readme"
+	done
+	kf_docs_check "$dir" einordnen
+	if [ "$kf_rc" -ne 0 ] || ! grep -qF -- ', 0 Befund(e)' <<<"$kf_out"; then
+		echo "full-smoke: FEHLER — Zellenlaenge: nach dem Zuruecknehmen ist docs-check im Ziel nicht wieder '0 Befund(e)' (Exit $kf_rc)." >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+}
+
+echo "full-smoke: Zellenlaenge der README-Tabellen im frischen Ziel — gruener Start, je Spalte ein Zellsatz ueber der Grenze mit Gegenprobe ..."
+	e2e_abdeckung "LH-FA-01 LH-QA-01" "Die emittierte Doku-Gate-Konfiguration begrenzt die Zellen der Spalten Vertrag und Tut was unter ## Sensors der Vorlagen-README an einem frisch emittierten sprachlosen Ziel: gruener Start, je Spalte ein Zellsatz ueber der Grenze mit Gegenprobe; NICHT gemessen: ein Ziel mit eigener .d-check.yml (skip-if-present), die Spalte Bindung und Tabellen ausserhalb von ## Sensors" "zellenlaenge_im_ziel"
+zellenlaenge_im_ziel
 
 # ADR-0067 Festlegung 1 und 5: ein Klon mit core.autocrlf=true traegt in den Verzeichnissen der
 # Emission, in denen ein Interpreter oder die Byte-Pruefung Dateien liest, kein CR. Gemessen
