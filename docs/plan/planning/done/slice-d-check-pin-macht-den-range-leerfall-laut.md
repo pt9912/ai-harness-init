@@ -83,7 +83,7 @@ DoD vollständig, `make gates` und `make full-smoke` grün unter dem neuen Pin, 
 - **V-1 (LOW):** Pin-Kopplungstest ohne Fall → Folge-Slice `slice-pin-kopplung-bekommt-ihren-mutations-fall` (`open/`, besteht); die neue Stufe ohne Fall → Beleg in [`BEO-ALL/neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md) (verkörpert, kein neuer Ausgang).
 - **Beobachtungs-Register (`../observations/`):** je ein Beleg dieses Vorgangs in `werkzeug-messung-und-gemessener-stand-werden-nicht-zusammengehalten`, `pin-digest-ohne-waechter`, `neuer-waechter-ohne-mutations-fall`; kein Eintrag erreicht durch diesen Beleg neu einen Ausgang.
 - **Risiken aus §6:** (1) weiter offen → Register · (2) weiter offen → Register (Einträge in §6).
-- **Paarungen geprüft am 2026-10-06** (nach dem `git mv`): Anker — kein `liegt in`-Feld (`grep -c 'liegt in'` → 0); Folge-Slice — `slice-pin-kopplung-bekommt-ihren-mutations-fall` und `slice-targets-modul-im-emittierten-doc-gate` liegen in `open/`; Register — die drei zitierten Verzeichnisse existieren und tragen Beleg (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md`). Grün.
+- **Paarungen geprüft am 2026-10-06** (nach dem `git mv`): Anker — kein Eintrag in §7 trägt das Zielort-Feld; Folge-Slice — `slice-pin-kopplung-bekommt-ihren-mutations-fall` und `slice-targets-modul-im-emittierten-doc-gate` liegen in `open/`; Register — die drei zitierten Verzeichnisse existieren und tragen Beleg (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md`). Grün.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
