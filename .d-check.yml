@@ -132,6 +132,22 @@ structure:
       - "docs/plan/planning/done/slice-kennungs-waechter-geht-ins-ziel.md"
       - "docs/plan/planning/done/slice-lifecycle-move-geht-ins-ziel.md"
       - "docs/plan/planning/done/slice-vorlauf-waechter-geht-ins-ziel.md"
+  # Zellenlaenge in harness/README.md: die Spalten "Vertrag" (Sensors-Tabelle) und "Tut was"
+  # (Werkzeuge-Tabelle) tragen eine Obergrenze je Zelle in Zeichen; laengere Prosa gehoert nach
+  # harness/sensors/<target>.md. Der Selektor trifft beide Tabellen unter "## Sensors". Die
+  # Schwellen liegen bei Bestand plus drei Zeichen; der Bestand misst
+  #   awk '/^### Werkzeuge/{f=1} f&&/^\| /&&!/^\|---/&&!/^\| Target/{split($0,a,"|"); c=a[3]; gsub(/^ +| +$/,"",c); print c}' harness/README.md | while IFS= read -r l; do printf '%s' "$l" | wc -m; done | sort -n | tail -1
+  # (Spalte "Vertrag": /^## Sensors/{f=1} /^### Werkzeuge/{f=0}). Kein hint, keine exempt-paths:
+  # ein Eintrag dort ist eine Senkung nach AGENTS.md 3.5. Ein Dauer-Waechter fuer die Regel
+  # selbst besteht nicht; Sonde und Grenze: harness/sensors/docs-check.md §Modul structure.
+  - files: "harness/README.md"
+    section: "## Sensors (Feedback-Gates)"
+    table:
+      column:
+        - name: "Vertrag"
+          cell-max-chars: 150
+        - name: "Tut was"
+          cell-max-chars: 260
 # targets (hermetisch, kein git, kein Netz): haelt zwei Richtungen zwischen den
 # Makefile-Rezepten und den Gate-Tabellen der Doku. Richtung 1 (gate-undocumented):
 # jedes .PHONY-Rezept aus makefiles steht entweder in einer `make X`-Tabellenzeile

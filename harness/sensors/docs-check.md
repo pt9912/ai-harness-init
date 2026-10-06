@@ -279,7 +279,8 @@ find docs/plan/planning/done -maxdepth 1 -name 'slice-*.md' | wc -l
 ### Modul `structure`
 
 **Was es hält.** [`.d-check.yml`](../../.d-check.yml) führt `structure` in `modules:` und einen
-`structure`-Block mit einer Regel: Über jedem Slice-Plan flach in `done/` zählt sie die offenen
+`structure`-Block mit zwei Regeln; die erste (Zellenlänge: letzter Absatz dieses Abschnitts):
+Über jedem Slice-Plan flach in `done/` zählt sie die offenen
 Task-Items im Abschnitt `## 2. Definition of Done` (`max-open-tasks: 0`). Trägt er welche, verlangt
 `open-tasks-require-marker` im Abschnitt `## 7. Closure-Notiz` (mit oder ohne Zusatz) eine Zeile
 in Marken-Form `**Gegenstand:**`. Fehlt sie, meldet die Regel **einen**
@@ -415,6 +416,47 @@ emittierte Vorlage `internal/emit/templates/d-check.yml` bleibt ohne `structure`
 (`grep -c 'structure' internal/emit/templates/d-check.yml` → 0). Nach
 [`MR-055`](../conventions.md#mr-055) gilt die Messung für dieses eine Ziel. Neu zu messen ist
 Kriterium 2, sobald ein frisch emittiertes Ziel eine Datei trägt, die die Regel trifft.
+
+**Zellenlänge in `harness/README.md`.** Die zweite Regel des `structure`-Blocks begrenzt unter
+`## Sensors (Feedback-Gates)` die Zellen der Spalte `Vertrag` (Sensors-Tabelle) auf 150 und der
+Spalte `Tut was` (Werkzeuge-Tabelle) auf 260 Zeichen (`cell-max-chars`); sie trägt weder `hint` noch
+`exempt-paths`. Der Selektor trifft beide Tabellen. Die Schwellen liegen drei Zeichen über dem
+Bestand; Zeichen gezählt, nicht Bytes. Der Bestand misst:
+
+```sh
+awk '/^### Werkzeuge/{f=1} f&&/^\| /&&!/^\|---/&&!/^\| Target/{split($0,a,"|"); c=a[3]; gsub(/^ +| +$/,"",c); print c}' harness/README.md \
+  | while IFS= read -r l; do printf '%s' "$l" | wc -m; done | sort -n | tail -1   # 257
+# Spalte Vertrag: /^## Sensors/{f=1} /^### Werkzeuge/{f=0} statt /^### Werkzeuge/{f=1}          # 149
+```
+
+Beide Zahlen sind keine Erwartungswerte. Gemessen gegen d-check `v0.79.0`
+(`DCHECK_DIGEST` in [`d-check.mk`](../../d-check.mk)), in einer Kopie des Arbeitsbaums außerhalb des
+Repos, Mount `:ro`, `--network none`, Flags wie in [`doc-structure.md`](doc-structure.md) §Grenze; je
+Lage eine frische `harness/README.md`:
+
+| Lage | Meldung |
+|---|---|
+| Bestand unverändert | keine, `0 Befund(e)` |
+| `Tut was`-Zelle der längsten Zeile um 3 Zeichen verlängert (260) | keine |
+| dieselbe Zelle um 4 (261) | `section-cell-oversized`: *Zelle der Spalte "Tut was" hat 261 Zeichen, erlaubt sind 260* |
+| dieselbe Zelle um 10 (267) | `section-cell-oversized`, 267 Zeichen |
+| `Vertrag`-Zelle der `docs-check`-Zeile um 1 (150) | keine |
+| dieselbe Zelle um 2 (151) | `section-cell-oversized`: *Zelle der Spalte "Vertrag" hat 151 Zeichen, erlaubt sind 150* |
+| dieselbe Zelle um 10 (159) | `section-cell-oversized`, 159 Zeichen |
+| Kopf `Tut was` umbenannt | `section-column-missing`: *keine Tabelle des Abschnitts traegt eine Kopfzelle "Tut was"* |
+| Kopf `Vertrag` umbenannt | `section-column-missing`, Kopfzelle `Vertrag` |
+
+Der Befund steht auf der Zeile der Zelle (`harness/README.md:<Zeile>`); die Spaltenangabe und die
+Zeichenzahl stehen in der Meldung. Ohne `hint` trägt die vierte Spalte den Text des Werkzeugs. Ein
+Kopf-Umbenennen färbt nur, solange die Spalte in keiner zweiten Tabelle des Abschnitts steht.
+
+**Grenze.** Ein Dauer-Wächter für diese Regel existiert nicht: `make mutate` lässt einen Fall nur für
+eine Stufe zu, für die `failure_form()` ein Fehlschlag-Muster führt
+(`sed -n '/^failure_form()/,/^}/p' harness/tools/mutate.sh`); für `make docs-check` führt es keines.
+Die Zusage trägt die Sonde oben, nicht ein Fall unter `test/mutations/`; wird die Regel aus der
+`.d-check.yml` genommen, schlägt außer `docs-check` selbst kein Wächter an. Die Schwelle begrenzt das
+Wachstum, nicht die Kürze: eine Zelle unter 260 Zeichen gilt als in Ordnung. Die Spalte `Bindung` ist
+nicht begrenzt.
 
 ### Modul `targets`
 
