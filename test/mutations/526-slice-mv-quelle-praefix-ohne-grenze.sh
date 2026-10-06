@@ -11,4 +11,4 @@
 # Der Anker steht genau einmal im Skript, als Muster-Zuweisung des Normalfalls
 # (grep -cF '*) muster="$name-" ;;' harness/tools/slice-mv.sh -> 1).
 set -euo pipefail
-sed -i 's~\(\*) muster="\$name\)-" ;;~\1" ;;~' harness/tools/slice-mv.sh
+sed -i 's~\(\*) muster="[$]name\)-" ;;~\1" ;;~' harness/tools/slice-mv.sh
