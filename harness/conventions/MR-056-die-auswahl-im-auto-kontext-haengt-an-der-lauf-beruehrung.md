@@ -77,15 +77,15 @@
   ([`MR-025`](../conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2) — beide wandern mit dem Verzeichnis und mit dem Tag.
 - **Setzung 4 — der Preis ist beziffert und bezahlt.** Die sieben Baseline-Zeiger messen
-  **119270** Zeichen
+  **125120** Zeichen
   (`(cd .claude/rules && cat $(readlink *.md | grep '\.harness/baseline/')) | wc -c`); davon
-  entfallen **25622** auf die zwei neuen
-  (`cat .harness/baseline/v6.13.0/regelwerk/modul-1[13]-*.md | wc -c`), also ein Aufschlag von
-  **27,4 %** auf die vorige Modul-Menge:
+  entfallen **26745** auf die zwei neuen
+  (`cat .harness/baseline/v6.16.0/regelwerk/modul-1[13]-*.md | wc -c`), also ein Aufschlag von
+  **27,2 %** auf die vorige Modul-Menge:
 
   ```sh
   awk -v ganz="$( (cd .claude/rules && cat $(readlink *.md | grep '\.harness/baseline/')) | wc -c )" \
-      -v neu="$(cat .harness/baseline/v6.13.0/regelwerk/modul-1[13]-*.md | wc -c)" \
+      -v neu="$(cat .harness/baseline/v6.16.0/regelwerk/modul-1[13]-*.md | wc -c)" \
       'BEGIN{printf "%.1f\n", neu/(ganz-neu)*100}'
   ```
 

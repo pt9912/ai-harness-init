@@ -99,12 +99,14 @@
   `doc-tables`-Datei führt keine `make X`-Tabellenzeile (``grep -cE '^\| `make ' AGENTS.md`` → 0),
   eine Liste `[harness/README.md, AGENTS.md]` ließe die Vereinigung also unverändert. Ein
   werkzeug-eigener Index-Teil, der eine zweite Autoritäts-Datei wäre, besteht im Dogfood nicht
-  (`ls harness/mk` → kein Verzeichnis), und die adoptierte Ziel-Fassung `v6.13.0` empfiehlt
-  weiter eine Datei (`grep -c 'es gibt nur einen Index' .harness/baseline/v6.13.0/templates/.d-check.yml`
+  (`ls harness/mk` → kein Verzeichnis), und die adoptierte Ziel-Fassung `v6.16.0` empfiehlt
+  weiter eine Datei (`grep -c 'es gibt nur einen Index' .harness/baseline/v6.16.0/templates/.d-check.yml`
   → 1). Die Liste nimmt auch die gebuchte Senkung nicht weg — sie scopt nicht nach Abschnitt —,
   Festlegung 2 der ADR bleibt also unberührt. Keine Erwartungswerte (`MR-025` Setzung 2).
-  **Neu zu prüfen**, sobald eine adoptierte Baseline einen Index-Teil je Werkzeug als eigene Datei
-  führt (die Kurs-Regel `harness/mk/<werkzeug>.md`, im Kurs ab `v6.16.0`, hier nicht adoptiert)
+  **Neu zu prüfen**, sobald dieses Repo einen Index-Teil je Werkzeug als eigene Datei
+  führt (die Kurs-Regel `harness/mk/<werkzeug>.md` steht in der adoptierten Baseline seit `v6.16.0`;
+  ihre Bedingung, Fragmente unter harness/mk, greift im Dogfood nicht — gemessen mit den zwei
+  Kommandos oben, die Wahl bleibt)
   oder eine zweite Dogfood-Datei wieder `make X`-Tabellenzeilen trägt. Die Listen-`authority` des
   **emittierten** Ziels ist eine andere Ebene und gehört dem `targets`-Slice nach `MR-054`, nicht
   dieser ADR.
