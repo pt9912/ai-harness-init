@@ -1998,6 +1998,9 @@ SMOKEEOF
 
 traeger_fetch_im_ziel "$tmprepo" "golang"
 
+echo "full-smoke: Lifecycle-Wechsel im Ziel — make slice-mv ueber dem gebootstrappten Repo ..."
+e2e_abdeckung "LH-FA-01 LH-QA-01" "Das Ziel bewegt Slices per make slice-mv: reiner Move-Commit getrennt vom Verweis-Nachzug, beide Richtungen, Sperre ueber unsauberem Baum, kein Gate, laut ohne Werkzeug — und der exakte Name gewinnt gegen einen laengeren Praefix-Treffer" "slice-smoke-praefix-lang"
+
 # --- Lifecycle-Wechsel: das gebootstrappte Ziel erreicht das Werkzeug ---------------
 #
 # WAS DER HAPPY PATH NICHT SIEHT: `make gates` faehrt `slice-mv` nicht — es ist kein
@@ -2018,7 +2021,8 @@ traeger_fetch_im_ziel "$tmprepo" "golang"
 #       ab, nennt es und bewegt nichts,
 #   (f) `slice-mv` ist KEIN Gate: die gates-Kette des Ziels nennt es nicht,
 #   (g) ohne jeden Verweis bleibt es beim einen Move-Commit,
-#   (h) ohne das Werkzeug bricht das Ziel laut ab und bewegt nichts.
+#   (h) ohne das Werkzeug bricht das Ziel laut ab und bewegt nichts,
+#   (i) neben einem laengeren Praefix-Namen bewegt der exakte Name genau seinen Slice.
 #
 # EINE VARIANTE, und die Grenze steht hier: gefahren wird das --lang-go-Ziel. Fragment
 # und Skript kommen aus enforceFiles() und liegen in BEIDEN Bootstrap-Varianten unter
@@ -2252,6 +2256,28 @@ SMOKEEOF
 		exit 1
 	fi
 	echo "full-smoke: ohne Verweise ($kennung): make slice-mv bewegt slice-smoke-einsam.md und laesst es beim einen Move-Commit — kein zweiter Commit ohne Inhaltsaenderung."
+
+	# (i) DER EXAKTE NAME GEWINNT GEGEN EINEN LAENGEREN PRAEFIX-TREFFER. Zwei Slices,
+	# deren einer Name Praefix des anderen ist (slice-smoke-praefix und
+	# slice-smoke-praefix-lang): der Aufruf mit dem kuerzeren vollen Namen bewegt genau
+	# ihn und laesst den laengeren liegen. Die Quellensuche der emittierten Fassung
+	# (quelle_finden) laeuft hier ueber dem Ablageort, den das Fragment aufruft.
+	local p
+	for p in slice-smoke-praefix slice-smoke-praefix-lang; do
+		printf '# Slice %s: Praefix-Paar\n\nNur fuer den E2E der Quellensuche angelegt.\n' "$p" >"$plan/open/$p.md"
+	done
+	git -C "$repo" -c user.email=full-smoke@example.invalid -c user.name=full-smoke add -A
+	git -C "$repo" -c user.email=full-smoke@example.invalid -c user.name=full-smoke \
+		commit -q -m "Lifecycle-Smoke: Praefix-Paar (full-smoke)"
+	local praefix="" praefix_rc=0
+	praefix="$( make --no-print-directory -C "$repo" slice-mv SLICE=slice-smoke-praefix TO=next 2>&1 )" || praefix_rc=$?
+	if [ "$praefix_rc" -ne 0 ] || [ ! -e "$plan/next/slice-smoke-praefix.md" ] || [ ! -e "$plan/open/slice-smoke-praefix-lang.md" ]; then
+		echo "full-smoke: FEHLER — $kennung: SLICE=slice-smoke-praefix bewegt nicht genau den exakt benannten Slice (Exit $praefix_rc; erwartet next/slice-smoke-praefix.md und open/slice-smoke-praefix-lang.md). Ausgabe:" >&2
+		printf '%s\n' "$praefix" >&2
+		einordnen "make slice-mv ueber einem Praefix-Paar ($kennung)" "$praefix"
+		exit 1
+	fi
+	echo "full-smoke: Praefix-Paar ($kennung): make slice-mv SLICE=slice-smoke-praefix bewegt den exakt benannten Slice nach next/ und laesst slice-smoke-praefix-lang.md in open/ liegen."
 
 	# (h) FEHLT DAS WERKZEUG, BRICHT DAS ZIEL LAUT AB, OHNE ZU BEWEGEN. Der Fall
 	# entsteht im halben Zustand — das Fragment liegt, das Programm daneben nicht;
@@ -4073,7 +4099,7 @@ echo "full-smoke: OK — ROLLEN-TYPEN (slice-097/LH-FA-10): 6 kanonische Typen u
 echo "full-smoke: OK — FELDLISTE (slice-098/LH-FA-13): $FELDLISTE_REL liegt in BEIDEN Bootstrap-Varianten im geprueften Doku-Bereich, fuehrt die drei stehenden Grenz-Saetze und deckt jeden Feldnamen der real geschriebenen Span-Zeile; ein toter Verweis darin faerbt das docs-check des Ziels rot (Ortswahl belegt); ein 2. Init-Lauf heilt eine von Hand geaenderte Fassung (konvergent, die einzige Zusage des Dokuments ueber sich selbst)."
 echo "full-smoke: OK — ARCHIVIERUNG IM ZIEL (ADR-0033 Festlegung 4 und 5): make archive-welle ist kein Gate und steht in keiner gates-Kette; ein Name daneben, den kein Fragment fuehrt, endet laut statt still; die zwei Sperren [untergrenze] und [haenger] halten den Aufruf auf, ueber demselben Bestand ohne sie laeuft die Operation real (Archiv + Stubs aus der vendored Vorlage), und ohne Traeger meldet das Kommando die Abwesenheit mit Exit 0."
 echo "full-smoke: OK — TRAEGER-FETCH IM ZIEL (ADR-0058): im frischen Klon eines gebootstrappten Repos bleibt der Fehlt-Fall der Konsumenten unangetastet (Exit 0, nennt das Fehlende, schreibt nichts — der Fetch ist kein Prerequisite); make traeger-fetch legt den Traeger per Fetch aus dem gepinnten Release real ab, ausfuehrbar, den Digest vor der Ablage verifiziert (Transport im gepinnten Bild, kein curl auf dem Host, LH-QA-03); ein verdrehter sha256-Pin bricht denselben Aufruf nach einmal Laden laut mit der Digest-Abweichung und laesst den liegenden Traeger unangetastet; der gefetchte Traeger fuehrt den Konsumenten-Aufruf real — die Archivierung laeuft ueber einer geschlossenen Welle und meldet den Vollzug mit Archiv und Stubs; und ein Unterkommando, das der Traeger nicht fuehrt, bricht den Aufruf laut mit der Argument-Sperre statt still in den Init-Pfad zu starten (ADR-0058 Festlegung 2) — der v0.1.1-Stand ohne diese Sperren startete in derselben Lage still, die Kopplung Pin zu Werkzeug-Fassung traegt der Release-Schnitt (Festlegung 2, Folgepflicht 3)."
-echo "full-smoke: OK — LIFECYCLE-WECHSEL IM ZIEL: make slice-mv ist kein Gate und steht in keiner gates-Kette; der Aufruf bewegt den Slice, legt den reinen Move als eigenen Commit an (0 insertions/0 deletions gegen den Verweis-Nachzug getrennt) und zieht beide Richtungen nach — den eingehenden Praefix-Verweis der Nachbar-Datei und das praefixlose Geschwister-Ziel in der bewegten Datei; eine ADR bleibt nach der Repo-Politik des Fragments unberuehrt; ueber einem unsauberen Arbeitsbaum bricht der Aufruf ab, nennt es und bewegt nichts; ohne jeden Verweis bleibt es beim einen Move-Commit; und ohne das Werkzeug bricht das Ziel laut ab, statt still auf ein fehlendes Programm zu zeigen."
+echo "full-smoke: OK — LIFECYCLE-WECHSEL IM ZIEL: make slice-mv ist kein Gate und steht in keiner gates-Kette; der Aufruf bewegt den Slice, legt den reinen Move als eigenen Commit an (0 insertions/0 deletions gegen den Verweis-Nachzug getrennt) und zieht beide Richtungen nach — den eingehenden Praefix-Verweis der Nachbar-Datei und das praefixlose Geschwister-Ziel in der bewegten Datei; eine ADR bleibt nach der Repo-Politik des Fragments unberuehrt; ueber einem unsauberen Arbeitsbaum bricht der Aufruf ab, nennt es und bewegt nichts; ohne jeden Verweis bleibt es beim einen Move-Commit; neben einem laengeren Praefix-Namen bewegt der exakte Name genau seinen Slice; und ohne das Werkzeug bricht das Ziel laut ab, statt still auf ein fehlendes Programm zu zeigen."
 echo "full-smoke: OK — COMMIT-KENNUNG IM ZIEL: .githooks/commit-msg liegt ausfuehrbar im Ziel und reist mit dem Klon, seine Aktivierung nicht — make hooks-install setzt core.hooksPath und ist kein Gate (steht in keiner gates-Kette); danach faellt ein Commit OHNE Kennung mit der Meldung der Pruefung und entsteht nicht, einer MIT Kennung geht durch, und git commit --no-verify umgeht den Traeger; die Reichweite (Umgehung, Anwesenheit-statt-Wahrheit, die von keinem Commit-Waechter pruefbare zweite Haelfte der Zusage, die mitgenommenen Werkzeug-Commits) steht im Ziel geschrieben."
 echo "full-smoke: OK — KLASSE DES COMMIT-TRAEGERS (ADR-0054 Festlegung 1 und 3): der Traeger liegt skip-if-present und die Pruefung daneben konvergent — ein FREIER Pfad bekommt den Traeger des Werkzeugs (er liegt ausfuehrbar im Ziel und ruft die Pruefung daneben), ein BELEGTER bleibt Byte fuer Byte unberuehrt und der Lauf nennt Pfad und mitgelieferte Pruefung; die Drift der Pruefung heilte der naechste Lauf, die des Traegers blieb stehen."
 echo "full-smoke: OK — SELBSTPRUEFUNG IM ZIEL (LH-FA-11): das gebootstrappte Repo faehrt make selbstpruefung ueber einem frischen Klon seiner selbst — der Klon traegt keinen core.hooksPath, der Aktivierungsschritt setzt ihn, danach faellt ein Commit OHNE Kennung (HEAD unbewegt) und geht einer MIT Kennung durch, und das Gate-Kommando laeuft im Klon gruen; beide Ausgaenge stehen in EINEM Lauf, das Kommando haengt an keiner gates-Kette des Ziels, und ein am Aufruf gesetzter Marker lenkt den Gate-Schritt (LH-FA-02)."
