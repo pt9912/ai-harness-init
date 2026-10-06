@@ -20,7 +20,7 @@ Gegenbeispiel), [`MR-055`](../../../../harness/conventions.md#mr-055) (eine Stel
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912)
 
 **Autor:** Planner. **Datum:** 2026-10-05.
 
@@ -97,6 +97,12 @@ entscheidet der Architect vor dem Start (`AGENTS.md` §3.8); ein ADR-Bedarf folg
       (`cell-max-chars: 200`), kein `exempt-paths`, der Kopfkommentar „Herkunft der Positionen" nennt die
       Position und ihre Grenze (nur freier Pfad, Nachzug Handarbeit). Ein Test in `internal/emit` hält Modul,
       Block und dass beide Spaltennamen in der vendorten Vorlage `README.template.md` als Kopfzeilen stehen.
+      Die exakte Modul-Liste `[links, anchors, ids, matrix, spans]` ist an drei Stellen verdrahtet und wird in
+      allen dreien nachgezogen: `internal/emit/emit_test.go` (`TestDCheckConfig_EntschiedeneModulListe`), das
+      `sed` der Kennungs-Stufe in `harness/tools/full-smoke.sh` und der Zahn
+      `test/mutations/295-emittierte-modulliste-verliert-matrix.sh`, dessen `sed`-Muster auf der neuen Liste
+      nicht mehr trifft — Fall 295 wird nach [`MR-071`](../../../../harness/conventions.md#mr-071) gegen den
+      neuen Bestand gemessen und rot gesehen (Verdikt: Architect-Bericht `2026-10-06-architect-zellenlaenge-ziel.md`).
       *Bricht die Zusage, wenn:* `structure` aus `modules:` fällt (das Ziel prüft keine Zelle mehr, bleibt aber
       grün) oder ein Baseline-Sprung eine Spalte umbenennt (jedes neue Ziel startet mit
       `section-column-missing` rot). Beides färbt den Test.
@@ -129,7 +135,9 @@ drei Paarungen.
 |---|---|---|
 | `internal/emit/templates/d-check.yml` | update | DoD (1): Modul und Regel |
 | Test in `internal/emit` | neu | DoD (1): Modul, Block, Spaltennamen gegen die Vorlage |
-| [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) | update | DoD (2) und (3): Stufe und Deklaration |
+| `internal/emit/emit_test.go` | update | DoD (1): `TestDCheckConfig_EntschiedeneModulListe` bindet die neue Liste |
+| `test/mutations/295-emittierte-modulliste-verliert-matrix.sh` | update | DoD (1): `sed`-Muster auf die neue Liste ([`MR-071`](../../../../harness/conventions.md#mr-071)) |
+| [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) | update | DoD (2) und (3): Stufe und Deklaration; das `sed` der Kennungs-Stufe (`modules:`-Liste) |
 | `test/mutations/` | neu | DoD (2): Zahn am Modul |
 | [`docs/user/e2e-abdeckung.md`](../../../../docs/user/e2e-abdeckung.md) | update (erzeugt) | DoD (3): `make e2e-abdeckung` |
 
