@@ -72,7 +72,7 @@ Schreib-Seite war bereits erfüllt, bevor dieser Slice begann (`slice-mv.sh` sch
 absorbierten Slice die davon zu unterscheidende zweite Seite: dass die **Erkennung**
 (`commit-msg-traceability.sh`, `.d-check.yml`) die geschriebene Kennung auch **sieht** — das war der
 Gegenstand des jetzt zurückgenommenen DoD (3). Dieser Gegenstand bleibt bei
-[`slice-kennungs-erkennung-traegt-die-zugelassenen-formen`](../next/slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md),
+[`slice-kennungs-erkennung-traegt-die-zugelassenen-formen`](../in-progress/slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md),
 unverändert in `open/`; dieser Slice nimmt ihn **nicht** per `Übernimmt:` auf, und der Sibling-Plan
 selbst wird durch diese Klarstellung nicht geändert.
 
@@ -117,7 +117,7 @@ jede Rolle bei jedem Lifecycle-Wechsel fährt.
   hier wird nur der Ausgang benannt, an dem der schreibende Lauf heute abbricht.
 - **Die Erkennung bereits zugelassener Kennungs-Formen in `commit-msg-traceability.sh`/
   `.d-check.yml` wird nicht erweitert.** Ein Folge-Slice übernimmt es —
-  [`slice-kennungs-erkennung-traegt-die-zugelassenen-formen`](../next/slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md)
+  [`slice-kennungs-erkennung-traegt-die-zugelassenen-formen`](../in-progress/slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md)
   (offen), der die Fundliste und den Rot-Beleg je Form führt
   ([`MR-059`](../../../../harness/conventions.md#mr-059) Setzung 2/3). *Ein Folge-Slice übernimmt
   es* — Klasse 1.
