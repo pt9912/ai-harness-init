@@ -1,6 +1,6 @@
 # ADR-0078: Die Ziel-Fassung regiert den Sprung `v6.13.0` → `v6.16.0` — die Prozedur ist byte-gleich, das Delta trifft einen Adaptions-Eintrag, den Reviewer-Skill, die Spezifikation und den emittierten Gate-Index
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-10-06
 
@@ -301,3 +301,4 @@ ebenfalls kein Sensor.
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-10-06 | **Proposed** | Auftrag des Auftraggebers zum Sprung `v6.13.0` → `v6.16.0`; erster Re-Evaluierungs-Trigger von [ADR-0072](0072-ziel-fassung-regiert-den-sprung-v6130.md) |
+| 2026-10-06 | **Accepted** | Weisung des Auftraggebers vom 2026-10-06; Acceptance-Trigger eingelöst durch die Reviewer-Konsistenzrunde `2026-10-06-adr-0078-review` (kein HIGH; die drei MEDIUM vor der Annahme eingearbeitet, [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1) |
