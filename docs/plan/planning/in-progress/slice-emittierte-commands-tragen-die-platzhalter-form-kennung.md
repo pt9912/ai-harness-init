@@ -98,14 +98,14 @@ keinen Wächter). Die Lücke ist benannt und wird in DoD (2) geschlossen.
 
 ## 2. Definition of Done
 
-- [ ] **(1) Die emittierten Commands und die Quell-Kommentare tragen `<Kennung>`.** Die Stellen aus §1 in
+- [x] **(1) Die emittierten Commands und die Quell-Kommentare tragen `<Kennung>`.** Die Stellen aus §1 in
       `commands/implement-slice.md`, `close-welle.md`, `plan-welle.md`, im Doc-Kommentar `internal/emit/templates.go` und im
       Test-Kommentar `commands_test.go` sagen `seit welle-<Kennung>`, `seit slice-<Kennung>`, `evidence/slice-<Kennung>.md`,
       `open/slice-<Kennung>.md`; die Aufzählung der Commit-Kennung in `implement-slice.md` nennt `ADR-NNNN`, `LH-XX-NN`, `MR-NNN` und
       verweist für die vollständige Menge auf die Zeile `patterns=` von `tools/harness/commit-msg-traceability.sh`, ohne `slice-N`
       zu nennen; die Stellen aus der Abgrenzung bleiben. *Bricht die Zusage, wenn:* eine Stelle bleibt
       nummeriert (Test aus Punkt 2 rot) oder eine funktionale Stelle wird mitgeändert (die Tests der Erkennungs-Muster färben).
-- [ ] **(2) Ein Wächter hält die Form und ist rot gesehen.** Ein Test in `internal/emit` liest alle emittierten Commands
+- [x] **(2) Ein Wächter hält die Form und ist rot gesehen.** Ein Test in `internal/emit` liest alle emittierten Commands
       (`emit.CommandPaths()`) und fällt bei `(slice|welle)-<N+>` (nummerierter Platzhalter in spitzen Klammern);
       `MR-<NNN>` ist erlaubt. Derselbe Test fällt bei `slice-N` als Kennung (Wort `slice-N` im Command-Text), damit die Nummernform
       nicht wieder als gültige Kennung gelehrt wird. Ein Fall in `test/mutations/` führt
@@ -114,7 +114,7 @@ keinen Wächter). Die Lücke ist benannt und wird in DoD (2) geschlossen.
       (`emit.CommandFile`). Der Test hält die Zusage über die **Menge aller Commands**, nicht über die heutigen drei Stellen
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6): ein vierter nummerierter Platzhalter färbt ihn. *Bricht die Zusage, wenn:* ein Command
       eine nummerierte Platzhalter-Form führt, oder das Muster die Form `<NN>` mit zwei Ziffern-Platzhaltern nicht mehr trifft.
-- [ ] **(3) Der Test `TestCommands_NoInternalLeak` sagt nichts Gegenteiliges.** Sein Kommentar nennt die nummerierte
+- [x] **(3) Der Test `TestCommands_NoInternalLeak` sagt nichts Gegenteiliges.** Sein Kommentar nennt die nummerierte
       Platzhalter-Form nicht mehr als erlaubt, sondern verweist auf den Wächter aus Punkt 2; sein Verhalten (nur konkrete
       Dogfood-Nummern) bleibt.
 
@@ -161,15 +161,13 @@ Zwei beobachtbare Kriterien: `make gates` grün; der neue Test und sein Mutation
 
 ## 7. Closure-Notiz
 
-*Wird bei der Closure gefüllt (Planner, `AGENTS.md` §3.10).*
-
-- **Was hat funktioniert:**
-- **Was ging anders als geplant:**
-- **Steering-Loop-Eintrag:**
-- **Beobachtungs-Register (`../observations/`):**
-- **Folge-Slices:**
-- **Risiken aus §6:**
-- **Drei Paarungen:**
+- **Was hat funktioniert:** Die drei emittierten Commands und die zwei Quell-Kommentare tragen `<Kennung>`; `TestCommands_KeinNummerierterPlatzhalter` liest alle `emit.CommandPaths()` und fällt bei `(slice|welle)-<N+>` und `slice-N`; die Fälle 518 und 519 färben ihn rot, der Wächter bindet allein. Review: keine Findings, 2 INFO; Verifikation bestätigt alle drei DoD-Punkte am echt emittierten Ziel (`docs/reviews/2026-10-06-platzhalter-form-review.md`, `-verifikation.md`).
+- **Was ging anders als geplant:** nichts; die Abgrenzung (Hook-Muster, `slice-mv.sh`, `roadmapDoneLink`) hielt.
+- **Steering-Loop-Eintrag:** benannte Lücke: der Wächter prüft nur die emittierten Commands. Kommentare in `internal/emit/templates.go` und andere emittierte Dateien (etwa der Ersatztext von `NeutralizeRoadmap`, `welle-NN-results.md`) sind ungeprüft; für Werkzeug-Kennungen tragen sie `slice-emittierte-traeger-dateien-tragen-keine-werkzeug-kennung` und `slice-emittierte-dateien-tragen-keine-nicht-aufloesende-kennung`. Die Menge, die `patterns=` im Ziel erkennt, nennt der Command nicht mehr, er verweist auf die Zeile; die Grenze (ein benannter Slice trifft heute kein Muster) trägt `slice-emittierte-commit-pruefung-erkennt-benannte-slices`.
+- **Beobachtungs-Register (`../observations/`):** neu [`BEO-ALL/emittierte-neutralisierung-greift-am-vendorten-stand-nicht`](../observations/BEO-ALL/emittierte-neutralisierung-greift-am-vendorten-stand-nicht/observation.md) (`NeutralizeRoadmap`/`roadmapDoneLink` greift am vendorten Stand nicht, vermutlich toter Code samt `TestNeutralizeRoadmap`), Stand `offen`, ein Beleg. [`emittierter-stand-laeuft-dem-dogfood-voraus`](../observations/BEO-ALL/emittierter-stand-laeuft-dem-dogfood-voraus/observation.md) bekommt keinen Beleg: hier fuhr die Emission die ältere Form, die Gegenrichtung; `abgeschaffte-kennung-in-unveraenderlichem-artefakt` bleibt unberührt (lebende Vorlagen).
+- **Folge-Slices:** keiner neu; getragen von `slice-emittierte-commit-pruefung-erkennt-benannte-slices` und `slice-kennungs-erkennung-traegt-die-zugelassenen-formen`.
+- **Risiken aus §6:** 1 entfallen (skip-if-present, Adopter-Bestand bleibt) · 2 entfallen (Muster verlangt spitze Klammern und Präfix; `MR-<NNN>` ist Gegenprobe, Fall 518/519 rot gesehen) · 3 entfallen (Architect-Verdikt lag vor dem Start, `<Kennung>` blieb).
+- **Drei Paarungen:** Anker: kein `liegt in`-Feld, nichts zu paaren; Folge-Slice: beide genannten Slices existieren in `open/`; Register: die zitierten Pfade existieren und tragen Beleg.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
