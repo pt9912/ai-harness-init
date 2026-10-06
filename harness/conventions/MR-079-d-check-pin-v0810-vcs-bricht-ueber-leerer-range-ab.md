@@ -31,22 +31,72 @@
   sind unverändert.
 - **Strenge-Bilanz — keine Senkung.** Gegenmessung nach
   [`MR-063`](../conventions.md#mr-063--die-gegenmessung-eines-d-check-sprungs-gibt-jedem-aktiven-modul-eine-basis-und-lässt-die-symlinks-stehen)
-  Setzung 2, netzlos, an einer `git archive dd26964c`-Kopie (Angabe nach
+  Setzung 2, netzlos, je Digest eine Kopie (Angabe nach
   [`MR-065`](../conventions.md#mr-065--ein-history-lesender-lauf-einer-d-check-bilanz-nennt-woher-sein-klon-die-objekte-liest)
-  Setzung 1: kein Objektspeicher); die Zahlen trägt die Commit-Message dieses Eintrags
-  ([`MR-051`](../conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)).
+  Setzung 1: kein Objektspeicher). `OLD`/`NEW` sind die Digests von `v0.79.0`/`v0.81.0`.
+
+  **Prüf-Bedingung vor dem Lauf**
+  ([`MR-067`](../conventions.md#mr-067--eine-aufbau-anleitung-nennt-ihre-prüf-bedingung-vor-ihren-kommandos)
+  Setzung 1):
+  - Die Symlinks bleiben stehen: `find .claude/rules -type l | wc -l` in der Kopie ist gleich
+    `git ls-tree dd26964c .claude/rules/ | grep -c '^120000'`, `find .claude/rules -type f` ist leer.
+  - Die alte Kopie trägt `d-check.mk` aus `dd26964c~1`.
+  - In Stufe 3 hat jedes aktive Modul mindestens einen Befund. Die Dogfood-Module nennt
+    `grep -m1 '^modules:' .d-check.yml` (neun), die Ziel-Module dieselbe Zeile im Ziel (sechs).
+
+  **Kommandos.** Gemessen wurde so; die Sonden folgen dem Stand des Baums und werden je Sprung neu
+  geschnitten.
+  - Kopie: `git archive dd26964c | tar -x -C "$K"`. Für die alte Kopie zusätzlich
+    `git show dd26964c~1:d-check.mk > "$K/d-check.mk"`.
+  - Lauf je Stufe: `make -C "$K" docs-check DCHECK_DIGEST=<OLD|NEW>`. Die Befundzeilen liefert
+    `awk -F'\t' 'NF>=3' | sort`. Dann folgen `diff` alt gegen neu und die Verteilung
+    `cut -f3 | sort | uniq -c`.
+  - Stufe 2: `sed -i 's/d-check:ignore/d-check:IGNORIERT-NICHT/g'` über jede `*.md` außer
+    `.harness/baseline/`.
+  - Stufe 3, Dogfood, je Modul eine Sonde:
+    - `links`: eine neue Datei sonde-l3.md unter `docs/` mit totem Ziel und `../../`-Escape.
+    - `anchors`: dieselbe Datei mit erfundenem Anker auf `AGENTS.md`.
+    - `matrix`: `spec/architecture.md` verlinkt [`ADR-0003`](../../docs/plan/adr/0003-go-native-binaries.md), `done/slice-001a-cli-skeleton.md`
+      verlinkt die erste ADR, die ersetzt ist (`superseded`).
+    - `spans`: eine neue Datei sonde-spans.md unter `docs/` mit offenem Code-Span, verschachteltem Link und offener Fence.
+    - `planning`: *Nichts in Arbeit.* unter *Offene Wellen*.
+    - `targets`: die Zeile `make sonde-fantom-ziel-l3` in `harness/README.md`.
+    - `structure`: `## 2. Definition of Done` aus `done/slice-001b-go-gates.md` gestrichen.
+    - `codepaths` und `ids` haben ihre Basis in Stufe 2.
+  - Ziel: `.harness/state/bin/ai-harness-init --lang go` aus `make host-bin` in ein frisches
+    Verzeichnis. Die alte Kopie bekommt Tag und Digest von `v0.79.0` per `sed` in ihr
+    `d-check.mk`. Sonden:
+    - `links`, `anchors` und `spans` wie oben; die Link-Sonde trägt zusätzlich die Kennung der ersten ADR ohne
+      Link (`ids`).
+    - `matrix`: `spec/architecture.md` verlinkt `harness/README.md`.
+    - `structure`: eine Zelle in `harness/README.md` ist um 230 Zeichen verlängert.
 
   | Stufe | `v0.79.0` | `v0.81.0` | `diff` |
   |---|---|---|---|
   | Dogfood unverändert | 2268 Dateien, 0 Befunde | gleich | leer |
   | Marker entwertet | 73 Befunde (36 `codepath-missing`, 37 `id-unlinked`) | gleich | leer |
-  | zusätzlich Sonden (13 Grund-Codes, alle 9 Module mit Basis) | 84 Befunde | gleich | leer |
-  | Ziel `--lang go` unverändert | 20 Dateien, 0 Befunde | gleich | leer |
-  | Ziel mit Sonden (alle 6 Module mit Basis) | 22 Dateien, 9 Befunde | gleich | leer |
+  | zusätzlich Sonden | 84 Befunde | gleich | leer |
+  | Ziel `--lang go` unverändert, auch mit entwerteten Markern | 20 Dateien, 0 Befunde | gleich | leer |
+  | Ziel mit Sonden | 22 Dateien, 9 Befunde | gleich | leer |
+
+  Verteilung der Dogfood-Stufe 3, unter beiden Digests gleich:
+  - je 1: `anchor-missing`, `fence-unclosed`, `gate-phantom`, `matrix-forbidden`,
+    `matrix-inactive`, `planning-drift`, `repo-escape`, `section-missing`, `span-nested-link`,
+    `span-unclosed`, `target-missing`;
+  - 36 `codepath-missing`, 37 `id-unlinked`.
+
+  Das sind 13 Grund-Codes; jedes der neun Module hat eine Basis. Im Ziel trägt jeder der neun
+  Grund-Codes einen Befund: `anchor-missing`, `fence-unclosed`, `id-unlinked`, `matrix-forbidden`,
+  `repo-escape`, `section-cell-oversized`, `span-nested-link`, `span-unclosed`, `target-missing`.
+  Damit haben alle sechs Module eine Basis.
 
   **Keine Erwartungswerte**
   ([`MR-025`](../conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-  Setzung 2); tragend sind die 0 der ersten Stufen und die Gleichheit der Mengen.
+  Setzung 2). Tragend sind die 0 der unveränderten Stufen und die Gleichheit der Mengen.
+  **Versioniert werden die Sonden-Skripte nicht.** Ihre Sonden hängen an Dateien und Abschnitten
+  des jeweiligen Stands, und `MR-063` bindet die Bedingung, nicht ein festes Set. Ein Skript im
+  Baum wäre ein Werkzeug ohne Gate, das mit dem Baum driftet. Das ist ein **akzeptiertes Negativ**:
+  der nächste Sprung baut die Sonden aus der Bedingung und den Kommandos oben neu.
 - **Was sich bewegt — außerhalb der aktiven Module:**
   - **`vcs` bricht über leerer Range selbst ab.** `make doc-immutable RANGE=HEAD..HEAD`:
     `v0.79.0` Exit 0, `0 Befund(e)`; `v0.81.0` Exit 2, `Range-Leerfall … es wurde nichts geprüft`.
@@ -58,17 +108,34 @@
     checkt mit `fetch-depth: 0` aus und ist nicht betroffen.
   - **`commits`** bricht im flachen Klon ab (`Vorfahren nicht lesbar`, Exit 2, wie seit `v0.76.3`)
     und meldet im vollständigen Klon über leerer Range weiter `0 Befund(e)`, Exit 0.
-  - **`hostpaths`** (opt-in, in keiner `modules:`-Liste) meldet unter `--enable hostpaths` 33 → 36;
-    **`targets.makefiles`** nimmt Globs, im Dogfood nicht gesetzt. Beide ohne Gegenstand.
-- **`make history-range-guard` bleibt — Retirement-Check mit Ergebnis.** Herkunft ist
+  - **`hostpaths`** ist opt-in und steht in keiner `modules:`-Liste. Am Arbeitsbaum meldet
+    `docker run --rm --network none -v "$PWD:/repo:ro" ghcr.io/pt9912/d-check@<OLD|NEW> --enable hostpaths`
+    33 → 36 Befunde. Die drei neuen sind `~/…`-Formen in `docs/reviews/**`.
+- **`make history-range-guard` — Retirement-Check, je Ebene.** Herkunft ist
   [`MR-007`](../conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
-  Setzung 3: die auflösbare, aber leere Range lief blind grün. Für `vcs` ist dieser Grund
-  entfallen, für `commits` im vollständigen Klon besteht er (gemessen, oben) — der Wächter behält
-  seinen Gegenstand, im Dogfood an `doc-commits` und im Ziel an beiden vorgebundenen Targets. Vor
-  `vcs` bleibt er als früherer Abbruch ohne Bild-Lauf stehen; den Vertrag in
-  `harness/sensors/history-range-guard.md` hat der Implementer auf diese Lage gezogen. Ihn für
-  `vcs` abzuhängen spart einen `git rev-list`-Aufruf und kostet eine zweite Kettenform —
-  **akzeptiertes Negativ**, kein Folge-Slice.
+  Setzung 3: die auflösbare, aber leere Range lief blind grün. Der Wächter ist kein Gate
+  ([`harness/README.md`](../README.md) §Werkzeuge, *kein Gate*). Ein Rückbau wäre darum keine Senkung
+  nach [`AGENTS.md`](../../AGENTS.md) §3.5; zu prüfen ist allein, ob der Grund entfallen ist.
+  - **Emittiertes Ziel — der Grund besteht, der Wächter bleibt.** Er ist dort an `doc-immutable`
+    **und** `doc-commits` vorgebunden. `commits` meldet im vollständigen Klon über leerer Range
+    `0 Befund(e)`, Exit 0. Gemessen ist das in `harness/sensors/history-range-guard.md`
+    §Im gebootstrappten Ziel — Grenze; den Fall hält `make full-smoke`.
+  - **Dogfood — der Grund ist entfallen, der Wächter bleibt mit zwei anderen Gründen.** Die einzige
+    Bindung ist `adr-immutable: history-range-guard doc-immutable`
+    (`grep -n '^adr-immutable:' Makefile`), also das Modul `vcs`, und `vcs` bricht selbst ab.
+    `doc-commits` hat dort, wo der Grund besteht, weder Wächter noch Aufrufer
+    (`grep -n '^doc-commits:' d-check.mk`, `grep -c doc-commits .github/workflows/*.yml` → 0).
+    Zwei Gründe tragen den Verbleib:
+    - **Der leere Index unter `STAGED=1`.** Nur der Wächter sagt, dass nichts geprüft wurde.
+      Gemessen unter `v0.81.0` bei leerem Index: `make history-range-guard STAGED=1` meldet
+      `--staged ohne gestagte Aenderung — nichts zu pruefen.`, Exit 0. `make doc-immutable STAGED=1`
+      meldet `0 Befund(e)`, Exit 0.
+    - **Der Abbruch vor dem Bild-Lauf.**
+
+    Ein Rückbau gewönne einen `git rev-list`-Aufruf. Er kostete einen Slice über `Makefile`,
+    `ci.yml`, die Sensor-Doku und den Mutations-Fall 325. Dass `doc-commits` im Dogfood
+    unbewacht ist, bleibt ein **akzeptiertes Negativ**: das Ziel hat keinen Aufrufer, und kein Job
+    fährt es.
 - **Kein ADR nötig ([`AGENTS.md`](../../AGENTS.md) §3.5):** jede Bewegung ist eine Verschärfung
   oder ohne Gegenstand; die aktiven Module zeigen gleiche Befundmengen.
 - **Grenze.**
@@ -94,6 +161,8 @@
   Setzung 1 — anders als die bloße Datierung eines Sprungs (Setzung 4 dort).
 - **Auflösungs-Trigger:** permanent, wie
   [`MR-073`](../conventions.md#mr-073--d-check-pin-v0790-links-lookahead-und-referenz-definitionen-standardmäßig-aktiv).
-  **Neu zu prüfen** ist der Verbleib von `make history-range-guard`, sobald `commits` über leerer
-  Range ebenfalls abbricht (dann ist der Retirement-Check oben erneut fällig), und die Aussage über
-  `hostpaths`/`targets.makefiles`, sobald eines davon einen Gegenstand bekommt.
+  **Neu zu prüfen** ist der Verbleib von `make history-range-guard` in drei Fällen. Bricht
+  `commits` über leerer Range ebenfalls ab, entfällt der Grund im Ziel. Meldet `vcs --staged`
+  einen leeren Index selbst, entfällt der erste Dogfood-Grund. Bekommt `doc-commits` im Dogfood
+  einen Aufrufer, wird der Wächter dort vorgebunden. Die Aussage über
+  `hostpaths`/`targets.makefiles` ist neu zu prüfen, sobald eines davon einen Gegenstand bekommt.
