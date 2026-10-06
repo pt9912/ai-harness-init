@@ -52,7 +52,13 @@ grep -rnE '(slice|welle)-<(N|NN|NNN)>|<(slice|welle)-(NN|NNN)' internal/emit/tem
 ```
 
 - `commands/implement-slice.md`: `seit welle-<NN>` und `seit slice-<NNN>` (Herkunfts-Anker-Aufzählung), `evidence/slice-<NNN>.md`
-  (Beleg-Form), `seit slice-<NNN>` statt `seit welle-<NN>` (wellenloser Fall). Dieselbe Datei führt an anderer Stelle schon
+  (Beleg-Form), `seit slice-<NNN>` statt `seit welle-<NN>` (wellenloser Fall), und die Aufzählung der Commit-Kennung
+  (`ADR-NNNN`, `LH-XX-NN`, `MR-NNN`, `slice-N`, Zeile ~48): sie lehrt die Nummernform `slice-N` als gültige Kennung, obwohl die
+  Baseline Slice-Kennungen als Namen vergibt ([`grundlagen-source-precedence.md` §Vergabe](../../../../.harness/baseline/v6.13.0/regelwerk/grundlagen-source-precedence.md#vergabe-woher-die-nächste-kennung-kommt)). Gemessen: die Menge steht allein in der Zeile `patterns=` der
+  emittierten Prüfung (`grep -n 'patterns=' internal/emit/templates/enforce/commit-msg-traceability.sh`; Dogfood-Fassung
+  `harness/tools/commit-msg-traceability.sh` gleich): `(ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3}|slice-[0-9]+)` — ein benannter Slice trifft
+  kein Muster. Der Text bleibt wahr, wenn er nur die Klassen nennt, die so aussehen, und für die Menge auf die Zeile `patterns=` verweist
+  (so [`harness/README.md`](../../../../harness/README.md) §Traceability). Dieselbe Datei führt an anderer Stelle schon
   `slice-<Kennung>` (`make slice-mv SLICE=slice-<Kennung>`): zwei Formen nebeneinander.
 - `commands/close-welle.md`: `seit welle-<NN>` und `seit welle-<NN>` bzw. `seit slice-<NNN>` (Anker-Paarung).
 - `commands/plan-welle.md`: `open/slice-<NN>-<titel>.md`.
@@ -75,9 +81,13 @@ keinen Wächter). Die Lücke ist benannt und wird in DoD (2) geschlossen.
   (`patterns=`) und ihre Tests. *(Sie müssen den Bestand erkennen, den ein Ziel mit nummerierten Slices führt; ein Namens-Muster
   fiele auf ihn zurück. Die Frage, welche Formen eine Erkennung trägt, ist ein anderer Vorgang: Dogfood-Seite
   `slice-kennungs-erkennung-traegt-die-zugelassenen-formen`, die emittierte Seite entscheidet der Architect.)*
-- **`slice-N` in `implement-slice.md` (Commit-Kennung):** die Zeile zählt die Formen auf, die der Hook akzeptiert; sie
-  beschreibt `slice-[0-9]+` und ist deshalb kein Platzhalter für eine Kennung. Ein Umschreiben auf `<Kennung>` sagte zu,
-  der Hook nehme Namen an. *(Beschreibung eines Verhaltens, nicht Form einer Kennung.)*
+- **Das Muster `slice-[0-9]+` im emittierten Hook selbst (`patterns=` in `enforce/commit-msg-traceability.sh`):** der Slice ändert
+  den Text, der die Menge beschreibt, nicht die Menge. *(Anderer Vorgang, Werkzeug statt Text. Der benannte Hook-Slice
+  `slice-werkzeug-commits-tragen-eine-kennung` ([`ADR-0053`](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) Festlegung 4) ist
+  stillgelegt (`done/`, Gegenstand übernommen von `slice-lifecycle-werkzeuge-tragen-die-kennung`) und liefert nur Kennungen in den Werkzeug-Messages;
+  die Erkennung der Formen führt `slice-kennungs-erkennung-traegt-die-zugelassenen-formen` (`open/`), und deren Gegenstand ist die
+  Dogfood-Seite. **Übergabe:** die emittierte Prüfung erkennt benannte Slices ([`MR-057`](../../../../harness/conventions.md#mr-057)-Form) erst, wenn ein Slice sie trägt; dafür
+  fehlt heute ein Träger — der Architect benennt ihn mit dem Verdikt aus dem Start-Trigger.)*
 - **Andere Platzhalter-Klassen:** `MR-<NNN>`, `CO-<NNN>`, `ADR-<NNNN>`, `LH-XX-NN`. *(Ihre Form setzen
   [`MR-000`](../../../../harness/conventions.md#mr-000) und [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md); sie sind keine Slice-/Welle-Kennung.)*
 - **`welle-NN-results.md` in `internal/emit/templates.go` (`roadmapDoneLink`) und `<welle-NN-titel>` im Doc-Kommentar zu
@@ -94,12 +104,15 @@ keinen Wächter). Die Lücke ist benannt und wird in DoD (2) geschlossen.
 - [ ] **(1) Die emittierten Commands und die Quell-Kommentare tragen `<Kennung>`.** Die Stellen aus §1 in
       `commands/implement-slice.md`, `close-welle.md`, `plan-welle.md`, im Doc-Kommentar `internal/emit/templates.go` und im
       Test-Kommentar `commands_test.go` sagen `seit welle-<Kennung>`, `seit slice-<Kennung>`, `evidence/slice-<Kennung>.md`,
-      `open/slice-<Kennung>.md`; die Stellen aus der Abgrenzung bleiben. *Bricht die Zusage, wenn:* eine Stelle bleibt
+      `open/slice-<Kennung>.md`; die Aufzählung der Commit-Kennung in `implement-slice.md` nennt `ADR-NNNN`, `LH-XX-NN`, `MR-NNN` und
+      verweist für die vollständige Menge auf die Zeile `patterns=` von `tools/harness/commit-msg-traceability.sh`, ohne `slice-N`
+      zu nennen; die Stellen aus der Abgrenzung bleiben. *Bricht die Zusage, wenn:* eine Stelle bleibt
       nummeriert (Test aus Punkt 2 rot) oder eine funktionale Stelle wird mitgeändert (die Tests der Erkennungs-Muster färben).
 - [ ] **(2) Ein Wächter hält die Form und ist rot gesehen.** Ein Test in `internal/emit` liest alle emittierten Commands
       (`emit.CommandPaths()`) und fällt bei `(slice|welle)-<N+>` (nummerierter Platzhalter in spitzen Klammern);
-      `slice-N` ohne Klammern (Hook-Beschreibung) und `MR-<NNN>` sind erlaubt. Ein Fall in `test/mutations/` führt
-      einen nummerierten Platzhalter in einen Command zurück (erwartet der Testname), `sed`-Muster gegen den
+      `MR-<NNN>` ist erlaubt. Derselbe Test fällt bei `slice-N` als Kennung (Wort `slice-N` im Command-Text), damit die Nummernform
+      nicht wieder als gültige Kennung gelehrt wird. Ein Fall in `test/mutations/` führt
+      je einen nummerierten Platzhalter und `slice-N` in `implement-slice.md` zurück (erwartet der Testname), `sed`-Muster gegen den
       Quell-Bestand gemessen ([`MR-071`](../../../../harness/conventions.md#mr-071)); der Fall fährt die Stelle, die der Aufrufer benutzt
       (`emit.CommandFile`). Der Test hält die Zusage über die **Menge aller Commands**, nicht über die heutigen drei Stellen
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6): ein vierter nummerierter Platzhalter färbt ihn. *Bricht die Zusage, wenn:* ein Command
@@ -115,7 +128,7 @@ Closure-Notiz mit Lerneintrag · Register fortgeschrieben · Risiko-Ausgänge ·
 
 | Datei | Änderungs-Art | Begründung |
 |---|---|---|
-| `internal/emit/templates/commands/implement-slice.md` | update | DoD (1): vier Stellen |
+| `internal/emit/templates/commands/implement-slice.md` | update | DoD (1): vier Stellen plus die Commit-Kennung-Aufzählung |
 | `internal/emit/templates/commands/close-welle.md` | update | DoD (1): zwei Stellen |
 | `internal/emit/templates/commands/plan-welle.md` | update | DoD (1): eine Stelle |
 | `internal/emit/templates.go` | update (Kommentar) | DoD (1) |
@@ -143,8 +156,8 @@ Zwei beobachtbare Kriterien: `make gates` grün; der neue Test und sein Mutation
 
 - Ein Adopter hat die alte Form in seiner adaptierten Command-Fassung. — **Ausgang:** entfallen: skip-if-present, sein
   Bestand bleibt unberührt; der Lauf schreibt nur an freie Pfade.
-- Das Muster des Wächters trifft eine Hook-Beschreibung (`slice-N`) oder eine andere Platzhalter-Klasse. — **Ausgang:**
-  entfallen: das Muster verlangt spitze Klammern und das Präfix `slice-`/`welle-`; `slice-N` und `MR-<NNN>` gehen durch
+- Das Muster des Wächters trifft eine andere Platzhalter-Klasse. — **Ausgang:**
+  entfallen: das Muster verlangt spitze Klammern und das Präfix `slice-`/`welle-`; `MR-<NNN>` geht durch
   und stehen als Gegenprobe im Test.
 - Die Form `<Kennung>` wird vom Architect anders entschieden. — **Ausgang:** entfallen: der Start-Trigger hält den Plan in
   `open/`, bis die Entscheidung steht; ein anderes Ergebnis ändert die Zielform, nicht den Wächter.
