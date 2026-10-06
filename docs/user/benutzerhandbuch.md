@@ -1,6 +1,6 @@
 # Benutzerhandbuch: ai-harness-init
 
-**Software-Stand:** `v0.2.8` — **vorgefertigte Programme für sechs Plattformen** (linux · macos · windows × amd64 · arm64). Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat`, `hexagonal` oder `hexslice`; bei den beiden geschichteten kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp`, beide auch mit `hexslice`; `hexagonal` liefert heute der Go-Renderer. Fünf Betriebs-Operationen beschreibt [Betriebs-Operationen](#betriebs-operationen). Die geschichtete Bauform benennt Adapter- und Ports-Ordner nach ihren Rollen ([`ADR-0060`](../plan/adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md), `Accepted`: `driving`/`driven`, `ports_inbound`/`ports_outbound` — siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch)); das veröffentlichte `v0.2.8` trägt diese Form.
+**Software-Stand:** `v0.2.8` — vorgefertigte Programme für sechs Plattformen (linux · macos · windows × amd64 · arm64). Siehe [Aufgaben](#4-aufgaben) (Bootstrap, `--lang`, `add-lang`), [`--arch`](#ein-geschichtetes-grundgerüst-wählen---arch) und [Betriebs-Operationen](#betriebs-operationen).
 **Stand:** 2026-10-06
 **Verantwortlich:** ai-harness-init-Team (pt9912)
 
@@ -191,7 +191,7 @@ make gates
 Während des Aufsetzens sehen Sie eine Abschluss-Zeile wie:
 
 ```text
-ai-harness-init: Bootstrap (Baseline v6.0.0 vendored + Doc-Gate + Aggregator + Durchsetzung + Template-Baseline) — --lang=go (Skelett verdrahtet).
+ai-harness-init: Bootstrap (Baseline v6.13.0 vendored + Doc-Gate + Aggregator + Durchsetzung + Template-Baseline) — --lang=go (Skelett verdrahtet).
 ```
 
 Das bedeutet: Regelwerk und Vorlagen liegen im Repository, die Prüfungen sind verdrahtet, und ein lauffähiges Go-Grundgerüst ist eingebaut. `make gates` läuft danach ohne Fehler durch. (Ohne `--lang` steht statt „Skelett verdrahtet“ die Meldung „sprach-agnostisch (doc-only Gate)“ — siehe [Ohne Sprache aufsetzen](#ohne-sprache-aufsetzen-doc-only).)
@@ -224,7 +224,7 @@ Dieser Abschnitt beschreibt die häufigsten Aufgaben Schritt für Schritt.
 
 **Ergebnis:** Das Verzeichnis enthält jetzt Regelwerk, Vorlagen, Prüf-Konfiguration und ein Go-Grundgerüst (siehe [Was wird angelegt](#6-was-wird-angelegt)). Der Platzhalter für den Projektnamen ist durch „Mein Projekt“ ersetzt.
 
-**Hinweise:** Der Aufruf braucht **einmalig** Netzwerk (Regelwerk-Download). `<zielordner>` ist **Pflicht** — ohne ihn bricht der Aufruf mit dem Usage-Text ab, statt still das Verzeichnis einzurichten, in dem er steht; das Ziel muss ein bestehendes Git-Repo sein (`.git` vorhanden), sonst bricht er ebenfalls ab. `--lang` ist **optional** — ohne Sprache setzt das Werkzeug ein rein dokumentgeführtes Repository auf (siehe [Ohne Sprache aufsetzen](#ohne-sprache-aufsetzen-doc-only)). Den Aufruf können Sie gefahrlos wiederholen (siehe [Ein Repository erneut aufsetzen](#ein-repository-erneut-aufsetzen-idempotent)).
+**Hinweise:** Der Aufruf braucht **einmalig** Netzwerk (Regelwerk-Download). `<zielordner>` ist **Pflicht** — ohne ihn bricht der Aufruf mit dem Usage-Text ab, statt still das Verzeichnis einzurichten, in dem er steht; das Ziel muss ein bestehendes Git-Repo sein (`.git` vorhanden), sonst bricht er ebenfalls ab. **Eine vorhandene `Makefile` im Wurzelverzeichnis wird ersetzt** — auch beim ersten Lauf in einem bestehenden Projekt, ohne Meldung; eigene Targets darin gehen verloren. Sichern Sie sie vorher und tragen Sie sie danach als eigene Datei ein. `--lang` ist **optional** — ohne Sprache setzt das Werkzeug ein rein dokumentgeführtes Repository auf (siehe [Ohne Sprache aufsetzen](#ohne-sprache-aufsetzen-doc-only)). Den Aufruf können Sie gefahrlos wiederholen (siehe [Ein Repository erneut aufsetzen](#ein-repository-erneut-aufsetzen-idempotent)).
 
 ### Ohne Projektnamen aufsetzen
 
@@ -294,7 +294,7 @@ ai-harness-init add-lang go apps/api --arch hexagonal
 **Ergebnis — zusätzlich zum flachen Fall:**
 
 - der Code liegt in Schichten. Bei `hexagonal`: `internal/hexagon/core/…` (Fachlogik **und** Anwendungsfall), `internal/hexagon/port/…` (die Schnittstellen nach außen — bewusst **ohne** eigene Importe), `internal/adapter/driven/…` (was der Kern benutzt: Datenbank, Datei, Fremdsystem), `internal/adapter/driving/…` (was den Kern antreibt: CLI, HTTP), dazu `cmd/<binary>/main.go` als Verdrahtungs-Punkt. Bei `hexslice`: `internal/hexagon/domain/…`, `internal/hexagon/application/<bereich>/<use-case>/…` (mit eigenen `ports/`, gegliedert nach `inbound`/`outbound`), `internal/adapters/{driving,driven}/…`, ebenfalls mit `cmd/<binary>/main.go`;
-- **das Architektur-Gate wird mitgeliefert**: `<pfad>/.a-check.yml` (die Schicht-Regeln) und `a-check.mk` (der Prüf-Baustein). `make gates` fährt es ab sofort mit.
+- **das Architektur-Gate wird mitgeliefert**: `<pfad>/.a-check.yml` (die Schicht-Regeln) und `a-check.mk` (der Prüf-Baustein). `make gates` fährt es mit.
 
 Das Architektur-Gate prüft die **Abhängigkeitsrichtung**: Importe zeigen nur nach innen. Ein Verstoß — etwa ein Import aus der Domain in einen Adapter — lässt `make gates` **rot** werden, mit Datei und Zeile:
 
@@ -315,9 +315,9 @@ Die erste sagt: der **Kern** sieht keinen Adapter — er kennt nur seine Ports. 
 
 **Die treibende Seite wird bei `hexagonal` bewusst mitgeprüft** — strenger, als es verbreitete Vorlagen tun, die sie als reinen Verdrahtungs-Bereich freistellen. Der Grund: ein zu strenger Standard meldet sich beim **ersten** Lauf und kostet Sie eine Zeile; ein zu lascher meldet sich **nie** und lässt einen Bereich still ungeprüft. Wollen Sie die Freistellung, tragen Sie in **Ihrer** `.a-check.yml` `"internal/adapter/driving/**"` unter `composition_root` ein — eine Zeile, in einer Datei, die das Werkzeug nie überschreibt.
 
-**Wichtig für die Pflege:** `.a-check.yml` gehört Ihnen — ein erneutes Aufsetzen überschreibt sie nicht. Bei `hexslice` gilt: legen Sie einen **weiteren** Use-Case-Schnitt an, tragen Sie ihn dort nach (je ein Eintrag unter `app` und, falls er eigene Ports hat, unter `ports_inbound` bzw. `ports_outbound` — je nach Richtung, mit eigenem `direction:`). Diese Rollen-Form ist der veröffentlichte Stand: wer das `v0.2.4` heruntergeladen hat, trägt dort die Rollen-Form mit `direction:`. Vergessen Sie es, fällt der neue Code unter keine Schicht: importiert er eine, meldet das Gate `wrong-direction` — importiert er keine, bleibt er unbemerkt ungeprüft. Bei `hexagonal` wachsen neue Dateien in die bestehenden vier Schichten hinein; nachzutragen ist erst, wenn Sie ein **neues** Schicht-Verzeichnis anlegen.
+**Wichtig für die Pflege:** `.a-check.yml` gehört Ihnen — ein erneutes Aufsetzen überschreibt sie nicht. Bei `hexslice` gilt: legen Sie einen **weiteren** Use-Case-Schnitt an, tragen Sie ihn dort nach (je ein Eintrag unter `app` und, falls er eigene Ports hat, unter `ports_inbound` bzw. `ports_outbound` — je nach Richtung, mit eigenem `direction:`). Vergessen Sie es, fällt der neue Code unter keine Schicht: importiert er eine, meldet das Gate `wrong-direction` — importiert er keine, bleibt er unbemerkt ungeprüft. Bei `hexagonal` wachsen neue Dateien in die bestehenden vier Schichten hinein; nachzutragen ist erst, wenn Sie ein **neues** Schicht-Verzeichnis anlegen.
 
-**Grenzen:** `--arch hexslice` liefert für **beide** Zielsprachen, `--arch hexagonal` derzeit nur der **Go**-Renderer. Eine Sprache, deren Renderer die gewählte Bauform nicht kennt (heute `cpp` mit `hexagonal`), endet mit Exit 2 und nennt die Bauformen, die **diese** Sprache kann — statt still ein Grundgerüst ohne Schichten anzulegen; eine unbekannte Bauform ebenso, mit Nennung der verfügbaren Werte.
+**Grenzen:** `--arch hexslice` liefert für **beide** Zielsprachen, `--arch hexagonal` nur der **Go**-Renderer. Eine Sprache, deren Renderer die gewählte Bauform nicht kennt (`cpp` mit `hexagonal`), endet mit Exit 2 und nennt die Bauformen, die **diese** Sprache kann — statt still ein Grundgerüst ohne Schichten anzulegen; eine unbekannte Bauform ebenso, mit Nennung der verfügbaren Werte.
 
 ### Das aufgesetzte Repository prüfen
 
@@ -410,7 +410,7 @@ Alle fünf sind **keine Gates**: `make gates` fährt keine von ihnen mit. `archi
 
 | Option | Pflicht | Bedeutung |
 |---|---|---|
-| `--lang <sprache>` | nein | Zielsprache des Grundgerüsts (Kurzform für „aufsetzen + `add-lang(<sprache>, .)`“). Ohne sie: dokument-only. Derzeit unterstützt: `go`, `cpp` (C++ per CMake + clang-tidy). |
+| `--lang <sprache>` | nein | Zielsprache des Grundgerüsts (Kurzform für „aufsetzen + `add-lang(<sprache>, .)`“). Ohne sie: dokument-only. Unterstützt: `go`, `cpp` (C++ per CMake + clang-tidy). |
 | `--arch <arch>` | nein | Bauform des Grundgerüsts: `flat` (Standard), `hexagonal` (drei Schichten) oder `hexslice` (Schichten plus Use-Case-Schnitte); die beiden geschichteten bringen das Architektur-Gate mit. Wirkt nur zusammen mit `--lang`. Siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch). |
 | `--name <name>` | nein | Projektname; ersetzt den Platzhalter `<Projektname>` in den Vorlagen. |
 | `-h`, `--help` | nein | Hilfe anzeigen und beenden. |
@@ -514,7 +514,7 @@ Die Meldung für `.githooks/commit-msg` lautet anders: sie nennt die mitgeliefer
 
 **Kennungs-Form der `.d-check.yml`.** Die mitgelieferte Prüf-Konfiguration der Dokumentation — die `.d-check.yml`, die `make docs-check` liest — kennt Slices und Welle-Pläne als **Namen** (`slice-<name>`, `welle-<name>`), nicht als Nummern. Im Block `matrix` stehen dafür die Klassen `slice` und `welle` (eine Klasse ist eine Gruppe von Dateien, für die eine gemeinsame Regel gilt) mit den Präfix-Token `slice-` und `welle-` (das Wort, an dem die Prüfung eine Erwähnung erkennt). Die Regel `spec-straten → welle` verbietet den drei Dokumenten unter `spec/` (den „Spec-Straten"), eine Welle-Datei zu verlinken — ebenso wie eine Architektur-Entscheidung, einen Slice, den Adaptions-Block (`harness/conventions.md` samt `harness/conventions/`) oder etwas außerhalb der Spec. Das Kennungs-Muster der Architektur-Entscheidungen im Block `ids` nimmt ein **optionales Bereichs-Kürzel** (`ADR-<Nummer>` ebenso wie `ADR-<Bereich>-<Nummer>`, etwa `ADR-IDX-0004`; die Nummer vierstellig) und verlangt für beide einen Link; die Klasse `adr` deckt neben `docs/plan/adr/[0-9]*.md` auch `docs/plan/adr/[A-Z]*-[0-9]*.md`. Ein frisch aufgesetztes Repository meldet mit `make docs-check` `0 Befund(e)`; eine Kennung mit Bereichs-Kürzel ohne Link im Fließtext färbt es rot (Meldung `id-unlinked`: Kennung ohne Link), ebenso ein Link aus `spec/architecture.md` auf eine Datei `welle-<name>.md` (Meldung `matrix-forbidden`: Verweis nicht erlaubt). Diese Form trägt die Datei, die der Lauf an einem freien Pfad schreibt; eine vorhandene `.d-check.yml` ändert ein erneutes Aufsetzen nicht (siehe [Ein Repository erneut aufsetzen](#ein-repository-erneut-aufsetzen-idempotent)).
 
-Die `.d-check.yml` gehört Ihnen, sobald sie da ist: eine vorhandene Datei bleibt beim erneuten Aufsetzen **unberührt, ohne Meldung** — auch ein Repository, das mit einer früheren Fassung des Programms aufgesetzt wurde, behält seine. Diese vier Positionen tragen Sie dann von Hand nach: im Block `matrix` unter `classes:` das Präfix-Token `slice-` an der Klasse `slice` und `welle-` an der Klasse `welle` sowie den Glob `docs/plan/adr/[A-Z]*-[0-9]*.md` in der Klasse `adr`; im Block `matrix` unter `rules:` die Regel `{from: spec-straten, to: welle, allow: false}`; im Block `ids` unter `patterns:` das Muster `ADR-([A-Z]+-)?\d{4}`. Dazu kommen das Modul `structure` in der Liste `modules:` und der Block `structure:` am Ende der Datei (nächster Absatz).
+Die `.d-check.yml` gehört Ihnen, sobald sie da ist: eine vorhandene Datei bleibt beim erneuten Aufsetzen **unberührt, ohne Meldung**. Fehlt einer vorhandenen Datei die oben beschriebene Form, tragen Sie diese vier Positionen von Hand nach: im Block `matrix` unter `classes:` das Präfix-Token `slice-` an der Klasse `slice` und `welle-` an der Klasse `welle` sowie den Glob `docs/plan/adr/[A-Z]*-[0-9]*.md` in der Klasse `adr`; im Block `matrix` unter `rules:` die Regel `{from: spec-straten, to: welle, allow: false}`; im Block `ids` unter `patterns:` das Muster `ADR-([A-Z]+-)?\d{4}`. Dazu kommen das Modul `structure` in der Liste `modules:` und der Block `structure:` am Ende der Datei (nächster Absatz).
 
 **Zellenlänge der Prüf-Ziel-Tabellen.** Die mitgelieferte `.d-check.yml` führt das Modul `structure` mit einer Regel auf `harness/README.md`: Unter der Überschrift `## Sensors (Feedback-Gates)` tragen die Zellen der Spalten `Vertrag` und `Tut was` höchstens 200 Zeichen; die Spalte `Bindung` hat keine Grenze. Prosa, die länger ist, gehört in eine eigene Datei `harness/sensors/<target>.md` <!-- d-check:ignore (Platzhalter-Pfad) -->, die Zelle verweist dann darauf. Den Ordner `harness/sensors/` legt das Aufsetzen an (mit einer `.gitkeep`-Datei). Eine längere Zelle färbt `make docs-check` rot.
 
@@ -528,9 +528,9 @@ Alle Fehler von `ai-harness-init` beginnen auf der Fehlerausgabe mit `Fehler:` u
 
 ### Fehler: `unbekannte Sprache "…"; verfuegbar: cpp, go`
 
-**Ursache:** Sie haben eine Sprache angegeben, für die es (noch) kein Grundgerüst gibt.
+**Ursache:** Sie haben eine Sprache angegeben, für die es kein Grundgerüst gibt.
 
-**Lösung:** Verwenden Sie eine der aufgelisteten Sprachen. Derzeit sind das `go` und `cpp`:
+**Lösung:** Verwenden Sie eine der aufgelisteten Sprachen, `go` oder `cpp`:
 
 ```bash
 ai-harness-init --lang cpp <zielordner>
@@ -576,7 +576,7 @@ ai-harness-init add-lang go apps/api
 ## 8. Häufige Fragen (FAQ)
 
 **Welche Sprachen werden unterstützt?**
-Derzeit `go` und `cpp` (C++). Das Werkzeug ist auf weitere Sprachen ausgelegt; sie kommen ohne Änderung der Bedienung hinzu. Die jeweils aktuelle Liste zeigt eine unbekannte Sprache in ihrer Fehlermeldung.
+`go` und `cpp` (C++). Die Liste zeigt auch die Fehlermeldung zu einer unbekannten Sprache.
 
 **Muss ich Go installieren?**
 Nein. Sowohl das Bauen des Werkzeugs als auch die Prüfungen im aufgesetzten Repository laufen über Docker.
@@ -594,7 +594,7 @@ Mit `ai-harness-init add-lang <sprache> <pfad>`. Der Befehl ist wiederholbar; me
 Ja — für sechs Plattformen (Linux, macOS, Windows × Intel/AMD und ARM). Das ist der empfohlene Weg, siehe [Installation](#2-installation-und-zugriff). Den Bau aus dem Quellcode brauchen Sie nur für einen Stand ohne Versions-Kennzeichnung.
 
 **Verändert `ai-harness-init` meine bestehenden Dateien?**
-Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vorhandene Dateien dieser Art werden nie überschrieben; ebenso bleiben die anpassbaren mitgelieferten Dateien wie die Prüf-Konfiguration `.d-check.yml` unberührt, solange sie vorhanden sind. Die **kanonischen** Teile (Regelwerk, `Makefile` mit Bausteinen, Hook-Skripte unter `.claude/hooks/`) werden bei jedem Lauf neu auf den Soll-Stand geschrieben; hatten Sie dort eine Datei von Hand geändert, wird die Änderung beim Re-Lauf überschrieben. Welche Datei in welche Klasse fällt, steht unter [Ein Repository erneut aufsetzen](#ein-repository-erneut-aufsetzen-idempotent).
+Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vorhandene Dateien dieser Art werden nie überschrieben. **Das gilt nicht für eine `Makefile` im Wurzelverzeichnis:** sie wird ersetzt, auch beim ersten Lauf in einem bestehenden Projekt und ohne Meldung; eigene Targets darin gehen verloren; ebenso bleiben die anpassbaren mitgelieferten Dateien wie die Prüf-Konfiguration `.d-check.yml` unberührt, solange sie vorhanden sind. Die **kanonischen** Teile (Regelwerk, `Makefile` mit Bausteinen, Hook-Skripte unter `.claude/hooks/`) werden bei jedem Lauf neu auf den Soll-Stand geschrieben; hatten Sie dort eine Datei von Hand geändert, wird die Änderung beim Re-Lauf überschrieben. Welche Datei in welche Klasse fällt, steht unter [Ein Repository erneut aufsetzen](#ein-repository-erneut-aufsetzen-idempotent).
 
 ---
 
