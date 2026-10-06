@@ -13,7 +13,7 @@
   `docs/plan/adr/`, wo [`AGENTS.md`](../../AGENTS.md) §3.4 unverändert gilt; **nicht** die emittierte
   Ebene.
 - **Ersetzt-Baseline-Regel:**
-  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v6.13.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
+  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v6.16.0/regelwerk/grundlagen-harness-dateien.md#harnessconventionsmd-als-konventionsspeicher)
   §harness/conventions.md als Konventionsspeicher — dieselbe Zelle, die
   [`MR-020`](../conventions.md#mr-020--aufgehobener-eintrag-behält-kopf-und-zeiger-statt-rumpf) für den Rumpf eines
   aufgehobenen Eintrags trifft, hier an zwei anderen Punkten: *„Einträge werden nie

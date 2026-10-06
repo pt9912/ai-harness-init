@@ -10,7 +10,7 @@
   sind keine Abweichung ([`ADR-0074`](../../docs/plan/adr/0074-spec-5-fliesstext-klassen-ort-und-lh-bezug-spalte.md)
   Festlegung 3, Abweichungen 5 und 6) und stehen als Zeilen der Spezifikation.
 - **Ersetzt-Baseline-Regel:**
-  [`modul-15-observability.md`](../../.harness/baseline/v6.13.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)
+  [`modul-15-observability.md`](../../.harness/baseline/v6.16.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)
   §Span-/Audit-Attribut-Regeln, Punkt *Audit-Span-Schema* — *„Pflicht-Minimum: Slice-ID,
   Agent-Rolle, Cache-Status, `requirement.id` — jede Abweichung davon begründest du."*
 - **Adaption:** Der Cache-Status steht in der Spezifikation als **Optional**, nicht als Pflicht:
