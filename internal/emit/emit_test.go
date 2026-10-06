@@ -10,7 +10,7 @@ import (
 )
 
 // TestDCheckConfig_EntschiedeneModulListe haelt die entschiedene Modul-Liste fest: die
-// eingebettete .d-check.yml aktiviert genau [links, anchors, ids, matrix, spans] — nicht
+// eingebettete .d-check.yml aktiviert genau [links, anchors, ids, matrix, spans, structure] — nicht
 // "mindestens zwei Module". Jedes der drei neu aktivierten ist im frischen Ziel gemessen gruen UND
 // faengt sein Gegenbeispiel (harness/tools/full-smoke.sh); dieser Test bindet nur die
 // LISTE, nicht das Verhalten (das braucht Docker und liegt in full-smoke). codepaths
@@ -23,8 +23,8 @@ import (
 // [Geschichte], nicht die weitere Dogfood-Liste und nicht leer.
 func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 	yml := emit.DCheckConfig()
-	if !strings.Contains(yml, "modules: [links, anchors, ids, matrix, spans]") {
-		t.Errorf("eingebettete .d-check.yml aktiviert nicht genau [links, anchors, ids, matrix, spans]:\n%s", yml)
+	if !strings.Contains(yml, "modules: [links, anchors, ids, matrix, spans, structure]") {
+		t.Errorf("eingebettete .d-check.yml aktiviert nicht genau [links, anchors, ids, matrix, spans, structure]:\n%s", yml)
 	}
 	sawPrefixPattern := false
 	// letzteKlasse haelt die LETZTE Klassen-Zeile — nur innerhalb von matrix.classes:,
@@ -435,4 +435,49 @@ func mkVar(t *testing.T, mkPath, name string) string {
 	}
 	t.Fatalf("%s nicht gefunden in %s", name, mkPath)
 	return ""
+}
+
+// TestDCheckConfig_ZellenlaengeStructure haelt die structure-Position der eingebetteten
+// .d-check.yml fest (LH-QA-01): das Modul steht in modules:, und der Block waehlt
+// "## Sensors (Feedback-Gates)" in harness/README.md mit genau den Spalten Vertrag und
+// Tut was, je cell-max-chars: 200, ohne exempt-paths. Dass beide Spaltennamen in der
+// vendorten harness/README.template.md als Kopfzeilen stehen, haelt
+// test/emit-zellenlaenge-spalten.bats (der Go-Test-Build-Kontext traegt .harness nicht).
+func TestDCheckConfig_ZellenlaengeStructure(t *testing.T) {
+	yml := emit.DCheckConfig()
+	var modulZeile string
+	var block []string
+	inBlock := false
+	for _, line := range strings.Split(yml, "\n") {
+		if strings.HasPrefix(line, "modules:") {
+			modulZeile = line
+		}
+		if line != "" && line[0] != ' ' && line[0] != '#' {
+			inBlock = strings.HasPrefix(line, "structure:")
+			continue
+		}
+		if inBlock {
+			block = append(block, strings.TrimSpace(line))
+		}
+	}
+	if !strings.Contains(modulZeile, "structure") {
+		t.Errorf("structure fehlt in der modules:-Liste (%q): das Ziel prueft keine Zelle", modulZeile)
+	}
+	text := strings.Join(block, "\n")
+	for _, want := range []string{
+		`- files: "harness/README.md"`,
+		`section: "## Sensors (Feedback-Gates)"`,
+		"- name: \"Vertrag\"\ncell-max-chars: 200",
+		"- name: \"Tut was\"\ncell-max-chars: 200",
+	} {
+		if !strings.Contains(text, want) {
+			t.Errorf("der structure-Block traegt %q nicht:\n%s", want, text)
+		}
+	}
+	if strings.Contains(text, "exempt-paths") {
+		t.Errorf("der structure-Block traegt exempt-paths (eine Senkung):\n%s", text)
+	}
+	if n := strings.Count(text, "- name:"); n != 2 {
+		t.Errorf("der structure-Block fuehrt %d Spalten statt genau Vertrag und Tut was:\n%s", n, text)
+	}
 }

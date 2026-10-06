@@ -7,7 +7,7 @@ scan:
   # .harness/**: tool-interne Ablage (gefetchtes Sprachskelett-Staging) —
   # keine Adopter-Doku, vom Doc-Gate ausgenommen.
   ignore: ["**/*.template.md", ".tmp/**", ".harness/**"]
-modules: [links, anchors, ids, matrix, spans]
+modules: [links, anchors, ids, matrix, spans, structure]
 ids:
   patterns:
     - {regex: 'ADR-([A-Z]+-)?\d{4}', target: docs/plan/adr/, link-policy: always}
@@ -24,7 +24,7 @@ ids:
 # Die Baseline-Vorlage fuehrt fuer die slice-Klasse ein token: in der Ziffern-Form;
 # hier steht das Praefix slice-, weil grundlagen-source-precedence.md §Vergabe Slice-
 # und Welle-Kennungen als Namen setzt: das Praefix faengt den Namen und die Nummer.
-# Fuenf Positionen gehen darueber hinaus:
+# Sechs Positionen gehen darueber hinaus:
 # Die welle-Klasse samt dem Praefix welle- und die Regeln {from: adr, to: welle} und
 # {from: spec-straten, to: welle}: Die Matrix-Tabelle setzt die Spalte Welle in der
 # ADR-Zeile und in allen drei Straten-Zeilen; die Klasse steht vor aussen, also faengt
@@ -60,11 +60,21 @@ ids:
 # einem Spec-Stratum hilft Umformulieren, denn das Regelwerk kennt dort keine
 # ausgenommene Sektion; der Marker wirkt dort mechanisch ebenfalls und ist dann ein
 # Umgehen, das nur der Reviewer faengt.
+# Die sechste Position ist das Modul structure, das die Baseline-Vorlage nur als Wort der
+# Modul-Liste fuehrt, mit einer Zellenregel auf harness/README.md
+# (Block am Ende der Datei): Die Zellen der Spalten Vertrag und Tut was unter
+# "## Sensors (Feedback-Gates)" tragen hoechstens 200 Zeichen; laengere Prosa gehoert nach
+# harness/sensors/<target>.md. Der Selektor ist der Abschnitt der Vorlage
+# harness/README.template.md, der beide Tabellen traegt; die Dogfood-Fassung waehlt einen
+# Unterabschnitt, den die Vorlage nicht fuehrt. Die Schwelle 200 liegt ueber dem laengsten
+# Zellsatz der Vorlage (80 Zeichen), damit ein Rot aus Adopter-Inhalt kommt und nicht aus
+# der emittierten Prosa; die Spalte Bindung traegt keine Grenze, Kennungs-Listen wachsen
+# mit den Bindungen. Kein exempt-paths: ein Eintrag dort ist eine Senkung.
 # Diese Datei wird nur an einem freien Pfad geschrieben: ein Ziel mit vorhandener
 # .d-check.yml behaelt seine Fassung und bekommt keine dieser Positionen. Der Nachzug
 # ist Handarbeit nach dieser Liste — die Praefix-Token slice- und welle-, die Regel
-# {from: spec-straten, to: welle}, das segment-tolerante ids-Muster fuer ADR und der
-# Bereichs-Praefix-Glob der adr-Klasse; die Regeln mit dem Adaptions-Block als Quelle
+# {from: spec-straten, to: welle}, das segment-tolerante ids-Muster fuer ADR, der
+# Bereichs-Praefix-Glob der adr-Klasse und der structure-Block; die Regeln mit dem Adaptions-Block als Quelle
 # fuehrt die Vorlage nicht.
 # Eine Position bleibt bewusst hinter der Vorlage zurueck:
 # token: 'ADR-\d{4}' auf der adr-Klasse geht NICHT mit — das
@@ -118,3 +128,14 @@ matrix:
   # seiner eigenen Kopie; bis dahin ist die Deckung die strengere Vorgabe.
   exempt-paths: ["docs/plan/adr/README.md", "docs/reviews/**"]
   exclude-sections: [Geschichte]
+# structure (hermetisch, kein git, opt-in): die Zellen der zwei Spalten begrenzen die Prosa
+# der Gate- und Werkzeug-Tabelle; Herkunft und Schwelle stehen im Kopfkommentar oben.
+structure:
+  - files: "harness/README.md"
+    section: "## Sensors (Feedback-Gates)"
+    table:
+      column:
+        - name: "Vertrag"
+          cell-max-chars: 200
+        - name: "Tut was"
+          cell-max-chars: 200
