@@ -255,7 +255,8 @@ targets:
 # GRENZE, keine Regel: die vier Paare ADR-0026/ADR-0027/ADR-0030/ADR-0034 sind je
 # EXTENSIONAL GESCHLOSSEN auf ihr eigenes Paar; die drei Baum-Eintraege aus ADR-0039 sind
 # EXTENSIONAL GESCHLOSSEN auf genau die drei dort genannten Quell-Baeume und den einen
-# `refs`-Wert `.harness/baseline/**`. Jeder weitere Eintrag, jedes weitere Glob und jede
+# `refs`-Wert `.harness/baseline/**`; die zwei Paare aus ADR-0079 sind EXTENSIONAL
+# GESCHLOSSEN auf ihre zwei Quell-ADRs. Jeder weitere Eintrag, jedes weitere Glob und jede
 # Verbreiterung ist eine neue Senkung nach AGENTS.md 3.5 und braucht ihre eigene ADR — auch
 # dann, wenn sie dieselbe Bedingung erfuellt.
 ignore-refs:
@@ -334,6 +335,19 @@ ignore-refs:
     refs: [".harness/baseline/**"]
   # Deckung: 2
   - in: "docs/plan/planning/observations/**"
+    refs: [".harness/baseline/**"]
+  # Achtes und neuntes Paar, eine Entscheidung zu zweit (ADR-0079 Festlegung 1): zwei Accepted-ADRs
+  # tragen Markdown-Links in den vendored Baum, die mit dem Tag-Wechsel sterben; die Quelldateien
+  # sind nach AGENTS.md 3.4 eingefroren. `refs` ist baum-weit aus demselben Grund wie bei ADR-0039
+  # Festlegung 1. Die Restbreite ist strukturell null: eine eingefrorene Datei bekommt keine
+  # zweite Referenz.
+  # GRENZE, keine Regel: EXTENSIONAL GESCHLOSSEN auf genau diese zwei Paare (ADR-0079). Jeder
+  # weitere Eintrag ist eine neue Senkung nach AGENTS.md 3.5 und braucht seine eigene ADR.
+  # Deckung: 1
+  - in: "docs/plan/adr/0075-begruendungen-zu-spec-5-sammel-adr.md"
+    refs: [".harness/baseline/**"]
+  # Deckung: 2
+  - in: "docs/plan/adr/0076-ausgaenge-zu-spec-5-luecken-ebene-und-traeger-offener-saetze.md"
     refs: [".harness/baseline/**"]
 # Kennungen sind linkpflichtig (auch in Inline-Code, link-policy: always) —
 # "klickbar zur Quelle" als gemessenes Property. Literal-schwere Artefakte
