@@ -16,4 +16,4 @@ gegen *die Änderung als ganze* liegt bei
 bei [`slice-werkzeug-commits-tragen-eine-kennung`](../../../done/slice-werkzeug-commits-tragen-eine-kennung.md).
 Träger der Wirkung bleibt der Commit-Pfad selbst; die Kennungs-Erkennung, die ihn liest, ist der
 Gegenstand von
-[`slice-kennungs-erkennung-traegt-die-zugelassenen-formen`](../../../in-progress/slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md).
+[`slice-kennungs-erkennung-traegt-die-zugelassenen-formen`](../../../next/slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md).
