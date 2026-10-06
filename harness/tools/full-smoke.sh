@@ -3426,6 +3426,49 @@ echo "full-smoke: Zeilenenden — ein Klon mit core.autocrlf=true traegt in den 
 	e2e_abdeckung "LH-FA-01 LH-FA-06" "Ein Klon mit core.autocrlf=true traegt in den Verzeichnissen der Emission kein CR: der git-eigene Traeger laeuft ueber seine Shebang-Zeile, die Byte-Pruefung des vendored Baums endet mit OK, der Command-Guard blockt das letzte Wort seiner Wortliste; die Kontrolle mit core.autocrlf=false traegt keines" "zeilenenden_im_klon"
 zeilenenden_im_klon
 
+# Der Ordner harness/sensors/ entsteht im Ziel (LH-FA-01, ADR-0054 Festlegung 1): die README
+# des Ziels nennt harness/sensors/<target>.md, der Bootstrap legt den Ort an. Gemessen wird
+# der Lauf, nicht der Ordner danach: .gitkeep liegt nach dem Bootstrap in git (git add ohne
+# -f nimmt sie an, ist sie ignoriert, endet der Aufruf rot), und ein zweiter Lauf laesst eine
+# vom Adopter belegte Datei an diesem Pfad unberuehrt. NICHT gemessen: dass der Ordner im Ziel
+# bestehen bleibt — kein Waechter haelt seine Existenz (internal/emit/templates.go).
+sensors_ordner_im_ziel() {
+	local w="" repo="" out="" traeger="harness/sensors/.gitkeep"
+	w="$(mktemp -d -p "$tmprepo_kf")"
+	chmod 755 "$w"
+	repo="$w/ziel"
+	git init -q "$repo"
+	if ! out="$( "$tmpbin/ai-harness-init" --lang go --name sensors-ordner "$repo" 2>&1 )"; then
+		echo "full-smoke: FEHLER — Sensors-Ordner: der Bootstrap (--lang go) ist NICHT Exit 0." >&2
+		printf '%s\n' "$out" >&2
+		exit 1
+	fi
+	if [ ! -f "$repo/$traeger" ]; then
+		echo "full-smoke: FEHLER — Sensors-Ordner: $traeger entsteht im Ziel NICHT — der Verweis harness/sensors/<target>.md der README des Ziels zeigt auf keinen Ort." >&2
+		exit 1
+	fi
+	git -C "$repo" add -- "$traeger"
+	if ! git -C "$repo" ls-files --error-unmatch -- "$traeger" >/dev/null 2>&1; then
+		echo "full-smoke: FEHLER — Sensors-Ordner: $traeger steht nach dem Bootstrap NICHT in git ls-files (ignoriert?)." >&2
+		exit 1
+	fi
+	printf 'adopter-eigen\n' >"$repo/$traeger"
+	if ! out="$( "$tmpbin/ai-harness-init" --lang go --name sensors-ordner "$repo" 2>&1 )"; then
+		echo "full-smoke: FEHLER — Sensors-Ordner: der zweite Bootstrap-Lauf ist NICHT Exit 0." >&2
+		printf '%s\n' "$out" >&2
+		exit 1
+	fi
+	if [ "$(cat "$repo/$traeger")" != "adopter-eigen" ]; then
+		echo "full-smoke: FEHLER — Sensors-Ordner: der zweite Lauf ueberschrieb die vom Adopter belegte Datei $traeger (skip-if-present verletzt)." >&2
+		exit 1
+	fi
+	echo "full-smoke: Sensors-Ordner: $traeger entsteht im Ziel, steht in git ls-files, und eine vom Adopter belegte Datei bleibt im zweiten Lauf unberuehrt; nicht gemessen: der Bestand des Ordners nach dem Bootstrap."
+}
+
+echo "full-smoke: Sensors-Ordner — harness/sensors/ entsteht im frischen Ziel, ein belegter Pfad bleibt im zweiten Lauf ..."
+	e2e_abdeckung "LH-FA-01" "Der Bootstrap legt den Ordner harness/sensors/ an (.gitkeep in git ls-files) und laesst eine vom Adopter belegte Datei dort im zweiten Lauf unberuehrt; NICHT gemessen: dass der Ordner im Ziel bestehen bleibt, und ein Inhalt jenseits des Traegers" "sensors_ordner_im_ziel"
+sensors_ordner_im_ziel
+
 # slice-038 (ADR-0007 Idempotenz-Klassifikation): ein ZWEITER Init-Lauf ist IDEMPOTENT
 # (Exit 0 statt Kollisions-Refuse). Konvergente Dateien (tool-Infra) werden kanonisch neu
 # geschrieben (heilen Drift); skip-if-present-Dateien (Adopter-Boden) bleiben unberuehrt.
