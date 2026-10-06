@@ -26,7 +26,7 @@ Auslöser: Auftrag des Auftraggebers — ein Adopter ist durch den `slice-mv`-Fe
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912)
 
 **Autor:** Planner. **Datum:** 2026-10-06.
 
