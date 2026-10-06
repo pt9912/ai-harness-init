@@ -107,3 +107,50 @@
   Für Pin und Stufe gibt es keinen Fall. Die Kopplung des Pins halten
   `TestDefaultImage_MatchesCanonical`/`TestDefaultDigest_MatchesCanonical` in `make test`, die Stufe hält
   `make full-smoke`. Die Digest-gegen-Tag-Lücke ist in `MR-079` §Grenze und Plan §6 benannt.
+
+## Nachrunde
+
+Gegenstand: Architect-Commit `2bc04f31` (`MR-079`, F-1/F-2) und Implementer-Commit `d90d016b`
+(`Makefile`, F-3).
+
+- **F-1 behoben.** Der Retirement-Check ist nach Ebene getrennt, die Dogfood-Bindung stimmt mit der
+  Verdrahtung überein. Bei leerem Index (`git diff --cached --quiet` → Exit 0) nachgemessen:
+  `make history-range-guard STAGED=1` → `--staged ohne gestagte Aenderung — nichts zu pruefen.`, Exit 0;
+  `make doc-immutable STAGED=1` → `2270 Datei(en) geprüft, 0 Befund(e)`, Exit 0.
+- **F-2 behoben.** Prüf-Bedingung, Kommandos, Sonden und Grund-Code-Verteilung stehen im Eintrag.
+  Stufe 1 nach seinem Kommando nachgefahren (`git archive` + `make -C "$K" docs-check DCHECK_DIGEST=…`):
+  `dd26964c` unter `v0.81.0` und, mit `d-check.mk` aus `dd26964c~1`, unter `v0.79.0` je
+  `2268 Datei(en) geprüft, 0 Befund(e)`; Symlinks `10 / 10`. Am heutigen `HEAD` unter `v0.81.0`:
+  2270 Dateien, 0 Befunde.
+- **F-3 behoben.** Der Kommentar an `adr-immutable` (`Makefile:296-302`) beschreibt den Stand unter
+  `v0.81.0`, die beiden Aussagen decken sich mit den Messungen oben und im ersten Teil.
+- **Kopf-Marken:** `git diff --stat 7845860f HEAD -- harness/conventions/MR-06[68]* harness/conventions/MR-073*`
+  ist leer; seit `7845860f~1` trägt der Diff je nur die eine Marken-Zeile.
+
+### N-1 — LOW — die `hostpaths`-Zeile nennt einen falschen Fundort, und der Eintrag bewegt seine eigene Zahl
+
+- `quelle`: `MR-025` Setzung 1, `MR-058`
+- `pfad`: `MR-079`, Unterpunkt **`hostpaths`** (Zeile 111-113)
+- `befund`: Die Zeile sagt 33 → 36 und *„Die drei neuen sind `~/…`-Formen in `docs/reviews/**`“*. Nach
+  dem Kommando des Eintrags am heutigen Baum gefahren, `diff` der sortierten Befundzeilen alt/neu:
+  `v0.79.0` 33, `v0.81.0` 37. Neu sind `docs/plan/planning/done/slice-081-baum-tauschen-pin-ziehen.md:459`,
+  zwei Zeilen in `docs/reviews/2026-09-27-*` und `MR-079` Zeile 113 selbst (der `~/…` im eigenen
+  Text). Damit liegt einer der drei vorherigen Funde nicht unter `docs/reviews/**`, und der Eintrag
+  hebt seinen eigenen Messwert schon an seinem Commit von 36 auf 37. Die Bilanz trägt das nicht, weil
+  `hostpaths` kein aktives Modul ist.
+- `verifizierbar`: ja (das `docker run … --enable hostpaths` des Eintrags, je Digest)
+- `klasse`: Messung, die ihr eigener Vorgang bewegt
+
+### N-2 — LOW — der Auflösungs-Trigger verweist auf eine Aussage über `targets.makefiles`, die der Eintrag nicht mehr trägt
+
+- `quelle`: `MR-079` Auflösungs-Trigger
+- `pfad`: `MR-079` Zeile 168
+- `befund`: `2bc04f31` streicht den Satz zu `targets.makefiles` (Globs, im Dogfood nicht gesetzt) aus
+  *„Was sich bewegt“*. Der Trigger sagt weiter, *„die Aussage über `hostpaths`/`targets.makefiles`“*
+  sei neu zu prüfen. `grep -n 'targets.makefiles' harness/conventions/MR-079-*.md` → nur Zeile 168.
+  Der Trigger hat für `targets.makefiles` damit keinen Gegenstand im Eintrag.
+- `verifizierbar`: ja (der `grep`)
+- `klasse`: Kürzung ohne Nachzug des Verweises
+
+`make gates`: ein Lauf am Ende über dem Baum mit dieser Nachrunde; das Ergebnis steht in der
+Commit-Message.
