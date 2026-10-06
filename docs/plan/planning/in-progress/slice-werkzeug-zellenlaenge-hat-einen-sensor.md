@@ -93,7 +93,7 @@ einen weiteren Eintrag **dieser Ausnahme-Liste**; die neue Regel trägt keine. E
 
 ## 2. Definition of Done
 
-- [ ] **(1) Die Regel steht und ist grün.** Ein `structure`-Eintrag in
+- [x] **(1) Die Regel steht und ist grün.** Ein `structure`-Eintrag in
       [`.d-check.yml`](../../../../.d-check.yml): `files: harness/README.md`,
       `section: "## Sensors (Feedback-Gates)"`, `table.column` mit `Vertrag` (`cell-max-chars: 150`) und
       `Tut was` (`cell-max-chars: 260`), kein `exempt-paths`, kein `hint`. Der Kommentar am Eintrag nennt
@@ -102,7 +102,7 @@ einen weiteren Eintrag **dieser Ausnahme-Liste**; die neue Regel trägt keine. E
       *Bricht die Zusage, wenn:* eine Zelle der Spalte die Grenze überschreitet oder der Spalten-Kopf
       umbenannt wird. Beides ist an der realen `harness/README.md` rot zu sehen (Punkt 2), nicht an einer
       Nachbildung.
-- [ ] **(2) Das Rot ist an der realen Quelle gesehen, die Lage steht in
+- [x] **(2) Das Rot ist an der realen Quelle gesehen, die Lage steht in
       [`harness/sensors/docs-check.md`](../../../../harness/sensors/docs-check.md) §Modul `structure`.** In
       einer Kopie außerhalb des Repos: je eine Zelle über der Grenze in `Tut was` und in `Vertrag`, und der
       umbenannte Kopf, jeweils mit gelesener Meldung (`section-cell-oversized` mit Spalte und Zeichenzahl,
@@ -150,15 +150,13 @@ in `docs-check.md` mit gelesener Meldung. Dazu ein Lerneintrag in einer der drei
 
 ## 7. Closure-Notiz
 
-*Wird bei der Closure gefüllt (Planner, `AGENTS.md` §3.10).*
-
-- **Was hat funktioniert:**
-- **Was ging anders als geplant:**
-- **Steering-Loop-Eintrag:**
-- **Beobachtungs-Register (`../observations/`):**
-- **Folge-Slices:**
-- **Risiken aus §6:**
-- **Drei Paarungen:**
+- **Was hat funktioniert:** Die `structure`-Regel (260 `Tut was`, 150 `Vertrag`) steht in `.d-check.yml` und ist an der realen `harness/README.md` rot gesehen: zu lange Zelle je Spalte, umbenannter Kopf, Grenzlage 257/256 und 149/148. Review ein LOW (behoben), Verifikation bestätigt beide DoD-Punkte (`docs/reviews/2026-10-06-zellenlaenge-dogfood-review.md`, `-verifikation.md`). Die Grenzzeilen 260/261 und 150/151 fuhren Implementer und Reviewer, nicht der Verifier.
+- **Was ging anders als geplant:** nichts; die Lage am Pin widerlegte die Plan-Aussage des Vorgängers (kein Sensor) und steht in `docs-check.md`.
+- **Steering-Loop-Eintrag:** neuer Sensor: die Zellenlängen-Regel; benannte Lücken: (1) kein Dauer-Wächter, `make mutate` führt für `docs-check` kein Fehlschlag-Muster, die Zusage trägt die Sonde; (2) die Schwelle begrenzt Wachstum, nicht Kürze (Median 59, Grenze 260); (3) die Spalte `Bindung` ist unbegrenzt.
+- **Beobachtungs-Register (`../observations/`):** [`BEO-ALL/sensor-schranke-wird-durch-tabellenwachstum-unscharf`](../observations/BEO-ALL/sensor-schranke-wird-durch-tabellenwachstum-unscharf/observation.md): zweiter Beleg (`evidence/slice-werkzeug-zellenlaenge-hat-einen-sensor.md`), Zähler 2, Stand `offen`; der Slice baut eine Schranke derselben Klasse, nicht die, die der Eintrag fordert, darum kein Ausgang.
+- **Folge-Slices:** [`slice-zellenlaenge-sensor-geht-ins-ziel`](../open/slice-zellenlaenge-sensor-geht-ins-ziel.md) (bestehend, Start-Trigger mit diesem `done/` erfüllt).
+- **Risiken aus §6:** 1 entfallen (gewollt, im Plan begründet; die Regel meldet jeden Zusatz) · 2 weiter offen (Register, siehe oben).
+- **Drei Paarungen:** Anker: kein `liegt in`-Feld, nichts zu paaren; Folge-Slice: der genannte existiert in `open/`; Register: der zitierte Pfad existiert und trägt Beleg.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
