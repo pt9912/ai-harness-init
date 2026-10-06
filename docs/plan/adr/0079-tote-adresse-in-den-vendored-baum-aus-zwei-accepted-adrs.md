@@ -1,6 +1,6 @@
 # ADR-0079: Die zwei `Accepted`-ADRs mit Adresse in den vendored Baum bekommen je ein Referenz-Paar — namentlich, baum-weit
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-10-06
 
@@ -101,3 +101,4 @@ auf, ist das Re-Evaluierungs-Trigger 1.
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-10-06 | **Proposed** | Architect-Lauf im Sprung `v6.13.0` → `v6.16.0`; offen für die Entscheidung des Auftraggebers |
+| 2026-10-06 | **Accepted** | Weisung des Auftraggebers vom 2026-10-06 ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1: Beleg ist die Weisung; eine Reviewer-Konsistenzrunde liegt nicht vor) |
