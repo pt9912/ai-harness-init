@@ -100,8 +100,11 @@ das `v6.13.0`-Verzeichnis fehlt; die Inline-Pfade sieht kein Gate
 
 Drei slice-eigene Punkte, einer je Achse (Adresse · Adaptions-Eintrag · Vorlage).
 
-- [ ] **1 — Jeder Träger des Tags steht auf `v6.16.0`, und keine lebende Adresse bleibt auf
-      `v6.13.0`.**
+- [x] **1 — Jeder Träger des Tags steht auf `v6.16.0`, und keine lebende Adresse bleibt auf
+      `v6.13.0`.** Abgehakt mit verschobenem Kriterium für 1.4 (§7, Planner-Entscheidung): die drei
+      Links des Kommandos liegen in [`ADR-0075`](../../adr/0075-begruendungen-zu-spec-5-sammel-adr.md)/[`ADR-0076`](../../adr/0076-ausgaenge-zu-spec-5-luecken-ebene-und-traeger-offener-saetze.md)
+      und sind nach [`ADR-0079`](../../adr/0079-tote-adresse-in-den-vendored-baum-aus-zwei-accepted-adrs.md)
+      als `ignore-refs`-Paare gedeckt; `make docs-check` → 0 Befunde.
       1. Baum über [`make vendor-baseline`](../../../../harness/sensors/vendor-baseline.md) aus dem
          verifizierten Release-Asset (einmal Netz, [`MR-007`](../../../../harness/conventions.md#mr-007)),
          `v6.13.0/` entfernt; `make baseline-verify` meldet `v6.16.0 OK` (die Dateizahl ist kein
@@ -123,7 +126,7 @@ Drei slice-eigene Punkte, einer je Achse (Adresse · Adaptions-Eintrag · Vorlag
       der die Rolle nennt (§3.8): `AGENTS.md`, `harness/conventions*`, `harness/migration.md` —
       Architect; `.harness/skills/reviewer.md` — Reviewer; `.claude/commands/` — die ausführende
       Rolle ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)).
-- [ ] **2 — Die Freshness-Review ist über alle aktiven Einträge gefahren**
+- [x] **2 — Die Freshness-Review ist über alle aktiven Einträge gefahren**
       (`ls harness/conventions/*.md | wc -l` → **77**, kein Erwartungswert): die acht geänderten
       Regelwerk-Dateien als Volltext am Tag `v6.16.0`, geordnet `v6.14.0` → `v6.14.1` → `v6.15.0` →
       `v6.16.0` ([ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md) Festlegung 2), die Kandidaten aus Festlegung 3 zuerst; jeder betroffene
@@ -131,22 +134,23 @@ Drei slice-eigene Punkte, einer je Achse (Adresse · Adaptions-Eintrag · Vorlag
       (Delta-Inventur je Release, abgearbeitete Liste, Stichprobe, Tag/Datum/sha256 für die Buchung
       nach [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
       Festlegung 2); die Ausgänge schreibt der Architect.
-- [ ] **3 — Der Vorlagen-Bericht `docs/migrations/v6.16.0.md` liegt vor**, in der Form von <!-- d-check:ignore (die Datei entsteht mit Liefer-Punkt 3) -->
+- [x] **3 — Der Vorlagen-Bericht `docs/migrations/v6.16.0.md` liegt vor**, in der Form von <!-- d-check:ignore (die Datei entsteht mit Liefer-Punkt 3) -->
       [`harness/migration.md`](../../../../harness/migration.md) §5: je Vorlage eine Zeile
       (`find .harness/baseline/v6.16.0/templates -name '*.template.md' | wc -l`), das Delta zwischen
       den zwei vendorten Bäumen am Tausch-Commit gemessen, die bestehenden Instanzen als Ist-Maßstab
       ([`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) Festlegung 2).
-- [ ] `make gates` grün über dem Liefer-Stand; `make full-smoke` endet EXIT 0.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün über dem Liefer-Stand; `make full-smoke` endet EXIT 0
+      ([Verifikation](../../../reviews/2026-10-06-sprung-v6160-verifikation.md) DoD 4).
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update (Architect-Commit): §Baseline und §Adoptierte Konventions-Quellen in
+- [x] Doku-Update (Architect-Commit): §Baseline und §Adoptierte Konventions-Quellen in
       [`harness/conventions.md`](../../../../harness/conventions.md) mit Zeiger auf [ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md);
       Sprung-Zeile in [`harness/migration.md`](../../../../harness/migration.md) §1.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap, die Datei existiert nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap, die Datei existiert nicht.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen prüft die nächste Welle-Closure — das Repo fährt Wellen
       (`ls docs/plan/planning/welle-*.md | wc -l` → **2**).
 
@@ -203,25 +207,81 @@ und eigenem Commit ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
 
 - **Sprungweite treibt die Kosten** — vier Releases; `baseline-sprungweite-treibt-kosten` steht bei
   2 Belegen. Ein dritter macht ihn zur Lücke mit eigenem
-  Folge-Slice. — **Ausgang:** offen bis zur Closure.
+  Folge-Slice. — **Ausgang:** *weiter offen* → Register, dritter Beleg (§7).
 - **Tag-tragende Adresse überlebt den Tausch nicht** — `tag-tragende-adresse-ueberlebt-den-baseline-tausch-nicht`
   bei 2 Belegen; Liefer-Punkt 1.4/1.5
-  fängt es. — **Ausgang:** offen bis zur Closure.
+  fängt es. — **Ausgang:** *weiter offen* → Register, dritter Beleg (§7).
 - **sha256 aus Klon oder Notiz statt am Asset** — Liefer-Punkt 1.2, zweites Netz ist die Sperre von
-  `make vendor-baseline`. — **Ausgang:** offen bis zur Closure.
+  `make vendor-baseline`. — **Ausgang:** *entfallen* — am Asset gemessen, Kommando im Tausch-Commit
+  `f39b62d9`; `make regelwerk-check` → 0 Befund(e).
 - **[`MR-076`](../../../../harness/conventions.md#mr-076) wird im Durchgang vorzeitig aufgehoben** —
-  gegen [ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md) Festlegung 4. — **Ausgang:** entfallen, wenn er bei der Closure aktiv ist.
-- **Release-Tag vor dem `targets`-Vorgang** (§4). — **Ausgang:** weiter offen über die Closure
-  hinaus, bis `slice-targets-modul-im-emittierten-doc-gate` in `done/` liegt.
+  gegen [ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md) Festlegung 4. — **Ausgang:** *entfallen* — der Eintrag ist bei der Closure aktiv (Datei unter `harness/conventions/` vorhanden).
+- **Release-Tag vor dem `targets`-Vorgang** (§4). — **Ausgang:** *weiter offen* über die Closure
+  hinaus, bis `slice-targets-modul-im-emittierten-doc-gate` in `done/` liegt (§7).
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+**Rolle:** Planner · **Datum:** 2026-10-06
+
+- **Was hat funktioniert:** Sechs Träger stehen auf `v6.16.0`, die Pin- und Mess-Tag-Wächter
+  wurden an der realen Quelle rot gesehen, `make regelwerk-check` (Netz) → 0 Befund(e)
+  ([Verifikation](../../../reviews/2026-10-06-sprung-v6160-verifikation.md) DoD 1). Die
+  Freshness-Review führt [`MR-076`](../../../../harness/conventions.md#mr-076) als *widerspricht*,
+  und der Rückbau liegt beim Folge-Slice. Der Vorlagen-Bericht trägt seine Ausgänge. Die
+  Review-Befunde M-1..M-3 sind in `1844159a` behoben.
+- **Was ging anders als geplant:** Zwei `Accepted`-ADRs ([`ADR-0075`](../../adr/0075-begruendungen-zu-spec-5-sammel-adr.md),
+  [`ADR-0076`](../../adr/0076-ausgaenge-zu-spec-5-luecken-ebene-und-traeger-offener-saetze.md))
+  tragen drei Links in den vendored Baum. Sie brachen mit dem Tausch und sind nicht nachziehbar
+  (§3.4). Gedeckt sind sie durch [`ADR-0079`](../../adr/0079-tote-adresse-in-den-vendored-baum-aus-zwei-accepted-adrs.md)
+  (zwei `ignore-refs`-Paare, `9b909aff`).
+- **Planner-Entscheidung — verschobenes Abnahmekriterium (DoD 1.4, Closure-Trigger 1):** Das
+  Link-Kommando aus §1 liefert **3**. Damit gilt 1.4 als erfüllt, wenn jeder verbleibende Link eine
+  eingefrorene Fundstelle mit `ignore-refs`-Paar nach der Entscheidung oben ist und `make docs-check` 0 Befunde
+  meldet. Der DoD-Wortlaut bleibt stehen, die Abweichung steht hier. Die zweite Hälfte von 1.4
+  (*Tausch- und Nachzugs-Commit in einem Push*) ist erfüllt: Der Push reicht bis `fc172962`
+  (`git log origin/main -1`).
+- **Planner-Entscheidung — Review I-1 (schreibende Rolle für Slice-Pläne):** Die Frage wird
+  **nicht** geregelt, es ist keine ADR nötig. Ein reiner Adress-Nachzug in einem änderbaren Plan
+  verschiebt keine Abnahme. Die Grenze, die zählt, zieht [`AGENTS.md`](../../../../AGENTS.md)
+  §3.10 schon: DoD-Punkt, Closure-Trigger und Out-of-Scope ändert nur der Planner. Für Pfade in
+  änderbaren Artefakten sagt §3.11, dass der Bewegende sie nachzieht. Das ist ein akzeptiertes
+  Negativ. Neu zu prüfen ist die Frage, sobald ein fremder Rollen-Commit in einem Plan mehr als
+  Adressen ändert. Dann schreibt der Architect die ADR in der Linie
+  [`ADR-0024`](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)/[`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md).
+- **Offene Bedingung — Release-Sperre:** Bis `slice-targets-modul-im-emittierten-doc-gate` in
+  `done/` liegt, wird kein Release-Tag geschnitten
+  ([ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md) Festlegung 5). Kein Sensor
+  hält das, Träger ist der Release-Schnitt. Ins Register geht die Bedingung nicht: Es gibt kein
+  Auftreten, das ein Beleg zählen könnte.
+- **Steering-Loop-Eintrag:** *Geschärfte Regel*. Ein Sprung misst vor dem Tausch auch die
+  eingefrorenen Links in den vendored Baum und legt ihre Deckung (Referenz-Paar per ADR) **vor**
+  den Tausch, nach [`AGENTS.md`](../../../../AGENTS.md) §3.11 *„die Entscheidung gehört vor den
+  Move"*. Ein Feld `liegt in` gibt es nicht, weil mit diesem Slice nichts verkörpert ist. Die
+  Klasse zählt im Register (unten).
+- **Beobachtungs-Register (`../observations/`):** Für jede der zwei Klassen gibt es einen
+  weiteren Beleg, und beide erreichen damit **3×**:
+  [`BEO-ALL/baseline-sprungweite-treibt-kosten`](../observations/BEO-ALL/baseline-sprungweite-treibt-kosten/observation.md) ·
+  [`BEO-ALL/tag-tragende-adresse-ueberlebt-den-baseline-tausch-nicht`](../observations/BEO-ALL/tag-tragende-adresse-ueberlebt-den-baseline-tausch-nicht/observation.md).
+  Der Stand bleibt `offen`, was zwischen dem dritten Beleg und dem Lese-Schritt zulässig ist
+  (Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtungs-Register). Den Ausgang
+  (*verkörpert* / *geplant* / *gestrichen*) weist der Lese-Schritt der nächsten Welle-Closure zu,
+  denn das Repo fährt Wellen. Die Verkörperung geht dabei Planner → Architect.
+- **Folge-Slices:** Neu angelegt ist keiner. Die Pläne
+  [`slice-targets-modul-im-emittierten-doc-gate`](../open/slice-targets-modul-im-emittierten-doc-gate.md) und
+  [`slice-gliederung-der-instanzen-ohne-vorlagen-delta`](../open/slice-gliederung-der-instanzen-ohne-vorlagen-delta.md)
+  sind durch `v6.16.0` inhaltlich überholt (Welle 159 bzw.
+  [`docs/migrations/v6.16.0.md`](../../../migrations/v6.16.0.md)). Adresse dafür ist
+  [`slice-offene-plaene-gegen-den-neuen-stand`](../open/slice-offene-plaene-gegen-den-neuen-stand.md)
+  (`open/`). Er bindet die Sichtung, schreibt aber keinen Bestand um (sein §1). Die zwei Pläne sind
+  darum die Gegenbeispiele für seinen Rot-Punkt (DoD 3) und kein Auftrag zum Umschreiben. Die vier
+  übrigen Folge-Slices aus §1 liegen in `open/`.
+- **Trigger-Audit:** Carveouts: keiner neu und keiner berührt. Bootstrap-aware Gates: keines
+  berührt. ADR: [ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md) und
+  [ADR-0079](../../adr/0079-tote-adresse-in-den-vendored-baum-aus-zwei-accepted-adrs.md) sind
+  `Accepted`, Re-Evaluierungs-Trigger 5 der ersten hängt an der Release-Sperre oben. Hard Rules:
+  keine mit Auflösungs-Trigger aus diesem Vorgang.
+- **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

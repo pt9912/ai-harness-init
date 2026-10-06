@@ -1,0 +1,2 @@
+**Vorgang:** slice-sprung-auf-v6160-wird-vollzogen
+**Fund:** Vor dem Tausch trugen 146 Markdown-Links und 113 Inline-Code-Pfade in lebenden Artefakten den Tag `v6.13.0` (Kommandos im Plan §1). Die Links fielen, als das Verzeichnis verschwand. Drei davon liegen in eingefrorenen ADRs, sind nicht nachziehbar und bekamen erst nach dem Tausch eine Deckung durch [`ADR-0079`](../../../../../../../docs/plan/adr/0079-tote-adresse-in-den-vendored-baum-aus-zwei-accepted-adrs.md) (zwei `ignore-refs`-Paare). Die Inline-Pfade sah kein Gate.

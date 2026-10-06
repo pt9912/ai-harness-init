@@ -1,0 +1,2 @@
+**Vorgang:** slice-sprung-auf-v6160-wird-vollzogen
+**Fund:** Der Sprung `v6.13.0` → `v6.16.0` umfasst wieder vier Releases in einem Zug (`v6.14.0`, `v6.14.1`, `v6.15.0`, `v6.16.0`; 22 Dateien, Wellen 154–159, [`ADR-0078`](../../../../../../../docs/plan/adr/0078-ziel-fassung-regiert-den-sprung-v6160.md) §Kontext). Der Durchgang läuft als Delta-Walkthrough je Release über 77 aktive Einträge. Er brauchte eine zweite ADR ([`ADR-0079`](../../../../../../../docs/plan/adr/0079-tote-adresse-in-den-vendored-baum-aus-zwei-accepted-adrs.md)) und schnitt fünf Folge-Slices.
