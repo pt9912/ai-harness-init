@@ -1,7 +1,7 @@
 # Benutzerhandbuch: ai-harness-init
 
-**Software-Stand:** `v0.2.7` — **vorgefertigte Programme für sechs Plattformen** (linux · macos · windows × amd64 · arm64). Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat`, `hexagonal` oder `hexslice`; bei den beiden geschichteten kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp`, beide auch mit `hexslice`; `hexagonal` liefert heute der Go-Renderer. Vier Betriebs-Operationen beschreibt [Betriebs-Operationen](#betriebs-operationen). Die geschichtete Bauform benennt Adapter- und Ports-Ordner nach ihren Rollen ([`ADR-0060`](../plan/adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md), `Accepted`: `driving`/`driven`, `ports_inbound`/`ports_outbound` — siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch)); das veröffentlichte `v0.2.7` trägt diese Form.
-**Stand:** 2026-10-05
+**Software-Stand:** `v0.2.8` — **vorgefertigte Programme für sechs Plattformen** (linux · macos · windows × amd64 · arm64). Inhaltlich: **phasierter** Bootstrap (Init sprach-agnostisch, `--lang` optional; Sprachmodule per `add-lang`, wiederholbar/Mono-Repo; **idempotenter** Re-Lauf) und **Bauform-Achse** `--arch` (`flat`, `hexagonal` oder `hexslice`; bei den beiden geschichteten kommt das Architektur-Gate mit). Zielsprachen `go` und `cpp`, beide auch mit `hexslice`; `hexagonal` liefert heute der Go-Renderer. Fünf Betriebs-Operationen beschreibt [Betriebs-Operationen](#betriebs-operationen). Die geschichtete Bauform benennt Adapter- und Ports-Ordner nach ihren Rollen ([`ADR-0060`](../plan/adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md), `Accepted`: `driving`/`driven`, `ports_inbound`/`ports_outbound` — siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch)); das veröffentlichte `v0.2.8` trägt diese Form.
+**Stand:** 2026-10-06
 **Verantwortlich:** ai-harness-init-Team (pt9912)
 
 ---
@@ -70,7 +70,7 @@ Eine lokale Go-Installation ist **nicht** nötig — alles läuft über Docker.
 
 ### Das Werkzeug bereitstellen
 
-Es gibt **drei Wege**. Empfohlen ist der **Download** — fertige Programme für sechs Plattformen; **aktuell ausgeliefert wird `v0.2.7`**. Den Bau aus dem Quellcode brauchen Sie nur, wenn Sie einen Stand **ohne** Versions-Kennzeichnung verwenden wollen. Für macOS und Linux steht der dritte Weg über das **Homebrew-Tap** bereit (siehe [Weg C](#weg-c--über-ein-homebrew-tap-macos-linux)).
+Es gibt **drei Wege**. Empfohlen ist der **Download** — fertige Programme für sechs Plattformen; **aktuell ausgeliefert wird `v0.2.8`**. Den Bau aus dem Quellcode brauchen Sie nur, wenn Sie einen Stand **ohne** Versions-Kennzeichnung verwenden wollen. Für macOS und Linux steht der dritte Weg über das **Homebrew-Tap** bereit (siehe [Weg C](#weg-c--über-ein-homebrew-tap-macos-linux)).
 
 #### Weg A — fertiges Programm herunterladen (empfohlen)
 
@@ -335,7 +335,7 @@ make gates
 
 **Ein bereits aufgesetztes Repository geklont — kein eigener `ai-harness-init`-Lauf.** Haben Sie ein Repository geklont, das jemand anderes (oder eine CI) bereits aufgesetzt hat, brauchen Sie keinen eigenen Lauf: `make gates` funktioniert unverändert, denn die Gates prüfen nur Docker und den versionierten Inhalt.
 
-**Was dabei fehlt:** Der **Träger** — die `ai-harness-init`-Programmdatei selbst, die das Repository für zwei der vier [Betriebs-Operationen](#betriebs-operationen) (`archive-welle`, `span-report`) braucht — liegt in einem **gitignorierten** Zustands-Bereich (`.harness/state/bin/`) und reist deshalb **nicht** mit einem Klon. `make gates` bleibt davon unberührt, ebenso `make span-clean`, das den Träger gar nicht anfasst. `make archive-welle`/`make span-report` melden nach einem frischen Klon: *„der Traeger liegt nicht … dieses Repo … nicht"* — kein Fehler, kein rotes Gate, nur eine Aussage über den fehlenden Träger.
+**Was dabei fehlt:** Der **Träger** — die `ai-harness-init`-Programmdatei selbst, die das Repository für zwei der fünf [Betriebs-Operationen](#betriebs-operationen) (`archive-welle`, `span-report`) braucht — liegt in einem **gitignorierten** Zustands-Bereich (`.harness/state/bin/`) und reist deshalb **nicht** mit einem Klon. `make gates` bleibt davon unberührt, ebenso `make span-clean`, das den Träger gar nicht anfasst. `make archive-welle`/`make span-report` melden nach einem frischen Klon: *„der Traeger liegt nicht … dieses Repo … nicht"* — kein Fehler, kein rotes Gate, nur eine Aussage über den fehlenden Träger.
 
 **Wie der Träger zurückkommt:** `make traeger-fetch` holt ihn aus dem gepinnten Release nach — **einmalig** Netzwerk für diesen Aufruf, danach funktionieren `archive-welle` und `span-report` ebenfalls.
 
@@ -388,9 +388,9 @@ SKEL_GO_VERSION=1.26.4 ai-harness-init --lang go --name "Mein Projekt" <zielordn
 
 ### Betriebs-Operationen
 
-**Voraussetzung:** Ein aufgesetztes Repository. Docker braucht nur `traeger-fetch` — der Transport läuft im gepinnten Bild. Von den drei übrigen rufen `archive-welle` und `span-report` den bereits abgelegten **Träger** (die `ai-harness-init`-Programmdatei im gitignorierten Zustands-Bereich `.harness/state/bin/`) direkt auf; `span-clean` braucht weder den Träger noch Docker, es räumt nur den lokalen Erfassungs-Bestand weg.
+**Voraussetzung:** Ein aufgesetztes Repository. Docker braucht nur `traeger-fetch` — der Transport läuft im gepinnten Bild. Von den vier übrigen rufen `archive-welle` und `span-report` den bereits abgelegten **Träger** (die `ai-harness-init`-Programmdatei im gitignorierten Zustands-Bereich `.harness/state/bin/`) direkt auf; `span-clean` braucht weder den Träger noch Docker, es räumt nur den lokalen Erfassungs-Bestand weg; `slice-mv` braucht weder den Träger noch Docker, es arbeitet mit `git` auf dem versionierten Baum.
 
-Alle vier sind **keine Gates**: `make gates` fährt keine von ihnen mit. `archive-welle` und `span-report` melden fehlenden Träger, statt rot zu färben (siehe [Ein bereits aufgesetztes Repository geklont](#das-aufgesetzte-repository-prüfen)); `traeger-fetch` legt ihn bei Bedarf erst ab; `span-clean` prüft den Träger gar nicht — sein Rezept löscht bedingungslos.
+Alle fünf sind **keine Gates**: `make gates` fährt keine von ihnen mit. `archive-welle` und `span-report` melden fehlenden Träger, statt rot zu färben (siehe [Ein bereits aufgesetztes Repository geklont](#das-aufgesetzte-repository-prüfen)); `traeger-fetch` legt ihn bei Bedarf erst ab; `span-clean` prüft den Träger gar nicht — sein Rezept löscht bedingungslos.
 
 | Kommando | Tut was |
 |---|---|
@@ -398,6 +398,7 @@ Alle vier sind **keine Gates**: `make gates` fährt keine von ihnen mit. `archiv
 | `make archive-welle WELLE=<welle-id>` | Archiviert die Zeitdokumente einer geschlossenen Welle (Slice-Dateien, Welle-Plan, Review-Reports) und committet den Vorgang im versionierten Baum. `WELLE=altbestand` archiviert die wellenlosen Slices samt ihren Review-Reports unter `done/altbestand/`; er ist die Untergrenze vor der ersten Wellen-Archivierung. Die Sperre `haenger` (Verweise auf verschwindende Review-Reports) besteht auch unter `altbestand` fort. Fehlt der Träger, schreibt das Kommando nichts und sagt das. |
 | `make span-report` | Zeigt eine Token-Bilanz je Rolle aus dem lokalen Erfassungs-Bestand — ein reiner, netzloser Bericht. Fehlt der Träger, meldet das Kommando das als Aussage über den Leser, nicht über den Bestand. |
 | `make span-clean` | Entfernt den lokalen Erfassungs-Bestand. Läuft nur auf **ausdrücklichen** Aufruf; kein Automatismus räumt ihn sonst auf. |
+| `make slice-mv SLICE=slice-<Kennung> TO=<open\|next\|in-progress\|done>` | Wechselt den Lifecycle-Zustand eines Slice: verschiebt die Datei per `git mv`, committet den reinen Move als eigenen Commit und zieht danach die Verweise auf die Datei und in ihr nach — als zweiten Commit, falls einer anfällt. Verlangt einen sauberen Arbeitsbaum. `SLICE` ist der Dateiname mit oder ohne `.md`; der exakte Name gewinnt, auch wenn ein anderer Slice mit ihm beginnt. Nur ohne exakten Treffer gilt ein Präfix; zwei Treffer brechen ab, statt zu raten. |
 
 **Ergebnis:** Ein frischer Klon hat den Träger nicht (er ist gitignoriert); `make traeger-fetch` legt ihn ab, danach funktionieren `archive-welle` und `span-report` ohne weiteres Netzwerk. `span-clean` funktioniert unabhängig davon, mit oder ohne Träger.
 
@@ -465,7 +466,8 @@ mein-projekt/
 ├── d-check.mk                Prüf-Ziel der Dokumentations-Prüfung (make docs-check)
 ├── spec/                     Anforderungen und Architektur (Vorlagen)
 ├── harness/                  Einstiegs- und Konventions-Dokumente (Vorlagen)
-│   └── mk/                   Prüf-Bausteine: Doc-Gate, Regelwerk-Prüfung, Schutz-Hooks
+│   ├── mk/                   Prüf-Bausteine: Doc-Gate, Regelwerk-Prüfung, Schutz-Hooks
+│   └── sensors/              Prosa zu einem Prüf-Ziel, die nicht in eine Tabellenzelle passt (anfangs leer)
 ├── docs/plan/                Planung: Architektur-Entscheidungen, Slices, Roadmap, Beobachtungs-Register
 ├── tools/harness/            Hilfsskripte des Repositorys
 ├── .claude/                  Schutz-Hooks (Command-Guard, Gate-Nachweis) + Arbeitsabläufe
@@ -512,7 +514,11 @@ Die Meldung für `.githooks/commit-msg` lautet anders: sie nennt die mitgeliefer
 
 **Kennungs-Form der `.d-check.yml`.** Die mitgelieferte Prüf-Konfiguration der Dokumentation — die `.d-check.yml`, die `make docs-check` liest — kennt Slices und Welle-Pläne als **Namen** (`slice-<name>`, `welle-<name>`), nicht als Nummern. Im Block `matrix` stehen dafür die Klassen `slice` und `welle` (eine Klasse ist eine Gruppe von Dateien, für die eine gemeinsame Regel gilt) mit den Präfix-Token `slice-` und `welle-` (das Wort, an dem die Prüfung eine Erwähnung erkennt). Die Regel `spec-straten → welle` verbietet den drei Dokumenten unter `spec/` (den „Spec-Straten"), eine Welle-Datei zu verlinken — ebenso wie eine Architektur-Entscheidung, einen Slice, den Adaptions-Block (`harness/conventions.md` samt `harness/conventions/`) oder etwas außerhalb der Spec. Das Kennungs-Muster der Architektur-Entscheidungen im Block `ids` nimmt ein **optionales Bereichs-Kürzel** (`ADR-<Nummer>` ebenso wie `ADR-<Bereich>-<Nummer>`, etwa `ADR-IDX-0004`; die Nummer vierstellig) und verlangt für beide einen Link; die Klasse `adr` deckt neben `docs/plan/adr/[0-9]*.md` auch `docs/plan/adr/[A-Z]*-[0-9]*.md`. Ein frisch aufgesetztes Repository meldet mit `make docs-check` `0 Befund(e)`; eine Kennung mit Bereichs-Kürzel ohne Link im Fließtext färbt es rot (Meldung `id-unlinked`: Kennung ohne Link), ebenso ein Link aus `spec/architecture.md` auf eine Datei `welle-<name>.md` (Meldung `matrix-forbidden`: Verweis nicht erlaubt). Diese Form trägt die Datei, die der Lauf an einem freien Pfad schreibt; eine vorhandene `.d-check.yml` ändert ein erneutes Aufsetzen nicht (siehe [Ein Repository erneut aufsetzen](#ein-repository-erneut-aufsetzen-idempotent)).
 
-Die `.d-check.yml` gehört Ihnen, sobald sie da ist: eine vorhandene Datei bleibt beim erneuten Aufsetzen **unberührt, ohne Meldung** — auch ein Repository, das mit einer früheren Fassung des Programms aufgesetzt wurde, behält seine. Diese vier Positionen tragen Sie dann von Hand nach: im Block `matrix` unter `classes:` das Präfix-Token `slice-` an der Klasse `slice` und `welle-` an der Klasse `welle` sowie den Glob `docs/plan/adr/[A-Z]*-[0-9]*.md` in der Klasse `adr`; im Block `matrix` unter `rules:` die Regel `{from: spec-straten, to: welle, allow: false}`; im Block `ids` unter `patterns:` das Muster `ADR-([A-Z]+-)?\d{4}`.
+Die `.d-check.yml` gehört Ihnen, sobald sie da ist: eine vorhandene Datei bleibt beim erneuten Aufsetzen **unberührt, ohne Meldung** — auch ein Repository, das mit einer früheren Fassung des Programms aufgesetzt wurde, behält seine. Diese vier Positionen tragen Sie dann von Hand nach: im Block `matrix` unter `classes:` das Präfix-Token `slice-` an der Klasse `slice` und `welle-` an der Klasse `welle` sowie den Glob `docs/plan/adr/[A-Z]*-[0-9]*.md` in der Klasse `adr`; im Block `matrix` unter `rules:` die Regel `{from: spec-straten, to: welle, allow: false}`; im Block `ids` unter `patterns:` das Muster `ADR-([A-Z]+-)?\d{4}`. Dazu kommen das Modul `structure` in der Liste `modules:` und der Block `structure:` am Ende der Datei (nächster Absatz).
+
+**Zellenlänge der Prüf-Ziel-Tabellen.** Die mitgelieferte `.d-check.yml` führt das Modul `structure` mit einer Regel auf `harness/README.md`: Unter der Überschrift `## Sensors (Feedback-Gates)` tragen die Zellen der Spalten `Vertrag` und `Tut was` höchstens 200 Zeichen; die Spalte `Bindung` hat keine Grenze. Prosa, die länger ist, gehört in eine eigene Datei `harness/sensors/<target>.md` <!-- d-check:ignore (Platzhalter-Pfad) -->, die Zelle verweist dann darauf. Den Ordner `harness/sensors/` legt das Aufsetzen an (mit einer `.gitkeep`-Datei). Eine längere Zelle färbt `make docs-check` rot.
+
+**Kennungen in Commit-Messages.** Die mitgelieferte Prüfung `tools/harness/commit-msg-traceability.sh`, die der Hook `.githooks/commit-msg` nach `make hooks-install` aufruft, nimmt neben `ADR-`, `LH-`, `MR-` und einer Slice-Nummer auch einen **benannten** Slice als Kennung an: `slice-<name>` in Kleinbuchstaben, Ziffern und Bindestrichen, als eigenes Wort — links davon steht der Zeilenanfang oder ein Zeichen, das weder Buchstabe, Ziffer, `_` noch `-` ist. Die Commits von `make slice-mv` nennen den Dateinamen des Slice und tragen damit eine solche Kennung.
 
 ---
 
