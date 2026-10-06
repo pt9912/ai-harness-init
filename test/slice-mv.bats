@@ -402,10 +402,70 @@ cat_scheitert() {
 # (harness/tools/slice-mv.sh) und, fuer BEIDE Richtungen an einem echten Move im
 # gebootstrappten Ziel, in harness/tools/full-smoke.sh.
 
+# Quellensuche (quelle_finden) — ein Planning-Baum aus leeren Dateien; LIFECYCLE
+# kommt aus der geladenen Fassung. Die Faelle tragen die Gegenproben des
+# Adopter-CR (LH-QA-01): ein Name, der Praefix eines anderen ist, bleibt
+# eindeutig adressierbar.
+quelle_baum() {  # $@ = <verzeichnis>/<datei> relativ zum Planning-Baum
+  P="$TMP/planning"
+  rm -rf "$P"
+  local p
+  for p in "$@"; do mkdir -p "$P/$(dirname "$p")"; : > "$P/$p"; done
+}
+
+@test "quelle: exakter Name gewinnt gegen einen laengeren Praefix-Treffer — mit und ohne .md, auch ueber Verzeichnisse hinweg (Adopter-CR, LH-QA-01)" {
+  for s in "${FASSUNGEN[@]}"; do
+    load_functions "$s"
+    quelle_baum in-progress/slice-a.md open/slice-a-b.md
+    run quelle_finden "$P" slice-a
+    [ "$status" -eq 0 ] || { echo "$s: slice-a -> Status $status: $output"; return 1; }
+    [ "$output" = "$P/in-progress/slice-a.md" ] || { echo "$s: slice-a -> $output"; return 1; }
+    run quelle_finden "$P" slice-a.md
+    [ "$status" -eq 0 ] && [ "$output" = "$P/in-progress/slice-a.md" ] || { echo "$s: slice-a.md -> $status $output"; return 1; }
+    run quelle_finden "$P" slice-a-b
+    [ "$status" -eq 0 ] && [ "$output" = "$P/open/slice-a-b.md" ] || { echo "$s: slice-a-b -> $status $output"; return 1; }
+  done
+}
+
+@test "quelle: ohne exakten Treffer sind zwei Praefix-Treffer mehrdeutig (Status 2), derselbe exakte Name in zwei Verzeichnissen ebenso" {
+  for s in "${FASSUNGEN[@]}"; do
+    load_functions "$s"
+    quelle_baum in-progress/slice-a.md open/slice-a-b.md
+    run quelle_finden "$P" slice-
+    [ "$status" -eq 2 ] && [[ "$output" == *"ist mehrdeutig"* ]] || { echo "$s: slice- -> $status $output"; return 1; }
+    quelle_baum open/slice-a.md done/slice-a.md
+    run quelle_finden "$P" slice-a
+    [ "$status" -eq 2 ] && [[ "$output" == *"ist mehrdeutig"* ]] || { echo "$s: doppelt exakt -> $status $output"; return 1; }
+  done
+}
+
+@test "quelle: ein Praefix trifft nur an der Bindestrich-Grenze — slice-a trifft slice-ax nicht, slice-13 trifft slice-130 nicht" {
+  for s in "${FASSUNGEN[@]}"; do
+    load_functions "$s"
+    quelle_baum open/slice-ax.md
+    run quelle_finden "$P" slice-a
+    [ "$status" -eq 2 ] && [[ "$output" == *"kein Slice"* ]] || { echo "$s: slice-a gegen slice-ax -> $status $output"; return 1; }
+    quelle_baum open/slice-13-titel.md done/slice-130-anderer.md
+    run quelle_finden "$P" slice-13
+    [ "$status" -eq 0 ] && [ "$output" = "$P/open/slice-13-titel.md" ] || { echo "$s: slice-13 -> $status $output"; return 1; }
+  done
+}
+
+@test "quelle: die Nummern-Kurzform des Bestands trifft ihren Slice weiter, mit Buchstaben-Suffix ebenso" {
+  for s in "${FASSUNGEN[@]}"; do
+    load_functions "$s"
+    quelle_baum done/slice-174-ein-titel.md done/slice-022b-embed-raus.md done/slice-022a-baseline-fetch.md
+    run quelle_finden "$P" slice-174
+    [ "$status" -eq 0 ] && [ "$output" = "$P/done/slice-174-ein-titel.md" ] || { echo "$s: slice-174 -> $status $output"; return 1; }
+    run quelle_finden "$P" slice-022b
+    [ "$status" -eq 0 ] && [ "$output" = "$P/done/slice-022b-embed-raus.md" ] || { echo "$s: slice-022b -> $status $output"; return 1; }
+  done
+}
+
 # Der Ersetzungs-KERN, den beide Fassungen teilen MUESSEN. Ein Fall trifft nur die
 # Entscheidungen, die er ausloest; eine einseitig entfernte Entscheidung bliebe
 # ueber jedem Fall gruen. Verglichen werden darum die Funktionsruempfe.
-KERN=(re_escape rewrite_incoming_in_file rewrite_incoming_bare_in_file rewrite_outgoing_bare_in_file)
+KERN=(re_escape rewrite_incoming_in_file rewrite_incoming_bare_in_file rewrite_outgoing_bare_in_file quelle_finden)
 
 # funktions_rumpf liest den Rumpf EINER Funktion: von der Definitionszeile in
 # Spalte 0 bis zur ersten schliessenden Klammer in Spalte 0. Die Funktionen

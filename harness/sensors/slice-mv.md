@@ -260,7 +260,11 @@ Alle vor dem ersten `git mv`; das Skript endet bei jeder mit 2, `make slice-mv` 
 - `slice-mv: Arbeitsbaum nicht sauber …` — das Skript committet selbst; eine unstaged oder gestagte
   Änderung landete sonst in einem seiner Commits → erst committen oder stashen.
 - `slice-mv: '…' ist kein Lifecycle-Verzeichnis` → `open`, `next`, `in-progress` oder `done`.
-- `slice-mv: '…' ist mehrdeutig` — die Angabe trifft zwei Dateien → die Kennung länger schreiben.
+- `slice-mv: '…' ist mehrdeutig` — derselbe exakte Name liegt in zwei Verzeichnissen, oder es gibt
+  keinen exakten Treffer und die Angabe trifft als Präfix zwei Dateien → die Kennung länger
+  schreiben. Der exakte Name (`SLICE=<name>` oder `<name>.md`) gewinnt gegen jeden Präfix-Treffer,
+  und ein Präfix trifft nur an einer Bindestrich-Grenze: `slice-a` trifft `slice-a-b.md`, nicht
+  `slice-ax.md` (`quelle_finden` in beiden Fassungen des Skripts, `test/slice-mv.bats`).
 - `slice-mv: kein Slice '…' unter …` → die Kennung prüfen.
 - `slice-mv: '…' liegt bereits in …/` → nichts zu tun.
 

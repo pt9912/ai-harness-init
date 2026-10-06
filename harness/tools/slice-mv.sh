@@ -170,6 +170,11 @@ usage() {
   cat >&2 <<'USAGE'
 Aufruf: make slice-mv SLICE=slice-<Kennung>[-kurztitel[.md]] TO=<open|next|in-progress|done>
 
+  SLICE: der exakte Dateiname (mit oder ohne .md) gewinnt; ohne exakten
+  Treffer gilt ein Präfix bis zu einer Bindestrich-Grenze (slice-<Kennung>
+  trifft slice-<Kennung>-titel.md, nicht slice-<Kennung>x.md). Zwei Treffer
+  derselben Stufe sind mehrdeutig und brechen ab.
+
   Bewegt den Slice per `git mv`, committet den reinen Move sofort, und zieht
   danach die Verweise nach — repo-weit eingehend (jede gemessene Präfix-Form,
   unter docs/reviews/ nur als Ziel eines Markdown-Links, dazu präfixlose Links
@@ -297,6 +302,48 @@ rewrite_incoming_nach_baum() {  # $1=datei $2=base $3=from $4=to
   esac
 }
 
+# quelle_finden — die Datei, die SLICE meint, als Pfad auf stdout. Der exakte
+# Name `${SLICE%.md}.md` gewinnt: liegt er in einem Lifecycle-Verzeichnis, zählen
+# weitere Präfix-Treffer nicht. Nur ohne exakten Treffer gilt der Präfix, und er
+# endet an einer Bindestrich-Grenze (`slice-a` trifft `slice-a-b.md`, nicht
+# `slice-ax.md`; ein Präfix, der selbst auf `-` endet, ist die Grenze). Mehrdeutig
+# — Status 2, beide Pfade auf stderr — ist derselbe exakte Name in zwei
+# Verzeichnissen oder, ohne exakten Treffer, ein zweiter Präfix-Treffer; kein
+# Treffer endet ebenfalls mit 2. test/slice-mv.bats (Fälle `quelle:`) deckt beide
+# Zweige und die Grenze.
+quelle_finden() {  # $1=planning-verzeichnis $2=slice
+  local name="${2%.md}" muster found="" d f
+  for d in $LIFECYCLE; do
+    f="$1/$d/$name.md"
+    [ -e "$f" ] || continue
+    if [ -n "$found" ]; then
+      echo "slice-mv: '$2' ist mehrdeutig — $found und $f" >&2
+      return 2
+    fi
+    found="$f"
+  done
+  if [ -n "$found" ]; then
+    printf '%s\n' "$found"
+    return 0
+  fi
+  case "$name" in
+    *-) muster="$name" ;;
+    *) muster="$name-" ;;
+  esac
+  for d in $LIFECYCLE; do
+    for f in "$1/$d/$muster"*.md; do
+      [ -e "$f" ] || continue
+      if [ -n "$found" ]; then
+        echo "slice-mv: '$2' ist mehrdeutig — $found und $f" >&2
+        return 2
+      fi
+      found="$f"
+    done
+  done
+  [ -n "$found" ] || { echo "slice-mv: kein Slice '$2' unter $1/" >&2; return 2; }
+  printf '%s\n' "$found"
+}
+
 main() {
   local SLICE="${1:-}" TO="${2:-}"
   [ -n "$SLICE" ] && [ -n "$TO" ] || { usage; exit 2; }
@@ -315,21 +362,10 @@ main() {
     *) echo "slice-mv: '$TO' ist kein Lifecycle-Verzeichnis ($LIFECYCLE)" >&2; exit 2 ;;
   esac
 
-  # Quelle finden: Präfix oder voller Dateiname, in genau EINEM Verzeichnis —
-  # zwei Treffer (auch über Verzeichnisse hinweg) sind mehrdeutig und brechen
-  # ab, statt zu raten.
-  local found="" d f
-  for d in $LIFECYCLE; do
-    for f in "$PLANNING/$d/${SLICE%.md}"*.md; do
-      [ -e "$f" ] || continue
-      if [ -n "$found" ]; then
-        echo "slice-mv: '$SLICE' ist mehrdeutig — $found und $f" >&2
-        exit 2
-      fi
-      found="$f"
-    done
-  done
-  [ -n "$found" ] || { echo "slice-mv: kein Slice '$SLICE' unter $PLANNING/" >&2; exit 2; }
+  # Quelle finden: exakter Name zuerst, sonst Präfix an der Bindestrich-Grenze
+  # (quelle_finden); mehrdeutig oder kein Treffer bricht ab, statt zu raten.
+  local found
+  found="$(quelle_finden "$PLANNING" "$SLICE")" || exit 2
 
   local base from
   base="$(basename "$found")"
