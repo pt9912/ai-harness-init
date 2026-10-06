@@ -294,9 +294,12 @@ history-range-guard: ## Historie-Vorlauf-Waechter: RANGE muss aufloesbar UND nic
 	@bash harness/tools/history-range-guard.sh "$(if $(STAGED),--staged,$(RANGE))"
 
 # ADR-Immutabilitaet (AGENTS.md 3.4, DC-FA-VCS-001): kettet den Vorlauf-Waechter
-# vor den eigentlichen d-check-`vcs`-Lauf (d-check.mk, Target `doc-immutable`) —
-# eine aufloesbare, aber leere RANGE bricht hier ab statt "0 Befund(e)" zu
-# melden (MR-007 Setzung 3). Beide Ziele lesen dieselben Variablen RANGE/STAGED
+# vor den eigentlichen d-check-`vcs`-Lauf (d-check.mk, Target `doc-immutable`).
+# Eine aufloesbare, aber leere RANGE faengt `vcs` des gepinnten d-check selbst
+# ab ("Range-Leerfall", Exit 2); der Waechter bricht dort schon vor dem
+# Bild-Lauf ab, und unter STAGED=1 mit leerem Index meldet nur er, dass nichts
+# geprueft wurde — `doc-immutable` meldet dort "0 Befund(e)", Exit 0
+# (MR-079, MR-007 Setzung 3). Beide Ziele lesen dieselben Variablen RANGE/STAGED
 # vom Aufruf; `make`s Prerequisite-Reihenfolge reicht sie unveraendert durch
 # beide Stufen. NICHT in gates: RANGE variiert pro Lauf und ist damit kein
 # hermetischer Pruefbereich (LH-QA-01) — Aufrufer ist der Job `adr-immutable`
