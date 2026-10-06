@@ -59,8 +59,9 @@ func TestCommands_NoInternalLeak(t *testing.T) {
 	}
 	// Konkrete Dogfood-Slice-Nummern (im Ziel bedeutungslos) als NUMERISCHE KLASSE,
 	// nicht als Literal-Aufzählung (Review-L-1): jede `slice-<Ziffern>` fällt auf. Das
-	// generische Platzhalter-Muster `slice-<NN>`/`slice-<titel>` trägt keine Ziffern
-	// und bleibt erlaubt.
+	// Platzhalter-Muster `slice-<Kennung>`/`slice-<titel>` trägt keine Ziffern
+	// und bleibt erlaubt; die nummerierte Platzhalter-Form hält
+	// TestCommands_KeinNummerierterPlatzhalter.
 	sliceNum := regexp.MustCompile(`slice-[0-9]{2,}`)
 	for _, rel := range emit.CommandPaths() {
 		s := string(emit.CommandFile(rel))
@@ -114,6 +115,23 @@ func TestCommands_CloseWelleNenntAltbestandUndUntergrenze(t *testing.T) {
 	for _, begriff := range []string{"WELLE=altbestand", "[untergrenze]", "[kein-schreib-pfad]"} {
 		if !strings.Contains(s, begriff) {
 			t.Errorf("%s nennt %q nicht", rel, begriff)
+		}
+	}
+}
+
+// TestCommands_KeinNummerierterPlatzhalter: kein emittierter Command nennt eine
+// Slice- oder Welle-Kennung in Nummernform — weder als nummerierten Platzhalter
+// (`slice-<NN>`, `welle-<NNN>`) noch als Wort `slice-N`. Die Kennung ist der Name
+// (`slice-<Kennung>`); `MR-<NNN>` ist erlaubt. Gelesen wird der ganze Bestand
+// emit.CommandPaths(), nicht eine Auswahl von Stellen.
+//
+// Rot-Gegenbeispiel: test/mutations/518-command-nummerierter-platzhalter.sh.
+func TestCommands_KeinNummerierterPlatzhalter(t *testing.T) {
+	nummeriert := regexp.MustCompile(`\b(slice|welle)-(<N+>|N+\b)`)
+	for _, rel := range emit.CommandPaths() {
+		s := string(emit.CommandFile(rel))
+		if m := nummeriert.FindString(s); m != "" {
+			t.Errorf("%s nennt die Kennung in Nummernform %q — die Kennung ist der Name, Platzhalter ist slice-<Kennung>/welle-<Kennung>", rel, m)
 		}
 	}
 }
