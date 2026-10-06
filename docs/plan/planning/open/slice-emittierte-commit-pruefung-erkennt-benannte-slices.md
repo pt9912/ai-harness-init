@@ -13,7 +13,7 @@
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912)
 
 **Autor:** Planner. **Datum:** 2026-10-06.
 
@@ -94,6 +94,8 @@ Zwei Schichten: Emissions-Vorlage (Shell) und ihre Tests/E2E.
 ## 4. Trigger
 
 **Start** (`next` → `in-progress`): erfüllt — Architect-Bericht `2026-10-06-architect-platzhalter-form.md` benennt diesen Slice als Träger.
+
+**Nachfolger:** nach seiner Closure startet `slice-kennungs-erkennung-traegt-die-zugelassenen-formen` (dessen Start-Bedingung).
 
 **Rückführungen:**
 
