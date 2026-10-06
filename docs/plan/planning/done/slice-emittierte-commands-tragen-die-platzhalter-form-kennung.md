@@ -51,7 +51,7 @@ grep -rnE '(slice|welle)-<(N|NN|NNN)>|<(slice|welle)-(NN|NNN)' internal/emit/tem
 - `commands/implement-slice.md`: `seit welle-<NN>` und `seit slice-<NNN>` (Herkunfts-Anker-Aufzählung), `evidence/slice-<NNN>.md`
   (Beleg-Form), `seit slice-<NNN>` statt `seit welle-<NN>` (wellenloser Fall), und die Aufzählung der Commit-Kennung
   (`ADR-NNNN`, `LH-XX-NN`, `MR-NNN`, `slice-N`, Zeile ~48): sie lehrt die Nummernform `slice-N` als gültige Kennung, obwohl die
-  Baseline Slice-Kennungen als Namen vergibt ([`grundlagen-source-precedence.md` §Vergabe](../../../../.harness/baseline/v6.13.0/regelwerk/grundlagen-source-precedence.md#vergabe-woher-die-nächste-kennung-kommt)). Gemessen: die Menge steht allein in der Zeile `patterns=` der
+  Baseline Slice-Kennungen als Namen vergibt (`grundlagen-source-precedence.md` §Vergabe). Gemessen: die Menge steht allein in der Zeile `patterns=` der
   emittierten Prüfung (`grep -n 'patterns=' internal/emit/templates/enforce/commit-msg-traceability.sh`; Dogfood-Fassung
   `harness/tools/commit-msg-traceability.sh` gleich): `(ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3}|slice-[0-9]+)` — ein benannter Slice trifft
   kein Muster. Der Text bleibt wahr, wenn er nur die Klassen nennt, die so aussehen, und für die Menge auf die Zeile `patterns=` verweist
