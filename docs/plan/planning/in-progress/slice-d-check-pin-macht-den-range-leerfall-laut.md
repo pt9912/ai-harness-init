@@ -36,17 +36,17 @@
 
 ## 2. Definition of Done
 
-- [ ] **L1 — Pin `v0.81.0` an beiden Stellen, Digest nachgemessen, Fragment re-adaptiert.** Rot: `make test` fällt (`TestDefaultImage_MatchesCanonical`/`TestDefaultDigest_MatchesCanonical`), solange `d-check.mk` und `internal/emit/emit.go` auseinanderlaufen — einmal mit nur einer gezogenen Stelle gesehen.
-- [ ] **L2 — Der Range-Leerfall ist nachgezogen:** die `full-smoke`-Stufe zur leeren Range erwartet für `vcs` ohne Wächter Exit 2 mit der Leerfall-Meldung (nicht mehr `0 Befund(e)`), die lebende Prosa (Kommando in §1) nennt den neuen Stand. Rot: die Stufe mit dem alten Erwartungswert gegen den neuen Pin gefahren meldet „der Anlass ist hier nicht reproduziert“; ihr neuer Erwartungswert wird mit dem alten Digest rot gesehen.
-- [ ] **L3 — Gegenmessung je aktivem Modul** ([`MR-063`](../../../../harness/conventions.md#mr-063)) im Dogfood (9 Module) und am frisch emittierten `--lang go`-Ziel (6 Module), vorher/nachher, auf Nicht-Null-Basis; der history-lesende Lauf nennt, woher der Klon die Objekte liest ([`MR-065`](../../../../harness/conventions.md#mr-065)). Ergebnis steht als Übergabe-Artefakt für den Architect im Implementer-Bericht. Rot: je Modul ein eingesetzter Verstoß, der unter beiden Digests fällt.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] **L1 — Pin `v0.81.0` an beiden Stellen, Digest nachgemessen, Fragment re-adaptiert.** Rot: `make test` fällt (`TestDefaultImage_MatchesCanonical`/`TestDefaultDigest_MatchesCanonical`), solange `d-check.mk` und `internal/emit/emit.go` auseinanderlaufen — einmal mit nur einer gezogenen Stelle gesehen.
+- [x] **L2 — Der Range-Leerfall ist nachgezogen:** die `full-smoke`-Stufe zur leeren Range erwartet für `vcs` ohne Wächter Exit 2 mit der Leerfall-Meldung (nicht mehr `0 Befund(e)`), die lebende Prosa (Kommando in §1) nennt den neuen Stand. Rot: die Stufe mit dem alten Erwartungswert gegen den neuen Pin gefahren meldet „der Anlass ist hier nicht reproduziert“; ihr neuer Erwartungswert wird mit dem alten Digest rot gesehen.
+- [x] **L3 — Gegenmessung je aktivem Modul** ([`MR-063`](../../../../harness/conventions.md#mr-063)) im Dogfood (9 Module) und am frisch emittierten `--lang go`-Ziel (6 Module), vorher/nachher, auf Nicht-Null-Basis; der history-lesende Lauf nennt, woher der Klon die Objekte liest ([`MR-065`](../../../../harness/conventions.md#mr-065)). Ergebnis steht als Übergabe-Artefakt für den Architect im Implementer-Bericht. Rot: je Modul ein eingesetzter Verstoß, der unter beiden Digests fällt.
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Der Adaptions-Eintrag des Architect für diesen Sprung liegt vor (§4).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Der Adaptions-Eintrag des Architect für diesen Sprung liegt vor (§4).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -72,12 +72,17 @@ DoD vollständig, `make gates` und `make full-smoke` grün unter dem neuen Pin, 
 
 ## 6. Risiken und offene Punkte
 
-- Ein emittiertes Ziel, das `doc-immutable` im flachen Klon fährt, bricht unter dem neuen Pin auch bei nicht-leerer Range ab (CHANGELOG) — **Ausgang:** bei Closure zuweisen, nach der Messung in L3.
-- Der Digest ist nur über die Werkzeug-Ausgabe belegt, kein Sensor hält ihn gegen den Tag — **Ausgang:** bei Closure zuweisen (Register-Klasse `pin-digest-ohne-waechter`).
+- Ein emittiertes Ziel, das `doc-immutable` im flachen Klon fährt, bricht unter dem neuen Pin auch bei nicht-leerer Range ab (CHANGELOG) — **Ausgang:** weiter offen → [`BEO-ALL/werkzeug-messung-und-gemessener-stand-werden-nicht-zusammengehalten`](../observations/BEO-ALL/werkzeug-messung-und-gemessener-stand-werden-nicht-zusammengehalten/observation.md) (Stand `geplant`, Beleg dieses Vorgangs ergänzt): gemessen (Tiefe 2, `HEAD~1..HEAD`: `v0.81.0` Exit 2, `v0.79.0` Exit 0), aber keine Stufe fährt es, und die Zeile *flacher Klon* in `harness/sensors/history-range-guard.md` hält kein Sensor.
+- Der Digest ist nur über die Werkzeug-Ausgabe belegt, kein Sensor hält ihn gegen den Tag — **Ausgang:** weiter offen → [`BEO-ALL/pin-digest-ohne-waechter`](../observations/BEO-ALL/pin-digest-ohne-waechter/observation.md) (Beleg dieses Vorgangs ergänzt).
 
 ## 7. Closure-Notiz
 
-Wird bei der Closure vom Planner geschrieben (AGENTS.md §3.10), nicht im Plan.
+- **Was hat funktioniert:** Pin `v0.81.0` an beiden Stellen, Kopplung einmal rot gesehen; die `full-smoke`-Stufe `leerfall_laut_ohne_waechter` erwartet für `doc-immutable` über leerer Range Exit 2 mit Leerfall-Meldung; Gegenmessung je aktivem Modul im Dogfood und am `--lang go`-Ziel; Adaptions-Eintrag [`MR-079`](../../../../harness/conventions.md#mr-079). Review `docs/reviews/2026-10-06-d-check-pin-v0810-review.md` (F-1..F-3, N-1, N-2 behoben, F-4 INFO offen → Risiko 1), Verifikation `docs/reviews/2026-10-06-d-check-pin-v0810-verifikation.md` (L1–L3 bestätigt, V-1 LOW).
+- **Was ging anders als geplant:** der Sprung macht ein Modul lauter, das eine `full-smoke`-Stufe still erwartete — der Pin-Sprung trägt damit eine Stufen-Änderung, nicht nur eine Prosa-Korrektur.
+- **Steering-Loop-Eintrag (neuer Sensor):** die Stufe `leerfall_laut_ohne_waechter` in `harness/tools/full-smoke.sh` hält den Abbruch von `vcs` über leerer Range im Ziel. Grenze: der flache Klon über nicht leerer Range hat keine Stufe (Risiko 1).
+- **V-1 (LOW):** Pin-Kopplungstest ohne Fall → Folge-Slice `slice-pin-kopplung-bekommt-ihren-mutations-fall` (`open/`, besteht); die neue Stufe ohne Fall → Beleg in [`BEO-ALL/neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md) (verkörpert, kein neuer Ausgang).
+- **Beobachtungs-Register (`../observations/`):** je ein Beleg dieses Vorgangs in `werkzeug-messung-und-gemessener-stand-werden-nicht-zusammengehalten`, `pin-digest-ohne-waechter`, `neuer-waechter-ohne-mutations-fall`; kein Eintrag erreicht durch diesen Beleg neu einen Ausgang.
+- **Risiken aus §6:** (1) weiter offen → Register · (2) weiter offen → Register (Einträge in §6).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
