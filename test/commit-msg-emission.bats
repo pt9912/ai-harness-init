@@ -152,6 +152,22 @@ klassen_muster() {
   [ "$status" -eq 1 ]
 }
 
+@test "rot: ein Mittendrin-Wort ohne Trenner links von slice- ist keine Kennung" {
+  lauf 'Betreff ohne Kennung\n\nBezug: noslice-foo und x_slice-bar und a-slice-baz\n'
+  [ "$status" -eq 1 ]
+  lauf 'noslice-foo\n'
+  [ "$status" -eq 1 ]
+}
+
+@test "gruen: ein Trenner links von slice- genuegt (akzeptiertes Negativ: a slice-wise fix)" {
+  lauf 'Betreff ohne Kennung\n\nBezug: (slice-foo) und `slice-bar`\n'
+  [ "$status" -eq 0 ]
+  # Mit Leerzeichen davor ist es ein Wort wie jedes andere; die Pruefung unterscheidet
+  # Kennung und Prosa nicht, sie prueft Anwesenheit.
+  lauf 'a slice-wise fix\n'
+  [ "$status" -eq 0 ]
+}
+
 @test "kopplung: die emittierte Kennungs-Menge ist eine Obermenge der Dogfood-Menge" {
   local emittiert dogfood fehlt
   emittiert="$(patterns_von "$EMITTIERT" | sort)"

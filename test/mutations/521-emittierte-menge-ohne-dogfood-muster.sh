@@ -9,4 +9,4 @@
 #
 # DER PATCH SITZT AUF DER AUSFUEHRENDEN ZEILE (Zuweisung), nicht auf der Prosa im Kopf.
 set -euo pipefail
-sed -i "s@^\(patterns=.*MR-\[0-9\]{3}\)|slice-\[0-9\]+|@\1|@" internal/emit/templates/enforce/commit-msg-traceability.sh
+sed -i "s@^\(patterns=.*MR-\[0-9\]{3}\)|slice-\[0-9\]+)@\1)@" internal/emit/templates/enforce/commit-msg-traceability.sh

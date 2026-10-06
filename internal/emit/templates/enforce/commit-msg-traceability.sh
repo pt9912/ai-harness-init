@@ -5,7 +5,10 @@
 #
 # ZUSAGE. Exit 0, wenn die Message mindestens eine Kennung aus der Menge
 # {ADR-, LH-, MR-, slice-} traegt (slice- als Nummer oder als Name in Kleinbuchstaben,
-# Ziffern und Bindestrichen) oder ihr Betreff mit "Merge " bzw. "Revert "
+# Ziffern und Bindestrichen; der Name zaehlt nur als eigenes Wort: links von slice-
+# steht der Zeilenanfang oder ein Zeichen, das weder Buchstabe, Ziffer, "_" noch "-"
+# ist — "noslice-foo" zaehlt nicht, "a slice-wise fix" zaehlt, ein Leerzeichen steht
+# davor) oder ihr Betreff mit "Merge " bzw. "Revert "
 # beginnt; Exit 1, wenn keines von beidem zutrifft; Exit 2, wenn die Datei fehlt
 # oder nicht lesbar ist. Betreff ist die erste nicht-leere Zeile ohne
 # Kommentarzeichen; die Kennung darf auch im Rumpf stehen, eine Kommentarzeile
@@ -14,7 +17,7 @@
 # GRENZE. Geprueft wird die ANWESENHEIT einer Kennung, nicht ihre Wahrheit: eine
 # Message, die zusaetzlich einen nicht aufloesbaren Verweis nennt, geht mit
 # derselben Kennung durch. Die Menge ist die des mitgelieferten Regelwerks und
-# steht in der Zeile `patterns=` unten — als Muster steht sie nur dort: der Kopf
+# steht in den Zeilen `patterns=` und `named_slice=` unten — als Muster steht sie nur dort: der Kopf
 # nennt die Klassen in Worten, die Fehlermeldung zeigt auf die Zeile, und ein
 # erneuter Bootstrap schreibt diese Datei kanonisch neu. Ein Repo mit einer
 # eigenen Kennungs-Klasse setzt darum HOOKS_DIR auf sein eigenes Hook-Verzeichnis
@@ -58,18 +61,19 @@ fi
 
 # Kennung: ERE ueber die ganze Datei, Kommentarzeilen ausgenommen. Der Dialekt
 # ist POSIX-ERE ([0-9] statt \d) — bash kennt die \d-Kurzform nicht.
-patterns='(ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3}|slice-[0-9]+|slice-[a-z][a-z0-9-]*)'
+patterns='(ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3}|slice-[0-9]+)'
+named_slice='(^|[^[:alnum:]_-])slice-[a-z][a-z0-9-]*'
 while IFS= read -r line || [ -n "$line" ]; do
   trimmed="${line#"${line%%[![:space:]]*}"}"
   case "$trimmed" in
     '#'*) continue ;;
   esac
-  if [[ "$line" =~ $patterns ]]; then
+  if [[ "$line" =~ $patterns ]] || [[ "$line" =~ $named_slice ]]; then
     exit 0
   fi
 done < "$msg_file"
 
 echo "commit-msg-traceability: keine Traceability-Kennung in der Commit-Message:" >&2
 echo "            ${subject}" >&2
-echo "            Erwartet wird eine Kennung aus der Menge in der Zeile \`patterns=\` dieser Pruefung." >&2
+echo "            Erwartet wird eine Kennung aus der Menge in den Zeilen \`patterns=\` und \`named_slice=\` dieser Pruefung." >&2
 exit 1
