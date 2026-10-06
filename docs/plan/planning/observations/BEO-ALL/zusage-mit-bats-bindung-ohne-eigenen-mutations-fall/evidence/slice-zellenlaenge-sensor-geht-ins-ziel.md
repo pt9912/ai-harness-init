@@ -1,0 +1,2 @@
+**Vorgang:** slice-zellenlaenge-sensor-geht-ins-ziel
+**Fund:** Die Zusage „die Spalte `Tut was` begrenzt die Zelle im frischen Ziel" hängt am Zweig `Tut was` der E2E-Stufe `zellenlaenge_im_ziel`, den der Verifier durch Rücknahme der Grenze (200 → 260) rot sah (`make full-smoke`, Meldung „Zellenlaenge-Gegenbeispiel (Tut was)"). Kein Fall in `test/mutations/` erwartet diese Meldung (`grep -l 'Tut was' test/mutations/51*.sh` → nur 517, der über den Go-Test fährt). Der Wächter ist gelistet (514–517), die Zusage dieser Spalte im E2E ist es nicht; die Ebene ist die der Klasse.

@@ -91,7 +91,7 @@ entscheidet der Architect vor dem Start (`AGENTS.md` §3.8); ein ADR-Bedarf folg
 
 ## 2. Definition of Done
 
-- [ ] **(1) Die emittierte Vorlage trägt Modul und Regel, grün über dem frischen Ziel.**
+- [x] **(1) Die emittierte Vorlage trägt Modul und Regel, grün über dem frischen Ziel.**
       `internal/emit/templates/d-check.yml`: `structure` in `modules:`, ein Block mit
       `section: "## Sensors (Feedback-Gates)"` und den Spalten `Vertrag` und `Tut was`
       (`cell-max-chars: 200`), kein `exempt-paths`, der Kopfkommentar „Herkunft der Positionen" nennt die
@@ -106,7 +106,7 @@ entscheidet der Architect vor dem Start (`AGENTS.md` §3.8); ein ADR-Bedarf folg
       *Bricht die Zusage, wenn:* `structure` aus `modules:` fällt (das Ziel prüft keine Zelle mehr, bleibt aber
       grün) oder ein Baseline-Sprung eine Spalte umbenennt (jedes neue Ziel startet mit
       `section-column-missing` rot). Beides färbt den Test.
-- [ ] **(2) E2E-Stufe `zellenlaenge_im_ziel` in [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh).**
+- [x] **(2) E2E-Stufe `zellenlaenge_im_ziel` in [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh).**
       Im frisch gebootstrappten Ziel: `make docs-check` ist grün (0 Befunde); je ein Satz über der Grenze in
       `Tut was` und in `Vertrag` der emittierten `harness/README.md` färbt `docs-check` rot, die Meldung
       `section-cell-oversized` wird gelesen; mit dem `structure`-Block aus der `.d-check.yml` des Ziels
@@ -114,7 +114,7 @@ entscheidet der Architect vor dem Start (`AGENTS.md` §3.8); ein ADR-Bedarf folg
       zurückgenommen. Ein Fall in `test/mutations/` nimmt der Vorlage das Modul oder den Block (erwartet
       `full-smoke: FEHLER`); das `sed`-Muster ist gegen den Quell-Bestand gemessen
       ([`MR-071`](../../../../harness/conventions.md#mr-071)), der Fall fährt die Stelle, die der Aufrufer benutzt.
-- [ ] **(3) Deklaration und Sicht nach `AGENTS.md` §3.6.** Die Stufe ruft `e2e_abdeckung` mit
+- [x] **(3) Deklaration und Sicht nach `AGENTS.md` §3.6.** Die Stufe ruft `e2e_abdeckung` mit
       den Kennungen [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) und [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6); die Kurzbeschreibung nennt, was der Lauf im Ziel misst — die zwei Spalten der
       Vorlagen-README an einem frisch emittierten Ziel — und die Teilabdeckung am selben Ort: nicht gemessen
       sind ein Ziel mit eigener `.d-check.yml` (skip-if-present), die Spalte `Bindung` und Tabellen außerhalb
@@ -172,15 +172,13 @@ Zwei beobachtbare Kriterien: `make gates` und `make full-smoke` grün; die neue 
 
 ## 7. Closure-Notiz
 
-*Wird bei der Closure gefüllt (Planner, `AGENTS.md` §3.10).*
-
-- **Was hat funktioniert:**
-- **Was ging anders als geplant:**
-- **Steering-Loop-Eintrag:**
-- **Beobachtungs-Register (`../observations/`):**
-- **Folge-Slices:**
-- **Risiken aus §6:**
-- **Drei Paarungen:**
+- **Was hat funktioniert:** Die emittierte Vorlage führt `structure` mit der Zellenregel (`Vertrag`, `Tut was`, je 200); die E2E-Stufe `zellenlaenge_im_ziel` misst grünen Start, je Spalte `section-cell-oversized` und die Gegenprobe im frischen Ziel; Deklaration und Sicht tragen die Teilabdeckung am selben Ort. Review: 1 LOW (behoben), 1 INFO; Verifikation bestätigt alle drei DoD-Punkte (`docs/reviews/2026-10-06-zellenlaenge-ziel-review.md`, `-verifikation.md`; Architect-Verdikt `2026-10-06-architect-zellenlaenge-ziel.md`).
+- **Was ging anders als geplant:** DoD (1) nennt „ein Test in `internal/emit`" für Modul, Block und Spaltennamen; geliefert sind zwei Träger: Modul und Block hält der Go-Test `TestDCheckConfig_ZellenlaengeStructure`, die Spaltennamen gegen die vendorte Vorlage hält `test/emit-zellenlaenge-spalten.bats`, weil `.dockerignore` `.harness` aus dem Go-Test-Kontext ausschließt. Die DoD ist nicht umgeschrieben; die Abnahme liest beide Träger (Fall 516 färbt rot als bats-Meldung).
+- **Steering-Loop-Eintrag:** benannte Lücke: die Zusage „Grenze der Spalte `Tut was` im Ziel" hängt allein an der Stufe `zellenlaenge_im_ziel`; kein `test/mutations`-Fall mit `verify: full-smoke` erwartet ihre Meldung (Fall 517 deckt sie nur über den Go-Test). Nicht gemessen: Ziel mit eigener `.d-check.yml`, Spalte `Bindung`, Tabellen außerhalb `## Sensors`, dritte Tabelle ohne die Spalten (`section-column-missing`).
+- **Beobachtungs-Register (`../observations/`):** [`BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall`](../observations/BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall/observation.md): weiterer Beleg (`evidence/slice-zellenlaenge-sensor-geht-ins-ziel.md`); die Klasse ist in `AGENTS.md` §3.6 verkörpert, der Stand bleibt. `sensor-schranke-wird-durch-tabellenwachstum-unscharf` bleibt ohne Beleg: der Slice setzt die Schranke mit Luft über dem Vorlagen-Bestand.
+- **Folge-Slices:** keiner; die Lücke trägt der Register-Beleg (Träger: Review gegen den Fall-Satz).
+- **Risiken aus §6:** 1 entfallen (gewollt, im Plan begründet: das Rot kommt aus Adopter-Inhalt) · 2 entfallen (DoD-Test und grüner Start der Stufe färben beim Sprung rot, bevor ein Ziel es erbt) · 3 entfallen (gewollt, skip-if-present; der Nachzug steht als Handarbeit im Kopfkommentar der Vorlage).
+- **Drei Paarungen:** Anker: kein `liegt in`-Feld, nichts zu paaren; Folge-Slice: keiner genannt; Register: der zitierte Pfad existiert und trägt Beleg.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
