@@ -79,7 +79,7 @@ keinen Wächter). Die Lücke ist benannt und wird in DoD (2) geschlossen.
   beschreibt `slice-[0-9]+` und ist deshalb kein Platzhalter für eine Kennung. Ein Umschreiben auf `<Kennung>` sagte zu,
   der Hook nehme Namen an. *(Beschreibung eines Verhaltens, nicht Form einer Kennung.)*
 - **Andere Platzhalter-Klassen:** `MR-<NNN>`, `CO-<NNN>`, `ADR-<NNNN>`, `LH-XX-NN`. *(Ihre Form setzen
-  [`MR-000`](../../../../harness/conventions.md#mr-000) und ADR-0034; sie sind keine Slice-/Welle-Kennung.)*
+  [`MR-000`](../../../../harness/conventions.md#mr-000) und [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md); sie sind keine Slice-/Welle-Kennung.)*
 - **`welle-NN-results.md` in `internal/emit/templates.go` (`roadmapDoneLink`) und `<welle-NN-titel>` im Doc-Kommentar zu
   den Platzhalter-Links:** die Konstante ersetzt einen Text der Baseline-Roadmap-Vorlage, der Kommentar zitiert dessen Form.
   Am vendorten Stand führt keine Vorlage `welle-NN-results` mehr (`grep -rn 'welle-NN-results' .harness/baseline/v6.13.0/templates`
