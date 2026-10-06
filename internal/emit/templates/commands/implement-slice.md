@@ -44,8 +44,8 @@ emittierten Durchsetzungsschicht):
   dann ausfüllen — keine handgeschriebenen oder repo-gepflegten Template-Kopien.
 - **Commit via Message-Datei** (`git commit -F <datei>`): der Guard scannt den Command-String,
   also nie eine Commit-Message inline, die ein geblocktes Tool-Token enthält.
-- **Commit-Kennung.** Eine Commit-Message ohne Kennung (`ADR-NNNN`, `LH-XX-NN`, `MR-NNN`,
-  `slice-N`) weist der git-eigene Hook `.githooks/commit-msg` ab, sobald er aktiviert ist. Er liegt
+- **Commit-Kennung.** Eine Commit-Message ohne Kennung (`ADR-NNNN`, `LH-XX-NN`, `MR-NNN`; die
+  vollständige Menge steht in der Zeile `patterns=` der mitgelieferten Prüfung `tools/harness/commit-msg-traceability.sh`) weist der git-eigene Hook `.githooks/commit-msg` ab, sobald er aktiviert ist. Er liegt
   versioniert im Repo und **reist mit dem Klon, seine Aktivierung nicht**: `make hooks-install`
   setzt `core.hooksPath` und ist der eine Schritt dazwischen; `git commit --no-verify` umgeht ihn.
   **An diesem Pfad ist das Werkzeug ein Gast** — der Name ist von `git` fixiert und das Verzeichnis
@@ -148,8 +148,8 @@ ist eine Lifecycle-Rücksprungkante (11).
     (indikativ, auflösbar), oder trägt er eine Slice-Nummer als Begründung, ein „(… , entschieden)"
     ohne Anker-Form, oder einen Konjunktiv über eine verworfene Alternative bzw. eine noch nicht
     existierende künftige Änderung (**„sobald Slice X das tut …"**)? Herkunft steht nur als **ein**
-    auflösbares Feld in den dort genannten Formen (`LH-*`, `ADR-*`, `· seit welle-<NN>`, wellenlos
-    `· seit slice-<NNN>`) — alles andere ist Zustand, keine Chronik, und wird vor der Übergabe
+    auflösbares Feld in den dort genannten Formen (`LH-*`, `ADR-*`, `· seit welle-<Kennung>`, wellenlos
+    `· seit slice-<Kennung>`) — alles andere ist Zustand, keine Chronik, und wird vor der Übergabe
     umformuliert statt mitgeschleift.
 
 Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontexten** (Modul 8).
@@ -189,7 +189,7 @@ Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontex
     — wer neu formuliert, spaltet eine Klasse in zwei Pfade, und keiner der beiden erreicht je 3×.
     Sonst ein neues Verzeichnis `BEO-<KUERZEL>/<slug>/` mit `observation.md` und `state.md` anlegen
     — Kürzel aus der Modus-Deklaration nachschlagen, nicht erfinden; das Register ist zugleich die
-    Vergabestelle für den `<slug>`-Teil. Der Beleg ist **formgebunden**: `evidence/slice-<NNN>.md`,
+    Vergabestelle für den `<slug>`-Teil. Der Beleg ist **formgebunden**: `evidence/slice-<Kennung>.md`,
     kein Freitext, eine Datei je Auftreten. Geschrieben wird er **vor** dem Move aus Schritt 24 — die
     Slice-Datei liegt dann noch nicht in `done/`, und das ist richtig so, weil Move und Inhalt
     getrennt committen (Hard Rule 3.3). Der Zähler wird **nicht gesetzt**, er ist die Zahl der
@@ -198,6 +198,6 @@ Hier endet die Implementation. Die übrigen Rollen laufen in **getrennten Kontex
     ist keine Antwort. Erreicht ein Eintrag **mit diesem Slice** 3× (die Zahl seiner
     Evidence-Dateien), wandert er in die Steering-Loop-Einträge der laufenden Welle-Closure
     (`/close-welle`); läuft keine Welle, löst die Slice-Closure den Lese-Schritt selbst aus, und der
-    Herkunfts-Anker lautet dann `seit slice-<NNN>` statt `seit welle-<NN>`.
+    Herkunfts-Anker lautet dann `seit slice-<Kennung>` statt `seit welle-<Kennung>`.
 
 Gates nicht überspringen. Keine Erfolgsmeldung ohne Command-Ausgabe.

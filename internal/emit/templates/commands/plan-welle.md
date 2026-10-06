@@ -63,7 +63,7 @@ die Antwort und wird notiert.
 ## Slices bereitstellen
 
 6. Existiert ein Slice der Welle noch nicht, ihn **per `cp` aus `slice.template.md`** anlegen
-   (`docs/plan/planning/open/slice-<NN>-<titel>.md`), dann füllen. Nie hand-authoren. **§8 des
+   (`docs/plan/planning/open/slice-<Kennung>.md`), dann füllen. Nie hand-authoren. **§8 des
    Plans trägt dieselbe Register-Sichtung noch einmal je Slice** (Modul 5, *Zwei Schritte vor der
    Modus-Begründung*) — und ist damit für alles **unter** 3× der einzige Leser; keine Treffer sind
    dort ebenfalls eine Antwort und werden notiert.

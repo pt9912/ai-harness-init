@@ -27,7 +27,7 @@ import (
 //
 //	KOPIERE-SATZ ("Kopiere … nach <pfad>.md") — so nennen ihn acht der elf,
 //	  darunter welle-results.template.md ("… docs/plan/planning/done/
-//	  welle-<NN>-results.md": eine je Welle, neben die Welle-Plan-Datei, die
+//	  welle-<Kennung>-results.md": eine je Welle, neben die Welle-Plan-Datei, die
 //	  ihrerseits aus welle.template.md kommt und schon hier steht),
 //	  MR-NNN-titel.template.md ("… harness/conventions/MR-<NNN>-<titel>.md …
 //	  Ein Eintrag je Datei": eine je Adaption, dieselbe Form wie der ADR-Eintrag
