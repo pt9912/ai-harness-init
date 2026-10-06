@@ -194,6 +194,10 @@ ls docs/plan/planning/in-progress/ | grep -c '^slice-'
 grep -n '^\*\*Status:\*\*' docs/plan/adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md
 ```
 
+**Start-Trigger:** `slice-emittierte-commit-pruefung-erkennt-benannte-slices` liegt in `done/` (`ls docs/plan/planning/done/ | grep -c emittierte-commit-pruefung-erkennt-benannte-slices`).
+
+**Rückführungs-Grund (`in-progress` → `next`):** nicht begonnen; Reihenfolge-Abhängigkeit zum emittierten Slice wegen der Gleichheits-Prüfung in `test/commit-msg-emission.bats`.
+
 **Reihenfolge:** nach `slice-emittierte-commit-pruefung-erkennt-benannte-slices`, nicht davor: dessen
 `test/commit-msg-emission.bats` hält heute die Muster-Mengen von Dogfood- und emittierter Fassung auf
 Gleichheit, und der Fall wird dort zu *emittiert ⊇ Dogfood*; nimmt dieser Slice zuerst ein Muster in
