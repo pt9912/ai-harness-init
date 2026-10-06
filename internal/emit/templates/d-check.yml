@@ -65,8 +65,8 @@ ids:
 # (Block am Ende der Datei): Die Zellen der Spalten Vertrag und Tut was unter
 # "## Sensors (Feedback-Gates)" tragen hoechstens 200 Zeichen; laengere Prosa gehoert nach
 # harness/sensors/<target>.md. Der Selektor ist der Abschnitt der Vorlage
-# harness/README.template.md, der beide Tabellen traegt; die Dogfood-Fassung waehlt einen
-# Unterabschnitt, den die Vorlage nicht fuehrt. Die Schwelle 200 liegt ueber dem laengsten
+# harness/README.template.md, der beide Tabellen traegt; die Dogfood-Fassung fuehrt denselben Selektor
+# mit eigenen Schwellen (150 und 260). Die Schwelle 200 liegt ueber dem laengsten
 # Zellsatz der Vorlage (80 Zeichen), damit ein Rot aus Adopter-Inhalt kommt und nicht aus
 # der emittierten Prosa; die Spalte Bindung traegt keine Grenze, Kennungs-Listen wachsen
 # mit den Bindungen. Kein exempt-paths: ein Eintrag dort ist eine Senkung.
