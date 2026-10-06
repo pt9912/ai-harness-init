@@ -3257,7 +3257,7 @@ $zeile
 		echo "full-smoke: Zellenlaenge-Gegenbeispiel ($spalte) belegt (faerbt docs-check im Ziel rot):"
 		grep -E -- "$meldung" <<<"$kf_out" | sed -n '1,2s/^/full-smoke:   /p'
 		cp "$dir/.d-check.yml" "$dir/.d-check.yml.zl-bak"
-		psed_i -e 's/, structure\]$/]/' -e '/^structure:/,$d' "$dir/.d-check.yml"
+		psed_i -e 's/, structure\]$/]/' -e "/^structure:/,\$d" "$dir/.d-check.yml"
 		if cmp -s "$dir/.d-check.yml" "$dir/.d-check.yml.zl-bak" || grep -qE '^(structure:|modules:.*structure)' "$dir/.d-check.yml"; then
 			mv "$dir/.d-check.yml.zl-bak" "$dir/.d-check.yml"
 			echo "full-smoke: FEHLER — Zellenlaenge-Gegenprobe ($spalte): die Schwaechung nimmt structure nicht aus der .d-check.yml des Ziels." >&2
