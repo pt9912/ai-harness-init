@@ -43,7 +43,7 @@ schreibt, kein Sensor halte die Zellenlänge. Am gepinnten d-check `v0.79.0` tut
 (`AGENTS.md` §3.11).
 
 **Messung am Pin** (Wegwerf-Verzeichnis außerhalb des Repos mit der Vorlage
-[`README.template.md`](../../../../.harness/baseline/v6.13.0/templates/harness/README.template.md) als
+`README.template.md` als
 `harness/README.md` und einer Minimal-`.d-check.yml` mit `modules: [structure]`; gepinnter Digest aus
 [`d-check.mk`](../../../../d-check.mk), `--network none`, Mount `:ro`):
 
