@@ -279,7 +279,7 @@ find docs/plan/planning/done -maxdepth 1 -name 'slice-*.md' | wc -l
 ### Modul `structure`
 
 **Was es hält.** [`.d-check.yml`](../../.d-check.yml) führt `structure` in `modules:` und einen
-`structure`-Block mit zwei Regeln; die erste (Zellenlänge: letzter Absatz dieses Abschnitts):
+`structure`-Block mit zwei Regeln; die `done/`-Regel (die Zellenlängen-Regel steht im letzten Absatz dieses Abschnitts):
 Über jedem Slice-Plan flach in `done/` zählt sie die offenen
 Task-Items im Abschnitt `## 2. Definition of Done` (`max-open-tasks: 0`). Trägt er welche, verlangt
 `open-tasks-require-marker` im Abschnitt `## 7. Closure-Notiz` (mit oder ohne Zusatz) eine Zeile
