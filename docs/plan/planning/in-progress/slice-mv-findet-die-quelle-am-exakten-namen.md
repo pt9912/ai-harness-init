@@ -33,14 +33,14 @@ Der Fund: Der Block „Quelle finden" (`harness/tools/slice-mv.sh:318`, wortglei
 
 ## 2. Definition of Done
 
-- [ ] **(1) Exakter Treffer zuerst, Präfix an der Grenze, in beiden Fassungen.** `harness/tools/slice-mv.sh` und `internal/emit/templates/enforce/slice-mv.sh` lösen nach §1 Ziel auf; der Hilfe-Text (`Aufruf: …`) und [`harness/sensors/slice-mv.md`](../../../../harness/sensors/slice-mv.md) (Fehlerzeile `mehrdeutig`) nennen die Regel. Der Bestand bleibt adressierbar: jede Nummern-Kurzform `slice-<NNN>` trifft ihren Slice weiter (gemessen über `ls docs/plan/planning/{open,next,in-progress,done}/slice-*.md`, Kurzform je Name ohne Titelrest; keine Erwartungswerte).
-- [ ] **(2) Die Gegenproben des CR sind rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6), in `test/slice-mv.bats`: neben `slice-a` und `slice-a-b` bewegen `SLICE=slice-a` und `SLICE=slice-a.md` den Slice `slice-a`, `SLICE=slice-a-b` bewegt `slice-a-b`; `SLICE=slice-` mit zwei Kandidaten ohne exakten Treffer bricht `mehrdeutig` ab; `slice-a` trifft `slice-ax` nicht. Mutations-Fälle: der exakte Zweig entfernt, die Grenze zum Teilstring-Glob geweitet — je ein Fall rot.
-- [ ] **(3) Das Ziel fährt es:** `make full-smoke` nutzt `slice-mv` im gebootstrappten Ziel (`grep -n 'slice-mv SLICE=' harness/tools/full-smoke.sh`); die emittierte Fassung trägt beide Zweige, der Lauf bleibt grün (gelesene Ausgabe), die Gleichheit beider Fassungen hält `internal/emit/slicemv_test.go`.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register fortgeschrieben (kein Zähler wird gesetzt); keine Beobachtung angefallen ist ebenfalls eine Antwort.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang.
+- [x] **(1) Exakter Treffer zuerst, Präfix an der Grenze, in beiden Fassungen.** `harness/tools/slice-mv.sh` und `internal/emit/templates/enforce/slice-mv.sh` lösen nach §1 Ziel auf; der Hilfe-Text (`Aufruf: …`) und [`harness/sensors/slice-mv.md`](../../../../harness/sensors/slice-mv.md) (Fehlerzeile `mehrdeutig`) nennen die Regel. Der Bestand bleibt adressierbar: jede Nummern-Kurzform `slice-<NNN>` trifft ihren Slice weiter (gemessen über `ls docs/plan/planning/{open,next,in-progress,done}/slice-*.md`, Kurzform je Name ohne Titelrest; keine Erwartungswerte).
+- [x] **(2) Die Gegenproben des CR sind rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6), in `test/slice-mv.bats`: neben `slice-a` und `slice-a-b` bewegen `SLICE=slice-a` und `SLICE=slice-a.md` den Slice `slice-a`, `SLICE=slice-a-b` bewegt `slice-a-b`; `SLICE=slice-` mit zwei Kandidaten ohne exakten Treffer bricht `mehrdeutig` ab; `slice-a` trifft `slice-ax` nicht. Mutations-Fälle: der exakte Zweig entfernt, die Grenze zum Teilstring-Glob geweitet — je ein Fall rot.
+- [x] **(3) Das Ziel fährt es:** `make full-smoke` nutzt `slice-mv` im gebootstrappten Ziel (`grep -n 'slice-mv SLICE=' harness/tools/full-smoke.sh`); die emittierte Fassung trägt beide Zweige, der Lauf bleibt grün (gelesene Ausgabe), die Gleichheit beider Fassungen hält `internal/emit/slicemv_test.go`.
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register fortgeschrieben (kein Zähler wird gesetzt); keine Beobachtung angefallen ist ebenfalls eine Antwort.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang.
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
 
 ## 3. Plan (vor Code)
@@ -70,17 +70,17 @@ Lerneintrag: die Form entscheidet die Closure.
 
 ## 6. Risiken und offene Punkte
 
-- **(1) Der exakte Treffer maskiert einen Tippfehler:** ein vollständiger, aber falscher Name trifft still einen anderen Slice — **Ausgang:** <…>
-- **(2) Die emittierte Fassung driftet von der Dogfood-Fassung** — **Ausgang:** <…>
+- **(1) Der exakte Treffer maskiert einen Tippfehler:** ein vollständiger, aber falscher Name trifft still einen anderen Slice — **Ausgang:** *entfallen* — ein voller Name, der exakt trifft, benennt genau diesen Slice; die vorige Suche bewegte ihn ebenso, sobald kein längerer Name ihn als Präfix trug. Der Präfix-Rückfall auch für `SLICE=<name>.md` ohne exakten Treffer ist Plan-Semantik (§1, „Mehr Eindeutigkeit für den Rückfall").
+- **(2) Die emittierte Fassung driftet von der Dogfood-Fassung** — **Ausgang:** *entfallen* — die bats-Kopplung `KERN` in `test/slice-mv.bats` schließt `quelle_finden` ein und färbt bei einseitiger Änderung rot (Fall 27).
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang>
+- **Was hat funktioniert:** die Gegenproben des CR am echt emittierten Ziel; `make full-smoke` Schritt (i) unterscheidet alte und neue Fassung; Fälle 525/526 binden ihre Tests allein.
+- **Was ging anders als geplant:** DoD 3 nennt `internal/emit/slicemv_test.go` als Träger der Fassungs-Gleichheit; der Test vergleicht die Fassungen nicht (`grep -c 'harness/tools/slice-mv' internal/emit/slicemv_test.go` → 0). Träger ist die bats-Kopplung `KERN` in `test/slice-mv.bats`, unter einseitiger Mutation rot gesehen. Planner-Korrektur; der DoD-Wortlaut bleibt stehen.
+- **Steering-Loop-Eintrag:** benannte Lücke — den Präfix-Rückfall ohne exakten Treffer fährt kein E2E-Schritt im Ziel; ihn halten die bats-Fälle über beide Fassungen. Gezählt, nicht verkörpert.
+- **Beobachtungs-Register (`../observations/`):** Beleg in [`BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle`](../observations/BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle/observation.md) (Review-Klasse *Herkunft im Kommentar*).
+- **Folge-Slices:** keine.
+- **Risiken aus §6:** (1) *entfallen*, (2) *entfallen* — Gründe in §6.
 - **Drei Paarungen:** <…>
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
