@@ -22,6 +22,11 @@ Kurs.
   prüfen (kein Abschnitt geleert).
 - **Knapp schließen:** DoD-Häkchen nur nach Verifikationsbericht; §7 trägt Zustand und Anker, keine
   Erzählung (`AGENTS.md` §3.7); jedes Risiko einen Ausgang in **einer** Zeile.
+- **Slice-Closure — die Paarungs-Zeile der DoD** (*„Die drei Paarungen … sind getragen"*): kein
+  Häkchen auf Zuweisung. Die Slice-Closure fährt (a)/(b)/(c) aus Schritt 3 unten **nach** ihrem
+  `git mv` selbst — auch hier, wo die Welle-Closure sie zusätzlich prüft — und setzt das Häkchen erst
+  danach, in einem Commit nach dem Move, mit der §7-Zeile *„Paarungen geprüft am <Datum>:
+  <Kommando/Ergebnis>"*; rot heißt: Häkchen weg, die Paarung als offene Folge nennen.
 - **Commit** via `git commit --only <pfade> -F <datei>`; Rolle „Planner" und eine Kennung in der Message.
   Abschluss-Commits berühren nur Closure-Artefakte.
 
