@@ -15,12 +15,15 @@
 ## 1. Ziel und Abgrenzung
 
 
-**Ziel:** Das emittierte `.d-check.yml` führt `targets` (Target ↔ Tabellenzeile in `harness/README.md`, beide Richtungen, Autorität `harness/README.md`), mit grünem Start am frischen `--lang go`-Ziel und je einem roten Gegenbeispiel pro Richtung in `make full-smoke`.
+**Ziel:** Das emittierte `.d-check.yml` führt `targets` (Target ↔ Tabellenzeile in `harness/README.md`, beide Richtungen, Autorität `harness/README.md`) in der Stufe 1 `makefiles: [Makefile]` mit den zwei `exempt-targets` `help` und `record-gates`, mit grünem Start am frischen `--lang go`-Ziel und je einem roten Gegenbeispiel pro Richtung in `make full-smoke`; die Stufe 2 steht als Kopfkommentar der Vorlage.
 
-**Messung vor dem Schnitt** (Pin v0.79.0, `host-bin`-Binär, emittiertes Scratch-Ziel `--lang go`, `docker run --network none -v …:ro`): `makefiles` nimmt keinen Glob (`harness/mk/*.mk` ⇒ Config-Fehler, fail-closed), die elf `harness/mk/*.mk` stehen als Liste. Mit `Makefile`, `d-check.mk` und den elf sind 29 Targets sichtbar; die Vorlage-README deklariert zwei (`docs-check`, `gates`; die `<make-target>`-Platzhalter-Zeilen zählen nicht). Start rot mit 27 Befunden `gate-undocumented` (`docker run … | awk -F'\t' '{print $2}' | sort -u | wc -l` → 27); mit 27 `exempt-targets` grün (20 Dateien, 0 Befunde). Rot gesehen: ein Makefile-Target ohne Zeile ⇒ `gate-undocumented`, eine Zeile ohne Target ⇒ `gate-phantom`, ohne den Eintrag `test` fällt genau `harness/mk/go.mk:10 test`. **Preis:** 27 Einträge, davon vier echte Gates (`baseline-verify`, `lint`, `test`, `build`), die als README-Zeilen statt als Ausnahme stehen sollten (⇒ 23 `exempt-targets`); `--lang cpp` und `--arch`-Varianten sind nicht gemessen ([`MR-055`](../../../../harness/conventions.md#mr-055)).
+**Lage** (Messung des Auftraggebers am emittierten Ziel v0.2.7): das Wurzel-`Makefile` definiert nur `help`, `gates`, `record-gates`; alle übrigen Targets kommen aus `harness/mk/*.mk` (11 Dateien) und `d-check.mk` (26). `gates` hat eine README-Zeile, also bleiben zwei Ausnahmen. **Stufe 2** — `makefiles: [Makefile, "harness/mk/*.mk", d-check.mk]` plus die dann nötigen `exempt-targets` — ist erst ab dem gepinnten d-check `v0.81.0` gültig, der Globs in `makefiles` annimmt; ihre Ausnahme-Zahl wird am frisch emittierten Ziel neu gemessen (`… | awk -F'\t' '{print $2}' | sort -u | wc -l` über den `gate-undocumented`-Befunden), nicht aus der Messung unter `v0.79.0` übernommen (dort 27, davon vier echte Gates).
+
+**Die Sorge „23 Ausnahmen = Gate-Senkung“ ist entschärft:** Stufe 1 trägt zwei Ausnahmen, und beide sind Werkzeug-Ziele ohne Gate-Anspruch; ein Ausnahme-Block in der Größe der Target-Menge entsteht erst in Stufe 2, und die ist Angebot im Kommentar, nicht Default.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
+- Stufe 2 als Default — Bestand bleibt: ihr Ausnahme-Block wäre wieder so groß wie die Target-Menge; sie steht als Kommentar mit ihrer Bedingung (Pin `v0.81.0`).
 - Die Varianten `--lang cpp` und `--arch hexslice`/`hexagonal` — nicht gemessen; der Slice misst jede Variante, die er abdeckt, oder benennt die Grenze statt sie zu behaupten ([`MR-055`](../../../../harness/conventions.md#mr-055)).
 - Der Ordner `harness/sensors/` im Ziel — Folge-Slice `slice-sensors-ordner-entsteht-im-ziel`; `targets` prüft Makefile gegen README-Tabelle und braucht ihn nicht.
 - Nachzug in bestehende Ziele — `.d-check.yml` wird nur an freiem Pfad geschrieben; der Nachzug ist Handarbeit nach der Positionsliste im Kopfkommentar, ein anderer Vorgang.
@@ -29,9 +32,9 @@
 ## 2. Definition of Done
 
 
-- [ ] Der Emitter schreibt `targets` in `modules` und den Block (`makefiles` als explizite Liste der tatsächlich emittierten mk-Dateien, `doc-tables`, `authority`, `exempt-targets`); die vier Gates stehen als README-Zeilen der Vorlage, die übrigen im Exempt-Block; der Kopfkommentar „Herkunft der Positionen“ nennt die Position (die Baseline-Vorlage führt `targets` nur auskommentiert); ein Test hält die Liste gleich der emittierten mk-Menge, und eine entfernte `exempt-targets`-Zeile färbt den Gate-Lauf im Ziel rot (Gegenbeispiel gesehen, AGENTS.md §3.6).
-- [ ] `make full-smoke` misst im Ziel grünen Start und beide Gegenbeispiele mit ihrem Grund-Code (`gate-undocumented`, `gate-phantom`); die Stufe steht mit ihrer Grenze (nur gemessene Varianten) in der E2E-Abdeckungs-Sicht ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-- [ ] Die Grenzen stehen am Ort der Emission (Kopfkommentar der Vorlage `d-check.yml`): `makefiles` ist eine Liste ohne Glob, eine später per `add-lang` oder vom Adopter angelegte mk-Datei bleibt ungelistet und damit blind; Kosten 23 Ausnahmen mit dem Kommando der Messung.
+- [ ] Der Emitter schreibt `targets` in `modules` und den Block der Stufe 1 (`makefiles: [Makefile]`, `doc-tables`, `authority`, `exempt-targets: [help, record-gates]`); der Kopfkommentar „Herkunft der Positionen“ nennt die Position (die Baseline-Vorlage führt `targets` nur auskommentiert); eine entfernte `exempt-targets`-Zeile färbt den Gate-Lauf im Ziel rot (Gegenbeispiel gesehen, AGENTS.md §3.6).
+- [ ] `make full-smoke` misst im Ziel grünen Start der Stufe 1 und ihre Gegenbeispiele mit Grund-Code: ein Target im `Makefile` ohne Zeile ⇒ `gate-undocumented`, eine Zeile ohne Target ⇒ `gate-phantom`; für Stufe 2 einmal von Hand rot gesehen und im Bericht belegt: dieselben zwei Befunde über ein Target in `harness/mk/*.mk` und ein Glob ohne Treffer ⇒ Exit 2. Die Stufe steht mit ihrer Grenze (nur gemessene Varianten) in der E2E-Abdeckungs-Sicht ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+- [ ] Die Grenzen stehen am Ort der Emission (Kopfkommentar der Vorlage `d-check.yml`): Stufe 1 sieht kein Target aus `harness/mk/*.mk` und `d-check.mk` und damit kein per `add-lang` hinzugekommenes Fragment; Stufe 2 mit ihrer Bedingung (gepinnter d-check ab `v0.81.0`), ihrer gemessenen Ausnahme-Zahl samt Kommando und ihren zwei Abbrüchen (Glob ohne Treffer, vom Muster getroffener Symlink — je Exit 2, Symlink wörtlich eintragen).
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -47,18 +50,17 @@
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `internal/emit/templates/d-check.yml` | update | `targets` + Block + Kopfkommentar; Aktivierung nach [`MR-054`](../../../../harness/conventions.md#mr-054) (Erprobung, grüner Start, rotes Gegenbeispiel) |
-| `internal/emit` (README-Vorlage, mk-Liste, Test) | update | vier Gate-Zeilen; Liste = emittierte mk-Dateien — [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | `harness/tools/full-smoke.sh` | update | Stufe grün plus zwei rote Gegenbeispiele; `docs/user/e2e-abdeckung.md` per `make e2e-abdeckung` neu erzeugt |
 
 ## 4. Trigger
 
 
-**Start** (`next` → `in-progress`): Auftrag des Auftraggebers; keine Abhängigkeit.
+**Start** (`next` → `in-progress`): Auftrag des Auftraggebers **und** `slice-d-check-pin-macht-den-range-leerfall-laut` liegt in `done/` — erst dann pinnt das emittierte Ziel `v0.81.0`, und der Kommentar zu Stufe 2 beschreibt etwas, das dort gilt.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): die Messung einer zweiten Variante (cpp, `--arch`) wird nötig — dann je Variante ein Slice.
-- `in-progress` → `open` (blockiert — Carveout?): das Exempt-Volumen im Ziel wird als Gate-Senkung gelesen — dann Architect-Frage nach AGENTS.md §3.5, nicht Slice-Arbeit.
+- `in-progress` → `open` (blockiert): das frisch emittierte Wurzel-`Makefile` definiert mehr als `help`, `gates`, `record-gates` — dann ist die Lage aus §1 nicht mehr die gemessene, und der Schnitt wird neu gemacht.
 
 ## 5. Closure-Trigger
 
@@ -68,8 +70,7 @@ DoD vollständig, `make gates` und `make full-smoke` grün, Closure-Notiz mit Le
 ## 6. Risiken und offene Punkte
 
 
-- Die Liste der mk-Dateien driftet gegen die emittierte Menge — **Ausgang:** entfallen: der Test aus der ersten DoD-Zeile hält sie gleich.
-- Ein Adopter legt eigene mk-Dateien an, die `makefiles` nicht nennt (blind, Grenze in der dritten DoD-Zeile) — **Ausgang:** weiter offen: → BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht
+- Stufe 1 sieht die Targets der Fragmente nicht; ein neues Fragment-Target ohne README-Zeile bleibt grün (Grenze in der dritten DoD-Zeile) — **Ausgang:** weiter offen: → BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht
 - Der Lauf kostet im Ziel Zeit, ungemessen — **Ausgang:** weiter offen: → BEO-ALL/kosten-einer-emittierten-pruefung-im-ziel-ungemessen
 
 ## 7. Closure-Notiz
