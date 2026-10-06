@@ -30,9 +30,10 @@
 # die Range ueber das `vcs`-Modul (Target `doc-immutable`/`adr-immutable` in
 # d-check.mk/Makefile) und traegt darum `fetch-depth: 0` UND einen
 # vorgeschalteten `make history-range-guard` (harness/tools/history-range-guard.sh)
-# vor seinem `make doc-immutable`-Aufruf — sonst meldet eine aufloesbare, aber
-# im flachen Klon leere Range `0 Befund(e)`, Exit 0, statt zu fallen (MR-007
-# Setzung 3, "blind und gruen"). Dieselbe Begruendung (kein History-Lesen)
+# vor seinem `make doc-immutable`-Aufruf — eine aufloesbare, aber leere Range
+# bricht damit vor dem Bild-Lauf ab (MR-007 Setzung 3). Der gepinnte d-check
+# bricht dort am Modul `vcs` selbst ab ("Range-Leerfall", Exit 2); am Modul
+# `commits` meldet er "0 Befund(e)", Exit 0 ("blind und gruen"). Dieselbe Begruendung (kein History-Lesen)
 # gilt fuer die drei Checkouts in release.yml und den einen in
 # upstream-drift.yml — repo-weit neun Checkouts, genau einer mit
 # `fetch-depth: 0`.
@@ -91,7 +92,7 @@ jobs:
   # DC-FA-VCS-001): ein Commit, der den Kern einer Accepted-ADR aendert,
   # faerbt diesen Job rot. Braucht die Historie der Range -> `fetch-depth: 0`
   # (Kopfkommentar oben) UND den Vorlauf-Waechter VOR dem Modul-Lauf (MR-007
-  # Setzung 3, "blind und gruen"). Die Range ist ereignis-abhaengig: ein PR
+  # Setzung 3; Kopfkommentar oben). Die Range ist ereignis-abhaengig: ein PR
   # vergleicht Base gegen Head, ein Push den vorherigen Ref-Stand
   # (`github.event.before`) gegen den neuen. Ein Push ohne vorherigen Stand
   # (neuer Branch/Ref, `before` ist die Nullreferenz) hat keine sinnvolle

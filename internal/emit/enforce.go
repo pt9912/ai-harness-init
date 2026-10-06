@@ -129,9 +129,10 @@ func enforceFiles() []enforceFile {
 		{src: "templates/enforce/extract-command.awk", dst: "tools/harness/extract-command.awk", mode: 0o644, class: Konvergent},
 		// Vorlauf-Waechter der zwei history-lesenden d-check-Targets (doc-immutable/
 		// doc-commits). Das Doc-Gate-Fragment haengt ihn als Vorbedingung vor beide
-		// Targets: ueber einer aufloesbaren, aber leeren Commit-Range meldet ein
-		// history-lesendes Modul sonst "0 Befund(e)", Exit 0 — gruen ueber leerem
-		// Pruefbereich (MR-007 Setzung 3). Sprach-agnostisch wie der uebrige Kern:
+		// Targets: ueber einer aufloesbaren, aber leeren Commit-Range meldet das
+		// Modul commits sonst "0 Befund(e)", Exit 0 — gruen ueber leerem
+		// Pruefbereich (MR-007 Setzung 3); das Modul vcs bricht dort selbst ab
+		// ("Range-Leerfall", Exit 2). Sprach-agnostisch wie der uebrige Kern:
 		// das Skript ist bash + git, ohne Docker und ohne Image.
 		{src: "templates/enforce/history-range-guard.sh", dst: "tools/harness/history-range-guard.sh", mode: 0o755, class: Konvergent},
 		// Commit-Kennungs-Waechter: der git-eigene Traeger, die Pruefung, die er

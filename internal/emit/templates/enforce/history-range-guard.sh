@@ -3,9 +3,11 @@
 # (`doc-immutable` ueber das Modul vcs, `doc-commits` ueber commits). Er prueft VOR dem
 # Modul-Lauf, dass die angeforderte Range git-seitig AUFLOESBAR und NICHT LEER ist.
 #
-# ANLASS: ein Klon der Tiefe 1 liefert fuer eine AUFLOESBARE, aber dort LEERE Range
-# (z. B. `HEAD..HEAD`) "0 Befund(e)", Exit 0 — das Modul unterscheidet das nicht von
-# "wirklich nichts zu melden". Das Ergebnis ist gruen ueber leerem Pruefbereich.
+# ANLASS: fuer eine AUFLOESBARE, aber LEERE Range (z. B. `HEAD..HEAD`) meldet das Modul
+# commits des gepinnten d-check "0 Befund(e)", Exit 0 — es unterscheidet das nicht von
+# "wirklich nichts zu melden", das Ergebnis ist gruen ueber leerem Pruefbereich. Das Modul
+# vcs bricht dort selbst ab ("Range-Leerfall", Exit 2); der Waechter meldet denselben Fall
+# vor dem Container-Start.
 #
 # GRENZE — was dieser Waechter NICHT deckt: eine UNAUFLOESBARE Basis (z. B. `HEAD~1` im
 # Klon der Tiefe 1) bricht schon ohne ihn ab (git kennt den Commit dort nicht). Ein

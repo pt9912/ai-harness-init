@@ -277,9 +277,10 @@ ci-lint: ## GitHub-Actions-Workflows linten (actionlint) im gepinnten Image — 
 
 # Vorlauf-Waechter fuer history-lesende d-check-Module (`vcs`/`commits`, Targets
 # `doc-immutable`/`doc-commits` in d-check.mk): prueft VOR dem Modul-Lauf, dass
-# RANGE git-seitig aufloesbar UND NICHT LEER ist — sonst meldet ein history-
-# lesender Job auf einem flachen Klon "0 Befund(e)", Exit 0, obwohl keine
-# Historie zur Verfuegung stand (MR-007 Setzung 3: "blind und gruen").
+# RANGE git-seitig aufloesbar UND NICHT LEER ist — sonst meldet das Modul
+# `commits` ueber einer leeren Range "0 Befund(e)", Exit 0, obwohl nichts
+# geprueft wurde (MR-007 Setzung 3: "blind und gruen"); das Modul `vcs` des
+# gepinnten d-check bricht dort selbst ab ("Range-Leerfall", Exit 2).
 # Hermetisch, kein Docker, kein Netz. NICHT in gates: RANGE variiert pro Lauf
 # und ist damit kein hermetischer Pruefbereich (LH-QA-01) — wie beim Ziel
 # `adr-immutable` unten, das diesen Waechter vorschaltet. Aufrufer ist der Job

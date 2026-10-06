@@ -8,11 +8,13 @@ history-lesenden d-check-Modul-Lauf (`vcs`/`commits`, Targets `doc-immutable`/`d
 Gate, in keiner Prerequisite-Kette — er prüft eine Vorbedingung *für einen Job*, nicht den Zustand
 des Repos ([`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 
-**Der Anlass:** `actions/checkout` klont per Default mit Tiefe 1; eine dabei *auflösbare, aber
-leere* Range (z. B. `HEAD..HEAD`) meldet d-check ohne diesen Wächter `0 Befund(e)`, Exit 0 —
-blind und grün, statt zu fallen
+**Der Anlass:** `actions/checkout` klont per Default mit Tiefe 1; über einer *auflösbaren, aber
+leeren* Range (z. B. `HEAD..HEAD`) meldet das Modul `commits` des gepinnten d-check ohne diesen
+Wächter `0 Befund(e)`, Exit 0 — blind und grün, statt zu fallen
 ([`MR-007`](../conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
-Setzung 3). Geprüft wird darum die **Range** (`git rev-list --count`), nicht die Klon-Tiefe.
+Setzung 3). Das Modul `vcs` bricht über derselben Range selbst ab (`Range-Leerfall`, Exit 2); der
+Wächter meldet den Fall dort vor dem Bild-Lauf. Geprüft wird die **Range**
+(`git rev-list --count`), nicht die Klon-Tiefe.
 `STAGED=1` prüft keine Range, sondern vergleicht den Index gegen `HEAD` (`git diff --cached`).
 
 ### Im gebootstrappten Ziel — Vertrag
@@ -79,33 +81,36 @@ Die emittierte Fassung unterscheidet sich in einem Punkt von
 (`test/history-range-guard.bats`) — im Ziel gibt es diesen Test nicht, die Entscheidung ist
 dieselbe Funktion. Rot gesehen wird die Ziel-Fassung in
 [`make full-smoke`](full-smoke.md): ein Klon der Tiefe 1 bricht über einer auflösbaren, aber
-leeren Range an beiden Targets mit der Meldung des Wächters ab, dieselbe Range auf einem
-vollständigen Klon bleibt grün. Dieselbe Stufe fährt die zwei Richtungen der Vorbindung
+leeren Range an beiden Targets mit der Meldung des Wächters ab, die Range `HEAD~1..HEAD` auf
+einem vollständigen Klon bleibt grün. Dieselbe Stufe fährt die zwei Richtungen der Vorbindung
 selbst: über einem `d-check.mk` **ohne** die Ziel-Definition bricht `make doc-immutable` bzw.
 `make doc-commits` mit Exit 2 und der Meldung des Fragments ab — zweimal gefahren, mit
 entfernter Ziel-Zeile und, als zweiter Auslöser derselben Klasse, mit einer Ziel-Zeile ohne
 Rezept; über dem **unverfälschten** d-check.mk greift der Wächter und das Modul läuft
 (Exit 0).
 
-**Beide Hälften der Zusage sind an beiden Targets gemessen, jede an ihrem Aufbau.** Der Abbruch
-des Wächters läuft an beiden Targets über dem flachen Klon. Der blinde Grün-Fall — dieselbe
-leere Range über `-f d-check.mk`, also ohne das Doc-Gate-Fragment — trägt `doc-immutable` am
-**flachen** und `doc-commits` am **vollständigen** Klon; beide führen dieselbe auflösbare, aber
-leere Range (`git rev-list --count HEAD..HEAD` → **0**), und die Stufe prüft das vorab.
+**Beide Targets sind ohne den Wächter gemessen, am vollständigen Klon.** Der Abbruch des
+Wächters läuft an beiden Targets über dem flachen Klon. Ohne das Doc-Gate-Fragment — dieselbe
+leere Range über `-f d-check.mk` — fährt die Stufe beide Targets am **vollständigen** Klon, der
+die auflösbare, aber leere Range (`git rev-list --count HEAD..HEAD` → **0**, die Stufe prüft das
+vorab) ohne unauflösbare Vorfahren-Kette vorlegt: `doc-commits` muss dort `0 Befund(e)`, Exit 0
+melden, `doc-immutable` mit `Range-Leerfall`, Exit 2 abbrechen, ohne Modul-Lauf.
 
-Warum zwei Aufbauten, gemessen am frisch emittierten Ziel unter dem gepinnten `v0.76.3`,
-`--range HEAD..HEAD`, ohne Wächter:
+Gemessen am frisch emittierten `--lang go`-Ziel unter dem gepinnten `v0.81.0`, `RANGE=HEAD..HEAD`,
+`make -f d-check.mk`, ohne Wächter:
 
 | Aufbau | `doc-immutable` | `doc-commits` |
 |---|---|---|
-| vollständiger Klon | `0 Befund(e)`, Exit 0 | `0 Befund(e)`, Exit 0 |
-| flacher Klon (Tiefe 1 über zwei Commits) | `0 Befund(e)`, Exit 0 | `d-check: error: Range-Basis-Vorfahren nicht lesbar: object not found`, Exit 2 |
+| vollständiger Klon | `d-check: error: Range-Leerfall "HEAD".."HEAD" — Basis und Spitze benennen denselben Commit, es wurde nichts geprüft`, Exit 2 | `0 Befund(e)`, Exit 0 |
+| flacher Klon (Tiefe 1 über zwei Commits) | dieselbe `Range-Leerfall`-Meldung, Exit 2 | `d-check: error: Range-Basis-Vorfahren nicht lesbar: object not found`, Exit 2 |
 
-Der **Anlass** des Wächters — die auflösbare, aber leere Range — bleibt an beiden Aufbauten
-ungedeckt; das ist die Klasse, gegen die er steht. Der flache Klon legt daneben eine
-**unauflösbare Vorfahren-Kette** vor, und die nimmt `v0.76.3` dem Wächter ab, aber nur am Modul
-`commits`, das die Range über die Vorfahren auflöst — `vcs` löst nur die zwei Bäume auf. Unter
-`v0.76.1` meldete auch `doc-commits` im flachen Klon `0 Befund(e)` bei Exit 0.
+Der **Anlass** des Wächters — die auflösbare, aber leere Range — bleibt am Modul `commits` im
+vollständigen Klon ungedeckt; das ist die Klasse, gegen die er steht. Am Modul `vcs` deckt der
+gepinnte Stand ihn selbst; der Wächter meldet ihn dort früher, ohne ein Bild zu fahren. Im
+flachen Klon bricht `vcs` unter `v0.81.0` auch über einer **nicht leeren** Range an der
+unlesbaren Vorfahren-Kette ab (Dogfood, Klon der Tiefe 2, `RANGE=HEAD~1..HEAD`:
+`Range-Basis-Vorfahren nicht lesbar: object not found`, Exit 2; unter `v0.79.0` `0 Befund(e)`,
+Exit 0) — ein history-lesender Job braucht dort weiter `fetch-depth: 0`.
 
 ## Ausgabe und Ausgänge
 

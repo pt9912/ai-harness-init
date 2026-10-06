@@ -4,10 +4,11 @@
 # Prueft VOR einem Modul-Lauf, dass eine angeforderte Range git-seitig
 # AUFLOESBAR und NICHT LEER ist.
 #
-# ANLASS (gemessen): ein Klon der Tiefe 1 liefert fuer eine AUFLOESBARE, aber
-# im flachen Klon LEERE Range (z. B. `HEAD..HEAD`) "0 Befund(e)", Exit 0 —
-# d-check selbst unterscheidet das nicht von "wirklich nichts zu melden". Das
-# ist die Klasse "blind und gruen" (harness/conventions.md MR-007 Setzung 3).
+# ANLASS (gemessen): fuer eine AUFLOESBARE, aber LEERE Range (z. B.
+# `HEAD..HEAD`) liefert das Modul `commits` "0 Befund(e)", Exit 0 — es
+# unterscheidet das nicht von "wirklich nichts zu melden". Das ist die Klasse
+# "blind und gruen" (harness/conventions.md MR-007 Setzung 3). Das Modul `vcs`
+# des gepinnten d-check bricht dort selbst ab ("Range-Leerfall", Exit 2).
 # Eine UNAUFLOESBARE Basis (z. B. `HEAD~1` im Tiefe-1-Klon) bricht dagegen
 # schon OHNE diesen Waechter mit d-check Exit 2 ab ("object not found") —
 # DAS deckt dieser Waechter nicht zusaetzlich; er meldet dieselbe Klasse nur
@@ -35,11 +36,14 @@
 #     -> Checkout braucht 'fetch-depth: 0' (oder ausreichende Tiefe) fuer diesen Job.
 #   $ echo $?
 #   1
-#   OHNE den Waechter meldet derselbe Klon fuer dieselbe Range (d-check direkt,
-#   `--enable vcs --range HEAD..HEAD`, alle anderen Module disabled) "834
-#   Datei(en) geprueft, 0 Befund(e)", Exit 0 — die Klasse "blind und gruen"
-#   aus MR-007 Setzung 3 (die Datei-Zahl wandert mit dem Bestand und ist kein
-#   Erwartungswert, MR-025 Setzung 2). Zum Vergleich die UNAUFLOESBARE Basis,
+#   OHNE den Waechter, d-check direkt (`make -f d-check.mk <ziel>
+#   RANGE=HEAD..HEAD`), gepinnter Stand: `doc-commits` meldet auf einem
+#   VOLLSTAENDIGEN Klon "N Datei(en) geprueft, 0 Befund(e)", Exit 0 — die
+#   Klasse "blind und gruen" aus MR-007 Setzung 3 (im flachen Klon bricht es an
+#   der unlesbaren Vorfahren-Kette ab, Exit 2); `doc-immutable` bricht in beiden
+#   Klonen mit "Range-Leerfall … es wurde nichts geprueft", Exit 2 ab. Gefahren
+#   in harness/tools/full-smoke.sh (Vorlauf-Waechter im Ziel, Schritt d). Zum
+#   Vergleich die UNAUFLOESBARE Basis,
 #   die dieser Waechter NICHT zusaetzlich deckt (d-check selbst bricht hier
 #   schon ab):
 #   $ bash harness/tools/history-range-guard.sh HEAD~1..HEAD
@@ -106,8 +110,8 @@ decide() {
 
 # decide_staged <has_staged> — REIN: 0 = keine gestagte Aenderung, 1 =
 # mindestens eine. Meldet den Leerfall statt ihn schweigend durchzureichen
-# (dieselbe Klasse "blind und gruen" wie bei der leeren Range, MR-007
-# Setzung 3, hier fuer den --staged-Zweig); Exit 0 in beiden gueltigen
+# (dieselbe Klasse "blind und gruen" wie bei der leeren Range am Modul
+# `commits`, MR-007 Setzung 3, hier fuer den --staged-Zweig); Exit 0 in beiden gueltigen
 # Faellen — --staged loest den Range-Check nicht aus. Exit 2 bei einem
 # Wert ausserhalb `0|1` — derselbe fail-closed-Grundsatz wie in decide();
 # ueber den produktiven Pfad nicht erreichbar (der `--staged`-Zweig
