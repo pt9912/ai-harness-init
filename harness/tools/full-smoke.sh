@@ -3429,9 +3429,10 @@ zeilenenden_im_klon
 # Der Ordner harness/sensors/ entsteht im Ziel (LH-FA-01, ADR-0054 Festlegung 1): die README
 # des Ziels nennt harness/sensors/<target>.md, der Bootstrap legt den Ort an. Gemessen wird
 # der Lauf, nicht der Ordner danach: .gitkeep liegt nach dem Bootstrap in git (git add ohne
-# -f nimmt sie an, ist sie ignoriert, endet der Aufruf rot), und ein zweiter Lauf laesst eine
-# vom Adopter belegte Datei an diesem Pfad unberuehrt. NICHT gemessen: dass der Ordner im Ziel
-# bestehen bleibt — kein Waechter haelt seine Existenz (internal/emit/templates.go).
+# -f nimmt sie an, ist sie ignoriert, endet der Aufruf rot), und ein zweiter Lauf geht gegen
+# eine vom Adopter belegte Datei an diesem Pfad; sie muss danach unveraendert stehen (diese
+# Stufe von full-smoke). Nicht gemessen: dass der Ordner im Ziel bestehen bleibt — kein
+# Waechter haelt seine Existenz (internal/emit/templates.go).
 sensors_ordner_im_ziel() {
 	local w="" repo="" out="" traeger="harness/sensors/.gitkeep"
 	w="$(mktemp -d -p "$tmprepo_kf")"
