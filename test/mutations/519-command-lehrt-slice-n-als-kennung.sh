@@ -9,4 +9,5 @@
 # MR-NNN; die Nummernform `slice-N` ist dort kein Teil mehr. Das Wort kehrt zurueck, ohne
 # Platzhalter in spitzen Klammern — der Waechter faellt trotzdem.
 set -euo pipefail
-sed -i 's/`MR-NNN`; die$/`MR-NNN`, `slice-N`; die/' internal/emit/templates/commands/implement-slice.md
+bt='`'
+sed -i "s/${bt}MR-NNN${bt}; die\$/${bt}MR-NNN${bt}, ${bt}slice-N${bt}; die/" internal/emit/templates/commands/implement-slice.md
