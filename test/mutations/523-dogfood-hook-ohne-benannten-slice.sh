@@ -11,4 +11,4 @@
 #
 # DER PATCH SITZT AUF DER AUSFUEHRENDEN ZEILE (Bedingung), nicht auf der Prosa im Kopf.
 set -euo pipefail
-sed -i 's@\(\[\[ "\$line" =~ \$patterns \]\]\) || \[\[ "\$line" =~ \$named_slice \]\]@\1@' harness/tools/commit-msg-traceability.sh
+sed -i "s@\(\[\[ \"\$line\" =~ \$patterns \]\]\) || \[\[ \"\$line\" =~ \$named_slice \]\]@\1@" harness/tools/commit-msg-traceability.sh
