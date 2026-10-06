@@ -41,7 +41,7 @@
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -76,7 +76,7 @@ DoD vollständig, `make gates` und `make full-smoke` grün unter dem neuen Pin, 
 - **Beobachtungs-Register (`../observations/`):** Belege in [`BEO-ALL/pin-digest-ohne-waechter`](../observations/BEO-ALL/pin-digest-ohne-waechter/observation.md) (Risiko 1), [`BEO-ALL/werkzeug-messung-und-gemessener-stand-werden-nicht-zusammengehalten`](../observations/BEO-ALL/werkzeug-messung-und-gemessener-stand-werden-nicht-zusammengehalten/observation.md) (Review-Klasse *Werkzeug-Aussage im Bestand vom Pin-Sprung falsifiziert*), [`BEO-ALL/aufbau-anleitung-stellt-die-gemessene-lage-nicht-her`](../observations/BEO-ALL/aufbau-anleitung-stellt-die-gemessene-lage-nicht-her/observation.md) (Review INFO) und neu [`BEO-ALL/pin-sprung-feuert-adr-trigger-ohne-nennung`](../observations/BEO-ALL/pin-sprung-feuert-adr-trigger-ohne-nennung/observation.md) (Review-Klasse *Pin-Sprung feuert Trigger einer Accepted-ADR ohne Nennung*). `pin-digest-ohne-waechter` erreicht damit 3× (`ls ../observations/BEO-ALL/pin-digest-ohne-waechter/evidence/*.md | wc -l`); den Ausgang weist der Lese-Schritt der nächsten Welle-Closure zu.
 - **Folge-Slices:** keine.
 - **Risiken aus §6:** (1) *weiter offen*, (2) *entfallen* — Gründe in §6.
-- **Drei Paarungen:** <…>
+- **Drei Paarungen:** Paarungen geprüft am 2026-10-06 nach dem `git mv`: (a) kein `liegt in` in §7 — kein Gegenstand; (b) keine Folge-Slices; (c) die vier genannten `BEO-ALL/…` existieren, `ls …/evidence/*.md | wc -l` → 2 · 3 · 1 · 6 (`sed -n "/^## 7/,/^## 8/p"` über §7, `grep -oE "BEO-ALL/[a-z0-9-]+"`).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
