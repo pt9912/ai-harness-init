@@ -35,14 +35,11 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 `<Kennung>` (`seit welle-<Kennung>`, `slice-<Kennung>`), und ein Test färbt rot, sobald ein nummerierter
 Platzhalter (`slice-<NNN>`, `welle-<NN>`) in den emittierten Commands steht.
 
-**Start-Trigger (Architect-Verdikt, Übergabe):** Die Form der Platzhalter in der emittierten Ebene ist entschieden —
-Vorschlag: `<Kennung>`, wie sie die Baseline setzt (Namen, nicht Nummern:
-[`grundlagen-source-precedence.md` §Vergabe](../../../../.harness/baseline/v6.13.0/regelwerk/grundlagen-source-precedence.md#vergabe-woher-die-nächste-kennung-kommt);
-Anker-Formen `seit welle-<Kennung>` / `seit slice-<Kennung>`:
-[`grundlagen-traceability.md` §Herkunfts-Anker](../../../../.harness/baseline/v6.13.0/regelwerk/grundlagen-traceability.md#herkunfts-anker)).
-[`MR-057`](../../../../harness/conventions.md#mr-057) schließt die emittierte Ebene ausdrücklich aus („entscheidet der Slice, der die Tool-Ebene
-entscheidet"); dieser Slice ist er, und ob dafür ein Adaptions-Eintrag nötig ist, entscheidet der Architect vor dem Start
-(`AGENTS.md` §3.8). Der Plan nimmt die Entscheidung nicht vorweg.
+**Start-Trigger (Architect-Verdikt, Übergabe): erfüllt.** Der Architect-Bericht `2026-10-06-architect-platzhalter-form.md` entscheidet die Form
+der Platzhalter in der emittierten Ebene: `<Kennung>`, wie sie die Baseline setzt (Namen, nicht Nummern:
+`grundlagen-source-precedence.md` §Vergabe; Anker-Formen `seit welle-<Kennung>` / `seit slice-<Kennung>`:
+`grundlagen-traceability.md` §Herkunfts-Anker), ohne Adaptions-Eintrag und ohne ADR ([`MR-000`](../../../../harness/conventions.md#mr-000): kein Eintrag ohne Delta). [`MR-057`](../../../../harness/conventions.md#mr-057)
+schließt die emittierte Ebene ausdrücklich aus („entscheidet der Slice, der die Tool-Ebene entscheidet"); dieser Slice vollzieht das Verdikt.
 
 **Lage, nachgemessen** (Kommando und Befund; keine Erwartungswerte,
 [`MR-025`](../../../../harness/conventions.md#mr-025)):
@@ -80,14 +77,14 @@ keinen Wächter). Die Lücke ist benannt und wird in DoD (2) geschlossen.
   und emittierte Fassung `enforce/slice-mv.sh`), das Muster `slice-[0-9]+` im emittierten `commit-msg-traceability.sh`
   (`patterns=`) und ihre Tests. *(Sie müssen den Bestand erkennen, den ein Ziel mit nummerierten Slices führt; ein Namens-Muster
   fiele auf ihn zurück. Die Frage, welche Formen eine Erkennung trägt, ist ein anderer Vorgang: Dogfood-Seite
-  `slice-kennungs-erkennung-traegt-die-zugelassenen-formen`, die emittierte Seite entscheidet der Architect.)*
+  `slice-kennungs-erkennung-traegt-die-zugelassenen-formen`, die emittierte Seite trägt `slice-emittierte-commit-pruefung-erkennt-benannte-slices`.)*
 - **Das Muster `slice-[0-9]+` im emittierten Hook selbst (`patterns=` in `enforce/commit-msg-traceability.sh`):** der Slice ändert
   den Text, der die Menge beschreibt, nicht die Menge. *(Anderer Vorgang, Werkzeug statt Text. Der benannte Hook-Slice
   `slice-werkzeug-commits-tragen-eine-kennung` ([`ADR-0053`](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) Festlegung 4) ist
   stillgelegt (`done/`, Gegenstand übernommen von `slice-lifecycle-werkzeuge-tragen-die-kennung`) und liefert nur Kennungen in den Werkzeug-Messages;
   die Erkennung der Formen führt `slice-kennungs-erkennung-traegt-die-zugelassenen-formen` (`open/`), und deren Gegenstand ist die
   Dogfood-Seite. **Übergabe:** die emittierte Prüfung erkennt benannte Slices ([`MR-057`](../../../../harness/conventions.md#mr-057)-Form) erst, wenn ein Slice sie trägt; dafür
-  fehlt heute ein Träger — der Architect benennt ihn mit dem Verdikt aus dem Start-Trigger.)*
+  trägt sie `slice-emittierte-commit-pruefung-erkennt-benannte-slices` (`open/`; er nimmt die Sendung an, sein Gegenstand ist die Zeile `patterns=` der emittierten Prüfung).)*
 - **Andere Platzhalter-Klassen:** `MR-<NNN>`, `CO-<NNN>`, `ADR-<NNNN>`, `LH-XX-NN`. *(Ihre Form setzen
   [`MR-000`](../../../../harness/conventions.md#mr-000) und [`ADR-0034`](../../adr/0034-register-verzeichnis-form-und-die-ortsfestigkeit-der-register-datei.md); sie sind keine Slice-/Welle-Kennung.)*
 - **`welle-NN-results.md` in `internal/emit/templates.go` (`roadmapDoneLink`) und `<welle-NN-titel>` im Doc-Kommentar zu
@@ -139,7 +136,7 @@ Zwei Schichten: Emissions-Vorlagen und ihre Tests.
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): Der Architect hat die Form der Platzhalter in der emittierten Ebene entschieden (§1).
+**Start** (`next` → `in-progress`): erfüllt — die Form ist entschieden (§1).
 
 **Rückführungen:**
 
