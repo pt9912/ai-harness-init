@@ -3511,7 +3511,7 @@ chmod 755 "$tmprepo_doc/.githooks/commit-msg"
 # add-lang apps/api + apps/web + blocked/go traegt) darf diese Fragmente NICHT pruen — der
 # Init emittiert sie nicht, aber loescht sie auch nicht (die H2-Clobber-Falle eine Ebene tiefer).
 echo "full-smoke: kein Prune — sprachloser 2. Init-Lauf am Mono-Repo, add-lang-Fragmente muessen ueberleben ..."
-	e2e_abdeckung "LH-FA-06 LH-QA-01" "Die Aktivierung greift: ein Commit ohne Kennung faellt, einer mit geht durch" "sprachloser Re-Lauf ueberschrieb den liegenden Commit-Traeger"
+	e2e_abdeckung "LH-FA-06 LH-QA-01" "Die Aktivierung greift: ein Commit ohne Kennung faellt, einer mit geht durch, ebenso einer mit benanntem Slice; gemessen ist EIN benannter Slice im Ziel, NICHT gemessen: andere Namens-Formen, das akzeptierte Negativ (slice-based im Fliesstext) und Welle-Kennungen" "sprachloser Re-Lauf ueberschrieb den liegenden Commit-Traeger"
 prune_rc=0
 prune_out="$( "$tmpbin/ai-harness-init" --name full-smoke-doc "$tmprepo_doc" 2>&1 )" || prune_rc=$?
 printf '%s\n' "$prune_out"
@@ -3647,15 +3647,16 @@ kennungs_traeger_im_ziel() {
 		exit 1
 	fi
 
-	# (c)-(e) DIE DREI COMMIT-VERSUCHE, je mit dem Exit-Code, den der Fall verlangt.
+	# (c)-(e) DIE VIER COMMIT-VERSUCHE, je mit dem Exit-Code, den der Fall verlangt.
 	# `--allow-empty` haelt jeden Versuch ohne Baum-Aenderung; die Form ist die
 	# `-m`-Form, weil der Kommando-Zeilen-Matcher des Agenten-Kanals sie nicht
 	# zuverlaessig erkennt und der Traeger am Commit sie darum mitfuehrt.
 	local lauf="" erwartet="" msg="" extra=() out="" rc=0 rot_meldung=""
-	for lauf in rot gruen umgehung; do
+	for lauf in rot gruen benannt umgehung; do
 		case "$lauf" in
 			rot)      erwartet="" ; msg="Smoke ohne Kennung" ; extra=() ;;
 			gruen)    erwartet="x"; msg="Smoke mit Kennung LH-FA-01" ; extra=() ;;
+			benannt)  erwartet="x"; msg="Smoke mit benanntem Slice slice-smoke-benannt" ; extra=() ;;
 			umgehung) erwartet="x"; msg="Smoke ohne Kennung (Umgehung)" ; extra=(--no-verify) ;;
 		esac
 		out=""
@@ -3691,7 +3692,7 @@ kennungs_traeger_im_ziel() {
 			fi
 		fi
 	done
-	echo "full-smoke: Traeger im Ziel ($kennung): make hooks-install setzt core.hooksPath; ein Commit OHNE Kennung faellt mit der Meldung der Pruefung und entsteht nicht, einer MIT Kennung geht durch, und --no-verify umgeht den Traeger:"
+	echo "full-smoke: Traeger im Ziel ($kennung): make hooks-install setzt core.hooksPath; ein Commit OHNE Kennung faellt mit der Meldung der Pruefung und entsteht nicht, einer MIT Kennung geht durch, ebenso einer mit benanntem Slice, und --no-verify umgeht den Traeger:"
 	grep -F -- 'keine Traceability-Kennung' <<<"$rot_meldung" | sed -n '1p' | sed 's/^/full-smoke:   /'
 
 	# (f) DIE REICHWEITE STEHT IM ZIEL, in beiden Richtungen: die zwei Grenzen des
