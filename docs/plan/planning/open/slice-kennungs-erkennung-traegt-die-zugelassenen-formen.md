@@ -128,13 +128,19 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
 - [ ] **(1) Die Fundliste steht im Vorgang, gelesen statt gegreppt.** Jede Stelle der
       Dogfood-Werkzeuge, die eine Slice- oder Welle-Kennung erkennt, ist **namentlich** geführt, je
       Stelle mit den Formen, die sie trägt (Nummernform · freier Slug · Anker-Präfix-Form), und der
-      Weg, auf dem die Menge gefunden wurde, ist als **Lesen** beschrieben
+      Weg, auf dem die Menge gefunden wurde, ist als **Lesen** beschrieben; die Fundliste führt
+      **namentlich** die Prüfung des Dogfood-Hooks `harness/tools/commit-msg-traceability.sh` (Zeile
+      `patterns=`, heute `slice-[0-9]+`) samt ihrer Kopplung an `commits.id-patterns` in `.d-check.yml`
       ([`MR-059`](../../../../harness/conventions.md#mr-059) Setzung 3).
 - [ ] **(2) Jede genannte Stelle trägt jede Form, und je ausgelassener Form ist der Fall rot
       gesehen.** Der Beleg ist kein Gate, sondern die gefahrene Erkennung: eine Kennung der
       ausgelassenen Form geht durch den **unveränderten** Bestand (die Nummernform weiterhin), und
       die Form, die vorher fiel, fällt jetzt nicht mehr — mit gelesener Ausgabe. Für die
-      Anker-Präfix-Form ist der Fall herstellbar, obwohl die Form noch nicht vergeben ist
+      Anker-Präfix-Form ist der Fall herstellbar, obwohl die Form noch nicht vergeben ist; für die
+      Dogfood-Hook-Prüfung gilt es ausdrücklich: ein Commit mit **benanntem** Slice (`slice-<Kennung>`,
+      [`MR-057`](../../../../harness/conventions.md#mr-057)-Form) und sonst keiner Kennung wird erkannt
+      (rot gesehen: vor dem Nachzug bricht er am Hook), ein Commit mit Nummernform (`slice-174`) bleibt
+      grün, und die Muster-Zahn-Fälle `316`, `317`, `342` in `test/mutations/` bleiben rot färbend
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
@@ -188,7 +194,11 @@ ls docs/plan/planning/in-progress/ | grep -c '^slice-'
 grep -n '^\*\*Status:\*\*' docs/plan/adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md
 ```
 
-**Reihenfolge:** unabhängig von jedem anderen offenen Slice; die Fläche — die Erkennungen dieses
+**Reihenfolge:** nach `slice-emittierte-commit-pruefung-erkennt-benannte-slices`, nicht davor: dessen
+`test/commit-msg-emission.bats` hält heute die Muster-Mengen von Dogfood- und emittierter Fassung auf
+Gleichheit, und der Fall wird dort zu *emittiert ⊇ Dogfood*; nimmt dieser Slice zuerst ein Muster in
+`patterns=` auf, färbt die Gleichheit rot, bis jener Slice sie zur Obermenge macht; ist jener zuerst da, bleibt sie grün — beide Pläne
+bleiben, wie sie sind, die Abfolge ist Abstimmung. Sonst unabhängig von jedem anderen offenen Slice; die Fläche — die Erkennungen dieses
 Repos — fasst kein laufender Vorgang an.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
