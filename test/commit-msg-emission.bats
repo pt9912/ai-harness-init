@@ -15,7 +15,7 @@
 # Stufe nicht zur Verfuegung.
 #
 # ZWEI GRUPPEN. Die erste faehrt das Urteil ueber eine Message-Datei. Die zweite
-# haelt die zwei Fassungen der Kennungs-Menge zusammen: die emittierte und die
+# haelt die zwei Fassungen der Kennungs-Menge zusammen (emittiert als Obermenge): die emittierte und die
 # dieses Repos (harness/tools/commit-msg-traceability.sh) — sie sind zwei
 # Dateien mit demselben Zweck, und eine einseitige Aenderung liesse die zwei
 # Traeger desselben Satzes auseinanderlaufen.
@@ -80,8 +80,8 @@ klassen_muster() {
 @test "kopplung: die Klassen-Aufzaehlung im Kopf ist die der Zeile patterns=" {
   local datei soll ist
   for datei in "$EMITTIERT" "$DOGFOOD"; do
-    soll="$(klassen_kopf "$datei" | sort)"
-    ist="$(klassen_muster "$datei" | sort)"
+    soll="$(klassen_kopf "$datei" | sort -u)"
+    ist="$(klassen_muster "$datei" | sort -u)"
     # Ein leeres `soll` ist kein Durchgang: der Kopf traegt dann keine Aufzaehlung,
     # die diese Ableitung liest — fail-closed statt still gruen.
     if [ -z "$soll" ] || [ "$soll" != "$ist" ]; then
@@ -104,7 +104,7 @@ klassen_muster() {
   [[ "$output" != *'slice-'* ]]
 }
 
-@test "gruen: jede der vier Kennungs-Klassen der Menge wird angenommen" {
+@test "gruen: jede der vier Kennungs-Klassen der Menge wird angenommen (slice als Nummer)" {
   local k
   for k in 'ADR-0053' 'LH-FA-01' 'MR-057' 'slice-126'; do
     lauf "Betreff mit Kennung\n\nBezug: $k\n"
@@ -138,14 +138,30 @@ klassen_muster() {
   [[ "$output" == *"nicht lesbar"* ]]
 }
 
-@test "kopplung: die zwei bash-Fassungen der Kennungs-Menge sind einander gleich" {
-  local emittiert dogfood
+@test "gruen: ein benannter Slice (slice-<kennung>) wird angenommen, die Nummernform ebenso" {
+  lauf 'Betreff mit Kennung\n\nBezug: slice-emittierte-commit-pruefung-erkennt-benannte-slices\n'
+  [ "$status" -eq 0 ]
+  lauf 'Betreff ohne Kennung\n\nBezug: slice-12\n'
+  [ "$status" -eq 0 ]
+  lauf 'slice-mv: slice-kennungs-erkennung.md  next/ -> in-progress/\n'
+  [ "$status" -eq 0 ]
+}
+
+@test "rot: ein Wort ohne Kennung nach slice- und eine Message ohne jede Kennung bleiben abgelehnt" {
+  lauf 'Betreff ohne Kennung\n\nBezug: slice- und slice_x und Slice-12\n'
+  [ "$status" -eq 1 ]
+}
+
+@test "kopplung: die emittierte Kennungs-Menge ist eine Obermenge der Dogfood-Menge" {
+  local emittiert dogfood fehlt
   emittiert="$(patterns_von "$EMITTIERT" | sort)"
   dogfood="$(patterns_von "$DOGFOOD" | sort)"
-  # BEIDE Richtungen, und als Mengen-Gleichheit statt als Beleg je Muster: die
-  # Richtung emittiert->dogfood allein waere blind fuer ein Muster, das nur die
-  # Emissions-Vorlage gewann.
-  if [ "$emittiert" != "$dogfood" ]; then
+  # EINE Richtung, emittiert ⊇ Dogfood: jedes Dogfood-Muster steht woertlich in der
+  # emittierten Menge. Die emittierte Menge darf mehr fuehren (den benannten Slice);
+  # die Gegenrichtung gilt nicht, weil die Emission der Dogfood-Fassung vorausgehen darf.
+  fehlt="$(comm -13 <(printf '%s\n' "$emittiert") <(printf '%s\n' "$dogfood"))"
+  if [ -n "$fehlt" ]; then
+    echo "in der emittierten Menge fehlt: $(printf '%s' "$fehlt" | tr '\n' ' ')"
     echo "emittiert: $(printf '%s' "$emittiert" | tr '\n' ' ')"
     echo "dogfood:   $(printf '%s' "$dogfood" | tr '\n' ' ')"
     false

@@ -4,7 +4,8 @@
 # der vorgeschlagenen Message-Datei als $1; Exit ungleich 0 bricht den Commit ab.
 #
 # ZUSAGE. Exit 0, wenn die Message mindestens eine Kennung aus der Menge
-# {ADR-, LH-, MR-, slice-} traegt oder ihr Betreff mit "Merge " bzw. "Revert "
+# {ADR-, LH-, MR-, slice-} traegt (slice- als Nummer oder als Name in Kleinbuchstaben,
+# Ziffern und Bindestrichen) oder ihr Betreff mit "Merge " bzw. "Revert "
 # beginnt; Exit 1, wenn keines von beidem zutrifft; Exit 2, wenn die Datei fehlt
 # oder nicht lesbar ist. Betreff ist die erste nicht-leere Zeile ohne
 # Kommentarzeichen; die Kennung darf auch im Rumpf stehen, eine Kommentarzeile
@@ -57,7 +58,7 @@ fi
 
 # Kennung: ERE ueber die ganze Datei, Kommentarzeilen ausgenommen. Der Dialekt
 # ist POSIX-ERE ([0-9] statt \d) — bash kennt die \d-Kurzform nicht.
-patterns='(ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3}|slice-[0-9]+)'
+patterns='(ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3}|slice-[0-9]+|slice-[a-z][a-z0-9-]*)'
 while IFS= read -r line || [ -n "$line" ]; do
   trimmed="${line#"${line%%[![:space:]]*}"}"
   case "$trimmed" in
