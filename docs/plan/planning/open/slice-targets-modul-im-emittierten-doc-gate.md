@@ -6,7 +6,7 @@
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912)
 
 **Autor:** Planner. **Datum:** 2026-10-06.
 
@@ -56,6 +56,8 @@
 
 
 **Start** (`next` → `in-progress`): Auftrag des Auftraggebers **und** `slice-d-check-pin-macht-den-range-leerfall-laut` liegt in `done/` — erst dann pinnt das emittierte Ziel `v0.81.0`, und der Kommentar zu Stufe 2 beschreibt etwas, das dort gilt.
+
+**Start-Bedingung erfüllt (2026-10-06):** Auftrag liegt vor; `slice-d-check-pin-macht-den-range-leerfall-laut` liegt in `done/` (`ls docs/plan/planning/done/slice-d-check-pin-macht-den-range-leerfall-laut.md`), der emittierte Default-Pin steht auf `v0.81.0` (`grep -n v0.81.0 internal/emit/emit.go`).
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
