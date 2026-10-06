@@ -154,7 +154,7 @@ in `docs-check.md` mit gelesener Meldung. Dazu ein Lerneintrag in einer der drei
 - **Was ging anders als geplant:** nichts; die Lage am Pin widerlegte die Plan-Aussage des Vorgängers (kein Sensor) und steht in `docs-check.md`.
 - **Steering-Loop-Eintrag:** neuer Sensor: die Zellenlängen-Regel; benannte Lücken: (1) kein Dauer-Wächter, `make mutate` führt für `docs-check` kein Fehlschlag-Muster, die Zusage trägt die Sonde; (2) die Schwelle begrenzt Wachstum, nicht Kürze (Median 59, Grenze 260); (3) die Spalte `Bindung` ist unbegrenzt.
 - **Beobachtungs-Register (`../observations/`):** [`BEO-ALL/sensor-schranke-wird-durch-tabellenwachstum-unscharf`](../observations/BEO-ALL/sensor-schranke-wird-durch-tabellenwachstum-unscharf/observation.md): zweiter Beleg (`evidence/slice-werkzeug-zellenlaenge-hat-einen-sensor.md`), Zähler 2, Stand `offen`; der Slice baut eine Schranke derselben Klasse, nicht die, die der Eintrag fordert, darum kein Ausgang.
-- **Folge-Slices:** [`slice-zellenlaenge-sensor-geht-ins-ziel`](../next/slice-zellenlaenge-sensor-geht-ins-ziel.md) (bestehend, Start-Trigger mit diesem `done/` erfüllt).
+- **Folge-Slices:** [`slice-zellenlaenge-sensor-geht-ins-ziel`](../in-progress/slice-zellenlaenge-sensor-geht-ins-ziel.md) (bestehend, Start-Trigger mit diesem `done/` erfüllt).
 - **Risiken aus §6:** 1 entfallen (gewollt, im Plan begründet; die Regel meldet jeden Zusatz) · 2 weiter offen (Register, siehe oben).
 - **Drei Paarungen:** Anker: kein `liegt in`-Feld, nichts zu paaren; Folge-Slice: der genannte existiert in `open/`; Register: der zitierte Pfad existiert und trägt Beleg.
 
