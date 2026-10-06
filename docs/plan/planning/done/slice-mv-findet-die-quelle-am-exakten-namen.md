@@ -41,7 +41,7 @@ Der Fund: Der Block „Quelle finden" (`harness/tools/slice-mv.sh:318`, wortglei
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register fortgeschrieben (kein Zähler wird gesetzt); keine Beobachtung angefallen ist ebenfalls eine Antwort.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang.
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
 
 ## 3. Plan (vor Code)
 
@@ -81,7 +81,7 @@ Lerneintrag: die Form entscheidet die Closure.
 - **Beobachtungs-Register (`../observations/`):** Beleg in [`BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle`](../observations/BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle/observation.md) (Review-Klasse *Herkunft im Kommentar*).
 - **Folge-Slices:** keine.
 - **Risiken aus §6:** (1) *entfallen*, (2) *entfallen* — Gründe in §6.
-- **Drei Paarungen:** <…>
+- **Drei Paarungen:** Paarungen geprüft am 2026-10-06 nach dem `git mv`: (a) kein `liegt in` in §7 — kein Gegenstand; (b) keine Folge-Slices; (c) die genannte `BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle` existiert, `ls …/evidence/*.md | wc -l` → 19 (`sed -n "/^## 7/,/^## 8/p"` über §7, `grep -oE "BEO-ALL/[a-z0-9-]+"`).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
