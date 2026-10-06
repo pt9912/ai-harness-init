@@ -49,7 +49,7 @@ grep -rl 'slice-\[0-9\]' internal test
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Die Dogfood-Fassung (`harness/tools/commit-msg-traceability.sh`) und `commits.id-patterns` in `.d-check.yml`:** Folge-Slice
-  `slice-kennungs-erkennung-traegt-die-zugelassenen-formen` (`open/`) trägt die Dogfood-Seite; seine Abgrenzung nennt die emittierte Ebene aus
+  `slice-kennungs-erkennung-traegt-die-zugelassenen-formen` trägt die Dogfood-Seite; seine Abgrenzung nennt die emittierte Ebene aus
   und bleibt wahr. Er nimmt die Sendung an: Dogfood-Erkennung ist sein Gegenstand.
 - **Eine Prüfung auf Auflösung der Kennung:** ein anderer Vorgang (Werkzeug statt Muster); die Anwesenheits-Zusage reicht der Baseline
   und ist am Skriptkopf benannt.
@@ -60,7 +60,7 @@ grep -rl 'slice-\[0-9\]' internal test
 
 ## 2. Definition of Done
 
-- [ ] **(1) Die emittierte Zeile `patterns=` erkennt benannte Slices, und die Nummernform bleibt grün.** Das Muster nimmt `slice-<Kennung>`
+- [x] **(1) Die emittierte Zeile `patterns=` erkennt benannte Slices, und die Nummernform bleibt grün.** Das Muster nimmt `slice-<Kennung>`
       an; `slice-12` geht weiter durch; der Kopf-Kommentar führt die Klasse in der Aufzählung, die `test/commit-msg-emission.bats` gegen
       `patterns=` hält. Der Gleichheits-Fall wird zur **Obermengen-Aussage in der Richtung emittiert ⊇ Dogfood** (jedes Dogfood-Muster steht in der
       emittierten Menge); die Richtung Dogfood ⊇ emittiert entfällt bewusst und steht im Fall-Kommentar. Fälle in `test/commit-msg-emission.bats`:
@@ -68,11 +68,11 @@ grep -rl 'slice-\[0-9\]' internal test
       `slice-[0-9]+` zurück (`sed`-Anker gegen den Quell-Bestand gemessen, [`MR-071`](../../../../harness/conventions.md#mr-071)); erwartet rot: der Fall „benannter Slice". Ein
       zweiter Zahn streicht ein Dogfood-Muster aus der emittierten Menge; erwartet rot: der Obermengen-Fall. *Bricht, wenn:* die Zeile den benannten Slice
       nicht annimmt, die Nummernform verliert oder ein Dogfood-Muster fehlt.
-- [ ] **(2) Im Ziel geht ein Commit mit benannter Kennung durch.** `make full-smoke` bekommt im Commit-Kennungs-Schritt einen vierten Lauf
+- [x] **(2) Im Ziel geht ein Commit mit benannter Kennung durch.** `make full-smoke` bekommt im Commit-Kennungs-Schritt einen vierten Lauf
       (Message mit `slice-<Kennung>`-Name, `make hooks-install` aktiv): er geht durch und der Commit entsteht. Nachgemessen vor dem Bau:
       `grep -n 'rot)\|gruen)\|umgehung)' harness/tools/full-smoke.sh`. *Bricht, wenn:* die Zeile im Ziel den Namen nicht annimmt (Zahn aus (1) fährt die
       emittierte Zeile; der E2E-Lauf belegt dieselbe Zeile im gebootstrappten Ziel).
-- [ ] **(3) Die Abdeckungs-Aussage nennt, was der Lauf im Ziel misst** ([`AGENTS.md`](../../../../AGENTS.md) §3.6, Teilabdeckung). Die Stufen-Deklaration in
+- [x] **(3) Die Abdeckungs-Aussage nennt, was der Lauf im Ziel misst** ([`AGENTS.md`](../../../../AGENTS.md) §3.6, Teilabdeckung). Die Stufen-Deklaration in
       `harness/tools/full-smoke.sh` und die erzeugte `docs/user/e2e-abdeckung.md` (`make e2e-abdeckung`) sagen: gemessen ist **ein** benannter Slice im
       Ziel; nicht gemessen sind andere Namens-Formen, das akzeptierte Negativ (`slice-based`) und Welle-Kennungen. Die Grenze steht am selben Ort. Benannte
       Lücke: kein Sensor liest die Kurzbeschreibung gegen den Körper der Stufe; Träger ist dieser Lauf und `test/e2e-abdeckung.bats`.
@@ -109,22 +109,20 @@ Dazu ein Lerneintrag in einer der drei Formen.
 
 ## 6. Risiken und offene Punkte
 
-- Der Dogfood-Slice nimmt ein Muster hinzu, das die emittierte Zeile nicht führt. — **Ausgang:** entfallen: der Obermengen-Fall färbt dann rot und
-  benennt das Muster; die Kopplung bricht laut, nicht still.
+- Der Dogfood-Slice nimmt ein Muster hinzu, das die emittierte Zeile nicht führt. — **Ausgang:** eingetreten (Folge-Slice oben); geplant war: der Obermengen-Fall färbt dann rot und
+  benennt das Muster; die Kopplung bricht laut, nicht still. **Eingetreten in Teilen:** Zeile `(^|…)` färbt falsch-rot, ein Zusatzmuster in eigener Variable bleibt unbemerkt → Folge-Slice `slice-kennungs-erkennung-traegt-die-zugelassenen-formen`.
 - Das breitere Muster nimmt Fließtext-Wörter an. — **Ausgang:** entfallen: akzeptiertes Negativ der Anwesenheits-Prüfung, benannt in §1 und in der
   Abdeckungs-Aussage (DoD 3).
 
 ## 7. Closure-Notiz
 
-*Wird bei der Closure gefüllt (Planner, [`AGENTS.md`](../../../../AGENTS.md) §3.10).*
-
-- **Was hat funktioniert:**
-- **Was ging anders als geplant:**
-- **Steering-Loop-Eintrag:**
-- **Beobachtungs-Register (`../observations/`):**
-- **Folge-Slices:**
-- **Risiken aus §6:**
-- **Drei Paarungen:**
+- **Was hat funktioniert:** Die emittierte Zeile `patterns=` nimmt `slice-12` an; der benannte Slice steht in der Zeile `named_slice` mit Wortgrenze (`noslice-foo`, `x_slice-bar`, `a-slice-baz`, `slice-` fallen). Der Obermengen-Fall (emittiert ⊇ Dogfood) und die vier Mutations-Fälle (356, 520, 521, 522) färben je ihren Wächter rot; 522 bindet beide Zeichen der Grenzklasse. Im Ziel geht der vierte `full-smoke`-Lauf durch, die Abdeckungs-Sicht nennt gemessen und nicht gemessen am selben Ort. Review: 1 LOW (Wortgrenze) behoben, 2 INFO; Verifikation bestätigt DoD 1 bis 3 am echt emittierten Ziel (`docs/reviews/2026-10-06-commit-pruefung-benannte-slices-review.md`, `-verifikation.md`).
+- **Was ging anders als geplant:** die Wortgrenze kam erst mit dem Review-Finding; der Bestand belegt die Namensform schwächer als gedacht: von 630 neu angenommenen Betreffen tragen 352 nur das Präfix `slice-mv:` und 278 einen echten benannten Slice.
+- **Steering-Loop-Eintrag:** benannte Lücke: der Obermengen-Fall vergleicht textuell (`patterns_von` liest nur `^patterns=` und zerlegt an `|`). Nimmt Dogfood ein Muster mit `(^|…)` in seine `patterns=`-Zeile, wird es zerrissen und der Fall färbt falsch-rot (laut); führt Dogfood ein Zusatzmuster in eigener Variable, sieht der Fall es nicht (still). Ungleiche Strenge: `noslice-12` geht durch, weil `patterns=` ohne Wortgrenze bleibt; akzeptiertes Negativ `a slice-wise fix`. Träger: `slice-kennungs-erkennung-traegt-die-zugelassenen-formen` (Übergabe im dortigen Plan, DoD 2).
+- **Beobachtungs-Register (`../observations/`):** keine Beobachtung angefallen, die ein Verzeichnis oder einen Beleg trüge: der Zahn-Fall kam mit eigenen Mutations-Fällen, `BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall` bekommt keinen Beleg; die Obermengen-Lücke ist benannt und hat eine Adresse.
+- **Folge-Slices:** `slice-kennungs-erkennung-traegt-die-zugelassenen-formen` (trägt die Dogfood-Seite und die Obermengen-Lücke).
+- **Risiken aus §6:** 1 eingetreten in Teilen (Kopplung bricht für `(^|…)` falsch-rot, für ein Zusatzmuster still) → Folge-Slice `slice-kennungs-erkennung-traegt-die-zugelassenen-formen` · 2 entfallen (akzeptiertes Negativ, in §1, im Skriptkopf und in der Abdeckungs-Aussage benannt).
+- **Drei Paarungen:** Anker: kein `liegt in`-Feld, nichts zu paaren; Folge-Slice: `slice-kennungs-erkennung-traegt-die-zugelassenen-formen` existiert in `next/`; Register: keine neue Kennung zitiert.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
