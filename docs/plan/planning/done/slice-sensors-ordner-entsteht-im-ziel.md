@@ -36,7 +36,7 @@
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis oder weitere Datei in `evidence/`; kein Zähler wird gesetzt. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo ohne Wellen-Betrieb hier geprüft.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -77,6 +77,7 @@ DoD vollständig, `make gates` und `make full-smoke` grün, Closure-Notiz mit Le
 - **Folge (kein Slice angelegt):** Stufen-Deklaration und Kopfkommentar nennen die `.gitignore`-Grenze — Adresse `BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`.
 - **Risiken aus §6:** (1) weiter offen → Register (Eintrag oben).
 - **Drei Paarungen:** dieses Repo fährt Wellen — Anker, Folge-Slice und Register prüft die nächste Welle-Closure, auch für diesen Slice ohne Wellen-Zugehörigkeit.
+- **Paarungen geprüft am 2026-10-06** (Planner, Nachprüfung des abgehakten DoD-Punkts): Anker — kein `liegt in`-Feld; Folge-Slice — keiner genannt; Register — beide zitierten Verzeichnisse existieren und tragen Beleg (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md`). Grün. Häkchen abgehakt vor diesem Lauf: [`BEO-ALL/closure-haken-ohne-gefahrene-pruefung`](../observations/BEO-ALL/closure-haken-ohne-gefahrene-pruefung/observation.md).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

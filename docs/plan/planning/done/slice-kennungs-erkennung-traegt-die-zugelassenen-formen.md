@@ -261,6 +261,7 @@ keinen zweiten Anker.
 - **Folge-Slices:** `slice-archivierung-erkennt-benannte-slices` (Go-Schicht, Start-Bedingung des Altbestand-Laufs) und `slice-mv-findet-die-quelle-am-exakten-namen` (Nachbar-Fund der Lesung, `slice-mv.sh`-Quellensuche) — beide Dateien in `open/`.
 - **Risiken aus §6:** (1) eingetreten → `slice-archivierung-erkennt-benannte-slices` · (2) entfallen, belegt · (3) entfallen, begründet.
 - **Drei Paarungen:** dieses **Repo** fährt Wellen — Anker, Folge-Slice und Register prüft die nächste Welle-Closure, auch für diesen Slice ohne Wellen-Zugehörigkeit.
+- **Paarungen geprüft am 2026-10-06** (Planner, Nachprüfung des abgehakten DoD-Punkts): Anker — kein `liegt in`-Feld; Folge-Slice — `slice-archivierung-erkennt-benannte-slices` und `slice-mv-findet-die-quelle-am-exakten-namen` liegen in `open/`; Register — `BEO-ALL/korrektur-trifft-den-fundort-statt-die-gemessene-fundmenge` existiert und trägt den eigenen Beleg. Grün. Häkchen abgehakt vor diesem Lauf: [`BEO-ALL/closure-haken-ohne-gefahrene-pruefung`](../observations/BEO-ALL/closure-haken-ohne-gefahrene-pruefung/observation.md).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
