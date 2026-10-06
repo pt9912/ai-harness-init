@@ -1,2 +1,2 @@
 **Vorgang:** slice-sensors-ordner-entsteht-im-ziel
-**Fund:** Die Zusage, der emittierte Träger `harness/sensors/.gitkeep` mache den Ordner im Ziel vorhanden, gilt nur ohne Adopter-`.gitignore`, die ihn erfasst (`*.gitkeep`, `.gitkeep`, `harness/sensors/`): dort Bootstrap Exit 0 ohne Meldung, `git ls-files harness/sensors` leer, ein Klon ohne Ordner; die Stufen-Deklaration nennt die Bedingung nicht.
+**Fund:** Die Zusage, der emittierte Träger `.gitkeep` (Ordner `harness/sensors/`) mache den Ordner im Ziel vorhanden, gilt nur ohne Adopter-`.gitignore`, die ihn erfasst (`*.gitkeep`, `.gitkeep`, `harness/sensors/`): dort Bootstrap Exit 0 ohne Meldung, `git ls-files harness/sensors` leer, ein Klon ohne Ordner; die Stufen-Deklaration nennt die Bedingung nicht.
