@@ -6,7 +6,9 @@
 # {ADR-, LH-, MR-, slice-} traegt (slice- als Nummer oder als Name in Kleinbuchstaben,
 # Ziffern und Bindestrichen; der Name zaehlt nur als eigenes Wort: links von slice- steht
 # der Zeilenanfang oder ein Zeichen, das weder Buchstabe, Ziffer, "_" noch "-" ist —
-# "noslice-foo" zaehlt nicht, "a slice-wise fix" zaehlt) oder ihr Betreff mit "Merge "
+# "noslice-foo" zaehlt nicht, "a slice-wise fix" zaehlt als akzeptiertes Negativ; ebenso
+# das Werkzeug-Praefix "slice-mv:", das ueber slice- plus Buchstabe selbst eine Kennung
+# traegt) oder ihr Betreff mit "Merge "
 # bzw. "Revert " beginnt; Exit 1, wenn keines von beidem zutrifft; Exit 2, wenn die Datei fehlt
 # oder nicht lesbar ist. Betreff ist die erste nicht-leere Zeile ohne
 # Kommentarzeichen; die Kennung darf auch im Rumpf stehen, eine Kommentarzeile

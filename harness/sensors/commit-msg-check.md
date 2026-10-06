@@ -7,8 +7,8 @@ gegen das `commits:`-Modul aus [`.d-check.yml`](../../.d-check.yml) via `--commi
 `slice-mv`/`archive-welle`/`vendor-baseline` **kein Gate und in keiner Prerequisite-Kette**: `MSG`
 variiert pro Aufruf und ist damit kein hermetischer Prüfbereich
 ([`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Geprüft
-wird **nur die Anwesenheit** einer Kennung aus `commits.id-patterns` (`ADR-\d{4}`,
-`LH-[A-Z]{2}-\d{2}`, `MR-\d{3}`, `slice-\d+`) — **nicht ihre Wahrheit**: eine Message, die
+wird **nur die Anwesenheit** einer Kennung aus `commits.id-patterns` (fünf Muster: `ADR-\d{4}`,
+`LH-[A-Z]{2}-\d{2}`, `MR-\d{3}`, `slice-\d+` und der benannte Slice `(^|[^[:alnum:]_-])slice-[a-z][a-z0-9-]*`) — **nicht ihre Wahrheit**: eine Message, die
 zusätzlich einen nicht auflösbaren Hash nennt, geht mit derselben Kennung ebenso durch.
 
 Der **Träger** dieses Ziels ist der PreToolUse-Zusatz-Hook

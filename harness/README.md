@@ -112,7 +112,7 @@ denen das nicht genügt:
 |---|---|---|
 | `git commit … -F <datei>`, vom Agenten getippt | erreicht | erreicht |
 | `git commit … -m …`, vom Agenten getippt | nicht garantiert erreicht — der Matcher verlangt eine `-F`/`--file`-Form, die auch im `-m`-Text stehen kann | erreicht |
-| Commit aus einem Repo-Werkzeug (`make slice-mv`, `archive-welle` committen intern) | strukturell nicht erreicht — der Kanal sieht `make slice-mv …` | erreicht, sobald die Werkzeug-Message eine Kennung trägt — **die Messages der benannten Slices ([`MR-057`](conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)) und `archive-welle` tragen keine**, und ihr Commit bricht darum am Träger, statt zu greifen (`git log --format='%s' \| grep '^slice-mv:' \| grep -vcE 'ADR-[0-9]{4}\|LH-[A-Z]{2}-[0-9]{2}\|MR-[0-9]{3}\|slice-[0-9]+'` → **44 von 411**); Adresse für die Behebung: `slice-werkzeug-commits-tragen-eine-kennung` ([`ADR-0053`](../docs/plan/adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) Festlegung 4) |
+| Commit aus einem Repo-Werkzeug (`make slice-mv`, `archive-welle` committen intern) | strukturell nicht erreicht — der Kanal sieht `make slice-mv …` | erreicht, sobald die Werkzeug-Message eine Kennung trägt — die Messages von `slice-mv` tragen eine über ihr Präfix `slice-mv:` (benannte Form, [`MR-057`](conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)): `git log --format='%s' \| grep '^slice-mv:' \| grep -vcE 'ADR-[0-9]{4}\|LH-[A-Z]{2}-[0-9]{2}\|MR-[0-9]{3}\|slice-[0-9]+\|(^\|[^[:alnum:]_-])slice-[a-z][a-z0-9-]*'` → **0**; **die Messages von `archive-welle` tragen keine** (außer dem Altbestand-Schlüssel, der [`ADR-0041`](../docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md) anhängt), und ihr Commit bricht darum am Träger, statt zu greifen; Adresse für die Behebung: `slice-werkzeug-commits-tragen-eine-kennung` ([`ADR-0053`](../docs/plan/adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) Festlegung 4) |
 | Commit außerhalb eines Claude-Code-Laufs (Mensch am Terminal) | nicht erreicht — er hängt am Tool-Call-Kanal des Agenten | erreicht |
 | Commit auf einem Klon, der `make hooks-install` nie gefahren hat | erreicht die `-F`-Form in einem Claude-Code-Lauf (er reist mit dem Klon) | nicht erreicht — `core.hooksPath` ist lokale Konfiguration |
 | `git commit --no-verify` | erreicht — er sieht die Kommandozeile | umgangen — git ruft einen Hook mit `--no-verify` nicht auf |
@@ -183,8 +183,8 @@ ihn. **Die erste wiegt dort schwerer, weil der Agenten-Kanal fehlt:** hier fäng
 PreToolUse-Zusatz Commits in der `-F`-Form auch ohne Aktivierung, im Ziel ist jeder Commit ohne
 `make hooks-install` ungeprüft.
 **Er hängt dort am Commit und sieht darum auch die Commits der Repo-Werkzeuge:** `make slice-mv`
-und `make archive-welle` committen intern mit dem Slice- bzw. Welle-Namen, und eine benannte
-Kennung trifft kein Muster der Menge — solche Commits fallen an ihm, sobald er aktiviert ist. Ein
+und `make archive-welle` committen intern mit dem Slice- bzw. Welle-Namen; der Welle-Name von
+`archive-welle` trifft kein Muster der Menge — solche Commits fallen an ihm, sobald er aktiviert ist. Ein
 Ziel, das ihn aktiviert, gibt seinen Werkzeug-Messages darum eine Kennung. Wie viele Messages
 dieser Klasse hier ohne Kennung sind, sagt die Tabelle oben mit ihrem Kommando — die Zahl steht
 darum nicht daneben

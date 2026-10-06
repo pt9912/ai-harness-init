@@ -19,6 +19,12 @@
 # dieses Repos (harness/tools/commit-msg-traceability.sh) — sie sind zwei
 # Dateien mit demselben Zweck, und eine einseitige Aenderung liesse die zwei
 # Traeger desselben Satzes auseinanderlaufen.
+#
+# GRENZE der Obermengen-Kopplung. `patterns_von` liest nur die Zeile `patterns=`,
+# `named_slice=` hat einen eigenen Gleichheits-Fall. Fuehrte eine Fassung eine dritte
+# Zusatzvariable mit einem Kennungs-Muster, sieht weder diese Kopplung noch
+# `hook_patterns()` in test/commit-msg-hook.bats sie; nur ein Urteils-Fall, der
+# genau diese Kennung ausfuehrt, faerbt sich.
 
 setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
