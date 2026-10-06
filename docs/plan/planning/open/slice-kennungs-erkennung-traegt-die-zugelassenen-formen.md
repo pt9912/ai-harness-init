@@ -39,7 +39,7 @@ Gegenstände liegen aufeinander),
 **Berührte Spec-Stellen:** `—` (der Slice berührt keine Spec-Stelle; Gegenstand ist die Kennungs-
 Erkennung der Werkzeuge dieses Repos).
 
-**Verantwortlich:** Implementer. Der Liefergegenstand ist ein **Werkzeug-Zustand** — die Erkenntnis
+**Verantwortlich:** Implementer (pt9912). Der Liefergegenstand ist ein **Werkzeug-Zustand** — die Erkenntnis
 liest eine Menge und zieht die Erkennungen nach; die Norm, gegen die sie urteilt, ist nicht seine und
 steht in [`MR-059`](../../../../harness/conventions.md#mr-059).
 
