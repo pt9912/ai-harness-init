@@ -403,9 +403,9 @@ cat_scheitert() {
 # gebootstrappten Ziel, in harness/tools/full-smoke.sh.
 
 # Quellensuche (quelle_finden) — ein Planning-Baum aus leeren Dateien; LIFECYCLE
-# kommt aus der geladenen Fassung. Die Faelle tragen die Gegenproben des
-# Adopter-CR (LH-QA-01): ein Name, der Praefix eines anderen ist, bleibt
-# eindeutig adressierbar.
+# kommt aus der geladenen Fassung. Die Faelle halten, dass ein Name, der
+# Praefix eines anderen ist, eindeutig adressierbar bleibt (LH-QA-01)
+# · seit slice-mv-findet-die-quelle-am-exakten-namen.
 quelle_baum() {  # $@ = <verzeichnis>/<datei> relativ zum Planning-Baum
   P="$TMP/planning"
   rm -rf "$P"
@@ -413,7 +413,7 @@ quelle_baum() {  # $@ = <verzeichnis>/<datei> relativ zum Planning-Baum
   for p in "$@"; do mkdir -p "$P/$(dirname "$p")"; : > "$P/$p"; done
 }
 
-@test "quelle: exakter Name gewinnt gegen einen laengeren Praefix-Treffer — mit und ohne .md, auch ueber Verzeichnisse hinweg (Adopter-CR, LH-QA-01)" {
+@test "quelle: exakter Name gewinnt gegen einen laengeren Praefix-Treffer — mit und ohne .md, auch ueber Verzeichnisse hinweg (LH-QA-01)" {
   for s in "${FASSUNGEN[@]}"; do
     load_functions "$s"
     quelle_baum in-progress/slice-a.md open/slice-a-b.md
