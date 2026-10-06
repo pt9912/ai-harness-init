@@ -675,3 +675,42 @@ func TestCarrierPath_NimmtDieEndungMit(t *testing.T) {
 		}
 	}
 }
+
+// TestEnforce_SensorsOrdnerEntstehtMitSeinemTraeger: der Bootstrap legt harness/sensors/
+// an, und ein belegter Pfad bleibt beim zweiten Lauf unberuehrt (skip-if-present). Der
+// Verweis harness/sensors/<target>.md der emittierten README zeigt damit auf einen
+// vorhandenen Ort (LH-FA-01). Haelt nur den Lauf, nicht den Ordner im Ziel danach.
+func TestEnforce_SensorsOrdnerEntstehtMitSeinemTraeger(t *testing.T) {
+	const traeger = "harness/sensors/.gitkeep"
+	dir := t.TempDir()
+	if err := emit.Enforce(dir, io.Discard); err != nil {
+		t.Fatalf("Enforce: %v", err)
+	}
+	info, err := os.Stat(filepath.Join(dir, filepath.FromSlash(traeger)))
+	if err != nil {
+		t.Fatalf("%s entsteht nicht: %v", traeger, err)
+	}
+	if !info.Mode().IsRegular() {
+		t.Errorf("%s ist keine regulaere Datei", traeger)
+	}
+	if got := emit.PathClass(traeger); got != emit.SkipIfPresent {
+		t.Errorf("%s: Klasse %s, verlangt skip-if-present", traeger, got)
+	}
+
+	// Pfad belegt: der Inhalt des Adopters bleibt.
+	const adopter = "adopter-eigen\n"
+	p := filepath.Join(dir, filepath.FromSlash(traeger))
+	if err := os.WriteFile(p, []byte(adopter), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := emit.Enforce(dir, io.Discard); err != nil {
+		t.Fatalf("Enforce (2. Lauf): %v", err)
+	}
+	roh, err := os.ReadFile(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(roh) != adopter {
+		t.Errorf("%s: der zweite Lauf ueberschrieb den belegten Pfad: %q", traeger, roh)
+	}
+}

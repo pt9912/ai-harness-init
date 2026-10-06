@@ -153,6 +153,13 @@ func enforceFiles() []enforceFile {
 		// nicht; die Begruendung der zwei Eintraege traegt e2eabdeckung.go.
 		e2eAbdeckungFile(),
 		e2eAbdeckungMkFile(),
+		// Ordner der Sensor-Beschreibungen: harness/README.md nennt harness/sensors/<target>.md,
+		// und der Verweis zeigt auf einen vorhandenen Ort. Der Traeger ist eine leere
+		// .gitkeep; der Ordner gehoert dem Adopter, sobald er dort eine Beschreibung ablegt
+		// (skip-if-present, ADR-0054 Festlegung 1). Grenze: kein Waechter haelt die
+		// Existenz des Ordners — das Doku-Gate unterscheidet keinen fehlenden Ordner von einem
+		// Ordner ohne Datei (templates.go, Kopfkommentar von isRecurring).
+		{src: "templates/enforce/gitkeep", dst: "harness/sensors/.gitkeep", mode: 0o644, class: SkipIfPresent},
 	}
 	// Die Zeilenenden-Attribute der fuenf Verzeichnisse mit Interpreter- oder
 	// Byte-Konsument; die Klasse je Pfad und die Meldung traegt zeilenenden.go.

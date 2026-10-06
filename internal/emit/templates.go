@@ -66,6 +66,13 @@ import (
 // fortgeschrieben; kein Gate sieht die Luecke, weil docs-check Kennungen und Links
 // prueft, nicht die Vollstaendigkeit einer Aufzaehlung.
 //
+// GRENZE harness/sensors/: der Bootstrap legt den Ordner an (enforceFiles, .gitkeep,
+// skip-if-present), und kein Waechter haelt seine Existenz. Das Modul `structure` des
+// Doku-Gates kennt keinen Ordner-Selektor; eine Regel ueber `harness/sensors/*.md` meldet
+// einen fehlenden Ordner, einen leeren und einen mit nur .gitkeep gleich und waere am
+// frischen Ziel rot. Getragen wird die Zusage vom Emitter-Test und der E2E-Stufe, die
+// den Lauf messen — ein im Ziel geloeschter Ordner bleibt unbemerkt.
+//
 // KOPPLUNG, die beim Aendern zaehlt: test/mutations/215, 216 und 218 verankern
 // ihr sed-Muster auf der LETZTEN case-Zeile samt Doppelpunkt. Ein hinten
 // angehaengter Eintrag nimmt ihnen den Anker; die Mutation greift dann ins Leere
