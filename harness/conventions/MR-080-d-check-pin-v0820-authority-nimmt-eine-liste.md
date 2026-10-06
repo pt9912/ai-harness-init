@@ -78,11 +78,17 @@
   Tragend sind die 0 der unveränderten Stufen und die Gleichheit der Mengen. Die Sonden-Skripte
   bleiben unversioniert — dasselbe akzeptierte Negativ wie in `MR-079`.
 - **Byte-Identität mit einer Datei.** `targets` im Dogfood unter `authority: harness/README.md`
-  gegen `authority: [harness/README.md]`, unter `v0.82.0`: Normallauf, `--json` und
-  `make doc-targets` byte-gleich, grün und mit einer `gate-undocumented`-Sonde rot; `--doctor`
-  byte-gleich bei getrennten Strömen. Mit `2>&1` verzahnt ist ein Lauf einmal verschieden
-  ausgefallen; Ursache ist die Reihenfolge der Ströme, nicht der Inhalt — darum ist die Aussage auf
-  getrennte Ströme beschränkt. Die Probe ändert `.d-check.yml` nicht dauerhaft.
+  gegen `authority: [harness/README.md]`, unter `v0.82.0`, an zwei `git archive`-Kopien: Normallauf,
+  `--json`, `--doctor` und der Lauf von `make doc-targets` (`--enable targets` mit dessen
+  `--disable`-Liste) **byte-gleich je Strom** — stdout, stderr und Exit getrennt, je drei Läufe
+  je Form, grün (Exit 0) und mit einer `gate-undocumented`-Sonde rot (Exit 1). **Zusammengeführt
+  (`2>&1`) ist die Reihenfolge der Ströme nicht festgelegt**, und zwar für jeden Lauf, nicht nur
+  `--doctor`: gesehen beim Normallauf (rot), bei `--doctor` (grün und rot) und bei
+  `--enable targets` (rot) — die Zusammenfassungs-Zeile steht einmal vor, einmal nach den
+  Befundzeilen, und das schwankt **innerhalb derselben Form** von Lauf zu Lauf, ist also keine
+  Wirkung der Liste. Nur `--json` blieb in sechs zusammengeführten Läufen gleich; das ist kein
+  Zusage-Grund. Die Aussage gilt darum allein für getrennte Ströme. Die Probe ändert `.d-check.yml`
+  nicht dauerhaft.
 - **Kein ADR nötig ([`AGENTS.md`](../../AGENTS.md) §3.5):** die aktiven Module zeigen gleiche
   Befundmengen; die neue Fähigkeit ist ungenutzt.
 - **Trigger-Audit
