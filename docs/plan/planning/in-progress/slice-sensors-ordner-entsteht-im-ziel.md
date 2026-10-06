@@ -28,15 +28,15 @@
 
 ## 2. Definition of Done
 
-- [ ] Der Bootstrap schreibt `.gitkeep` (Ordner `harness/sensors/`) an einem freien Pfad (skip-if-present, [`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md)); ein Test in `internal/emit` hält es, und die Emitter-Zeile entfernt färbt ihn rot (Gegenbeispiel gesehen, AGENTS.md §3.6).
-- [ ] `make full-smoke` misst im Ziel, dass `.gitkeep` (Ordner `harness/sensors/`) nach dem Bootstrap in `git ls-files` steht; die E2E-Abdeckungs-Sicht nennt die Stufe mit ihrer Grenze (Ordner, nicht Inhalt).
-- [ ] Die Grenze steht am Ort der Emission (Kopfkommentar `internal/emit/templates.go`): kein Wächter für die Existenz des Ordners, Messung wie oben.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`) — kein Self-Review.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis oder weitere Datei in `evidence/`; kein Zähler wird gesetzt. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo ohne Wellen-Betrieb hier geprüft.
+- [x] Der Bootstrap schreibt `.gitkeep` (Ordner `harness/sensors/`) an einem freien Pfad (skip-if-present, [`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md)); ein Test in `internal/emit` hält es, und die Emitter-Zeile entfernt färbt ihn rot (Gegenbeispiel gesehen, AGENTS.md §3.6).
+- [x] `make full-smoke` misst im Ziel, dass `.gitkeep` (Ordner `harness/sensors/`) nach dem Bootstrap in `git ls-files` steht; die E2E-Abdeckungs-Sicht nennt die Stufe mit ihrer Grenze (Ordner, nicht Inhalt).
+- [x] Die Grenze steht am Ort der Emission (Kopfkommentar `internal/emit/templates.go`): kein Wächter für die Existenz des Ordners, Messung wie oben.
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`) — kein Self-Review.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis oder weitere Datei in `evidence/`; kein Zähler wird gesetzt. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo ohne Wellen-Betrieb hier geprüft.
 
 ## 3. Plan (vor Code)
 
@@ -64,12 +64,19 @@ DoD vollständig, `make gates` und `make full-smoke` grün, Closure-Notiz mit Le
 ## 6. Risiken und offene Punkte
 
 
-- `.gitkeep` fehlt nach einem Löschen im Ziel unbemerkt (kein Wächter, Messung oben) — **Ausgang:** weiter offen: → BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht
+- `.gitkeep` fehlt nach einem Löschen im Ziel unbemerkt (kein Wächter, Messung oben) — **Ausgang:** weiter offen → `BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht` (verkörpert; Beleg dieses Vorgangs ergänzt).
 
 ## 7. Closure-Notiz
 
 
-Wird bei der Closure vom Planner geschrieben (AGENTS.md §3.10), nicht im Plan.
+- **Was hat funktioniert:** Emitter schreibt `harness/sensors/.gitkeep` skip-if-present, Test in `internal/emit` färbt ohne die Emitter-Zeile rot; die `full-smoke`-Stufe `sensors_ordner_im_ziel` misst `git ls-files` im Ziel, ihr gestrichener Eintrag färbt die Abdeckungs-Sicht rot (Review: keine Findings, 1 INFO; Verifikation: DoD 1–3 bestätigt; `docs/reviews/2026-10-06-sensors-ordner-review.md`, `-verifikation.md`).
+- **Was ging anders als geplant:** die Zusage hängt an einer Bedingung, die §6 nicht nannte — die `.gitignore` des Adopters.
+- **Grenze (gemessen, Verifikation):** eine Adopter-`.gitignore` mit `*.gitkeep`, `.gitkeep` oder `harness/sensors/` lässt den Träger ungetrackt — Bootstrap Exit 0 ohne Meldung, `git ls-files harness/sensors` nach `git add -A` leer, ein Klon trägt den Ordner nicht. Die Zusage „der Verweis zeigt auf einen vorhandenen Ort" gilt dort nur für die Arbeitskopie; weder die Stufen-Deklaration noch der Kopfkommentar in `internal/emit/templates.go` nennen den Fall, und `make full-smoke` misst nur das Ziel ohne Adopter-`.gitignore`.
+- **Steering-Loop-Eintrag:** benannte Lücke, kein Sensor: ein skip-if-present-Träger im Ziel ist erst getragen, wenn er auch an der Ignorier-Konfiguration des Adopters vorbeikommt; die E2E-Stufe misst den leeren Grund. Träger ist der Lauf, der die Aussage schreibt (`AGENTS.md` §3.6, emittierte Abdeckungs-Aussage).
+- **Beobachtungs-Register (`../observations/`):** `evidence/slice-sensors-ordner-entsteht-im-ziel.md` in `BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/` ergänzt; der Eintrag ist bereits verkörpert, kein neuer Ausgang.
+- **Folge (kein Slice angelegt):** Stufen-Deklaration und Kopfkommentar nennen die `.gitignore`-Grenze — Adresse `BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`.
+- **Risiken aus §6:** (1) weiter offen → Register (Eintrag oben).
+- **Drei Paarungen:** dieses Repo fährt Wellen — Anker, Folge-Slice und Register prüft die nächste Welle-Closure, auch für diesen Slice ohne Wellen-Zugehörigkeit.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
