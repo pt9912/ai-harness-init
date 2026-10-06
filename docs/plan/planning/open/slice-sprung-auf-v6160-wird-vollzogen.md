@@ -31,7 +31,7 @@ Festlegungen 1–5),
 **Berührte Spec-Stellen:** — (trägt ein Spec-Stratum eine Adresse in den vendored Baum, zählen die
 Kommandos in §1 sie mit; ihr Nachzug ist Adresse, keine Spec-Änderung).
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-10-06.
 
