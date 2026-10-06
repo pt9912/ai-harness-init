@@ -1,5 +1,7 @@
 # MR-068 — d-check-Pin v0.77.0 (Instanz-Identitäts-Ausnahme verfügbar, ohne Gegenstand)
 
+> **ÜBERHOLT: für das Modul `vcs` der Satz zur leeren Range *„kein Modul deckt ihn“* → [`MR-079`](../conventions.md#mr-079--d-check-pin-v0810-vcs-bricht-über-leerer-range-ab).** Für `commits` und für die übrigen Aussagen gilt der Eintrag fort.
+
 - **Datum:** 2026-09-18
 - **Wirksamkeits-Anlass:** slice-d-check-pin-bringt-die-instanz-identitaets-ausnahme.
 - **Geltungsbereich:** `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`, Kopfkommentar samt

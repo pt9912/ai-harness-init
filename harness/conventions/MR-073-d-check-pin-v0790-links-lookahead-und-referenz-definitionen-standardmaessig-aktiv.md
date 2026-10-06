@@ -1,5 +1,7 @@
 # MR-073 — d-check-Pin v0.79.0 (Links-Lookahead und Referenz-Definitionen standardmäßig aktiv)
 
+> **ÜBERHOLT: für das Modul `vcs` die Aussage, die Lücke *leere Range* aus MR-066 stehe unverändert → [`MR-079`](../conventions.md#mr-079--d-check-pin-v0810-vcs-bricht-über-leerer-range-ab).** Für `commits` und für die übrigen Aussagen gilt der Eintrag fort.
+
 - **Datum:** 2026-09-27
 - **Wirksamkeits-Anlass:** slice-d-check-pin-bringt-links-lookahead-und-referenz-definitionen.
 - **Geltungsbereich:** `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`, Kopfkommentar samt

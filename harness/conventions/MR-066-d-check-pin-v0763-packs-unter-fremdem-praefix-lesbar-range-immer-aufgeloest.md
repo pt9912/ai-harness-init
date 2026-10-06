@@ -2,6 +2,8 @@
 
 > **ÜBERHOLT: der Aufbau-Satz von Messung 1 „Wegwerf-Kopie: `git clone --no-local`, Pack per `git unpack-objects` ausgepackt und entfernt, dann `git maintenance run --task=loose-objects`.“ als Anleitung → [`MR-067`](../conventions.md#mr-067--eine-aufbau-anleitung-nennt-ihre-prüf-bedingung-vor-ihren-kommandos).** Die Messwerte der Tabelle, ihre Gegenprobe und die Angabe daneben gelten fort; der Nachfolger nennt die Prüf-Bedingung der Lage vor den Kommandos und die vollständige Folge.
 
+> **ÜBERHOLT: für das Modul `vcs` die Aussage zur leeren Range — Messung 4 *„blind grün“* und *„kein Modul deckt ihn“* → [`MR-079`](../conventions.md#mr-079--d-check-pin-v0810-vcs-bricht-über-leerer-range-ab).** Die Messwerte gelten als datierte Messung an `v0.76.1`/`v0.76.3` fort, ebenso die Aussage für `commits`.
+
 - **Datum:** 2026-09-17
 - **Wirksamkeits-Anlass:** slice-d-check-pin-liest-fremde-packs-und-loest-jede-range.
 - **Geltungsbereich:** `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`, Kopfkommentar),
