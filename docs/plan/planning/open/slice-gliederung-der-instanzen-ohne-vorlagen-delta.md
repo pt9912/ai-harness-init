@@ -46,11 +46,11 @@ Bedingung nicht zutrifft. Maßstab ist das Gliederungs-Kriterium in
 
 | Instanz | Vorlage |
 |---|---|
-| `docs/plan/carveouts/README.md` | `.harness/baseline/v6.13.0/templates/docs/plan/carveouts/README.template.md` |
-| `harness/README.md` | `.harness/baseline/v6.13.0/templates/harness/README.template.md` |
-| `README.md` | `.harness/baseline/v6.13.0/templates/project-readme.template.md` |
-| `spec/architecture.md` | `.harness/baseline/v6.13.0/templates/spec/architecture.template.md` |
-| `spec/spezifikation.md` | `.harness/baseline/v6.13.0/templates/spec/spezifikation.template.md` |
+| `docs/plan/carveouts/README.md` | `.harness/baseline/v6.16.0/templates/docs/plan/carveouts/README.template.md` |
+| `harness/README.md` | `.harness/baseline/v6.16.0/templates/harness/README.template.md` |
+| `README.md` | `.harness/baseline/v6.16.0/templates/project-readme.template.md` |
+| `spec/architecture.md` | `.harness/baseline/v6.16.0/templates/spec/architecture.template.md` |
+| `spec/spezifikation.md` | `.harness/baseline/v6.16.0/templates/spec/spezifikation.template.md` |
 
 Die Abweichungen misst der Umsetzungs-Lauf, je Zeile der Tabelle:
 

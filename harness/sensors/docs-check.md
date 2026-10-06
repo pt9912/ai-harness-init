@@ -105,7 +105,7 @@ docs/plan/planning/done/welle-*-results.md | wc -l` → **8**. Die übrigen vier
 (`welle-06`, `welle-07`, `welle-08`, `welle-12`) tragen als H1 *„… — Results-Notiz"* und führen das
 Wort *Closure* in **keiner** Überschriften-Ebene (`grep -cE '^#{1,6} .*[Cc]losure'` → 0 je Datei) —
 sie weichen damit auch von der vendored Ziel-Form ab
-(`.harness/baseline/v6.13.0/templates/docs/plan/planning/welle-results.template.md:1`) und bleiben
+(`.harness/baseline/v6.16.0/templates/docs/plan/planning/welle-results.template.md:1`) und bleiben
 eine benannte, nicht nachgezogene Abweichung, kein zweiter Grund für den engen Filter. Gegen eine
 Kopie außerhalb des Repos, netzlos, mit `closure.glob: '*.md'`
 probeweise geweitet
@@ -145,7 +145,7 @@ Notiz in einem Unterverzeichnis erzeugt **keinen** Fund — gemessen an einem So
 `done/welle-99/`): flach `closure-note-thin`, tief **0** Treffer, in derselben Kopie außerhalb des
 Repos. `done/` trägt heute keine Unterverzeichnisse (`find docs/plan/planning/done -mindepth 1
 -maxdepth 1 -type d | wc -l` → 0), die Zusage ist also **heute** vollständig — die vom
-Regelwerk (`.harness/baseline/v6.13.0/regelwerk/modul-06-roadmap.md` §Wellen-Closure-Prozedur
+Regelwerk (`.harness/baseline/v6.16.0/regelwerk/modul-06-roadmap.md` §Wellen-Closure-Prozedur
 Schritt 4) **vor der ersten Archivierung** verlangte Geltungsbereichs-Prüfung gilt für diesen
 Sensor als hiermit durchgeführt
 und mit **benannter Grenze** beantwortet, statt stillschweigend zu bestehen: sobald ein
@@ -157,8 +157,8 @@ oder benennt an dieser Stelle, dass die Zusage ab dann nur für den flachen Best
 
 ### Ein stillgelegter Slice in `done/`
 
-**Was gemessen ist.** Die Ziel-Fassung (`v6.13.0` ·
-`.harness/baseline/v6.13.0/regelwerk/modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand
+**Was gemessen ist.** Die Ziel-Fassung (`v6.16.0` ·
+`.harness/baseline/v6.16.0/regelwerk/modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand
 ein anderer übernimmt) legt einen Slice, dessen Gegenstand ein anderer übernimmt oder der
 entfällt, ohne Lieferung nach `done/`: Die Liefer-Punkte der DoD bleiben leer, §7 trägt die Zeile
 `Gegenstand:`, und jedes Risiko hat einen Ausgang. Gemessen gegen d-check `v0.76.1`
@@ -287,13 +287,13 @@ in Marken-Form `**Gegenstand:**`. Fehlt sie, meldet die Regel **einen**
 `section-open-tasks-marker-missing` auf der §2-Überschrift; die vierte Spalte trägt den `hint` der
 Regel. Offene Items außerhalb von §2 zählen nicht, und eine Marke außerhalb von §7 zählt nicht.
 Ein regulär gelieferter Slice trägt in `done/` keine offenen Items
-(`.harness/baseline/v6.13.0/regelwerk/modul-05-planning-harness.md` §Lifecycle als State Machine:
+(`.harness/baseline/v6.16.0/regelwerk/modul-05-planning-harness.md` §Lifecycle als State Machine:
 die DoD-Häkchen sind Bedingung für `done/`; §Ein Slice, dessen Gegenstand ein anderer übernimmt:
 die einzige Ausnahme sind die Liefer-Punkte eines stillgelegten Slice). **Das gilt auch für die
 letzte DoD-Zeile der Vorlage**, *„Die drei Paarungen … sind getragen"*: Dieselbe Stelle zählt die
 Paarungen zu den Closure-Pflichten, die *„wie bei jeder Closure"* abgehakt werden. Im Repo mit
 Wellen-Betrieb sagt das Häkchen, dass die nächste Welle-Closure die Paarungen prüft. Sie liest
-auch Slices ohne Wellen-Zugehörigkeit (`v6.13.0` · `modul-06-roadmap.md` §Wann Arbeit eine Welle
+auch Slices ohne Wellen-Zugehörigkeit (`v6.16.0` · `modul-06-roadmap.md` §Wann Arbeit eine Welle
 braucht). Das Häkchen sagt nicht, dass die Paarungen schon geprüft sind. Die Zeile *„**nach** dem
 `git mv`"* in `modul-06` steht in der Tabelle für das Repo **ohne** Wellen. Sie regelt, wann
 abgehakt wird, nicht ob. Trägt ein gelieferter Slice doch ein offenes Item, färbt er dieselbe
