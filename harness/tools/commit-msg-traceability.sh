@@ -3,8 +3,11 @@
 # Traceability-Zusage (AGENTS.md §5, harness/README.md §Traceability).
 #
 # ZUSAGE. Exit 0, wenn die Message mindestens eine Kennung aus der Menge
-# {ADR-, LH-, MR-, slice-} traegt oder ihr Betreff mit "Merge " bzw. "Revert "
-# beginnt; Exit 1, wenn keines von beidem zutrifft; Exit 2, wenn die Datei fehlt
+# {ADR-, LH-, MR-, slice-} traegt (slice- als Nummer oder als Name in Kleinbuchstaben,
+# Ziffern und Bindestrichen; der Name zaehlt nur als eigenes Wort: links von slice- steht
+# der Zeilenanfang oder ein Zeichen, das weder Buchstabe, Ziffer, "_" noch "-" ist —
+# "noslice-foo" zaehlt nicht, "a slice-wise fix" zaehlt) oder ihr Betreff mit "Merge "
+# bzw. "Revert " beginnt; Exit 1, wenn keines von beidem zutrifft; Exit 2, wenn die Datei fehlt
 # oder nicht lesbar ist. Betreff ist die erste nicht-leere Zeile ohne
 # Kommentarzeichen; die Kennung darf auch im Rumpf stehen, eine Kommentarzeile
 # zaehlt dagegen nicht.
@@ -15,9 +18,11 @@
 # coreutils. Der Aufrufer ist der git-eigene Traeger .githooks/commit-msg.
 #
 # KOPPLUNG. .d-check.yml fuehrt dieselbe Kennungs-Menge als
-# `commits.id-patterns` samt `exempt-pattern`; `make commit-msg-check` liest sie
-# ueber d-check. test/commit-msg-hook.bats haelt beide Fassungen in beide
-# Richtungen gegen dieselbe Liste.
+# `commits.id-patterns` (die Alternativen der Zeile `patterns=` und die Zeile
+# `named_slice=`, je ein Listeneintrag) samt `exempt-pattern`; `make commit-msg-check`
+# liest sie ueber d-check. test/commit-msg-hook.bats haelt beide Fassungen in beide
+# Richtungen gegen dieselbe Liste; test/commit-msg-emission.bats haelt `named_slice=`
+# gleich der emittierten Fassung.
 #
 # GRENZE. Geprueft wird die ANWESENHEIT einer Kennung, nicht ihre Wahrheit
 # (dieselbe Grenze wie bei `make commit-msg-check`). Als Kommentarzeile gilt die
@@ -56,12 +61,13 @@ fi
 # ist POSIX-ERE ([0-9] statt \d) — bash kennt die \d-Kurzform des d-check-Moduls
 # nicht, die Uebersetzung steht in test/commit-msg-hook.bats.
 patterns='(ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3}|slice-[0-9]+)'
+named_slice='(^|[^[:alnum:]_-])slice-[a-z][a-z0-9-]*'
 while IFS= read -r line || [ -n "$line" ]; do
   trimmed="${line#"${line%%[![:space:]]*}"}"
   case "$trimmed" in
     '#'*) continue ;;
   esac
-  if [[ "$line" =~ $patterns ]]; then
+  if [[ "$line" =~ $patterns ]] || [[ "$line" =~ $named_slice ]]; then
     exit 0
   fi
 done < "$msg_file"

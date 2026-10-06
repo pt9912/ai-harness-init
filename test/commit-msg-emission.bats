@@ -191,3 +191,43 @@ klassen_muster() {
   [ -n "$emittiert" ]
   [ "$emittiert" = "$dogfood" ]
 }
+
+@test "kopplung: die Zeile named_slice= der zwei Fassungen ist dieselbe (genau eine je Datei)" {
+  local datei n emittiert dogfood
+  for datei in "$EMITTIERT" "$DOGFOOD"; do
+    n="$(grep -c '^named_slice=' "$datei")"
+    if [ "$n" -ne 1 ]; then
+      echo "STORUNG: $datei traegt $n '^named_slice='-Zeilen statt einer"
+      return 1
+    fi
+  done
+  emittiert="$(sed -n 's/^named_slice=//p' "$EMITTIERT")"
+  dogfood="$(sed -n 's/^named_slice=//p' "$DOGFOOD")"
+  [ -n "$emittiert" ]
+  if [ "$emittiert" != "$dogfood" ]; then
+    echo "emittiert: $emittiert"
+    echo "dogfood:   $dogfood"
+    false
+  fi
+}
+
+# urteil_beider <inhalt> — Exit der emittierten und der Dogfood-Pruefung ueber
+# dieselbe Message, als "<emittiert> <dogfood>".
+urteil_beider() {
+  local e d
+  printf '%b' "$1" > "$TMP/msg.txt"
+  e=0; bash "$EMITTIERT" "$TMP/msg.txt" >/dev/null 2>&1 || e=$?
+  d=0; bash "$DOGFOOD" "$TMP/msg.txt" >/dev/null 2>&1 || d=$?
+  echo "$e $d"
+}
+
+@test "kopplung: beide Fassungen urteilen gleich ueber Namensform, Nummernform und die zwei Grenzfaelle" {
+  # Namensform, Nummernform, ungleiche Strenge der Nummernform (kein Wortrand: noslice-12)
+  # und das akzeptierte Negativ gehen durch; ein Mittendrin-Wort der Namensform nicht.
+  [ "$(urteil_beider 'x\n\nBezug: slice-kennungs-erkennung-foo\n')" = "0 0" ]
+  [ "$(urteil_beider 'x\n\nBezug: slice-174\n')" = "0 0" ]
+  [ "$(urteil_beider 'noslice-12\n')" = "0 0" ]
+  [ "$(urteil_beider 'a slice-wise fix\n')" = "0 0" ]
+  [ "$(urteil_beider 'noslice-foo\n')" = "1 1" ]
+  [ "$(urteil_beider 'Betreff ohne Kennung\n')" = "1 1" ]
+}

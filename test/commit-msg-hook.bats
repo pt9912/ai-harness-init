@@ -60,6 +60,16 @@ hook_patterns() {
   line="${line#\'}"; line="${line%\'}"
   line="${line#(}"; line="${line%)}"
   printf '%s\n' "$line" | tr '|' '\n' | sed -e '/^$/d' -e 's/\[0-9\]/\\d/g'
+  # Die zweite Zeile der Menge: genau eine `^named_slice=`-Zeile, als EIN Muster
+  # (seine Gruppe traegt selbst ein `|`, es wird nicht zerlegt).
+  n="$(grep -c '^named_slice=' "$REPO/harness/tools/commit-msg-traceability.sh")"
+  if [ "$n" -ne 1 ]; then
+    echo "STORUNG: der Traeger traegt $n '^named_slice='-Zeilen statt einer"
+    return 1
+  fi
+  line="$(sed -n 's/^named_slice=//p' "$REPO/harness/tools/commit-msg-traceability.sh")"
+  line="${line#\'}"; line="${line%\'}"
+  printf '%s\n' "$line"
 }
 
 # config_exempt / hook_exempt — die Betreff-Ausnahme beider Fassungen.
@@ -126,6 +136,35 @@ hook_exempt() {
   [ "$status" -eq 1 ]
 }
 
+@test "traeger: ein benannter Slice (MR-057-Form) und sonst keine Kennung wird angenommen" {
+  f="$(write_msg 'Betreff ohne Kennung\n\nBezug: slice-kennungs-erkennung-traegt-die-zugelassenen-formen\n')"
+  run bash "$HOOK" "$f"
+  [ "$status" -eq 0 ]
+  f="$(write_msg 'slice-lifecycle-move-geht-ins-ziel erledigt\n')"
+  run bash "$HOOK" "$f"
+  [ "$status" -eq 0 ]
+}
+
+@test "traeger: die Nummernform bleibt angenommen, auch ohne Wortgrenze (ungleiche Strenge: noslice-12)" {
+  f="$(write_msg 'Betreff ohne Kennung\n\nBezug: slice-174\n')"
+  run bash "$HOOK" "$f"
+  [ "$status" -eq 0 ]
+  # patterns= traegt keine Wortgrenze, der benannte Slice schon: die Nummernform
+  # geht auch als Mittendrin-Wort durch. Beschrieben, nicht angeglichen.
+  f="$(write_msg 'noslice-12\n')"
+  run bash "$HOOK" "$f"
+  [ "$status" -eq 0 ]
+}
+
+@test "traeger: ein Mittendrin-Wort ohne Trenner links von slice- ist keine Kennung; a slice-wise fix ist akzeptiertes Negativ" {
+  f="$(write_msg 'noslice-foo und x_slice-bar und a-slice-baz\n')"
+  run bash "$HOOK" "$f"
+  [ "$status" -eq 1 ]
+  f="$(write_msg 'a slice-wise fix\n')"
+  run bash "$HOOK" "$f"
+  [ "$status" -eq 0 ]
+}
+
 @test "traeger: ohne Message-Datei bricht der Aufruf ab (fail-closed)" {
   run bash "$HOOK"
   [ "$status" -eq 2 ]
@@ -175,7 +214,7 @@ hook_exempt() {
     [ -n "$p" ] || continue
     e="$(printf '%s' "$p" | sed 's/\\d/[0-9]/g')"
     hit=""
-    for t in ADR-0001 LH-QA-01 MR-001 slice-1; do
+    for t in ADR-0001 LH-QA-01 MR-001 slice-1 slice-benannt-foo; do
       if [[ "$t" =~ ^($e)$ ]]; then hit="$t"; break; fi
     done
     [ -n "$hit" ] || { echo "kein Beispiel-Token fuer das Muster '$p' — Kopplung angefasst?"; return 1; }
