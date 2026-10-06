@@ -194,7 +194,7 @@ ls docs/plan/planning/in-progress/ | grep -c '^slice-'
 grep -n '^\*\*Status:\*\*' docs/plan/adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md
 ```
 
-**Start-Trigger:** `slice-emittierte-commit-pruefung-erkennt-benannte-slices` liegt in `done/` (`ls docs/plan/planning/done/ | grep -c emittierte-commit-pruefung-erkennt-benannte-slices`).
+**Start-Trigger (erfüllt):** `slice-emittierte-commit-pruefung-erkennt-benannte-slices` liegt in `done/` (`ls docs/plan/planning/done/ | grep -c emittierte-commit-pruefung-erkennt-benannte-slices`).
 
 **Rückführungs-Grund (`in-progress` → `next`):** nicht begonnen; Reihenfolge-Abhängigkeit zum emittierten Slice wegen der Gleichheits-Prüfung in `test/commit-msg-emission.bats`.
 
@@ -204,6 +204,8 @@ Gleichheit, und der Fall wird dort zu *emittiert ⊇ Dogfood*; nimmt dieser Slic
 `patterns=` auf, färbt die Gleichheit rot, bis jener Slice sie zur Obermenge macht; ist jener zuerst da, bleibt sie grün — beide Pläne
 bleiben, wie sie sind, die Abfolge ist Abstimmung. Sonst unabhängig von jedem anderen offenen Slice; die Fläche — die Erkennungen dieses
 Repos — fasst kein laufender Vorgang an.
+
+**Übergabe aus `slice-emittierte-commit-pruefung-erkennt-benannte-slices`** (Verifikation, Lücke benannt; Übergabe-Artefakt, kein Teil der Abnahme jenes Slice): `test/commit-msg-emission.bats` hält *emittiert ⊇ Dogfood* **textuell** — `patterns_von` liest nur die Zeile `^patterns=` und zerlegt an `|`. Nimmt die Dogfood-Prüfung die Namensform in diese Zeile (etwa als `(^|[^[:alnum:]_-])slice-…`), zerreißt die Zerlegung sie, und der Fall färbt falsch-rot (laut); führt sie ein Zusatzmuster in eigener Variable, sieht der Fall es nicht (still). Die emittierte Fassung führt die Namensform in einer eigenen Zeile `named_slice` mit Wortgrenze. **Der Implementer entscheidet** zwischen eigener Zeile `named_slice` (wie emittiert) und gemeinsamer Zeile; die Kopplung und der Vergleichsfall müssen die Wahl **tragen** — auch für ein Muster außerhalb von `patterns=` — und der Fall wird dafür rot gesehen. Mitzuführen: die ungleiche Strenge (die Nummernform in `patterns=` hat keine Wortgrenze, `noslice-12` geht durch) und das akzeptierte Negativ `a slice-wise fix` bleiben benannt, nicht stillschweigend übernommen.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
