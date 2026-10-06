@@ -110,7 +110,12 @@
     und meldet im vollständigen Klon über leerer Range weiter `0 Befund(e)`, Exit 0.
   - **`hostpaths`** ist opt-in und steht in keiner `modules:`-Liste. Am Arbeitsbaum meldet
     `docker run --rm --network none -v "$PWD:/repo:ro" ghcr.io/pt9912/d-check@<OLD|NEW> --enable hostpaths`
-    33 → 36 Befunde. Die drei neuen sind `~/…`-Formen in `docs/reviews/**`.
+    33 → 38 Befunde, gemessen am Stand mit dem Commit, der diese Zeile fasst; **kein
+    Erwartungswert** ([`MR-025`](../conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+    Setzung 2). Neu sind fünf Home-Pfade in Tilde-Form: `docs/plan/planning/done/slice-081-baum-tauschen-pin-ziehen.md:459`
+    und je zwei Zeilen in `docs/reviews/2026-09-27-*` und im Review dieses Eintrags. Jeder Text, der
+    die Form als Literal zitiert, hebt die Zahl; dieser Eintrag nennt sie darum nur in Worten
+    ([`MR-058`](../conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)).
 - **`make history-range-guard` — Retirement-Check, je Ebene.** Herkunft ist
   [`MR-007`](../conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
   Setzung 3: die auflösbare, aber leere Range lief blind grün. Der Wächter ist kein Gate
@@ -165,4 +170,4 @@
   `commits` über leerer Range ebenfalls ab, entfällt der Grund im Ziel. Meldet `vcs --staged`
   einen leeren Index selbst, entfällt der erste Dogfood-Grund. Bekommt `doc-commits` im Dogfood
   einen Aufrufer, wird der Wächter dort vorgebunden. Die Aussage über
-  `hostpaths`/`targets.makefiles` ist neu zu prüfen, sobald eines davon einen Gegenstand bekommt.
+  `hostpaths` ist neu zu prüfen, sobald es in eine `modules:`-Liste aufgenommen wird.
