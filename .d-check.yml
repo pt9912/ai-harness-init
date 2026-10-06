@@ -521,8 +521,8 @@ commits:
 # Makefile-BASELINE_ZIP_SHA256 (MR-007; gemessen 0 Drift). test/sources-pin.bats koppelt beide
 # fail-closed (in gates) — Re-Baseline muss beide Pins bewegen.
 sources:
-  - url: https://github.com/pt9912/ai-harness-course/releases/download/v6.13.0/lab-regelwerk.zip
-    sha256: b5151e77807e2affebb25cfab9be24b88cf43afc42c075db0b982a2ff1052b96
+  - url: https://github.com/pt9912/ai-harness-course/releases/download/v6.16.0/lab-regelwerk.zip
+    sha256: feb4d7444c92ec4d11fcf88035ce2eaef48da64ae990eb8bbcf44550a5e87063
     unpack: none
 # trace: KEIN Modul — steuert nur `--trace`/`--require-complete` (`make doc-trace`/`make doc-complete`,
 # advisory, nicht in modules: und nicht in `make gates`). Der Default-Muster erwartet `FA-<Buchstaben>-<Zahl>`;
