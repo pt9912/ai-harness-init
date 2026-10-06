@@ -154,11 +154,14 @@ structure:
 # der authority-Datei oder in exempt-targets — eine dritte Antwort gibt es nicht.
 # Richtung 2 (gate-phantom): jede `make X`-Tabellenzeile in einer der
 # doc-tables-Dateien nennt ein Rezept, das in einer der makefiles-Dateien
-# existiert. `authority` nimmt genau eine Datei (Schema-Grenze des Moduls); die
-# zweite doc-tables-Datei (harness/README.md) traegt darum nur Richtung 2, nicht
-# Richtung 1 — eine dort in Prosa beschriebene Nicht-Gate-Verify erfuellt die
-# Vollstaendigkeits-Pruefung nicht automatisch und braucht ihren eigenen
-# exempt-targets-Eintrag.
+# existiert. `authority` nennt eine Datei, harness/README.md; das Modul nimmt auch
+# eine Liste (Vereinigung), und warum es hier bei einer bleibt, steht im
+# Trigger-Audit zu ADR-0045 in harness/conventions.md MR-080. Die zweite
+# doc-tables-Datei (AGENTS.md) steht nicht in authority und traegt darum nur
+# Richtung 2, nicht Richtung 1 — ein Rezept, das nur dort genannt ist, erfuellt
+# die Vollstaendigkeits-Pruefung nicht und braucht seine Zeile in der
+# authority-Datei oder einen exempt-targets-Eintrag; ebenso eines, das in der
+# authority-Datei nur in Prosa statt in einer Tabellenzeile steht.
 #
 # exempt-targets ist EXAKT (kein Glob) und in zwei Gruppen kuratiert:
 #
