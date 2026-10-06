@@ -43,12 +43,25 @@
   - In Stufe 3 hat jedes aktive Modul mindestens einen Befund (`grep -m1 '^modules:' .d-check.yml`
     in Dogfood und Ziel).
 
-  **Kommandos** wie in
+  **Kommandos, Dogfood** wie in
   [`MR-079`](../conventions.md#mr-079--d-check-pin-v0810-vcs-bricht-über-leerer-range-ab)
   §Strenge-Bilanz, mit `6fb5058f` statt `dd26964c` als Kopie-Quelle
   (`git archive 6fb5058f | tar -x -C "$K"`), `make -s -C "$K" docs-check DCHECK_DIGEST=<OLD|NEW>`,
   und Stufe 2 über jede `*.md` außer `.harness/baseline/` **und außer Symlinks**. Die Sonden sind
   nach derselben Bedingung am Stand `6fb5058f` neu geschnitten.
+
+  **Kommandos, Ziel** — hier gilt die Ziel-Hälfte von `MR-079` nicht wörtlich, sondern diese.
+  Prüf-Bedingung zuerst: das frisch emittierte Ziel führt **keine** ADR, die `ids`-Sonde nennt
+  darum eine Kennung als Text, die das Muster `ids.patterns` der Ziel-`.d-check.yml` trifft; die
+  `structure`-Sonde liegt in einer Zelle der Spalte `Vertrag` oder `Tut was` unter
+  `## Sensors (Feedback-Gates)` — nur diese Spalten begrenzt der `structure`-Block des Ziels.
+  - Ziel: `git init -q "$Z" && .harness/state/bin/ai-harness-init --lang go --name rv "$Z"`
+    (Träger aus `make host-bin`; ohne Zielordner bricht der Aufruf ab).
+  - Lauf: `make -s -C "$Z" docs-check DCHECK_DIGEST=<OLD|NEW>` — das Ziel-Fragment lässt den Digest
+    den Tag stechen; die Befundzeilen wie im Dogfood.
+  - Sonden: `links`, `anchors`, `spans` wie im Dogfood; die Link-Sonde trägt die Kennung `ADR-` + `0001` zusammengeschrieben, ohne Link
+    (`ids`); `matrix`: `spec/architecture.md` verlinkt `harness/README.md`; `structure`: eine
+    Zelle der Spalte `Vertrag` in §Sensors um 230 Zeichen verlängert.
 
   | Stufe | `v0.81.0` | `v0.82.0` | `diff` |
   |---|---|---|---|
@@ -72,6 +85,23 @@
   getrennte Ströme beschränkt. Die Probe ändert `.d-check.yml` nicht dauerhaft.
 - **Kein ADR nötig ([`AGENTS.md`](../../AGENTS.md) §3.5):** die aktiven Module zeigen gleiche
   Befundmengen; die neue Fähigkeit ist ungenutzt.
+- **Trigger-Audit
+  [`ADR-0045`](../../docs/plan/adr/0045-authority-wechsel-senkt-eine-richtung.md) — bestätigt.**
+  Der Sprung feuert ihren Trigger *„Wenn `authority` mehr als eine Datei nimmt"*. Die Wahl
+  `authority: harness/README.md` bleibt, keine Folge-ADR. Von den drei Gründen der ADR (§Kontext)
+  entfällt allein der zweite, die Schema-Grenze. Der erste trägt weiter: die einzige andere
+  `doc-tables`-Datei führt keine `make X`-Tabellenzeile (``grep -cE '^\| `make ' AGENTS.md`` → 0),
+  eine Liste `[harness/README.md, AGENTS.md]` ließe die Vereinigung also unverändert. Ein
+  werkzeug-eigener Index-Teil, der eine zweite Autoritäts-Datei wäre, besteht im Dogfood nicht
+  (`ls harness/mk` → kein Verzeichnis), und die adoptierte Ziel-Fassung `v6.13.0` empfiehlt
+  weiter eine Datei (`grep -c 'es gibt nur einen Index' .harness/baseline/v6.13.0/templates/.d-check.yml`
+  → 1). Die Liste nimmt auch die gebuchte Senkung nicht weg — sie scopt nicht nach Abschnitt —,
+  Festlegung 2 der ADR bleibt also unberührt. Keine Erwartungswerte (`MR-025` Setzung 2).
+  **Neu zu prüfen**, sobald eine adoptierte Baseline einen Index-Teil je Werkzeug als eigene Datei
+  führt (die Kurs-Regel `harness/mk/<werkzeug>.md`, im Kurs ab `v6.16.0`, hier nicht adoptiert)
+  oder eine zweite Dogfood-Datei wieder `make X`-Tabellenzeilen trägt. Die Listen-`authority` des
+  **emittierten** Ziels ist eine andere Ebene und gehört dem `targets`-Slice nach `MR-054`, nicht
+  dieser ADR.
 - **Grenze.**
   - Die Gegenmessung fährt den VCS-Port nicht (`git archive`-Kopie).
   - Der Digest ist über die Werkzeug-Ausgabe belegt; kein Sensor hält ihn gegen den Tag
@@ -91,6 +121,10 @@
   [`MR-054`](../conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
   prüft. Keine Aussage eines früheren Eintrags wird abgelöst; der Sprung datiert nur
   ([`MR-032`](../conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger)
-  Setzung 4), darum trägt `MR-079` keine Kopf-Marke.
+  Setzung 4), darum trägt `MR-079` keine Kopf-Marke. Auch die Ziel-Kommandos oben lösen keine
+  Aussage ab: `MR-079` hält, wie **dort** gemessen wurde; welche Kommandos ein nächster Sprung
+  fährt, liest er am jüngsten Pin-Eintrag. **Akzeptiertes Negativ:** wer `MR-079` allein liest,
+  fährt dessen Ziel-Hälfte nicht wörtlich nach — die Prüf-Bedingung *jedes Modul hat eine Basis*
+  zeigt es ihm.
 - **Auflösungs-Trigger:** permanent, wie `MR-079`. **Neu zu prüfen** ist die Byte-Identitäts-Aussage,
   sobald eine `authority` dieses Repos oder des emittierten Ziels mehr als eine Datei führt.
