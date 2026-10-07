@@ -39,9 +39,9 @@ Fundmenge unter demselben Kommando; der Schnitt in Träger-Familie und Rest erzw
 und dasselbe Muster über `internal/emit/*.go` — dort zählt es auch die Quell-Kommentare des
 Werkzeugs mit, die nicht emittiert werden; maßgeblich ist darum die Fundmenge über der **realen**
 Emission, die der Wächter (Liefer-Punkt 2) misst. Zwei Zeilen sind funktionale Nutzlast — der
-Default-Commit-Text `Selbstpruefung mit Kennung LH-FA-01` in `selbstpruefung.sh` und
+Default-Commit-Text der Selbstprüfung (`SELBSTPRUEFUNG_MSG_GRUEN`) in `selbstpruefung.sh` und
 `selbstpruefung.mk` muss ein Kennungs-Muster des Ziels treffen
-(`git grep -n 'Kennung LH-FA-01' -- internal/emit/templates`) — und bleiben als namentliche Ausnahme.
+(`git grep -n 'SELBSTPRUEFUNG_MSG_GRUEN' -- internal/emit/templates`) — und bleiben als namentliche Ausnahme.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
