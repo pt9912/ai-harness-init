@@ -6,7 +6,7 @@
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912 (Implementer).
 
 **Autor:** Planner. **Datum:** 2026-10-07.
 
@@ -38,9 +38,15 @@ grep -c 'sondern in ihr eigenes `docs/plan/carveouts/done/` (Baseline' $T/docs/p
 
 - [ ] `NeutralizeRoadmap`, `roadmapDoneLink`, ihr Aufruf und die an ihren Wortlaut gebundenen Tests
       und Fixture-Zeilen entfallen; die emittierte Roadmap bleibt gate-sicher (`make full-smoke` EXIT 0).
+      **Rot-Werkzeug:** der Marker-Fall aus Liefer-Punkt 2, zuerst über dem unveränderten
+      `templates.go` gefahren (`make test`): rot, die Meldung nennt `roadmapDoneLink` mit 0 Treffern
+      in `roadmap.template.md`; nach dem Entfernen grün.
 - [ ] Ein Fall in `make test` liest die Vorlagen des vendored Baums zu `DefaultTag` und verlangt je
-      verbleibendem Wortlaut-Marker genau einen Treffer; rot gesehen durch Verfälschen eines Markers in
-      `templates.go`, die Meldung nennt Marker und Vorlage.
+      verbleibendem Wortlaut-Marker (`conventionsPathRefOld`, `carveoutsDoneRefOld`) genau einen
+      Treffer. **Rot-Werkzeug:** ein Fall in `test/mutations/` (`sed`-Anker gegen den Quell-Bestand,
+      [`MR-071`](../../../../harness/conventions.md#mr-071)) verfälscht einen Marker in
+      `templates.go`; `make mutate MUTATE_CASES=<nr>` meldet ihn gebunden, die Meldung (Marker und
+      Vorlage) ist gelesen und als `expect:` eingetragen.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), kein Self-Review.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -54,6 +60,7 @@ grep -c 'sondern in ihr eigenes `docs/plan/carveouts/done/` (Baseline' $T/docs/p
 |---|---|---|
 | `internal/emit/templates.go` | update | Funktion, Konstante und Aufruf entfallen; Doc-Kommentare der zwei übrigen nennen den neuen Fall statt „kein Sensor" |
 | `internal/emit/templates_test.go`, Fixture `courseSet()` | update | Roadmap-Wortlaut-Tests entfallen; Marker-Fall gegen den vendored Baum |
+| `test/mutations/` | neu | Rot-Werkzeug Liefer-Punkt 2 ([`MR-071`](../../../../harness/conventions.md#mr-071)) |
 
 ## 4. Trigger
 
