@@ -8,4 +8,4 @@
 # (SPEC-077). Der Fall bindet die `mustContain`-Zeile dieses Feldes im
 # Fehlschlag-Waechter.
 set -euo pipefail
-sed -i 's@CacheCount `json:"cache_read_input_tokens"`@CacheCount `json:"cache_read_input_tokens,omitzero"`@' internal/span/response.go
+sed -i 's@json:"cache_read_input_tokens"@json:"cache_read_input_tokens,omitzero"@' internal/span/response.go
