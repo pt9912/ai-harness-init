@@ -12,8 +12,8 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 **Welle:** ohne Welle — die Closure-Bedingung ist die DoD dieses Slice; Baseline-Regelwerk
 `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht.
 
-**Bezug:** [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [ADR-0058](../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md), [ADR-0059](../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md). Anlass: LOW-1 zu
-`slice-full-smoke-misst-den-emittierten-traeger-pin` ([Review](../../reviews/2026-10-07-traeger-pin-review.md)).
+**Bezug:** [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [ADR-0058](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md), [ADR-0059](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md). Anlass: LOW-1 zu
+`slice-full-smoke-misst-den-emittierten-traeger-pin` ([Review](../../../reviews/2026-10-07-traeger-pin-review.md)).
 
 **Berührte Spec-Stellen:** `—`
 
@@ -52,7 +52,7 @@ Manifest; `grep -n 'klon_traeger_fetch' harness/tools/full-smoke.sh` den Aufruf,
 - [ ] **2 — Negativ-Fall:** der Fall „nach EINMAL Laden" der Stufe hält den Manifest-Kanal, nicht
       die Pin-Variable.
 - [ ] **3 — E2E-Sicht:** die Deklaration von Stufe 5 nennt den Kanal; `make e2e-abdeckung` zieht
-      [`docs/user/e2e-abdeckung.md`](../../user/e2e-abdeckung.md) nach.
+      [`docs/user/e2e-abdeckung.md`](../../../user/e2e-abdeckung.md) nach.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -68,7 +68,7 @@ Manifest; `grep -n 'klon_traeger_fetch' harness/tools/full-smoke.sh` den Aufruf,
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `harness/tools/full-smoke.sh` | update | `klon_traeger_fetch` ohne Digest-Pins, Negativ-Fall, Deklaration (Liefer-Punkte 1–3) |
-| `test/mutations/` | neu | ein Fall am Manifest-Zweig, `verify: full-smoke` — [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
+| `test/mutations/` | neu | ein Fall am Manifest-Zweig, `verify: full-smoke` — [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 | `docs/user/e2e-abdeckung.md` | update (erzeugt) | Liefer-Punkt 3 |
 
 ## 4. Trigger
@@ -110,5 +110,5 @@ Manifest; `grep -n 'klon_traeger_fetch' harness/tools/full-smoke.sh` den Aufruf,
 `BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht` (verkörpert) — Liefer-Punkt 3
 trägt die Teilmessung.
 
-**Alle berührten Sub-Areas GF** ([`harness/conventions.md`](../../../harness/conventions.md)
+**Alle berührten Sub-Areas GF** ([`harness/conventions.md`](../../../../harness/conventions.md)
 §Modus-Deklaration pro Sub-Area).
