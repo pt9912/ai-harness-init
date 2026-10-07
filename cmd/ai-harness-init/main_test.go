@@ -1006,3 +1006,38 @@ func sameEntries(a, b []string) bool {
 	}
 	return true
 }
+
+// TestRun_AddLangMeldetNeueTargets haelt die Meldung des Laufs auf stdout (LH-QA-01): das erste
+// add-lang legt den Werkzeug-Teil an und nennt nur die Zahlen; ein zweites Modul nennt je
+// neuem Target eine Zeile, ein Gate mit der Marke NEUES GATE, dazu den Satz zum Doku-Gate; ein
+// Re-Lauf desselben Moduls nennt keines.
+func TestRun_AddLangMeldetNeueTargets(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	if code := run([]string{"add-lang", "go", "apps/api"}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("erstes add-lang exit %d: %q", code, errb.String())
+	}
+	if !strings.Contains(out.String(), "harness/mk/ai-harness-init.md angelegt — ") || strings.Contains(out.String(), "make lint-apps-api") {
+		t.Errorf("Erstlauf: erwartet die Zahlen-Zeile ohne Einzelnennung, stdout:\n%s", out.String())
+	}
+	out.Reset()
+	if code := run([]string{"add-lang", "go", "apps/web"}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("zweites add-lang exit %d: %q", code, errb.String())
+	}
+	for _, n := range []string{"lint-apps-web", "build-apps-web", "test-apps-web"} {
+		want := "ai-harness-init: >>> NEUES GATE: make " + n + " — neu in der Gate-Tabelle von harness/mk/ai-harness-init.md.\n"
+		if !strings.Contains(out.String(), want) {
+			t.Errorf("stdout nennt das neue Gate %s nicht, stdout:\n%s", n, out.String())
+		}
+	}
+	if strings.Contains(out.String(), "make lint-apps-api") || !strings.Contains(out.String(), "das Doku-Gate meldet sie nicht") {
+		t.Errorf("zweites Modul: ein altes Target genannt oder der Satz zum Doku-Gate fehlt, stdout:\n%s", out.String())
+	}
+	out.Reset()
+	if code := run([]string{"add-lang", "go", "apps/web"}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("Re-Lauf exit %d: %q", code, errb.String())
+	}
+	if strings.Contains(out.String(), "make ") || strings.Contains(out.String(), "angelegt") {
+		t.Errorf("Re-Lauf ohne neues Target nennt eines, stdout:\n%s", out.String())
+	}
+}

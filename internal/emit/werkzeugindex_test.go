@@ -43,7 +43,7 @@ func werkzeugIndexZiel(t *testing.T) string {
 // harness/README.md schon fuehrt, und das Target aus repo.mk fehlen.
 func TestWerkzeugIndex_ZeileJeWerkzeugTargetDisjunkt(t *testing.T) {
 	dir := werkzeugIndexZiel(t)
-	if err := emit.WerkzeugIndex(dir); err != nil {
+	if _, err := emit.WerkzeugIndex(dir); err != nil {
 		t.Fatal(err)
 	}
 	got, err := os.ReadFile(filepath.Join(dir, filepath.FromSlash(emit.WerkzeugIndexPath)))
@@ -104,7 +104,7 @@ func TestWerkzeugIndex_ErkenntRegelnWieDasDokuGate(t *testing.T) {
 	if err := os.WriteFile(readme, append(r, "| `make doc_ok` | o | — |\n"...), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	if err := emit.WerkzeugIndex(dir); err != nil {
+	if _, err := emit.WerkzeugIndex(dir); err != nil {
 		t.Fatal(err)
 	}
 	got, err := os.ReadFile(filepath.Join(dir, filepath.FromSlash(emit.WerkzeugIndexPath)))
@@ -127,7 +127,7 @@ func TestWerkzeugIndex_ErkenntRegelnWieDasDokuGate(t *testing.T) {
 // auch ueber eine Aenderung von Hand.
 func TestWerkzeugIndex_KonvergentHeiltDrift(t *testing.T) {
 	dir := werkzeugIndexZiel(t)
-	if err := emit.WerkzeugIndex(dir); err != nil {
+	if _, err := emit.WerkzeugIndex(dir); err != nil {
 		t.Fatal(err)
 	}
 	p := filepath.Join(dir, filepath.FromSlash(emit.WerkzeugIndexPath))
@@ -135,7 +135,7 @@ func TestWerkzeugIndex_KonvergentHeiltDrift(t *testing.T) {
 	if err := os.WriteFile(p, append(erst, "| `make von-hand` | x | — |\n"...), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	if err := emit.WerkzeugIndex(dir); err != nil {
+	if _, err := emit.WerkzeugIndex(dir); err != nil {
 		t.Fatal(err)
 	}
 	zweit, _ := os.ReadFile(p)
@@ -162,5 +162,48 @@ func TestInjectWerkzeugIndexLink(t *testing.T) {
 	}
 	if _, err := emit.InjectWerkzeugIndexLink("# R\n\n## Andere\n"); err == nil {
 		t.Errorf("ohne Sensors-Sektion kein Fehler (fail-closed verletzt)")
+	}
+}
+
+// TestWerkzeugIndex_BerichtNenntNeueTargets haelt den Bericht, den der Lauf aus dem liegenden
+// gegen den geschriebenen Werkzeug-Teil zieht (LH-QA-01): der Erstlauf nennt keine Einzel-Targets,
+// sondern die Zahlen; ein Re-Lauf ohne Aenderung nennt nichts; ein neues Fragment nennt sein Gate
+// und sein Werkzeug-Ziel vollstaendig, Gates zuerst; ein Target, das von der zweiten in die
+// Gate-Tabelle wechselt, steht als Gate darin; ein entfallenes Target nennt er nicht.
+func TestWerkzeugIndex_BerichtNenntNeueTargets(t *testing.T) {
+	dir := werkzeugIndexZiel(t)
+	erst, err := emit.WerkzeugIndex(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !erst.Erstlauf || len(erst.Neu) != 0 || erst.Targets != 6 || erst.Gates != 3 {
+		t.Errorf("Erstlauf: %+v, erwartet Erstlauf ohne Neu mit 6 Targets, davon 3 Gates", erst)
+	}
+	gleich, err := emit.WerkzeugIndex(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if gleich.Erstlauf || len(gleich.Neu) != 0 {
+		t.Errorf("Re-Lauf ohne Aenderung: %+v, erwartet keinen Erstlauf und nichts Neues", gleich)
+	}
+	frag := "GATE_CHECKS += neu-gate record-gates\nneu-gate: ## G\nneu-werkzeug: ## W\n"
+	if err := os.WriteFile(filepath.Join(dir, "harness", "mk", "neu.mk"), []byte(frag), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Remove(filepath.Join(dir, "harness", "mk", "werk.mk")); err != nil {
+		t.Fatal(err)
+	}
+	b, err := emit.WerkzeugIndex(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	soll := []emit.WerkzeugTargetNeu{{Name: "neu-gate", Gate: true}, {Name: "record-gates", Gate: true}, {Name: "neu-werkzeug"}}
+	if b.Erstlauf || len(b.Neu) != len(soll) {
+		t.Fatalf("Bericht nach neuem Fragment: %+v, erwartet Neu = %+v", b, soll)
+	}
+	for i, s := range soll {
+		if b.Neu[i] != s {
+			t.Errorf("Neu[%d] = %+v, erwartet %+v", i, b.Neu[i], s)
+		}
 	}
 }

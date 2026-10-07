@@ -61,6 +61,46 @@ type werkzeugTarget struct {
 	name, hilfe, datei string
 }
 
+// werkzeugIndexZeilePattern liest eine geschriebene Zeile des Werkzeug-Teils: Gruppe 1 das
+// Target, Gruppe 2 die Bindung-Spalte (`—` in der Gate-Tabelle, `kein Gate` in der zweiten).
+// KOPPLUNG: die Zeilenform, die WerkzeugIndex schreibt.
+var werkzeugIndexZeilePattern = regexp.MustCompile("(?m)^\\| `make ([^`]+)` \\|.*\\| (—|kein Gate) \\|$")
+
+// WerkzeugTargetNeu ist ein Target, das der geschriebene Werkzeug-Teil gegenueber dem vorigen
+// neu fuehrt. Gate ist wahr, wenn es in der Gate-Tabelle steht (ohne Marke `kein Gate`).
+type WerkzeugTargetNeu struct {
+	Name string
+	Gate bool
+}
+
+// WerkzeugIndexBericht sagt, was ein Lauf von WerkzeugIndex am Werkzeug-Teil geaendert hat.
+// Erstlauf ist wahr, wenn vor dem Lauf kein Werkzeug-Teil lag; Neu ist dann leer. Sonst nennt
+// Neu jedes Target, das der vorige Teil nicht fuehrte, und jedes, das jetzt in der Gate-Tabelle
+// steht und vorher nicht — Gates zuerst, je Klasse nach Namen sortiert. Ein entfallenes Target
+// nennt der Bericht nicht. Targets und Gates zaehlen die Zeilen des geschriebenen Teils.
+type WerkzeugIndexBericht struct {
+	Erstlauf       bool
+	Neu            []WerkzeugTargetNeu
+	Targets, Gates int
+}
+
+// vorigerWerkzeugIndex liest den liegenden Werkzeug-Teil: je Zeile Target -> Gate-Eigenschaft.
+// Fehlt die Datei, ist da false.
+func vorigerWerkzeugIndex(targetDir string) (zeilen map[string]bool, da bool, err error) {
+	content, err := os.ReadFile(filepath.Join(targetDir, filepath.FromSlash(WerkzeugIndexPath)))
+	if os.IsNotExist(err) {
+		return nil, false, nil
+	}
+	if err != nil {
+		return nil, false, fmt.Errorf("%s lesen: %w", WerkzeugIndexPath, err)
+	}
+	zeilen = map[string]bool{}
+	for _, m := range werkzeugIndexZeilePattern.FindAllStringSubmatch(string(content), -1) {
+		zeilen[m[1]] = m[2] == "—"
+	}
+	return zeilen, true, nil
+}
+
 // WerkzeugIndex schreibt den werkzeug-eigenen Teil des Gate-Index nach targetDir: je Target der
 // Make-Dateien des Werkzeugs (werkzeugMakeDateien) eine Zeile; Gate ist, was ein Fragment an
 // GATE_CHECKS haengt, dazu `gates`, alles uebrige steht mit `kein Gate` in der zweiten Tabelle.
@@ -68,11 +108,26 @@ type werkzeugTarget struct {
 // als Tabellenzeile fuehrt, steht hier nicht. Gehalten von TestWerkzeugIndex_ZeileJeWerkzeugTargetDisjunkt und
 // TestWerkzeugIndex_KonvergentHeiltDrift, im Ziel von
 // der full-smoke-Stufe targets_im_ziel (gruener Start, gate-phantom, gate-undocumented).
-func WerkzeugIndex(targetDir string) error {
+//
+// Vor dem Schreiben liest der Lauf den liegenden Teil und gibt im Bericht zurueck, was neu
+// hinzukam (WerkzeugIndexBericht) — das Doku-Gate meldet ein solches Target nicht, es ist im
+// Teil des Werkzeugs deklariert (Kurs v6.16.0, modul-13-quality-gates.md §Hard Rule), sichtbar
+// macht es allein der Lauf. ERSTLAUF (kein voriger Teil): keine Einzelnennung, der Bericht traegt
+// die Zahlen. Ohne vorigen Teil fehlt der Vergleichsstand: im frischen Bootstrap wie im Ziel, das
+// den Teil zum ersten Mal bekommt, ist jedes Target neu, und eine Liste trennt dort nichts.
+// Gehalten von TestWerkzeugIndex_BerichtNenntNeueTargets, im Ziel von der full-smoke-Stufe
+// werkzeug_meldung_im_ziel.
+func WerkzeugIndex(targetDir string) (WerkzeugIndexBericht, error) {
+	var bericht WerkzeugIndexBericht
 	files, err := werkzeugMakeDateien(targetDir)
 	if err != nil {
-		return err
+		return bericht, err
 	}
+	vorher, vorherDa, err := vorigerWerkzeugIndex(targetDir)
+	if err != nil {
+		return bericht, err
+	}
+	bericht.Erstlauf = !vorherDa
 	imRepoIndex := map[string]bool{}
 	if readme, readErr := os.ReadFile(filepath.Join(targetDir, filepath.FromSlash(harnessReadmePath))); readErr == nil {
 		for _, m := range readmeZeilePattern.FindAllStringSubmatch(string(readme), -1) {
@@ -83,10 +138,10 @@ func WerkzeugIndex(targetDir string) error {
 	gefunden := map[string]*werkzeugTarget{}
 	for _, rel := range files {
 		if err := sammleWerkzeugTargets(targetDir, rel, gates, gefunden); err != nil {
-			return err
+			return bericht, err
 		}
 	}
-	var gateZeilen, werkzeugZeilen []string
+	var gateZeilen, werkzeugZeilen, gateNamen, werkzeugNamen []string
 	namen := make([]string, 0, len(gefunden))
 	for n := range gefunden {
 		namen = append(namen, n)
@@ -104,11 +159,36 @@ func WerkzeugIndex(targetDir string) error {
 		zelle = strings.ReplaceAll(zelle, "|", `\|`)
 		if gates[n] {
 			gateZeilen = append(gateZeilen, "| `make "+n+"` | "+zelle+" | — |")
+			gateNamen = append(gateNamen, n)
 		} else {
 			werkzeugZeilen = append(werkzeugZeilen, "| `make "+n+"` | "+zelle+" | kein Gate |")
+			werkzeugNamen = append(werkzeugNamen, n)
 		}
 	}
-	return writeFileMode(targetDir, WerkzeugIndexPath, []byte(werkzeugIndexText(gateZeilen, werkzeugZeilen)), 0o644)
+	if vorherDa {
+		bericht.Neu = neueWerkzeugTargets(gateNamen, werkzeugNamen, vorher)
+	}
+	bericht.Targets = len(gateZeilen) + len(werkzeugZeilen)
+	bericht.Gates = len(gateZeilen)
+	return bericht, writeFileMode(targetDir, WerkzeugIndexPath, []byte(werkzeugIndexText(gateZeilen, werkzeugZeilen)), 0o644)
+}
+
+// neueWerkzeugTargets vergleicht die geschriebenen Zeilen mit dem vorigen Teil (Target -> Gate):
+// neu ist ein Gate, das vorher nicht in der Gate-Tabelle stand, und ein Werkzeug-Ziel, das vorher
+// fehlte. Gates zuerst, beide Listen in der Reihenfolge der Eingabe.
+func neueWerkzeugTargets(gateNamen, werkzeugNamen []string, vorher map[string]bool) []WerkzeugTargetNeu {
+	var neu []WerkzeugTargetNeu
+	for _, n := range gateNamen {
+		if !vorher[n] {
+			neu = append(neu, WerkzeugTargetNeu{Name: n, Gate: true})
+		}
+	}
+	for _, n := range werkzeugNamen {
+		if _, warDa := vorher[n]; !warDa {
+			neu = append(neu, WerkzeugTargetNeu{Name: n})
+		}
+	}
+	return neu
 }
 
 // sammleWerkzeugTargets liest eine Make-Datei des Werkzeugs: ihre GATE_CHECKS-Eintraege nach

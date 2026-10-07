@@ -3734,6 +3734,75 @@ echo "full-smoke: Modul targets im frischen --lang go-Ziel — gruener Start, je
 	e2e_abdeckung "LH-QA-01" "Die emittierte Doku-Gate-Konfiguration haelt jedes Make-Target gegen eine Zeile im Gate-Index aus harness/README.md und dem Werkzeug-Teil harness/mk/ai-harness-init.md: gruener Start am frischen --lang go-Ziel, ein Target in repo.mk ohne Zeile meldet gate-undocumented, eine Zeile ohne Target gate-phantom, je mit Gegenprobe; als Grenze gemessen: eine aus repo.mk eingebundene .mk im Unterverzeichnis bleibt ungeprueft, an der Wurzel meldet sie gate-undocumented; NICHT gemessen: ein Ziel mit eigener .d-check.yml (skip-if-present), cpp und --arch, der Nachzug durch add-lang, die Disjunktheit der zwei Teile" "targets_im_ziel"
 targets_im_ziel
 
+# werkzeug_meldung_im_ziel <dir> — der Lauf nennt auf stdout jedes Target, das der neu
+# geschriebene Werkzeug-Teil harness/mk/ai-harness-init.md gegenueber dem liegenden neu fuehrt;
+# das Doku-Gate meldet ein solches Target nicht (Kurs v6.16.0, modul-13-quality-gates.md
+# §Hard Rule). Gemessen an einem frischen sprachlosen Ziel: (a) der Erstlauf nennt die Zahlen
+# und kein Einzel-Target; (b) add-lang go apps/api nennt je Gate des neuen Fragments eine Zeile
+# mit der Marke NEUES GATE; (c) ein Re-Lauf des Bootstrap ueber einer belegten harness/mk/probe.mk
+# nennt ihr Target ohne GATE_CHECKS als neues Target (kein Gate) und kein Gate; (d) docs-check
+# bleibt danach bei '0 Befund(e)'; (e) ein Re-Lauf ohne Aenderung nennt nichts.
+# GRENZE: die Gate-Eigenschaft ist die Klassifikation des Index (GATE_CHECKS und gates), nicht ein
+# Lauf von make gates — make gates faehrt diese Stufe nicht; ein entfallenes Target nennt der Lauf
+# nicht; cpp und --arch sind hier nicht gemessen.
+werkzeug_meldung_im_ziel() {
+	local dir="$1" aus fehlt n
+	aus="$( "$tmpbin/ai-harness-init" --name meldung "$dir" )"
+	if ! grep -qF -- 'harness/mk/ai-harness-init.md angelegt — ' <<<"$aus" || grep -qE -- 'NEUES GATE|neues Target' <<<"$aus"; then
+		echo "full-smoke: FEHLER — Werkzeug-Meldung: der Erstlauf nennt nicht die Zahlen-Zeile oder nennt Einzel-Targets. stdout:" >&2
+		printf '%s\n' "$aus" >&2
+		exit 1
+	fi
+	echo "full-smoke: Werkzeug-Meldung (Erstlauf) gelesen:"
+	grep -F -- 'ai-harness-init.md angelegt' <<<"$aus" | sed 's/^/full-smoke:   /'
+
+	aus="$( cd "$dir" && "$tmpbin/ai-harness-init" add-lang go apps/api )"
+	fehlt=""
+	for n in lint-apps-api build-apps-api test-apps-api; do
+		grep -qF -- ">>> NEUES GATE: make $n — " <<<"$aus" || fehlt="$fehlt $n"
+	done
+	if [ -n "$fehlt" ] || ! grep -qF -- 'das Doku-Gate meldet sie nicht' <<<"$aus"; then
+		echo "full-smoke: FEHLER — Werkzeug-Meldung: add-lang go apps/api nennt die neuen Gates nicht:${fehlt:- (Satz zum Doku-Gate fehlt)}. stdout:" >&2
+		printf '%s\n' "$aus" >&2
+		exit 1
+	fi
+	echo "full-smoke: Werkzeug-Meldung (add-lang, neue Gates) gelesen:"
+	grep -E -- 'NEUES GATE|Doku-Gate meldet' <<<"$aus" | sed 's/^/full-smoke:   /'
+
+	printf 'probe-werkzeug: ## Probe ohne Gate-Anspruch\n\t@true\n' >"$dir/harness/mk/probe.mk"
+	aus="$( "$tmpbin/ai-harness-init" --name meldung "$dir" )"
+	if ! grep -qF -- 'neues Target: make probe-werkzeug (kein Gate) — ' <<<"$aus" || grep -qF -- 'NEUES GATE' <<<"$aus"; then
+		echo "full-smoke: FEHLER — Werkzeug-Meldung: der Re-Lauf nennt probe-werkzeug nicht als neues Target ohne Gate, oder nennt ein Gate. stdout:" >&2
+		printf '%s\n' "$aus" >&2
+		exit 1
+	fi
+	echo "full-smoke: Werkzeug-Meldung (Re-Lauf, neues Werkzeug-Ziel) gelesen:"
+	grep -F -- 'neues Target' <<<"$aus" | sed 's/^/full-smoke:   /'
+
+	kf_docs_check "$dir" einordnen
+	if [ "$kf_rc" -ne 0 ] || ! grep -qF -- ', 0 Befund(e)' <<<"$kf_out"; then
+		echo "full-smoke: FEHLER — Werkzeug-Meldung: docs-check nach den neuen Targets meldet nicht '0 Befund(e)' (Exit $kf_rc)." >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+	echo "full-smoke: Werkzeug-Meldung: docs-check bleibt bei '0 Befund(e)' — die neuen Targets traegt allein die Meldung des Laufs."
+
+	aus="$( "$tmpbin/ai-harness-init" --name meldung "$dir" )"
+	if grep -qE -- 'NEUES GATE|neues Target|angelegt — ' <<<"$aus"; then
+		echo "full-smoke: FEHLER — Werkzeug-Meldung: ein Re-Lauf ohne Aenderung nennt ein Target. stdout:" >&2
+		printf '%s\n' "$aus" >&2
+		exit 1
+	fi
+	echo "full-smoke: Werkzeug-Meldung: Re-Lauf ohne Aenderung nennt kein Target."
+}
+
+echo "full-smoke: Werkzeug-Meldung im frischen sprachlosen Ziel — Erstlauf, add-lang mit neuen Gates, Re-Lauf mit neuem Werkzeug-Ziel ..."
+	e2e_abdeckung "LH-QA-01 LH-FA-01" "Bootstrap und add-lang nennen auf stdout jedes Target, das der Werkzeug-Teil harness/mk/ai-harness-init.md neu fuehrt, ein neues Gate mit der Marke NEUES GATE, waehrend docs-check bei 0 Befund(e) bleibt; Erstlauf nur mit Zahlen, Re-Lauf ohne Aenderung ohne Nennung; NICHT gemessen: ob ein als Gate genanntes Target in make gates laeuft, ein entfallenes Target, cpp und --arch" "werkzeug_meldung_im_ziel"
+wm_dir="$(mktemp -d -p "$tmprepo_kf")"
+chmod 755 "$wm_dir"
+git init -q "$wm_dir"
+werkzeug_meldung_im_ziel "$wm_dir"
+
 # slice-038 (ADR-0007 Idempotenz-Klassifikation): ein ZWEITER Init-Lauf ist IDEMPOTENT
 # (Exit 0 statt Kollisions-Refuse). Konvergente Dateien (tool-Infra) werden kanonisch neu
 # geschrieben (heilen Drift); skip-if-present-Dateien (Adopter-Boden) bleiben unberuehrt.

@@ -368,13 +368,42 @@ func addLang(targetDir, path, lang, arch string, src sources, stdout, stderr io.
 	}
 	// Das neue Fragment bringt Targets mit; der Werkzeug-Teil des Gate-Index zieht im selben
 	// Lauf nach.
-	if err := emit.WerkzeugIndex(targetDir); err != nil {
+	bericht, err := emit.WerkzeugIndex(targetDir)
+	if err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
 	fmt.Fprintf(stdout, "ai-harness-init: add-lang %s nach %s — Skelett + harness/mk/%s.mk + %s.\n",
 		lang, path, gen.ModuleName(path, lang), emit.BlockedFragmentPath(lang))
+	meldeWerkzeugIndex(stdout, bericht)
 	return 0
+}
+
+// meldeWerkzeugIndex nennt auf stdout, was der Lauf am Werkzeug-Teil des Gate-Index neu
+// gefuehrt hat: je neuem Target eine Zeile, ein neues Gate (Zeile der Gate-Tabelle, ohne Marke
+// `kein Gate`) mit der Marke `NEUES GATE` vorn, danach ein Satz, dass das Doku-Gate keines davon
+// meldet. Ohne neues Target keine dieser Zeilen; im Erstlauf eine Zeile mit den Zahlen statt
+// Einzelzeilen (emit.WerkzeugIndex, ERSTLAUF). Grenze: die Gate-Eigenschaft ist die
+// Klassifikation des Index (GATE_CHECKS und `gates`), nicht ein Lauf von `make gates`; ein
+// entfallenes Target nennt die Meldung nicht. Gehalten von TestRun_AddLangMeldetNeueTargets.
+func meldeWerkzeugIndex(stdout io.Writer, b emit.WerkzeugIndexBericht) {
+	if b.Erstlauf {
+		fmt.Fprintf(stdout, "ai-harness-init: %s angelegt — %d Targets, davon %d in der Gate-Tabelle; ohne vorigen Stand keine Einzelnennung.\n",
+			emit.WerkzeugIndexPath, b.Targets, b.Gates)
+		return
+	}
+	if len(b.Neu) == 0 {
+		return
+	}
+	for _, t := range b.Neu {
+		if t.Gate {
+			fmt.Fprintf(stdout, "ai-harness-init: >>> NEUES GATE: make %s — neu in der Gate-Tabelle von %s.\n", t.Name, emit.WerkzeugIndexPath)
+		} else {
+			fmt.Fprintf(stdout, "ai-harness-init: neues Target: make %s (kein Gate) — Zeile in %s.\n", t.Name, emit.WerkzeugIndexPath)
+		}
+	}
+	fmt.Fprintf(stdout, "ai-harness-init: %d neue Zeile(n) in %s — das Doku-Gate meldet sie nicht; sichtbar sind sie hier und im Diff dieser Datei.\n",
+		len(b.Neu), emit.WerkzeugIndexPath)
 }
 
 // wireLang platziert das gestagte Skelett am Zielort <pfad> (skip-if-present: Skelett-Code
@@ -516,12 +545,20 @@ func bootstrap(targetDir, lang, name, arch string, src sources, stdout, stderr i
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
+	// Der werkzeug-eigene Teil des Gate-Index liest die Make-Dateien, die emitAll geschrieben
+	// hat — er steht darum nach ihm.
+	bericht, err := emit.WerkzeugIndex(targetDir)
+	if err != nil {
+		fmt.Fprintln(stderr, "Fehler:", err)
+		return 1
+	}
 
 	langNote := "sprach-agnostisch (doc-only Gate)"
 	if hasLang {
 		langNote = "--lang=" + lang + " (Skelett verdrahtet)"
 	}
 	fmt.Fprintf(stdout, "ai-harness-init: Bootstrap (Baseline %s vendored + Doc-Gate + Aggregator + Durchsetzung + Template-Baseline) — %s.\n", tag, langNote)
+	meldeWerkzeugIndex(stdout, bericht)
 	return 0
 }
 
@@ -580,13 +617,9 @@ func emitAll(targetDir, skelDir, tag, name, lang, version, arch string, hasLang 
 	// Fragment (harness/mk/<lang>.mk) + blocked/<lang> droppen — der --lang-One-Shot ist
 	// Init + ein addLang(<pfad>="."). NUR mit Sprache; ohne --lang gibt es kein Skelett.
 	if hasLang {
-		if err := wireLang(targetDir, skelDir, ".", lang, version, arch, archMK); err != nil {
-			return err
-		}
+		return wireLang(targetDir, skelDir, ".", lang, version, arch, archMK)
 	}
-	// Der werkzeug-eigene Teil des Gate-Index liest die Make-Dateien, die dieser Lauf
-	// geschrieben hat — er steht darum als letzter Schritt.
-	return emit.WerkzeugIndex(targetDir)
+	return nil
 }
 
 // baselineDir und templatesDir halten das Ziel-Layout an EINER Stelle: die
