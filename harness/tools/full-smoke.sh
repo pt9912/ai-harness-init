@@ -3665,6 +3665,38 @@ targets_im_ziel() {
 	echo "full-smoke: targets-Gegenprobe (undocumented) belegt (ohne repo.mk in makefiles: bleibt dasselbe Target gruen, danach zurueckgenommen)."
 	mv "$dir/repo.mk.tg-orig" "$dir/repo.mk"
 
+	# Grenze aus dem Kopf von repo.mk und der .d-check.yml: eine per include eingebundene .mk im
+	# Unterverzeichnis laeuft mit make und bleibt ungeprueft; dieselbe Datei an der Wurzel liest
+	# der Glob "*.mk". Beide Seiten gemessen, damit die benannte Grenze nicht still veraltet.
+	cp "$dir/repo.mk" "$dir/repo.mk.tg-orig"
+	mkdir "$dir/mk"
+	printf 'sub-probe:\n\t@true\n' >"$dir/mk/sub.mk"
+	printf 'include mk/sub.mk\n' >>"$dir/repo.mk"
+	if ! make -s -C "$dir" sub-probe >/dev/null 2>&1; then
+		echo "full-smoke: FEHLER — targets-Grenze: das aus repo.mk eingebundene Target sub-probe laeuft nicht mit make." >&2
+		exit 1
+	fi
+	kf_docs_check "$dir" einordnen
+	if [ "$kf_rc" -ne 0 ] || ! grep -qF -- ', 0 Befund(e)' <<<"$kf_out"; then
+		echo "full-smoke: FEHLER — targets-Grenze: eine eingebundene mk/sub.mk meldet etwas (Exit $kf_rc) — die benannte Grenze (Unterverzeichnis ungeprueft) stimmt nicht mehr; Kopf von repo.mk, .d-check.yml und Handbuch nachziehen." >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+	mv "$dir/mk/sub.mk" "$dir/sub.mk"
+	rmdir "$dir/mk"
+	psed_i -e 's|^include mk/sub\.mk$|include sub.mk|' "$dir/repo.mk"
+	kf_docs_check "$dir"
+	meldung='sub-probe[[:space:]]+gate-undocumented'
+	if [ "$kf_rc" -eq 0 ] || ! grep -qE -- "^sub\.mk:[0-9]+[[:space:]]+$meldung" <<<"$kf_out"; then
+		echo "full-smoke: FEHLER — targets-Grenze: dieselbe Datei an der Wurzel meldet nicht [$meldung] (Exit $kf_rc). Ausgabe:" >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+	echo "full-smoke: targets-Grenze belegt (mk/sub.mk eingebunden: 0 Befund(e); an der Wurzel rot):"
+	grep -E -- "$meldung" <<<"$kf_out" | sed -n '1s/^/full-smoke:   /p'
+	rm "$dir/sub.mk"
+	mv "$dir/repo.mk.tg-orig" "$dir/repo.mk"
+
 	cp "$dir/harness/README.md" "$dir/harness/README.md.tg-orig"
 	# Der Backtick steht als Variable: woertlich liest shellcheck ihn als Kommando-Substitution.
 	local bt='`'
@@ -3699,7 +3731,7 @@ targets_im_ziel() {
 }
 
 echo "full-smoke: Modul targets im frischen --lang go-Ziel — gruener Start, je Richtung ein Gegenbeispiel mit Gegenprobe ..."
-	e2e_abdeckung "LH-QA-01" "Die emittierte Doku-Gate-Konfiguration haelt jedes Make-Target gegen eine Zeile im Gate-Index aus harness/README.md und dem Werkzeug-Teil harness/mk/ai-harness-init.md: gruener Start am frischen --lang go-Ziel, ein Target in repo.mk ohne Zeile meldet gate-undocumented, eine Zeile ohne Target gate-phantom, je mit Gegenprobe; NICHT gemessen: ein Ziel mit eigener .d-check.yml (skip-if-present), cpp und --arch, der Nachzug durch add-lang, die Disjunktheit der zwei Teile" "targets_im_ziel"
+	e2e_abdeckung "LH-QA-01" "Die emittierte Doku-Gate-Konfiguration haelt jedes Make-Target gegen eine Zeile im Gate-Index aus harness/README.md und dem Werkzeug-Teil harness/mk/ai-harness-init.md: gruener Start am frischen --lang go-Ziel, ein Target in repo.mk ohne Zeile meldet gate-undocumented, eine Zeile ohne Target gate-phantom, je mit Gegenprobe; als Grenze gemessen: eine aus repo.mk eingebundene .mk im Unterverzeichnis bleibt ungeprueft, an der Wurzel meldet sie gate-undocumented; NICHT gemessen: ein Ziel mit eigener .d-check.yml (skip-if-present), cpp und --arch, der Nachzug durch add-lang, die Disjunktheit der zwei Teile" "targets_im_ziel"
 targets_im_ziel
 
 # slice-038 (ADR-0007 Idempotenz-Klassifikation): ein ZWEITER Init-Lauf ist IDEMPOTENT

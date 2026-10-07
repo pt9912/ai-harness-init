@@ -83,7 +83,11 @@ ids:
 # Datei unter harness/mk/. Kein exempt-targets: der Werkzeug-Teil fuehrt jedes Target der
 # Werkzeug-Dateien. Grenzen: die Disjunktheit der zwei Teile prueft d-check nicht, er zaehlt
 # ein doppelt genanntes Target einmal; jede andere .mk-Datei an der Wurzel liest der Glob mit,
-# ihre Targets brauchen eine Zeile in harness/README.md, auch wenn kein Makefile sie einbindet.
+# ihre Targets brauchen eine Zeile in harness/README.md, auch wenn kein Makefile sie einbindet;
+# eine .mk-Datei in einem Unterverzeichnis ausser harness/mk/ liest er nicht, auch wenn repo.mk
+# sie per include einbindet — ihre Targets laufen mit make und bleiben ungeprueft. Ein
+# rekursiver Glob schliesst die Luecke nicht: makefiles: folgt scan.ignore nicht und liest dann
+# auch .mk-Dateien unter test/ und .harness/.
 # Diese Datei wird nur an einem freien Pfad geschrieben: ein Ziel mit vorhandener
 # .d-check.yml behaelt seine Fassung und bekommt keine dieser Positionen. Der Nachzug
 # ist Handarbeit nach dieser Liste — die Praefix-Token slice- und welle-, die Regel
