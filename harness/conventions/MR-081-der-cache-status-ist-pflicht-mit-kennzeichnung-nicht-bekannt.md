@@ -1,4 +1,5 @@
 # MR-081 — Der Cache-Status ist Pflicht mit Kennzeichnung *nicht bekannt*, seine Abweichung entfällt
+> **ÜBERHOLT: der Satz *„Damit ist der zweite Auflösungs-Trigger von MR-076 in der Sache eingetreten …"* im Feld Begründung → [`MR-083`](../conventions.md#mr-083--mr-076-endet-durch-die-zurückgenommene-wahl-nicht-durch-einen-eingetretenen-trigger).** Die übrigen Felder binden fort: `MR-076` endet durch die zurückgenommene Wahl (`SPEC-024` steht `Pflicht`), kein Auflösungs-Trigger ist eingetreten.
 
 - **Datum:** 2026-10-07
 - **Wirksamkeits-Anlass:** slice-span-pflichtfeld-traegt-nicht-bekannt;
