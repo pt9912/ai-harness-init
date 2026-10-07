@@ -121,7 +121,7 @@ Draht-Form.
 - [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen).
+- [x] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen); nach dem Move gefahren, §7.
 
 ## 3. Plan (vor Code)
 
@@ -235,6 +235,16 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
   ADR: [ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md) `Accepted`, Festlegung 4
   Punkt 2 offen beim Architect (oben). Hard Rules: keine mit Auflösungs-Trigger aus diesem Vorgang.
 - **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
+- **Paarungen geprüft am 2026-10-07** (nach dem Move): (a) *Anker*: §7 trägt kein Feld `liegt in`,
+  es gibt nichts zu prüfen. (b) *Folge-Slice*: `slice-agent-role-traegt-nicht-bekannt` liegt in
+  `open/` (`ls docs/plan/planning/open/slice-agent-role-traegt-nicht-bekannt.md`). (c) *Register*: Die
+  vier zitierten Pfade existieren, `evidence/` trägt 1, 7, 5 und 3 Dateien. Zweite Hälfte über das
+  ganze Register: 3 Verzeichnisse ohne Beleg, namentlich
+  `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+  `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab` und
+  `BEO-ALL/planungs-bestand-waechst-schneller-als-er-abgebaut-wird`; sie gelten nicht als getragen
+  ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  Festlegung 2).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
