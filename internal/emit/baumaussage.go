@@ -299,8 +299,9 @@ func baumAussage(targets []string) (string, error) {
 	b.WriteString("Wie viele Regelblöcke der Baum führt, sagt `ls .harness/baseline/*/regelwerk/*.md`.\n\n")
 	b.WriteString("**Gesagt ist, was ein frisches Repo bekommt.** Ein Teil dieser Adressen gehört dem\n")
 	b.WriteString("Adopter: dort legt der Bootstrap nur ab, wo nichts liegt, und eine vorhandene\n")
-	b.WriteString("Fassung überlebt jeden weiteren Lauf unberührt. **Drei solche Pfade nennt der Lauf:**\n")
-	b.WriteString("den Commit-Träger `.githooks/commit-msg`, und die Skills `.harness/skills/reviewer.md`\n")
+	b.WriteString("Fassung überlebt jeden weiteren Lauf unberührt. **Diese Pfade nennt der Lauf:**\n")
+	b.WriteString(backtickListe(gemeldetePfade()) + ", sobald dort eine Datei liegt;\n")
+	b.WriteString("und die Skills `.harness/skills/reviewer.md`\n")
 	b.WriteString("und `.harness/skills/closure-note-reviewer.md`, sobald die liegende Fassung von der\n")
 	b.WriteString("mitgelieferten abweicht — samt der Vorlage im vendored Baum zum Abgleich. Für jeden\n")
 	b.WriteString("anderen schweigt er:\n")
@@ -330,6 +331,33 @@ func baumAussage(targets []string) (string, error) {
 		return "", errors.New("baum-aussage nennt ein make-Ziel, das die Init-Phase nicht schreibt (LH-QA-01)")
 	}
 	return block, nil
+}
+
+// gemeldetePfade sind die Pfade der Durchsetzungsschicht, die Enforce bei liegender Datei
+// auf notice nennt (writeEnforceFile -> writeSkipIfPresentTold): jeder SkipIfPresent-Eintrag
+// der Listen, die Enforce schreibt. Abgeleitet aus denselben Listen, damit der Satz im Ziel
+// jeden gemeldeten Pfad nennt; TestBaumAussage_NenntDieGemeldetenPfade haelt ihn gegen die
+// Meldungen eines realen Re-Laufs.
+func gemeldetePfade() []string {
+	var out []string
+	for _, f := range append(enforceFiles(), captureFiles()...) {
+		if f.class == SkipIfPresent {
+			out = append(out, f.dst)
+		}
+	}
+	return out
+}
+
+// backtickListe setzt Pfade als Inline-Code in eine Aufzaehlung "`a`, `b` und `c`".
+func backtickListe(pfade []string) string {
+	q := make([]string, len(pfade))
+	for i, p := range pfade {
+		q[i] = "`" + p + "`"
+	}
+	if len(q) < 2 {
+		return strings.Join(q, "")
+	}
+	return strings.Join(q[:len(q)-1], ", ") + " und " + q[len(q)-1]
 }
 
 // InjectBaumAussage setzt den Block vor die Ueberschrift des Adaptions-Blocks in die

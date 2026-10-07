@@ -4,6 +4,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -221,31 +222,65 @@ func TestBaumAussage_ImEmittiertenSatz(t *testing.T) {
 	}
 }
 
-// TestBaumAussage_NenntDieGemeldetenPfade haelt ADR-0084 Festlegung 3: der Absatz "Gesagt
-// ist, was ein frisches Repo bekommt" nennt neben dem Commit-Traeger die zwei Skills als
-// Pfade, die der Lauf meldet. Gelesen wird der Absatz bis zur naechsten Leerzeile.
+// TestBaumAussage_NenntDieGemeldetenPfade haelt ADR-0084 Festlegung 3 als Vollstaendigkeit:
+// der Satz "Diese Pfade nennt der Lauf" im Absatz "Gesagt ist, was ein frisches Repo bekommt"
+// nennt GENAU die Pfade, die ein realer Re-Lauf meldet. Gemessen wird der Ist-Bestand der
+// Meldungen — Enforce und Templates je zweimal ueber demselben Ziel, die Skills dazwischen
+// veraendert — gegen die Inline-Code-Pfade des Satzes, in beide Richtungen.
 func TestBaumAussage_NenntDieGemeldetenPfade(t *testing.T) {
 	t.Parallel()
 	dir := t.TempDir()
 	if err := emit.Templates(courseSet(), dir, "Probe", testVorlagen, io.Discard); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
-	s := mustReadString(t, filepath.Join(dir, "harness", "conventions.md"))
-	start := strings.Index(s, "**Gesagt ist, was ein frisches Repo bekommt.**")
-	if start < 0 {
-		t.Fatal("der Absatz \"Gesagt ist, was ein frisches Repo bekommt\" fehlt in der emittierten harness/conventions.md")
+	if err := emit.Enforce(dir, io.Discard); err != nil {
+		t.Fatalf("Enforce: %v", err)
 	}
-	absatz := s[start:]
-	if ende := strings.Index(absatz, "\n\n"); ende >= 0 {
-		absatz = absatz[:ende]
-	}
-	for _, pfad := range []string{"`.githooks/commit-msg`", "`.harness/skills/reviewer.md`", "`.harness/skills/closure-note-reviewer.md`"} {
-		if !strings.Contains(absatz, pfad) {
-			t.Errorf("der Absatz nennt den gemeldeten Pfad %s nicht: %q", pfad, absatz)
+	for _, skill := range []string{".harness/skills/reviewer.md", ".harness/skills/closure-note-reviewer.md"} {
+		if err := os.WriteFile(filepath.Join(dir, filepath.FromSlash(skill)), []byte("adopter\n"), 0o644); err != nil {
+			t.Fatalf("Skill %s veraendern: %v", skill, err)
 		}
 	}
-	if strings.Contains(absatz, "Einen einzigen solchen Pfad") {
-		t.Errorf("der Absatz behauptet einen einzigen gemeldeten Pfad: %q", absatz)
+	var meldungen strings.Builder
+	if err := emit.Templates(courseSet(), dir, "Probe", testVorlagen, &meldungen); err != nil {
+		t.Fatalf("Templates (Re-Lauf): %v", err)
+	}
+	if err := emit.Enforce(dir, &meldungen); err != nil {
+		t.Fatalf("Enforce (Re-Lauf): %v", err)
+	}
+	gemeldet := map[string]bool{}
+	for _, m := range regexp.MustCompile(`ai-harness-init: (\S+) liegt bereits`).FindAllStringSubmatch(meldungen.String(), -1) {
+		gemeldet[m[1]] = true
+	}
+	if len(gemeldet) == 0 {
+		t.Fatalf("der Re-Lauf meldet keinen Pfad — die Messung hat keinen Ist-Bestand: %q", meldungen.String())
+	}
+
+	s := mustReadString(t, filepath.Join(dir, "harness", "conventions.md"))
+	const kopf = "**Diese Pfade nennt der Lauf:**"
+	start := strings.Index(s, kopf)
+	if start < 0 {
+		t.Fatalf("der Satz %q fehlt in der emittierten harness/conventions.md", kopf)
+	}
+	satz := s[start+len(kopf):]
+	ende := strings.Index(satz, "Für jeden")
+	if ende < 0 {
+		t.Fatal("der Satz der gemeldeten Pfade endet nicht vor \"Für jeden anderen schweigt er\"")
+	}
+	satz = satz[:ende]
+	genannt := map[string]bool{}
+	for _, m := range regexp.MustCompile("`([^`]+)`").FindAllStringSubmatch(satz, -1) {
+		genannt[m[1]] = true
+	}
+	for p := range gemeldet {
+		if !genannt[p] {
+			t.Errorf("der Re-Lauf meldet %s, der Satz nennt den Pfad nicht: %q", p, satz)
+		}
+	}
+	for p := range genannt {
+		if !gemeldet[p] {
+			t.Errorf("der Satz nennt %s, der Re-Lauf meldet den Pfad nicht", p)
+		}
 	}
 }
 
