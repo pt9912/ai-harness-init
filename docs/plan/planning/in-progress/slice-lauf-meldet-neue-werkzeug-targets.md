@@ -34,7 +34,7 @@ besonders bei einem neuen Gate in make gates."* Fällig vor dem Release `v0.3.0`
 ## 1. Ziel und Abgrenzung
 
 **Ziel:** Bootstrap und `add-lang` nennen auf stdout jedes Target, das der neu geschriebene
-Werkzeug-Teil des Gate-Index (`harness/mk/ai-harness-init.md`) gegenüber dem vorigen neu führt, und
+Werkzeug-Teil des Gate-Index (im Ziel die Datei harness/mk/ai-harness-init.md) gegenüber dem vorigen neu führt, und
 heben ein neues Gate hervor. Gemessen am Stand des Schnitts schreiben beide Läufe den Teil still neu
 (`emit.WerkzeugIndex` in `internal/emit/werkzeugindex.go`, aufgerufen in
 `cmd/ai-harness-init/main.go` am Ende von `addLang` und des Bootstrap); stdout nennt keine Targets.
