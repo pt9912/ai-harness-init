@@ -9,7 +9,7 @@
   einen Anker im Lastenheft trägt: sie gehört zur Spalte
   ([`MR-075`](../conventions.md#mr-075--die-spalte-präzisiert-bindet-jede-festlegung-der-spezifikation-an-ihr-lastenheft-element)).
 - **Ersetzt-Baseline-Regel:**
-  [`modul-15-observability.md`](../../.harness/baseline/v6.16.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)
+  [`modul-15-observability.md`](../../.harness/baseline/v6.17.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)
   §Span-/Audit-Attribut-Regeln, Punkt *Mindestfelder eines Tool-Call-Spans* — *„`tool.name`,
   `tool.arguments` (redacted), `tool.result.status` plus Korrelations-IDs zu Slice/PR/Agent-Rolle."*
 - **Adaption:** Das Schema führt keine PR-Angabe. An ihrer Stelle erfasst der Span `branch` und

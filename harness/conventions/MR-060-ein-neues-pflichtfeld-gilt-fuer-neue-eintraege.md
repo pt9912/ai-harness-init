@@ -23,7 +23,7 @@
   Setzung 1 und 2.
 - **Ausgelöst durch Baseline-Stand:** `v6.9.0`.
 - **Ersetzt-Baseline-Regel:**
-  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.16.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2)
+  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.17.0/regelwerk/modul-02-harness-bootstrap.md#freshness-audit-der-vendored-baseline-schritt-2)
   §Freshness-Audit der vendored Baseline (Schritt 2), Punkt *„Der Review vergleicht auch die
   Form"*: *„Für **wiederkehrende** Templates (ADR, Slice, Welle, Carveout, Review-Report, `MR`)
   gilt die Append-only-Logik: Neue Instanzen folgen der neuen Form, bestehende werden nicht
@@ -34,7 +34,7 @@
 
   ```sh
   grep -c 'MR-NNN-titel.template.md`) gehören ebenfalls dazu' \
-    .harness/baseline/v6.16.0/regelwerk/modul-02-harness-bootstrap.md                    # 1
+    .harness/baseline/v6.17.0/regelwerk/modul-02-harness-bootstrap.md                    # 1
   git show 63e0964e^:.harness/baseline/v6.8.0/regelwerk/modul-02-harness-bootstrap.md \
     | grep -c 'MR-NNN-titel.template.md`) gehören ebenfalls dazu'                        # 0, Exit 1
   ```

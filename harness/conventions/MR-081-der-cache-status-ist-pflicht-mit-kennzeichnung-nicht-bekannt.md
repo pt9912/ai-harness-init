@@ -10,7 +10,7 @@
 - **Löst auf:** [`MR-076`](../conventions.md#mr-076) vollständig.
 - **Ausgelöst durch Baseline-Stand:** `v6.14.0` (Kurs-Welle 154), adoptiert mit `v6.16.0`.
 - **Adaption:** Der Cache-Status folgt dem Pflicht-Minimum aus
-  [`modul-15-observability.md`](../../.harness/baseline/v6.16.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)
+  [`modul-15-observability.md`](../../.harness/baseline/v6.17.0/regelwerk/modul-15-observability.md#span-audit-attribut-regeln)
   §Span-/Audit-Attribut-Regeln: [`spec/spezifikation.md`](../../spec/spezifikation.md#5-metriken-und-tracing-felder)
   §5 führt `SPEC-024` als `Pflicht`, und liefert die Quelle die Zähler nicht, trägt das Feld die
   Kennzeichnung *nicht bekannt* samt Quelle (`SPEC-087`). Eine Abweichung, die ein Eintrag tragen

@@ -99,8 +99,8 @@
   `doc-tables`-Datei führt keine `make X`-Tabellenzeile (``grep -cE '^\| `make ' AGENTS.md`` → 0),
   eine Liste `[harness/README.md, AGENTS.md]` ließe die Vereinigung also unverändert. Ein
   werkzeug-eigener Index-Teil, der eine zweite Autoritäts-Datei wäre, besteht im Dogfood nicht
-  (`ls harness/mk` → kein Verzeichnis), und die adoptierte Ziel-Fassung `v6.16.0` empfiehlt
-  weiter eine Datei (`grep -c 'es gibt nur einen Index' .harness/baseline/v6.16.0/templates/.d-check.yml`
+  (`ls harness/mk` → kein Verzeichnis), und die adoptierte Ziel-Fassung `v6.17.0` empfiehlt
+  weiter eine Datei (`grep -c 'es gibt nur einen Index' .harness/baseline/v6.17.0/templates/.d-check.yml`
   → 1). Die Liste nimmt auch die gebuchte Senkung nicht weg — sie scopt nicht nach Abschnitt —,
   Festlegung 2 der ADR bleibt also unberührt. Keine Erwartungswerte (`MR-025` Setzung 2).
   **Neu zu prüfen**, sobald dieses Repo einen Index-Teil je Werkzeug als eigene Datei

@@ -177,7 +177,7 @@ bleibt ohne Nachzug gültig.
 
 **2. Der Stub-Inhalt ist minimal: Überschrift, Archiv-Zeiger, Zustand.** Dieselbe Form wie bei
 Slice/Welle
-([`archiv-stub-slice.template.md`](../../../.harness/baseline/v6.16.0/templates/docs/plan/planning/archiv-stub-slice.template.md)),
+([`archiv-stub-slice.template.md`](../../../.harness/baseline/v6.17.0/templates/docs/plan/planning/archiv-stub-slice.template.md)),
 auf einen Review-Report angewandt. Da die vendored Baseline keine Vorlage für diese Artefaktklasse
 führt (sie sieht die Klasse *„Report-Stub"* nicht vor), entsteht die Form **repo-eigen** unter
 `docs/plan/planning/` als Nachbar-Vorlage der beiden vorhandenen — kein Bruch mit
