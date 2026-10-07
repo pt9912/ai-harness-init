@@ -32,7 +32,7 @@ Festlegungen 1–4, §Fitness Function),
 **Berührte Spec-Stellen:** — (Adressen in den vendored Baum in einem Spec-Stratum zählen die
 Kommandos in §1 mit; ihr Nachzug ist Adresse, keine Spec-Änderung).
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912 (Implementer).
 
 **Autor:** Planner. **Datum:** 2026-10-07.
 
