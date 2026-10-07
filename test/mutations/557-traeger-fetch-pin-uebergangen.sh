@@ -14,4 +14,4 @@
 # fuer den gruenen Vorlauf (make mutate, Zeilen "Zeit je Fall" und "Gruen-Vorlaeufe") —
 # der Lauf bricht an der Traeger-Stufe ab, lange vor dem Ende von harness/tools/full-smoke.sh.
 set -euo pipefail
-sed -i 's|^erwartet="\$TRAEGER_SHA256"$|erwartet=""|' internal/emit/templates/enforce/traeger-fetch.sh
+sed -i 's|^erwartet="[$]TRAEGER_SHA256"$|erwartet=""|' internal/emit/templates/enforce/traeger-fetch.sh
