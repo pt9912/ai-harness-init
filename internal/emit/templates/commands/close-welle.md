@@ -94,6 +94,13 @@ Wellen-Closure), Modul 7 (Carveouts), Modul 5 (Lifecycle). Bei Konflikt gilt der
    Schlüssel `altbestand` mit `[kein-schreib-pfad]` ab; dann bleibt der Altbestand, wo er ist, und
    die Sperre für die Wellen-Archivierung besteht fort — ohne `done/*/archiv.zip` gibt es keinen
    Weg an ihr vorbei.
+   **Die Grenze zieht die Commit-Abstammung.** Liegt eine Ergebnisnotiz in `done/`, nimmt ein Lauf
+   nur die wellenlosen Slices, deren Add-Commit Vorfahr des Add-Commits einer Ergebnisnotiz ist
+   oder gleich: `altbestand` die vor irgendeiner Closure, `<welle-id>` die, deren früheste Closure
+   in der Abstammung diese Welle ist. Später geschlossene bleiben flach liegen; die Vorprüfung
+   zählt sie unter *„bleibt liegen (nach der Grenze)"*. Ein flacher Klon sperrt mit
+   `[flacher-klon]` (`git fetch --unshallow` holt die Historie), ein Pfad ohne Add-Commit mit
+   `[add-commit]`.
    <!-- ANPASSEN: der Weg zum Träger ist die repo-spezifische Stelle; nenne hier den deines Repos.
         Der Ziel-NAME `archive-welle` ist es nicht. Er kommt aus einem tool-eigenen Fragment, das
         jeder Bootstrap kanonisch neu schreibt — ein umbenanntes Ziel hält darum nicht, und diese

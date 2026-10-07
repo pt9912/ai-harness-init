@@ -120,7 +120,7 @@ func TestArchiveWelleAltbestandSchreibtDieMengeDerVorschau(t *testing.T) {
 	dateien := indexAttrappe(t, root)
 
 	var vorschau, errb bytes.Buffer
-	if code := archiveWelleLauf(root, "altbestand", true, "", dateien, &gitBewegend{root: root}, &vorschau, &errb); code != 0 {
+	if code := archiveWelleLauf(root, einCommit(t, root), "altbestand", true, "", dateien, &gitBewegend{root: root}, &vorschau, &errb); code != 0 {
 		t.Fatalf("Vorschau Exit %d, want 0:\n%s%s", code, vorschau.String(), errb.String())
 	}
 	wellenlos := zahlAus(t, vorschau.String(), "wellenlos (seit der letzten Closure):")
@@ -131,7 +131,7 @@ func TestArchiveWelleAltbestandSchreibtDieMengeDerVorschau(t *testing.T) {
 
 	g := &gitBewegend{root: root}
 	var out bytes.Buffer
-	if code := archiveWelleLauf(root, "altbestand", false, "", dateien, g, &out, &errb); code != 0 {
+	if code := archiveWelleLauf(root, einCommit(t, root), "altbestand", false, "", dateien, g, &out, &errb); code != 0 {
 		t.Fatalf("Lauf Exit %d, want 0:\n%s%s", code, out.String(), errb.String())
 	}
 
@@ -195,16 +195,16 @@ func TestArchiveWelleAltbestandSchreibtDieMengeDerVorschau(t *testing.T) {
 func TestArchiveWelleAltbestandNimmtDieUntergrenzeSperreWeg(t *testing.T) {
 	root := altbestandBaum(t)
 	var vorher, nachher, errb bytes.Buffer
-	archiveWelleLauf(root, "welle-10", true, "", indexAttrappe(t, root), &gitBewegend{root: root}, &vorher, &errb)
+	archiveWelleLauf(root, einCommit(t, root), "welle-10", true, "", indexAttrappe(t, root), &gitBewegend{root: root}, &vorher, &errb)
 	if !strings.Contains(vorher.String(), "[untergrenze]") {
 		t.Fatalf("Vorbedingung: ohne Sammel-Archiv fehlt [untergrenze]:\n%s", vorher.String())
 	}
 
 	var out bytes.Buffer
-	if code := archiveWelleLauf(root, "altbestand", false, "", indexAttrappe(t, root), &gitBewegend{root: root}, &out, &errb); code != 0 {
+	if code := archiveWelleLauf(root, einCommit(t, root), "altbestand", false, "", indexAttrappe(t, root), &gitBewegend{root: root}, &out, &errb); code != 0 {
 		t.Fatalf("Lauf Exit %d:\n%s%s", code, out.String(), errb.String())
 	}
-	archiveWelleLauf(root, "welle-10", true, "", indexAttrappe(t, root), &gitBewegend{root: root}, &nachher, &errb)
+	archiveWelleLauf(root, einCommit(t, root), "welle-10", true, "", indexAttrappe(t, root), &gitBewegend{root: root}, &nachher, &errb)
 	if strings.Contains(nachher.String(), "[untergrenze]") {
 		t.Errorf("nach dem Sammel-Archiv steht [untergrenze] noch:\n%s", nachher.String())
 	}
@@ -218,7 +218,7 @@ func TestArchiveWelleAltbestandNimmtDieUntergrenzeSperreWeg(t *testing.T) {
 func TestArchiveWelleAltbestandZweiterLaufSperrtAnArchiviert(t *testing.T) {
 	root := altbestandBaum(t)
 	var out, errb bytes.Buffer
-	if code := archiveWelleLauf(root, "altbestand", false, "", indexAttrappe(t, root), &gitBewegend{root: root}, &out, &errb); code != 0 {
+	if code := archiveWelleLauf(root, einCommit(t, root), "altbestand", false, "", indexAttrappe(t, root), &gitBewegend{root: root}, &out, &errb); code != 0 {
 		t.Fatalf("erster Lauf Exit %d:\n%s%s", code, out.String(), errb.String())
 	}
 	schreibeDatei(t, root, doneRel+"slice-104-e.md", "# Slice slice-104: E\n\n**Welle:** ohne Welle\n")
@@ -226,7 +226,7 @@ func TestArchiveWelleAltbestandZweiterLaufSperrtAnArchiviert(t *testing.T) {
 
 	g := &gitBewegend{root: root}
 	var zweiter bytes.Buffer
-	code := archiveWelleLauf(root, "altbestand", false, "", indexAttrappe(t, root), g, &zweiter, &errb)
+	code := archiveWelleLauf(root, einCommit(t, root), "altbestand", false, "", indexAttrappe(t, root), g, &zweiter, &errb)
 	if code != 3 {
 		t.Errorf("zweiter Lauf Exit %d, want 3", code)
 	}
@@ -252,7 +252,7 @@ func TestArchiveWelleAltbestandSperrtImLaufBeiHaenger(t *testing.T) {
 
 	g := &gitBewegend{root: root}
 	var out, errb bytes.Buffer
-	code := archiveWelleLauf(root, "altbestand", false, "", indexAttrappe(t, root), g, &out, &errb)
+	code := archiveWelleLauf(root, einCommit(t, root), "altbestand", false, "", indexAttrappe(t, root), g, &out, &errb)
 	if code != 3 {
 		t.Errorf("Exit %d, want 3:\n%s", code, out.String())
 	}
@@ -276,7 +276,7 @@ func TestArchiveWelleAltbestandSperrtImLaufBeiPlanDatei(t *testing.T) {
 
 	g := &gitBewegend{root: root}
 	var out, errb bytes.Buffer
-	if code := archiveWelleLauf(root, "altbestand", false, "", indexAttrappe(t, root), g, &out, &errb); code != 3 {
+	if code := archiveWelleLauf(root, einCommit(t, root), "altbestand", false, "", indexAttrappe(t, root), g, &out, &errb); code != 3 {
 		t.Errorf("Exit %d, want 3:\n%s", code, out.String())
 	}
 	if !strings.Contains(out.String(), "[altbestand-plan]") || len(g.rufe) != 0 || baumAbdruck(t, root) != vorher {

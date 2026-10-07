@@ -38,8 +38,8 @@ type Bericht struct {
 // `porcelain` ist die Ausgabe von `git status --porcelain`, `dateien` der
 // Suchraum aus `git ls-files`. Damit ist die Vorschau ohne git pruefbar, und der
 // Aufrufer behaelt die eine Datei, in der git laeuft.
-func Vorschau(root, welleID, porcelain string, dateien []string) (Bericht, error) {
-	b, err := Einsammeln(root, welleID)
+func Vorschau(root, welleID, porcelain string, dateien []string, a Abstammung) (Bericht, error) {
+	b, err := Einsammeln(root, welleID, a)
 	if err != nil {
 		return Bericht{}, err
 	}
@@ -69,7 +69,9 @@ func Vorschau(root, welleID, porcelain string, dateien []string) (Bericht, error
 // setzt, die die laufende Regel danach braucht. An ihre Stelle tritt
 // altbestand-plan, wenn doch eine Datei `altbestand*.md` in done/ liegt.
 // unsauber, archiviert, kein-slice und haenger bleiben unveraendert: haenger
-// traegt ADR-0041 Festlegung 4 und darf nicht mit aufgehen. Der schreibende Lauf
+// traegt ADR-0041 Festlegung 4 und darf nicht mit aufgehen. Die zwei Sperren der
+// Grenze (grenzSperren, ADR-0081 Festlegung 4) gelten fuer beide Betriebsarten.
+// Der schreibende Lauf
 // liest dieselbe Liste (archiveWelleLauf), eine Sperre beendet ihn vor dem ersten
 // Schreibzugriff.
 func sperren(b Bestand, porcelain string, haenger []string) []Sperre {
@@ -118,6 +120,7 @@ func sperren(b Bestand, porcelain string, haenger []string) []Sperre {
 	if welleGebunden {
 		out = append(out, untergrenzeSperre(b)...)
 	}
+	out = append(out, grenzSperren(b)...)
 	if len(haenger) > 0 {
 		out = append(out, Sperre{
 			Kennung: "haenger",
@@ -183,14 +186,15 @@ func untergrenzeSperre(b Bestand) []Sperre {
 
 // Schreibe rendert den Bericht als Text. Beide Zweige geben ihn aus — der
 // Vorschau-Lauf als sein Ergebnis, der schreibende als seine Vorpruefung —, und
-// die vier Einsammel-Zahlen stehen darin in der Reihenfolge Mitglieder ·
-// wellenlos · fremd · Review-Reports.
+// die Einsammel-Zahlen stehen darin in der Reihenfolge Mitglieder · wellenlos ·
+// bleibt liegen (nach der Grenze) · fremd · Review-Reports.
 func Schreibe(b Bericht) string {
 	var sb strings.Builder
 	be := b.Bestand
 	fmt.Fprintf(&sb, "archive-welle --vorschau: %s\n", be.Welle)
 	fmt.Fprintf(&sb, "  Mitglieder (Welle-Feld nennt %s): %d\n", be.Welle, len(be.Mitglieder))
 	fmt.Fprintf(&sb, "  wellenlos (seit der letzten Closure): %d\n", len(be.Wellenlose))
+	fmt.Fprintf(&sb, "  bleibt liegen (nach der Grenze):      %d\n", len(be.NachGrenze))
 	fmt.Fprintf(&sb, "  fremd (andere Welle, bleibt liegen):  %d\n", len(be.Fremde))
 	fmt.Fprintf(&sb, "  Review-Reports (ohne Stub):           %d\n", len(be.Reviews))
 	schreibeVerweise(&sb, b.Funde)

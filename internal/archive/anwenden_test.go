@@ -159,7 +159,7 @@ func indexDateien(t *testing.T, root string) []string {
 
 func einsammeln(t *testing.T, root, welle string) archive.Bestand {
 	t.Helper()
-	b, err := archive.Einsammeln(root, welle)
+	b, err := archive.Einsammeln(root, welle, archive.Abstammung{})
 	if err != nil {
 		t.Fatal(err)
 	}

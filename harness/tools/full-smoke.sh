@@ -1490,7 +1490,10 @@ echo "full-smoke: Archivierung im Ziel — Sperren, Vollzug, Fehlt-Fall und Schl
 #       zieht, faellt hier auf,
 #   (d) ohne Traeger sagt das Kommando das und endet mit 0 — der frische Klon,
 #   (e) der Schluessel `altbestand` erreicht den Traeger und legt altbestand/archiv.zip
-#       an — ueber einem synthetischen Altbestand und dem Traeger aus dem Arbeitsbaum.
+#       an — ueber einem synthetischen Altbestand und dem Traeger aus dem Arbeitsbaum;
+#       die Grenze aus der Commit-Abstammung laesst einen nach der Closure von welle-1
+#       geschlossenen Slice in beiden Laeufen liegen, und ein realer flacher Klon
+#       sperrt mit [flacher-klon] (ADR-0081).
 #
 # NUR HIER MESSBAR: kein Go-Test faehrt `make`, und ein Lauf auf dem HOST findet den
 # Traeger eines gebootstrappten Repos nicht.
@@ -1695,24 +1698,49 @@ SMOKEEOF
 	fi
 	echo "full-smoke: Archivierung im Ziel ($kennung): make archive-welle archiviert real — $welle/archiv.zip mit $welle.md und slice-999-archiv-smoke.md als Stubs, der Review-Report des Slice ist fort."
 
-	# (e) DER SCHLUESSEL altbestand erreicht den Traeger. Ein wellenloser Slice kommt
-	# nach der Wellen-Archivierung hinzu; der Lauf unter dem Schluessel legt das
-	# Sammel-Archiv an. Gelesen werden Ausgabe und Archiv (`make` gibt fuer ein
-	# fehlgeschlagenes Rezept immer 2 zurueck). TEILMESSUNG: der Altbestand ist
-	# synthetisch, und der Traeger ist der aus dem Arbeitsbaum gebaute, nicht der
+	# (e) DER SCHLUESSEL altbestand erreicht den Traeger, und die Grenze aus der
+	# Commit-Abstammung haelt (ADR-0081). Drei Commits in dieser Reihenfolge: ein
+	# wellenloser Slice (frueh), die geschlossene, unarchivierte welle-1 (Plan,
+	# Ergebnisnotiz, ein Mitglied), ein wellenloser Slice danach (spaet). Der Lauf
+	# unter dem Schluessel nimmt nur den fruehen; ein anschliessendes
+	# `archive-welle welle-1` laesst den spaeten flach liegen. Gelesen werden
+	# Ausgabe, Archiv und Stubs (`make` gibt fuer ein fehlgeschlagenes Rezept immer
+	# 2 zurueck). TEILMESSUNG: der Altbestand ist synthetisch, die Historie linear
+	# (kein Merge), und der Traeger ist der aus dem Arbeitsbaum gebaute, nicht der
 	# gepinnte Release-Traeger.
-	cat >"$plan_done/slice-997-altbestand.md" <<'SMOKEEOF'
-# Slice slice-997: wellenlos, Altbestand
+	smoke_slice() { # <datei> <welle-feld>
+		printf '# Slice: E2E der Archivierung\n\n**Welle:** %s\n\n## 1. Ziel\n\nNur fuer den E2E der Wellen-Archivierung angelegt.\n' "$2" >"$plan_done/$1"
+		git -C "$repo" add -A
+		git -C "$repo" commit -q -m "Archivierungs-Smoke: $1 (full-smoke)"
+	}
+	smoke_slice slice-997-altbestand.md "ohne Welle"
+	printf '# Welle welle-1: E2E der Grenze\n' >"$plan_done/welle-1.md"
+	printf '# welle-1-results: E2E der Grenze\n\n**Abschluss:** 2026-01-02\n' >"$plan_done/welle-1-results.md"
+	smoke_slice slice-995-welle-1.md "welle-1"
+	smoke_slice slice-996-spaet.md "ohne Welle"
 
-**Welle:** ohne Welle
+	# (e1) REALER FLACHER KLON desselben Stands: die Shallow-Sperre haelt den Lauf
+	# an, done/ bleibt unveraendert (ADR-0081 Festlegung 4(a)). Die Identitaet
+	# steht im Klon, damit ein Lauf ohne die Sperre wirklich committen koennte.
+	local klon="$repo-flach" flach="" flach_flach="" vorher_klon
+	rm -rf "$klon"
+	git clone -q --depth 1 "file://$repo" "$klon"
+	mkdir -p "$klon/.harness/state/bin"
+	cp "$carrier" "$klon/.harness/state/bin/"
+	git -C "$klon" config user.email full-smoke@example.invalid
+	git -C "$klon" config user.name full-smoke
+	vorher_klon="$(git -C "$klon" rev-parse HEAD)"
+	flach="$( make --no-print-directory -C "$klon" archive-welle WELLE=altbestand 2>&1 )" || true
+	flach_flach="$(tr -s '[:space:]' ' ' <<<"$flach")"
+	if ! grep -qF -- '[flacher-klon]' <<<"$flach_flach" || [ -e "$klon/docs/plan/planning/done/altbestand" ] \
+		|| [ "$(git -C "$klon" rev-parse HEAD)" != "$vorher_klon" ] || [ -n "$(git -C "$klon" status --porcelain)" ]; then
+		echo "full-smoke: FEHLER — $kennung: im flachen Klon (git clone --depth 1) sperrt make archive-welle WELLE=altbestand nicht mit [flacher-klon], oder done/ ist veraendert (ADR-0081 Festlegung 4). Ausgabe:" >&2
+		printf '%s\n' "$flach" >&2
+		exit 1
+	fi
+	rm -rf "$klon"
+	echo "full-smoke: flacher Klon ($kennung): make archive-welle WELLE=altbestand sperrt mit [flacher-klon], HEAD und done/ unveraendert."
 
-## 1. Ziel
-
-Nur fuer den E2E der Wellen-Archivierung angelegt.
-SMOKEEOF
-	git -C "$repo" -c user.email=full-smoke@example.invalid -c user.name=full-smoke add -A
-	git -C "$repo" -c user.email=full-smoke@example.invalid -c user.name=full-smoke \
-		commit -q -m "Archivierungs-Smoke: wellenloser Altbestand (full-smoke)"
 	local alt="" alt_rc=0 alt_flach=""
 	alt="$( make --no-print-directory -C "$repo" archive-welle WELLE=altbestand 2>&1 )" || alt_rc=$?
 	printf '%s\n' "$alt"
@@ -1727,7 +1755,28 @@ SMOKEEOF
 		echo "full-smoke: FEHLER — $kennung: der Altbestand-Lauf meldet Vollzug, aber altbestand/archiv.zip fehlt." >&2
 		exit 1
 	fi
-	echo "full-smoke: Altbestand im Ziel ($kennung): make archive-welle WELLE=altbestand legt altbestand/archiv.zip an und meldet den Vollzug."
+	if [ ! -f "$plan_done/altbestand/slice-997-altbestand.md" ] || [ ! -f "$plan_done/slice-996-spaet.md" ] \
+		|| ! grep -qF -- 'bleibt liegen (nach der Grenze): 1' <<<"$alt_flach"; then
+		echo "full-smoke: FEHLER — $kennung: der Altbestand-Lauf nimmt nicht genau den fruehen Slice — slice-997 gehoert ins Sammel-Archiv, slice-996 (nach der Grenze von welle-1) bleibt flach und wird gezaehlt (ADR-0081 Festlegung 2). Ausgabe:" >&2
+		printf '%s\n' "$alt" >&2
+		exit 1
+	fi
+	echo "full-smoke: Altbestand im Ziel ($kennung): make archive-welle WELLE=altbestand legt altbestand/archiv.zip mit dem fruehen Slice an; der spaete bleibt liegen (nach der Grenze)."
+
+	# (e2) Der nachgeholte Welle-Lauf: welle-1 nimmt ihr Mitglied, der spaete
+	# wellenlose Slice bleibt flach (ADR-0081 Festlegung 3).
+	local w1="" w1_rc=0 w1_flach=""
+	w1="$( make --no-print-directory -C "$repo" archive-welle WELLE=welle-1 2>&1 )" || w1_rc=$?
+	printf '%s\n' "$w1"
+	w1_flach="$(tr -s '[:space:]' ' ' <<<"$w1")"
+	if [ "$w1_rc" -ne 0 ] || ! grep -qF -- "archive-welle ok: welle-1" <<<"$w1_flach" \
+		|| [ ! -f "$plan_done/welle-1/slice-995-welle-1.md" ] || [ ! -f "$plan_done/slice-996-spaet.md" ] \
+		|| [ -e "$plan_done/welle-1/slice-996-spaet.md" ] || ! grep -qF -- 'bleibt liegen (nach der Grenze): 1' <<<"$w1_flach"; then
+		echo "full-smoke: FEHLER — $kennung: archive-welle welle-1 nimmt den nach ihrer Closure geschlossenen Slice mit oder laeuft nicht (Exit $w1_rc; ADR-0081 Festlegung 3). Ausgabe:" >&2
+		printf '%s\n' "$w1" >&2
+		exit 1
+	fi
+	echo "full-smoke: Welle-Lauf nach dem Altbestand ($kennung): make archive-welle WELLE=welle-1 archiviert ihr Mitglied, slice-996 bleibt flach liegen."
 
 	# (d) OHNE TRAEGER: Meldung, Exit 0, nichts geschrieben. Der Fall des frischen Klons.
 	mv "$carrier" "$carrier.beiseite"
@@ -1754,7 +1803,7 @@ SMOKEEOF
 }
 
 archivierung_im_ziel "$tmprepo" "golang"
-e2e_abdeckung "LH-FA-01 LH-QA-01" "Das Ziel archiviert real: Sperren, Vollzug, Fehlt-Fall des Traegers und der Schluessel altbestand (Sammel-Archiv ueber einem synthetischen Altbestand, Traeger aus dem Arbeitsbaum, nicht der gepinnte Release-Traeger)" "WELLE=altbestand"
+e2e_abdeckung "LH-FA-01 LH-QA-01 LH-QA-02" "Das Ziel archiviert real: Sperren, Vollzug, Fehlt-Fall des Traegers, der Schluessel altbestand und die Grenze aus der Commit-Abstammung — altbestand nimmt nur den Slice vor der Closure von welle-1, der nachgeholte Lauf welle-1 laesst den spaeteren flach liegen, ein realer git clone --depth 1 sperrt mit [flacher-klon] (synthetischer Altbestand, lineare Historie ohne Merge, Traeger aus dem Arbeitsbaum, nicht der gepinnte Release-Traeger)" "WELLE=altbestand"
 
 # --- Traeger-Fetch: der frische Klon holt den Traeger aus dem gepinnten Release ------
 echo "full-smoke: Traeger-Fetch — frischer Klon ohne Traeger, Fetch aus dem gepinnten Release (ADR-0058) ..."

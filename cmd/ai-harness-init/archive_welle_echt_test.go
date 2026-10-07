@@ -214,3 +214,54 @@ func TestArchiveWelleEchtArchiviertUndSetztZweiCommits(t *testing.T) {
 		t.Errorf("der Stub traegt keinen Archiv-Zeiger:\n%s", stub)
 	}
 }
+
+// TestArchiveWelleEchtGrenzeLaesstDenSpaetenSliceLiegen misst die Werte der
+// Grenze dort, wo sie entstehen: gitAbstammung liest Add-Commits und Abstammung
+// aus einem echten Repo. Ein wellenloser Slice im Ausgangsstand (gleicher Commit
+// wie die Ergebnisnotiz) gehoert zur Welle, einer aus einem spaeteren Commit
+// bleibt liegen (ADR-0081 Festlegungen 1 und 3).
+func TestArchiveWelleEchtGrenzeLaesstDenSpaetenSliceLiegen(t *testing.T) {
+	ohne := "# Slice\n\n**Welle:** ohne Welle\n"
+	root := echtesRepo(t, map[string]string{"docs/plan/planning/done/slice-401-frueh.md": ohne})
+	schreibeDatei(t, root, "docs/plan/planning/done/slice-402-spaet.md", ohne)
+	// Der fruehe Slice wird im spaeteren Commit nur GEAENDERT: sein Add-Commit
+	// bleibt der Ausgangsstand (--diff-filter=A), nicht der juengste Commit.
+	schreibeDatei(t, root, "docs/plan/planning/done/slice-401-frueh.md", ohne+"\nnachgetragen\n")
+	gitLauf(t, root, "add", "-A")
+	gitLauf(t, root, "commit", "-q", "-m", "spaeter Slice")
+
+	// Der Exit-Code traegt hier nichts: der Baum hat kein done/*/archiv.zip, und
+	// [untergrenze] steht fuer den eingesammelten fruehen Slice. Gemessen werden
+	// die zwei Zahlen und die Abwesenheit der Grenz-Sperren.
+	aus, fehler, _ := traegerLauf(t, root, "archive-welle", "--vorschau", "welle-10")
+	for _, sperre := range []string{"[flacher-klon]", "[add-commit]"} {
+		if strings.Contains(aus, sperre) {
+			t.Fatalf("Sperre %s steht im vollen Repo:\n%s\nstderr: %s", sperre, aus, fehler)
+		}
+	}
+	for _, zeile := range []string{"wellenlos (seit der letzten Closure): 1", "bleibt liegen (nach der Grenze):      1"} {
+		if !strings.Contains(aus, zeile) {
+			t.Errorf("Zeile %q fehlt:\n%s", zeile, aus)
+		}
+	}
+}
+
+// TestArchiveWelleEchtSperrtImFlachenKlon misst ADR-0081 Festlegung 4(a) an
+// einem echten `git clone --depth 1`: dort erscheint der Graft-Commit als
+// Add-Commit jeder Datei, und der Lauf sperrt, statt ueber ihm einzuordnen.
+func TestArchiveWelleEchtSperrtImFlachenKlon(t *testing.T) {
+	root := echtesRepo(t, nil)
+	schreibeDatei(t, root, "docs/plan/planning/done/slice-402-spaet.md", "# Slice\n\n**Welle:** ohne Welle\n")
+	gitLauf(t, root, "add", "-A")
+	gitLauf(t, root, "commit", "-q", "-m", "spaeter Slice")
+	klon := filepath.Join(t.TempDir(), "klon")
+	gitLauf(t, root, "clone", "-q", "--depth", "1", "file://"+root, klon)
+
+	aus, fehler, code := traegerLauf(t, klon, "archive-welle", "--vorschau", "welle-10")
+	if !strings.Contains(aus, "[flacher-klon]") {
+		t.Fatalf("die Sperre [flacher-klon] steht nicht im Bericht:\n%s\nstderr: %s", aus, fehler)
+	}
+	if code != 3 {
+		t.Errorf("Exit %d, want 3", code)
+	}
+}

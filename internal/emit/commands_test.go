@@ -119,6 +119,22 @@ func TestCommands_CloseWelleNenntAltbestandUndUntergrenze(t *testing.T) {
 	}
 }
 
+// TestCommands_CloseWelleNenntDieGrenzeAusDerAbstammung: Schritt 4 des
+// emittierten close-welle nennt die Vorschau-Zeile der liegen bleibenden Slices
+// und die zwei Sperren der Grenze (ADR-0081 Festlegungen 2 und 4).
+//
+// Rot-Gegenbeispiele: test/mutations/543-close-welle-ohne-flacher-klon.sh und
+// test/mutations/544-close-welle-ohne-bleibt-liegen.sh.
+func TestCommands_CloseWelleNenntDieGrenzeAusDerAbstammung(t *testing.T) {
+	const rel = ".claude/commands/close-welle.md"
+	s := string(emit.CommandFile(rel))
+	for _, begriff := range []string{"„bleibt liegen (nach der Grenze)\"", "[flacher-klon]", "[add-commit]"} {
+		if !strings.Contains(s, begriff) {
+			t.Errorf("%s nennt %q nicht", rel, begriff)
+		}
+	}
+}
+
 // TestCommands_KeinNummerierterPlatzhalter: kein emittierter Command nennt eine
 // Slice- oder Welle-Kennung in Nummernform — weder als nummerierten Platzhalter
 // (`slice-<NN>`, `welle-<NNN>`) noch als Wort `slice-N`. Die Kennung ist der Name

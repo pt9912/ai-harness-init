@@ -44,7 +44,7 @@ func TestArchiveWelleSchreibendBrichtAnEinerSperreAb(t *testing.T) {
 	}
 	g := &gitStumm{}
 	var out, errb bytes.Buffer
-	code := archiveWelleLauf(root, "welle-10", false, "?? fremd.txt\n", nil, g, &out, &errb)
+	code := archiveWelleLauf(root, einCommit(t, root), "welle-10", false, "?? fremd.txt\n", nil, g, &out, &errb)
 	if code != 3 {
 		t.Fatalf("Exit %d, want 3 (Sperre steht)", code)
 	}
@@ -77,7 +77,7 @@ func TestArchiveWelleVorschauSchreibtNichtsObwohlDerLaufLiefe(t *testing.T) {
 
 	g := &gitStumm{}
 	var out, errb bytes.Buffer
-	code := archiveWelleLauf(root, "welle-10", true, "", dateien, g, &out, &errb)
+	code := archiveWelleLauf(root, einCommit(t, root), "welle-10", true, "", dateien, g, &out, &errb)
 
 	// Zuerst die Vorbedingung, und sie ist die einzige mit Fatal: ohne sie sagen
 	// die drei Pruefungen darunter nichts ueber den Schalter aus.
@@ -108,7 +108,7 @@ func TestArchiveWelleSchreibendLaeuftAmSelbenBaum(t *testing.T) {
 
 	g := &gitStumm{}
 	var out, errb bytes.Buffer
-	archiveWelleLauf(root, "welle-10", false, "", dateien, g, &out, &errb)
+	archiveWelleLauf(root, einCommit(t, root), "welle-10", false, "", dateien, g, &out, &errb)
 
 	if len(g.rufe) == 0 {
 		t.Fatalf("ohne --vorschau keine einzige git-Operation — der Baum traegt eine Sperre:\n%s", out.String())
@@ -217,8 +217,27 @@ func attrappenEingang(t *testing.T, root string, g archive.Git) laufEingang {
 		wurzel:     func() (string, error) { return root, nil },
 		porcelain:  func(string) (string, error) { return "", nil },
 		dateien:    func(string) ([]string, error) { return dateien, nil },
+		abstammung: func(string) (archive.Abstammung, error) { return einCommit(t, root), nil },
 		schreibend: func(string) archive.Git { return g },
 	}
+}
+
+// einCommit ist die Abstammung eines synthetischen Baums, in dem jede Datei im
+// selben Commit hinzukam: jeder Pfad, den die Operation liest, traegt "c0", und
+// c0 <= c0. Damit gehoert jeder wellenlose Slice zu jedem Lauf — die Einordnung
+// des Baums ohne Grenze. Die Grenze selbst messen die Faelle in internal/archive
+// und archive_welle_echt_test.go.
+func einCommit(t *testing.T, root string) archive.Abstammung {
+	t.Helper()
+	ergebnisse, slices, err := archive.AbstammungsPfade(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	a := archive.Abstammung{Add: map[string]string{}, Vorfahren: map[string]map[string]bool{"c0": {"c0": true}}}
+	for _, p := range append(ergebnisse, slices...) {
+		a.Add[p] = "c0"
+	}
+	return a
 }
 
 // TestArchiveWelleReichtDenSchalterVomArgumentBisZumZweig misst die STRECKE, die

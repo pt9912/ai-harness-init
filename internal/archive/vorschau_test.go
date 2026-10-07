@@ -69,7 +69,7 @@ func indexVon(t *testing.T, root string) []string {
 // vollstaendigen Suchraum dieses Baums.
 func vorschauVon(t *testing.T, root, welle, porcelain string) archive.Bericht {
 	t.Helper()
-	b, err := archive.Vorschau(root, welle, porcelain, indexVon(t, root))
+	b, err := archive.Vorschau(root, welle, porcelain, indexVon(t, root), einCommit(t, root))
 	if err != nil {
 		t.Fatal(err)
 	}

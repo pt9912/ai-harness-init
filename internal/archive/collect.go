@@ -132,6 +132,14 @@ type Bestand struct {
 	Reviews     []string
 	Untergrenze string // ein vorhandenes done/*/archiv.zip; leer = keines
 	Archiviert  bool   // done/<welle-id>/ existiert bereits
+	// Die Grenze aus der Commit-Abstammung (ADR-0081): aktiv, sobald eine
+	// Ergebnisnotiz in done/ liegt. NachGrenze sind wellenlose Slices, die nicht
+	// in diesen Lauf gehoeren und flach liegen bleiben; OhneAdd die Pfade ohne
+	// Add-Commit; Flach der Shallow-Status des Repos.
+	GrenzeAktiv bool
+	Flach       bool
+	NachGrenze  []string
+	OhneAdd     []string
 }
 
 // Slices sind die eingesammelten Slice-Dateien: Mitglieder und Wellenlose. Die
@@ -181,7 +189,11 @@ func (b Bestand) Verschwindend() []string {
 // ist ein Lese-Fehler und nichts sonst: ein fehlender Plan, eine fehlende
 // Ergebnisnotiz und ein leeres Einsammel-Ergebnis sind ZUSTAENDE und stehen im
 // Bestand, damit die Vorschau sie nennen kann statt abzubrechen.
-func Einsammeln(root, welleID string) (Bestand, error) {
+//
+// `a` traegt die Abstammung aus dem Aufrufer; die wellenlosen Slices werden an
+// ihr begrenzt (grenzeAnwenden), BEVOR die Review-Reports eingesammelt werden —
+// ein liegen bleibender Slice behaelt seine Reports.
+func Einsammeln(root, welleID string, a Abstammung) (Bestand, error) {
 	b := Bestand{Welle: welleID}
 	eintraege, err := os.ReadDir(filepath.Join(root, filepath.FromSlash(doneDir)))
 	if err != nil {
@@ -207,6 +219,9 @@ func Einsammeln(root, welleID string) (Bestand, error) {
 		}
 	}
 	b.Untergrenze = untergrenze(root, eintraege)
+	if err := b.grenzeAnwenden(root, a); err != nil {
+		return b, err
+	}
 	if b.Reviews, err = Reviews(root, b.Slices()); err != nil {
 		return b, err
 	}

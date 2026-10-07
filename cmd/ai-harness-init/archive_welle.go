@@ -67,8 +67,16 @@ Verweis-Nachzug.
 den wellenlosen Bestand (done/altbestand/archiv.zip, ohne Welle-Plan); er traegt
 genau einen Lauf.
 
-  --vorschau   Nur sagen, was der Lauf taete, und nichts schreiben: die drei
-                Einsammel-Klassen (Mitglieder · wellenlos · fremd), die
+Liegt eine Ergebnisnotiz in done/, zieht die Commit-Abstammung die Grenze:
+altbestand nimmt nur wellenlose Slices, deren Add-Commit Vorfahr des Add-Commits
+einer Ergebnisnotiz ist (oder gleich); ein Welle-Lauf nur die, deren frueheste
+Closure in der Abstammung diese Welle ist. Spaeter geschlossene bleiben flach
+liegen. Ein flacher Klon sperrt ([flacher-klon]), ebenso ein Pfad ohne
+Add-Commit ([add-commit]).
+
+  --vorschau   Nur sagen, was der Lauf taete, und nichts schreiben: die
+                Einsammel-Klassen (Mitglieder · wellenlos · bleibt liegen
+                (nach der Grenze) · fremd), die
                 Review-Reports, die Dateien mit einem Verweis auf etwas Bewegtes
                 und die fail-closed-Ausgaenge, an denen der Lauf abbraeche.
 
@@ -95,6 +103,7 @@ type laufEingang struct {
 	wurzel     func() (string, error)
 	porcelain  func(root string) (string, error)
 	dateien    func(root string) ([]string, error)
+	abstammung func(root string) (archive.Abstammung, error)
 	schreibend func(root string) archive.Git
 }
 
@@ -119,6 +128,7 @@ func echterEingang() laufEingang {
 		wurzel:     repoWurzel,
 		porcelain:  gitStatusPorcelain,
 		dateien:    gitLsFiles,
+		abstammung: gitAbstammung,
 		schreibend: func(root string) archive.Git { return gitSchreibend{root} },
 	}
 }
@@ -154,7 +164,12 @@ func archiveWelleMit(args []string, e laufEingang, out, errOut io.Writer) int {
 		fmt.Fprintf(errOut, "archive-welle: %v\n", err)
 		return 1
 	}
-	return archiveWelleLauf(root, welle, vorschau, porcelain, dateien, e.schreibend(root), out, errOut)
+	abst, err := e.abstammung(root)
+	if err != nil {
+		fmt.Fprintf(errOut, "archive-welle: %v\n", err)
+		return 1
+	}
+	return archiveWelleLauf(root, abst, welle, vorschau, porcelain, dateien, e.schreibend(root), out, errOut)
 }
 
 // archiveWelleLauf ist der Kern beider Zweige: er startet keinen Prozess, sondern
@@ -162,8 +177,8 @@ func archiveWelleMit(args []string, e laufEingang, out, errOut io.Writer) int {
 // Schnittstelle. Dadurch ist die Reihenfolge-Zusage pruefbar — die Vorschau ist
 // die Vorpruefung, und eine Sperre beendet den Lauf, BEVOR er etwas anfasst.
 // Gedeckt von TestArchiveWelleSchreibendBrichtAnEinerSperreAb.
-func archiveWelleLauf(root, welle string, vorschau bool, porcelain string, dateien []string, g archive.Git, out, errOut io.Writer) int {
-	bericht, err := archive.Vorschau(root, welle, porcelain, dateien)
+func archiveWelleLauf(root string, abst archive.Abstammung, welle string, vorschau bool, porcelain string, dateien []string, g archive.Git, out, errOut io.Writer) int {
+	bericht, err := archive.Vorschau(root, welle, porcelain, dateien, abst)
 	if err != nil {
 		fmt.Fprintf(errOut, "archive-welle: %v\n", err)
 		return 1
@@ -268,8 +283,8 @@ func repoWurzel() (string, error) {
 	return root, nil
 }
 
-// gitStatusPorcelain und gitLsFiles sind die einzigen zwei Stellen, an denen
-// dieser Zweig ein fremdes Programm startet — beide rein lesend, beide in dieser
+// gitStatusPorcelain, gitLsFiles und gitAbstammung sind die lesenden Stellen,
+// an denen dieser Zweig ein fremdes Programm startet — alle in dieser
 // Datei. Ihre Ergebnisse gehen als Werte an archive.Vorschau, damit die
 // Urteils-Logik ohne git pruefbar bleibt.
 func gitStatusPorcelain(root string) (string, error) {
@@ -293,6 +308,52 @@ func gitLsFiles(root string) ([]string, error) {
 		return nil, err
 	}
 	return strings.FieldsFunc(string(b), func(r rune) bool { return r == 0 }), nil
+}
+
+// gitAbstammung liest die Werte der Grenze aus der Commit-Abstammung (ADR-0081
+// Festlegungen 1, 4 und 5): den Shallow-Status, je Pfad, den
+// archive.AbstammungsPfade nennt, den Add-Commit, und je Grenz-Commit die Menge
+// seiner Vorfahren. Ohne Ergebnisnotiz in done/ nennt die Operation keinen Pfad,
+// und kein git-Aufruf laeuft. Ein Pfad ohne Add-Commit bekommt keinen Eintrag;
+// die Operation sperrt dann. Die Klasse eines Slice entscheidet internal/archive.
+// Gedeckt von TestArchiveWelleEchtGrenzeLaesstDenSpaetenSliceLiegen und
+// TestArchiveWelleEchtSperrtImFlachenKlon.
+func gitAbstammung(root string) (archive.Abstammung, error) {
+	a := archive.Abstammung{Add: map[string]string{}, Vorfahren: map[string]map[string]bool{}}
+	ergebnisse, slices, err := archive.AbstammungsPfade(root)
+	if err != nil || len(ergebnisse) == 0 {
+		return a, err
+	}
+	flach, err := gitLesend(root, "rev-parse", "--is-shallow-repository")
+	if err != nil {
+		return a, err
+	}
+	a.Flach = strings.TrimSpace(string(flach)) == "true"
+	for _, p := range append(append([]string{}, ergebnisse...), slices...) {
+		c, err := gitLesend(root, "log", "-1", "--no-renames", "--diff-filter=A", "--format=%H", "--", p)
+		if err != nil {
+			return a, err
+		}
+		if h := strings.TrimSpace(string(c)); h != "" {
+			a.Add[p] = h
+		}
+	}
+	for _, p := range ergebnisse {
+		g := a.Add[p]
+		if g == "" || a.Vorfahren[g] != nil {
+			continue
+		}
+		liste, err := gitLesend(root, "rev-list", g)
+		if err != nil {
+			return a, err
+		}
+		menge := map[string]bool{}
+		for _, h := range strings.Fields(string(liste)) {
+			menge[h] = true
+		}
+		a.Vorfahren[g] = menge
+	}
+	return a, nil
 }
 
 // gitLesend startet git mit Kontext-Timeout und gibt stdout zurueck.

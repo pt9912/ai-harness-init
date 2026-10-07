@@ -142,7 +142,7 @@ func baumMitWelle(t *testing.T) string {
 // Vorschau-Lauf benutzt.
 func TestEinsammelnDreiKlassen(t *testing.T) {
 	root := baumMitWelle(t)
-	b, err := archive.Einsammeln(root, "welle-10")
+	b, err := archive.Einsammeln(root, "welle-10", archive.Abstammung{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -182,7 +182,7 @@ func TestEinsammelnReviewsAnDerSuffixGrenze(t *testing.T) {
 	} {
 		schreibe(t, filepath.Join(root, "docs", "reviews", n), "x\n")
 	}
-	b, err := archive.Einsammeln(root, "welle-10")
+	b, err := archive.Einsammeln(root, "welle-10", archive.Abstammung{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -208,7 +208,7 @@ func TestEinsammelnPlanAnDerZiffernGrenze(t *testing.T) {
 	schreibe(t, slicePfad(root, "welle-10-results.md"), "# Ergebnis\n")
 	schreibe(t, slicePfad(root, "welle-14-x.md"), "# Welle welle-14\n")
 
-	b, err := archive.Einsammeln(root, "welle-1")
+	b, err := archive.Einsammeln(root, "welle-1", archive.Abstammung{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -224,7 +224,7 @@ func TestEinsammelnPlanAnDerZiffernGrenze(t *testing.T) {
 // Untergrenzen-Merkmals: ohne ein bestehendes Archiv leer, mit einem gesetzt.
 func TestEinsammelnFindetUntergrenze(t *testing.T) {
 	root := baumMitWelle(t)
-	b, err := archive.Einsammeln(root, "welle-10")
+	b, err := archive.Einsammeln(root, "welle-10", archive.Abstammung{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -232,7 +232,7 @@ func TestEinsammelnFindetUntergrenze(t *testing.T) {
 		t.Fatalf("Untergrenze = %q, want leer", b.Untergrenze)
 	}
 	schreibe(t, slicePfad(root, filepath.Join("welle-09", "archiv.zip")), "PK\n")
-	b, err = archive.Einsammeln(root, "welle-10")
+	b, err = archive.Einsammeln(root, "welle-10", archive.Abstammung{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -246,7 +246,7 @@ func TestEinsammelnFindetUntergrenze(t *testing.T) {
 func TestEinsammelnMeldetArchivierteWelle(t *testing.T) {
 	root := baumMitWelle(t)
 	schreibe(t, slicePfad(root, filepath.Join("welle-10", "archiv.zip")), "PK\n")
-	b, err := archive.Einsammeln(root, "welle-10")
+	b, err := archive.Einsammeln(root, "welle-10", archive.Abstammung{})
 	if err != nil {
 		t.Fatal(err)
 	}

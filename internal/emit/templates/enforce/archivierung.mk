@@ -15,6 +15,12 @@
 # unter done/altbestand/; er ist die Untergrenze, an der `[untergrenze]` fuer die
 # erste Wellen-Archivierung haengt. Ein Traeger ohne Schreibpfad weist ihn ohne
 # --vorschau mit `[kein-schreib-pfad]` ab.
+# Liegt eine Ergebnisnotiz in done/, zieht die Commit-Abstammung die Grenze: ein
+# Lauf nimmt nur wellenlose Slices, deren Add-Commit Vorfahr des Add-Commits einer
+# Ergebnisnotiz ist (WELLE=<welle-id>: deren frueheste Closure diese Welle ist);
+# spaeter geschlossene bleiben flach liegen und stehen in der Vorpruefung unter
+# "bleibt liegen (nach der Grenze)". Ein flacher Klon sperrt mit `[flacher-klon]`,
+# ein Pfad ohne Add-Commit mit `[add-commit]`.
 # Ein Lauf ueber einem unsauberen Arbeitsbaum bricht ab, statt fremden Inhalt in
 # den Archivierungs-Commit zu nehmen.
 .PHONY: archive-welle
