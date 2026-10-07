@@ -47,7 +47,7 @@ Konfiguration im Ziel: `authority: [harness/README.md, harness/mk/ai-harness-ini
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -110,12 +110,25 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
   [`BEO-ALL/plan-abweichung-landet-im-commit-bericht-statt-im-plan`](../observations/BEO-ALL/plan-abweichung-landet-im-commit-bericht-statt-im-plan/observation.md) (V-2) und
   [`BEO-ALL/kosten-einer-emittierten-pruefung-im-ziel-ungemessen`](../observations/BEO-ALL/kosten-einer-emittierten-pruefung-im-ziel-ungemessen/observation.md) (Risiko 2).
   Keiner der offenen Einträge erreicht damit 3×.
-- **Folge-Slices:** keiner neu; `slice-sensors-ordner-entsteht-im-ziel` (§1) liegt in `done/`.
+- **Folge-Slices:** keiner neu; `slice-sensors-ordner-entsteht-im-ziel` (§1) ist geschlossen.
 - **Trigger-Audit:** Carveouts, Bootstrap-aware Gates, Hard Rules: keine berührt.
   [ADR-0080](../../adr/0080-anwender-targets-leben-in-repo-mk-ausserhalb-von-harness-mk.md) `Accepted`, kein Trigger fällig.
 - **Risiken aus §6:** jede Zeile trägt ihren Ausgang.
 - **Archivierung:** keine bei dieser Closure — das Repo fährt Wellen, die nächste Welle-Closure
   sammelt den Slice ein ([`MR-078`](../../../../harness/conventions.md#mr-078)).
+- **Paarungen geprüft am 2026-10-07** (nach dem Move): (a) *Anker*: §7 führt kein Feld `liegt in <Zielort>`
+  (`grep -c 'liegt in'` über §7 trifft nur diese Zeile). (b) *Folge-Slice*: `slice-sensors-ordner-entsteht-im-ziel`
+  liegt im Lifecycle (`ls docs/plan/planning/*/<kennung>.md` → `done/`). (c) *Register*: die vier
+  zitierten Pfade existieren, `evidence/` trägt 5 · 9 · 2 · 2 Dateien (`ls <pfad>/evidence/*.md | wc -l`).
+  Zweite Hälfte über das ganze Register: 3 Verzeichnisse ohne Beleg, namentlich
+  `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+  `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab` und
+  `BEO-ALL/planungs-bestand-waechst-schneller-als-er-abgebaut-wird`; nicht als getragen behauptet
+  ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  Festlegung 2).
+- **Übergabe an den Architect:** `BEO-ALL/regel-rand-ohne-benannte-luecke` trägt den fünften Beleg
+  einer verkörperten Klasse (Prosa-Form im Reviewer-Skill); nach Modul 6 Schritt 3 Sensor oder
+  begründeter Verzicht — die Verkörperung fing den Fund im Review, nicht vor ihm.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
