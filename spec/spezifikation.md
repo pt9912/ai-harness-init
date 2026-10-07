@@ -49,11 +49,13 @@ Drei Formregeln, weil alle drei von außen gelesen werden:
   (`ids`); die Historie nimmt `matrix.exclude-sections` dabei aus, und eine nackte
   Planungs-Kennung wie jede Kennung, deren Link woanders endet,
   trifft kein Muster — dort gilt die Regel ohne Wächter.
-- **Abschnittsnummern werden nie neu vergeben.** Ein
-  Abschnitt ohne Inhalt lässt seine Nummer frei, und ein hinzukommender bekommt
-  seine eigene. Neu zu nummerieren verschöbe die Anker, auf die von außen gezeigt
-  wird — und ein Teil dieser Zeiger steht in Dokumenten, die nicht mehr geändert
-  werden dürfen.
+- **Abschnittsnummern werden nicht neu vergeben, außer die Gliederung der
+  adoptierten Vorlage setzt sie neu.** Ein Abschnitt ohne Inhalt lässt seine Nummer
+  frei, und ein hinzukommender bekommt seine eigene. Setzt die Vorlage eine Nummer
+  neu, misst der Lauf vor der Umnummerierung über Link und Code-Span, ob ein
+  eingefrorenes Artefakt den Anker nennt; findet er einen, fällt die Entscheidung
+  vor der Umnummerierung. Die Neuvergabe trägt eine Zeile in der
+  [Historie](#8-historie).
 - **Eine `SPEC-<NNN>` wird nie neu vergeben.** Sie ist eine **Adresse**, keine
   Anforderung: fortlaufend **je Datei** gezählt, nicht je Abschnitt, und eine
   entfallene Zeile lässt ihre Nummer frei. Sie ist das, worauf das `Schärft:`-Feld
@@ -235,3 +237,4 @@ die Spalten `ID` · `Werkzeug` · `Festlegung` · `Präzisiert` und entsteht mit
 | 2026-09-30 | §5: Jede Zeile mit `Lücke` trägt einen Anker ins Lastenheft; fünf Zeilen (Betriebsart eines Rollen-Laufs, Agent-Guard, Grenze der `mustContain`-Gegenproben, Abweisung ohne Subagent-Typ, Verdrahtung des Guards) stehen nicht mehr hier, weil sie nur dieses Repo betreffen; ihre Zusagen und Grenzen stehen als Kommentar am Guard und am Helfer der Gegenproben. Die Zelle der Berichtsgröße nennt nur noch die Größe |
 | 2026-09-30 | Die Aufnahme-Regel sagt, dass Verdrahtung, die allein dieses Repo trägt, nicht in der Spezifikation steht und dass emittierte Verdrahtung Träger ist; keine Zeile trägt `Lücke`, der Übergangswert bleibt zulässig |
 | 2026-10-07 | §7 *Festlegungen der Harness-Werkzeuge* ist neu und trägt noch keine Zeile; die Historie steht als §8 |
+| 2026-10-07 | Die Aufnahme-Regel lässt die Neuvergabe einer Abschnittsnummer zu, wenn die Gliederung der adoptierten Vorlage sie setzt; vorher wird gemessen, ob ein eingefrorenes Artefakt den Anker nennt |
