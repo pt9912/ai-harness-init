@@ -65,7 +65,7 @@ jobs:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - name: Shard-Zuteilung berechnen (deterministisch, Index-Modulo)
         id: shard
-        # `matrix.shard` (0..4, aus der Liste oben) und `strategy.job-total` (die Laenge
+        # `matrix.shard` (0..8, aus der Liste oben) und `strategy.job-total` (die Laenge
         # dieser Liste) sind beide strukturell aus der Matrix-Deklaration abgeleitet, nicht
         # aus Runner-Hardware oder Checkout-Uhrzeit — dieselbe sortierte Namensliste ergibt
         # bei gleicher Shard-Zahl bei jedem Lauf dieselbe Zuteilung.
