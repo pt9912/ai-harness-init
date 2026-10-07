@@ -300,8 +300,8 @@ func baumAussage(targets []string) (string, error) {
 	b.WriteString("**Gesagt ist, was ein frisches Repo bekommt.** Ein Teil dieser Adressen gehört dem\n")
 	b.WriteString("Adopter: dort legt der Bootstrap nur ab, wo nichts liegt, und eine vorhandene\n")
 	b.WriteString("Fassung überlebt jeden weiteren Lauf unberührt. **Diese Pfade nennt der Lauf:**\n")
-	b.WriteString(backtickListe(gemeldetePfade()) + ", sobald dort eine Datei liegt;\n")
-	b.WriteString("und die Skills `.harness/skills/reviewer.md`\n")
+	b.WriteString(backtickListe(gemeldetePfade()) + ", sobald dort eine Datei liegt;\n" +
+		"und die Skills `.harness/skills/reviewer.md`\n")
 	b.WriteString("und `.harness/skills/closure-note-reviewer.md`, sobald die liegende Fassung von der\n")
 	b.WriteString("mitgelieferten abweicht — samt der Vorlage im vendored Baum zum Abgleich. Für jeden\n")
 	b.WriteString("anderen schweigt er:\n")
