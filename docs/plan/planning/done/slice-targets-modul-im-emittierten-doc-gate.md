@@ -117,7 +117,7 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
 - **Archivierung:** keine bei dieser Closure — das Repo fährt Wellen, die nächste Welle-Closure
   sammelt den Slice ein ([`MR-078`](../../../../harness/conventions.md#mr-078)).
 - **Paarungen geprüft am 2026-10-07** (nach dem Move): (a) *Anker*: §7 führt kein Feld `liegt in <Zielort>`
-  (`grep -c 'liegt in'` über §7 trifft nur diese Zeile). (b) *Folge-Slice*: `slice-sensors-ordner-entsteht-im-ziel`
+  (`grep -c 'liegt in'` über §7 trifft nur diesen Eintrag). (b) *Folge-Slice*: `slice-sensors-ordner-entsteht-im-ziel`
   liegt im Lifecycle (`ls docs/plan/planning/*/<kennung>.md` → `done/`). (c) *Register*: die vier
   zitierten Pfade existieren, `evidence/` trägt 5 · 9 · 2 · 2 Dateien (`ls <pfad>/evidence/*.md | wc -l`).
   Zweite Hälfte über das ganze Register: 3 Verzeichnisse ohne Beleg, namentlich
