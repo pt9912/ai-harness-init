@@ -6,7 +6,7 @@
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912 (Implementer).
 
 **Autor:** Planner. **Datum:** 2026-10-06.
 
