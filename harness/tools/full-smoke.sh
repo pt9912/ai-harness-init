@@ -1774,6 +1774,7 @@ SMOKEEOF
 		|| [ -e "$plan_done/welle-1/slice-996-spaet.md" ] || ! grep -qF -- 'bleibt liegen (nach der Grenze): 1' <<<"$w1_flach"; then
 		echo "full-smoke: FEHLER — $kennung: archive-welle welle-1 nimmt den nach ihrer Closure geschlossenen Slice mit oder laeuft nicht (Exit $w1_rc; ADR-0081 Festlegung 3). Ausgabe:" >&2
 		printf '%s\n' "$w1" >&2
+		einordnen "make archive-welle WELLE=welle-1 im Ziel ($kennung)" "$w1"
 		exit 1
 	fi
 	echo "full-smoke: Welle-Lauf nach dem Altbestand ($kennung): make archive-welle WELLE=welle-1 archiviert ihr Mitglied, slice-996 bleibt flach liegen."
