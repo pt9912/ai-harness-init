@@ -9,11 +9,11 @@
 # (curl: (22) ... 404), und full-smoke ordnet sie ueber das Muster (5) von
 # harness/tools/full-smoke-ausgang.sh der Leitung zu (LH-QA-01, ADR-0058).
 #
-# WARUM "=" STATT "?=": das Dogfood-Makefile exportiert TRAEGER_TAG, und make mutate wie
-# make full-smoke laufen unter ihm; der Aufruf "make -C <klon> traeger-fetch" in
-# harness/tools/full-smoke.sh erbt diesen Wert, und "?=" im emittierten Fragment weicht
-# ihm. Ein verdrehter Wert hinter "?=" laesst full-smoke deshalb gruen. Mit "=" schlaegt
-# der Wert des Fragments die geerbte Umgebung.
+# DIE ZUWEISUNG BLEIBT "?=", wie im Fragment: das Dogfood-Makefile exportiert
+# TRAEGER_TAG, aber der Aufruf im Klon (klon_traeger_fetch in
+# harness/tools/full-smoke.sh) laeuft ohne ihn — env -u TRAEGER_TAG, MAKEFLAGS
+# entfernt. Der Tag des Laufs ist damit der des emittierten Fragments, und ein
+# verdrehter Wert hinter "?=" erreicht den Abruf.
 #
 # WAS DIESER FALL MISST, UND 551/552 NICHT: dass der Fehltext des Abrufs den
 # Einordner im Lauf unveraendert erreicht. Die Klasse steht in der Beleg-Zeile darunter;
@@ -22,4 +22,4 @@
 # BRAUCHT NETZ, wie jeder full-smoke-Lauf, und laeuft fast voll durch: die Stufe liegt
 # spaet in harness/tools/full-smoke.sh.
 set -euo pipefail
-sed -i 's/^TRAEGER_TAG ?= .*$/TRAEGER_TAG = v9.99.9-gibt-es-diesen-tag-nicht/' internal/emit/templates/enforce/traeger.mk
+sed -i 's/^TRAEGER_TAG ?= .*$/TRAEGER_TAG ?= v9.99.9-gibt-es-diesen-tag-nicht/' internal/emit/templates/enforce/traeger.mk

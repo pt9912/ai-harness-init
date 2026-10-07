@@ -1806,9 +1806,23 @@ SMOKEEOF
 archivierung_im_ziel "$tmprepo" "golang"
 e2e_abdeckung "LH-FA-01 LH-QA-01 LH-QA-02" "Das Ziel archiviert real: Sperren, Vollzug, Fehlt-Fall des Traegers, der Schluessel altbestand und die Grenze aus der Commit-Abstammung — altbestand nimmt nur den Slice vor der Closure von welle-1, der nachgeholte Lauf welle-1 laesst den spaeteren flach liegen, ein realer git clone --depth 1 sperrt mit [flacher-klon] (synthetischer Altbestand, lineare Historie ohne Merge, Traeger aus dem Arbeitsbaum, nicht der gepinnte Release-Traeger); die Reproduzierbarkeit ist nur teilweise gemessen (QA-02: nur dass ein flacher Klon sperrt statt abweichend zu archivieren, nicht der Pin, nicht dieselbe Ausgabe ueber zwei Laeufe)" "WELLE=altbestand"
 
+# klon_traeger_fetch <klon> [<var=wert>...] — make traeger-fetch im Klon unter
+# ADOPTER-BEDINGUNG: der Pin des Laufs ist der des emittierten harness/mk/traeger.mk.
+# Das Dogfood-Makefile exportiert TRAEGER_TAG, make full-smoke laeuft unter ihm, und
+# ein geerbter Wert schlaegt das "?=" des Fragments — env -u nimmt ihn dem Aufruf.
+# MAKEFLAGS/MFLAGS fallen mit: eine Kommandozeilen-Zuweisung an den aeusseren Lauf
+# (make full-smoke TRAEGER_TAG=...) reist ueber sie in jeden inneren make.
+# GRENZE: die uebrigen Dogfood-Exporte (TRAEGER_CARRIER, TRAEGER_SHA256_*) erbt der
+# Aufruf weiter (LH-QA-02, ADR-0058 Festlegung 1).
+klon_traeger_fetch() {
+	local klon="$1"
+	shift
+	env -u TRAEGER_TAG -u MAKEFLAGS -u MFLAGS make --no-print-directory -C "$klon" traeger-fetch "$@"
+}
+
 # --- Traeger-Fetch: der frische Klon holt den Traeger aus dem gepinnten Release ------
 echo "full-smoke: Traeger-Fetch — frischer Klon ohne Traeger, Fetch aus dem gepinnten Release (ADR-0058) ..."
-e2e_abdeckung "LH-FA-01 LH-QA-02 LH-QA-03" "Der frische Klon holt den Traeger per Fetch aus dem gepinnten Release — sha256 vor der Ablage verifiziert, Transport im gepinnten Bild, und der gefetchte Traeger fuehrt den Konsumenten-Aufruf (Vollzug) und den laut-Bruch" "ohne den Traeger zu legen"
+e2e_abdeckung "LH-FA-01 LH-QA-02 LH-QA-03" "Der frische Klon holt den Traeger per Fetch aus dem gepinnten Release — der Pin des Laufs ist der des emittierten Fragments harness/mk/traeger.mk (kein geerbter TRAEGER_TAG; die Digest-Pins erbt der Aufruf weiter aus dem Dogfood), sha256 vor der Ablage verifiziert, Transport im gepinnten Bild, und der gefetchte Traeger fuehrt den Konsumenten-Aufruf (Vollzug) und den laut-Bruch" "ohne den Traeger zu legen"
 #
 # WAS DIE STUFE DAVOR NICHT SIEHT: der Traeger liegt gitignored — der Bootstrap-Lauf
 # legt ihn im Bootstrap-Ziel ab, aber ein FRISCHER KLON dieses Ziels hat ihn nicht
@@ -1916,7 +1930,7 @@ traeger_fetch_im_ziel() {
 
 	# (b) DER FETCH LAEUFT REAL.
 	local lauf="" lauf_rc=0 lauf_flach=""
-	lauf="$( make --no-print-directory -C "$klon" traeger-fetch 2>&1 )" || lauf_rc=$?
+	lauf="$( klon_traeger_fetch "$klon" 2>&1 )" || lauf_rc=$?
 	lauf_flach="$(tr -s '[:space:]' ' ' <<<"$lauf")"
 	if [ "$lauf_rc" -ne 0 ]; then
 		echo "full-smoke: FEHLER — $kennung: make traeger-fetch endet im frischen Klon mit Exit $lauf_rc — der Fetch aus dem gepinnten Release ist im gebootstrappten Repo nicht erreichbar (ADR-0058 Festlegung 3). Ausgabe:" >&2
@@ -1940,7 +1954,7 @@ traeger_fetch_im_ziel() {
 	local vor="" nach="" verdreht="" neg="" neg_rc=0 neg_flach=""
 	vor="$(sha256sum "$klon/$carrier" | awk '{print $1}')"
 	verdreht="0000000000000000000000000000000000000000000000000000000000000000"
-	neg="$( make --no-print-directory -C "$klon" traeger-fetch "$ts_pin_var=$verdreht" 2>&1 )" || neg_rc=$?
+	neg="$( klon_traeger_fetch "$klon" "$ts_pin_var=$verdreht" 2>&1 )" || neg_rc=$?
 	neg_flach="$(tr -s '[:space:]' ' ' <<<"$neg")"
 	if [ "$neg_rc" -eq 0 ]; then
 		echo "full-smoke: FEHLER — $kennung: der verdrehte sha256-Pin endete mit 0 — die Digest-Verifizierung haelt den Pin nicht fail-closed (ADR-0058 Festlegung 1, LH-QA-02). Ausgabe:" >&2

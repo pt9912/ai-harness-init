@@ -108,9 +108,10 @@ ENDE
   export TRAEGER_SHIM_SUMS="$TMP/sums"
 }
 
-# pin_wert <datei> <name> — liest eine Pin-Zeile `NAME ?= wert`.
+# pin_wert <datei> <name> — liest eine Pin-Zeile `NAME ?= wert`, genau unter diesem
+# Namen: `TRAEGER_TAGX ?= …` liefert fuer TRAEGER_TAG nichts (LH-QA-01).
 pin_wert() {
-  grep "^$2" "$1" | head -1 | sed 's/.*=[ ]*//'
+  grep "^$2 ?=" "$1" | head -1 | sed 's/.*=[ ]*//'
 }
 
 @test "pin-kopplung: der Tag haelt an beiden Stellen, das Fragment fuehrt keinen Digest (ADR-0059 Festlegung 2 und Folgepflicht 3)" {
