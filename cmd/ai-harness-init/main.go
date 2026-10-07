@@ -366,6 +366,12 @@ func addLang(targetDir, path, lang, arch string, src sources, stdout, stderr io.
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
+	// Das neue Fragment bringt Targets mit; der Werkzeug-Teil des Gate-Index zieht im selben
+	// Lauf nach.
+	if err := emit.WerkzeugIndex(targetDir); err != nil {
+		fmt.Fprintln(stderr, "Fehler:", err)
+		return 1
+	}
 	fmt.Fprintf(stdout, "ai-harness-init: add-lang %s nach %s — Skelett + harness/mk/%s.mk + %s.\n",
 		lang, path, gen.ModuleName(path, lang), emit.BlockedFragmentPath(lang))
 	return 0
@@ -578,7 +584,9 @@ func emitAll(targetDir, skelDir, tag, name, lang, version, arch string, hasLang 
 			return err
 		}
 	}
-	return nil
+	// Der werkzeug-eigene Teil des Gate-Index liest die Make-Dateien, die dieser Lauf
+	// geschrieben hat — er steht darum als letzter Schritt.
+	return emit.WerkzeugIndex(targetDir)
 }
 
 // baselineDir und templatesDir halten das Ziel-Layout an EINER Stelle: die

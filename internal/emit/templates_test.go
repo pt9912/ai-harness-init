@@ -51,7 +51,7 @@ func courseSet() fs.FS {
 		"spec/lastenheft.template.md":           f(hint + body),
 		"spec/architecture.template.md":         f(hint + body),
 		"spec/spezifikation.template.md":        f(hint + body),
-		"harness/README.template.md":            f(hint + body + spitz),
+		"harness/README.template.md":            f(hint + body + spitz + "\n## Sensors (Feedback-Gates)\n\nTabellen.\n"),
 		"harness/conventions.template.md":       f(hint + body + nurAnker + conventionsPathQuirk + adaptionsBlockAnker),
 		"docs/plan/adr/README.template.md":      f(hint + body),
 		"docs/plan/carveouts/README.template.md": f(hint + body),

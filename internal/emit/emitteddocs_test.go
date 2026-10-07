@@ -84,7 +84,7 @@ func claimSet(t *testing.T) fs.FS {
 		"| `make fullbuild` | volle Closure |\n\n" +
 		"Lokal `make help` bzw. `make gates`.\n"
 	out["AGENTS.template.md"] = f(table)
-	out["harness/README.template.md"] = f(table)
+	out["harness/README.template.md"] = f(table + "\n## Sensors (Feedback-Gates)\n\nTabellen.\n")
 	out[".harness/skills/closure-note-reviewer.template.md"] = f(hint +
 		"# <Projektname>\n\nDas Ergebnis von `make verify-closure-notes` fuer denselben Stand.\n")
 	out["project-readme.template.md"] = f(hint +

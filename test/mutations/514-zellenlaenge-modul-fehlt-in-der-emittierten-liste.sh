@@ -8,4 +8,4 @@
 # den gruenen Start am frisch emittierten Ziel und je Spalte einen Zellsatz ueber der Grenze;
 # ohne das Modul bleibt der Zellsatz gruen, und die Stufe endet mit FEHLER.
 set -euo pipefail
-sed -i 's/^modules: \[links, anchors, ids, matrix, spans, structure\]$/modules: [links, anchors, ids, matrix, spans]/' internal/emit/templates/d-check.yml
+sed -i 's/^modules: \[links, anchors, ids, matrix, spans, structure, targets\]$/modules: [links, anchors, ids, matrix, spans, targets]/' internal/emit/templates/d-check.yml

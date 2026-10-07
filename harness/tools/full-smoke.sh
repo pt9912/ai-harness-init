@@ -3307,7 +3307,7 @@ $zeile
 		echo "full-smoke: Zellenlaenge-Gegenbeispiel ($spalte) belegt (faerbt docs-check im Ziel rot):"
 		grep -E -- "$meldung" <<<"$kf_out" | sed -n '1,2s/^/full-smoke:   /p'
 		cp "$dir/.d-check.yml" "$dir/.d-check.yml.zl-bak"
-		psed_i -e 's/, structure\]$/]/' -e "/^structure:/,\$d" "$dir/.d-check.yml"
+		psed_i -e 's/^\(modules: .*\), structure\(.*\)$/\1\2/' -e "/^structure:/,\$d" "$dir/.d-check.yml"
 		if cmp -s "$dir/.d-check.yml" "$dir/.d-check.yml.zl-bak" || grep -qE '^(structure:|modules:.*structure)' "$dir/.d-check.yml"; then
 			mv "$dir/.d-check.yml.zl-bak" "$dir/.d-check.yml"
 			echo "full-smoke: FEHLER — Zellenlaenge-Gegenprobe ($spalte): die Schwaechung nimmt structure nicht aus der .d-check.yml des Ziels." >&2
@@ -3569,6 +3569,11 @@ repo_mk_im_ziel() {
 		'	@echo "repo-mk: eigen-gate laeuft"' \
 		'GATE_CHECKS += eigen-gate' >"$repo/repo.mk"
 	cp "$repo/repo.mk" "$w/eigen.mk"
+	# Jedes Target in repo.mk braucht seine Zeile in harness/README.md (Modul targets der
+	# emittierten .d-check.yml); ohne sie faerbt docs-check das make gates unten rot.
+	psed_i -e 's/^| `make gates` |/| `make eigen-gate` | Probe-Gate aus repo.mk | — |\
+| `make gates` |/' -e 's/^| `make <mover>` |/| `make eigen` | Probe-Ziel aus repo.mk | kein Gate |\
+| `make <mover>` |/' "$repo/harness/README.md"
 	if ! out="$( "$tmpbin/ai-harness-init" --name repo-mk "$repo" 2>&1 )"; then
 		echo "full-smoke: FEHLER — repo.mk: der dritte Bootstrap-Lauf ist NICHT Exit 0." >&2
 		printf '%s\n' "$out" >&2
@@ -3600,6 +3605,98 @@ repo_mk_im_ziel() {
 echo "full-smoke: repo.mk — Ort der Repo-Targets im sprachlosen Ziel, belegt und geloescht ..."
 	e2e_abdeckung "LH-FA-01 LH-QA-01" "Ein sprachloses Ziel fuehrt seine Targets in repo.mk: ohne die Datei ist make gates gruen und der Re-Lauf legt den Startinhalt neu an; eine belegte repo.mk bleibt byte-gleich, make eigen laeuft, ein Gate ueber GATE_CHECKS += laeuft in make gates mit; NICHT gemessen: die Reihenfolge vor dem Gate-Nachweis, eine Vorgabe ueber = gegen ein ?= der Fragmente, ein Ziel mit Sprache" "repo_mk_im_ziel"
 repo_mk_im_ziel
+
+# Das Modul targets im frisch emittierten --lang go-Ziel (LH-QA-01): die emittierte .d-check.yml
+# haelt jedes Make-Target gegen eine Tabellenzeile im Gate-Index aus zwei Teilen —
+# harness/README.md (Repo) und harness/mk/ai-harness-init.md (Werkzeug, je Lauf neu geschrieben).
+# Gemessen werden (a) der Werkzeug-Teil liegt, harness/README.md verlinkt ihn, und docs-check ist
+# gruen; (b) ein Target in repo.mk ohne Zeile meldet gate-undocumented, Gegenprobe: ohne den
+# Glob "*.mk" in makefiles: (also ohne repo.mk) bleibt dasselbe Target gruen; (c) eine Zeile ohne
+# Target in harness/README.md meldet gate-phantom, Gegenprobe: ohne das Modul bleibt sie gruen.
+# GRENZE: gemessen ist ein --lang go-Ziel ohne --arch; ein Ziel mit eigener .d-check.yml
+# (skip-if-present), der Nachzug durch add-lang und die Disjunktheit der zwei Teile sind hier
+# nicht gemessen.
+targets_im_ziel() {
+	local dir meldung
+	dir="$(mktemp -d -p "$tmprepo_kf")"
+	chmod 755 "$dir"
+	git init -q "$dir"
+	"$tmpbin/ai-harness-init" --lang go --name targets "$dir" >/dev/null
+	if [ ! -s "$dir/harness/mk/ai-harness-init.md" ] || ! grep -qF -- '](mk/ai-harness-init.md)' "$dir/harness/README.md" \
+		|| ! grep -qE '^modules: .*targets' "$dir/.d-check.yml"; then
+		echo "full-smoke: FEHLER — targets: Werkzeug-Teil harness/mk/ai-harness-init.md fehlt, harness/README.md verlinkt ihn nicht, oder die .d-check.yml fuehrt das Modul targets nicht." >&2
+		exit 1
+	fi
+	kf_docs_check "$dir" einordnen
+	if [ "$kf_rc" -ne 0 ] || ! grep -qF -- ', 0 Befund(e)' <<<"$kf_out"; then
+		echo "full-smoke: FEHLER — gruener Start von targets: docs-check des frischen --lang go-Ziels meldet nicht '0 Befund(e)' (Exit $kf_rc)." >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+	echo "full-smoke: gruener Start von targets: docs-check im frischen --lang go-Ziel '0 Befund(e)'."
+
+	cp "$dir/repo.mk" "$dir/repo.mk.tg-orig"
+	printf 'eigen-probe:\n\t@true\n' >>"$dir/repo.mk"
+	kf_docs_check "$dir"
+	meldung='eigen-probe[[:space:]]+gate-undocumented'
+	if [ "$kf_rc" -eq 0 ] || ! grep -qE -- "^repo\.mk:[0-9]+[[:space:]]+$meldung" <<<"$kf_out"; then
+		echo "full-smoke: FEHLER — targets-Gegenbeispiel (undocumented): ein Target in repo.mk ohne Zeile in harness/README.md meldet nicht [$meldung] (Exit $kf_rc, AGENTS.md §3.6). Ausgabe:" >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+	echo "full-smoke: targets-Gegenbeispiel (undocumented) belegt (faerbt docs-check im Ziel rot):"
+	grep -E -- "$meldung" <<<"$kf_out" | sed -n '1s/^/full-smoke:   /p'
+	cp "$dir/.d-check.yml" "$dir/.d-check.yml.tg-bak"
+	psed_i -e 's/^\(  makefiles: \[.*\), "\*\.mk"\]$/\1, d-check.mk]/' "$dir/.d-check.yml"
+	if cmp -s "$dir/.d-check.yml" "$dir/.d-check.yml.tg-bak"; then
+		mv "$dir/.d-check.yml.tg-bak" "$dir/.d-check.yml"
+		echo "full-smoke: FEHLER — targets-Gegenprobe (undocumented): die Schwaechung nimmt den Glob \"*.mk\" nicht aus makefiles:." >&2
+		exit 1
+	fi
+	kf_docs_check "$dir" einordnen
+	mv "$dir/.d-check.yml.tg-bak" "$dir/.d-check.yml"
+	if [ "$kf_rc" -ne 0 ] || ! grep -qF -- ', 0 Befund(e)' <<<"$kf_out"; then
+		echo "full-smoke: FEHLER — targets-Gegenprobe (undocumented): ohne repo.mk in makefiles: bleibt das Target nicht gruen — der Fall belegt nicht, dass ERST repo.mk in makefiles: es findet (AGENTS.md §3.6)." >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+	echo "full-smoke: targets-Gegenprobe (undocumented) belegt (ohne repo.mk in makefiles: bleibt dasselbe Target gruen, danach zurueckgenommen)."
+	mv "$dir/repo.mk.tg-orig" "$dir/repo.mk"
+
+	cp "$dir/harness/README.md" "$dir/harness/README.md.tg-orig"
+	psed_i -e 's/^| `make gates` |/| `make phantom-probe` | Probe | — |\
+| `make gates` |/' "$dir/harness/README.md"
+	kf_docs_check "$dir"
+	meldung='phantom-probe[[:space:]]+gate-phantom'
+	if [ "$kf_rc" -eq 0 ] || ! grep -qE -- "^harness/README\.md:[0-9]+[[:space:]]+$meldung" <<<"$kf_out"; then
+		echo "full-smoke: FEHLER — targets-Gegenbeispiel (phantom): eine Zeile ohne Target in harness/README.md meldet nicht [$meldung] (Exit $kf_rc, AGENTS.md §3.6). Ausgabe:" >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+	echo "full-smoke: targets-Gegenbeispiel (phantom) belegt (faerbt docs-check im Ziel rot):"
+	grep -E -- "$meldung" <<<"$kf_out" | sed -n '1s/^/full-smoke:   /p'
+	cp "$dir/.d-check.yml" "$dir/.d-check.yml.tg-bak"
+	psed_i -e 's/^\(modules: .*\), targets\(.*\)$/\1\2/' "$dir/.d-check.yml"
+	kf_docs_check "$dir" einordnen
+	mv "$dir/.d-check.yml.tg-bak" "$dir/.d-check.yml"
+	if [ "$kf_rc" -ne 0 ] || ! grep -qF -- ', 0 Befund(e)' <<<"$kf_out"; then
+		echo "full-smoke: FEHLER — targets-Gegenprobe (phantom): ohne das Modul targets bleibt dieselbe Zeile nicht gruen (AGENTS.md §3.6)." >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+	echo "full-smoke: targets-Gegenprobe (phantom) belegt (ohne das Modul bleibt dieselbe Zeile gruen, danach zurueckgenommen)."
+	mv "$dir/harness/README.md.tg-orig" "$dir/harness/README.md"
+	kf_docs_check "$dir" einordnen
+	if [ "$kf_rc" -ne 0 ] || ! grep -qF -- ', 0 Befund(e)' <<<"$kf_out"; then
+		echo "full-smoke: FEHLER — targets: nach dem Zuruecknehmen ist docs-check im Ziel nicht wieder '0 Befund(e)' (Exit $kf_rc)." >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+}
+
+echo "full-smoke: Modul targets im frischen --lang go-Ziel — gruener Start, je Richtung ein Gegenbeispiel mit Gegenprobe ..."
+	e2e_abdeckung "LH-QA-01" "Die emittierte Doku-Gate-Konfiguration haelt jedes Make-Target gegen eine Zeile im Gate-Index aus harness/README.md und dem Werkzeug-Teil harness/mk/ai-harness-init.md: gruener Start am frischen --lang go-Ziel, ein Target in repo.mk ohne Zeile meldet gate-undocumented, eine Zeile ohne Target gate-phantom, je mit Gegenprobe; NICHT gemessen: ein Ziel mit eigener .d-check.yml (skip-if-present), cpp und --arch, der Nachzug durch add-lang, die Disjunktheit der zwei Teile" "targets_im_ziel"
+targets_im_ziel
 
 # slice-038 (ADR-0007 Idempotenz-Klassifikation): ein ZWEITER Init-Lauf ist IDEMPOTENT
 # (Exit 0 statt Kollisions-Refuse). Konvergente Dateien (tool-Infra) werden kanonisch neu

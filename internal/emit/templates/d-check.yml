@@ -7,7 +7,7 @@ scan:
   # .harness/**: tool-interne Ablage (gefetchtes Sprachskelett-Staging) —
   # keine Adopter-Doku, vom Doc-Gate ausgenommen.
   ignore: ["**/*.template.md", ".tmp/**", ".harness/**"]
-modules: [links, anchors, ids, matrix, spans, structure]
+modules: [links, anchors, ids, matrix, spans, structure, targets]
 ids:
   patterns:
     - {regex: 'ADR-([A-Z]+-)?\d{4}', target: docs/plan/adr/, link-policy: always}
@@ -70,11 +70,27 @@ ids:
 # Zellsatz der Vorlage (80 Zeichen), damit ein Rot aus Adopter-Inhalt kommt und nicht aus
 # der emittierten Prosa; die Spalte Bindung traegt keine Grenze, Kennungs-Listen wachsen
 # mit den Bindungen. Kein exempt-paths: ein Eintrag dort ist eine Senkung.
+# Die siebte Position ist das Modul targets samt Block (vor dem structure-Block), das die
+# Baseline-Vorlage nur als Wort der Modul-Liste fuehrt: Target und Tabellenzeile in beiden
+# Richtungen (gate-undocumented, gate-phantom) gegen einen Gate-Index aus zwei Teilen, wie
+# ihn die Kurs-Fassung v6.16.0 setzt (grundlagen-harness-dateien.md §harness/README.md als
+# Einstiegspunkt): harness/README.md gehoert dem Repo, harness/mk/ai-harness-init.md dem
+# Werkzeug — jeder Lauf schreibt ihn neu, eine Aenderung von Hand geht dabei verloren.
+# authority nimmt ab d-check v0.82.0 eine Liste und misst gegen die Vereinigung. makefiles
+# traegt den Glob "*.mk" statt der Einzeldatei repo.mk: am Pin v0.82.0 endet eine fehlende
+# Einzeldatei mit Exit 2 (DC-FA-TGT-001), und repo.mk darf fehlen, ohne make zu brechen; der
+# Glob trifft immer d-check.mk und daneben repo.mk und a-check.mk, wo sie liegen, aber keine
+# Datei unter harness/mk/. Kein exempt-targets: der Werkzeug-Teil fuehrt jedes Target der
+# Werkzeug-Dateien. Grenzen: die Disjunktheit der zwei Teile prueft d-check nicht, er zaehlt
+# ein doppelt genanntes Target einmal; jede andere .mk-Datei an der Wurzel liest der Glob mit,
+# ihre Targets brauchen eine Zeile in harness/README.md, auch wenn kein Makefile sie einbindet.
 # Diese Datei wird nur an einem freien Pfad geschrieben: ein Ziel mit vorhandener
 # .d-check.yml behaelt seine Fassung und bekommt keine dieser Positionen. Der Nachzug
 # ist Handarbeit nach dieser Liste — die Praefix-Token slice- und welle-, die Regel
 # {from: spec-straten, to: welle}, das segment-tolerante ids-Muster fuer ADR, der
-# Bereichs-Praefix-Glob der adr-Klasse und der structure-Block; die Regeln mit dem Adaptions-Block als Quelle
+# Bereichs-Praefix-Glob der adr-Klasse, der structure-Block und der targets-Block samt
+# Werkzeug-Teil (er entsteht mit dem naechsten Lauf, die Zeile in harness/README.md
+# darauf nicht); die Regeln mit dem Adaptions-Block als Quelle
 # fuehrt die Vorlage nicht.
 # Eine Position bleibt bewusst hinter der Vorlage zurueck:
 # token: 'ADR-\d{4}' auf der adr-Klasse geht NICHT mit — das
@@ -128,6 +144,12 @@ matrix:
   # seiner eigenen Kopie; bis dahin ist die Deckung die strengere Vorgabe.
   exempt-paths: ["docs/plan/adr/README.md", "docs/reviews/**"]
   exclude-sections: [Geschichte]
+# targets (hermetisch, kein git): jedes Make-Target hat eine Tabellenzeile im Gate-Index und
+# jede Zeile ein Target; Herkunft und Grenzen im Kopfkommentar oben.
+targets:
+  makefiles: [Makefile, "harness/mk/*.mk", "*.mk"]
+  doc-tables: [harness/README.md, harness/mk/ai-harness-init.md]
+  authority: [harness/README.md, harness/mk/ai-harness-init.md]
 # structure (hermetisch, kein git, opt-in): die Zellen der zwei Spalten begrenzen die Prosa
 # der Gate- und Werkzeug-Tabelle; Herkunft und Schwelle stehen im Kopfkommentar oben.
 structure:

@@ -10,7 +10,7 @@ import (
 )
 
 // TestDCheckConfig_EntschiedeneModulListe haelt die entschiedene Modul-Liste fest: die
-// eingebettete .d-check.yml aktiviert genau [links, anchors, ids, matrix, spans, structure] — nicht
+// eingebettete .d-check.yml aktiviert genau [links, anchors, ids, matrix, spans, structure, targets] — nicht
 // "mindestens zwei Module". Jedes der drei neu aktivierten ist im frischen Ziel gemessen gruen UND
 // faengt sein Gegenbeispiel (harness/tools/full-smoke.sh); dieser Test bindet nur die
 // LISTE, nicht das Verhalten (das braucht Docker und liegt in full-smoke). codepaths
@@ -23,8 +23,8 @@ import (
 // [Geschichte], nicht die weitere Dogfood-Liste und nicht leer.
 func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 	yml := emit.DCheckConfig()
-	if !strings.Contains(yml, "modules: [links, anchors, ids, matrix, spans, structure]") {
-		t.Errorf("eingebettete .d-check.yml aktiviert nicht genau [links, anchors, ids, matrix, spans, structure]:\n%s", yml)
+	if !strings.Contains(yml, "modules: [links, anchors, ids, matrix, spans, structure, targets]") {
+		t.Errorf("eingebettete .d-check.yml aktiviert nicht genau [links, anchors, ids, matrix, spans, structure, targets]:\n%s", yml)
 	}
 	sawPrefixPattern := false
 	// letzteKlasse haelt die LETZTE Klassen-Zeile — nur innerhalb von matrix.classes:,

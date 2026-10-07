@@ -433,6 +433,9 @@ func neutralisiereJeDatei(rel, body string, targets []string) (string, error) {
 		// (ADR-0037 Festlegung 4) — derselbe Marker, den die Baseline fuer denselben
 		// Ort in carveout.template.md selbst setzt.
 		return NeutralizePlanningReadmeCarveoutsDoneRef(body), nil
+	case harnessReadmeTemplate:
+		// Der Gate-Index des Repos verlinkt den werkzeug-eigenen Teil (WerkzeugIndex).
+		return InjectWerkzeugIndexLink(body)
 	}
 	return body, nil
 }
