@@ -99,7 +99,7 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
   `18cd5bb2` nahm [`ADR-0035`](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
   nach einer Reviewer-Runde an — die zweite Alternative des Ziels.
 - **Was ging anders als geplant:** Der Slice wurde nie gearbeitet; seine Liefer-Punkte bleiben leer.
-- **Gegenstand:** entfallen: geliefert durch `18cd5bb2` (ADR-0035 `Accepted`, Festlegung 3 nennt
+- **Gegenstand:** entfallen: geliefert durch `18cd5bb2` ([`ADR-0035`](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md) `Accepted`, Festlegung 3 nennt
   Deklaration am Ort der Definition, Grund und Zählung als Rest).
 - **Steering-Loop-Eintrag:** benannte Grenze — Festlegung 3 bindet die Bezugsmenge von `make mutate`;
   ob sie für andere Ausnahmelisten (`exempt-targets`, Breiten-Wächter) gilt, ist ihr
@@ -108,7 +108,7 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
   [`BEO-ALL/ausnahmeliste-nur-auf-form-geprueft`](../observations/BEO-ALL/ausnahmeliste-nur-auf-form-geprueft/observation.md)
   Stand *verkörpert* (zuvor *geplant* mit dieser Kennung); keine neue Beobachtung.
 - **Folge-Slices:** keine.
-- **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines. ADR: ADR-0035
+- **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines. ADR: [`ADR-0035`](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
   angenommen, kein Re-Evaluierungs-Trigger eingetreten. Hard Rules: keine.
 - **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
 
