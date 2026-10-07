@@ -1011,7 +1011,8 @@ func sameEntries(a, b []string) bool {
 // TestRun_AddLangMeldetNeueTargets haelt die Meldung des Laufs auf stdout (LH-QA-01): das erste
 // add-lang legt den Werkzeug-Teil an und nennt nur die Zahlen; ein zweites Modul nennt je
 // neuem Target eine Zeile, ein Gate mit der Marke NEUES GATE, dazu den Satz zum Doku-Gate; ein
-// Re-Lauf desselben Moduls nennt keines.
+// Re-Lauf desselben Moduls nennt keines; ein vom Repo abgelegtes Fragment harness/mk/probe.mk
+// bringt ein Target ohne Gate-Anspruch, das der naechste Lauf mit `(kein Gate)` nennt.
 func TestRun_AddLangMeldetNeueTargets(t *testing.T) {
 	dir := initializedRepo(t)
 	var out, errb bytes.Buffer
@@ -1040,6 +1041,20 @@ func TestRun_AddLangMeldetNeueTargets(t *testing.T) {
 	}
 	if strings.Contains(out.String(), "make ") || strings.Contains(out.String(), "angelegt") {
 		t.Errorf("Re-Lauf ohne neues Target nennt eines, stdout:\n%s", out.String())
+	}
+	// Ein Fragment, das das Repo unter harness/mk/ ablegt, bringt ein Target ohne GATE_CHECKS:
+	// der naechste Lauf nennt es mit der Zeile `neues Target … (kein Gate)`, nicht als Gate.
+	probe := "probe-report: ## Probe-Bericht.\n\t@true\n"
+	if err := os.WriteFile(filepath.Join(dir, "harness", "mk", "probe.mk"), []byte(probe), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	out.Reset()
+	if code := run([]string{"add-lang", "go", "apps/web"}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("Lauf mit probe.mk exit %d: %q", code, errb.String())
+	}
+	want := "ai-harness-init: neues Target: make probe-report (kein Gate) — Zeile in harness/mk/ai-harness-init.md.\n"
+	if !strings.Contains(out.String(), want) || strings.Contains(out.String(), "NEUES GATE: make probe-report") {
+		t.Errorf("stdout nennt das neue Nicht-Gate-Target probe-report nicht als kein Gate, stdout:\n%s", out.String())
 	}
 }
 
