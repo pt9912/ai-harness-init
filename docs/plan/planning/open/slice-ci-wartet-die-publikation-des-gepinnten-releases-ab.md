@@ -38,7 +38,7 @@ zählt die Belege; `ls .github/workflows/` nennt die Workflows, deren Reihenfolg
 
 - **Die Einordnung des 404 im Log.** *Bestand bleibt:* der Einordner von `full-smoke` ordnet ihn
   LEITUNG zu (`slice-full-smoke-erkennt-unveroeffentlichtes-artefakt`, in `done/`).
-- **Ein Ausweichen von `traeger-fetch` auf eine andere Fassung.** *Bestand bleibt:* ADR-0058
+- **Ein Ausweichen von `traeger-fetch` auf eine andere Fassung.** *Bestand bleibt:* [ADR-0058](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
   Festlegung 2 verlangt den lauten Bruch; eine Wartezeit ist kein Ausweichen, solange sie endet.
 - **Der emittierte Träger-Pin unter Adopter-Bedingung.** *Anderer Vorgang:*
   `slice-full-smoke-misst-den-emittierten-traeger-pin`.
