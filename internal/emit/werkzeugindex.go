@@ -21,15 +21,20 @@ const WerkzeugIndexPath = "harness/mk/ai-harness-init.md"
 const harnessReadmePath = "harness/README.md"
 
 // werkzeugRegelPattern erfasst eine Make-Regel-Zeile samt optionalem Hilfetext hinter `##`.
-// `:=`/`::=` sind Zuweisungen, keine Regeln, und fallen ueber `[^=]` heraus.
-var werkzeugRegelPattern = regexp.MustCompile(`(?m)^([a-z][a-z0-9-]*):(?:[^=\n][^\n]*)?$`)
+// KOPPLUNG: dieselbe Erkennung wie das Modul targets am Pin d-check v0.82.0
+// (`^[A-Za-z][A-Za-z0-9 _-]*:([^=]|$)`); Gruppe 1 ist eine Namensliste, jedes Feld ein Target.
+// `.PHONY`, Pattern-Regeln und `:=`/`?=` fallen heraus. Gehalten von
+// TestWerkzeugIndex_ErkenntRegelnWieDasDokuGate. Grenze: eine Tabellenzelle `make X` erkennt
+// das Modul nur fuer einen Namen aus Kleinbuchstaben, Ziffern, `_` und `-` — ein Target mit
+// Grossbuchstaben steht hier und meldet trotzdem gate-undocumented.
+var werkzeugRegelPattern = regexp.MustCompile(`(?m)^([A-Za-z][A-Za-z0-9 _-]*):(?:[^=\n][^\n]*)?$`)
 
 // werkzeugHilfePattern liest den Hilfetext einer Regel-Zeile (`name: … ## text`).
 var werkzeugHilfePattern = regexp.MustCompile(`##[ \t]*(.+)$`)
 
 // readmeZeilePattern erfasst die Target-Zelle einer Tabellenzeile: `make <name>` in der ersten
 // Zelle, nackt oder als Link.
-var readmeZeilePattern = regexp.MustCompile("(?m)^\\|[ \\t]*\\[?`make ([a-z][a-z0-9-]*)`")
+var readmeZeilePattern = regexp.MustCompile("(?m)^\\|[ \\t]*\\[?`make ([a-z][a-z0-9_-]*)`")
 
 // werkzeugMakeDateien nennt die Make-Dateien des Werkzeugs im Ziel, in Lese-Reihenfolge:
 // Aggregator, die zwei tool-generierten Fragmente an der Wurzel (a-check.mk nur mit
@@ -127,13 +132,15 @@ func sammleWerkzeugTargets(targetDir, rel string, gates map[string]bool, gefunde
 		if h := werkzeugHilfePattern.FindStringSubmatch(m[0]); h != nil {
 			hilfe = strings.TrimSpace(h[1])
 		}
-		t, ok := gefunden[m[1]]
-		if !ok {
-			gefunden[m[1]] = &werkzeugTarget{name: m[1], hilfe: hilfe, datei: rel}
-			continue
-		}
-		if t.hilfe == "" {
-			t.hilfe = hilfe
+		for _, name := range strings.Fields(m[1]) {
+			t, ok := gefunden[name]
+			if !ok {
+				gefunden[name] = &werkzeugTarget{name: name, hilfe: hilfe, datei: rel}
+				continue
+			}
+			if t.hilfe == "" {
+				t.hilfe = hilfe
+			}
 		}
 	}
 	return nil

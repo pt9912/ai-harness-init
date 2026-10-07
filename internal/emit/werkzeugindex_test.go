@@ -87,6 +87,42 @@ func TestWerkzeugIndex_ZeileJeWerkzeugTargetDisjunkt(t *testing.T) {
 	}
 }
 
+// TestWerkzeugIndex_ErkenntRegelnWieDasDokuGate haelt die Target-Erkennung des Werkzeug-Teils
+// gegen die des Moduls targets am Pin d-check v0.82.0 (`^[A-Za-z][A-Za-z0-9 _-]*:([^=]|$)`, je
+// Name der Liste vor dem Doppelpunkt ein Target): Unterstrich, Grossbuchstabe, Mehrfach-Target,
+// Leerzeichen vor dem Doppelpunkt und `::` sind Regeln; `.PHONY`, Pattern-Regeln und
+// Zuweisungen nicht. Die Tabellenzelle `make doc_ok` in harness/README.md nimmt ihr Target aus.
+func TestWerkzeugIndex_ErkenntRegelnWieDasDokuGate(t *testing.T) {
+	dir := werkzeugIndexZiel(t)
+	frag := "my_tgt: ## u\nBuild: ## g\nmulti-a multi-b: ## m\nsp : ## s\ndbl:: ## d\ndoc_ok: ## o\n" +
+		".PHONY: my_tgt\n%.o: %.c\nX ?= 1\nY := 2\n"
+	if err := os.WriteFile(filepath.Join(dir, "harness", "mk", "form.mk"), []byte(frag), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	readme := filepath.Join(dir, "harness", "README.md")
+	r, _ := os.ReadFile(readme)
+	if err := os.WriteFile(readme, append(r, "| `make doc_ok` | o | — |\n"...), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := emit.WerkzeugIndex(dir); err != nil {
+		t.Fatal(err)
+	}
+	got, err := os.ReadFile(filepath.Join(dir, filepath.FromSlash(emit.WerkzeugIndexPath)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, n := range []string{"my_tgt", "Build", "multi-a", "multi-b", "sp", "dbl"} {
+		if !strings.Contains(string(got), "| `make "+n+"` |") {
+			t.Errorf("Regel %s aus form.mk fehlt im Werkzeug-Teil", n)
+		}
+	}
+	for _, n := range []string{"doc_ok", ".PHONY", "%.o", "X", "Y"} {
+		if strings.Contains(string(got), "| `make "+n+"` |") {
+			t.Errorf("%s steht im Werkzeug-Teil, ist aber keine Regel fuer das Doku-Gate oder steht schon in harness/README.md", n)
+		}
+	}
+}
+
 // TestWerkzeugIndex_KonvergentHeiltDrift: ein zweiter Lauf schreibt die Datei byte-gleich neu,
 // auch ueber eine Aenderung von Hand.
 func TestWerkzeugIndex_KonvergentHeiltDrift(t *testing.T) {
