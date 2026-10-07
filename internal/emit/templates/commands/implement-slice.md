@@ -33,8 +33,10 @@ emittierten Durchsetzungsschicht):
   Working Tree und die Commit-SHA von HEAD stempelt. Der Stop-Hook bindet an den Commit: er
   verweigert das Turn-Ende, sobald HEAD ein anderer ist als beim letzten grünen Lauf **und** der
   Inhalt nicht gedeckt ist — **ein Commit oder `git mv`-Commit ohne frischen `make gates`-Lauf
-  lässt ihn rot.** Ein Turn-Ende ohne neuen Commit geht frei, auch mit ungedeckter Änderung;
-  das Netz dort ist CI auf dem Push. **Streng** — jedes Turn-Ende mit ungedecktem Inhalt blockiert
+  lässt ihn rot.** Ein Turn-Ende ohne neuen Commit geht frei, auch mit ungedeckter Änderung,
+  sofern ein grüner Lauf HEAD gestempelt hat (Stempel `gates-passed.head` aus `record-gates`); das
+  Netz dort ist CI auf dem Push. Fehlt der Stempel (erster Turn nach dem Update, Klon vor dem
+  ersten grünen Lauf), gilt der strenge Zweig. **Streng** — jedes Turn-Ende mit ungedecktem Inhalt blockiert
   —, wenn die Datei `.harness/stop-gate-streng` im Repo liegt oder `STOP_GATE_STRENG=1` gesetzt
   ist.
 - **Strenges Doc-Gate (d-check).** Jede `LH-`/`ADR-`/`MR-`-Kennung in einer gescannten `.md` muss

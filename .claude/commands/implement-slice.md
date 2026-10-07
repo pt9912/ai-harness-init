@@ -19,7 +19,10 @@ Quellen: vendored Regelwerk `.harness/baseline/<tag>/regelwerk/` — Modul 9 (Im
 - **Gate-Nachweis + Stop-Hook.** `make gates` endet mit `record-gates` (Content-Hash des Working
   Tree und HEAD-SHA). Der Stop-Hook bindet an den Commit: **ein Commit — auch der eines `git mv`
   — ohne frischen grünen Lauf über seinem Inhalt hält das Turn-Ende auf**; ohne neuen Commit geht
-  es frei. Streng, wenn `.harness/stop-gate-streng` liegt oder `STOP_GATE_STRENG=1` gesetzt ist
+  es frei, sofern ein grüner Lauf HEAD gestempelt hat (Stempel `gates-passed.head` aus
+  `record-gates`) — fehlt der Stempel (erster Turn nach dem Update, Klon vor dem ersten grünen
+  Lauf), gilt der strenge Zweig. Streng, wenn `.harness/stop-gate-streng` liegt oder
+  `STOP_GATE_STRENG=1` gesetzt ist
   ([ADR-0083](../../docs/plan/adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md)).
 - **Strenges Doc-Gate (d-check).** Jede `LH-`/`ADR-`/`MR-`-Kennung in einer gescannten `.md` ist
   ein Anker-Link (`id-unlinked`). Pfade in Inline-Code müssen existieren: *geplante* Datei →
