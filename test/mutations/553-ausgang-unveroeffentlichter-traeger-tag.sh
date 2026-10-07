@@ -19,7 +19,8 @@
 # Einordner im Lauf unveraendert erreicht. Die Klasse steht in der Beleg-Zeile darunter;
 # der Treiber haelt allein die FEHLER-Zeile.
 #
-# BRAUCHT NETZ, wie jeder full-smoke-Lauf, und laeuft fast voll durch: die Stufe liegt
-# spaet in harness/tools/full-smoke.sh.
+# BRAUCHT NETZ, wie jeder full-smoke-Lauf. DAUER: 23.77 s fuer diesen Fall gegen 148.31 s
+# fuer den gruenen Vorlauf (make mutate, Zeilen "Zeit je Fall" und "Gruen-Vorlaeufe") —
+# der Lauf bricht an der Traeger-Stufe ab, lange vor dem Ende von harness/tools/full-smoke.sh.
 set -euo pipefail
 sed -i 's/^TRAEGER_TAG ?= .*$/TRAEGER_TAG ?= v9.99.9-gibt-es-diesen-tag-nicht/' internal/emit/templates/enforce/traeger.mk
