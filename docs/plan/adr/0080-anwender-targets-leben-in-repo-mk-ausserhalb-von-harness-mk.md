@@ -1,6 +1,6 @@
 # ADR-0080: Die eigenen Targets des Anwenders leben in `repo.mk` an der Wurzel des Ziels — harness/mk/ gehört allein dem Werkzeug
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-10-07
 
@@ -119,3 +119,4 @@ Liefer-Punkte: (a) Aggregator-Zeile, Startinhalt und Vorgabe-Ort; (b) eine `full
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-10-07 | Proposed | Review-Befund F-1 zum Handbuch-Ist-Zustand (`docs/reviews/`) |
+| 2026-10-07 | **Accepted** | Weisung des Auftraggebers vom 2026-10-07, Name `repo.mk` ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1: Beleg ist die Weisung; eine Reviewer-Konsistenzrunde liegt nicht vor) |
