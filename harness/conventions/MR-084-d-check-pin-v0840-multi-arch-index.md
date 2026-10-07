@@ -32,7 +32,11 @@
   nach
   [`MR-065`](../conventions.md#mr-065--ein-history-lesender-lauf-einer-d-check-bilanz-nennt-woher-sein-klon-die-objekte-liest)
   Setzung 1: kein Objektspeicher); Lauf und Auswertung wie in `MR-082`, Sonden wie dort neu
-  geschnitten. Mess-Protokoll samt Sonden-Liste: Commit-Message von `cb808e89`.
+  geschnitten **bis auf eine**: die zweite `matrix`-Sonde (ein `done/`-Slice verlinkt eine ersetzte
+  ADR) ist nicht gesetzt. Stufe 3 trägt darum 12 statt 13 Grund-Codes — es fehlt
+  `matrix-inactive`, `matrix` hat seine Basis allein über `matrix-forbidden`
+  (`cut -f3 | sort -u` über die Befundzeilen der Stufe). Mess-Protokoll samt Sonden-Liste:
+  Commit-Message von `cb808e89`.
 
   **Prüf-Bedingung vor dem Lauf**
   ([`MR-067`](../conventions.md#mr-067--eine-aufbau-anleitung-nennt-ihre-prüf-bedingung-vor-ihren-kommandos)
