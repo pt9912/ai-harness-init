@@ -40,8 +40,9 @@
 #   SELBSTPRUEFUNG_GATE = <kommando>
 # Das einfache `=` ueberschreibt die Belegung des `?=` im Fragment. Wer keinen
 # dauerhaften Ort braucht, setzt am Aufruf.
-# Der Traeger unter .githooks/ ist der eine Pfad, den dieses Werkzeug an einen
-# belegten Ort nicht schreibt (skip-if-present, ADR-0054): er gehoert dem Repo.
+# Der Traeger unter .githooks/ liegt in derselben Klasse wie repo.mk: an einem
+# belegten Ort schreibt dieses Werkzeug ihn nicht (skip-if-present, ADR-0054),
+# er gehoert dem Repo.
 #
 # DIE GRENZE. Geprueft sind der Traeger und die zwei Commit-Ausgaenge. NICHT
 # geprueft ist, ob der Traeger jeden Commit-Pfad erreicht: `git commit

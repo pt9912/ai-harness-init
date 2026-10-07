@@ -83,10 +83,11 @@ type enforceFile struct {
 //
 // JEDER EINTRAG NENNT SEINE KLASSE, und die Klasse eines Pfades steht nur hier bzw. in
 // der Konstruktor-Funktion ihres Eintrags (commitmsg.go, slicemv.go u. a.) — eine zweite
-// Liste daneben liefe gegen sie. Der Commit-Traeger ist der eine Eintrag mit
-// SkipIfPresent: er liegt an einem Namen, den git fixiert, in einem Verzeichnis des
-// Adopters, und ein Ziel, das dort seine eigene Zusage fuehrt, behaelt sie (ADR-0054
-// Festlegung 1 und 2).
+// Liste daneben liefe gegen sie. SkipIfPresent tragen in dieser Liste
+// harness/sensors/.gitkeep und repo.mk (ADR-0080 Festlegung 2), daneben der
+// Commit-Traeger aus commitmsg.go: er liegt an einem Namen, den git fixiert, in einem
+// Verzeichnis des Adopters, und ein Ziel, das dort seine eigene Zusage fuehrt, behaelt
+// sie (ADR-0054 Festlegung 1 und 2).
 func enforceFiles() []enforceFile {
 	files := []enforceFile{
 		{src: "templates/enforce/working-tree-hash.sh", dst: "tools/harness/working-tree-hash.sh", mode: 0o755, class: Konvergent},

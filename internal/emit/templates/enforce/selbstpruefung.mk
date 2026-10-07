@@ -17,8 +17,9 @@
 # Der Aggregator bindet sie nach den Fragmenten ein (`-include repo.mk`), und
 # ein Lauf legt sie nur an, wo sie fehlt. Das einfache `=` dort ueberschreibt
 # die Belegung des `?=` unten. Der
-# Traeger unter .githooks/ ist der eine Pfad, den dieses Werkzeug an einen
-# belegten Ort nicht schreibt (skip-if-present, ADR-0054): er gehoert dem Repo.
+# Traeger unter .githooks/ liegt in derselben Klasse wie repo.mk: an einem
+# belegten Ort schreibt dieses Werkzeug ihn nicht (skip-if-present, ADR-0054),
+# er gehoert dem Repo.
 #
 # ABHAENGIGKEIT. git, make und coreutils; was das Gate-Kommando braucht,
 # bringt es selbst mit.

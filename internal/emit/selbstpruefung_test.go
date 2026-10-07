@@ -214,18 +214,22 @@ func TestSelbstpruefung_EinEditIstNachDemNaechstenLaufWiederDieAusgelieferteFass
 	}
 }
 
-// TestSelbstpruefung_DerGenannteVorgabeOrtWirdVonKeinemLaufGeschrieben haelt die zweite
+// TestSelbstpruefung_DerGenannteVorgabeOrtWirdNieUeberschrieben haelt die zweite
 // Haelfte der Klassen-Zusage: die Koepfe nennen einen Ort fuer eine DAUERHAFTE
-// Marker-Vorgabe, und der traegt nur, wenn kein Lauf des Werkzeugs ihn anfasst.
+// Marker-Vorgabe, und der traegt nur, wenn kein Lauf des Werkzeugs einen liegenden
+// Inhalt dort ersetzt — ein Lauf darf ihn anlegen, wo er fehlt.
 //
-// GEMESSEN WIRD DER ORT, NICHT EIN WORT: der genannte Pfad wird gegen die Pfad-Mengen
-// gehalten, die ein Lauf schreibt. Ein Kopf, der stattdessen das Root-Makefile oder eine
-// der zwei eigenen Dateien naennte, faellt hier — genau die Klasse, die der Kopf erklaert.
+// GEMESSEN WIRD DER ORT, NICHT EIN WORT: eine Vorgabe am genannten Pfad muss einen
+// Re-Lauf byte-gleich ueberstehen, und der Pfad wird gegen die Pfad-Mengen gehalten, die
+// ein Lauf bei jedem Mal neu schreibt. Ein Kopf, der stattdessen das Root-Makefile oder
+// eine der zwei eigenen Dateien naennte, faellt hier — genau die Klasse, die der Kopf
+// erklaert.
 //
-// GEPRUEFT SIND ALLE PFADE, DIE DIESES PAKET SCHREIBT und die als Konstante oder Muster
-// greifbar sind: der Aggregator, die Durchsetzungsschicht, Commands, Rollen-Typen, das
-// Baseline- und das Doc-Gate-Fragment, das Arch-Gate-Fragment am Root und die Familie
-// harness/mk/arch-<modul>.mk.
+// GEPRUEFT SIND DIE KONVERGENT GESCHRIEBENEN PFADE, die als Konstante oder Muster greifbar
+// sind: der Aggregator, die Konvergent-Eintraege der Durchsetzungsschicht, das Baseline-
+// und das Doc-Gate-Fragment, das Arch-Gate-Fragment am Root und die Familie
+// harness/mk/arch-<modul>.mk. Commands und Rollen-Typen schreibt ein Lauf skip-if-present
+// und ersetzt dort nichts.
 //
 // GRENZE — EINE FAMILIE BLEIBT AUSSEN: die Code-Gate-Fragmente, die das Sprach-Skelett
 // (internal/gen) unter harness/mk/ ablegt, tragen den Namen ihres Moduls
@@ -264,13 +268,17 @@ func TestSelbstpruefung_DerGenannteVorgabeOrtWirdNieUeberschrieben(t *testing.T)
 		emit.DocGateMkPath,
 		emit.ArchMkPath,
 	}
+	fest := len(konvergent)
 	for _, p := range emit.EnforcePaths() {
 		if emit.PathClass(p) == emit.Konvergent {
 			konvergent = append(konvergent, p)
 		}
 	}
-	geschrieben := append(konvergent, emit.CommandPaths()...)
-	geschrieben = append(geschrieben, emit.AgentPaths()...)
+	// Vorbedingung: ohne Konvergent-Eintrag aus der Durchsetzungsschicht hielte die
+	// Schleife unten den Ort nur gegen die vier Konstanten.
+	if len(konvergent) == fest {
+		t.Fatalf("die Durchsetzungsschicht liefert keinen Konvergent-Pfad — der Abgleich prueft dann nur %d Konstanten", fest)
+	}
 	for _, p := range konvergent {
 		if p == emit.SelbstpruefungVorgabeOrt {
 			t.Errorf("%s wird von jedem Lauf neu geschrieben — eine Vorgabe dort ist nach dem naechsten Bootstrap weg, und die Koepfe nennen sie trotzdem als dauerhaften Ort",
@@ -287,9 +295,5 @@ func TestSelbstpruefung_DerGenannteVorgabeOrtWirdNieUeberschrieben(t *testing.T)
 	if strings.HasPrefix(emit.SelbstpruefungVorgabeOrt, archPraefix) {
 		t.Errorf("%s faellt in die Familie %s*, die ein Lauf je Modul schreibt — eine Vorgabe dort ist nach dem naechsten Bootstrap weg",
 			emit.SelbstpruefungVorgabeOrt, archPraefix)
-	}
-	// Vorbedingung: eine leere Menge liesse die Schleife oben still gruen.
-	if len(geschrieben) < 2 {
-		t.Fatalf("die gelesene Menge geschriebener Pfade traegt %d Eintraege — der Abgleich prueft dann nichts", len(geschrieben))
 	}
 }
