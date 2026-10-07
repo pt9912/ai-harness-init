@@ -17,7 +17,7 @@ Closure entstanden und darum hier als Zustand zitiert, nicht als Kommando-Ausgab
 ([`MR-058`](../../../../../../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)
 Setzung 2: eine Messung, die ihr eigener Vorgang bewegt, wird nach dem Vorgang genommen). Der
 Closure-Lauf der Welle hat den Ausgang als
-[`slice-ausnahmeliste-bekommt-ihre-berechtigungs-pruefung`](../../../../open/slice-ausnahmeliste-bekommt-ihre-berechtigungs-pruefung.md)
+[`slice-ausnahmeliste-bekommt-ihre-berechtigungs-pruefung`](../../../../done/slice-ausnahmeliste-bekommt-ihre-berechtigungs-pruefung.md)
 geschnitten und die zugehörige Register-Zeile
 [`ausnahmeliste-nur-auf-form-geprueft`](../../ausnahmeliste-nur-auf-form-geprueft/observation.md)
 von `offen` auf `geplant` gezogen.
