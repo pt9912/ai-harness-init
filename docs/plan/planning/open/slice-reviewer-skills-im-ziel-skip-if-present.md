@@ -19,9 +19,9 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 §Fitness Function, Folgepflicht), [ADR-0007](../../adr/0007-bootstrap-phasen.md) (bleibt byte-gleich),
 [ADR-0054](../../adr/0054-emittierter-commit-traeger-skip-if-present.md) (Form der Meldung).
 
-**Berührte Spec-Stellen:** [`spec/architecture.md`](../../../../spec/architecture.md) §5.
+**Berührte Spec-Stellen:** [`spec/architecture.md`](../../../../spec/architecture.md) §5, `ARC-006`.
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912 (Implementer)
 
 **Autor:** Planner. **Datum:** 2026-10-07.
 
@@ -34,8 +34,23 @@ Ziel nur an einem freien Pfad; der Lauf nennt je abweichend stehengelassenem Ski
 mitgelieferte Vorlage ([ADR-0084](../../adr/0084-reviewer-skills-im-ziel-skip-if-present.md)
 Festlegungen 1–3).
 
-**Lage** (keine Erwartungswerte): `grep -n 'skills' internal/emit/templates.go` nennt die heutige
-konvergente Klasse; `grep -n 'func Templates' internal/emit/*.go` die Funktion ohne Meldeweg.
+**Lage** (keine Erwartungswerte): `grep -n 'HasPrefix(rel, ".harness/skills/")' internal/emit/templates.go`
+nennt die konvergente Weiche in `Templates()`; die Funktion hat keinen Meldeweg, ihr einziger
+Produkt-Aufrufer `emitAll` hält schon einen (`grep -n 'emit.Templates(' cmd/ai-harness-init/main.go`,
+Parameter `notice io.Writer`), die Test-Aufrufe zählt `grep -rn 'emit.Templates(' --include=*_test.go . | wc -l`.
+Vorbild der Meldung ist `writeSkipIfPresentTold` in `internal/emit/enforce.go`; anders als dort
+meldet sie nur bei Abweichung — verglichen wird gegen den Inhalt, den `planTemplates` für den Pfad
+liefert. Den Tag für den Vorlagen-Pfad der Meldung kennt `Templates()` nicht, nur sein Aufrufer.
+Daneben nennen die Skills als kanonisch: [`spec/architecture.md`](../../../../spec/architecture.md)
+§5 (`grep -n 'Baseline, Skills' spec/architecture.md`) und das Benutzerhandbuch
+(`grep -n 'die Skills unter' docs/user/benutzerhandbuch.md`).
+
+**Werkzeug der Ziel-Fälle.** Die Fitness-Zeile 2 der ADR nennt `make selbstpruefung`; deren Skript
+fährt den Bootstrap nicht (`grep -n 'ai-harness-init' internal/emit/templates/enforce/selbstpruefung.sh`
+nennt nur den Kopfkommentar), ein Re-Lauf ist dort nicht herstellbar. Die drei Fälle laufen darum
+in `make full-smoke`, neben der Stufe *„Klasse des Commit-Traegers"*, die denselben Re-Lauf über
+`tmprepo_doc` schon fährt (`grep -n 'Klasse des Commit-Traegers' harness/tools/full-smoke.sh`).
+Die Regel der ADR bleibt, das Werkzeug wechselt; der Reviewer prüft den Wechsel gegen die ADR.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
@@ -46,24 +61,38 @@ konvergente Klasse; `grep -n 'func Templates' internal/emit/*.go` die Funktion o
 - **Trennung in tool-eigenen und Adopter-Teil.** *Anderer Vorgang:* Re-Evaluierungs-Trigger der ADR.
 - **Die übrigen konvergenten Pfade der Zeile aus [ADR-0007](../../adr/0007-bootstrap-phasen.md).** *Schicht-Abgrenzung:* allein
   `.harness/skills/*` wechselt die Klasse.
+- **`selbstpruefung.sh` um einen Bootstrap-Lauf erweitern.** *Anderer Vorgang:* das Skript prüft
+  den Commit-Träger im Klon, nicht die Emission; die Fälle liegen in `make full-smoke` (§1 Lage).
 
 ## 2. Definition of Done
 
 - [ ] **1 — Klasse und Meldung:** `internal/emit/templates.go` legt beide Skills skip-if-present ab;
-      `Templates()` bekommt einen Meldeweg, die Meldung folgt der Form des Commit-Trägers
-      ([ADR-0054](../../adr/0054-emittierter-commit-traeger-skip-if-present.md)) und erscheint nur bei
-      Abweichung von der Lieferfassung. Go-Test ersetzt `TestTemplates_SkillsConvergent`: veränderter
-      Skill überlebt den zweiten Lauf byte-gleich und wird gemeldet, unveränderter meldet nichts,
-      fehlender wird angelegt. **Rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6):
-      `test/mutations/53-skills-konvergent.sh` umgekehrt (Skills wieder konvergent → der Go-Test rot),
-      `make mutate MUTATE_CASES=…` meldet ihn gebunden.
-- [ ] **2 — Ziel:** `make selbstpruefung` mit den drei Fällen der §Fitness Function (gefüllt →
-      unverändert und gemeldet · unverändert → keine Meldung · fehlend → angelegt), gefahren von
-      `make full-smoke` (EXIT 0); die Stufen-Deklaration nennt, was sie misst.
+      `Templates()` bekommt einen Meldeweg (Writer und Vorlagen-Pfad vom Aufrufer `emitAll`), die
+      Meldung folgt der Form des Commit-Trägers
+      ([ADR-0054](../../adr/0054-emittierter-commit-traeger-skip-if-present.md)), nennt Pfad und
+      `.harness/baseline/<tag>/templates/.harness/skills/<name>.template.md` und erscheint nur, wenn
+      die liegende Datei vom Inhalt aus `planTemplates` abweicht. Go-Test in
+      `internal/emit/templates_test.go` (Dateisystem über `t.TempDir()`, Lauf in `make test`) ersetzt
+      `TestTemplates_SkillsConvergent`: veränderter Skill bleibt byte-gleich und wird gemeldet,
+      unveränderter meldet nichts, fehlender wird angelegt. **Rot gesehen**
+      ([`AGENTS.md`](../../../../AGENTS.md) §3.6), zwei Wege: (a) `test/mutations/53-skills-konvergent.sh`
+      neu geschrieben — `expect:` der neue Test, `sed`-Anker gegen die neue Quelle gemessen
+      ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)),
+      Skills wieder konvergent —, `make mutate MUTATE_CASES=53-skills-konvergent` meldet ihn
+      gebunden; (b) Hand-Bruch: Byte-Vergleich entfernt (Meldung immer) → `make test` rot am Fall
+      *„unverändert meldet nichts"*, Meldung gelesen, `git checkout -- internal/emit/templates.go`.
+- [ ] **2 — Ziel:** neue Stufe in `harness/tools/full-smoke.sh` neben *„Klasse des
+      Commit-Traegers"*: Re-Lauf des Bootstrap über `tmprepo_doc` mit drei Fällen (gefüllter
+      Skill → byte-gleich und gemeldet · unverändert emittierter → keine Meldung · gelöschter →
+      angelegt); `make full-smoke` EXIT 0, die Stufen-Deklaration (`e2e_abdeckung`) nennt, was sie
+      misst, `make e2e-abdeckung` zieht `docs/user/e2e-abdeckung.md` nach. **Rot gesehen:** der
+      `sed` aus Fall 53 von Hand auf `internal/emit/templates.go` angewandt → `make full-smoke` rot
+      mit der FEHLER-Zeile der neuen Stufe (gelesen), danach `git checkout -- internal/emit/templates.go`.
 - [ ] **3 — Texte:** `internal/emit/baumaussage.go` zählt die zwei Skills zu den genannten Pfaden,
-      der Satz *„Einen einzigen solchen Pfad nennt der Lauf"* fällt;
-      [`spec/architecture.md`](../../../../spec/architecture.md) §5 und das Benutzerhandbuch (falls es
-      die Klasse nennt) im Ist-Zustand.
+      der Satz *„Einen einzigen solchen Pfad nennt der Lauf"* fällt (der Go-Test der Baum-Aussage
+      zieht mit, `make test`); [`spec/architecture.md`](../../../../spec/architecture.md) §5 und
+      `ARC-006` sowie `docs/user/benutzerhandbuch.md` (Skills aus der Zeile *kanonisch*, damit unter
+      *nur bei fehlender Datei*) im Ist-Zustand.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -78,10 +107,10 @@ konvergente Klasse; `grep -n 'func Templates' internal/emit/*.go` die Funktion o
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `internal/emit/templates.go`, Aufrufer von `Templates()` | update | Klasse und Meldeweg (Liefer-Punkt 1) |
-| `internal/emit/*_test.go`, `test/mutations/53-skills-konvergent.sh` | update | Fitness-Zeilen 1 und 3 |
-| `internal/emit/templates/enforce/selbstpruefung.sh`, `harness/tools/full-smoke.sh` | update | Liefer-Punkt 2 |
-| `internal/emit/baumaussage.go`, `spec/architecture.md`, Benutzerhandbuch | update | Liefer-Punkt 3 |
+| `internal/emit/templates.go`, `cmd/ai-harness-init/main.go` (`emitAll`) | update | Klasse und Meldeweg (Liefer-Punkt 1) |
+| `internal/emit/*_test.go` (Aufrufe von `emit.Templates`), `test/mutations/53-skills-konvergent.sh` | update | Fitness-Zeilen 1 und 3 |
+| `harness/tools/full-smoke.sh`, `docs/user/e2e-abdeckung.md` (erzeugt) | update | Liefer-Punkt 2 |
+| `internal/emit/baumaussage.go` samt Test, `spec/architecture.md`, `docs/user/benutzerhandbuch.md` | update | Liefer-Punkt 3 |
 
 ## 4. Trigger
 
@@ -89,15 +118,17 @@ konvergente Klasse; `grep -n 'func Templates' internal/emit/*.go` die Funktion o
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
-- `in-progress` → `next`: der Meldeweg für `Templates()` zieht mehr Aufrufer nach, als eine
-  Review-Sitzung trägt — dann wird der Meldeweg als eigener Slice geschnitten.
-- `in-progress` → `open`: die Lieferfassung ist für den Vergleich nicht eindeutig (z. B. sie hängt am
-  Tag) — Übergabe an den Architect.
+- `in-progress` → `next`: der Meldeweg zieht über die Test-Aufrufe von `emit.Templates` hinaus
+  weitere Produkt-Aufrufer nach, als eine Review-Sitzung trägt — dann wird der Meldeweg als eigener
+  Slice geschnitten.
+- `in-progress` → `open`: die Lieferfassung ist für den Vergleich nicht eindeutig — etwa weil der
+  gestempelte Projektname zwischen zwei Läufen wechselt und jeder Re-Lauf meldet — Übergabe an den
+  Architect.
 
 ## 5. Closure-Trigger
 
-1. `make full-smoke` EXIT 0 mit den drei Fällen der Selbstprüfung.
-2. `make gates` grün und der umgekehrte Fall 53 als gebunden gemeldet.
+1. `make full-smoke` EXIT 0 mit den drei Fällen der neuen Stufe.
+2. `make gates` grün und `make mutate MUTATE_CASES=53-skills-konvergent` meldet den Fall gebunden.
 
 **Lerneintrag** in einer der drei Formen, §7; die Closure schreibt der Planner
 ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
