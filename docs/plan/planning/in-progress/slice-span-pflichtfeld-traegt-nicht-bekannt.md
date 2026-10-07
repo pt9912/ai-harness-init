@@ -59,7 +59,7 @@ Feld künftig die Kennzeichnung, muss die Auswertung sie wie `""` lesen, sonst w
 eine eigene Rolle.
 
 **Emittierte Ebene.** Betroffen, ohne eigenen Liefer-Punkt: die emittierte Feldliste
-`harness/erfassung-feldliste.md` wird verbatim aus `span.FieldList` geschrieben
+(Zielpfad `FieldListPath`) wird verbatim aus `span.FieldList` geschrieben
 (`internal/emit/fieldlist.go`) und zieht die Änderung an `internal/span/fieldlist.go` konstruktiv
 nach; der emittierte Hook `span-emit.sh` ruft den Träger, der die Erfassung mit dem nächsten
 Release ins Ziel bringt (`make traeger-fetch`, gepinnt). Kein emittierter Text daneben nennt die
