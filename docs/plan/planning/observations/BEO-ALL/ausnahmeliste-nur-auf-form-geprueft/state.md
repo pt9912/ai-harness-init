@@ -1,11 +1,6 @@
-**Stand:** geplant
+**Stand:** verkörpert in [`ADR-0035`](../../../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
+Festlegung 3 (`Accepted`) — Deklaration am Ort der Definition, genannter Grund, Zählung als **Rest**.
 
-Kennung: `slice-ausnahmeliste-bekommt-ihre-berechtigungs-pruefung` — er entscheidet, was eine
-deklarierte Ausnahmeliste jenseits von Existenz und Form schuldet, und gibt der Regel einen
-tragenden Ort.
-
-Ein Zielort besteht nicht:
-[`ADR-0035`](../../../../../../docs/plan/adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
-Festlegung 3 verlangt Deklaration am Ort der Definition, genannten Grund und Zählung als **Rest** —
-die Entscheidung steht aber auf `Proposed` und bindet damit nicht; sie führt keinen
-Acceptance-Trigger und hat keinen Träger-Slice. Die Prüfung der drei Bedingungen bleibt ein Urteil.
+Grenze: Die Festlegung bindet die Bezugsmenge von `make mutate`. Ob sie für andere deklarierte
+Ausnahmelisten gilt (`exempt-targets` in `.d-check.yml`, Breiten-Wächter), ist ihr
+Re-Evaluierungs-Trigger 3; die Prüfung der Berechtigung eines Eintrags bleibt dort ein Urteil.
