@@ -11,4 +11,4 @@
 # Der Fall bindet, dass die Liste namentlich ist und kein Eintrag still entfallen kann
 # (LH-QA-01).
 set -euo pipefail
-sed -i '/^\t"harness\/mk\/selbstpruefung\.mk": *{"LH-FA-01"},$/d' cmd/ai-harness-init/kennungen_test.go
+sed -i '/^\t*"harness\/mk\/selbstpruefung\.mk": *{"LH-FA-01"},$/d' cmd/ai-harness-init/kennungen_test.go

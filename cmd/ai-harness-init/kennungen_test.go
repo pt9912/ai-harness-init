@@ -20,9 +20,11 @@ var kennungMuster = regexp.MustCompile(`\b(ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-
 // realen Emission. Beide Eintraege sind funktionale Nutzlast: der Default-Commit-Text der
 // Selbstpruefung (SELBSTPRUEFUNG_MSG_GRUEN) muss ein Kennungs-Muster des emittierten
 // commit-msg-Traegers treffen, sonst faellt der gruene Probe-Commit am Traeger.
-var erlaubteKennungen = map[string][]string{
-	"harness/mk/selbstpruefung.mk":    {"LH-FA-01"},
-	"tools/harness/selbstpruefung.sh": {"LH-FA-01"},
+func erlaubteKennungen() map[string][]string {
+	return map[string][]string{
+		"harness/mk/selbstpruefung.mk":    {"LH-FA-01"},
+		"tools/harness/selbstpruefung.sh": {"LH-FA-01"},
+	}
 }
 
 // kennungsAusnahme nennt die Pfade der realen Emission, die der Waechter nicht liest:
@@ -122,6 +124,7 @@ func TestEmittierteDateienTragenNurImZielAufloesendeKennungen(t *testing.T) {
 		kennungenIn(t, dir, fund)
 	}
 
+	erlaubt := erlaubteKennungen()
 	ist := map[string][]string{}
 	for f, ks := range fund {
 		for k := range ks {
@@ -131,11 +134,11 @@ func TestEmittierteDateienTragenNurImZielAufloesendeKennungen(t *testing.T) {
 	}
 	var fehler []string
 	for f, ks := range ist {
-		if want := erlaubteKennungen[f]; strings.Join(want, ",") != strings.Join(ks, ",") {
+		if want := erlaubt[f]; strings.Join(want, ",") != strings.Join(ks, ",") {
 			fehler = append(fehler, "  "+f+": emittiert "+strings.Join(ks, ", ")+" — erlaubt: "+strings.Join(want, ", "))
 		}
 	}
-	for f, want := range erlaubteKennungen {
+	for f, want := range erlaubt {
 		if _, ok := ist[f]; !ok {
 			fehler = append(fehler, "  "+f+": die Ausnahme "+strings.Join(want, ", ")+" emittiert keine Variante")
 		}
