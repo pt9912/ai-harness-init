@@ -78,20 +78,23 @@ Zwei Schichten: Emissions-Vorlagen und Go-Test.
 
 ## 6. Risiken und offene Punkte
 
-- Eine Lauf-Variante emittiert eine Datei, die der Test nicht fährt. — **Ausgang:** weiter offen: benannte Lücke (Zweige ohne Test); Eintrag im Register bei der Closure.
-- Der Ersatz-Wortlaut trägt die Zusage nicht. — **Ausgang:** entfallen: Urteil des Reviews, kein Sensor; benannt in §1.
+- Eine Lauf-Variante emittiert eine Datei, die der Test nicht fährt. — **Ausgang:** eingetreten: `slice-emittierte-dateien-tragen-nur-im-ziel-aufloesende-kennungen` (übernommen).
+- Der Ersatz-Wortlaut trägt die Zusage nicht. — **Ausgang:** eingetreten: `slice-emittierte-dateien-tragen-nur-im-ziel-aufloesende-kennungen` (übernommen).
 
 ## 7. Closure-Notiz
 
-*Wird bei der Closure gefüllt (Planner, [`AGENTS.md`](../../../../AGENTS.md) §3.10).*
+Geschrieben vom Planner (Gruppierungs-Durchgang, Baseline-Regelwerk `modul-06-roadmap.md`
+§Wellen-Closure-Prozedur Schritt 3). **Rolle:** Planner · **Datum:** 2026-10-07
 
-- **Was hat funktioniert:**
-- **Was ging anders als geplant:**
-- **Steering-Loop-Eintrag:**
-- **Beobachtungs-Register (`../observations/`):**
-- **Folge-Slices:**
-- **Risiken aus §6:**
-- **Drei Paarungen:**
+- **Gegenstand:** übernommen von `slice-emittierte-dateien-tragen-nur-im-ziel-aufloesende-kennungen`.
+- **Was hat funktioniert:** — (keine Arbeit; die Liefer-Punkte bleiben leer).
+- **Was ging anders als geplant:** Der Schnitt in Träger-Familie und Rest teilte eine Fundmenge
+  unter einem Kommando und erzwang eine Reihenfolge; der Nehmer trägt beides in einem Slice.
+- **Steering-Loop-Eintrag:** keiner.
+- **Beobachtungs-Register (`../observations/`):** keine Beobachtung angefallen.
+- **Folge-Slices:** keiner.
+- **Risiken aus §6:** jede Zeile trägt den Ausgang *eingetreten* mit der Kennung des Nehmers.
+- **Kennung löst auf:** `ls docs/plan/planning/*/slice-emittierte-dateien-tragen-nur-im-ziel-aufloesende-kennungen.md` nennt genau eine Datei (`open/`).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

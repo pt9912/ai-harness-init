@@ -77,20 +77,23 @@ Eine Schicht: Emissions-Vorlagen.
 
 ## 6. Risiken und offene Punkte
 
-- Eine Meldung verliert mit der Kennung die einzige Fundstelle für den Anwender. — **Ausgang:** entfallen: im Ziel löst die Kennung nicht auf; der Satz trägt die Handlung.
-- Der Folge-Slice wird nicht gearbeitet; die Eigenschaft bleibt dann ohne Wächter. — **Ausgang:** eingetreten wäre `slice-emittierte-dateien-tragen-keine-nicht-aufloesende-kennung`; Träger der Frist ist die Slice-Planung ([`MR-037`](../../../../harness/conventions.md#mr-037)).
+- Eine Meldung verliert mit der Kennung die einzige Fundstelle für den Anwender. — **Ausgang:** eingetreten: `slice-emittierte-dateien-tragen-nur-im-ziel-aufloesende-kennungen` (übernommen).
+- Der Folge-Slice wird nicht gearbeitet; die Eigenschaft bleibt dann ohne Wächter. — **Ausgang:** eingetreten: `slice-emittierte-dateien-tragen-nur-im-ziel-aufloesende-kennungen` (übernommen).
 
 ## 7. Closure-Notiz
 
-*Wird bei der Closure gefüllt (Planner, [`AGENTS.md`](../../../../AGENTS.md) §3.10).*
+Geschrieben vom Planner (Gruppierungs-Durchgang, Baseline-Regelwerk `modul-06-roadmap.md`
+§Wellen-Closure-Prozedur Schritt 3). **Rolle:** Planner · **Datum:** 2026-10-07
 
-- **Was hat funktioniert:**
-- **Was ging anders als geplant:**
-- **Steering-Loop-Eintrag:**
-- **Beobachtungs-Register (`../observations/`):**
-- **Folge-Slices:**
-- **Risiken aus §6:**
-- **Drei Paarungen:**
+- **Gegenstand:** übernommen von `slice-emittierte-dateien-tragen-nur-im-ziel-aufloesende-kennungen`.
+- **Was hat funktioniert:** — (keine Arbeit; die Liefer-Punkte bleiben leer).
+- **Was ging anders als geplant:** Der Schnitt in Träger-Familie und Rest teilte eine Fundmenge
+  unter einem Kommando und erzwang eine Reihenfolge; der Nehmer trägt beides in einem Slice.
+- **Steering-Loop-Eintrag:** keiner.
+- **Beobachtungs-Register (`../observations/`):** keine Beobachtung angefallen.
+- **Folge-Slices:** keiner.
+- **Risiken aus §6:** jede Zeile trägt den Ausgang *eingetreten* mit der Kennung des Nehmers.
+- **Kennung löst auf:** `ls docs/plan/planning/*/slice-emittierte-dateien-tragen-nur-im-ziel-aufloesende-kennungen.md` nennt genau eine Datei (`open/`).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
