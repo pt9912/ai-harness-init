@@ -269,15 +269,24 @@ stehen in ` + "`repo.mk`" + ` und brauchen ihre Zeile in ` + "`harness/README.md
 
 **Grenzen.**
 
-- Kein Target steht in zwei Teilen: so verlangt es die adoptierte Kurs-Fassung ` + "`v6.16.0`" + `
-  (Regelwerk ` + "`grundlagen-harness-dateien.md`" + ` §harness/README.md als Einstiegspunkt), und dort
-  ist auch festgehalten, dass ein Sensor gegen die Vereinigung beider Teile eine Doppelung nicht
-  sieht. Der gepinnte d-check ` + "`v0.82.0`" + ` misst gegen die Vereinigung und prüft die Disjunktheit
-  nicht. Legt das Repo nach einem Lauf eine eigene Zeile für ein Target dieser Datei an, steht
-  es bis zum nächsten Lauf in beiden Teilen.
+- Kein Target steht in zwei Teilen: so verlangt es die adoptierte Kurs-Fassung (Regelwerk
+  ` + "`grundlagen-harness-dateien.md`" + ` §harness/README.md als Einstiegspunkt). ` + DisjunktheitsBedingung + `
 - Eine Datei, die das Repo selbst unter ` + "`harness/mk/`" + ` ablegt, liest der Lauf mit; ihre Targets
   stehen dann hier statt in ` + "`harness/README.md`" + `.
 `
+
+// DisjunktheitsBedingung ist der statische Satz der Grenz-Zeile: er nennt die Bedingung, unter
+// der das Doku-Gate des Ziels die Disjunktheit der zwei Teile prueft, und liest die
+// .d-check.yml des Ziels nicht — er ist darum in einem frisch gebootstrappten wie in einem
+// bestehenden Ziel wahr (ADR-0082 Festlegung 2). Er sagt einem bestehenden Ziel nicht, ob es
+// die Bedingung erfuellt. Wird durch TestWerkzeugIndex_GrenzeNenntDisjunktheitsBedingung gehalten.
+const DisjunktheitsBedingung = "Das Doku-Gate prüft die Disjunktheit, wenn in " +
+	"`.d-check.yml` das Modul `targets` in `modules` steht, `targets.authority` beide Teile als " +
+	"Liste nennt und `targets.authority-disjoint: true` gesetzt ist; dann meldet es ein Target, " +
+	"das in beiden Teilen eine Zeile hat, als `gate-declared-twice`. Sonst bleibt eine Doppelung " +
+	"still. Der Sensor sieht eine Doppelung erst, wenn das Repo sie angelegt hat: legt es nach " +
+	"einem Lauf eine eigene Zeile für ein Target dieser Datei an, steht es bis zum nächsten Lauf " +
+	"in beiden Teilen."
 
 // harnessReadmeTemplate ist die Vorlage des Gate-Index des Repos im Kurs-Satz.
 const harnessReadmeTemplate = "harness/README.template.md"

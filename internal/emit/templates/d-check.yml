@@ -82,8 +82,10 @@ ids:
 # Einzeldatei mit Exit 2 (DC-FA-TGT-001), und repo.mk darf fehlen, ohne make zu brechen; der
 # Glob trifft immer d-check.mk und daneben repo.mk und a-check.mk, wo sie liegen, aber keine
 # Datei unter harness/mk/. Kein exempt-targets: der Werkzeug-Teil fuehrt jedes Target der
-# Werkzeug-Dateien. Grenzen: die Disjunktheit der zwei Teile prueft d-check nicht, er zaehlt
-# ein doppelt genanntes Target einmal; jede andere .mk-Datei an der Wurzel liest der Glob mit,
+# Werkzeug-Dateien. authority-disjoint (ab d-check v0.83.0, nur mit authority als Liste) meldet ein
+# Target, das in beiden Teilen eine Zeile hat, als gate-declared-twice. Grenzen: eine Doppelung sieht
+# der Sensor erst, wenn das Repo sie angelegt hat;
+# jede andere .mk-Datei an der Wurzel liest der Glob mit,
 # ihre Targets brauchen eine Zeile in harness/README.md, auch wenn kein Makefile sie einbindet;
 # eine .mk-Datei in einem Unterverzeichnis ausser harness/mk/ liest er nicht, auch wenn repo.mk
 # sie per include einbindet — ihre Targets laufen mit make und bleiben ungeprueft. Ein
@@ -155,6 +157,7 @@ targets:
   makefiles: [Makefile, "harness/mk/*.mk", "*.mk"]
   doc-tables: [harness/README.md, harness/mk/ai-harness-init.md]
   authority: [harness/README.md, harness/mk/ai-harness-init.md]
+  authority-disjoint: true
 # structure (hermetisch, kein git, opt-in): die Zellen der zwei Spalten begrenzen die Prosa
 # der Gate- und Werkzeug-Tabelle; Herkunft und Schwelle stehen im Kopfkommentar oben.
 structure:

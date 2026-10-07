@@ -207,3 +207,41 @@ func TestWerkzeugIndex_BerichtNenntNeueTargets(t *testing.T) {
 		}
 	}
 }
+
+// TestWerkzeugIndex_GrenzeNenntDisjunktheitsBedingung haelt den Bedingungssatz im GESCHRIEBENEN
+// Werkzeug-Teil (ADR-0082 Festlegung 2, LH-QA-01): die drei Bedingungen, die sonst-Haelfte und die
+// Grenze des Sensors stehen woertlich darin, und die Pin-Aussage, nach der der gepinnte d-check
+// die Disjunktheit nicht prueft, steht nicht mehr darin. Der erwartete Satz steht hier literal
+// und nicht als Verweis auf die Konstante — sonst wuerde eine Aenderung des Satzes den Test mit
+// aendern statt ihn rot zu faerben.
+func TestWerkzeugIndex_GrenzeNenntDisjunktheitsBedingung(t *testing.T) {
+	dir := werkzeugIndexZiel(t)
+	if _, err := emit.WerkzeugIndex(dir); err != nil {
+		t.Fatal(err)
+	}
+	b, err := os.ReadFile(filepath.Join(dir, filepath.FromSlash(emit.WerkzeugIndexPath)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := string(b)
+	i := strings.Index(got, "**Grenzen.**")
+	if i < 0 {
+		t.Fatalf("Werkzeug-Teil ohne Abschnitt **Grenzen.**:\n%s", got)
+	}
+	grenzen := got[i:]
+	satz := "Das Doku-Gate prüft die Disjunktheit, wenn in `.d-check.yml` das Modul `targets` in " +
+		"`modules` steht, `targets.authority` beide Teile als Liste nennt und " +
+		"`targets.authority-disjoint: true` gesetzt ist; dann meldet es ein Target, das in beiden " +
+		"Teilen eine Zeile hat, als `gate-declared-twice`. Sonst bleibt eine Doppelung still. Der " +
+		"Sensor sieht eine Doppelung erst, wenn das Repo sie angelegt hat: legt es nach einem Lauf " +
+		"eine eigene Zeile für ein Target dieser Datei an, steht es bis zum nächsten Lauf in beiden " +
+		"Teilen."
+	if !strings.Contains(grenzen, satz) {
+		t.Errorf("Grenzen des Werkzeug-Teils nennen den Bedingungssatz nicht:\n%s", grenzen)
+	}
+	for _, alt := range []string{"prüft die Disjunktheit\n  nicht", "Der gepinnte d-check"} {
+		if strings.Contains(got, alt) {
+			t.Errorf("Werkzeug-Teil traegt noch die Pin-Aussage %q", alt)
+		}
+	}
+}

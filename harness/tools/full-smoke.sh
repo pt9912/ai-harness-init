@@ -3608,15 +3608,35 @@ echo "full-smoke: repo.mk — Ort der Repo-Targets im sprachlosen Ziel, belegt u
 	e2e_abdeckung "LH-FA-01 LH-QA-01" "Ein sprachloses Ziel fuehrt seine Targets in repo.mk: ohne die Datei ist make gates gruen und der Re-Lauf legt den Startinhalt neu an; eine belegte repo.mk bleibt byte-gleich, make eigen laeuft, ein Gate ueber GATE_CHECKS += laeuft in make gates mit; NICHT gemessen: die Reihenfolge vor dem Gate-Nachweis, eine Vorgabe ueber = gegen ein ?= der Fragmente, ein Ziel mit Sprache" "repo_mk_im_ziel"
 repo_mk_im_ziel
 
+# doppelzeile_setzen <dir> — legt in harness/README.md vor die Zeile `make gates` eine Zeile fuer
+# das erste Target, das der Werkzeug-Teil harness/mk/ai-harness-init.md fuehrt (dz_target);
+# das Original liegt als harness/README.md.dz-orig daneben.
+doppelzeile_setzen() {
+	local dir="$1" bt='`'
+	dz_target="$(sed -n "s/^| \\[*${bt}make \\([a-z][a-z0-9-]*\\)${bt}.*/\\1/p" "$dir/harness/mk/ai-harness-init.md" | head -n 1)"
+	if [ -z "$dz_target" ]; then
+		echo "full-smoke: FEHLER — Doppelzeile: der Werkzeug-Teil harness/mk/ai-harness-init.md fuehrt keine Zeile | ${bt}make X${bt} |." >&2
+		exit 1
+	fi
+	cp "$dir/harness/README.md" "$dir/harness/README.md.dz-orig"
+	psed_i -e "s/^| ${bt}make gates${bt} |/| ${bt}make ${dz_target}${bt} | Doppelzeile | — |\\
+| ${bt}make gates${bt} |/" "$dir/harness/README.md"
+	if cmp -s "$dir/harness/README.md" "$dir/harness/README.md.dz-orig"; then
+		echo "full-smoke: FEHLER — Doppelzeile: harness/README.md traegt keine Zeile | ${bt}make gates${bt} |." >&2
+		exit 1
+	fi
+}
 # Das Modul targets im frisch emittierten --lang go-Ziel (LH-QA-01): die emittierte .d-check.yml
 # haelt jedes Make-Target gegen eine Tabellenzeile im Gate-Index aus zwei Teilen —
 # harness/README.md (Repo) und harness/mk/ai-harness-init.md (Werkzeug, je Lauf neu geschrieben).
 # Gemessen werden (a) der Werkzeug-Teil liegt, harness/README.md verlinkt ihn, und docs-check ist
 # gruen; (b) ein Target in repo.mk ohne Zeile meldet gate-undocumented, Gegenprobe: ohne den
 # Glob "*.mk" in makefiles: (also ohne repo.mk) bleibt dasselbe Target gruen; (c) eine Zeile ohne
-# Target in harness/README.md meldet gate-phantom, Gegenprobe: ohne das Modul bleibt sie gruen.
+# Target in harness/README.md meldet gate-phantom, Gegenprobe: ohne das Modul bleibt sie gruen;
+# (d) eine Zeile in harness/README.md fuer ein Target des Werkzeug-Teils meldet gate-declared-twice,
+# Gegenprobe: ohne authority-disjoint bleibt sie gruen.
 # GRENZE: gemessen ist ein --lang go-Ziel ohne --arch; ein Ziel mit eigener .d-check.yml
-# (skip-if-present), der Nachzug durch add-lang und die Disjunktheit der zwei Teile sind hier
+# (skip-if-present; misst disjunktheit_im_v02x_ziel fuer eine Form) und der Nachzug durch add-lang sind hier
 # nicht gemessen.
 targets_im_ziel() {
 	local dir meldung
@@ -3728,11 +3748,91 @@ targets_im_ziel() {
 		printf '%s\n' "$kf_out" >&2
 		exit 1
 	fi
+
+	# (d) Disjunktheit: eine Zeile in harness/README.md fuer ein Target, das der Werkzeug-Teil
+	# schon fuehrt, meldet gate-declared-twice; Gegenprobe: ohne authority-disjoint bleibt sie gruen.
+	doppelzeile_setzen "$dir"
+	kf_docs_check "$dir"
+	meldung="${dz_target}[[:space:]]+gate-declared-twice"
+	if [ "$kf_rc" -eq 0 ] || ! grep -qE -- "$meldung" <<<"$kf_out"; then
+		echo "full-smoke: FEHLER — targets-Gegenbeispiel (Doppelzeile): make $dz_target in harness/README.md und im Werkzeug-Teil meldet nicht [$meldung] (Exit $kf_rc, ADR-0082 §Fitness Function). Ausgabe:" >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+	echo "full-smoke: targets-Gegenbeispiel (Doppelzeile) belegt (faerbt docs-check im Ziel rot):"
+	grep -E -- "$meldung" <<<"$kf_out" | sed -n '1s/^/full-smoke:   /p'
+	cp "$dir/.d-check.yml" "$dir/.d-check.yml.tg-bak"
+	psed_i -e '/^  authority-disjoint: true$/d' "$dir/.d-check.yml"
+	if cmp -s "$dir/.d-check.yml" "$dir/.d-check.yml.tg-bak"; then
+		mv "$dir/.d-check.yml.tg-bak" "$dir/.d-check.yml"
+		echo "full-smoke: FEHLER — targets-Gegenprobe (Doppelzeile): die emittierte .d-check.yml traegt keine Zeile 'authority-disjoint: true'." >&2
+		exit 1
+	fi
+	kf_docs_check "$dir" einordnen
+	mv "$dir/.d-check.yml.tg-bak" "$dir/.d-check.yml"
+	if [ "$kf_rc" -ne 0 ] || ! grep -qF -- ', 0 Befund(e)' <<<"$kf_out"; then
+		echo "full-smoke: FEHLER — targets-Gegenprobe (Doppelzeile): ohne authority-disjoint bleibt die Doppelzeile nicht gruen — der Fall belegt nicht, dass ERST der Schalter sie meldet (AGENTS.md §3.6)." >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+	echo "full-smoke: targets-Gegenprobe (Doppelzeile) belegt (ohne den Schalter bleibt dieselbe Zeile gruen, danach zurueckgenommen)."
+	mv "$dir/harness/README.md.dz-orig" "$dir/harness/README.md"
 }
 
 echo "full-smoke: Modul targets im frischen --lang go-Ziel — gruener Start, je Richtung ein Gegenbeispiel mit Gegenprobe ..."
-	e2e_abdeckung "LH-QA-01" "Die emittierte Doku-Gate-Konfiguration haelt jedes Make-Target gegen eine Zeile im Gate-Index aus harness/README.md und dem Werkzeug-Teil harness/mk/ai-harness-init.md: gruener Start am frischen --lang go-Ziel, ein Target in repo.mk ohne Zeile meldet gate-undocumented, eine Zeile ohne Target gate-phantom, je mit Gegenprobe; als Grenze gemessen: eine aus repo.mk eingebundene .mk im Unterverzeichnis bleibt ungeprueft, an der Wurzel meldet sie gate-undocumented; NICHT gemessen: ein Ziel mit eigener .d-check.yml (skip-if-present), cpp und --arch, der Nachzug durch add-lang, die Disjunktheit der zwei Teile" "targets_im_ziel"
+	e2e_abdeckung "LH-QA-01" "Die emittierte Doku-Gate-Konfiguration haelt jedes Make-Target gegen eine Zeile im Gate-Index aus harness/README.md und dem Werkzeug-Teil harness/mk/ai-harness-init.md: gruener Start am frischen --lang go-Ziel, ein Target in repo.mk ohne Zeile meldet gate-undocumented, eine Zeile ohne Target gate-phantom, eine Zeile fuer ein Target des Werkzeug-Teils auch in harness/README.md gate-declared-twice, je mit Gegenprobe; als Grenze gemessen: eine aus repo.mk eingebundene .mk im Unterverzeichnis bleibt ungeprueft, an der Wurzel meldet sie gate-undocumented; NICHT gemessen: ein Ziel mit eigener .d-check.yml (skip-if-present), cpp und --arch, der Nachzug durch add-lang" "targets_im_ziel"
 targets_im_ziel
+
+# Ein Ziel in der Form vor dem Modul targets (v0.2.x: targets nicht in modules) mit gesetztem
+# Schalter authority-disjoint (ADR-0082 §Fitness Function, Zeile 2): (a) die vorab gelegte
+# .d-check.yml bleibt beim Bootstrap byte-gleich (skip-if-present); (b) dieselbe Doppelzeile wie
+# in targets_im_ziel bleibt gruen — der Schalter allein prueft nichts, ohne targets in modules
+# steht die Bedingung der Grenz-Zeile nicht; Gegenprobe: targets in modules eingetragen meldet
+# gate-declared-twice. GRENZE: gemessen ist diese eine Form; die Formen, die den Wortlaut der
+# Bedingung erfuellen und abweichen (zweites YAML-Dokument, ein Rezept mit --disable/--enable
+# targets), misst die Stufe nicht.
+disjunktheit_im_v02x_ziel() {
+	local vorlage dir
+	vorlage="$(mktemp -d -p "$tmprepo_kf")"
+	git init -q "$vorlage"
+	"$tmpbin/ai-harness-init" --lang go --name disjunkt "$vorlage" >/dev/null
+	dir="$(mktemp -d -p "$tmprepo_kf")"
+	chmod 755 "$dir"
+	git init -q "$dir"
+	sed -e 's/^\(modules: .*\), targets\(.*\)$/\1\2/' "$vorlage/.d-check.yml" >"$dir/.d-check.yml"
+	if grep -qE '^modules: .*targets' "$dir/.d-check.yml" || ! grep -qx '  authority-disjoint: true' "$dir/.d-check.yml"; then
+		echo "full-smoke: FEHLER — v0.2.x-Ziel: die vorab gelegte .d-check.yml fuehrt targets noch in modules oder den Schalter nicht." >&2
+		exit 1
+	fi
+	cp "$dir/.d-check.yml" "$dir/.d-check.yml.v02x"
+	"$tmpbin/ai-harness-init" --lang go --name disjunkt "$dir" >/dev/null
+	if ! cmp -s "$dir/.d-check.yml" "$dir/.d-check.yml.v02x"; then
+		echo "full-smoke: FEHLER — v0.2.x-Ziel: der Bootstrap hat die vorab gelegte .d-check.yml veraendert (skip-if-present)." >&2
+		diff "$dir/.d-check.yml.v02x" "$dir/.d-check.yml" >&2 || true
+		exit 1
+	fi
+	rm "$dir/.d-check.yml.v02x"
+	doppelzeile_setzen "$dir"
+	kf_docs_check "$dir" einordnen
+	if [ "$kf_rc" -ne 0 ] || ! grep -qF -- ', 0 Befund(e)' <<<"$kf_out"; then
+		echo "full-smoke: FEHLER — v0.2.x-Ziel: mit Schalter, ohne targets in modules ist die Doppelzeile make $dz_target nicht gruen (Exit $kf_rc) — der Satz der Grenz-Zeile ist neu zu fassen (ADR-0082, Rueckfuehrung (b))." >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+	echo "full-smoke: v0.2.x-Ziel: .d-check.yml byte-gleich, Doppelzeile make $dz_target mit Schalter ohne targets in modules '0 Befund(e)'."
+	psed_i -e 's/^\(modules: \[.*\)\]$/\1, targets]/' "$dir/.d-check.yml"
+	kf_docs_check "$dir"
+	if [ "$kf_rc" -eq 0 ] || ! grep -qE -- "${dz_target}[[:space:]]+gate-declared-twice" <<<"$kf_out"; then
+		echo "full-smoke: FEHLER — v0.2.x-Gegenprobe: mit targets in modules meldet die Doppelzeile nicht gate-declared-twice (Exit $kf_rc) — die Stufe misst nicht die Bedingung. Ausgabe:" >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+	echo "full-smoke: v0.2.x-Gegenprobe belegt (targets in modules eingetragen faerbt dieselbe Doppelzeile rot)."
+}
+
+echo "full-smoke: Ziel in v0.2.x-Form mit Schalter authority-disjoint — skip-if-present, Doppelzeile gruen, Gegenprobe ..."
+	e2e_abdeckung "LH-QA-01" "Ein Ziel mit vorab gelegter .d-check.yml in der Form vor dem Modul targets (targets nicht in modules) und gesetztem authority-disjoint: die Datei bleibt beim Bootstrap byte-gleich, eine Zeile fuer ein Target des Werkzeug-Teils auch in harness/README.md bleibt gruen, mit targets in modules meldet sie gate-declared-twice; NICHT gemessen: Formen, die den Wortlaut der Bedingung erfuellen und abweichen (zweites YAML-Dokument, ein Rezept mit --disable oder --enable targets), cpp und --arch" "disjunktheit_im_v02x_ziel"
+disjunktheit_im_v02x_ziel
 
 # werkzeug_meldung_im_ziel <dir> — der Lauf nennt auf stdout jedes Target, das der neu
 # geschriebene Werkzeug-Teil harness/mk/ai-harness-init.md gegenueber dem liegenden neu fuehrt;
