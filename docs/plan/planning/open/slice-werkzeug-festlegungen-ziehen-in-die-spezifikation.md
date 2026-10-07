@@ -23,7 +23,7 @@ und ihr akzeptiertes Negativ zu Skriptkopf und `AGENTS.md` §3.7),
 **Berührte Spec-Stellen:** `spezifikation.md §1`, `spezifikation.md §7` (neu, *Festlegungen der
 Harness-Werkzeuge*), `spezifikation.md §8` (Historie, bisher §7).
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912 (Implementer).
 
 **Autor:** Planner. **Datum:** 2026-10-06.
 
@@ -34,17 +34,26 @@ Harness-Werkzeuge*), `spezifikation.md §8` (Historie, bisher §7).
 eines Harness-Werkzeugs — was ein Gate, Prüfer oder Hook prüft und wie er an Randformen entscheidet —
 in der Spezifikation: als Verfeinerung in §1, wenn das Werkzeug genau eine Anforderung durchsetzt,
 sonst in §7 *Festlegungen der Harness-Werkzeuge*; die Historie wird §8. Sensor-Datei und Skriptkopf
-tragen die Festlegung nicht mehr, sondern einen Rang-Zeiger dorthin.
+tragen die Festlegung nicht mehr, sondern einen Rang-Zeiger dorthin. **Liefer-Punkt 3 ist vor dem
+Release `v0.2.9` fällig:** die emittierte Gate-Vorlage beschreibt sonst im Ziel eine Überschrift, die
+dessen Spezifikations-Skelett nicht trägt.
 
 **Lage** (Arbeitsbaum dieses Plans, keine Erwartungswerte):
 
 ```sh
 ls harness/sensors/*.md | wc -l                                  # 21
 ls harness/tools/*.sh | wc -l                                    # 28 Skriptköpfe
-grep -n '^## ' spec/spezifikation.md | tail -1                   # ## 7. Historie
+grep -n '^## ' spec/spezifikation.md                             # Aufnahme-Regel, 3, 5, 6, 7. Historie — kein §1
 grep -c '"7. Historie"' .d-check.yml                             # 1 (exclude-sections)
-grep -n '7\. Historie' internal/emit/templates/d-check.yml       # zwei Kommentar-Stellen
+grep -n '7\. Historie' internal/emit/templates/d-check.yml internal/emit/emit_test.go
+                                                                 # d-check.yml:34, :44 (Kommentar), emit_test.go:111 (Kommentar)
+grep -n '^## [78]' .harness/baseline/v6.16.0/templates/spec/spezifikation.template.md
+                                                                 # 7. Festlegungen der Harness-Werkzeuge, 8. Historie
 ```
+
+Das Spezifikations-Skelett eines Ziels kommt aus dem Template-Satz des gepinnten Tags (`DefaultTag`
+in `internal/fetch/baseline.go` ist `v6.16.0`) und trägt §7/§8 bereits; falsch sind allein die
+Kommentare, die es als *„7. Historie"* beschreiben.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
@@ -54,8 +63,9 @@ grep -n '7\. Historie' internal/emit/templates/d-check.yml       # zwei Kommenta
   die §3.7 führt ([ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md), akzeptiertes Negativ).
 - **Form der Sensor-Datei selbst.** *Folge-Slice:*
   [`slice-222`](slice-222-sensor-datei-traegt-die-form-ihrer-vorlage.md).
-- **Emittierte Spezifikations-Vorlage.** *Schicht-Abgrenzung:* sie reist mit dem Pin ([ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md)
-  §Emittierte Ebene); hier werden nur die zwei Kommentare der emittierten `.d-check.yml` wahr.
+- **Emittierte Spezifikations-Vorlage.** *Bestand bleibt stehen:* sie reist mit dem Pin ([ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md)
+  §Emittierte Ebene) und trägt am `v6.16.0` §7/§8 schon (Lage oben); hier werden nur die Kommentare
+  wahr, die sie beschreiben.
 - **Kein neuer Ausnahme-Gegenstand.** *Anderer Vorgang:* `exclude-sections` zieht nur den neuen Namen
   desselben Abschnitts nach — keine Senkung nach [`AGENTS.md`](../../../../AGENTS.md) §3.5.
 
@@ -66,12 +76,16 @@ grep -n '7\. Historie' internal/emit/templates/d-check.yml       # zwei Kommenta
       Liste liegt dem Review vor.
 - [ ] **2 — Spezifikation:** §7 *Festlegungen der Harness-Werkzeuge* trägt die Festlegungen mit
       Bindungs-Spalte ([`MR-075`](../../../../harness/conventions.md#mr-075)), §1 die
-      Verfeinerungen; die Historie ist §8; `exclude-sections` in `.d-check.yml` nennt den neuen
+      Verfeinerungen (der Abschnitt entsteht nur, wenn die Inventur eine liefert — heute führt die
+      Datei keinen §1); die Historie ist §8; `exclude-sections` in `.d-check.yml` nennt den neuen
       Namen; jede Quelle trägt einen Rang-Zeiger. **Rot gesehen**
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6): `exclude-sections` behält einmal den alten Namen,
       und `make docs-check` meldet einen Befund aus dem Historie-Abschnitt.
-- [ ] **3 — Emittierte Kommentare:** die zwei Stellen in `internal/emit/templates/d-check.yml`
-      beschreiben, was da ist; `make full-smoke` endet EXIT 0.
+- [ ] **3 — Emittierte Kommentare (vor `v0.2.9`):** die zwei Stellen in
+      `internal/emit/templates/d-check.yml` (Überschrift des Skeletts ist *„8. Historie"*; die
+      Dogfood-Liste trägt den neuen Namen) und der Kommentar in `internal/emit/emit_test.go`
+      beschreiben, was da ist; `exclude-sections: [Geschichte]` der Vorlage bleibt; `make full-smoke`
+      endet EXIT 0.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -89,12 +103,12 @@ grep -n '7\. Historie' internal/emit/templates/d-check.yml       # zwei Kommenta
 | `spec/spezifikation.md` §1, §7, §8 | update | Liefer-Punkt 2 |
 | `harness/sensors/*.md`, Köpfe in `harness/tools/` | update | Festlegung raus, Rang-Zeiger rein |
 | `.d-check.yml` (`exclude-sections`) | update | neuer Abschnittsname |
-| `internal/emit/templates/d-check.yml` | update | Liefer-Punkt 3 |
+| `internal/emit/templates/d-check.yml`, Kommentar in `internal/emit/emit_test.go` | update | Liefer-Punkt 3 |
 
 ## 4. Trigger
 
 **Start** (`next` → `in-progress`): `slice-sprung-auf-v6160-wird-vollzogen` liegt in `done/` — die
-Regel steht dann im vendored Baum. WIP-Limit frei.
+Regel steht dann im vendored Baum (erfüllt). WIP-Limit frei.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
