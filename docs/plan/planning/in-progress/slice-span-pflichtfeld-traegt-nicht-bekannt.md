@@ -26,7 +26,7 @@ bestätigt durch [ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160
 [`MR-077`](../../../../harness/conventions.md#mr-077),
 [`MR-075`](../../../../harness/conventions.md#mr-075).
 
-**Berührte Spec-Stellen:** `SPEC-024`, `SPEC-055`, `SPEC-010`, `SPEC-011`, `SPEC-012`, `SPEC-044`
+**Berührte Spec-Stellen:** `SPEC-024`, `SPEC-055`, `SPEC-087`, `SPEC-010`, `SPEC-011`, `SPEC-012`
 (`spezifikation.md §5`).
 
 **Verantwortlich:** pt9912 (Implementer).
@@ -42,8 +42,14 @@ Span die ausdrückliche Kennzeichnung *nicht bekannt* samt Nennung der Quelle �
 am Tag `v6.16.0`, Welle 154). Die Draht-Form legt die Spezifikation fest
 ([`ADR-0078`](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md) Festlegung 4 Punkt 1); Erfassung
 und Tests folgen. `SPEC-010`/`011`/`012` sind nach Festlegung 4 Punkt 3 eingeordnet: wo `""` *nicht
-bekannt* heißt (`agent_role`, Lesevorschrift `SPEC-044`), dieselbe Kennzeichnung; wo `""` einen Wert
+bekannt* heißt (`agent_role`, Lesevorschrift `SPEC-044`), steht das als Einordnung; wo `""` einen Wert
 trägt (*kein Slice*, *kein Bezug*), bleibt er von *nicht bekannt* unterscheidbar.
+
+**Schnitt.** Dieser Slice liefert die Cache-Status-Hälfte, die
+[`MR-076`](../../../../harness/conventions.md#mr-076) trägt. Die `agent_role`-Hälfte verlangt eine
+Änderung von [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) (Kriterium
+*Rolle wird abgeleitet*: das Feld bleibt bei `general-purpose` und im Haupt-Kontext leer) und geht an
+den Folge-Slice (Ausschluss unten).
 
 **Lage** (Arbeitsbaum dieses Plans, keine Erwartungswerte):
 
@@ -81,6 +87,13 @@ Draht-Form.
   `slice-emittierte-feldliste-traegt-verfuegbarkeit-und-aufbewahrung`; hier zieht die Feldliste
   nur den Inhalt nach, der aus `span.FieldList` kommt.
 - **Ein Release des Trägers.** *Anderer Vorgang:* der Release-Schnitt.
+- **Die Kennzeichnung bei `agent_role`, `SPEC-010`/`SPEC-043`/`SPEC-044` und die Auswertung
+  (`make span-report`).** *Folge-Slice übernimmt es:* `slice-agent-role-traegt-nicht-bekannt`
+  (`open/`), Start-Trigger ist der Entscheid des Auftraggebers über den Change Request zu
+  [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung)
+  ([`MR-015`](../../../../harness/conventions.md#mr-015),
+  [`MR-036`](../../../../harness/conventions.md#mr-036)). Bis dahin bleibt das Feld leer, und
+  `SPEC-043` trägt *(Abweichung 3)*.
 
 ## 2. Definition of Done
 
@@ -88,19 +101,14 @@ Draht-Form.
       Draht-Form der Kennzeichnung *nicht bekannt* und wie die Quelle genannt wird, mit
       Bindungs-Spalte nach [`MR-075`](../../../../harness/conventions.md#mr-075); `SPEC-055` führt
       den Cache-Status nicht mehr als Abweichung; je Feld `SPEC-010`/`011`/`012` steht, ob `""`
-      *nicht bekannt* heißt oder einen Wert trägt, und `SPEC-044` ist nachgezogen.
+      *nicht bekannt* heißt oder einen Wert trägt.
 - [ ] **2 — Erfassung, Feldliste und Tests:** Ein Span aus einer Payload ohne `usage` trägt beim
-      Cache-Status die Kennzeichnung, einer mit `usage` die Zähler; ein Span ohne erkennbare Rolle
-      trägt sie bei `agent_role`, einer mit *kein Slice* bleibt davon unterscheidbar; die Feldliste
-      (`span.FieldList`, emittiert verbatim) nennt beides. **Rot gesehen**
+      Cache-Status die Kennzeichnung, einer mit `usage` die Zähler; die Feldliste
+      (`span.FieldList`, emittiert verbatim) nennt sie. **Rot gesehen**
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6): die Erfassung lässt das Feld weg, schreibt `0`
       oder `""` — der benannte Test wird mit einer Meldung über genau dieses Feld rot; ein Fall in
       `test/mutations/` hält die Zusage ([`make mutate`](../../../../harness/sensors/mutate.md) mit
       `MUTATE_CASES`).
-- [ ] **3 — Auswertung:** `make span-report` liest die Kennzeichnung bei `agent_role` wie `""` —
-      der Lauf geht in den Sammelposten, keine Rolle *nicht bekannt* entsteht; Spans vor und nach der
-      Umstellung landen im selben Posten. **Rot gesehen:** die Auswertung prüft nur `""` — der Test
-      mit einem Span, der die Kennzeichnung trägt, wird rot.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -120,9 +128,8 @@ Draht-Form.
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `spec/spezifikation.md` §5 | update | Liefer-Punkt 1 |
-| `internal/span/response.go`, `internal/span/emit.go` (Rollen-Ableitung), `internal/span/fieldlist.go` | update | Kennzeichnung schreiben, Feldliste (Liefer-Punkt 2) |
-| `internal/span/*_test.go` | update | Happy/Negative nach [`LH-FA-13`](../../../../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans), [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) |
-| `internal/report/report.go` + Test | update | Liefer-Punkt 3 |
+| `internal/span/response.go`, `internal/span/notknown.go`, `internal/span/fieldlist.go` | update | Kennzeichnung schreiben, Feldliste (Liefer-Punkt 2) |
+| `internal/span/*_test.go` | update | Happy/Negative nach [`LH-FA-13`](../../../../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) |
 | `test/mutations/<NNN>-…sh` | neu | Mutations-Fall für Liefer-Punkt 2 |
 
 ## 4. Trigger
@@ -141,9 +148,15 @@ aufgehoben. WIP-Limit frei.
   [`ADR-0074`](../../adr/0074-spec-5-fliesstext-klassen-ort-und-lh-bezug-spalte.md) oder `SPEC-083`),
   oder die Quelle ist für einen Lauf nicht benennbar — Übergabe an den Architect.
 
+**Keine Rückführung trotz Blocker.** Die `agent_role`-Hälfte kollidiert mit
+[`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) (Rang 1), nicht mit einer
+ADR — die Bedingung `in-progress → open` trifft sie nicht, und der Slice bleibt ohne sie lieferbar.
+Sie verlässt den Slice per Plan-Änderung an `slice-agent-role-traegt-nicht-bekannt` (§1); der Rest
+bleibt in `in-progress/`.
+
 ## 5. Closure-Trigger
 
-1. `make gates` grün mit den Tests aus Liefer-Punkt 2 und 3; der Mutations-Fall läuft unter
+1. `make gates` grün mit den Tests aus Liefer-Punkt 2; der Mutations-Fall läuft unter
    `make mutate` mit `MUTATE_CASES` und färbt seinen Wächter.
 2. [`MR-076`](../../../../harness/conventions.md#mr-076) liegt unter `harness/conventions/done/`,
    und `grep -c "SPEC-024.*| Pflicht |" spec/spezifikation.md` → **1**.
@@ -153,17 +166,21 @@ aufgehoben. WIP-Limit frei.
 
 ## 6. Risiken und offene Punkte
 
-- **Bedeutung eines Span-Felds wechselt ohne Fassungs-Angabe** — `SPEC-024` und `agent_role` ändern
-  ihre Draht-Form; Spans vor und nach der Umstellung stehen nebeneinander.
+- **Bedeutung eines Span-Felds wechselt ohne Fassungs-Angabe** — `SPEC-024` ändert seine Draht-Form;
+  Spans vor und nach der Umstellung stehen nebeneinander.
   `span-feld-bedeutung-wechselt-ohne-fassungs-angabe` steht bei
   2 Belegen; ein dritter ist eine Lücke mit
   eigenem Folge-Slice. — **Ausgang:** offen bis zur Closure.
 - **Die Kennzeichnung wird als Wert gelesen** — ein Leser, der summiert, zählte sie beim
-  Cache-Status als `0`; beim Cache-Status liest heute keiner, bei `agent_role` trägt Liefer-Punkt 3
-  den einen Leser (§1). — **Ausgang:** offen bis zur Closure.
-- **Feldliste und Träger eines Ziels auf verschiedenem Stand** — schreibt ein Werkzeug-Stand die
-  Feldliste, dessen gepinnter Träger älter ist, sagt sie *Pflicht*, während der Träger das Feld
-  noch weglässt; ob der Pin das zulässt, prüft der Implementer an `make traeger-fetch`. — **Ausgang:** offen bis zur Closure.
+  Cache-Status als `0`; beim Cache-Status liest heute keiner. — **Ausgang:** offen bis zur Closure.
+- **Feldliste und Träger eines Ziels auf verschiedenem Stand** — gemessen: je Release-Tag stimmen
+  Feldliste und Träger überein; ein Werkzeug von unveröffentlichtem `main` schreibt die Feldliste mit
+  *Pflicht*, während `make traeger-fetch` den gepinnten Träger `v0.2.8` holt, der das Feld weglässt.
+  Der nächste Release (`v0.3.0`) schließt die Lücke. — **Ausgang:** offen bis zur Closure.
+- **Die Kurs-Regel gilt hier nur verengt** — `SPEC-087` bindet die Kennzeichnung allein an die
+  Cache-Zähler; `agent_role` bleibt leer, `SPEC-043` trägt weiter *(Abweichung 3)* gegen
+  `modul-15` am Tag `v6.16.0`. — **Ausgang:** offen bis zur Closure; Adresse
+  `slice-agent-role-traegt-nicht-bekannt` (§1).
 
 ## 7. Closure-Notiz
 
