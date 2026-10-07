@@ -9,7 +9,8 @@ import (
 
 // TestCacheStatusIsMarkedNotKnown haelt SPEC-024 mit der Draht-Form aus SPEC-087: der
 // Cache-Status ist Pflicht. Liefert `tool_response.usage` die Zaehler nicht — ein
-// `Agent`-Ergebnis ohne `usage`, jedes andere Werkzeug —, steht in beiden Feldern die
+// `Agent`-Ergebnis ohne `usage`, ein `usage` ohne die zwei Cache-Schluessel, jedes andere
+// Werkzeug —, steht in beiden Feldern die
 // Kennzeichnung mit der Quelle, nie `0`, nie Abwesenheit; mit `usage` stehen die Zahlen.
 // Die Erwartung ist die woertliche Zeichenkette der Spezifikation, nicht der Aufruf von
 // span.NotKnown — sonst folgte der Waechter einer geaenderten Draht-Form mit.
@@ -20,9 +21,10 @@ func TestCacheStatusIsMarkedNotKnown(t *testing.T) {
 		read     = `"cache_read_input_tokens":"nicht bekannt: tool_response.usage"`
 	)
 	ohne := map[string]string{
-		"Agent ohne usage":     `{"tool_name":"Agent","session_id":"s1","tool_response":{"totalTokens":110,"agentType":"reviewer"}}`,
-		"Agent mit usage null": `{"tool_name":"Agent","session_id":"s1","tool_response":{"usage":{"cache_creation_input_tokens":null,"cache_read_input_tokens":null}}}`,
-		"Bash":                 `{"tool_name":"Bash","session_id":"s1","tool_input":{"command":"make gates"}}`,
+		"Agent ohne usage":                      `{"tool_name":"Agent","session_id":"s1","tool_response":{"totalTokens":110,"agentType":"reviewer"}}`,
+		"Agent mit usage null":                  `{"tool_name":"Agent","session_id":"s1","tool_response":{"usage":{"cache_creation_input_tokens":null,"cache_read_input_tokens":null}}}`,
+		"Agent mit usage ohne Cache-Schluessel": `{"tool_name":"Agent","session_id":"s1","tool_response":{"usage":{"input_tokens":11,"output_tokens":5}}}`,
+		"Bash":                                  `{"tool_name":"Bash","session_id":"s1","tool_input":{"command":"make gates"}}`,
 	}
 	for name, payload := range ohne {
 		t.Run(name, func(t *testing.T) {
