@@ -1,6 +1,6 @@
 # ADR-0081: Die Grenze der Archiv-Läufe ist die Welle-Closure in der Commit-Abstammung — später geschlossene Slices bleiben liegen
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-10-07
 
@@ -133,7 +133,7 @@ Datums-Vergleich findet nirgends statt.
 
 | Tooling | Regel | Make-Target |
 |---|---|---|
-| `full-smoke`-Stufe der Archivierung im Ziel | Ziel mit geschlossener, unarchivierter `welle-1` (Ergebnisnotiz committet), ein wellenloser Slice davor, einer danach: `archive-welle altbestand` nimmt nur den frühen, ein anschließendes `archive-welle welle-1` lässt den späten flach liegen. Rot: den Abstammungs-Schnitt im Aufrufer überspringen ⇒ der späte Slice wandert in ein Archiv | `make full-smoke` |
+| `full-smoke`-Stufe der Archivierung im Ziel | Ziel mit geschlossener, unarchivierter `welle-1` (Ergebnisnotiz committet), ein wellenloser Slice davor, einer danach: `archive-welle altbestand` nimmt nur den frühen, ein anschließendes `archive-welle welle-1` lässt den späten flach liegen. Rot: den Abstammungs-Vergleich in `internal/archive` überspringen ⇒ der späte Slice wandert in ein Archiv (im Aufrufer übersprungen, fehlen die Werte und Festlegung 4(b) sperrt — eine andere Rot-Ursache) | `make full-smoke` |
 | `full-smoke`, realer flacher Klon | dasselbe Ziel per `git clone --depth 1 file://…` geklont: `archive-welle altbestand` bricht mit der Shallow-Sperre ab, `done/` unverändert. Rot: die `--is-shallow-repository`-Prüfung entfernen ⇒ der Lauf archiviert still beide Slices | `make full-smoke` |
 | Go-Test in `internal/archive` | Einordnung über eingespeiste Abstammungs-Werte, einschließlich früheste-Closure-Regel und paralleler Grenz-Commits. Rot: Vergleich umkehren. Deckt die Logik, nicht die git-Quelle — die tragen die zwei Zeilen darüber | `make test` |
 
@@ -155,6 +155,7 @@ von `v6.16.0` ohne blockierenden Befund geprüft hat; die Accept-Zeile nennt den
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-10-07 | Proposed | Adopter-CR zu `v0.2.8` |
+| 2026-10-07 | **Accepted** | Review `2026-10-07-adr-0081-review` mit Nachprüfung *„annahmereif"* (Commit `ad96c251`), Annahme durch den Auftraggeber am 2026-10-07 ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1) |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
