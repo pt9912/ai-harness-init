@@ -16,7 +16,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 
 **Berührte Spec-Stellen:** `—`
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912 (Implementer).
 
 **Autor:** Planner (Gruppierungs-Durchgang, `modul-06-roadmap.md` §Wellen-Closure-Prozedur Schritt 3). **Datum:** 2026-10-07.
 
@@ -36,9 +36,12 @@ Fundmenge unter demselben Kommando; der Schnitt in Träger-Familie und Rest erzw
 
 **Lage** (keine Erwartungswerte):
 `git grep -cE '\b(ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3})\b' -- 'internal/emit/templates' ':!*_test.go'`
-und dasselbe Muster über die Go-Strings in `internal/emit/*.go`. Zwei Zeilen sind funktionale
-Nutzlast — der Default-Commit-Text in `selbstpruefung.sh` und `selbstpruefung.mk` muss ein
-Kennungs-Muster des Ziels treffen — und bleiben als namentliche Ausnahme.
+und dasselbe Muster über `internal/emit/*.go` — dort zählt es auch die Quell-Kommentare des
+Werkzeugs mit, die nicht emittiert werden; maßgeblich ist darum die Fundmenge über der **realen**
+Emission, die der Wächter (Liefer-Punkt 2) misst. Zwei Zeilen sind funktionale Nutzlast — der
+Default-Commit-Text `Selbstpruefung mit Kennung LH-FA-01` in `selbstpruefung.sh` und
+`selbstpruefung.mk` muss ein Kennungs-Muster des Ziels treffen
+(`git grep -n 'Kennung LH-FA-01' -- internal/emit/templates`) — und bleiben als namentliche Ausnahme.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
@@ -57,14 +60,20 @@ Kennungs-Muster des Ziels treffen — und bleiben als namentliche Ausnahme.
       (Träger-Familie `traeger-fetch.sh`/`traeger.mk` und die übrigen) tragen keine Kennung außer den
       zwei Nutzlast-Zeilen; Tests, die eine Meldung zitieren (`grep -rn '<präfix>:' internal test`),
       ziehen mit und halten die Aussage statt der Kennung.
+      **Rot-Werkzeug:** der Wächter aus Liefer-Punkt 2, zuerst über dem unveränderten Bestand
+      gefahren (`make test-go`): rot, und seine Meldung nennt je Datei die Fundmenge; nach dem
+      Nachzug grün mit genau den zwei Nutzlast-Zeilen.
 - [ ] **2 — Wächter:** ein Go-Test in `internal/emit/` emittiert jede Lauf-Variante (Sprache,
       `--arch`, mit/ohne Erfassung) in ein Temp-Verzeichnis und vergleicht die Fundmenge mit der
       namentlichen Liste *Datei → Kennungs-Menge* auf Gleichheit in beide Richtungen, über die
       **reale** Emission. **Rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6), beide
       Richtungen: eine erfundene Kennung in einer Vorlage → rot mit Dateiname; eine Ausnahme aus der
-      Liste gestrichen → rot. Ein Fall in `test/mutations/` führt die erste Mutation (`sed`-Anker gegen
-      den Quell-Bestand, [`MR-071`](../../../../harness/conventions.md#mr-071)).
-- [ ] `make gates` grün; `make mutate` für den neuen Fall ohne Befund.
+      Liste gestrichen → rot. **Rot-Werkzeug:** zwei Fälle in `test/mutations/` (`verify: test-go`,
+      `sed`-Anker gegen den Quell-Bestand, [`MR-071`](../../../../harness/conventions.md#mr-071)):
+      einer setzt eine erfundene Kennung in eine emittierte Vorlage, einer streicht eine Nutzlast-Zeile
+      aus der Ausnahme-Liste des Tests; `make mutate MUTATE_CASES=<nr>` meldet beide gebunden, die
+      Fehlermeldung ist gelesen und als `expect:` eingetragen.
+- [ ] `make gates` grün; `make mutate` für die zwei neuen Fälle ohne Befund.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
@@ -95,7 +104,7 @@ Kennungs-Muster des Ziels treffen — und bleiben als namentliche Ausnahme.
 
 ## 5. Closure-Trigger
 
-1. `make gates` grün, der Mutations-Fall als gebunden gemeldet.
+1. `make gates` grün, beide Mutations-Fälle als gebunden gemeldet.
 2. Die Fundmenge des Wächters ist gleich der Ausnahme-Liste (zwei Nutzlast-Zeilen), gelesen in §7.
 
 **Lerneintrag** in einer der drei Formen, §7; die Closure schreibt der Planner
