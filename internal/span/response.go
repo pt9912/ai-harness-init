@@ -23,15 +23,15 @@ import "encoding/json"
 // die normative Fassung (ADR-0011 Folgepflicht 1: "der naechste Leser muss es ohne Code
 // finden"), dieses Struct ihre Umsetzung.
 type AgentResult struct {
-	SpawnedRole              string `json:"spawned_role,omitempty"`
-	InputTokens              *int64 `json:"input_tokens,omitempty"`
-	OutputTokens             *int64 `json:"output_tokens,omitempty"`
-	CacheCreationInputTokens *int64 `json:"cache_creation_input_tokens,omitempty"`
-	CacheReadInputTokens     *int64 `json:"cache_read_input_tokens,omitempty"`
-	TotalTokens              *int64 `json:"total_tokens,omitempty"`
-	TotalDurationMS          *int64 `json:"total_duration_ms,omitempty"`
-	TotalToolUseCount        *int64 `json:"total_tool_use_count,omitempty"`
-	ModelVersion             string `json:"model_version,omitempty"`
+	SpawnedRole              string     `json:"spawned_role,omitempty"`
+	InputTokens              *int64     `json:"input_tokens,omitempty"`
+	OutputTokens             *int64     `json:"output_tokens,omitempty"`
+	CacheCreationInputTokens CacheCount `json:"cache_creation_input_tokens"`
+	CacheReadInputTokens     CacheCount `json:"cache_read_input_tokens"`
+	TotalTokens              *int64     `json:"total_tokens,omitempty"`
+	TotalDurationMS          *int64     `json:"total_duration_ms,omitempty"`
+	TotalToolUseCount        *int64     `json:"total_tool_use_count,omitempty"`
+	ModelVersion             string     `json:"model_version,omitempty"`
 }
 
 // responseKey ist ein Eintrag der Positiv-Liste: WO der Wert steht und WIE er
@@ -78,8 +78,8 @@ func responseKeys() []responseKey {
 
 func intoInputTokens(r *AgentResult, v json.RawMessage)   { r.InputTokens = count(v) }
 func intoOutputTokens(r *AgentResult, v json.RawMessage)  { r.OutputTokens = count(v) }
-func intoCacheCreation(r *AgentResult, v json.RawMessage) { r.CacheCreationInputTokens = count(v) }
-func intoCacheRead(r *AgentResult, v json.RawMessage)     { r.CacheReadInputTokens = count(v) }
+func intoCacheCreation(r *AgentResult, v json.RawMessage) { r.CacheCreationInputTokens = CacheCount{count(v)} }
+func intoCacheRead(r *AgentResult, v json.RawMessage)     { r.CacheReadInputTokens = CacheCount{count(v)} }
 func intoTotalTokens(r *AgentResult, v json.RawMessage)   { r.TotalTokens = count(v) }
 func intoTotalDuration(r *AgentResult, v json.RawMessage) { r.TotalDurationMS = count(v) }
 func intoTotalToolUse(r *AgentResult, v json.RawMessage)  { r.TotalToolUseCount = count(v) }
@@ -181,9 +181,10 @@ func modelVersion(s string) string {
 }
 
 // count nimmt eine ZAHL oder nichts. Ein Wert anderen Typs kostet dieses Feld, nicht den
-// Span — dieselbe tolerante Linie wie Parse. Und ein fehlender Zaehler bleibt ABWESEND
-// statt 0: `0` waere eine Messung, die nie stattfand (Hintergrund-Laeufe liefern keine
-// Zaehler, gemessen in slice-060 §3).
+// Span — dieselbe tolerante Linie wie Parse. Und ein fehlender Zaehler wird nie zu 0:
+// `0` waere eine Messung, die nie stattfand (Hintergrund-Laeufe liefern keine Zaehler,
+// gemessen in slice-060 §3). Die optionalen Zaehler fehlen dann, die zwei Cache-Zaehler
+// tragen als Pflichtfelder die Kennzeichnung (CacheCount).
 func count(v json.RawMessage) *int64 {
 	var n int64
 	if err := json.Unmarshal(v, &n); err != nil {

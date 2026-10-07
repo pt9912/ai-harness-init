@@ -98,8 +98,8 @@ func SchemaNotes() []Note {
 		{Field: "spawned_role", Question: "Welche Rolle lief im Subagenten? — aus dem Ergebnis, gegen die kanonischen Namen normalisiert"},
 		{Field: "input_tokens", Question: "Wie viele Eingabe-Token verbrauchte der Subagenten-Lauf?"},
 		{Field: "output_tokens", Question: "Wie viele Ausgabe-Token verbrauchte er?"},
-		{Field: "cache_creation_input_tokens", Question: "Zahlte der Lauf den Cache?"},
-		{Field: "cache_read_input_tokens", Question: "Nutzte der Lauf den Cache?"},
+		{Field: "cache_creation_input_tokens", Question: "Zahlte der Lauf den Cache? — ohne Zähler im Ergebnis `" + NotKnown(SourceUsage) + "`"},
+		{Field: "cache_read_input_tokens", Question: "Nutzte der Lauf den Cache? — ohne Zähler im Ergebnis `" + NotKnown(SourceUsage) + "`"},
 		{Field: "total_tokens", Question: "Wie groß war der Subagenten-Lauf insgesamt? — die Summe, die das Werkzeug selbst ausweist"},
 		{Field: "total_duration_ms", Question: "Wie lange lief der Subagent selbst? — nicht `duration_ms`, das den Aufruf misst"},
 		{Field: "total_tool_use_count", Question: "Wie viele Werkzeug-Aufrufe verursachte der Subagent?"},
@@ -139,8 +139,9 @@ func backtickJoin(names []string) string {
 }
 
 const limitCounters = "**Die Verbrauchs-Zähler kommen aus der Mechanik des Agenten-Werkzeugs nicht.**\n" +
-	"Die Token- und Cache-Zähler erreichen eine Zeile nur, wenn das Werkzeug sie im Ergebnis eines\n" +
-	"Subagenten-Aufrufs mitliefert; ein im Hintergrund gestarteter Lauf liefert sie nicht. **Kein\n" +
+	"Die Token- und Cache-Zähler tragen einen Wert nur, wenn das Werkzeug sie im Ergebnis eines\n" +
+	"Subagenten-Aufrufs mitliefert; ein im Hintergrund gestarteter Lauf liefert sie nicht. Dann\n" +
+	"fehlen die Token-Zähler, und die Cache-Zähler tragen `nicht bekannt: tool_response.usage`. **Kein\n" +
 	"Lauf dieses Repos führt sie herbei** — das ist keine Eigenschaft dieses Aufbaus, sondern der\n" +
 	"Mechanik. Ein Bestand ohne Zähler ist deshalb der Normalfall und kein Defekt.\n"
 
@@ -186,7 +187,9 @@ const fieldListHead = "# Erfassungsschicht — die Feldliste und ihre Grenzen\n"
 	"## Feldliste\n" +
 	"\n" +
 	"**Pflicht** heißt: das Feld steht in jeder Zeile, auch leer — leer ist dort eine Aussage und\n" +
-	"kein fehlender Wert. **Optional** heißt: das Feld fehlt, wo es nichts zu sagen gibt.\n" +
+	"kein fehlender Wert. Ein Pflicht-Zähler, dessen Wert die Quelle nicht liefert, trägt statt seiner\n" +
+	"`nicht bekannt:` und die Quelle, die ihn nicht liefert — nie `0`. **Optional** heißt: das Feld fehlt,\n" +
+	"wo es nichts zu sagen gibt.\n" +
 	"\n" +
 	"| Feld | Pflicht | Wonach gefragt wird |\n" +
 	"|---|---|---|\n"

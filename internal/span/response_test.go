@@ -315,14 +315,15 @@ func TestResolvedModelIsStructurallyBounded(t *testing.T) {
 // einem unbekannten Agenten-Typ fehlt `tool_response` GANZ (gemessen, slice-060 §3
 // Zeile 4 — nicht leer, sondern nicht vorhanden); `error` steht auf oberster Ebene,
 // dazu ein bis dahin ungesehenes `is_interrupt`. Es entsteht ein Span mit Name und
-// Status, kein HALBER: die neun Werte fehlen alle, statt mit 0 dazustehen.
+// Status, kein HALBER: die sieben optionalen Werte fehlen, statt mit 0 dazustehen, und die
+// zwei Cache-Zaehler tragen als Pflichtfelder die Kennzeichnung *nicht bekannt*.
 //
 // WAS AN DIESER LISTE EINEN DAUER-ZAHN HAT, und was nicht — sonst behauptet die Liste
-// mehr, als sie bindet: DREI der neun Eintraege sind einzeln
+// mehr, als sie bindet: DREI der sieben optionalen Eintraege sind einzeln
 // gebunden — `input_tokens` von test/mutations/134-span-zaehler-praesent-leer.sh,
 // `output_tokens` von test/mutations/136-span-ausgabezaehler-praesent-leer.sh,
 // `spawned_role` von test/mutations/137-span-rollenfeld-praesent-leer.sh. Die
-// uebrigen SECHS prueft dieser Waechter, aber kein Fall bindet sie einzeln: wer einen
+// uebrigen VIER prueft dieser Waechter, aber kein Fall bindet sie einzeln: wer einen
 // von ihnen aus der Liste streicht, bekommt von `make mutate` keinen Befund. Die
 // normative Fassung dieser Auszaehlung steht in spec/spezifikation.md §5
 // in den Zeilen SPEC-073 bis SPEC-081.
@@ -331,10 +332,11 @@ func TestResolvedModelIsStructurallyBounded(t *testing.T) {
 // Fall bindet einen Eintrag genau dann, wenn das Streichen dieses Eintrags den
 // Fall von "ok" auf Befund kippt; dass seine Mutation den Namen in die
 // Fehlschlag-Zeile schreibt, ist notwendig, nicht hinreichend, denn mustNotContain
-// prueft per strings.Contains und bricht beim ersten Treffer ab. Fuer die zwei
-// Cache-Zaehler ist das Kippen nicht herstellbar, solange "input_tokens" als
-// Teilstring in derselben Liste steht. Die sechs uebrigen omitempty-Kopien sind
-// nicht geschnitten.
+// prueft per strings.Contains und bricht beim ersten Treffer ab.
+//
+// DIE NAMEN STEHEN IN ANFUEHRUNGSZEICHEN: `"input_tokens"` ist sonst ein Teilstring der
+// zwei Cache-Zaehler, die als Pflichtfelder in dieser Zeile STEHEN (SPEC-024) — der
+// Waechter faende sie und waere ohne Mutation rot.
 func TestFailedAgentCallCapturesNothing(t *testing.T) {
 	root := newRoot(t)
 	emit(t, root, `{"hook_event_name":"PostToolUseFailure","tool_name":"Agent",
@@ -342,22 +344,20 @@ func TestFailedAgentCallCapturesNothing(t *testing.T) {
 	  "tool_input":{"subagent_type":"nope","prompt":"`+geheimPrompt+`"}}`)
 	line := rawStream(t, root, "s1")
 	mustContain(t, line, `"tool":"Agent"`, `"status":"error"`, `"event":"PostToolUseFailure"`)
-	// DIE NEUN WERTE NAMENTLICH. Fehlt einer, faellt seine Draht-Form aus der Pruefung:
-	// ein Feld ohne `omitempty` stuende als `"<name>":null` in JEDER Zeile, auch in einem
-	// reinen `Bash`-Span, und kippte die Lesart aus spec/spezifikation.md §5 (SPEC-044) "unbekannt" gegen "nicht
-	// vorhanden" — bei gruenem Gate-Stack.
-	//
-	// Die zwei Cache-Zaehler deckte `"input_tokens"` schon per TEILSTRING ab; sie
-	// stehen jetzt trotzdem namentlich da, damit der Leser NEUN Namen gegen die
-	// Feldtabelle in spec/spezifikation.md §5 zaehlen kann statt SECHS plus einer Teilstring-
-	// Ueberlegung. Sechs ist die Zahl der frueher namentlich genannten Werte; die
-	// zwei Cache-Zaehler kamen per Teilstring dazu, `output_tokens` fehlte ganz.
+	// DIE SIEBEN OPTIONALEN WERTE NAMENTLICH. Fehlt einer, faellt seine Draht-Form aus der
+	// Pruefung: ein Feld ohne `omitempty` stuende als `"<name>":null` in JEDER Zeile, auch
+	// in einem reinen `Bash`-Span, und kippte die Lesart aus spec/spezifikation.md §5
+	// (SPEC-044) "unbekannt" gegen "nicht vorhanden" — bei gruenem Gate-Stack.
 	// `result_bytes` ist KEINER der neun — es ist die Laenge, die jedes Werkzeug
 	// abgibt; sie fehlt hier, weil `tool_response` ganz fehlt.
 	mustNotContain(t, line,
-		"spawned_role", "input_tokens", "output_tokens",
-		"cache_creation_input_tokens", "cache_read_input_tokens",
-		"total_tokens", "total_duration_ms", "total_tool_use_count", "model_version",
-		"result_bytes",
+		`"spawned_role"`, `"input_tokens"`, `"output_tokens"`,
+		`"total_tokens"`, `"total_duration_ms"`, `"total_tool_use_count"`, `"model_version"`,
+		`"result_bytes"`,
 		geheimPrompt, "is_interrupt", "not found")
+	// Die zwei Cache-Zaehler sind Pflicht und tragen ohne `tool_response` die
+	// Kennzeichnung (SPEC-024, SPEC-087).
+	mustContain(t, line,
+		`"cache_creation_input_tokens":"nicht bekannt: tool_response.usage"`,
+		`"cache_read_input_tokens":"nicht bekannt: tool_response.usage"`)
 }
