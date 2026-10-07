@@ -67,6 +67,14 @@ Eine lokale Go-Installation ist **nicht** nötig — alles läuft über Docker.
 > Für **macOS**, **Windows** und **Linux/ARM** ist damit belegt, dass das Programm dort **läuft** —
 > **nicht**, dass ein kompletter Durchlauf dort durchläuft. Grund für macOS und Windows: die
 > gehosteten Prüf-Maschinen können die benötigten Linux-Container nicht fahren.
+>
+> **Das Image der Dokumentations-Prüfung** und, bei einer geschichteten Bauform,
+> **das der Architektur-Prüfung** sind je auf einen Digest festgelegt, unter dem das Image für
+> **`linux/amd64` und `linux/arm64`** vorliegt; Docker zieht die Variante Ihres Rechners selbst,
+> auf ARM (auch Apple Silicon) ohne Emulation. Nachsehen lässt sich das mit
+> `docker manifest inspect <image>@<digest>` (Referenz und Digest stehen in `d-check.mk` bzw.
+> `a-check.mk` Ihres Repositorys). Gefahren wird der vollständige Durchlauf auch hier nur mit der
+> `linux/amd64`-Variante.
 
 ### Das Werkzeug bereitstellen
 
