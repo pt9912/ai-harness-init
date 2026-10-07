@@ -225,7 +225,7 @@ func matchGlob(glob, rel string) bool {
 }
 
 // TestArchImagePin_CouplesToDirectionPorts (LH-QA-02): die emittierte Config traegt
-// `direction:` auf den Port-Schichten — eine Form, die erst a-check v0.20.0 dekodiert;
+// `direction:` auf den Port-Schichten — eine Form, die a-check erst ab v0.20.0 dekodiert;
 // eine a-check-Fassung vor dieser Form bricht mit Exit 2 ueber dem unbekannten
 // Schluessel. Der Default-Pin haelt deshalb an derselben Fassung wie die Config-Form:
 // faellt er dahinter zurueck, bricht das emittierte Gate beim ersten Lauf — genau
@@ -234,7 +234,7 @@ func matchGlob(glob, rel string) bool {
 // Satz nicht; die rot faerbende Aenderung ist der Pin-Wert selbst und faerbt
 // diesen Test.
 func TestArchImagePin_CouplesToDirectionPorts(t *testing.T) {
-	if !strings.HasSuffix(emit.DefaultArchImage, ":v0.20.0") {
+	if !strings.HasSuffix(emit.DefaultArchImage, ":v0.23.0") {
 		t.Errorf("DefaultArchImage = %q, want die Fassung, die direction auf Port-Schichten dekodiert", emit.DefaultArchImage)
 	}
 	if emit.DefaultArchDigest == "" || !strings.HasPrefix(emit.DefaultArchDigest, "sha256:") {
