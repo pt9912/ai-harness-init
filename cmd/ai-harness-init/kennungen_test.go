@@ -12,9 +12,15 @@ import (
 )
 
 // kennungMuster trifft die Kennungen dieses Repos in Ziffernform: ADR-NNNN, LH-XX-NN,
-// MR-NNN. Ein emittiertes Ziel fuehrt keines dieser Register mit diesen Nummern — eine
-// solche Kennung in einer emittierten Datei zeigt dort ins Leere.
-var kennungMuster = regexp.MustCompile(`\b(ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3})\b`)
+// MR-NNN, SPEC-NNN, CO-NNN, slice-NNN, welle-NN. Ein emittiertes Ziel fuehrt keines
+// dieser Register mit diesen Nummern — eine solche Kennung in einer emittierten Datei
+// zeigt dort ins Leere.
+//
+// GRENZE: die Namensform slice-<name> / welle-<name> (MR-057) trifft das Muster nicht.
+// Sie ist von Werkzeug-Namen derselben Gestalt (slice-mv, slice-lokal) nur durch den
+// Abgleich gegen die Plan-Dateien dieses Repos zu trennen, und die liest der Test nicht —
+// eine emittierte Namens-Kennung bleibt unter ihm gruen.
+var kennungMuster = regexp.MustCompile(`\b(ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3}|SPEC-[0-9]{3}|CO-[0-9]{3}|slice-[0-9]+|welle-[0-9]+)\b`)
 
 // erlaubteKennungen ist die namentliche Ausnahme-Liste Datei → Kennungs-Menge ueber der
 // realen Emission. Beide Eintraege sind funktionale Nutzlast: der Default-Commit-Text der
@@ -31,7 +37,9 @@ func erlaubteKennungen() map[string][]string {
 // das Git-Verzeichnis, die vendored Baseline (Fremdtext des Kurses, kein Text dieses
 // Werkzeugs) und den abgelegten Traeger (das laufende Binaerbild, im Test das
 // Testbinary). GRENZE: die Meldungen, die der Traeger zur Laufzeit ausgibt, liest der
-// Waechter damit nicht.
+// Waechter damit nicht. Gelesen, aber nicht real ist d-check.mk: im Test kommt es aus
+// einer Fixture (docMKFixture), real aus `d-check --print-mk` — Fremdtext wie die
+// Baseline, kein Text dieses Werkzeugs; seinen realen Inhalt haelt der Waechter nicht.
 func kennungsAusnahme(rel string) bool {
 	for _, p := range []string{".git/", ".harness/baseline/", ".harness/state/bin/"} {
 		if strings.HasPrefix(rel, p) {
@@ -84,6 +92,8 @@ func kennungenIn(t *testing.T, root string, into map[string]map[string]bool) {
 //
 // GRENZE: gelesen ist, was diese Varianten schreiben. Der add-lang-Pfad an einem
 // Unterverzeichnis und Flag-Kombinationen ausserhalb der Liste unten laufen nicht.
+// Erkannt sind die Formen aus kennungMuster; die Namensform slice-<name> nicht (dort
+// benannt).
 func TestEmittierteDateienTragenNurImZielAufloesendeKennungen(t *testing.T) {
 	varianten := []struct {
 		name      string
