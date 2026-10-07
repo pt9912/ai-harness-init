@@ -20,7 +20,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 [`MR-036`](../../../../harness/conventions.md#mr-036),
 [`MR-042`](../../../../harness/conventions.md#mr-042).
 
-**Berührte Spec-Stellen:** `SPEC-010`, `SPEC-043`, `SPEC-044`, `SPEC-087` (`spezifikation.md §5`).
+**Berührte Spec-Stellen:** `SPEC-010`, `SPEC-011`, `SPEC-012`, `SPEC-043`, `SPEC-044`, `SPEC-055`, `SPEC-087` (`spezifikation.md §5`).
 
 **Verantwortlich:** —
 
@@ -48,6 +48,22 @@ grep -n 'sonst bleibt das Feld leer' spec/lastenheft.md spec/spezifikation.md
 grep -n 'agent_role\\":\\"$erwartet' harness/tools/full-smoke.sh
 ```
 
+**Übergabe aus `slice-span-pflichtfeld-traegt-nicht-bekannt`** (Planner, 2026-10-07) — drei Punkte, die
+denselben Change Request brauchen oder dieselben Zeilen in `spezifikation.md` §5 berühren:
+
+1. **Rang-1-Lesart von `LH-FA-13` (Verifikation V-2).** Das Kriterium *Leer heißt unbekannt* liest jeden
+   leeren Pflichtwert als *unbekannt*; `SPEC-011`/`012` setzen `[]` als Wert *kein Slice*/*kein Bezug*,
+   gestützt vom Kriterium *Korrelations-Achsen* und [ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md)
+   Festlegung 4 Punkt 3. Die zwei Kriterien in Rang 1 sagen nicht dasselbe; die Frage gehört in den
+   Change Request zu [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung).
+2. **`references()` liefert `[]` auch bei unlesbarer Slice-Datei (Review L-3).** Der Span trägt dann
+   `"requirement":[]`, den `SPEC-012` als *kein Bezug* einordnet, obwohl der Wert unbekannt ist
+   (`internal/span/emit.go`, `references`). Wie der Fehlerpfad den Wert trägt, folgt aus der Lesart in Punkt 1.
+3. **`SPEC-055` zählt die Fälle der Kennzeichnung unvollständig auf.** Genannt sind *jeder andere Span*
+   und *`Agent`-Aufruf ohne `usage`*; der Fall *`usage` ohne Cache-Schlüssel* steht allein unter der
+   allgemeinen Regel `SPEC-087` (Wächter: Fall 540). Weitet dieser Slice `SPEC-087` auf `agent_role`,
+   zieht er die Aufzählung in `SPEC-055` mit.
+
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Der Change Request selbst.** *Anderer Vorgang:* ob [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) geändert wird, entscheidet der
@@ -56,8 +72,6 @@ grep -n 'agent_role\\":\\"$erwartet' harness/tools/full-smoke.sh
   ([`MR-042`](../../../../harness/conventions.md#mr-042)). Dieser Slice setzt den Entscheid um.
 - **Der Cache-Status.** *Bestand bleibt stehen:* geliefert von
   `slice-span-pflichtfeld-traegt-nicht-bekannt` (`SPEC-024`, `SPEC-087`).
-- **`SPEC-011`/`012` (`slice`, Bezug).** *Bestand bleibt stehen:* dort trägt `""` einen Wert und ist
-  bereits eingeordnet.
 
 ## 2. Definition of Done
 
@@ -118,6 +132,11 @@ Eintrag in `spec/lastenheft.md` §7 Historie. Lehnt er ab, geht der Slice `open 
   Beleg kann 3× erreichen. — **Ausgang:** offen bis zur Closure.
 - **Die Kennzeichnung wird als Rolle gelesen** — ein Leser außer `internal/report` zählte
   *nicht bekannt* als eigene Rolle. — **Ausgang:** offen bis zur Closure.
+
+- **Die Lesart von `LH-FA-13` ändert die Einordnung von `SPEC-011`/`012`** — fällt der Entscheid auf
+  *leer heißt unbekannt*, tragen `slice`/`requirement` künftig die Kennzeichnung oder ein eigenes
+  Fehlerpfad-Signal, und der Slice wächst um eine Ableitung (Rückführung `in-progress` → `next`). —
+  **Ausgang:** offen bis zur Closure.
 
 ## 7. Closure-Notiz
 
