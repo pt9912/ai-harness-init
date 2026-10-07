@@ -1,4 +1,5 @@
 # MR-003 — Härtung: inhaltsbasierter Nachweis und Sub-Shell-Prüfung
+> **ÜBERHOLT: die Restlücke in (a) als vollständige Grenze des Stop-Hooks → [`MR-085`](../conventions.md#mr-085--das-handoff-gate-bindet-an-einen-neuen-head-nicht-an-jedes-turn-ende).** Die übrigen Felder binden fort: der Nachweis bleibt inhaltsbasiert, ein neuer HEAD ohne gedeckten Inhalt blockiert, (b) ist unberührt; hinzu kommt die Grenze aus `MR-085` (ohne neuen HEAD frei).
 
 - **Datum:** 2026-06-13
 - **Geltungsbereich:** [`harness/tools/working-tree-hash.sh`](../../harness/tools/working-tree-hash.sh), [`.claude/hooks/`](../../.claude/hooks/)

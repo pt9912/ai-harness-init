@@ -1,4 +1,5 @@
 # MR-002 — Gate-Nachweis-Mechanik und Claude-Hooks
+> **ÜBERHOLT: der Satz *„der Stop-Hook vergleicht den Hash"* im Feld Adaption, als Bindepunkt gelesen → [`MR-085`](../conventions.md#mr-085--das-handoff-gate-bindet-an-einen-neuen-head-nicht-an-jedes-turn-ende).** Die übrigen Felder binden fort: Hash-Mechanik, Hooks und Guard bleiben; im Default vergleicht der Hook den Hash erst, wenn HEAD vom gestempelten abweicht.
 
 - **Datum:** 2026-06-13
 - **Geltungsbereich:** [`harness/tools/`](../../harness/tools/), [`.claude/`](../../.claude/), `make record-gates`
