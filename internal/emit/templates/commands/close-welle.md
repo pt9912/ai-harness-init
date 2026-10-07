@@ -21,8 +21,9 @@ Wellen-Closure), Modul 7 (Carveouts), Modul 5 (Lifecycle). Bei Konflikt gilt der
      emittierten Schicht stehen unten; ergänze/streiche nach deinem Repo. -->
 
 - **Docker-only + Gate-Nachweis/Stop-Hook.** Nur `make`-Targets; `make gates` endet mit
-  `record-gates`. Jede Inhaltsänderung nach einem Gate-Lauf (inkl. Commit) macht den Stempel ungültig →
-  nach dem Wave-Self-Close-Commit `make gates` grün bestätigen.
+  `record-gates`. Ein neuer Commit mit Inhalt, den kein grüner Lauf deckt, lässt den Stop-Hook rot
+  (streng auch ohne Commit, wenn `.harness/stop-gate-streng` liegt oder `STOP_GATE_STRENG=1` gesetzt
+  ist) → nach dem Wave-Self-Close-Commit `make gates` grün bestätigen.
 - **Strenges Doc-Gate.** `LH-`/`ADR-`/`MR-`-Kennungen in gescannten `.md` als klickbare Anker-Links —
   die Results-Notiz und die Roadmap werden gescannt.
 - **Neue Artefakte per `cp` aus den vendored Templates** — die Results-Notiz entsteht per `cp` aus
@@ -128,8 +129,8 @@ Wellen-Closure), Modul 7 (Carveouts), Modul 5 (Lifecycle). Bei Konflikt gilt der
 
 ## Abschluss
 
-8. `make gates` grün nach dem Commit bestätigen (der Stop-Hook-Stempel muss auf den aktuellen Tree
-   passen). Erst wenn **alle sechs Belege** vorliegen — Trigger · Carveout-Audit · Results-Notiz ·
+8. `make gates` grün nach dem Commit bestätigen (nach einem neuen Commit gibt der Stop-Hook erst
+   frei, wenn ein grüner Lauf dessen Inhalt deckt). Erst wenn **alle sechs Belege** vorliegen — Trigger · Carveout-Audit · Results-Notiz ·
    Archivierung (oder ihre nicht eingetretene Start-Bedingung) · Self-Close-Commit ·
    fortgeschriebene Roadmap — ist die Welle auditierbar geschlossen.
 

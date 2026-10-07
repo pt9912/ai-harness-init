@@ -4318,9 +4318,11 @@ if [ "$selbst_rc" -ne 0 ]; then
 	einordnen "make selbstpruefung im sprachlosen Ziel" "$selbst_out"
 	exit 1
 fi
-# DIE VIER SAETZE SIND WIRKUNGEN, KEINE ANKUENDIGUNGEN: die zwei Commit-Ausgaenge
-# entstehen aus git, und `Datei(en) geprueft` schreibt das Doku-Gate im Klon — keine der
-# vier Zeilen entsteht durch Interpolation eines Markers.
+# DIE SAETZE SIND WIRKUNGEN, KEINE ANKUENDIGUNGEN: die zwei Commit-Ausgaenge und die drei
+# Stop-Hook-Entscheidungen (ADR-0083: Turn-Ende ohne Commit frei, streng blockiert, Commit
+# ohne Nachweis blockiert) entstehen aus git bzw. dem echten Hook im Klon,
+# und `Datei(en) geprueft` schreibt das Doku-Gate im Klon — keine der
+# Zeilen entsteht durch Interpolation eines Markers.
 # DIE LETZTEN ZWEI HALTEN ZUSAMMEN EINE EIGENE ZUSAGE: die Vorlage druckt die GANZE
 # Ausgabe des Gate-Schritts, nicht nur deren letzte Zeile. Die zwei Spuren stammen aus
 # zwei Kommandos der Kette und stehen auf verschiedenen Zeilen — ein Rueckfall auf die
@@ -4328,10 +4330,13 @@ fi
 for satz in 'der frische Klon traegt lokal keinen core.hooksPath' \
             'selbstpruefung: ROT — die Message [' \
             'selbstpruefung: GRUEN — die Message [' \
+            'selbstpruefung: STOP FREI — ' \
+            'selbstpruefung: STOP STRENG — ' \
+            'selbstpruefung: STOP BLOCK — ' \
             'Integritaet + Vollstaendigkeit' \
             'Datei(en) geprüft'; do
 	if ! grep -qF -- "$satz" <<<"$selbst_out"; then
-		echo "full-smoke: FEHLER — sprachlos: die Selbstpruefung belegt den Ausgang '$satz' nicht — gelesen wird die AUSGABE des Laufs: beide Commit-Ausgaenge in EINEM Lauf, und beide Spuren der Gate-Kette, die zusammen belegen, dass die ganze Ausgabe des Gate-Schritts dasteht (LH-FA-11)." >&2
+		echo "full-smoke: FEHLER — sprachlos: die Selbstpruefung belegt den Ausgang '$satz' nicht — gelesen wird die AUSGABE des Laufs: beide Commit-Ausgaenge und die drei Stop-Hook-Entscheidungen in EINEM Lauf, und beide Spuren der Gate-Kette, die zusammen belegen, dass die ganze Ausgabe des Gate-Schritts dasteht (LH-FA-11)." >&2
 		printf '%s\n' "$selbst_out" >&2
 		exit 1
 	fi
@@ -4535,6 +4540,6 @@ echo "full-smoke: OK — TRAEGER-FETCH IM ZIEL (ADR-0058): im frischen Klon eine
 echo "full-smoke: OK — LIFECYCLE-WECHSEL IM ZIEL: make slice-mv ist kein Gate und steht in keiner gates-Kette; der Aufruf bewegt den Slice, legt den reinen Move als eigenen Commit an (0 insertions/0 deletions gegen den Verweis-Nachzug getrennt) und zieht beide Richtungen nach — den eingehenden Praefix-Verweis der Nachbar-Datei und das praefixlose Geschwister-Ziel in der bewegten Datei; eine ADR bleibt nach der Repo-Politik des Fragments unberuehrt; ueber einem unsauberen Arbeitsbaum bricht der Aufruf ab, nennt es und bewegt nichts; ohne jeden Verweis bleibt es beim einen Move-Commit; neben einem laengeren Praefix-Namen bewegt der exakte Name genau seinen Slice; und ohne das Werkzeug bricht das Ziel laut ab, statt still auf ein fehlendes Programm zu zeigen."
 echo "full-smoke: OK — COMMIT-KENNUNG IM ZIEL: .githooks/commit-msg liegt ausfuehrbar im Ziel und reist mit dem Klon, seine Aktivierung nicht — make hooks-install setzt core.hooksPath und ist kein Gate (steht in keiner gates-Kette); danach faellt ein Commit OHNE Kennung mit der Meldung der Pruefung und entsteht nicht, einer MIT Kennung geht durch, und git commit --no-verify umgeht den Traeger; die Reichweite (Umgehung, Anwesenheit-statt-Wahrheit, die von keinem Commit-Waechter pruefbare zweite Haelfte der Zusage, die mitgenommenen Werkzeug-Commits) steht im Ziel geschrieben."
 echo "full-smoke: OK — KLASSE DES COMMIT-TRAEGERS (ADR-0054 Festlegung 1 und 3): der Traeger liegt skip-if-present und die Pruefung daneben konvergent — ein FREIER Pfad bekommt den Traeger des Werkzeugs (er liegt ausfuehrbar im Ziel und ruft die Pruefung daneben), ein BELEGTER bleibt Byte fuer Byte unberuehrt und der Lauf nennt Pfad und mitgelieferte Pruefung; die Drift der Pruefung heilte der naechste Lauf, die des Traegers blieb stehen."
-echo "full-smoke: OK — SELBSTPRUEFUNG IM ZIEL (LH-FA-11): das gebootstrappte Repo faehrt make selbstpruefung ueber einem frischen Klon seiner selbst — der Klon traegt keinen core.hooksPath, der Aktivierungsschritt setzt ihn, danach faellt ein Commit OHNE Kennung (HEAD unbewegt) und geht einer MIT Kennung durch, und das Gate-Kommando laeuft im Klon gruen; beide Ausgaenge stehen in EINEM Lauf, das Kommando haengt an keiner gates-Kette des Ziels, und ein am Aufruf gesetzter Marker lenkt den Gate-Schritt (LH-FA-02)."
+echo "full-smoke: OK — SELBSTPRUEFUNG IM ZIEL (LH-FA-11): das gebootstrappte Repo faehrt make selbstpruefung ueber einem frischen Klon seiner selbst — der Klon traegt keinen core.hooksPath, der Aktivierungsschritt setzt ihn, danach faellt ein Commit OHNE Kennung (HEAD unbewegt) und geht einer MIT Kennung durch, und das Gate-Kommando laeuft im Klon gruen; danach gibt der Stop-Hook im Klon ein Turn-Ende ohne Commit im Default frei, haelt es streng auf und haelt einen Commit ohne Nachweis auf (ADR-0083); die Ausgaenge stehen in EINEM Lauf, das Kommando haengt an keiner gates-Kette des Ziels, und ein am Aufruf gesetzter Marker lenkt den Gate-Schritt (LH-FA-02)."
 echo "full-smoke: OK — E2E-ABDECKUNG IM ZIEL: das gebootstrappte Repo erzeugt mit make e2e-abdeckung die Sicht ueber seine eigenen E2E-Stufen — eine Zeile aus der einen Stufe der mitgelieferten Selbstpruefung, mit dem Gedankenstrich statt einer geratenen Kennung und dem Ort in tools/harness/selbstpruefung.sh; es steht in make help des Ziels (dem einen Index, den ein gebootstrapptes Repo von sich aus fuehrt) und haengt an keiner gates-Kette (LH-QA-01), der zweite Lauf meldet unveraendert, ein am Aufruf gesetzter Ziel-Marker lenkt die geschriebene Datei (LH-FA-02), und eine Stufe ohne Deklaration faerbt den Erzeuger rot."
 echo "full-smoke: OK — ZEILENENDEN IM KLON (ADR-0067): ein Klon des committeten Ziels mit core.autocrlf=true traegt in .harness, .claude/hooks, .githooks, harness/mk und tools/harness kein CR — der git-eigene Traeger laeuft ueber seine Shebang-Zeile, bash tools/harness/baseline-verify.sh endet mit OK, und der Command-Guard blockt das letzte Wort seiner Wortliste; der Kontrollklon mit ausdruecklich gesetztem core.autocrlf=false traegt in denselben Verzeichnissen keines und laesst dieselben Konsumenten laufen; die Restmenge ausserhalb der fuenf Verzeichnisse wird ausgegeben, nicht zugesagt. Gemessen ist der Smudge-Filter von git unter Linux, kein Windows-Lauf (LH-QA-04, Grenze der Messmethode)."

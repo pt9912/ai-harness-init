@@ -29,8 +29,9 @@ Lies den Adaptions-Block („MR-Block") in `harness/conventions.md`; die planung
   klickbarer Anker-Link sein (link-policy: always) — ein bares Kennungs-Token bricht `docs-check`. Der
   Welle-Plan wird gescannt.
 - **Docker-only + Gate-Nachweis/Stop-Hook.** Nur `make`-Targets, nie Host-Toolchain. `make gates`
-  endet mit `record-gates`; jede Inhaltsänderung nach einem Gate-Lauf (inkl. Commit) macht den Stempel
-  ungültig → `make gates` erneut laufen.
+  endet mit `record-gates`; ein neuer Commit mit Inhalt, den kein grüner Lauf deckt, lässt den
+  Stop-Hook rot → `make gates` erneut laufen (streng auch ohne Commit, wenn
+  `.harness/stop-gate-streng` liegt oder `STOP_GATE_STRENG=1` gesetzt ist).
 - **Commit via Message-Datei** (`git commit -F <datei>`).
 
 ## Kontext lesen

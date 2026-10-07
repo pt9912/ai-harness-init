@@ -30,10 +30,13 @@ emittierten Durchsetzungsschicht):
   die Host-Toolchain deiner Sprache (und prüft Sub-Shell-Strings). Rufe nie einen Host-Toolchain auf
   — nur die `make`-Targets.
 - **Gate-Nachweis + Stop-Hook.** `make gates` endet mit `record-gates`, das einen Content-Hash des
-  Working Tree stempelt; der Stop-Hook verweigert den Abschluss, solange der aktuelle Tree nicht
-  passt. **Jede Inhaltsänderung nach einem Gate-Lauf — inklusive jedes Commits und jedes `git mv`
-  — macht den Stempel ungültig: `make gates` erneut laufen.** Ein Commit/Move ohne frischen
-  Gate-Lauf lässt den Stop-Hook rot.
+  Working Tree und die Commit-SHA von HEAD stempelt. Der Stop-Hook bindet an den Commit: er
+  verweigert das Turn-Ende, sobald HEAD ein anderer ist als beim letzten grünen Lauf **und** der
+  Inhalt nicht gedeckt ist — **ein Commit oder `git mv`-Commit ohne frischen `make gates`-Lauf
+  lässt ihn rot.** Ein Turn-Ende ohne neuen Commit geht frei, auch mit ungedeckter Änderung;
+  das Netz dort ist CI auf dem Push. **Streng** — jedes Turn-Ende mit ungedecktem Inhalt blockiert
+  —, wenn die Datei `.harness/stop-gate-streng` im Repo liegt oder `STOP_GATE_STRENG=1` gesetzt
+  ist.
 - **Strenges Doc-Gate (d-check).** Jede `LH-`/`ADR-`/`MR-`-Kennung in einer gescannten `.md` muss
   ein klickbarer Anker-Link sein (link-policy: always) — ein bares Kennungs-Token bricht
   `docs-check` (`id-unlinked`). `codepaths` verlangt, dass Pfade in Inline-Code existieren: eine

@@ -17,8 +17,10 @@ Quellen: vendored Regelwerk `.harness/baseline/<tag>/regelwerk/` — Modul 9 (Im
 - **Docker-only** (`AGENTS.md` §3.9): nur `make`-Targets, nie eine Host-Toolchain; der
   PreToolUse-Guard blockt sie samt Sub-Shell-Strings.
 - **Gate-Nachweis + Stop-Hook.** `make gates` endet mit `record-gates` (Content-Hash des Working
-  Tree); der Stop-Hook verweigert den Abschluss, solange der Tree nicht passt. **Jede
-  Inhaltsänderung nach dem Gate-Lauf — auch Commit und `git mv` — entwertet den Stempel.**
+  Tree und HEAD-SHA). Der Stop-Hook bindet an den Commit: **ein Commit — auch der eines `git mv`
+  — ohne frischen grünen Lauf über seinem Inhalt hält das Turn-Ende auf**; ohne neuen Commit geht
+  es frei. Streng, wenn `.harness/stop-gate-streng` liegt oder `STOP_GATE_STRENG=1` gesetzt ist
+  ([ADR-0083](../../docs/plan/adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md)).
 - **Strenges Doc-Gate (d-check).** Jede `LH-`/`ADR-`/`MR-`-Kennung in einer gescannten `.md` ist
   ein Anker-Link (`id-unlinked`). Pfade in Inline-Code müssen existieren: *geplante* Datei →
   Inline-`d-check:ignore`, *bewusst entfernte* → `ignore-refs`. Spec verweist nie abwärts auf
