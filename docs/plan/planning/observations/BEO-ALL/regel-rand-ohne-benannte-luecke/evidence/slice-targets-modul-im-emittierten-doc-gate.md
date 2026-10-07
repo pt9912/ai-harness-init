@@ -1,0 +1,2 @@
+**Vorgang:** slice-targets-modul-im-emittierten-doc-gate
+**Fund:** Die Grenzen-Aufzählung im Kopf der emittierten `d-check.yml` und im Benutzerhandbuch nannte die `.mk`-Datei unterhalb der Wurzel nicht, die `repo.mk` per `include` einbindet: ihr Target läuft mit `make`, `docs-check` meldet `0 Befund(e)` — die Form, die ADR-0080 Festlegung 1 selbst nahelegt (Review F-1, HIGH). Gefunden vom Review; behoben in `86d20906` (Grenze benannt, in `make full-smoke` gemessen).
