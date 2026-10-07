@@ -119,9 +119,14 @@ Die Schritt-Folge:
    Beleg-Zeile darunter trägt die Klasse *Release-Asset nicht abrufbar* und die
    Zeile `curl: (22) The requested URL returned error: 404`
    (`harness/tools/full-smoke-ausgang.sh`, Muster 5). Die Zeile trennt ein
-   noch nicht veröffentlichtes Release nicht von einem falsch gesetzten
-   `TRAEGER_TAG` — beide liefern denselben Text; ob der Release-Lauf
-   publiziert hat, zeigt `gh release view <tag>`. Operativer Ausgang ist der Re-Run der gefallenen
+   noch nicht veröffentlichtes Release weder von einem falsch gesetzten
+   `TRAEGER_TAG` noch von einem falsch gebildeten Asset-Namen im Fetch-Skript
+   (`asset` aus Plattform und Architektur, in `url` eingesetzt —
+   `harness/tools/traeger-fetch.sh`, emittiert als `tools/harness/traeger-fetch.sh`)
+   — alle drei liefern denselben Text; ob der Release-Lauf publiziert hat,
+   zeigt `gh release view <tag>`. Ist das Release veröffentlicht und der Pin
+   richtig, liegt der Fehler an der Namensbildung, also im Baum, obwohl die
+   Zeile `AUSGANG LEITUNG` sagt. Operativer Ausgang ist der Re-Run der gefallenen
    Jobs nach abgeschlossener Publikation; die Struktur-Entscheidung
    (begrenzte Wartezeit oder Workflow-Anordnung) steht aus
    ([`BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases`](../plan/planning/observations/BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases/)).

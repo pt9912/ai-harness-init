@@ -54,9 +54,13 @@ set -euo pipefail
 #     112691251599, 112729405107 und 112925525011, jeweils an der Stufe
 #     "make traeger-fetch im frischen Klon" mit
 #     "curl: (22) The requested URL returned error: 404".
-#     GRENZE: der Text trennt ein noch nicht veroeffentlichtes Release nicht von einem
-#     falsch gesetzten Pin — beide sind eine nicht mit 2xx beantwortete Anfrage, dieselbe
-#     Lesart wie (4) fuer einen nicht vergebenen Bild-Tag. Die Klasse nennt den Weg,
+#     GRENZE: der Text trennt ein noch nicht veroeffentlichtes Release weder von einem
+#     falsch gesetzten Pin noch von einem falsch gebildeten Asset-Namen im
+#     Fetch-Skript selbst (Variable "asset", aus Plattform und Architektur gebildet und
+#     in "url" eingesetzt) — alle drei sind eine nicht mit 2xx beantwortete Anfrage,
+#     dieselbe Lesart wie (4) fuer einen nicht vergebenen Bild-Tag. Der dritte ist ein
+#     Defekt des geprueften Baums und steht trotzdem als LEITUNG da; rot bleibt der
+#     Lauf in jedem der drei Faelle. Die Klasse nennt den Weg,
 #     keine Ursache. Gefuehrt ist allein der Exit-Code 22 (--fail); jeder andere
 #     curl-Fehler, etwa (23) beim Schreiben am Ziel, faellt in den BAUM-Ausgang.
 #

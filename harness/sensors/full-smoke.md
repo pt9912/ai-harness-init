@@ -93,7 +93,12 @@ Die Tabelle nennt den Exit des Skripts; über `make full-smoke` meldet `make` ei
 als `Fehler <n>` und endet selbst mit 2.
 
 **Sein Grün sagt das eine, sein Rot sagt zwei Dinge:** der Lauf fragt je Durchgang fremde
-Registries nach gepinnten Bildern und macht jede dieser Anfragen zur Bedingung seines Grüns.
+Registries nach gepinnten Bildern und GitHub-Releases nach dem gepinnten Release-Asset samt
+`SHA256SUMS` (Stufe `make traeger-fetch im frischen Klon`) und macht jede dieser Anfragen zur
+Bedingung seines Grüns. Ein nicht abrufbares Release-Asset steht mit der Zeile
+`curl: (22) … 404` als `AUSGANG LEITUNG` da — auch dann, wenn nicht das Release fehlt, sondern
+der Pin falsch gesetzt oder der Asset-Name im Fetch-Skript falsch gebildet ist; der Text trennt
+die drei nicht (Grenze im Kopf von `harness/tools/full-smoke-ausgang.sh`, Muster 5).
 Bricht ein Abschnitt ab, ordnet `harness/tools/full-smoke-ausgang.sh` ihn einem von zwei
 Ausgängen zu — `AUSGANG LEITUNG` (eine ausgehende Anfrage nach einem gepinnten Artefakt wurde
 nicht mit 2xx beantwortet) oder `AUSGANG BAUM` (keine der geführten Formen steht in den
@@ -107,7 +112,9 @@ Fundstellen-Liste; die mechanische Abgrenzung, ihre Gleichung und die fünf Form
 nachprüfbar **kein** Bild anfordern (Trockenlauf, `make span-clean`, der Hook-Wrapper,
 `make help`,
 `make e2e-abdeckung` im Ziel) stehen
-im Kopf von `harness/tools/full-smoke.sh`. Die Ausgangs-Muster, ihre Messung und ihre weiteren
+im Kopf von `harness/tools/full-smoke.sh`. Die mechanische Abgrenzung dort zählt jede
+make-Stufe mit eigenem Exit-Code, also auch `make traeger-fetch im frischen Klon`, die statt
+eines Bildes ein Release-Asset anfordert; sie trägt ihre Einordnung wie jede andere. Die Ausgangs-Muster, ihre Messung und ihre weiteren
 Grenzen (Paketquellen der C++-Kette fallen in den Baum-Fall) stehen im Kopf von
 `harness/tools/full-smoke-ausgang.sh`.
 
