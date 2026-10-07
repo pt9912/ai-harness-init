@@ -347,6 +347,16 @@ make gates
 
 **Wie der Träger zurückkommt:** `make traeger-fetch` holt ihn aus dem gepinnten Release nach — **einmalig** Netzwerk für diesen Aufruf, danach funktionieren `archive-welle` und `span-report` ebenfalls.
 
+### Der Stop-Hook am Ende einer Claude-Code-Antwort
+
+Das aufgesetzte Repository bringt den Hook `.claude/hooks/stop-require-gates.sh` mit. Er läuft, wenn Claude Code eine Antwort beenden will, und prüft, ob der Stand von einem grünen `make gates` gedeckt ist. Ein grüner Lauf schreibt dafür zwei Stempel unter `.harness/state/`: den Inhalts-Hash des Arbeitsbaums und den damaligen HEAD. <!-- d-check:ignore (die Pfade entstehen erst im aufgesetzten Repository) -->
+
+- **Normalfall:** Ist HEAD derselbe wie beim letzten grünen Lauf, gibt der Hook frei. Ist seitdem ein neuer Commit entstanden, blockiert er, sobald der Arbeitsbaum vom Nachweis abweicht — die Antwort endet erst nach einem erneuten grünen `make gates`.
+- **Streng:** Jedes Antwort-Ende, dessen Inhalt nicht gedeckt ist, blockiert — auch ohne neuen Commit. Einschalten lässt sich das für alle mit der versionierten Datei `.harness/stop-gate-streng` (Inhalt beliebig) oder lokal mit `STOP_GATE_STRENG=1`. Streng gilt außerdem, solange noch kein grüner Lauf einen HEAD-Stempel geschrieben hat. <!-- d-check:ignore (der Pfad entsteht erst im aufgesetzten Repository) -->
+- **Fehler und Wiederholung:** Ein unerwarteter Fehler im Hook blockiert. Ein frischer Klon ohne Stempel und ohne lokale Änderung geht frei. Beim zweiten Stop derselben Antwort gibt der Hook frei, damit ein dauerhaft rotes Gate keine Endlosschleife erzeugt.
+
+**Grenze:** Eine „fertig"-Meldung ohne neuen Commit geht im Normalfall ohne Gate-Lauf durch; das Netz dafür ist die CI auf dem Push.
+
 ### Ein Repository erneut aufsetzen (idempotent)
 
 **Voraussetzung:** Sie wollen ein bereits aufgesetztes Verzeichnis reparieren — etwa nach einem abgebrochenen Lauf oder nachdem eine mitgelieferte Datei fehlt oder versehentlich verändert wurde. (Auf einen **neueren Kurs-Stand** hebt Sie dieser Lauf **nicht**; dafür siehe [Eine andere Kurs-Version verwenden](#eine-andere-kurs-version-verwenden).)
