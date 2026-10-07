@@ -72,30 +72,33 @@ Folge-Slices je Werkzeug-Gruppe (Abgrenzung unten).
 
 ## 2. Definition of Done
 
-- [ ] **1 — Gliederung:** §7 *Festlegungen der Harness-Werkzeuge* steht mit der Spaltenform der
-      Vorlage und ohne Zeilen (Bindungs-Spalte nach
-      [`MR-075`](../../../../harness/conventions.md#mr-075)); die Historie ist §8;
+- [x] **1 — Gliederung:** §7 *Festlegungen der Harness-Werkzeuge* steht ohne Zeilen und nennt die
+      Spalten der Vorlage (`ID · Werkzeug · Festlegung · Präzisiert`, Bindungs-Spalte nach
+      [`MR-075`](../../../../harness/conventions.md#mr-075)) als Satz — eine leere Tabelle mit
+      `Präzisiert` färbt `test/spec-tabellenform.bats` rot; die Historie ist §8;
       `exclude-sections` in `.d-check.yml` nennt den neuen Namen. **Rot gesehen**
-      ([`AGENTS.md`](../../../../AGENTS.md) §3.6): `exclude-sections` behält einmal den alten Namen,
-      und `make docs-check` meldet einen Befund aus dem Historie-Abschnitt.
-- [ ] **2 — Aufnahme-Regel:** die Formregel zu den Abschnittsnummern sagt nach dem
+      ([`AGENTS.md`](../../../../AGENTS.md) §3.6): mit einem Probe-Link auf eine ADR in §8 und ohne
+      `"8. Historie"` in `exclude-sections` meldet `make docs-check` `matrix-forbidden` aus dem
+      Historie-Abschnitt; mit dem Namen bleibt derselbe Lauf grün — ohne Probe-Link trägt §8 keinen
+      Verweis, an dem die Ausnahme bindet.
+- [x] **2 — Aufnahme-Regel:** die Formregel zu den Abschnittsnummern sagt nach dem
       Architect-Verdikt (Bezug oben): Nummern werden nicht neu vergeben, außer die Gliederung der
       adoptierten Vorlage setzt sie neu; dann misst der Lauf vorher über Link und Code-Span, ob ein
       eingefrorenes Artefakt den Anker nennt, und findet er einen, fällt die Entscheidung vor der
       Umnummerierung. §8 trägt dazu eine Zeile.
-- [ ] **3 — Emittierte Kommentare (vor `v0.3.0`):** die zwei Stellen in
+- [x] **3 — Emittierte Kommentare (vor `v0.3.0`):** die zwei Stellen in
       `internal/emit/templates/d-check.yml` (Überschrift des Skeletts ist *„8. Historie"*; die
       Dogfood-Liste trägt den neuen Namen) und der Kommentar in `internal/emit/emit_test.go`
       beschreiben, was da ist; `exclude-sections: [Geschichte]` der Vorlage bleibt; `make full-smoke`
       endet EXIT 0.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen).
 
 ## 3. Plan (vor Code)
@@ -106,6 +109,7 @@ Folge-Slices je Werkzeug-Gruppe (Abgrenzung unten).
 | `spec/spezifikation.md` §Aufnahme-Regel, §8 | update | Liefer-Punkt 2 |
 | `.d-check.yml` (`exclude-sections`) | update | Liefer-Punkt 1 |
 | `internal/emit/templates/d-check.yml`, Kommentar in `internal/emit/emit_test.go` | update | Liefer-Punkt 3 |
+| `harness/sensors/adr-immutable.md`, `harness/sensors/docs-check.md` | update | zitieren die `exclude-sections`-Liste; mitgezogen mit Liefer-Punkt 1 (Verifikation, Plan vs. Code; mit der Closure nachgeführt) |
 
 ## 4. Trigger
 
@@ -136,25 +140,59 @@ Regel steht dann im vendored Baum (erfüllt). WIP-Limit frei.
 
 - **Rang-Zeiger nennt eine Festlegung, deren Zweifelsregel anders entscheidet** — beim Umzug
   divergieren Quelle und Spezifikation; `rang-zeiger-nennt-eine-festlegung-deren-zweifelsregel-anders-entscheidet`
-  im Register. — **Ausgang:** bei Closure *entfallen*, wenn der Umzug wie geplant nicht hier
-  stattfindet — die Folge-Slices führen das Risiko in ihrem §6.
+  im Register. — **Ausgang:** *entfallen* — der Umzug fand hier nicht statt; die Folge-Slices (§1) führen das
+  Risiko in ihrem §6.
 - **Festlegung und Rumpf nennen verschiedene Reichweiten** —
-  `festlegung-und-ihr-rumpf-nennen-verschiedene-reichweiten` im Register. — **Ausgang:** wie oben.
+  `festlegung-und-ihr-rumpf-nennen-verschiedene-reichweiten` im Register. — **Ausgang:** *entfallen* — wie oben.
 - **[`MR-001`](../../../../harness/conventions.md#mr-001) nennt den Dogfood-Wert ohne den neuen
   Namen** — sein Feld *Ersetzt-Baseline-Regel* führt `matrix.exclude-sections: [Historie, "7. Historie",
   Geschichte]`, `.d-check.yml` trägt seit Liefer-Punkt 1 zusätzlich `"8. Historie"`. Ob das eine
   Kopf-Marke oder einen Folge-Eintrag braucht, entscheidet der Architect
-  ([`AGENTS.md`](../../../../AGENTS.md) §3.8); dieser Punkt ist die Übergabe. — **Ausgang:** offen bis
-  zum Architect-Verdikt, spätestens zur Closure.
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.8); dieser Punkt ist die Übergabe. — **Ausgang:** weiter offen:
+  → BEO-ALL/adaptions-eintrag-nennt-einen-konfigurationswert-den-ein-slice-fortschreibt (das Verdikt
+  des Architect steht aus).
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+**Rolle:** Planner · **Datum:** 2026-10-07
+
+- **Was hat funktioniert:** DoD 2 und 3 bestätigt, DoD 1 in der Sache getragen
+  ([Verifikation](../../../reviews/2026-10-07-werkzeug-festlegungen-verifikation.md)); Rot-Beleg zu
+  DoD 1 mit Probe-Link nachgetragen (Läufe va–vc, Ursache `matrix-forbidden` aus dem
+  Historie-Abschnitt). Closure-Trigger: `grep -n '^## ' spec/spezifikation.md` nennt `## 8. Historie`
+  als letzten Abschnitt; `make full-smoke` EXIT 0 (Verifikation); `make gates` am Ende dieser Closure.
+- **Was ging anders als geplant:** §7 nennt die Spalten als Satz statt als leere Tabelle
+  ([Review](../../../reviews/2026-10-07-werkzeug-festlegungen-review.md) F-3); der Rot-Beleg aus DoD 1
+  trug am Bestand nur mit Probe-Link (F-2) — beides im DoD-Wortlaut nachgezogen. Zwei Sensor-Dateien
+  zitieren die Liste und wurden mitgezogen, ohne Plan-Zeile; §3 mit der Closure nachgeführt.
+- **Steering-Loop-Eintrag:** *Geschärfte Regel*: Ein Rot-Beleg im Plan nennt die Probe, die der
+  heutige Bestand braucht, damit der Wächter überhaupt einen Gegenstand hat — fehlt der Gegenstand,
+  bleibt die geschwächte Konfiguration grün. Gezählt, nicht verkörpert; Auslöser
+  `BEO-ALL/beleg-faehrt-den-behaupteten-pfad-nicht`.
+  *Benannte Lücke* (F-1): die Formregel der Aufnahme-Regel hat keinen Wächter **vor** der
+  Umnummerierung; die Link-Form fängt `anchors` erst danach, ein Code-Span-Verweis in einem
+  eingefrorenen Artefakt bleibt auch danach stumm (Review, Lauf c5). Träger ist der Lauf, der
+  umnummeriert ([`AGENTS.md`](../../../../AGENTS.md) §3.11).
+- **Beobachtungs-Register (`../observations/`):** je `evidence/slice-werkzeug-festlegungen-ziehen-in-die-spezifikation.md` in
+  [`BEO-ALL/beleg-faehrt-den-behaupteten-pfad-nicht`](../observations/BEO-ALL/beleg-faehrt-den-behaupteten-pfad-nicht/observation.md) (F-2),
+  [`BEO-ALL/regel-rand-ohne-benannte-luecke`](../observations/BEO-ALL/regel-rand-ohne-benannte-luecke/observation.md) (F-1; Stand bleibt `verkörpert`),
+  [`BEO-ALL/plan-abweichung-landet-im-commit-bericht-statt-im-plan`](../observations/BEO-ALL/plan-abweichung-landet-im-commit-bericht-statt-im-plan/observation.md)
+  (Sensor-Dateien nur in `7978f3ca` genannt; erreicht damit **3×**, den Ausgang weist der Lese-Schritt
+  der nächsten Welle-Closure zu) und neu
+  [`BEO-ALL/adaptions-eintrag-nennt-einen-konfigurationswert-den-ein-slice-fortschreibt`](../observations/BEO-ALL/adaptions-eintrag-nennt-einen-konfigurationswert-den-ein-slice-fortschreibt/observation.md) (Risiko 3).
+- **Folge-Slices:** keiner neu; die sieben Umzugs-Slices und `slice-222` aus §1 liegen in `open/`.
+- **Trigger-Audit:** Carveouts, Bootstrap-aware Gates, Hard Rules: keine berührt.
+  [ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md) `Accepted`, kein Trigger fällig.
+- **Risiken aus §6:** jede Zeile trägt ihren Ausgang.
+- **Archivierung:** keine bei dieser Closure — das Repo fährt Wellen, die nächste Welle-Closure
+  sammelt den Slice ein ([`MR-078`](../../../../harness/conventions.md#mr-078)).
+- **Übergabe an den Architect:** (1) Risiko 3 — [`MR-001`](../../../../harness/conventions.md#mr-001)
+  führt in *Ersetzt-Baseline-Regel* die Liste ohne `"8. Historie"`; Kopf-Marke oder Folge-Eintrag ist
+  sein Verdikt (§3.8). (2) INFO aus der Verifikation: das Verdikt
+  `docs/reviews/2026-10-07-spezifikation-nummern-verdikt.md` zählt „drei" bloße §7-Nennungen der
+  Historie in Zeitdokumenten; `git grep -nE '§ ?7 Historie' -- 'docs/reviews/**' 'docs/plan/planning/done/**' | grep -i spezifikation | wc -l`
+  → 8 Zeilen. Die Klasse deckt das akzeptierte Negativ; nur die Fundmenge ist größer als benannt.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
