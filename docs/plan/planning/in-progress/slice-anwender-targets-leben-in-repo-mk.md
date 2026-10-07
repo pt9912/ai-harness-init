@@ -26,16 +26,16 @@
 
 ## 2. Definition of Done
 
-- [ ] Der Aggregator trägt `-include repo.mk` direkt nach `include harness/mk/*.mk` und vor `record-gates: $(GATE_CHECKS)`; der Bootstrap legt `repo.mk` an freiem Pfad mit dem Kopfkommentar aus [ADR-0080](../../adr/0080-anwender-targets-leben-in-repo-mk-ausserhalb-von-harness-mk.md) Festlegung 2 an (Klasse skip-if-present in der Klassentabelle, keine Targets); `SelbstpruefungVorgabeOrt` und jeder Kopf, der den Ort nennt, zeigen auf `repo.mk`. Go-Tests halten Klasse, Zeilen-Reihenfolge und Ort; je Zusage eine rot gesehene Mutation ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)).
-- [ ] Eine `full-smoke`-Stufe im Ziel misst [ADR-0080](../../adr/0080-anwender-targets-leben-in-repo-mk-ausserhalb-von-harness-mk.md) Fitness 1–2: eine vorab geschriebene `repo.mk` mit Target `eigen` ist nach dem Re-Lauf byte-gleich (`cmp`) und `make eigen` läuft; ein eigenes Gate über `GATE_CHECKS +=` läuft in `make gates`; ohne `repo.mk` legt der Lauf den Startinhalt an und `make gates` ist grün. Rot gesehen: Klasse konvergent bzw. `-include` → `include` mit gelöschter Datei; die Stufe steht in der E2E-Abdeckungs-Sicht ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-- [ ] `docs/user/benutzerhandbuch.md` nennt `repo.mk` als Ort für eigene Targets (Hinweise beim Aufsetzen, FAQ zum Re-Lauf, Klassentabelle „nur bei fehlender Datei", Zeilenenden-Absatz zur Wurzel) — Ist-Zustand, keine Chronik.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] Der Aggregator trägt `-include repo.mk` direkt nach `include harness/mk/*.mk` und vor `record-gates: $(GATE_CHECKS)`; der Bootstrap legt `repo.mk` an freiem Pfad mit dem Kopfkommentar aus [ADR-0080](../../adr/0080-anwender-targets-leben-in-repo-mk-ausserhalb-von-harness-mk.md) Festlegung 2 an (Klasse skip-if-present in der Klassentabelle, keine Targets); `SelbstpruefungVorgabeOrt` und jeder Kopf, der den Ort nennt, zeigen auf `repo.mk`. Go-Tests halten Klasse, Zeilen-Reihenfolge und Ort; je Zusage eine rot gesehene Mutation ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)).
+- [x] Eine `full-smoke`-Stufe im Ziel misst [ADR-0080](../../adr/0080-anwender-targets-leben-in-repo-mk-ausserhalb-von-harness-mk.md) Fitness 1–2: eine vorab geschriebene `repo.mk` mit Target `eigen` ist nach dem Re-Lauf byte-gleich (`cmp`) und `make eigen` läuft; ein eigenes Gate über `GATE_CHECKS +=` läuft in `make gates`; ohne `repo.mk` legt der Lauf den Startinhalt an und `make gates` ist grün. Rot gesehen: Klasse konvergent bzw. `-include` → `include` mit gelöschter Datei; die Stufe steht in der E2E-Abdeckungs-Sicht ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+- [x] `docs/user/benutzerhandbuch.md` nennt `repo.mk` als Ort für eigene Targets (Hinweise beim Aufsetzen, FAQ zum Re-Lauf, Klassentabelle „nur bei fehlender Datei", Zeilenenden-Absatz zur Wurzel) — Ist-Zustand, keine Chronik.
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -66,12 +66,36 @@ DoD vollständig, `make gates` und `make full-smoke` grün, Closure-Notiz mit Le
 
 ## 6. Risiken und offene Punkte
 
-- Ein bestehendes Ziel hat `harness/mk/vorgaben.mk`; nach dem Umzug nennen die Köpfe einen anderen Ort, die Datei wirkt weiter über den Glob — **Ausgang:** bei Closure (eingetreten, wenn eine Vorgabe doppelt gesetzt wird und der Wert kippt). <!-- d-check:ignore (der Pfad entsteht erst im gebootstrappten Ziel) -->
-- Ein Adopter löscht `repo.mk`; der nächste Lauf legt sie neu an (Festlegung 3), bis dahin fehlt sie `makefiles:` des Folge-Slice — **Ausgang:** bei Closure; misst ihn der Folge-Slice `slice-targets-modul-im-emittierten-doc-gate`, ist er dort eingetreten.
+- Ein bestehendes Ziel hat `harness/mk/vorgaben.mk`; nach dem Umzug nennen die Köpfe einen anderen Ort, die Datei wirkt weiter über den Glob — **Ausgang:** *entfallen* — die Reihenfolge ist fest (Glob vor `-include repo.mk`, gehalten von `TestMakefile_HasOrderEdge`), ein doppelt gesetzter Wert entscheidet deterministisch für `repo.mk` und kippt nicht ([Review](../../../reviews/2026-10-07-repo-mk-review.md) §Kommandos: `repo.mk` überschreibt das `?=` der Fragmente). <!-- d-check:ignore (der Pfad entsteht erst im gebootstrappten Ziel) -->
+- Ein Adopter löscht `repo.mk`; der nächste Lauf legt sie neu an (Festlegung 3), bis dahin fehlt sie `makefiles:` des Folge-Slice — **Ausgang:** *eingetreten* → Folge-Slice `slice-targets-modul-im-emittierten-doc-gate` (`repo.mk` steht heute in keinem emittierten `makefiles:`, [ADR-0080](../../adr/0080-anwender-targets-leben-in-repo-mk-ausserhalb-von-harness-mk.md) Festlegung 5).
 
 ## 7. Closure-Notiz
 
-Wird bei der Closure vom Planner geschrieben (AGENTS.md §3.10), nicht im Plan.
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+**Rolle:** Planner · **Datum:** 2026-10-07
+
+- **Was hat funktioniert:** DoD 1–5 bestätigt ([Verifikation](../../../reviews/2026-10-07-repo-mk-verifikation.md));
+  die Stufe `repo_mk_im_ziel` wurde dreifach an der realen Quelle rot gesehen, je mit der
+  behaupteten Ursache (`include` statt `-include`, gestrichene Zeile, Klasse `Konvergent`).
+  Closure-Trigger: `make full-smoke` auf `da914b2e` (Baum sauber) rc=0; `make gates` am Ende dieser Closure.
+- **Was ging anders als geplant:** Die Klassen-Änderung von `repo.mk` machte drei benachbarte
+  Aussagen über die Klassenmenge falsch („der eine Pfad", „der eine Eintrag", ein umbenannter
+  Testkommentar); [Review](../../../reviews/2026-10-07-repo-mk-review.md) L1–L4, behoben in `7c9f27fb`.
+- **Steering-Loop-Eintrag:** *Geschärfte Regel*: Wer die Klasse eines emittierten Pfads ändert,
+  misst vor dem Commit jede Aussage über die Menge dieser Klasse, nicht nur die Zeile des Pfads.
+  Gezählt, nicht verkörpert; Auslöser `BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen`.
+- **Beobachtungs-Register (`../observations/`):** `evidence/slice-anwender-targets-leben-in-repo-mk.md`
+  in [`BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
+  ergänzt (Review-Klasse L1–L3); Stand bleibt `geplant` (`slice-153`). L4 ist ein Einzelbefund
+  ohne wiederkehrende Klasse und nicht registriert. `emittierter-stand-laeuft-dem-dogfood-voraus`
+  zählt nicht: `repo.mk` ist ein Ort, keine im Ziel schärfer gefasste Regel.
+- **Folge-Slices:** keiner neu; `slice-targets-modul-im-emittierten-doc-gate` (`open/`) trägt
+  Festlegung 5 und Risiko 2.
+- **Trigger-Audit:** Carveouts, Bootstrap-aware Gates, Hard Rules: keine berührt.
+  [ADR-0080](../../adr/0080-anwender-targets-leben-in-repo-mk-ausserhalb-von-harness-mk.md) `Accepted`, kein Trigger fällig.
+- **Risiken aus §6:** jede Zeile trägt ihren Ausgang.
+- **Archivierung:** keine bei dieser Closure — das Repo fährt Wellen, die nächste Welle-Closure
+  sammelt den Slice ein ([`MR-078`](../../../../harness/conventions.md#mr-078)).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

@@ -1,0 +1,2 @@
+**Vorgang:** slice-anwender-targets-leben-in-repo-mk
+**Fund:** Die Klasse von `repo.mk` (skip-if-present) machte daneben stehende Aussagen über die Klassenmenge falsch: ein umbenannter Test behielt Kommentar und Vorbedingung der alten Zusage (Review L1), der emittierte Selbstprüfungs-Kopf nennt den Commit-Träger weiter „den einen Pfad" (L2), der Kommentar der Klassentabelle „den einen Eintrag mit SkipIfPresent" (L3).
