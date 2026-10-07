@@ -1804,7 +1804,7 @@ SMOKEEOF
 }
 
 archivierung_im_ziel "$tmprepo" "golang"
-e2e_abdeckung "LH-FA-01 LH-QA-01 LH-QA-02" "Das Ziel archiviert real: Sperren, Vollzug, Fehlt-Fall des Traegers, der Schluessel altbestand und die Grenze aus der Commit-Abstammung — altbestand nimmt nur den Slice vor der Closure von welle-1, der nachgeholte Lauf welle-1 laesst den spaeteren flach liegen, ein realer git clone --depth 1 sperrt mit [flacher-klon] (synthetischer Altbestand, lineare Historie ohne Merge, Traeger aus dem Arbeitsbaum, nicht der gepinnte Release-Traeger)" "WELLE=altbestand"
+e2e_abdeckung "LH-FA-01 LH-QA-01 LH-QA-02" "Das Ziel archiviert real: Sperren, Vollzug, Fehlt-Fall des Traegers, der Schluessel altbestand und die Grenze aus der Commit-Abstammung — altbestand nimmt nur den Slice vor der Closure von welle-1, der nachgeholte Lauf welle-1 laesst den spaeteren flach liegen, ein realer git clone --depth 1 sperrt mit [flacher-klon] (synthetischer Altbestand, lineare Historie ohne Merge, Traeger aus dem Arbeitsbaum, nicht der gepinnte Release-Traeger); die Reproduzierbarkeit ist nur teilweise gemessen (QA-02: nur dass ein flacher Klon sperrt statt abweichend zu archivieren, nicht der Pin, nicht dieselbe Ausgabe ueber zwei Laeufe)" "WELLE=altbestand"
 
 # --- Traeger-Fetch: der frische Klon holt den Traeger aus dem gepinnten Release ------
 echo "full-smoke: Traeger-Fetch — frischer Klon ohne Traeger, Fetch aus dem gepinnten Release (ADR-0058) ..."
