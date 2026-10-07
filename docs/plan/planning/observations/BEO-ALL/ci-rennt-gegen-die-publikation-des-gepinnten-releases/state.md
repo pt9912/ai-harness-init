@@ -1,4 +1,4 @@
-**Stand:** offen
+**Stand:** geplant — `slice-ci-wartet-die-publikation-des-gepinnten-releases-ab` trägt die Struktur-Entscheidung.
 
 Die Struktur-Entscheidung steht aus — Träger-Kandidaten: eine begrenzte Wartezeit des Fetch auf
 eine frisch gezogene Fassung (Grenze zum fail-closed-Bruch ist zu ziehen) oder eine

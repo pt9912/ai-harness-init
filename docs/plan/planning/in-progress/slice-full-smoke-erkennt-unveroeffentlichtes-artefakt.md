@@ -62,7 +62,7 @@ bekommt, trägt die `curl`-Zeile unverändert (`harness/tools/full-smoke.sh`, St
 
 ## 2. Definition of Done
 
-- [ ] **1 — Einordnung:** ein Muster für `curl: (22) The requested URL returned error: <code>` in
+- [x] **1 — Einordnung:** ein Muster für `curl: (22) The requested URL returned error: <code>` in
       `full-smoke-ausgang.sh`, mit Herkunft am Muster (die drei Jobs aus dem Kopf) und Klassenname
       in der Beleg-Zeile; `test/full-smoke-ausgang.bats` trägt den Fall über dem **zitierten**
       Ausschnitt aus Job `112925525011` (LEITUNG) und einen Baum-Fall mit `curl: (23)` im Text
@@ -70,25 +70,25 @@ bekommt, trägt die `curl`-Zeile unverändert (`harness/tools/full-smoke.sh`, St
       in `test/mutations/` (`verify: test-bats`), beide über `make mutate MUTATE_CASES=<nr>` als
       gebunden gemeldet: das Muster entfernt (LEITUNG-Fall rot) · das Muster auf jeden
       `curl: ([0-9]+)` geweitet (Baum-Fall rot).
-- [ ] **2 — Reale Quelle:** ein Fall in `test/mutations/` (`verify: full-smoke`, `files:
+- [x] **2 — Reale Quelle:** ein Fall in `test/mutations/` (`verify: full-smoke`, `files:
       internal/emit/templates/enforce/traeger.mk`) zieht den emittierten `TRAEGER_TAG` auf einen
       nicht veröffentlichten Tag; `make mutate MUTATE_CASES=<nr>` meldet ihn gebunden mit
       `AUSGANG LEITUNG` und der Klasse an der Stufe `make traeger-fetch im frischen Klon`.
       **Gegenprobe:** derselbe Fall über dem Stand ohne das Muster aus Punkt 1 erfüllt sein
       `expect` nicht (er endet in `AUSGANG BAUM`, wie in den drei Jobs) — der Bruch an der
       realen Quelle, nicht nur am Ausschnitt.
-- [ ] **3 — Doku:** [`docs/user/releasing.md`](../../../user/releasing.md) §Prozedur Schritt 6
+- [x] **3 — Doku:** [`docs/user/releasing.md`](../../../user/releasing.md) §Prozedur Schritt 6
       nennt, woran der 404-Fall im `ci`-Log zu erkennen ist (Ausgang und Klasse) — Ist-Zustand.
       **Ein Wächter existiert nicht:** kein Sensor liest den Satz gegen die Ausgabe des
       Einordners; Träger ist der Review.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen).
 
 ## 3. Plan (vor Code)
@@ -125,27 +125,46 @@ bekommt, trägt die `curl`-Zeile unverändert (`harness/tools/full-smoke.sh`, St
 ## 6. Risiken und offene Punkte
 
 - **Fremder 404 wird zu LEITUNG** — ein Abruf mit falsch gesetztem Pin im Ziel liefert denselben
-  `curl`-Text; die Klasse trennt beides nicht (Grenze in §1). Eintreten hieße: ein Leser nimmt
-  LEITUNG als „nur warten" und übersieht einen falschen Pin. — **Ausgang:** offen bis zur Closure.
-- **Der Mutations-Fall aus Liefer-Punkt 2 braucht Netz und einen fast vollen Lauf** — anders als
-  `test/mutations/189-emittierter-pin-nicht-aufloesbar.sh` bricht er nicht früh, die Stufe
-  `make traeger-fetch im frischen Klon` liegt spät in `harness/tools/full-smoke.sh`; fällt vorher
-  eine andere Stufe am verdrehten Pin, ist das die Rückführung `in-progress` → `next`.
-  — **Ausgang:** offen bis zur Closure.
-- **Register erreicht 3×** — die drei Auftreten tragen keinen eigenen Vorgang (die Schnitte
-  `ce9d0753`, `365be814`, `05619ae5` sind Commits ohne Slice); die Closure schreibt dafür **einen**
-  Beleg `evidence/slice-full-smoke-erkennt-unveroeffentlichtes-artefakt.md` mit allen drei
-  (Modul 6: ein Vorgang zählt einmal), der Zähler steht dann bei 3. — **Ausgang:** eingetreten
-  erwartet, Folge-Slice `slice-ci-wartet-die-publikation-des-gepinnten-releases-ab` (§1).
+  `curl`-Text; die Klasse trennt beides nicht (Grenze in §1). — **Ausgang:** entfallen — die Klasse
+  behauptet keine Ursache (Grenze im Kopf von `full-smoke-ausgang.sh`), und ein falscher Pin-**Wert**
+  im emittierten Fragment fällt vorher in `make gates` am Fall `pin-kopplung`; die Namens-Lücke daneben
+  trägt `slice-full-smoke-misst-den-emittierten-traeger-pin`.
+- **Der Mutations-Fall aus Liefer-Punkt 2 braucht Netz und einen fast vollen Lauf.** — **Ausgang:**
+  entfallen — gemessen bricht der Lauf nach 24 s an der Stufe ab
+  ([Verifikation](../../../reviews/2026-10-07-404-verifikation.md)).
+- **Register erreicht 3×** — ein Beleg für die drei Schnitte (ein Vorgang zählt einmal). —
+  **Ausgang:** eingetreten: `slice-ci-wartet-die-publikation-des-gepinnten-releases-ab`.
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+**Rolle:** Planner · **Datum:** 2026-10-07
+
+- **Was hat funktioniert:** DoD 1–3 bestätigt; Rot-Beleg an der realen Quelle
+  (`internal/emit/templates/enforce/traeger.mk`) mit der Klassen-Zeile gelesen, `make full-smoke`
+  grün ([Verifikation](../../../reviews/2026-10-07-404-verifikation.md)). Review 0 HIGH/MEDIUM;
+  F1 und F5 behoben in `2663b1e3` ([Review](../../../reviews/2026-10-07-404-review.md)).
+- **Was ging anders als geplant:** Der Rückführungs-Trigger `in-progress → open` aus §4 ist der Form
+  nach erfüllt (ein falsch gesetzter Pin liefert dasselbe `(22)`); Urteil: getragen von der im
+  Skriptkopf benannten Grenze, keine Rückführung (Review F2). `curl`-Ausfälle ohne Antwort (`(6)`,
+  `(28)`) bleiben BAUM, ihr Docker-Gegenstück LEITUNG — als Grenze hingenommen (Review F3).
+- **Steering-Loop-Eintrag:** Lese-Schritt — `BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases`
+  steht bei 3×, Ausgang *geplant* mit `slice-ci-wartet-die-publikation-des-gepinnten-releases-ab`.
+  Benannte Sensor-Lücke (Review F4): kein Wächter liest den emittierten Träger-Pin unter
+  Adopter-Bedingung — `make full-smoke` erbt `TRAEGER_TAG` aus dem Dogfood-Export, `pin_wert` greift
+  per Präfix; gezählt, nicht verkörpert.
+- **Beobachtungs-Register (`../observations/`):**
+  [`BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases`](../observations/BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases/observation.md)
+  Beleg `evidence/slice-full-smoke-erkennt-unveroeffentlichtes-artefakt.md` ergänzt — Zähler 3×,
+  Stand *geplant*.
+  [`BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`](../observations/BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/observation.md)
+  Beleg ergänzt (Stufe 5 der E2E-Sicht verschweigt den Dogfood-Pin), Stand unverändert.
+- **Folge-Slices:** `slice-ci-wartet-die-publikation-des-gepinnten-releases-ab`,
+  `slice-full-smoke-misst-den-emittierten-traeger-pin` — Dateien in `open/`.
+- **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines. ADR:
+  [ADR-0058](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md) umgesetzt, kein
+  Re-Evaluierungs-Trigger eingetreten. Hard Rules: keine.
+- **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
