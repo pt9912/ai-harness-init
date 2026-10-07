@@ -121,7 +121,7 @@ func TestInjectWerkzeugIndexLink(t *testing.T) {
 		t.Errorf("Injektion:\n%q\nerwartet\n%q", got, want)
 	}
 	if !strings.Contains(emit.WerkzeugIndexZeile, "](mk/ai-harness-init.md)") ||
-		"harness/"+"mk/ai-harness-init.md" != emit.WerkzeugIndexPath {
+		emit.WerkzeugIndexPath != "harness/"+"mk/ai-harness-init.md" {
 		t.Errorf("Link-Ziel der Zeile loest von harness/ nicht auf %s auf", emit.WerkzeugIndexPath)
 	}
 	if _, err := emit.InjectWerkzeugIndexLink("# R\n\n## Andere\n"); err == nil {

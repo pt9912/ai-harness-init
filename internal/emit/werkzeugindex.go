@@ -77,30 +77,8 @@ func WerkzeugIndex(targetDir string) error {
 	gates := map[string]bool{"gates": true}
 	gefunden := map[string]*werkzeugTarget{}
 	for _, rel := range files {
-		content, readErr := os.ReadFile(filepath.Join(targetDir, filepath.FromSlash(rel)))
-		if os.IsNotExist(readErr) {
-			continue
-		}
-		if readErr != nil {
-			return fmt.Errorf("%s lesen: %w", rel, readErr)
-		}
-		for _, m := range regexp.MustCompile(gateCheckPattern).FindAllStringSubmatch(string(content), -1) {
-			for _, t := range strings.Fields(m[1]) {
-				gates[t] = true
-			}
-		}
-		for _, m := range werkzeugRegelPattern.FindAllStringSubmatch(string(content), -1) {
-			hilfe := ""
-			if h := werkzeugHilfePattern.FindStringSubmatch(m[0]); h != nil {
-				hilfe = strings.TrimSpace(h[1])
-			}
-			if t, ok := gefunden[m[1]]; ok {
-				if t.hilfe == "" && hilfe != "" {
-					t.hilfe = hilfe
-				}
-				continue
-			}
-			gefunden[m[1]] = &werkzeugTarget{name: m[1], hilfe: hilfe, datei: rel}
+		if err := sammleWerkzeugTargets(targetDir, rel, gates, gefunden); err != nil {
+			return err
 		}
 	}
 	var gateZeilen, werkzeugZeilen []string
@@ -126,6 +104,39 @@ func WerkzeugIndex(targetDir string) error {
 		}
 	}
 	return writeFileMode(targetDir, WerkzeugIndexPath, []byte(werkzeugIndexText(gateZeilen, werkzeugZeilen)), 0o644)
+}
+
+// sammleWerkzeugTargets liest eine Make-Datei des Werkzeugs: ihre GATE_CHECKS-Eintraege nach
+// gates, ihre Regeln nach gefunden (erste Fundstelle gewinnt, ein spaeterer Hilfetext fuellt eine
+// leere Zelle). Eine fehlende Datei — a-check.mk ohne Arch-Gate — wird uebersprungen.
+func sammleWerkzeugTargets(targetDir, rel string, gates map[string]bool, gefunden map[string]*werkzeugTarget) error {
+	content, err := os.ReadFile(filepath.Join(targetDir, filepath.FromSlash(rel)))
+	if os.IsNotExist(err) {
+		return nil
+	}
+	if err != nil {
+		return fmt.Errorf("%s lesen: %w", rel, err)
+	}
+	for _, m := range regexp.MustCompile(gateCheckPattern).FindAllStringSubmatch(string(content), -1) {
+		for _, t := range strings.Fields(m[1]) {
+			gates[t] = true
+		}
+	}
+	for _, m := range werkzeugRegelPattern.FindAllStringSubmatch(string(content), -1) {
+		hilfe := ""
+		if h := werkzeugHilfePattern.FindStringSubmatch(m[0]); h != nil {
+			hilfe = strings.TrimSpace(h[1])
+		}
+		t, ok := gefunden[m[1]]
+		if !ok {
+			gefunden[m[1]] = &werkzeugTarget{name: m[1], hilfe: hilfe, datei: rel}
+			continue
+		}
+		if t.hilfe == "" {
+			t.hilfe = hilfe
+		}
+	}
+	return nil
 }
 
 // werkzeugIndexText setzt Kopf und beide Tabellen zusammen; eine leere Tabelle wird durch
