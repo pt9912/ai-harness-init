@@ -326,7 +326,10 @@ func Templates(src fs.FS, targetDir, name, vorlagen string, notice io.Writer) er
 				return err
 			}
 		}
-		if err := writeSkipIfPresent(targetDir, rel, content, 0o644); err != nil {
+		// write ist die Stelle, an der ein Pfad seine Klasse bekommt; im ganzen Satz
+		// dieselbe.
+		write := writeSkipIfPresent
+		if err := write(targetDir, rel, content, 0o644); err != nil {
 			return err
 		}
 	}

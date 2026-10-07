@@ -6,4 +6,6 @@
 # writeSkipIfPresent): ein vom Adopter gefuellter Skill wird beim Re-Lauf ueberschrieben
 # (ADR-0084 Festlegung 1 verletzt). Der Waechter muss rot werden.
 set -euo pipefail
-sed -i 's#if err := writeSkipIfPresent(targetDir, rel, content, 0o644); err != nil {#write := writeSkipIfPresent; if isSkill(rel) { write = writeFileMode }; if err := write(targetDir, rel, content, 0o644); err != nil {#' internal/emit/templates.go
+sed -i \
+  's#write := writeSkipIfPresent#write := writeSkipIfPresent\n\t\tif isSkill(rel) {\n\t\t\twrite = writeFileMode\n\t\t}#' \
+  internal/emit/templates.go
