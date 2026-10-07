@@ -20,16 +20,19 @@ func TestCacheStatusIsMarkedNotKnown(t *testing.T) {
 		read     = `"cache_read_input_tokens":"nicht bekannt: tool_response.usage"`
 	)
 	ohne := map[string]string{
-		"Agent ohne usage": `{"tool_name":"Agent","session_id":"s1","tool_response":{"totalTokens":110,"agentType":"reviewer"}}`,
-		"Bash":             `{"tool_name":"Bash","session_id":"s1","tool_input":{"command":"make gates"}}`,
+		"Agent ohne usage":     `{"tool_name":"Agent","session_id":"s1","tool_response":{"totalTokens":110,"agentType":"reviewer"}}`,
+		"Agent mit usage null": `{"tool_name":"Agent","session_id":"s1","tool_response":{"usage":{"cache_creation_input_tokens":null,"cache_read_input_tokens":null}}}`,
+		"Bash":                 `{"tool_name":"Bash","session_id":"s1","tool_input":{"command":"make gates"}}`,
 	}
 	for name, payload := range ohne {
 		t.Run(name, func(t *testing.T) {
 			root := newRoot(t)
 			emit(t, root, payload)
 			line := rawStream(t, root, "s1")
-			mustContain(t, line, creation, read)
+			// Erst die Null: steht sie da, nennt die Meldung die geschriebene Messung statt
+			// einer fehlenden Erfassung.
 			mustNotContain(t, line, `"cache_creation_input_tokens":0`, `"cache_read_input_tokens":0`)
+			mustContain(t, line, creation, read)
 		})
 	}
 
@@ -53,5 +56,11 @@ func TestCacheStatusIsMarkedNotKnown(t *testing.T) {
 	}
 	if s.CacheCreationInputTokens.N != nil {
 		t.Fatalf("cache_creation_input_tokens: die Kennzeichnung las sich als Wert %d", *s.CacheCreationInputTokens.N)
+	}
+	if err := json.Unmarshal([]byte(`{"cache_read_input_tokens":null}`), &s); err != nil {
+		t.Fatalf("Zeile mit null unlesbar: %v", err)
+	}
+	if s.CacheReadInputTokens.N != nil {
+		t.Fatalf("cache_read_input_tokens: null las sich als Wert %d", *s.CacheReadInputTokens.N)
 	}
 }

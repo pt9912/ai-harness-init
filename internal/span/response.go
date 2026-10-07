@@ -1,6 +1,9 @@
 package span
 
-import "encoding/json"
+import (
+	"bytes"
+	"encoding/json"
+)
 
 // AgentResult traegt die Werte, die aus dem ERGEBNIS eines Agenten-Aufrufs erfasst
 // werden: NEUN Blatt-Werte aus SECHS Schluesseln von `tool_response` (nachgezaehlt —
@@ -181,17 +184,23 @@ func modelVersion(s string) string {
 }
 
 // count nimmt eine ZAHL oder nichts. Ein Wert anderen Typs kostet dieses Feld, nicht den
-// Span — dieselbe tolerante Linie wie Parse. Und ein fehlender Zaehler wird nie zu 0:
-// `0` waere eine Messung, die nie stattfand (Hintergrund-Laeufe liefern keine Zaehler,
-// gemessen in slice-060 §3). Die optionalen Zaehler fehlen dann, die zwei Cache-Zaehler
-// tragen als Pflichtfelder die Kennzeichnung (CacheCount).
+// Span — dieselbe tolerante Linie wie Parse. Ein fehlender Zaehler und das Literal `null`
+// werden nie zu 0: `0` waere eine Messung, die nie stattfand (SPEC-087). `null` braucht
+// die eigene Pruefung, weil json.Unmarshal einen int64 bei `null` fehlerfrei auf 0 laesst.
+// Die optionalen Zaehler fehlen dann, die zwei Cache-Zaehler tragen als Pflichtfelder die
+// Kennzeichnung (CacheCount). Bewacht von TestCacheStatusIsMarkedNotKnown.
 func count(v json.RawMessage) *int64 {
+	if isNull(v) {
+		return nil
+	}
 	var n int64
 	if err := json.Unmarshal(v, &n); err != nil {
 		return nil
 	}
 	return &n
 }
+
+func isNull(v json.RawMessage) bool { return string(bytes.TrimSpace(v)) == "null" }
 
 func text(v json.RawMessage) string {
 	var s string
