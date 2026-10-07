@@ -72,7 +72,7 @@ einen Wächter rot, und Stufe 5 der E2E-Sicht nennt, was sie misst.
 - [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen).
+- [x] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen); nach dem Move gefahren, §7.
 
 ## 3. Plan (vor Code)
 
@@ -136,6 +136,15 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
   [ADR-0058](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md) umgesetzt, kein
   Re-Evaluierungs-Trigger eingetreten. Hard Rules: keine.
 - **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
+- **Paarungen geprüft am 2026-10-07** (nach dem Move): (a) *Anker*: §7 trägt kein Feld `liegt in`,
+  nichts zu prüfen. (b) *Folge-Slice*: `ls docs/plan/planning/*/<kennung>.md` nennt eine Datei in
+  `open/`. (c) *Register*: der genannte Pfad existiert, `evidence/` trägt 11 Dateien. Zweite Hälfte
+  über das ganze Register: 3 Verzeichnisse ohne Beleg, namentlich
+  `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+  `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`,
+  `BEO-ALL/planungs-bestand-waechst-schneller-als-er-abgebaut-wird`; nicht als getragen behauptet
+  ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  Festlegung 2).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
