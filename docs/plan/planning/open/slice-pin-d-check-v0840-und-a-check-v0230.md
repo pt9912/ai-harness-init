@@ -22,7 +22,7 @@ a-check-`v0.22.0`-Slice (Auftraggeber-Entscheidung 2026-10-07).
 
 **Berührte Spec-Stellen:** `—` — die Pins sind Code-Konstanten.
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912 (Implementer)
 
 **Autor:** Planner. **Datum:** 2026-10-07.
 
