@@ -15,14 +15,16 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 **Bezug:**
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6),
 [ADR-0058](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md) (Festlegung 2: laut-Bruch
-statt stiller Ausweichung). Anlass: Release-Schnitte `v0.3.0` und `v0.4.0` — der `ci`-Lauf am
-Tag-Commit fiel im `full-smoke` an `make traeger-fetch` im frischen Klon mit
-`curl: (22) The requested URL returned error: 404` und meldete *„AUSGANG BAUM … Keine der 4
-gefuehrten Formen … steht in den 16 gelesenen Zeilen"*; lokal reproduziert.
+statt stiller Ausweichung). Anlass: Release-Schnitte `v0.3.0`, `v0.4.0` und `v0.5.0` — der
+`ci`-Lauf am Tag-Commit fiel im ersten Versuch im `full-smoke` an `make traeger-fetch` im frischen
+Klon mit `curl: (22) The requested URL returned error: 404` und meldete *„AUSGANG BAUM … Keine der 4
+gefuehrten Formen … steht in den 16 (bzw. 18) gelesenen Zeilen"*. Gemessen an den Jobs
+`112691251599`, `112729405107`, `112925525011`
+(`gh api repos/pt9912/ai-harness-init/actions/jobs/<id>/logs | grep -nE 'curl: \(22\)|AUSGANG'`).
 
 **Berührte Spec-Stellen:** `—`
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912 (Implementer)
 
 **Autor:** Planner. **Datum:** 2026-10-07.
 
@@ -32,19 +34,26 @@ gefuehrten Formen … steht in den 16 gelesenen Zeilen"*; lokal reproduziert.
 
 **Ziel:** `harness/tools/full-smoke-ausgang.sh` ordnet die `curl`-Antwort eines nicht mit 2xx
 beantworteten Asset-Abrufs (`curl: (22) The requested URL returned error: <code>`) dem Ausgang
-LEITUNG zu und nennt im Beleg die Klasse *„Artefakt nicht veröffentlicht"*, statt den Fehlschlag
-dem Baum zuzurechnen.
+LEITUNG zu und nennt im Beleg die Klasse *„Release-Asset nicht abrufbar"*, statt den Fehlschlag
+dem Baum zuzurechnen. **Grenze, im Kopf des Skripts zu nennen:** der Text trennt *nicht
+veröffentlicht* nicht von *falsch gepinnt* — beide sind eine nicht mit 2xx beantwortete Anfrage,
+dieselbe Lesart wie Muster (4) für einen nicht vergebenen Bild-Tag; die Klasse behauptet keine
+Ursache. Gemeint ist allein `(22)`; ein anderer `curl`-Fehler (etwa `(23)`, Schreibfehler am Ziel)
+bleibt BAUM.
 
-**Lage** (keine Erwartungswerte): `grep -n "^	'" harness/tools/full-smoke-ausgang.sh` nennt die
+**Lage** (keine Erwartungswerte): `grep -c "^	'" harness/tools/full-smoke-ausgang.sh` zählt die
 gefuehrten Muster, keines trifft eine `curl`-Zeile; `grep -n 'curl -fsSL' harness/tools/traeger-fetch.sh`
-nennt die zwei Abrufe (Prüfsummen, Asset), deren Fehltext das ist.
+nennt die zwei Abrufe (Prüfsummen, Asset), deren Fehltext das ist; der Ausschnitt, den `einordnen`
+bekommt, trägt die `curl`-Zeile unverändert (`harness/tools/full-smoke.sh`, Stufe
+`make traeger-fetch im frischen Klon`).
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Die Struktur-Entscheidung gegen das Rennen von `ci` und Publikation** (Wartezeit oder
-  Workflow-Anordnung). *Anderer Vorgang:* sie trägt
-  `BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases` und braucht eine Entscheidung;
-  dieser Slice macht nur den Fehlschlag richtig lesbar, der Lauf bleibt rot.
+  Workflow-Anordnung). *Folge-Slice übernimmt es:* `slice-ci-wartet-die-publikation-des-gepinnten-releases-ab`
+  — die Closure dieses Slice hebt `BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases`
+  auf 3× (§8) und legt die Datei in `open/` an; dieser Slice macht nur den Fehlschlag richtig
+  lesbar, der Lauf bleibt rot.
 - **Ein dritter Ausgang oder ein eigener Exit-Code.** *Bestand bleibt:* die zwei Ausgänge und der
   gemeinsame Exit-Code sind im Kopf von `full-smoke-ausgang.sh` gesetzt ([`AGENTS.md`](../../../../AGENTS.md)
   §3.5); die Klasse steht in der Beleg-Zeile unter LEITUNG.
@@ -53,18 +62,25 @@ nennt die zwei Abrufe (Prüfsummen, Asset), deren Fehltext das ist.
 
 ## 2. Definition of Done
 
-- [ ] **1 — Einordnung:** ein gemessenes Muster für den `curl`-Fehltext in
-      `full-smoke-ausgang.sh`, mit Herkunft am Muster (CI-Log des `v0.4.0`-Schnitts) und
-      Klassenname in der Beleg-Zeile; `test/full-smoke-ausgang.bats` trägt den Fall über dem
-      **zitierten** Log-Ausschnitt (LEITUNG) und hält, dass ein Baum-Fehler mit `curl` im Text
-      nicht zu LEITUNG wird. **Rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6): ein Fall
-      in `test/mutations/` nimmt das Muster weg, `make mutate MUTATE_CASES=…` meldet ihn gebunden.
-- [ ] **2 — Reale Quelle:** ein Fall in `test/mutations/` (`verify: full-smoke`) zieht den im
-      Ziel emittierten Träger-Pin auf einen nicht veröffentlichten Tag; der Lauf endet rot mit
-      `AUSGANG LEITUNG` und der Klasse an der Stufe `make traeger-fetch im frischen Klon` — der
-      Bruch an der realen Quelle, nicht nur am Ausschnitt.
+- [ ] **1 — Einordnung:** ein Muster für `curl: (22) The requested URL returned error: <code>` in
+      `full-smoke-ausgang.sh`, mit Herkunft am Muster (die drei Jobs aus dem Kopf) und Klassenname
+      in der Beleg-Zeile; `test/full-smoke-ausgang.bats` trägt den Fall über dem **zitierten**
+      Ausschnitt aus Job `112925525011` (LEITUNG) und einen Baum-Fall mit `curl: (23)` im Text
+      (BAUM). **Rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6), je Zusicherung ein Fall
+      in `test/mutations/` (`verify: test-bats`), beide über `make mutate MUTATE_CASES=<nr>` als
+      gebunden gemeldet: das Muster entfernt (LEITUNG-Fall rot) · das Muster auf jeden
+      `curl: ([0-9]+)` geweitet (Baum-Fall rot).
+- [ ] **2 — Reale Quelle:** ein Fall in `test/mutations/` (`verify: full-smoke`, `files:
+      internal/emit/templates/enforce/traeger.mk`) zieht den emittierten `TRAEGER_TAG` auf einen
+      nicht veröffentlichten Tag; `make mutate MUTATE_CASES=<nr>` meldet ihn gebunden mit
+      `AUSGANG LEITUNG` und der Klasse an der Stufe `make traeger-fetch im frischen Klon`.
+      **Gegenprobe:** derselbe Fall über dem Stand ohne das Muster aus Punkt 1 erfüllt sein
+      `expect` nicht (er endet in `AUSGANG BAUM`, wie in den drei Jobs) — der Bruch an der
+      realen Quelle, nicht nur am Ausschnitt.
 - [ ] **3 — Doku:** [`docs/user/releasing.md`](../../../user/releasing.md) §Prozedur Schritt 6
       nennt, woran der 404-Fall im `ci`-Log zu erkennen ist (Ausgang und Klasse) — Ist-Zustand.
+      **Ein Wächter existiert nicht:** kein Sensor liest den Satz gegen die Ausgabe des
+      Einordners; Träger ist der Review.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -80,8 +96,8 @@ nennt die zwei Abrufe (Prüfsummen, Asset), deren Fehltext das ist.
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `harness/tools/full-smoke-ausgang.sh` | update | Muster, Herkunft, Klassenname in der Beleg-Zeile, Grenz-Absatz im Kopf (Liefer-Punkt 1) |
-| `test/full-smoke-ausgang.bats` | update | zitierter Ausschnitt aus dem `ci`-Log `v0.4.0` (LEITUNG) und ein Baum-Fall mit `curl` im Text — [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
-| `test/mutations/` | neu | Muster weg (`verify: test-bats`); Pin auf unveröffentlichten Tag (`verify: full-smoke`, Liefer-Punkt 2) |
+| `test/full-smoke-ausgang.bats` | update | zitierter Ausschnitt aus Job `112925525011` (LEITUNG) und ein Baum-Fall mit `curl: (23)` — [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| `test/mutations/` | neu | Muster weg und Muster geweitet (`verify: test-bats`); emittierter `TRAEGER_TAG` auf unveröffentlichten Tag (`verify: full-smoke`, Liefer-Punkt 2) |
 | `docs/user/releasing.md` | update | Schritt 6 (Liefer-Punkt 3) |
 
 ## 4. Trigger
@@ -109,10 +125,18 @@ nennt die zwei Abrufe (Prüfsummen, Asset), deren Fehltext das ist.
 ## 6. Risiken und offene Punkte
 
 - **Fremder 404 wird zu LEITUNG** — ein Abruf mit falsch gesetztem Pin im Ziel liefert denselben
-  `curl`-Text; der Einordner kann „nicht veröffentlicht" und „falsch gepinnt" nicht trennen.
+  `curl`-Text; die Klasse trennt beides nicht (Grenze in §1). Eintreten hieße: ein Leser nimmt
+  LEITUNG als „nur warten" und übersieht einen falschen Pin. — **Ausgang:** offen bis zur Closure.
+- **Der Mutations-Fall aus Liefer-Punkt 2 braucht Netz und einen fast vollen Lauf** — anders als
+  `test/mutations/189-emittierter-pin-nicht-aufloesbar.sh` bricht er nicht früh, die Stufe
+  `make traeger-fetch im frischen Klon` liegt spät in `harness/tools/full-smoke.sh`; fällt vorher
+  eine andere Stufe am verdrehten Pin, ist das die Rückführung `in-progress` → `next`.
   — **Ausgang:** offen bis zur Closure.
-- **Der Mutations-Fall aus Liefer-Punkt 2 braucht Netz und einen vollen Lauf** — Preis wie bei
-  `test/mutations/189-emittierter-pin-nicht-aufloesbar.sh`. — **Ausgang:** offen bis zur Closure.
+- **Register erreicht 3×** — die drei Auftreten tragen keinen eigenen Vorgang (die Schnitte
+  `ce9d0753`, `365be814`, `05619ae5` sind Commits ohne Slice); die Closure schreibt dafür **einen**
+  Beleg `evidence/slice-full-smoke-erkennt-unveroeffentlichtes-artefakt.md` mit allen drei
+  (Modul 6: ein Vorgang zählt einmal), der Zähler steht dann bei 3. — **Ausgang:** eingetreten
+  erwartet, Folge-Slice `slice-ci-wartet-die-publikation-des-gepinnten-releases-ab` (§1).
 
 ## 7. Closure-Notiz
 
@@ -132,10 +156,10 @@ und `*` (`test/`, `docs/user/releasing.md`); `CODEX` nicht.
 (`ls docs/plan/planning/observations/BEO-ALL/ | grep -i 'smoke\|ausgang\|release\|fetch\|klassif'`).
 Treffer: `BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases` — Zähler-Stand
 `ls docs/plan/planning/observations/BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases/evidence/ | wc -l`
-→ 2; die Auftreten bei `v0.3.0` und `v0.4.0` tragen dort noch keinen Beleg. Dieser Slice löst die
-Beobachtung nicht (§1), er macht ihr Symptom im `ci`-Log erkennbar; schreibt seine Closure einen
-dritten Beleg, braucht die Struktur-Entscheidung einen eigenen Folge-Slice. Übrige Treffer der Suche
-betreffen andere Klassen.
+→ 2; die Auftreten bei `v0.3.0`, `v0.4.0` und `v0.5.0` tragen dort noch keinen Beleg. Dieser Slice
+löst die Beobachtung nicht (§1), er macht ihr Symptom im `ci`-Log erkennbar; seine Closure schreibt
+den dritten Beleg (§6), damit braucht die Struktur-Entscheidung den Folge-Slice aus §1. Übrige
+Treffer der Suche betreffen andere Klassen.
 
 **Alle berührten Sub-Areas GF** ([`harness/conventions.md`](../../../../harness/conventions.md)
 §Modus-Deklaration pro Sub-Area).
