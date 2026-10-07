@@ -234,7 +234,7 @@ und eigenem Commit ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
   die Menge der Formen ([`ADR-0082`](../../adr/0082-ziel-fassung-regiert-den-sprung-v6170.md)
   §Fitness Function, Lücke). — **Ausgang:** entfallen — die Grenz-Zeile nennt die drei
   Bedingungen, keine Menge der Formen; beide Seiten messen die zwei `full-smoke`-Stufen je mit
-  Gegenprobe (Verifikation §ADR-0082 §Fitness Function), die Menge ist in
+  Gegenprobe (Verifikation §Fitness Function), die Menge ist in
   [`ADR-0082`](../../adr/0082-ziel-fassung-regiert-den-sprung-v6170.md) als Lücke benannt.
 - **Release-Tag zwischen Pin und Schalter** (§1, Release `v0.4.0`). — **Ausgang:** entfallen — Pin
   (`94a258ce`) und Schalter (`8b08c3ab`) liegen in diesem Slice, `git tag --contains f9f082c5` →
