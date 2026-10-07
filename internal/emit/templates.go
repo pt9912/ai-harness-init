@@ -321,19 +321,28 @@ func Templates(src fs.FS, targetDir, name, vorlagen string, notice io.Writer) er
 	// .harness/skills/ tragen dazu die Meldung, wenn die liegende Fassung von der dieses
 	// Laufs abweicht (ADR-0084 Festlegungen 1 und 2).
 	for rel, content := range plan {
-		if isSkill(rel) {
-			if err := skillMeldung(targetDir, rel, content, vorlagen, notice); err != nil {
-				return err
-			}
-		}
-		// write ist die Stelle, an der ein Pfad seine Klasse bekommt; im ganzen Satz
-		// dieselbe.
+		// write ist die Stelle, an der ein Pfad seine Klasse bekommt.
 		write := writeSkipIfPresent
+		if isSkill(rel) {
+			write = skillWriter(vorlagen, notice)
+		}
 		if err := write(targetDir, rel, content, 0o644); err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+// skillWriter ist writeSkipIfPresent mit vorangestellter skillMeldung: ein liegender Skill
+// bleibt unberuehrt und wird genannt, wenn er von content abweicht; ein fehlender wird
+// angelegt.
+func skillWriter(vorlagen string, notice io.Writer) func(string, string, []byte, fs.FileMode) error {
+	return func(targetDir, rel string, content []byte, mode fs.FileMode) error {
+		if err := skillMeldung(targetDir, rel, content, vorlagen, notice); err != nil {
+			return err
+		}
+		return writeSkipIfPresent(targetDir, rel, content, mode)
+	}
 }
 
 // isSkill sagt, ob rel einer der Reviewer-Skills unter .harness/skills/ ist.
