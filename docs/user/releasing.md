@@ -7,6 +7,25 @@ Schnitte: der Release-Text einzelner Releases ist veröffentlicht und liegt
 außerhalb des Repos. Was ein Schnitt tut, welche Schritt-Folge er fährt und
 was er vor dem Tag-Push prüft, steht hier — einmal, nicht je Release.
 
+## Versionsnummer
+
+Die Tags folgen [Semantic Versioning 2.0.0](https://semver.org/lang/de/) in der Form
+`v<major>.<minor>.<patch>`. Solange `major` `0` ist, gilt:
+
+- **`minor` steigt**, sobald der Schnitt gegenüber dem vorigen Tag eine Fähigkeit hinzufügt
+  oder ändert, was ein Ziel bekommt oder wie es sich verhält. Dazu zählen eine neue
+  Option, eine neue oder geänderte emittierte Datei, ein Gate, das im Ziel neu läuft oder
+  strenger prüft, ein Sprung der adoptierten Baseline und ein Pin-Sprung eines Werkzeugs,
+  der das Verhalten eines Gates im Ziel ändert. `patch` beginnt dann wieder bei `0`.
+- **`patch` steigt**, wenn der Schnitt nur Fehler behebt: Was ein Ziel bekommt und wie es
+  sich verhält, entspricht danach dem, was der vorige Tag zugesagt hat.
+- **`major` auf `1`** zu setzen ist eine eigene Entscheidung und kein Ergebnis dieser
+  Regel.
+
+Ein Vorab-Tag trägt einen Bindestrich-Teil (`v0.3.0-rc.1`); wie Schritt 7 ihn behandelt,
+steht dort. Welche Stelle steigt, entscheidet der Release-Schnitt vor Schritt 1 anhand
+der Änderungen seit dem vorigen Tag (`git log --oneline <voriger-tag>..HEAD`).
+
 ## Prozedur
 
 Der Schnitt läuft tag-getrieben: der Release-Workflow
