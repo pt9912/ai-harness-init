@@ -44,7 +44,7 @@ konvergente Klasse; `grep -n 'func Templates' internal/emit/*.go` die Funktion o
 - **Heilen veralteter Skills beim Baseline-Sprung.** *Bestand bleibt:* akzeptiertes Negativ
   ([ADR-0084](../../adr/0084-reviewer-skills-im-ziel-skip-if-present.md) Festlegung 4); der Abgleich ist Handarbeit des Adopters.
 - **Trennung in tool-eigenen und Adopter-Teil.** *Anderer Vorgang:* Re-Evaluierungs-Trigger der ADR.
-- **Die übrigen konvergenten Pfade der Zeile aus ADR-0007.** *Schicht-Abgrenzung:* allein
+- **Die übrigen konvergenten Pfade der Zeile aus [ADR-0007](../../adr/0007-bootstrap-phasen.md).** *Schicht-Abgrenzung:* allein
   `.harness/skills/*` wechselt die Klasse.
 
 ## 2. Definition of Done
