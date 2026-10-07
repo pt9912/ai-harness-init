@@ -31,7 +31,7 @@ ids:
 # aussen eine Welle-Datei nicht, und die Regel aus spec-straten ist die einzige Deckung.
 # Das Praefix welle- ist die Setzung dieser Vorlage aus der Spalte Welle; der Gate-Text
 # des Regelwerks nennt nur ADR- und slice-. exclude-sections traegt nur Geschichte,
-# nicht Historie/"7. Historie": Die ADR-Vorlage fuehrt in ihrem Geschichte-Abschnitt
+# nicht Historie/"7. Historie"/"8. Historie": Die ADR-Vorlage fuehrt in ihrem Geschichte-Abschnitt
 # eine Verweis-Spalte, deren erste Zeile eine Slice-Datei nennt — legitime
 # rueckwaertige Provenance, die {from: adr, to: slice} sonst faelschlich faengt. Die
 # Historie-Abschnitte der Spec-Straten-Vorlagen tragen keine solche Ausnahme: ihre
@@ -40,8 +40,9 @@ ids:
 # exclude-sections gilt in d-check fuer alle Klassen zugleich; je Klasse oder je Regel
 # ist es nicht setzbar. Ein Abschnitt Geschichte in einer Spec-Datei nimmt dort Slice-
 # und Welle-Token aus, was das Regelwerk fuer die Spec-Straten nicht vorsieht. Die
-# emittierten Spec-Vorlagen fuehren keinen solchen Abschnitt (ihre Ueberschrift ist
-# 7. Historie); wo ein Adopter ihn anlegt, faengt ihn nur der Reviewer.
+# emittierten Spec-Vorlagen fuehren keinen solchen Abschnitt (ihre Ueberschriften sind
+# 7. Historie im Lastenheft und 8. Historie in der Spezifikation); wo ein Adopter ihn
+# anlegt, faengt ihn nur der Reviewer.
 # Die blosse Zeichenfolge ADR- ohne Nummer faengt keine Regel: sie steht als Wort in den
 # emittierten Spec-Vorlagen, und das ids-Muster verlangt vier Ziffern.
 # Die dritte ist die Klasse aussen als letzte Klasse samt der Regel aus spec-straten

@@ -1,6 +1,6 @@
 # Spezifikation — ai-harness-init
 
-**Status:** Aktiv. **Letzte Änderung:** 2026-09-30.
+**Status:** Aktiv. **Letzte Änderung:** 2026-10-07.
 
 **Bezug zum Lastenheft:** Diese Spezifikation präzisiert die in
 [`spec/lastenheft.md`](lastenheft.md) formulierten Anforderungen (`LH-*`-IDs). Bei
@@ -39,7 +39,7 @@ Zeitdokument; hier steht die Festlegung, gegen die gemessen wird), die
 
 Drei Formregeln, weil alle drei von außen gelesen werden:
 
-- **Der bindende Text zeigt nicht abwärts, auch die [Historie](#7-historie) nicht.**
+- **Der bindende Text zeigt nicht abwärts, auch die [Historie](#8-historie) nicht.**
   Hier steht keine Entscheidungs- und keine Planungs-Kennung: ein Wert steht für
   sich, das Warum findet man über die aufwärts zeigende Entscheidung — sie nennt
   ihr Ziel in ihrem `Schärft:`-Feld. Gemessen wird
@@ -214,7 +214,16 @@ festgelegt ist.
 | ID | System | Version | Vertrag-Datei |
 |---|---|---|---|
 
-## 7. Historie
+## 7. Festlegungen der Harness-Werkzeuge
+
+Was ein Gate, ein Prüfer oder ein Hook prüft und wie er an seinen Randformen entscheidet. Setzt
+das Werkzeug genau eine Anforderung durch, steht die Festlegung als deren Verfeinerung in §1, nicht
+hier. Womit das Werkzeug selbst gedeckt ist, steht nicht hier, sondern bei ihm.
+
+| ID | Werkzeug | Festlegung | Präzisiert |
+|---|---|---|---|
+
+## 8. Historie
 
 | Datum | Änderung |
 |---|---|
@@ -227,3 +236,4 @@ festgelegt ist.
 | 2026-09-30 | §3 und §5: Die Tabellen tragen die Spalte `Präzisiert` (Anker-Link ins Lastenheft oder `Lücke`); der Fließtext von §5 steht als Tabellenzeilen `SPEC-035` bis `SPEC-086` (Regeln der Erfassung, Zusicherungen mit Sensor). Begründungen, Messprotokolle und Prozess-Konventionen stehen nicht mehr in der Spezifikation; die Aufnahme-Regel nennt diese Klassen. Die Werte der Zeilen `SPEC-001` bis `SPEC-034` bleiben |
 | 2026-09-30 | §5: Jede Zeile mit `Lücke` trägt einen Anker ins Lastenheft; fünf Zeilen (Betriebsart eines Rollen-Laufs, Agent-Guard, Grenze der `mustContain`-Gegenproben, Abweisung ohne Subagent-Typ, Verdrahtung des Guards) stehen nicht mehr hier, weil sie nur dieses Repo betreffen; ihre Zusagen und Grenzen stehen als Kommentar am Guard und am Helfer der Gegenproben. Die Zelle der Berichtsgröße nennt nur noch die Größe |
 | 2026-09-30 | Die Aufnahme-Regel sagt, dass Verdrahtung, die allein dieses Repo trägt, nicht in der Spezifikation steht und dass emittierte Verdrahtung Träger ist; keine Zeile trägt `Lücke`, der Übergangswert bleibt zulässig |
+| 2026-10-07 | §7 *Festlegungen der Harness-Werkzeuge* ist neu, ihre Tabelle trägt die Spalte `Präzisiert` und noch keine Zeile; die Historie steht als §8 |

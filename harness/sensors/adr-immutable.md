@@ -94,8 +94,8 @@ liegen bei der Review-Disziplin ([`AGENTS.md`](../../AGENTS.md) §3.7 für den K
 Teil-Supersede-Anordnung).
 
 **Eine Grenze bleibt offen, benannt statt geschlossen:** ob `vcs` dieselbe
-`exclude-sections`-Liste wie `matrix` braucht (`[Historie, "7. Historie", Geschichte]`), ist
-geprüft, aber nicht übernommen, solange kein ADR-Kopf eine dieser zwei zusätzlichen
+`exclude-sections`-Liste wie `matrix` braucht (`[Historie, "7. Historie", "8. Historie", Geschichte]`), ist
+geprüft, aber nicht übernommen, solange kein ADR-Kopf eine dieser drei zusätzlichen
 Überschriften trägt.
 
 ## Ausgabe und Ausgänge

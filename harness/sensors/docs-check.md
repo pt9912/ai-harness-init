@@ -253,7 +253,7 @@ statt über `ids` — dort trägt die Klasse `adaptionsblock` ein `token:`. Eine
 der einen Ebene ist keine Aussage über die andere.
 
 **2 — Die Historie-Abschnitte stehen außerhalb.** `exclude-sections` nimmt `Historie`,
-`7. Historie` und `Geschichte` aus; dort und nur dort lebt Provenienz. Das Modul `ids`
+`7. Historie`, `8. Historie` und `Geschichte` aus; dort und nur dort lebt Provenienz. Das Modul `ids`
 teilt diese Ausnahme **nicht** — eine blanke Kennung meldet es auch in einer
 Historie-Tabelle.
 

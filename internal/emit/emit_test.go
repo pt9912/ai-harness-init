@@ -108,7 +108,7 @@ func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 	// exclude-sections traegt exakt [Geschichte] — weder leer (dann faengt
 	// {from: adr, to: slice} auch die legitime, im Zeilen-Marker deklarierte
 	// Provenance-Zeile der ADR-Geschichte-Tabelle) noch die weitere Dogfood-Liste
-	// [Historie, "7. Historie", Geschichte] (die Spec-Straten-Vorlagen fuehren dort keine
+	// [Historie, "7. Historie", "8. Historie", Geschichte] (die Spec-Straten-Vorlagen fuehren dort keine
 	// Ausnahme, s. internal/emit/templates/d-check.yml Kopfkommentar).
 	if !strings.Contains(yml, "exclude-sections: [Geschichte]") {
 		t.Errorf("exclude-sections traegt nicht genau [Geschichte]:\n%s", yml)
