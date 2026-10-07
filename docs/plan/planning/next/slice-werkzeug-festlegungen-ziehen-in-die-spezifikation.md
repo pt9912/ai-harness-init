@@ -62,7 +62,7 @@ Kommentare, die es als *„7. Historie"* beschreiben.
 - **Keine Hard-Rule-Änderung an §3.7.** *Bestand bleibt stehen:* der Rang-Zeiger ist eine Klasse,
   die §3.7 führt ([ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md), akzeptiertes Negativ).
 - **Form der Sensor-Datei selbst.** *Folge-Slice:*
-  [`slice-222`](slice-222-sensor-datei-traegt-die-form-ihrer-vorlage.md).
+  [`slice-222`](../open/slice-222-sensor-datei-traegt-die-form-ihrer-vorlage.md).
 - **Emittierte Spezifikations-Vorlage.** *Bestand bleibt stehen:* sie reist mit dem Pin ([ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md)
   §Emittierte Ebene) und trägt am `v6.16.0` §7/§8 schon (Lage oben); hier werden nur die Kommentare
   wahr, die sie beschreiben.
