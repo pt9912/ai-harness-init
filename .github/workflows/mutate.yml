@@ -32,7 +32,7 @@
 # den Shard-eigenen `make mutate`-Aufruf; `select_cases()` bricht fail-closed ab,
 # sollte ein berechneter Name nicht existieren. Die Shard-Zahl ist ausschliesslich die
 # Laenge der Liste `matrix.shard` unten — `strategy.job-total` liest sie strukturell
-# aus, kein zweiter Ort haelt denselben Wert. Fuenf Shards zielen auf einen
+# aus, kein zweiter Ort haelt denselben Wert. Neun Shards zielen auf einen
 # Wall-Clock-Korridor von ~20-25 Minuten fuer den naechtlichen Lauf; die Konstante wird
 # anhand der Wall-Clock-Zeit eines echten Matrix-Laufs ueberprueft und mit Begruendung
 # angepasst, falls sie den Korridor verfehlt (harness/sensors/mutate.md).
@@ -60,7 +60,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [0, 1, 2, 3, 4]
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8]
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - name: Shard-Zuteilung berechnen (deterministisch, Index-Modulo)
