@@ -25,7 +25,8 @@
 # ZAHN: test/full-smoke-ausgang.bats faehrt beide Ausgaenge ueber Ausschnitten echter
 # Laeufe; test/mutations/187 nimmt die Muster weg, test/mutations/188 macht LEITUNG
 # bedingungslos, test/mutations/189 stellt im vollen Lauf einen nicht aufloesbaren
-# Tag her.
+# Tag her. Muster (5): test/mutations/551 nimmt es weg, 552 weitet es auf jeden
+# curl-Fehler, 553 stellt im vollen Lauf einen nicht veroeffentlichten Release-Tag her.
 set -euo pipefail
 
 # JEDES MUSTER STEHT NEBEN DEM LAUF, AN DEM ES GEMESSEN WURDE — ein Muster ohne
@@ -47,6 +48,17 @@ set -euo pipefail
 #     (Head, denied) und ueber einen nicht aufloesbaren Host (Get, no such host).
 # (4) Derselbe Weg, wenn Repository und Host stimmen und nur der Tag fehlt. Gemessen
 #     ueber "make ci-lint ACTIONLINT_IMAGE=rhysd/actionlint:gibt-es-diesen-tag-nicht".
+# (5) Die Antwort von curl auf einen nicht mit 2xx beantworteten Abruf eines
+#     Release-Assets (harness/tools/traeger-fetch.sh, Pruefsummen und Asset, beide
+#     "curl -fsSL"). Klasse "Release-Asset nicht abrufbar". Gemessen in den CI-Jobs
+#     112691251599, 112729405107 und 112925525011, jeweils an der Stufe
+#     "make traeger-fetch im frischen Klon" mit
+#     "curl: (22) The requested URL returned error: 404".
+#     GRENZE: der Text trennt ein noch nicht veroeffentlichtes Release nicht von einem
+#     falsch gesetzten Pin — beide sind eine nicht mit 2xx beantwortete Anfrage, dieselbe
+#     Lesart wie (4) fuer einen nicht vergebenen Bild-Tag. Die Klasse nennt den Weg,
+#     keine Ursache. Gefuehrt ist allein der Exit-Code 22 (--fail); jeder andere
+#     curl-Fehler, etwa (23) beim Schreiben am Ziel, faellt in den BAUM-Ausgang.
 #
 # WAS DIESE MUSTER NICHT SEHEN — die Grenze steht hier, weil sie sonst nur im Kopf des
 # Lesenden stuende:
@@ -62,6 +74,16 @@ MUSTER=(
 	'unexpected status from [A-Z]+ request to https?://'
 	'Error response from daemon: (Head|Get) "https?://'
 	'Error response from daemon: manifest for .* not found'
+	'curl: \(22\) The requested URL returned error: [0-9]+'
+)
+# KLASSE[i] gehoert zu MUSTER[i] und steht in der Beleg-Zeile; leer heisst: das Muster
+# fuehrt keinen eigenen Klassennamen.
+KLASSE=(
+	''
+	''
+	''
+	''
+	'Release-Asset nicht abrufbar'
 )
 
 if [ "$#" -ne 1 ] || [ -z "$1" ]; then
@@ -76,7 +98,7 @@ ausgabe="$(cat)"
 gelesen="$(grep -c '' <<<"$ausgabe" || true)"
 
 # Jeder Treffer wird mit seiner Muster-Nummer gefuehrt: die Nummer sagt, WELCHE der
-# vier gemessenen Formen zugeschlagen hat, und macht den Ausgang ohne Blick in dieses
+# gemessenen Formen zugeschlagen hat, und macht den Ausgang ohne Blick in dieses
 # Skript nachvollziehbar.
 treffer=""
 nummer=0
@@ -92,7 +114,12 @@ if [ -n "$treffer" ]; then
 	echo "full-smoke: FEHLER — AUSGANG LEITUNG: $kennung. Eine ausgehende Anfrage nach einem gepinnten Artefakt wurde nicht mit 2xx beantwortet; der Pruefgegenstand wurde an dieser Stelle nicht erreicht. Der Lauf bleibt rot."
 	while IFS='|' read -r nr rest; do
 		[ -n "$nr" ] || continue
-		echo "full-smoke:   Beleg (Muster $nr von ${#MUSTER[@]}): $rest"
+		klasse="${KLASSE[$((nr - 1))]:-}"
+		if [ -n "$klasse" ]; then
+			echo "full-smoke:   Beleg (Muster $nr von ${#MUSTER[@]}, Klasse: $klasse): $rest"
+		else
+			echo "full-smoke:   Beleg (Muster $nr von ${#MUSTER[@]}): $rest"
+		fi
 	done <<<"$treffer"
 	exit 0
 fi

@@ -3,7 +3,7 @@
 # expect: 502 der Registry auf ein gepinntes Bild -> LEITUNG
 # verify: test-bats
 #
-# NIMMT DEM EINORDNER SEINE MUSTER: die vier gemessenen Formen einer nicht mit 2xx
+# NIMMT DEM EINORDNER SEINE MUSTER: die gemessenen Formen einer nicht mit 2xx
 # beantworteten Anfrage nach einem gepinnten Artefakt verschwinden aus der Liste.
 #
 # DAS IST DIE ERSTE DER ZWEI BRUCHSTELLEN. Ohne Muster faellt jeder Fehlschlag in den

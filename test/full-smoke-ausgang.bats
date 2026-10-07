@@ -11,6 +11,8 @@
 # DIE AUSSCHNITTE SIND ZITATE, KEINE NACHBAUTEN. Woher jeder stammt, steht an ihm.
 # Ein erfundener Fehlertext prueft die Vorstellung des Autors davon, wie ein
 # Registry-Ausfall aussieht — und genau die ist der Gegenstand, nicht der Massstab.
+# Eine Ausnahme: (B3) ist ein abgewandeltes Zitat und haelt allein die Grenze eines
+# Musters; was daran abgewandelt ist, steht an ihm.
 #
 # ZU (1) — ZWEI RICHTUNGEN, ZWEI BRUCHSTELLEN: dass LEITUNG erkannt wird, und dass BAUM
 # NICHT zu LEITUNG wird. Ein Einordner, der immer LEITUNG sagt, bestuende die erste
@@ -111,6 +113,60 @@ d-check: 406 Datei(en) geprueft, 1 Befund(e)
 make: *** [d-check.mk:32: docs-check] Fehler 1
 ENDE
 )"
+
+  # (L5) CI-Job 112925525011 vom 2026-10-07 (ci-Lauf am Tag-Commit v0.5.0), die Ausgabe
+  # von make traeger-fetch im frischen Klon, mit dem Zeitstempel-Praefix des
+  # Aktionslaufs — gelesen ueber
+  # gh api repos/pt9912/ai-harness-init/actions/jobs/112925525011/logs, Zeilen 664-681.
+  # Das Release-Asset des gepinnten Tags war noch nicht veroeffentlicht; curl antwortete
+  # mit 404.
+  LEITUNG_ASSET="$(cat <<'ENDE'
+2026-10-07T17:36:35.7705253Z Unable to find image 'curlimages/curl@sha256:463eaf6072688fe96ac64fa623fe73e1dbe25d8ad6c34404a669ad3ce1f104b6' locally
+2026-10-07T17:36:35.7706257Z docker.io/curlimages/curl@sha256:463eaf6072688fe96ac64fa623fe73e1dbe25d8ad6c34404a669ad3ce1f104b6: Pulling from curlimages/curl
+2026-10-07T17:36:35.7706848Z 9824c27679d3: Pulling fs layer
+2026-10-07T17:36:35.7707101Z e4200f789582: Pulling fs layer
+2026-10-07T17:36:35.7707340Z bd9ddc54bea9: Pulling fs layer
+2026-10-07T17:36:35.7707584Z bd9ddc54bea9: Verifying Checksum
+2026-10-07T17:36:35.7707831Z bd9ddc54bea9: Download complete
+2026-10-07T17:36:35.7708076Z 9824c27679d3: Verifying Checksum
+2026-10-07T17:36:35.7708312Z 9824c27679d3: Download complete
+2026-10-07T17:36:35.7708554Z e4200f789582: Verifying Checksum
+2026-10-07T17:36:35.7709110Z e4200f789582: Download complete
+2026-10-07T17:36:35.7709380Z 9824c27679d3: Pull complete
+2026-10-07T17:36:35.7709613Z e4200f789582: Pull complete
+2026-10-07T17:36:35.7709834Z bd9ddc54bea9: Pull complete
+2026-10-07T17:36:35.7710201Z Digest: sha256:463eaf6072688fe96ac64fa623fe73e1dbe25d8ad6c34404a669ad3ce1f104b6
+2026-10-07T17:36:35.7710918Z Status: Downloaded newer image for curlimages/curl@sha256:463eaf6072688fe96ac64fa623fe73e1dbe25d8ad6c34404a669ad3ce1f104b6
+2026-10-07T17:36:35.7711785Z curl: (22) The requested URL returned error: 404
+2026-10-07T17:36:35.7712164Z make[1]: *** [harness/mk/traeger.mk:31: traeger-fetch] Error 22
+ENDE
+)"
+
+  # (B3) KEIN ZITAT: (L5) mit der curl-Zeile eines anderen Exit-Codes. Ein Lauf, in dem
+  # curl beim Schreiben am Ziel brach, ist nicht aufgezeichnet; der Ausschnitt haelt die
+  # Grenze des Musters (5) — gefuehrt ist allein (22) —, nicht die Form eines realen
+  # Fehlschlags.
+  BAUM_CURL="$(cat <<'ENDE'
+2026-10-07T17:36:35.7705253Z Unable to find image 'curlimages/curl@sha256:463eaf6072688fe96ac64fa623fe73e1dbe25d8ad6c34404a669ad3ce1f104b6' locally
+2026-10-07T17:36:35.7706257Z docker.io/curlimages/curl@sha256:463eaf6072688fe96ac64fa623fe73e1dbe25d8ad6c34404a669ad3ce1f104b6: Pulling from curlimages/curl
+2026-10-07T17:36:35.7706848Z 9824c27679d3: Pulling fs layer
+2026-10-07T17:36:35.7707101Z e4200f789582: Pulling fs layer
+2026-10-07T17:36:35.7707340Z bd9ddc54bea9: Pulling fs layer
+2026-10-07T17:36:35.7707584Z bd9ddc54bea9: Verifying Checksum
+2026-10-07T17:36:35.7707831Z bd9ddc54bea9: Download complete
+2026-10-07T17:36:35.7708076Z 9824c27679d3: Verifying Checksum
+2026-10-07T17:36:35.7708312Z 9824c27679d3: Download complete
+2026-10-07T17:36:35.7708554Z e4200f789582: Verifying Checksum
+2026-10-07T17:36:35.7709110Z e4200f789582: Download complete
+2026-10-07T17:36:35.7709380Z 9824c27679d3: Pull complete
+2026-10-07T17:36:35.7709613Z e4200f789582: Pull complete
+2026-10-07T17:36:35.7709834Z bd9ddc54bea9: Pull complete
+2026-10-07T17:36:35.7710201Z Digest: sha256:463eaf6072688fe96ac64fa623fe73e1dbe25d8ad6c34404a669ad3ce1f104b6
+2026-10-07T17:36:35.7710918Z Status: Downloaded newer image for curlimages/curl@sha256:463eaf6072688fe96ac64fa623fe73e1dbe25d8ad6c34404a669ad3ce1f104b6
+2026-10-07T17:36:35.7711785Z curl: (23) Failure writing output to destination
+2026-10-07T17:36:35.7712164Z make[1]: *** [harness/mk/traeger.mk:31: traeger-fetch] Error 23
+ENDE
+)"
 }
 
 # ordne faehrt den Einordner mit dem Ausschnitt auf stdin. Der Text geht als Argument
@@ -162,6 +218,21 @@ ordne() {
 
 @test "ausgang: Doku-Gate-Befund -> BAUM" {
   ordne "make docs-check" "$BAUM_DCHECK"
+  [ "$status" -eq 0 ]
+  printf '%s' "$output" | grep -q 'AUSGANG BAUM'
+  ! printf '%s' "$output" | grep -q 'AUSGANG LEITUNG'
+}
+
+@test "ausgang: 404 auf das Release-Asset des gepinnten Tags -> LEITUNG mit Klasse" {
+  ordne "make traeger-fetch im frischen Klon (golang)" "$LEITUNG_ASSET"
+  [ "$status" -eq 0 ]
+  printf '%s' "$output" | grep -q 'AUSGANG LEITUNG: make traeger-fetch im frischen Klon'
+  # Die Klasse steht in der Beleg-Zeile, zusammen mit der curl-Zeile, die sie traegt.
+  printf '%s' "$output" | grep -q 'Klasse: Release-Asset nicht abrufbar.*curl: (22) The requested URL returned error: 404'
+}
+
+@test "ausgang: curl-Fehler ausser (22) -> BAUM" {
+  ordne "make traeger-fetch im frischen Klon (golang)" "$BAUM_CURL"
   [ "$status" -eq 0 ]
   printf '%s' "$output" | grep -q 'AUSGANG BAUM'
   ! printf '%s' "$output" | grep -q 'AUSGANG LEITUNG'

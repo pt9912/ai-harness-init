@@ -114,7 +114,14 @@ Die Schritt-Folge:
    Release-Workflow** und holen in ihrem `full-smoke` den Traeger-Fetch am
    selben Tag — der fällt mit 404, bis der Release-Lauf publiziert hat; ein
    gemeinsamer Push von `main` und Tag erzeugt den Fall an zwei Läufen
-   (main-Ref und Tag-Ref). Operativer Ausgang ist der Re-Run der gefallenen
+   (main-Ref und Tag-Ref). Im Log des `ci`-Laufs steht der Fall als
+   `AUSGANG LEITUNG` an der Stufe `make traeger-fetch im frischen Klon`, die
+   Beleg-Zeile darunter trägt die Klasse *Release-Asset nicht abrufbar* und die
+   Zeile `curl: (22) The requested URL returned error: 404`
+   (`harness/tools/full-smoke-ausgang.sh`, Muster 5). Die Zeile trennt ein
+   noch nicht veröffentlichtes Release nicht von einem falsch gesetzten
+   `TRAEGER_TAG` — beide liefern denselben Text; ob der Release-Lauf
+   publiziert hat, zeigt `gh release view <tag>`. Operativer Ausgang ist der Re-Run der gefallenen
    Jobs nach abgeschlossener Publikation; die Struktur-Entscheidung
    (begrenzte Wartezeit oder Workflow-Anordnung) steht aus
    ([`BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases`](../plan/planning/observations/BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases/)).
