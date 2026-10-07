@@ -71,6 +71,11 @@ Werkzeug-Teil heute schon disjunkt gegen `harness/README.md`
 (`internal/emit/werkzeugindex.go`, Kommentar an `WerkzeugIndex`), und seine Grenz-Zeile im
 emittierten Teil nennt den Pin `v0.82.0` als Grund, warum niemand die Disjunktheit prüft.
 
+**Zwei Schreib-Klassen im Ziel:** die `.d-check.yml` schreibt der Lauf skip-if-present
+(`internal/emit/emit.go`, `DocGate`), `d-check.mk` und den Werkzeug-Teil
+harness/mk/ai-harness-init.md bei jedem Lauf kanonisch neu. Ein **bestehendes** Ziel bekommt mit
+dem nächsten Lauf also Pin und Grenz-Zeile, aber nicht den Schalter.
+
 **a-check liegt außerhalb des Deltas:**
 `git -C "$K" grep -c 'a-check:v' v6.17.0 -- Makefile lab/` → kein Treffer; der Kurs pinnt kein
 a-check.
@@ -83,11 +88,24 @@ Es regiert `v6.17.0`, `modul-02-harness-bootstrap.md` §Freshness-Audit der vend
 (Schritt 2), mit derselben Begründung wie
 [ADR-0078](0078-ziel-fassung-regiert-den-sprung-v6160.md) Festlegung 1 (Prozedur unverändert,
 Tag-Klammer [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Keine neue
-Abweichung. Der Durchgang liest die zwei geänderten Regelwerk-Dateien als Volltext; **Kandidaten**
-sind die aktiven Einträge, deren `Ersetzt-Baseline-Regel` in die zwei geänderten Abschnitte zeigt
-(`grep -ln 'hard-rule-doku-disziplin\|harnessreadmemd-als-einstiegspunkt' harness/conventions/*.md`
-→ [`MR-010`](../../../harness/conventions.md#mr-010), [`MR-011`](../../../harness/conventions.md#mr-011), [`MR-014`](../../../harness/conventions.md#mr-014), [`MR-024`](../../../harness/conventions.md#mr-024), [`MR-054`](../../../harness/conventions.md#mr-054), [`MR-065`](../../../harness/conventions.md#mr-065)); das Urteil je Eintrag fällt im
-Durchgang.
+Abweichung. Der Durchgang liest die drei geänderten Regelwerk- und Vorlagen-Dateien mit Inhalt als
+Volltext; **Kandidaten** sind die aktiven Einträge, die einen der zwei geänderten Abschnitte oder
+die geänderte Vorlage nennen:
+
+```sh
+grep -ln 'hard-rule-doku-disziplin\|harnessreadmemd-als-einstiegspunkt\|templates/\.d-check\.yml' harness/conventions/*.md
+# -> MR-001, MR-009, MR-010, MR-011, MR-014, MR-024, MR-054, MR-065, MR-080
+```
+
+[`MR-001`](../../../harness/conventions.md#mr-001),
+[`MR-009`](../../../harness/conventions.md#mr-009),
+[`MR-010`](../../../harness/conventions.md#mr-010),
+[`MR-011`](../../../harness/conventions.md#mr-011),
+[`MR-014`](../../../harness/conventions.md#mr-014),
+[`MR-024`](../../../harness/conventions.md#mr-024),
+[`MR-054`](../../../harness/conventions.md#mr-054),
+[`MR-065`](../../../harness/conventions.md#mr-065),
+[`MR-080`](../../../harness/conventions.md#mr-080); das Urteil je Eintrag fällt im Durchgang.
 
 ### Festlegung 2 — Welle 160 im emittierten Ziel: Schalter an, mit dem Pin
 
@@ -96,10 +114,19 @@ emittierte Default-Pin d-check `v0.83.0`** — vorher kennt das Werkzeug den Sch
 Schalter ist eine Verschärfung eines aktiven Moduls, kein neues Modul; die drei Kriterien von
 [`MR-054`](../../../harness/conventions.md#mr-054) gelten trotzdem, weil das Ziel ihn ab dem
 ersten Lauf fährt: **Erprobung** (Lauf im gebootstrappten Ziel), **grüner Start** (der Emitter
-schreibt disjunkt, der Lauf belegt es) und **rotes Gegenbeispiel** (§Fitness Function). Die
-Grenz-Zeile in harness/mk/ai-harness-init.md im Ziel (Text in `internal/emit/werkzeugindex.go`) zieht mit: aus *„prüft
-die Disjunktheit nicht"* wird der Sensor, der sie prüft, und seine Grenze — er sieht eine
-Doppelung erst, wenn das Repo sie angelegt hat.
+schreibt disjunkt, der Lauf belegt es) und **rotes Gegenbeispiel** (§Fitness Function).
+
+**Die Grenz-Zeile im Werkzeug-Teil folgt der `.d-check.yml`, die im Ziel liegt** — nicht der, die
+der Lauf emittieren würde. `WerkzeugIndex` liest die Ziel-`.d-check.yml` nach `DocGate`, also auch
+die eben frisch geschriebene: Trägt sie eine nicht auskommentierte Zeile
+`authority-disjoint: true`, nennt die Zeile den Sensor und seine Grenze (er sieht eine Doppelung
+erst, wenn das Repo sie angelegt hat); fehlt sie, sagt die Zeile, dass eine Doppelung still bleibt,
+und nennt den Schlüssel, der sie einschaltet. So hält der Werkzeug-Teil in beiden Ziel-Klassen
+die Wahrheit am Ort ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)),
+und die skip-if-present-Zusage an die `.d-check.yml` bleibt unberührt. **Grenze:** erkannt wird
+die Zeile textuell, nicht über das YAML-Schema; ein Schalter an anderer Stelle der Datei gilt als
+gesetzt. Akzeptiertes Negativ — der Lauf schreibt die Datei selbst in genau dieser Form, und ein
+Adopter, der sie umbaut, liest die Zeile, die ihn betrifft.
 
 ### Festlegung 3 — Welle 160 im Dogfood: kein Schalter, akzeptiertes Negativ
 
@@ -135,7 +162,7 @@ Treffer); beide Releases ändern nur `shapes`-Verhalten, der Slice belegt das am
 
 | Vorgang | Inhalt | Träger |
 |---|---|---|
-| Sprung-Slice | Vendoring `v6.17.0` + Baseline-Pins + emittierter Mess-Tag; d-check-Pin `v0.83.0` (Dogfood, emittierter Default); Schalter und Grenz-Zeile im Ziel (Festlegung 2) samt rotem Gegenbeispiel — drei Liefer-Punkte | Planner schneidet, Implementer |
+| Sprung-Slice | Vendoring `v6.17.0` + Baseline-Pins + emittierter Mess-Tag; d-check-Pin `v0.83.0` (Dogfood, emittierter Default); Schalter und zustandsabhängige Grenz-Zeile im Ziel (Festlegung 2) samt rotem Gegenbeispiel für beide Ziel-Klassen — drei Liefer-Punkte | Planner schneidet, Implementer |
 | `MR`-Eintrag d-check `v0.83.0` | Festlegung 4 | Architect, mit dem Vollzug |
 | Buchung §Baseline, `migration.md` §1, Freshness-Review | Festlegung 1 | Architect, mit dem Vollzug |
 | a-check-Pin `v0.22.0` | Festlegung 5 | eigener Slice, unabhängig |
@@ -161,15 +188,20 @@ gegen [ADR-0078](0078-ziel-fassung-regiert-den-sprung-v6160.md),
 | B — Sprung ohne Schalter, Welle 160 als eigener späterer Vorgang | kleinerer Sprung | die Vorlage sagt nach dem Vendoring *„bleibt sie aus, steht die Regel nur im Briefing"* — ein Intervall, das ein Release erreichen könnte; der Schalter ist eine Zeile plus ein Gegenbeispiel |
 | C — Schalter auch im Dogfood | eine Konfiguration für beide Ebenen | kein Objekt bei einer Autoritäts-Datei; behauptet ein Gate über einer leeren Menge |
 | D — a-check-Pin in den Sprung | ein Vorgang für alle Pins | nicht im Delta; vier Liefer-Punkte sprengen die Größenregel (`modul-05-planning-harness.md` §Ziel-Form: Slice) |
-| **E — gewählt: Ziel-Fassung, Schalter emittiert mit dem Pin, Dogfood ohne, d-check-`MR` mit dem Vollzug, a-check eigener Slice** | Delta und Wirkung in einem Vorgang; kein Intervall im Ziel; jede Folge-Arbeit hat einen Träger | der Sprung-Slice trägt Code (Emitter, Grenz-Zeile, `full-smoke`), nicht nur Doku |
+| F — bestehendes Ziel nur per stdout-Meldung über den fehlenden Schalter informieren | kein Lesen der Ziel-Konfiguration im Werkzeug-Teil | die Meldung vergeht mit dem Lauf, die Grenz-Zeile im Werkzeug-Teil behauptete weiter eine Prüfung, die nicht läuft |
+| G — Konsequenz auf frisch gebootstrappte Ziele einschränken, Klasse nur benennen | kein Code | die Grenz-Zeile bliebe im bestehenden Ziel falsch; Benennen in der ADR erreicht den Adopter nicht |
+| **E — gewählt: Ziel-Fassung, Schalter emittiert mit dem Pin, Grenz-Zeile nach der liegenden `.d-check.yml`, Dogfood ohne, d-check-`MR` mit dem Vollzug, a-check eigener Slice** | Delta und Wirkung in einem Vorgang; kein Intervall im Ziel; der Werkzeug-Teil sagt in jeder Ziel-Klasse, was läuft; jede Folge-Arbeit hat einen Träger | der Sprung-Slice trägt Code (Emitter, Grenz-Zeile, `full-smoke`), nicht nur Doku |
 
 ## Konsequenzen
 
 - **Positiv:** Das emittierte Ziel prüft die Zusage *„kein Target in zwei Teilen"*, statt sie nur
-  zu nennen; die Grenz-Zeile im Werkzeug-Teil verliert ihren Pin-Grund.
-- **Negativ:** Legt ein Repo eine eigene `harness/README.md`-Zeile für ein Werkzeug-Target an,
-  wird sein Doku-Gate ab `v0.4.0` rot, wo es bisher still blieb — gewollt, aber eine sichtbare
-  Verhaltensänderung für Adopter; sie gehört in die Release-Notiz.
+  zu nennen; die Grenz-Zeile im Werkzeug-Teil verliert ihren Pin-Grund und sagt in jedem Ziel, ob
+  die Prüfung dort läuft.
+- **Negativ:** Ein ab `v0.4.0` **frisch gebootstrapptes** Ziel, das eine eigene
+  `harness/README.md`-Zeile für ein Werkzeug-Target anlegt, wird rot, wo es bisher still blieb —
+  gewollt, aber eine sichtbare Verhaltensänderung für Adopter; sie gehört in die Release-Notiz.
+  Ein **bestehendes** Ziel behält seine `.d-check.yml` und bleibt still, bis der Adopter den
+  Schalter setzt; die Grenz-Zeile seines Werkzeug-Teils sagt ihm das, die Release-Notiz ebenso.
 - **Negativ / [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6):**
   im Dogfood hält kein Sensor die Disjunktheit — sie hat dort kein Objekt (Festlegung 3).
 - **Folgepflicht:** siehe §Folge-Arbeit und Schnitt.
@@ -180,6 +212,7 @@ gegen [ADR-0078](0078-ziel-fassung-regiert-den-sprung-v6160.md),
 | Tooling | Regel | Make-Target |
 |---|---|---|
 | d-check `targets` mit `authority-disjoint: true`, im gebootstrappten Ziel | eine Tabellenzeile für ein Target aus harness/mk/ai-harness-init.md im Ziel, zusätzlich in `harness/README.md` §Sensors eingefügt, färbt das Doku-Gate des Ziels rot mit `gate-declared-twice`; der unveränderte Bootstrap bleibt grün | `make full-smoke` (Stufe `targets_im_ziel`, im Sprung-Slice erweitert) |
+| Grenz-Zeile gegen die liegende `.d-check.yml`, im Ziel mit vorab gelegter `.d-check.yml` ohne Schalter | der Lauf lässt die Datei unverändert, der Werkzeug-Teil nennt die Disjunktheit **nicht** geprüft, und dieselbe Doppelzeile lässt das Doku-Gate grün (gemessene Grenze); rotes Gegenbeispiel: schreibt der Emitter die Zeile unabhängig vom Ziel-Stand („geprüft"), fällt die Stufe | `make full-smoke` (neue Stufe im Sprung-Slice, mit Fall in `test/mutations/`) |
 
 **Lücke:** ob der Durchgang der gewählten Fassung folgte, und die Release-Bedingung — wie
 [ADR-0078](0078-ziel-fassung-regiert-den-sprung-v6160.md) §Fitness Function; Träger ist der
@@ -193,6 +226,8 @@ Release-Schnitt, der diese Entscheidung liest.
   Schalter gehört dann auch hierher.
 - **Der grüne Start im Ziel scheitert** (der Emitter schreibt doch eine Doppelung): Festlegung 2
   geht nicht ohne Emitter-Korrektur in den Sprung; der Schnitt ist neu zu führen.
+- **Die `.d-check.yml` des Ziels wird konvergent oder gemischt geschrieben:** die
+  zustandsabhängige Grenz-Zeile aus Festlegung 2 verliert ihren Grund.
 - **Der Kurs pinnt a-check:** Festlegung 5 verliert ihren Grund.
 
 ## Geschichte
