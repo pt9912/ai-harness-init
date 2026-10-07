@@ -53,18 +53,18 @@ gesetzter Pin ihn schlägt ([ADR-0059](../../adr/0059-sha256sums-reisen-als-rele
 
 ## 2. Definition of Done
 
-- [ ] **1 — Adopter-Kanal:** `klon_traeger_fetch` entfernt zusätzlich die sechs
+- [x] **1 — Adopter-Kanal:** `klon_traeger_fetch` entfernt zusätzlich die sechs
       `TRAEGER_SHA256_*`; (b) verifiziert damit gegen die `SHA256SUMS` des gepinnten Release.
       **Rot-Werkzeug:** neuer Fall in `test/mutations/` (`files:` das emittierte
       `traeger-fetch.sh`, `verify: full-smoke`), der die Manifest-Adresse bricht
       (`/SHA256SUMS"` → `/SHA256SUMSX"`); `make mutate MUTATE_CASES=<nr>` meldet ihn gebunden, die
       FEHLER-/AUSGANG-Zeile ist gelesen und als `expect:` eingetragen. Gegenprobe: mit
       zurückgenommenem `env -u TRAEGER_SHA256_*` meldet derselbe Lauf den Fall als BEFUND.
-- [ ] **2 — Fall (c) misst den Pin-Kanal ausdrücklich:** nur der Host-Pin gesetzt, die Prüfung
+- [x] **2 — Fall (c) misst den Pin-Kanal ausdrücklich:** nur der Host-Pin gesetzt, die Prüfung
       verlangt `aus Pin` in der Meldung. **Rot-Werkzeug:** neuer Fall (`verify: full-smoke`), der
       im emittierten Skript den Pin übergeht (`erwartet="$TRAEGER_SHA256"` → `erwartet=""`); (c)
       endet dann mit 0, `make mutate` meldet ihn gebunden, Meldung gelesen.
-- [ ] **3 — Sicht und Kopf-Sätze:** Deklaration von Stufe 5 und der `GRENZE`-Kommentar von
+- [x] **3 — Sicht und Kopf-Sätze:** Deklaration von Stufe 5 und der `GRENZE`-Kommentar von
       `klon_traeger_fetch` nennen beide Kanäle; `make e2e-abdeckung` zieht
       [`docs/user/e2e-abdeckung.md`](../../../user/e2e-abdeckung.md) nach; der Laufzeit-Satz in
       `test/mutations/553-…` und `554-…` (und in den zwei neuen Fällen) nennt statt „läuft fast
@@ -72,14 +72,14 @@ gesetzter Pin ihn schlägt ([ADR-0059](../../adr/0059-sha256sums-reisen-als-rele
       Zahl**: eine Dauer ist das Protokoll eines Laufs und nach `AGENTS.md` §3.7 kein
       Kommentar-Inhalt (INFO-1 des
       [Reviews](../../../reviews/2026-10-07-traeger-pin-review.md)).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen).
 
 ## 3. Plan (vor Code)
@@ -111,22 +111,45 @@ Kein Produkt-Code: das emittierte `traeger-fetch.sh` bleibt unverändert, es ist
 
 ## 6. Risiken und offene Punkte
 
-- **Weitere geerbte Exporte** (`TRAEGER_CARRIER`) an derselben Stufe. — **Ausgang:** offen bis zur
-  Closure.
+- **Weitere geerbte Exporte** (`TRAEGER_CARRIER`) an derselben Stufe. — **Ausgang:** entfallen — der
+  geerbte Wert gleicht dem Default des emittierten Fragments und Skripts
+  (`grep -n 'TRAEGER_CARRIER' Makefile internal/emit/templates/enforce/traeger.mk internal/emit/templates/enforce/traeger-fetch.sh`),
+  und `make -C "$klon"` löst den relativen Pfad im Klon auf; die Stufe fährt damit den Pfad des
+  Adopters. Der `GRENZE`-Kommentar von `klon_traeger_fetch` nennt das Erben.
 - **Die Erfolgsmeldung von (b) unterscheidet die Kanäle nicht:** (b) prüft `Digest verifiziert`,
   das in beiden Kanälen gleich lautet; dass (b) den Manifest-Kanal fährt, hält allein der
   Mutationsfall 556 unter `make mutate`, nicht `make gates` (INFO-1 des
   [Reviews](../../../reviews/2026-10-07-sha256sums-review.md)). Grenze, kein Liefer-Punkt.
-  — **Ausgang:** offen bis zur Closure.
+  — **Ausgang:** weiter offen — Register
+  [`BEO-ALL/erfolgs-meldung-nennt-einen-kanal-den-die-ausgabe-nicht-traegt`](../observations/BEO-ALL/erfolgs-meldung-nennt-einen-kanal-den-die-ausgabe-nicht-traegt/observation.md).
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+**Rolle:** Planner · **Datum:** 2026-10-07
+
+- **Was hat funktioniert:** Liefer-Punkte 1–3 bestätigt
+  ([Verifikation](../../../reviews/2026-10-07-sha256sums-verifikation.md)); `make full-smoke` EXIT 0.
+  Fälle 556 und 557 binden (`make mutate MUTATE_CASES=…` → `2 ok, 0 Befund(e)`); die Gegenprobe ohne
+  `env -u TRAEGER_SHA256_*` meldet 556 als BEFUND, die 404 stammt nachweislich vom Manifest-Abruf
+  ([Review](../../../reviews/2026-10-07-sha256sums-review.md), Belege).
+- **Was ging anders als geplant:** Liefer-Punkt 3 bestellte Messwerte eines Laufs in Kommentaren
+  (HIGH-1, [`AGENTS.md`](../../../../AGENTS.md) §3.7); Plan-Korrektur `48a91848`, behoben in `96db3cc1`.
+- **Steering-Loop-Eintrag:** benannte Grenze — dass (b) den Manifest-Kanal fährt, hält allein Fall 556
+  unter `make mutate`, nicht `make gates`. Gezählt, nicht verkörpert.
+- **Beobachtungs-Register (`../observations/`):** neu
+  [`BEO-ALL/plan-bestellt-was-eine-hard-rule-verbietet`](../observations/BEO-ALL/plan-bestellt-was-eine-hard-rule-verbietet/observation.md)
+  und
+  [`BEO-ALL/erfolgs-meldung-nennt-einen-kanal-den-die-ausgabe-nicht-traegt`](../observations/BEO-ALL/erfolgs-meldung-nennt-einen-kanal-den-die-ausgabe-nicht-traegt/observation.md)
+  (je 1 Beleg); Beleg an
+  [`BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle`](../observations/BEO-ALL/kommentar-nennt-den-vorgang-seiner-entstehung-statt-der-stelle/observation.md)
+  (Stand *verkörpert*, Zielort §3.7 trägt weiter *Ein Wächter existiert nicht*).
+- **Folge-Slices:** keine neuen; genannt bleibt `slice-ci-wartet-die-publikation-des-gepinnten-releases-ab` (§1).
+- **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines. ADR:
+  [ADR-0058](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md),
+  [ADR-0059](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md) —
+  kein Re-Evaluierungs-Trigger eingetreten. Hard Rules: keine entfernt.
+- **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
