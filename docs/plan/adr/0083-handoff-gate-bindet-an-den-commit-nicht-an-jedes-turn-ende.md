@@ -1,6 +1,6 @@
 # ADR-0083: Das Handoff-Gate bindet an den Commit, nicht an jedes Turn-Ende — der strenge Modus bleibt per Schalter
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-10-07
 
@@ -78,7 +78,9 @@ dieselbe Weise: `git rev-parse --verify -q HEAD` gelingt → die SHA. Scheitert 
 Zweig) **und** `git rev-list -n1 --all` leer mit Exit 0 endet (kein einziger Commit); dann ist der
 Wert der feste Text `kein-commit`, `record-gates.sh` bleibt grün und der Hook vergleicht ihn wie
 eine SHA. Jede andere Lage — HEAD zeigt auf einen kaputten oder fehlenden Ref in einem Repo mit
-Commits, `rev-list` scheitert — ist ein Git-Fehler und fällt unter §5. Ein frisches Ziel fährt
+Commits, `rev-list` scheitert — ist ein Git-Fehler und fällt unter §5.
+Darunter fällt auch ein frischer `git switch --orphan` in einem Repo mit Commits: `rev-list --all` ist nicht
+leer, der Hook endet mit Exit 2 — die strenge Seite; akzeptiertes Negativ. Ein frisches Ziel fährt
 `make gates` vor dem ersten Commit (`harness/tools/full-smoke.sh` Stufe des Ziel-Laufs); vor dem
 ersten Commit ist das Turn-Ende damit frei, der erste Commit gilt als neuer HEAD.
 
@@ -164,6 +166,7 @@ Commit (`AGENTS.md` §3.8), wenn der Slice den Hook ändert.
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-10-07 | Proposed | Auftraggeber-Entscheidung zu CR-1 eines Adopters (v0.4.0) |
+| 2026-10-07 | **Accepted** | Review `2026-10-07-adr-0083-0084-review` mit Nachprüfung (Commit `968f7c6f`); deren N1/N2 nach Vorschlag des Reviewers behoben (Commit `ade73d27`), **nicht erneut nachgeprüft**; §4 vor der Annahme um den `--orphan`-Fall ergänzt; Annahme durch den Auftraggeber am 2026-10-07 ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1) |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit

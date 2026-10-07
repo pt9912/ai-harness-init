@@ -1,6 +1,6 @@
 # ADR-0084: Die Reviewer-Skills im Ziel sind Adopter-Boden — skip-if-present statt konvergent
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-10-07
 
@@ -105,6 +105,7 @@ der Abgleich ist Handarbeit des Adopters, wie bei jedem anderen Ausfüll-Dokumen
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-10-07 | Proposed | Auftraggeber-Entscheidung zu CR-2 eines Adopters (v0.4.0) |
+| 2026-10-07 | **Accepted** | Review `2026-10-07-adr-0083-0084-review` mit Nachprüfung *„annahmereif"* (Commit `968f7c6f`), Annahme durch den Auftraggeber am 2026-10-07 ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1) |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
