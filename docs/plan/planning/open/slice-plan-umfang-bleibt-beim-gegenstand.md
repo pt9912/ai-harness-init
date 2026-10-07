@@ -24,10 +24,12 @@ Entstehung).
 
 ## 1. Ziel und Abgrenzung
 
-**Ziel:** Die Beweisführung eines Slice-Plans bleibt beim Gegenstand des Slice und wächst nicht über
-das hinaus, was seine Umsetzung liest. Die Regel steht an einem Norm-Artefakt.
+**Ziel:** Die Regel, dass ein Slice-Plan nur trägt, was der Slice trägt, nennt eine messbare Form
+und ihre Grenze. Die Regel selbst steht seit `ca5fce63` in `.claude/agents/planner.md` (*Knapp
+schreiben*) und `.claude/commands/plan-welle.md` (*Plan knapp halten*); offen ist, woran ihr
+Bruch erkennbar ist.
 
-Die Klasse hat keinen Zielort: Die Größen-Regel des Baseline-Regelwerks deckelt **Liefer-Punkte**
+Die Größen-Regel des Baseline-Regelwerks deckelt **Liefer-Punkte**
 und die Reviewbarkeit in einer Sitzung, nicht den Umfang der Herleitung. Ein Slice-Plan dieses Repos
 trägt ein Vielfaches der Zeilenzahl, die das Schwester-Repo für dieselbe Arbeitsklasse braucht.
 Beleg:
@@ -45,9 +47,7 @@ Beleg:
 
 ## 2. Definition of Done
 
-- [ ] Die Regel steht an einem Norm-Artefakt: die Herleitung eines Slice-Plans bleibt beim
-      Gegenstand, den seine Umsetzung liest.
-- [ ] Der Zielort nennt eine messbare Form — etwa die Zeilenzahl des Plans gegen die seiner
+- [ ] Die zwei Zielorte nennen eine messbare Form — etwa die Zeilenzahl des Plans gegen die seiner
       Umsetzung —, statt nur ein Gefühl.
 - [ ] Rot gesehen: ein Plan über der benannten Grenze färbt den Träger rot **oder** die Zusage ist
       auf das eingeschränkt, was der Lauf hält.
@@ -60,7 +60,7 @@ Beleg:
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| Anweisungssatz [`plan-welle.md`](../../../../.claude/commands/plan-welle.md) bzw. `AGENTS.md` §3 | update | Träger der Regel für den schreibenden Lauf |
+| Anweisungssatz [`plan-welle.md`](../../../../.claude/commands/plan-welle.md) bzw. `AGENTS.md` §3 | update | messbare Form und Grenze der Regel am Ort, den der schreibende Lauf liest |
 | [`harness/tools/`](../../../../harness/tools) | neu | Träger, wenn die Zeilenzahl gemessen wird |
 | [`test/`](../../../../test) | neu | Rot-Beleg über einem Plan über der Grenze |
 
