@@ -10,8 +10,7 @@
 # (klon_traeger_fetch, env -u). Erbt er ihn, bleibt full-smoke gruen: der Fall bindet
 # die Adopter-Bedingung der Stufe (LH-QA-02, ADR-0058 Festlegung 1).
 #
-# BRAUCHT NETZ, wie jeder full-smoke-Lauf. DAUER: 23.05 s fuer diesen Fall gegen 148.31 s
-# fuer den gruenen Vorlauf (make mutate, Zeilen "Zeit je Fall" und "Gruen-Vorlaeufe") —
-# der Lauf bricht an der Traeger-Stufe ab, lange vor dem Ende von harness/tools/full-smoke.sh.
+# BRAUCHT NETZ, wie jeder full-smoke-Lauf.
+# Der Lauf bricht an der Traeger-Stufe ab, lange vor dem Ende von harness/tools/full-smoke.sh.
 set -euo pipefail
 sed -i 's/^TRAEGER_TAG ?= /TRAEGER_TAGX ?= /' internal/emit/templates/enforce/traeger.mk

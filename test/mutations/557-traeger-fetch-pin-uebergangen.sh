@@ -10,8 +10,7 @@
 # gegen die SHA256SUMS des Release, endet mit 0, und (c) wird rot. Der Fall bindet den
 # Vorrang des Pins vor dem Manifest (LH-QA-02, ADR-0059 Festlegung 3).
 #
-# BRAUCHT NETZ, wie jeder full-smoke-Lauf. DAUER: 27.31 s fuer diesen Fall gegen 148.31 s
-# fuer den gruenen Vorlauf (make mutate, Zeilen "Zeit je Fall" und "Gruen-Vorlaeufe") —
-# der Lauf bricht an der Traeger-Stufe ab, lange vor dem Ende von harness/tools/full-smoke.sh.
+# BRAUCHT NETZ, wie jeder full-smoke-Lauf.
+# Der Lauf bricht an der Traeger-Stufe ab, lange vor dem Ende von harness/tools/full-smoke.sh.
 set -euo pipefail
 sed -i 's|^erwartet="[$]TRAEGER_SHA256"$|erwartet=""|' internal/emit/templates/enforce/traeger-fetch.sh

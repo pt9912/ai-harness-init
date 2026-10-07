@@ -12,8 +12,7 @@
 # full-smoke bleibt gruen: der Fall bindet den Kanal des Adopters (LH-QA-02,
 # ADR-0059 Festlegung 1).
 #
-# BRAUCHT NETZ, wie jeder full-smoke-Lauf. DAUER: 25.67 s fuer diesen Fall gegen 148.31 s
-# fuer den gruenen Vorlauf (make mutate, Zeilen "Zeit je Fall" und "Gruen-Vorlaeufe") —
-# der Lauf bricht an der Traeger-Stufe ab, lange vor dem Ende von harness/tools/full-smoke.sh.
+# BRAUCHT NETZ, wie jeder full-smoke-Lauf.
+# Der Lauf bricht an der Traeger-Stufe ab, lange vor dem Ende von harness/tools/full-smoke.sh.
 set -euo pipefail
 sed -i 's|/SHA256SUMS"|/SHA256SUMSX"|' internal/emit/templates/enforce/traeger-fetch.sh
