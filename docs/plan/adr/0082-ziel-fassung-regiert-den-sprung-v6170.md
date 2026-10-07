@@ -1,6 +1,6 @@
 # ADR-0082: Die Ziel-Fassung regiert den Sprung `v6.16.0` → `v6.17.0` — Welle 160 schaltet im emittierten Doku-Gate die Disjunktheit ein, das Dogfood hat für sie kein Objekt
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-10-07
 
@@ -129,6 +129,13 @@ sagt einem bestehenden Ziel nicht, *ob* es die Bedingung erfüllt — sie nennt 
 muss. Eine Erkennung, die das entschiede, läge bei gemessenen Formen still falsch
 (§Verglichene Alternativen, H und I).
 
+**Benannte Grenze:** die Bedingung beschreibt die Datei, nicht die wirksame Konfiguration. Zwei
+gemessene Formen erfüllen den Wortlaut und weichen ab: der Schalter in einem zweiten YAML-Dokument
+nach `---` (d-check liest nur das erste; still), und ein selbst geändertes `docs-check`-Rezept mit
+`--disable targets` (still trotz erfüllter Bedingung) bzw. `--enable targets` (prüft ohne `targets`
+in `modules`). Das emittierte Rezept trägt keine dieser Flags; beide Formen entstehen nur durch
+einen Eingriff des Adopters, und die Zeile nennt sie nicht — akzeptiertes Negativ.
+
 ### Festlegung 3 — Welle 160 im Dogfood: kein Schalter, akzeptiertes Negativ
 
 Das Dogfood führt eine Autoritäts-Datei; eine Doppelung innerhalb einer Datei ist für d-check kein
@@ -163,7 +170,7 @@ Treffer); beide Releases ändern nur `shapes`-Verhalten, der Slice belegt das am
 
 | Vorgang | Inhalt | Träger |
 |---|---|---|
-| Sprung-Slice | Vendoring `v6.17.0` + Baseline-Pins + emittierter Mess-Tag; d-check-Pin `v0.83.0` (Dogfood, emittierter Default); Schalter und bedingte Grenz-Zeile im Ziel (Festlegung 2) samt den zwei Stufen aus §Fitness Function — drei Liefer-Punkte | Planner schneidet, Implementer |
+| Sprung-Slice | Vendoring `v6.17.0` + Baseline-Pins + emittierter Mess-Tag; d-check-Pin `v0.83.0` (Dogfood, emittierter Default); Schalter und bedingte Grenz-Zeile im Ziel (Festlegung 2) samt den zwei Stufen und dem Test aus §Fitness Function — drei Liefer-Punkte | Planner schneidet, Implementer |
 | `MR`-Eintrag d-check `v0.83.0` | Festlegung 4 | Architect, mit dem Vollzug |
 | Buchung §Baseline, `migration.md` §1, Freshness-Review | Festlegung 1 | Architect, mit dem Vollzug |
 | a-check-Pin `v0.22.0` | Festlegung 5 | eigener Slice, unabhängig |
@@ -217,6 +224,7 @@ gegen [ADR-0078](0078-ziel-fassung-regiert-den-sprung-v6160.md),
 |---|---|---|
 | d-check `targets` mit `authority-disjoint: true`, im gebootstrappten Ziel | eine Tabellenzeile für ein Target aus harness/mk/ai-harness-init.md im Ziel, zusätzlich in `harness/README.md` §Sensors eingefügt, färbt das Doku-Gate des Ziels rot mit `gate-declared-twice`; der unveränderte Bootstrap bleibt grün | `make full-smoke` (Stufe `targets_im_ziel`, im Sprung-Slice erweitert) |
 | d-check `targets` im Ziel mit vorab gelegter `.d-check.yml` in `v0.2.x`-Form (`targets` nicht in `modules`) und gesetztem Schalter | der Lauf lässt die Datei unverändert, und dieselbe Doppelzeile lässt das Doku-Gate grün — die *sonst*-Hälfte der Grenz-Zeile, gemessen; rot wird die Stufe, sobald d-check dort doch prüft, und dann ist der Satz der Zeile neu zu fassen | `make full-smoke` (neue Stufe im Sprung-Slice) |
+| Go-Test am Emitter, im Sprung-Slice | der von `WerkzeugIndex` geschriebene Werkzeug-Teil enthält den Bedingungs-Satz aus Festlegung 2 (drei Bedingungen und die *sonst*-Hälfte); ein Mutationsfall in `test/mutations/`, der den Satz im Emitter streicht oder durch die alte Pin-Zeile ersetzt, färbt den Test rot | `make test`; `make mutate` (kein Gate) |
 
 **Lücke:** ob der Satz der Grenz-Zeile die Wirkbedingungen des gepinnten d-check vollständig nennt,
 prüft kein Sensor — die zwei Stufen messen je eine Seite, nicht die Menge der Formen; Träger ist
@@ -241,3 +249,9 @@ und die Release-Bedingung — wie [ADR-0078](0078-ziel-fassung-regiert-den-sprun
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-10-07 | Proposed | — |
+| 2026-10-07 | **Accepted** | Review `2026-10-07-adr-0082-review` mit zweiter Nachprüfung *„annahmereif"* (Commit `1e08aa81`), Annahme durch den Auftraggeber am 2026-10-07 ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1) |
+
+Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
+Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
+`Supersedes ADR-NNNN` (Baseline-Regelwerk `modul-04-adrs.md`
+§Hard Rule für Accepted-ADRs).
