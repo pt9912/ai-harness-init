@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -226,16 +227,17 @@ func matchGlob(glob, rel string) bool {
 
 // TestArchImagePin_CouplesToDirectionPorts (LH-QA-02): die emittierte Config traegt
 // `direction:` auf den Port-Schichten — eine Form, die a-check erst ab v0.20.0 dekodiert;
-// eine a-check-Fassung vor dieser Form bricht mit Exit 2 ueber dem unbekannten
-// Schluessel. Der Default-Pin haelt deshalb an derselben Fassung wie die Config-Form:
-// faellt er dahinter zurueck, bricht das emittierte Gate beim ersten Lauf — genau
-// diese Kopplung haelt der Zahn unten fest: ein Pin unterhalb der Fassung faerbt
-// ihn mit der Pin-Meldung rot. Einen Mutations-Fall dafuer traegt der kuratierte
-// Satz nicht; die rot faerbende Aenderung ist der Pin-Wert selbst und faerbt
-// diesen Test.
+// eine a-check-Fassung davor bricht mit Exit 2 ueber dem unbekannten Schluessel. Der
+// Zahn haelt den Default-Pin auf mindestens dieser Fassung: ein Tag unter v0.20.0 (oder
+// einer, der sich nicht als vX.Y.Z lesen laesst) faerbt ihn mit der Pin-Meldung rot;
+// welche Fassung ab v0.20.0 gepinnt ist, prueft er nicht. Einen Mutations-Fall dafuer
+// traegt der kuratierte Satz nicht; die rot faerbende Aenderung ist der Pin-Wert selbst
+// und faerbt diesen Test.
 func TestArchImagePin_CouplesToDirectionPorts(t *testing.T) {
-	if !strings.HasSuffix(emit.DefaultArchImage, ":v0.23.0") {
-		t.Errorf("DefaultArchImage = %q, want die Fassung, die direction auf Port-Schichten dekodiert", emit.DefaultArchImage)
+	const minDirection = "v0.20.0"
+	tag := emit.DefaultArchImage[strings.LastIndex(emit.DefaultArchImage, ":")+1:]
+	if !semverAtLeast(tag, minDirection) {
+		t.Errorf("DefaultArchImage = %q, want Tag >= %s — erst ab dieser Fassung dekodiert a-check direction auf Port-Schichten", emit.DefaultArchImage, minDirection)
 	}
 	if emit.DefaultArchDigest == "" || !strings.HasPrefix(emit.DefaultArchDigest, "sha256:") {
 		t.Errorf("DefaultArchDigest = %q, digest-gepinnt statt Tag", emit.DefaultArchDigest)
@@ -252,6 +254,37 @@ func TestArchImagePin_CouplesToDirectionPorts(t *testing.T) {
 			t.Errorf("%s-Config ohne %q — die Pin-Kopplung haelt an einer Config-Form, die es nicht gibt", lang, want)
 		}
 	}
+}
+
+// semverAtLeast sagt, ob der Tag got (vX.Y.Z) mindestens floor ist; ein Tag, der sich
+// nicht in drei Zahlen zerlegen laesst, gilt als darunter.
+func semverAtLeast(got, floor string) bool {
+	parse := func(s string) ([3]int, bool) {
+		var v [3]int
+		parts := strings.Split(strings.TrimPrefix(s, "v"), ".")
+		if !strings.HasPrefix(s, "v") || len(parts) != 3 {
+			return v, false
+		}
+		for i, p := range parts {
+			n, err := strconv.Atoi(p)
+			if err != nil || n < 0 {
+				return v, false
+			}
+			v[i] = n
+		}
+		return v, true
+	}
+	g, ok := parse(got)
+	m, _ := parse(floor)
+	if !ok {
+		return false
+	}
+	for i := range g {
+		if g[i] != m[i] {
+			return g[i] > m[i]
+		}
+	}
+	return true
 }
 
 // TestArchGateConfig_OnlyLayered (slice-046, LH-QA-01): nur eine schichten-tragende,

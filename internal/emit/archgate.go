@@ -19,7 +19,7 @@ import (
 // Doc-Gate. Der Digest ist der des OCI-Image-Index (linux/amd64 + linux/arm64), gelesen
 // mit `docker buildx imagetools inspect` auf den Tag (v0.23.0 — die emittierte Config
 // traegt `direction:` auf den Port-Schichten, eine Form, die erst ab v0.20.0 dekodiert
-// wird; TestArchImagePin_CouplesToDirectionPorts haelt beide Stellen gegeneinander).
+// wird; TestArchImagePin_CouplesToDirectionPorts haelt den Tag auf mindestens v0.20.0).
 const (
 	DefaultArchImage  = "ghcr.io/pt9912/a-check:v0.23.0"
 	DefaultArchDigest = "sha256:97cb6d4eb52a0c9fb8f352baeea4f028691fdffbe534499141668dd9329c3f44"
