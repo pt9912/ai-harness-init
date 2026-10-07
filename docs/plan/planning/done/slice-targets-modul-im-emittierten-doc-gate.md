@@ -99,7 +99,7 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
   ([Review](../../../reviews/2026-10-07-targets-review.md) F-2, [Architect-Verdikt](../../../reviews/2026-10-07-targets-architect-verdikt.md),
   Plan-Korrektur `674126c5`); die Grenzen-Aufzählung ließ die eingebundene `.mk` unterhalb der Wurzel aus
   (F-1 HIGH, behoben `86d20906`); der Kopfkommentar von `repo.mk` wurde mitgeändert (V-2, §1/§3 nachgezogen);
-  die Rot-Probe in §2 war breiter als ADR-0080 Fitness 3 (V-1, präzisiert).
+  die Rot-Probe in §2 war breiter als [ADR-0080](../../adr/0080-anwender-targets-leben-in-repo-mk-ausserhalb-von-harness-mk.md) Fitness 3 (V-1, präzisiert).
 - **Steering-Loop-Eintrag:** *Geschärfte Regel*: Eine Rot-Probe im Plan nennt die Mutation in der Form
   ihrer Quelle (hier: `repo.mk` aus der Lese-Menge nehmen), nicht die gröbere Operation, die die Quelle
   verkürzt. Gezählt, nicht verkörpert; Auslöser `BEO-ALL/zusammenfassung-staerker-als-ihre-quelle`.
