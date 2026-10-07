@@ -99,7 +99,8 @@ Folge-Slices je Werkzeug-Gruppe (Abgrenzung unten).
 - [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen).
+- [x] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen); die Slice-Closure
+      fährt sie nach dem Move zusätzlich (§7).
 
 ## 3. Plan (vor Code)
 
@@ -187,6 +188,16 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
 - **Risiken aus §6:** jede Zeile trägt ihren Ausgang.
 - **Archivierung:** keine bei dieser Closure — das Repo fährt Wellen, die nächste Welle-Closure
   sammelt den Slice ein ([`MR-078`](../../../../harness/conventions.md#mr-078)).
+- **Paarungen geprüft am 2026-10-07** (nach dem Move `ac69ebd8`): (a) *Anker*: §7 führt kein Feld
+  `liegt in <Zielort>` (`grep -c` über §7 → 0). (b) *Folge-Slice*: die acht Kennungen aus §1 lösen auf
+  (`ls docs/plan/planning/*/<kennung>.md` → je eine Datei in `open/`). (c) *Register*: die vier
+  zitierten Pfade existieren, `evidence/` trägt 2 · 6 · 3 · 1 Dateien (`ls <pfad>/evidence/*.md | wc -l`).
+  Zweite Hälfte über das ganze Register: 3 Verzeichnisse ohne Beleg, namentlich
+  `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+  `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab` und
+  `BEO-ALL/planungs-bestand-waechst-schneller-als-er-abgebaut-wird`; nicht als getragen behauptet
+  ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  Festlegung 2).
 - **Übergabe an den Architect:** (1) Risiko 3 — [`MR-001`](../../../../harness/conventions.md#mr-001)
   führt in *Ersetzt-Baseline-Regel* die Liste ohne `"8. Historie"`; Kopf-Marke oder Folge-Eintrag ist
   sein Verdikt (§3.8). (2) INFO aus der Verifikation: das Verdikt
