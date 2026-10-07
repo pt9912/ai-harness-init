@@ -6,7 +6,7 @@
 # weil jemand eine Deklaration noch nicht geschrieben hat — nicht, weil etwas kaputt ist.
 # Es wird ausdruecklich gerufen und schreibt seine Sicht nur bei Abweichung.
 #
-# DIESE DATEI IST KONVERGENT (ADR-0007 Festlegung 3): jeder Lauf des Werkzeugs schreibt
+# DIESE DATEI IST KONVERGENT: jeder Lauf des Werkzeugs schreibt
 # sie kanonisch neu, und ein Edit an den Belegungen unten ist danach still weg. Sie sind
 # darum die VORGABE, nicht der Setz-Ort. Dasselbe gilt fuer das Root-Makefile: es ist der
 # generierte Aggregator und wird ebenso neu geschrieben. Gesetzt wird am Aufruf

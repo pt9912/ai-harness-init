@@ -2,9 +2,9 @@
 # baseline-verify — prueft die vendored Baseline dieses Repos
 # (.harness/baseline/<tag>/{regelwerk,templates}/ + SHA256SUMS) NETZLOS.
 #
-# Emittiert von ai-harness-init (LH-FA-09). Tool-als-Quelle: das Skript ist
+# Emittiert von ai-harness-init. Tool-als-Quelle: das Skript ist
 # generiert, nicht aus dem Kurs kopiert — es gehoert zur selben Herkunftsklasse
-# wie das Verzeichnis-Geruest (ADR-0005).
+# wie das Verzeichnis-Geruest.
 #
 # ZWEI Pruefungen, beide noetig:
 #   1. Integritaet     — sha256sum -c ueber SHA256SUMS: erkennt GEAENDERTE und

@@ -7,7 +7,7 @@
 # ungeprueft, und `git commit --no-verify` umgeht den Traeger auch danach — ein
 # Stolperdraht, keine Sandbox.
 #
-# DIE KLASSE DES TRAEGERS IST SKIP-IF-PRESENT (ADR-0054). Der Name ist von git
+# DIE KLASSE DES TRAEGERS IST SKIP-IF-PRESENT. Der Name ist von git
 # fixiert und das Verzeichnis gehoert dem Repo: das Werkzeug legt seinen Traeger
 # nur ab, WO DER PFAD FREI IST. Fuehrt das Repo dort schon einen eigenen, bleibt
 # er unberuehrt und der Lauf sagt es — die Aktivierung unten nimmt dann ein
@@ -36,16 +36,16 @@
 .PHONY: hooks-install
 
 # Das Verzeichnis des Traegers ist das des Repos — git fixiert den Hook-Namen, das Werkzeug
-# legt dort nur ab, wo nichts liegt (skip-if-present, ADR-0054).
+# legt dort nur ab, wo nichts liegt (skip-if-present).
 HOOKS_DIR ?= .githooks
 
 # Fehlt der Traeger, sagt dieses Ziel das und bricht ab: `git config` haette sonst
 # einen Pfad gesetzt, unter dem nichts liegt, und jeder Commit liefe ungeprueft
-# durch, waehrend die Konfiguration einen Waechter behauptet (LH-QA-01).
+# durch, waehrend die Konfiguration einen Waechter behauptet.
 # Das Ausfuehrrecht setzt das Rezept nach: git verwirft einen nicht ausfuehrbaren
 # Hook still, und ein verlorenes Bit waere ein Waechter, der nur so aussieht.
 hooks-install: ## den git-eigenen commit-msg-Traeger im Klon aktivieren (core.hooksPath) — KEIN Gate
-	@test -f "$(HOOKS_DIR)/commit-msg" || { echo "hooks-install: $(HOOKS_DIR)/commit-msg liegt nicht — dieses Fragment aktiviert einen commit-msg-Traeger dieses Verzeichnisses; das Werkzeug legt seinen eigenen nur ab, wo der Pfad frei ist, und laesst einen bereits liegenden unberuehrt (skip-if-present, ADR-0054)."; exit 2; }
+	@test -f "$(HOOKS_DIR)/commit-msg" || { echo "hooks-install: $(HOOKS_DIR)/commit-msg liegt nicht — dieses Fragment aktiviert einen commit-msg-Traeger dieses Verzeichnisses; das Werkzeug legt seinen eigenen nur ab, wo der Pfad frei ist, und laesst einen bereits liegenden unberuehrt (skip-if-present)."; exit 2; }
 	@test -x "$(HOOKS_DIR)/commit-msg" || chmod +x "$(HOOKS_DIR)/commit-msg"
 	@git config core.hooksPath "$(HOOKS_DIR)"
 	@printf '%s\n' "hooks-install: core.hooksPath=$$(git config --get core.hooksPath) — $(HOOKS_DIR)/commit-msg laeuft ab dem naechsten Commit (Umgehung: git commit --no-verify)."

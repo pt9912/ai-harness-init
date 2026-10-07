@@ -1,7 +1,7 @@
 # Doku-Referenz-Gate — emittiert von ai-harness-init (Adopter-Baseline).
 # Startgeruest: `d-check --print-config`. Waechst mit den Artefakten:
 # ids/codepaths erst aktivieren, wenn Targets/roots existieren — sonst
-# Config-Fehler bzw. ein behaupteter, aber leerer Gate (Modul 13, LH-QA-01).
+# Config-Fehler bzw. ein behaupteter, aber leerer Gate (Modul 13).
 scan:
   roots: ["."]
   # .harness/**: tool-interne Ablage (gefetchtes Sprachskelett-Staging) —

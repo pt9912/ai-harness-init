@@ -635,7 +635,7 @@ CheckOptions:
 
 const cppDockerfileTmpl = `# syntax=docker/dockerfile:1.7
 # Dockerfile — generiert von ai-harness-init (C++-Skelett). Jede Gate ist eine Stage
-# (docker build --target <stage>); das Basis-Image ist TAG-gepinnt (LH-QA-02, kein
+# (docker build --target <stage>); das Basis-Image ist TAG-gepinnt (kein
 # floating). Digest bewusst weggelassen, damit CXX_VERSION (ubuntu-Tag) ein echter Knopf
 # bleibt. Die Toolchain (build-essential/cmake/clang-tidy) kommt per apt im Bild-Build —
 # das ist kein Host-Toolchain-Aufruf (der Guard blockt sie nur auf dem Host).
@@ -662,7 +662,7 @@ RUN clang-tidy --warnings-as-errors='*' -p build src/main.cpp
 // cppMkFragmentTmpl — das C++-Code-Gate-Fragment (harness/mk/cpp.mk): lint/build/test als
 // Dockerfile-Stages, an GATE_CHECKS gehaengt. Recipe-Zeilen sind TAB-eingerueckt.
 const cppMkFragmentTmpl = `# harness/mk/cpp.mk — C++-Code-Gate-Fragment, generiert von ai-harness-init. Die
-# Gates sind Dockerfile-Stages (Docker-only, ADR-0003); dieses Fragment haengt
+# Gates sind Dockerfile-Stages (Docker-only); dieses Fragment haengt
 # lint/build/test an GATE_CHECKS, der Root-Aggregator faehrt sie via make gates.
 CXX_VERSION ?= {{CXX_VERSION}}
 IMAGE ?= app
@@ -691,7 +691,7 @@ GATE_CHECKS += lint build test
 // GATE_CHECKS haengt die UNSCOPED Namen an (record-gates dedupliziert Praezedenz-Listen);
 // die scoped Namen stehen NICHT daneben — sonst liefe der C++-Kontext in gates doppelt.
 const cppMixedMkFragmentTmpl = `# harness/mk/{{MODULE}}.mk — C++-Code-Gate-Fragment (Modul {{MODULE}}), generiert von
-# ai-harness-init. Gates als Dockerfile-Stages (Docker-only, ADR-0003); modul-scoped
+# ai-harness-init. Gates als Dockerfile-Stages (Docker-only); modul-scoped
 # Targets, Build-Kontext {{CONTEXT}} — ein zweites Sprach-Fragment liegt am Root, darum
 # traegt dieses Fragment die unscoped Ziele test/lint/build nur als Praezedenz-Erweiterung
 # ohne eigenes Rezept: make haengt Praezedenz-Listen mehrerer Regeln zusammen. Welches
@@ -720,7 +720,7 @@ GATE_CHECKS += test lint build
 // {{CONTEXT}}: modul-scoped Targets (kollisionsfrei), Build-Kontext {{CONTEXT}}, Image-Tag
 // inline der Modul-Name. Recipe-Zeilen sind TAB-eingerueckt.
 const cppScopedMkFragmentTmpl = `# harness/mk/{{MODULE}}.mk — C++-Code-Gate-Fragment (Modul {{MODULE}}), generiert von
-# ai-harness-init. Gates als Dockerfile-Stages (Docker-only, ADR-0003); modul-scoped
+# ai-harness-init. Gates als Dockerfile-Stages (Docker-only); modul-scoped
 # Targets (kollisionsfrei im Mono-Repo), Build-Kontext {{CONTEXT}}. Haengt an GATE_CHECKS,
 # der Root-Aggregator faehrt sie via make gates.
 CXX_VERSION ?= {{CXX_VERSION}}

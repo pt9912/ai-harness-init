@@ -30,7 +30,7 @@ GATE_CHECKS :=
 # NACH beiden Includes und sieht GATE_CHECKS damit vollstaendig.
 include harness/mk/*.mk
 
-# Die Targets des Repos (ADR-0080): repo.mk gehoert dem Repo, der Bootstrap legt sie
+# Die Targets des Repos: repo.mk gehoert dem Repo, der Bootstrap legt sie
 # nur an, wo sie fehlt. Sie steht NACH den Fragmenten, damit ihr GATE_CHECKS += die
 # Ordnungskante unten erreicht und ihr = die ?=-Vorgaben der Fragmente ueberschreibt;
 # -include, damit eine geloeschte repo.mk make nicht bricht.

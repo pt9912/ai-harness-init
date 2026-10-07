@@ -6,7 +6,7 @@
 # fuehrte jeder Gate-Lauf einen Klon mit, und ein rotes Ergebnis waere nicht
 # mehr vom roten Klon-Lauf zu unterscheiden. Es wird ausdruecklich gerufen.
 #
-# DIESE DATEI IST KONVERGENT (ADR-0007 Festlegung 3): jeder Lauf des Werkzeugs
+# DIESE DATEI IST KONVERGENT: jeder Lauf des Werkzeugs
 # schreibt sie kanonisch neu, und ein Edit an den Belegungen unten ist danach
 # still weg. Sie sind darum die VORGABE, nicht der Setz-Ort. Dasselbe gilt fuer
 # das Root-Makefile: es ist der generierte Aggregator und wird ebenso neu
@@ -18,7 +18,7 @@
 # ein Lauf legt sie nur an, wo sie fehlt. Das einfache `=` dort ueberschreibt
 # die Belegung des `?=` unten. Der
 # Traeger unter .githooks/ liegt in derselben Klasse wie repo.mk: an einem
-# belegten Ort schreibt dieses Werkzeug ihn nicht (skip-if-present, ADR-0054),
+# belegten Ort schreibt dieses Werkzeug ihn nicht (skip-if-present),
 # er gehoert dem Repo.
 #
 # ABHAENGIGKEIT. git, make und coreutils; was das Gate-Kommando braucht,

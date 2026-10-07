@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# stop-require-gates — das Handoff-Gate am Stop von Claude Code (ADR-0083). Nutzt
+# stop-require-gates — das Handoff-Gate am Stop von Claude Code. Nutzt
 # dieselbe inhaltsbasierte Hash-Funktion wie record-gates (keine Logik-Dopplung).
 #
 # DEFAULT — BINDUNG AN DEN COMMIT. Der Hook blockiert nur, wenn BEIDES gilt: HEAD ist

@@ -84,7 +84,7 @@ include d-check.mk
 # Datei, die das include oben einbindet (awk, kein Bild, kein Netz).
 #
 # KEIN GATE: die Range setzt der Aufrufer, ohne sie ist der Pruefbereich nicht
-# hermetisch (LH-QA-01) — das Ziel steht darum nicht in GATE_CHECKS.
+# hermetisch — das Ziel steht darum nicht in GATE_CHECKS.
 .PHONY: history-range-guard
 
 history-range-guard: ## Vorlauf-Waechter: RANGE muss aufloesbar UND nicht leer sein (STAGED=1 prueft den Index; den STAGED-Zweig fuehrt nur doc-immutable)
@@ -103,7 +103,7 @@ ifeq ($(call DOC_GATE_ZIEL,doc-immutable),da)
 doc-immutable: history-range-guard
 else
 doc-immutable:
-	@echo "harness/mk/doc-gate.mk: d-check.mk fuehrt 'doc-immutable' nicht als Ziel mit Rezept (oder awk fehlt) — die Vorbindung des Vorlauf-Waechters haette dort kein Rezept (LH-QA-01)." >&2
+	@echo "harness/mk/doc-gate.mk: d-check.mk fuehrt 'doc-immutable' nicht als Ziel mit Rezept (oder awk fehlt) — die Vorbindung des Vorlauf-Waechters haette dort kein Rezept." >&2
 	@exit 2
 endif
 
@@ -111,7 +111,7 @@ ifeq ($(call DOC_GATE_ZIEL,doc-commits),da)
 doc-commits: history-range-guard
 else
 doc-commits:
-	@echo "harness/mk/doc-gate.mk: d-check.mk fuehrt 'doc-commits' nicht als Ziel mit Rezept (oder awk fehlt) — die Vorbindung des Vorlauf-Waechters haette dort kein Rezept (LH-QA-01)." >&2
+	@echo "harness/mk/doc-gate.mk: d-check.mk fuehrt 'doc-commits' nicht als Ziel mit Rezept (oder awk fehlt) — die Vorbindung des Vorlauf-Waechters haette dort kein Rezept." >&2
 	@exit 2
 endif
 

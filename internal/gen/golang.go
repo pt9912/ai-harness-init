@@ -932,8 +932,8 @@ exclude:
 
 const goDockerfileTmpl = `# syntax=docker/dockerfile:1.7
 # Dockerfile — generiert von ai-harness-init (Go-Skelett). Jede Go-Gate ist eine
-# Stage (docker build --target <stage>); die Images sind TAG-gepinnt (LH-QA-02,
-# kein floating). Digest bewusst weggelassen, damit GO_VERSION ein echter Knopf
+# Stage (docker build --target <stage>); die Images sind TAG-gepinnt
+# (kein floating). Digest bewusst weggelassen, damit GO_VERSION ein echter Knopf
 # bleibt; wer Digest-Pinning will, haengt @sha256:… an.
 ARG GO_VERSION={{GO_VERSION}}
 ARG GOLANGCI_LINT_VERSION={{GOLANGCI_VERSION}}
@@ -966,7 +966,7 @@ RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/app ./cmd/app
 // goMkFragmentTmpl — das Go-Code-Gate-Fragment (harness/mk/go.mk): lint/build/test als
 // Dockerfile-Stages, an GATE_CHECKS gehaengt. Die Recipe-Zeilen sind TAB-eingerueckt.
 const goMkFragmentTmpl = `# harness/mk/go.mk — Go-Code-Gate-Fragment, generiert von ai-harness-init. Die
-# Go-Gates sind Dockerfile-Stages (Docker-only, ADR-0003); dieses Fragment haengt
+# Go-Gates sind Dockerfile-Stages (Docker-only); dieses Fragment haengt
 # lint/build/test an GATE_CHECKS, der Root-Aggregator faehrt sie via make gates.
 GO_VERSION ?= {{GO_VERSION}}
 GOLANGCI_LINT_VERSION ?= {{GOLANGCI_VERSION}}
@@ -996,7 +996,7 @@ GATE_CHECKS += lint build test
 // (record-gates dedupliziert Praezedenz-Listen); die scoped Namen stehen NICHT daneben —
 // sonst liefe der Go-Kontext in gates doppelt.
 const goMixedMkFragmentTmpl = `# harness/mk/{{MODULE}}.mk — Go-Code-Gate-Fragment (Modul {{MODULE}}), generiert von
-# ai-harness-init. Go-Gates als Dockerfile-Stages (Docker-only, ADR-0003); modul-scoped
+# ai-harness-init. Go-Gates als Dockerfile-Stages (Docker-only); modul-scoped
 # Targets, Build-Kontext {{CONTEXT}} — ein zweites Sprach-Fragment liegt am Root, darum
 # traegt dieses Fragment die unscoped Ziele test/lint/build nur als Praezedenz-Erweiterung
 # ohne eigenes Rezept: make haengt Praezedenz-Listen mehrerer Regeln zusammen. Welches
@@ -1028,7 +1028,7 @@ GATE_CHECKS += test lint build
 // (nicht `.`), der Image-Tag ist der Modul-Name (inline, kein IMAGE-Var-Kollisionsrisiko).
 // Recipe-Zeilen sind TAB-eingerueckt.
 const goScopedMkFragmentTmpl = `# harness/mk/{{MODULE}}.mk — Go-Code-Gate-Fragment (Modul {{MODULE}}), generiert von
-# ai-harness-init. Go-Gates als Dockerfile-Stages (Docker-only, ADR-0003); modul-scoped
+# ai-harness-init. Go-Gates als Dockerfile-Stages (Docker-only); modul-scoped
 # Targets (kollisionsfrei im Mono-Repo), Build-Kontext {{CONTEXT}}. Haengt an GATE_CHECKS,
 # der Root-Aggregator faehrt sie via make gates.
 GO_VERSION ?= {{GO_VERSION}}

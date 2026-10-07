@@ -7,7 +7,7 @@
 # core.hooksPath traegt, aktiviert dort den Traeger der Commit-Kennung und
 # faehrt danach ZWEI Commit-Versuche: einer OHNE Kennung faellt und entsteht
 # nicht, einer MIT Kennung geht durch. Zuletzt laeuft das Gate-Kommando im
-# Klon; danach faehrt der Stop-Hook im Klon beide Zweige (ADR-0083): ein Turn-Ende
+# Klon; danach faehrt der Stop-Hook im Klon beide Zweige: ein Turn-Ende
 # ohne Commit geht im Default frei und faellt im strengen Modus, ein Commit ohne
 # Nachweis faellt. BEIDE AUSGAENGE STEHEN IN EINEM LAUF — ein Lauf, der nur den
 # durchgelassenen Commit beobachtet, belegt nicht, dass der Traeger ueberhaupt
@@ -29,7 +29,7 @@
 # prueft den Traeger-Marker gegen den Hook, den git nach der Aktivierung
 # wirklich ruft — ein Marker, der eine andere Datei nennt, bricht den Lauf ab.
 #
-# DIESE DATEI IST KONVERGENT (ADR-0007 Festlegung 3): jeder Lauf des Werkzeugs
+# DIESE DATEI IST KONVERGENT: jeder Lauf des Werkzeugs
 # schreibt sie kanonisch neu. Ein Edit an ihr ist danach still weg — deshalb
 # sind die fuenf Stellen oben Variablen. DASSELBE GILT FUER DAS ROOT-Makefile:
 # es ist der generierte Aggregator und wird ebenso kanonisch neu geschrieben;
@@ -43,7 +43,7 @@
 # Das einfache `=` ueberschreibt die Belegung des `?=` im Fragment. Wer keinen
 # dauerhaften Ort braucht, setzt am Aufruf.
 # Der Traeger unter .githooks/ liegt in derselben Klasse wie repo.mk: an einem
-# belegten Ort schreibt dieses Werkzeug ihn nicht (skip-if-present, ADR-0054),
+# belegten Ort schreibt dieses Werkzeug ihn nicht (skip-if-present),
 # er gehoert dem Repo.
 #
 # DIE GRENZE. Geprueft sind der Traeger und die zwei Commit-Ausgaenge. NICHT
@@ -56,7 +56,7 @@
 # EIN REPO MIT EIGENEM TRAEGER passt die zwei Message-Marker an. Die Belegung
 # unten gilt dem Traeger, den dieses Werkzeug mitbringt, und der Kennungs-Menge
 # der Pruefung daneben (Zeile `patterns=`). Fuehrt das Repo an .githooks/ seinen
-# eigenen Traeger — der Zustand, den ADR-0054 Festlegung 1 ihm freistellt —,
+# eigenen Traeger — der Zustand, den skip-if-present ihm freistellt —,
 # nennt es mit SELBSTPRUEFUNG_MSG_ROT und SELBSTPRUEFUNG_MSG_GRUEN je eine
 # Message, die sein Traeger aufhaelt bzw. durchlaesst.
 #
@@ -201,7 +201,7 @@ for fall in rot gruen; do
 		commit -q --allow-empty -m "$msg" 2>&1)" || rc=$?
 	if [ "$fall" = rot ]; then
 		if [ "$rc" -eq 0 ]; then
-			fehler "der Commit '$msg' geht durch — er sollte am Traeger [$SELBSTPRUEFUNG_TRAEGER] fallen. Fuehrt dieses Repo dort seinen EIGENEN Traeger (skip-if-present, ADR-0054 Festlegung 1), nennt SELBSTPRUEFUNG_MSG_ROT eine Message, die jener aufhaelt."
+			fehler "der Commit '$msg' geht durch — er sollte am Traeger [$SELBSTPRUEFUNG_TRAEGER] fallen. Fuehrt dieses Repo dort seinen EIGENEN Traeger (skip-if-present), nennt SELBSTPRUEFUNG_MSG_ROT eine Message, die jener aufhaelt."
 		fi
 		nun_head="$(git -C "$klon" rev-parse HEAD)"
 		if [ "$nun_head" != "$vorher_head" ]; then
@@ -238,7 +238,7 @@ fi
 echo "selbstpruefung: GATE — [$SELBSTPRUEFUNG_GATE] im Klon ist Exit 0. Ausgabe:"
 printf '%s\n' "$gate_out" | sed 's/^/selbstpruefung:   /'
 
-# (5) DER STOP-HOOK IM KLON, BEIDE ZWEIGE (ADR-0083). Den Nachweis schreibt
+# (5) DER STOP-HOOK IM KLON, BEIDE ZWEIGE. Den Nachweis schreibt
 # record-gates.sh direkt, nicht das Gate-Kommando: ein gesetzter Gate-Marker muss
 # record-gates nicht fahren, und ohne Stempel misst der Lauf nur den strengen Zweig.
 # Die Repo-Einstellung .harness/stop-gate-streng nimmt der Lauf im Klon weg, damit
@@ -263,11 +263,11 @@ rg_out=""
 rg_out="$(cd "$klon" && bash tools/harness/record-gates.sh 2>&1)" || fehler "record-gates.sh im Klon endet nicht mit Exit 0:
 $rg_out"
 printf 'selbstpruefung\n' >"$klon/selbstpruefung-stop.txt"
-entscheid="$(stop_entscheid "")"; [ "$entscheid" = frei ] || fehler "im Default haelt der Stop-Hook ein Turn-Ende ohne neuen Commit auf — erwartet ist die Freigabe (ADR-0083 Festlegung 1)."
+entscheid="$(stop_entscheid "")"; [ "$entscheid" = frei ] || fehler "im Default haelt der Stop-Hook ein Turn-Ende ohne neuen Commit auf — erwartet ist die Freigabe."
 echo "selbstpruefung: STOP FREI — im Default geht ein Turn-Ende ohne neuen Commit durch, auch mit ungedeckter Aenderung."
-entscheid="$(stop_entscheid 1)"; [ "$entscheid" = blockiert ] || fehler "mit STOP_GATE_STRENG=1 gibt der Stop-Hook ein Turn-Ende mit ungedeckter Aenderung frei — erwartet ist die Blockade (ADR-0083 Festlegung 6)."
+entscheid="$(stop_entscheid 1)"; [ "$entscheid" = blockiert ] || fehler "mit STOP_GATE_STRENG=1 gibt der Stop-Hook ein Turn-Ende mit ungedeckter Aenderung frei — erwartet ist die Blockade."
 : >"$klon/.harness/stop-gate-streng"
-entscheid="$(stop_entscheid "")"; [ "$entscheid" = blockiert ] || fehler "mit der Datei .harness/stop-gate-streng gibt der Stop-Hook ein Turn-Ende mit ungedeckter Aenderung frei — erwartet ist die Blockade (ADR-0083 Festlegung 6)."
+entscheid="$(stop_entscheid "")"; [ "$entscheid" = blockiert ] || fehler "mit der Datei .harness/stop-gate-streng gibt der Stop-Hook ein Turn-Ende mit ungedeckter Aenderung frei — erwartet ist die Blockade."
 rm -f "$klon/.harness/stop-gate-streng"
 echo "selbstpruefung: STOP STRENG — mit STOP_GATE_STRENG=1 und mit der Datei .harness/stop-gate-streng haelt der Stop-Hook dasselbe Turn-Ende auf."
 commit_out=""
@@ -275,6 +275,6 @@ commit_out="$(git -C "$klon" add -A 2>&1 &&
 	git -C "$klon" -c user.email=selbstpruefung@example.invalid -c user.name=selbstpruefung \
 		commit -q -m "$SELBSTPRUEFUNG_MSG_GRUEN" 2>&1)" || fehler "der Commit fuer die Stop-Hook-Probe ist nicht entstanden:
 $commit_out"
-entscheid="$(stop_entscheid "")"; [ "$entscheid" = blockiert ] || fehler "im Default gibt der Stop-Hook einen Commit ohne Nachweis frei — erwartet ist die Blockade (ADR-0083 Festlegung 1)."
+entscheid="$(stop_entscheid "")"; [ "$entscheid" = blockiert ] || fehler "im Default gibt der Stop-Hook einen Commit ohne Nachweis frei — erwartet ist die Blockade."
 echo "selbstpruefung: STOP BLOCK — im Default haelt der Stop-Hook einen Commit ohne Nachweis auf."
 echo "selbstpruefung: OK — der Traeger [$SELBSTPRUEFUNG_TRAEGER] reist mit dem Klon, seine Aktivierung nicht; [$SELBSTPRUEFUNG_AKTIVIERUNG] nimmt genau ihn in Betrieb, danach faellt '$SELBSTPRUEFUNG_MSG_ROT' und geht '$SELBSTPRUEFUNG_MSG_GRUEN' durch, und [$SELBSTPRUEFUNG_GATE] laeuft im Klon gruen; der Stop-Hook gibt im Default ein Turn-Ende ohne Commit frei, haelt es streng auf und haelt einen Commit ohne Nachweis auf. Nicht geprueft: ob der Traeger jeden Commit-Pfad erreicht (--no-verify, Werkzeug-Commits, andere Aufrufformen)."

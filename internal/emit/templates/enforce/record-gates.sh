@@ -6,7 +6,7 @@
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
-# HEAD-STEMPEL (ADR-0083 Festlegungen 3/4): neben dem Hash schreibt dieses Skript die
+# HEAD-STEMPEL: neben dem Hash schreibt dieses Skript die
 # aufgeloeste Commit-SHA von HEAD nach .harness/state/gates-passed.head — der Stop-Hook
 # gibt ein Turn-Ende ohne neuen HEAD damit frei. Format von gates-passed.diffsha bleibt,
 # wie es ist (weitere Leser). head_wert ermittelt den Wert genauso wie der Stop-Hook —
@@ -25,7 +25,7 @@ head_wert() {
 }
 
 if ! head="$(head_wert)"; then
-  echo "record-gates: FEHLER — HEAD ist nicht aufloesbar, und das Repo ist nicht als commitlos erkannt (ungeborener Zweig ohne einzigen Commit) — kein Stempel geschrieben (ADR-0083 Festlegung 4)." >&2
+  echo "record-gates: FEHLER — HEAD ist nicht aufloesbar, und das Repo ist nicht als commitlos erkannt (ungeborener Zweig ohne einzigen Commit) — kein Stempel geschrieben." >&2
   exit 1
 fi
 
