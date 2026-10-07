@@ -158,13 +158,13 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
   neu (1×, Risiko §6);
   [`BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`](../observations/BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/observation.md)
   Beleg ergänzt (Review F-1, F-2; Stand `verkörpert` bleibt).
-- **Folge-Slices:** keiner neu; `slice-archivierung-erkennt-benannte-slices` (§1) liegt in `open/`.
+- **Folge-Slices:** keiner neu; `slice-archivierung-erkennt-benannte-slices` (§1) steht in `open/`.
 - **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines berührt. ADR:
   [ADR-0081](../../adr/0081-altbestand-grenze-aus-der-commit-abstammung.md) `Accepted`, kein
   Re-Evaluierungs-Trigger ausgelöst. Hard Rules: keine mit Auflösungs-Trigger aus diesem Vorgang.
 - **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
 - **Paarungen geprüft am 2026-10-07** (nach dem Move): (a) *Anker*: §7 trägt kein Feld `liegt in`,
-  nichts zu prüfen. (b) *Folge-Slice*: `slice-archivierung-erkennt-benannte-slices` liegt in `open/`.
+  nichts zu prüfen. (b) *Folge-Slice*: `slice-archivierung-erkennt-benannte-slices` steht in `open/`.
   (c) *Register*: die drei genannten Pfade existieren, `evidence/` trägt 1, 1 und 8 Dateien. Zweite
   Hälfte über das ganze Register: 3 Verzeichnisse ohne Beleg, namentlich `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`, `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`, `BEO-ALL/planungs-bestand-waechst-schneller-als-er-abgebaut-wird`; sie gelten nicht als
   getragen ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
