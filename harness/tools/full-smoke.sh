@@ -3570,10 +3570,12 @@ repo_mk_im_ziel() {
 		'GATE_CHECKS += eigen-gate' >"$repo/repo.mk"
 	cp "$repo/repo.mk" "$w/eigen.mk"
 	# Jedes Target in repo.mk braucht seine Zeile in harness/README.md (Modul targets der
-	# emittierten .d-check.yml); ohne sie faerbt docs-check das make gates unten rot.
-	psed_i -e 's/^| `make gates` |/| `make eigen-gate` | Probe-Gate aus repo.mk | — |\
-| `make gates` |/' -e 's/^| `make <mover>` |/| `make eigen` | Probe-Ziel aus repo.mk | kein Gate |\
-| `make <mover>` |/' "$repo/harness/README.md"
+	# emittierten .d-check.yml); ohne sie faerbt docs-check das make gates unten rot. Der
+	# Backtick steht als Variable: woertlich liest shellcheck ihn als Kommando-Substitution.
+	local bt='`'
+	psed_i -e "s/^| ${bt}make gates${bt} |/| ${bt}make eigen-gate${bt} | Probe-Gate aus repo.mk | — |\\
+| ${bt}make gates${bt} |/" -e "s/^| ${bt}make <mover>${bt} |/| ${bt}make eigen${bt} | Probe-Ziel aus repo.mk | kein Gate |\\
+| ${bt}make <mover>${bt} |/" "$repo/harness/README.md"
 	if ! out="$( "$tmpbin/ai-harness-init" --name repo-mk "$repo" 2>&1 )"; then
 		echo "full-smoke: FEHLER — repo.mk: der dritte Bootstrap-Lauf ist NICHT Exit 0." >&2
 		printf '%s\n' "$out" >&2
@@ -3664,8 +3666,10 @@ targets_im_ziel() {
 	mv "$dir/repo.mk.tg-orig" "$dir/repo.mk"
 
 	cp "$dir/harness/README.md" "$dir/harness/README.md.tg-orig"
-	psed_i -e 's/^| `make gates` |/| `make phantom-probe` | Probe | — |\
-| `make gates` |/' "$dir/harness/README.md"
+	# Der Backtick steht als Variable: woertlich liest shellcheck ihn als Kommando-Substitution.
+	local bt='`'
+	psed_i -e "s/^| ${bt}make gates${bt} |/| ${bt}make phantom-probe${bt} | Probe | — |\\
+| ${bt}make gates${bt} |/" "$dir/harness/README.md"
 	kf_docs_check "$dir"
 	meldung='phantom-probe[[:space:]]+gate-phantom'
 	if [ "$kf_rc" -eq 0 ] || ! grep -qE -- "^harness/README\.md:[0-9]+[[:space:]]+$meldung" <<<"$kf_out"; then
