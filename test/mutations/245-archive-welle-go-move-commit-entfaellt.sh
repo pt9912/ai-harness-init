@@ -16,4 +16,4 @@
 # Zip liegt, die Stubs stehen, `make docs-check` bleibt gruen. Sichtbar ist der
 # Unterschied allein in der Commit-Folge, und die liest kein Gate.
 set -euo pipefail
-sed -i 's|^\tif err := g.Commit("archive-welle: " + b.Welle + "  Zeitdokumente nach " + ziel + "/ (reiner Move)"); err != nil {$|\tif false {|' internal/archive/anwenden.go
+sed -i 's|^\tif err := g.Commit("archive-welle: " + b.Welle + "  Zeitdokumente nach " + ziel + "/ (reiner Move" + kennungSuffix(b) + ")"); err != nil {$|\tif false {|' internal/archive/anwenden.go
