@@ -25,7 +25,7 @@ besonders bei einem neuen Gate in make gates."* Fällig vor dem Release `v0.3.0`
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912 (Implementer).
 
 **Autor:** Planner. **Datum:** 2026-10-07.
 
