@@ -42,7 +42,7 @@ konvergente Klasse; `grep -n 'func Templates' internal/emit/*.go` die Funktion o
 - **[ADR-0007](../../adr/0007-bootstrap-phasen.md) und ihre Index-Marke.** *Bestand bleibt:* die ADR
   bleibt byte-gleich, die Marke setzte der Accept-Übergang.
 - **Heilen veralteter Skills beim Baseline-Sprung.** *Bestand bleibt:* akzeptiertes Negativ
-  (ADR-0084 Festlegung 4); der Abgleich ist Handarbeit des Adopters.
+  ([ADR-0084](../../adr/0084-reviewer-skills-im-ziel-skip-if-present.md) Festlegung 4); der Abgleich ist Handarbeit des Adopters.
 - **Trennung in tool-eigenen und Adopter-Teil.** *Anderer Vorgang:* Re-Evaluierungs-Trigger der ADR.
 - **Die übrigen konvergenten Pfade der Zeile aus ADR-0007.** *Schicht-Abgrenzung:* allein
   `.harness/skills/*` wechselt die Klasse.
@@ -85,7 +85,7 @@ konvergente Klasse; `grep -n 'func Templates' internal/emit/*.go` die Funktion o
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): ADR-0084 `Accepted` (erfüllt); WIP-Limit frei.
+**Start** (`next` → `in-progress`): [ADR-0084](../../adr/0084-reviewer-skills-im-ziel-skip-if-present.md) `Accepted` (erfüllt); WIP-Limit frei.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 

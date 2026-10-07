@@ -43,9 +43,9 @@ internal/emit/templates/enforce/stop-require-gates.sh` nennt den heutigen Nachwe
   *Anderer Vorgang:* Architect-Artefakt (`AGENTS.md` §3.8); dieser Slice liefert die Übergabe
   (DoD-Zeile *Doku-Update*).
 - **Format von `gates-passed.diffsha`, Checks und Kante von `record-gates`.** *Bestand bleibt:*
-  weitere Leser (`full-smoke.sh`, `mutate.sh`), ADR-0083 Festlegung 3.
+  weitere Leser (`full-smoke.sh`, `mutate.sh`), [ADR-0083](../../adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md) Festlegung 3.
 - **Schalter in `repo.mk` oder `.claude/settings.json`; das Werkzeug schreibt `.harness/stop-gate-streng`.**
-  *Bestand bleibt:* von ADR-0083 Festlegung 6 verworfen bzw. Repo-Eigentum.
+  *Bestand bleibt:* von [ADR-0083](../../adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md) Festlegung 6 verworfen bzw. Repo-Eigentum.
 - **Codex-Seite.** *Schicht-Abgrenzung:* `.codex/hooks.json` führt keinen Stop-Hook.
 
 ## 2. Definition of Done
@@ -72,7 +72,7 @@ internal/emit/templates/enforce/stop-require-gates.sh` nennt den heutigen Nachwe
       *„eine ‚fertig'-Meldung ohne neuen HEAD geht ohne Gate-Lauf durch; das Netz dort ist CI auf dem
       Push"* und Kopf-Marken an [`MR-002`](../../../../harness/conventions.md#mr-002) und
       [`MR-003`](../../../../harness/conventions.md#mr-003) nach [`MR-032`](../../../../harness/conventions.md#mr-032)
-      (ADR-0083 Festlegung 7).
+      ([ADR-0083](../../adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md) Festlegung 7).
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [ ] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
 - [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
@@ -91,7 +91,7 @@ internal/emit/templates/enforce/stop-require-gates.sh` nennt den heutigen Nachwe
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): ADR-0083 `Accepted` (erfüllt); WIP-Limit frei.
+**Start** (`next` → `in-progress`): [ADR-0083](../../adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md) `Accepted` (erfüllt); WIP-Limit frei.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
@@ -110,7 +110,7 @@ internal/emit/templates/enforce/stop-require-gates.sh` nennt den heutigen Nachwe
 
 ## 6. Risiken und offene Punkte
 
-- **Exit-2-Semantik der Hooks-Referenz im Repo ungemessen** (ADR-0083 §5) — ein Exit-Code, den Claude
+- **Exit-2-Semantik der Hooks-Referenz im Repo ungemessen** ([ADR-0083](../../adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md) §5) — ein Exit-Code, den Claude
   Code anders liest, gäbe frei. — **Ausgang:** offen bis zur Closure.
 - **Übergang nach dem Update** — ohne Stempel-Datei gilt der strenge Zweig bis zum ersten grünen Lauf
   (akzeptiertes Negativ); ein Klon im Ziel meldet das ggf. als Blockade ohne Grund. — **Ausgang:**
