@@ -2,7 +2,7 @@
 
 **Welle:** ohne Welle.
 
-**Bezug:** [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`MR-054`](../../../../harness/conventions.md#mr-054), [`MR-055`](../../../../harness/conventions.md#mr-055), [`MR-063`](../../../../harness/conventions.md#mr-063).
+**Bezug:** [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`MR-054`](../../../../harness/conventions.md#mr-054), [`MR-055`](../../../../harness/conventions.md#mr-055), [`MR-063`](../../../../harness/conventions.md#mr-063), [`MR-080`](../../../../harness/conventions.md#mr-080), [ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md) Festlegung 3 (Welle 159), [ADR-0080](../../adr/0080-anwender-targets-leben-in-repo-mk-ausserhalb-von-harness-mk.md) Festlegung 5.
 
 **Berührte Spec-Stellen:** —
 
@@ -15,19 +15,20 @@
 ## 1. Ziel und Abgrenzung
 
 
-**Ziel:** Das emittierte `.d-check.yml` führt `targets` (Target ↔ Tabellenzeile, beide Richtungen) über **alle** Makefiles des Ziels, und der Gate-Index ist zweigeteilt: ein **werkzeug-eigener Teil** (`harness/mk/ai-harness-init.md` im Ziel <!-- d-check:ignore (der Pfad entsteht erst im gebootstrappten Ziel) -->, neben den Fragmenten, die er beschreibt, vom Bootstrap bei jedem Lauf kanonisch neu geschrieben) führt die emittierten Targets, `harness/README.md` §Sensors die des Adopters; beide sind `authority`. Grüner Start am frischen `--lang go`-Ziel, je ein rotes Gegenbeispiel pro Richtung in `make full-smoke`.
+**Ziel:** Das emittierte `.d-check.yml` führt `targets` (Target ↔ Tabellenzeile, beide Richtungen) über **alle** Makefiles des Ziels gegen einen Gate-Index mit zwei Eigentümern: der **werkzeug-eigene Teil** `harness/mk/ai-harness-init.md` <!-- d-check:ignore (der Pfad entsteht erst im gebootstrappten Ziel) --> (neben den Fragmenten, vom Bootstrap bei jedem Lauf kanonisch neu geschrieben, aus `harness/README.md` §Sensors verlinkt) führt die emittierten Targets, `harness/README.md` §Sensors die des Repos — auch die aus `repo.mk`. Grüner Start am frischen `--lang go`-Ziel, je ein rotes Gegenbeispiel pro Richtung in `make full-smoke`.
 
-**Planner-Entscheidung — die Abnahme ist geändert (2026-10-06, Auftraggeber):** Die Stufe 1 (`makefiles: [Makefile]`, `exempt-targets: [help, record-gates]`) ist als Ziel gestrichen; sie ist am frisch emittierten Ziel (Pin d-check `v0.81.0`) widerlegt (§4). An ihre Stelle tritt die Indirektion über den werkzeug-eigenen Teil des Gate-Index; §1, §2 und §3 tragen diese Fassung. Sie setzt zwei Antworten voraus, die nicht in diesem Repo entstehen (Start-Bedingung §4).
+**Lage.** Die Stufe 1 (`makefiles: [Makefile]`) ist am frisch emittierten Ziel widerlegt (§4): `gate-phantom` für die README-Zeile `make docs-check`, `exempt-targets` wirkt nicht darauf; Variante A braucht 14, Variante B 27 Ausnahmen. Die zwei Voraussetzungen der Indirektion sind erfüllt:
 
-**Lage** (Implementer-Messung am frisch emittierten Ziel, Pin `v0.81.0`): `makefiles: [Makefile]` meldet `gate-phantom` für die README-Zeile `make docs-check` (Regel in `d-check.mk`), und `exempt-targets` wirkt nicht auf `gate-phantom`. Variante A `makefiles: [Makefile, d-check.mk]` braucht 14 Ausnahmen, Variante B (Glob über `harness/mk/*.mk`) 27, darunter vier echte Gates — ein Ausnahme-Block in der Größe der Target-Menge. Die Indirektion braucht am Regelwerk eine Erlaubnis für einen zweiteiligen Gate-Index (heute [`modul-13-quality-gates.md`](../../../../.harness/baseline/v6.16.0/regelwerk/modul-13-quality-gates.md#hard-rule-doku-disziplin) §Hard Rule: *„es gibt genau eine"* Autoritäts-Doku; `grundlagen-harness-dateien.md`: *„Der Gate-Index steht einmal"*) und am Werkzeug `targets.authority` als Liste (heute ein einzelner String; `gate-undocumented` misst nur gegen `authority`). Beide Antworten liegen vor:
+- **Kurs `v6.16.0`, adoptiert** ([ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md) Festlegung 3: Welle 159 trägt dieser Vorgang): [`grundlagen-harness-dateien.md`](../../../../.harness/baseline/v6.16.0/regelwerk/grundlagen-harness-dateien.md) §Ein Index, mehrere Eigentümer — `harness/mk/<werkzeug>.md`, werkzeug-eigen und je Lauf neu geschrieben, nur die eigenen Targets in den Tabellen-Formen von §Sensors (`kein Gate` in der Bindung, wo zutreffend), disjunkt, von einer Zeile unter den Tabellen in §Sensors verlinkt, und der Deklarations-Sensor misst gegen die **Vereinigung**; dieselbe Regel in [`modul-13-quality-gates.md`](../../../../.harness/baseline/v6.16.0/regelwerk/modul-13-quality-gates.md#hard-rule-doku-disziplin) §Hard Rule. Die Disjunktheit prüft der Sensor nicht.
+- **d-check `v0.82.0`, gepinnt** ([`MR-080`](../../../../harness/conventions.md#mr-080), Dogfood und emittierter Default-Pin): `targets.authority` als Liste (Vereinigung; fehlende Datei ⇒ Exit 2), Glob in `makefiles` ab `v0.81.0`.
 
-- **Kurs:** der werkzeug-eigene Teil des Gate-Index heißt `harness/mk/<werkzeug>.md` — hier `harness/mk/ai-harness-init.md` <!-- d-check:ignore (der Pfad entsteht erst im gebootstrappten Ziel) --> — und liegt neben den Fragmenten, die er beschreibt; die Eigentumsgrenze ist das Verzeichnis `harness/mk/`. Eine eigene Vorlage gibt es nicht: die Form ist die von `harness/README.md` §Sensors, das Werkzeug erzeugt die Datei. Die Regel steht noch in keiner Kurs-Release.
-- **d-check:** `targets.authority` nimmt ab `v0.82.0` eine Liste — Vereinigung der Dateien; eine Doppelnennung ist kein Befund; eine fehlende Datei oder ein leerer Eintrag endet mit Exit 2; eine leere Liste lässt die Prüfung entfallen; mit einer Datei ist das Ergebnis byte-identisch zum String. Der Glob in `makefiles` steht ab `v0.81.0`. Die Konfiguration im Ziel ist damit `authority: [harness/README.md, harness/mk/ai-harness-init.md]`, `makefiles: [Makefile, "harness/mk/*.mk", d-check.mk]`; Ausnahmen voraussichtlich keine — am Ziel zu messen, nicht anzunehmen.
+Konfiguration im Ziel: `authority: [harness/README.md, harness/mk/ai-harness-init.md]`, `makefiles: [Makefile, "harness/mk/*.mk", d-check.mk, repo.mk]` — `repo.mk` existiert dank Startinhalt immer ([ADR-0080](../../adr/0080-anwender-targets-leben-in-repo-mk-ausserhalb-von-harness-mk.md) Festlegung 2). Ausnahmen werden am Ziel gemessen, nicht angenommen.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - Die Stufe 1 und Variante A/B als Default — gemessen widerlegt bzw. ein Ausnahme-Block in der Größe der Target-Menge (Lage oben).
-- Die Change Requests selbst — anderer Vorgang in fremden Repos; der Slice wartet auf ihre Antwort (§4).
+- `repo.mk` selbst (Aggregator-Zeile, Startinhalt, Vorgabe-Ort, Fitness 1–2 aus [ADR-0080](../../adr/0080-anwender-targets-leben-in-repo-mk-ausserhalb-von-harness-mk.md)) — Vorgänger `slice-anwender-targets-leben-in-repo-mk`; dieser Slice misst nur Fitness 3.
+- Ein Sensor für die Disjunktheit der beiden Index-Teile — der gepinnte d-check prüft sie nicht; Grenze am Ort der Emission benannt (§2), kein eigener Sensor-Bau.
 - Die Varianten `--lang cpp` und `--arch hexslice`/`hexagonal` — nicht gemessen; der Slice misst jede Variante, die er abdeckt, oder benennt die Grenze statt sie zu behaupten ([`MR-055`](../../../../harness/conventions.md#mr-055)).
 - Der Ordner `harness/sensors/` im Ziel — Folge-Slice `slice-sensors-ordner-entsteht-im-ziel`; `targets` prüft Makefile gegen Index-Tabellen und braucht ihn nicht.
 - Nachzug in bestehende Ziele — `.d-check.yml` wird nur an freiem Pfad geschrieben; der Nachzug ist Handarbeit nach der Positionsliste im Kopfkommentar, ein anderer Vorgang.
@@ -36,8 +37,8 @@
 ## 2. Definition of Done
 
 
-- [ ] Der Bootstrap schreibt den werkzeug-eigenen Index-Teil kanonisch neu (eine Zeile je emittiertem Target, `kein Gate` wo zutreffend), und das emittierte `.d-check.yml` führt `targets` mit beiden Index-Teilen als `authority` über alle Makefiles des Ziels, ohne Ausnahme-Block in der Größe der Target-Menge; der Kopfkommentar „Herkunft der Positionen“ nennt die Position.
-- [ ] `make full-smoke` misst im Ziel grünen Start und die Gegenbeispiele mit Grund-Code: ein Target ohne Zeile ⇒ `gate-undocumented`, eine Zeile ohne Target ⇒ `gate-phantom`; die Stufe steht mit ihrer Grenze (nur gemessene Varianten) in der E2E-Abdeckungs-Sicht ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+- [ ] Der Bootstrap schreibt den werkzeug-eigenen Index-Teil kanonisch neu (eine Zeile je emittiertem Target, `kein Gate` wo zutreffend), das emittierte `harness/README.md` verlinkt ihn unter den Tabellen von §Sensors, und das emittierte `.d-check.yml` führt `targets` mit beiden Index-Teilen als `authority` über `Makefile`, `harness/mk/*.mk`, `d-check.mk` und `repo.mk`, ohne Ausnahme-Block in der Größe der Target-Menge; der Kopfkommentar „Herkunft der Positionen“ nennt die Position. Aufnahme nach den drei Kriterien von [`MR-054`](../../../../harness/conventions.md#mr-054).
+- [ ] `make full-smoke` misst im Ziel grünen Start und die Gegenbeispiele mit Grund-Code: ein Target in `repo.mk` ohne Zeile ⇒ `gate-undocumented` (Rot-Probe: `repo.mk` aus `makefiles:` gestrichen ⇒ bleibt grün, [ADR-0080](../../adr/0080-anwender-targets-leben-in-repo-mk-ausserhalb-von-harness-mk.md) Fitness 3), eine Zeile ohne Target ⇒ `gate-phantom`; die Stufe steht mit ihrer Grenze (nur gemessene Varianten) in der E2E-Abdeckungs-Sicht ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
 - [ ] Die Grenzen stehen am Ort der Emission (Kopfkommentar der Vorlage `d-check.yml` und Kopf des werkzeug-eigenen Index-Teils): wer ihn von Hand ändert, verliert die Änderung beim nächsten Bootstrap-Lauf; was die adoptierte Kurs-Fassung und der gepinnte d-check dazu sagen, steht mit Tag.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
@@ -54,14 +55,16 @@
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `internal/emit/templates/d-check.yml` | update | `targets` + Block + Kopfkommentar; Aktivierung nach [`MR-054`](../../../../harness/conventions.md#mr-054) (Erprobung, grüner Start, rotes Gegenbeispiel) |
-| `internal/emit/` (werkzeug-eigener Index-Teil) | neu | kanonisch neu geschrieben je Bootstrap-Lauf |
+| `internal/emit/` (werkzeug-eigener Index-Teil) | neu | kanonisch neu geschrieben je Bootstrap-Lauf, Klasse konvergent in der Klassentabelle `internal/emit/enforce.go` |
+| emittiertes `harness/README.md` (Vorlagen-Kopie, skip-if-present) | prüfen / update | die Link-Zeile auf den Werkzeug-Teil; die Vorlage `v6.16.0` trägt die Regel (`grep -n 'harness/mk' .harness/baseline/v6.16.0/templates/harness/README.template.md`), ob sie die Zeile auf `ai-harness-init.md` trägt, misst der Lauf; ein bestehendes Ziel bekommt sie nicht (Nachzug ausgeschlossen) |
+| `docs/user/benutzerhandbuch.md` | update | Klassentabelle (kanonisch) nennt den Werkzeug-Teil; die Pflicht „eigenes Target ⇒ Zeile in `harness/README.md`" steht als gemessene Zusage |
 | `harness/tools/full-smoke.sh` | update | Stufe grün plus zwei rote Gegenbeispiele; `docs/user/e2e-abdeckung.md` per `make e2e-abdeckung` neu erzeugt. **Kopplung (Implementer-Messung):** hängt `targets` an die Modul-Liste, bricht der `sed` der Zellenlänge-Gegenprobe (`grep -nF 's/, structure' harness/tools/full-smoke.sh`) |
 | `test/mutations/` (Fälle 295, 514), `internal/emit/emit_test.go` (`TestDCheckConfig_EntschiedeneModulListe`) | update | binden die exakte Modul-Liste `[links, anchors, ids, matrix, spans, structure]` |
 
 ## 4. Trigger
 
 
-**Start** (`next` → `in-progress`): Auftrag des Auftraggebers **und** zwei Bedingungen — die Kurs-Release, die den werkzeug-eigenen Index-Teil `harness/mk/<werkzeug>.md` regelt, ist per Baseline-Sprung adoptiert (`.harness/baseline/<tag>/`), **und** der d-check-Pin steht auf `v0.82.0` oder später, im Dogfood und im emittierten Default-Pin (`grep -n DCHECK internal/emit/emit.go d-check.mk`).
+**Start** (`next` → `in-progress`): Auftrag des Auftraggebers **und** `slice-anwender-targets-leben-in-repo-mk` liegt in `done/` (`ls docs/plan/planning/done/slice-anwender-targets-leben-in-repo-mk*`). Erfüllt und nur vermerkt: Kurs `v6.16.0` adoptiert (`ls .harness/baseline/`), d-check-Pin `v0.82.0` im Dogfood und im emittierten Default-Pin (`grep -n 'v0.82.0' internal/emit/emit.go d-check.mk`).
 
 **Rückführung `in-progress` → `open` vollzogen (2026-10-06, Blocker):** Die Implementer-Messung am frisch emittierten Ziel (Pin d-check `v0.81.0`) widerlegte die Stufe 1: `makefiles: [Makefile]` meldet `gate-phantom` für die README-Zeile `make docs-check`, `exempt-targets` wirkt nicht auf `gate-phantom`; Variante A braucht 14, Variante B 27 Ausnahmen (§1 Lage). Der Auftraggeber wählt die Indirektion über einen werkzeug-eigenen Index-Teil, die zwei Change Requests voraussetzt; die Abnahme ist darum geändert (§1 Planner-Entscheidung).
 
@@ -90,5 +93,5 @@ Wird bei der Closure vom Planner geschrieben (AGENTS.md §3.10), nicht im Plan.
 
 **Vorgelagert — Sub-Area-Wahl prüfen:** eine Sub-Area, `*` (`ALL`), Schwelle erfüllt; alle berührten Sub-Areas GF.
 
-**Vorgelagert — offene Beobachtungen sichten:** gelesen am gemergten Stand 2026-10-06, Zähler je `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence | wc -l`: `waechter-abdeckung-haengt-an-uninstruierter-konvention` → 2 (die Vorlage-Konvention „neues Target ⇒ README-Zeile“ führt nicht jeder Anweisungssatz; der Slice macht sie zu einem Wächter im Ziel), `emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht` → 5 (bereits über der Schwelle; die Grenzen stehen am Ort der Emission), `kosten-einer-emittierten-pruefung-im-ziel-ungemessen` → 1, `emittierter-stand-laeuft-dem-dogfood-voraus` → 2.
+**Vorgelagert — offene Beobachtungen sichten:** gelesen am gemergten Stand 2026-10-07, Zähler je `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence | wc -l`: `waechter-abdeckung-haengt-an-uninstruierter-konvention` → 2 (die Vorlage-Konvention „neues Target ⇒ README-Zeile“ führt nicht jeder Anweisungssatz; der Slice macht sie zu einem Wächter im Ziel), `emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht` → 6 (verkörpert; die Grenzen stehen am Ort der Emission), `kosten-einer-emittierten-pruefung-im-ziel-ungemessen` → 1, `emittierter-stand-laeuft-dem-dogfood-voraus` → 2.
 
