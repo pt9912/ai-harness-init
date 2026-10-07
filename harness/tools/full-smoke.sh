@@ -3520,6 +3520,85 @@ echo "full-smoke: Sensors-Ordner — harness/sensors/ entsteht im frischen Ziel,
 	e2e_abdeckung "LH-FA-01" "Der Bootstrap legt den Ordner harness/sensors/ an (.gitkeep in git ls-files) und laesst eine vom Adopter belegte Datei dort im zweiten Lauf unberuehrt; NICHT gemessen: dass der Ordner im Ziel bestehen bleibt, und ein Inhalt jenseits des Traegers" "sensors_ordner_im_ziel"
 sensors_ordner_im_ziel
 
+# repo.mk ist der Ort der Make-Targets des Ziel-Repos (ADR-0080 Fitness 1 und 2), gemessen an
+# einem sprachlosen Ziel: ohne repo.mk laeuft `make gates` gruen, und der naechste Lauf legt den
+# Startinhalt byte-gleich neu an; eine belegte repo.mk mit Target `eigen` und einem Gate ueber
+# `GATE_CHECKS +=` ist nach dem Re-Lauf byte-gleich (cmp), `make eigen` laeuft, und das Gate
+# laeuft in `make gates` mit. Nicht gemessen: ob das Gate VOR dem Gate-Nachweis laeuft (die
+# Ordnungskante haelt TestMakefile_HasOrderEdge), eine Vorgabe ueber `=` gegen ein `?=` der
+# Fragmente, und ein Ziel mit Sprache.
+repo_mk_im_ziel() {
+	local w="" repo="" out="" rc=0
+	w="$(mktemp -d -p "$tmprepo_kf")"
+	chmod 755 "$w"
+	repo="$w/ziel"
+	git init -q "$repo"
+	if ! out="$( "$tmpbin/ai-harness-init" --name repo-mk "$repo" 2>&1 )"; then
+		echo "full-smoke: FEHLER — repo.mk: der Bootstrap (sprachlos) ist NICHT Exit 0." >&2
+		printf '%s\n' "$out" >&2
+		exit 1
+	fi
+	if [ ! -f "$repo/repo.mk" ]; then
+		echo "full-smoke: FEHLER — repo.mk: der Bootstrap legt repo.mk an freiem Pfad NICHT an (ADR-0080 Festlegung 2)." >&2
+		exit 1
+	fi
+	cp "$repo/repo.mk" "$w/start.mk"
+
+	rm "$repo/repo.mk"
+	out="$( make -j -C "$repo" gates 2>&1 )" || rc=$?
+	if [ "$rc" -ne 0 ]; then
+		printf '%s\n' "$out" >&2
+		echo "full-smoke: FEHLER — repo.mk: ohne repo.mk ist make gates im Ziel NICHT Exit 0 — der Aggregator bindet sie nicht optional ein (ADR-0080 Festlegung 3). rc=$rc" >&2
+		einordnen "make -j gates im Ziel ohne repo.mk" "$out"
+		exit 1
+	fi
+	if ! out="$( "$tmpbin/ai-harness-init" --name repo-mk "$repo" 2>&1 )"; then
+		echo "full-smoke: FEHLER — repo.mk: der zweite Bootstrap-Lauf ist NICHT Exit 0." >&2
+		printf '%s\n' "$out" >&2
+		exit 1
+	fi
+	if ! cmp -s "$w/start.mk" "$repo/repo.mk"; then
+		echo "full-smoke: FEHLER — repo.mk: nach dem Loeschen legt der naechste Lauf den Startinhalt NICHT byte-gleich neu an (ADR-0080 Festlegung 3)." >&2
+		exit 1
+	fi
+
+	printf '%s\n' \
+		'eigen:' \
+		'	@echo "repo-mk: eigen laeuft"' \
+		'eigen-gate:' \
+		'	@echo "repo-mk: eigen-gate laeuft"' \
+		'GATE_CHECKS += eigen-gate' >"$repo/repo.mk"
+	cp "$repo/repo.mk" "$w/eigen.mk"
+	if ! out="$( "$tmpbin/ai-harness-init" --name repo-mk "$repo" 2>&1 )"; then
+		echo "full-smoke: FEHLER — repo.mk: der dritte Bootstrap-Lauf ist NICHT Exit 0." >&2
+		printf '%s\n' "$out" >&2
+		exit 1
+	fi
+	if ! cmp -s "$w/eigen.mk" "$repo/repo.mk"; then
+		echo "full-smoke: FEHLER — repo.mk: der Re-Lauf ueberschrieb die belegte repo.mk (skip-if-present verletzt, ADR-0080 Festlegung 2)." >&2
+		exit 1
+	fi
+	rc=0
+	out="$( make -C "$repo" eigen 2>&1 )" || rc=$?
+	if [ "$rc" -ne 0 ] || ! grep -qF -- 'repo-mk: eigen laeuft' <<<"$out"; then
+		printf '%s\n' "$out" >&2
+		echo "full-smoke: FEHLER — repo.mk: make eigen laeuft im Ziel NICHT — der Aggregator liest repo.mk nicht ein (ADR-0080 Festlegung 3). rc=$rc" >&2
+		exit 1
+	fi
+	rc=0
+	out="$( make -j -C "$repo" gates 2>&1 )" || rc=$?
+	if [ "$rc" -ne 0 ] || ! grep -qF -- 'repo-mk: eigen-gate laeuft' <<<"$out"; then
+		printf '%s\n' "$out" >&2
+		echo "full-smoke: FEHLER — repo.mk: das Gate aus repo.mk (GATE_CHECKS += eigen-gate) laeuft in make gates NICHT mit, oder make gates ist nicht Exit 0. rc=$rc" >&2
+		exit 1
+	fi
+	echo "full-smoke: repo.mk: ohne die Datei ist make gates gruen und der Re-Lauf legt den Startinhalt neu an; eine belegte repo.mk bleibt byte-gleich, make eigen laeuft, ihr Gate laeuft in make gates mit."
+}
+
+echo "full-smoke: repo.mk — Ort der Repo-Targets im sprachlosen Ziel, belegt und geloescht ..."
+	e2e_abdeckung "LH-FA-01 LH-QA-01" "Ein sprachloses Ziel fuehrt seine Targets in repo.mk: ohne die Datei ist make gates gruen und der Re-Lauf legt den Startinhalt neu an; eine belegte repo.mk bleibt byte-gleich, make eigen laeuft, ein Gate ueber GATE_CHECKS += laeuft in make gates mit; NICHT gemessen: die Reihenfolge vor dem Gate-Nachweis, eine Vorgabe ueber = gegen ein ?= der Fragmente, ein Ziel mit Sprache" "repo_mk_im_ziel"
+repo_mk_im_ziel
+
 # slice-038 (ADR-0007 Idempotenz-Klassifikation): ein ZWEITER Init-Lauf ist IDEMPOTENT
 # (Exit 0 statt Kollisions-Refuse). Konvergente Dateien (tool-Infra) werden kanonisch neu
 # geschrieben (heilen Drift); skip-if-present-Dateien (Adopter-Boden) bleiben unberuehrt.
