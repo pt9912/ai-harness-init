@@ -51,7 +51,7 @@ grep -n 'agent_role\\":\\"$erwartet' harness/tools/full-smoke.sh
 **Übergabe aus `slice-span-pflichtfeld-traegt-nicht-bekannt`** (Planner, 2026-10-07) — drei Punkte, die
 denselben Change Request brauchen oder dieselben Zeilen in `spezifikation.md` §5 berühren:
 
-1. **Rang-1-Lesart von `LH-FA-13` (Verifikation V-2).** Das Kriterium *Leer heißt unbekannt* liest jeden
+1. **Rang-1-Lesart von [`LH-FA-13`](../../../../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) (Verifikation V-2).** Das Kriterium *Leer heißt unbekannt* liest jeden
    leeren Pflichtwert als *unbekannt*; `SPEC-011`/`012` setzen `[]` als Wert *kein Slice*/*kein Bezug*,
    gestützt vom Kriterium *Korrelations-Achsen* und [ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md)
    Festlegung 4 Punkt 3. Die zwei Kriterien in Rang 1 sagen nicht dasselbe; die Frage gehört in den
@@ -133,7 +133,7 @@ Eintrag in `spec/lastenheft.md` §7 Historie. Lehnt er ab, geht der Slice `open 
 - **Die Kennzeichnung wird als Rolle gelesen** — ein Leser außer `internal/report` zählte
   *nicht bekannt* als eigene Rolle. — **Ausgang:** offen bis zur Closure.
 
-- **Die Lesart von `LH-FA-13` ändert die Einordnung von `SPEC-011`/`012`** — fällt der Entscheid auf
+- **Die Lesart von [`LH-FA-13`](../../../../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) ändert die Einordnung von `SPEC-011`/`012`** — fällt der Entscheid auf
   *leer heißt unbekannt*, tragen `slice`/`requirement` künftig die Kennzeichnung oder ein eigenes
   Fehlerpfad-Signal, und der Slice wächst um eine Ableitung (Rückführung `in-progress` → `next`). —
   **Ausgang:** offen bis zur Closure.
