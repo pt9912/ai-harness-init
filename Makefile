@@ -52,7 +52,7 @@ TRAEGER_SHA256_WINDOWS_ARM64 ?= 112c9f4c298e49a8cbc44873ff207d528cf2f18b34f1bffa
 TRAEGER_CARRIER ?= .harness/state/bin/ai-harness-init
 export TRAEGER_TAG TRAEGER_SHA256_LINUX_AMD64 TRAEGER_SHA256_LINUX_ARM64 TRAEGER_SHA256_DARWIN_AMD64 TRAEGER_SHA256_DARWIN_ARM64 TRAEGER_SHA256_WINDOWS_AMD64 TRAEGER_SHA256_WINDOWS_ARM64 TRAEGER_CARRIER
 
-.PHONY: help gates record-gates test test-bats test-go test-go-pids-guard lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle traeger-fetch tap-check tap-nachzug vendor-baseline
+.PHONY: help gates record-gates test test-bats test-go test-go-pids-guard lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle traeger-fetch release-warten tap-check tap-nachzug vendor-baseline
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
@@ -541,6 +541,15 @@ archive-welle: host-bin ## Zeitdokumente einer geschlossenen Welle archivieren (
 # benennen (ADR-0058 Festlegung 3 und 5). Braucht Netz an genau diesem Aufruf.
 traeger-fetch: ## Traeger aus dem gepinnten Release nachholen (braucht Netz, Transport im gepinnten Bild) — NICHT in gates
 	@bash harness/tools/traeger-fetch.sh
+
+# Wartet begrenzt, bis das gepinnte Release (TRAEGER_TAG) SHA256SUMS und das
+# Linux-amd64-Asset fuehrt; der ci-Job full-smoke faehrt es vor make full-smoke.
+# KEIN Gate und KEIN Prerequisite: ueber die Abrufbarkeit endet es immer mit Exit 0,
+# das Urteil faellt in full-smoke (ADR-0058 Festlegung 2). Grenze und Abstand per
+# TRAEGER_WARTEN_GRENZE / TRAEGER_WARTEN_INTERVALL (Sekunden, Default 900/30).
+# Braucht Netz an genau diesem Aufruf; Transport im Bild von traeger-fetch.
+release-warten: ## Begrenzt warten, bis das gepinnte Release abrufbar ist (braucht Netz, urteilt nicht) — NICHT in gates
+	@bash harness/tools/release-warten.sh
 
 # Haelt die Formel am Kopf des Default-Branch des Tap byte-genau gegen das Asset des
 # Tags (ADR-0064 Festlegung 1 und 2): Exit 0 gleich oder Vorab-Tag, 1 Formel-Unterschied,

@@ -111,10 +111,19 @@ Die Schritt-Folge:
    `gh run list --commit <tag-commit-sha>` nennt die Läufe am Tag-Commit;
    die Meldung des vollzogenen Schnitts geht erst, wenn der `ci`-Lauf
    eingetroffen ist. Die `ci`-Läufe am Release-Commit fahren **parallel zum
-   Release-Workflow** und holen in ihrem `full-smoke` den Traeger-Fetch am
-   selben Tag — der fällt mit 404, bis der Release-Lauf publiziert hat; ein
-   gemeinsamer Push von `main` und Tag erzeugt den Fall an zwei Läufen
-   (main-Ref und Tag-Ref). Im Log des `ci`-Laufs steht der Fall als
+   Release-Workflow**; ihr Job `full-smoke` holt den Traeger-Fetch am selben
+   Tag. Vor `make full-smoke` fährt er `make release-warten`
+   (`harness/tools/release-warten.sh`): der Schritt fragt im gepinnten Bild des
+   Fetch je Versuch `SHA256SUMS` und `ai-harness-init-linux-amd64` des
+   `TRAEGER_TAG` ab, alle `TRAEGER_WARTEN_INTERVALL` Sekunden (Default 30), bis
+   beide abrufbar sind oder `TRAEGER_WARTEN_GRENZE` Sekunden (Default 900)
+   erreicht sind. Er urteilt nicht: in beiden Fällen endet er mit Exit 0 — im
+   ersten mit der Zeile `release-warten: Release <tag> fuehrt SHA256SUMS und …`,
+   im zweiten mit `release-warten: GRENZE ERREICHT — …`. Hat der Release-Lauf
+   innerhalb der Grenze publiziert, läuft `full-smoke` danach gegen das
+   veröffentlichte Release; ein gemeinsamer Push von `main` und Tag wartet so
+   an beiden Läufen (main-Ref und Tag-Ref). Ist die Grenze überschritten, fällt
+   der Fetch in `full-smoke` mit 404: im Log steht der Fall als
    `AUSGANG LEITUNG` an der Stufe `make traeger-fetch im frischen Klon`, die
    Beleg-Zeile darunter trägt die Klasse *Release-Asset nicht abrufbar* und die
    Zeile `curl: (22) The requested URL returned error: 404`
@@ -126,10 +135,10 @@ Die Schritt-Folge:
    — alle drei liefern denselben Text; ob der Release-Lauf publiziert hat,
    zeigt `gh release view <tag>`. Ist das Release veröffentlicht und der Pin
    richtig, liegt der Fehler an der Namensbildung, also im Baum, obwohl die
-   Zeile `AUSGANG LEITUNG` sagt. Operativer Ausgang ist der Re-Run der gefallenen
-   Jobs nach abgeschlossener Publikation; die Struktur-Entscheidung
-   (begrenzte Wartezeit oder Workflow-Anordnung) steht aus
-   ([`BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases`](../plan/planning/observations/BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases/)).
+   Zeile `AUSGANG LEITUNG` sagt. Der Re-Run der gefallenen Jobs nach
+   abgeschlossener Publikation bleibt der Ausgang, wenn die Grenze
+   überschritten ist — dann ist ein falsch gesetzter Pin oder ein hängender
+   Release-Lauf wahrscheinlicher als das Rennen.
 
 7. **Die Formel ins Tap nachziehen und gegen das Asset halten.**
    *Regelweg:* der Job `tap` des Release-Workflows

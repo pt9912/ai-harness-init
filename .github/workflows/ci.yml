@@ -78,10 +78,17 @@ jobs:
   # frisch gebootstrapptes Repo out-of-the-box gruen faehrt. Host-Docker + ggf.
   # Netz-Pull, wie smoke; der Sensor braucht diesen mechanischen Pro-Push-Ausloeser,
   # sonst laeuft er nie (dasselbe Muster, das slice-027 fuer make mutate schloss).
+  # Vor dem Lauf wartet `make release-warten` begrenzt (Default 15 Minuten), bis das
+  # gepinnte Release (TRAEGER_TAG) SHA256SUMS und das Linux-amd64-Asset fuehrt — am
+  # Tag-Commit faehrt release.yml parallel und publiziert erst danach. Das Warten
+  # urteilt nicht und endet immer mit Exit 0; fehlt das Asset nach der Grenze, bricht
+  # full-smoke mit AUSGANG LEITUNG (ADR-0058 Festlegung 2). Ist das Release schon
+  # veroeffentlicht, endet es beim ersten Versuch.
   full-smoke:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - run: make release-warten
       - run: make full-smoke
 
   # Der Mutations-Sensor zu AGENTS.md 3.6 (slice-026). Hier bekommt seine
