@@ -66,7 +66,7 @@ Die Regel der ADR bleibt, das Werkzeug wechselt; der Reviewer prüft den Wechsel
 
 ## 2. Definition of Done
 
-- [ ] **1 — Klasse und Meldung:** `internal/emit/templates.go` legt beide Skills skip-if-present ab;
+- [x] **1 — Klasse und Meldung:** `internal/emit/templates.go` legt beide Skills skip-if-present ab;
       `Templates()` bekommt einen Meldeweg (Writer und Vorlagen-Pfad vom Aufrufer `emitAll`), die
       Meldung folgt der Form des Commit-Trägers
       ([ADR-0054](../../adr/0054-emittierter-commit-traeger-skip-if-present.md)), nennt Pfad und
@@ -81,26 +81,28 @@ Die Regel der ADR bleibt, das Werkzeug wechselt; der Reviewer prüft den Wechsel
       Skills wieder konvergent —, `make mutate MUTATE_CASES=53-skills-konvergent` meldet ihn
       gebunden; (b) Hand-Bruch: Byte-Vergleich entfernt (Meldung immer) → `make test` rot am Fall
       *„unverändert meldet nichts"*, Meldung gelesen, `git checkout -- internal/emit/templates.go`.
-- [ ] **2 — Ziel:** neue Stufe in `harness/tools/full-smoke.sh` neben *„Klasse des
+- [x] **2 — Ziel:** neue Stufe in `harness/tools/full-smoke.sh` neben *„Klasse des
       Commit-Traegers"*: Re-Lauf des Bootstrap über `tmprepo_doc` mit drei Fällen (gefüllter
       Skill → byte-gleich und gemeldet · unverändert emittierter → keine Meldung · gelöschter →
       angelegt); `make full-smoke` EXIT 0, die Stufen-Deklaration (`e2e_abdeckung`) nennt, was sie
       misst, `make e2e-abdeckung` zieht `docs/user/e2e-abdeckung.md` nach. **Rot gesehen:** der
       `sed` aus Fall 53 von Hand auf `internal/emit/templates.go` angewandt → `make full-smoke` rot
       mit der FEHLER-Zeile der neuen Stufe (gelesen), danach `git checkout -- internal/emit/templates.go`.
-- [ ] **3 — Texte:** `internal/emit/baumaussage.go` zählt die zwei Skills zu den genannten Pfaden,
-      der Satz *„Einen einzigen solchen Pfad nennt der Lauf"* fällt (der Go-Test der Baum-Aussage
-      zieht mit, `make test`); [`spec/architecture.md`](../../../../spec/architecture.md) §5 und
+- [x] **3 — Texte:** `internal/emit/baumaussage.go` nennt jeden Pfad, den ein Re-Lauf meldet —
+      die Skip-if-present-Pfade der Durchsetzungsschicht abgeleitet aus den Listen von `Enforce`
+      (`gemeldetePfade`) und die zwei Skills bei Abweichung —, der Satz *„Einen einzigen solchen
+      Pfad nennt der Lauf"* fällt (`TestBaumAussage_NenntDieGemeldetenPfade` hält ihn gegen die
+      Meldungen eines realen Re-Laufs, `make test`); [`spec/architecture.md`](../../../../spec/architecture.md) §5 und
       `ARC-006` sowie `docs/user/benutzerhandbuch.md` (Skills aus der Zeile *kanonisch*, damit unter
       *nur bei fehlender Datei*) im Ist-Zustand.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen).
 
 ## 3. Plan (vor Code)
@@ -110,7 +112,7 @@ Die Regel der ADR bleibt, das Werkzeug wechselt; der Reviewer prüft den Wechsel
 | `internal/emit/templates.go`, `cmd/ai-harness-init/main.go` (`emitAll`) | update | Klasse und Meldeweg (Liefer-Punkt 1) |
 | `internal/emit/*_test.go` (Aufrufe von `emit.Templates`), `test/mutations/53-skills-konvergent.sh` | update | Fitness-Zeilen 1 und 3 |
 | `harness/tools/full-smoke.sh`, `docs/user/e2e-abdeckung.md` (erzeugt) | update | Liefer-Punkt 2 |
-| `internal/emit/baumaussage.go` samt Test, `spec/architecture.md`, `docs/user/benutzerhandbuch.md` | update | Liefer-Punkt 3 |
+| `internal/emit/baumaussage.go` samt Test, `spec/architecture.md`, `docs/user/benutzerhandbuch.md` | update | Liefer-Punkt 3; die Pfad-Liste der Baum-Aussage aus den `Enforce`-Listen abgeleitet (`gemeldetePfade`, Review M-1) |
 
 ## 4. Trigger
 
@@ -136,16 +138,44 @@ Die Regel der ADR bleibt, das Werkzeug wechselt; der Reviewer prüft den Wechsel
 ## 6. Risiken und offene Punkte
 
 - **Meldung erreicht den Nutzer nicht** — ein Aufrufer verwirft den neuen Rückgabewert, der Skill
-  bleibt still stehen. — **Ausgang:** offen bis zur Closure.
+  bleibt still stehen. — **Ausgang:** entfallen — der einzige Produkt-Aufrufer `emitAll` reicht
+  `notice` (stderr) durch, die Meldung steht im `make full-smoke`-Log der Stufe *„Klasse der
+  Reviewer-Skills"* ([Verifikation](../../../reviews/2026-10-07-skills-verifikation.md)).
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+**Rolle:** Planner · **Datum:** 2026-10-07
+
+- **Was hat funktioniert:** DoD 1 und 2 bestätigt, Rot-Belege vom Verifier nachgetragen;
+  `make full-smoke` EXIT 0 mit der Stufe *„Klasse der Reviewer-Skills"*
+  ([Verifikation](../../../reviews/2026-10-07-skills-verifikation.md)). Review 0 HIGH; M-1 behoben
+  in `8c107d59` und `ee02d31e`; M-2 per [Architect-Verdikt](../../../reviews/2026-10-07-skills-architect-verdikt.md)
+  ohne Folge-ADR, Messort in `make full-smoke` statt `make selbstpruefung` (§1 Lage); INFO-1:
+  `d66451f5` allein nicht grün, gemeinsam gepusht
+  ([Review](../../../reviews/2026-10-07-skills-review.md)). DoD 3 nach Verifikations-Befund V-1
+  (Handbuch) mit `27452ecb` erfüllt, gegen einen doppelten Bootstrap geprüft.
+- **Was ging anders als geplant:** Die Baum-Aussage nennt jeden gemeldeten Pfad, abgeleitet aus
+  `Enforce` (`gemeldetePfade`), nicht nur die zwei Skills; DoD 3 und §3 im Closure-Commit
+  nachgezogen. Commit `ee02d31e` trägt die Message von `3f068403` (*„full-smoke ordnet den
+  Welle-1-Lauf der Grenze ein"*, Kennung [ADR-0081](../../adr/0081-altbestand-grenze-aus-der-commit-abstammung.md)), sein Inhalt ist der funlen-Nachzug zu M-1 in
+  `internal/emit/baumaussage.go`; Herkunft ungeklärt, bleibt stehen (Auftraggeber-Entscheidung).
+- **Steering-Loop-Eintrag:** *Benannte Sensor-Lücke*: kein Träger hält die Message eines Commits
+  gegen seinen Inhalt — die Kennungs-Träger prüfen Anwesenheit, nicht Zugehörigkeit. Nicht
+  verkörpert, gezählt im Register (unten).
+- **Beobachtungs-Register (`../observations/`):**
+  [`BEO-ALL/commit-traegt-die-message-eines-fremden-vorgangs`](../observations/BEO-ALL/commit-traegt-die-message-eines-fremden-vorgangs/observation.md)
+  neu (1×); nicht `amend-committet-fremde-index-eintraege-mit` — dort reist fremder Inhalt unter
+  eigener Message, hier eigener Inhalt unter fremder.
+  [`BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`](../observations/BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/observation.md)
+  Beleg ergänzt (M-1 und V-1, ein Vorgang), Stand verkörpert unverändert.
+  `BEO-ALL/idempotente-anlage-erreicht-den-bestand-nicht` nicht aufgetreten — die Stufe misst den
+  Re-Lauf am bestehenden Ziel; bleibt bei 2.
+- **Folge-Slices:** keiner.
+- **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines berührt. ADR:
+  [ADR-0084](../../adr/0084-reviewer-skills-im-ziel-skip-if-present.md) umgesetzt, kein
+  Re-Evaluierungs-Trigger eingetreten. Hard Rules: keine mit Auflösungs-Trigger aus diesem Vorgang.
+- **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
