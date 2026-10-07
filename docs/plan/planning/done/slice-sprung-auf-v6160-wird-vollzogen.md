@@ -268,7 +268,7 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
   (*verkörpert* / *geplant* / *gestrichen*) weist der Lese-Schritt der nächsten Welle-Closure zu,
   denn das Repo fährt Wellen. Die Verkörperung geht dabei Planner → Architect.
 - **Folge-Slices:** Neu angelegt ist keiner. Die Pläne
-  [`slice-targets-modul-im-emittierten-doc-gate`](../in-progress/slice-targets-modul-im-emittierten-doc-gate.md) und
+  [`slice-targets-modul-im-emittierten-doc-gate`](../done/slice-targets-modul-im-emittierten-doc-gate.md) und
   [`slice-gliederung-der-instanzen-ohne-vorlagen-delta`](../open/slice-gliederung-der-instanzen-ohne-vorlagen-delta.md)
   sind durch `v6.16.0` inhaltlich überholt (Welle 159 bzw.
   [`docs/migrations/v6.16.0.md`](../../../migrations/v6.16.0.md)). Adresse dafür ist
