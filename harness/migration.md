@@ -50,6 +50,7 @@ Spalte), alle anderen bleiben unangetastet:
 | `v6.8.0` → `v6.9.0` (vollzogen) | Ziel-Fassung `v6.9.0` | [ADR-0056](../docs/plan/adr/0056-ziel-fassung-regiert-den-sprung-v690.md) |
 | `v6.9.0` → `v6.13.0` (vollzogen) | Ziel-Fassung `v6.13.0` | [ADR-0072](../docs/plan/adr/0072-ziel-fassung-regiert-den-sprung-v6130.md) |
 | `v6.13.0` → `v6.16.0` (vollzogen) | Ziel-Fassung `v6.16.0` | [ADR-0078](../docs/plan/adr/0078-ziel-fassung-regiert-den-sprung-v6160.md) |
+| `v6.16.0` → `v6.17.0` (vollzogen) | Ziel-Fassung `v6.17.0` | [ADR-0082](../docs/plan/adr/0082-ziel-fassung-regiert-den-sprung-v6170.md) |
 
 Die Zeile zu `v5.12.0` → `v5.18.0` zitiert
 [ADR-0031](../docs/plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) Festlegung 1;
@@ -57,12 +58,13 @@ die ADR steht auf **`Proposed`** (ihre eigene §Geschichte) und ist damit nach
 [`AGENTS.md`](../AGENTS.md) §3.4 noch nicht eingefroren — die Zeile hält fest, was sie **heute**
 vorschlägt, nicht, dass die Entscheidung feststeht.
 
-Der aktuell vendored Stand ist `v6.16.0`
+Der aktuell vendored Stand ist `v6.17.0`
 (`ls -1 .harness/baseline/` — kein Erwartungswert, wandert mit jedem Tausch); §Baseline von
 [`conventions.md`](conventions.md) trägt denselben Tag als Zielstand, und damit ist die
-Zwei-Fassungen-Phase des zehnten Sprungs geschlossen. Der Sprung ist vollzogen, die regierende
-Fassung ist [ADR-0078](../docs/plan/adr/0078-ziel-fassung-regiert-den-sprung-v6160.md); der Report
-zum Sprung ist [`docs/migrations/v6.16.0.md`](../docs/migrations/v6.16.0.md).
+Zwei-Fassungen-Phase des elften Sprungs geschlossen. Der Sprung ist vollzogen, die regierende
+Fassung ist [ADR-0082](../docs/plan/adr/0082-ziel-fassung-regiert-den-sprung-v6170.md); einen
+Report unter `docs/migrations/` führt dieser Sprung nicht — sein Delta steht in
+der ADR, §Kontext.
 
 ## 2. Ort und Form der Zielstand-Setzung
 
