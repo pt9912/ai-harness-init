@@ -76,7 +76,7 @@ arm64-Unterstützung.
 - [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen).
+- [x] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen); nach dem Move gefahren, §7.
 
 ## 3. Plan (vor Code)
 
@@ -142,6 +142,14 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
 - **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines berührt. ADR: keine
   berührt. Hard Rules: keine mit Auflösungs-Trigger aus diesem Vorgang.
 - **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
+- **Paarungen geprüft am 2026-10-07** (nach dem Move): (a) *Anker*: §7 trägt kein Feld `liegt in`,
+  nichts zu prüfen. (b) *Folge-Slice*: keiner genannt. (c) *Register*: die zwei genannten Pfade
+  existieren, `evidence/` trägt 1 und 4 Dateien. Zweite Hälfte über das ganze Register: 3
+  Verzeichnisse ohne Beleg, namentlich `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+  `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`,
+  `BEO-ALL/planungs-bestand-waechst-schneller-als-er-abgebaut-wird`; sie gelten nicht als getragen
+  ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  Festlegung 2).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
