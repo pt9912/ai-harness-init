@@ -173,7 +173,7 @@ Drei slice-eigene Punkte, einer je Achse (Baseline · d-check-Pin · Disjunkthei
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, einschließlich der F-1-Übergabe
       aus §1, oder „keine Beobachtung" in §7.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen prüft die nächste Welle-Closure — das Repo fährt Wellen.
+- [x] Die drei Paarungen prüft die nächste Welle-Closure — das Repo fährt Wellen; nach dem Move gefahren, §7.
 
 ## 3. Plan (vor Code)
 
@@ -282,6 +282,15 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
   [`ADR-0082`](../../adr/0082-ziel-fassung-regiert-den-sprung-v6170.md) `Accepted`; kein
   Re-Evaluierungs-Trigger ausgelöst — Trigger 4 nennt der Umsetzungs-Commit `94a258ce` als nicht gefeuert. Hard Rules: keine mit Auflösungs-Trigger aus diesem Vorgang.
 - **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
+- **Paarungen geprüft am 2026-10-07** (nach dem Move): (a) *Anker*: §7 trägt kein Feld `liegt in`,
+  nichts zu prüfen. (b) *Folge-Slice*: keiner genannt. (c) *Register*: die vier genannten Pfade
+  existieren, `evidence/` trägt 1, 1, 1 und 3 Dateien. Zweite Hälfte über das ganze Register:
+  3 Verzeichnisse ohne Beleg, namentlich
+  `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+  `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab` und
+  `BEO-ALL/planungs-bestand-waechst-schneller-als-er-abgebaut-wird`; sie gelten nicht als getragen
+  ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  Festlegung 2).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
