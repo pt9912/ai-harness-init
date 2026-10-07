@@ -20,6 +20,10 @@ adopter-gefüllter Inhalt wird nie überschrieben),
 **Regeln:** Baseline-Regelwerk `modul-04-adrs.md` §Ziel-Form: ADR (MADR); `modul-08-agentenrollen.md`
 §Welche Rolle braucht welche Artefaktklasse.
 
+**Supersedes (Teil):** [ADR-0007](0007-bootstrap-phasen.md) Idempotenz-Klassifikation, und dort
+**genau einen Gegenstand** — den Eintrag `.harness/skills/*` der Zeile der konvergenten
+Infrastruktur; alles Übrige der ADR gilt fort.
+
 ---
 
 ## Kontext
@@ -40,16 +44,19 @@ Auftraggeber-Entscheidung 2026-10-07: umsetzen). Im Dogfood gehört der Skill de
 
 ## Entscheidung
 
-Wir wählen **skip-if-present für beide Skills, mit Meldung je stehengelassener Datei**.
+Wir wählen **skip-if-present für beide Skills, mit Meldung je abweichend stehengelassener Datei**.
 
 **1. Klasse.** `.harness/skills/reviewer.md` und `.harness/skills/closure-note-reviewer.md` werden
 nur an einem freien Pfad abgelegt. Das löst aus [ADR-0007](0007-bootstrap-phasen.md) allein den
 Eintrag `.harness/skills/*` der konvergenten Zeile ab; alles Übrige dort gilt fort, ADR-0007 bleibt
 byte-gleich. Die Marke in ihrer Index-Zeile setzt der Accept-Übergang dieser ADR.
 
-**2. Der Lauf nennt, was er stehen lässt** — je Skill den Pfad und die mitgelieferte Vorlage unter
-`.harness/baseline/<tag>/templates/.harness/skills/` zum Abgleich, in der Form der Meldung zum
-Commit-Träger ([ADR-0054](0054-emittierter-commit-traeger-skip-if-present.md)).
+**2. Der Lauf nennt, was er stehen lässt — nur, wenn es von der Lieferfassung abweicht.** Je Skill,
+dessen vorhandene Datei nicht byte-gleich der Fassung ist, die dieser Lauf ablegen würde: den Pfad
+und die mitgelieferte Vorlage unter `.harness/baseline/<tag>/templates/.harness/skills/` zum
+Abgleich, in der Form der Meldung zum Commit-Träger
+([ADR-0054](0054-emittierter-commit-traeger-skip-if-present.md)). Eine unveränderte Emission meldet
+nichts — sonst meldete jeder Re-Lauf beide Skills, und die Meldung trüge keine Information.
 
 **3. Die Baum-Aussage nennt sie.** Der Absatz *„Gesagt ist, was ein frisches Repo bekommt"* der
 emittierten Baum-Aussage (Erzeuger `internal/emit/baumaussage.go`) zählt die zwei Skills zu den
@@ -72,7 +79,9 @@ der Abgleich ist Handarbeit des Adopters, wie bei jedem anderen Ausfüll-Dokumen
 
 - Positiv: ein gefüllter Skill überlebt jeden Re-Lauf; die Klasse folgt der Vorlage.
 - Negativ: §Entscheidung 4.
-- Folgepflicht: ein Slice (Planner) — Klasse in `internal/emit/templates.go`, Meldung,
+- Folgepflicht: ein Slice (Planner) — Klasse in `internal/emit/templates.go`, Meldung samt einem
+  Meldeweg für `Templates()` (die Funktion hat heute keinen; die Meldung des Commit-Trägers lebt in
+  `internal/emit/enforce.go`),
   Baum-Aussage, `spec/architecture.md` §5 nachziehen, Test und Mutationsfall umkehren,
   Selbstprüfung; Release `v0.5.0` (minor: Verhalten des Re-Laufs ändert sich).
 
@@ -81,7 +90,7 @@ der Abgleich ist Handarbeit des Adopters, wie bei jedem anderen Ausfüll-Dokumen
 | Tooling | Regel | Make-Target |
 |---|---|---|
 | Go-Test (ersetzt `TestTemplates_SkillsConvergent`) | ein veränderter Skill überlebt den zweiten Lauf byte-gleich; ein fehlender wird angelegt | `make test` |
-| Selbstprüfung des Ziels | beide Fälle: Re-Lauf über gefülltem Skill → unverändert und gemeldet; über fehlendem → angelegt | `make selbstpruefung` (kein Gate), gefahren von `make full-smoke` |
+| Selbstprüfung des Ziels | drei Fälle: Re-Lauf über gefülltem Skill → unverändert und gemeldet; über unverändert emittiertem → unverändert, keine Meldung; über fehlendem → angelegt | `make selbstpruefung` (kein Gate), gefahren von `make full-smoke` |
 | Mutationsfall (Nachfolger von `test/mutations/53-skills-konvergent.sh`) | die Skills wieder konvergent schreiben → der Go-Test wird rot | `make mutate` |
 
 ## Re-Evaluierungs-Trigger
