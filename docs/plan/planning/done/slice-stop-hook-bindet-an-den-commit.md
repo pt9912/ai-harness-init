@@ -133,7 +133,7 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
   ([Verifikation](../../../reviews/2026-10-07-stop-hook-verifikation.md)). Review 0 HIGH · 0 MEDIUM;
   LOW-2 behoben in `807071ba`
   ([Review](../../../reviews/2026-10-07-stop-hook-review.md)). Architect-Übergabe
-  [`MR-085`](../../../../harness/conventions.md#mr-085) mit Kopf-Marken an `MR-002`/`MR-003` liegt als
+  [`MR-085`](../../../../harness/conventions.md#mr-085) mit Kopf-Marken an [`MR-002`](../../../../harness/conventions.md#mr-002)/[`MR-003`](../../../../harness/conventions.md#mr-003) liegt als
   eigener Commit vor; Verifikations-Befund F-1 (Grenze `git switch --orphan`) behoben in `e04f60ff`.
 - **Was ging anders als geplant:** Liefer-Punkt 1 nannte bats, geliefert ist ein Go-Test, weil das
   bats-Image kein `git` führt (Review LOW-1); DoD 1 und §3 sind im Closure-Commit auf das Werkzeug
