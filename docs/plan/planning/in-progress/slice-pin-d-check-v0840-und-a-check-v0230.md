@@ -52,30 +52,30 @@ arm64-Unterstützung.
 
 ## 2. Definition of Done
 
-- [ ] **1 — d-check `v0.84.0`:** `DCHECK_IMAGE`/`DCHECK_DIGEST` in `d-check.mk` und
+- [x] **1 — d-check `v0.84.0`:** `DCHECK_IMAGE`/`DCHECK_DIGEST` in `d-check.mk` und
       `DefaultImage`/`DefaultDigest` in `internal/emit/emit.go` auf den Index-Digest (Kommando der
       Messung im Commit); Gegenmessung nach [`MR-063`](../../../../harness/conventions.md#mr-063) —
       jedes aktive Modul mit Nicht-Null-Basis vor und nach dem Pin, Befund-Zahlen samt Kommando im
       Umsetzungs-Commit. **Rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6): eine der zwei
       Stellen bleibt auf `v0.83.0` — der Wächter, der sie koppelt, wird rot; koppelt keiner, nennt der
       Umsetzungs-Commit die Lücke.
-- [ ] **2 — a-check `v0.23.0`:** `DefaultArchImage`/`DefaultArchDigest` auf den Index-Digest;
+- [x] **2 — a-check `v0.23.0`:** `DefaultArchImage`/`DefaultArchDigest` auf den Index-Digest;
       `make full-smoke` EXIT 0 über `hexslice` (go, cpp) und `hexagonal` (go), der verbotene Import
       färbt das emittierte Gate weiter rot.
-- [ ] **3 — Handbuch:** [`docs/user/benutzerhandbuch.md`](../../../user/benutzerhandbuch.md) nennt,
+- [x] **3 — Handbuch:** [`docs/user/benutzerhandbuch.md`](../../../user/benutzerhandbuch.md) nennt,
       dass beide gepinnten Images per Index-Digest auf amd64 und arm64 laufen — begrenzt auf das, was
       der Index trägt (Kommando `docker manifest inspect`), Ist-Zustand.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: Übergabe an den Architect liegt als eigener Commit vor — MR-Eintrag zum
+- [x] Doku-Update: Übergabe an den Architect liegt als eigener Commit vor — MR-Eintrag zum
       d-check-Pin `v0.84.0` nach dem Muster von [`MR-082`](../../../../harness/conventions.md#mr-082),
       mit der Gegenmessung aus Liefer-Punkt 1.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen).
 
 ## 3. Plan (vor Code)
@@ -84,7 +84,7 @@ arm64-Unterstützung.
 |---|---|---|
 | `d-check.mk`, `internal/emit/emit.go` | update | d-check-Pin (Liefer-Punkt 1) |
 | `internal/emit/archgate.go` | update | a-check-Pin (Liefer-Punkt 2) |
-| Pin-Tests unter `internal/emit/`, `test/` | update | Kopplung der Pin-Stellen |
+| Pin-Tests unter `internal/emit/`, `internal/gen/` | update | Kopplung der Pin-Stellen; `internal/gen/archgate_test.go` hält den a-check-Pin (Verifikation, Code → Plan) |
 | `docs/user/benutzerhandbuch.md` | update | Liefer-Punkt 3 |
 
 ## 4. Trigger
@@ -109,19 +109,39 @@ arm64-Unterstützung.
 ## 6. Risiken und offene Punkte
 
 - **arm64 ungemessen** — kein Lauf dieses Repos fährt arm64; der Handbuch-Satz trägt nur, was der
-  Index-Manifest sagt. — **Ausgang:** offen bis zur Closure.
+  Index-Manifest sagt. — **Ausgang:** entfallen — der Handbuch-Satz sagt nur „liegt vor" und
+  „gefahren … nur mit der `linux/amd64`-Variante", keine Zusage hängt an einem arm64-Lauf
+  ([Verifikation](../../../reviews/2026-10-07-pin-v0840-v0230-verifikation.md), DoD 3).
 - **Digest ohne Wächter** — `BEO-ALL/pin-digest-ohne-waechter` steht bei 3 Belegen, `offen`; ein
-  weiterer Pin-Sprung ohne Digest-Wächter berührt die Klasse erneut. — **Ausgang:** offen bis zur
-  Closure.
+  weiterer Pin-Sprung ohne Digest-Wächter berührt die Klasse erneut. — **Ausgang:** weiter offen →
+  [`BEO-ALL/pin-digest-ohne-waechter`](../observations/BEO-ALL/pin-digest-ohne-waechter/observation.md)
+  (Beleg dieses Slice; Ausgang im Lese-Schritt der nächsten Welle-Closure).
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+**Rolle:** Planner · **Datum:** 2026-10-07
+
+- **Was hat funktioniert:** LP 1–3 bestätigt, keine Findings; `make full-smoke` EXIT 0, jeder
+  a-check- und d-check-Aufruf im Ziel über die neuen Index-Digests, Arch-Stufen grün, verbotene
+  Importe rot ([Verifikation](../../../reviews/2026-10-07-pin-v0840-v0230-verifikation.md)). Review
+  0 HIGH; M-1 behoben in `76c5a48e`, L-1 behoben in `8181fdd6`
+  ([Review](../../../reviews/2026-10-07-pin-v0840-v0230-review.md)). Architect-Übergabe
+  [`MR-084`](../../../../harness/conventions.md#mr-084) liegt als eigener Commit vor.
+- **Was ging anders als geplant:** Der a-check-Pin-Test liegt unter `internal/gen/`, §3 nachgezogen.
+  Der Pin-Zahn prüfte zuerst Tag-Gleichheit statt der Mindestfassung (M-1).
+- **Steering-Loop-Eintrag:** *Geschärfte Regel*: ein Pin-Zahn, der eine Fassungs-Eigenschaft nennt,
+  prüft die Mindestfassung, nicht den heutigen Tag ([`AGENTS.md`](../../../../AGENTS.md) §3.6 auf
+  Pins angewandt). Nicht verkörpert, gezählt im Register (unten).
+- **Beobachtungs-Register (`../observations/`):**
+  [`BEO-ALL/test-nennt-eigenschaft-prueft-heutigen-wert`](../observations/BEO-ALL/test-nennt-eigenschaft-prueft-heutigen-wert/observation.md)
+  neu (1×, Review M-1);
+  [`BEO-ALL/pin-digest-ohne-waechter`](../observations/BEO-ALL/pin-digest-ohne-waechter/observation.md)
+  Beleg ergänzt (4×, Stand `offen` bis zum Lese-Schritt).
+- **Folge-Slices:** keiner.
+- **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines berührt. ADR: keine
+  berührt. Hard Rules: keine mit Auflösungs-Trigger aus diesem Vorgang.
+- **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
