@@ -66,6 +66,8 @@ func TestEnforce_EmitsAllMechanicFiles(t *testing.T) {
 		// UNBEDINGT, weil der frische Klon ohne Traeger genau sein Fall ist.
 		"harness/mk/traeger.mk",
 		"tools/harness/traeger-fetch.sh",
+		// Der Ort der Make-Targets des Repos an der Wurzel (ADR-0080 Festlegung 1).
+		"repo.mk",
 	}
 	got := strings.Join(emit.EnforcePaths(), "\n")
 	for _, w := range want {
@@ -405,6 +407,11 @@ func TestEnforce_IdempotenzKlasseJePfad(t *testing.T) {
 	}
 	if len(kanonisch) == 0 {
 		t.Fatal("EnforcePaths ist leer — der Waechter misst dann nichts")
+	}
+	// Die Klasse von repo.mk ist festgelegt (ADR-0080 Festlegung 2), nicht nur vorhanden:
+	// eine konvergente repo.mk schriebe die Targets des Repos bei jedem Lauf weg.
+	if klassen[emit.RepoMkPath] != emit.SkipIfPresent {
+		t.Errorf("%s traegt die Klasse %s statt %s (ADR-0080 Festlegung 2)", emit.RepoMkPath, klassen[emit.RepoMkPath], emit.SkipIfPresent)
 	}
 	for _, klasse := range []emit.EnforceClass{emit.Konvergent, emit.SkipIfPresent} {
 		if len(jeKlasse[klasse]) == 0 {

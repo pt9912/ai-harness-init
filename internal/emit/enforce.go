@@ -161,6 +161,11 @@ func enforceFiles() []enforceFile {
 		// Existenz des Ordners — das Doku-Gate unterscheidet keinen fehlenden Ordner von einem
 		// Ordner ohne Datei (templates.go, Kopfkommentar von isRecurring).
 		{src: "templates/enforce/gitkeep", dst: "harness/sensors/.gitkeep", mode: 0o644, class: SkipIfPresent},
+		// Der Ort der Make-Targets des Repos (ADR-0080 Festlegung 1 und 2): harness/mk/
+		// und der Aggregator gehoeren dem Werkzeug, repo.mk dem Repo. Der Startinhalt ist
+		// ein Kopfkommentar ohne Targets; ein liegender Inhalt bleibt unberuehrt. Der
+		// Aggregator bindet sie mit -include ein (makefile.go).
+		{src: "templates/enforce/repo.mk", dst: RepoMkPath, mode: 0o644, class: SkipIfPresent},
 	}
 	// Die Zeilenenden-Attribute der fuenf Verzeichnisse mit Interpreter- oder
 	// Byte-Konsument; die Klasse je Pfad und die Meldung traegt zeilenenden.go.

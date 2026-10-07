@@ -7,6 +7,10 @@ package emit
 // der Aggregator ist sprach-agnostisch und gehoert in die Init-Phase, nicht ins Skelett.
 const MakefilePath = "Makefile"
 
+// RepoMkPath ist der Ort der Make-Targets des Repos an der Wurzel des Ziels (ADR-0080):
+// skip-if-present (Klassentabelle in enforce.go), vom Aggregator mit -include eingebunden.
+const RepoMkPath = "repo.mk"
+
 // aggregatorMakefile — die sprach-agnostische Root-Makefile: ein duenner Aggregator, der
 // die Gate-Fragmente (harness/mk/*.mk) per Glob einbindet. KEIN Sprach-Pin (die GO_VERSION
 // lebt im Code-Gate-Fragment harness/mk/<lang>.mk, das gen bei --lang emittiert). Die
@@ -23,8 +27,14 @@ GATE_CHECKS :=
 
 # Gate-Fragmente je Belang (baseline/doc-gate/enforce + Sprach-Code-Gates) einbinden.
 # Alphabetisch (baseline < doc-gate < enforce < <lang>); die Ordnungskante unten steht
-# NACH dem Include und sieht GATE_CHECKS damit vollstaendig.
+# NACH beiden Includes und sieht GATE_CHECKS damit vollstaendig.
 include harness/mk/*.mk
+
+# Die Targets des Repos (ADR-0080): repo.mk gehoert dem Repo, der Bootstrap legt sie
+# nur an, wo sie fehlt. Sie steht NACH den Fragmenten, damit ihr GATE_CHECKS += die
+# Ordnungskante unten erreicht und ihr = die ?=-Vorgaben der Fragmente ueberschreibt;
+# -include, damit eine geloeschte repo.mk make nicht bricht.
+-include repo.mk
 
 help: ## Diese Hilfe
 	@grep -hE '^[a-z0-9-]+:.*##' $(MAKEFILE_LIST) | sort | awk 'BEGIN{FS=":.*##"}{printf "  %-14s %s\n",$$1,$$2}'

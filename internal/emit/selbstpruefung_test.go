@@ -232,7 +232,7 @@ func TestSelbstpruefung_EinEditIstNachDemNaechstenLaufWiederDieAusgelieferteFass
 // (harness/mk/apps-api.mk fuer das Modul apps/api) und sind von hier aus weder Konstante
 // noch Muster. Ein Adopter, der sein Vorgabe-Fragment so nennt wie eines seiner Module,
 // verliert seine Vorgabe beim naechsten Lauf, und das faengt dieser Test nicht.
-func TestSelbstpruefung_DerGenannteVorgabeOrtWirdVonKeinemLaufGeschrieben(t *testing.T) {
+func TestSelbstpruefung_DerGenannteVorgabeOrtWirdNieUeberschrieben(t *testing.T) {
 	dir := selbstpruefungZiel(t)
 	for _, rel := range []string{emit.SelbstpruefungPath, emit.SelbstpruefungMkPath} {
 		text := mustReadString(t, filepath.Join(dir, filepath.FromSlash(rel)))
@@ -242,17 +242,38 @@ func TestSelbstpruefung_DerGenannteVorgabeOrtWirdVonKeinemLaufGeschrieben(t *tes
 		}
 	}
 
-	geschrieben := append([]string{
+	// Gemessen am Lauf selbst: eine Vorgabe am genannten Ort ueberlebt den naechsten
+	// Bootstrap byte-gleich (ADR-0080 Festlegung 2 und 4).
+	ort := filepath.Join(dir, filepath.FromSlash(emit.SelbstpruefungVorgabeOrt))
+	const vorgabe = "SELBSTPRUEFUNG_GATE = make baseline-verify\n"
+	if err := os.WriteFile(ort, []byte(vorgabe), 0o644); err != nil {
+		t.Fatalf("%s belegen: %v", emit.SelbstpruefungVorgabeOrt, err)
+	}
+	if err := emit.Enforce(dir, io.Discard); err != nil {
+		t.Fatalf("Enforce (Re-Lauf): %v", err)
+	}
+	if got := mustReadString(t, ort); got != vorgabe {
+		t.Errorf("%s wurde vom Re-Lauf ueberschrieben — die Vorgabe ist nach dem naechsten Bootstrap weg, und die Koepfe nennen sie trotzdem als dauerhaften Ort:\n%s",
+			emit.SelbstpruefungVorgabeOrt, got)
+	}
+
+	// Kein konvergent geschriebener Pfad ist der Ort.
+	konvergent := []string{
 		emit.MakefilePath,
 		emit.BaselineMkPath,
 		emit.DocGateMkPath,
 		emit.ArchMkPath,
-	}, emit.EnforcePaths()...)
-	geschrieben = append(geschrieben, emit.CommandPaths()...)
+	}
+	for _, p := range emit.EnforcePaths() {
+		if emit.PathClass(p) == emit.Konvergent {
+			konvergent = append(konvergent, p)
+		}
+	}
+	geschrieben := append(konvergent, emit.CommandPaths()...)
 	geschrieben = append(geschrieben, emit.AgentPaths()...)
-	for _, p := range geschrieben {
+	for _, p := range konvergent {
 		if p == emit.SelbstpruefungVorgabeOrt {
-			t.Errorf("%s wird von einem Lauf geschrieben — eine Vorgabe dort ist nach dem naechsten Bootstrap weg, und die Koepfe nennen sie trotzdem als dauerhaften Ort",
+			t.Errorf("%s wird von jedem Lauf neu geschrieben — eine Vorgabe dort ist nach dem naechsten Bootstrap weg, und die Koepfe nennen sie trotzdem als dauerhaften Ort",
 				emit.SelbstpruefungVorgabeOrt)
 		}
 	}

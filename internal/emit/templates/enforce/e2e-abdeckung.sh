@@ -57,11 +57,10 @@
 # ein Edit an ihr ist danach still weg — deshalb sind die vier Stellen oben Variablen.
 # Gesetzt wird am Aufruf
 #   make e2e-abdeckung E2E_ABDECKUNG_QUELLE=tools/harness/mein-e2e.sh
-# oder dauerhaft in einem EIGENEN Fragment unter harness/mk/ mit einem Namen, den dieses
-# Werkzeug nicht schreibt — etwa harness/mk/vorgaben.mk:
+# oder dauerhaft in repo.mk an der Wurzel, der Datei des Repos:
 #   E2E_ABDECKUNG_QUELLE = tools/harness/mein-e2e.sh
-# Der Aggregator bindet es ueber `include harness/mk/*.mk` mit ein, und kein Lauf
-# entfernt, was er nicht selbst angelegt hat.
+# Der Aggregator bindet sie nach den Fragmenten ein (`-include repo.mk`), und ein Lauf
+# legt sie nur an, wo sie fehlt.
 #
 # SCHREIBEN NUR BEI ABWEICHUNG: gerendert wird in eine Temp-Datei, danach verglichen.
 # Ueber identischem Inhalt meldet der Lauf "unveraendert" und laesst das Ziel stehen.
@@ -126,7 +125,7 @@ if [ -z "$stufen" ]; then
 	echo "    e2e_abdeckung() { echo \"abdeckung: \$1 — \$2 (Anker: \$3)\"; }" >&2
 	echo "  Faehrt dieses Repo sein E2E woanders oder mit einem anderen Wort am Zeilenanfang, nennen es die Marker:" >&2
 	echo "    make e2e-abdeckung E2E_ABDECKUNG_QUELLE=<pfad> E2E_ABDECKUNG_PRAEFIX=<wort>" >&2
-	echo "  Dauerhaft in einem eigenen Fragment unter harness/mk/, das dieses Werkzeug nicht schreibt (etwa harness/mk/vorgaben.mk)." >&2
+	echo "  Dauerhaft in repo.mk an der Wurzel, der Datei des Repos, die ein Lauf nur anlegt, wo sie fehlt." >&2
 	exit 1
 fi
 

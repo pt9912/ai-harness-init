@@ -12,13 +12,11 @@
 # das Root-Makefile: es ist der generierte Aggregator und wird ebenso neu
 # geschrieben. Gesetzt wird am Aufruf
 #   make selbstpruefung SELBSTPRUEFUNG_GATE='make baseline-verify'
-# oder dauerhaft in einem EIGENEN Fragment unter harness/mk/ mit einem Namen,
-# den dieses Werkzeug nicht schreibt — etwa harness/mk/vorgaben.mk:
+# oder dauerhaft in repo.mk an der Wurzel, der Datei des Repos:
 #   SELBSTPRUEFUNG_GATE = make baseline-verify
-# Der Aggregator bindet es ueber `include harness/mk/*.mk` mit ein, und kein
-# Lauf entfernt, was er nicht selbst angelegt hat. Das einfache `=` gewinnt
-# unabhaengig von der Include-Reihenfolge: steht es vorher, greift das `?=`
-# unten nicht mehr; steht es nachher, ueberschreibt es dessen Belegung. Der
+# Der Aggregator bindet sie nach den Fragmenten ein (`-include repo.mk`), und
+# ein Lauf legt sie nur an, wo sie fehlt. Das einfache `=` dort ueberschreibt
+# die Belegung des `?=` unten. Der
 # Traeger unter .githooks/ ist der eine Pfad, den dieses Werkzeug an einen
 # belegten Ort nicht schreibt (skip-if-present, ADR-0054): er gehoert dem Repo.
 #

@@ -33,15 +33,13 @@
 # es ist der generierte Aggregator und wird ebenso kanonisch neu geschrieben;
 # eine Vorgabe darin ueberlebt den naechsten Bootstrap nicht.
 #
-# WO EINE DAUERHAFTE VORGABE TRAEGT: in einem EIGENEN Fragment unter
-# harness/mk/ mit einem Namen, den dieses Werkzeug nicht schreibt — der
-# Aggregator bindet es ueber `include harness/mk/*.mk` mit ein, und kein Lauf
-# entfernt, was er nicht selbst angelegt hat. Vorgeschlagen:
-# harness/mk/vorgaben.mk mit einer Zeile je Marker, in der Form
+# WO EINE DAUERHAFTE VORGABE TRAEGT: in repo.mk an der Wurzel, der Datei des
+# Repos — der Aggregator bindet sie nach den Fragmenten ein (`-include
+# repo.mk`), und ein Lauf legt sie nur an, wo sie fehlt. Dort eine Zeile je
+# Marker, in der Form
 #   SELBSTPRUEFUNG_GATE = <kommando>
-# Das einfache `=` gewinnt unabhaengig von der Include-Reihenfolge: steht es
-# vorher, greift das `?=` daneben nicht mehr; steht es nachher, ueberschreibt
-# es dessen Belegung. Wer keinen dauerhaften Ort braucht, setzt am Aufruf.
+# Das einfache `=` ueberschreibt die Belegung des `?=` im Fragment. Wer keinen
+# dauerhaften Ort braucht, setzt am Aufruf.
 # Der Traeger unter .githooks/ ist der eine Pfad, den dieses Werkzeug an einen
 # belegten Ort nicht schreibt (skip-if-present, ADR-0054): er gehoert dem Repo.
 #

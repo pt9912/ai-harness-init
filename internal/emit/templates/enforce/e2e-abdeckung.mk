@@ -11,13 +11,11 @@
 # darum die VORGABE, nicht der Setz-Ort. Dasselbe gilt fuer das Root-Makefile: es ist der
 # generierte Aggregator und wird ebenso neu geschrieben. Gesetzt wird am Aufruf
 #   make e2e-abdeckung E2E_ABDECKUNG_QUELLE=tools/harness/mein-e2e.sh
-# oder dauerhaft in einem EIGENEN Fragment unter harness/mk/ mit einem Namen, den dieses
-# Werkzeug nicht schreibt — etwa harness/mk/vorgaben.mk:
+# oder dauerhaft in repo.mk an der Wurzel, der Datei des Repos:
 #   E2E_ABDECKUNG_QUELLE = tools/harness/mein-e2e.sh
-# Der Aggregator bindet es ueber `include harness/mk/*.mk` mit ein, und kein Lauf
-# entfernt, was er nicht selbst angelegt hat. Das einfache `=` gewinnt unabhaengig von
-# der Include-Reihenfolge: steht es vorher, greift das `?=` unten nicht mehr; steht es
-# nachher, ueberschreibt es dessen Belegung.
+# Der Aggregator bindet sie nach den Fragmenten ein (`-include repo.mk`), und ein Lauf
+# legt sie nur an, wo sie fehlt. Das einfache `=` dort ueberschreibt die Belegung des
+# `?=` unten.
 #
 # ABHAENGIGKEIT. bash und coreutils. Kein git, kein Docker, kein Netz.
 .PHONY: e2e-abdeckung
