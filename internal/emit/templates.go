@@ -560,7 +560,7 @@ type WortlautNeutralisierung struct {
 	Neu     string // Ersatz
 }
 
-// WortlautNeutralisierungen ist die eine Tabelle aller Wortlaut-Neutralisierungen;
+// WortlautNeutralisierungen liefert die eine Tabelle aller Wortlaut-Neutralisierungen;
 // neutralisiereWortlaut ist die einzige Stelle, die sie anwendet. Zusagen und ihre
 // Sensoren:
 //   - jeder strings.Replace/ReplaceAll/NewReplacer- und bytes.Replace/ReplaceAll-Aufruf
@@ -572,15 +572,17 @@ type WortlautNeutralisierung struct {
 //     test/neutralisierung-marker.bats liest;
 //   - jeder Marker trifft seine Vorlage am gepinnten Kurs-Stand so oft, wie die
 //     Erwartungs-Tabelle in test/neutralisierung-marker.bats nennt.
-var WortlautNeutralisierungen = []WortlautNeutralisierung{
-	{Vorlage: roadmapTemplate, Alt: roadmapDoneLink, Neu: roadmapDoneLinkNew},
-	{Vorlage: conventionsTemplate, Alt: conventionsPathRefOld, Neu: conventionsPathRefNew},
-	{Vorlage: planningReadmeTemplate, Alt: carveoutsDoneRefOld, Neu: carveoutsDoneRefNew},
+func WortlautNeutralisierungen() []WortlautNeutralisierung {
+	return []WortlautNeutralisierung{
+		{Vorlage: roadmapTemplate, Alt: roadmapDoneLink, Neu: roadmapDoneLinkNew},
+		{Vorlage: conventionsTemplate, Alt: conventionsPathRefOld, Neu: conventionsPathRefNew},
+		{Vorlage: planningReadmeTemplate, Alt: carveoutsDoneRefOld, Neu: carveoutsDoneRefNew},
+	}
 }
 
 // neutralisiereWortlaut wendet jede Zeile der Tabelle an, die vorlage nennt.
 func neutralisiereWortlaut(vorlage, s string) string {
-	for _, n := range WortlautNeutralisierungen {
+	for _, n := range WortlautNeutralisierungen() {
 		if n.Vorlage == vorlage {
 			s = strings.ReplaceAll(s, n.Alt, n.Neu)
 		}

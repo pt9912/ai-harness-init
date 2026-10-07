@@ -14,27 +14,27 @@ import (
 	"github.com/pt9912/ai-harness-init/internal/emit"
 )
 
-// ersetzungOhneWortlaut nennt die Funktionen in templates.go, deren Ersetzung keinen
-// Wortlaut-Marker einer Vorlage traegt: stampName setzt den Projektnamen fuer den
-// <Projektname>-Platzhalter, unmaskQuotedCommentSyntax macht eine eigene Maskierung
-// rueckgaengig. Jede andere Funktion bezieht ihren Marker aus der Tabelle.
-var ersetzungOhneWortlaut = map[string]bool{
-	"stampName":                  true,
-	"unmaskQuotedCommentSyntax": true,
-}
-
 // TestWortlautNeutralisierungen_EineTabelle haelt die Vollstaendigkeit strukturell
 // (LH-FA-02): jeder strings.Replace/ReplaceAll/NewReplacer- und bytes.Replace/ReplaceAll-
-// Aufruf in templates.go bezieht seinen Marker aus emit.WortlautNeutralisierungen (das
+// Aufruf in templates.go bezieht seinen Marker aus emit.WortlautNeutralisierungen() (das
 // Such-Argument ist ein Feld `.Alt`) oder steht in einer Funktion aus
 // ersetzungOhneWortlaut. Zweitens steht jede Tabellen-Zeile auf einer Zeile, mit den
-// Schluesseln Vorlage, Alt, Neu in dieser Reihenfolge, und Vorlage und Alt sind
+// Schluesseln Vorlage, Alt, Neu in dieser Reihenfolge im einzigen return-Literal der
+// Funktion, und Vorlage und Alt sind
 // Bezeichner einer einzeiligen `const X = "…"`-Deklaration — die Form, die
 // test/neutralisierung-marker.bats liest, um jeden Marker am vendored Baum zu zaehlen.
 // Grenze: eine Ersetzung ueber regexp oder ueber eine eigene Schleife sieht der Test
 // nicht, ebenso wenig eine Wortlaut-Ersetzung ausserhalb von templates.go oder in einer
 // Funktion aus ersetzungOhneWortlaut.
 func TestWortlautNeutralisierungen_EineTabelle(t *testing.T) {
+	// ersetzungOhneWortlaut nennt die Funktionen in templates.go, deren Ersetzung
+	// keinen Wortlaut-Marker einer Vorlage traegt: stampName setzt den Projektnamen fuer
+	// den <Projektname>-Platzhalter, unmaskQuotedCommentSyntax macht eine eigene
+	// Maskierung rueckgaengig. Jede andere Funktion bezieht ihren Marker aus der Tabelle.
+	ersetzungOhneWortlaut := map[string]bool{
+		"stampName":                 true,
+		"unmaskQuotedCommentSyntax": true,
+	}
 	fset := token.NewFileSet()
 	file, err := parser.ParseFile(fset, "templates.go", nil, 0)
 	if err != nil {
@@ -44,6 +44,12 @@ func TestWortlautNeutralisierungen_EineTabelle(t *testing.T) {
 	consts := map[string]bool{} // einzeilige `const X = "…"` ausserhalb eines Blocks
 	var tabelle *ast.CompositeLit
 	for _, d := range file.Decls {
+		if fd, ok := d.(*ast.FuncDecl); ok && fd.Recv == nil && fd.Name.Name == "WortlautNeutralisierungen" &&
+			fd.Body != nil && len(fd.Body.List) == 1 {
+			if rs, ok := fd.Body.List[0].(*ast.ReturnStmt); ok && len(rs.Results) == 1 {
+				tabelle, _ = rs.Results[0].(*ast.CompositeLit)
+			}
+		}
 		gd, ok := d.(*ast.GenDecl)
 		if !ok {
 			continue
@@ -58,16 +64,13 @@ func TestWortlautNeutralisierungen_EineTabelle(t *testing.T) {
 					consts[vs.Names[0].Name] = true
 				}
 			}
-			if gd.Tok == token.VAR && vs.Names[0].Name == "WortlautNeutralisierungen" {
-				tabelle, _ = vs.Values[0].(*ast.CompositeLit)
-			}
 		}
 	}
 	if tabelle == nil || len(tabelle.Elts) == 0 {
-		t.Fatal("templates.go fuehrt keine Tabelle WortlautNeutralisierungen als Literal")
+		t.Fatal("templates.go: WortlautNeutralisierungen gibt kein einzelnes Tabellen-Literal zurueck")
 	}
-	if len(tabelle.Elts) != len(emit.WortlautNeutralisierungen) {
-		t.Errorf("Literal mit %d Zeilen, Laufzeit-Tabelle mit %d", len(tabelle.Elts), len(emit.WortlautNeutralisierungen))
+	if len(tabelle.Elts) != len(emit.WortlautNeutralisierungen()) {
+		t.Errorf("Literal mit %d Zeilen, Laufzeit-Tabelle mit %d", len(tabelle.Elts), len(emit.WortlautNeutralisierungen()))
 	}
 	for _, e := range tabelle.Elts {
 		pos := fset.Position(e.Pos())

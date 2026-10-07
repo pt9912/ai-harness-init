@@ -23,7 +23,7 @@ setup() {
   TAG="$(sed -n 's/^const DefaultTag = "\(.*\)"$/\1/p' "$REPO/internal/fetch/baseline.go")"
   TREE="$REPO/.harness/baseline/$TAG/templates"
   # Marker-Konstante:Vorlage-Konstante je Zeile der Go-Tabelle.
-  TABELLE="$(sed -n 's/^\t{Vorlage: \([A-Za-z0-9_]*\), Alt: \([A-Za-z0-9_]*\), Neu: .*},$/\2:\1/p' "$SRC")"
+  TABELLE="$(sed -n 's/^\t*{Vorlage: \([A-Za-z0-9_]*\), Alt: \([A-Za-z0-9_]*\), Neu: .*},$/\2:\1/p' "$SRC")"
   # Marker-Konstante:erwartete Treffer in ihrer Vorlage am gepinnten Stand.
   ERWARTUNG="carveoutsDoneRefOld:1
 conventionsPathRefOld:1
