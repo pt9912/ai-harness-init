@@ -21,7 +21,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 
 **Berührte Spec-Stellen:** `—` — [ADR-0083](../../adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md) schärft kein Spec-Stratum.
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912 (Implementer)
 
 **Autor:** Planner. **Datum:** 2026-10-07.
 
