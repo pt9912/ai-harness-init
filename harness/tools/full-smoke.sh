@@ -3583,6 +3583,7 @@ repo_mk_im_ziel() {
 	if [ "$rc" -ne 0 ] || ! grep -qF -- 'repo-mk: eigen laeuft' <<<"$out"; then
 		printf '%s\n' "$out" >&2
 		echo "full-smoke: FEHLER — repo.mk: make eigen laeuft im Ziel NICHT — der Aggregator liest repo.mk nicht ein (ADR-0080 Festlegung 3). rc=$rc" >&2
+		einordnen "make eigen im Ziel mit belegter repo.mk" "$out"
 		exit 1
 	fi
 	rc=0
@@ -3590,6 +3591,7 @@ repo_mk_im_ziel() {
 	if [ "$rc" -ne 0 ] || ! grep -qF -- 'repo-mk: eigen-gate laeuft' <<<"$out"; then
 		printf '%s\n' "$out" >&2
 		echo "full-smoke: FEHLER — repo.mk: das Gate aus repo.mk (GATE_CHECKS += eigen-gate) laeuft in make gates NICHT mit, oder make gates ist nicht Exit 0. rc=$rc" >&2
+		einordnen "make -j gates im Ziel mit belegter repo.mk" "$out"
 		exit 1
 	fi
 	echo "full-smoke: repo.mk: ohne die Datei ist make gates gruen und der Re-Lauf legt den Startinhalt neu an; eine belegte repo.mk bleibt byte-gleich, make eigen laeuft, ihr Gate laeuft in make gates mit."
