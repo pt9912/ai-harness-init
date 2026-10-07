@@ -22,7 +22,7 @@ bleiben). Anlass: Adopter-CR zu `v0.2.8` (Text in [ADR-0081](../../adr/0081-altb
 
 **Berührte Spec-Stellen:** `—` — [ADR-0081](../../adr/0081-altbestand-grenze-aus-der-commit-abstammung.md) schärft kein Spec-Stratum.
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912 (Implementer)
 
 **Autor:** Planner. **Datum:** 2026-10-07.
 
@@ -63,14 +63,15 @@ nennt die heutige Grenze (Existenz eines `done/*/archiv.zip`, für `altbestand` 
       eigener Kennung (flacher Klon · fehlender Add-Commit), nur wo ein Grenz-Commit gebraucht wird;
       `--vorschau` zählt *„bleibt liegen (nach der Grenze)"*. `git` läuft allein in
       `archive_welle.go`. **Rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6): Go-Test unter
-      umgekehrtem Vergleich; ein Fall in `test/mutations/` am Vergleich in `internal/archive`, den
-      `make mutate MUTATE_CASES=…` als gebunden meldet.
+      umgekehrtem Vergleich; ein Fall in `test/mutations/` (`verify: test-go`) kehrt den Vergleich
+      in `internal/archive` um, `make mutate MUTATE_CASES=…` meldet ihn gebunden.
 - [ ] **2 — E2E im Ziel** (`make full-smoke`, Stufe der Archivierung): Ziel mit committeter,
       unarchivierter `welle-1`-Ergebnisnotiz, ein wellenloser Slice davor, einer danach —
       `archive-welle altbestand` nimmt nur den frühen, ein anschließendes `archive-welle welle-1`
       lässt den späten flach liegen; derselbe Stand per `git clone --depth 1 file://…` bricht mit der
       Shallow-Sperre ab, `done/` unverändert. **Rot gesehen:** Vergleich in `internal/archive`
-      übersprungen ⇒ der späte Slice wandert; `--is-shallow-repository`-Prüfung entfernt ⇒ stiller
+      übersprungen ⇒ der späte Slice wandert (im Aufrufer übersprungen sperrt Festlegung 4(b) —
+      eine andere Rot-Ursache, kein Beleg); `--is-shallow-repository`-Prüfung entfernt ⇒ stiller
       Lauf. Die Stufen-Deklaration nennt, was sie misst (`make e2e-abdeckung`).
 - [ ] **3 — Texte:** `internal/emit/templates/commands/close-welle.md`,
       `internal/emit/templates/enforce/archivierung.mk` (Hilfetext) und
@@ -141,7 +142,9 @@ nennt die heutige Grenze (Existenz eines `done/*/archiv.zip`, für `altbestand` 
 
 **Vorgelagert — offene Beobachtungen sichten:** Register am gemergten Stand gesichtet
 (`grep -l 'archive-welle\|Archivierung\|shallow\|Abstammung\|Add-Commit' docs/plan/planning/observations/BEO-ALL/*/observation.md`):
-kein Eintrag zu Archiv-Grenze, Abstammung oder flachem Klon — keine Treffer.
+ein Treffer, `BEO-ALL/benannte-luecke-ohne-ausgang` — er misst den Umfang des
+`archive-welle`-Blocks in `harness/README.md`, nicht die Grenze; kein Eintrag zu Archiv-Grenze,
+Abstammung oder flachem Klon.
 
 **Alle berührten Sub-Areas GF** ([`harness/conventions.md`](../../../../harness/conventions.md)
 §Modus-Deklaration pro Sub-Area).
