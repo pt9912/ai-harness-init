@@ -21,7 +21,7 @@ Marker am Pin nicht und entfällt.
 **Lage** (Arbeitsbaum dieses Plans, keine Erwartungswerte):
 
 ```sh
-T=.harness/baseline/v6.16.0/templates
+T=.harness/baseline/v6.17.0/templates
 grep -c 'welle-NN-results.md`](../done/' $T/docs/plan/planning/roadmap.template.md                 # 0
 grep -c '^`harness/conventions/MR-NNN-titel.template.md` der vendored' $T/harness/conventions.template.md   # 1
 grep -c 'sondern in ihr eigenes `docs/plan/carveouts/done/` (Baseline' $T/docs/plan/planning/README.template.md   # 1
