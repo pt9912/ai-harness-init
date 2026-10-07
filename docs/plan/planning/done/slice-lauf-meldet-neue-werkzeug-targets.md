@@ -73,7 +73,7 @@ heben ein neues Gate hervor. Gemessen am Stand des Schnitts schreiben beide Läu
 - [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -157,6 +157,16 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
 - **Risiken aus §6:** jede Zeile trägt ihren Ausgang (1 *entfallen*, 2 *weiter offen*).
 - **Archivierung:** keine bei dieser Closure — das Repo fährt Wellen, die nächste Welle-Closure
   sammelt den Slice ein ([`MR-078`](../../../../harness/conventions.md#mr-078)).
+- **Paarungen geprüft am 2026-10-07** (nach dem Move `5148e754`): (a) *Anker*: §7 führt kein Feld
+  `liegt in <Zielort>` (`grep -c` über §7 → 0). (b) *Folge-Slice*: keiner genannt; §1 trägt keine
+  Slice-Kennung (`grep -oE 'slice-[a-z0-9-]+'` über §1 → leer). (c) *Register*: die drei zitierten
+  Pfade existieren, `evidence/` trägt 4 · 3 · 1 Dateien (`ls <pfad>/evidence/*.md | wc -l`).
+  Zweite Hälfte über das ganze Register: 3 Verzeichnisse ohne Beleg, namentlich
+  `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+  `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab` und
+  `BEO-ALL/planungs-bestand-waechst-schneller-als-er-abgebaut-wird`; nicht als getragen behauptet
+  ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  Festlegung 2).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
