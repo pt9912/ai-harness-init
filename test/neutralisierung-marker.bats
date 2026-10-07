@@ -1,28 +1,33 @@
 #!/usr/bin/env bats
 # neutralisierung-marker.bats — LH-FA-02: jede Wortlaut-Neutralisierung in
-# internal/emit/templates.go trifft ihren Marker in der Vorlage des gepinnten Kurs-Stands.
+# internal/emit/templates.go trifft ihren Marker in der Vorlage des gepinnten Kurs-Stands
+# so oft, wie ERWARTUNG unten nennt.
 #
-# Gelesen wird die reale Quelle, nicht die Fixture: der Marker-Wert steht als Go-Konstante
-# in templates.go, der Pin als DefaultTag in internal/fetch/baseline.go, die Vorlage im
-# vendored Baum .harness/baseline/<DefaultTag>/templates/. Der Fall steht in bats und nicht
-# in go test, weil .dockerignore .harness aus dem Build-Kontext der Go-Stufe nimmt.
+# Gelesen wird die reale Quelle, nicht die Fixture: die Neutralisierungen stehen in der
+# Tabelle WortlautNeutralisierungen in templates.go (je Zeile Vorlage- und Marker-Konstante),
+# der Pin als DefaultTag in internal/fetch/baseline.go, die Vorlage im vendored Baum
+# .harness/baseline/<DefaultTag>/templates/. Der Fall steht in bats und nicht in go test,
+# weil .dockerignore .harness aus dem Build-Kontext der Go-Stufe nimmt.
 #
-# Zusage: je Marker genau ein Treffer in seiner Vorlage. Ein Marker, den der Kurs-Stand
-# nicht (mehr) traegt, macht strings.ReplaceAll zum stillen No-op — dieser Fall wird rot.
-# Zweite Zusage: die Tabelle unten nennt jede String-Konstante (`const <name> = "…"`), die
-# templates.go als Such-Argument an strings.ReplaceAll(s, <konstante>, …) gibt; eine neue
-# Wortlaut-Neutralisierung ohne Tabellen-Zeile wird ebenfalls rot.
-# Grenze: eine Neutralisierung, deren Marker kein benannter Bezeichner ist (ein
-# String-Literal direkt im Aufruf), sieht die Vollstaendigkeits-Pruefung nicht.
+# Dass jede Ersetzung in templates.go ueber diese Tabelle laeuft und dass jede Zeile die
+# Form hat, die setup() liest (einzeilig, Vorlage und Alt als Bezeichner einzeiliger
+# `const X = "…"`), haelt TestWortlautNeutralisierungen_EineTabelle (go/ast).
+#
+# Zusage: je Tabellen-Zeile die Trefferzahl aus ERWARTUNG — 1 heisst, die Ersetzung wirkt
+# am Pin; 0 heisst, sie gilt aelteren Kurs-Staenden (COURSE_TAG) und ist am Pin ein No-op.
+# Zweite Zusage: ERWARTUNG und Tabelle nennen dieselben Marker, in beide Richtungen.
 
 setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
   SRC="$REPO/internal/emit/templates.go"
   TAG="$(sed -n 's/^const DefaultTag = "\(.*\)"$/\1/p' "$REPO/internal/fetch/baseline.go")"
   TREE="$REPO/.harness/baseline/$TAG/templates"
-  # Marker-Konstante -> Konstante, die den Quell-Relpfad ihrer Vorlage traegt.
-  MARKER_TABELLE="conventionsPathRefOld:conventionsTemplate
-carveoutsDoneRefOld:planningReadmeTemplate"
+  # Marker-Konstante:Vorlage-Konstante je Zeile der Go-Tabelle.
+  TABELLE="$(sed -n 's/^\t{Vorlage: \([A-Za-z0-9_]*\), Alt: \([A-Za-z0-9_]*\), Neu: .*},$/\2:\1/p' "$SRC")"
+  # Marker-Konstante:erwartete Treffer in ihrer Vorlage am gepinnten Stand.
+  ERWARTUNG="carveoutsDoneRefOld:1
+conventionsPathRefOld:1
+roadmapDoneLink:0"
 }
 
 # go_const <name> — Wert einer einzeiligen Go-String-Konstante aus templates.go, mit `\n`
@@ -47,11 +52,13 @@ treffer() {
 @test "der gepinnte Kurs-Stand liegt vendored vor (Vorbedingung, LH-FA-02)" {
   [ -n "$TAG" ]
   [ -d "$TREE" ]
+  [ -n "$TABELLE" ]
 }
 
-@test "jeder Wortlaut-Marker trifft seine Vorlage am gepinnten Stand genau einmal (LH-FA-02)" {
+@test "jeder Wortlaut-Marker trifft seine Vorlage am gepinnten Stand so oft wie erwartet (LH-FA-02)" {
   fehler=""
   while IFS=: read -r marker vorlage; do
+    soll="$(sed -n "s/^$marker:\([0-9]*\)$/\1/p" <<<"$ERWARTUNG")"
     nadel="$(go_const "$marker")"
     rel="$(go_const "$vorlage")"
     if [ -z "$nadel" ] || [ -z "$rel" ]; then
@@ -63,25 +70,19 @@ treffer() {
       continue
     fi
     n="$(treffer "$nadel" "$TREE/$rel")"
-    [ "$n" = 1 ] || fehler+="$marker: $n Treffer in $rel ($TAG) — erwartet genau 1"$'\n'
-  done <<<"$MARKER_TABELLE"
+    [ "$n" = "$soll" ] || fehler+="$marker: $n Treffer in $rel ($TAG) — erwartet ${soll:-?}"$'\n'
+  done <<<"$TABELLE"
   if [ -n "$fehler" ]; then
     printf '%s' "$fehler"
     false
   fi
 }
 
-@test "die Marker-Tabelle nennt jede Konstante, die templates.go an strings.ReplaceAll gibt (LH-FA-02)" {
-  ist=""
-  for id in $(grep -oE 'strings\.ReplaceAll\(s, [A-Za-z_][A-Za-z0-9_]*,' "$SRC" \
-    | sed -E 's/.*\(s, ([A-Za-z0-9_]+),/\1/' | sort -u); do
-    grep -qE "^const $id = \"" "$SRC" && ist+="$id"$'\n'
-  done
-  ist="${ist%$'\n'}"
-  [ -n "$ist" ]
-  soll="$(cut -d: -f1 <<<"$MARKER_TABELLE" | sort -u)"
+@test "Erwartung und Tabelle WortlautNeutralisierungen nennen dieselben Marker (LH-FA-02)" {
+  ist="$(cut -d: -f1 <<<"$TABELLE" | sort -u)"
+  soll="$(cut -d: -f1 <<<"$ERWARTUNG" | sort -u)"
   if [ "$ist" != "$soll" ]; then
-    printf 'templates.go: %s\nTabelle:      %s\n' "$(tr '\n' ' ' <<<"$ist")" "$(tr '\n' ' ' <<<"$soll")"
+    printf 'Tabelle:   %s\nErwartung: %s\n' "$(tr '\n' ' ' <<<"$ist")" "$(tr '\n' ' ' <<<"$soll")"
     false
   fi
 }

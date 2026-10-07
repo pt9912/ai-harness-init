@@ -459,6 +459,10 @@ func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
 // No-op.
 func neutralisiereJeDatei(rel, body string, targets []string) (string, error) {
 	switch rel {
+	case roadmapTemplate:
+		// Aeltere Kurs-Staende (COURSE_TAG) tragen eine Beispielzeile mit totem
+		// ../done/-Link; am gepinnten Stand ist die Ersetzung ein No-op.
+		return NeutralizeRoadmap(body), nil
 	case conventionsTemplate:
 		// Der Vorlagen-Pfad ist baseline-relativ (ADR-0037 Festlegung 1) — emit-seitig
 		// entschaerfen, der vendored Fremdtext bleibt unveraendert (MR-007).
@@ -548,6 +552,57 @@ func singletonTarget(rel string) string {
 	return strings.TrimSuffix(rel, ".template.md") + ".md"
 }
 
+// WortlautNeutralisierung ersetzt in genau einer Vorlage einen festen Wortlaut (Alt,
+// der Marker) durch Neu. Ohne den Marker ist sie ein No-op.
+type WortlautNeutralisierung struct {
+	Vorlage string // Quell-Relpfad der Vorlage (templates/-gewurzelt)
+	Alt     string // Marker: der Wortlaut der Vorlage
+	Neu     string // Ersatz
+}
+
+// WortlautNeutralisierungen ist die eine Tabelle aller Wortlaut-Neutralisierungen;
+// neutralisiereWortlaut ist die einzige Stelle, die sie anwendet. Zusagen und ihre
+// Sensoren:
+//   - jeder strings.Replace/ReplaceAll/NewReplacer- und bytes.Replace/ReplaceAll-Aufruf
+//     in dieser Datei bezieht seinen Marker aus der Tabelle (n.Alt) oder steht in
+//     einer benannten Funktion ohne Wortlaut-Marker —
+//     TestWortlautNeutralisierungen_EineTabelle (go/ast);
+//   - jede Zeile steht auf einer Zeile, Vorlage und Alt sind Bezeichner einzeiliger
+//     `const X = "…"`-Deklarationen — derselbe Test; das ist die Form, die
+//     test/neutralisierung-marker.bats liest;
+//   - jeder Marker trifft seine Vorlage am gepinnten Kurs-Stand so oft, wie die
+//     Erwartungs-Tabelle in test/neutralisierung-marker.bats nennt.
+var WortlautNeutralisierungen = []WortlautNeutralisierung{
+	{Vorlage: roadmapTemplate, Alt: roadmapDoneLink, Neu: roadmapDoneLinkNew},
+	{Vorlage: conventionsTemplate, Alt: conventionsPathRefOld, Neu: conventionsPathRefNew},
+	{Vorlage: planningReadmeTemplate, Alt: carveoutsDoneRefOld, Neu: carveoutsDoneRefNew},
+}
+
+// neutralisiereWortlaut wendet jede Zeile der Tabelle an, die vorlage nennt.
+func neutralisiereWortlaut(vorlage, s string) string {
+	for _, n := range WortlautNeutralisierungen {
+		if n.Vorlage == vorlage {
+			s = strings.ReplaceAll(s, n.Alt, n.Neu)
+		}
+	}
+	return s
+}
+
+// roadmapDoneLink ist die "Abgeschlossene Wellen"-Beispielzeile aelterer Kurs-Staende
+// (der Kurs-Klon traegt sie an v3.5.2, v6.0.0, v6.5.0, nicht an v6.8.0): ein Link auf
+// ../done/welle-NN-results.md, das im frischen Repo nicht existiert. Der gepinnte
+// Stand traegt sie nicht; ein Bootstrap mit COURSE_TAG auf einem solchen Stand braucht
+// die Ersetzung.
+const roadmapDoneLink = "[`welle-NN-results.md`](../done/welle-NN-results.md)"
+const roadmapDoneLinkNew = "`welle-NN-results.md`"
+
+// NeutralizeRoadmap nimmt der Beispielzeile den toten Link und laesst ihren Text als
+// Inline-Code stehen. TestTemplates_RoadmapGateSafe haelt die Wirkung ueber einem
+// woertlichen Ausschnitt der alten Vorlage.
+func NeutralizeRoadmap(s string) string {
+	return neutralisiereWortlaut(roadmapTemplate, s)
+}
+
 // conventionsTemplate ist der Quell-Relpfad der Konventionsspeicher-Vorlage
 // (templates/-gewurzelt).
 const conventionsTemplate = "harness/conventions.template.md"
@@ -577,7 +632,7 @@ const conventionsPathRefNew = "kopiert aus der\ngleichnamigen Eintrags-Vorlage `
 // Kurs-Stands (fetch.DefaultTag) genau einmal trifft, haelt
 // test/neutralisierung-marker.bats am vendored Baum.
 func NeutralizeConventionsTemplateRef(s string) string {
-	return strings.ReplaceAll(s, conventionsPathRefOld, conventionsPathRefNew)
+	return neutralisiereWortlaut(conventionsTemplate, s)
 }
 
 // planningReadmeTemplate ist der Quell-Relpfad der Planning-Index-Vorlage
@@ -603,7 +658,7 @@ const carveoutsDoneRefNew = "sondern in ihr eigenes `docs/plan/carveouts/done/` 
 // Dass der Marker die Vorlage des gepinnten Kurs-Stands (fetch.DefaultTag) genau
 // einmal trifft, haelt test/neutralisierung-marker.bats am vendored Baum.
 func NeutralizePlanningReadmeCarveoutsDoneRef(s string) string {
-	return strings.ReplaceAll(s, carveoutsDoneRefOld, carveoutsDoneRefNew)
+	return neutralisiereWortlaut(planningReadmeTemplate, s)
 }
 
 // makeTargetPlaceholder tritt an die Stelle einer Ziel-Nennung, die im
