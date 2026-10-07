@@ -33,7 +33,12 @@
   CI auf dem Push. Ohne Stempel (erster Turn nach dem Update) gilt der strenge Zweig, bis der erste
   grüne `make gates` ihn schreibt. Die Rückkehr per `git switch -` oder `git reset --soft` auf den
   gestempelten HEAD gibt frei: zugesagt ist „HEAD gleich geblieben", nicht „kein Commit". Ein
-  `git switch --orphan` in einem Repo mit Commits endet mit Exit 2 — die strenge Seite. Die
+  ungeborener HEAD in einem Repo mit Commits — `git checkout --orphan` mit erhaltenem Baum, oder
+  der Hook von außen gegen einen solchen Klon gestartet — endet mit Exit 2, der strengen Seite.
+  `git switch --orphan` leert dagegen den Arbeitsbaum samt `.claude/hooks/`; der verdrahtete
+  Aufruf findet den Hook nicht und endet mit Exit 127, den Claude Code als nicht blockierenden
+  Fehler liest ([`claude-hooks-referenz.md`](../../docs/user/claude-hooks-referenz.md)
+  §Exit-Code-Ausgabe) — dort gibt der Stop **frei**. Die
   Restlücke aus `MR-003` (frischer Klon ohne State mit cleanem Tree wird freigegeben) bleibt
   unverändert. Fitness Function, Gegenbeispiele und Mutationsfälle: [`ADR-0083`](../../docs/plan/adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md) §Fitness Function.
 - **Begründung.** Die Bindung an jedes Turn-Ende blockiert Rückfrage und Zwischenstand und ist
