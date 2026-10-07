@@ -50,7 +50,7 @@ einen Wächter rot, und Stufe 5 der E2E-Sicht nennt, was sie misst.
 
 ## 2. Definition of Done
 
-- [ ] **1 — Adopter-Bedingung:** jeder `make -C "$klon" traeger-fetch`-Aufruf in Stufe 5 läuft
+- [x] **1 — Adopter-Bedingung:** jeder `make -C "$klon" traeger-fetch`-Aufruf in Stufe 5 läuft
       ohne geerbten `TRAEGER_TAG` (`env -u TRAEGER_TAG`; eine Kommandozeilen-Zuweisung über
       `MAKEFLAGS` erreicht den Klon ebenso nicht), der Tag kommt aus dem emittierten `traeger.mk`.
       **Rot gesehen** an der realen Quelle, `make mutate MUTATE_CASES=…`: ein neuer Fall
@@ -58,20 +58,20 @@ einen Wächter rot, und Stufe 5 der E2E-Sicht nennt, was sie misst.
       `TRAEGER_TAG ?=` in `TRAEGER_TAGX ?=` um — gebunden, die FEHLER-Zeile der Stufe gelesen
       („nicht gesetzt" ist ihr Grund); und die Gegenprobe ohne `env -u` bleibt grün. Fall 553 fährt
       wieder `?=` statt `=`, sein Kopfkommentar nennt die neue Lage, und er bleibt gebunden.
-- [ ] **2 — Namens-Bindung:** `pin_wert` liest genau `^<name> ?=` (kein Präfix-Treffer); ein Fall
+- [x] **2 — Namens-Bindung:** `pin_wert` liest genau `^<name> ?=` (kein Präfix-Treffer); ein Fall
       (`verify: test-bats`) mit derselben Umbenennung in `traeger.mk` färbt `pin-kopplung` rot,
       gegen `pin_wert` in der heutigen Präfix-Form bleibt er grün (Gegenprobe gelesen).
-- [ ] **3 — E2E-Sicht:** die Stufen-Deklaration von Stufe 5 nennt, dass der Pin des Laufs der des
+- [x] **3 — E2E-Sicht:** die Stufen-Deklaration von Stufe 5 nennt, dass der Pin des Laufs der des
       emittierten Fragments ist; `make e2e-abdeckung` zieht
       [`docs/user/e2e-abdeckung.md`](../../../user/e2e-abdeckung.md) nach.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen).
 
 ## 3. Plan (vor Code)
@@ -105,18 +105,37 @@ einen Wächter rot, und Stufe 5 der E2E-Sicht nennt, was sie misst.
 ## 6. Risiken und offene Punkte
 
 - **Weitere Stufen erben Dogfood-Exporte** — dieselbe Klasse an anderem Pin. — **Ausgang:** offen bis
-  zur Closure.
+  zur Closure. — **Ausgang:** eingetreten: `slice-full-smoke-faehrt-den-adopter-pfad-ueber-sha256sums`
+  (Stufe 5 erbt `TRAEGER_SHA256_*` und fährt den Pin-Kanal statt `SHA256SUMS`, Review LOW-1).
 - **Netz:** die `full-smoke`-Fälle brauchen Netz und laufen fast voll durch (Kopf von 553) — ohne
-  Netz kein Rot-Beleg für Punkt 1. — **Ausgang:** offen bis zur Closure.
+  Netz kein Rot-Beleg für Punkt 1. — **Ausgang:** entfallen — der Rot-Beleg zu Fall 554 liegt mit
+  Netz vor, samt Gegenprobe ([Verifikation](../../../reviews/2026-10-07-traeger-pin-verifikation.md)).
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+**Rolle:** Planner · **Datum:** 2026-10-07
+
+- **Was hat funktioniert:** DoD 1–3 bestätigt; Fall 554 an der realen Quelle rot mit der
+  FEHLER-Zeile „nicht gesetzt", ohne `env -u` grün; `make full-smoke` grün
+  ([Verifikation](../../../reviews/2026-10-07-traeger-pin-verifikation.md)). Review 0 HIGH/MEDIUM
+  ([Review](../../../reviews/2026-10-07-traeger-pin-review.md)).
+- **Was ging anders als geplant:** Der Laufzeit-Satz im Kopf von 553/554 („fast voll") trifft nicht
+  zu, der Lauf bricht nach rund 18 s an der Stufe ab (Review INFO-1) — Bestand, Korrektur geht mit dem
+  Folge-Slice, der dieselben Fälle anfasst. `-u MAKEFLAGS -u MFLAGS` über den Plan hinaus, vom DoD-Text
+  gedeckt.
+- **Steering-Loop-Eintrag:** benannte Sensor-Lücke — kein E2E-Lauf fährt den Verifizierungs-Kanal des
+  Adopters über `SHA256SUMS`; `full-smoke` erbt die Digest-Pins, `smoke` fetcht nicht. Gezählt, nicht
+  verkörpert; Adresse ist der Folge-Slice.
+- **Beobachtungs-Register (`../observations/`):**
+  [`BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`](../observations/BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/observation.md)
+  Beleg `evidence/slice-full-smoke-misst-den-emittierten-traeger-pin.md` ergänzt, Stand unverändert
+  (verkörpert).
+- **Folge-Slices:** `slice-full-smoke-faehrt-den-adopter-pfad-ueber-sha256sums` — Datei in `open/`.
+- **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines. ADR:
+  [ADR-0058](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md) umgesetzt, kein
+  Re-Evaluierungs-Trigger eingetreten. Hard Rules: keine.
+- **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
