@@ -53,26 +53,26 @@ heben ein neues Gate hervor. Gemessen am Stand des Schnitts schreiben beide Läu
 
 ## 2. Definition of Done
 
-- [ ] **1 — Meldung im Lauf:** Bootstrap und `add-lang` lesen den vorhandenen Werkzeug-Teil vor dem
+- [x] **1 — Meldung im Lauf:** Bootstrap und `add-lang` lesen den vorhandenen Werkzeug-Teil vor dem
       Neuschreiben und nennen auf stdout je neu hinzugekommenem Target eine Zeile; ein Target ohne
       Marke `kein Gate` steht hervorgehoben als neues Gate; ohne neues Target keine solche Zeile, und
       beim ersten Lauf (kein voriger Teil) keine Einzelzeilen. Ein Go-Test hält das; **Rot gesehen**
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6): die Ausgabe-Zeile entfernt, und der Test fällt mit
       dem Namen des fehlenden Targets.
-- [ ] **2 — E2E:** eine `make full-smoke`-Stufe mit Deklaration fährt im Ziel einen zweiten Lauf, der
+- [x] **2 — E2E:** eine `make full-smoke`-Stufe mit Deklaration fährt im Ziel einen zweiten Lauf, der
       ein neues Fragment-Target mitbringt, und prüft dessen Nennung auf stdout; die Stufe steht mit
       ihrer Grenze in der E2E-Abdeckungs-Sicht (`make e2e-abdeckung`,
       [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-- [ ] **3 — Handbuch (Ist-Zustand):** `docs/user/benutzerhandbuch.md` nennt die Meldung, die
+- [x] **3 — Handbuch (Ist-Zustand):** `docs/user/benutzerhandbuch.md` nennt die Meldung, die
       Hervorhebung eines neuen Gates und dass das Doku-Gate ein solches Target nicht meldet.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -84,6 +84,8 @@ heben ein neues Gate hervor. Gemessen am Stand des Schnitts schreiben beide Läu
 | `internal/emit/werkzeugindex_test.go` bzw. `cmd/ai-harness-init/*_test.go` | update | Liefer-Punkt 1: neues Target, neues Gate, kein neues, Erstlauf ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) |
 | `harness/tools/full-smoke.sh` (neue Stufe mit Deklaration), `docs/user/e2e-abdeckung.md` (erzeugt) | update | Liefer-Punkt 2 |
 | `docs/user/benutzerhandbuch.md` | update | Liefer-Punkt 3 |
+| `internal/emit/emit.go` (`DocGate` nimmt die `PrintMK`-Quelle als Parameter) | update | Liefer-Punkt 1: Bootstrap-Meldung im Go-Test ohne Docker-Lauf; mit der Closure nachgeführt |
+| `test/mutations/532–535` | create | Liefer-Punkt 1: Zähne für Gate-Zeile, Erstlauf, Bootstrap-Meldung, kein-Gate-Zeile; mit der Closure nachgeführt |
 
 - Die Gate-Eigenschaft liest der Lauf aus der Marke `kein Gate`, die der Werkzeug-Teil je Zeile
   trägt — keine zweite Erkennung neben dem Index.
@@ -111,18 +113,50 @@ heben ein neues Gate hervor. Gemessen am Stand des Schnitts schreiben beide Läu
 
 - **Die Marke `kein Gate` sagt, was der Index deklariert, nicht, was `make gates` fährt** — ein
   Fragment-Target ohne Marke, das `gates` nicht aufruft, wird als Gate hervorgehoben. — **Ausgang:**
-  bei Closure aus der geschlossenen Menge.
-- **Ein umbenanntes Target erscheint als neu** (und das alte verschwindet still). — **Ausgang:** bei
-  Closure aus der geschlossenen Menge.
+  *entfallen* — Gate ist im Werkzeug-Teil, was ein Fragment an `GATE_CHECKS` hängt
+  (`sammleWerkzeugTargets` in `internal/emit/werkzeugindex.go`), und der emittierte Aggregator fährt
+  genau das (`record-gates: $(GATE_CHECKS)`, `internal/emit/makefile.go`).
+- **Ein umbenanntes Target erscheint als neu** (und das alte verschwindet still). — **Ausgang:**
+  *weiter offen* →
+  [`BEO-ALL/lauf-meldung-vergleicht-nur-namen-gegen-einen-vorhandenen-teil`](../observations/BEO-ALL/lauf-meldung-vergleicht-nur-namen-gegen-einen-vorhandenen-teil/observation.md).
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+**Rolle:** Planner · **Datum:** 2026-10-07
+
+- **Was hat funktioniert:** DoD 2 und 3 bestätigt, `make full-smoke` EXIT 0 mit der neuen Stufe,
+  `make e2e-abdeckung` führt sie ([Verifikation](../../../reviews/2026-10-07-werkzeug-meldung-verifikation.md));
+  [Review](../../../reviews/2026-10-07-werkzeug-meldung-review.md) 0 HIGH / 0 MEDIUM, F-1 (LOW,
+  Bootstrap-Meldung ohne Test) behoben in `34d425cb`. DoD 1 nach dem bedingten Verdikt der
+  Verifikation geschlossen in `ece52b28`: `TestRun_AddLangMeldetNeueTargets` hält die Zeile
+  `(kein Gate)`, Mutationsfall 535 färbt ihn rot; Gate-Zeile, Erstlauf und Bootstrap tragen die
+  Fälle 532–534 (`make mutate` 3 ok, Verifikation).
+- **Was ging anders als geplant:** DoD 1 sagte „ein Go-Test hält das" für beide Zeilen, gefahren war
+  nur die Gate-Zeile; die kein-Gate-Zeile hielt allein `make full-smoke`. `internal/emit/emit.go`
+  und `test/mutations/532–535` standen nicht in §3; mit der Closure nachgeführt. Über den
+  DoD-Wortlaut hinaus meldet der Lauf den Wechsel `kein Gate` → Gate als NEUES GATE (Review F-2,
+  durch §1 gedeckt).
+- **Steering-Loop-Eintrag:** *Benannte Lücke*: die Meldung vergleicht nur Namen gegen einen
+  vorhandenen Teil — eine Umbenennung erscheint als neu, ein Erstlauf in einem Alt-Ziel hebt kein
+  Gate hervor (Review F-3); beide Ränder nennt das Handbuch, kein Lauf hebt sie hervor. Gezählt,
+  nicht verkörpert.
+- **Beobachtungs-Register (`../observations/`):** je `evidence/slice-lauf-meldet-neue-werkzeug-targets.md` in
+  [`BEO-ALL/plan-abweichung-landet-im-commit-bericht-statt-im-plan`](../observations/BEO-ALL/plan-abweichung-landet-im-commit-bericht-statt-im-plan/observation.md)
+  (erreicht **4×**; den Ausgang weist der Lese-Schritt der nächsten Welle-Closure zu, und nach
+  `modul-06-roadmap.md` Schritt 3 verlangt die vierte Schwelle einen Sensor oder die Begründung,
+  warum keiner möglich ist),
+  [`BEO-ALL/beleg-faehrt-den-behaupteten-pfad-nicht`](../observations/BEO-ALL/beleg-faehrt-den-behaupteten-pfad-nicht/observation.md)
+  (DoD 1, kein-Gate-Zeile; erreicht **3×**, Ausgang beim selben Lese-Schritt) und neu
+  [`BEO-ALL/lauf-meldung-vergleicht-nur-namen-gegen-einen-vorhandenen-teil`](../observations/BEO-ALL/lauf-meldung-vergleicht-nur-namen-gegen-einen-vorhandenen-teil/observation.md)
+  (Risiko 2, F-3).
+- **Folge-Slices:** keiner.
+- **Trigger-Audit:** Carveouts, Bootstrap-aware Gates, Hard Rules: keine berührt.
+  [`ADR-0080`](../../adr/0080-anwender-targets-leben-in-repo-mk-ausserhalb-von-harness-mk.md)
+  `Accepted`; die Meldung widerspricht keiner Festlegung, kein Trigger fällig.
+- **Risiken aus §6:** jede Zeile trägt ihren Ausgang (1 *entfallen*, 2 *weiter offen*).
+- **Archivierung:** keine bei dieser Closure — das Repo fährt Wellen, die nächste Welle-Closure
+  sammelt den Slice ein ([`MR-078`](../../../../harness/conventions.md#mr-078)).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
