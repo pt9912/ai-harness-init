@@ -128,7 +128,7 @@ bestehende Ziele (§Konsequenzen).
 
 Drei slice-eigene Punkte, einer je Achse (Baseline · d-check-Pin · Disjunktheit im Ziel).
 
-- [ ] **1 — Jeder Träger des Tags steht auf `v6.17.0`, und keine lebende Adresse bleibt auf
+- [x] **1 — Jeder Träger des Tags steht auf `v6.17.0`, und keine lebende Adresse bleibt auf
       `v6.16.0`.**
       1. Baum über [`make vendor-baseline`](../../../../harness/sensors/vendor-baseline.md) aus dem
          verifizierten Release-Asset (einmal Netz, [`MR-007`](../../../../harness/conventions.md#mr-007)),
@@ -144,12 +144,12 @@ Drei slice-eigene Punkte, einer je Achse (Baseline · d-check-Pin · Disjunkthei
 
       **Rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6): ein echter Pin-Wert bleibt einmal
       auf `v6.16.0`, ein Pin-Wächter wird mit einer Meldung über genau diese Stelle rot.
-- [ ] **2 — d-check `v0.83.0` im Dogfood (`d-check.mk`, Image und Digest) und als emittierter
+- [x] **2 — (abgehakt mit präzisiertem Closure-Trigger 2, §7 Planner-Entscheidung) d-check `v0.83.0` im Dogfood (`d-check.mk`, Image und Digest) und als emittierter
       Default (`internal/emit/emit.go`).** Gegenmessung nach
       [`MR-063`](../../../../harness/conventions.md#mr-063): jedes aktive Modul mit Nicht-Null-Basis
       vor und nach dem Pin, Befund-Zahlen im Umsetzungs-Commit samt Kommando; das ist das
       Mess-Material für die Architect-Übergabe 1.
-- [ ] **3 — Das emittierte Ziel prüft die Disjunktheit, und der Werkzeug-Teil nennt die
+- [x] **3 — Das emittierte Ziel prüft die Disjunktheit, und der Werkzeug-Teil nennt die
       Bedingung** ([`ADR-0082`](../../adr/0082-ziel-fassung-regiert-den-sprung-v6170.md)
       Festlegung 2, §Fitness Function).
       1. `internal/emit/templates/d-check.yml` trägt `authority-disjoint: true`; die Grenz-Zeile
@@ -163,16 +163,16 @@ Drei slice-eigene Punkte, einer je Achse (Baseline · d-check-Pin · Disjunkthei
       3. Go-Test hält den Bedingungssatz im geschriebenen Werkzeug-Teil; ein Fall in
          `test/mutations/` streicht den Satz bzw. setzt die alte Pin-Zeile ein und färbt ihn rot
          (`MUTATE_CASES`, Meldung gelesen). Handbuch (`docs/user/`) im Ist-Zustand nachgezogen.
-- [ ] `make gates` grün über dem Liefer-Stand; `make full-smoke` endet EXIT 0.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün über dem Liefer-Stand; `make full-smoke` endet EXIT 0 ([Verifikation](../../../reviews/2026-10-07-sprung-v6170-verifikation.md)).
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: die Architect-Übergaben 1–3 aus §1 liegen als eigene Commits vor.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap, die Datei existiert nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, einschließlich der F-1-Übergabe
+- [x] Doku-Update: die Architect-Übergaben 1–3 aus §1 liegen als eigene Commits vor.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap, die Datei existiert nicht.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, einschließlich der F-1-Übergabe
       aus §1, oder „keine Beobachtung" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen prüft die nächste Welle-Closure — das Repo fährt Wellen.
 
 ## 3. Plan (vor Code)
@@ -223,22 +223,65 @@ und eigenem Commit ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
 ## 6. Risiken und offene Punkte
 
 - **Tag-tragende Adresse überlebt den Tausch nicht** — Register bei 3 Belegen, Ausgang beim
-  Lese-Schritt; Liefer-Punkt 1.4 fängt es. — **Ausgang:** <…>
+  Lese-Schritt; Liefer-Punkt 1.4 fängt es. — **Ausgang:** entfallen — Liefer-Punkt 1.4 hat den
+  Nachzug getragen: Link-Kommando aus §1 → **0**, `make docs-check` ohne Befund (Verifikation 1.4);
+  kein Auftreten in diesem Vorgang, die Registerzeile bleibt bei 3 `offen`.
 - **Eingefrorener Link in den vendored Baum** — eine ADR-Datei trägt einen; ohne vorab
-  entschiedene Deckung bricht `docs-check` mit dem Tausch (§4 (d)). — **Ausgang:** <…>
+  entschiedene Deckung bricht `docs-check` mit dem Tausch (§4 (d)). — **Ausgang:** entfallen — die
+  Deckung entschied der Architect im Nachzug `e8469f9c` ohne neues `ignore-refs`-Paar;
+  `git grep -lE '\]\([^)]*\.harness/baseline/v6\.16\.0' -- docs/plan/adr | wc -l` → **0**.
 - **Grenz-Zeile verspricht mehr als der Pin prüft** — die zwei Stufen messen je eine Seite, nicht
   die Menge der Formen ([`ADR-0082`](../../adr/0082-ziel-fassung-regiert-den-sprung-v6170.md)
-  §Fitness Function, Lücke). — **Ausgang:** <…>
-- **Release-Tag zwischen Pin und Schalter** (§1, Release `v0.4.0`). — **Ausgang:** <…>
+  §Fitness Function, Lücke). — **Ausgang:** entfallen — die Grenz-Zeile nennt die drei
+  Bedingungen, keine Menge der Formen; beide Seiten messen die zwei `full-smoke`-Stufen je mit
+  Gegenprobe (Verifikation §ADR-0082 §Fitness Function), die Menge ist in
+  [`ADR-0082`](../../adr/0082-ziel-fassung-regiert-den-sprung-v6170.md) als Lücke benannt.
+- **Release-Tag zwischen Pin und Schalter** (§1, Release `v0.4.0`). — **Ausgang:** entfallen — Pin
+  (`94a258ce`) und Schalter (`8b08c3ab`) liegen in diesem Slice, `git tag --contains f9f082c5` →
+  leer; der nächste Tag `v0.4.0` trägt beide.
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <…>
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+**Rolle:** Planner · **Datum:** 2026-10-07
+
+- **Was hat funktioniert:** Baum, fünf Pins, Mess-Tag, Symlinks und Adressen stehen auf `v6.17.0`
+  (`make baseline-verify` → `v6.17.0 OK`, `make regelwerk-check` → `0 Befund(e)`); d-check `v0.83.0`
+  an beiden Stellen; das Ziel prüft die Disjunktheit, `make full-smoke` EXIT 0 mit beiden Stufen
+  ([Verifikation](../../../reviews/2026-10-07-sprung-v6170-verifikation.md)). Review: 0 HIGH/MEDIUM/LOW
+  ([Review](../../../reviews/2026-10-07-sprung-v6170-review.md)). Architect-Übergaben 1–4 liegen vor
+  (`25a85c8b`, `43f37383`, `dfa42f8a`, `6fb392e7`).
+- **Was ging anders als geplant:** Das Freshness-Verdikt (`dfa42f8a`) fiel nach dem Entfernen von
+  `v6.16.0/` (`f9f082c5`); der Form-Vergleich lief am maschinen-lokalen Kurs-Klon (Review I-1). Die
+  Reihenfolge setzte dieser Plan (§1 Übergabe 3 *nach dem Vollzug*), nicht der Implementer.
+- **Planner-Entscheidung — Closure-Trigger 2 präzisiert (Verifikation V-1):** Gemeint sind die
+  Pin-Träger und die Grenz-Zeile. `grep -rn 'v0\.82\.0' d-check.mk internal/emit/emit.go` → kein
+  Treffer; in `internal/emit/werkzeugindex.go` trifft allein der KOPPLUNG-Kommentar Zeile 24 *am Pin
+  d-check v0.82.0*, eine datierte Messaussage
+  ([`MR-033`](../../../../harness/conventions.md#mr-033)), die wahr bleibt — `v0.82.0..v0.83.0`
+  trägt allein `authority-disjoint` (Review). Der Kommentar bleibt; ihn auf `v0.83.0` zu heben
+  verlangte eine neue Messung. Der Trigger-Wortlaut bleibt stehen.
+- **Übergabe an den Architect (Review I-2, nicht blockierend):**
+  [`MR-083`](../../../../harness/conventions.md#mr-083) führt kein Feld `Löst auf`; der Bestand ist
+  bei Teil-Ablösungen uneinheitlich.
+- **Steering-Loop-Eintrag:** *Geschärfte Regel*. Ein Abnahme-Kommando über einen alten Pin-Wert
+  trennt Pin von datierter Messung; und ein Sprung-Plan lässt den alten vendored Baum liegen, bis das
+  Freshness-Verdikt gefallen ist. Kein Feld `liegt in` — verkörpert ist mit diesem Slice nichts; beide
+  Klassen zählen im Register (unten).
+- **Beobachtungs-Register (`../observations/`):**
+  [`BEO-ALL/abnahme-kommando-trifft-datierte-messaussage`](../observations/BEO-ALL/abnahme-kommando-trifft-datierte-messaussage/observation.md)
+  neu (1×, V-1);
+  [`BEO-ALL/freshness-verdikt-faellt-nach-dem-entfernen-des-alten-baums`](../observations/BEO-ALL/freshness-verdikt-faellt-nach-dem-entfernen-des-alten-baums/observation.md)
+  neu (1×, I-1);
+  [`BEO-ALL/entfernungs-commit-traegt-eine-addition`](../observations/BEO-ALL/entfernungs-commit-traegt-eine-addition/observation.md)
+  neu (1×, Übergabe aus §1: Review `2026-10-07-mr-081-review` F-1; das Register führte keine passende
+  Klasse — gesucht nach *additionsfrei*, *Entfernungs-Commit*, *Zwei-Commit*).
+  `tag-tragende-adresse-ueberlebt-den-baseline-tausch-nicht` ohne neuen Beleg.
+- **Folge-Slices:** keiner.
+- **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines berührt. ADR:
+  [`ADR-0082`](../../adr/0082-ziel-fassung-regiert-den-sprung-v6170.md) `Accepted`; kein
+  Re-Evaluierungs-Trigger ausgelöst — Trigger 4 nennt der Umsetzungs-Commit `94a258ce` als nicht gefeuert. Hard Rules: keine mit Auflösungs-Trigger aus diesem Vorgang.
+- **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
