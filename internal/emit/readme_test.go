@@ -1,6 +1,7 @@
 package emit_test
 
 import (
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -69,7 +70,7 @@ func TestRootReadme_StampStrip(t *testing.T) {
 // existierende Datei zeigen — sonst braeche docs-check im frischen Repo.
 func TestRootReadme_LinksGateSicher(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
+	if err := emit.Templates(courseSet(), dir, "X", testVorlagen, io.Discard); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	if err := emit.RootReadme(projectReadmeSet(), dir, "X"); err != nil {

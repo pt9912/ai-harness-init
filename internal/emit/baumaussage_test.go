@@ -1,6 +1,7 @@
 package emit_test
 
 import (
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -187,7 +188,7 @@ func TestTraegerInventur_ModulListeOhneWiederholung(t *testing.T) {
 func TestBaumAussage_ImEmittiertenSatz(t *testing.T) {
 	t.Parallel()
 	dir := t.TempDir()
-	if err := emit.Templates(courseSet(), dir, "Probe"); err != nil {
+	if err := emit.Templates(courseSet(), dir, "Probe", testVorlagen, io.Discard); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	raw, err := os.ReadFile(filepath.Join(dir, "harness", "conventions.md"))
@@ -217,6 +218,34 @@ func TestBaumAussage_ImEmittiertenSatz(t *testing.T) {
 	}
 	if strings.Contains(s, "<make-target>") {
 		t.Error("der emittierte Block traegt einen neutralisierten Platzhalter — er nennt ein Ziel, das die Init-Phase nicht schreibt")
+	}
+}
+
+// TestBaumAussage_NenntDieGemeldetenPfade haelt ADR-0084 Festlegung 3: der Absatz "Gesagt
+// ist, was ein frisches Repo bekommt" nennt neben dem Commit-Traeger die zwei Skills als
+// Pfade, die der Lauf meldet. Gelesen wird der Absatz bis zur naechsten Leerzeile.
+func TestBaumAussage_NenntDieGemeldetenPfade(t *testing.T) {
+	t.Parallel()
+	dir := t.TempDir()
+	if err := emit.Templates(courseSet(), dir, "Probe", testVorlagen, io.Discard); err != nil {
+		t.Fatalf("Templates: %v", err)
+	}
+	s := mustReadString(t, filepath.Join(dir, "harness", "conventions.md"))
+	start := strings.Index(s, "**Gesagt ist, was ein frisches Repo bekommt.**")
+	if start < 0 {
+		t.Fatal("der Absatz \"Gesagt ist, was ein frisches Repo bekommt\" fehlt in der emittierten harness/conventions.md")
+	}
+	absatz := s[start:]
+	if ende := strings.Index(absatz, "\n\n"); ende >= 0 {
+		absatz = absatz[:ende]
+	}
+	for _, pfad := range []string{"`.githooks/commit-msg`", "`.harness/skills/reviewer.md`", "`.harness/skills/closure-note-reviewer.md`"} {
+		if !strings.Contains(absatz, pfad) {
+			t.Errorf("der Absatz nennt den gemeldeten Pfad %s nicht: %q", pfad, absatz)
+		}
+	}
+	if strings.Contains(absatz, "Einen einzigen solchen Pfad") {
+		t.Errorf("der Absatz behauptet einen einzigen gemeldeten Pfad: %q", absatz)
 	}
 }
 

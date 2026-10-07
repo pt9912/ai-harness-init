@@ -574,8 +574,9 @@ func bootstrap(targetDir, lang, name, arch string, src sources, stdout, stderr i
 // bootstrap druckt den Fehler einmal. DocGate zuerst (Docker-Lauf = reales Fehlerrisiko).
 //
 // notice ist der Kanal fuer einen Schritt, der AUSFAELLT, ohne den Bootstrap zu
-// beenden — heute nur die Erfassungsschicht (ADR-0022 Festlegung 5a): scheitert die
-// Ablage des Traegers, nennt Enforce dort den Grund und gibt keinen Fehler zurueck.
+// beenden — die Erfassungsschicht (ADR-0022 Festlegung 5a): scheitert die Ablage des
+// Traegers, nennt Enforce dort den Grund und gibt keinen Fehler zurueck. Templates nennt
+// dort jeden stehengelassenen Skill, der von der Fassung des Laufs abweicht (ADR-0084).
 func emitAll(targetDir, skelDir, tag, name, lang, version, arch string, hasLang bool, opts emit.Options, archMK, docMK emit.PrintMK, notice io.Writer) error {
 	if err := emit.DocGate(context.Background(), targetDir, opts, docMK); err != nil {
 		return err
@@ -583,7 +584,7 @@ func emitAll(targetDir, skelDir, tag, name, lang, version, arch string, hasLang 
 	if err := emit.BaselineVerify(targetDir); err != nil {
 		return err
 	}
-	if err := emit.Templates(os.DirFS(templatesDir(targetDir, tag)), targetDir, name); err != nil {
+	if err := emit.Templates(os.DirFS(templatesDir(targetDir, tag)), targetDir, name, ".harness/baseline/"+tag+"/templates", notice); err != nil {
 		return err
 	}
 	// Root-README (slice-005): eigenes Ziel README.md, aus dem Templates-Emit ausgeschlossen.

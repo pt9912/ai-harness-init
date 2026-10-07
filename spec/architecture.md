@@ -75,7 +75,7 @@ ist kein Sprungziel, der Link von außen endet weiter am Abschnitt.
 | `ARC-003` | Idempotente Ablage | Jede emittierte Datei nach ihrer Idempotenz-Klasse ablegen — konvergent oder skip-if-present |
 | `ARC-004` | Gate-Fragment-Emitter | Root-Makefile als dünner Aggregator + Gate-Fragmente je Belang |
 | `ARC-005` | Durchsetzungs-Emitter | Hooks, Gate-Nachweis, Working-Tree-Hash, Command-Guard mit gebackenem Boden |
-| `ARC-006` | Commands- und Skills-Emitter | Agenten-Workflow-Commands + Reviewer-Skill ins Ziel schreiben |
+| `ARC-006` | Commands- und Skills-Emitter | Agenten-Workflow-Commands + Reviewer-Skills ins Ziel schreiben, beide nur an freiem Pfad |
 | `ARC-007` | Doc-Chain + Sprach-ADR (Phase 2) | **Adopter-Schritt, kein Tool** — er trägt deshalb keine Zeile in §2 |
 | `ARC-008` | CLI / add-lang-Orchestrierung | Arg-Parsing `add-lang <sprache> <pfad>` mit optionalem `--arch`, wiederholbar |
 | `ARC-009` | Generator | Skelett deterministisch je `add-lang` erzeugen; `lang-renderer × arch-layout` komponieren |
@@ -93,7 +93,7 @@ nennt die `ARC-*` aus §1, die sie umfasst.
 | `ARC-003` | Placer | Jede emittierte Datei nach ihrer Idempotenz-Klasse ablegen: **konvergent** schreibt kanonisch (heilt Drift/Baseline-Upgrade), **skip-if-present** lässt Adopter-Inhalt unberührt | Adopter-Inhalt clobbern; ein Verzeichnis prunen; im Zweifel konvergent klassifizieren |
 | `ARC-004` | Gate-Emitter | Root-Makefile als **dünnen Aggregator** (benannter Glob-Include) + Gate-Fragmente je Belang; die Checks akkumulieren in eine Variable, der Nachweis läuft via **Ordnungskante** strikt zuletzt | Gate ohne existierendes Target aktivieren; ein Fragment in-place editieren; `make -j` serialisieren |
 | `ARC-005` | Enforce-Emitter | Durchsetzung (Hooks, Gate-Nachweis, Working-Tree-Hash, Command-Guard mit **gebackenem universellem Boden** + Union der blocked-Fragmente) schreiben | den Guard fail-open lassen (Boden greift immer); node/jq/OCI als Guard-Dep verlangen |
-| `ARC-006` | Commands-/Skills-Emitter | Agenten-Workflow-Commands (mit ANPASSEN-Marker) + Reviewer-Skill ins Ziel schreiben | Repo-Quell-Identität in die Artefakte tragen |
+| `ARC-006` | Commands-/Skills-Emitter | Agenten-Workflow-Commands (mit ANPASSEN-Marker) + Reviewer-Skills ins Ziel schreiben, **skip-if-present**; einen liegenden Skill, der von der mitgelieferten Fassung abweicht, samt der Vorlage im vendored Baum melden | Repo-Quell-Identität in die Artefakte tragen; einen liegenden Skill überschreiben |
 | `ARC-009` | Generator | Skelett **deterministisch** je `add-lang` erzeugen (Tool-als-Quelle), **gemäß ADR**; **`lang-renderer × arch-layout` komponieren** — arch-invariante Bau-Gerüstung + arch-gegatetes Code-Layout (`flat` byte-identisch zum heutigen Skelett, `hexslice` = `domain`/`application` (Use-Case-Slices)/`ports`/`adapters` + Composition Root `cmd/`, `hexagonal` = `core`/`port`/`driven`/`driving` + Composition Root `cmd/`) | nicht-reproduzierbare/floating Ausgabe; ohne ADR generieren; die Bau-Gerüstung an die Architektur koppeln (sie ist arch-invariant); zwei Layouts zu einem mit zwei Kanten-Mengen verschmelzen (ihre Verzeichnisnamen sind disjunkt) |
 | `ARC-010` | Verdrahtung | Skelett am Ziel-Root platzieren + Code-Gate-Fragment + Guard-blocked-Fragment **droppen** (kein In-Place-Edit); das **a-check-Fragment (`.a-check.yml` + `a-check.mk`) nur bei schichten-tragendem Layout** droppen | nicht-laufende Targets emittieren; a-check über einem flachen (leeren) Prüfbereich aktivieren |
 
@@ -151,10 +151,11 @@ byte-identisch). `--lang <X>` beim Init ist die One-Shot-Kurzform (Init + ein
 ## 5. Idempotenz, Fragment-Assembly und Resume
 
 - **Idempotenz-Klassifikation je Datei** (nicht je Verzeichnis): tool-eigene
-  Infrastruktur (Aggregator, Fragmente, Hooks, Guard, Baseline, Skills) ist
+  Infrastruktur (Aggregator, Fragmente, Hooks, Guard, Baseline) ist
   **konvergent** — ein Re-Lauf schreibt sie kanonisch und **prunt nie**; im Zweifel
   gilt **skip-if-present** (Adopter-Boden: Doc-Chain, ADRs, `README`, `AGENTS`,
-  Manifeste, Skelett-Code). So überlebt ein zuvor gedropptes `harness/mk/<modul>.mk`
+  Manifeste, Skelett-Code, die Reviewer-Skills unter `.harness/skills/` — ein Skill, der
+  von der mitgelieferten Fassung abweicht, wird samt seiner Vorlage gemeldet). So überlebt ein zuvor gedropptes `harness/mk/<modul>.mk`
   oder `blocked/<sprache>` einen sprachlosen Re-Lauf.
 - **Fragment-Assembly:** die Root-Makefile ist ein Aggregator mit `include harness/mk/*.mk`;
   jedes Fragment hängt seine Checks an eine Variable (`GATE_CHECKS += …`). Der

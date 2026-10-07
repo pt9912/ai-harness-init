@@ -1,6 +1,7 @@
 package emit_test
 
 import (
+	"io"
 	"io/fs"
 	"os"
 	"path"
@@ -102,7 +103,7 @@ func courseSet() fs.FS {
 // prueft der Pre-Flight andere Pfade als der Emit schreibt (ein stilles Loch).
 func TestTemplateTargets_SpiegeltDenEmittiertenSatz(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
+	if err := emit.Templates(courseSet(), dir, "X", testVorlagen, io.Discard); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	var written []string
@@ -144,7 +145,7 @@ func TestTemplateTargets_MisrootedRejected(t *testing.T) {
 
 func TestTemplates_Layout(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
+	if err := emit.Templates(courseSet(), dir, "X", testVorlagen, io.Discard); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	singletons := []string{
@@ -200,7 +201,7 @@ func TestTemplates_Layout(t *testing.T) {
 func TestTemplates_StampAndStrip(t *testing.T) {
 	dir := t.TempDir()
 	const name = "MeinProjekt"
-	if err := emit.Templates(courseSet(), dir, name); err != nil {
+	if err := emit.Templates(courseSet(), dir, name, testVorlagen, io.Discard); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	got, err := os.ReadFile(filepath.Join(dir, "spec/lastenheft.md"))
@@ -232,7 +233,7 @@ func TestTemplates_StampAndStrip(t *testing.T) {
 // Treue der Fixture zum realen Satz haelt `test/courseset-fixture.bats` fest.
 func TestTemplates_RecurringNichtEmittiert(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
+	if err := emit.Templates(courseSet(), dir, "X", testVorlagen, io.Discard); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	for _, rel := range []string{
@@ -282,7 +283,7 @@ func TestTemplates_RecurringNichtEmittiert(t *testing.T) {
 // derselbe Fehler wie bei slice-022a N2.
 func TestTemplates_EmittierterBestandVollstaendig(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
+	if err := emit.Templates(courseSet(), dir, "X", testVorlagen, io.Discard); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	want := []string{
@@ -350,7 +351,7 @@ func TestTemplates_NeuesUpstreamTemplateFliesstMit(t *testing.T) {
 	src := courseSet().(fstest.MapFS)
 	src["spec/glossar.template.md"] = &fstest.MapFile{Data: []byte("> **Template-Hinweis.** X\n\n# <Projektname>\n")}
 	dir := t.TempDir()
-	if err := emit.Templates(src, dir, "X"); err != nil {
+	if err := emit.Templates(src, dir, "X", testVorlagen, io.Discard); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	if _, err := os.Stat(filepath.Join(dir, "spec", "glossar.md")); err != nil {
@@ -370,7 +371,7 @@ func TestTemplates_FalscheWurzelung(t *testing.T) {
 	}
 	nested["regelwerk/README.md"] = &fstest.MapFile{Data: []byte("# Index\n")}
 	dir := t.TempDir()
-	err := emit.Templates(nested, dir, "X")
+	err := emit.Templates(nested, dir, "X", testVorlagen, io.Discard)
 	if err == nil {
 		t.Fatal("Vorfahren-Wurzelung wurde akzeptiert — sie emittiert zu viel, nicht zu wenig")
 	}
@@ -403,7 +404,7 @@ func TestTemplates_FalscheWurzelung(t *testing.T) {
 		}},
 	} {
 		d := t.TempDir()
-		if err := emit.Templates(c.src, d, "X"); err == nil {
+		if err := emit.Templates(c.src, d, "X", testVorlagen, io.Discard); err == nil {
 			t.Errorf("%s wurde akzeptiert — sie emittiert in falsche Ziel-Pfade", c.name)
 		}
 		if got := emittedTree(t, d); len(got) != 0 {
@@ -412,7 +413,7 @@ func TestTemplates_FalscheWurzelung(t *testing.T) {
 	}
 
 	// (d) voellig fremde Quelle.
-	if err := emit.Templates(fstest.MapFS{"irgendwas.txt": &fstest.MapFile{Data: []byte("x")}}, t.TempDir(), "X"); err == nil {
+	if err := emit.Templates(fstest.MapFS{"irgendwas.txt": &fstest.MapFile{Data: []byte("x")}}, t.TempDir(), "X", testVorlagen, io.Discard); err == nil {
 		t.Error("fremde Quelle wurde als Erfolg gemeldet")
 	}
 }
@@ -424,13 +425,13 @@ func TestCheckRoot_EinRenameGenuegtNicht(t *testing.T) {
 	src := courseSet().(fstest.MapFS)
 	delete(src, "AGENTS.template.md") // upstream umbenannt/verschoben
 	dir := t.TempDir()
-	if err := emit.Templates(src, dir, "X"); err != nil {
+	if err := emit.Templates(src, dir, "X", testVorlagen, io.Discard); err != nil {
 		t.Fatalf("ein fehlender Marker sollte den Bootstrap nicht brechen: %v", err)
 	}
 	// Gegenprobe: zwei fehlende Marker MUESSEN abbrechen, sonst ist die
 	// Schwelle wirkungslos.
 	delete(src, "spec/lastenheft.template.md")
-	if err := emit.Templates(src, t.TempDir(), "X"); err == nil {
+	if err := emit.Templates(src, t.TempDir(), "X", testVorlagen, io.Discard); err == nil {
 		t.Error("zwei fehlende Marker wurden akzeptiert — Schwelle wirkungslos")
 	}
 }
@@ -455,7 +456,7 @@ func TestTemplates_MinimalQuelle(t *testing.T) {
 		"spec/lastenheft.template.md": &fstest.MapFile{Data: []byte("# <Projektname>\n")},
 	}
 	dir := t.TempDir()
-	if err := emit.Templates(minimal, dir, "X"); err != nil {
+	if err := emit.Templates(minimal, dir, "X", testVorlagen, io.Discard); err != nil {
 		t.Fatalf("minimale gueltige Quelle sollte emittieren: %v", err)
 	}
 	// Emittiert: die zwei Singletons der Quelle PLUS die tool-definierten .gitkeep der
@@ -487,7 +488,7 @@ func TestTemplates_SkipIfPresent(t *testing.T) {
 	if err := os.WriteFile(target, []byte(sentinel), 0o644); err != nil {
 		t.Fatalf("Setup: %v", err)
 	}
-	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
+	if err := emit.Templates(courseSet(), dir, "X", testVorlagen, io.Discard); err != nil {
 		t.Fatalf("Templates (skip-if-present darf nicht fehlschlagen): %v", err)
 	}
 	// Das vorhandene Singleton bleibt UNBERUEHRT (nie clobbern).
@@ -533,7 +534,7 @@ func TestTemplates_ObservationsReadmeSkipIfPresent(t *testing.T) {
 	if err := os.WriteFile(target, []byte(sentinel), 0o644); err != nil {
 		t.Fatalf("Setup: %v", err)
 	}
-	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
+	if err := emit.Templates(courseSet(), dir, "X", testVorlagen, io.Discard); err != nil {
 		t.Fatalf("Templates (skip-if-present darf nicht fehlschlagen): %v", err)
 	}
 	after, err := os.ReadFile(target)
@@ -545,38 +546,63 @@ func TestTemplates_ObservationsReadmeSkipIfPresent(t *testing.T) {
 	}
 }
 
-// TestTemplates_SkillsConvergent (slice-038, Review-MEDIUM-Auflösung): .harness/skills/* ist
-// tool-eigene Infrastruktur (ADR-0007 Z.100 KONVERGENT), NICHT skip-if-present wie der uebrige
-// Templates-Satz. Ein Re-Lauf ueber ein modifiziertes Skill heilt es kanonisch — waehrend ein
-// Doc-Chain-Singleton (skip-if-present) daneben unberuehrt bleibt. Rot-Gegenbeispiel: eine
-// Mutation, die die Skills-Ausnahme neutralisiert, laesst die Skill-Drift stehen.
-func TestTemplates_SkillsConvergent(t *testing.T) {
+// testVorlagen ist der Vorlagen-Pfad, den die Tests an emit.Templates reichen; der Aufrufer
+// emitAll setzt dort .harness/baseline/<tag>/templates.
+const testVorlagen = ".harness/baseline/v0.0.0-test/templates"
+
+// TestTemplates_SkillsSkipIfPresent haelt ADR-0084 Festlegungen 1 und 2 fuer beide Skills: ein
+// veraenderter Skill bleibt byte-gleich und wird mit seiner Vorlage gemeldet, ein unveraendert
+// emittierter meldet nichts, ein fehlender wird angelegt. Rot-Gegenbeispiele:
+// test/mutations/53-skills-konvergent.sh (Skills wieder konvergent) und ein skillMeldung ohne
+// Byte-Vergleich (meldet auch den unveraenderten).
+func TestTemplates_SkillsSkipIfPresent(t *testing.T) {
+	const reviewer = ".harness/skills/reviewer.md"
+	const closure = ".harness/skills/closure-note-reviewer.md"
 	dir := t.TempDir()
-	skill := filepath.Join(dir, filepath.FromSlash(".harness/skills/reviewer.md"))
-	if err := os.MkdirAll(filepath.Dir(skill), 0o755); err != nil {
+	if err := emit.Templates(courseSet(), dir, "X", testVorlagen, io.Discard); err != nil {
+		t.Fatalf("erster Lauf: %v", err)
+	}
+	// Fall "fehlend -> angelegt": der erste Lauf in ein leeres Ziel legt beide ab.
+	emittiert := mustReadString(t, filepath.Join(dir, filepath.FromSlash(closure)))
+	if emittiert == "" {
+		t.Fatalf("%s nach dem ersten Lauf leer", closure)
+	}
+	const gefuellt = "# adopter-gefuellter Skill\n"
+	if err := os.WriteFile(filepath.Join(dir, filepath.FromSlash(reviewer)), []byte(gefuellt), 0o644); err != nil {
 		t.Fatalf("Setup: %v", err)
 	}
-	if err := os.WriteFile(skill, []byte("adopter-modifiziert"), 0o644); err != nil {
+	var meldung strings.Builder
+	if err := emit.Templates(courseSet(), dir, "X", testVorlagen, &meldung); err != nil {
+		t.Fatalf("zweiter Lauf: %v", err)
+	}
+	out := meldung.String()
+	if got := mustReadString(t, filepath.Join(dir, filepath.FromSlash(reviewer))); got != gefuellt {
+		t.Errorf("veraenderter Skill %s ueberschrieben (skip-if-present verletzt, ADR-0084 Festlegung 1): %q", reviewer, got)
+	}
+	for _, satz := range []string{reviewer + " liegt bereits", "skip-if-present", testVorlagen + "/.harness/skills/reviewer.template.md"} {
+		if !strings.Contains(out, satz) {
+			t.Errorf("veraenderter Skill nicht gemeldet — Meldung nennt %q nicht (ADR-0084 Festlegung 2); Meldung: %q", satz, out)
+		}
+	}
+	if strings.Contains(out, closure) {
+		t.Errorf("unveraenderter Skill %s gemeldet — eine unveraenderte Emission meldet nichts (ADR-0084 Festlegung 2); Meldung: %q", closure, out)
+	}
+	if got := mustReadString(t, filepath.Join(dir, filepath.FromSlash(closure))); got != emittiert {
+		t.Errorf("unveraenderter Skill %s veraendert: %q", closure, got)
+	}
+	// Fall "fehlend -> angelegt" im Re-Lauf, ohne Meldung.
+	if err := os.Remove(filepath.Join(dir, filepath.FromSlash(closure))); err != nil {
 		t.Fatalf("Setup: %v", err)
 	}
-	if err := os.MkdirAll(filepath.Join(dir, "spec"), 0o755); err != nil {
-		t.Fatalf("Setup: %v", err)
+	meldung.Reset()
+	if err := emit.Templates(courseSet(), dir, "X", testVorlagen, &meldung); err != nil {
+		t.Fatalf("dritter Lauf: %v", err)
 	}
-	const singleton = "# adopter-gefuellt\n"
-	specTarget := filepath.Join(dir, "spec/lastenheft.md")
-	if err := os.WriteFile(specTarget, []byte(singleton), 0o644); err != nil {
-		t.Fatalf("Setup: %v", err)
+	if got := mustReadString(t, filepath.Join(dir, filepath.FromSlash(closure))); got != emittiert {
+		t.Errorf("geloeschter Skill %s nicht neu angelegt: %q", closure, got)
 	}
-	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
-		t.Fatalf("Templates: %v", err)
-	}
-	// Skill KONVERGENT: Drift geheilt (nicht mehr die Adopter-Modifikation).
-	if got := mustReadString(t, skill); got == "adopter-modifiziert" {
-		t.Error("Skill .harness/skills/reviewer.md NICHT geheilt (konvergent verletzt, ADR-0007 Z.100)")
-	}
-	// Doc-Chain-Singleton SKIP-IF-PRESENT: unberuehrt.
-	if got := mustReadString(t, specTarget); got != singleton {
-		t.Errorf("Doc-Chain-Singleton clobbert (skip-if-present verletzt): %q", got)
+	if strings.Contains(meldung.String(), closure) {
+		t.Errorf("neu angelegter Skill %s gemeldet: %q", closure, meldung.String())
 	}
 }
 
@@ -731,7 +757,7 @@ func TestTemplates_KeineKommentarHilfenImEmittiertenSatz(t *testing.T) {
 	}
 
 	dir := t.TempDir()
-	if err := emit.Templates(src, dir, "X"); err != nil {
+	if err := emit.Templates(src, dir, "X", testVorlagen, io.Discard); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	if err := emit.RootReadme(src, dir, "X"); err != nil {
@@ -794,7 +820,7 @@ func TestNeutralizeRoadmap(t *testing.T) {
 // Property gemessen, nicht die Implementierung — §3.6).
 func TestTemplates_RoadmapGateSafe(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
+	if err := emit.Templates(courseSet(), dir, "X", testVorlagen, io.Discard); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	got, err := os.ReadFile(filepath.Join(dir, "docs/plan/planning/in-progress/roadmap.md"))
@@ -833,7 +859,7 @@ func TestNeutralizeConventionsTemplateRef(t *testing.T) {
 // realen, baseline-relativen Pfad (courseSet() §conventionsPathQuirk).
 func TestTemplates_ConventionsTemplateRefGateSafe(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
+	if err := emit.Templates(courseSet(), dir, "X", testVorlagen, io.Discard); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	got, err := os.ReadFile(filepath.Join(dir, "harness/conventions.md"))
@@ -870,7 +896,7 @@ func TestNeutralizePlanningReadmeCarveoutsDoneRef(t *testing.T) {
 // die Fixture traegt die reale Nennung (courseSet() §carveoutsDoneQuirk).
 func TestTemplates_PlanningReadmeCarveoutsDoneRefGateSafe(t *testing.T) {
 	dir := t.TempDir()
-	if err := emit.Templates(courseSet(), dir, "X"); err != nil {
+	if err := emit.Templates(courseSet(), dir, "X", testVorlagen, io.Discard); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	got, err := os.ReadFile(filepath.Join(dir, "docs/plan/planning/README.md"))
@@ -987,7 +1013,7 @@ func TestTemplates_KeinPlatzhalterLinkImEmittiertenSatz(t *testing.T) {
 	}
 
 	dir := t.TempDir()
-	if err := emit.Templates(src, dir, "X"); err != nil {
+	if err := emit.Templates(src, dir, "X", testVorlagen, io.Discard); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	if err := emit.RootReadme(src, dir, "X"); err != nil {
@@ -1035,7 +1061,7 @@ func TestTemplates_NeuerPlatzhalterLinkOhneCodeaenderung(t *testing.T) {
 	src["spec/glossar.template.md"] = &fstest.MapFile{Data: []byte(
 		"# <Projektname>\n\n- [<begriff>](glossar/<begriff>.md)\n")}
 	dir := t.TempDir()
-	if err := emit.Templates(src, dir, "X"); err != nil {
+	if err := emit.Templates(src, dir, "X", testVorlagen, io.Discard); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	got, err := os.ReadFile(filepath.Join(dir, "spec/glossar.md"))

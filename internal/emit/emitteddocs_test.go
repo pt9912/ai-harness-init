@@ -1,6 +1,7 @@
 package emit_test
 
 import (
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -103,7 +104,7 @@ func claimSet(t *testing.T) fs.FS {
 func emitDokumentSatz(t *testing.T, src fs.FS) string {
 	t.Helper()
 	dir := t.TempDir()
-	if err := emit.Templates(src, dir, "Demo"); err != nil {
+	if err := emit.Templates(src, dir, "Demo", testVorlagen, io.Discard); err != nil {
 		t.Fatalf("Templates: %v", err)
 	}
 	if err := emit.RootReadme(src, dir, "Demo"); err != nil {

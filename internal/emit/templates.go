@@ -5,8 +5,11 @@ import (
 	_ "embed" // fuer //go:embed templates/observations/README.md (observationsReadme)
 	"errors"
 	"fmt"
+	"io"
 	"io/fs"
+	"os"
 	"path"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
@@ -300,7 +303,12 @@ func TemplateTargets(src fs.FS, name string) ([]string, error) {
 // damit die Tests hermetisch bleiben: der reale Baum liegt unter .harness/, das
 // der Docker-Build-Kontext ausschliesst (.dockerignore) — genau der Grund, warum
 // der alte Drift-Waechter nach bats musste.
-func Templates(src fs.FS, targetDir, name string) error {
+//
+// vorlagen ist der slash-Pfad des Template-Satzes relativ zu targetDir
+// (.harness/baseline/<tag>/templates), notice der Kanal fuer die Meldung zu einem
+// stehengelassenen Skill (skillMeldung); beide reicht der Aufrufer herein, weil nur er
+// den Tag kennt.
+func Templates(src fs.FS, targetDir, name, vorlagen string, notice io.Writer) error {
 	if err := checkRoot(src); err != nil {
 		return err
 	}
@@ -308,20 +316,44 @@ func Templates(src fs.FS, targetDir, name string) error {
 	if err != nil {
 		return err
 	}
-	// GEMISCHTE Idempotenz-Klasse (slice-038, ADR-0007 Z.100): .harness/skills/* ist
-	// tool-eigene Infrastruktur -> KONVERGENT (bei jedem Lauf kanonisch neu, heilt
-	// Baseline-Bump); der uebrige Satz (Doc-Chain-Singletons + Struktur-gitkeeps) ist
-	// Adopter-Boden -> SKIP-IF-PRESENT (nie clobbern, ein adopter-gefuelltes Singleton
-	// ueberlebt unberuehrt).
+	// EINE Idempotenz-Klasse fuer den ganzen Satz: SKIP-IF-PRESENT (Adopter-Boden, ein
+	// gefuelltes Singleton oder ein gefuellter Skill ueberlebt unberuehrt). Die Skills unter
+	// .harness/skills/ tragen dazu die Meldung, wenn die liegende Fassung von der dieses
+	// Laufs abweicht (ADR-0084 Festlegungen 1 und 2).
 	for rel, content := range plan {
-		write := writeSkipIfPresent
-		if strings.HasPrefix(rel, ".harness/skills/") {
-			write = writeFileMode // konvergent
+		if isSkill(rel) {
+			if err := skillMeldung(targetDir, rel, content, vorlagen, notice); err != nil {
+				return err
+			}
 		}
-		if err := write(targetDir, rel, content, 0o644); err != nil {
+		if err := writeSkipIfPresent(targetDir, rel, content, 0o644); err != nil {
 			return err
 		}
 	}
+	return nil
+}
+
+// isSkill sagt, ob rel einer der Reviewer-Skills unter .harness/skills/ ist.
+func isSkill(rel string) bool {
+	return strings.HasPrefix(rel, ".harness/skills/")
+}
+
+// skillMeldung nennt auf notice einen Skill, der am Zielpfad liegt und NICHT byte-gleich
+// content ist — der Fassung, die dieser Lauf ablegen wuerde —, samt der mitgelieferten
+// Vorlage unter vorlagen zum Abgleich (ADR-0084 Festlegung 2, Form wie
+// writeSkipIfPresentTold). Ein fehlender oder byte-gleicher Skill meldet nichts.
+func skillMeldung(targetDir, rel string, content []byte, vorlagen string, notice io.Writer) error {
+	liegt, err := os.ReadFile(filepath.Join(targetDir, filepath.FromSlash(rel)))
+	switch {
+	case errors.Is(err, fs.ErrNotExist):
+		return nil
+	case err != nil:
+		return fmt.Errorf("%s pruefen: %w", rel, err)
+	case bytes.Equal(liegt, content):
+		return nil
+	}
+	vorlage := path.Join(vorlagen, strings.TrimSuffix(rel, ".md")+".template.md")
+	fmt.Fprintf(notice, "ai-harness-init: %s liegt bereits — die Datei bleibt unberuehrt (skip-if-present). Sie weicht von der Fassung dieses Laufs ab; die mitgelieferte Vorlage zum Abgleich liegt unter %s.\n", rel, vorlage)
 	return nil
 }
 

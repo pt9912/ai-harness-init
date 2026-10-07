@@ -4071,6 +4071,73 @@ done
 echo "full-smoke: Klasse im Ziel: der belegte .githooks/commit-msg blieb unberuehrt, und der Lauf nennt ihn samt der mitgelieferten Pruefung:"
 sed -n '/skip-if-present/{p;q;}' <<<"$prune_out" | sed 's/^/full-smoke:   /'
 
+# --- Klasse der Reviewer-Skills: belegt bleibt und wird gemeldet, frei wird angelegt -----
+#
+# ADR-0084 Festlegungen 1 und 2 im gebootstrappten Ziel, aus einem echten Werkzeug-Aufruf
+# heraus; die Go-Stufe (TestTemplates_SkillsSkipIfPresent) liest dieselbe Klasse aus dem
+# notice-Kanal eines Templates-Laufs. Drei Faelle:
+#   (1) UNVERAENDERT EMITTIERT -> keine Meldung: gelesen an der Ausgabe des sprachlosen
+#       Re-Laufs der Stufe davor, vor dem die Skills unberuehrt lagen,
+#   (2) GEFUELLT -> byte-gleich und gemeldet, samt Vorlage im vendored Baum,
+#   (3) GELOESCHT -> neu angelegt, ohne Meldung.
+# (2) und (3) faehrt ein weiterer sprachloser Re-Lauf ueber tmprepo_doc.
+echo "full-smoke: Klasse der Reviewer-Skills — gefuellter, unveraenderter und geloeschter Skill im Re-Lauf ueber tmprepo_doc ..."
+	e2e_abdeckung "LH-FA-02 LH-FA-01" "Ein gefuellter Reviewer-Skill bleibt im Re-Lauf byte-gleich und wird samt Vorlage gemeldet, ein unveraendert emittierter meldet nichts, ein geloeschter wird angelegt; NICHT gemessen: der Baseline-Sprung (die neue Vorlage heilt den Skill nicht) und ein Ziel mit Sprache" "ADOPTER-GEFUELLTER SKILL"
+skill_rev=".harness/skills/reviewer.md"
+skill_clo=".harness/skills/closure-note-reviewer.md"
+for skill in "$skill_rev" "$skill_clo"; do
+	if [ ! -s "$tmprepo_doc/$skill" ]; then
+		echo "full-smoke: FEHLER — $skill liegt nach den Init-Laeufen nicht im Ziel (ein freier Pfad bekommt den Skill, ADR-0084 Festlegung 1)." >&2
+		exit 1
+	fi
+	if grep -qF -- "$skill" <<<"$prune_out"; then
+		echo "full-smoke: FEHLER — der Re-Lauf meldet den unveraendert emittierten $skill: eine unveraenderte Emission meldet nichts (ADR-0084 Festlegung 2). Ausgabe:" >&2
+		printf '%s\n' "$prune_out" >&2
+		exit 1
+	fi
+done
+skill_emittiert="$(cat "$tmprepo_doc/$skill_clo")"
+skill_gefuellt='# ADOPTER-GEFUELLTER SKILL: diese Fassung gehoert dem Repo, nicht dem Werkzeug.'
+printf '%s\n' "$skill_gefuellt" > "$tmprepo_doc/$skill_rev"
+rm -f "$tmprepo_doc/$skill_clo"
+skill_rc=0
+skill_out="$( "$tmpbin/ai-harness-init" --name full-smoke-doc "$tmprepo_doc" 2>&1 )" || skill_rc=$?
+printf '%s\n' "$skill_out"
+if [ "$skill_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — der Re-Lauf ueber den Skills ist NICHT Exit 0. rc=$skill_rc" >&2
+	exit 1
+fi
+if [ "$(cat "$tmprepo_doc/$skill_rev")" != "$skill_gefuellt" ]; then
+	echo "full-smoke: FEHLER — der Re-Lauf ueberschrieb den gefuellten $skill_rev (skip-if-present verletzt, ADR-0084 Festlegung 1)." >&2
+	exit 1
+fi
+skill_vorlage="$(sed -n "s#^ai-harness-init: $skill_rev liegt bereits .* unter \(.*\)\.\$#\1#p" <<<"$skill_out")"
+if [ -z "$skill_vorlage" ] || ! grep -qF -- 'skip-if-present' <<<"$skill_out"; then
+	echo "full-smoke: FEHLER — der Re-Lauf meldet den gefuellten $skill_rev nicht samt Vorlage (ADR-0084 Festlegung 2). Ausgabe:" >&2
+	printf '%s\n' "$skill_out" >&2
+	exit 1
+fi
+case "$skill_vorlage" in
+.harness/baseline/*/templates/.harness/skills/reviewer.template.md) ;;
+*)
+	echo "full-smoke: FEHLER — die gemeldete Vorlage hat nicht die Form .harness/baseline/<tag>/templates/.harness/skills/reviewer.template.md: [$skill_vorlage]" >&2
+	exit 1
+	;;
+esac
+if [ ! -f "$tmprepo_doc/$skill_vorlage" ]; then
+	echo "full-smoke: FEHLER — die gemeldete Vorlage liegt nicht im Ziel ($skill_vorlage) — die Meldung nennt einen Pfad, den der Adopter nicht findet." >&2
+	exit 1
+fi
+if [ ! -f "$tmprepo_doc/$skill_clo" ] || [ "$(cat "$tmprepo_doc/$skill_clo")" != "$skill_emittiert" ]; then
+	echo "full-smoke: FEHLER — der geloeschte $skill_clo wurde nicht mit der Fassung des Laufs neu angelegt (ein freier Pfad bekommt den Skill, ADR-0084 Festlegung 1)." >&2
+	exit 1
+fi
+if grep -qF -- "$skill_clo" <<<"$skill_out"; then
+	echo "full-smoke: FEHLER — der Re-Lauf meldet den neu angelegten $skill_clo: gemeldet wird nur eine abweichend stehengelassene Fassung (ADR-0084 Festlegung 2)." >&2
+	exit 1
+fi
+echo "full-smoke: Klasse der Skills im Ziel: der gefuellte $skill_rev blieb byte-gleich und wird mit $skill_vorlage gemeldet, der geloeschte $skill_clo liegt wieder, der unveraenderte meldete nichts."
+
 # --- Commit-Kennung: das gebootstrappte Ziel erreicht seinen Traeger ------------------
 #
 # WAS DER HAPPY PATH NICHT SIEHT: `make gates` faehrt den Traeger nicht — er ist kein
