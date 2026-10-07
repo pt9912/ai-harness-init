@@ -29,7 +29,7 @@ bestätigt durch [ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160
 **Berührte Spec-Stellen:** `SPEC-024`, `SPEC-055`, `SPEC-010`, `SPEC-011`, `SPEC-012`, `SPEC-044`
 (`spezifikation.md §5`).
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912 (Implementer).
 
 **Autor:** Planner. **Datum:** 2026-10-06.
 
@@ -50,9 +50,20 @@ trägt (*kein Slice*, *kein Bezug*), bleibt er von *nicht bekannt* unterscheidba
 ```sh
 grep -E '^\| `SPEC-024`' spec/spezifikation.md | grep -c '| Optional |'           # 1
 git grep -l 'cache_creation_input_tokens' -- internal ':!*_test.go'              # internal/span/fieldlist.go, internal/span/response.go
+git grep -n 's.AgentRole != ""' -- internal/report                               # report.go: leere Rolle -> Sammelposten
 ```
 
-Die Auswertung (`make span-report`) liest das Feld nicht; Leser sind allein Erfassung und Tests.
+**Leser.** Den Cache-Status liest die Auswertung (`make span-report`) nicht. `agent_role` liest
+sie: eine leere Rolle geht in den Sammelposten (`internal/report/report.go`, `SPEC-044`) — trägt das
+Feld künftig die Kennzeichnung, muss die Auswertung sie wie `""` lesen, sonst wird *nicht bekannt*
+eine eigene Rolle.
+
+**Emittierte Ebene.** Betroffen, ohne eigenen Liefer-Punkt: die emittierte Feldliste
+`harness/erfassung-feldliste.md` wird verbatim aus `span.FieldList` geschrieben
+(`internal/emit/fieldlist.go`) und zieht die Änderung an `internal/span/fieldlist.go` konstruktiv
+nach; der emittierte Hook `span-emit.sh` ruft den Träger, der die Erfassung mit dem nächsten
+Release ins Ziel bringt (`make traeger-fetch`, gepinnt). Kein emittierter Text daneben nennt die
+Draht-Form.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
@@ -66,24 +77,30 @@ Die Auswertung (`make span-report`) liest das Feld nicht; Leser sind allein Erfa
   keine Pflicht des Minimums (Festlegung 4 Punkt 3); seine Abwesenheit sagt *kein Subagent*.
 - **Kein Umschreiben vorhandener Spans.** *Bestand bleibt stehen:* der Span-Bestand ist lokal und
   nicht versioniert.
-- **Emittierte Ebene.** *Schicht-Abgrenzung:* ob ein Ziel eine Feldliste bekommt, trägt
-  `slice-emittierte-feldliste-traegt-verfuegbarkeit-und-aufbewahrung`.
+- **Verfügbarkeit und Aufbewahrung der emittierten Feldliste.** *Folge-Slice übernimmt es:*
+  `slice-emittierte-feldliste-traegt-verfuegbarkeit-und-aufbewahrung`; hier zieht die Feldliste
+  nur den Inhalt nach, der aus `span.FieldList` kommt.
+- **Ein Release des Trägers.** *Anderer Vorgang:* der Release-Schnitt.
 
 ## 2. Definition of Done
 
 - [ ] **1 — Spezifikation:** `SPEC-024` steht auf `Pflicht`; eine Festlegungs-Zeile in §5 nennt die
       Draht-Form der Kennzeichnung *nicht bekannt* und wie die Quelle genannt wird, mit
-      Bindungs-Spalte nach [`MR-075`](../../../../harness/conventions.md#mr-075); `SPEC-055` ist
-      nachgezogen und führt den Cache-Status nicht mehr als Abweichung.
-- [ ] **2 — Erfassung und Tests:** Ein Span aus einer Payload ohne `usage` trägt die Kennzeichnung,
-      einer mit `usage` die Zähler. **Rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6): die
-      Erfassung lässt das Feld weg oder schreibt `0` — der benannte Test wird mit einer Meldung über
-      genau dieses Feld rot; ein Fall in `test/mutations/` hält die Zusage
-      ([`make mutate`](../../../../harness/sensors/mutate.md) mit `MUTATE_CASES`).
-- [ ] **3 — `SPEC-010`/`011`/`012` eingeordnet:** je Feld steht in §5, ob `""` *nicht bekannt* heißt
-      oder einen Wert trägt; für `agent_role` trägt der Span die Kennzeichnung, und `SPEC-044` ist
-      nachgezogen. **Rot gesehen:** ein Span ohne erkennbare Rolle trägt `""` statt der
-      Kennzeichnung — der Test wird rot; einer mit *kein Slice* bleibt unterscheidbar.
+      Bindungs-Spalte nach [`MR-075`](../../../../harness/conventions.md#mr-075); `SPEC-055` führt
+      den Cache-Status nicht mehr als Abweichung; je Feld `SPEC-010`/`011`/`012` steht, ob `""`
+      *nicht bekannt* heißt oder einen Wert trägt, und `SPEC-044` ist nachgezogen.
+- [ ] **2 — Erfassung, Feldliste und Tests:** Ein Span aus einer Payload ohne `usage` trägt beim
+      Cache-Status die Kennzeichnung, einer mit `usage` die Zähler; ein Span ohne erkennbare Rolle
+      trägt sie bei `agent_role`, einer mit *kein Slice* bleibt davon unterscheidbar; die Feldliste
+      (`span.FieldList`, emittiert verbatim) nennt beides. **Rot gesehen**
+      ([`AGENTS.md`](../../../../AGENTS.md) §3.6): die Erfassung lässt das Feld weg, schreibt `0`
+      oder `""` — der benannte Test wird mit einer Meldung über genau dieses Feld rot; ein Fall in
+      `test/mutations/` hält die Zusage ([`make mutate`](../../../../harness/sensors/mutate.md) mit
+      `MUTATE_CASES`).
+- [ ] **3 — Auswertung:** `make span-report` liest die Kennzeichnung bei `agent_role` wie `""` —
+      der Lauf geht in den Sammelposten, keine Rolle *nicht bekannt* entsteht; Spans vor und nach der
+      Umstellung landen im selben Posten. **Rot gesehen:** die Auswertung prüft nur `""` — der Test
+      mit einem Span, der die Kennzeichnung trägt, wird rot.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -102,9 +119,10 @@ Die Auswertung (`make span-report`) liest das Feld nicht; Leser sind allein Erfa
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `spec/spezifikation.md` §5 | update | Liefer-Punkte 1 und 3 |
-| `internal/span/response.go`, `internal/span/fieldlist.go` (und die Rollen-Ableitung) | update | Kennzeichnung schreiben |
+| `spec/spezifikation.md` §5 | update | Liefer-Punkt 1 |
+| `internal/span/response.go`, `internal/span/emit.go` (Rollen-Ableitung), `internal/span/fieldlist.go` | update | Kennzeichnung schreiben, Feldliste (Liefer-Punkt 2) |
 | `internal/span/*_test.go` | update | Happy/Negative nach [`LH-FA-13`](../../../../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans), [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) |
+| `internal/report/report.go` + Test | update | Liefer-Punkt 3 |
 | `test/mutations/<NNN>-…sh` | neu | Mutations-Fall für Liefer-Punkt 2 |
 
 ## 4. Trigger
@@ -116,8 +134,9 @@ aufgehoben. WIP-Limit frei.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
-- `in-progress` → `next`: Liefer-Punkt 3 verlangt mehr als die Rollen-Ableitung — etwa einen
-  Umbau der Slice- oder Bezugs-Ableitung — dann wird er ein eigener Slice.
+- `in-progress` → `next`: die Einordnung von `SPEC-011`/`012` verlangt mehr als eine Spec-Zeile —
+  etwa einen Umbau der Slice- oder Bezugs-Ableitung —, oder ein weiterer Leser von `agent_role`
+  außer `internal/report` taucht auf; dann wird das ein eigener Slice.
 - `in-progress` → `open`: Die Draht-Form kollidiert mit einer `Accepted`-Festlegung (etwa
   [`ADR-0074`](../../adr/0074-spec-5-fliesstext-klassen-ort-und-lh-bezug-spalte.md) oder `SPEC-083`),
   oder die Quelle ist für einen Lauf nicht benennbar — Übergabe an den Architect.
@@ -139,8 +158,12 @@ aufgehoben. WIP-Limit frei.
   `span-feld-bedeutung-wechselt-ohne-fassungs-angabe` steht bei
   2 Belegen; ein dritter ist eine Lücke mit
   eigenem Folge-Slice. — **Ausgang:** offen bis zur Closure.
-- **Die Kennzeichnung wird als Zahl gelesen** — ein Leser, der summiert, zählte sie als `0`. Heute
-  liest kein Leser das Feld (§1). — **Ausgang:** offen bis zur Closure.
+- **Die Kennzeichnung wird als Wert gelesen** — ein Leser, der summiert, zählte sie beim
+  Cache-Status als `0`; beim Cache-Status liest heute keiner, bei `agent_role` trägt Liefer-Punkt 3
+  den einen Leser (§1). — **Ausgang:** offen bis zur Closure.
+- **Feldliste und Träger eines Ziels auf verschiedenem Stand** — schreibt ein Werkzeug-Stand die
+  Feldliste, dessen gepinnter Träger älter ist, sagt sie *Pflicht*, während der Träger das Feld
+  noch weglässt; ob der Pin das zulässt, prüft der Implementer an `make traeger-fetch`. — **Ausgang:** offen bis zur Closure.
 
 ## 7. Closure-Notiz
 
