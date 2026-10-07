@@ -459,10 +459,6 @@ func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
 // No-op.
 func neutralisiereJeDatei(rel, body string, targets []string) (string, error) {
 	switch rel {
-	case roadmapTemplate:
-		// Die Roadmap MUSS emittiert bleiben (stark inbound-verlinkt), traegt aber
-		// eine gate-unsichere Beispielzeile — emit-seitig neutralisieren (§6 b).
-		return NeutralizeRoadmap(body), nil
 	case conventionsTemplate:
 		// Der Vorlagen-Pfad ist baseline-relativ (ADR-0037 Festlegung 1) — emit-seitig
 		// entschaerfen, der vendored Fremdtext bleibt unveraendert (MR-007).
@@ -552,30 +548,6 @@ func singletonTarget(rel string) string {
 	return strings.TrimSuffix(rel, ".template.md") + ".md"
 }
 
-// roadmapDoneLink ist die eine gate-unsichere Stelle der Roadmap-Vorlage: die
-// "Abgeschlossene Wellen"-Beispielzeile verlinkt ../done/welle-NN-results.md, das im
-// frischen Repo nicht existiert (broken link -> docs-check-Befund, der dritte aus
-// slice-024s Voll-Smoke). Der Rest der Roadmap ist gate-sicher.
-const roadmapDoneLink = "[`welle-NN-results.md`](../done/welle-NN-results.md)"
-
-// NeutralizeRoadmap macht die emittierte Roadmap gate-sicher: es ersetzt den einen
-// broken Vorwaerts-Link der "Abgeschlossene Wellen"-Beispielzeile durch Inline-Code
-// (die Zeile bleibt als Form-Beispiel erhalten, traegt aber keinen toten Link). Das
-// ist die emit-seitige Neutralisierung aus slice-028 §6 Option (b); der Kurs-Fix
-// (Option a) waere die SSoT-Loesung, ist aber blockiert (immutable vendored Baseline,
-// AGENTS 3.4). Ohne den Marker unveraendert. Deckungs-Grenze (ehrlich): geht der
-// Neutralisierungs-Effekt VERLOREN (Logik-Regression), faengt es
-// TestTemplates_RoadmapGateSafe (kein `](../done/` im emittierten Ziel) gegen die
-// courseSet()-Fixture. Aendert dagegen der KURS diesen Wortlaut upstream, bleibt dieser
-// Test gruen — die Fixture traegt den alten Marker, und courseset-fixture.bats gleicht
-// vom Inhalt allein die Platzhalter-Pfad-FORM ab, keinen Wortlaut; diese reale Drift
-// faengt allein `make smoke` (Tier-2, NICHT in make gates), das gegen den realen Satz
-// emittiert. Ein Ziel wie `../<welle-NN>/results.md` traegt dagegen einen Platzhalter
-// im Pfad und faellt unter NeutralizePlaceholderLinks, ohne diesen Marker zu brauchen.
-func NeutralizeRoadmap(s string) string {
-	return strings.ReplaceAll(s, roadmapDoneLink, "`welle-NN-results.md`")
-}
-
 // conventionsTemplate ist der Quell-Relpfad der Konventionsspeicher-Vorlage
 // (templates/-gewurzelt).
 const conventionsTemplate = "harness/conventions.template.md"
@@ -598,14 +570,12 @@ const conventionsPathRefNew = "kopiert aus der\ngleichnamigen Eintrags-Vorlage `
 // gibt es unter diesem Pfad nichts. Ersetzt wird die Pfad-Form durch eine
 // Nennung ohne Verzeichnis-Segment — der Dateiname bleibt lesbar, zeigt aber
 // nicht mehr auf einen Ort, den es im Ziel-Repo nicht gibt. Ohne den Satzteil
-// unveraendert. Deckungs-Luecke, anders als bei NeutralizeRoadmap (dort ein
-// gebrochener Markdown-Link, den `links` im emittierten Ziel faehrt): der hier
-// neutralisierte Defekt ist ein Inline-Code-Pfad, den allein `codepaths` liest —
-// und `codepaths` ist im emittierten Pruefbereich auskommentiert
-// (internal/emit/templates/d-check.yml: modules: [links, anchors]). Driftet der
-// Wortlaut im vendored Baum, wird dieser strings.ReplaceAll ein stiller No-op;
-// kein Sensor dieses Repos faengt das heute (ADR-0037 §Fitness Function nennt
-// dieselbe Luecke fuer die Deckung zwischen emittiertem Text und Bestand).
+// unveraendert. Der neutralisierte Defekt ist ein Inline-Code-Pfad, den allein
+// `codepaths` liest — und `codepaths` ist im emittierten Pruefbereich auskommentiert
+// (internal/emit/templates/d-check.yml: modules: [links, anchors]); das emittierte
+// Gate faengt einen Ausfall darum nicht. Dass der Marker die Vorlage des gepinnten
+// Kurs-Stands (fetch.DefaultTag) genau einmal trifft, haelt
+// test/neutralisierung-marker.bats am vendored Baum.
 func NeutralizeConventionsTemplateRef(s string) string {
 	return strings.ReplaceAll(s, conventionsPathRefOld, conventionsPathRefNew)
 }
@@ -626,15 +596,12 @@ const carveoutsDoneRefNew = "sondern in ihr eigenes `docs/plan/carveouts/done/` 
 // NeutralizePlanningReadmeCarveoutsDoneRef macht die emittierte
 // docs/plan/planning/README.md codepath-sicher: sie setzt denselben
 // d-check:ignore-Marker, den die Baseline in carveout.template.md fuer
-// denselben Ort bereits fuehrt. Ohne die Zeile unveraendert. Deckungs-Luecke,
-// anders als bei NeutralizeRoadmap (dort ein gebrochener Markdown-Link, den
-// `links` im emittierten Ziel faehrt): der hier neutralisierte Defekt ist ein
-// Inline-Code-Pfad, den allein `codepaths` liest — und `codepaths` ist im
-// emittierten Pruefbereich auskommentiert (internal/emit/templates/d-check.yml:
-// modules: [links, anchors]). Driftet der Wortlaut im vendored Baum, wird dieser
-// strings.ReplaceAll ein stiller No-op; kein Sensor dieses Repos faengt das
-// heute (ADR-0037 §Fitness Function nennt dieselbe Luecke fuer die Deckung
-// zwischen emittiertem Text und Bestand).
+// denselben Ort bereits fuehrt. Ohne die Zeile unveraendert. Der neutralisierte
+// Defekt ist ein Inline-Code-Pfad, den allein `codepaths` liest — und `codepaths`
+// ist im emittierten Pruefbereich auskommentiert (internal/emit/templates/d-check.yml:
+// modules: [links, anchors]); das emittierte Gate faengt einen Ausfall darum nicht.
+// Dass der Marker die Vorlage des gepinnten Kurs-Stands (fetch.DefaultTag) genau
+// einmal trifft, haelt test/neutralisierung-marker.bats am vendored Baum.
 func NeutralizePlanningReadmeCarveoutsDoneRef(s string) string {
 	return strings.ReplaceAll(s, carveoutsDoneRefOld, carveoutsDoneRefNew)
 }
@@ -758,8 +725,8 @@ func InitInvariantTargets() ([]string, error) {
 
 // NeutralizeMakeClaims ersetzt jede `make <ziel>`-Nennung eines emittierten
 // Dokuments durch makeTargetPlaceholder, sofern <ziel> nicht in targets liegt —
-// die emit-seitige Neutralisierung aus slice-087, dieselbe Form wie
-// NeutralizeRoadmap. Eine Muster-Nennung mit Stern bleibt unveraendert.
+// die emit-seitige Neutralisierung. Eine Muster-Nennung mit Stern
+// bleibt unveraendert.
 //
 // Deckungs-Grenze (ehrlich): rot faerbt eine verlorene Wirkung
 // TestEmittierteDokumente_NurInitInvarianteZiele gegen eine anspruchstragende
@@ -796,7 +763,7 @@ const placeholderPattern = `<[^<>]*>`
 // NeutralizePlaceholderLinks nimmt jedem Markdown-Link, dessen Ziel-PFAD einen
 // <…>-Platzhalter traegt, die Link-Syntax: der Link-Text bleibt VERBATIM stehen, das
 // Ziel faellt weg. Die Zeile bleibt damit als Form-Beispiel erhalten und traegt keinen
-// toten Link — dieselbe Bauart wie NeutralizeRoadmap, nur ueber eine FORM statt ueber
+// toten Link — die Bauart ueber eine FORM statt ueber
 // einen Wortlaut. Der emittierte Stand ist out-of-the-box gate-sicher (LH-FA-02); der
 // Vorlagen-Satz gehoert dem Kurs und liegt unveraenderlich vendored (AGENTS 3.4), die
 // Reparatur faellt darum emit-seitig.

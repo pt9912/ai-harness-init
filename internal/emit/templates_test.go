@@ -60,9 +60,9 @@ func courseSet() fs.FS {
 		// Durchsetzungs-Skills (LH-FA-06 Skill-Teil, seit slice-030 emittiert; bleiben Fetch, ADR-0006)
 		".harness/skills/reviewer.template.md":              f(hint + body),
 		".harness/skills/closure-note-reviewer.template.md": f(hint + body),
-		// Roadmap traegt die gate-unsichere "Abgeschlossene Wellen"-Beispielzeile
-		// (broken ../done/-Link) — NeutralizeRoadmap muss sie beim Emit entschaerfen.
-		"docs/plan/planning/roadmap.template.md": f(hint + "# Roadmap\n" + eingebettet + "\n| <welle-NN> | YYYY-MM-DD | [`welle-NN-results.md`](../done/welle-NN-results.md) |\n"),
+		// Roadmap traegt einen Link mit Platzhalter im Ziel-Pfad — NeutralizePlaceholderLinks
+		// muss ihn beim Emit entschaerfen.
+		"docs/plan/planning/roadmap.template.md": f(hint + "# Roadmap\n" + eingebettet),
 		// in scope — Wiederkehrende (LH-FA-02 0.8.0: NICHT emittiert, referenziert
 		// aus der vendored Baseline) und derivative Indexe (nicht emittiert)
 		"docs/plan/adr/NNNN-titel.template.md":       f(hint + body),
@@ -794,47 +794,6 @@ func TestTemplates_KeineKommentarHilfenImEmittiertenSatz(t *testing.T) {
 	}
 }
 
-// TestNeutralizeRoadmap prueft die pure Neutralisierung: der broken ../done/-Link der
-// "Abgeschlossene Wellen"-Beispielzeile wird zu Inline-Code (Form bleibt, Link weg),
-// ohne Marker unveraendert.
-func TestNeutralizeRoadmap(t *testing.T) {
-	in := "## Abgeschlossene Wellen\n\n| <welle-NN> | YYYY-MM-DD | [`welle-NN-results.md`](../done/welle-NN-results.md) |\n"
-	got := emit.NeutralizeRoadmap(in)
-	if strings.Contains(got, "](../done/") {
-		t.Errorf("broken ../done/-Link nicht neutralisiert:\n%s", got)
-	}
-	if !strings.Contains(got, "`welle-NN-results.md`") {
-		t.Errorf("Beispiel-Form (Inline-Code) verloren:\n%s", got)
-	}
-	const plain = "kein Link hier\n"
-	if emit.NeutralizeRoadmap(plain) != plain {
-		t.Error("NeutralizeRoadmap veraenderte Text ohne den Marker")
-	}
-}
-
-// TestTemplates_RoadmapGateSafe: die emittierte Roadmap (in-progress/roadmap.md)
-// traegt KEINEN broken ../done/-Link mehr. Das ist die Wiring-Probe — sie belegt, dass
-// der Roadmap-Zweig in planTemplates NeutralizeRoadmap wirklich aufruft (die
-// Fixture-Roadmap in courseSet() traegt den realen broken Link). Ginge upstream der
-// Link-Wortlaut verloren oder aenderte er seine Form, faellt es hier auf (Ausgabe-
-// Property gemessen, nicht die Implementierung — §3.6).
-func TestTemplates_RoadmapGateSafe(t *testing.T) {
-	dir := t.TempDir()
-	if err := emit.Templates(courseSet(), dir, "X", testVorlagen, io.Discard); err != nil {
-		t.Fatalf("Templates: %v", err)
-	}
-	got, err := os.ReadFile(filepath.Join(dir, "docs/plan/planning/in-progress/roadmap.md"))
-	if err != nil {
-		t.Fatalf("roadmap.md lesen: %v", err)
-	}
-	if strings.Contains(string(got), "](../done/") {
-		t.Errorf("emittierte Roadmap traegt noch einen broken ../done/-Link:\n%s", got)
-	}
-	if strings.Contains(string(got), "Template-Hinweis") {
-		t.Error("emittierte Roadmap traegt noch den Template-Hinweis-Block")
-	}
-}
-
 // TestNeutralizeConventionsTemplateRef prueft die pure Neutralisierung: der
 // baseline-relative Vorlagen-Pfad verliert sein Verzeichnis-Segment, der
 // Dateiname bleibt lesbar, ohne Marker unveraendert.
@@ -855,7 +814,7 @@ func TestNeutralizeConventionsTemplateRef(t *testing.T) {
 
 // TestTemplates_ConventionsTemplateRefGateSafe: die emittierte harness/conventions.md
 // traegt KEINEN Inline-Code-Pfad mehr, der auf harness/conventions/MR-NNN-titel.template.md
-// zeigt. Wiring-Probe wie TestTemplates_RoadmapGateSafe — die Fixture traegt den
+// zeigt. Wiring-Probe — die Fixture traegt den
 // realen, baseline-relativen Pfad (courseSet() §conventionsPathQuirk).
 func TestTemplates_ConventionsTemplateRefGateSafe(t *testing.T) {
 	dir := t.TempDir()
@@ -892,7 +851,7 @@ func TestNeutralizePlanningReadmeCarveoutsDoneRef(t *testing.T) {
 
 // TestTemplates_PlanningReadmeCarveoutsDoneRefGateSafe: die emittierte
 // docs/plan/planning/README.md traegt den d-check:ignore-Marker auf der
-// docs/plan/carveouts/done/-Zeile. Wiring-Probe wie TestTemplates_RoadmapGateSafe —
+// docs/plan/carveouts/done/-Zeile. Wiring-Probe —
 // die Fixture traegt die reale Nennung (courseSet() §carveoutsDoneQuirk).
 func TestTemplates_PlanningReadmeCarveoutsDoneRefGateSafe(t *testing.T) {
 	dir := t.TempDir()
@@ -1055,7 +1014,7 @@ func TestTemplates_KeinPlatzhalterLinkImEmittiertenSatz(t *testing.T) {
 // an einer Vorlage, die der Code NICHT kennt: sie kommt mit einem frei erfundenen
 // Platzhalter-Namen dazu, den kein Marker und keine Liste nennt. Die Neutralisierung
 // erfasst sie trotzdem, weil sie ueber die FORM verfuegt — das ist der Unterschied zu
-// NeutralizeRoadmap, die einen Wortlaut kennt und beim naechsten Zugang danebengreift.
+// einer Wortlaut-Neutralisierung, die nur ihren Marker kennt.
 func TestTemplates_NeuerPlatzhalterLinkOhneCodeaenderung(t *testing.T) {
 	src := courseSet().(fstest.MapFS)
 	src["spec/glossar.template.md"] = &fstest.MapFile{Data: []byte(
