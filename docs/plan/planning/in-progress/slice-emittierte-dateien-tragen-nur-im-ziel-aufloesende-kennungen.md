@@ -26,8 +26,9 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 
 **Ziel:** Kein emittierter Kommentar und keine emittierte Meldung trägt eine Kennung (`ADR-NNNN`,
 `LH-XX-NN`, `MR-NNN` mit Ziffern), die im Ziel nicht auflöst; die Zusage steht in Worten, die Meldung
-nennt den Satz, nach dem der Anwender handelt — und ein Go-Test in `internal/emit/` hält die
-Eigenschaft über die reale Emission.
+nennt den Satz, nach dem der Anwender handelt — und ein Go-Test in `cmd/ai-harness-init/` hält die
+Eigenschaft über die reale Emission; nur über `run()` sieht er auch die Emission aus `internal/gen`.
+Gebunden sind die emittierten **Dateien**; die Laufzeit-Meldungen des Binärs nicht (§6).
 
 **Übernimmt:** `slice-emittierte-traeger-dateien-tragen-keine-werkzeug-kennung`,
 `slice-emittierte-dateien-tragen-keine-nicht-aufloesende-kennung`. Geteilte Ursache: dieselbe
@@ -50,20 +51,26 @@ Default-Commit-Text der Selbstprüfung (`SELBSTPRUEFUNG_MSG_GRUEN`) in `selbstpr
 - **Prosa-Verweise ohne Ziffernform** und die Frage, ob ein Ersatz-Wortlaut die Zusage trägt.
   *Anderer Vorgang:* Urteil des Reviews, kein Sensor.
 - **Dogfood-Skripte und Quell-Kommentare des Werkzeugs.** *Anderer Vorgang:* Dogfood-Ebene
-  ([`MR-059`](../../../../harness/conventions.md#mr-059) Setzung 1).
+  ([`MR-059`](../../../../harness/conventions.md#mr-059) Setzung 1). Ausgenommen
+  `harness/tools/traeger-fetch.sh`: er zieht als erzwungene Folge mit, weil
+  `test/traeger-fetch.bats` (Fall *„transport-skript: der Dogfood-Zwilling ist byte-gleich mit dem
+  emittierten"*, `cmp`) ihn byte-gleich zur Vorlage hält.
+- **Namensform-Kennungen** (`slice-<name>`). *Bestand bleibt:* mit einem einfachen Muster nicht von
+  Werkzeugnamen (`slice-mv`) trennbar; `GRENZE` im Testkopf, Register (§7).
 - **Zweige, die der Test nicht fährt** (nicht gesetzte Flag-Kombinationen). *Bestand bleibt:* benannte
   Lücke.
 
 ## 2. Definition of Done
 
-- [ ] **1 — Wortlaut statt Kennung:** die Kommentare und Meldungen aller emittierten Dateien
+- [x] **1 — Wortlaut statt Kennung:** die Kommentare und Meldungen aller emittierten Dateien
       (Träger-Familie `traeger-fetch.sh`/`traeger.mk` und die übrigen) tragen keine Kennung außer den
       zwei Nutzlast-Zeilen; Tests, die eine Meldung zitieren (`grep -rn '<präfix>:' internal test`),
       ziehen mit und halten die Aussage statt der Kennung.
       **Rot-Werkzeug:** der Wächter aus Liefer-Punkt 2, zuerst über dem unveränderten Bestand
       gefahren (`make test-go`): rot, und seine Meldung nennt je Datei die Fundmenge; nach dem
       Nachzug grün mit genau den zwei Nutzlast-Zeilen.
-- [ ] **2 — Wächter:** ein Go-Test in `internal/emit/` emittiert jede Lauf-Variante (Sprache,
+- [x] **2 — Wächter:** ein Go-Test in `cmd/ai-harness-init/` (über `run()`, damit auch die
+      `internal/gen`-Emission) emittiert jede Lauf-Variante (Sprache,
       `--arch`, mit/ohne Erfassung) in ein Temp-Verzeichnis und vergleicht die Fundmenge mit der
       namentlichen Liste *Datei → Kennungs-Menge* auf Gleichheit in beide Richtungen, über die
       **reale** Emission. **Rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6), beide
@@ -73,14 +80,14 @@ Default-Commit-Text der Selbstprüfung (`SELBSTPRUEFUNG_MSG_GRUEN`) in `selbstpr
       einer setzt eine erfundene Kennung in eine emittierte Vorlage, einer streicht eine Nutzlast-Zeile
       aus der Ausnahme-Liste des Tests; `make mutate MUTATE_CASES=<nr>` meldet beide gebunden, die
       Fehlermeldung ist gelesen und als `expect:` eingetragen.
-- [ ] `make gates` grün; `make mutate` für die zwei neuen Fälle ohne Befund.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün; `make mutate` für die zwei neuen Fälle ohne Befund.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen).
 
 ## 3. Plan (vor Code)
@@ -89,7 +96,9 @@ Default-Commit-Text der Selbstprüfung (`SELBSTPRUEFUNG_MSG_GRUEN`) in `selbstpr
 |---|---|---|
 | `internal/emit/templates/**`, `internal/emit/*.go` (Meldungs-Strings) | update | Liefer-Punkt 1 |
 | Tests, die eine geänderte Meldung zitieren | update | Liefer-Punkt 1 |
-| `internal/emit/*_test.go` (neuer Wächter), `test/mutations/` | neu | Liefer-Punkt 2 — [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| `internal/gen/*.go` (Kommentare der generierten Dateien) | update | Liefer-Punkt 1 |
+| `harness/tools/traeger-fetch.sh` | update | Folge der Byte-Gleichheit mit der Vorlage (`test/traeger-fetch.bats`) |
+| `cmd/ai-harness-init/kennungen_test.go` (neuer Wächter), `test/mutations/` | neu | Liefer-Punkt 2 — [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 
 ## 4. Trigger
 
@@ -113,20 +122,42 @@ Default-Commit-Text der Selbstprüfung (`SELBSTPRUEFUNG_MSG_GRUEN`) in `selbstpr
 ## 6. Risiken und offene Punkte
 
 - **Eine Meldung verliert mit der Kennung die einzige Fundstelle für den Anwender.** — **Ausgang:**
-  offen bis zur Closure.
-- **Eine Lauf-Variante emittiert eine Datei, die der Test nicht fährt.** — **Ausgang:** offen bis zur
-  Closure.
-- **Der Ersatz-Wortlaut trägt die Zusage nicht.** — **Ausgang:** offen bis zur Closure (Urteil des
-  Reviews).
+  weiter offen — in den emittierten Dateien nennt jede Meldung weiter, was fehlt (Review (a)); die
+  Laufzeit-Meldungen des Binärs tragen weiter Kennungen, die im Ziel nicht auflösen (Review INFO-1):
+  Register
+  [`BEO-ALL/laufzeit-meldung-traegt-im-ziel-nicht-aufloesende-kennung`](../observations/BEO-ALL/laufzeit-meldung-traegt-im-ziel-nicht-aufloesende-kennung/observation.md).
+- **Eine Lauf-Variante emittiert eine Datei, die der Test nicht fährt.** — **Ausgang:** entfallen —
+  add-lang im Unterverzeichnis per Probe ohne Fund (Review (b)); die nicht gefahrenen
+  Flag-Kombinationen sind §1-Ausschluss und als `GRENZE` im Testkopf benannt.
+- **Der Ersatz-Wortlaut trägt die Zusage nicht.** — **Ausgang:** entfallen — alle geänderten Zeilen
+  gelesen, keine Zusage verloren (Review (a)).
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+**Rolle:** Planner · **Datum:** 2026-10-08
+
+- **Was hat funktioniert:** DoD 1 und 2 bestätigt
+  ([Verifikation](../../../reviews/2026-10-07-kennungen-verifikation.md)); DoD 1 rot am realen
+  Vorzustand (`internal/` auf `c5bc8656^`, 16 Dateien mit Fundmenge), danach grün mit genau den zwei
+  Nutzlast-Zeilen. Fälle 558, 559, 560 binden (`make mutate MUTATE_CASES=…` → ok, 0 Befund(e)).
+- **Was ging anders als geplant:** HIGH-1 des [Reviews](../../../reviews/2026-10-07-kennungen-review.md)
+  (Formen-Grenze ungenannt) behoben in `78dd879f`: das Muster erkennt zusätzlich `SPEC-`, `CO-`,
+  `slice-NNN`, `welle-NN`. Testort `cmd/` statt `internal/emit/` und die Mitänderung von
+  `harness/tools/traeger-fetch.sh` standen in keinem Plan-Text; §1/§2/§3 nachgezogen.
+- **Steering-Loop-Eintrag:** neuer Sensor —
+  `TestEmittierteDateienTragenNurImZielAufloesendeKennungen` in `cmd/ai-harness-init/kennungen_test.go`
+  hält die Kennungen der realen Emission (sieben Lauf-Varianten) gegen die namentliche Ausnahme-Liste.
+  Grenze: Laufzeit-Meldungen, Namensform-Kennungen, `d-check.mk` als Fixture.
+- **Beobachtungs-Register (`../observations/`):** neu
+  [`BEO-ALL/laufzeit-meldung-traegt-im-ziel-nicht-aufloesende-kennung`](../observations/BEO-ALL/laufzeit-meldung-traegt-im-ziel-nicht-aufloesende-kennung/observation.md)
+  und
+  [`BEO-ALL/namensform-kennung-in-emittierter-datei-ohne-sensor`](../observations/BEO-ALL/namensform-kennung-in-emittierter-datei-ohne-sensor/observation.md)
+  (je 1 Beleg).
+- **Folge-Slices:** keine.
+- **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines. ADR: kein
+  Re-Evaluierungs-Trigger eingetreten. Hard Rules: keine entfernt.
+- **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
