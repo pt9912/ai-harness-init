@@ -135,6 +135,9 @@ type sources struct {
 	// wie die Baseline-Quelle, weil der add-lang-Pfad — anders als der Bootstrap —
 	// netzlose ERFOLGS-Faelle hat, die sonst an Docker haengen wuerden.
 	archMK emit.PrintMK
+	// docMK liefert das Doc-Gate-Fragment (`d-check --print-mk`); injiziert, damit der
+	// Bootstrap-Erfolgsfall netzlos testbar ist.
+	docMK emit.PrintMK
 }
 
 // run parst die Argumente und liefert den Exit-Code. Ein-/Ausgabe, das
@@ -385,7 +388,8 @@ func addLang(targetDir, path, lang, arch string, src sources, stdout, stderr io.
 // meldet. Ohne neues Target keine dieser Zeilen; im Erstlauf eine Zeile mit den Zahlen statt
 // Einzelzeilen (emit.WerkzeugIndex, ERSTLAUF). Grenze: die Gate-Eigenschaft ist die
 // Klassifikation des Index (GATE_CHECKS und `gates`), nicht ein Lauf von `make gates`; ein
-// entfallenes Target nennt die Meldung nicht. Gehalten von TestRun_AddLangMeldetNeueTargets.
+// entfallenes Target nennt die Meldung nicht. Gehalten von TestRun_AddLangMeldetNeueTargets
+// (add-lang) und TestRun_BootstrapMeldetNeueTargets (Bootstrap).
 func meldeWerkzeugIndex(stdout io.Writer, b emit.WerkzeugIndexBericht) {
 	if b.Erstlauf {
 		fmt.Fprintf(stdout, "ai-harness-init: %s angelegt — %d Targets, davon %d in der Gate-Tabelle; ohne vorigen Stand keine Einzelnennung.\n",
@@ -541,7 +545,7 @@ func bootstrap(targetDir, lang, name, arch string, src sources, stdout, stderr i
 		Image:  envOr("DCHECK_IMAGE", emit.DefaultImage),
 		Digest: envOr("DCHECK_DIGEST", emit.DefaultDigest),
 	}
-	if err := emitAll(targetDir, skelDir, tag, name, lang, version, arch, hasLang, opts, src.archMK, stderr); err != nil {
+	if err := emitAll(targetDir, skelDir, tag, name, lang, version, arch, hasLang, opts, src.archMK, src.docMK, stderr); err != nil {
 		fmt.Fprintln(stderr, "Fehler:", err)
 		return 1
 	}
@@ -572,8 +576,8 @@ func bootstrap(targetDir, lang, name, arch string, src sources, stdout, stderr i
 // notice ist der Kanal fuer einen Schritt, der AUSFAELLT, ohne den Bootstrap zu
 // beenden — heute nur die Erfassungsschicht (ADR-0022 Festlegung 5a): scheitert die
 // Ablage des Traegers, nennt Enforce dort den Grund und gibt keinen Fehler zurueck.
-func emitAll(targetDir, skelDir, tag, name, lang, version, arch string, hasLang bool, opts emit.Options, archMK emit.PrintMK, notice io.Writer) error {
-	if err := emit.DocGate(context.Background(), targetDir, opts); err != nil {
+func emitAll(targetDir, skelDir, tag, name, lang, version, arch string, hasLang bool, opts emit.Options, archMK, docMK emit.PrintMK, notice io.Writer) error {
+	if err := emit.DocGate(context.Background(), targetDir, opts, docMK); err != nil {
 		return err
 	}
 	if err := emit.BaselineVerify(targetDir); err != nil {
@@ -754,5 +758,6 @@ func initSources() sources {
 		baseline:    fetch.DownloadBaseline,
 		baselineSHA: envOr("BASELINE_SHA256", fetch.DefaultBaselineSHA256),
 		archMK:      emit.DockerPrintMK,
+		docMK:       emit.DockerPrintMK,
 	}
 }

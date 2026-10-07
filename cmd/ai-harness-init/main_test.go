@@ -23,11 +23,11 @@ import (
 
 // baselineFixture liefert ein minimales Bundle (beide Baeume) samt seinem
 // sha256 — so traegt der Test denselben Pin, den run() prueft, ohne Netz.
-func baselineFixture(t *testing.T) (fetch.AssetFetch, string) {
+func baselineFixture(t *testing.T, extra ...struct{ name, content string }) (fetch.AssetFetch, string) {
 	t.Helper()
 	var buf bytes.Buffer
 	zw := zip.NewWriter(&buf)
-	for _, e := range []struct{ name, content string }{
+	for _, e := range append([]struct{ name, content string }{
 		{"regelwerk/README.md", "index"},
 		// Zwei Root-Marker: emit.TemplateTargets (Phase-3-Pre-Flight) verlangt via
 		// checkRoot mindestens zwei, damit ein einzelnes Upstream-Rename den
@@ -35,7 +35,7 @@ func baselineFixture(t *testing.T) (fetch.AssetFetch, string) {
 		// schon an checkRoot scheitern, nicht an der zu testenden Kollision.
 		{"templates/AGENTS.template.md", "agents"},
 		{"templates/spec/lastenheft.template.md", "lastenheft"},
-	} {
+	}, extra...) {
 		w, err := zw.Create(e.name)
 		if err != nil {
 			t.Fatalf("zip Create %s: %v", e.name, err)
@@ -77,7 +77,7 @@ func archMKFixture() emit.PrintMK {
 func testSources(t *testing.T) sources {
 	t.Helper()
 	asset, sum := baselineFixture(t)
-	return sources{baseline: asset, baselineSHA: sum, archMK: archMKFixture()}
+	return sources{baseline: asset, baselineSHA: sum, archMK: archMKFixture(), docMK: emit.DockerPrintMK}
 }
 
 // gitRepo legt ein temporaeres, leeres Git-Repo an. Der Zielordner des
@@ -142,8 +142,9 @@ func TestHelp_NenntDieZweiKlassenDesReLaufs(t *testing.T) {
 }
 
 // TestRun deckt die Arg-Parser-Pfade von LH-FA-01 ab (Exit-Codes + korrekter Stream).
-// Der erfolgreiche Bootstrap ruft `docker run <d-check>` (Doc-Gate) — kein Unit-Fall;
-// er wird in Tier 2 (`make smoke`) verifiziert. Diese Fälle kehren vor dem Fetch/Emit zurück.
+// Den erfolgreichen Bootstrap mit realem `docker run <d-check>` (Doc-Gate) verifiziert Tier 2
+// (`make smoke`); netzlos mit Attrappe faehrt ihn TestRun_BootstrapMeldetNeueTargets. Diese
+// Fälle kehren vor dem Fetch/Emit zurück.
 func TestRun(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -1039,5 +1040,50 @@ func TestRun_AddLangMeldetNeueTargets(t *testing.T) {
 	}
 	if strings.Contains(out.String(), "make ") || strings.Contains(out.String(), "angelegt") {
 		t.Errorf("Re-Lauf ohne neues Target nennt eines, stdout:\n%s", out.String())
+	}
+}
+
+// docMKFixture ist die netzlose Attrappe von `d-check --print-mk`: die Roh-Ausgabe, gegen die
+// internal/emit AdaptMK prueft. Sie ersetzt nur den Docker-Lauf; Adaption und Schreiben laufen
+// real.
+func docMKFixture(t *testing.T) emit.PrintMK {
+	t.Helper()
+	raw, err := os.ReadFile(filepath.Join("..", "..", "internal", "emit", "testdata", "raw-print-mk.txt"))
+	if err != nil {
+		t.Fatalf("Fixture lesen: %v", err)
+	}
+	return func(context.Context, string) ([]byte, error) { return raw, nil }
+}
+
+// TestRun_BootstrapMeldetNeueTargets haelt die Meldung im Bootstrap-Pfad: ein sprachloser
+// Bootstrap legt den Werkzeug-Teil an (Zahlen-Zeile), ein zweiter mit --lang go bringt das
+// Code-Gate-Fragment und nennt dessen Targets mit der Marke NEUES GATE. Rot wird der Fall,
+// wenn der Bootstrap den Bericht nicht an meldeWerkzeugIndex gibt.
+func TestRun_BootstrapMeldetNeueTargets(t *testing.T) {
+	dir := gitRepo(t)
+	src := testSources(t)
+	// Der Erfolgsfall emittiert auch die Root-README; ihre Vorlage braucht der Bootstrap.
+	src.baseline, src.baselineSHA = baselineFixture(t, struct{ name, content string }{
+		"templates/project-readme.template.md", "# <Projektname>\n"})
+	src.docMK = docMKFixture(t)
+	var out, errb bytes.Buffer
+	if code := run([]string{dir}, dir, src, &out, &errb); code != 0 {
+		t.Fatalf("erster Bootstrap exit %d: %q", code, errb.String())
+	}
+	if !strings.Contains(out.String(), "harness/mk/ai-harness-init.md angelegt — ") {
+		t.Errorf("Erstlauf: erwartet die Zahlen-Zeile, stdout:\n%s", out.String())
+	}
+	out.Reset()
+	if code := run([]string{"--lang", "go", dir}, dir, src, &out, &errb); code != 0 {
+		t.Fatalf("zweiter Bootstrap exit %d: %q", code, errb.String())
+	}
+	for _, n := range []string{"lint", "build", "test"} {
+		want := "ai-harness-init: >>> NEUES GATE: make " + n + " — neu in der Gate-Tabelle von harness/mk/ai-harness-init.md.\n"
+		if !strings.Contains(out.String(), want) {
+			t.Errorf("stdout nennt das neue Gate %s nicht, stdout:\n%s", n, out.String())
+		}
+	}
+	if strings.Contains(out.String(), "angelegt") || !strings.Contains(out.String(), "das Doku-Gate meldet sie nicht") {
+		t.Errorf("zweiter Bootstrap: Zahlen-Zeile statt Einzelnennung oder der Satz zum Doku-Gate fehlt, stdout:\n%s", out.String())
 	}
 }

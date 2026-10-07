@@ -169,9 +169,11 @@ func (o Options) RunRef() string {
 // Idempotenz-Klasse (ADR-0007): `.d-check.yml` ist SKIP-IF-PRESENT (Adopter-
 // Boden — er kann Module aktivieren), `d-check.mk` + `doc-gate.mk` sind KONVERGENT (tool-
 // generiert, heilen Drift/Digest-Bump). Reihenfolge: erst die fallierbaren Schritte
-// (docker --print-mk, Adaption), dann die Schreibvorgaenge — kein halb geschriebener Stand.
-func DocGate(ctx context.Context, targetDir string, opts Options) error {
-	raw, err := printMK(ctx, opts.RunRef())
+// (pm: `d-check --print-mk`, Adaption), dann die Schreibvorgaenge — kein halb geschriebener
+// Stand. pm ist im Lauf DockerPrintMK; injiziert, damit der Bootstrap-Erfolgsfall netzlos
+// testbar ist.
+func DocGate(ctx context.Context, targetDir string, opts Options, pm PrintMK) error {
+	raw, err := pm(ctx, opts.RunRef())
 	if err != nil {
 		return err
 	}
