@@ -1,8 +1,10 @@
 **Stand:** offen
 
-Unterhalb der Schwelle (2×,
+Schwelle erreicht (3×,
 `ls docs/plan/planning/observations/BEO-ALL/span-feld-bedeutung-wechselt-ohne-fassungs-angabe/evidence/*.md | wc -l`,
-gelesen 2026-09-27, keine Erwartung); `offen` ist hier der Normalzustand und kein Ausgang. Ein Wächter besteht nicht: Kein Feld des Span-Schemas
-trägt eine Fassung, und der Bestand wird nicht nachgezogen. Betroffen sind zwei Felder, `program` (zwei Vorgänge) und `argc`
-(seit `slice-204-das-programm-feld-nennt-das-programm`). Solange kein Leser ein Feld über die Zeit vergleicht, hat die Klasse keinen
-Schaden: `harness/tools/hook-overhead.sh` verträgt beide Bedeutungen, `span-report` liest die Felder nicht.
+gelesen 2026-10-07, keine Erwartung). `offen` steht zwischen dem dritten Beleg und dem Lese-Schritt der
+nächsten Welle-Closure, der den Ausgang zuweist (Baseline-Regelwerk `modul-06-roadmap.md` §Das
+Beobachtungs-Register). Ein Wächter besteht nicht: Kein Feld des Span-Schemas trägt eine Fassung, und
+der Bestand wird nicht nachgezogen. Betroffen sind `program`, `argc` und die zwei Cache-Zähler
+(`SPEC-024`). Den Cache-Status liest kein Leser über die Zeit; `harness/tools/hook-overhead.sh` und
+`span-report` lesen die betroffenen Felder nicht als Zeitreihe.

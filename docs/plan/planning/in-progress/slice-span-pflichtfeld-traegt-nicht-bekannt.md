@@ -97,30 +97,30 @@ Draht-Form.
 
 ## 2. Definition of Done
 
-- [ ] **1 — Spezifikation:** `SPEC-024` steht auf `Pflicht`; eine Festlegungs-Zeile in §5 nennt die
+- [x] **1 — Spezifikation:** `SPEC-024` steht auf `Pflicht`; eine Festlegungs-Zeile in §5 nennt die
       Draht-Form der Kennzeichnung *nicht bekannt* und wie die Quelle genannt wird, mit
       Bindungs-Spalte nach [`MR-075`](../../../../harness/conventions.md#mr-075); `SPEC-055` führt
       den Cache-Status nicht mehr als Abweichung; je Feld `SPEC-010`/`011`/`012` steht, ob `""`
       *nicht bekannt* heißt oder einen Wert trägt.
-- [ ] **2 — Erfassung, Feldliste und Tests:** Ein Span aus einer Payload ohne `usage` trägt beim
+- [x] **2 — Erfassung, Feldliste und Tests:** Ein Span aus einer Payload ohne `usage` trägt beim
       Cache-Status die Kennzeichnung, einer mit `usage` die Zähler; die Feldliste
       (`span.FieldList`, emittiert verbatim) nennt sie. **Rot gesehen**
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6): die Erfassung lässt das Feld weg, schreibt `0`
       oder `""` — der benannte Test wird mit einer Meldung über genau dieses Feld rot; ein Fall in
       `test/mutations/` hält die Zusage ([`make mutate`](../../../../harness/sensors/mutate.md) mit
       `MUTATE_CASES`).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün ([Verifikation](../../../reviews/2026-10-07-cache-status-verifikation.md); nach `06f7c614` EXIT 0).
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Übergabe an den Architect: [`MR-076`](../../../../harness/conventions.md#mr-076) ist nach dem
+- [x] Übergabe an den Architect (abgehakt mit verschobenem Kriterium, §7 Planner-Entscheidung): [`MR-076`](../../../../harness/conventions.md#mr-076) ist nach dem
       Umstellungs-Commit aufgehoben (Kopf und Zeiger,
       [`MR-020`](../../../../harness/conventions.md#mr-020)), eigener Architect-Commit — Bedingung
       der Closure.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen).
 
 ## 3. Plan (vor Code)
@@ -170,26 +170,71 @@ bleibt in `in-progress/`.
   Spans vor und nach der Umstellung stehen nebeneinander.
   `span-feld-bedeutung-wechselt-ohne-fassungs-angabe` steht bei
   2 Belegen; ein dritter ist eine Lücke mit
-  eigenem Folge-Slice. — **Ausgang:** offen bis zur Closure.
+  eigenem Folge-Slice. — **Ausgang:** weiter offen → Register: `span-feld-bedeutung-wechselt-ohne-fassungs-angabe` erreicht mit diesem Slice 3×, den Ausgang weist der Lese-Schritt der nächsten Welle-Closure zu.
 - **Die Kennzeichnung wird als Wert gelesen** — ein Leser, der summiert, zählte sie beim
-  Cache-Status als `0`; beim Cache-Status liest heute keiner. — **Ausgang:** offen bis zur Closure.
+  Cache-Status als `0`; beim Cache-Status liest heute keiner. — **Ausgang:** entfallen — die Kennzeichnung ist eine Zeichenkette (`SPEC-087`), ein summierender Leser kann sie nicht als `0` lesen, und den Cache-Status liest keiner; der Leser von `agent_role` liegt bei `slice-agent-role-traegt-nicht-bekannt`.
 - **Feldliste und Träger eines Ziels auf verschiedenem Stand** — gemessen: je Release-Tag stimmen
   Feldliste und Träger überein; ein Werkzeug von unveröffentlichtem `main` schreibt die Feldliste mit
   *Pflicht*, während `make traeger-fetch` den gepinnten Träger `v0.2.8` holt, der das Feld weglässt.
-  Der nächste Release (`v0.3.0`) schließt die Lücke. — **Ausgang:** offen bis zur Closure.
+  Der nächste Release (`v0.3.0`) schließt die Lücke. — **Ausgang:** weiter offen → Register: Beleg in `BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht` (Review I-1 bestätigt die Lage); die Lücke schließt der Release `v0.3.0`, Träger ist der Release-Schnitt.
 - **Die Kurs-Regel gilt hier nur verengt** — `SPEC-087` bindet die Kennzeichnung allein an die
   Cache-Zähler; `agent_role` bleibt leer, `SPEC-043` trägt weiter *(Abweichung 3)* gegen
-  `modul-15` am Tag `v6.16.0`. — **Ausgang:** offen bis zur Closure; Adresse
+  `modul-15` am Tag `v6.16.0`. — **Ausgang:** eingetreten → Folge-Slice
   `slice-agent-role-traegt-nicht-bekannt` (§1).
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+**Rolle:** Planner · **Datum:** 2026-10-07
+
+- **Was hat funktioniert:** `SPEC-024` steht auf `Pflicht`, `SPEC-087` nennt die Draht-Form
+  `nicht bekannt: <Quelle>`; Umstellung `91af2b67`. Fünf Mutations-Fälle (536–540) halten die Zusage,
+  je rot gesehen mit gelesener Meldung
+  ([Verifikation](../../../reviews/2026-10-07-cache-status-verifikation.md) §Rot-Belege). Review:
+  0 HIGH, M-1/L-1/L-2 behoben in `b0c73625`
+  ([Review](../../../reviews/2026-10-07-cache-status-review.md)).
+- **Was ging anders als geplant:** Die DoD nannte die Eingaben *ohne `usage`* und *mit `usage`*;
+  `SPEC-087` sagt für jeden nicht gelieferten Zähler zu. Der Fall *`usage` ohne Cache-Schlüssel* war
+  unbewacht (Verifikation V-1) und ist in `06f7c614` nachgezogen (Test-Teilfall, Fall 540, `make gates`
+  EXIT 0). Damit ist DoD 2 bestätigt, nicht mehr bedingt.
+- **Planner-Entscheidung — `SPEC-055` (Hinweis des Implementer):** Die Aufzählung in `SPEC-055` nennt
+  *`usage` ohne Cache-Schlüssel* nicht. Kein DoD-Mangel: DoD 1 verlangt, dass `SPEC-055` den
+  Cache-Status nicht mehr als Abweichung führt, und die allgemeine Regel `SPEC-087` trägt den Fall samt
+  Wächter. Die Präzisierung geht an `slice-agent-role-traegt-nicht-bekannt` (§1 Punkt 3), der `SPEC-087`
+  ohnehin weitet.
+- **Planner-Entscheidung — verschobenes Abnahmekriterium (DoD 5, Closure-Trigger 2 erste Hälfte):**
+  Abgehakt ist die **erteilte Übergabe** an den Architect. Die Aufhebung von
+  [`MR-076`](../../../../harness/conventions.md#mr-076) ist Folgepflicht in eigenem Architect-Commit
+  nach dieser Closure ([ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md) Festlegung 4
+  Punkt 2 bindet sie an den Umstellungs-Commit, nicht an die Closure). Bis dahin führt der
+  Adaptions-Block eine Abweichung, die nicht mehr besteht. Kein Sensor hält das, Träger ist der
+  Architect-Lauf. Die zweite Hälfte von Closure-Trigger 2 hält:
+  `grep -c "SPEC-024.*| Pflicht |" spec/spezifikation.md` → **1**. Der DoD-Wortlaut bleibt stehen.
+- **Übergaben an `slice-agent-role-traegt-nicht-bekannt` (`open/`, §1/§6):** Verifikation V-2
+  (Rang-1-Lesart von [`LH-FA-13`](../../../../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans)
+  *Leer heißt unbekannt* gegen `SPEC-011`/`012`) und Review L-3 (`references()` liefert `[]` auch bei
+  unlesbarer Slice-Datei). Beide gehören in den Change Request zu
+  [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung).
+- **Steering-Loop-Eintrag:** *Geschärfte Regel*. Ein DoD-Rot-Punkt nennt die Fallmenge der
+  Spec-Zusage, die er liefert, nicht eine Auswahl ihrer Eingaben. Ein Feld `liegt in` gibt es nicht,
+  weil mit diesem Slice nichts verkörpert ist. Die Klasse zählt im Register (unten).
+- **Beobachtungs-Register (`../observations/`):**
+  [`BEO-ALL/dod-rot-punkt-nennt-eingaben-enger-als-die-spec-zusage`](../observations/BEO-ALL/dod-rot-punkt-nennt-eingaben-enger-als-die-spec-zusage/observation.md)
+  neu (1×);
+  [`BEO-ALL/span-feld-bedeutung-wechselt-ohne-fassungs-angabe`](../observations/BEO-ALL/span-feld-bedeutung-wechselt-ohne-fassungs-angabe/observation.md)
+  erreicht **3×**;
+  [`BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere`](../observations/BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere/observation.md)
+  (Review L-1) steht bei 5×; [`BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`](../observations/BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/observation.md)
+  (Risiko 3, Review I-1) trägt einen weiteren Beleg und bleibt verkörpert. Die zwei offenen Einträge über der Schwelle bleiben `offen`; den Ausgang weist der
+  Lese-Schritt der nächsten Welle-Closure zu, denn das Repo fährt Wellen. Review M-1 (toleranter
+  Zahl-Parser liest `null` als `0`) und L-2 (Meldung nennt fremde Ursache) sind behoben und benannt,
+  nicht gezählt.
+- **Folge-Slices:** keiner neu; Adresse der Übergaben ist `slice-agent-role-traegt-nicht-bekannt`
+  (`open/`).
+- **Trigger-Audit:** Carveouts: keiner neu und keiner berührt. Bootstrap-aware Gates: keines berührt.
+  ADR: [ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md) `Accepted`, Festlegung 4
+  Punkt 2 offen beim Architect (oben). Hard Rules: keine mit Auflösungs-Trigger aus diesem Vorgang.
+- **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
