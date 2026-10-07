@@ -67,8 +67,10 @@ gesetzter Pin ihn schlägt ([ADR-0059](../../adr/0059-sha256sums-reisen-als-rele
 - [ ] **3 — Sicht und Kopf-Sätze:** Deklaration von Stufe 5 und der `GRENZE`-Kommentar von
       `klon_traeger_fetch` nennen beide Kanäle; `make e2e-abdeckung` zieht
       [`docs/user/e2e-abdeckung.md`](../../../user/e2e-abdeckung.md) nach; der Laufzeit-Satz in
-      `test/mutations/553-…` und `554-…` (und in den zwei neuen Fällen) nennt die gemessene
-      Dauer aus der Zeitzeile von `make mutate` statt „läuft fast voll durch" (INFO-1 des
+      `test/mutations/553-…` und `554-…` (und in den zwei neuen Fällen) nennt statt „läuft fast
+      voll durch" die Grenze — der Lauf bricht an der Träger-Stufe ab, früh im Lauf — **ohne
+      Zahl**: eine Dauer ist das Protokoll eines Laufs und nach `AGENTS.md` §3.7 kein
+      Kommentar-Inhalt (INFO-1 des
       [Reviews](../../../reviews/2026-10-07-traeger-pin-review.md)).
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
@@ -111,6 +113,11 @@ Kein Produkt-Code: das emittierte `traeger-fetch.sh` bleibt unverändert, es ist
 
 - **Weitere geerbte Exporte** (`TRAEGER_CARRIER`) an derselben Stufe. — **Ausgang:** offen bis zur
   Closure.
+- **Die Erfolgsmeldung von (b) unterscheidet die Kanäle nicht:** (b) prüft `Digest verifiziert`,
+  das in beiden Kanälen gleich lautet; dass (b) den Manifest-Kanal fährt, hält allein der
+  Mutationsfall 556 unter `make mutate`, nicht `make gates` (INFO-1 des
+  [Reviews](../../../reviews/2026-10-07-sha256sums-review.md)). Grenze, kein Liefer-Punkt.
+  — **Ausgang:** offen bis zur Closure.
 
 ## 7. Closure-Notiz
 
