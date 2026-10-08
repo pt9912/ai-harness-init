@@ -1,6 +1,9 @@
-**Stand:** gestrichen
+**Stand:** verkörpert
 
-Kennung: `slice-baseline-wird-je-release-adoptiert` — ein Adoptions-Rhythmus *je gemeldete Version
-ein Sprung*; hängt an der Entscheidung des Auftraggebers.
+Zielort: `Makefile:baseline-freshness`, nächtlich gefahren in `.github/workflows/upstream-drift.yml`
+— meldet jeden Upstream-Tag, der neuer ist als `BASELINE_TAG`; die Sprungweite ist damit an jedem
+Release sichtbar. Ob adoptiert wird, entscheidet der Auftraggeber; einen Adoptions-Rhythmus setzt
+der Zielort nicht. Ein Herkunfts-Anker steht nicht: der Sensor bestand vor der Beobachtung.
 
-**Gestrichen als Ablehnung, nicht als Wegfall:** der planende Slice `slice-baseline-wird-je-release-adoptiert` ist entfallen (Auftraggeber-Entscheidung vom 2026-10-08); ein Adoptions-Rhythmus wird nicht gesetzt. Die Beobachtung kann weiter auftreten.
+**Grenze der Verkörperung, benannt.** Der Sensor macht die Weite sichtbar, er begrenzt sie nicht;
+die Kosten eines weiten Sprungs trägt der Vorgang, der ihn vollzieht.
