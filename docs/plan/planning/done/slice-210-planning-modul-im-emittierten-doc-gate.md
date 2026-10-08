@@ -238,6 +238,17 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
   [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
   angewandt, kein Trigger eingetreten. Hard Rules: keine.
 - **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
+- **Paarungen geprüft am 2026-10-08** (nach dem Move): (a) *Anker*: §7 trägt kein Zielort-Feld,
+  nichts zu prüfen. (b) *Folge-Slice*: keiner genannt; die zitierten Kennungen
+  `slice-ortswechsel-zieht-sein-zustandsfeld-nach` und
+  `slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor` stehen in `open/`. (c) *Register*:
+  die zwei genannten Pfade existieren, `evidence/` trägt 25 und 4 Dateien
+  (`ls …/evidence/*.md | wc -l`). Zweite Hälfte über das ganze Register: 3 Verzeichnisse ohne
+  Beleg, namentlich `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+  `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`,
+  `BEO-ALL/planungs-bestand-waechst-schneller-als-er-abgebaut-wird`; nicht als getragen behauptet
+  ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  Festlegung 2). Zusätzlich geprüft von der Closure von `welle-emittiertes-doc-gate`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
