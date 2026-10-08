@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-handbuch-zeigt-den-bestand](../welle-handbuch-zeigt-den-bestand.md) — läuft dort
+**Welle:** [welle-handbuch-zeigt-den-bestand](welle-handbuch-zeigt-den-bestand.md) — läuft dort
 nach slice-191 (Welle-Plan §4).
 
 **Handbuch-Setzung:** das Handbuch trägt nur den Ist-Zustand — keine Kennungen, keine Chronik,

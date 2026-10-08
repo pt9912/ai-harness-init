@@ -19,13 +19,13 @@ zwei Positionen, nicht drei.
 in §6 vollständig und gegen den Emitter gehalten, dazu die Fähigkeiten, die heute nur als Pfad oder
 gar nicht vorkommen (Workflow-Commands, Skills, Pointer-Abschnitt der README, Erfassungsschicht); das
 Formel-Skelett nennt seine eine Fassungs-Ausnahme.** Gegenstand ist der Vertrag aus
-[`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), beschrieben am Ist-Zustand:
+[`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), beschrieben am Ist-Zustand:
 das Handbuch trägt keine Kennungen, keine Chronik und nichts Unimplementiertes.
 
 ## 2. Trigger (Welle startet)
 
 - `welle-adopter-weg-im-ziel` liegt in `done/` — eingetreten
-  ([Closure-Notiz](done/welle-adopter-weg-im-ziel-results.md)).
+  ([Closure-Notiz](welle-adopter-weg-im-ziel-results.md)).
 
 ## 3. Closure-Trigger (Welle schließt)
 
@@ -39,10 +39,10 @@ das Handbuch trägt keine Kennungen, keine Chronik und nichts Unimplementiertes.
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| [slice-formel-skelett-nennt-die-fassungs-ausnahme](done/slice-formel-skelett-nennt-die-fassungs-ausnahme.md) | Das Formel-Skelett nennt die eine Fassungs-Ausnahme | [`ADR-0063`](../adr/0063-das-werkzeug-sagt-seine-fassung.md), [`LH-QA-04`](../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) |
-| [slice-195](done/slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md) | Das Handbuch nennt die zugesagten Fähigkeiten | [`LH-FA-08`](../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren), [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren), [`LH-FA-05`](../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2) |
-| [slice-191](done/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md) | Das Handbuch zeigt den Bestand, den der Bootstrap anlegt | [`LH-FA-02`](../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
-| [slice-111](done/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md) | Was ein Bootstrap anlegt, steht in der Nutzer-Doku | [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
+| [slice-formel-skelett-nennt-die-fassungs-ausnahme](slice-formel-skelett-nennt-die-fassungs-ausnahme.md) | Das Formel-Skelett nennt die eine Fassungs-Ausnahme | [`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md), [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) |
+| [slice-195](slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md) | Das Handbuch nennt die zugesagten Fähigkeiten | [`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren), [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren), [`LH-FA-05`](../../../../spec/lastenheft.md#lh-fa-05--root-readme-emittieren-f1-f2) |
+| [slice-191](slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md) | Das Handbuch zeigt den Bestand, den der Bootstrap anlegt | [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3), [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
+| [slice-111](slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md) | Was ein Bootstrap anlegt, steht in der Nutzer-Doku | [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen), [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
 
 **Reihenfolge** (die Tabelle nennt sie): zuerst das Formel-Skelett — ein Satz, von der offenen
 Frage zu 111/191 unabhängig; dann 195, das den Baum nicht anfasst; dann 191, das die Form von §6

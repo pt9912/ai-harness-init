@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-handbuch-zeigt-den-bestand](../welle-handbuch-zeigt-den-bestand.md) — erster
+**Welle:** [welle-handbuch-zeigt-den-bestand](welle-handbuch-zeigt-den-bestand.md) — erster
 Slice der Welle (Welle-Plan §4).
 
 **Bezug:** [`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md) (Festlegung 1 lässt
