@@ -46,6 +46,7 @@ Gemessen am Stand dieses Commits (keine Erwartungswerte,
 git grep -l 'Dieser Command führt die' -- internal/emit/templates/commands/ | wc -l   # 3 — jede Vorlage nennt ihre ausführende Rolle
 grep -rn 'Anweisungssatz' .harness/baseline/v6.17.0/regelwerk/*.md | wc -l            # 0
 grep -rn 'claude/commands' .harness/baseline/v6.17.0/ | wc -l                         # 1 — Artefakt-Liste, ohne Rollen-Aussage
+grep -c 'R aktualisiert Skill-Datei' .harness/baseline/v6.17.0/regelwerk/modul-08-agentenrollen.md   # 1
 ```
 
 Jeder Ort, den ein Ziel für die Aussage böte, ist **skip-if-present** und gehört damit dem Adopter:
@@ -54,8 +55,11 @@ Jeder Ort, den ein Ziel für die Aussage böte, ist **skip-if-present** und geh�
 und `harness/conventions.md` (Kurs-Vorlagen, eine Idempotenz-Klasse in `Templates`,
 `internal/emit/templates.go`). Ein konvergentes, tool-eigenes Gefäß gibt es — das Fragment, das
 [ADR-0033](0033-wellen-archivierung-als-unterkommando.md) Festlegung 5 für einen Satz wählt —, es
-ist aber **Mechanik**, keine Norm. Die adoptierte Baseline (`v6.17.0`) benennt für Command- oder
-Skill-Artefakte keine schreibende Rolle.
+ist aber **Mechanik**, keine Norm. Die adoptierte Baseline (`v6.17.0`) benennt für Command-Artefakte
+keine schreibende Rolle. Für die Skill-Klasse trägt sie einen Satz — *„R aktualisiert Skill-Datei"*
+(`modul-08-agentenrollen.md` §Konflikt-Pfad als Rollen-Sequenz) —, den
+[ADR-0028](0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) als Präzedenzfall für
+`.harness/skills/reviewer.md` führt.
 
 ## Entscheidung
 
@@ -66,10 +70,12 @@ Commands oder Reviewer-Skills — weder in die Instanzen noch in `AGENTS.md`,
 `harness/conventions.md` oder ein Fragment. **Grund:** Wer welches Norm-Artefakt schreibt, ist
 Rollen-Ordnung des **adoptierenden** Projekts. Eine Aussage dieses Repos wäre dort entweder ein
 einmaliger Vorschlag in einer Datei, die dem Adopter gehört (ein Re-Lauf hält sie nicht), oder eine
-Norm in einem tool-eigenen Mechanik-Gefäß, für die weder Lastenheft noch Baseline eine Quelle
-liefern — sie reichte weiter als ihre Quelle. Was der Adopter braucht, um die Regel selbst zu setzen,
-liegt bereits: jede Command-Vorlage nennt die Rolle, die sie ausführt (Messung oben), und der
-Reviewer-Skill trägt seine Rolle im Namen.
+Norm in einem tool-eigenen Mechanik-Gefäß. Für Commands liefert dafür weder Lastenheft noch Baseline
+eine Quelle — sie reichte weiter als ihre Quelle. Für Skills liefert die Baseline sie bereits selbst:
+der Skill-Satz aus §Kontext reist mit dem vendored Baum ins Ziel und bindet den Adopter dort über
+seine eigene Baseline-Adoption; eine Aussage dieses Repos daneben wäre eine zweite Fassung, die
+driftet. Was der Adopter darüber hinaus braucht, liegt bereits: jede Command-Vorlage nennt die
+Rolle, die sie ausführt (Messung oben), und der Reviewer-Skill trägt seine Rolle im Namen.
 
 **2. Ort, an dem der Adopter die Regel führt.** In **seinem** Konventionsspeicher — als Eintrag im
 Adaptions-Block von `harness/conventions.md` oder als Hard Rule in seiner `AGENTS.md`. Beide legt
@@ -95,14 +101,14 @@ Accept-Übergang dieser ADR.
 |---|---|---|
 | A — nichts entscheiden (Frage bleibt offen) | kein Aufwand | der nächste Lauf beantwortet sie faktisch (`BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`); ADR-0051 Re-Evaluierungs-Trigger 2 bleibt ohne Ausgang |
 | B — Aussage in jede Command-/Skill-Vorlage | sichtbar am Artefakt | skip-if-present: erreicht nur frisch angelegte Dateien, ein Re-Lauf hält sie nicht; Norm ohne Quelle im Ziel; Arbeit am Werkzeug je Datei bei der ausführenden Rolle (ADR-0051 Festlegung 1) |
-| C — Aussage in ein konvergentes, tool-eigenes Gefäß (Fragment oder Baum-Aussage) | ein Re-Lauf hält sie | setzt eine Rollen-Norm im fremden Repo, die weder Lastenheft noch Baseline trägt; Mechanik-Gefäß für Norm-Text; neue Emission samt `full-smoke`-Stufe |
+| C — Aussage in ein konvergentes, tool-eigenes Gefäß (Fragment oder Baum-Aussage) | ein Re-Lauf hält sie | setzt für Commands eine Rollen-Norm im fremden Repo, die weder Lastenheft noch Baseline trägt, und doppelt für Skills den Baseline-Satz; Mechanik-Gefäß für Norm-Text; neue Emission samt `full-smoke`-Stufe |
 | **D — keine Aussage; der Adopter führt die Regel in seinem Konventionsspeicher** | kein Emissions-Aufwand; Eigentum bleibt dort, wo die Datei liegt; die ausführende Rolle steht schon in jeder Vorlage | ein Adopter, der die Regel will, schreibt sie selbst |
 
 ## Konsequenzen
 
 - Positiv: die offene Hälfte der Grenze ist geschlossen, ohne Änderung unter `internal/emit/`.
-- Negativ (akzeptiert): ein Ziel trägt keine Regel, wer seine Commands und Skills schreibt, bis der
-  Adopter sie setzt.
+- Negativ (akzeptiert): ein Ziel trägt keine Regel, wer seine Commands schreibt, bis der Adopter
+  sie setzt; für Skills trägt es nur den Baseline-Satz.
 - Folgepflicht: keine Emissionsänderung, kein Folge-Slice. Beim Accept: Marke in der Index-Zeile
   von ADR-0051.
 
@@ -115,9 +121,11 @@ ist diese Datei.
 
 ## Re-Evaluierungs-Trigger
 
-- Ein künftiger Baseline-Stand benennt eine schreibende Rolle für Command- oder Skill-Artefakte
-  (`grep -rn 'Anweisungssatz' .harness/baseline/<tag>/regelwerk/*.md` wird fündig) — dann ist die
-  Quelle da, und Option C neu zu prüfen.
+- Ein künftiger Baseline-Stand benennt eine schreibende Rolle für Command-Artefakte oder verlangt
+  für Command- oder Skill-Artefakte eine Eigentums-Aussage des erzeugenden Werkzeugs im Ziel — dann
+  ist die Quelle da, und Option C neu zu prüfen. Beobachtet wird beim Baseline-Sprung durch Lesen
+  der Rollen-Regeln in `modul-08-agentenrollen.md`; ein Wort-Grep hielte die Formulierung, nicht
+  die Eigenschaft.
 - Dieses Repo beginnt, ins Ziel eine ADR-Ablage oder eigene Adaptions-Einträge zu emittieren — dann
   existiert ein Ort, an dem es Eigentum regelt.
 - Ein Adopter verlangt die Aussage per Change Request.
