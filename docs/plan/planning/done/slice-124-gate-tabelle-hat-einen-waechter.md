@@ -410,7 +410,7 @@ Rahmen der Welle-Closure ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
 
 Der Adaptions-Block trägt keinen Ort, an dem steht, dass dieses Repo `planning` und `targets` im
 Doc-Gate fährt. Die Übergabe hat einen Träger bekommen statt nur einen Satz in dieser Notiz:
-[slice-212](../open/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md) in `open/`. Der
+[slice-212](../done/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md) in `open/`. Der
 zuerst gemeldete Posten an
 [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)
 Setzung 2 ist entkräftet und wird **nicht** weitergereicht: Aktiviert wurde ein Modul *innerhalb*

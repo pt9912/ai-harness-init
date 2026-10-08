@@ -198,7 +198,7 @@ nimmt sie als **Ausgangslage**, nicht als Ergebnis.
   `structure`) sowie bei den Modul-Slices
   [slice-210](../done/slice-210-planning-modul-im-emittierten-doc-gate.md),
   [slice-211](../done/slice-211-codepaths-im-emittierten-doc-gate.md) und
-  [slice-212](../open/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md). *Es wäre ein
+  [slice-212](../done/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md). *Es wäre ein
   anderer Vorgang.*
 - **Kein Produkt-Code und keine emittierte Vorlage.** Dieser Slice ändert Norm-Text und eine
   Gate-Konfiguration; alles unter `internal/` und `cmd/` bleibt unberührt. *Schicht-Abgrenzung* —

@@ -219,7 +219,7 @@ welches Muster trägt und welcher Cutoff dahinter bleibt. Das ist DoD (2), keine
   Entscheidung. *(Klasse: andere Rolle — es wäre ein anderer Vorgang.)*
 - **Kein Adaptions-Eintrag für die Aktivierung von `structure`.** Denselben Block schreibt derselbe
   Architect; die **Form** dieser Buchung entscheidet
-  [slice-212](../open/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md). **Die Adresse
+  [slice-212](../done/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md). **Die Adresse
   nimmt die Sendung nur unter einer Bedingung an:** slice-212 misst extensional gegen `planning` und
   `targets`; schließt er **vor** diesem Slice, trägt seine Entscheidung die Form, aber nicht diese
   dritte Aktivierung. Der Fall steht als Risiko in §6.
@@ -352,7 +352,7 @@ Zwei beobachtbare Kriterien und ein Lerneintrag:
   [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   in der Zellen-Form einlösbar bleibt, ist eine Form-Entscheidung der Reviewer-Rolle und liegt in
   DoD (1). — **Ausgang:** <…>
-- **Die Aktivierung vergrößert die in [slice-212](../open/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md)
+- **Die Aktivierung vergrößert die in [slice-212](../done/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md)
   gemessene Differenz.** Schließt slice-212 vor diesem Slice, hat die dritte Aktivierung keinen
   Adress-Träger im Adaptions-Block — der Fall, den
   [`uebergabe-an-andere-rolle-ohne-traeger-artefakt`](../observations/BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt/observation.md)
