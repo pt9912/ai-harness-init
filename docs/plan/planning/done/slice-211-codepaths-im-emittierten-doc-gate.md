@@ -145,7 +145,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -297,7 +297,16 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
   [`MR-054`](../../../../harness/conventions.md#mr-054) Setzung 3 für `codepaths` eingelöst, abgebildet durch [`MR-087`](../../../../harness/conventions.md#mr-087) samt Kopf-Marken; kein
   weiterer Trigger eingetreten. Hard Rules: keine.
 - **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
-- **Drei Paarungen:** PAARUNGEN
+- **Paarungen geprüft am 2026-10-08** (nach dem Move): (a) *Anker*: §7 trägt kein Zielort-Feld
+  (`grep -c 'liegt in'` → 0), nichts zu prüfen. (b) *Folge-Slice*: keiner genannt. (c) *Register*:
+  die fünf genannten Pfade existieren, `evidence/` trägt 35, 3, 4, 5 und 3 Dateien
+  (`ls …/evidence/*.md | wc -l`, Reihenfolge wie oben genannt). Zweite Hälfte über das ganze
+  Register: 3 Verzeichnisse ohne Beleg, namentlich
+  `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+  `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`,
+  `BEO-ALL/planungs-bestand-waechst-schneller-als-er-abgebaut-wird`; nicht als getragen behauptet
+  ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  Festlegung 2). Zusätzlich geprüft von der Closure von `welle-emittiertes-doc-gate`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
