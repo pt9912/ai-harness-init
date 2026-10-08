@@ -403,7 +403,7 @@ Baseline-Regelwerk `v6.9.0` · `modul-05-planning-harness.md` §Closure- und Ler
 
   **Lese-Schritt.** **Ein** Eintrag erreicht mit diesem Slice zum ersten Mal 3×:
   `config-kommentar-nennt-anderen-bereich-als-der-eintrag`. Sein Ausgang ist **geplant**, mit
-  Kennung: [`slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand`](../in-progress/slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand.md)
+  Kennung: [`slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand`](../done/slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand.md)
   — er schreibt die Regel, dass die Begründung neben einem Ausnahme-Eintrag den ganzen Gegenstand
   ihres Schlüssels nennt, und deckt beide Ebenen (diese Gate-Konfiguration und die emittierte).
   *Verkörpert* war hier nicht zu setzen: Der Norm-Text gehört dem Architect
@@ -416,7 +416,7 @@ Baseline-Regelwerk `v6.9.0` · `modul-05-planning-harness.md` §Closure- und Ler
   Repo-weit trägt danach kein Eintrag mit mindestens drei Belegen den Stand `offen` — in der Closure
   gemessen, je Verzeichnis die Zahl der Belege gegen die erste Zeile der `state.md`.
 - **Folge-Slices:** **einer, neu** —
-  [`slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand`](../in-progress/slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand.md)
+  [`slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand`](../done/slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand.md)
   (Die Begründung neben einem Ausnahme-Eintrag nennt den ganzen Gegenstand, den ihr Schlüssel stumm
   schaltet) — eine Datei in `open/`, angelegt aus der vendored Vorlage. Er ist der Ausgang des
   Lese-Schritts und trägt keinen der übrigen Befunde.
