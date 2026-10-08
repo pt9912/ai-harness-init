@@ -139,7 +139,7 @@ grep -c 'HOOKS_DIR' Makefile                                                    
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben oder „keine Beobachtung" in §7.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen prüft die Closure von welle-adopter-weg-im-ziel.
+- [x] Die drei Paarungen prüft die Closure von welle-adopter-weg-im-ziel; für diesen Slice nach dem `git mv` geprüft (§7).
 
 ## 3. Plan (vor Code)
 
@@ -255,7 +255,7 @@ Review `docs/reviews/2026-10-08-aktivierung-im-klon-review.md` (0/0/0/1) und Ver
   **Lese-Schritt:** kein Eintrag erreicht mit diesem Slice erstmals 3×.
 - **Folge-Slices:** keine.
 - **Risiken aus §6:** vier, jedes *entfallen* mit Begründung in §6.
-- **Drei Paarungen:** siehe die Zeile nach dem `git mv`.
+- **Paarungen geprüft am 2026-10-08:** (a) Anker — kein Gegenstand, §7 trägt kein Feld `liegt in`; (b) Folge-Slice — keiner genannt; (c) Register — alle drei genannten Verzeichnisse existieren, `ls <eintrag>/evidence/*.md | wc -l` je ≥ 1. Repo-weite zweite Hälfte von (c): 2 Verzeichnisse ohne Beleg (`cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`, `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; Kommando in `close-welle.md` Schritt 3), kein Fund dieser Closure, nicht als getragen behauptet.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
