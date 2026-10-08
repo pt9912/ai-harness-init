@@ -229,7 +229,8 @@ func TestTemplates_StampAndStrip(t *testing.T) {
 // isRecurring-Weiche auf Singleton oder der alte co-located Zweig kehrt zurueck).
 //
 // Gegen den REALEN Kurs-Satz laeuft dieser Test NICHT: er nutzt courseSet(), und
-// `.harness/` ist im Docker-Build-Kontext gar nicht sichtbar (.dockerignore). Die
+// `.harness/baseline/` liegt nicht im Docker-Build-Kontext (.dockerignore laesst von
+// `.harness/` allein `.harness/skills/` hinein). Die
 // Treue der Fixture zum realen Satz haelt `test/courseset-fixture.bats` fest.
 func TestTemplates_RecurringNichtEmittiert(t *testing.T) {
 	dir := t.TempDir()

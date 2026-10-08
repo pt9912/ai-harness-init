@@ -57,7 +57,8 @@ const vorlageWelle = `# <welle-id> — <Titel>
 // den keine echte traegt. Ein Stub, der ihn abdruckt, hat seine Form aus der
 // Datei gelesen — das ist die Eigenschaft, die ADR-0033 Festlegung 3 verlangt.
 // Die Deckung gegen die ECHTEN Vorlagen liegt nicht hier: `.dockerignore` haelt
-// .harness aus dem Build-Kontext der Go-Test-Stufe, und die Platzhalter-Kopplung
+// .harness/baseline aus dem Build-Kontext der Go-Test-Stufe (von .harness/ steht
+// allein .harness/skills/ darin), und die Platzhalter-Kopplung
 // traegt test/archiv-stub-vorlagen.bats.
 func vorlagenBaum(t *testing.T, root string) string {
 	t.Helper()

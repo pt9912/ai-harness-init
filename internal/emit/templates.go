@@ -300,8 +300,9 @@ func TemplateTargets(src fs.FS, name string) ([]string, error) {
 // src ist der Kurs-Template-Satz, gewurzelt am templates/-Verzeichnis — seit
 // slice-022b die vom Bootstrap GEFETCHTE Baseline des Ziels statt eines
 // eingebetteten Duplikats (ADR-0005: eine Quelle, der Kurs). Injiziert als fs.FS,
-// damit die Tests hermetisch bleiben: der reale Baum liegt unter .harness/, das
-// der Docker-Build-Kontext ausschliesst (.dockerignore) — genau der Grund, warum
+// damit die Tests hermetisch bleiben: der reale Baum liegt unter .harness/baseline/,
+// das der Docker-Build-Kontext ausschliesst (.dockerignore laesst von .harness/
+// allein .harness/skills/ hinein) — genau der Grund, warum
 // der alte Drift-Waechter nach bats musste.
 //
 // vorlagen ist der slash-Pfad des Template-Satzes relativ zu targetDir

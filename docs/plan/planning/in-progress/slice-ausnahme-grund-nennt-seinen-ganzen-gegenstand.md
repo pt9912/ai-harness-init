@@ -131,7 +131,9 @@ Aussagen-Berührung steht hier gar nicht.
 | [`internal/emit/templates/`](../../../../internal/emit/templates) (Gate-Vorlage des Ziels) | update | die emittierte Hälfte; der dritte Beleg liegt hier |
 | [`internal/ausnahmegrund/`](../../../../internal/ausnahmegrund) (neu) | neu | die Regel des Wächters aus DoD 2 als ein Paket für beide Ebenen: Ausnahme-Einträge lesen, Gegenstand messen (Glob-Treffer bzw. Inline-Code-Zitate im Prüfbereich), Nennung der Bäume prüfen; dazu der Fall über der `.d-check.yml` dieses Repos |
 | [`cmd/ai-harness-init/`](../../../../cmd/ai-harness-init) (Test) | neu | der Fall über der emittierten Konfiguration: er fährt den realen Bootstrap (netzlos, drei Lauf-Varianten) und misst das Ziel — die Orte unter `.harness/` legt nur `run()` an, ein Test in `internal/emit/` sähe sie nicht |
-| [`test/mutations/`](../../../../test/mutations) | neu | je Ebene ein Fall aus DoD 1, `# verify: test-go` |
+| [`test/mutations/`](../../../../test/mutations) | neu | je Ebene ein Fall aus DoD 1, `# verify: test-go`; dazu der Fall `581` (der Parser übergeht eine unbekannte Form in einer Block-Liste still → `TestEintraege_UnbekannteFormFailClosed` rot) |
+| [`.dockerignore`](../../../../.dockerignore) | update | der Fall über der `.d-check.yml` dieses Repos misst im Go-Test-Build Glob-Treffer und Zitate im Prüfbereich; der Build-Kontext trägt dafür den Markdown-Baum und `.harness/skills/`, von `.harness/` bleiben nur die vendored Baseline und der Lauf-Zustand außen |
+| `internal/emit/templates.go`, `internal/emit/templates_test.go`, `internal/archive/stub_test.go` (Kommentare) | update | drei Kommentare sagten, `.harness/` liege ganz außerhalb des Build-Kontexts; sie nennen jetzt `.harness/baseline/` und die Ausnahme `.harness/skills/` nach `.dockerignore` |
 
 **Fortgeschrieben im Implementierungs-Lauf:** Der Wächter sitzt nicht in `internal/emit/`, sondern
 im neuen Paket und in `cmd/ai-harness-init/` (Begründung in der Tabelle). Gemessen vor den
