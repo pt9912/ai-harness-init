@@ -3,7 +3,7 @@
 # expect: TestDCheckConfig_EntschiedeneModulListe
 #
 # Entfernt "matrix" aus der emittierten modules:-Liste: der Waechter bindet genau
-# [links, anchors, ids, matrix, spans, planning, structure, targets], nicht "mindestens zwei Module" — ohne matrix
+# [links, anchors, ids, matrix, codepaths, spans, planning, structure, targets], nicht "mindestens zwei Module" — ohne matrix
 # in der Liste faerbt er rot.
 set -euo pipefail
-sed -i 's/^modules: \[links, anchors, ids, matrix, spans, planning, structure, targets\]$/modules: [links, anchors, ids, spans, planning, structure, targets]/' internal/emit/templates/d-check.yml
+sed -i 's/^modules: \[links, anchors, ids, matrix, codepaths, spans, planning, structure, targets\]$/modules: [links, anchors, ids, codepaths, spans, planning, structure, targets]/' internal/emit/templates/d-check.yml

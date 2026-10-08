@@ -888,14 +888,14 @@ fi
 echo "full-smoke: Feldlisten-Ortswahl belegt (toter Verweis im Dokument faerbt das docs-check des Ziels rot, danach zurueckgenommen):"
 grep -E "$FELDLISTE_REL:[0-9]+" <<<"$feldzahn_out" | sed -n '1,2s/^/full-smoke:   /p'
 
-# ZAEHNE zu den drei in der emittierten Konfiguration aktiven Modulen ids/matrix/spans —
-# SECHS Gegenbeispiele im gebootstrappten Ziel (AGENTS.md §3.6), nach derselben Form wie der
+# ZAEHNE zu den vier in der emittierten Konfiguration aktiven Modulen ids/matrix/spans/codepaths —
+# SIEBEN Gegenbeispiele im gebootstrappten Ziel (AGENTS.md §3.6), nach derselben Form wie der
 # Feldlisten-Zahn oben: Verletzung einschmuggeln -> docs-check MUSS roeten, MIT der
 # benannten Befund-Art -> zurueckgenommen. matrix traegt vier gepruefte Aussagen und
 # vier eigene Zaehne (matrix-forbidden abwaerts, matrix-downward, matrix-forbidden nach
 # aussen, matrix-forbidden auf dem token: der Klasse adaptionsblock); ids traegt einen
-# (ADR-Kennung) und spans einen; eine Regel ohne eigenes Gegenbeispiel waere
-# gelistet-aber-unbewacht. Die ZWEITE Richtung gehoert bei allen sechs dazu: dieselbe
+# (ADR-Kennung), spans und codepaths je einen; eine Regel ohne eigenes Gegenbeispiel waere
+# gelistet-aber-unbewacht. Die ZWEITE Richtung gehoert bei allen sieben dazu: dieselbe
 # Verletzung MUSS unter dem AELTEREN modules: [links, anchors] gruen bleiben — sonst
 # belegt der Zahn nur "irgendein Modul faengt es", nicht "ERST dieses Modul findet sie".
 modul_zahn_alte_module_gruen() {
@@ -1069,6 +1069,31 @@ echo "full-smoke: spans-Zahn belegt (ungeschlossener Code-Span faerbt spans im Z
 grep -E 'span-unclosed' <<<"$spanszahn_out" | sed -n '1,2s/^/full-smoke:   /p'
 modul_zahn_alte_module_gruen "$tmprepo" "spans-Zahn"
 mv "$spans_doc.orig" "$spans_doc"
+
+# (5) codepath-missing: ein Inline-Code-Pfad unter einer der roots, dessen Ziel es nicht gibt.
+codepaths_doc="$tmprepo/spec/lastenheft.md"
+cp "$codepaths_doc" "$codepaths_doc.orig"
+psed_i '5a\
+\
+Die Festlegung steht in `docs/zahn-nicht-vorhanden.md` (erfundener Pfad, Zahn).
+' "$codepaths_doc"
+codepathszahn_rc=0
+codepathszahn_out="$( make -C "$tmprepo" docs-check 2>&1 )" || codepathszahn_rc=$?
+if [ "$codepathszahn_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — codepaths-Zahn: ein Inline-Code-Pfad ohne Ziel laesst docs-check im Ziel GRUEN: codepaths nicht wirksam (AGENTS.md §3.6)." >&2
+	printf '%s\n' "$codepathszahn_out" >&2
+	exit 1
+fi
+if ! grep -qE 'docs/zahn-nicht-vorhanden\.md.*codepath-missing' <<<"$codepathszahn_out"; then
+	echo "full-smoke: FEHLER — codepaths-Zahn: docs-check im Ziel rot, aber ohne codepath-missing auf dem erfundenen Pfad (rot aus falschem Grund?). Ausgabe:" >&2
+	printf '%s\n' "$codepathszahn_out" >&2
+	einordnen "make docs-check im Ziel (codepaths-Zahn)" "$codepathszahn_out"
+	exit 1
+fi
+echo "full-smoke: codepaths-Zahn belegt (Inline-Code-Pfad ohne Ziel faerbt codepaths im Ziel rot, danach zurueckgenommen):"
+grep -E 'codepath-missing' <<<"$codepathszahn_out" | sed -n '1,2s/^/full-smoke:   /p'
+modul_zahn_alte_module_gruen "$tmprepo" "codepaths-Zahn"
+mv "$codepaths_doc.orig" "$codepaths_doc"
 
 # slice-099 (LH-FA-17 §Leser und LH-FA-16 §Aufbewahrung / ADR-0022 Festlegung 8 und 6 Stueck 2):
 # DER LESER LAEUFT IM ZIEL UEBER DESSEN EIGENEM BESTAND, UND DAS AUFRAEUM-KOMMANDO IST DA.

@@ -679,9 +679,9 @@ const conventionsPathRefNew = "kopiert aus der\ngleichnamigen Eintrags-Vorlage `
 // Nennung ohne Verzeichnis-Segment — der Dateiname bleibt lesbar, zeigt aber
 // nicht mehr auf einen Ort, den es im Ziel-Repo nicht gibt. Ohne den Satzteil
 // unveraendert. Der neutralisierte Defekt ist ein Inline-Code-Pfad, den allein
-// `codepaths` liest — und `codepaths` ist im emittierten Pruefbereich auskommentiert
-// (internal/emit/templates/d-check.yml: modules: [links, anchors]); das emittierte
-// Gate faengt einen Ausfall darum nicht. Dass der Marker die Vorlage des gepinnten
+// `codepaths` liest; `codepaths` ist im emittierten Pruefbereich aktiv, ein Ausfall
+// faerbt darum `make docs-check` des frischen Ziels mit `codepath-missing` rot (der
+// gruene Start in harness/tools/full-smoke.sh). Dass der Marker die Vorlage des gepinnten
 // Kurs-Stands (fetch.DefaultTag) genau einmal trifft, haelt
 // test/neutralisierung-marker.bats am vendored Baum.
 func NeutralizeConventionsTemplateRef(s string) string {
@@ -705,9 +705,9 @@ const carveoutsDoneRefNew = "sondern in ihr eigenes `docs/plan/carveouts/done/` 
 // docs/plan/planning/README.md codepath-sicher: sie setzt denselben
 // d-check:ignore-Marker, den die Baseline in carveout.template.md fuer
 // denselben Ort bereits fuehrt. Ohne die Zeile unveraendert. Der neutralisierte
-// Defekt ist ein Inline-Code-Pfad, den allein `codepaths` liest — und `codepaths`
-// ist im emittierten Pruefbereich auskommentiert (internal/emit/templates/d-check.yml:
-// modules: [links, anchors]); das emittierte Gate faengt einen Ausfall darum nicht.
+// Defekt ist ein Inline-Code-Pfad, den allein `codepaths` liest; `codepaths` ist im
+// emittierten Pruefbereich aktiv, ein Ausfall faerbt darum `make docs-check` des frischen
+// Ziels mit `codepath-missing` rot (der gruene Start in harness/tools/full-smoke.sh).
 // Dass der Marker die Vorlage des gepinnten Kurs-Stands (fetch.DefaultTag) genau
 // einmal trifft, haelt test/neutralisierung-marker.bats am vendored Baum.
 func NeutralizePlanningReadmeCarveoutsDoneRef(s string) string {

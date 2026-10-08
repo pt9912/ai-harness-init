@@ -1,22 +1,25 @@
 # Doku-Referenz-Gate — emittiert von ai-harness-init (Adopter-Baseline).
 # Startgeruest: `d-check --print-config`. Waechst mit den Artefakten:
-# ids/codepaths erst aktivieren, wenn Targets/roots existieren — sonst
+# ein Modul erst aktivieren, wenn seine Targets/roots existieren — sonst
 # Config-Fehler bzw. ein behaupteter, aber leerer Gate (Modul 13).
 scan:
   roots: ["."]
   # .harness/**: tool-interne Ablage (gefetchtes Sprachskelett-Staging) —
   # keine Adopter-Doku, vom Doc-Gate ausgenommen.
   ignore: ["**/*.template.md", ".tmp/**", ".harness/**"]
-modules: [links, anchors, ids, matrix, spans, planning, structure, targets]
+modules: [links, anchors, ids, matrix, codepaths, spans, planning, structure, targets]
 ids:
   patterns:
     - {regex: 'ADR-([A-Z]+-)?\d{4}', target: docs/plan/adr/, link-policy: always}
     # Requirement-Praefix gehoert dem Adopter (er ist in einem frischen Ziel nicht
     # bekannt) — Muster setzen und aktivieren, sobald spec/lastenheft.md eigene
     # Kennungen fuehrt: {regex: '<PREFIX>-[A-Z]{2}-\d{2}', target: spec/lastenheft.md, link-policy: always}
-# codepaths bleibt aus — ihre Aktivierung ist eine eigene Entscheidung.
-# codepaths:
-#   roots: [spec, docs, harness]
+# codepaths: ein Pfad in Inline-Code, der mit einer der roots beginnt, muss im Repo
+# existieren (codepath-missing). Auch docs/reviews/** ist geprueft. Eine erst geplante
+# Datei traegt den Inline-Marker d-check:ignore mit Grund in derselben Zeile; ein Pfad
+# ausserhalb der roots bleibt ungeprueft.
+codepaths:
+  roots: [spec, docs, harness]
 # reviews bleibt aus. Das Modul (hermetisch, kein git) haelt die Review-Zusagen der
 # Slice-Plaene unter done-dir gegen die Reports unter reviews-dir: eine Zusage ohne Report,
 # dessen Dateiname dieselbe Slice-Kennung traegt, meldet es als review-missing. done-dir ist

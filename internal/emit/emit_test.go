@@ -10,11 +10,11 @@ import (
 )
 
 // TestDCheckConfig_EntschiedeneModulListe haelt die entschiedene Modul-Liste fest: die
-// eingebettete .d-check.yml aktiviert genau [links, anchors, ids, matrix, spans, planning, structure, targets] — nicht
+// eingebettete .d-check.yml aktiviert genau [links, anchors, ids, matrix, codepaths, spans, planning, structure, targets] — nicht
 // "mindestens zwei Module". Jedes neu aktivierte Modul ist im frischen Ziel gemessen gruen UND
 // faengt sein Gegenbeispiel (harness/tools/full-smoke.sh); dieser Test bindet nur die
 // LISTE, nicht das Verhalten (das braucht Docker und liegt in full-smoke). codepaths
-// bleibt aus — ihre Aktivierung ist eine eigene Entscheidung. Das Requirement-Muster
+// ist aktiv, sein Block traegt genau die roots [spec, docs, harness]. Das Requirement-Muster
 // von ids bleibt auskommentiert: das Praefix gehoert dem Adopter und ist in einem
 // frischen Ziel nicht bekannt. Die
 // spec-straten-Klasse traegt order:/direction: no-downward: die Baseline-Vorlage fuehrt
@@ -23,8 +23,8 @@ import (
 // [Geschichte], nicht die weitere Dogfood-Liste und nicht leer.
 func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 	yml := emit.DCheckConfig()
-	if !strings.Contains(yml, "modules: [links, anchors, ids, matrix, spans, planning, structure, targets]") {
-		t.Errorf("eingebettete .d-check.yml aktiviert nicht genau [links, anchors, ids, matrix, spans, planning, structure, targets]:\n%s", yml)
+	if !strings.Contains(yml, "modules: [links, anchors, ids, matrix, codepaths, spans, planning, structure, targets]") {
+		t.Errorf("eingebettete .d-check.yml aktiviert nicht genau [links, anchors, ids, matrix, codepaths, spans, planning, structure, targets]:\n%s", yml)
 	}
 	sawPrefixPattern := false
 	// letzteKlasse haelt die LETZTE Klassen-Zeile — nur innerhalb von matrix.classes:,
@@ -37,10 +37,10 @@ func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 	// Datei bliebe bei link-policy: never auf dieser Zeile erfuellt.
 	var idsADR string
 	inIDs := false
+	if !strings.Contains(yml, "\ncodepaths:\n  roots: [spec, docs, harness]\n") {
+		t.Errorf("der Block codepaths: ist nicht aktiv oder traegt nicht genau roots: [spec, docs, harness]:\n%s", yml)
+	}
 	for _, line := range strings.Split(yml, "\n") {
-		if strings.HasPrefix(line, "codepaths:") {
-			t.Errorf("codepaths unkommentiert aktiv im frischen Repo (halluziniertes Gate): %q", line)
-		}
 		if line != "" && line[0] != ' ' && line[0] != '#' {
 			inIDs = strings.HasPrefix(line, "ids:")
 		}

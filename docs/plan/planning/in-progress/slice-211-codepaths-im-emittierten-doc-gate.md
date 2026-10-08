@@ -154,6 +154,9 @@ Aussagen-Berührung steht hier gar nicht.
 | `internal/emit/templates/d-check.yml` | update | Ergebnis von DoD (3): Modul-Liste erweitert, oder der Kommentar-Block trägt den neuen, nicht eingetretenen Trigger |
 | `internal/emit/emit_test.go` | update | `TestDCheckConfig_EntschiedeneModulListe` hält die entschiedene Liste; er wird nachgezogen, nicht aufgeweicht |
 | `test/mutations/` | neu | der Zahn aus DoD (1) bekommt seinen kuratierten Fall — ein neuer Wächter ohne Mutations-Fall ist unbewacht ([`AGENTS.md`](../../../../AGENTS.md) §3.6) |
+| `internal/emit/templates.go` | update (Kommentar) | zwei Doc-Kommentare der Neutralisierungen sagten *codepaths ist im Ziel auskommentiert*; mit der Aktivierung fängt der grüne Start einen Ausfall (`codepath-missing`, am frischen Ziel gemessen) |
+| `internal/emit/templates/commands/implement-slice.md` | update | die emittierte Prosa sagte *`docs/reviews/**` ist ausgenommen*; im Ziel nimmt allein `matrix` die Reports aus, `ids` und — mit diesem Slice — `codepaths` prüfen sie (am frischen Ziel gemessen) |
+| `docs/user/benutzerhandbuch.md` | update | Ist-Zustand des mitgelieferten Moduls `codepaths` neben den übrigen Modul-Absätzen |
 | die `.d-check.yml` **dieses** Repos | **unverändert** | Dogfood-Ebene, anderer Vertrag |
 
 ## 4. Trigger
