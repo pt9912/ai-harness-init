@@ -7,8 +7,8 @@
 #
 # DAS IST DIE DRAHT-FORM, AUF DER EINE LESEVORSCHRIFT RUHT, nicht eine Formalie.
 # spec/spezifikation.md §5 (SPEC-022 und SPEC-083) legt fuer `spawned_role` ausdruecklich die ANDERE
-# Draht-Form fest als fuer `agent_role`: `agent_role` ist Pflicht und steht als `""` in
-# jeder Zeile, `spawned_role` ist `omitempty` und FEHLT bei leerem Wert. Ein
+# Draht-Form fest als fuer `agent_role`: `agent_role` ist Pflicht und steht in jeder
+# Zeile, ohne Rolle als Kennzeichnung `nicht bekannt: agent_type`, `spawned_role` ist `omitempty` und FEHLT bei leerem Wert. Ein
 # `"spawned_role":""` in jedem `Bash`-Span behauptete einen Subagenten, den es nicht
 # gab — und eine Auswertung, die den Sammelposten ueber die Abwesenheit des Feldes
 # bildet, verlaesst sich genau darauf.

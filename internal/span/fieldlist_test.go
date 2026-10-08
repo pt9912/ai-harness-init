@@ -223,3 +223,51 @@ func TestRenderFieldList_EintragOhneFeldBrichtAb(t *testing.T) {
 		t.Errorf("der Abbruch nennt den ueberzaehligen Eintrag nicht: %v", err)
 	}
 }
+
+// TestFeldliste_KennzeichnungNenntGenauDieFaelleDerSpezifikation haelt den Satz der
+// Feldliste ueber die Kennzeichnung *nicht bekannt* auf der abschliessenden Fall-Menge von
+// SPEC-087 (spec/spezifikation.md §5): genau diese Felder, keines mehr und keines weniger,
+// jedes davon ein Pflichtfeld des Traegers. Eine Zusage an ALLE Pflichtfelder waere falsch —
+// im Haupt-Kontext stehen `agent`, `agent_type`, `tool_use_id` und `event` als `""`.
+//
+// Rot faerbt ihn test/mutations/603-feldliste-kennzeichnung-an-alle-pflichtfelder.sh (der
+// Satz sagt die Kennzeichnung wieder jedem Pflichtfeld ohne Quellwert zu).
+func TestFeldliste_KennzeichnungNenntGenauDieFaelleDerSpezifikation(t *testing.T) {
+	doc, err := span.FieldList()
+	if err != nil {
+		t.Fatalf("FieldList: %v", err)
+	}
+	const einleitung = "Die Kennzeichnung *nicht bekannt* tragen abschließend diese Felder:"
+	i := strings.Index(doc, einleitung)
+	if i < 0 {
+		t.Fatalf("die Feldliste nennt die Felder mit Kennzeichnung nicht abschliessend (Satz %q fehlt)", einleitung)
+	}
+	rest := doc[i+len(einleitung):]
+	ende := strings.Index(rest, ". ")
+	if ende < 0 {
+		t.Fatalf("der Satz %q endet nicht", einleitung)
+	}
+	genannt := map[string]bool{}
+	for _, m := range regexp.MustCompile("`([a-z_]+)`").FindAllStringSubmatch(rest[:ende], -1) {
+		genannt[m[1]] = true
+	}
+	erwartet := map[string]bool{
+		"cache_creation_input_tokens": true, "cache_read_input_tokens": true, "agent_role": true,
+		"branch": true, "commit": true, "slice": true, "requirement": true, "adr": true,
+	}
+	if strings.Join(sortiert(genannt), ",") != strings.Join(sortiert(erwartet), ",") {
+		t.Errorf("die Feldliste nennt als Felder mit Kennzeichnung %v, SPEC-087 nennt %v", sortiert(genannt), sortiert(erwartet))
+	}
+	pflicht := map[string]bool{}
+	for _, f := range span.SchemaFields() {
+		pflicht[f.Name] = f.Required
+	}
+	for name := range genannt {
+		if !pflicht[name] {
+			t.Errorf("die Feldliste nennt %q als Feld mit Kennzeichnung, der Traeger fuehrt es nicht als Pflichtfeld", name)
+		}
+	}
+	if strings.Contains(doc, "Ein Pflichtfeld, dessen Wert die Quelle nicht liefert") {
+		t.Errorf("die Feldliste sagt die Kennzeichnung jedem Pflichtfeld ohne Quellwert zu; SPEC-087 begrenzt die Faelle abschliessend")
+	}
+}

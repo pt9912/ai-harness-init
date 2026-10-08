@@ -188,9 +188,12 @@ const fieldListHead = "# Erfassungsschicht — die Feldliste und ihre Grenzen\n"
 	"## Feldliste\n" +
 	"\n" +
 	"**Pflicht** heißt: das Feld steht in jeder Zeile. Eine leere Liste `[]` ist dort eine Aussage —\n" +
-	"keiner — und kein fehlender Wert. Ein Pflichtfeld, dessen Wert die Quelle nicht liefert, trägt statt seiner\n" +
-	"`nicht bekannt:` und die Quelle, die ihn nicht liefert — nie `0`, nie `\"\"`, nie `[]`. **Optional** heißt: das Feld fehlt,\n" +
-	"wo es nichts zu sagen gibt.\n" +
+	"keiner — und kein fehlender Wert. Die Kennzeichnung *nicht bekannt* tragen abschließend diese Felder:\n" +
+	"`cache_creation_input_tokens`, `cache_read_input_tokens`, `agent_role`, `branch`, `commit`, `slice`,\n" +
+	"`requirement`, `adr`. Liefert die Quelle ihren Wert nicht, steht statt seiner `nicht bekannt:` und die\n" +
+	"Quelle, die ihn nicht liefert — nie `0`, nie `\"\"`, nie `[]`. Für die übrigen Pflichtfelder gilt sie\n" +
+	"nicht; im Haupt-Kontext stehen etwa `agent`, `agent_type`, `tool_use_id` und `event` als `\"\"`.\n" +
+	"**Optional** heißt: das Feld fehlt, wo es nichts zu sagen gibt.\n" +
 	"\n" +
 	"| Feld | Pflicht | Wonach gefragt wird |\n" +
 	"|---|---|---|\n"
