@@ -21,7 +21,7 @@ Ebenen).
 **Regeln:** Baseline-Regelwerk `modul-04-adrs.md` §Ziel-Form: ADR (MADR);
 `modul-08-agentenrollen.md` §Rollen-Regeln.
 
-**Supersedes (Teil):** [ADR-0011](0011-telemetrie-erfassung-policy.md) Festlegung 2, die Wendung *„und ohne Inhalts-Hash"* samt dem Satz über das Bestätigungs-Orakel, und Festlegung 5, die Wendung *„abgeleitete Werte **ohne** Inhalts-Hash"*; [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 6, die Wendung *„**ohne** Inhalts-Hash"*. Alles Übrige beider Dateien gilt fort — auch *„bleibt die Länge"*.
+**Supersedes (Teil):** [ADR-0011](0011-telemetrie-erfassung-policy.md) Festlegung 2 in allen drei Stellen, die den Hash an die Ebene binden — die Überschriften-Wendung *„und die Schärfe ist je Ebene verschieden"*, die Tabellenzelle *„Pfad + Länge; im Repo zusätzlich ein Inhalts-Hash"* (geltende Fassung: *Pfad + Länge + Inhalts-Hash, auf beiden Ebenen*) und die Wendung *„und ohne Inhalts-Hash"* samt dem Satz über das Bestätigungs-Orakel —, und Festlegung 5, die Wendung *„abgeleitete Werte **ohne** Inhalts-Hash"*; [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 6, die Wendung *„**ohne** Inhalts-Hash"*. Alles Übrige beider Dateien gilt fort — auch *„bleibt die Länge"*.
 
 ---
 
@@ -54,8 +54,9 @@ eines.
 für den Bestand **ausdrücklich** aus; ein Verbot auf Entscheidungs-Ebene läge dagegen, ohne dass
 die Vertrags-Ebene es trägt. Das Orakel-Argument aus ADR-0011 trägt schwächer, als es dort steht:
 der Hash ist ein 64-bit-Präfix über den **ganzen Dateiinhalt** aus dem Dateisystem, kein Hash eines
-Argument-Werts; er bestätigt einen Verdacht nur, wo der ganze Inhalt erratbar ist, und nach einer
-Rotation bestätigt er einen ungültigen Wert. Dieses Restrisiko ist ein **akzeptiertes Negativ**
+Argument-Werts; er bestätigt einen Verdacht nur, wo der ganze Inhalt erratbar ist. Der typische
+Fall ist genau das: eine Datei, die nur ein Secret trägt (`KEY=<wert>`), macht „Inhalt erraten"
+zu „Secret erraten", und vor einer Rotation bestätigt der Hash einen gültigen Wert. Dieses Restrisiko ist ein **akzeptiertes Negativ**
 (§Konsequenzen), kein offener Posten.
 
 **3. Was die Entscheidung nicht ändert.** Kein Code, keine Spezifikation, keine Feldliste — sie
@@ -69,7 +70,10 @@ unberührt ([`MR-015`](../../../harness/conventions.md#mr-015--change-request-be
   Change Request, den nur der Auftraggeber annimmt ([`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)). Text dafür: [`LH-FA-14`](../../../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) §Redaktion: *„
   ‚eine Ableitung (Pfad, Länge, Fingerabdruck)' wird zu ‚eine Ableitung (Pfad, Länge); ein
   Fingerabdruck des Inhalts wird nicht erfasst'."* Diese ADR wird dann `Rejected`, und ein Slice
-  entfernt `sha256_16` aus Träger, Feldliste und `SPEC-018`/`SPEC-029`.
+  entfernt `sha256_16` aus Träger, Feldliste und `SPEC-018`/`SPEC-029`. Weil das Binär eines ist,
+  fällt der Hash dabei **auch im Repo** weg, den ADR-0011 Festlegung 2 dort setzt; dieser Weg
+  braucht darum zusätzlich eine eigene ADR, die die Repo-Hälfte von Festlegung 2 ablöst — sonst
+  liefe der Entfern-Slice gegen eine aktive Entscheidung.
 
 ## Verglichene Alternativen
 
@@ -84,8 +88,14 @@ unberührt ([`MR-015`](../../../harness/conventions.md#mr-015--change-request-be
 
 - Positiv: eine geltende Fassung; kein Diff außerhalb der Entscheidungs-Ablage.
 - Negativ (akzeptiert): wer den Span-Bestand eines Ziels liest, kann für eine geschriebene Datei
-  einen vollständig erratenen Inhalt bestätigen. Der Bestand ist laut Lastenheft nicht geschützt;
-  die Grenze steht dort, nicht hier.
+  einen vollständig erratenen Inhalt bestätigen — im typischen Fall einer Ein-Secret-Datei
+  (`KEY=<wert>`) also einen geratenen, noch gültigen Secret-Wert. Angenommen dennoch, weil
+  (1) das Lastenheft den Bestand ausdrücklich nicht schützt und die Grenze dort steht, (2) der
+  Hash nur einen **Kandidaten** bestätigt und nichts preisgibt — gegen ein Secret voller Entropie
+  ist Raten aussichtslos, das Restrisiko trifft schwache Secrets —, und (3) wer die Span-Datei am
+  Ort lesen kann, die Datei selbst lesen kann (ADR-0011 §Bedrohungsmodell); offen bleibt die
+  Weitergabe des Bestands. Kippen würde die Abwägung, wenn der Hash über einen Argument-Wert statt
+  den ganzen Inhalt liefe (§Re-Evaluierungs-Trigger).
 - Folgepflicht beim Accept: Marke in den Index-Zeilen von ADR-0011 und ADR-0022.
 
 ## Fitness Function (falls maschinell prüfbar)
