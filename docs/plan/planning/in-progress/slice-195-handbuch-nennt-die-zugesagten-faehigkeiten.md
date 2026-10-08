@@ -31,7 +31,7 @@ und welches nicht).
 **Prüfgegenstand**, nicht Änderungsziel. Der Verweis zeigt aufwärts (Baseline-Regelwerk
 `grundlagen-referenz-richtung.md` §Referenz-Richtung (SDP)).
 
-**Verantwortlich:** — (bis zur Priorisierung).
+**Verantwortlich:** pt9912.
 
 **Autor:** ai-harness-init-Team (pt9912). **Datum:** 2026-09-07.
 
