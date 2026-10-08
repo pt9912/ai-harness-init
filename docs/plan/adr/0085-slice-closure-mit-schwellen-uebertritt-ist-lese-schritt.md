@@ -1,6 +1,6 @@
 # ADR-0085: Die Slice-Closure, die einen Eintrag über die 3×-Schwelle hebt, ist für ihn ein Lese-Schritt
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-10-08
 
@@ -104,3 +104,12 @@ auf dem Closure-Commit prüft nur dessen Endstand.
 
 Der Auftraggeber nimmt an ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1). Bis dahin bleibt `make register-ausgang` ein
 Werkzeug (`kein Gate`).
+
+## Geschichte
+
+| Datum | Ereignis | Verweis |
+|---|---|---|
+| 2026-10-08 | Proposed | Commit `d15972a2` |
+| 2026-10-08 | **Accepted** | Verdikt `2026-10-08-register-ausgang-architect-verdikt` (Empfehlung: annehmen), Annahme durch den Auftraggeber am 2026-10-08 ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1) |
+
+Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
