@@ -33,7 +33,7 @@ Gegenstand — gemeinsam belegt an einem frisch gebootstrappten Ziel.
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| [slice-emittierte-gate-vorlage-traegt-targets-und-reviews](open/slice-emittierte-gate-vorlage-traegt-targets-und-reviews.md) | Die emittierte Vorlage trägt `targets` und `reviews` | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
+| [slice-emittierte-gate-vorlage-traegt-targets-und-reviews](next/slice-emittierte-gate-vorlage-traegt-targets-und-reviews.md) | Die emittierte Vorlage trägt `targets` und `reviews` | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
 | [slice-210](next/slice-210-planning-modul-im-emittierten-doc-gate.md) | Das Modul `planning` im emittierten Doc-Gate wird entschieden | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
 | [slice-211](next/slice-211-codepaths-im-emittierten-doc-gate.md) | Das Modul `codepaths` im emittierten Doc-Gate wird entschieden | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
 | [slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand](open/slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand.md) | Die Begründung neben einer Ausnahme nennt ihren ganzen Gegenstand | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
