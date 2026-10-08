@@ -462,7 +462,7 @@ func neutralisiereJeDatei(rel, body string, targets []string) (string, error) {
 	case roadmapTemplate:
 		// Aeltere Kurs-Staende (COURSE_TAG) tragen eine Beispielzeile mit totem
 		// ../done/-Link; am gepinnten Stand ist die Ersetzung ein No-op.
-		return NeutralizeRoadmap(body), nil
+		return InjectRoadmapRuheMarker(NeutralizeRoadmap(body)), nil
 	case conventionsTemplate:
 		// Der Vorlagen-Pfad ist baseline-relativ (ADR-0037 Festlegung 1) — emit-seitig
 		// entschaerfen, der vendored Fremdtext bleibt unveraendert (MR-007).
@@ -603,6 +603,57 @@ const roadmapDoneLinkNew = "`welle-NN-results.md`"
 // woertlichen Ausschnitt der alten Vorlage.
 func NeutralizeRoadmap(s string) string {
 	return neutralisiereWortlaut(roadmapTemplate, s)
+}
+
+// RoadmapOffeneWellen ist die Ueberschrift, unter der die emittierte .d-check.yml
+// (planning.heading) den Ruhe-Marker sucht.
+const RoadmapOffeneWellen = "## Offene Wellen"
+
+// RoadmapRuheMarker ist der Ruhe-Marker der emittierten Roadmap; derselbe Wortlaut steht in
+// planning.marker der emittierten .d-check.yml (TestDCheckConfig_PlanningBlock haelt beide
+// gleich).
+const RoadmapRuheMarker = "Nichts in Arbeit."
+
+// InjectRoadmapRuheMarker setzt den Ruhe-Marker als eigenen Absatz an das Ende des
+// Abschnitts "## Offene Wellen": ein frisches Ziel hat keinen Slice in in-progress/, und
+// das Modul planning der emittierten .d-check.yml verlangt dann den Marker. Ohne die
+// Ueberschrift, oder wenn der Abschnitt den Marker schon traegt, bleibt der Text
+// unveraendert; das Fehlen der Ueberschrift meldet im Ziel docs-check (planning-drift).
+// TestInjectRoadmapRuheMarker haelt die Wirkung ueber einem Ausschnitt der Vorlage; am
+// vendored Vorlagen-Stand haelt sie der gruene Start der Stufe planning_im_ziel in
+// harness/tools/full-smoke.sh.
+func InjectRoadmapRuheMarker(s string) string {
+	lines := strings.Split(s, "\n")
+	start := -1
+	for i, l := range lines {
+		if l == RoadmapOffeneWellen {
+			start = i
+			break
+		}
+	}
+	if start < 0 {
+		return s
+	}
+	end := len(lines)
+	for i := start + 1; i < len(lines); i++ {
+		if strings.HasPrefix(lines[i], "## ") {
+			end = i
+			break
+		}
+		if strings.Contains(lines[i], RoadmapRuheMarker) {
+			return s
+		}
+	}
+	// Leerzeilen am Abschnittsende bleiben hinter dem Marker stehen.
+	ins := end
+	for ins > start+1 && strings.TrimSpace(lines[ins-1]) == "" {
+		ins--
+	}
+	out := make([]string, 0, len(lines)+2)
+	out = append(out, lines[:ins]...)
+	out = append(out, "", RoadmapRuheMarker)
+	out = append(out, lines[ins:]...)
+	return strings.Join(out, "\n")
 }
 
 // conventionsTemplate ist der Quell-Relpfad der Konventionsspeicher-Vorlage

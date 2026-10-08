@@ -10,7 +10,7 @@ import (
 )
 
 // TestDCheckConfig_EntschiedeneModulListe haelt die entschiedene Modul-Liste fest: die
-// eingebettete .d-check.yml aktiviert genau [links, anchors, ids, matrix, spans, structure, targets] — nicht
+// eingebettete .d-check.yml aktiviert genau [links, anchors, ids, matrix, spans, planning, structure, targets] — nicht
 // "mindestens zwei Module". Jedes der drei neu aktivierten ist im frischen Ziel gemessen gruen UND
 // faengt sein Gegenbeispiel (harness/tools/full-smoke.sh); dieser Test bindet nur die
 // LISTE, nicht das Verhalten (das braucht Docker und liegt in full-smoke). codepaths
@@ -23,8 +23,8 @@ import (
 // [Geschichte], nicht die weitere Dogfood-Liste und nicht leer.
 func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 	yml := emit.DCheckConfig()
-	if !strings.Contains(yml, "modules: [links, anchors, ids, matrix, spans, structure, targets]") {
-		t.Errorf("eingebettete .d-check.yml aktiviert nicht genau [links, anchors, ids, matrix, spans, structure, targets]:\n%s", yml)
+	if !strings.Contains(yml, "modules: [links, anchors, ids, matrix, spans, planning, structure, targets]") {
+		t.Errorf("eingebettete .d-check.yml aktiviert nicht genau [links, anchors, ids, matrix, spans, planning, structure, targets]:\n%s", yml)
 	}
 	sawPrefixPattern := false
 	// letzteKlasse haelt die LETZTE Klassen-Zeile — nur innerhalb von matrix.classes:,
@@ -112,6 +112,73 @@ func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 	// Ausnahme, s. internal/emit/templates/d-check.yml Kopfkommentar).
 	if !strings.Contains(yml, "exclude-sections: [Geschichte]") {
 		t.Errorf("exclude-sections traegt nicht genau [Geschichte]:\n%s", yml)
+	}
+}
+
+// TestDCheckConfig_PlanningBlock haelt den Top-Level-Block planning: der eingebetteten
+// .d-check.yml (LH-FA-03): roadmap zeigt auf die emittierte Roadmap, heading und marker sind
+// dieselben Wortlaute, die die Roadmap-Emission setzt (emit.RoadmapOffeneWellen,
+// emit.RoadmapRuheMarker), und der Block fuehrt weder closure noch waves. Er liest die
+// Vorlage; das Verhalten im Ziel belegt die full-smoke-Stufe planning_im_ziel.
+func TestDCheckConfig_PlanningBlock(t *testing.T) {
+	yml := emit.DCheckConfig()
+	felder := map[string]string{}
+	inBlock := false
+	for _, line := range strings.Split(yml, "\n") {
+		if line != "" && line[0] != ' ' && line[0] != '#' {
+			inBlock = line == "planning:"
+			continue
+		}
+		if !inBlock || !strings.HasPrefix(line, "  ") || strings.HasPrefix(line, "   ") {
+			continue
+		}
+		k, v, ok := strings.Cut(strings.TrimSpace(line), ":")
+		if !ok {
+			continue
+		}
+		felder[k] = strings.Trim(strings.TrimSpace(v), `"`)
+	}
+	want := map[string]string{
+		"roadmap": "docs/plan/planning/in-progress/roadmap.md",
+		"heading": emit.RoadmapOffeneWellen,
+		"marker":  emit.RoadmapRuheMarker,
+	}
+	for k, v := range want {
+		if felder[k] != v {
+			t.Errorf("planning.%s = %q, erwartet %q", k, felder[k], v)
+		}
+	}
+	for k := range felder {
+		if _, ok := want[k]; !ok {
+			t.Errorf("planning traegt das Feld %q ueber roadmap/heading/marker hinaus", k)
+		}
+	}
+}
+
+// TestInjectRoadmapRuheMarker haelt den Ruhe-Marker im Abschnitt "## Offene Wellen" der
+// emittierten Roadmap (LH-FA-03, LH-FA-02): genau einmal, innerhalb des Abschnitts, und ein
+// zweiter Aufruf setzt ihn nicht doppelt. Der Ausschnitt folgt dem Abschnitt der Vorlage
+// nach den Neutralisierungen (Regel-Zeile, entlinkter Platzhalter, naechste Ueberschrift).
+func TestInjectRoadmapRuheMarker(t *testing.T) {
+	in := "# Roadmap\n\n## Offene Wellen\n\nRegeln dieser Sektion: Text.\n\n- <welle-id>\n\n## Nächste Wellen\n\n| Welle |\n"
+	got := emit.InjectRoadmapRuheMarker(in)
+	start := strings.Index(got, "## Offene Wellen")
+	ende := strings.Index(got, "## Nächste Wellen")
+	if start < 0 || ende < start {
+		t.Fatalf("Abschnitte fehlen:\n%s", got)
+	}
+	abschnitt := got[start:ende]
+	if n := strings.Count(abschnitt, "\n"+emit.RoadmapRuheMarker+"\n"); n != 1 {
+		t.Errorf("Abschnitt Offene Wellen traegt den Ruhe-Marker %d-mal als eigene Zeile statt einmal:\n%s", n, got)
+	}
+	if strings.Count(got, emit.RoadmapRuheMarker) != 1 {
+		t.Errorf("der Ruhe-Marker steht ausserhalb des Abschnitts:\n%s", got)
+	}
+	if again := emit.InjectRoadmapRuheMarker(got); again != got {
+		t.Errorf("zweiter Aufruf veraendert den Text:\n%s", again)
+	}
+	if ohne := "# Roadmap\n\n## Aktuelle Welle\n\n- x\n"; emit.InjectRoadmapRuheMarker(ohne) != ohne {
+		t.Errorf("ohne die Ueberschrift veraendert die Injektion den Text")
 	}
 }
 

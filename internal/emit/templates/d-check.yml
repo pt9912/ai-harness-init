@@ -7,7 +7,7 @@ scan:
   # .harness/**: tool-interne Ablage (gefetchtes Sprachskelett-Staging) —
   # keine Adopter-Doku, vom Doc-Gate ausgenommen.
   ignore: ["**/*.template.md", ".tmp/**", ".harness/**"]
-modules: [links, anchors, ids, matrix, spans, structure, targets]
+modules: [links, anchors, ids, matrix, spans, planning, structure, targets]
 ids:
   patterns:
     - {regex: 'ADR-([A-Z]+-)?\d{4}', target: docs/plan/adr/, link-policy: always}
@@ -41,7 +41,7 @@ ids:
 # Die Baseline-Vorlage fuehrt fuer die slice-Klasse ein token: in der Ziffern-Form;
 # hier steht das Praefix slice-, weil grundlagen-source-precedence.md §Vergabe Slice-
 # und Welle-Kennungen als Namen setzt: das Praefix faengt den Namen und die Nummer.
-# Sechs Positionen gehen darueber hinaus:
+# Acht Positionen gehen darueber hinaus:
 # Die welle-Klasse samt dem Praefix welle- und die Regeln {from: adr, to: welle} und
 # {from: spec-straten, to: welle}: Die Matrix-Tabelle setzt die Spalte Welle in der
 # ADR-Zeile und in allen drei Straten-Zeilen; die Klasse steht vor aussen, also faengt
@@ -108,11 +108,22 @@ ids:
 # sie per include einbindet — ihre Targets laufen mit make und bleiben ungeprueft. Ein
 # rekursiver Glob schliesst die Luecke nicht: makefiles: folgt scan.ignore nicht und liest dann
 # auch .mk-Dateien unter test/ und .harness/.
+# Die achte Position ist das Modul planning samt Block (vor dem targets-Block), das die
+# Baseline-Vorlage nur als Make-Target doc-planning fuehrt: Der Ruhe-Marker unter
+# "## Offene Wellen" der Roadmap steht genau dann, wenn in-progress/ keinen slice-*.md
+# traegt (Baseline-Regelwerk modul-06-roadmap.md §Roadmap-Struktur, Bullet Offene Wellen;
+# Grund-Code planning-drift in beide Richtungen). Die Vorlage fuehrt den Marker-Wortlaut
+# nicht; die emittierte Roadmap traegt ihn, weil ein frisches Ziel keinen Slice in
+# in-progress/ hat. Nur die Marker-Haelfte ist aktiv: closure und waves desselben Moduls
+# stehen nicht im Block. Grenze: beim Uebergang eines Slice nach in-progress/ und zurueck
+# zieht make slice-mv den Marker nicht nach — das bleibt Handarbeit, und docs-check meldet
+# den vergessenen Nachzug.
 # Diese Datei wird nur an einem freien Pfad geschrieben: ein Ziel mit vorhandener
 # .d-check.yml behaelt seine Fassung und bekommt keine dieser Positionen. Der Nachzug
 # ist Handarbeit nach dieser Liste — die Praefix-Token slice- und welle-, die Regel
 # {from: spec-straten, to: welle}, das segment-tolerante ids-Muster fuer ADR, der
-# Bereichs-Praefix-Glob der adr-Klasse, der structure-Block und der targets-Block samt
+# Bereichs-Praefix-Glob der adr-Klasse, der planning-Block samt Marker-Zeile in der
+# Roadmap, der structure-Block und der targets-Block samt
 # Werkzeug-Teil (er entsteht mit dem naechsten Lauf, die Zeile in harness/README.md
 # darauf nicht); die Regeln mit dem Adaptions-Block als Quelle
 # fuehrt die Vorlage nicht.
@@ -168,6 +179,12 @@ matrix:
   # seiner eigenen Kopie; bis dahin ist die Deckung die strengere Vorgabe.
   exempt-paths: ["docs/plan/adr/README.md", "docs/reviews/**"]
   exclude-sections: [Geschichte]
+# planning (hermetisch, kein git): Ruhe-Marker der Roadmap gegen in-progress/; Herkunft und
+# Grenze im Kopfkommentar oben.
+planning:
+  roadmap: docs/plan/planning/in-progress/roadmap.md
+  heading: "## Offene Wellen"
+  marker: "Nichts in Arbeit."
 # targets (hermetisch, kein git): jedes Make-Target hat eine Tabellenzeile im Gate-Index und
 # jede Zeile ein Target; Herkunft und Grenzen im Kopfkommentar oben.
 targets:

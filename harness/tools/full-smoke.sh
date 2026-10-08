@@ -3417,6 +3417,83 @@ echo "full-smoke: Zellenlaenge der README-Tabellen im frischen Ziel — gruener 
 	e2e_abdeckung "LH-FA-01 LH-QA-01" "Die emittierte Doku-Gate-Konfiguration begrenzt die Zellen der Spalten Vertrag und Tut was unter ## Sensors der Vorlagen-README an einem frisch emittierten sprachlosen Ziel: gruener Start, je Spalte ein Zellsatz ueber der Grenze mit Gegenprobe; NICHT gemessen: ein Ziel mit eigener .d-check.yml (skip-if-present), die Spalte Bindung und Tabellen ausserhalb von ## Sensors" "zellenlaenge_im_ziel"
 zellenlaenge_im_ziel
 
+# Der Ruhe-Marker der Roadmap im frischen Ziel (LH-FA-02, LH-QA-01): die emittierte
+# .d-check.yml fuehrt planning mit heading "## Offene Wellen" und marker "Nichts in Arbeit.",
+# die emittierte Roadmap traegt den Marker. Gemessen werden (a) der gruene Start am frisch
+# emittierten Ziel, (b) beide Richtungen der Invariante — ein Slice in in-progress/ neben
+# stehendem Marker, und der fehlende Marker bei leerem in-progress/ —, je mit der Meldung
+# planning-drift, und (c) je die Gegenprobe: ohne das Modul bleibt derselbe Zustand gruen.
+# GRENZE: gemessen ist ein sprachloses Ziel; ein Ziel mit eigener .d-check.yml
+# (skip-if-present) und die Faehigkeiten closure/waves des Moduls sind nicht gemessen.
+planning_im_ziel() {
+	local dir roadmap fall meldung='planning-drift'
+	dir="$(mktemp -d -p "$tmprepo_kf")"
+	chmod 755 "$dir"
+	git init -q "$dir"
+	"$tmpbin/ai-harness-init" --name pl "$dir" >/dev/null
+	roadmap="$dir/docs/plan/planning/in-progress/roadmap.md"
+	kf_docs_check "$dir" einordnen
+	if [ "$kf_rc" -ne 0 ] || ! grep -qF -- ', 0 Befund(e)' <<<"$kf_out"; then
+		echo "full-smoke: FEHLER — gruener Start des Ruhe-Markers: docs-check des frischen Ziels meldet nicht '0 Befund(e)' (Exit $kf_rc)." >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+	if ! grep -qE '^modules: .*\bplanning\b' "$dir/.d-check.yml" || ! grep -qxF -- 'Nichts in Arbeit.' "$roadmap"; then
+		echo "full-smoke: FEHLER — Ruhe-Marker: das frische Ziel fuehrt planning nicht in modules: oder seine Roadmap traegt die Zeile 'Nichts in Arbeit.' nicht." >&2
+		exit 1
+	fi
+	echo "full-smoke: gruener Start des Ruhe-Markers: docs-check im frischen Ziel '0 Befund(e)', planning aktiv, Marker in der Roadmap."
+	cp "$roadmap" "$roadmap.pl-orig"
+	for fall in "Slice in in-progress, Marker steht" "kein Slice, Marker fehlt"; do
+		if [ "$fall" = "Slice in in-progress, Marker steht" ]; then
+			printf '# Slice slice-planning-probe\n' >"$dir/docs/plan/planning/in-progress/slice-planning-probe.md"
+		else
+			psed_i '/^Nichts in Arbeit\.$/d' "$roadmap"
+		fi
+		kf_docs_check "$dir"
+		if [ "$kf_rc" -eq 0 ]; then
+			echo "full-smoke: FEHLER — planning-Gegenbeispiel ($fall) laesst docs-check im Ziel GRUEN: das Modul planning der emittierten .d-check.yml ist nicht wirksam (AGENTS.md §3.6)." >&2
+			printf '%s\n' "$kf_out" >&2
+			exit 1
+		fi
+		if ! grep -qE -- "roadmap\.md:[0-9]+.*$meldung" <<<"$kf_out"; then
+			echo "full-smoke: FEHLER — planning-Gegenbeispiel ($fall): docs-check im Ziel rot, aber ohne die Meldung [$meldung] an der Roadmap (rot aus falschem Grund?). Ausgabe:" >&2
+			printf '%s\n' "$kf_out" >&2
+			exit 1
+		fi
+		echo "full-smoke: planning-Gegenbeispiel ($fall) belegt (faerbt docs-check im Ziel rot):"
+		grep -E -- "$meldung" <<<"$kf_out" | sed -n '1s/^/full-smoke:   /p'
+		cp "$dir/.d-check.yml" "$dir/.d-check.yml.pl-bak"
+		psed_i -e 's/^\(modules: .*\), planning\(.*\)$/\1\2/' "$dir/.d-check.yml"
+		if grep -qE '^modules: .*\bplanning\b' "$dir/.d-check.yml"; then
+			mv "$dir/.d-check.yml.pl-bak" "$dir/.d-check.yml"
+			echo "full-smoke: FEHLER — planning-Gegenprobe ($fall): die Schwaechung nimmt planning nicht aus modules: der .d-check.yml des Ziels." >&2
+			exit 1
+		fi
+		kf_docs_check "$dir" einordnen
+		mv "$dir/.d-check.yml.pl-bak" "$dir/.d-check.yml"
+		if [ "$kf_rc" -ne 0 ] || ! grep -qF -- ', 0 Befund(e)' <<<"$kf_out"; then
+			echo "full-smoke: FEHLER — planning-Gegenprobe ($fall): derselbe Zustand faerbt docs-check auch ohne planning rot — der Fall belegt nicht, dass ERST das Modul ihn findet (AGENTS.md §3.6)." >&2
+			printf '%s\n' "$kf_out" >&2
+			exit 1
+		fi
+		echo "full-smoke: planning-Gegenprobe ($fall) belegt (ohne planning bleibt derselbe Zustand gruen, danach zurueckgenommen)."
+		rm -f "$dir/docs/plan/planning/in-progress/slice-planning-probe.md"
+		cp "$roadmap.pl-orig" "$roadmap"
+	done
+	rm -f "$roadmap.pl-orig"
+	kf_docs_check "$dir" einordnen
+	if [ "$kf_rc" -ne 0 ] || ! grep -qF -- ', 0 Befund(e)' <<<"$kf_out"; then
+		echo "full-smoke: FEHLER — Ruhe-Marker: nach dem Zuruecknehmen ist docs-check im Ziel nicht wieder '0 Befund(e)' (Exit $kf_rc)." >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+}
+
+echo "full-smoke: Ruhe-Marker der Roadmap im frischen Ziel — gruener Start, beide Richtungen der Invariante mit Gegenprobe ..."
+	e2e_abdeckung "LH-FA-02 LH-QA-01" "Die emittierte Doku-Gate-Konfiguration haelt den Ruhe-Marker der Roadmap gegen in-progress/ an einem frisch emittierten sprachlosen Ziel: gruener Start, ein Slice neben stehendem Marker und ein fehlender Marker bei leerem in-progress/, je mit Gegenprobe; NICHT gemessen: ein Ziel mit eigener .d-check.yml (skip-if-present) und die Faehigkeiten closure/waves des Moduls" "planning_im_ziel"
+planning_im_ziel
+
 # ADR-0067 Festlegung 1 und 5: ein Klon mit core.autocrlf=true traegt in den Verzeichnissen der
 # Emission, in denen ein Interpreter oder die Byte-Pruefung Dateien liest, kein CR. Gemessen
 # wird an zwei echten Klonen desselben committeten Ziels; der Kontrollklon setzt

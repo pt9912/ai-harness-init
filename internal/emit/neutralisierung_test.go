@@ -159,6 +159,27 @@ func TestNeutralizeRoadmap(t *testing.T) {
 // TestTemplates_RoadmapGateSafe: die emittierte Roadmap traegt keinen toten
 // ../done/-Link, wenn die Vorlage die Zeile eines aelteren Kurs-Stands fuehrt — die
 // Wiring-Probe, dass planTemplates die Roadmap durch NeutralizeRoadmap schickt.
+// TestTemplates_RoadmapTraegtRuheMarker haelt die Verdrahtung der Marker-Injektion: die von
+// emit.Templates geschriebene Roadmap traegt den Ruhe-Marker im Abschnitt "## Offene Wellen"
+// (LH-FA-02 — ohne ihn startet das Modul planning im Ziel rot).
+func TestTemplates_RoadmapTraegtRuheMarker(t *testing.T) {
+	src := courseSet().(fstest.MapFS)
+	src["docs/plan/planning/roadmap.template.md"] = &fstest.MapFile{Data: []byte("# Roadmap\n\n## Offene Wellen\n\n- x\n\n## Nächste Wellen\n")}
+	dir := t.TempDir()
+	if err := emit.Templates(src, dir, "X", testVorlagen, io.Discard); err != nil {
+		t.Fatalf("Templates: %v", err)
+	}
+	got, err := os.ReadFile(filepath.Join(dir, "docs/plan/planning/in-progress/roadmap.md"))
+	if err != nil {
+		t.Fatalf("roadmap.md lesen: %v", err)
+	}
+	s := string(got)
+	start, ende := strings.Index(s, "## Offene Wellen"), strings.Index(s, "## Nächste Wellen")
+	if start < 0 || ende < start || !strings.Contains(s[start:ende], "\n"+emit.RoadmapRuheMarker+"\n") {
+		t.Errorf("emittierte Roadmap traegt den Ruhe-Marker nicht im Abschnitt Offene Wellen:\n%s", s)
+	}
+}
+
 func TestTemplates_RoadmapGateSafe(t *testing.T) {
 	src := courseSet().(fstest.MapFS)
 	src["docs/plan/planning/roadmap.template.md"] = &fstest.MapFile{Data: []byte("# Roadmap\n\n## Abgeschlossene Wellen\n\n" + roadmapAlterStand)}
