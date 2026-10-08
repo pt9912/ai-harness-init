@@ -172,7 +172,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **(1) §6 zeigt den vollständigen Bestand, für beide Phasen.**
+- [x] **(1) §6 zeigt den vollständigen Bestand, für beide Phasen.**
   `docs/user/benutzerhandbuch.md` §6 nennt für den dokument-only-Bootstrap
   **jede** Datei und **jedes** Verzeichnis einzeln, das der Lauf real anlegt, und
   für den Sprachmodul-Bootstrap das Delta dazu. **Die Ausnahme ist zu benennen,
@@ -187,7 +187,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
   ein vollständiger Baum zeigt sie ohnehin, und was der Befund hinzufügt, ist die Pflicht, das
   Etikett zu wählen statt den Pfad kommentarlos einzureihen. *Was* erfasst wird, wie ein Adopter es
   ausliest oder abschaltet, bleibt außerhalb (§6, *Nicht in diesem Slice*).
-- [ ] **(2) Der Baum ist gegen den realen Bestand gehalten, nicht von Hand
+- [x] **(2) Der Baum ist gegen den realen Bestand gehalten, nicht von Hand
   gepflegt.** Ein Wächter vergleicht die im Handbuch genannten Pfade mit der
   Menge, die der Emitter liefert. **Diese Menge ist die der ganzen Init-Strecke, nicht die der
   Vorlagen-Stufe allein** — die `want`-Liste in
@@ -205,16 +205,19 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
   gesehen, sonst ist der Wächter eine Behauptung
   ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Ein `test/mutations/`-Fall hält den
   Zahn.
-- [ ] **(3) Die Aussage über den Register-Ort ist mit dem Bestand in
+- [x] **(3) Die Aussage über den Register-Ort ist mit dem Bestand in
   Übereinstimmung.** Die `docs/plan/`-Zeile nennt heute das
   Beobachtungs-Register als Inhalt; der Ort entsteht heute (Kommando in §1), der
   Baum nennt ihn als Pfad.
   **Dieser Slice erfindet die Entscheidung nicht** — er schreibt den Baum so,
   wie der Bestand zum Zeitpunkt der Umsetzung ist, und der Wächter aus (2) hält
   ihn danach unabhängig davon, wie sie ausfällt.
-- [ ] `make gates` grün; `make full-smoke` grün; `make mutate` grün über die CI.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] `make gates` grün; `make full-smoke` grün; `make mutate` grün über die CI. — `full-smoke`
+  grün in CI-Lauf `37818942409` (`c13c59ce`); `make mutate`: die Fälle 614–617 gezielt grün
+  (`MUTATE_CASES`, Verifikation und `cf17fc46`); der nächtliche Vollsweep über diesem Stand liegt
+  bei der Closure nicht vor (§7).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -362,19 +365,19 @@ dasteht.
   Benutzerhandbuch ist zum Lesen da; ein Baum mit **44** Dateien ist eine
   Bestandsliste. Wird der Baum unbenutzbar, ist die Rückführung nach `open` der
   richtige Zug (§4) und nicht die stille Kürzung — die wäre der Zustand, aus dem
-  dieser Slice kommt. — **Ausgang:** <offen>
+  dieser Slice kommt. — **Ausgang:** **entfallen** — Urteil des Planners: der Baum trägt (95 Einträge, je Zeile ein Etikett, nach Verzeichnissen gegliedert, `.harness/baseline/` als ein Eintrag mit Zahl; Vollständigkeit hält der Wächter), die Rückführungs-Bedingung aus §4 (*„als Lesehilfe unbrauchbar"*) ist nicht eingetreten (§7).
 - **Der Wächter kann die falsche Ebene messen.** Prüft er die *Zahl* der
   Einträge statt der *Menge*, ist er grün, sobald ein Pfad gegen einen anderen
   getauscht wird — dieselbe Klasse, die
   [`BEO-ALL/vollstaendigkeits-zusage-misst-falsche-ebene`](../observations/BEO-ALL/vollstaendigkeits-zusage-misst-falsche-ebene/observation.md)
   führt. DoD (2) verlangt darum den Mengen-Vergleich in beide Richtungen und
-  nicht einen Zähler. — **Ausgang:** <offen>
+  nicht einen Zähler. — **Ausgang:** **entfallen** — `handbuch-baum.sh` vergleicht Pfad-Mengen in beide Richtungen; gebunden durch die Fälle 614–617.
 - **`.harness/baseline/` bleibt aggregiert, und das ist eine bewusste Lücke.**
   Der vendored Baum steht als **ein** Eintrag mit seiner Datei-Zahl. Wächst er
   bei einem Baseline-Sprung, bleibt der Handbuch-Baum formal richtig, ohne die
   Änderung zu zeigen. Der Ausgang wäre ein zweiter Wächter über der Zahl; er ist
   hier **nicht** gebaut, und die Lücke steht benannt statt behauptet. —
-  **Ausgang:** <offen>
+  **Ausgang:** **entfallen** — `handbuch-baum.sh` hält die Zahl neben dem Eintrag gegen das Ziel (Verifikation: 55→54 rot); einen Mutations-Fall für diese Prüfung gibt es nicht (§7, Grenze).
 - **Der Baum nennt eine Fähigkeit, die das Handbuch sonst nirgends einführt.** Nach §1 ist die
   Zeile der Feldliste die **erste und einzige** Erwähnung der Erfassung im ganzen Dokument
   ([`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)); ein
@@ -382,19 +385,19 @@ dasteht.
   [slice-111](../next/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md), nicht ein vierter
   DoD-Punkt hier (Modul 5 §Ziel-Form, ≤ 3). Bis er läuft, steht die Fähigkeit **benannt und
   unerklärt** da; das ist die bewusste Grenze dieses Schnitts und keine Auslassung. —
-  **Ausgang:** <offen>
+  **Ausgang:** **eingetreten** → [slice-111](../next/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md) (DoD (1), in dieser Welle).
 - **Der Baum kann aus dem Vertrag statt aus dem Bestand entstehen.** Wer beim Schreiben
   [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) daneben
   legt, nimmt `CLAUDE.md` auf — zugesagt, aber von keinem Emissions-Pfad angelegt (§1). Der
   Wächter aus DoD (2) fängt das in der einen Richtung (genannter Pfad ohne Emission), und genau
   dafür verlangt DoD (2) beide Richtungen; bis er steht, trägt allein die Regel aus §1. —
-  **Ausgang:** <offen>
+  **Ausgang:** **entfallen** — `CLAUDE.md` steht nicht im Baum; die Richtung *genannt, nicht angelegt* binden 614–616.
 - **Die Register-Zeile hängt an einer fremden Entscheidung.** DoD (3) schreibt
   den Bestand zum Zeitpunkt der Umsetzung; fällt die Entscheidung aus
   [slice-190](../done/slice-190-bootstrap-legt-die-versprochenen-orte-an.md) §6 **nach**
   diesem Slice, ändert sich der Baum noch einmal. Der Wächter aus DoD (2) fängt
   das — er wird dann rot, und das ist der gewollte Ausgang, nicht ein Fehler
-  dieses Slice. — **Ausgang:** <offen>
+  dieses Slice. — **Ausgang:** **entfallen** — slice-190 lag vor der Umsetzung in `done/`; der Baum nennt `observations/README.md`, der Wächter hält ihn.
 - **Nicht in diesem Slice:** der Generator selbst
   ([slice-190](../done/slice-190-bootstrap-legt-die-versprochenen-orte-an.md)), die
   emittierte Modul-Liste
@@ -419,26 +422,40 @@ dasteht.
 
 ## 7. Closure-Notiz
 
-Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
-§Das Beobachtungs-Register (vorhandene `BEO-<NNN>` **zitieren** statt neu
-formulieren — sonst zählt das Register zwei Namen getrennt) ·
-`grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln (das
-Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
-wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
-Backticks).
+**Rolle:** Planner · **Datum:** 2026-10-08.
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-NNN>, <slice-MMM>, <slice-KKK> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-NNN.md` | `evidence/slice-NNN.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-NNN (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+- **Was hat funktioniert:** Soll-Menge aus dem realen Lauf (Kandidat 4, §3) statt einer
+  Stufen-Liste; der Wächter `harness/tools/handbuch-baum.sh` in einer `full-smoke`-Stufe, grün in
+  CI-Lauf `37818942409`. Rot gesehen beide Richtungen: 614–616 (*genannt, nicht angelegt*, 615 an
+  der Erfassungs-Stufe), 617 (*angelegt, nicht genannt*, `cf17fc46`). Review 0 HIGH / 0 MEDIUM,
+  F-1..F-3 in `ee0fc36b`; Verifikation DoD (1)/(3) bestätigt, (2) nach V-1 durch 617 gebunden.
+- **Was ging anders als geplant:** Der Baum trägt in Phase 1 **95** Einträge statt der 44 Dateien,
+  mit denen §4/§6 rechneten (Verifikation V-2; die Differenz sind Verzeichnisse und der Zuwachs aus
+  slice-190 und der Erfassungsschicht). **Abnahme-Urteil des Planners:** der Baum ist Lesehilfe,
+  kein `find`-Protokoll — jede Zeile trägt ein Etikett, die Gliederung folgt den Verzeichnissen, der
+  Fremd-Blob `.harness/baseline/` steht als ein Eintrag mit Zahl, und die Vollständigkeit hält der
+  Wächter, nicht der Leser. Die Rückführung nach `open` greift darum nicht. Ob 95 Zeilen einem
+  Adopter zu viel sind, misst kein Sensor; eine Validierung kann das Urteil kippen.
+  **Grenze:** die Phase-2-Prüfungen (Delta, Basis) und die Zahl des Baseline-Eintrags trägt kein
+  `test/mutations/`-Fall; rot gesehen nur synthetisch (Review-Sonden 8/9, Verifikation 55→54).
+  Der nächtliche `make mutate`-Vollsweep über diesem Stand lag bei der Closure nicht vor (letzter
+  Lauf `37753643856` an `09ee0c8a`, vor diesem Slice, rot).
+- **Steering-Loop-Eintrag:** **gezählt, nicht verkörpert** — kein Zielort, darum kein
+  `liegt in`-Feld. Alle drei berührten Einträge tragen ihren Ausgang schon.
+- **Beobachtungs-Register (`../observations/`):** drei Belege
+  `evidence/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md` — in
+  [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
+  (Gegenstand: die Init-Strecke wuchs, §6 stand still), in
+  [`zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel`](../observations/BEO-ALL/zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel/observation.md)
+  (V-1: Kopf sagt *beide Richtungen*, 614–616 banden eine) und in
+  [`regel-rand-ohne-benannte-luecke`](../observations/BEO-ALL/regel-rand-ohne-benannte-luecke/observation.md)
+  (Review-Klasse F-1: Formfehler-Aufzählung im Kopf unvollständig). Alle drei stehen `geplant`; kein
+  Eintrag steht danach `offen` über der Schwelle
+  ([`ADR-0085`](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md)
+  Festlegung 1 greift nicht).
+- **Folge-Slices:** keine; Risiko 4 geht an das vorhandene slice-111.
+- **Risiken aus §6:** (1) **entfallen** (Urteil oben) · (2) **entfallen** · (3) **entfallen** ·
+  (4) **eingetreten** → slice-111 · (5) **entfallen** · (6) **entfallen** — je mit Grund in §6.
 
 ## 8. Sub-Area-Modus-Begründung
 
