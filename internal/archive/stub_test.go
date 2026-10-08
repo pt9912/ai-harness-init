@@ -147,11 +147,6 @@ func TestFormOKMeldetStehengebliebeneUeberschrift(t *testing.T) {
 	}
 }
 
-// TestTitelVonLaesstDenNummernRestStehen misst die vier getroffenen H1-Formen UND
-// die Grenze, die der Funktionskopf benennt: `# Slice 190: T` traegt das Wort ohne
-// `slice-`-Praefix, die dritte Ersetzung greift dort nicht, und der Rest `190:`
-// bleibt stehen. Der Fall steht hier, damit die Zusage nicht weiter reicht als
-// der Code.
 // TestTitelVonStreiftDenNamen: die benannte Kennung geht samt Trenner vom Titel,
 // wie die Nummer. Gegenbeispiel: kennungRE wieder auf `[0-9]+` am Kennungs-Anfang
 // verengen — der Name bleibt im Titel stehen.
@@ -168,6 +163,12 @@ func TestTitelVonStreiftDenNamen(t *testing.T) {
 	}
 }
 
+// TestTitelVonLaesstDenNummernRestStehen misst die vier getroffenen H1-Formen UND
+// die zwei Grenzen, die der Funktionskopf benennt: `# Slice 190: T` traegt das
+// Wort ohne `slice-`-Praefix, die dritte Ersetzung greift dort nicht, und der Rest
+// `190:` bleibt stehen; fehlt der Trenner hinter der Kennung, faellt nur ihr Teil
+// bis zum letzten inneren Bindestrich, ohne inneren Bindestrich nichts. Die Faelle
+// stehen hier, damit die Zusage nicht weiter reicht als der Code.
 func TestTitelVonLaesstDenNummernRestStehen(t *testing.T) {
 	faelle := []struct{ kopf, want string }{
 		{"# Slice slice-190: Der Titel", "Der Titel"},
@@ -177,6 +178,9 @@ func TestTitelVonLaesstDenNummernRestStehen(t *testing.T) {
 		{"# slice-001a - Der Titel", "Der Titel"},
 		{"# Ganz ohne Kennung", "Ganz ohne Kennung"},
 		{"# Slice 190: Der Titel", "190: Der Titel"},
+		{"# slice-foo-bar Der Titel", "bar Der Titel"},
+		{"# slice-190-2 Der Titel", "2 Der Titel"},
+		{"# slice-190 Der Titel", "slice-190 Der Titel"},
 	}
 	for _, f := range faelle {
 		if got := archive.TitelVon(f.kopf); got != f.want {

@@ -162,7 +162,11 @@ var wortRE = regexp.MustCompile(`^(?:Slice|Welle)\s+`)
 // GRENZE, gemessen und nicht wegdefiniert: was keine der drei Ersetzungen trifft,
 // bleibt stehen — auch ein Rest. Die Form `# Slice 190: T` traegt das Wort ohne
 // das `slice-`-Praefix; die dritte Ersetzung greift dort nicht, und der Titel
-// lautet danach `190: T`. Gedeckt von TestTitelVonLaesstDenNummernRestStehen.
+// lautet danach `190: T`. Und fehlt der Trenner hinter der Kennung, streift
+// kennungRE nur einen Teil von ihr — Nummer wie Name: der Bindestrich im Inneren
+// gilt dann als Trenner, `# slice-foo-bar T` ergibt `bar T`, `# slice-190-2 T`
+// ergibt `2 T`; eine Kennung ohne inneren Bindestrich bleibt ganz stehen.
+// Gedeckt von TestTitelVonLaesstDenNummernRestStehen.
 func TitelVon(kopfzeile string) string {
 	t := rautenRE.ReplaceAllString(strings.TrimRight(kopfzeile, "\r"), "")
 	t = wortRE.ReplaceAllString(t, "")
