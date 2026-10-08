@@ -61,7 +61,7 @@ Reihenfolge = Zeilenfolge; Begründung in §5. Erster Slice:
 - **Das Ende-Ereignis trägt seinen Ausgang außerhalb von §4:** Das Kriterium *Erfassungs-Umfang* von
   [`LH-FA-14`](../../../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) schließt das Ende
   eines Laufs aus, und der Auftraggeber hat den Change Request dazu abgelehnt; `slice-205` ist mit
-  `Gegenstand: entfallen` stillgelegt ([slice-205](next/slice-205-der-strom-traegt-die-zug-grenze.md) §7).
+  `Gegenstand: entfallen` stillgelegt ([slice-205](done/slice-205-der-strom-traegt-die-zug-grenze.md) §7).
 - Blockiert: keine Welle. Wird blockiert von: keiner Welle.
 
 ## 6. Out-of-Scope für diese Welle

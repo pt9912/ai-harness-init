@@ -499,7 +499,7 @@ und Verifikation. Alle Kommandos gemessen am 2026-09-27 am Stand `62a7b27d`, kei
   Register-Verzeichnis mit Beleg dieses Vorgangs, (4) an einem Kommando, (5) an der Adresse.
 - **Adressen vor dem Move ([`AGENTS.md`](../../../../AGENTS.md) §3.11):** über beide Adress-Formen gemessen, außerhalb dieser Datei, am 2026-09-27:
   die Code-Span-Form `(open|next|in-progress|done)/<Kennung>` (`git grep -lE "(open|next|in-progress|done)/<Kennung>" -- . ':!<diese Datei>'`) trifft **3** Dateien —
-  `done/slice-program-feld-nennt-weder-operator-noch-wertfragment.md`, `done/slice-span-programm-nennt-das-programm.md` und `next/slice-205-der-strom-traegt-die-zug-grenze.md` —
+  `done/slice-program-feld-nennt-weder-operator-noch-wertfragment.md`, `done/slice-span-programm-nennt-das-programm.md` und `done/slice-205-der-strom-traegt-die-zug-grenze.md` —
   und die Markdown-Link-Form `](…<Kennung>[.md])` (`git grep -lE "\]\([^)]*<Kennung>(\.md)?[)#]" -- . ':!<diese Datei>'`) **2** davon (die erste und die dritte). In `docs/reviews`,
   `docs/plan/adr` und `.harness/baseline` treffen beide Formen **0** Dateien (`git grep -lE "<beide Muster>" -- docs/reviews docs/plan/adr .harness/baseline | wc -l` → 0):
   die Reports nennen den Slice bei der Kennung. **Entscheidung vor dem Move:** die zwei Zeitdokumente unter `done/` und die lebende `slice-205` in `open/` nennen den Pfad; der Nachzug
@@ -508,7 +508,7 @@ und Verifikation. Alle Kommandos gemessen am 2026-09-27 am Stand `62a7b27d`, kei
   eine `Accepted`-ADR und die Baseline bekommen keinen Byte-Nachzug, und keine nennt den Slice als Pfad.
 - **Der Move, gemessen (`make slice-mv` nach `done/`, 2026-09-27):** zwei Commits, wie Hard Rule 3.3 sie trennt — der reine Move (`86841db5`, 0 Zeilen
   geändert) und der Verweis-Nachzug (`1097ea25`, drei Dateien, je Pfad-Adresse ersetzt: `done/slice-program-feld-nennt-weder-operator-noch-wertfragment.md`,
-  `done/slice-span-programm-nennt-das-programm.md`, `next/slice-205-der-strom-traegt-die-zug-grenze.md`; `git show --stat` je Commit gelesen). Weder ein Report noch eine ADR noch die
+  `done/slice-span-programm-nennt-das-programm.md`, `done/slice-205-der-strom-traegt-die-zug-grenze.md`; `git show --stat` je Commit gelesen). Weder ein Report noch eine ADR noch die
   Baseline wurde berührt (`git diff --name-only 2026c1ac..HEAD -- docs/reviews docs/plan/adr .harness/baseline | wc -l` → **0**). Der Satz *„(`next/`)"* hinter einem Link in
   `done/slice-program-feld-nennt-weder-operator-noch-wertfragment.md` ist Zustandsprosa, die der Nachzug nicht erreicht (Grenze 1 von `make slice-mv`); er bleibt.
 - **Drei Paarungen (nach dem Move geprüft, 2026-09-27):** (a) *Anker:* der Eintrag trägt kein Zielort-Feld (siehe *Steering-Loop-Eintrag*), das Feld
