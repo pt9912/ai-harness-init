@@ -48,6 +48,15 @@ Block mitbekommt — sie führt heute weder `versions` noch `vcs`
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2).
 
+**Im Prüfbereich: auch die Inline-Code-Pfade ohne Link.** Neben dem Markdown-Link trägt ein lebendes
+Artefakt den Tag als Code-Span (`` `.harness/baseline/<tag>/…` `` ohne Link-Ziel); diese Form sieht
+heute kein Gate, und der Baum-Tausch lässt sie still tot zurück
+([`BEO-ALL/tag-tragende-adresse-ueberlebt-den-baseline-tausch-nicht`](../observations/BEO-ALL/tag-tragende-adresse-ueberlebt-den-baseline-tausch-nicht/observation.md),
+Stand `geplant` auf diesen Slice). Das `pin-pattern` erfasst beide Formen; eine datierte Messung,
+die ihren Tag nennen muss
+([`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)),
+ist keine Adresse und wird benannt ausgenommen, nicht mitgezogen.
+
 ## 2. Definition of Done
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
@@ -57,7 +66,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
 - [ ] **`versions` ist aktiviert und hat Zähne:** der Block steht in
       [`.d-check.yml`](../../../../.d-check.yml), und ein absichtlich falscher Pin ist **rot
-      gesehen** worden ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Nicht aktiviert, solange der
+      gesehen** worden — an einem Link **und** an einem Inline-Code-Pfad — ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Nicht aktiviert, solange der
       gepinnte d-check-Stand das Modul nicht führt — das wäre ein behaupteter Gate.
 - [ ] **Der Bezugspunkt ist genau einer:** `current-from` zeigt auf die eine Deklaration des
       adoptierten Standes, und die eingefrorenen Artefakte
