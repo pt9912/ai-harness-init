@@ -3,7 +3,7 @@
 **Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese Datei liegt; er wechselt
 nur durch `git mv` (Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine).
 
-**Welle:** [welle-erfassungsschicht-im-ziel](../welle-erfassungsschicht-im-ziel.md) — erster Slice:
+**Welle:** [welle-erfassungsschicht-im-ziel](welle-erfassungsschicht-im-ziel.md) — erster Slice:
 der Wechsel leerer Werte auf *nicht bekannt* (`slice-agent-role-traegt-nicht-bekannt`) ist der nächste
 Bedeutungswechsel und trägt seine Fassung dann schon.
 

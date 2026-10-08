@@ -29,7 +29,7 @@
   [`ADR-0087`](../../adr/0087-fingerabdruck-gilt-auch-fuer-das-emittierte.md)):
   `slice-107-inhalts-hash-traegt-eine-entscheidung`.
 - Das Ende-Ereignis trägt seinen Ausgang außerhalb der Lieferung: `slice-205` stillgelegt,
-  Gegenstand *entfallen* (Auftraggeber-Entscheidung, `LH-FA-14` *Erfassungs-Umfang* bleibt).
+  Gegenstand *entfallen* (Auftraggeber-Entscheidung, [`LH-FA-14`](../../../../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) *Erfassungs-Umfang* bleibt).
 - Das *Mehr*: `make gates` und `make full-smoke` grün auf demselben Commit (§Verifikation).
 
 ## Was hat funktioniert?
@@ -43,7 +43,7 @@
 
 - **Schritt 4 nicht ausgeführt:** `.harness/state/bin/ai-harness-init archive-welle --vorschau welle-erfassungsschicht-im-ziel`
   sperrt mit `[untergrenze]` (198 wellenlose Slices flach in `done/`, kein `done/*/archiv.zip`) und
-  `[haenger]` (ADR-0016 → zwei Review-Reports von `slice-050`). Der Altbestand-Lauf
+  `[haenger]` ([`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) → zwei Review-Reports von `slice-050`). Der Altbestand-Lauf
   `archive-welle altbestand` ist ein eigener Vorgang (Auftraggeber-Freigabe vom 2026-10-08).
 - `slice-205` trug nach der Stilllegung weiter das Kopf-Feld dieser Welle; berichtigt auf
   *ohne Welle* vor dem Self-Close, damit die Archivierung ihn nicht nach der Welle einsammelt.
@@ -106,6 +106,6 @@
 - Schritt 2: `CO-001` *Auflösung fällig* mit Folge-Slice `slice-113`, `CO-002` permanent; kein
   bootstrap-aware Gate; ADR-Zweig: keine Folge-ADR — die Teil-Ablösung von
   [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) und
-  [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) durch `ADR-0087`
+  [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) durch [`ADR-0087`](../../adr/0087-fingerabdruck-gilt-auch-fuer-das-emittierte.md)
   ist mit der Annahme erledigt, ihre Re-Evaluierungs-Trigger feuerten nicht; Hard Rules bestätigt
   (Architect-Verdikt `docs/reviews/2026-10-08-welle-erfassungsschicht-im-ziel-architect-verdikt.md`).

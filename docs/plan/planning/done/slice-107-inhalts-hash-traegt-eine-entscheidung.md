@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-erfassungsschicht-im-ziel](../welle-erfassungsschicht-im-ziel.md) — der Ausgang dieses
+**Welle:** [welle-erfassungsschicht-im-ziel](welle-erfassungsschicht-im-ziel.md) — der Ausgang dieses
 Slice entscheidet, was die emittierte Feldliste über den Fingerabdruck sagt.
 
 **Ebene: beide — und genau das ist der Gegenstand.** Die zwei Entscheidungssätze reden über die
