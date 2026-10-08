@@ -200,7 +200,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   [`zusage-nennt-zwei-kanten-der-sensor-deckt-eine`](../observations/BEO-ALL/zusage-nennt-zwei-kanten-der-sensor-deckt-eine/observation.md)
   (die Default-Hälfte trug keinen Wächter, Beleg `evidence/slice-das-werkzeug-sagt-seine-fassung.md`).
   Der Lese-Schritt weist keinen Ausgang zu: kein Eintrag erreichte mit diesem Slice 3×.
-- **Folge-Slices:** [`slice-formel-skelett-nennt-die-fassungs-ausnahme`](../next/slice-formel-skelett-nennt-die-fassungs-ausnahme.md)
+- **Folge-Slices:** [`slice-formel-skelett-nennt-die-fassungs-ausnahme`](../in-progress/slice-formel-skelett-nennt-die-fassungs-ausnahme.md)
   (neu in `open/`) — der Skelett-Satz nennt die eine Fassungs-Ausnahme; der einzige Restposten
   der Review-Findings (F-3), außerhalb der §1-Abgrenzung dieses Slices.
 - **Risiken aus §6:** alle drei tragen **Ausgang: entfallen** — (1) der Bau ohne Kontext meldet
