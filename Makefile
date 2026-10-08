@@ -52,7 +52,7 @@ TRAEGER_SHA256_WINDOWS_ARM64 ?= 112c9f4c298e49a8cbc44873ff207d528cf2f18b34f1bffa
 TRAEGER_CARRIER ?= .harness/state/bin/ai-harness-init
 export TRAEGER_TAG TRAEGER_SHA256_LINUX_AMD64 TRAEGER_SHA256_LINUX_ARM64 TRAEGER_SHA256_DARWIN_AMD64 TRAEGER_SHA256_DARWIN_ARM64 TRAEGER_SHA256_WINDOWS_AMD64 TRAEGER_SHA256_WINDOWS_ARM64 TRAEGER_CARRIER
 
-.PHONY: help gates record-gates test test-bats test-go test-go-pids-guard lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle traeger-fetch release-warten tap-check tap-nachzug vendor-baseline
+.PHONY: help gates record-gates test test-bats test-go test-go-pids-guard lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims register-ausgang history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle traeger-fetch release-warten tap-check tap-nachzug vendor-baseline
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
@@ -266,6 +266,13 @@ shell-lint: ## Shell-Hooks/-Helfer linten (shellcheck) im gepinnten Image — Do
 # Geprueft werden echte Kommentare; Roh-String-Literale (emittierter Inhalt) nicht.
 comment-claims: ## Kommentar-Behauptungen nennen ihren Sensor (AGENTS.md 3.6) — hermetisch
 	@bash harness/tools/comment-claims.sh $$(git ls-files 'internal/*.go' 'internal/**/*.go' 'cmd/**/*.go' | grep -v '_test[.]go') $$(git ls-files 'harness/tools/*.sh' '.claude/hooks/*.sh' '.githooks/*')
+
+# Haelt das Beobachtungs-Register gegen seine Ausgangs-Regel: ein Eintrag ueber der 3x-Schwelle
+# traegt einen der drei Ausgaenge (ADR-0069). Hermetisch — reines bash auf dem Arbeitsbaum. NICHT
+# in gates: der Bestand fuehrt Eintraege ueber der Schwelle ohne Ausgang, und eine Ausnahmeliste
+# fuehrt der Waechter nicht; Zusage und Grenze im Kopf von harness/tools/register-ausgang.sh.
+register-ausgang: ## Register-Eintraege ueber der 3x-Schwelle tragen einen Ausgang (ADR-0069) — hermetisch, NICHT in gates
+	@bash harness/tools/register-ausgang.sh
 
 # Prueft die GitHub-Actions-Workflows syntaktisch. IN gates: .github/workflows/
 # ist ein reales committetes Artefakt (kein leerer Pruefbereich, LH-QA-01), und

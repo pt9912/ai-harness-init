@@ -91,6 +91,7 @@ ist (`make help` listet sie).
 | [`make commit-msg-check`](sensors/commit-msg-check.md) | prüft eine Commit-Message-Datei gegen Traceability-Kennung | kein Gate — Träger ist der PreToolUse-Hook |
 | `make hooks-install` | aktiviert die git-eigenen Träger `commit-msg` und `pre-commit` in diesem Klon (`core.hooksPath .githooks`) — Letzterer hält `git commit --amend` gegen fremde, zwischenzeitlich gestagte Index-Einträge | kein Gate · [`AGENTS.md`](../AGENTS.md) §5 |
 | [`make history-range-guard`](sensors/history-range-guard.md) | Vorlauf-Wächter: angeforderte Range auflösbar **und** nicht leer | kein Gate |
+| `make register-ausgang` | hält jeden Registereintrag mit mindestens drei `evidence/*.md` gegen einen der drei Ausgänge in seiner `state.md` und nennt jeden ohne namentlich; geprüft ist das Stand-Wort, nicht ob der Ausgang trägt. Nicht in `make gates`, solange der Bestand Einträge über der Schwelle ohne Ausgang führt (`make register-ausgang` nennt sie) | kein Gate · [`ADR-0069`](../docs/plan/adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md) |
 | [`make adr-immutable`](sensors/adr-immutable.md) | hält den Kern einer `Accepted`-ADR über einer Range unverändert | kein Gate · [`AGENTS.md`](../AGENTS.md) §3.4 |
 | [`make doc-tracked`](sensors/doc-tracked.md) | sagt, ob ein verlinktes Ziel im git-Index steht | kein Gate |
 | [`make doc-structure`](sensors/doc-structure.md) | fährt die `structure`-Regeln der `.d-check.yml` allein (inert ohne `structure:`-Block) | kein Gate |

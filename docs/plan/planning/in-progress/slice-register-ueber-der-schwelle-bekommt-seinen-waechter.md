@@ -196,6 +196,25 @@ aber bei einer Nicht-Markdown-Datei in `evidence/`.
 Ob das den Liefer-Punkt zum Zähler verschiebt, urteilt der Implementer an der Sonde; der Planner ändert die
 DoD nicht.
 
+**Umsetzungsstand (Implementer, 2026-10-08).** Der Wächter zählt Dateien `evidence/*.md` (kein
+Verzeichnis, keine Nicht-`.md`) und liest das erste Wort der `**Stand:**`-Zeile:
+`harness/tools/register-ausgang.sh`, Ziel `make register-ausgang`, Tests
+`test/register-ausgang.bats`, Mutations-Fälle `564`/`565` unter `test/mutations/`. **Zwei
+Abweichungen von der Tabelle oben, beide offen für den Planner:**
+
+- **Die Zeile steht unter §Werkzeuge mit `kein Gate`, nicht unter §Sensors, und `make gates` fährt
+  das Ziel nicht.** Über dem Bestand ist der Wächter rot (`make register-ausgang` nennt die Einträge
+  namentlich); verdrahtet machte er `make gates` rot, und eine Ausnahmeliste verbietet
+  [ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  (Re-Evaluierungs-Trigger 2: der Bestand wird vor der Verdrahtung getilgt). Die Verdrahtung ist
+  danach eine Zeile in `record-gates`, die Tabellen-Zeile wandert nach §Sensors, und
+  `register-ausgang` verläßt `targets.exempt-targets` in [`.d-check.yml`](../../../../.d-check.yml).
+- **Der Nachzug der Zeile `BEO-ALL/*/state.md` ist nicht gefahren.** Einen Ausgang zuzuweisen ist
+  der Lese-Schritt, und zwei der genannten Einträge halten in ihrer `state.md` eine fällige Übergabe
+  an den Architect fest; *verkörpert* und *geplant* verlangen je Eintrag ein Urteil über Zielort
+  oder einen Nehmer-Slice, den es teils nicht gibt (Baseline-Regelwerk `modul-08-agentenrollen.md`
+  §Rollen-Sequenz für eine Welle, Zeile 3b). Übergabe an Planner und Architect.
+
 ## 4. Trigger
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
