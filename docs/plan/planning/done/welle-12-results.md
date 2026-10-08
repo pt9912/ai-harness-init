@@ -203,7 +203,7 @@ einem bestehenden erzeugt. Was offen bleibt, in Klassen statt als Liste:
   Festlegung 6 *„ohne Inhalts-Hash"* sagt. ADRs sind ab *Accepted* immutabel
   ([`AGENTS.md`](../../../../AGENTS.md) §3.4) — die Korrektur ist eine **neue** Entscheidung und
   gehört dem Architect. Träger:
-  [slice-107](../next/slice-107-inhalts-hash-traegt-eine-entscheidung.md).
+  [slice-107](../in-progress/slice-107-inhalts-hash-traegt-eine-entscheidung.md).
 - **Vier Produktions-Fundorte für sechs Rollen-Namen, und der vierte geht als erster ins Ziel.**
   Die Kopplung, die [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
   Festlegung 3 *„benannt, nicht geschlossen"* lässt, ist von dieser Welle **vergrößert** worden,
@@ -361,7 +361,7 @@ Setzung 1 und darum **nicht** in der Roadmap (Setzung 2):
 | [slice-104](../done/slice-104-rollen-namen-haben-eine-quelle.md) | die Rollen-Namen haben eine Quelle statt vier Fundorte |
 | [slice-105](../done/slice-105-mutate-messen-dann-teilen.md) | `make mutate` wird erst gemessen, dann geteilt |
 | [slice-106](../done/slice-106-rotes-ci-traegt-seinen-ausgang.md) | jedes Rot der CI trägt einen Ausgang |
-| [slice-107](../next/slice-107-inhalts-hash-traegt-eine-entscheidung.md) | der Inhalts-Hash bekommt seine Entscheidung |
+| [slice-107](../in-progress/slice-107-inhalts-hash-traegt-eine-entscheidung.md) | der Inhalts-Hash bekommt seine Entscheidung |
 | [slice-108](../done/slice-108-feldlisten-waechter-tragen-ihren-fall.md) | die Feldlisten-Wächter tragen ihren Fall oder ihre Grenze |
 | [slice-109](../done/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md) | jede Aussage der Feldliste hat ihre Quelle |
 | [slice-110](../done/slice-110-erfassungs-waechter-fall-meldung-grenze.md) | die Wächter der Erfassungs-Ausgabe tragen Fall, Meldung und Grenze |
