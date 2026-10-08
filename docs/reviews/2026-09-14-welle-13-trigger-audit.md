@@ -262,7 +262,7 @@ die Verengung, und das ist eine eigene ADR.
 
 Sie lautet: *„Ob die Grenze aus Festlegung 1 in `.harness/skills/reviewer.md` aufgenommen wird,
 entscheidet der Reviewer."* Ihr Träger ist
-[`slice-die-vorgangs-grenze-erreicht-den-reviewer-skill`](../plan/planning/next/slice-die-vorgangs-grenze-erreicht-den-reviewer-skill.md)
+[`slice-die-vorgangs-grenze-erreicht-den-reviewer-skill`](../plan/planning/done/slice-die-vorgangs-grenze-erreicht-den-reviewer-skill.md)
 (in `next/`): sein §1 nennt ihn als **zweite Hälfte** des zweiteiligen Übergabe-Artefakts aus
 [ADR-0048](../plan/adr/0048-eigentum-haengt-am-vorgang-nicht-an-der-datei.md) §Konsequenzen, sein
 Verantwortlich-Feld weist ihn dem Reviewer zu
