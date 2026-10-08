@@ -83,81 +83,102 @@ func gruppe(zeilen []string, i int) string {
 	return strings.Join(g, "\n")
 }
 
+// leser haelt den Zustand eines Durchlaufs ueber die Zeilen einer Konfiguration.
+type leser struct {
+	zeilen      []string
+	out         []Eintrag
+	top         string
+	topZeile    int
+	blockKey    string
+	blockIndent int
+}
+
 // Eintraege liest die Ausnahme-Eintraege einer d-check-Konfiguration.
 func Eintraege(yml string) []Eintrag {
-	zeilen := strings.Split(yml, "\n")
-	var out []Eintrag
-	top, topZeile := "", 0
-	blockKey, blockIndent := "", -1
-	for i, l := range zeilen {
+	r := &leser{zeilen: strings.Split(yml, "\n"), blockIndent: -1}
+	for i, l := range r.zeilen {
 		if kommentar(l) || strings.TrimSpace(l) == "" {
 			continue
 		}
 		if m := reTop.FindStringSubmatch(l); m != nil {
-			top, topZeile = m[1], i
-			blockKey, blockIndent = "", -1
+			r.top, r.topZeile = m[1], i
+			r.blockKey, r.blockIndent = "", -1
 		}
-		abschnitt := func() string {
-			var t []string
-			if g := gruppe(zeilen, topZeile); g != "" {
-				t = append(t, g)
-			}
-			for j := topZeile; j <= i; j++ {
-				if kommentar(zeilen[j]) {
-					t = append(t, zeilen[j])
-				} else if c := inline(zeilen[j]); c != "" {
-					t = append(t, c)
-				}
-			}
-			return strings.Join(t, "\n")
-		}
-		if m := reFlow.FindStringSubmatch(l); m != nil {
-			if m[1] == "ignore" && top != "scan" {
-				continue
-			}
-			for _, w := range strings.Split(m[2], ",") {
-				w = strings.Trim(strings.TrimSpace(w), `"'`)
-				if w == "" {
-					continue
-				}
-				out = append(out, Eintrag{Schluessel: top + "." + m[1], Wert: w, Zeile: i + 1,
-					Klasse: Glob, Begruendung: abschnitt() + "\n" + w})
-			}
-			continue
-		}
-		if top == "ignore-refs" {
-			if m := reInItem.FindStringSubmatch(l); m != nil {
-				out = append(out, eintrag(zeilen, i, "ignore-refs.in", m[1], Glob, abschnitt))
-			}
-			continue
-		}
-		if m := reBlockKopf.FindStringSubmatch(l); m != nil && reTop.FindStringSubmatch(l) == nil {
-			blockKey, blockIndent = m[2], len(m[1])
-			continue
-		}
-		if blockKey != "" {
-			m := reItem.FindStringSubmatch(l)
-			if m == nil || len(m[1]) < blockIndent {
-				blockKey, blockIndent = "", -1
-				continue
-			}
-			switch {
-			case blockKey == "exempt-paths":
-				out = append(out, eintrag(zeilen, i, top+".exempt-paths", m[2], Glob, abschnitt))
-			case blockKey == "ignore-refs" && top == "codepaths":
-				out = append(out, eintrag(zeilen, i, "codepaths.ignore-refs", m[2], Zitat, abschnitt))
-			}
-		}
+		r.zeile(i, l)
 	}
-	return out
+	return r.out
 }
 
-func eintrag(zeilen []string, i int, key, wert string, k Klasse, abschnitt func() string) Eintrag {
+// zeile ordnet eine Nicht-Kommentar-Zeile ein: Flow-Liste, `in`-Wert des Top-Level-Blocks
+// ignore-refs, Kopf einer Block-Liste oder Wert darin.
+func (r *leser) zeile(i int, l string) {
+	if m := reFlow.FindStringSubmatch(l); m != nil {
+		r.flow(i, m[1], m[2])
+		return
+	}
+	if r.top == "ignore-refs" {
+		if m := reInItem.FindStringSubmatch(l); m != nil {
+			r.out = append(r.out, r.eintrag(i, "ignore-refs.in", m[1], Glob))
+		}
+		return
+	}
+	if m := reBlockKopf.FindStringSubmatch(l); m != nil && reTop.FindStringSubmatch(l) == nil {
+		r.blockKey, r.blockIndent = m[2], len(m[1])
+		return
+	}
+	if r.blockKey == "" {
+		return
+	}
+	m := reItem.FindStringSubmatch(l)
+	if m == nil || len(m[1]) < r.blockIndent {
+		r.blockKey, r.blockIndent = "", -1
+		return
+	}
+	switch {
+	case r.blockKey == "exempt-paths":
+		r.out = append(r.out, r.eintrag(i, r.top+".exempt-paths", m[2], Glob))
+	case r.blockKey == "ignore-refs" && r.top == "codepaths":
+		r.out = append(r.out, r.eintrag(i, "codepaths.ignore-refs", m[2], Zitat))
+	}
+}
+
+// flow liest die Werte einer Flow-Liste; `ignore` zaehlt nur unter `scan`.
+func (r *leser) flow(i int, key, liste string) {
+	if key == "ignore" && r.top != "scan" {
+		return
+	}
+	for _, w := range strings.Split(liste, ",") {
+		w = strings.Trim(strings.TrimSpace(w), `"'`)
+		if w != "" {
+			r.out = append(r.out, Eintrag{Schluessel: r.top + "." + key, Wert: w, Zeile: i + 1,
+				Klasse: Glob, Begruendung: r.abschnitt(i) + "\n" + w})
+		}
+	}
+}
+
+// abschnitt liefert die Kommentare des Top-Level-Blocks bis Zeile i samt der Gruppe direkt
+// ueber dem Block.
+func (r *leser) abschnitt(i int) string {
+	var t []string
+	if g := gruppe(r.zeilen, r.topZeile); g != "" {
+		t = append(t, g)
+	}
+	for j := r.topZeile; j <= i; j++ {
+		if kommentar(r.zeilen[j]) {
+			t = append(t, r.zeilen[j])
+		} else if c := inline(r.zeilen[j]); c != "" {
+			t = append(t, c)
+		}
+	}
+	return strings.Join(t, "\n")
+}
+
+func (r *leser) eintrag(i int, key, wert string, k Klasse) Eintrag {
 	e := Eintrag{Schluessel: key, Wert: wert, Zeile: i + 1, Klasse: k}
-	if g := gruppe(zeilen, i); g != "" {
+	if g := gruppe(r.zeilen, i); g != "" {
 		e.Begruendung, e.EigeneGrp = g+"\n"+wert, true
 	} else {
-		e.Begruendung = abschnitt() + "\n" + wert
+		e.Begruendung = r.abschnitt(i) + "\n" + wert
 	}
 	return e
 }
