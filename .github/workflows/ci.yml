@@ -85,9 +85,10 @@ jobs:
   # full-smoke mit AUSGANG LEITUNG (ADR-0058 Festlegung 2). Ist das Release schon
   # veroeffentlicht, endet es beim ersten Versuch. Jeder Versuch ist auf die Restzeit
   # begrenzt; der Schritt endet hoechstens 7 s nach der Grenze (Kopf des Skripts).
-  # timeout-minutes 45: 15 Minuten Warten plus Raum fuer full-smoke, das am
-  # 2026-10-07 4 bis 9 Minuten lief (gh run view <id> --json jobs, Job full-smoke);
-  # ohne den Wert gilt der GitHub-Default von 360 Minuten.
+  # timeout-minutes 45 deckt die Warte-Grenze von release-warten plus die Laufzeit
+  # von full-smoke plus Puffer; wer einen der Summanden aendert, zieht den Wert nach.
+  # Die Laufzeit von full-smoke liest gh run view <id> --json jobs (Job full-smoke).
+  # Ohne den Wert gilt der GitHub-Default von 360 Minuten.
   full-smoke:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
