@@ -19,7 +19,7 @@ und fällt mit der Closure, und beide Male steht der Verweis präfixlos. Der ers
 make slice-mv SLICE=slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke TO=in-progress
 #   eingehend: 0 Datei(en) mit Verweisen nachgezogen
 make docs-check
-#   docs/plan/planning/next/slice-register-ueber-der-schwelle-bekommt-seinen-waechter.md:43
+#   docs/plan/planning/in-progress/slice-register-ueber-der-schwelle-bekommt-seinen-waechter.md:43
 #     slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke.md  target-missing
 #   … :99  target-missing
 ```
@@ -35,6 +35,6 @@ der Fix selbst die Grundmenge bewegt
 ([`MR-058`](../../../../../../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)):
 
 ```sh
-git show 36ec0151^:docs/plan/planning/next/slice-register-ueber-der-schwelle-bekommt-seinen-waechter.md \
+git show 36ec0151^:docs/plan/planning/in-progress/slice-register-ueber-der-schwelle-bekommt-seinen-waechter.md \
   | grep -c '](slice-die-ausgangs-regel-des-registers-deckt-die-benannte-luecke\.md)'   # 2
 ```
