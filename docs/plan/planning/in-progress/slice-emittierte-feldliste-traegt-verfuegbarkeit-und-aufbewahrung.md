@@ -24,7 +24,7 @@ bleibt vom Spec-Umbau unberührt — dieser Slice ist die Tool-Ebene),
 [§5](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) zu den Abweichungen 2 bis 6 und zu `SPEC-087` als Quelle
 seiner Aussagen, nach dem Umbau in `slice-spec-5-wird-nach-adr-0074-umgebaut`).
 
-**Verantwortlich:** — bis zur Priorisierung.
+**Verantwortlich:** pt9912
 
 **Autor:** Planner. **Datum:** 2026-09-30.
 
