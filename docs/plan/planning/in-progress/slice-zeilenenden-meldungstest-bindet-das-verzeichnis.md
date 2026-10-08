@@ -35,7 +35,7 @@ Eigenschaft behauptet, misst die Eigenschaft).
 [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) — beide nur
 als Gegenstand, den der Test hält; keine Spec-Aussage ändert sich, und kein Change Request entsteht.
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912
 
 **Autor:** Planner. **Datum:** 2026-09-25.
 
