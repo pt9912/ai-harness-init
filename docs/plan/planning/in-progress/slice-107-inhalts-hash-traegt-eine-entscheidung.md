@@ -159,6 +159,36 @@ Sätze der Entscheidungen nehmen sie **nicht** aus; nur der Hash ist ausdrückli
 die Antwort mehr als eine Zeile, ist der
 Gegenstand ein Durchgang über die Tabelle und nicht ein Satz — dann greift die Rückführung aus §4.
 
+### Ist-Messung beim Eintritt in `in-progress/` (Implementer, 2026-10-08)
+
+Keine Zahl ist ein Erwartungswert
+([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
+Setzung 2).
+
+- **Der Widerspruch besteht unverändert.** Rang 1 nennt den Fingerabdruck
+  (`sed -n '/^### .* — Redaktion und Erfassungs-Umfang$/,/^### .* — Rolle der Erfassung$/p' spec/lastenheft.md | grep -c 'Fingerabdruck'`
+  → **1**); die zwei Entscheidungen schließen ihn für das Emittierte aus
+  (`grep -c 'ohne Inhalts-Hash' docs/plan/adr/0011-telemetrie-erfassung-policy.md` → **1**,
+  `grep -c 'Inhalts-Hash' docs/plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md`
+  → **1**); der Träger unterscheidet keine Ebene (`grep -c 'Ebene' internal/span/emit.go` → **0**).
+- **Eine fünfte Quelle steht auf der Seite von Rang 1:** das Technik-Stratum führt `sha256_16` für
+  die Schreib-Werkzeuge ohne Ebenen-Vorbehalt (`grep -c 'sha256_16' spec/spezifikation.md` → **5**,
+  darunter `SPEC-018` und `SPEC-029`).
+- **Die Frage aus §3 trifft nur den Fingerabdruck.** [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md)
+  Festlegung 2 behält für das Emittierte ausdrücklich die Länge (*„bleibt die Länge"*,
+  `grep -c 'bleibt die Länge' docs/plan/adr/0011-telemetrie-erfassung-policy.md` → **1**); keine
+  Rückführung nach `next/`.
+- **Das Kommando in DoD (2) für Ausgang (a) misst nicht mehr die Eigenschaft:**
+  `grep -rl 'Inhalts-Hash' docs/plan/adr/*.md | wc -l` → **3** statt der dort genannten 2, weil
+  [`ADR-0083`](../../adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md) das
+  Wort für den Inhalts-Hash des Gate-Nachweises führt. Die Berichtigung verschiebt ein
+  Abnahmekriterium und ist Übergabe an den Planner ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+- **Der Gegenstand ist eine Entscheidung, kein Diff der Implementer-Rolle.** Ausgang (a) ist ein
+  neuer ADR-Text, Ausgang (c) eine Lesart — beide Architect-Arbeit
+  ([`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1); Ausgang (b)
+  setzt einen Change Request voraus. Eine neue Fassungs-Zeile der Erfassungsregel fällt nur bei (b)
+  an — dort ändert sich ein Feld, bei (a) und (c) keines.
+
 ## 4. Trigger
 
 **Beginn (`open` → `next` → `in-progress`): nichts blockiert ihn außer dem WIP-Limit — und das ist
