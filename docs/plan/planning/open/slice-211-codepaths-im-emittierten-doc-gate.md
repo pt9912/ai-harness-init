@@ -5,9 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** ohne Welle. Es gibt keine Closure-Bedingung, die von der DoD dieses Slice verschieden
-wäre — ein Welle-Trigger wäre hier die Abschrift von DoD (2)
-(Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht).
+**Welle:** `welle-emittiertes-doc-gate`.
 
 **Ebene: emittiert, nicht Dogfood.** Gegenstand ist die Doc-Gate-Startkonfiguration, die das
 Werkzeug in ein fremdes Ziel schreibt. Die `.d-check.yml` **dieses** Repos ist nicht berührt; zwei

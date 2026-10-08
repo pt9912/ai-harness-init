@@ -9,8 +9,7 @@ aus `open/` oder `next/` nach `done/` — §7 nennt in der Zeile `Gegenstand:`
 Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 (§Ein Slice, dessen Gegenstand ein anderer übernimmt).
 
-**Welle:** ohne Welle. Der Closure-Trigger unten beobachtet nichts, was die DoD nicht belegt
-(Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht).
+**Welle:** `welle-emittiertes-doc-gate`.
 
 **Bezug:**
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) (ein

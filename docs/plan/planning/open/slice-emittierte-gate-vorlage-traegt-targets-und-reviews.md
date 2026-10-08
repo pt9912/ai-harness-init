@@ -9,10 +9,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 [`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
 Setzung 1 — ein freier Slug in lowercase-Kebab-Case.
 
-**Welle:** ohne Welle. Sein Closure-Trigger würde die eigene DoD abschreiben
-(Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht); nach
-[`MR-037`](../../../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst)
-steht wellenlose Arbeit nicht in der Roadmap.
+**Welle:** `welle-emittiertes-doc-gate`.
 
 **Ebene: emittiert, nicht Dogfood.** Gegenstand ist ausschließlich die Doc-Gate-Startkonfiguration,
 die das Werkzeug in ein **frisches Zielrepo** schreibt. Die
