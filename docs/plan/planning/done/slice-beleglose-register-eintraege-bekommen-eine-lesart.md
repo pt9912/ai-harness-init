@@ -111,7 +111,7 @@ Setzung 2) — die Zahl wandert mit dem nächsten Vorgang, der den Eintrag triff
 
 - **Kein Sensor und keine Gate-Änderung.** Ein Modul, das die Register-Paarung fährt, ist der
   Liefergegenstand von
-  [slice-register-ueber-der-schwelle-bekommt-seinen-waechter](../in-progress/slice-register-ueber-der-schwelle-bekommt-seinen-waechter.md)
+  [slice-register-ueber-der-schwelle-bekommt-seinen-waechter](../done/slice-register-ueber-der-schwelle-bekommt-seinen-waechter.md)
   und hängt an der Regel, die hier erst entsteht. Rollen-Trennung: wer die Norm entscheidet, baut
   ihren Wächter nicht im selben Kontext. *Es wäre ein anderer Vorgang.*
 - **Kein Nachzug des Bestands.** Welche beleglosen Verzeichnisse es heute gibt, ist eine Messung,
@@ -179,7 +179,7 @@ Aussagen-Berührung steht hier gar nicht.
 
 **Kein Test-Eintrag, und das ist kein Vergessen.** Der Liefergegenstand ist eine **Regel** für zwei
 inferentielle Leser; die maschinelle Hälfte ist ausdrücklich der Folge-Slice
-([slice-register-ueber-der-schwelle-bekommt-seinen-waechter](../in-progress/slice-register-ueber-der-schwelle-bekommt-seinen-waechter.md)
+([slice-register-ueber-der-schwelle-bekommt-seinen-waechter](../done/slice-register-ueber-der-schwelle-bekommt-seinen-waechter.md)
 trägt den Sensor über der Schwelle, die Paarung (c) selbst hat weiterhin kein Modul). Ein Test
 daneben hielte den Regeltext gegen eine zweite Fassung seiner selbst.
 
@@ -260,7 +260,7 @@ dasteht.
   Verzeichnisse, die sie tragen, hat Belege). Die Entscheidung fiel am Bestand, nicht am Wortlaut allein.
 - **(3) Der Sensor über der Schwelle wird vor dieser Entscheidung gebaut.** Dann prüft er eine Form,
   die niemand entschieden hat, und die Ausnahme für (b) fehlt in ihm. **Gegenmittel im Plan:**
-  [slice-register-ueber-der-schwelle-bekommt-seinen-waechter](../in-progress/slice-register-ueber-der-schwelle-bekommt-seinen-waechter.md)
+  [slice-register-ueber-der-schwelle-bekommt-seinen-waechter](../done/slice-register-ueber-der-schwelle-bekommt-seinen-waechter.md)
   führt in §1 *„Keine Entscheidung über den Ausgang selbst"* und startet erst danach. —
   **Ausgang: entfallen.** Die Entscheidung liegt vor
   ([ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md),
@@ -323,7 +323,7 @@ Backticks).
   (`grep -rl 'slice-beleglose-register-eintraege-bekommen-eine-lesart' docs/plan/planning/observations | wc -l`
   → 0, keine Erwartung); der Ausgang der Auslöser-Beobachtung steht in deren `state.md`.
 - **Folge-Slices:** keiner. Der Wächter-Slice
-  [slice-register-ueber-der-schwelle-bekommt-seinen-waechter](../in-progress/slice-register-ueber-der-schwelle-bekommt-seinen-waechter.md)
+  [slice-register-ueber-der-schwelle-bekommt-seinen-waechter](../done/slice-register-ueber-der-schwelle-bekommt-seinen-waechter.md)
   ist ein Nachbar, kein Folge-Slice dieses Abschlusses; seine Zustandssätze zur ADR sind auf
   `Accepted` und `verkörpert` gezogen, DoD und Liefer-Punkte sind unberührt.
 - **Risiken aus §6:** drei, je ein Ausgang — alle *entfallen* mit Begründung (§6): (1) die Antwort ist (a),
