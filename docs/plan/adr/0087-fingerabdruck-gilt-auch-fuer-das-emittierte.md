@@ -1,6 +1,6 @@
 # ADR-0087: Der Fingerabdruck gilt auch für das Emittierte — die Erfassung folgt dem Lastenheft, nicht der Ebenen-Schärfe
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-10-08
 
@@ -120,3 +120,4 @@ besteht nicht.
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-10-08 | Proposed | `slice-107-inhalts-hash-traegt-eine-entscheidung` |
+| 2026-10-08 | **Accepted** | Review `2026-10-08-adr-0087-review` (0 HIGH; MEDIUM und LOW eingearbeitet in `d75764fd`), Annahme durch den Auftraggeber am 2026-10-08 ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1) |
