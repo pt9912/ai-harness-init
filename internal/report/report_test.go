@@ -496,6 +496,26 @@ func TestAggregiere_TrenntDieFassungen(t *testing.T) {
 	}
 }
 
+// TestAggregiere_FassungNullIstNichtBekannt haelt die Null-Haelfte von SPEC-089: eine Zeile
+// mit `"rule_version":0` zaehlt wie eine ohne das Feld unter *Fassung nicht bekannt* — 0 ist
+// der Nullwert des fehlenden Feldes, der Emitter schreibt ihn nie — und der Bericht nennt sie
+// nicht als eigene Fassung 0.
+func TestAggregiere_FassungNullIstNichtBekannt(t *testing.T) {
+	dir := schreibeBestand(t,
+		`{"ts":"2026-10-08T10:00:00Z","tool":"Read","session":"s1","rule_version":0}`,
+		`{"ts":"2026-10-07T10:00:00Z","tool":"Read","session":"s1"}`,
+	)
+	b, err := report.Aggregiere(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	aus := report.Schreibe(b)
+	want := "Erfassungsregel: Fassung nicht bekannt: 2 Zeile(n)\n"
+	if !strings.Contains(aus, want) {
+		t.Fatalf("erwartet %q in:\n%s", want, aus)
+	}
+}
+
 // TestSchreibe_NenntJedeFassungGetrennt haelt die Ausgabe von SPEC-089: der Bericht nennt
 // jede Fassung mit ihrer Zeilenzahl, kennzeichnet eine Fassung, die der Leser nicht fuehrt,
 // und fuehrt die Zeilen ohne Fassung als *nicht bekannt* auf — getrennt, nicht summiert.

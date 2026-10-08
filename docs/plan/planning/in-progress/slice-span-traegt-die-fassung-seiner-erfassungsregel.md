@@ -50,7 +50,7 @@ Beobachteten trennen, weil jede Zeile die Fassung der Erfassungsregel nennt, unt
 | `spec/spezifikation.md` §5 | update | gewählt ist die Feld-Variante: Feldzeile `rule_version` (`SPEC-088`), Regel mit Begründung und Zählregel (`SPEC-089`), Fassungs-Tabelle 1–4 mit den bisherigen Bedeutungswechseln (`SPEC-090`–`SPEC-093`), zwei Zusicherungen (`SPEC-094`, `SPEC-095`) ([`LH-FA-13`](../../../../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans)) |
 | `internal/span/` (`emit.go`, `ruleversion.go`, `fieldlist.go`) | update | Pflichtfeld `rule_version` mit der Konstante der laufenden Fassung; die emittierte Feldliste trägt seine Frage |
 | `internal/report/report.go` | update | Zeile `Erfassungsregel:` nennt je Fassung die lesbaren Zeilen, ohne Feld als *nicht bekannt* |
-| Go-Tests, Mutations-Fälle 592–594 | neu/update | Fassung geschrieben, an die Spec-Tabelle gekoppelt, im Bericht getrennt |
+| Go-Tests, Mutations-Fälle 592–596 | neu/update | Fassung geschrieben, an die Spec-Tabelle gekoppelt, im Bericht getrennt; 595/596 binden Leer-Guard und untere Grenze der Fassungs-Zeile; `0` zählt als *nicht bekannt* (`TestAggregiere_FassungNullIstNichtBekannt`) |
 | `harness/sensors/span-report.md`, `docs/user/benutzerhandbuch.md` | update | Ausgabe des Berichts um die Fassungs-Zeile |
 
 ## 4. Trigger

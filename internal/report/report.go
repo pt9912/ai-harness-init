@@ -59,8 +59,9 @@ type Bilanz struct {
 	// Zeilen == 0 und sehen sonst gleich aus (slice-071 DoD (1)).
 	AblageortFehlt bool
 	// Fassungen zaehlt die lesbaren Zeilen je Fassung der Erfassungsregel (`rule_version`,
-	// SPEC-088). Schluessel 0 ist eine Zeile ohne das Feld: Fassung nicht bekannt.
-	// Bewacht von TestAggregiere_TrenntDieFassungen.
+	// SPEC-088). Schluessel 0 ist eine Zeile ohne das Feld oder mit dem Wert 0: Fassung
+	// nicht bekannt (SPEC-089). Bewacht von TestAggregiere_TrenntDieFassungen und
+	// TestAggregiere_FassungNullIstNichtBekannt.
 	Fassungen map[int]int
 }
 
