@@ -18,7 +18,6 @@ nicht hier.
 
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
 - [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
-- [welle-erfassungsschicht-im-ziel — Erfassungsschicht im Ziel](../welle-erfassungsschicht-im-ziel.md)
 
 **Nichts in Arbeit.**
 
@@ -131,6 +130,7 @@ Ergebnis-Notiz, keine Nummernfolge.
 | [welle-v021-faehigkeit](../done/welle-v021-faehigkeit.md) | 2026-09-23 | [welle-v021-faehigkeit-results.md](../done/welle-v021-faehigkeit-results.md) |
 | [welle-emittiertes-doc-gate](../done/welle-emittiertes-doc-gate.md) | 2026-10-08 | [welle-emittiertes-doc-gate-results.md](../done/welle-emittiertes-doc-gate-results.md) |
 | [welle-adopter-weg-im-ziel](../done/welle-adopter-weg-im-ziel.md) | 2026-10-08 | [welle-adopter-weg-im-ziel-results.md](../done/welle-adopter-weg-im-ziel-results.md) |
+| [welle-erfassungsschicht-im-ziel](../welle-erfassungsschicht-im-ziel.md) | 2026-10-08 | [welle-erfassungsschicht-im-ziel-results.md](../done/welle-erfassungsschicht-im-ziel-results.md) |
 
 Die Tabelle ist nach Wellen-Nummer sortiert, nicht nach Abschluss-Datum; `welle-10` schloss nach
 `welle-12`, und `welle-emittierte-werkzeuge` sowie `welle-v021-faehigkeit` stehen am Ende, weil

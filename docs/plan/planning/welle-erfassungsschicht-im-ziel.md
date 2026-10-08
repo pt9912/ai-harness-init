@@ -78,5 +78,5 @@ Reihenfolge = Zeilenfolge; Begründung in §5. Erster Slice:
 
 ## 7. Closure-Notiz
 
-Ergebnis: <Zeiger auf `welle-erfassungsschicht-im-ziel-results.md`, Geschwister im Ruheort `done/`>
-Zähler: <Zeiger aufs Beobachtungs-Register, eine Ebene über dem Ruheort>
+Ergebnis: `welle-erfassungsschicht-im-ziel-results.md` (Geschwister im Ruheort `done/`)
+Zähler: Beobachtungs-Register `docs/plan/planning/observations/`
