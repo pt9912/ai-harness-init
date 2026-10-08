@@ -1,5 +1,7 @@
 # MR-048 — Der Reproduzierbarkeits-Anker ist die Rezept-Form, die emittierten Skelette pinnen per Tag
 
+> **ÜBERHOLT: der Halbsatz im Feld Geltungsbereich, die zwei Regeln aus `modul-14-docker-harness.md` §Multi-Stage-Build *„bleiben dort offen"* bei slice-146 → [`MR-088`](../conventions.md#mr-088--zwei-multi-stage-regeln-aus-modul-14-bleiben-unentschieden-und-ohne-träger).** Die übrigen Aussagen gelten fort.
+
 - **Datum:** 2026-09-03
 - **Wirksamkeits-Anlass:** slice-160 — die Docker-Form dieses Repos gegen die Ziel-Fassung.
 - **Geltungsbereich:** die **Anker-Frage** auf beiden Ebenen, getrennt beantwortet —
