@@ -30,6 +30,8 @@ Festlegung 1, 3, 6 und 7 sind die Herkunft der vier Klassen).
 
 **Autor:** Planner. **Datum:** 2026-08-26.
 
+**Verantwortlich:** pt9912.
+
 ---
 
 ## 1. Ziel
