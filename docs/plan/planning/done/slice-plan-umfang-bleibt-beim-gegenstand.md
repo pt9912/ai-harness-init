@@ -80,7 +80,7 @@ DoD vollständig, Review ohne blockierenden Befund, Closure-Notiz geschrieben.
 ## 6. Risiken und offene Punkte
 
 - Die Grenze ist ein Urteil und wird als Zahl ausgegeben — **Ausgang:** weiter offen →
-  `BEO-ALL/eine-stellen-messung-traegt-keine-folgerung-ueber-eine-eigenschaft` (unter der Schwelle).
+  `BEO-ALL/stellen-messung-als-eigenschaft-ausgegeben` (unter der Schwelle).
 - Die Regel greift nur für neue Pläne — **Ausgang:** weiter offen →
   `BEO-ALL/slice-plan-umfang-waechst-ueber-umsetzung-hinaus`.
 
