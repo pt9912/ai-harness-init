@@ -545,7 +545,7 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
   ist `git`-Lesung — die Lücke ist in [`AGENTS.md`](../../../../AGENTS.md) §3.8 benannt.
 - **Paarungen:** (a) *Anker* — §7 trägt kein `liegt in`-Feld, nichts zu prüfen. (b)
   *Folge-Slice* — §7 nennt keine Kennung; der in §1 genannte
-  [`slice-offene-plaene-gegen-den-neuen-stand`](../open/slice-offene-plaene-gegen-den-neuen-stand.md)
+  [`slice-offene-plaene-gegen-den-neuen-stand`](../done/slice-offene-plaene-gegen-den-neuen-stand.md)
   liegt in `open/`. (c) *Register* — alle zitierten Pfade existieren mit nicht leerem
   `evidence/`; zweite Hälfte über das ganze Register: 4 Verzeichnisse ohne Beleg, namentlich
   `BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases`,

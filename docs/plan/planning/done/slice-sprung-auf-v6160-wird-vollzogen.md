@@ -272,7 +272,7 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
   [`slice-gliederung-der-instanzen-ohne-vorlagen-delta`](../open/slice-gliederung-der-instanzen-ohne-vorlagen-delta.md)
   sind durch `v6.16.0` inhaltlich überholt (Welle 159 bzw.
   [`docs/migrations/v6.16.0.md`](../../../migrations/v6.16.0.md)). Adresse dafür ist
-  [`slice-offene-plaene-gegen-den-neuen-stand`](../open/slice-offene-plaene-gegen-den-neuen-stand.md)
+  [`slice-offene-plaene-gegen-den-neuen-stand`](../done/slice-offene-plaene-gegen-den-neuen-stand.md)
   (`open/`). Er bindet die Sichtung, schreibt aber keinen Bestand um (sein §1). Die zwei Pläne sind
   darum die Gegenbeispiele für seinen Rot-Punkt (DoD 3) und kein Auftrag zum Umschreiben. Die vier
   übrigen Folge-Slices aus §1 liegen in `open/`.
