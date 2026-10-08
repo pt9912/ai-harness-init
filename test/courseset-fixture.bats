@@ -10,7 +10,7 @@
 # Fixture gegen Wirklichkeit. Strukturell dieselbe Klasse, die der Slice
 # abschaffen wollte — nur mit milderer Folge (Testtreue statt Auslieferung).
 #
-# Warum bats und nicht go-test: .harness/ liegt nicht im Docker-Build-Kontext
+# Warum bats und nicht go-test: .harness/baseline/ liegt nicht im Docker-Build-Kontext
 # (.dockerignore), die go-test-Stage sieht den realen Baum also gar nicht. Genau
 # der Grund, aus dem schon der geloeschte Waechter hier lag.
 #
@@ -241,7 +241,7 @@ wiederkehrend_code() {
 # Signatur, nicht hier.
 #
 # GRENZE: gelesen wird der Quelltext der Aufzaehlung, nicht das Verhalten von
-# isRecurring — die go-test-Stufe sieht .harness/ nicht (.dockerignore), ein Lauf
+# isRecurring — die go-test-Stufe sieht .harness/baseline/ nicht (.dockerignore), ein Lauf
 # mit realem Satz UND Emit-Regel existiert in `make gates` nicht. Dieselbe
 # Begruendung traegt schon die Fixture-Achse oben.
 @test "fixture: emit.isRecurring fuehrt genau die Vorlagen mit Platzhalter im Ziel-Pfad" {
@@ -321,7 +321,7 @@ fixture_formen() {
 # Scanner. OB emit.NeutralizePlaceholderLinks einen realen Link ERREICHT, misst
 # dieser Test nicht — und kein Gate misst es: dafuer braeuchte EIN Lauf den realen
 # Satz UND die Emit-Regel, und keiner in `make gates` hat beides (die go-test-Stufe
-# sieht .harness/ nicht, s. .dockerignore; diese Stufe sieht die Regel nicht).
+# sieht .harness/baseline/ nicht, s. .dockerignore; diese Stufe sieht die Regel nicht).
 # Diese Reste sieht allein `make smoke`, ausserhalb von `make gates`.
 # gate_zeilen_ohne_marke liest aus einer Datei jede Tabellen-Zeile, die "make
 # span-report" oder "make span-clean" nennt, aber nicht die Marke "kein Gate" traegt —
@@ -336,7 +336,7 @@ gate_zeilen_ohne_marke() {
 # GRENZE: der Go-Test sieht fuer die vendored KURS-Vorlagen (Templates()/RootReadme())
 # nur die Fixture courseSet(), nie den realen Baum — dieser bats-Test haelt genau den
 # realen Baum fest, aus demselben Grund wie die drei Tests oben (.dockerignore schliesst
-# .harness/ aus der go-test-Stage aus, test-bats mountet den vollen Checkout). Fuer
+# .harness/baseline/ aus der go-test-Stage aus, test-bats mountet den vollen Checkout). Fuer
 # Commands()/Agents()/FieldList() (go:embed, kein courseSet()-Ersatz) traegt bereits der
 # Go-Test den realen Bestand; hier geht es um die vendored KURS-Vorlagen, die
 # courseSet() nachbildet.

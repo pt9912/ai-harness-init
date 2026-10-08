@@ -1,5 +1,8 @@
 # Build-Kontext schlank halten: der go-test-Build (Dockerfile test-Stage) braucht
-# nur go.mod + cmd/. .git (History) und .harness (vendored Baseline, ~240 KB)
-# gehören nicht in den Kontext.
+# go.mod + cmd/ + internal/ und den Markdown-Baum, den internal/ausnahmegrund gegen die
+# .d-check.yml haelt. .git (History) und .harness/ ausser .harness/skills/ (vendored Baseline,
+# Lauf-Zustand) gehören nicht in den Kontext; .harness/skills/ liegt im Pruefbereich von
+# codepaths und darum im Kontext.
 .git
-.harness
+.harness/*
+!.harness/skills

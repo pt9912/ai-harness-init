@@ -7,7 +7,7 @@
 # Tabelle WortlautNeutralisierungen in templates.go (je Zeile Vorlage- und Marker-Konstante),
 # der Pin als DefaultTag in internal/fetch/baseline.go, die Vorlage im vendored Baum
 # .harness/baseline/<DefaultTag>/templates/. Der Fall steht in bats und nicht in go test,
-# weil .dockerignore .harness aus dem Build-Kontext der Go-Stufe nimmt.
+# weil .dockerignore .harness/baseline aus dem Build-Kontext der Go-Stufe nimmt.
 #
 # Dass jede Ersetzung in templates.go ueber diese Tabelle laeuft und dass jede Zeile die
 # Form hat, die setup() liest (einzeilig, Vorlage und Alt als Bezeichner einzeiliger

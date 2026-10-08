@@ -13,7 +13,7 @@
 #
 # Ohne diesen Waechter faellt das durch jede Masche: der Datei-Bestand ist
 # unveraendert, die in-scope-Zahl bleibt unberuehrt, courseSet() bleibt deckungsgleich,
-# und die go-test-Stufe sieht .harness/ gar nicht (.dockerignore).
+# und die go-test-Stufe sieht .harness/baseline/ gar nicht (.dockerignore).
 #
 # `# files:` ENTDECKT DAS TAG-VERZEICHNIS: der Pfad wird ueber
 # `.harness/baseline/*/templates/...` gegen den EINEN vendored Baum ENTDECKT

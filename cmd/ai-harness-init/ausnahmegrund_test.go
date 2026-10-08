@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 
@@ -41,10 +42,40 @@ func TestEmittierteKonfiguration_BegruendungNenntJedenBaum(t *testing.T) {
 		if _, ok := dateien[".harness/skills/reviewer.md"]; !ok {
 			t.Fatalf("%v: der Lauf hat .harness/skills/reviewer.md nicht abgelegt — der Fall misst nicht, was sein Name sagt", args)
 		}
-		ee := ausnahmegrund.Eintraege(string(yml))
+		ee, err := ausnahmegrund.Eintraege(string(yml))
+		if err != nil {
+			t.Fatalf("%v: emittierte .d-check.yml: %v", args, err)
+		}
+		pruefeGelesen(t, args, ee, dateien)
 		if b := ausnahmegrund.Befunde(ee, dateien, ausnahmegrund.Pruefbereich(ee)); len(b) > 0 {
 			t.Errorf("%v: emittierte .d-check.yml (internal/emit/templates/d-check.yml) — %d Befund(e):\n%s",
 				args, len(b), strings.Join(b, "\n"))
 		}
+	}
+}
+
+// pruefeGelesen ist der Positiv-Beleg des Falls: aus der emittierten Konfiguration ist je
+// erfasstem Schluessel die Mindestzahl Eintraege gelesen, und der Eintrag .harness/** trifft die
+// abgelegten Skills. Sonst ist ein leeres Befund-Ergebnis keine Aussage ueber die Begruendungen.
+func pruefeGelesen(t *testing.T, args []string, ee []ausnahmegrund.Eintrag, dateien map[string]string) {
+	t.Helper()
+	je := map[string]int{}
+	var harness *ausnahmegrund.Eintrag
+	for i, e := range ee {
+		je[e.Schluessel]++
+		if e.Schluessel == "scan.ignore" && e.Wert == ".harness/**" {
+			harness = &ee[i]
+		}
+	}
+	for s, n := range map[string]int{"scan.ignore": 3, "codepaths.exempt-paths": 1, "matrix.exempt-paths": 1} {
+		if je[s] < n {
+			t.Fatalf("%v: %d Eintraege unter %s gelesen, mindestens %d erwartet (gelesen: %v)", args, je[s], s, n, je)
+		}
+	}
+	if harness == nil {
+		t.Fatalf("%v: scan.ignore .harness/** nicht gelesen — der Eintrag, der die Skills ausnimmt, ist nicht gemessen", args)
+	}
+	if !slices.Contains(ausnahmegrund.Treffer(*harness, dateien, nil), ".harness/skills/reviewer.md") {
+		t.Fatalf("%v: scan.ignore .harness/** trifft .harness/skills/reviewer.md nicht", args)
 	}
 }

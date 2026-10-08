@@ -2,7 +2,7 @@
 # archiv-stub-vorlagen.bats — koppelt die Stub-Erzeugung des Traegers an die
 # ECHTEN vendored Vorlagen (ADR-0033 Festlegung 3).
 #
-# WARUM HIER UND NICHT IN GO. `.dockerignore` haelt `.harness` aus dem
+# WARUM HIER UND NICHT IN GO. `.dockerignore` haelt `.harness/baseline` aus dem
 # Build-Kontext der Go-Test-Stufe; die Go-Tests von internal/archive fahren
 # darum ueber synthetischen Vorlagen. Das bats-Bild bekommt den Baum
 # read-only gemountet und sieht die echten. Ohne diese Datei kaeme eine

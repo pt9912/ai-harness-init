@@ -434,7 +434,7 @@ codepaths:
   # gleichgueltig in welcher Datei. Der Kommentar direkt ueber ihm nennt darum jeden Baum, in dem
   # eine solche Nennung steht; internal/ausnahmegrund haelt das gegen den Bestand
   # (TestRepoKonfiguration_BegruendungNenntJedenBaum). Die Nennungen eines Eintrags listet
-  #   git grep -l -F '`<pfad>' -- '*.md' ':!.harness' ':!**/*.template.md' ':!docs/reviews/**'
+  #   git grep -l -F '`<pfad>' -- '*.md' ':!.harness/baseline' ':!**/*.template.md' ':!docs/reviews/**'
   ignore-refs:
     # Repo-Kopie einer Ausfuell-Vorlage, deren einzige Quelle heute die vendored Baseline ist
     # (MR-008). Genannt in harness/conventions/ (der Eintrag, der die Kopie entfernt hat).

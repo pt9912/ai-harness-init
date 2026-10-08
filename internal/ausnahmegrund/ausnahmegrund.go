@@ -20,11 +20,17 @@
 // nennt seinen Gegenstand selbst und hat keinen weiteren. `exempt-targets`, `exclude-sections`,
 // `exempt-pattern` und die `refs`-Seite des Top-Level-Blocks `ignore-refs` sind nicht erfasst.
 // Die Zitat-Suche ist ein Teilstring-Vergleich hinter einem Backtick, nicht der Pfad-Parser des
-// Werkzeugs. Gelesen wird die Schreibform dieser Konfigurationen (Flow-Liste auf einer Zeile,
-// Block-Liste mit `- `); eine andere gleichwertige YAML-Form erkennt der Parser nicht.
+// Werkzeugs. Gelesen werden bei `scan.ignore`, `exempt-paths` und `codepaths.ignore-refs` die
+// Flow-Liste auf einer Zeile und die Block-Liste mit `- `, beim `in` des Top-Level-Blocks
+// `ignore-refs` der Skalar; jeder Wert ungequotet, in einfachen oder in doppelten
+// Anfuehrungszeichen. Steht ein erfasster Schluessel in einer anderen Form (Skalar, Flow-Liste
+// ueber mehrere Zeilen, verschachtelter Wert), liefert Eintraege einen Fehler statt einer
+// kuerzeren Liste. Ein `ignore` ausserhalb von `scan` und ein `ignore-refs` ausserhalb von
+// `codepaths` sind nicht erfasst.
 package ausnahmegrund
 
 import (
+	"fmt"
 	"io/fs"
 	"os"
 	"path"
@@ -56,12 +62,17 @@ type Eintrag struct {
 }
 
 var (
-	reTop       = regexp.MustCompile(`^([A-Za-z][\w-]*):`)
-	reFlow      = regexp.MustCompile(`^\s*(?:- )?(ignore|exempt-paths):\s*\[([^\]]*)\]`)
-	reBlockKopf = regexp.MustCompile(`^(\s*)(?:- )?(exempt-paths|ignore-refs):\s*(#.*)?$`)
-	reItem      = regexp.MustCompile(`^(\s*)- (?:in:\s*)?"?([^"#\s]+)"?\s*(#.*)?$`)
-	reInItem    = regexp.MustCompile(`^\s+- in:\s*"?([^"#\s]+)"?`)
+	reTop    = regexp.MustCompile(`^([A-Za-z][\w-]*):`)
+	reKey    = regexp.MustCompile(`^(\s*)(?:- )?(ignore|exempt-paths|ignore-refs):(.*)$`)
+	reFlow   = regexp.MustCompile(`^\[([^\]]*)\]$`)
+	reItem   = regexp.MustCompile(`^(\s*)- ` + wertForm + `\s*(#.*)?$`)
+	reInKey  = regexp.MustCompile(`^\s*(?:- )?in:`)
+	reInItem = regexp.MustCompile(`^\s*(?:- )?in:\s*` + wertForm + `\s*(#.*)?$`)
 )
+
+// wertForm ist ein Skalar in einer der drei gelesenen Formen: doppelt gequotet, einfach gequotet,
+// ungequotet ohne Flow- und Kommentar-Zeichen. Genau eine der drei Gruppen ist belegt.
+const wertForm = `(?:"([^"]*)"|'([^']*)'|([^"'#\s\[\]{},]+))`
 
 func kommentar(l string) bool { return strings.HasPrefix(strings.TrimSpace(l), "#") }
 
@@ -72,6 +83,18 @@ func inline(l string) string {
 		return l[i:]
 	}
 	return ""
+}
+
+// rest liefert, was hinter dem Doppelpunkt eines Schluessels steht, ohne Kommentar.
+func rest(s string) string {
+	s = strings.TrimSpace(s)
+	if strings.HasPrefix(s, "#") {
+		return ""
+	}
+	if i := strings.Index(s, " #"); i >= 0 {
+		s = s[:i]
+	}
+	return strings.TrimSpace(s)
 }
 
 // gruppe liefert die zusammenhaengenden Kommentarzeilen direkt ueber Zeile i.
@@ -89,12 +112,15 @@ type leser struct {
 	out         []Eintrag
 	top         string
 	topZeile    int
-	blockKey    string
+	blockSchl   string // Schluessel der offenen Block-Liste, leer ausserhalb
+	blockKlasse Klasse
 	blockIndent int
 }
 
-// Eintraege liest die Ausnahme-Eintraege einer d-check-Konfiguration.
-func Eintraege(yml string) []Eintrag {
+// Eintraege liest die Ausnahme-Eintraege einer d-check-Konfiguration. Steht ein erfasster
+// Schluessel in einer Form, die der Parser nicht liest, endet der Lauf mit einem Fehler, der
+// Schluessel und Zeile nennt — kein Eintrag wird still uebergangen.
+func Eintraege(yml string) ([]Eintrag, error) {
 	r := &leser{zeilen: strings.Split(yml, "\n"), blockIndent: -1}
 	for i, l := range r.zeilen {
 		if kommentar(l) || strings.TrimSpace(l) == "" {
@@ -102,56 +128,116 @@ func Eintraege(yml string) []Eintrag {
 		}
 		if m := reTop.FindStringSubmatch(l); m != nil {
 			r.top, r.topZeile = m[1], i
-			r.blockKey, r.blockIndent = "", -1
+			r.blockEnde()
 		}
-		r.zeile(i, l)
+		if err := r.zeile(i, l); err != nil {
+			return nil, err
+		}
 	}
-	return r.out
+	return r.out, nil
 }
 
-// zeile ordnet eine Nicht-Kommentar-Zeile ein: Flow-Liste, `in`-Wert des Top-Level-Blocks
-// ignore-refs, Kopf einer Block-Liste oder Wert darin.
-func (r *leser) zeile(i int, l string) {
-	if m := reFlow.FindStringSubmatch(l); m != nil {
-		r.flow(i, m[1], m[2])
-		return
-	}
+func (r *leser) blockEnde() { r.blockSchl, r.blockIndent = "", -1 }
+
+func (r *leser) fehler(i int, schl string) error {
+	return fmt.Errorf("%s (Zeile %d): Schreibform nicht gelesen: %s", schl, i+1, strings.TrimSpace(r.zeilen[i]))
+}
+
+// zeile ordnet eine Nicht-Kommentar-Zeile ein: `in`-Wert des Top-Level-Blocks ignore-refs,
+// Kopf eines erfassten Schluessels (Flow-Liste oder Beginn einer Block-Liste) oder Wert darin.
+func (r *leser) zeile(i int, l string) error {
 	if r.top == "ignore-refs" {
-		if m := reInItem.FindStringSubmatch(l); m != nil {
-			r.out = append(r.out, r.eintrag(i, "ignore-refs.in", m[1], Glob))
+		return r.inZeile(i, l)
+	}
+	if m := reKey.FindStringSubmatch(l); m != nil && i != r.topZeile {
+		if schl, k, ok := r.erfasst(m[2]); ok {
+			return r.kopf(i, len(m[1]), schl, k, rest(m[3]))
 		}
-		return
 	}
-	if m := reBlockKopf.FindStringSubmatch(l); m != nil && reTop.FindStringSubmatch(l) == nil {
-		r.blockKey, r.blockIndent = m[2], len(m[1])
-		return
+	if r.blockSchl == "" {
+		return nil
 	}
-	if r.blockKey == "" {
-		return
-	}
-	m := reItem.FindStringSubmatch(l)
-	if m == nil || len(m[1]) < r.blockIndent {
-		r.blockKey, r.blockIndent = "", -1
-		return
-	}
-	switch {
-	case r.blockKey == "exempt-paths":
-		r.out = append(r.out, r.eintrag(i, r.top+".exempt-paths", m[2], Glob))
-	case r.blockKey == "ignore-refs" && r.top == "codepaths":
-		r.out = append(r.out, r.eintrag(i, "codepaths.ignore-refs", m[2], Zitat))
-	}
+	return r.item(i, l)
 }
 
-// flow liest die Werte einer Flow-Liste; `ignore` zaehlt nur unter `scan`.
-func (r *leser) flow(i int, key, liste string) {
-	if key == "ignore" && r.top != "scan" {
-		return
+// erfasst sagt, ob der Schluessel key unter dem laufenden Top-Level-Block geprueft wird, und
+// liefert seinen Namen und seine Klasse.
+func (r *leser) erfasst(key string) (string, Klasse, bool) {
+	switch {
+	case key == "exempt-paths":
+		return r.top + ".exempt-paths", Glob, true
+	case key == "ignore" && r.top == "scan":
+		return "scan.ignore", Glob, true
+	case key == "ignore-refs" && r.top == "codepaths":
+		return "codepaths.ignore-refs", Zitat, true
 	}
+	return "", Glob, false
+}
+
+// kopf liest einen erfassten Schluessel: leerer Rest oeffnet eine Block-Liste, eine Flow-Liste
+// auf derselben Zeile wird gelesen, jede andere Form ist ein Fehler.
+func (r *leser) kopf(i, indent int, schl string, k Klasse, wert string) error {
+	if wert == "" {
+		r.blockSchl, r.blockKlasse, r.blockIndent = schl, k, indent
+		return nil
+	}
+	f := reFlow.FindStringSubmatch(wert)
+	if f == nil {
+		return r.fehler(i, schl)
+	}
+	r.blockEnde()
+	r.flow(i, schl, k, f[1])
+	return nil
+}
+
+// item liest eine Zeile innerhalb einer offenen Block-Liste. Eine flachere Zeile oder ein
+// Geschwister-Schluessel schliesst die Liste; eine Zeile, die zur Liste gehoert und kein
+// gelesener Wert ist, ist ein Fehler.
+func (r *leser) item(i int, l string) error {
+	if m := reItem.FindStringSubmatch(l); m != nil {
+		if len(m[1]) < r.blockIndent {
+			r.blockEnde()
+			return nil
+		}
+		r.out = append(r.out, r.eintrag(i, r.blockSchl, m[2]+m[3]+m[4], r.blockKlasse))
+		return nil
+	}
+	t := strings.TrimLeft(l, " ")
+	indent := len(l) - len(t)
+	if indent > r.blockIndent || (indent == r.blockIndent && strings.HasPrefix(t, "-")) {
+		return r.fehler(i, r.blockSchl)
+	}
+	r.blockEnde()
+	return nil
+}
+
+// inZeile liest eine Zeile des Top-Level-Blocks ignore-refs: jeder `in`-Wert ist ein Eintrag.
+func (r *leser) inZeile(i int, l string) error {
+	if i == r.topZeile {
+		if m := reKey.FindStringSubmatch(l); m == nil || rest(m[3]) != "" {
+			return r.fehler(i, "ignore-refs")
+		}
+		return nil
+	}
+	if !reInKey.MatchString(l) {
+		return nil
+	}
+	m := reInItem.FindStringSubmatch(l)
+	if m == nil {
+		return r.fehler(i, "ignore-refs.in")
+	}
+	r.out = append(r.out, r.eintrag(i, "ignore-refs.in", m[1]+m[2]+m[3], Glob))
+	return nil
+}
+
+// flow liest die Werte einer Flow-Liste. Die Begruendung ist der Abschnitt; ein Zitat-Eintrag
+// hat damit keine eigene Gruppe.
+func (r *leser) flow(i int, schl string, k Klasse, liste string) {
 	for _, w := range strings.Split(liste, ",") {
 		w = strings.Trim(strings.TrimSpace(w), `"'`)
 		if w != "" {
-			r.out = append(r.out, Eintrag{Schluessel: r.top + "." + key, Wert: w, Zeile: i + 1,
-				Klasse: Glob, Begruendung: r.abschnitt(i) + "\n" + w})
+			r.out = append(r.out, Eintrag{Schluessel: schl, Wert: w, Zeile: i + 1,
+				Klasse: k, Begruendung: r.abschnitt(i) + "\n" + w})
 		}
 	}
 }
