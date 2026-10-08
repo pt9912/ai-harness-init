@@ -58,6 +58,10 @@ type Bilanz struct {
 	// unterschieden vom Fall, dass er existiert und leer ist. Beide fuehren zu
 	// Zeilen == 0 und sehen sonst gleich aus (slice-071 DoD (1)).
 	AblageortFehlt bool
+	// Fassungen zaehlt die lesbaren Zeilen je Fassung der Erfassungsregel (`rule_version`,
+	// SPEC-088). Schluessel 0 ist eine Zeile ohne das Feld: Fassung nicht bekannt.
+	// Bewacht von TestAggregiere_TrenntDieFassungen.
+	Fassungen map[int]int
 }
 
 // TraegtZaehler ist wahr, wenn mindestens ein Subagenten-Lauf des Bestands
@@ -121,6 +125,10 @@ func Aggregiere(dir string) (Bilanz, error) {
 			if json.Unmarshal([]byte(zeile), &s) != nil {
 				continue
 			}
+			if b.Fassungen == nil {
+				b.Fassungen = map[int]int{}
+			}
+			b.Fassungen[s.RuleVersion]++
 			verarbeite(&b, s, direkt, toolCalls, sitzungen)
 		}
 	}
@@ -366,6 +374,7 @@ func Schreibe(b Bilanz) string {
 		fmt.Fprintf(&sb, "Bestand: %d Sitzung(en) — verschiedene session-Werte der lesbaren Zeilen, %s bis %s\n",
 			b.Sitzungen, b.Von, b.Bis)
 	}
+	sb.WriteString(fassungsZeile(b))
 	sb.WriteString("\n")
 
 	// Ohne Zaehler wird KEINE Bilanz ausgewiesen — keine Rollen-Zeile, keine groesste
@@ -422,6 +431,36 @@ func Schreibe(b Bilanz) string {
 	}
 
 	return sb.String()
+}
+
+// fassungsZeile nennt je Fassung der Erfassungsregel die Zahl der lesbaren Zeilen, die sie
+// tragen (SPEC-089 in spec/spezifikation.md §5): aufsteigend, eine Fassung, die dieser
+// Leser nicht fuehrt, mit dem Zusatz `dem Leser unbekannt`, und die Zeilen ohne das Feld
+// zuletzt als `Fassung nicht bekannt`. Ohne lesbare Zeile entfaellt sie.
+// Bewacht von TestSchreibe_NenntJedeFassungGetrennt.
+func fassungsZeile(b Bilanz) string {
+	if len(b.Fassungen) == 0 {
+		return ""
+	}
+	nummern := make([]int, 0, len(b.Fassungen))
+	for n := range b.Fassungen {
+		if n != 0 {
+			nummern = append(nummern, n)
+		}
+	}
+	sort.Ints(nummern)
+	teile := make([]string, 0, len(b.Fassungen))
+	for _, n := range nummern {
+		zusatz := ""
+		if n < 1 || n > span.CurrentRuleVersion {
+			zusatz = " (dem Leser unbekannt)"
+		}
+		teile = append(teile, fmt.Sprintf("Fassung %d%s: %d Zeile(n)", n, zusatz, b.Fassungen[n]))
+	}
+	if ohne, ok := b.Fassungen[0]; ok {
+		teile = append(teile, fmt.Sprintf("Fassung nicht bekannt: %d Zeile(n)", ohne))
+	}
+	return "Erfassungsregel: " + strings.Join(teile, " · ") + "\n"
 }
 
 func anteil(teil, gesamt int64) float64 {

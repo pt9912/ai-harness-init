@@ -1191,7 +1191,7 @@ func TestMandatoryFieldsAlwaysPresent(t *testing.T) {
 	for _, feld := range []string{
 		`"seq":`, `"ts":`, `"event":`, `"tool":`, `"tool_use_id":`,
 		`"session":`, `"agent":`, `"agent_type":`, `"agent_role":`, `"slice":`, `"requirement":`, `"adr":`,
-		`"branch":`, `"commit":`, `"status":`,
+		`"branch":`, `"commit":`, `"status":`, `"rule_version":`,
 		`"cache_creation_input_tokens":`, `"cache_read_input_tokens":`,
 	} {
 		if !strings.Contains(string(b), feld) {

@@ -54,6 +54,9 @@ type Span struct {
 	Branch         string   `json:"branch"`
 	Commit         string   `json:"commit"`
 	Status         string   `json:"status"`
+	// RuleVersion ist die Fassung der Erfassungsregel, unter der die Zeile entstand
+	// (SPEC-088). Ein Leser liest eine Zeile ohne das Feld als Wert 0: Fassung nicht bekannt.
+	RuleVersion    int      `json:"rule_version"`
 	PermissionMode string   `json:"permission_mode,omitempty"`
 	Path           string   `json:"path,omitempty"`
 	Bytes          *int64   `json:"bytes,omitempty"`
@@ -105,6 +108,7 @@ func Build(p Payload, root string, now time.Time) Span {
 		Branch:         branch,
 		Commit:         commit,
 		Status:         status,
+		RuleVersion:    CurrentRuleVersion,
 		PermissionMode: p.PermissionMode,
 		Path:           d.Path,
 		Program:        d.Program,

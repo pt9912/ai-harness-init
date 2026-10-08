@@ -87,6 +87,7 @@ func SchemaNotes() []Note {
 		{Field: "branch", Question: "Zu welchem Zweig gehört der Zugriff? — aus dem git-Zustand abgeleitet"},
 		{Field: "commit", Question: "Zu welchem Stand gehört der Zugriff? — aus dem git-Zustand abgeleitet"},
 		{Field: "status", Question: "Ging es gut?"},
+		{Field: "rule_version", Question: "Unter welcher Fassung der Erfassungsregel entstand die Zeile? — eine Ganzzahl, die mit jedem Bedeutungswechsel eines Feldes steigt; eine Zeile ohne dieses Feld hat eine nicht bekannte Fassung"},
 		{Field: "permission_mode", Question: "Unter welcher Berechtigungs-Lage lief der Aufruf?"},
 		{Field: "path", Question: "Was wurde gelesen oder geschrieben? — der Pfad, nie der Inhalt, und nur bei namentlich geführten Datei-Werkzeugen"},
 		{Field: "bytes", Question: "Wie groß ist die geschriebene Datei? — aus dem Dateisystem, nie aus der Payload"},

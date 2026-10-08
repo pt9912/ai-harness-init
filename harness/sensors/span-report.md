@@ -13,6 +13,12 @@ Die Ausgabe nennt ihren Nenner, den Sammelposten-Anteil und die Abdeckungszahl s
 Bezugsmenge. Ohne Span-Bestand ist der Nenner leer, und der Bericht sagt das statt eine Bilanz
 über nichts zu behaupten.
 
+Die Zeile `Erfassungsregel:` nennt je Fassung der Erfassungsregel die Zahl der lesbaren Zeilen,
+eine Zeile ohne Fassungs-Feld als *Fassung nicht bekannt*
+([`spezifikation.md` §5](../../spec/spezifikation.md#5-metriken-und-tracing-felder), `SPEC-089`).
+Sie trennt die Fassungen, sie rechnet nicht je Fassung: die Token-Bilanz läuft über den ganzen
+Bestand.
+
 ## Ausgabe und Ausgänge
 
 | Exit | Bedeutung |

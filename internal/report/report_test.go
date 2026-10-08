@@ -470,3 +470,39 @@ func TestAggregiere_GanzzahlRestGehtNichtVerloren(t *testing.T) {
 		t.Fatalf("Gesamt = %d, erwartet %d", b.Gesamt, b.Sammelposten)
 	}
 }
+
+// TestAggregiere_TrenntDieFassungen haelt SPEC-089 auf der Leser-Seite: jede lesbare Zeile
+// zaehlt unter genau der Fassung, die sie traegt, und eine Zeile ohne `rule_version` unter
+// *nicht bekannt* (Schluessel 0) — nie unter der laufenden Fassung des Lesers.
+func TestAggregiere_TrenntDieFassungen(t *testing.T) {
+	dir := schreibeBestand(t,
+		`{"ts":"2026-10-08T10:00:00Z","tool":"Read","session":"s1","rule_version":4}`,
+		`{"ts":"2026-10-08T10:00:01Z","tool":"Read","session":"s1","rule_version":4}`,
+		`{"ts":"2026-10-08T10:00:02Z","tool":"Read","session":"s1","rule_version":99}`,
+		`{"ts":"2026-10-07T10:00:00Z","tool":"Read","session":"s1"}`,
+	)
+	b, err := report.Aggregiere(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := map[int]int{4: 2, 99: 1, 0: 1}
+	if len(b.Fassungen) != len(want) {
+		t.Fatalf("Fassungen %v, erwartet %v", b.Fassungen, want)
+	}
+	for n, z := range want {
+		if b.Fassungen[n] != z {
+			t.Fatalf("Fassung %d: %d Zeile(n), erwartet %d (alle: %v)", n, b.Fassungen[n], z, b.Fassungen)
+		}
+	}
+}
+
+// TestSchreibe_NenntJedeFassungGetrennt haelt die Ausgabe von SPEC-089: der Bericht nennt
+// jede Fassung mit ihrer Zeilenzahl, kennzeichnet eine Fassung, die der Leser nicht fuehrt,
+// und fuehrt die Zeilen ohne Fassung als *nicht bekannt* auf — getrennt, nicht summiert.
+func TestSchreibe_NenntJedeFassungGetrennt(t *testing.T) {
+	aus := report.Schreibe(report.Bilanz{Zeilen: 4, Fassungen: map[int]int{4: 2, 99: 1, 0: 1}})
+	want := "Erfassungsregel: Fassung 4: 2 Zeile(n) · Fassung 99 (dem Leser unbekannt): 1 Zeile(n) · Fassung nicht bekannt: 1 Zeile(n)\n"
+	if !strings.Contains(aus, want) {
+		t.Fatalf("die Fassungs-Zeile fehlt oder fasst zusammen, erwartet %q in:\n%s", want, aus)
+	}
+}
