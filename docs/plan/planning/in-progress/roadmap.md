@@ -20,7 +20,7 @@ nicht hier.
 - [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
 - [welle-erfassungsschicht-im-ziel — Erfassungsschicht im Ziel](../welle-erfassungsschicht-im-ziel.md)
 
-**In Arbeit:** welle-erfassungsschicht-im-ziel — `ls docs/plan/planning/in-progress/` nennt den Slice.
+**Nichts in Arbeit.**
 
 ## Nächste Wellen
 
