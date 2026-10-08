@@ -44,289 +44,168 @@ des Lastenhefts, auf den Slice-Plan angewandt); die vier Klassen des
 Ausschlusses stehen in **eben diesem Abschnitt** des Baseline-Regelwerks,
 zusammen mit der Begründungs-Pflicht je Punkt.
 
-**Ziel:** Der Adopter-Weg des Commit-Kennungs-Wächters wird **gefahren** statt behauptet: ein
-frischer Klon des gebootstrappten Ziels zeigt, dass der Träger mitreist und seine Aktivierung
-**nicht** (ein Commit ohne Kennung geht dort durch), `make -C <klon> hooks-install` schaltet ihn
-scharf, und danach fällt derselbe Commit am Träger; die zwei **negativen** Fälle der Aktivierung
-— Träger fehlt · Träger ist ein Verzeichnis — enden ≠ 0, **benennen** den Fall und lassen
-`core.hooksPath` **ungesetzt**.
+**Ziel:** Der Adopter-Weg des Commit-Kennungs-Wächters wird dort gefahren, wo er heute noch
+unbelegt ist: im **unaktivierten** Klon geht ein Commit **ohne** Kennung durch (die Gegenrichtung
+zur Selbstprüfung des Ziels), und die zwei **negativen** Fälle der Aktivierung — Träger fehlt ·
+Träger ist ein Verzeichnis — enden ≠ 0, **benennen** den Fall und lassen `core.hooksPath`
+**ungesetzt**; die neue Stufe trägt ihre Deklaration und einen gelisteten Zahn.
 
 ### Der Befund, gemessen
 
-Alle Zahlen sind über den Baum vom 2026-09-15 genommen und **keine Erwartungswerte**
+Gemessen über den Baum vom 2026-10-08, **keine Erwartungswerte**
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-Setzung 2) — die erste Handlung der Umsetzung ist, sie neu zu fahren. Jede Zahl steht neben dem
-Kommando, das sie liefert:
+Setzung 2) — die Umsetzung fährt sie zuerst neu:
 
 ```sh
-grep -c 'core.hooksPath' harness/tools/full-smoke.sh                                    #  6  (alle sechs im Kennungs-Abschnitt, alle ueber das ZIEL)
-grep -c 'git clone' harness/tools/full-smoke.sh                                         #  2  (beide im Vorlauf-Waechter-Abschnitt, keiner fuer die Aktivierung)
-grep -c 'reist mit dem Klon' harness/tools/full-smoke.sh                                #  1  (die Schluss-Zeile des Kennungs-Abschnitts)
-grep -l 'internal/emit/templates/enforce/hooks-install.mk' test/mutations/*.sh | wc -l   #  3  (jeder erwartet einen Go-TEXTANKER)
+grep -c 'core.hooksPath' harness/tools/full-smoke.sh                                    # 10
+grep -c 'reist mit dem Klon' harness/tools/full-smoke.sh                                #  1  (Schluss-Zeile COMMIT-KENNUNG)
+grep -l 'internal/emit/templates/enforce/hooks-install.mk' test/mutations/*.sh | wc -l   #  4  (keiner faehrt das Rezept)
 make -n hooks-install | grep -c 'test -f'                                               #  0  (Dogfood-Rezept)
 make -f internal/emit/templates/enforce/hooks-install.mk -n hooks-install | grep -c 'test -f'  # 1 (emittiertes Fragment)
+grep -c 'HOOKS_DIR' Makefile                                                            #  0
 ```
 
-1. **Die Klon-Aussage läuft mit und hat keine Messung.** Die Schluss-Zeile des Kennungs-Abschnitts
-   sagt zu, der Träger »reist mit dem Klon, seine Aktivierung nicht« — der Lauf legt aber keinen
-   Klon für die Aktivierung an: die zwei `git clone`-Aufrufe gehören dem Vorlauf-Wächter-Abschnitt
-   und dienen dessen History-Sonde (Tiefe 1 gegen vollständig), und **keiner** von beiden liest
-   `core.hooksPath`. Auch der Abschnitts-Kommentar nennt den frischen Klon —
-   »Ein frischer Klon ist bis (b) ungeprueft; genau das liest (e)« —, und (e) liest
-   `git commit --no-verify`. Die Klasse ist
-   [`gruen-aussage-ohne-herkunft`](../observations/BEO-ALL/gruen-aussage-ohne-herkunft/observation.md)
-   (2×, offen): eine Grün-Aussage, deren Herkunft kein Lauf ist.
-2. **Die zwei negativen Fälle des Fragments sind unbewacht.** Das Fragment trägt die tragende
-   Zeile (`test -f`, gemessen: 1) und die zwei Lagen dahinter; die drei Mutations-Fälle auf
-   derselben Datei erwarten **Go-Textanker**, keiner fährt das Rezept, und der E2E fährt nur den
-   geglückten Fall. Ohne die zweite Hälfte setzt das Rezept einen Pfad, unter dem nichts liegt,
-   und jeder Commit liefe ungeprüft durch, *während die Konfiguration einen Wächter behauptet*
+1. **Zwei der drei Klon-Lagen sind geliefert, die dritte nicht.**
+   [slice-das-ziel-prueft-seine-durchsetzung-selbst](../done/slice-das-ziel-prueft-seine-durchsetzung-selbst.md)
+   fährt in der `full-smoke`-Stufe *Selbstpruefung im Ziel* (Satz *„der frische Klon traegt lokal
+   keinen core.hooksPath"*) über `internal/emit/templates/enforce/selbstpruefung.sh` einen frischen
+   Klon: Träger liegt (`test -f`), `core.hooksPath` leer, nach Aktivierung fällt ein Commit ohne
+   Kennung — Letzteres belegt mittelbar auch das Ausführungs-Bit im Klon (git verwirft einen nicht
+   ausführbaren Hook still, der Commit ginge dann durch). **Ungefahren** ist der Commit ohne
+   Kennung, der im Klon **vor** der Aktivierung durchgeht: kein `full-smoke`-Abschnitt und keine
+   Vorlage fährt ihn.
+2. **Die zwei negativen Fälle des Fragments sind unbewacht.** Das Fragment trägt die `test -f`-Zeile
+   (gemessen: 1); die vier Mutations-Fälle auf derselben Datei lesen Text, keiner fährt das Rezept,
+   und beide E2E-Stufen fahren nur den geglückten Fall. Ohne die Zähne setzte das Rezept einen Pfad,
+   unter dem nichts liegt, *während die Konfiguration einen Wächter behauptet*
    ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-3. **Das Dogfood-Rezept kennt die Zähne nicht.** Der Unterschied ist gemessen (0 gegen 1 in den
-   zwei Kommandos oben, die `test -f`-Zeile): die eigene Fassung hat die benannte Abbruch-Zeile
-   **nicht** und kennt auch `HOOKS_DIR` nicht (`grep -c 'HOOKS_DIR' Makefile` → 0). Die Klasse trägt
-   im Register zwei Einträge
-   ([`zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`](../observations/BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor/observation.md)
-   2× · [`emittierter-stand-laeuft-dem-dogfood-voraus`](../observations/BEO-ALL/emittierter-stand-laeuft-dem-dogfood-voraus/observation.md)
-   1×). **Nicht in diesem Slice** — s. u.
+3. **Das Dogfood-Rezept kennt die Zähne nicht** (0 gegen 1 oben, kein `HOOKS_DIR`). **Nicht in diesem
+   Slice** — s. u.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
+- **Die Klon-Lagen „Träger reist mit" und „`core.hooksPath` bleibt leer"** — **geliefert:**
+  [slice-das-ziel-prueft-seine-durchsetzung-selbst](../done/slice-das-ziel-prueft-seine-durchsetzung-selbst.md)
+  fährt sie in der Stufe *Selbstpruefung im Ziel* (§1 Befund 1); sie hier zu wiederholen hieße,
+  dieselbe Zusage zweimal zu liefern. Die neue Stufe darf sie als **Vorbedingung** lesen, nicht als
+  eigene Aussage.
 - **Die Dogfood-Reparatur (`Makefile:hooks-install` bekommt dieselben Zähne)** — **anderer
-  Vorgang und Schicht-Abgrenzung.** Der Gegenstand dieses Slice ist die *emittierte* Ebene — was
-  ein Adopter bekommt; das Dogfood-Rezept ist dieses Repos eigene Fassung derselben Regel, und
-  ihre **Vergleichung** ist ein Sensor (genau der Gegenstand von
-  [`zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`](../observations/BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor/observation.md),
-  2×, offen), nicht ein E2E. Dazu der harte Grund: der E2E kann dieses Rezept **nicht** fahren,
-  ohne den **lebenden** Träger dieses Repos beiseitezulegen (`.githooks/commit-msg`) — ein Sensor
-  würde den Wächter bewegen, der jeden Commit dieses Klons bewacht, und ein Abbruch zwischen
-  Beiseitelegen und Zurücklegen ließe ihn liegen. Einen eigenen Schnitt dafür zu legen ist ein
-  Planner-Schnitt, nicht ein Anhängsel dieses Plans.
-- **Die Deklaration der neuen Stufe** — **Folge-Slice, mit Adresse:**
-  [slice-e2e-abdeckung-ist-deklariert-und-erzeugt](../done/slice-e2e-abdeckung-ist-deklariert-und-erzeugt.md).
-  Sein Erzeuger verlangt für jede Stufe eine Deklaration (`echo "full-smoke: … ..."` eröffnet eine
-  Stufe, die Region bis zur nächsten muss eine tragen) und sein §1 schließt aus, *was der E2E
-  prüft*, zu ändern — eine **Deklaration** ist keine Prüfungs-Änderung, und seine DoD (1) führt
-  *jede* Stufe. Die Adresse nimmt den Punkt damit an; die Form legt **er** fest, nicht dieser
-  Plan. Die Reihenfolge der zwei Landungen steht als Risiko in §6.
-- **Ein Vergleichs-Sensor zwischen Dogfood-Fassung und Fragment** — **anderer Vorgang:** ein
-  Sensor ist keine E2E-Stufe. Sein Gegenstand ist gemessen benannt und wäre je Fassung ein
-  eigener Bau.
+  Vorgang und Schicht-Abgrenzung.** Gegenstand ist die *emittierte* Ebene; der E2E kann das
+  Dogfood-Rezept nicht fahren, ohne den lebenden Träger dieses Klons (`.githooks/commit-msg`)
+  beiseitezulegen.
+- **Ein Vergleichs-Sensor zwischen Dogfood-Fassung und Fragment** — **anderer Vorgang:** ein Sensor
+  ist keine E2E-Stufe. Die Klasse ist im Register auf
+  [slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor](../open/slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor.md)
+  geplant; das Paar `hooks-install` nennt jener Plan nicht (`grep -c hooks-install` darüber → 0) —
+  ob er es aufnimmt, entscheidet sein eigener Schnitt.
 - **Ein Eingriff in die emittierte Ebene (Fragment, Prüfung, `internal/emit/**`)** —
-  **Schicht-Abgrenzung: kein Produkt-Code.** Dieser Slice *fährt* das Fragment und *mutiert* es
-  nur in einem gelisteten Mutations-Fall; er ändert es nicht.
-- **Die drei Commit-Versuche des bestehenden Abschnitts** (ohne Kennung · mit Kennung ·
-  `--no-verify`) — **Bestand bleibt bewusst stehen.** Sie messen das *Ziel*; sie in den Klon zu
-  ziehen, änderte den gemessenen Gegenstand und nähme dem Abschnitt die eine Messung, die er
-  heute trägt.
-
-**Keine Mindestzahl.** Ein Slice mit *einem* echten Ausschluss ist besser als
-einer mit vier erfundenen; die vier Klassen sind ein Suchraster, keine
-Ausfüll-Liste. Suchreihenfolge: Was übernimmt ein **Folge-Slice** (mit
-Kennung — und die Kennung muss den Punkt auch annehmen)? Was bleibt als
-**Bestand** bewusst stehen (mit Begründung)? Was wäre ein **anderer Vorgang**?
-Welche **Schicht** rührt der Slice nicht an?
-
-Was hier steht, ist die Grenze, an der ein wachsender Slice sich messen lässt:
-Wer später etwas mitnimmt, das hier ausgeschlossen war, hat den Plan
-**geändert**, nicht nur ergänzt.
+  **Schicht-Abgrenzung: kein Produkt-Code.** Der Slice *fährt* das Fragment und *mutiert* es nur im
+  gelisteten Fall.
+- **Die drei Commit-Versuche des Abschnitts COMMIT-KENNUNG** (ohne Kennung · mit Kennung ·
+  `--no-verify`) — **Bestand bleibt stehen:** sie messen das *Ziel*, nicht den Klon.
 
 ## 2. Definition of Done
 
-Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
-§Ziel-Form: Slice — **≤ 3 Liefer-Punkte**; mehr heißt: der Slice ist zu groß und
-gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
-Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
-
-- [ ] **(1) Der Klon-Weg ist gefahren — der Träger reist, seine Aktivierung nicht.** Drei Lagen
-  im frischen Klon, jede **gelesen**: (a) `.githooks/commit-msg` liegt **ausführbar** und die
-  Prüfung `tools/harness/commit-msg-traceability.sh` liegt daneben (git transportiert nur das
-  Ausführungs-Bit, und ein verlorenes Bit wäre ein Wächter, der nur so aussieht); (b) `git config
-  --get core.hooksPath` endet ≠ 0 und bleibt leer; (c) ein Commit **ohne** Kennung geht durch —
-  Exit 0 **und** `HEAD` trägt danach genau diese Message (ein Durchgang, der keinen Commit
-  erzeugt, wäre keiner). **Vorbedingung zuerst:** das Ziel selbst ist zu diesem Zeitpunkt
-  aktiviert (`git -C <ziel> config --get core.hooksPath` → `.githooks`) — sonst läse der leere
-  Klon-Wert nur, dass *niemand* irgendwo aktiviert hat. **Beleg ist der gefahrene Lauf**
-  (`make full-smoke`, kein Gate).
-- [ ] **(2) Die zwei negativen Fälle der Aktivierung, und beide werden aus git zurückgelesen.**
-  In demselben Klon, **vor** dessen Aktivierung: (a) **Träger fehlt** → `make -C <klon>
-  hooks-install` endet ≠ 0, **nennt** den Fall, und `core.hooksPath` bleibt ungesetzt;
-  (b) **Träger ist ein Verzeichnis** → ebenso abgelehnt und ebenso ungesetzt — `test -x` ist auch
-  für ein Verzeichnis wahr, erst die `test -f`-Zeile fängt das; (c) **die Variable wirkt** —
-  derselbe Aufruf mit `HOOKS_DIR=<leer>` bricht ab und nennt **diesen** Pfad, nicht `.githooks`.
-  Ohne (a) und (b) setzte das Rezept einen Pfad, unter dem nichts liegt, während die Konfiguration
-  einen Wächter behauptet ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-  Gelesen wird die Konfiguration **aus git**, nicht aus der Meldung des Rezepts.
-- [ ] **(3) Die neue Stufe hat einen gelisteten Zahn, und sein Rot ist gesehen.**
-  `test/mutations/358-aktivierung-ohne-traeger-pruefung.sh` nimmt dem Fragment
-  `internal/emit/templates/enforce/hooks-install.mk` die `test -f`-Zeile; `# verify: full-smoke`
-  (das gepinnte bats-Image führt kein `git`, und keine bats-Datei dieses Repos fährt
-  `git init`/`make -f` — nur der E2E fährt diese Kette, Begründung und Messung in §3),
-  `# expect:` ist der Wortlaut der Fehler-Zeile aus (2a). Rot gesehen mit
-  **gelesener** Begründung ([`AGENTS.md`](../../../../AGENTS.md) §3.6): die Meldung nennt die
-  fehlende Träger-Prüfung, nicht irgendeinen Abbruch; `make mutate` meldet den Fall als bewacht.
+- [ ] **(1) Die Stufe im unaktivierten Klon — ein Commit ohne Kennung geht durch, die negativen
+  Fälle lehnen ab.** Ein frischer Klon des Ziels, **vor** dessen Aktivierung. **Vorbedingungen
+  zuerst, gelesen statt angenommen:** das Ziel selbst ist aktiviert
+  (`git -C <ziel> config --get core.hooksPath` → `.githooks`), im Klon ist er leer, und
+  `.githooks/commit-msg` liegt dort ausführbar — sonst läse der Durchgang nur, dass *niemand*
+  irgendwo aktiviert hat oder kein Träger da ist. Dann: (a) ein Commit **ohne** Kennung endet
+  Exit 0 **und** `HEAD` trägt danach genau diese Message; (b) **Träger fehlt** →
+  `make -C <klon> hooks-install` endet ≠ 0, nennt den Pfad, `core.hooksPath` bleibt ungesetzt;
+  (c) **Träger ist ein Verzeichnis** → ebenso (`test -x` ist für ein Verzeichnis wahr, erst
+  `test -f` fängt es); (d) `HOOKS_DIR=<leer>` bricht ab und nennt **diesen** Pfad, nicht
+  `.githooks`. Die Konfiguration wird **aus git** zurückgelesen, nicht aus der Meldung. Beleg ist
+  der gefahrene `make full-smoke`.
+- [ ] **(2) Die Stufe ist deklariert.** Ihre `echo "full-smoke: … ..."`-Zeile trägt einen
+  `e2e_abdeckung`-Aufruf mit den Kennungen, die sie misst, und einer Kurzbeschreibung, die nur das
+  Gemessene nennt ([`AGENTS.md`](../../../../AGENTS.md) §3.6, emittierte Abdeckungs-Aussage);
+  `make e2e-abdeckung` erzeugt [`docs/user/e2e-abdeckung.md`](../../../../docs/user/e2e-abdeckung.md)
+  neu, und die Datei ist mit dem Commit byte-gleich (`test/e2e-abdeckung.bats`).
+- [ ] **(3) Die Stufe hat einen gelisteten Zahn, und sein Rot ist gesehen.**
+  `test/mutations/<NNN>-aktivierung-ohne-traeger-pruefung.sh` (nächste freie Nummer bei Anlage;
+  `ls test/mutations/*.sh | sed 's#.*/##' | sort -n | tail -1` → `587-…` heute, kein
+  Erwartungswert) nimmt dem Fragment `internal/emit/templates/enforce/hooks-install.mk` die
+  `test -f`-Zeile; `# verify: full-smoke`, `# expect:` ist der Wortlaut der Fehler-Zeile aus (1b).
+  Rot gesehen mit **gelesener** Begründung: die Meldung nennt die fehlende Träger-Prüfung, nicht
+  irgendeinen Abbruch; `make mutate` (`MUTATE_CASES`) meldet den Fall als bewacht.
 - [ ] `make gates` grün; Arbeitsbaum danach sauber.
-- [ ] `make full-smoke` Exit 0 gefahren und die neue Stufe in seinem Output belegt — der Beleg ist
-  der Lauf ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)),
-  nicht ein Eintrag in einer Gate-Liste.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
-      (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
-      Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: **entfällt** — [`harness/sensors/full-smoke.md`](../../../../harness/sensors/full-smoke.md)
-  nennt ein *Kriterium* (»jeder Abschnitt, der ein Bild anfordern kann«) und keine Stufen-Liste,
-  und [`harness/README.md`](../../../../harness/README.md) §Werkzeuge führt `full-smoke` bereits als
-  `kein Gate`. Die neue Stufe kann kein Bild anfordern und tritt in keine der drei dort genannten
-  Formen ein (Begründung in §3).
+- [ ] `make full-smoke` Exit 0 gefahren und die neue Stufe in seinem Output belegt.
+- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`),
+  kein Self-Review.
+- [ ] Doku-Update: **entfällt** über (2) hinaus — [`harness/sensors/full-smoke.md`](../../../../harness/sensors/full-smoke.md)
+  führt keine Stufen-Liste, und `full-smoke` steht in [`harness/README.md`](../../../../harness/README.md)
+  §Werkzeuge bereits als `kein Gate`.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben oder „keine Beobachtung" in §7.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [ ] Die drei Paarungen prüft die Closure von welle-adopter-weg-im-ziel.
 
 ## 3. Plan (vor Code)
 
-Regeln dieser Sektion: Baseline-Regelwerk `grundlagen-bootstrap.md`
-§Was ist eine Sub-Area? — diese Liste liefert die **Pfad-Kandidaten** für §8,
-nicht die Antwort: Pfad-Berührung ist nicht hinreichend, und eine
-Aussagen-Berührung steht hier gar nicht.
-
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `harness/tools/full-smoke.sh` | update | die neue Stufe `aktivierung_reist_nicht_mit_dem_klon` samt Aufruf und Schluss-Zeile (Liefer-Punkte 1 und 2). Der bestehende Kennungs-Abschnitt, seine sechs Aussagen und die Abdeckungs-Gleichung im Dateikopf bleiben unberührt |
-| `test/mutations/358-aktivierung-ohne-traeger-pruefung.sh` | neu | der **gelistete Zahn** (Liefer-Punkt 3): nimmt dem Fragment `internal/emit/templates/enforce/hooks-install.mk` die `test -f`-Zeile, `# verify: full-smoke`, `# expect:` = die Fehler-Zeile der neuen Stufe |
+| `harness/tools/full-smoke.sh` | update | neue Stufe hinter COMMIT-KENNUNG samt `e2e_abdeckung`-Aufruf (DoD 1, 2); der Kennungs-Abschnitt, seine Aussagen (a)–(f) und die Abdeckungs-Gleichung im Dateikopf bleiben unberührt; die Schluss-Zeile »reist mit dem Klon« bekommt ihren Lauf |
+| `docs/user/e2e-abdeckung.md` | update (erzeugt) | `make e2e-abdeckung` nach der Deklaration (DoD 2) |
+| `test/mutations/<NNN>-aktivierung-ohne-traeger-pruefung.sh` | neu | der gelistete Zahn (DoD 3) |
 
-**Warum keine bats- und keine Go-Datei daneben.** Eine Stufe unterhalb des E2E, die die Kette
-*Repo → `make` → Rezept → `git config`* fahren könnte, gibt es hier nicht, und das ist gemessen:
-das gepinnte bats-Image führt kein `git` (benannt im `Makefile` beim Vorlauf-Wächter), und keine
-bats-Datei dieses Repos ruft `git init`/`make -f` — der Haus-Weg für eine Zusage, die **beide**
-braucht, ist die E2E-Stufe:
+**Warum keine bats- und keine Go-Datei daneben.** Die Kette *Repo → `make` → Rezept → `git config`*
+fährt nur der E2E: das gepinnte bats-Image führt kein `git`, und keine bats-Datei ruft
+`git init`/`make -f` (`grep -rlE 'git init|make -f' test/*.bats | wc -l` → 0;
+`grep -rl 'verify: full-smoke' test/mutations/ | wc -l` → 30, der Modus ist etabliert — keine
+Erwartungswerte). Ein Zahn über dem **Text** des Rezepts wäre die falsche Ebene (§3.6).
 
-```sh
-grep -rlE 'git init|make -f' test/*.bats | wc -l    # 0
-grep -rl 'verify: full-smoke' test/mutations/ | wc -l   # 14  (der Modus ist etabliert)
-```
-
-**Keine Erwartungswerte** ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-Setzung 2). Ein Zahn, der das Rezept nur über seinem **Text** hält (`test -f` kommt vor
-`git config`), wäre die falsche Ebene: die Zusage ist *verhalten* (ohne Träger bleibt die
-Konfiguration ungesetzt), nicht *Form* — genau die Klasse, die
-[`AGENTS.md`](../../../../AGENTS.md) §3.6 verbietet. Der Preis des E2E-Modus steht im Kopf von
-[`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh) (*Preis eines
-`# verify: full-smoke`-Falls*), damit die nächste Zusage ihn kennt, bevor sie ihn auslöst.
-
-**Optional: Ansatz als Liste, wenn eine Zeile pro Datei nicht trägt** — z. B.
-eine Schnittstellenänderung über viele gleichrangige Dateien mit derselben
-Begründung, oder ein Ansatz, der sich nicht auf eine Datei herunterbrechen
-lässt. Ergänzt die Tabelle, ersetzt sie nicht:
-
-- **Die neue Stufe sitzt hinter dem Kennungs-Abschnitt, und das ist keine Ordnungsliebe.** Der
-  Klon ist die **einzige** unaktivierte Instanz derselben Quelle: im Ziel ist `core.hooksPath`
-  nach (b) gesetzt, im Klon nicht. Damit sind die zwei Lagen derselben Sache in einem Lauf
-  lesbar — und die zwei negativen Fälle sind nur **dort** messbar, wo noch nichts gesetzt ist.
-- **Der Klon liegt unter dem bestehenden `$tmpklon`-Elternverzeichnis** (`$tmpklon/kennung`);
-  dessen Deklarations-Kommentar nennt danach **drei** Klone statt zwei — die Änderung ist Teil
-  dieses Slice (§3.7: der Kommentar beschreibt, was an der Stelle liegt).
-- **Die neuen Aufrufe laufen in der `if out="$( … )"; then rc=0; else rc=$?; fi`-Form**, wie die
-  drei Commit-Versuche des Abschnitts darüber: so bleibt die Menge (A) der Abdeckungs-Gleichung
-  im Dateikopf unverändert, die `test/full-smoke-ausgang.bats` in beiden Richtungen hält. Eine
-  Einordnung bekommt die Stufe **nicht** — sie kann kein Bild anfordern (das Fragment ruft `git`
-  und coreutils), und der Kopf sagt genau das zu.
-- **Die Fehler-Zeilen der neuen Stufe sind einzeilig und tragen den Wortlaut, den der
-  Mutations-Fall als `# expect:` zitiert** — der Treiber liest die Erwartung gegen die Zeile, die
-  `full-smoke: FEHLER` führt (`harness/tools/mutate.sh`, `failure_form`).
+- **Ort im Lauf:** hinter `kennungs_traeger_im_ziel` — dort ist das Ziel aktiviert, der Klon ist
+  die einzige unaktivierte Instanz derselben Quelle. Der Klon liegt unter dem bestehenden
+  `$tmpklon`-Elternverzeichnis; dessen Deklarations-Kommentar wird mitgezogen (§3.7).
+- **Aufrufe in der `if out="$( … )"; then rc=0; else rc=$?; fi`-Form**, damit die Menge (A) der
+  Abdeckungs-Gleichung unverändert bleibt (`test/full-smoke-ausgang.bats`); keine Einordnung — die
+  Stufe fordert kein Bild an.
+- **Fehler-Zeilen einzeilig**, mit dem Wortlaut, den der Fall als `# expect:` zitiert
+  (`harness/tools/mutate.sh`, `failure_form`).
 
 ## 4. Trigger
 
-Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
-§Trigger je Lifecycle-Übergang und WIP-Limit.
+**Start** (`next` → `in-progress`): **kein Vorgänger** — der Slice ist rein additiv; die zwei
+Schreibenden auf denselben Dateien, die früher eine Serialisierung verlangten, liegen in `done/`
+([slice-commit-traeger-wird-skip-if-present](../done/slice-commit-traeger-wird-skip-if-present.md),
+[slice-das-ziel-prueft-seine-durchsetzung-selbst](../done/slice-das-ziel-prueft-seine-durchsetzung-selbst.md)).
+Dazu `Verantwortlich:` gesetzt und das WIP-Limit frei.
 
-**Start** (`next` → `in-progress`): **kein Vorgänger** — der Slice ist einzeln lieferbar; er ist
-rein additiv gegenüber dem, was heute läuft. Dazu die zwei gewöhnlichen Bedingungen: der Slice ist
-priorisiert (`Verantwortlich:` gesetzt) und das WIP-Limit frei.
+**Rückführungen:**
 
-**Der Zuschnitt von DoD (1) wird beim `open → next` neu gezogen** — zwei seiner drei Lagen sind
-geliefert. [slice-das-ziel-prueft-seine-durchsetzung-selbst](../done/slice-das-ziel-prueft-seine-durchsetzung-selbst.md)
-belegt in seiner Emitter-Stufe und in der ersten Ausgabezeile der emittierten Vorlage bereits, dass
-der Träger mit dem Klon reist (a) und dass `core.hooksPath` im frischen Klon leer bleibt (b); ein
-Akzeptanzkriterium von
-[`LH-FA-11`](../../../../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren)
-verlangt genau das, und das Lastenheft steht über einer Abgrenzung im Slice-Plan. **Nicht**
-geliefert ist Lage (c) — der Commit **ohne** Kennung, der im **unaktivierten** Klon durchgeht: die
-Gegenrichtung, die nur dieser Slice fährt. Wer den Punkt unverändert übernimmt, liefert eine Zusage
-zum zweiten Mal; die zwei übrigen Liefer-Punkte sind unberührt.
-
-**Reihenfolge — und sie ist keine Abhängigkeit, sondern eine Serialisierung.**
-[slice-commit-traeger-wird-skip-if-present](../done/slice-commit-traeger-wird-skip-if-present.md) führt
-dieselben zwei Dateien in seinem §3 (das Aktivierungs-Fragment — Kopf **und Fehlermeldung** — und
-`harness/tools/full-smoke.sh`); er hängt an seinem eigenen Start-Trigger
-([`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md) `Accepted`). Die zwei
-laufen **nicht parallel**: derselbe Wächter, dieselbe Datei, zwei Schreibende. Wer zuerst läuft,
-gibt sie frei — der zweite zieht den Nachzug nach (§6 Risiko 4).
-
-**Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
-
-- `in-progress` → `next` (zu groß, zurück zur Zerlegung): wenn die neue Stufe die zwei negativen
-  Fälle **nicht ohne Eingriff in das Fragment** fahren kann — etwa weil die Abbruch-Zeile dort
-  nicht vor der `git config`-Zeile steht. Dann sind die Zähne des Fragments und ihre Messung zwei
-  Vorgänge, und der Schnitt wird vor der Umsetzung geteilt.
-- `in-progress` → `open` (blockiert — Carveout?): wenn die Messung zeigt, dass der Träger im Klon
-  **nicht ausführbar** ankommt oder `make -C <klon> hooks-install` nicht greift — dann liegt die
-  Ursache in `internal/emit/**` (Ablage-Modus, Pfad) und damit **außerhalb der Schicht dieses
-  Slice**; der Befund ist eine Übergabe an den Planner, nicht ein Nachzug hier.
+- `in-progress` → `next`: wenn die negativen Fälle **nicht ohne Eingriff in das Fragment** fahrbar
+  sind (etwa: die Abbruch-Zeile steht nicht vor `git config`) — dann sind Zähne und Messung zwei
+  Vorgänge.
+- `in-progress` → `open`: wenn der Träger im Klon **nicht ausführbar** ankommt oder
+  `make -C <klon> hooks-install` nicht greift — Ursache in `internal/emit/**`, außerhalb der Schicht;
+  Übergabe an den Planner.
 
 ## 5. Closure-Trigger
 
-Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
-§Closure- und Lerneintrag-Regeln — zwei beobachtbare Kriterien **und** ein
-Lerneintrag; ohne ihn ist der Slice nur abgelegt.
-
-- **Beobachtbar 1:** `make full-smoke` endet Exit 0, und sein Output trägt die neue Stufe: die
-  drei Lagen des Klons (Träger ausführbar · `core.hooksPath` leer · Commit ohne Kennung geht
-  durch), die drei negativen Fälle der Aktivierung (fehlt · Verzeichnis · `HOOKS_DIR`) und den
-  gefallenen Commit danach.
-- **Beobachtbar 2:** der Mutations-Fall ist gelistet und sein Rot ist **gesehen**, mit gelesener
-  Begründung ([`AGENTS.md`](../../../../AGENTS.md) §3.6) — `make mutate` meldet ihn als bewacht,
-  und die Meldung nennt die fehlende Träger-Prüfung, nicht irgendeinen Abbruch.
-- `make gates` grün; Arbeitsbaum sauber; kein Gate behauptet, was der Lauf nicht fährt
-  ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-- **Review** durch einen Lauf, der die Umsetzung nicht geschrieben hat; danach **Verifikation**
-  gegen diese DoD.
-- Closure-Notiz §7 mit Lerneintrag und jedes Risiko aus §6 mit genau einem Ausgang.
+- **Beobachtbar 1:** `make full-smoke` Exit 0, sein Output trägt die neue Stufe (Commit ohne
+  Kennung im unaktivierten Klon geht durch · fehlt · Verzeichnis · `HOOKS_DIR`), und
+  `docs/user/e2e-abdeckung.md` führt ihre Zeile.
+- **Beobachtbar 2:** der Mutations-Fall ist gelistet, sein Rot gesehen mit gelesener Begründung.
+- `make gates` grün; Review und Verifikation durch fremde Läufe; §7 mit Lerneintrag, jedes Risiko
+  mit Ausgang.
 
 ## 6. Risiken und offene Punkte
 
-Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
-§Offene Risiken werden bei Closure aufgelöst — **jedes** Risiko bekommt genau
-**einen** Ausgang, und kein Slice geht nach `done/`, während eines ohne Ausgang
-dasteht.
-
-- **Risiko 1 — die neue Stufe hängt an ihrer Stelle im Lauf.** Der Klon ist nur *dort* die
-  unaktivierte Instanz; die zwei negativen Fälle lesen »`core.hooksPath` bleibt ungesetzt« und
-  sind an jeder anderen Stelle unmessbar (im Ziel ist er nach (b) gesetzt). Wandert die Stufe
-  oder verliert sie ihre zwei Vorbedingungen (das Ziel ist aktiviert · der Klon trägt Commits),
-  liest sie einen Zustand, den sie nicht mehr herstellt. — **Ausgang:** <…>
-- **Risiko 2 — die Abbruch-Meldung des Fragments ist fremd.** Gelesen wird der **Pfad**, den die
-  Meldung nennt (`.githooks/commit-msg` bzw. der `HOOKS_DIR`-Wert), nicht ihr Satz:
-  [slice-commit-traeger-wird-skip-if-present](../done/slice-commit-traeger-wird-skip-if-present.md) zieht
-  Kopf **und Fehlermeldung** desselben Fragments; eine wörtlich gelesene Zusage bräche dabei, ohne
-  dass etwas kaputt wäre. — **Ausgang:** <…>
+- **Risiko 1 — die neue Stufe hängt an ihrer Stelle im Lauf.** Nur hinter COMMIT-KENNUNG ist das
+  Ziel aktiviert und der Klon nicht; wandert die Stufe oder verliert sie ihre Vorbedingungen, liest
+  sie einen Zustand, den sie nicht herstellt. — **Ausgang:** <…>
+- **Risiko 2 — die Abbruch-Meldung des Fragments ist fremd.** Gelesen wird der **Pfad**, den sie
+  nennt, nicht ihr Satz; ein späterer Nachzug des Wortlauts bräche sonst die Stufe, ohne dass etwas
+  kaputt wäre. — **Ausgang:** <…>
 - **Risiko 3 — der Zahn läuft nur nächtlich und teuer.** Ein `# verify: full-smoke`-Fall kostet
-  einen ganzen E2E-Lauf (Preis im Kopf von
-  [`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh)) und `make mutate` ist kein
-  Gate. Bis zum Nacht-Job ist die neue Stufe **gelistet, aber nicht gefahren** — der Rot-Beleg aus
-  DoD (3) ist die Bedingung, unter der ihr Grün trotzdem etwas sagt. — **Ausgang:** <…>
-- **Risiko 4 — zwei Schreibende auf denselben zwei Dateien.**
-  [slice-commit-traeger-wird-skip-if-present](../done/slice-commit-traeger-wird-skip-if-present.md) führt
-  das Fragment **und** `harness/tools/full-smoke.sh` in seinem §3. Landet er zuerst, findet dieser
-  Slice eine gezogene Meldung vor und misst gegen den dann geltenden Stand; landen beide zugleich,
-  schreiben zwei Kontexte dieselben Dateien. — **Ausgang:** <…>
-- **Risiko 5 — die Deklaration der neuen Stufe hängt an der Reihenfolge.**
-  [slice-e2e-abdeckung-ist-deklariert-und-erzeugt](../done/slice-e2e-abdeckung-ist-deklariert-und-erzeugt.md)
-  verlangt für jede Stufe eine Deklaration. Ist sein Erzeuger zur Closure dieses Slice gebaut,
-  fällt die neue Stufe dort **laut** aus (die Regel, nicht still) und die Deklaration ist in der
-  dann geltenden Form nachzuziehen; ist er es nicht, trägt der Lauf die neue Stufe als einzige
-  ohne Deklaration, bis er sie schreibt
-  (`grep -cE '^echo "full-smoke: .* \.\.\."$' harness/tools/full-smoke.sh` → 15 heute, kein
-  Erwartungswert). — **Ausgang:** <…>
+  einen E2E-Lauf, `make mutate` ist kein Gate; bis zum Nacht-Job trägt allein der Rot-Beleg aus
+  DoD (3). — **Ausgang:** <…>
+- **Risiko 4 — die Kurzbeschreibung der Deklaration sagt mehr, als die Stufe misst.** Sie liegt
+  neben der Selbstprüfungs-Zeile, die die zwei übrigen Klon-Lagen trägt; eine Beschreibung „Klon-Weg
+  der Aktivierung" läse sich als Ganz-Abdeckung. Den Inhalt prüft kein Sensor
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.6). — **Ausgang:** <…>
 
 ## 7. Closure-Notiz
 
@@ -377,35 +256,28 @@ der an Adopter ausgeliefert wird); soweit dieser Slice sie berührt, berührt er
 *„Commit-Kennung"* auszudifferenzieren hätte weder eigene Konventionen-Dichte noch eigenen
 Reifegrad gegenüber `*` und unterbliebe darum.
 
-**Vorgelagert — offene Beobachtungen sichten:** Gesichtet ist der **gemergte** Stand vom
-2026-09-15: **120** Verzeichnisse (`ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l`,
-kein Erwartungswert). Alle Einträge dieses Repos führen dieselbe Sub-Area `*`, die Sichtung ist
-also nach **Gegenstand** geschnitten. Die Auswahl ist ein **Urteil** über Relevanz, keine
-Vollständigkeits-Aussage über 120 Einträge — ein `grep` über Slugs trifft Muster, nicht
-Gegenstände ([`AGENTS.md`](../../../../AGENTS.md) §3.6). **Acht Einträge berühren diesen Slice**,
-je mit ihrem Zähler-Stand aus `ls <eintrag>/evidence/*.md | wc -l`:
+**Vorgelagert — offene Beobachtungen sichten:** gemergter Stand vom 2026-10-08, **232**
+Verzeichnisse (`ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l`, kein Erwartungswert);
+alle unter `*`, die Auswahl ist ein **Urteil** nach Gegenstand, keine Vollständigkeits-Aussage.
+Zähler je `ls <eintrag>/evidence/*.md | wc -l`:
 
 | Beobachtung | Stand | berührt wie |
 |---|---|---|
-| [`gruen-aussage-ohne-herkunft`](../observations/BEO-ALL/gruen-aussage-ohne-herkunft/observation.md) | **2×**, offen | die Schluss-Zeile »reist mit dem Klon« ist heute eine Grün-Aussage ohne Lauf als Herkunft (§1 Befund 1); dieser Slice macht sie zur gemessenen — ob daraus ein **Beleg** wird, ist ein Urteil bei der Closure, nicht beim Schnitt |
-| [`zusage-nennt-zwei-kanten-der-sensor-deckt-eine`](../observations/BEO-ALL/zusage-nennt-zwei-kanten-der-sensor-deckt-eine/observation.md) | **3×**, offen | die Zusage hat zwei Kanten (§2 (3), §3): der **E2E** fährt die Kette real (Klon · `make` · `git`), der **Mutations-Fall** fährt sie je Nacht — beide Kanten sind benannt, keine Zusage liest die andere mit |
-| [`zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md) | **16×**, geplant (`slice-181`) | Warnung ohne Gegenstand: der Funktionskopf der neuen Stufe nennt genau die Lagen, die ihr Code hält — nicht mehr |
-| [`neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md) | **8×**, *verkörpert* | jede neue Zusage braucht einen **gelisteten** Fall; DoD (3) und der Zahn in §3 |
-| [`waechter-misst-die-fixture-statt-der-realen-quelle`](../observations/BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/observation.md) | **1×**, offen | der Zahn fährt den **realen** Gegenstand (Fragment-Quelle, echtes `make`, echtes `git`) in einem Wegwerf-**Repo**: die Fixture ist die Umgebung, nicht der Prüfgegenstand — die Grenze steht dort, wo er nur nächtlich läuft |
-| [`zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`](../observations/BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor/observation.md) | **2×**, offen | die Dogfood-Fassung bleibt in diesem Schnitt stehen (§1); der Gegenstand ist benannt und **gemessen** (0 gegen 1 in §1) |
-| [`emittierter-stand-laeuft-dem-dogfood-voraus`](../observations/BEO-ALL/emittierter-stand-laeuft-dem-dogfood-voraus/observation.md) | **1×**, offen | derselbe Befund auf der anderen Achse: die Emissions-Vorlage ist schärfer als die eigene Fassung |
-| [`rotierender-pruef-gegenstand-ohne-ort`](../observations/BEO-ALL/rotierender-pruef-gegenstand-ohne-ort/observation.md) | **1×**, offen | Nachbar, kein Gegenstand: dieser Prüf-Gegenstand **hat** einen Ort (die Stelle im Lauf) — ob daraus ein Beleg wird, fällt bei der Closure |
+| [`gruen-aussage-ohne-herkunft`](../observations/BEO-ALL/gruen-aussage-ohne-herkunft/observation.md) | 2×, offen | die Schluss-Zeile »reist mit dem Klon« bekommt für die Gegenrichtung ihren Lauf; ob das ein Beleg wird, urteilt die Closure |
+| [`traeger-wirkt-nur-nach-lokaler-aktivierung`](../observations/BEO-ALL/traeger-wirkt-nur-nach-lokaler-aktivierung/observation.md) | 1×, offen | der Gegenstand selbst: DoD (1a) macht die unaktivierte Lage messbar |
+| [`emittierter-stand-laeuft-dem-dogfood-voraus`](../observations/BEO-ALL/emittierter-stand-laeuft-dem-dogfood-voraus/observation.md) | 2×, offen | Dogfood-Fassung ohne `test -f` bleibt stehen (§1) — erreicht dieser Slice keinen dritten Beleg, bleibt der Eintrag unter der Schwelle |
+| [`rotierender-pruef-gegenstand-ohne-ort`](../observations/BEO-ALL/rotierender-pruef-gegenstand-ohne-ort/observation.md) | 2×, offen | Nachbar: dieser Prüf-Gegenstand hat einen Ort (Risiko 1) |
+| [`gleichzeitig-laufender-slice-macht-adresse-tot`](../observations/BEO-ALL/gleichzeitig-laufender-slice-macht-adresse-tot/observation.md) | 1×, offen | derselbe Mechanismus traf diesen Plan: seine Folge-Adresse für die Deklaration schloss vor ihm — beim Nachschnitt behoben (DoD 2), Beleg-Urteil bei der Closure |
+| [`zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`](../observations/BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor/observation.md) | 5×, geplant | Vergleichs-Sensor ist außerhalb (§1) |
+| [`neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md) | 17×, geplant | DoD (3) |
+| [`zusage-nennt-zwei-kanten-der-sensor-deckt-eine`](../observations/BEO-ALL/zusage-nennt-zwei-kanten-der-sensor-deckt-eine/observation.md) | 5×, geplant | E2E fährt die Kette, der Fall bindet die `test -f`-Kante — beide in §2 getrennt |
+| [`waechter-misst-die-fixture-statt-der-realen-quelle`](../observations/BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/observation.md) | 6×, geplant | der Zahn mutiert die reale Fragment-Quelle, nicht eine Kopie |
 
-**Keiner der acht erreicht mit diesem Slice erstmals die Schwelle 3×** — einer steht schon
-darüber und bleibt `offen`; seinen Ausgang weist der **Lese-Schritt** zu (nächste Welle-Closure,
-§7), nicht dieser Schnitt. Der Schnitt löst darum **keinen** Folge-Slice aus; ob ein Eintrag einen
-**Beleg** bekommt, ist ein Urteil beim Schreiben und fällt bei der Slice-Closure.
+Keiner der offenen Einträge erreicht mit diesem Schnitt 3×; die Schnitt-Sichtung löst **keinen**
+Folge-Slice aus.
 
-**Modus-Begründungsblock — Umfang.** Bei reinem GF genügt der Hinweis *"alle berührten Sub-Areas GF"*.
-
-**Alle berührten Sub-Areas GF** — die zwei Blöcke stehen trotzdem, weil das
-Evidenz-/Diskrepanz-Kriterium hier je eine Antwort trägt, die über *„GF, also niedrig"*
-hinausgeht.
+**Alle berührten Sub-Areas GF** — die zwei Blöcke stehen, weil das Evidenz-Kriterium je eine
+eigene Antwort trägt.
 
 ### Sub-Area: `harness/tools/`
 
@@ -422,7 +294,7 @@ hinausgeht.
 - **Evidenz-/Diskrepanz-Risiko:** **niedrig, mit einer benannten Kante.** Der Bestand wird nicht
   angefasst (kein Abschnitt umgebaut, kein Exit-Code verschoben); die Kante ist die *Reichweite*
   der neuen Zusage — ihr billigster Zahn läuft nur nächtlich (Risiko 3), und die zwei Kanten sind
-  in §3 auseinandergehalten.
+  in §2 auseinandergehalten.
 - **Reconciliation-Aufwand:** **keiner** — GF, es gibt keine Inventur-Linie. Gemessen statt
   behauptet: `ls docs/plan/planning/reconciliation.md` → *nicht vorhanden*; dieses Repo hat keinen
   Brownfield-Bootstrap und führt darum kein Inventur-Register. Deshalb trägt §2 das
@@ -434,7 +306,7 @@ hinausgeht.
 - **Modus:** GF
 - **Konventionen-Dichte:** **hoch für die Form, offen für den Gegenstand.** Die Prüf-Suite liegt
   unter `test/`, ihre Form (Kopf mit `# files:`/`# expect:`/`# verify:`, Treiber mit
-  `failure_form`) ist über 343 Fälle etabliert und von `make mutate` gedeckt
+  `failure_form`) ist über 574 Fälle etabliert und von `make mutate` gedeckt
   (`ls test/mutations/*.sh | wc -l`, kein Erwartungswert). **Offen ist der Gegenstand:** das
   Rezept der Aktivierung ist heute in keiner Suite *ausgeführt* — genau die Lücke, die dieser
   Slice mit ihrem ersten Fall schließt.
