@@ -203,12 +203,21 @@ Verzeichnis, keine Nicht-`.md`) und liest das erste Wort der `**Stand:**`-Zeile:
 Abweichungen von der Tabelle oben, beide offen für den Planner:**
 
 - **Die Zeile steht unter §Werkzeuge mit `kein Gate`, nicht unter §Sensors, und `make gates` fährt
-  das Ziel nicht.** Über dem Bestand ist der Wächter rot (`make register-ausgang` nennt die Einträge
-  namentlich); verdrahtet machte er `make gates` rot, und eine Ausnahmeliste verbietet
-  [ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
-  (Re-Evaluierungs-Trigger 2: der Bestand wird vor der Verdrahtung getilgt). Die Verdrahtung ist
-  danach eine Zeile in `record-gates`, die Tabellen-Zeile wandert nach §Sensors, und
-  `register-ausgang` verläßt `targets.exempt-targets` in [`.d-check.yml`](../../../../.d-check.yml).
+  das Ziel nicht.** Bindung: die Regel aus
+  [ADR-0049](../../adr/0049-ausgang-traegt-die-benannte-luecke.md), der Zeitpunkt aus
+  [ADR-0085](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md)
+  (`Proposed`), die Zählung `evidence/*.md` aus
+  [ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md).
+  Die Verdrahtung wartet auf das Accept der Zeitpunkt-ADR; eine Ausnahmeliste führt der Wächter nicht,
+  weil er keine Liste erwarteter Einträge führt (Absatz *Und der Sensor prüft die Eigenschaft*
+  oben). Die Verdrahtung ist danach eine Zeile in `record-gates`, die Tabellen-Zeile wandert nach
+  §Sensors, und `register-ausgang` verläßt `targets.exempt-targets` in
+  [`.d-check.yml`](../../../../.d-check.yml).
+- **Leerer Prüfbereich und mehrdeutiger Stand.** Trifft `BEO-*/*/` kein Verzeichnis, bricht der
+  Wächter mit Exit 2 ab, statt über nichts grün zu melden; führt eine `state.md` über der Schwelle
+  mehr als eine Zeile `**Stand:**`, ist das ein Befund, statt dass die erste entscheidet. Beide
+  Zweige tragen je einen Fall in `test/register-ausgang.bats` und je einen Mutations-Fall
+  (`566`, `567` unter `test/mutations/`).
 - **Der Nachzug der Zeile `BEO-ALL/*/state.md` ist nicht gefahren.** Einen Ausgang zuzuweisen ist
   der Lese-Schritt, und zwei der genannten Einträge halten in ihrer `state.md` eine fällige Übergabe
   an den Architect fest; *verkörpert* und *geplant* verlangen je Eintrag ein Urteil über Zielort

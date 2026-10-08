@@ -73,6 +73,22 @@ eintrag() {
   [[ "$output" == *"2 Befund(e)"* ]]
 }
 
+@test "register-ausgang: mehr als eine Stand-Zeile ueber der Schwelle -> Befund, auch wenn die erste einen Ausgang nennt" {
+  eintrag doppelt '**Stand:** verkörpert — zitiert' 3
+  printf '**Stand:** offen\n' >>"$R/BEO-ALL/doppelt/state.md"
+  run bash "$SENSOR" "$R"
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"BEO-ALL/doppelt: 3 Belege (evidence/*.md), 2 Zeilen '**Stand:**' in state.md — Stand nicht eindeutig"* ]]
+}
+
+@test "register-ausgang: Wurzel ohne Eintrag unter BEO-*/*/ -> exit 2, kein Gruen ueber leerem Pruefbereich" {
+  mkdir -p "$R/beo-all/x/evidence"
+  printf '**Stand:** offen\n' >"$R/beo-all/x/state.md"
+  run bash "$SENSOR" "$R"
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"kein Eintrag unter '$R/BEO-*/*/' — leerer Pruefbereich, nichts geprueft"* ]]
+}
+
 @test "register-ausgang: Wurzel fehlt -> exit 2" {
   run bash "$SENSOR" "$BATS_TEST_TMPDIR/gibt-es-nicht"
   [ "$status" -eq 2 ]
