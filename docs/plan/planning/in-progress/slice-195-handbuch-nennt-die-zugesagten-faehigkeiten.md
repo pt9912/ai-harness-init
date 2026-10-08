@@ -91,30 +91,30 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **(1) Die drei Workflow-Commands stehen im Rumpf, nicht nur in der Historie.**
+- [x] **(1) Die drei Workflow-Commands stehen im Rumpf, nicht nur in der Historie.**
   [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) nennt
   `implement-slice`, `plan-welle` und `close-welle` beim Namen, sagt, dass ein Agent sie als
   Slash-Command aufruft, und wofür jedes steht — die Klasse, die
   [`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) als
   *Anleitung* gegen die *Durchsetzung* abgrenzt. **Rot:** das Command-Kommando aus §1 bleibt `0`.
-- [ ] **(2) Der emittierte Reviewer-/Closure-Skill ist beschrieben.** Das Handbuch nennt
+- [x] **(2) Der emittierte Reviewer-/Closure-Skill ist beschrieben.** Das Handbuch nennt
   `.harness/skills/` und sagt, was ein Adopter damit bekommt: die fixierte Urteilsgrundlage der
   Review-Rolle, die als einzige Rolle eine Skill-Datei trägt. Das Verhalten beim erneuten
   Aufsetzen steht schon im Handbuch (nur an freiem Pfad,
   [`ADR-0084`](../../adr/0084-reviewer-skills-im-ziel-skip-if-present.md)) und wird nicht
   wiederholt.
   **Rot:** `grep -ic 'reviewer' docs/user/benutzerhandbuch.md` bleibt `0`; `.harness/skills/` steht heute nur als Pfad in der Tabelle zum erneuten Aufsetzen.
-- [ ] **(3) Der Pointer-/Trust-Abschnitt der emittierten README ist beschrieben.** Das Handbuch
+- [x] **(3) Der Pointer-/Trust-Abschnitt der emittierten README ist beschrieben.** Das Handbuch
   sagt, dass die angelegte `README.md` einen Abschnitt mitbringt, der auf die kanonischen Quellen
   des neuen Repos **vorwärts** verweist, und warum diese Verweise gate-sicher sind — sie zeigen auf
   co-emittierte Ziele, keiner läuft ins Leere, sonst bräche `make docs-check` im frischen Repo
   ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
   **Rot:** `grep -icE 'pointer|vertrauenswürdig|vorwärts' docs/user/benutzerhandbuch.md`
   bleibt `0`.
-- [ ] `make gates` grün.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] `make gates` grün.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 **Kein Gate hält diese drei Punkte, und das ist der Befund, keine Vertagung.** Die *Rot*-Sätze
@@ -137,8 +137,8 @@ Aussagen-Berührung steht hier gar nicht.
 | [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) §4 *Aufgaben* | update | DoD (1) — die Workflow-Commands sind Bedienwissen; §4 führt bereits einen Abschnitt je Aufgabe (`add-lang`, `--arch`) |
 | [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) §6 *Was wird angelegt* | update, **soweit die Fähigkeits-Aussage dort hingehört** | DoD (2) und (3) beschreiben, was der Adopter bekommt; **welcher Abschnitt** sie trägt, entscheidet der Lauf am Text — die Pfad-Aufzählung selbst gehört [slice-191](../next/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md) |
 | [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) §9 *Glossar* | update, **soweit betroffen** | „Slash-Command", „Skill" und „Pointer-Abschnitt" sind Begriffe, die der Rumpf sonst unerklärt einführt |
-| `internal/emit/`, `spec/`, `docs/plan/adr/` | **unverändert** |
-| *am Text entschieden* | — | DoD (1) steht in §4 als eigener Aufgaben-Abschnitt mit Tabelle (ein Absatz je Command genügt, kein durchgespieltes Beispiel — die Rückführung aus §4 greift nicht); DoD (2) und (3) stehen in §6 als ein `###`-Abschnitt nach Phase 2, der Baum bleibt unberührt; §9 bekommt *Slash-Command* und *Skill* — „Pointer-Abschnitt" kommt im Rumpf nicht vor und bekommt keine Zeile. Jede Aussage ist an einem real aufgesetzten Ziel (Host-Binär, doc-only) gegen `.claude/commands/`, `.harness/skills/` und `README.md` gelesen | es wächst keine Anforderung, fällt keine Entscheidung und ändert sich kein emittiertes Byte — die drei Fähigkeiten liegen (§1) |
+| `internal/emit/`, `spec/`, `docs/plan/adr/` | **unverändert** | es wächst keine Anforderung, fällt keine Entscheidung und ändert sich kein emittiertes Byte — die drei Fähigkeiten liegen (§1) |
+| *am Text entschieden* | — | DoD (1) steht in §4 als eigener Aufgaben-Abschnitt mit Tabelle (ein Absatz je Command genügt, kein durchgespieltes Beispiel — die Rückführung aus §4 greift nicht); DoD (2) und (3) stehen in §6 als ein `###`-Abschnitt nach Phase 2, der Baum bleibt unberührt; §9 bekommt *Slash-Command* und *Skill* — „Pointer-Abschnitt" kommt im Rumpf nicht vor und bekommt keine Zeile. Jede Aussage ist an einem real aufgesetzten Ziel (Host-Binär, doc-only) gegen `.claude/commands/`, `.harness/skills/` und `README.md` gelesen |
 
 ## 4. Trigger
 
@@ -199,18 +199,18 @@ dasteht.
   bräuchte erst ein Kriterium, was als *beschrieben* zählt, und das ist ein Urteil, kein Muster.
   Die Klasse führt
   [`BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md).
-  — **Ausgang:** <offen>
+  — **Ausgang:** **weiter offen** — ins Register, `BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen` (Beleg `slice-195`, Ausgang dort *geplant*).
 - **Die Beschreibung kann mehr zusagen als das Ziel liefert.** Wer
   [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) liest und
   daraus die Durchsetzungsschicht beschreibt, schreibt `CLAUDE.md` mit hinein — der Vertrag nennt
   sie, der Bestand kennt sie nicht (unten). Das Handbuch beschreibt den **Ist-Stand**; eine Zeile
   über eine nicht angelegte Datei wäre dieselbe Klasse Fehler wie das heutige Schweigen, nur mit
-  umgekehrtem Vorzeichen. — **Ausgang:** <offen>
+  umgekehrtem Vorzeichen. — **Ausgang:** **entfallen** — der eingetretene Fall (Review LOW-1, Geltungsbereich von `reviewer.md`) ist im Slice behoben (`bb8c97a5`, Verifikation DoD (2)); `CLAUDE.md` nennt das Handbuch nicht (`grep -c CLAUDE docs/user/benutzerhandbuch.md` → `0`); die Klasse ist im Register gezählt (§7).
 - **Drei offene Pläne auf einer Datei.** §4 zieht die Form-Grenze, aber sie ist eine Absprache im
   Text und kein Mechanismus; wer zwei davon nebeneinander fährt, löst Konflikte von Hand.
   Die Klasse führt
   [`BEO-ALL/ueberholter-offener-plan-ohne-genormten-ausgang`](../observations/BEO-ALL/ueberholter-offener-plan-ohne-genormten-ausgang/observation.md).
-  — **Ausgang:** <offen>
+  — **Ausgang:** **entfallen** — die Naht hat getragen: dieser Slice schrieb §4, §6 (eigener `###`-Abschnitt) und §9, den Baum nicht; die zwei übrigen Pläne laufen nach Welle-Plan §4 nacheinander (111 nach 191), nicht nebeneinander.
 
 **Nicht in diesem Slice — zwei Doku-Nachbarn.** Die Erklärung der **Erfassungsschicht**
 ([`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)) liegt bei
@@ -276,26 +276,39 @@ ist ein Satz und fährt mit dem nächsten Lauf mit, der `spec/` anfasst. Dieser 
 
 ## 7. Closure-Notiz
 
-Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
-§Das Beobachtungs-Register (vorhandene `BEO-<NNN>` **zitieren** statt neu
-formulieren — sonst zählt das Register zwei Namen getrennt) ·
-`grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln (das
-Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
-wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
-Backticks).
+Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`.
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-NNN>, <slice-MMM>, <slice-KKK> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-NNN.md` | `evidence/slice-NNN.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-NNN (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+**Rolle:** Planner · **Datum:** 2026-10-08.
+
+- **Was hat funktioniert:** Die drei *Rot*-Messungen aus §2, erneut gefahren:
+  `grep -cE 'implement-slice|plan-welle|close-welle' docs/user/benutzerhandbuch.md` → `5`,
+  `grep -ic 'reviewer' docs/user/benutzerhandbuch.md` → `1`,
+  `grep -icE 'pointer|vertrauenswürdig|vorwärts' docs/user/benutzerhandbuch.md` → `1` (alle
+  vorher `0`; keine Erwartungswerte). Review und Verifikation haben jede Aussage an einem frisch
+  aufgesetzten Ziel gelesen; die Gate-Sicherheit der README-Verweise sah das Review rot
+  (`target-missing`). Die Form-Grenze zu slice-191/slice-111 hielt: der Baum blieb unberührt.
+- **Was ging anders als geplant:** Der erste Wortlaut sagte `reviewer.md` einen Geltungsbereich
+  zu (*Code, Pläne, Entwürfe*), den die emittierte Datei nicht trägt — ihr Eingang ist ein PR-Diff
+  (Review LOW-1, behoben in `bb8c97a5`). Die Implementer-Änderung an §3 verschob die Begründung der
+  Zeile *unverändert* in eine vierte Zelle (Verifikation LOW-1); bei dieser Closure
+  zurückgeschoben. Kein Gate hält Handbuch-Prosa gegen den Ziel-Inhalt — Träger bleibt das Review
+  (§2).
+- **Steering-Loop-Eintrag:** **gezählt, nicht verkörpert** — kein Zielort, darum kein
+  `liegt in`-Feld. Beide berührten Einträge tragen ihren Ausgang schon; der Slice legt nur Belege
+  an.
+- **Beobachtungs-Register (`../observations/`):** zwei Belege
+  `evidence/slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md` — in
+  [`emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`](../observations/BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/observation.md)
+  (Review-Klasse LOW-1: Doku sagt einer angelegten Datei einen Geltungsbereich zu, den sie im Ziel
+  nicht trägt; Ausgang *verkörpert*) und in
+  [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
+  (der Gegenstand und Risiko 1; Ausgang *geplant*, `slice-153`). Ein Vorgang je Eintrag; kein
+  Eintrag steht danach `offen` über der Schwelle
+  ([`ADR-0085`](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md)
+  Festlegung 1 greift nicht).
+- **Folge-Slices:** keine.
+- **Risiken aus §6:** (1) **weiter offen** → Register · (2) **entfallen** · (3) **entfallen** —
+  je mit Grund in §6.
 
 ## 8. Sub-Area-Modus-Begründung
 
