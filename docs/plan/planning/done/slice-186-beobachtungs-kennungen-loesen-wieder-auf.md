@@ -154,7 +154,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Architect-Artefakt nach [`AGENTS.md`](../../../../AGENTS.md) §3.8, wie in §3 geplant —
       **Übergabe an den Architect**. **Diese zwei sind die einzigen nicht dauerhaften Ausnahmen,
       und ihr Träger ist eine Datei, kein Satz:**
-      [slice-189](../open/slice-189-abgeschaffte-kennung-in-architect-artefakten.md) in `open/`
+      [slice-189](../done/slice-189-abgeschaffte-kennung-in-architect-artefakten.md) in `open/`
       (§7). **1** in
       [slice-188](../done/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md) —
       ein **wörtliches Zitat** von `anwenden_test.go`s Testfixture-Zeichenkette, keine Zusage
@@ -271,7 +271,7 @@ der 16 zerfällt in eine der vier gemessenen, in DoD (1) benannten Ausnahmen (Ac
 Architect-Übergabe [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) ·
 Architect-Übergabe `harness/conventions/` · wörtliches Go-Test-Zitat
 in slice-188), wobei die zwei Übergaben mit
-[slice-189](../open/slice-189-abgeschaffte-kennung-in-architect-artefakten.md) einen Träger im
+[slice-189](../done/slice-189-abgeschaffte-kennung-in-architect-artefakten.md) einen Träger im
 Planning-Lifecycle haben und nicht nur einen Satz in dieser Datei; `make gates` grün;
 Closure-Notiz mit Steering-Loop-Lerneintrag geschrieben.
 
@@ -420,7 +420,7 @@ Backticks).
   der Closure von [welle-15](welle-15-re-baseline.md) zu und wird hier **nicht** zugewiesen.
   Zähler-Stände: `for s in abgeschaffte-kennung-in-unveraenderlichem-artefakt zahl-ohne-kommando-trifft-ihren-gegenstand-nicht uebergabe-an-andere-rolle-ohne-traeger-artefakt fremdes-rollen-artefakt-im-implementations-kontext; do d="docs/plan/planning/observations/BEO-ALL/$s"; echo "$s $(ls "$d/evidence" | wc -l)x"; done`
   (keine Erwartungswerte).
-- **Folge-Slices:** [slice-189](../open/slice-189-abgeschaffte-kennung-in-architect-artefakten.md)
+- **Folge-Slices:** [slice-189](../done/slice-189-abgeschaffte-kennung-in-architect-artefakten.md)
   — *Die abgeschaffte Beobachtungs-Kennung zieht in den Architect-Artefakten nach*, eine Datei in
   `open/`. Sie trägt die zwei Übergaben, die dieser Slice nicht selbst ziehen darf: die Vorkommen
   in [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md)

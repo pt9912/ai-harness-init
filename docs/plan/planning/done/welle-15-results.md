@@ -157,7 +157,7 @@ die daraus schon gezogen wurde (Folge-Slice, Spec-Version).
   die Reparatur ist zweigeteilt worden, weil das Eigentum es ist:
   [slice-186](slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) zieht, was
   dem Planner gehört,
-  [slice-189](../open/slice-189-abgeschaffte-kennung-in-architect-artefakten.md)
+  [slice-189](../done/slice-189-abgeschaffte-kennung-in-architect-artefakten.md)
   das, was in ADR und Adaptions-Block steht
   ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
 
@@ -290,7 +290,7 @@ ein halluziniertes Gate.
 - [slice-188](../done/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md)
   — der Archiv-Stub kennt die Kennungs-Form des Registers; hervorgegangen aus
   [slice-184](slice-184-register-form-im-bestand-nachziehen.md).
-- [slice-189](../open/slice-189-abgeschaffte-kennung-in-architect-artefakten.md)
+- [slice-189](../done/slice-189-abgeschaffte-kennung-in-architect-artefakten.md)
   — die Architect-Hälfte des Kennungs-Nachzugs; hervorgegangen aus
   [slice-186](slice-186-beobachtungs-kennungen-loesen-wieder-auf.md).
 

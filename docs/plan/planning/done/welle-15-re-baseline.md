@@ -227,7 +227,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   gefeuert; der Träger bleibt entschieden, der Auslöser nicht.
 - **Eine vierte Übergabe ist mit dem Vollzug entstanden und liegt ebenfalls außerhalb dieser
   Welle:** der **Kennungs-Nachzug in den Architect-Artefakten**
-  ([slice-189](../open/slice-189-abgeschaffte-kennung-in-architect-artefakten.md)).
+  ([slice-189](../done/slice-189-abgeschaffte-kennung-in-architect-artefakten.md)).
   [slice-186](slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) zieht jedes
   lebende Zitat der abgeschafften Kennungs-Form, das ihm gehört; was in
   [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) und im
