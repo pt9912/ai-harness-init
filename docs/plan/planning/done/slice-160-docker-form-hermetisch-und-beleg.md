@@ -17,7 +17,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 **Verantwortlich:** Architect (pt9912) — der Liefergegenstand ist der Ausgang je Befund, und alle
 drei Ausgänge dieses Laufs sind Einträge im Konventionsspeicher, einem Architect-Artefakt
 ([`AGENTS.md`](../../../../AGENTS.md) §3.8). Präzedenzfall
-[slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) trägt
+[slice-146](../done/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) trägt
 dieselbe Besetzung. Das Feld weicht damit von der Default-Besetzung ab, die Baseline-Regelwerk
 `modul-05-planning-harness.md` §Lifecycle als State Machine nennt (*„den Rolleninhaber der
 Implementer-Rolle"*).
@@ -193,7 +193,7 @@ Backticks).
   Bezugsmenge die Adaptions-Einträge sind, nicht die offenen Slice-Pläne.
 - **Folge-Slices:** keiner geschnitten — das ist Planner-Arbeit. **Ein offener Punkt zur
   Übergabe:** die Fracht von
-  [slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) hat sich
+  [slice-146](../done/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) hat sich
   mit dem Sprung bewegt. Seine DoD (2) fragt nach dem Ausgang der Image-Hash-Regel; der neue
   Abschnitt §Zwei Formen des Reproduzierbarkeits-Ankers beantwortet die Vorfrage bereits teilweise
   (*„harness/image-hash.txt hält dann fest, welches Image einen Lauf gemacht hat; ein
@@ -273,7 +273,7 @@ Setzung 2) — jede Zahl unten wandert mit dem Baum.
 **keine von beiden**. Ein Image-Hash-Beleg existiert auf keiner der zwei Ebenen
 (`grep -n 'metadata-file\|iidfile' Makefile d-check.mk harness/tools/*.sh` → kein Treffer;
 `git ls-files | grep -ci 'image-hash'` → **0**) — das ist die Fracht von
-[slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) und
+[slice-146](../done/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) und
 ausdrücklich **nicht** die dieses Laufs.
 
 **Ausgang:** [`MR-048`](../../../../harness/conventions.md#mr-048) — die Rezept-Form ist benannt

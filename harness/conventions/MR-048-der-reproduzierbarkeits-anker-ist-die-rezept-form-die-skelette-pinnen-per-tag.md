@@ -7,7 +7,7 @@
   [`internal/gen/golang.go`](../../internal/gen/golang.go) und
   [`internal/gen/cpp.go`](../../internal/gen/cpp.go) (emittierte Ebene). **Nicht** die zwei
   Regeln desselben Baseline-Abschnitts, die
-  [slice-146](../../docs/plan/planning/open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md)
+  [slice-146](../../docs/plan/planning/done/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md)
   hält (Runtime-Stage, Image-Hash-Beleg) — die bleiben dort offen.
 - **Ersetzt-Baseline-Regel:**
   [`modul-14-docker-harness.md`](../../.harness/baseline/v6.17.0/regelwerk/modul-14-docker-harness.md#multi-stage-build-die-operativen-disziplinen-modul-14)

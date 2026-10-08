@@ -126,7 +126,7 @@ wurde.
   Regeln sind zweimal nein (§9); getroffen ist damit die
   [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)-Blankett-Klausel, nicht
   die einzelne Regel. Folge-Slice
-  [slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) trägt die
+  [slice-146](../done/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) trägt die
   Korrektur als Architect-Übergabe und liegt als Datei in `open/`. Kein Carveout: kein Gate ist
   deswegen rot (§9, *Route*).
 
@@ -181,7 +181,7 @@ stehen in §9 dieses Plans und werden hier nicht gedoppelt; der Ausgang nach DoD
   Lehre des Durchgangs — dass die Blankett-Klausel von
   [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) für einen Abschnitt falsch
   sein kann, ohne dass ein Gate rot wird — ist keine Regel dieses Slice, sondern die Fracht von
-  [slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md): sie ändert
+  [slice-146](../done/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md): sie ändert
   ein Architect-Artefakt ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
 - **Beobachtungs-Register (`../observations.md`):** eine neue Kennung —
   `BEO-012` (Sub-Area `*`, 1×, Beleg `slice-084`). Kein bestehender Eintrag
@@ -190,7 +190,7 @@ stehen in §9 dieses Plans und werden hier nicht gedoppelt; der Ausgang nach DoD
   zweites Auftreten des Kurzschlusses; `BEO-003` bleibt bei 2×, weil der
   auslösende Lauf kein Slice-Closure-Lauf war und damit keinen formgebundenen Beleg hat.
 - **Folge-Slices:**
-  [slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) — *Modul 14
+  [slice-146](../done/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) — *Modul 14
   „Multi-Stage-Build": zwei Regeln bekommen ihren Ausgang*, liegt als Datei in `open/`. Kein
   weiterer: Der zweite Risiko-Ausgang nahm die Register-Route, statt einen Slice zu erzeugen — genau
   die Route, die `BEO-001` verkörpert hat.
@@ -225,7 +225,7 @@ geführt — keine zu grobe, neu auszudifferenzierende Sub-Area.
   Architektur, nimmt die Regel aber an keiner Stelle ausdrücklich im Adaptions-Block-Sinn aus (§9).
   Der Zähler bleibt bei 1× — dieser Lauf ist die Anwendung der Lehre, kein zweites Auftreten des
   Fehlers; die Prüfpflicht selbst wandert als DoD-Punkt in
-  [slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) weiter.
+  [slice-146](../done/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) weiter.
 - **`BEO-003`** (2× im Register: slice-137, slice-144) — nach dem Move `slice-144: open → next`
   dieser Sitzung und dem folgenden Link-Abgleich-Commit (`91e1fe0`) läge ein drittes Auftreten vor,
   das nach Modul 6 die 3×-Schwelle (Lücke statt Notiz) erreichte. **Nicht der Gegenstand dieses
@@ -274,7 +274,7 @@ ausnimmt, gilt die Klausel fort"*), die hier für zwei Regeln nicht vorliegt.
 
 **Route (§1-Auflösung).** Kein Gate ist deswegen rot — es fehlt eine Deklaration, kein
 Carveout-Fall. Folge-Slice
-[slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) trägt die
+[slice-146](../done/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) trägt die
 Architect-Übergabe. Was die zwei Regeln dort werden — Adoption (Mechanismus ergänzen) oder
 deklarierte Abweichung mit Begründung — entscheidet der Architect-Lauf; für die Runtime-Stage-Regel
 liegt die Begründung nahe ([`ADR-0003`](../../adr/0003-go-native-binaries.md): kein OCI-Image als

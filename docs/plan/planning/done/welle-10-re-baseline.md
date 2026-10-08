@@ -458,7 +458,7 @@ voraus, dass alle Mitglieder inklusive 149 bereits in `done/` liegen, und bleibt
 `/close-welle`. Er hängt an keinem anderen Mitglied (§5).
 
 **150 ist kein Nachzügler, sondern eine Korrektur an Durchgang 1 — und deshalb Mitglied, wo
-[slice-146](../open/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) keines ist.**
+[slice-146](../done/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) keines ist.**
 §6 schickt einen Fund, der eigene Arbeit verlangt, als Slice in `open/` **ohne**
 Wellen-Zugehörigkeit; das trifft den Fund aus Durchgang 3, dessen Ausgang *mehrere Funde* mit dem
 Verbuchen abgeschlossen ist. Hier liegt es anders: Das Kriterium von Durchgang 1 oben verlangt,
