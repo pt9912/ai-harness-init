@@ -11,3 +11,6 @@ Vorkommen seit der Verkörperung, der eigene Auflösungs-Trigger von
 [`MR-071`](../../../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)
 ist damit noch nicht
 erreicht.
+
+**Sensor:** [`make mutate`](../../../../../../harness/sensors/mutate.md) (Nacht-Workflow) meldet einen
+entwaffneten Fall als Befund; aus diesen Meldungen entstehen die Belege.

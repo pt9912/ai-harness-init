@@ -10,3 +10,6 @@ Folge-Slices auf Existenz; ein ausdrückliches *keine* ist für sie kein Gegenst
 aus `modules:` der [`.d-check.yml`](../../../../../../.d-check.yml) liest eine erklärte Übergabe
 gegen den Planning-Lifecycle. Der einzige Träger bleibt damit die Closure-Notiz des übergebenden
 Vorgangs. Träger der Wirkung ist der schreibende Lauf.
+
+**Kein Sensor möglich.** Die fehlende Übergabe ist eine Abwesenheit ohne Form; die
+Folge-Slice-Paarung prüft nur genannte Übergaben.

@@ -55,6 +55,11 @@ bleibt damit grün, während der Bedien-Einstieg gebrochen ist. Dieselbe Zusage 
 Das ist die **dritte** Instanz von [`BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md), und mit ihr die Schwelle:
 eine Zusage nennt einen Geltungsbereich, den der Ausdruck darunter nicht hält.
 
+**Register-Ausgang, den dieser Slice zusätzlich trägt:**
+[`BEO-ALL/regel-rand-ohne-benannte-luecke`](../observations/BEO-ALL/regel-rand-ohne-benannte-luecke/state.md)
+steht *geplant* auf diesem Slice — dieselbe Klasse von der Autor-Seite: der zweite Liefer-Punkt
+(*die Klasse bekommt ihre Regel*) verlangt die vollständige Grenze oder das fail-closed Urteil.
+
 ## 2. Definition of Done
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`

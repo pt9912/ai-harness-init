@@ -10,3 +10,10 @@ und der Zielort trägt seine eigene Adresse.
 nicht*): `make comment-claims` prüft, ob ein **genannter** Sensor existiert, nicht, worüber ein
 Kommentar spricht, und [`d-check.mk`](../../../../../../d-check.mk) liegt außerhalb seiner vier
 Pfad-Muster. Träger bleibt der Lauf, der den Kommentar schreibt, und der Review danach.
+
+**Sensor baubar, ohne Träger — offen beim Auftraggeber.** `make comment-claims` könnte in
+Kommentaren die zwei zählbaren Klassen erkennen (Befund-Kennung; Slice-Kennung außerhalb der Form
+`seit slice-…`). [`slice-070-comment-claims-pruefbereich`](../../../open/slice-070-comment-claims-pruefbereich.md)
+nimmt ihn nicht an: er trägt mit Prüfbereich, Erkennung und Zähnen bereits drei Liefer-Punkte, und
+die Frage *worüber ein Kommentar spricht* ist eine neue Erkennungs-Klasse neben seiner Frage *nennt
+eine Zusage ihren Sensor* — ein vierter Liefer-Punkt bräche die Größenregel.

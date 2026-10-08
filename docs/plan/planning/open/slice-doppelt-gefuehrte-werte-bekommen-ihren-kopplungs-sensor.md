@@ -30,6 +30,12 @@ vergisst, wird rot statt still grün.
 - Paare über die drei unten genannten hinaus — Bestand bleibt bis zum nächsten Register-Beleg
   stehen; die Menge wächst nicht ohne Befund.
 
+**Register-Ausgang, den dieser Slice zusätzlich trägt:**
+[`BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle`](../observations/BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/state.md)
+steht *geplant* auf diesem Slice. Eine Fixture, die einen realen Wert nachbaut, ist ein doppelt
+geführter Wert; DoD (a) bricht dafür den **realen** Pin-Wert. Die Abgrenzung oben gilt weiter: neue
+Paare kommen mit dem nächsten Register-Beleg, nicht mit diesem Ausgang.
+
 ## 2. Definition of Done
 
 - [ ] **(a) Fallbacks:** die wert-hardcodenden Fallbacks in `harness/tools/smoke.sh` und

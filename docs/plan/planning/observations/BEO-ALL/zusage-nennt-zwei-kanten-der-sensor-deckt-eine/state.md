@@ -1,4 +1,8 @@
-**Stand:** verkörpert
+**Stand:** geplant
+
+Kennung: [`slice-069-zahn-bindet-zusicherung`](../../../open/slice-069-zahn-bindet-zusicherung.md) —
+eine Kante ohne bindenden Fall wird am Treiber sichtbar, weil der Fall die Zusicherung nennt, die er
+bindet. Der Zielort unten bleibt verkörpert, bis der Slice liefert.
 
 Zielort: [`AGENTS.md`](../../../../../../AGENTS.md) §3.6 — *„benennen, was wirklich deckt"*. Eine
 Zusage, die die **Regel** ankündigt, während der verdrahtete Sensor nur **eine** ihrer zwei Kanten

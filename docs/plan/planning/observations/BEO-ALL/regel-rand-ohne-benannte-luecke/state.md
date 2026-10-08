@@ -1,4 +1,9 @@
-**Stand:** verkörpert
+**Stand:** geplant
+
+Kennung: [`slice-181-grenzen-liste-vollstaendig-oder-fail-closed`](../../../open/slice-181-grenzen-liste-vollstaendig-oder-fail-closed.md)
+— trägt die Regel, dass eine erkennende Regel ihre Grenze vollständig nennt oder über einer Form, die
+sie nicht führt, fail-closed urteilt; damit auch die offene Autor-Seite. Die Reviewer-Zeile unten
+bleibt verkörpert, bis der Slice liefert.
 
 Zielort: [`.harness/skills/reviewer.md`](../../../../../../.harness/skills/reviewer.md) — die Zeile
 *„Grenzen-Aufzählung einer erkennenden Regel ohne Formen-Probe"*, mit dem Herkunfts-Anker

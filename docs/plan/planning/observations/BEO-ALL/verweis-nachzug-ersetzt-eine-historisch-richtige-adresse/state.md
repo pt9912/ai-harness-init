@@ -33,3 +33,6 @@ an `codepaths.exempt-paths` für `docs/reviews/**` in der `.d-check.yml`; diese 
 binden Blockanfang und Blockende seiner Abschnitts-Erkennung. Der Wächter hält die **Zeile** in einer einzeiligen
 Flow-Liste mit doppelten Anführungszeichen, nicht die Wahrheit der Gate-Begründung und nicht die Implikation
 *Regel ⇒ Zeile*; Träger für Trigger 1 der ADR bleibt der Folge-ADR-Vorgang, den seine Meldung nennt.
+
+**Sensor:** `internal/archive/refs_test.go` und `cmd/ai-harness-init/slice_mv_echt_test.go`
+(`make test`) halten die Form-Regel aus [`ADR-0070`](../../../../../../docs/plan/adr/0070-der-verweis-nachzug-schreibt-in-docs-reviews-nur-die-link-form.md) Festlegung 1 in beiden Trägern.

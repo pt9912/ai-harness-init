@@ -1,4 +1,4 @@
-**Stand:** verkörpert für die Klasse (Zielort [`AGENTS.md`](../../../../../../AGENTS.md) §3.6), geplant für die
+**Stand:** geplant für die Klasse auf `slice-119-zusage-ohne-fall-wird-sichtbar` (Sensor; die Prosa-Regel bleibt verkörpert, Zielort [`AGENTS.md`](../../../../../../AGENTS.md) §3.6), geplant für die
 Instanz `sync`. Schwelle erreicht
 (`ls docs/plan/planning/observations/BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall/evidence/*.md | wc -l`
 → 4, gelesen 2026-09-26, keine Erwartung).

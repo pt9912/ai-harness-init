@@ -15,3 +15,6 @@ Docker noch Sensor: die **Annahmen** eines Plans vor dem Abhaken gegen die Messu
 der Vorgang seither gefahren hat. Als Schritt eines Anweisungssatzes besteht sie nicht — der
 Zielort nennt den **Weg** der Korrektur, nicht ihren **Auslöser**. Träger ist der Planner an der
 Closure, dem die Übergabe gilt.
+
+**Kein Sensor möglich.** Ob ein Vorgang eine Annahme des Kriteriums widerlegt, ist ein Urteil
+über Bedeutung; keine Form unterscheidet es. Träger bleibt die Übergabe nach `AGENTS.md` §3.10.

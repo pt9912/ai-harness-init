@@ -16,3 +16,6 @@ Lesen im Lauf des Implementers, bevor die Meldung „fertig" geht. Träger daneb
 Verifier, der die Aussagen fährt. **Eskalation:** tritt die Klasse nach der Zeile erneut ein, ist die Trägerschaft
 der Befund und nicht die Wiederholung; die nächste Stufe ist eine Hard Rule
 ([`AGENTS.md`](../../../../../../AGENTS.md) §3.8, Architect).
+
+**Kein Sensor möglich.** Ob eine Wiedergabe weiter geht als ihre Quelle, ist
+ein Vergleich von Aussagen; ein Link-Sensor prüft die Auflösbarkeit, nicht die Aussage.

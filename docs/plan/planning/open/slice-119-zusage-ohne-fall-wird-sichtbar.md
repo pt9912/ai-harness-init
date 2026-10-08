@@ -116,6 +116,13 @@ nicht seine Voraussetzung.
 Die drei sind verwandt und **nicht** dasselbe; ob sie zusammengelegt gehören, entscheidet die
 Priorisierung, nicht dieser Plan.
 
+### Register-Ausgänge, die dieser Slice trägt
+
+[`BEO-ALL/neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/state.md)
+und [`BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall`](../observations/BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall/state.md)
+stehen *geplant* auf diesem Slice: beide sind die Klasse *Wächter oder Zusage ohne Fall*, die der
+Sensor aus DoD (1) zählt. Die Instanz `sync` bleibt bei `slice-sync-waechter-tragen-mutations-faelle`.
+
 ## 2. Definition of Done
 
 Drei slice-eigene Punkte, jeder mit dem Kommando, das ihn **rot** färbt (Modul 5 §Ziel-Form: ≤ 3;

@@ -11,3 +11,7 @@ eine Prosa-Zahl gegen ihren Gegenstand, und `make mutate` kennt dafür keine Feh
 der Zielort nicht erreicht, ist der **Bestand** — er bindet den Schreibenden, nicht jede schon
 geschriebene Zahl. Träger bleibt der Lauf, der die Zahl schreibt oder den Absatz anfasst, in dem sie
 steht.
+
+**Kein Sensor möglich.** Die Zahl hat ihr Kommando, aber es misst den falschen Gegenstand;
+das Kommando zu fahren belegt nicht, dass es den Gegenstand misst. Zählbar wäre nur die Form-Hälfte
+(Zahl ohne Kommando), und die ist nicht diese Klasse.

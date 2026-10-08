@@ -11,3 +11,11 @@ Trägers — Gelingens-Zweig, skip-if-present, Melde-Kanal — liest keiner der 
 [`make full-smoke`](../../../../../../harness/sensors/full-smoke.md) auch nicht: dort entsteht
 jedes Ziel im Gelingens-Zweig und auf leerem Grund, also genau in dem Zweig, den die Aussage
 behauptet. Träger ist der Lauf, der die Aussage schreibt.
+
+**Sensor der Adress-Hälfte:** `internal/emit/baumaussage_test.go` (`make test`) und
+[`test/baum-inventur.bats`](../../../../../../test/baum-inventur.bats) urteilen über sie.
+
+**Offen beim Auftraggeber — die Bedingungs-Hälfte.** Der Sensor ist benannt: je Bedingungs-Zweig
+(Gelingens-Zweig, skip-if-present, Melde-Kanal) eine `full-smoke`-Stufe auf vorbelegtem Grund. Kein
+bestehender Slice trägt ihn; ob ein Slice ihn bekommt oder die Lücke als akzeptiertes Negativ steht,
+entscheidet der Auftraggeber.

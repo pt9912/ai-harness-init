@@ -1,4 +1,9 @@
-**Stand:** verkörpert
+**Stand:** geplant
+
+Kennung: [`slice-069-zahn-bindet-zusicherung`](../../../open/slice-069-zahn-bindet-zusicherung.md) —
+der Fall-Kopf trägt die Zusicherung, nicht den Wächter-Namen; bei einer mehrteiligen Regel braucht
+damit jeder Teil einen eigenen bindenden Fall, und der fehlende wird am Treiber sichtbar. Die
+Reviewer-Zeile unten bleibt verkörpert, bis der Slice liefert.
 
 Zielort: [`.harness/skills/reviewer.md`](../../../../../../.harness/skills/reviewer.md) — die Zeile
 *„Mehrteilige Regel-Zusage im Kommentar ohne Mutations-Deckung je Teil"*, mit dem Herkunfts-Anker

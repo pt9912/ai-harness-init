@@ -1,4 +1,8 @@
-**Stand:** verkörpert
+**Stand:** geplant
+
+Kennung: [`slice-119-zusage-ohne-fall-wird-sichtbar`](../../../open/slice-119-zusage-ohne-fall-wird-sichtbar.md) —
+trägt den Sensor der Klasse: er zählt die Wächter, die kein Fall in `test/mutations/` nennt, mit
+ihrer Bezugsmenge. Die Prosa-Regel unten bleibt der Zielort, bis der Sensor steht.
 
 Zielort: [`AGENTS.md`](../../../../../../AGENTS.md) §3.6 — *wer keinen Fall in `test/mutations/`
 hat, ist unbewacht*; `make mutate` meldet jeden **gelisteten** Wächter, der seine Zähne verloren

@@ -13,3 +13,6 @@ außerhalb jedes Prüfbereichs dieses Repos, `make mutate` kennt dafür keine Fe
 `make comment-claims` prüft die Existenz eines genannten Sensors, nicht ob er die zugesagte
 Eigenschaft trifft. Träger bleiben der Lauf, der die Zusage formuliert, und die Rolle, die sie
 abnimmt.
+
+**Kein Sensor möglich.** Ohne herstellbares Gegenbeispiel gibt es keine Mutation, die rot färben
+könnte; ein Sensor wäre selbst eine Zusage ohne Gegenbeispiel. Die Regel schränkt die Zusage ein.
