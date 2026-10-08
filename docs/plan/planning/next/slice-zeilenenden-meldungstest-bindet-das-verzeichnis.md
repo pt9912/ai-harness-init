@@ -9,9 +9,7 @@ aus `open/` oder `next/` nach `done/` — §7 nennt in der Zeile `Gegenstand:`
 Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 (§Ein Slice, dessen Gegenstand ein anderer übernimmt).
 
-**Welle:** ohne Welle. Der Slice hat keine Closure-Bedingung, die von seiner eigenen DoD verschieden
-ist: sein Beleg ist ein rot und grün gesehener Test samt Mutations-Fall und ein grüner Gate-Lauf, und
-sie stehen in §2 (Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht).
+**Welle:** [welle-adopter-weg-im-ziel](../welle-adopter-weg-im-ziel.md) — Closure verlangt `make gates` und `make full-smoke` grün auf demselben Commit, das *Mehr* über diese DoD.
 
 **Ebene: Test-Code der Emission und ein Fall im Mutations-Set — Dogfood.** Eine Schicht:
 `internal/emit/` (ein Test). Der Fall in `test/mutations/` ist Konfiguration des Mutations-Sensors und

@@ -9,8 +9,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** ohne Welle. Begründung in §1 *Warum wellenlos* — geprüft gegen
-Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht (Modul 6).
+**Welle:** [welle-adopter-weg-im-ziel](../welle-adopter-weg-im-ziel.md) — Closure verlangt `make gates` und `make full-smoke` grün auf demselben Commit, das *Mehr* über diese DoD.
 
 **Bezug:** [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) (der Voll-E2E
 ist sein Beleg), [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)
@@ -90,16 +89,6 @@ make -f internal/emit/templates/enforce/hooks-install.mk -n hooks-install | grep
    ([`zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`](../observations/BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor/observation.md)
    2× · [`emittierter-stand-laeuft-dem-dogfood-voraus`](../observations/BEO-ALL/emittierter-stand-laeuft-dem-dogfood-voraus/observation.md)
    1×). **Nicht in diesem Slice** — s. u.
-
-### Warum wellenlos
-
-Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht: Eine Welle liegt vor,
-wenn ein Closure-Trigger **mehr** beobachtet, als die DoDs ihrer Slices ohnehin belegen. Hier ist
-es ein Slice; sein Closure-Trigger schriebe seine eigene DoD ab — der dort benannte Regelfall für
-wellenlose Arbeit. Die zwei repo-weiten Belege (ein `make gates`-Lauf im *eigenen* Baum und ein
-Replay) trägt die Welle dieses Repos ohnehin, nicht dieser Schnitt: der E2E ist **kein Gate**
-([`harness/README.md`](../../../../harness/README.md) §Werkzeuge, `targets.exempt-targets`) —
-Beleg ist der gefahrene Lauf.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
@@ -361,7 +350,7 @@ Backticks).
 - **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
 - **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
 - **Drei Paarungen:** dieses **Repo** fährt Wellen — Anker, Folge-Slice und Register prüft die
-  nächste Welle-Closure, auch für diesen Slice ohne Wellen-Zugehörigkeit.
+  Closure von welle-adopter-weg-im-ziel.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

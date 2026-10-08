@@ -10,15 +10,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 Setzung 1 — ein freier Slug in lowercase-Kebab-Case, der den **Gegenstand** nennt: die Adopter-Seite
 der Anweisungssatz-Grenze.
 
-**Welle:** ohne Welle. Der Gegenstand ist eine **Eigentums-Aussage**, kein Werkzeug:
-[welle-emittierte-werkzeuge](../done/welle-emittierte-werkzeuge.md) §1 bindet ihre Mitgliedschaft an die
-Frage, ob eine **vorgeschriebene Operation** im Ziel ein Werkzeug hat — eine Aussage darüber, welche
-Rolle eine Datei schreiben darf, ist keine Operation, und ihr Beleg wäre kein Lauf von
-[`make full-smoke`](../../../../harness/sensors/full-smoke.md). Wäre dieser Slice ein Mitglied,
-müsste §1 der Welle neu gelesen werden — das ist eine Umplanung der Welle und nicht dieser Schnitt.
-Nach
-[`MR-037`](../../../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst)
-steht wellenlose Arbeit nicht in der Roadmap — auch nicht beim Abschluss.
+**Welle:** [welle-adopter-weg-im-ziel](../welle-adopter-weg-im-ziel.md) — Closure verlangt `make gates` und `make full-smoke` grün auf demselben Commit, das *Mehr* über diese DoD.
 
 **Ebene: dieses Repo, Gegenstand ist die Emission.** Entschieden wird **was** ein erzeugtes Repo an
 Aussage bekommt; die emittierte Instanz selbst gehört dem Adopter (§1).
@@ -233,7 +225,7 @@ ausführbaren Pfad (§3).
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — **hier nicht**: Dieses
       Repo fährt Wellen-Betrieb (`ls docs/plan/planning/welle-*.md | wc -l`), also prüft sie die
-      nächste Welle-Closure, auch für diesen Slice ohne Wellen-Zugehörigkeit.
+      Closure von welle-adopter-weg-im-ziel.
 
 ## 3. Plan (vor Code)
 
