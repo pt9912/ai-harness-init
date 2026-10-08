@@ -82,7 +82,7 @@ Dogfood-Teil derselben Zeile — ob **dieses** Repo `reviews` einschaltet — bl
 
 | Modul | Lage heute | was der Kommentar-Block sagen muss |
 |---|---|---|
-| `targets` | im Dogfood **aktiv**, im Ziel nicht emittiert | dass er zwei Richtungen hält, dass `authority` genau **eine** Datei nimmt, und welcher Trigger ihn ins Ziel bringt |
+| `targets` | im Dogfood **aktiv**, im Ziel ebenfalls **aktiv** (§3, Ist-Stand) | nichts — ein Kommentar-Block hat keinen Gegenstand |
 | `reviews` | weder im Dogfood aktiv noch emittiert | dass `done-dir` der Aktivierungs-Schalter ist und ohne ihn keine Datei geöffnet wird |
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
@@ -128,31 +128,34 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
 Zwei slice-eigene Punkte.
 
-- [ ] **1 — Beide Blöcke stehen, inaktiv und begründet.**
-      `grep -cE '^# (targets|reviews):' internal/emit/templates/d-check.yml` liefert **2**, die
-      emittierte `modules:`-Zeile ist **unverändert**
-      (`git diff -- internal/emit/templates/d-check.yml | grep -c '^[-+]modules:'` → **0**), und
-      jeder der zwei Blöcke trägt seinen **eigenen Trigger** in der Form aus
+- [x] **1 — Der `reviews`-Block steht, inaktiv und begründet; `targets` ist schon aktiv.**
+      `grep -cE '^# (targets|reviews):' internal/emit/templates/d-check.yml` liefert **1**
+      (`reviews`); `targets` steht vor wie nach dem Diff in `modules:`
+      (`git show d4850268^:internal/emit/templates/d-check.yml | grep '^modules:'`), ein
+      Kommentar-Block hat dort keinen Gegenstand. Die `modules:`-Zeile ist **unverändert**, und der
+      `reviews`-Block trägt seine **eigene** `# Trigger:`-Zeile in der Form aus
       [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
-      Setzung 3 — was eintreten muss, damit das Modul aktiviert wird.
-- [ ] **2 — Ein frisch gebootstrapptes Ziel bleibt grün, und das ist gemessen statt behauptet.**
+      Setzung 3, als dritte ausbleibende Position getragen von
+      [`MR-086`](../../../../harness/conventions.md#mr-086--das-modul-reviews-bleibt-als-dritte-position-aus-dem-emittierten-doc-gate).
+- [x] **2 — Ein frisch gebootstrapptes Ziel bleibt grün, und das ist gemessen statt behauptet.**
       [`make full-smoke`](../../../../harness/sensors/full-smoke.md) läuft durch: Das tmp-Ziel
-      bekommt die Vorlage, sein `make gates` ist out-of-the-box grün, und die zwei neuen Blöcke
-      ändern daran nichts — ein auskommentierter Block ist YAML-Kommentar, aber *dass* er die
-      Konfiguration nicht bricht, sagt der Lauf und nicht der Augenschein. **Rot gesehen**
-      ([`AGENTS.md`](../../../../AGENTS.md) §3.6): ein Block, dem die führenden `#` fehlen, bricht
-      denselben Lauf — das Gegenbeispiel gehört gefahren, nicht beschrieben.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+      bekommt die Vorlage, sein `make gates` ist out-of-the-box grün. **Rot gesehen**
+      ([`AGENTS.md`](../../../../AGENTS.md) §3.6), getrennt nach Lage: ein **halb** entkommentierter
+      Block (`reviews:` und `done-dir` ohne `#`) bricht `make docs-check` im Ziel mit einem
+      Konfig-Fehler; ein **vollständig** entkommentierter bleibt dort grün und fällt am Unit-Wächter
+      `TestDCheckConfig_ReviewsBleibtKommentarBlock` über der eingebetteten Vorlage, gebunden durch
+      Mutations-Fall `568`.
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md)
+- [x] Doku-Update: [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md)
       sagt, was ein frisches Ziel an Doc-Gate-Konfiguration bekommt — ein öffentlicher Vertrag
       gegenüber dem Adopter, falls die dortige Beschreibung die Modul-Lage aufzählt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieses Repo fährt Wellen (`ls docs/plan/planning/welle-*.md`), sie werden deshalb von der nächsten Welle-Closure geprüft, auch für diesen Slice ohne Wellen-Zugehörigkeit.
 
 ## 3. Plan (vor Code)
@@ -222,22 +225,31 @@ dasteht.
   Aktivierungs-Weg im Ziel wirklich funktioniert; das täte erst die Aktivierung selbst, und die ist
   ausgeschlossen. Register-Stand der Klasse `zusage-nennt-sensor-der-form-nicht-sieht`: **14×**
   (`ls docs/plan/planning/observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/evidence/*.md | wc -l`).
-  — **Ausgang:** offen bis zur Closure.
+  — **Ausgang:** weiter offen — die **Form** hält `TestDCheckConfig_ReviewsBleibtKommentarBlock`
+  mit Fall `568`; die **Werkzeug-Aussagen** im Kommentar (Phrase, fail-closed) hält kein Sensor
+  gegen einen künftigen d-check-Pin, Beleg in
+  [`BEO-ALL/aussage-ueber-das-gepinnte-werkzeug-ohne-blick-in-seinen-stand`](../observations/BEO-ALL/aussage-ueber-das-gepinnte-werkzeug-ohne-blick-in-seinen-stand/state.md).
 - **Der Block beschreibt einen Stand des gepinnten Werkzeugs, in den niemand geschaut hat.** Was
   `targets` und `reviews` im gepinnten d-check verlangen, ist gegen seinen Stand zu lesen und nicht
   aus der Baseline-Vorlage abzuschreiben. Register-Stand der Klasse
   `aussage-ueber-das-gepinnte-werkzeug-ohne-blick-in-seinen-stand`: **2×**
   (`ls docs/plan/planning/observations/BEO-ALL/aussage-ueber-das-gepinnte-werkzeug-ohne-blick-in-seinen-stand/evidence/*.md | wc -l`).
-  — **Ausgang:** offen bis zur Closure.
+  — **Ausgang:** eingetreten — die Umschrift „unabhaengiger Review" erkennt der Pin v0.84.0 nicht
+  (Review L-1), behoben in `1d2442f7`; Reviewer und Verifier lasen den Stand am Pin (Sonden C–H der
+  [Verifikation](../../../reviews/2026-10-08-emittierte-gate-vorlage-verifikation.md)); Beleg im
+  selben Register-Eintrag.
 - **`make full-smoke` ist teuer und läuft nicht in `make gates`.** DoD-Punkt 2 hängt an einem
   Sensor, den kein Pro-Push-Auslöser fährt; er ist ausdrücklich zu fahren, nicht vorauszusetzen.
-  — **Ausgang:** offen bis zur Closure.
+  — **Ausgang:** entfallen — der Verifier fuhr ihn ausdrücklich, `EXIT 0`.
 - **Die Sendung könnte breiter sein als die zwei Module.** `slice-224` §9 nennt die Zeile als
   *„Doku-Kommentare zu den Modulen `targets` … und `reviews`"*; findet der Lauf in der
   Baseline-Vorlage weitere Kommentar-Positionen ohne Gegenstück, wächst der Umfang über diesen
   Plan hinaus. Register-Stand der Klasse `slice-plan-umfang-waechst-ueber-umsetzung-hinaus`: **3×**
   (`ls docs/plan/planning/observations/BEO-ALL/slice-plan-umfang-waechst-ueber-umsetzung-hinaus/evidence/*.md | wc -l`).
-  — **Ausgang:** offen bis zur Closure.
+  — **Ausgang:** entfallen — der Diff trägt allein `reviews` (§3, Ist-Stand); die dritte
+  ausbleibende Position ging als Übergabe an den Architect
+  ([`MR-086`](../../../../harness/conventions.md#mr-086--das-modul-reviews-bleibt-als-dritte-position-aus-dem-emittierten-doc-gate)),
+  nicht in den Diff.
 
 ## 7. Closure-Notiz
 
@@ -249,14 +261,40 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
-  für diesen Slice ohne Wellen-Zugehörigkeit>
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+**Rolle:** Planner · **Datum:** 2026-10-08
+
+- **Was hat funktioniert:** `make full-smoke` `EXIT 0`, im Ziel `0 Befund(e)`; Sonden C–H am Pin
+  v0.84.0 bestätigen die Phrasen-Zusage in allen drei Teilen
+  ([Verifikation](../../../reviews/2026-10-08-emittierte-gate-vorlage-verifikation.md)). Review
+  0 HIGH · 1 MEDIUM · 2 LOW ([Review](../../../reviews/2026-10-08-emittierte-gate-vorlage-review.md)):
+  M-1 getragen durch das [Architect-Verdikt](../../../reviews/2026-10-08-emittierte-gate-vorlage-architect-verdikt.md)
+  und [`MR-086`](../../../../harness/conventions.md#mr-086--das-modul-reviews-bleibt-als-dritte-position-aus-dem-emittierten-doc-gate),
+  L-1/L-2 behoben in `1d2442f7`.
+- **Was ging anders als geplant — Abnahme bei der Closure geändert:** DoD 1 verlangte zwei
+  Kommentar-Blöcke; `targets` war im Ziel schon aktiv, gemessen ist **1**. DoD 2 sagte ein Rot für
+  jeden Block ohne führende `#` zu; am Pin bricht nur der halb entkommentierte, der vollständig
+  entkommentierte bleibt grün und fällt am Unit-Wächter mit Fall `568`. Beide Punkte sind auf das
+  Gemessene umformuliert, nicht still abgehakt; §1-Tabelle und §4-Rückführung (`targets`) haben
+  damit keinen Gegenstand mehr.
+- **Steering-Loop-Eintrag:** benannte Sensor-Lücke — kein Sensor hält die Werkzeug-Aussagen eines
+  emittierten Kommentar-Blocks gegen einen künftigen d-check-Pin; gezählt in
+  `BEO-ALL/aussage-ueber-das-gepinnte-werkzeug-ohne-blick-in-seinen-stand` (Stand *geplant*,
+  `slice-werkzeug-aussage-traegt-quelle-stand-und-messstelle`), nicht verkörpert, kein Zielort-Feld.
+- **Beobachtungs-Register (`../observations/`):** je ein Beleg in
+  [`BEO-ALL/abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt`](../observations/BEO-ALL/abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt/observation.md),
+  [`BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt`](../observations/BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt/observation.md)
+  und
+  [`BEO-ALL/aussage-ueber-das-gepinnte-werkzeug-ohne-blick-in-seinen-stand`](../observations/BEO-ALL/aussage-ueber-das-gepinnte-werkzeug-ohne-blick-in-seinen-stand/observation.md);
+  Stände unverändert.
+- **Folge-Slices:** keine. Die Anforderung an d-check, die Review-Zeile der Slice-Vorlage zu
+  erkennen, liegt beim Auftraggeber (fremdes Repo).
+- **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines. ADR/MR:
+  [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
+  Setzung 3 durch `MR-086` erweitert, kein weiterer Trigger eingetreten. Hard Rules: keine.
+- **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
+- **Drei Paarungen:** nach dem Move gefahren (Zeile folgt), zusätzlich geprüft von der Closure von
+  `welle-emittiertes-doc-gate`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

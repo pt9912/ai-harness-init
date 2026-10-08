@@ -1,0 +1,2 @@
+**Vorgang:** slice-emittierte-gate-vorlage-traegt-targets-und-reviews
+**Fund:** DoD 1 verlangte zwei Kommentar-Blöcke (`targets`, `reviews`) auf der Annahme, `targets` sei im Ziel nicht emittiert; es stand vor dem Diff aktiv in `modules:`, gemessen ist 1. DoD 2 sagte ein Rot für jeden Block ohne führende `#` zu; am Pin v0.84.0 bleibt der vollständig entkommentierte Block grün, rot wird nur der halb entkommentierte. Der Planner formulierte beide Punkte bei der Closure auf das Gemessene.
