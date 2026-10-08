@@ -131,7 +131,7 @@ Drei Liefer-Punkte auf zwei Ebenen: Dogfood-Werkzeug und emittierte Fassung im Z
 - [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen prüft die Closure von welle-adopter-weg-im-ziel; für diesen Slice nach dem `git mv` geprüft (§7).
+- [x] Die drei Paarungen prüft die Closure von welle-adopter-weg-im-ziel; für diesen Slice nach dem `git mv` geprüft (§7).
 
 ## 3. Plan (vor Code)
 
@@ -229,7 +229,7 @@ Verifikation `docs/reviews/2026-10-08-mv-kanten-verifikation.md` (DoD 1–3 best
 - **Beobachtungs-Register (`../observations/`):** `evidence/slice-mv-kanten-nach-done-sind-bewacht.md` in [`zusage-mit-bats-bindung-ohne-eigenen-mutations-fall`](../observations/BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall/observation.md) (Review F-3); der Eintrag steht über der Schwelle mit Ausgang *geplant*, der Beleg weist keinen neuen zu. Kein Beleg für [`waechter-misst-die-fixture-statt-der-realen-quelle`](../observations/BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/observation.md) (Review F-4): der Wächter fährt die reale Quelle, nicht eine Nachbildung. **Lese-Schritt:** kein Eintrag erreicht mit diesem Slice erstmals 3×.
 - **Folge-Slices:** keine.
 - **Risiken aus §6:** drei, jedes *entfallen* mit Begründung in §6.
-- **Drei Paarungen:** nach dem `git mv` geprüft, Zeile folgt im Commit danach.
+- **Paarungen geprüft am 2026-10-08:** (a) Anker — kein Gegenstand, §7 trägt kein Feld `liegt in`; (b) Folge-Slice — keiner genannt; (c) Register — beide genannten Verzeichnisse existieren, `ls <eintrag>/evidence/*.md | wc -l` je ≥ 1. Repo-weite zweite Hälfte von (c): 2 Verzeichnisse ohne Beleg (`cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`, `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; Kommando in `close-welle.md` Schritt 3), kein Fund dieser Closure, nicht als getragen behauptet.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
