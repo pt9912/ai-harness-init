@@ -1,0 +1,2 @@
+**Vorgang:** slice-211-codepaths-im-emittierten-doc-gate
+**Fund:** Benutzerhandbuch und Kopfkommentar des emittierten `codepaths`-Blocks zählten die Grenzen des Moduls auf, ohne die Formen am Pin `v0.84.0` zu fahren: ein `./docs/…`-Pfad galt als ungeprüft und meldet `codepath-missing`; ein Glob unter einer Wurzel und ein Pfad im umzäunten Code-Block bleiben still, während der Absatz „muss im Repository liegen" sie einschließt. Review-Befunde F-2/F-3, behoben in `a5e77648`.

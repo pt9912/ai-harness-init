@@ -1,0 +1,2 @@
+**Vorgang:** slice-211-codepaths-im-emittierten-doc-gate
+**Fund:** Die Aktivierung von `codepaths` in der emittierten Startkonfiguration änderte die Modul-Liste des Ziels; die Norm-Texte daneben führten `codepaths` unverändert als ausbleibende Position — [`MR-054`](../../../../../../../harness/conventions.md#mr-054) Setzung 3 und [`MR-086`](../../../../../../../harness/conventions.md#mr-086) §Adaption („in derselben Form wie `codepaths`"). Review-Befund F-1, nachgezogen durch [`MR-087`](../../../../../../../harness/conventions.md#mr-087) mit Kopf-Marken.

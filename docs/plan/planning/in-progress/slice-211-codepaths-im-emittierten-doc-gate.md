@@ -121,29 +121,30 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **(1) Kriterium 3 steht: `make full-smoke` trägt einen `codepaths`-Zahn im Ziel.** Eine
+- [x] **(1) Kriterium 3 steht: `make full-smoke` trägt einen `codepaths`-Zahn im Ziel.** Eine
       erfundene Inline-Pfad-Nennung in einer emittierten Datei färbt `make docs-check` im
       gebootstrappten Ziel mit dem Grund-Code `codepath-missing` rot und wird danach
       zurückgenommen; der Zahn läuft über `modul_zahn_alte_module_gruen` gegen die **vorherige**
       Modul-Liste grün, sonst belegt er nicht, dass erst dieses Modul die Verletzung findet. Die
       rote Ausgabe wird gelesen und in §7 benannt.
-- [ ] **(2) Gemessen: Kriterium 2 über dem frisch gebootstrappten Ziel**, netzlos, gegen den in
+- [x] **(2) Gemessen: Kriterium 2 über dem frisch gebootstrappten Ziel**, netzlos, gegen den in
       [`d-check.mk`](../../../../d-check.mk) gepinnten Digest, in **beiden** Bootstrap-Formen
       (`--lang go` und sprachlos). Die Zahl steht neben ihrem Kommando; grün **oder** rot ist ein
       Ergebnis, nur eine fehlende Messung ist keines.
-- [ ] **(3) Die Entscheidung steht in der emittierten Datei** — `codepaths` geht mit, oder es
+- [x] **(3) Die Entscheidung steht in der emittierten Datei** — `codepaths` geht mit, oder es
       bleibt als begründeter Kommentar-Block mit einem Trigger, der **nicht** eingetreten ist
       ([`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
       Setzung 3, letzter Absatz). Beide Ausgänge ziehen
       `TestDCheckConfig_EntschiedeneModulListe` nach; eine Leerstelle ist keiner von beiden. Geht
       `codepaths` mit, trägt sein Block `exempt-paths: ["docs/reviews/**"]` (§1).
-- [ ] `make gates` grün; `make full-smoke` grün (beide Bootstrap-Formen); `make mutate` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün; `make full-smoke` grün (`--lang go`; die sprachlose Form trägt DoD (2));
+      `make mutate` grün über den neuen und den nachgezogenen Fällen (Teilläufe, §7).
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow ([`AGENTS.md`](../../../../AGENTS.md) §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -213,44 +214,90 @@ dasteht.
   [`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)
   hält das für die bessere Fehlrichtung, solange das Rot aus Adopter-Inhalt kommt; ob diese
   Zuordnung für `codepaths` trägt, entscheidet erst die Messung aus DoD (2).
-  — **Ausgang:** <offen>
+  — **Ausgang:** *entfallen* — der frische Ziel-Bestand ist in beiden Bootstrap-Formen `0 Befund(e)`
+  (§7); ein Rot entsteht damit nur an Inline-Pfaden, die der Adopter schreibt, und die Reports als
+  Zeitdokumente nimmt `exempt-paths` aus
+  ([`MR-087`](../../../../harness/conventions.md#mr-087--das-modul-codepaths-verlässt-die-ausbleibenden-positionen-des-emittierten-doc-gates)).
 - **Kriterium 1 hat keinen Wächter.** Kein Ziel hält die emittierte Modul-Liste gegen die dieses
   Repos; der Träger ist der Rollen-Wechsel, wie
   [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
   selbst feststellt. Dieser Slice misst Kriterium 1 an einem Kommando, nicht an einem Gate.
-  — **Ausgang:** <offen>
+  — **Ausgang:** *weiter offen* — Beleg in
+  [`BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`](../observations/BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor/observation.md).
 - **Die Deckung zwischen emittiertem Text und emittiertem Bestand bleibt für alles unbewacht, was
   kein Inline-Pfad ist.** Auch ein mitgehendes `codepaths` prüft Pfade, nicht Aussagen; registriert
   als
   [`BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger`](../observations/BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger/observation.md).
-  — **Ausgang:** <offen>
+  — **Ausgang:** *weiter offen* — im genannten Eintrag; seine `state.md` nennt die gelieferte
+  Inline-Pfad-Hälfte und die Aussagen-Hälfte ohne Träger.
 - **Nicht in diesem Slice:** die Modul-Liste dieses Repos, das Modul `planning`
   ([slice-210](../done/slice-210-planning-modul-im-emittierten-doc-gate.md)), das Requirement-Muster von
   `ids`, die Positionen innerhalb von `codepaths`, und jeder Migrationspfad für bereits
-  gebootstrappte Repos.
+  gebootstrappte Repos. — **Ausgang:** *entfallen* — Abgrenzung, kein Risiko; die Adressen stehen
+  in §1.
 
 ## 7. Closure-Notiz
 
-Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
-§Das Beobachtungs-Register (vorhandene `BEO-<NNN>` **zitieren** statt neu
-formulieren — sonst zählt das Register zwei Namen getrennt) ·
-`grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln (das
-Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
-wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
-Backticks).
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+**Rolle:** Planner · **Datum:** 2026-10-08
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-NNN>, <slice-MMM>, <slice-KKK> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-NNN.md` | `evidence/slice-NNN.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-NNN (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+- **Was hat funktioniert:** `codepaths` geht ins emittierte Doc-Gate, mit `roots: [spec, docs, harness]`
+  und `exempt-paths: ["docs/reviews/**"]`
+  ([`MR-087`](../../../../harness/conventions.md#mr-087--das-modul-codepaths-verlässt-die-ausbleibenden-positionen-des-emittierten-doc-gates)).
+  **DoD (1), rote Ausgabe des Zahns** — Zahn (5) in `harness/tools/full-smoke.sh`, am `--lang go`-Ziel:
+  `spec/lastenheft.md:136	docs/zahn-nicht-vorhanden.md	codepath-missing …`, `1 Befund(e)`; ohne
+  `codepaths` in der Liste `0 Befund(e)`. Gelesen: die Meldung nennt den erfundenen Pfad und den
+  Grund-Code des Moduls, das Rot trägt die behauptete Ursache. Fall `574` →
+  `FEHLER — codepaths-Zahn rot`; CI `full-smoke` (Lauf `37724435931`) druckt
+  `full-smoke: codepaths-Zahn belegt …` mit derselben Zeile.
+  **DoD (2), Messung** — Träger aus `make host-bin` am Stand `964a5d3f`, Pin `d-check:v0.84.0`
+  wie [`d-check.mk`](../../../../d-check.mk), `--network none`:
+
+  Bootstrap `--lang go` bzw. ohne `--lang` in je ein frisches Verzeichnis, dann:
+
+  ```sh
+  make -C <ziel-go> docs-check          # d-check: 21 Datei(en) geprüft, 0 Befund(e), rc 0
+  make -C <ziel-ohne-lang> docs-check   # d-check: 21 Datei(en) geprüft, 0 Befund(e), rc 0
+  ```
+
+  Keine Erwartungswerte ([`MR-025`](../../../../harness/conventions.md#mr-025) Setzung 2); Beleg:
+  [Verifikation](../../../reviews/2026-10-08-slice-211-verifikation.md).
+  **Gates:** CI `ci` Lauf `37725377425` auf `964a5d3f` — `gates`, `smoke`, `full-smoke`,
+  `adr-immutable` je `success` (`gh run view 37725377425 --json jobs`). `make mutate` als Teilläufe:
+  `573`–`578` → `6 ok, 0 Befund(e)`; die nachgezogenen Anker
+  `MUTATE_CASES='295-… 514-… 569-… 572-…' make mutate` → `4 ok, 0 Befund(e)`, rc 0; der Vollsweep läuft nächtlich.
+  Review 0 HIGH · 1 MEDIUM · 2 LOW · 1 INFO
+  ([Review](../../../reviews/2026-10-08-slice-211-review.md)): F-1 an den Architect
+  ([Verdikt](../../../reviews/2026-10-08-slice-211-architect-verdikt.md), [`MR-087`](../../../../harness/conventions.md#mr-087) mit Kopf-Marken an
+  [`MR-054`](../../../../harness/conventions.md#mr-054)/[`MR-086`](../../../../harness/conventions.md#mr-086)), F-2/F-3 behoben in `a5e77648`, F-4 in `964a5d3f` (Fälle `577`/`578`).
+- **Was ging anders als geplant — Abnahme bei der Closure geändert:** Die Gate-Zeile der DoD
+  verlangte `make full-smoke` in „beiden Bootstrap-Formen"; `full-smoke` bootstrappt nur
+  `--lang go`, die sprachlose Form ist allein durch DoD (2) gemessen. Die Zeile ist auf das Gemessene
+  umformuliert. Dazu: `exempt-paths` kam erst über das Architect-Verdikt in den Umfang (`e6d8cd9c`).
+- **Steering-Loop-Eintrag:** neuer Sensor — `codepaths` im Doc-Gate jedes gebootstrappten Ziels,
+  sein Zahn in `make full-smoke` und die Fälle `573`–`578`; er deckt die Inline-Pfad-Hälfte von
+  `BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger`. Benannte Grenze: `577`/`578` binden das
+  Rot von `make gates` im Ziel, nicht seine Ursache `codepath-missing` — die ist in der Verifikation
+  einmal gelesen. Nicht verkörpert, kein Zielort-Feld.
+- **Beobachtungs-Register (`../observations/`):** je ein Beleg `evidence/slice-211-codepaths-im-emittierten-doc-gate.md` in
+  [`BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
+  (F-1),
+  [`BEO-ALL/gate-zusage-in-prosa-reicht-weiter-als-ihr-pruefumfang`](../observations/BEO-ALL/gate-zusage-in-prosa-reicht-weiter-als-ihr-pruefumfang/observation.md)
+  (F-2/F-3 — Zähler erreicht damit 3×, `ls …/evidence | wc -l`; den Ausgang weist der Lese-Schritt
+  der Closure von `welle-emittiertes-doc-gate` zu),
+  [`BEO-ALL/zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel`](../observations/BEO-ALL/zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel/observation.md)
+  (F-4) und
+  [`BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`](../observations/BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor/observation.md)
+  (Risiko 2). Der Stand von
+  [`BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger`](../observations/BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger/observation.md)
+  geht von *geplant* (Kennung dieses Slice) auf *offen*: geliefert ist die Inline-Pfad-Hälfte, die
+  Aussagen-Hälfte hat keinen Träger; Ausgang beim Lese-Schritt derselben Welle-Closure.
+- **Folge-Slices:** keine (Vorgabe des Auftraggebers).
+- **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines. ADR/MR:
+  [`MR-054`](../../../../harness/conventions.md#mr-054) Setzung 3 für `codepaths` eingelöst, abgebildet durch [`MR-087`](../../../../harness/conventions.md#mr-087) samt Kopf-Marken; kein
+  weiterer Trigger eingetreten. Hard Rules: keine.
+- **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
+- **Drei Paarungen:** PAARUNGEN
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

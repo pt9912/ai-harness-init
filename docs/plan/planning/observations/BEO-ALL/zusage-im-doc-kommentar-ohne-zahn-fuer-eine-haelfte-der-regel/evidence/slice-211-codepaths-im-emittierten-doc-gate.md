@@ -1,0 +1,2 @@
+**Vorgang:** slice-211-codepaths-im-emittierten-doc-gate
+**Fund:** Zwei Doc-Kommentare in `internal/emit/templates.go` sagten zu, ein Ausfall der Neutralisierung färbe den grünen Start im Ziel mit `codepath-missing` rot; die Mutations-Fälle beider Aufrufe hielten nur den Go-Test, kein Fall mit `verify: full-smoke` den zugesagten Pfad. Review-Befund F-4, behoben in `964a5d3f` (Fälle `577`/`578`); sie binden das Rot, nicht die Ursache.
