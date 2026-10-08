@@ -147,7 +147,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
 **Liefer-Punkte dieses Slice — zwei** (die Größenregel lässt drei):
 
-- [ ] **Liefer-Punkt 1 — die Assertion bindet das Verzeichnis.** In
+- [x] **Liefer-Punkt 1 — die Assertion bindet das Verzeichnis.** In
       `TestZeilenenden_BelegterPfadBleibtUndWirdGemeldet` prüft die Aussage-Schleife für jeden der drei
       skip-if-present-Pfade, dass die Meldungszeile das Verzeichnis dieses Pfades **im Aussage-Teil**
       nennt — der Teil der Zeile nach dem Pfad, nicht das Pfad-Token selbst. Die Erwartung kommt aus
@@ -160,7 +160,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       am Stand `HEAD` in einer Scratchpad-Kopie **selbst** gefahren und `make test-go` dort **grün**, nach
       der Änderung **rot**; die gelesene Meldung des roten Laufs nennt das erwartete Verzeichnis und den
       Pfad, dessen Zeile es nicht trägt.
-- [ ] **Liefer-Punkt 2 — ein Fall in `test/mutations/` färbt die Assertion, mit Gegenprobe.** Der Fall
+- [x] **Liefer-Punkt 2 — ein Fall in `test/mutations/` färbt die Assertion, mit Gegenprobe.** Der Fall
       trägt die nächste freie Nummer
       (`ls test/mutations | grep -oE '^[0-9]+' | sort -n | tail -1` → **451** am Stand `HEAD`), den Modus
       `100755` und die Kopfzeilen `# files: internal/emit/zeilenenden.go` und
@@ -181,16 +181,16 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
 **Konstante Pflichten** (zählen nicht als Liefer-Punkte):
 
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update entfällt: kein öffentlicher Vertrag berührt (Test und Fall, kein Produktions-Code).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register entfällt: das Repo führt die Datei nicht
+- [x] Doku-Update entfällt: kein öffentlicher Vertrag berührt (Test und Fall, kein Produktions-Code).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register entfällt: das Repo führt die Datei nicht
       (`ls docs/plan/planning/reconciliation.md` → nicht vorhanden).
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, soweit etwas angefallen ist — neues Verzeichnis oder eine weitere Datei in einem `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, soweit etwas angefallen ist — neues Verzeichnis oder eine weitere Datei in einem `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -313,13 +313,13 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 Der Abschnitt wird bei der Closure gefüllt, im Commit vor dem `git mv` (Ausnahme: die Paarungen, nach
 dem `git mv`).
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
-- **Drei Paarungen:** —
+- **Was hat funktioniert:** Die Aussage-Schleife sucht das Verzeichnis im Text hinter dem Pfad, an einer Wortgrenze (`zeilenendenNenntVerzeichnis`); Fälle 586 und 587 binden, `make mutate` über 446–451, 586, 587 → `8 ok, 0 Befund(e)`; Gegenproben grün, die drei übrigen Zeichenketten je als Sonde rot (Review `docs/reviews/2026-10-08-zeilenenden-review.md`, LOW F-1 behoben in `83eca5a8`; Verifikation `docs/reviews/2026-10-08-zeilenenden-verifikation.md`, alle DoD-Punkte bestätigt).
+- **Was ging anders als geplant:** Fall 587 und der Helfer `zeilenendenNenntVerzeichnis` stehen nicht in §3 — sie entstanden aus Review-F-1 im selben Liefer-Punkt, gefunden von der Verifikation (Plan vs. Code). `83eca5a8` trägt `LH-FA-01` (Kennung der Welle), der Kopf führt `LH-QA-04`/`LH-FA-06`. Die Zähler der §8-Tabelle sind Stand 2026-09-25 und am Closure-Stand veraltet; die Tabelle bleibt als Planungs-Stand stehen.
+- **Steering-Loop-Eintrag:** neuer Sensor — Fälle 586 und 587 in `test/mutations/` färben `TestZeilenenden_BelegterPfadBleibtUndWirdGemeldet`, sobald der Aussagesatz ein fremdes oder ein auf das erwartete endendes Verzeichnis nennt.
+- **Beobachtungs-Register (`../observations/`):** neu `BEO-ALL/teilzeichenketten-suche-bindet-einen-pfad-nicht-an-seine-grenze` (Finding-Klasse des Reviews) und Beleg in `BEO-ALL/plan-abweichung-landet-im-commit-bericht-statt-im-plan` (Fall 587 außerhalb §3), je `evidence/slice-zeilenenden-meldungstest-bindet-das-verzeichnis.md`.
+- **Folge-Slices:** keine.
+- **Risiken aus §6:** (1) entfallen — die drei Zeichenketten färben je als Sonde rot · (2) entfallen wie vorab benannt (`MR-071`, Anker gegen den Quell-Bestand gemessen) · (3) entfallen — der Treiber hat 586/587 mit Isolation und Fingerabdruck gefahren (Teillauf), den Vollauf trägt der nächtliche `mutate.yml` · (4) entfallen — die Erwartung verlangt das Verzeichnis an einer Wortgrenze, keine Wortfolge.
+- **Drei Paarungen:** dieses Repo fährt Wellen — die Welle-Closure von `welle-adopter-weg-im-ziel` prüft sie erneut; die Slice-Closure fährt sie nach dem `git mv` selbst (Zeile unten).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
