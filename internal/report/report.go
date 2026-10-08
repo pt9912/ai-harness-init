@@ -437,7 +437,8 @@ func Schreibe(b Bilanz) string {
 // tragen (SPEC-089 in spec/spezifikation.md §5): aufsteigend, eine Fassung, die dieser
 // Leser nicht fuehrt, mit dem Zusatz `dem Leser unbekannt`, und die Zeilen ohne das Feld
 // zuletzt als `Fassung nicht bekannt`. Ohne lesbare Zeile entfaellt sie.
-// Bewacht von TestSchreibe_NenntJedeFassungGetrennt.
+// Bewacht von TestSchreibe_NenntJedeFassungGetrennt, TestSchreibe_OhneLesbareZeileKeineFassungsZeile
+// und TestSchreibe_FassungUnterEinsIstDemLeserUnbekannt.
 func fassungsZeile(b Bilanz) string {
 	if len(b.Fassungen) == 0 {
 		return ""

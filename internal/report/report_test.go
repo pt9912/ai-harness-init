@@ -506,3 +506,32 @@ func TestSchreibe_NenntJedeFassungGetrennt(t *testing.T) {
 		t.Fatalf("die Fassungs-Zeile fehlt oder fasst zusammen, erwartet %q in:\n%s", want, aus)
 	}
 }
+
+// TestSchreibe_OhneLesbareZeileKeineFassungsZeile haelt die Leer-Haelfte von SPEC-089: ein
+// leerer Bestand und ein Bestand, dessen Zeilen alle unlesbar sind, tragen keine Fassung,
+// und der Bericht schreibt dann keine Zeile `Erfassungsregel:` — auch keine leere.
+func TestSchreibe_OhneLesbareZeileKeineFassungsZeile(t *testing.T) {
+	for name, dir := range map[string]string{
+		"leer":     t.TempDir(),
+		"unlesbar": schreibeBestand(t, `kein json`, `{"ts":"2026-10-08T10:00:00Z","tool":"Read","rule_version":"vier"}`),
+	} {
+		b, err := report.Aggregiere(dir)
+		if err != nil {
+			t.Fatalf("%s: %v", name, err)
+		}
+		if aus := report.Schreibe(b); strings.Contains(aus, "Erfassungsregel:") {
+			t.Fatalf("%s: Bestand ohne lesbare Zeile, erwartet keine Fassungs-Zeile in:\n%s", name, aus)
+		}
+	}
+}
+
+// TestSchreibe_FassungUnterEinsIstDemLeserUnbekannt haelt die untere Grenze der
+// Kennzeichnung aus SPEC-089: eine Fassung kleiner als 1 fuehrt die Tabelle nicht, der
+// Bericht nennt sie mit dem Zusatz `dem Leser unbekannt` und nicht als Fassung nicht bekannt.
+func TestSchreibe_FassungUnterEinsIstDemLeserUnbekannt(t *testing.T) {
+	aus := report.Schreibe(report.Bilanz{Zeilen: 1, Fassungen: map[int]int{-1: 1}})
+	want := "Erfassungsregel: Fassung -1 (dem Leser unbekannt): 1 Zeile(n)\n"
+	if !strings.Contains(aus, want) {
+		t.Fatalf("erwartet %q in:\n%s", want, aus)
+	}
+}
