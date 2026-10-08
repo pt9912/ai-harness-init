@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** [welle-erfassungsschicht-im-ziel](../welle-erfassungsschicht-im-ziel.md).
+**Welle:** ohne Welle (hat §4 von `welle-erfassungsschicht-im-ziel` verlassen, Gegenstand entfallen; §7).
 
 **Konflikt mit Rang 1, seit Lastenheft 0.23.0.** Das Kriterium *Erfassungs-Umfang* von
 [`LH-FA-14`](../../../../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) sagt:
