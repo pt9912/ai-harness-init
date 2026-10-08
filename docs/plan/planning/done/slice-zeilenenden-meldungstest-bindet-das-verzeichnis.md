@@ -191,7 +191,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       (`ls docs/plan/planning/reconciliation.md` → nicht vorhanden).
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, soweit etwas angefallen ist — neues Verzeichnis oder eine weitere Datei in einem `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -320,6 +320,7 @@ dem `git mv`).
 - **Folge-Slices:** keine.
 - **Risiken aus §6:** (1) entfallen — die drei Zeichenketten färben je als Sonde rot · (2) entfallen wie vorab benannt (`MR-071`, Anker gegen den Quell-Bestand gemessen) · (3) entfallen — der Treiber hat 586/587 mit Isolation und Fingerabdruck gefahren (Teillauf), den Vollauf trägt der nächtliche `mutate.yml` · (4) entfallen — die Erwartung verlangt das Verzeichnis an einer Wortgrenze, keine Wortfolge.
 - **Drei Paarungen:** dieses Repo fährt Wellen — die Welle-Closure von `welle-adopter-weg-im-ziel` prüft sie erneut; die Slice-Closure fährt sie nach dem `git mv` selbst (Zeile unten).
+- **Paarungen geprüft am 2026-10-08** (Planner, nach dem `git mv`): Anker — kein `liegt in`-Feld in §7; Folge-Slice — keiner genannt; Register — `BEO-ALL/teilzeichenketten-suche-bindet-einen-pfad-nicht-an-seine-grenze` (1 Beleg) und `BEO-ALL/plan-abweichung-landet-im-commit-bericht-statt-im-plan` (5 Belege) existieren und tragen den eigenen Beleg (`ls …/evidence/*.md | wc -l`). Grün.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
