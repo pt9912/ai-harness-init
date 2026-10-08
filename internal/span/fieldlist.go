@@ -155,7 +155,8 @@ const limitStore = "**Über den Bestand ist nichts zugesagt.** Er ist **gitignor
 func limits() []string { return []string{limitAgentGuard(), limitCounters, limitStore} }
 
 // fieldListHead ist der Kopf des Dokuments: was es ist, woher es kommt, und was das
-// geschlossene Schema bedeutet. Er nennt KEIN `make`-Ziel und traegt KEINEN Markdown-Link
+// geschlossene Schema bedeutet. Er nennt KEIN `make`-Ziel (das Dokument nennt allein
+// `make span-clean`, das jeder Lauf schreibt) und traegt KEINEN Markdown-Link
 // — das Dokument liegt im geprueften Doku-Bereich des Ziels, und ein toter Verweis darin
 // faerbte dessen Doku-Gate rot, ohne dass der Adopter ihn heilen koennte: die Datei ist
 // konvergent, ein Re-Lauf setzt sie zurueck.
@@ -197,6 +198,61 @@ const fieldListHead = "# Erfassungsschicht — die Feldliste und ihre Grenzen\n"
 	"\n" +
 	"| Feld | Pflicht | Wonach gefragt wird |\n" +
 	"|---|---|---|\n"
+
+// availCache, availPR, availMainContext und availStore sind die vier Saetze ueber
+// Verfuegbarkeit und Aufbewahrung. Jeder gibt eine Zeile der Spezifikation dieses Werkzeugs
+// wieder (spec/spezifikation.md §5) und nennt sie als Quelle — bei ihrem Gegenstand, nicht
+// bei ihrer Kennung: im Ziel loest keine Kennung dieses Werkzeugs auf (LH-QA-01, gehalten
+// von TestEmittierteDateienTragenNurImZielAufloesendeKennungen). Je Satz haelt ein Test in
+// fieldlist_test.go den Satz, den genannten Gegenstand gegen die Zelle der Spec-Zeile UND
+// die Wendungen der Zeile, die er wiedergibt; aendert sich die Zeile, faellt der Test.
+//
+// availCache gibt SPEC-055 mit SPEC-087 wieder: eine Zahl traegt nur der Span eines
+// Subagenten-Aufrufs im Vordergrund, jeder andere die Kennzeichnung.
+const availCache = "**Den Cache-Status liefert nur ein Subagenten-Aufruf im Vordergrund.** Die zwei\n" +
+	"Cache-Zähler tragen eine Zahl nur im Span eines solchen Aufrufs, und die Zahl ist die des\n" +
+	"Subagenten-Laufs. Jeder andere Span und ein Aufruf, dessen Ergebnis keine Zähler führt, trägt in\n" +
+	"beiden Feldern `nicht bekannt: tool_response.usage`; die Felder stehen trotzdem in jeder Zeile.\n" +
+	"Der Cache des Haupt-Kontexts selbst steht in keinem Span.\n" +
+	"Quelle: Spezifikation von ai-harness-init, §5, Festlegungen „Cache-Status (Quelle)\" und\n" +
+	"„Kennzeichnung *nicht bekannt*\".\n"
+
+// availPR gibt SPEC-056 wieder und die Begruendung des Adaptions-Eintrags MR-077.
+const availPR = "**Eine PR-Nummer steht bewusst nicht im Schema.** Sie lebt bei der Forge, und die\n" +
+	"Erfassung läuft je Werkzeug-Aufruf, ohne Netz und ohne `gh`. An ihrer Stelle stehen `branch`\n" +
+	"und `commit`, abgeleitet aus `.git/HEAD`; über sie schlägt eine Auswertung den PR nach. Das ist\n" +
+	"eine Ableitung, keine Erfüllung: liegt zum Zweig kein PR vor, bleibt die Frage offen.\n" +
+	"Quelle: Spezifikation von ai-harness-init, §5, Festlegung „PR-Nummer (Abweichung 2)\";\n" +
+	"Adaptions-Eintrag „Statt der PR-Nummer erfasst der Span branch und commit\" von ai-harness-init.\n"
+
+// availMainContext gibt SPEC-049 wieder: der Verbrauch des Haupt-Kontexts steht in keinem
+// Span, und eine Token-Bilanz ist eine ueber Subagenten-Laeufe.
+const availMainContext = "**Der Haupt-Kontext trägt keine Zahl.** Die Token-Zähler und die drei\n" +
+	"Gesamtwerte stehen ausschließlich im Ergebnis eines Subagenten-Aufrufs, und den Haupt-Kontext\n" +
+	"umschließt keiner. `result_bytes` und `duration_ms` sind Größen eines Aufrufs, keine Token;\n" +
+	"geschätzt wird nicht. Jede Token-Bilanz aus diesen Zeilen ist eine Bilanz über\n" +
+	"Subagenten-Läufe: ihr Nenner ist nicht der Verbrauch des Laufs, und ein Prozentsatz daraus ist\n" +
+	"ein Anteil an der erfassten Teilmenge.\n" +
+	"Quelle: Spezifikation von ai-harness-init, §5, Festlegung „Haupt-Kontext ohne Zahl (Abweichung 6)\".\n"
+
+// availStore gibt SPEC-057 wieder. `make span-clean` steht im Ziel in jedem Lauf: das
+// Fragment harness/mk/erfassung.mk ist unbedingt und konvergent (internal/emit/erfassung.go).
+const availStore = "**Der Bestand wird nie nebenbei geräumt.** Die Erfassung hängt ausschließlich an;\n" +
+	"Altbestände bleiben auch beim ersten Span einer Sitzung liegen. Aufgeräumt wird ausdrücklich mit\n" +
+	"`make span-clean`, das den ganzen Bestand entfernt. Ein Werkzeug, das Sitzungs-Kennungen\n" +
+	"wiederverwendet, mischt zwei Läufe in einer Datei.\n" +
+	"Quelle: Spezifikation von ai-harness-init, §5, Festlegung „Altbestände (Abweichung 4)\".\n"
+
+// availability liefert die vier Saetze in ihrer Reihenfolge im Dokument.
+func availability() []string {
+	return []string{availCache, availPR, availMainContext, availStore}
+}
+
+// fieldListAvailabilityHead leitet die vier Saetze ueber Verfuegbarkeit und Aufbewahrung
+// ein: was die Erfassung nicht liefern kann und was mit dem Bestand geschieht.
+const fieldListAvailabilityHead = "\n" +
+	"## Verfügbarkeit und Aufbewahrung\n" +
+	"\n"
 
 // fieldListLimitsHead leitet den zweiten Gegenstand des Dokuments ein. Er ist kein Anhang
 // der Tabelle: die Nicht-Zusage ist die Kehrseite genau dieser Liste — wer liest, WAS
@@ -252,7 +308,10 @@ func RenderFieldList(fields []Field, notes []Note) (string, error) {
 	}
 	// Ein Leerzeile zwischen den Saetzen, KEINE dahinter: jeder Satz endet auf einen
 	// Zeilenumbruch, der Trenner setzt den zweiten. Faellt einer weg, bleibt die Datei
-	// wohlgeformt — der Waechter ueber ihm faellt, nicht das Markdown.
+	// wohlgeformt — der Waechter ueber ihm faellt, nicht das Markdown. Dieselbe Fuge gilt
+	// fuer die Saetze ueber Verfuegbarkeit und Aufbewahrung.
+	b.WriteString(fieldListAvailabilityHead)
+	b.WriteString(strings.Join(availability(), "\n"))
 	b.WriteString(fieldListLimitsHead)
 	b.WriteString(strings.Join(limits(), "\n"))
 	return b.String(), nil

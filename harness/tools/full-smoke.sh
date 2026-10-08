@@ -396,6 +396,29 @@ feldliste_deckt_die_zeile() {
 	echo "full-smoke: Feldliste deckt die Zeile ($label): alle $gemessen Feldnamen der geschriebenen Span-Zeile haben ihre Zeile in $FELDLISTE_REL."
 }
 
+# Die vier Saetze ueber Verfuegbarkeit und Aufbewahrung im EMITTIERTEN Dokument des Ziels:
+# Cache-Status nur aus einem Subagenten-Aufruf im Vordergrund, keine PR-Nummer im Schema,
+# keine Zahl fuer den Haupt-Kontext, Raeumen nur ausdruecklich mit `make span-clean`. Gelesen
+# wird je Satz sein fett gesetzter Kopf, leerraum-normalisiert. Gemessen ist der Text, den
+# das Ziel bekommt, nicht das Verhalten, das er beschreibt; dessen Waechter sind die Tests in
+# internal/span/fieldlist_test.go an der Spezifikation.
+feldliste_verfuegbarkeit_im_ziel() {
+	local repo="$1" label="$2"
+	local flach fehlend="" satz
+	flach="$(tr -s '[:space:]' ' ' <"$repo/$FELDLISTE_REL")"
+	for satz in "**Den Cache-Status liefert nur ein Subagenten-Aufruf im Vordergrund.**" \
+	            "**Eine PR-Nummer steht bewusst nicht im Schema.**" \
+	            "**Der Haupt-Kontext trägt keine Zahl.**" \
+	            "**Der Bestand wird nie nebenbei geräumt.**"; do
+		grep -qF -- "$satz" <<<"$flach" || fehlend="$fehlend [$satz]"
+	done
+	if [ -n "$fehlend" ]; then
+		echo "full-smoke: FEHLER — $label: die Feldliste im Ziel fuehrt einen Satz ueber Verfuegbarkeit oder Aufbewahrung nicht:$fehlend" >&2
+		exit 1
+	fi
+	echo "full-smoke: Feldliste im Ziel ($label) traegt die vier Saetze ueber Verfuegbarkeit und Aufbewahrung."
+}
+
 # ARTIFACT_TARGET waehlt, WIE das Binary auf den Host kommt: `artifact` (Default,
 # byte-identisch, slice-048/LH-QA-04) oder `artifact-host` (fuer den Host
 # cross-kompiliert — additiv, fuer Hosts, deren Kernel/Architektur vom Docker-
@@ -437,6 +460,10 @@ baum_aussagen_im_ziel "$tmprepo" "--lang go"
 rollen_typen_im_ziel "$tmprepo" "--lang go"
 # Aus demselben Grund vor dem Gate-Lauf: das Dokument liegt im geprueften Bereich (slice-098).
 feldliste_im_ziel "$tmprepo" "--lang go"
+
+echo "full-smoke: Feldliste im Ziel — Verfuegbarkeit und Aufbewahrung (--lang go) ..."
+	e2e_abdeckung "LH-FA-13 LH-FA-16" "Die emittierte Feldliste fuehrt die Saetze zu Cache-Status, fehlender PR-Nummer, Haupt-Kontext ohne Zahl und Aufbewahrung; gemessen ist der Text im Ziel, nicht das Verhalten, das er beschreibt" "feldliste_verfuegbarkeit_im_ziel"
+feldliste_verfuegbarkeit_im_ziel "$tmprepo" "--lang go"
 
 # slice-031: ein echter Adopter bootstrappt IN sein git-Repo. Der Gate-Nachweis
 # (record-gates -> working-tree-hash, jetzt letztes gates-Prerequisite) braucht

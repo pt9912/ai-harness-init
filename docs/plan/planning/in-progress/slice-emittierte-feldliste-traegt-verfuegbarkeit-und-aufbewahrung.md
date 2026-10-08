@@ -120,8 +120,21 @@ Aussagen-Berührung steht hier gar nicht.
 |---|---|---|
 | `internal/span/fieldlist.go` | update | Liefer-Punkt 1: vier Aussagen |
 | `internal/span/fieldlist_test.go` | update | Liefer-Punkt 2: ein Test je Aussage, Rot durch Streichen |
-| `test/mutations/` | neu | ein Fall je Aussage-Wächter |
+| `test/mutations/` | neu | ein Fall je Aussage-Wächter (604–607), dazu 608 an der realen Quelle: die Spezifikation benennt den Gegenstand einer Zeile um |
 | `harness/tools/full-smoke.sh` | update | Liefer-Punkt 3: Stufe mit Kopfzeile |
+| `docs/user/e2e-abdeckung.md` | neu erzeugt | `make e2e-abdeckung` nach der neuen Stufe |
+
+**Fortgeschrieben im Lauf (Implementer):**
+
+- Die Feldliste nennt ihre Quelle beim **Gegenstand** der Spec-Zeile und beim **Titel** des
+  Adaptions-Eintrags, nicht bei der Kennung: `TestEmittierteDateienTragenNurImZielAufloesendeKennungen`
+  hält, dass eine emittierte Datei keine Kennung trägt, die im Ziel nicht auflöst
+  ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Die Tests lesen
+  Gegenstand und Titel aus der Spezifikation bzw. der Eintrags-Datei, statt sie abzuschreiben.
+- Aussage (1) war zur Hälfte geliefert (Kennzeichnung der Cache-Zähler, Satz zu den Verbrauchs-Zählern);
+  ergänzt ist die Differenz: Zahl nur im Span eines Subagenten-Aufrufs im Vordergrund, der Cache des
+  Haupt-Kontexts in keinem Span. Eine „Abweichung 3" führt §5 nicht mehr; Abweichung 5 deckt der
+  bestehende Satz zu den Verbrauchs-Zählern.
 
 - **Zwei Schichten:** Go-Tool (Feldliste, Test) und E2E-Skript; die Spec und die Vorlage bleiben unberührt.
 - Der Lauf liest zuerst die Spec-Zeilen und die zwei Einträge und stellt je Aussage fest, was die Feldliste

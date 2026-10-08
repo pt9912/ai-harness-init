@@ -2,6 +2,8 @@ package span_test
 
 import (
 	"encoding/json"
+	"os"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
@@ -270,4 +272,161 @@ func TestFeldliste_KennzeichnungNenntGenauDieFaelleDerSpezifikation(t *testing.T
 	if strings.Contains(doc, "Ein Pflichtfeld, dessen Wert die Quelle nicht liefert") {
 		t.Errorf("die Feldliste sagt die Kennzeichnung jedem Pflichtfeld ohne Quellwert zu; SPEC-087 begrenzt die Faelle abschliessend")
 	}
+}
+
+// flacheFeldliste liefert die Feldliste mit zusammengezogenem Leerraum: WO das Dokument
+// umbricht, ist gleichgueltig, WAS es sagt, nicht.
+func flacheFeldliste(t *testing.T) string {
+	t.Helper()
+	doc, err := span.FieldList()
+	if err != nil {
+		t.Fatalf("FieldList: %v", err)
+	}
+	return strings.Join(strings.Fields(doc), " ")
+}
+
+// specZeile liefert die Tabellenzeile der Spezifikation (spec/spezifikation.md §5) mit der
+// Kennung id, Leerraum zusammengezogen. Sie ist die Quelle, die ein Satz der Feldliste
+// wiedergibt; fehlt sie, faellt der Test, statt einen Satz ohne Quelle stehen zu lassen.
+func specZeile(t *testing.T, id string) string {
+	t.Helper()
+	roh, err := os.ReadFile(filepath.Join("..", "..", "spec", "spezifikation.md"))
+	if err != nil {
+		t.Fatalf("Spezifikation lesen: %v", err)
+	}
+	for _, zeile := range strings.Split(string(roh), "\n") {
+		if strings.HasPrefix(zeile, "| `"+id+"` |") {
+			return strings.Join(strings.Fields(zeile), " ")
+		}
+	}
+	t.Fatalf("die Spezifikation fuehrt keine Zeile %s — die Feldliste nennt sie als Quelle", id)
+	return ""
+}
+
+// quelleGenannt prueft, dass die Feldliste die Spec-Zeile id als ihre Quelle nennt — bei
+// ihrem Gegenstand, der zweiten Zelle der Zeile, in „…" gesetzt. Gelesen wird die Zelle aus
+// der Spezifikation, nicht abgeschrieben: benennt die Spezifikation den Gegenstand um,
+// faellt der Test, und die Quellen-Angabe zeigt nie auf eine Zeile, die so nicht mehr heisst.
+func quelleGenannt(t *testing.T, id string) {
+	t.Helper()
+	zellen := strings.Split(specZeile(t, id), " | ")
+	if len(zellen) < 3 {
+		t.Fatalf("die Spec-Zeile %s hat keine Gegenstands-Zelle: %q", id, zellen)
+	}
+	stehtJeweils(t, "die Feldliste (Quelle "+id+")", flacheFeldliste(t), "„"+zellen[1]+"\"")
+}
+
+// mrTitel liefert den Titel des Adaptions-Eintrags id aus seiner Datei unter
+// harness/conventions/ — die Ueberschrift nach dem Gedankenstrich. Die Feldliste nennt den
+// Eintrag beim Titel, weil im Ziel keine Kennung dieses Werkzeugs aufloest.
+func mrTitel(t *testing.T, id string) string {
+	t.Helper()
+	treffer, err := filepath.Glob(filepath.Join("..", "..", "harness", "conventions", id+"-*.md"))
+	if err != nil || len(treffer) != 1 {
+		t.Fatalf("Adaptions-Eintrag %s nicht eindeutig gefunden: %v %v", id, treffer, err)
+	}
+	roh, err := os.ReadFile(treffer[0])
+	if err != nil {
+		t.Fatalf("Adaptions-Eintrag lesen: %v", err)
+	}
+	kopf, _, _ := strings.Cut(string(roh), "\n")
+	_, titel, ok := strings.Cut(kopf, " — ")
+	if !ok {
+		t.Fatalf("die Ueberschrift von %s traegt keinen Titel nach ' — ': %q", id, kopf)
+	}
+	return titel
+}
+
+// stehtJeweils prueft, dass text jede der Wendungen traegt, und nennt im Rot die fehlende
+// samt dem Ort, an dem sie fehlt.
+func stehtJeweils(t *testing.T, ort, text string, wendungen ...string) {
+	t.Helper()
+	for _, w := range wendungen {
+		if !strings.Contains(text, w) {
+			t.Errorf("%s traegt die Wendung %q nicht", ort, w)
+		}
+	}
+}
+
+// TestFeldliste_CacheStatusNurAusSubagentImVordergrund haelt den Satz der Feldliste, dass
+// den Cache-Status nur ein Subagenten-Aufruf im Vordergrund liefert und jeder andere Span
+// die Kennzeichnung traegt — gekoppelt an die Zeilen SPEC-055 und SPEC-087 der
+// Spezifikation, die ihn tragen.
+//
+// Rot faerbt ihn test/mutations/604-feldliste-cache-status-satz-gestrichen.sh (der Satz
+// faellt aus dem Dokument).
+func TestFeldliste_CacheStatusNurAusSubagentImVordergrund(t *testing.T) {
+	stehtJeweils(t, "die Feldliste", flacheFeldliste(t),
+		"**Den Cache-Status liefert nur ein Subagenten-Aufruf im Vordergrund.**",
+		"Jeder andere Span und ein Aufruf, dessen Ergebnis keine Zähler führt, trägt in beiden Feldern `nicht bekannt: tool_response.usage`",
+		"Der Cache des Haupt-Kontexts selbst steht in keinem Span.",
+	)
+	quelleGenannt(t, "SPEC-055")
+	quelleGenannt(t, "SPEC-087")
+	stehtJeweils(t, "die Spezifikation, Zeile SPEC-055", specZeile(t, "SPEC-055"),
+		"`tool_response` eines Vordergrund-`Agent`-Aufrufs",
+		"Jeder andere Span und ein `Agent`-Aufruf ohne `usage` tragen die Kennzeichnung",
+	)
+	stehtJeweils(t, "die Spezifikation, Zeile SPEC-087", specZeile(t, "SPEC-087"),
+		"die zwei Cache-Zähler (`SPEC-024`, Quelle `tool_response.usage`",
+	)
+}
+
+// TestFeldliste_PRNummerBewusstNichtImSchema haelt den Satz, dass eine PR-Nummer bewusst
+// nicht im Schema steht und `branch`/`commit` an ihrer Stelle — gekoppelt an die Zeile
+// SPEC-056 der Spezifikation.
+//
+// Rot faerbt ihn test/mutations/605-feldliste-pr-satz-gestrichen.sh.
+func TestFeldliste_PRNummerBewusstNichtImSchema(t *testing.T) {
+	stehtJeweils(t, "die Feldliste", flacheFeldliste(t),
+		"**Eine PR-Nummer steht bewusst nicht im Schema.**",
+		"ohne Netz und ohne `gh`",
+		"An ihrer Stelle stehen `branch` und `commit`, abgeleitet aus `.git/HEAD`",
+		"Adaptions-Eintrag „"+mrTitel(t, "MR-077")+"\" von ai-harness-init.",
+	)
+	quelleGenannt(t, "SPEC-056")
+	stehtJeweils(t, "die Spezifikation, Zeile SPEC-056", specZeile(t, "SPEC-056"),
+		"Der Span führt keine PR-Angabe.",
+		"An ihrer Stelle erfasst er `branch` und `commit`",
+		"abgeleitet aus `.git/HEAD`; der Emitter geht nicht ins Netz und ruft kein `gh`",
+	)
+}
+
+// TestFeldliste_HauptKontextTraegtKeineZahl haelt den Satz, dass der Haupt-Kontext keine
+// Zahl traegt und jede Token-Bilanz eine ueber Subagenten-Laeufe ist — gekoppelt an die
+// Zeile SPEC-049 der Spezifikation.
+//
+// Rot faerbt ihn test/mutations/606-feldliste-haupt-kontext-satz-gestrichen.sh.
+func TestFeldliste_HauptKontextTraegtKeineZahl(t *testing.T) {
+	stehtJeweils(t, "die Feldliste", flacheFeldliste(t),
+		"**Der Haupt-Kontext trägt keine Zahl.**",
+		"`result_bytes` und `duration_ms` sind Größen eines Aufrufs, keine Token",
+		"ihr Nenner ist nicht der Verbrauch des Laufs",
+	)
+	quelleGenannt(t, "SPEC-049")
+	stehtJeweils(t, "die Spezifikation, Zeile SPEC-049", specZeile(t, "SPEC-049"),
+		"Haupt-Kontext ohne Zahl",
+		"den Haupt-Kontext umschließt kein `Agent`-Aufruf",
+		"`result_bytes` und `duration_ms` sind Größen **eines** Aufrufs, keine Token",
+		"ihr Nenner ist nicht der Verbrauch des Laufs",
+	)
+}
+
+// TestFeldliste_BestandNurAusdruecklichGeraeumt haelt den Satz, dass der Bestand nie
+// nebenbei geraeumt wird und `make span-clean` ihn ausdruecklich entfernt — gekoppelt an
+// die Zeile SPEC-057 der Spezifikation.
+//
+// Rot faerbt ihn test/mutations/607-feldliste-aufbewahrungs-satz-gestrichen.sh.
+func TestFeldliste_BestandNurAusdruecklichGeraeumt(t *testing.T) {
+	stehtJeweils(t, "die Feldliste", flacheFeldliste(t),
+		"**Der Bestand wird nie nebenbei geräumt.**",
+		"Die Erfassung hängt ausschließlich an",
+		"Aufgeräumt wird ausdrücklich mit `make span-clean`",
+	)
+	quelleGenannt(t, "SPEC-057")
+	stehtJeweils(t, "die Spezifikation, Zeile SPEC-057", specZeile(t, "SPEC-057"),
+		"Altbestände werden beim ersten Span einer Sitzung **nicht** entfernt",
+		"der Emitter hängt ausschließlich an",
+		"Aufgeräumt wird ausdrücklich mit `make span-clean`",
+	)
 }
