@@ -96,6 +96,19 @@ PR-Kommentar. Eine befristete Ausnahme für einen Teil (einen Layer, einen
 Pfad) ist keine Senkung, sondern ein Carveout mit Trigger und Folge-Slice;
 die Schwelle selbst bleibt.
 
+**Eine Ausnahme nennt ihren ganzen Gegenstand.** Die Begründung neben einem Ausnahme-Eintrag einer
+Gate-Konfiguration — in der [`.d-check.yml`](.d-check.yml) dieses Repos und in der Vorlage, die das
+Werkzeug ins Ziel schreibt — nennt jeden Baum, den ihr Schlüssel stumm schaltet, gemessen am
+Ist-Bestand und nicht an einer notierten Liste. Nennt sie weniger, liest der nächste Lauf einen
+Ausschnitt als den Bestand · seit slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand.
+**Wächter:** die Go-Tests in `internal/ausnahmegrund/` (Konfiguration dieses Repos) und
+`cmd/ai-harness-init/ausnahmegrund_test.go` (emittierte Konfiguration, über dem realen Bootstrap),
+beide in `make test`. **Grenze:** sie prüfen, ob die Begründung die getroffenen Bäume *nennt*, nicht
+ob sie *stimmt*; welche Schlüssel und Schreibformen erfasst sind, welche nicht, und dass der
+emittierte Fall die Baseline-Fixture statt des realen Kurs-Satzes misst, steht im Kopf von
+`internal/ausnahmegrund/ausnahmegrund.go` — dort und nicht hier, damit es nicht in zwei Fassungen
+driftet. Auflösungs-Trigger: *permanent*.
+
 ### 3.6 Keine Zusage ohne rot gesehenes Gegenbeispiel
 
 Eine Zusage — Doc-Kommentar, Test-Name, DoD-Punkt, Commit-Message — ist erst
