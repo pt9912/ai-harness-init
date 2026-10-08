@@ -66,25 +66,25 @@ grep -n 'agent_role\\":\\"$erwartet' harness/tools/full-smoke.sh
 
 ## 2. Definition of Done
 
-- [ ] **1 — Spezifikation:** `SPEC-087` gilt für die drei Stellen aus §1 (Quelle je benannt), `SPEC-043`
+- [x] **1 — Spezifikation:** `SPEC-087` gilt für die drei Stellen aus §1 (Quelle je benannt), `SPEC-043`
       trägt kein *(Abweichung 3)* mehr, `SPEC-010`/`011`/`012`/`014`/`044`/`055`/`056` sind nachgezogen — gemäß dem
       geänderten [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung).
-- [ ] **2 — Erfassung und Tests:** ein Span ohne erkennbare Rolle trägt die Kennzeichnung bei
+- [x] **2 — Erfassung und Tests:** ein Span ohne erkennbare Rolle trägt die Kennzeichnung bei
       `agent_role`, einer ohne ableitbaren git-Zustand bei `branch`/`commit`, einer mit unlesbarer Slice-Datei bei den Korrelations-Listen; Feldliste (`span.FieldList`) und `make full-smoke` folgen. **Rot gesehen**
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6): die Erfassung schreibt `""` — der benannte Test wird
       mit einer Meldung über genau dieses Feld rot; ein Fall in `test/mutations/` hält die Zusage.
-- [ ] **3 — Auswertung:** `make span-report` liest die Kennzeichnung wie `""`, keine Rolle
+- [x] **3 — Auswertung:** `make span-report` liest die Kennzeichnung wie `""`, keine Rolle
       *nicht bekannt* entsteht. **Rot gesehen:** die Auswertung prüft nur `""` — der Test mit einem
       Span, der die Kennzeichnung trägt, wird rot.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag und dem Anlass der Lastenheft-Änderung
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag und dem Anlass der Lastenheft-Änderung
       ([`MR-042`](../../../../harness/conventions.md#mr-042)).
-- [ ] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen).
 
 ## 3. Plan (vor Code)
@@ -129,21 +129,58 @@ Eintrag in `spec/lastenheft.md` §7 Historie — **eingetreten** (0.25.0, 0.25.1
 
 - **Bedeutung eines Span-Felds wechselt ohne Fassungs-Angabe** — `agent_role` wechselt von `""` auf
   die Kennzeichnung; `span-feld-bedeutung-wechselt-ohne-fassungs-angabe` (Register) — Stand 3×, `geplant` auf `slice-span-traegt-die-fassung-seiner-erfassungsregel`, der vor diesem Slice läuft;
-  ein weiterer Beleg ist Evidenz. — **Ausgang:** offen bis zur Closure.
+  ein weiterer Beleg ist Evidenz. — **Ausgang:** entfallen — der Wechsel trägt Fassung 5
+  (`SPEC-096`, `CurrentRuleVersion = 5`; `make span-report` → `Fassung 5: 73 Zeile(n)`), Fall 593 hält die Konstante.
 - **Die Kennzeichnung wird als Rolle gelesen** — ein Leser außer `internal/report` zählte
-  *nicht bekannt* als eigene Rolle. — **Ausgang:** offen bis zur Closure.
+  *nicht bekannt* als eigene Rolle. — **Ausgang:** entfallen — außer `internal/report` liest kein Code
+  `agent_role` (`grep -rn 'agent_role\|AgentRole'` außerhalb `internal/span`, Verifikation); dort binden
+  `TestAggregiere_KennzeichnungIstKeineRolle` und Fall 602.
 
 - **Der Slice wächst um zwei Ableitungen** (git-Zustand, Bezugs-Fehlerpfad; Lastenheft 0.25.1). Trägt er sie
-  nicht in einer Review-Sitzung, Rückführung `in-progress` → `next`, Teilung nach Feld. — **Ausgang:** offen bis zur Closure.
+  nicht in einer Review-Sitzung, Rückführung `in-progress` → `next`, Teilung nach Feld. — **Ausgang:** entfallen — ein Review-Lauf trug den ganzen Diff (0 HIGH, 0 MEDIUM).
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
+- **Anlass der Lastenheft-Änderung** ([`MR-042`](../../../../harness/conventions.md#mr-042)): Baseline
+  `v6.14.0` (Welle 154, `modul-15` §Audit-Span-Schema) verlangt für ein Pflichtfeld, dessen Wert die Quelle
+  nicht liefert, die Kennzeichnung *nicht bekannt* samt Quelle statt eines leeren Werts;
+  [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) verlangte für die unbekannte
+  Rolle das leere Feld, `SPEC-043` führte das als *(Abweichung 3)*
+  ([`ADR-0078`](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md) Festlegung 4 Punkt 3). 0.25.0
+  (Nutzer-Entscheidung) nahm die Kennzeichnung für `agent_role` und die Lesart *`[]` heißt keiner* in
+  [`LH-FA-13`](../../../../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) auf; 0.25.1 zog die
+  Folgestellen nach, die 0.25.0 stehen ließ (*Zweig und Stand*, *Rolle besetzt*, *Lesevorschrift*).
+- **Was hat funktioniert:** Kennzeichnung bei `agent_role`, `branch`/`commit` und den Korrelations-Listen,
+  Fassung 5 (`SPEC-096`); `SPEC-087` nennt die Fälle abschließend, `grep -c '(Abweichung 3)' spec/spezifikation.md`
+  → 0. `make mutate` (137, 593, 597–603) → `9 ok, 0 Befund(e)`, Fall 603 bindet allein; `make full-smoke` EXIT 0
+  mit `nicht bekannt: agent_type` im Ziel. Review `docs/reviews/2026-10-08-agent-role-review.md` (0 HIGH,
+  0 MEDIUM; F-1–F-3 in `79e0c4b9`), Verifikation `docs/reviews/2026-10-08-agent-role-verifikation.md`
+  (DoD 1–3 bestätigt).
+- **Was ging anders als geplant:** (1) `slice` bleibt bei unlesbarer Slice-Datei **bekannt** — der Name kommt
+  aus dem Verzeichnis; gekennzeichnet sind `requirement` und `adr`, alle drei nur bei unlesbarem
+  Lifecycle-Verzeichnis. §1 Punkt 3 nannte `slice` mit. (2) Bei abgekoppeltem `HEAD` trägt **nur** `branch`
+  die Kennzeichnung, `commit` ist ableitbar (`SPEC-056` je Feld); §1 Punkt 2 und das Kriterium *Zweig und Stand*
+  nennen *beide*, gemeint ist der Fall ohne mögliche Ableitung. Beides steht in §3, getragen von der
+  Verifikation. (3) Fall 603 und `TestFeldliste_KennzeichnungNenntGenauDieFaelleDerSpezifikation` kamen aus
+  Review-F-1 und stehen nicht in §3 (dort 597–602).
+- **Grenzen:** (1) `make full-smoke` misst im Ziel nur `agent_role`; `branch`/`commit` und die Listen tragen
+  allein die Unit-Tests mit den Fällen 598–601. (2) DoD 3 ist am echten Bestand nicht gegenprüfbar: der Bestand
+  trägt keine Verbrauchs-Zähler (`make span-report` → `Keine Bilanz`), es entsteht keine Rollen-Zeile; getragen
+  allein von `TestAggregiere_KennzeichnungIstKeineRolle`. (3) Die Lesbarkeits-Hälfte von `SPEC-098` (Zeile mit
+  gekennzeichneter Liste bleibt lesbar) ist rot gesehen, aber ohne Fall in `test/mutations/`.
+- **Steering-Loop-Eintrag:** neuer Sensor —
+  `TestFeldliste_KennzeichnungNenntGenauDieFaelleDerSpezifikation` mit Fall 603 färbt rot, sobald die emittierte
+  Feldliste die Felder mit Kennzeichnung nicht abschließend nennt; Fälle 597–602 halten Erfassung und Auswertung
+  der Kennzeichnung ([`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung)).
+- **Beobachtungs-Register (`../observations/`):** Beleg `evidence/slice-agent-role-traegt-nicht-bekannt.md` in
+  `BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen` (Finding-Klassen Review F-1–F-3) und in
+  `BEO-ALL/neuer-waechter-ohne-mutations-fall` (Grenze 3). Beide stehen über der Schwelle mit Ausgang
+  `geplant`; kein Eintrag hebt sich auf 3× ([`ADR-0085`](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md)).
+  Grenzen 1 und 2: benannt, nicht gezählt — kein Eintrag trifft die Klasse.
+- **Folge-Slices:** keine.
+- **Risiken aus §6:** (1) entfallen, (2) entfallen, (3) entfallen — je Begründung in §6.
+- **Drei Paarungen:** die Welle-Closure von `welle-erfassungsschicht-im-ziel` prüft sie erneut; die
+  Slice-Closure fährt sie nach dem `git mv` selbst (Zeile unten).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

@@ -1,0 +1,2 @@
+**Vorgang:** slice-agent-role-traegt-nicht-bekannt
+**Fund:** Der Wechsel von `""` auf die Kennzeichnung *nicht bekannt* ließ daneben stehende Zusagen falsch zurück: die emittierte Feldliste sagte jedem Pflichtfeld „nie `""`" zu, während `SPEC-087` die Fälle abschließend begrenzt (Review F-1); `SPEC-009` nannte das leere `agent_role` weiter eine Aussage (F-2); der Kopf von Mutations-Fall 137 nannte `agent_role` weiter `""` in jeder Zeile (F-3).
