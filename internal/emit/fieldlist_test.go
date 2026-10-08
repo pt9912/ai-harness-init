@@ -183,15 +183,16 @@ func TestFeldliste_GrenzeVerbrauchsZaehler(t *testing.T) {
 }
 
 // TestFeldliste_GrenzeUeberDenBestand misst den DRITTEN Satz (LH-FA-14 §Redaktion,
-// ADR-0022 Festlegung 6 Stueck 3): ueber den Schutz des Bestands ist nichts zugesagt. Die vier
-// Bestandteile sind vier Aussagen, nicht eine — gitignored, nicht verschluesselt, nicht
-// zugriffsbeschraenkt, und Pfadnamen ausdruecklich nicht als unkritisch zugesagt.
+// ADR-0022 Festlegung 6 Stueck 3): ueber den Schutz des Bestands ist wenig zugesagt. Die vier
+// Bestandteile sind vier Aussagen, nicht eine — gitignored, nicht verschluesselt, Dateien nur
+// fuer den Eigentuemer lesbar (der Modus, den TestModeIsOwnerOnly haelt), und Pfadnamen
+// ausdruecklich nicht als unkritisch zugesagt.
 func TestFeldliste_GrenzeUeberDenBestand(t *testing.T) {
 	grenzSatzSteht(t, "keine Zusage über den Bestand",
-		"Über den Schutz des Bestands ist nichts zugesagt",
+		"Über den Schutz des Bestands ist wenig zugesagt",
 		"**gitignored**",
 		"**nicht verschlüsselt**",
-		"**nicht zugriffsbeschränkt**",
+		"**nur für den Eigentümer lesbar**",
 		"**Pfadnamen sind nicht als unkritisch zugesagt**",
 	)
 }

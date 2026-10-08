@@ -146,8 +146,9 @@ const limitCounters = "**Die Verbrauchs-Zähler kommen aus der Mechanik des Agen
 	"Lauf dieses Repos führt sie herbei** — das ist keine Eigenschaft dieses Aufbaus, sondern der\n" +
 	"Mechanik. Ein Bestand ohne Zähler ist deshalb der Normalfall und kein Defekt.\n"
 
-const limitStore = "**Über den Schutz des Bestands ist nichts zugesagt.** Er ist **gitignored**, aber **nicht\n" +
-	"verschlüsselt** und **nicht zugriffsbeschränkt**. Und **Pfadnamen sind nicht als unkritisch\n" +
+const limitStore = "**Über den Schutz des Bestands ist wenig zugesagt.** Er ist **gitignored** und **nicht\n" +
+	"verschlüsselt**. Seine Dateien entstehen **nur für den Eigentümer lesbar** (Modus 0600); das\n" +
+	"Verzeichnis selbst bleibt für andere auflistbar. Und **Pfadnamen sind nicht als unkritisch\n" +
 	"zugesagt** — sie stehen als `path` in der Zeile, und ein Pfad kann selbst die Aussage sein, die\n" +
 	"niemand teilen wollte. Wer den Bestand weitergibt, gibt beides weiter.\n"
 
