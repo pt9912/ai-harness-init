@@ -274,7 +274,7 @@ slice-190 wieder alt. Läuft dieser Slice zuerst, färbt sein eigener Wächter a
 DoD (2) den Nachbarn rot — was funktioniert, aber die Arbeit zweimal macht.
 
 **Ein zweiter Anspruch liegt auf demselben Abschnitt, und er antwortet entgegengesetzt.**
-[slice-111](slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md) — offen seit dem
+[slice-111](../next/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md) — offen seit dem
 2026-08-26 — nimmt sich §6 des Handbuchs ebenfalls vor. Sein DoD (2) *„Der Baum sagt, ob er
 aufzählt oder zusammenfasst"* lässt die Bündelung ausdrücklich zu, mit der Begründung, eine
 Einzel-Aufzählung altere bei jedem Slice; DoD (1) hier zählt auf. **Beide antworten auf denselben
@@ -357,7 +357,7 @@ dasteht.
   Zeile der Feldliste die **erste und einzige** Erwähnung der Erfassung im ganzen Dokument
   ([`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)); ein
   Etikett im Baum ist kein Abschnitt. Wer das für zu wenig hält, hat recht — der Träger dafür ist
-  [slice-111](slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md), nicht ein vierter
+  [slice-111](../next/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md), nicht ein vierter
   DoD-Punkt hier (Modul 5 §Ziel-Form, ≤ 3). Bis er läuft, steht die Fähigkeit **benannt und
   unerklärt** da; das ist die bewusste Grenze dieses Schnitts und keine Auslassung. —
   **Ausgang:** <offen>
@@ -380,7 +380,7 @@ dasteht.
   *was* erfasst wird, wie ein Adopter es ausliest oder abschaltet, und die zwei `make`-Ziele
   dafür**, und jede Aussage über den Bestand außerhalb von §6 des Handbuchs.
   Die Erklärungs-Hälfte ist **kein neu zu schneidender Slice**: sie liegt als
-  [slice-111](slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md) in `open/` und führt
+  [slice-111](../next/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md) in `open/` und führt
   sie in DoD (1) samt dem Nachzug an §5 *Konfiguration* und §9 *Glossar* des Handbuchs. Der
   Zuschnitt hier fügt ihr nichts hinzu und nimmt ihr nichts weg — er benennt nur die Naht (§4).
 - **Ebenfalls nicht in diesem Slice: die Erklärung der drei übrigen zugesagten Fähigkeiten** —
