@@ -49,7 +49,7 @@ Reihenfolge = Zeilenfolge; Begründung in §5. Erster Slice:
 | [slice-span-traegt-die-fassung-seiner-erfassungsregel](done/slice-span-traegt-die-fassung-seiner-erfassungsregel.md) | Der Span trägt die Fassung seiner Erfassungsregel | [`LH-FA-13`](../../../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) |
 | [slice-agent-role-traegt-nicht-bekannt](done/slice-agent-role-traegt-nicht-bekannt.md) | Ein unbekannter Wert trägt die Kennzeichnung *nicht bekannt* | [`LH-FA-15`](../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung), [`LH-FA-13`](../../../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) |
 | [slice-emittierte-feldliste-traegt-verfuegbarkeit-und-aufbewahrung](done/slice-emittierte-feldliste-traegt-verfuegbarkeit-und-aufbewahrung.md) | Die emittierte Feldliste trägt Verfügbarkeit und Aufbewahrung | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren), [`LH-FA-13`](../../../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) |
-| [slice-107](in-progress/slice-107-inhalts-hash-traegt-eine-entscheidung.md) | Der Inhalts-Hash bekommt seinen Ausgang | [`LH-FA-14`](../../../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) |
+| [slice-107](done/slice-107-inhalts-hash-traegt-eine-entscheidung.md) | Der Inhalts-Hash bekommt seinen Ausgang | [`LH-FA-14`](../../../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) |
 
 ## 5. Abhängigkeiten
 
