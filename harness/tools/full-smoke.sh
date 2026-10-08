@@ -1073,10 +1073,7 @@ mv "$spans_doc.orig" "$spans_doc"
 # (5) codepath-missing: ein Inline-Code-Pfad unter einer der roots, dessen Ziel es nicht gibt.
 codepaths_doc="$tmprepo/spec/lastenheft.md"
 cp "$codepaths_doc" "$codepaths_doc.orig"
-psed_i '5a\
-\
-Die Festlegung steht in `docs/zahn-nicht-vorhanden.md` (erfundener Pfad, Zahn).
-' "$codepaths_doc"
+printf '\nDie Festlegung steht in %s (erfundener Pfad, Zahn).\n' "\`docs/zahn-nicht-vorhanden.md\`" >>"$codepaths_doc"
 codepathszahn_rc=0
 codepathszahn_out="$( make -C "$tmprepo" docs-check 2>&1 )" || codepathszahn_rc=$?
 if [ "$codepathszahn_rc" -eq 0 ]; then
