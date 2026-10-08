@@ -142,7 +142,7 @@ Report.
 
 - `kategorie`: **INFO** (Fortschreibung, kein neuer Befund an diesem Diff)
 - `quelle`: [`MR-054`](../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
-- `pfad`: [`docs/plan/planning/open/slice-210-planning-modul-im-emittierten-doc-gate.md:100-101`](../plan/planning/next/slice-210-planning-modul-im-emittierten-doc-gate.md)
+- `pfad`: [`docs/plan/planning/open/slice-210-planning-modul-im-emittierten-doc-gate.md:100-101`](../plan/planning/in-progress/slice-210-planning-modul-im-emittierten-doc-gate.md)
 - `befund`: Der Ausschluss-Punkt dort lautet unverändert *„`waves` ist auch im Dogfood aus (**die
   dokumentierte Abweichung dieses Repos**)"*. Die erste Hälfte ist seit `ba8698fc` falsch, die
   zweite seit `7cfd8283`: [ADR-0046](../plan/adr/0046-welle-datei-entsteht-mit-der-eroeffnung.md)

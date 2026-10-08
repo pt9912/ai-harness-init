@@ -267,7 +267,7 @@ ein drittes Mal abgelesen.
 
   **Keine Erwartungswerte.** **Der Ausgang ist ein Folge-Slice mit Kennung, und er musste neu
   geschnitten werden:** Die naheliegende Adresse nimmt die Sendung nicht an —
-  [slice-210](../next/slice-210-planning-modul-im-emittierten-doc-gate.md) schließt `codepaths` in
+  [slice-210](../in-progress/slice-210-planning-modul-im-emittierten-doc-gate.md) schließt `codepaths` in
   §1 aus und begründet den Ausschluss mit genau dem Trigger, der eingetreten ist. Nach
   Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form: Slice ist ein Folge-Slice, der den
   verwiesenen Punkt selbst ausschließt, keine Adresse. Der Trigger geht darum an

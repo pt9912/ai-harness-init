@@ -90,7 +90,7 @@ vorweggenommenes Ergebnis.
   zwei Gründe.)*
 - **Das Modul `planning` und das Requirement-Muster von `ids`.** Beide sind eigene Kandidaten mit
   eigenem Träger: `planning` hat seinen in
-  [slice-210](../next/slice-210-planning-modul-im-emittierten-doc-gate.md), das `ids`-Muster einen eigenen
+  [slice-210](../in-progress/slice-210-planning-modul-im-emittierten-doc-gate.md), das `ids`-Muster einen eigenen
   Auflösungs-Trigger in
   [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
   Setzung 3, der nicht eingetreten ist. *(Ein Folge-Slice bzw. ein stehender Bestand übernimmt es.)*
@@ -217,7 +217,7 @@ dasteht.
   [`BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger`](../observations/BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger/observation.md).
   — **Ausgang:** <offen>
 - **Nicht in diesem Slice:** die Modul-Liste dieses Repos, das Modul `planning`
-  ([slice-210](../next/slice-210-planning-modul-im-emittierten-doc-gate.md)), das Requirement-Muster von
+  ([slice-210](../in-progress/slice-210-planning-modul-im-emittierten-doc-gate.md)), das Requirement-Muster von
   `ids`, die Positionen innerhalb von `codepaths`, und jeder Migrationspfad für bereits
   gebootstrappte Repos.
 

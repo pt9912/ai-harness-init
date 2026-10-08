@@ -122,7 +122,7 @@ für die Schwester-Fähigkeit `observations`.
   — Erprobung im Dogfood, grün über dem frisch emittierten Bestand, rotes Gegenbeispiel im Ziel —,
   und die **erste** davon ist genau das, was dieser Slice liefert. *Es wäre ein anderer Vorgang.*
   **Eine Folge-Slice-Kennung steht hier nicht:**
-  [slice-210](../next/slice-210-planning-modul-im-emittierten-doc-gate.md) entscheidet über die
+  [slice-210](../in-progress/slice-210-planning-modul-im-emittierten-doc-gate.md) entscheidet über die
   emittierte Modul-Aktivierung und **schließt `waves` in seinem eigenen §1 aus** — er nimmt die
   Sendung nicht an, und eine Adresse, die sie nicht annimmt, ist keine.
 - **Keine Änderung an `modules:` und darum keine an den Gate-Tabellen.** `waves` ist eine
@@ -480,7 +480,7 @@ Backticks).
   einfrierenden Artefakt**, was genau die andere Klasse trifft. Runde-2-INFO-2 ist **nicht** unter
   `ueberholter-offener-plan-ohne-genormten-ausgang` gebucht: Jene Klasse handelt vom **Ausscheiden**
   eines Plans, für das keine Quelle einen Weg nennt;
-  [slice-210](../next/slice-210-planning-modul-im-emittierten-doc-gate.md) scheidet nicht aus, sein
+  [slice-210](../in-progress/slice-210-planning-modul-im-emittierten-doc-gate.md) scheidet nicht aus, sein
   Gegenstand steht — nur eine Begründung daneben ist falsch geworden, und dafür gibt es einen
   Ausgang, den diese Closure geht.
   **Kein Eintrag erreicht mit diesem Slice 3×**; drei standen schon davor darüber. Den Lese-Schritt
@@ -504,7 +504,7 @@ Backticks).
   ist der Preis von [`AGENTS.md`](../../../../AGENTS.md) §3.4 und wird nicht geheilt, sondern hier
   vermerkt. **Nicht** eingelöst sind die drei übrigen — sie sind der Folge-Slice oben. (b) Der
   überholte Ausschluss-Punkt in
-  [slice-210](../next/slice-210-planning-modul-im-emittierten-doc-gate.md) §1 ist nachgezogen; der
+  [slice-210](../in-progress/slice-210-planning-modul-im-emittierten-doc-gate.md) §1 ist nachgezogen; der
   Ausschluss selbst bleibt, seine Begründung nennt jetzt die drei Kriterien von
   [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
   statt einer Abweichung, die es nicht gibt.
