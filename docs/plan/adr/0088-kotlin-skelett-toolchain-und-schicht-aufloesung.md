@@ -35,8 +35,8 @@ Change Request ist nicht nötig. Anders als bei `cpp` gibt es für Kotlin Altern
 (Modul-Schnitt, Lint-Werkzeug, Layout-Menge, Zielplattform). [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) AC *Arch-Achse* verlangt eine
 **arch-invariante** Bau-Gerüstung ([ADR-0008](0008-arch-achse-emittiertes-skelett.md)). Der
 gepinnte a-check (`grep -n 'DefaultArchImage  =' internal/emit/archgate.go` → `v0.23.0`) führt laut
-seinem Changelog ein Kotlin-Backend mit `fixed-root`/`package_base`; bestätigt wird das erst durch
-die Sonde im hexslice-Slice.
+seinem Changelog ein Kotlin-Backend mit `fixed-root`/`package_base`; die Sonde dazu steht unter
+Festlegung 4.
 
 ## Entscheidung
 
@@ -58,13 +58,26 @@ Code-Gate-Fragment wie bei go/cpp. Test über `kotlin("test")`. Lint ist **`dete
 Sonde mit der gepinnten Kotlin-Version nicht grün, ist es **`ktlint`** — der Slice nennt, welcher
 Zweig gilt, und belegt ihn mit dem Sonden-Lauf. Ein dritter Weg braucht eine Folge-ADR.
 
-**4. Layouts und Schicht-Auflösung (E3).** `kotlin` rendert `flat` und `hexslice`; `hexagonal`
-erst bei Bedarf (Folge-Slice, keine neue ADR, solange Festlegung 1 trägt). Pfade
+**4. Layouts und Schicht-Auflösung (E3).** Diese ADR legt für `kotlin` die Layouts `flat` und
+`hexslice` fest; `hexagonal` legt sie nicht fest (Pfade und Auflösung dafür trägt erst eine
+Folge-ADR, Trigger 3). Pfade
 `src/main/kotlin/app/hexagon/{domain,application}/…`, `src/main/kotlin/app/adapters/{driving,driven}/…`,
 Composition Root `src/main/kotlin/app/Main.kt` (Rollen-Namen aus
 [ADR-0060](0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)). a-check-Auflösung
-`resolution: kotlin: {mode: fixed-root, roots: ["src/main/kotlin"], package_base: "app"}`;
+`resolution: kotlin: {mode: fixed-root, roots: ["src/main/kotlin/app"], package_base: "app"}` —
+der Root **endet im `package_base`-Verzeichnis**, weil a-check `package_base.` vom Import abstreift,
+bevor es den Root voranstellt (`resolveImport` in `internal/hexagon/core/rules.go` am Tag `v0.23.0`).
 **Paket == Verzeichnis** ist Skelett-Pflicht, weil die Auflösung über den Pfad geht.
+Gemessen an einer Fixture (`…/app/hexagon/domain/Greeting.kt` importiert
+`app.adapters.driven.Store`; Schicht-Rolle `domain` bzw. `adapter`):
+
+```text
+$ docker run --rm --network none -v "$PWD":/src:ro ghcr.io/pt9912/a-check:v0.23.0 /src
+# roots: ["src/main/kotlin"]      → EXIT=0, 0 Befund(e),
+#   Hinweis: Schicht core: … 0 von 1 Import-Symbolen lösen auf eine Schicht auf
+# roots: ["src/main/kotlin/app"]  → EXIT=1,
+#   …/Greeting.kt:3: core-impurity: Kern importiert app.adapters.driven.Store
+```
 
 **5. Guard.** `blockedByLang("kotlin")` nimmt die Host-Toolchain auf (Gradle, Kotlin-Compiler,
 JDK-Werkzeuge, Lint-Binär); die genaue Liste koppelt der bestehende Test an `gen.SupportedLangs`.
@@ -94,19 +107,21 @@ JDK-Werkzeuge, Lint-Binär); die genaue Liste koppelt der bestehende Test an `ge
 
 | Tooling | Regel | Make-Target |
 |---|---|---|
-| a-check (gepinnt) über dem Kotlin-`hexslice`-Ziel | ein Import aus `app.hexagon.domain` nach `app.adapters` färbt a-check rot mit `core-impurity` (oder `wrong-direction`) — derselbe Zahn wie für go/cpp, am gebootstrappten Ziel | `make full-smoke` (kein Gate) |
-| Code-Gate-Fragment ↔ Dockerfile | jedes Ziel `test`/`lint`/`build` hat seine Stage | `make test` (`TestCodeGateFragment_TargetsMatchStages`) |
+| a-check (gepinnt) über dem Kotlin-`hexslice`-Ziel | ein Import aus `app.hexagon.domain` nach `app.adapters` färbt a-check rot mit `core-impurity` (Kern-Rolle `domain`; bei Rolle `app` heißt die Regel `app-impurity`) oder `wrong-direction` — derselbe Zahn wie für go/cpp, am gebootstrappten Ziel | `make full-smoke` (kein Gate) |
+| Code-Gate-Fragment ↔ Dockerfile | jedes Ziel `test`/`lint`/`build` des Kotlin-Fragments hat seine Stage — Zusage eines eigenen Kotlin-Tests nach dem Muster `TestCppCodeGateFragment_TargetsMatchStages` (`internal/gen/cpp_test.go`); `TestCodeGateFragment_TargetsMatchStages` hängt an go und deckt Kotlin nicht | `make test` (Test entsteht im ersten Kotlin-Slice) |
 
-Rot zu sehen ist der erste Zahn im hexslice-Slice; bis dahin trägt ihn diese Zeile als Zusage,
+Rot zu sehen sind beide Zähne im jeweiligen Kotlin-Slice; bis dahin tragen sie diese Zeilen als Zusage,
 nicht als Beleg (`AGENTS.md` §3.6).
 
 ## Re-Evaluierungs-Trigger
 
-- Die Sonde zeigt, dass a-check `v0.23.0` die Kotlin-Auflösung nicht trägt → Anforderung an
-  a-check, Festlegung 4 neu prüfen.
+- Die Sonde im hexslice-Slice färbt das Gegenbeispiel aus §Fitness Function nicht rot → zuerst
+  die Config gegen a-check prüfen: meldet der Lauf „0 von N Import-Symbolen lösen auf", ist es
+  ein Config-Fehler, keine fehlende Fähigkeit. Erst wenn eine Config, die Importe auflöst, grün
+  bleibt → Anforderung an a-check, Festlegung 4 neu prüfen.
 - Weder `detekt` noch `ktlint` laufen mit der gepinnten Kotlin-Version grün → Festlegung 3.
-- Ein Adopter verlangt `hexagonal`, Multi-Modul oder KMP/Android → E3, E1 (mit CR an [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4))
-  bzw. E4.
+- Ein Adopter verlangt `hexagonal` → Folge-ADR mit Pfaden und Auflösung (E3); Multi-Modul → E1
+  (mit CR an [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)); KMP/Android → E4.
 
 ## Geschichte
 
