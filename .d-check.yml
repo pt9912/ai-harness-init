@@ -3,6 +3,10 @@
 # Targets/roots existieren (sonst Config-Fehler / halluzinierter Gate).
 scan:
   roots: ["."]
+  # **/*.template.md: Ausfuell-Vorlagen tragen Platzhalter-Pfade und -Kennungen, die erst im
+  # ausgefuellten Artefakt aufloesen. Getroffen werden sie heute allein unter .harness/baseline/
+  # (git ls-files '*.template.md'); das Muster nimmt jede kuenftige Vorlage in jedem Baum mit.
+  # .tmp/**: Arbeitsablage der Laeufe, kein Artefakt.
   # .harness/baseline/: committet vendored Baseline (MR-007) — externer,
   # derivativer Inhalt, nicht repo-autoritativ; vom Doc-Gate ausgenommen. Sie
   # trägt kurs-eigene MR-/ADR-Kennungen (Beispiele, nicht die des Repos), die
@@ -426,36 +430,33 @@ codepaths:
   # Genau die geloeschten Dateien, keine breite Liste. MR-009 ist PERMANENT; seine
   # Wachstums-Klausel ist eine Bedingung an diese Liste, kein Aufloesungs-Trigger: sie waechst
   # nur mit weiteren bewusst entfernten Artefakten.
-  # Die ersten fuenf sind die Repo-Kopien der Ausfuell-Templates, deren einzige Quelle heute
-  # die vendored Baseline ist (MR-008).
-  # Der sechste ist der Shell-Helfer der Wellen-Archivierung: die Operation liegt als
-  # Unterkommando des Produkt-Binaers in internal/archive (ADR-0033 Festlegung 1 und 2), zwei
-  # Fassungen nebeneinander gibt es nicht. Die Zeitdokumente in docs/plan/planning/done/ und
-  # das Beobachtungs-Register nennen den Pfad als Inline-Code weiter — dort ist er die Adresse
-  # eines Vorgangs, den es gab.
-  # Der siebte ist die flache Register-Datei selbst (ADR-0034): v6.0.0 ersetzt sie ersatzlos
-  # durch die Verzeichnis-Ablage docs/plan/planning/observations/, keine zweite Fassung bleibt
-  # stehen. Referenz-weit wie die sechs Paare darueber: jede Inline-Code-Nennung dieses Pfads
-  # verstummt, unabhaengig von der Quelldatei. Gemessen (Eintrag entfernt, docs-check ueber der
-  # Kopie) reicht das ueber die zwei im Ursprungs-Slice genannten Klassen (docs/plan/planning/
-  # done/, docs/reviews/) hinaus auf vier Klassen: docs/plan/planning/done/** (Zeitdokumente,
-  # Adresse eines Vorgangs, den es gab) · docs/plan/planning/open/** (slice-151/152/153/162/168/
-  # 171/174/181/184 -- neun Dateien, die alte Vorlagen-Zeile "Beobachtungs-Register
-  # (`../observations.md`) fortgeschrieben", Form-Nachzug ist slice-184s eigener Gegenstand,
-  # nicht dieser Zeile -- slice-184 traegt die Zeile selbst UND ist in dieser Liste, weil sein
-  # eigener Plan sie ebenfalls zitiert) ·
-  # docs/plan/planning/in-progress/slice-177-*.md selbst (misst den Ausgangsstand vor dem eigenen
-  # Umzug, Praeteritum) · docs/user/benutzerhandbuch.md (eine datierte Aenderungshistorie-Zeile,
-  # Chronik von Beruf). Kein Treffer liegt ausserhalb dieser vier Klassen -- namentlich kein
-  # .claude/commands/* oder internal/emit/templates/commands/* mehr, die vor diesem Nachzug hier
-  # mitverdeckt waren.
+  # Jeder Eintrag schaltet jede Inline-Code-Nennung seines Pfads im Pruefbereich stumm,
+  # gleichgueltig in welcher Datei. Der Kommentar direkt ueber ihm nennt darum jeden Baum, in dem
+  # eine solche Nennung steht; internal/ausnahmegrund haelt das gegen den Bestand
+  # (TestRepoKonfiguration_BegruendungNenntJedenBaum). Die Nennungen eines Eintrags listet
+  #   git grep -l -F '`<pfad>' -- '*.md' ':!.harness' ':!**/*.template.md' ':!docs/reviews/**'
   ignore-refs:
+    # Repo-Kopie einer Ausfuell-Vorlage, deren einzige Quelle heute die vendored Baseline ist
+    # (MR-008). Genannt in harness/conventions/ (der Eintrag, der die Kopie entfernt hat).
     - docs/plan/planning/slice.template.md
+    # Repo-Kopie einer Ausfuell-Vorlage (MR-008). Genannt in harness/conventions/.
     - docs/plan/planning/welle.template.md
+    # Repo-Kopie einer Ausfuell-Vorlage (MR-008). Genannt in harness/conventions/.
     - docs/plan/adr/NNNN-titel.template.md
+    # Repo-Kopie einer Ausfuell-Vorlage (MR-008). Genannt in harness/conventions/.
     - docs/plan/carveouts/carveout.template.md
+    # Repo-Kopie einer Ausfuell-Vorlage (MR-008). Genannt in harness/conventions/ und in den
+    # Zeitdokumenten unter docs/plan/planning/done/ (Adresse eines Vorgangs, den es gab).
     - docs/reviews/review-report.template.md
+    # Shell-Helfer der Wellen-Archivierung: die Operation liegt als Unterkommando des
+    # Produkt-Binaers in internal/archive (ADR-0033 Festlegung 1 und 2), zwei Fassungen
+    # nebeneinander gibt es nicht. Genannt in den Zeitdokumenten unter docs/plan/planning/done/
+    # (Adresse eines Vorgangs, den es gab).
     - harness/tools/archive-welle.sh
+    # Die flache Register-Datei (ADR-0034): v6.0.0 ersetzt sie ersatzlos durch die
+    # Verzeichnis-Ablage, keine zweite Fassung bleibt stehen. Genannt in den Zeitdokumenten unter
+    # docs/plan/planning/done/ (Adresse eines Vorgangs, den es gab) und im Beobachtungs-Register
+    # docs/plan/planning/observations/ (eine Beobachtung beschreibt den Wegfall der Datei).
     - docs/plan/planning/observations.md
 # vcs (git-basiert, braucht .git + eine Commit-Range — strikt opt-in, NICHT in
 # modules: oben: ein hermetischer docs-check-Lauf ohne Range liefe damit ins

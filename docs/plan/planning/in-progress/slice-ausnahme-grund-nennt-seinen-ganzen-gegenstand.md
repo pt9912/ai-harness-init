@@ -129,8 +129,17 @@ Aussagen-Berührung steht hier gar nicht.
 |---|---|---|
 | `.d-check.yml` (Begründungen der Ausnahme-Einträge) | update | die Hälfte dieses Repos; zwei der drei Belege liegen hier |
 | [`internal/emit/templates/`](../../../../internal/emit/templates) (Gate-Vorlage des Ziels) | update | die emittierte Hälfte; der dritte Beleg liegt hier |
-| [`internal/emit/`](../../../../internal/emit) (Wächter über der Vorlage) | update | der Wächter aus DoD 2, hermetisch neben der Vorlage |
-| [`test/mutations/`](../../../../test/mutations) | neu | der Fall aus DoD 1, `# verify: test-go` |
+| [`internal/ausnahmegrund/`](../../../../internal/ausnahmegrund) (neu) | neu | die Regel des Wächters aus DoD 2 als ein Paket für beide Ebenen: Ausnahme-Einträge lesen, Gegenstand messen (Glob-Treffer bzw. Inline-Code-Zitate im Prüfbereich), Nennung der Bäume prüfen; dazu der Fall über der `.d-check.yml` dieses Repos |
+| [`cmd/ai-harness-init/`](../../../../cmd/ai-harness-init) (Test) | neu | der Fall über der emittierten Konfiguration: er fährt den realen Bootstrap (netzlos, drei Lauf-Varianten) und misst das Ziel — die Orte unter `.harness/` legt nur `run()` an, ein Test in `internal/emit/` sähe sie nicht |
+| [`test/mutations/`](../../../../test/mutations) | neu | je Ebene ein Fall aus DoD 1, `# verify: test-go` |
+
+**Fortgeschrieben im Implementierungs-Lauf:** Der Wächter sitzt nicht in `internal/emit/`, sondern
+im neuen Paket und in `cmd/ai-harness-init/` (Begründung in der Tabelle). Gemessen vor den
+Begründungen: in der emittierten Konfiguration nennt `scan.ignore` weder `.harness/baseline/` noch
+`.harness/skills/`; in der dieses Repos tragen die sieben Einträge unter `codepaths.ignore-refs`
+keine eigene Begründung, und die gemeinsame nannte für den siebten Klassen, die er heute nicht
+mehr trifft, und `**/*.template.md`/`.tmp/**` unter `scan.ignore` hatten keinen Satz. Alle übrigen
+Ausnahme-Einträge nennen ihren Gegenstand bereits — die meisten über ihren eigenen Wert.
 
 **Optional: Ansatz als Liste, wenn eine Zeile pro Datei nicht trägt** — z. B.
 eine Schnittstellenänderung über viele gleichrangige Dateien mit derselben
