@@ -9,15 +9,15 @@
 ## 1. Welle-Ziel
 
 Die Startkonfiguration des Doc-Gates, die das Werkzeug ins Ziel schreibt
-([`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7)), trägt für jedes offene Modul
+([`LH-FA-03`](../../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7)), trägt für jedes offene Modul
 eine Entscheidung nach den drei Kriterien aus
-[`MR-054`](../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
+[`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
 (`planning`, `codepaths`, `targets`, `reviews`), und jede Ausnahme darin nennt ihren ganzen
 Gegenstand — gemeinsam belegt an einem frisch gebootstrappten Ziel.
 
 ## 2. Trigger (Welle startet)
 
-- [`MR-054`](../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
+- [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
   steht im Adaptions-Block (die drei Kriterien, an denen jede Modul-Entscheidung misst) —
   eingetreten.
 
@@ -33,10 +33,10 @@ Gegenstand — gemeinsam belegt an einem frisch gebootstrappten Ziel.
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| [slice-emittierte-gate-vorlage-traegt-targets-und-reviews](done/slice-emittierte-gate-vorlage-traegt-targets-und-reviews.md) | Die emittierte Vorlage trägt `targets` und `reviews` | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
-| [slice-210](done/slice-210-planning-modul-im-emittierten-doc-gate.md) | Das Modul `planning` im emittierten Doc-Gate wird entschieden | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
-| [slice-211](done/slice-211-codepaths-im-emittierten-doc-gate.md) | Das Modul `codepaths` im emittierten Doc-Gate wird entschieden | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
-| [slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand](done/slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand.md) | Die Begründung neben einer Ausnahme nennt ihren ganzen Gegenstand | [`LH-FA-03`](../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
+| [slice-emittierte-gate-vorlage-traegt-targets-und-reviews](slice-emittierte-gate-vorlage-traegt-targets-und-reviews.md) | Die emittierte Vorlage trägt `targets` und `reviews` | [`LH-FA-03`](../../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
+| [slice-210](slice-210-planning-modul-im-emittierten-doc-gate.md) | Das Modul `planning` im emittierten Doc-Gate wird entschieden | [`LH-FA-03`](../../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
+| [slice-211](slice-211-codepaths-im-emittierten-doc-gate.md) | Das Modul `codepaths` im emittierten Doc-Gate wird entschieden | [`LH-FA-03`](../../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
+| [slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand](slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand.md) | Die Begründung neben einer Ausnahme nennt ihren ganzen Gegenstand | [`LH-FA-03`](../../../../spec/lastenheft.md#lh-fa-03--doc-gate-baseline-emittieren-f6-f7) |
 
 ## 5. Abhängigkeiten
 
