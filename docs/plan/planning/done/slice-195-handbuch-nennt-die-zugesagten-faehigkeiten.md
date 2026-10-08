@@ -77,7 +77,7 @@ zum erneuten Aufsetzen, ohne Namen und ohne Aufgaben-Abschnitt, wie ihn `add-lan
 
 **Warum das eine Fähigkeits-Frage ist und keine Baum-Frage.** Ein vollständiger Baum zeigt die
 Pfade — das liefert
-[slice-191](../next/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md) und hält es mit einem
+[slice-191](../in-progress/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md) und hält es mit einem
 Wächter. Ein Pfad ist aber keine Beschreibung: Wer `.harness/skills/reviewer.md` im Baum liest,
 weiß nicht, dass sein Repo damit eine Review-Rolle mit fixierter Urteilsgrundlage bekommt, und wer
 `.claude/commands/plan-welle.md` sieht, weiß nicht, dass er es als Slash-Command aufruft. Die zwei
@@ -135,7 +135,7 @@ Aussagen-Berührung steht hier gar nicht.
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) §4 *Aufgaben* | update | DoD (1) — die Workflow-Commands sind Bedienwissen; §4 führt bereits einen Abschnitt je Aufgabe (`add-lang`, `--arch`) |
-| [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) §6 *Was wird angelegt* | update, **soweit die Fähigkeits-Aussage dort hingehört** | DoD (2) und (3) beschreiben, was der Adopter bekommt; **welcher Abschnitt** sie trägt, entscheidet der Lauf am Text — die Pfad-Aufzählung selbst gehört [slice-191](../next/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md) |
+| [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) §6 *Was wird angelegt* | update, **soweit die Fähigkeits-Aussage dort hingehört** | DoD (2) und (3) beschreiben, was der Adopter bekommt; **welcher Abschnitt** sie trägt, entscheidet der Lauf am Text — die Pfad-Aufzählung selbst gehört [slice-191](../in-progress/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md) |
 | [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) §9 *Glossar* | update, **soweit betroffen** | „Slash-Command", „Skill" und „Pointer-Abschnitt" sind Begriffe, die der Rumpf sonst unerklärt einführt |
 | `internal/emit/`, `spec/`, `docs/plan/adr/` | **unverändert** | es wächst keine Anforderung, fällt keine Entscheidung und ändert sich kein emittiertes Byte — die drei Fähigkeiten liegen (§1) |
 | *am Text entschieden* | — | DoD (1) steht in §4 als eigener Aufgaben-Abschnitt mit Tabelle (ein Absatz je Command genügt, kein durchgespieltes Beispiel — die Rückführung aus §4 greift nicht); DoD (2) und (3) stehen in §6 als ein `###`-Abschnitt nach Phase 2, der Baum bleibt unberührt; §9 bekommt *Slash-Command* und *Skill* — „Pointer-Abschnitt" kommt im Rumpf nicht vor und bekommt keine Zeile. Jede Aussage ist an einem real aufgesetzten Ziel (Host-Binär, doc-only) gegen `.claude/commands/`, `.harness/skills/` und `README.md` gelesen |
@@ -149,7 +149,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 und keine der drei Fähigkeiten wartet auf eine Entscheidung.
 
 **Zwei weitere offene Pläne stehen auf derselben Datei; die Naht ist eine Form-Grenze, keine
-Reihenfolge.** [slice-191](../next/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md) schreibt
+Reihenfolge.** [slice-191](../in-progress/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md) schreibt
 den **Pfad-Baum** in §6 und hält ihn mit einem Wächter;
 [slice-111](../next/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md) beschreibt die
 **Erfassungsschicht** als Fähigkeit und zieht §5 und §9 dazu nach. Dieser Slice beschreibt drei
@@ -216,7 +216,7 @@ dasteht.
 ([`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)) liegt bei
 [slice-111](../next/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md), die **Pfad-Aufzählung**
 des Baums bei
-[slice-191](../next/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md). Beide sind bereits
+[slice-191](../in-progress/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md). Beide sind bereits
 geschnitten; dieser Slice fügt ihnen nichts hinzu und nimmt ihnen nichts weg.
 
 **Nicht in diesem Slice — zwei Soll/Ist-Deltas, und beide sind der Normalfall.** Sie sind vom
@@ -374,7 +374,7 @@ Setzung 2). Die sechs Einträge des Kommandos berühren diesen Slice; weitere Tr
 - [`slice-plan-umfang-waechst-ueber-umsetzung-hinaus`](../observations/BEO-ALL/slice-plan-umfang-waechst-ueber-umsetzung-hinaus/observation.md)
   — berührt durch die Anlage eines weiteren Plans. **Nicht getroffen:** der Umfang ist geteilt
   statt gewachsen — die Fähigkeits-Hälfte steht hier, die Pfad-Hälfte bleibt in
-  [slice-191](../next/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md), und die
+  [slice-191](../in-progress/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md), und die
   Beweisführung ist ein Kommando-Block statt einer Herleitung.
 - [`benannte-luecke-ohne-ausgang`](../observations/BEO-ALL/benannte-luecke-ohne-ausgang/observation.md)
   — berührt, weil §2 eine Grenze benennt und §6 zwei. **Nicht getroffen:** der Eintrag misst
