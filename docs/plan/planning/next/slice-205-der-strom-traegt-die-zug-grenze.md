@@ -190,10 +190,10 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow ([`AGENTS.md`](../../../../AGENTS.md) §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register ([`../observations/`](../observations/)) fortgeschrieben — **kein
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register ([`../observations/`](../observations/)) fortgeschrieben — **kein
       Zähler wird gesetzt**, er folgt aus den Dateien.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die Welle-Closure.
 
 ## 3. Plan (vor Code)
@@ -262,7 +262,7 @@ dasteht.
   es je Zug, übersieht ein Beobachter, der es glaubt, genau den Fall, für den er gebaut wurde:
   den Lauf, der pausiert und weitergeht. Der Referenz-Wortlaut trägt **beide** Lesarten (§1), also
   entscheidet nur der Lauf. Liefer-Punkt 2 schreibt das Ergebnis in die Spec, damit es nicht nur
-  im Kopf des schreibenden Laufs steht. — **Ausgang:** <offen>
+  im Kopf des schreibenden Laufs steht. — **Ausgang:** *entfallen* — das Ereignis wird nicht verdrahtet, also auch nicht als „Lauf beendet" gelesen (§7).
 - **Für `.claude/settings.json` benennt keine Quelle eine schreibende Rolle.**
   [`AGENTS.md`](../../../../AGENTS.md) §3.8 deckt nur Hard Rules und Adaptions-Block;
   [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) nimmt
@@ -273,20 +273,26 @@ dasteht.
   Register-Eintrag `anweisungssatz-eigentum-ohne-quelle` (5×, `geplant`) ist auf Anweisungssätze
   zugeschnitten, und ob dies dieselbe Beobachtung ist oder eine eigene, ist ein **Urteil** und
   fällt bei der Closure — nicht hier, und nicht durch stille Einordnung.
-  — **Ausgang:** <offen>
+  — **Ausgang:** *entfallen* — `.claude/settings.json` wird von diesem Slice nicht geschrieben; die Rollen-Frage hat hier keinen Gegenstand mehr (§7).
 - **Die zwei Ebenen können auseinanderlaufen.** Die Ereignis-Menge steht in zwei Dateien, und
   kein Sensor hält sie gegeneinander. Liefer-Punkt 1 verlangt beide; ob ein Wächter das dauerhaft
-  hält, entscheidet dieser Slice nicht. — **Ausgang:** <offen>
+  hält, entscheidet dieser Slice nicht. — **Ausgang:** *entfallen* — keine der zwei Dateien wird angefasst; ihre Erfassungs-Menge bleibt dieselbe (§7).
 - **Ein blockierender Hook an diesem Ereignis hält den Subagenten an.** Die Referenz führt
   `SubagentStop` als blockierfähig (*„Verhindert, dass der Subagent stoppt"*). `span-emit` ist ein
   schreibender Hook und darf hier nichts blockieren; die Klemme aus
   [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 6 muss auch auf diesem
-  Kanal greifen. — **Ausgang:** <offen>
+  Kanal greifen. — **Ausgang:** *entfallen* — an `SubagentStop` hängt kein Hook (§7).
 
 ## 7. Closure-Notiz
 
-<!-- Wird bei der Closure gefüllt — Planner, nicht der Lauf, der die Arbeit tat
-(AGENTS.md §3.10). -->
+**Gegenstand:** entfallen: Auftraggeber-Entscheidung vom 2026-10-08 — das Ende eines Laufs wird nicht erfasst; das Kriterium *Erfassungs-Umfang* von [`LH-FA-14`](../../../../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) schließt es aus und bleibt unverändert, ein Change Request entsteht nicht.
+
+Stillgelegt ohne Lieferung (Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer übernimmt), der Ablehnungs-Zweig aus §4. Die Liefer-Punkte der DoD bleiben leer.
+
+- **Risiko-Ausgänge (§6):** alle vier *entfallen*, je mit Grund an ihrer Zeile.
+- **Wellen-Zugehörigkeit:** der Slice verlässt §4 von `welle-erfassungsschicht-im-ziel`; die Umplanung steht im Drift-Log der Roadmap.
+- **Lerneintrag (gezählt, nicht verkörpert):** Beobachtungs-Register `BEO-ALL/geplanter-slice-wird-nie-gearbeitet` — Beleg `slice-205-der-strom-traegt-die-zug-grenze`; geschnitten unter einem offenen Rang-1-Konflikt, den der Auftraggeber gegen den Slice entschied. Die Regel steht bereits (`.claude/commands/plan-welle.md` §Slices bereitstellen); eine neue entsteht nicht.
+- **Paarungen:** von der Welle-Closure `welle-erfassungsschicht-im-ziel` geprüft.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

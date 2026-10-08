@@ -33,7 +33,7 @@ und Ende-Ereignis tragen je einen entschiedenen Ausgang
 
 ## 3. Closure-Trigger (Welle schließt)
 
-- Alle fünf Slices aus §4 liegen in `done/` (geliefert oder mit `Gegenstand:` stillgelegt).
+- Alle vier Slices aus §4 liegen in `done/` (geliefert oder mit `Gegenstand:` stillgelegt).
 - `make gates` **und** `make full-smoke` grün auf **demselben** Commit — das *Mehr*: die DoDs belegen je
   ihren Ausschnitt, erst der gemeinsame E2E-Lauf belegt das Zusammenspiel von Kennzeichnung, Fassung
   und Feldliste im gebootstrappten Ziel.
@@ -50,7 +50,6 @@ Reihenfolge = Zeilenfolge; Begründung in §5. Erster Slice:
 | [slice-agent-role-traegt-nicht-bekannt](done/slice-agent-role-traegt-nicht-bekannt.md) | Ein unbekannter Wert trägt die Kennzeichnung *nicht bekannt* | [`LH-FA-15`](../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung), [`LH-FA-13`](../../../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) |
 | [slice-emittierte-feldliste-traegt-verfuegbarkeit-und-aufbewahrung](done/slice-emittierte-feldliste-traegt-verfuegbarkeit-und-aufbewahrung.md) | Die emittierte Feldliste trägt Verfügbarkeit und Aufbewahrung | [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren), [`LH-FA-13`](../../../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) |
 | [slice-107](in-progress/slice-107-inhalts-hash-traegt-eine-entscheidung.md) | Der Inhalts-Hash bekommt seinen Ausgang | [`LH-FA-14`](../../../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) |
-| [slice-205](next/slice-205-der-strom-traegt-die-zug-grenze.md) | `SubagentStop` — verdrahtet oder mit Grund entfallen | [`LH-FA-14`](../../../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang), [`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) |
 
 ## 5. Abhängigkeiten
 
@@ -59,11 +58,10 @@ Reihenfolge = Zeilenfolge; Begründung in §5. Erster Slice:
   zuerst trägt er seine Fassungs-Angabe, statt nachgetragen zu werden.
 - **Kennzeichnung vor Feldliste:** Die Feldliste liest die Spec-Zeilen `SPEC-043`/`SPEC-056`/`SPEC-087`
   in ihrer neuen Fassung; davor schriebe sie den alten Wortlaut ab.
-- **`slice-205` zuletzt und bedingt:** Das Kriterium *Erfassungs-Umfang* von
+- **Das Ende-Ereignis trägt seinen Ausgang außerhalb von §4:** Das Kriterium *Erfassungs-Umfang* von
   [`LH-FA-14`](../../../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) schließt das Ende
-  eines Laufs aus; verdrahtet wird erst nach einem Change Request des Auftraggebers
-  ([`MR-015`](../../../harness/conventions.md#mr-015)). Lehnt er ab, geht der Slice mit
-  `Gegenstand: entfallen` nach `done/`.
+  eines Laufs aus, und der Auftraggeber hat den Change Request dazu abgelehnt; `slice-205` ist mit
+  `Gegenstand: entfallen` stillgelegt ([slice-205](next/slice-205-der-strom-traegt-die-zug-grenze.md) §7).
 - Blockiert: keine Welle. Wird blockiert von: keiner Welle.
 
 ## 6. Out-of-Scope für diese Welle
