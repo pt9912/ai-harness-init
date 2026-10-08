@@ -6,6 +6,7 @@
 # ein Verzeichnis namens `*.md` hebt den Zaehler dann ueber die Schwelle (ADR-0069
 # Folgepflicht 2: gezaehlt werden Dateien).
 #
-# Rot wird allein der genannte Fall in test/register-ausgang.bats.
+# Rot wird allein der genannte Fall in test/register-ausgang.bats. Anker in DOPPELTEN
+# Anfuehrungszeichen (SC2016, s. test/mutations/117).
 set -euo pipefail
-sed -i 's/\[ -f "\$f" \] && belege/[ -e "$f" ] \&\& belege/' harness/tools/register-ausgang.sh
+sed -i "s/\[ -f \"\\\$f\" \] && belege/[ -e \"\$f\" ] \\&\\& belege/" harness/tools/register-ausgang.sh
