@@ -367,7 +367,7 @@ Das ist das Übergabe-Artefakt *Verifier → Planner* aus
   [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md)
   → [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md),
   [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
-  → [slice-171](../open/slice-171-adr-0031-acceptance-trigger.md).
+  → [slice-171](../done/slice-171-adr-0031-acceptance-trigger.md).
   [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) trägt
   ihren Acceptance-Trigger **in der Datei** (§Der Acceptance-Trigger: eine
   Reviewer-Runde gegen drei benannte ADRs, deren Report in `docs/reviews/`

@@ -240,7 +240,7 @@ das Original ist die Slice-Datei. Jeder genannte Folge-Slice muss als Datei im
 Planning-Lifecycle existieren; genannt ohne angelegt ist dieselbe Klasse wie
 ein halluziniertes Gate.
 
-- [slice-171](../open/slice-171-adr-0031-acceptance-trigger.md) — Annahme-Träger
+- [slice-171](../done/slice-171-adr-0031-acceptance-trigger.md) — Annahme-Träger
   für [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md).
   Geschnitten aus der ausdrücklichen *Offenen Übergabe an den Planner* in
   [slice-163](slice-163-regierende-fassung-des-sprungs.md) §7 und aus dem
@@ -313,7 +313,7 @@ Die fünf Closure-Kriterien aus §3 der Welle-Datei, jedes einzeln gefahren:
   aus [slice-163](slice-163-regierende-fassung-des-sprungs.md), dessen §7 das
   Schneiden ausdrücklich dem Planner übergibt. Der Audit hat sie aufgenommen und
   den Träger geschnitten:
-  [slice-171](../open/slice-171-adr-0031-acceptance-trigger.md). *Ein Trigger
+  [slice-171](../done/slice-171-adr-0031-acceptance-trigger.md). *Ein Trigger
   ohne Wächter ist eine Absichtserklärung mit Verfallsdatum.*
   Ein zweiter Befund derselben ADR ist an `slice-171` DoD (2) weitergegeben:
   ihr vierter Re-Evaluierungs-Trigger nennt als beobachtbaren Anlass die

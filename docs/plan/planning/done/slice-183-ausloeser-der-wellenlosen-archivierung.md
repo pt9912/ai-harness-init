@@ -168,7 +168,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       *„Wellen, die vor der Einführung schlossen"*; ob sie den **wellenlosen** Bestand trägt, sagt
       sie nicht — genau diese Lücke ist zu schließen. Die Entscheidung nennt ihren `Status`; bei
       `Proposed` steht der Acceptance-Trigger daneben (Präzedenz
-      [slice-171](../open/slice-171-adr-0031-acceptance-trigger.md)).
+      [slice-171](../done/slice-171-adr-0031-acceptance-trigger.md)).
 - [x] **Das Verhältnis zu [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md)
       ist ausgesprochen:** kein `Supersedes` — deren Festlegung 1 (Träger = Produkt-Binär) bleibt
       unberührt, und **keiner** ihrer fünf Re-Evaluierungs-Trigger ist gefeuert. Die neue
@@ -323,7 +323,7 @@ dasteht.
   **Lese-Schritt**, der in diesem Repo der Welle-Closure gehört (§7).
 - **Die neue ADR steht auf `Proposed` und bindet keinen Durchgang.** Zwei Slice-Kennungen in
   `open/` tragen diese Restpflicht für ältere Entscheidungen
-  ([slice-171](../open/slice-171-adr-0031-acceptance-trigger.md),
+  ([slice-171](../done/slice-171-adr-0031-acceptance-trigger.md),
   [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md));
   [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) hat ihren Übergang
   inzwischen vollzogen und ist seit dem 2026-09-10 `Accepted`. Der Acceptance-Trigger gehört darum
@@ -335,7 +335,7 @@ dasteht.
   0 MEDIUM) — eine **erneute** Runde derselben prüfenden Rolle, wie
   [`ADR-0040`](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 sie
   nach einem blockierenden Befund verlangt. Die Restpflicht, die
-  [slice-171](../open/slice-171-adr-0031-acceptance-trigger.md) und
+  [slice-171](../done/slice-171-adr-0031-acceptance-trigger.md) und
   [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md) für ältere Entscheidungen tragen,
   hat hier keinen Gegenstand.
 - **Der Beleg für die eigene Rückführung steht aus.** Der Lifecycle-Move dieses Slice nach

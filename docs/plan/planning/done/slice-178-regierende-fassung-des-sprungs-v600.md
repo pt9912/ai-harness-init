@@ -72,7 +72,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       abgeschriebenen. Sie zitiert das Ergebnis beider Mess-Stufen aus
       [slice-176](../done/slice-176-inventur-vor-dem-schnitt-v600.md) §9 als Zeiger, statt es zu
       wiederholen. `Status` steht in ihr; bei `Proposed` steht der Acceptance-Trigger daneben
-      (Präzedenz [slice-171](../open/slice-171-adr-0031-acceptance-trigger.md)).
+      (Präzedenz [slice-171](../done/slice-171-adr-0031-acceptance-trigger.md)).
 - [x] **Die Abgrenzung ist ausgesprochen:** kein `Supersedes` auf
       [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) und keine
       allgemeine Regel *„es regiert stets die Ziel-Fassung"* — die bleibt verworfen
@@ -155,7 +155,7 @@ dasteht.
   (`grep -c 'Eine Festlegung' docs/plan/adr/0036-ziel-fassung-regiert-den-sprung-v600.md` → **1**).
 - **Die ADR steht auf `Proposed` und bindet den Durchgang nicht.** Zwei Slice-Kennungen in `open/`
   tragen heute genau diese Restpflicht für ältere ADRs
-  ([slice-171](../open/slice-171-adr-0031-acceptance-trigger.md),
+  ([slice-171](../done/slice-171-adr-0031-acceptance-trigger.md),
   [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md)); eine dritte wäre ein Muster.
   Der Acceptance-Trigger gehört darum in die ADR selbst. — **Ausgang: weiter offen**, ins
   Register als `BEO-041` (1×, Beleg `slice-178`). Die Mitigation ist
@@ -212,7 +212,7 @@ Backticks).
   (*„… und die haben ein Delta"* trägt für **eine** der vier Zieldateien, nicht für vier); ihre
   Festlegung 1 stützt sich auf denselben einen Delegaten und bleibt unberührt. Jene Datei steht
   auf `Proposed`, ihre Konsistenz-Prüfung ist ein eigener Vorgang mit eigenem Träger
-  ([slice-171](../open/slice-171-adr-0031-acceptance-trigger.md)) — dieser Lauf hat sie deshalb
+  ([slice-171](../done/slice-171-adr-0031-acceptance-trigger.md)) — dieser Lauf hat sie deshalb
   **nicht** angefasst.
 - **Risiken aus §6:** drei, je genau ein Ausgang — *entfallen* · *entfallen* · *weiter offen*
   (`BEO-041`); siehe §6.

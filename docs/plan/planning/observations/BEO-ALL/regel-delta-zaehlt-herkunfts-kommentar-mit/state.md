@@ -12,7 +12,7 @@ führt dieselbe Mehrzahl an drei Stellen, davon in §Entscheidung als einen der 
 Festlegung 1 — nicht nur in ihrem §Kontext. Das Ergebnis von Festlegung 1 bleibt unberührt: der
 eine Delegat mit echtem Delta trägt sie unabhängig. Die Konsistenz-Prüfung jener Datei ist
 ein eigener Vorgang
-([slice-171](../../../../../../docs/plan/planning/open/slice-171-adr-0031-acceptance-trigger.md)).
+([slice-171](../../../../../../docs/plan/planning/done/slice-171-adr-0031-acceptance-trigger.md)).
 **Kein Sensor:** kein Modul aus `modules:` der
 [`.d-check.yml`](../../../../../../.d-check.yml) vergleicht zwei Baseline-Bäume, und
 `.harness/baseline/**` liegt dort in `scan.ignore`.

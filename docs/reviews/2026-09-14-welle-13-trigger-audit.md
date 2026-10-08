@@ -299,7 +299,7 @@ Adresse, an der die Reviewer-Frage fällt, und dieser Lauf hat sie ausgewertet.
   [ADR-0035](../plan/adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md) keinen
   Acceptance-Trigger **führt** und die Suche nach einem Träger-Slice leer ausgeht — die Klasse, die
   der `welle-14`-Audit für [ADR-0031](../plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
-  mit [slice-171](../plan/planning/open/slice-171-adr-0031-acceptance-trigger.md) geschlossen hat.
+  mit [slice-171](../plan/planning/done/slice-171-adr-0031-acceptance-trigger.md) geschlossen hat.
 - **Die zwei Carveouts** — bestätigt der Planner aus dem Bestand; ich habe sie nur auf den
   Widerspruch in §1 gelesen.
 
