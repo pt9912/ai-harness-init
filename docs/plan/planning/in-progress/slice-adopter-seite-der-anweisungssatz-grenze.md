@@ -103,8 +103,8 @@ Ausnahme zusätzlich ein: nach
 Setzung 2):
 
 ```sh
-git ls-files internal/emit/templates/ | wc -l                                    # 25 — der ganze Satz, den dieses Repo ins Ziel schreibt
-git grep -c 'writeSkipIfPresent' -- internal/emit/commands.go                    #  1 — die Commands sind skip-if-present
+git ls-files internal/emit/templates/ | wc -l                                    # 39 — der ganze Satz, den dieses Repo ins Ziel schreibt
+git grep -c 'SkipIfPresent' -- internal/emit/commands.go                         #  3 — die Commands sind skip-if-present (Klassen-Feld)
 git grep -l 'Dieser Command führt die' -- internal/emit/templates/commands/ | wc -l  # 3 — die drei Commands nennen ihre ausführende Rolle
 ls internal/emit/templates/docs/plan/adr/                                        # Exit 2 — dieses Repo emittiert keine ADR
 ```
@@ -192,7 +192,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 **Zwei slice-eigene Punkte.** Kein Test-Eintrag: der Prüfgegenstand ist eine Norm-Aussage ohne
 ausführbaren Pfad (§3).
 
-- [ ] **1 — Die Adopter-Seite ist entschieden und trägt ihren Ausgang.** Eine Festlegung
+- [x] **1 — Die Adopter-Seite ist entschieden und trägt ihren Ausgang.** Eine Festlegung
       beantwortet die Frage aus
       [ADR-0051](../../adr/0051-anweisungssatz-eigentum-traegt-ueber-die-emissionsgrenze.md)
       Festlegung 2 (a), und die Index-Zeile nach
@@ -203,7 +203,7 @@ ausführbaren Pfad (§3).
       Festlegung 1 gehört; *„keine Aussage"* — sie nennt den Grund und den Ort, an dem ein Adopter
       die Regel stattdessen führt. **Ein Ausgang, der weder das eine noch das andere nennt, erfüllt
       ihn nicht** — der Gegenstand ist die Antwort, nicht ihre Richtung.
-- [ ] **2 — Die Quelle ist auf die Entscheidung hin fortgeschrieben.**
+- [x] **2 — Die Quelle ist auf die Entscheidung hin fortgeschrieben.**
       [ADR-0051](../../adr/0051-anweisungssatz-eigentum-traegt-ueber-die-emissionsgrenze.md)
       nimmt die Frage in Festlegung 2 (a) und in §Was diese Entscheidung nicht tut ausdrücklich
       aus; **jeder ihrer zwei Re-Evaluierungs-Zweige ist ein gültiger Ausgang:** trägt sie
@@ -212,20 +212,18 @@ ausführbaren Pfad (§3).
       ([`AGENTS.md`](../../../../AGENTS.md) §3.4); trägt sie `Proposed`, wird ihre §Geschichte um
       die Zeile *„Überarbeitet, weiter `Proposed`"* fortgeschrieben und Festlegung 2 (a) trägt den
       neuen Zustand. Beide Ausgänge erfüllen den Punkt, ein dritter nicht.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow ([`AGENTS.md`](../../../../AGENTS.md) §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: Liefer-Punkt (1) **ist** dieses Item — die Festlegung und ihr Index-Eintrag
+- [x] Doku-Update: Liefer-Punkt (1) **ist** dieses Item — die Festlegung und ihr Index-Eintrag
       sind der öffentliche Vertrag.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die
       Datei nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — **hier nicht**: Dieses
-      Repo fährt Wellen-Betrieb (`ls docs/plan/planning/welle-*.md | wc -l`), also prüft sie die
-      Closure von welle-adopter-weg-im-ziel.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [ ] Die drei Paarungen prüft die Closure von welle-adopter-weg-im-ziel; für diesen Slice nach dem `git mv` geprüft (§7).
 
 ## 3. Plan (vor Code)
 
@@ -332,29 +330,30 @@ dasteht.
   und [ADR-0029](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) offen lässt —
   die Register-Klasse
   [`BEO-ALL/zusammenfassung-staerker-als-ihre-quelle`](../observations/BEO-ALL/zusammenfassung-staerker-als-ihre-quelle/observation.md),
-  **8×** (`ls docs/plan/planning/observations/BEO-ALL/zusammenfassung-staerker-als-ihre-quelle/evidence/*.md | wc -l`,
+  **9×** (`ls docs/plan/planning/observations/BEO-ALL/zusammenfassung-staerker-als-ihre-quelle/evidence/*.md | wc -l`,
   kein Erwartungswert). **Gegenmittel im Plan:** §1 nimmt die Typkarten namentlich aus, und
   Liefer-Punkt (1) verlangt, dass die Festlegung ihren Geltungsbereich nennt.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang:** **entfallen** — [ADR-0086](../../adr/0086-erzeugtes-repo-bekommt-keine-eigentums-aussage-ueber-seinen-anweisungssatz.md) Festlegung 3 nennt den Geltungsbereich (Commands und Reviewer-Skills) und nimmt `.claude/agents/*.md` aus.
 - **(2) Die Antwort bleibt für ihre Verkörperung ohne Adresse.** Fällt sie *„Aussage"* und nennt
   den Träger-Ort nicht **mitsamt** der Rolle, beantwortet der nächste Lauf die Frage wieder
   faktisch — die Register-Klasse
   [`BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`](../observations/BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet/observation.md)
-  steht bei **1×** (`ls docs/plan/planning/observations/BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet/evidence/*.md | wc -l`,
-  kein Erwartungswert) und wüchse um einen Beleg. **Gegenmittel im Plan:** Liefer-Punkt (1) verlangt
+  steht bei **12×** (`ls docs/plan/planning/observations/BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet/evidence/*.md | wc -l`,
+  kein Erwartungswert; Stand `geplant` auf [ADR-0062](../../adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md), `Proposed`) und wüchse um einen Beleg. **Gegenmittel im Plan:** Liefer-Punkt (1) verlangt
   bei *„Aussage"* Träger **und** Rolle; §1 nennt die Ausführung als eigenen Vorgang der Rolle, der
   die Datei gehört.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang:** **entfallen** — [ADR-0086](../../adr/0086-erzeugtes-repo-bekommt-keine-eigentums-aussage-ueber-seinen-anweisungssatz.md) fällt *„keine Aussage"* und nennt Grund und Ort (Festlegungen 1 und 2); der Fall *Aussage ohne Träger und Rolle* hat keinen Gegenstand, und das Register bekommt aus diesem Slice keinen Beleg.
 - **(3) Der Quelle wird beim Ausführen die Grundlage entzogen.** Läuft die Runde erst nach einem
   weiteren Baseline-Sprung oder nach einer Überarbeitung, die Festlegung 2 (a) von
   [ADR-0051](../../adr/0051-anweisungssatz-eigentum-traegt-ueber-die-emissionsgrenze.md) bewegt, so
   misst die Antwort gegen einen Stand, den der Baum nicht mehr führt — die Register-Klasse
   [`BEO-ALL/folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht`](../observations/BEO-ALL/folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht/observation.md),
-  **6×** (`ls docs/plan/planning/observations/BEO-ALL/folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht/evidence/*.md | wc -l`,
-  kein Erwartungswert). **Gegenmittel im Plan:** Der Start-Trigger aus §4 bindet den Lauf an den
+  **7×** (`ls docs/plan/planning/observations/BEO-ALL/folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht/evidence/*.md | wc -l`,
+  kein Erwartungswert; Stand `gestrichen`). **Gegenmittel im Plan:** Der Start-Trigger aus §4 bindet den Lauf an den
   Abschluss des auslösenden Slice, und §2 Liefer-Punkt (2) schreibt die Quelle im **selben** Vorgang
-  fort — der Bezug altert damit nicht über den Slice hinaus. — **Ausgang:** <eingetreten /
-  entfallen / weiter offen — bei Closure zu setzen>
+  fort — der Bezug altert damit nicht über den Slice hinaus. — **Ausgang:** **entfallen** — ADR-0051
+  hat sich unter dem Lauf nicht bewegt (`git log --oneline 4c456e2b..8c14fcee -- docs/plan/adr/0051-*.md | wc -l` → 0);
+  die Teil-Ablösung ist der Ausgang dieses Slice.
 
 ## 7. Closure-Notiz
 
@@ -366,18 +365,35 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <der Gegenstand berührt
-  `BEO-ALL/anweisungssatz-eigentum-ohne-quelle` — dessen `state.md` führt die **emittierte Ebene**
-  nicht als offenen Teil; ob die Antwort einen Beleg wert ist, entscheidet diese Closure, und
-  angelegt wird hier, gezählt wird nicht>
-- **Folge-Slices:** <fällt die Antwort *„Aussage"*, nennt Liefer-Punkt (1) Träger und Rolle; sein
-  Ausführungs-Vorgang wird hier mit Kennung geführt — oder ausdrücklich nicht, mit Grund>
-- **Risiken aus §6:** <jedes der drei mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
-  für diesen Slice ohne Wellen-Zugehörigkeit>
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10). Eingang:
+Review `docs/reviews/2026-10-08-adr-0086-review.md` (0/1/1/1; F-1/F-2 eingearbeitet in `b1a8195d`,
+F-3 mit dem Accept `8c14fcee` erledigt) und Verifikation
+`docs/reviews/2026-10-08-adopter-seite-verifikation.md` (LP 1/2 bestätigt, keine Rückführung,
+Emission unverändert).
+
+- **Was hat funktioniert:** Ausgang *keine Aussage* mit benanntem Ort
+  ([ADR-0086](../../adr/0086-erzeugtes-repo-bekommt-keine-eigentums-aussage-ueber-seinen-anweisungssatz.md)
+  Festlegungen 1–3), Fortschreibung der Quelle als `Supersedes (Teil)` an
+  [ADR-0051](../../adr/0051-anweisungssatz-eigentum-traegt-ueber-die-emissionsgrenze.md); kein Satz
+  unter `internal/emit/`.
+- **Was ging anders als geplant:** Die Bestandszahlen aus §1, §6 und §8 waren beim Lauf veraltet
+  (Plan vom 2026-09-15); in dieser Closure mit Kommando nachgezogen.
+- **Steering-Loop-Eintrag:** benannte Lücke — die Abwesenheits-Prämisse einer Entscheidung über
+  ihre Quelle wird nur im Review gegen den Gegenfall gehalten; erstmals registriert als
+  [`BEO-ALL/praemisse-ueber-eine-quelle-ohne-den-gegenfall-den-sie-nennt`](../observations/BEO-ALL/praemisse-ueber-eine-quelle-ohne-den-gegenfall-den-sie-nennt/observation.md)
+  (1×, gezählt, nicht verkörpert).
+- **Beobachtungs-Register (`../observations/`):** neu
+  [`praemisse-ueber-eine-quelle-ohne-den-gegenfall-den-sie-nennt`](../observations/BEO-ALL/praemisse-ueber-eine-quelle-ohne-den-gegenfall-den-sie-nennt/observation.md)
+  (Review F-1). [`anweisungssatz-eigentum-ohne-quelle`](../observations/BEO-ALL/anweisungssatz-eigentum-ohne-quelle/observation.md):
+  kein Beleg — die Antwort ist kein Auftreten der Klasse, `state.md` unverändert.
+  [`eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`](../observations/BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet/observation.md):
+  kein Beleg, Ausgang bleibt `geplant` auf
+  [ADR-0062](../../adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md) —
+  ADR-0086 beantwortet eine Einzelfrage aus Quelle, die allgemeine Regel trägt weiter ADR-0062. F-2
+  (Trigger misst ein Wort) ohne Eintrag: im Trigger als Grenze benannt.
+- **Folge-Slices:** keine — Ausgang *keine Aussage*, kein Ausführungs-Vorgang.
+- **Risiken aus §6:** (1) entfallen · (2) entfallen · (3) entfallen — je Grund in §6.
+- **Drei Paarungen:** nach dem `git mv` geprüft, Zeile folgt im Commit danach.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
@@ -403,7 +419,7 @@ und eigene Fehlermodi (eine Festlegung, die weiter reicht als ihre Quelle).
 eine Aussage dieses Slice; Pfad-Berührung allein genügt nicht.
 
 **Vorgelagert — offene Beobachtungen sichten:** Das Register ist am gemergten Stand durchgegangen —
-**115** Verzeichnisse (`ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l`, **kein
+**232** Verzeichnisse am 2026-10-08 (`ls -d docs/plan/planning/observations/BEO-ALL/*/ | wc -l`, **kein
 Erwartungswert**,
 [`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)
 Setzung 2: ein Zähler-Stand ist eine datierte Messung); alle führen dieselbe Sub-Area `*`, die
@@ -412,10 +428,10 @@ Sichtung ist damit vollständig. **Fünf Treffer** berühren diesen Slice:
 | Beobachtung (`BEO-ALL/<slug>`) | Zähler | Stand | wo sie diesen Slice trifft |
 |---|---|---|---|
 | [`anweisungssatz-eigentum-ohne-quelle`](../observations/BEO-ALL/anweisungssatz-eigentum-ohne-quelle/observation.md) | 5× | geplant | §1 — sein `state.md` führt die **emittierte Ebene** nicht als offenen Teil; genau die nimmt dieser Slice |
-| [`eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`](../observations/BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet/observation.md) | 1× | offen | §1 — dieser Slice gibt der Frage einen Träger, statt sie faktisch beantworten zu lassen; §6 Risiko (2) |
-| [`uebergabe-an-andere-rolle-ohne-traeger-artefakt`](../observations/BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt/observation.md) | 6× | verkörpert | §1 — dieser Slice **ist** das Träger-Artefakt einer Übergabe ([ADR-0051](../../adr/0051-anweisungssatz-eigentum-traegt-ueber-die-emissionsgrenze.md) Folgepflicht 4) |
+| [`eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`](../observations/BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet/observation.md) | 12× | geplant (ADR-0062) | §1 — dieser Slice gibt der Frage einen Träger, statt sie faktisch beantworten zu lassen; §6 Risiko (2) |
+| [`uebergabe-an-andere-rolle-ohne-traeger-artefakt`](../observations/BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt/observation.md) | 7× | verkörpert | §1 — dieser Slice **ist** das Träger-Artefakt einer Übergabe ([ADR-0051](../../adr/0051-anweisungssatz-eigentum-traegt-ueber-die-emissionsgrenze.md) Folgepflicht 4) |
 | [`fremdes-rollen-artefakt-im-implementations-kontext`](../observations/BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext/observation.md) | 9× | verkörpert | §1 — die Abgrenzung *„kein Satz im emittierten Satz"* hält den Slice aus einem fremden Rollen-Artefakt heraus |
-| [`zusammenfassung-staerker-als-ihre-quelle`](../observations/BEO-ALL/zusammenfassung-staerker-als-ihre-quelle/observation.md) | 8× | geplant | §6 Risiko (1) — eine Aussage über *alle* Rollen-Artefakte liefe ihrer Quelle voraus |
+| [`zusammenfassung-staerker-als-ihre-quelle`](../observations/BEO-ALL/zusammenfassung-staerker-als-ihre-quelle/observation.md) | 9× | geplant | §6 Risiko (1) — eine Aussage über *alle* Rollen-Artefakte liefe ihrer Quelle voraus |
 
 ```sh
 for s in anweisungssatz-eigentum-ohne-quelle \
@@ -427,8 +443,8 @@ for s in anweisungssatz-eigentum-ohne-quelle \
 done
 ```
 
-**Keiner der fünf steht bei 2×**, keiner erreicht **mit diesem Slice** die 3×-Schwelle; zwei tragen
-ihren Ausgang (verkörpert), drei warten auf den Lese-Schritt der nächsten Welle-Closure. **Ein
+**Am 2026-10-08 stehen alle fünf über der 3×-Schwelle und tragen ihren Ausgang** — zwei
+verkörpert, drei geplant; dieser Slice hebt keinen Zähler (§7). **Ein
 eigener Folge-Slice entsteht aus dieser Sichtung also nicht** — die Zähler-Stände gehören ins
 Kriterium *Evidenz-/Diskrepanz-Risiko* unten, den Ausgang weist der Lese-Schritt zu, nicht diese
 Planung.
@@ -455,7 +471,7 @@ Sub-Area.
   Frage heute ausnimmt, steht in **drei** Entscheidungen und wird von jeder mit einer *anderen*
   Wendung geführt (§1). Welche davon der Träger-Ort ist, macht erst die Antwort sichtbar; die
   Register-Klasse [`zusammenfassung-staerker-als-ihre-quelle`](../observations/BEO-ALL/zusammenfassung-staerker-als-ihre-quelle/observation.md)
-  (**8×**) ist genau die Gefahr, dass die Antwort über ihre Quelle hinaus greift.
+  (**9×**) ist genau die Gefahr, dass die Antwort über ihre Quelle hinaus greift.
 - **Reconciliation-Aufwand:** keiner — GF, kein Inventur-Fund; die Datei `reconciliation.md`
   existiert in diesem Repo nicht, und das zugehörige DoD-Item entfällt deshalb in §2. Graduation
   entfällt (n/a bei GF).
