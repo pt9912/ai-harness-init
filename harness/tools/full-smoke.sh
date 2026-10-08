@@ -452,9 +452,10 @@ fi
 echo "full-smoke: Handbuch-Baum gegen den Bestand frischer Ziele (sprachlos, --lang go, --lang cpp) ..."
 	e2e_abdeckung "LH-FA-02" "Der Baum in Paragraf 6 des Benutzerhandbuchs nennt genau die Pfade frischer Ziele (sprachlos, Delta von --lang go und --lang cpp), in beide Richtungen; gemessen ist die Pfad-Menge im Gelingens-Zweig der Traeger-Ablage, nicht die Etiketten und nicht die Ablage-Klassen selbst" "handbuch_baum_pruefen"
 handbuch_baum_pruefen() {
-	local variante="$1" ziel="$2" basis="${3:-}" aus rc=0
-	aus="$(bash "$HIER/handbuch-baum.sh" "$HIER/../../docs/user/benutzerhandbuch.md" "$variante" "$ziel" ${basis:+"$basis"} 2>&1)" || rc=$?
-	if [ "$rc" -ne 0 ]; then
+	local variante="$1" ziel="$2" basis="${3:-}" aus
+	# Der Vergleich fordert kein Bild an; ein Fehlschlag ist darum ein Befund und kein
+	# Ausgang, den einordnen zuweist.
+	if ! aus="$(bash "$HIER/handbuch-baum.sh" "$HIER/../../docs/user/benutzerhandbuch.md" "$variante" "$ziel" ${basis:+"$basis"} 2>&1)"; then
 		echo "full-smoke: FEHLER — Handbuch-Baum ($variante): $aus" >&2
 		exit 1
 	fi
@@ -497,7 +498,6 @@ init_out="$( "$tmpbin/ai-harness-init" --lang go --name full-smoke "$tmprepo" 2>
 printf '%s\n' "$init_out"
 if [ "$init_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — der Bootstrap (--lang go) ist NICHT Exit 0 (Exit $init_rc)." >&2
-	einordnen "Bootstrap --lang go (das Werkzeug holt d-check fuer --print-mk)" "$init_out"
 	exit 1
 fi
 
