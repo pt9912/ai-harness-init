@@ -1,6 +1,6 @@
 # ADR-0086: Ein erzeugtes Repo bekommt keine Eigentums-Aussage über seinen Anweisungssatz — die Regel führt der Adopter in seinem Konventionsspeicher
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-10-08
 
@@ -135,6 +135,7 @@ ist diese Datei.
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-10-08 | Proposed | `slice-adopter-seite-der-anweisungssatz-grenze` |
+| 2026-10-08 | **Accepted** | Review `2026-10-08-adr-0086-review` (0 HIGH; MEDIUM und LOW eingearbeitet in `b1a8195d`), Annahme durch den Auftraggeber am 2026-10-08 ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1) |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
