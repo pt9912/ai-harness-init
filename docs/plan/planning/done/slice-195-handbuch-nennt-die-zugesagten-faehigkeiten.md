@@ -151,7 +151,7 @@ und keine der drei Fähigkeiten wartet auf eine Entscheidung.
 **Zwei weitere offene Pläne stehen auf derselben Datei; die Naht ist eine Form-Grenze, keine
 Reihenfolge.** [slice-191](../done/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md) schreibt
 den **Pfad-Baum** in §6 und hält ihn mit einem Wächter;
-[slice-111](../in-progress/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md) beschreibt die
+[slice-111](../done/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md) beschreibt die
 **Erfassungsschicht** als Fähigkeit und zieht §5 und §9 dazu nach. Dieser Slice beschreibt drei
 **andere** Fähigkeiten und fasst den Baum nicht an. Läuft er als erster, findet der Nachbar seine
 Prosa vor und ersetzt sie nicht; läuft er als letzter, schreibt er in einen bereits vollständigen
@@ -214,7 +214,7 @@ dasteht.
 
 **Nicht in diesem Slice — zwei Doku-Nachbarn.** Die Erklärung der **Erfassungsschicht**
 ([`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)) liegt bei
-[slice-111](../in-progress/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md), die **Pfad-Aufzählung**
+[slice-111](../done/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md), die **Pfad-Aufzählung**
 des Baums bei
 [slice-191](../done/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md). Beide sind bereits
 geschnitten; dieser Slice fügt ihnen nichts hinzu und nimmt ihnen nichts weg.

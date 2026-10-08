@@ -416,7 +416,7 @@ Schnitt, vorhandener Träger oder Ablehnung mit Grund. *„Genannt"* ist seit
 | **F-3** — der Gate-Tabellen-Wächter liest für zwei seiner fünf Dokument-Quellen die Fixture `courseSet()` statt des realen vendored Satzes | **[slice-110](../done/slice-110-erfassungs-waechter-fall-meldung-grenze.md)**, DoD (3) — als **benannte Grenze**, nicht als Schließung. Die Ursache ist der Docker-Build-Kontext (`.dockerignore` schließt `.harness/` aus, seit slice-022b) und damit eine vorbestehende Eigenschaft der gesamten Emit-Test-Infrastruktur; sie hier zu schließen wäre ein anderer Schnitt, und §4 jenes Slice führt genau diese Rückführung. **Heute nicht realisiert** (V-12: `grep -rhoE 'make [a-z][a-z0-9-]*' .harness/baseline/*/templates/ \| LC_ALL=C sort -u` → **11** Nennungen, keine davon `span-report`/`span-clean`) |
 | **V-6** — das konditionale Arch-Gate-Fragment liegt in keiner der beiden Sensor-Mengen, und die benannte Grenze nennt es nicht | **[slice-110](../done/slice-110-erfassungs-waechter-fall-meldung-grenze.md)**, dieselbe DoD (3): dieselbe Frage (was sieht der Wächter nicht?) an derselben Datei |
 | **F-5 / V-8** — fünf Dateien außerhalb der §3-Tabelle, dritte Beobachtung dieser Klasse in Folge | **[slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md)** — als **neunter Posten**, dort eingetragen, mit dem gemessenen Grund gegen einen Sensor. **Kein eigener Schnitt:** sein Ergebnis wäre Norm-Text über die Form eines Plans, und genau dafür existiert jener Durchgang. Zusätzlich trägt [slice-110](../done/slice-110-erfassungs-waechter-fall-meldung-grenze.md) §3 die Zeile für die bewegte gemeinsame Stelle bereits — die erste Anwendung des Postens, bevor er entschieden ist |
-| **V-10** — die Ausgabe unseres eigenen `span-report` hat sich geändert, [`AGENTS.md`](../../../../AGENTS.md) §4 und [`harness/README.md`](../../../../harness/README.md) sind unberührt | **[slice-111](../in-progress/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md)** — neu geschnitten, **und die Frage ist entschieden: ja, ein öffentlicher Vertrag ist berührt — aber ein anderer als der gefragte.** Begründung unten |
+| **V-10** — die Ausgabe unseres eigenen `span-report` hat sich geändert, [`AGENTS.md`](../../../../AGENTS.md) §4 und [`harness/README.md`](../../../../harness/README.md) sind unberührt | **[slice-111](../done/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md)** — neu geschnitten, **und die Frage ist entschieden: ja, ein öffentlicher Vertrag ist berührt — aber ein anderer als der gefragte.** Begründung unten |
 | **V-13** — [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 4 macht die Aufnahme des neuen Init-invarianten Fragments in den `targets:`-Satz fällig, sobald der Block existiert | **[welle-09](../welle-09-modul-15-konformitaet.md), Block 4 → `slice-063`** — vorhandener Träger, dort nachgezogen. **Keine Verletzung heute:** `grep -c 'targets' .d-check.yml` und `grep -c 'targets' internal/emit/templates/d-check.yml` → je **0**; es gibt nichts, dem etwas hinzuzufügen wäre. Die Welle hatte die Schuld in §5 benannt; neu ist, dass sie **scharf** ist |
 | **V-9** — weder der Grund-Satz des Lesers noch die drei Träger-Sätze des Fragments haben einen Sensor in `make gates` | **kein Träger, und das ist entschieden** — die Einlösung ist nicht geschwächt; Begründung unten |
 | **V-5** — die Begründung des Implementers für den fehlenden Fall der „fehlt"-Richtung nennt zwei Mechanismen, die nicht greifen | **kein Träger, hier erledigt** — die Sache ist gedeckt (`full-smoke` Schritt (b) fängt den Syntaxfehler im Ziel), die Begründung ist oben ersetzt statt wiederholt. Ein Slice hätte keinen Gegenstand |
@@ -452,7 +452,7 @@ die ein Adopter seit dieser Welle in seinem Repo sieht (`span-report`, `span-cle
 `erfassung.mk`, `erfassung-feldliste`, `span-emit`, `state/bin`, `agent.role`, `Rollen-Typ`):
 **null** Nennungen in [`README.md`](../../../../README.md) und
 [`docs/user/benutzerhandbuch.md`](../../../user/benutzerhandbuch.md) zusammen (Kommando in
-[slice-111](../in-progress/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md) §1), und beide
+[slice-111](../done/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md) §1), und beide
 Dokumente haben sich seit **2026-07-28** nicht bewegt
 (`git log -1 --format='%h %ad' --date=short -- docs/user/benutzerhandbuch.md README.md`).
 **Der Befund ist damit größer als dieser Slice** — vier Slices dieser Welle haben den emittierten
@@ -462,7 +462,7 @@ geführt, nicht als Nachtrag in einem von vieren.
 **Folge-Slices: zwei neue `open/`-Einträge.**
 [slice-110](../done/slice-110-erfassungs-waechter-fall-meldung-grenze.md) (die Wächter der
 Erfassungs-Ausgabe tragen ihren Fall, ihre Meldung und ihre Grenze) und
-[slice-111](../in-progress/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md) (was ein
+[slice-111](../done/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md) (was ein
 Bootstrap anlegt, steht in der Nutzer-Doku). **Beide sind wellenlos** — die drei Fragen aus
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 1 sind in ihren Kopfzeilen einzeln beantwortet, und keiner füllt oder leert eine Zelle der
