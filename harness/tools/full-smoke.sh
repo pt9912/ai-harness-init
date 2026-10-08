@@ -155,8 +155,9 @@ e2e_abdeckung() {
 
 GO_VERSION="${GO_VERSION:-1.27.1}"
 tmpbin="$(mktemp -d -p "${TMPDIR:-/tmp}")"
-# Elternverzeichnis der zwei Klone, die der Vorlauf-Waechter-Abschnitt derselben Quelle
-# anlegt (flach und vollstaendig). chmod 755 aus demselben Grund wie beim tmprepo-Root
+# Elternverzeichnis der Klone des Ziels tmprepo: der zwei, die der Vorlauf-Waechter-Abschnitt
+# derselben Quelle anlegt (flach und vollstaendig), und des unaktivierten Klons der Stufe
+# "Aktivierung im Klon". chmod 755 aus demselben Grund wie beim tmprepo-Root
 # unten: das d-check-Modul mountet sie read-only in einen Nicht-Root-Container.
 tmpklon="$(mktemp -d -p "${TMPDIR:-/tmp}")"
 tmprepo="$(mktemp -d -p "${TMPDIR:-/tmp}")"
@@ -4439,6 +4440,106 @@ kennungs_traeger_im_ziel() {
 }
 
 kennungs_traeger_im_ziel "$tmprepo" "golang"
+
+# --- Aktivierung im Klon: der unaktivierte Klon und die zwei negativen Faelle -----------
+#
+# DER ZAHN DIESER STUFE ist test/mutations/588-aktivierung-ohne-traeger-pruefung.sh: er
+# nimmt dem emittierten Fragment die `test -f`-Zeile, und Fall (b) faellt darauf — ohne
+# sie bricht das Rezept erst an `chmod` ab, und keine Zeile des Ziels nennt den Fall.
+#
+# ORT IM LAUF: hinter COMMIT-KENNUNG. Dort ist das Ziel aktiviert, und ein Klon derselben
+# Quelle ist die einzige unaktivierte Instanz; die Stufe liest beides als Vorbedingung,
+# statt es herzustellen. Dass der Traeger mit dem Klon reist und core.hooksPath dort leer
+# ist, ist die Aussage der Selbstpruefung unten — hier sind es Vorbedingungen.
+#
+# GELESEN WIRD DER ZUSTAND AUS GIT, nicht aus der Meldung: core.hooksPath ueber
+# `git config --get` (alle Ebenen, darum auch keine globale Aktivierung), der entstandene
+# Commit ueber `git log`. Von der Abbruch-Meldung des Fragments liest die Stufe nur den
+# Zielnamen am Zeilenanfang und den Pfad, den sie nennt — nicht ihren Satz.
+#
+# GRENZE: gefahren ist das Fragment des --lang-go-Ziels; die Dogfood-Fassung im Makefile
+# dieses Repos ist eine andere Datei und hier nicht gemessen.
+aktivierung_im_klon() {
+	local repo="$1" kennung="$2"
+	local klon="$tmpklon/aktivierung"
+	local wert="" out="" rc=0 fall="" pfad="" hooks_arg=() msg="Smoke ohne Kennung im unaktivierten Klon"
+
+	# VORBEDINGUNGEN, gelesen statt angenommen: sonst laese der Durchgang (a) nur, dass
+	# niemand irgendwo aktiviert hat oder kein Traeger da ist.
+	wert="$(git -C "$repo" config --get core.hooksPath || true)"
+	if [ "$wert" != ".githooks" ]; then
+		echo "full-smoke: FEHLER — $kennung: Vorbedingung der Aktivierung im Klon: das Ziel ist nicht aktiviert (core.hooksPath=[$wert], erwartet .githooks)." >&2
+		exit 1
+	fi
+	if ! git clone -q "file://$repo" "$klon"; then
+		echo "full-smoke: FEHLER — $kennung: der Klon fuer die Aktivierung ist nicht entstanden." >&2
+		exit 1
+	fi
+	wert="$(git -C "$klon" config --get core.hooksPath || true)"
+	if [ -n "$wert" ]; then
+		echo "full-smoke: FEHLER — $kennung: Vorbedingung der Aktivierung im Klon: der frische Klon traegt core.hooksPath=[$wert] — er ist nicht unaktiviert." >&2
+		exit 1
+	fi
+	if [ ! -f "$klon/.githooks/commit-msg" ] || [ ! -x "$klon/.githooks/commit-msg" ]; then
+		echo "full-smoke: FEHLER — $kennung: Vorbedingung der Aktivierung im Klon: .githooks/commit-msg liegt im Klon nicht als ausfuehrbare Datei." >&2
+		exit 1
+	fi
+
+	# (a) DER UNAKTIVIERTE KLON: ein Commit OHNE Kennung geht durch und entsteht.
+	if out="$( git -C "$klon" -c user.email=full-smoke@example.invalid -c user.name=full-smoke \
+		commit -q --allow-empty -m "$msg" 2>&1 )"; then
+		rc=0
+	else
+		rc=$?
+	fi
+	if [ "$rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — $kennung: im unaktivierten Klon faellt ein Commit ohne Kennung (Exit $rc) — der Traeger wirkt ohne Aktivierung. Ausgabe:" >&2
+		printf '%s\n' "$out" >&2
+		exit 1
+	fi
+	wert="$(git -C "$klon" log -1 --format=%s)"
+	if [ "$wert" != "$msg" ]; then
+		echo "full-smoke: FEHLER — $kennung: im unaktivierten Klon endet der Commit mit Exit 0, HEAD traegt aber [$wert] statt [$msg]." >&2
+		exit 1
+	fi
+
+	# (b)-(d) DIE NEGATIVEN FAELLE DER AKTIVIERUNG: Exit != 0, eine Zeile des Ziels nennt
+	# den Pfad, und core.hooksPath bleibt ungesetzt. (c) steht neben (b), weil `test -x`
+	# fuer ein Verzeichnis wahr ist; (d) belegt, dass die Meldung den GESETZTEN Pfad nennt.
+	for fall in fehlt verzeichnis hooks_dir; do
+		case "$fall" in
+			fehlt)       rm -f "$klon/.githooks/commit-msg"; pfad=".githooks/commit-msg"; hooks_arg=() ;;
+			verzeichnis) mkdir "$klon/.githooks/commit-msg"; pfad=".githooks/commit-msg"; hooks_arg=() ;;
+			hooks_dir)   mkdir "$klon/leer-hooks"; pfad="leer-hooks/commit-msg"; hooks_arg=(HOOKS_DIR=leer-hooks) ;;
+		esac
+		if out="$( make --no-print-directory -C "$klon" hooks-install ${hooks_arg[@]+"${hooks_arg[@]}"} 2>&1 )"; then
+			rc=0
+		else
+			rc=$?
+		fi
+		wert="$(git -C "$klon" config --get core.hooksPath || true)"
+		if [ "$rc" -eq 0 ] || [ -n "$wert" ]; then
+			echo "full-smoke: FEHLER — $kennung: make hooks-install aktiviert ohne Traeger-Datei ($fall, Exit $rc, core.hooksPath=[$wert]) — die Konfiguration behauptet einen Waechter, unter dem nichts liegt (LH-QA-01). Ausgabe:" >&2
+			printf '%s\n' "$out" >&2
+			exit 1
+		fi
+		if ! grep -E '^hooks-install: ' <<<"$out" | grep -qF -- "$pfad"; then
+			echo "full-smoke: FEHLER — $kennung: make hooks-install bricht ab ($fall, Exit $rc), aber keine Zeile des Ziels nennt $pfad — der Abbruch kommt nicht aus der Traeger-Pruefung. Ausgabe:" >&2
+			printf '%s\n' "$out" >&2
+			exit 1
+		fi
+		if [ "$fall" = "hooks_dir" ] && grep -qF -- '.githooks/commit-msg' <<<"$out"; then
+			echo "full-smoke: FEHLER — $kennung: make hooks-install HOOKS_DIR=leer-hooks nennt .githooks statt des gesetzten Pfads. Ausgabe:" >&2
+			printf '%s\n' "$out" >&2
+			exit 1
+		fi
+	done
+	echo "full-smoke: Aktivierung im Klon ($kennung): im unaktivierten Klon geht ein Commit OHNE Kennung durch und entsteht; make hooks-install endet ohne Traeger-Datei, ueber einem Verzeichnis an ihrer Stelle und mit HOOKS_DIR auf ein leeres Verzeichnis mit Exit != 0, nennt den jeweiligen Pfad und laesst core.hooksPath ungesetzt."
+}
+
+echo "full-smoke: Aktivierung im Klon — unaktivierter Klon, fehlender Traeger, Verzeichnis, HOOKS_DIR ..."
+e2e_abdeckung "LH-FA-06 LH-QA-01" "Ein frischer Klon des aktivierten --lang-go-Ziels: vor der Aktivierung geht ein Commit ohne Kennung durch; make hooks-install endet ohne Traeger-Datei, ueber einem Verzeichnis und mit HOOKS_DIR auf ein leeres Verzeichnis mit Exit != 0, nennt den Pfad und laesst core.hooksPath ungesetzt; NICHT gemessen: dass der Traeger mit dem Klon reist (Vorbedingung, Aussage der Selbstpruefung), die Dogfood-Fassung des Rezepts, das nachgesetzte Ausfuehrrecht" "aktivierung_im_klon"
+aktivierung_im_klon "$tmprepo" "golang"
 
 # --- Selbstpruefung im Ziel: das Ziel faehrt sie auf einem Klon seiner selbst ----------
 #
