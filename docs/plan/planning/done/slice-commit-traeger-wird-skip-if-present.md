@@ -187,7 +187,7 @@ schriebe eine Setzung in den Code, die niemand ausgesprochen hat
 **Reihenfolge:** unabhängig von jedem anderen offenen Slice; die Fläche — `internal/emit/` und die
 vier Sätze neben dem Pfad — fasst kein laufender Vorgang an. **Der eine Vorgang, der sie
 mit-fasst, ist serialisiert:**
-[`slice-aktivierung-reist-nicht-mit-dem-klon`](../open/slice-aktivierung-reist-nicht-mit-dem-klon.md)
+[`slice-aktivierung-reist-nicht-mit-dem-klon`](../next/slice-aktivierung-reist-nicht-mit-dem-klon.md)
 berührt `harness/tools/full-smoke.sh` (dort die neue Stufe) und nimmt dem Fragment
 `internal/emit/templates/enforce/hooks-install.mk` die `test -f`-Zeile — beide stehen auch in §3
 dieses Plans. Er liegt in `open/` **hinter** [welle-11](../welle-11-traeger-aussage.md) und damit
