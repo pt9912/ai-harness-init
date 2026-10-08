@@ -418,6 +418,20 @@ SKEL_GO_VERSION=1.26.4 ai-harness-init --lang go --name "Mein Projekt" <zielordn
 
 **Ergebnis:** Das erzeugte Grundgerüst (`Dockerfile`, `go.mod`) verwendet die angegebene Go-Version. Ohne die Variable gilt die festgelegte Standard-Version.
 
+### Was die Erfassung aufzeichnet
+
+**Voraussetzung:** Ein aufgesetztes Repository, in dem Agenten mit Claude Code arbeiten, und die Programmdatei unter `.harness/state/bin/` (siehe [Betriebs-Operationen](#betriebs-operationen)). <!-- d-check:ignore (der Pfad entsteht erst im aufgesetzten Repository) -->
+
+**Was geschieht:** `.claude/settings.json` bindet den Hook `.claude/hooks/span-emit.sh` an drei Ereignisse: nach jedem Werkzeug-Aufruf eines Agenten, nach einem fehlgeschlagenen und beim Start eines Subagenten. Je Ereignis schreibt er eine Zeile JSON — einen **Span** — unter `.harness/state/spans/`, eine Datei `<sitzung>-<agent>.jsonl` je Paar aus Sitzung und Agent. Der Hook hält keinen Aufruf auf. Fehlt die Programmdatei, schreibt er nichts; ein frischer Klon erfasst darum nichts, bis `make traeger-fetch` oder ein erneutes Aufsetzen sie ablegt. <!-- d-check:ignore (die Pfade entstehen erst im aufgesetzten Repository) -->
+
+**Was eine Zeile trägt:** Abschließend nennt es `harness/erfassung-feldliste.md` im aufgesetzten Repository, mit seinen Grenzen. Darunter: Zeitpunkt, Ereignis, Werkzeug und Status; Sitzung, Agent, Agenten-Typ und Rolle; die Slices unter `docs/plan/planning/in-progress/` und die Anforderungen und Architektur-Entscheidungen aus deren Bezug; Zweig und Commit. Von den Argumenten eines Aufrufs steht nie der Inhalt in der Zeile, sondern eine Ableitung — der Pfad einer Datei, ihre Größe, ein Fingerabdruck-Präfix, das aufgerufene Programm, die Zahl der Argumente. Token-Zähler trägt nur der Span eines Subagenten-Aufrufs im Vordergrund. <!-- d-check:ignore (die Pfade entstehen erst im aufgesetzten Repository) -->
+
+**Die Rollen-Typen.** Unter `.claude/agents/` liegt je ein **Rollen-Typ** für die sechs Rollen des Prozesses: `planner`, `architect`, `implementer`, `reviewer`, `verifier`, `validator`. Läuft ein Subagent unter einem dieser Typen, trägt das Feld `agent_role` seiner Spans die Rolle; unter jedem anderen Typ steht dort `nicht bekannt: agent_type`. Kein Hook und kein Gate erzwingt, dass Rollen-Arbeit unter ihrem Rollen-Typ läuft. Ein erneutes Aufsetzen schreibt eine vorhandene Datei unter `.claude/agents/` nicht neu. <!-- d-check:ignore (die Pfade entstehen erst im aufgesetzten Repository) -->
+
+**Auslesen und aufräumen:** `make span-report` zeigt die Token-Bilanz je Rolle, `make span-clean` entfernt den Bestand (siehe [Betriebs-Operationen](#betriebs-operationen)). Von selbst räumt nichts auf; ohne `make span-clean` wächst der Bestand unbegrenzt.
+
+**Hinweise:** Einen eigenen Schalter zum Abschalten bringt das Aufsetzen nicht mit; `.claude/settings.json` gehört zu den Dateien, die jeder Lauf neu schreibt (siehe [Ein Repository erneut aufsetzen](#ein-repository-erneut-aufsetzen-idempotent)). Der Bestand ist von `git` ausgenommen, aber weder verschlüsselt noch zugriffsbeschränkt, und die Pfade der gelesenen und geschriebenen Dateien stehen in ihm — wer ihn weitergibt, gibt sie mit.
+
 ### Betriebs-Operationen
 
 **Voraussetzung:** Ein aufgesetztes Repository. Docker braucht nur `traeger-fetch` — der Transport läuft im gepinnten Bild. Von den vier übrigen rufen `archive-welle` und `span-report` den bereits abgelegten **Träger** (die `ai-harness-init`-Programmdatei im gitignorierten Zustands-Bereich `.harness/state/bin/`) direkt auf; `span-clean` braucht weder den Träger noch Docker, es räumt nur den lokalen Erfassungs-Bestand weg; `slice-mv` braucht weder den Träger noch Docker, es arbeitet mit `git` auf dem versionierten Baum.
@@ -495,7 +509,7 @@ Der Bootstrap läuft in **Phasen**: Ein **Aufsetzen ohne Sprache** legt die doku
 find .harness/baseline -type f | wc -l    # 55
 ```
 
-**Drei Einträge hängen an der Erfassungsschicht** und sind im Baum mit *(Erfassung)* markiert: das Programm selbst unter `.harness/state/bin/`, der Hook, der bei Werkzeug-Aufrufen eines Agenten einen Span schreibt, und die Feldliste darüber. Das Aufsetzen legt sie gemeinsam an, wenn es die Programmdatei ablegen kann, und sonst keinen der drei; es meldet dann den Grund und endet trotzdem erfolgreich. Der Baum zeigt den Fall, in dem die Ablage gelingt. `.harness/state/` ist von `git` ausgenommen (`.harness/.gitignore`) und reist darum nicht mit einem Klon.
+**Drei Einträge hängen an der Erfassungsschicht** und sind im Baum mit *(Erfassung)* markiert: das Programm selbst unter `.harness/state/bin/`, der Hook, der bei Werkzeug-Aufrufen eines Agenten einen Span schreibt, und die Feldliste darüber. Das Aufsetzen legt sie gemeinsam an, wenn es die Programmdatei ablegen kann, und sonst keinen der drei; es meldet dann den Grund und endet trotzdem erfolgreich. Der Baum zeigt den Fall, in dem die Ablage gelingt. `.harness/state/` ist von `git` ausgenommen (`.harness/.gitignore`) und reist darum nicht mit einem Klon. Was die Erfassung aufzeichnet und wie Sie sie auslesen, steht unter [Was die Erfassung aufzeichnet](#was-die-erfassung-aufzeichnet).
 
 <!-- baum: dokument-only -->
 ```text
@@ -518,7 +532,7 @@ mein-projekt/
 │   ├── erfassung-feldliste.md         welche Felder ein Span trägt (Erfassung)
 │   ├── sensors/                       Prosa zu einem Prüf-Ziel, die nicht in eine Tabellenzelle passt (anfangs leer)
 │   │   └── .gitkeep
-│   └── mk/                            Prüf-Bausteine, vom Makefile eingebunden
+│   └── mk/                            make-Bausteine, vom Makefile eingebunden — Prüfungen und Kommandos
 │       ├── .gitattributes             Zeilenenden LF
 │       ├── ai-harness-init.md         Gate-Index (Teil des Werkzeugs, jeder Lauf schreibt ihn neu)
 │       ├── archivierung.mk            make archive-welle
@@ -787,9 +801,11 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vo
 | **Grundgerüst (Skelett)** | Das minimale, lauffähige Sprach-Layout (bei `go`: `Dockerfile`, `Makefile`, `go.mod`, Beispiel-Code), das die Prüfungen bedienen. |
 | **Doc-Gate** | Die Dokumentations-Prüfung (Ziel `make docs-check`): prüft Verweise, Anker und Kennungen in den Markdown-Dateien. |
 | **Aggregator (`Makefile`)** | Die zentrale `Makefile` im Repository, die alle Prüf-Bausteine einbindet; `make gates` fährt darüber alle Prüfungen. Erscheint so in der Abschluss-Ausgabe des Werkzeugs. |
-| **Prüf-Baustein (Fragment)** | Eine kleine `make`-Datei (`harness/mk/*.mk`), die je eine Prüfung beisteuert; die zentrale `Makefile` bindet sie ein. |
+| **Prüf-Baustein (Fragment)** | Eine kleine `make`-Datei (`harness/mk/*.mk`), die Targets beisteuert — eine Prüfung oder ein Kommando, das nichts prüft (etwa `make span-report`); die zentrale `Makefile` bindet sie ein. |
 | **Command-Guard / Durchsetzung** | Automatische Schutz-Hooks unter `.claude/`, die im aufgesetzten Repo riskante Befehle abfangen (z. B. Toolchains außerhalb von Docker). Erscheint als „Durchsetzung“ in der Abschluss-Ausgabe. |
 | **Slash-Command** | Ein Arbeitsablauf unter `.claude/commands/`, den Sie in Claude Code mit `/<name>` aufrufen (z. B. `/implement-slice`). Er beschreibt dem Agenten den Ablauf, erzwingt ihn aber nicht. |
+| **Erfassung / Span** | Die lokale Aufzeichnung der Agenten-Läufe: je Werkzeug-Aufruf eines Agenten eine Zeile JSON (ein Span) unter `.harness/state/spans/`, nicht versioniert. Siehe [Was die Erfassung aufzeichnet](#was-die-erfassung-aufzeichnet). <!-- d-check:ignore (der Pfad entsteht erst im aufgesetzten Repository) --> |
+| **Rollen-Typ** | Ein Agenten-Typ unter `.claude/agents/`, je einer für die sechs Rollen des Prozesses. Läuft ein Subagent unter ihm, trägt die Erfassung seine Rolle. |
 | **Skill (Review-Skill)** | Eine Datei unter `.harness/skills/`, die festhält, wonach die Review-Rolle urteilt und wie sie berichtet. |
 | **Vorlage (`.template.md`)** | Eine Datei zum Kopieren-und-Ausfüllen für wiederkehrende Artefakte (z. B. eine Architektur-Entscheidung). |
 

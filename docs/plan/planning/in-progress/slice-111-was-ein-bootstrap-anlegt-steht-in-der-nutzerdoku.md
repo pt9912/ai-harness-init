@@ -121,7 +121,20 @@ mit Steering-Loop-Lerneintrag.
 | [`README.md`](../../../../README.md) | update, **soweit betroffen** | die kürzere der beiden Beschreibungen; welche Aussage wohin gehört, entscheidet der Lauf am Text |
 | [`AGENTS.md`](../../../../AGENTS.md) §4 und [`harness/README.md`](../../../../harness/README.md) §Sensors | **zu prüfen, nicht vorab gesetzt** | beide beschreiben **unser** `span-report` und sind gemessen weiterhin wahr; ob die zwei **emittierten** Ziele dort hingehören, ist die Frage des Laufs. §4 ist die Gate-Beschreibung — **nicht** der Hard-Rules-Block, für den [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1 den Architect setzt |
 | `spec/`, `docs/plan/adr/` | **unverändert** | es wächst keine Anforderung und fällt keine Entscheidung; die vier Klassen sind bereits angenommen ([`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren), [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)) — kein Change Request nach [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) |
-| [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | **unverändert** | die Welle führt den Slice in ihrer Plan-Datei, die Roadmap nur ihren Zeiger |
+| [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | **unverändert** (außer der Marke *In Arbeit*) | die Welle führt den Slice in ihrer Plan-Datei, die Roadmap nur ihren Zeiger |
+
+**Umsetzung (Stand nach slice-191).** Der Baum in §6 zählt auf und sagt das (*„Der Baum nennt
+jede Datei und jedes Verzeichnis, das der Lauf anlegt"*), `harness/tools/handbuch-baum.sh` hält ihn
+in `make full-smoke`; der `harness/mk/`-Kommentar zählt keine Prüf-Klassen mehr auf. <!-- d-check:ignore (Pfad im Zielrepo, nicht in diesem) -->
+Geschrieben ist darum nur der Rest: Handbuch §4 neuer Abschnitt *Was die Erfassung aufzeichnet*
+(Hook-Bindung, Ablage, Feldklassen, Rollen-Typen und `agent_role`, Auslesen/Aufräumen, kein
+Abschalt-Schalter, Schutz), Verweis darauf aus §6, Etikett von `harness/mk/` und Glossar-Zeile <!-- d-check:ignore (Pfad im Zielrepo, nicht in diesem) -->
+*Prüf-Baustein* auf „Prüfungen und Kommandos", Glossar *Erfassung / Span* und *Rollen-Typ*; ein
+Satz in [`README.md`](../../../../README.md). [`AGENTS.md`](../../../../AGENTS.md) §4 und
+[`harness/README.md`](../../../../harness/README.md) bleiben unverändert — sie beschreiben das
+`span-report` dieses Repos, nicht das emittierte (§6, *Zwei Ebenen*). DoD (2) verlangt einen Satz
+zur selbst erhobenen Menge *statt* einer Aufzählung; der Baum zählt auf und ist bewacht — ob der
+Punkt damit erfüllt oder gegenstandslos ist, ist Übergabe an den Planner.
 
 ## 4. Trigger
 

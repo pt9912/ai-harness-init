@@ -25,7 +25,11 @@ Ohne Zielordner bricht der Aufruf mit dem Usage-Text ab, statt still das Verzeic
 einzurichten, in dem er steht.
 
 Danach läuft dort `make gates` **out-of-the-box grün**: Prozess-Regeln, Vorlagen, Prüfungen und ein
-lauffähiges Go-Grundgerüst sind eingerichtet, nichts ist nachzuarbeiten. Ohne `--lang` entsteht ein
+lauffähiges Go-Grundgerüst sind eingerichtet, nichts ist nachzuarbeiten. Dazu kommen für Claude Code
+je ein Rollen-Typ für die sechs Prozess-Rollen und, wo das Aufsetzen seine Programmdatei ablegen
+kann, eine lokale Erfassung, die je Werkzeug-Aufruf
+eines Agenten eine Zeile schreibt — [was sie aufzeichnet](docs/user/benutzerhandbuch.md#was-die-erfassung-aufzeichnet).
+Ohne `--lang` entsteht ein
 rein dokumentgeführtes Repo — die Sprache kommt später per `add-lang` dazu.
 
 **Eine Sprache oder ein Modul nachziehen:**
