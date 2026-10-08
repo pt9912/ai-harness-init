@@ -351,7 +351,7 @@ dasteht.
   **7×** (`ls docs/plan/planning/observations/BEO-ALL/folge-slice-ueberlebt-baseline-sprung-mit-alter-pflicht/evidence/*.md | wc -l`,
   kein Erwartungswert; Stand `gestrichen`). **Gegenmittel im Plan:** Der Start-Trigger aus §4 bindet den Lauf an den
   Abschluss des auslösenden Slice, und §2 Liefer-Punkt (2) schreibt die Quelle im **selben** Vorgang
-  fort — der Bezug altert damit nicht über den Slice hinaus. — **Ausgang:** **entfallen** — ADR-0051
+  fort — der Bezug altert damit nicht über den Slice hinaus. — **Ausgang:** **entfallen** — [ADR-0051](../../adr/0051-anweisungssatz-eigentum-traegt-ueber-die-emissionsgrenze.md)
   hat sich unter dem Lauf nicht bewegt (`git log --oneline 4c456e2b..8c14fcee -- docs/plan/adr/0051-*.md | wc -l` → 0);
   die Teil-Ablösung ist der Ausgang dieses Slice.
 
