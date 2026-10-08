@@ -357,6 +357,20 @@ Das aufgesetzte Repository bringt den Hook `.claude/hooks/stop-require-gates.sh`
 
 **Grenze:** Eine „fertig"-Meldung ohne neuen Commit geht im Normalfall ohne Gate-Lauf durch; das Netz dafür ist die CI auf dem Push.
 
+### Die Arbeitsabläufe des Agenten aufrufen (Slash-Commands)
+
+**Voraussetzung:** Ein aufgesetztes Repository, in dem Sie mit Claude Code arbeiten.
+
+**Vorgehen:** Das Aufsetzen legt unter `.claude/commands/` drei Arbeitsabläufe an. Claude Code bietet jede Datei dort als **Slash-Command** an: Sie tippen in der Eingabe einen Schrägstrich und den Dateinamen ohne `.md`; was Sie dahinter schreiben, bekommt der Agent als Argument.
+
+| Command | Wofür |
+|---|---|
+| `/implement-slice` | setzt einen Slice um — eine Arbeitseinheit mit Plan unter `docs/plan/planning/`. Der Agent liest den Plan, setzt ihn um, lässt `make gates` laufen und übergibt an Review und Verifikation. Argument ist die Slice-Datei. |
+| `/plan-welle` | plant eine Welle — ein Bündel von Slices, das gemeinsam geplant und geschlossen wird — und legt ihre Plan-Datei unter `docs/plan/planning/` an. |
+| `/close-welle` | schließt eine Welle in sechs Schritten: Abschluss-Bedingung prüfen, Trigger-Audit, Abschluss-Notiz schreiben, Zeitdokumente archivieren, Abschluss-Commit, Roadmap fortschreiben. |
+
+**Hinweise:** Die drei Dateien sind **Anleitungen**, keine Prüfungen — sie beschreiben dem Agenten den Ablauf, erzwingen ihn aber nicht; erzwingen tun die Gates und die Hooks unter `.claude/hooks/`. Jede trägt einen mit `ANPASSEN` markierten Abschnitt für die Besonderheiten Ihres Repositorys, den Sie selbst füllen. Ein erneutes Aufsetzen schreibt eine vorhandene Datei dort nicht neu (siehe [Ein Repository erneut aufsetzen](#ein-repository-erneut-aufsetzen-idempotent)).
+
 ### Ein Repository erneut aufsetzen (idempotent)
 
 **Voraussetzung:** Sie wollen ein bereits aufgesetztes Verzeichnis reparieren — etwa nach einem abgebrochenen Lauf oder nachdem eine mitgelieferte Datei fehlt oder versehentlich verändert wurde. (Auf einen **neueren Kurs-Stand** hebt Sie dieser Lauf **nicht**; dafür siehe [Eine andere Kurs-Version verwenden](#eine-andere-kurs-version-verwenden).)
@@ -506,6 +520,12 @@ Am Wurzelverzeichnis (`--lang go` bzw. `add-lang go .`) liegen sie neben den Bas
 
 Mit einer geschichteten Bauform sieht der Code-Teil anders aus (die Bau-Dateien bleiben gleich): statt eines einzelnen Einstiegspunkts entstehen Schichten — bei `hexslice` `internal/hexagon/{domain,application}` und `internal/adapters/{driving,driven}`, bei `hexagonal` `internal/hexagon/{core,port}` und `internal/adapter/{driven,driving}` —, dazu `cmd/<binary>/main.go` und **plus** das Architektur-Gate `<pfad>/.a-check.yml` und `a-check.mk`. Bei `flat` (dem Standard) entsteht keines von beidem. Siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch).
 
+### Review-Skills und der Verweis-Abschnitt der README
+
+**Die Review-Skills unter `.harness/skills/`.** Zwei Dateien, `reviewer.md` und `closure-note-reviewer.md`, halten die Urteilsgrundlage der Review-Rolle fest: was ein Reviewer — Mensch oder Agent — vor dem Diff liest, welche Befunde in Ihrem Repository als HIGH, MEDIUM oder LOW zählen und in welcher Form er berichtet. `reviewer.md` gilt für Code, Pläne und Entwürfe, `closure-note-reviewer.md` eng für die Abschluss-Notiz eines Slices: trägt sie Inhalt oder nur eine Floskel? Unter den Rollen des Prozesses ist Review die einzige, die eine solche Datei bekommt — ohne festgehaltene Grundlage fiele dieselbe Prüfung von Lauf zu Lauf anders aus. `/implement-slice` übergibt an `reviewer.md`. Beide kommen als Vorlage mit Platzhaltern wie `<Repo-Name>`, die Sie für Ihr Repository füllen; `--name` füllt sie nicht.
+
+**Der Abschnitt „Was macht es vertrauenswürdig?" der `README.md`.** Die angelegte `README.md` ist eine Vorlage, deren Abschnitte Sie ausfüllen. Dieser eine kommt schon gefüllt: er verweist **vorwärts** auf die kanonischen Quellen Ihres neuen Repositorys — `AGENTS.md` (die festen Regeln für Agenten), `harness/README.md` (Rangfolge der Quellen, Gates) und `spec/lastenheft.md` (die Anforderungen) — und nennt, wo Entscheidungen und Planung liegen. Die Verweise sind Links auf Dateien, die derselbe Lauf anlegt; darum bleibt `make docs-check` im frisch aufgesetzten Repository grün. Zeigte einer auf eine fehlende Datei, meldete die Dokumentations-Prüfung ihn als Befund. Nur die Zeile **Gates:** füllen Sie selbst — mit den Prüfungen, die in Ihrem Repository tatsächlich laufen.
+
 Die Dateien mit der Endung `.template.md` unter `.harness/baseline/` sind **Vorlagen**: Sie kopieren sie bei Bedarf und füllen sie aus (z. B. für eine neue Architektur-Entscheidung). Die Prozess-Regeln erklären, wann welche Vorlage zum Einsatz kommt.
 
 ### Zeilenenden und Kennungs-Form der Prüf-Konfiguration
@@ -642,6 +662,8 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vo
 | **Aggregator (`Makefile`)** | Die zentrale `Makefile` im Repository, die alle Prüf-Bausteine einbindet; `make gates` fährt darüber alle Prüfungen. Erscheint so in der Abschluss-Ausgabe des Werkzeugs. |
 | **Prüf-Baustein (Fragment)** | Eine kleine `make`-Datei (`harness/mk/*.mk`), die je eine Prüfung beisteuert; die zentrale `Makefile` bindet sie ein. |
 | **Command-Guard / Durchsetzung** | Automatische Schutz-Hooks unter `.claude/`, die im aufgesetzten Repo riskante Befehle abfangen (z. B. Toolchains außerhalb von Docker). Erscheint als „Durchsetzung“ in der Abschluss-Ausgabe. |
+| **Slash-Command** | Ein Arbeitsablauf unter `.claude/commands/`, den Sie in Claude Code mit `/<name>` aufrufen (z. B. `/implement-slice`). Er beschreibt dem Agenten den Ablauf, erzwingt ihn aber nicht. |
+| **Skill (Review-Skill)** | Eine Datei unter `.harness/skills/`, die festhält, wonach die Review-Rolle urteilt und wie sie berichtet. |
 | **Vorlage (`.template.md`)** | Eine Datei zum Kopieren-und-Ausfüllen für wiederkehrende Artefakte (z. B. eine Architektur-Entscheidung). |
 
 ---
