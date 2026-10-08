@@ -74,7 +74,7 @@ zählt die Belege; `grep -n 'full-smoke' .github/workflows/ci.yml` zeigt den Job
 - [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen).
+- [x] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen); nach dem Move gefahren, §7.
 
 ## 3. Plan (vor Code)
 
@@ -141,8 +141,8 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
 - **Steering-Loop-Eintrag:** Lese-Schritt —
   `BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases` von *geplant* auf *verkörpert* in
   `make release-warten` und dem Schritt davor im `ci`-Job; die Target-Zeile trägt den Anker
-  `seit slice-ci-wartet-die-publikation-des-gepinnten-releases-ab` nicht, §7 führt darum kein Feld
-  `liegt in`. Benannte Sensor-Lücke: `BEO-ALL/abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt`
+  `seit slice-ci-wartet-die-publikation-des-gepinnten-releases-ab` nicht, §7 führt darum kein Zielort-Feld.
+  Benannte Sensor-Lücke: `BEO-ALL/abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt`
   trifft zum zweiten Mal dieselbe Unterform (README-Zeile und `exempt-targets` als redundante Träger)
   trotz Verkörperung in [`AGENTS.md`](../../../../AGENTS.md) §3.10 — kein Sensor liest einen DoD-Satz
   „ohne X ist `docs-check` rot" gegen `targets.exempt-targets`; gezählt, nicht verkörpert.
@@ -158,6 +158,14 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
   [ADR-0058](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md) Festlegung 2 gehalten
   (das Warten urteilt nicht), kein Re-Evaluierungs-Trigger eingetreten. Hard Rules: keine.
 - **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
+- **Paarungen geprüft am 2026-10-08** (nach dem Move): (a) *Anker*: §7 trägt kein Zielort-Feld,
+  nichts zu prüfen. (b) *Folge-Slice*: keine genannt. (c) *Register*: die drei genannten Pfade
+  existieren, `evidence/` trägt 3, 8 und 17 Dateien. Zweite Hälfte über das ganze Register:
+  3 Verzeichnisse ohne Beleg, namentlich `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+  `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`,
+  `BEO-ALL/planungs-bestand-waechst-schneller-als-er-abgebaut-wird`; nicht als getragen behauptet
+  ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  Festlegung 2).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
