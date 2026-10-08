@@ -389,7 +389,7 @@ Emission unverändert).
   [`eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`](../observations/BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet/observation.md):
   kein Beleg, Ausgang bleibt `geplant` auf
   [ADR-0062](../../adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md) —
-  ADR-0086 beantwortet eine Einzelfrage aus Quelle, die allgemeine Regel trägt weiter ADR-0062. F-2
+  [ADR-0086](../../adr/0086-erzeugtes-repo-bekommt-keine-eigentums-aussage-ueber-seinen-anweisungssatz.md) beantwortet eine Einzelfrage aus Quelle, die allgemeine Regel trägt weiter [ADR-0062](../../adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md). F-2
   (Trigger misst ein Wort) ohne Eintrag: im Trigger als Grenze benannt.
 - **Folge-Slices:** keine — Ausgang *keine Aussage*, kein Ausführungs-Vorgang.
 - **Risiken aus §6:** (1) entfallen · (2) entfallen · (3) entfallen — je Grund in §6.
@@ -428,7 +428,7 @@ Sichtung ist damit vollständig. **Fünf Treffer** berühren diesen Slice:
 | Beobachtung (`BEO-ALL/<slug>`) | Zähler | Stand | wo sie diesen Slice trifft |
 |---|---|---|---|
 | [`anweisungssatz-eigentum-ohne-quelle`](../observations/BEO-ALL/anweisungssatz-eigentum-ohne-quelle/observation.md) | 5× | geplant | §1 — sein `state.md` führt die **emittierte Ebene** nicht als offenen Teil; genau die nimmt dieser Slice |
-| [`eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`](../observations/BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet/observation.md) | 12× | geplant (ADR-0062) | §1 — dieser Slice gibt der Frage einen Träger, statt sie faktisch beantworten zu lassen; §6 Risiko (2) |
+| [`eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`](../observations/BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet/observation.md) | 12× | geplant ([ADR-0062](../../adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md)) | §1 — dieser Slice gibt der Frage einen Träger, statt sie faktisch beantworten zu lassen; §6 Risiko (2) |
 | [`uebergabe-an-andere-rolle-ohne-traeger-artefakt`](../observations/BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt/observation.md) | 7× | verkörpert | §1 — dieser Slice **ist** das Träger-Artefakt einer Übergabe ([ADR-0051](../../adr/0051-anweisungssatz-eigentum-traegt-ueber-die-emissionsgrenze.md) Folgepflicht 4) |
 | [`fremdes-rollen-artefakt-im-implementations-kontext`](../observations/BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext/observation.md) | 9× | verkörpert | §1 — die Abgrenzung *„kein Satz im emittierten Satz"* hält den Slice aus einem fremden Rollen-Artefakt heraus |
 | [`zusammenfassung-staerker-als-ihre-quelle`](../observations/BEO-ALL/zusammenfassung-staerker-als-ihre-quelle/observation.md) | 9× | geplant | §6 Risiko (1) — eine Aussage über *alle* Rollen-Artefakte liefe ihrer Quelle voraus |
