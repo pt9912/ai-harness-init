@@ -20,6 +20,8 @@
 #   6. Die Bau-Rezepte reichen TRAEGER_VERSION an die build-Stage durch.
 #   7. TRAEGER_VERSION traegt keinen Default im Makefile — die Fassung kommt
 #      aus dem uebergebenen Kontext, nie aus dem Pin-Default.
+#   8. Der Kopf des Formel-Skeletts nennt als einzigen Wert im Binary die
+#      Fassung — dieselbe Menge, die der Bau per `-X` injiziert.
 
 setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
@@ -150,6 +152,26 @@ mk_platforms() {
   treffer="$(grep -E '^TRAEGER_VERSION[[:space:]]*[-?+:!]*=[[:space:]]*[^[:space:]]' "$MK" || true)"
   if [ -n "$treffer" ]; then
     echo "TRAEGER_VERSION hat eine Default-Zuweisung — die Fassung kommt aus dem uebergebenen Kontext, nie aus dem Pin-Default; ein Bau ohne uebergebenen Wert injiziert nicht, sonst waere der Fehlt-Fall unerreichbar: $treffer" >&2
+    return 1
+  fi
+}
+
+# Der Kopf des Formel-Skeletts sagt, welcher Wert im Binary reist: keiner ausser der
+# Fassung (ADR-0063 Festlegung 1). Die Quelle dieser Aussage ist die Menge der
+# `-X`-Operanden in den Bau-Dateien, nicht der Kommentar: der Test liest beide und
+# haelt sie gegeneinander. Kommt ein zweiter injizierter Wert hinzu oder faellt die
+# Ausnahme aus dem Satz, wird er rot. Grenze: er sieht `-X`-Operanden in Dockerfile,
+# Makefile und den Workflows, keinen Wert, der auf anderem Weg ins Binary gelangt.
+@test "release: das Formel-Skelett nennt genau die eine Ausnahme, die der Bau ins Binary injiziert" {
+  local injiziert kopf
+  injiziert="$(grep -ohE -- '-X [A-Za-z0-9_./]+=' "$DF" "$MK" "$REPO"/.github/workflows/*.yml | sort -u)"
+  if [ "$injiziert" != "-X main.fassung=" ]; then
+    echo "der Bau injiziert nicht genau die Fassung ins Binary — der Skelett-Satz nennt nur sie als Ausnahme: $injiziert" >&2
+    return 1
+  fi
+  kopf="$(sed -n '1,/^class /p' "$REPO/harness/tools/homebrew-formula.rb.tmpl" | grep '^#' | sed 's/^# \{0,1\}//' | tr '\n' ' ')"
+  if ! grep -qF 'kein Wert reist im Binary außer der Fassung (die Injektion, ADR-0063 Festlegung 1)' <<<"$kopf"; then
+    echo "der Kopf des Formel-Skeletts nennt die Fassungs-Ausnahme samt Anker nicht: $kopf" >&2
     return 1
   fi
 }

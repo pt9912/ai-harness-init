@@ -1,7 +1,8 @@
 # ai-harness-init.rb — Homebrew-Formel-Skeleton (slice-tap-verteilt-die-release-assets,
 # LH-QA-04). Formularseitig: dieselbe Kopplung wie SHA256SUMS nach ADR-0059 — das
-# Formular reist als Release-Asset, kein Wert reist im Binary. Die sechs markierten
-# Platzhalter-Felder unten werden im Release-Workflow je Schnitt aus der SHA256SUMS
+# Formular reist als Release-Asset;
+# kein Wert reist im Binary außer der Fassung (die Injektion, ADR-0063 Festlegung 1).
+# Die sechs markierten Platzhalter-Felder unten werden im Release-Workflow je Schnitt aus der SHA256SUMS
 # desselben Schnitts befuellt (.github/workflows/release.yml, Job `artifacts`) und
 # ersetzen keinen Wert im Binary — dieses Skeleton bleibt dabei unveraendert. Vier
 # Plattformen, nicht sechs: Homebrew traegt Windows nicht.
