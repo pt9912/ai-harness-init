@@ -4,7 +4,7 @@
 
 **Lifecycle:** Der Zustand ist das Verzeichnis, in dem diese Datei liegt; er wechselt nur durch `git mv`.
 
-**Welle:** [welle-adopter-weg-im-ziel](../welle-adopter-weg-im-ziel.md) — Closure verlangt `make gates` und `make full-smoke` grün auf demselben Commit, das *Mehr* über diese DoD.
+**Welle:** [welle-adopter-weg-im-ziel](welle-adopter-weg-im-ziel.md) — Closure verlangt `make gates` und `make full-smoke` grün auf demselben Commit, das *Mehr* über diese DoD.
 
 **Bezug:** [`MR-059`](../../../../harness/conventions.md#mr-059) Setzung 1 und 3 (Erkennung trägt die zugelassenen Formen), [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6), [`AGENTS.md`](../../../../AGENTS.md) §3.6, [ADR-0041](../../adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md) (Altbestand), [ADR-0077](../../adr/0077-wellenlose-slices-archivieren-bei-der-slice-closure.md) (Slice-Closure-Archiv). Herkunft: Fund der Verifikation von `slice-kennungs-erkennung-traegt-die-zugelassenen-formen`, dort §7 Fundliste.
 

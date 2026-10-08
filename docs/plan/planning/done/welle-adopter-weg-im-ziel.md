@@ -18,9 +18,9 @@ zwei Positionen, nicht drei.
 Die Werkzeuge, die ein Adopter im gebootstrappten Ziel fährt — Aktivierung des Commit-Trägers,
 Archivierung, `make slice-mv` nach `done/`, die Zeilenenden-Meldung — halten dort ihre Zusage, und
 die Eigentums-Grenze der emittierten Anweisungssätze ist für die Adopter-Seite entschieden
-([`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen),
-[`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren),
-[`LH-FA-11`](../../../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren)).
+([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen),
+[`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren),
+[`LH-FA-11`](../../../../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren)).
 
 ## 2. Trigger (Welle startet)
 
@@ -41,11 +41,11 @@ Reihenfolge = Abarbeitung; die zwei `full-smoke.sh`-Slices laufen nacheinander (
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| [slice-archivierung-erkennt-benannte-slices](done/slice-archivierung-erkennt-benannte-slices.md) | Archivierung liest benannte Kennungen; Start-Bedingung des Altbestand-Laufs | [`MR-059`](../../../harness/conventions.md#mr-059), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
-| [slice-zeilenenden-meldungstest-bindet-das-verzeichnis](done/slice-zeilenenden-meldungstest-bindet-das-verzeichnis.md) | Meldungstest hält das genannte Verzeichnis | [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
-| [slice-aktivierung-reist-nicht-mit-dem-klon](done/slice-aktivierung-reist-nicht-mit-dem-klon.md) | Klon-Weg des Commit-Trägers gefahren | [`LH-FA-11`](../../../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren) |
-| [slice-mv-kanten-nach-done-sind-bewacht](done/slice-mv-kanten-nach-done-sind-bewacht.md) | `open\|next → done` im Ziel gefahren | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
-| [slice-adopter-seite-der-anweisungssatz-grenze](done/slice-adopter-seite-der-anweisungssatz-grenze.md) | Eigentums-Aussage für die Adopter-Seite (Architect) | [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
+| [slice-archivierung-erkennt-benannte-slices](slice-archivierung-erkennt-benannte-slices.md) | Archivierung liest benannte Kennungen; Start-Bedingung des Altbestand-Laufs | [`MR-059`](../../../../harness/conventions.md#mr-059), [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-zeilenenden-meldungstest-bindet-das-verzeichnis](slice-zeilenenden-meldungstest-bindet-das-verzeichnis.md) | Meldungstest hält das genannte Verzeichnis | [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
+| [slice-aktivierung-reist-nicht-mit-dem-klon](slice-aktivierung-reist-nicht-mit-dem-klon.md) | Klon-Weg des Commit-Trägers gefahren | [`LH-FA-11`](../../../../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren) |
+| [slice-mv-kanten-nach-done-sind-bewacht](slice-mv-kanten-nach-done-sind-bewacht.md) | `open\|next → done` im Ziel gefahren | [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-adopter-seite-der-anweisungssatz-grenze](slice-adopter-seite-der-anweisungssatz-grenze.md) | Eigentums-Aussage für die Adopter-Seite (Architect) | [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
 
 ## 5. Abhängigkeiten
 

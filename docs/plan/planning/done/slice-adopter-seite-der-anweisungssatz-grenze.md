@@ -10,7 +10,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 Setzung 1 — ein freier Slug in lowercase-Kebab-Case, der den **Gegenstand** nennt: die Adopter-Seite
 der Anweisungssatz-Grenze.
 
-**Welle:** [welle-adopter-weg-im-ziel](../welle-adopter-weg-im-ziel.md) — Closure verlangt `make gates` und `make full-smoke` grün auf demselben Commit, das *Mehr* über diese DoD.
+**Welle:** [welle-adopter-weg-im-ziel](welle-adopter-weg-im-ziel.md) — Closure verlangt `make gates` und `make full-smoke` grün auf demselben Commit, das *Mehr* über diese DoD.
 
 **Ebene: dieses Repo, Gegenstand ist die Emission.** Entschieden wird **was** ein erzeugtes Repo an
 Aussage bekommt; die emittierte Instanz selbst gehört dem Adopter (§1).

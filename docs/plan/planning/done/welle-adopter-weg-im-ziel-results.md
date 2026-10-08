@@ -24,7 +24,7 @@
   `open|next → done` ist im Ziel gefahren (`slice-mv-kanten-nach-done-sind-bewacht`).
 - Die Eigentums-Grenze der emittierten Anweisungssätze ist für die Adopter-Seite entschieden
   ([`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren),
-  [`ADR-0086`](../../../adr/0086-erzeugtes-repo-bekommt-keine-eigentums-aussage-ueber-seinen-anweisungssatz.md)):
+  [`ADR-0086`](../../adr/0086-erzeugtes-repo-bekommt-keine-eigentums-aussage-ueber-seinen-anweisungssatz.md)):
   `slice-adopter-seite-der-anweisungssatz-grenze`.
 - Das *Mehr*: die Stufen dieser Slices laufen in `make full-smoke` zusammen mit allen übrigen
   durch (§Verifikation).
@@ -95,7 +95,7 @@
   `1642a029` — die fünf Slices in `done/`; `make gates` rc=0; `make full-smoke` rc=0
   (25 Zeilen `full-smoke: OK`); CI auf dem Commit success. Ein Replay-Set führt dieses Repo nicht.
 - Schritt 2: `CO-001` verlängert mit Folge-Slice `slice-113`, `CO-002` permanent; kein
-  bootstrap-aware Gate; ADR-Zweig: keine Folge-ADR, [`ADR-0028`](../../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
-  bestätigt, Trigger T2 von [`ADR-0051`](../../../adr/0051-anweisungssatz-eigentum-traegt-ueber-die-emissionsgrenze.md)
-  durch [`ADR-0086`](../../../adr/0086-erzeugtes-repo-bekommt-keine-eigentums-aussage-ueber-seinen-anweisungssatz.md) erledigt; Hard Rules bestätigt (Architect-Verdikt
+  bootstrap-aware Gate; ADR-Zweig: keine Folge-ADR, [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
+  bestätigt, Trigger T2 von [`ADR-0051`](../../adr/0051-anweisungssatz-eigentum-traegt-ueber-die-emissionsgrenze.md)
+  durch [`ADR-0086`](../../adr/0086-erzeugtes-repo-bekommt-keine-eigentums-aussage-ueber-seinen-anweisungssatz.md) erledigt; Hard Rules bestätigt (Architect-Verdikt
   `docs/reviews/2026-10-08-welle-adopter-weg-im-ziel-architect-verdikt.md`).
