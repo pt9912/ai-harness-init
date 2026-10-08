@@ -41,7 +41,7 @@ Beobachteten trennen, weil jede Zeile die Fassung der Erfassungsregel nennt, unt
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder in §7 notiert, dass keine Beobachtung anfiel.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die Welle-Closure.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die Welle-Closure.
 
 ## 3. Plan (vor Code)
 
@@ -82,6 +82,7 @@ DoD vollständig, `make gates` grün, Closure-Notiz mit Lerneintrag.
 - **Folge-Slices:** keine.
 - **Risiken aus §6:** (1) weiter offen → Register, s. o.
 - **Drei Paarungen:** dieses Repo fährt Wellen — die Welle-Closure von `welle-erfassungsschicht-im-ziel` prüft sie erneut; die Slice-Closure fährt sie nach dem `git mv` selbst (Zeile unten).
+- **Paarungen geprüft am 2026-10-08** (Planner, nach dem `git mv`): Anker — kein `liegt in`-Feld in §7; Folge-Slice — keiner genannt; Register — `BEO-ALL/span-feld-bedeutung-wechselt-ohne-fassungs-angabe` (4 Belege) und `BEO-ALL/zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel` (6 Belege) existieren und tragen den eigenen Beleg (`ls …/evidence/*.md | wc -l`). Grün.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
