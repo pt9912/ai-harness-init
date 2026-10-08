@@ -1,2 +1,0 @@
-**Vorgang:** slice-register-ueber-der-schwelle-bekommt-seinen-waechter
-**Fund:** Der neue Wächter `make register-ausgang` liest das erste Wort der `**Stand:**`-Zeile über der 3×-Schwelle; ein Ausgang `geplant`, dessen Folge-Slice den Befund nicht deckt, bleibt grün (Grenze im Skriptkopf von `harness/tools/register-ausgang.sh`, Slice-Risiko 1 mit Ausgang *weiter offen*). Die Klasse hat damit ein Gate neben sich, das sie nicht sieht; ein Ausgang mit nicht tragendem Träger ist in diesem Vorgang nicht gefunden worden.
