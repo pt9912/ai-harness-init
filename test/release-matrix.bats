@@ -156,22 +156,36 @@ mk_platforms() {
   fi
 }
 
-# Der Kopf des Formel-Skeletts sagt, welcher Wert im Binary reist: keiner ausser der
-# Fassung (ADR-0063 Festlegung 1). Die Quelle dieser Aussage ist die Menge der
-# `-X`-Operanden in den Bau-Dateien, nicht der Kommentar: der Test liest beide und
-# haelt sie gegeneinander. Kommt ein zweiter injizierter Wert hinzu oder faellt die
-# Ausnahme aus dem Satz, wird er rot. Grenze: er sieht `-X`-Operanden in Dockerfile,
-# Makefile und den Workflows, keinen Wert, der auf anderem Weg ins Binary gelangt.
+# Der Kopf des Formel-Skeletts sagt, wie viele Werte der Bau ins Binary injiziert:
+# genau einen, die Fassung (ADR-0063 Festlegung 1). Die Quelle dieser Aussage ist die
+# Menge der `-X`-Operanden in den Bau-Dateien, nicht der Kommentar: der Test liest beide
+# und haelt sie gegeneinander. Kommt ein zweiter injizierter Wert hinzu oder faellt der
+# Satz aus dem Kopf, wird er rot.
+# Erkannt wird jedes `-X`/`--X` als eigenes Token (davor Zeilenanfang oder ein Zeichen
+# ausser Buchstabe, Ziffer, `_`, `-`), auch in Kommentaren. Als Operand gelesen werden
+# die Formen `-X name=`, `-X=name=`, `-X 'name=`, `-X "name=` mit Leerzeichen oder Tab;
+# ein `-X`, dessen Operand keiner dieser Formen folgt (etwa `-X $(PKG).v=`), ist selbst
+# ein Befund — fail-closed statt still uebersehen.
+# Grenze: er liest Dockerfile, Makefile, die `*.mk` der Wurzel und die Workflows; einen
+# Wert, der auf anderem Weg ins Binary gelangt (eingebettete Vorgaben aus dem
+# Quellstand, ein `-X` aus einer Variable ausserhalb dieser Dateien), sieht er nicht.
 @test "release: das Formel-Skelett nennt genau die eine Ausnahme, die der Bau ins Binary injiziert" {
-  local injiziert kopf
-  injiziert="$(grep -ohE -- '-X [A-Za-z0-9_./]+=' "$DF" "$MK" "$REPO"/.github/workflows/*.yml | sort -u)"
-  if [ "$injiziert" != "-X main.fassung=" ]; then
-    echo "der Bau injiziert nicht genau die Fassung ins Binary — der Skelett-Satz nennt nur sie als Ausnahme: $injiziert" >&2
+  local quellen alle erkannt namen kopf
+  quellen=("$DF" "$MK" "$REPO"/*.mk "$REPO"/.github/workflows/*.yml)
+  alle="$(grep -ohE -- '(^|[^[:alnum:]_-])--?X([^[:alnum:]_-]|$)' "${quellen[@]}" || true)"
+  erkannt="$(grep -ohE -- "(^|[^[:alnum:]_-])--?X(=|[[:space:]]+)[\"']?[A-Za-z0-9_./-]+=" "${quellen[@]}" || true)"
+  if [ "$(grep -c . <<<"$alle")" != "$(grep -c . <<<"$erkannt")" ]; then
+    echo "ein -X in den Bau-Dateien folgt keiner erkannten Operanden-Form — der injizierte Wert ist nicht lesbar: $(grep -nE -- '(^|[^[:alnum:]_-])--?X([^[:alnum:]_-]|$)' "${quellen[@]}")" >&2
+    return 1
+  fi
+  namen="$(sed -E "s/^.?--?X(=|[[:space:]]+)[\"']?//; s/=\$//" <<<"$erkannt" | sort -u)"
+  if [ "$namen" != "main.fassung" ]; then
+    echo "der Bau injiziert nicht genau die Fassung ins Binary — der Skelett-Satz nennt nur sie: $namen" >&2
     return 1
   fi
   kopf="$(sed -n '1,/^class /p' "$REPO/harness/tools/homebrew-formula.rb.tmpl" | grep '^#' | sed 's/^# \{0,1\}//' | tr '\n' ' ')"
-  if ! grep -qF 'kein Wert reist im Binary außer der Fassung (die Injektion, ADR-0063 Festlegung 1)' <<<"$kopf"; then
-    echo "der Kopf des Formel-Skeletts nennt die Fassungs-Ausnahme samt Anker nicht: $kopf" >&2
+  if ! grep -qF 'der Bau injiziert genau einen Wert ins Binary, die Fassung (ADR-0063 Festlegung 1); eingebettete Vorgaben aus dem Quellstand berührt das nicht.' <<<"$kopf"; then
+    echo "der Kopf des Formel-Skeletts nennt die eine Injektion samt Anker nicht: $kopf" >&2
     return 1
   fi
 }
