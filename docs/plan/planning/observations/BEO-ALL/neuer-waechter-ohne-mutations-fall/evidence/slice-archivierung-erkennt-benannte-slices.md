@@ -1,0 +1,2 @@
+**Vorgang:** slice-archivierung-erkennt-benannte-slices
+**Fund:** `TestTitelVonLaesstDenNummernRestStehen` (`internal/archive`) bindet drei Grenz-Fälle des Trenners in `kennungRE`; die Verifikation hat sie per Hand-Mutation rot gesehen (Trenner `-` entfernt; Trenner optional), kein Fall in `test/mutations/` nennt den Test (`grep -l 'TestTitelVonLaesstDenNummernRestStehen' test/mutations/*.sh` leer).

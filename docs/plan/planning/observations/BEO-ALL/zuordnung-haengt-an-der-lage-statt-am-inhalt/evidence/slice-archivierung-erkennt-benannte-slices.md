@@ -1,0 +1,2 @@
+**Vorgang:** slice-archivierung-erkennt-benannte-slices
+**Fund:** Zwei Funde, eine Gelegenheit. `internal/archive` ordnet einen Review-Report über seinen Dateinamen einem Slice zu: ein Report ohne Kennung im Namen bleibt unzugeordnet (Plan §6 (1)), und bei Präfix-Namen gewinnt die längste Kennung, die als Datei im Lifecycle liegt — fehlt der längere Slice dort, zieht der kürzere dessen Reports mit (Plan §6 (2), in einer Fixture der Verifikation gesehen). Im Bestand kein Fall.
