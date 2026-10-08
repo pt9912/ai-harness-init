@@ -1,5 +1,5 @@
 **Stand:** geplant — die Regel schreibt
-[`slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand`](../../../next/slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand.md),
+[`slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand`](../../../in-progress/slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand.md),
 eine Datei in `open/`.
 
 Kein Modul aus `modules:` der [`.d-check.yml`](../../../../../../.d-check.yml) liest
