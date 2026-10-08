@@ -103,7 +103,7 @@ Dogfood-Teil derselben Zeile — ob **dieses** Repo `reviews` einschaltet — bl
 - **Keine Entscheidung über `codepaths` und `planning`.** Für beide führt
   [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
   Setzung 3 bereits einen begründeten Kommentar-Block mit eigenem Trigger, und ihre Auflösung liegt
-  bei [slice-210](../in-progress/slice-210-planning-modul-im-emittierten-doc-gate.md) und
+  bei [slice-210](../done/slice-210-planning-modul-im-emittierten-doc-gate.md) und
   [slice-211](../next/slice-211-codepaths-im-emittierten-doc-gate.md). *Folge-Slice übernimmt es* — beide
   nehmen die Sendung an, weil ihr §1 je genau ein Modul nennt.
 - **Kein neuer Adaptions-Eintrag.** Der Block, dessen Form dieser Slice anwendet, steht bereits als

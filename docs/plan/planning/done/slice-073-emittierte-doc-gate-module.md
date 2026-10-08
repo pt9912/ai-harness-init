@@ -322,7 +322,7 @@ DoD vollständig; Review konform (Modul 10); Verifikation bestätigt (Modul 11);
   auf einen aufgelösten Eintrag, abgelöst von
   [`MR-037`](../../../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst),
   und die Lifecycle-Zeile nennt eine Kurs-URL auf einen abgelösten Tag.
-  — **Ausgang:** eingetreten: [slice-210](../in-progress/slice-210-planning-modul-im-emittierten-doc-gate.md). Die
+  — **Ausgang:** eingetreten: [slice-210](../done/slice-210-planning-modul-im-emittierten-doc-gate.md). Die
   Nachmessung hat die gewachsene Kandidaten-Menge **nicht** mit aufgenommen; `planning` erfüllt
   Kriterium 1 und ist bis heute weder emittiert noch als Nicht-Emission begründet.
   [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
@@ -544,7 +544,7 @@ Lerneintrag-Regeln). **Datum:** 2026-09-10.
   Wächter hat und keinen haben kann: Ein Gleichheits-Sensor über den zwei Modul-Listen färbte rot,
   sobald dieses Repo ein Modul erprobt, das im Ziel nichts zu prüfen hat. Die Lücke ist damit
   benannt und nicht geschlossen; ihr erster fälliger Fall hat mit
-  [slice-210](../in-progress/slice-210-planning-modul-im-emittierten-doc-gate.md) eine Adresse.
+  [slice-210](../done/slice-210-planning-modul-im-emittierten-doc-gate.md) eine Adresse.
   *Kein `liegt in`:* Der Satz oben ist die Lehre, nicht ihr Zielort — verkörpert ist die
   Modul-Regel in
   [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel),
@@ -576,7 +576,7 @@ Lerneintrag-Regeln). **Datum:** 2026-09-10.
 - **Folge-Slices:**
   [slice-209](../open/slice-209-report-trennt-fundort-von-fundmenge.md) (Ein Report trennt Fundort
   von gemessener Fundmenge) — mit dieser Closure geschnitten, ist eine Datei in `open/` ·
-  [slice-210](../in-progress/slice-210-planning-modul-im-emittierten-doc-gate.md) (Das Modul `planning` im
+  [slice-210](../done/slice-210-planning-modul-im-emittierten-doc-gate.md) (Das Modul `planning` im
   emittierten Doc-Gate wird entschieden) — mit dieser Closure geschnitten, ist eine Datei in
   `open/`. Bereits vorhanden und hier nur adressiert:
   [slice-072](../open/slice-072-adr-verweist-nicht-auf-lifecycle.md) und
