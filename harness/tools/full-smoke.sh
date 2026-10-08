@@ -3438,11 +3438,13 @@ planning_im_ziel() {
 		printf '%s\n' "$kf_out" >&2
 		exit 1
 	fi
-	if ! grep -qE '^modules: .*\bplanning\b' "$dir/.d-check.yml" || ! grep -qxF -- 'Nichts in Arbeit.' "$roadmap"; then
-		echo "full-smoke: FEHLER — Ruhe-Marker: das frische Ziel fuehrt planning nicht in modules: oder seine Roadmap traegt die Zeile 'Nichts in Arbeit.' nicht." >&2
+	# Ob planning in modules: steht, prueft hier keine Zeile: ohne das Modul bleiben die
+	# Gegenbeispiele unten gruen, und die Stufe endet dort mit ihrer eigenen Meldung.
+	if ! grep -qxF -- 'Nichts in Arbeit.' "$roadmap"; then
+		echo "full-smoke: FEHLER — Ruhe-Marker: die Roadmap des frischen Ziels traegt die Zeile 'Nichts in Arbeit.' nicht." >&2
 		exit 1
 	fi
-	echo "full-smoke: gruener Start des Ruhe-Markers: docs-check im frischen Ziel '0 Befund(e)', planning aktiv, Marker in der Roadmap."
+	echo "full-smoke: gruener Start des Ruhe-Markers: docs-check im frischen Ziel '0 Befund(e)', Marker in der Roadmap."
 	cp "$roadmap" "$roadmap.pl-orig"
 	for fall in "Slice in in-progress, Marker steht" "kein Slice, Marker fehlt"; do
 		if [ "$fall" = "Slice in in-progress, Marker steht" ]; then
