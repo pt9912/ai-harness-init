@@ -28,9 +28,18 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 ([`harness/tools/homebrew-formula.rb.tmpl`](../../../../harness/tools/homebrew-formula.rb.tmpl))
 behauptet *„kein Wert reist im Binary"* — überbreit seit
 [`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md) Festlegung 1 (die Fassung reist
-per `ldflags` in jedes Release-Binary). Der Satz trägt die Ausnahme: *kein Wert reist im Binary
-außer der Fassung* — ein Satz, nicht eine zweite Quelle für die Festlegung (der Skelett-Satz
+per `ldflags` in jedes Release-Binary). Der Satz sagt, dass der Bau genau einen Wert injiziert,
+die Fassung — ein Satz, nicht eine zweite Quelle für die Festlegung (der Skelett-Satz
 verweist auf [`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md), er ordnet nicht neu).
+Er spricht über die **Injektion des Baus**, nicht über alles, was im Binary steht: eingebettete
+Vorgaben aus dem Quellstand (etwa `TRAEGER_TAG`, zulässig nach
+[`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
+Festlegung 2, und `DefaultTag`/`DefaultBaselineSHA256`) liegen außerhalb seiner Aussage.
+
+**Plan geändert nach Review** (Review-Report dieses Slice vom 2026-10-08, F-2 und F-3):
+der zuvor vorgegebene Wortlaut *„kein Wert reist im Binary außer der Fassung"* war als Allaussage
+falsch, und die Rot-Angabe von DoD (1) nannte mit `docs-check` einen Sensor, der den Fall nicht
+sieht; §3 führt dazu den Test und die Mutations-Fälle, die der Diff trägt.
 
 **Ausdrücklich NICHT in diesem Slice:**
 
@@ -47,11 +56,14 @@ verweist auf [`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md), er
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Ziel-Form: Slice.
 
-- [ ] **(1) Der Skelett-Kommentar nennt die Ausnahme.** Der Satz lautet *„kein Wert reist im
-      Binary außer der Fassung (die Injektion, [`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md)
-      Festlegung 1)"* — der Zeiger ersetzt die breite Aussage, er formuliert die Festlegung
-      nicht um.
-      **Rot:** `make gates` — `docs-check` hält die Referenz auf die ADR.
+- [ ] **(1) Der Skelett-Kommentar nennt die eine Injektion.** Der Satz lautet *„der Bau
+      injiziert genau einen Wert ins Binary, die Fassung ([`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md) Festlegung 1); eingebettete
+      Vorgaben aus dem Quellstand berührt das nicht."* — der Zeiger ersetzt die breite Aussage,
+      er formuliert die Festlegung nicht um.
+      **Rot:** [`test/release-matrix.bats`](../../../../test/release-matrix.bats), Test *„das
+      Formel-Skelett nennt genau die eine Ausnahme, die der Bau ins Binary injiziert"* — hält
+      den Satz als Literal und die `-X`-Menge des Baus gegen ihn; Mutations-Fälle 610 (zweiter
+      injizierter Wert) und 611 (Satz gestrichen).
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor — Rollenwechsel nach Schritt 8
       des Minimal Agent Workflow, kein Self-Review. **Bei einem Ein-Satz-Slice:** der Review
@@ -71,7 +83,9 @@ Regeln dieser Sektion: Baseline-Regelwerk `grundlagen-bootstrap.md`.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| [`harness/tools/homebrew-formula.rb.tmpl`](../../../../harness/tools/homebrew-formula.rb.tmpl) | update | der Kopf-Kommentar nennt die eine Ausnahme statt der breiten Aussage |
+| [`harness/tools/homebrew-formula.rb.tmpl`](../../../../harness/tools/homebrew-formula.rb.tmpl) | update | der Kopf-Kommentar nennt die eine Injektion statt der breiten Aussage |
+| [`test/release-matrix.bats`](../../../../test/release-matrix.bats) | update | Test hält den Satz als Literal und die `-X`-Operanden des Baus gegen ihn (Rot von DoD 1) |
+| `test/mutations/610-fassungs-ausnahme-zweiter-injizierter-wert.sh`, `test/mutations/611-fassungs-ausnahme-aus-dem-skelett-satz-gestrichen.sh` | neu | Zähne des Tests: zweiter injizierter Wert · Satz gestrichen |
 
 ## 4. Trigger
 
