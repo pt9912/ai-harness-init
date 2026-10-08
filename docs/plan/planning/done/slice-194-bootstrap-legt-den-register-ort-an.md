@@ -271,7 +271,7 @@ ein drittes Mal abgelesen.
   §1 aus und begründet den Ausschluss mit genau dem Trigger, der eingetreten ist. Nach
   Baseline-Regelwerk `modul-05-planning-harness.md` §Ziel-Form: Slice ist ein Folge-Slice, der den
   verwiesenen Punkt selbst ausschließt, keine Adresse. Der Trigger geht darum an
-  [slice-211](../in-progress/slice-211-codepaths-im-emittierten-doc-gate.md).
+  [slice-211](../done/slice-211-codepaths-im-emittierten-doc-gate.md).
   **Die übrigen zwei Artefaktklassen des Audits:** Zwei Carveouts stehen
   (`ls docs/plan/carveouts/CO-*.md | wc -l` → **2**), beide mit gesetztem Ausgang und von diesem
   Slice nicht berührt; ein bootstrap-aware Gate führt der Dogfood nicht. Die ADR-Achse liegt beim
@@ -352,7 +352,7 @@ ein drittes Mal abgelesen.
   [`emittierte-vorlagen-klassifikation-ohne-traeger`](../observations/BEO-ALL/emittierte-vorlagen-klassifikation-ohne-traeger/observation.md)
   bleibt bei **3×** — dieser Slice ist seine Auflösung, kein Auftreten —, behält den Ausgang
   `geplant` und trägt als Kennung jetzt
-  [slice-211](../in-progress/slice-211-codepaths-im-emittierten-doc-gate.md): Die Anwendung steht, die
+  [slice-211](../done/slice-211-codepaths-im-emittierten-doc-gate.md): Die Anwendung steht, die
   Wächter-Lücke, die seine `state.md` benennt, ist das im Ziel nicht laufende `codepaths`.
   **Geprüft und ausdrücklich *nicht* gebucht:**
   [`schwellen-uebertritt-ohne-zustaendige-rolle`](../observations/BEO-ALL/schwellen-uebertritt-ohne-zustaendige-rolle/observation.md)
@@ -360,7 +360,7 @@ ein drittes Mal abgelesen.
   der Rolle dieser Closure nicht zusteht"*; hier ist die Rolle der Planner, und das Schneiden eines
   Folge-Slice steht ihr offen.
 - **Folge-Slices:**
-  [slice-211](../in-progress/slice-211-codepaths-im-emittierten-doc-gate.md) (Das Modul `codepaths` im
+  [slice-211](../done/slice-211-codepaths-im-emittierten-doc-gate.md) (Das Modul `codepaths` im
   emittierten Doc-Gate wird entschieden) — mit dieser Closure geschnitten, ist eine Datei in
   `open/`.
 - **Risiken aus §6:** alle **drei** mit genau einem Ausgang, alle drei **weiter offen** ins

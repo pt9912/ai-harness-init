@@ -168,7 +168,7 @@ durch Arbeit.
   — eine eigene Gate-Aktivierung mit eigener Erprobung und eigenem rotem Gegenbeispiel, kein Nachzug
   dieses Slice. **Korrigiert (Review slice-224 MEDIUM-4):** keiner der drei zuvor hier genannten
   Slices trägt diesen Gegenstand — [slice-210](../done/slice-210-planning-modul-im-emittierten-doc-gate.md)
-  und [slice-211](../in-progress/slice-211-codepaths-im-emittierten-doc-gate.md) entscheiden über die
+  und [slice-211](../done/slice-211-codepaths-im-emittierten-doc-gate.md) entscheiden über die
   Modul-Zusammensetzung des emittierten Doc-Gates, [slice-212](../open/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md)
   schließt die Kennungs-Notation wörtlich aus; die Ausschluss-Klasse *Schicht-Abgrenzung* trägt hier
   ohne Adresse. **Gemessen, nicht vermutet:** `internal/emit/templates/commands/` trägt 6 der 25
@@ -243,7 +243,7 @@ Drei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
       Reviewer ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)),
       die emittierte Ebene an
       [slice-210](../done/slice-210-planning-modul-im-emittierten-doc-gate.md)/
-      [slice-211](../in-progress/slice-211-codepaths-im-emittierten-doc-gate.md)/
+      [slice-211](../done/slice-211-codepaths-im-emittierten-doc-gate.md)/
       [slice-212](../open/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md). **Ein
       Rollenwechsel ohne Artefakt ist keiner** (`v6.5.0` · `regelwerk/modul-08-agentenrollen.md`
       §Die neun Übergaben und ihre Artefakte); eine Sendung ohne Empfänger ist der Befund.

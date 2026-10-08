@@ -213,7 +213,7 @@ Klasse wird als **Klasse** benannt und nicht einzeln aufgeführt; die Zugehörig
 Gegenstand („prüft den Emitter"), nicht der Dateiname.
 
 **Die drei Slices am emittierten `d-check.yml`.** [slice-210](../done/slice-210-planning-modul-im-emittierten-doc-gate.md),
-[slice-211](../in-progress/slice-211-codepaths-im-emittierten-doc-gate.md) und
+[slice-211](../done/slice-211-codepaths-im-emittierten-doc-gate.md) und
 [slice-emittierte-gate-vorlage-traegt-targets-und-reviews](../done/slice-emittierte-gate-vorlage-traegt-targets-und-reviews.md)
 entscheiden die **Modul-Liste** der emittierten Startkonfiguration. Das ist eine andere Fläche als
 die der Mitglieder hier: diese entscheiden **Ziele und Wächter**, jene **Module**. Sie bleiben
