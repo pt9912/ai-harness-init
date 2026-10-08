@@ -83,6 +83,11 @@ genau einen Lauf.
    das Datum aus der `**Rolle:** … **Datum:**`-Zeile der Closure-Notiz und sonst das
    Abschluss-Datum der Welle; und ein Review-Report über mehrere Slices trägt die Plural-Form im
    Namen („…-slices-011-014-…"), fällt damit durch die Einsammel-Regel und bleibt flach liegen.
+   Zugeordnet wird ein Report allein über seinen Dateinamen, für eine Nummer wie für einen Namen:
+   ein Report ohne die Kennung im Namen bleibt liegen, und trägt er zwei Namen, von denen einer
+   den anderen als Präfix trägt (`slice-foo` und `slice-foo-bar`), gehört er dem längeren,
+   sofern dessen Datei im Planning-Lifecycle liegt (`ReviewTrifft` und `lifecycleKennungen` in
+   `internal/archive/collect.go`).
 6. **Unter `altbestand` hebt die Vorprüfung genau vier welle- bzw. untergrenzen-gebundene Ausgänge
    auf** — `ergebnisnotiz`, `kein-plan`, `mehrdeutiger-plan` und `untergrenze` (§Sperren) —, weil
    dieser Schlüssel weder einen Welle-Plan noch eine Ergebnisnotiz in `done/` hat und mit seinem

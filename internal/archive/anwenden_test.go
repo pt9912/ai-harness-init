@@ -537,3 +537,28 @@ func lesen(t *testing.T, root, rel string) string {
 	}
 	return string(b)
 }
+
+// TestAnwendenSchreibtDenStubEinesBenanntenSlice: der Stub eines benannten
+// Slice traegt seine Kennung und seinen Titel ohne die Kennung, und sein Report
+// geht ins Archiv. Gegenbeispiel: die Namens-Alternative aus sliceKennungRE
+// streichen — die Kopfzeile lautet `# slice- — …` und der Report bleibt liegen.
+func TestAnwendenSchreibtDenStubEinesBenanntenSlice(t *testing.T) {
+	root := baueBaum(t)
+	done := filepath.Join(root, "docs", "plan", "planning", "done")
+	schreibe(t, filepath.Join(done, "slice-der-benannte.md"),
+		"# Slice slice-der-benannte: Der benannte Gegenstand\n\n**Welle:** ohne Welle\n\n## 7. Closure-Notiz\n\n- **Folge-Slices:** keine\n")
+	schreibe(t, filepath.Join(root, "docs", "reviews", "2026-05-06-slice-der-benannte-r2.md"), "# Review\n")
+	b := einsammeln(t, root, "welle-10")
+	g := &gitMitschreiber{root: root, zipPfad: "docs/plan/planning/done/welle-10/" + archivNameTest}
+	var aus bytes.Buffer
+	if err := archive.Anwenden(root, b, indexDateien(t, root), g, &aus); err != nil {
+		t.Fatal(err)
+	}
+	stub := lesen(t, root, "docs/plan/planning/done/welle-10/slice-der-benannte.md")
+	if kopf := strings.SplitN(stub, "\n", 2)[0]; kopf != "# slice-der-benannte — Der benannte Gegenstand" {
+		t.Errorf("Stub-Kopfzeile = %q", kopf)
+	}
+	if _, err := os.Stat(filepath.Join(root, "docs", "reviews", "2026-05-06-slice-der-benannte-r2.md")); err == nil {
+		t.Errorf("Report des benannten Slice liegt noch in docs/reviews/; Reviews = %v", b.Reviews)
+	}
+}

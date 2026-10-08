@@ -92,30 +92,64 @@ func istWellenlos(feld string) bool {
 	return regexp.MustCompile(`^ohne Welle([^A-Za-z]|$)`).MatchString(feld)
 }
 
-// SliceNummer liest die Slice-Nummer aus einem Dateinamen, MIT dem
-// Buchstaben-Suffix, den ein Re-Schnitt vergibt ("slice-170-titel.md" -> "170",
-// "slice-001a-cli-skeleton.md" -> "001a"). Der Suffix gehoert zur Identitaet: er
-// traegt die Grenze, an der die Review-Reports eingesammelt werden. Leer, wenn
-// der Name keine Slice-Kennung traegt.
+// sliceKennungRE liest die Kennung aus einem Slice-Dateinamen, in zwei Formen
+// (MR-057 Setzung 1): die NUMMER mit dem Buchstaben-Suffix, den ein Re-Schnitt
+// vergibt, vor einem Titel-Suffix (`slice-170-titel.md`, `slice-001a-x.md`), und
+// der NAME, der den ganzen Dateinamen bis `.md` traegt und mit einem Buchstaben
+// beginnt (`slice-<name>.md`, kein Titel-Suffix — dieselbe Form, die
+// sliceDateiMuster als benannte Datei sucht).
+var sliceKennungRE = regexp.MustCompile(`^slice-(?:([0-9]+[A-Za-z]*)|([a-z][a-z0-9]*(?:-[a-z0-9]+)*)\.md$)`)
+
+// SliceNummer liest die Kennung ohne `slice-`-Praefix aus einem Dateinamen:
+// "slice-170-titel.md" -> "170", "slice-001a-cli-skeleton.md" -> "001a",
+// "slice-archiv-x.md" -> "archiv-x". Der Re-Schnitt-Suffix gehoert zur
+// Identitaet: er traegt die Grenze, an der die Review-Reports eingesammelt
+// werden. Leer, wenn der Name keine Slice-Kennung traegt.
+// Gedeckt von TestSliceNummerTraegtDenReSchnittSuffix und
+// TestSliceNummerTraegtDieBenannteForm.
 func SliceNummer(basename string) string {
-	m := regexp.MustCompile(`^slice-([0-9]+[A-Za-z]*)`).FindStringSubmatch(basename)
+	m := sliceKennungRE.FindStringSubmatch(basename)
 	if m == nil {
 		return ""
 	}
-	return m[1]
+	return m[1] + m[2]
 }
 
-// ReviewTrifft sagt, ob ein Review-Report zu dieser Slice-Nummer gehoert. Die
-// Grenze entscheidet, nicht der Glob: hinter der Nummer darf kein Buchstabe und
-// keine Ziffer stehen, sonst zoege "slice-001" die Reports von "slice-001a" mit
-// — und liegen die zwei Haelften eines Re-Schnitts in verschiedenen Wellen,
-// loeschte die erste Archivierung die Reports der zweiten.
-// Gedeckt von TestReviewTrifftSuffixGrenze.
-func ReviewTrifft(name, nummer string) bool {
-	if nummer == "" {
+// ReviewTrifft sagt, ob ein Review-Report zu dieser Slice-Kennung gehoert. Zwei
+// Grenzen entscheiden, nicht der Glob:
+//
+//   - hinter der Kennung steht kein Buchstabe und keine Ziffer, sonst zoege
+//     "slice-001" die Reports von "slice-001a" mit — und liegen die zwei Haelften
+//     eines Re-Schnitts in verschiedenen Wellen, loeschte die erste Archivierung
+//     die Reports der zweiten;
+//   - ein Bindestrich ist hinter einem Namen der Trenner zum Runden-Suffix
+//     (`-r2`, `-verify`) und hinter einem LAENGEREN Namen derselbe Text: traegt
+//     eine der `andere`-Kennungen diese als Praefix vor einem Bindestrich und
+//     trifft den Report selbst, gehoert er ihr. Ohne `andere` entscheidet die
+//     erste Grenze allein.
+//
+// GRENZE: der Dateiname ist die einzige Quelle; ein Report ohne Kennung im Namen
+// bleibt unzugeordnet, und eine Kennung, die als Teilwort `slice-<k>` in einem
+// fremden Namen steht, trifft dessen Reports, sofern der fremde nicht in
+// `andere` steht. Gedeckt von TestReviewTrifftSuffixGrenze und
+// TestReviewTrifftBenanntePraefixGrenze.
+func ReviewTrifft(name, nummer string, andere ...string) bool {
+	if !reviewTraegt(name, nummer) {
 		return false
 	}
-	re := regexp.MustCompile(`slice-` + regexp.QuoteMeta(nummer) + `([^0-9A-Za-z]|$)`)
+	for _, o := range andere {
+		if strings.HasPrefix(o, nummer+"-") && reviewTraegt(name, o) {
+			return false
+		}
+	}
+	return true
+}
+
+func reviewTraegt(name, kennung string) bool {
+	if kennung == "" {
+		return false
+	}
+	re := regexp.MustCompile(`slice-` + regexp.QuoteMeta(kennung) + `([^0-9A-Za-z]|$)`)
 	return re.MatchString(name)
 }
 
@@ -279,10 +313,12 @@ func untergrenze(root string, eintraege []os.DirEntry) string {
 }
 
 // Reviews sammelt die Review-Reports zu den uebergebenen Slice-Dateien: der
-// Dateiname traegt die Nummer, die Suffix-Grenze in ReviewTrifft entscheidet.
-// 1:N ist zulaessig (mehrere Runden desselben Slice); doppelt gezaehlt wird
-// keiner, weil ein Report die Nummern mehrerer eingesammelter Slices tragen kann.
-// Ein fehlendes docs/reviews/ ist kein Fehler, sondern eine leere Liste.
+// Dateiname traegt die Kennung, die zwei Grenzen in ReviewTrifft entscheiden —
+// die zweite gegen jede Slice-Kennung im Lifecycle (lifecycleKennungen), nicht
+// nur gegen die eingesammelten. 1:N ist zulaessig (mehrere Runden desselben
+// Slice); doppelt gezaehlt wird keiner, weil ein Report die Kennungen mehrerer
+// eingesammelter Slices tragen kann. Ein fehlendes docs/reviews/ ist kein
+// Fehler, sondern eine leere Liste.
 func Reviews(root string, slices []string) ([]string, error) {
 	nummern := make([]string, 0, len(slices))
 	for _, p := range slices {
@@ -290,6 +326,7 @@ func Reviews(root string, slices []string) ([]string, error) {
 			nummern = append(nummern, nr)
 		}
 	}
+	alle := lifecycleKennungen(root)
 	eintraege, err := os.ReadDir(filepath.Join(root, filepath.FromSlash(reviewsDir)))
 	if errors.Is(err, fs.ErrNotExist) {
 		return nil, nil
@@ -303,7 +340,7 @@ func Reviews(root string, slices []string) ([]string, error) {
 			continue
 		}
 		for _, nr := range nummern {
-			if ReviewTrifft(e.Name(), nr) {
+			if ReviewTrifft(e.Name(), nr, alle...) {
 				out = append(out, reviewsDir+"/"+e.Name())
 				break
 			}
@@ -311,4 +348,22 @@ func Reviews(root string, slices []string) ([]string, error) {
 	}
 	sort.Strings(out)
 	return out, nil
+}
+
+// lifecycleKennungen liefert die Kennung jeder Slice-Datei im Lifecycle — open/,
+// next/, in-progress/, flach in done/ und in einem Welle-Verzeichnis unter done/
+// (Stubs). Sie ist die Vergleichsmenge der Praefix-Grenze in ReviewTrifft: ein
+// Report gehoert dem laengsten Namen, den er traegt, auch wenn dieser Slice in
+// diesem Lauf nicht eingesammelt wird.
+func lifecycleKennungen(root string) []string {
+	var out []string
+	for _, m := range []string{"open", "next", "in-progress", doneName, doneName + "/*"} {
+		treffer, _ := filepath.Glob(filepath.Join(root, filepath.FromSlash(planningDir), m, "slice-*.md"))
+		for _, t := range treffer {
+			if k := SliceNummer(filepath.Base(t)); k != "" {
+				out = append(out, k)
+			}
+		}
+	}
+	return out
 }

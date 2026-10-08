@@ -51,6 +51,8 @@ Der Fund (Lesung, nicht Grep): `SliceNummer` (`internal/archive/collect.go:101`,
 | `internal/archive/collect.go` | update | `SliceNummer` und `ReviewTrifft`: benannte Form (DoD 1) |
 | `internal/archive/stub.go`, `anwenden.go` | update | Titel und `<Kennung>` des Stubs (DoD 2) |
 | `internal/archive/*_test.go`, `test/mutations/` | update/neu | Fall je Form, rot gesehen (DoD 3, [`AGENTS.md`](../../../../AGENTS.md) §3.6) |
+| `internal/archive/collect.go` (`lifecycleKennungen`) | neu | Die Wortgrenze allein trennt `slice-foo-r2` (Runde) nicht von `slice-foo-bar` (anderer Name) — hinter einem Namen ist der Bindestrich beides. `ReviewTrifft` nimmt darum die Kennungen des Lifecycle als Vergleichsmenge, und ein Report gehört dem längsten Namen, den er trägt (DoD 1, Präfix-Hälfte) |
+| `harness/sensors/archive-welle.md` | update | Die Zuordnungs-Regel steht bei den Grenzen der Einsammel-Regel |
 
 ## 4. Trigger
 

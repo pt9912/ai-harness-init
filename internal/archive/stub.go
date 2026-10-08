@@ -143,19 +143,21 @@ func FormOK(inhalt string) error {
 }
 
 // kennungRE trifft eine Kennung am Anfang der Titelzeile, gefolgt von einem der
-// drei Trenner. Der Gedankenstrich steht als ALTERNATIVE und nicht in einer
-// Zeichenklasse — Go liest die Datei als UTF-8, und die Alternative sagt dasselbe
-// ohne die Byte-Frage aufzuwerfen.
-var kennungRE = regexp.MustCompile(`^(?:slice|welle)-[0-9]+[A-Za-z0-9-]*\s*(?::|—|-)\s*`)
+// drei Trenner — die Nummer (`slice-190`) wie den Namen (`slice-<name>`, MR-057
+// Setzung 1); beide beginnen mit einem Zeichen aus [0-9A-Za-z]. Der
+// Gedankenstrich steht als ALTERNATIVE und nicht in einer Zeichenklasse — Go
+// liest die Datei als UTF-8, und die Alternative sagt dasselbe ohne die
+// Byte-Frage aufzuwerfen. Gedeckt von TestTitelVonStreiftDenNamen.
+var kennungRE = regexp.MustCompile(`^(?:slice|welle)-[0-9A-Za-z][A-Za-z0-9-]*\s*(?::|—|-)\s*`)
 
 var rautenRE = regexp.MustCompile(`^#\s*`)
 var wortRE = regexp.MustCompile(`^(?:Slice|Welle)\s+`)
 
 // TitelVon liefert den Titel aus der ersten Zeile eines Slice- oder Welle-Plans.
 // Drei Ersetzungen laufen der Reihe nach: die fuehrende Raute, das Wort
-// `Slice`/`Welle` dahinter, und eine Kennung `slice-NNN`/`welle-NN` samt Trenner.
-// Getroffen sind damit `# Slice slice-190: T`, `# slice-190 — T`,
-// `# Welle welle-87: T` und `# welle-87 — T`.
+// `Slice`/`Welle` dahinter, und eine Kennung `slice-<Kennung>`/`welle-<Kennung>`
+// samt Trenner. Getroffen sind damit `# Slice slice-190: T`, `# slice-190 — T`,
+// `# Welle welle-87: T`, `# welle-87 — T` und `# Slice slice-<name>: T`.
 //
 // GRENZE, gemessen und nicht wegdefiniert: was keine der drei Ersetzungen trifft,
 // bleibt stehen — auch ein Rest. Die Form `# Slice 190: T` traegt das Wort ohne

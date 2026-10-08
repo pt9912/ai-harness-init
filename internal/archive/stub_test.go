@@ -152,6 +152,22 @@ func TestFormOKMeldetStehengebliebeneUeberschrift(t *testing.T) {
 // `slice-`-Praefix, die dritte Ersetzung greift dort nicht, und der Rest `190:`
 // bleibt stehen. Der Fall steht hier, damit die Zusage nicht weiter reicht als
 // der Code.
+// TestTitelVonStreiftDenNamen: die benannte Kennung geht samt Trenner vom Titel,
+// wie die Nummer. Gegenbeispiel: kennungRE wieder auf `[0-9]+` am Kennungs-Anfang
+// verengen — der Name bleibt im Titel stehen.
+func TestTitelVonStreiftDenNamen(t *testing.T) {
+	faelle := []struct{ kopf, want string }{
+		{"# Slice slice-archivierung-erkennt-benannte-slices: Die Archivierung", "Die Archivierung"},
+		{"# slice-foo-bar — Der Titel", "Der Titel"},
+		{"# Welle welle-adopter-weg-im-ziel — Der Titel", "Der Titel"},
+	}
+	for _, f := range faelle {
+		if got := archive.TitelVon(f.kopf); got != f.want {
+			t.Errorf("TitelVon(%q) = %q, want %q", f.kopf, got, f.want)
+		}
+	}
+}
+
 func TestTitelVonLaesstDenNummernRestStehen(t *testing.T) {
 	faelle := []struct{ kopf, want string }{
 		{"# Slice slice-190: Der Titel", "Der Titel"},

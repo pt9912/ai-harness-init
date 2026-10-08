@@ -3,6 +3,7 @@ package archive_test
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/pt9912/ai-harness-init/internal/archive"
@@ -252,5 +253,80 @@ func TestEinsammelnMeldetArchivierteWelle(t *testing.T) {
 	}
 	if !b.Archiviert {
 		t.Fatal("done/welle-10/ liegt, Archiviert ist trotzdem false")
+	}
+}
+
+// TestSliceNummerTraegtDieBenannteForm haelt die zweite Kennungs-Form (MR-057
+// Setzung 1): der benannte Slice liefert seinen ganzen Namen, die Nummernform
+// bleibt, was sie war. Gegenbeispiel: die Namens-Alternative aus sliceKennungRE
+// streichen — der Name liefert "" und der Fall faellt.
+func TestSliceNummerTraegtDieBenannteForm(t *testing.T) {
+	faelle := map[string]string{
+		"slice-archivierung-erkennt-benannte-slices.md": "archivierung-erkennt-benannte-slices",
+		"slice-v028-schnitt.md":                         "v028-schnitt",
+		"slice-170-titel.md":                            "170",
+		"slice-001a-cli-skeleton.md":                    "001a",
+		"slice-Gross-x.md":                              "",
+		"2026-09-01-slice-foo-r1.md":                    "",
+	}
+	for name, want := range faelle {
+		if got := archive.SliceNummer(name); got != want {
+			t.Errorf("SliceNummer(%q) = %q, want %q", name, got, want)
+		}
+	}
+}
+
+// TestReviewTrifftBenanntePraefixGrenze haelt beide Grenzen fuer Namen: der
+// Report mit voller Kennung und Runden-Suffix gehoert dem Namen; der Report eines
+// LAENGEREN Namens, der diesen als Praefix traegt, gehoert ihm nicht, sobald der
+// laengere in der Vergleichsmenge steht.
+func TestReviewTrifftBenanntePraefixGrenze(t *testing.T) {
+	andere := []string{"foo", "foo-bar", "170"}
+	faelle := []struct {
+		name, kennung string
+		want          bool
+	}{
+		{"2026-10-01-slice-foo.md", "foo", true},
+		{"2026-10-01-slice-foo-r2.md", "foo", true},
+		{"2026-10-01-slice-foo-verify.md", "foo", true},
+		{"2026-10-01-slice-foo-bar.md", "foo", false},
+		{"2026-10-01-slice-foo-bar-r2.md", "foo", false},
+		{"2026-10-01-slice-foo-bar-r2.md", "foo-bar", true},
+		{"2026-10-01-slice-foobar.md", "foo", false},
+		{"2026-10-01-slice-170-r1.md", "170", true},
+	}
+	for _, f := range faelle {
+		if got := archive.ReviewTrifft(f.name, f.kennung, andere...); got != f.want {
+			t.Errorf("ReviewTrifft(%q, %q, %v) = %v, want %v", f.name, f.kennung, andere, got, f.want)
+		}
+	}
+}
+
+// TestEinsammelnReviewsBenannterSlices fuehrt die Zuordnung ueber Einsammeln: der
+// wellenlose benannte Slice zieht seine Reports mit, nicht die des laengeren
+// Namens, der in next/ liegt und in diesem Lauf nicht eingesammelt wird.
+func TestEinsammelnReviewsBenannterSlices(t *testing.T) {
+	root := baumMitWelle(t)
+	schreibe(t, slicePfad(root, "slice-foo.md"), "# Slice slice-foo: F\n\n**Welle:** ohne Welle.\n")
+	schreibe(t, filepath.Join(root, "docs", "plan", "planning", "next", "slice-foo-bar.md"),
+		"# Slice slice-foo-bar: FB\n\n**Welle:** ohne Welle.\n")
+	for _, n := range []string{
+		"2026-10-01-slice-foo.md",
+		"2026-10-02-slice-foo-verify.md",
+		"2026-10-03-slice-foo-bar-r2.md",
+	} {
+		schreibe(t, filepath.Join(root, "docs", "reviews", n), "x\n")
+	}
+	b, err := archive.Einsammeln(root, "welle-10", archive.Abstammung{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for _, r := range b.Reviews {
+		got = append(got, filepath.Base(r))
+	}
+	want := "2026-10-01-slice-foo.md 2026-10-02-slice-foo-verify.md"
+	if strings.Join(got, " ") != want {
+		t.Errorf("Reviews = %v, want %s", got, want)
 	}
 }
