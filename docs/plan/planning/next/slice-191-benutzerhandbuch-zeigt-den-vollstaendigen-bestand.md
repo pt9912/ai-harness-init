@@ -148,7 +148,7 @@ die Workflow-Commands,
 Reviewer-/Closure-Skill —, und beide liegen im Ziel. Für DoD (1) sind sie **keine Ausnahme,
 sondern der Regelfall**: ein Baum, der jede Datei einzeln nennt, zeigt sie ohne Zusatzregel. Dass
 ein Adopter danach auch **weiß**, wozu sie da sind, ist eine andere Frage; sie liegt bei
-[slice-195](../next/slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md) und steht hier unter
+[slice-195](../in-progress/slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md) und steht hier unter
 *Nicht in diesem Slice* (§6).
 
 **Der Baum zeigt den Bestand, nicht das Zielbild.** Die Richtung ist nicht selbstverständlich:
@@ -156,7 +156,7 @@ ein Adopter danach auch **weiß**, wozu sie da sind, ist eine andere Frage; sie 
 `CLAUDE.md` als Teil der Durchsetzungsschicht, und kein Emissions-Pfad legt sie an. Wer den Baum
 aus dem Zielbild ableitet, schreibt eine Zeile über eine Datei, die kein Lauf erzeugt — dieselbe
 Klasse Defekt wie die `docs/plan/`-Zeile oben, nur aus der anderen Quelle. Gemessen steht der Fall
-in [slice-195](../next/slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md) §6; hier gilt die Regel:
+in [slice-195](../in-progress/slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md) §6; hier gilt die Regel:
 die Soll-Menge kommt aus dem Emitter (§3), nicht aus dem Lastenheft.
 
 **Zwei Dinge sind zu liefern, und sie hängen zusammen.** Erst muss entschieden
@@ -295,7 +295,7 @@ den ein Wächter hält; ob es damit erfüllt oder gegenstandslos ist, entscheide
 Dieser Slice schreibt nicht in den fremden Plan.
 
 **Ein dritter Anspruch liegt auf derselben Datei, aber nicht auf demselben Abschnitt.**
-[slice-195](../next/slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md) beschreibt drei Fähigkeiten,
+[slice-195](../in-progress/slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md) beschreibt drei Fähigkeiten,
 die der Vertrag zusagt und der Ist-Text verschweigt — Workflow-Commands, Reviewer-/Closure-Skill,
 Pointer-/Trust-Abschnitt der emittierten README. Die Grenze ist die **Form**: dort Prosa über
 Fähigkeiten (§4, §9), hier die Pfad-Aufzählung in §6 und ihr Wächter. Keine Reihenfolge ist
@@ -391,13 +391,13 @@ dasteht.
 - **Ebenfalls nicht in diesem Slice: die Erklärung der drei übrigen zugesagten Fähigkeiten** —
   Workflow-Commands, Reviewer-/Closure-Skill und der Pointer-/Trust-Abschnitt der emittierten
   README. Ihre Pfade zeigt DoD (1) wie jeden anderen; was sie **leisten**, führt
-  [slice-195](../next/slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md).
+  [slice-195](../in-progress/slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md).
 - **Und ebenfalls nicht: zwei Soll/Ist-Deltas.** Die Sprachenliste in
   [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) und `CLAUDE.md`
   in [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)
   nennen, was der Bestand nicht führt — der Normalfall zwischen einem Zielbild und einem Bestand
   und kein Befund; gemessen stehen beide in
-  [slice-195](../next/slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md) §6. Für diesen Slice folgt
+  [slice-195](../in-progress/slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md) §6. Für diesen Slice folgt
   daraus **eine** Regel und sonst nichts: Der Baum zeigt, was der Emitter anlegt (§1).
 
 ## 7. Closure-Notiz
@@ -493,7 +493,7 @@ Treffer: keine.
   — **berührt, Zuordnung offen.** Die geteilte Hälfte ist wörtlich die Lage aus §4: *„Wer ihn
   liegen lässt, führt einen zweiten Anspruch auf dieselbe Linie"* — zwei offene Pläne über §6 des
   Handbuchs, mit entgegengesetzter Formantwort. (Der dritte,
-  [slice-195](../next/slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md), steht daneben und nicht
+  [slice-195](../in-progress/slice-195-handbuch-nennt-die-zugesagten-faehigkeiten.md), steht daneben und nicht
   dagegen: er beschreibt Fähigkeiten und beantwortet die Formfrage nicht.) Der Anlass ist ein
   **anderer**: die Identitäts-Zeile
   des Eintrags bindet ihn an einen Versions-Sprung, hier ist es ein zweiter Schnitt auf dieselbe
