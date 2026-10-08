@@ -18,7 +18,6 @@ nicht hier.
 
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
 - [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
-- [welle-handbuch-zeigt-den-bestand — Das Handbuch zeigt den Bestand](../welle-handbuch-zeigt-den-bestand.md)
 
 **Nichts in Arbeit.**
 
@@ -131,6 +130,7 @@ Ergebnis-Notiz, keine Nummernfolge.
 | [welle-emittiertes-doc-gate](../done/welle-emittiertes-doc-gate.md) | 2026-10-08 | [welle-emittiertes-doc-gate-results.md](../done/welle-emittiertes-doc-gate-results.md) |
 | [welle-adopter-weg-im-ziel](../done/welle-adopter-weg-im-ziel.md) | 2026-10-08 | [welle-adopter-weg-im-ziel-results.md](../done/welle-adopter-weg-im-ziel-results.md) |
 | [welle-erfassungsschicht-im-ziel](../done/welle-erfassungsschicht-im-ziel.md) | 2026-10-08 | [welle-erfassungsschicht-im-ziel-results.md](../done/welle-erfassungsschicht-im-ziel-results.md) |
+| [welle-handbuch-zeigt-den-bestand](../done/welle-handbuch-zeigt-den-bestand.md) | 2026-10-08 | [welle-handbuch-zeigt-den-bestand-results.md](../done/welle-handbuch-zeigt-den-bestand-results.md) |
 
 Die Tabelle ist nach Wellen-Nummer sortiert, nicht nach Abschluss-Datum; `welle-10` schloss nach
 `welle-12`, und `welle-emittierte-werkzeuge` sowie `welle-v021-faehigkeit` stehen am Ende, weil

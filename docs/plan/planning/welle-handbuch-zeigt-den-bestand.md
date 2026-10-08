@@ -67,6 +67,6 @@ entscheidet und hält; zuletzt 111, dessen Rest an dem Baum zu messen ist, den 1
 
 ## 7. Closure-Notiz
 
-Ergebnis: `welle-handbuch-zeigt-den-bestand-results.md`, Geschwister im Ruheort `done/` (entsteht bei
+Ergebnis: `welle-handbuch-zeigt-den-bestand-results.md`, Geschwister im Ruheort `done/` (geschrieben bei
 der Closure).
 Zähler: das Beobachtungs-Register, eine Ebene über dem Ruheort.
