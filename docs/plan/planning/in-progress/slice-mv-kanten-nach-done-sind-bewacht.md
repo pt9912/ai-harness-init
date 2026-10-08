@@ -93,7 +93,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
 Drei Liefer-Punkte auf zwei Ebenen: Dogfood-Werkzeug und emittierte Fassung im Ziel.
 
-- [ ] **1 — Ein Wächter in `make gates` fährt `harness/tools/slice-mv.sh` über beide Kanten.**
+- [x] **1 — Ein Wächter in `make gates` fährt `harness/tools/slice-mv.sh` über beide Kanten.**
       - Er arbeitet in einem Wegwerf-Repository mit eingehenden Präfix-Verweisen (auch aus
         `done/**` und `docs/reviews/**`), ausgehenden präfixlosen Zielen und präfixlosen
         Geschwister-Verweisen.
@@ -106,31 +106,32 @@ Drei Liefer-Punkte auf zwei Ebenen: Dogfood-Werkzeug und emittierte Fassung im Z
         zählt darin einmal.
       - **Wo der Wächter läuft, entscheidet der Umsetzungs-Lauf und begründet es.** Zur Wahl
         stehen `git` in der bats-Stufe (`BATS_IMAGE` im `Makefile`) oder ein anderer Weg über ein
-        gepinntes Image ([`AGENTS.md`](../../../../AGENTS.md) §3.9).
-- [ ] **2 — `make full-smoke` fährt im gebootstrappten Ziel je Kante einen erfolgreichen
+        gepinntes Image ([`AGENTS.md`](../../../../AGENTS.md) §3.9). Entschieden: die Go-Teststufe
+        (`make test-go`) im Image der `test`-Stage, das `git` führt.
+- [x] **2 — `make full-smoke` fährt im gebootstrappten Ziel je Kante einen erfolgreichen
       Wechsel.** Das emittierte Doku-Gate des Ziels ist danach ohne Befund. Die
       Stufen-Deklaration folgt der Form in `harness/tools/full-smoke.sh`, und
       `docs/user/e2e-abdeckung.md` ist neu erzeugt (`make e2e-abdeckung`).
-- [ ] **3 — Jeder der zwei Wächter ist rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
+- [x] **3 — Jeder der zwei Wächter ist rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
       - Für den Wächter aus DoD 1: ein Fall unter `test/mutations/`, der den Nachzug oder den
         reinen Move bricht, und ein Fall, der in `main()` den Aufruf der präfixlosen Ersetzung
         zurücknimmt. `make mutate` meldet beide rot, die Meldungen sind gelesen.
-      - Für den Fall aus DoD 2: ein einmaliges Rot über einer gebrochenen emittierten Fassung,
-        mit Kommando im Umsetzungs-Commit. `make mutate` kennt für `make full-smoke` keine
-        Fehlschlag-Form.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+      - Für den Fall aus DoD 2: ein Fall unter `test/mutations/` mit `# verify: full-smoke`, der in
+        der emittierten Fassung den Aufruf der präfixlosen Ersetzung zurücknimmt; `make mutate`
+        meldet ihn rot, die Meldung ist gelesen.
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: [`harness/sensors/slice-mv.md`](../../../../harness/sensors/slice-mv.md) §Grenze
+- [x] Doku-Update: [`harness/sensors/slice-mv.md`](../../../../harness/sensors/slice-mv.md) §Grenze
       (`### Kanten …`) nennt die zwei Wächter statt *„Kein Wächter hält die zwei Kanten"*;
       [`harness/sensors/full-smoke.md`](../../../../harness/sensors/full-smoke.md) nennt die neue
       Stufe.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [ ] Die drei Paarungen prüft die Closure von welle-adopter-weg-im-ziel; für diesen Slice nach dem `git mv` geprüft (§7).
 
 ## 3. Plan (vor Code)
 
@@ -161,11 +162,12 @@ keine Start-Bedingung (§1).
 
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): Der Träger aus DoD 1 verlangt einen
   Image-Wechsel mit eigenem Pin und eigener Freshness-Frage. Dann werden DoD 1 und DoD 2 getrennt
-  geschnitten.
+  geschnitten. — *Nicht eingetreten:* der Träger braucht kein neues Image.
 - `in-progress` → `open` (blockiert — Carveout?): Kein gepinntes Image trägt `git` und bats
   zugleich, und ein eigenes Image wäre eine Entscheidung nach
   [`ADR-0003`](../../adr/0003-go-native-binaries.md). Die Entscheidung liegt dann beim
-  Architect.
+  Architect. — *Nicht eingetreten:* das Image der `test`-Stage führt `git`, und der Wächter läuft
+  dort als Go-Test statt in bats.
 
 ## 5. Closure-Trigger
 
@@ -188,13 +190,19 @@ dasteht.
 1. **Der Wächter misst eine nachgebaute Verdrahtung statt der Stelle, die `make slice-mv` fährt.**
    *Absehbar:* entfallen, wenn der Wächter das Skript so aufruft wie das Rezept; sonst
    eingetreten, mit Beleg in `waechter-misst-die-fixture-statt-der-realen-quelle`. —
-   **Ausgang:** <offen>
+   **Ausgang:** **entfallen** — der Go-Test fährt `harness/tools/slice-mv.sh` als Prozess mit der
+   Repo-Wurzel als Arbeitsverzeichnis, wie das Rezept `slice-mv` im `Makefile`. Die Rezeptzeile
+   selbst fährt er nicht (Review F-4); sie ruft das Skript ohne eigene Logik auf, und im Ziel fährt
+   `make full-smoke` `make slice-mv … TO=done` über das emittierte Rezept (Verifikation DoD 1/2).
 2. **Die Laufzeit von `make gates` oder `make full-smoke` wächst merklich.** *Absehbar:*
    entfallen, wenn der Zuwachs gemessen und im Umsetzungs-Commit genannt ist. —
-   **Ausgang:** <offen>
+   **Ausgang:** **entfallen** — gemessen und im Umsetzungs-Commit `7720b489` genannt: Paket
+   `cmd/ai-harness-init` 1,4 s in `make test-go`, `make full-smoke` eine Stufe mehr.
 3. **Die Gruppierung läuft, bevor dieser Slice schließt, und ohne die drei Prüfungen je
    Wechsel.** *Absehbar:* entfallen, wenn der Lauf, der die Kanten nimmt, sie fährt (§1). —
-   **Ausgang:** <offen>
+   **Ausgang:** **entfallen** — die Gruppierung lief vor dieser Closure über den Träger [`.claude/commands/plan-welle.md`](../../../../.claude/commands/plan-welle.md) §Einen Slice stilllegen, der die drei Prüfungen je Wechsel verlangt. Jeder Move-Commit der zwei Kanten ist ein reiner Rename:
+   `for h in $(git log --format='%h %s' | grep -E 'slice-mv: .*(open|next)/ -> done/' | grep -F '(reiner Move)' | cut -d' ' -f1); do git show --numstat --format= -M $h; done | awk '$1 != 0 || $2 != 0' | wc -l`
+   → 0, kein Erwartungswert.
 
 ## 7. Closure-Notiz
 
@@ -210,13 +218,18 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-- **Was hat funktioniert:** offen bis zur Closure.
-- **Was ging anders als geplant:** offen bis zur Closure.
-- **Steering-Loop-Eintrag:** offen bis zur Closure.
-- **Beobachtungs-Register (`../observations/`):** offen bis zur Closure.
-- **Folge-Slices:** offen bis zur Closure.
-- **Risiken aus §6:** offen bis zur Closure, jedes mit genau einem Ausgang.
-- **Drei Paarungen:** offen bis zur Closure.
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10). Eingang:
+Review `docs/reviews/2026-10-08-mv-kanten-review.md` (0/0/2/2; F-1/F-2 behoben in `a4bd8a40`) und
+Verifikation `docs/reviews/2026-10-08-mv-kanten-verifikation.md` (DoD 1–3 bestätigt,
+`make mutate` 589–591 → `3 ok, 0 Befund(e)`, CI-Run `37757328485` grün).
+
+- **Was hat funktioniert:** Der Wächter fährt das reale Skript als Prozess und hält den vollständigen Ist-Bestand von `<from>/`; die drei Mutations-Fälle binden, 589 mit gelesener Ursache (Move und Nachzug in einem Commit).
+- **Was ging anders als geplant:** Der Träger aus DoD 1 ist die Go-Teststufe statt bats, die Image-Annahme in §4 trat nicht ein. Der DoD-3-Wortlaut zu DoD 2 ist auf das Gemessene gezogen: er verlangte ein einmaliges Rot, weil `make mutate` für `make full-smoke` keine Fehlschlag-Form kenne; Fall 591 trägt `# verify: full-smoke`, die Form besteht, und das Rot ist dauerhaft im Set.
+- **Steering-Loop-Eintrag:** **Neuer Sensor** — `TestSliceMvEchtKanteOpenNachDone`/`…NextNachDone` in `make gates` und die `full-smoke`-Stufe `slice_mv_kanten_nach_done_im_ziel` halten die Kanten `open → done` und `next → done`, gebunden durch `test/mutations/589…591`. Kein `liegt in`: es wurde keine 3×-Regel verkörpert.
+- **Beobachtungs-Register (`../observations/`):** `evidence/slice-mv-kanten-nach-done-sind-bewacht.md` in [`zusage-mit-bats-bindung-ohne-eigenen-mutations-fall`](../observations/BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall/observation.md) (Review F-3); der Eintrag steht über der Schwelle mit Ausgang *geplant*, der Beleg weist keinen neuen zu. Kein Beleg für [`waechter-misst-die-fixture-statt-der-realen-quelle`](../observations/BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/observation.md) (Review F-4): der Wächter fährt die reale Quelle, nicht eine Nachbildung. **Lese-Schritt:** kein Eintrag erreicht mit diesem Slice erstmals 3×.
+- **Folge-Slices:** keine.
+- **Risiken aus §6:** drei, jedes *entfallen* mit Begründung in §6.
+- **Drei Paarungen:** nach dem `git mv` geprüft, Zeile folgt im Commit danach.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
