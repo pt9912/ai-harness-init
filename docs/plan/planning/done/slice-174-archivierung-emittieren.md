@@ -192,7 +192,7 @@ dasteht.
   benennen war Planner-Arbeit. Die Eigentums-Frage selbst ist mit
   [ADR-0051](../../adr/0051-anweisungssatz-eigentum-traegt-ueber-die-emissionsgrenze.md) entschieden,
   und die offene **Adopter-Seite** trägt der Folge-Slice
-  [slice-adopter-seite-der-anweisungssatz-grenze](../in-progress/slice-adopter-seite-der-anweisungssatz-grenze.md).
+  [slice-adopter-seite-der-anweisungssatz-grenze](../done/slice-adopter-seite-der-anweisungssatz-grenze.md).
 - **Ein Sensor des Ziels sieht die Stubs womöglich nicht mehr.** Der emittierte Anweisungssatz
   warnt selbst: was auf `done/*.md` keilt, sieht die Stubs eine Ebene tiefer nicht und bleibt
   grün, ohne noch etwas zu prüfen. Was die emittierte Gate-Konfiguration hier zusagt, ist zu
@@ -295,7 +295,7 @@ Backticks).
   # amend-committet-fremde-index-eintraege-mit                     2
   ```
 
-- **Folge-Slices:** [slice-adopter-seite-der-anweisungssatz-grenze](../in-progress/slice-adopter-seite-der-anweisungssatz-grenze.md)
+- **Folge-Slices:** [slice-adopter-seite-der-anweisungssatz-grenze](../done/slice-adopter-seite-der-anweisungssatz-grenze.md)
   (die Adopter-Seite der Anweisungssatz-Grenze) — ist eine Datei in `next/`, wellenlos.
 - **Risiken aus §6:** fünf Punkte, je ein Ausgang — **viermal *entfallen*** (die Meldung ohne Rot
   trägt · die emittierte Gate-Konfiguration deckt die Stub-Ebene über `**` · die offene Plan-Frage
