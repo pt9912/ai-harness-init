@@ -118,7 +118,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 - [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -233,6 +233,15 @@ Review- und Verifikations-Report vom 2026-10-08, Architect-Commit `03f14601`.
   `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/ | wc -l`; kein Erwartungswert.
 - **Folge-Slices:** keine.
 - **Risiken aus §6:** alle drei *entfallen* (§6).
+- **Paarungen geprüft am 2026-10-08, nach dem `git mv`:** (a) Anker — `AGENTS.md` existiert, §3.5
+  trägt `seit slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand`
+  (`sed -n '/^### 3.5/,/^### 3.6/p' AGENTS.md | grep -c 'seit slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand'`
+  → 1) · (b) Folge-Slice — keiner genannt · (c) Register — beide genannten Verzeichnisse existieren
+  mit nicht leerem `evidence/`. Zweite Hälfte über das ganze Register: 3 Verzeichnisse ohne Beleg,
+  namentlich `cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
+  `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`,
+  `planungs-bestand-waechst-schneller-als-er-abgebaut-wird`; nicht als getragen behauptet
+  (Kommando: Schleife über `BEO-ALL/*/evidence/*.md`, kein Erwartungswert).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
