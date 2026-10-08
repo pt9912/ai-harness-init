@@ -218,7 +218,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
   bei der Closure nicht vor (§7).
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -456,6 +456,12 @@ dasteht.
 - **Folge-Slices:** keine; Risiko 4 geht an das vorhandene slice-111.
 - **Risiken aus §6:** (1) **entfallen** (Urteil oben) · (2) **entfallen** · (3) **entfallen** ·
   (4) **eingetreten** → slice-111 · (5) **entfallen** · (6) **entfallen** — je mit Grund in §6.
+
+- **Paarungen geprüft am 2026-10-08, nach dem `git mv`:** (a) Anker — kein `liegt in`-Feld in §7,
+  kein Gegenstand · (b) Folge-Slice — keiner neu; slice-111 liegt in `next/`
+  (`ls docs/plan/planning/*/slice-111-*`) · (c) Register — die drei genannten Verzeichnisse
+  existieren, `evidence/*.md` je nicht leer (7 · 8 · 39, `ls …/evidence/*.md | wc -l`, keine
+  Erwartung). Grün.
 
 ## 8. Sub-Area-Modus-Begründung
 
