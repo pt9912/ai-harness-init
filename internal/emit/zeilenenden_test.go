@@ -224,13 +224,16 @@ func TestZeilenenden_JederKonsumentLiegtUnterEinerZeile(t *testing.T) {
 
 // Rot-Gegenbeispiele: test/mutations/449-zeilenenden-meldung-ohne-aussage.sh (die Meldung
 // nennt nur noch den Pfad) und test/mutations/450-zeilenenden-klasse-wird-konvergent.sh (ein
-// skip-if-present-Pfad wird konvergent — die liegende Datei verschwindet).
+// skip-if-present-Pfad wird konvergent — die liegende Datei verschwindet) und
+// test/mutations/586-zeilenenden-meldung-nennt-fremdes-verzeichnis.sh (die Aussage zu
+// .githooks/.gitattributes nennt das Verzeichnis .claude/hooks/).
 //
 // TestZeilenenden_BelegterPfadBleibtUndWirdGemeldet haelt die Klasse je Pfad (ADR-0067
 // Festlegung 3 und 4). Die drei skip-if-present-Pfade behalten eine liegende Datei ohne
-// `eol=lf` Byte fuer Byte, und die Meldung des Laufs nennt den Pfad UND die Aussage, was dann
-// gilt — die Zeile fehlt, die Dateien des Verzeichnisses tragen im Klon mit core.autocrlf=true
-// CRLF. Die zwei konvergenten Pfade kehren nach einer Verstellung auf die Fassung des Werkzeugs
+// `eol=lf` Byte fuer Byte, und die Meldung des Laufs nennt den Pfad UND, im Text hinter dem
+// Pfad, die Aussage, was dann gilt — die Zeile fehlt, die Dateien des Verzeichnisses dieses
+// Pfades tragen im Klon mit core.autocrlf=true CRLF. Das erwartete Verzeichnis ist das des
+// Pfades aus der eigenen Aufzaehlung, nicht ein Wert aus der Meldung. Die zwei konvergenten Pfade kehren nach einer Verstellung auf die Fassung des Werkzeugs
 // zurueck und melden nichts. Ein freier skip-if-present-Pfad wird geschrieben und schweigt.
 //
 // Die Klassen stehen hier als eigene Aufzaehlung, unabhaengig von PathClass: sie sind die
@@ -285,9 +288,13 @@ func TestZeilenenden_BelegterPfadBleibtUndWirdGemeldet(t *testing.T) {
 			t.Errorf("die Meldung nennt den belegten Pfad %s nicht:\n%s", rel, meldung)
 			continue
 		}
+		// Gesucht wird im Aussage-Teil: dem Rest der Zeile hinter dem Pfad-Token. Das Token traegt
+		// das Verzeichnis selbst; der Rest muss es aus eigenem Text nennen, und die Erwartung
+		// kommt aus skip, nicht aus der Meldung.
+		rest := zeile[strings.Index(zeile, rel)+len(rel):]
 		for _, aussage := range []string{zeilenendenZeile, "core.autocrlf=true", "CRLF", path.Dir(rel) + "/"} {
-			if !strings.Contains(zeile, aussage) {
-				t.Errorf("die Meldung zu %s nennt %q nicht — sie sagt dann nicht, was gilt:\n%s", rel, aussage, zeile)
+			if !strings.Contains(rest, aussage) {
+				t.Errorf("die Meldung zu %s nennt %q hinter dem Pfad nicht — sie sagt dann nicht, was fuer dieses Verzeichnis gilt:\n%s", rel, aussage, zeile)
 			}
 		}
 	}
