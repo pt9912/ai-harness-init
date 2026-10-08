@@ -1,5 +1,7 @@
 # MR-086 — Das Modul reviews bleibt als dritte Position aus dem emittierten Doc-Gate
 
+> **ÜBERHOLT: der Vergleich *„in derselben Form wie `codepaths`"* im Feld Adaption → [`MR-087`](../conventions.md#mr-087--das-modul-codepaths-verlässt-die-ausbleibenden-positionen-des-emittierten-doc-gates).** Die Form des Kommentar-Blocks bindet fort; `codepaths` ist keine ausbleibende Position mehr.
+
 - **Datum:** 2026-10-08
 - **Wirksamkeits-Anlass:** slice-emittierte-gate-vorlage-traegt-targets-und-reviews.
 - **Geltungsbereich:** die Positions-Aufzählung in Setzung 3 von

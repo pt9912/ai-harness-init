@@ -2,6 +2,8 @@
 
 > **ÜBERHOLT: die drei Folgerungen, die dieser Eintrag aus einer Messung an einer benannten Stelle zieht — die zwei in Setzung 3 und die eine im Feld `Ersetzt-Baseline-Regel` → [`MR-055`](../conventions.md#mr-055--eine-stellen-messung-trägt-keine-folgerung-über-eine-eigenschaft).** Die fünf Setzungen, die drei Kriterien und das Fork-Verdikt binden fort; der Auflösungs-Trigger der Position `codepaths` ist eingetreten.
 
+> **ÜBERHOLT: die Position `codepaths` in Setzung 3 → [`MR-087`](../conventions.md#mr-087--das-modul-codepaths-verlässt-die-ausbleibenden-positionen-des-emittierten-doc-gates).** Setzung 3 bindet fort mit den Positionen Requirement-Muster von `ids` und `reviews`; `codepaths` ist emittiert.
+
 > **ÜBERHOLT: die Zahl der Positionen in Setzung 3 („zwei Positionen bleiben aus“) → [`MR-086`](../conventions.md#mr-086--das-modul-reviews-bleibt-als-dritte-position-aus-dem-emittierten-doc-gate).** Setzung 3 bindet fort, um die Position `reviews` erweitert.
 
 - **Datum:** 2026-09-10
