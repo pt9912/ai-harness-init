@@ -285,7 +285,7 @@ Drei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
         → 17). Der Posten verlangt keine Arbeit, die nicht getan ist — er verlangte den Beleg, und
         der fehlte.
       - `lab/templates/.d-check.yml` — **eingetreten → Folge-Slice mit Kennung**
-        [slice-emittierte-gate-vorlage-traegt-targets-und-reviews](../in-progress/slice-emittierte-gate-vorlage-traegt-targets-und-reviews.md).
+        [slice-emittierte-gate-vorlage-traegt-targets-und-reviews](../done/slice-emittierte-gate-vorlage-traegt-targets-und-reviews.md).
         Die Zeile hat zwei Hälften: die emittierte Vorlage (von §1 dieses Plans ausgeschlossen) und
         die Aktivierungsfrage des Moduls `reviews` in der `.d-check.yml` dieses Repos (bei
         [slice-213](../open/slice-213-review-report-laeuft-in-der-tabellen-form.md)). Für die erste
@@ -465,7 +465,7 @@ dasteht.
   Klasse `slice-plan-umfang-waechst-ueber-umsetzung-hinaus`: **2×**
   (`ls docs/plan/planning/observations/BEO-ALL/slice-plan-umfang-waechst-ueber-umsetzung-hinaus/evidence/*.md | wc -l`).
   — **Ausgang: eingetreten → Folge-Slice mit Kennung**
-  [slice-emittierte-gate-vorlage-traegt-targets-und-reviews](../in-progress/slice-emittierte-gate-vorlage-traegt-targets-und-reviews.md).
+  [slice-emittierte-gate-vorlage-traegt-targets-und-reviews](../done/slice-emittierte-gate-vorlage-traegt-targets-und-reviews.md).
   Zwei der sieben Zeilen standen bei der Verifikation ohne Beleg da (DoD-Punkt 2), und eine davon
   hatte **keinen** Empfänger: §9 adressierte sie an diesen Slice, dessen §1 sie ausschloss und vier
   Adressen nannte, von denen keine sie annahm. Die Rückführung aus §4 war **nicht** der richtige
@@ -563,7 +563,7 @@ Backticks).
 - **Folge-Slices:**
   [slice-werkzeug-erkennt-die-benannte-kennung](../done/slice-werkzeug-erkennt-die-benannte-kennung.md)
   (Verweis-Nachzug und Archiv-Stub erkennen eine benannte Slice-Kennung) und
-  [slice-emittierte-gate-vorlage-traegt-targets-und-reviews](../in-progress/slice-emittierte-gate-vorlage-traegt-targets-und-reviews.md)
+  [slice-emittierte-gate-vorlage-traegt-targets-und-reviews](../done/slice-emittierte-gate-vorlage-traegt-targets-und-reviews.md)
   (Die emittierte Doc-Gate-Vorlage nennt die zwei Module, die sie heute verschweigt) — beide Dateien
   in `open/`, beide neu geschnitten. **Es sind die ersten zwei Kennungen dieses Repos ohne Nummer**
   ([`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
