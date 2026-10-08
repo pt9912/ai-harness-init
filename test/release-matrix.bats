@@ -20,8 +20,10 @@
 #   6. Die Bau-Rezepte reichen TRAEGER_VERSION an die build-Stage durch.
 #   7. TRAEGER_VERSION traegt keinen Default im Makefile — die Fassung kommt
 #      aus dem uebergebenen Kontext, nie aus dem Pin-Default.
-#   8. Der Kopf des Formel-Skeletts nennt als einzigen Wert im Binary die
-#      Fassung — dieselbe Menge, die der Bau per `-X` injiziert.
+#   8. Der Bau injiziert per `-X` hoechstens einen Wert ins Binary, die
+#      Fassung (ohne TRAEGER_VERSION keinen; den Null-Fall prueft dieser
+#      Test nicht) — dieselbe Menge, die der Kopf des Formel-Skeletts nennt.
+#      Eingebettete Vorgaben aus dem Quellstand erfasst die Pruefung nicht.
 
 setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
