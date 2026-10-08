@@ -13,8 +13,17 @@
 # Intervall keine Zahl).
 #
 # GRENZE: TRAEGER_WARTEN_GRENZE Sekunden (Default 900 = 15 Minuten), Abstand der
-# Versuche TRAEGER_WARTEN_INTERVALL Sekunden (Default 30). Die Grenze wird zwischen
-# den Versuchen geprueft; ein Versuch, der bei ihr laeuft, wird zu Ende gefahren.
+# Versuche TRAEGER_WARTEN_INTERVALL Sekunden (Default 30). Jeder Versuch bekommt die
+# Restzeit bis zur Grenze als Budget (mindestens 1 s, damit auch Grenze 0 einen
+# Versuch faehrt): `timeout` um den docker-Aufruf (Bild-Pull eingeschlossen), nach
+# dem Budget TERM, 5 s spaeter KILL; im Bild traegt curl dasselbe Budget als
+# --max-time. Die Pause wird auf die Restzeit gekuerzt. Damit endet der Lauf
+# hoechstens 7 s nach der Grenze: 1 s Rundung von SECONDS, 1 s Mindestbudget, 5 s
+# Nachfrist bis KILL. Ein per KILL beendeter docker-Client kann einen Container
+# zuruecklassen; den haelt das Budget von curl, nicht dieser Lauf.
+#
+# DIE GRENZ-ZEILE NENNT DEN AUSGANG DES LETZTEN VERSUCHS — Exit-Code und erste
+# stderr-Zeile (124, 137 oder 143: Budget abgelaufen) —, ohne ihn zu deuten.
 #
 # DER TRANSPORT LAEUFT IM GEPINNTEN BILD, NICHT AUF DEM HOST (AGENTS.md 3.9): das
 # Bild ist dasselbe wie das von harness/tools/traeger-fetch.sh, und sein Pin wird
@@ -66,25 +75,35 @@ asset="ai-harness-init-linux-amd64"
 payload="$(cat <<'ENDE'
 set -eu
 for u in "$WARTEN_SUMS_URL" "$WARTEN_ASSET_URL"; do
-	curl -fsSL -r 0-0 -o /dev/null "$u"
+	curl -fsSL --connect-timeout "$WARTEN_BUDGET" --max-time "$WARTEN_BUDGET" -r 0-0 -o /dev/null "$u"
 done
 ENDE
 )"
+
+fehler_datei="$(mktemp)"
+trap 'rm -f "$fehler_datei"' EXIT
 
 versuch=0
 SECONDS=0
 while :; do
 	versuch=$((versuch + 1))
-	if docker run --rm \
+	budget=$((grenze - SECONDS))
+	[ "$budget" -ge 1 ] || budget=1
+	rc=0
+	timeout -k 5 "$budget" docker run --rm \
 		-e WARTEN_SUMS_URL="$basis/SHA256SUMS" \
 		-e WARTEN_ASSET_URL="$basis/$asset" \
-		"$bild" sh -c "$payload" >/dev/null 2>&1; then
+		-e WARTEN_BUDGET="$budget" \
+		"$bild" sh -c "$payload" >/dev/null 2>"$fehler_datei" || rc=$?
+	if [ "$rc" -eq 0 ]; then
 		echo "release-warten: Release $tag fuehrt SHA256SUMS und $asset — abrufbar beim Versuch $versuch nach ${SECONDS}s."
 		exit 0
 	fi
-	if [ "$SECONDS" -ge "$grenze" ]; then
-		echo "release-warten: GRENZE ERREICHT — Release $tag fuehrt SHA256SUMS oder $asset nach ${SECONDS}s und $versuch Versuch(en) nicht abrufbar (Grenze ${grenze}s); das Warten urteilt nicht, das Urteil faellt in make full-smoke."
+	rest=$((grenze - SECONDS))
+	if [ "$rest" -le 0 ]; then
+		meldung="$(sed -n '1p' "$fehler_datei")"
+		echo "release-warten: GRENZE ERREICHT — Release $tag fuehrt SHA256SUMS oder $asset nach ${SECONDS}s und $versuch Versuch(en) nicht abrufbar (Grenze ${grenze}s); letzter Versuch: Exit $rc${meldung:+, stderr: $meldung}; das Warten urteilt nicht, das Urteil faellt in make full-smoke."
 		exit 0
 	fi
-	sleep "$intervall"
+	if [ "$intervall" -lt "$rest" ]; then sleep "$intervall"; else sleep "$rest"; fi
 done

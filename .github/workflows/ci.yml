@@ -83,9 +83,14 @@ jobs:
   # Tag-Commit faehrt release.yml parallel und publiziert erst danach. Das Warten
   # urteilt nicht und endet immer mit Exit 0; fehlt das Asset nach der Grenze, bricht
   # full-smoke mit AUSGANG LEITUNG (ADR-0058 Festlegung 2). Ist das Release schon
-  # veroeffentlicht, endet es beim ersten Versuch.
+  # veroeffentlicht, endet es beim ersten Versuch. Jeder Versuch ist auf die Restzeit
+  # begrenzt; der Schritt endet hoechstens 7 s nach der Grenze (Kopf des Skripts).
+  # timeout-minutes 45: 15 Minuten Warten plus Raum fuer full-smoke, das am
+  # 2026-10-07 4 bis 9 Minuten lief (gh run view <id> --json jobs, Job full-smoke);
+  # ohne den Wert gilt der GitHub-Default von 360 Minuten.
   full-smoke:
     runs-on: ubuntu-24.04
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       - run: make release-warten

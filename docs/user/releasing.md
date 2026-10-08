@@ -117,9 +117,13 @@ Die Schritt-Folge:
    Fetch je Versuch `SHA256SUMS` und `ai-harness-init-linux-amd64` des
    `TRAEGER_TAG` ab, alle `TRAEGER_WARTEN_INTERVALL` Sekunden (Default 30), bis
    beide abrufbar sind oder `TRAEGER_WARTEN_GRENZE` Sekunden (Default 900)
-   erreicht sind. Er urteilt nicht: in beiden Fällen endet er mit Exit 0 — im
+   erreicht sind; jeder Versuch hat die Restzeit bis zur Grenze als Budget
+   (`timeout` um den docker-Aufruf samt Bild-Pull, `curl --max-time` im Bild),
+   der Schritt endet höchstens 7 s nach der Grenze. Er urteilt nicht: in beiden
+   Fällen endet er mit Exit 0 — im
    ersten mit der Zeile `release-warten: Release <tag> fuehrt SHA256SUMS und …`,
-   im zweiten mit `release-warten: GRENZE ERREICHT — …`. Hat der Release-Lauf
+   im zweiten mit `release-warten: GRENZE ERREICHT — …`, die Exit-Code und erste
+   stderr-Zeile des letzten Versuchs nennt. Hat der Release-Lauf
    innerhalb der Grenze publiziert, läuft `full-smoke` danach gegen das
    veröffentlichte Release; ein gemeinsamer Push von `main` und Tag wartet so
    an beiden Läufen (main-Ref und Tag-Ref). Ist die Grenze überschritten, fällt
