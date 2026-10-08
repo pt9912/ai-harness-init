@@ -5,14 +5,11 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** ohne Welle (Doku-Nachzug, reaktiv). Die drei Fragen aus
-[`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
-Setzung 1: **(1) Bündel?** Nein — ein Nachzug an zwei lebenden Dokumenten, einzeln lieferbar.
-**(2) Gemeinsames Closure-Kriterium?** Nein. **(3) Auslöser reaktiv oder gewollt?** Reaktiv: vier
-geschlossene Slices haben den emittierten Datei-Satz erweitert und die Standard-DoD-Zeile
-*„Doku-Update, falls ein öffentlicher Vertrag berührt ist"* keiner davon bedient (§1). Kein
-Fähigkeits-Sprung — das Werkzeug lernt nichts Neues. Nach Setzung 2 steht wellenlose Arbeit
-**nicht** in der Roadmap.
+**Welle:** [welle-handbuch-zeigt-den-bestand](../welle-handbuch-zeigt-den-bestand.md) — läuft dort
+nach slice-191 (Welle-Plan §4).
+
+**Handbuch-Setzung:** das Handbuch trägt nur den Ist-Zustand — keine Kennungen, keine Chronik,
+nichts Unimplementiertes.
 
 **Ebene: die Nutzer-Doku dieses Repos über das, was das Werkzeug emittiert.** Der Gegenstand ist
 **nicht** die emittierte Doku eines Ziels — die kommt aus den vendored Vorlagen —, sondern
@@ -46,10 +43,8 @@ Vier geschlossene Slices haben den emittierten Satz erweitert
 ([slice-096](../done/slice-096-traeger-liegt-im-ziel.md),
 [slice-097](../done/slice-097-rollen-typen-gehen-mit.md),
 [slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md),
-[slice-099](../done/slice-099-leser-und-aufraeum-kommando.md)). Die zwei lebenden Beschreibungen
-haben sich seither nicht bewegt:
-`git log -1 --format='%h %ad' --date=short -- docs/user/benutzerhandbuch.md README.md` → **9a4ad3b
-2026-07-28** (slice-058, mitwandernd).
+[slice-099](../done/slice-099-leser-und-aufraeum-kommando.md)). Das Handbuch hat seither die
+Bedienung nachgezogen (§4 *Betriebs-Operationen*), den Rest nicht — Kommando unten.
 
 **Die Eigenschaft, über die gezählt wird:** eine Zeichenkette, die ein Adopter im Baum seines
 frisch gebootstrappten Repos sieht oder als `make`-Ziel aufruft. Kommando:
@@ -60,7 +55,11 @@ for t in span-report span-clean erfassung.mk erfassung-feldliste span-emit state
 done
 ```
 
-→ **acht Zeilen, jede mit `0`**. Die Zahl wandert mit beiden Dokumenten und ist **kein**
+→ gemessen am 2026-10-08: **vier** Zeilen mit `0` — `erfassung.mk`, `span-emit`, `agent.role`,
+`Rollen-Typ`. Die übrigen vier nennt das Handbuch: `span-report`, `span-clean` und `state/bin` in
+§4 *Betriebs-Operationen*, `erfassung-feldliste` als Pfad in der Tabelle zum erneuten Aufsetzen.
+Was die Erfassung **aufzeichnet** und welche Rollen-Typen mitkommen, steht nirgends. Die Zahl
+wandert mit beiden Dokumenten und ist **kein**
 Erwartungswert
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2).
@@ -88,8 +87,8 @@ Zwei slice-eigene Punkte (Modul 5 §Ziel-Form: ≤ 3;
 [`AGENTS.md`](../../../../AGENTS.md) §3.6). Wo kein Kommando einen Punkt rot färbt, steht das
 dabei, statt sich hinter einem anderen zu verstecken.
 
-- [ ] **(1) Die acht heute unbenannten Zeichenketten sind entweder benannt oder ausdrücklich einer
-      genannten Menge zugeordnet.** Für jede der acht steht in
+- [ ] **(1) Die heute unbenannten Zeichenketten sind entweder benannt oder ausdrücklich einer
+      genannten Menge zugeordnet.** Für jede der acht aus §1 steht in
       [`docs/user/benutzerhandbuch.md`](../../../user/benutzerhandbuch.md) (§6 *Was wird angelegt*)
       oder in [`README.md`](../../../../README.md) entweder ihr Name oder der Satz, der sie als
       Teil einer benannten Menge ausweist. Der Kommentar zu `harness/mk/` nennt die <!-- d-check:ignore (Pfad im Zielrepo, nicht in diesem) -->
@@ -116,11 +115,11 @@ mit Steering-Loop-Lerneintrag.
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | [`docs/user/benutzerhandbuch.md`](../../../user/benutzerhandbuch.md) §6 *Was wird angelegt* | update | DoD (1) und (2) — der Baum und sein `harness/mk/`-Kommentar | <!-- d-check:ignore (Pfad im Zielrepo, nicht in diesem) -->
-| [`docs/user/benutzerhandbuch.md`](../../../user/benutzerhandbuch.md) §5 *Konfiguration* / §9 *Glossar* | update, **soweit betroffen** | zwei neue `make`-Ziele und ein gitignorierter Zustands-Bereich sind Bedienwissen, nicht nur Baum-Inhalt |
+| [`docs/user/benutzerhandbuch.md`](../../../user/benutzerhandbuch.md) §4 / §9 *Glossar* | update, **soweit betroffen** | die zwei `make`-Ziele und der Zustands-Bereich stehen bereits in §4 *Betriebs-Operationen*; offen ist, was erfasst wird und welche Rollen-Typen mitkommen |
 | [`README.md`](../../../../README.md) | update, **soweit betroffen** | die kürzere der beiden Beschreibungen; welche Aussage wohin gehört, entscheidet der Lauf am Text |
 | [`AGENTS.md`](../../../../AGENTS.md) §4 und [`harness/README.md`](../../../../harness/README.md) §Sensors | **zu prüfen, nicht vorab gesetzt** | beide beschreiben **unser** `span-report` und sind gemessen weiterhin wahr; ob die zwei **emittierten** Ziele dort hingehören, ist die Frage des Laufs. §4 ist die Gate-Beschreibung — **nicht** der Hard-Rules-Block, für den [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1 den Architect setzt |
 | `spec/`, `docs/plan/adr/` | **unverändert** | es wächst keine Anforderung und fällt keine Entscheidung; die vier Klassen sind bereits angenommen ([`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren), [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)) — kein Change Request nach [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) |
-| [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | **unverändert** | wellenlose Arbeit wird dort nicht geführt ([`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) Setzung 2/3) |
+| [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | **unverändert** | die Welle führt den Slice in ihrer Plan-Datei, die Roadmap nur ihren Zeiger |
 
 ## 4. Trigger
 

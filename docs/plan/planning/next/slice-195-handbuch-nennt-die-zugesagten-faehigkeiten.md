@@ -5,9 +5,10 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** ohne Welle. Die Closure-Bedingung wäre die Abschrift der DoD unten
-(Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht).
-Damit **nicht** in der Roadmap geführt.
+**Welle:** [welle-handbuch-zeigt-den-bestand](../welle-handbuch-zeigt-den-bestand.md).
+
+**Handbuch-Setzung:** das Handbuch trägt nur den Ist-Zustand — keine Kennungen, keine Chronik,
+nichts Unimplementiertes. Eine Änderungshistorie führt es nicht mehr.
 
 **Ebene: Dogfood-Doku über die emittierte Ebene.** Gegenstand ist
 [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) — eine Datei
@@ -51,33 +52,28 @@ Kommando, das die Emission zeigt, und das Kommando, das das Schweigen zeigt.
 ```sh
 # LH-FA-08 — die drei Workflow-Commands
 grep -c '".claude/commands/' internal/emit/commands.go                          # 3  emittiert
-grep -nE 'implement-slice|plan-welle|close-welle' docs/user/benutzerhandbuch.md | cut -d: -f1
-grep -n '^## 11\.' docs/user/benutzerhandbuch.md | cut -d: -f1                  # die Historie beginnt hier
+grep -cE 'implement-slice|plan-welle|close-welle' docs/user/benutzerhandbuch.md          # 0
 
 # LH-FA-06 — Reviewer-/Closure-Skill
-ls .harness/baseline/v6.0.0/templates/.harness/skills/ | wc -l                  # 2  Vorlagen im Kurs-Satz
+ls .harness/baseline/v6.17.0/templates/.harness/skills/ | wc -l                  # 2  Vorlagen im Kurs-Satz
 sed -n '/^func inScope/,/^}$/p' internal/emit/templates.go | grep -c 'skills'   # 1  die Regel, die sie durchlaesst
-grep -icE 'reviewer|skill' docs/user/benutzerhandbuch.md                        # 0
+grep -ic 'reviewer' docs/user/benutzerhandbuch.md                               # 0
 
 # LH-FA-05 — Pointer-/Trust-Abschnitt der Root-README
 grep -c 'Was macht es vertrauenswürdig' \
-  .harness/baseline/v6.0.0/templates/project-readme.template.md                 # 1  in der Vorlage
-grep -icE 'pointer|trust|vertrauenswürdig|vorwärts' docs/user/benutzerhandbuch.md  # 0
+  .harness/baseline/v6.17.0/templates/project-readme.template.md                 # 1  in der Vorlage
+grep -icE 'pointer|vertrauenswürdig|vorwärts' docs/user/benutzerhandbuch.md  # 0
 ```
 
 **Keine Erwartungswerte**
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-Setzung 2) — jede Zahl wandert mit dem Emitter oder mit dem Handbuch. Tragend ist bei den zwei
-Handbuch-Nullen, dass sie null sind, und bei den zwei Zeilennummern, dass die einzige Fundzeile
-**hinter** der Überschrift der Änderungshistorie liegt. Was die genannten Muster nicht treffen, ist
-ungemessen: die Null gilt für sie, nicht für jede denkbare Umschreibung.
+Setzung 2) — jede Zahl wandert mit dem Emitter oder mit dem Handbuch. Tragend ist bei den drei
+Handbuch-Nullen (gemessen am 2026-10-08), dass sie null sind. Was die genannten Muster nicht
+treffen, ist ungemessen: die Null gilt für sie, nicht für jede denkbare Umschreibung.
 
-**Der Command-Fall ist der schärfste, weil das Handbuch selbst über ihn urteilt.** Sein
-Kasten in §11 setzt: *„Der Rumpf dieses Handbuchs beschreibt den **Ist-Stand**. Aussagen der Form
-‚**ab** Version X gibt es Y' bleiben dort … Aussagen der Form ‚**in** Version X war es noch
-anders' gehören **hierher**."* Die drei Kommando-Namen stehen ausschließlich in der Historie —
-nach der eigenen Regel des Dokuments am falschen Ort. Im Rumpf trägt sie eine einzige Baum-Zeile
-als *„+ Arbeitsabläufe"*, ohne Namen und ohne Aufgaben-Abschnitt, wie ihn `add-lang` hat.
+**Der Command-Fall ist der schärfste:** die drei Kommando-Namen stehen nirgends im Handbuch. Es
+trägt sie als eine Baum-Zeile *„+ Arbeitsabläufe"* und als Pfad `.claude/commands/` in der Tabelle
+zum erneuten Aufsetzen, ohne Namen und ohne Aufgaben-Abschnitt, wie ihn `add-lang` hat.
 
 **Warum das eine Fähigkeits-Frage ist und keine Baum-Frage.** Ein vollständiger Baum zeigt die
 Pfade — das liefert
@@ -100,22 +96,20 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
   `implement-slice`, `plan-welle` und `close-welle` beim Namen, sagt, dass ein Agent sie als
   Slash-Command aufruft, und wofür jedes steht — die Klasse, die
   [`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) als
-  *Anleitung* gegen die *Durchsetzung* abgrenzt. **Rot:** die Fundzeilen aus §1 liegen weiterhin
-  ausschließlich hinter der `## 11.`-Überschrift.
+  *Anleitung* gegen die *Durchsetzung* abgrenzt. **Rot:** das Command-Kommando aus §1 bleibt `0`.
 - [ ] **(2) Der emittierte Reviewer-/Closure-Skill ist beschrieben.** Das Handbuch nennt
   `.harness/skills/` und sagt, was ein Adopter damit bekommt: die fixierte Urteilsgrundlage der
-  Review-Rolle, die als einzige Rolle eine Skill-Datei trägt. **Die Herkunfts-Aussage gehört
-  dazu**, weil sie den Satz in §4 des Handbuchs bedient, nach dem werkzeug-eigene Infrastruktur
-  bei jedem Lauf *aufgefrischt* wird und Adopter-Boden unangetastet bleibt: dieser Satz kommt aus
-  dem Kurs-Satz und wird konvergent neu geschrieben, die Doc-Chain-Singletons daneben nicht
-  ([`ADR-0006`](../../adr/0006-durchsetzung-commands-tool-als-quelle.md) §Abgrenzung Punkt 2).
-  **Rot:** `grep -icE 'reviewer|skill' docs/user/benutzerhandbuch.md` bleibt `0`.
+  Review-Rolle, die als einzige Rolle eine Skill-Datei trägt. Das Verhalten beim erneuten
+  Aufsetzen steht schon im Handbuch (nur an freiem Pfad,
+  [`ADR-0084`](../../adr/0084-reviewer-skills-im-ziel-skip-if-present.md)) und wird nicht
+  wiederholt.
+  **Rot:** `grep -ic 'reviewer' docs/user/benutzerhandbuch.md` bleibt `0`; `.harness/skills/` steht heute nur als Pfad in der Tabelle zum erneuten Aufsetzen.
 - [ ] **(3) Der Pointer-/Trust-Abschnitt der emittierten README ist beschrieben.** Das Handbuch
   sagt, dass die angelegte `README.md` einen Abschnitt mitbringt, der auf die kanonischen Quellen
   des neuen Repos **vorwärts** verweist, und warum diese Verweise gate-sicher sind — sie zeigen auf
   co-emittierte Ziele, keiner läuft ins Leere, sonst bräche `make docs-check` im frischen Repo
   ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-  **Rot:** `grep -icE 'pointer|trust|vertrauenswürdig|vorwärts' docs/user/benutzerhandbuch.md`
+  **Rot:** `grep -icE 'pointer|vertrauenswürdig|vorwärts' docs/user/benutzerhandbuch.md`
   bleibt `0`.
 - [ ] `make gates` grün.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -143,7 +137,6 @@ Aussagen-Berührung steht hier gar nicht.
 | [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) §4 *Aufgaben* | update | DoD (1) — die Workflow-Commands sind Bedienwissen; §4 führt bereits einen Abschnitt je Aufgabe (`add-lang`, `--arch`) |
 | [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) §6 *Was wird angelegt* | update, **soweit die Fähigkeits-Aussage dort hingehört** | DoD (2) und (3) beschreiben, was der Adopter bekommt; **welcher Abschnitt** sie trägt, entscheidet der Lauf am Text — die Pfad-Aufzählung selbst gehört [slice-191](../next/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md) |
 | [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) §9 *Glossar* | update, **soweit betroffen** | „Slash-Command", „Skill" und „Pointer-Abschnitt" sind Begriffe, die der Rumpf sonst unerklärt einführt |
-| [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) §11 *Änderungshistorie* | update | die Versions-Zeile des Handbuchs; nach dem Kasten in §11 wandert dabei **keine** Fähigkeits-Aussage aus dem Rumpf hierher |
 | `internal/emit/`, `spec/`, `docs/plan/adr/` | **unverändert** | es wächst keine Anforderung, fällt keine Entscheidung und ändert sich kein emittiertes Byte — die drei Fähigkeiten liegen (§1) |
 
 ## 4. Trigger
@@ -184,8 +177,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 Lerneintrag; ohne ihn ist der Slice nur abgelegt.
 
 Zwei beobachtbare Kriterien: **(a)** die *Rot*-Sätze aus §2 sind mit den Kommandos aus §1 erneut
-gemessen und die Ausgabe steht in der Closure-Notiz — die zwei Null-Zahlen sind positiv, und die
-Fundzeilen der Command-Namen liegen nicht mehr allein hinter `## 11.`; **(b)** `make gates` grün.
+gemessen und die Ausgabe steht in der Closure-Notiz — die drei Null-Zahlen sind positiv; **(b)** `make gates` grün.
 
 Dazu: DoD vollständig; Review konform (Modul 10); Verifikation bestätigt (Modul 11); jedes Risiko
 aus §6 mit Ausgang; Closure-Notiz mit Steering-Loop-Lerneintrag; `git mv` nach `done/` als eigener
@@ -260,7 +252,7 @@ Handbuch bildet den Ist-Zustand ab und trägt keine Vorschau.
 
    ```sh
    git grep -c 'CLAUDE\.md' -- 'internal/emit/*.go' 'cmd/**' | wc -l                    # 0 Dateien
-   find .harness/baseline/v6.0.0/templates -iname '*CLAUDE*' | wc -l                     # 0
+   find .harness/baseline/v6.17.0/templates -iname '*CLAUDE*' | wc -l                     # 0
    grep -c '`CLAUDE\.md` (falls vorhanden)' internal/emit/templates/commands/plan-welle.md   # 1
    ```
 

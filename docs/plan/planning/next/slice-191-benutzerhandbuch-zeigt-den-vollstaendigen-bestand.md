@@ -5,9 +5,11 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** ohne Welle. Die Closure-Bedingung wäre die Abschrift der DoD unten
-(Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht).
-Damit **nicht** in der Roadmap geführt.
+**Welle:** [welle-handbuch-zeigt-den-bestand](../welle-handbuch-zeigt-den-bestand.md) — läuft dort
+vor slice-111 (Welle-Plan §4).
+
+**Handbuch-Setzung:** das Handbuch trägt nur den Ist-Zustand — keine Kennungen, keine Chronik,
+nichts Unimplementiertes.
 
 **Ebene: Dogfood-Doku über die emittierte Ebene.** Gegenstand ist
 [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) §6 —
@@ -49,11 +51,11 @@ etwas hinzufügt oder vergisst, sieht es am Handbuch, nicht erst an einem
 fremden Repo.**
 
 §6 *Was wird angelegt* zeigt heute einen zusammenfassenden Baum. Er nennt
-**zwölf** Einträge:
+**vierzehn** Einträge:
 
 ```sh
 sed -n '/^mein-projekt\/$/,/^```$/p' docs/user/benutzerhandbuch.md \
-  | grep -cE '^[│├└ ]'                                              # 12
+  | grep -cE '^[│├└ ]'                                              # 14 (2026-10-08)
 ```
 
 Der reale Bestand eines dokument-only gebootstrappten Ziels ist um eine
@@ -72,9 +74,10 @@ Setzung 2) — beide Zahlen wandern mit dem Generator. Genau das ist der Punkt.
 **Die Verkürzung ist nicht Bequemlichkeit, sie ist der Grund, warum eine Lücke
 lange unbemerkt blieb.** Der Baum fasst `docs/plan/` zu **einer** Zeile zusammen
 und beschreibt ihren Inhalt als *„Architektur-Entscheidungen, Slices, Roadmap,
-Beobachtungs-Register"*. Das Beobachtungs-Register entsteht dort nicht — die
-Zeile behauptet einen Ort, den kein Emissions-Pfad anlegt, und weil sie kein
-Verzeichnis einzeln nennt, fällt das beim Lesen nicht auf. Dasselbe gilt für
+Beobachtungs-Register"*. Ob ein genannter Ort entsteht, sagt eine solche Zeile
+nicht — sie nennt kein Verzeichnis einzeln. Das Register entsteht heute
+(`grep -n 'observationsReadmeTarget =' internal/emit/templates.go`); die Zeile
+ist damit wahr, aber nur zufällig gehalten. Dasselbe gilt für
 `harness/conventions/` und `docs/plan/carveouts/done/`, die
 [slice-190](../done/slice-190-bootstrap-legt-die-versprochenen-orte-an.md) nachträgt.
 
@@ -84,12 +87,14 @@ beschreibt den Ist-Zustand des Werkzeugs; über
 (Erfassungsschicht emittieren) steht darin nichts:
 
 ```sh
-grep -icE 'span|telemetri|erfassung|aufzeichn|feldliste' docs/user/benutzerhandbuch.md   # 0
+grep -icE 'span|telemetri|erfassung|aufzeichn|feldliste' docs/user/benutzerhandbuch.md   # 9 (2026-10-08)
 ```
 
 **Kein Erwartungswert**
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-Setzung 2) — die Zahl wandert mit dem Handbuch; tragend ist, dass sie null ist. Was die fünf Muster
+Setzung 2) — die Zahl wandert mit dem Handbuch; tragend ist, wo die Treffer liegen: in §4
+*Betriebs-Operationen* (Bedienung) und in der Tabelle zum erneuten Aufsetzen (ein Pfad), keiner im
+Baum von §6. Was die fünf Muster
 **nicht** treffen, ist ungemessen: die Null gilt für sie, nicht für jede denkbare Umschreibung.
 
 **Die Lücke ist nicht theoretisch, und sie liegt schon in Phase 1.** Die Feldliste entsteht in
@@ -202,8 +207,8 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
   Zahn.
 - [ ] **(3) Die Aussage über den Register-Ort ist mit dem Bestand in
   Übereinstimmung.** Die `docs/plan/`-Zeile nennt heute das
-  Beobachtungs-Register als Inhalt; ob der Ort entsteht, entscheidet das Risiko
-  aus [slice-190](../done/slice-190-bootstrap-legt-die-versprochenen-orte-an.md) §6.
+  Beobachtungs-Register als Inhalt; der Ort entsteht heute (Kommando in §1), der
+  Baum nennt ihn als Pfad.
   **Dieser Slice erfindet die Entscheidung nicht** — er schreibt den Baum so,
   wie der Bestand zum Zeitpunkt der Umsetzung ist, und der Wächter aus (2) hält
   ihn danach unabhängig davon, wie sie ausfällt.

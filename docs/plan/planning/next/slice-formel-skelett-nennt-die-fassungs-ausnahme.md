@@ -5,8 +5,8 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** ohne Welle. Ein einzelner Doku-Satz; sein Closure-Trigger beobachtet
-nichts, was die DoD darunter nicht ohnehin belegt.
+**Welle:** [welle-handbuch-zeigt-den-bestand](../welle-handbuch-zeigt-den-bestand.md) — erster
+Slice der Welle (Welle-Plan §4).
 
 **Bezug:** [`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md) (Festlegung 1 lässt
 genau einen Wert ins Binary reisen — die Fassung), [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix).
