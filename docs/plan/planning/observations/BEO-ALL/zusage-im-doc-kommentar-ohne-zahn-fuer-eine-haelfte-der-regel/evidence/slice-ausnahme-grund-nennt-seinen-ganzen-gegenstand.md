@@ -1,0 +1,2 @@
+**Vorgang:** slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand
+**Fund:** Der Paketkopf von `internal/ausnahmegrund/ausnahmegrund.go` sagt zu, welche Schreibformen der Ausnahme-Parser liest; die Mutations-Faelle binden die fail-closed-Haelfte (Fall `581`, unbekannte Form), nicht die Anfuehrungszeichen-Behandlung und nicht `scan.ignore` als Block-Liste (Review F-1, im Vorgang behoben in `e7cebd16`). Fuer diese Haelfte besteht kein Fall in `test/mutations/`; ihre Haltbarkeit traegt allein `TestEintraege_Schreibformen` und der Repo-Fall (Verifikation, offen fuer Planner).

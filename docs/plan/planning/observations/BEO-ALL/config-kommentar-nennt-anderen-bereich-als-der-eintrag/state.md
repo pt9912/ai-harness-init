@@ -1,11 +1,9 @@
-**Stand:** geplant — die Regel schreibt
-[`slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand`](../../../in-progress/slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand.md),
-eine Datei in `open/`.
+**Stand:** verkörpert
 
-Kein Modul aus `modules:` der [`.d-check.yml`](../../../../../../.d-check.yml) liest
-Kommentar-Prosa, und `make comment-claims` nimmt die
-[`.d-check.yml`](../../../../../../.d-check.yml) dauerhaft aus — sein Prüfbereich sind vier
-Pfad-Muster unter `internal/`, `cmd/`, `harness/tools/` und `.claude/hooks/`
-([`harness/README.md`](../../../../../../harness/README.md) §Sensors, Punkt 2). Beide Enden fehlen
-damit: Die Reichweite eines Eintrags misst nur eine Sonde gegen das gepinnte Werkzeug, und den Satz
-daneben liest kein Sensor. Träger ist der Lauf, der den Eintrag schreibt.
+Zielort: [`AGENTS.md`](../../../../../../AGENTS.md) §3.5 — der Absatz *„Eine Ausnahme nennt ihren
+ganzen Gegenstand"*, mit dem Herkunfts-Anker
+`seit slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand`
+(`grep -c 'seit slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand' AGENTS.md`, kein
+Erwartungswert). Wächter: die Go-Tests in `internal/ausnahmegrund/` und
+`cmd/ai-harness-init/ausnahmegrund_test.go` (`make test`); ihre Grenze steht im Kopf von
+`internal/ausnahmegrund/ausnahmegrund.go`.

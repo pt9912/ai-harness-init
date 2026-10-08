@@ -92,30 +92,32 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 **Drei Liefer-Punkte**, jeder mit dem Kommando, das ihn **rot** färbt
 ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 
-- [ ] **(1) Jeder Ausnahme-Eintrag der beiden Gate-Konfigurationen** — `.d-check.yml` dieses Repos
-      und die Vorlage, die das Werkzeug ins Ziel schreibt — trägt eine Begründung, die jeden Baum
-      nennt, den sein Schlüssel trifft. Gemessen je Eintrag gegen den Ist-Bestand, nicht gegen eine
-      notierte Liste. **Rot:** ein Fall in `test/mutations/`, der einen Gegenstand aus einer
-      Begründung streicht, färbt den Wächter aus (2) rot.
-- [ ] **(2) Ein Wächter hält die Zusage**, und seine Grenze steht neben ihm: er prüft, ob die
+- [x] **(1) Jeder Ausnahme-Eintrag der erfassten Schlüssel** (`scan.ignore`, `*.exempt-paths`,
+      `codepaths.ignore-refs`, `ignore-refs.in`) in beiden Gate-Konfigurationen — `.d-check.yml`
+      dieses Repos und die Vorlage, die das Werkzeug ins Ziel schreibt — trägt eine Begründung, die
+      jeden Baum nennt, den sein Schlüssel trifft; gemessen je Eintrag gegen den Ist-Bestand. Nicht
+      erfasste Schlüssel und Mess-Grenzen stehen im Kopf von `internal/ausnahmegrund/ausnahmegrund.go`.
+      **Rot:** `make mutate` über die Fälle `579`, `580`, `581` in `test/mutations/` → `3 ok, 0 Befund(e)`
+      (Verifikation); für die
+      Anführungszeichen- und `scan.ignore`-Block-Form besteht kein Fall (§7).
+- [x] **(2) Ein Wächter hält die Zusage**, und seine Grenze steht neben ihm: er prüft, ob die
       Begründung die Bäume nennt, die der Schlüssel trifft — nicht, ob sie *stimmt*.
-      **Rot:** `make test` über dem Fall aus (1); die gelesene Meldung nennt den Eintrag und den
+      **Rot:** `make test` über den Fällen aus (1); die gelesene Meldung nennt den Eintrag und den
       fehlenden Gegenstand.
-- [ ] **(3) Die Regel hat einen Ort.** Entweder liegt sie als Architect-Artefakt vor (ein Eintrag
-      des Adaptions-Blocks oder eine Hard Rule) oder die Ablehnung steht mit Grund in §7; der
-      Register-Eintrag trägt danach den Ausgang *verkörpert* mit Zielort und Herkunfts-Anker
-      `seit slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand`. **Rot:** `make docs-check` —
-      die Anker-Paarung fällt, wenn der genannte Zielort den Anker nicht trägt.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] **(3) Die Regel hat einen Ort:** [`AGENTS.md`](../../../../AGENTS.md) §3.5, Architect-Commit
+      `03f14601`, Anker `seit slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand`, *permanent*; der
+      Register-Eintrag trägt den Ausgang *verkörpert*. **Kein Sensor färbt die Anker-Paarung rot**
+      (die `.d-check.yml` führt kein Modul dafür); geprüft per Hand in der Closure (§7).
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: berührt ist die Begründung neben den Gate-Einträgen; ein öffentlicher Vertrag
-      ist nur berührt, wenn die emittierte Konfiguration ihre Form ändert.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Doku-Update: entfällt — die emittierte Konfiguration ändert nur Kommentarzeilen, ihre Form
+      bleibt (`git diff 748c0180 33ba1221 -- internal/emit/templates/d-check.yml`).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Datei *reconciliation.md* nicht (`ls docs/plan/planning/reconciliation.md`).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -189,41 +191,48 @@ dasteht.
 
 1. **Der Wächter misst die Form der Begründung statt ihres Gegenstands** — er zählt Wörter oder
    Muster und gibt damit ein Muster als Kriterium aus ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
-   *Absehbar:* entfallen, wenn der Wächter die Bäume aus dem Schlüssel ableitet und gegen den Text
-   hält; sonst eingetreten, und die Zusage wird auf das eingeschränkt, was er hält.
-2. **DoD 3 hängt an einer fremden Rolle.** Der Norm-Ort ist Architect-Arbeit; bleibt die
-   Entscheidung aus, steht der Register-Ausgang weiter auf *geplant*. *Absehbar:* entfallen, wenn
-   das Übergabe-Artefakt beantwortet ist; sonst weiter offen im Register.
+   — **Ausgang:** **entfallen** — der Wächter leitet die Bäume aus dem Schlüssel ab (Glob-Treffer
+   bzw. Inline-Code-Zitate im Prüfbereich) und hält sie gegen den Text; die Zusage ist auf das
+   Nennen eingeschränkt, nicht auf das Stimmen (Grenze im Paketkopf).
+2. **DoD 3 hängt an einer fremden Rolle.** — **Ausgang:** **entfallen** — der Architect hat die
+   Regel in [`AGENTS.md`](../../../../AGENTS.md) §3.5 gesetzt (`03f14601`).
 3. **Ein Glob trifft mehr, als seine Begründung je nennen kann** (`**`-Muster über einem wachsenden
-   Baum). *Absehbar:* entfallen, wenn die Begründung die *Klassen* statt der Pfade nennt; sonst
-   Rückführung nach §4.
+   Baum). — **Ausgang:** **entfallen** — gemessen werden die getroffenen Bäume, nicht Einzelpfade;
+   die Rückführung nach §4 wurde nicht gezogen. Was der Repo-Fall nicht sieht (Treffer unter
+   `.harness/baseline/`, emittiert nur die Baseline-Fixture), steht als Grenze am Sensor.
 
 ## 7. Closure-Notiz
 
-Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
-§Das Beobachtungs-Register (vorhandene `BEO-<NNN>` **zitieren** statt neu
-formulieren — sonst zählt das Register zwei Namen getrennt) ·
-`grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln (das
-Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
-wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
-Backticks). Ging der Gegenstand an einen anderen Slice oder entfiel er, trägt
-diese Sektion die Zeile `Gegenstand:` mit Kennung oder Grund und jedes Risiko
-aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
-(`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
-übernimmt).
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10). Eingang:
+Review- und Verifikations-Report vom 2026-10-08, Architect-Commit `03f14601`.
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-kennung-a>, <slice-kennung-b>, <slice-kennung-c> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-<Kennung>.md` | `evidence/slice-<Kennung>.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+- **Was hat funktioniert:** Erst die Menge gemessen, dann der Wächter, dann die Texte (§3) — die
+  Begründungen wurden gegen einen Sensor geschrieben, der sie nicht selbst erzeugt hat. Der
+  emittierte Fall fährt den realen Bootstrap statt einer nachgebauten Konfiguration.
+- **Was ging anders als geplant:** Review F-1 (HIGH): der Paketkopf nannte Formen als gelesen, die
+  still nichts maßen (Block-Item in `'…'`, `scan.ignore` als Block-Liste); behoben in `e7cebd16`
+  samt fail-closed für unbekannte Formen (Fall `581`). F-2/F-3 (MEDIUM): Positiv-Beleg über der
+  gemessenen Menge und Build-Kontext (`.dockerignore`), behoben in `e7cebd16`/`33ba1221`, die
+  Kommentare nachgezogen in `72a06601`. DoD 1 ist auf die erfassten Schlüssel eingeschränkt.
+- **Offen, benannt:** Für die Anführungszeichen- und die `scan.ignore`-Block-Hälfte von F-1 besteht
+  kein Fall in `test/mutations/`; ihre Haltbarkeit trägt allein `TestEintraege_Schreibformen` und
+  der Repo-Fall. Kein neuer Slice — gezählt im Register (unten). Die Anker-Paarung aus DoD 3 hat
+  keinen Sensor; per Hand geprüft (unten).
+- **Steering-Loop-Eintrag:** Regel geschärft: die Begründung neben einem Ausnahme-Eintrag nennt
+  jeden Baum, den ihr Schlüssel stumm schaltet; Wächter `internal/ausnahmegrund/` und
+  `cmd/ai-harness-init/ausnahmegrund_test.go` in `make test` — liegt in `AGENTS.md §3.5`.
+  Auslöser: `BEO-ALL/config-kommentar-nennt-anderen-bereich-als-der-eintrag` (slice-177,
+  slice-197, slice-das-ziel-sagt-was-sein-vendored-baum-ist — 3×).
+- **Beobachtungs-Register (`../observations/`):**
+  [`config-kommentar-nennt-anderen-bereich-als-der-eintrag`](../observations/BEO-ALL/config-kommentar-nennt-anderen-bereich-als-der-eintrag/observation.md)
+  → Stand *verkörpert* (Zielort `AGENTS.md` §3.5), kein neuer Beleg — dieser Slice ist sein
+  Ausgang, kein weiteres Auftreten.
+  `evidence/slice-ausnahme-grund-nennt-seinen-ganzen-gegenstand.md` in
+  [`zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel`](../observations/BEO-ALL/zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel/observation.md)
+  ergänzt (Stand bleibt *verkörpert*). Den Zähler liefert
+  `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/ | wc -l`; kein Erwartungswert.
+- **Folge-Slices:** keine.
+- **Risiken aus §6:** alle drei *entfallen* (§6).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
