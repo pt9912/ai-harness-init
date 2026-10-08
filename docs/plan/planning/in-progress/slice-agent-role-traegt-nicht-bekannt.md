@@ -23,7 +23,7 @@ seine Fassung.
 
 **Berührte Spec-Stellen:** `SPEC-010`, `SPEC-011`, `SPEC-012`, `SPEC-014`, `SPEC-043`, `SPEC-044`, `SPEC-055`, `SPEC-056`, `SPEC-087` (`spezifikation.md §5`).
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912
 
 **Autor:** Planner. **Datum:** 2026-10-07.
 
