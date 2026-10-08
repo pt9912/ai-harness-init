@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.25.0
+**Version:** 0.25.1
 
 **Status:** Draft
 
@@ -322,7 +322,8 @@ und Cache-Felder. Die Liste liegt im Zielrepo lesbar.
   [`LH-FA-15`](../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung).
 - **Zweig und Stand:** Der Span trägt `branch` und `commit`, ohne Netz aus dem git-Zustand
   des Zielrepos abgeleitet; eine PR-Angabe trägt er nicht. Ist die Ableitung nicht
-  möglich, stehen beide Felder leer da statt zu fehlen.
+  möglich, tragen beide Felder die Kennzeichnung *nicht bekannt*, statt leer zu sein oder
+  zu fehlen.
 - **Token- und Cache-Felder:** Der Span eines Subagenten-Laufs trägt Eingabe- und
   Ausgabe-Token, Cache-Erstellung und Cache-Lesen, die Gesamtsumme, die Laufzeit, die Zahl
   der Werkzeug-Aufrufe und die Modell-Bezeichnung — soweit das Ergebnis des Werkzeugs sie
@@ -373,7 +374,7 @@ lief, soweit sie bekannt ist. Die Rolle kommt aus den Rollen-Typen, die
 **Akzeptanzkriterien:**
 
 - **Rolle besetzt:** Ein unter einem Rollen-Typ gestarteter Lauf trägt seine Rolle;
-  leer heißt **unbekannt**, nie rollenlos.
+  eine unbekannte Rolle trägt die Kennzeichnung *nicht bekannt*, nie *rollenlos*.
 - **Rolle wird abgeleitet:** Die Rolle ist einer der sechs Rollen-Namen Planner,
   Architect, Implementer, Reviewer, Verifier, Validator (kleingeschrieben); nennt der
   Agenten-Typ eine Rolle, ist er die Rolle, sonst trägt das Feld die Kennzeichnung
@@ -382,8 +383,8 @@ lief, soweit sie bekannt ist. Die Rolle kommt aus den Rollen-Typen, die
   Lauf mit leerem Rollenfeld. Die Rolle eines gestarteten Subagenten kommt aus
   dem Ergebnis des Laufs, nicht aus der Anforderung an ihn, und steht nie als
   `general-purpose` im Span.
-- **Lesevorschrift:** Jede Auswertung liest ein leeres Rollenfeld als **unbekannt**, nie
-  als *ohne Rolle*; ein Span, dessen Rolle fehlt, ist am Werkzeug-Namen als Lauf mit
+- **Lesevorschrift:** Jede Auswertung liest die Kennzeichnung *nicht bekannt* und — für
+  den Bestand davor — ein leeres Rollenfeld als **unbekannt**, nie als *ohne Rolle*; ein Span, dessen Rolle fehlt, ist am Werkzeug-Namen als Lauf mit
   unbekannter Rolle erkennbar.
 - **Benannte Grenze:** Die emittierte Ebene führt keinen Wächter über die Aufrufform des
   Agenten-Werkzeugs; die Rollen-Achse ruht dort auf Adopter-Disziplin.
@@ -678,3 +679,4 @@ emittierte Datei zu ändern.
 | 0.24.1 | 2026-10-01 | CR: **Kriterien der Anforderungen [`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) und [`LH-FA-13`](../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) bis [`LH-FA-17`](../spec/lastenheft.md#lh-fa-17--auswertung-der-erfassung) bestätigt, soweit der Schnitt 0.24.0 sie ergänzt hat:** Träger und Ablageort (LH-FA-10); Pflicht- und Optionalfelder, Korrelations-Achsen, Zweig und Stand, Token- und Cache-Felder, Leer heißt unbekannt (LH-FA-13); Begrenzter Rohstring (LH-FA-14); Rolle wird abgeleitet, Lesevorschrift (LH-FA-15); Strom und Sequenz, Lock (LH-FA-16); Abdeckung, Aufteilung des Sammelpostens, Berichtsgröße (LH-FA-17). „Betrieb fail-open, Umfang fail-closed" ist auf LH-FA-16 und LH-FA-14 geteilt. Die Zusage zu den Zählern des Haupt-Kontexts ist auf „der Span trägt für ihn keine Zahl" eingeschränkt | Nutzer-Entscheidung 2026-10-01 |
 | 0.24.2 | 2026-10-01 | CR: **Das Kriterium „Benannte Grenze" zur Rollen-Achse wandert von [`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) nach [`LH-FA-15`](../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung)**, wo die Rolle steht; Wortlaut unverändert | Nutzer-Entscheidung 2026-10-01 |
 | 0.25.0 | 2026-10-08 | CR: **Kennzeichnung *nicht bekannt* statt leerem Wert** — [`LH-FA-15`](../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) Kriterium „Rolle wird abgeleitet": bei unbekannter Rolle (`general-purpose`, Haupt-Kontext) trägt das Feld die Kennzeichnung samt Quelle statt leer zu bleiben, die Auswertung zählt den Lauf im Sammelposten wie bisher. [`LH-FA-13`](../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) Kriterium „Leer heißt unbekannt" wird „Leer heißt keiner, unbekannt ist gekennzeichnet": `[]` einer Korrelations-Achse heißt *keiner*, ein unbekannter Wert trägt die Kennzeichnung, nie einen leeren Wert | Nutzer-Entscheidung 2026-10-08 |
+| 0.25.1 | 2026-10-08 | CR: **Folgestellen der Kennzeichnung *nicht bekannt* aus 0.25.0 nachgezogen** — [`LH-FA-13`](../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) Kriterium „Zweig und Stand": ist die Ableitung nicht möglich, tragen beide Felder die Kennzeichnung statt leer zu sein. [`LH-FA-15`](../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) Kriterium „Rolle besetzt": eine unbekannte Rolle trägt die Kennzeichnung; Kriterium „Lesevorschrift": die Auswertung liest die Kennzeichnung und, für den Bestand davor, das leere Rollenfeld als unbekannt. Keine neue Anforderung | Nutzer-Entscheidung 2026-10-08 |
