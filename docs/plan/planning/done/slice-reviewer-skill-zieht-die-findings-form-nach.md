@@ -55,7 +55,7 @@ ls .harness/skills/                                                  # reviewer.
 - **Keine Closure-Note-Reviewer-Datei.** *Anderer Vorgang:* das Repo führt keine ([ADR-0078](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md)
   Festlegung 3); sie anzulegen wäre eine neue Skill-Datei mit eigenem Urteilstyp.
 - **Der Baseline-Stand im Kopf der Skill-Datei.** *Folge-Slice:*
-  [`slice-227`](slice-227-reviewer-skill-nennt-den-vorhandenen-stand.md).
+  [`slice-227`](../open/slice-227-reviewer-skill-nennt-den-vorhandenen-stand.md).
 - **Die Vorgangs-Grenze am Welle-Plan.** *Folge-Slice:*
   `slice-die-vorgangs-grenze-erreicht-den-reviewer-skill`.
 - **Emittierte Ebene.** *Schicht-Abgrenzung:* Skill-Dateien im Ziel sind Vorlagen-Kopien und reisen
