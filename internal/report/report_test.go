@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/pt9912/ai-harness-init/internal/report"
+	"github.com/pt9912/ai-harness-init/internal/span"
 )
 
 // schreibeBestand legt einen Span-Bestand aus fertigen Zeilen an.
@@ -117,6 +118,38 @@ func TestAggregiere_RollenloseCallsNichtImNenner(t *testing.T) {
 	}
 	if got := rolle(t, b, "planner").Zugeteilt; got != 100 {
 		t.Fatalf("planner zugeteilt = %d, erwartet 100 (der rollenlose Call zaehlt nicht mit)", got)
+	}
+}
+
+// TestAggregiere_KennzeichnungIstKeineRolle haelt LH-FA-15 (Lesevorschrift): ein Call,
+// dessen `agent_role` die Kennzeichnung *nicht bekannt* traegt, zaehlt wie ein Call mit
+// leerem Rollenfeld — nicht im Nenner der Splitting-Regel, und keine Rolle
+// *nicht bekannt* entsteht. Spans vor und nach der Umstellung landen damit im selben Posten.
+func TestAggregiere_KennzeichnungIstKeineRolle(t *testing.T) {
+	t.Parallel()
+	dir := schreibeBestand(t,
+		agentSpan("", 100, 0),
+		callSpan("planner"),
+		callSpan("nicht bekannt: agent_type"),
+		callSpan(""),
+		`{"ts":"2026-08-08T10:00:00Z","event":"PostToolUse","tool":"Read","session":"s1",`+
+			`"slice":"nicht bekannt: docs/plan/planning/in-progress","branch":"nicht bekannt: .git/HEAD"}`,
+	)
+
+	b, err := report.Aggregiere(dir)
+	if err != nil {
+		t.Fatalf("Aggregiere: %v", err)
+	}
+	for _, r := range b.Rollen {
+		if span.IsNotKnown(r.Name) || r.Name == "" {
+			t.Fatalf("die Kennzeichnung wurde als Rolle gelesen: %+v", b.Rollen)
+		}
+	}
+	if got := rolle(t, b, "planner").Zugeteilt; got != 100 {
+		t.Fatalf("planner zugeteilt = %d, erwartet 100 (der Call mit Kennzeichnung zaehlt nicht mit)", got)
+	}
+	if b.Fassungen[0] != 5 {
+		t.Fatalf("lesbare Zeilen = %d, erwartet 5 — eine Zeile mit gekennzeichneter Liste bleibt lesbar", b.Fassungen[0])
 	}
 }
 

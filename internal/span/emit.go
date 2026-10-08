@@ -48,9 +48,9 @@ type Span struct {
 	Agent          string   `json:"agent"`
 	AgentType      string   `json:"agent_type"`
 	AgentRole      string   `json:"agent_role"`
-	Slice          []string `json:"slice"`
-	Requirement    []string `json:"requirement"`
-	Adr            []string `json:"adr"`
+	Slice          IDList   `json:"slice"`
+	Requirement    IDList   `json:"requirement"`
+	Adr            IDList   `json:"adr"`
 	Branch         string   `json:"branch"`
 	Commit         string   `json:"commit"`
 	Status         string   `json:"status"`
@@ -101,7 +101,7 @@ func Build(p Payload, root string, now time.Time) Span {
 		Session:        p.Session,
 		Agent:          p.Agent,
 		AgentType:      p.AgentType,
-		AgentRole:      RoleFromAgentType(p.AgentType),
+		AgentRole:      agentRole(p.AgentType),
 		Slice:          slices,
 		Requirement:    reqs,
 		Adr:            adrs,
@@ -175,22 +175,10 @@ func CanonicalRoles() []string {
 	return []string{"planner", "architect", "implementer", "reviewer", "verifier", "validator"}
 }
 
-// RoleFromAgentType fuellt die Rollen-Achse aus Modul 15, SOWEIT sie erreichbar ist.
-// LEER HEISST UNBEKANNT, nicht "rollenlos": eine Rolle gibt es immer, wir kennen sie
-// nur nicht. Die Lesevorschrift dazu steht in spec/spezifikation.md §5, Zeile SPEC-044 — eine Auswertung, die die leeren
-// Spans als eigene Kostenstelle aufsummiert, erfindet eine, die es nicht gibt.
-//
-// wird ein Subagent unter dem Namen seiner Harness-Rolle gestartet, IST der
-// Agenten-Typ die Rolle. Jeder andere Wert — heute durchweg `general-purpose` — ergibt
-// ein LEERES Feld.
-//
-// Warum ein Feld, das heute meist leer bleibt: dieselbe Begruendung wie bei
-// `branch`/`commit`. Ein Pflichtfeld, dessen Ableitung scheitert, gehoert anwesend und
-// leer in die Zeile, sonst kann ein Auswerter "unbekannt" nicht von "nicht vorhanden"
-// unterscheiden. Die frueher hier fehlende Achse machte die Luecke nur in MR-018
-// sichtbar — jetzt steht sie in JEDEM Span. Und sie fuellt sich ohne
-// Erfassungs-Aenderung, sobald rollen-benannte Agenten-Typen existieren.
-// Bewacht von TestAgentRoleFromKnownTypes.
+// RoleFromAgentType normalisiert einen Agenten-Typ gegen die sechs Rollen: nennt er eine,
+// IST er die Rolle, jeder andere Wert ergibt "". Das "" ist ein Zwischenwert und keine
+// Draht-Form — `agent_role` macht daraus die Kennzeichnung (agentRole), `spawned_role`
+// die Abwesenheit des Feldes (response.go).
 func RoleFromAgentType(agentType string) string {
 	for _, role := range CanonicalRoles() {
 		if agentType == role {
@@ -198,6 +186,19 @@ func RoleFromAgentType(agentType string) string {
 		}
 	}
 	return ""
+}
+
+// agentRole fuellt das Pflichtfeld `agent_role` (SPEC-010): die Rolle, wenn der
+// Agenten-Typ eine nennt, sonst die Kennzeichnung mit der Quelle SourceAgentType — bei
+// `general-purpose`, einem fremden Typ und im Haupt-Kontext ohne Typ. Eine Rolle gibt es
+// immer; unbekannt ist sie, nie *rollenlos*, und die Auswertung liest die Kennzeichnung
+// wie das leere Feld des Bestands (SPEC-044).
+// Bewacht von TestAgentRoleFromKnownTypes.
+func agentRole(agentType string) string {
+	if role := RoleFromAgentType(agentType); role != "" {
+		return role
+	}
+	return NotKnown(SourceAgentType)
 }
 
 // StreamName bildet den Strom (Sitzung, Agent) aus ADR-0011 Festlegung 3. Zwei Dinge
@@ -387,44 +388,69 @@ func writeOwnerOnly(file string, data []byte) error {
 // Abweichung zu erklaeren waere gegen ADR-0011 Festlegung 1.4 gewesen ("Ableiten
 // schlaegt deklarieren"). Die vierte Achse, agent.role, wird NICHT hier abgeleitet:
 // sie haengt am LAUF, nicht am Repo-Zustand, und kommt aus dem Agenten-Typ
-// (RoleFromAgentType).
-func correlation(root string) (slices, reqs, adrs []string) {
-	slices, reqs, adrs = []string{}, []string{}, []string{}
-	matches, err := filepath.Glob(filepath.Join(root, "docs/plan/planning/in-progress/slice-*.md"))
+// (agentRole).
+//
+// LEER HEISST KEINER, UNBEKANNT IST GEKENNZEICHNET (SPEC-087): fehlt das Verzeichnis, sind
+// alle drei `[]`. Ist es da und nicht lesbar, tragen alle drei die Kennzeichnung mit dem
+// Verzeichnis als Quelle. Ist eine Slice-Datei nicht lesbar, bleibt `slice` bekannt — der
+// Name kommt aus dem Verzeichnis —, und `requirement`/`adr` tragen die Kennzeichnung mit
+// dieser Datei als Quelle: ihr Bezug-Block fehlt der Liste.
+func correlation(root string) (slices, reqs, adrs IDList) {
+	const inProgress = "docs/plan/planning/in-progress"
+	entries, err := os.ReadDir(filepath.Join(root, inProgress))
 	if err != nil {
-		return slices, reqs, adrs
+		if os.IsNotExist(err) {
+			return IDList{IDs: []string{}}, IDList{IDs: []string{}}, IDList{IDs: []string{}}
+		}
+		return IDList{Unknown: inProgress}, IDList{Unknown: inProgress}, IDList{Unknown: inProgress}
 	}
-	sort.Strings(matches)
+	slices, reqs, adrs = IDList{IDs: []string{}}, IDList{IDs: []string{}}, IDList{IDs: []string{}}
+	var unreadable string
 	seenReq, seenAdr := map[string]bool{}, map[string]bool{}
-	for _, m := range matches {
-		slices = append(slices, strings.TrimSuffix(filepath.Base(m), ".md"))
-		r, a := references(m)
-		for _, id := range r {
-			if !seenReq[id] {
-				seenReq[id] = true
-				reqs = append(reqs, id)
-			}
+	for _, e := range entries {
+		name := e.Name()
+		if !strings.HasPrefix(name, "slice-") || !strings.HasSuffix(name, ".md") {
+			continue
 		}
-		for _, id := range a {
-			if !seenAdr[id] {
-				seenAdr[id] = true
-				adrs = append(adrs, id)
+		slices.IDs = append(slices.IDs, strings.TrimSuffix(name, ".md"))
+		r, a, ok := references(filepath.Join(root, inProgress, name))
+		if !ok {
+			if unreadable == "" {
+				unreadable = inProgress + "/" + name
 			}
+			continue
+		}
+		appendNew(&reqs, seenReq, r)
+		appendNew(&adrs, seenAdr, a)
+	}
+	sort.Strings(slices.IDs)
+	if unreadable != "" {
+		return slices, IDList{Unknown: unreadable}, IDList{Unknown: unreadable}
+	}
+	sort.Strings(reqs.IDs)
+	sort.Strings(adrs.IDs)
+	return slices, reqs, adrs
+}
+
+// appendNew haengt jede noch nicht gesehene Kennung an die Liste.
+func appendNew(list *IDList, seen map[string]bool, ids []string) {
+	for _, id := range ids {
+		if !seen[id] {
+			seen[id] = true
+			list.IDs = append(list.IDs, id)
 		}
 	}
-	sort.Strings(reqs)
-	sort.Strings(adrs)
-	return slices, reqs, adrs
 }
 
 // references liest Anforderungs- und ADR-Kennungen NUR aus dem Bezug-Block, nicht aus
 // der ganzen Datei: ein Slice erwaehnt im Fliesstext fremde Anforderungen
 // (Praezedenzfaelle, Abgrenzungen), und die sind nicht sein Bezug. Der Block reicht von
-// der `**Bezug:**`-Zeile bis zur naechsten Leerzeile.
-func references(file string) (reqs, adrs []string) {
+// der `**Bezug:**`-Zeile bis zur naechsten Leerzeile. ok ist falsch, wenn die Datei nicht
+// lesbar ist — dann ist der Bezug unbekannt, nicht leer.
+func references(file string) (reqs, adrs []string, ok bool) {
 	b, err := os.ReadFile(file)
 	if err != nil {
-		return nil, nil
+		return nil, nil, false
 	}
 	reReq := regexp.MustCompile(`LH-[A-Z]{2}-[0-9]{2}`)
 	reAdr := regexp.MustCompile(`ADR-[0-9]{4}`)
@@ -440,16 +466,31 @@ func references(file string) (reqs, adrs []string) {
 			adrs = append(adrs, reAdr.FindAllString(line, -1)...)
 		}
 	}
-	return reqs, adrs
+	return reqs, adrs, true
 }
 
 // gitRef leitet Branch und Commit aus .git ab — die Korrelations-Achse, nach der
 // Modul 15 mit "Slice/PR/Agent-Rolle" fragt. Die PR-NUMMER selbst ist im Hook nicht
 // erreichbar (sie lebt bei der Forge, der Emitter geht nicht ins Netz); Branch und
-// Commit sind der Anker, ueber den eine Auswertung sie nachschlaegt. Ein `.git` als
-// DATEI (Worktree/Submodul) wird nicht aufgeloest — dann bleiben beide Felder leer,
-// als leer erkennbar.
+// Commit sind der Anker, ueber den eine Auswertung sie nachschlaegt. Ein Feld, das nicht
+// ableitbar ist, traegt die Kennzeichnung mit der Quelle SourceGitHead (SPEC-056): beide
+// bei fehlendem `.git`, bei einem `.git` als DATEI (Worktree/Submodul, nicht aufgeloest)
+// und bei unlesbarem HEAD; `branch` allein bei abgekoppeltem HEAD; `commit` allein, wenn
+// die Referenz nicht aufloest (Zweig ohne Commit) oder keine Kennung traegt.
+// Bewacht von TestUnresolvableGitRefIsMarkedNotKnown.
 func gitRef(root string) (branch, commit string) {
+	branch, commit = readGitRef(root)
+	if branch == "" {
+		branch = NotKnown(SourceGitHead)
+	}
+	if commit == "" {
+		commit = NotKnown(SourceGitHead)
+	}
+	return branch, commit
+}
+
+// readGitRef liest Branch und Commit aus .git; "" heisst nicht ableitbar.
+func readGitRef(root string) (branch, commit string) {
 	gitDir := filepath.Join(root, ".git")
 	fi, err := os.Stat(gitDir)
 	if err != nil || !fi.IsDir() {

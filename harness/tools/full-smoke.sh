@@ -1320,18 +1320,18 @@ leser_und_aufraeumen_im_ziel() {
 # LH-FA-15 (Kriterien "Rolle besetzt" und "Rolle wird abgeleitet", erster Teil): der
 # ABGELEGTE Traeger leitet die Rolle im Ziel ab. Typ-Namen kommen aus den im Ziel
 # emittierten Rollen-Typ-Dateien (`name:`), nicht aus einer Liste im Skript; dazu
-# `general-purpose` und ein fremder Typ (leer = unbekannt, nie rollenlos). Je Payload
+# `general-purpose` und ein fremder Typ (Kennzeichnung `nicht bekannt: agent_type` = unbekannt, nie rollenlos). Je Payload
 # ein eigener Strom (session_id). Grenze: ein synthetischer Payload zeigt die Ableitung
 # des Emitters, nicht ob das Agenten-Werkzeug `agent_type` so setzt (kein Claude-Code-Lauf
 # im Ziel).
-# TEILABDECKUNG von LH-FA-15: gemessen sind "Rolle besetzt" und "leer heisst unbekannt".
+# TEILABDECKUNG von LH-FA-15: gemessen sind "Rolle besetzt" und "unbekannt traegt die Kennzeichnung".
 # NICHT gemessen sind die Rolle aus tool_response.agentType und die Lesevorschrift; im E2E
 # traegt sie kein Waechter. Die Ableitung aus agentType deckt allein der Go-Test in
 # internal/span/response_test.go (Pfad tool_response.agentType, nie tool_input.subagent_type).
 # VOLLZAEHLIGKEIT: die Zahl der emittierten Typ-Dateien gleicht der Zahl der Typ-Quellen
 # dieses Repos (internal/emit/templates/agents/*.md, dieselbe Quelle wie
 # rollen_typen_im_ziel), ohne Namen im Skript; ein Ziel mit weniger Typen faellt.
-# Rot-Gegenbeispiel: RoleFromAgentType (internal/span/emit.go) verfaelscht; eine gekuerzte
+# Rot-Gegenbeispiel: agentRole (internal/span/emit.go) verfaelscht; eine gekuerzte
 # Typ-Liste im Ziel.
 rolle_im_ziel() {
 	local repo="$1" kennung="$2"
@@ -1361,7 +1361,7 @@ rolle_im_ziel() {
 		echo "full-smoke: FEHLER — $kennung: LH-FA-15: das Ziel emittiert ${#faelle[@]} Rollen-Typ-Dateien, die Quelle fuehrt $soll — 'jeder emittierte Rollen-Typ' misst sonst eine Teilmenge." >&2
 		exit 1
 	fi
-	faelle+=("general-purpose:" "kein-rollen-typ:")
+	faelle+=("general-purpose:nicht bekannt: agent_type" "kein-rollen-typ:nicht bekannt: agent_type")
 	for typ in "${faelle[@]}"; do
 		name="${typ%%:*}"
 		erwartet="${typ#*:}"
@@ -1375,11 +1375,11 @@ rolle_im_ziel() {
 		fi
 		zeile="$(cat "$repo/.harness/state/spans/$sess.jsonl" 2>/dev/null || true)"
 		if ! grep -qF -- "\"agent_type\":\"$name\"" <<<"$zeile" || ! grep -qF -- "\"agent_role\":\"$erwartet\"" <<<"$zeile"; then
-			echo "full-smoke: FEHLER — $kennung: LH-FA-15: bei agent_type=$name erwartet die Span-Zeile des abgelegten Traegers \"agent_role\":\"$erwartet\" (leer = unbekannt, nie rollenlos) — Zeile: [$zeile]" >&2
+			echo "full-smoke: FEHLER — $kennung: LH-FA-15: bei agent_type=$name erwartet die Span-Zeile des abgelegten Traegers \"agent_role\":\"$erwartet\" (die Kennzeichnung heisst unbekannt, nie rollenlos) — Zeile: [$zeile]" >&2
 			exit 1
 		fi
 	done
-	echo "full-smoke: Rolle im Ziel ($kennung): $n Payloads ueber den Wrapper — jeder emittierte Rollen-Typ traegt seinen Namen als agent_role, general-purpose und ein fremder Typ ein leeres Feld (LH-FA-15)."
+	echo "full-smoke: Rolle im Ziel ($kennung): $n Payloads ueber den Wrapper — jeder emittierte Rollen-Typ traegt seinen Namen als agent_role, general-purpose und ein fremder Typ die Kennzeichnung \"nicht bekannt: agent_type\" (LH-FA-15)."
 }
 
 # slice-096 (LH-FA-10 / ADR-0022 Festlegung 1 und 5): DER TRAEGER LIEGT IM ZIEL.

@@ -163,7 +163,10 @@ func verarbeite(b *Bilanz, s span.Span, direkt, toolCalls map[string]int64, sitz
 	// `tool_use_id` (SPEC-052 in spec/spezifikation.md §5) und darf einen Schluessel, der
 	// Tool-Calls zaehlt, nicht verschieben.
 	// Bewacht von TestAggregiere_SpawnSpanZaehltNichtAlsToolCall.
-	if s.AgentRole != "" && s.Tool != "" {
+	// Die Kennzeichnung *nicht bekannt* zaehlt wie das leere Rollenfeld des Bestands: als
+	// unbekannte Rolle, nie als eigene (SPEC-044). Bewacht von
+	// TestAggregiere_KennzeichnungIstKeineRolle.
+	if s.AgentRole != "" && !span.IsNotKnown(s.AgentRole) && s.Tool != "" {
 		toolCalls[s.AgentRole]++
 	}
 

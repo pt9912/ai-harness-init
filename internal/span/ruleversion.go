@@ -8,4 +8,4 @@ package span
 // diese Zahl ist deren letzte Zeile.
 // Bewacht von TestCurrentRuleVersionIsTheLastSpecFassung (Kopplung an die Tabelle) und
 // TestSpanCarriesCurrentRuleVersion (die Zeile traegt sie).
-const CurrentRuleVersion = 4
+const CurrentRuleVersion = 5

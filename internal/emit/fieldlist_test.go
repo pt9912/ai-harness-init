@@ -159,12 +159,12 @@ func TestFeldliste_OhneMarkdownLink(t *testing.T) {
 // TestFeldliste_GrenzeAufrufform misst den ERSTEN stehenden Grenz-Satz (ADR-0022
 // Festlegung 7, LH-FA-15 §Benannte Grenze): die emittierte Ebene fuehrt keinen Waechter
 // ueber die Aufrufform des Agenten-Werkzeugs, und die Richtung gehoert dazu — die
-// Rollen-Achse ruht dort auf Adopter-Disziplin, und ein leeres Feld heisst unbekannt,
+// Rollen-Achse ruht dort auf Adopter-Disziplin, und die Kennzeichnung heisst unbekannt,
 // nie rollenlos.
 func TestFeldliste_GrenzeAufrufform(t *testing.T) {
 	grenzSatzSteht(t, "kein Wächter über die Aufrufform",
 		"Über die Aufrufform des Agenten-Werkzeugs führt diese Ebene keinen Wächter",
-		"leer heißt unbekannt, nie rollenlos",
+		"`nicht bekannt: agent_type`, und **das heißt unbekannt, nie rollenlos**",
 		"ruht hier auf Disziplin",
 	)
 }

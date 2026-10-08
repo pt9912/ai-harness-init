@@ -964,15 +964,16 @@ func TestStreamsAreSeparate(t *testing.T) {
 	}
 }
 
-// TestAgentRoleFromKnownTypes: die Rollen-Achse aus Modul 15 fuellt sich aus dem
-// Agenten-Typ, wenn der eine Rolle NENNT — und bleibt sonst leer statt geraten. Heute
-// ist sie durchweg leer (gemessen: alle Subagenten-Stroeme tragen `general-purpose`);
-// genau das soll ein Auswerter SEHEN, statt es aus einer fehlenden Zeile zu schliessen.
+// TestAgentRoleFromKnownTypes haelt LH-FA-15 (Rolle besetzt, Rolle wird abgeleitet): die
+// Rollen-Achse fuellt sich aus dem Agenten-Typ, wenn der eine Rolle NENNT; sonst — bei
+// `general-purpose`, einem fremden Typ und im Haupt-Kontext ohne Typ — traegt sie die
+// Kennzeichnung `nicht bekannt: agent_type`, nie `""` und nie einen geratenen Wert.
 func TestAgentRoleFromKnownTypes(t *testing.T) {
+	nb := "nicht bekannt: agent_type"
 	cases := map[string]string{
 		"reviewer": "reviewer", "verifier": "verifier", "planner": "planner",
 		"architect": "architect", "implementer": "implementer", "validator": "validator",
-		"general-purpose": "", "": "", "Explore": "", "reviewer-2": "",
+		"general-purpose": nb, "": nb, "Explore": nb, "reviewer-2": nb,
 	}
 	for typ, want := range cases {
 		got := span.Build(span.Payload{Tool: "Bash", AgentType: typ}, t.TempDir(), time.Now()).AgentRole
@@ -1031,16 +1032,16 @@ func TestCorrelationFromLifecycle(t *testing.T) {
 		t.Fatal(err)
 	}
 	s := span.Build(span.Payload{Tool: "Bash"}, root, time.Now())
-	if len(s.Slice) != 1 || s.Slice[0] != "slice-042-beispiel" {
+	if len(s.Slice.IDs) != 1 || s.Slice.IDs[0] != "slice-042-beispiel" || s.Slice.Unknown != "" {
 		t.Fatalf("slice = %v", s.Slice)
 	}
-	if strings.Join(s.Requirement, ",") != "LH-FA-02,LH-QA-01" {
+	if strings.Join(s.Requirement.IDs, ",") != "LH-FA-02,LH-QA-01" {
 		t.Fatalf("requirement = %v (nur der Bezug-Block zaehlt)", s.Requirement)
 	}
 	// adr.id ist die dritte ableitbare Korrelations-Achse aus Modul 15 Kernidee. Sie
 	// fehlte zuerst ganz — weder erfasst noch als Abweichung erklaert, obwohl sie im
 	// selben Block steht wie requirement.id.
-	if strings.Join(s.Adr, ",") != "ADR-0003,ADR-0011" {
+	if strings.Join(s.Adr.IDs, ",") != "ADR-0003,ADR-0011" {
 		t.Fatalf("adr = %v (nur der Bezug-Block zaehlt)", s.Adr)
 	}
 }
@@ -1119,23 +1120,114 @@ func TestLeftoverLockDirectoryDoesNotBlock(t *testing.T) {
 	}
 }
 
-// TestUnresolvableGitRefStillCarriesFields ist der Worktree-Fall: dort ist `.git` eine
-// DATEI, die Ableitung schlaegt fehl — und spec/spezifikation.md §5 (SPEC-056) sagt fuer diesen Fall "leer und als
-// leer erkennbar" zu. Mit `omitempty` verschwanden die Schluessel stattdessen ganz.
-// Der Unterschied ist der zwischen "unbekannt" und "nicht
-// vorhanden", und genau den soll ein Audit-Schema tragen.
-func TestUnresolvableGitRefStillCarriesFields(t *testing.T) {
-	root := t.TempDir()
-	if err := os.WriteFile(filepath.Join(root, ".git"), []byte("gitdir: /woanders\n"), 0o600); err != nil {
+// TestUnresolvableGitRefIsMarkedNotKnown haelt LH-FA-13 (Zweig und Stand) und SPEC-056:
+// ist ein Feld aus dem git-Zustand nicht ableitbar, steht es anwesend mit der
+// Kennzeichnung `nicht bekannt: .git/HEAD` in der geschriebenen Zeile — nie `""` und nie
+// abwesend. Vier Lagen: `.git` als Datei (Worktree), `.git` ohne HEAD, abgekoppelter HEAD
+// (nur `branch`), Zweig ohne Commit (nur `commit`).
+func TestUnresolvableGitRefIsMarkedNotKnown(t *testing.T) {
+	const nb = `"nicht bekannt: .git/HEAD"`
+	sha := "0123456789abcdef0123456789abcdef01234567"
+	cases := []struct {
+		name, git, head, branch, commit string
+	}{
+		{"worktree", "datei", "", nb, nb},
+		{"ohne_head", "verzeichnis", "", nb, nb},
+		{"abgekoppelt", "verzeichnis", sha + "\n", nb, `"` + sha[:12] + `"`},
+		{"zweig_ohne_commit", "verzeichnis", "ref: refs/heads/neu\n", `"neu"`, nb},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			root := t.TempDir()
+			git := filepath.Join(root, ".git")
+			if c.git == "datei" {
+				if err := os.WriteFile(git, []byte("gitdir: /woanders\n"), 0o600); err != nil {
+					t.Fatal(err)
+				}
+			} else if err := os.MkdirAll(git, 0o700); err != nil {
+				t.Fatal(err)
+			}
+			if c.head != "" {
+				if err := os.WriteFile(filepath.Join(git, "HEAD"), []byte(c.head), 0o600); err != nil {
+					t.Fatal(err)
+				}
+			}
+			b, err := json.Marshal(span.Build(span.Payload{Tool: "Bash"}, root, time.Now()))
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, want := range []string{`"branch":` + c.branch, `"commit":` + c.commit} {
+				if !strings.Contains(string(b), want) {
+					t.Fatalf("%s fehlt — ein nicht ableitbares Feld traegt die Kennzeichnung: %s", want, b)
+				}
+			}
+		})
+	}
+}
+
+// TestCorrelationUnreadableSliceIsMarkedNotKnown haelt LH-FA-13 (Leer heisst keiner,
+// unbekannt ist gekennzeichnet): ist eine Slice-Datei nicht lesbar, tragen `requirement`
+// und `adr` die Kennzeichnung mit dieser Datei als Quelle statt `[]`, auch wenn eine
+// zweite, lesbare Slice-Datei Kennungen liefert; `slice` bleibt die Liste aus dem
+// Verzeichnis. Unlesbar ist die Datei hier als Verzeichnis gleichen Namens — das haelt
+// auch unter einer Kennung, die jede Datei lesen darf.
+func TestCorrelationUnreadableSliceIsMarkedNotKnown(t *testing.T) {
+	root := newRoot(t)
+	dir := filepath.Join(root, "docs/plan/planning/in-progress")
+	if err := os.MkdirAll(filepath.Join(dir, "slice-a-unlesbar.md"), 0o700); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "slice-b-lesbar.md"), []byte("**Bezug:** LH-FA-02, ADR-0011.\n"), 0o600); err != nil {
 		t.Fatal(err)
 	}
 	b, err := json.Marshal(span.Build(span.Payload{Tool: "Bash"}, root, time.Now()))
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, want := range []string{`"branch":""`, `"commit":""`} {
+	nb := `"nicht bekannt: docs/plan/planning/in-progress/slice-a-unlesbar.md"`
+	for _, want := range []string{`"slice":["slice-a-unlesbar","slice-b-lesbar"]`, `"requirement":` + nb, `"adr":` + nb} {
 		if !strings.Contains(string(b), want) {
-			t.Fatalf("%s fehlt — der Schluessel muss anwesend und leer sein: %s", want, b)
+			t.Fatalf("%s fehlt — ein unbekannter Bezug traegt die Kennzeichnung, nicht []: %s", want, b)
+		}
+	}
+}
+
+// TestCorrelationUnreadableDirIsMarkedNotKnown haelt dieselbe Zusage eine Stufe hoeher:
+// ist das Lifecycle-Verzeichnis da, aber nicht lesbar (hier: eine Datei an seiner Stelle),
+// tragen alle drei Listen die Kennzeichnung mit dem Verzeichnis als Quelle — `[]` hiesse
+// *kein Slice*, und das weiss der Emitter nicht.
+func TestCorrelationUnreadableDirIsMarkedNotKnown(t *testing.T) {
+	root := newRoot(t)
+	if err := os.MkdirAll(filepath.Join(root, "docs/plan/planning"), 0o700); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(root, "docs/plan/planning/in-progress"), nil, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	b, err := json.Marshal(span.Build(span.Payload{Tool: "Bash"}, root, time.Now()))
+	if err != nil {
+		t.Fatal(err)
+	}
+	nb := `"nicht bekannt: docs/plan/planning/in-progress"`
+	for _, want := range []string{`"slice":` + nb, `"requirement":` + nb, `"adr":` + nb} {
+		if !strings.Contains(string(b), want) {
+			t.Fatalf("%s fehlt: %s", want, b)
+		}
+	}
+}
+
+// TestIDListRoundTrip haelt die Lesbarkeit beider Draht-Formen einer Korrelations-Liste:
+// eine Zeile mit Kennzeichnung bleibt fuer die Auswertung lesbar, statt am Typ zu
+// scheitern, und `[]` liest sich als leere Liste, nicht als Kennzeichnung.
+func TestIDListRoundTrip(t *testing.T) {
+	for _, roh := range []string{`[]`, `["slice-x"]`, `"nicht bekannt: docs/plan/planning/in-progress"`} {
+		var l span.IDList
+		if err := json.Unmarshal([]byte(roh), &l); err != nil {
+			t.Fatalf("%s: %v", roh, err)
+		}
+		b, err := json.Marshal(l)
+		if err != nil || string(b) != roh {
+			t.Fatalf("%s -> %s (%v)", roh, b, err)
 		}
 	}
 }

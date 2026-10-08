@@ -31,9 +31,9 @@ hier.
   Werkzeug führt den Hintergrund als Standard
   ([Hooks-Referenz](claude-hooks-referenz.md)). Die Konvention hat damit **eine** Bedingung:
   den Typ. Der Agent-Guard prüft die Lesbarkeit der Aufrufform, nicht die Betriebsart.
-- **Wer die Rolle nicht anfordert, bekommt `general-purpose`.** Das Feld `agent_role` bleibt
-  dann leer und heißt *unbekannt*, nicht *ohne Rolle*; der Lauf fällt in den Sammelposten der
-  Token-Bilanz.
+- **Wer die Rolle nicht anfordert, bekommt `general-purpose`.** Das Feld `agent_role` trägt
+  dann `nicht bekannt: agent_type` und heißt *unbekannt*, nicht *ohne Rolle*; ein leeres Feld
+  aus älteren Spans liest die Token-Bilanz genauso, und der Lauf fällt in ihren Sammelposten.
 - **Die Bedingung, den Typ per @-Erwähnung anzufordern, trägt keinen Wächter.** Kein Sensor
   erzwingt sie; sie ruht auf Disziplin. Der Agent-Guard prüft die Lesbarkeit der Aufrufform,
   nicht die Rolle. Ein Lauf ohne Rollen-Tag wird nicht erkannt, sondern erscheint als Anteil

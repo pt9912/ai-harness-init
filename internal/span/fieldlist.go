@@ -80,12 +80,12 @@ func SchemaNotes() []Note {
 		{Field: "session", Question: "Welcher Lauf war es? — zusammen mit `agent` der Strom"},
 		{Field: "agent", Question: "Welcher Agent innerhalb des Laufs? — zusammen mit `session` der Strom"},
 		{Field: "agent_type", Question: "Welche Art Lauf? — der Typ des laufenden Agenten, roh übernommen"},
-		{Field: "agent_role", Question: "Welche Rolle verursachte den Zugriff? — besetzt, wenn `agent_type` eine kanonische Rolle nennt"},
-		{Field: "slice", Question: "Auf wessen Rechnung lief der Zugriff? — aus dem Lifecycle-Verzeichnis abgeleitet, Liste"},
-		{Field: "requirement", Question: "Gegen welche Anforderung? — aus dem Bezug-Block der laufenden Slices, Liste"},
-		{Field: "adr", Question: "Auf wessen Entscheidung? — aus demselben Bezug-Block, Liste"},
-		{Field: "branch", Question: "Zu welchem Zweig gehört der Zugriff? — aus dem git-Zustand abgeleitet"},
-		{Field: "commit", Question: "Zu welchem Stand gehört der Zugriff? — aus dem git-Zustand abgeleitet"},
+		{Field: "agent_role", Question: "Welche Rolle verursachte den Zugriff? — besetzt, wenn `agent_type` eine kanonische Rolle nennt, sonst `" + NotKnown(SourceAgentType) + "`"},
+		{Field: "slice", Question: "Auf wessen Rechnung lief der Zugriff? — aus dem Lifecycle-Verzeichnis abgeleitet, Liste; `[]` heißt kein Slice, ein unlesbares Verzeichnis die Kennzeichnung"},
+		{Field: "requirement", Question: "Gegen welche Anforderung? — aus dem Bezug-Block der laufenden Slices, Liste; `[]` heißt kein Bezug, eine unlesbare Slice-Datei die Kennzeichnung"},
+		{Field: "adr", Question: "Auf wessen Entscheidung? — aus demselben Bezug-Block, Liste; `[]` und Kennzeichnung wie bei `requirement`"},
+		{Field: "branch", Question: "Zu welchem Zweig gehört der Zugriff? — aus dem git-Zustand abgeleitet, sonst `" + NotKnown(SourceGitHead) + "`"},
+		{Field: "commit", Question: "Zu welchem Stand gehört der Zugriff? — aus dem git-Zustand abgeleitet, sonst `" + NotKnown(SourceGitHead) + "`"},
 		{Field: "status", Question: "Ging es gut?"},
 		{Field: "rule_version", Question: "Unter welcher Fassung der Erfassungsregel entstand die Zeile? — eine Ganzzahl, die mit jedem Bedeutungswechsel eines Feldes steigt; eine Zeile ohne dieses Feld hat eine nicht bekannte Fassung"},
 		{Field: "permission_mode", Question: "Unter welcher Berechtigungs-Lage lief der Aufruf?"},
@@ -124,7 +124,7 @@ func limitAgentGuard() string {
 	return "**Über die Aufrufform des Agenten-Werkzeugs führt diese Ebene keinen Wächter.**\n" +
 		"Das Feld `agent_role` besetzt sich genau dann, wenn der Agenten-Typ eine der sechs kanonischen\n" +
 		"Rollen nennt — " + backtickJoin(CanonicalRoles()) + ". Wer\n" +
-		"seine Typen umbenennt, bekommt ein leeres Feld, und **leer heißt unbekannt, nie rollenlos**.\n" +
+		"seine Typen umbenennt, bekommt `" + NotKnown(SourceAgentType) + "`, und **das heißt unbekannt, nie rollenlos**.\n" +
 		"Kein Gate und kein Hook erzwingt, dass Rollen-Arbeit unter ihrem Rollen-Typ läuft; die\n" +
 		"Rollen-Achse ruht hier auf Disziplin.\n"
 }
@@ -187,9 +187,9 @@ const fieldListHead = "# Erfassungsschicht — die Feldliste und ihre Grenzen\n"
 	"\n" +
 	"## Feldliste\n" +
 	"\n" +
-	"**Pflicht** heißt: das Feld steht in jeder Zeile, auch leer — leer ist dort eine Aussage und\n" +
-	"kein fehlender Wert. Ein Pflicht-Zähler, dessen Wert die Quelle nicht liefert, trägt statt seiner\n" +
-	"`nicht bekannt:` und die Quelle, die ihn nicht liefert — nie `0`. **Optional** heißt: das Feld fehlt,\n" +
+	"**Pflicht** heißt: das Feld steht in jeder Zeile. Eine leere Liste `[]` ist dort eine Aussage —\n" +
+	"keiner — und kein fehlender Wert. Ein Pflichtfeld, dessen Wert die Quelle nicht liefert, trägt statt seiner\n" +
+	"`nicht bekannt:` und die Quelle, die ihn nicht liefert — nie `0`, nie `\"\"`, nie `[]`. **Optional** heißt: das Feld fehlt,\n" +
 	"wo es nichts zu sagen gibt.\n" +
 	"\n" +
 	"| Feld | Pflicht | Wonach gefragt wird |\n" +

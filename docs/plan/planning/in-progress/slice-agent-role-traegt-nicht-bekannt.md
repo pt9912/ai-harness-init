@@ -95,7 +95,16 @@ grep -n 'agent_role\\":\\"$erwartet' harness/tools/full-smoke.sh
 | `internal/span/emit.go` (Rollen-, git- und Bezugs-Ableitung), `internal/span/notknown.go`, `internal/span/fieldlist.go` | update | Liefer-Punkt 2 |
 | `internal/span/*_test.go`, `harness/tools/full-smoke.sh` | update | Happy/Negative nach [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) |
 | `internal/report/report.go` + Test | update | Liefer-Punkt 3 |
-| `test/mutations/<NNN>-…sh` | neu | Mutations-Fälle für Liefer-Punkt 2 und 3 |
+| `test/mutations/<NNN>-…sh` | neu | Mutations-Fälle für Liefer-Punkt 2 und 3 — Fälle 597 bis 602 |
+| `internal/span/ruleversion.go`, `spec/spezifikation.md` §5 Fassungs-Tabelle | update | der Wechsel `""`/`[]` → Kennzeichnung ist ein Bedeutungswechsel nach `SPEC-089`; Fassung 4 (Cache-Status) lag in `v0.3.0`, dieser Wechsel kommt mit einem späteren Release → Fassung 5 (`SPEC-096`) |
+| `test/mutations/593-…sh` | update | sein `sed`-Anker nannte Fassung 4 wörtlich und griff nach dem Hochzählen nicht mehr; er nimmt jetzt jede Fassung |
+| `internal/emit/fieldlist_test.go`, `docs/user/rollen-laeufe.md` | update | der Grenz-Satz der Feldliste und das Handbuch nennen die Kennzeichnung statt des leeren Felds |
+
+**Abweichungen vom Wortlaut in §1, gemessen am Stand:**
+
+- `slice` bleibt bei unlesbarer Slice-Datei **bekannt** — der Name kommt aus dem Verzeichnis, nicht aus der Datei; die Kennzeichnung tragen `requirement` und `adr`. Alle drei tragen sie, wenn das Lifecycle-Verzeichnis selbst da und nicht lesbar ist.
+- `branch` trägt die Kennzeichnung auch bei abgekoppeltem `HEAD` (der Zweig ist dort nicht ableitbar), `commit` allein bei einem Zweig ohne Commit.
+- `spawned_role` bleibt unberührt: optional, bei unbekannter Rolle abwesend (`SPEC-083`); die Kennzeichnung gilt für Pflichtfelder.
 
 ## 4. Trigger
 
