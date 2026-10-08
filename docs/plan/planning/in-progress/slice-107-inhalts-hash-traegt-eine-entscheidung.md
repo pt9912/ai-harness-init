@@ -33,9 +33,7 @@ Entscheidungstext benennt — dieser Slice liefert den Termin, nicht den Text),
 (*„weder ADR noch Slice dürfen `LH-*` je ändern"* — die Grenze, an der einer der drei Ausgänge
 teurer ist, als er aussieht),
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-(jede Zahl unten steht neben dem Kommando, das genau sie liefert),
-[`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
-(Verortung).
+(jede Zahl unten steht neben dem Kommando, das genau sie liefert).
 
 **Verantwortlich:** pt9912. **Autor:** Planner. **Datum:** 2026-08-26.
 
@@ -47,7 +45,7 @@ teurer ist, als er aussieht),
 Fassung — und wo zwei *Accepted*-Entscheidungen etwas anderes sagen als die Anforderung auf Rang 1
 und der laufende Träger, trägt der Widerspruch einen Ausgang statt einer Nennung.**
 
-### Die Ausgangslage: vier Quellen, zwei Aussagen
+### Die Ausgangslage: fünf Quellen, zwei Aussagen
 
 Die Eigenschaft, über die gezählt wird: *eine Stelle, die sagt, ob von einem Schreib-Werkzeug ein
 Inhalts-Hash in die Zeile wandert.* Jede Zahl wandert mit ihrem Bestand und ist **kein**
@@ -61,6 +59,7 @@ Setzung 2).
 | [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) Festlegung 2 | Entscheidung | *„Pfad + Länge; **im Repo zusätzlich** ein Inhalts-Hash"*, und daneben *„Für alles Emittierte gilt die Tabelle unverkürzt und **ohne** Inhalts-Hash"* | `grep -c 'ohne Inhalts-Hash' docs/plan/adr/0011-telemetrie-erfassung-policy.md` → **1** |
 | [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 6 | Entscheidung | der Adopter-Vertrag führt *„abgeleitete Argument-Werte **ohne** Inhalts-Hash"* | `grep -c 'Inhalts-Hash' docs/plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md` → **1** |
 | der laufende Träger | Code | der Fingerabdruck wird für Schreib-Werkzeuge **unbedingt** gesetzt; eine Ebenen-Unterscheidung gibt es nicht | `grep -n 'classFileWrite' internal/span/emit.go` → Zeile **135**; `grep -c 'Ebene' internal/span/emit.go` → **0** |
+| [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5, `SPEC-018`/`SPEC-029` | **2** | führt `sha256_16` für die Schreib-Werkzeuge ohne Ebenen-Vorbehalt | `grep -c 'sha256_16' spec/spezifikation.md` → **5** |
 
 **Und die Zeile trägt ihn wirklich, nicht nur der Code.** Über dem Bestand dieses Repos:
 `grep -l 'sha256_16' .harness/state/spans/*.jsonl | wc -l` → **188** von
@@ -115,13 +114,13 @@ dabei, statt sich hinter einem anderen zu verstecken.
       dort, wo ihn der nächste Lauf findet.** Bei (a) und (b) im Entscheidungs-Stratum, bei (c) in
       §7 dieses Slice — nie in einer geschlossenen Datei unter `done/`.
       **Kein Kommando färbt „der Widerspruch hat einen Ausgang" rot, und das ist der Befund, keine
-      Vertagung.** Die vier Quellen sind gezählt (§1); die Wahl zwischen ihnen ist ein Urteil über
+      Vertagung.** Die fünf Quellen sind gezählt (§1); die Wahl zwischen ihnen ist ein Urteil über
       Fließtext, kein Muster — dieselbe Absage, die
       [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) §1 ihrem Weg (C) erteilt. Diese
       Hälfte trägt das Review. Was **je Ausgang** messbar ist, steht in DoD (2).
 - [ ] **(2) Der gewählte Ausgang ist am lebenden Artefakt messbar — mit dem Kommando, das heute
-      den alten Wert liefert.** Für **(a)**: `grep -rl 'Inhalts-Hash' docs/plan/adr/*.md | wc -l` →
-      heute **2**; die neue Entscheidung ist die dritte Datei und nennt beide abgelösten Sätze.
+      den alten Wert liefert.** Für **(a)**: `grep -l 'Supersedes (Teil):.*0011-telemetrie-erfassung-policy' docs/plan/adr/*.md | wc -l`
+      → vor der neuen Entscheidung **0**, mit ihr **1**; sie nennt beide abgelösten Sätze.
       Für **(b)**: `grep -c 'sha256_16' "$p/harness/erfassung-feldliste.md"` am frisch
       gebootstrappten Ziel → heute **1**, danach **0**, und
       `grep -c 'classFileWrite' internal/span/emit.go` bewegt sich mit. Für **(c)** bewegt sich
@@ -147,7 +146,7 @@ Feldzeile fällt mit der Erfassung.
 | [`internal/span/emit.go`](../../../../internal/span/emit.go) | **unverändert**, außer bei Ausgang (b) | der Träger tut heute, was Rang 1 sagt; gemessen wird die Aussage über ihn, nicht sein Verhalten |
 | [`internal/span/fieldlist.go`](../../../../internal/span/fieldlist.go) | **unverändert**, außer bei Ausgang (b) | fällt das Feld, fällt sein Eintrag — und zwar erzwungen: [slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md) hat die zwei Richtungen so gebaut, dass ein Eintrag ohne Feld die Erzeugung abbricht. Hier ist der konstruktive Ausschluss der Drift zum ersten Mal ein Werkzeug und keine Zusage |
 | `docs/plan/planning/done/` | **unverändert** | Zeitdokumente ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert) §Geltungsbereich); ein Ausgang, der als Nachtrag in eine geschlossene Datei geschrieben wird, steht wieder an dem Ort, den kein Lauf aufschlägt |
-| [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | **unverändert** | wellenlose Arbeit wird dort nicht geführt ([`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird) Setzung 2/3) |
+| [`docs/plan/planning/in-progress/roadmap.md`](../in-progress/roadmap.md) | **unverändert** | geführt wird die Welle über ihre Datei, nicht der einzelne Slice (Baseline-Regelwerk `modul-06-roadmap.md` §Roadmap-Struktur: fünf Abschnitte) |
 
 **Eine Frage gehört vor den Entscheidungstext, nicht in ihn:** *Gilt der Widerspruch nur dem
 Fingerabdruck, oder derselben Achse insgesamt?* Dieselbe Tabelle in
@@ -179,10 +178,9 @@ Setzung 2).
   `grep -c 'bleibt die Länge' docs/plan/adr/0011-telemetrie-erfassung-policy.md` → **1**); keine
   Rückführung nach `next/`.
 - **Das Kommando in DoD (2) für Ausgang (a) misst nicht mehr die Eigenschaft:**
-  `grep -rl 'Inhalts-Hash' docs/plan/adr/*.md | wc -l` → **3** statt der dort genannten 2, weil
+  `grep -rl 'Inhalts-Hash' docs/plan/adr/*.md | wc -l` → **3**, weil
   [`ADR-0083`](../../adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md) das
-  Wort für den Inhalts-Hash des Gate-Nachweises führt. Die Berichtigung verschiebt ein
-  Abnahmekriterium und ist Übergabe an den Planner ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+  Wort für den Inhalts-Hash des Gate-Nachweises führt; DoD (2) misst darum die `Supersedes (Teil):`-Zeile.
 - **Der Gegenstand ist eine Entscheidung, kein Diff der Implementer-Rolle.** Ausgang (a) ist ein
   neuer ADR-Text, Ausgang (c) eine Lesart — beide Architect-Arbeit
   ([`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1); Ausgang (b)
@@ -192,7 +190,7 @@ Setzung 2).
 ## 4. Trigger
 
 **Beginn (`open` → `next` → `in-progress`): nichts blockiert ihn außer dem WIP-Limit — und das ist
-der Termin, den dieser Slice trägt.** Alle vier Quellen liegen im Baum, der Widerspruch ist über
+der Termin, den dieser Slice trägt.** Alle fünf Quellen liegen im Baum, der Widerspruch ist über
 ihnen gemessen (§1), und keine Vorarbeit eines anderen Slice fehlt. Er wartet insbesondere **nicht**
 auf die Closure von [welle-12](../done/welle-12-erfassungsschicht-emittieren.md): das Kriterium
 *„Redaktion"* ist in jedem der drei Ausgänge erfüllt.
