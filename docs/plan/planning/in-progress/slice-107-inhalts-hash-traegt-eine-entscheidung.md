@@ -37,7 +37,7 @@ teurer ist, als er aussieht),
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 (Verortung).
 
-**Autor:** Planner. **Datum:** 2026-08-26.
+**Verantwortlich:** pt9912. **Autor:** Planner. **Datum:** 2026-08-26.
 
 ---
 
