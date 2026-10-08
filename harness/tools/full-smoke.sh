@@ -362,7 +362,7 @@ feldliste_im_ziel() {
 	flach="$(tr -s '[:space:]' ' ' <"$doc")"
 	for satz in "Über die Aufrufform des Agenten-Werkzeugs führt diese Ebene keinen Wächter" \
 	            "Die Verbrauchs-Zähler kommen aus der Mechanik des Agenten-Werkzeugs nicht" \
-	            "Über den Bestand ist nichts zugesagt"; do
+	            "Über den Schutz des Bestands ist nichts zugesagt"; do
 		grep -qF -- "$satz" <<<"$flach" || fehlend="$fehlend [$satz]"
 	done
 	if [ -n "$fehlend" ]; then

@@ -313,7 +313,45 @@ func quelleGenannt(t *testing.T, id string) {
 	if len(zellen) < 3 {
 		t.Fatalf("die Spec-Zeile %s hat keine Gegenstands-Zelle: %q", id, zellen)
 	}
-	stehtJeweils(t, "die Feldliste (Quelle "+id+")", flacheFeldliste(t), "„"+zellen[1]+"\"")
+	doc := flacheFeldliste(t)
+	gegenstand := "„" + zellen[1] + "\""
+	stehtJeweils(t, "die Feldliste (Quelle "+id+")", doc, gegenstand)
+	vor, _, ok := strings.Cut(doc, gegenstand)
+	if !ok {
+		return
+	}
+	const quelle = "Quelle: Spezifikation von ai-harness-init, §"
+	i := strings.LastIndex(vor, quelle)
+	if i < 0 {
+		t.Fatalf("die Feldliste nennt %s ohne vorangehendes %q", id, quelle)
+	}
+	genannt, _, _ := strings.Cut(vor[i+len(quelle):], ",")
+	if soll := specAbschnitt(t, id); genannt != soll {
+		t.Errorf("die Feldliste nennt %s unter §%s, die Spezifikation fuehrt die Zeile unter §%s", id, genannt, soll)
+	}
+}
+
+// specAbschnitt liefert die Nummer des `## <N>.`-Abschnitts der Spezifikation, unter dem die
+// Zeile id steht — gelesen aus der Ueberschrift, damit die Quellen-Angabe der Feldliste einer
+// Umnummerierung der Spezifikation nicht still hinterherhinkt.
+func specAbschnitt(t *testing.T, id string) string {
+	t.Helper()
+	roh, err := os.ReadFile(filepath.Join("..", "..", "spec", "spezifikation.md"))
+	if err != nil {
+		t.Fatalf("Spezifikation lesen: %v", err)
+	}
+	abschnitt := ""
+	for _, zeile := range strings.Split(string(roh), "\n") {
+		if rest, ok := strings.CutPrefix(zeile, "## "); ok {
+			nr, _, _ := strings.Cut(rest, ". ")
+			abschnitt = nr
+		}
+		if strings.HasPrefix(zeile, "| `"+id+"` |") {
+			return abschnitt
+		}
+	}
+	t.Fatalf("die Spezifikation fuehrt keine Zeile %s", id)
+	return ""
 }
 
 // mrTitel liefert den Titel des Adaptions-Eintrags id aus seiner Datei unter

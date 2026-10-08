@@ -7,4 +7,4 @@
 # das Doku-Gate des Adopters rot, ohne dass er ihn heilen koennte (ein Re-Lauf setzt die
 # Datei zurueck). Diese Mutation fuegt genau die verbotene Form `](` ein.
 set -euo pipefail
-sed -i 's@const limitStore = "\*\*Über den Bestand@const limitStore = "Siehe [Details](https://example.invalid). **Über den Bestand@' internal/span/fieldlist.go
+sed -i 's@const limitStore = "\*\*Über den Schutz des Bestands@const limitStore = "Siehe [Details](https://example.invalid). **Über den Schutz des Bestands@' internal/span/fieldlist.go

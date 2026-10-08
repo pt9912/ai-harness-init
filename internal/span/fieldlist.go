@@ -146,7 +146,7 @@ const limitCounters = "**Die Verbrauchs-Zähler kommen aus der Mechanik des Agen
 	"Lauf dieses Repos führt sie herbei** — das ist keine Eigenschaft dieses Aufbaus, sondern der\n" +
 	"Mechanik. Ein Bestand ohne Zähler ist deshalb der Normalfall und kein Defekt.\n"
 
-const limitStore = "**Über den Bestand ist nichts zugesagt.** Er ist **gitignored**, aber **nicht\n" +
+const limitStore = "**Über den Schutz des Bestands ist nichts zugesagt.** Er ist **gitignored**, aber **nicht\n" +
 	"verschlüsselt** und **nicht zugriffsbeschränkt**. Und **Pfadnamen sind nicht als unkritisch\n" +
 	"zugesagt** — sie stehen als `path` in der Zeile, und ein Pfad kann selbst die Aussage sein, die\n" +
 	"niemand teilen wollte. Wer den Bestand weitergibt, gibt beides weiter.\n"
@@ -204,8 +204,12 @@ const fieldListHead = "# Erfassungsschicht — die Feldliste und ihre Grenzen\n"
 // wieder (spec/spezifikation.md §5) und nennt sie als Quelle — bei ihrem Gegenstand, nicht
 // bei ihrer Kennung: im Ziel loest keine Kennung dieses Werkzeugs auf (LH-QA-01, gehalten
 // von TestEmittierteDateienTragenNurImZielAufloesendeKennungen). Je Satz haelt ein Test in
-// fieldlist_test.go den Satz, den genannten Gegenstand gegen die Zelle der Spec-Zeile UND
-// die Wendungen der Zeile, die er wiedergibt; aendert sich die Zeile, faellt der Test.
+// fieldlist_test.go den Satz, den genannten Gegenstand gegen die Zelle der Spec-Zeile, die
+// Abschnittsnummer gegen die Ueberschrift, unter der die Zeile steht, und eine Auswahl von
+// Wendungen der Zeile: Faellt eine davon aus der Zeile, wird der Test rot. Eine inhaltliche
+// Aenderung der Zeile ausserhalb dieser Wendungen faellt keinem Test auf — der Satz hier
+// behauptet dann weiter die alte Fassung. Ein Sensor ueber den Wortlaut der ganzen Zeile
+// existiert nicht.
 //
 // availCache gibt SPEC-055 mit SPEC-087 wieder: eine Zahl traegt nur der Span eines
 // Subagenten-Aufrufs im Vordergrund, jeder andere die Kennzeichnung.
