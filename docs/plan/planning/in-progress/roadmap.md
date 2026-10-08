@@ -20,7 +20,7 @@ nicht hier.
 - [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
 - [welle-handbuch-zeigt-den-bestand — Das Handbuch zeigt den Bestand](../welle-handbuch-zeigt-den-bestand.md)
 
-**Nichts in Arbeit.**
+**In Arbeit:** welle-handbuch-zeigt-den-bestand — `ls docs/plan/planning/in-progress/` nennt den Slice.
 
 ## Nächste Wellen
 

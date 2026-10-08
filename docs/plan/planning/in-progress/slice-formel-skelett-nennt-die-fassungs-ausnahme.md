@@ -13,7 +13,7 @@ genau einen Wert ins Binary reisen — die Fassung), [`LH-QA-04`](../../../../sp
 
 **Berührte Spec-Stellen:** — (Doku-Satz am Skelett).
 
-**Verantwortlich:** —.
+**Verantwortlich:** pt9912.
 
 **Autor:** Planner. **Datum:** 2026-09-23.
 
