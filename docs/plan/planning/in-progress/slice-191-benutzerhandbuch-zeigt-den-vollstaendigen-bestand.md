@@ -38,7 +38,7 @@ Gegenbeispiel).
 [`spec/architecture.md §1`](../../../../spec/architecture.md#1-komponenten-übersicht))
 · Technik: `—`.
 
-**Verantwortlich:** — (bis zur Priorisierung).
+**Verantwortlich:** pt9912.
 
 **Autor:** ai-harness-init-Team (pt9912). **Datum:** 2026-09-06.
 
