@@ -107,7 +107,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — die Slice-Closure fährt sie nach dem `git mv`, die Welle-Closure prüft sie erneut.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — die Slice-Closure fährt sie nach dem `git mv`, die Welle-Closure prüft sie erneut.
 
 ## 3. Plan (vor Code)
 
@@ -233,6 +233,11 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   ([`ADR-0085`](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md)).
 - **Folge-Slices:** keine.
 - **Risiken aus §6:** (1) weiter offen (Register), (2) entfallen, (3) entfallen — je Begründung in §6.
+- **Paarungen geprüft am 2026-10-08** (Planner, nach dem `git mv`): Anker — §7 führt kein Verkörperungs-Feld
+  (das Feld steht nur im Regel-Absatz der Vorlage); Folge-Slice — keiner genannt; Register —
+  `BEO-ALL/feldnotiz-traeger-und-spec-koennen-in-der-kernaussage-abweichen-ohne-sensor` (2 Belege) und
+  `BEO-ALL/zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel` (7 Belege) existieren und tragen den
+  eigenen Beleg (`ls …/evidence/*.md | wc -l`). Grün.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
