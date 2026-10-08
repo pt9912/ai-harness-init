@@ -89,7 +89,7 @@ Zwei slice-eigene Punkte (Modul 5 §Ziel-Form: ≤ 3;
 [`AGENTS.md`](../../../../AGENTS.md) §3.6). Wo kein Kommando einen Punkt rot färbt, steht das
 dabei, statt sich hinter einem anderen zu verstecken.
 
-- [ ] **(1) Die heute unbenannten Zeichenketten sind entweder benannt oder ausdrücklich einer
+- [x] **(1) Die heute unbenannten Zeichenketten sind entweder benannt oder ausdrücklich einer
       genannten Menge zugeordnet.** Für jede der acht aus §1 steht in
       [`docs/user/benutzerhandbuch.md`](../../../user/benutzerhandbuch.md) (§6 *Was wird angelegt*)
       oder in [`README.md`](../../../../README.md) entweder ihr Name oder der Satz, der sie als
@@ -100,13 +100,17 @@ dabei, statt sich hinter einem anderen zu verstecken.
       finden. **Kein Gate färbt diese Zeile rot, und das ist der Befund, keine Vertagung:**
       `make docs-check` prüft Links, Anker, Kennungen und Codepaths, nicht die Vollständigkeit
       einer Aufzählung gegen einen Emitter. Der Sensor dafür ist offen (§6).
-- [ ] **(2) Der Baum sagt, ob er aufzählt oder zusammenfasst.** An genau einer Stelle steht, wie
+- [x] **(2) Der Baum sagt, ob er aufzählt oder zusammenfasst.** An genau einer Stelle steht, wie
       ein Adopter die vollständige Menge selbst erhebt — das `make help` seines Ziels und der
       Blick in `harness/mk/`. Ein Baum ohne diesen Satz bietet Vollständigkeit an, die niemand <!-- d-check:ignore (Pfad im Zielrepo, nicht in diesem) -->
       hält.
       **Rot:** ein `test/mutations/`-Fall ist hier **nicht** möglich, weil der Gegenstand
       Fließtext in einem nicht-emittierten Dokument ist; der Punkt trägt sein Rot über das
       Review, und das steht hier statt eines behaupteten Kommandos.
+      — **Abnahme (Planner): erfüllt in der Eigenschaft.** Der Baum sagt, dass er aufzählt
+      (*„Der Baum nennt jede Datei und jedes Verzeichnis …"*), und seine Vollständigkeit hält
+      `harness/tools/handbuch-baum.sh` in `make full-smoke`; der verlangte `make help`-Satz fehlt,
+      weil es keine Zusammenfassung mehr gibt, deren Menge ein Adopter selbst erheben müsste (§7).
 
 Standard-Punkte der Vorlage (nicht slice-eigen): `make gates` grün · Doku-Update, falls ein
 öffentlicher Vertrag berührt ist — **hier ist es der Gegenstand, nicht die Folge** · Closure-Notiz
@@ -158,34 +162,68 @@ Steering-Loop-Eintrag.
 - **Der Nachzug altert sofort wieder.** Genau das ist beim letzten Mal passiert: die Beschreibung
   hielt vier Slices lang nicht Schritt. Wer nur die acht Zeichenketten einträgt, hat den nächsten
   Nachzug schon bestellt — deshalb DoD (2), das die Form ändert und nicht nur den Inhalt.
+  — **Ausgang:** **entfallen** — den Baum hält seit slice-191 `handbuch-baum.sh` in beide
+  Richtungen gegen den realen Lauf; ein Nachzug, der ausbleibt, färbt `make full-smoke` rot.
 - **Ein Sensor über *„die Aufzählung ist vollständig"* ist offen und hier nicht mitgeschnitten.**
   Die naheliegende Konstruktion — den emittierten Datei-Satz gegen den Baum halten — hat einen
   Gegner: der Baum ist Prosa mit Kommentaren, und ein Wächter darüber bräuchte erst ein Kriterium,
   was als *genannt* zählt. Die Klasse liegt beim Roadmap-Kandidaten *Regeln ohne
   Feedback-Quadrant schließen*, Achse (1) (Doku ↔ `Makefile` über das `targets`-Modul); ob sie
   eine Aufzählung **innerhalb** einer Prosa-Zeile erreicht, ist dort ausdrücklich als **ungemessen**
-  geführt.
+  geführt. — **Ausgang:** **entfallen** — der Sensor steht: `handbuch-baum.sh`
+  ([slice-191](../done/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md)) hält die
+  Pfad-Menge des Baums; das Kriterium *genannt* ist dort ein Pfad im Baum, nicht ein Wort in Prosa.
 - **Zwei Ebenen, die leicht verrutschen.** Das Handbuch beschreibt, was ein **Ziel** bekommt;
   [`AGENTS.md`](../../../../AGENTS.md) §4 und [`harness/README.md`](../../../../harness/README.md)
   beschreiben, was **dieses** Repo fährt. Beide Sätze über `span-report` sind heute wahr, und beide
   meinen ein anderes Programm am anderen Ort. Wer sie zusammenzieht, erzeugt die Verwechslung, die
-  dieser Slice beheben soll.
+  dieser Slice beheben soll. — **Ausgang:** **entfallen** — [`AGENTS.md`](../../../../AGENTS.md)
+  §4 und [`harness/README.md`](../../../../harness/README.md) sind unverändert; das Handbuch
+  beschreibt allein das emittierte Ziel (Verifikation: ohne Befund).
 - **Der getaggte Stand bleibt, wie er ist.** Ein Release-Text ist außerhalb von `git` und wird von
   keinem Gate erreicht (Roadmap-Kandidat, Achse (7)); dieser Slice zieht die lebenden Dokumente
-  nach, nicht die veröffentlichten.
+  nach, nicht die veröffentlichten. — **Ausgang:** **entfallen** — ein veröffentlichter Stand
+  wird nicht nachgezogen; die lebenden Dokumente gehen mit dem nächsten Release-Schnitt hinaus, der
+  das Handbuch ohnehin trägt.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!--
-Wird *nach* Abschluss ergänzt. Inhalt:
-- Was hat funktioniert?
-- Was ging anders als geplant?
-- Steering-Loop-Eintrag: welcher Guide/Sensor sollte verbessert werden?
-  (kanonische Definition: [`/kurs/de/grundlagen/klassifikation.md` §Steering Loop](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/grundlagen/klassifikation.md#steering-loop))
-- Folge-Slices: welche neuen open/-Einträge?
--->
+**Rolle:** Planner · **Datum:** 2026-10-08.
 
-<!-- Erst nach Abschluss füllen. -->
+- **Was hat funktioniert:** Handbuch §4 *Was die Erfassung aufzeichnet* und ein README-Satz
+  (`8749d5b5`); das Kommando aus §1 liefert keine Zeile `0` mehr (Verifikation, DoD (1) bestätigt).
+  Review 0 HIGH / 0 MEDIUM, LOW-1/2 in `e2ce9549`; die geänderten Aussagen (Ablage, 0600,
+  `agent_role`) am frisch gebootstrappten Ziel gemessen.
+- **Was ging anders als geplant:** DoD (2) war durch slice-191 überholt — der Baum zählt auf und ist
+  bewacht, statt eine Menge zusammenzufassen. **Abnahme-Urteil:** erfüllt in der Eigenschaft
+  (*der Baum sagt, ob er aufzählt*); der verlangte `make help`-Satz ist gegenstandslos und fehlt.
+- **Offen beim Auftraggeber (V-1):** `e2ce9549` hat ohne Plan-Zeile die **emittierte** Feldliste
+  geändert (`internal/span/fieldlist.go`, *„nur für den Eigentümer lesbar (Modus 0600)"*) — gegen
+  §3 (*nicht die emittierte Doku*), gegen das Out-of-Scope der Welle (*kein emittiertes Byte*) und
+  im Widerspruch zu [`LH-FA-14`](../../../../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang)
+  §Redaktion und [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
+  Festlegung 6 Stück 3 (*„nicht zugriffsbeschränkt"*). Das Verhalten (0600) bestand vorher; zu
+  entscheiden ist Change Request + Folge-ADR oder Rücknahme des Satzes. Diese Closure entscheidet es
+  nicht und legt keinen Slice an.
+- **Grenze:** `TestModeIsOwnerOnly` hat keinen `test/mutations/`-Fall; `TestFeldliste_GrenzeUeberDenBestand`
+  hält *„nur für den Eigentümer lesbar"*, nicht *„(Modus 0600)"* und nicht *„Verzeichnis
+  auflistbar"* (Verifikation, rot gesehen im Klon).
+- **Steering-Loop-Eintrag:** **gezählt, nicht verkörpert** — kein Zielort, darum kein
+  `liegt in`-Feld.
+- **Beobachtungs-Register (`../observations/`):** drei Belege
+  `evidence/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md` — in
+  [`plan-abweichung-landet-im-commit-bericht-statt-im-plan`](../observations/BEO-ALL/plan-abweichung-landet-im-commit-bericht-statt-im-plan/observation.md)
+  (V-1), in
+  [`zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel`](../observations/BEO-ALL/zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel/observation.md)
+  (Grenze oben) und in
+  [`abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt`](../observations/BEO-ALL/abnahme-kriterium-traegt-annahme-die-der-vorgang-widerlegt/observation.md)
+  (DoD (2)). Alle drei tragen ihren Ausgang schon (`verkörpert` · `geplant` · `verkörpert`); kein
+  Eintrag steht danach `offen` über der Schwelle
+  ([`ADR-0085`](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md)
+  Festlegung 1 greift nicht).
+- **Folge-Slices:** keine.
+- **Risiken aus §6:** (1) **entfallen** · (2) **entfallen** · (3) **entfallen** · (4) **entfallen**
+  — je mit Grund in §6.
 
 ## 8. Sub-Area-Modus-Begründung
 
