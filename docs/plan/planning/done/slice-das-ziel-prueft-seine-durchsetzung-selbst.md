@@ -58,7 +58,7 @@ Aktivierungsschritt · Gate-Kommando), und der Emitter fährt sie in seinem eige
 
 ### Warum ein eigener Slice und nicht der vorhandene
 
-[slice-aktivierung-reist-nicht-mit-dem-klon](../in-progress/slice-aktivierung-reist-nicht-mit-dem-klon.md)
+[slice-aktivierung-reist-nicht-mit-dem-klon](../done/slice-aktivierung-reist-nicht-mit-dem-klon.md)
 ist der nächstliegende Plan und nimmt diesen Gegenstand **nicht** an — aus drei Gründen, jeder
 an seinem Text nachlesbar:
 
@@ -96,7 +96,7 @@ Schnitt nicht.
 - **Die Emitter-seitige Messung des Aktivierungs-Rezepts** — die drei negativen Fälle (Träger
   fehlt · Träger ist ein Verzeichnis · `HOOKS_DIR` wirkt) und der Nachweis, dass der Träger mit
   dem Klon reist und seine Aktivierung nicht. **Folge-Slice mit Adresse:**
-  [slice-aktivierung-reist-nicht-mit-dem-klon](../in-progress/slice-aktivierung-reist-nicht-mit-dem-klon.md),
+  [slice-aktivierung-reist-nicht-mit-dem-klon](../done/slice-aktivierung-reist-nicht-mit-dem-klon.md),
   dessen §2 (1) und (2) genau diese Punkte führen — die Adresse nimmt sie an, weil sie sein
   eigener Gegenstand sind.
 - **Der bestehende Abschnitt `COMMIT-KENNUNG IM ZIEL` in `harness/tools/full-smoke.sh`** —
@@ -249,7 +249,7 @@ additiv: er nimmt nichts weg, was heute läuft. Dazu die zwei gewöhnlichen Bedi
 ist priorisiert (`Verantwortlich:` gesetzt) und das WIP-Limit ist frei.
 
 **Reihenfolge gegenüber
-[slice-aktivierung-reist-nicht-mit-dem-klon](../in-progress/slice-aktivierung-reist-nicht-mit-dem-klon.md)
+[slice-aktivierung-reist-nicht-mit-dem-klon](../done/slice-aktivierung-reist-nicht-mit-dem-klon.md)
 — eine Serialisierung, keine Abhängigkeit.** Beide schreiben in `harness/tools/full-smoke.sh`;
 derselbe Lauf, zwei Schreibende. Wer zuerst landet, gibt die Datei frei, der zweite zieht nach
 (§6 Risiko 1). Inhaltlich hängt keiner am anderen: jener misst das Aktivierungs-**Rezept**, dieser
@@ -294,7 +294,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 dasteht.
 
 - **Risiko 1 — zwei Schreibende auf `harness/tools/full-smoke.sh`.**
-  [slice-aktivierung-reist-nicht-mit-dem-klon](../in-progress/slice-aktivierung-reist-nicht-mit-dem-klon.md)
+  [slice-aktivierung-reist-nicht-mit-dem-klon](../done/slice-aktivierung-reist-nicht-mit-dem-klon.md)
   führt dieselbe Datei in seinem §3. Landet er zuerst, findet dieser Slice einen veränderten
   Abschnitt vor; landen beide zugleich, schreiben zwei Kontexte dieselbe Datei. — **Ausgang:**
   **entfallen.** Der andere Slice liegt weiter in `open/` und hat nicht geschrieben; dieser Slice
@@ -384,7 +384,7 @@ Baseline-Regelwerk `v6.9.0` · `modul-05-planning-harness.md` §Closure- und Ler
     **drei** steht im Ausgang von Risiko 2 statt einer geschätzten.
   - **Ein §1-Ausschluss war zu weit gefasst** (Verifikation V-2, MEDIUM). §1 schloss *„der Nachweis,
     dass der Träger mit dem Klon reist und seine Aktivierung nicht"* aus und verwies ihn an
-    [slice-aktivierung-reist-nicht-mit-dem-klon](../in-progress/slice-aktivierung-reist-nicht-mit-dem-klon.md).
+    [slice-aktivierung-reist-nicht-mit-dem-klon](../done/slice-aktivierung-reist-nicht-mit-dem-klon.md).
     Geliefert ist er trotzdem — an der Vorbedingung der Emitter-Stufe und an der ersten Ausgabezeile
     der Vorlage. **Kein Verstoß:** Die Akzeptanzkriterien von
     [`LH-FA-11`](../../../../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren)
@@ -395,7 +395,7 @@ Baseline-Regelwerk `v6.9.0` · `modul-05-planning-harness.md` §Closure- und Ler
     siehe unten.
 - **Entscheidungen zu den Befunden, die offen in die Closure kamen:**
   - **V-2 (MEDIUM): Adresse statt neuem Vorgang.** DoD (1) von
-    [slice-aktivierung-reist-nicht-mit-dem-klon](../in-progress/slice-aktivierung-reist-nicht-mit-dem-klon.md)
+    [slice-aktivierung-reist-nicht-mit-dem-klon](../done/slice-aktivierung-reist-nicht-mit-dem-klon.md)
     ist **teilweise vorweggenommen**: seine Lagen (a) *Träger liegt ausführbar im Klon* und (b)
     *`core.hooksPath` bleibt leer* liefert dieser Slice schon. Nicht vorweggenommen ist (c) — der
     Commit **ohne** Kennung, der im **unaktivierten** Klon durchgeht; das ist die Gegenrichtung und
@@ -460,7 +460,7 @@ Baseline-Regelwerk `v6.9.0` · `modul-05-planning-harness.md` §Closure- und Ler
   *geplant* mit Kennung. Es ist damit **keine** Regel zu verkörpern und kein Ausgang zuzuweisen.
 - **Folge-Slices:** **keiner, neu.** Der einzige Befund mit Arbeitsfolge ist V-2, und seine Adresse
   besteht bereits:
-  [slice-aktivierung-reist-nicht-mit-dem-klon](../in-progress/slice-aktivierung-reist-nicht-mit-dem-klon.md)
+  [slice-aktivierung-reist-nicht-mit-dem-klon](../done/slice-aktivierung-reist-nicht-mit-dem-klon.md)
   in `open/` — er nimmt den Gegenstand an und zieht seinen Zuschnitt beim `open → next` nach. Die
   drei übrigen Befunde brauchen keinen: zwei sind im Register gezählt, zwei sind mit Begründung
   abgelehnt.
