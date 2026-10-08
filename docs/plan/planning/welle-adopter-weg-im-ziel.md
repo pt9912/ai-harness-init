@@ -63,4 +63,4 @@ Reihenfolge = Abarbeitung; die zwei `full-smoke.sh`-Slices laufen nacheinander (
 ## 7. Closure-Notiz
 
 Erst nach Welle-Abschluss: Ergebnis `welle-adopter-weg-im-ziel-results.md` (Geschwister im Ruheort
-`done/`), Zähler `../observations/` (vom Ruheort aus).
+`done/`), Zähler das Beobachtungs-Register eine Ebene über dem Ruheort.
