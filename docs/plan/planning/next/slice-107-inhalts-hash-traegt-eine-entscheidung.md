@@ -130,7 +130,7 @@ dabei, statt sich hinter einem anderen zu verstecken.
       **Kein Kommando färbt „der Widerspruch hat einen Ausgang" rot, und das ist der Befund, keine
       Vertagung.** Die vier Quellen sind gezählt (§1); die Wahl zwischen ihnen ist ein Urteil über
       Fließtext, kein Muster — dieselbe Absage, die
-      [slice-101](slice-101-norm-postens-bekommen-einen-termin.md) §1 ihrem Weg (C) erteilt. Diese
+      [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) §1 ihrem Weg (C) erteilt. Diese
       Hälfte trägt das Review. Was **je Ausgang** messbar ist, steht in DoD (2).
 - [ ] **(2) Der gewählte Ausgang ist am lebenden Artefakt messbar — mit dem Kommando, das heute
       den alten Wert liefert.** Für **(a)**: `grep -rl 'Inhalts-Hash' docs/plan/adr/*.md | wc -l` →
@@ -183,7 +183,7 @@ auf die Closure von [welle-12](../done/welle-12-erfassungsschicht-emittieren.md)
 **Was dieser Slice ausdrücklich nicht ist: eine Nennung.** Die Form *„Träger: der Architect"* ist
 in diesem Repo gemessen vergeben und nicht eingelöst —
 `git grep -l '^\*\*Träger: der Architect' -- 'docs/plan/planning/done/*.md' | wc -l` → **3**
-([slice-101](slice-101-norm-postens-bekommen-einen-termin.md) §1, mit derselben Messung). Was
+([slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) §1, mit derselben Messung). Was
 fehlt, ist nicht die Zuständigkeit, sondern der Anlass zu laufen; in diesem Repo entsteht ein
 Anlass durch einen Schnitt.
 
