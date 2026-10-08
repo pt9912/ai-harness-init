@@ -110,7 +110,7 @@ Drei slice-eigene Punkte (Modul 5 §Ziel-Form: ≤ 3;
 [`AGENTS.md`](../../../../AGENTS.md) §3.6). Wo kein Kommando einen Punkt rot färbt, steht das
 dabei, statt sich hinter einem anderen zu verstecken.
 
-- [ ] **(1) Der Widerspruch trägt genau einen der drei Ausgänge aus §1, und der Ausgang steht
+- [x] **(1) Der Widerspruch trägt genau einen der drei Ausgänge aus §1, und der Ausgang steht
       dort, wo ihn der nächste Lauf findet.** Bei (a) und (b) im Entscheidungs-Stratum, bei (c) in
       §7 dieses Slice — nie in einer geschlossenen Datei unter `done/`.
       **Kein Kommando färbt „der Widerspruch hat einen Ausgang" rot, und das ist der Befund, keine
@@ -118,7 +118,7 @@ dabei, statt sich hinter einem anderen zu verstecken.
       Fließtext, kein Muster — dieselbe Absage, die
       [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) §1 ihrem Weg (C) erteilt. Diese
       Hälfte trägt das Review. Was **je Ausgang** messbar ist, steht in DoD (2).
-- [ ] **(2) Der gewählte Ausgang ist am lebenden Artefakt messbar — mit dem Kommando, das heute
+- [x] **(2) Der gewählte Ausgang ist am lebenden Artefakt messbar — mit dem Kommando, das heute
       den alten Wert liefert.** Für **(a)**: `grep -l 'Supersedes (Teil):.*0011-telemetrie-erfassung-policy' docs/plan/adr/*.md | wc -l`
       → vor der neuen Entscheidung **0**, mit ihr **1**; sie nennt beide abgelösten Sätze.
       Für **(b)**: `grep -c 'sha256_16' "$p/harness/erfassung-feldliste.md"` am frisch
@@ -126,7 +126,7 @@ dabei, statt sich hinter einem anderen zu verstecken.
       `grep -c 'classFileWrite' internal/span/emit.go` bewegt sich mit. Für **(c)** bewegt sich
       **kein** Wert — dann sagt die Closure-Notiz ausdrücklich, dass hier **nichts** gemessen
       wurde, statt das Ausbleiben als Erfolg zu lesen.
-- [ ] **(3) Die zwei *Accepted*-Entscheidungen bleiben unangetastet.** Eine Korrektur entsteht als
+- [x] **(3) Die zwei *Accepted*-Entscheidungen bleiben unangetastet.** Eine Korrektur entsteht als
       neue Entscheidung, nicht durch Überschreiben
       ([`AGENTS.md`](../../../../AGENTS.md) §3.4).
       **Rot:** `git diff --stat <Basis> -- docs/plan/adr/0011-telemetrie-erfassung-policy.md docs/plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md`
@@ -233,28 +233,54 @@ Grund ist ein vollwertiger Ausgang, und ohne sie wäre das Ergebnis vorweggenomm
 - **Der Slice kann den Entscheidungstext vorwegnehmen.** Sein Ergebnis ist ein Termin, und die
   Versuchung ist, die Lösung gleich mitzuschreiben. Wer das tut, verschiebt nur die Stelle, an der
   die Entscheidung unbelegt entsteht ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
+  — **Ausgang:** *entfallen* — den Entscheidungstext schrieb der Architect-Lauf
+  ([`ADR-0087`](../../adr/0087-fingerabdruck-gilt-auch-fuer-das-emittierte.md)); dieser Slice trägt nur Termin und Messung.
 - **Ausgang (b) ist teurer, als er aussieht, und die Kosten liegen außerhalb des Repos.** Der
   Fingerabdruck steht auf Rang 1; ein Change Request ist ein externer Vorgang, kein
   Harness-Konstrukt
   ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)).
   Wer ihn übergeht, ändert eine Anforderung aus einem Slice heraus — genau die Klasse, gegen die
-  jener Eintrag steht.
+  jener Eintrag steht. — **Ausgang:** *entfallen* — gewählt ist Ausgang (a); das Lastenheft bleibt
+  unverändert, ein Change Request entsteht nicht.
 - **Eine ebenen-verschiedene Schärfe kostet mehr als eine Zeile Code.** Sie macht aus einem Binär
   zwei Verhalten. Der Dogfood belegt dann nicht mehr, was das Ziel tut — die Richtung, die
   [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Folgepflicht 1
-  für den umgekehrten Fall ausschließt.
+  für den umgekehrten Fall ausschließt. — **Ausgang:** *entfallen* — [`ADR-0087`](../../adr/0087-fingerabdruck-gilt-auch-fuer-das-emittierte.md) entscheidet gegen
+  eine Ebenen-Unterscheidung; der Träger bleibt ein Verhalten. Dass kein Schalter entsteht, hält
+  kein Sensor — benannt in §7.
 - **Der Widerspruch ist älter als der Slice, der ihn sichtbar macht.** Der Träger schreibt den
   Fingerabdruck, seit es ihn gibt; neu ist allein, dass die Aussage darüber **im Repo eines
   Adopters** steht. Wer daraus einen Fehler von
   [slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md) macht, sucht am
-  falschen Ende — jener Slice hat den Widerspruch geleistet, nicht verursacht.
+  falschen Ende — jener Slice hat den Widerspruch geleistet, nicht verursacht. — **Ausgang:**
+  *entfallen* — der Ausgang zieht die Entscheidungen nach; an slice-098 ist nichts zu ändern.
 - **`make gates` deckt den Gegenstand nicht.** Der Doku-Gate prüft Kennungen, Anker und Pfade;
   zwei Entscheidungen, die einander widersprechen, sind grün. Das ist keine Lücke dieses Schnitts,
   sondern die Grenze der Form — und der Grund, aus dem DoD (1) kein Rot-Kommando trägt.
+  — **Ausgang:** *entfallen* — DoD (1) trug das Review (0 HIGH, Befunde eingearbeitet in
+  `d75764fd`), die Verifikation bestätigte ihn; der Widerspruch ist aufgelöst.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+- **Ausgang (a)**, verkörpert als [`ADR-0087`](../../adr/0087-fingerabdruck-gilt-auch-fuer-das-emittierte.md)
+  (*Accepted*, `Supersedes (Teil):` auf [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md) F2/F5 und [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) F6). DoD (2):
+  `grep -l 'Supersedes (Teil):.*0011-telemetrie-erfassung-policy' docs/plan/adr/*.md | wc -l` → **0** vor,
+  **1** nach der Entscheidung. DoD (3): `git diff --stat 80b6154a^ HEAD` über [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md)/[`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) leer.
+  Rang 1, Rang 2, Entscheidung und Träger sagen jetzt dasselbe.
+- **Belege:** Review `docs/reviews/2026-10-08-adr-0087-review.md`; Verifikation
+  `docs/reviews/2026-10-08-slice-107-verifikation.md` (DoD 1–3 bestätigt; Fitness Function rot
+  gesehen: Zuweisung von `Sha256Prefix` entfernt → `TestWriteToolGetsFingerprintFromFilesystem`,
+  `sha256_16 = ""`).
+- **Risiko-Ausgänge (§6):** alle fünf *entfallen*, je mit Grund an ihrer Zeile.
+- **Lerneintrag (gezählt, nicht verkörpert):** Beobachtungs-Register
+  `BEO-ALL/neuer-waechter-ohne-mutations-fall` — Beleg `slice-107-inhalts-hash-traegt-eine-entscheidung`:
+  [`ADR-0087`](../../adr/0087-fingerabdruck-gilt-auch-fuer-das-emittierte.md) bindet den Test als Fitness Function, kein Fall in `test/mutations/` hält die
+  `Sha256Prefix`-Zeile. Der Eintrag steht `geplant` (`slice-119-zusage-ohne-fall-wird-sichtbar`);
+  ein Lese-Schritt nach [`ADR-0085`](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md) fällt nicht an. **Benannt, nicht gezählt:** gegen einen
+  Ebenen-Schalter hält kein Sensor — die Lücke steht in [`ADR-0087`](../../adr/0087-fingerabdruck-gilt-auch-fuer-das-emittierte.md) §Fitness Function; derselbe
+  Vorgang zählt nicht zweimal.
+- **Paarungen:** (a) kein `liegt in`-Feld; (b) kein Folge-Slice; (c) der zitierte Eintrag existiert
+  und trägt Belege.
 
 ## 8. Sub-Area-Modus-Begründung
 
