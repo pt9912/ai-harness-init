@@ -5,21 +5,8 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** ohne Welle (Norm-Wartung, reaktiv). Die drei Fragen aus
-[`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
-Setzung 1, hier beantwortet: **(1) Bündel?** Nein — ein Widerspruch, ein Ausgang; einzeln
-lieferbar, und kein zweiter Slice wartet auf ihn. **(2) Gemeinsames Closure-Kriterium?** Nein —
-jedes denkbare wäre die Abschrift seiner eigenen DoD. **(3) Auslöser reaktiv oder gewollt?**
-Reaktiv: ein gemessener Widerspruch zwischen zwei *Accepted*-Entscheidungen, der Anforderung auf
-Rang 1 und dem laufenden Träger (§1). Kein Fähigkeits-Sprung — das Werkzeug lernt nichts, was es
-nicht schon kann. **Auch nicht in [welle-12](../done/welle-12-erfassungsschicht-emittieren.md):** deren
-Abdeckungs-Tabelle führt die Zeile *„Redaktion — was zugesagt ist und was nicht"* als von
-[slice-098](../done/slice-098-feldliste-ist-ausdruck-des-traegers.md) geliefert, und
-[`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) nennt den
-Fingerabdruck selbst als eine der Ableitungen — das Kriterium ist in **jedem** Ausgang erfüllt.
-Dieser Slice füllt keine Zelle und leert keine. Nach
-[`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
-Setzung 2 steht wellenlose Arbeit **nicht** in der Roadmap; ihr Zustand ist das Verzeichnis.
+**Welle:** [welle-erfassungsschicht-im-ziel](../welle-erfassungsschicht-im-ziel.md) — der Ausgang dieses
+Slice entscheidet, was die emittierte Feldliste über den Fingerabdruck sagt.
 
 **Ebene: beide — und genau das ist der Gegenstand.** Die zwei Entscheidungssätze reden über die
 **emittierte** Ebene, gemessen wird der **eine** Träger, der auf beiden läuft: das Produkt-Binär
@@ -104,7 +91,7 @@ Gegenrichtung: der Dogfood führte dann etwas, das das Ziel nicht führt, und be
   ([`AGENTS.md`](../../../../AGENTS.md) §3.4).
 - **(b) Die Erfassung ändert sich — der Fingerabdruck fällt.** **Dieser Ausgang steht einem ADR
   nicht offen:**
-  [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) nennt ihn auf
+  [`LH-FA-14`](../../../../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) nennt ihn auf
   Rang 1, und *„weder ADR noch Slice dürfen `LH-*` je ändern"*
   ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler),
   adoptierter Wortlaut). Vor ihm liegt ein Change Request, dessen annehmender Akt die
@@ -198,7 +185,7 @@ Die zwei Rückführungen, vorab benannt:
   Slice **vorausgeht**
   ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
   Setzung 1/2) — der Slice wartet darauf, statt an
-  [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) vorbei zu
+  [`LH-FA-14`](../../../../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) vorbei zu
   bauen.
 
 ## 5. Closure-Trigger

@@ -9,19 +9,19 @@ aus `open/` oder `next/` nach `done/` — §7 nennt in der Zeile `Gegenstand:`
 Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 (§Ein Slice, dessen Gegenstand ein anderer übernimmt).
 
-**Welle:** ohne Welle — keine Closure-Bedingung über die DoD hinaus (Baseline-Regelwerk
-`modul-06-roadmap.md` §Wann Arbeit eine Welle braucht).
+**Welle:** [welle-erfassungsschicht-im-ziel](../welle-erfassungsschicht-im-ziel.md) — nach
+`slice-agent-role-traegt-nicht-bekannt`, dessen Spec-Zeilen dieser Slice liest.
 
 **Bezug:**
 [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) (Arbeits-Bezug),
 [`ADR-0074`](../../adr/0074-spec-5-fliesstext-klassen-ort-und-lh-bezug-spalte.md) (Festlegung 3 und 9,
 Folgepflicht 3), [`ADR-0013`](../../adr/0013-technik-stratum-als-zielort.md) (Folgepflicht 3: die emittierte Ebene
 bleibt vom Spec-Umbau unberührt — dieser Slice ist die Tool-Ebene),
-[`MR-076`](../../../../harness/conventions.md#mr-076) und [`MR-077`](../../../../harness/conventions.md#mr-077)
+[`MR-081`](../../../../harness/conventions.md#mr-081) und [`MR-077`](../../../../harness/conventions.md#mr-077)
 (die Abweichungen, deren Begründung die Feldliste nennt), [`AGENTS.md`](../../../../AGENTS.md) §3.6, §3.7.
 
 **Berührte Spec-Stellen:** — (der Slice ändert keine; er **liest** die Zeilen von
-[§5](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) zu den Abweichungen 1, 2, 3 bis 6 als Quelle
+[§5](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) zu den Abweichungen 2 bis 6 und zu `SPEC-087` als Quelle
 seiner Aussagen, nach dem Umbau in `slice-spec-5-wird-nach-adr-0074-umgebaut`).
 
 **Verantwortlich:** — bis zur Priorisierung.
@@ -41,7 +41,7 @@ zusammen mit der Begründungs-Pflicht je Punkt.
 
 **Ziel:** Die emittierte Feldliste (`internal/span/fieldlist.go`, Tool-Ebene, im Zielrepo wirksam) trägt die
 Verfügbarkeits-Aussagen und die Aufbewahrung, die ihr fehlen: (1) Cache-Status — Haupt-Kontext gegen Subagent
-(Abweichung 1); (2) die PR-Nummer steht **bewusst nicht** im Schema, und der Grund (Abweichung 2); (3) der
+(Pflicht mit Kennzeichnung, `SPEC-024`/`SPEC-087` — die Feldliste trägt sie schon, nur die Differenz zählt); (2) die PR-Nummer steht **bewusst nicht** im Schema, und der Grund (Abweichung 2); (3) der
 Haupt-Kontext trägt keine Zahl (Abweichung 6, mit 3 und 5, soweit dort etwas fehlt); (4) die Aufbewahrung und
 `make span-clean` (Abweichung 4). Jede Aussage ist getestet und im gebootstrappten Ziel per E2E belegt.
 
@@ -134,7 +134,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 
 **Start** (`next` → `in-progress`): `slice-spec-5-wird-nach-adr-0074-umgebaut` liegt in `done/`
 (`ls docs/plan/planning/done/slice-spec-5-wird-nach-adr-0074-umgebaut.md` nennt die Datei) — die Aussagen stehen erst
-danach als Zeilen, aus denen der Lauf sie liest.
+danach als Zeilen, aus denen der Lauf sie liest — **eingetreten**. Dazu `slice-agent-role-traegt-nicht-bekannt` in `done/`, sonst liest der Lauf `SPEC-056`/`SPEC-087` im alten Wortlaut.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
@@ -206,8 +206,8 @@ Greenfield); die Deklaration führt für `internal/span/` keine feinere — bena
 - [`feldnotiz-traeger-und-spec-koennen-in-der-kernaussage-abweichen-ohne-sensor`](../observations/BEO-ALL/feldnotiz-traeger-und-spec-koennen-in-der-kernaussage-abweichen-ohne-sensor/observation.md)
   — 1×, offen.
 - [`emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`](../observations/BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/observation.md)
-  — 2×, offen: **ein Beleg aus diesem Slice hebt ihn auf 3×.**
+  — 11×, verkörpert in `AGENTS.md` §3.6; ein weiterer Beleg ist Evidenz.
 - [`span-feld-bedeutung-wechselt-ohne-fassungs-angabe`](../observations/BEO-ALL/span-feld-bedeutung-wechselt-ohne-fassungs-angabe/observation.md)
-  — 2×, offen: ebenso.
+  — 3×, `geplant` auf `slice-span-traegt-die-fassung-seiner-erfassungsregel` (läuft vor diesem Slice).
 
 **Modus-Begründungsblock:** alle berührten Sub-Areas GF.

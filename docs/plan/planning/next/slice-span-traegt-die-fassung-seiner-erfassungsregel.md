@@ -3,8 +3,9 @@
 **Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese Datei liegt; er wechselt
 nur durch `git mv` (Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine).
 
-**Welle:** ohne Welle — reaktiv, ein Eintrag des Beobachtungs-Registers über der Schwelle; keine
-Closure-Bedingung jenseits der DoD.
+**Welle:** [welle-erfassungsschicht-im-ziel](../welle-erfassungsschicht-im-ziel.md) — erster Slice:
+der Wechsel leerer Werte auf *nicht bekannt* (`slice-agent-role-traegt-nicht-bekannt`) ist der nächste
+Bedeutungswechsel und trägt seine Fassung dann schon.
 
 **Bezug:** [`LH-FA-13`](../../../../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans),
 [`ADR-0011`](../../adr/0011-telemetrie-erfassung-policy.md), [`ADR-0049`](../../adr/0049-ausgang-traegt-die-benannte-luecke.md).
@@ -40,7 +41,7 @@ Beobachteten trennen, weil jede Zeile die Fassung der Erfassungsregel nennt, unt
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder in §7 notiert, dass keine Beobachtung anfiel.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
+- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die Welle-Closure.
 
 ## 3. Plan (vor Code)
 
@@ -55,8 +56,9 @@ Beobachteten trennen, weil jede Zeile die Fassung der Erfassungsregel nennt, unt
 **Start** (`next` → `in-progress`): priorisiert, `Verantwortlich:` gesetzt.
 
 - `in-progress` → `next`: die Feld-Variante verlangt eine Änderung an [`LH-FA-13`](../../../../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) selbst (Change
-  Request) — dann trennt sich der Spec-Teil ab.
-- `in-progress` → `open`: der offene CR zu [`LH-FA-13`](../../../../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) blockiert die Festlegung.
+  Request) — dann trennt sich der Spec-Teil ab. Lastenheft 0.25.1 nennt die Fassung nicht; ein
+  Pflichtfeld mehr in der geschlossenen Feldliste ist eine Festlegung in §5, kein CR, solange
+  [`LH-FA-13`](../../../../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) es nicht ausschließt.
 
 ## 5. Closure-Trigger
 

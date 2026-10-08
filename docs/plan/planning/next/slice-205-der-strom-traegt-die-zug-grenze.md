@@ -5,9 +5,13 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** ohne Welle. Der Slice verdrahtet **ein** Ereignis und schreibt seine Bedeutung fest;
-sein Beleg ist eine Messung an einem realen Strom, und die steht in seiner eigenen DoD
-(Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht).
+**Welle:** [welle-erfassungsschicht-im-ziel](../welle-erfassungsschicht-im-ziel.md).
+
+**Konflikt mit Rang 1, seit Lastenheft 0.23.0.** Das Kriterium *Erfassungs-Umfang* von
+[`LH-FA-14`](../../../../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) sagt:
+*„**Nicht erfasst** werden ein vom Guard geblockter Aufruf und das Ende eines Laufs"* — dieser Slice
+verdrahtet genau das Ende. Er beginnt deshalb erst nach einem Change Request des Auftraggebers
+([`MR-015`](../../../../harness/conventions.md#mr-015)); §4 trägt die Bedingung.
 
 **Ebene: Dogfood *und* emittiert, hier mit zwei Dateien statt einer.** Anders als bei
 [slice-204](../done/slice-204-das-programm-feld-nennt-das-programm.md), wo die Änderung über den Träger
@@ -175,7 +179,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       dort eine Lesart, die der Lauf nicht belegt hat, ist **das** der Befund. Das Technik-Stratum ist
       ohne Vertragsänderung fortschreibbar
       ([`MR-019`](../../../../harness/conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence));
-      das Lastenheft wird **nicht** angefasst.
+      das Lastenheft ändert nicht dieser Slice, sondern der Change Request aus §4.
 - [ ] Ein Fall in `test/mutations/` nimmt der Verdrahtung die Zähne — ohne ihn ist sie
       unbewacht ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Vorbild ist die bestehende
       Kopplungs-Prüfung der Hook-Aufrufer.
@@ -190,8 +194,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 - [ ] Beobachtungs-Register ([`../observations/`](../observations/)) fortgeschrieben — **kein
       Zähler wird gesetzt**, er folgt aus den Dateien.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — dieser Slice läuft
-      **ohne Welle**, sie werden also hier geprüft, nach dem `git mv`.
+- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die Welle-Closure.
 
 ## 3. Plan (vor Code)
 
@@ -215,8 +218,12 @@ kein `cmd/`, kein `Makefile`.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): Der Slice ist priorisiert, `Verantwortlich:` ist gesetzt, das
-WIP-Limit des Rolleninhabers ist frei. **Keine Abhängigkeit von slice-203** — siehe §5.
+**Start** (`next` → `in-progress`): `spec/lastenheft.md` §7 Historie trägt einen Change Request, der
+das Kriterium *Erfassungs-Umfang* von
+[`LH-FA-14`](../../../../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) für das Ende
+eines Subagenten-Laufs öffnet; dazu priorisiert, `Verantwortlich:` gesetzt, WIP-Limit frei. **Lehnt
+der Auftraggeber ab**, geht der Slice `next → done` mit `Gegenstand: entfallen` (Grund: Rang 1 schließt
+das Ende aus), die Liefer-Punkte bleiben leer. **Keine Abhängigkeit von slice-203** — siehe §5.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
