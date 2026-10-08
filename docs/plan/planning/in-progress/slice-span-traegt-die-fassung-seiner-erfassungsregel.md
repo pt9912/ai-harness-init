@@ -31,16 +31,16 @@ Beobachteten trennen, weil jede Zeile die Fassung der Erfassungsregel nennt, unt
 
 ## 2. Definition of Done
 
-- [ ] Entschieden und in `spec/spezifikation.md` §5 begründet: ein Fassungs-Feld je Span **oder** eine
+- [x] Entschieden und in `spec/spezifikation.md` §5 begründet: ein Fassungs-Feld je Span **oder** eine
       datierte Wechsel-Zeile je Bedeutungswechsel.
-- [ ] Umgesetzt, und `make span-report` trennt die Fassungen; ein Span ohne bzw. mit falscher Fassung
+- [x] Umgesetzt, und `make span-report` trennt die Fassungen; ein Span ohne bzw. mit falscher Fassung
       ist rot gesehen (bei der Feld-Variante).
-- [ ] Die bisherigen Bedeutungswechsel (`program`-Feld) sind in der gewählten Form nachgetragen.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder in §7 notiert, dass keine Beobachtung anfiel.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die bisherigen Bedeutungswechsel (`program`-Feld) sind in der gewählten Form nachgetragen.
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder in §7 notiert, dass keine Beobachtung anfiel.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die Welle-Closure.
 
 ## 3. Plan (vor Code)
@@ -68,12 +68,20 @@ DoD vollständig, `make gates` grün, Closure-Notiz mit Lerneintrag.
 
 ## 6. Risiken und offene Punkte
 
-- Die Fassungs-Angabe wird bei einem künftigen Regelwechsel nicht hochgezählt — **Ausgang:** offen
-  bis Closure.
+- Die Fassungs-Angabe wird bei einem künftigen Regelwechsel nicht hochgezählt — **Ausgang:** weiter
+  offen → `BEO-ALL/span-feld-bedeutung-wechselt-ohne-fassungs-angabe` (Beleg dieses Slice); ob ein
+  Bedeutungswechsel erkannt und hochgezählt wird, hält kein Wächter (`SPEC-094`).
 
 ## 7. Closure-Notiz
 
-— bei Closure.
+- **Was hat funktioniert:** Feld-Variante `rule_version` (`SPEC-088`/`SPEC-089`), Fassungs-Tabelle 1–4 (`SPEC-090`–`SPEC-093`); `TestCurrentRuleVersionIsTheLastSpecFassung` hält die Konstante an der realen Tabelle, Fälle 592–596 färben rot (`make mutate` → ok). Review `docs/reviews/2026-10-08-span-fassung-review.md` (0 HIGH, 0 MEDIUM; F-1–F-4 in `b24e7315`), Verifikation `docs/reviews/2026-10-08-span-fassung-verifikation.md` (DoD 1–5 bestätigt; V-1 in `2236a0cd`), CI-Lauf `37775749099` grün.
+- **Was ging anders als geplant:** Die Zählregel bekam ihre Einheit (je Release) erst aus Review-F-4; Fälle 595/596 und `TestAggregiere_FassungNullIstNichtBekannt` stehen aus Review und Verifikation in §3.
+- **Grenzen:** (1) Der Träger aus einem Zwischenstand zwischen zwei Releases (`make host-bin`) schreibt die neue Fassung schon, bevor das Release sie trägt — die Zählregel zählt je Release, der Träger je Build (F-4). (2) `rule_version` `0` gilt als *nicht bekannt* (V-1); `TestAggregiere_FassungNullIstNichtBekannt` bindet es und ist rot gesehen, ein Mutations-Fall dafür existiert nicht.
+- **Steering-Loop-Eintrag:** neuer Sensor — `TestCurrentRuleVersionIsTheLastSpecFassung` und Fälle 592–596 in `test/mutations/` färben rot, sobald die geschriebene Fassung von der letzten Zeile der Fassungs-Tabelle abweicht oder der Bericht die Fassungen nicht trennt; benannte Spec-Lücke — `SPEC-094`: das Erkennen eines Bedeutungswechsels hält kein Wächter ([`LH-FA-13`](../../../../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans)).
+- **Beobachtungs-Register (`../observations/`):** Beleg in `BEO-ALL/span-feld-bedeutung-wechselt-ohne-fassungs-angabe` (Risiko §6, weiter offen) und in `BEO-ALL/zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel` (Finding-Klasse Review-F-2/F-3), je `evidence/slice-span-traegt-die-fassung-seiner-erfassungsregel.md`. Der Stand des ersten nennt weiter diesen Slice als `geplant`; seinen Ausgang nach der Lieferung entscheidet der Zug Planner → Architect → Planner.
+- **Folge-Slices:** keine.
+- **Risiken aus §6:** (1) weiter offen → Register, s. o.
+- **Drei Paarungen:** dieses Repo fährt Wellen — die Welle-Closure von `welle-erfassungsschicht-im-ziel` prüft sie erneut; die Slice-Closure fährt sie nach dem `git mv` selbst (Zeile unten).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
