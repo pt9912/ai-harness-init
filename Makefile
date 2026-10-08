@@ -268,11 +268,11 @@ comment-claims: ## Kommentar-Behauptungen nennen ihren Sensor (AGENTS.md 3.6) �
 	@bash harness/tools/comment-claims.sh $$(git ls-files 'internal/*.go' 'internal/**/*.go' 'cmd/**/*.go' | grep -v '_test[.]go') $$(git ls-files 'harness/tools/*.sh' '.claude/hooks/*.sh' '.githooks/*')
 
 # Haelt das Beobachtungs-Register gegen seine Ausgangs-Regel: ein Eintrag ueber der 3x-Schwelle
-# traegt einen der drei Ausgaenge — Regel ADR-0049, Zeitpunkt ADR-0085 (Proposed), Zaehlung
-# ADR-0069. Hermetisch — reines bash auf dem Arbeitsbaum. NICHT in gates, bis ADR-0085 angenommen
-# ist; eine Ausnahmeliste fuehrt der Waechter nicht; Zusage und Grenze im Kopf von
+# traegt einen der drei Ausgaenge — Regel ADR-0049, Zeitpunkt ADR-0085, Zaehlung
+# ADR-0069. Hermetisch — reines bash auf dem Arbeitsbaum. Haengt an record-gates und laeuft damit
+# in gates; eine Ausnahmeliste fuehrt der Waechter nicht; Zusage und Grenze im Kopf von
 # harness/tools/register-ausgang.sh.
-register-ausgang: ## Register-Eintraege ueber der 3x-Schwelle tragen einen Ausgang (ADR-0049, ADR-0085, Zaehlung ADR-0069) — hermetisch, NICHT in gates
+register-ausgang: ## Register-Eintraege ueber der 3x-Schwelle tragen einen Ausgang (ADR-0049, ADR-0085, Zaehlung ADR-0069) — hermetisch
 	@bash harness/tools/register-ausgang.sh
 
 # Prueft die GitHub-Actions-Workflows syntaktisch. IN gates: .github/workflows/
@@ -653,7 +653,7 @@ vendor-baseline: host-bin ## Eigenen vendored Baum aus dem verifizierten Release
 # GESCHLOSSEN, gemessen: `make record-gates` ist mit `make gates` deckungsgleich — die
 # Kante zieht dort dieselben Checks mit (`diff <(make -n gates) <(make -n record-gates)`
 # ist leer).
-record-gates: baseline-verify docs-check lint build test shell-lint ci-lint comment-claims host-bin span-check ## Checks + Gate-Nachweis (Working-Tree-Hash für den Stop-Hook)
+record-gates: baseline-verify docs-check lint build test shell-lint ci-lint comment-claims register-ausgang host-bin span-check ## Checks + Gate-Nachweis (Working-Tree-Hash für den Stop-Hook)
 	@bash harness/tools/record-gates.sh
 
 gates: record-gates ## alle aktuell lauffähigen Gates + Nachweis

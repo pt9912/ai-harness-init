@@ -3,7 +3,7 @@
 # expect: gate-nachweis: an der Kante haengen genau die erwarteten Checks
 #
 # Die Kante bleibt stehen, aber ihre Liste wird auf die ERSTE Voraussetzung gekuerzt:
-# `record-gates: <a> <b> … ## …` -> `record-gates: <a> ## …`. Neun Checks fallen damit
+# `record-gates: <a> <b> … ## …` -> `record-gates: <a> ## …`. Zehn Checks fallen damit
 # aus `make gates` heraus, und der Stempel deckt einen Baum, ueber den sie nie geurteilt
 # haben — der Stop-Hook gibt einen Abschluss frei, den kein Check gesehen hat.
 #

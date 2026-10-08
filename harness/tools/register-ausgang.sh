@@ -2,7 +2,7 @@
 # register-ausgang.sh — haelt das Beobachtungs-Register gegen seine Ausgangs-Regel: ein Eintrag
 # ueber der 3x-Schwelle traegt in state.md einen der drei Ausgaenge (verkoerpert · geplant ·
 # gestrichen), nicht `offen`. Bindung: die Regel aus ADR-0049, der Zeitpunkt (der Ausgang steht
-# mit dem Beleg, der die Schwelle hebt) aus ADR-0085 (Proposed), die Zaehlung `evidence/*.md`
+# mit dem Beleg, der die Schwelle hebt) aus ADR-0085, die Zaehlung `evidence/*.md`
 # aus ADR-0069; Wortlaut der Regel in docs/plan/planning/observations/README.md.
 #
 # Aufruf: register-ausgang.sh [<wurzel>]   (Default: docs/plan/planning/observations)

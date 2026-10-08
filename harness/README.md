@@ -54,6 +54,7 @@ wird dann zum Link auf die Datei.
 | `make shell-lint` | Shell-Hooks/-Helfer lint-clean (shellcheck) | [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md) |
 | `make ci-lint` | GitHub-Actions-Workflows syntax-clean (actionlint) | [`MR-014`](conventions.md#mr-014--ci-auf-frischem-klon-github-actions) |
 | [`make comment-claims`](sensors/comment-claims.md) | Kommentar-Behauptungen nennen ihren Sensor; genannte Tests existieren — im Prüfbereich, enger als der Gate-Stempel | [`AGENTS.md`](../AGENTS.md) §3.6 |
+| `make register-ausgang` | Register-Einträge mit ≥ 3 `evidence/*.md` tragen in `state.md` eine eindeutige Stand-Zeile mit einem der drei Ausgänge; leerer Prüfbereich → Exit 2 | Regel [`ADR-0049`](../docs/plan/adr/0049-ausgang-traegt-die-benannte-luecke.md), Zeitpunkt [`ADR-0085`](../docs/plan/adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md), Zählung [`ADR-0069`](../docs/plan/adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md) |
 | `make host-bin` | Träger (Produkt-Binär) für die **Host**-Plattform gebaut und im gitignorierten Zustands-Bereich abgelegt (Docker-only, GOOS/GOARCH aus `uname`) | [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md) |
 | `make span-check` | Träger vorhanden **und** sein Unterkommando `span-emit` funktionsfähig; Ablageort real `git check-ignore`-geprüft | [`spec/spezifikation.md`](../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 |
 | `make gates` | alle aktuell lauffähigen Gates | — |
@@ -91,7 +92,6 @@ ist (`make help` listet sie).
 | [`make commit-msg-check`](sensors/commit-msg-check.md) | prüft eine Commit-Message-Datei gegen Traceability-Kennung | kein Gate — Träger ist der PreToolUse-Hook |
 | `make hooks-install` | aktiviert die git-eigenen Träger `commit-msg` und `pre-commit` in diesem Klon (`core.hooksPath .githooks`) — Letzterer hält `git commit --amend` gegen fremde, zwischenzeitlich gestagte Index-Einträge | kein Gate · [`AGENTS.md`](../AGENTS.md) §5 |
 | [`make history-range-guard`](sensors/history-range-guard.md) | Vorlauf-Wächter: angeforderte Range auflösbar **und** nicht leer | kein Gate |
-| `make register-ausgang` | nennt jeden Registereintrag mit ≥ 3 `evidence/*.md`, dessen `state.md` keinen der drei Ausgänge oder keine eindeutige Stand-Zeile trägt; Exit 2 bei leerem Prüfbereich. Nicht in `make gates`, solange die Zeitpunkt-ADR `Proposed` ist | kein Gate · Regel [`ADR-0049`](../docs/plan/adr/0049-ausgang-traegt-die-benannte-luecke.md), Zeitpunkt [`ADR-0085`](../docs/plan/adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md), Zählung [`ADR-0069`](../docs/plan/adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md) |
 | [`make adr-immutable`](sensors/adr-immutable.md) | hält den Kern einer `Accepted`-ADR über einer Range unverändert | kein Gate · [`AGENTS.md`](../AGENTS.md) §3.4 |
 | [`make doc-tracked`](sensors/doc-tracked.md) | sagt, ob ein verlinktes Ziel im git-Index steht | kein Gate |
 | [`make doc-structure`](sensors/doc-structure.md) | fährt die `structure`-Regeln der `.d-check.yml` allein (inert ohne `structure:`-Block) | kein Gate |

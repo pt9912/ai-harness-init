@@ -199,30 +199,27 @@ DoD nicht.
 **Umsetzungsstand (Implementer, 2026-10-08).** Der Wächter zählt Dateien `evidence/*.md` (kein
 Verzeichnis, keine Nicht-`.md`) und liest das erste Wort der `**Stand:**`-Zeile:
 `harness/tools/register-ausgang.sh`, Ziel `make register-ausgang`, Tests
-`test/register-ausgang.bats`, Mutations-Fälle `564`/`565` unter `test/mutations/`. **Zwei
-Abweichungen von der Tabelle oben, beide offen für den Planner:**
+`test/register-ausgang.bats`, Mutations-Fälle `564`/`565` unter `test/mutations/`.
 
-- **Die Zeile steht unter §Werkzeuge mit `kein Gate`, nicht unter §Sensors, und `make gates` fährt
-  das Ziel nicht.** Bindung: die Regel aus
-  [ADR-0049](../../adr/0049-ausgang-traegt-die-benannte-luecke.md), der Zeitpunkt aus
-  [ADR-0085](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md)
-  (`Proposed`), die Zählung `evidence/*.md` aus
-  [ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md).
-  Die Verdrahtung wartet auf das Accept der Zeitpunkt-ADR; eine Ausnahmeliste führt der Wächter nicht,
-  weil er keine Liste erwarteter Einträge führt (Absatz *Und der Sensor prüft die Eigenschaft*
-  oben). Die Verdrahtung ist danach eine Zeile in `record-gates`, die Tabellen-Zeile wandert nach
-  §Sensors, und `register-ausgang` verläßt `targets.exempt-targets` in
-  [`.d-check.yml`](../../../../.d-check.yml).
+- **Verdrahtet in `make gates`.** `register-ausgang` hängt an den Voraussetzungen von
+  `record-gates` im `Makefile`, die Zeile steht in [`harness/README.md`](../../../../harness/README.md)
+  §Sensors (Bindung: Regel [ADR-0049](../../adr/0049-ausgang-traegt-die-benannte-luecke.md),
+  Zeitpunkt [ADR-0085](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md),
+  Zählung [ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)),
+  und `register-ausgang` steht nicht mehr in `targets.exempt-targets` der
+  [`.d-check.yml`](../../../../.d-check.yml). Die Erwartungsliste der Kante in
+  `test/gate-nachweis-kante.bats` führt das Ziel; der Mutations-Fall `582` unter `test/mutations/`
+  nimmt es aus der Kante und färbt diese Liste rot (Stufe `test-bats`). Eine Ausnahmeliste führt der
+  Wächter nicht, weil er keine Liste erwarteter Einträge führt (Absatz *Und der Sensor prüft die
+  Eigenschaft* oben).
 - **Leerer Prüfbereich und mehrdeutiger Stand.** Trifft `BEO-*/*/` kein Verzeichnis, bricht der
   Wächter mit Exit 2 ab, statt über nichts grün zu melden; führt eine `state.md` über der Schwelle
   mehr als eine Zeile `**Stand:**`, ist das ein Befund, statt dass die erste entscheidet. Beide
   Zweige tragen je einen Fall in `test/register-ausgang.bats` und je einen Mutations-Fall
   (`566`, `567` unter `test/mutations/`).
-- **Der Nachzug der Zeile `BEO-ALL/*/state.md` ist nicht gefahren.** Einen Ausgang zuzuweisen ist
-  der Lese-Schritt, und zwei der genannten Einträge halten in ihrer `state.md` eine fällige Übergabe
-  an den Architect fest; *verkörpert* und *geplant* verlangen je Eintrag ein Urteil über Zielort
-  oder einen Nehmer-Slice, den es teils nicht gibt (Baseline-Regelwerk `modul-08-agentenrollen.md`
-  §Rollen-Sequenz für eine Welle, Zeile 3b). Übergabe an Planner und Architect.
+- **Der Nachzug der Zeilen `BEO-ALL/*/state.md` lag bei Architect und Planner** (Lese-Schritt,
+  Baseline-Regelwerk `modul-08-agentenrollen.md` §Rollen-Sequenz für eine Welle, Zeile 3b); auf dem
+  Bestand meldet `make register-ausgang` keinen Befund.
 
 ## 4. Trigger
 
