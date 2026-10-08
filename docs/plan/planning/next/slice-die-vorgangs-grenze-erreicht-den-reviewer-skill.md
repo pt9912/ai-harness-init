@@ -152,9 +152,9 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
       besonders:** Liefergegenstand *ist* die Urteilsgrundlage der prüfenden Rolle; der prüfende
       Lauf muss ein **anderer Kontext** sein als der schreibende (§5 Kriterium 2).
 - [ ] Doku-Update: Liefer-Punkt (1) **ist** dieses Item — der Träger ist Durchsetzungs-Doku.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — **hier nicht**: Dieses
       Repo fährt Wellen-Betrieb (`ls docs/plan/planning/welle-*.md | wc -l` → **3**, kein
       Erwartungswert), also prüft sie die nächste Welle-Closure, auch für diesen Slice ohne
@@ -262,6 +262,14 @@ dasteht.
   — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
 
 ## 7. Closure-Notiz
+
+**Gegenstand:** übernommen von `slice-227-reviewer-skill-nennt-den-vorhandenen-stand`.
+
+Stillgelegt ohne Lieferung (Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer übernimmt) im Bestands-Lese-Schritt der Welle-Closure `welle-emittiertes-doc-gate`, Auftraggeber-Entscheidung vom 2026-10-08. Die Liefer-Punkte der DoD bleiben leer.
+
+- **Risiko-Ausgänge (§6):** jedes Risiko ohne vorab gesetzten Ausgang — *eingetreten* → `slice-227-reviewer-skill-nennt-den-vorhandenen-stand`, der den Gegenstand samt diesen Risiken führt; vorab gesetzte Ausgänge gelten unverändert.
+- **Beobachtungs-Register:** `BEO-ALL/geplanter-slice-wird-nie-gearbeitet` — Beleg `welle-emittiertes-doc-gate`, eine Gelegenheit für alle Stilllegungen dieses Lese-Schritts.
+- **Paarungen:** von der Welle-Closure `welle-emittiertes-doc-gate` geprüft, Ergebnis in deren Ergebnisnotiz.
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Das Beobachtungs-Register (vorhandene `BEO-<KUERZEL>/<slug>` **zitieren** statt neu

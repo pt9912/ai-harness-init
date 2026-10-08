@@ -1,6 +1,6 @@
 **Stand:** geplant
 
-Kennung: `slice-plan-umfang-bleibt-beim-gegenstand` — er gibt der Regel eine messbare Form und ihre
+Kennung: `slice-zusammenfassung-bleibt-innerhalb-ihrer-quelle` — er gibt der Regel eine messbare Form und ihre
 Grenze.
 
 Die Regel steht in `.claude/agents/planner.md` (*Knapp schreiben*) und

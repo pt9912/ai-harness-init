@@ -586,6 +586,14 @@ Grund ist ein vollwertiger Ausgang, und ohne sie wäre die Entscheidung vorwegge
 
 ## 7. Closure-Notiz (nach `done/`)
 
+**Gegenstand:** entfallen: Auftraggeber-Entscheidung vom 2026-10-08; die zwölf Posten bleiben in ihren Closure-Notizen unter `done/`, ein Sammel-Termin wird nicht gesetzt.
+
+Stillgelegt ohne Lieferung (Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer übernimmt) im Bestands-Lese-Schritt der Welle-Closure `welle-emittiertes-doc-gate`, Auftraggeber-Entscheidung vom 2026-10-08. Die Liefer-Punkte der DoD bleiben leer.
+
+- **Risiko-Ausgänge (§6):** jedes Risiko ohne vorab gesetzten Ausgang — *entfallen*: mit dem Gegenstand entfällt die Arbeit, an der es hing; vorab gesetzte Ausgänge gelten unverändert.
+- **Beobachtungs-Register:** `BEO-ALL/geplanter-slice-wird-nie-gearbeitet` — Beleg `welle-emittiertes-doc-gate`, eine Gelegenheit für alle Stilllegungen dieses Lese-Schritts.
+- **Paarungen:** von der Welle-Closure `welle-emittiertes-doc-gate` geprüft, Ergebnis in deren Ergebnisnotiz.
+
 <!-- Erst nach Abschluss füllen. -->
 
 ## 8. Sub-Area-Modus-Begründung

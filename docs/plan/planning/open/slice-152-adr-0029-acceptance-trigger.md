@@ -85,15 +85,15 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Zeiger schuldet (dort steht heute der Fall
       [ADR-0024](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md));
       kein sicherer Treffer.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — **neue
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — **neue
       Kennung für die Klasse** *ein `Proposed`-ADR hat keinen Träger für ihren
       Acceptance-Trigger* (Sub-Area `*`, 1×, Beleg `slice-152`); dazu
       [`BEO-ALL/anweisungssatz-eigentum-ohne-quelle`](../observations/BEO-ALL/anweisungssatz-eigentum-ohne-quelle/observation.md) Stand-Spalte um den `.claude/agents/`-Ausgang
       ergänzt. Die Kennung entsteht bei **dieser** Slice-Closure, nicht früher:
       Modul 6 §Das Beobachtungs-Register weist das Schreiben der Slice-Closure
       zu, und ein Beleg ist formgebunden auf eine Slice-Datei in `done/`.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste
       Welle-Closure.
 
@@ -175,6 +175,14 @@ dasteht.
   `BEO-ALL/zaehler-startet-bei-null` im Register (kein neuer Mechanismus)>
 
 ## 7. Closure-Notiz
+
+**Gegenstand:** übernommen von `slice-199-adr-0038-bekommt-ihre-bestaetigungsrunde`.
+
+Stillgelegt ohne Lieferung (Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer übernimmt) im Bestands-Lese-Schritt der Welle-Closure `welle-emittiertes-doc-gate`, Auftraggeber-Entscheidung vom 2026-10-08. Die Liefer-Punkte der DoD bleiben leer.
+
+- **Risiko-Ausgänge (§6):** jedes Risiko ohne vorab gesetzten Ausgang — *eingetreten* → `slice-199-adr-0038-bekommt-ihre-bestaetigungsrunde`, der den Gegenstand samt diesen Risiken führt; vorab gesetzte Ausgänge gelten unverändert.
+- **Beobachtungs-Register:** `BEO-ALL/geplanter-slice-wird-nie-gearbeitet` — Beleg `welle-emittiertes-doc-gate`, eine Gelegenheit für alle Stilllegungen dieses Lese-Schritts.
+- **Paarungen:** von der Welle-Closure `welle-emittiertes-doc-gate` geprüft, Ergebnis in deren Ergebnisnotiz.
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Das Beobachtungs-Register (vorhandene `BEO-<NNN>` **zitieren** statt neu

@@ -45,6 +45,8 @@ zeigt — `links` prüft die Auflösbarkeit, nicht die Aussage. Beleg:
 - **Der Bestand.** Geschriebene Zusammenfassungen werden nicht rückwirkend geprüft; gebunden ist
   der Satz, der geschrieben oder geändert wird.
 
+**Übernimmt:** `slice-zaehler-label-nennt-seine-einheit`, `slice-zitat-pruefung-liest-statt-greppt`, `slice-plan-umfang-bleibt-beim-gegenstand` — Bestands-Lese-Schritt der Welle-Closure `welle-emittiertes-doc-gate`, Auftraggeber-Entscheidung vom 2026-10-08. Ihre Bedingungen (§1–§3 der Geber) gelten hier; gelesen werden sie dort.
+
 ## 2. Definition of Done
 
 - [ ] Die Regel steht an einem Norm-Artefakt und nennt die Fehlerrichtung: die Wiedergabe sagt
@@ -53,6 +55,10 @@ zeigt — `links` prüft die Auflösbarkeit, nicht die Aussage. Beleg:
       die fehlende Bewachung als benannte Lücke aus.
 - [ ] Rot gesehen: ein Artefakt mit einer überzeichnenden Zusammenfassung färbt den benannten
       Träger rot **oder** die Zusage ist auf das eingeschränkt, was der Lauf hält.
+      **Die drei Punkte gelten je Regel, für vier:** diese; ein Zähler-Label nennt die Einheit, die sein Zähler
+      zählt (`slice-zaehler-label-nennt-seine-einheit`); eine Zitat-Prüfung liest den Abschnitt an der Quelle statt
+      zu greppen (`slice-zitat-pruefung-liest-statt-greppt`); die Plan-Umfangs-Regel nennt eine messbare Form
+      (`slice-plan-umfang-bleibt-beim-gegenstand`). Die Wortlaute stehen in deren §2.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -86,6 +92,8 @@ DoD vollständig, Review ohne blockierenden Befund, Closure-Notiz geschrieben.
   `BEO-ALL/zusammenfassung-staerker-als-ihre-quelle`.
 - Die Regel greift nur für einen Artefakt-Typ — **Ausgang:** weiter offen →
   `BEO-ALL/zusammenfassung-staerker-als-ihre-quelle`.
+
+- **Risiken der übernommenen Slices** stehen in deren §6 mit Ausgang *eingetreten* → dieser Slice und gelten hier als offene Punkte — **Ausgang:** bei der Closure dieses Slice.
 
 ## 7. Closure-Notiz
 

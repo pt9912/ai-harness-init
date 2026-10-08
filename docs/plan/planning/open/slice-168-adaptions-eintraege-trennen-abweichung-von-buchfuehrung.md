@@ -52,6 +52,8 @@ Die Bezugsmenge, gegen die sie zu halten sind, ist der Block als ganzer:
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2).
 
+**Übernimmt:** `slice-189-abgeschaffte-kennung-in-architect-artefakten` — Bestands-Lese-Schritt der Welle-Closure `welle-emittiertes-doc-gate`, Auftraggeber-Entscheidung vom 2026-10-08. Ihre Bedingungen (§1–§3 der Geber) gelten hier; gelesen werden sie dort.
+
 ## 2. Definition of Done
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
@@ -66,6 +68,9 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 - [ ] **Jeder Eintrag der gemessenen Menge trägt genau ein Verdikt** aus
       *bleibt · geht auf in `MR-<NNN>` · retiriert*, je mit Begründung; ein
       Verdikt ohne Begründung ist keines.
+- [ ] **Die Zitate der abgeschafften `BEO-<NNN>`-Form in den Architect-Artefakten nennen die Pfad-Form
+      `BEO-ALL/<slug>`** (aus `slice-189-abgeschaffte-kennung-in-architect-artefakten`, dessen zwei DoD-Punkte: die
+      Vorkommen in ADRs und in `harness/conventions/`).
 - [ ] `make gates` grün.
 - [ ] Doku-Update, falls ein öffentlicher Vertrag berührt.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -127,6 +132,8 @@ dasteht.
 - **Ein Abgang bricht eingehende Verweise** — der Block ist repo-weit
   referenziert, und ein retirierter Eintrag zieht seinen Index-Anker mit.
   — **Ausgang:** offen, wird bei Closure verbucht.
+
+- **Risiken der übernommenen Slices** stehen in deren §6 mit Ausgang *eingetreten* → dieser Slice und gelten hier als offene Punkte — **Ausgang:** bei der Closure dieses Slice.
 
 ## 7. Closure-Notiz
 

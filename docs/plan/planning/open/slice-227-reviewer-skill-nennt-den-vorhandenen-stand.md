@@ -113,6 +113,8 @@ trägt, nicht ob die Vorlage sich bewegt hat (Register-Klasse
   und wird fortgeschrieben, nicht umgeschrieben — die Skill-Datei versioniert nach Modul 10, statt
   zu überschreiben. *Bestand bleibt bewusst stehen.*
 
+**Übernimmt:** `slice-reviewer-skill-zieht-die-findings-form-nach`, `slice-die-vorgangs-grenze-erreicht-den-reviewer-skill` — Bestands-Lese-Schritt der Welle-Closure `welle-emittiertes-doc-gate`, Auftraggeber-Entscheidung vom 2026-10-08. Ihre Bedingungen (§1–§3 der Geber) gelten hier; gelesen werden sie dort.
+
 ## 2. Definition of Done
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
@@ -135,6 +137,12 @@ Zwei slice-eigene Punkte. Gezählt ist nur, was mit dem Umfang wächst.
       Auslassung. **Der Vergleich läuft ohne Diff-Filter** (Register-Klasse
       `beleg-filter-entfernt-die-zeilenklasse-die-den-beleg-traegt`, §8): Ein Filter über dem Diff
       nimmt genau die Tabellen- und Listenzeilen mit, in denen dieses Modul seine Pflichten führt.
+      **Darin übernommen** (aus `slice-reviewer-skill-zieht-die-findings-form-nach`): die Findings-Form der
+      Reviewer-Vorlage am Tag `v6.16.0` — `pfad` = Datei · wörtliches Kurzzitat, kein HIGH/MEDIUM ohne
+      Failure-Szenario, kein Stil-Finding ohne Konventions-Anker — trägt *übernommen* mit Beleg.
+- [ ] **3 — Die Vorgangs-Grenze erreicht die Urteilsgrundlage** (aus
+      `slice-die-vorgangs-grenze-erreicht-den-reviewer-skill`, dessen DoD (1)): die Skill-Datei beantwortet, ob ein
+      vorlagengebundener Nachzug an einem laufenden Welle-Plan ein Befund ist.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -222,6 +230,8 @@ dasteht.
   Die DoD ist dagegen gehärtet: Sie nennt `ls .harness/baseline/` als Quelle des Tags, nicht einen
   Tag-String. Die **Delta-Basis** in §1 ist es nicht — sie nennt `v6.0.0..v6.7.2` ausdrücklich und
   müsste dann neu gelesen werden. — **Ausgang:** offen bis zur Closure.
+
+- **Risiken der übernommenen Slices** stehen in deren §6 mit Ausgang *eingetreten* → dieser Slice und gelten hier als offene Punkte — **Ausgang:** bei der Closure dieses Slice.
 
 ## 7. Closure-Notiz
 

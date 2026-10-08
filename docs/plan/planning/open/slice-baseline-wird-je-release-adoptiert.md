@@ -35,9 +35,9 @@ statt Sprünge zu sammeln — die Kosten einer Re-Baseline folgen dem Prozess, n
       Anweisungssatz daraus den Sprung-Slice schneidet.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder in §7 notiert, dass keine Beobachtung anfiel.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder in §7 notiert, dass keine Beobachtung anfiel.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
 
 ## 3. Plan (vor Code)
@@ -66,6 +66,14 @@ DoD vollständig, `make gates` grün, Closure-Notiz mit Lerneintrag.
   Closure.
 
 ## 7. Closure-Notiz
+
+**Gegenstand:** entfallen: Auftraggeber-Entscheidung vom 2026-10-08; ein Adoptions-Rhythmus *je gemeldete Version ein Sprung* wird nicht als Adaptions-Eintrag gesetzt, ein Sprung wird je Anlass geschnitten.
+
+Stillgelegt ohne Lieferung (Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer übernimmt) im Bestands-Lese-Schritt der Welle-Closure `welle-emittiertes-doc-gate`, Auftraggeber-Entscheidung vom 2026-10-08. Die Liefer-Punkte der DoD bleiben leer.
+
+- **Risiko-Ausgänge (§6):** jedes Risiko ohne vorab gesetzten Ausgang — *entfallen*: mit dem Gegenstand entfällt die Arbeit, an der es hing; vorab gesetzte Ausgänge gelten unverändert.
+- **Beobachtungs-Register:** `BEO-ALL/geplanter-slice-wird-nie-gearbeitet` — Beleg `welle-emittiertes-doc-gate`, eine Gelegenheit für alle Stilllegungen dieses Lese-Schritts.
+- **Paarungen:** von der Welle-Closure `welle-emittiertes-doc-gate` geprüft, Ergebnis in deren Ergebnisnotiz.
 
 — bei Closure.
 

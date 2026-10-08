@@ -78,10 +78,10 @@ ls .harness/skills/                                                  # reviewer.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor — in einem anderen Kontext als
       dem schreibenden Reviewer-Lauf, kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [ ] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen).
 
 ## 3. Plan (vor Code)
@@ -120,6 +120,14 @@ Vorlage am Tag `v6.16.0` ist dann vendored. WIP-Limit des Reviewer-Rolleninhaber
   **Ausgang:** offen bis zur Closure.
 
 ## 7. Closure-Notiz
+
+**Gegenstand:** übernommen von `slice-227-reviewer-skill-nennt-den-vorhandenen-stand`.
+
+Stillgelegt ohne Lieferung (Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer übernimmt) im Bestands-Lese-Schritt der Welle-Closure `welle-emittiertes-doc-gate`, Auftraggeber-Entscheidung vom 2026-10-08. Die Liefer-Punkte der DoD bleiben leer.
+
+- **Risiko-Ausgänge (§6):** jedes Risiko ohne vorab gesetzten Ausgang — *eingetreten* → `slice-227-reviewer-skill-nennt-den-vorhandenen-stand`, der den Gegenstand samt diesen Risiken führt; vorab gesetzte Ausgänge gelten unverändert.
+- **Beobachtungs-Register:** `BEO-ALL/geplanter-slice-wird-nie-gearbeitet` — Beleg `welle-emittiertes-doc-gate`, eine Gelegenheit für alle Stilllegungen dieses Lese-Schritts.
+- **Paarungen:** von der Welle-Closure `welle-emittiertes-doc-gate` geprüft, Ergebnis in deren Ergebnisnotiz.
 
 - **Was hat funktioniert:** —
 - **Was ging anders als geplant:** —

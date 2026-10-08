@@ -93,6 +93,8 @@ git grep -lF '0038-ziel-fassung-regiert-den-sprung-v650' -- 'docs/reviews/*.md'
   [`ADR-0040`](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md), und ihr Cutoff
   nimmt den Bestand ausdrücklich aus. Dieser Slice behandelt die **Instanz**.
 
+**Übernimmt:** `slice-152-adr-0029-acceptance-trigger`, `slice-171-adr-0031-acceptance-trigger` — Bestands-Lese-Schritt der Welle-Closure `welle-emittiertes-doc-gate`, Auftraggeber-Entscheidung vom 2026-10-08. Ihre Bedingungen (§1–§3 der Geber) gelten hier; gelesen werden sie dort.
+
 ## 2. Definition of Done
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
@@ -118,6 +120,12 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       fortgeschrieben, trägt Zustand und Beleg als auflösbaren Anker). Der Beleg nennt den Report
       als **Kennung**, nicht als Pfad, wenn der Zielort einfriert
       ([`AGENTS.md`](../../../../AGENTS.md) §3.11).
+- [ ] **Die zwei übernommenen Bestätigungsrunden tragen ihr Verdikt nach denselben zwei Maßstäben** —
+      [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) samt
+      [`ADR-0025`](../../adr/0025-register-mit-gemischten-originalen.md) (aus `slice-152-adr-0029-acceptance-trigger`)
+      und [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) samt ihrem vierten
+      Re-Evaluierungs-Trigger (aus `slice-171-adr-0031-acceptance-trigger`): je ein Report in frischem Kontext, der Beleg
+      am selben lebenden Ort wie oben.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -241,6 +249,8 @@ dasteht.
   Prüfverfahren selbst und wäre in dem Moment falsch, in dem dieser Plan nach `done/` einfriert
   ([`ADR-0040`](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) §Konsequenzen).
   — **Ausgang:** offen; die Closure setzt ihn.
+
+- **Risiken der übernommenen Slices** stehen in deren §6 mit Ausgang *eingetreten* → dieser Slice und gelten hier als offene Punkte — **Ausgang:** bei der Closure dieses Slice.
 
 ## 7. Closure-Notiz
 

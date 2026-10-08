@@ -53,8 +53,8 @@ getauschte Regelwerk. Beleg:
       Zusage ist auf das eingeschränkt, was der Lauf hält.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben.
 
 ## 3. Plan (vor Code)
 
@@ -86,6 +86,14 @@ DoD vollständig, Review ohne blockierenden Befund, Closure-Notiz geschrieben.
   `BEO-ALL/re-baseline-ohne-inventur-slice`.
 
 ## 7. Closure-Notiz
+
+**Gegenstand:** entfallen: Auftraggeber-Entscheidung vom 2026-10-08. Den Bestand offener Pläne liest seit `v6.17.0` jede Welle-Closure (`regelwerk/modul-06-roadmap.md` §Wellen-Closure-Prozedur, Schritt 3, *Was den Bestand überlebt hat*); ein eigener Schritt nach dem Baseline-Sprung wird nicht geschrieben.
+
+Stillgelegt ohne Lieferung (Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer übernimmt) im Bestands-Lese-Schritt der Welle-Closure `welle-emittiertes-doc-gate`, Auftraggeber-Entscheidung vom 2026-10-08. Die Liefer-Punkte der DoD bleiben leer.
+
+- **Risiko-Ausgänge (§6):** jedes Risiko ohne vorab gesetzten Ausgang — *entfallen*: mit dem Gegenstand entfällt die Arbeit, an der es hing; vorab gesetzte Ausgänge gelten unverändert.
+- **Beobachtungs-Register:** `BEO-ALL/geplanter-slice-wird-nie-gearbeitet` — Beleg `welle-emittiertes-doc-gate`, eine Gelegenheit für alle Stilllegungen dieses Lese-Schritts.
+- **Paarungen:** von der Welle-Closure `welle-emittiertes-doc-gate` geprüft, Ergebnis in deren Ergebnisnotiz.
 
 - **Was hat funktioniert:** —
 - **Was ging anders als geplant:** —

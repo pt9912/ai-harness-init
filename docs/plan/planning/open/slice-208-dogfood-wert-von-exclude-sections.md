@@ -104,6 +104,8 @@ Slice.
   Prüfgegenstand (ADR-Kern-Unveränderlichkeit statt Referenz-Richtung). *(Es wäre ein anderer
   Vorgang.)*
 
+**Übernimmt:** `slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag` — Bestands-Lese-Schritt der Welle-Closure `welle-emittiertes-doc-gate`, Auftraggeber-Entscheidung vom 2026-10-08. Ihre Bedingungen (§1–§3 der Geber) gelten hier; gelesen werden sie dort.
+
 ## 2. Definition of Done
 
 - [ ] **(1) Die Entscheidung steht, und beide Wege sind beziffert.** Für jeden der zwei Wege —
@@ -120,6 +122,9 @@ Slice.
   — dem Kommentar über dem Schlüssel in [`.d-check.yml`](../../../../.d-check.yml) — und
   [`harness/README.md`](../../../../harness/README.md) nennt die Divergenz als bekannte Grenze,
   ohne sie ein zweites Mal zu begründen.
+- [ ] **(2b) Die Aktivierung von `planning` und `targets` ist im Adaptions-Block entschieden** (aus
+  `slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag`, dessen DoD (1)) — derselbe Ort wie die benannte
+  Abweichung aus (2), Norm-Text vom Architect.
 - [ ] **(3) `make gates` grün, Review durchgeführt, Report unter `docs/reviews/`**
   (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des Minimal Agent Workflow
   ([`AGENTS.md`](../../../../AGENTS.md) §6), kein Self-Review (Modul 8). Closure-Notiz mit
@@ -178,6 +183,8 @@ begründet, gemessen mit
   Erwartungswert. Wird der Slice erst spät gezogen, ist die Messung vor der Entscheidung zu
   wiederholen. — **Ausgang:** <eingetreten: CO-NNN / slice-NNN | entfallen: Grund | weiter offen:
   → Beobachtungs-Register>
+
+- **Risiken der übernommenen Slices** stehen in deren §6 mit Ausgang *eingetreten* → dieser Slice und gelten hier als offene Punkte — **Ausgang:** bei der Closure dieses Slice.
 
 ## 7. Closure-Notiz
 

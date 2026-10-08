@@ -1,6 +1,6 @@
 **Stand:** geplant
 
-Kennung: `slice-zaehler-label-nennt-seine-einheit` — er schreibt die Regel, die heute nirgends
+Kennung: `slice-zusammenfassung-bleibt-innerhalb-ihrer-quelle` — er schreibt die Regel, die heute nirgends
 normiert ist: ein Zähler-Label nennt die Einheit, die der Zähler zählt, weil der Aufrufer seine
 Zahl sonst gegen den falschen Gegenstand abzählt.
 

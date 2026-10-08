@@ -1,6 +1,6 @@
 **Stand:** geplant
 
-Kennung: `slice-zitat-pruefung-liest-statt-greppt` — er schreibt die Regel, die heute nirgends
+Kennung: `slice-zusammenfassung-bleibt-innerhalb-ihrer-quelle` — er schreibt die Regel, die heute nirgends
 normiert ist: eine Zitat-Prüfung liest den zitierten Abschnitt an seiner Quelle, statt ihn über ein
 Muster zu suchen; Zeilenumbruch und Inline-Markup trennen das Muster, ohne dass der Satz fort ist.
 

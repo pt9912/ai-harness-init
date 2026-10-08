@@ -61,7 +61,7 @@ danach wieder — für diesen Abschnitt korrekt statt stillschweigend falsch.
 - [ ] Doku-Update: `harness/conventions.md` trägt die zwei Ausgänge als neue Adaptions-Block-
       Einträge (oder Verweis auf einen bestehenden, falls einer der beiden sich als Sonderfall
       eines schon geführten Eintrags erweist).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -102,6 +102,14 @@ DoD vollständig, Closure-Notiz geschrieben.
   **Ausgang:** offen, wird bei Closure verbucht.
 
 ## 7. Closure-Notiz
+
+**Gegenstand:** entfallen: Auftraggeber-Entscheidung vom 2026-10-08; die zwei Regeln aus `regelwerk/modul-14-docker-harness.md` §Multi-Stage-Build (Runtime-Stage, Image-Hash-Beleg) bleiben weder adoptiert noch als Adaption deklariert. [`MR-048`](../../../../harness/conventions.md#mr-048) §Geltungsbereich nennt sie als offen bei diesem Slice — Folge an den Architect.
+
+Stillgelegt ohne Lieferung (Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer übernimmt) im Bestands-Lese-Schritt der Welle-Closure `welle-emittiertes-doc-gate`, Auftraggeber-Entscheidung vom 2026-10-08. Die Liefer-Punkte der DoD bleiben leer.
+
+- **Risiko-Ausgänge (§6):** jedes Risiko ohne vorab gesetzten Ausgang — *entfallen*: mit dem Gegenstand entfällt die Arbeit, an der es hing; vorab gesetzte Ausgänge gelten unverändert.
+- **Beobachtungs-Register:** `BEO-ALL/geplanter-slice-wird-nie-gearbeitet` — Beleg `welle-emittiertes-doc-gate`, eine Gelegenheit für alle Stilllegungen dieses Lese-Schritts.
+- **Paarungen:** von der Welle-Closure `welle-emittiertes-doc-gate` geprüft, Ergebnis in deren Ergebnisnotiz.
 
 <!-- Erst nach Abschluss füllen. -->
 
