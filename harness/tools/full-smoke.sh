@@ -183,8 +183,12 @@ tmprepo_selbst="$(mktemp -d -p "${TMPDIR:-/tmp}")"
 # d-check mountet jedes Ziel read-only in einen Nicht-Root-Container, darum 0755.
 tmprepo_kf="$(mktemp -d -p "${TMPDIR:-/tmp}")"
 chmod 755 "$tmprepo_kf"
+# Elternverzeichnis der drei frischen Ziele der Stufe "Handbuch-Baum"; d-check
+# mountet jedes Ziel read-only in einen Nicht-Root-Container, darum 0755.
+tmprepo_baum="$(mktemp -d -p "${TMPDIR:-/tmp}")"
+chmod 755 "$tmprepo_baum"
 git init -q "$tmprepo_selbst"
-cleanup() { rm -rf "$tmpbin" "$tmpklon" "$tmprepo" "$tmprepo_doc" "$tmprepo_hex" "$tmprepo_cpphex" "$tmprepo_selbst" "$tmprepo_traeger" "$tmprepo_mixed" "$tmprepo_kf"; }
+cleanup() { rm -rf "$tmpbin" "$tmpklon" "$tmprepo" "$tmprepo_doc" "$tmprepo_hex" "$tmprepo_cpphex" "$tmprepo_selbst" "$tmprepo_traeger" "$tmprepo_mixed" "$tmprepo_kf" "$tmprepo_baum"; }
 trap cleanup EXIT
 # Aus demselben Grund wie bei den uebrigen Zielen: der Klon dieses Ziels wird von
 # d-check read-only gemountet, und der Container laeuft als Nicht-Root.
@@ -438,11 +442,53 @@ if [ "$artefakt_rc" -ne 0 ]; then
 	exit 1
 fi
 
+# DER BAUM IM BENUTZERHANDBUCH IST DER BESTAND FRISCHER ZIELE. docs/user/benutzerhandbuch.md
+# §6 nennt jede Datei, die ein Bootstrap anlegt; harness/tools/handbuch-baum.sh haelt die
+# Pfad-Menge eines Baums gegen `find` ueber einem Ziel, in beide Richtungen. Die Soll-Menge
+# ist der reale Lauf aller Emissions-Stufen, keine Liste daneben: drei frische Ziele —
+# sprachlos, --lang go, --lang cpp —, die beiden Sprach-Ziele als Delta gegen das
+# sprachlose. Die Stufe steht VOR jeder anderen Ziel-Stufe, damit ein Pfad, den ein Lauf
+# nicht mehr anlegt, zuerst hier und mit seinem Namen rot wird.
+echo "full-smoke: Handbuch-Baum gegen den Bestand frischer Ziele (sprachlos, --lang go, --lang cpp) ..."
+	e2e_abdeckung "LH-FA-02" "Der Baum in Paragraf 6 des Benutzerhandbuchs nennt genau die Pfade frischer Ziele (sprachlos, Delta von --lang go und --lang cpp), in beide Richtungen; gemessen ist die Pfad-Menge im Gelingens-Zweig der Traeger-Ablage, nicht die Etiketten und nicht die Ablage-Klassen selbst" "handbuch_baum_pruefen"
+handbuch_baum_pruefen() {
+	local variante="$1" ziel="$2" basis="${3:-}" aus rc=0
+	aus="$(bash "$HIER/handbuch-baum.sh" "$HIER/../../docs/user/benutzerhandbuch.md" "$variante" "$ziel" ${basis:+"$basis"} 2>&1)" || rc=$?
+	if [ "$rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — Handbuch-Baum ($variante): $aus" >&2
+		exit 1
+	fi
+	echo "full-smoke: Handbuch-Baum ($variante): $aus"
+}
+# Der erste Bootstrap dieser Schleife ist die erste Anfrage nach dem d-check-Bild (das
+# Werkzeug erzeugt das Doku-Gate-Fragment aus dessen --print-mk-Ausgabe); auf einem
+# frischen Laeufer liegt das Bild nicht lokal, darum ordnet ein Fehlschlag ein.
+for baum_lang in sprachlos go cpp; do
+	baum_ziel="$tmprepo_baum/$baum_lang"
+	mkdir "$baum_ziel"
+	chmod 755 "$baum_ziel"
+	git init -q "$baum_ziel"
+	baum_args=(--name full-smoke-baum)
+	[ "$baum_lang" = sprachlos ] || baum_args=(--lang "$baum_lang" "${baum_args[@]}")
+	baum_rc=0
+	baum_out="$( "$tmpbin/ai-harness-init" "${baum_args[@]}" "$baum_ziel" 2>&1 )" || baum_rc=$?
+	if [ "$baum_rc" -ne 0 ]; then
+		printf '%s\n' "$baum_out"
+		echo "full-smoke: FEHLER — der Bootstrap ($baum_lang) der Stufe Handbuch-Baum ist NICHT Exit 0 (Exit $baum_rc)." >&2
+		einordnen "Bootstrap $baum_lang (das Werkzeug holt d-check fuer --print-mk)" "$baum_out"
+		exit 1
+	fi
+	if [ "$baum_lang" = sprachlos ]; then
+		handbuch_baum_pruefen dokument-only "$baum_ziel"
+	else
+		handbuch_baum_pruefen "$baum_lang" "$baum_ziel" "$tmprepo_baum/sprachlos"
+	fi
+done
+
 echo "full-smoke: 2/3 Bootstrap (--lang go --name full-smoke) in ein leeres tmp-Repo ..."
 	e2e_abdeckung "LH-FA-01 LH-FA-10 LH-FA-13" "Bootstrap in ein leeres Zielverzeichnis, sprachgebunden in einem Lauf" "der Bootstrap (--lang go) ist NICHT Exit 0"
-# ERSTER AUFRUF DES WERKZEUGS und damit die erste Anfrage nach dem d-check-Bild: das
-# Werkzeug erzeugt das Doku-Gate-Fragment aus dessen --print-mk-Ausgabe. Auf einem
-# frischen Laeufer liegt das Bild nicht lokal.
+# Das Werkzeug erzeugt das Doku-Gate-Fragment aus der --print-mk-Ausgabe des d-check-Bilds;
+# die erste Anfrage nach dem Bild stellt die Stufe "Handbuch-Baum" davor.
 # Der Aufruf steht OHNE cd im Ziel: der Zielordner kommt als ARGUMENT, und das
 # Arbeitsverzeichnis des Laufs ist nicht das Ziel — die Ziel-Aufloesung aus dem
 # Argument (LH-FA-01) wird hier am echten Lauf gemessen.

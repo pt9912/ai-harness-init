@@ -487,34 +487,161 @@ Der Bootstrap läuft in **Phasen**: Ein **Aufsetzen ohne Sprache** legt die doku
 
 ### Phase 1 — Aufsetzen ohne Sprache (dokument-only)
 
-`ai-harness-init --name "Mein Projekt" <zielordner>` (ohne `--lang`) legt die sprach-unabhängige Basis an (leere Prozess-Ordner werden mit einer `.gitkeep`-Datei gehalten, damit `git` sie behält):
+`ai-harness-init --name "Mein Projekt" <zielordner>` (ohne `--lang`) legt die sprach-unabhängige Basis an. Der Baum nennt jede Datei und jedes Verzeichnis, das der Lauf anlegt; leere Prozess-Ordner hält eine `.gitkeep`-Datei, damit `git` sie behält.
 
+**Eine Ausnahme ist zusammengefasst:** `.harness/baseline/` steht als **ein** Eintrag. Darunter liegt das mitgelieferte Regelwerk samt Vorlagen und Prüfsummen, ein Unterordner je Stand; seine Dateien zählt, im aufgesetzten Repository ausgeführt:
+
+```bash
+find .harness/baseline -type f | wc -l    # 55
+```
+
+**Drei Einträge hängen an der Erfassungsschicht** und sind im Baum mit *(Erfassung)* markiert: das Programm selbst unter `.harness/state/bin/`, der Hook, der bei Werkzeug-Aufrufen eines Agenten einen Span schreibt, und die Feldliste darüber. Das Aufsetzen legt sie gemeinsam an, wenn es die Programmdatei ablegen kann, und sonst keinen der drei; es meldet dann den Grund und endet trotzdem erfolgreich. Der Baum zeigt den Fall, in dem die Ablage gelingt. `.harness/state/` ist von `git` ausgenommen (`.harness/.gitignore`) und reist darum nicht mit einem Klon.
+
+<!-- baum: dokument-only -->
 ```text
 mein-projekt/
-├── AGENTS.md                 Regeln und Verweise für KI-Agenten (Vorlage, ausfüllen)
-├── README.md                 Projekt-Überblick
-├── Makefile                  Einstiegspunkt: make gates …
-├── repo.mk                   Ihre eigenen Targets (einmal angelegt, nie überschrieben)
-├── .d-check.yml              Konfiguration der Dokumentations-Prüfung
-├── d-check.mk                Prüf-Ziel der Dokumentations-Prüfung (make docs-check)
-├── spec/                     Anforderungen und Architektur (Vorlagen)
-├── harness/                  Einstiegs- und Konventions-Dokumente (Vorlagen)
-│   ├── mk/                   Prüf-Bausteine: Doc-Gate, Regelwerk-Prüfung, Schutz-Hooks
-│   └── sensors/              Prosa zu einem Prüf-Ziel, die nicht in eine Tabellenzelle passt (anfangs leer)
-├── docs/plan/                Planung: Architektur-Entscheidungen, Slices, Roadmap, Beobachtungs-Register
-├── tools/harness/            Hilfsskripte des Repositorys
-├── .claude/                  Schutz-Hooks (Command-Guard, Gate-Nachweis) + Arbeitsabläufe
-└── .harness/baseline/        Mitgeliefertes Regelwerk und Vorlagen (netzunabhängig)
+├── AGENTS.md                          Regeln und Verweise für KI-Agenten (Vorlage, ausfüllen)
+├── README.md                          Projekt-Überblick (Vorlage)
+├── Makefile                           Einstiegspunkt: make gates, make help
+├── repo.mk                            Ihre eigenen Targets (einmal angelegt, nie überschrieben)
+├── .d-check.yml                       Konfiguration der Dokumentations-Prüfung
+├── d-check.mk                         Prüf-Ziele der Dokumentations-Prüfung (make docs-check …)
+├── spec/                              Anforderungen und Architektur (Vorlagen)
+│   ├── lastenheft.md                  was das Projekt vertraglich liefert
+│   ├── spezifikation.md               technische Festlegungen
+│   └── architecture.md                Komponenten und Abläufe
+├── harness/                           Einstiegs- und Konventions-Dokumente
+│   ├── README.md                      Einstieg: Rangfolge der Quellen, Gate-Index (Ihr Teil)
+│   ├── conventions.md                 Abweichungen vom Regelwerk, Modus je Bereich
+│   ├── conventions/                   ein Eintrag je Abweichung (anfangs leer)
+│   │   └── .gitkeep
+│   ├── erfassung-feldliste.md         welche Felder ein Span trägt (Erfassung)
+│   ├── sensors/                       Prosa zu einem Prüf-Ziel, die nicht in eine Tabellenzelle passt (anfangs leer)
+│   │   └── .gitkeep
+│   └── mk/                            Prüf-Bausteine, vom Makefile eingebunden
+│       ├── .gitattributes             Zeilenenden LF
+│       ├── ai-harness-init.md         Gate-Index (Teil des Werkzeugs, jeder Lauf schreibt ihn neu)
+│       ├── archivierung.mk            make archive-welle
+│       ├── baseline.mk                make baseline-verify
+│       ├── doc-gate.mk                make history-range-guard, doc-immutable, doc-commits
+│       ├── e2e-abdeckung.mk           make e2e-abdeckung
+│       ├── enforce.mk                 make record-gates
+│       ├── erfassung.mk               make span-report, span-clean
+│       ├── hooks-install.mk           make hooks-install
+│       ├── selbstpruefung.mk          make selbstpruefung
+│       ├── slice-mv.mk                make slice-mv
+│       └── traeger.mk                 make traeger-fetch
+├── docs/
+│   ├── plan/                          Planung
+│   │   ├── adr/                       Architektur-Entscheidungen (anfangs leer)
+│   │   │   └── .gitkeep
+│   │   ├── carveouts/                 befristete Ausnahmen (anfangs leer)
+│   │   │   └── .gitkeep
+│   │   └── planning/
+│   │       ├── README.md              wie Slices ihren Zustand wechseln
+│   │       ├── open/                  Slices, noch nicht eingeplant
+│   │       │   └── .gitkeep
+│   │       ├── next/                  Slices, eingeplant
+│   │       │   └── .gitkeep
+│   │       ├── in-progress/           Slices in Arbeit
+│   │       │   └── roadmap.md         Roadmap
+│   │       ├── done/                  abgeschlossene Slices
+│   │       │   └── .gitkeep
+│   │       └── observations/          Beobachtungs-Register
+│   │           └── README.md
+│   └── reviews/                       Review-Berichte (anfangs leer)
+│       └── .gitkeep
+├── tools/
+│   └── harness/                       Hilfsskripte, von den Prüf-Bausteinen gerufen
+│       ├── .gitattributes             Zeilenenden LF
+│       ├── baseline-verify.sh         prüft das mitgelieferte Regelwerk gegen seine Prüfsummen
+│       ├── commit-msg-traceability.sh prüft eine Commit-Message auf eine Kennung
+│       ├── e2e-abdeckung.sh           erzeugt die Abdeckungs-Sicht
+│       ├── extract-command.awk        zerlegt einen Befehl für den Command-Guard
+│       ├── history-range-guard.sh     prüft eine Commit-Range vor einem history-lesenden Lauf
+│       ├── record-gates.sh            schreibt den Nachweis eines grünen make gates
+│       ├── selbstpruefung.sh          prüft die Schutz-Hooks selbst
+│       ├── slice-mv.sh                bewegt einen Slice samt seinen Verweisen
+│       ├── traeger-fetch.sh           holt das Programm aus dem gepinnten Release
+│       └── working-tree-hash.sh       Hash über den Arbeitsbaum, für Nachweis und Stop-Hook
+├── .githooks/
+│   ├── .gitattributes                 Zeilenenden LF
+│   └── commit-msg                     ruft die Kennungs-Prüfung (aktiv nach make hooks-install)
+├── .claude/
+│   ├── settings.json                  verdrahtet die Hooks
+│   ├── hooks/
+│   │   ├── .gitattributes             Zeilenenden LF
+│   │   ├── pretooluse-command-guard.sh  blockt Host-Werkzeuge in Agenten-Befehlen
+│   │   ├── stop-require-gates.sh      hält ein Turn-Ende ohne grünes make gates auf
+│   │   └── span-emit.sh               schreibt einen Span je Werkzeug-Aufruf (Erfassung)
+│   ├── commands/                      Arbeitsabläufe für Agenten
+│   │   ├── plan-welle.md
+│   │   ├── implement-slice.md
+│   │   └── close-welle.md
+│   └── agents/                        je ein Agenten-Typ für die sechs Rollen
+│       ├── planner.md
+│       ├── architect.md
+│       ├── implementer.md
+│       ├── reviewer.md
+│       ├── verifier.md
+│       └── validator.md
+└── .harness/
+    ├── .gitattributes                 Zeilenenden LF
+    ├── .gitignore                     nimmt state/ von git aus
+    ├── baseline/                      Mitgeliefertes Regelwerk und Vorlagen (netzunabhängig, ein Eintrag)
+    ├── skills/                        Urteilsgrundlage der Review-Rolle (Vorlagen)
+    │   ├── reviewer.md
+    │   └── closure-note-reviewer.md
+    └── state/                         lokaler Zustand, nicht versioniert
+        └── bin/
+            └── ai-harness-init        das Programm selbst (Erfassung)
 ```
 
 Schon hier läuft `make gates` **grün** — dokument-only (Dokumentations-Prüfung + Regelwerk-Integrität), **ohne** Code-Gate und **ohne** Sprach-Grundgerüst.
 
 ### Phase 2 — ein Sprachmodul hinzufügen
 
-`--lang <sprache>` (beim Aufsetzen) oder `add-lang <sprache> <pfad>` (jederzeit danach) legt **zusätzlich** die Sprach-Dateien an, samt Prüf-Baustein `harness/mk/<modul>.mk`. Sie unterscheiden sich je Sprache:
+`--lang <sprache>` (beim Aufsetzen) oder `add-lang <sprache> <pfad>` (jederzeit danach) legt **zusätzlich** die Sprach-Dateien an, samt Prüf-Baustein unter `harness/mk/` <!-- d-check:ignore (der Pfad entsteht erst im aufgesetzten Repository) --> und einer Liste der Werkzeuge, die der Command-Guard für diese Sprache blockt. Alles aus Phase 1 bleibt; die Bäume nennen nur, was dazukommt, und die schon vorhandenen Verzeichnisse, unter denen es liegt. Für `--lang go`:
 
-- **Go:** `Dockerfile`, `go.mod`, `.golangci.yml`, `cmd/app/main.go`
-- **C++:** `Dockerfile`, `CMakeLists.txt`, `src/main.cpp`, `tests/` (netzloser CTest) und `.clang-tidy`
+<!-- baum: go -->
+```text
+mein-projekt/
+├── Dockerfile                         Bau und Prüfung in Docker (lint, build, test)
+├── go.mod                             Go-Modul
+├── .golangci.yml                      Lint-Konfiguration
+├── cmd/
+│   └── app/
+│       └── main.go                    Einstiegspunkt
+├── harness/
+│   └── mk/
+│       └── go.mk                      Code-Gates der Sprache
+└── tools/
+    └── harness/
+        └── blocked/
+            └── go                     vom Command-Guard geblockte Go-Werkzeuge
+```
+
+Für `--lang cpp`:
+
+<!-- baum: cpp -->
+```text
+mein-projekt/
+├── Dockerfile                         Bau und Prüfung in Docker (lint, build, test)
+├── CMakeLists.txt                     Build-Beschreibung
+├── .clang-tidy                        Lint-Konfiguration
+├── src/
+│   └── main.cpp                       Einstiegspunkt
+├── tests/                             netzloser CTest
+│   ├── CMakeLists.txt
+│   └── test_main.cpp
+├── harness/
+│   └── mk/
+│       └── cpp.mk                     Code-Gates der Sprache
+└── tools/
+    └── harness/
+        └── blocked/
+            └── cpp                    vom Command-Guard geblockte C++-Werkzeuge
+```
 
 Am Wurzelverzeichnis (`--lang go` bzw. `add-lang go .`) liegen sie neben den Basis-Dateien; in einem **Mono-Repo** (mehrere `add-lang`-Läufe mit verschiedenen `<pfad>`) je Modul ein solcher Satz unter seinem `<pfad>`, auch mit gemischten Sprachen. Erst mit einem Sprachmodul fährt `make gates` **zusätzlich** die Code-Gates (lint/build/test in Docker).
 

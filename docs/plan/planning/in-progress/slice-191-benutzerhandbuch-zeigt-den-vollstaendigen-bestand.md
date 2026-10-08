@@ -267,6 +267,23 @@ sonst ohne Messung vorweg. **Die Fehlerrichtung ist bei allen dreien dieselbe**:
 die Stufen aufzählt, ist eine zweite Fassung von `emitAll` und altert genau wie der Baum, den sie
 halten soll — wer eine wählt, benennt in DoD (2), wie ihre eigene Vollständigkeit gehalten wird.
 
+**Entscheidung der Umsetzung: Kandidat 4.** Die Soll-Menge ist `find` über drei frisch gebootstrappten
+Zielen (sprachlos, `--lang go`, `--lang cpp`) in einer eigenen Stufe von `make full-smoke`, vor
+jeder anderen Ziel-Stufe; der Vergleich steht in `harness/tools/handbuch-baum.sh`. Die
+Zweitfassungs-Falle entfällt damit: keine Liste zählt die Stufen auf, der Lauf ruft sie. Der Preis
+steht in der Zeile des Kandidaten — der Wächter hängt an `full-smoke` (CI je Push, kein Gate),
+nicht an `make test`; `harness/README.md` bekommt darum keinen Eintrag. Gehalten ist der
+Gelingens-Zweig der Träger-Ablage; die Phase-2-Prosa zu `add-lang <pfad>` und `--arch` bleibt
+ungehalten.
+
+| Datei | Änderung |
+|---|---|
+| [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) §6 | Baum Phase 1 vollständig, Bäume Phase 2 für `go` und `cpp` als Delta, Marker `<!-- baum: … -->` je Block, Zahl des Baseline-Baums mit Kommando |
+| [`harness/tools/handbuch-baum.sh`](../../../../harness/tools/handbuch-baum.sh) | neu — Pfad-Mengen-Vergleich in beide Richtungen |
+| [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) | neue Stufe *Handbuch-Baum*, vor Stufe 2 |
+| [`docs/user/e2e-abdeckung.md`](../../../../docs/user/e2e-abdeckung.md) | neu erzeugt (`make e2e-abdeckung`) |
+| `test/mutations/614…616` | neu — Vorlagen-Stufe, Erfassungs-Stufe, erfundener Handbuch-Pfad |
+
 ## 4. Trigger
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
