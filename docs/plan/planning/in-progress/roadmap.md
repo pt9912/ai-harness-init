@@ -20,7 +20,7 @@ nicht hier.
 - [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
 - [welle-emittiertes-doc-gate — Das emittierte Doc-Gate ist entschieden](../welle-emittiertes-doc-gate.md)
 
-**In Arbeit:** wellenlose Arbeit — `ls docs/plan/planning/in-progress/` nennt den Slice.
+**Nichts in Arbeit.**
 
 ## Nächste Wellen
 

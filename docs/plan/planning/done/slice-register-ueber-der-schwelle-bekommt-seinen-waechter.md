@@ -157,7 +157,7 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — in dieser Closure nach dem `git mv` geprüft (§7); zusätzlich: Dieses
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — in dieser Closure nach dem `git mv` geprüft (§7); zusätzlich: Dieses
       Repo fährt Wellen-Betrieb (`ls docs/plan/planning/welle-*.md | wc -l` → **3**, kein
       Erwartungswert), also prüft sie die nächste Welle-Closure, auch für diesen Slice ohne
       Wellen-Zugehörigkeit.
@@ -331,7 +331,7 @@ Reviews und Verdikte unter `docs/reviews/2026-10-08-register-ausgang-*`, Verifik
   ([ADR-0085](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md)) ist
   damit beantwortet: kein Eintrag über der Schwelle ohne Ausgang.
 - **Steering-Loop-Eintrag:** neuer Sensor — `make register-ausgang` in `make gates` hält, dass jeder
-  Registereintrag über der 3×-Schwelle einen Ausgang trägt. Kein `liegt in`-Feld und kein
+  Registereintrag über der 3×-Schwelle einen Ausgang trägt. Kein Zielort-Feld und kein
   `seit`-Anker: der Sensor folgt aus
   [ADR-0049](../../adr/0049-ausgang-traegt-die-benannte-luecke.md) und trägt dessen Kennung auf der
   Target-Zeile (Baseline-Regelwerk `grundlagen-traceability.md` §Herkunfts-Anker, *Geltungsbereich —
@@ -342,7 +342,7 @@ Reviews und Verdikte unter `docs/reviews/2026-10-08-register-ausgang-*`, Verifik
   bleibt *geplant* mit `slice-ausgang-auf-einen-folge-slice-prueft-dessen-dod` in `open/`.
 - **Folge-Slices:** keine.
 - **Risiken aus §6:** (1) weiter offen → Register · (2) entfallen · (3) entfallen — je Zeile in §6.
-- **Drei Paarungen:** nach dem `git mv` in dieser Closure geprüft (Zeile unten).
+- **Paarungen geprüft am 2026-10-08, nach dem `git mv`:** (a) Anker — §7 trägt kein Zielort-Feld, keine Paarung · (b) Folge-Slice — keiner genannt; der im Register zitierte `slice-ausgang-auf-einen-folge-slice-prueft-dessen-dod` steht in `open/` · (c) Register — `BEO-ALL/ausgang-nennt-traeger-der-nicht-traegt` existiert mit 4 Belegen (`evidence/*.md`). Register-Paarung (c), zweite Hälfte: 3 Verzeichnisse ohne Beleg, namentlich `cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`, `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`, `planungs-bestand-waechst-schneller-als-er-abgebaut-wird`; nicht als getragen behauptet (Schleife über `BEO-ALL/*/evidence/*.md`, keine Erwartungswerte).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
