@@ -248,7 +248,9 @@ zuvor jede Form (die Regel gilt für dieses Repo,
 [`ADR-0070`](../../docs/plan/adr/0070-der-verweis-nachzug-schreibt-in-docs-reviews-nur-die-link-form.md)). Die Zwei-Commit-Sequenz fährt diese Stufe nicht: der
 Vergleich ruft die Funktionen ohne Repository auf, und der Ablauf mit `git` gehört ins Ziel, wo
 `make full-smoke` ihn trägt. Gefahren wird die Kette über der `--lang-go`-Variante des
-Bootstraps; dass Fragment und Skript auch sprachlos unter denselben Pfaden liegen, hält
+Bootstraps und, für die zwei Kanten `open -> done` und `next -> done`, in der Stufe
+`slice_mv_kanten_nach_done_im_ziel` an einem Ziel ohne Sprache; dass Fragment und Skript auch
+sprachlos unter denselben Pfaden liegen, hält
 `make test-go` (`TestSliceMvFragment_LiegtImZielUndHaengtNichtAnDerGatesKette` für das Fragment,
 `TestSliceMvWerkzeug_LiegtAusfuehrbarUndTraegtBeideRichtungen` für das Skript — beide über einen
 Emit ohne Sprache).

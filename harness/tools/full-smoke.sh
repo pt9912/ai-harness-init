@@ -3525,8 +3525,9 @@ planning_im_ziel
 # Geschwister zeigt in beiden Formen (praefixlos und mit Praefix) auf sie, und ein Nachbar
 # unter done/ zeigt mit Praefix auf sie. Gemessen werden je Kante Exit 0, die Datei am neuen
 # Ort, der vorletzte Commit als reiner Rename (eine numstat-Zeile 0 0) und das Doku-Gate des
-# Ziels danach mit '0 Befund(e)' — vor dem ersten Wechsel ebenso, damit das Gruen danach nicht
-# schon vorher bestand.
+# Ziels danach mit '0 Befund(e)' — vor dem ersten Wechsel ebenso, damit ein Befund danach dem
+# Wechsel zuzuordnen ist. Dass das Doku-Gate die Planungsdateien sieht, haelt der Mutations-Fall
+# test/mutations/591-slice-mv-emittiert-ruft-die-praefixlose-ersetzung-nicht.sh.
 # GRENZE: Verweise aus docs/reviews/**, ein Unterverzeichnis und eine ungetrackte Datei im
 # Ausgangsverzeichnis sowie die Zaehlzeile `eingehend:` misst diese Stufe nicht; sie haelt der
 # Go-Test TestSliceMvEchtKanteOpenNachDone am Dogfood-Werkzeug harness/tools/slice-mv.sh,
@@ -3553,7 +3554,7 @@ slice_mv_kanten_nach_done_im_ziel() {
 	git -C "$dir" commit -q -m "Kanten-Smoke: Ausgangsstand (full-smoke)"
 	kf_docs_check "$dir" einordnen
 	if [ "$kf_rc" -ne 0 ] || ! grep -qF -- ', 0 Befund(e)' <<<"$kf_out"; then
-		echo "full-smoke: FEHLER — Kanten nach done: docs-check des Ausgangsstands meldet nicht '0 Befund(e)' (Exit $kf_rc) — das Gruen nach dem Wechsel saehe dann nichts." >&2
+		echo "full-smoke: FEHLER — Kanten nach done: docs-check des Ausgangsstands meldet nicht '0 Befund(e)' (Exit $kf_rc) — ein Befund nach dem Wechsel liesse sich ihm dann nicht zuordnen." >&2
 		printf '%s\n' "$kf_out" >&2
 		exit 1
 	fi
