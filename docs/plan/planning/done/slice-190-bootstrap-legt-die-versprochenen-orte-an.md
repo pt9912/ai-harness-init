@@ -204,7 +204,7 @@ Aussagen-Berührung steht hier gar nicht.
 | `internal/emit/templates_test.go` (`want`-Liste) | update | der Mengen-Vergleich ist der Zahn; er wird nachgezogen, nicht aufgeweicht |
 | die emittierte `harness/conventions.md` und `docs/plan/planning/README.md` | update | DoD (2) — je ein Ausgang für die Fundstelle; **nur** die emittierte Fassung, nicht der vendored Fremdtext |
 | [`spec/lastenheft.md`](../../../../spec/lastenheft.md) | **unverändert** | siehe die Change-Request-Frage unten |
-| [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) | **unverändert** | sein §6-Baum ist zusammenfassende Prosa und nennt kein Struktur-Verzeichnis einzeln; er wird von DoD (1) weder wahr noch falsch. Dass er in dieser Form Lücken **verdeckt**, ist ein eigener Liefer-Wert — [slice-191](../open/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md), §6 |
+| [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) | **unverändert** | sein §6-Baum ist zusammenfassende Prosa und nennt kein Struktur-Verzeichnis einzeln; er wird von DoD (1) weder wahr noch falsch. Dass er in dieser Form Lücken **verdeckt**, ist ein eigener Liefer-Wert — [slice-191](../next/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md), §6 |
 | `internal/emit/` — Emission der Register-`README.md` | **nicht in diesem Slice** | entschieden (Festlegung 2), eigener Schnitt — §6 |
 
 **Die Change-Request-Frage ist beantwortet.**
@@ -334,12 +334,12 @@ dasteht.
   nennt heute kein einziges Struktur-Verzeichnis einzeln, es gibt also nichts zu
   koppeln — erst muss entschieden werden, *was* er zeigt, dann kann ein Wächter
   ihn halten. Beides zusammen ist ein eigener Liefer-Wert und liegt als
-  [slice-191](../open/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md) in
+  [slice-191](../next/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md) in
   `open/`. Registriert als
   [`BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md),
   dessen `state.md` genau diese Unterklasse als *Zusage ohne Anker, Ausgang eine
   Regel ohne Sensor* führt. — **Ausgang:** eingetreten →
-  [slice-191](../open/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md). Die
+  [slice-191](../next/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md). Die
   Beschreibung ist zwischen `slice-182` und heute gealtert, ohne dass etwas rot wurde; der
   Folge-Slice ist eine Datei in `open/` und trägt beide Hälften — was der §6-Baum zeigt und welcher
   Wächter ihn hält.
@@ -407,7 +407,7 @@ dasteht.
   (mit dieser Closure angelegt, Beleg `evidence/slice-190.md`).
 - **Nicht in diesem Slice:** die emittierte Modul-Liste
   ([slice-073](../done/slice-073-emittierte-doc-gate-module.md)), der Handbuch-Baum
-  ([slice-191](../open/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md)),
+  ([slice-191](../next/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md)),
   der Register-Ort (Risiko 2), die `.d-check.yml` **dieses** Repos, jeder
   Migrationspfad für bereits gebootstrappte Repos, und jede Änderung am vendored
   Baseline-Baum.
@@ -647,7 +647,7 @@ weiter belastet — er hätte dieselbe Messstelle ein drittes Mal abgelesen.
 - **Folge-Slices:**
   [slice-194](../done/slice-194-bootstrap-legt-den-register-ort-an.md) (Der Bootstrap legt den
   Register-Ort an) — mit dieser Closure geschnitten, ist eine Datei in `open/` ·
-  [slice-191](../open/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md)
+  [slice-191](../next/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md)
   (Benutzerhandbuch zeigt den vollständigen Bestand) — lag bereits in `open/`.
 - **Risiken aus §6:** alle **neun** mit genau einem Ausgang — **2** eingetreten (Folge-Slice
   `slice-194` bzw. `slice-191`), **2** entfallen mit Begründung, **5** weiter offen ins
@@ -718,7 +718,7 @@ Treffer: keine.
   — **getroffen**, aber an einer Stelle, die dieser Slice nicht anfasst: der
   §6-Baum des Benutzerhandbuchs beschreibt einen Bestand, den `slice-182`
   verändert hat. Steht als Risiko in §6, Träger ist
-  [slice-191](../open/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md).
+  [slice-191](../next/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md).
   Die Zusagen über die emittierte **Modul-Liste** sind davon verschieden und hier
   nicht berührt — die Liste bewegt dieser Slice nicht.
 - [`zusage-ohne-herstellbares-gegenbeispiel`](../observations/BEO-ALL/zusage-ohne-herstellbares-gegenbeispiel/observation.md)

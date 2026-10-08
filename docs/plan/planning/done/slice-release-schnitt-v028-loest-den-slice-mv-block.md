@@ -54,7 +54,7 @@ Auslöser: Auftrag des Auftraggebers — ein Adopter ist durch den `slice-mv`-Fe
 
 - Weiterer Funktionsinhalt — Schnitt nach Lieferwert: ausgeliefert wird, was in `done/` liegt; jede Programm- oder Vorlagen-Änderung wäre ein anderer Slice, und der Verifier hielte den Tag-Baum nicht mehr gegen einen geprüften Stand.
 - Der Baseline-Sprung auf `v6.16.0` — anderer Vorgang; nach [`ADR-0078`](../../adr/0078-ziel-fassung-regiert-den-sprung-v6160.md) Festlegung 5 liegt dieser Tag **vor** ihm, nicht in ihm.
-- Betriebs-Kommandos des Ziels, die das Handbuch heute nicht nennt, außer `slice-mv` (etwa `hooks-install`) — Folge-Slice [`slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand`](../open/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md) trägt die Vollständigkeit; hier nur, was dieser Release ändert.
+- Betriebs-Kommandos des Ziels, die das Handbuch heute nicht nennt, außer `slice-mv` (etwa `hooks-install`) — Folge-Slice [`slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand`](../next/slice-191-benutzerhandbuch-zeigt-den-vollstaendigen-bestand.md) trägt die Vollständigkeit; hier nur, was dieser Release ändert.
 - Ein Signier-Schritt für die Assets — Bestand bleibt bewusst stehen: [`releasing.md`](../../../user/releasing.md) §Grenze führt ihn.
 - Eine Struktur-Entscheidung zum CI-Rennen gegen die Publikation — offene Beobachtung; der Schnitt fährt den operativen Ausgang (Re-Run), er entscheidet nichts.
 - Anlage oder Rotation des Repo-Secrets `HOMEBREW_TAP_GITHUB_TOKEN` — außerhalb der Prozedur ([`releasing.md`](../../../user/releasing.md) Schritt 7); vom Auftraggeber als gesetzt bestätigt.
