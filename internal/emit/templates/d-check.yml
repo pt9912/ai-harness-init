@@ -23,9 +23,10 @@ ids:
 # der Aktivierungs-Schalter — ohne ihn oeffnet das Modul keine Datei. Am Pin v0.84.0 hat es
 # zwei Grenzen, die ein frisches Ziel rot bzw. blind machen: Liegt unter done-dir kein
 # Slice-Plan, meldet es die leere Pruefmenge fail-closed als review-missing. Und als Zusage
-# erkennt es die Wortfolge "unabhaengiger Review" an einer Kennung in Ziffern-Form
-# (slice-<NNN>); die Review-Zeile der Slice-Vorlage ("Review durchgefuehrt, …") erkennt es
-# nicht, eine Kennung in Namens-Form (slice-<name>) ebenso wenig.
+# erkennt es allein die Wortfolge "unabhängiger Review" (mit ä, buchstabengetreu) an einer
+# Kennung in Ziffern-Form (slice-<NNN>); die Review-Zeile der Slice-Vorlage ("Review
+# durchgeführt, …") erkennt es an keinem Slice, eine Kennung in Namens-Form (slice-<name>)
+# auch mit der Wortfolge nicht.
 # Trigger: aktivieren — reviews in modules: aufnehmen und den Block ohne # uebernehmen —,
 # sobald das gepinnte d-check die Review-Zeile der Slice-Vorlage an einer Kennung in
 # Namens-Form als Zusage erkennt und der erste Slice-Plan mit dieser Zeile unter done-dir
