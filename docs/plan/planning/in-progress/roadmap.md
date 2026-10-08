@@ -20,7 +20,7 @@ nicht hier.
 - [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
 - [welle-adopter-weg-im-ziel — Die Werkzeuge des Adopters halten ihre Zusage im Ziel](../welle-adopter-weg-im-ziel.md)
 
-**In Arbeit:** welle-adopter-weg-im-ziel — `ls docs/plan/planning/in-progress/` nennt den Slice.
+**Nichts in Arbeit.**
 
 ## Nächste Wellen
 

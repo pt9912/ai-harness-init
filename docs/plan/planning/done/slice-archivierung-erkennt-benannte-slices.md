@@ -42,7 +42,7 @@ Der Fund (Lesung, nicht Grep): `SliceNummer` (`internal/archive/collect.go:101`,
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register fortgeschrieben (kein Zähler wird gesetzt); keine Beobachtung angefallen ist ebenfalls eine Antwort.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang.
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
 
 ## 3. Plan (vor Code)
 
@@ -84,6 +84,7 @@ Lerneintrag: die Form entscheidet die Closure.
 - **Folge-Slices:** keine.
 - **Risiken aus §6:** (1) weiter offen → Register · (2) weiter offen → Register.
 - **Drei Paarungen:** dieses Repo fährt Wellen — die Welle-Closure von `welle-adopter-weg-im-ziel` prüft sie erneut; die Slice-Closure fährt sie nach dem `git mv` selbst (Zeile unten).
+- **Paarungen geprüft am 2026-10-08** (Planner, nach dem `git mv`): Anker — kein `liegt in`-Feld in §7; Folge-Slice — keiner genannt; Register — `BEO-ALL/zuordnung-haengt-an-der-lage-statt-am-inhalt` (2 Belege) und `BEO-ALL/neuer-waechter-ohne-mutations-fall` (17 Belege) existieren und tragen den eigenen Beleg (`ls …/evidence/*.md | wc -l`). Grün.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
