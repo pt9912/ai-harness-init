@@ -71,7 +71,8 @@ var (
 )
 
 // wertForm ist ein Skalar in einer der drei gelesenen Formen: doppelt gequotet, einfach gequotet,
-// ungequotet ohne Flow- und Kommentar-Zeichen. Genau eine der drei Gruppen ist belegt.
+// ungequotet ohne Flow- und Kommentar-Zeichen. Der Wert ist die Verkettung der drei Gruppen
+// (TestEintraege_Schreibformen).
 const wertForm = `(?:"([^"]*)"|'([^']*)'|([^"'#\s\[\]{},]+))`
 
 func kommentar(l string) bool { return strings.HasPrefix(strings.TrimSpace(l), "#") }
