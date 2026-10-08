@@ -130,7 +130,7 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
 
 **Zwei Liefer-Punkte:**
 
-- [ ] **(1) Die Klasse färbt rot, und zwar aus dem richtigen Grund** — der Sensor ist an einem
+- [x] **(1) Die Klasse färbt rot, und zwar aus dem richtigen Grund** — der Sensor ist an einem
       **hinzugefügten** Fall rot gesehen worden (ein künstlich über die Schwelle gehobener Eintrag
       ohne Ausgang), mit der Meldung, die die Stelle nennt; **und** er ist über dem unveränderten
       Bestand **still**, nachdem Punkt (2) ihn gezogen hat. Beide Läufe stehen mit ihrem Kommando im
@@ -139,21 +139,25 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
       [`harness/README.md`](../../../../harness/README.md) §Sensors **und** in `make gates`
       verdrahtet, netzlos wie jeder andere
       ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
-- [ ] **(2) Der Bestand ist nach der Regel aus dem Träger-Slice ohne Befund** — die zu diesem
+      **Gemessen:** das Rot steht im Commit `a5495478` (`make gates` rc=2, Meldung nennt den
+      Eintrag); der stille Lauf über dem **gezogenen** Bestand steht in **keinem** Commit — er steht
+      datiert in §7. Die verlangte Beleg-Form (beide Läufe im Umsetzungs-Commit) ist damit nur zur
+      Hälfte getragen; die Wirkung selbst ist gemessen.
+- [x] **(2) Der Bestand ist nach der Regel aus dem Träger-Slice ohne Befund** — die zu diesem
       Zeitpunkt über der Schwelle stehenden Einträge tragen einen Ausgang; **die Zahl ist vorher
       neu gefahren** und steht als datierte Messung mit ihrem Kommando in §7
       ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)
       Setzung 2). Wo kein Ausgang zulässig ist, sagt §7 nach der neuen Regel, warum — ein leerer
       `state.md`-Rumpf ist kein Nachzug.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: Liefer-Punkt (1) **ist** dieses Item — der Träger ist der Gate-Index.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — **hier nicht**: Dieses
+- [x] Doku-Update: Liefer-Punkt (1) **ist** dieses Item — der Träger ist der Gate-Index.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — in dieser Closure nach dem `git mv` geprüft (§7); zusätzlich: Dieses
       Repo fährt Wellen-Betrieb (`ls docs/plan/planning/welle-*.md | wc -l` → **3**, kein
       Erwartungswert), also prüft sie die nächste Welle-Closure, auch für diesen Slice ohne
       Wellen-Zugehörigkeit.
@@ -280,17 +284,22 @@ dasteht.
   [`BEO-ALL/ausgang-nennt-traeger-der-nicht-traegt`](../observations/BEO-ALL/ausgang-nennt-traeger-der-nicht-traegt/observation.md).
   **Gegenmittel im Plan:** Liefer-Punkt (1) verlangt das **Rot aus dem richtigen Grund** und den
   stillen Bestand danach; §7 benennt die Grenze des Sensors ausdrücklich.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang:** **weiter offen** — der Wächter liest das erste Wort der `**Stand:**`-Zeile, nicht ob
+  der Ausgang trägt (Grenze im Skriptkopf von `harness/tools/register-ausgang.sh`); Beleg in
+  [`BEO-ALL/ausgang-nennt-traeger-der-nicht-traegt`](../observations/BEO-ALL/ausgang-nennt-traeger-der-nicht-traegt/observation.md).
 - **(2) Der Nachzug wird zur Formalie.** Achtzehn Einträge sind nicht achtzehnmal derselbe Text; wer
   die Rümpfe vereinheitlicht, löscht den Befund, statt ihn zu beantworten. **Gegenmittel im Plan:**
   Liefer-Punkt (2) verlangt, daß der Rumpf den Ausgang **trägt**; ein leerer `state.md`-Rumpf ist
   ausdrücklich kein Nachzug.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang:** **entfallen** — jede der zehn in `525e36b7`/`d4cd1a63` nachgezogenen `state.md`
+  trägt einen eigenen Rumpf mit Zielort bzw. Kennung, je Eintrag nach Architect-Verdikt
+  (Verifikation 2026-10-08).
 - **(3) Der Zähler läuft schneller als der Nachzug.** Jede Slice-Closure kann neue Einträge über die
   Schwelle heben; ein Nachzug, der einmal läuft, ist am Tag danach unvollständig.
   **Gegenmittel im Plan:** Genau deshalb ist der Sensor der erste Liefer-Punkt und keine Handliste —
   nach ihm ist der Nachzug eine Schleife bis grün, nicht eine Zahl.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang:** **entfallen** — `register-ausgang` hängt an `record-gates`; ein neuer
+  Schwellen-Übertritt ohne Ausgang färbt jeden Gate-Lauf rot, statt still nachzulaufen.
 
 ## 7. Closure-Notiz
 
@@ -302,14 +311,38 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes der drei mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
-  für diesen Slice ohne Wellen-Zugehörigkeit>
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10). Eingang:
+Reviews und Verdikte unter `docs/reviews/2026-10-08-register-ausgang-*`, Verifikation vom
+2026-10-08.
+
+- **Was hat funktioniert:** Rot an der realen Quelle, nicht an einer Fixture: eine echte `state.md`
+  über der Schwelle auf `offen` → `make gates` rc=2 mit Meldung auf den Eintrag (`a5495478`). Der
+  Nachzug lief je Eintrag über ein Architect-Verdikt statt über einen Sammel-Rumpf.
+- **Was ging anders als geplant:** Review F-1/F-2 (MEDIUM): ein nach
+  [ADR-0049](../../adr/0049-ausgang-traegt-die-benannte-luecke.md) zulässiger Zustand färbte rot,
+  und der leere Prüfbereich blieb still; den Zeitpunkt des Lese-Schritts setzt seither
+  [ADR-0085](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md), der leere
+  Prüfbereich bricht mit Exit 2 ab. Der stille Lauf über dem gezogenen Bestand steht in keinem
+  Commit (DoD 1, Closure-Kriterium 1 nur zur Hälfte in der verlangten Form); er steht hier.
+- **Datierte Messung (Liefer-Punkt 2, kein Erwartungswert,
+  [`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)
+  Setzung 2):** 2026-10-08, `make register-ausgang` → `233 Eintraege, 66 ueber der Schwelle,
+  0 Befund(e)`, rc=0. Der Lese-Schritt dieser Closure
+  ([ADR-0085](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md)) ist
+  damit beantwortet: kein Eintrag über der Schwelle ohne Ausgang.
+- **Steering-Loop-Eintrag:** neuer Sensor — `make register-ausgang` in `make gates` hält, dass jeder
+  Registereintrag über der 3×-Schwelle einen Ausgang trägt. Kein `liegt in`-Feld und kein
+  `seit`-Anker: der Sensor folgt aus
+  [ADR-0049](../../adr/0049-ausgang-traegt-die-benannte-luecke.md) und trägt dessen Kennung auf der
+  Target-Zeile (Baseline-Regelwerk `grundlagen-traceability.md` §Herkunfts-Anker, *Geltungsbereich —
+  eng*). Grenze: er liest das Stand-Wort, nicht ob der Ausgang trägt.
+- **Beobachtungs-Register (`../observations/`):**
+  [`ausgang-nennt-traeger-der-nicht-traegt`](../observations/BEO-ALL/ausgang-nennt-traeger-der-nicht-traegt/observation.md)
+  — `evidence/slice-register-ueber-der-schwelle-bekommt-seinen-waechter.md` neu (Risiko 1); Stand
+  bleibt *geplant* mit `slice-ausgang-auf-einen-folge-slice-prueft-dessen-dod` in `open/`.
+- **Folge-Slices:** keine.
+- **Risiken aus §6:** (1) weiter offen → Register · (2) entfallen · (3) entfallen — je Zeile in §6.
+- **Drei Paarungen:** nach dem `git mv` in dieser Closure geprüft (Zeile unten).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
