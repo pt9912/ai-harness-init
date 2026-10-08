@@ -85,7 +85,7 @@ grep -n 'agent_role\\":\\"$erwartet' harness/tools/full-smoke.sh
 - [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen).
+- [x] Die drei Paarungen prüft die nächste Welle-Closure (das Repo fährt Wellen).
 
 ## 3. Plan (vor Code)
 
@@ -181,6 +181,10 @@ Eintrag in `spec/lastenheft.md` §7 Historie — **eingetreten** (0.25.0, 0.25.1
 - **Risiken aus §6:** (1) entfallen, (2) entfallen, (3) entfallen — je Begründung in §6.
 - **Drei Paarungen:** die Welle-Closure von `welle-erfassungsschicht-im-ziel` prüft sie erneut; die
   Slice-Closure fährt sie nach dem `git mv` selbst (Zeile unten).
+- **Paarungen geprüft am 2026-10-08** (Planner, nach dem `git mv`): Anker — kein `liegt in`-Feld in §7
+  (`grep -c 'liegt in'` → 0); Folge-Slice — keiner genannt; Register —
+  `BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen` (36 Belege) und `BEO-ALL/neuer-waechter-ohne-mutations-fall`
+  (18 Belege) existieren und tragen den eigenen Beleg (`ls …/evidence/*.md | wc -l`). Grün.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
