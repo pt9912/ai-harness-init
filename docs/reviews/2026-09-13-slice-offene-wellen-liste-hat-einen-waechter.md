@@ -173,7 +173,7 @@ Datei ist dieser Report.
 - `quelle`: [`MR-054`](../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
   (Kriterium *Erprobung im Dogfood*) · [`AGENTS.md`](../../AGENTS.md) §3.8 (die Rollen-Grenze, die
   hier eine **Übergabe** statt einer Änderung verlangt)
-- `pfad`: [`docs/plan/planning/open/slice-210-planning-modul-im-emittierten-doc-gate.md:101`](../plan/planning/open/slice-210-planning-modul-im-emittierten-doc-gate.md)
+- `pfad`: [`docs/plan/planning/open/slice-210-planning-modul-im-emittierten-doc-gate.md:101`](../plan/planning/next/slice-210-planning-modul-im-emittierten-doc-gate.md)
 - `befund`: Der Ausschluss-Punkt dort lautet *„`waves` ist auch im Dogfood aus (die dokumentierte
   Abweichung dieses Repos)"*. Beides ist seit `ba8698fc` falsch. Die Datei ist ein **lebendes**
   Planungs-Artefakt (Lifecycle `open/`), kein Zeitdokument; sie gehört dem Planner, deshalb ist

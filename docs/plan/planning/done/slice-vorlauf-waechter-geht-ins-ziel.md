@@ -83,7 +83,7 @@ ohne ihn mit Exit 2 ab (*object not found*); was er fängt, ist die auflösbare,
   die Doppelführung, die das Register vermeidet.
 - **Das Modul `vcs`/`commits` selbst.** Ob `d-check` eine leere Range selbst von der leeren Menge
   unterscheidet, ist eine Anforderung an das Nachbar-Repo. Der
-  [slice-210](../open/slice-210-planning-modul-im-emittierten-doc-gate.md) entscheidet die Modul-**Liste** —
+  [slice-210](../next/slice-210-planning-modul-im-emittierten-doc-gate.md) entscheidet die Modul-**Liste** —
   eine andere Fläche.
 - **Der Bestand.** Ziele, die vor dieser Emission entstanden, werden nicht nachgerüstet; gebunden ist
   die Vorlage, die geschrieben wird.

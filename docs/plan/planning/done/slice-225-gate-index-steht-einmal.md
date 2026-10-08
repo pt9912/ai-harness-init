@@ -196,7 +196,7 @@ nimmt sie als **Ausgangslage**, nicht als Ergebnis.
   einschaltet, ist eine Gate-Aktivierung mit eigener Erprobung und eigenem rotem Gegenbeispiel und
   liegt bei [slice-213](../open/slice-213-review-report-laeuft-in-der-tabellen-form.md) (Form und
   `structure`) sowie bei den Modul-Slices
-  [slice-210](../open/slice-210-planning-modul-im-emittierten-doc-gate.md),
+  [slice-210](../next/slice-210-planning-modul-im-emittierten-doc-gate.md),
   [slice-211](../open/slice-211-codepaths-im-emittierten-doc-gate.md) und
   [slice-212](../open/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md). *Es wäre ein
   anderer Vorgang.*
