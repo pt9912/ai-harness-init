@@ -282,7 +282,7 @@ ungehalten.
 | [`harness/tools/handbuch-baum.sh`](../../../../harness/tools/handbuch-baum.sh) | neu — Pfad-Mengen-Vergleich in beide Richtungen |
 | [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) | neue Stufe *Handbuch-Baum*, vor Stufe 2 |
 | [`docs/user/e2e-abdeckung.md`](../../../../docs/user/e2e-abdeckung.md) | neu erzeugt (`make e2e-abdeckung`) |
-| `test/mutations/614…616` | neu — Vorlagen-Stufe, Erfassungs-Stufe, erfundener Handbuch-Pfad |
+| `test/mutations/614…617` | neu — Vorlagen-Stufe, Erfassungs-Stufe, erfundener Handbuch-Pfad (Richtung *genannt, nicht angelegt*); gestrichene Handbuch-Zeile (Richtung *angelegt, nicht genannt*) |
 
 ## 4. Trigger
 
