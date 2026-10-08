@@ -43,7 +43,7 @@ Reihenfolge = Abarbeitung; die zwei `full-smoke.sh`-Slices laufen nacheinander (
 |---|---|---|
 | [slice-archivierung-erkennt-benannte-slices](done/slice-archivierung-erkennt-benannte-slices.md) | Archivierung liest benannte Kennungen; Start-Bedingung des Altbestand-Laufs | [`MR-059`](../../../harness/conventions.md#mr-059), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-zeilenenden-meldungstest-bindet-das-verzeichnis](done/slice-zeilenenden-meldungstest-bindet-das-verzeichnis.md) | Meldungstest hält das genannte Verzeichnis | [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
-| [slice-aktivierung-reist-nicht-mit-dem-klon](next/slice-aktivierung-reist-nicht-mit-dem-klon.md) | Klon-Weg des Commit-Trägers gefahren | [`LH-FA-11`](../../../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren) |
+| [slice-aktivierung-reist-nicht-mit-dem-klon](in-progress/slice-aktivierung-reist-nicht-mit-dem-klon.md) | Klon-Weg des Commit-Trägers gefahren | [`LH-FA-11`](../../../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren) |
 | [slice-mv-kanten-nach-done-sind-bewacht](next/slice-mv-kanten-nach-done-sind-bewacht.md) | `open\|next → done` im Ziel gefahren | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-adopter-seite-der-anweisungssatz-grenze](next/slice-adopter-seite-der-anweisungssatz-grenze.md) | Eigentums-Aussage für die Adopter-Seite (Architect) | [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) |
 
