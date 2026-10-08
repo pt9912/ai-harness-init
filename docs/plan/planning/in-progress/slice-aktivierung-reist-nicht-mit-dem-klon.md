@@ -28,8 +28,7 @@ eigenen E2E; kein Zielelement der Spec-Straten wird angefasst. Die Spec ist übe
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
 Prüfgegenstand, nicht Änderungsziel.
 
-**Verantwortlich:** `—` — bis zur Priorisierung (Baseline-Regelwerk
-`modul-05-planning-harness.md` §Lifecycle als State Machine: der Übergang `open→next` setzt sie).
+**Verantwortlich:** pt9912
 
 **Autor:** Planner. **Datum:** 2026-09-15.
 
