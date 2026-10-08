@@ -12,7 +12,7 @@ Bedeutungswechsel und trägt seine Fassung dann schon.
 
 **Berührte Spec-Stellen:** [`spezifikation.md` §5](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder).
 
-**Verantwortlich:** — bis zur Priorisierung.
+**Verantwortlich:** pt9912
 
 **Autor:** Planner. **Datum:** 2026-10-08.
 
