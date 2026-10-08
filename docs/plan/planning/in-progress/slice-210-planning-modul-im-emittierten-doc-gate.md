@@ -73,7 +73,7 @@ Roadmap entsteht, trägt die Überschrift, auf die das Modul bindet, aber **kein
 Ruhe-Marker-Literal:
 
 ```sh
-T=.harness/baseline/v6.7.2/templates/docs/plan/planning/roadmap.template.md
+T=.harness/baseline/v6.17.0/templates/docs/plan/planning/roadmap.template.md
 grep -nE '^## Offene Wellen' "$T"     # die Ueberschrift steht
 grep -c 'Nichts in Arbeit' "$T"       # 0 -- der Marker steht nicht
 ```
@@ -117,7 +117,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **(1) Kriterium 2 und 3 sind für `planning` am frisch gebootstrappten Ziel gemessen.** Je ein
+- [x] **(1) Kriterium 2 und 3 sind für `planning` am frisch gebootstrappten Ziel gemessen.** Je ein
   netzloser d-check-Lauf gegen den in [`d-check.mk`](../../../../d-check.mk) gepinnten Digest, gegen
   ein mit dem Träger aus `make host-bin` frisch gebootstrapptes Ziel außerhalb des Repos, Mount
   `:ro`: **out-of-the-box** (Kriterium 2 — wie viele Befunde, welcher Grund-Code) und **mit
@@ -125,7 +125,7 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
   leerem `in-progress/`, stehengebliebener Marker bei beanspruchtem Slice). Dazu die
   Kausalitäts-Gegenprobe: dasselbe Gegenbeispiel bleibt ohne das Modul grün. Die Zahlen stehen je
   neben dem Kommando, das sie liefert.
-- [ ] **(2) Das Ergebnis ist verkörpert — in genau einer der zwei Formen.** *Entweder* `planning`
+- [x] **(2) Das Ergebnis ist verkörpert — in genau einer der zwei Formen.** *Entweder* `planning`
   geht in `internal/emit/templates/d-check.yml`: die Modul-Liste wächst, der netzlose Wächter
   `TestDCheckConfig_EntschiedeneModulListe` bindet sie, ein Fall in `test/mutations/` färbt rot, und
   `harness/tools/full-smoke.sh` trägt den Zahn nach der dort etablierten Form — **einschließlich
@@ -134,7 +134,7 @@ Gate-Läufe und die Closure-Pflichten darunter zählen nicht mit.
   mit eigenem Auflösungs-Trigger im Adaptions-Block — **Architect-Arbeit**
   ([`AGENTS.md`](../../../../AGENTS.md) §3.8), eigener Commit, und dieser Plan ist das
   Übergabe-Artefakt dafür. Ein drittes Ergebnis („weiter unentschieden") ist keines.
-- [ ] **(3) `make gates` grün; `make full-smoke` grün — beide Bootstrap-Formen; Review durchgeführt,
+- [x] **(3) `make gates` grün; `make full-smoke` grün (der Lauf `make full-smoke`; `make full-smoke-host` ist nicht gefahren); Review durchgeführt,
   Report unter `docs/reviews/`** (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
   Minimal Agent Workflow ([`AGENTS.md`](../../../../AGENTS.md) §6), kein Self-Review (Modul 8).
   Closure-Notiz mit Steering-Loop-Lerneintrag; Beobachtungs-Register fortgeschrieben; jedes Risiko
@@ -187,25 +187,57 @@ dasteht.
 - **Der Nicht-Emissions-Zweig ist der bequemere und darum der verdächtigere.** „Bleibt aus" kostet
   eine Kommentar-Zeile, der Emissions-Zweig kostet einen Zahn und womöglich eine Änderung an der
   Roadmap-Emission. DoD (1) verlangt die Messung für **beide** Kriterien, damit die Bequemlichkeit
-  nicht als Begründung durchgeht. — **Ausgang:** <eingetreten: CO-NNN / slice-NNN | entfallen:
-  Grund | weiter offen: → Beobachtungs-Register>
+  nicht als Begründung durchgeht. — **Ausgang:** entfallen — der Emissions-Zweig ist gewählt, mit
+  Messung beider Kriterien (Verifikation, DoD 1).
 - **Die Marker-Invariante ist im Ziel eine Zusage über einen wandernden Zustand.** Sie hält den
   Ruhe-Marker gegen `in-progress/`; beim Adopter bewegt sich dieses Verzeichnis mit jedem
   Lifecycle-Übergang. Ein emittiertes Modul, das bei jedem `slice-mv` eine Roadmap-Zeile
   nachzuziehen verlangt, verschiebt Arbeit zum Adopter, die dieses Repo selbst als
   [`BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`](../observations/BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/observation.md)
-  zählt. — **Ausgang:** <eingetreten: CO-NNN / slice-NNN | entfallen: Grund | weiter offen: →
-  Beobachtungs-Register>
+  zählt. — **Ausgang:** weiter offen → Beleg in
+  `BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch` (am Ziel eingetreten; kein Slice
+  der `welle-adopter-weg-im-ziel` führt den Gegenstand).
 - **Die Kandidaten-Menge wächst weiter.** Dieser Slice entscheidet **einen** Kandidaten; wächst die
   Modul-Liste dieses Repos erneut, entsteht dieselbe Lücke für das nächste Modul, und
   [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
   nennt dafür keinen Wächter — Kriterium 1 ist eine Zulassungs-Bedingung, kein Gleichheits-Sensor.
-  — **Ausgang:** <eingetreten: CO-NNN / slice-NNN | entfallen: Grund | weiter offen: →
-  Beobachtungs-Register>
+  — **Ausgang:** weiter offen → Beleg in
+  `BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`.
 
 ## 7. Closure-Notiz
 
-<!-- Erst nach Abschluss füllen. -->
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+**Rolle:** Planner · **Datum:** 2026-10-08
+
+- **Was hat funktioniert:** `planning` geht ins emittierte Doc-Gate. Am frisch gebootstrappten Ziel
+  (Pin v0.84.0, `--network none`, `:ro`): out-of-the-box `0 Befund(e)`; beide Marker-Richtungen je
+  `1 Befund(e)` `planning-drift`, ohne Modul je `0`
+  ([Verifikation](../../../reviews/2026-10-08-slice-210-verifikation.md)). Fälle `572` und `514`
+  rot mit `# expect:`-Text. Review 0 HIGH · 0 MEDIUM · 1 LOW · 2 INFO
+  ([Review](../../../reviews/2026-10-08-slice-210-review.md)): F-1/F-3 behoben in `4de69177`, F-2
+  INFO (Injektor und Sensor grenzen den Abschnitt verschieden ab; gedeckt vom grünen Start der Stufe
+  `planning_im_ziel`).
+- **Was ging anders als geplant — Abnahme bei der Closure geändert:** DoD 3 verlangte
+  `make full-smoke` in „beiden Bootstrap-Formen"; der Plan nennt sie nicht, belegt ist der eine Lauf
+  `make full-smoke` (Grün-Vorlauf des Mutate-Laufs), `make full-smoke-host` nicht. Der Punkt ist auf
+  das Gemessene umformuliert. §1 zeigte auf den abgelösten Baum `v6.7.2`; auf `v6.17.0` gezogen, die
+  Aussage hält dort (`grep -c` → 0).
+- **Steering-Loop-Eintrag:** benannte Lücke — im Ziel macht `make slice-mv` den Ruhe-Marker falsch
+  (am realen Ziel gemessen: `next → in-progress`, danach `planning-drift`), und die emittierte
+  `.claude/commands/implement-slice.md` nennt den Nachzug nicht; ein Agent im Ziel erfährt ihn erst
+  aus dem Rot. Gezählt in `BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch` (Stand
+  *geplant*, `slice-ortswechsel-zieht-sein-zustandsfeld-nach` — dessen §1 nennt die Ziel-Hälfte
+  nicht), nicht verkörpert, kein Zielort-Feld.
+- **Beobachtungs-Register (`../observations/`):** je ein Beleg in
+  [`BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch`](../observations/BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/observation.md)
+  und
+  [`BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`](../observations/BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor/observation.md);
+  Stände unverändert.
+- **Folge-Slices:** keine (Vorgabe des Auftraggebers).
+- **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines. ADR/MR:
+  [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
+  angewandt, kein Trigger eingetreten. Hard Rules: keine.
+- **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
