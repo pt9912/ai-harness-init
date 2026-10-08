@@ -74,7 +74,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
       [`BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
       trägt den Ausgang dieses Vorkommens.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang.
-- [ ] Die drei Paarungen — dieses Repo führt Wellen-Betrieb; der Träger ist die nächste
+- [x] Die drei Paarungen — dieses Repo führt Wellen-Betrieb; der Träger ist die nächste
       Welle-Closure.
 
 ## 3. Plan (vor Code)
@@ -147,6 +147,11 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`.
 - **Folge-Slices:** keine.
 - **Risiken aus §6:** (1) **entfallen** — der Satz ändert die Form, nicht den Emissions-Vorgang;
   das Literal am Skelett hält der Test.
+- **Paarungen geprüft am 2026-10-08, nach dem `git mv`:** (a) Anker — kein `liegt in`-Feld in §7,
+  kein Gegenstand · (b) Folge-Slice — keiner genannt; die Ausgangs-Kennungen `slice-181` und
+  `slice-153` liegen in `open/` (`ls docs/plan/planning/open/slice-1{81,53}-*`) · (c) Register —
+  beide genannten Verzeichnisse existieren, `evidence/*.md` je nicht leer (20 bzw. 37,
+  `ls …/evidence/*.md | wc -l`, keine Erwartung). Grün.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
