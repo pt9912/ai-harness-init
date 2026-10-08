@@ -18,7 +18,6 @@ nicht hier.
 
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
 - [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
-- [welle-emittiertes-doc-gate — Das emittierte Doc-Gate ist entschieden](../welle-emittiertes-doc-gate.md)
 
 **Nichts in Arbeit.**
 
@@ -131,6 +130,7 @@ Ergebnis-Notiz, keine Nummernfolge.
 | [welle-15-re-baseline](../done/welle-15-re-baseline.md) | 2026-09-05 | [welle-15-results.md](../done/welle-15-results.md) |
 | [welle-emittierte-werkzeuge](../done/welle-emittierte-werkzeuge.md) | 2026-09-15 | [welle-emittierte-werkzeuge-results.md](../done/welle-emittierte-werkzeuge-results.md) |
 | [welle-v021-faehigkeit](../done/welle-v021-faehigkeit.md) | 2026-09-23 | [welle-v021-faehigkeit-results.md](../done/welle-v021-faehigkeit-results.md) |
+| [welle-emittiertes-doc-gate](../done/welle-emittiertes-doc-gate.md) | 2026-10-08 | [welle-emittiertes-doc-gate-results.md](../done/welle-emittiertes-doc-gate-results.md) |
 
 Die Tabelle ist nach Wellen-Nummer sortiert, nicht nach Abschluss-Datum; `welle-10` schloss nach
 `welle-12`, und `welle-emittierte-werkzeuge` sowie `welle-v021-faehigkeit` stehen am Ende, weil
@@ -187,4 +187,4 @@ einer Umplanung steht im Beleg, nicht in der Zelle.
 | 2026-07-20 | `slice-022` → `slice-022a`/`022b` re-sliced vor der Implementierung; Kette jetzt 022a→022b→023→004b | Ist-Messung: der Fetch-Umbau ist ZIP≠Tar (Kernlogik, kein Update), und das Prüfsummen-Akzeptanzkriterium braucht einen Ziel-Verifier, den weder Template-Satz noch Emit-Pfad liefern — zusammen über der Ein-Sitzungs-Review-Linie | [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren), [slice-022a](../done/slice-022a-baseline-fetch.md) §1 |
 | 2026-07-20 | welle-02 **umgeplant** (nicht geschlossen): Ziel auf den Distributions-Umbau fokussiert, `slice-022`/`023` neu, `slice-004b` re-gescopet, `slice-005` nach welle-03 umgehängt; **welle-03 neu**; M2 auf welle-02+welle-03 verteilt | Die Entscheidung zur Ziel-Repo-Distribution machte das Wellen-Ziel und den Closure-Trigger ungültig. Kappen wäre die Auditierbarkeits-Lücke aus *Welle ≠ Sprint* | [`ADR-0005`](../../adr/0005-ziel-repo-distribution.md) |
 | 2026-07 | welle-01-Slices auf die Go-Ära re-geschnitten (`slice-001` → `001a`/`001b`) | Implementierungssprache Go / native Binaries; `slice-001` war zu groß und ging zurück zum Schneiden | [`ADR-0003`](../../adr/0003-go-native-binaries.md) |
-| 2026-10-08 | Vier Slices aus dem wellenlosen Bestand in `welle-emittiertes-doc-gate` umgehängt (eröffnet); drei Wellen für 14 weitere produktive Slices in die Vorschau | Auftrag des Auftraggebers vom 2026-10-08: produktive Slices in Wellen gruppieren — der wellenlose Betrieb seit 2026-09-23 ließ den Bestands-Lese-Schritt der Welle-Closure ohne Träger | [welle-emittiertes-doc-gate](../welle-emittiertes-doc-gate.md) §4 |
+| 2026-10-08 | Vier Slices aus dem wellenlosen Bestand in `welle-emittiertes-doc-gate` umgehängt (eröffnet); drei Wellen für 14 weitere produktive Slices in die Vorschau | Auftrag des Auftraggebers vom 2026-10-08: produktive Slices in Wellen gruppieren — der wellenlose Betrieb seit 2026-09-23 ließ den Bestands-Lese-Schritt der Welle-Closure ohne Träger | [welle-emittiertes-doc-gate](../done/welle-emittiertes-doc-gate.md) §4 |
