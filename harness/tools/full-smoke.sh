@@ -3519,6 +3519,78 @@ echo "full-smoke: Ruhe-Marker der Roadmap im frischen Ziel — gruener Start, be
 	e2e_abdeckung "LH-FA-02 LH-QA-01" "Die emittierte Doku-Gate-Konfiguration haelt den Ruhe-Marker der Roadmap gegen in-progress/ an einem frisch emittierten sprachlosen Ziel: gruener Start, ein Slice neben stehendem Marker und ein fehlender Marker bei leerem in-progress/, je mit Gegenprobe; NICHT gemessen: ein Ziel mit eigener .d-check.yml (skip-if-present) und die Faehigkeiten closure/waves des Moduls" "planning_im_ziel"
 planning_im_ziel
 
+# Die zwei Stilllegungs-Kanten `open -> done` und `next -> done` des emittierten
+# `make slice-mv` an einem frisch emittierten sprachlosen Ziel (LH-FA-01, LH-QA-01). Je Kante
+# liegt die bewegte Datei mit einem praefixlosen Ziel auf ein Geschwister, das bleibt; das
+# Geschwister zeigt in beiden Formen (praefixlos und mit Praefix) auf sie, und ein Nachbar
+# unter done/ zeigt mit Praefix auf sie. Gemessen werden je Kante Exit 0, die Datei am neuen
+# Ort, der vorletzte Commit als reiner Rename (eine numstat-Zeile 0 0) und das Doku-Gate des
+# Ziels danach mit '0 Befund(e)' — vor dem ersten Wechsel ebenso, damit das Gruen danach nicht
+# schon vorher bestand.
+# GRENZE: Verweise aus docs/reviews/**, ein Unterverzeichnis und eine ungetrackte Datei im
+# Ausgangsverzeichnis sowie die Zaehlzeile `eingehend:` misst diese Stufe nicht; sie haelt der
+# Go-Test TestSliceMvEchtKanteOpenNachDone am Dogfood-Werkzeug harness/tools/slice-mv.sh,
+# nicht an der emittierten Fassung. Ein Ziel mit Sprache ist nicht gemessen.
+slice_mv_kanten_nach_done_im_ziel() {
+	local dir plan from lauf lauf_rc move_stat betreff
+	dir="$(mktemp -d -p "$tmprepo_kf")"
+	chmod 755 "$dir"
+	git init -q "$dir"
+	"$tmpbin/ai-harness-init" --name kd "$dir" >/dev/null
+	git -C "$dir" config user.email full-smoke@example.invalid
+	git -C "$dir" config user.name full-smoke
+	plan="$dir/docs/plan/planning"
+	mkdir -p "$plan/open" "$plan/next" "$plan/done"
+	for from in open next; do
+		printf '# Slice slice-kante-%s\n\nGeschwister: [bleibt](slice-kante-%s-bleibt.md)\n' \
+			"$from" "$from" >"$plan/$from/slice-kante-$from.md"
+		printf '# Slice slice-kante-%s-bleibt\n\nPraefixlos: [kante](slice-kante-%s.md)\nMit Praefix: [kante](../%s/slice-kante-%s.md)\n' \
+			"$from" "$from" "$from" "$from" >"$plan/$from/slice-kante-$from-bleibt.md"
+		printf '# Nachbar unter done\n\n[kante](../%s/slice-kante-%s.md)\n' \
+			"$from" "$from" >"$plan/done/slice-kante-$from-alt.md"
+	done
+	git -C "$dir" add -A
+	git -C "$dir" commit -q -m "Kanten-Smoke: Ausgangsstand (full-smoke)"
+	kf_docs_check "$dir" einordnen
+	if [ "$kf_rc" -ne 0 ] || ! grep -qF -- ', 0 Befund(e)' <<<"$kf_out"; then
+		echo "full-smoke: FEHLER — Kanten nach done: docs-check des Ausgangsstands meldet nicht '0 Befund(e)' (Exit $kf_rc) — das Gruen nach dem Wechsel saehe dann nichts." >&2
+		printf '%s\n' "$kf_out" >&2
+		exit 1
+	fi
+	for from in open next; do
+		lauf_rc=0
+		lauf="$( make --no-print-directory -C "$dir" slice-mv SLICE="slice-kante-$from" TO=done 2>&1 )" || lauf_rc=$?
+		if [ "$lauf_rc" -ne 0 ] || ! grep -qF -- "slice-mv ok: slice-kante-$from.md" <<<"$lauf"; then
+			echo "full-smoke: FEHLER — Kante $from -> done: make slice-mv endet mit Exit $lauf_rc oder ohne Vollzugsmeldung. Ausgabe:" >&2
+			printf '%s\n' "$lauf" >&2
+			einordnen "make slice-mv $from -> done im Ziel" "$lauf"
+			exit 1
+		fi
+		if [ ! -f "$plan/done/slice-kante-$from.md" ] || [ -e "$plan/$from/slice-kante-$from.md" ]; then
+			echo "full-smoke: FEHLER — Kante $from -> done: slice-kante-$from.md liegt nicht allein in done/." >&2
+			exit 1
+		fi
+		betreff="$(git -C "$dir" log -1 --format=%s HEAD~1)"
+		move_stat="$(git -C "$dir" show --numstat --format= -M HEAD~1)"
+		if [ "${betreff%(reiner Move)}" = "$betreff" ] || [ "$(grep -c . <<<"$move_stat")" -ne 1 ] \
+			|| ! grep -qE '^0[[:space:]]+0[[:space:]]' <<<"$move_stat"; then
+			echo "full-smoke: FEHLER — Kante $from -> done: der vorletzte Commit ist nicht der reine Move (Betreff: $betreff; numstat: $move_stat)." >&2
+			exit 1
+		fi
+		kf_docs_check "$dir" einordnen
+		if [ "$kf_rc" -ne 0 ] || ! grep -qF -- ', 0 Befund(e)' <<<"$kf_out"; then
+			echo "full-smoke: FEHLER — Kante $from -> done: docs-check des Ziels meldet nach dem Wechsel nicht '0 Befund(e)' (Exit $kf_rc) — ein Verweis auf die bewegte Datei loest nicht auf." >&2
+			printf '%s\n' "$kf_out" >&2
+			exit 1
+		fi
+		echo "full-smoke: Kante $from -> done im Ziel: make slice-mv bewegt slice-kante-$from.md mit reinem Move-Commit, und docs-check des Ziels bleibt bei '0 Befund(e)'."
+	done
+}
+
+echo "full-smoke: Stilllegungs-Kanten open -> done und next -> done im frischen Ziel ..."
+	e2e_abdeckung "LH-FA-01 LH-QA-01" "Das emittierte make slice-mv nimmt an einem frisch emittierten sprachlosen Ziel die Kanten open -> done und next -> done: je Exit 0, reiner Move-Commit, eingehende Verweise mit und ohne Praefix sowie das ausgehende Geschwister-Ziel loesen danach auf (docs-check des Ziels 0 Befund(e), auch vor dem ersten Wechsel); NICHT gemessen: Verweise aus docs/reviews/**, Unterverzeichnis und ungetrackte Datei im Ausgangsverzeichnis, die Zaehlzeile eingehend und ein Ziel mit Sprache" "slice_mv_kanten_nach_done_im_ziel"
+slice_mv_kanten_nach_done_im_ziel
+
 # ADR-0067 Festlegung 1 und 5: ein Klon mit core.autocrlf=true traegt in den Verzeichnissen der
 # Emission, in denen ein Interpreter oder die Byte-Pruefung Dateien liest, kein CR. Gemessen
 # wird an zwei echten Klonen desselben committeten Ziels; der Kontrollklon setzt

@@ -214,13 +214,26 @@ P=docs/plan/planning; for d in open next; do n=0; for f in "$P/$d"/*.md; do
 — kein Erwartungswert. Jeder davon bekommt beim Wechsel seines Ziels `../<neues-verzeichnis>/`
 vorangestellt; welche Schreibweise die Ersetzung nicht erkennt, steht unter §Grenze.
 
-**Kein Wächter hält die zwei Kanten.** `test/slice-mv.bats` ruft die Ersetzungs-Funktionen ohne
-Repository auf. [`make full-smoke`](full-smoke.md) fährt im gebootstrappten Ziel den erfolgreichen
-Wechsel mit `TO=next` und `TO=done` nur in den zwei Sperr-Fällen
-(`grep -n 'slice-mv SLICE' harness/tools/full-smoke.sh`). Die Tabelle ist darum eine Messung und
-keine bewachte Zusage: Wer `harness/tools/slice-mv.sh` ändert, misst sie neu;
-ob sie zum Skript im Baum gehört, zeigt `git rev-parse --short=7 HEAD:harness/tools/slice-mv.sh` im
-Vergleich mit dem Blob oben.
+**Zwei Wächter halten die zwei Kanten, und die Tabelle bleibt eine Messung.** Die Zahlen der
+Tabelle gehören zu dem Bestand, an dem sie gemessen wurden; bewacht ist das Verhalten, das sie
+zeigen:
+
+- **Im Dogfood** fahren `TestSliceMvEchtKanteOpenNachDone` und `TestSliceMvEchtKanteNextNachDone`
+  (`cmd/ai-harness-init/slice_mv_kanten_echt_test.go`, in `make test` und damit in `make gates`)
+  `harness/tools/slice-mv.sh` als echten Prozess über ein Wegwerf-Repository. Sie laufen in der
+  Go-Teststufe, weil das gepinnte bats-Image kein `git` führt und das Go-Image es führt. Gehalten
+  sind je Kante Exit 0, genau zwei neue Commits mit dem reinen Rename zuerst, die Auflösung jedes
+  Links, der vorher auf die bewegte Datei zeigte (eingehend aus dem Ausgangsverzeichnis, aus
+  `done/` und aus `docs/reviews/`), der vollständige Ist-Bestand des Ausgangsverzeichnisses — eine
+  Datei in einem Unterverzeichnis und eine ungetrackte Datei bleiben byte-gleich — und die Zeile
+  `eingehend:`, in der eine Datei mit Präfix- und präfixloser Form einmal zählt. Rot färben sie
+  `test/mutations/589-slice-mv-main-verliert-den-move-commit.sh` und
+  `test/mutations/590-slice-mv-main-ruft-die-praefixlose-ersetzung-nicht.sh`.
+- **Im gebootstrappten Ziel** fährt [`make full-smoke`](full-smoke.md) je Kante einen erfolgreichen
+  Wechsel mit der emittierten Fassung und danach das Doku-Gate des Ziels
+  (`grep -n 'slice_mv_kanten_nach_done_im_ziel' harness/tools/full-smoke.sh`); was die Stufe nicht
+  misst, nennt ihre Deklaration. Rot färbt sie
+  `test/mutations/591-slice-mv-emittiert-ruft-die-praefixlose-ersetzung-nicht.sh`.
 
 ### Im gebootstrappten Ziel — Grenze
 

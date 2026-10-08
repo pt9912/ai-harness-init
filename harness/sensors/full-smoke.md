@@ -10,6 +10,11 @@ gebootstrapptes Repo out-of-the-box grün fährt (die Nutzer-Sicht, die
 [`make smoke`](smoke.md) mit seinen getrennten Schritten nicht nimmt). Host-Docker + ggf.
 Netz-Pull → nicht in `make gates`; gehört an DoD-Verify/CI/Wellen-Closure.
 
+Die Stilllegungs-Kanten `open → done` und `next → done` des emittierten `make slice-mv` misst die
+Stufe `slice_mv_kanten_nach_done_im_ziel` an einem frisch emittierten sprachlosen Ziel; was sie
+hält und was der Dogfood-Wächter daneben hält, steht in [`slice-mv.md`](slice-mv.md) §Kanten
+`open → done` und `next → done`.
+
 ### Deklaration der Stufen
 
 Jede Stufe nennt an sich selbst, welche Anforderung sie trägt. Unmittelbar nach ihrer
