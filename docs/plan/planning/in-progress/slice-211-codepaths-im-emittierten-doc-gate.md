@@ -99,7 +99,11 @@ vorweggenommenes Ergebnis.
   [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel),
   dessen Geltungsbereich die Modul-Zusammensetzung ist. Dieser Slice übernimmt die Wurzel-Liste,
   die der Kommentar-Block heute schon führt, und begründet keine zweite. *(Bestand bleibt bewusst
-  stehen.)*
+  stehen.)* **Eine Position ist im Umfang:** `exempt-paths: ["docs/reviews/**"]` im emittierten
+  `codepaths`-Block samt Kopfkommentar und Prosa in `implement-slice.md` — ein Review-Report ist
+  Zeitdokument, und ein gelöschter Pfad darin wäre ein Rot aus Werkzeug-Form
+  ([Architect-Verdikt](../../../reviews/2026-10-08-slice-211-architect-verdikt.md) §2,
+  [`MR-087`](../../../../harness/conventions.md#mr-087--das-modul-codepaths-verlässt-die-ausbleibenden-positionen-des-emittierten-doc-gates)).
 - **Der tote Inline-Pfad unter `.harness/baseline/` im Dogfood.** Dieselbe Modul-Familie, andere
   Ebene und eigener Träger:
   [slice-202](../open/slice-202-der-tote-inline-pfad-unter-harness-bekommt-seinen-pruefer.md).
@@ -131,7 +135,8 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       bleibt als begründeter Kommentar-Block mit einem Trigger, der **nicht** eingetreten ist
       ([`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
       Setzung 3, letzter Absatz). Beide Ausgänge ziehen
-      `TestDCheckConfig_EntschiedeneModulListe` nach; eine Leerstelle ist keiner von beiden.
+      `TestDCheckConfig_EntschiedeneModulListe` nach; eine Leerstelle ist keiner von beiden. Geht
+      `codepaths` mit, trägt sein Block `exempt-paths: ["docs/reviews/**"]` (§1).
 - [ ] `make gates` grün; `make full-smoke` grün (beide Bootstrap-Formen); `make mutate` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
