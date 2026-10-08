@@ -291,7 +291,7 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
   erkennen, liegt beim Auftraggeber (fremdes Repo).
 - **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines. ADR/MR:
   [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
-  Setzung 3 durch `MR-086` erweitert, kein weiterer Trigger eingetreten. Hard Rules: keine.
+  Setzung 3 durch [`MR-086`](../../../../harness/conventions.md#mr-086--das-modul-reviews-bleibt-als-dritte-position-aus-dem-emittierten-doc-gate) erweitert, kein weiterer Trigger eingetreten. Hard Rules: keine.
 - **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
 - **Paarungen geprüft am 2026-10-08** (nach dem Move): (a) *Anker*: §7 trägt kein Zielort-Feld,
   nichts zu prüfen. (b) *Folge-Slice*: keiner genannt; der zitierte
