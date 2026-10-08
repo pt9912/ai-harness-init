@@ -223,7 +223,7 @@ ausführbaren Pfad (§3).
       Datei nicht.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen prüft die Closure von welle-adopter-weg-im-ziel; für diesen Slice nach dem `git mv` geprüft (§7).
+- [x] Die drei Paarungen prüft die Closure von welle-adopter-weg-im-ziel; für diesen Slice nach dem `git mv` geprüft (§7).
 
 ## 3. Plan (vor Code)
 
@@ -393,7 +393,7 @@ Emission unverändert).
   (Trigger misst ein Wort) ohne Eintrag: im Trigger als Grenze benannt.
 - **Folge-Slices:** keine — Ausgang *keine Aussage*, kein Ausführungs-Vorgang.
 - **Risiken aus §6:** (1) entfallen · (2) entfallen · (3) entfallen — je Grund in §6.
-- **Drei Paarungen:** nach dem `git mv` geprüft, Zeile folgt im Commit danach.
+- **Paarungen geprüft am 2026-10-08:** (a) Anker — kein Gegenstand, §7 trägt kein Feld `liegt in`; (b) Folge-Slice — keiner genannt; (c) Register — alle sieben genannten Verzeichnisse existieren, `ls <eintrag>/evidence/*.md | wc -l` je ≥ 1. Repo-weite zweite Hälfte von (c): 2 Verzeichnisse ohne Beleg (`cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`, `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; Kommando in `close-welle.md` Schritt 3), kein Fund dieser Closure, nicht als getragen behauptet.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
