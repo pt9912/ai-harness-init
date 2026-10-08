@@ -222,11 +222,31 @@ func TestZeilenenden_JederKonsumentLiegtUnterEinerZeile(t *testing.T) {
 	}
 }
 
+// zeilenendenNenntVerzeichnis sagt, ob text das Verzeichnis verz an einer Wortgrenze nennt: am
+// Anfang oder nach einem Leerzeichen oder Backtick. Ein Verzeichnis, dessen Name auf verz endet
+// (tools/harness/mk/ fuer harness/mk/), ist damit kein Treffer. Rot-Gegenbeispiel:
+// test/mutations/587-zeilenenden-meldung-nennt-verzeichnis-mit-praefix.sh.
+func zeilenendenNenntVerzeichnis(text, verz string) bool {
+	for i := 0; ; {
+		j := strings.Index(text[i:], verz)
+		if j < 0 {
+			return false
+		}
+		k := i + j
+		if k == 0 || text[k-1] == ' ' || text[k-1] == '`' {
+			return true
+		}
+		i = k + 1
+	}
+}
+
 // Rot-Gegenbeispiele: test/mutations/449-zeilenenden-meldung-ohne-aussage.sh (die Meldung
 // nennt nur noch den Pfad) und test/mutations/450-zeilenenden-klasse-wird-konvergent.sh (ein
 // skip-if-present-Pfad wird konvergent — die liegende Datei verschwindet) und
 // test/mutations/586-zeilenenden-meldung-nennt-fremdes-verzeichnis.sh (die Aussage zu
-// .githooks/.gitattributes nennt das Verzeichnis .claude/hooks/).
+// .githooks/.gitattributes nennt das Verzeichnis .claude/hooks/) und
+// test/mutations/587-zeilenenden-meldung-nennt-verzeichnis-mit-praefix.sh (die Aussage zu
+// harness/mk/.gitattributes nennt tools/harness/mk/).
 //
 // TestZeilenenden_BelegterPfadBleibtUndWirdGemeldet haelt die Klasse je Pfad (ADR-0067
 // Festlegung 3 und 4). Die drei skip-if-present-Pfade behalten eine liegende Datei ohne
@@ -292,10 +312,13 @@ func TestZeilenenden_BelegterPfadBleibtUndWirdGemeldet(t *testing.T) {
 		// das Verzeichnis selbst; der Rest muss es aus eigenem Text nennen, und die Erwartung
 		// kommt aus skip, nicht aus der Meldung.
 		rest := zeile[strings.Index(zeile, rel)+len(rel):]
-		for _, aussage := range []string{zeilenendenZeile, "core.autocrlf=true", "CRLF", path.Dir(rel) + "/"} {
+		for _, aussage := range []string{zeilenendenZeile, "core.autocrlf=true", "CRLF"} {
 			if !strings.Contains(rest, aussage) {
 				t.Errorf("die Meldung zu %s nennt %q hinter dem Pfad nicht — sie sagt dann nicht, was fuer dieses Verzeichnis gilt:\n%s", rel, aussage, zeile)
 			}
+		}
+		if verz := path.Dir(rel) + "/"; !zeilenendenNenntVerzeichnis(rest, verz) {
+			t.Errorf("die Meldung zu %s nennt das Verzeichnis %q hinter dem Pfad nicht als eigenes Wort (nach Leerzeichen oder Backtick) — sie sagt dann nicht, was fuer dieses Verzeichnis gilt:\n%s", rel, verz, zeile)
 		}
 	}
 	for _, rel := range konvergent {
