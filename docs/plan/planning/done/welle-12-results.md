@@ -158,13 +158,13 @@ den Slice-Notizen; hier steht, was sie **als Reihe** zeigen, und der eigene Eint
   über fünf Achsen gibt es hier keinen Replay-Lauf — kein `make`-Ziel, kein `evals/`-Layout, kein
   Modul-12-Vokabular außerhalb des vendored Baums, keine der acht bisherigen Closure-Notizen und
   keine Welle-Plan-Datei nennt ihn (Kommandos in
-  [slice-112](../open/slice-112-replay-schritt-hat-keinen-referenten.md) §1). Getragen wird der
+  [slice-112](../done/slice-112-replay-schritt-hat-keinen-referenten.md) §1). Getragen wird der
   Schritt hier von den Sensoren, die [`harness/README.md`](../../../../harness/README.md)
   §Nicht-Gate-Verify ausdrücklich der **Wellen-Closure** zuweist — `make full-smoke` und
   `make mutate` neben `make gates` — plus den welle-eigenen Kriterien aus §3 der Plan-Datei. Diese
   Fassung wird gelebt, ist in **zwei** Anleitungen geschrieben und **eine davon wird emittiert** —
   und sie ist im Adaptions-Block nirgends deklariert. **Träger:**
-  [slice-112](../open/slice-112-replay-schritt-hat-keinen-referenten.md); der Text gehört dem
+  [slice-112](../done/slice-112-replay-schritt-hat-keinen-referenten.md); der Text gehört dem
   Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8,
   [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1), diese Closure
   liefert die Messung und den Termin.
@@ -305,7 +305,7 @@ Auflösung: [slice-113](../open/slice-113-co-001-ist-faellig.md) DoD (3) bindet 
 | Welle-eigenes Kriterium: Trennungs-Trigger scharf | Median **2,7 bis 2,8 ms** gegen **50 ms**; der schlechteste gesehene Median liegt um Faktor **13,9** darunter (`awk 'BEGIN{printf "%.3f\n", 50/3.6}'`) |
 | Carveout-Audit | §6 — **einer** von zwei Carveouts mit eingetretenem Trigger, Folge-Slice geschnitten; **keine** neuen aus dieser Welle |
 | Closure-Notiz mit Steering-Loop-Eintrag | diese Notiz, §4 |
-| **Replay-Lauf grün** (Modul 6 Schritt 1) | **Nicht erhoben — es gibt ihn hier nicht.** Gemessen über fünf Achsen (§4, Kommandos in [slice-112](../open/slice-112-replay-schritt-hat-keinen-referenten.md) §1). Getragen wird der Schritt von `make gates` · `make full-smoke` · `make mutate` plus den welle-eigenen Kriterien; deklariert ist diese Fassung nirgends, und genau das ist der Gegenstand von [slice-112](../open/slice-112-replay-schritt-hat-keinen-referenten.md) |
+| **Replay-Lauf grün** (Modul 6 Schritt 1) | **Nicht erhoben — es gibt ihn hier nicht.** Gemessen über fünf Achsen (§4, Kommandos in [slice-112](../done/slice-112-replay-schritt-hat-keinen-referenten.md) §1). Getragen wird der Schritt von `make gates` · `make full-smoke` · `make mutate` plus den welle-eigenen Kriterien; deklariert ist diese Fassung nirgends, und genau das ist der Gegenstand von [slice-112](../done/slice-112-replay-schritt-hat-keinen-referenten.md) |
 
 **Der erste `make gates`-Lauf dieser Closure war rot**, und das gehört genannt: `d-check` meldete
 **zwei** `codepath-missing`-Befunde. Der erste galt der Feldliste des **Zielrepos**, die in diesem <!-- d-check:ignore (Pfad im Zielrepo, nicht in diesem) -->
@@ -369,7 +369,7 @@ Setzung 1 und darum **nicht** in der Roadmap (Setzung 2):
 
 Aus **dieser Closure** kommen zwei:
 
-- [slice-112](../open/slice-112-replay-schritt-hat-keinen-referenten.md) — Modul 6 Schritt 1 nennt
+- [slice-112](../done/slice-112-replay-schritt-hat-keinen-referenten.md) — Modul 6 Schritt 1 nennt
   einen Sensor, den dieses Repo nicht hat; die gelebte Fassung bekommt ihren Ort. Der Adaptions-Text
   gehört dem Architect; der Slice liefert Messung und Termin.
 - [slice-113](../open/slice-113-co-001-ist-faellig.md) — der Auflösungs-Trigger von
@@ -381,6 +381,6 @@ adoptiert-aber-nicht-umgesetzt sind. Modul 15 war der erste gemessene Fall
 ([welle-09](../welle-09-modul-15-konformitaet.md), 2026-07-28), Modul 12 ist der zweite. Zwei
 Instanzen derselben Klasse sind in diesem Repo der Anlass, den Gegenstand zu benennen — sie sind
 **nicht** der Anlass, eine Inventur über fünfzehn weitere Module in eine Closure zu hängen. Der
-Befund steht in [slice-112](../open/slice-112-replay-schritt-hat-keinen-referenten.md) §1, und §6
+Befund steht in [slice-112](../done/slice-112-replay-schritt-hat-keinen-referenten.md) §1, und §6
 jenes Slice führt die Rückführung, falls sein Lauf sich in die Inventur ausdehnt; wer sie schneidet,
 schneidet sie mit eigener Abwägung.
