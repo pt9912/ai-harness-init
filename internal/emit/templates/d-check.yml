@@ -15,11 +15,15 @@ ids:
     # bekannt) — Muster setzen und aktivieren, sobald spec/lastenheft.md eigene
     # Kennungen fuehrt: {regex: '<PREFIX>-[A-Z]{2}-\d{2}', target: spec/lastenheft.md, link-policy: always}
 # codepaths: ein Pfad in Inline-Code, der mit einer der roots beginnt, muss im Repo
-# existieren (codepath-missing). Auch docs/reviews/** ist geprueft. Eine erst geplante
-# Datei traegt den Inline-Marker d-check:ignore mit Grund in derselben Zeile; ein Pfad
-# ausserhalb der roots bleibt ungeprueft.
+# existieren (codepath-missing). Ein Pfad mit vorangestelltem ./ oder ../ wird vom Ort
+# der Datei aus aufgeloest und ebenso geprueft. Eine erst geplante Datei traegt den
+# Inline-Marker d-check:ignore mit Grund in derselben Zeile. Still bleiben am Pin
+# v0.84.0: ein Pfad ohne root am Anfang (src/..., /docs/...), ein Glob unter einer root
+# und ein Pfad in einem umzaeunten Code-Block. exempt-paths nimmt die Review-Reports aus:
+# ein Pfad darin nennt den Stand seines Laufs, nicht den heutigen Baum.
 codepaths:
   roots: [spec, docs, harness]
+  exempt-paths: ["docs/reviews/**"]
 # reviews bleibt aus. Das Modul (hermetisch, kein git) haelt die Review-Zusagen der
 # Slice-Plaene unter done-dir gegen die Reports unter reviews-dir: eine Zusage ohne Report,
 # dessen Dateiname dieselbe Slice-Kennung traegt, meldet es als review-missing. done-dir ist

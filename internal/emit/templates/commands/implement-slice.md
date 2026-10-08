@@ -44,9 +44,9 @@ emittierten Durchsetzungsschicht):
   `docs-check` (`id-unlinked`). `codepaths` verlangt, dass Pfade in Inline-Code existieren: eine
   *geplante* Datei braucht einen Inline-`d-check:ignore`-Marker, eine *bewusst entfernte* gehört in
   `ignore-refs`. Spec verweist nie abwärts auf ADR/Slice; ein Verweis auf eine superseded ADR nur
-  via Inline-Code + `d-check:ignore`. `docs/reviews/**` (Zeitdokumente) ist allein von der
-  Referenz-Richtung (`matrix`) ausgenommen; Kennungen und Inline-Pfade prüft das Gate dort wie
-  überall.
+  via Inline-Code + `d-check:ignore`. `docs/reviews/**` (Zeitdokumente) ist von der
+  Referenz-Richtung (`matrix`) und von der Pfad-Existenz (`codepaths`) ausgenommen; Kennungen
+  prüft das Gate dort wie überall.
 - **Neue Artefakte per `cp` aus den vendored Templates** (`.harness/baseline/<tag>/templates/…`),
   dann ausfüllen — keine handgeschriebenen oder repo-gepflegten Template-Kopien.
 - **Commit via Message-Datei** (`git commit -F <datei>`): der Guard scannt den Command-String,

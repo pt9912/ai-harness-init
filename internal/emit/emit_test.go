@@ -14,7 +14,8 @@ import (
 // "mindestens zwei Module". Jedes neu aktivierte Modul ist im frischen Ziel gemessen gruen UND
 // faengt sein Gegenbeispiel (harness/tools/full-smoke.sh); dieser Test bindet nur die
 // LISTE, nicht das Verhalten (das braucht Docker und liegt in full-smoke). codepaths
-// ist aktiv, sein Block traegt genau die roots [spec, docs, harness]. Das Requirement-Muster
+// ist aktiv, sein Block traegt genau die roots [spec, docs, harness] und nimmt docs/reviews/**
+// per exempt-paths aus. Das Requirement-Muster
 // von ids bleibt auskommentiert: das Praefix gehoert dem Adopter und ist in einem
 // frischen Ziel nicht bekannt. Die
 // spec-straten-Klasse traegt order:/direction: no-downward: die Baseline-Vorlage fuehrt
@@ -37,8 +38,8 @@ func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 	// Datei bliebe bei link-policy: never auf dieser Zeile erfuellt.
 	var idsADR string
 	inIDs := false
-	if !strings.Contains(yml, "\ncodepaths:\n  roots: [spec, docs, harness]\n") {
-		t.Errorf("der Block codepaths: ist nicht aktiv oder traegt nicht genau roots: [spec, docs, harness]:\n%s", yml)
+	if !strings.Contains(yml, "\ncodepaths:\n  roots: [spec, docs, harness]\n  exempt-paths: [\"docs/reviews/**\"]\n") {
+		t.Errorf("der Block codepaths: ist nicht aktiv oder traegt nicht genau roots: [spec, docs, harness] und exempt-paths: [\"docs/reviews/**\"]:\n%s", yml)
 	}
 	for _, line := range strings.Split(yml, "\n") {
 		if line != "" && line[0] != ' ' && line[0] != '#' {
