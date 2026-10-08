@@ -283,7 +283,7 @@ Lifecycle-Invariante des Moduls `planning` (*Ruhe-Marker genau dann, wenn kein S
 liegt*) — sie sieht **Verzeichnis gegen Überschrift**, nicht einen veralteten Prosa-Satz; die
 Drift, die `de1e4bc` zog, lag in einem Satz, den sein eigener Nachsatz bereits widerlegte, und
 sein §1 misst für denselben Baum-Stand `0 Befund(e)`.
-[slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) trägt die Regel *„keiner
+[slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) trägt die Regel *„keiner
 bleibt genannt"*, aber über eine **abgeschlossene Liste von zwölf** Posten, deren Quelle eine
 Closure-Notiz und deren Ziel ein Norm-Artefakt ist; hier ist die Quelle eine Commit-Message und
 das Ziel ein Plan-Artefakt. Die Liste zu erweitern hieße, eine DoD zu bewegen, die auf ihrer

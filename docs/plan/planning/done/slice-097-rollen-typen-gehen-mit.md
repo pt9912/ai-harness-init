@@ -351,12 +351,12 @@ Begründung, die daneben steht.
 
 **Warum eine Regel und kein Sensor.** Ob eine Begründung *zutrifft*, ist ein Urteil über Prosa, kein
 Muster; ein Wächter darüber bräuchte zuerst ein Kriterium — dieselbe Absage, die
-[slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) §1 ihrem Weg (C) erteilt. Was
+[slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) §1 ihrem Weg (C) erteilt. Was
 mechanisch bleibt, ist der **Zeitpunkt**: die Meldung ist genau dann lesbar, wenn das Gegenbeispiel
 läuft, und dieser Moment ist in §3.6 bereits vorgeschrieben. Die Schärfung kostet also keinen
 zusätzlichen Lauf, sondern einen zusätzlichen Blick in den, den es schon gibt.
 
-**Träger: [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) — als sechster
+**Träger: [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) — als sechster
 Posten, ausdrücklich nicht *„der Architect"*.** Jener Slice ist genau für diese Klasse geschnitten
 und trägt seinen Termin selbst; sein §3 verlangt, dass ein weiterer Posten **vor** der ersten
 Entscheidung aufgenommen wird und dass dabei steht, woran er erkannt ist. Erkannt ist er an drei
@@ -380,7 +380,7 @@ seiner **Reichweite**, seinem **Gegenstand** und der **Richtung** seines Fehlers
 | Der Slice legt den **dritten** Produktions-Fundort der Sechser-Namensliste an: `grep -rn 'planner.*architect.*implementer' --include='*.go' --include='*.sh' . \| grep -v '_test.go' \| wc -l` → **3** | **[slice-104](../done/slice-104-rollen-namen-haben-eine-quelle.md)** — er schließt die Kopplung, die [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 3 *„benannt, nicht geschlossen"* lässt |
 | Der Klassen-Kommentar in [`internal/emit/agents_test.go`](../../../../internal/emit/agents_test.go) beziffert die Emissions-Menge unter `docs/plan/` mit *zwei* (gemessen **6**), und das `richtung`-Feld derselben Klasse ist breiter als sein Muster | **[slice-104](../done/slice-104-rollen-namen-haben-eine-quelle.md)** — beide liegen in der Datei, deren Wächter er ohnehin auf eine Quelle zieht; zwei Zeilen, kein eigener Schnitt |
 | `emit.AgentFile()` ist exportiert und hat **null** Aufrufer (`grep -rn 'AgentFile' --include=*.go . \| wc -l` → **1**, die Definition); der Doc-Kommentar sagt *„(fuer Tests/Inspektion)"* | **[slice-104](../done/slice-104-rollen-namen-haben-eine-quelle.md)** — als **§3-Zelle**, nicht als §6-Aufzählung: sein Bestands-Nachweis braucht genau diesen Zugriff, also bekommt die Funktion einen Aufrufer oder sie fällt. Ein Posten ohne Ort in der Plan-Tabelle ist die Form, die dieses Repo als wirkungslos gemessen hat |
-| Der Text einer Fehlschlag-Meldung ist Teil des Wächters und wird nur im Rot gelesen | **[slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md)** — der Steering-Loop-Eintrag oben, dort als sechster Posten eingetragen |
+| Der Text einer Fehlschlag-Meldung ist Teil des Wächters und wird nur im Rot gelesen | **[slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md)** — der Steering-Loop-Eintrag oben, dort als sechster Posten eingetragen |
 | `make mutate` kostet **1166** Sekunden für **157** Fälle (Messung der [Verifikation](../../../reviews/2026-08-25-slice-097-verify.md) §1.1, **fremdbelegt**), und sein Grün-Vorlauf wirft sein Protokoll bei Erfolg weg — ein grüner Lauf belegt darum **nicht**, dass die Zähne dieses Slice in `full-smoke` gelaufen sind | **[slice-105](../done/slice-105-mutate-messen-dann-teilen.md)** — er misst zuerst je Fall und je Sensor und entscheidet dann über die Teilung; die Protokoll-Frage hängt an derselben Mechanik |
 | Die Hülle über `writeSkipIfPresent` ist zweimal geschrieben (Delta 1) | **kein Träger, und das ist entschieden** — ein Refactor ohne Lieferwert; der Zustand ist in zwei `grep` sichtbar und in dieser Notiz benannt |
 | Ob das Agenten-Werkzeug die Typ-Dateien im Ziel lädt | **kein Träger, und das ist entschieden** — netzlos nicht führbar, und die Grenze steht in [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) §Benannte Grenze wie in allen sechs emittierten Dateien |

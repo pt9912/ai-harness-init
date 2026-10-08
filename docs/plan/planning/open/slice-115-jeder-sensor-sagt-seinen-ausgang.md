@@ -195,7 +195,7 @@ für Plan-Texte).
       **Kein Kommando färbt diesen Punkt rot, und das ist der Befund, keine Vertagung.** Ob eine
       Grenze zutrifft, ist ein Urteil über Prosa; ein Wächter über der **Anwesenheit** des Satzes
       belegt die Zeichenkette und nicht ihre Wahrheit — dieselbe Absage, die der sechste Posten von
-      [slice-101](slice-101-norm-postens-bekommen-einen-termin.md) für seine Klasse ausspricht.
+      [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) für seine Klasse ausspricht.
       Diese Hälfte trägt das Review.
 
 Standard-Punkte der Vorlage (nicht slice-eigen): `make gates` grün · `make mutate` ohne Befund ·

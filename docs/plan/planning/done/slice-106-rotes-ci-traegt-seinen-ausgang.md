@@ -274,7 +274,7 @@ für Plan-Texte).
       (Ursache benannt, mit Sensor oder Grenze) · **als Umgebungs-Eigenschaft ausgewiesen** (mit dem
       Beleg, nicht der Plausibilität) · **abgelehnt** mit Grund · **aufgeschoben** mit einem
       Auflösungs-Trigger, der ein beobachtbares Ereignis nennt. Dieselbe Ausgangs-Menge, die
-      [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) für offene Norm-Postens setzt.
+      [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) für offene Norm-Postens setzt.
       **Kein Kommando färbt die Zuordnung rot, und das ist der Befund, keine Vertagung.** Welcher
       Klasse ein Fehlschlag angehört, ist ein Urteil über Protokolltext. Was **mechanisch** ist, ist
       der **Nenner**: liefert
@@ -635,7 +635,7 @@ Urteil über den Prüfbereich und kein Muster.
 ein **drittes** Rot gefahren, das niemand verlangt hatte — den zweiten Meldungs-Zweig seiner
 Gleichung, mit der Begründung, eine nie im Rot gelesene Fehlermeldung sei genau die Klasse dieses
 Slice. Das ist die Anwendung des **sechsten** Postens von
-[slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) auf einen frisch geschriebenen
+[slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) auf einen frisch geschriebenen
 Wächter und damit ein **Beleg**, dass jener Posten trägt — kein neuer Lerneintrag, sondern das
 Gegenteil eines fehlenden Trägers. Der Selbsttreffer dagegen hat in der Postens-Liste **keine**
 Achse: die Postens zwei bis acht handeln von den Trägern eines Rot-Belegs, seiner Reichweite, seinem
@@ -646,7 +646,7 @@ Gegenstand, der Richtung seines Fehlers, seiner Ausgabe, der Anweisung im Quellt
 Setzung 1 selbst, die Zahl und Kommando in dasselbe Artefakt zwingt. Eine Regel, die ihre eigene
 Fehlerquelle erzeugt, gehört um deren Behandlung ergänzt.
 
-**Träger: [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) — als zehnter Posten,
+**Träger: [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) — als zehnter Posten,
 ausdrücklich nicht *„der Architect"*.** Jener Slice ist für diese Klasse geschnitten, trägt seinen
 Termin selbst und verlangt in §3, dass ein weiterer Posten **vor** der ersten Entscheidung
 aufgenommen wird und dabei steht, woran er erkannt ist. Er ist dort eingetragen; **der Regeltext
@@ -654,7 +654,7 @@ wird hier nicht vorentschieden**, er entsteht im Architect-Lauf
 ([`AGENTS.md`](../../../../AGENTS.md) §3.8,
 [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1).
 
-**Der neunte Posten von [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) ist
+**Der neunte Posten von [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) ist
 geschärft, nicht verdoppelt.** Er verlangte bisher, die Plan-Tabelle §3 nenne auch die *bestehende
 gemeinsame Stelle*, die ein neuer Wächter bewegen muss. Delta (2) oben ist die **vierte** Instanz
 derselben Symptom-Klasse und die **erste**, die der Posten in seiner bisherigen Fassung nicht fängt:
@@ -672,8 +672,8 @@ wäre eine Zweitfassung, die driftet; geschärft ist deshalb der vorhandene.
 | Der Abdeckungs-Wächter prüft, **dass** eingeordnet wird, nicht **welche** Ausgabe; eine falsch verdrahtete Zeile lässt drei Sensoren grün (oben gemessen) | **[slice-115](../open/slice-115-jeder-sensor-sagt-seinen-ausgang.md)** — die Prüfschleife liegt fertig in der [Verifikation](../../../reviews/2026-08-27-slice-106-verify.md) §3.3 |
 | `make docs-check` sieht einen Verweis auf einen gitignorierten Pfad lokal nicht, sobald ein früherer Lauf das Ziel angelegt hat; drei der elf roten Läufe gehen darauf zurück | **[slice-116](../open/slice-116-doku-gate-urteilt-ueber-den-getrackten-bestand.md)** |
 | Die Menge des Abdeckungs-Kriteriums altert an einer Stelle, die das Kriterium nicht sieht: eine künftige **bare** `make`-Zeile unter `set -e` läge außerhalb von A, forderte ein Bild an und ließe die Gleichung unverändert wahr | **[slice-115](../open/slice-115-jeder-sensor-sagt-seinen-ausgang.md)** — als §3-Zelle des Wächters, der ohnehin angefasst wird; heute ist die Lücke leer, **fremdbelegt** über alle `make `-Zeilen des Sensors ([Verifikation](../../../reviews/2026-08-27-slice-106-verify.md) §3.3: keine ausführende ohne eigenen Exit-Code) |
-| Ein Kommando, das seine eigene Erwähnung mitzählt | **[slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md)** — der Steering-Loop-Eintrag oben, dort als zehnter Posten eingetragen |
-| Die Plan-Tabelle §3 nennt auch die Dateien, die der Lauf **neu anlegt** | **[slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md)** — der neunte Posten, dort geschärft |
+| Ein Kommando, das seine eigene Erwähnung mitzählt | **[slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md)** — der Steering-Loop-Eintrag oben, dort als zehnter Posten eingetragen |
+| Die Plan-Tabelle §3 nennt auch die Dateien, die der Lauf **neu anlegt** | **[slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md)** — der neunte Posten, dort geschärft |
 | Die Vollständigkeit der Ausgangs-Liste hat kein Kommando, das sie rot färbt — der Nenner braucht Netz und ein Retentions-Fenster | **kein Träger, und das ist entschieden** — §2 sagt es selbst, und ein Gate über einer fremden API wäre eines, das ohne Befund rot wird ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) |
 | Ob ein Adopter dieselbe Unterscheidung bekommt | **kein Träger, und das ist entschieden** — der Sensor geht in kein Zielrepo (Kopfzeile *Ebene*); was die emittierte Ebene bekommt, entscheidet der Slice, der die Tool-Ebene entscheidet |
 
@@ -697,7 +697,7 @@ diese Notiz — beide fassen `harness/tools/mutate.sh` an, und das ist eine Beob
 Reihenfolge.
 
 **Gates.** Eigener Lauf über dem Baum, den diese Closure hinterlässt — Notiz, Listen-Ergänzung, die
-Schärfung in [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) und die zwei
+Schärfung in [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) und die zwei
 geschnittenen Slices eingerechnet: `make gates` **EXIT=0**,
 `baseline-verify: v3.5.2 OK — 42 Dateien`, `d-check: 411 Datei(en) geprüft, 0 Befund(e)`,
 golangci-lint `0 issues.`, bats `grep -c '^ok '` → **162** und `grep -c '^not ok'` → **0**,

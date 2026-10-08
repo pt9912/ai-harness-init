@@ -337,7 +337,7 @@ Sensor, sondern eine Entscheidung über einen Geltungsbereich — und die gehör
 ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
 
 **Der Träger, und er ist nicht diese Notiz.**
-[slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) existiert genau dafür: jeder
+[slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) existiert genau dafür: jeder
 Posten an ein Norm-Artefakt bekommt einen Ausgang. Er trägt die Frage seit diesem Lauf als
 **zwölften Posten** mit eigener Achse — *Geltungsbereich* statt Setzung —, samt der Messung, die
 die Sensor-Frage entscheidet. Der Eintrag steht damit dort, wo ihn der nächste Lauf aufschlägt,
@@ -358,11 +358,11 @@ statt in einem Zeitdokument.
 | *„sechs … FUENF"* ohne Kommando | Review LOW-3, Verifikation V-5 | **Architect-Übergabe** unten — beide Zahlen wandern mit dem **Tool**, nicht mit dem Repo; ihr Ort ist der Auflösungs-Trigger, der den Re-Pin-Abgleich verlangt, und der nennt sie heute nicht |
 | *„18./19./20."* aus dem Repo nicht nachprüfbar | Verifikation V-5 | **Architect-Übergabe** unten, dieselbe Klasse: eine Fremdquellen-Zahl, deren Herkunft im Kopf nicht steht |
 | Die Existenz-Hälfte *„es gibt sie"* hat im Kopf keinen Sensor | Verifikation V-6 | **abgelehnt, mit Grund** — ihr Beleg ist eine wandernde Zahl (heute **94** von **278**: die Summe oben, davon `… \| grep -c '<!--[^>]*d-check:ignore'` → **184** in Kommentar-Form), und genau solche hat DoD (2) aus dem Kopf entfernt. Sie lebt in [`MR-027`](../../../../harness/conventions.md#mr-027--d-check-pin-v0650-ignore-marker-in-zwei-achsen-verengt), auf den Zeile 2 zeigt |
-| Das Beleg-Kommando einer Commit-Message liefert am Nach-Baum `2` statt `1` | Review INFO-1 | **bestehender Posten** — [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) führt die Klasse *„ein Kommando, dessen Prüfbereich den Text enthält, der es zitiert"* bereits; dieser Lauf ist eine weitere Instanz und braucht keinen Schnitt |
+| Das Beleg-Kommando einer Commit-Message liefert am Nach-Baum `2` statt `1` | Review INFO-1 | **bestehender Posten** — [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) führt die Klasse *„ein Kommando, dessen Prüfbereich den Text enthält, der es zitiert"* bereits; dieser Lauf ist eine weitere Instanz und braucht keinen Schnitt |
 | Tag und Digest hält nichts aneinander | Review INFO-2 | **Architect-Übergabe** unten — gemessen: kein Test hält die zwei Zeichenketten gegeneinander, und das gelieferte Modul dafür ist nicht adoptiert |
 | Die Sonden-Beschreibung nennt einen der zwei Gegenstände | Review INFO-3 | **teilweise erledigt** in `07a1de9` (`grep -c 'unverlinkter Kennung' d-check.mk` → **1**); der Rest liegt in Zeilen, die dieser Slice nicht angefasst hat — [`AGENTS.md`](../../../../AGENTS.md) §3.7 Cutoff, kein Arbeitsauftrag |
 | `citations` hat nirgends einen Lauf, der Satz sagt es nicht | Review INFO-4 | **abgelehnt, mit Grund** — der Satz definiert *„nicht aktiviert"* und zählt die Läufe auf, die es gibt; er sagt für kein Modul einen Lauf zu. Die Entscheidung selbst trägt [`MR-011`](../../../../harness/conventions.md#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines) |
-| Die Zahl-Beleg-Setzung wird auf ein Artefakt außerhalb ihres Geltungsbereichs angewendet | Review INFO-5 | **zwölfter Posten in [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md)** — der Steering-Loop-Eintrag oben |
+| Die Zahl-Beleg-Setzung wird auf ein Artefakt außerhalb ihres Geltungsbereichs angewendet | Review INFO-5 | **zwölfter Posten in [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md)** — der Steering-Loop-Eintrag oben |
 
 ### Übergabe an den Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8 — drei Posten, keiner hier geschrieben)
 
@@ -375,7 +375,7 @@ statt in einem Zeitdokument.
    folgt, ein Zeiger aus [`AGENTS.md`](../../../../AGENTS.md) §3.6 heraus oder eine bewusst
    gezogene Grenze, ist eine Entscheidung am Text. **Die Sensor-Vorfrage ist hier beantwortet**
    (zwei Muster, **3** bzw. **1** Treffer, **0** Instanzen); der Termin liegt bei
-   [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md).
+   [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md).
 2. **Der Auflösungs-Trigger des Fragment-Eintrags nennt zwei Zahlen im Kopf nicht.**
    [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)
    Setzung 2 bindet an den Re-Pin die **Target-Aufzählung**; die Kopf-Zeile *„von den sechs

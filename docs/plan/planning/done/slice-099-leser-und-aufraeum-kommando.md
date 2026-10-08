@@ -213,7 +213,7 @@ Setzung 2).
 4. **`make mutate` grün mit den neuen Fällen** — **fremdbelegt** (L1: `mutate: 179 ok, 0
    Befund(e)`, **1326,26 s**). Der gemessene Bestand **ist** der geschlossene:
    `ls test/mutations/*.sh | wc -l` → **179**, identisch mit der Zahl des Laufs. Das ist der achte
-   Posten von [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md), hier zum ersten
+   Posten von [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md), hier zum ersten
    Mal ausdrücklich geprüft statt unterstellt.
 5. **Review (Modul 10).** [Bericht](../../../reviews/2026-08-26-slice-099-review.md):
    `grep -c '^### F-' docs/reviews/2026-08-26-slice-099-review.md` → **6** (1 HIGH, 3 MEDIUM,
@@ -245,7 +245,7 @@ Setzung 2).
   `AGENTS.md`-Update / Gate"*
   (`grep -n 'dreimaligem gleichem Finding' .harness/baseline/v3.5.2/regelwerk/modul-10-review-harness.md`).
   **Sie hat deshalb ab hier einen Träger und wird nicht zum dritten Mal einzeln notiert** —
-  [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md), **neunter Posten**, mit dem
+  [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md), **neunter Posten**, mit dem
   gemessenen Grund, warum ein Sensor sie nicht trennt (die §3-Zellen nennen Komponenten, nicht
   Dateien: von den fünf Zeilen ist genau **eine** ein Dateipfad, ein Präfix-Vergleich wäre für alle
   fünf ungenannten Dateien grün).
@@ -361,7 +361,7 @@ vorliegen können (V-1); und über einem Bestand mit **null** Agent-Läufen gibt
 Mechanik des Agenten-Werkzeugs die Schuld, obwohl schlicht kein Subagent gelaufen ist (V-3).
 
 **Warum das eine Weitung ist und nicht die Wiederholung von
-[slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) Posten 6.** Jener Posten
+[slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) Posten 6.** Jener Posten
 setzt voraus, der Begründungstext werde *„ausschließlich im Rot"* ausgegeben — daraus folgt seine
 Vorschrift, beim Rot-Sehen die Meldung zu lesen. **Gemessen trifft die Prämisse auf ein Drittel
 der Fälle zu:** V-2 liegt im Rot, V-1 und V-3 liegen im **grünen** Pfad. Es sind Sätze, die das
@@ -395,7 +395,7 @@ ist, nennt den Zustand mit, über dem sein Rot erhoben wird — und das ist Form
 [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1). Diese Notiz
 liefert die Formulierung, den Anlass und die Messung.
 
-**Träger: [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md), Posten 6 —
+**Träger: [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md), Posten 6 —
 nachgezogen, nicht als zehnter Posten danebengestellt.** Ein zweiter Posten mit derselben Regel und
 einer weiteren Prämisse ergäbe zwei Postens, die einander den Geltungsbereich streitig machen;
 was sich geändert hat, ist die **Reichweite** eines vorhandenen, nicht die Zahl. Die Fassung dort
@@ -403,7 +403,7 @@ ist entsprechend geweitet, und die Messung steht daneben.
 
 **Offen, mit Träger.** Jeder Befund aus Review und Verifikation trägt einen Ausgang — eigener
 Schnitt, vorhandener Träger oder Ablehnung mit Grund. *„Genannt"* ist seit
-[slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) keiner.
+[slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) keiner.
 
 | Posten | Träger |
 |---|---|
@@ -415,7 +415,7 @@ Schnitt, vorhandener Träger oder Ablehnung mit Grund. *„Genannt"* ist seit
 | **V-7** — *„ein erneuter Lauf des Werkzeugs legt ihn wieder ab"* ist gemessen wahr und hat einen Anwesenheits-, aber keinen Wahrheits-Wächter und keinen eigenen Fall | **[slice-110](../done/slice-110-erfassungs-waechter-fall-meldung-grenze.md)**, DoD (2) — mit **beiden** zulässigen Ausgängen im Plan: Fall **oder** ausgesprochene Grenze. Der Wahrheits-Zahn kostet einen zweiten Init-Lauf im `full-smoke`, und genau diese Klasse misst [slice-105](../done/slice-105-mutate-messen-dann-teilen.md) als Klippe |
 | **F-3** — der Gate-Tabellen-Wächter liest für zwei seiner fünf Dokument-Quellen die Fixture `courseSet()` statt des realen vendored Satzes | **[slice-110](../done/slice-110-erfassungs-waechter-fall-meldung-grenze.md)**, DoD (3) — als **benannte Grenze**, nicht als Schließung. Die Ursache ist der Docker-Build-Kontext (`.dockerignore` schließt `.harness/` aus, seit slice-022b) und damit eine vorbestehende Eigenschaft der gesamten Emit-Test-Infrastruktur; sie hier zu schließen wäre ein anderer Schnitt, und §4 jenes Slice führt genau diese Rückführung. **Heute nicht realisiert** (V-12: `grep -rhoE 'make [a-z][a-z0-9-]*' .harness/baseline/*/templates/ \| LC_ALL=C sort -u` → **11** Nennungen, keine davon `span-report`/`span-clean`) |
 | **V-6** — das konditionale Arch-Gate-Fragment liegt in keiner der beiden Sensor-Mengen, und die benannte Grenze nennt es nicht | **[slice-110](../done/slice-110-erfassungs-waechter-fall-meldung-grenze.md)**, dieselbe DoD (3): dieselbe Frage (was sieht der Wächter nicht?) an derselben Datei |
-| **F-5 / V-8** — fünf Dateien außerhalb der §3-Tabelle, dritte Beobachtung dieser Klasse in Folge | **[slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md)** — als **neunter Posten**, dort eingetragen, mit dem gemessenen Grund gegen einen Sensor. **Kein eigener Schnitt:** sein Ergebnis wäre Norm-Text über die Form eines Plans, und genau dafür existiert jener Durchgang. Zusätzlich trägt [slice-110](../done/slice-110-erfassungs-waechter-fall-meldung-grenze.md) §3 die Zeile für die bewegte gemeinsame Stelle bereits — die erste Anwendung des Postens, bevor er entschieden ist |
+| **F-5 / V-8** — fünf Dateien außerhalb der §3-Tabelle, dritte Beobachtung dieser Klasse in Folge | **[slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md)** — als **neunter Posten**, dort eingetragen, mit dem gemessenen Grund gegen einen Sensor. **Kein eigener Schnitt:** sein Ergebnis wäre Norm-Text über die Form eines Plans, und genau dafür existiert jener Durchgang. Zusätzlich trägt [slice-110](../done/slice-110-erfassungs-waechter-fall-meldung-grenze.md) §3 die Zeile für die bewegte gemeinsame Stelle bereits — die erste Anwendung des Postens, bevor er entschieden ist |
 | **V-10** — die Ausgabe unseres eigenen `span-report` hat sich geändert, [`AGENTS.md`](../../../../AGENTS.md) §4 und [`harness/README.md`](../../../../harness/README.md) sind unberührt | **[slice-111](../next/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md)** — neu geschnitten, **und die Frage ist entschieden: ja, ein öffentlicher Vertrag ist berührt — aber ein anderer als der gefragte.** Begründung unten |
 | **V-13** — [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 4 macht die Aufnahme des neuen Init-invarianten Fragments in den `targets:`-Satz fällig, sobald der Block existiert | **[welle-09](../welle-09-modul-15-konformitaet.md), Block 4 → `slice-063`** — vorhandener Träger, dort nachgezogen. **Keine Verletzung heute:** `grep -c 'targets' .d-check.yml` und `grep -c 'targets' internal/emit/templates/d-check.yml` → je **0**; es gibt nichts, dem etwas hinzuzufügen wäre. Die Welle hatte die Schuld in §5 benannt; neu ist, dass sie **scharf** ist |
 | **V-9** — weder der Grund-Satz des Lesers noch die drei Träger-Sätze des Fragments haben einen Sensor in `make gates` | **kein Träger, und das ist entschieden** — die Einlösung ist nicht geschwächt; Begründung unten |

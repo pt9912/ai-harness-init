@@ -519,7 +519,7 @@ als das Warten.
 **diagnostiziert** (Ursache benannt, mit Sensor oder Grenze) · **als Umgebungs-Eigenschaft
 ausgewiesen** (nicht der Baum, sondern der Runner; mit dem Beleg dafür) · **abgelehnt** mit Grund ·
 **aufgeschoben** mit einem Auflösungs-Trigger, der ein beobachtbares Ereignis nennt. Dieselbe
-Ausgangs-Menge, die [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) für offene Postens
+Ausgangs-Menge, die [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) für offene Postens
 setzt — und aus demselben Grund: *„genannt"* ist keiner davon.
 
 **Delta zum Abnahme-Kriterium (2026-08-26), ausgewiesen statt eingearbeitet.** Der Ausgang
@@ -716,7 +716,7 @@ gemessen wurde) und die aus ihr gezogenen Behauptungen nicht mehr.
 
 **Die offenen Befunde und ihr Ausgang — vier Klassen, keine „genannt".** Dieselbe Ausgangs-Menge,
 die §4 für den `full-smoke`-Befund gesetzt hat und die
-[slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) für Norm-Postens führt:
+[slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) für Norm-Postens führt:
 **diagnostiziert** · **als Umgebungs-Eigenschaft ausgewiesen** · **abgelehnt** mit Grund ·
 **aufgeschoben** mit einem Auflösungs-Trigger, der ein beobachtbares Ereignis nennt.
 
@@ -827,7 +827,7 @@ den Behälter oder die Menge misst, ist ein Urteil über den Zusammenhang von Z�
 ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 1 verlangt für eine Mengen-Aussage denselben Beleg wie für eine Zahl).
 
-**Träger: [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) — als elfter Posten,
+**Träger: [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) — als elfter Posten,
 ausdrücklich nicht *„der Architect"*.** Jener Slice ist für genau diese Klasse geschnitten, trägt
 seinen Termin selbst und verlangt in §3, dass ein weiterer Posten **vor** der ersten Entscheidung
 aufgenommen wird und dabei steht, woran er erkannt ist. Er ist dort eingetragen, mit seiner Achse
@@ -836,11 +836,11 @@ Architect-Lauf ([`AGENTS.md`](../../../../AGENTS.md) §3.8,
 [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1). **Warum das kein
 Feedforward-Posten ohne Träger ist:** eine Lehre, die nur in einer `done/`-Datei steht, liest kein
 Lauf wieder — der Lifecycle bewegt Slices, nicht Nennungen, und
-[slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) ist der Slice, der diese
+[slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) ist der Slice, der diese
 Bewegung herstellt.
 
 **Übergabe an den Architect — eine, und sie ist keine Norm-Änderung dieser Rolle.** Der elfte
-Posten in [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) ist der **Antrag**;
+Posten in [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) ist der **Antrag**;
 ob er in [`AGENTS.md`](../../../../AGENTS.md) §3.6 wandert, anders gefasst wird oder mit Grund
 fällt, entscheidet der Architect am Text. Diese Closure hat weder §3 von
 [`AGENTS.md`](../../../../AGENTS.md) noch den Adaptions-Block in
@@ -863,7 +863,7 @@ Setzung 1 sind in seiner Kopfzeile einzeln beantwortet; die Roadmap bekommt dahe
 
 **Gates.** Eigener Lauf über dem Baum, den diese Closure hinterlässt — Notiz, Befund und
 Messprotokoll in §1, der elfte Posten in
-[slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md),
+[slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md),
 [slice-117](../done/slice-117-lauf-ohne-ende-faerbt-rot.md),
 [`CO-003`](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) und der Carveout-Index eingerechnet:
 `make gates` **EXIT=0**, `baseline-verify: v3.5.2 OK — 42 Dateien`,

@@ -170,7 +170,7 @@ sechs neuen Vorlagen nur ein `make`-Ziel behaupten, das die Init-Phase wirklich 
 (`grep -ho 'make [a-z-]*' internal/emit/templates/agents/*.md | sort -u` → `make gates`) — ein
 künftiger Anspruch wäre durch genau den Wächter nicht gefangen worden, der dafür existiert.
 **Kein Gate hat es gemeldet:** `make comment-claims` nimmt `_test[.]go` dauerhaft aus
-([slice-070](slice-070-comment-claims-pruefbereich.md) §1, dritte Verengung), und `make mutate`
+([slice-070](../open/slice-070-comment-claims-pruefbereich.md) §1, dritte Verengung), und `make mutate`
 prüft, ob ein gelisteter Wächter fällt, nie ob seine gedeckte Menge noch stimmt.
 
 **Warum die Fläche hier eine Untergrenze ohne Muster ist.** Die Eigenschaft — *ein Kommentar, der

@@ -133,8 +133,8 @@ den Slice-Notizen; hier steht, was sie **als Reihe** zeigen, und der eigene Eint
   Sichtbarkeit eines Textes, den ein grüner Lauf nie liest.** Das ist kein Zufall dieser Welle: sie
   hat zum ersten Mal Text **in ein fremdes Repo** geschrieben, und dort liest ihn niemand von uns.
 - **Der Ausgang der sechs ist gebündelt, nicht verstreut.** Fünf der neun Postens in
-  [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) stammen aus dieser Welle
-  (`grep -coE '^\*\*Und ein (fünfter|sechster|siebter|achter|neunter)' docs/plan/planning/open/slice-101-norm-postens-bekommen-einen-termin.md`
+  [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) stammen aus dieser Welle
+  (`grep -coE '^\*\*Und ein (fünfter|sechster|siebter|achter|neunter)' docs/plan/planning/done/slice-101-norm-postens-bekommen-einen-termin.md`
   → **5**). Damit hat diese Welle die Lehre aus
   [„Lehre braucht Träger"](slice-100-vorlauf-nennt-den-grund.md) selbst angewandt: eine Regel ohne
   Träger ist ein Satz, den der Prozess nie wieder liest.
@@ -228,7 +228,7 @@ einem bestehenden erzeugt. Was offen bleibt, in Klassen statt als Liste:
   [slice-106](../done/slice-106-rotes-ci-traegt-seinen-ausgang.md) für das Rot der CI, das heute
   keinen Ausgang trägt.
 - **Fünf Norm-Postens ohne Termin, aus dieser Welle.** Sie liegen in
-  [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) (§4). Sie sind **nicht**
+  [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) (§4). Sie sind **nicht**
   geliefert; geliefert ist, dass sie einen Ort haben, an dem der nächste Lauf sie findet.
 - **Und eine Schuld an [welle-09](../welle-09-modul-15-konformitaet.md), die der Plan vorab benannt
   hat.** Diese Welle legt ein Init-invariantes Gate-Fragment und neue emittierte `make`-Ziele ab;
@@ -355,7 +355,7 @@ Setzung 1 und darum **nicht** in der Roadmap (Setzung 2):
 
 | Slice | Gegenstand |
 |---|---|
-| [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) | die offenen Norm-Postens bekommen einen Termin — fünf der neun kommen aus dieser Welle |
+| [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) | die offenen Norm-Postens bekommen einen Termin — fünf der neun kommen aus dieser Welle |
 | [slice-102](../open/slice-102-messung-nennt-grenzen-und-anlass.md) | die Messung nennt ihre Grenzen und ihren Anlass |
 | [slice-103](../done/slice-103-traeger-waechter-decken-was-sie-sagen.md) | die Träger-Wächter decken, was sie sagen |
 | [slice-104](../done/slice-104-rollen-namen-haben-eine-quelle.md) | die Rollen-Namen haben eine Quelle statt vier Fundorte |

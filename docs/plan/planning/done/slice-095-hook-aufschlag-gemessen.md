@@ -329,7 +329,7 @@ seinem **Gegenstand** (der Eingriff bewegt etwas anderes als die Zusage). Dieser
 vom Fall, in dem es **kein Rot gibt und mit Grund keines geben soll**, und fügt der Reihe eine
 dritte Achse hinzu: Träger · Reichweite · Gegenstand — und jetzt **Richtung**.
 
-**Träger: [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md), als fünfter
+**Träger: [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md), als fünfter
 Posten — ausdrücklich nicht *„der Architect"*.** Diese Form ist an diesem Repo gemessen kein
 Träger: wörtlich vergeben in **3** Closure-Notizen unter `done/`
 (`git grep -l '^\*\*Träger: der Architect' -- 'docs/plan/planning/done/*.md' | wc -l`), bewegtes
@@ -337,7 +337,7 @@ Artefakt keines. Die Zuständigkeit ist nicht die Lücke — sie steht in
 [`AGENTS.md`](../../../../AGENTS.md) §3.8 und
 [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1 —, der **Termin**
 ist es, und den gibt in diesem Repo ein Schnitt.
-[slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md) ist genau dafür geschnitten,
+[slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) ist genau dafür geschnitten,
 liegt in `open/` und hat seinen Durchgang noch nicht begonnen; sein §3 verlangt, dass die Liste
 **vor** der ersten Entscheidung erweitert wird und dabei steht, woran der weitere Posten erkannt
 wurde. Beides ist eingelöst: der Posten steht in **seiner** Datei, mit seiner Herkunft und seinem

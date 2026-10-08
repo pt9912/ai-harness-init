@@ -666,7 +666,7 @@ ist eine Verschärfung derselben Bauart wie *„keine Zusage ohne rot gesehenes 
 braucht darum kein ADR, aber einen Lauf der Rolle, die Hard Rules schreibt. **Gezählt, nicht
 verkörpert:** dieser Lauf hat keinen Norm-Text geschrieben; das Feld `liegt in` entfällt darum
 ersatzlos. Der Termin-Träger für Postens dieser Art ist
-[slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md).
+[slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md).
 
 **Eintrag 2 — geschärfte Regel: ein Zeiger auf einen Ort, den der Prozess selbst bewegt, gehört
 nicht in ein Artefakt, das unveränderlich wird.** Ein Pfad-Link auf einen **aktiven** Carveout
@@ -704,7 +704,7 @@ Ort wäre die Ziel-Form des Slice-Plans, und die ist Norm-Text; `liegt in` entf�
 
 **Die Wiederholung ist der eigentliche Befund an diesen drei Einträgen.** Zwei von dreien enden
 mit *gezählt, nicht verkörpert* und einem Zeiger auf
-[slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md), der seit zwölf Postens auf
+[slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md), der seit zwölf Postens auf
 seinen Lauf wartet — dieselbe Endung tragen die Closure-Notizen von
 [slice-130](../done/slice-130-emitter-entscheidet-jedes-neue-template.md),
 [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) und
@@ -724,7 +724,7 @@ den Träger zu priorisieren** — und Priorisieren ist ein eigener Zug, kein Clo
 | Festlegung 3 hat keinen Wächter | [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md) Folgepflicht 3 | **Folge-Slice** [slice-142](../open/slice-142-verweis-form-vor-dem-einfrieren-hat-einen-waechter.md) |
 | `CO-001` ist fällig, und seine Auflösung bricht zwei Verweise aus [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) | [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md) §Kontext, ausdrücklich **nicht** gedeckt | **Folge-Slice** [slice-141](../next/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) |
 | [`ADR-0017`](../../adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) und der `scan.ignore`-Kommentar tragen den gefallenen Werkzeug-Satz | §6, drittes Risiko | **Folge-Slice** [slice-143](../open/slice-143-datei-weiter-ausschluss-weicht-dem-referenz-ventil.md) |
-| Zwei Steering-Loop-Regeln ohne Norm-Text | §7, Einträge 1 und 3 | **gezählt, nicht verkörpert** — Adressat Architect bzw. Planner, Termin-Träger [slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md); dieser Lauf hat sie dort **nicht** eingetragen |
+| Zwei Steering-Loop-Regeln ohne Norm-Text | §7, Einträge 1 und 3 | **gezählt, nicht verkörpert** — Adressat Architect bzw. Planner, Termin-Träger [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md); dieser Lauf hat sie dort **nicht** eingetragen |
 
 ### Folge-Slices
 

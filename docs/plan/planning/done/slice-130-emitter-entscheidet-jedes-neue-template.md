@@ -617,7 +617,7 @@ Drift-Form einmal von Hand bauen, beide Lesarten darüber laufen lassen und die 
 *„die Zusage auf das einschränken, was der Code hält"* — dort steht heute, dass eine Zusage ihr
 Gegenbeispiel braucht, nicht, dass ein Wächter seinen **Fehlermodus** wählen kann. Damit gehört er
 dem **Architect** ([`AGENTS.md`](../../../../AGENTS.md) §3.8); den Termin trägt
-[slice-101](../open/slice-101-norm-postens-bekommen-einen-termin.md), der genau diese Klasse von
+[slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md), der genau diese Klasse von
 Postens führt. **Dieser Lauf hat ihn dort nicht eingetragen** — das Feld `liegt in` entfällt darum
 ersatzlos, der Eintrag ist **gezählt, nicht verkörpert**
 (`grundlagen-traceability.md` §Herkunfts-Anker).
