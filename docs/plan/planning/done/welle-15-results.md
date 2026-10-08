@@ -365,7 +365,7 @@ Das ist das Übergabe-Artefakt *Verifier → Planner* aus
   existiert:
   [`ADR-0025`](../../adr/0025-register-mit-gemischten-originalen.md) und
   [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md)
-  → [slice-152](../open/slice-152-adr-0029-acceptance-trigger.md),
+  → [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md),
   [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
   → [slice-171](../open/slice-171-adr-0031-acceptance-trigger.md).
   [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) trägt

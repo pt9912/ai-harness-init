@@ -201,7 +201,7 @@ Korrektur und diesen Lauf gefallen ist.
   (`for f in 0015 0016 0024 0025 0028 0029; do grep -c 'v[0-9]\+\.[0-9]\+\.[0-9]\+' docs/plan/adr/$f-*.md; done`
   → **20 · 25 · 7 · 9 · 17 · 1**; keine Erwartungswerte, sie wandern mit dem Text). Sie stützt
   sich in Festlegung 1 auf ADR-0028 und wird von
-  [`slice-152`](../plan/planning/open/slice-152-adr-0029-acceptance-trigger.md) zur Annahme
+  [`slice-152`](../plan/planning/done/slice-152-adr-0029-acceptance-trigger.md) zur Annahme
   geführt — derselbe Übergang, dieselbe Vorbedingung aus `ADR-0016` Festlegung 3 (a), und
   inzwischen derselbe Stand-Wechsel auf `v5.18.0`.
 - **verifizierbar:** ja — das `for`-Kommando oben.

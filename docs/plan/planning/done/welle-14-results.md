@@ -191,7 +191,7 @@ Verkörperung und keine Übergabe an den Architect. Zwei davon
   steht jetzt auf `Accepted` (Command-Artefakte gehören der ausführenden Rolle).
   Offen bleiben `.claude/agents/*.md`
   ([`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md),
-  `Proposed`; Träger [slice-152](../open/slice-152-adr-0029-acceptance-trigger.md))
+  `Proposed`; Träger [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md))
   und die **Spec-Straten** (Träger
   [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md)).
   Kein `liegt in`: die Zeile schließt erst, wenn auch diese zwei eine

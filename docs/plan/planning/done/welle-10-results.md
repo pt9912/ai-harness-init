@@ -143,7 +143,7 @@ Setzung 2). Jede der drei bekommt hier ihren Lese-Schritt:
   (`Proposed`; Annahme trägt [slice-145](../done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)),
   `.claude/agents/*.md` über
   [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md)
-  (`Proposed`; Annahme trägt [slice-152](../open/slice-152-adr-0029-acceptance-trigger.md));
+  (`Proposed`; Annahme trägt [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md));
   für die **Spec-Straten** benennt keine Quelle eine Rolle, Träger ist
   [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md).
   Kein `liegt in`: verkörpert ist noch nichts, beide ADRs stehen auf `Proposed`.
@@ -181,7 +181,7 @@ ein halluziniertes Gate.
 **Aus dieser Closure** — alle drei **wellenlos**, kein Mitglied einer Welle:
 
 - [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md) — für die zwei Spec-Straten benennt eine Quelle die schreibende Rolle (`open/`).
-- [slice-152](../open/slice-152-adr-0029-acceptance-trigger.md) — [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) durchläuft ihren Acceptance-Trigger (`open/`).
+- [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md) — [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) durchläuft ihren Acceptance-Trigger (`open/`).
 - [slice-153](../open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md) — die zwei Wellen-Anweisungssätze nennen die Abschnitte, die die Roadmap führt (`open/`).
 
 **Aus den Closures der Mitglieder, noch nicht geschlossen** (je Zeile der
@@ -252,7 +252,7 @@ Sensor-Läufe, je mit dem Baum, über dem sie liefen:
   Re-Evaluierungs-Trigger geprüft, **keiner feuert**; damit kein
   Architect-Verdikt und keine Folge-ADR. Zusätzlich sichtbar wurde, dass zwei
   `Proposed`-ADRs keinen Träger für ihren Acceptance-Trigger hatten — Ausgang
-  ist [slice-152](../open/slice-152-adr-0029-acceptance-trigger.md).
+  ist [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md).
 
 **Schritt 3 — die drei Paarungen**, geprüft **nach** dem `git mv`:
 

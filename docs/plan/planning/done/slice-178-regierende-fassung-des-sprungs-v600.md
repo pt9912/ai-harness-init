@@ -156,7 +156,7 @@ dasteht.
 - **Die ADR steht auf `Proposed` und bindet den Durchgang nicht.** Zwei Slice-Kennungen in `open/`
   tragen heute genau diese Restpflicht für ältere ADRs
   ([slice-171](../open/slice-171-adr-0031-acceptance-trigger.md),
-  [slice-152](../open/slice-152-adr-0029-acceptance-trigger.md)); eine dritte wäre ein Muster.
+  [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md)); eine dritte wäre ein Muster.
   Der Acceptance-Trigger gehört darum in die ADR selbst. — **Ausgang: weiter offen**, ins
   Register als `BEO-041` (1×, Beleg `slice-178`). Die Mitigation ist
   angewandt — der Trigger steht in der Datei, ein dritter Slice in `open/` entsteht nicht

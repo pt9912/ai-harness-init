@@ -156,7 +156,7 @@ Nachzug hinge an nichts. Vor jener Closure gäbe es diesen Slice aber nicht — 
   Beobachtung trägt, die mit der neuen Form nicht mehr stimmt. Dann trennt der Schnitt den
   Adaptions-Block vom ADR-Text.
 - `in-progress` → `open` (blockiert — Carveout?): wenn die ADR zwischen Schnitt und Ausführung auf
-  `Accepted` wechselt ([slice-152](slice-152-adr-0029-acceptance-trigger.md) ist ihr
+  `Accepted` wechselt ([slice-152](../done/slice-152-adr-0029-acceptance-trigger.md) ist ihr
   Acceptance-Trigger). Dann ist sie nach [`AGENTS.md`](../../../../AGENTS.md) §3.4 immutabel und
   ihre Vorkommen wandern in dieselbe dauerhafte Ausnahme wie die von
   [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) — der Slice
@@ -188,7 +188,7 @@ dasteht.
   an das Kommando und nicht an „alle". — **Ausgang:** offen bis zur Closure.
 - **[`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) wechselt vor
   der Ausführung auf `Accepted`** und wird damit immutabel. Der Fall ist nicht hypothetisch:
-  [slice-152](slice-152-adr-0029-acceptance-trigger.md) liegt in `open/` und trägt genau diesen
+  [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md) liegt in `open/` und trägt genau diesen
   Übergang. Er ist als Rückführung `in-progress → open` in §4 vorab benannt und kein Blocker,
   sondern eine Halbierung des Umfangs. — **Ausgang:** offen bis zur Closure.
 - **Ein Label-Nachzug im Adaptions-Block berührt einen Text, dessen Aussage an der alten Kennung

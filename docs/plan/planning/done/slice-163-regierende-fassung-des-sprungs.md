@@ -187,7 +187,7 @@ Backticks).
   [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) (Träger
   [slice-145](../done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)) und
   [ADR-0029](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) (Träger
-  [slice-152](../open/slice-152-adr-0029-acceptance-trigger.md)). Das Schneiden dieses Slice ist
+  [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md)). Das Schneiden dieses Slice ist
   Planner-Arbeit und steht hier als Übergabe, nicht als Folge-Slice-ID.
 - **Risiken aus §6:** zwei, je genau ein Ausgang. *„Die Entscheidung wird zur Formalie"* —
   **entfallen**, und zwar gemessen statt vermutet: die praktische Differenz ist nicht null (vier

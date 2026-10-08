@@ -324,7 +324,7 @@ dasteht.
 - **Die neue ADR steht auf `Proposed` und bindet keinen Durchgang.** Zwei Slice-Kennungen in
   `open/` tragen diese Restpflicht für ältere Entscheidungen
   ([slice-171](../open/slice-171-adr-0031-acceptance-trigger.md),
-  [slice-152](../open/slice-152-adr-0029-acceptance-trigger.md));
+  [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md));
   [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) hat ihren Übergang
   inzwischen vollzogen und ist seit dem 2026-09-10 `Accepted`. Der Acceptance-Trigger gehört darum
   in die neue ADR selbst. — **Ausgang: entfallen.**
@@ -336,7 +336,7 @@ dasteht.
   [`ADR-0040`](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 sie
   nach einem blockierenden Befund verlangt. Die Restpflicht, die
   [slice-171](../open/slice-171-adr-0031-acceptance-trigger.md) und
-  [slice-152](../open/slice-152-adr-0029-acceptance-trigger.md) für ältere Entscheidungen tragen,
+  [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md) für ältere Entscheidungen tragen,
   hat hier keinen Gegenstand.
 - **Der Beleg für die eigene Rückführung steht aus.** Der Lifecycle-Move dieses Slice nach
   `in-progress/` hat den Ruhe-Marker der Roadmap gegen den Inhalt von `in-progress/` gestellt

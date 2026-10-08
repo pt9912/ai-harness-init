@@ -72,7 +72,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       (*„ADR-Review-Runde abgeschlossen → bindend"*, `grundlagen-bootstrap.md`
       §Vier Trigger-Klassen). Index-Status nachgezogen. **Ein eigener
       Folge-Slice für die Annahme entsteht nicht** — genau das ist die Klasse,
-      die [slice-152](slice-152-adr-0029-acceptance-trigger.md) nachträglich
+      die [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md) nachträglich
       auffängt.
 - [ ] `make gates` grün.
 - [ ] Doku-Update: [`AGENTS.md`](../../../../AGENTS.md) §3.8 bekommt den Zeiger

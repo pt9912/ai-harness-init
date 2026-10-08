@@ -14,7 +14,7 @@ Closure-Bedingung, die mehr beobachtet als die DoD dieses Slice. Es gibt keine.
 (deren Festlegung 3 der Gegenstand anwendet),
 [ADR-0029](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md)
 (Nachbarfall; ihr Acceptance-Trigger liegt bei
-[slice-152](slice-152-adr-0029-acceptance-trigger.md) — derselbe Bauplan),
+[slice-152](../done/slice-152-adr-0029-acceptance-trigger.md) — derselbe Bauplan),
 Baseline-Regelwerk `grundlagen-bootstrap.md` §Vier Trigger-Klassen
 (Acceptance-Trigger), [`BEO-ALL/anweisungssatz-eigentum-ohne-quelle`](../observations/BEO-ALL/anweisungssatz-eigentum-ohne-quelle/observation.md).
 
@@ -117,7 +117,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 
 **Start** (`next` → `in-progress`): ein Architect-Lauf steht bereit. Keine
 technische Vorbedingung. **Nicht** blockiert auf
-[slice-152](slice-152-adr-0029-acceptance-trigger.md): die zwei ADRs
+[slice-152](../done/slice-152-adr-0029-acceptance-trigger.md): die zwei ADRs
 entscheiden verschiedene Gegenstände und hängen nicht aneinander.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
@@ -167,7 +167,7 @@ dasteht.
   [ADR-0025](../../adr/0025-register-mit-gemischten-originalen.md),
   [ADR-0029](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md)
   und diesem Fall drei Instanzen, und ihre Kennung entsteht erst in der Closure
-  von [slice-152](slice-152-adr-0029-acceptance-trigger.md) (dessen DoD-Punkt 6
+  von [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md) (dessen DoD-Punkt 6
   sie vergibt). — **Ausgang:** <weiter offen → jene Kennung im Register,
   Zähler erhöht mit Beleg `slice-171`>
 
