@@ -225,6 +225,11 @@ Steering-Loop-Eintrag.
 - **Risiken aus §6:** (1) **entfallen** · (2) **entfallen** · (3) **entfallen** · (4) **entfallen**
   — je mit Grund in §6.
 
+- **Paarungen geprüft am 2026-10-08, nach dem `git mv`:** (a) Anker — kein `liegt in`-Feld in §7,
+  kein Gegenstand · (b) Folge-Slice — keiner genannt · (c) Register — die drei genannten
+  Verzeichnisse existieren, `evidence/*.md` je nicht leer (6 · 9 · 10, `ls …/evidence/*.md | wc -l`,
+  keine Erwartung). Grün.
+
 ## 8. Sub-Area-Modus-Begründung
 
 Alle berührten Sub-Areas GF (siehe Kurs Modul 5 §Worked Mini-Example): `docs/user/` und die
