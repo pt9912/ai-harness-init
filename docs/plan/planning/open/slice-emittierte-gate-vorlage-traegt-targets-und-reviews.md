@@ -104,7 +104,7 @@ Dogfood-Teil derselben Zeile — ob **dieses** Repo `reviews` einschaltet — bl
   [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
   Setzung 3 bereits einen begründeten Kommentar-Block mit eigenem Trigger, und ihre Auflösung liegt
   bei [slice-210](../next/slice-210-planning-modul-im-emittierten-doc-gate.md) und
-  [slice-211](../open/slice-211-codepaths-im-emittierten-doc-gate.md). *Folge-Slice übernimmt es* — beide
+  [slice-211](../next/slice-211-codepaths-im-emittierten-doc-gate.md). *Folge-Slice übernimmt es* — beide
   nehmen die Sendung an, weil ihr §1 je genau ein Modul nennt.
 - **Kein neuer Adaptions-Eintrag.** Der Block, dessen Form dieser Slice anwendet, steht bereits als
   [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)
@@ -326,7 +326,7 @@ eine Sub-Area.
   Fassung**: Die Baseline-Vorlage führt zwei Kommentar-Blöcke, die emittierte keinen, und gemerkt
   hat das ein Delta-Durchgang, kein Wächter. `emittierte-vorlagen-klassifikation-ohne-traeger` (3×)
   ist genau diese Klasse, und sie steht auf `geplant` mit
-  [slice-211](../open/slice-211-codepaths-im-emittierten-doc-gate.md) als benanntem Träger für ihre
+  [slice-211](../next/slice-211-codepaths-im-emittierten-doc-gate.md) als benanntem Träger für ihre
   `codepaths`-Hälfte.
 - **Reconciliation-Aufwand:** keiner — GF, kein Inventur-Fund im Sinne des
   Reconciliation-Registers (die Datei existiert in diesem Repo nicht; das DoD-Item entfällt).

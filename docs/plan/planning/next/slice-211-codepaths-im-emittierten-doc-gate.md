@@ -102,7 +102,7 @@ vorweggenommenes Ergebnis.
   stehen.)*
 - **Der tote Inline-Pfad unter `.harness/baseline/` im Dogfood.** Dieselbe Modul-Familie, andere
   Ebene und eigener Träger:
-  [slice-202](slice-202-der-tote-inline-pfad-unter-harness-bekommt-seinen-pruefer.md).
+  [slice-202](../open/slice-202-der-tote-inline-pfad-unter-harness-bekommt-seinen-pruefer.md).
   *(Ein Folge-Slice übernimmt es.)*
 - **Eine Migration für bereits gebootstrappte Ziele.** Die Anlage ist *skip-if-present*; ein
   gealtertes Ziel bekommt weder den Ort noch eine geänderte Gate-Konfiguration. Die Lücke ist als
