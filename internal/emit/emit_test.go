@@ -11,7 +11,7 @@ import (
 
 // TestDCheckConfig_EntschiedeneModulListe haelt die entschiedene Modul-Liste fest: die
 // eingebettete .d-check.yml aktiviert genau [links, anchors, ids, matrix, spans, planning, structure, targets] — nicht
-// "mindestens zwei Module". Jedes der drei neu aktivierten ist im frischen Ziel gemessen gruen UND
+// "mindestens zwei Module". Jedes neu aktivierte Modul ist im frischen Ziel gemessen gruen UND
 // faengt sein Gegenbeispiel (harness/tools/full-smoke.sh); dieser Test bindet nur die
 // LISTE, nicht das Verhalten (das braucht Docker und liegt in full-smoke). codepaths
 // bleibt aus — ihre Aktivierung ist eine eigene Entscheidung. Das Requirement-Muster
