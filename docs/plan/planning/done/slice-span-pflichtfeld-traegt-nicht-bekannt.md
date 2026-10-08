@@ -237,7 +237,7 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
 - **Risiken aus §6:** Jede Zeile in §6 trägt ihren Ausgang.
 - **Paarungen geprüft am 2026-10-07** (nach dem Move): (a) *Anker*: §7 trägt kein Feld `liegt in`,
   es gibt nichts zu prüfen. (b) *Folge-Slice*: `slice-agent-role-traegt-nicht-bekannt` liegt in
-  `open/` (`ls docs/plan/planning/open/slice-agent-role-traegt-nicht-bekannt.md`). (c) *Register*: Die
+  `open/` (`ls docs/plan/planning/next/slice-agent-role-traegt-nicht-bekannt.md`). (c) *Register*: Die
   vier zitierten Pfade existieren, `evidence/` trägt 1, 7, 5 und 3 Dateien. Zweite Hälfte über das
   ganze Register: 3 Verzeichnisse ohne Beleg, namentlich
   `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`,
