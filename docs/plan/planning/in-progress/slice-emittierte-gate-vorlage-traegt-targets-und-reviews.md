@@ -167,6 +167,13 @@ Aussagen-Berührung steht hier gar nicht.
 | [`internal/emit/templates/d-check.yml`](../../../../internal/emit/templates/d-check.yml) | update | die zwei Kommentar-Blöcke samt Trigger; `modules:` bleibt, wie es ist |
 | [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) | update | das rote Gegenbeispiel aus DoD-Punkt 2, falls der Voll-E2E es tragen soll statt eines Einmal-Laufs |
 | [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md) | update | nur falls die dortige Beschreibung die Modul-Lage des Ziels aufzählt — sonst entfällt die Zeile |
+| [`internal/emit/emit_test.go`](../../../../internal/emit/emit_test.go) | update | Wächter: `reviews` bleibt Kommentar-Block mit Trigger-Zeile — ein unkommentierter Block lässt `docs-check` im Ziel grün und fällt dort nicht auf |
+| [`test/mutations/568-emittierter-reviews-block-unkommentiert.sh`](../../../../test/mutations/568-emittierter-reviews-block-unkommentiert.sh) | neu | Mutations-Fall zum Wächter |
+
+**Ist-Stand vor dem Diff, gegen diesen Plan gemessen:** `targets` ist in der emittierten Vorlage
+bereits **aktiv** (`sed -n 's/^modules: \[\(.*\)\]$/\1/p' internal/emit/templates/d-check.yml`
+nennt es, ein `targets:`-Block steht unkommentiert). Für `targets` entfällt der Kommentar-Block;
+der Diff trägt allein `reviews`.
 
 **Was hier bewusst fehlt:** eine Zeile für [`.d-check.yml`](../../../../.d-check.yml) und für
 [`harness/conventions/`](../../../../harness/conventions/). Beide sind in §1 mit Adresse

@@ -481,3 +481,35 @@ func TestDCheckConfig_ZellenlaengeStructure(t *testing.T) {
 		t.Errorf("der structure-Block fuehrt %d Spalten statt genau Vertrag und Tut was:\n%s", n, text)
 	}
 }
+
+// TestDCheckConfig_ReviewsBleibtKommentarBlock haelt das Modul reviews in der eingebetteten
+// .d-check.yml als begruendeten, inaktiven Kommentar-Block (MR-054 Setzung 3): kein
+// reviews in modules:, kein unkommentierter reviews:-Block, und der Kommentar-Block traegt
+// done-dir, reviews-dir und eine Trigger-Zeile. Ein unkommentierter Block laesst docs-check
+// im Ziel gruen, solange das Modul nicht in modules: steht — er behauptete eine
+// Konfiguration, die nicht laeuft; darum faengt ihn dieser Test und nicht das Ziel.
+func TestDCheckConfig_ReviewsBleibtKommentarBlock(t *testing.T) {
+	yml := emit.DCheckConfig()
+	var kopf, doneDir, reviewsDir, trigger bool
+	for _, line := range strings.Split(yml, "\n") {
+		if strings.HasPrefix(line, "modules:") && strings.Contains(line, "reviews") {
+			t.Errorf("reviews steht in der modules:-Liste des frischen Ziels: %q", line)
+		}
+		if strings.HasPrefix(line, "reviews:") || strings.HasPrefix(line, "  done-dir:") || strings.HasPrefix(line, "  reviews-dir:") {
+			t.Errorf("reviews-Block unkommentiert im frischen Ziel: %q", line)
+		}
+		switch {
+		case line == "# reviews:":
+			kopf = true
+		case line == "#   done-dir: docs/plan/planning/done":
+			doneDir = true
+		case line == "#   reviews-dir: docs/reviews":
+			reviewsDir = true
+		case strings.HasPrefix(line, "# Trigger: aktivieren — reviews in modules:"):
+			trigger = true
+		}
+	}
+	if !kopf || !doneDir || !reviewsDir || !trigger {
+		t.Errorf("Kommentar-Block reviews unvollstaendig (Kopf %v, done-dir %v, reviews-dir %v, Trigger %v)", kopf, doneDir, reviewsDir, trigger)
+	}
+}

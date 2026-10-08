@@ -17,6 +17,22 @@ ids:
 # codepaths bleibt aus — ihre Aktivierung ist eine eigene Entscheidung.
 # codepaths:
 #   roots: [spec, docs, harness]
+# reviews bleibt aus. Das Modul (hermetisch, kein git) haelt die Review-Zusagen der
+# Slice-Plaene unter done-dir gegen die Reports unter reviews-dir: eine Zusage ohne Report,
+# dessen Dateiname dieselbe Slice-Kennung traegt, meldet es als review-missing. done-dir ist
+# der Aktivierungs-Schalter — ohne ihn oeffnet das Modul keine Datei. Am Pin v0.84.0 hat es
+# zwei Grenzen, die ein frisches Ziel rot bzw. blind machen: Liegt unter done-dir kein
+# Slice-Plan, meldet es die leere Pruefmenge fail-closed als review-missing. Und als Zusage
+# erkennt es die Wortfolge "unabhaengiger Review" an einer Kennung in Ziffern-Form
+# (slice-<NNN>); die Review-Zeile der Slice-Vorlage ("Review durchgefuehrt, …") erkennt es
+# nicht, eine Kennung in Namens-Form (slice-<name>) ebenso wenig.
+# Trigger: aktivieren — reviews in modules: aufnehmen und den Block ohne # uebernehmen —,
+# sobald das gepinnte d-check die Review-Zeile der Slice-Vorlage an einer Kennung in
+# Namens-Form als Zusage erkennt und der erste Slice-Plan mit dieser Zeile unter done-dir
+# liegt.
+# reviews:
+#   done-dir: docs/plan/planning/done
+#   reviews-dir: docs/reviews
 # Herkunft der Positionen in diesem Block, gemessen gegen die Baseline-Vorlage
 # (.harness/baseline/<tag>/templates/.d-check.yml) und gegen die Matrix-Tabelle in
 # grundlagen-referenz-richtung.md. order:/direction: auf spec-straten und die Regel
