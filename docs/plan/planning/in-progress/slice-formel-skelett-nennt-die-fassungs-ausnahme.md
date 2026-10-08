@@ -56,7 +56,7 @@ sieht; §3 führt dazu den Test und die Mutations-Fälle, die der Diff trägt.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Ziel-Form: Slice.
 
-- [ ] **(1) Der Skelett-Kommentar nennt die eine Injektion.** Der Satz lautet *„der Bau
+- [x] **(1) Der Skelett-Kommentar nennt die eine Injektion.** Der Satz lautet *„der Bau
       injiziert genau einen Wert ins Binary, die Fassung ([`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md) Festlegung 1); eingebettete
       Vorgaben aus dem Quellstand berührt das nicht."* — der Zeiger ersetzt die breite Aussage,
       er formuliert die Festlegung nicht um.
@@ -64,16 +64,16 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
       Formel-Skelett nennt genau die eine Ausnahme, die der Bau ins Binary injiziert"* — hält
       den Satz als Literal und die `-X`-Menge des Baus gegen ihn; Mutations-Fälle 610 (zweiter
       injizierter Wert) und 611 (Satz gestrichen).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor — Rollenwechsel nach Schritt 8
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor — Rollenwechsel nach Schritt 8
       des Minimal Agent Workflow, kein Self-Review. **Bei einem Ein-Satz-Slice:** der Review
       kann als Stich-Befund im Closure-Commit berichtet werden, wenn der Diff ein Byte-Satz
       bleibt; sonst eigener Report.
-- [ ] Closure-Notiz mit Lerneintrag.
-- [ ] Beobachtungs-Register fortgeschrieben — der Eintrag
+- [x] Closure-Notiz mit Lerneintrag.
+- [x] Beobachtungs-Register fortgeschrieben — der Eintrag
       [`BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
       trägt den Ausgang dieses Vorkommens.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang.
 - [ ] Die drei Paarungen — dieses Repo führt Wellen-Betrieb; der Träger ist die nächste
       Welle-Closure.
 
@@ -107,20 +107,46 @@ Dazu ein **Lerneintrag** in einer der drei Formen (§7).
 ## 6. Risiken und offene Punkte
 
 1. **Der Skelett-Satz wird an zwei Stellen gelesen** (Skeleton und emittierte Formel je Release).
-   *Absehbar:* entfallen — der Satz ändert die Form, nicht den Vorgang; die Emissions-Prüfung
-   hält den Skeleton-Bestand weiter.
+   **Ausgang: entfallen** — der Satz ändert die Form, nicht den Vorgang; das Literal am Skelett
+   hält `test/release-matrix.bats`.
 
 ## 7. Closure-Notiz
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`.
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang>
-- **Drei Paarungen:** dieses Repo führt Wellen-Betrieb — der Träger ist die nächste Welle-Closure.
+**Rolle:** Planner · **Datum:** 2026-10-08.
+
+- **Was hat funktioniert:** Der Satz im Skelett trägt die eine Injektion des Baus samt Anker;
+  `test/release-matrix.bats` hält ihn als Literal und die `-X`-Menge des Baus dagegen. Rot
+  gelesen (Verifikation): je eine der vier `-X`-Formen am Makefile färbt den Test, eine
+  unlesbare Form bricht ihn fail-closed; `make mutate` über 610–613 → `4 ok, 0 Befund(e)`.
+- **Was ging anders als geplant:** Der Plan gab einen überbreiten Wortlaut und eine Rot-Angabe
+  mit `docs-check` vor (Review F-2/F-3), nachgeschnitten vor der Nacharbeit. Die
+  Test-Erkennung sah vier gültige `-X`-Formen nicht (F-1, HIGH), behoben mit den Fällen
+  612 (Makefile, `-X=`) und 613 (Workflow, `-X "…"`) — beide ohne Zeile in §3, hier
+  nachgewiesen (Verifikation V-2). Die Testkopf-Zusage Punkt 8 blieb zunächst als Allaussage
+  stehen (V-1), nachgezogen.
+- **Grenze des Satzes:** *„genau einen Wert"* gilt für den Release-Bau; ohne `TRAEGER_VERSION`
+  injiziert der Bau keinen, und der Test hält *„höchstens die Fassung"*, den Null-Fall nicht
+  (V-3). Der Satz und das Test-Literal verweisen auf Festlegung 1 der **Proposed**
+  [`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md); dass Nummer und Inhalt bis
+  zur Annahme bleiben, hält kein Sensor. Träger ist der Accept-Übergang
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.11); die Annahme entscheidet der Auftraggeber.
+- **Steering-Loop-Eintrag:** **gezählt, nicht verkörpert** — kein Zielort, darum kein
+  `liegt in`-Feld. Beide berührten Einträge tragen ihren Ausgang schon (*geplant*); der Slice
+  legt nur Belege an.
+- **Beobachtungs-Register (`../observations/`):** zwei Belege
+  `evidence/slice-formel-skelett-nennt-die-fassungs-ausnahme.md` — in
+  [`zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md)
+  (Review-Klasse F-1: Testkopf nennt Formen, die das Muster nicht erkennt; Ausgang *geplant*,
+  `slice-181`) und in
+  [`zusage-neben-geaenderter-ableitung-bleibt-stehen`](../observations/BEO-ALL/zusage-neben-geaenderter-ableitung-bleibt-stehen/observation.md)
+  (F-2/V-1; Ausgang *geplant*, `slice-153`). Ein Vorgang je Eintrag; kein Eintrag steht danach
+  `offen` über der Schwelle ([`ADR-0085`](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md)
+  Festlegung 1 greift nicht).
+- **Folge-Slices:** keine.
+- **Risiken aus §6:** (1) **entfallen** — der Satz ändert die Form, nicht den Emissions-Vorgang;
+  das Literal am Skelett hält der Test.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
