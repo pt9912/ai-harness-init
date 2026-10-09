@@ -149,6 +149,15 @@ liest die Kurzbeschreibung gegen den Körper ihrer Stufe, und eine Stufe, die ih
 nie benannt hat, bleibt unbemerkt. Träger ist der Lauf, der die Deklaration schreibt, und
 der Test, der die erzeugte Datei hält · seit slice-emittierte-zusage-nennt-was-der-lauf-im-ziel-misst.
 
+**Falsch:** eine Zeile zu `make <ziel>`, die „Exit 1" oder „Exit 10" zusagt, gemessen am
+direkten Aufruf des Skripts.
+**Richtig:** die Zusage nennt den Aufruf, an dem sie gemessen ist. Über `make` endet jeder
+Fehlschlag eines Rezepts mit Exit 2, und der Exit des Skripts steht nur als `Fehler <n>` in der
+Meldung von GNU Make; wer die Klasse des Skripts zusagt, sagt sie für das Skript zu. Das rote
+Gegenbeispiel läuft über `make`. **Ein Wächter existiert nicht:** keine Prüfung hält einen
+Exit-Satz einer Doku-Zeile gegen den Aufruf, den sie nennt. Träger ist der Lauf, der den Satz
+schreibt · seit slice-mutate-laeuft-ueber-einen-ci-branch.
+
 **Feedback:** `make mutate` (kein Gate; geführt in
 [`harness/README.md`](harness/README.md) §Werkzeuge) fährt ein kuratiertes Set aus
 *(Mutation → erwartet rot färbender Test)* und meldet jeden **gelisteten** Wächter,
