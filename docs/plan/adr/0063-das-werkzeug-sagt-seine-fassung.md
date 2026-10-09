@@ -1,6 +1,6 @@
 # ADR-0063: Das Werkzeug sagt seine Fassung — die Fassung reist per `ldflags` aus dem Tag am Release-Bau, der Fehlt-Fall ist laut
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-23
 
@@ -302,6 +302,7 @@ blockierenden Verdikt ist es die **nächste** Runde derselben Rolle. Die Accept-
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-23 | **Proposed** | Architect-Lauf zu `slice-das-werkzeug-sagt-seine-fassung`, ausgelöst durch den Re-Evaluierungs-Trigger 1 von [ADR-0058](0058-traeger-per-fetch-aus-dem-gepinnten-release.md) und die Setzung des Auftraggebers vom 2026-09-23 (`ai-harness-init --version`). Die Neuwägung: der Stempel aus Alternative A bleibt verworfen (die zwei flächen-unabhängigen Gründe tragen), die Fassungs-Fläche entsteht auf der Binary-Achse — injiziert am Tag-Bau aus `TRAEGER_TAG`, Fehlt-Fall laut mit Exit 2. Der Acceptance-Trigger steht unten |
+| 2026-10-09 | **Accepted** | Prüfung `2026-10-09-proposed-adrs-pruefung`, Review `2026-10-09-adr-runde-0088-0062-0063-0089` (annahmereif, 1 INFO), Annahme durch den Auftraggeber am 2026-10-09 ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1) |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit

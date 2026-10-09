@@ -1,6 +1,6 @@
 # ADR-0089: Span-Dateien sind nur für den Eigentümer lesbar — die Nicht-Zusage über den Bestand nennt den Modus
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-10-09
 
@@ -104,6 +104,7 @@ der Strom-Zahn einmal rot gesehen; ein Test oder Fall lohnt erst, wenn ein Modus
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-10-09 | Proposed | Change Request des Auftraggebers an [`LH-FA-14`](../../../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang), Lastenheft `0.26.0` |
+| 2026-10-09 | **Accepted** | Prüfung `2026-10-09-proposed-adrs-pruefung`, Review `2026-10-09-adr-runde-0088-0062-0063-0089` (annahmereif; LOW eingearbeitet in `c12c55a4`), Annahme durch den Auftraggeber am 2026-10-09 ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1) |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
