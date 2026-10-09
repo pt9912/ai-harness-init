@@ -58,7 +58,7 @@ im Nacht-Lauf.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine Beobachtung anfiel.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) hier geprüft (ohne Wellen-Betrieb).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) hier geprüft (ohne Wellen-Betrieb).
 
 ## 3. Plan (vor Code)
 
@@ -128,6 +128,7 @@ Closure-Notiz mit Lerneintrag.
   passende Klasse.
 - **Folge-Slices:** keine.
 - **Risiken aus §6:** beide *entfallen* (§6).
+- **Paarungen geprüft am 2026-10-09:** (a) Anker — `grep -c "seit slice-mutations-anker-greift-in-den-gates" .harness/skills/reviewer.md` → 1; (b) Folge-Slice — keiner genannt; (c) Register — die fünf genannten `BEO-ALL/<slug>/` existieren, `ls …/evidence/*.md | wc -l` → 8 · 8 · 7 · 4 · 3.
 - **Archivierung:** entfällt — das Unterkommando `archive-slice`
   ([`MR-078`](../../../../harness/conventions.md#mr-078--wellenlose-slices-werden-bei-der-eigenen-closure-archiviert))
   ist nicht gebaut; die Wellen-Closure sammelt den Slice ein (Rückfall dort).
