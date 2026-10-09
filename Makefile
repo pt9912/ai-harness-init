@@ -264,7 +264,7 @@ mutate: ## Mutations-Sensor fuer AGENTS 3.6: faerbt jede Mutation ihren Waechter
 # Zeile fuer den lokalen Lauf, Exit 10 mit dem Push auf mutate/<SLICE> (durch make als Fehler 10
 # gemeldet). Mit SHARDS und SHARD: die Faelle dieses Shards; SLICE=--alle nimmt alle Faelle.
 # Sensor: test/mutate-auswahl.bats. MR-014, LH-QA-03.
-mutate-auswahl: ## Mutations-Faelle eines Slice waehlen: lokal (SLICE=) oder je Shard (SHARDS= SHARD=) — kein Gate
+mutate-auswahl: ## Mutations-Faelle eines Slice waehlen: lokal (SLICE=) oder je Shard (SHARDS= SHARD=) — NICHT in gates
 	@if [ -n "$(SHARDS)" ]; then bash harness/tools/mutate-auswahl.sh shard '$(SLICE)' '$(SHARDS)' '$(SHARD)'; \
 	else bash harness/tools/mutate-auswahl.sh urteil '$(SLICE)'; fi
 
@@ -272,7 +272,7 @@ mutate-auswahl: ## Mutations-Faelle eines Slice waehlen: lokal (SLICE=) oder je 
 # SCHRITT=lauf REF=<ref> (Kennung, ob ein Lauf noetig ist), SCHRITT=shard SLICE= SHARDS= SHARD=
 # ERGEBNIS_DIR= (Fall-Lauf eines Shards samt Beleg), SCHRITT=ergebnis REF= SHARDS= ERGEBNIS_DIR=
 # (Ergebnisdatei schreiben, committen, ohne --force nach refs/heads/<REF> pushen). MR-014.
-mutate-branch: ## Schritte des CI-Branch-Laufs der Mutations-Faelle (SCHRITT=lauf|shard|ergebnis) — kein Gate
+mutate-branch: ## Schritte des CI-Branch-Laufs der Mutations-Faelle (SCHRITT=lauf|shard|ergebnis) — NICHT in gates
 	@case '$(SCHRITT)' in \
 	  lauf) bash harness/tools/mutate-auswahl.sh lauf '$(REF)' ;; \
 	  shard) bash harness/tools/mutate-auswahl.sh shard-lauf '$(SLICE)' '$(SHARDS)' '$(SHARD)' '$(ERGEBNIS_DIR)' ;; \
