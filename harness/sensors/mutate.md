@@ -213,29 +213,36 @@ Gewählt ist jeder Fall unter `test/mutations/`, dessen `# files:`-Angabe eine g
 trifft, und jeder geänderte oder neue Fall selbst. Das Werkzeug fällt das Urteil, die Schwelle
 steht allein in `harness/tools/mutate-auswahl.sh` (`SCHWELLE`): bis dahin Exit 0 mit der Zeile
 für den lokalen Lauf, darüber Exit 10 mit dem Push
-`git push -f origin HEAD:refs/heads/mutate/<kennung>`.
+`git push origin HEAD:refs/heads/mutate/<kennung>-<sha8>` — `<sha8>` sind die ersten acht Zeichen von
+`HEAD`. Jeder Lauf ist damit ein neuer Ref, und kein Push braucht `--force`; das Werkzeug gibt
+keinen aus. Die verschachtelte Form `mutate/<kennung>/<sha8>` lehnt git ab, solange ein Ref
+`mutate/<kennung>` besteht.
 
 **Der Lauf.** Der Push startet `.github/workflows/mutate-branch.yml`: Schritt `lauf` prüft den
-Präfix `mutate/` und überspringt einen Tip, der allein `mutate-ergebnis.txt` ändert; 10 Shards
+Form `mutate/<kennung>-<sha8>` samt `<sha8>` gegen den Tip und überspringt einen Tip, der allein `mutate-ergebnis.txt` ändert; 10 Shards
 fahren je `make mutate` über ihren Teil (Zuteilung wie im Nacht-Workflow: schwere Fälle — die
 Modi der seriellen Spur von `mutate.sh` — reihum, leichte nach Last aus angenommenen Gewichten je
 Sensor-Modus); Schritt `ergebnis` schreibt die Datei, committet sie über dem geprüften Commit und
 pusht ohne `--force` nach genau `refs/heads/<ref>`. Allein dieser Job trägt `contents: write`.
+Die `concurrency`-Gruppe ist der Ref: Läufe zu verschiedenen Commits desselben Slice brechen
+einander nicht ab.
 `ci.yml` läuft auf `mutate/**` nicht.
 
 **Ergebnisform.** `mutate-ergebnis.txt` an der Branch-Wurzel: Kennung, geprüfter Commit, Basis,
 je Shard Exit, Sekunden und Fälle, je Fall `ok` oder `BEFUND` mit Shard, Fallmenge, Wanduhr
 gesamt (erster Shard-Start bis letztes Shard-Ende) und `Urteil: gruen` oder `Urteil: BEFUND`.
-Gelesen wird ohne `gh`: `git fetch origin mutate/<kennung> && git show FETCH_HEAD:mutate-ergebnis.txt`.
-Der Verifier liest einmal, gleicht den Commit ab und löscht danach den Branch.
+Gelesen wird ohne `gh`: `git fetch origin mutate/<kennung>-<sha8> && git show FETCH_HEAD:mutate-ergebnis.txt`.
+Der Verifier liest einmal, gleicht den Commit ab und löscht danach diesen Branch und die älteren
+desselben Slice (`git ls-remote origin 'refs/heads/mutate/<kennung>*'`, Ablauf in
+`.claude/agents/verifier.md`).
 
 **Grenze.** Gewählt wird über `# files:`: ein Fall, dessen Wächter-Test sich änderte, dessen
 `# files:` aber keine geänderte Datei nennt, läuft nicht; zeigt `# files:` auf die falsche
 Datei, fehlt der Fall. Das lokale Urteil misst `HEAD`, nicht den Arbeitsbaum. Die Gewichte sind
-eine Annahme; die Messung je Sensor gibt `make mutate` selbst aus (Zeit je Sensor). Ist der
-Branch weitergelaufen, scheitert der Ergebnis-Push, und es liegt kein Ergebnis vor. Kein Wächter
+eine Annahme; die Messung je Sensor gibt `make mutate` selbst aus (Zeit je Sensor). Kein
+Wächter
 hält den Refspec des Ergebnis-Jobs, und keiner meldet liegen gebliebene `mutate/*`-Branches oder
-eine Ergebnisdatei, die nach `main` gelangt. Wächter der Auswahl: `test/mutate-auswahl.bats`.
+eine Ergebnisdatei, die nach `main` gelangt; das Aufräumen ist Arbeit des Verifiers. Wächter der Auswahl: `test/mutate-auswahl.bats`.
 
 ## Bindung
 

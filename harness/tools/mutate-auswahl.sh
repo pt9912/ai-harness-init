@@ -6,7 +6,7 @@
 #   urteil <kennung>                    lokal: Fallmenge ueber <Claim-Commit>..HEAD und GENAU
 #                                       eine Anweisung — bei hoechstens SCHWELLE Faellen die
 #                                       Zeile `make mutate MUTATE_CASES='…'` (Exit 0), bei mehr
-#                                       den Push auf `mutate/<kennung>` (Exit 10).
+#                                       den Push auf `mutate/<kennung>-<sha8>` (Exit 10).
 #   shard <kennung> <shards> <index>    CI-Branch: die Faelle des Shards <index> ueber
 #                                       <Claim-Commit>..HEAD, leerzeichengetrennt auf stdout.
 #   shard --alle <shards> <index>       naechtlicher Vollsweep: dieselbe Zuteilung ueber alle Faelle.
@@ -166,8 +166,10 @@ urteil() {
   mapfile -t liste <<<"$menge"
   printf '  %s\n' "${liste[@]}"
   if [ "$n" -gt "$SCHWELLE" ]; then
-    echo "mutate-auswahl: CI-Branch — git push -f origin HEAD:refs/heads/mutate/$kennung"
-    echo "mutate-auswahl: Ergebnis danach: git fetch origin mutate/$kennung && git show FETCH_HEAD:mutate-ergebnis.txt"
+    local ref
+    ref="mutate/$kennung-$(git -C "$REPO" rev-parse HEAD | cut -c1-8)"
+    echo "mutate-auswahl: CI-Branch — git push origin HEAD:refs/heads/$ref"
+    echo "mutate-auswahl: Ergebnis danach: git fetch origin $ref && git show FETCH_HEAD:mutate-ergebnis.txt"
     return 10
   fi
   echo "mutate-auswahl: lokal — make mutate MUTATE_CASES='$(printf '%s\n' "$menge" | paste -sd' ')'"
@@ -177,17 +179,24 @@ urteil() {
 # ERGEBNIS heisst die Datei an der Branch-Wurzel, die der Schritt `ergebnis` schreibt.
 ERGEBNIS="mutate-ergebnis.txt"
 
+# Der Branch eines Laufs heisst `mutate/<kennung>-<sha8>`, <sha8> die ersten acht Zeichen des
+# geprueften Commits: jeder Lauf ist ein neuer Ref, der Push ein Fast-Forward auf ihn, und kein
+# Push braucht `--force`. Die verschachtelte Form `mutate/<kennung>/<sha8>` lehnt git ab, solange
+# ein Ref `mutate/<kennung>` besteht.
+#
 # kennung_aus_ref liefert die Slice-Kennung aus dem Ref-Namen <1> oder bricht ab, wenn der
-# Ref nicht mit `mutate/` beginnt — der Schreibschritt beschreibt keinen anderen Branch.
+# Ref nicht `mutate/<kennung>-<sha8>` ist — der Schreibschritt beschreibt keinen anderen Branch.
 kennung_aus_ref() {
-  case "$1" in
-    mutate/?*) printf '%s\n' "${1#mutate/}" ;;
-    *) abbruch "Ref '$1' beginnt nicht mit mutate/ — kein Lauf, kein Push" ;;
-  esac
+  if [[ "$1" =~ ^mutate/(.+)-([0-9a-f]{8})$ ]]; then
+    printf '%s\n' "${BASH_REMATCH[1]}"
+  else
+    abbruch "Ref '$1' hat nicht die Form mutate/<kennung>-<sha8> — kein Lauf, kein Push"
+  fi
 }
 
 # lauf_pruefen gibt `kennung=…` und `laufen=true|false` aus (Zeilen fuer GITHUB_OUTPUT).
 # `false` heisst: der Tip aendert gegenueber seinem Vorgaenger allein die Ergebnisdatei.
+# Sonst muss <sha8> im Ref der Anfang des Tip-Commits sein, oder der Lauf bricht ab.
 lauf_pruefen() {
   local kennung geaendert
   kennung="$(kennung_aus_ref "$1")" || exit 2
@@ -196,9 +205,12 @@ lauf_pruefen() {
   if [ "$geaendert" = "$ERGEBNIS" ]; then
     echo "laufen=false"
     echo "mutate-auswahl: Tip aendert allein $ERGEBNIS — kein Lauf." >&2
-  else
-    echo "laufen=true"
+    return 0
   fi
+  case "$(git -C "$REPO" rev-parse HEAD)" in
+    "${1##*-}"*) echo "laufen=true" ;;
+    *) abbruch "Ref '$1' nennt nicht den Tip-Commit — kein Lauf" ;;
+  esac
 }
 
 # shard_lauf faehrt die Faelle des Shards <3> von <2> fuer die Kennung <1> und legt unter <4>

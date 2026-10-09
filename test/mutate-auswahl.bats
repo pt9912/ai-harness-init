@@ -20,6 +20,7 @@ setup() {
 [ "$1" = "-C" ] && shift 2
 case "$1" in
   log) [ -n "${FAKE_CLAIM:-}" ] && printf '%s\n' "$FAKE_CLAIM"; exit 0 ;;
+  rev-parse) printf '%s\n' "$FAKE_HEAD" ;;
   diff) cat "$FAKE_DIFF" ;;
   *) exit 1 ;;
 esac
@@ -33,6 +34,7 @@ EOF
   export PATH="$BIN:$PATH"
   export MUTATE_AUSWAHL_FAELLE="$FAELLE"
   export FAKE_CLAIM="c1a1m"
+  export FAKE_HEAD="0123abcd4567ef890123abcd4567ef890123abcd"
   export FAKE_DIFF="$BATS_TEST_TMPDIR/diff"
   : >"$FAKE_DIFF"
 }
@@ -129,6 +131,33 @@ fall() {
   printf 'src/a.sh\n' >"$FAKE_DIFF"
   run bash "$TOOL" urteil slice-x
   [ "$status" -eq 10 ]
-  [[ "$output" == *"git push -f origin HEAD:refs/heads/mutate/slice-x"* ]]
+  [[ "$output" == *"git push origin HEAD:refs/heads/mutate/slice-x-0123abcd"* ]]
   [[ "$output" != *"make mutate MUTATE_CASES"* ]]
+}
+
+@test "grenze: das Werkzeug gibt nie einen Force-Push aus" {
+  local i
+  for i in 1 2 3 4 5 6 7 8 9; do fall "0$i" src/a.sh test-bats; done
+  printf 'src/a.sh\n' >"$FAKE_DIFF"
+  run bash "$TOOL" urteil slice-x
+  [ "$status" -eq 10 ]
+  [[ "$output" == *"git push "* ]]
+  [[ "$output" != *"push -f"* ]]
+  [[ "$output" != *"--force"* ]]
+  [[ "$output" != *"HEAD:refs/heads/+"* && "$output" != *" +HEAD"* ]]
+}
+
+@test "lauf: ein Ref ohne Praefix mutate/ bricht ab" {
+  run bash "$TOOL" lauf main
+  [ "$status" -eq 2 ]
+  [[ "$output" == *"ABBRUCH — Ref 'main' hat nicht die Form mutate/<kennung>-<sha8>"* ]]
+}
+
+@test "lauf: mutate/<kennung>-<sha8> liefert die Kennung und laeuft auf seinem Commit" {
+  printf 'src/a.sh\n' >"$FAKE_DIFF"
+  run bash "$TOOL" lauf mutate/slice-x-0123abcd
+  [ "$status" -eq 0 ]
+  [ "$output" = $'kennung=slice-x\nlaufen=true' ]
+  run bash "$TOOL" lauf mutate/slice-x-deadbeef
+  [ "$status" -eq 2 ]
 }
