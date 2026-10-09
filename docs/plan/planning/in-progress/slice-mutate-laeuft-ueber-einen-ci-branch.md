@@ -31,7 +31,7 @@ Lauf fährt die gepinnten Images), [`MR-014`](../../../../harness/conventions.md
 ## 1. Ziel und Abgrenzung
 
 **Ziel:** Berührt ein Slice mehr als 8 Mutations-Fälle, startet ein `git push` nach
-`mutate/<slice-kennung>` sie in CI auf 10 nach Wanduhr gewichteten Shards, und das Ergebnis liegt danach als Datei im
+`mutate/<slice-kennung>-<sha8>` sie in CI auf 10 nach Wanduhr gewichteten Shards, und das Ergebnis liegt danach als Datei im
 selben Branch, lesbar mit `git fetch` und `git show`, ohne `gh`.
 
 **Anlass** (Messung des Auftraggebers, 2026-10-09): bei Emissions-Dateien nennen über 100 Fälle eine
@@ -42,9 +42,13 @@ ist heute **nicht** gewichtet, sondern Index-Modulo über die sortierten Namen
 
 **Festlegungen des Schnitts:**
 
-- **Branch:** `mutate/<slice-kennung>`, vom Implementer gepusht
-  (`git push -f origin HEAD:refs/heads/mutate/<slice-kennung>`). Eine Kennung, ein Branch; ein
-  erneuter Push ersetzt den Lauf.
+- **Branch:** `mutate/<slice-kennung>-<sha8>`, `<sha8>` die ersten acht Zeichen des geprüften
+  Commits, vom Implementer ohne `--force` gepusht
+  (`git push origin HEAD:refs/heads/mutate/<slice-kennung>-<sha8>`). Jeder Lauf hat seinen eigenen
+  Branch; ein späterer Lauf ersetzt keinen früheren. `concurrency` gilt je Branch, also je geprüftem
+  Commit. Entscheidung des Orchestrators, 2026-10-09: kein Force-Push, weil das Berechtigungssystem
+  ihn verweigert und die Berechtigungen nicht geändert werden; die verschachtelte Form
+  `mutate/<slice-kennung>/<sha8>` scheitert neben einem bestehenden Ref `mutate/<slice-kennung>`.
 - **Basis:** der Claim-Commit des Slice, also der Commit, der `in-progress/<slice-kennung>.md`
   anlegt (`git log --diff-filter=A --format=%H -1 -- docs/plan/planning/in-progress/<slice-kennung>.md`).
   Eine Anforderungsdatei gibt es nicht; die Basis folgt aus dem Branch-Namen. Ein Diff gegen `main`
@@ -75,10 +79,12 @@ ist heute **nicht** gewichtet, sondern Index-Modulo über die sortierten Namen
   10 Shards. Zwei Zuteilungsregeln für dieselben Fälle würden auseinanderlaufen, und die
   Index-Modulo-Zuteilung verfehlt den Korridor nachweislich (§8, Register).
 - **Lesen und Wegräumen:** Der Verifier liest das Ergebnis einmal zu Beginn seines Laufs
-  (`git fetch origin mutate/<slice-kennung> && git show FETCH_HEAD:mutate-ergebnis.txt`), prüft, dass
-  der geprüfte Commit der verifizierte ist, übernimmt Fallmenge und Befunde in seinen Bericht und
-  löscht danach den Branch (`git push origin --delete mutate/<slice-kennung>`). Den Lauf-Beleg trägt
-  ab dann sein Bericht, und der Branch hat keinen Leser mehr. Fehlt die Datei, meldet er das als
+  (`git fetch origin mutate/<slice-kennung>-<sha8> && git show FETCH_HEAD:mutate-ergebnis.txt`), prüft,
+  dass der geprüfte Commit der verifizierte ist, übernimmt Fallmenge und Befunde in seinen Bericht und
+  löscht danach den gelesenen Branch und die älteren Branches desselben Slice (die Refs aus
+  `git ls-remote origin 'refs/heads/mutate/<slice-kennung>*'`, deren Rest nach dem Präfix leer ist oder
+  `-<sha8>` lautet; `git push origin --delete <ref> …`). Den Lauf-Beleg trägt ab dann sein Bericht,
+  und die Branches haben keinen Leser mehr. Fehlt die Datei, meldet er das als
   Befund. Er wartet nicht in einer Abfrage-Schleife darauf.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
@@ -108,7 +114,7 @@ Liefer-Punkte:
 - [ ] **CI-Pfad:** `.github/workflows/mutate-branch.yml` (push auf `mutate/**`, 10 Shards, der
       Ergebnis-Job schreibt `mutate-ergebnis.txt` in den Branch), `ci.yml` ignoriert `mutate/**`,
       `mutate.yml` fährt dieselbe Zuteilung auf 10 Shards; `make ci-lint` ist grün. Ein realer Lauf auf
-      `mutate/slice-mutate-laeuft-ueber-einen-ci-branch` liegt vor, sein Ergebnis ist per `git show`
+      `mutate/slice-mutate-laeuft-ueber-einen-ci-branch-<sha8>` liegt vor, sein Ergebnis ist per `git show`
       gelesen und im Bericht zitiert.
 - [ ] **Anweisungssätze und Sensor-Doku:** `.claude/commands/implement-slice.md` und
       `.claude/agents/implementer.md` (vor der Übergabe an die Verifikation fragt der Implementer das
@@ -152,7 +158,7 @@ Konstant:
   daraus die Datei zusammen. Lesen kann der Implementer das Ergebnis nur über die Datei im Branch,
   nicht über die Artefakte.
 - Der Ergebnis-Job pusht mit explizitem Refspec auf genau `refs/heads/${GITHUB_REF_NAME}` und bricht
-  ab, wenn der Name nicht mit `mutate/` beginnt.
+  ab, wenn der Name nicht die Form `mutate/<kennung>-<sha8>` hat.
 
 ## 4. Trigger
 
@@ -170,8 +176,8 @@ den Implementer-Slot frei gemeldet (WIP-Limit 1 je Lauf).
 ## 5. Closure-Trigger
 
 Alle Punkte der DoD sind abgehakt. Ein realer Branch-Lauf mit gelesenem Ergebnis ist im
-Verifikations-Bericht zitiert, und der Branch dieses Slice ist gelöscht
-(`git ls-remote origin 'refs/heads/mutate/*'` nennt ihn nicht). Dazu kommt der Lerneintrag in §7.
+Verifikations-Bericht zitiert, und kein Branch dieses Slice liegt mehr
+(`git ls-remote origin 'refs/heads/mutate/*'` nennt keinen). Dazu kommt der Lerneintrag in §7.
 
 ## 6. Risiken und offene Punkte
 
@@ -182,9 +188,9 @@ Verifikations-Bericht zitiert, und der Branch dieses Slice ist gelöscht
 - **CI-Minuten.** Jeder `full-smoke`-Fall baut Docker-Images und braucht Netz; jeder Push auf den
   Branch startet bis zu 10 Shards. — **Ausgang:** entfallen: Der Auftraggeber setzt am 2026-10-09
   „CI Minuten sind kein Problem“ und zieht stattdessen die Schwelle von 8 Fällen (§1).
-- **Parallele Branches mehrerer Läufe.** Zwei Slices laufen auf getrennten Branches. Ein erneuter
-  Push derselben Kennung bricht den alten Lauf ab, und ein Ergebnis-Push auf einen weitergelaufenen
-  Branch scheitert (ohne `--force`). Branches, die der Verifier nicht löscht, bleiben als Leichen
+- **Parallele Branches mehrerer Läufe.** Jeder Lauf hat seinen eigenen Branch; ein späterer Lauf
+  bricht einen früheren nicht ab, und ein Ergebnis-Push auf einen weitergelaufenen Branch scheitert
+  (ohne `--force`). Branches, die der Verifier nicht löscht, bleiben als Leichen
   liegen; ein Wächter dafür existiert nicht. — **Ausgang:** <bei Closure>
 - **Die Ergebnisdatei gelangt nach `main`.** Bringt jemand den Branch-Tip per Fast-Forward, Merge
   oder Cherry-Pick nach `main`, steht dort `mutate-ergebnis.txt`. Kein Gate prüft das. Zur Closure ist
