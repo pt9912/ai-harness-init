@@ -23,9 +23,7 @@ und vierter Beleg genau diese zwei Dateien sind).
 **Berührte Spec-Stellen:** `—`. Der Liefergegenstand ist eine ADR über das
 Eigentum an zwei Spec-Dateien, kein Satz *in* ihnen.
 
-**Verantwortlich:** `—` bis zur Priorisierung (Baseline-Regelwerk
-`modul-05-planning-harness.md` §Lifecycle als State Machine — das Feld setzt der
-Übergang `open→next`). Der Liefergegenstand ist eine Norm-Aussage über
+**Verantwortlich:** Architect (pt9912). Der Liefergegenstand ist eine Norm-Aussage über
 Rollen-Eigentum und damit **Architect**-Arbeit
 ([`AGENTS.md`](../../../../AGENTS.md) §3.8, Baseline-Regelwerk
 `modul-08-agentenrollen.md` §Rollen-Regeln: *„ADR-Änderung: Architect
@@ -35,7 +33,7 @@ schreibt"*).
 
 ---
 
-## 1. Ziel
+## 1. Ziel und Abgrenzung
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Ziel-Form: Slice — Schnitt nach Lieferwert, nicht nach Schichten; jeder Slice
@@ -50,6 +48,19 @@ Source Precedence — benennt heute keine Quelle die schreibende Rolle
 Setzung 2). Eine ADR entscheidet sie und durchläuft im selben Slice ihren
 Acceptance-Trigger.
 
+**Abgrenzung:**
+
+- **Kein Satz in den zwei Spec-Dateien** (Klasse 3, anderer Vorgang). Das
+  Architect-Verdikt `2026-10-09-spec-architecture-architect-verdikt.md` übergibt
+  der Rolle, die diese ADR benennt, zwei Posten an `spec/architecture.md`: die
+  Korrektur von `ARC-009` (Composition Root je Sprache statt
+  sprachübergreifend `cmd/`) und die Übernahme oder Streichung der go- und
+  cpp-Sätze in „Layout je Sprache". Beide schreibt diese Rolle, nachdem sie
+  benannt ist — sie hier mitzunehmen hieße, die Spec ohne die Quelle zu
+  ändern, die dieser Slice erst schafft
+  ([ADR-0062](../../adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md)
+  Festlegung 2). Eine Kennung für diesen Vorgang gibt es noch nicht.
+
 ## 2. Definition of Done
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
@@ -59,7 +70,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
 - [ ] **(1) Eine ADR entscheidet die schreibende Rolle für die zwei
       Spec-Straten** — per `cp` aus
-      `.harness/baseline/v5.18.0/templates/docs/plan/adr/NNNN-titel.template.md`.
+      `.harness/baseline/v6.17.0/templates/docs/plan/adr/NNNN-titel.template.md`.
       Sie nennt ihren Geltungsbereich extensional (diese zwei Dateien), leitet
       aus [ADR-0015](../../adr/0015-rollen-eigentum-an-norm-artefakten.md)
       §Kontext ab statt aus dem Bestand, und trägt einen
