@@ -95,6 +95,7 @@ Kein Eintrag erreicht im Fenster erstmals 3×; kein Zielort-Feld. Wiederauftrete
   `BEO-ALL/archiv-vorschau-rechnet-im-produkt-aus-dateien-und-bewegten-namen` (Beleg
   `2026-10-09-welle-kotlin-skelett-audit-vorlage`). `state.md` ergänzt nach dem Architect-Verdikt:
   die sechs Einträge aus §Steering-Loop-Einträge.
+- **Paarungen nach dem Move, 2026-10-09:** (a) diese Notiz trägt kein Zielort-Feld; im Fenster seit `d82ac7be` trägt eines allein `slice-kotlin-flaches-skelett`, Zielort `harness/conventions/MR-089-laufzeit-aussage-nennt-image-lage-und-variante.md` existiert und trägt `seit slice-kotlin-flaches-skelett` (`grep -l`). (b) jeder genannte Slice existiert genau einmal im Lifecycle (`ls docs/plan/planning/{open,next,in-progress,done}/<kennung>*.md`), `slice-rollen-grenze-eines-commits-hat-ein-werkzeug` in `open/`. (c) erste Hälfte: jede genannte `BEO-ALL/<slug>` existiert mit 1–13 Belegen. Register-Paarung (c), zweite Hälfte: 2 Verzeichnisse ohne Beleg, namentlich `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`, `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen behauptet (`for d in docs/plan/planning/observations/BEO-ALL/*/; do n=$(ls "$d"evidence/*.md 2>/dev/null | wc -l); [ "$n" -eq 0 ] && echo "$d"; done`). `make register-ausgang` → `237 Eintraege, 67 ueber der Schwelle, 0 Befund(e)`.
 
 ## Folge-Slices
 
