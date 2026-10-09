@@ -128,7 +128,7 @@ dieselbe Mechanik eine Ebene höher: Die Funktion überspringt bereits etwas (f�
   Quelle — [`AGENTS.md`](../../../../AGENTS.md) §3.8 weist nur Hard Rules und Adaptions-Block dem
   Architect zu und sagt ausdrücklich: *„wo keine Quelle sie benennt, bleibt die Frage offen"*. Die
   Frage hat bereits eine Adresse, und **das ist ein Folge-Slice, der die Sendung annimmt**:
-  [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md) liefert genau diese ADR. Wie
+  [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md) liefert genau diese ADR. Wie
   dieser Slice sich in der Zwischenzeit verhält, steht in §2 — er entscheidet die Frage nicht
   still mit.
 - **Keine Änderung an `span-report`, `span-watch` oder `hook-overhead`.** Sie lesen das Feld;
@@ -199,7 +199,7 @@ Lieferung, nicht zusätzlicher Umfang.
       das Lastenheft wird **nicht** angefasst.
 - [x] **Die offene Eigentumsfrage ist benannt, nicht entschieden.** Der Lauf, der die Spec-Zeilen
       schreibt, hält in §7 fest, dass für dieses Stratum **keine Quelle** eine schreibende Rolle
-      benennt, und nennt [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md)
+      benennt, und nennt [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md)
       als deren Adresse. Er leitet daraus **keine** Zuständigkeit ab — eine aus Zweckmäßigkeit
       abgeleitete Rolle wäre genau der Befund, den slice-151 auflösen soll.
 
@@ -255,7 +255,7 @@ es ein Konflikt in derselben Funktion.
   Übersprung-Regel. Dann ist es ein anderer Slice als dieser.
 - `in-progress` → `open` (blockiert — Carveout?): Die zwei Spec-Zeilen lassen sich ohne eine
   Entscheidung über das Rollen-Eigentum nicht schreiben — dann wartet der Slice auf
-  [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md), und **das** ist der Blocker,
+  [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md), und **das** ist der Blocker,
   nicht der Code. Ebenso, wenn der erste Slice den Begriff *Segment ohne Programm* oder die
   Wert-Grenze nicht so liefert, wie §1 sie voraussetzt — dann ist die Aufteilung neu zu schneiden,
   nicht im Lauf umzudeuten.
@@ -324,7 +324,7 @@ dasteht.
   ist am Stand des Verifiers grün.
 - **Für das berührte Spec-Stratum benennt keine Quelle eine schreibende Rolle.** Der Slice ändert
   zwei Zeilen in Rang 2 der Source Precedence, ohne dass gesagt ist, wer das darf. Adresse:
-  [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md). — **Ausgang:**
+  [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md). — **Ausgang:**
   *eingetreten* — Folge-Slice `slice-151`, eine Datei in `open/`: der Slice hat `SPEC-021` und
   `SPEC-031` ohne benannte Quelle für die schreibende Rolle geändert und daraus keine Zuständigkeit
   abgeleitet; die Frage bleibt bei `slice-151`, und `slice-151` nimmt sie an, denn er führt genau diese
@@ -421,7 +421,7 @@ und Verifikation. Alle Kommandos gemessen am 2026-09-27 am Stand `62a7b27d`, kei
   Source Precedence) benennt **keine Quelle** eine schreibende Rolle: [`AGENTS.md`](../../../../AGENTS.md) §3.8 weist nur Hard Rules und
   Adaptions-Block dem Architect zu und lässt jede andere Frage ausdrücklich offen. `SPEC-021` und `SPEC-031` hat ein Lauf mit der Rolle
   Implementer geschrieben (die Commit-Messages nennen sie); daraus wird **keine** Zuständigkeit abgeleitet — eine aus Zweckmäßigkeit
-  abgeleitete Rolle wäre genau der Befund, den [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md) auflösen soll.
+  abgeleitete Rolle wäre genau der Befund, den [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md) auflösen soll.
   Die Adresse ist `slice-151` (`open/`). **Querlage, benannt:** der Wortlaut des Punktes legt diese Zeile in §7 in die Hand *„des Laufs, der
   die Spec-Zeilen schreibt"*; §3.10 legt §7 in die Hand des Planners, ausdrücklich nicht in die des ausführenden Laufs. Der Implementer hat §7
   richtig leer gelassen (Verifier); die Zeile steht hier, vom Planner, und das Häkchen meint die **Zeile in §7**, nicht die Autorschaft

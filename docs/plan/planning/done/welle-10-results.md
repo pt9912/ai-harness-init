@@ -145,7 +145,7 @@ Setzung 2). Jede der drei bekommt hier ihren Lese-Schritt:
   [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md)
   (`Proposed`; Annahme trägt [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md));
   für die **Spec-Straten** benennt keine Quelle eine Rolle, Träger ist
-  [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md).
+  [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md).
   Kein `liegt in`: verkörpert ist noch nichts, beide ADRs stehen auf `Proposed`.
   Auslöser: `BEO-007` (slice-137, slice-144, slice-147, slice-148 — 4×).
 - **Ein Fix korrigiert die Ableitung und lässt die Zusage daneben stehen** —
@@ -180,7 +180,7 @@ ein halluziniertes Gate.
 
 **Aus dieser Closure** — alle drei **wellenlos**, kein Mitglied einer Welle:
 
-- [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md) — für die zwei Spec-Straten benennt eine Quelle die schreibende Rolle (`open/`).
+- [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md) — für die zwei Spec-Straten benennt eine Quelle die schreibende Rolle (`open/`).
 - [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md) — [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) durchläuft ihren Acceptance-Trigger (`open/`).
 - [slice-153](../open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md) — die zwei Wellen-Anweisungssätze nennen die Abschnitte, die die Roadmap führt (`open/`).
 

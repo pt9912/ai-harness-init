@@ -255,7 +255,7 @@ Backticks).
   als **geplant**, bis die zwei übrigen Teile eine angenommene Quelle haben. Zwei neue Kennungen:
   `BEO-024` und `BEO-025`, je 1×, Beleg `slice-145`.
 - **Folge-Slices:** keine neuen — die zwei offenen Teile von `BEO-007`
-  tragen [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md) und
+  tragen [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md) und
   [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md), beide in `open/`.
 - **Risiken aus §6:** drei benannt, drei mit genau einem Ausgang — eines **eingetreten** (der
   inhaltliche Einwand der ersten Runde, im `Proposed`-Fenster korrigiert, ohne Rest), zwei

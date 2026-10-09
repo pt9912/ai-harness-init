@@ -129,7 +129,7 @@ Keine neuen. Die zwei `CO-001`-Ausgänge aus dem Trigger-Audit stehen unverände
 `slice-141-co-001-aufloesung-ist-vorher-entschieden` in `next/` und
 `slice-113-co-001-ist-faellig` in `open/` (verlängert, nicht aufgelöst). Die zwei
 weiterhin offenen Eigentums-Fragen (`docs/plan/planning/README.md`, Spec-Straten —
-[`slice-151-spec-straten-haben-eine-schreibende-rolle`](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md)
+[`slice-151-spec-straten-haben-eine-schreibende-rolle`](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md)
 in `open/`) fallen unter [`ADR-0062`](../../adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md) Festlegung 2 **erst ab deren Annahme**; bis
 dahin beantwortet die ADR sie nicht.
 

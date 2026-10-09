@@ -46,7 +46,7 @@ selbst als
 Slices derselben Klasse tragen dieselbe Besetzung —
 [slice-145](../done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md), das für genau
 diesen Konflikt-Pfad direkt in `next/` abgelegt wurde, und
-[slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md). Das Feld weicht damit
+[slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md). Das Feld weicht damit
 von der Default-Besetzung ab, die Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als
 State Machine nennt (*„den Rolleninhaber der Implementer-Rolle"*) — gesetzt ist es trotzdem, weil
 dieser Slice direkt in `next/` liegt und der Übergang `open`→`next`, der es nach jener Sektion

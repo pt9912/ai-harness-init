@@ -193,7 +193,7 @@ Verkörperung und keine Übergabe an den Architect. Zwei davon
   ([`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md),
   `Proposed`; Träger [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md))
   und die **Spec-Straten** (Träger
-  [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md)).
+  [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md)).
   Kein `liegt in`: die Zeile schließt erst, wenn auch diese zwei eine
   **angenommene** Quelle haben.
   Auslöser: `BEO-007` (slice-137, slice-144, slice-147, slice-148 — 4×).

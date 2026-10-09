@@ -263,7 +263,7 @@ dasteht.
    benennt sie in §7 und leitet keine Zuständigkeit ab.
    — **Ausgang: entfallen.** Die offene Frage bleibt adressiert, ohne diesen Plan:
    `slice-204-das-programm-feld-nennt-das-programm` §6, viertes Risiko, nennt dieselbe Lücke und
-   dieselbe Adresse [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md).
+   dieselbe Adresse [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md).
    Der Ausgang *weiter offen* wäre hier die zweite Fassung eines Postens, den ein lebender Plan
    bereits trägt.
 

@@ -166,7 +166,7 @@ nicht geschlossen ist.
   Quelle — [`AGENTS.md`](../../../../AGENTS.md) §3.8 weist nur Hard Rules und Adaptions-Block dem
   Architect zu und sagt: *„wo keine Quelle sie benennt, bleibt die Frage offen"*. Die Frage hat
   eine Adresse, die die Sendung annimmt:
-  [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md). Der Lauf, der
+  [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md). Der Lauf, der
   `SPEC-031` schreibt, leitet daraus keine Zuständigkeit ab.
 - **Keine Änderung an `span-report` oder `hook-overhead`.** Sie lesen das Feld nicht
   (`span-report`) bzw. nur seine Größe (`hook-overhead`); dieser Slice schreibt es —
@@ -237,7 +237,7 @@ die Zusage; jede Zeile ist ein Fall in `internal/span/span_test.go`.
       ([`MR-019`](../../../../harness/conventions.md#mr-019--technik-stratum-als-rang-2-der-source-precedence));
       das Lastenheft wird **nicht** angefasst. Wer schreibt, benennt in §7, dass für dieses
       Stratum **keine** Quelle eine schreibende Rolle benennt
-      ([slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md)), und leitet
+      ([slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md)), und leitet
       keine Zuständigkeit daraus ab.
 
 **Pro Slice konstant — zählt nicht in die drei:**
@@ -293,7 +293,7 @@ der erste liefert einzeln. slice-204 trägt die Reihenfolge als eigenen Start-Tr
   ein Tokenizer, und der ist ein anderer Slice als dieser (slice-204 nennt dieselbe Weggabelung).
 - `in-progress` → `open` (blockiert — Carveout?): `SPEC-031` lässt sich ohne eine Entscheidung
   über das Rollen-Eigentum am Spec-Stratum nicht schreiben — dann wartet der Slice auf
-  [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md), und **das** ist der
+  [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md), und **das** ist der
   Blocker, nicht der Code. Ebenso, wenn slice-204 während der Arbeit beansprucht wird — sein
   Start-Trigger verlangt diesen Slice in `done/`, und ein Anspruch davor trüge die Reihenfolge
   aus dem Start-Punkt nicht mehr.
@@ -356,7 +356,7 @@ dasteht.
   erfüllt.
 - **Für das berührte Spec-Stratum benennt keine Quelle eine schreibende Rolle.** Der Slice ändert
   eine Zeile in Rang 2 der Source Precedence, ohne dass gesagt ist, wer das darf. Adresse:
-  [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md). — **Ausgang:**
+  [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md). — **Ausgang:**
   *eingetreten* — Folge-Slice `slice-151`, eine Datei in `open/`: der Slice hat `SPEC-031` ohne
   benannte Quelle für die schreibende Rolle geändert und daraus keine Zuständigkeit abgeleitet; die
   Frage bleibt bei `slice-151`, und `slice-151` nimmt sie an, denn er führt genau diese Frage.

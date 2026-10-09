@@ -493,7 +493,7 @@ dasteht.
     diese Klasse einschließt, ist offen — die zwei vorhandenen Stellschrauben stehen dort **nicht**,
     und wer diese Frage entscheidet, ist selbst ungeklärt (`BEO-007`, dritter Teil: die Spec-Straten
     haben keine schreibende Rolle; Träger ist
-    [slice-151](../open/slice-151-spec-straten-haben-eine-schreibende-rolle.md)). Dieser Slice folgt
+    [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md)). Dieser Slice folgt
     der bestehenden Platzierung und entscheidet die Frage nicht. — **Ausgang: weiter offen, bereits
     gedeckt.** Zitiert dieselbe offene Teilfrage wie `BEO-007` (4×, **geplant** → `slice-151`); dieser
     Slice folgt der bestehenden Platzierung (`MUTATE_FORCE` im Skript, keine Spec-Stelle) und bewegt
