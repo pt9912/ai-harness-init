@@ -105,6 +105,12 @@ greift sie später, wird die Entfernung hier zum No-op, nicht falsch.
       zitieren.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [ ] **Closure-Lese-Schritt — Verkörperung** (kein Liefer-Punkt, Teil der Closure):
+      `BEO-ALL/idempotente-anlage-erreicht-den-bestand-nicht` erreicht mit Risiko R4 (§6) den
+      dritten Beleg; Ausgang *verkörpert* nach dem Architect-Verdikt §1 — die Regel *Bestand im
+      Release-Text* steht in `docs/user/releasing.md` Schritt 5 mit dem Anker
+      `· seit slice-ziel-traegt-keine-kennung-dieses-repos`, gelandet **vor** dem Closure-Commit;
+      §7 trägt den Steering-Loop-Eintrag mit `liegt in` auf diesen Zielort.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
@@ -121,6 +127,12 @@ greift sie später, wird die Entfernung hier zum No-op, nicht falsch.
 | `cmd/ai-harness-init/kennungen_test.go` | update | DoD 3 (a, b, d); Kopf nennt die Grenze |
 | `harness/tools/full-smoke.sh` | update | DoD 3 (c): reale `--print-mk`-Adaption am gebootstrappten Ziel |
 | `test/mutations/` | neu | je Wächter-Teil ein Fall (`make mutate`) |
+| `docs/user/releasing.md` | update | Regel *Bestand im Release-Text* in Schritt 5, Wortlaut nach dem Architect-Verdikt [`2026-10-09-…-architect-verdikt.md`](../../../reviews/2026-10-09-slice-ziel-traegt-keine-kennung-dieses-repos-architect-verdikt.md) §1, Anker `· seit slice-ziel-traegt-keine-kennung-dieses-repos` — Verkörperung des Lese-Schritts (DoD *Closure-Lese-Schritt*), kein Liefer-Punkt |
+
+- **Schreibrolle für `releasing.md` in diesem Fall — Entscheidung des Auftraggebers vom
+  2026-10-09:** der Implementer schreibt den Regeltext, in einem eigenen Commit vor dem
+  Closure-Commit. Keine Quelle benennt die Rolle für `releasing.md` ([`AGENTS.md`](../../../../AGENTS.md)
+  §3.8 lässt die Frage offen); die Entscheidung gilt für diesen Fall, nicht als allgemeine Zuordnung.
 
 - **Grenze des Wächters, im Kopf zu nennen:** Klartext-Verweise ohne Marker („siehe unsere
   Spezifikation“) erkennt er nicht; die Namensform `slice-<name>` erkennt er nur, soweit sie
