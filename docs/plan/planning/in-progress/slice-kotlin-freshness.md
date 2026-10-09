@@ -30,15 +30,15 @@ existiert — kein Gate, wie `freshness-cpp`.
 
 ## 2. Definition of Done
 
-- [ ] `kotlin-freshness.sh` unter `harness/tools/` + `make freshness-kotlin`; Zeile in `harness/README.md`
+- [x] `kotlin-freshness.sh` unter `harness/tools/` + `make freshness-kotlin`; Zeile in `harness/README.md`
       §Werkzeuge mit `kein Gate`.
-- [ ] bats-Fall: veralteter Pin → Meldung, aktueller → still; das Rot einmal gesehen.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), kein Self-Review.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine Beobachtung anfiel.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen prüft die Closure von `welle-kotlin-skelett`.
+- [x] bats-Fall: veralteter Pin → Meldung, aktueller → still; das Rot einmal gesehen.
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), kein Self-Review.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine Beobachtung anfiel.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [ ] Die drei Paarungen prüft die Closure von `welle-kotlin-skelett`; nach dem Move gefahren, §7.
 
 ## 3. Plan (vor Code)
 
@@ -49,6 +49,7 @@ existiert — kein Gate, wie `freshness-cpp`.
 | `test/kotlin-freshness.bats` | neu | beide Richtungen |
 | `.github/workflows/upstream-drift.yml` | update | Aufrufer im Nachtlauf, wie `freshness-cpp`; der Gate-Lauf bleibt netzlos (§6) |
 | `test/mutations/` | neu | je Zusage des Skripts ein Fall mit Gegenprobe |
+| `.d-check.yml` | update | `exempt-targets` führt das neue Ziel; folgt aus der Werkzeug-Zeile (nachgezogen bei Closure) |
 
 ## 4. Trigger
 
@@ -66,16 +67,34 @@ DoD vollständig, bats-Fall grün und einmal rot gesehen, Closure-Notiz mit Lern
 
 ## 6. Risiken und offene Punkte
 
-- Das Werkzeug braucht Netz; ein Ausfall des Registers darf keinen Gate-Lauf blockieren — **Ausgang:** *bei Closure*
+- Das Werkzeug braucht Netz; ein Ausfall des Registers darf keinen Gate-Lauf blockieren — **Ausgang:** entfallen — `freshness-kotlin` läuft nur nächtlich, außerhalb
+  von `gates`/`record-gates`; ein Fetch-Ausfall endet in `FETCH-FEHLER (kein Freshness-Urteil)`,
+  Exit 2 (Verifikation `2026-10-09-slice-kotlin-freshness-verifikation`).
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** *bei Closure*
-- **Was ging anders als geplant:** *bei Closure*
-- **Steering-Loop-Eintrag:** *bei Closure*
-- **Beobachtungs-Register (`../observations/`):** *bei Closure*
-- **Folge-Slices:** *bei Closure*
-- **Risiken aus §6:** *bei Closure*
+- **Was hat funktioniert:** Keine Rückführung aus §4 trat ein; die Tag-Liste trennt die Achsen über
+  den Filter `name=jdk21`. Der Verifier fuhr den echten Pin aus `DefaultKotlinVersion` in drei Zweigen
+  live (aktuell · VERALTET · KEIN URTEIL) und trug den Rot-Beleg für DoD 2 nach (`head`/`tail`-Mutation
+  → Fall 2 rot, invertierter Vergleicher → Fall 3 rot); `make mutate` über 629–634 → `6 ok, 0 Befund(e)`.
+- **Was ging anders als geplant:** Review LOW-1 — ein Pin über allen gelieferten Tags meldete
+  `aktuell`; seit `440a1ac6` gibt er `KEIN URTEIL`, Exit 2. `.d-check.yml` war geändert, ohne in §3 zu
+  stehen (INFO-V2); §3 nachgezogen.
+- **Steering-Loop-Eintrag:** geschärfte Regel, gezählt, nicht verkörpert — die Laufzeit-Meldung eines
+  Freshness-Werkzeugs nennt die Grenze ihrer Eingabe (eine Seite, sortiert nach `last_updated`) im
+  Ausgabetext, nicht nur im Skript-Kopf; `aktuell`/`VERALTET` des gemeinsamen Vergleichers und der
+  `##`-Hilfetext tragen sie nicht (INFO-V1, hingenommen, kein weiterer Implementer-Zyklus). Beleg in
+  `BEO-ALL/stellen-messung-als-eigenschaft-ausgegeben`, Ausgang dort geplant
+  (`slice-werkzeug-aussage-traegt-quelle-stand-und-messstelle`).
+- **Beobachtungs-Register (`../observations/`):** Belege in
+  `BEO-ALL/stellen-messung-als-eigenschaft-ausgegeben` (LOW-1 und INFO-V1, ein Vorgang, geplant) ·
+  `BEO-ALL/plan-abweichung-landet-im-commit-bericht-statt-im-plan` (INFO-V2, verkörpert). Benannt,
+  nicht gezählt: Review INFO-2 — `freshness-kotlin` und die übrigen `freshness-*` stehen in
+  verschiedenen `exempt-targets`-Gruppen, und `harness/sensors/docs-check.md` nennt „heute 40“ neben
+  einem Kommando, das 49 ausgibt; Bestand, vom Diff nicht berührt. Kein Eintrag erreicht mit diesem
+  Slice 3× ohne Ausgang.
+- **Folge-Slices:** keine.
+- **Risiken aus §6:** Ausgang steht in §6.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
