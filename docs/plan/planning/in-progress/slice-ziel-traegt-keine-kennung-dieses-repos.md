@@ -77,19 +77,19 @@ greift sie später, wird die Entfernung hier zum No-op, nicht falsch.
 
 ## 2. Definition of Done
 
-- [ ] **Emittierte Dateien** ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)):
+- [x] **Emittierte Dateien** ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)):
       Kein emittierter oder adaptierter Text (Ziel a und b wie in §1) nennt eine Kennung, Spec-Stelle
       oder einen Adaptions-Eintrag dieses Repos oder eine Anforderungs-/Slice-Kennung von d-check
       oder a-check; `traeger.mk` beschreibt das Ziel, nicht das Dogfood-Makefile. Die Kennung im
       Default-Text der Selbstprüfung bleibt nur, wenn sie auf die Saat-Anforderung **des Ziels**
       auflöst und das Muster seines `commit-msg`-Trägers trifft — der Grund steht dann in
       `erlaubteKennungen()`; sonst eine neutrale Form, die beides erfüllt.
-- [ ] **Meldungen des Trägers** ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)):
+- [x] **Meldungen des Trägers** ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)):
       Hilfe beider Unterkommandos, jede Fehlermeldung und jede Commit-Message, die der Träger im
       Ziel schreibt, tragen keine Kennung dieses Repos; das `grep`-Kommando aus §1 liefert 0
       Nicht-Kommentar-Treffer. Der Altbestand-Commit von `archive-welle` trifft im Ziel weiter ein
       Muster seines `commit-msg`-Trägers (sonst bricht er dort, s. §6).
-- [ ] **Wächter** ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)):
+- [x] **Wächter** ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)):
       Die Kennungs-Prüfung liest zusätzlich (a) den `add-lang`-Pfad an einem Unterverzeichnis,
       (b) die Prosa-Form „von ai-harness-init“ mit Spec-, Festlegungs- oder Adaptions-Bezug (nicht
       die Herkunftszeile), (c) fremde Werkzeug-Kennungen der Form `DC-…`/`slice-NNN` in den
@@ -97,21 +97,21 @@ greift sie später, wird die Entfernung hier zum No-op, nicht falsch.
       `make full-smoke` am gebootstrappten Ziel, wo der Go-Test nur die Fixture sieht —, (d) die
       Meldungen des Trägers über jeden im Test erreichbaren Fehlerpfad (Fehlertypen mit eigenem
       `Error()` direkt). Je Teil einmal rot gesehen; die Grenze steht im Kopf des Wächters (§3).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: `harness/README.md` bzw. Handbuch nur, falls sie eine der geänderten Meldungen
+- [x] Doku-Update: `harness/README.md` bzw. Handbuch nur, falls sie eine der geänderten Meldungen
       zitieren.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] **Closure-Lese-Schritt — Verkörperung** (kein Liefer-Punkt, Teil der Closure):
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] **Closure-Lese-Schritt — Verkörperung** (kein Liefer-Punkt, Teil der Closure):
       `BEO-ALL/idempotente-anlage-erreicht-den-bestand-nicht` erreicht mit Risiko R4 (§6) den
       dritten Beleg; Ausgang *verkörpert* nach dem Architect-Verdikt §1 — die Regel *Bestand im
       Release-Text* steht in `docs/user/releasing.md` Schritt 5 mit dem Anker
       `· seit slice-ziel-traegt-keine-kennung-dieses-repos`, gelandet **vor** dem Closure-Commit;
       §7 trägt den Steering-Loop-Eintrag mit `liegt in` auf diesen Zielort.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -178,30 +178,65 @@ gebootstrappten Ziel (Variante a und b) keinen Treffer; Closure-Notiz mit Lernei
 - Der Altbestand-Commit von `archive-welle` braucht im Ziel eine Kennung, die das Muster
   `(ADR-[0-9]{4}|LH-[A-Z]{2}-[0-9]{2}|MR-[0-9]{3}|slice-[0-9]+)` des emittierten
   `commit-msg`-Trägers trifft; die einzige im frischen Ziel auflösende ist eine Saat-Kennung. Ohne
-  Ersatz bricht der Commit dort — **Ausgang:** <eingetreten | entfallen | weiter offen>
+  Ersatz bricht der Commit dort — **Ausgang:** *entfallen* — der Commit nimmt die Kennung vom Aufrufer ([ADR-0090](../../adr/0090-altbestand-commit-traegt-die-kennung-des-aufrufers.md), Pflicht für `altbestand`); gehalten von der `full-smoke`-Stufe `[flacher-klon]`.
 - Die Quellen-Sätze der Feldliste sind heute die Kopplung, die `fieldlist_test.go` an §5 hält;
   fallen sie weg, ohne dass der Test die Kopplung anders trägt, driftet die Feldliste still von
-  §5 — **Ausgang:** <…>
+  §5 — **Ausgang:** *entfallen* — die Kopplung trägt `festlegungenDerFeldliste` in `internal/span/fieldlist_test.go` (Festlegung → Gegenstand, `specAbschnitt == "5"`).
 - Die Entfernung fremder Kennungen aus `--print-mk` greift über ein Muster; eine neue Form im
   nächsten Pin-Sprung von d-check oder a-check rutscht durch, bis der Wächter-Teil (c) sie zeigt —
-  **Ausgang:** <…>
+  **Ausgang:** *entfallen* — die `full-smoke`-Stufe `fremde_kennungen_im_fragment` liest die reale `--print-mk`-Ausgabe der gepinnten Images am gebootstrappten Ziel; Grenze: kein Gate, nur das Root-Modul-Ziel.
 - Ziele, die mit `v0.5.0` oder früher gebootstrappt wurden, behalten in `.d-check.yml` unsere
-  Kennungen (§3) — **Ausgang:** <…>
+  Kennungen (§3) — **Ausgang:** *weiter offen* — ins Register, [`idempotente-anlage-erreicht-den-bestand-nicht`](../observations/BEO-ALL/idempotente-anlage-erreicht-den-bestand-nicht/state.md) (3×, verkörpert in `docs/user/releasing.md` Schritt 5).
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<KUERZEL>/<slug>` (<slice-kennung-a>, <slice-kennung-b>, <slice-kennung-c> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-<Kennung>.md` | `evidence/slice-<Kennung>.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+- **Was hat funktioniert:** Beide Ziele (go/hexslice; sprachlos plus `add-lang` an Unterverzeichnissen)
+  tragen keine Kennung dieses Repos und keine fremde Werkzeug-Kennung; die Wächter sind je Teil rot
+  gesehen, `make full-smoke` grün (Verifikation `2026-10-09-slice-ziel-traegt-keine-kennung-dieses-repos-verifikation`).
+- **Was ging anders als geplant:** Der Commit-Suffix des Altbestands ging nicht über ein Muster,
+  sondern über eine Architect-Entscheidung: die Kennung nennt der Aufrufer
+  ([ADR-0090](../../adr/0090-altbestand-commit-traegt-die-kennung-des-aufrufers.md)); daraus folgten
+  `--kennung`, `ARCHIV_KENNUNG` und die Doku-Nachzüge außerhalb von §3. Das Review blockierte (1 HIGH,
+  1 MEDIUM), die Nachprüfung gab frei.
+- **Steering-Loop-Eintrag:** Guide ergänzt: Regel *Bestand im Release-Text* — ändert ein Release
+  den Inhalt einer skip-if-present-Datei, trägt der Release-Text den Abschnitt **Bestand** mit
+  Pfaden, ältestem abweichendem Tag und Abhilfe
+  — liegt in `docs/user/releasing.md`.
+  Auslöser: `BEO-ALL/idempotente-anlage-erreicht-den-bestand-nicht` (slice-190, slice-194,
+  slice-ziel-traegt-keine-kennung-dieses-repos — 3×); Verdikt
+  `2026-10-09-slice-ziel-traegt-keine-kennung-dieses-repos-architect-verdikt`. Der Umzug der Datei
+  nach `docs/maintainer/` liegt bei `slice-releasing-zieht-nach-docs-maintainer`; Bedingung dort:
+  der Stub am alten Ort trägt den Anker.
+- **Beobachtungs-Register (`../observations/`):** Beleg `evidence/slice-ziel-traegt-keine-kennung-dieses-repos.md` in
+  `BEO-ALL/regel-rand-ohne-benannte-luecke/` (8×, geplant; Review HIGH-1, INFO-1, INFO-2,
+  Nachprüfung LOW-1) · `BEO-ALL/laufzeit-meldung-traegt-im-ziel-nicht-aufloesende-kennung/` (2×,
+  Review MEDIUM-1) · `BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere/` (8×,
+  verkörpert; Review LOW-2) · `BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/` (22×, geplant;
+  Nachprüfung INFO-1) · `BEO-ALL/idempotente-anlage-erreicht-den-bestand-nicht/` (3×, verkörpert;
+  R4); neu angelegt `BEO-ALL/streich-muster-trifft-mehr-als-seine-klasse/` (1×; Review LOW-1).
+  Zähler: `ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence/*.md | wc -l`.
+- **Folge-Slices:** keine neuen. `slice-releasing-zieht-nach-docs-maintainer` (open/) trägt den Umzug
+  des Zielorts.
+- **Benannte Lücken:**
+  - [MR-071](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand):
+    zu `47365e76` laufen 15 Fälle nicht (`40 310 311 325 327 329 330 331 332 333 504 505 508 559 641`),
+    zu `3922608f` liefen 14 von 50 — Grenze von 8 Fällen je Lauf (Auftraggeber), der CI-Weg ist
+    `slice-mutate-laeuft-ueber-einen-ci-branch`; die Anker hält `make mutate-greift`.
+  - §3 *Skip-if-present-Altbestand*: Text, den der Träger aus Go-Konstanten emittiert
+    (`internal/gen`, `internal/span/fieldlist.go`), ist je Release-Träger nicht gemessen.
+  - Nachprüfung LOW-1 und INFO-1 bleiben unbehoben (Register oben).
+- **Übergabe an den nächsten Release-Schnitt** (DoD *Doku-Update*: das Handbuch trägt nur den
+  Ist-Zustand des Releases und zieht im Schnitt nach):
+  1. Das Benutzerhandbuch nennt beim Lauf `WELLE=altbestand` das Pflicht-Argument
+     `KENNUNG=<kennung>` und den Abbruch ohne es (Folgepflicht aus
+     [ADR-0090](../../adr/0090-altbestand-commit-traegt-die-kennung-des-aufrufers.md)).
+  2. Ziele, die mit `v0.5.0` oder früher gebootstrappt wurden, behalten in der skip-if-present
+     angelegten `.d-check.yml` Kennungen von ai-harness-init; Abhilfe: Diff gegen eine frische
+     Emission — der erste Abschnitt **Bestand** nach `docs/user/releasing.md` Schritt 5.
+- **Risiken aus §6:** R1–R3 *entfallen*, R4 *weiter offen* ins Register (§6).
+- **Archivierung:** entfällt — `archive-slice` ist nicht gebaut
+  ([MR-078](../../../../harness/conventions.md#mr-078--wellenlose-slices-werden-bei-der-eigenen-closure-archiviert)).
+- **Drei Paarungen:** geprüft im Commit nach dem `git mv` (Zeile folgt).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
