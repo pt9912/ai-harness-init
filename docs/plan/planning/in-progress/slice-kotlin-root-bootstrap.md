@@ -45,7 +45,7 @@ Schritt, wie die cpp-Form.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `cmd/ai-harness-init/`, `internal/gen/` (+ Tests) | update | Root-Pfad für `kotlin` |
+| `cmd/ai-harness-init/`, `internal/gen/` (+ Tests) | update | Root-Pfad für `kotlin` — gemessen: der One-Shot verdrahtet `kotlin` am Root ohne Code-Änderung (`wireLang` mit Pfad `.` ist sprach-agnostisch); geändert sind nur die Tests (`TestRun_BootstrapKotlinRoot`, zwei Kotlin-Varianten in `TestEmittierteDateienTragenNurImZielAufloesendeKennungen`) und die Mutationsfälle 626–628 |
 | `harness/tools/full-smoke.sh`, `docs/user/e2e-abdeckung.md` | update | Stufe, erzeugte Sicht |
 
 ## 4. Trigger

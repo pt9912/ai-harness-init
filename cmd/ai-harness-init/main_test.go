@@ -379,6 +379,77 @@ func TestRun_AddLangRoot(t *testing.T) {
 	}
 }
 
+// TestRun_BootstrapKotlinRoot (LH-FA-01, LH-FA-04, ADR-0088): der One-Shot `--lang kotlin`
+// und `--lang kotlin --arch hexslice` legt das Kotlin-Skelett in einem Lauf am Repo-Root ab —
+// Gradle-Geruest und Kotlin-Dockerfile am Root, das UNSCOPED Fragment harness/mk/kotlin.mk mit
+// dem Build-Kontext ".", blocked/kotlin; hexslice zusaetzlich die .a-check.yml mit der
+// Auflösung fixed-root src/main/kotlin/app (der Gate-Lauf am Root mountet das ganze Ziel, die
+// Config ist modul-relativ und das Modul ist der Root) samt Arch-Gate-Fragment, flat keines.
+// Gemessen ist die abgelegte Datei-Menge und ihr Inhalt, nicht ein Gate-Lauf — den traegt die
+// full-smoke-Stufe "Kotlin als One-Shot am Root".
+func TestRun_BootstrapKotlinRoot(t *testing.T) {
+	for _, v := range []struct {
+		name string
+		args []string
+		hex  bool
+	}{
+		{"flat", []string{"--lang", "kotlin"}, false},
+		{"hexslice", []string{"--lang", "kotlin", "--arch", "hexslice"}, true},
+	} {
+		dir := gitRepo(t)
+		src := testSources(t)
+		src.baseline, src.baselineSHA = baselineFixture(t, struct{ name, content string }{
+			"templates/project-readme.template.md", "# <Projektname>\n"})
+		src.docMK = docMKFixture(t)
+		var out, errb bytes.Buffer
+		if code := run(append(append([]string{}, v.args...), dir), dir, src, &out, &errb); code != 0 {
+			t.Fatalf("%s: Bootstrap exit %d: %s", v.name, code, errb.String())
+		}
+		hexDateien := []string{".a-check.yml", "a-check.mk", "harness/mk/arch-kotlin.mk",
+			"src/main/kotlin/app/hexagon/domain/example/Greeting.kt"}
+		pflicht := []string{"settings.gradle.kts", "build.gradle.kts", "detekt.yml", "Dockerfile",
+			"src/main/kotlin/app/Main.kt", "harness/mk/kotlin.mk", "tools/harness/blocked/kotlin"}
+		if v.hex {
+			pflicht = append(pflicht, hexDateien...)
+		}
+		for _, rel := range pflicht {
+			if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel))); err != nil {
+				t.Errorf("%s: %s liegt nicht am Root: %v", v.name, rel, err)
+			}
+		}
+		for _, rel := range []string{"go.mod", "CMakeLists.txt", "harness/mk/go.mk", "harness/mk/cpp.mk"} {
+			if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel))); err == nil {
+				t.Errorf("%s: %s liegt am Root — der One-Shot hat eine fremde Sprache verdrahtet", v.name, rel)
+			}
+		}
+		if !v.hex {
+			for _, rel := range hexDateien {
+				if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel))); err == nil {
+					t.Errorf("flat: %s liegt am Root — ein flaches Ziel bekommt kein Arch-Gate (LH-QA-01)", rel)
+				}
+			}
+		}
+		if df := readFile(t, filepath.Join(dir, "Dockerfile")); !strings.Contains(df, "FROM gradle:${GRADLE_TAG} AS toolchain") {
+			t.Errorf("%s: das Root-Dockerfile ist nicht das Kotlin-Dockerfile:\n%s", v.name, df)
+		}
+		frag := readFile(t, filepath.Join(dir, filepath.FromSlash("harness/mk/kotlin.mk")))
+		for _, want := range []string{"\nGRADLE_TAG ?= ", "--target test -t $(IMAGE):test .\n", "--target lint -t $(IMAGE):lint .\n",
+			"--target build -t $(IMAGE):build .\n", "GATE_CHECKS += lint build test\n"} {
+			if !strings.Contains(frag, want) {
+				t.Errorf("%s: das Root-Fragment ist nicht die unscoped Fassung mit Kontext \".\", es fehlt %q:\n%s", v.name, want, frag)
+			}
+		}
+		if v.hex {
+			cfg := readFile(t, filepath.Join(dir, ".a-check.yml"))
+			for _, want := range []string{"\n    roots: [\"src/main/kotlin/app\"]\n", "\n    package_base: \"app\"\n"} {
+				if !strings.Contains(cfg, want) {
+					t.Errorf("hexslice: die Root-.a-check.yml traegt %q nicht:\n%s", want, cfg)
+				}
+			}
+		}
+	}
+}
+
 // TestRun_AddLangMixedRoot: am gemischten Root — ein zweites Sprach-Fragment liegt unter
 // harness/mk/ — kommt das neue Fragment in der gemischten Fassung (modul-scoped Targets +
 // unscoped Praezedenz-Erweiterung OHNE eigenes Rezept); das zuerst geschriebene Fragment

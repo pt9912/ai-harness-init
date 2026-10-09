@@ -167,6 +167,8 @@ git init -q "$tmprepo_doc"
 tmprepo_hex="$(mktemp -d -p "${TMPDIR:-/tmp}")"
 git init -q "$tmprepo_hex"
 tmprepo_cpphex="$(mktemp -d -p "${TMPDIR:-/tmp}")"
+tmprepo_kthexroot="$(mktemp -d -p "${TMPDIR:-/tmp}")"
+git init -q "$tmprepo_kthexroot"
 git init -q "$tmprepo_cpphex"
 tmprepo_traeger="$(mktemp -d -p "${TMPDIR:-/tmp}")"
 tmprepo_mixed="$(mktemp -d -p "${TMPDIR:-/tmp}")"
@@ -188,7 +190,7 @@ chmod 755 "$tmprepo_kf"
 tmprepo_baum="$(mktemp -d -p "${TMPDIR:-/tmp}")"
 chmod 755 "$tmprepo_baum"
 git init -q "$tmprepo_selbst"
-cleanup() { rm -rf "$tmpbin" "$tmpklon" "$tmprepo" "$tmprepo_doc" "$tmprepo_hex" "$tmprepo_cpphex" "$tmprepo_selbst" "$tmprepo_traeger" "$tmprepo_mixed" "$tmprepo_kf" "$tmprepo_baum"; }
+cleanup() { rm -rf "$tmpbin" "$tmpklon" "$tmprepo" "$tmprepo_doc" "$tmprepo_hex" "$tmprepo_cpphex" "$tmprepo_kthexroot" "$tmprepo_selbst" "$tmprepo_traeger" "$tmprepo_mixed" "$tmprepo_kf" "$tmprepo_baum"; }
 trap cleanup EXIT
 # Aus demselben Grund wie bei den uebrigen Zielen: der Klon dieses Ziels wird von
 # d-check read-only gemountet, und der Container laeuft als Nicht-Root.
@@ -203,6 +205,8 @@ chmod 755 "$tmprepo_mixed"
 chmod 755 "$tmprepo_hex"
 # Auch das cpp-Root-Ziel (slice-054) wird von a-check read-only gemountet.
 chmod 755 "$tmprepo_cpphex"
+# Ebenso das Kotlin-Root-Ziel: a-check und d-check mounten es read-only.
+chmod 755 "$tmprepo_kthexroot"
 # mktemp -d liefert 0700; der d-check-Container laeuft als Nicht-Root und kann den
 # 0700-Mount nicht traversieren. Ein echtes Adopter-Git-Repo hat 0755.
 chmod 755 "$tmprepo"
@@ -3228,6 +3232,70 @@ if [ "$override_rc" -ne 0 ]; then
 	einordnen "make a-check mit gesetztem A_CHECK_IMAGE" "$override_out"
 	exit 1
 fi
+
+# LH-FA-04/ADR-0088: der One-Shot `--lang kotlin --arch hexslice` legt das Kotlin-Schicht-
+# Skelett am Repo-Root ab. Das Kotlin-Dockerfile baut dann mit dem GANZEN Ziel als Kontext,
+# und das Arch-Gate mountet das ganze Ziel; die .a-check.yml ist modul-relativ und das Modul
+# ist der Root. Die Stufe misst make gates des Ziels gruen mit den drei Gradle-Gates und dem
+# Arch-Gate am Root, ohne den Hinweis auf nicht aufloesende Import-Symbole, und danach den
+# roten Fall: ein Import aus der Domain in einen Adapter faerbt das Arch-Gate am Root mit
+# core-impurity, an genau dieser Datei.
+echo "full-smoke: Root-Bootstrap (--lang kotlin --arch hexslice) in ein eigenes tmp-Repo ..."
+	e2e_abdeckung "LH-FA-01 LH-FA-04 LH-FA-07 LH-QA-01" "Der One-Shot --lang kotlin --arch hexslice bootstrappt das Kotlin-Schicht-Skelett am Repo-Root: make gates gruen mit den Gradle-Gates (test, lint, build) und dem Arch-Gate ueber dem ganzen Ziel, ohne den Hinweis auf nicht aufloesende Import-Symbole; ein Import aus der Domain in einen Adapter faerbt das Arch-Gate am Root rot mit core-impurity; NICHT gemessen: --lang kotlin ohne --arch am Root, die uebrigen Richtungs-Regeln" "Kotlin-Root-Modul (--arch hexslice) ohne"
+ktroot_start=$SECONDS
+( "$tmpbin/ai-harness-init" --lang kotlin --arch hexslice --name full-smoke-kthexroot "$tmprepo_kthexroot" )
+for rel in .a-check.yml a-check.mk harness/mk/arch-kotlin.mk harness/mk/kotlin.mk tools/harness/blocked/kotlin \
+           settings.gradle.kts build.gradle.kts Dockerfile \
+           src/main/kotlin/app/hexagon/domain/example/Greeting.kt src/main/kotlin/app/Main.kt; do
+	if [ ! -e "$tmprepo_kthexroot/$rel" ]; then
+		echo "full-smoke: FEHLER — Kotlin-Root-Modul (--arch hexslice) ohne $rel." >&2
+		exit 1
+	fi
+done
+ktroot_rc=0
+ktroot_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_kthexroot" gates 2>&1 )" || ktroot_rc=$?
+printf '%s\n' "$ktroot_out"
+if [ "$ktroot_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — make gates am Kotlin-Root-Modul ist NICHT Exit 0 (Gradle-Kontext am Root? Schicht-Config falsch verortet?)." >&2
+	einordnen "make -j gates am Kotlin-Root-Modul" "$ktroot_out"
+	exit 1
+fi
+ktroot_missing=""
+for marker in "--build-arg GRADLE_TAG=" "--target test -t app:test ." "--target lint -t app:lint ." \
+              "--target build -t app:build ." "\"$tmprepo_kthexroot\":/src:ro ghcr.io/pt9912/a-check"; do
+	grep -qF -- "$marker" <<<"$ktroot_out" || ktroot_missing="$ktroot_missing [$marker]"
+done
+if [ -n "$ktroot_missing" ]; then
+	echo "full-smoke: FEHLER — make gates am Kotlin-Root-Modul ohne Beleg fuer:$ktroot_missing — Gradle-Gate oder Arch-Gate lief nicht am Root?" >&2
+	exit 1
+fi
+if grep -qF -- 'Import-Symbolen' <<<"$ktroot_out"; then
+	echo "full-smoke: FEHLER — das Kotlin-Arch-Gate am Root ist gruen, loest aber keinen Import auf (resolution der .a-check.yml am Root?):" >&2
+	grep -F -- 'Import-Symbolen' <<<"$ktroot_out" >&2
+	exit 1
+fi
+ktroot_layer="$tmprepo_kthexroot/src/main/kotlin/app/hexagon/domain/example/Greeting.kt"
+cp "$ktroot_layer" "$ktroot_layer.orig"
+psed_i 's|^package app.hexagon.domain.example$|&\
+\
+import app.adapters.driven.notify.StdoutNotifier|' "$ktroot_layer"
+ktrootarch_rc=0
+ktrootarch_out="$( make -C "$tmprepo_kthexroot" a-check 2>&1 )" || ktrootarch_rc=$?
+mv "$ktroot_layer.orig" "$ktroot_layer"
+if [ "$ktrootarch_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — das Kotlin-Arch-Gate am Root bleibt bei einem Import aus der Domain in einen Adapter gruen (zahnloses Gate, AGENTS.md §3.6/LH-QA-01)." >&2
+	printf '%s\n' "$ktrootarch_out" >&2
+	exit 1
+fi
+if ! grep -qF -- 'Greeting.kt:4: core-impurity: Kern importiert app.adapters.driven.notify.StdoutNotifier' <<<"$ktrootarch_out"; then
+	echo "full-smoke: FEHLER — Kotlin-Arch-Gate am Root rot, aber nicht mit core-impurity an der Domain-Datei (rot aus falschem Grund?). Ausgabe:" >&2
+	printf '%s\n' "$ktrootarch_out" >&2
+	einordnen "make a-check am Kotlin-Root-Modul (Arch-Gate-Zahn)" "$ktrootarch_out"
+	exit 1
+fi
+echo "full-smoke: Kotlin-Arch-Gate-Zahn am Root belegt (Import aus der Domain in einen Adapter faerbt a-check rot, danach zurueckgenommen):"
+grep -F -- 'core-impurity' <<<"$ktrootarch_out" | sed -n '1,2s/^/full-smoke:   /p'
+echo "full-smoke: Kotlin-Root-Stufe dauerte $(( SECONDS - ktroot_start ))s (Bootstrap, make -j gates und Arch-Zahn)."
 
 # slice-046 (Review F-2): ZWEI hexSlice-Module in einem Mono-Repo. Jedes bringt sein
 # Arch-Gate-Fragment mit, und jedes Fragment will `include a-check.mk`. Ohne den

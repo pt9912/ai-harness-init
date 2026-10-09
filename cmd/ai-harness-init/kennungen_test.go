@@ -107,6 +107,8 @@ func TestEmittierteDateienTragenNurImZielAufloesendeKennungen(t *testing.T) {
 		{"go-hexslice", []string{"--lang", "go", "--arch", "hexslice"}, false},
 		{"cpp-flat", []string{"--lang", "cpp"}, false},
 		{"cpp-hexslice", []string{"--lang", "cpp", "--arch", "hexslice"}, false},
+		{"kotlin-flat", []string{"--lang", "kotlin"}, false},
+		{"kotlin-hexslice", []string{"--lang", "kotlin", "--arch", "hexslice"}, false},
 	}
 	fund := map[string]map[string]bool{}
 	for _, v := range varianten {
