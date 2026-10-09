@@ -72,10 +72,10 @@
 Kein Eintrag erreicht im Fenster erstmals 3×; kein Zielort-Feld. Wiederauftreten nach Verkörperung
 (4×-Regel, Architect-Verdikt `docs/reviews/2026-10-09-welle-kotlin-skelett-architect-verdikt.md`):
 
-- **Sensor benannt, nicht gebaut:** `BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext`
+- **Sensor benannt, Slice geschnitten:** `BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext`
   (10 Belege, 6 nach `seit welle-15`). Abschnitts-Wächter über die Rolle im Commit-Subject, Werkzeug
-  über `RANGE=<claim>..HEAD`, fasst 9 von 10 Belegen. Ausgang bleibt *verkörpert*; ob ein Slice ihn
-  trägt, entscheidet der Auftraggeber (Architect empfiehlt: schneiden).
+  über `RANGE=<claim>..HEAD`, fasst 9 von 10 Belegen. Ausgang wechselt auf *geplant*:
+  `slice-rollen-grenze-eines-commits-hat-ein-werkzeug` (Auftraggeber: Option A).
 - **Kein Sensor angemessen, neue Begründung:** `BEO-ALL/plan-abweichung-landet-im-commit-bericht-statt-im-plan`
   — §3-Spalte 1 hat keine geschlossene Pfad-Form; Träger Plan-vs-Code-Diff des Verifiers.
 - **Kein Sensor möglich, Begründung unverändert oder auf die Unterklasse erweitert:**
@@ -98,12 +98,12 @@ Kein Eintrag erreicht im Fenster erstmals 3×; kein Zielort-Feld. Wiederauftrete
 
 ## Folge-Slices
 
-- Kein neuer Slice. Die *geplant*-Ausgänge tragen `slice-181-grenzen-liste-vollstaendig-oder-fail-closed`,
+- Neu in `open/`: `slice-rollen-grenze-eines-commits-hat-ein-werkzeug` (Sensor B-4, Auftraggeber-Entscheidung
+  Option A vom 2026-10-09). Die übrigen *geplant*-Ausgänge tragen `slice-181-grenzen-liste-vollstaendig-oder-fail-closed`,
   `slice-werkzeug-aussage-traegt-quelle-stand-und-messstelle` und
   `slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor`; ADR-0062 Trigger 2 trägt
   `slice-151-spec-straten-haben-eine-schreibende-rolle`.
-- **Offen beim Auftraggeber:** Sensor B-4 schneiden (Option A, dann Stand *geplant* mit Kennung)
-  oder nicht (Option B, der gesetzte Stand); Folge-Slice für das gemischte-Root-Gate. Ein Slice
+- **Offen beim Auftraggeber:** Folge-Slice für das gemischte-Root-Gate; ein Slice
   entsteht erst nach der Entscheidung.
 
 ## Verifikation

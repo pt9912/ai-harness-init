@@ -1,4 +1,9 @@
-**Stand:** verkörpert
+**Stand:** geplant
+
+Kennung: [`slice-rollen-grenze-eines-commits-hat-ein-werkzeug`](../../../open/slice-rollen-grenze-eines-commits-hat-ein-werkzeug.md)
+— Abschnitts-Wächter über die Rolle im Commit-Subject (Verdikt `2026-10-09-welle-kotlin-skelett-architect-verdikt`
+B-4, Auftraggeber-Entscheidung Option A vom 2026-10-09). Die Zeile in `AGENTS.md` §3.10 unten bleibt
+verkörpert, bis der Slice liefert.
 
 Zielort: [`AGENTS.md`](../../../../../../AGENTS.md) §3.10 — den Slice schließt der Planner, nicht
 der Lauf, der ihn gebaut hat. Herkunfts-Anker: `seit welle-15`.
@@ -18,7 +23,3 @@ Reviewer-Skill und Adaptions-Einträge. Für sie tragen
 [`AGENTS.md`](../../../../../../AGENTS.md) §3.8 und
 [`ADR-0028`](../../../../../../docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
 unverändert; auch dort ist die fehlende Trägerschaft der Befund und nicht die fehlende Regel.
-
-**Sensor benannt (B-4), Schnitt entscheidet der Auftraggeber.** Abschnitts-Wächter über die Rolle im
-Commit-Subject (Verdikt `2026-10-09-welle-kotlin-skelett-architect-verdikt`, B-4); kein Slice trägt ihn. Bis zur Entscheidung steht die Lücke als
-akzeptiertes Negativ mit dem Sensor als benannter Möglichkeit.
