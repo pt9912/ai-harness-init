@@ -39,6 +39,21 @@ meldet"*) eingetreten ist, ist die Frage an den Architect.
   4. Ein Fall-Skript, das mehr als seine `# files:` braucht, scheitert in der Kopie und wird als
      Befund gemeldet. Im Bestand trifft das auf keinen der 621 Fälle zu
      (`bash harness/tools/mutate.sh --greift` auf dem Stand vor diesem Slice).
+  5. **Verdrahtung Rezept → Modus** (Review M-1). Stand: gedeckt. `test/gate-nachweis-kante.bats`
+     hält nur, dass `mutate-greift` an `record-gates` hängt. Was das Rezept tut, hält der Fall
+     „greift: das Rezept von make mutate-greift faehrt mutate.sh --greift als Prozess …" in
+     `test/mutate-driver.bats`; er liest das Rezept aus dem `Makefile` und fährt es als Prozess.
+     Zahn: `test/mutations/636-greift-einstieg-faehrt-den-modus-nicht.sh`.
+  6. **Präfix-Pfade in `# files:`** (Review M-2). Stand: gedeckt. Der Vergleich läuft je exaktem
+     Pfad; bats-Fall „greift: ein Pfad, der Praefix eines anderen in # files: ist, …".
+  7. **GNU-Werkzeuge auf dem Host** (Review M-3). Stand: offen, als Grenze benannt in
+     `harness/sensors/mutate.md` §Greift-Modus. Die Fall-Skripte nutzen `sed -i` ohne Suffix und
+     `\t` im Muster, der Treiber `mktemp -d -p`; der Modus läuft ohne Container. Ein Nicht-GNU-Host
+     ist nicht gemessen. Eine Norm, die den Sensor nennt, sagt diese Bedingung mit.
+  8. **`MUTATE_CASES` aus der Umgebung** (Review I-1). Stand: im Gate wirkungslos. Das Rezept
+     `make mutate-greift` setzt `unset MUTATE_CASES` vor den Aufruf; beim Direktaufruf
+     `bash harness/tools/mutate.sh --greift` engt es weiter ein. Gehalten vom Fall aus Punkt 5,
+     Zahn `test/mutations/637-greift-rezept-laesst-mutate-cases-durch.sh`.
 - **Beleg im Bestand:** Der erste Lauf über HEAD meldete die Fälle 145 und 147 als entwaffnet: Ihr
   Anker zitierte die Zeile vor `ac429eec`. Der Implementer-Lauf hat sie im eigenen Commit nachgezogen
   (`9fbc304c`). Ob das ein weiterer Beleg in
