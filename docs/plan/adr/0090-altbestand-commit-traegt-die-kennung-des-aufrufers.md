@@ -1,6 +1,6 @@
 # ADR-0090: Der Altbestand-Commit von `archive-welle` trägt die Kennung, die der Aufrufer nennt — das Werkzeug bringt keine mit
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-10-09
 
@@ -98,7 +98,10 @@ Kennung; weiter prüft das Werkzeug den Wert nicht (Festlegung 1).
   Kennung und erwartet `[flacher-klon]` (Festlegung 3a); `harness/README.md` §Traceability, Zeile
   *Commit aus einem Repo-Werkzeug* — der Altbestand-Commit trägt die Kennung des Aufrufers, im
   Dogfood voreingestellt `ADR-0041`; der Kopf des emittierten `hooks-install.mk` (*WAS ER
-  MITNIMMT*) nennt `KENNUNG=<K>` als den Weg, auf dem `archive-welle` eine Kennung bekommt.
+  MITNIMMT*) nennt `KENNUNG=<K>` als den Weg, auf dem `archive-welle` eine Kennung bekommt;
+  `traegerAusnahmen` in `cmd/ai-harness-init/kennungen_test.go` verliert den Eintrag für
+  `internal/archive/anwenden.go` mit der Konstante; `harness/sensors/archive-welle.md` Punkt 7
+  nennt statt `ADR-0041` die Kennung des Aufrufers, im Dogfood voreingestellt `ADR-0041`.
 
 ## Fitness Function (falls maschinell prüfbar)
 
@@ -124,6 +127,7 @@ am aktivierten Träger, `make full-smoke` rot.
 |---|---|---|
 | 2026-10-09 | Proposed | Übergabe aus `slice-ziel-traegt-keine-kennung-dieses-repos` §4/§6 |
 | 2026-10-09 | Proposed, nachgebessert | Festlegung 3, Folgepflicht und Fitness Function nach der Konsistenz-Runde |
+| 2026-10-09 | **Accepted** | Review `2026-10-09-adr-0090-review` (blockiert, 2 MEDIUM), Nachbesserung `c6d5d419`, Nachprüfung `2026-10-09-adr-0090-nachpruefung` (annahmereif; LOW N-1 in die Folgepflicht übernommen), Annahme durch den Auftraggeber am 2026-10-09 ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1) |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
