@@ -20,6 +20,8 @@ nicht hier.
 - [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
 - [welle-kotlin-skelett — Kotlin als drittes Sprachskelett](../welle-kotlin-skelett.md)
 
+**Nichts in Arbeit.**
+
 ## Nächste Wellen
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
