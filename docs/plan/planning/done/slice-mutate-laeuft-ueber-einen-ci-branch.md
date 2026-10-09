@@ -139,7 +139,7 @@ Konstant:
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -262,7 +262,18 @@ Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md)
 - **Archivierung:** entfällt ([`MR-078`](../../../../harness/conventions.md#mr-078); `archive-slice`
   ist nicht gebaut).
 - **Risiken aus §6:** Jede Zeile in §6 hat ihren Ausgang.
-- **Drei Paarungen:** werden nach dem `git mv` geprüft, im Commit danach.
+- **Paarungen geprüft am 2026-10-09** (nach dem Move):
+  - (a) *Anker*: `AGENTS.md` existiert. §3.6 trägt `seit slice-mutate-laeuft-ueber-einen-ci-branch`,
+    gezählt mit `sed -n '/^### 3.6/,/^### 3.7/p' AGENTS.md | grep -c …` → 1, und zwar im Paar,
+    nicht in der Überschrift.
+  - (b) *Folge-Slice*: Kein Folge-Slice ist genannt.
+  - (c) *Register*: Die fünf genannten Pfade existieren. Ihre `evidence/` tragen 3, 1, 1, 9 und 1
+    Dateien.
+  - Zweite Hälfte über das ganze Register: 2 Verzeichnisse ohne Beleg, namentlich
+    `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht` und
+    `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`. Sie gelten nicht als getragen
+    ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+    Festlegung 2).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
