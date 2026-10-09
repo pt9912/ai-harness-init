@@ -52,7 +52,7 @@ TRAEGER_SHA256_WINDOWS_ARM64 ?= d20f1409211e88be72424342c9be804ebaf1f9f84eb1539d
 TRAEGER_CARRIER ?= .harness/state/bin/ai-harness-init
 export TRAEGER_TAG TRAEGER_SHA256_LINUX_AMD64 TRAEGER_SHA256_LINUX_ARM64 TRAEGER_SHA256_DARWIN_AMD64 TRAEGER_SHA256_DARWIN_ARM64 TRAEGER_SHA256_WINDOWS_AMD64 TRAEGER_SHA256_WINDOWS_ARM64 TRAEGER_CARRIER
 
-.PHONY: help gates record-gates test test-bats test-go test-go-pids-guard lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims register-ausgang history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp mutate slice-mv archive-welle traeger-fetch release-warten tap-check tap-nachzug vendor-baseline
+.PHONY: help gates record-gates test test-bats test-go test-go-pids-guard lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims register-ausgang history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp freshness-kotlin mutate slice-mv archive-welle traeger-fetch release-warten tap-check tap-nachzug vendor-baseline
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
@@ -429,6 +429,12 @@ freshness-go: ## Neuere stabile Go-Version als GO_VERSION melden (read-only, Que
 freshness-cpp: ## Neueres ubuntu-LTS als DefaultCppVersion melden (read-only, Quelle Docker Hub) — Maintenance/CI, NICHT in gates
 	@pinned=$$(sed -n 's/.*DefaultCppVersion = "\([0-9.]*\)".*/\1/p' internal/gen/cpp.go); \
 	  CPP_PINNED="$$pinned" bash harness/tools/cpp-freshness.sh
+
+# Kotlin/gradle-Achse mit Sonderquelle Docker Hub, Gradle-Achse bei fester JDK-Achse
+# des Pins. Pin-Quelle: DefaultKotlinVersion in internal/gen/kotlin.go — das Skript
+# liest sie selbst, KOTLIN_PINNED ersetzt sie (ADR-0088 Festlegung 2).
+freshness-kotlin: ## Neueren gradle-Image-Tag als DefaultKotlinVersion melden (read-only, Quelle Docker Hub) — Maintenance/CI, NICHT in gates
+	@bash harness/tools/kotlin-freshness.sh
 
 # Der Traeger ist ein HOST-Binary: der Hook ruft ihn je Tool-Call, ein Container-Start
 # je Aufruf waere um zwei Groessenordnungen teurer als der Schreiber selbst. Gebaut

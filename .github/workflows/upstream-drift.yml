@@ -60,3 +60,7 @@ jobs:
       # C++/ubuntu-Base-Tag-Achse (slice-042): Sonderquelle Docker Hub, LTS-Extraktion.
       - if: '!cancelled()'
         run: make freshness-cpp
+      # Kotlin/gradle-Image-Tag-Achse (ADR-0088 Festlegung 2): Sonderquelle Docker Hub,
+      # Gradle-Achse bei fester JDK-Achse des Pins.
+      - if: '!cancelled()'
+        run: make freshness-kotlin

@@ -47,6 +47,8 @@ existiert — kein Gate, wie `freshness-cpp`.
 | `kotlin-freshness.sh` unter `harness/tools/`, `Makefile` | neu / update | Werkzeug und Ziel |
 | `harness/README.md` | update | Werkzeug-Zeile |
 | `test/kotlin-freshness.bats` | neu | beide Richtungen |
+| `.github/workflows/upstream-drift.yml` | update | Aufrufer im Nachtlauf, wie `freshness-cpp`; der Gate-Lauf bleibt netzlos (§6) |
+| `test/mutations/` | neu | je Zusage des Skripts ein Fall mit Gegenprobe |
 
 ## 4. Trigger
 
