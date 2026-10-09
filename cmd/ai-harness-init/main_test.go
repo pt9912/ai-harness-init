@@ -1102,3 +1102,18 @@ func TestRun_BootstrapMeldetNeueTargets(t *testing.T) {
 		t.Errorf("zweiter Bootstrap: Zahlen-Zeile statt Einzelnennung oder der Satz zum Doku-Gate fehlt, stdout:\n%s", out.String())
 	}
 }
+
+// TestUsage_NenntJedeSpracheUndIhrenKnopf: der Hilfetext ist der oeffentliche Vertrag der
+// Sprach-Achse (LH-FA-04) — jede Sprache mit gen-Profil steht in der add-lang-Hilfe, und ihr
+// Versions-Knopf SKEL_<LANG>_VERSION steht in der Umgebungs-Liste der Haupthilfe.
+func TestUsage_NenntJedeSpracheUndIhrenKnopf(t *testing.T) {
+	for _, lang := range gen.SupportedLangs() {
+		if !strings.Contains(addLangUsage, lang) {
+			t.Errorf("add-lang-Hilfe nennt die Sprache %q nicht", lang)
+		}
+		knopf := "SKEL_" + strings.ToUpper(lang) + "_VERSION"
+		if !strings.Contains(usage, knopf) {
+			t.Errorf("Haupthilfe nennt den Knopf %s nicht", knopf)
+		}
+	}
+}

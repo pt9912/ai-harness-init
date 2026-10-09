@@ -6,4 +6,4 @@
 # statt des Skeletts. Die zweite Sprache waere nicht mehr registriert (LH-FA-04). Der
 # Profil-Waechter muss rot werden (Generate scheitert vor dem Datei-Satz).
 set -euo pipefail
-sed -i '/"cpp": cppProfile,/d' internal/gen/gen.go
+sed -i '/"cpp": *cppProfile,/d' internal/gen/gen.go

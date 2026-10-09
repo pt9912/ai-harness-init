@@ -36,7 +36,7 @@ func zeilenendenEmit(t *testing.T) string {
 	if err := emit.Enforce(dir, io.Discard); err != nil {
 		t.Fatalf("Enforce: %v", err)
 	}
-	for _, lang := range []string{"go", "cpp"} {
+	for _, lang := range []string{"go", "cpp", "kotlin"} {
 		if err := emit.BlockedFragment(dir, lang); err != nil {
 			t.Fatalf("BlockedFragment(%s): %v", lang, err)
 		}

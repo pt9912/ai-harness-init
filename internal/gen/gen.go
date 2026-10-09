@@ -116,8 +116,9 @@ func SupportedLangs() []string {
 // neuer Eintrag, kein Umbau der Mechanik (LH-FA-04: sprach-agnostisch).
 func profiles() map[string]func(version, arch string) map[string]string {
 	return map[string]func(string, string) map[string]string{
-		"go":  goProfile,
-		"cpp": cppProfile,
+		"go":     goProfile,
+		"cpp":    cppProfile,
+		"kotlin": kotlinProfile,
 	}
 }
 
@@ -133,7 +134,8 @@ const DefaultArch = archFlat
 // Exit 2 gibt, statt still ein Geruestung-only-Skelett zu schreiben (slice-045a-Review
 // INFO-1).
 //
-// STAND slice-058: go traegt flat + hexslice + hexagonal, cpp traegt flat + hexslice.
+// STAND: go traegt flat + hexslice + hexagonal, cpp traegt flat + hexslice, kotlin traegt
+// flat (ADR-0088).
 // Die sprach-spezifische zweite Stufe der Arch-Validierung ist damit wieder von aussen
 // ERREICHBAR und bewacht — `cpp --arch hexagonal` ist eine existierende Architektur, die
 // dieser Renderer nicht rendert (TestGenerateArch_LangSpecificArchRejected haelt es fest,
@@ -143,8 +145,9 @@ const DefaultArch = archFlat
 // Doppel-Pflegepunkt).
 func langArchs() map[string][]string {
 	return map[string][]string{
-		"go":  {archFlat, archHexslice, archHexagonal},
-		"cpp": {archFlat, archHexslice},
+		"go":     {archFlat, archHexslice, archHexagonal},
+		"cpp":    {archFlat, archHexslice},
+		"kotlin": {archFlat},
 	}
 }
 
@@ -166,7 +169,8 @@ func archsForLang(lang string) []string {
 	return archs
 }
 
-// DefaultVersion liefert die gepinnte Default-Toolchain-Version fuer lang (go: die
+// DefaultVersion liefert die gepinnte Default-Toolchain-Version fuer lang (kotlin: der
+// gradle-Image-Tag; go: die
 // Go-Version; cpp: der ubuntu-Base-Tag). Die Bedeutung von „Version" ist per Sprache
 // verschieden — der Aufrufer (cmd) faedelt sie generisch (SKEL_<LANG>_VERSION), das
 // Profil interpretiert sie. Unbekannte Sprache -> "" (Generate faengt sie separat via
@@ -177,6 +181,8 @@ func DefaultVersion(lang string) string {
 		return DefaultGoVersion
 	case "cpp":
 		return DefaultCppVersion
+	case "kotlin":
+		return DefaultKotlinVersion
 	}
 	return ""
 }
@@ -239,8 +245,9 @@ func CodeGateFragmentMixed(lang, path, version string) (string, error) {
 // Build-Kontext, Toolchain-Version -> Fragment-Inhalt).
 func fragmentsMixed() map[string]func(modul, context, version string) string {
 	return map[string]func(string, string, string) string{
-		"go":  goFragmentMixed,
-		"cpp": cppFragmentMixed,
+		"go":     goFragmentMixed,
+		"cpp":    cppFragmentMixed,
+		"kotlin": kotlinFragmentMixed,
 	}
 }
 
@@ -263,7 +270,8 @@ func FragmentLangs() []string {
 // <pfad>-aware ist (Kontext/Scoping), das Skelett aber ortsunabhaengig.
 func fragments() map[string]func(modul, context, version string) string {
 	return map[string]func(string, string, string) string{
-		"go":  goFragment,
-		"cpp": cppFragment,
+		"go":     goFragment,
+		"cpp":    cppFragment,
+		"kotlin": kotlinFragment,
 	}
 }

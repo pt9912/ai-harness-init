@@ -479,6 +479,7 @@ Alle Umgebungsvariablen sind **optional**. Ohne sie gelten festgelegte, reproduz
 |---|---|
 | `COURSE_TAG` | Kurs-Version für das Regelwerk und die Vorlagen. |
 | `SKEL_GO_VERSION` | Go-Version des erzeugten Go-Grundgerüsts. |
+| `SKEL_KOTLIN_VERSION` | Tag des gradle-Images (`gradle:<ver>-jdk<NN>`) des erzeugten Kotlin-Grundgerüsts (bestimmt Gradle und JDK). |
 | `SKEL_CPP_VERSION` | Ubuntu-Basis-Tag des erzeugten C++-Grundgerüsts (bestimmt Compiler/CMake/clang-tidy). Allgemein: `SKEL_<SPRACHE>_VERSION` setzt die Toolchain-Version je Sprache. |
 | `BASELINE_SHA256` | Erwartete Prüfsumme des heruntergeladenen Regelwerk-Pakets. |
 | `DCHECK_IMAGE` | Abweichende Referenz für das Dokumentations-Prüf-Image. |

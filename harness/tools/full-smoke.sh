@@ -2694,6 +2694,49 @@ if ! printf '%s' "$cppguard_out" | grep -q '"decision": "block"'; then
 	exit 1
 fi
 
+# LH-FA-04/ADR-0088: add-lang kotlin ergaenzt eine DRITTE Sprache demselben Mono-Repo — das
+# JVM-Gradle-Einzelmodul (settings.gradle.kts, build.gradle.kts, Dockerfile, detekt.yml) plus
+# modul-scoped Code-Gate-Fragment und blocked/kotlin. Danach faehrt `make -j gates`
+# zusaetzlich die realen Kotlin-Gates im gradle-Image (assemble, test, detekt); der reale
+# Lauf ist der LH-QA-01-Beleg, dass die Stages existieren und das Skelett lint-sauber ist.
+echo "full-smoke: add-lang kotlin apps/kt ins Mono-Repo (dritte Sprache, JVM-Gradle) ..."
+	e2e_abdeckung "LH-FA-04 LH-FA-06 LH-QA-01" "Eine dritte Sprache (Kotlin, flat) im selben Ziel, mit den realen Gradle-Gates (assemble, test, detekt) und dem Guard gegen die Host-Toolchain" "Kotlin-Gate kaputt"
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang kotlin apps/kt )
+for rel in apps/kt/settings.gradle.kts apps/kt/build.gradle.kts apps/kt/Dockerfile apps/kt/detekt.yml \
+           apps/kt/src/main/kotlin/app/Main.kt apps/kt/src/test/kotlin/app/MainTest.kt \
+           harness/mk/apps-kt.mk tools/harness/blocked/kotlin; do
+	if [ ! -e "$tmprepo_doc/$rel" ]; then
+		echo "full-smoke: FEHLER — add-lang kotlin dropte $rel nicht (dritte Sprache kaputt)." >&2
+		exit 1
+	fi
+done
+kt_rc=0
+kt_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || kt_rc=$?
+printf '%s\n' "$kt_out"
+if [ "$kt_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — make gates nach add-lang kotlin ist NICHT Exit 0 (Kotlin-Gate kaputt)." >&2
+	einordnen "make -j gates nach add-lang kotlin (apps/kt)" "$kt_out"
+	exit 1
+fi
+# Die drei Kotlin-Gates MUESSEN real gelaufen sein: je Ziel die Recipe-Zeile des
+# modul-scoped Fragments (Kontext apps/kt) und der detekt-Schritt der lint-Stage im
+# BuildKit-Protokoll — er steht dort auch, wenn die Schicht aus dem Cache kommt.
+kt_missing=""
+for marker in "--target test -t apps-kt:test apps/kt" "--target lint -t apps-kt:lint apps/kt" \
+              "--target build -t apps-kt:build apps/kt" "RUN gradle --no-daemon detekt"; do
+	grep -qF -- "$marker" <<<"$kt_out" || kt_missing="$kt_missing [$marker]"
+done
+if [ -n "$kt_missing" ]; then
+	echo "full-smoke: FEHLER — make gates nach add-lang kotlin ohne Beleg fuer:$kt_missing — Kotlin-Gate lief nicht?" >&2
+	exit 1
+fi
+# Der Guard blockt jetzt die Kotlin-Host-Toolchain (blocked/kotlin via add-lang).
+ktguard_out="$(printf '%s' '{"tool_input":{"command":"gradle build"}}' | bash "$guard_doc" || true)"
+if ! grep -q '"decision": "block"' <<<"$ktguard_out"; then
+	echo "full-smoke: FEHLER — Guard blockt 'gradle' nach add-lang kotlin NICHT (blocked/kotlin kaputt). Ausgabe: [$ktguard_out]" >&2
+	exit 1
+fi
+
 # Der GEMISCHTE ROOT (LH-FA-04/LH-QA-01): zwei Sprach-Fragmente am selben Root
 # (harness/mk/go.mk + harness/mk/cpp.mk). Die gemischte Fassung komponiert: ein Fragment
 # traegt die unscoped Rezepte, das andere modul-scoped Targets plus Praezedenz-
@@ -2743,6 +2786,43 @@ for ziel in test lint build; do
 	# beide Woertlichkeiten geprueft.
 	if grep -qE 'overriding recipe for target|Rezept für das Ziel' <<<"$mixed_out"; then
 		echo "full-smoke: FEHLER — make $ziel meldet am gemischten Root eine Rezept-Ueberschreibung (Komposition kaputt)." >&2
+		exit 1
+	fi
+done
+
+# Der GEMISCHTE ROOT mit DREI Sprach-Fragmenten (LH-FA-04, ADR-0088): add-lang kotlin . an
+# einem Root, an dem go.mk und cpp.mk schon liegen, waehlt die gemischte Fassung; der direkte
+# Aufruf bedient danach alle drei Kontexte ohne Rezept-Ueberschreibung. Gemessen sind die
+# Rezept-Zeilen, nicht das Kotlin-Geruest: das Dockerfile am Root ist das des ersten Moduls
+# (Skelett-Code skip-if-present), der Kontext kotlin: baut darum dieses.
+echo "full-smoke: gemischter Root go+cpp+kotlin — make test/lint/build direkt bedient drei Sprach-Fragmente ..."
+	e2e_abdeckung "LH-FA-04 LH-QA-01" "Der direkte Aufruf am gemischten Root bedient drei Sprach-Kontexte (go, cpp, kotlin) ohne Rezept-Ueberschreibung; gemessen sind die Rezept-Zeilen der drei Kontexte, nicht das Kotlin-Geruest — das Dockerfile am Root ist das des ersten Moduls" "am gemischten Root mit Kotlin"
+( cd "$tmprepo_mixed" && "$tmpbin/ai-harness-init" add-lang kotlin . )
+for rel in harness/mk/go.mk harness/mk/cpp.mk harness/mk/kotlin.mk tools/harness/blocked/kotlin build.gradle.kts; do
+	if [ ! -e "$tmprepo_mixed/$rel" ]; then
+		echo "full-smoke: FEHLER — das gemischte Root-Ziel traegt $rel nicht (add-lang kotlin . kaputt)." >&2
+		exit 1
+	fi
+done
+for ziel in test lint build; do
+	mixedkt_rc=0
+	mixedkt_out="$( make -C "$tmprepo_mixed" "$ziel" 2>&1 )" || mixedkt_rc=$?
+	printf '%s\n' "$mixedkt_out"
+	if [ "$mixedkt_rc" -ne 0 ]; then
+		echo "full-smoke: FEHLER — make $ziel am gemischten Root mit Kotlin ist NICHT Exit 0 (Komposition kaputt)." >&2
+		einordnen "make $ziel am gemischten Root mit Kotlin (direkter Aufruf)" "$mixedkt_out"
+		exit 1
+	fi
+	mixedkt_missing=""
+	for marker in "--target $ziel -t app:" "--target $ziel -t cpp:" "--target $ziel -t kotlin:"; do
+		grep -qF -- "$marker" <<<"$mixedkt_out" || mixedkt_missing="$mixedkt_missing [$marker]"
+	done
+	if [ -n "$mixedkt_missing" ]; then
+		echo "full-smoke: FEHLER — make $ziel am gemischten Root mit Kotlin ohne Beleg fuer:$mixedkt_missing — ein Kontext fiel heraus." >&2
+		exit 1
+	fi
+	if grep -qE 'overriding recipe for target|Rezept für das Ziel' <<<"$mixedkt_out"; then
+		echo "full-smoke: FEHLER — make $ziel meldet am gemischten Root mit Kotlin eine Rezept-Ueberschreibung (Komposition kaputt)." >&2
 		exit 1
 	fi
 done

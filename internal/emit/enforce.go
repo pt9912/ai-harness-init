@@ -242,8 +242,9 @@ func BlockedFragmentPath(lang string) string { return blockedDir + "/" + lang }
 // Sprach-Toolchain im Ziel ungehindert laufen (stille Luecke).
 func blockedByLang() map[string]string {
 	return map[string]string{
-		"go":  "go gofmt golangci-lint staticcheck\n",
-		"cpp": "g++ gcc cmake clang-tidy clang clang++\n",
+		"go":     "go gofmt golangci-lint staticcheck\n",
+		"cpp":    "g++ gcc cmake clang-tidy clang clang++\n",
+		"kotlin": "gradle gradlew kotlin kotlinc java javac jar jshell detekt ktlint\n",
 	}
 }
 
