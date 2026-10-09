@@ -19,3 +19,6 @@ behauptet. Träger ist der Lauf, der die Aussage schreibt.
 (Gelingens-Zweig, skip-if-present, Melde-Kanal) eine `full-smoke`-Stufe auf vorbelegtem Grund. Kein
 bestehender Slice trägt ihn; ob ein Slice ihn bekommt oder die Lücke als akzeptiertes Negativ steht,
 entscheidet der Auftraggeber.
+
+**Unterklasse Kurzbeschreibung einer E2E-Stufe gegen ihren Körper:** kein Sensor möglich
+(Bedeutungsvergleich), Träger Review (Verdikt `2026-10-09-welle-kotlin-skelett-architect-verdikt`, B-3).

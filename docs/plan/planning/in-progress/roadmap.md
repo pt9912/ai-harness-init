@@ -18,7 +18,6 @@ nicht hier.
 
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
 - [welle-11 — Träger-Aussage](../welle-11-traeger-aussage.md)
-- [welle-kotlin-skelett — Kotlin als drittes Sprachskelett](../welle-kotlin-skelett.md)
 
 **Nichts in Arbeit.**
 
@@ -89,6 +88,7 @@ flowchart LR
     W18[welle-adopter-weg-im-ziel<br/>Adopter-Weg im Ziel]
     W19[welle-erfassungsschicht-im-ziel<br/>Erfassungsschicht im Ziel]
     W20[welle-handbuch-zeigt-den-bestand<br/>Handbuch zeigt den Bestand]
+    W21[welle-kotlin-skelett<br/>Kotlin als drittes Sprachskelett]
     W1 --> W2 --> W3 --> W4 --> W5
     W5 -.-> W6
     W5 --> W7 --> W8
@@ -103,6 +103,7 @@ flowchart LR
     S122([slice-122 done<br/>d-check-Pin v0.65.0]) --> W13
     S187([slice-187 done<br/>d-check-Pin v0.74.1]) --> W13
     A0022([ADR-0022 Accepted<br/>+ slice-093 done]) --> W12
+    A0088([ADR-0088 Accepted]) --> W21
 ```
 
 ## Abgeschlossene Wellen
@@ -132,6 +133,7 @@ Ergebnis-Notiz, keine Nummernfolge.
 | [welle-adopter-weg-im-ziel](../done/welle-adopter-weg-im-ziel.md) | 2026-10-08 | [welle-adopter-weg-im-ziel-results.md](../done/welle-adopter-weg-im-ziel-results.md) |
 | [welle-erfassungsschicht-im-ziel](../done/welle-erfassungsschicht-im-ziel.md) | 2026-10-08 | [welle-erfassungsschicht-im-ziel-results.md](../done/welle-erfassungsschicht-im-ziel-results.md) |
 | [welle-handbuch-zeigt-den-bestand](../done/welle-handbuch-zeigt-den-bestand.md) | 2026-10-08 | [welle-handbuch-zeigt-den-bestand-results.md](../done/welle-handbuch-zeigt-den-bestand-results.md) |
+| [welle-kotlin-skelett](../done/welle-kotlin-skelett.md) | 2026-10-09 | [welle-kotlin-skelett-results.md](../done/welle-kotlin-skelett-results.md) |
 
 Die Tabelle ist nach Wellen-Nummer sortiert, nicht nach Abschluss-Datum; `welle-10` schloss nach
 `welle-12`, und `welle-emittierte-werkzeuge` sowie `welle-v021-faehigkeit` stehen am Ende, weil

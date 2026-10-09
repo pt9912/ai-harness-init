@@ -11,3 +11,6 @@ Herkunfts-Anker: `· seit slice-release-schnitt-v025-bereitet-vor`.
 
 **Grenze der Verkörperung, benannt** — die Zeile selbst trägt sie: Kein Sensor hält eine Fixture
 gegen ihre reale Quelle; Träger bleibt der Lauf, der den Wächter schreibt.
+
+**Unterklasse Fremd-Werkzeug-Verhalten nachgebaut:** Halter der realen Quelle ist die
+`full-smoke`-Stufe in CI. Der geplante Kopplungs-Sensor deckt sie nicht und muss es nicht (Verdikt `2026-10-09-welle-kotlin-skelett-architect-verdikt`, B-5).

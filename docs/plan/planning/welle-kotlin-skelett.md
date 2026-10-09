@@ -61,5 +61,5 @@ Offene Beobachtungen sind gesichtet in §8 jedes Slice-Plans.
 
 ## 7. Closure-Notiz
 
-Erst nach Welle-Abschluss: Ergebnis `welle-kotlin-skelett-results.md` (Geschwister im Ruheort
+Ergebnis: [welle-kotlin-skelett-results.md](welle-kotlin-skelett-results.md) (Geschwister im Ruheort
 `done/`), Zähler: das Beobachtungs-Register, eine Ebene über dem Ruheort.
