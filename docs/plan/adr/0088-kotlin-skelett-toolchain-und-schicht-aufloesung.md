@@ -1,6 +1,6 @@
 # ADR-0088: Kotlin-Skelett — Toolchain und Schicht-Auflösung
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-10-08
 
@@ -128,6 +128,7 @@ nicht als Beleg (`AGENTS.md` §3.6).
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-10-08 | Proposed | Vorklärung `2026-10-08-kotlin-welle-architect-vorklaerung` |
+| 2026-10-09 | **Accepted** | Review `2026-10-08-adr-0088-review` (H-1, M-1, L-1 eingearbeitet in `e66fec9d`), Nachprüfung `2026-10-09-adr-runde-0088-0062-0063-0089` (H-1 behoben, keine neuen Befunde; [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2), Annahme durch den Auftraggeber am 2026-10-09 ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1) |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
