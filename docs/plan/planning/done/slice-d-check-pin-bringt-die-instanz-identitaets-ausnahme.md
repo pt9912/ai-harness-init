@@ -320,7 +320,7 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   ergänzt (vierte Fundstelle): Die Pin-Kopplung (`TestDefaultImage_MatchesCanonical`,
   `TestDefaultDigest_MatchesCanonical`) trägt ihre Zähne — die Rotation wurde am Wegwerf-Klon real
   rot gefahren —, aber keinen kuratierten Fall unter `test/mutations/`; der Fall ist Bestands-Posten
-  der Mutations-Kuratierung und wird von [`slice-pin-kopplung-bekommt-ihren-mutations-fall`](../open/slice-pin-kopplung-bekommt-ihren-mutations-fall.md)
+  der Mutations-Kuratierung und wird von [`slice-pin-kopplung-bekommt-ihren-mutations-fall`](../done/slice-pin-kopplung-bekommt-ihren-mutations-fall.md)
   geschrieben. Eine geschärfte Regel an `AGENTS.md` §3.6 trägt nicht: §3.6 sagt die Pflicht bereits
   (wer keinen Fall in `test/mutations/` hat, ist unbewacht), und der Bestand ist kein Arbeitsauftrag
   (Cutoff). Kein `liegt in`-Feld — der Eintrag ist gezählt, nicht verkörpert.
@@ -331,7 +331,7 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   [`BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/`](../observations/BEO-ALL/lifecycle-move-macht-ein-bewachtes-zustandsfeld-falsch/observation.md)
   dazu (der Ruhe-Marker fällt mit dem Move und wird im eigenen Commit danach gezogen) — derselbe
   Vorgang, zweite Beobachtung, je Beobachtung einmal gezählt.
-- **Folge-Slices:** [`slice-pin-kopplung-bekommt-ihren-mutations-fall`](../open/slice-pin-kopplung-bekommt-ihren-mutations-fall.md)
+- **Folge-Slices:** [`slice-pin-kopplung-bekommt-ihren-mutations-fall`](../done/slice-pin-kopplung-bekommt-ihren-mutations-fall.md)
   (Der Pin-Kopplungs-Wächter bekommt seinen kuratierten Mutations-Fall) — ist eine Datei in `open/`.
 - **Risiken aus §6:** alle sechs *entfallen* — je Beleg in §6.
 - **Drei Paarungen:** Anker — kein `liegt in`-Feld in dieser Notiz, die Paarung ist nicht
