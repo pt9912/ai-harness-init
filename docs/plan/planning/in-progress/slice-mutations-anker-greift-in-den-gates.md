@@ -41,23 +41,23 @@ im Nacht-Lauf.
 
 ## 2. Definition of Done
 
-- [ ] Greift-Modus in `harness/tools/mutate.sh` (Bedingung 2 des Treibers,
+- [x] Greift-Modus in `harness/tools/mutate.sh` (Bedingung 2 des Treibers,
       `grep -n 'nicht gegriffen' harness/tools/mutate.sh`): je Fall Kopie der `# files:`, Patch
       anwenden, jede Datei geändert — sonst Exit ≠ 0 mit Fallname; kein Grün-Vorlauf, kein Testlauf,
       kein Beleg-Slot. In `make gates` verdrahtet, Zeile in `harness/README.md` §Sensors, Vertrag und
       Grenze in `harness/sensors/mutate.md`; Laufzeit-Zuwachs von `make gates` gemessen.
-- [ ] Rot an der realen Quelle: die Fälle `29-roadmap-nicht-neutralisiert` und
+- [x] Rot an der realen Quelle: die Fälle `29-roadmap-nicht-neutralisiert` und
       `247-archive-welle-go-schalter-erreicht-zweig-nicht` in der Fassung `98bfab0b^` gegen den
       heutigen Quellbestand → rot, Meldung nennt den Fall (gelesen); HEAD grün. Ein bats-Fall hält beide
       Richtungen ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-- [ ] Übergabe an den Architect liegt vor: Nachfolge-MR zu [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand) §Grenze mit Kopf-Marke
+- [x] Übergabe an den Architect liegt vor: Nachfolge-MR zu [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand) §Grenze mit Kopf-Marke
       ([`MR-032`](../../../../harness/conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger))
       — der Satz *„Kein Sensor hält die Anlage"* ist mit dem Modus falsch; Sensor und Grenze benannt.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), kein Self-Review.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine Beobachtung anfiel.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), kein Self-Review.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine Beobachtung anfiel.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) hier geprüft (ohne Wellen-Betrieb).
 
 ## 3. Plan (vor Code)
@@ -89,18 +89,48 @@ Closure-Notiz mit Lerneintrag.
 ## 6. Risiken und offene Punkte
 
 - Fälle, deren Patch nicht allein über die `# files:` wirkt, passen nicht in die Kopie-Prüfung —
-  **Ausgang:** *bei Closure*
+  **Ausgang:** *entfallen* — `make mutate-greift` → `624 Fall/Faelle, 624 greifen, 0 Befund(e)`
+  (Verifikation); kein Fall des Bestands fällt aus der Kopie-Prüfung.
 - Der Modus läuft im Gate-Pfad; ob er ohne Container auskommt, ist an [`AGENTS.md`](../../../../AGENTS.md)
-  §3.9 zu messen — **Ausgang:** *bei Closure*
+  §3.9 zu messen — **Ausgang:** *entfallen* — der Modus läuft ohne Container, §3.9 ist nicht
+  verletzt (Review M-3); die GNU-Abhängigkeit (`sed -i`, `mktemp -d -p`) ist als Grenze in
+  [`MR-090`](../../../../harness/conventions.md#mr-090) und `harness/sensors/mutate.md` benannt.
+  Eine Frage an §3.9 entsteht erst mit einem zweiten Gate-Rezept ohne Container; ein
+  Register-Eintrag trägt sie nicht (Verdikt `2026-10-09-slice-mutations-anker-greift-in-den-gates-architect-verdikt`).
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** *bei Closure*
-- **Was ging anders als geplant:** *bei Closure*
-- **Steering-Loop-Eintrag:** *bei Closure*
-- **Beobachtungs-Register (`../observations/`):** *bei Closure*
-- **Folge-Slices:** *bei Closure*
-- **Risiken aus §6:** *bei Closure*
+- **Was hat funktioniert:** Der Greift-Modus fand beim ersten Lauf auf HEAD zwei entwaffnete Fälle
+  (145/147) außer den Fixtures 29/247 — der reale Fall, für den er gebaut ist. Laufzeit
+  `real 0m17,155s`, unter der Schwelle aus §4.
+- **Was ging anders als geplant:** **Abweichung vom Plan (Review M-4).** Die Reparatur von 145/147
+  (`9fbc304c`) lief gegen §1 Punkt 3, und die Rückführung `in-progress → open` aus §4 wurde nicht
+  gezogen. Entschieden hat das der Orchestrator mit Verweis auf
+  [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand);
+  die Begründung trägt nicht, weil der Eintrag die Anlage regelt und Bestand und Treiber ausschließt.
+  Folge: eine Out-of-Scope-Grenze verschob sich ohne Plan-Diff und ohne Übergabe-Artefakt an den
+  Planner; die Reparatur selbst ist inhaltlich gedeckt (Review L-1 ausgenommen, Fall 145 mutiert
+  breiter als sein Kopf).
+- **Steering-Loop-Eintrag:** neuer Sensor — `make mutate-greift` in `make gates`, Vertrag in
+  [`MR-090`](../../../../harness/conventions.md#mr-090); dazu verkörpert:
+  `BEO-ALL/teilzeichenketten-suche-bindet-einen-pfad-nicht-an-seine-grenze` — liegt in
+  `.harness/skills/reviewer.md` (Eintrag *„Zugehörigkeit per Teilzeichenkette statt per Grenze"*),
+  `seit slice-mutations-anker-greift-in-den-gates`.
+- **Beobachtungs-Register ([`../observations/`](../observations/README.md)):** je ein Beleg
+  `evidence/slice-mutations-anker-greift-in-den-gates.md` in
+  `mutations-fall-wird-von-berechtigter-aenderung-entwaffnet` (I-2; verkörpert, Trigger des Eintrags
+  im Sensor-Eintrag entschieden) · `plan-abweichung-landet-im-commit-bericht-statt-im-plan` (M-4;
+  verkörpert) · `mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere` (L-1; verkörpert) ·
+  `gate-zusage-in-prosa-reicht-weiter-als-ihr-pruefumfang` (I-1; geplant) ·
+  `teilzeichenketten-suche-bindet-einen-pfad-nicht-an-seine-grenze` (M-2; 3×, Ausgang *verkörpert*
+  nach Architect-Verdikt). Benannt, nicht gezählt: M-1 (Zahn fährt nicht die Verdrahtung
+  `--greift`), M-3 (GNU-Werkzeuge im Gate-Pfad), L-2 (Übergabe-Grenze unvollständig) — keine
+  passende Klasse.
+- **Folge-Slices:** keine.
+- **Risiken aus §6:** beide *entfallen* (§6).
+- **Archivierung:** entfällt — das Unterkommando `archive-slice`
+  ([`MR-078`](../../../../harness/conventions.md#mr-078--wellenlose-slices-werden-bei-der-eigenen-closure-archiviert))
+  ist nicht gebaut; die Wellen-Closure sammelt den Slice ein (Rückfall dort).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
