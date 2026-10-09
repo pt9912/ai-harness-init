@@ -38,7 +38,7 @@ existiert — kein Gate, wie `freshness-cpp`.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine Beobachtung anfiel.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen prüft die Closure von `welle-kotlin-skelett`; nach dem Move gefahren, §7.
+- [x] Die drei Paarungen prüft die Closure von `welle-kotlin-skelett`; nach dem Move gefahren, §7.
 
 ## 3. Plan (vor Code)
 
@@ -94,6 +94,13 @@ DoD vollständig, bats-Fall grün und einmal rot gesehen, Closure-Notiz mit Lern
   einem Kommando, das 49 ausgibt; Bestand, vom Diff nicht berührt. Kein Eintrag erreicht mit diesem
   Slice 3× ohne Ausgang.
 - **Folge-Slices:** keine.
+- **Paarungen geprüft am 2026-10-09:** (a) kein Eintrag in §7 trägt das Zielort-Feld · (b) keine
+  Folge-Slices genannt; die Register-Kennung `slice-werkzeug-aussage-traegt-quelle-stand-und-messstelle`
+  liegt unter `open/` · (c) die zwei hier genannten `BEO-ALL/…` existieren, `evidence/*.md` 8 bzw. 7;
+  zweite Hälfte über das Register: 2 Verzeichnisse ohne Beleg, namentlich
+  `cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht` und
+  `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen behauptet (Kommando:
+  Schleife über `BEO-ALL/*/evidence/*.md`, `close-welle.md` Schritt 3).
 - **Risiken aus §6:** Ausgang steht in §6.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
