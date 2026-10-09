@@ -609,7 +609,7 @@ Setzung 1).
   **LOW-3** (die Tag-Zerlegung geht nicht auf) im Architect-Lauf richtiggestellt — zwölf Tags sind
   neun Minors **und drei** Patches. **LOW-1** (die zwei Kopplungstests haben keinen Fall in
   `test/mutations/`) bleibt offen und ist **nicht** von diesem Slice erzeugt; sein Träger ist
-  [slice-119](../open/slice-119-zusage-ohne-fall-wird-sichtbar.md), dem
+  [slice-119](../done/slice-119-zusage-ohne-fall-wird-sichtbar.md), dem
   [slice-122](../done/slice-122-d-check-pin-v0650.md) die Bezugsmengen-Frage bereits zugewiesen
   hat. Eine zweite Kennung daneben wäre eine zweite Fassung derselben Frage.
 - **Was diese Closure nicht deckt — drei Posten, benannt statt still:**

@@ -148,7 +148,7 @@ den Kommentar.** Die Lehre steht in
 bats-Ebene.
 
 **Die Reihenfolge gegenüber [slice-115](../open/slice-115-jeder-sensor-sagt-seinen-ausgang.md) und
-[slice-119](../open/slice-119-zusage-ohne-fall-wird-sichtbar.md):** alle drei fassen den
+[slice-119](../done/slice-119-zusage-ohne-fall-wird-sichtbar.md):** alle drei fassen den
 Mutations-Treiber oder seine Sensor-Ebene an. Das ist eine Beobachtung, keine Reihenfolge — wer
 zuerst läuft, entscheidet die Priorisierung, nicht dieser Plan. **Was hier ausdrücklich nicht
 behauptet wird:** dass sie zusammengehören. Sie teilen eine Datei, nicht ein Closure-Kriterium.

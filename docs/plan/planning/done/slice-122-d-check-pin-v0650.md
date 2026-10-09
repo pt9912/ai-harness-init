@@ -356,7 +356,7 @@ Zeitdokument.
 | Die Dateizahl `432` im Kopf von `d-check.mk` misst den Baum, nicht den Kopf (heute **434**) | dieser Lauf | **[slice-128](../done/slice-128-d-check-kopf-sagt-was-gilt.md)** DoD (2) |
 | Kopf-Aussagen zu `sources` und zur Neu-Erzeugung sagen weniger als der Baum tut | Review INFO-2 | **[slice-128](../done/slice-128-d-check-kopf-sagt-was-gilt.md)** DoD (3) — derselbe Kommentarblock, ein Lauf |
 | [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)-Entscheidung ist fällig | Review MEDIUM-2 | **Architect-Übergabe** unten (Vorfragen hier neu gemessen) + [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) als Termin-Träger |
-| `TestDefaultDigest_MatchesCanonical`/`TestDefaultImage_MatchesCanonical` ohne Fall in `test/mutations/` | Review MEDIUM-4, Verifikation V-8 | **[slice-119](../open/slice-119-zusage-ohne-fall-wird-sichtbar.md)**, dessen Bezugsmenge dieser Lauf um die Go-Stufe erweitert hat — **kein** eigener Schnitt, Begründung unten |
+| `TestDefaultDigest_MatchesCanonical`/`TestDefaultImage_MatchesCanonical` ohne Fall in `test/mutations/` | Review MEDIUM-4, Verifikation V-8 | **[slice-119](../done/slice-119-zusage-ohne-fall-wird-sichtbar.md)**, dessen Bezugsmenge dieser Lauf um die Go-Stufe erweitert hat — **kein** eigener Schnitt, Begründung unten |
 | `ids` hatte keine Richtungs-Messung | Review MEDIUM-1, Verifikation V-5 | **erledigt** — hier neu gemessen, Tabelle in DoD (3) |
 | DoD (2) nannte eine andere Grenze als der Commit | Verifikation V-4 | **erledigt** — der Strip-Lauf oben schließt sie auf Nicht-Null-Basis |
 | *„vier Handgriffe schrumpfen auf einen"* misst die Tool-Ausgabe, nicht die Handgriffe | Verifikation V-1 | **eingefroren** — die Aussage steht nur in der gepushten Message `3ce4ea3`; kein lebendes Artefakt trägt sie (`grep -c 'Handgriffe' d-check.mk` → **0**). Sie zählt als Instanz zum Steering-Loop-Eintrag oben |
@@ -364,7 +364,7 @@ Zeitdokument.
 
 **Warum der fehlende Mutations-Fall kein eigener Schnitt ist.** Ein einzeln nachgereichter Fall
 schlösse **eine** Stelle. Die Lücke ist aber eine Bezugsmengen-Frage, und
-[slice-119](../open/slice-119-zusage-ohne-fall-wird-sichtbar.md) besitzt sie bereits — nur maß
+[slice-119](../done/slice-119-zusage-ohne-fall-wird-sichtbar.md) besitzt sie bereits — nur maß
 seine Fläche **allein bats-Titel**, während `make mutate` seine Fälle über `# expect:` an beide
 Stufen bindet. Über der Go-Stufe gerechnet: `git grep -h '^func Test' -- '*_test.go' | sed 's/^func \(Test[A-Za-z0-9_]*\).*/\1/' | sort -u | wc -l`
 → **226** Funktionen, davon ohne Fall (`comm -23` gegen die `# expect:`-Ziele) → **117** — und die

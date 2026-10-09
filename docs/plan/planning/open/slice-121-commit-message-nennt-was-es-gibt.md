@@ -13,10 +13,10 @@ Steering-Loop-Eintrag aus [slice-120](../done/slice-120-co-003-wird-vollzogen.md
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 2 steht wellenlose Arbeit **nicht** in der Roadmap; ihr Zustand ist das Verzeichnis.
 
-**Warum das nicht [slice-119](slice-119-zusage-ohne-fall-wird-sichtbar.md) ist.** Beide entstehen
+**Warum das nicht [slice-119](../done/slice-119-zusage-ohne-fall-wird-sichtbar.md) ist.** Beide entstehen
 aus einem Steering-Loop-Eintrag der Form *„die Regel steht, ihr Träger fehlt"*, und beide zählen
 eine Menge, bevor sie einen Maßstab darüber setzen. Der **Gegenstand** ist ein anderer:
-[slice-119](slice-119-zusage-ohne-fall-wird-sichtbar.md) misst Wächter im Test-Bestand gegen
+[slice-119](../done/slice-119-zusage-ohne-fall-wird-sichtbar.md) misst Wächter im Test-Bestand gegen
 `test/mutations/`, also **Dateien im Baum**; dieser Slice misst Behauptungen in **Commit-Messages**,
 also Objekte, die kein Baum trägt. Daraus folgt der zweite Unterschied: eine Testdatei ohne Fall
 kann man morgen nachziehen, eine gepushte Message nicht — der Sensor muss deshalb **vor** dem
