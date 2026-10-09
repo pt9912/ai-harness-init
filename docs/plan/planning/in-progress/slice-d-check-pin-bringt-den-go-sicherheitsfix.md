@@ -96,6 +96,8 @@ zwei HIGH-Befunde der Standardbibliothek (CVE-2026-78667, CVE-2026-97031).
 | `d-check.mk` | update | Pin und Kopfkommentar (Liefer-Punkt 1) |
 | `internal/emit/emit.go` | update | emittierter Default-Pin (Liefer-Punkt 1) |
 | Pin-Tests unter `internal/emit/` | update, falls sie den Tag nennen | Kopplung der zwei Stellen ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)) |
+| `internal/emit/templates/d-check.yml` | update | Prosa der Kommentar-Blöcke `reviews` und `codepaths` auf den Stand am neuen Pin; `reviews` bleibt auskommentiert ([`MR-086`](../../../../harness/conventions.md#mr-086)), der Block trägt `match: name` |
+| `internal/emit/emit_test.go`, `test/mutations/` | update, neu | koppelt die Pin-Fassung der `reviews`-Prosa an `DefaultImage` und hält `match: name` im Block |
 
 ## 4. Trigger
 

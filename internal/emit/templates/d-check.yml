@@ -25,7 +25,7 @@ ids:
 # existieren (codepath-missing). Ein Pfad mit vorangestelltem ./ oder ../ wird vom Ort
 # der Datei aus aufgeloest und ebenso geprueft. Eine erst geplante Datei traegt den
 # Inline-Marker d-check:ignore mit Grund in derselben Zeile. Still bleiben am Pin
-# v0.84.0: ein Pfad ohne root am Anfang (src/..., /docs/...), ein Glob unter einer root
+# v0.85.0: ein Pfad ohne root am Anfang (src/..., /docs/...), ein Glob unter einer root
 # und ein Pfad in einem umzaeunten Code-Block. exempt-paths nimmt die Review-Reports aus:
 # ein Pfad darin nennt den Stand seines Laufs, nicht den heutigen Baum.
 codepaths:
@@ -33,21 +33,23 @@ codepaths:
   exempt-paths: ["docs/reviews/**"]
 # reviews bleibt aus. Das Modul (hermetisch, kein git) haelt die Review-Zusagen der
 # Slice-Plaene unter done-dir gegen die Reports unter reviews-dir: eine Zusage ohne Report,
-# dessen Dateiname dieselbe Slice-Kennung traegt, meldet es als review-missing. done-dir ist
-# der Aktivierungs-Schalter — ohne ihn oeffnet das Modul keine Datei. Am Pin v0.84.0 hat es
-# zwei Grenzen, die ein frisches Ziel rot bzw. blind machen: Liegt unter done-dir kein
-# Slice-Plan, meldet es die leere Pruefmenge fail-closed als review-missing. Und als Zusage
-# erkennt es allein die Wortfolge "unabhängiger Review" (mit ä, buchstabengetreu) an einer
-# Kennung in Ziffern-Form (slice-<NNN>); die Review-Zeile der Slice-Vorlage ("Review
-# durchgeführt, …") erkennt es an keinem Slice, eine Kennung in Namens-Form (slice-<name>)
-# auch mit der Wortfolge nicht.
-# Trigger: aktivieren — reviews in modules: aufnehmen und den Block ohne # uebernehmen —,
-# sobald das gepinnte d-check die Review-Zeile der Slice-Vorlage an einer Kennung in
-# Namens-Form als Zusage erkennt und der erste Slice-Plan mit dieser Zeile unter done-dir
-# liegt.
+# der den Slice deckt, meldet es als review-missing. done-dir ist der Aktivierungs-Schalter —
+# ohne ihn oeffnet das Modul keine Datei. Am Pin v0.85.0 erkennt es die Review-Zeile der
+# Slice-Vorlage ("Review durchgeführt, …") als Zusage, ebenso die Wortfolge "unabhängiger
+# Review". Den Report ordnet es ohne match: ueber eine Kennung in Ziffern-Form (slice-<NNN>)
+# im Dateinamen zu; einen Slice-Plan mit Kennung in Namens-Form (slice-<name>) meldet es dann
+# als review-missing, auch wenn sein Report vorliegt. match: name ordnet ueber den Basisnamen
+# des Slice-Plans ohne .md im Report-Namen zu und traegt beide Formen; darum steht der
+# Schluessel im Block. Aus bleibt das Modul, weil ein frisches Ziel damit rot startet: Liegt
+# unter done-dir kein Slice-Plan, meldet es die leere Pruefmenge fail-closed als
+# review-missing.
+# Trigger: aktivieren — reviews in modules: aufnehmen und den Block ohne # uebernehmen,
+# match: name eingeschlossen —, sobald unter done-dir ein Slice-Plan liegt und jeder Plan
+# mit Review-Zeile seinen Report unter reviews-dir hat.
 # reviews:
 #   done-dir: docs/plan/planning/done
 #   reviews-dir: docs/reviews
+#   match: name
 # Herkunft der Positionen in diesem Block, gemessen gegen die Baseline-Vorlage
 # (.harness/baseline/<tag>/templates/.d-check.yml) und gegen die Matrix-Tabelle in
 # grundlagen-referenz-richtung.md. order:/direction: auf spec-straten und die Regel

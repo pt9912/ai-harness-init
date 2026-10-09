@@ -574,12 +574,24 @@ func TestDCheckConfig_ZellenlaengeStructure(t *testing.T) {
 // TestDCheckConfig_ReviewsBleibtKommentarBlock haelt das Modul reviews in der eingebetteten
 // .d-check.yml als begruendeten, inaktiven Kommentar-Block (MR-054 Setzung 3): kein
 // reviews in modules:, kein unkommentierter reviews:-Block, und der Kommentar-Block traegt
-// done-dir, reviews-dir und eine Trigger-Zeile. Ein unkommentierter Block laesst docs-check
-// im Ziel gruen, solange das Modul nicht in modules: steht — er behauptete eine
+// done-dir, reviews-dir, match: name und eine Trigger-Zeile. Ein unkommentierter Block laesst
+// docs-check im Ziel gruen, solange das Modul nicht in modules: steht — er behauptete eine
 // Konfiguration, die nicht laeuft; darum faengt ihn dieser Test und nicht das Ziel.
+// Die Prosa des Blocks nennt die Pin-Fassung, an der ihre Aussagen ueber das Werkzeug
+// gemessen sind; der Test koppelt sie an den Tag von emit.DefaultImage. Grenze: er haelt
+// die Fassung, nicht die Aussagen — die belegt allein eine Sonde mit dem gepinnten d-check.
 func TestDCheckConfig_ReviewsBleibtKommentarBlock(t *testing.T) {
 	yml := emit.DCheckConfig()
-	var kopf, doneDir, reviewsDir, trigger bool
+	tag := emit.DefaultImage[strings.LastIndex(emit.DefaultImage, ":")+1:]
+	start := strings.Index(yml, "# reviews bleibt aus.")
+	ende := strings.Index(yml, "\n# reviews:\n")
+	if start < 0 || ende < start {
+		t.Fatalf("Kommentar-Block reviews nicht gefunden (Start %d, Ende %d)", start, ende)
+	}
+	if prosa := yml[start:ende]; !strings.Contains(prosa, "Pin "+tag+" ") {
+		t.Errorf("Prosa des reviews-Blocks nennt nicht den Pin %s aus emit.DefaultImage:\n%s", tag, prosa)
+	}
+	var kopf, doneDir, reviewsDir, matchName, trigger bool
 	for _, line := range strings.Split(yml, "\n") {
 		if strings.HasPrefix(line, "modules:") && strings.Contains(line, "reviews") {
 			t.Errorf("reviews steht in der modules:-Liste des frischen Ziels: %q", line)
@@ -594,11 +606,13 @@ func TestDCheckConfig_ReviewsBleibtKommentarBlock(t *testing.T) {
 			doneDir = true
 		case line == "#   reviews-dir: docs/reviews":
 			reviewsDir = true
+		case line == "#   match: name":
+			matchName = true
 		case strings.HasPrefix(line, "# Trigger: aktivieren — reviews in modules:"):
 			trigger = true
 		}
 	}
-	if !kopf || !doneDir || !reviewsDir || !trigger {
-		t.Errorf("Kommentar-Block reviews unvollstaendig (Kopf %v, done-dir %v, reviews-dir %v, Trigger %v)", kopf, doneDir, reviewsDir, trigger)
+	if !kopf || !doneDir || !reviewsDir || !matchName || !trigger {
+		t.Errorf("Kommentar-Block reviews unvollstaendig (Kopf %v, done-dir %v, reviews-dir %v, match: name %v, Trigger %v)", kopf, doneDir, reviewsDir, matchName, trigger)
 	}
 }
