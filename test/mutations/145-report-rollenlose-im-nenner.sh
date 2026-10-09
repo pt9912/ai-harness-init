@@ -14,4 +14,4 @@
 # Faerbt zusaetzlich TestAggregiere_SammelpostenWirdAnteiligVerteilt rot: auch
 # dessen Bestand traegt rollenlose Calls. Erwartet wird der Fall oben.
 set -euo pipefail
-sed -i 's@^\tif s.AgentRole != "" \&\& !span.IsNotKnown(s.AgentRole) \&\& s.Tool != "" {$@\tif s.Tool != "" {@' internal/report/report.go
+sed -i 's@^\tif s.AgentRole != "" \&\& !span.IsNotKnown(s.AgentRole) \&\& s.Tool != "" {$@\tif !span.IsNotKnown(s.AgentRole) \&\& s.Tool != "" {@' internal/report/report.go

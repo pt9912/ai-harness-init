@@ -152,15 +152,27 @@ Verzeichnis außerhalb des Repos kopiert, das Fall-Skript läuft dort, und jede 
 einen anderen Inhalts-Hash tragen. Fehlt das bei einem Fall — oder löst seine `# files:`-Angabe
 nicht auf genau eine Datei auf, oder scheitert sein Skript in der Kopie —, meldet eine Zeile
 `mutate-greift: BEFUND <fall> — …`, und der Lauf endet mit Exit 1. Kein Grün-Vorlauf, kein
-Sensor-Lauf, kein Lock, kein Beleg-Slot, kein Docker; `MUTATE_CASES` engt ein wie beim vollen
-Lauf. Ein leeres Fall-Set ist ein Befund. Damit fällt ein Anker, den eine berechtigte Änderung
+Sensor-Lauf, kein Lock, kein Beleg-Slot, kein Docker. Beim Direktaufruf
+`bash harness/tools/mutate.sh --greift` engt `MUTATE_CASES` ein wie beim vollen Lauf; das Rezept
+`make mutate-greift` — der Weg in `make gates` — nimmt es aus der Umgebung heraus, dort läuft
+jeder Fall. Vorher- und Nachher-Hash werden je exaktem Pfad verglichen; ein Pfad, der Präfix
+eines anderen ist, liest nur seinen eigenen Wert. Ein leeres Fall-Set ist ein Befund. Damit fällt ein Anker, den eine berechtigte Änderung
 am Quellbestand verschoben hat, am Commit statt im Nacht-Lauf.
 
 **Sensor:** `test/mutate-driver.bats`, Fälle „greift: …" — rot an den Fall-Fassungen 29 und 247
 aus dem Stand `98bfab0b^` (Fixtures unter `test/fixtures/mutate-greift/`, byte-gleich zu
-`git show 98bfab0b^:test/mutations/<fall>.sh`), grün an denselben Fällen im Bestand; die
-Verdrahtung hält `test/gate-nachweis-kante.bats`. Den Zahn auf den Modus selbst trägt
-`test/mutations/635-greift-modus-uebersieht-ungegriffenen-anker.sh`.
+`git show 98bfab0b^:test/mutations/<fall>.sh`), grün an denselben Fällen im Bestand. Diese zwei
+Fälle rufen `greift_main` über `source`; den Pfadvergleich hält der Fall „greift: ein Pfad, der
+Praefix eines anderen in # files: ist, …". **Die Verdrahtung hält zwei Tests, je eine Hälfte:**
+`test/gate-nachweis-kante.bats` hält, dass `mutate-greift` an der Kante von `record-gates` hängt
+— nicht, was sein Rezept tut. Das Rezept hält der Fall „greift: das Rezept von make mutate-greift
+faehrt mutate.sh --greift als Prozess …": er liest das Rezept aus dem gelebten `Makefile`, fährt
+es als Prozess in einer Kopie (Treiber, Fixtures 29/247 als Fall-Set, ihre zwei Quelldateien) mit
+`MUTATE_CASES` in der Umgebung und verlangt beide Befunde über das ganze Set. Zähne:
+`test/mutations/635-greift-modus-uebersieht-ungegriffenen-anker.sh` (der Modus sammelt keine
+ungegriffene Datei), `636-greift-einstieg-faehrt-den-modus-nicht.sh` (`--greift` ruft
+`greift_main` nicht) und `637-greift-rezept-laesst-mutate-cases-durch.sh` (das Rezept lässt
+`MUTATE_CASES` durch).
 
 **Laufzeit:** Der Zuwachs von `make gates` ist die Differenz zweier Läufe in derselben Lage, einmal
 mit dem Rezept `@true` an Stelle des Modus und einmal mit dem Modus:
@@ -182,6 +194,15 @@ dem Fall-Bestand. Nicht gemessen ist die Laufzeit auf dem CI-Runner und bei kalt
 - Die `# expect:`-Zeile liest der Modus nicht.
 - Dass die Fixtures den Stand `98bfab0b^` tragen, hält kein Sensor — der bats-Container trägt
   kein git; Träger ist der Lauf, der sie anlegt.
+- **Der Modus braucht GNU-Werkzeuge auf dem Host.** Er läuft ohne Container, also mit dem `sed`,
+  `mktemp` und `sha256sum` des Hosts. Die Fall-Skripte nutzen `sed -i` ohne Suffix-Argument
+  (`grep -l 'sed -i' test/mutations/*.sh | wc -l`) und `\t` im Muster
+  (`grep -lF '\t' test/mutations/*.sh | wc -l`), der Treiber `mktemp -d -p`. Das sind GNU-Formen;
+  `AGENTS.md` §3.9 nennt als Host-Bedarf `git`, `docker` und GNU `make`, nicht GNU `sed`. Auf
+  einem Host mit BSD-Werkzeugen ist das Verhalten nicht gemessen. Mit `make comment-claims`
+  teilt der Modus nur die Ausführung ohne Container; `harness/tools/comment-claims.sh` nutzt
+  keine dieser Formen (`grep -cE 'sed -i|mktemp -d -p' harness/tools/comment-claims.sh` → 0).
+  Die CI läuft auf einem GNU-Runner; das deckt den Lauf dort, nicht einen anderen Host.
 
 ## Bindung
 

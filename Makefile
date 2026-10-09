@@ -254,10 +254,13 @@ mutate: ## Mutations-Sensor fuer AGENTS 3.6: faerbt jede Mutation ihren Waechter
 
 # Greift-Modus des Mutations-Treibers: je Fall nur Bedingung 2 (die Mutation aendert jede
 # Datei aus `# files:` auf einer Kopie) — kein Gruen-Vorlauf, kein Sensor-Lauf, kein
-# Docker. Hermetisch wie comment-claims (bash, sed, sha256sum auf Kopien ausserhalb des
-# Repos), deshalb IN gates. MR-071 · seit slice-mutations-anker-greift-in-den-gates.
-mutate-greift: ## Greift jeder sed-Anker der Mutations-Faelle im Quellbestand? — hermetisch, in gates (MR-071)
-	@bash harness/tools/mutate.sh --greift
+# Docker. Wie comment-claims laeuft es ohne Container auf dem Host; anders als dort fahren die
+# Fall-Skripte GNU-Formen (`sed -i` ohne Suffix, `\t` im Muster) und der Treiber `mktemp -d -p`
+# — Grenze in harness/sensors/mutate.md §Greift-Modus. Das Rezept nimmt MUTATE_CASES aus der
+# Umgebung heraus: im Gate laeuft jeder Fall. Sensor: test/mutate-driver.bats „greift: das
+# Rezept von make mutate-greift …". MR-071 · seit slice-mutations-anker-greift-in-den-gates.
+mutate-greift: ## Greift jeder sed-Anker der Mutations-Faelle im Quellbestand? — ohne Container, jeder Fall, in gates (MR-071)
+	@unset MUTATE_CASES; bash harness/tools/mutate.sh --greift
 
 # shellcheck über die harness-eigenen Shell-Hooks/-Helfer. .bats ist
 # ausgenommen (shellcheck parst die @test-Syntax nicht); .awk ist kein Shell.

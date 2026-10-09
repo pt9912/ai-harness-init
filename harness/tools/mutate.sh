@@ -846,10 +846,16 @@ run_case() {
 # Isolationskopie des Baums: je Fall werden nur seine `# files:` in ein frisches
 # Verzeichnis ausserhalb des Repos kopiert, das Fall-Skript laeuft dort, und der
 # Inhalts-Hash jeder Datei muss sich geaendert haben. Ein Befund nennt den Fall; der Lauf
-# endet mit Exit != 0, sobald einer fehlt. MUTATE_CASES engt ein wie beim vollen Lauf.
+# endet mit Exit != 0, sobald einer fehlt. Beim Direktaufruf engt MUTATE_CASES ein wie beim
+# vollen Lauf; das Rezept `make mutate-greift` nimmt es aus der Umgebung heraus. Vorher- und
+# Nachher-Hash werden je exaktem Pfad verglichen, nicht ueber einen Teilstring.
 # Sensor: test/mutate-driver.bats „greift: die Fall-Fassungen 29/247 aus 98bfab0b^
-# greifen im Bestand nicht, der Befund nennt beide" (Fixtures test/fixtures/mutate-greift/)
-# und „greift: dieselben Faelle im Bestand greifen" · seit
+# greifen im Bestand nicht, der Befund nennt beide" (Fixtures test/fixtures/mutate-greift/),
+# „greift: dieselben Faelle im Bestand greifen", „greift: ein Pfad, der Praefix eines
+# anderen in # files: ist, gilt nur als gegriffen, wenn er selbst sich aendert" und — fuer
+# den Einstieg `--greift` als Prozess samt Rezept — „greift: das Rezept von make
+# mutate-greift faehrt mutate.sh --greift als Prozess ueber das ganze Fall-Set,
+# MUTATE_CASES aus der Umgebung engt es nicht ein" · seit
 # slice-mutations-anker-greift-in-den-gates.
 #
 # GRENZE: der Modus sagt, dass der Anker im Quellbestand TRIFFT, nicht, dass der Waechter
@@ -882,7 +888,12 @@ greift_case() {
     mkdir -p "$dir/$(dirname "$f")"
     cp "$root/$f" "$dir/$f"
   done
-  ( cd "$dir" && sha256sum "${file_list[@]}" >"$dir/.greift-before" )
+  # Vorher-Hash je Pfad, Schluessel ist der exakte Pfad: ein Pfad, der Praefix eines anderen
+  # ist (`a.txt`, `a.txt.bak`), liest nur seinen eigenen Wert.
+  local -A vorher=()
+  for f in "${file_list[@]}"; do
+    vorher[$f]="$(sha256sum <"$dir/$f")"
+  done
   out="$( cd "$dir" && bash "$case_file" 2>&1 )" || rc=$?
   if [ "$rc" -ne 0 ]; then
     echo "mutate-greift: BEFUND $name — Fall-Skript scheiterte in der Kopie (Exit $rc): ${out//$'\n'/ }" >&2
@@ -891,7 +902,7 @@ greift_case() {
   fi
   local ungegriffen=""
   for f in "${file_list[@]}"; do
-    if ( cd "$dir" && grep -F -- " $f" .greift-before | sha256sum -c - ) >/dev/null 2>&1; then
+    if [ "$(sha256sum <"$dir/$f")" = "${vorher[$f]}" ]; then
       ungegriffen="$ungegriffen $f"
     fi
   done

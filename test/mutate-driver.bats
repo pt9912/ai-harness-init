@@ -1464,3 +1464,40 @@ vollauf() {
   [ "$status" -eq 0 ]
   grep -qF '2 Fall/Faelle, 2 greifen, 0 Befund(e)' <<<"$output"
 }
+
+# VERDRAHTUNG (`make mutate-greift` -> `mutate.sh --greift` -> greift_main): das Rezept wird
+# aus dem gelebten Makefile gelesen und als Prozess gefahren — kein `source`, keine
+# Nachbildung des Aufrufs. Der Baum ist eine Kopie: der Treiber selbst, die Fixtures 29/247
+# als Fall-Set und die zwei Quelldateien, auf die sie zielen; der Treiber leitet REPO und
+# CASES_DIR aus seinem eigenen Ort ab. MUTATE_CASES steht dabei in der Umgebung und nennt
+# nur einen der zwei Faelle: das Gate faehrt trotzdem das ganze Set (LH-QA-01).
+@test "greift: das Rezept von make mutate-greift faehrt mutate.sh --greift als Prozess ueber das ganze Fall-Set, MUTATE_CASES aus der Umgebung engt es nicht ein" {
+  local t="$BATS_TEST_TMPDIR/greift-rezept" rezept
+  rezept="$(awk '/^mutate-greift:/ { f = 1; next } f && /^\t/ { sub(/^\t@?/, ""); print; next } f { exit }' "$REPO/Makefile")"
+  echo "rezept: [$rezept]"
+  [ -n "$rezept" ]
+  mkdir -p "$t/harness/tools" "$t/test/mutations" "$t/internal/emit" "$t/cmd/ai-harness-init"
+  cp "$DRIVER" "$t/harness/tools/mutate.sh"
+  cp "$REPO"/test/fixtures/mutate-greift/*.sh "$t/test/mutations/"
+  cp "$REPO/internal/emit/templates.go" "$t/internal/emit/"
+  cp "$REPO/cmd/ai-harness-init/archive_welle.go" "$t/cmd/ai-harness-init/"
+  run env MUTATE_CASES=29-roadmap-nicht-neutralisiert bash -c "cd '$t' && $rezept"
+  echo "$output"
+  [ "$status" -ne 0 ]
+  grep -qF '2 Fall/Faelle, 0 greifen, 2 Befund(e)' <<<"$output"
+}
+
+# PRAEFIX-PFADE in `# files:`: der Vergleich vor/nach haengt am exakten Pfad, nicht an einem
+# Teilstring. Aendert der Patch nur `a.txt.bak`, ist `a.txt` ungegriffen — auch wenn sein
+# Name im anderen Pfad steckt.
+@test "greift: ein Pfad, der Praefix eines anderen in # files: ist, gilt nur als gegriffen, wenn er selbst sich aendert" {
+  local t="$BATS_TEST_TMPDIR/greift-praefix"
+  mkdir -p "$t/root" "$t/cases"
+  echo alt >"$t/root/a.txt"
+  echo alt >"$t/root/a.txt.bak"
+  printf '#!/usr/bin/env bash\n# files: a.txt a.txt.bak\n# expect: x\nset -euo pipefail\nsed -i "s/alt/neu/" a.txt.bak\n' >"$t/cases/1-praefix.sh"
+  run bash -c "source '$DRIVER' 2>/dev/null || true; greift_main '$t/cases' '$t/root'"
+  echo "$output"
+  [ "$status" -ne 0 ]
+  grep -qF 'BEFUND 1-praefix — Mutation hat nicht gegriffen bei: a.txt — ' <<<"$output"
+}
