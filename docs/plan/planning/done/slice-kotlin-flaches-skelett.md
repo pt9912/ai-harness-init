@@ -49,7 +49,7 @@ in drei Fassungen und Guard-Set, das im gebootstrappten Ziel `make gates` grün 
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine Beobachtung anfiel.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen prüft die Closure von `welle-kotlin-skelett`.
+- [x] Die drei Paarungen prüft die Closure von `welle-kotlin-skelett`; nach dem Move gefahren, §7.
 
 ## 3. Plan (vor Code)
 
@@ -116,13 +116,20 @@ DoD vollständig, beide Kotlin-Stufen in `make full-smoke` grün, Closure-Notiz 
 - **Steering-Loop-Eintrag:** geschärfte Regel — eine Laufzeit-Aussage über einen emittierten oder
   E2E-Lauf nennt Image-Lage und Variante, an der sie gemessen ist; dritter Beleg von
   `BEO-ALL/kosten-einer-emittierten-pruefung-im-ziel-ungemessen` (§6 Risiko 1), liegt in
-  `harness/conventions/MR-089-laufzeit-aussage-nennt-image-lage-und-variante.md`.
+  [`harness/conventions/MR-089-laufzeit-aussage-nennt-image-lage-und-variante.md`](../../../../harness/conventions/MR-089-laufzeit-aussage-nennt-image-lage-und-variante.md)
+  ([MR-089](../../../../harness/conventions.md#mr-089)).
 - **Beobachtungs-Register (`../observations/`):** neu
   `BEO-ALL/emittiertes-gate-am-gemischten-root-baut-das-dockerfile-einer-anderen-sprache` (1×,
   MEDIUM-2) · Beleg in `BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext` (MEDIUM-1),
   `BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht` (LOW-1),
   `BEO-ALL/teilzeichenketten-suche-bindet-einen-pfad-nicht-an-seine-grenze` (LOW-2, 2×).
 - **Folge-Slices:** keine.
+- **Paarungen geprüft am 2026-10-09:** (a) Zielort `harness/conventions/MR-089-…` existiert,
+  `grep -c 'seit slice-kotlin-flaches-skelett'` → 1 · (b) keine Folge-Slices genannt · (c) die fünf
+  hier genannten `BEO-ALL/…` existieren, je `evidence/*.md` ≥ 1; zweite Hälfte über das Register:
+  2 Verzeichnisse ohne Beleg, namentlich `cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`
+  und `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen behauptet
+  (Kommando: Schleife über `BEO-ALL/*/evidence/*.md`, `close-welle.md` Schritt 3).
 - **Risiken aus §6:** Ausgänge stehen in §6.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
