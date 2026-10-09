@@ -143,6 +143,18 @@ Won't-Fix-Designnotiz.
   rot werden"-Zusicherung und träfe legitimes Mitfärben (gemeinsame Ausgabe-Senke) systematisch als
   falschen Befund; Träger ist dieser Review ([`AGENTS.md`](../../AGENTS.md) §3.6)
   (seit slice-fall-406-trifft-die-umgebaute-zerlegung)
+- **Zugehörigkeit per Teilzeichenkette statt per Grenze** — prüft ein Test, Wächter oder Treiber,
+  ob ein Pfad, eine Kennung oder ein Wort in einem Text oder einer Liste vorkommt, per
+  Teilzeichenkette (`strings.Contains`, `grep -F`, Präfix), ohne Grenze davor **und** danach? Der
+  Reviewer fährt die Grenz-Sonde: ein fremder Wert, der den erwarteten enthält, auf ihn endet oder
+  mit ihm beginnt (`go` in „hexagonal", `a.txt` neben `a.txt.bak`, ein vorangestelltes
+  Verzeichnis-Segment), und liest, ob das Urteil kippt. Kippt es: INFO; LOW, wenn der fremde Wert
+  im Bestand oder in der zugesagten Eingabe-Menge vorkommen kann; HIGH, wenn kein Gate die Folge
+  meldet (Stilles-Grün-Pfad). Ein Textstück einer Meldung ist kein Fall dieser Zeile. Gilt für
+  Prüfungen, die der Diff anlegt oder ändert, nicht für den Bestand. Kein Gate fängt das: ob ein
+  Operand Kennung oder Meldungstext ist, entscheidet die Syntax nicht; Träger ist dieser Review
+  ([`AGENTS.md`](../../AGENTS.md) §3.6)
+  (seit slice-mutations-anker-greift-in-den-gates)
 
 **Kontext-Eskalation:** dieselbe Beobachtung im Gate-/Sicherheitspfad steigt eine
 Stufe. Streit über eine Kategorisierung ⇒ Regel hier schärfen (§Pflege).
