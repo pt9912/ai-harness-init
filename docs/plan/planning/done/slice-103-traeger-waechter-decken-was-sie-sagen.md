@@ -81,7 +81,7 @@ Prüfbereich nimmt `_test[.]go` zudem ganz aus
 
 - **Die Kopf-Granularität von `test/mutations/`.** Ob ein Kopf die erwartete **Zusicherung** statt
   des **Wächter-Namens** trägt, ist der Gegenstand von
-  [slice-069](../open/slice-069-zahn-bindet-zusicherung.md) DoD (1). Dieser Slice legt Fälle in der heute
+  [slice-069](../done/slice-069-zahn-bindet-zusicherung.md) DoD (1). Dieser Slice legt Fälle in der heute
   geltenden Form an und migriert nichts.
 - **Der Prüfbereich von `make comment-claims`.** Er gehört
   [slice-070](../open/slice-070-comment-claims-pruefbereich.md). Dieser Slice repariert **einen**
@@ -167,7 +167,7 @@ Gründen rot würde und deshalb keinen bindet.
   blockierten Ablageort **hergestellt**; jeder Eingriff, der die Blockade umgeht, verändert
   zugleich die Adresse, an der `TestCarrierPath_NimmtDieEndungMit` misst. Ein Fall, der aus zwei
   Gründen rot wird, ist genau die Klasse, die
-  [slice-069](../open/slice-069-zahn-bindet-zusicherung.md) §1 als gemessene Instanz führt.
+  [slice-069](../done/slice-069-zahn-bindet-zusicherung.md) §1 als gemessene Instanz führt.
   — **Ausgang: eingetreten** → `slice-waechter-der-erfassungsschicht-decken-was-sie-sagen`. Der
   Nehmer nimmt genau diese Klasse an und entscheidet sie vorab: Sein Liefer-Punkt (1) setzt *„wo
   ein Eingriff mehrere Wächter zugleich reißt, bindet er keinen"* und nennt für

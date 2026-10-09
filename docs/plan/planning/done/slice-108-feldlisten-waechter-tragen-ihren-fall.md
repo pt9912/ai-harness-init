@@ -117,7 +117,7 @@ keiner wartet auf den anderen.
   Nummern werden beim Anlegen neu ausgezählt (`ls -1 test/mutations/*.sh | wc -l` → **165**,
   mitwandernd), nicht aus einem Plan übernommen.
 - **Die Kopf-Granularität der Fälle.** Ob ein `# expect:` die **Zusicherung** statt des
-  **Wächter-Namens** trägt, ist [slice-069](../open/slice-069-zahn-bindet-zusicherung.md) DoD (1). Dieser
+  **Wächter-Namens** trägt, ist [slice-069](../done/slice-069-zahn-bindet-zusicherung.md) DoD (1). Dieser
   Slice legt Fälle in der heute geltenden Form an und migriert nichts.
 - **Die Laufzeit des Treibers.** Sie gehört
   [slice-105](../done/slice-105-mutate-messen-dann-teilen.md); hier wird die **Stufe je Fall** begründet,

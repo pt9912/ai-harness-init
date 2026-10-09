@@ -191,7 +191,7 @@ Closure-Notiz mit Steering-Loop-Eintrag.
   Fall, nicht nur diesen. Sein eigener Wächter gehört deshalb in denselben Slice und nicht in
   einen Folge-Slice.
 - **Nicht in diesem Slice:** die Frage, ob ein Mutations-Fall die *genannte Zusicherung* bindet
-  ([slice-069](slice-069-zahn-bindet-zusicherung.md)) und der Prüfbereich von `comment-claims`
+  ([slice-069](../done/slice-069-zahn-bindet-zusicherung.md)) und der Prüfbereich von `comment-claims`
   ([slice-070](slice-070-comment-claims-pruefbereich.md)). Beide gehören derselben Familie an —
   Zusagen, die heute kein Sensor prüft —, hängen aber weder von diesem Slice ab noch er von
   ihnen. Ebenfalls **nicht** hier: die umgekehrte Richtung (ein Slice verweist auf eine ADR) —

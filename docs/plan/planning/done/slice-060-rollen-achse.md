@@ -470,7 +470,7 @@ Behebung ist der Umzug, nicht ein weiterer Satz.
 | die zwei Sachmängel in [`MR-018`](../../../../harness/conventions.md#mr-018--span-schema-der-telemetrie-erfassung) | [slice-076](slice-076-mr-018-umzug-technik-stratum.md) (c) und (d) |
 | die drei fail-closed-Zweige ohne Dauer-Sensor und die zwei fail-open-Pfade (§6) | kein Schnitt gelegt — Planner-Arbeit |
 | `comment-claims`: Index-Verengung, vier Pfad-Muster, `_test.go`-Ausnahme, das Zwölf-Zeichen-Fenster der Verneinungs-Ausnahme | [slice-070](../open/slice-070-comment-claims-pruefbereich.md) |
-| ein Fall bindet einen Wächter-**Namen**, nicht seine **Zusicherung** | [slice-069](../open/slice-069-zahn-bindet-zusicherung.md) |
+| ein Fall bindet einen Wächter-**Namen**, nicht seine **Zusicherung** | [slice-069](../done/slice-069-zahn-bindet-zusicherung.md) |
 | der veraltete Top-Level-`decision`-Pfad des Nachbar-Guards | [slice-067](../open/slice-067-pretooluse-ausgabeform.md) |
 | die Sonde, die „der Hook lief" von „er feuerte nie" trennt | [slice-074](../open/slice-074-agent-vor-aufruf-protokoll.md) |
 | die Rechnung über den erfassten Werten (Bilanz, Cache-Zähler, Abdeckungszahl) | [slice-066](slice-066-telemetrie-auswertung.md) · [slice-071](../done/slice-071-bilanz-nennt-ihren-bestand.md) · [slice-068](slice-068-rollen-arbeit-laeuft-als-rolle.md) |

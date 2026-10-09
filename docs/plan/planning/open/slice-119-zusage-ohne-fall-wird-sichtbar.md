@@ -105,7 +105,7 @@ nicht seine Voraussetzung.
 
 ### Was dieser Slice nicht ist — drei Nachbarn, gegen die er abgegrenzt ist
 
-- [slice-069](../open/slice-069-zahn-bindet-zusicherung.md) fragt, ob ein vorhandener Fall die
+- [slice-069](../done/slice-069-zahn-bindet-zusicherung.md) fragt, ob ein vorhandener Fall die
   **Zusicherung** bindet statt nur einen Wächter-**Namen** — Richtung Fall → Eigenschaft.
 - [slice-103](../done/slice-103-traeger-waechter-decken-was-sie-sagen.md) führt eine **benannte,
   kleine Menge** von Assertions (Träger-Wächter) und verlangt für jede *rot gesehen oder mit Grund
@@ -178,7 +178,7 @@ Steering-Loop-Lerneintrag.
 
 **Beginn (`open` → `next`): nichts blockiert.**
 
-**Die Reihenfolge gegenüber [slice-069](../open/slice-069-zahn-bindet-zusicherung.md),
+**Die Reihenfolge gegenüber [slice-069](../done/slice-069-zahn-bindet-zusicherung.md),
 [slice-103](../done/slice-103-traeger-waechter-decken-was-sie-sagen.md) und
 [slice-118](../open/slice-118-vorwaermlauf-endet-von-selbst.md):** alle vier berühren den
 Mutations-Sensor oder seine Fall-Menge. Das ist eine Beobachtung, keine Reihenfolge. **Was hier

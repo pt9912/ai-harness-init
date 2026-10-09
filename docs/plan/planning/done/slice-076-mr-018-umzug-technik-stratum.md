@@ -574,7 +574,7 @@ Closure-Notiz mit Steering-Loop-Eintrag.
   Adaptions-Einträge · die inhaltliche Prüfung der sechs Abweichungen · eine neue ADR · die
   Linkpflicht als **Regel** ([slice-075](../open/slice-075-regelwerk-verweis-linkpflicht.md) — dieser Slice
   setzt Links, er erzwingt sie nicht) · der Prüfbereich und die Bindungs-Schärfe des
-  Mutations-Sensors ([slice-069](../open/slice-069-zahn-bindet-zusicherung.md),
+  Mutations-Sensors ([slice-069](../done/slice-069-zahn-bindet-zusicherung.md),
   [slice-070](../open/slice-070-comment-claims-pruefbereich.md)) · die emittierte Ebene und
   [slice-073](../done/slice-073-emittierte-doc-gate-module.md) · der Inhalt der übrigen 20 Einträge · die
   Textänderung an [`AGENTS.md`](../../../../AGENTS.md) §3.4. Ob

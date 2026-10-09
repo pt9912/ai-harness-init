@@ -212,7 +212,7 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
 - **Dieser Slice heilt die Klasse NICHT**, die ihn ausgelöst hat. Ein perfekt gescopetes
   `comment-claims` prüft weiterhin nur, dass ein genannter Sensor **existiert** — nie, ob er
   die genannte Zusicherung **bindet**. Das ist
-  [slice-069](slice-069-zahn-bindet-zusicherung.md); beide zusammen decken die Wurzel, keiner
+  [slice-069](../done/slice-069-zahn-bindet-zusicherung.md); beide zusammen decken die Wurzel, keiner
   allein.
 - **Nicht in diesem Slice:** die emittierte Ebene. Ob ein bootstrapptes Ziel denselben Sensor
   bekommt, entscheidet slice-062/063.

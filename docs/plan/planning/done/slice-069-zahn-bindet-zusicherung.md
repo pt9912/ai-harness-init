@@ -45,7 +45,7 @@ gebunden, die ihn nennen.
 `make comment-claims` fängt sie bauartbedingt nicht — es prüft, dass ein genannter **Test
 existiert**, nie ob ein genannter **Fall die genannte Zusicherung bindet**. Fall-Köpfe,
 `_test.go`-Kommentare und `harness/conventions.md` liegen zudem alle außerhalb seines
-Prüfbereichs ([slice-070](slice-070-comment-claims-pruefbereich.md)).
+Prüfbereichs ([slice-070](../open/slice-070-comment-claims-pruefbereich.md)).
 
 **Register-Ausgänge, die dieser Slice trägt:**
 [`BEO-ALL/zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel`](../observations/BEO-ALL/zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel/state.md)
@@ -145,7 +145,7 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
   (`test/mutate-driver.bats` + Fall 09 decken `failure_form`, nicht die übrigen
   `run_case`-Zweige). Dieser Slice fasst genau diesen Bereich an.
 - **Nicht in diesem Slice:** der Prüfbereich von `comment-claims`
-  ([slice-070](slice-070-comment-claims-pruefbereich.md)) und die Frage, ob jeder Wächter
+  ([slice-070](../open/slice-070-comment-claims-pruefbereich.md)) und die Frage, ob jeder Wächter
   überhaupt gelistet ist (Roadmap-Kandidat *Vollständigkeits-Wächter für kuratierte Listen* —
   die **andere** Richtung: Inventar gegen Abdeckung, nicht Bindung).
 
