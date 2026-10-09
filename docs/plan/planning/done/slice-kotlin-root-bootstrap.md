@@ -39,7 +39,7 @@ Schritt, wie die cpp-Form.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine Beobachtung anfiel.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen prüft die Closure von `welle-kotlin-skelett`.
+- [x] Die drei Paarungen prüft die Closure von `welle-kotlin-skelett`; nach dem Move gefahren, §7.
 
 ## 3. Plan (vor Code)
 
@@ -107,6 +107,12 @@ DoD vollständig, Root-Stufe in `make full-smoke` grün, Closure-Notiz mit Lerne
   Quell-Stelle, die Kopfzeile sagt nicht mehr zu als gemessen. Kein Eintrag erreicht mit diesem Slice
   3× ohne Ausgang.
 - **Folge-Slices:** keine.
+- **Paarungen geprüft am 2026-10-09:** (a) kein Eintrag in §7 trägt das Zielort-Feld · (b) keine
+  Folge-Slices genannt; die Register-Kennung `slice-181` liegt unter `open/` · (c) die vier hier
+  genannten `BEO-ALL/…` existieren, je `evidence/*.md` ≥ 1; zweite Hälfte über das Register: 2
+  Verzeichnisse ohne Beleg, namentlich `cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht` und
+  `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen behauptet (Kommando:
+  Schleife über `BEO-ALL/*/evidence/*.md`, `close-welle.md` Schritt 3).
 - **Risiken aus §6:** Ausgang steht in §6.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
