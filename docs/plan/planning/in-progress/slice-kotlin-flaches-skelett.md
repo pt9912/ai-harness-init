@@ -48,7 +48,7 @@ in drei Fassungen und Guard-Set, das im gebootstrappten Ziel `make gates` grün 
 - [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), kein Self-Review.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine Beobachtung anfiel.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen prüft die Closure von `welle-kotlin-skelett`.
 
 ## 3. Plan (vor Code)
@@ -84,8 +84,8 @@ DoD vollständig, beide Kotlin-Stufen in `make full-smoke` grün, Closure-Notiz 
 - JVM/Gradle verlängern `make full-smoke` je Stufe um einen `docker build` mit
   Dependency-Auflösung — **Ausgang:** weiter offen →
   `BEO-ALL/kosten-einer-emittierten-pruefung-im-ziel-ungemessen` (gemessen nur mit lokal liegendem
-  Image, §7; der Kalt-Anteil ist ungemessen). Der Beleg hebt den Eintrag auf 3×; Beleg und
-  Register-Ausgang stehen nach dem Zug Planner → Architect → Planner
+  Image, §7; der Kalt-Anteil ist ungemessen). Der Beleg hebt den Eintrag auf 3×, Ausgang
+  verkörpert in [MR-089](../../../../harness/conventions.md#mr-089)
   ([ADR-0085](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md) Festlegung 1).
 - `detekt` hängt der Kotlin-Version nach; der Fallback `ktlint` ist nur Stil-Check —
   **Ausgang:** entfallen — die Sonde fährt detekt 1.23.8 mit Kotlin 2.4.21 grün und rot am
@@ -113,10 +113,10 @@ DoD vollständig, beide Kotlin-Stufen in `make full-smoke` grün, Closure-Notiz 
   Handbuch-Nachzug in den Release-Schnitt (Review MEDIUM-1, im Folge-Commit zurückgenommen). Am
   gemischten Root baut `test-kotlin` das Go-`Dockerfile`, ungenannt im Ziel (Review MEDIUM-2,
   nicht behoben).
-- **Steering-Loop-Eintrag:** gezählt, nicht verkörpert — eine Laufzeit-Messung, die ein DoD-Punkt
-  verlangt, gilt nur für die Cache-Lage, in der sie lief; der dritte Beleg von
-  `BEO-ALL/kosten-einer-emittierten-pruefung-im-ziel-ungemessen` (§6 Risiko 1), Ausgang beim
-  Architect-Zug.
+- **Steering-Loop-Eintrag:** geschärfte Regel — eine Laufzeit-Aussage über einen emittierten oder
+  E2E-Lauf nennt Image-Lage und Variante, an der sie gemessen ist; dritter Beleg von
+  `BEO-ALL/kosten-einer-emittierten-pruefung-im-ziel-ungemessen` (§6 Risiko 1), liegt in
+  `harness/conventions/MR-089-laufzeit-aussage-nennt-image-lage-und-variante.md`.
 - **Beobachtungs-Register (`../observations/`):** neu
   `BEO-ALL/emittiertes-gate-am-gemischten-root-baut-das-dockerfile-einer-anderen-sprache` (1×,
   MEDIUM-2) · Beleg in `BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext` (MEDIUM-1),
