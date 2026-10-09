@@ -12,8 +12,8 @@ gefeuert; diese Entscheidung ist seine Antwort — die Datei bleibt unberührt u
 Entscheidung löst sie nicht ab, sondern trägt darum kein `Supersedes`),
 [ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) (Festlegung 1 verengt sich auf zwei
 Norm-Artefakte und lässt die Frage für alle übrigen ausdrücklich offen; ihre Festlegung 2 ist die
-Commit-Konstruktion, die Festlegung 2 unten wiederverwendet; ihre Begründung — eine Norm-Frage ohne
-Original ist eine Architektur-Frage — trägt das Residuum unten),
+Commit-Konstruktion, die Festlegung 2 unten wiederverwendet; ihre Datei-Bindung gilt unverändert,
+und die Architect-Zuordnung unten ist nicht aus ihr abgeleitet),
 [ADR-0024](0024-derivatives-register-gehoert-der-rolle-seines-originals.md) (die Original-Achse,
 eine der Instanz-Regeln, die unten in Kraft bleiben; ihre Ableitung endet an der bindenden Aussage
 ohne Original und lässt genau dieses Residuum offen),
@@ -42,7 +42,7 @@ Tag, Dateiname, Abschnittsname, Zitat verbatim),
 Quelle benennt, in diesem Repo beantwortet wird, und ändert keine Spec-Aussage.
 
 **Regeln:** Baseline-Regelwerk `modul-04-adrs.md` §Ziel-Form: ADR (MADR). Die Rollen-Aussagen unten
-messen gegen die regierende Fassung `v6.9.0`
+messen gegen die regierende Fassung `v6.17.0`
 ([`MR-033`](../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)).
 
 ---
@@ -123,11 +123,11 @@ faktisch beantwortet worden ist.
 
 ### Was die Baseline regelt
 
-`v6.9.0`, `modul-08-agentenrollen.md` §Rollen-Regeln weist die Architektur-Entscheidung zu —
+`v6.17.0`, `modul-08-agentenrollen.md` §Rollen-Regeln weist die Architektur-Entscheidung zu —
 whitespace-normalisiert geprüft, die Ausgabe jedes Kommandos ist **1**:
 
 ```sh
-B=.harness/baseline/v6.9.0/regelwerk/modul-08-agentenrollen.md
+B=.harness/baseline/v6.17.0/regelwerk/modul-08-agentenrollen.md
 tr '\n' ' ' < $B | tr -s ' ' | grep -cF 'ADR-Änderung: Architect schreibt; Reviewer prüft auf Konsistenz; Implementer liest als Constraint'   # 1
 ```
 
@@ -162,20 +162,26 @@ Festlegungen:
 
 ### 1. Die schreibende Rolle eines Artefakts hängt an dem Vorgang, zu dem seine Änderung gehört — nicht an der Datei, ihrem Pfad, ihrem Typ oder ihrem Bestand · seit welle-v021-faehigkeit
 
-Die vier Entscheidungen der Familie sind **Instanzen** dieser Regel: Je eine Vorgangs-Klasse je
-Artefaktklasse, wo keine Quelle nach [`AGENTS.md`](../../../AGENTS.md) §2 die Rolle benennt.
+Drei der vier Entscheidungen der Familie sind **Instanzen** dieser Regel — je eine Vorgangs-Klasse
+je Artefaktklasse, wo keine Quelle nach [`AGENTS.md`](../../../AGENTS.md) §2 die Rolle benennt:
 [ADR-0024](0024-derivatives-register-gehoert-der-rolle-seines-originals.md) leitet aus dem
 **Original** ab — die Rolle, die die Originale schreibt, schreibt die Projektion;
 [ADR-0028](0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) aus dem **Ablauf** — wer ihn
 ausführt, schreibt seinen Anweisungssatz;
 [ADR-0048](0048-eigentum-haengt-am-vorgang-nicht-an-der-datei.md) am **Änderungsobjekt** —
 Eröffnung und Closure sind Planner-Arbeit, der vorlagengebundene Nachzug läuft im
-Implementations-Kontext; [ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) an der **Frage, die
-das Artefakt trägt** — eine Baseline-Abweichungs-Frage ist eine Architektur-Frage. Keine der vier
-widpricht dieser Regel: Jede benennt den Vorgang, zu dem die Änderung gehört, und keine von ihnen
-hängt Eigentum an Pfad, Typ oder Bestand. Sie bleiben in Kraft, solange sie konsistent sind; diese
-Entscheidung löst keine von ihnen ab und trägt darum kein `Supersedes`. Bei Konflikt gilt die ADR
-([`AGENTS.md`](../../../AGENTS.md) §2).
+Implementations-Kontext.
+
+[ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) ist **keine** Instanz in diesem Sinn: Sie
+bindet zwei **benannte Artefakte** (`AGENTS.md` §3, Adaptions-Block) an den Architect, gemessen an
+der Datei ([`AGENTS.md`](../../../AGENTS.md) §3.8, *„`git` sieht Dateien, nicht Abschnitte"*). Diese
+Bindung gilt unverändert; Festlegung 1 schränkt sie nicht ein und gilt für diese zwei Artefakte
+nicht.
+
+Diese Entscheidung löst keine der vier ab und trägt darum kein `Supersedes`; die Geltung der vier hängt
+nicht an dieser Festlegung. **Bei Konflikt zwischen Festlegung 1 und einer der vier gilt die
+jeweilige der vier** — sie ist die benannte, engere Setzung; Festlegung 1 greift nur, wo keine von
+ihnen eine Rolle benennt.
 
 ### 2. Berührung ist keine Antwort
 
@@ -188,12 +194,16 @@ beantwortbar** — auch nicht durch Tun. Vier Sätze tragen sie:
 - Er liefert ein **Übergabe-Artefakt**: Anlass, berührter Bestand, Änderungsbedarf — dieselbe
   Konstruktion, die
   [ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 2 für ihre zwei Artefakte setzt
-  und die Baseline `v6.9.0` für das Lastenheft formuliert hat.
-- Die Entscheidung fällt im **Architect-Lauf** — eine Norm-Aussage ohne Original ist eine
-  Architektur-Frage ([`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler),
-  [ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1, Begründung oben). Ihre Form
-  ist die ADR, wo sie eine **Klasse** entscheidet; wo die Antwort an einer bestehenden Quelle hängt,
-  genügt die Nennung jener Quelle im Übergabe-Artefakt — dann war die Frage keine quellenlose.
+  und die Baseline `v6.17.0` für das Lastenheft formuliert hat.
+- Die Entscheidung fällt im **Architect-Lauf**. Die Zuordnung trifft **diese** Entscheidung selbst;
+  sie ist nicht aus [ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1 oder
+  [`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
+  abgeleitet — die eine trifft über übrige Artefakte keine Aussage, die andere nennt keinen
+  Architect, und [ADR-0028](0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) Festlegung 2
+  schließt genau diese Ableitung aus. Ihre Form ist die ADR, wo sie eine **Klasse** entscheidet —
+  ADRs schreibt der Architect (`modul-08-agentenrollen.md` §Rollen-Regeln, §Kontext); wo die
+  Antwort an einer bestehenden Quelle hängt, genügt die Nennung jener Quelle im Übergabe-Artefakt —
+  dann war die Frage keine quellenlose.
 - Der laufende Kontext nimmt keinen der beiden Schritte vor: weder das Schreiben noch das
   stillschweigende Annehmen.
 
@@ -204,7 +214,7 @@ kostet einen Rollen-Wechsel; die stille Berührung kostet ihn danach, mit einem 
 
 ### 3. Die Residuen der Instanz-Regeln fallen unter Festlegung 2
 
-Die Stellen, an denen die vier Instanz-Entscheidungen ihre Ableitung bewusst enden lassen — die
+Die Stellen, an denen die vier Entscheidungen ihre Ableitung bewusst enden lassen — die
 übrigen Norm-Artefakte ([ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1), die
 bindende Aussage ohne Original
 ([ADR-0024](0024-derivatives-register-gehoert-der-rolle-seines-originals.md) Festlegung 1), die
@@ -245,7 +255,7 @@ Regeln dieser Sektion: **mindestens drei Optionen mit Pro/Contra** — „nichts
 | A — **nichts tun**, die Familie weiter je Artefaktklasse schließen | kein neuer Text; die vier Instanzen tragen die Fälle, solange sie auftreten | Genau das ist die Klasse, deren Zähler **3** steht: dreimal wurde die Frage durch Tun beantwortet, und jede Auflösung kostete ein Verdikt plus Runden. [ADR-0048](0048-eigentum-haengt-am-vorgang-nicht-an-der-datei.md) Trigger 5 verlangt die allgemeine Regel — ihn zu lassen, ist ein stiller, stehengebliebener Trigger |
 | B — die **Datei-Lesart**: ein quellenloses Artefakt gehört der Rolle, die es bisher geschrieben hat | eine Zeile, ohne Probe | Bestand begründet nichts — weder in die eine noch in die andere Richtung ([`AGENTS.md`](../../../AGENTS.md) §3.7); [ADR-0048](0048-eigentum-haengt-am-vorgang-nicht-an-der-datei.md) §Kontext misst für denselben Artefakt-Typ beide Antworten nebeneinander (56 gegen 7 Rollen-Präfixe). Die Lesart beantwortet die Frage mit genau der Klasse, die der Zähler zählt |
 | C — die vier Instanz-Entscheidungen per `Supersedes` ablösen und alles in **eine** Regel ziehen | eine Datei statt vier; keine Instanz-Aufzählung | Die vier tragen je eine geprüfte Achse mit eigenen Proben und Triggern, und keine ist angegriffen. Sie zu ablösen, bewegte vier Entscheidungen, die niemand angreift — derselbe Contra, den [ADR-0048](0048-eigentum-haengt-am-vorgang-nicht-an-der-datei.md) Option C gegen das Ablösen von [ADR-0046](0046-welle-datei-entsteht-mit-der-eroeffnung.md) führt; der Präzedenzfall dieses Repos ist [`AGENTS.md`](../../../AGENTS.md) §3.11, das vier Entscheidungen verallgemeinert, ohne eine davon abzulösen |
-| E — **auf die Baseline warten** | kein eigener Norm-Text | Gemessen: `v6.9.0`, `modul-08-agentenrollen.md` §Rollen-Regeln benennt die schreibende Rolle für ADRs und keine für ein quellenloses Artefakt allgemein (§Kontext, Kommando **1**). [ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) hat denselben Zweig über **alle 26** Regelwerk-Dateien ihres damaligen Stands geprüft und verworfen |
+| E — **auf die Baseline warten** | kein eigener Norm-Text | Gemessen: `v6.17.0`, `modul-08-agentenrollen.md` §Rollen-Regeln benennt die schreibende Rolle für ADRs und keine für ein quellenloses Artefakt allgemein (§Kontext, Kommando **1**). [ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) hat denselben Zweig über **alle 26** Regelwerk-Dateien ihres damaligen Stands geprüft und verworfen |
 | **D — gewählt: die allgemeine Regel als Instanz-Familie mit geschlossenem Residuum, ohne `Supersedes`** | Schließt die Lücke, die der Zähler zählt, ohne eine fremde Entscheidung zu bewegen; die Antwort-Pflicht hängt an einer Handlung (Übergabe), nicht an einem Urteil über Bestand; [ADR-0048](0048-eigentum-haengt-am-vorgang-nicht-an-der-datei.md) Trigger 5 ist bedient | Die Vorfrage — greift eine Instanz-Regel, oder ist es Residuum? — ist ein Urteil je Änderung, kein Muster, also nicht maschinell zu halten (§Fitness Function); und ein dringender Norm-Nachzug läuft nicht mehr im laufenden Kontext, sondern über die Übergabe — derselbe Preis, den [ADR-0015](0015-rollen-eigentum-an-norm-artefakten.md) für ihre zwei Artefakte führt |
 
 ## Konsequenzen
@@ -323,7 +333,7 @@ Behauptet wird hier **kein** Gate
 - **Wenn die Baseline eine schreibende Rolle für quellenlose Artefakte allgemein benennt**
   *(feedforward — eine Textänderung upstream, kein Sensor; gegen `BASELINE_TAG` gemessen)*: Dann ist
   diese Entscheidung gegenstandslos und wird durch eine Nachfolge-ADR mit `Supersedes` auf den
-  Baseline-Abschnitt zurückgeführt. `v6.9.0` benennt keine (§Kontext).
+  Baseline-Abschnitt zurückgeführt. `v6.17.0` benennt keine (§Kontext).
 
 ### Der Acceptance-Trigger
 
