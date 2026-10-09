@@ -1,5 +1,7 @@
 # MR-014 — CI auf frischem Klon (GitHub Actions)
 > **ÜBERHOLT: der Verbotssatz *„Ein Inline-Prüfblock in der YAML bleibt verboten"* im Nachtrag 2026-07-25 zu Setzung 1, für Jobs, die bewusst nicht auschecken → [`MR-069`](../conventions.md#mr-069--ein-job-der-bewusst-nicht-auscheckt-trägt-seine-prüfung-inline).** Die Regelform der Setzung — eine Quelle je Check; ein versioniertes, von `shell-lint` gedecktes Artefakt, das der Workflow-Step ruft — bindet fort und gilt für jeden checkout-führenden Job.
+>
+> **ÜBERHOLT: der Satz *„GitHub Actions fährt bei **jedem Push und PR** …"* der Adaption, soweit er Pushes nach `mutate/**` erfasst → [`MR-091`](../conventions.md#mr-091--ab-neun-fällen-läuft-die-mutations-probe-eines-slice-über-einen-ci-branch-dessen-ergebnis-job-schreibt).** Daneben beantwortet MR-091 Setzung 2, ob ein Job schreiben darf. Die vier Setzungen binden fort.
 
 - **Datum:** 2026-07-20
 - **Geltungsbereich:** `.github/workflows/ci.yml` (neu), `Makefile` (`ACTIONLINT_IMAGE`,

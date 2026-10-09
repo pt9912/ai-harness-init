@@ -1,5 +1,7 @@
 # MR-090 — Ein Sensor hält den Anker eines Mutations-Falls am Commit
 
+> **ÜBERHOLT: §Grenze, der Halbsatz *„das bleibt beim nächtlichen `make mutate`"* → [`MR-091`](../conventions.md#mr-091--ab-neun-fällen-läuft-die-mutations-probe-eines-slice-über-einen-ci-branch-dessen-ergebnis-job-schreibt).** Ob der Wächter rot wird, prüft je Slice die Probe vor der Verifikation (lokal oder über den CI-Branch); der Nachtlauf bleibt der Vollsweep. Der Sensor, seine übrige Grenze und der Auflösungs-Trigger binden fort.
+
 - **Datum:** 2026-10-09
 - **Wirksamkeits-Anlass:** slice-mutations-anker-greift-in-den-gates — mit ihm läuft
   `make mutate-greift` in `make gates`, und der Satz *„Kein Sensor hält die Anlage"* in
