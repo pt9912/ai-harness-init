@@ -214,7 +214,9 @@ trifft, und jeder geänderte oder neue Fall selbst. Das Werkzeug fällt das Urte
 steht allein in `harness/tools/mutate-auswahl.sh` (`SCHWELLE`): bis dahin Exit 0 mit der Zeile
 für den lokalen Lauf, darüber Exit 10 mit dem Push
 `git push origin HEAD:refs/heads/mutate/<kennung>-<sha8>` — `<sha8>` sind die ersten acht Zeichen von
-`HEAD`. Jeder Lauf ist damit ein neuer Ref, und kein Push braucht `--force`; das Werkzeug gibt
+`HEAD`. Die Exit-Codes sind die des Skripts: Das `make`-Ziel reicht sie nicht durch, es meldet
+„Fehler 10“ bzw. „Fehler 2“ und endet in beiden Fällen mit Exit 2. Am `make`-Aufruf erkennt man
+den CI-Weg deshalb an der Meldung „Fehler 10“ und an der ausgegebenen `git push`-Zeile. Jeder Lauf ist damit ein neuer Ref, und kein Push braucht `--force`; das Werkzeug gibt
 keinen aus. Die verschachtelte Form `mutate/<kennung>/<sha8>` lehnt git ab, solange ein Ref
 `mutate/<kennung>` besteht.
 
