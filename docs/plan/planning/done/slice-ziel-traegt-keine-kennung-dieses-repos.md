@@ -205,7 +205,7 @@ gebootstrappten Ziel (Variante a und b) keinen Treffer; Closure-Notiz mit Lernei
   Auslöser: `BEO-ALL/idempotente-anlage-erreicht-den-bestand-nicht` (slice-190, slice-194,
   slice-ziel-traegt-keine-kennung-dieses-repos — 3×); Verdikt
   `2026-10-09-slice-ziel-traegt-keine-kennung-dieses-repos-architect-verdikt`. Der Umzug der Datei
-  nach `docs/maintainer/` liegt bei `slice-releasing-zieht-nach-docs-maintainer`; Bedingung dort:
+  in das Maintainer-Verzeichnis unter docs liegt bei `slice-releasing-zieht-nach-docs-maintainer`; Bedingung dort:
   der Stub am alten Ort trägt den Anker.
 - **Beobachtungs-Register (`../observations/`):** Beleg `evidence/slice-ziel-traegt-keine-kennung-dieses-repos.md` in
   `BEO-ALL/regel-rand-ohne-benannte-luecke/` (8×, geplant; Review HIGH-1, INFO-1, INFO-2,
