@@ -11,12 +11,24 @@
 # ACHSEN-REGEL: verglichen wird nur die Gradle-Achse bei FESTER JDK-Achse. Kandidat
 # ist jeder Tag `X.Y.Z-jdk<NN>` mit dem <NN> des Pins; Varianten mit Suffix
 # (`-alpine`, `-noble`, `-graal`, …), Kurz-Tags (`9.8-jdk21`, `jdk21`) und andere
-# JDKs fallen heraus. latest = hoechster Kandidat nach `sort -V`, der Pin selbst
-# zaehlt mit, sobald ein Kandidat gefunden ist — ein Pin, der neuer ist als jeder
-# gelieferte Tag, meldet sich damit als aktuell, nicht als VERALTET.
+# JDKs fallen heraus. latest = hoechster GELIEFERTER Kandidat nach `sort -V`; der Pin
+# geht nicht als Kandidat ein (Gleichlauf mit cpp-freshness.sh).
+#
+# URTEILS-REGEL (`judge`): latest == Pin -> aktuell (Exit 0) · latest > Pin ->
+# VERALTET (Exit 1) · latest < Pin -> KEIN URTEIL (Exit 2): der Pin liegt ueber jedem
+# gelieferten Kandidaten, steht also nicht auf der gelesenen Seite, und ein hoeherer
+# Tag ist dort auch nicht. Begruendung der dritten Klasse: die Seite ist nach
+# last_updated sortiert, nicht nach Version (`name=jdk21` liefert 657 Tags auf 7
+# Seiten; Seite 1 trug 8.14.6/9.8.1, Seite 2 9.6.0-9.8.0). Ein Pin ausserhalb von
+# Seite 1 ist darum entweder upstream nicht vorhanden oder seit laengerem nicht neu
+# gebaut — VERALTET mit einem NIEDRIGEREN latest riete eine Herabstufung, aktuell
+# behauptete einen latest-Wert, den keine Quelle geliefert hat. Kein Urteil allein
+# fuer "Pin fehlt" waere zu weit: ein gealterter Pin faellt von Seite 1, waehrend
+# sein Nachfolger dort steht — das ist der VERALTET-Fall, und er bleibt einer.
 # Grenze: eine neuere JDK-Achse (jdk25 neben jdk21) beurteilt der Sensor nicht.
-# Grenze: gelesen wird EINE Seite (page_size=100, Docker-Hub-Default-Sortierung
-# last_updated); ein neuerer Tag ausserhalb dieser Seite bleibt unsichtbar.
+# Grenze: gelesen wird EINE Seite (page_size=100), sortiert nach last_updated
+# (Docker-Hub-Default), nicht nach Version; ein neuerer Tag, den mehr als 100
+# juenger aktualisierte Tags derselben JDK-Achse verdraengen, bleibt unsichtbar.
 #
 # Den Vergleich traegt `component-freshness.sh --compare`; dieser Wrapper macht
 # Pin-Lesen, Fetch und Kandidaten-Filter (Arbeitsteilung wie cpp-freshness.sh).
@@ -25,10 +37,11 @@
 # hebt eine eigene Operation.
 #
 # Exit (wie cpp-/component-freshness): 0 = aktuell, 1 = VERALTET, 2 = kein Urteil
-# (Fetch-/Parse-Fehler, kein Kandidat, Pin leer oder nicht in der Form
-# `X.Y.Z-jdk<NN>`). Netzlos aufrufbar: `--pinned`, `--latest <pin> <roh>`,
-# `--compare <pin> <latest>` und der Pin-Abbruch des vollen Laufs. bash + coreutils
-# + grep + sed + sort + curl.
+# (Fetch-/Parse-Fehler, kein Kandidat, Pin ueber jedem gelieferten Kandidaten, Pin
+# leer oder nicht in der Form `X.Y.Z-jdk<NN>`). Netzlos aufrufbar: `--pinned`,
+# `--latest <pin> <roh>`, `--judge <pin> <roh>` (dieselbe Funktion, die der volle
+# Lauf nach dem Fetch ruft), `--compare <pin> <latest>` und der Pin-Abbruch des
+# vollen Laufs. bash + coreutils + grep + sed + sort + curl.
 set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -50,7 +63,7 @@ jdk_suffix() {
 }
 
 # Kandidaten-Filter (netzlos): $1 = Pin, stdin = roher Tags-Text. Liefert den
-# hoechsten Tag `X.Y.Z<suffix>` des Pins; ohne Kandidat leer.
+# hoechsten gelieferten Tag `X.Y.Z<suffix>` mit dem JDK des Pins; ohne Kandidat leer.
 extract_latest() {
   local pin="$1" suffix found
   suffix="$(jdk_suffix "$pin")"
@@ -58,7 +71,20 @@ extract_latest() {
   found="$({ grep -oE "\"name\": ?\"[0-9]+\.[0-9]+\.[0-9]+${suffix}\"" \
       | grep -oE "[0-9]+\.[0-9]+\.[0-9]+${suffix}" ; } || true)"
   [ -n "$found" ] || return 0
-  printf '%s\n%s\n' "$found" "$pin" | sort -V | tail -n 1
+  printf '%s\n' "$found" | sort -V | tail -n 1
+}
+
+# Urteil (netzlos): $1 = Pin, $2 = roher Tags-Text. URTEILS-REGEL im Kopf; latest
+# < Pin endet hier mit Exit 2, alles andere urteilt der gemeinsame Vergleicher.
+judge() {
+  local pin="$1" latest
+  latest="$(printf '%s' "$2" | extract_latest "$pin")"
+  if [ -n "$latest" ] && [ "$latest" != "$pin" ] \
+      && [ "$(printf '%s\n%s\n' "$latest" "$pin" | sort -V | tail -n 1)" = "$pin" ]; then
+    echo "$NAME: KEIN URTEIL: gepinnt $pin steht nicht unter den gelieferten Tags, und keiner liegt darueber (hoechster gelieferter: $latest) — gelesen wird eine Seite, sortiert nach last_updated." >&2
+    exit 2
+  fi
+  exec env COMPONENT_ADVICE="$ADVICE" bash "$GENERIC" --compare "$NAME" "$pin" "$latest"
 }
 
 if [ "${1:-}" = "--pinned" ]; then
@@ -69,6 +95,10 @@ fi
 if [ "${1:-}" = "--latest" ]; then
   printf '%s' "${3:-}" | extract_latest "${2:-}"
   exit 0
+fi
+
+if [ "${1:-}" = "--judge" ]; then
+  judge "${2:-}" "${3:-}"
 fi
 
 if [ "${1:-}" = "--compare" ]; then
@@ -83,5 +113,4 @@ if [ -z "$suffix" ]; then
   exit 2
 fi
 raw="$(curl -fsSL "${TAGS_URL_BASE}${suffix#-}")" || raw=""
-latest="$(printf '%s' "$raw" | extract_latest "$pinned")"
-exec env COMPONENT_ADVICE="$ADVICE" bash "$GENERIC" --compare "$NAME" "$pinned" "$latest"
+judge "$pinned" "$raw"

@@ -97,7 +97,7 @@ ist (`make help` listet sie).
 | [`make doc-structure`](sensors/doc-structure.md) | fährt die `structure`-Regeln der `.d-check.yml` allein (inert ohne `structure:`-Block) | kein Gate |
 | `make regelwerk-check` | Upstream-Content-Drift des Baseline-ZIP auditieren (Netz) | kein Gate — nur nächtlich |
 | `make baseline-freshness` | neueren Upstream-Tag als `BASELINE_TAG` melden (Netz, read-only) | kein Gate — nur nächtlich |
-| `make freshness-kotlin` | meldet, ob die erste Seite der Docker-Hub-Tags von `gradle` einen höheren Tag `X.Y.Z-jdk<NN>` mit dem JDK von `DefaultKotlinVersion` (`internal/gen/kotlin.go`) führt; Varianten und andere JDKs zählen nicht (Netz, read-only) | kein Gate — nur nächtlich · [ADR-0088](../docs/plan/adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md) |
+| `make freshness-kotlin` | meldet, ob Seite 1 der Docker-Hub-Tags von `gradle` (100, sortiert nach `last_updated`) einen höheren Tag `X.Y.Z-jdk<NN>` mit dem JDK von `DefaultKotlinVersion` führt — Varianten zählen nicht; Pin über jedem gelieferten Tag: kein Urteil (Netz, read-only) | kein Gate — nur nächtlich · [ADR-0088](../docs/plan/adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md) |
 | `make record-gates` | Working-Tree-Hash-Nachweis für den Stop-Hook | kein Gate |
 
 ## Traceability

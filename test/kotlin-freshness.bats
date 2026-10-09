@@ -4,8 +4,8 @@
 # Docker-only im gepinnten bats-Image (make test).
 #
 # Gemessen wird netzlos: das Lesen des Pins aus internal/gen/kotlin.go (`--pinned`),
-# der Kandidaten-Filter ueber Fixture-Tags (`--latest`), der Vergleich (`--compare`)
-# und der Abbruch des vollen Laufs bei einem Pin ausserhalb der Form X.Y.Z-jdk<NN>,
+# der Kandidaten-Filter ueber Fixture-Tags (`--latest`), das Urteil, das der volle Lauf
+# nach dem Fetch ruft (`--judge`), der Vergleich (`--compare`) und der Abbruch des vollen Laufs bei einem Pin ausserhalb der Form X.Y.Z-jdk<NN>,
 # der vor dem Fetch endet. Den Fetch gegen Docker Hub ruft keiner dieser Tests.
 
 setup() {
@@ -52,10 +52,31 @@ setup() {
   [ "$output" = "9.8.1-jdk21" ]
 }
 
-@test "kotlin-freshness: Pin neuer als jeder gelieferte Kandidat bleibt latest" {
+@test "kotlin-freshness: latest kommt allein aus den gelieferten Tags, der Pin ist kein Kandidat" {
   run bash "$KT_FRESH" --latest "9.10.0-jdk21" "$FIX_NEUER"
   [ "$status" -eq 0 ]
-  [ "$output" = "9.10.0-jdk21" ]
+  [ "$output" = "9.9.0-jdk21" ]
+}
+
+@test "kotlin-freshness: Pin ueber jedem gelieferten Kandidaten gibt kein Urteil (Exit 2)" {
+  run bash "$KT_FRESH" --judge "9.10.0-jdk21" "$FIX_NEUER"
+  [ "$status" -eq 2 ]
+  grep -qF 'kotlin-gradle: KEIN URTEIL: gepinnt 9.10.0-jdk21 steht nicht unter den gelieferten Tags, und keiner liegt darueber (hoechster gelieferter: 9.9.0-jdk21)' <<<"$output"
+  ! grep -q 'aktuell' <<<"$output"
+  ! grep -q 'VERALTET' <<<"$output"
+}
+
+@test "kotlin-freshness: Pin nicht geliefert, ein hoeherer Tag schon, meldet VERALTET (Exit 1)" {
+  run bash "$KT_FRESH" --judge "9.7.0-jdk21" "$FIX_NEUER"
+  [ "$status" -eq 1 ]
+  grep -q 'kotlin-gradle: VERALTET' <<<"$output"
+  grep -q 'latest:  9.9.0-jdk21' <<<"$output"
+}
+
+@test "kotlin-freshness: --judge mit geliefertem Pin als hoechstem Tag meldet aktuell (Exit 0)" {
+  run bash "$KT_FRESH" --judge "9.9.0-jdk21" "$FIX_NEUER"
+  [ "$status" -eq 0 ]
+  grep -q 'kotlin-gradle: aktuell' <<<"$output"
 }
 
 @test "kotlin-freshness: ohne Kandidaten kein latest, der Vergleich urteilt nicht (Exit 2)" {
