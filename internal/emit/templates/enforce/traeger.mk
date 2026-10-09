@@ -22,7 +22,7 @@
 # Dogfood-Makefile fuehrt daneben die sechs Einzeldigests (zwei Kanaele).
 # Der Tag ist eine Release-Entscheidung: er wandert mit dem
 # Release-Schnitt, nicht mit jedem Bau.
-TRAEGER_TAG ?= v0.5.0
+TRAEGER_TAG ?= v0.6.0
 TRAEGER_CARRIER ?= .harness/state/bin/ai-harness-init
 
 export TRAEGER_TAG TRAEGER_CARRIER
