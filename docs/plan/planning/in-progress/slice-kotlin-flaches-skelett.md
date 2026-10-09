@@ -32,22 +32,22 @@ in drei Fassungen und Guard-Set, das im gebootstrappten Ziel `make gates` grün 
 
 ## 2. Definition of Done
 
-- [ ] Renderer `kotlin`/`flat` in `internal/gen/` nach [ADR-0088](../../adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md) Festlegung 1–3:
+- [x] Renderer `kotlin`/`flat` in `internal/gen/` nach [ADR-0088](../../adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md) Festlegung 1–3:
       `settings.gradle.kts` ohne `include`, `build.gradle.kts`, `Dockerfile` mit Stages
       `test`/`lint`/`build`, Lint-Config, `src/main/kotlin/app/Main.kt`, `src/test/kotlin/…`; Image
       `gradle:<ver>-jdk<NN>` per Tag, `SKEL_KOTLIN_VERSION` → `gen.DefaultVersion("kotlin")`, kein Wrapper.
       Lint-Zweig per Sonde belegt (`detekt`, sonst `ktlint`); Sonden-Lauf in §7.
-- [ ] Eigener Kotlin-Test Fragment↔Stages nach dem Muster `TestCppCodeGateFragment_TargetsMatchStages`,
+- [x] Eigener Kotlin-Test Fragment↔Stages nach dem Muster `TestCppCodeGateFragment_TargetsMatchStages`,
       einmal rot gesehen (Stage entfernt); `blockedByLang("kotlin")` mit Kopplung an `gen.SupportedLangs`
       ([`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)).
-- [ ] `make full-smoke`: `add-lang kotlin` ins Mono-Repo und gemischter Root go+cpp+kotlin, je mit
+- [x] `make full-smoke`: `add-lang kotlin` ins Mono-Repo und gemischter Root go+cpp+kotlin, je mit
       `e2e_abdeckung`-Kopfzeile, `docs/user/e2e-abdeckung.md` neu erzeugt; Laufzeit-Zuwachs von
       `make full-smoke` vorher/nachher gemessen, in §7.
-- [ ] Hilfetext nennt `kotlin` und `SKEL_KOTLIN_VERSION` (öffentlicher Vertrag).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), kein Self-Review.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine Beobachtung anfiel.
+- [x] Hilfetext nennt `kotlin` und `SKEL_KOTLIN_VERSION` (öffentlicher Vertrag).
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), kein Self-Review.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine Beobachtung anfiel.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen prüft die Closure von `welle-kotlin-skelett`.
 
@@ -82,18 +82,48 @@ DoD vollständig, beide Kotlin-Stufen in `make full-smoke` grün, Closure-Notiz 
 ## 6. Risiken und offene Punkte
 
 - JVM/Gradle verlängern `make full-smoke` je Stufe um einen `docker build` mit
-  Dependency-Auflösung — **Ausgang:** *bei Closure*
+  Dependency-Auflösung — **Ausgang:** weiter offen →
+  `BEO-ALL/kosten-einer-emittierten-pruefung-im-ziel-ungemessen` (gemessen nur mit lokal liegendem
+  Image, §7; der Kalt-Anteil ist ungemessen). Der Beleg hebt den Eintrag auf 3×; Beleg und
+  Register-Ausgang stehen nach dem Zug Planner → Architect → Planner
+  ([ADR-0085](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md) Festlegung 1).
 - `detekt` hängt der Kotlin-Version nach; der Fallback `ktlint` ist nur Stil-Check —
-  **Ausgang:** *bei Closure*
+  **Ausgang:** entfallen — die Sonde fährt detekt 1.23.8 mit Kotlin 2.4.21 grün und rot am
+  Gegenbeispiel (§7), `ktlint` wird nicht gebraucht; ein späteres Nachhängen bei einem Pin-Zug trägt
+  Re-Evaluierungs-Trigger 2 von [ADR-0088](../../adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md).
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** *bei Closure*
-- **Was ging anders als geplant:** *bei Closure*
-- **Steering-Loop-Eintrag:** *bei Closure*
-- **Beobachtungs-Register (`../observations/`):** *bei Closure*
-- **Folge-Slices:** *bei Closure*
-- **Risiken aus §6:** *bei Closure*
+- **Was hat funktioniert:** Lint-Sonde ([ADR-0088](../../adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md)
+  Festlegung 3, DoD 1): detekt 1.23.8 mit Kotlin-Plugin 2.4.21 auf `gradle:9.8.1-jdk21`,
+  `gradle --no-daemon detekt` → BUILD SUCCESSFUL; Gegenbeispiel `fun leer() {}` →
+  `[EmptyFunctionBlock]`, „Analysis failed with 1 weighted issues", BUILD FAILED. Der Verifier hat es
+  nachgefahren: die `test`-Stage bleibt unter derselben Mutation grün, das Rot kommt aus detekt.
+  Damit gilt der detekt-Zweig; Gradle warnt zusätzlich „Deprecated Gradle features …
+  incompatible with Gradle 10". Die fünf Mutationsfälle 618–622 färben ihren Wächter aus dem
+  behaupteten Grund rot (Verifikations-Bericht `2026-10-09-slice-kotlin-flaches-skelett-verifikation`).
+- **Laufzeit (DoD 3):** `make full-smoke` vorher 170 s, nachher 231 s, +61 s, beide Exit 0 — das
+  gradle-Image lag lokal (von der Sonde gezogen), die Gradle-Abhängigkeiten wurden ohne Cache
+  aufgelöst (Messung des Implementers). Verifier bei warmem Cache: 176 s. Der Image-Pull auf einem
+  frischen Host ist ungemessen.
+- **Was ging anders als geplant:** Der Implementer trug §3-Zeilen selbst ein. Übernommen sind
+  `main_test.go`, `gen_test.go`/`zeilenenden_test.go` und `test/mutations/` — sie begleiten
+  Liefer-Punkte 2 und 4 und verschieben keine Abnahme; Fall 306 bleibt in der Erwartung unverwässert
+  (Review INFO-1). Zurückgewiesen ist die Zeile `docs/user/benutzerhandbuch.md`: §6 der Welle legt den
+  Handbuch-Nachzug in den Release-Schnitt (Review MEDIUM-1, im Folge-Commit zurückgenommen). Am
+  gemischten Root baut `test-kotlin` das Go-`Dockerfile`, ungenannt im Ziel (Review MEDIUM-2,
+  nicht behoben).
+- **Steering-Loop-Eintrag:** gezählt, nicht verkörpert — eine Laufzeit-Messung, die ein DoD-Punkt
+  verlangt, gilt nur für die Cache-Lage, in der sie lief; der dritte Beleg von
+  `BEO-ALL/kosten-einer-emittierten-pruefung-im-ziel-ungemessen` (§6 Risiko 1), Ausgang beim
+  Architect-Zug.
+- **Beobachtungs-Register (`../observations/`):** neu
+  `BEO-ALL/emittiertes-gate-am-gemischten-root-baut-das-dockerfile-einer-anderen-sprache` (1×,
+  MEDIUM-2) · Beleg in `BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext` (MEDIUM-1),
+  `BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht` (LOW-1),
+  `BEO-ALL/teilzeichenketten-suche-bindet-einen-pfad-nicht-an-seine-grenze` (LOW-2, 2×).
+- **Folge-Slices:** keine.
+- **Risiken aus §6:** Ausgänge stehen in §6.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
