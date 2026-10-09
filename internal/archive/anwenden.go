@@ -2,6 +2,7 @@ package archive
 
 import (
 	"archive/zip"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -87,6 +88,13 @@ func ZuStagen(b Bestand, nachgezogen []string) []string {
 // nimmt den Fortschrittstext.
 func Anwenden(root string, b Bestand, dateien []string, g Git, out io.Writer) error {
 	altbestand := b.Welle == AltbestandSchluessel
+	// ZUSAGE (ADR-0090 Festlegung 1 und 3): der Schluessel AltbestandSchluessel laeuft nur
+	// mit einer nicht leeren Kennung des Aufrufers; ohne sie endet der Lauf hier — vor dem
+	// Verzeichnis, vor dem ersten Mv und ohne Commit. Gedeckt von
+	// TestAnwendenAltbestandOhneKennungBrichtVorDemMoveAb.
+	if altbestand && b.Kennung == "" {
+		return ErrKennungFehlt
+	}
 	if altbestand && len(altbestandFremdesPlanBild(b)) > 0 {
 		return fmt.Errorf("der Schluessel %s hat keinen Welle-Plan, %d Datei(en) '%s*.md' in %s/",
 			b.Welle, len(altbestandFremdesPlanBild(b)), b.Welle, doneDir)
@@ -120,15 +128,25 @@ func Anwenden(root string, b Bestand, dateien []string, g Git, out io.Writer) er
 	return nil
 }
 
-// kennungSuffix haengt an die Commit-Nachrichten des Schluessels
-// AltbestandSchluessel die Kennung ADR-0041: der Schluessel trifft kein Muster
-// der Traceability-Menge, ein commit-msg-Traeger wiese den Commit sonst ab. Die
-// Nachrichten einer Welle-Kennung bleiben unveraendert.
+// ErrKennungFehlt ist der Abbruch des Schluessels AltbestandSchluessel ohne
+// Kennung des Aufrufers. Der Text nennt das Argument und keine Kennung: welche
+// das Ziel annimmt, entscheidet dessen commit-msg-Traeger (ADR-0090 Festlegung 1);
+// die Raender der Pflicht — nach den Sperren, nicht unter --vorschau, leer gilt als
+// fehlend — setzt Festlegung 3.
+var ErrKennungFehlt = errors.New("der Schluessel " + AltbestandSchluessel +
+	" braucht eine Kennung des eigenen Repos (--kennung <K>, im Make-Ziel KENNUNG=<K>), " +
+	"die beide Commits tragen und die der commit-msg-Traeger dieses Repos annimmt — nichts wurde bewegt")
+
+// kennungSuffix haengt die Kennung des Aufrufers (Bestand.Kennung) an beide
+// Commit-Nachrichten; ohne Kennung bleiben sie unveraendert. Das Werkzeug bringt
+// keine eigene mit und prueft die gegebene nicht gegen die Traceability-Menge —
+// Richter ist der commit-msg-Traeger des Repos (ADR-0090 Festlegung 1).
+// Gedeckt von TestAnwendenTraegtDieKennungDesAufrufersInBeidenCommits.
 func kennungSuffix(b Bestand) string {
-	if b.Welle == AltbestandSchluessel {
-		return ", ADR-0041"
+	if b.Kennung == "" {
+		return ""
 	}
-	return ""
+	return ", " + b.Kennung
 }
 
 // NachCommit1Fehler ist ein Fehler, der NACH dem Move-Commit auftrat. Der Baum
@@ -188,7 +206,7 @@ func inhaltsSchritt(root string, b Bestand, dateien []string, vorlagen string, u
 	if err := g.Add(ZuStagen(b, beruehrt)); err != nil {
 		return err
 	}
-	if err := g.Commit("archive-welle: " + b.Welle + "  Archiv, Stubs und Verweis-Nachzug (Inhalt, getrennt vom Move — AGENTS.md §3.3" + kennungSuffix(b) + ")"); err != nil {
+	if err := g.Commit("archive-welle: " + b.Welle + "  Archiv, Stubs und Verweis-Nachzug (Inhalt, getrennt vom Move: git mv und Inhaltsaenderung in zwei Commits" + kennungSuffix(b) + ")"); err != nil {
 		return err
 	}
 

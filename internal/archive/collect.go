@@ -174,6 +174,10 @@ type Bestand struct {
 	Flach       bool
 	NachGrenze  []string
 	OhneAdd     []string
+	// Kennung ist die Kennung des Aufrufers, die beide Commit-Nachrichten tragen
+	// (ADR-0090). Die Vorschau setzt sie nicht; der Aufrufer traegt sie vor
+	// Anwenden ein. Pflicht fuer AltbestandSchluessel, sonst optional.
+	Kennung string
 }
 
 // Slices sind die eingesammelten Slice-Dateien: Mitglieder und Wellenlose. Die

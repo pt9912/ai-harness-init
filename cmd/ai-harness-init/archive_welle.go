@@ -42,6 +42,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -53,7 +54,7 @@ import (
 	"github.com/pt9912/ai-harness-init/internal/span"
 )
 
-const archiveWelleUsage = `ai-harness-init archive-welle [--vorschau] <welle-id>
+const archiveWelleUsage = `ai-harness-init archive-welle [--vorschau] [--kennung <K>] <welle-id>
 
 Archiviert die Zeitdokumente einer GESCHLOSSENEN Welle: Slice-Dateien,
 Welle-Plan und Review-Reports wandern nach
@@ -79,6 +80,12 @@ Add-Commit ([add-commit]).
                 (nach der Grenze) · fremd), die
                 Review-Reports, die Dateien mit einem Verweis auf etwas Bewegtes
                 und die fail-closed-Ausgaenge, an denen der Lauf abbraeche.
+  --kennung <K>
+               Eine Kennung des eigenen Repos, die beide Commits am Ende ihrer
+                Nachricht tragen und die sein commit-msg-Traeger annimmt; das
+                Werkzeug prueft sie nicht. Pflicht fuer altbestand — ohne sie
+                bricht der Lauf ab, bevor er etwas bewegt (Exit 2); fuer eine
+                <welle-id> optional.
 
 Exit-Codes:
   0   Lauf (bzw. Vorschau) gefahren, keine Sperre.
@@ -145,7 +152,7 @@ func echterEingang() laufEingang {
 // Parser weg, test/mutations/247-archive-welle-go-schalter-erreicht-zweig-nicht.sh
 // auf dieser Strecke.
 func archiveWelleMit(args []string, e laufEingang, out, errOut io.Writer) int {
-	welle, vorschau, code := parseArchiveWelle(args, out, errOut)
+	welle, kennung, vorschau, code := parseArchiveWelle(args, out, errOut)
 	if code >= 0 {
 		return code
 	}
@@ -169,7 +176,7 @@ func archiveWelleMit(args []string, e laufEingang, out, errOut io.Writer) int {
 		fmt.Fprintf(errOut, "archive-welle: %v\n", err)
 		return 1
 	}
-	return archiveWelleLauf(root, abst, welle, vorschau, porcelain, dateien, e.schreibend(root), out, errOut)
+	return archiveWelleLauf(root, abst, welle, kennung, vorschau, porcelain, dateien, e.schreibend(root), out, errOut)
 }
 
 // archiveWelleLauf ist der Kern beider Zweige: er startet keinen Prozess, sondern
@@ -177,7 +184,7 @@ func archiveWelleMit(args []string, e laufEingang, out, errOut io.Writer) int {
 // Schnittstelle. Dadurch ist die Reihenfolge-Zusage pruefbar — die Vorschau ist
 // die Vorpruefung, und eine Sperre beendet den Lauf, BEVOR er etwas anfasst.
 // Gedeckt von TestArchiveWelleSchreibendBrichtAnEinerSperreAb.
-func archiveWelleLauf(root string, abst archive.Abstammung, welle string, vorschau bool, porcelain string, dateien []string, g archive.Git, out, errOut io.Writer) int {
+func archiveWelleLauf(root string, abst archive.Abstammung, welle, kennung string, vorschau bool, porcelain string, dateien []string, g archive.Git, out, errOut io.Writer) int {
 	bericht, err := archive.Vorschau(root, welle, porcelain, dateien, abst)
 	if err != nil {
 		fmt.Fprintf(errOut, "archive-welle: %v\n", err)
@@ -195,8 +202,15 @@ func archiveWelleLauf(root string, abst archive.Abstammung, welle string, vorsch
 	if vorschau {
 		return 0
 	}
-	if err := archive.Anwenden(root, bericht.Bestand, dateien, g, out); err != nil {
+	b := bericht.Bestand
+	b.Kennung = kennung
+	if err := archive.Anwenden(root, b, dateien, g, out); err != nil {
 		fmt.Fprintf(errOut, "archive-welle: %v\n", err)
+		// Die fehlende Kennung ist ein Aufruf-Fehler: Anwenden bricht ab, bevor es
+		// etwas anfasst, und erst nach den Sperren (ADR-0090 Festlegung 3).
+		if errors.Is(err, archive.ErrKennungFehlt) {
+			return 2
+		}
 		return 1
 	}
 	return 0
@@ -240,32 +254,45 @@ func (g gitSchreibend) lauf(args ...string) error {
 // TestParseArchiveWelleGewinntDenSchalterAusDemArgument;
 // test/mutations/246-archive-welle-go-vorschau-flag-verloren.sh nimmt die eine
 // Zuweisung weg, aus der dieser Wert entsteht.
-func parseArchiveWelle(args []string, out, errOut io.Writer) (welle string, vorschau bool, code int) {
-	for _, a := range args {
+func parseArchiveWelle(args []string, out, errOut io.Writer) (welle, kennung string, vorschau bool, code int) {
+	for i := 0; i < len(args); i++ {
+		a := args[i]
 		switch {
 		case a == "-h" || a == "--help":
 			fmt.Fprint(out, archiveWelleUsage)
-			return "", false, 0
+			return "", "", false, 0
 		case a == "--vorschau":
 			vorschau = true
+		case a == "--kennung" || strings.HasPrefix(a, "--kennung="):
+			wert, ok := strings.CutPrefix(a, "--kennung=")
+			if !ok {
+				if i+1 >= len(args) {
+					fmt.Fprintln(errOut, "Fehler: --kennung braucht einen Wert")
+					fmt.Fprint(errOut, archiveWelleUsage)
+					return "", "", false, 2
+				}
+				i++
+				wert = args[i]
+			}
+			kennung = wert
 		case strings.HasPrefix(a, "-"):
 			fmt.Fprintln(errOut, "Fehler: unbekanntes Flag:", a)
 			fmt.Fprint(errOut, archiveWelleUsage)
-			return "", false, 2
+			return "", "", false, 2
 		case welle == "":
 			welle = a
 		default:
 			fmt.Fprintln(errOut, "Fehler: archive-welle nimmt genau eine <welle-id>")
 			fmt.Fprint(errOut, archiveWelleUsage)
-			return "", false, 2
+			return "", "", false, 2
 		}
 	}
 	if welle == "" {
 		fmt.Fprintln(errOut, "Fehler: archive-welle braucht eine <welle-id>")
 		fmt.Fprint(errOut, archiveWelleUsage)
-		return "", false, 2
+		return "", "", false, 2
 	}
-	return welle, vorschau, -1
+	return welle, kennung, vorschau, -1
 }
 
 // repoWurzel loest die Repo-Wurzel ueber dem Arbeitsverzeichnis auf — dieselbe

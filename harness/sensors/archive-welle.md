@@ -107,11 +107,15 @@ genau einen Lauf.
    ihren Review-Reports; sie wandern nach `done/altbestand/`, an ihrer Stelle liegt ein Stub
    (`Welle: ohne Welle`, `Archiviert mit: altbestand`, `Geschlossen:` aus der Closure-Notiz des
    Slice, sonst der Leerwert `—`, weil der Schlüssel kein Welle-Datum hat). Welle-Pläne,
-   Ergebnisnotizen, Welle-Mitglieder und fremde Slices bleiben flach. Die Commit-Nachrichten dieses
-   Schlüssels nennen
-   [`ADR-0041`](../../docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md), weil
-   der Schlüssel kein Muster der Traceability-Menge trifft; die Nachrichten einer Welle-Kennung
-   tragen keine Kennung. Eine Datei `altbestand*.md` in `done/` — Plan oder Ergebnisnotiz — sperrt
+   Ergebnisnotizen, Welle-Mitglieder und fremde Slices bleiben flach. Beide Commit-Nachrichten
+   tragen die Kennung des Aufrufers (`KENNUNG=<K>`, im Unterkommando `--kennung <K>`), weil der
+   Schlüssel kein Muster der Traceability-Menge trifft; für diesen Schlüssel ist sie Pflicht — ohne
+   sie oder mit leerem Wert endet der Lauf nach den Sperren mit Exit 2, bevor er etwas bewegt, unter
+   `--vorschau` nicht. Im Dogfood-`Makefile` ist
+   [`ADR-0041`](../../docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md)
+   voreingestellt, das emittierte Fragment trägt keine Voreinstellung
+   ([`ADR-0090`](../../docs/plan/adr/0090-altbestand-commit-traegt-die-kennung-des-aufrufers.md)).
+   Die Nachrichten einer Welle-Kennung tragen eine Kennung nur, wenn der Aufrufer eine nennt. Eine Datei `altbestand*.md` in `done/` — Plan oder Ergebnisnotiz — sperrt
    mit `altbestand-plan` (§Sperren), statt ignoriert zu werden. Gedeckt von den Fällen
    `TestArchiveWelleAltbestand…` in `cmd/ai-harness-init/archive_welle_altbestand_test.go` über
    einem synthetischen Baum; `test/mutations/504` bis `508` nehmen je eine Sperre, die

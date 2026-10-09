@@ -213,14 +213,11 @@ func TestEmittierteDateienTragenNurImZielAufloesendeKennungen(t *testing.T) {
 }
 
 // traegerAusnahmen ist die namentliche Ausnahme-Liste des Meldungs-Waechters: Datei →
-// Zeichenkette, deren Kennung funktionale Nutzlast ist. `, ADR-0041` ist der Commit-Suffix
-// des Altbestand-Schluessels von archive-welle; ohne Kennung wiese der commit-msg-Traeger
-// den Commit ab. Welche Kennung ihn im Ziel ersetzt, ist eine Entscheidung ueber die
-// Kennungs-Menge des Ziel-Traegers (ADR-0065) und steht aus.
+// Zeichenkette, deren Kennung funktionale Nutzlast ist. Sie ist leer: die Commit-Kennung
+// von archive-welle nennt der Aufrufer (ADR-0090), der Traeger bringt keine mit. Ein
+// Eintrag hier verlangt, dass die Kennung im Ziel aufloest.
 func traegerAusnahmen() map[string][]string {
-	return map[string][]string{
-		"internal/archive/anwenden.go": {`", ADR-0041"`},
-	}
+	return map[string][]string{}
 }
 
 // TestTraegerMeldungenTragenKeineKennung haelt, dass der Traeger in keiner Meldung eine

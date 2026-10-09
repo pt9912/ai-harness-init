@@ -3,6 +3,7 @@ package archive_test
 import (
 	"archive/zip"
 	"bytes"
+	"errors"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -206,7 +207,7 @@ func TestAnwendenTrenntMoveVonInhalt(t *testing.T) {
 	if !g.zipDaLage[1] {
 		t.Error("Commit 2 sieht das Archiv nicht")
 	}
-	if !strings.Contains(g.commits[0], "reiner Move") || !strings.Contains(g.commits[1], "§3.3") {
+	if !strings.Contains(g.commits[0], "reiner Move") || !strings.Contains(g.commits[1], "zwei Commits") {
 		t.Errorf("Commit-Nachrichten benennen die Trennung nicht: %q / %q", g.commits[0], g.commits[1])
 	}
 }
@@ -561,4 +562,94 @@ func TestAnwendenSchreibtDenStubEinesBenanntenSlice(t *testing.T) {
 	if _, err := os.Stat(filepath.Join(root, "docs", "reviews", "2026-05-06-slice-der-benannte-r2.md")); err == nil {
 		t.Errorf("Report des benannten Slice liegt noch in docs/reviews/; Reviews = %v", b.Reviews)
 	}
+}
+
+// TestAnwendenAltbestandOhneKennungBrichtVorDemMoveAb haelt ADR-0090 Festlegung 1:
+// der Schluessel AltbestandSchluessel ohne Kennung des Aufrufers endet mit
+// ErrKennungFehlt, bevor ein git-Aufruf laeuft und bevor done/altbestand/ entsteht —
+// der Baum ist danach Datei fuer Datei der vorige, und kein Commit liegt vor. Die
+// Meldung nennt das Argument und traegt selbst keine Kennung.
+// Gegenbeispiel: test/mutations/643-archive-welle-go-altbestand-ohne-kennungspflicht.sh.
+func TestAnwendenAltbestandOhneKennungBrichtVorDemMoveAb(t *testing.T) {
+	root := baueBaum(t)
+	b := einsammeln(t, root, archive.AltbestandSchluessel)
+	b.Kennung = ""
+	vorher := strings.Join(baumListe(t, root), "\n")
+	g := &gitMitschreiber{root: root}
+	var aus bytes.Buffer
+	err := archive.Anwenden(root, b, indexDateien(t, root), g, &aus)
+	if !errors.Is(err, archive.ErrKennungFehlt) {
+		t.Fatalf("Fehler = %v, want ErrKennungFehlt", err)
+	}
+	if len(g.rufe) != 0 || len(g.commits) != 0 {
+		t.Errorf("git-Aufrufe vor dem Abbruch: %v (Commits: %d)", g.rufe, len(g.commits))
+	}
+	if nachher := strings.Join(baumListe(t, root), "\n"); nachher != vorher {
+		t.Errorf("der Baum hat sich veraendert:\nvorher:\n%s\nnachher:\n%s", vorher, nachher)
+	}
+	if !strings.Contains(err.Error(), "--kennung") || !strings.Contains(err.Error(), "KENNUNG=") {
+		t.Errorf("die Meldung nennt das Argument nicht: %q", err.Error())
+	}
+	for _, verboten := range []string{"ADR-", "LH-", "MR-"} {
+		if strings.Contains(err.Error(), verboten) {
+			t.Errorf("die Meldung traegt eine Kennung (%s): %q", verboten, err.Error())
+		}
+	}
+}
+
+// TestAnwendenTraegtDieKennungDesAufrufersInBeidenCommits haelt die zweite Haelfte
+// von ADR-0090 Festlegung 1: mit Kennung K tragen beide Commit-Nachrichten K, und
+// keine traegt eine Kennung, die das Werkzeug selbst mitbringt. Gemessen am
+// Welle-Lauf, an dem die Kennung optional ist; den Altbestand-Lauf mit Kennung
+// misst TestArchiveWelleAltbestandSchreibtDieMengeDerVorschau in cmd/.
+// Gegenbeispiel: test/mutations/644-archive-welle-go-kennung-konstant.sh.
+func TestAnwendenTraegtDieKennungDesAufrufersInBeidenCommits(t *testing.T) {
+	const k = "LH-XY-42"
+	root := baueBaum(t)
+	b := einsammeln(t, root, "welle-10")
+	b.Kennung = k
+	g := &gitMitschreiber{root: root}
+	var aus bytes.Buffer
+	if err := archive.Anwenden(root, b, indexDateien(t, root), g, &aus); err != nil {
+		t.Fatal(err)
+	}
+	if len(g.commits) != 2 {
+		t.Fatalf("%d Commits, want 2", len(g.commits))
+	}
+	for _, c := range g.commits {
+		if !strings.HasSuffix(c, ", "+k+")") {
+			t.Errorf("Commit-Nachricht endet nicht auf die Kennung %s: %q", k, c)
+		}
+		if strings.Contains(c, "ADR-0041") {
+			t.Errorf("Commit-Nachricht traegt eine Kennung des Werkzeugs: %q", c)
+		}
+	}
+}
+
+// baumListe ist die sortierte Liste aller Pfade unter root samt Dateiinhalt — der
+// Abdruck, an dem ein Abbruch "vor dem ersten Schreibzugriff" messbar ist.
+func baumListe(t *testing.T, root string) []string {
+	t.Helper()
+	var out []string
+	err := filepath.WalkDir(root, func(p string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		inhalt := ""
+		if !d.IsDir() {
+			b, err := os.ReadFile(p)
+			if err != nil {
+				return err
+			}
+			inhalt = string(b)
+		}
+		rel, _ := filepath.Rel(root, p)
+		out = append(out, filepath.ToSlash(rel)+"\x00"+inhalt)
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	sort.Strings(out)
+	return out
 }

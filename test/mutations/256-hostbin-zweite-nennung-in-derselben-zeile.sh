@@ -31,4 +31,4 @@
 # liest shellcheck als bewusst maskiertes Dollar (SC2016 gilt einfachen
 # Anfuehrungszeichen), und eine Inline-Unterdrueckung verbietet AGENTS.md §3.2.
 set -euo pipefail
-sed -i "s,archive-welle \"\$(WELLE)\",& || \$(HOST_BIN) \"\$(NOTFALL)\"," Makefile
+sed -i "s,(ARCHIV_KENNUNG)\") \"\$(WELLE)\",& || \$(HOST_BIN) \"\$(NOTFALL)\"," Makefile

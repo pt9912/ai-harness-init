@@ -44,7 +44,7 @@ func TestArchiveWelleSchreibendBrichtAnEinerSperreAb(t *testing.T) {
 	}
 	g := &gitStumm{}
 	var out, errb bytes.Buffer
-	code := archiveWelleLauf(root, einCommit(t, root), "welle-10", false, "?? fremd.txt\n", nil, g, &out, &errb)
+	code := archiveWelleLauf(root, einCommit(t, root), "welle-10", "", false, "?? fremd.txt\n", nil, g, &out, &errb)
 	if code != 3 {
 		t.Fatalf("Exit %d, want 3 (Sperre steht)", code)
 	}
@@ -77,7 +77,7 @@ func TestArchiveWelleVorschauSchreibtNichtsObwohlDerLaufLiefe(t *testing.T) {
 
 	g := &gitStumm{}
 	var out, errb bytes.Buffer
-	code := archiveWelleLauf(root, einCommit(t, root), "welle-10", true, "", dateien, g, &out, &errb)
+	code := archiveWelleLauf(root, einCommit(t, root), "welle-10", "", true, "", dateien, g, &out, &errb)
 
 	// Zuerst die Vorbedingung, und sie ist die einzige mit Fatal: ohne sie sagen
 	// die drei Pruefungen darunter nichts ueber den Schalter aus.
@@ -108,7 +108,7 @@ func TestArchiveWelleSchreibendLaeuftAmSelbenBaum(t *testing.T) {
 
 	g := &gitStumm{}
 	var out, errb bytes.Buffer
-	archiveWelleLauf(root, einCommit(t, root), "welle-10", false, "", dateien, g, &out, &errb)
+	archiveWelleLauf(root, einCommit(t, root), "welle-10", "", false, "", dateien, g, &out, &errb)
 
 	if len(g.rufe) == 0 {
 		t.Fatalf("ohne --vorschau keine einzige git-Operation — der Baum traegt eine Sperre:\n%s", out.String())
@@ -307,18 +307,25 @@ func TestArchiveWelleOhneSchalterSchreibtAmSelbenArgumentFeld(t *testing.T) {
 func TestParseArchiveWelleGewinntDenSchalterAusDemArgument(t *testing.T) {
 	faelle := []struct {
 		name     string
+		kennung  string
 		args     []string
 		welle    string
 		vorschau bool
 	}{
-		{"Schalter vor der Kennung", []string{"--vorschau", "welle-10"}, "welle-10", true},
-		{"Schalter nach der Kennung", []string{"welle-10", "--vorschau"}, "welle-10", true},
-		{"ohne Schalter", []string{"welle-10"}, "welle-10", false},
+		{"Schalter vor der Kennung", "", []string{"--vorschau", "welle-10"}, "welle-10", true},
+		{"Schalter nach der Kennung", "", []string{"welle-10", "--vorschau"}, "welle-10", true},
+		{"ohne Schalter", "", []string{"welle-10"}, "welle-10", false},
+		{"Kennung als Paar", "LH-XY-42", []string{"--kennung", "LH-XY-42", "altbestand"}, "altbestand", false},
+		{"Kennung mit Gleichheitszeichen", "LH-XY-42", []string{"altbestand", "--kennung=LH-XY-42", "--vorschau"}, "altbestand", true},
+		{"leere Kennung", "", []string{"--kennung", "", "altbestand"}, "altbestand", false},
 	}
 	for _, f := range faelle {
 		t.Run(f.name, func(t *testing.T) {
 			var out, errb bytes.Buffer
-			welle, vorschau, code := parseArchiveWelle(f.args, &out, &errb)
+			welle, kennung, vorschau, code := parseArchiveWelle(f.args, &out, &errb)
+			if kennung != f.kennung {
+				t.Errorf("Kennung %q, want %q — aus %v gewonnen", kennung, f.kennung, f.args)
+			}
 			if code != -1 {
 				t.Fatalf("Exit %d, want -1 (der Aufruf laeuft weiter; stderr: %q)", code, errb.String())
 			}
@@ -355,6 +362,7 @@ func TestArchiveWelleAufrufFehler(t *testing.T) {
 		{"nur --vorschau", []string{"--vorschau"}, 2},
 		{"unbekanntes Flag", []string{"--bogus", "welle-10"}, 2},
 		{"zwei Kennungen", []string{"--vorschau", "welle-10", "welle-11"}, 2},
+		{"--kennung ohne Wert", []string{"altbestand", "--kennung"}, 2},
 	}
 	for _, f := range faelle {
 		t.Run(f.name, func(t *testing.T) {

@@ -90,8 +90,10 @@ Wellen-Closure), Modul 7 (Carveouts), Modul 5 (Lifecycle). Bei Konflikt gilt der
    Dateien. Liegt der Träger im Repo, führt `make archive-welle WELLE=<welle-id>` ihn; fehlt er,
    sagt das Kommando das selbst.
    **Gibt es noch kein `done/*/archiv.zip`, sperrt die Vorprüfung mit `[untergrenze]`:** erst
-   `make archive-welle WELLE=altbestand` (die wellenlosen Slices, gesammelt unter
-   `done/altbestand/`), dann die erste Wellen-Archivierung. Ein Träger ohne Schreibpfad weist den
+   `make archive-welle WELLE=altbestand KENNUNG=<K>` (die wellenlosen Slices, gesammelt unter
+   `done/altbestand/`), dann die erste Wellen-Archivierung. `KENNUNG` ist Pflicht: eine Kennung
+   deines Repos, die beide Commits des Laufs tragen und die dein `commit-msg`-Träger annimmt —
+   ohne sie bricht der Lauf ab, bevor er etwas bewegt. Ein Träger ohne Schreibpfad weist den
    Schlüssel `altbestand` mit `[kein-schreib-pfad]` ab; dann bleibt der Altbestand, wo er ist, und
    die Sperre für die Wellen-Archivierung besteht fort — ohne `done/*/archiv.zip` gibt es keinen
    Weg an ihr vorbei.

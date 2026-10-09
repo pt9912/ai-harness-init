@@ -18,5 +18,5 @@
 # rot ohne den erwarteten Fall — ein Gegenbeispiel, das aus dem falschen Grund
 # faellt, belegt seinen Waechter nicht.
 set -euo pipefail
-sed -i 's/^\treturn archiveWelleLauf(root, abst, welle, vorschau, porcelain, dateien, e\.schreibend(root), out, errOut)$/\treturn archiveWelleLauf(root, abst, welle, !vorschau, porcelain, dateien, e.schreibend(root), out, errOut)/' \
+sed -i 's/^\treturn archiveWelleLauf(root, abst, welle, kennung, vorschau, porcelain, dateien, e\.schreibend(root), out, errOut)$/\treturn archiveWelleLauf(root, abst, welle, kennung, !vorschau, porcelain, dateien, e.schreibend(root), out, errOut)/' \
 	cmd/ai-harness-init/archive_welle.go

@@ -1841,8 +1841,34 @@ SMOKEEOF
 	rm -rf "$klon"
 	echo "full-smoke: flacher Klon ($kennung): make archive-welle WELLE=altbestand sperrt mit [flacher-klon], HEAD und done/ unveraendert."
 
-	local alt="" alt_rc=0 alt_flach=""
-	alt="$( make --no-print-directory -C "$repo" archive-welle WELLE=altbestand 2>&1 )" || alt_rc=$?
+	# (e0) Ohne KENNUNG: das emittierte Fragment traegt keine Voreinstellung, der
+	# Traeger bricht ab, bevor er etwas bewegt, und nennt das Argument (ADR-0090
+	# Festlegung 1 und 2).
+	local ohne_k="" ohne_k_rc=0 vorher_k
+	vorher_k="$(git -C "$repo" rev-parse HEAD)"
+	ohne_k="$( make --no-print-directory -C "$repo" archive-welle WELLE=altbestand 2>&1 )" || ohne_k_rc=$?
+	if [ "$ohne_k_rc" -eq 0 ] || ! grep -qF -- '--kennung' <<<"$ohne_k" || [ -e "$plan_done/altbestand" ] \
+		|| [ "$(git -C "$repo" rev-parse HEAD)" != "$vorher_k" ] || [ -n "$(git -C "$repo" status --porcelain)" ]; then
+		echo "full-smoke: FEHLER — $kennung: make archive-welle WELLE=altbestand ohne KENNUNG bricht nicht vor dem Move ab (Exit $ohne_k_rc), nennt --kennung nicht, oder Baum/HEAD sind veraendert (ADR-0090 Festlegung 1). Ausgabe:" >&2
+		einordnen "make archive-welle WELLE=altbestand ohne KENNUNG im Ziel ($kennung)" "$ohne_k"
+		printf '%s\n' "$ohne_k" >&2
+		exit 1
+	fi
+	echo "full-smoke: Altbestand ohne KENNUNG ($kennung): Abbruch vor dem Move, das Argument genannt, HEAD und Baum unveraendert."
+
+	# (e1) Mit der Saat-Kennung des Ziels und AKTIVIERTEM commit-msg-Traeger: beide
+	# Commits tragen sie und passieren ihn; keiner traegt eine Kennung des Werkzeugs.
+	# Die Aktivierung gilt nur fuer diesen Lauf — die Welle-Laeufe danach tragen keine.
+	local alt="" alt_rc=0 alt_flach="" alt_betreffe=""
+	git -C "$repo" config core.hooksPath .githooks
+	alt="$( make --no-print-directory -C "$repo" archive-welle WELLE=altbestand KENNUNG=LH-FA-01 2>&1 )" || alt_rc=$?
+	git -C "$repo" config --unset core.hooksPath
+	alt_betreffe="$(git -C "$repo" log -2 --format=%s)"
+	if [ "$alt_rc" -eq 0 ] && { [ "$(grep -c ', LH-FA-01)$' <<<"$alt_betreffe")" -ne 2 ] || grep -qF -- 'ADR-0041' <<<"$alt_betreffe"; }; then
+		echo "full-smoke: FEHLER — $kennung: die zwei Altbestand-Commits enden nicht beide auf die Kennung des Aufrufers, oder einer traegt eine Kennung des Werkzeugs (ADR-0090 Festlegung 1):" >&2
+		printf '%s\n' "$alt_betreffe" >&2
+		exit 1
+	fi
 	printf '%s\n' "$alt"
 	alt_flach="$(tr -s '[:space:]' ' ' <<<"$alt")"
 	if [ "$alt_rc" -ne 0 ] || ! grep -qF -- "archive-welle ok: altbestand" <<<"$alt_flach"; then

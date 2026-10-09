@@ -27,7 +27,8 @@
 # auch die Commits der Repo-Werkzeuge. `make slice-mv` und `make archive-welle`
 # committen intern mit dem Slice- bzw. Welle-Namen; traegt er keine Kennung aus der
 # Menge, faellt der Commit des Werkzeugs. Ein Repo, das diesen Traeger aktiviert,
-# gibt seinen Werkzeug-Messages darum eine Kennung — sonst bricht sein eigenes
+# gibt seinen Werkzeug-Messages darum eine Kennung — `make archive-welle` nimmt sie
+# als KENNUNG=<K> und haengt sie an beide Commits —, sonst bricht sein eigenes
 # Werkzeug an seinem eigenen Waechter.
 #
 # ABHAENGIGKEIT. Dieses Rezept ruft `git` — die zugelassene Host-Abhaengigkeit

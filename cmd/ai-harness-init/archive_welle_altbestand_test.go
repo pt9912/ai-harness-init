@@ -14,6 +14,10 @@ import (
 // gitBewegend ist die Test-Verdrahtung der vier schreibenden git-Operationen
 // ueber einem synthetischen Baum: Mv und Rm bewegen wirklich (die Schritte
 // danach finden die Dateien an der neuen Adresse), Add und Commit schreiben mit.
+// altKennung ist die Kennung, die die Faelle dieser Datei als Aufrufer nennen — eine
+// Form, die kein Artefakt dieses Repos traegt, damit ein Treffer nur von ihr kommt.
+const altKennung = "LH-XY-42"
+
 type gitBewegend struct {
 	root    string
 	rufe    []string
@@ -120,7 +124,7 @@ func TestArchiveWelleAltbestandSchreibtDieMengeDerVorschau(t *testing.T) {
 	dateien := indexAttrappe(t, root)
 
 	var vorschau, errb bytes.Buffer
-	if code := archiveWelleLauf(root, einCommit(t, root), "altbestand", true, "", dateien, &gitBewegend{root: root}, &vorschau, &errb); code != 0 {
+	if code := archiveWelleLauf(root, einCommit(t, root), "altbestand", "", true, "", dateien, &gitBewegend{root: root}, &vorschau, &errb); code != 0 {
 		t.Fatalf("Vorschau Exit %d, want 0:\n%s%s", code, vorschau.String(), errb.String())
 	}
 	wellenlos := zahlAus(t, vorschau.String(), "wellenlos (seit der letzten Closure):")
@@ -131,7 +135,7 @@ func TestArchiveWelleAltbestandSchreibtDieMengeDerVorschau(t *testing.T) {
 
 	g := &gitBewegend{root: root}
 	var out bytes.Buffer
-	if code := archiveWelleLauf(root, einCommit(t, root), "altbestand", false, "", dateien, g, &out, &errb); code != 0 {
+	if code := archiveWelleLauf(root, einCommit(t, root), "altbestand", altKennung, false, "", dateien, g, &out, &errb); code != 0 {
 		t.Fatalf("Lauf Exit %d, want 0:\n%s%s", code, out.String(), errb.String())
 	}
 
@@ -184,8 +188,8 @@ func TestArchiveWelleAltbestandSchreibtDieMengeDerVorschau(t *testing.T) {
 		t.Fatalf("%d Commits, want 2", len(g.commits))
 	}
 	for _, c := range g.commits {
-		if !strings.Contains(c, "ADR-0041") {
-			t.Errorf("Commit-Nachricht ohne Kennung: %q", c)
+		if !strings.HasSuffix(c, ", "+altKennung+")") || strings.Contains(c, "ADR-0041") {
+			t.Errorf("Commit-Nachricht endet nicht auf die Kennung des Aufrufers %s oder traegt eine des Werkzeugs: %q", altKennung, c)
 		}
 	}
 }
@@ -195,16 +199,16 @@ func TestArchiveWelleAltbestandSchreibtDieMengeDerVorschau(t *testing.T) {
 func TestArchiveWelleAltbestandNimmtDieUntergrenzeSperreWeg(t *testing.T) {
 	root := altbestandBaum(t)
 	var vorher, nachher, errb bytes.Buffer
-	archiveWelleLauf(root, einCommit(t, root), "welle-10", true, "", indexAttrappe(t, root), &gitBewegend{root: root}, &vorher, &errb)
+	archiveWelleLauf(root, einCommit(t, root), "welle-10", "", true, "", indexAttrappe(t, root), &gitBewegend{root: root}, &vorher, &errb)
 	if !strings.Contains(vorher.String(), "[untergrenze]") {
 		t.Fatalf("Vorbedingung: ohne Sammel-Archiv fehlt [untergrenze]:\n%s", vorher.String())
 	}
 
 	var out bytes.Buffer
-	if code := archiveWelleLauf(root, einCommit(t, root), "altbestand", false, "", indexAttrappe(t, root), &gitBewegend{root: root}, &out, &errb); code != 0 {
+	if code := archiveWelleLauf(root, einCommit(t, root), "altbestand", altKennung, false, "", indexAttrappe(t, root), &gitBewegend{root: root}, &out, &errb); code != 0 {
 		t.Fatalf("Lauf Exit %d:\n%s%s", code, out.String(), errb.String())
 	}
-	archiveWelleLauf(root, einCommit(t, root), "welle-10", true, "", indexAttrappe(t, root), &gitBewegend{root: root}, &nachher, &errb)
+	archiveWelleLauf(root, einCommit(t, root), "welle-10", "", true, "", indexAttrappe(t, root), &gitBewegend{root: root}, &nachher, &errb)
 	if strings.Contains(nachher.String(), "[untergrenze]") {
 		t.Errorf("nach dem Sammel-Archiv steht [untergrenze] noch:\n%s", nachher.String())
 	}
@@ -218,7 +222,7 @@ func TestArchiveWelleAltbestandNimmtDieUntergrenzeSperreWeg(t *testing.T) {
 func TestArchiveWelleAltbestandZweiterLaufSperrtAnArchiviert(t *testing.T) {
 	root := altbestandBaum(t)
 	var out, errb bytes.Buffer
-	if code := archiveWelleLauf(root, einCommit(t, root), "altbestand", false, "", indexAttrappe(t, root), &gitBewegend{root: root}, &out, &errb); code != 0 {
+	if code := archiveWelleLauf(root, einCommit(t, root), "altbestand", altKennung, false, "", indexAttrappe(t, root), &gitBewegend{root: root}, &out, &errb); code != 0 {
 		t.Fatalf("erster Lauf Exit %d:\n%s%s", code, out.String(), errb.String())
 	}
 	schreibeDatei(t, root, doneRel+"slice-104-e.md", "# Slice slice-104: E\n\n**Welle:** ohne Welle\n")
@@ -226,7 +230,7 @@ func TestArchiveWelleAltbestandZweiterLaufSperrtAnArchiviert(t *testing.T) {
 
 	g := &gitBewegend{root: root}
 	var zweiter bytes.Buffer
-	code := archiveWelleLauf(root, einCommit(t, root), "altbestand", false, "", indexAttrappe(t, root), g, &zweiter, &errb)
+	code := archiveWelleLauf(root, einCommit(t, root), "altbestand", altKennung, false, "", indexAttrappe(t, root), g, &zweiter, &errb)
 	if code != 3 {
 		t.Errorf("zweiter Lauf Exit %d, want 3", code)
 	}
@@ -252,7 +256,7 @@ func TestArchiveWelleAltbestandSperrtImLaufBeiHaenger(t *testing.T) {
 
 	g := &gitBewegend{root: root}
 	var out, errb bytes.Buffer
-	code := archiveWelleLauf(root, einCommit(t, root), "altbestand", false, "", indexAttrappe(t, root), g, &out, &errb)
+	code := archiveWelleLauf(root, einCommit(t, root), "altbestand", altKennung, false, "", indexAttrappe(t, root), g, &out, &errb)
 	if code != 3 {
 		t.Errorf("Exit %d, want 3:\n%s", code, out.String())
 	}
@@ -276,10 +280,59 @@ func TestArchiveWelleAltbestandSperrtImLaufBeiPlanDatei(t *testing.T) {
 
 	g := &gitBewegend{root: root}
 	var out, errb bytes.Buffer
-	if code := archiveWelleLauf(root, einCommit(t, root), "altbestand", false, "", indexAttrappe(t, root), g, &out, &errb); code != 3 {
+	if code := archiveWelleLauf(root, einCommit(t, root), "altbestand", altKennung, false, "", indexAttrappe(t, root), g, &out, &errb); code != 3 {
 		t.Errorf("Exit %d, want 3:\n%s", code, out.String())
 	}
 	if !strings.Contains(out.String(), "[altbestand-plan]") || len(g.rufe) != 0 || baumAbdruck(t, root) != vorher {
 		t.Errorf("Sperre fehlt oder der Lauf schrieb (rufe %v):\n%s", g.rufe, out.String())
+	}
+}
+
+// TestArchiveWelleAltbestandOhneKennungEndetAlsAufrufFehler haelt ADR-0090
+// Festlegung 1 und 3 (b, c) am Kern des Unterkommandos: `altbestand` ohne Kennung —
+// ein leerer Wert gilt als fehlend, der Parser reicht `--kennung ""` als "" durch — endet mit
+// Exit 2, ohne einen schreibenden git-Aufruf, der Baum ist Byte fuer Byte der
+// vorige, und stderr nennt das Argument. Die Vorschau ueber demselben Baum laeuft
+// ohne Kennung weiter (Exit 0) — sie schreibt nichts.
+// Gegenbeispiel: test/mutations/643-archive-welle-go-altbestand-ohne-kennungspflicht.sh
+// und test/mutations/645-archive-welle-go-kennungsfehler-ist-laufzeitfehler.sh.
+func TestArchiveWelleAltbestandOhneKennungEndetAlsAufrufFehler(t *testing.T) {
+	root := altbestandBaum(t)
+	vorher := baumAbdruck(t, root)
+	g := &gitBewegend{root: root}
+	var out, errb bytes.Buffer
+	if code := archiveWelleLauf(root, einCommit(t, root), "altbestand", "", true, "", indexAttrappe(t, root), g, &out, &errb); code != 0 {
+		t.Fatalf("Vorschau ohne Kennung: Exit %d, want 0:\n%s", code, errb.String())
+	}
+	out.Reset()
+	errb.Reset()
+	if code := archiveWelleLauf(root, einCommit(t, root), "altbestand", "", false, "", indexAttrappe(t, root), g, &out, &errb); code != 2 {
+		t.Fatalf("Exit %d, want 2:\n%s%s", code, out.String(), errb.String())
+	}
+	if len(g.rufe) != 0 {
+		t.Errorf("git-Aufrufe vor dem Abbruch: %v", g.rufe)
+	}
+	if baumAbdruck(t, root) != vorher {
+		t.Error("der Baum hat sich veraendert")
+	}
+	if !strings.Contains(errb.String(), "--kennung") {
+		t.Errorf("stderr nennt das Argument nicht: %q", errb.String())
+	}
+}
+
+// TestArchiveWelleAltbestandSperreGehtDerKennungsPflichtVor haelt ADR-0090
+// Festlegung 3 (a): ueber einem gesperrten Baum endet `altbestand` ohne Kennung mit
+// der Sperre (Exit 3), nicht mit der Kennungs-Meldung — der Bediener sieht zuerst,
+// was den Lauf ohnehin aufhielte.
+func TestArchiveWelleAltbestandSperreGehtDerKennungsPflichtVor(t *testing.T) {
+	root := altbestandBaum(t)
+	schreibeDatei(t, root, doneRel+"altbestand-plan.md", "# Plan\n")
+	g := &gitBewegend{root: root}
+	var out, errb bytes.Buffer
+	if code := archiveWelleLauf(root, einCommit(t, root), "altbestand", "", false, "", indexAttrappe(t, root), g, &out, &errb); code != 3 {
+		t.Fatalf("Exit %d, want 3 (die Sperre):\n%s%s", code, out.String(), errb.String())
+	}
+	if strings.Contains(errb.String(), "--kennung") || !strings.Contains(out.String(), "[altbestand-plan]") {
+		t.Errorf("die Kennungs-Meldung ueberholt die Sperre:\nstdout:\n%s\nstderr:\n%s", out.String(), errb.String())
 	}
 }
