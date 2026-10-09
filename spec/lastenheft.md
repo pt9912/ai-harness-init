@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.25.1
+**Version:** 0.26.0
 
 **Status:** Draft
 
@@ -353,8 +353,8 @@ er erfasst und welche nicht, steht als Kriterium.
   einer geschlossenen, im Zielrepo lesbaren Feldliste steht; von Argument-Werten wandert
   nie der Inhalt, sondern eine Ableitung (Pfad, Länge, Fingerabdruck).
   **Ausdrücklich nicht zugesagt** ist, dass Pfadnamen unkritisch sind, und dass der
-  Bestand geschützt ist — er ist gitignored, nicht verschlüsselt und nicht
-  zugriffsbeschränkt.
+  Bestand geschützt ist — er ist gitignored und nicht verschlüsselt; seine Dateien sind
+  nur für den Eigentümer lesbar, das Verzeichnis bleibt für andere auflistbar.
 - **Begrenzter Rohstring:** Die Modell-Bezeichnung ist der einzige Rohstring unter den
   erfassten Ergebnis-Werten und ist in Länge und Zeichensatz begrenzt; was die Schranke
   nicht erfüllt, wird verworfen, nicht gekürzt. Weitere Felder der Payload werden nicht
@@ -680,3 +680,4 @@ emittierte Datei zu ändern.
 | 0.24.2 | 2026-10-01 | CR: **Das Kriterium „Benannte Grenze" zur Rollen-Achse wandert von [`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) nach [`LH-FA-15`](../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung)**, wo die Rolle steht; Wortlaut unverändert | Nutzer-Entscheidung 2026-10-01 |
 | 0.25.0 | 2026-10-08 | CR: **Kennzeichnung *nicht bekannt* statt leerem Wert** — [`LH-FA-15`](../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) Kriterium „Rolle wird abgeleitet": bei unbekannter Rolle (`general-purpose`, Haupt-Kontext) trägt das Feld die Kennzeichnung samt Quelle statt leer zu bleiben, die Auswertung zählt den Lauf im Sammelposten wie bisher. [`LH-FA-13`](../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) Kriterium „Leer heißt unbekannt" wird „Leer heißt keiner, unbekannt ist gekennzeichnet": `[]` einer Korrelations-Achse heißt *keiner*, ein unbekannter Wert trägt die Kennzeichnung, nie einen leeren Wert | Nutzer-Entscheidung 2026-10-08 |
 | 0.25.1 | 2026-10-08 | CR: **Folgestellen der Kennzeichnung *nicht bekannt* aus 0.25.0 nachgezogen** — [`LH-FA-13`](../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) Kriterium „Zweig und Stand": ist die Ableitung nicht möglich, tragen beide Felder die Kennzeichnung statt leer zu sein. [`LH-FA-15`](../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) Kriterium „Rolle besetzt": eine unbekannte Rolle trägt die Kennzeichnung; Kriterium „Lesevorschrift": die Auswertung liest die Kennzeichnung und, für den Bestand davor, das leere Rollenfeld als unbekannt. Keine neue Anforderung | Nutzer-Entscheidung 2026-10-08 |
+| 0.26.0 | 2026-10-09 | CR: **Schutz des Bestands genau benannt** — [`LH-FA-14`](../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) Kriterium „Redaktion — was zugesagt ist und was nicht": der Bestand ist gitignored und nicht verschlüsselt; seine Dateien sind nur für den Eigentümer lesbar, das Verzeichnis bleibt für andere auflistbar. Minor, weil sich die Aussage eines Akzeptanzkriteriums ändert; keine neue Anforderung | Nutzer-Entscheidung 2026-10-09 |
