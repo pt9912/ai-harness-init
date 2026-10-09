@@ -112,7 +112,7 @@ greift sie später, wird die Entfernung hier zum No-op, nicht falsch.
       `· seit slice-ziel-traegt-keine-kennung-dieses-repos`, gelandet **vor** dem Closure-Commit;
       §7 trägt den Steering-Loop-Eintrag mit `liegt in` auf diesen Zielort.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -236,7 +236,7 @@ gebootstrappten Ziel (Variante a und b) keinen Treffer; Closure-Notiz mit Lernei
 - **Risiken aus §6:** R1–R3 *entfallen*, R4 *weiter offen* ins Register (§6).
 - **Archivierung:** entfällt — `archive-slice` ist nicht gebaut
   ([MR-078](../../../../harness/conventions.md#mr-078--wellenlose-slices-werden-bei-der-eigenen-closure-archiviert)).
-- **Drei Paarungen:** geprüft im Commit nach dem `git mv` (Zeile folgt).
+- **Drei Paarungen:** geprüft am 2026-10-09 nach dem `git mv`: (a) `grep -c 'seit slice-ziel-traegt-keine-kennung-dieses-repos' docs/user/releasing.md` → 1; (b) `slice-releasing-zieht-nach-docs-maintainer` in `open/`, `slice-mutate-laeuft-ueber-einen-ci-branch` im Lifecycle; (c) alle neun in §7 und §8 genannten `BEO-ALL/<slug>` existieren mit nicht leerem `evidence/`; Register-Paarung (c), zweite Hälfte: 2 Verzeichnisse ohne Beleg, namentlich `cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`, `einstiegs-datei-weicht-von-der-pflichtgliederung-ab` — nicht als getragen behauptet ([ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)); `make register-ausgang` → 0 Befunde.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
