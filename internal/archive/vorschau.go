@@ -126,7 +126,7 @@ func sperren(b Bestand, porcelain string, haenger []string) []Sperre {
 			Kennung: "haenger",
 			Grund:   "ein Review-Report soll verschwinden, auf den noch verwiesen wird",
 			Zeilen: append(append([]string{}, haenger...),
-				"erst den Verweis aufloesen (oder die Referenz im Doku-Gate ausnehmen, mit ADR nach AGENTS.md 3.5)"),
+				"erst den Verweis aufloesen (oder die Referenz im Doku-Gate ausnehmen, mit einer ADR — Gates werden nicht ohne ADR gelockert)"),
 		})
 	}
 	return out

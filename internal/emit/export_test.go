@@ -18,3 +18,7 @@ func IsBrownfieldOnly(rel string) bool { return isBrownfieldOnly(rel) }
 
 // InScope exportiert inScope fuers externe Testpaket.
 func InScope(rel string) bool { return inScope(rel) }
+
+// StreicheFremdeKennungen exportiert streicheFremdeKennungen fuers externe Testpaket —
+// dieselbe Sichtbarkeits-Bruecke, ausserhalb der vier Weichen oben.
+func StreicheFremdeKennungen(body string) string { return streicheFremdeKennungen(body) }

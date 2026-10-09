@@ -23,7 +23,11 @@ import (
 // d-check, AC-…-NN von a-check). Ein emittiertes Ziel fuehrt keines dieser Register mit
 // diesen Nummern — eine solche Kennung in einer emittierten Datei zeigt dort ins Leere.
 // Die Grenze links ist ausgeschrieben (kein Buchstabe, keine Ziffer, kein `_`/`-` davor),
-// die rechts prueft kennungenInText: `x-slice-12` und `ADR-00012` sind keine Kennung.
+// die rechts prueft kennungenInText: die Kennung endet mit ihrer Ziffernfolge, danach steht
+// kein Buchstabe, keine Ziffer und kein `_`. Ein `-wort` danach gehoert nicht zur Kennung
+// und verwirft sie nicht — `MR-077-statt-der`, `slice-082-foo`, `LH-QA-01-Bedingung` (die
+// Form der Dateinamen und Komposita dieses Repos) sind Treffer; `x-slice-12`, `ADR-00012`
+// und `ADR-0001x` sind keine Kennung.
 //
 // GRENZE: die Namensform slice-<name> / welle-<name> (MR-057) trifft das Muster nicht.
 // Sie ist von Werkzeug-Namen derselben Gestalt (slice-mv, slice-lokal) nur durch den
@@ -35,16 +39,22 @@ var kennungMuster = regexp.MustCompile(`(?:^|[^A-Za-z0-9_-])(ADR-[0-9]{4}|LH-[A-
 // ohne Kennung: Spezifikation, Lastenheft, Festlegung, Adaptions-Eintrag oder Dogfood,
 // gefolgt von „von ai-harness-init" im selben Satz. Die Herkunftszeile im Kopf einer
 // emittierten Datei („emittiert von ai-harness-init") trifft es nicht. Gelesen wird der
-// leerraum-normalisierte Text, damit ein Umbruch den Satz nicht teilt.
-var prosaVerweisMuster = regexp.MustCompile(`(?i)\b(?:spezifikation|lastenheft|festlegung(?:en)?|adaptions-eintrag|dogfood[a-z-]*)\b[^.]{0,160}\bvon ai-harness-init\b|\bdogfood`)
+// leerraum-normalisierte Text, damit ein Umbruch den Satz nicht teilt. Der Satz endet an
+// einem Punkt vor Leerraum oder Textende; ein Punkt in einem Dateinamen oder einer Version
+// (`spezifikation.md`, `v0.6.0`) beendet ihn nicht.
+//
+// GRENZE: `dogfood` allein trifft jedes Vorkommen, auch eines ohne Bezug auf dieses Repo
+// (laut, nicht still). Eine Abkuerzung mit Punkt vor Leerraum zwischen Stichwort und
+// Herkunft teilt den Satz; ein Verweis ohne die Wendung von ai-harness-init faellt durch.
+var prosaVerweisMuster = regexp.MustCompile(`(?i)\b(?:spezifikation|lastenheft|festlegung(?:en)?|adaptions-eintrag|dogfood[a-z-]*)\b(?:[^.]|\.\S){0,160}\bvon ai-harness-init\b|\bdogfood`)
 
 // kennungenInText liefert die Kennungen aus kennungMuster und die Prosa-Verweise aus
-// prosaVerweisMuster in text. Eine Kennung, auf die ein Buchstabe, eine Ziffer, `_` oder
-// `-` folgt, zaehlt nicht.
+// prosaVerweisMuster in text. Eine Kennung, auf die ein Buchstabe, eine Ziffer oder `_`
+// folgt, zaehlt nicht; ein folgendes `-` beendet sie.
 func kennungenInText(text string) []string {
 	var ks []string
 	for _, m := range kennungMuster.FindAllStringSubmatchIndex(text, -1) {
-		if e := m[3]; e < len(text) && strings.ContainsRune("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-", rune(text[e])) {
+		if e := m[3]; e < len(text) && strings.ContainsRune("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_", rune(text[e])) {
 			continue
 		}
 		ks = append(ks, text[m[2]:m[3]])
@@ -53,6 +63,52 @@ func kennungenInText(text string) []string {
 		ks = append(ks, "Prosa: "+p)
 	}
 	return ks
+}
+
+// agentsAbschnittMuster trifft eine Abschnittsnummer der AGENTS.md in der Form, in der
+// dieses Repo sie schreibt: `AGENTS.md 3.5`, `AGENTS.md §3.5`. Es gilt nur fuer Meldungen
+// des Traegers, nicht fuer emittierte Dateien — die AGENTS.md des Ziels und ihre Nachbarn
+// verweisen dort auf die eigenen Abschnitte, und die loesen im Ziel auf.
+var agentsAbschnittMuster = regexp.MustCompile(`AGENTS\.md ?§? ?[0-9]`)
+
+// meldungsVerweise liefert kennungenInText und die Abschnittsnummern aus
+// agentsAbschnittMuster in text.
+func meldungsVerweise(text string) []string {
+	ks := kennungenInText(text)
+	for _, a := range agentsAbschnittMuster.FindAllString(text, -1) {
+		ks = append(ks, "Abschnittsnummer: "+a)
+	}
+	return ks
+}
+
+// TestKennungenInTextGrenzen haelt die Grenzen der Erkennung an den Formen, die dieses
+// Repo schreibt (LH-QA-01): eine Kennung vor `-wort` ist ein Treffer, eine laengere
+// Ziffernfolge oder ein angehaengter Buchstabe keiner; ein Prosa-Verweis ueber einen
+// Dateinamen oder eine Version hinweg ist ein Treffer; eine Abschnittsnummer der
+// AGENTS.md ist in einer Meldung ein Treffer.
+func TestKennungenInTextGrenzen(t *testing.T) {
+	for _, f := range [][2]string{
+		{"siehe MR-077-statt-der", "MR-077"},
+		{"siehe slice-082-foo", "slice-082"},
+		{"die LH-QA-01-Bedingung", "LH-QA-01"},
+		{"(DC-FA-CLI-009-x)", "DC-FA-CLI-009"},
+		{"Festlegung in spezifikation.md von ai-harness-init", "Prosa: "},
+		{"Spezifikation (v0.6.0) von ai-harness-init", "Prosa: "},
+	} {
+		if got := strings.Join(kennungenInText(f[0]), "|"); !strings.HasPrefix(got, f[1]) {
+			t.Errorf("kennungenInText(%q) = %q, erwartet ein Treffer %q", f[0], got, f[1])
+		}
+	}
+	for _, text := range []string{"x-slice-12", "ADR-00012", "ADR-0001x", "LH-QA-012", "Spezifikation. Danach von ai-harness-init"} {
+		if ks := kennungenInText(text); len(ks) > 0 {
+			t.Errorf("kennungenInText(%q) = %q, erwartet kein Treffer", text, ks)
+		}
+	}
+	for _, text := range []string{"mit ADR nach AGENTS.md 3.5", "AGENTS.md §3.3"} {
+		if ks := meldungsVerweise(text); len(ks) == 0 {
+			t.Errorf("meldungsVerweise(%q) erkennt die Abschnittsnummer nicht", text)
+		}
+	}
 }
 
 // erlaubteKennungen ist die namentliche Ausnahme-Liste Datei → Kennungs-Menge ueber der
@@ -228,10 +284,18 @@ func traegerAusnahmen() map[string][]string {
 // Error()-Texte der Fehlertypen; (2) die reale Hilfe-Ausgabe von Init und add-lang.
 // Kommentare sind keine Zeichenkette und zaehlen nicht.
 //
+// Dazu haelt er, dass keine Meldung eine Abschnittsnummer der AGENTS.md nennt
+// (agentsAbschnittMuster): die Nummer ist die dieses Repos, im Ziel steht unter derselben
+// Nummer eine andere Regel — die Meldung nennt die Regel im Klartext.
+//
 // GRENZE: eine Meldung, die ihre Kennung aus einer Datei oder einem Laufzeit-Wert
 // zusammensetzt, sieht er nicht; ebenso keine Zeichenkette in einer eingebetteten
 // Vorlage — die liest TestEmittierteDateienTragenNurImZielAufloesendeKennungen am Ziel.
-// Erkannt sind die Formen aus kennungMuster und prosaVerweisMuster.
+// Geprueft wird je Literal (ast.BasicLit), nicht je Konstante: eine Kennung oder ein
+// Prosa-Verweis, der ueber zwei mit `+` verbundene Literale laeuft (`"… ADR-" + "0007"`,
+// ein Satz, der am `+` umbricht), faellt durch. Erkannt sind die Formen aus kennungMuster,
+// prosaVerweisMuster und agentsAbschnittMuster; eine Abschnittsnummer in anderer Form
+// („§3.5 der AGENTS.md", „Abschnitt 3.5") nicht.
 func TestTraegerMeldungenTragenKeineKennung(t *testing.T) {
 	ausnahme := traegerAusnahmen()
 	var fehler []string
@@ -271,7 +335,7 @@ func TestTraegerMeldungenTragenKeineKennung(t *testing.T) {
 				if err != nil {
 					wert = lit.Value
 				}
-				if ks := kennungenInText(wert); len(ks) > 0 {
+				if ks := meldungsVerweise(wert); len(ks) > 0 {
 					fehler = append(fehler, fmt.Sprintf("  %s:%d: %s", rel, fset.Position(lit.Pos()).Line, strings.Join(ks, ", ")))
 				}
 				return true
@@ -292,7 +356,7 @@ func TestTraegerMeldungenTragenKeineKennung(t *testing.T) {
 	for _, args := range [][]string{{"--help"}, {"add-lang", "--help"}} {
 		var out, errb bytes.Buffer
 		run(args, t.TempDir(), testSources(t), &out, &errb)
-		if ks := kennungenInText(out.String() + errb.String()); len(ks) > 0 {
+		if ks := meldungsVerweise(out.String() + errb.String()); len(ks) > 0 {
 			fehler = append(fehler, "  Hilfe "+strings.Join(args, " ")+": "+strings.Join(ks, ", "))
 		}
 	}

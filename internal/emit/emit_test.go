@@ -399,6 +399,27 @@ func TestAdaptMK_Fixture(t *testing.T) {
 	}
 }
 
+// TestStreicheFremdeKennungenTrifftNurDieRegister haelt beide Richtungen der Streichung im
+// Kommentar-Teil eines --print-mk-Fragments (LH-QA-01): die Kennungen aus den Registern der
+// Nachbar-Werkzeuge fallen — die Zeilen mit ADR-0030, AC-QA-03 und slice-082 stehen so in
+// der realen Ausgabe von a-check v0.23.0 —, eine Klammer gleicher Gestalt ohne Bezug auf
+// ein Register (UTF-8, ISO-8601, SHA-256) bleibt stehen.
+func TestStreicheFremdeKennungenTrifftNurDieRegister(t *testing.T) {
+	for _, f := range [][2]string{
+		{"# gueltig aussehend und falsch (ADR-0030).", "# gueltig aussehend und falsch."},
+		{"# Die Pin-Hebung ist ein bewusster Commit (AC-QA-03).", "# Die Pin-Hebung ist ein bewusster Commit."},
+		{"# die andere (slice-082).", "# die andere."},
+		{"x: ## Pruefung (advisory, DC-FA-CLI-009)", "x: ## Pruefung (advisory)"},
+		{"# Ausgabe als Text (UTF-8).", "# Ausgabe als Text (UTF-8)."},
+		{"# Format (ISO-8601), Hash (SHA-256)", "# Format (ISO-8601), Hash (SHA-256)"},
+		{"# Kodierung (Latin, UTF-8)", "# Kodierung (Latin, UTF-8)"},
+	} {
+		if got := emit.StreicheFremdeKennungen(f[0]); got != f[1] {
+			t.Errorf("StreicheFremdeKennungen(%q) = %q, erwartet %q", f[0], got, f[1])
+		}
+	}
+}
+
 // TestDocGate_FragmentWiresDocsCheck: das Doc-Gate-Fragment haengt docs-check an
 // GATE_CHECKS und bindet d-check.mk ein — der netzlose Waechter auf die Verdrahtung
 // (DocGate selbst braucht Docker; ersetzt zusammen mit full-smoke die Deckung des

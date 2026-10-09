@@ -258,10 +258,14 @@ func execErr(err error) error {
 }
 
 // fremdeKennung ist eine Kennung aus dem Register eines Nachbar-Werkzeugs, wie sie seine
-// --print-mk-Ausgabe in Kommentaren und `##`-Hilfetexten fuehrt: Grossbuchstaben-Segmente
-// mit Ziffern-Ende (DC-FA-CLI-009, AC-QA-03, ADR-0030) oder eine Slice-/Welle-Nummer
-// (slice-082). Im Ziel loest keine davon auf.
-const fremdeKennung = `(?:[A-Z]{2,}(?:-[A-Z]+)*-[0-9]+|slice-[0-9]+|welle-[0-9]+)`
+// --print-mk-Ausgabe in Kommentaren und `##`-Hilfetexten fuehrt: eine Anforderung von
+// d-check (DC-FA-CLI-009) oder a-check (AC-QA-03), eine ADR des Werkzeugs (ADR-0030, im
+// Fragment von a-check) oder eine Slice-/Welle-Nummer (slice-082). Im Ziel loest keine
+// davon auf. Andere Grossbuchstaben-Ziffer-Formen (UTF-8, ISO-8601, SHA-256) gehoeren zu
+// keiner dieser Familien und bleiben stehen; eine Kennung einer weiteren Familie im
+// realen Fragment meldet full-smoke (fremde_kennungen_im_fragment), statt dass sie still
+// faellt.
+const fremdeKennung = `(?:(?:DC|AC)(?:-[A-Z]+)+-[0-9]+|ADR-[0-9]{4}|slice-[0-9]+|welle-[0-9]+)`
 
 // streicheFremdeKennungen entfernt fremde Kennungen aus dem Kommentar-Teil jeder Zeile —
 // ab dem ersten `#`, der Rezept- und Zuweisungs-Teil davor bleibt unberuehrt. Erkannt wird
