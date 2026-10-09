@@ -1,0 +1,2 @@
+**Vorgang:** slice-kotlin-hexslice-mit-arch-gate
+**Fund:** Review LOW-2: `ARC-009` in `spec/architecture.md` legt für `hexslice` den Composition Root sprachübergreifend auf `cmd/`; Code und der Absatz „Layout je Sprache" führen ihn je Sprache (`cpp` `src/main.cpp`, `kotlin` `src/main/kotlin/app/Main.kt`). Für `cpp` bestand die Drift schon, der Slice dehnt sie auf Kotlin aus. Die Korrektur liegt als Übergabe an die Rolle, die `slice-151-spec-straten-haben-eine-schreibende-rolle` benennt.

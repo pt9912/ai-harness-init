@@ -1,0 +1,2 @@
+**Vorgang:** slice-kotlin-hexslice-mit-arch-gate
+**Fund:** Review INFO-1: `TestArchGateConfig_KotlinEdgesMatchSkeleton` (`internal/gen/kotlin_test.go`) baut die Import-Auflösung von a-check nach (`package_base` abstreifen, Punkte zu `/`, Root voran); die reale Auflösung hält allein die `full-smoke`-Stufe über die Abwesenheit des Hinweises „0 von N Import-Symbolen", kein Gate, und der Testkopf nennt diesen Halter nicht. Gegen a-check `v0.23.0` ohne Abweichung geprüft.

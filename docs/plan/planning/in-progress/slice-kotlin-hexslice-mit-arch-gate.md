@@ -32,19 +32,19 @@
 
 ## 2. Definition of Done
 
-- [ ] hexslice-Renderer mit den Pfaden aus [ADR-0088](../../adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md) Festlegung 4, Paket == Verzeichnis;
+- [x] hexslice-Renderer mit den Pfaden aus [ADR-0088](../../adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md) Festlegung 4, Paket == Verzeichnis;
       `archGateConfigs()` mit `resolution: kotlin: {mode: fixed-root, roots: ["src/main/kotlin/app"], package_base: "app"}`;
       im gebootstrappten Ziel meldet a-check keinen Hinweis „0 von N Import-Symbolen lösen auf".
-- [ ] `make full-smoke`: `add-lang kotlin <pfad> --arch hexslice` grün; mit Import aus
+- [x] `make full-smoke`: `add-lang kotlin <pfad> --arch hexslice` grün; mit Import aus
       `app.hexagon.domain` nach `app.adapters` rot mit `core-impurity` (Meldung gelesen); Stufe mit
       `e2e_abdeckung`-Kopfzeile; Laufzeit-Zuwachs gemessen, in §7
       ([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)).
-- [ ] `spec/architecture.md` Layout je Sprache um Kotlin nachgezogen (Folgepflicht [ADR-0088](../../adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md)).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), kein Self-Review.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine Beobachtung anfiel.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] `spec/architecture.md` Layout je Sprache um Kotlin nachgezogen (Folgepflicht [ADR-0088](../../adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md)).
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), kein Self-Review.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine Beobachtung anfiel.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen prüft die Closure von `welle-kotlin-skelett`.
 
 ## 3. Plan (vor Code)
@@ -73,18 +73,50 @@ DoD vollständig, Arch-Zahn rot und Gegenprobe grün in `make full-smoke`, Closu
 ## 6. Risiken und offene Punkte
 
 - JVM/Gradle verlängern `make full-smoke` je Stufe um einen `docker build` mit
-  Dependency-Auflösung — **Ausgang:** *bei Closure*
+  Dependency-Auflösung — **Ausgang:** entfallen — gemessen, Δ ≈ 9 s am Gesamtlauf bei warmer Lage
+  (§7); der kalte Lauf ist benannt ungemessen, die Klasse trägt
+  `BEO-ALL/kosten-einer-emittierten-pruefung-im-ziel-ungemessen`, verkörpert in
+  [MR-089](../../../../harness/conventions.md#mr-089).
 - Ein Paket außerhalb seines Verzeichnisses entgeht der Auflösung ([ADR-0088](../../adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md) §Konsequenzen) —
-  **Ausgang:** *bei Closure*
+  **Ausgang:** entfallen — im Skelett hält Fall 623 (`TestKotlinHexslice_PaketGleichVerzeichnis`)
+  Paket == Verzeichnis; ein Adopter, der ein Paket anderswo ablegt, ist eine Konsequenz, die
+  [ADR-0088](../../adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md) in Kauf nimmt.
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** *bei Closure*
-- **Was ging anders als geplant:** *bei Closure*
-- **Steering-Loop-Eintrag:** *bei Closure*
-- **Beobachtungs-Register (`../observations/`):** *bei Closure*
-- **Folge-Slices:** *bei Closure*
-- **Risiken aus §6:** *bei Closure*
+- **Was hat funktioniert:** Der Arch-Zahn färbt mit
+  `Greeting.kt:4: core-impurity: Kern importiert app.adapters.driven.notify.StdoutNotifier`, die
+  Stufe vergleicht die Zeile byte-genau; die HEAD-Config meldet keinen Hinweis „0 von N
+  Import-Symbolen", der Root aus Fall 624 vier (gegen a-check `v0.23.0`). Die Fälle 623 und 624
+  binden ihren Wächter allein (Gegenprobe mit `t.Skip`), Fall 625 färbt über `app-impurity`
+  (Review-Report `2026-10-09-slice-kotlin-hexslice-mit-arch-gate` §Belege).
+- **Laufzeit (DoD 2, [MR-089](../../../../harness/conventions.md#mr-089)):** `make full-smoke`
+  186,35 s auf `9d1b0837` gegen 177,17 s auf `9d1b0837^`, Δ ≈ 9 s am Gesamtlauf; je ein Lauf,
+  Images und BuildKit-Cache warm; Variante `add-lang kotlin --arch hexslice` neben dem bereits
+  gebauten flachen Kotlin-Modul. Streuung und kalter Lauf sind ungemessen. Die 13 s der Stufe
+  umfassen `make -j gates` über alle Module des Ziels und sind kein Kotlin-Zuwachs (Review INFO-2).
+  Kein Beleg für `BEO-ALL/kosten-einer-emittierten-pruefung-im-ziel-ungemessen`: Lage und Variante
+  sind benannt, die Regel hat gegriffen.
+- **Was ging anders als geplant:** `spec/architecture.md` bekam den Abschnitt „Layout je Sprache"
+  neu, samt go-/cpp-Sätzen, die die Folgepflicht aus
+  [ADR-0088](../../adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md) nicht deckt
+  (Review LOW-1). Das Architect-Verdikt `2026-10-09-spec-architecture-architect-verdikt` lässt sie
+  als akzeptiertes Negativ bis `slice-151-spec-straten-haben-eine-schreibende-rolle` stehen.
+- **Steering-Loop-Eintrag:** benannte Spec-Lücke — `ARC-009` legt den Composition Root für
+  `hexslice`/`hexagonal` sprachübergreifend auf `cmd/`, Code und Absatz „Layout je Sprache“ führen
+  ihn je Sprache (Review LOW-2). Die Korrektur wartet auf eine schreibende Rolle für Rang 3; Adresse
+  `slice-151-spec-straten-haben-eine-schreibende-rolle` (`open/`), Änderungsbedarf als Übergabe im
+  Architect-Verdikt.
+- **Beobachtungs-Register (`../observations/`):** Belege in
+  `BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet` (LOW-1, verkörpert in
+  [ADR-0062](../../adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md)) ·
+  `BEO-ALL/spec-zeile-enger-als-der-code-den-sie-beschreibt` (LOW-2, 2×, offen) ·
+  `BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle` (INFO-1, geplant) ·
+  `BEO-ALL/strukturtest-sieht-den-import-alias-nicht` (INFO-3, 2×, offen). Benannt, nicht gezählt:
+  INFO-2 — die Stufen-Ausgabe nennt ihren Umfang, und §7 liest sie nicht als Zuwachs. Kein Eintrag
+  erreicht mit diesem Slice 3× ohne Ausgang.
+- **Folge-Slices:** keine.
+- **Risiken aus §6:** Ausgänge stehen in §6.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
