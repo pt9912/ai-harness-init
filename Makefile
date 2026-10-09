@@ -259,6 +259,27 @@ mutate: ## Mutations-Sensor fuer AGENTS 3.6: faerbt jede Mutation ihren Waechter
 # — Grenze in harness/sensors/mutate.md §Greift-Modus. Das Rezept nimmt MUTATE_CASES aus der
 # Umgebung heraus: im Gate laeuft jeder Fall. Sensor: test/mutate-driver.bats „greift: das
 # Rezept von make mutate-greift …". MR-071 · seit slice-mutations-anker-greift-in-den-gates.
+# Fallauswahl und Shard-Zuteilung der Mutations-Faelle eines Slice (harness/tools/mutate-auswahl.sh).
+# Ohne SHARDS: das Urteil ueber die Fallmenge seit dem Claim-Commit von SLICE — Exit 0 mit der
+# Zeile fuer den lokalen Lauf, Exit 10 mit dem Push auf mutate/<SLICE> (durch make als Fehler 10
+# gemeldet). Mit SHARDS und SHARD: die Faelle dieses Shards; SLICE=--alle nimmt alle Faelle.
+# Sensor: test/mutate-auswahl.bats. MR-014, LH-QA-03.
+mutate-auswahl: ## Mutations-Faelle eines Slice waehlen: lokal (SLICE=) oder je Shard (SHARDS= SHARD=) — kein Gate
+	@if [ -n "$(SHARDS)" ]; then bash harness/tools/mutate-auswahl.sh shard '$(SLICE)' '$(SHARDS)' '$(SHARD)'; \
+	else bash harness/tools/mutate-auswahl.sh urteil '$(SLICE)'; fi
+
+# Die Schritte des Workflows .github/workflows/mutate-branch.yml (harness/tools/mutate-auswahl.sh):
+# SCHRITT=lauf REF=<ref> (Kennung, ob ein Lauf noetig ist), SCHRITT=shard SLICE= SHARDS= SHARD=
+# ERGEBNIS_DIR= (Fall-Lauf eines Shards samt Beleg), SCHRITT=ergebnis REF= SHARDS= ERGEBNIS_DIR=
+# (Ergebnisdatei schreiben, committen, ohne --force nach refs/heads/<REF> pushen). MR-014.
+mutate-branch: ## Schritte des CI-Branch-Laufs der Mutations-Faelle (SCHRITT=lauf|shard|ergebnis) — kein Gate
+	@case '$(SCHRITT)' in \
+	  lauf) bash harness/tools/mutate-auswahl.sh lauf '$(REF)' ;; \
+	  shard) bash harness/tools/mutate-auswahl.sh shard-lauf '$(SLICE)' '$(SHARDS)' '$(SHARD)' '$(ERGEBNIS_DIR)' ;; \
+	  ergebnis) bash harness/tools/mutate-auswahl.sh ergebnis '$(REF)' '$(SHARDS)' '$(ERGEBNIS_DIR)' ;; \
+	  *) echo "mutate-branch: SCHRITT=lauf|shard|ergebnis fehlt" >&2; exit 2 ;; \
+	esac
+
 mutate-greift: ## Greift jeder sed-Anker der Mutations-Faelle im Quellbestand? — ohne Container, jeder Fall, in gates (MR-071)
 	@unset MUTATE_CASES; bash harness/tools/mutate.sh --greift
 

@@ -12,6 +12,13 @@ Hard Rules). Der Implementer **behauptet**, du **bestätigst** — oder nicht.
 `docs/reviews/<YYYY-MM-DD>-<gegenstand>-verify.md` — mit dem Start der Rolle angefordert, dein
 Werkstück. Den Slice schließt der Planner, nie du; nie im Kontext, der den Code schrieb.
 
+**Mutations-Ergebnis vom CI-Branch** — nennt der Implementer den CI-Weg, liest du es einmal, zu
+Beginn: `git fetch origin mutate/<kennung> && git show FETCH_HEAD:mutate-ergebnis.txt`. Der dort
+genannte geprüfte Commit muss der verifizierte sein; Fallmenge und Befunde übernimmst du in den
+Bericht und löschst danach den Branch (`git push origin --delete mutate/<kennung>`). Fehlt die
+Datei, ist das ein Befund — du wartest nicht in einer Abfrage-Schleife darauf
+([`harness/sensors/mutate.md`](../../harness/sensors/mutate.md) §CI-Branch).
+
 **Prüfungen, in dieser Reihenfolge:**
 
 1. **Sensor gelaufen?** Ein nicht gelaufener ist ein Befund; Weglassen heißt „betrifft den Slice

@@ -46,6 +46,10 @@ on:
   # ein bewusst akzeptierter Doppellauf (getrennte concurrency-Gruppen, s. u.);
   # der Preis ist ein doppelter Lauf, der Gewinn die Fork-PR-Abdeckung.
   push:
+    # Ein Push nach mutate/** faehrt allein mutate-branch.yml, nicht diese Sensoren.
+    branches-ignore: ['mutate/**']
+    # Mit einem Branch-Filter allein liefe ein Tag-Push nicht mehr an; der Tag-Filter haelt ihn.
+    tags: ['**']
   pull_request:
 
 # Nicht zwei Laeufe DESSELBEN Ausloesers parallel: `make mutate` mutiert den

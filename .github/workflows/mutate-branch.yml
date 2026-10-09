@@ -1,0 +1,82 @@
+# mutate-branch — die Mutations-Faelle eines Slice auf einem CI-Branch (AGENTS.md §3.6, LH-QA-03).
+#
+# Ausloeser ist ein Push nach `mutate/<slice-kennung>`. Die Fallmenge folgt aus dem Diff gegen den
+# Claim-Commit des Slice, verteilt auf 10 Shards; das Ergebnis liegt danach als
+# `mutate-ergebnis.txt` an der Branch-Wurzel, ein Commit ueber dem geprueften — lesbar mit
+# `git fetch origin mutate/<kennung> && git show FETCH_HEAD:mutate-ergebnis.txt`, ohne `gh`.
+# Werkzeug, Ergebnisform und Grenze: harness/sensors/mutate.md §CI-Branch.
+#
+# Nur `make`-Targets (MR-014): jede Pruefung und jeder Schreibschritt liegt in
+# harness/tools/mutate-auswahl.sh, der Workflow ruft ihn auf.
+#
+# SCHREIBRECHT: `contents: write` traegt allein der Job `ergebnis`; der Workflow selbst und alle
+# anderen Jobs lesen nur. Der Schreibschritt bricht ab, wenn der Ref nicht mit `mutate/` beginnt,
+# pusht auf genau `refs/heads/<ref>` und ohne `--force` — ist der Branch inzwischen
+# weitergelaufen, scheitert der Push. Ein Tip, dessen einzige Aenderung `mutate-ergebnis.txt`
+# ist, startet keine Shards (Schritt `lauf`).
+#
+# Eigene Datei neben mutate.yml, damit das Schreibrecht nicht in den naechtlichen Lauf wandert.
+# CHECKOUT-TIEFE: `fetch-depth: 0` in jedem Job, der die Basis braucht — der Claim-Commit liegt
+# in der Historie, nicht im Tip.
+
+name: mutate-branch
+
+on:
+  push:
+    branches: ['mutate/**']
+
+permissions:
+  contents: read
+
+# Ein erneuter Push derselben Kennung ersetzt den Lauf.
+concurrency:
+  group: mutate-branch-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  plan:
+    runs-on: ubuntu-24.04
+    outputs:
+      laufen: ${{ steps.lauf.outputs.laufen }}
+      kennung: ${{ steps.lauf.outputs.kennung }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+      - id: lauf
+        run: make -s --no-print-directory mutate-branch SCHRITT=lauf REF="$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
+
+  shard:
+    needs: plan
+    if: needs.plan.outputs.laufen == 'true'
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+      - run: make --no-print-directory mutate-branch SCHRITT=shard SLICE='${{ needs.plan.outputs.kennung }}' SHARDS='${{ strategy.job-total }}' SHARD='${{ matrix.shard }}' ERGEBNIS_DIR="$RUNNER_TEMP/shard-${{ matrix.shard }}"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: shard-${{ matrix.shard }}
+          path: ${{ runner.temp }}/shard-${{ matrix.shard }}
+          retention-days: 3
+
+  ergebnis:
+    needs: [plan, shard]
+    if: ${{ !cancelled() && needs.plan.outputs.laufen == 'true' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          path: ${{ runner.temp }}/shards
+      - run: make --no-print-directory mutate-branch SCHRITT=ergebnis REF="$GITHUB_REF_NAME" SHARDS=10 ERGEBNIS_DIR="$RUNNER_TEMP/shards"

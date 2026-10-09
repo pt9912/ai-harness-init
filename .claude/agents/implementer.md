@@ -26,6 +26,11 @@ Eine Behauptung ohne Sensor-Beleg ist der häufigste Verifier-Befund. Den vollen
 fährst du nicht — einen neuen oder geänderten Wächter belegst du **einzeln** an der realen Quelle
 (Mutation von Hand, Test fallen sehen); der repo-weite Satz läuft nächtlich
 (`.github/workflows/mutate.yml`, Post-integration, `AGENTS.md` §3.6).
+Vor der Übergabe an die Verifikation fragst du `make mutate-auswahl SLICE=<kennung>` und folgst
+seinem Urteil: lokaler Lauf (Exit 0, die ausgegebene `make mutate`-Zeile) oder Push auf den
+CI-Branch (Exit 10 — make meldet „Fehler 10" —, die ausgegebene `git push`-Zeile). Der Bericht
+nennt den Weg, bei CI auch Branch und gepushten Commit; auf das Ergebnis wartest du nicht in einer
+Abfrage-Schleife ([`harness/sensors/mutate.md`](../../harness/sensors/mutate.md) §CI-Branch).
 
 **Arbeitsweise:** engster Sensor während der Arbeit (`make test-bats BATS_TARGET=test/<datei>.bats`,
 `make mutate MUTATE_CASES=…`), kein zusätzliches `make test` vor `make gates`, das einmal vor dem

@@ -90,7 +90,13 @@ nicht pauschal alles:
 12. **Sensor-Belege.** `make gates` einmal (siehe 9) **und die Nicht-Gate-Sensoren, die den Slice
     betreffen** (`make smoke`, wenn der Emit-Pfad berührt ist). Einen neuen oder geänderten
     Wächter belegst du **einzeln**: die Mutation von Hand fahren, den benannten Test fallen sehen,
-    die Ausgabe lesen. Den repo-weiten `make mutate`-Satz fährst du nicht — er läuft nächtlich
+    die Ausgabe lesen. **Die Mutations-Fälle des Slice:** vor der Übergabe an die Verifikation
+    `make mutate-auswahl SLICE=<kennung>` fragen und seinem Urteil folgen — lokaler Lauf (Exit 0,
+    die ausgegebene `make mutate`-Zeile) oder Push auf den CI-Branch (Exit 10, make meldet
+    „Fehler 10"; die ausgegebene `git push`-Zeile). Der Bericht nennt den Weg, beim CI-Weg auch
+    Branch und gepushten Commit; das Ergebnis liest der Verifier
+    ([`harness/sensors/mutate.md`](../../harness/sensors/mutate.md) §CI-Branch).
+    Den repo-weiten `make mutate`-Satz fährst du nicht — er läuft nächtlich
     (`.github/workflows/mutate.yml`, Stufe Post-integration, `AGENTS.md` §3.6). Ein nicht
     gelaufener Sensor ist ein Befund: ihn wegzulassen braucht eine Begründung. Das ist die
     *Behauptung* der Rolle und die *Eingabe* des Verifiers, nicht das DoD-Urteil.

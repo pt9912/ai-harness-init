@@ -204,11 +204,44 @@ dem Fall-Bestand. Nicht gemessen ist die Laufzeit auf dem CI-Runner und bei kalt
   keine dieser Formen (`grep -cE 'sed -i|mktemp -d -p' harness/tools/comment-claims.sh` → 0).
   Die CI läuft auf einem GNU-Runner; das deckt den Lauf dort, nicht einen anderen Host.
 
+## CI-Branch (`make mutate-auswahl`, `make mutate-branch`)
+
+**Welcher Weg.** `make mutate-auswahl SLICE=<kennung>` berechnet die Fallmenge eines Slice über
+`<Claim-Commit>..HEAD` — der Claim-Commit ist der Commit, der
+`docs/plan/planning/in-progress/<kennung>.md` anlegt; fehlt er, bricht das Werkzeug mit Exit 2 ab.
+Gewählt ist jeder Fall unter `test/mutations/`, dessen `# files:`-Angabe eine geänderte Datei
+trifft, und jeder geänderte oder neue Fall selbst. Das Werkzeug fällt das Urteil, die Schwelle
+steht allein in `harness/tools/mutate-auswahl.sh` (`SCHWELLE`): bis dahin Exit 0 mit der Zeile
+für den lokalen Lauf, darüber Exit 10 mit dem Push
+`git push -f origin HEAD:refs/heads/mutate/<kennung>`.
+
+**Der Lauf.** Der Push startet `.github/workflows/mutate-branch.yml`: Schritt `lauf` prüft den
+Präfix `mutate/` und überspringt einen Tip, der allein `mutate-ergebnis.txt` ändert; 10 Shards
+fahren je `make mutate` über ihren Teil (Zuteilung wie im Nacht-Workflow: schwere Fälle — die
+Modi der seriellen Spur von `mutate.sh` — reihum, leichte nach Last aus angenommenen Gewichten je
+Sensor-Modus); Schritt `ergebnis` schreibt die Datei, committet sie über dem geprüften Commit und
+pusht ohne `--force` nach genau `refs/heads/<ref>`. Allein dieser Job trägt `contents: write`.
+`ci.yml` läuft auf `mutate/**` nicht.
+
+**Ergebnisform.** `mutate-ergebnis.txt` an der Branch-Wurzel: Kennung, geprüfter Commit, Basis,
+je Shard Exit, Sekunden und Fälle, je Fall `ok` oder `BEFUND` mit Shard, Fallmenge, Wanduhr
+gesamt (erster Shard-Start bis letztes Shard-Ende) und `Urteil: gruen` oder `Urteil: BEFUND`.
+Gelesen wird ohne `gh`: `git fetch origin mutate/<kennung> && git show FETCH_HEAD:mutate-ergebnis.txt`.
+Der Verifier liest einmal, gleicht den Commit ab und löscht danach den Branch.
+
+**Grenze.** Gewählt wird über `# files:`: ein Fall, dessen Wächter-Test sich änderte, dessen
+`# files:` aber keine geänderte Datei nennt, läuft nicht; zeigt `# files:` auf die falsche
+Datei, fehlt der Fall. Das lokale Urteil misst `HEAD`, nicht den Arbeitsbaum. Die Gewichte sind
+eine Annahme; die Messung je Sensor gibt `make mutate` selbst aus (Zeit je Sensor). Ist der
+Branch weitergelaufen, scheitert der Ergebnis-Push, und es liegt kein Ergebnis vor. Kein Wächter
+hält den Refspec des Ergebnis-Jobs, und keiner meldet liegen gebliebene `mutate/*`-Branches oder
+eine Ergebnisdatei, die nach `main` gelangt. Wächter der Auswahl: `test/mutate-auswahl.bats`.
+
 ## Bindung
 
 [`AGENTS.md`](../../AGENTS.md) §3.6; slice-026; kein Gate-Versprechen. Mechanischer Auslöser
 ist der **Nacht-Workflow** `mutate.yml` (`schedule` + `workflow_dispatch`), der den Fall-Satz
-als **Matrix aus parallelen Shard-Jobs** fährt (deterministische, index-basierte Zuteilung über
+als **Matrix aus 10 parallelen Shard-Jobs** fährt (deterministische, gewichtete Zuteilung aus `make mutate-auswahl` über
 `MUTATE_CASES`, `fail-fast: false`) statt eines Einzel-Jobs — die Klassifikation des Regelwerks
 ordnet die Mutationstests der Stufe **Post-integration** zu (`grundlagen-klassifikation.md`
 §Klassifikation: *„nach Merge : Mutation Tests"*, *„teurer, aber tolerierbar"*); die
