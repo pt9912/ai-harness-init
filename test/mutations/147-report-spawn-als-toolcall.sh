@@ -12,4 +12,4 @@
 # einen einzigen Tool-Call mehr gemacht zu haben. Der Schaden ist lautlos: die
 # Summe stimmt, die Verteilung nicht.
 set -euo pipefail
-sed -i 's@^\tif s.AgentRole != "" \&\& s.Tool != "" {$@\tif s.AgentRole != "" {@' internal/report/report.go
+sed -i 's@^\tif s.AgentRole != "" \&\& !span.IsNotKnown(s.AgentRole) \&\& s.Tool != "" {$@\tif s.AgentRole != "" \&\& !span.IsNotKnown(s.AgentRole) {@' internal/report/report.go
