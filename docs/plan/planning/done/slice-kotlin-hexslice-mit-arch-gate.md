@@ -45,7 +45,7 @@
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine Beobachtung anfiel.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen prüft die Closure von `welle-kotlin-skelett`.
+- [x] Die drei Paarungen prüft die Closure von `welle-kotlin-skelett`; nach dem Move gefahren, §7.
 
 ## 3. Plan (vor Code)
 
@@ -116,6 +116,13 @@ DoD vollständig, Arch-Zahn rot und Gegenprobe grün in `make full-smoke`, Closu
   INFO-2 — die Stufen-Ausgabe nennt ihren Umfang, und §7 liest sie nicht als Zuwachs. Kein Eintrag
   erreicht mit diesem Slice 3× ohne Ausgang.
 - **Folge-Slices:** keine.
+- **Paarungen geprüft am 2026-10-09:** (a) kein Eintrag trägt das Zielort-Feld, die benannte
+  Spec-Lücke hat keinen Zielort; die genannte Adresse `slice-151-spec-straten-haben-eine-schreibende-rolle`
+  existiert unter `open/` · (b) keine Folge-Slices genannt · (c) die fünf hier genannten `BEO-ALL/…`
+  existieren, je `evidence/*.md` ≥ 1; zweite Hälfte über das Register: 2 Verzeichnisse ohne Beleg,
+  namentlich `cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht` und
+  `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen behauptet (Kommando:
+  Schleife über `BEO-ALL/*/evidence/*.md`, `close-welle.md` Schritt 3).
 - **Risiken aus §6:** Ausgänge stehen in §6.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
