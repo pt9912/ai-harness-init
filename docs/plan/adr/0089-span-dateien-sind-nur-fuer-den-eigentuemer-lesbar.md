@@ -50,9 +50,11 @@ Schreiben auf `0600` gezogen; das **Verzeichnis** bleibt für andere auflistbar;
 als unkritisch zugesagt. Eine Zugriffs**kontrolle** über den Dateimodus hinaus (ACL, Verschlüsselung,
 eigener Nutzer) ist nicht zugesagt.
 
-**2. Kein Code-Nachzug.** Träger und emittierte Feldliste sagen den Ist-Zustand schon; die Wendung in
-[ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) war die einzige Stelle, die
-dagegen stand.
+**2. Kein Produkt-Code-Nachzug.** Träger und emittierte Feldliste sagen den Ist-Zustand schon. Unter
+den Normtexten war die Wendung in [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
+die einzige Stelle, die dagegen stand; ein Kommentar sagt sie noch — der Kopf des Mutations-Falls
+`test/mutations/169-feldliste-grenze-bestand-weg.sh` (*„nicht zugriffsbeschraenkt"*). Er wird
+nachgezogen (Konsequenzen, Folgepflicht).
 
 ## Verglichene Alternativen
 
@@ -70,20 +72,25 @@ dagegen stand.
   dieselbe Grenze wie für jede andere Modus-Aussage des Werkzeugs; kein eigener Folge-Slice.
 - Folgepflicht, fällig mit dem Accept: ADR-Index — die Zeile von
   [ADR-0022](0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) nennt diese Teil-Ablösung.
+- Folgepflicht (Implementer), nicht fällig mit dem Accept: der Kopf von
+  `test/mutations/169-feldliste-grenze-bestand-weg.sh` ersetzt *„nicht zugriffsbeschraenkt"* durch
+  die geltende Fassung (Dateien `0600`, Verzeichnis auflistbar); der Fall selbst bleibt.
 
 ## Fitness Function (falls maschinell prüfbar)
 
 | Tooling | Regel | Make-Target |
 |---|---|---|
-| Go-Test `TestModeIsOwnerOnly` (`internal/span/span_test.go`) | neue Span-Datei hat `0600`; eine auf `0644` gesetzte wird beim nächsten Schreiben zurückgezogen | `make test` |
+| Go-Test `TestModeIsOwnerOnly` (`internal/span/span_test.go`) | ein neuer Span-Strom hat `0600`; ein auf `0644` gesetzter wird beim nächsten Schreiben zurückgezogen | `make test` |
 | Go-Test `TestFeldliste_GrenzeUeberDenBestand` (`internal/emit/fieldlist_test.go`) | die emittierte Feldliste trägt *„nur für den Eigentümer lesbar"* | `make test` |
 
 Rot gesehen am 2026-10-09 in einer Kopie (`OpenFile`-Modus `0o644`, Nachzieh-Bedingung entschärft),
 `make test-go` → `--- FAIL: TestModeIsOwnerOnly … Modus = -rw-r--r--, erwartet 0600`, rc=2.
-**Lücke:** kein Fall in `test/mutations/` hält den Datei-Modus; `make mutate` bewacht nur den
-Verzeichnis-Modus (`116-span-verzeichnis-modus`). Akzeptiertes Negativ: der Zahn ist ein einzelner
-Vergleich auf einen Literalwert und einmal rot gesehen; ein Fall lohnt erst, wenn der Modus wieder
-bewegt wird.
+**Lücke:** `TestModeIsOwnerOnly` hält nur den Strom (`s<N>.jsonl`). Sequenz- und Sperr-Datei
+entstehen ebenfalls mit `0600` (`writeOwnerOnly`, `OpenFile(path, …, 0o600)` in
+`internal/span/emit.go`), sind aber **ungedeckt** — eine Mutation auf `0o644` bliebe grün. Kein Fall
+in `test/mutations/` hält einen Datei-Modus; `make mutate` bewacht nur den Verzeichnis-Modus
+(`116-span-verzeichnis-modus`). Akzeptiertes Negativ: die Modi sind Literalwerte je Datei,
+der Strom-Zahn einmal rot gesehen; ein Test oder Fall lohnt erst, wenn ein Modus wieder bewegt wird.
 
 ## Re-Evaluierungs-Trigger
 
