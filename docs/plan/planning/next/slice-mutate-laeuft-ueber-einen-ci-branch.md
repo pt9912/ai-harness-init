@@ -30,8 +30,8 @@ Lauf fährt die gepinnten Images), [`MR-014`](../../../../harness/conventions.md
 
 ## 1. Ziel und Abgrenzung
 
-**Ziel:** Ein `git push` nach `mutate/<slice-kennung>` startet in CI die Mutations-Fälle, die der
-Slice berührt, auf 10 nach Wanduhr gewichteten Shards, und das Ergebnis liegt danach als Datei im
+**Ziel:** Berührt ein Slice mehr als 8 Mutations-Fälle, startet ein `git push` nach
+`mutate/<slice-kennung>` sie in CI auf 10 nach Wanduhr gewichteten Shards, und das Ergebnis liegt danach als Datei im
 selben Branch, lesbar mit `git fetch` und `git show`, ohne `gh`.
 
 **Anlass** (Messung des Auftraggebers, 2026-10-09): bei Emissions-Dateien nennen über 100 Fälle eine
@@ -53,6 +53,13 @@ ist heute **nicht** gewichtet, sondern Index-Modulo über die sortierten Namen
 - **Fallmenge:** jeder Fall unter `test/mutations/`, dessen `# files:` eine Datei aus
   `git diff --name-only <basis> <commit>` nennt, und jeder geänderte oder neue Fall selbst. Eine leere
   Menge ist ein Ergebnis („0 Fälle“), kein Fehler.
+- **Schwelle — höchstens 8 lokal, ab 9 über CI** (Setzung des Auftraggebers, 2026-10-09): Das
+  Werkzeug, das die Fallmenge berechnet, fällt auch das Urteil. Lokal aufgerufen (Basis = Claim-Commit,
+  Commit = `HEAD`) gibt es die Menge und genau eine Anweisung aus: bei höchstens 8 Fällen die Zeile
+  `make mutate MUTATE_CASES='…'`, bei mehr als 8 den `git push` auf den Branch. Die zwei Wege
+  unterscheiden sich im Exit-Code. Die Zahl steht einmal, im Werkzeug; der Anweisungssatz nennt sie
+  nicht, er verweist auf das Urteil des Werkzeugs. Der CI-Pfad prüft die Schwelle nicht noch einmal:
+  ein Push mit 8 Fällen oder weniger läuft trotzdem.
 - **Zuteilung:** 10 Shards; schwere Fälle (die Modi der seriellen Spur, `is_heavy_mode` in
   `harness/tools/mutate.sh`, keine zweite Liste) zuerst reihum, danach die leichten auf den Shard mit
   der geringsten Last. Ein Werkzeug für beide Workflows.
@@ -92,19 +99,22 @@ Liefer-Punkte:
 
 - [ ] **Fallauswahl und Zuteilung:** ein Skript unter `harness/tools/` hinter einem `make`-Ziel
       ([`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions):
-      die CI ruft `make`) gibt zu Basis, Commit, Shard-Zahl und Index die Fälle des Shards aus. Ein
-      bats-Test belegt: ein Fall mit geänderter `# files:`-Datei ist gewählt, ein unberührter nicht,
-      eine geänderte Fall-Datei ist gewählt, ein fehlender Claim-Commit bricht ab, schwere Fälle liegen
-      auf verschiedenen Shards. Zu jeder Zusage ist die rot färbende Mutation gesehen (`AGENTS.md` §3.6).
+      die CI ruft `make`) gibt zu Basis, Commit, Shard-Zahl und Index die Fälle des Shards aus. Lokal
+      aufgerufen urteilt es nach der Schwelle (§1). Ein bats-Test belegt: ein Fall mit geänderter
+      `# files:`-Datei ist gewählt, ein unberührter nicht, eine geänderte Fall-Datei ist gewählt, ein
+      fehlender Claim-Commit bricht ab, schwere Fälle liegen auf verschiedenen Shards. An der Grenze
+      ergeben 8 Fälle den lokalen Weg und 9 den CI-Weg. Zu jeder Zusage ist die rot färbende Mutation
+      gesehen (`AGENTS.md` §3.6), an der Schwelle auch die Verschiebung um eins (`>` gegen `>=`).
 - [ ] **CI-Pfad:** `.github/workflows/mutate-branch.yml` (push auf `mutate/**`, 10 Shards, der
       Ergebnis-Job schreibt `mutate-ergebnis.txt` in den Branch), `ci.yml` ignoriert `mutate/**`,
       `mutate.yml` fährt dieselbe Zuteilung auf 10 Shards; `make ci-lint` ist grün. Ein realer Lauf auf
       `mutate/slice-mutate-laeuft-ueber-einen-ci-branch` liegt vor, sein Ergebnis ist per `git show`
       gelesen und im Bericht zitiert.
 - [ ] **Anweisungssätze und Sensor-Doku:** `.claude/commands/implement-slice.md` und
-      `.claude/agents/implementer.md` (die Mutations-Pflicht wechselt von „lokal vor dem Commit“ auf
-      „Branch gepusht vor der Übergabe an die Verifikation“; der Bericht nennt Branch und geprüften
-      Commit), `.claude/agents/verifier.md` (Ergebnis lesen, Commit abgleichen, in den Bericht
+      `.claude/agents/implementer.md` (vor der Übergabe an die Verifikation fragt der Implementer das
+      Werkzeug und folgt seinem Urteil: lokaler Lauf oder Branch-Push; der Bericht nennt den Weg, bei
+      CI auch Branch und geprüften Commit), `.claude/agents/verifier.md` (beim CI-Weg: Ergebnis lesen,
+      Commit abgleichen, in den Bericht
       übernehmen, Branch löschen), `harness/sensors/mutate.md` (Weg, Ergebnisform, Grenze) und die
       Werkzeuge-Zeile des neuen Ziels in `harness/README.md`.
 
@@ -169,10 +179,9 @@ Verifikations-Bericht zitiert, und der Branch dieses Slice ist gelöscht
   beschreiben, auch `main`. Ein fehlerhafter Ergebnis-Job könnte also dorthin pushen. Gemildert wird
   das durch das Recht nur im Ergebnis-Job, den expliziten Refspec und den Präfix-Abbruch (§3). Kein
   Wächter hält den Refspec. — **Ausgang:** <bei Closure>
-- **CI-Minuten.** Jeder `full-smoke`-Fall baut Docker-Images und braucht Netz. Jeder Push auf den
-  Branch startet bis zu 10 Shards, und `cancel-in-progress` je Ref bricht nur den älteren Lauf
-  derselben Kennung ab. Bei einem privaten Repo zählt jeder Shard gegen das Kontingent
-  (`docs/plan/planning/observations/BEO-ALL/mutate-matrix-actions-minuten-bei-privatem-repo/`, 1×). — **Ausgang:** <bei Closure>
+- **CI-Minuten.** Jeder `full-smoke`-Fall baut Docker-Images und braucht Netz; jeder Push auf den
+  Branch startet bis zu 10 Shards. — **Ausgang:** entfallen: Der Auftraggeber setzt am 2026-10-09
+  „CI Minuten sind kein Problem“ und zieht stattdessen die Schwelle von 8 Fällen (§1).
 - **Parallele Branches mehrerer Läufe.** Zwei Slices laufen auf getrennten Branches. Ein erneuter
   Push derselben Kennung bricht den alten Lauf ab, und ein Ergebnis-Push auf einen weitergelaufenen
   Branch scheitert (ohne `--force`). Branches, die der Verifier nicht löscht, bleiben als Leichen
@@ -212,7 +221,8 @@ von `harness/conventions.md`; feiner geschnitten ist nichts.
 - `docs/plan/planning/observations/BEO-ALL/mutate-shard-kosten-ungleich-verfehlt-zielkorridor/` (1×,
   offen): Die Gewichtung dieses Slice ist die Antwort darauf, und der nächtliche Lauf nutzt sie mit.
 - `docs/plan/planning/observations/BEO-ALL/mutate-matrix-actions-minuten-bei-privatem-repo/` (1×,
-  offen): Risiko 2 in §6.
+  offen): Für diesen Slice ist das CI-Minuten-Risiko nach der Setzung des Auftraggebers entfallen (§6); der
+  Register-Eintrag bleibt unberührt.
 - `docs/plan/planning/observations/BEO-ALL/mutations-fall-zeigt-auf-falsche-datei/` (2×, offen): Die
   Auswahl hängt an `# files:` (Risiko 5). Tritt der Fall in diesem Slice auf, erreicht der Eintrag 3×
   und braucht einen eigenen Folge-Slice.
