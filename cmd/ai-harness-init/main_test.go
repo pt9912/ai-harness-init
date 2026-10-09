@@ -13,6 +13,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -1105,10 +1106,12 @@ func TestRun_BootstrapMeldetNeueTargets(t *testing.T) {
 
 // TestUsage_NenntJedeSpracheUndIhrenKnopf: der Hilfetext ist der oeffentliche Vertrag der
 // Sprach-Achse (LH-FA-04) — jede Sprache mit gen-Profil steht in der add-lang-Hilfe, und ihr
-// Versions-Knopf SKEL_<LANG>_VERSION steht in der Umgebungs-Liste der Haupthilfe.
+// Versions-Knopf SKEL_<LANG>_VERSION steht in der Umgebungs-Liste der Haupthilfe. Die Sprache
+// zaehlt nur als eigenes Wort: "go" als Teilstring von "hexagonal" deckt sie nicht.
 func TestUsage_NenntJedeSpracheUndIhrenKnopf(t *testing.T) {
 	for _, lang := range gen.SupportedLangs() {
-		if !strings.Contains(addLangUsage, lang) {
+		wort := regexp.MustCompile(`(^|[^[:alnum:]])` + regexp.QuoteMeta(lang) + `([^[:alnum:]]|$)`)
+		if !wort.MatchString(addLangUsage) {
 			t.Errorf("add-lang-Hilfe nennt die Sprache %q nicht", lang)
 		}
 		knopf := "SKEL_" + strings.ToUpper(lang) + "_VERSION"

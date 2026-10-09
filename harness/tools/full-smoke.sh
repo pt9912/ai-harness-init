@@ -2700,7 +2700,7 @@ fi
 # zusaetzlich die realen Kotlin-Gates im gradle-Image (assemble, test, detekt); der reale
 # Lauf ist der LH-QA-01-Beleg, dass die Stages existieren und das Skelett lint-sauber ist.
 echo "full-smoke: add-lang kotlin apps/kt ins Mono-Repo (dritte Sprache, JVM-Gradle) ..."
-	e2e_abdeckung "LH-FA-04 LH-FA-06 LH-QA-01" "Eine dritte Sprache (Kotlin, flat) im selben Ziel, mit den realen Gradle-Gates (assemble, test, detekt) und dem Guard gegen die Host-Toolchain" "Kotlin-Gate kaputt"
+	e2e_abdeckung "LH-FA-04 LH-FA-06 LH-QA-01" "Eine dritte Sprache (Kotlin, flat) im selben Ziel, mit den realen Gradle-Gates (assemble, test, detekt) und dem Guard, der gradle build blockt" "Kotlin-Gate kaputt"
 ( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang kotlin apps/kt )
 for rel in apps/kt/settings.gradle.kts apps/kt/build.gradle.kts apps/kt/Dockerfile apps/kt/detekt.yml \
            apps/kt/src/main/kotlin/app/Main.kt apps/kt/src/test/kotlin/app/MainTest.kt \

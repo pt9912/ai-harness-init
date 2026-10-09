@@ -61,9 +61,8 @@ in drei Fassungen und Guard-Set, das im gebootstrappten Ziel `make gates` grün 
 | `cmd/ai-harness-init/main.go` | update | Hilfetext |
 | `harness/tools/full-smoke.sh`, `docs/user/e2e-abdeckung.md` | update | zwei Stufen, erzeugte Sicht |
 | `cmd/ai-harness-init/main_test.go` | update | Hilfetext nennt jede Sprache und ihren `SKEL_<LANG>_VERSION` |
-| `docs/user/benutzerhandbuch.md` | update | Zeile `SKEL_KOTLIN_VERSION` (öffentlicher Vertrag) |
 | `internal/gen/gen_test.go`, `internal/emit/zeilenenden_test.go` | update | Sprach-Listen um `kotlin` |
-| `test/mutations/` | neu / update | Fälle 618–622; 54 und 56 an die gofmt-Ausrichtung der Map-Zeilen ([MR-071](../../../../harness/conventions.md#mr-071)) |
+| `test/mutations/` | neu / update | Fälle 618–622; 54 und 56 an die gofmt-Ausrichtung der Map-Zeilen, 306 an die Stufe, die den leeren `.claude/agents/` zuerst meldet ([MR-071](../../../../harness/conventions.md#mr-071)) |
 
 ## 4. Trigger
 
