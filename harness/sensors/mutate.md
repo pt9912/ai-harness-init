@@ -219,8 +219,10 @@ keinen aus. Die verschachtelte Form `mutate/<kennung>/<sha8>` lehnt git ab, sola
 `mutate/<kennung>` besteht.
 
 **Der Lauf.** Der Push startet `.github/workflows/mutate-branch.yml`: Schritt `lauf` prüft den
-Form `mutate/<kennung>-<sha8>` samt `<sha8>` gegen den Tip und überspringt einen Tip, der allein `mutate-ergebnis.txt` ändert; 10 Shards
-fahren je `make mutate` über ihren Teil (Zuteilung wie im Nacht-Workflow: schwere Fälle — die
+Form `mutate/<kennung>-<sha8>` — `<kennung>` aus `[a-z0-9-]`, sonst Exit 2 — samt `<sha8>` gegen den
+Tip, überspringt einen Tip, der allein `mutate-ergebnis.txt` ändert, und gibt Shard-Zahl und
+Matrix aus `CI_SHARDS` (`harness/tools/mutate-auswahl.sh`) aus; Job `shard` und Job `ergebnis` lesen
+beide diesen Output, keine Shard-Zahl steht im Workflow. Die Shards fahren je `make mutate` über ihren Teil (Zuteilung wie im Nacht-Workflow: schwere Fälle — die
 Modi der seriellen Spur von `mutate.sh` — reihum, leichte nach Last aus angenommenen Gewichten je
 Sensor-Modus); Schritt `ergebnis` schreibt die Datei, committet sie über dem geprüften Commit und
 pusht ohne `--force` nach genau `refs/heads/<ref>`. Allein dieser Job trägt `contents: write`.
@@ -229,8 +231,11 @@ einander nicht ab.
 `ci.yml` läuft auf `mutate/**` nicht.
 
 **Ergebnisform.** `mutate-ergebnis.txt` an der Branch-Wurzel: Kennung, geprüfter Commit, Basis,
-je Shard Exit, Sekunden und Fälle, je Fall `ok` oder `BEFUND` mit Shard, Fallmenge, Wanduhr
+je Shard Exit, Sekunden und Fälle, je Fall `ok` oder `BEFUND` mit Shard, je Fall der Fallmenge des
+Slice ohne Beleg `FEHLT`, je gelaufener Fall außerhalb von ihr `UNERWARTET`, Fallmenge, Wanduhr
 gesamt (erster Shard-Start bis letztes Shard-Ende) und `Urteil: gruen` oder `Urteil: BEFUND`.
+`gruen` heißt: jeder Shard hat einen Beleg mit Exit 0, jeder Fall `ok`, und die gelaufenen Fälle
+sind genau die Fallmenge, die das Werkzeug für den Slice berechnet.
 Gelesen wird ohne `gh`: `git fetch origin mutate/<kennung>-<sha8> && git show FETCH_HEAD:mutate-ergebnis.txt`.
 Der Verifier liest einmal, gleicht den Commit ab und löscht danach diesen Branch und die älteren
 desselben Slice (`git ls-remote origin 'refs/heads/mutate/<kennung>*'`, Ablauf in
@@ -241,8 +246,26 @@ desselben Slice (`git ls-remote origin 'refs/heads/mutate/<kennung>*'`, Ablauf i
 Datei, fehlt der Fall. Das lokale Urteil misst `HEAD`, nicht den Arbeitsbaum. Die Gewichte sind
 eine Annahme; die Messung je Sensor gibt `make mutate` selbst aus (Zeit je Sensor). Kein
 Wächter
-hält den Refspec des Ergebnis-Jobs, und keiner meldet liegen gebliebene `mutate/*`-Branches oder
-eine Ergebnisdatei, die nach `main` gelangt; das Aufräumen ist Arbeit des Verifiers. Wächter der Auswahl: `test/mutate-auswahl.bats`.
+meldet liegen gebliebene `mutate/*`-Branches oder eine Ergebnisdatei, die nach `main` gelangt; das
+Aufräumen ist Arbeit des Verifiers. Den Push des Ergebnis-Schritts und das Überspringen des
+Ergebnis-Tips hält der Test über einem `git`-Stub (Argumente des Push, Antwort auf
+`diff HEAD^ HEAD`), nicht über einem realen Remote.
+
+**Die Basis ist der Claim-Commit, nicht der Slice.** `git diff <Claim-Commit> HEAD` umfasst jeden
+Commit nach dem Claim, auch die anderer Rollen und Slices auf `main`. Die Fallmenge kann dadurch
+nur wachsen — kein Fall des Slice fällt heraus, fremde kommen hinzu und können die Schwelle
+überschreiten.
+
+**Eingaben, und wer den Workflow bestimmt.** Ref, Kennung, Shard-Zahl und Verzeichnis gibt der
+Workflow über `env:` an `make`; das Rezept reicht sie als Umgebungswert (`"$$REF"`) weiter, nie als
+Literal im Shelltext, und das Skript prüft Ref und Kennung gegen `[a-z0-9-]`, bevor sie `git`, einen
+Pfad oder `GITHUB_OUTPUT` erreichen. Ein gültiger Branch-Name mit Anführungszeichen, `$` oder `;`
+bricht damit mit Exit 2 ab, ohne dass ein Teil von ihm als Shell-Code läuft
+(`test/mutate-auswahl.bats`, Fälle `rezept: …` und `lauf: ein Ref mit Shell-Zeichen …`). Der
+Rezept-Test führt den Rezepttext unter nachgebildeter Make-Expansion aus, nicht unter make — das
+bats-Image führt kein make. Und der Workflow läuft in der Fassung des gepushten Branch: wer auf
+`mutate/**` pushen darf, bestimmt auch `.github/workflows/mutate-branch.yml` und damit, was der Job
+mit `contents: write` tut. Die Prüfung schützt vor einem Ref-Namen, nicht vor dem Inhalt des Branch. Wächter der Auswahl: `test/mutate-auswahl.bats`.
 
 ## Bindung
 

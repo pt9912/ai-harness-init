@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # files: harness/tools/mutate-auswahl.sh
-# expect: grenze: das Werkzeug gibt nie einen Force-Push aus
+# expect: grenze: der Ergebnis-Schritt pusht ohne Force auf genau seinen Ref
 #
-# Das Urteil gibt wieder einen Force-Push aus — ein Agent ohne dieses Recht bliebe stehen,
-# und ein Push mit -f ueberschriebe einen fremden Ergebnis-Commit (LH-QA-03).
+# Der Ergebnis-Schritt pusht mit -f: ein zweiter Lauf auf demselben Ref ueberschriebe einen
+# fremden Ergebnis-Commit, und der Schreibschritt braeuchte ein Recht, das er nicht fuehrt (LH-QA-03).
 set -euo pipefail
-sed -i 's/git push origin HEAD:refs/git push -f origin HEAD:refs/' harness/tools/mutate-auswahl.sh
+sed -i 's/ push origin "HEAD:refs/ push -f origin "HEAD:refs/' harness/tools/mutate-auswahl.sh

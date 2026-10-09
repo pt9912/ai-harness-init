@@ -1,7 +1,8 @@
 # mutate-branch — die Mutations-Faelle eines Slice auf einem CI-Branch (AGENTS.md §3.6, LH-QA-03).
 #
 # Ausloeser ist ein Push nach `mutate/<slice-kennung>-<sha8>` (die ersten acht Zeichen des geprueften Commits). Die Fallmenge folgt aus dem Diff gegen den
-# Claim-Commit des Slice, verteilt auf 10 Shards; das Ergebnis liegt danach als
+# Claim-Commit des Slice, verteilt auf die Shards, deren Zahl und Matrix der Job `plan` aus
+# CI_SHARDS in harness/tools/mutate-auswahl.sh ausgibt; das Ergebnis liegt danach als
 # `mutate-ergebnis.txt` an der Branch-Wurzel, ein Commit ueber dem geprueften — lesbar mit
 # `git fetch origin mutate/<kennung>-<sha8> && git show FETCH_HEAD:mutate-ergebnis.txt`, ohne `gh`.
 # Werkzeug, Ergebnisform und Grenze: harness/sensors/mutate.md §CI-Branch.
@@ -14,6 +15,12 @@
 # pusht auf genau `refs/heads/<ref>` und ohne `--force`; jeder Lauf hat seinen eigenen Ref, der Push
 # ist ein Fast-Forward um den Ergebnis-Commit. Ein Tip, dessen einzige Aenderung `mutate-ergebnis.txt`
 # ist, startet keine Shards (Schritt `lauf`).
+#
+# EINGABEN: Ref, Kennung, Shard-Zahl und Verzeichnis erreichen `make` ueber `env:`, kein
+# `${{ … }}` steht in einem `run:`-Text; das Rezept liest sie als Umgebungsvariable, das Skript
+# prueft den Ref gegen KENNUNG_KLASSE (Exit 2), bevor er git oder GITHUB_OUTPUT erreicht.
+# GRENZE: der Workflow laeuft in der Fassung des gepushten Branch — wer `mutate/**` pushen darf,
+# bestimmt auch diese Datei.
 #
 # Eigene Datei neben mutate.yml, damit das Schreibrecht nicht in den naechtlichen Lauf wandert.
 # CHECKOUT-TIEFE: `fetch-depth: 0` in jedem Job, der die Basis braucht — der Claim-Commit liegt
@@ -41,12 +48,16 @@ jobs:
     outputs:
       laufen: ${{ steps.lauf.outputs.laufen }}
       kennung: ${{ steps.lauf.outputs.kennung }}
+      shards: ${{ steps.lauf.outputs.shards }}
+      matrix: ${{ steps.lauf.outputs.matrix }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
       - id: lauf
-        run: make -s --no-print-directory mutate-branch SCHRITT=lauf REF="$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
+        env:
+          REF: ${{ github.ref_name }}
+        run: make -s --no-print-directory mutate-branch SCHRITT=lauf >> "$GITHUB_OUTPUT"
 
   shard:
     needs: plan
@@ -55,12 +66,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        shard: ${{ fromJSON(needs.plan.outputs.matrix) }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
-      - run: make --no-print-directory mutate-branch SCHRITT=shard SLICE='${{ needs.plan.outputs.kennung }}' SHARDS='${{ strategy.job-total }}' SHARD='${{ matrix.shard }}' ERGEBNIS_DIR="$RUNNER_TEMP/shard-${{ matrix.shard }}"
+      - env:
+          SLICE: ${{ needs.plan.outputs.kennung }}
+          SHARDS: ${{ needs.plan.outputs.shards }}
+          SHARD: ${{ matrix.shard }}
+          ERGEBNIS_DIR: ${{ runner.temp }}/shard-${{ matrix.shard }}
+        run: make --no-print-directory mutate-branch SCHRITT=shard
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
         with:
@@ -81,4 +97,8 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           path: ${{ runner.temp }}/shards
-      - run: make --no-print-directory mutate-branch SCHRITT=ergebnis REF="$GITHUB_REF_NAME" SHARDS=10 ERGEBNIS_DIR="$RUNNER_TEMP/shards"
+      - env:
+          REF: ${{ github.ref_name }}
+          SHARDS: ${{ needs.plan.outputs.shards }}
+          ERGEBNIS_DIR: ${{ runner.temp }}/shards
+        run: make --no-print-directory mutate-branch SCHRITT=ergebnis

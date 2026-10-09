@@ -31,7 +31,8 @@
 #
 # GRENZEN: Ein Fall, dessen Waechter-Test geaendert wurde, dessen `# files:` aber keine
 # geaenderte Datei nennt, faellt nicht in die Menge; ebenso ein Fall, dessen `# files:` auf die
-# falsche Datei zeigt. Das lokale Urteil misst HEAD, nicht den Arbeitsbaum. Die Gewichte sind
+# falsche Datei zeigt. Der Diff ab dem Claim-Commit nimmt jeden spaeteren Commit mit, auch fremde
+# auf `main`: die Menge kann dadurch nur wachsen. Das lokale Urteil misst HEAD, nicht den Arbeitsbaum. Die Gewichte sind
 # eine Annahme ueber die Wanduhr je Sensor; ihre Messung ist report_times in mutate.sh.
 #
 # Sensor: test/mutate-auswahl.bats.
@@ -46,6 +47,15 @@ FAELLE_DIR="${MUTATE_AUSWAHL_FAELLE:-$REPO/test/mutations}"
 # CI-Branch. Setzung des Auftraggebers; die Anweisungssaetze nennen die Zahl nicht.
 SCHWELLE=8
 
+# KENNUNG_KLASSE: die Zeichen einer Slice-Kennung (Namens-Form MR-057, Nummern-Form slice-NNN).
+# Kennung und Ref werden gegen sie geprueft, bevor sie git, einen Pfad oder eine Ausgabe fuer
+# GITHUB_OUTPUT erreichen; ein Wert mit `'`, `$`, `;` oder Leerraum bricht mit Exit 2 ab.
+KENNUNG_KLASSE='[a-z0-9][a-z0-9-]*'
+
+# CI_SHARDS: die Shard-Zahl des CI-Branch-Laufs. Der Schritt `lauf` gibt sie samt Matrix aus,
+# Job `shard` und Job `ergebnis` lesen beide von dort (.github/workflows/mutate-branch.yml).
+CI_SHARDS=10
+
 abbruch() {
   echo "mutate-auswahl: ABBRUCH — $1" >&2
   exit 2
@@ -55,6 +65,7 @@ abbruch() {
 basis_commit() {
   local kennung="$1" basis
   [ -n "$kennung" ] || abbruch "keine Slice-Kennung angegeben"
+  [[ "$kennung" =~ ^$KENNUNG_KLASSE$ ]] || abbruch "Kennung '$kennung' traegt ein Zeichen ausserhalb [a-z0-9-] — kein Lauf"
   basis="$(git -C "$REPO" log --no-renames --diff-filter=A --format=%H -1 -- \
     "docs/plan/planning/in-progress/$kennung.md")" || abbruch "git log ueber den Claim-Commit von $kennung scheiterte"
   [ -n "$basis" ] || abbruch "kein Claim-Commit fuer $kennung — kein Commit legt docs/plan/planning/in-progress/$kennung.md an"
@@ -185,16 +196,18 @@ ERGEBNIS="mutate-ergebnis.txt"
 # ein Ref `mutate/<kennung>` besteht.
 #
 # kennung_aus_ref liefert die Slice-Kennung aus dem Ref-Namen <1> oder bricht ab, wenn der
-# Ref nicht `mutate/<kennung>-<sha8>` ist — der Schreibschritt beschreibt keinen anderen Branch.
+# Ref nicht `mutate/<kennung>-<sha8>` mit <kennung> aus KENNUNG_KLASSE ist — der Schreibschritt
+# beschreibt keinen anderen Branch, und kein anderes Zeichen erreicht einen Folgeschritt.
 kennung_aus_ref() {
-  if [[ "$1" =~ ^mutate/(.+)-([0-9a-f]{8})$ ]]; then
+  if [[ "$1" =~ ^mutate/($KENNUNG_KLASSE)-([0-9a-f]{8})$ ]]; then
     printf '%s\n' "${BASH_REMATCH[1]}"
   else
     abbruch "Ref '$1' hat nicht die Form mutate/<kennung>-<sha8> — kein Lauf, kein Push"
   fi
 }
 
-# lauf_pruefen gibt `kennung=…` und `laufen=true|false` aus (Zeilen fuer GITHUB_OUTPUT).
+# lauf_pruefen gibt `kennung=…`, `shards=…`, `matrix=[0,…]` und `laufen=true|false` aus (Zeilen
+# fuer GITHUB_OUTPUT); Shard-Zahl und Matrix folgen beide aus CI_SHARDS.
 # `false` heisst: der Tip aendert gegenueber seinem Vorgaenger allein die Ergebnisdatei.
 # Sonst muss <sha8> im Ref der Anfang des Tip-Commits sein, oder der Lauf bricht ab.
 lauf_pruefen() {
@@ -202,6 +215,8 @@ lauf_pruefen() {
   kennung="$(kennung_aus_ref "$1")" || exit 2
   geaendert="$(git -C "$REPO" diff --name-only HEAD^ HEAD 2>/dev/null || true)"
   printf 'kennung=%s\n' "$kennung"
+  printf 'shards=%s\n' "$CI_SHARDS"
+  printf 'matrix=[%s]\n' "$(seq 0 $((CI_SHARDS - 1)) | paste -sd,)"
   if [ "$geaendert" = "$ERGEBNIS" ]; then
     echo "laufen=false"
     echo "mutate-auswahl: Tip aendert allein $ERGEBNIS — kein Lauf." >&2
@@ -233,14 +248,17 @@ shard_lauf() {
 }
 
 # ergebnis_schreiben setzt aus den Shard-Belegen unter <3>/shard-<i>/ die Ergebnisdatei
-# zusammen, committet sie ueber HEAD und pusht nach refs/heads/<1> — ohne --force. Exit 1,
-# wenn ein Fall einen Befund oder kein Ergebnis traegt, nach dem Push.
+# zusammen, committet sie ueber HEAD und pusht nach refs/heads/<1> — ohne --force. Exit 1 nach
+# dem Push, wenn ein Shard keinen Beleg oder einen Exit ungleich 0 traegt, ein Fall einen Befund
+# oder kein Ergebnis, oder die gelaufene Fallmenge von faelle_fuer abweicht (FEHLT/UNERWARTET).
 ergebnis_schreiben() {
-  local ref="$1" shards="$2" dir="$3" kennung basis commit i d f st n=0 befund=0
-  local -a liste=()
+  local ref="$1" shards="$2" dir="$3" kennung basis commit erwartet i d f st rc n=0 befund=0
+  local -a liste=() gelaufen=()
   local start_min="" ende_max=""
   kennung="$(kennung_aus_ref "$ref")" || exit 2
+  [[ "$shards" =~ ^[1-9][0-9]*$ ]] || abbruch "Shard-Zahl '$shards' ist keine ganze Zahl >= 1"
   basis="$(basis_commit "$kennung")" || exit 2
+  erwartet="$(faelle_fuer "$kennung")" || exit 2
   commit="$(git -C "$REPO" rev-parse HEAD)"
   {
     echo "mutate-ergebnis: $kennung"
@@ -253,7 +271,9 @@ ergebnis_schreiben() {
         befund=1
         continue
       fi
-      echo "Shard $i: Exit $(cat "$d/rc"), $(($(cat "$d/ende") - $(cat "$d/start"))) s, Faelle: $(cat "$d/faelle")"
+      rc="$(cat "$d/rc")"
+      echo "Shard $i: Exit $rc, $(($(cat "$d/ende") - $(cat "$d/start"))) s, Faelle: $(cat "$d/faelle")"
+      [ "$rc" = 0 ] || befund=1
       if [ -z "$start_min" ] || [ "$(cat "$d/start")" -lt "$start_min" ]; then start_min="$(cat "$d/start")"; fi
       if [ -z "$ende_max" ] || [ "$(cat "$d/ende")" -gt "$ende_max" ]; then ende_max="$(cat "$d/ende")"; fi
     done
@@ -263,6 +283,7 @@ ergebnis_schreiben() {
       read -r -a liste <"$d/faelle" || true
       for f in "${liste[@]}"; do
         n=$((n + 1))
+        gelaufen+=("$f")
         if grep -qE "^mutate: ok +$f( |$)" "$d/log"; then st="ok"
         elif grep -qE "^mutate: BEFUND +$f( |$)" "$d/log"; then st="BEFUND"; befund=1
         else st="BEFUND (kein Ergebnis im Log)"; befund=1
@@ -270,7 +291,21 @@ ergebnis_schreiben() {
         printf '%-8s %-56s Shard %s\n' "$st" "$f" "$i"
       done
     done
-    echo "Fallmenge: $n"
+    # Die Fallmenge der Belege muss die des Slice sein: fehlt ein Shard in der Matrix oder ein
+    # Fall in einem Shard, steht er hier als FEHLT, und das Urteil ist nicht gruen.
+    while IFS= read -r f; do
+      [ -n "$f" ] || continue
+      echo "FEHLT    $f"
+      befund=1
+    done < <(LC_ALL=C comm -23 <(printf '%s\n' "$erwartet" | sed '/^$/d' | LC_ALL=C sort -u) \
+      <(printf '%s\n' "${gelaufen[@]}" | sed '/^$/d' | LC_ALL=C sort -u))
+    while IFS= read -r f; do
+      [ -n "$f" ] || continue
+      echo "UNERWARTET $f"
+      befund=1
+    done < <(LC_ALL=C comm -13 <(printf '%s\n' "$erwartet" | sed '/^$/d' | LC_ALL=C sort -u) \
+      <(printf '%s\n' "${gelaufen[@]}" | sed '/^$/d' | LC_ALL=C sort -u))
+    echo "Fallmenge: $n (Slice: $(printf '%s\n' "$erwartet" | sed '/^$/d' | wc -l))"
     if [ -n "$start_min" ]; then echo "Wanduhr gesamt (erster Shard-Start bis letztes Shard-Ende): $((ende_max - start_min)) s"; fi
     if [ "$befund" -eq 0 ]; then echo "Urteil: gruen"; else echo "Urteil: BEFUND"; fi
   } >"$REPO/$ERGEBNIS"
