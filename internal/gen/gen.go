@@ -134,8 +134,8 @@ const DefaultArch = archFlat
 // Exit 2 gibt, statt still ein Geruestung-only-Skelett zu schreiben (slice-045a-Review
 // INFO-1).
 //
-// STAND: go traegt flat + hexslice + hexagonal, cpp traegt flat + hexslice, kotlin traegt
-// flat (ADR-0088).
+// STAND: go traegt flat + hexslice + hexagonal, cpp und kotlin tragen flat + hexslice
+// (ADR-0088).
 // Die sprach-spezifische zweite Stufe der Arch-Validierung ist damit wieder von aussen
 // ERREICHBAR und bewacht — `cpp --arch hexagonal` ist eine existierende Architektur, die
 // dieser Renderer nicht rendert (TestGenerateArch_LangSpecificArchRejected haelt es fest,
@@ -147,7 +147,7 @@ func langArchs() map[string][]string {
 	return map[string][]string{
 		"go":     {archFlat, archHexslice, archHexagonal},
 		"cpp":    {archFlat, archHexslice},
-		"kotlin": {archFlat},
+		"kotlin": {archFlat, archHexslice},
 	}
 }
 

@@ -147,8 +147,9 @@ func ArchGateConfig(lang, arch string) (string, bool) {
 // das Gate lautlos ausfaellt.
 func archGateConfigs() map[string]map[string]string {
 	return map[string]map[string]string{
-		"go":  {archHexslice: goHexArchConfig, archHexagonal: goHexagonalArchConfig},
-		"cpp": {archHexslice: cppHexArchConfig},
+		"go":     {archHexslice: goHexArchConfig, archHexagonal: goHexagonalArchConfig},
+		"cpp":    {archHexslice: cppHexArchConfig},
+		"kotlin": {archHexslice: kotlinHexArchConfig},
 	}
 }
 

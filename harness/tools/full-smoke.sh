@@ -3071,6 +3071,72 @@ fi
 echo "full-smoke: C++-Arch-Gate-Zaehne belegt (verbotener Domain->Adapter-Include faerbt a-check rot, danach zurueckgenommen):"
 grep -E 'core-impurity|wrong-direction' <<<"$cpparch_out" | sed -n '1,2s/^/full-smoke:   /p'
 
+# LH-FA-07/ADR-0088 Festlegung 4: dasselbe Schicht-Layout in Kotlin. Die Schichten sind
+# Pakete, a-check loest `import app.…` nur ueber den resolution-Block der emittierten
+# .a-check.yml auf (fixed-root, Root src/main/kotlin/app, package_base app). Loest kein
+# Import auf, bleibt das Gate gruen und a-check gibt den Hinweis "0 von N
+# Import-Symbolen" aus — darum prueft die Stufe dessen Abwesenheit im gruenen Lauf und
+# danach den roten Fall: ein Import aus der Domain in einen Adapter faerbt das Arch-Gate
+# mit core-impurity, an genau dieser Datei.
+echo "full-smoke: add-lang kotlin apps/kthex --arch hexslice (Arch-Achse, Kotlin) ..."
+	e2e_abdeckung "LH-FA-04 LH-FA-07 LH-QA-01" "Das Schicht-Layout in Kotlin (Pakete, Paket gleich Verzeichnis) mit Arch-Gate: make gates gruen ohne den Hinweis auf nicht aufloesende Import-Symbole, ein Import aus der Domain in einen Adapter faerbt das Arch-Gate rot mit core-impurity; NICHT gemessen: die uebrigen Richtungs-Regeln, ein Paket ausserhalb seines Verzeichnisses" "Kotlin-hexSlice-Gate kaputt"
+kthex_start=$SECONDS
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang kotlin apps/kthex --arch hexslice )
+for rel in apps/kthex/src/main/kotlin/app/hexagon/domain/example/Greeting.kt \
+           apps/kthex/src/main/kotlin/app/hexagon/application/example/greet/Handler.kt \
+           apps/kthex/src/main/kotlin/app/adapters/driven/notify/StdoutNotifier.kt \
+           apps/kthex/src/main/kotlin/app/Main.kt apps/kthex/src/test/kotlin/app/GreetTest.kt \
+           apps/kthex/.a-check.yml harness/mk/apps-kthex.mk harness/mk/arch-apps-kthex.mk; do
+	if [ ! -e "$tmprepo_doc/$rel" ]; then
+		echo "full-smoke: FEHLER — add-lang kotlin --arch hexslice dropte $rel nicht." >&2
+		exit 1
+	fi
+done
+kthex_rc=0
+kthex_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || kthex_rc=$?
+printf '%s\n' "$kthex_out"
+if [ "$kthex_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — make gates nach add-lang kotlin --arch hexslice ist NICHT Exit 0 (Kotlin-hexSlice-Gate kaputt)." >&2
+	einordnen "make -j gates nach add-lang kotlin --arch hexslice (apps/kthex)" "$kthex_out"
+	exit 1
+fi
+kthex_missing=""
+for marker in "--target test -t apps-kthex:test apps/kthex" "--target lint -t apps-kthex:lint apps/kthex" \
+              "--target build -t apps-kthex:build apps/kthex" 'apps/kthex":/src:ro'; do
+	grep -qF -- "$marker" <<<"$kthex_out" || kthex_missing="$kthex_missing [$marker]"
+done
+if [ -n "$kthex_missing" ]; then
+	echo "full-smoke: FEHLER — make gates ohne Beleg fuer:$kthex_missing — Kotlin-hexSlice-Gate oder sein Arch-Gate lief nicht?" >&2
+	exit 1
+fi
+if grep -qF -- 'Import-Symbolen' <<<"$kthex_out"; then
+	echo "full-smoke: FEHLER — das Kotlin-Arch-Gate ist gruen, loest aber keinen Import auf (resolution der emittierten .a-check.yml?):" >&2
+	grep -F -- 'Import-Symbolen' <<<"$kthex_out" >&2
+	exit 1
+fi
+kthex_layer="$tmprepo_doc/apps/kthex/src/main/kotlin/app/hexagon/domain/example/Greeting.kt"
+cp "$kthex_layer" "$kthex_layer.orig"
+psed_i 's|^package app.hexagon.domain.example$|&\
+\
+import app.adapters.driven.notify.StdoutNotifier|' "$kthex_layer"
+kthexarch_rc=0
+kthexarch_out="$( make -C "$tmprepo_doc" a-check-apps-kthex 2>&1 )" || kthexarch_rc=$?
+mv "$kthex_layer.orig" "$kthex_layer"
+if [ "$kthexarch_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — das emittierte Kotlin-Arch-Gate bleibt bei einem Import aus der Domain in einen Adapter gruen (zahnloses Gate, AGENTS.md §3.6/LH-QA-01)." >&2
+	printf '%s\n' "$kthexarch_out" >&2
+	exit 1
+fi
+if ! grep -qF -- 'Greeting.kt:4: core-impurity: Kern importiert app.adapters.driven.notify.StdoutNotifier' <<<"$kthexarch_out"; then
+	echo "full-smoke: FEHLER — Kotlin-Arch-Gate rot, aber nicht mit core-impurity an der Domain-Datei (rot aus falschem Grund?). Ausgabe:" >&2
+	printf '%s\n' "$kthexarch_out" >&2
+	einordnen "make a-check-apps-kthex (Arch-Gate-Zahn, kotlin)" "$kthexarch_out"
+	exit 1
+fi
+echo "full-smoke: Kotlin-Arch-Gate-Zaehne belegt (Import aus der Domain in einen Adapter faerbt a-check rot, danach zurueckgenommen):"
+grep -F -- 'core-impurity' <<<"$kthexarch_out" | sed -n '1,2s/^/full-smoke:   /p'
+echo "full-smoke: Kotlin-hexSlice-Stufe dauerte $(( SECONDS - kthex_start ))s (make -j gates samt add-lang und Arch-Zahn)."
+
 # slice-046, ROOT-Modul: der Init-One-Shot `--lang go --arch hexslice` verortet das Modul
 # am Repo-Root — das Arch-Gate mountet dann das GANZE Ziel, samt der vendored Baseline.
 # Genau hier schlug der 0700-Modus des <tag>-Verzeichnisses zu (a-check laeuft als

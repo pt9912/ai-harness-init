@@ -307,6 +307,9 @@ func TestArchGateConfig_OnlyLayered(t *testing.T) {
 		{"cpp", "flat", false},
 		{"cpp", "hexslice", true},
 		{"cpp", "hexagonal", false}, // Achsen-Wert vorhanden, cpp-Renderer traegt ihn nicht
+		{"kotlin", "flat", false},
+		{"kotlin", "hexslice", true},
+		{"kotlin", "hexagonal", false}, // ADR-0088 legt das Layout fuer kotlin nicht fest
 		{"go", "onion", false},
 	} {
 		if _, ok := gen.ArchGateConfig(tc.lang, tc.arch); ok != tc.want {

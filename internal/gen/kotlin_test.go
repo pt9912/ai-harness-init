@@ -151,21 +151,196 @@ func TestGenerate_KotlinVersionThreaded(t *testing.T) {
 	}
 }
 
-// TestGenerateArch_KotlinTraegtNurFlat: hexslice und hexagonal rendert der Kotlin-Renderer
-// nicht — Exit-2-Klasse mit der Liste der Sprache, ohne Artefakte (ADR-0088 Festlegung 4).
-func TestGenerateArch_KotlinTraegtNurFlat(t *testing.T) {
-	for _, arch := range []string{"hexslice", "hexagonal"} {
+// TestGenerateArch_KotlinOhneHexagonal: hexagonal rendert der Kotlin-Renderer nicht —
+// Exit-2-Klasse mit der Liste der Sprache (flat, hexslice), ohne Artefakte (ADR-0088
+// Festlegung 4 legt das Layout nicht fest).
+func TestGenerateArch_KotlinOhneHexagonal(t *testing.T) {
+	for _, arch := range []string{"hexagonal"} {
 		dir := t.TempDir()
 		err := gen.GenerateArch(dir, "kotlin", gen.DefaultKotlinVersion, arch)
 		var uae *gen.UnknownArchError
 		if !errors.As(err, &uae) {
 			t.Fatalf("erwartete *UnknownArchError fuer kotlin+%s, got %v", arch, err)
 		}
-		if strings.Join(uae.Available, ",") != "flat" {
-			t.Errorf("Available = %v, want [flat]", uae.Available)
+		if strings.Join(uae.Available, ",") != "flat,hexslice" {
+			t.Errorf("Available = %v, want [flat hexslice]", uae.Available)
 		}
 		if rels := walkRel(t, dir); len(rels) != 0 {
 			t.Errorf("abgelehnte Kombination kotlin+%s hat Artefakte geschrieben: %v", arch, rels)
+		}
+	}
+}
+
+// genKotlinHexslice generiert das hexSlice-Kotlin-Skelett in ein frisches Temp-Verzeichnis.
+func genKotlinHexslice(t *testing.T) string {
+	t.Helper()
+	dir := t.TempDir()
+	if err := gen.GenerateArch(dir, "kotlin", gen.DefaultKotlinVersion, "hexslice"); err != nil {
+		t.Fatalf("GenerateArch(kotlin, hexslice): %v", err)
+	}
+	return dir
+}
+
+// TestGenerate_KotlinHexsliceProfile_FileSet (LH-FA-04, ADR-0088 Festlegung 4): --arch
+// hexslice erzeugt GENAU die Rollen-Dateien unter src/main/kotlin/app/{hexagon,adapters}
+// plus Composition Root, Test und die arch-invariante Geruestung — nicht mehr, nicht weniger.
+func TestGenerate_KotlinHexsliceProfile_FileSet(t *testing.T) {
+	got := walkRel(t, genKotlinHexslice(t))
+	want := []string{
+		"Dockerfile", "build.gradle.kts", "detekt.yml", "settings.gradle.kts",
+		"src/main/kotlin/app/Main.kt",
+		"src/main/kotlin/app/adapters/driven/memory/example/InMemoryRepository.kt",
+		"src/main/kotlin/app/adapters/driven/notify/StdoutNotifier.kt",
+		"src/main/kotlin/app/adapters/driving/cli/example/Cli.kt",
+		"src/main/kotlin/app/hexagon/application/example/greet/Handler.kt",
+		"src/main/kotlin/app/hexagon/application/example/greet/ports/inbound/Greet.kt",
+		"src/main/kotlin/app/hexagon/application/example/greet/ports/outbound/Notifier.kt",
+		"src/main/kotlin/app/hexagon/application/example/ports/outbound/GreetingRepository.kt",
+		"src/main/kotlin/app/hexagon/domain/example/Greeting.kt",
+		"src/test/kotlin/app/GreetTest.kt",
+	}
+	if strings.Join(got, ",") != strings.Join(want, ",") {
+		t.Errorf("kotlin-hexSlice-Datei-Satz = %v\nwant %v", got, want)
+	}
+}
+
+// TestKotlinHexslice_PaketGleichVerzeichnis (ADR-0088 Festlegung 4): jede .kt-Datei des
+// hexSlice-Skeletts deklariert genau das Paket ihres Verzeichnisses unter src/<set>/kotlin.
+// a-check loest Importe ueber den Pfad auf; ein Paket ausserhalb seines Verzeichnisses
+// entginge dem Arch-Gate. Rot-Gegenbeispiel: test/mutations/623 verschiebt das Paket der
+// Domain-Datei.
+func TestKotlinHexslice_PaketGleichVerzeichnis(t *testing.T) {
+	dir := genKotlinHexslice(t)
+	pkgRe := regexp.MustCompile(`(?m)^package ([a-z.]+)$`)
+	n := 0
+	for _, rel := range walkRel(t, dir) {
+		if !strings.HasSuffix(rel, ".kt") {
+			continue
+		}
+		n++
+		parts := strings.SplitN(rel, "/", 4) // src/<set>/kotlin/<paket-pfad>/<Datei>.kt
+		if len(parts) != 4 || parts[0] != "src" || parts[2] != "kotlin" {
+			t.Errorf("%s liegt nicht unter src/<set>/kotlin/", rel)
+			continue
+		}
+		want := strings.ReplaceAll(filepath.ToSlash(filepath.Dir(parts[3])), "/", ".")
+		m := pkgRe.FindStringSubmatch(mustRead(t, filepath.Join(dir, filepath.FromSlash(rel))))
+		if m == nil {
+			t.Errorf("%s traegt keine package-Zeile", rel)
+		} else if m[1] != want {
+			t.Errorf("%s deklariert package %s, das Verzeichnis verlangt %s", rel, m[1], want)
+		}
+	}
+	if n == 0 {
+		t.Fatal("keine .kt-Datei im hexSlice-Skelett")
+	}
+}
+
+// kotlinResolution zieht roots und package_base aus dem resolution-Block der Config.
+func kotlinResolution(t *testing.T, cfg string) (root, base string) {
+	t.Helper()
+	block := cfg[strings.Index(cfg, "\nresolution:\n")+1:]
+	rm := regexp.MustCompile(`(?m)^    roots: \["([^"]+)"\]$`).FindStringSubmatch(block)
+	bm := regexp.MustCompile(`(?m)^    package_base: "([^"]+)"$`).FindStringSubmatch(block)
+	if !strings.Contains(cfg, "\nresolution:\n  kotlin:\n    mode: fixed-root\n") || rm == nil || bm == nil {
+		t.Fatalf("kein resolution-Block kotlin/fixed-root mit genau einem Root und package_base:\n%s", block)
+	}
+	return rm[1], bm[1]
+}
+
+// TestArchGateConfig_KotlinMatchesSkeleton (ADR-0088 Festlegung 4, LH-FA-07): jede
+// Produktionsdatei ausserhalb des Composition Root faellt unter den erwarteten Schicht-Glob,
+// und jeder Glob ist fuer mindestens eine Datei der spezifischste. Die Erwartung steht
+// ausgeschrieben, nicht aus der Config abgeleitet.
+func TestArchGateConfig_KotlinMatchesSkeleton(t *testing.T) {
+	cfg, ok := gen.ArchGateConfig("kotlin", "hexslice")
+	if !ok {
+		t.Fatal("kotlin+hexslice traegt keine Arch-Gate-Config")
+	}
+	globs := archGlobs(t, cfg)
+	const hex, ad = "src/main/kotlin/app/hexagon/", "src/main/kotlin/app/adapters/"
+	want := map[string]string{
+		hex + "domain/example/Greeting.kt":                                 "domain",
+		hex + "application/example/greet/ports/inbound/Greet.kt":          "ports_inbound",
+		hex + "application/example/greet/ports/outbound/Notifier.kt":      "ports_outbound",
+		hex + "application/example/ports/outbound/GreetingRepository.kt": "ports_outbound",
+		hex + "application/example/greet/Handler.kt":                      "app",
+		ad + "driving/cli/example/Cli.kt":                                 "driving_adapters",
+		ad + "driven/memory/example/InMemoryRepository.kt":               "driven_adapters",
+		ad + "driven/notify/StdoutNotifier.kt":                           "driven_adapters",
+	}
+	hits := map[string]int{}
+	seen := map[string]bool{}
+	for _, rel := range walkRel(t, genKotlinHexslice(t)) {
+		if !strings.HasSuffix(rel, ".kt") || strings.HasPrefix(rel, "src/test/") || rel == "src/main/kotlin/app/Main.kt" {
+			continue // exclude bzw. composition_root
+		}
+		seen[rel] = true
+		layer, glob := mostSpecific(globs, rel)
+		hits[glob]++
+		switch {
+		case layer == "":
+			t.Errorf("%s faellt unter KEINE Schicht (Loch im Pruefbereich)", rel)
+		case want[rel] == "":
+			t.Errorf("%s ist neu im Skelett, aber in der Erwartung nicht gefuehrt", rel)
+		case layer != want[rel]:
+			t.Errorf("%s faellt unter Schicht %q, want %q", rel, layer, want[rel])
+		}
+	}
+	for rel := range want {
+		if !seen[rel] {
+			t.Errorf("erwartete Skelett-Datei %s fehlt (Rollen-Pfad gewandert?)", rel)
+		}
+	}
+	for layer, gs := range globs {
+		for _, g := range gs {
+			if hits[g] == 0 {
+				t.Errorf("Schicht %s: Glob %q ist fuer keine Datei der spezifischste (LH-QA-01)", layer, g)
+			}
+		}
+	}
+}
+
+// TestArchGateConfig_KotlinEdgesMatchSkeleton (ADR-0088 Festlegung 4, LH-FA-07): jeder
+// `import app.…` einer Produktionsdatei wird so aufgeloest, wie a-check es mit dem
+// resolution-Block der Config tut (package_base abstreifen, Punkte zu "/", Root voran). Dann
+// gilt in beide Richtungen: jeder Import loest auf eine Schicht auf und hat seine Kante, und
+// jede deklarierte Kante wird von einem Import gebraucht. Ein Root, der nicht im
+// package_base-Verzeichnis endet, loest keinen Import auf und faerbt den Test rot —
+// test/mutations/624 setzt genau diesen Root.
+func TestArchGateConfig_KotlinEdgesMatchSkeleton(t *testing.T) {
+	cfg, _ := gen.ArchGateConfig("kotlin", "hexslice")
+	globs := archGlobs(t, cfg)
+	declared := archEdges(t, cfg)
+	root, base := kotlinResolution(t, cfg)
+	dir := genKotlinHexslice(t)
+	importRe := regexp.MustCompile(`(?m)^import (` + regexp.QuoteMeta(base) + `\.[A-Za-z.]+)$`)
+	used := map[string]bool{}
+	for _, rel := range walkRel(t, dir) {
+		if !strings.HasPrefix(rel, "src/main/") || rel == "src/main/kotlin/app/Main.kt" {
+			continue
+		}
+		from, _ := mostSpecific(globs, rel)
+		for _, m := range importRe.FindAllStringSubmatch(mustRead(t, filepath.Join(dir, filepath.FromSlash(rel))), -1) {
+			cand := root + "/" + strings.ReplaceAll(strings.TrimPrefix(m[1], base+"."), ".", "/")
+			to, _ := mostSpecific(globs, cand)
+			if to == "" {
+				t.Errorf("%s: import %s loest auf %s auf und trifft keine Schicht (das Gate saehe ihn nicht)", rel, m[1], cand)
+				continue
+			}
+			if to == from {
+				continue
+			}
+			edge := from + "->" + to
+			used[edge] = true
+			if !declared[edge] {
+				t.Errorf("%s importiert %s (%s), die Config deklariert keine Kante %s", rel, m[1], to, edge)
+			}
+		}
+	}
+	for edge := range declared {
+		if !used[edge] {
+			t.Errorf("Kante %s ist deklariert, wird aber von keinem aufgeloesten Import gebraucht", edge)
 		}
 	}
 }

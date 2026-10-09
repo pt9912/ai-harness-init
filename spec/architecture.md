@@ -223,6 +223,20 @@ byte-identisch). `--lang <X>` beim Init ist die One-Shot-Kurzform (Init + ein
   Sprach-Renderers bildet dessen reale Erfüllungs-Form ab; eine Kante aus einer anderen
   Sprache zu übernehmen oder zu streichen, färbt das Gate des generierten Skeletts rot.
   Das Schicht-Layout selbst bleibt über alle Sprachen dasselbe.
+- **Layout je Sprache.** `go` trägt `flat`, `hexslice` und `hexagonal`; `cpp` und `kotlin`
+  tragen `flat` und `hexslice` — eine Architektur, die ein Renderer nicht trägt, endet mit
+  Exit 2 und der Liste seiner Layouts. Die Verzeichnisse folgen der Bau-Gerüstung der
+  Sprache: `go` unter `internal/` mit Composition Root `cmd/`, `cpp` unter `src/` mit
+  Composition Root `src/main.cpp`, `kotlin` als **ein** Gradle-Modul, dessen Schichten
+  **Pakete** sind — `src/main/kotlin/app/hexagon/{domain,application}/…`,
+  `src/main/kotlin/app/adapters/{driving,driven}/…`, Composition Root
+  `src/main/kotlin/app/Main.kt`, Tests unter `src/test/kotlin/` (a-check-`exclude`). Für
+  Kotlin ist **Paket == Verzeichnis** Skelett-Pflicht: a-check löst einen Import über den
+  Pfad auf, und die emittierte Config trägt dafür einen `resolution`-Block
+  (`fixed-root`, Root `src/main/kotlin/app`, `package_base` `app` — der Root endet im
+  Verzeichnis des `package_base`). Ein Paket, das nicht in seinem Verzeichnis liegt,
+  entgeht dem Gate; die Kanten-Menge ist die der Vererbungs-Erfüllung wie bei C++
+  (`driven_adapters→ports_outbound`).
 - **Ein ausführbares Artefakt, und eine Klasse außerhalb des versionierten Baums.** Die
   Emission legt nicht nur Text ab: der **Träger** der Erfassung ist das laufende
   Produkt-Binär selbst, kopiert in den gitignorierten Zustands-Bereich des Ziels
