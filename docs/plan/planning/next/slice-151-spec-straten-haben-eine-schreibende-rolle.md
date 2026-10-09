@@ -20,8 +20,8 @@ und [ADR-0028](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
 die Frage offen"*), [`BEO-ALL/anweisungssatz-eigentum-ohne-quelle`](../observations/BEO-ALL/anweisungssatz-eigentum-ohne-quelle/observation.md) (der Zähler, dessen dritter
 und vierter Beleg genau diese zwei Dateien sind).
 
-**Berührte Spec-Stellen:** `—`. Der Liefergegenstand ist eine ADR über das
-Eigentum an zwei Spec-Dateien, kein Satz *in* ihnen.
+**Berührte Spec-Stellen:** `ARC-009` und §„Layout je Sprache" in
+[`spec/architecture.md`](../../../../spec/architecture.md) — DoD (3).
 
 **Verantwortlich:** Architect (pt9912). Der Liefergegenstand ist eine Norm-Aussage über
 Rollen-Eigentum und damit **Architect**-Arbeit
@@ -48,18 +48,15 @@ Source Precedence — benennt heute keine Quelle die schreibende Rolle
 Setzung 2). Eine ADR entscheidet sie und durchläuft im selben Slice ihren
 Acceptance-Trigger.
 
-**Abgrenzung:**
+Danach nimmt die benannte Rolle die Übergabe aus dem Architect-Verdikt
+`2026-10-09-spec-architecture-architect-verdikt.md` auf: `ARC-009` und
+„Layout je Sprache" in `spec/architecture.md`.
 
-- **Kein Satz in den zwei Spec-Dateien** (Klasse 3, anderer Vorgang). Das
-  Architect-Verdikt `2026-10-09-spec-architecture-architect-verdikt.md` übergibt
-  der Rolle, die diese ADR benennt, zwei Posten an `spec/architecture.md`: die
-  Korrektur von `ARC-009` (Composition Root je Sprache statt
-  sprachübergreifend `cmd/`) und die Übernahme oder Streichung der go- und
-  cpp-Sätze in „Layout je Sprache". Beide schreibt diese Rolle, nachdem sie
-  benannt ist — sie hier mitzunehmen hieße, die Spec ohne die Quelle zu
-  ändern, die dieser Slice erst schafft
-  ([ADR-0062](../../adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md)
-  Festlegung 2). Eine Kennung für diesen Vorgang gibt es noch nicht.
+**Reihenfolge:** erst DoD (1) und (2) — die ADR ist `Accepted` —, dann DoD (3)
+durch die Rolle, die sie benennt. Eine Spec-Änderung vor der Annahme wäre
+Schreiben ohne Quelle
+([ADR-0062](../../adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md)
+Festlegung 2).
 
 ## 2. Definition of Done
 
@@ -85,6 +82,12 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Folge-Slice für die Annahme entsteht nicht** — genau das ist die Klasse,
       die [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md) nachträglich
       auffängt.
+- [ ] **(3) Die benannte Rolle zieht `spec/architecture.md` nach** — nach
+      DoD (2). `ARC-009` nennt den Composition Root je Sprache (go `cmd/`,
+      cpp `src/main.cpp`, kotlin `src/main/kotlin/app/Main.kt`) statt
+      sprachübergreifend `cmd/`; die go- und cpp-Sätze in „Layout je Sprache"
+      werden ausdrücklich übernommen oder gestrichen. Die Spec trägt dabei
+      keinen Verweis auf ADR, Slice oder MR (Referenz-Richtung).
 - [ ] `make gates` grün.
 - [ ] Doku-Update: [`AGENTS.md`](../../../../AGENTS.md) §3.8 bekommt den Zeiger
       auf die neue ADR — in eigenem Architect-Commit, **nach** DoD (2), nach dem
@@ -95,9 +98,9 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Spec-Straten-Hälfte (Stand-Spalte, Zähler unverändert: der Slice löst
       auf, er beobachtet nicht neu).
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste
-      Welle-Closure — dieses Repo fährt Wellen-Betrieb, und das gilt auch für
-      wellenlose Slices.
+- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) laufen bei der eigenen
+      Closure nach dem `git mv`, danach die Archivierung — wellenlos nach
+      [`MR-078`](../../../../harness/conventions.md#mr-078--wellenlose-slices-werden-bei-der-eigenen-closure-archiviert).
 
 ## 3. Plan (vor Code)
 
@@ -111,6 +114,7 @@ Aussagen-Berührung steht hier gar nicht.
 | `docs/plan/adr/00NN-…​.md` | neu (per `cp` aus der vendored Vorlage), Architect | DoD (1)/(2) |
 | [`docs/plan/adr/README.md`](../../adr/README.md) | update (Index-Zeile + Status), Architect | DoD (1)/(2) — derivatives Register desselben Originals ([ADR-0024](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)) |
 | [`AGENTS.md`](../../../../AGENTS.md) | update (§3.8 Zeiger), Architect, eigener Commit | Doku-Update, fällig erst mit der Annahme |
+| [`spec/architecture.md`](../../../../spec/architecture.md) | update (`ARC-009`, §„Layout je Sprache"), die von der ADR benannte Rolle, nach der Annahme | DoD (3) |
 | [`docs/plan/planning/observations/README.md`](../observations/README.md) | update (`BEO-ALL/anweisungssatz-eigentum-ohne-quelle` Stand) | Register-Pflicht (nicht mitgezählt) |
 
 ## 4. Trigger
@@ -195,8 +199,8 @@ reinem GF genügt der Hinweis *"alle berührten Sub-Areas GF"*; bei reinem
 Refactor ohne neue Sub-Area-Berührung entfällt er ganz. Die beiden
 *Vorgelagert*-Blöcke entfallen nie.
 
-**Vorgelagert — Sub-Area-Wahl prüfen:** berührt sind `docs/plan/adr/` und das
-Wurzelverzeichnis (`AGENTS.md`). Beide fallen unter den Eintrag `*` (gesamtes
+**Vorgelagert — Sub-Area-Wahl prüfen:** berührt sind `docs/plan/adr/`, `spec/` und das
+Wurzelverzeichnis (`AGENTS.md`). Alle drei fallen unter den Eintrag `*` (gesamtes
 Repo) der Modus-Deklaration in
 [`harness/conventions.md`](../../../../harness/conventions.md#modus-deklaration-pro-sub-area)
 — **alle berührten Sub-Areas GF**, der Modus-Begründungsblock entfällt damit
