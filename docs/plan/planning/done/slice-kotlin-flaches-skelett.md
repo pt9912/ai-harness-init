@@ -124,7 +124,7 @@ DoD vollständig, beide Kotlin-Stufen in `make full-smoke` grün, Closure-Notiz 
   `BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht` (LOW-1),
   `BEO-ALL/teilzeichenketten-suche-bindet-einen-pfad-nicht-an-seine-grenze` (LOW-2, 2×).
 - **Folge-Slices:** keine.
-- **Paarungen geprüft am 2026-10-09:** (a) Zielort `harness/conventions/MR-089-…` existiert,
+- **Paarungen geprüft am 2026-10-09:** (a) der Zielort, die Datei von [MR-089](../../../../harness/conventions.md#mr-089), existiert,
   `grep -c 'seit slice-kotlin-flaches-skelett'` → 1 · (b) keine Folge-Slices genannt · (c) die fünf
   hier genannten `BEO-ALL/…` existieren, je `evidence/*.md` ≥ 1; zweite Hälfte über das Register:
   2 Verzeichnisse ohne Beleg, namentlich `cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`
