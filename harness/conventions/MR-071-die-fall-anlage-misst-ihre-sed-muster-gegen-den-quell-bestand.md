@@ -1,5 +1,7 @@
 # MR-071 — Die Fall-Anlage misst ihr sed-Muster gegen den Quell-Bestand
 
+> **ÜBERHOLT: §Grenze, Punkte 1 und 2 — die Meldung erst hinter Isolationskopie und Grün-Vorlauf, und *„Kein Sensor hält die Anlage"* → [`MR-090`](../conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit).** Die Regel, Punkt 3 der Grenze und die Auflösungs-Trigger binden fort; den ersten hat MR-090 entschieden.
+
 - **Datum:** 2026-09-20
 - **Wirksamkeits-Anlass:** der 5×-Übertritt des Register-Eintrags
   [`BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet`](../../docs/plan/planning/observations/BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet/observation.md)
