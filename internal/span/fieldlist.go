@@ -202,11 +202,11 @@ const fieldListHead = "# Erfassungsschicht — die Feldliste und ihre Grenzen\n"
 
 // availCache, availPR, availMainContext und availStore sind die vier Saetze ueber
 // Verfuegbarkeit und Aufbewahrung. Jeder gibt eine Zeile der Spezifikation dieses Werkzeugs
-// wieder (spec/spezifikation.md §5) und nennt sie als Quelle — bei ihrem Gegenstand, nicht
-// bei ihrer Kennung: im Ziel loest keine Kennung dieses Werkzeugs auf (LH-QA-01, gehalten
-// von TestEmittierteDateienTragenNurImZielAufloesendeKennungen). Je Satz haelt ein Test in
-// fieldlist_test.go den Satz, den genannten Gegenstand gegen die Zelle der Spec-Zeile, die
-// Abschnittsnummer gegen die Ueberschrift, unter der die Zeile steht, und eine Auswahl von
+// wieder (spec/spezifikation.md §5) und nennt sie im emittierten Text nicht: im Ziel loest
+// weder eine Kennung noch eine Spec-Stelle dieses Werkzeugs auf (LH-QA-01, gehalten von
+// TestEmittierteDateienTragenNurImZielAufloesendeKennungen). Die Zuordnung Satz → Zeile
+// fuehrt fieldlist_test.go (festlegungenDerFeldliste): je Satz haelt ein Test den Satz, den
+// Gegenstand der Zeile gegen die Zuordnung, die Lage der Zeile in §5 und eine Auswahl von
 // Wendungen der Zeile: Faellt eine davon aus der Zeile, wird der Test rot. Eine inhaltliche
 // Aenderung der Zeile ausserhalb dieser Wendungen faellt keinem Test auf — der Satz hier
 // behauptet dann weiter die alte Fassung. Ein Sensor ueber den Wortlaut der ganzen Zeile
@@ -218,17 +218,14 @@ const availCache = "**Den Cache-Status liefert nur ein Subagenten-Aufruf im Vord
 	"Cache-Zähler tragen eine Zahl nur im Span eines solchen Aufrufs, und die Zahl ist die des\n" +
 	"Subagenten-Laufs. Jeder andere Span und ein Aufruf, dessen Ergebnis keine Zähler führt, trägt in\n" +
 	"beiden Feldern `nicht bekannt: tool_response.usage`; die Felder stehen trotzdem in jeder Zeile.\n" +
-	"Der Cache des Haupt-Kontexts selbst steht in keinem Span.\n" +
-	"Quelle: Spezifikation von ai-harness-init, §5, Festlegungen „Cache-Status (Quelle)\" und\n" +
-	"„Kennzeichnung *nicht bekannt*\".\n"
+	"Der Cache des Haupt-Kontexts selbst steht in keinem Span.\n"
 
-// availPR gibt SPEC-056 wieder und die Begruendung des Adaptions-Eintrags MR-077.
+// availPR gibt SPEC-056 wieder und die Begruendung des Adaptions-Eintrags MR-077, ohne beide
+// im emittierten Text zu nennen.
 const availPR = "**Eine PR-Nummer steht bewusst nicht im Schema.** Sie lebt bei der Forge, und die\n" +
 	"Erfassung läuft je Werkzeug-Aufruf, ohne Netz und ohne `gh`. An ihrer Stelle stehen `branch`\n" +
 	"und `commit`, abgeleitet aus `.git/HEAD`; über sie schlägt eine Auswertung den PR nach. Das ist\n" +
-	"eine Ableitung, keine Erfüllung: liegt zum Zweig kein PR vor, bleibt die Frage offen.\n" +
-	"Quelle: Spezifikation von ai-harness-init, §5, Festlegung „PR-Nummer (Abweichung 2)\";\n" +
-	"Adaptions-Eintrag „Statt der PR-Nummer erfasst der Span branch und commit\" von ai-harness-init.\n"
+	"eine Ableitung, keine Erfüllung: liegt zum Zweig kein PR vor, bleibt die Frage offen.\n"
 
 // availMainContext gibt SPEC-049 wieder: der Verbrauch des Haupt-Kontexts steht in keinem
 // Span, und eine Token-Bilanz ist eine ueber Subagenten-Laeufe.
@@ -237,16 +234,14 @@ const availMainContext = "**Der Haupt-Kontext trägt keine Zahl.** Die Token-Zä
 	"umschließt keiner. `result_bytes` und `duration_ms` sind Größen eines Aufrufs, keine Token;\n" +
 	"geschätzt wird nicht. Jede Token-Bilanz aus diesen Zeilen ist eine Bilanz über\n" +
 	"Subagenten-Läufe: ihr Nenner ist nicht der Verbrauch des Laufs, und ein Prozentsatz daraus ist\n" +
-	"ein Anteil an der erfassten Teilmenge.\n" +
-	"Quelle: Spezifikation von ai-harness-init, §5, Festlegung „Haupt-Kontext ohne Zahl (Abweichung 6)\".\n"
+	"ein Anteil an der erfassten Teilmenge.\n"
 
 // availStore gibt SPEC-057 wieder. `make span-clean` steht im Ziel in jedem Lauf: das
 // Fragment harness/mk/erfassung.mk ist unbedingt und konvergent (internal/emit/erfassung.go).
 const availStore = "**Der Bestand wird nie nebenbei geräumt.** Die Erfassung hängt ausschließlich an;\n" +
 	"Altbestände bleiben auch beim ersten Span einer Sitzung liegen. Aufgeräumt wird ausdrücklich mit\n" +
 	"`make span-clean`, das den ganzen Bestand entfernt. Ein Werkzeug, das Sitzungs-Kennungen\n" +
-	"wiederverwendet, mischt zwei Läufe in einer Datei.\n" +
-	"Quelle: Spezifikation von ai-harness-init, §5, Festlegung „Altbestände (Abweichung 4)\".\n"
+	"wiederverwendet, mischt zwei Läufe in einer Datei.\n"
 
 // availability liefert die vier Saetze in ihrer Reihenfolge im Dokument.
 func availability() []string {

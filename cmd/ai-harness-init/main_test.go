@@ -65,6 +65,7 @@ func archMKFixture() emit.PrintMK {
 	return func(context.Context, string) ([]byte, error) {
 		return []byte("# a-check.mk — erzeugt von `a-check --print-mk`.\n" +
 			"A_CHECK_IMAGE ?= ghcr.io/pt9912/a-check@" + archMKFixturePin + "\n" +
+			"# die andere (slice-082).\n" +
 			"\n.PHONY: a-check a-check-graph\n" +
 			"a-check: ## Architektur: Hexagon-Regeln via a-check (netzlos, read-only).\n" +
 			"\tdocker run --rm --network none -v \"$(CURDIR)\":/src:ro $(A_CHECK_IMAGE) /src\n"), nil

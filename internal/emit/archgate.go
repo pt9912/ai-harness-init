@@ -145,5 +145,5 @@ func AdaptArchMK(raw []byte, ref string) ([]byte, error) {
 	if !strings.Contains(body, anchor+" "+ref+"\n") {
 		return nil, fmt.Errorf("pinnen von A_CHECK_IMAGE auf %s fehlgeschlagen (--print-mk-format geaendert?)", ref)
 	}
-	return []byte(archAdopterHeader + body), nil
+	return []byte(archAdopterHeader + streicheFremdeKennungen(body)), nil
 }

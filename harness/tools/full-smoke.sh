@@ -3233,6 +3233,41 @@ if [ "$override_rc" -ne 0 ]; then
 	exit 1
 fi
 
+# DIE ADAPTIERTEN FRAGMENTE TRAGEN KEINE FREMDE KENNUNG. d-check.mk und a-check.mk des Ziels
+# entstehen aus der realen `--print-mk`-Ausgabe der gepinnten Images; deren Kommentare und
+# `##`-Hilfetexte fuehren Kennungen aus den Registern der Werkzeuge (DC-…, slice-NNN), die im
+# Ziel nicht aufloesen, und die Adaption entfernt sie. Der Go-Waechter
+# (cmd/ai-harness-init/kennungen_test.go) sieht nur die Fixtures; hier steht die reale
+# Ausgabe. Erkannt ist eine Kennung als ganzes Wort mit ausgeschriebener Grenze:
+# Grossbuchstaben-Segmente mit Ziffern-Ende oder slice-/welle-Nummer.
+# GRENZE: eine Kennung in anderer Gestalt (Kleinbuchstaben-Praefix, Namensform) erkennt die
+# Stufe nicht; gelesen ist das Root-Modul-Ziel (--lang go --arch hexslice), dessen
+# a-check.mk dieselbe Adaption traegt wie das eines add-lang-Moduls.
+FREMDE_KENNUNG_RE='(^|[^A-Za-z0-9_-])([A-Z]{2,}(-[A-Z]+)*-[0-9]+|slice-[0-9]+|welle-[0-9]+)([^A-Za-z0-9_-]|$)'
+fremde_kennungen_im_fragment() {
+	local repo="$1" datei treffer funde=""
+	for datei in d-check.mk a-check.mk; do
+		if [ ! -f "$repo/$datei" ]; then
+			echo "full-smoke: FEHLER — fremde Kennungen: $datei fehlt im Ziel — die Stufe misst nichts." >&2
+			exit 1
+		fi
+		treffer="$(grep -nE "$FREMDE_KENNUNG_RE" "$repo/$datei" || true)"
+		[ -z "$treffer" ] || funde="$funde"$'\n'"$datei:"$'\n'"$treffer"
+	done
+	if [ -n "$funde" ]; then
+		echo "full-smoke: FEHLER — fremde Kennungen: die adaptierten --print-mk-Fragmente des Ziels tragen Kennungen aus einem Register, das im Ziel nicht aufloest (Adaption in internal/emit/emit.go bzw. archgate.go greift nicht):$funde" >&2
+		exit 1
+	fi
+	echo "full-smoke: fremde Kennungen: d-check.mk und a-check.mk des Ziels tragen keine Kennung aus einem fremden Register."
+}
+
+echo "full-smoke: Fremde Kennungen in den adaptierten Fragmenten des Root-Modul-Ziels (d-check.mk, a-check.mk) ..."
+	e2e_abdeckung "LH-QA-01" "Die realen --print-mk-Fragmente im Ziel tragen keine Kennung aus dem Register von d-check oder a-check (Root-Modul-Ziel go/hexslice)" "Stufe fremde Kennungen dauerte"
+fk_start_ns="$(date +%s%N)"
+fremde_kennungen_im_fragment "$tmprepo_hex"
+echo "full-smoke: Stufe fremde Kennungen dauerte $(( ($(date +%s%N) - fk_start_ns) / 1000000 )) ms."
+
+
 # LH-FA-04/ADR-0088: der One-Shot `--lang kotlin --arch hexslice` legt das Kotlin-Schicht-
 # Skelett am Repo-Root ab. Das Kotlin-Dockerfile baut dann mit dem GANZEN Ziel als Kontext,
 # und das Arch-Gate mountet das ganze Ziel; die .a-check.yml ist modul-relativ und das Modul

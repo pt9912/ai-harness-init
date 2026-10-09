@@ -128,7 +128,7 @@ type SHA256Mismatch struct {
 }
 
 func (e *SHA256Mismatch) Error() string {
-	return fmt.Sprintf("baseline %s: sha256 %s erwartet, %s erhalten — Asset veraendert oder falscher Pin (LH-QA-02)", e.Tag, e.Want, e.Got)
+	return fmt.Sprintf("baseline %s: sha256 %s erwartet, %s erhalten — Asset veraendert oder falscher Pin", e.Tag, e.Want, e.Got)
 }
 
 // AssetTooLargeError meldet ein Asset, das maxBaselineBytes ueberschreitet, BEVOR
@@ -138,7 +138,7 @@ func (e *SHA256Mismatch) Error() string {
 type AssetTooLargeError struct{ Max int64 }
 
 func (e *AssetTooLargeError) Error() string {
-	return fmt.Sprintf("baseline-asset ueberschreitet %d bytes vor dem sha256-pin — abgewiesen (LH-QA-03)", e.Max)
+	return fmt.Sprintf("baseline-asset ueberschreitet %d bytes vor dem sha256-pin — abgewiesen", e.Max)
 }
 
 // Baseline holt das Bundle zu tag, verifiziert es gegen wantSHA und legt es als
@@ -399,7 +399,7 @@ func writeSums(root string) error {
 		// Vollstaendigkeits-Check des Verifiers dekodiert das nicht und wuerde
 		// falsch-positiv melden. Ehrlich abbrechen schlaegt still falsch.
 		if strings.ContainsAny(rel, "\\\n") {
-			return fmt.Errorf("pfad %q enthaelt Backslash/Newline — SHA256SUMS waere GNU-escapt und der Vollstaendigkeits-Check falsch-positiv (MR-007)", rel)
+			return fmt.Errorf("pfad %q enthaelt Backslash/Newline — SHA256SUMS waere GNU-escapt und der Vollstaendigkeits-Check falsch-positiv", rel)
 		}
 		data, readErr := os.ReadFile(p)
 		if readErr != nil {

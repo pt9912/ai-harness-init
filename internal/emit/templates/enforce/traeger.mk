@@ -18,8 +18,8 @@
 # DER PIN: das
 # Fragment fuehrt nur den Release-Tag — keinen Wert, der vom Bau-Ergebnis abhaengt
 # (keine Digest-Variable, kein Export).
-# Die Verifizierung liest der Fetch aus der SHA256SUMS desselben Releases; das
-# Dogfood-Makefile fuehrt daneben die sechs Einzeldigests (zwei Kanaele).
+# Die Verifizierung liest der Fetch aus der SHA256SUMS desselben Releases; einen
+# zweiten Kanal mit Einzeldigests fuehrt das Ziel nicht.
 # Der Tag ist eine Release-Entscheidung: er wandert mit dem
 # Release-Schnitt, nicht mit jedem Bau.
 TRAEGER_TAG ?= v0.6.0

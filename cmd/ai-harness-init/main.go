@@ -50,7 +50,7 @@ fail-closed) — er startet keinen stillen Init-Pfad gegen das Repo, in dem er
 steht. Der Zielordner muss ein bestehendes Git-Repo sein; alles andere bricht
 ebenfalls laut (Exit 2), bevor etwas geschrieben wird.
 
-Der Init-Lauf ist IDEMPOTENT (ADR-0007): ein zweiter Lauf ist Exit 0. Die kanonischen
+Der Init-Lauf ist IDEMPOTENT: ein zweiter Lauf ist Exit 0. Die kanonischen
 Teile der Infrastruktur (Regelwerk, Makefile mit Bausteinen, Skripte, Hook-Skripte)
 werden auf den mitgelieferten Stand neu geschrieben; jede andere Datei — die
 Pruef-Konfiguration .d-check.yml, .golangci.yml, das Dockerfile, die Rollen-Anweisungen,
@@ -63,8 +63,8 @@ Init-Flags:
                 --lang <X> = Init + ein add-lang(<X>, .) als One-Shot-Kurzform.
   --arch        Ziel-Architektur des Skeletts (flat|hexagonal|hexslice, Default flat; nur
                 mit --lang wirksam). hexagonal = die drei klassischen Schichten
-                core/port/adapter (ADR-0010), hexslice = HexSlice mit Use-Case-Slices
-                (ADR-0009). Welche Architekturen eine SPRACHE traegt, sagt die
+                core/port/adapter, hexslice = HexSlice mit Use-Case-Slices.
+                Welche Architekturen eine SPRACHE traegt, sagt die
                 Fehlermeldung bei einer nicht getragenen Kombination.
   --name        Projektname (optional)
   -h, --help    diese Hilfe anzeigen
@@ -74,7 +74,7 @@ Fassungs-Auskunft:
   Meldet die Fassung des geschnittenen Tags, die der Release-Bau per ldflags
   injiziert hat. Ein Bau ohne Injektion — der Quell-Bau, ein plain go build —
   meldet den Fehlt-Fall laut mit Exit 2: nicht leer, nicht der Pin-Stand des
-  Makefiles (ADR-0063 Festlegung 2).
+  Makefiles.
 
 Subkommando add-lang <sprache> <pfad>:
   Fuegt einem bereits gebootstrappten Repo ein Sprachmodul hinzu (WIEDERHOLBAR, Mono-Repo):
@@ -84,7 +84,7 @@ Subkommando add-lang <sprache> <pfad>:
 Subkommando span-emit:
   Liest eine Hook-Payload von stdin und schreibt EINEN Span in den gitignorierten
   Zustands-Bereich (.harness/state/spans/ unter der Repo-Wurzel). stdout bleibt leer,
-  der Exit-Code ist auf 0 geklemmt (ADR-0011) — ein Hook darf den Lauf, den er
+  der Exit-Code ist auf 0 geklemmt — ein Hook darf den Lauf, den er
   beobachtet, nicht blockieren.
 
 Subkommando span-report [<ablageort>]:
@@ -103,13 +103,13 @@ Subkommando archive-welle [--vorschau] <welle-id>:
 Subkommando vendor-baseline <tag> <sha256>:
   Legt den vendored Baum DIESES Repos (.harness/baseline/<tag>/) aus dem
   verifizierten Release-Asset an — sha256 gegen <sha256> pruefen, regelwerk/
-  UND templates/ entpacken, SHA256SUMS schreiben. KONVERGENT (ADR-0007): ein
+  UND templates/ entpacken, SHA256SUMS schreiben. KONVERGENT: ein
   vorhandenes <tag>-Verzeichnis, das GENAU <tag> heisst, wird ersetzt. Liegt
   statt dessen ein ANDERER Tag da (Tag-Bump), bricht der Lauf VOR jedem
   Zugriff ab, statt ein zweites Verzeichnis anzulegen. Bricht der sha256-Pin,
   bleibt ein bestehender Baum ebenso unveraendert.
 
-Umgebung (bewusster Opt-in-Override der gepinnten Werte — LH-QA-02):
+Umgebung (bewusster Opt-in-Override der gepinnten Werte):
   COURSE_TAG        Kurs-Version für die Baseline (Regelwerk + Templates)
   BASELINE_SHA256   erwarteter sha256 des Baseline-Assets
   DCHECK_IMAGE      d-check-Tag-Referenz
@@ -283,13 +283,13 @@ const addLangUsage = `ai-harness-init add-lang <sprache> <pfad> [--arch <arch>]
 Fuegt einem bereits gebootstrappten Repo ein Sprachmodul hinzu (WIEDERHOLBAR, Mono-Repo):
 generiert das Skelett unter <pfad>, dropt das Code-Gate-Fragment harness/mk/<modul>.mk
 (Build-Kontext <pfad>) und das blocked/<sprache>-Fragment. Mehrere Aufrufe ergeben ein
-Mono-Repo. <pfad>=. verortet am Repo-Root. Idempotent (ADR-0007): das Fragment/blocked
+Mono-Repo. <pfad>=. verortet am Repo-Root. Idempotent: das Fragment/blocked
 wird konvergent kanonisch geschrieben, vorhandener Skelett-Code bleibt unberuehrt.
 
 Argumente:
   <sprache>   Zielsprache (gen-Profil: go, cpp, kotlin)
   <pfad>      Zielort des Moduls (. = Repo-Root)
-  --arch      Ziel-Architektur (flat|hexagonal|hexslice, Default flat; ADR-0009/ADR-0010).
+  --arch      Ziel-Architektur (flat|hexagonal|hexslice, Default flat).
               Eine von der Sprache nicht getragene Architektur (z.B. cpp+hexagonal) -> Exit 2
               mit der Liste, die DIESE Sprache traegt. Ein geschichtetes Layout dropt
               zusaetzlich das Architektur-Gate (.a-check.yml + a-check.mk +

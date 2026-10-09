@@ -303,37 +303,45 @@ func specZeile(t *testing.T, id string) string {
 	return ""
 }
 
-// quelleGenannt prueft, dass die Feldliste die Spec-Zeile id als ihre Quelle nennt — bei
-// ihrem Gegenstand, der zweiten Zelle der Zeile, in „…" gesetzt. Gelesen wird die Zelle aus
-// der Spezifikation, nicht abgeschrieben: benennt die Spezifikation den Gegenstand um,
-// faellt der Test, und die Quellen-Angabe zeigt nie auf eine Zeile, die so nicht mehr heisst.
-func quelleGenannt(t *testing.T, id string) {
+// festlegungenDerFeldliste ordnet jeder Spec-Zeile, die ein Satz der Feldliste wiedergibt,
+// den Gegenstand zu, den die Zeile in ihrer zweiten Zelle fuehrt. Die Zuordnung steht hier
+// und nicht im emittierten Text: im Ziel loest keine Spec-Stelle dieses Werkzeugs auf.
+func festlegungenDerFeldliste() map[string]string {
+	return map[string]string{
+		"SPEC-055": "Cache-Status (Quelle)",
+		"SPEC-087": "Kennzeichnung *nicht bekannt*",
+		"SPEC-056": "PR-Nummer (Abweichung 2)",
+		"SPEC-049": "Haupt-Kontext ohne Zahl (Abweichung 6)",
+		"SPEC-057": "Altbestände (Abweichung 4)",
+	}
+}
+
+// quelleGekoppelt prueft die Kopplung eines Satzes der Feldliste an die Spec-Zeile id: die
+// Zeile steht in §5 und fuehrt in ihrer zweiten Zelle den Gegenstand, den
+// festlegungenDerFeldliste ihr zuordnet. Gelesen wird die Zelle aus der Spezifikation:
+// benennt die Spezifikation den Gegenstand um oder verschiebt die Zeile aus §5, faellt der
+// Test. Die emittierte Feldliste nennt weder die Zeile noch ihren Gegenstand.
+func quelleGekoppelt(t *testing.T, id string) {
 	t.Helper()
+	soll, ok := festlegungenDerFeldliste()[id]
+	if !ok {
+		t.Fatalf("festlegungenDerFeldliste fuehrt %s nicht", id)
+	}
 	zellen := strings.Split(specZeile(t, id), " | ")
 	if len(zellen) < 3 {
 		t.Fatalf("die Spec-Zeile %s hat keine Gegenstands-Zelle: %q", id, zellen)
 	}
-	doc := flacheFeldliste(t)
-	gegenstand := "„" + zellen[1] + "\""
-	stehtJeweils(t, "die Feldliste (Quelle "+id+")", doc, gegenstand)
-	vor, _, ok := strings.Cut(doc, gegenstand)
-	if !ok {
-		return
+	if zellen[1] != soll {
+		t.Errorf("die Spec-Zeile %s fuehrt den Gegenstand %q, die Feldliste gibt %q wieder", id, zellen[1], soll)
 	}
-	const quelle = "Quelle: Spezifikation von ai-harness-init, §"
-	i := strings.LastIndex(vor, quelle)
-	if i < 0 {
-		t.Fatalf("die Feldliste nennt %s ohne vorangehendes %q", id, quelle)
-	}
-	genannt, _, _ := strings.Cut(vor[i+len(quelle):], ",")
-	if soll := specAbschnitt(t, id); genannt != soll {
-		t.Errorf("die Feldliste nennt %s unter §%s, die Spezifikation fuehrt die Zeile unter §%s", id, genannt, soll)
+	if abschnitt := specAbschnitt(t, id); abschnitt != "5" {
+		t.Errorf("die Spec-Zeile %s steht unter §%s, die Feldliste gibt Festlegungen aus §5 wieder", id, abschnitt)
 	}
 }
 
 // specAbschnitt liefert die Nummer des `## <N>.`-Abschnitts der Spezifikation, unter dem die
-// Zeile id steht — gelesen aus der Ueberschrift, damit die Quellen-Angabe der Feldliste einer
-// Umnummerierung der Spezifikation nicht still hinterherhinkt.
+// Zeile id steht — gelesen aus der Ueberschrift, damit eine Umnummerierung oder Verschiebung
+// der Zeile die Kopplung der Feldliste an §5 rot faerbt.
 func specAbschnitt(t *testing.T, id string) string {
 	t.Helper()
 	roh, err := os.ReadFile(filepath.Join("..", "..", "spec", "spezifikation.md"))
@@ -352,27 +360,6 @@ func specAbschnitt(t *testing.T, id string) string {
 	}
 	t.Fatalf("die Spezifikation fuehrt keine Zeile %s", id)
 	return ""
-}
-
-// mrTitel liefert den Titel des Adaptions-Eintrags id aus seiner Datei unter
-// harness/conventions/ — die Ueberschrift nach dem Gedankenstrich. Die Feldliste nennt den
-// Eintrag beim Titel, weil im Ziel keine Kennung dieses Werkzeugs aufloest.
-func mrTitel(t *testing.T, id string) string {
-	t.Helper()
-	treffer, err := filepath.Glob(filepath.Join("..", "..", "harness", "conventions", id+"-*.md"))
-	if err != nil || len(treffer) != 1 {
-		t.Fatalf("Adaptions-Eintrag %s nicht eindeutig gefunden: %v %v", id, treffer, err)
-	}
-	roh, err := os.ReadFile(treffer[0])
-	if err != nil {
-		t.Fatalf("Adaptions-Eintrag lesen: %v", err)
-	}
-	kopf, _, _ := strings.Cut(string(roh), "\n")
-	_, titel, ok := strings.Cut(kopf, " — ")
-	if !ok {
-		t.Fatalf("die Ueberschrift von %s traegt keinen Titel nach ' — ': %q", id, kopf)
-	}
-	return titel
 }
 
 // stehtJeweils prueft, dass text jede der Wendungen traegt, und nennt im Rot die fehlende
@@ -399,8 +386,8 @@ func TestFeldliste_CacheStatusNurAusSubagentImVordergrund(t *testing.T) {
 		"Jeder andere Span und ein Aufruf, dessen Ergebnis keine Zähler führt, trägt in beiden Feldern `nicht bekannt: tool_response.usage`",
 		"Der Cache des Haupt-Kontexts selbst steht in keinem Span.",
 	)
-	quelleGenannt(t, "SPEC-055")
-	quelleGenannt(t, "SPEC-087")
+	quelleGekoppelt(t, "SPEC-055")
+	quelleGekoppelt(t, "SPEC-087")
 	stehtJeweils(t, "die Spezifikation, Zeile SPEC-055", specZeile(t, "SPEC-055"),
 		"`tool_response` eines Vordergrund-`Agent`-Aufrufs",
 		"Jeder andere Span und ein `Agent`-Aufruf ohne `usage` tragen die Kennzeichnung",
@@ -420,9 +407,8 @@ func TestFeldliste_PRNummerBewusstNichtImSchema(t *testing.T) {
 		"**Eine PR-Nummer steht bewusst nicht im Schema.**",
 		"ohne Netz und ohne `gh`",
 		"An ihrer Stelle stehen `branch` und `commit`, abgeleitet aus `.git/HEAD`",
-		"Adaptions-Eintrag „"+mrTitel(t, "MR-077")+"\" von ai-harness-init.",
 	)
-	quelleGenannt(t, "SPEC-056")
+	quelleGekoppelt(t, "SPEC-056")
 	stehtJeweils(t, "die Spezifikation, Zeile SPEC-056", specZeile(t, "SPEC-056"),
 		"Der Span führt keine PR-Angabe.",
 		"An ihrer Stelle erfasst er `branch` und `commit`",
@@ -441,7 +427,7 @@ func TestFeldliste_HauptKontextTraegtKeineZahl(t *testing.T) {
 		"`result_bytes` und `duration_ms` sind Größen eines Aufrufs, keine Token",
 		"ihr Nenner ist nicht der Verbrauch des Laufs",
 	)
-	quelleGenannt(t, "SPEC-049")
+	quelleGekoppelt(t, "SPEC-049")
 	stehtJeweils(t, "die Spezifikation, Zeile SPEC-049", specZeile(t, "SPEC-049"),
 		"Haupt-Kontext ohne Zahl",
 		"den Haupt-Kontext umschließt kein `Agent`-Aufruf",
@@ -461,7 +447,7 @@ func TestFeldliste_BestandNurAusdruecklichGeraeumt(t *testing.T) {
 		"Die Erfassung hängt ausschließlich an",
 		"Aufgeräumt wird ausdrücklich mit `make span-clean`",
 	)
-	quelleGenannt(t, "SPEC-057")
+	quelleGekoppelt(t, "SPEC-057")
 	stehtJeweils(t, "die Spezifikation, Zeile SPEC-057", specZeile(t, "SPEC-057"),
 		"Altbestände werden beim ersten Span einer Sitzung **nicht** entfernt",
 		"der Emitter hängt ausschließlich an",

@@ -20,6 +20,7 @@ import (
 	"errors"
 	"fmt"
 	"os/exec"
+	"regexp"
 	"strings"
 )
 
@@ -40,7 +41,8 @@ var dcheckConfig string
 const adopterHeader = "# d-check.mk — Doku-Referenz-Gate via d-check. Emittiert von ai-harness-init,\n" +
 	"# adaptiert aus `d-check --print-mk`: doc-check -> docs-check (das Befund-Gate,\n" +
 	"# einziges als Gate behauptetes Target) und DCHECK_DIGEST auf den erzeugenden\n" +
-	"# Image-Digest gepinnt (Reproduzierbarkeit). advisory doc-*-Targets verbatim.\n" +
+	"# Image-Digest gepinnt (Reproduzierbarkeit). advisory doc-*-Targets verbatim, ohne\n" +
+	"# die Kennungen aus dem Register von d-check in Kommentaren und Hilfetexten.\n" +
 	"# Einbinden: `include d-check.mk`; eigene .d-check.yml danebenlegen.\n"
 
 // DCheckConfig liefert die eingebettete .d-check.yml-Vorlage; welche Module sie
@@ -139,7 +141,7 @@ func vorbindungsTargets() []string { return []string{"doc-immutable", "doc-commi
 func requireVorbindungsTargets(mk string) error {
 	for _, ziel := range vorbindungsTargets() {
 		if !strings.Contains(mk, "\n"+ziel+":") {
-			return fmt.Errorf("--print-mk-Ausgabe fuehrt das Target %q nicht — die Vorbindung des Doc-Gate-Fragments haette dort kein Rezept (LH-QA-01)", ziel)
+			return fmt.Errorf("--print-mk-Ausgabe fuehrt das Target %q nicht — die Vorbindung des Doc-Gate-Fragments haette dort kein Rezept", ziel)
 		}
 	}
 	return nil
@@ -231,7 +233,7 @@ func AdaptMK(raw []byte, digest string) ([]byte, error) {
 	if err := requireVorbindungsTargets(body); err != nil {
 		return nil, err
 	}
-	return []byte(adopterHeader + body), nil
+	return []byte(adopterHeader + streicheFremdeKennungen(body)), nil
 }
 
 // printMK ruft `docker run <ref> --print-mk` und liefert die rohe Ausgabe.
@@ -253,4 +255,32 @@ func execErr(err error) error {
 		return fmt.Errorf("%w (%s)", err, bytes.TrimSpace(ee.Stderr))
 	}
 	return err
+}
+
+// fremdeKennung ist eine Kennung aus dem Register eines Nachbar-Werkzeugs, wie sie seine
+// --print-mk-Ausgabe in Kommentaren und `##`-Hilfetexten fuehrt: Grossbuchstaben-Segmente
+// mit Ziffern-Ende (DC-FA-CLI-009, AC-QA-03, ADR-0030) oder eine Slice-/Welle-Nummer
+// (slice-082). Im Ziel loest keine davon auf.
+const fremdeKennung = `(?:[A-Z]{2,}(?:-[A-Z]+)*-[0-9]+|slice-[0-9]+|welle-[0-9]+)`
+
+// streicheFremdeKennungen entfernt fremde Kennungen aus dem Kommentar-Teil jeder Zeile —
+// ab dem ersten `#`, der Rezept- und Zuweisungs-Teil davor bleibt unberuehrt. Erkannt wird
+// eine Kennung nur als ganzes Element einer Klammer: `(K)` faellt samt Klammer und dem
+// Leerzeichen davor, `, K)` als letztes Element einer Aufzaehlung faellt bis zur Klammer.
+// GRENZE: eine Kennung ausserhalb dieser zwei Formen (frei im Satz, erstes von mehreren
+// Elementen einer Klammer) bleibt stehen; sie zeigt der Waechter am realen Fragment im
+// Ziel (harness/tools/full-smoke.sh, fremde_kennungen_im_fragment).
+func streicheFremdeKennungen(body string) string {
+	allein := regexp.MustCompile(` ?\(` + fremdeKennung + `\)`)
+	zuletzt := regexp.MustCompile(`, ` + fremdeKennung + `\)`)
+	zeilen := strings.Split(body, "\n")
+	for i, z := range zeilen {
+		j := strings.Index(z, "#")
+		if j < 0 {
+			continue
+		}
+		kommentar := allein.ReplaceAllString(z[j:], "")
+		zeilen[i] = z[:j] + zuletzt.ReplaceAllString(kommentar, ")")
+	}
+	return strings.Join(zeilen, "\n")
 }

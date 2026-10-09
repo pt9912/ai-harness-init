@@ -480,7 +480,7 @@ func writeEnforceFile(targetDir string, f enforceFile, content []byte, notice io
 	case SkipIfPresent:
 		return writeSkipIfPresentTold(targetDir, f, content, notice)
 	}
-	return fmt.Errorf("%s: keine Idempotenz-Klasse (%s) — ein Pfad ohne Klasse faellt aus, statt konvergent zu gelten (ADR-0007 Festlegung 3)", f.dst, f.class)
+	return fmt.Errorf("%s: keine Idempotenz-Klasse (%s) — ein Pfad ohne Klasse faellt aus, statt konvergent zu gelten", f.dst, f.class)
 }
 
 // writeSkipIfPresentTold ist writeSkipIfPresent MIT Meldung: liegt am Zielpfad schon eine

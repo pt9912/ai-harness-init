@@ -47,7 +47,7 @@ templates/ entpacken, SHA256SUMS schreiben. KONVERGENT — ein vorhandenes
 <tag>-Verzeichnis, das GENAU <tag> heisst, wird ersetzt. Liegt stattdessen ein
 ANDERES <tag>-Verzeichnis da (Tag-Bump), bricht der Lauf VOR jedem Zugriff ab
 — dieses Ziel vendort den angegebenen Tag neu, es zieht keinen Tag-Wechsel
-nach (MR-007 Setzung 4: ein Tag zur Zeit).
+nach (ein Tag zur Zeit).
 
   <tag>      Kurs-Tag (kanonisch: BASELINE_TAG im Makefile)
   <sha256>   erwarteter sha256 des Release-Assets (kanonisch:
@@ -89,7 +89,7 @@ func vendorBaselineMit(args []string, wurzel func() (string, error), fetchFn fet
 		return 1
 	}
 	if fremd != "" {
-		fmt.Fprintf(errOut, "vendor-baseline: %s enthaelt bereits %q (ein anderer Tag) — dieses Ziel ersetzt nur %s selbst, ein Tag-Wechsel bleibt ausserhalb (MR-007 Setzung 4: ein Tag zur Zeit); %s von Hand entfernen und den Lauf wiederholen.\n", dest, fremd, tag, filepath.Join(dest, fremd))
+		fmt.Fprintf(errOut, "vendor-baseline: %s enthaelt bereits %q (ein anderer Tag) — dieses Ziel ersetzt nur %s selbst, ein Tag-Wechsel bleibt ausserhalb (ein Tag zur Zeit); %s von Hand entfernen und den Lauf wiederholen.\n", dest, fremd, tag, filepath.Join(dest, fremd))
 		return 1
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)

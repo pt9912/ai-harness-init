@@ -328,7 +328,7 @@ func baumAussage(targets []string) (string, error) {
 
 	block := b.String()
 	if neutral := NeutralizeMakeClaims(block, targets); neutral != block {
-		return "", errors.New("baum-aussage nennt ein make-Ziel, das die Init-Phase nicht schreibt (LH-QA-01)")
+		return "", errors.New("baum-aussage nennt ein make-Ziel, das die Init-Phase nicht schreibt")
 	}
 	return block, nil
 }

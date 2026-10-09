@@ -97,8 +97,7 @@ codepaths:
 # (Block am Ende der Datei): Die Zellen der Spalten Vertrag und Tut was unter
 # "## Sensors (Feedback-Gates)" tragen hoechstens 200 Zeichen; laengere Prosa gehoert nach
 # harness/sensors/<target>.md. Der Selektor ist der Abschnitt der Vorlage
-# harness/README.template.md, der beide Tabellen traegt; die Dogfood-Fassung fuehrt denselben Selektor
-# mit eigenen Schwellen (150 und 260). Die Schwelle 200 liegt ueber dem laengsten
+# harness/README.template.md, der beide Tabellen traegt. Die Schwelle 200 liegt ueber dem laengsten
 # Zellsatz der Vorlage (80 Zeichen), damit ein Rot aus Adopter-Inhalt kommt und nicht aus
 # der emittierten Prosa; die Spalte Bindung traegt keine Grenze, Kennungs-Listen wachsen
 # mit den Bindungen. Kein exempt-paths: ein Eintrag dort ist eine Senkung.
@@ -110,7 +109,7 @@ codepaths:
 # Werkzeug — jeder Lauf schreibt ihn neu, eine Aenderung von Hand geht dabei verloren.
 # authority nimmt ab d-check v0.82.0 eine Liste und misst gegen die Vereinigung. makefiles
 # traegt den Glob "*.mk" statt der Einzeldatei repo.mk: am Pin v0.82.0 endet eine fehlende
-# Einzeldatei mit Exit 2 (DC-FA-TGT-001), und repo.mk darf fehlen, ohne make zu brechen; der
+# Einzeldatei mit Exit 2, und repo.mk darf fehlen, ohne make zu brechen; der
 # Glob trifft immer d-check.mk und daneben repo.mk und a-check.mk, wo sie liegen, aber keine
 # Datei unter harness/mk/. Kein exempt-targets: der Werkzeug-Teil fuehrt jedes Target der
 # Werkzeug-Dateien. authority-disjoint (ab d-check v0.83.0, nur mit authority als Liste) meldet ein
