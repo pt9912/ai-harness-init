@@ -101,7 +101,25 @@ Die Schritt-Folge:
    Titelzeile, **Stand** (was das Programm dieses Releases kann und was das
    Handbuch beschreibt), **Assets** (Menge, Prüfsummen, Start-Smoke),
    **Grenze** (was das Release nicht zusagt), am Ende die Zeile *Full
-   Changelog*. Gesetzt wird der Text nach der Publikation mit
+   Changelog*.
+
+   **Bestand.** Ändert das Release den Inhalt einer Datei, die der Lauf nur
+   bei fehlender Datei schreibt (die zweite Klasse unter
+   [Ein Repository erneut aufsetzen](benutzerhandbuch.md#ein-repository-erneut-aufsetzen-idempotent)),
+   erreicht ein Re-Lauf ein schon aufgesetztes Repository damit nicht. Der
+   Release-Text trägt dann den Abschnitt **Bestand** mit den betroffenen
+   Pfaden, dem ältesten Tag, dessen Fassung abweicht, und der Abhilfe: die
+   eigene Datei gegen eine frische Emission in ein leeres Git-Repository
+   vergleichen. Die Pfade liefert der Vergleich zweier frischer Emissionen
+   mit denselben Optionen, eine mit dem Träger des Vorgänger-Tags und eine
+   mit dem des neuen Tags (`git init <alt>`, `git init <neu>`, je
+   `ai-harness-init [--lang <sprache>] [--arch <arch>] <ziel>`, dann
+   `diff -rq -x .git <alt> <neu>`), beschränkt auf die zweite Klasse. Ändert
+   das Release keine solche Datei, entfällt der Abschnitt. Ein Sensor
+   existiert nicht; Träger ist der Schnitt
+   · seit slice-ziel-traegt-keine-kennung-dieses-repos.
+
+   Gesetzt wird der Text nach der Publikation mit
    `gh release edit <tag> --notes-file <datei>`; `gh release view <tag>
    --json body --jq .body` zeigt ihn. Der manuelle Weg —
    `gh release create <tag> <dir>/*` nach dem `verify`-Modus von Schritt 3 —
