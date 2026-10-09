@@ -11,7 +11,7 @@
 
 **Berührte Spec-Stellen:** `ARC-009`, `ARC-010` (über [ADR-0088](../../adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md)).
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-10-09.
 
