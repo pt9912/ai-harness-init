@@ -1,0 +1,2 @@
+**Vorgang:** slice-kotlin-root-bootstrap
+**Fund:** Der Zuwachs +39,6 s der Root-Stufe ist bei kaltem Gradle-Layer gemessen; die Message von `12d6868d` schreibt ihn jedem Lauf zu („Gradle-Abhängigkeiten werden je Lauf neu aufgelöst“). Die Verifier-Gegenmessung bei warmem Gradle-Layer: `FULLSMOKE_SECONDS=218.54`, Stufe 5 s. Die Lage-Angabe „Basis-Cache warm“ trennt den Cache der Schicht, die den Preis trägt, nicht vom Basis-Cache.
