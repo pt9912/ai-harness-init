@@ -52,7 +52,7 @@ TRAEGER_SHA256_WINDOWS_ARM64 ?= d20f1409211e88be72424342c9be804ebaf1f9f84eb1539d
 TRAEGER_CARRIER ?= .harness/state/bin/ai-harness-init
 export TRAEGER_TAG TRAEGER_SHA256_LINUX_AMD64 TRAEGER_SHA256_LINUX_ARM64 TRAEGER_SHA256_DARWIN_AMD64 TRAEGER_SHA256_DARWIN_ARM64 TRAEGER_SHA256_WINDOWS_AMD64 TRAEGER_SHA256_WINDOWS_ARM64 TRAEGER_CARRIER
 
-.PHONY: help gates record-gates test test-bats test-go test-go-pids-guard lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims register-ausgang history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp freshness-kotlin mutate slice-mv archive-welle traeger-fetch release-warten tap-check tap-nachzug vendor-baseline
+.PHONY: help gates record-gates test test-bats test-go test-go-pids-guard lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims register-ausgang history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp freshness-kotlin mutate mutate-greift slice-mv archive-welle traeger-fetch release-warten tap-check tap-nachzug vendor-baseline
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
@@ -251,6 +251,13 @@ e2e-abdeckung: ## E2E-Abdeckungs-Tabelle aus den Stufen-Deklarationen erzeugen (
 # ein lokaler Lauf ohne Vorgabe.
 mutate: ## Mutations-Sensor fuer AGENTS 3.6: faerbt jede Mutation ihren Waechter rot? — NICHT in gates
 	@MUTATE_JOBS='$(MUTATE_JOBS)' bash harness/tools/mutate.sh
+
+# Greift-Modus des Mutations-Treibers: je Fall nur Bedingung 2 (die Mutation aendert jede
+# Datei aus `# files:` auf einer Kopie) — kein Gruen-Vorlauf, kein Sensor-Lauf, kein
+# Docker. Hermetisch wie comment-claims (bash, sed, sha256sum auf Kopien ausserhalb des
+# Repos), deshalb IN gates. MR-071 · seit slice-mutations-anker-greift-in-den-gates.
+mutate-greift: ## Greift jeder sed-Anker der Mutations-Faelle im Quellbestand? — hermetisch, in gates (MR-071)
+	@bash harness/tools/mutate.sh --greift
 
 # shellcheck über die harness-eigenen Shell-Hooks/-Helfer. .bats ist
 # ausgenommen (shellcheck parst die @test-Syntax nicht); .awk ist kein Shell.
@@ -659,7 +666,7 @@ vendor-baseline: host-bin ## Eigenen vendored Baum aus dem verifizierten Release
 # GESCHLOSSEN, gemessen: `make record-gates` ist mit `make gates` deckungsgleich — die
 # Kante zieht dort dieselben Checks mit (`diff <(make -n gates) <(make -n record-gates)`
 # ist leer).
-record-gates: baseline-verify docs-check lint build test shell-lint ci-lint comment-claims register-ausgang host-bin span-check ## Checks + Gate-Nachweis (Working-Tree-Hash für den Stop-Hook)
+record-gates: baseline-verify docs-check lint build test shell-lint ci-lint comment-claims register-ausgang mutate-greift host-bin span-check ## Checks + Gate-Nachweis (Working-Tree-Hash für den Stop-Hook)
 	@bash harness/tools/record-gates.sh
 
 gates: record-gates ## alle aktuell lauffähigen Gates + Nachweis

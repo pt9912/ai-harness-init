@@ -1444,3 +1444,23 @@ vollauf() {
   [ -z "$(ls -A "$TL_ROOT/tmp")" ]
   rm -rf "$TL_ROOT"
 }
+
+# GREIFT-MODUS (`make mutate-greift`, in `make gates`): rot an der realen Quelle. Die
+# Fixtures unter test/fixtures/mutate-greift/ sind die Fall-Fassungen 29 und 247 aus dem
+# Stand 98bfab0b^ (byte-gleich zu `git show 98bfab0b^:test/mutations/<fall>.sh`); ihre
+# Anker zitieren Quellzeilen, die eine berechtigte Aenderung verschoben hat. Gegen den
+# heutigen Bestand greifen sie nicht, und der Befund nennt jeden Fall — LH-QA-01.
+@test "greift: die Fall-Fassungen 29/247 aus 98bfab0b^ greifen im Bestand nicht, der Befund nennt beide" {
+  run bash -c "source '$DRIVER' 2>/dev/null || true; greift_main '$REPO/test/fixtures/mutate-greift' '$REPO'"
+  [ "$status" -ne 0 ]
+  grep -qF 'BEFUND 29-roadmap-nicht-neutralisiert — Mutation hat nicht gegriffen bei: internal/emit/templates.go' <<<"$output"
+  grep -qF 'BEFUND 247-archive-welle-go-schalter-erreicht-zweig-nicht — Mutation hat nicht gegriffen bei: cmd/ai-harness-init/archive_welle.go' <<<"$output"
+}
+
+# Gegenrichtung: dieselben zwei Faelle im heutigen Bestand greifen — der Modus schweigt
+# auf dem unveraenderten Bestand.
+@test "greift: dieselben Faelle im Bestand greifen" {
+  run bash -c "source '$DRIVER' 2>/dev/null || true; MUTATE_CASES='29-roadmap-nicht-neutralisiert 247-archive-welle-go-schalter-erreicht-zweig-nicht' greift_main '$REPO/test/mutations' '$REPO'"
+  [ "$status" -eq 0 ]
+  grep -qF '2 Fall/Faelle, 2 greifen, 0 Befund(e)' <<<"$output"
+}

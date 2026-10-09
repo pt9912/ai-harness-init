@@ -144,6 +144,45 @@ Festlegung 4 gilt weiter (Cache-Zustand und Host-Werkzeuge deckt kein Schlüssel
 hält den Inhalt dieser Regel — sie ist Prosa; der Träger ist die Rolle, die den Beleg liest
 (Verifier), und sie liest die Ausgabe beider Läufe, nicht den Slot.
 
+## Greift-Modus (`make mutate-greift`, in `make gates`)
+
+**Vertrag:** `harness/tools/mutate.sh --greift` fährt je Fall allein Bedingung 2 des Treibers
+(*„Mutation hat nicht gegriffen"*): die Dateien aus `# files:` werden einzeln in ein frisches
+Verzeichnis außerhalb des Repos kopiert, das Fall-Skript läuft dort, und jede Datei muss danach
+einen anderen Inhalts-Hash tragen. Fehlt das bei einem Fall — oder löst seine `# files:`-Angabe
+nicht auf genau eine Datei auf, oder scheitert sein Skript in der Kopie —, meldet eine Zeile
+`mutate-greift: BEFUND <fall> — …`, und der Lauf endet mit Exit 1. Kein Grün-Vorlauf, kein
+Sensor-Lauf, kein Lock, kein Beleg-Slot, kein Docker; `MUTATE_CASES` engt ein wie beim vollen
+Lauf. Ein leeres Fall-Set ist ein Befund. Damit fällt ein Anker, den eine berechtigte Änderung
+am Quellbestand verschoben hat, am Commit statt im Nacht-Lauf.
+
+**Sensor:** `test/mutate-driver.bats`, Fälle „greift: …" — rot an den Fall-Fassungen 29 und 247
+aus dem Stand `98bfab0b^` (Fixtures unter `test/fixtures/mutate-greift/`, byte-gleich zu
+`git show 98bfab0b^:test/mutations/<fall>.sh`), grün an denselben Fällen im Bestand; die
+Verdrahtung hält `test/gate-nachweis-kante.bats`. Den Zahn auf den Modus selbst trägt
+`test/mutations/635-greift-modus-uebersieht-ungegriffenen-anker.sh`.
+
+**Laufzeit:** Der Zuwachs von `make gates` ist die Differenz zweier Läufe in derselben Lage, einmal
+mit dem Rezept `@true` an Stelle des Modus und einmal mit dem Modus:
+`a0=$(date +%s.%N); make gates; a1=$(date +%s.%N)`, gemessen am 2026-10-09 auf einem Host mit 20
+Kernen (`nproc`) bei warmem Docker-Cache. Ergebnis: 175,8 s gegen 194,0 s, also **18,2 s** Zuwachs.
+Der Modus allein brauchte 18,2 s für 622 Fälle (`time bash harness/tools/mutate.sh --greift`,
+user 7,1 s, sys 14,8 s). Den Preis trägt der Host-Kern, das heißt Prozessstarts und Dateisystem
+für eine Kopie je Fall; Docker ist nicht beteiligt. **Kein Erwartungswert:** Die Zahl wächst mit
+dem Fall-Bestand. Nicht gemessen ist die Laufzeit auf dem CI-Runner und bei kaltem Seiten-Cache.
+
+**Grenze:**
+
+- Grün heißt *der Anker trifft*, nicht *der Wächter wird rot* — das bleibt Sache des vollen
+  Laufs (Nacht-Workflow). Ein Anker, der die falsche Stelle trifft — eine Zeilennummer, ein zu
+  breites Muster —, geht durch.
+- Ein Fall-Skript, das außer seinen `# files:` weitere Dateien liest, scheitert in der Kopie und
+  wird als Befund gemeldet; der Modus setzt voraus, dass der Patch allein über die `# files:`
+  wirkt.
+- Die `# expect:`-Zeile liest der Modus nicht.
+- Dass die Fixtures den Stand `98bfab0b^` tragen, hält kein Sensor — der bats-Container trägt
+  kein git; Träger ist der Lauf, der sie anlegt.
+
 ## Bindung
 
 [`AGENTS.md`](../../AGENTS.md) §3.6; slice-026; kein Gate-Versprechen. Mechanischer Auslöser

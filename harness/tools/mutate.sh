@@ -840,6 +840,93 @@ run_case() {
   restore
 }
 
+# GREIFT-MODUS (`mutate.sh --greift`, Ziel `make mutate-greift`, in `make gates`): je Fall
+# Bedingung 2 von run_case allein — greift die Mutation, aendert sich also jede Datei aus
+# `# files:`? Kein Gruen-Vorlauf, kein Sensor-Lauf, kein Lock, kein Beleg-Slot, keine
+# Isolationskopie des Baums: je Fall werden nur seine `# files:` in ein frisches
+# Verzeichnis ausserhalb des Repos kopiert, das Fall-Skript laeuft dort, und der
+# Inhalts-Hash jeder Datei muss sich geaendert haben. Ein Befund nennt den Fall; der Lauf
+# endet mit Exit != 0, sobald einer fehlt. MUTATE_CASES engt ein wie beim vollen Lauf.
+# Sensor: test/mutate-driver.bats „greift: die Fall-Fassungen 29/247 aus 98bfab0b^
+# greifen im Bestand nicht, der Befund nennt beide" (Fixtures test/fixtures/mutate-greift/)
+# und „greift: dieselben Faelle im Bestand greifen" · seit
+# slice-mutations-anker-greift-in-den-gates.
+#
+# GRENZE: der Modus sagt, dass der Anker im Quellbestand TRIFFT, nicht, dass der Waechter
+# rot wird — das bleibt `make mutate` (naechtlich). Ein Anker, der trifft, aber die falsche
+# Stelle (eine Zeilennummer, ein zu breites Muster), geht durch. Ein Fall-Skript, das
+# ausser seinen `# files:` weitere Dateien liest, scheitert in der Kopie und wird als
+# Befund gemeldet, nicht uebergangen.
+greift_case() {
+  local case_file="$1" root="$2" name spec resolved f dir rc=0 out
+  name="$(basename "$case_file" .sh)"
+  if [ "$(grep -c '^# files: ' "$case_file")" -gt 1 ]; then
+    echo "mutate-greift: BEFUND $name — mehrfacher '# files:'-Kopf" >&2
+    return 1
+  fi
+  local -a file_list=()
+  while IFS= read -r spec; do
+    [ -n "$spec" ] || continue
+    if ! resolved="$(resolve_file_spec "$root" "$spec")" || [ ! -f "$root/$resolved" ]; then
+      echo "mutate-greift: BEFUND $name — '# files: $spec' loest gegen den Bestand nicht auf genau eine Datei auf" >&2
+      return 1
+    fi
+    file_list+=("$resolved")
+  done < <(sed -n 's/^# files: //p' "$case_file" | tr ' ' '\n' | sed '/^$/d')
+  if [ "${#file_list[@]}" -eq 0 ]; then
+    echo "mutate-greift: BEFUND $name — kein '# files:'-Kopf" >&2
+    return 1
+  fi
+  dir="$(mktemp -d -p "${TMPDIR:-/tmp}")"
+  for f in "${file_list[@]}"; do
+    mkdir -p "$dir/$(dirname "$f")"
+    cp "$root/$f" "$dir/$f"
+  done
+  ( cd "$dir" && sha256sum "${file_list[@]}" >"$dir/.greift-before" )
+  out="$( cd "$dir" && bash "$case_file" 2>&1 )" || rc=$?
+  if [ "$rc" -ne 0 ]; then
+    echo "mutate-greift: BEFUND $name — Fall-Skript scheiterte in der Kopie (Exit $rc): ${out//$'\n'/ }" >&2
+    rm -rf "$dir"
+    return 1
+  fi
+  local ungegriffen=""
+  for f in "${file_list[@]}"; do
+    if ( cd "$dir" && grep -F -- " $f" .greift-before | sha256sum -c - ) >/dev/null 2>&1; then
+      ungegriffen="$ungegriffen $f"
+    fi
+  done
+  rm -rf "$dir"
+  if [ -n "$ungegriffen" ]; then
+    echo "mutate-greift: BEFUND $name — Mutation hat nicht gegriffen bei:$ungegriffen — Anker veraltet?" >&2
+    return 1
+  fi
+}
+
+# greift_main faehrt greift_case ueber jeden Fall unter <1> gegen den Bestand <2> (der
+# Treiber setzt CASES_DIR und REPO; test/mutate-driver.bats setzt ein Fixture-Verzeichnis).
+# Ein leeres Fall-Set ist ein Befund, kein gruener Lauf.
+greift_main() {
+  local cases_dir="$1" root="$2" cf selected="" fails=0 total=0
+  local -a cases=()
+  shopt -s nullglob
+  cases=("$cases_dir"/*.sh)
+  shopt -u nullglob
+  if [ -n "${MUTATE_CASES+x}" ]; then
+    selected="$(select_cases "$cases_dir" "$MUTATE_CASES")" || return 1
+  fi
+  for cf in "${cases[@]}"; do
+    if [ -n "$selected" ] && ! grep -qxF "$(basename "$cf" .sh)" <<<"$selected"; then continue; fi
+    total=$((total + 1))
+    greift_case "$cf" "$root" || fails=$((fails + 1))
+  done
+  if [ "$total" -eq 0 ]; then
+    echo "mutate-greift: keine Faelle in $cases_dir — ein leeres Set ist kein gruener Lauf" >&2
+    return 1
+  fi
+  echo "mutate-greift: $total Fall/Faelle, $((total - fails)) greifen, $fails Befund(e)"
+  [ "$fails" -eq 0 ]
+}
+
 # green_prerun faehrt jeden uebergebenen Modus EINMAL, bevor die erste Mutation laeuft
 # (Review-Befund slice-026 F-6). Ohne ihn wuerde jeder Fall auf einem bereits roten
 # Baum "bestehen" — aus dem falschen Grund. Der Fall ist nicht theoretisch: waehrend des
@@ -1874,5 +1961,9 @@ main() {
 
 # Nur bei DIREKTEM Aufruf laufen, nicht beim Sourcen.
 if [ "${BASH_SOURCE[0]}" = "$0" ]; then
-  main "$@"
+  if [ "${1:-}" = "--greift" ]; then
+    greift_main "$CASES_DIR" "$REPO"
+  else
+    main "$@"
+  fi
 fi
