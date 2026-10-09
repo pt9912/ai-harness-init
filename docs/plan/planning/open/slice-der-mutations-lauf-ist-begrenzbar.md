@@ -257,9 +257,9 @@ der fallen soll; seine Form steht an den 39 bestehenden Treiber-Fällen
       Ziels — Liefer-Punkt (2) **ist** dieses Item, ein zweiter Doku-Ort entsteht nicht: die
       Werkzeug-Zeile in [`harness/README.md`](../../../../harness/README.md) §Werkzeuge **zeigt**
       auf die Sensordatei und führt die Aussage nicht als zweite Fassung.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — **hier nicht**: Dieses
       Repo fährt Wellen-Betrieb (`ls docs/plan/planning/welle-*.md | wc -l` → **3**, kein
       Erwartungswert), also prüft sie die nächste Welle-Closure, auch für diesen Slice ohne
@@ -379,7 +379,7 @@ dasteht.
   genau der Verstoß, den der Adaptions-Block führt.
   **Gegenmittel im Plan:** DoD (3) verlangt die **Entscheidung mit benannter Quelle** — gezogen
   oder ausdrücklich stehen gelassen —, §4 führt die Rückführung nach `open`, §7 nennt das Ergebnis.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang:** siehe §7
 - **(2) Der Filter wird zum Ersatz für den vollen Satz.** Eine Runde meldet „mutate grün" über
   ihrem Ausschnitt, während der repo-weite Satz lokal nie wieder läuft — und seit der Stufen-Änderung
   läuft er auch im Push nicht mehr, sondern nur **nächtlich**.
@@ -388,7 +388,7 @@ dasteht.
   volle Satz hat einen benannten Auslöser (`.github/workflows/mutate.yml`, `MUTATE_FORCE=1`).
   **Benannte Grenze:** *daß* eine Rolle den vollen Satz lokal fährt, erzwingt nichts — das Netz ist
   der Nacht-Job, und seine Kadenzen sind nicht dieser Slice.
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang:** siehe §7
 - **(3) Die Auswahl trifft etwas anderes als gemeint.** Ein Muster, das **nicht** leer ausgeht,
   aber die falschen Fälle zieht, ist für keinen Sensor von der richtigen Auswahl zu unterscheiden —
   die leere Auswahl ist fail-closed gefangen, diese nicht.
@@ -396,38 +396,21 @@ dasteht.
   leerer Ausschnitt bleibt damit ein Urteil des Lesers und wird als Grenze benannt, nicht als
   Zusage verkauft (Baseline-Regelwerk `modul-13-quality-gates.md` §Hard Rule, *„Ein Gate ohne seine
   Grenze behauptet ebenfalls zu viel"*).
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang:** siehe §7
 - **(4) Der Kommentar-Kopf des Treibers wird zur Chronik.** Die Versuchung ist konkret: den
   *Anlaß* des Filters in den Kopf zu schreiben, neben die vorhandenen Befund-Kennungen.
   **Gegenmittel im Plan:** §3 verlangt die Form *was gilt*; der Bestand des Kopfes ist **kein**
   Arbeitsauftrag dieses Slice ([`AGENTS.md`](../../../../AGENTS.md) §3.7).
-  — **Ausgang:** <eingetreten / entfallen / weiter offen — bei Closure zu setzen>
+  — **Ausgang:** siehe §7
 
 ## 7. Closure-Notiz
 
-Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
-§Das Beobachtungs-Register (vorhandene `BEO-<KUERZEL>/<slug>` **zitieren** statt neu
-formulieren — sonst zählt das Register zwei Namen getrennt) ·
-`grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln (das
-Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
-wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
-Backticks).
-
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/sensors/<name>.md>`.
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-<Kennung>.md` | `evidence/slice-<Kennung>.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes der vier mit genau einem Ausgang — siehe §6>
-- **Die zwei Anweisungssatz-Zeilen:** <Ergebnis der Übergabe — gezogen, mit der Rolle in der
-  Commit-Message | ausdrücklich stehen gelassen, mit dem Grund. **Nicht** dieses Slice'
-  Liefergegenstand im Planner-Kontext>
-- **Drei Paarungen:** Repo **mit** Wellen-Betrieb — geprüft von der nächsten Welle-Closure, auch
-  für diesen Slice ohne Wellen-Zugehörigkeit.
+- **Gegenstand:** entfallen: geliefert von `slice-mutate-fall-filter-und-die-belegform-vereinigung` — `MUTATE_CASES` fährt nur genannte Fälle, bricht bei leerem, unbekanntem oder doppeltem Namen ab und lässt den Beleg-Slot unberührt (`grep -n 'MUTATE_CASES' harness/tools/mutate.sh`); die Rundenpflicht zum vollen Lauf steht in keinem Anweisungssatz mehr (`grep -n 'mutate' .claude/commands/implement-slice.md .claude/agents/implementer.md`).
+- **Risiken aus §6:** (1) Typkarten-Zeile ohne Träger — *entfallen*: die Zeile ist gezogen; (2) Filter ersetzt den vollen Satz — *entfallen*: der Vollsweep hat einen festen Auslöser (`.github/workflows/mutate.yml`), lokal hält ihn die Vollauf-Sperre aus `slice-mutate-ohne-cases-bricht-ab`; (3) Auswahl trifft anderes — *entfallen*: `MUTATE_CASES` nimmt Namen, keine Globs; (4) Kommentar-Kopf wird Chronik — *entfallen*: kein Eingriff dieses Slice.
+- **Steering-Loop-Eintrag:** gezählt, nicht verkörpert — die Mutations-Gruppe aus sechs offenen Slices trug zwei, deren Gegenstand inzwischen geliefert oder ohne Konsumenten war; erst der Gruppierungs-Durchgang (Modul 6 Schritt 3) machte das sichtbar, kein Sensor.
+- **Beobachtungs-Register (`../observations/`):** keine Beobachtung angefallen; Register-Nachzug im selben Commit (`state.md` der Einträge, die auf diesen Slice zeigten).
+- **Folge-Slices:** keine.
+- **Drei Paarungen:** Folge-Slice-Paarung — die genannte Kennung löst auf (`ls docs/plan/planning/*/<kennung>.md`, eine Datei).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

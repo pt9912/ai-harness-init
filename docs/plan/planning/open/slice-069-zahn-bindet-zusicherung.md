@@ -78,7 +78,7 @@ Treiber sichtbar.
   Teilmenge.
 - [ ] `make gates` grün; der Vollauf `make mutate` grün über die CI (`.github/workflows/ci.yml`,
   frischer Runner — der lokale Host-Speicher-Ausschluss gilt dort nicht).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 
 ## 3. Plan (vor Code)
 
@@ -151,7 +151,12 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+- **Gegenstand:** übernommen von `slice-der-mutations-treiber-sieht-bindung-und-abdeckung` (Gruppierung 2026-10-09; gemeinsamer Parser `# expect:` mit `slice-119-zusage-ohne-fall-wird-sichtbar`).
+- **Risiken aus §6:** (1) zweites Kopf-Feld driftet, (2) Fehlschlag-Text an Testformulierung gebunden, (3) Bestand dreistellig, (4) Treiber bewacht sich teilweise — je *eingetreten* → `slice-der-mutations-treiber-sieht-bindung-und-abdeckung` §6; (5) *Nicht in diesem Slice* — *entfallen*: Abgrenzung, kein Risiko; die Abdeckungs-Richtung trägt `slice-der-mutations-treiber-sieht-bindung-und-abdeckung` DoD (2).
+- **Steering-Loop-Eintrag:** gezählt, nicht verkörpert — die Mutations-Gruppe aus sechs offenen Slices trug zwei, deren Gegenstand inzwischen geliefert oder ohne Konsumenten war; erst der Gruppierungs-Durchgang (Modul 6 Schritt 3) machte das sichtbar, kein Sensor.
+- **Beobachtungs-Register (`../observations/`):** keine Beobachtung angefallen; Register-Nachzug im selben Commit (`state.md` der Einträge, die auf diesen Slice zeigten).
+- **Folge-Slices:** keine.
+- **Drei Paarungen:** Folge-Slice-Paarung — die genannte Kennung löst auf (`ls docs/plan/planning/*/<kennung>.md`, eine Datei).
 
 ## 8. Sub-Area-Modus-Begründung
 

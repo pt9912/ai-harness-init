@@ -223,7 +223,12 @@ schneidet einen Slice, der in einer Review-Sitzung nicht prüfbar ist (Modul 5 �
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+- **Gegenstand:** übernommen von `slice-der-mutations-treiber-sieht-bindung-und-abdeckung` (Gruppierung 2026-10-09; gemeinsamer Parser `# expect:` mit `slice-069-zahn-bindet-zusicherung`).
+- **Risiken aus §6:** (1) Zähler ohne Schwelle, (2) Schnitt gegen `git` altert, (3) Sensor gehört selbst zur Klasse — je *eingetreten* → `slice-der-mutations-treiber-sieht-bindung-und-abdeckung` §6; (4) Zahl 167 als Momentaufnahme — *entfallen*: der Nehmer führt keine Zahl ohne Kommando und misst beim Start neu.
+- **Steering-Loop-Eintrag:** gezählt, nicht verkörpert — die Mutations-Gruppe aus sechs offenen Slices trug zwei, deren Gegenstand inzwischen geliefert oder ohne Konsumenten war; erst der Gruppierungs-Durchgang (Modul 6 Schritt 3) machte das sichtbar, kein Sensor.
+- **Beobachtungs-Register (`../observations/`):** keine Beobachtung angefallen; Register-Nachzug im selben Commit (`state.md` der Einträge, die auf diesen Slice zeigten).
+- **Folge-Slices:** keine.
+- **Drei Paarungen:** Folge-Slice-Paarung — die genannte Kennung löst auf (`ls docs/plan/planning/*/<kennung>.md`, eine Datei).
 
 ## 8. Sub-Area-Modus-Begründung
 

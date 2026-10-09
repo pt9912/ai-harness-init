@@ -111,10 +111,10 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
 - [ ] Doku-Update: der Absatz *Grenze* ist Liefer-Punkt 3; eine neue Zeile in `harness/README.md` entsteht nicht
       (`make mutate` steht dort).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Register-Datei nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -190,19 +190,12 @@ Kein Risiko trägt hier schon seinen Ausgang; er wird bei der Closure zugewiesen
 
 ## 7. Closure-Notiz
 
-Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
-§Das Beobachtungs-Register (vorhandene `BEO-<NNN>` **zitieren** statt neu
-formulieren — sonst zählt das Register zwei Namen getrennt) ·
-`grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln (das
-Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
-wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
-Backticks). Ging der Gegenstand an einen anderen Slice oder entfiel er, trägt
-diese Sektion die Zeile `Gegenstand:` mit Kennung oder Grund und jedes Risiko
-aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
-(`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
-übernimmt).
-
-Wird bei der Closure geschrieben — von der Rolle Planner in frischem Kontext (AGENTS.md §3.10), nach Review und Verifikation, in der Form der Regeln oben.
+- **Gegenstand:** übernommen von `slice-pin-kopplung-und-sync-tragen-ihre-mutations-faelle` (Gruppierung 2026-10-09; dieselbe Klasse *Wächter ohne Fall*, Instanz neben `slice-pin-kopplung-bekommt-ihren-mutations-fall`).
+- **Risiken aus §6:** (1) Fall bindet nicht, (2) zu groß für eine Review-Sitzung, (3) Absatz *Grenze* altert — je *eingetreten* → `slice-pin-kopplung-und-sync-tragen-ihre-mutations-faelle` §6.
+- **Steering-Loop-Eintrag:** gezählt, nicht verkörpert — die Mutations-Gruppe aus sechs offenen Slices trug zwei, deren Gegenstand inzwischen geliefert oder ohne Konsumenten war; erst der Gruppierungs-Durchgang (Modul 6 Schritt 3) machte das sichtbar, kein Sensor.
+- **Beobachtungs-Register (`../observations/`):** keine Beobachtung angefallen; Register-Nachzug im selben Commit (`state.md` der Einträge, die auf diesen Slice zeigten).
+- **Folge-Slices:** keine.
+- **Drei Paarungen:** Folge-Slice-Paarung — die genannte Kennung löst auf (`ls docs/plan/planning/*/<kennung>.md`, eine Datei).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

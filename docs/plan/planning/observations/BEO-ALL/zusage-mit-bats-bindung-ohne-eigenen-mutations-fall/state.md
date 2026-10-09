@@ -1,10 +1,10 @@
-**Stand:** geplant für die Klasse auf `slice-119-zusage-ohne-fall-wird-sichtbar` (Sensor; die Prosa-Regel bleibt verkörpert, Zielort [`AGENTS.md`](../../../../../../AGENTS.md) §3.6), geplant für die
+**Stand:** geplant für die Klasse auf `slice-der-mutations-treiber-sieht-bindung-und-abdeckung` (Sensor; die Prosa-Regel bleibt verkörpert, Zielort [`AGENTS.md`](../../../../../../AGENTS.md) §3.6), geplant für die
 Instanz `sync`. Schwelle erreicht
 (`ls docs/plan/planning/observations/BEO-ALL/zusage-mit-bats-bindung-ohne-eigenen-mutations-fall/evidence/*.md | wc -l`
 → 4, gelesen 2026-09-26, keine Erwartung).
 
 **Zwei Aussagen, zwei Träger.** Die **Instanz** `sync` ist `geplant`: Kennung
-[`slice-sync-waechter-tragen-mutations-faelle`](../../../open/slice-sync-waechter-tragen-mutations-faelle.md)
+[`slice-pin-kopplung-und-sync-tragen-ihre-mutations-faelle`](../../../open/slice-pin-kopplung-und-sync-tragen-ihre-mutations-faelle.md)
 (`open/`: Mutations-Fälle für die `sync`-eigenen Wächter und der Absatz *Grenze* in Schritt 7); der Slice legt die
 Fälle an, die die `sync`-Zusagen unter `make mutate` stellen, und ist eine zulässige Instanz-Reparatur, kein Zwang
 aus der Klasse. Die **Klasse** — jede

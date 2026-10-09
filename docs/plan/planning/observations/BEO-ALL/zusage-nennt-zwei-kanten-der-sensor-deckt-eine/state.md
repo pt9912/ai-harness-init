@@ -1,6 +1,6 @@
 **Stand:** geplant
 
-Kennung: [`slice-069-zahn-bindet-zusicherung`](../../../open/slice-069-zahn-bindet-zusicherung.md) —
+Kennung: [`slice-der-mutations-treiber-sieht-bindung-und-abdeckung`](../../../open/slice-der-mutations-treiber-sieht-bindung-und-abdeckung.md) —
 eine Kante ohne bindenden Fall wird am Treiber sichtbar, weil der Fall die Zusicherung nennt, die er
 bindet. Der Zielort unten bleibt verkörpert, bis der Slice liefert.
 

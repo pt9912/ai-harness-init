@@ -198,10 +198,10 @@ mit gelesener Meldung ([`AGENTS.md`](../../../../AGENTS.md) §3.6), nicht nur al
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [ ] Reconciliation-Register: entfällt — dieses Repo hat keinen Brownfield-Bootstrap und führt die Register-Datei nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -328,39 +328,12 @@ dasteht.
 
 ## 7. Closure-Notiz
 
-<!-- BEDIENHINWEIS — keine Norm; faellt beim Kopieren weg (README.md
-§Verwendung, Schritt 5) und darf deshalb nichts Tragendes halten. Reihenfolge:
-diese Sektion vor dem `git mv` nach done/ fuellen — einzige Ausnahme ist das
-letzte DoD-Item in §2 (die Paarungen suchen in `done/`, also nach dem `git mv`).
-Im Repo ohne Wellen-Betrieb braucht die Closure dadurch drei Commits: Inhalt,
-`git mv`, Haekchen — das folgt aus der Hard Rule, es widerspricht ihr nicht. -->
-
-Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
-§Das Beobachtungs-Register (vorhandene `BEO-<NNN>` **zitieren** statt neu
-formulieren — sonst zählt das Register zwei Namen getrennt) ·
-`grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln (das
-Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
-wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
-Backticks). Ging der Gegenstand an einen anderen Slice oder entfiel er, trägt
-diese Sektion die Zeile `Gegenstand:` mit Kennung oder Grund und jedes Risiko
-aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
-(`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
-übernimmt).
-
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Gegenstand:** <übernommen von `slice-<Kennung>` | entfallen: <Grund>>
-  *(nur beim Ausgang ohne Arbeit; sonst Zeile löschen)*
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<NNN>` (<slice-kennung-a>, <slice-kennung-b>, <slice-kennung-c> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-<Kennung>.md` | `evidence/slice-<Kennung>.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+- **Gegenstand:** entfallen: der Beleg-Slot hat keinen Rollen-Konsumenten mehr. Ein Teillauf liest, schreibt und löscht ihn nie (`slice-mutate-fall-filter-und-die-belegform-vereinigung`), der Vollsweep läuft als Teilläufe je Shard (`grep -n 'MUTATE_CASES' .github/workflows/mutate.yml`), ein lokaler Vollauf braucht `MUTATE_FORCE=1` (`slice-mutate-ohne-cases-bricht-ab`), und kein Anweisungssatz verlangt den vollen Lauf (`grep -ln 'make mutate' .claude/commands/*.md .claude/agents/*.md` nennt nur Implementer-Sätze, die ihn ausschließen). Ein Rollen-Dokument entwertet damit keinen Beleg, den eine Rolle braucht.
+- **Risiken aus §6:** R1–R4 — *entfallen*: kein Baum wird aus der Isolationskopie genommen, keine Beleg-Prüfung gebaut; R5 (Status der Beleg-ADR) — *entfallen* für diesen Slice, die Annahme bleibt Sache des Architects.
+- **Steering-Loop-Eintrag:** gezählt, nicht verkörpert — die Mutations-Gruppe aus sechs offenen Slices trug zwei, deren Gegenstand inzwischen geliefert oder ohne Konsumenten war; erst der Gruppierungs-Durchgang (Modul 6 Schritt 3) machte das sichtbar, kein Sensor.
+- **Beobachtungs-Register (`../observations/`):** keine Beobachtung angefallen; Register-Nachzug im selben Commit (`state.md` der Einträge, die auf diesen Slice zeigten).
+- **Folge-Slices:** keine.
+- **Drei Paarungen:** Folge-Slice-Paarung — die genannte Kennung löst auf (`ls docs/plan/planning/*/<kennung>.md`, eine Datei).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

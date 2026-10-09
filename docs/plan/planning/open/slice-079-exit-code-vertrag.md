@@ -137,13 +137,13 @@ eingehende Links im Zug danach; Closure-Notiz mit Steering-Loop-Eintrag.
   **jeder** Fall unter `test/mutations/`, `# verify:` nur einzelne) — es erfüllt die
   Aufnahme-Regel und
   lebt heute allein im Parser von [`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh),
-  aber [slice-069](slice-069-zahn-bindet-zusicherung.md) fügt ihm ein Kopf-Feld hinzu. Es jetzt
+  aber [slice-der-mutations-treiber-sieht-bindung-und-abdeckung](slice-der-mutations-treiber-sieht-bindung-und-abdeckung.md) fügt ihm ein Kopf-Feld hinzu. Es jetzt
   festzuschreiben hieße, eine Festlegung zu schreiben, die ihr eigener Nachfolger umschreibt;
-  **Trigger:** slice-069 liegt in `done/`. Ebenfalls nicht hier: die Verlagerung des
+  **Trigger:** slice-der-mutations-treiber-sieht-bindung-und-abdeckung liegt in `done/`. Ebenfalls nicht hier: die Verlagerung des
   Span-Schemas aus §5 (reine Umschichtung an einem Anker, auf den eine immutable ADR zeigt), der
   Prüfbereich von `comment-claims` ([slice-070](slice-070-comment-claims-pruefbereich.md)) und
   die Zusicherungs-Granularität der Mutations-Fälle
-  ([slice-069](slice-069-zahn-bindet-zusicherung.md)).
+  ([slice-der-mutations-treiber-sieht-bindung-und-abdeckung](slice-der-mutations-treiber-sieht-bindung-und-abdeckung.md)).
 
 ## 7. Closure-Notiz (nach `done/`)
 

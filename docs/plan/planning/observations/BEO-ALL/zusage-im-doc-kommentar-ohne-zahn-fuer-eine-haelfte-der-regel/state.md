@@ -1,6 +1,6 @@
 **Stand:** geplant
 
-Kennung: [`slice-069-zahn-bindet-zusicherung`](../../../open/slice-069-zahn-bindet-zusicherung.md) —
+Kennung: [`slice-der-mutations-treiber-sieht-bindung-und-abdeckung`](../../../open/slice-der-mutations-treiber-sieht-bindung-und-abdeckung.md) —
 der Fall-Kopf trägt die Zusicherung, nicht den Wächter-Namen; bei einer mehrteiligen Regel braucht
 damit jeder Teil einen eigenen bindenden Fall, und der fehlende wird am Treiber sichtbar. Die
 Reviewer-Zeile unten bleibt verkörpert, bis der Slice liefert.

@@ -24,7 +24,7 @@ vergisst, wird rot statt still grün.
 
 **Ausdrücklich NICHT in diesem Slice:**
 
-- Der Mutations-Fall für die vorhandene Pin-Kopplung — `slice-pin-kopplung-bekommt-ihren-mutations-fall`
+- Der Mutations-Fall für die vorhandene Pin-Kopplung — `slice-pin-kopplung-und-sync-tragen-ihre-mutations-faelle`
   trägt ihn; dort ist der Wächter vorhanden, hier fehlt er.
 - Ein Pin-Zug selbst — anderer Vorgang; der Sensor misst die Kopplung, er bewegt keinen Wert.
 - Paare über die drei unten genannten hinaus — Bestand bleibt bis zum nächsten Register-Beleg

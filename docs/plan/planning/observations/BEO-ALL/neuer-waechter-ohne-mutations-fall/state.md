@@ -1,6 +1,6 @@
 **Stand:** geplant
 
-Kennung: [`slice-119-zusage-ohne-fall-wird-sichtbar`](../../../open/slice-119-zusage-ohne-fall-wird-sichtbar.md) —
+Kennung: [`slice-der-mutations-treiber-sieht-bindung-und-abdeckung`](../../../open/slice-der-mutations-treiber-sieht-bindung-und-abdeckung.md) —
 trägt den Sensor der Klasse: er zählt die Wächter, die kein Fall in `test/mutations/` nennt, mit
 ihrer Bezugsmenge. Die Prosa-Regel unten bleibt der Zielort, bis der Sensor steht.
 
