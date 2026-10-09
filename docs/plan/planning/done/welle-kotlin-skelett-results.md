@@ -41,7 +41,7 @@
   den vier Vorgänger-Wellen. Die Vorschau sperrt nicht sofort, sie rechnet: `ZaehlePraefix` kompiliert
   je Aufruf neu, 3545 Dateien × 203 bewegte Namen — Register-Eintrag
   `BEO-ALL/archiv-vorschau-rechnet-im-produkt-aus-dateien-und-bewegten-namen` (1 Beleg).
-- **ADR-0062 Trigger 2 eingetreten, bestätigt:** der Fund liegt in den Spec-Straten, die
+- **[ADR-0062](../../adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md) Trigger 2 eingetreten, bestätigt:** der Fund liegt in den Spec-Straten, die
   [ADR-0062](../../adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md)
   ausnimmt; Träger ist `slice-151`, keine Folge-ADR.
 - **Offen aus einem Review:** `test-kotlin` am gemischten Root baut das Go-`Dockerfile` (MEDIUM-2 aus
@@ -50,7 +50,7 @@
 - **Bestands-Lese-Schritt — Vorschläge an den Auftraggeber,** nichts stillgelegt, kein Slice-Zustand
   geändert:
   - `slice-151-spec-straten-haben-eine-schreibende-rolle` bestätigt, Priorität hoch (Träger für
-    ADR-0062 Trigger 2 und für `spec-zeile-enger-…`).
+    [ADR-0062](../../adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md) Trigger 2 und für `spec-zeile-enger-…`).
   - `slice-181-grenzen-liste-vollstaendig-oder-fail-closed`,
     `slice-werkzeug-aussage-traegt-quelle-stand-und-messstelle`,
     `slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor` bestätigt.
@@ -86,7 +86,7 @@ Kein Eintrag erreicht im Fenster erstmals 3×; kein Zielort-Feld. Wiederauftrete
   `BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle` (Fremd-Werkzeug-Verhalten; Halter ist
   die `full-smoke`-Stufe in CI).
 - **ADR-Zählregel:** `BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet` —
-  für Trigger 2 von ADR-0062 zählen nur Belege im Residuum von Festlegung 1.
+  für Trigger 2 von [ADR-0062](../../adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md) zählen nur Belege im Residuum von Festlegung 1.
 
 ## Beobachtungs-Register (Zeiger)
 
@@ -95,14 +95,14 @@ Kein Eintrag erreicht im Fenster erstmals 3×; kein Zielort-Feld. Wiederauftrete
   `BEO-ALL/archiv-vorschau-rechnet-im-produkt-aus-dateien-und-bewegten-namen` (Beleg
   `2026-10-09-welle-kotlin-skelett-audit-vorlage`). `state.md` ergänzt nach dem Architect-Verdikt:
   die sechs Einträge aus §Steering-Loop-Einträge.
-- **Paarungen nach dem Move, 2026-10-09:** (a) diese Notiz trägt kein Zielort-Feld; im Fenster seit `d82ac7be` trägt eines allein `slice-kotlin-flaches-skelett`, Zielort `harness/conventions/MR-089-laufzeit-aussage-nennt-image-lage-und-variante.md` existiert und trägt `seit slice-kotlin-flaches-skelett` (`grep -l`). (b) jeder genannte Slice existiert genau einmal im Lifecycle (`ls docs/plan/planning/{open,next,in-progress,done}/<kennung>*.md`), `slice-rollen-grenze-eines-commits-hat-ein-werkzeug` in `open/`. (c) erste Hälfte: jede genannte `BEO-ALL/<slug>` existiert mit 1–13 Belegen. Register-Paarung (c), zweite Hälfte: 2 Verzeichnisse ohne Beleg, namentlich `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`, `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen behauptet (`for d in docs/plan/planning/observations/BEO-ALL/*/; do n=$(ls "$d"evidence/*.md 2>/dev/null | wc -l); [ "$n" -eq 0 ] && echo "$d"; done`). `make register-ausgang` → `237 Eintraege, 67 ueber der Schwelle, 0 Befund(e)`.
+- **Paarungen nach dem Move, 2026-10-09:** (a) diese Notiz trägt kein Zielort-Feld; im Fenster seit `d82ac7be` trägt eines allein `slice-kotlin-flaches-skelett`, Zielort [`MR-089`](../../../../harness/conventions.md#mr-089) existiert und trägt `seit slice-kotlin-flaches-skelett` (`grep -l`). (b) jeder genannte Slice existiert genau einmal im Lifecycle (`ls docs/plan/planning/{open,next,in-progress,done}/<kennung>*.md`), `slice-rollen-grenze-eines-commits-hat-ein-werkzeug` in `open/`. (c) erste Hälfte: jede genannte `BEO-ALL/<slug>` existiert mit 1–13 Belegen. Register-Paarung (c), zweite Hälfte: 2 Verzeichnisse ohne Beleg, namentlich `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`, `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen behauptet (`for d in docs/plan/planning/observations/BEO-ALL/*/; do n=$(ls "$d"evidence/*.md 2>/dev/null | wc -l); [ "$n" -eq 0 ] && echo "$d"; done`). `make register-ausgang` → `237 Eintraege, 67 ueber der Schwelle, 0 Befund(e)`.
 
 ## Folge-Slices
 
 - Neu in `open/`: `slice-rollen-grenze-eines-commits-hat-ein-werkzeug` (Sensor B-4, Auftraggeber-Entscheidung
   Option A vom 2026-10-09). Die übrigen *geplant*-Ausgänge tragen `slice-181-grenzen-liste-vollstaendig-oder-fail-closed`,
   `slice-werkzeug-aussage-traegt-quelle-stand-und-messstelle` und
-  `slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor`; ADR-0062 Trigger 2 trägt
+  `slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor`; [ADR-0062](../../adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md) Trigger 2 trägt
   `slice-151-spec-straten-haben-eine-schreibende-rolle`.
 - **Offen beim Auftraggeber:** Folge-Slice für das gemischte-Root-Gate; ein Slice
   entsteht erst nach der Entscheidung.
@@ -115,6 +115,6 @@ Kein Eintrag erreicht im Fenster erstmals 3×; kein Zielort-Feld. Wiederauftrete
   `core-impurity`-Gegenbeispiel (`Greeting.kt:4`). Ein Replay-Set führt dieses Repo nicht.
 - Schritt 2: `CO-001` *Auflösung fällig* mit Folge-Slices `slice-113`, `slice-141`; `CO-002`
   permanent; kein bootstrap-aware Gate (Audit-Vorlage
-  `docs/reviews/2026-10-09-welle-kotlin-skelett-audit-vorlage.md`). ADR-0088, ADR-0089, ADR-0063,
-  `MR-089` ohne eingetretenen Trigger; ADR-0062 Trigger 2 bestätigt, keine Folge-ADR
+  `docs/reviews/2026-10-09-welle-kotlin-skelett-audit-vorlage.md`). [ADR-0088](../../adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md), [ADR-0089](../../adr/0089-span-dateien-sind-nur-fuer-den-eigentuemer-lesbar.md), [ADR-0063](../../adr/0063-das-werkzeug-sagt-seine-fassung.md),
+  [`MR-089`](../../../../harness/conventions.md#mr-089) ohne eingetretenen Trigger; [ADR-0062](../../adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md) Trigger 2 bestätigt, keine Folge-ADR
   (Architect-Verdikt `docs/reviews/2026-10-09-welle-kotlin-skelett-architect-verdikt.md`).
