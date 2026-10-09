@@ -4,7 +4,7 @@
 `open/`, `next/`, `in-progress/`, `done/`. Er wechselt nur durch `git mv`, siehe Baseline-Regelwerk
 `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
-**Welle:** `welle-kotlin-skelett`.
+**Welle:** [welle-kotlin-skelett](../welle-kotlin-skelett.md).
 
 **Bezug:** [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) · [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) · [ADR-0088](../../adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md). Grundlage: Vorklärung
 `2026-10-08-kotlin-welle-architect-vorklaerung`.
