@@ -103,7 +103,7 @@ ist heute **nicht** gewichtet, sondern Index-Modulo über die sortierten Namen
 
 Liefer-Punkte:
 
-- [ ] **Fallauswahl und Zuteilung:** ein Skript unter `harness/tools/` hinter einem `make`-Ziel
+- [x] **Fallauswahl und Zuteilung:** ein Skript unter `harness/tools/` hinter einem `make`-Ziel
       ([`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions):
       die CI ruft `make`) gibt zu Basis, Commit, Shard-Zahl und Index die Fälle des Shards aus. Lokal
       aufgerufen urteilt es nach der Schwelle (§1). Ein bats-Test belegt: ein Fall mit geänderter
@@ -111,12 +111,12 @@ Liefer-Punkte:
       fehlender Claim-Commit bricht ab, schwere Fälle liegen auf verschiedenen Shards. An der Grenze
       ergeben 8 Fälle den lokalen Weg und 9 den CI-Weg. Zu jeder Zusage ist die rot färbende Mutation
       gesehen (`AGENTS.md` §3.6), an der Schwelle auch die Verschiebung um eins (`>` gegen `>=`).
-- [ ] **CI-Pfad:** `.github/workflows/mutate-branch.yml` (push auf `mutate/**`, 10 Shards, der
+- [x] **CI-Pfad:** `.github/workflows/mutate-branch.yml` (push auf `mutate/**`, 10 Shards, der
       Ergebnis-Job schreibt `mutate-ergebnis.txt` in den Branch), `ci.yml` ignoriert `mutate/**`,
       `mutate.yml` fährt dieselbe Zuteilung auf 10 Shards; `make ci-lint` ist grün. Ein realer Lauf auf
       `mutate/slice-mutate-laeuft-ueber-einen-ci-branch-<sha8>` liegt vor, sein Ergebnis ist per `git show`
       gelesen und im Bericht zitiert.
-- [ ] **Anweisungssätze und Sensor-Doku:** `.claude/commands/implement-slice.md` und
+- [x] **Anweisungssätze und Sensor-Doku:** `.claude/commands/implement-slice.md` und
       `.claude/agents/implementer.md` (vor der Übergabe an die Verifikation fragt der Implementer das
       Werkzeug und folgt seinem Urteil: lokaler Lauf oder Branch-Push; der Bericht nennt den Weg, bei
       CI auch Branch und geprüften Commit), `.claude/agents/verifier.md` (beim CI-Weg: Ergebnis lesen,
@@ -126,19 +126,19 @@ Liefer-Punkte:
 
 Konstant:
 
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`), kein Self-Review (Modul 8).
-- [ ] **Übergabe an den Architect** (eigener Commit, `AGENTS.md` §3.8, kein Liefer-Punkt):
+- [x] **Übergabe an den Architect** (eigener Commit, `AGENTS.md` §3.8, kein Liefer-Punkt):
       [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)
       und [`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit)
       nennen den Branch-Weg statt des lokalen Laufs. Zu
       [`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions) ist
       entschieden, ob der Ergebnis-Job mit `contents: write` und einem `git push` außerhalb eines
       `make`-Ziels zulässig ist.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -184,36 +184,85 @@ Verifikations-Bericht zitiert, und kein Branch dieses Slice liegt mehr
 - **Schreibrecht auf Inhalte.** Mit `contents: write` kann der `GITHUB_TOKEN` jeden Branch
   beschreiben, auch `main`. Ein fehlerhafter Ergebnis-Job könnte also dorthin pushen. Gemildert wird
   das durch das Recht nur im Ergebnis-Job, den expliziten Refspec und den Präfix-Abbruch (§3). Kein
-  Wächter hält den Refspec. — **Ausgang:** <bei Closure>
+  Wächter hält den Refspec. — **Ausgang:** weiter offen: [`BEO-ALL/workflow-laeuft-in-der-fassung-des-gepushten-branch`](../observations/BEO-ALL/workflow-laeuft-in-der-fassung-des-gepushten-branch/observation.md); `main` ist ungeschützt, den Branch-Schutz setzt nur der Auftraggeber, die Grenze nennt [`MR-091`](../../../../harness/conventions.md#mr-091) §Grenze.
 - **CI-Minuten.** Jeder `full-smoke`-Fall baut Docker-Images und braucht Netz; jeder Push auf den
   Branch startet bis zu 10 Shards. — **Ausgang:** entfallen: Der Auftraggeber setzt am 2026-10-09
   „CI Minuten sind kein Problem“ und zieht stattdessen die Schwelle von 8 Fällen (§1).
 - **Parallele Branches mehrerer Läufe.** Jeder Lauf hat seinen eigenen Branch; ein späterer Lauf
   bricht einen früheren nicht ab, und ein Ergebnis-Push auf einen weitergelaufenen Branch scheitert
   (ohne `--force`). Branches, die der Verifier nicht löscht, bleiben als Leichen
-  liegen; ein Wächter dafür existiert nicht. — **Ausgang:** <bei Closure>
+  liegen; ein Wächter dafür existiert nicht. — **Ausgang:** entfallen: Das Aufräumen ist Pflicht des Verifiers ([`MR-091`](../../../../harness/conventions.md#mr-091) Setzung 1, `.claude/agents/verifier.md`), und `git ls-remote origin 'refs/heads/mutate/*'` nennt am 2026-10-09 keinen Branch; dass kein Wächter Leichen meldet, benennt `harness/sensors/mutate.md` §CI-Branch.
 - **Die Ergebnisdatei gelangt nach `main`.** Bringt jemand den Branch-Tip per Fast-Forward, Merge
   oder Cherry-Pick nach `main`, steht dort `mutate-ergebnis.txt`. Kein Gate prüft das. Zur Closure ist
-  zu entscheiden: ein Wächter in `make gates` oder benannte Grenze. — **Ausgang:** <bei Closure>
+  zu entscheiden: ein Wächter in `make gates` oder benannte Grenze. — **Ausgang:** entfallen: `git ls-files mutate-ergebnis.txt | wc -l` → 0, und die Grenze ist benannt (`harness/sensors/mutate.md` §CI-Branch: kein Wächter meldet eine Ergebnisdatei in `main`; [`MR-091`](../../../../harness/conventions.md#mr-091) §Grenze).
 - **Grenze der Auswahl.** Gewählt wird über `# files:`. Ein Fall, dessen Wächter-Test geändert wurde,
   dessen `# files:` aber keine geänderte Datei nennt, läuft nicht; nennt `# files:` die falsche Datei
   (`docs/plan/planning/observations/BEO-ALL/mutations-fall-zeigt-auf-falsche-datei/`, 2×), fehlt der Fall in der Menge. Das ist
   dieselbe Grenze wie bei der lokalen Regel, jetzt aber an einem Werkzeug statt an einem Urteil. —
-  **Ausgang:** <bei Closure>
+  **Ausgang:** weiter offen: [`BEO-ALL/mutations-fall-zeigt-auf-falsche-datei`](../observations/BEO-ALL/mutations-fall-zeigt-auf-falsche-datei/observation.md) (2×); in diesem Slice nicht aufgetreten, kein Beleg.
 - **Schleife über den Ergebnis-Commit.** Ein Push mit dem `GITHUB_TOKEN` startet heute keinen neuen
   Workflow-Lauf. Ändert sich das, löste der Ergebnis-Commit einen weiteren Lauf aus. Der Workflow
   überspringt deshalb einen Tip, dessen einzige Änderung `mutate-ergebnis.txt` ist. —
-  **Ausgang:** <bei Closure>
+  **Ausgang:** entfallen: Der Workflow überspringt einen Tip, der allein `mutate-ergebnis.txt` ändert, und Mutations-Fall 665 hält das im Test; ob ein Token-Push einen Lauf auslöst, ist ohne `gh` nicht beobachtbar.
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** <bei Closure>
-- **Was ging anders als geplant:** <bei Closure>
-- **Steering-Loop-Eintrag:** <bei Closure>
-- **Beobachtungs-Register (`../observations/`):** <bei Closure>
-- **Folge-Slices:** <bei Closure>
-- **Risiken aus §6:** <bei Closure>
-- **Drei Paarungen:** <bei Closure>
+Geschrieben vom Planner in eigenem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+**Rolle:** Planner · **Datum:** 2026-10-09
+
+- **Was hat funktioniert:** Die drei Liefer-Punkte sind bestätigt
+  ([Verifikation](../../../reviews/2026-10-09-slice-mutate-laeuft-ueber-einen-ci-branch-verifikation.md),
+  `59c7a4ff`). Der reale Branch-Lauf auf `mutate/slice-mutate-laeuft-ueber-einen-ci-branch-79651a0e`
+  ergab 66 von 66 Fällen `ok`, `Urteil: gruen`. Er wurde einmal per `git show` gelesen, danach wurden
+  die Branches gelöscht. Der Review fand 0 HIGH · 3 MEDIUM · 3 LOW · 2 INFO
+  ([Review](../../../reviews/2026-10-09-slice-mutate-laeuft-ueber-einen-ci-branch.md)). Behoben sind
+  MEDIUM-1, MEDIUM-2, LOW-1–3 und INFO-2 in `c4c9fa4e`/`79651a0e`, MEDIUM-3 in `742c5f76` und das
+  LOW-1 der Verifikation in `9106e745`. INFO-1 (niemand wartet auf CI) bleibt benannt.
+- **Architect-Übergabe:** [`MR-091`](../../../../harness/conventions.md#mr-091) (`ed2ac693`) erfüllt
+  sie. Für [`MR-090`](../../../../harness/conventions.md#mr-090) nennt [`MR-091`](../../../../harness/conventions.md#mr-091) den Branch-Weg statt des
+  Nachtlaufs (Kopf-Marke). Zu [`MR-014`](../../../../harness/conventions.md#mr-014) ist das
+  Schreibrecht in Setzung 2 entschieden: zulässig unter vier Bedingungen.
+  [`MR-071`](../../../../harness/conventions.md#mr-071) bleibt unberührt. Er bindet die Anlage eines
+  Falls und nennt keinen Lauf-Ort, eine Änderung hätte also kein Objekt ([`MR-091`](../../../../harness/conventions.md#mr-091) §Geltungsbereich).
+  Die DoD nannte [`MR-071`](../../../../harness/conventions.md#mr-071) trotzdem; diese Nennung ist damit gegenstandslos.
+- **Was ging anders als geplant:** Zwei Entscheidungen hat der Orchestrator getroffen:
+  - Kein Force-Push. Jeder Commit bekommt seinen eigenen Branch `mutate/<kennung>-<sha8>`, und Plan §1
+    ist nachgezogen (`742c5f76`).
+  - Der Implementer hat auf das CI-Ergebnis gewartet, statt es dem Verifier zu überlassen.
+
+  Die Grenze aus [`MR-091`](../../../../harness/conventions.md#mr-091) bleibt offen: Der Workflow läuft in der Fassung des gepushten Branch, und
+  `main` ist nicht geschützt (öffentliche API: `"protected": false`). Den Branch-Schutz setzt nur der
+  Auftraggeber (Register unten, Risiko 1).
+- **Steering-Loop-Eintrag:** Guide geschärft: Eine Exit-Zusage für `make <ziel>` gilt dem
+  `make`-Aufruf, nicht dem Skript. GNU Make endet nur mit 0, 1 oder 2. Das steht als Falsch/Richtig-Paar
+  — liegt in `AGENTS.md §3.6`.
+  Auslöser: `BEO-ALL/exit-zusage-aus-anderem-aufruf-abgeleitet` (slice-sprung-auf-v690-wird-vollzogen,
+  slice-tap-check-haelt-die-formel-gegen-das-veroeffentlichte-asset,
+  slice-mutate-laeuft-ueber-einen-ci-branch — 3×). Grundlage ist das Verdikt
+  [`2026-10-09-…-architect-verdikt`](../../../reviews/2026-10-09-slice-mutate-laeuft-ueber-einen-ci-branch-architect-verdikt.md)
+  (`0a2e4306`). Der mechanische Sensor ist ein akzeptiertes Negativ bis zum vierten Beleg.
+- **Übergabe an den nächsten Implementer:** Die README-Zeile zu `make doc-complete` sagt „Exit 1“ zu,
+  über `make` ist es Exit 2. Das ist dieselbe Klasse, aber benannt, nicht gezählt, weil sie zu keinem
+  abgeschlossenen Vorgang gehört. Den Wortlaut nennt das Verdikt. Der Implementer von
+  `slice-d-check-pin-bringt-den-go-sicherheitsfix` zieht die Zeile mit nach.
+- **Beobachtungs-Register (`../observations/`):**
+  - [`BEO-ALL/exit-zusage-aus-anderem-aufruf-abgeleitet`](../observations/BEO-ALL/exit-zusage-aus-anderem-aufruf-abgeleitet/observation.md):
+    Beleg ergänzt (LOW-1 der Verifikation), damit 3×, Stand *verkörpert*.
+  - [`BEO-ALL/plan-abweichung-landet-im-commit-bericht-statt-im-plan`](../observations/BEO-ALL/plan-abweichung-landet-im-commit-bericht-statt-im-plan/observation.md):
+    Beleg ergänzt (MEDIUM-3), damit 9×, Stand *verkörpert*, unverändert.
+  - Neu angelegt, je 1×:
+    - [`BEO-ALL/make-variable-ungequotet-im-shell-rezept`](../observations/BEO-ALL/make-variable-ungequotet-im-shell-rezept/observation.md) (MEDIUM-1)
+    - [`BEO-ALL/konstante-doppelt-eine-richtung-bleibt-still`](../observations/BEO-ALL/konstante-doppelt-eine-richtung-bleibt-still/observation.md) (MEDIUM-2)
+    - [`BEO-ALL/workflow-laeuft-in-der-fassung-des-gepushten-branch`](../observations/BEO-ALL/workflow-laeuft-in-der-fassung-des-gepushten-branch/observation.md) (Risiko 1)
+  - Ohne Eintrag: LOW-1–3 der Review und beide INFO, im Slice behoben oder benannt. LOW-3 ist eine
+    andere Klasse als `neue-oeffentliche-funktion-ohne-benannte-grenze`.
+- **Folge-Slices:** keiner.
+- **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines berührt. ADR: kein
+  Re-Evaluierungs-Trigger eingetreten. Hard Rules: keine mit eingetretenem Auflösungs-Trigger.
+- **Archivierung:** entfällt ([`MR-078`](../../../../harness/conventions.md#mr-078); `archive-slice`
+  ist nicht gebaut).
+- **Risiken aus §6:** Jede Zeile in §6 hat ihren Ausgang.
+- **Drei Paarungen:** werden nach dem `git mv` geprüft, im Commit danach.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
