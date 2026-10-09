@@ -385,8 +385,14 @@ func TestRun_AddLangRoot(t *testing.T) {
 // dem Build-Kontext ".", blocked/kotlin; hexslice zusaetzlich die .a-check.yml mit der
 // Auflösung fixed-root src/main/kotlin/app (der Gate-Lauf am Root mountet das ganze Ziel, die
 // Config ist modul-relativ und das Modul ist der Root) samt Arch-Gate-Fragment, flat keines.
-// Gemessen ist die abgelegte Datei-Menge und ihr Inhalt, nicht ein Gate-Lauf — den traegt die
-// full-smoke-Stufe "Kotlin als One-Shot am Root".
+// Gemessen ist die abgelegte Datei-Menge und ihr Inhalt, nicht ein Gate-Lauf. Einen Gate-Lauf
+// am Root faehrt allein fuer hexslice die full-smoke-Stufe "Root-Bootstrap (--lang kotlin
+// --arch hexslice)"; flat am Root deckt nur dieser Test, ohne Gate-Lauf.
+// Grenze: die Verdrahtung in cmd/ (emitAll -> wireLang mit Pfad ".") ist sprachunabhaengig und
+// traegt keine kotlin-eigene Stelle; was hier sprachspezifisch bricht, liegt in internal/gen/
+// und faellt dort zuerst (test/mutations/626, 627). Ein Bruch des Pfads "." in emitAll faerbt
+// neben diesem Test auch TestRun_BootstrapMeldetNeueTargets rot (--lang go) — dieser Test
+// bindet die cmd-Stelle nicht allein, darum fuehrt sie keinen Mutationsfall auf ihn.
 func TestRun_BootstrapKotlinRoot(t *testing.T) {
 	for _, v := range []struct {
 		name string
