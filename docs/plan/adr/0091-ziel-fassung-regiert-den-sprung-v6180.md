@@ -39,7 +39,7 @@ git -C "$K" diff --stat v6.17.0 v6.18.0 -- lab/regelwerk lab/templates kurs/de |
 
 Geändert: `modul-10-review-harness.md` (Absatz in §Harness-Einordnung (Modul 10), Ablage-Satz),
 `regelwerk/README.md` (Stand-Zeile), die Vorlagen `.d-check.yml`, `README.template.md` (unter `harness/`),
-`docs/reviews/review-report.template.md`. **`modul-02-harness-bootstrap.md` ist unverändert** —
+`review-report.template.md` (unter `docs/reviews/`). **`modul-02-harness-bootstrap.md` ist unverändert** —
 die Prozedur des Durchgangs ist dieselbe wie in
 [ADR-0082](0082-ziel-fassung-regiert-den-sprung-v6170.md) Festlegung 1.
 
