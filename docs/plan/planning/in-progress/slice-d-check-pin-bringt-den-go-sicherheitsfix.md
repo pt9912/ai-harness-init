@@ -1,4 +1,4 @@
-# Slice slice-d-check-pin-bringt-den-go-sicherheitsfix: d-check v0.85.0 mit dem Go-1.27.2-Image
+# Slice slice-d-check-pin-bringt-den-go-sicherheitsfix: d-check v0.86.0 mit dem Go-1.27.2-Image
 
 **Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese
 Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
@@ -18,7 +18,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 [`MR-063`](../../../../harness/conventions.md#mr-063) (Gegenmessung),
 [`MR-084`](../../../../harness/conventions.md#mr-084) (Muster des Pin-Eintrags),
 [`MR-086`](../../../../harness/conventions.md#mr-086) (Trigger-Prüfung). Auftraggeber-Freigabe
-2026-10-09.
+2026-10-09; Zielversion v0.86.0 am 2026-10-10 (§1 Entscheidung).
 
 **Berührte Spec-Stellen:** `—` — die Pins sind Code-Konstanten.
 
@@ -30,14 +30,33 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 
 ## 1. Ziel und Abgrenzung
 
-**Ziel:** d-check `v0.85.0` steht im Dogfood (`d-check.mk`, `DCHECK_IMAGE`/`DCHECK_DIGEST`) und
+**Ziel:** d-check `v0.86.0` steht im Dogfood (`d-check.mk`, `DCHECK_IMAGE`/`DCHECK_DIGEST`) und
 als emittierter Default (`internal/emit/emit.go`, `DefaultImage`/`DefaultDigest`). Anlass ist der
 Sicherheitsgrund: laut CHANGELOG des Nachbar-Repos ist das Image mit Go 1.27.2 gebaut und behebt
 zwei HIGH-Befunde der Standardbibliothek (CVE-2026-78667, CVE-2026-97031).
 
+**Entscheidung 2026-10-10 (Orchestrator):** Zielversion `v0.86.0` statt `v0.85.0`. Grund: der
+Auftraggeber meldete `v0.86.0` als erschienen, bevor dieser Slice schloss; ein Sprung statt zwei
+hintereinander. Die Abnahme ändert sich nur im Versionsziel. Die Arbeit an `v0.85.0` (Pin,
+Exit-Zusage, `reviews`-Kommentar) wird auf `v0.86.0` nachgezogen.
+
+**Was `v0.86.0` gegenüber `v0.85.0` ändert** (CHANGELOG des Nachbar-Repos, gelesen):
+
+- `reviews.match: name` deckt nur den **längsten** passenden Slice-Namen — nicht rein additiv. Der
+  emittierte Kommentar-Block `reviews` nennt `match: name`; ob Kommentar und Trigger-Aussage am
+  neuen Pin noch stimmen, prüft der Implementer an `v0.86.0` neu (§3).
+- `skip-allows-empty` (neben `skip-pattern` in `reviews`, `planning.closure`, `structure`) erklärt
+  eine erst durch `skip-pattern` geleerte Kandidatenmenge zum Ruhezustand. Das berührt den Grund
+  von [`MR-086`](../../../../harness/conventions.md#mr-086) (leerer Start fail-closed); ob der
+  Auflösungs-Trigger damit eintritt, prüft der Architect (§2, Doku-Update).
+- `--suggest-config` schlägt `"8. Historie"` für `matrix.exclude-sections` vor. Betrifft unsere
+  Konfiguration nicht: die Dogfood-`.d-check.yml` führt den Eintrag bereits, die emittierte
+  Vorlage lässt ihn begründet weg (Kommentar über `matrix` in `internal/emit/templates/d-check.yml`)
+  — `grep -n 'exclude-sections' .d-check.yml internal/emit/templates/d-check.yml`.
+
 **Lage** (keine Erwartungswerte): `grep -n '^DCHECK_IMAGE\|^DCHECK_DIGEST' d-check.mk`,
 `grep -n 'DefaultImage\|DefaultDigest' internal/emit/emit.go`; Index-Digest des Ziels:
-`docker buildx imagetools inspect ghcr.io/pt9912/d-check:v0.85.0` (Netz).
+`docker buildx imagetools inspect ghcr.io/pt9912/d-check:v0.86.0` (Netz).
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
@@ -48,8 +67,9 @@ zwei HIGH-Befunde der Standardbibliothek (CVE-2026-78667, CVE-2026-97031).
   Klon von a-check; `GO_VERSION ?= 1.27.0` im `Makefile` beider Tags) und keinen eigenen CHANGELOG-Abschnitt. Der Sprung brächte
   einen neuen Digest ohne neuen Inhalt, also auch nicht den Sicherheitsfix dieses Slice.
 - **Die neuen Opt-ins `vcs.ignore-link-targets`, `planning.closure.recursive`/`skip-pattern`,
-  `structure[].skip-pattern`.** *Anderer Vorgang:* der Pin macht sie verfügbar, eine Aktivierung
-  ist eine eigene Entscheidung. `vcs.ignore-link-targets` (ein reiner Pfad-Nachzug in einer
+  `structure[].skip-pattern`, `skip-allows-empty`, `--manual` und der `--suggest-config`-Vorschlag
+  `"8. Historie"`.** *Anderer Vorgang:* der Pin macht sie verfügbar, eine Aktivierung
+  ist eine eigene Entscheidung; aktiviert wird keiner. `vcs.ignore-link-targets` (ein reiner Pfad-Nachzug in einer
   immutablen Datei ist keine Drift) passt zu `slice-releasing-zieht-nach-docs-maintainer`, dort
   steht ein Pfad-Nachzug in eingefrorenen Artefakten an; die Entscheidung trifft jener Slice.
 - **`reviews` aktivieren, im Dogfood oder im emittierten Doc-Gate.** *Anderer Vorgang:* dieser
@@ -60,17 +80,17 @@ zwei HIGH-Befunde der Standardbibliothek (CVE-2026-78667, CVE-2026-97031).
 
 ## 2. Definition of Done
 
-- [ ] **1 — d-check `v0.85.0`:** `DCHECK_IMAGE`/`DCHECK_DIGEST` in `d-check.mk` und
+- [ ] **1 — d-check `v0.86.0`:** `DCHECK_IMAGE`/`DCHECK_DIGEST` in `d-check.mk` und
       `DefaultImage`/`DefaultDigest` in `internal/emit/emit.go` auf den Index-Digest (Kommando der
       Messung im Commit). **Rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6): eine der zwei
       Stellen bleibt auf `v0.84.0` — der Wächter, der sie koppelt, wird rot.
 - [ ] **2 — Strenge-Bilanz:** Gegenmessung nach
-      [`MR-063`](../../../../harness/conventions.md#mr-063) über beide Digests — jedes aktive Modul
+      [`MR-063`](../../../../harness/conventions.md#mr-063) zwischen `v0.84.0` und `v0.86.0`, also über beide Sprünge — jedes aktive Modul
       (`grep -m1 '^modules:' .d-check.yml`, Dogfood und emittiertes Ziel) mit Nicht-Null-Basis,
-      Befund-Zahlen und `diff` samt Kommando im Umsetzungs-Commit. Die zwei geänderten
-      `reviews`-Defaults treffen kein aktives Modul; die Bilanz nennt das mit dem Kommando, das es
-      zeigt.
-- [ ] **3 — Sicherheitsgrund gemessen:** die Go-Fassung des Binärs im gepinnten Image ist
+      Befund-Zahlen und `diff` samt Kommando im Umsetzungs-Commit. Die geänderten
+      `reviews`-Defaults (`v0.85.0`) und die `match: name`-Regel (`v0.86.0`) treffen kein aktives
+      Modul; die Bilanz nennt das mit dem Kommando, das es zeigt.
+- [ ] **3 — Sicherheitsgrund gemessen:** die Go-Fassung des Binärs im gepinnten `v0.86.0`-Image ist
       mindestens 1.27.2, gemessen am Image selbst (Kommando im Umsetzungs-Commit), nicht am
       CHANGELOG.
 - [ ] `make gates` grün; `make full-smoke` EXIT 0 (emittierter Pin im Ziel).
@@ -78,9 +98,10 @@ zwei HIGH-Befunde der Standardbibliothek (CVE-2026-78667, CVE-2026-97031).
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
 - [ ] Doku-Update: Übergabe an den Architect liegt als eigener Commit vor — MR-Eintrag zum
-      d-check-Pin `v0.85.0` nach dem Muster von [`MR-084`](../../../../harness/conventions.md#mr-084)
+      d-check-Pin `v0.86.0` nach dem Muster von [`MR-084`](../../../../harness/conventions.md#mr-084)
       mit der Bilanz aus Liefer-Punkt 2, **und** das Ergebnis der Prüfung, ob mit `reviews`
-      `match: name` (Slug-Kennungen) und der erkannten Vorlagen-Zusage der Auflösungs-Trigger von
+      `match: name` (Slug-Kennungen, längster Name), der erkannten Vorlagen-Zusage und
+      `skip-allows-empty` am Pin `v0.86.0` der Auflösungs-Trigger von
       [`MR-086`](../../../../harness/conventions.md#mr-086) eintritt — im MR-Eintrag genannt, auch
       wenn er nicht eintritt.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -96,7 +117,7 @@ zwei HIGH-Befunde der Standardbibliothek (CVE-2026-78667, CVE-2026-97031).
 | `d-check.mk` | update | Pin und Kopfkommentar (Liefer-Punkt 1) |
 | `internal/emit/emit.go` | update | emittierter Default-Pin (Liefer-Punkt 1) |
 | Pin-Tests unter `internal/emit/` | update, falls sie den Tag nennen | Kopplung der zwei Stellen ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)) |
-| `internal/emit/templates/d-check.yml` | update | Prosa der Kommentar-Blöcke `reviews` und `codepaths` auf den Stand am neuen Pin; `reviews` bleibt auskommentiert ([`MR-086`](../../../../harness/conventions.md#mr-086)), der Block trägt `match: name` |
+| `internal/emit/templates/d-check.yml` | update | Prosa der Kommentar-Blöcke `reviews` und `codepaths` auf den Stand am Pin `v0.86.0` (`match: name` deckt den längsten Namen — neu prüfen); `reviews` bleibt auskommentiert ([`MR-086`](../../../../harness/conventions.md#mr-086)), der Block trägt `match: name` |
 | `internal/emit/emit_test.go`, `test/mutations/` | update, neu | koppelt die Pin-Fassung der `reviews`-Prosa an `DefaultImage` und hält `match: name` im Block |
 
 ## 4. Trigger
@@ -115,7 +136,7 @@ zwei HIGH-Befunde der Standardbibliothek (CVE-2026-78667, CVE-2026-97031).
 
 ## 5. Closure-Trigger
 
-1. `make gates` grün und `make full-smoke` EXIT 0 mit d-check `v0.85.0`.
+1. `make gates` grün und `make full-smoke` EXIT 0 mit d-check `v0.86.0`.
 2. Gegenmessung und Go-Fassung im Umsetzungs-Commit, MR-Eintrag als eigener Architect-Commit.
 
 **Lerneintrag** in einer der drei Formen, §7; die Closure schreibt der Planner
@@ -131,6 +152,9 @@ zwei HIGH-Befunde der Standardbibliothek (CVE-2026-78667, CVE-2026-97031).
   treffen, misst dieser Slice nicht (Abgrenzung §1). — **Ausgang:** offen bis zur Closure; der
   Kandidat ist ein Beleg in `BEO-ALL/gepinntes-bild-ohne-schwachstellen-scan` oder eine
   Anforderung an das Nachbar-Repo.
+- **Mutate-Weg offen** — die Fallmenge des `make mutate`-Laufs für diesen Slice liegt bei 46; der CI-Weg ist durch das
+  Docker-Hub-Limit blockiert. Die Entscheidung des Auftraggebers, auf welchem Weg die Fälle
+  laufen, steht aus. — **Ausgang:** offen bis zur Closure.
 
 ## 7. Closure-Notiz
 
