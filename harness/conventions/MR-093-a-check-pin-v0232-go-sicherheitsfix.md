@@ -5,11 +5,11 @@
   [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit).
 - **Geltungsbereich:** `internal/emit/archgate.go` (`DefaultArchImage`/`DefaultArchDigest`,
   Kopfkommentar); der a-check-Pin ist allein emittiert und tritt an keine Stelle des Dogfood.
-  Setzt [`MR-084`](../conventions.md#mr-084--d-check-pin-v0840-multi-arch-index-prüfverhalten-unverändert)
-  fort, der den Sprung `v0.23.0` ohne eigenen Eintrag trug. **Nicht** die Methode der Gegenmessung
+  Form-Vorlage ist [`MR-084`](../conventions.md#mr-084--d-check-pin-v0840-multi-arch-index-prüfverhalten-unverändert)
+  (Multi-Arch-Index-Pin); er schließt den a-check-Pin aus und ist keine Vorgänger-Entscheidung. **Nicht** die Methode der Gegenmessung
   ([`MR-063`](../conventions.md#mr-063--die-gegenmessung-eines-d-check-sprungs-gibt-jedem-aktiven-modul-eine-basis-und-lässt-die-symlinks-stehen)).
 - **Ersetzt-Baseline-Regel:** keine. Nach dem Wortlaut der Eintrags-Vorlage ist der Eintrag damit
-  ein **Fork**, aus demselben Grund wie `MR-084`: ein Pin-Sprung tritt an keine Baseline-Stelle.
+  ein **Fork**: ein Pin-Sprung tritt an keine Baseline-Stelle.
 - **Adaption.** Der Pin springt **v0.23.0 → v0.23.2**, Digest des **Index**
   `sha256:2368f7b3a84f1dc5d075edccfe2201e19947d12fcbc8eaf4df84ef162d94f422`
   (`docker buildx imagetools inspect ghcr.io/pt9912/a-check:v0.23.2`; Manifests `linux/amd64`
@@ -47,11 +47,11 @@
   [`ADR-0088`](../../docs/plan/adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md) (die
   Kotlin-Sonde färbt rot: `Greeting.kt:4`) sind nicht eingetreten.
 - **Grenze.** Die Gegenmessung lief nur auf dem Host-Manifest (`amd64`); für `arm64` ist nur die
-  Go-Fassung gemessen — akzeptiertes Negativ wie in `MR-084`, weil Host und Gate-Job `amd64` fahren.
+  Go-Fassung gemessen — akzeptiertes Negativ, weil Host und Gate-Job `amd64` fahren.
   Kein Sensor hält Tag gegen Digest (`BEO-ALL/pin-digest-ohne-waechter`): ein Digest, der nicht zum
   Tag passt, geht durch. Das Messbild `golang:1.27.2` ist an keinen Digest gebunden. Datierte
   Momentaufnahme (`MR-053`).
 - **Begründung.** Der Digest ist die Reproduzierbarkeits-Zusage
   ([`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)); der Sprung tauscht die
   Go-Fassung des Werkzeugs, ohne sein Prüfverhalten zu bewegen.
-- **Auflösungs-Trigger:** permanent, wie `MR-084`.
+- **Auflösungs-Trigger:** permanent.
