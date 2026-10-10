@@ -8,9 +8,9 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 ## Baseline
 
 - **Konvention:** AI-Harness-Kurs
-- **Stand:** `v6.17.0` — Zielstand-Setzung vollzogen am 2026-10-07; Delta-Nachweis in
-  `slice-sprung-auf-v6170-wird-vollzogen`; regierende Fassung des Sprungs:
-  [`ADR-0082`](../docs/plan/adr/0082-ziel-fassung-regiert-den-sprung-v6170.md)
+- **Stand:** `v6.18.0` — Zielstand-Setzung vollzogen am 2026-10-10; Delta-Nachweis in
+  `slice-sprung-auf-v6180-wird-vollzogen`; regierende Fassung des Sprungs:
+  [`ADR-0091`](../docs/plan/adr/0091-ziel-fassung-regiert-den-sprung-v6180.md)
 - **Regelwerk + Templates:** committet vendored unter
   `.harness/baseline/v6.18.0/` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); der Regelwerks-Stand
   steht im vendored Baum selbst — `regelwerk/README.md` trägt ihn
@@ -34,18 +34,18 @@ Feld steht als Ziel-Form, nicht als bewachte Zusage.
 
 ## Adoptierte Konventions-Quellen
 
-- **Extern (Kurs, kanonisch):** <https://github.com/pt9912/ai-harness-course/tree/v6.17.0/kurs/de>
-  — auf den Tag `v6.17.0` gepinnt, **nicht** `main`-floating
+- **Extern (Kurs, kanonisch):** <https://github.com/pt9912/ai-harness-course/tree/v6.18.0/kurs/de>
+  — auf den Tag `v6.18.0` gepinnt, **nicht** `main`-floating
   ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Netzlos nachprüfbar ist der
   vendored Baum — `make baseline-verify` →
-  `baseline-verify: v6.17.0 OK — 54 Dateien (Integritaet + Vollstaendigkeit, netzlos)`. **Die
+  `baseline-verify: v6.18.0 OK — 54 Dateien (Integritaet + Vollstaendigkeit, netzlos)`. **Die
   Dateizahl ist kein Erwartungswert** ([`MR-025`](#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2) — sie wandert mit dem Stand; tragend ist das `OK`. Die URL ersetzt die frühere
   `raw…/main/…/agents-regelwerk.md`-Monolith-URL, die **404** liefert (der Monolith
   existiert upstream seit v2.0.0 nicht mehr — die Module leben unter `/kurs/de/`).
 - **Die Provenienz-Kette ist zur Hälfte bewacht**, und die unbewachte Hälfte steht hier, weil sie
   sonst als belegt gälte ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)). Fünf
-  Stellen pinnen `v6.17.0` samt dem sha256 seines Release-Assets: `BASELINE_TAG` und
+  Stellen pinnen `v6.18.0` samt dem sha256 seines Release-Assets: `BASELINE_TAG` und
   `BASELINE_ZIP_SHA256` (`grep -nE '^BASELINE_(TAG|ZIP_SHA256)' Makefile`), das `sources`-Paar in
   [`.d-check.yml`](../.d-check.yml) (`grep -n 'lab-regelwerk' -A 1 .d-check.yml`) und
   `DefaultTag`/`DefaultBaselineSHA256` in `internal/fetch/baseline.go`
