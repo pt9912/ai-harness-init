@@ -1,7 +1,7 @@
 # Benutzerhandbuch: ai-harness-init
 
 **Software-Stand:** `v0.7.0` — vorgefertigte Programme für sechs Plattformen (linux · macos · windows × amd64 · arm64). Siehe [Aufgaben](#4-aufgaben) (Bootstrap, `--lang`, `add-lang`), [`--arch`](#ein-geschichtetes-grundgerüst-wählen---arch) und [Betriebs-Operationen](#betriebs-operationen).
-**Stand:** 2026-10-06
+**Stand:** 2026-10-10
 **Verantwortlich:** ai-harness-init-Team (pt9912)
 
 ---
