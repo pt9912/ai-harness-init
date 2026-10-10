@@ -1,4 +1,4 @@
-# Slice slice-d-check-pin-bringt-den-go-sicherheitsfix: d-check v0.86.0 mit dem Go-1.27.2-Image
+# Slice slice-d-check-pin-bringt-den-go-sicherheitsfix: d-check v0.86.1 mit dem Go-1.27.2-Image und x/net v0.60.0
 
 **Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese
 Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
@@ -18,7 +18,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 [`MR-063`](../../../../harness/conventions.md#mr-063) (Gegenmessung),
 [`MR-084`](../../../../harness/conventions.md#mr-084) (Muster des Pin-Eintrags),
 [`MR-086`](../../../../harness/conventions.md#mr-086) (Trigger-Prüfung). Auftraggeber-Freigabe
-2026-10-09; Zielversion v0.86.0 am 2026-10-10 (§1 Entscheidung).
+2026-10-09; Zielversion v0.86.1 am 2026-10-10 (§1 Entscheidungen).
 
 **Berührte Spec-Stellen:** `—` — die Pins sind Code-Konstanten.
 
@@ -30,7 +30,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 
 ## 1. Ziel und Abgrenzung
 
-**Ziel:** d-check `v0.86.0` steht im Dogfood (`d-check.mk`, `DCHECK_IMAGE`/`DCHECK_DIGEST`) und
+**Ziel:** d-check `v0.86.1` steht im Dogfood (`d-check.mk`, `DCHECK_IMAGE`/`DCHECK_DIGEST`) und
 als emittierter Default (`internal/emit/emit.go`, `DefaultImage`/`DefaultDigest`). Anlass ist der
 Sicherheitsgrund: laut CHANGELOG des Nachbar-Repos ist das Image mit Go 1.27.2 gebaut und behebt
 zwei HIGH-Befunde der Standardbibliothek (CVE-2026-78667, CVE-2026-97031).
@@ -40,11 +40,24 @@ Auftraggeber meldete `v0.86.0` als erschienen, bevor dieser Slice schloss; ein S
 hintereinander. Die Abnahme ändert sich nur im Versionsziel. Die Arbeit an `v0.85.0` (Pin,
 Exit-Zusage, `reviews`-Kommentar) wird auf `v0.86.0` nachgezogen.
 
+**Entscheidung 2026-10-10, zweite (Orchestrator):** Zielversion `v0.86.1` statt `v0.86.0`. Grund:
+der Auftraggeber meldete `v0.86.1` als erschienen, während dieser Slice noch offen ist; ein Sprung
+statt eines dritten. Die Abnahme ändert sich nur im Versionsziel; der Pin auf `v0.86.0` wird auf
+`v0.86.1` nachgezogen.
+
+**Was `v0.86.1` gegenüber `v0.86.0` ändert** (CHANGELOG des Nachbar-Repos, gelesen): allein
+Security — `golang.org/x/net` `v0.60.0` behebt vier HTTP/2-Befunde (CRITICAL/HIGH) und einen
+MEDIUM im publizierten Image, laut CHANGELOG ohne Verhaltensänderung des Werkzeugs. Am lokalen
+Klon `$D` des Nachbar-Repos berührt `git -C "$D" diff --stat v0.86.0 v0.86.1 -- internal cmd Dockerfile go.mod`
+nur `go.mod`; `GO_VERSION ?= 1.27.2` bleibt
+(`git -C "$D" show v0.86.1:Makefile | grep -n '^GO_VERSION'`). Ob das Prüfverhalten gleich bleibt,
+misst Liefer-Punkt 2, nicht das CHANGELOG.
+
 **Was `v0.86.0` gegenüber `v0.85.0` ändert** (CHANGELOG des Nachbar-Repos, gelesen):
 
 - `reviews.match: name` deckt nur den **längsten** passenden Slice-Namen — nicht rein additiv. Der
   emittierte Kommentar-Block `reviews` nennt `match: name`; ob Kommentar und Trigger-Aussage am
-  neuen Pin noch stimmen, prüft der Implementer an `v0.86.0` neu (§3).
+  neuen Pin noch stimmen, prüft der Implementer an `v0.86.1` neu (§3).
 - `skip-allows-empty` (neben `skip-pattern` in `reviews`, `planning.closure`, `structure`) erklärt
   eine erst durch `skip-pattern` geleerte Kandidatenmenge zum Ruhezustand. Das berührt den Grund
   von [`MR-086`](../../../../harness/conventions.md#mr-086) (leerer Start fail-closed); ob der
@@ -56,7 +69,7 @@ Exit-Zusage, `reviews`-Kommentar) wird auf `v0.86.0` nachgezogen.
 
 **Lage** (keine Erwartungswerte): `grep -n '^DCHECK_IMAGE\|^DCHECK_DIGEST' d-check.mk`,
 `grep -n 'DefaultImage\|DefaultDigest' internal/emit/emit.go`; Index-Digest des Ziels:
-`docker buildx imagetools inspect ghcr.io/pt9912/d-check:v0.86.0` (Netz).
+`docker buildx imagetools inspect ghcr.io/pt9912/d-check:v0.86.1` (Netz).
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
@@ -80,28 +93,28 @@ Exit-Zusage, `reviews`-Kommentar) wird auf `v0.86.0` nachgezogen.
 
 ## 2. Definition of Done
 
-- [ ] **1 — d-check `v0.86.0`:** `DCHECK_IMAGE`/`DCHECK_DIGEST` in `d-check.mk` und
+- [ ] **1 — d-check `v0.86.1`:** `DCHECK_IMAGE`/`DCHECK_DIGEST` in `d-check.mk` und
       `DefaultImage`/`DefaultDigest` in `internal/emit/emit.go` auf den Index-Digest (Kommando der
       Messung im Commit). **Rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6): eine der zwei
       Stellen bleibt auf `v0.84.0` — der Wächter, der sie koppelt, wird rot.
 - [ ] **2 — Strenge-Bilanz:** Gegenmessung nach
-      [`MR-063`](../../../../harness/conventions.md#mr-063) zwischen `v0.84.0` und `v0.86.0`, also über beide Sprünge — jedes aktive Modul
+      [`MR-063`](../../../../harness/conventions.md#mr-063) zwischen `v0.84.0` und `v0.86.1`, also über alle drei Sprünge — jedes aktive Modul
       (`grep -m1 '^modules:' .d-check.yml`, Dogfood und emittiertes Ziel) mit Nicht-Null-Basis,
       Befund-Zahlen und `diff` samt Kommando im Umsetzungs-Commit. Die geänderten
       `reviews`-Defaults (`v0.85.0`) und die `match: name`-Regel (`v0.86.0`) treffen kein aktives
       Modul; die Bilanz nennt das mit dem Kommando, das es zeigt.
-- [ ] **3 — Sicherheitsgrund gemessen:** die Go-Fassung des Binärs im gepinnten `v0.86.0`-Image ist
-      mindestens 1.27.2, gemessen am Image selbst (Kommando im Umsetzungs-Commit), nicht am
-      CHANGELOG.
+- [ ] **3 — Sicherheitsgrund gemessen:** im Binär des gepinnten `v0.86.1`-Image ist die Go-Fassung
+      mindestens 1.27.2 und `go version -m` zeigt `golang.org/x/net v0.60.0`, beides gemessen am
+      Image selbst (Kommando im Umsetzungs-Commit), nicht am CHANGELOG.
 - [ ] `make gates` grün; `make full-smoke` EXIT 0 (emittierter Pin im Ziel).
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
 - [ ] Doku-Update: Übergabe an den Architect liegt als eigener Commit vor — MR-Eintrag zum
-      d-check-Pin `v0.86.0` nach dem Muster von [`MR-084`](../../../../harness/conventions.md#mr-084)
+      d-check-Pin `v0.86.1` nach dem Muster von [`MR-084`](../../../../harness/conventions.md#mr-084)
       mit der Bilanz aus Liefer-Punkt 2, **und** das Ergebnis der Prüfung, ob mit `reviews`
       `match: name` (Slug-Kennungen, längster Name), der erkannten Vorlagen-Zusage und
-      `skip-allows-empty` am Pin `v0.86.0` der Auflösungs-Trigger von
+      `skip-allows-empty` am Pin `v0.86.1` der Auflösungs-Trigger von
       [`MR-086`](../../../../harness/conventions.md#mr-086) eintritt — im MR-Eintrag genannt, auch
       wenn er nicht eintritt.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -117,7 +130,7 @@ Exit-Zusage, `reviews`-Kommentar) wird auf `v0.86.0` nachgezogen.
 | `d-check.mk` | update | Pin und Kopfkommentar (Liefer-Punkt 1) |
 | `internal/emit/emit.go` | update | emittierter Default-Pin (Liefer-Punkt 1) |
 | Pin-Tests unter `internal/emit/` | update, falls sie den Tag nennen | Kopplung der zwei Stellen ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)) |
-| `internal/emit/templates/d-check.yml` | update | Prosa der Kommentar-Blöcke `reviews` und `codepaths` auf den Stand am Pin `v0.86.0` (`match: name` deckt den längsten Namen — neu prüfen); `reviews` bleibt auskommentiert ([`MR-086`](../../../../harness/conventions.md#mr-086)), der Block trägt `match: name` |
+| `internal/emit/templates/d-check.yml` | update | Prosa der Kommentar-Blöcke `reviews` und `codepaths` auf den Stand am Pin `v0.86.1` (`match: name` deckt den längsten Namen — neu prüfen); `reviews` bleibt auskommentiert ([`MR-086`](../../../../harness/conventions.md#mr-086)), der Block trägt `match: name` |
 | `internal/emit/emit_test.go`, `test/mutations/` | update, neu | koppelt die Pin-Fassung der `reviews`-Prosa an `DefaultImage` und hält `match: name` im Block |
 
 ## 4. Trigger
@@ -131,12 +144,13 @@ Exit-Zusage, `reviews`-Kommentar) wird auf `v0.86.0` nachgezogen.
   Befund-Zahl — das Prüfverhalten hat sich geändert; dann braucht die Senkung oder Verschärfung
   ihre Entscheidung ([`AGENTS.md`](../../../../AGENTS.md) §3.5) vor dem Pin.
 - `in-progress` → `open`: der Index-Digest löst im gepinnten Docker-Lauf (lokal oder CI) nicht
-  auf, oder die gemessene Go-Fassung im Image liegt unter 1.27.2 — Übergabe an den Auftraggeber
+  auf, oder die gemessene Go-Fassung im Image liegt unter 1.27.2 oder `golang.org/x/net` unter
+  `v0.60.0` — Übergabe an den Auftraggeber
   als Anforderung an das Nachbar-Repo.
 
 ## 5. Closure-Trigger
 
-1. `make gates` grün und `make full-smoke` EXIT 0 mit d-check `v0.86.0`.
+1. `make gates` grün und `make full-smoke` EXIT 0 mit d-check `v0.86.1`.
 2. Gegenmessung und Go-Fassung im Umsetzungs-Commit, MR-Eintrag als eigener Architect-Commit.
 
 **Lerneintrag** in einer der drei Formen, §7; die Closure schreibt der Planner
