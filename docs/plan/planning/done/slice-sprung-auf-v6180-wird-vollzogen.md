@@ -163,7 +163,7 @@ Drei slice-eigene Punkte, einer je Achse (Baseline · Dogfood · Emission).
 - [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap, die Datei existiert nicht.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen prüft die nächste Welle-Closure — das Repo fährt Wellen.
+- [x] Die drei Paarungen prüft die nächste Welle-Closure — das Repo fährt Wellen.
 
 ## 3. Plan (vor Code)
 
@@ -290,6 +290,31 @@ Geschrieben vom Planner in eigenem Kontext bei der Closure ([`AGENTS.md`](../../
 - **Archivierung:** entfällt ([`MR-078`](../../../../harness/conventions.md#mr-078); `archive-slice`
   ist nicht gebaut).
 - **Risiken aus §6:** jede Zeile in §6 hat ihren Ausgang (viermal entfallen).
+- **Paarungen geprüft am 2026-10-10** (nach dem Move):
+  - (a) *Anker*: §7 trägt kein Feld `liegt in`
+    (`sed -n '/^## 7/,/^## 8/p' <datei> | grep -c 'liegt in'` → 0); kein Gegenstand.
+  - (b) *Folge-Slice*: kein Folge-Slice genannt.
+  - (c) *Register*: die fünf genannten Pfade existieren; ihre `evidence/` tragen 6, 9, 2, 5 und 2
+    Dateien (`ls <verzeichnis>/evidence/*.md | wc -l`).
+  - Zweite Hälfte über das ganze Register: 2 Verzeichnisse ohne Beleg, namentlich
+    `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht` und
+    `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen behauptet
+    ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+    Festlegung 2).
+- **Paarungen geprüft am 2026-10-10** (nach dem Move):
+  - (a) *Anker*: §7 nennt keinen Zielort einer verkörperten Regel (der Steering-Loop-Eintrag ist
+    gezählt, nicht verkörpert); kein Gegenstand.
+  - (b) *Folge-Slice*: `slice-review-deckung-laeuft-im-dogfood` und
+    `slice-der-mutations-treiber-sieht-bindung-und-abdeckung` existieren in `open/`
+    (`ls docs/plan/planning/open/<kennung>.md`).
+  - (c) *Register*: der genannte Pfad `BEO-ALL/neuer-waechter-ohne-mutations-fall` existiert, sein
+    `evidence/` trägt 20 Dateien, darunter `slice-sprung-auf-v6180-wird-vollzogen.md`
+    (`ls <verzeichnis>/evidence/*.md | wc -l`).
+    Zweite Hälfte über das ganze Register: 2 Verzeichnisse ohne Beleg, namentlich
+    `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht` und
+    `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen behauptet
+    ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+    Festlegung 2).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
