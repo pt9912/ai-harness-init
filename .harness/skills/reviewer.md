@@ -51,7 +51,7 @@ bewusst kurz (Ergänzungs-Kanal, nicht Hauptkanal).
 - **Norm nur im Template-Kommentar** — eine Regel steht im `<!-- -->`-Block eines
   `.template.md` und nirgends sonst. Sie ist beim Adopter weg, sobald er die
   Kommentare entfernt. Kein Gate fängt das (Baseline-Regelwerk
-  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v6.17.0/regelwerk/grundlagen-harness-dateien.md)
+  [`grundlagen-harness-dateien.md`](../../.harness/baseline/v6.18.0/regelwerk/grundlagen-harness-dateien.md)
   §Template-Schichtung)
 - **Kommentar trägt keine der Kommentar-Klassen** — ein Kommentar in Code, Config
   oder Skript beschreibt die verworfene Alternative („Ohne X wäre …"), einen
@@ -194,11 +194,19 @@ Jedes Finding:
 Zusätzlich am Ende: eine Zeile „geprüft, ohne Befund" pro betrachtetem Bereich
 (Negativbefund-Zeile — sonst ist „keine Findings" nicht von „nicht geprüft"
 unterscheidbar). Report-Gerüst für den ganzen Lauf ist
-[`review-report.template.md`](../../.harness/baseline/v6.17.0/templates/docs/reviews/review-report.template.md);
+[`review-report.template.md`](../../.harness/baseline/v6.18.0/templates/docs/reviews/review-report.template.md);
 eine eigene Kopie unter `docs/reviews/` hält dieses Repo nicht
 ([`MR-041`](../../harness/conventions.md#mr-041--die-referenz-statt-kopie-setzung-für-ausfüll-templates-steht-jetzt-in-der-adoptierten-baseline)).
-Ein Report pro Lauf unter `docs/reviews/<YYYY-MM-DD>-<gegenstand>.md`, Folgeläufe
-als neue Datei statt Überschreibung.
+Ein Report pro Lauf unter `docs/reviews/<YYYY-MM-DD>-<slice-Kennung>.md`, mit der **vollen**
+Slice-Kennung im Dateinamen (Baseline-Regelwerk `modul-10-review-harness.md` §Reviewer berichtet
+auch, was er nicht gefunden hat); ein Review ohne Slice heißt `<YYYY-MM-DD>-<diff-ref>.md`.
+Folgeläufe als neue Datei statt Überschreibung, etwa mit Suffix `-r2`. Über die Kennung ordnet
+das d-check-Modul `reviews` mit `match: name` den Report seinem Slice zu — es sucht den
+Basisnamen des Slice-Plans ohne `.md` im Report-Namen; ein Report ohne die volle Kennung,
+gekürzt oder nur nach seinem Gegenstand benannt, deckt keinen Slice. Die bestehenden Reports
+unter `docs/reviews/` bleiben, wie sie sind: sie sind Zeitdokumente und werden nicht umbenannt.
+Im Dogfood fährt das Modul nicht ([`harness/README.md`](../../harness/README.md) §Safety and
+scope boundaries) — diese Ablage-Regel hält kein Sensor.
 
 ## Pflege (Steering-Loop)
 
