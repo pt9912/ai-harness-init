@@ -76,34 +76,34 @@ Stelle also; **kein** Wächter koppelt Tag und Digest
 
 ## 2. Definition of Done
 
-- [ ] **1 — a-check `v0.23.2`:** `DefaultArchImage`/`DefaultArchDigest` in
+- [x] **1 — a-check `v0.23.2`:** `DefaultArchImage`/`DefaultArchDigest` in
       `internal/emit/archgate.go` auf den Index-Digest, samt Tag im Kopfkommentar
       (`docker buildx imagetools inspect ghcr.io/pt9912/a-check:v0.23.2`, Kommando im Commit).
       **Rot gesehen am echten Pin** ([`AGENTS.md`](../../../../AGENTS.md) §3.6): `DefaultArchDigest`
       einmal verfälscht — `make full-smoke` scheitert mit einer Meldung über genau diese Referenz
       (Meldung gelesen). Dass ein Tag, der nicht zum Digest passt, durchgeht, nennt der Commit als
       Lücke (`BEO-ALL/pin-digest-ohne-waechter`).
-- [ ] **2 — Gegenmessung des Arch-Gates im Ziel** nach
+- [x] **2 — Gegenmessung des Arch-Gates im Ziel** nach
       [`MR-063`](../../../../harness/conventions.md#mr-063): je gebootstrapptem Ziel `hexslice`-go,
       -cpp und -kotlin `make a-check` am alten und am neuen Digest; grünes Skelett mit leerem
       `diff` der Ausgaben alt gegen neu, und ein verbotener Import färbt das Gate an beiden
       Digests rot mit `core-impurity` (Meldung gelesen). Kommandos und Befund-Zahlen im
       Umsetzungs-Commit.
-- [ ] **3 — Sicherheitsgrund gemessen:** die Go-Fassung des a-check-Binärs ist ≥ 1.27.2, gemessen
+- [x] **3 — Sicherheitsgrund gemessen:** die Go-Fassung des a-check-Binärs ist ≥ 1.27.2, gemessen
       am Image selbst für `linux/amd64` und `linux/arm64` (Docker-only, Kommando im
       Umsetzungs-Commit), nicht am Makefile von a-check.
-- [ ] `make gates` grün; `make full-smoke` EXIT 0 (emittierter Pin im Ziel).
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün; `make full-smoke` EXIT 0 (emittierter Pin im Ziel).
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: Übergabe an den Architect liegt als eigener Commit vor — MR-Eintrag zum
+- [x] Doku-Update: Übergabe an den Architect liegt als eigener Commit vor — MR-Eintrag zum
       a-check-Pin `v0.23.2` nach dem Muster von [`MR-084`](../../../../harness/conventions.md#mr-084),
       mit der Gegenmessung aus Liefer-Punkt 2 und der Go-Fassung aus Liefer-Punkt 3 (Übergabe
       unten).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind nach dem Move geprüft, §7.
 
 **Übergabe an den Architect** (Eingang für den MR-Eintrag): Quellen sind dieser Plan,
@@ -163,24 +163,62 @@ fährt. Der Lauf ist darum **parallel** zulässig, unter zwei Bedingungen:
   die Closure den Beleg dieses Slice ein, steht er bei 3×, und die Closure ist Lese-Schritt
   ([`ADR-0085`](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md)): Ausgang
   *verkörpert* oder *geplant* mit Kennung, wofür ein Folge-Slice die Freigabe des Auftraggebers
-  braucht. — **Ausgang:** offen bis zur Closure.
+  braucht. — **Ausgang:** eingetreten: `slice-gepinnte-bilder-bekommen-einen-schwachstellen-scan`
+  (`open/`, Freigabe des Auftraggebers 2026-10-10).
 - **Digest ohne Wächter** — kein Sensor hält den Digest gegen den Tag;
-  `BEO-ALL/pin-digest-ohne-waechter` steht bei 5 Belegen, `geplant`. — **Ausgang:** offen bis zur
-  Closure.
+  `BEO-ALL/pin-digest-ohne-waechter` steht bei 5 Belegen, `geplant`. — **Ausgang:** weiter offen:
+  `BEO-ALL/pin-digest-ohne-waechter` (6. Beleg angelegt, Stand `geplant`).
 - **Fremdes Image ohne Go-Werkzeug** — liegt im a-check-Image kein Werkzeug, das die Go-Fassung
   ausgibt, muss Liefer-Punkt 3 das Binär aus dem Image holen und in einem gepinnten Go-Image lesen;
-  ein Host-`go` ist ausgeschlossen ([`AGENTS.md`](../../../../AGENTS.md) §3.9). — **Ausgang:** offen
-  bis zur Closure.
+  ein Host-`go` ist ausgeschlossen ([`AGENTS.md`](../../../../AGENTS.md) §3.9). — **Ausgang:**
+  entfallen: die Go-Fassung ist am Binär in einem gepinnten Go-Image gemessen
+  ([`MR-093`](../../../../harness/conventions.md#mr-093)); kein Host-`go`.
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <…>
-- **Drei Paarungen:** <…>
+Geschrieben vom Planner in eigenem Kontext bei der Closure ([`AGENTS.md`](../../../../AGENTS.md)
+§3.10). **Rolle:** Planner · **Datum:** 2026-10-10
+
+- **Was hat funktioniert:** Alle Liefer-Punkte bestätigt
+  ([Verifikation](../../../reviews/2026-10-10-slice-a-check-pin-bringt-den-go-sicherheitsfix-verify.md),
+  `6493e771`, 0 Findings): Pin `v0.23.2` als Index-Digest an der einen Stelle, am echten Pin rot
+  gesehen (verfälschter Digest, `full-smoke` nennt genau diese Referenz), Gegenmessung go mit
+  `core-impurity` an beiden Digests, `make full-smoke` EXIT 0. Review
+  ([Report](../../../reviews/2026-10-10-slice-a-check-pin-bringt-den-go-sicherheitsfix.md),
+  `a0120715`): 0 HIGH, 0 MEDIUM, LOW-1 behoben in `278d9eca`. Mutation: 5 Fälle lokal `ok`, ein
+  Teillauf ohne Beleg; sie prüfen Verdrahtung und Adaption, nicht den Pin-Wert.
+- **Architect-Übergabe:** [`MR-093`](../../../../harness/conventions.md#mr-093) (`d3868345`,
+  `278d9eca`) erfüllt sie.
+- **Was ging anders als geplant:** Nichts am Schnitt. **Grenze von Liefer-Punkt 3:** die Go-Fassung
+  für `linux/arm64` und für den alten Digest steht nur nach Commit-Message und
+  [`MR-093`](../../../../harness/conventions.md#mr-093), das Messbild `golang:1.27.2` ist per Tag
+  gewählt; die Verifikation hat amd64 über das Review, nicht selbst, wiederholt. Gegenmessung cpp und
+  kotlin ebenso nur nach Commit-Message.
+- **Steering-Loop-Eintrag:** Benannte Lücke, kein neuer Sensor: ein Tag-Digest-Paar ohne Wächter
+  (`BEO-ALL/pin-digest-ohne-waechter`, 6×, `geplant`) und ein Pin ohne Bewertung der Schwachstellen
+  (`BEO-ALL/gepinntes-bild-ohne-schwachstellen-scan`, 3×) blieben auch bei einem dritten Pin-Sprung
+  ohne Sensor; der Lese-Schritt dieser Closure gibt dem zweiten seinen Ausgang
+  (`slice-gepinnte-bilder-bekommen-einen-schwachstellen-scan`), gezählt, nicht verkörpert.
+- **Beobachtungs-Register (`../observations/`):** je ein Beleg dieses Slice:
+  - [`BEO-ALL/gepinntes-bild-ohne-schwachstellen-scan`](../observations/BEO-ALL/gepinntes-bild-ohne-schwachstellen-scan/observation.md)
+    → 3×, Ausgang *geplant* auf `slice-gepinnte-bilder-bekommen-einen-schwachstellen-scan`
+    ([`ADR-0085`](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md)).
+  - [`BEO-ALL/pin-digest-ohne-waechter`](../observations/BEO-ALL/pin-digest-ohne-waechter/observation.md)
+    → 6×, Stand `geplant`, unverändert.
+  - Weitere in §8 genannte Einträge: kein Beleg aus diesem Slice (Review und Verifikation ohne
+    passenden Fund); gezählt wird nicht.
+- **Folge-Slices:** `slice-gepinnte-bilder-bekommen-einen-schwachstellen-scan` — ist eine Datei in
+  `open/`. Der Wächter Tag↔Digest bleibt bei
+  `slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor`, nicht neu angelegt.
+- **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines. ADR/MR: kein
+  Re-Evaluierungs-Trigger von [`ADR-0009`](../../adr/0009-hexslice-arch-realisierung.md) oder
+  [`ADR-0088`](../../adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md) durch die
+  Pin-Fassung gefeuert (Prüfverhalten unverändert, Gegenmessung). Hard Rules: keine mit
+  eingetretenem Auflösungs-Trigger.
+- **Archivierung:** entfällt ([`MR-078`](../../../../harness/conventions.md#mr-078); `archive-slice`
+  ist nicht gebaut).
+- **Risiken aus §6:** jede Zeile in §6 hat ihren Ausgang.
+- **Drei Paarungen:** nach dem Move.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
