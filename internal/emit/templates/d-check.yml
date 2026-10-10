@@ -42,18 +42,29 @@ codepaths:
 # des Slice-Plans ohne .md im Report-Namen zu und traegt beide Formen; darum steht der
 # Schluessel im Block. Traegt ein Report-Name auch den laengeren Basisnamen eines zweiten
 # Slice-Plans unter done-dir, deckt er nur den laengeren: der Report zu slice-<name>-<mehr>
-# deckt slice-<name> nicht. Aus bleibt das Modul, weil ein frisches Ziel damit rot startet:
-# Liegt unter done-dir kein Slice-Plan, meldet es die leere Pruefmenge fail-closed als
-# review-missing. skip-allows-empty aendert das nicht: der Schluessel gilt nur neben
-# skip-pattern und nur fuer eine Menge, aus der skip-pattern mindestens einen Plan genommen
-# hat.
+# deckt slice-<name> nicht. require-promises meldet den Leerlauf: Slice-Plaene unter
+# done-dir, unter denen keine einzige Zusage erkannt wird. recursive nimmt die Stubs unter
+# done/<welle-id>/ in die Menge, skip-pattern nimmt einen archivierten Stub an seiner
+# Marker-Zeile wieder heraus — der Stub, den das Archivieren aus der Vorlage
+# archiv-stub-slice.template.md schreibt, traegt sie; ein lebender Plan, der die Marker-Zeile
+# woertlich zitiert, faellt ebenso heraus. skip-allows-empty laesst die Menge leer, wenn alle
+# Plaene archiviert sind. Die vier Schluessel stehen in der Baseline-Vorlage; ohne die drei
+# letzten wird das Modul nach dem Archivieren rot, obwohl nichts fehlt. Aus bleibt das Modul,
+# weil ein frisches Ziel damit rot startet: Liegt unter done-dir kein Slice-Plan, meldet es
+# die leere Pruefmenge fail-closed als review-missing. skip-allows-empty aendert das nicht:
+# der Schluessel gilt nur neben skip-pattern und nur fuer eine Menge, aus der skip-pattern
+# mindestens einen Plan genommen hat.
 # Trigger: aktivieren — reviews in modules: aufnehmen und den Block ohne # uebernehmen,
-# match: name eingeschlossen —, sobald unter done-dir ein Slice-Plan liegt und jeder Plan
-# mit Review-Zeile seinen Report unter reviews-dir hat.
+# alle fuenf Schluessel ab match: name eingeschlossen —, sobald unter done-dir ein Slice-Plan
+# liegt und jeder Plan mit Review-Zeile seinen Report unter reviews-dir hat.
 # reviews:
 #   done-dir: docs/plan/planning/done
 #   reviews-dir: docs/reviews
 #   match: name
+#   require-promises: true
+#   recursive: true
+#   skip-pattern: '(?m)^> \*\*ARCHIVIERT\*\* — Volltext:'
+#   skip-allows-empty: true
 # Herkunft der Positionen in diesem Block, gemessen gegen die Baseline-Vorlage
 # (.harness/baseline/<tag>/templates/.d-check.yml) und gegen die Matrix-Tabelle in
 # grundlagen-referenz-richtung.md. order:/direction: auf spec-straten und die Regel

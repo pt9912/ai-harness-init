@@ -615,4 +615,18 @@ func TestDCheckConfig_ReviewsBleibtKommentarBlock(t *testing.T) {
 	if !kopf || !doneDir || !reviewsDir || !matchName || !trigger {
 		t.Errorf("Kommentar-Block reviews unvollstaendig (Kopf %v, done-dir %v, reviews-dir %v, match: name %v, Trigger %v)", kopf, doneDir, reviewsDir, matchName, trigger)
 	}
+	// Die vier Schluessel, die die Baseline-Vorlage v6.18.0 neben match: name fuehrt
+	// (ADR-0091 Festlegung 2), je einzeln verlangt: fehlt einer, nennt die Meldung ihn.
+	// Grenze: gehalten ist die Zeile im Kommentar-Block, nicht dass der Wert zur
+	// Baseline-Vorlage passt — skip-pattern ist hier wortgleich mit ihr gesetzt.
+	for _, want := range []string{
+		"#   require-promises: true",
+		"#   recursive: true",
+		"#   skip-pattern: '(?m)^> \\*\\*ARCHIVIERT\\*\\* — Volltext:'",
+		"#   skip-allows-empty: true",
+	} {
+		if !strings.Contains(yml, "\n"+want+"\n") {
+			t.Errorf("Kommentar-Block reviews traegt %q nicht", want)
+		}
+	}
 }

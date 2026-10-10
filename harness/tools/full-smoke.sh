@@ -427,6 +427,42 @@ feldliste_verfuegbarkeit_im_ziel() {
 	echo "full-smoke: Feldliste im Ziel ($label) traegt die vier Saetze ueber Verfuegbarkeit und Aufbewahrung."
 }
 
+# review_vorlagen_im_ziel <repo> <label> — die Review-Deckung im frisch emittierten Ziel,
+# gemessen am Text (ADR-0091 Festlegung 2): die .d-check.yml fuehrt reviews nicht in
+# modules: und nicht als unkommentierten Block, ihr Kommentar-Block traegt die vier
+# Schluessel der Baseline-Vorlage neben match: name; die Report-Vorlage im mitgelieferten
+# Baum (.harness/baseline/<tag>/templates/) nennt die volle Slice-Kennung im Dateinamen,
+# die README-Vorlage dort die Voraussetzungen des Moduls — der emittierte harness/README.md
+# fuehrt diesen Absatz der Vorlage nicht.
+# Grenze: gemessen ist der Text, nicht dass ein aktivierter Block im Ziel greift — das
+# misst keine Stufe, und ein frisches Ziel startet mit ihm rot (ADR-0091 Festlegung 2).
+review_vorlagen_im_ziel() {
+	local repo="$1" label="$2"
+	local yml="$repo/.d-check.yml" fehlend="" zeile flach
+	if grep -E '^modules:' "$yml" | grep -q 'reviews' || grep -qE '^reviews:' "$yml"; then
+		echo "full-smoke: FEHLER — $label: die emittierte .d-check.yml schaltet reviews aktiv — ein frisches Ziel startet damit rot." >&2
+		exit 1
+	fi
+	for zeile in '#   match: name' '#   require-promises: true' '#   recursive: true' \
+	             "#   skip-pattern: '(?m)^> \\*\\*ARCHIVIERT\\*\\* — Volltext:'" '#   skip-allows-empty: true'; do
+		grep -qxF -- "$zeile" "$yml" || fehlend="$fehlend [$zeile]"
+	done
+	local vorlage
+	vorlage="$(find "$repo/.harness/baseline" -path '*/templates/docs/reviews/review-report.template.md' -print -quit)"
+	{ [ -n "$vorlage" ] && grep -qF -- 'docs/reviews/<YYYY-MM-DD>-<slice-Kennung>.md' "$vorlage"; } \
+		|| fehlend="$fehlend [Report-Vorlage im mitgelieferten Baum: volle Slice-Kennung im Dateinamen]"
+	vorlage="$(find "$repo/.harness/baseline" -path '*/templates/harness/README.template.md' -print -quit)"
+	flach=""
+	[ -n "$vorlage" ] && flach="$(tr -s '[:space:]' ' ' <"$vorlage")"
+	grep -qF -- "mit \`match: name\`, \`require-promises\`" <<<"$flach" \
+		|| fehlend="$fehlend [README-Vorlage im mitgelieferten Baum: Voraussetzungen des Moduls reviews]"
+	if [ -n "$fehlend" ]; then
+		echo "full-smoke: FEHLER — $label: die Review-Deckung im Ziel folgt der Baseline-Vorlage nicht:$fehlend" >&2
+		exit 1
+	fi
+	echo "full-smoke: Review-Deckung im Ziel ($label) — reviews aus, Kommentar-Block mit den fuenf Schluesseln, Report- und README-Vorlage im mitgelieferten Baum nennen die volle Kennung bzw. die Voraussetzungen."
+}
+
 # ARTIFACT_TARGET waehlt, WIE das Binary auf den Host kommt: `artifact` (Default,
 # byte-identisch, slice-048/LH-QA-04) oder `artifact-host` (fuer den Host
 # cross-kompiliert — additiv, fuer Hosts, deren Kernel/Architektur vom Docker-
@@ -514,6 +550,10 @@ feldliste_im_ziel "$tmprepo" "--lang go"
 echo "full-smoke: Feldliste im Ziel — Verfuegbarkeit und Aufbewahrung (--lang go) ..."
 	e2e_abdeckung "LH-FA-13 LH-FA-16" "Die emittierte Feldliste fuehrt die Saetze zu Cache-Status, fehlender PR-Nummer, Haupt-Kontext ohne Zahl und Aufbewahrung; gemessen ist der Text im Ziel, nicht das Verhalten, das er beschreibt" "feldliste_verfuegbarkeit_im_ziel"
 feldliste_verfuegbarkeit_im_ziel "$tmprepo" "--lang go"
+
+echo "full-smoke: Review-Deckung im Ziel — Kommentar-Block und Vorlagen (--lang go) ..."
+	e2e_abdeckung "LH-FA-09 LH-QA-01" "Die emittierte .d-check.yml fuehrt reviews nicht aktiv und traegt im Kommentar-Block match: name und die vier Schluessel der Baseline-Vorlage; Report- und README-Vorlage im mitgelieferten Baum nennen die volle Slice-Kennung bzw. die Voraussetzungen des Moduls; gemessen ist der Text im Ziel, nicht dass ein aktivierter Block greift, und nicht der emittierte harness/README.md, der den Absatz nicht fuehrt" "review_vorlagen_im_ziel"
+review_vorlagen_im_ziel "$tmprepo" "--lang go"
 
 # slice-031: ein echter Adopter bootstrappt IN sein git-Repo. Der Gate-Nachweis
 # (record-gates -> working-tree-hash, jetzt letztes gates-Prerequisite) braucht
