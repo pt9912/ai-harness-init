@@ -130,7 +130,7 @@ Baseline.
 
 Drei slice-eigene Punkte, einer je Achse (Baseline · Dogfood · Emission).
 
-- [ ] **1 — Jeder Träger des Tags steht auf `v6.18.0`, und keine lebende Adresse bleibt auf
+- [x] **1 — Jeder Träger des Tags steht auf `v6.18.0`, und keine lebende Adresse bleibt auf
       `v6.17.0`.** Baum über [`make vendor-baseline`](../../../../harness/sensors/vendor-baseline.md)
       aus dem verifizierten Release-Asset (einmal Netz,
       [`MR-007`](../../../../harness/conventions.md#mr-007)); `make baseline-verify` meldet
@@ -140,29 +140,29 @@ Drei slice-eigene Punkte, einer je Achse (Baseline · Dogfood · Emission).
       Nachzugs-Commit in einem Push, Nachzug je Eigentümer ein Commit mit Rolle.
       **Rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6): ein echter Pin-Wert bleibt einmal
       auf `v6.17.0`, ein Pin-Wächter wird mit einer Meldung über genau diese Stelle rot.
-- [ ] **2 — Der Dogfood folgt dem Delta.** Die Ablage-Form neuer Reports nennt die volle
+- [x] **2 — Der Dogfood folgt dem Delta.** Die Ablage-Form neuer Reports nennt die volle
       Slice-Kennung im Dateinamen (Reviewer-Skill und die Rollen-Anweisungen, die die Form
       nennen; je Eigentümer ein Commit,
       [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)); `harness/README.md`
       nennt die Review-Deckung im Ist-Zustand nach Verdikt A2(b) — aktiv mit den Schlüsseln der
       Vorlage und grünem `make docs-check`, oder ausdrücklich nicht aktiv mit Grund.
-- [ ] **3 — Die Emission folgt dem Delta.** Die emittierten Vorlagen (Report-Vorlage, README-Vorlage des Harness)
+- [x] **3 — Die Emission folgt dem Delta.** Die emittierten Vorlagen (Report-Vorlage, README-Vorlage des Harness)
       tragen den Stand `v6.18.0`; `internal/emit/templates/d-check.yml` folgt Verdikt A2(a) —
       Kommentar-Block mit den neuen Schlüsseln oder aktives Modul. Beleg in `make full-smoke` am
       frischen Ziel: das Ziel-Gate startet grün; ist `reviews` aktiv, färbt ein Slice in `done/`
       mit Review-Zusage und ohne Report das Ziel-Gate rot (Meldung gelesen), sonst hält ein
       Go-Test den Block auskommentiert und ein Fall in `test/mutations/` färbt ihn rot.
       `e2e_abdeckung`-Deklaration und `make e2e-abdeckung` nachgezogen.
-- [ ] `make gates` grün über dem Liefer-Stand; `make full-smoke` endet EXIT 0.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün über dem Liefer-Stand; `make full-smoke` endet EXIT 0.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: die Architect-Übergaben A1–A3 aus §1 liegen als eigene Commits vor; Handbuch
+- [x] Doku-Update: die Architect-Übergaben A1–A3 aus §1 liegen als eigene Commits vor; Handbuch
       (`docs/user/`) im Ist-Zustand, falls die Emission das Ziel-Gate ändert.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap, die Datei existiert nicht.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap, die Datei existiert nicht.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen prüft die nächste Welle-Closure — das Repo fährt Wellen.
 
 ## 3. Plan (vor Code)
@@ -219,20 +219,77 @@ und eigenem Commit ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
 
 - **Emittierter Stand läuft dem Dogfood voraus** — aktiviert A2 `reviews` im Ziel, nicht aber
   hier, ist das das dritte Auftreten der Klasse; dann braucht sie einen eigenen Folge-Slice (§8).
+  **Ausgang: entfallen** — das Ziel aktiviert `reviews` nicht
+  ([`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md) Festlegungen 2 und 4); der
+  Eintrag bleibt bei 2×, `offen`.
 - **Grünes Ziel über leerer Menge** — `skip-allows-empty` und `require-promises` ziehen gegen
   einander; ein grüner Start über null Kandidaten darf nicht als Deckung gelesen werden
   ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Die
   Grenz-Aussage im Ziel nennt die Bedingung.
+  **Ausgang: entfallen** — im Ziel ist das Modul nicht aktiv, ein grüner Start über null Kandidaten
+  entsteht nicht (fail-closed mit leerer Prüfmenge gemessen,
+  [`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md) Festlegung 2); die Stufe
+  `review_vorlagen_im_ziel` nennt am selben Ort, dass der Text gemessen ist. Die Aktivierung im
+  Dogfood trägt `slice-review-deckung-laeuft-im-dogfood` mit eigenem Rot-Beleg.
 - **`match: name` deckt nur den längsten passenden Slice-Namen** — ein Report, dessen Name einen
   kürzeren Slice als Präfix eines längeren trägt, fällt dem längeren zu (Befund des Pin-Slice).
   Die Sonde in A2 misst es am Bestand.
+  **Ausgang: entfallen** — die Sonde fand `Praefix-Paare=0` über dem `done/`-Bestand
+  ([`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md) Festlegung 3); die Grenze
+  für künftige Paare trägt der Abschnitt von `slice-review-deckung-laeuft-im-dogfood`.
 - **Tag-tragende Adresse überlebt den Tausch nicht** — Liefer-Punkt 1 fängt es mit dem
   Link-Kommando.
+  **Ausgang: entfallen** — nicht eingetreten: das Link-Kommando aus §1 liefert 0
+  ([Verifikation](../../../reviews/2026-10-10-slice-sprung-auf-v6180-wird-vollzogen-verify.md)).
 
 ## 7. Closure-Notiz
 
-Schreibt der Planner bei der Closure, in frischem Kontext und eigenem Commit
-([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+Geschrieben vom Planner in eigenem Kontext bei der Closure ([`AGENTS.md`](../../../../AGENTS.md)
+§3.10).
+**Rolle:** Planner · **Datum:** 2026-10-10
+
+- **Was hat funktioniert:** DoD 1 bis 3 bestätigt
+  ([Verifikation](../../../reviews/2026-10-10-slice-sprung-auf-v6180-wird-vollzogen-verify.md),
+  `84c1499e`): `make baseline-verify` → `v6.18.0 OK`, fünf Pins und Mess-Tag auf `v6.18.0`, sieben
+  Symlinks, Link-Kommando 0, `make gates` und `make full-smoke` EXIT 0. Rot gesehen: Pin-Wert
+  `v6.17.0` → `test/sources-pin.bats` rot; `skip-allows-empty` aus dem Block entfernt →
+  `TestDCheckConfig_ReviewsBleibtKommentarBlock` rot mit dem Schlüssel in der Meldung. Mutation
+  140/140 `ok` über `mutate/…-e5a3000b`, beide Branches gelöscht. Review
+  ([Report](../../../reviews/2026-10-10-slice-sprung-auf-v6180-wird-vollzogen.md), `678d3980`):
+  0 HIGH, 1 LOW, annahmereif. Architect-Übergaben A1 bis A3: `ADR-0091` `Accepted`, Commits
+  `4a617506`, `32bbd041`, `ed76b475`.
+- **Was ging anders als geplant:** Die Verifikation lief vor dem Review-Report und meldete ihn als
+  F-1 offen; `678d3980` erledigt ihn. `reviews` bleibt in beiden Ebenen aus (Dogfood:
+  [`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md) Festlegung 3, vom
+  Auftraggeber gewählt).
+- **Steering-Loop-Eintrag:** Neuer Sensor: `TestDCheckConfig_ReviewsBleibtKommentarBlock` hält jeden
+  der fünf Schlüssel des emittierten `reviews`-Blocks einzeln, dazu die `full-smoke`-Stufe
+  `review_vorlagen_im_ziel` (Text im Ziel). Benannte Grenzen: die Haltbarkeit der vier neuen
+  Schlüssel überwacht kein Fall in `test/mutations/` (Review LOW-1, Verifikation F-2) — gezählt in
+  [`BEO-ALL/neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md),
+  deren Sensor `slice-der-mutations-treiber-sieht-bindung-und-abdeckung` trägt; dass ein
+  aktivierter Block im Ziel greift, misst keine Stufe (F-3, in der Stufe benannt). Gezählt, nicht
+  verkörpert.
+- **Beobachtungs-Register (`../observations/`):**
+  - [`BEO-ALL/neuer-waechter-ohne-mutations-fall`](../observations/BEO-ALL/neuer-waechter-ohne-mutations-fall/observation.md)
+    (LOW-1, F-2) → ein Beleg mehr, Stand `geplant`, unverändert.
+  - Kein weiterer Beleg: `emittierter-stand-laeuft-dem-dogfood-voraus` bleibt bei 2×
+    ([`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md) Festlegung 4);
+    `freshness-verdikt-faellt-nach-dem-entfernen-des-alten-baums` trat nicht ein (Verdikt
+    `ed76b475` liegt vor dem Entfernen `e5a3000b`); F-3 ist die in der Stufe benannte Grenze.
+  - Kein Eintrag ohne Ausgang erreicht 3×.
+- **Folge-Slices:** `slice-review-deckung-laeuft-im-dogfood` (`open/`, nimmt die Aktivierung nach
+  [`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md) Festlegung 3 an); für F-2
+  keiner angelegt, Entscheidung beim Auftraggeber.
+- **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines.
+  [`MR-086`](../../../../harness/conventions.md#mr-086): Auflösungs-Trigger nicht eingetreten (am
+  Pin `v0.86.1` startet das Ziel mit `reviews` rot,
+  [`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md) Festlegung 2). Re-Evaluierungs-Trigger von
+  [`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md): nicht eingetreten. Hard
+  Rules: keine mit eingetretenem Auflösungs-Trigger.
+- **Archivierung:** entfällt ([`MR-078`](../../../../harness/conventions.md#mr-078); `archive-slice`
+  ist nicht gebaut).
+- **Risiken aus §6:** jede Zeile in §6 hat ihren Ausgang (viermal entfallen).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

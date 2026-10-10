@@ -1,0 +1,2 @@
+**Vorgang:** slice-sprung-auf-v6180-wird-vollzogen
+**Fund:** Die vier neuen Schlüssel des emittierten `reviews`-Blocks (`require-promises`, `recursive`, `skip-pattern`, `skip-allows-empty`) tragen einen Go-Test (`TestDCheckConfig_ReviewsBleibtKommentarBlock`, in Review und Verifikation rot gesehen), aber keinen Fall in `test/mutations/`; die Fälle 568, 666 und 667 binden nur Block-Kopf, Pin-Kommentar und `match: name` ([Review LOW-1](../../../../../../reviews/2026-10-10-slice-sprung-auf-v6180-wird-vollzogen.md)).
