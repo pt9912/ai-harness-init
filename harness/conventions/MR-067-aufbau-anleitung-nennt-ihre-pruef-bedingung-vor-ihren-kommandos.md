@@ -31,9 +31,9 @@
   ein **Fork**; das Verdikt steht nach
   [`MR-039`](../conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
   Setzung 3 in diesem Feld. Die Baseline kennt keine Form für eine Aufbau-Anleitung. Nahe liegt
-  [`modul-13-quality-gates.md`](../../.harness/baseline/v6.17.0/regelwerk/modul-13-quality-gates.md#adr-zur-fitness-function)
+  [`modul-13-quality-gates.md`](../../.harness/baseline/v6.18.0/regelwerk/modul-13-quality-gates.md#adr-zur-fitness-function)
   §Fitness Function aus einem ADR-Satz: *„Und das Rot muss von **dieser** Regel kommen."*
-  (`grep -c 'Und das Rot muss von \*dieser\* Regel kommen' .harness/baseline/v6.17.0/regelwerk/modul-13-quality-gates.md`
+  (`grep -c 'Und das Rot muss von \*dieser\* Regel kommen' .harness/baseline/v6.18.0/regelwerk/modul-13-quality-gates.md`
   → **1**). Diese Setzung wendet den Gedanken eine Stufe früher an — auf den **Aufbau**, der den
   Gegenstand überhaupt erst herstellt — und tritt an keine Stelle.
 - **Adaption — Setzung 1, die Reihenfolge.** Eine Aufbau-Anleitung nennt **zuerst die

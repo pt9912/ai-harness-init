@@ -6,7 +6,7 @@
   genannte Träger `slice-146` ist ohne Lieferung entfallen (Auftraggeber-Entscheidung vom 2026-10-08).
 - **Geltungsbereich:** der Halbsatz *„die [slice-146] hält … — die bleiben dort offen"* im Feld
   Geltungsbereich von `MR-048`, und die zwei Regeln, die er meint:
-  [`modul-14-docker-harness.md`](../../.harness/baseline/v6.17.0/regelwerk/modul-14-docker-harness.md#multi-stage-build-die-operativen-disziplinen-modul-14)
+  [`modul-14-docker-harness.md`](../../.harness/baseline/v6.18.0/regelwerk/modul-14-docker-harness.md#multi-stage-build-die-operativen-disziplinen-modul-14)
   §Multi-Stage-Build, *Stages trennen … `runtime`* und *Image-Hash im Build-Output festhalten*.
   **Nicht** die übrigen Aussagen von `MR-048`; **nicht** die emittierte Ebene.
 - **Ersetzt-Baseline-Regel:** keine — der Eintrag tritt an keine der zwei Regeln, er nennt ihren
@@ -24,5 +24,5 @@
   beauftragt.
 - **Auflösungs-Trigger:** ein Slice entscheidet eine der zwei Regeln (Adoption oder deklarierte
   Abweichung), **oder** dieses Repo führt ein Replay-Manifest nach
-  [`modul-12-replay-evaluierung.md`](../../.harness/baseline/v6.17.0/regelwerk/modul-12-replay-evaluierung.md)
+  [`modul-12-replay-evaluierung.md`](../../.harness/baseline/v6.18.0/regelwerk/modul-12-replay-evaluierung.md)
   — dann braucht dessen `image_hash`-Slot die zweite Regel, und die Lücke ist nicht mehr harmlos.

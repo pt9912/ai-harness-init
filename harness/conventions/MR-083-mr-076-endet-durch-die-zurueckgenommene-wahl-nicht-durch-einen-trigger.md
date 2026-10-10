@@ -14,7 +14,7 @@
   Der zweite lautet *„das Modul streicht den Cache-Status aus seinem Pflicht-Minimum"*; Kurs-Welle
   154 (`v6.14.0`) streicht nichts, sie hält den Cache-Status Pflicht und ergänzt die Kennzeichnung
   *nicht bekannt*
-  (`grep -c 'ausdrücklich als nicht bekannt' .harness/baseline/v6.17.0/regelwerk/modul-15-observability.md`
+  (`grep -c 'ausdrücklich als nicht bekannt' .harness/baseline/v6.18.0/regelwerk/modul-15-observability.md`
   → **1**, kein Erwartungswert). `MR-076` endet durch die **zurückgenommene Wahl** — die
   Umstellung von `SPEC-024` auf `Pflicht` —, wie
   [`ADR-0078`](../../docs/plan/adr/0078-ziel-fassung-regiert-den-sprung-v6160.md) Festlegung 4

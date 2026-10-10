@@ -12,7 +12,7 @@
   **nicht** [`make hook-overhead`](../sensors/hook-overhead.md), dessen Messung ihre Last selbst führt.
 - **Ersetzt-Baseline-Regel:** keine — das Regelwerk am adoptierten Stand führt keine Regel über die
   Bedingungen einer Laufzeit-Zahl
-  (`grep -rliE 'kalter|warmer|pull' .harness/baseline/v6.17.0/regelwerk/` ist leer); nach dem
+  (`grep -rliE 'kalter|warmer|pull' .harness/baseline/v6.18.0/regelwerk/` ist leer); nach dem
   Wortlaut der Eintrags-Vorlage damit ein **Fork**, aus demselben Grund wie
   [`MR-025`](../conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert),
   den er für diese Zahlen-Klasse schärft.

@@ -9,11 +9,11 @@
   [`ADR-0041`](../../docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md)
   unverändert.
 - **Ersetzt-Baseline-Regel:**
-  [`modul-06-roadmap.md`](../../.harness/baseline/v6.17.0/regelwerk/modul-06-roadmap.md#wann-arbeit-eine-welle-braucht-modul-6)
+  [`modul-06-roadmap.md`](../../.harness/baseline/v6.18.0/regelwerk/modul-06-roadmap.md#wann-arbeit-eine-welle-braucht-modul-6)
   §Wann Arbeit eine Welle braucht, Tabelle *Träger im Repo ohne Wellen*, Zeile *Zeitdokumente
   archivieren* (Träger: Slice-Closure), samt Schritt 4 der Wellen-Closure-Prozedur (die Welle
   sammelt die wellenlos Geschlossenen ein); und
-  [`modul-05-planning-harness.md`](../../.harness/baseline/v6.17.0/regelwerk/modul-05-planning-harness.md#lifecycle-als-state-machine)
+  [`modul-05-planning-harness.md`](../../.harness/baseline/v6.18.0/regelwerk/modul-05-planning-harness.md#lifecycle-als-state-machine)
   §Lifecycle als State Machine, der Absatz, der `done/slice-<Kennung>-archiv.zip` als Ablage
   nennt.
 - **Adaption:** Die Baseline weist die Slice-Archivierung der Slice-Closure des Repos **ohne**

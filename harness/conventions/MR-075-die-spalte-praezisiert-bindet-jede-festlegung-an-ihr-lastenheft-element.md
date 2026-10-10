@@ -16,12 +16,12 @@
   [`MR-021`](../conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
   Punkt 1 fort.
 - **Ersetzt-Baseline-Regel:**
-  [`modul-03-spec.md`](../../.harness/baseline/v6.17.0/regelwerk/modul-03-spec.md#ziel-form-spezifikation)
+  [`modul-03-spec.md`](../../.harness/baseline/v6.18.0/regelwerk/modul-03-spec.md#ziel-form-spezifikation)
   §Ziel-Form: Spezifikation — *„Technische Festlegungen leben in der Spezifikation
   (`templates/spec/spezifikation.template.md`)"*: die Vorlage führt in §3
   `ID · Name · Wert · Begründung` und in §5 `ID · Span · Pflicht-Attribute · Quelle`, jeweils ohne
   Spalte für die Bindung an das Lastenheft
-  (`grep -n '^| ID | Name | Wert | Begründung |\|^| ID | Span | Pflicht-Attribute | Quelle |' .harness/baseline/v6.17.0/templates/spec/spezifikation.template.md`
+  (`grep -n '^| ID | Name | Wert | Begründung |\|^| ID | Span | Pflicht-Attribute | Quelle |' .harness/baseline/v6.18.0/templates/spec/spezifikation.template.md`
   nennt beide Kopfzeilen). Genannt ist die Form, an deren Stelle die zusätzliche Spalte tritt; die
   Regel *„Präzisieren, nie erweitern"* derselben Sektion bindet unverändert fort.
 - **Adaption:** Jede der genannten Tabellen trägt als **letzte** Spalte `Präzisiert`. Ihr Wert ist ein

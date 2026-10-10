@@ -17,7 +17,7 @@
   **Nicht** der PreToolUse-Guard, **nicht** die Hash-Funktion und **nicht** das Format von
   `gates-passed.diffsha`.
 - **Ersetzt-Baseline-Regel:**
-  [`grundlagen-durchsetzungsschicht.md`](../../.harness/baseline/v6.17.0/regelwerk/grundlagen-durchsetzungsschicht.md#drei-bindepunkte)
+  [`grundlagen-durchsetzungsschicht.md`](../../.harness/baseline/v6.18.0/regelwerk/grundlagen-durchsetzungsschicht.md#drei-bindepunkte)
   §Drei Bindepunkte, Zeile *Handoff-Gate* — Bindepunkt *„bevor der Agent ‚fertig' meldet"*. Im
   Default bindet er an den Commit; die strenge Lesart bleibt als Schalter.
 - **Adaption.** Den Inhalt trägt [`ADR-0083`](../../docs/plan/adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md) Festlegungen 1–6; hier steht die Abweichung, nicht ihr
