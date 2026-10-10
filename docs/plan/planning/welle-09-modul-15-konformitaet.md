@@ -33,10 +33,9 @@ Kommando).
 (`grep -c '^- \*\*Festlegung [123]\*\*' docs/plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md`
 → **3**) und führt für **drei** der vier Tool-Zellen den Wert *emittiert* statt *ADR-Verdikt*
 (`grep -c '^| .* \*\*emittiert\*\* —' docs/plan/adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md`
-→ **3**). **Offen:** §3 (Tool-Spalte, Absatz *Die Tool-Spalte braucht ihren eigenen Beleg*) und §4
-(Absatz zu slice-062) tragen noch den Stand von [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md); welchen Ziel-Beleg jede der drei Zellen
-nach [welle-12](done/welle-12-erfassungsschicht-emittieren.md) schuldet, ist nicht entschieden
-(Frage an den Auftraggeber).
+→ **3**); die Tool-Zelle *Doku-Konsistenz-Drift* bleibt *emittiert* nach
+[`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) Festlegungen 4 und 5. Den Ziel-Beleg der
+drei revidierten Zellen führt [welle-12](done/welle-12-erfassungsschicht-emittieren.md).
 
 **Warum beide Ebenen in dieselbe Welle gehören.** Das Tool emittiert das **vollständige
 Regelwerk** ins Ziel — Modul 15 inklusive. Ein bootstrappedes Repo bekommt dieselben Regeln und
@@ -105,10 +104,9 @@ Eingetreten:
   [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Falle eine Ebene weiter. Verlangt sind daher **beide** Richtungen: (a) das frisch gebootstrappte Ziel ist out-of-the-box grün,
   **und** (b) ein Gegenbeispiel im Ziel wird **rot gesehen** — für einen emittierten Span-Emitter
   etwa: er läuft, und ein Lauf ohne Pflicht-Feld fällt auf. **Wen diese Pflicht trifft, sagt der
-  Zellwert:** sie gilt jeder Zelle, die *emittiert* trägt — nach [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) ist das
-  *Doku-Konsistenz-Drift × Tool*, die drei übrigen trugen *ADR-Verdikt* (zum Nachzug auf
-  [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) siehe §1,
-  *Offen*). Für *ADR-Verdikt* ist kein Sensor und kein Ziel-Beleg geschuldet: die Entscheidung
+  Zellwert:** sie gilt jeder Zelle, die *emittiert* trägt — nach [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
+  und [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) Festlegungen 4 und 5 sind das alle vier Tool-Zellen.
+  Für *ADR-Verdikt* (Repo-Spalte) ist kein Sensor und kein Ziel-Beleg geschuldet: die Entscheidung
   trägt die Verbindlichkeit, und ein Smoke, der Anwesenheit prüft, belegt keine Abwesenheit.
   **Der Beleg ist über die Bootstrap-Varianten zu klammern:** ein Ergebnis aus *einer* Variante
   deckt die andere nicht, weil `--lang` optional ist
@@ -205,10 +203,11 @@ Reihenfolge ist **Erprobung → Entscheidung → Emission**.
 bewegt ihn nur ein Change Request des Auftraggebers. Der Slice liefert die ADR und keinen CR, weil
 ohne neues Artefakt keine Anforderung wächst. Die Entscheidung steht mit Begründung in
 [slice-062](done/slice-062-emittierte-modul-15-regeln.md) und
-[`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) (kein Span-Emitter im Ziel; Block 4 über das
-advisory `make doc-targets`; Rollen-Typen nicht mit), soweit
-[`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) sie nicht revidiert
-(§1). Die Abzählung der Ausgänge führt die ADR; sie hier zu doppeln, driftete.
+[`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) (Block 4 über das advisory
+`make doc-targets`), revidiert durch
+[`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md): Span-Emitter und
+Rollen-Typen (Block 1) sowie die Auswertung (Block 2 und 3) gehen ins Ziel. Die Abzählung der
+Ausgänge führen die ADRs; sie hier zu doppeln, driftete.
 
 **slice-087 (Tool, Vorarbeit).** Die Emission von Block 4 hängt an einer Bedingung über den
 **Dokument-Satz**, nicht an einer Aufzählung von Fundorten: kein emittiertes Dokument darf ein
