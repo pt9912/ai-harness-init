@@ -121,7 +121,7 @@ misst Liefer-Punkt 2, nicht das CHANGELOG.
 - [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind nach dem Move geprüft, §7.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind nach dem Move geprüft, §7.
 
 ## 3. Plan (vor Code)
 
@@ -230,7 +230,17 @@ Geschrieben vom Planner in eigenem Kontext bei der Closure ([`AGENTS.md`](../../
 - **Archivierung:** entfällt ([`MR-078`](../../../../harness/conventions.md#mr-078); `archive-slice`
   ist nicht gebaut).
 - **Risiken aus §6:** jede Zeile in §6 hat ihren Ausgang.
-- **Drei Paarungen:** —
+- **Paarungen geprüft am 2026-10-10** (nach dem Move):
+  - (a) *Anker*: §7 nennt keinen Zielort einer verkörperten Regel (der Steering-Loop-Eintrag ist
+    gezählt, nicht verkörpert); kein Gegenstand.
+  - (b) *Folge-Slice*: kein Folge-Slice genannt.
+  - (c) *Register*: die fünf genannten Pfade existieren; ihre `evidence/` tragen 6, 9, 2, 5 und 2
+    Dateien (`ls <verzeichnis>/evidence/*.md | wc -l`).
+  - Zweite Hälfte über das ganze Register: 2 Verzeichnisse ohne Beleg, namentlich
+    `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht` und
+    `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen behauptet
+    ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+    Festlegung 2).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
