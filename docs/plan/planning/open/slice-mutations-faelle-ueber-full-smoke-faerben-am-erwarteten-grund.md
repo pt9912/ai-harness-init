@@ -40,6 +40,17 @@ Handbuch genannt, nicht angelegt"* ab; *„FEHLER — Rollen-Typ fehlt"* fällt 
 Bootstrap anlegt, und die Handbuch-Stufe (`handbuch_baum_pruefen`, vor `rollen_typen_im_ziel` in
 `harness/tools/full-smoke.sh`) misst genau diese Pfad-Menge zuerst.
 
+**Dritter Messpunkt, gleiche Meldung, andere Stufe** (selber Nachtlauf):
+`111-span-korrelationsfeld-verschwindet` (`# verify:` ist `test-go`, nicht `full-smoke`) ist „rot, aber
+`TestMandatoryFieldsAlwaysPresent` fällt nicht". Lokal gefahren (`make mutate MUTATE_CASES=…`,
+2026-10-10): es fällt `TestFeldliste_KennzeichnungNenntGenauDieFaelleDerSpezifikation`
+(`fieldlist_test.go:269`, *„die Feldliste nennt "branch" als Feld mit Kennzeichnung, der Traeger fuehrt
+es nicht als Pflichtfeld"*), `TestMandatoryFieldsAlwaysPresent` bleibt grün. **Nicht dieselbe Klasse:**
+keine früher fallende Stufe fängt den Fall ab, `go test` fährt beide Tests; der benannte Test hat die
+Mutation `omitempty` an `branch` nicht mehr als Zahn. Gemeinsam ist nur die Meldung „falscher Grund".
+Der Slice führt `111` als Fall der Liste aus DoD (1) und (2) — Menge: alle Fälle mit „falscher Grund",
+nicht nur `full-smoke`; die Ursache je Fall bleibt zu messen. Die Liefer-Punkte bleiben drei.
+
 **Zu klären, gemessen und nicht geschätzt:**
 
 - Reihenfolge der Stufen: welche Stufe fällt vor welcher erwarteten; `git log -S'handbuch-baum.sh'`
@@ -68,8 +79,9 @@ Bootstrap anlegt, und die Handbuch-Stufe (`handbuch_baum_pruefen`, vor `rollen_t
 
 ## 2. Definition of Done
 
-- [ ] **(1) Ursache und Menge stehen fest.** Alle `# verify: full-smoke`-Fälle sind gefahren; die
-      Fälle, die an einer anderen Stufe als der erwarteten rot werden, sind mit Stufe und Meldung
+- [ ] **(1) Ursache und Menge stehen fest.** Alle `# verify: full-smoke`-Fälle sind gefahren, dazu
+      `111` und jeder weitere Fall, den der Nachtlauf mit „falscher Grund" meldet; die
+      Fälle, die an einer anderen Stufe oder einem anderen Test als dem erwarteten rot werden, sind mit Stufe und Meldung
       aufgelistet; die Läufe vom 05./06.10. haben eine gemessene Ursache oder die benannte Lücke.
       **Rot:** ein Fall der Liste, dessen `# expect:` im Lauf nicht erscheint.
 - [ ] **(2) Jeder Fall der Liste bindet seinen Grund.** Angesetzt wird so, dass die erwartete Stufe
