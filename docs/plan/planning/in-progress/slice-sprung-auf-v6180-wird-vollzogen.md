@@ -188,7 +188,7 @@ das Verdikt A2 liegt als Commit vor; WIP-Limit frei; einmal Netz für `make vend
 `make regelwerk-check`; `make baseline-freshness` meldet keinen neueren Tag als `v6.18.0`. Der Zug
 nach `in-progress/` landet auf dem Hauptzweig.
 
-**Startbedingung erfüllt** (2026-10-10): der Vorgänger liegt in `done/`; ADR-0091 ist `Accepted`
+**Startbedingung erfüllt** (2026-10-10): der Vorgänger liegt in `done/`; [`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md) ist `Accepted`
 (`c82071b7`) und trägt das Verdikt A2 in ihren Festlegungen 2–4; `in-progress/` trägt keinen Slice;
 `make baseline-freshness` meldet `latest: v6.18.0`; der Auftraggeber hat den Sprung freigegeben.
 Netz für `make vendor-baseline` und `make regelwerk-check` braucht der Implementer-Lauf.
