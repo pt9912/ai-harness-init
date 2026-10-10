@@ -60,10 +60,10 @@ Auslöser: Freigabe des Auftraggebers vom 2026-10-10 — ein Release wird vorber
 
 Liefer-Punkte (drei):
 
-- [ ] **L1 — Tag-Baum vorbereitet und verifiziert** (Schritte 1 bis 4 der Prozedur). `TRAEGER_TAG` in `internal/emit/templates/enforce/traeger.mk` und der Tag-Wert in `test/traeger-fetch.bats` zeigen auf `v0.7.0`; `make release-artifacts DEST=dist TRAEGER_VERSION=v0.7.0` baut die sechs Binaries und `dist/SHA256SUMS`; `bash harness/tools/release-sums.sh verify dist` endet mit Exit 0; `TRAEGER_TAG` und die sechs `TRAEGER_SHA256_*` im `Makefile` tragen den Tag und die gemessenen Digests; `make gates` ist grün auf dem Commit, der den Tag tragen wird.
+- [x] **L1 — Tag-Baum vorbereitet und verifiziert** (Schritte 1 bis 4 der Prozedur). `TRAEGER_TAG` in `internal/emit/templates/enforce/traeger.mk` und der Tag-Wert in `test/traeger-fetch.bats` zeigen auf `v0.7.0`; `make release-artifacts DEST=dist TRAEGER_VERSION=v0.7.0` baut die sechs Binaries und `dist/SHA256SUMS`; `bash harness/tools/release-sums.sh verify dist` endet mit Exit 0; `TRAEGER_TAG` und die sechs `TRAEGER_SHA256_*` im `Makefile` tragen den Tag und die gemessenen Digests; `make gates` ist grün auf dem Commit, der den Tag tragen wird.
   - Rot (ohne Netz): ein Byte eines Assets in einer Kopie von `dist/` ändern — `release-sums.sh verify` endet mit Exit ≠ 0 und nennt die Datei; den Tag der Vorlage vom Tag im `Makefile` trennen — die Kopplung in `test/traeger-fetch.bats` färbt rot.
   - Rot an der realen Quelle: einen Digest im realen `Makefile` verfälschen und `bats test/traeger-fetch.bats` fahren; färbt kein Fall, steht die bekannte Lücke („realer `Makefile`-Digest ungebunden") im Bericht, nicht verdeckt durch Fixture-Grün.
-- [ ] **L2 — Handbuch im Ist-Zustand** (`docs/user/benutzerhandbuch.md`; Zeilennummern gemessen am 2026-10-10 an `8e1b1691`, der Implementer misst am Tag-Baum neu):
+- [x] **L2 — Handbuch im Ist-Zustand** (`docs/user/benutzerhandbuch.md`; Zeilennummern gemessen am 2026-10-10 an `8e1b1691`, der Implementer misst am Tag-Baum neu):
   - Stand: `grep -n 'v0\.6\.0' docs/user/benutzerhandbuch.md` → `**Software-Stand:**` (Zeile 3) und „aktuell ausgeliefert wird" (Zeile 81) auf `v0.7.0`.
   - Kotlin: `grep -c -i kotlin docs/user/benutzerhandbuch.md` → `0`. Die `--lang`-Tabelle (Zeile 459, heute „Unterstützt: `go`, `cpp`"), die `--arch`-Grenzen (Zeile 328, „beide Zielsprachen"), der Baum-Abschnitt der Sprachen (ab Zeile 638) und `SKEL_<SPRACHE>_VERSION` (Zeile 482) werden gegen `internal/gen/gen.go` (`SupportedLangs`) gemessen und nachgezogen; dazu die Toolchain-Voraussetzungen von Kotlin (Gradle/JDK), wo das Handbuch sie bei den anderen Sprachen nennt.
   - `KENNUNG` beim Altbestand-Lauf: die Zeile `make archive-welle` (Zeile 444) nennt `WELLE=altbestand KENNUNG=<K>` samt Pflicht (Quelle: `internal/emit/templates/enforce/archivierung.mk`).
@@ -71,18 +71,18 @@ Liefer-Punkte (drei):
   - `reviews`-Absatz (Zeile 707, „Die Review-Report-Deckung ist nicht eingeschaltet") auf den Stand des Kommentar-Blocks der Vorlage mit Pin `v0.86.x` und den vier neuen Schlüsseln; die Aussage über die Wortfolge „unabhängiger Review" gegen die Vorlage prüfen.
   - Weitere Versions-Pins: `grep -n -E 'v0\.8[0-9]|v0\.2[0-9]|v6\.1[0-9]' docs/user/benutzerhandbuch.md README.md` messen und nur ziehen, was ein Ist-Zustand nennt.
   - Nur Ist-Zustand: keine Chronik, keine Prognose. `make docs-check` rot bei totem Link/Anker; dass die Aussagen stimmen, hält kein Gate — der Reviewer liest sie gegen die Vorlagen am Tag-Baum.
-- [ ] **L3 — Veröffentlicht, belegt, gemeldet** (Schritte 5 bis 8). Der Tag-Push ist ein eigener, benannter Schritt (**Schritt P** in §3) und braucht die ausdrückliche Freigabe des Auftraggebers; der Release trägt acht Assets (`gh release view v0.7.0 --json assets --jq '.assets | length'` → `8`); `make traeger-fetch` hält das veröffentlichte Asset gegen den Pin; `ci` an `main` und am Tag grün (gefallene `full-smoke`-Jobs nach abgeschlossener Publikation per `gh run rerun --failed`); Job `tap` grün und `make tap-check TAG=v0.7.0` Exit 0, die Meldung trägt dessen Ausgabezeile; der Release-Text trägt Stand, Assets, Grenze, die Gegenstände aus §1 und, falls der Vergleich zweier frischer Emissionen (Träger `v0.6.0` gegen `v0.7.0`, [`releasing.md`](../../../user/releasing.md) Schritt 5) Dateien der zweiten Klasse ändert, den Abschnitt **Bestand**.
+- [x] **L3 — Veröffentlicht, belegt, gemeldet** (Schritte 5 bis 8). Der Tag-Push ist ein eigener, benannter Schritt (**Schritt P** in §3) und braucht die ausdrückliche Freigabe des Auftraggebers; der Release trägt acht Assets (`gh release view v0.7.0 --json assets --jq '.assets | length'` → `8`); `make traeger-fetch` hält das veröffentlichte Asset gegen den Pin; `ci` an `main` und am Tag grün (gefallene `full-smoke`-Jobs nach abgeschlossener Publikation per `gh run rerun --failed`); Job `tap` grün und `make tap-check TAG=v0.7.0` Exit 0, die Meldung trägt dessen Ausgabezeile; der Release-Text trägt Stand, Assets, Grenze, die Gegenstände aus §1 und, falls der Vergleich zweier frischer Emissionen (Träger `v0.6.0` gegen `v0.7.0`, [`releasing.md`](../../../user/releasing.md) Schritt 5) Dateien der zweiten Klasse ändert, den Abschnitt **Bestand**.
   - Rot (Pin passt nicht zum Asset): ein verfälschter `TRAEGER_SHA256_*` lässt `make traeger-fetch` mit Exit ≠ 0 enden, bevor etwas abgelegt wird — nach der Publikation fahren und belegen; sonst steht es als Lücke in §7.
   - Fällt der Job `tap`: `make tap-nachzug TAG=v0.7.0` mit `TAP_TOKEN` des Auftraggebers, danach `make tap-check`.
 
 Gate-Läufe und Closure-Pflichten:
 
-- [ ] `make gates` grün am Tag-Baum (siehe L1).
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), Verifier-Bericht am Tag-Baum **vor** dem Tag-Push — kein Self-Review.
-- [ ] Doku-Update: Handbuch (L2); [`releasing.md`](../../../user/releasing.md) bleibt unverändert, solange die Prozedur trägt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag, vom Planner in frischem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben oder „keine Beobachtung angefallen" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] `make gates` grün am Tag-Baum (siehe L1).
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), Verifier-Bericht am Tag-Baum **vor** dem Tag-Push — kein Self-Review.
+- [x] Doku-Update: Handbuch (L2); [`releasing.md`](../../../user/releasing.md) bleibt unverändert, solange die Prozedur trägt.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag, vom Planner in frischem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben oder „keine Beobachtung angefallen" in §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
 
 ## 3. Plan (vor Code)
@@ -128,16 +128,22 @@ DoD vollständig, Verifier-Bericht am Tag-Baum ohne Blocker, `ci` an `main` und 
 
 ## 6. Risiken und offene Punkte
 
-- Ein Plattform-Asset baut nicht — **Ausgang:** entfallen, wenn alle sechs im ersten Lauf bauen; sonst eingetreten → Rückführung nach §4.
+- Ein Plattform-Asset baut nicht — **Ausgang:** entfallen — alle sechs Binaries bauten im ersten Lauf, der Release trägt 8 Assets.
 - Der Gates-Beleg reist nicht mit dem Tag; Report-Commits ändern den Baum nach dem Stempel — **Ausgang:** eingetreten, strukturell: erneuter `make gates` auf dem finalen Commit ist Teil von L3 ([`BEO-ALL/ge-tagter-stand-traegt-keinen-gates-beleg`](../observations/BEO-ALL/ge-tagter-stand-traegt-keinen-gates-beleg/observation.md)).
-- `ci` fällt im `full-smoke` mit 404, falls der `release`-Lauf nicht innerhalb der Grenze von `make release-warten` publiziert — **Ausgang:** weiter offen: → [`BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases`](../observations/BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases/observation.md); operativ Re-Run.
-- Der Job `tap` scheitert (Secret abgelaufen) — **Ausgang:** eingetreten → lokaler Ausfallweg mit `TAP_TOKEN`; sonst entfallen.
-- Der reale `Makefile`-Digest ist ungebunden; den Pin gegen das Asset hält erst `make traeger-fetch` nach der Publikation — **Ausgang:** weiter offen: → [`BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle`](../observations/BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/observation.md).
-- Die Kennung dieses Slice trägt den Tag, den der Schnitt selbst überholt — **Ausgang:** weiter offen: → [`BEO-ALL/kennung-traegt-den-stand-den-ein-release-ueberholt`](../observations/BEO-ALL/kennung-traegt-den-stand-den-ein-release-ueberholt/observation.md).
+- `ci` fällt im `full-smoke` mit 404, falls der `release`-Lauf nicht innerhalb der Grenze von `make release-warten` publiziert — **Ausgang:** eingetreten und weiter offen: Beleg `evidence/slice-release-schnitt-v070-liefert-kotlin-und-v6180.md` → [`BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases`](../observations/BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases/observation.md); operativ Re-Run.
+- Der Job `tap` scheitert (Secret abgelaufen) — **Ausgang:** entfallen — Job `tap` grün, `make tap-check TAG=v0.7.0` gleich.
+- Der reale `Makefile`-Digest ist ungebunden; den Pin gegen das Asset hält erst `make traeger-fetch` nach der Publikation — **Ausgang:** weiter offen: Beleg `evidence/slice-release-schnitt-v070-liefert-kotlin-und-v6180.md` → [`BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle`](../observations/BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/observation.md).
+- Die Kennung dieses Slice trägt den Tag, den der Schnitt selbst überholt — **Ausgang:** entfallen — der Tag blieb `v0.7.0`, die Kennung nennt den geschnittenen Stand; kein Auftreten, kein Beleg zu [`BEO-ALL/kennung-traegt-den-stand-den-ein-release-ueberholt`](../observations/BEO-ALL/kennung-traegt-den-stand-den-ein-release-ueberholt/observation.md).
 
 ## 7. Closure-Notiz
 
-Wird vom Planner bei der Closure geschrieben ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+- **Was hat funktioniert:** Tag `v0.7.0` (annotiert) liegt auf `a6ed0813`; Release-Workflow Run `38065750258` grün samt Job `tap`; 8 Assets; `make tap-check TAG=v0.7.0` gleich; `make traeger-fetch` „Digest verifiziert", mit verfälschtem Digest Exit 2 „Digest-Abweichung"; `ci` an `a6ed0813` grün (Run `38060627055` nach `gh run rerun --failed`, Run `38065750227` am Tag); Release-Text gesetzt (Belege in §3). Review ohne HIGH/MEDIUM, LOW-1 behoben ([Review](../../../reviews/2026-10-10-slice-release-schnitt-v070-liefert-kotlin-und-v6180.md)); Verifikation am Tag-Baum: L1 und L2 bestätigt ([Verifikation](../../../reviews/2026-10-10-slice-release-schnitt-v070-liefert-kotlin-und-v6180-verify.md)).
+- **Was ging anders als geplant:** `main` mit Pin `v0.7.0` lag bis zur Freigabe des Tag-Pushs vor der Publikation; der `full-smoke`-Job an `a6ed0813` wartete in `make release-warten` die Grenze ab (14:41 bis 14:58 UTC, `gh run view 38060627055 --attempt 1`) und fiel an der Träger-Fetch-Stufe. Ausgang: Re-Run nach der Publikation (Verifikation F1). Das Review führt INFO-1: die `README.md`-Änderung steht nicht in Plan §3.
+- **Steering-Loop-Eintrag:** benannte Grenzen, kein neuer Sensor und keine geschärfte Regel. (1) Der reale `Makefile`-Digest ist von keinem Test gebunden; den Pin gegen das Asset hält allein `make traeger-fetch` nach der Publikation, dessen Rot-Seite hier gefahren ist (Verifikation F3). (2) Der Kotlin-Baum im Handbuch hat keinen Sensor in `full-smoke` (Verifikation F2). (3) `make release-warten` trägt nur, wenn der Tag innerhalb seiner Grenze auf `main` folgt; liegt zwischen Push und Freigabe mehr Zeit, ist `ci` bis zum Re-Run rot. Träger aller drei bleibt der Lauf, der den Schnitt schreibt.
+- **Beobachtungs-Register (`../observations/`):** `evidence/slice-release-schnitt-v070-liefert-kotlin-und-v6180.md` ergänzt in [`BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle`](../observations/BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/observation.md) (Zähler steht damit bei 8×, Stand `geplant`) und in [`BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases`](../observations/BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases/observation.md) (4×, Stand `verkörpert`; die verkörperte Regel trägt nicht über ihre Grenze, `state.md` nachgezogen); neu angelegt [`BEO-ALL/handbuch-sprachbaum-ohne-sensor-in-full-smoke`](../observations/BEO-ALL/handbuch-sprachbaum-ohne-sensor-in-full-smoke/observation.md), Beleg `evidence/slice-release-schnitt-v070-liefert-kotlin-und-v6180.md` (1×).
+- **Folge-Slices:** keine neuen; [`slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor`](../open/slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor.md) bleibt der Träger des Ausgangs von `waechter-misst-die-fixture-statt-der-realen-quelle`.
+- **Risiken aus §6:** jedes trägt seinen Ausgang am Risiko: 1 entfallen, 2 eingetreten (strukturell), 3 eingetreten und weiter offen (Register), 4 entfallen, 5 weiter offen (Register), 6 entfallen.
+- **Drei Paarungen:** werden nach dem `git mv` geprüft.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
