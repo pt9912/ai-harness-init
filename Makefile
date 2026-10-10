@@ -22,7 +22,7 @@ GOLANGCI_LINT_VERSION ?= v2.14.0
 # Injektor und baseline-verify ENTDECKEN das Verzeichnis (Setzung: ein Tag zur
 # Zeit), .d-check.yml nutzt einen Glob. Ein Tag-Bump ändert damit diese Zeile,
 # BASELINE_ZIP_SHA256 und den Baum — keinen repo-weiten Grep (LH-QA-02).
-BASELINE_TAG ?= v6.17.0
+BASELINE_TAG ?= v6.18.0
 # Kein BASELINE_DIR: baseline-verify und der Injektor ENTDECKEN das <tag>-
 # Verzeichnis per Glob (Setzung "ein Tag zur Zeit"), lesen es also nicht aus
 # einer Variablen — ein solcher Pfad-Override wäre stiller No-op.
@@ -31,7 +31,7 @@ BASELINE_TAG ?= v6.17.0
 # erzeugt und beweist die Herkunft NICHT; diese Kette hängt allein hier.
 # regelwerk-check vergleicht Upstream gegen diesen Pin (MR-007).
 BASELINE_URL ?= https://github.com/pt9912/ai-harness-course/releases/download/$(BASELINE_TAG)/lab-regelwerk.zip
-BASELINE_ZIP_SHA256 ?= afe50df82c3d178985e8fd86b4e09cb018323a7329d603e6d15170c5d8fa32a3
+BASELINE_ZIP_SHA256 ?= 18e5443b4fca32ce452ec5dcf7cf011d7e04b0d29741b777a8dceaa452dcb8d9
 
 # Traeger-Fetch-Pins (ADR-0058 Festlegung 1, Dogfood-Haelfte; ADR-0059 Festlegung 3,
 # LH-QA-02): Release-Tag und sha256 der sechs Assets der Plattform-Matrix (LH-QA-04).

@@ -33,7 +33,7 @@ const (
 // FAIL-CLOSED an den Tag gekoppelt, den der Bootstrap fetcht:
 // TestInventurMessTag_IstDerGefetchteStand haelt beide gegeneinander — ein Baseline-Sprung,
 // der den Stand hier stehen laesst, faerbt rot statt einen falschen Mess-Tag auszuliefern.
-const InventurMessTag = "v6.17.0"
+const InventurMessTag = "v6.18.0"
 
 // TraegerEintrag ist eine Zeile der Inventur.
 //
