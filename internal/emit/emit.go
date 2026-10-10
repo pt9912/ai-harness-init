@@ -30,8 +30,8 @@ import (
 // (DCHECK_IMAGE/DCHECK_DIGEST) fuer bewussten Opt-in-Override ueberschreibbar; die
 // Semantik (Digest sticht Tag) ist dieselbe wie im emittierten Fragment.
 const (
-	DefaultImage  = "ghcr.io/pt9912/d-check:v0.86.0"
-	DefaultDigest = "sha256:d90200e94db311a70f9b15045e1290feecde03e9185ad78fb1ebea265e6ee44b"
+	DefaultImage  = "ghcr.io/pt9912/d-check:v0.86.1"
+	DefaultDigest = "sha256:3e0b9779a71e2fa942960e8b961428fba036455c535513d34a75bfb799ffce0e"
 )
 
 //go:embed templates/d-check.yml
