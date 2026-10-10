@@ -256,7 +256,7 @@ Geschrieben vom Planner in eigenem Kontext bei der Closure ([`AGENTS.md`](../../
   `TestDCheckConfig_ReviewsBleibtKommentarBlock` rot mit dem Schlüssel in der Meldung. Mutation
   140/140 `ok` über `mutate/…-e5a3000b`, beide Branches gelöscht. Review
   ([Report](../../../reviews/2026-10-10-slice-sprung-auf-v6180-wird-vollzogen.md), `678d3980`):
-  0 HIGH, 1 LOW, annahmereif. Architect-Übergaben A1 bis A3: `ADR-0091` `Accepted`, Commits
+  0 HIGH, 1 LOW, annahmereif. Architect-Übergaben A1 bis A3: [`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md) `Accepted`, Commits
   `4a617506`, `32bbd041`, `ed76b475`.
 - **Was ging anders als geplant:** Die Verifikation lief vor dem Review-Report und meldete ihn als
   F-1 offen; `678d3980` erledigt ihn. `reviews` bleibt in beiden Ebenen aus (Dogfood:
