@@ -160,8 +160,8 @@ Details und Beleg stehen im Kopf von `harness/tools/slice-mv.sh`, Abschnitt BELE
 **Das Werkzeug führt beide Kanten aus, und die Form der Stilllegung liest es nicht.** `TO` prüft es
 allein gegen die Lifecycle-Liste (`grep -n 'LIFECYCLE=' harness/tools/slice-mv.sh`); eine Sperre
 für einen Übergang, der an `in-progress/` vorbeiführt, hat es nicht. Ob die Liefer-Punkte leer
-sind und §7 die Zeile `Gegenstand:` trägt (`v6.17.0` ·
-`.harness/baseline/v6.17.0/regelwerk/modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand
+sind und §7 die Zeile `Gegenstand:` trägt (`v6.18.0` ·
+`.harness/baseline/v6.18.0/regelwerk/modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand
 ein anderer übernimmt), prüft es nicht; den Inhalts-Commit vor dem Wechsel setzt der Aufrufer.
 
 **Gemessen** am Blob `7e53bd7` von `harness/tools/slice-mv.sh`, dem Stand des Commits `7348e55c`
@@ -297,5 +297,5 @@ es nicht ablegt.
 
 ## Bindung
 
-Kein Gate-Versprechen; Träger von [Modul 5](../../.harness/baseline/v6.17.0/regelwerk/modul-05-planning-harness.md#lifecycle-als-state-machine)
+Kein Gate-Versprechen; Träger von [Modul 5](../../.harness/baseline/v6.18.0/regelwerk/modul-05-planning-harness.md#lifecycle-als-state-machine)
 und `BEO-ALL/verweise-brechen-beim-ortswechsel`.

@@ -78,7 +78,7 @@ grep -n 'reviews' internal/emit/templates/d-check.yml | head -3        # emittie
 grep -n 'docs/reviews/<' .harness/skills/reviewer.md                   # Ablage-Form im Dogfood
 ```
 
-Emittiert werden `review-report.template.md` und `.harness/baseline/v6.17.0/templates/harness/README.template.md` aus dem vendored
+Emittiert werden `review-report.template.md` und `.harness/baseline/v6.18.0/templates/harness/README.template.md` aus dem vendored
 Baum (`internal/emit/templates.go`, `internal/emit/werkzeugindex.go`); die emittierte
 `.d-check.yml` ist dagegen die eigene Vorlage `internal/emit/templates/d-check.yml`, nicht die der
 Baseline.
