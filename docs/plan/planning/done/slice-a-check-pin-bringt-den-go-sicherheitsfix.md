@@ -104,7 +104,7 @@ Stelle also; **kein** Wächter koppelt Tag und Digest
 - [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind nach dem Move geprüft, §7.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind nach dem Move geprüft, §7.
 
 **Übergabe an den Architect** (Eingang für den MR-Eintrag): Quellen sind dieser Plan,
 [`MR-084`](../../../../harness/conventions.md#mr-084) als Muster und
@@ -218,7 +218,19 @@ Geschrieben vom Planner in eigenem Kontext bei der Closure ([`AGENTS.md`](../../
 - **Archivierung:** entfällt ([`MR-078`](../../../../harness/conventions.md#mr-078); `archive-slice`
   ist nicht gebaut).
 - **Risiken aus §6:** jede Zeile in §6 hat ihren Ausgang.
-- **Drei Paarungen:** nach dem Move.
+- **Paarungen geprüft am 2026-10-10** (nach dem Move):
+  - (a) *Anker*: §7 nennt keinen Zielort einer verkörperten Regel (der Steering-Loop-Eintrag ist
+    gezählt, nicht verkörpert); kein Gegenstand.
+  - (b) *Folge-Slice*: `slice-gepinnte-bilder-bekommen-einen-schwachstellen-scan` und
+    `slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor` existieren in `open/`
+    (`ls docs/plan/planning/open/<kennung>.md`).
+  - (c) *Register*: beide genannten Pfade existieren; ihre `evidence/` tragen 3 und 6 Dateien
+    (`ls <verzeichnis>/evidence/*.md | wc -l`).
+  - Zweite Hälfte über das ganze Register: 2 Verzeichnisse ohne Beleg, namentlich
+    `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht` und
+    `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen behauptet
+    ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+    Festlegung 2).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
