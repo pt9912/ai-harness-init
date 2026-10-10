@@ -20,7 +20,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) (Vorlagen wandern ins
 Ziel),
 [`ADR-0082`](../../adr/0082-ziel-fassung-regiert-den-sprung-v6170.md) (Muster der regierenden
-Fassung; die Fassung für `v6.18.0` ist Architect-Übergabe A1),
+Fassung; die Fassung für `v6.18.0` ist [`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md), Architect-Übergabe A1),
 [`MR-007`](../../../../harness/conventions.md#mr-007) (Vendoring),
 [`MR-054`](../../../../harness/conventions.md#mr-054) (drei Kriterien für ein emittiertes Modul),
 [`MR-086`](../../../../harness/conventions.md#mr-086) (`reviews` bleibt aus dem emittierten Gate),
@@ -29,7 +29,7 @@ Fassung; die Fassung für `v6.18.0` ist Architect-Übergabe A1),
 **Berührte Spec-Stellen:** — (Adressen in den vendored Baum zählen die Kommandos in §1 mit; ihr
 Nachzug ist Adresse, keine Spec-Änderung).
 
-**Verantwortlich:** — bis zur Priorisierung durch den Auftraggeber.
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-10-10.
 
@@ -37,7 +37,7 @@ Nachzug ist Adresse, keine Spec-Änderung).
 
 ## 1. Ziel und Abgrenzung
 
-**Ziel:** Der Sprung `v6.17.0` → `v6.18.0` ist nach der regierenden Fassung (Architect-Übergabe
+**Ziel:** Der Sprung `v6.17.0` → `v6.18.0` ist nach der regierenden Fassung ([`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md), Architect-Übergabe
 A1) vollzogen — vendored Baum, fünf gekoppelte Pins, Mess-Tag, Symlinks und jede lebende Adresse
 stehen auf `v6.18.0` —, und **beide Ebenen** folgen dem Delta: der Dogfood und das, was das
 Werkzeug ins Ziel emittiert (Auftrag des Auftraggebers vom 2026-10-10).
@@ -107,7 +107,9 @@ Baseline.
 - **A1 — ADR *„Ziel-Fassung regiert den Sprung v6.18.0"*, `Proposed`,** nach dem Muster von
   [`ADR-0082`](../../adr/0082-ziel-fassung-regiert-den-sprung-v6170.md); die Annahme entscheidet der
   Auftraggeber. Sie trägt das Delta, die Kandidaten des Freshness-Durchgangs (wer Modul 10, die
-  Report-Ablage oder `reviews` nennt) und die Re-Evaluierungs-Trigger.
+  Report-Ablage oder `reviews` nennt) und die Re-Evaluierungs-Trigger. Liegt vor als
+  [`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md), `Accepted`; ihre
+  Festlegungen 2–4 tragen das Verdikt A2.
 - **A2 — Delta-Urteil zu [`MR-086`](../../../../harness/conventions.md#mr-086), beide Ebenen.**
   (a) *Emission:* bleibt `reviews` im emittierten Gate auskommentiert (der Kommentar-Block zieht
   die neuen Schlüssel nach), oder wird es aktiv? Zu messen am Pin `v0.86.1` mit einem frisch
@@ -119,9 +121,9 @@ Baseline.
   ([`MR-054`](../../../../harness/conventions.md#mr-054) Kriterium 1 hängt daran)? Die Sonde über
   dem `done/`-Bestand liefert die Befund-Zahl samt Kommando.
 - **A3 — nach dem Vollzug:** Buchung §Baseline in
-  [`harness/conventions.md`](../../../../harness/conventions.md) mit Zeiger auf die ADR aus A1;
+  [`harness/conventions.md`](../../../../harness/conventions.md) mit Zeiger auf [`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md);
   Sprung-Zeile in [`harness/migration.md`](../../../../harness/migration.md) §1; Freshness-Verdikt
-  über die Kandidaten aus A1 **vor** dem Entfernen von `v6.17.0/` (Register
+  über die Kandidaten aus [`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md) **vor** dem Entfernen von `v6.17.0/` (Register
   `freshness-verdikt-faellt-nach-dem-entfernen-des-alten-baums`).
 
 ## 2. Definition of Done
@@ -181,10 +183,15 @@ Drei slice-eigene Punkte, einer je Achse (Baseline · Dogfood · Emission).
 ## 4. Trigger
 
 **Start** (`next` → `in-progress`): `slice-d-check-pin-bringt-den-go-sicherheitsfix` liegt in
-`done/` (d-check `v0.86.1` gepinnt, der Bezugsstand der Vorlage); die ADR aus A1 ist `Accepted`;
+`done/` (d-check `v0.86.1` gepinnt, der Bezugsstand der Vorlage); [`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md) ist `Accepted`;
 das Verdikt A2 liegt als Commit vor; WIP-Limit frei; einmal Netz für `make vendor-baseline` und
 `make regelwerk-check`; `make baseline-freshness` meldet keinen neueren Tag als `v6.18.0`. Der Zug
 nach `in-progress/` landet auf dem Hauptzweig.
+
+**Startbedingung erfüllt** (2026-10-10): der Vorgänger liegt in `done/`; ADR-0091 ist `Accepted`
+(`c82071b7`) und trägt das Verdikt A2 in ihren Festlegungen 2–4; `in-progress/` trägt keinen Slice;
+`make baseline-freshness` meldet `latest: v6.18.0`; der Auftraggeber hat den Sprung freigegeben.
+Netz für `make vendor-baseline` und `make regelwerk-check` braucht der Implementer-Lauf.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
@@ -242,7 +249,7 @@ Einträge führen `*`, gesichtet nach Gegenstand (reviews · Baseline · Emissio
 |---|---|---|
 | `emittierter-stand-laeuft-dem-dogfood-voraus` | 2 (offen) | Verdikt A2 — `reviews` aktiv im Ziel und nicht hier wäre das dritte Auftreten (§6) |
 | `zusicherung-ueber-der-leeren-menge-wahr` | 3 (verkörpert) | Kern des Delta; Liefer-Punkt 3 nennt die Bedingung im Ziel |
-| `re-baseline-ohne-inventur-slice` | 2 (offen) | kein Auftreten — die Inventur trägt die ADR aus A1 |
+| `re-baseline-ohne-inventur-slice` | 2 (offen) | kein Auftreten — die Inventur trägt [`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md) |
 | `freshness-verdikt-faellt-nach-dem-entfernen-des-alten-baums` | 1 (offen) | A3 verlangt das Verdikt vor dem Entfernen |
 | `tag-tragende-adresse-ueberlebt-den-baseline-tausch-nicht` | 3 (geplant) | Liefer-Punkt 1, Link-Kommando |
 | `baseline-sprungweite-treibt-kosten` | 3 (verkörpert) | kein Auftreten — ein Minor Abstand |
