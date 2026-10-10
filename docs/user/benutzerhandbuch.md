@@ -1,6 +1,6 @@
 # Benutzerhandbuch: ai-harness-init
 
-**Software-Stand:** `v0.6.0` — vorgefertigte Programme für sechs Plattformen (linux · macos · windows × amd64 · arm64). Siehe [Aufgaben](#4-aufgaben) (Bootstrap, `--lang`, `add-lang`), [`--arch`](#ein-geschichtetes-grundgerüst-wählen---arch) und [Betriebs-Operationen](#betriebs-operationen).
+**Software-Stand:** `v0.7.0` — vorgefertigte Programme für sechs Plattformen (linux · macos · windows × amd64 · arm64). Siehe [Aufgaben](#4-aufgaben) (Bootstrap, `--lang`, `add-lang`), [`--arch`](#ein-geschichtetes-grundgerüst-wählen---arch) und [Betriebs-Operationen](#betriebs-operationen).
 **Stand:** 2026-10-06
 **Verantwortlich:** ai-harness-init-Team (pt9912)
 
@@ -44,7 +44,7 @@ Auf dem Rechner, der `ai-harness-init` ausführt, brauchen Sie:
 * **Netzwerk-Zugang** — **einmalig** beim ersten Aufruf. `ai-harness-init` lädt das Regelwerk vom festgelegten Kurs-Stand. Danach ist Ihr Repository netzunabhängig.
 * **GNU `make`** — um das aufgesetzte Repository anschließend zu prüfen.
 
-Eine lokale Go-Installation ist **nicht** nötig — alles läuft über Docker.
+Eine lokale Installation der Zielsprache (Go-Toolchain, C++-Toolchain, JDK, Gradle) ist **nicht** nötig — alles läuft über Docker.
 
 ---
 
@@ -78,7 +78,7 @@ Eine lokale Go-Installation ist **nicht** nötig — alles läuft über Docker.
 
 ### Das Werkzeug bereitstellen
 
-Es gibt **drei Wege**. Empfohlen ist der **Download** — fertige Programme für sechs Plattformen; **aktuell ausgeliefert wird `v0.6.0`**. Den Bau aus dem Quellcode brauchen Sie nur, wenn Sie einen Stand **ohne** Versions-Kennzeichnung verwenden wollen. Für macOS und Linux steht der dritte Weg über das **Homebrew-Tap** bereit (siehe [Weg C](#weg-c--über-ein-homebrew-tap-macos-linux)).
+Es gibt **drei Wege**. Empfohlen ist der **Download** — fertige Programme für sechs Plattformen; **aktuell ausgeliefert wird `v0.7.0`**. Den Bau aus dem Quellcode brauchen Sie nur, wenn Sie einen Stand **ohne** Versions-Kennzeichnung verwenden wollen. Für macOS und Linux steht der dritte Weg über das **Homebrew-Tap** bereit (siehe [Weg C](#weg-c--über-ein-homebrew-tap-macos-linux)).
 
 #### Weg A — fertiges Programm herunterladen (empfohlen)
 
@@ -325,7 +325,7 @@ Die erste sagt: der **Kern** sieht keinen Adapter — er kennt nur seine Ports. 
 
 **Wichtig für die Pflege:** `.a-check.yml` gehört Ihnen — ein erneutes Aufsetzen überschreibt sie nicht. Bei `hexslice` gilt: legen Sie einen **weiteren** Use-Case-Schnitt an, tragen Sie ihn dort nach (je ein Eintrag unter `app` und, falls er eigene Ports hat, unter `ports_inbound` bzw. `ports_outbound` — je nach Richtung, mit eigenem `direction:`). Vergessen Sie es, fällt der neue Code unter keine Schicht: importiert er eine, meldet das Gate `wrong-direction` — importiert er keine, bleibt er unbemerkt ungeprüft. Bei `hexagonal` wachsen neue Dateien in die bestehenden vier Schichten hinein; nachzutragen ist erst, wenn Sie ein **neues** Schicht-Verzeichnis anlegen.
 
-**Grenzen:** `--arch hexslice` liefert für **beide** Zielsprachen, `--arch hexagonal` nur der **Go**-Renderer. Eine Sprache, deren Renderer die gewählte Bauform nicht kennt (`cpp` mit `hexagonal`), endet mit Exit 2 und nennt die Bauformen, die **diese** Sprache kann — statt still ein Grundgerüst ohne Schichten anzulegen; eine unbekannte Bauform ebenso, mit Nennung der verfügbaren Werte.
+**Grenzen:** `--arch hexslice` liefern alle drei Zielsprachen (`go`, `cpp`, `kotlin`), `--arch hexagonal` nur der **Go**-Renderer. Eine Sprache, deren Renderer die gewählte Bauform nicht kennt (`cpp` oder `kotlin` mit `hexagonal`), endet mit Exit 2 und nennt die Bauformen, die **diese** Sprache kann — statt still ein Grundgerüst ohne Schichten anzulegen; eine unbekannte Bauform ebenso, mit Nennung der verfügbaren Werte.
 
 ### Das aufgesetzte Repository prüfen
 
@@ -441,7 +441,7 @@ Alle fünf sind **keine Gates**: `make gates` fährt keine von ihnen mit. `archi
 | Kommando | Tut was |
 |---|---|
 | `make traeger-fetch` | Holt den Träger aus dem gepinnten Release nach und legt ihn im Zustands-Bereich ab. Braucht **einmalig** Netzwerk für diesen Aufruf; danach nicht mehr. `archive-welle` und `span-report` setzen ihn voraus. |
-| `make archive-welle WELLE=<welle-id>` | Archiviert die Zeitdokumente einer geschlossenen Welle (Slice-Dateien, Welle-Plan, Review-Reports) und committet den Vorgang im versionierten Baum. `WELLE=altbestand` archiviert die wellenlosen Slices samt ihren Review-Reports unter `done/altbestand/`; er ist die Untergrenze vor der ersten Wellen-Archivierung. Liegt eine Ergebnisnotiz in `done/`, nimmt ein Lauf nur die wellenlosen Slices, die vor einer Welle-Closure geschlossen wurden — gemessen an der Commit-Abstammung, nicht am Datum: `altbestand` die vor irgendeiner Closure, `WELLE=<welle-id>` die, deren früheste Closure diese Welle ist; später geschlossene bleiben flach liegen und stehen in der Vorprüfung unter *„bleibt liegen (nach der Grenze)"*. Liegt eine Ergebnisnotiz in `done/`, bricht der Lauf in einem flachen Klon (`git clone --depth 1`) mit der Sperre `flacher-klon` ab; ohne Ergebnisnotiz greift diese Sperre nicht, ein Pfad ohne Add-Commit mit `add-commit`. Die Sperre `haenger` (Verweise auf verschwindende Review-Reports) besteht auch unter `altbestand` fort. Fehlt der Träger, schreibt das Kommando nichts und sagt das. |
+| `make archive-welle WELLE=<welle-id>` | Archiviert die Zeitdokumente einer geschlossenen Welle (Slice-Dateien, Welle-Plan, Review-Reports) und committet den Vorgang im versionierten Baum. `WELLE=altbestand` archiviert die wellenlosen Slices samt ihren Review-Reports unter `done/altbestand/`; er ist die Untergrenze vor der ersten Wellen-Archivierung. `KENNUNG=<K>` nennt eine Kennung Ihres Repositorys, die beide Commits am Ende ihrer Nachricht tragen und die Ihr `commit-msg`-Träger annimmt; das Werkzeug prüft sie nicht. Für `WELLE=altbestand` ist sie **Pflicht** — ohne sie bricht das Programm mit Exit 2 ab, bevor es etwas bewegt, und eine Voreinstellung gibt es nicht —, für eine `<welle-id>` optional. Liegt eine Ergebnisnotiz in `done/`, nimmt ein Lauf nur die wellenlosen Slices, die vor einer Welle-Closure geschlossen wurden — gemessen an der Commit-Abstammung, nicht am Datum: `altbestand` die vor irgendeiner Closure, `WELLE=<welle-id>` die, deren früheste Closure diese Welle ist; später geschlossene bleiben flach liegen und stehen in der Vorprüfung unter *„bleibt liegen (nach der Grenze)"*. Liegt eine Ergebnisnotiz in `done/`, bricht der Lauf in einem flachen Klon (`git clone --depth 1`) mit der Sperre `flacher-klon` ab; ohne Ergebnisnotiz greift diese Sperre nicht, ein Pfad ohne Add-Commit mit `add-commit`. Die Sperre `haenger` (Verweise auf verschwindende Review-Reports) besteht auch unter `altbestand` fort. Fehlt der Träger, schreibt das Kommando nichts und sagt das. |
 | `make span-report` | Zeigt eine Token-Bilanz je Rolle aus dem lokalen Erfassungs-Bestand — ein reiner, netzloser Bericht — und nennt je Fassung der Erfassungsregel, wie viele Zeilen sie trägt; eine Zeile ohne Fassungs-Angabe zählt als *Fassung nicht bekannt*. Fehlt der Träger, meldet das Kommando das als Aussage über den Leser, nicht über den Bestand. |
 | `make span-clean` | Entfernt den lokalen Erfassungs-Bestand. Läuft nur auf **ausdrücklichen** Aufruf; kein Automatismus räumt ihn sonst auf. |
 | `make slice-mv SLICE=slice-<Kennung> TO=<open\|next\|in-progress\|done>` | Wechselt den Lifecycle-Zustand eines Slice: verschiebt die Datei per `git mv`, committet den reinen Move als eigenen Commit und zieht danach die Verweise auf die Datei und in ihr nach — als zweiten Commit, falls einer anfällt. Verlangt einen sauberen Arbeitsbaum. `SLICE` ist der Dateiname mit oder ohne `.md`; der exakte Name gewinnt, auch wenn ein anderer Slice mit ihm beginnt. Nur ohne exakten Treffer gilt ein Präfix, und er endet an einer Bindestrich-Grenze (`slice-y` trifft `slice-y-z.md`, nicht `slice-yz.md`); zwei Treffer brechen ab, statt zu raten. |
@@ -456,7 +456,7 @@ Alle fünf sind **keine Gates**: `make gates` fährt keine von ihnen mit. `archi
 
 | Option | Pflicht | Bedeutung |
 |---|---|---|
-| `--lang <sprache>` | nein | Zielsprache des Grundgerüsts (Kurzform für „aufsetzen + `add-lang(<sprache>, .)`“). Ohne sie: dokument-only. Unterstützt: `go`, `cpp` (C++ per CMake + clang-tidy). |
+| `--lang <sprache>` | nein | Zielsprache des Grundgerüsts (Kurzform für „aufsetzen + `add-lang(<sprache>, .)`“). Ohne sie: dokument-only. Unterstützt: `go`, `cpp` (C++ per CMake + clang-tidy), `kotlin` (JVM per Gradle + detekt). |
 | `--arch <arch>` | nein | Bauform des Grundgerüsts: `flat` (Standard), `hexagonal` (drei Schichten) oder `hexslice` (Schichten plus Use-Case-Schnitte); die beiden geschichteten bringen das Architektur-Gate mit. Wirkt nur zusammen mit `--lang`. Siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch). |
 | `--name <name>` | nein | Projektname; ersetzt den Platzhalter `<Projektname>` in den Vorlagen. |
 | `-h`, `--help` | nein | Hilfe anzeigen und beenden. |
@@ -480,6 +480,7 @@ Alle Umgebungsvariablen sind **optional**. Ohne sie gelten festgelegte, reproduz
 | `COURSE_TAG` | Kurs-Version für das Regelwerk und die Vorlagen. |
 | `SKEL_GO_VERSION` | Go-Version des erzeugten Go-Grundgerüsts. |
 | `SKEL_CPP_VERSION` | Ubuntu-Basis-Tag des erzeugten C++-Grundgerüsts (bestimmt Compiler/CMake/clang-tidy). Allgemein: `SKEL_<SPRACHE>_VERSION` setzt die Toolchain-Version je Sprache. |
+| `SKEL_KOTLIN_VERSION` | Tag des `gradle`-Images des erzeugten Kotlin-Grundgerüsts (`<gradle-version>-jdk<NN>`; bestimmt Gradle und JDK der Prüf-Stufen; Standard `9.8.1-jdk21`). |
 | `BASELINE_SHA256` | Erwartete Prüfsumme des heruntergeladenen Regelwerk-Pakets. |
 | `DCHECK_IMAGE` | Abweichende Referenz für das Dokumentations-Prüf-Image. |
 | `DCHECK_DIGEST` | Abweichende Prüfsumme (Digest) des Prüf-Images; sticht die Referenz. |
@@ -657,9 +658,38 @@ mein-projekt/
             └── cpp                    vom Command-Guard geblockte C++-Werkzeuge
 ```
 
+Für `--lang kotlin`:
+
+<!-- baum: kotlin -->
+```text
+mein-projekt/
+├── Dockerfile                         Bau und Prüfung in Docker (lint, build, test)
+├── settings.gradle.kts                Gradle-Einstellungen (ein Modul)
+├── build.gradle.kts                   Build-Beschreibung (Kotlin/JVM, detekt)
+├── detekt.yml                         Lint-Konfiguration
+├── src/
+│   ├── main/
+│   │   └── kotlin/
+│   │       └── app/
+│   │           └── Main.kt            Einstiegspunkt
+│   └── test/
+│       └── kotlin/
+│           └── app/
+│               └── MainTest.kt
+├── harness/
+│   └── mk/
+│       └── kotlin.mk                  Code-Gates der Sprache
+└── tools/
+    └── harness/
+        └── blocked/
+            └── kotlin                 vom Command-Guard geblockte JVM-Werkzeuge
+```
+
+Das Kotlin-Grundgerüst ist ein einzelnes JVM-Gradle-Modul ohne Gradle-Wrapper; die Prüf-Stufen (`lint`, `build`, `test`) laufen im `Dockerfile` auf dem `gradle`-Image, dessen Tag `SKEL_KOTLIN_VERSION` bestimmt.
+
 Am Wurzelverzeichnis (`--lang go` bzw. `add-lang go .`) liegen sie neben den Basis-Dateien; in einem **Mono-Repo** (mehrere `add-lang`-Läufe mit verschiedenen `<pfad>`) je Modul ein solcher Satz unter seinem `<pfad>`, auch mit gemischten Sprachen. Erst mit einem Sprachmodul fährt `make gates` **zusätzlich** die Code-Gates (lint/build/test in Docker).
 
-Mit einer geschichteten Bauform sieht der Code-Teil anders aus (die Bau-Dateien bleiben gleich): statt eines einzelnen Einstiegspunkts entstehen Schichten — bei `hexslice` `internal/hexagon/{domain,application}` und `internal/adapters/{driving,driven}`, bei `hexagonal` `internal/hexagon/{core,port}` und `internal/adapter/{driven,driving}` —, dazu `cmd/<binary>/main.go` und **plus** das Architektur-Gate `<pfad>/.a-check.yml` und `a-check.mk`. Bei `flat` (dem Standard) entsteht keines von beidem. Siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch).
+Mit einer geschichteten Bauform sieht der Code-Teil anders aus (die Bau-Dateien bleiben gleich): statt eines einzelnen Einstiegspunkts entstehen Schichten — bei `hexslice` `internal/hexagon/{domain,application}` und `internal/adapters/{driving,driven}`, bei `hexagonal` `internal/hexagon/{core,port}` und `internal/adapter/{driven,driving}` —, dazu `cmd/<binary>/main.go` (bei `kotlin`: Pakete unter `src/main/kotlin/app/` — `hexagon/{domain,application}` und `adapters/{driving,driven}` —, der Composition Root `Main.kt` und der Test `src/test/kotlin/app/GreetTest.kt`) und **plus** das Architektur-Gate `<pfad>/.a-check.yml` und `a-check.mk`. Bei `flat` (dem Standard) entsteht keines von beidem. Siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch).
 
 ### Review-Skills und der Verweis-Abschnitt der README
 
@@ -696,6 +726,8 @@ Die Meldung für `.githooks/commit-msg` lautet anders: sie nennt die mitgeliefer
 
 Die `.d-check.yml` gehört Ihnen, sobald sie da ist: eine vorhandene Datei bleibt beim erneuten Aufsetzen **unberührt, ohne Meldung**. Fehlt einer vorhandenen Datei die oben beschriebene Form, tragen Sie diese vier Positionen von Hand nach: im Block `matrix` unter `classes:` das Präfix-Token `slice-` an der Klasse `slice` und `welle-` an der Klasse `welle` sowie den Glob `docs/plan/adr/[A-Z]*-[0-9]*.md` in der Klasse `adr`; im Block `matrix` unter `rules:` die Regel `{from: spec-straten, to: welle, allow: false}`; im Block `ids` unter `patterns:` das Muster `ADR-([A-Z]+-)?\d{4}`. Dazu kommen das Modul `structure` in der Liste `modules:` und der Block `structure:` am Ende der Datei (nächster Absatz), das Modul `targets` mit seinem Block `targets:` (übernächster Absatz) sowie das Modul `planning` mit seinem Block `planning:` und der Marker-Zeile in der Roadmap (Absatz zum Ruhe-Marker) und das Modul `codepaths` mit seinem Block `codepaths:` (Absatz zu Pfaden in Inline-Code).
 
+**Ein Repository, das mit einem älteren Programm aufgesetzt wurde.** Ein Re-Lauf ändert die vorhandene `.d-check.yml` nicht. Ihre Kommentare tragen in einem Ziel, das mit `v0.6.0` oder früher aufgesetzt wurde, noch `DC-FA-TGT-001` (die Kennung einer Anforderung des Prüfwerkzeugs, die in Ihrem Repository nicht auflöst) und den Pin `v0.84.0` an den Stellen, an denen die neue Fassung `v0.86.1` nennt; ein Ziel bis `v0.5.0` trägt im ersten Kommentar der Datei zusätzlich die Kennung einer Qualitätsanforderung dieses Werkzeugs. Das sind Kommentare, keine Prüf-Einstellungen: kein Modul liest sie, und `make docs-check` bleibt ihretwegen grün. Bereinigen Sie die Stellen von Hand, wenn Sie sie nicht stehen lassen wollen; die neue Fassung liegt in einem frisch aufgesetzten Ziel zum Vergleich. Der Kommentar-Block `reviews` (Absatz unten) ist die eine Stelle, an der die alte Fassung etwas anderes sagt als die neue.
+
 **Zellenlänge der Prüf-Ziel-Tabellen.** Die mitgelieferte `.d-check.yml` führt das Modul `structure` mit einer Regel auf `harness/README.md`: Unter der Überschrift `## Sensors (Feedback-Gates)` tragen die Zellen der Spalten `Vertrag` und `Tut was` höchstens 200 Zeichen; die Spalte `Bindung` hat keine Grenze. Prosa, die länger ist, gehört in eine eigene Datei `harness/sensors/<target>.md` <!-- d-check:ignore (Platzhalter-Pfad) -->, die Zelle verweist dann darauf. Den Ordner `harness/sensors/` legt das Aufsetzen an (mit einer `.gitkeep`-Datei). Eine längere Zelle färbt `make docs-check` rot.
 
 **Jedes Target hat eine Zeile im Gate-Index.** Die mitgelieferte `.d-check.yml` führt das Modul `targets`: Jedes Target der `Makefile`, der Bausteine unter `harness/mk/` und jeder `.mk`-Datei im Wurzelverzeichnis (`d-check.mk`, `repo.mk`, bei einer geschichteten Bauform `a-check.mk`) braucht eine Tabellenzeile `make <target>`, und jede solche Zeile ein Target. Der Index hat zwei Teile: `harness/README.md` gehört Ihnen und führt Ihre Targets; `harness/mk/ai-harness-init.md` gehört dem Werkzeug, führt die Targets seiner eigenen Dateien und wird bei jedem Lauf — Aufsetzen und `add-lang` — neu geschrieben, eine Änderung von Hand geht dabei verloren. Ein Target, das `harness/README.md` beim Lauf schon als Zeile führt, steht dort nicht. Eine Zeile unter den Tabellen von `## Sensors (Feedback-Gates)` in `harness/README.md` verlinkt den Werkzeug-Teil. <!-- d-check:ignore (die Pfade entstehen erst im aufgesetzten Repository) --> Ein frisch aufgesetztes Repository mit `--lang go` meldet mit `make docs-check` `0 Befund(e)`. Ein Target in `repo.mk` ohne Zeile färbt es rot (Meldung `gate-undocumented`: Regel ohne Deklaration in einer der beiden Dateien), ebenso eine Zeile ohne Target (Meldung `gate-phantom`). Ein Target, das in beiden Teilen eine Zeile hat, färbt es ebenfalls rot (Meldung `gate-declared-twice`): Die mitgelieferte Fassung setzt dafür `authority-disjoint: true` im Block `targets:`. Geprüft wird das nur, wenn `targets` in `modules:` steht, `authority` beide Teile als Liste nennt und `authority-disjoint: true` gesetzt ist; sonst bleibt eine Doppelung still. Grenzen: Eine Doppelung sieht die Prüfung erst, wenn sie im Repository steht — tragen Sie ein Target des Werkzeugs selbst in `harness/README.md` ein, steht es bis zum nächsten Lauf doppelt da. Eine `.mk`-Datei im Wurzelverzeichnis, die keine `Makefile` einbindet, liest die Prüfung trotzdem. Eine `.mk`-Datei in einem Unterverzeichnis außer `harness/mk/` liest sie nicht, auch wenn `repo.mk` sie per `include` einbindet: ihre Targets laufen mit `make`, die Prüfung meldet zu ihnen nichts — weitere eigene Make-Dateien gehören darum ins Wurzelverzeichnis. Eine vorhandene `.d-check.yml` bekommt das Modul nicht von selbst: nachtragen heißt `targets` in `modules:` und den Block `targets:` aus der mitgelieferten Fassung übernehmen (samt `authority-disjoint: true`); den Werkzeug-Teil legt der nächste Lauf an, die Zeile in einer vorhandenen `harness/README.md` darauf nicht.
@@ -704,7 +736,7 @@ Die `.d-check.yml` gehört Ihnen, sobald sie da ist: eine vorhandene Datei bleib
 
 **Pfade in Inline-Code müssen existieren.** Die mitgelieferte `.d-check.yml` führt das Modul `codepaths` mit den Wurzeln `spec`, `docs` und `harness`: Ein Pfad zwischen Backticks, der mit einer dieser Wurzeln beginnt, muss im Repository liegen. Ein frisch aufgesetztes Repository meldet mit `make docs-check` `0 Befund(e)`, mit und ohne `--lang`. Ein solcher Pfad auf eine Datei, die es nicht gibt, färbt es rot (Meldung `codepath-missing`: Ziel des Inline-Code-Pfads existiert nicht). Ein Pfad mit vorangestelltem `./` oder `../` wird vom Ort der Datei aus aufgelöst und ebenso geprüft; verlässt das Ziel dabei das Repository, lautet die Meldung `repo-escape`. Ausgenommen sind die Review-Reports unter `docs/reviews/`: ein Pfad darin nennt den Stand seines Laufs und wird nicht geprüft. Still bleiben auch ein Pfad, der mit keiner der drei Wurzeln beginnt (etwa `src/…` oder `/docs/…`), ein Glob unter einer Wurzel (etwa `docs/**/…`) und ein Pfad in einem umzäunten Code-Block. Eine Datei, die erst entstehen soll, nennen Sie mit dem HTML-Kommentar `d-check:ignore` samt Grund in Klammern in derselben Zeile; die Zeile bleibt dann still. Eine vorhandene `.d-check.yml` bekommt das Modul nicht von selbst: nachtragen heißt `codepaths` in `modules:` und den Block `codepaths:` aus der mitgelieferten Fassung übernehmen.
 
-**Die Review-Report-Deckung ist nicht eingeschaltet.** Die mitgelieferte `.d-check.yml` führt das Modul `reviews` nur als auskommentierten Block samt der Bedingung, unter der es eingeschaltet wird. Eingeschaltet hielte es die Review-Zusagen der Slice-Pläne unter `docs/plan/planning/done/` gegen die Reports unter `docs/reviews/`. In der mitgelieferten Fassung der Prüfung färbt es ein frisch aufgesetztes Repository rot, solange unter `docs/plan/planning/done/` kein Slice-Plan liegt, und die Review-Zeile der Slice-Vorlage erkennt es an keinem Slice als Zusage — als Zusage gilt allein die Wortfolge „unabhängiger Review“ in genau dieser Schreibung, und auch sie nur an einem Slice mit Nummer, nicht an einem mit Namen. Den Block ohne `#` zu übernehmen, ohne `reviews` in `modules:` aufzunehmen, schaltet nichts ein: `make docs-check` bleibt grün und prüft keinen Report.
+**Die Review-Report-Deckung ist nicht eingeschaltet.** Die mitgelieferte `.d-check.yml` führt das Modul `reviews` nur als auskommentierten Block samt der Bedingung, unter der es eingeschaltet wird. Eingeschaltet hielte es die Review-Zusagen der Slice-Pläne unter `docs/plan/planning/done/` gegen die Reports unter `docs/reviews/`. Im Block stehen fünf Schlüssel hinter `done-dir` und `reviews-dir`: `match: name` (der Report wird über den Basisnamen des Slice-Plans zugeordnet, auch bei einer Kennung in Namens-Form), `require-promises`, `recursive`, `skip-pattern` und `skip-allows-empty` (die Stubs archivierter Slices unter `done/<welle-id>/` fallen an ihrer Marker-Zeile wieder heraus). In der mitgelieferten Fassung der Prüfung (Pin `v0.86.x`) erkennt es sowohl die Review-Zeile der Slice-Vorlage als auch die Wortfolge „unabhängiger Review“ als Zusage; es färbt aber ein frisch aufgesetztes Repository rot, solange unter `docs/plan/planning/done/` kein Slice-Plan liegt. Den Block ohne `#` zu übernehmen, ohne `reviews` in `modules:` aufzunehmen, schaltet nichts ein: `make docs-check` bleibt grün und prüft keinen Report.
 
 **Neue Targets des Werkzeugs nennt der Lauf.** Vor dem Neuschreiben liest jeder Lauf — Aufsetzen und `add-lang` — den liegenden `harness/mk/ai-harness-init.md` und nennt danach auf der Standardausgabe je Target, das die neue Fassung zusätzlich führt, eine Zeile `ai-harness-init: neues Target: make <target> (kein Gate) — Zeile in harness/mk/ai-harness-init.md.`; ein Target, das neu in der Gate-Tabelle steht — auch eines, das vorher mit `kein Gate` geführt war —, hervorgehoben als `ai-harness-init: >>> NEUES GATE: make <target> — neu in der Gate-Tabelle von harness/mk/ai-harness-init.md.`. Die Gates stehen zuerst; darauf folgt eine Zeile mit der Zahl der neuen Zeilen und dem Hinweis, dass das Doku-Gate sie nicht meldet. Das tut es auch nicht: ein solches Target steht mit seiner Zeile im Teil des Werkzeugs und ist damit deklariert, `make docs-check` bleibt grün — sichtbar ist es in dieser Meldung und im Diff von `harness/mk/ai-harness-init.md`. Lag die Datei vor dem Lauf nicht vor, nennt der Lauf keine einzelnen Targets, sondern eine Zeile mit der Zahl der Targets und der Zeilen der Gate-Tabelle. Bringt der Lauf kein neues Target, nennt er keines. Grenzen: Ob ein Target in der Gate-Tabelle steht, entscheidet der Index — ein Target, das eine der gelesenen Make-Dateien an `GATE_CHECKS` hängt, und `gates` selbst —, nicht ein Lauf von `make gates`. Ein entfallenes Target nennt der Lauf nicht; führt `harness/README.md` noch eine Zeile dazu, meldet das Doku-Gate sie als `gate-phantom`. Ein umbenanntes Target erscheint als neu. Die Targets einer eigenen Datei unter `harness/mk/` nennt der Lauf ebenso, weil er sie in den Werkzeug-Teil aufnimmt. <!-- d-check:ignore (die Pfade entstehen erst im aufgesetzten Repository) -->
 
@@ -716,11 +748,11 @@ Die `.d-check.yml` gehört Ihnen, sobald sie da ist: eine vorhandene Datei bleib
 
 Alle Fehler von `ai-harness-init` beginnen auf der Fehlerausgabe mit `Fehler:` und liefern einen von Null verschiedenen Exit-Code (siehe [Anhang](#10-anhang)).
 
-### Fehler: `unbekannte Sprache "…"; verfuegbar: cpp, go`
+### Fehler: `unbekannte Sprache "…"; verfuegbar: cpp, go, kotlin`
 
 **Ursache:** Sie haben eine Sprache angegeben, für die es kein Grundgerüst gibt.
 
-**Lösung:** Verwenden Sie eine der aufgelisteten Sprachen, `go` oder `cpp`:
+**Lösung:** Verwenden Sie eine der aufgelisteten Sprachen, `go`, `cpp` oder `kotlin`:
 
 ```bash
 ai-harness-init --lang cpp <zielordner>
@@ -766,7 +798,7 @@ ai-harness-init add-lang go apps/api
 ## 8. Häufige Fragen (FAQ)
 
 **Welche Sprachen werden unterstützt?**
-`go` und `cpp` (C++). Die Liste zeigt auch die Fehlermeldung zu einer unbekannten Sprache.
+`go`, `cpp` (C++) und `kotlin`. Die Liste zeigt auch die Fehlermeldung zu einer unbekannten Sprache.
 
 **Muss ich Go installieren?**
 Nein. Sowohl das Bauen des Werkzeugs als auch die Prüfungen im aufgesetzten Repository laufen über Docker.

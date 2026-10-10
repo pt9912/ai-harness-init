@@ -39,7 +39,7 @@ ai-harness-init add-lang go apps/api
 ```
 
 Wiederholbar — mehrere Aufrufe mit verschiedenen Pfaden ergeben ein **Mono-Repo**, auch mit
-gemischten Sprachen. Unterstützt sind heute `go` und `cpp` (C++, per CMake + clang-tidy).
+gemischten Sprachen. Unterstützt sind heute `go`, `cpp` (C++, per CMake + clang-tidy) und `kotlin` (JVM, per Gradle + detekt).
 
 **Die Bauform wählen** — neben der Sprache entscheidet `--arch`, wie das Grundgerüst *geschnitten*
 ist:
@@ -79,7 +79,7 @@ make artifact DEST=./bin
 
 Beide Wege Schritt für Schritt im [Benutzerhandbuch](docs/user/benutzerhandbuch.md).
 
-**Was heute noch fehlt:** weitere Sprachen über `go` und `cpp` hinaus.
+**Was heute noch fehlt:** weitere Sprachen über `go`, `cpp` und `kotlin` hinaus.
 
 ## Warum ai-harness-init?
 
