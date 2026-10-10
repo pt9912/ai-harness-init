@@ -229,6 +229,20 @@ Welche Layouts das sind, entscheidet keine Namensliste, sondern die strukturelle
 das Layout eine geprüfte Schicht trägt. Belegt in [`make full-smoke`](sensors/full-smoke.md)
 (beide Richtungen + ein verbotener Import, der das emittierte Gate rot färbt), nicht hier.
 
+**Nicht behauptet ist ebenso die Review-Deckung** — das Modul `reviews` des Doku-Gates, das die
+Review-Zusagen der Slice-Pläne unter `done/` gegen die Reports unter `docs/reviews/` hält
+(Baseline-Regelwerk `modul-10-review-harness.md` §Harness-Einordnung (Modul 10)); die
+Modul-Liste nennt es nicht (`grep -n '^modules:' .d-check.yml`). Mit der Konfiguration der
+Baseline-Vorlage meldet es über dem Bestand Befunde, überwiegend Reports mit gekürzter Kennung im
+Dateinamen, und `docs/reviews/**` sind Zeitdokumente, die nicht umbenannt werden
+([`ADR-0091`](../docs/plan/adr/0091-ziel-fassung-regiert-den-sprung-v6180.md) Festlegung 3). Die
+Ablage-Regel neuer Reports — die volle Slice-Kennung im Dateinamen — trägt der Reviewer-Skill;
+kein Sensor hält sie. Die Aktivierung trägt `slice-review-deckung-laeuft-im-dogfood`. **Im
+emittierten Ziel** steht das Modul als Kommentar-Block mit den Schlüsseln der Vorlage, nicht
+aktiv: ein frisches Ziel mit leerem `done/` startet damit rot
+([`ADR-0091`](../docs/plan/adr/0091-ziel-fassung-regiert-den-sprung-v6180.md) Festlegung 2,
+[`MR-086`](conventions.md#mr-086--das-modul-reviews-bleibt-als-dritte-position-aus-dem-emittierten-doc-gate)).
+
 **CI** ([`MR-014`](conventions.md#mr-014--ci-auf-frischem-klon-github-actions)): GitHub
 Actions fährt `make gates` + [`make smoke`](sensors/smoke.md) +
 [`make full-smoke`](sensors/full-smoke.md)
