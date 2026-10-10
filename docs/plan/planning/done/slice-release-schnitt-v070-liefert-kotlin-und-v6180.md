@@ -83,7 +83,7 @@ Gate-Läufe und Closure-Pflichten:
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag, vom Planner in frischem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben oder „keine Beobachtung angefallen" in §7.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
 
 ## 3. Plan (vor Code)
 
@@ -143,7 +143,7 @@ DoD vollständig, Verifier-Bericht am Tag-Baum ohne Blocker, `ci` an `main` und 
 - **Beobachtungs-Register (`../observations/`):** `evidence/slice-release-schnitt-v070-liefert-kotlin-und-v6180.md` ergänzt in [`BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle`](../observations/BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/observation.md) (Zähler steht damit bei 8×, Stand `geplant`) und in [`BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases`](../observations/BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases/observation.md) (4×, Stand `verkörpert`; die verkörperte Regel trägt nicht über ihre Grenze, `state.md` nachgezogen); neu angelegt [`BEO-ALL/handbuch-sprachbaum-ohne-sensor-in-full-smoke`](../observations/BEO-ALL/handbuch-sprachbaum-ohne-sensor-in-full-smoke/observation.md), Beleg `evidence/slice-release-schnitt-v070-liefert-kotlin-und-v6180.md` (1×).
 - **Folge-Slices:** keine neuen; [`slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor`](../open/slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor.md) bleibt der Träger des Ausgangs von `waechter-misst-die-fixture-statt-der-realen-quelle`.
 - **Risiken aus §6:** jedes trägt seinen Ausgang am Risiko: 1 entfallen, 2 eingetreten (strukturell), 3 eingetreten und weiter offen (Register), 4 entfallen, 5 weiter offen (Register), 6 entfallen.
-- **Drei Paarungen:** werden nach dem `git mv` geprüft.
+- **Drei Paarungen:** Paarungen geprüft am 2026-10-10 nach dem `git mv`: (a) kein `liegt in` in §7 — kein Gegenstand; (b) der genannte Folge-Slice liegt in `open/` (`ls docs/plan/planning/open/slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor.md`); (c) die drei genannten `BEO-ALL/…` existieren, `ls …/evidence/*.md | wc -l` → 4 · 1 · 8 (`sed -n "/^## 7/,/^## 8/p"` über §7, `grep -oE "BEO-ALL/[a-z0-9-]+"`).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
