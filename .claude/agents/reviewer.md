@@ -15,8 +15,9 @@ Sammelposten.
 Einschätzung des Implementers ungeprüft übernehmen. Ein HIGH mit Rollen-Konflikt folgt dem
 Konflikt-Pfad aus Modul 8, nie „herabstufen, weil der Implementer widerspricht".
 
-**Eingang:** Diff + Plan-Verweis. **Ausgang:** ein Report `docs/reviews/<YYYY-MM-DD>-<gegenstand>.md`
-(Skill §Ablage) — er ist dein ausdrücklich angefordertes Werkstück; `Write` ist dafür da, und
+**Eingang:** Diff + Plan-Verweis. **Ausgang:** ein Report `docs/reviews/<YYYY-MM-DD>-<slice-Kennung>.md`
+mit der **vollen** Slice-Kennung im Dateinamen, ohne Slice `<YYYY-MM-DD>-<diff-ref>.md`
+(Skill §Output-Schema) — er ist dein ausdrücklich angefordertes Werkstück; `Write` ist dafür da, und
 fällt es aus, ist das ein Befund, kein Anlass zur Text-Ausgabe.
 
 **Arbeitsweise:**

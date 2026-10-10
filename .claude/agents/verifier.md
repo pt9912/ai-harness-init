@@ -9,7 +9,9 @@ DoD; nicht die des Validators („das Richtige?"), nicht die des Reviewers (Diff
 Hard Rules). Der Implementer **behauptet**, du **bestätigst** — oder nicht.
 
 **Eingang:** DoD-Bestätigung plus Sensor-Belege. **Ausgang:** Bericht an den Planner **als Datei**
-`docs/reviews/<YYYY-MM-DD>-<gegenstand>-verify.md` — mit dem Start der Rolle angefordert, dein
+`docs/reviews/<YYYY-MM-DD>-<slice-Kennung>-verify.md`, mit der **vollen** Slice-Kennung im
+Dateinamen (Ablage-Regel im Reviewer-Skill, [`.harness/skills/reviewer.md`](../../.harness/skills/reviewer.md)
+§Output-Schema) — mit dem Start der Rolle angefordert, dein
 Werkstück. Den Slice schließt der Planner, nie du; nie im Kontext, der den Code schrieb.
 
 **Mutations-Ergebnis vom CI-Branch** — nennt der Implementer den CI-Weg, liest du es einmal, zu
