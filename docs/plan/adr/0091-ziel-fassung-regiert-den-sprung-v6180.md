@@ -1,6 +1,6 @@
 # ADR-0091: Die Ziel-Fassung regiert den Sprung `v6.17.0` → `v6.18.0` — Welle 161 zieht im emittierten Doku-Gate nur den Kommentar-Block nach, `reviews` bleibt auf beiden Ebenen aus
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-10-10
 
@@ -196,3 +196,10 @@ Träger ist der d-check-Pin-Sprung (Re-Evaluierungs-Trigger).
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-10-10 | Proposed | — |
+| 2026-10-10 | Proposed, nachgebessert | Wahl (ii) des Auftraggebers in Festlegung 3, Fitness-Zusage eingeschränkt — Commit `1522c29c` |
+| 2026-10-10 | **Accepted** | Review `2026-10-10-adr-0091-review` (Commit `5ee4251c`, annahmereif, 0 HIGH), Nachbesserung `1522c29c` (MEDIUM-1, LOW-1, INFO-1, INFO-2 eingearbeitet); keine Nachprüfung, weil [ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2 sie nur nach einem blockierenden Befund verlangt; Annahme durch den Auftraggeber am 2026-10-10 ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1) |
+
+Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
+Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
+`Supersedes ADR-0091` (Baseline-Regelwerk `modul-04-adrs.md`
+§Hard Rule für Accepted-ADRs).
