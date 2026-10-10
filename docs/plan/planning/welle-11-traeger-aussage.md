@@ -1,12 +1,5 @@
 # Welle welle-11: Träger-Aussage — das emittierte Repo sagt, welche mitgelieferte Regel keinen Träger hat
 
-**Lifecycle:** Diese Datei entsteht bei der **Eröffnung** der Welle und liegt
-flach unter `docs/plan/planning/`; bei Closure wandert sie per `git mv` nach
-`done/` (neben ihre `welle-11-results.md`). Der Zustand ist die
-Verzeichnis-Position — kein Status-Feld. **Geplante Wellen bekommen noch keine
-Datei:** Sie stehen in der Roadmap unter *Nächste Wellen* und nirgends sonst —
-zwei Positionen, nicht drei.
-
 **Zielmeilenstein:** kein Meilenstein-Bezug (Konformitäts-Welle auf der emittierten Ebene, keine
 Nutzer-Fähigkeit des Werkzeugs).
 
@@ -22,137 +15,98 @@ Dokumenten, ohne ein neues Artefakt.**
 
 Der Gegenstand ist die zweite Hälfte von
 [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren). Die erste ist erfüllt:
-das Ziel trägt den vendored Baum netzlos und prüfsummen-verifiziert. Die zweite ist offen — ein
-Adopter liest dort Regeln, deren Träger in seinem Repo nicht existiert, und **nichts in seinem Repo
-sagt es ihm**. Dieselbe Lage war am 2026-07-28 der Auslöser von
-[welle-09](welle-09-modul-15-konformitaet.md) (*„Nutzer-Befund — Modul 15 ist adoptiert und in
-keinem Block umgesetzt"*); der Adopter steht danach dort, wo dieses Repo damals stand.
+das Ziel trägt den vendored Baum netzlos und prüfsummen-verifiziert. Die zweite: ein Adopter liest
+Regeln, deren Träger in seinem Repo nicht existiert, und nichts in seinem Repo sagt es ihm. Dieselbe
+Lage ist der Gegenstand von [welle-09](welle-09-modul-15-konformitaet.md) für Modul 15.
 
-### Bestandsaufnahme — an einem gebootstrappten Ziel gemessen, nicht am Emit-Code gelesen
-
-Alle Zahlen dieses Abschnitts stammen aus **zwei Sonden-Repos**, mit dem Binär aus
-[`harness/tools/full-smoke.sh`](../../../harness/tools/full-smoke.sh)-Bauart erzeugt
-(`make artifact DEST=<dir>`, dann `ai-harness-init --name Probe` bzw.
+**Mess-Verfahren.** Maßgeblich ist ein gebootstrapptes Ziel, nicht der Emit-Code: zwei Sonden-Repos,
+mit dem Binär aus [`harness/tools/full-smoke.sh`](../../../harness/tools/full-smoke.sh)-Bauart
+erzeugt (`make artifact DEST=<dir>`, dann `ai-harness-init --name Probe` bzw.
 `ai-harness-init --lang go --name ProbeGo` in ein leeres `git init`-Verzeichnis) — die
 **Varianten-Klammer**, ohne die wahr und falsch an der Ausgabe nicht zu unterscheiden sind
 ([`ADR-0007`](../adr/0007-bootstrap-phasen.md): `--lang` ist optional). Kommando neben der Aussage
-([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)),
-gefahren am 2026-08-22:
+([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)).
 
-| Regel im mitgelieferten Regelwerk | Träger hier | im Ziel | Kommando im Sonden-Repo |
-|---|---|---|---|
-| **Modul 2** §*Freshness-Audit der vendored Baseline* | `harness/tools/baseline-freshness.sh` + `harness/tools/component-freshness.sh`, `make baseline-freshness`, Nachtlauf | **fehlt ganz** — kein Ziel, keine Zeile | `grep -rni 'freshness' --exclude-dir=.git --exclude-dir=baseline . \| wc -l` → **0**; Gegenprobe im mitgelieferten Baum: `grep -rlni 'freshness' .harness/baseline/v5.18.0/regelwerk/ \| wc -l` → **4** (nachgemessen gegen `v5.18.0`, unverändert) |
-| **`make`-Ansprüche des vendored Baums** (Modul 7/11/13/15 + Grundlagen) | hier gibt es die Ziele teils, teils nicht | **5** Regelwerk-Dateien nennen ein Ziel, das in **keiner** Variante existiert; **2** wiederkehrende Vorlagen tragen es beim `cp` in ein lebendes Dokument | `grep -rlE 'make (arch-check\|coverage-gate\|coverage-gate-critical\|fullbuild\|test-determinism\|verify)\b' .harness/baseline/v5.18.0/regelwerk/ \| wc -l` → **5** (nachgemessen gegen `v5.18.0`, unverändert) |
-| **Modul 15**, Erfassung · Token-Attribution · Cache-Counter | `span-emit`, `make span-report`, `.claude/agents/` | **entschieden, geht mit** ([`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegungen 1, 3–5 für Träger und Rollen-Typen, Festlegung 8 für Token-Attribution/Cache-Counter als Auswertung ohne Bilanz) — **noch nicht umgesetzt** | `ls .claude/` im Ziel → `commands hooks settings.json`, unverändert seit der Messung vom 2026-08-22: kein Slice legt den Träger bisher ab (`grep -rn 'claude/agents' --include=*.go . \| wc -l` → **0**) |
-| **Modul 15**, Doku-Konsistenz-Drift | `make docs-check` + `.d-check.yml` | Träger `doc-targets` liegt bei, ist **nicht aktiviert** — Gegenstand von [welle-09](welle-09-modul-15-konformitaet.md), nicht dieser Welle | im Ziel (frisch emittiert, `ai-harness-init --lang go`): `grep -m1 '^modules:' .d-check.yml` → `modules: [links, anchors, ids, matrix, spans]`; `grep -c 'targets' .d-check.yml` → **0** |
-| **Modul 8**, Rollen-Trennung | `.claude/agents/` (6 Dateien) | **entschieden, geht mit** ([`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 3 — generische, aus Dogfood und Regelwerk abgeleitete Fassung, `skip-if-present`) — **noch nicht umgesetzt** | dasselbe `ls .claude/`, unverändert seit der Messung vom 2026-08-22 |
+**Zwei Befunde grenzen den Schnitt ab:**
 
-**Zwei Posten der Ausgangs-Lage haben die Messung nicht überlebt, und das ändert den Schnitt.**
-
-1. **Der Reviewer-Skill fehlt nicht — er kommt mit.** `ls .harness/skills/` im Sonden-Repo nennt
-   `reviewer.md` **und** `closure-note-reviewer.md`. Beide sind seit slice-030 als Singleton
-   in-scope ([`internal/emit/templates.go`](../../../internal/emit/templates.go) `inScope`, dort
-   ausdrücklich als Regel statt als Allowlist), und
-   [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) führt den
-   Reviewer-Skill in seiner Aufzählung. Die Ziel-Form aus Modul 10 ist im Ziel also vorhanden — als
-   auszufüllende Vorlage, was genau ihre Ziel-Form ist. **Ein Slice dafür hätte keinen
-   Gegenstand.** Derselbe Befund gilt für alle **elf** `### Ziel-Form`-Abschnitte des
-   Regelwerks — `grep -rh '^### Ziel-Form' .harness/baseline/v5.18.0/regelwerk/ | wc -l` → **11**
-   (nachgemessen gegen `v5.18.0`, unverändert), und jede zugehörige Vorlage liegt im
-   `templates/`-Geschwisterbaum, den das Ziel vollständig bekommt — die vier stichprobenartig
-   geprüften Verzeichnisse (`ls .harness/baseline/v5.18.0/templates/.harness/skills/ …/docs/plan/{planning,adr,carveouts}/`)
-   tragen ihre Vorlagen unverändert.
+1. **Der Reviewer-Skill kommt mit.** `ls .harness/skills/` im Sonden-Repo nennt `reviewer.md`
+   **und** `closure-note-reviewer.md`; beide sind Singletons in
+   [`internal/emit/templates.go`](../../../internal/emit/templates.go) (`inScope`, als Regel statt
+   als Allowlist), und [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)
+   führt den Reviewer-Skill. Dasselbe gilt für jeden `### Ziel-Form`-Abschnitt des Regelwerks
+   (`grep -rh '^### Ziel-Form' .harness/baseline/*/regelwerk/ | wc -l`): jede Vorlage liegt im
+   `templates/`-Geschwisterbaum, den das Ziel vollständig bekommt. Ein Slice dafür hätte keinen
+   Gegenstand.
 2. **Die Mutations-Regel steht im Ziel nirgends.** *„Keine Zusage ohne rot gesehenes
-   Gegenbeispiel"* ist [`AGENTS.md`](../../../AGENTS.md) §3.6 **dieses** Repos und ein Vorgriff auf
-   einen späteren Kurs-Stand
-   ([`MR-022`](../../../harness/conventions.md#mr-022--kommentar-regel-als-vorgriff-auf-eine-neuere-baseline)-Klasse).
-   Die emittierte `AGENTS.md` stammt aus der vendored Vorlage und führt unter §3 sechs andere Hard
-   Rules (`grep -n '^### 3\.' AGENTS.md` im Sonden-Repo); im gesamten mitgelieferten Baum trifft
-   `grep -rniE 'rot gesehen|gegenbeispiel' .harness/baseline/v5.18.0/` **eine** Zeile (nachgemessen
-   gegen `v5.18.0`, unverändert), und die ist
-   *„Gegenbeispiel-Rauschen"* aus einem anderen Zusammenhang. **Ein Ziel, das die Regel nicht
-   liest, vermisst ihren Träger nicht** — `harness/tools/mutate.sh` und `test/mutations/` sind
-   deshalb kein vierter Slice (§6).
+   Gegenbeispiel"* ist [`AGENTS.md`](../../../AGENTS.md) §3.6 **dieses** Repos; die emittierte
+   `AGENTS.md` stammt aus der vendored Vorlage und führt andere Hard Rules
+   (`grep -n '^### 3\.' AGENTS.md` im Sonden-Repo), und im mitgelieferten Baum steht die Regel nicht
+   (`grep -rniE 'rot gesehen|gegenbeispiel' .harness/baseline/` im Sonden-Repo). Ein Ziel, das die
+   Regel nicht liest, vermisst ihren Träger nicht — `harness/tools/mutate.sh` und `test/mutations/`
+   sind kein Slice dieser Welle (§6).
 
 ### Kontext: die Emissions-Frage ist entschieden
 
-[`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) ist *Accepted* und
-beantwortet, wie die Erfassungsschicht ins Ziel kommt: der Träger ist das laufende Produkt-Binär,
-kopiert in den gitignorierten Zustands-Bereich des Ziels; Schreiber und Auswertung sind seine
-Unterkommandos, die Rollen-Typen gehen generisch mit (Weg G). Sie revidiert aus
-[`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) die Festlegungen 1 und 2 vollständig sowie
-das Erfassungs-Glied ihrer Festlegung 3 und führt die Abzählung der Transportwege neu — **verwiesen,
-nicht abgeschrieben**, dieselbe Regel wie bei einem bereits gesetzten Zellwert (§3). Namentlich
-korrigiert: das digest-gepinnte OCI-Image (`docker create`/`docker cp`), das hier zuvor als
-mechanisch tragfähiger Weg stand, ist dort als Alternative **E** verworfen — Grund und Beleg stehen
-in ihrer Alternativen-Tabelle, nicht hier. Der additive Change Request, der diese Frage bis zu
-ihrer Annahme offenhielt, ist angenommen
-([`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren), Lastenheft
-0.19.0). Warum die Umsetzung trotzdem nicht Gegenstand dieser Welle ist, steht in §6.
+[`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) ist *Accepted*: der
+Träger der Erfassungsschicht ist das laufende Produkt-Binär, kopiert in den gitignorierten
+Zustands-Bereich des Ziels; Schreiber und Auswertung sind seine Unterkommandos, die Rollen-Typen
+gehen generisch mit. Sie revidiert aus
+[`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) die Festlegungen 1 und 2 sowie das
+Erfassungs-Glied der Festlegung 3 — verwiesen, nicht abgeschrieben. Grundlage ist
+[`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren). Für die Träger-
+Tabelle dieser Welle heißt das: Erfassung, Token-Attribution/Cache-Counter und Rollen-Trennung
+tragen den Wert *geht mit*; die Umsetzung ist Gegenstand von
+[welle-12](done/welle-12-erfassungsschicht-emittieren.md), nicht dieser Welle (§6).
 
 ## 2. Trigger (Welle startet)
 
-- **[welle-14](done/welle-14-re-baseline.md) liegt in `done/`.** Beobachtbar ohne Rückfrage: die
-  Plan-Datei liegt neben ihrer Ergebnis-Notiz.
-- **Warum diese Reihenfolge tragend ist und nicht bloß ordentlich:** **jede** Messung dieser Welle
-  läuft über den vendored Baum, und welle-14 tauscht genau ihn. Sie bewegt zudem den Gegenstand von
-  slice-090 unmittelbar: `modul-02-harness-bootstrap.md` ändert sich in jenem Sprung erneut, und
-  der Freshness-Audit ist genau das Thema jenes Slice. Eine Aussage über den Audit, die vor dem
-  Tausch entsteht, beschriebe eine Prozedur, die das Ziel danach nicht mehr liest — ein
-  Risiko-Grund, kein Ordnungs-Grund.
-- **[welle-09](welle-09-modul-15-konformitaet.md) ist keine Vorbedingung dieser Welle** — weder
-  unmittelbar noch mittelbar, seit sie welle-10 nicht mehr blockiert. Die Abgrenzung zu ihr bleibt
-  und hält den Schnitt sauber: die `make`-Ansprüche der **lebenden** emittierten Doku-Tische
-  gehören slice-087, die des **vendored Baums** dieser Welle (§4). Eine Abgrenzung ist keine
-  Reihenfolge.
+- **[welle-14](done/welle-14-re-baseline.md) liegt in `done/`** (eingetreten). Jede Messung dieser
+  Welle läuft über den vendored Baum, den ein Baseline-Sprung tauscht; eine Aussage über den
+  Freshness-Audit vor dem Tausch beschriebe eine Prozedur, die das Ziel danach nicht mehr liest.
+- **[welle-09](welle-09-modul-15-konformitaet.md) ist keine Vorbedingung.** Die Abgrenzung bleibt:
+  die `make`-Ansprüche der **lebenden** emittierten Doku-Tische gehören slice-087, die des
+  **vendored Baums** dieser Welle (§4).
 
 ## 3. Closure-Trigger (Welle schließt)
 
 **Das gemeinsame Kriterium:** *Für jeden Regelblock und jede Ziel-Form des mitgelieferten
-Regelwerks sagt das emittierte Repo, ob ein Träger mitkommt — belegt im `full-smoke`.* Es wird
-erst wahr, wenn alle drei Slices liegen: 090 und 091 setzen je einen Wert, 092 schließt die Liste.
+Regelwerks sagt das emittierte Repo, ob ein Träger mitkommt — belegt im `full-smoke`.*
 
 - **Alle Slices dieser Welle in `done/`.**
 - **Vollständigkeit heißt Inventar gegen Abdeckung, nicht „die auffälligen".** Der **Nenner** ist
   die Datei-Zahl des mitgelieferten Regelwerk-Verzeichnisses, zur Laufzeit gelesen
-  (`ls .harness/baseline/*/regelwerk/*.md | wc -l` im gebootstrappten Ziel), nicht abgeschrieben —
-  eine notierte Zahl bräche beim nächsten Baseline-Sprung, ohne dass am Gegenstand etwas bricht
+  (`ls .harness/baseline/*/regelwerk/*.md | wc -l` im gebootstrappten Ziel), nicht abgeschrieben
   ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-  Setzung 2). Dieselbe Lücke, an der welle-10 ihren Adaptions-Durchgang aufhängt.
+  Setzung 2).
 - **Je Regelblock genau ein Wert, und der Wert-Vorrat ist geschlossen:** *Träger kommt mit* ·
   *Träger liegt bei, ist nicht verdrahtet* · *kommt nicht mit — Grund und Dauer benannt*. Eine
-  leere Zelle ist ein offener Closure-Trigger, kein „passt schon". Wo
+  leere Zelle ist ein offener Closure-Trigger. Wo
   [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) oder
-  [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) den Wert bereits
-  gesetzt hat, wird er **verwiesen, nicht abgeschrieben** — eine zweite Fassung derselben
-  Entscheidung driftet.
+  [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) den Wert gesetzt
+  hat, wird er verwiesen, nicht abgeschrieben.
 - **Beide Richtungen im `full-smoke`, über beide Bootstrap-Varianten geklammert:** (a) die Aussage
   steht im frisch gebootstrappten Ziel out-of-the-box, sprachlos **und** mit `--lang go`; (b) ihre
   emit-seitige Rücknahme wird **rot gesehen**. Nur (a) wäre die
-  [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Falle
-  eine Ebene weiter: ein Text, dessen Fehlen nichts rot färbt, ist keine Zusage
-  ([`AGENTS.md`](../../../AGENTS.md) §3.6).
+  [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Falle eine
+  Ebene weiter ([`AGENTS.md`](../../../AGENTS.md) §3.6).
 - **Kein neues Artefakt.** Der emittierte Datei-Satz wächst nicht — die Aussage landet in
-  Dokumenten, die das Ziel ohnehin bekommt. Damit bleibt die Aufzählung aus
-  [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) unberührt und
-  das Budget aus [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) auch;
-  ohne diese Schranke wäre die Welle ein Change Request
+  Dokumenten, die das Ziel ohnehin bekommt. Damit bleiben die Aufzählung aus
+  [`LH-FA-06`](../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) und das Budget
+  aus [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) unberührt; ohne
+  diese Schranke wäre die Welle ein Change Request
   ([`MR-015`](../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)).
-  Prüfbar am geschlossenen Vergleich in `internal/emit/templates_test.go`
-  (`TestTemplates_EmittierterBestandVollstaendig`), nicht an einer Beteuerung — und **nicht** an
-  `TestTemplates_Layout`: der prüft `os.Stat`-Listen und bleibt grün, wenn ein Pfad hinzukommt, der
-  in keiner von ihnen steht. Die Grenze des Vergleichs gehört dazu: er deckt die
-  Kurs-Vorlagen-Schicht, während `EnforcePaths` und `CommandPaths` Enthaltensein prüfen statt
-  Vollständigkeit — eine geschlossene Liste des **gesamten** emittierten Datei-Satzes existiert
-  nicht.
+  Prüfbar an `TestTemplates_EmittierterBestandVollstaendig` in `internal/emit/templates_test.go`,
+  **nicht** an `TestTemplates_Layout` (der prüft `os.Stat`-Listen und bleibt grün, wenn ein Pfad
+  hinzukommt, der in keiner steht). Grenze: der Vergleich deckt die Kurs-Vorlagen-Schicht;
+  `EnforcePaths` und `CommandPaths` prüfen Enthaltensein statt Vollständigkeit, eine geschlossene
+  Liste des **gesamten** emittierten Datei-Satzes existiert nicht.
 - **`make gates` grün** *und* `make full-smoke`; jeder neue Wächter hat seinen
-  `test/mutations/`-Fall ([`AGENTS.md`](../../../AGENTS.md) §3.6). Ein Wächter, der **allein**
-  an `make full-smoke` hängt, bekommt seinen Fall: `failure_form` in `harness/tools/mutate.sh`
-  führt den Modus (`grep -c 'full-smoke' harness/tools/mutate.sh` → **7**, mitwandernd), und
-  `make mutate` fährt ihn im Standard-Lauf mit.
-- **Carveout-Audit (Modul 7)** über den Bestand in `docs/plan/carveouts/` — gelesen wird der
-  `Status:`-Kopf, nicht das Verzeichnis (`grep -n '^\*\*Status:' docs/plan/carveouts/CO-*.md`).
-- **Closure-Notiz `welle-11-results.md`** mit Steering-Loop-Eintrag.
+  `test/mutations/`-Fall ([`AGENTS.md`](../../../AGENTS.md) §3.6). Ein Wächter, der **allein** an
+  `make full-smoke` hängt, bekommt seinen Fall über den Modus in `failure_form`
+  (`grep -c 'full-smoke' harness/tools/mutate.sh`, mitwandernd).
+- **Carveout-Audit (Modul 7)** über `docs/plan/carveouts/` — gelesen wird der `Status:`-Kopf
+  (`grep -n '^\*\*Status:' docs/plan/carveouts/CO-*.md`).
+- **Closure-Notiz `welle-11-results.md`** mit Steering-Loop-Eintrag — entfällt bei Auflösung (§4).
 
 ## 4. Slices in dieser Welle
 
@@ -164,135 +118,83 @@ Der Zustand jedes Slice ist sein Lifecycle-Verzeichnis, hier nicht gespiegelt.
 | [slice-091](done/slice-091-vendored-baum-ohne-anspruch.md) | Der mitgelieferte Baum stellt keine `make`-Ansprüche an das Ziel, und eine lebende Zeile sagt es | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-092](done/slice-092-traeger-inventur.md) | Die Träger-Inventur: je Regelblock ein Wert, Inventar gegen Abdeckung | [`LH-FA-09`](../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) |
 
+**Reihenfolge:** 090 und 091 setzen je einen Wert und hängen nicht aneinander (090 spricht über eine
+Regel **ohne** Träger, 091 über einen **Anspruch ohne Gegenstand**); 092 schließt die Liste, weil
+eine Inventur davor zwei Zellen als offen führte, die dann belegt sind. 090 und 091 sind zwei
+Slices, weil sie zwei Fragen beantworten (geschuldete **Handlung** des Adopters gegen
+**Falschaussage**, die beim `cp` einer Vorlage weiterwandert: `welle.template.md` nennt
+`make fullbuild`, `NNNN-titel.template.md` nennt `make arch-check`, beide werden nach
+[`MR-008`](../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)
+absichtlich in lebende Pläne kopiert); zusammen wären es mehr Zusagen, als Modul 5 §Ziel-Form einem
+Schnitt zugesteht.
+
 ### Die Welle ist aufgelöst — der Wellen-Test fällt negativ aus
 
-Der Gegenstand der drei Slices unten geht in `slice-das-ziel-sagt-was-sein-vendored-baum-ist` auf;
-die Welle bündelt danach **einen** Slice. Der Test aus Baseline-Regelwerk `modul-06-roadmap.md`
-§Wann Arbeit eine Welle braucht fragt, ob der Closure-Trigger **mehr** beobachtet, als die DoDs
-ihrer Slices belegen. Er tut es nicht: `make gates` und `make full-smoke` stehen in der DoD des
-Nehmers, die Inventur gegen den Laufzeit-Nenner ebenso, und das Trigger-Audit über
-`docs/plan/carveouts/` trägt nach `modul-08-agentenrollen.md` §Rollen-Sequenz für eine Welle im
-Repo ohne Wellen-Betrieb die Slice-Closure. Was bliebe, ist der **repo-weite Verifikations-Beleg
-über die Slice-DoD hinaus** — und genau der fehlt; derselbe Abschnitt nennt ihn als das *Mehr*, an
-dem eine Welle hängt. **Der Nehmer steht deshalb ohne Welle.**
+Der Gegenstand der drei Slices ist in
+[`slice-das-ziel-sagt-was-sein-vendored-baum-ist`](done/slice-das-ziel-sagt-was-sein-vendored-baum-ist.md)
+aufgegangen; der Nehmer steht ohne Welle. Nach Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit
+eine Welle braucht liegt eine Welle nur vor, wenn der Closure-Trigger **mehr** beobachtet, als die
+DoDs ihrer Slices belegen. Hier tut er es nicht: `make gates`, `make full-smoke` und die Inventur
+gegen den Laufzeit-Nenner stehen in der DoD des Nehmers, und das Trigger-Audit über
+`docs/plan/carveouts/` trägt im Repo ohne Wellen-Betrieb die Slice-Closure
+(`modul-08-agentenrollen.md` §Rollen-Sequenz für eine Welle); ein repo-weiter Verifikations-Beleg
+über die Slice-DoD hinaus fehlt. Die Auflösung ist eine Umplanung und steht im Drift-Log der
+Roadmap, nicht im Closure-Log.
 
-**Der Vollzug des Ortswechsels ist gesperrt, und das ist gemessen.** Diese Datei müsste per
-`git mv` nach `done/`; dabei sterben **19** Pfad-Nennungen in eingefrorenen Artefakten, über beide
-Adress-Formen — ein Code-Span in [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
-und Markdown-Links in `done/`. **Keine Erwartungswerte**
+**Der Vollzug des Ortswechsels ist gesperrt.** Der `git mv` dieser Datei nach `done/` machte
+Pfad-Nennungen in eingefrorenen Artefakten tot, über beide Adress-Formen (Code-Span in
+[`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md), Markdown-Links in
+`done/`); keines der `ignore-refs`-Ventile deckt sie. **Keine Erwartungswerte**
 ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2):
 
 ```sh
 git grep -c 'welle-11-traeger-aussage' -- 'docs/plan/adr/*.md' 'docs/plan/planning/done/*.md' \
-  | awk -F: '{s+=$NF} END{print s+0}'   # 19
-grep -c '^  - in: ' .d-check.yml                                                  # 7 Ventile, keines deckt sie
+  | awk -F: '{s+=$NF} END{print s+0}'
+grep -c '^  - in: ' .d-check.yml
 ```
 
 Nach [`AGENTS.md`](../../../AGENTS.md) §3.11 gehört die Entscheidung **vor** den Move, und ein
-weiteres `ignore-refs`-Paar ist eine Senkung nach §3.5 mit eigener ADR — **Architect-Arbeit**, kein
-Planungs-Schritt. Bis sie vorliegt, bleibt diese Datei flach; *Offene Wellen* der Roadmap folgt ihr,
-weil der Abschnitt derivativ ist.
-
-**Und die Form der Auflösung selbst führt keine Quelle.** Modul 6 kennt die **Closure** einer Welle
-(sechs Schritte, Ergebnis-Notiz, `git mv` nach `done/`) und Modul 5 die Stilllegung eines Slice,
-dessen Gegenstand ein anderer übernimmt. Eine eröffnete Welle, die ihren Gegenstand abgibt, steht
-in keinem der beiden — offen bleiben damit drei Fragen: wohin ihre Datei gehört, ob eine
-`welle-11-results.md` entsteht (hier: nein, es ist nichts geliefert und nichts verkörpert), und in
-welcher Tabelle der Roadmap sie erscheint. Die dritte ist beantwortbar: Eine Auflösung ist eine
-**Umplanung**, keine Schließung, und trägt deshalb im Drift-Log, nicht im Closure-Log — zwei Logs
-derselben Sache driften. Die ersten zwei sind eine benannte Lücke.
-
-**Die Reihenfolge ist die Aussage: 090 und 091 setzen je einen Wert, 092 schließt die Liste.** 090
-und 091 hängen nicht aneinander — der eine spricht über eine Regel **ohne** Träger, der andere über
-einen **Anspruch ohne Gegenstand**; beide sind einzeln lieferbar und einzeln nützlich. 092 läuft
-zuletzt, weil eine Inventur, die vor ihnen entsteht, zwei Zellen als offen führte, die dann schon
-belegt sind.
-
-**Warum 090 und 091 zwei Slices sind und nicht einer.** Sie beantworten zwei Fragen und werden in
-zwei Sitzungen geprüft: *„welche mitgelieferte Regel hat hier keinen Träger?"* (Modul 2, eine
-geschuldete **Handlung** des Adopters) gegen *„welcher mitgelieferte Satz behauptet etwas über
-dieses Repo, das nicht gilt?"* (eine **Falschaussage**, die beim `cp` einer Vorlage weiterwandert).
-Der zweite hat einen eigenen, gemessenen Träger-Kreis: `welle.template.md` nennt `make fullbuild`,
-`NNNN-titel.template.md` nennt `make arch-check` — und beide werden nach
-[`MR-008`](../../../harness/conventions.md#mr-008--ausfüll-templates-referenziert-statt-kopiert)
-**absichtlich** in lebende Plan-Dokumente kopiert. In einem Slice zusammen wären es mehr Zusagen,
-als Modul 5 §Ziel-Form einem Schnitt zugesteht.
-
-**Warum `harness/tools/mutate.sh` + `test/mutations/` kein vierter Slice ist.** Die Regel dahinter
-— *keine Zusage ohne rot gesehenes Gegenbeispiel* — steht in
-[`AGENTS.md`](../../../AGENTS.md) §3.6 **dieses** Repos und in **keiner** Zeile des mitgelieferten
-Regelwerks (§1, zweiter Posten, mit Kommando). Ein Ziel, das die Regel nicht liest, vermisst ihren
-Träger nicht; ein Slice dafür schriebe eine Aussage über eine Abwesenheit, deren Gegenstück im Ziel
-gar nicht existiert — das wäre die
-[`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Klasse mit
-umgekehrtem Vorzeichen. **Die Frage kann wiederkommen, und dann als eigene:** bringt die
-Re-Baseline die Regel in den Kurs-Stand, liest sie das Ziel — die Prüfung gehört dann in den
-Adaptions-Durchgang von [welle-10](done/welle-10-re-baseline.md), der ohnehin jeden Eintrag gegen die
-neue Fassung hält.
-
-**Und warum kein Slice für den Reviewer-Skill.** Er kommt mit (§1, erster Posten, mit Kommando).
-Ein Slice hätte keinen Gegenstand — die Ziel-Form liegt im Ziel, ausgefüllt wird sie vom Adopter.
-Der Wert *Träger kommt mit* für Modul 10 wird in 092 gesetzt, nicht erarbeitet.
+weiteres `ignore-refs`-Paar ist eine Senkung nach §3.5 mit eigener ADR — Architect-Arbeit. Bis
+dahin bleibt die Datei flach, und *Offene Wellen* der Roadmap folgt ihr (der Abschnitt ist
+derivativ). **Benannte Lücke:** wohin die Datei einer aufgelösten Welle gehört und ob eine
+`welle-11-results.md` entsteht (hier: nein, nichts geliefert, nichts verkörpert), führt keine Quelle.
 
 ## 5. Abhängigkeiten
 
-- **Wird blockiert von:** [welle-10](done/welle-10-re-baseline.md), und **nur** von ihr — sie tauscht
-  den Baum, über den jede Messung dieser Welle läuft (§2). Die mittelbare Bindung an
-  [welle-09](welle-09-modul-15-konformitaet.md) ist mit deren Kante entfallen.
-- **Blockiert:** keine geplante Welle. Sie ist die letzte der Reihe.
+- **Wird blockiert von:** [welle-14](done/welle-14-re-baseline.md) (§2), und nur von ihr.
+- **Blockiert:** keine geplante Welle.
 - **Innerhalb der Welle:** {090, 091} → 092.
-- **Die Eintritts-Vorfrage, die dem Architect gehörte, ist gegenstandslos geworden.** Sie fragte,
-  ob *Artefakt* im Halbsatz *„und das Ziel erfährt es nicht"*
-  ([`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) §Konsequenzen) die neue Datei meint oder
-  jede Aussage — eine Wahl, die nur bestand, solange die drei Modul-15-Blöcke im Ziel als
-  **Abwesenheit** zu deklarieren waren.
-  [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) kehrt das um: für
-  Träger und Rollen-Typen entscheidet sie *geht mit*, für Token-Attribution/Cache-Counter eine
-  Auswertung ohne Bilanz (§1) — nicht mehr als Abwesenheit zu benennen. Die Lesart-Wahl entfällt
-  damit, nicht weil sie beantwortet wurde, sondern weil ihr Gegenstand sich aufgelöst hat.
-  [slice-092](done/slice-092-traeger-inventur.md) ist darauf gezogen: die Vorfrage steht dort nicht
-  mehr als Blocker, und an die Stelle der alten Grenze ist die Eigenschaft getreten, dass keine
-  Zelle die Abwesenheit eines Trägers behauptet, den derselbe Lauf ablegt.
-- **Nicht abhängig, aber benachbart:** slice-087 räumt dieselbe Fehlerklasse in den **lebenden**
-  emittierten Doku-Tischen. Wer beide gleichzeitig anfasst, erzeugt einen Konflikt in
-  `internal/emit`; die Trigger-Reihenfolge (§2) verhindert das.
+- **Benachbart, nicht abhängig:** slice-087 räumt dieselbe Fehlerklasse in den **lebenden**
+  emittierten Doku-Tischen; wer beide gleichzeitig anfasst, erzeugt einen Konflikt in
+  `internal/emit`.
 
 ## 6. Out-of-Scope für diese Welle
 
-- **Die Emission der Modul-15-Erfassungsschicht** — Träger, Schreiber und Auswertung als
-  Unterkommandos, Rollen-Typen, Feldlisten-Dokument.
-  [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) hat entschieden,
-  dass sie ins Ziel geht (Festlegungen 1, 3–5, 8), und revidiert damit
-  [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) Festlegungen 1 und 2 sowie das
-  Erfassungs-Glied ihrer Festlegung 3 — der additive Change Request, der das auslöste, ist
-  angenommen ([`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren),
-  Lastenheft 0.19.0). **Das setzt diese Welle nicht frei:** ihr eigenes Ziel bindet sie auf eine
-  Aussage *„als Text in bereits emittierten Dokumenten, ohne ein neues Artefakt"* (§1) — der
-  Träger, der Hook-Wrapper, die generische Rollen-Fassung und das Feldlisten-Dokument sind aber
-  genau die neuen Artefakte, die [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
-  verlangt. Die Umsetzung bleibt darum out-of-scope — nicht mehr, weil eine Anforderung fehlt,
-  sondern weil sie eine eigene Welle ist
-  ([`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Folgepflicht 5
-  nennt nur den Nachzug dieses Wellen-Plans als ihre eigene Plan-Arbeit, nicht die Umsetzung
-  selbst). Was diese Welle stattdessen liefert: die Träger-Tabelle in §1 trägt für die betroffenen
-  Blöcke den neuen **Wert** — geht mit, noch nicht umgesetzt.
-- **Die Aktivierung von `doc-targets` im Ziel** (Modul 15, Block 4). Sie gehört
-  [welle-09](welle-09-modul-15-konformitaet.md), ist dort geschnitten (slice-063 auf slice-087) und
-  in [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) Festlegungen 4/5 entschieden. Diese
-  Welle nimmt ihr Ergebnis als Zellwert entgegen und rührt die Konfiguration nicht an.
-- **Die `make`-Ansprüche der lebenden emittierten Doku-Tische** (`AGENTS.md`,
-  `harness/README.md`, `.harness/skills/closure-note-reviewer.md`). Derselbe Fehler, anderer
-  Gegenstand: sie sind slice-087, und der liegt in welle-09.
-  [slice-091](done/slice-091-vendored-baum-ohne-anspruch.md) nimmt ausdrücklich nur den **vendored**
-  Baum — die Trennung ist am Kommando ablesbar: sein Sweep schließt genau diese drei Vorlagen aus
-  (dort §1).
-- **Eine Reparatur im vendored Baum.** Er ist auf beiden Ebenen byte-verifiziert (`make
-  baseline-verify` gegen `SHA256SUMS`, hier wie im Ziel); wer den Anspruch dort heilte, färbte den
-  Gate rot. Diese Welle sagt **über** den Baum etwas, sie ändert ihn nicht — dieselbe Grenze, die
-  [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) Festlegung 4(e) zieht.
-- **`harness/tools/mutate.sh` + `test/mutations/`** — kein Gegenstand im Ziel (§4, mit Kommando).
-- **Zeitdokumente** unter `docs/reviews/**` und `docs/plan/planning/done/**`. Sie halten den Stand
+- **Die Emission der Modul-15-Erfassungsschicht** — Träger, Schreiber, Auswertung, Rollen-Typen,
+  Feldlisten-Dokument. Sie ist durch [`ADR-0022`](../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
+  entschieden ([`LH-FA-10`](../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)),
+  aber das Welle-Ziel bindet auf *„als Text in bereits emittierten Dokumenten, ohne ein neues
+  Artefakt"* (§1) — Träger, Hook-Wrapper, Rollen-Fassung und Feldlisten-Dokument sind neue
+  Artefakte und eine eigene Welle (welle-12). Die Träger-Tabelle trägt für die betroffenen Blöcke
+  den Wert *geht mit*.
+- **Die Aktivierung von `doc-targets` im Ziel** (Modul 15, Block 4): [welle-09](welle-09-modul-15-konformitaet.md),
+  entschieden in [`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md) Festlegungen 4/5; diese
+  Welle nimmt das Ergebnis als Zellwert entgegen und rührt die Konfiguration nicht an.
+- **Die `make`-Ansprüche der lebenden emittierten Doku-Tische** (`AGENTS.md`, `harness/README.md`,
+  `.harness/skills/closure-note-reviewer.md`): slice-087 in welle-09.
+  [slice-091](done/slice-091-vendored-baum-ohne-anspruch.md) nimmt nur den **vendored** Baum; sein
+  Sweep schließt genau diese drei Vorlagen aus (dort §1).
+- **Eine Reparatur im vendored Baum.** Er ist byte-verifiziert (`make baseline-verify` gegen
+  `SHA256SUMS`, hier wie im Ziel); wer den Anspruch dort heilte, färbte den Gate rot. Die Welle sagt
+  **über** den Baum etwas, sie ändert ihn nicht ([`ADR-0020`](../adr/0020-emittierte-modul-15-regeln.md)
+  Festlegung 4(e)).
+- **`harness/tools/mutate.sh` + `test/mutations/`** — kein Gegenstand im Ziel (§1, Befund 2); ein
+  Slice dafür schriebe eine Aussage über eine Abwesenheit, deren Gegenstück im Ziel nicht existiert
+  ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Klasse mit
+  umgekehrtem Vorzeichen). Nimmt ein künftiger Kurs-Stand die Regel auf, gehört die Frage in den
+  Adaptions-Durchgang des Baseline-Sprungs.
+- **Zeitdokumente** unter `docs/reviews/**` und `docs/plan/planning/done/**`: sie halten den Stand
   ihres Laufs fest und werden nicht nachgezogen
   ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   §Geltungsbereich).
