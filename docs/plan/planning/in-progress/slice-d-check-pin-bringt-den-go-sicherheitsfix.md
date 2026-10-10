@@ -93,34 +93,34 @@ misst Liefer-Punkt 2, nicht das CHANGELOG.
 
 ## 2. Definition of Done
 
-- [ ] **1 — d-check `v0.86.1`:** `DCHECK_IMAGE`/`DCHECK_DIGEST` in `d-check.mk` und
+- [x] **1 — d-check `v0.86.1`:** `DCHECK_IMAGE`/`DCHECK_DIGEST` in `d-check.mk` und
       `DefaultImage`/`DefaultDigest` in `internal/emit/emit.go` auf den Index-Digest (Kommando der
       Messung im Commit). **Rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6): eine der zwei
       Stellen bleibt auf `v0.84.0` — der Wächter, der sie koppelt, wird rot.
-- [ ] **2 — Strenge-Bilanz:** Gegenmessung nach
+- [x] **2 — Strenge-Bilanz:** Gegenmessung nach
       [`MR-063`](../../../../harness/conventions.md#mr-063) zwischen `v0.84.0` und `v0.86.1`, also über alle drei Sprünge — jedes aktive Modul
       (`grep -m1 '^modules:' .d-check.yml`, Dogfood und emittiertes Ziel) mit Nicht-Null-Basis,
       Befund-Zahlen und `diff` samt Kommando im Umsetzungs-Commit. Die geänderten
       `reviews`-Defaults (`v0.85.0`) und die `match: name`-Regel (`v0.86.0`) treffen kein aktives
       Modul; die Bilanz nennt das mit dem Kommando, das es zeigt.
-- [ ] **3 — Sicherheitsgrund gemessen:** im Binär des gepinnten `v0.86.1`-Image ist die Go-Fassung
+- [x] **3 — Sicherheitsgrund gemessen:** im Binär des gepinnten `v0.86.1`-Image ist die Go-Fassung
       mindestens 1.27.2 und `go version -m` zeigt `golang.org/x/net v0.60.0`, beides gemessen am
       Image selbst (Kommando im Umsetzungs-Commit), nicht am CHANGELOG.
-- [ ] `make gates` grün; `make full-smoke` EXIT 0 (emittierter Pin im Ziel).
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün; `make full-smoke` EXIT 0 (emittierter Pin im Ziel).
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: Übergabe an den Architect liegt als eigener Commit vor — MR-Eintrag zum
+- [x] Doku-Update: Übergabe an den Architect liegt als eigener Commit vor — MR-Eintrag zum
       d-check-Pin `v0.86.1` nach dem Muster von [`MR-084`](../../../../harness/conventions.md#mr-084)
       mit der Bilanz aus Liefer-Punkt 2, **und** das Ergebnis der Prüfung, ob mit `reviews`
       `match: name` (Slug-Kennungen, längster Name), der erkannten Vorlagen-Zusage und
       `skip-allows-empty` am Pin `v0.86.1` der Auflösungs-Trigger von
       [`MR-086`](../../../../harness/conventions.md#mr-086) eintritt — im MR-Eintrag genannt, auch
       wenn er nicht eintritt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Reconciliation-Register: entfällt — kein Brownfield-Bootstrap.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind nach dem Move geprüft, §7.
 
 ## 3. Plan (vor Code)
@@ -132,6 +132,7 @@ misst Liefer-Punkt 2, nicht das CHANGELOG.
 | Pin-Tests unter `internal/emit/` | update, falls sie den Tag nennen | Kopplung der zwei Stellen ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)) |
 | `internal/emit/templates/d-check.yml` | update | Prosa der Kommentar-Blöcke `reviews` und `codepaths` auf den Stand am Pin `v0.86.1` (`match: name` deckt den längsten Namen — neu prüfen); `reviews` bleibt auskommentiert ([`MR-086`](../../../../harness/conventions.md#mr-086)), der Block trägt `match: name` |
 | `internal/emit/emit_test.go`, `test/mutations/` | update, neu | koppelt die Pin-Fassung der `reviews`-Prosa an `DefaultImage` und hält `match: name` im Block |
+| `harness/README.md` | update | Werkzeuge-Zeile `make doc-trace`/`make doc-complete`: die Exit-Zusage nennt ihren Aufruf (`f652d6fb`); Übergabe aus der Closure von `slice-mutate-laeuft-ueber-einen-ci-branch` §7, nachgetragen bei der Closure |
 
 ## 4. Trigger
 
@@ -159,28 +160,76 @@ misst Liefer-Punkt 2, nicht das CHANGELOG.
 ## 6. Risiken und offene Punkte
 
 - **Digest ohne Wächter** — kein Sensor hält den Digest gegen den Tag;
-  `BEO-ALL/pin-digest-ohne-waechter` steht bei 4 Belegen, `geplant`. — **Ausgang:** offen bis zur
-  Closure.
+  `BEO-ALL/pin-digest-ohne-waechter` steht bei 4 Belegen, `geplant`. — **Ausgang:** *weiter offen*
+  → Register `BEO-ALL/pin-digest-ohne-waechter` (Beleg dieses Slice, 5×, Stand `geplant`).
 - **a-check-Image mit derselben Go-Fassung** — das gepinnte a-check `v0.23.0` und `v0.23.1` sind
   mit `GO_VERSION 1.27.0` gebaut; ob die zwei Befunde der Standardbibliothek das a-check-Binär
-  treffen, misst dieser Slice nicht (Abgrenzung §1). — **Ausgang:** offen bis zur Closure; der
-  Kandidat ist ein Beleg in `BEO-ALL/gepinntes-bild-ohne-schwachstellen-scan` oder eine
-  Anforderung an das Nachbar-Repo.
+  treffen, misst dieser Slice nicht (Abgrenzung §1). — **Ausgang:** *weiter offen* → Register
+  `BEO-ALL/gepinntes-bild-ohne-schwachstellen-scan` (Beleg dieses Slice, 2×, `offen`); die
+  Anforderung an a-check (Image mit Go ≥ 1.27.2) geht über den Orchestrator an den Auftraggeber.
 - **Mutate-Weg offen** — die Fallmenge des `make mutate`-Laufs für diesen Slice liegt bei 46; der CI-Weg ist durch das
   Docker-Hub-Limit blockiert. Die Entscheidung des Auftraggebers, auf welchem Weg die Fälle
-  laufen, steht aus. — **Ausgang:** offen bis zur Closure.
+  laufen, steht aus. — **Ausgang:** *entfallen* — der wiederholte CI-Lauf über
+  `mutate/slice-d-check-pin-bringt-den-go-sicherheitsfix-4abafc4f` ergab 46/46 `ok`
+  ([Verifikation](../../../reviews/2026-10-10-slice-d-check-pin-bringt-den-go-sicherheitsfix-verifikation.md)).
 
 ## 7. Closure-Notiz
 
 Geschrieben vom Planner in eigenem Kontext bei der Closure ([`AGENTS.md`](../../../../AGENTS.md)
 §3.10).
+**Rolle:** Planner · **Datum:** 2026-10-10
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
+- **Was hat funktioniert:** Alle Liefer-Punkte bestätigt
+  ([Verifikation](../../../reviews/2026-10-10-slice-d-check-pin-bringt-den-go-sicherheitsfix-verifikation.md),
+  `91e6658b`): Pin `v0.86.1` als Index-Digest an beiden Stellen, Strenge-Bilanz `v0.84.0` gegen
+  `v0.86.1` ohne Abweichung, Go 1.27.2 und `golang.org/x/net v0.60.0` am Image gemessen,
+  `make full-smoke` EXIT 0. Mutation 46/46 `ok` über `mutate/…-4abafc4f`; beide `mutate/…`-Branches
+  gelöscht, `git ls-remote origin 'refs/heads/mutate/*'` leer. Reviews:
+  [erster](../../../reviews/2026-10-09-slice-d-check-pin-bringt-den-go-sicherheitsfix.md) (`4520ab1e`,
+  MEDIUM-1 behoben in `724b63ff`),
+  [Nachprüfung](../../../reviews/2026-10-10-slice-d-check-pin-bringt-den-go-sicherheitsfix-nachpruefung.md)
+  (`a79d72a9`, 2 INFO),
+  [Nachprüfung 2](../../../reviews/2026-10-10-slice-d-check-pin-bringt-den-go-sicherheitsfix-nachpruefung-2.md)
+  (`cc5663a8`, freigegeben, 3 INFO).
+- **Architect-Übergabe:** [`MR-092`](../../../../harness/conventions.md#mr-092) (`eb6f1f1b`) erfüllt
+  sie; der Auflösungs-Trigger von [`MR-086`](../../../../harness/conventions.md#mr-086) ist nicht
+  eingetreten, [`MR-086`](../../../../harness/conventions.md#mr-086) bleibt unverändert.
+- **Was ging anders als geplant:** Zwei Entscheidungen des Orchestrators:
+  - Zielversion zweimal nachgezogen, `v0.85.0` → `v0.86.0` → `v0.86.1` (beide am 2026-10-10, §1).
+  - Der erste CI-Mutationslauf scheiterte am Docker-Hub-Limit (429); auf Wunsch des Auftraggebers
+    wurde er wiederholt, nicht lokal gefahren.
+
+  Plan-Lücke: die `harness/README.md`-Zeile aus `f652d6fb` fehlte in §3; nachgetragen.
+- **Steering-Loop-Eintrag:** Neuer Sensor: `TestDCheckConfig_ReviewsBleibtKommentarBlock`
+  (`internal/emit/emit_test.go`) koppelt die Pin-Fassung der emittierten `reviews`-Prosa an
+  `DefaultImage` und hält `match: name` im Block (aus MEDIUM-1). Grenze: der `codepaths`-Block ist
+  nicht gekoppelt (INFO-2 beider Nachprüfungen); gezählt, nicht verkörpert.
+- **Beobachtungs-Register (`../observations/`):** je ein Beleg dieses Slice:
+  - [`BEO-ALL/aussage-ueber-das-gepinnte-werkzeug-ohne-blick-in-seinen-stand`](../observations/BEO-ALL/aussage-ueber-das-gepinnte-werkzeug-ohne-blick-in-seinen-stand/observation.md)
+    (MEDIUM-1, INFO-2 beider Nachprüfungen) → 6×, Stand `geplant`, unverändert.
+  - [`BEO-ALL/regel-rand-ohne-benannte-luecke`](../observations/BEO-ALL/regel-rand-ohne-benannte-luecke/observation.md)
+    (INFO-1 beider Nachprüfungen, INFO-3 der Nachprüfung 2; Klasse *Grenzen-Aufzählung einer
+    erkennenden Regel ohne Formen-Probe*) → 9×, Stand `geplant`, unverändert.
+  - [`BEO-ALL/sensor-lauf-endet-rot-an-der-infrastruktur-bevor-der-fall-urteilt`](../observations/BEO-ALL/sensor-lauf-endet-rot-an-der-infrastruktur-bevor-der-fall-urteilt/observation.md)
+    (INFO-1 des ersten Reviews, 429) → 2×, `offen`.
+  - [`BEO-ALL/pin-digest-ohne-waechter`](../observations/BEO-ALL/pin-digest-ohne-waechter/observation.md)
+    (Risiko 1) → 5×, Stand `geplant`, unverändert.
+  - [`BEO-ALL/gepinntes-bild-ohne-schwachstellen-scan`](../observations/BEO-ALL/gepinntes-bild-ohne-schwachstellen-scan/observation.md)
+    (Risiko 2) → 2×, `offen`.
+  - Ohne Beleg: INFO-2 des ersten Reviews (`spans`-Basis über einen Grund-Code) — die Bilanz nennt
+    die Grenze selbst, [`MR-063`](../../../../harness/conventions.md#mr-063) ist auf Modul-Ebene
+    erfüllt; abgelehnt. INFO-3 des ersten Reviews (`doc-complete` „Exit 1") — Übergabe aus der Closure
+    von `slice-mutate-laeuft-ueber-einen-ci-branch`, dort benannt, im Slice behoben (`f652d6fb`);
+    nicht gezählt.
+  - Kein Eintrag ohne Ausgang erreicht 3×.
+- **Folge-Slices:** keiner.
+- **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines. ADR/MR:
+  Auflösungs-Trigger von [`MR-086`](../../../../harness/conventions.md#mr-086) geprüft, nicht
+  eingetreten ([`MR-092`](../../../../harness/conventions.md#mr-092)). Hard Rules: keine mit
+  eingetretenem Auflösungs-Trigger.
+- **Archivierung:** entfällt ([`MR-078`](../../../../harness/conventions.md#mr-078); `archive-slice`
+  ist nicht gebaut).
+- **Risiken aus §6:** jede Zeile in §6 hat ihren Ausgang.
 - **Drei Paarungen:** —
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
