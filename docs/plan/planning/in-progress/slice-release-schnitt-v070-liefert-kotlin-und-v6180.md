@@ -100,8 +100,18 @@ Reihenfolge der Rollen:
 1. **Implementer** — Schritte 1 bis 3 und L2: ein Commit mit Vorlage, Pin und Handbuch; **kein** Push, **kein** Tag.
 2. **Reviewer** — Diff gegen diesen Plan und die Prozedur; liest die Handbuch-Aussagen gegen die Vorlagen am Tag-Baum.
 3. **Verifier** — am Tag-Baum, vor dem Tag-Push: Digests eigenständig nachgerechnet, `make gates` frisch auf dem finalen Commit, bewusstes Brechen des realen Pins.
-4. **Schritt P — Push von `main` und Tag-Push** (Implementer-Kontext, zweiter Lauf; Schritte 5 bis 7 der Prozedur). Erst nach grünem Verifier-Bericht **und** grünem `make gates` auf dem dann finalen Commit (Report-Commits ändern den Baum nach dem Stempel). Reihenfolge: `main` zuerst, dann der Tag. **Der Tag-Push ist nach außen wirksam und wird erst gefahren, wenn der Auftraggeber ihn ausdrücklich freigibt.** Freigabe-Vermerk: *ausstehend* — der Implementer trägt hier Datum und Wortlaut der Freigabe ein, bevor er `git push origin v0.7.0` fährt.
+4. **Schritt P — Push von `main` und Tag-Push** (Implementer-Kontext, zweiter Lauf; Schritte 5 bis 7 der Prozedur). Erst nach grünem Verifier-Bericht **und** grünem `make gates` auf dem dann finalen Commit (Report-Commits ändern den Baum nach dem Stempel). Reihenfolge: `main` zuerst, dann der Tag. **Der Tag-Push ist nach außen wirksam und wird erst gefahren, wenn der Auftraggeber ihn ausdrücklich freigibt.** Freigabe-Vermerk: erteilt am 2026-10-10, Wortlaut des Auftraggebers: „ja tag push“; Tag `v0.7.0` (annotiert) auf `a6ed0813`.
 5. **Planner-Closure** — nach Schritt 8 (Meldung), in eigenem Commit.
+
+**Belege der Publikation** (gemessen am 2026-10-10, Tag `v0.7.0` auf `a6ed0813`):
+
+- `gh release view v0.7.0 --json assets --jq '.assets | length'` → `8`.
+- Release-Workflow Run `38065750258` (artifacts, 6× Start-Smoke, publish, tap): `success`.
+- `make tap-check TAG=v0.7.0` → `tap-check: gleich — Tag v0.7.0, Tap-Kopf Formula/ai-harness-init.rb, sha256 6f7a1e417f8a6de963503e11648c1347187bce1242999286ca0245c13f4abdd6`.
+- `make traeger-fetch` → `Traeger abgelegt (…/.harness/state/bin/ai-harness-init) — ai-harness-init-linux-amd64 aus Release v0.7.0, Digest verifiziert.` Rot an der Publikation: `make traeger-fetch TRAEGER_SHA256_LINUX_AMD64=<64 Nullen>` → `Digest-Abweichung — ist 91fe2ba5…3642, erwartet 0000… (aus Pin). Der Traeger wird nicht abgelegt.`, make-Exit 2, nichts abgelegt; der echte Pin stimmt mit dem Asset überein.
+- `ci` an `a6ed0813`: Run `38060627055` (main, nach `gh run rerun --failed`) und Run `38065750227` (Tag `v0.7.0`): beide `completed`/`success`. Run `38059784584` (main, `6f7a392e`) steht auf `cancelled` (von der Nachfolge abgelöst).
+- Release-Text gesetzt mit `gh release edit v0.7.0 --notes-file`: Titelzeile, Neu im gebootstrappten Ziel, Assets, **Bestand**, Grenze, Full Changelog. Der Vergleich zweier frischer Emissionen (`v0.6.0`-Träger gegen `v0.7.0`-Träger; dokument-only, `--lang go`, `--lang cpp`, `--lang go --arch hexslice`; `diff -rq -x .git`) ändert in der zweiten Klasse `.d-check.yml` (Kurs-URL `v6.17.0` → `v6.18.0`, Kommentare), `.claude/commands/close-welle.md` (`KENNUNG=<K>`), `AGENTS.md` und `harness/conventions.md` (Kurs-Stand).
+- `--version` des veröffentlichten linux-amd64-Binaries → `v0.7.0` (v0.6.0-Binary: `v0.6.0`).
 
 ## 4. Trigger
 
