@@ -132,6 +132,6 @@ behoben, `make gates` deckt den Stand nach dem Nachzug (Hash deckungsgleich), Ou
 Lesart weiter, bewusst außerhalb der DoD dieses Slice):
 `docs/plan/planning/README.md:26`, sowie die `Lifecycle:`-Kopfnoten von
 [`welle-09`](../plan/planning/welle-09-modul-15-konformitaet.md),
-[`welle-11`](../plan/planning/welle-11-traeger-aussage.md) und
+[`welle-11`](../plan/planning/done/welle-11-traeger-aussage.md) und
 [`welle-13`](../plan/planning/done/welle-13-regeln-bekommen-ihren-sensor.md) (je der Satz *„Ob eine
 flache Welle *aktuell* oder *geplant* ist, sagt die Roadmap"*).

@@ -250,7 +250,7 @@ ist falsch"*, nicht *„die DoD ist länger"*.
 
 - **Wird blockiert von:** [slice-122](slice-122-d-check-pin-v0650.md) (Pin, tragend) und
   [welle-10](welle-10-re-baseline.md) (WIP, ordnend) — beide mit ihrer Begründung in §2.
-- **Blockiert:** nichts. [welle-11](../welle-11-traeger-aussage.md) hängt an
+- **Blockiert:** nichts. [welle-11](welle-11-traeger-aussage.md) hängt an
   [welle-10](welle-10-re-baseline.md), nicht an dieser Welle; die Reihung ist damit
   welle-10 → welle-11 **und** welle-10 → welle-13, ohne Kante zwischen 11 und 13.
 - **Berührt, aber bindet nicht:** [slice-121](../open/slice-121-commit-message-nennt-was-es-gibt.md)

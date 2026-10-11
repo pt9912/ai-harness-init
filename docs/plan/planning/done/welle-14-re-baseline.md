@@ -143,7 +143,7 @@ Feststellung in der Ergebnis-Notiz.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Roadmap-Struktur: fünf Abschnitte.
 
-- **Blockiert: [welle-11](../welle-11-traeger-aussage.md).** Jede Messung jener Welle läuft über den
+- **Blockiert: [welle-11](welle-11-traeger-aussage.md).** Jede Messung jener Welle läuft über den
   vendored Baum, und diese Welle tauscht genau ihn — derselbe Grund, mit dem ihre §2 bisher die
   Kante zu [welle-10](welle-10-re-baseline.md) trug. Ihr Gegenstand bewegt sich dabei real:
   `modul-02-harness-bootstrap.md` ändert sich in diesem Sprung erneut, und der Freshness-Audit ist

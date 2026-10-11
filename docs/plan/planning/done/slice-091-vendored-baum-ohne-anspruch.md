@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-11](../welle-11-traeger-aussage.md) — er setzt den Wert für die Regelblöcke, die
+**Welle:** [welle-11](welle-11-traeger-aussage.md) — er setzt den Wert für die Regelblöcke, die
 im Ziel einen `make`-Anspruch **ohne Gegenstand** tragen; ohne ihn bliebe das Closure-Kriterium für
 fünf Regelwerk-Dateien unbelegt.
 
@@ -132,7 +132,7 @@ Standard-Punkte der Vorlage (nicht slice-eigen): `make gates` grün · Doku-Upda
 
 ## 4. Trigger
 
-**`open` → `next`:** [welle-11](../welle-11-traeger-aussage.md) ist eingetreten, also liegt
+**`open` → `next`:** [welle-11](welle-11-traeger-aussage.md) ist eingetreten, also liegt
 [welle-10](../done/welle-10-re-baseline.md) in `done/` — und damit auch slice-087, der dieselbe
 Fehlerklasse in den **lebenden** Doku-Tischen räumt. **`next` → `in-progress`:** WIP-Limit frei.
 
@@ -190,7 +190,7 @@ Zeile weist den mitgelieferten Baum als Kurs-Inhalt aus, dessen `make`-Namen kei
 Repos sind* — als Eigenschaft, nicht als Namensliste.
 
 **Die Wellen-Zugehörigkeit ist bereits gewandert.** Der Kopf nennt
-[welle-11](../welle-11-traeger-aussage.md); sie ist aufgelöst, der Nehmer steht ohne Welle, und
+[welle-11](welle-11-traeger-aussage.md); sie ist aufgelöst, der Nehmer steht ohne Welle, und
 die Umplanung trägt das Drift-Log der Roadmap (Eintrag vom 2026-09-17, er nennt diese drei Geber
 und den Nehmer). Diese Closure fasst weder die Welle-Datei noch das Drift-Log an.
 

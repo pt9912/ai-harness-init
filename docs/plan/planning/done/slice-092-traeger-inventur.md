@@ -5,7 +5,7 @@ Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
 wechselt nur durch `git mv`, siehe
 [`/kurs/de/02-planung/modul-05-planning-harness.md` §Lifecycle als State Machine](https://github.com/pt9912/ai-harness-course/blob/v3.5.2/kurs/de/02-planung/modul-05-planning-harness.md#lifecycle-als-state-machine).
 
-**Welle:** [welle-11](../welle-11-traeger-aussage.md) — er schließt die Liste und ist damit der
+**Welle:** [welle-11](welle-11-traeger-aussage.md) — er schließt die Liste und ist damit der
 Slice, an dem das Closure-Kriterium der Welle wahr wird. Er läuft **nach**
 [slice-090](../done/slice-090-freshness-audit-im-ziel.md) und
 [slice-091](../done/slice-091-vendored-baum-ohne-anspruch.md), deren Werte er entgegennimmt statt sie zu
@@ -256,7 +256,7 @@ des mitgelieferten Regelwerks trägt genau einen der drei Träger-Werte* — mit
 hermetisch und real.
 
 **Die Wellen-Zugehörigkeit ist bereits gewandert.** Der Kopf nennt
-[welle-11](../welle-11-traeger-aussage.md); sie ist aufgelöst, der Nehmer steht ohne Welle, und
+[welle-11](welle-11-traeger-aussage.md); sie ist aufgelöst, der Nehmer steht ohne Welle, und
 die Umplanung trägt das Drift-Log der Roadmap (Eintrag vom 2026-09-17, er nennt diese drei Geber
 und den Nehmer). Diese Closure fasst weder die Welle-Datei noch das Drift-Log an; mit ihr ist der
 dritte und letzte Geber der Welle stillgelegt.

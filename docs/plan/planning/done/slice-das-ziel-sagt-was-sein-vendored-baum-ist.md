@@ -11,7 +11,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 
 **Welle:** ohne Welle. Die Wellen-Zugehörigkeit wandert zwar mit dem Gegenstand (Baseline-Regelwerk
 `modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer übernimmt) — nur bündelte
-[welle-11](../welle-11-traeger-aussage.md) danach **einen** Slice, und der Test aus
+[welle-11](welle-11-traeger-aussage.md) danach **einen** Slice, und der Test aus
 `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht fällt negativ aus: Ihr Closure-Trigger
 beobachtet nichts, was die DoD unten nicht belegt — `make gates`, `make full-smoke` und die Inventur
 gegen den Laufzeit-Nenner stehen dort, und das Trigger-Audit trägt im Repo ohne Wellen-Betrieb die

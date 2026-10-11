@@ -91,17 +91,17 @@ Beide Bedingungen sind **beobachtbar und heute erfüllt**; die Welle ist damit s
 **Was ausdrücklich *nicht* Trigger ist, und warum — gemessen statt vermutet.** Diese Welle hängt an
 **keiner** der drei Wellen in der Reihe
 [welle-09](../welle-09-modul-15-konformitaet.md) → [welle-10](welle-10-re-baseline.md) →
-[welle-11](../welle-11-traeger-aussage.md):
+[welle-11](welle-11-traeger-aussage.md):
 
 - **[welle-10](welle-10-re-baseline.md) (Re-Baseline) nicht**, weil die Entscheidung die beiden
   Modul-15-Ergänzungen der kommenden Regelwerks-Fassung **vorweggenommen statt abgewartet** hat —
   sie stehen in ihrem Kontext-Abschnitt, gegen den Regelwerks-Spiegel des Tags gelesen. Eine Welle,
   die auf einen Tausch wartet, dessen Ergebnis die tragende Entscheidung schon kennt, wartet ohne
   Gegenstand.
-- **[welle-11](../welle-11-traeger-aussage.md) nicht**, weil ihr Nachzug aus
+- **[welle-11](welle-11-traeger-aussage.md) nicht**, weil ihr Nachzug aus
   [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Folgepflicht 5
   bereits vollzogen ist:
-  `grep -niE 'permanent nicht emittiert|solange er offen ist' docs/plan/planning/welle-11-traeger-aussage.md | wc -l`
+  `grep -niE 'permanent nicht emittiert|solange er offen ist' docs/plan/planning/done/welle-11-traeger-aussage.md | wc -l`
   → **0** (mitwandernd, kein Erwartungswert). Die Richtung ist zudem asymmetrisch: läuft welle-12
   zuerst, tragen die vier Zellen von `slice-092` gleich ihren Endwert statt ihres
   Auflösungs-Triggers — jener Slice hat sich **ausdrücklich** dagegen entschieden, auf diese Welle
@@ -217,10 +217,10 @@ denen dieselbe Stelle warnt.
   vermutet (§2).
 - **Blockiert:** keine geplante Welle. Sie liegt **neben** der Reihe
   [welle-09](../welle-09-modul-15-konformitaet.md) → [welle-10](welle-10-re-baseline.md) →
-  [welle-11](../welle-11-traeger-aussage.md), nicht hinter ihr; welche der beiden startbaren Wellen
+  [welle-11](welle-11-traeger-aussage.md), nicht hinter ihr; welche der beiden startbaren Wellen
   zuerst läuft, sagt die Roadmap als Sequenzierungs-Autorität.
 - **Innerhalb der Welle:** 094 → 095 → 096 → {098, 099}; 097 ohne Vorbedingung.
-- **Eine Berührung mit [welle-11](../welle-11-traeger-aussage.md), in beide Richtungen tragbar.**
+- **Eine Berührung mit [welle-11](welle-11-traeger-aussage.md), in beide Richtungen tragbar.**
   `slice-092` baut einen Wächter, der rot wird, sobald eines von drei Emit-Präfixen wächst, während
   seine Inventur-Zelle noch Abwesenheit behauptet. Läuft welle-12 **zuerst**, entsteht der Wächter
   über einem Bestand, der die Träger schon führt, und die vier Zellen tragen gleich ihren Endwert.

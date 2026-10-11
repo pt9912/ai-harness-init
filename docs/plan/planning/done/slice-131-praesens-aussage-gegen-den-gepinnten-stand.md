@@ -179,7 +179,7 @@ Aussagen-Berührung steht hier gar nicht.
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | [slice-090](../done/slice-090-freshness-audit-im-ziel.md), [slice-091](../done/slice-091-vendored-baum-ohne-anspruch.md), [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md), [slice-112](../done/slice-112-replay-schritt-hat-keinen-referenten.md) | update | je eine bis zwei Präsens-Aussagen über den vendored Baum; zwei von ihnen bewegen sich nachweislich (§1) |
-| [welle-09](../welle-09-modul-15-konformitaet.md), [welle-11](../welle-11-traeger-aussage.md) | update | lebende Welle-Pläne; `welle-11` trägt allein **5** der 11 Nennungen und die größte bewegte Zahl (7 → 11) |
+| [welle-09](../welle-09-modul-15-konformitaet.md), [welle-11](welle-11-traeger-aussage.md) | update | lebende Welle-Pläne; `welle-11` trägt allein **5** der 11 Nennungen und die größte bewegte Zahl (7 → 11) |
 | [slice-083](../done/slice-083-form-vergleich-pflichtfelder.md) | **unverändert** | Tree-Operand der Vor-Tausch-Seite; das Ziehen zerstörte die Messung ([welle-10](welle-10-re-baseline.md) §5) |
 | `docs/plan/adr/**` | **unverändert** | Accepted und damit unveränderlich ([`AGENTS.md`](../../../../AGENTS.md) §3.4); die Verweis-Form dort regelt [`ADR-0016`](../../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 1, und sie heilt den Bestand nicht |
 | `docs/reviews/**`, `docs/plan/planning/done/**` | **unverändert** | Zeitdokumente — die richtige Aussage über ihren Stand |
@@ -201,7 +201,7 @@ der Stand, gegen den nachgemessen wird, nicht fest.
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): wenn eine nachgemessene Zahl nicht nur
   ihren Wert, sondern die **Folgerung** eines ganzen Abschnitts umstößt und der Abschnitt dadurch
   neu zu schneiden ist — das ist Plan-Arbeit an einem anderen Slice, nicht Nachzug in diesem. Der
-  Fall ist real: die Ziel-Form-Zählung in [welle-11](../welle-11-traeger-aussage.md) trägt eine
+  Fall ist real: die Ziel-Form-Zählung in [welle-11](welle-11-traeger-aussage.md) trägt eine
   Matrix-Zeile.
 - `in-progress` → `open` (blockiert — Carveout?): wenn DoD (3) ergibt, dass die Sortier-Regel eine
   **ADR** braucht. Dann wartet dieser Slice auf sie, statt sie im Implementations-Kontext zu

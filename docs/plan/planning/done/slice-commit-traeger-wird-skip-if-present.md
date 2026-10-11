@@ -190,7 +190,7 @@ mit-fasst, ist serialisiert:**
 [`slice-aktivierung-reist-nicht-mit-dem-klon`](../done/slice-aktivierung-reist-nicht-mit-dem-klon.md)
 berührt `harness/tools/full-smoke.sh` (dort die neue Stufe) und nimmt dem Fragment
 `internal/emit/templates/enforce/hooks-install.mk` die `test -f`-Zeile — beide stehen auch in §3
-dieses Plans. Er liegt in `open/` **hinter** [welle-11](../welle-11-traeger-aussage.md) und damit
+dieses Plans. Er liegt in `open/` **hinter** [welle-11](welle-11-traeger-aussage.md) und damit
 nach diesem Slice; die Anordnung trägt die Serialisierung, nicht die Ungleichzeitigkeit der
 Flächen.
 
@@ -338,7 +338,7 @@ Backticks).
   [`ADR-0049`](../../adr/0049-ausgang-traegt-die-benannte-luecke.md) Festlegung 3 zwischen zwei
   Lese-Schritten zulässig gewesen; keiner der zwei offenen Wellen trägt den Eintrag (weder
   [welle-09](../welle-09-modul-15-konformitaet.md) noch
-  [welle-11](../welle-11-traeger-aussage.md) nennt ihn). Die nächste Welle-Closure liest ihn als
+  [welle-11](welle-11-traeger-aussage.md) nennt ihn). Die nächste Welle-Closure liest ihn als
   Eintrag über der Schwelle ohnehin wieder und bestätigt oder verschiebt den Ausgang.
 - **Beobachtungs-Register (`../observations/`):** **fünf** Belege in bestehende Einträge gelegt und
   **ein** Verzeichnis neu angelegt; die Stände sind gemessen, nicht abgelesen
