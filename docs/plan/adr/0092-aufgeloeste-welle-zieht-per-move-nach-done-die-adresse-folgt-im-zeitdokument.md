@@ -1,8 +1,8 @@
 # ADR-0092: Der Plan einer aufgelösten Welle zieht per Move nach `done/` — die Adresse folgt im Zeitdokument, ein Referenz-Ventil entfällt
 
-**Status:** Proposed
+**Status:** Accepted
 
-**Datum:** 2026-10-10
+**Datum:** 2026-10-11
 
 **Autor:** Architect (ai-harness-init-Team, pt9912)
 
@@ -129,6 +129,7 @@ Welle-Plan-Move findet Nennungen in einer `Accepted`-ADR, die das Doku-Gate meld
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-10-10 | Proposed | Architect-Lauf |
+| 2026-10-11 | **Accepted** | Annahme durch den Auftraggeber am 2026-10-11; die Datei trägt keinen Acceptance-Trigger ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1), kein Review-Report zu dieser ADR |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
