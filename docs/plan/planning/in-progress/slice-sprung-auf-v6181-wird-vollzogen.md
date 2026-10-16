@@ -115,7 +115,7 @@ Die Proben im Kommentar von `StripCommentHints` gelten laut ihrem Wortlaut je f�
 
 Zwei Liefer-Punkte, einer je Achse (Baseline · Emission).
 
-- [ ] **1 — Jeder Träger des Tags steht auf `v6.18.1`, und keine lebende Adresse bleibt auf `v6.18.0`.** Baum über
+- [x] **1 — Jeder Träger des Tags steht auf `v6.18.1`, und keine lebende Adresse bleibt auf `v6.18.0`.** Baum über
       [`make vendor-baseline`](../../../../harness/sensors/vendor-baseline.md) aus dem verifizierten Asset (einmal Netz,
       [`MR-007`](../../../../harness/conventions.md#mr-007)); `make baseline-verify` meldet `v6.18.1 OK`; fünf Pins gesetzt,
       sha256 am Asset gemessen, Kommando im Tausch-Commit; `make regelwerk-check` → `0 Befund(e)`; Mess-Tag und
@@ -123,7 +123,7 @@ Zwei Liefer-Punkte, einer je Achse (Baseline · Emission).
       Nachzugs-Commit in einem Push, Nachzug je Eigentümer ein Commit mit Rolle.
       **Rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6): ein echter Pin-Wert bleibt einmal auf `v6.18.0`, ein
       Pin-Wächter wird mit einer Meldung über genau diese Stelle rot.
-- [ ] **2 — Die Emission folgt den umgeschriebenen Adressen.** Jeder der fünf Treffer bleibt nach Verdikt A2 stehen;
+- [x] **2 — Die Emission folgt den umgeschriebenen Adressen.** Jeder der fünf Treffer bleibt nach Verdikt A2 stehen;
       `test/neutralisierung-marker.bats` meldet je Marker die erwartete Trefferzahl am neuen Baum, für
       `conventionsPathRefOld` `0`; die drei Proben im Kommentar
       von `StripCommentHints` sind gegen den neuen Satz gefahren und leer; `make full-smoke` startet am frischen Ziel grün,
@@ -131,13 +131,13 @@ Zwei Liefer-Punkte, einer je Achse (Baseline · Emission).
       **Rot gesehen:** der Wächter ist die Erwartung `conventionsPathRefOld:0`; er wird an der **realen** Quelle rot, wenn der
       Marker wieder trifft (der vendorte Baum wird so verändert, dass die Adresse ohne Präfix steht — nicht die Fixture) —
       der Bats-Fall meldet genau diese Stelle.
-- [ ] `make gates` grün über dem Liefer-Stand; `make full-smoke` endet EXIT 0.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), volle Slice-Kennung im
+- [x] `make gates` grün über dem Liefer-Stand; `make full-smoke` endet EXIT 0.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), volle Slice-Kennung im
       Dateinamen — Rollenwechsel nach Schritt 8 des Minimal Agent Workflow, kein Self-Review (Modul 8).
-- [ ] Doku-Update: die Architect-Übergaben A1–A3 liegen als eigene Commits vor.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Doku-Update: die Architect-Übergaben A1–A3 liegen als eigene Commits vor.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen sind getragen — das Repo fährt Wellen; sie prüft die nächste Welle-Closure.
 
 ## 3. Plan (vor Code)
@@ -182,23 +182,82 @@ von [`ADR-0093`](../../adr/0093-ziel-fassung-regiert-den-sprung-v6181.md) (`Acce
 
 - **Die Neutralisierung fällt am neuen Stand still aus** — `conventionsPathRefOld` trifft nicht mehr (nach A2 gewollt); ohne
   Wächter am realen Baum bliebe ein Test über einer Fixture grün. Der Wächter ist die Erwartung `0` in `test/neutralisierung-marker.bats`.
-  **Ausgang:** bei der Closure.
+  **Ausgang: entfallen** — der Wächter steht und ist an der realen Quelle rot gesehen (Verifikation F-3).
 - **Fall `577` und Fixtures tragen den alten Wortlaut** — `test/mutations/577-conventions-neutralisierung-faellt-im-ziel-aus.sh`
   dürfte am neuen Baum keinen Treffer mehr haben (Folgerung, nicht gemessen), und `internal/emit/*_test.go` könnten den alten
   Wortlaut als Fixture führen. Der Implementer prüft beides und entscheidet über Fall `577` nach
-  [`MR-071`](../../../../harness/conventions.md#mr-071) (entfernen oder neu verankern). **Ausgang:** bei der Closure.
+  [`MR-071`](../../../../harness/conventions.md#mr-071) (entfernen oder neu verankern). **Ausgang: eingetreten** — Fall `577` ist entfernt (`26ef8f20`); die
+  Restlücke (Aufruf am Pin ohne realen Wächter) ist **weiter offen** im Register:
+  [`BEO-ALL/aufruf-ohne-wirkung-am-pin-traegt-nur-eine-fixture`](../observations/BEO-ALL/aufruf-ohne-wirkung-am-pin-traegt-nur-eine-fixture/observation.md).
 - **Das frische Ziel startet nicht grün** — Inline-Pfade mit dem Literal `<tag>` im emittierten Satz. Das wäre das dritte Auftreten von
   [`BEO-ALL/vendored-vorlage-nennt-pfad-den-das-adoptierende-repo-nicht-fuehrt`](../observations/BEO-ALL/vendored-vorlage-nennt-pfad-den-das-adoptierende-repo-nicht-fuehrt/observation.md)
-  (heute 2×) und bekäme einen eigenen Folge-Slice. **Ausgang:** bei der Closure.
+  (heute 2×) und bekäme einen eigenen Folge-Slice. **Ausgang: entfallen** — nicht eingetreten: `make full-smoke-host` EXIT 0, `codepath-missing` nennt nur den beabsichtigten Zahn; kein drittes Auftreten (Messgrenze: §7).
 - **Tag-tragende Adresse überlebt den Tausch nicht** — das Link-Kommando aus §1 fängt es
   ([`BEO-ALL/tag-tragende-adresse-ueberlebt-den-baseline-tausch-nicht`](../observations/BEO-ALL/tag-tragende-adresse-ueberlebt-den-baseline-tausch-nicht/observation.md), Stand `geplant`).
-  **Ausgang:** bei der Closure.
+  **Ausgang: entfallen** — nicht eingetreten: das Link-Kommando aus §1 liefert 0 außerhalb von `ignore-refs`-Paaren, die Symlink-Probe 0.
 - **Asset → vendored Baum bleibt ungehalten** — `SHA256SUMS` ist selbst erzeugt; die Herkunft hält allein der Vendoring-Vorgang
-  ([`MR-007`](../../../../harness/conventions.md#mr-007)). **Ausgang:** bei der Closure.
+  ([`MR-007`](../../../../harness/conventions.md#mr-007)). **Ausgang: weiter offen** — Register
+  [`BEO-ALL/vendored-baum-entsteht-aus-anderer-quelle-als-sein-pin`](../observations/BEO-ALL/vendored-baum-entsteht-aus-anderer-quelle-als-sein-pin/observation.md)
+  (Stand `offen`); kein neuer Beleg, hier trat nichts auf, und die Verifikation hat Asset gegen Baum nicht nachgemessen.
 
 ## 7. Closure-Notiz
 
-Wird vom Planner bei der Closure in frischem Kontext geschrieben ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+Geschrieben vom Planner in eigenem Kontext bei der Closure ([`AGENTS.md`](../../../../AGENTS.md)
+§3.10).
+**Rolle:** Planner · **Datum:** 2026-10-16
+
+- **Was hat funktioniert:** DoD 1, 2 und `make gates` bestätigt
+  ([Verifikation](../../../reviews/2026-10-16-slice-sprung-auf-v6181-wird-vollzogen-verify.md),
+  `0007e163`): `make baseline-verify` → `v6.18.1 OK`, fünf Pins und Mess-Tag auf `v6.18.1`, sieben
+  Symlinks, Link-Kommando 0, `make regelwerk-check` → 0 Befunde, `make full-smoke-host` EXIT 0.
+  Rot gesehen vom Verifier an echten Werten: Makefile-Pin `v6.18.0` → `test/sources-pin.bats` rot; sha in
+  `.d-check.yml` verfälscht → rot; `DefaultTag` → `TestDefaultTag_MatchesBaseline` rot; Präfix im vendorten
+  Baum entfernt → `conventionsPathRefOld: 1 Treffer … erwartet 0`. Review
+  ([Report](../../../reviews/2026-10-16-slice-sprung-auf-v6181-wird-vollzogen.md), `a85c72bd`): 0 HIGH,
+  0 MEDIUM, 1 LOW, 2 INFO. Architect-Übergaben A1 bis A3:
+  [`ADR-0093`](../../adr/0093-ziel-fassung-regiert-den-sprung-v6181.md) `Accepted`, Commits `5f294fbd`,
+  `2a44411b`, `c63d2f48`.
+- **Grenze von DoD 2 (Verifikation F-2):** gemessen ist *„nicht als `codepath-missing` gemeldet"*, nicht
+  *„löst im Ziel auf"*. Die Literale `<tag>` im emittierten Satz lösen im Ziel nicht auf; das emittierte
+  `codepaths` hat `roots: [spec, docs, harness]`, und `.harness/…` liegt außerhalb. Ein Sensor für „löst auf"
+  existiert nicht. Der Haken trägt die engere Aussage.
+- **Nicht gelaufen:** `make mutate-auswahl` endete beim Implementer mit Exit 10 (Weg über den CI-Branch
+  `mutate/…`); es wurde nicht gepusht, ein Ergebnis liegt nicht vor
+  ([`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md)). Die DoD verlangt die Probe nicht;
+  der einzige Fall zum Gegenstand (`577`) ist entfernt, `make mutate-greift` läuft grün in `make gates`.
+  Die Probe trägt für diesen Slice keine Zusage, und über sie wird nichts behauptet; der Nacht-Vollsweep
+  bleibt der Träger.
+- **Was ging anders als geplant:** Fall `577` fiel weg statt neu verankert zu werden (die Mutation ist am
+  Pin ohne Wirkung, [`MR-071`](../../../../harness/conventions.md#mr-071)); das Freshness-Verdikt
+  `c63d2f48` ist ein leerer Commit, das Verdikt steht in seiner Message (Review INFO-2) — nach A3
+  zulässig, auffindbar über `git log --grep Freshness-Verdikt`.
+- **Steering-Loop-Eintrag:** Benannte Lücke, im Register geführt: ein Aufruf, der am Pin ohne Wirkung ist,
+  behält nur eine Fixture als Wächter und trägt die Begründung nicht am Ort der Zusage (LOW-1);
+  `conventionsPathRefOld:0` unterscheidet nicht „Präfix steht" von „Satz entfällt" (INFO-1, folgenlos, den
+  Ende-zu-Ende-Beleg trägt `make full-smoke`). Gezählt, nicht verkörpert; **kein Folge-Slice** — ein Satz am
+  Kommentar von `NeutralizeConventionsTemplateRef` ist kein Slice, und die Beobachtung steht bei 1×; wer die
+  Stelle anfasst, zieht den Satz nach. Dieser Abschluss schrieb keinen Produktionscode.
+- **Beobachtungs-Register (`../observations/`):**
+  - neu: [`BEO-ALL/aufruf-ohne-wirkung-am-pin-traegt-nur-eine-fixture`](../observations/BEO-ALL/aufruf-ohne-wirkung-am-pin-traegt-nur-eine-fixture/observation.md)
+    (LOW-1), 1×, `offen`.
+  - ein Beleg mehr: [`BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`](../observations/BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/observation.md)
+    (F-2: eine Adresse, die im Ziel nicht auflöst, liegt außerhalb der `codepaths`-roots); Stand
+    `verkörpert`, unverändert.
+  - Kein Beleg: `vendored-vorlage-nennt-pfad-den-das-adoptierende-repo-nicht-fuehrt` bleibt bei 2×
+    ([`ADR-0093`](../../adr/0093-ziel-fassung-regiert-den-sprung-v6181.md) Festlegung 2; das Ziel startet
+    grün, F-2 ist eine Messgrenze, kein Rot); `freshness-verdikt-faellt-nach-dem-entfernen-des-alten-baums`
+    trat nicht ein (Verdikt `c63d2f48` vor dem Entfernen `e10c2328`), bleibt bei 1×;
+    `tag-tragende-adresse-ueberlebt-den-baseline-tausch-nicht` trat nicht ein.
+  - Kein Eintrag ohne Ausgang erreicht 3×.
+- **Folge-Slices:** keiner angelegt; der Start-Trigger von
+  [`slice-release-schnitt-v080-liefert-die-baseline-v6181`](../open/slice-release-schnitt-v080-liefert-die-baseline-v6181.md)
+  (dieser Slice in `done/`) ist mit dem Move erfüllt.
+- **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines.
+  [`ADR-0093`](../../adr/0093-ziel-fassung-regiert-den-sprung-v6181.md) Re-Evaluierungs-Trigger: nicht
+  eingetreten. Hard Rules: keine mit eingetretenem Auflösungs-Trigger.
+- **Archivierung:** entfällt ([`MR-078`](../../../../harness/conventions.md#mr-078); `archive-slice` ist
+  nicht gebaut, wie beim Vorgänger).
+- **Risiken aus §6:** jede Zeile in §6 hat ihren Ausgang (dreimal entfallen, einmal eingetreten, einmal weiter offen).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
