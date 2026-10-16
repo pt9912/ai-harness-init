@@ -18,8 +18,8 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) (Vorlagen wandern ins Ziel),
 [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) (Template-Ablage),
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6),
-[`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md) (Muster der regierenden Fassung; ob für
-`v6.18.1` eine eigene ADR nötig ist, entscheidet der Architect, Übergabe A1),
+[`ADR-0093`](../../adr/0093-ziel-fassung-regiert-den-sprung-v6181.md) (regierende Fassung des Sprungs und Emissions-Urteil; `Proposed`),
+[`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md) (Muster der regierenden Fassung),
 [`MR-007`](../../../../harness/conventions.md#mr-007) (Vendoring),
 [`MR-025`](../../../../harness/conventions.md#mr-025).
 Auslöser: Auftrag des Auftraggebers vom 2026-10-16 — der Patch-Sprung ist klein, die Emission darf nicht vergessen werden.
@@ -77,10 +77,13 @@ git grep -l 'baseline/v6.18.0' -- ':!*.md' ':!.harness/baseline'                
 **Emission — was der Plan misst und was er offen lässt.** Der emittierte Vorlagen-Satz kommt aus dem
 vendored Baum (`internal/emit/templates.go`). Gelesen am Wortlaut: der Marker `conventionsPathRefOld`
 (zwei Zeilen, `` `harness/conventions/MR-NNN-titel.template.md` ``) trifft den Text von `v6.18.1` nicht mehr, weil
-die Adresse dort das Präfix `.harness/baseline/<tag>/templates/` trägt; die Erwartung
-`conventionsPathRefOld:1` in `test/neutralisierung-marker.bats` hält genau diesen Treffer
-(der Lauf am neuen Baum steht aus). **Nicht gemessen** ist, ob das emittierte `codepaths` die Inline-Pfade mit
-dem Literal `<tag>` im frischen Ziel als `codepath-missing` meldet; der grüne Start in `make full-smoke` beantwortet es.
+die Adresse dort das Präfix `.harness/baseline/<tag>/templates/` trägt. **Verdikt A2**
+([`ADR-0093`](../../adr/0093-ziel-fassung-regiert-den-sprung-v6181.md) Festlegung 2): die Neutralisierung bleibt stehen, die
+Erwartung `conventionsPathRefOld` in `test/neutralisierung-marker.bats` wird von `1` auf `0` gesetzt, die umgeschriebenen
+Adressen bleiben im emittierten Satz stehen — kein Einsetzen des Tags, kein Tabellen-Update in `internal/emit/templates.go`
+(nur der Kommentar zur Zeile darf nachgezogen werden). Gemessen hat der Architect `codepaths` am Scratch-Repo; **nicht
+gemessen** ist der Lauf im frischen Ziel — den Beleg, dass das emittierte `codepaths` die Inline-Pfade mit dem Literal
+`<tag>` nicht als `codepath-missing` meldet, trägt `make full-smoke`.
 Die Proben im Kommentar von `StripCommentHints` gelten laut ihrem Wortlaut je für den Satz, gegen den sie gefahren wurden.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
@@ -98,15 +101,14 @@ Die Proben im Kommentar von `StripCommentHints` gelten laut ihrem Wortlaut je f�
 
 **Übergaben an den Architect** (keine Liefer-Punkte; je eigener Commit):
 
-- **A1 — Muss `v6.18.1` eine eigene Ziel-Fassungs-ADR bekommen?** Empfehlung des Planners: nein — das Delta ändert
-  keine Regel (Regelwerk: nur Tag-Zeilen; Vorlagen: Adress-Form), und [`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md)
-  regiert den Zielstand der `v6.18`-Linie. Prüfen: trägt ihre Festlegung 1 den Patch ohne neue Abwägung?
-- **A2 — Verdikt vor dem Start: Wie behandelt der Emitter die umgeschriebenen Adressen?** Zur Wahl stehen: Einsetzen des
-  Tags beim Emittieren (der Pfad löst im Ziel auf, wo der Baum liegt), eine neue Neutralisierungs-Zeile, oder Stehenlassen
-  mit Begründung — gemessen am frischen Ziel. Ob die Wahl eine ADR oder einen MR braucht, sagt der Architect.
+- **A1 — entschieden:** eigene Kurz-ADR, [`ADR-0093`](../../adr/0093-ziel-fassung-regiert-den-sprung-v6181.md) (Bezug
+  [`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md), kein `supersedes`); liegt als Architect-Commit vor,
+  Status `Proposed`.
+- **A2 — entschieden:** Verdikt in `ADR-0093` Festlegung 2, siehe Emission oben; liegt mit ihr als Architect-Commit vor.
 - **A3 — nach dem Vollzug:** Buchung §Baseline in [`harness/conventions.md`](../../../../harness/conventions.md);
-  Sprung-Zeile in [`harness/migration.md`](../../../../harness/migration.md) §1 samt der tag-tragenden Pfade des Instanz-Registers;
-  Freshness-Verdikt über die Kandidaten (wer die fünf Vorlagen oder ihre Adressen nennt) **vor** dem Entfernen von `v6.18.0/`
+  Sprung-Zeile in [`harness/migration.md`](../../../../harness/migration.md) §1 (zitiert `ADR-0093`) samt der tag-tragenden Pfade
+  des Instanz-Registers; Freshness-Verdikt über die Kandidaten `MR-008`, `MR-020`, `MR-026`, `MR-028`, `MR-029`, `MR-031`,
+  `MR-034`, `MR-038`, `MR-045`, `MR-060`, `MR-072` (`ADR-0093` Festlegung 1) **vor** dem Entfernen von `v6.18.0/`
   (Register `freshness-verdikt-faellt-nach-dem-entfernen-des-alten-baums`).
 
 ## 2. Definition of Done
@@ -121,12 +123,14 @@ Zwei Liefer-Punkte, einer je Achse (Baseline · Emission).
       Nachzugs-Commit in einem Push, Nachzug je Eigentümer ein Commit mit Rolle.
       **Rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6): ein echter Pin-Wert bleibt einmal auf `v6.18.0`, ein
       Pin-Wächter wird mit einer Meldung über genau diese Stelle rot.
-- [ ] **2 — Die Emission folgt den umgeschriebenen Adressen.** Der Emitter behandelt jeden der fünf Treffer nach Verdikt A2;
-      `test/neutralisierung-marker.bats` meldet je Marker die erwartete Trefferzahl am neuen Baum; die drei Proben im Kommentar
+- [ ] **2 — Die Emission folgt den umgeschriebenen Adressen.** Jeder der fünf Treffer bleibt nach Verdikt A2 stehen;
+      `test/neutralisierung-marker.bats` meldet je Marker die erwartete Trefferzahl am neuen Baum, für
+      `conventionsPathRefOld` `0`; die drei Proben im Kommentar
       von `StripCommentHints` sind gegen den neuen Satz gefahren und leer; `make full-smoke` startet am frischen Ziel grün,
       und im emittierten Satz steht keine Adresse, die im Ziel nicht auflöst (Kommando im Beleg).
-      **Rot gesehen:** die Behandlung wird an der **realen** Quelle aufgehoben (der vendorte Baum, nicht die Fixture) —
-      Bats-Fall oder `full-smoke` wird mit der Meldung über genau diese Stelle rot.
+      **Rot gesehen:** der Wächter ist die Erwartung `conventionsPathRefOld:0`; er wird an der **realen** Quelle rot, wenn der
+      Marker wieder trifft (der vendorte Baum wird so verändert, dass die Adresse ohne Präfix steht — nicht die Fixture) —
+      der Bats-Fall meldet genau diese Stelle.
 - [ ] `make gates` grün über dem Liefer-Stand; `make full-smoke` endet EXIT 0.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), volle Slice-Kennung im
       Dateinamen — Rollenwechsel nach Schritt 8 des Minimal Agent Workflow, kein Self-Review (Modul 8).
@@ -144,20 +148,21 @@ Zwei Liefer-Punkte, einer je Achse (Baseline · Emission).
 | `Makefile`, `.d-check.yml` (`sources`), `internal/fetch/baseline.go` | update | fünf Pins (1) |
 | `internal/emit/baumaussage.go`, `internal/emit/templates.go` (Kommentar-Adressen), `.claude/rules/*.md` | update | Mess-Tag, Adressen, Symlinks (1) |
 | lebende Markdown-Artefakte mit Adresse | update | 1 — je Eigentümer ein Commit |
-| `internal/emit/templates.go` (Tabelle `WortlautNeutralisierungen`), `internal/emit/*_test.go` | update | 2, nach Verdikt A2 |
-| `test/neutralisierung-marker.bats`, `test/mutations/` | update · neu | Wächter für 2 (reale Quelle) |
-| `harness/tools/full-smoke.sh`, `docs/user/e2e-abdeckung.md` | update, falls A2 eine Stufe verlangt | Beleg am frischen Ziel (2) |
+| `internal/emit/templates.go` (nur Kommentar zur Zeile `conventionsPathRefOld`; Tabelle unverändert), `internal/emit/*_test.go` | update, falls Fixture den alten Wortlaut führt | 2, Verdikt A2 |
+| `test/neutralisierung-marker.bats`, `test/mutations/577-conventions-neutralisierung-faellt-im-ziel-aus.sh` | update (Erwartung `0`) · entfernen oder neu verankern ([`MR-071`](../../../../harness/conventions.md#mr-071)) | Wächter für 2 (reale Quelle) |
+| `harness/tools/full-smoke.sh`, `docs/user/e2e-abdeckung.md` | unverändert (A2 verlangt keine Stufe) | Beleg am frischen Ziel (2) |
 | `test/sources-pin.bats`, `internal/fetch/*_test.go` | unverändert | Wächter für 1 |
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): `in-progress/` trägt keinen Slice; die Übergaben A1 und A2 liegen als Commits vor
-(Stand dieses Plans: ausstehend); `make baseline-freshness` meldet keinen neueren Tag als `v6.18.1`; einmal Netz für
+**Start** (`next` → `in-progress`): `in-progress/` trägt keinen Slice; die Übergaben A1 und A2 liegen mit
+[`ADR-0093`](../../adr/0093-ziel-fassung-regiert-den-sprung-v6181.md) als Architect-Commit vor, **offene Startbedingung:** die Annahme
+(`Accepted`) von `ADR-0093` durch den Auftraggeber (Stand dieses Plans: ausstehend); `make baseline-freshness` meldet keinen neueren Tag als `v6.18.1`; einmal Netz für
 `make vendor-baseline` und `make regelwerk-check`; WIP-Limit frei. Der Zug nach `in-progress/` landet auf dem Hauptzweig.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
-- `in-progress` → `next`: Liefer-Punkt 2 übersteigt eine Review-Sitzung (Emitter-Änderung samt neuer `full-smoke`-Stufe) —
+- `in-progress` → `next`: Liefer-Punkt 2 übersteigt eine Review-Sitzung (Wächter-Anpassung und Fall `577`) —
   er wird eigener Slice, mit der Release-Bedingung *kein Tag zwischen den Vorgängen*.
 - `in-progress` → `open`, jede Bedingung für sich hinreichend: **(a)** der am Asset gemessene sha256 weicht ab, oder
   `make vendor-baseline` bricht an seiner Sperre ab; **(b)** das frische Ziel startet mit der nach A2 gewählten Behandlung
@@ -175,9 +180,13 @@ Zwei Liefer-Punkte, einer je Achse (Baseline · Emission).
 
 ## 6. Risiken und offene Punkte
 
-- **Die Neutralisierung fällt am neuen Stand still aus** — `conventionsPathRefOld` trifft nicht mehr; ohne Wächter am realen
-  Baum bliebe ein Test über einer Fixture grün. Der Wächter ist `test/neutralisierung-marker.bats`.
+- **Die Neutralisierung fällt am neuen Stand still aus** — `conventionsPathRefOld` trifft nicht mehr (nach A2 gewollt); ohne
+  Wächter am realen Baum bliebe ein Test über einer Fixture grün. Der Wächter ist die Erwartung `0` in `test/neutralisierung-marker.bats`.
   **Ausgang:** bei der Closure.
+- **Fall `577` und Fixtures tragen den alten Wortlaut** — `test/mutations/577-conventions-neutralisierung-faellt-im-ziel-aus.sh`
+  dürfte am neuen Baum keinen Treffer mehr haben (Folgerung, nicht gemessen), und `internal/emit/*_test.go` könnten den alten
+  Wortlaut als Fixture führen. Der Implementer prüft beides und entscheidet über Fall `577` nach
+  [`MR-071`](../../../../harness/conventions.md#mr-071) (entfernen oder neu verankern). **Ausgang:** bei der Closure.
 - **Das frische Ziel startet nicht grün** — Inline-Pfade mit dem Literal `<tag>` im emittierten Satz. Das wäre das dritte Auftreten von
   [`BEO-ALL/vendored-vorlage-nennt-pfad-den-das-adoptierende-repo-nicht-fuehrt`](../observations/BEO-ALL/vendored-vorlage-nennt-pfad-den-das-adoptierende-repo-nicht-fuehrt/observation.md)
   (heute 2×) und bekäme einen eigenen Folge-Slice. **Ausgang:** bei der Closure.
