@@ -89,8 +89,9 @@ Geschrieben vom Planner in eigenem Kontext bei der Closure ([`AGENTS.md`](../../
   Handbuch-Baum bleibt grün, und es fällt allein `rollen_typen_im_ziel` mit `FEHLER — Rollen-Typ fehlt`. Kontrast: nur
   `emit.go` gekürzt → `FEHLER — Handbuch-Baum` vorgelagert. **Fall 171:** das Muster lag vor (Wortlaut in den CI-Logs
   der Läufe 38698945568, 38529836984, 38376387942, Shard 2: `FEHLER — Handbuch-Baum (dokument-only) … [harness/erfassung-feldliste.md]`);
-  die Mutation hängt `harness/erfassung-feldliste.md` an `scan.ignore` der emittierten `.d-check.yml`, `# expect:` ist
-  `laesst das docs-check des Ziels GRUEN`, und der Fall misst die Zusage aus ADR-0022 Festlegung 7 (GEPRÜFTER
+  die Mutation hängt die Feldliste des Ziels an `scan.ignore` der emittierten `.d-check.yml`, `# expect:` ist
+  `laesst das docs-check des Ziels GRUEN`, und der Fall misst die Zusage aus
+  [ADR-0022](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) Festlegung 7 (GEPRÜFTER
   Bereich). Beide Einzelläufe `1 ok, 0 Befund(e)`; `make mutate-greift` 653 von 653; `make gates` Exit 0,
   Stempel == HEAD; `harness/tools/full-smoke.sh` und `harness/tools/mutate.sh` unverändert. Review (`fbf3225b`):
   0 HIGH, 0 MEDIUM, 2 LOW (Köpfe im Konjunktiv; danach im Implementer-Commit `d8e4cb5e` behoben), 2 INFO.
