@@ -113,7 +113,7 @@ Reihenfolge der Rollen:
    wenn der Auftraggeber ihn ausdrücklich freigibt — die Entscheidung der Version ist keine Freigabe des Pushes; der Auftraggeber will vor dem Tag-Push noch einmal gefragt werden.**
    `main` und Tag gehen in einem Zug nach der Freigabe, der Tag unmittelbar nach `main`: `make release-warten` trägt nur innerhalb seiner
    Grenze ([`BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases`](../observations/BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases/observation.md)).
-   **Freigabe-Vermerk:** ausstehend — der Implementer trägt hier Datum und Wortlaut der Freigabe ein, bevor er pusht.
+   **Freigabe-Vermerk:** 2026-10-16, Auftraggeber, Antwort „ja, pushen" auf die Frage „Darf ich `main` und den Tag `v0.8.0` pushen?" — gilt für `git push origin main` und den Tag `v0.8.0` und nichts darüber hinaus.
 5. **Planner-Closure** — nach Schritt 8 (Meldung), in eigenem Commit.
 
 ## 4. Trigger
