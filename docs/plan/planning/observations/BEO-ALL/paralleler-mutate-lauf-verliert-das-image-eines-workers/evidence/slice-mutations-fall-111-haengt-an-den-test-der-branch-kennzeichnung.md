@@ -1,0 +1,2 @@
+**Vorgang:** slice-mutations-fall-111-haengt-an-den-test-der-branch-kennzeichnung
+**Fund:** Reviewer (Report INFO-2): vier Fünfer-Läufe, in jedem starb mindestens ein Worker am roten Grün-Vorlauf, im vierten gelesen als `No such image`. Verifier (F-2): drei Läufe, alle unvollständig (Status 3/3/1/3). Hauptsitzung: allein, ohne parallele Agenten, wiederholt, Exit 2, Status 3/3/3/1, Wurzelursache am Log gelesen. Der Fünfer-Lauf (111, 501, 502, 608, 609) ist auf diesem Host nicht grün herstellbar.

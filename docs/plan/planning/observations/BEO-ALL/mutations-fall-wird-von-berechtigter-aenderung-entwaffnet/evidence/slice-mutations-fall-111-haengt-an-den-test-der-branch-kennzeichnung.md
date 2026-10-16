@@ -1,0 +1,2 @@
+**Vorgang:** slice-mutations-fall-111-haengt-an-den-test-der-branch-kennzeichnung
+**Fund:** Die Kennzeichnung *nicht bekannt* für `branch` machte `gitRef()` nie leer; die Mutation `omitempty` an `branch` ließ `TestMandatoryFieldsAlwaysPresent` nicht mehr fallen, der Fall 111 hing am falschen Test (Anlass: geplanter CI-Lauf `mutate`). Umgehängt auf `TestFeldliste_KennzeichnungNenntGenauDieFaelleDerSpezifikation`, vom Verifier vier Mal und vom Reviewer in einer Kopie allein rot gesehen.

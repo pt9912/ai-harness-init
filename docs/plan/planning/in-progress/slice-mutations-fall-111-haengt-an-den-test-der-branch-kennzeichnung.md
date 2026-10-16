@@ -39,16 +39,16 @@ Anlass: der geplante CI-Lauf `mutate` vom 2026-10-16. Die Mutation hängt `omite
 
 ## 2. Definition of Done
 
-- [ ] Fall 111 umgehängt: `# expect:` trägt `TestFeldliste_KennzeichnungNenntGenauDieFaelleDerSpezifikation` (`internal/span/fieldlist_test.go`), der Kopfkommentar nennt die heute wahre Eigenschaft (*branch ist Pflichtfeld der Draht-Form mit Kennzeichnung nicht bekannt*, `SPEC-087`/`SPEC-014`). Vor Annahme ist die Meldung gelesen und gezeigt, dass **nur** dieser Test fällt (kein zweiter, siehe §8); `make mutate-greift` grün.
-- [ ] Spec nachgezogen: in `SPEC-061` entfällt `branch` im Satz („an `tool_use_id`, an `branch` und an `tool`“) und die Zeile `111` der Bindungs-Spalte; Fall 111 und der Test stehen in der Bindung von `SPEC-087` bzw. `SPEC-014`. Eigener Implementer-Commit, die Spec-Stellen stehen im Kopf.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] Fall 111 umgehängt: `# expect:` trägt `TestFeldliste_KennzeichnungNenntGenauDieFaelleDerSpezifikation` (`internal/span/fieldlist_test.go`), der Kopfkommentar nennt die heute wahre Eigenschaft (*branch ist Pflichtfeld der Draht-Form mit Kennzeichnung nicht bekannt*, `SPEC-087`/`SPEC-014`). Vor Annahme ist die Meldung gelesen und gezeigt, dass **nur** dieser Test fällt (kein zweiter, siehe §8); `make mutate-greift` grün.
+- [x] Spec nachgezogen: in `SPEC-061` entfällt `branch` im Satz („an `tool_use_id`, an `branch` und an `tool`“) und die Zeile `111` der Bindungs-Spalte; Fall 111 und der Test stehen in der Bindung von `SPEC-087` bzw. `SPEC-014`. Eigener Implementer-Commit, die Spec-Stellen stehen im Kopf.
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — das Repo fährt Wellen; sie prüft die nächste Welle-Closure, hier nach dem Move gelesen (§7).
 
 ## 3. Plan (vor Code)
 
@@ -72,16 +72,70 @@ DoD vollständig, `make mutate-greift` und ein lokaler Lauf des Falls 111 zeigen
 
 ## 6. Risiken und offene Punkte
 
-- Die Mutation färbt neben dem benannten Test einen zweiten — **Ausgang:** weiter offen → `BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere`; bei Eintritt ist der Fall zu schneiden oder der Architect zu fragen.
-- `SPEC-061` nennt nach dem Nachzug `branch` nirgends mehr als `omitempty`-Fall, und `SPEC-087`/`SPEC-014` tragen die Bindung — **Ausgang:** entfallen, sobald der Nachzug steht; sonst bleibt die Zeile benannte Lücke.
+- Die Mutation färbt neben dem benannten Test einen zweiten — **Ausgang:** entfallen — nicht eingetreten: Verifier (vier Läufe) und Reviewer (Kopie, Gegenprobe `t.Skip`) sehen allein `TestFeldliste_KennzeichnungNenntGenauDieFaelleDerSpezifikation` rot, `TestMandatoryFieldsAlwaysPresent` nie; kein Beleg für `BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere`.
+- `SPEC-061` nennt nach dem Nachzug `branch` nirgends mehr als `omitempty`-Fall, und `SPEC-087`/`SPEC-014` tragen die Bindung — **Ausgang:** entfallen — der Nachzug steht (`9f9985bd`): `SPEC-061` nennt `tool_use_id` und `tool`, die Bindung von `SPEC-014` trägt Test und Fall 111; Review (c) und Verifikation D2 bestätigen. `SPEC-087` führt keine Bindungs-Spalte, die Bindung liegt allein in `SPEC-014`.
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
+Geschrieben vom Planner in eigenem Kontext bei der Closure ([`AGENTS.md`](../../../../AGENTS.md)
+§3.10).
+**Rolle:** Planner · **Datum:** 2026-10-16
+
+- **Was hat funktioniert:** DoD 1 bis 3 bestätigt
+  ([Verifikation](../../../reviews/2026-10-16-slice-mutations-fall-111-haengt-an-den-test-der-branch-kennzeichnung-verify.md),
+  `21ca399b`): Fall 111 nennt `TestFeldliste_KennzeichnungNenntGenauDieFaelleDerSpezifikation`; in einer Kopie fällt
+  unter der Mutation in vier Läufen **nur** dieser Test (`fieldlist_test.go:269`), `TestMandatoryFieldsAlwaysPresent`
+  nie; `MUTATE_CASES=111-… make mutate` mehrfach einzeln `1 ok, 0 Befund(e)`; `make mutate-greift` 653 von 653;
+  `make gates` Exit 0, Stempel == HEAD. Review
+  ([Report](../../../reviews/2026-10-16-slice-mutations-fall-111-haengt-an-den-test-der-branch-kennzeichnung.md),
+  `0c0f351e`): 0 HIGH, 0 MEDIUM, 1 LOW, 2 INFO; die Gegenprobe (`t.Skip` im benannten Test, Mutation angewandt →
+  Suite grün) zeigt, dass der Test allein bindet.
+- **Grenzen, benannt:**
+  - *Fünfer-Lauf nicht grün herstellbar.* `MUTATE_CASES='111 501 502 608 609' make mutate` endet auf diesem Host mit
+    Exit 2 und 3 von 5 Ergebnissen (Worker-Status 3/3/3/1), allein und ohne parallele Agenten wiederholt. Die
+    Wurzelursache ist am Log gelesen: der Grün-Vorlauf `make test-go` der Worker-Kopie bricht mit
+    `No such image: sha256:…` (Error 125), weil die Worker dasselbe Tag `ai-harness-init:test` bauen und ein Worker
+    das Image eines anderen verliert. Ob nur der lokale Image-Speicher oder auch CI betroffen ist, ist
+    **ungemessen**; der CI-Shard-Fehler vom 2026-10-16 war ein anderer (`TestConcurrentEmittersGetDistinctSeq`).
+    Über den Fünfer-Lauf wird nichts behauptet; getragen ist allein der Einzellauf von Fall 111.
+  - *Der einmalige „falscher Grund“ für 111* im Fünfer-Lauf des Implementers ist weder reproduziert noch widerlegt;
+    gezählt wird er nicht (benannt in `paralleler-mutate-lauf-verliert-das-image-eines-workers`).
+  - *Reichweite des Zahns:* `gitRef()` liefert nie `""`, die Mutation ändert allein die Pflicht-Deklaration des
+    Trägers, kein Draht-Verhalten; der Fall-Name `…verschwindet` reicht weiter als der Zahn (Review INFO-1).
+  - *Spec-Bindung:* `SPEC-087` führt keine Bindungs-Spalte; die Bindung steht in `SPEC-014` (Verifikation F-1).
+- **Was ging anders als geplant:** nichts am Schnitt; die Prüfung des Falls lief über den Einzellauf statt über
+  den Fünfer-Lauf, den der Host nicht liefert. `make mutate-auswahl` ist nicht über den CI-Branch gefahren (kein Push).
+- **Steering-Loop-Eintrag:** drei Beobachtungen als **benannte Lücken** gezählt, keine verkörpert:
+  (i) der Treiber von `make mutate` verliert unter Parallelität das Image eines Workers (Tag-Kollision);
+  (ii) `mutate-auswahl.sh` bricht auf BSD-`paste` still (Verifikation F-3); (iii) der Kopf eines Falls nennt eine
+  andere Ursache als die rote Stelle (LOW-1). **LOW-1 geht den Register-Weg, kein Folge-Slice:** ein Satz im Kopf von
+  `test/mutations/111-…` ist Fall-Pflege ([`MR-071`](../../../../harness/conventions.md#mr-071)), kein Slice nach
+  [Modul 5](../../../../.harness/baseline/v6.18.1/regelwerk/modul-05-planning-harness.md) (≤ 3 Liefer-Punkte, eine
+  Review-Sitzung sind es, aber der Slice trüge keinen Lieferwert über den einen Satz hinaus); der Zähler steht bei 1×;
+  wer den Fall anfasst, zieht den Satz nach. Dieser Abschluss schrieb keinen Produktionscode.
+- **Beobachtungs-Register (`../observations/`):**
+  - neu, je 1×, `offen`:
+    [`BEO-ALL/paralleler-mutate-lauf-verliert-das-image-eines-workers`](../observations/BEO-ALL/paralleler-mutate-lauf-verliert-das-image-eines-workers/observation.md),
+    [`BEO-ALL/mutate-auswahl-paste-ohne-operand-bricht-auf-bsd`](../observations/BEO-ALL/mutate-auswahl-paste-ohne-operand-bricht-auf-bsd/observation.md),
+    [`BEO-ALL/fall-kopf-nennt-andere-ursache-als-die-rote-stelle`](../observations/BEO-ALL/fall-kopf-nennt-andere-ursache-als-die-rote-stelle/observation.md).
+  - ein Beleg mehr:
+    [`BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet`](../observations/BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet/observation.md)
+    — eine berechtigte Änderung (die Kennzeichnung *nicht bekannt*) hat den Zahn des Falls 111 entwaffnet; Stand
+    `verkörpert` ([`MR-071`](../../../../harness/conventions.md#mr-071)), unverändert.
+  - Kein Beleg:
+    [`BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere`](../observations/BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere/observation.md)
+    — die Mutation färbt nur einen Test; und
+    [`BEO-ALL/neue-isolation-entzahnt-bestehende-waechter`](../observations/BEO-ALL/neue-isolation-entzahnt-bestehende-waechter/observation.md)
+    — keine Isolations-Änderung beteiligt.
+  - Kein Eintrag ohne Ausgang erreicht 3×.
+- **Folge-Slices:** keiner angelegt. Den Start-Trigger von
+  `slice-mutations-faelle-305-und-171-bekommen-ihren-zahn-oder-nennen-die-luecke` (dieser Slice in `done/`) erfüllt
+  der Move.
+- **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines. ADR-Re-Evaluierungs-Trigger: keiner
+  berührt. Hard Rules: keine mit eingetretenem Auflösungs-Trigger.
+- **Archivierung:** entfällt ([`MR-078`](../../../../harness/conventions.md#mr-078); `archive-slice` ist nicht
+  gebaut, wie beim Vorgänger).
+- **Risiken aus §6:** beide Zeilen tragen ihren Ausgang (zweimal entfallen).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
