@@ -1,0 +1,2 @@
+**Vorgang:** slice-release-schnitt-v080-liefert-die-baseline-v6181
+**Fund:** Der Pin im realen `Makefile` ist wieder nur durch `make traeger-fetch` nach der Publikation an das Asset gebunden: ein verfälschter `TRAEGER_SHA256_LINUX_AMD64` im realen `Makefile` ließ `bats test/traeger-fetch.bats` bei 10 von 10 `ok` (Verifikation F-1, Review INFO-1). Nach der Publikation wurde nur `darwin-arm64` gegen das Asset gehalten; die übrigen fünf Digests deckt allein die Bau-Reproduktion.

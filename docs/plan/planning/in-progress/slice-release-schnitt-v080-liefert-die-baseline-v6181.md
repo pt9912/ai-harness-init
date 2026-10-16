@@ -56,7 +56,7 @@ weiteren Commit mit seinem Slice in diese Tabelle, bevor er ihn liefert.
 
 Liefer-Punkte (drei):
 
-- [ ] **L1 — Tag-Baum vorbereitet und verifiziert** (Schritte 1 bis 4 der Prozedur). `TRAEGER_TAG` in
+- [x] **L1 — Tag-Baum vorbereitet und verifiziert** (Schritte 1 bis 4 der Prozedur). `TRAEGER_TAG` in
       `internal/emit/templates/enforce/traeger.mk` und der Tag-Wert in `test/traeger-fetch.bats` zeigen auf `v0.8.0`;
       `make release-artifacts DEST=dist TRAEGER_VERSION=v0.8.0` baut die sechs Binaries und `dist/SHA256SUMS`;
       `bash harness/tools/release-sums.sh verify dist` endet mit Exit 0; `TRAEGER_TAG` und die sechs `TRAEGER_SHA256_*` im
@@ -65,14 +65,14 @@ Liefer-Punkte (drei):
     nennt die Datei; den Tag der Vorlage vom Tag im `Makefile` trennen — die Kopplung in `test/traeger-fetch.bats` färbt rot.
   - Rot an der realen Quelle: einen Digest im realen `Makefile` verfälschen und `bats test/traeger-fetch.bats` fahren; färbt kein Fall,
     steht die bekannte Lücke („realer `Makefile`-Digest ungebunden") im Bericht, nicht verdeckt durch Fixture-Grün.
-- [ ] **L2 — Handbuch im Ist-Zustand** (`docs/user/benutzerhandbuch.md`; Zeilen am Tag-Baum neu messen):
+- [x] **L2 — Handbuch im Ist-Zustand** (`docs/user/benutzerhandbuch.md`; Zeilen am Tag-Baum neu messen):
   - Stand: `grep -n 'v0\.7\.0' docs/user/benutzerhandbuch.md` → `**Software-Stand:**` und „aktuell ausgeliefert wird" auf `v0.8.0`.
   - Baseline: `grep -n 'v6\.18\.0' docs/user/benutzerhandbuch.md README.md` — die Beispiel-Ausgabe des Bootstraps nennt die Baseline des Ziels; sie
     steht auf `v6.18.1`, sobald der Träger sie so ausgibt.
   - Weitere Versions-Pins: `grep -n -E 'v0\.8[0-9]|v0\.2[0-9]|v6\.1[0-9]' docs/user/benutzerhandbuch.md README.md` messen; nur ziehen, was ein Ist-Zustand nennt.
   - Nur Ist-Zustand: keine Chronik, keine Prognose. `make docs-check` rot bei totem Link/Anker; dass die Aussagen stimmen, hält kein Gate —
     der Reviewer liest sie gegen die Vorlagen am Tag-Baum.
-- [ ] **L3 — Veröffentlicht, belegt, gemeldet** (Schritte 5 bis 8). Der Tag-Push ist ein eigener, benannter Schritt (**Schritt P** in §3)
+- [x] **L3 — Veröffentlicht, belegt, gemeldet** (Schritte 5 bis 8). Der Tag-Push ist ein eigener, benannter Schritt (**Schritt P** in §3)
   und braucht die ausdrückliche Freigabe des Auftraggebers; der Release trägt acht Assets
   (`gh release view v0.8.0 --json assets --jq '.assets | length'` → `8`); `make traeger-fetch` hält das veröffentlichte Asset gegen den Pin;
   `ci` an `main` und am Tag grün (gefallene `full-smoke`-Jobs nach abgeschlossener Publikation per `gh run rerun --failed`);
@@ -85,12 +85,12 @@ Liefer-Punkte (drei):
 
 Gate-Läufe und Closure-Pflichten:
 
-- [ ] `make gates` grün am Tag-Baum (siehe L1).
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), Verifier-Bericht am Tag-Baum **vor** dem Tag-Push — kein Self-Review.
-- [ ] Doku-Update: Handbuch (L2); [`releasing.md`](../../../user/releasing.md) bleibt unverändert, solange die Prozedur trägt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag, vom Planner in frischem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben oder „keine Beobachtung angefallen" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] `make gates` grün am Tag-Baum (siehe L1).
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), Verifier-Bericht am Tag-Baum **vor** dem Tag-Push — kein Self-Review.
+- [x] Doku-Update: Handbuch (L2); [`releasing.md`](../../../user/releasing.md) bleibt unverändert, solange die Prozedur trägt.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag, vom Planner in frischem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben oder „keine Beobachtung angefallen" in §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
 
 ## 3. Plan (vor Code)
@@ -134,19 +134,25 @@ Auftraggeber und Closure-Notiz mit Lerneintrag. Nicht Closure-Trigger: ein gepus
 
 ## 6. Risiken und offene Punkte
 
-- Ein Plattform-Asset baut nicht — **Ausgang:** bei der Closure.
-- Der Gates-Beleg reist nicht mit dem Tag; Report-Commits ändern den Baum nach dem Stempel — **Ausgang:** bei der Closure
+- Ein Plattform-Asset baut nicht — **Ausgang: entfallen** — alle sechs Binaries bauten, der Release trägt acht Assets.
+- Der Gates-Beleg reist nicht mit dem Tag; Report-Commits ändern den Baum nach dem Stempel — **Ausgang: weiter offen** (Register, Zähler 1×, kein neuer Beleg: `gates-passed.head` == Tag-Ziel `77e83395`, der Beleg reist trotzdem nicht mit dem Tag)
   ([`BEO-ALL/ge-tagter-stand-traegt-keinen-gates-beleg`](../observations/BEO-ALL/ge-tagter-stand-traegt-keinen-gates-beleg/observation.md)).
-- `ci` fällt im `full-smoke` mit 404, falls der `release`-Lauf nicht innerhalb der Grenze von `make release-warten` publiziert — **Ausgang:** bei der Closure
+- `ci` fällt im `full-smoke` mit 404, falls der `release`-Lauf nicht innerhalb der Grenze von `make release-warten` publiziert — **Ausgang: entfallen** — `release`, `ci` am Tag und `ci` an `main` endeten `success`, kein Re-Run; Tag unmittelbar nach `main`
   ([`BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases`](../observations/BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases/observation.md)).
-- Der reale `Makefile`-Digest ist ungebunden; den Pin gegen das Asset hält erst `make traeger-fetch` nach der Publikation — **Ausgang:** bei der Closure
+- Der reale `Makefile`-Digest ist ungebunden; den Pin gegen das Asset hält erst `make traeger-fetch` nach der Publikation — **Ausgang: weiter offen** (Register, 9×, Stand geplant; Träger `slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor`; nur `darwin-arm64` nach der Publikation gegen das Asset gehalten)
   ([`BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle`](../observations/BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/observation.md)).
-- Die Kennung dieses Slice trägt den Tag, den der Schnitt selbst überholt, falls der Auftraggeber einen anderen wählt — **Ausgang:** bei der Closure
+- Die Kennung dieses Slice trägt den Tag, den der Schnitt selbst überholt, falls der Auftraggeber einen anderen wählt — **Ausgang: entfallen** — der Auftraggeber wählte `v0.8.0`, die Kennung nennt den geschnittenen Tag
   ([`BEO-ALL/kennung-traegt-den-stand-den-ein-release-ueberholt`](../observations/BEO-ALL/kennung-traegt-den-stand-den-ein-release-ueberholt/observation.md)).
 
 ## 7. Closure-Notiz
 
-Wird vom Planner bei der Closure in frischem Kontext geschrieben ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+- **Geliefert:** Release `v0.8.0` ([Release-Text](https://github.com/pt9912/ai-harness-init/releases/tag/v0.8.0): Stand, Assets, Bestand, Grenze, Gegenstände). `main` und Tag am 2026-10-16 gepusht (Freigabe §3); Tag annotiert, Objekt `deb5fbbf…`, Ziel `77e83395`; Run `release` [38867510343](https://github.com/pt9912/ai-harness-init/actions/runs/38867510343), `ci` am Tag [38867510267](https://github.com/pt9912/ai-harness-init/actions/runs/38867510267), `ci` an `main` [38867508511](https://github.com/pt9912/ai-harness-init/actions/runs/38867508511) alle `success`, kein Re-Run.
+- **Was hat funktioniert:** acht Assets; `make traeger-fetch` (darwin-arm64) „Digest verifiziert"; Job `tap` `success`, `make tap-check TAG=v0.8.0` Exit 0: `tap-check: gleich — Tag v0.8.0, Tap-Kopf Formula/ai-harness-init.rb, sha256 a1aa285a4c58615614487935bef6f5c79feeca979864e82916404a0e71b46399`. Rot nach der Publikation: verfälschter `TRAEGER_SHA256_DARWIN_ARM64` (Umgebungsvariable) → „Digest-Abweichung … Der Traeger wird nicht abgelegt", Datei nicht angelegt. Review ohne HIGH/MEDIUM/LOW, 3 INFO ([Review](../../../reviews/2026-10-16-slice-release-schnitt-v080-liefert-die-baseline-v6181.md)); Verifikation am Tag-Baum: L1 und L2 bestätigt ([Verifikation](../../../reviews/2026-10-16-slice-release-schnitt-v080-liefert-die-baseline-v6181-verify.md)). `gates-passed.head` == Tag-Ziel `77e83395`.
+- **Was ging anders als geplant:** nichts am Ablauf; der Warte-Schritt aus `make release-warten` trug, weil der Tag unmittelbar auf `main` folgte. Zwei Funde: (1) der Push von `main` lief über eine Regelumgehung des geschützten Zweigs (GitHub: „Bypassed rule violations … Cannot update this protected ref"); (2) das Rot an der realen Quelle fiel vor der Publikation aus (Verifikation F-1, Review INFO-1).
+- **Steering-Loop-Eintrag:** benannte Grenzen, kein neuer Sensor und keine geschärfte Regel. (1) Der reale `Makefile`-Digest ist von keinem Test gebunden; nach der Publikation hielt nur `traeger-fetch` den Pin `darwin-arm64` gegen das Asset, die übrigen fünf Digests deckt allein die Bau-Reproduktion (Verifikation F-2: gleiche Digests belegen Reproduzierbarkeit, nicht Gleichheit mit dem CI-Asset). (2) Den Exit-Code des Rot-Belegs hat niemand am Prozess gelesen: belegt ist die `make`-Zeile „Error 1" und die nicht angelegte Datei, nicht der Exit von `make`. (3) Der Bestand-Vergleich (`v0.7.0` gegen `v0.8.0`) lief dokument-only, nicht mit `--lang`/`--arch`. (4) Ein `mutate`-Lauf auf `main` war bei der Prüfung ohne Ergebnis und gehört nicht zu diesem Schnitt. Träger von (1) ist der Lauf, der den Schnitt schreibt; den Sensor trägt der geplante Slice im Register.
+- **Beobachtungs-Register (`../observations/`):** `evidence/slice-release-schnitt-v080-liefert-die-baseline-v6181.md` ergänzt in [`BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle`](../observations/BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/observation.md) (9×, Stand `geplant` unverändert); neu angelegt [`BEO-ALL/push-auf-den-geschuetzten-hauptzweig-laeuft-ueber-die-regelumgehung`](../observations/BEO-ALL/push-auf-den-geschuetzten-hauptzweig-laeuft-ueber-die-regelumgehung/observation.md), Beleg `evidence/slice-release-schnitt-v080-liefert-die-baseline-v6181.md` (1×, offen). Kein neuer Beleg in [`BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases`](../observations/BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases/observation.md) (4×, verkörpert: die Regel trug), [`BEO-ALL/ge-tagter-stand-traegt-keinen-gates-beleg`](../observations/BEO-ALL/ge-tagter-stand-traegt-keinen-gates-beleg/observation.md) (1×, offen) und [`BEO-ALL/kennung-traegt-den-stand-den-ein-release-ueberholt`](../observations/BEO-ALL/kennung-traegt-den-stand-den-ein-release-ueberholt/observation.md) (1×, offen); der Tag deckt die Kennung. Kein Eintrag erreichte mit diesem Slice 3× neu: der einzige über der Schwelle ist `waechter-…` mit Ausgang `geplant`.
+- **Folge-Slices:** keine neuen; [`slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor`](../open/slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor.md) bleibt der Träger des Ausgangs von `waechter-misst-die-fixture-statt-der-realen-quelle`.
+- **Risiken aus §6:** jedes trägt seinen Ausgang am Risiko: 1 entfallen, 2 weiter offen (Register), 3 entfallen, 4 weiter offen (Register), 5 entfallen.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
@@ -158,5 +164,7 @@ Wird vom Planner bei der Closure in frischem Kontext geschrieben ([`AGENTS.md`](
 - `BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle` — 8, Stand geplant; als Risiko übernommen.
 - `BEO-ALL/kennung-traegt-den-stand-den-ein-release-ueberholt` — 1, offen; als Risiko übernommen.
 - `BEO-ALL/pin-digest-ohne-waechter` — Gegenstand sind Dockerfile-Digests und Wert-Fallbacks der Smoke-Skripte, nicht der Träger-Pin dieses Schnitts — gesichtet, kein Treffer.
+
+**Stand bei der Closure (2026-10-16):** `ci-rennt-…` 4 · `ge-tagter-…` 1 · `waechter-misst-…` 9 · `kennung-traegt-…` 1 · neu `push-auf-den-geschuetzten-hauptzweig-…` 1 (`ls <eintrag>/evidence/*.md | wc -l`).
 
 **Modus-Begründung:** alle berührten Sub-Areas GF.
