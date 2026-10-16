@@ -687,7 +687,10 @@ show_tail() { sed -e 's/^/    | /' <(tail -n 12 "$1") >&2; }
 # show_failures zeigt jede Fehlschlag-Zeile des Sensor-Logs $1 eingerueckt auf stderr: jedes
 # bats-`not ok` samt den folgenden `#`-Diagnose-Zeilen und jede Go-Zeile `--- FAIL`. Die Menge
 # ist durch die Fehlschlaege begrenzt, nicht durch eine Zeilenzahl — ein fruehes `not ok`
-# steht in TAP-Ausgabe vor den spaeten `ok`-Zeilen, die show_tail allein zeigt. Ohne
+# steht in TAP-Ausgabe vor den spaeten `ok`-Zeilen, die show_tail allein zeigt. "Samt Diagnose"
+# gilt nur fuer bats; bei Go zeigt die Funktion allein die `--- FAIL`-Zeile, die Ursache steht
+# in den eingerueckten Folgezeilen und bleibt dem Tail. Ein Go-Build-Fehler (`FAIL pkg [build
+# failed]` ohne `--- FAIL`) traegt keine Fehlschlag-Zeile und bleibt ebenfalls beim Tail. Ohne
 # Fehlschlag-Zeile (Absturz, Sensor ohne TAP) schreibt die Funktion nichts und endet mit 0.
 show_failures() {
   awk '

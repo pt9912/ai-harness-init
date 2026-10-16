@@ -325,6 +325,29 @@ STUB
   grep -qF 'DIAGNOSE-ZEILE-B' <<<"$output"
 }
 
+# Eine Go-Fehlschlagzeile `--- FAIL` steht in der Go-Testausgabe weit vor den spaeten Paketzeilen;
+# die letzten zwoelf Zeilen allein zeigen sie nicht. Der make-Stub druckt sie zuerst, ohne
+# bats-`not ok`, und dann mehr als zwoelf `ok`-Paketzeilen. Die Meldung nennt die Zeile
+# trotzdem (LH-QA-02).
+@test "driver: der abgebrochene Gruen-Vorlauf nennt eine fruehe Go-Fehlschlagzeile trotz spaeterer ok-Zeilen" {
+  local iso stub
+  iso="$(mktemp -d)"; stub="$iso/bin"
+  mkdir -p "$iso/kopie" "$stub"
+  cat >"$stub/make" <<'STUB'
+#!/usr/bin/env bash
+printf '%s\n' '=== RUN   TestX' '--- FAIL: TestX (0.00s)' '    x_test.go:9: ursache'
+for i in $(seq 1 30); do printf 'ok  \tpaket/p%s\t0.01s\n' "$i"; done
+exit 1
+STUB
+  chmod +x "$stub/make"
+  run env "PATH=$stub:$PATH" bash -c "source '$DRIVER' 2>/dev/null || true
+    WORK='$iso/kopie'
+    green_prerun test"
+  rm -rf "$iso"
+  [ "$status" -ne 0 ]
+  grep -qF -- '--- FAIL: TestX (0.00s)' <<<"$output"
+}
+
 # Das Protokoll des Vorlaufs liegt AUSSERHALB des Repos — dieselbe Ortsregel wie fuer
 # die isolierte Kopie und aus demselben Grund: harness/tools/working-tree-hash.sh rechnet
 # den MR-003-Stempel ueber getrackte UND untrackte Dateien, und der Vorlauf schreibt sein

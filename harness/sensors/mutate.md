@@ -117,8 +117,13 @@ den Fällen 453 bis 458 in `test/mutations/`.
 Ist `make <modus>` in der Isolationskopie ohne Mutation rot (`green_prerun`), nennt die Meldung
 auf stderr zuerst die Fehlschläge des Logs — jedes bats-`not ok` samt seinen folgenden
 `#`-Diagnose-Zeilen und jede Go-Zeile `--- FAIL`, nicht auf eine Zeilenzahl begrenzt (nur, wenn
-das Log eine solche Zeile trägt) — und danach die letzten zwölf Zeilen des Logs. Ein Absturz ohne
-TAP-Zeile (hart beendeter Prozess) trägt keine Fehlschlag-Zeile; dann bleibt nur der Tail.
+das Log eine solche Zeile trägt) — und danach die letzten zwölf Zeilen des Logs. Die Diagnose
+gilt nur für bats; bei Go zeigt die Meldung allein die `--- FAIL`-Zeile, die Ursache steht in den
+eingerückten Folgezeilen und bleibt dem Tail. Ein Absturz ohne TAP-Zeile (hart beendeter Prozess),
+ein Sensor ohne TAP und ein Go-Build-Fehler (`FAIL pkg [build failed]` ohne `--- FAIL`) tragen
+keine Fehlschlag-Zeile; dann bleibt nur der Tail. Gehalten wird bats-seitig das `not ok` samt
+Diagnose und Go-seitig die `--- FAIL`-Zeile (je ein Fall in `test/mutate-driver.bats`), nicht die
+Go-Folgezeilen.
 Gehalten wird das von `test/mutate-driver.bats`, Fall „der abgebrochene Gruen-Vorlauf nennt ein
 fruehes not ok trotz spaeterer ok-Zeilen". Die Meldung nennt nicht die Ursache der Fehlschläge,
 und sie unterscheidet einen Umgebungsfehler (Docker-Aussetzer) nicht von einem Test-Fehlschlag.
