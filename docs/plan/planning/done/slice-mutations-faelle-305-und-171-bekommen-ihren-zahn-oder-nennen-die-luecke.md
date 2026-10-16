@@ -47,7 +47,7 @@ Anlass: der geplante CI-Lauf `mutate` vom 2026-10-16. **305:** die Mutation kür
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -100,7 +100,7 @@ Geschrieben vom Planner in eigenem Kontext bei der Closure ([`AGENTS.md`](../../
   führt, die im Gleichschritt mitwandert. Der Fallback (i) und eine Änderung an `full-smoke.sh` blieben unnötig.
   `make mutate-auswahl` über den CI-Branch ist nicht gefahren (kein Push); gemessen ist über Einzelläufe lokal. Ein erster
   Einzellauf von 305 fiel an einem Docker/colima-Aussetzer, die Wiederholung war grün (Review INFO-2, nicht gezählt).
-- **Steering-Loop-Eintrag:** drei Beobachtungen, keine verkörpert (kein `liegt in`).
+- **Steering-Loop-Eintrag:** drei Beobachtungen, keine verkörpert (kein Zielort-Feld).
   (i) Eine vorgelagerte Stufe fängt die Mutation ab, bevor sie die gemessene Stelle erreicht — die Mutation wird im
   Gleichschritt mit der Stufe geführt (hier: Handbuch im selben Fall); gezählt als zweiter Beleg der
   Klasse *neue Isolation entzahnt bestehende Wächter*, mit benannter Grenze in dem Beleg: die Ursache ist eine
@@ -130,6 +130,17 @@ Geschrieben vom Planner in eigenem Kontext bei der Closure ([`AGENTS.md`](../../
   Hard Rules: keine mit eingetretenem Auflösungs-Trigger.
 - **Archivierung:** entfällt ([`MR-078`](../../../../harness/conventions.md#mr-078); `archive-slice` ist nicht gebaut, wie beim Vorgänger).
 - **Risiken aus §6:** drei Zeilen, je ein Ausgang (eingetreten · weiter offen · entfallen).
+- **Paarungen geprüft am 2026-10-16** (nach dem Move):
+  - (a) *Anker*: §7 trägt kein Zielort-Feld (Treffer des Feldworts in §7 per `grep -c`: 0, die Prüfzeile
+    nennt es nicht wörtlich); kein Gegenstand.
+  - (b) *Folge-Slice*: `slice-mutate-doku-nennt-den-lokalen-weg-auf-macos` existiert in `open/`
+    (`ls docs/plan/planning/open/<kennung>.md`).
+  - (c) *Register*: die vier genannten Pfade existieren; ihre `evidence/` tragen 3, 2, 2 und 1 Dateien
+    (`ls <verzeichnis>/evidence/*.md | wc -l`). Zweite Hälfte über das ganze Register: 2 Verzeichnisse ohne Beleg,
+    namentlich `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht` und
+    `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen behauptet
+    ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+    Festlegung 2).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
