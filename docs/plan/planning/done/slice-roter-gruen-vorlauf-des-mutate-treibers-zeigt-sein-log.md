@@ -47,7 +47,7 @@ Anlass: Shard 2 des Laufs vom 2026-10-16: Grün-Vorlauf `make test-bats` in der 
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -92,6 +92,7 @@ Geschrieben vom Planner in eigenem Kontext bei der Closure ([`AGENTS.md`](../../
   - **Kein Beleg:** `BEO-ALL/gruen-vorlauf-eines-mutate-workers-faellt-unter-runner-last` (bleibt 1×) — kein Lauf nennt den Grund des roten Vorlaufs; `BEO-ALL/paralleler-mutate-lauf-verliert-das-image-eines-workers` (bleibt 1×) — nicht aufgetreten; `BEO-ALL/neue-isolation-entzahnt-bestehende-waechter` und `BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet` — Nähe über denselben Treiber, aber keine Isolation und kein entwaffneter Fall.
 - **Folge-Slices:** `slice-doku-zusage-nennt-den-test-nur-fuer-das-was-er-misst` (Hard-Rule-Entscheidung zur Klasse) — ist eine Datei in `open/`. Der nächste rote Grün-Vorlauf ist Beobachtung der Folgezeit, kein Slice.
 - **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines. ADR-Re-Evaluierungs-Trigger: keiner berührt. Hard Rules: keine mit eingetretenem Auflösungs-Trigger.
+- **Drei Paarungen:** Anker: kein Eintrag trägt `liegt in`, nichts zu paaren · Folge-Slice: `slice-doku-zusage-nennt-den-test-nur-fuer-das-was-er-misst` liegt in `open/` · Register: beide genannten Verzeichnisse existieren mit nicht leerem `evidence/`, `make register-ausgang` 0 Befunde.
 - **Archivierung:** entfällt ([`MR-078`](../../../../harness/conventions.md#mr-078); `archive-slice` ist nicht gebaut).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
