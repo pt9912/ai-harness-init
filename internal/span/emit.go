@@ -29,7 +29,16 @@ const (
 	// wartet auf ihn (ADR-0011 Festlegung 6: nie spuerbar verzoegern).
 	maxHash = 64 << 20
 
-	lockTries = 200
+	// Das Sperr-Budget ist lockTries x lockWait = 1,5 s nominal, 30 % des
+	// Hook-timeout von 5 s (.claude/settings.json): der Emitter gibt fail-open auf,
+	// bevor der Hook beendet wird. Grenze: nominal — Schlafzeiten können unter Last
+	// länger dauern, die Wanduhr-Zeit ist dann größer als 1,5 s und nicht begrenzt;
+	// und hält ein Prozess die Sperre länger als das Budget (er läuft unter Last
+	// nicht), verliert der Wartende seinen Span.
+	// `make hook-overhead` misst unbeanspruchte Aufrufe und sieht dieses Budget nicht.
+	// TestConcurrentEmittersGetDistinctSeq bindet das Budget: mit einem Versuch
+	// fällt er mit „Sperre nicht erhalten“.
+	lockTries = 750
 	lockWait  = 2 * time.Millisecond
 
 	maxStreamName = 120
