@@ -15,7 +15,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 
 **Berührte Spec-Stellen:** —.
 
-**Verantwortlich:** — bis zur Priorisierung.
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-10-16.
 
@@ -25,7 +25,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 
 **Ziel:** [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md) nennt den Aufruf, mit dem ein `# verify: full-smoke`-Fall auf einem Nicht-Linux-Host lokal läuft (`SMOKE_ARTIFACT_TARGET=artifact-host`), samt seiner Grenze; der Kopf von Fall 171 nennt den richtigen Halter der Feldlisten-Ablage.
 
-Anlass: der Ausgang *geplant* von `BEO-ALL/lokaler-full-smoke-scheitert-auf-macos-host` (3×). Die Fälle 305 und 171 wurden lokal nur über diese Variable gemessen; sie steht in keiner Doku (`grep -rn SMOKE_ARTIFACT_TARGET docs harness/README.md harness/sensors Makefile` trifft allein `Makefile`). Der Kopf von Fall 171 nennt Fall 614 als Halter der Stufe für die Feldlisten-Ablage; 614 mutiert `docs/plan/carveouts`, Fall 615 die Feldliste (Beleg für `BEO-ALL/fall-kopf-nennt-andere-ursache-als-die-rote-stelle`).
+Anlass: der Ausgang *geplant* von `BEO-ALL/lokaler-full-smoke-scheitert-auf-macos-host` (3×). Die Fälle 305 und 171 wurden lokal nur über diese Variable gemessen; sie steht in keiner Doku (`grep -rn SMOKE_ARTIFACT_TARGET docs harness/README.md harness/sensors Makefile` trifft allein `Makefile`). Der Kopf von Fall 171 nennt „die Fälle 614 und 615“ als Halter der Stufe für die Feldlisten-Ablage; 614 mutiert `docs/plan/carveouts` (`.gitkeep`), nur Fall 615 die Feldliste (`internal/emit/enforce.go`) — beide halten dieselbe Stufe, 614 nicht für diesen Pfad (Verifikation zu Slice 305/171, F-1; Beleg für `BEO-ALL/fall-kopf-nennt-andere-ursache-als-die-rote-stelle`).
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
@@ -35,8 +35,8 @@ Anlass: der Ausgang *geplant* von `BEO-ALL/lokaler-full-smoke-scheitert-auf-maco
 
 ## 2. Definition of Done
 
-- [ ] `harness/sensors/mutate.md` nennt den Aufruf `SMOKE_ARTIFACT_TARGET=artifact-host MUTATE_CASES=<fall> make mutate` für Fälle mit `# verify: full-smoke` auf einem Nicht-Linux-Host und seine Grenze (nur Einzel-Fälle gemessen); der Aufruf ist am Fall 305 einmal gefahren und sein Ausgang (`ok`) im Slice §7 genannt.
-- [ ] Der Kopf von `test/mutations/171-feldliste-ausserhalb-des-geprueften-bereichs.sh` nennt Fall 615 statt 614 als Halter der Feldlisten-Ablage; `make mutate-greift` bleibt grün.
+- [ ] `harness/sensors/mutate.md` nennt den Aufruf `SMOKE_ARTIFACT_TARGET=artifact-host MUTATE_CASES=<voller Fallname> make mutate` für Fälle mit `# verify: full-smoke` auf einem Nicht-Linux-Host und seine Grenzen: nur Einzel-Fälle gemessen; `MUTATE_CASES` verlangt den vollen Fallnamen (mehrere Fälle durch Leerzeichen getrennt); der Grün-Vorlauf dauert je Fall Größenordnung 100–220 s (der Implementer belegt die Zahl am Aufruf); der Aufruf ist am Fall 305 einmal gefahren und sein Ausgang (`ok`) im Slice §7 genannt.
+- [ ] Der Kopf von `test/mutations/171-feldliste-ausserhalb-des-geprueften-bereichs.sh` nennt Fall 615 allein statt „614 und 615“ als Halter der Feldlisten-Ablage; `make mutate-greift` bleibt grün.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -56,7 +56,7 @@ Anlass: der Ausgang *geplant* von `BEO-ALL/lokaler-full-smoke-scheitert-auf-maco
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): Priorisierung durch den Planner; WIP-Limit frei. Reihenfolge nach `slice-span-sperre-haelt-den-test-unter-last`.
+**Start** (`next` → `in-progress`): Priorisierung durch den Planner; WIP-Limit frei. Reihenfolge nach `slice-span-sperre-haelt-den-test-unter-last`. **Erfüllter Zustand:** der Vorgänger `slice-roter-gruen-vorlauf-des-mutate-treibers-zeigt-sein-log` liegt in `done/` (Beleg: `ls docs/plan/planning/done/slice-roter-gruen-vorlauf-des-mutate-treibers-zeigt-sein-log.md`), `in-progress/` trägt danach nur `roadmap.md` (`ls docs/plan/planning/in-progress/`), WIP-Limit frei; `Verantwortlich:` gesetzt.
 
 **Rückführungen:**
 
