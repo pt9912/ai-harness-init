@@ -110,7 +110,7 @@ Geschrieben vom Planner in eigenem Kontext bei der Closure ([`AGENTS.md`](../../
   (ii) `mutate-auswahl.sh` bricht auf BSD-`paste` still (Verifikation F-3); (iii) der Kopf eines Falls nennt eine
   andere Ursache als die rote Stelle (LOW-1). **LOW-1 geht den Register-Weg, kein Folge-Slice:** ein Satz im Kopf von
   `test/mutations/111-…` ist Fall-Pflege ([`MR-071`](../../../../harness/conventions.md#mr-071)), kein Slice nach
-  [Modul 5](../../../../.harness/baseline/v6.18.1/regelwerk/modul-05-planning-harness.md) (≤ 3 Liefer-Punkte, eine
+  Modul 5 des Baseline-Regelwerks (≤ 3 Liefer-Punkte, eine
   Review-Sitzung sind es, aber der Slice trüge keinen Lieferwert über den einen Satz hinaus); der Zähler steht bei 1×;
   wer den Fall anfasst, zieht den Satz nach. Dieser Abschluss schrieb keinen Produktionscode.
 - **Beobachtungs-Register (`../observations/`):**
