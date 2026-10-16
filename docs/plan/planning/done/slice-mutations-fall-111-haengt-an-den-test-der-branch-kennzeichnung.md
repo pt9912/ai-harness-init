@@ -136,6 +136,17 @@ Geschrieben vom Planner in eigenem Kontext bei der Closure ([`AGENTS.md`](../../
 - **Archivierung:** entfällt ([`MR-078`](../../../../harness/conventions.md#mr-078); `archive-slice` ist nicht
   gebaut, wie beim Vorgänger).
 - **Risiken aus §6:** beide Zeilen tragen ihren Ausgang (zweimal entfallen).
+- **Paarungen geprüft am 2026-10-16** (nach dem Move):
+  - (a) *Anker*: §7 trägt kein Feld `liegt in`
+    (`sed -n '/^## 7/,/^## 8/p' <datei> | grep -c 'liegt in'` → 0); kein Gegenstand.
+  - (b) *Folge-Slice*: `slice-mutations-faelle-305-und-171-bekommen-ihren-zahn-oder-nennen-die-luecke` existiert in
+    `open/` (`ls docs/plan/planning/open/<kennung>.md`).
+  - (c) *Register*: die vier genannten Pfade existieren; ihre `evidence/` tragen 1, 1, 1 und 9 Dateien
+    (`ls <verzeichnis>/evidence/*.md | wc -l`). Zweite Hälfte über das ganze Register: 2 Verzeichnisse ohne Beleg,
+    namentlich `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht` und
+    `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen behauptet
+    ([`ADR-0069`](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+    Festlegung 2).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
