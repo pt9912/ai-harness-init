@@ -88,7 +88,7 @@ Die Proben im Kommentar von `StripCommentHints` gelten laut ihrem Wortlaut je f�
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
-- **Der Release `v0.8.0` und sein Tag-Push.** *Folge-Slice:* [`slice-release-schnitt-v080-liefert-die-baseline-v6181`](../in-progress/slice-release-schnitt-v080-liefert-die-baseline-v6181.md)
+- **Der Release `v0.8.0` und sein Tag-Push.** *Folge-Slice:* [`slice-release-schnitt-v080-liefert-die-baseline-v6181`](../done/slice-release-schnitt-v080-liefert-die-baseline-v6181.md)
   nimmt ihn an; sein Start-Trigger ist dieser Slice in `done/`.
 - **`reviews` im Dogfood scharf schalten.** *Folge-Slice:* [`slice-review-deckung-laeuft-im-dogfood`](../open/slice-review-deckung-laeuft-im-dogfood.md)
   trägt es; das Delta berührt Modul 10 nicht.
@@ -250,7 +250,7 @@ Geschrieben vom Planner in eigenem Kontext bei der Closure ([`AGENTS.md`](../../
     `tag-tragende-adresse-ueberlebt-den-baseline-tausch-nicht` trat nicht ein.
   - Kein Eintrag ohne Ausgang erreicht 3×.
 - **Folge-Slices:** keiner angelegt; der Start-Trigger von
-  [`slice-release-schnitt-v080-liefert-die-baseline-v6181`](../in-progress/slice-release-schnitt-v080-liefert-die-baseline-v6181.md)
+  [`slice-release-schnitt-v080-liefert-die-baseline-v6181`](../done/slice-release-schnitt-v080-liefert-die-baseline-v6181.md)
   (dieser Slice in `done/`) ist mit dem Move erfüllt.
 - **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines.
   [`ADR-0093`](../../adr/0093-ziel-fassung-regiert-den-sprung-v6181.md) Re-Evaluierungs-Trigger: nicht
