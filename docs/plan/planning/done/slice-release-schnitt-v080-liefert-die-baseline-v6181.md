@@ -91,7 +91,7 @@ Gate-Läufe und Closure-Pflichten:
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag, vom Planner in frischem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben oder „keine Beobachtung angefallen" in §7.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
 
 ## 3. Plan (vor Code)
 
@@ -153,6 +153,7 @@ Auftraggeber und Closure-Notiz mit Lerneintrag. Nicht Closure-Trigger: ein gepus
 - **Beobachtungs-Register (`../observations/`):** `evidence/slice-release-schnitt-v080-liefert-die-baseline-v6181.md` ergänzt in [`BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle`](../observations/BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/observation.md) (9×, Stand `geplant` unverändert); neu angelegt [`BEO-ALL/push-auf-den-geschuetzten-hauptzweig-laeuft-ueber-die-regelumgehung`](../observations/BEO-ALL/push-auf-den-geschuetzten-hauptzweig-laeuft-ueber-die-regelumgehung/observation.md), Beleg `evidence/slice-release-schnitt-v080-liefert-die-baseline-v6181.md` (1×, offen). Kein neuer Beleg in [`BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases`](../observations/BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases/observation.md) (4×, verkörpert: die Regel trug), [`BEO-ALL/ge-tagter-stand-traegt-keinen-gates-beleg`](../observations/BEO-ALL/ge-tagter-stand-traegt-keinen-gates-beleg/observation.md) (1×, offen) und [`BEO-ALL/kennung-traegt-den-stand-den-ein-release-ueberholt`](../observations/BEO-ALL/kennung-traegt-den-stand-den-ein-release-ueberholt/observation.md) (1×, offen); der Tag deckt die Kennung. Kein Eintrag erreichte mit diesem Slice 3× neu: der einzige über der Schwelle ist `waechter-…` mit Ausgang `geplant`.
 - **Folge-Slices:** keine neuen; [`slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor`](../open/slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor.md) bleibt der Träger des Ausgangs von `waechter-misst-die-fixture-statt-der-realen-quelle`.
 - **Risiken aus §6:** jedes trägt seinen Ausgang am Risiko: 1 entfallen, 2 weiter offen (Register), 3 entfallen, 4 weiter offen (Register), 5 entfallen.
+- **Drei Paarungen:** Paarungen geprüft am 2026-10-16 nach dem `git mv`: (a) kein `liegt in` in §7 — kein Gegenstand; (b) der genannte Folge-Slice liegt in `open/` (`ls docs/plan/planning/open/slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor.md`); (c) die fünf genannten `BEO-ALL/…` existieren, `ls …/evidence/*.md | wc -l` → 4 · 1 · 1 · 1 · 9 (`sed -n "/^## 7/,/^## 8/p"` über §7, `grep -oE "BEO-ALL/[a-z0-9-]+"`); zweite Hälfte von (c) über das ganze Register: 2 Verzeichnisse ohne Beleg, namentlich `cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`, `einstiegs-datei-weicht-von-der-pflichtgliederung-ab` (Bestand, nicht dieser Slice; nicht als getragen behauptet).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
