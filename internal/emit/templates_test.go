@@ -32,9 +32,9 @@ func courseSet() fs.FS {
 	spitz := "\n1. [<zuerst — z. B. `AGENTS.md`>](<pfad>)\n"
 	eingebettet := "\n- [<welle-NN-titel>](../<welle-NN-titel>.md)\n"
 	nurAnker := "\n[`MR-<NNN>`](../conventions.md#mr-<NNN>)\n"
-	// conventionsPathQuirk traegt den realen, baseline-relativen Vorlagen-Pfad
-	// (ADR-0037 Festlegung 1, Fundstelle 1) — NeutralizeConventionsTemplateRef
-	// muss ihn beim Emit entschaerfen.
+	// conventionsPathQuirk traegt den baseline-relativen Vorlagen-Pfad der Kurs-Staende
+	// bis v6.18.0 (ADR-0037 Festlegung 1, Fundstelle 1) — NeutralizeConventionsTemplateRef
+	// muss ihn beim Emit entschaerfen; der gepinnte Stand traegt ihn nicht mehr.
 	conventionsPathQuirk := "\nJede Adaption ist eine eigene Datei unter `harness/conventions/`, kopiert aus\n`harness/conventions/MR-NNN-titel.template.md` der vendored Baseline;\n"
 	// adaptionsBlockAnker traegt die Ueberschrift, VOR die InjectBaumAussage den
 	// Baum-Aussage-Block setzt. Sie steht im realen Vorlagen-Satz; ohne sie hier
@@ -815,8 +815,8 @@ func TestNeutralizeConventionsTemplateRef(t *testing.T) {
 
 // TestTemplates_ConventionsTemplateRefGateSafe: die emittierte harness/conventions.md
 // traegt KEINEN Inline-Code-Pfad mehr, der auf harness/conventions/MR-NNN-titel.template.md
-// zeigt. Wiring-Probe — die Fixture traegt den
-// realen, baseline-relativen Pfad (courseSet() §conventionsPathQuirk).
+// zeigt. Wiring-Probe — die Fixture traegt den baseline-relativen Pfad der
+// Kurs-Staende bis v6.18.0 (courseSet() §conventionsPathQuirk).
 func TestTemplates_ConventionsTemplateRefGateSafe(t *testing.T) {
 	dir := t.TempDir()
 	if err := emit.Templates(courseSet(), dir, "X", testVorlagen, io.Discard); err != nil {

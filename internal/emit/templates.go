@@ -680,12 +680,10 @@ const conventionsPathRefNew = "kopiert aus der\ngleichnamigen Eintrags-Vorlage `
 // Nennung ohne Verzeichnis-Segment — der Dateiname bleibt lesbar, zeigt aber
 // nicht mehr auf einen Ort, den es im Ziel-Repo nicht gibt. Ohne den Satzteil
 // unveraendert. Der neutralisierte Defekt ist ein Inline-Code-Pfad, den allein
-// `codepaths` liest; `codepaths` ist im emittierten Pruefbereich aktiv, ein Ausfall
-// faerbt darum `make docs-check` des frischen Ziels mit `codepath-missing` rot (der
-// gruene Start in harness/tools/full-smoke.sh; das Rot haelt
-// test/mutations/577-conventions-neutralisierung-faellt-im-ziel-aus.sh). Dass der Marker die
-// Vorlage des gepinnten Kurs-Stands (fetch.DefaultTag) genau einmal trifft, haelt
-// test/neutralisierung-marker.bats am vendored Baum.
+// `codepaths` liest. Die Zeile gilt Kurs-Staenden bis v6.18.0 (COURSE_TAG); die
+// Vorlage des gepinnten Stands (fetch.DefaultTag) traegt den Pfad mit dem Praefix
+// `.harness/baseline/<tag>/templates/`, der Marker trifft sie 0-mal, und das haelt
+// test/neutralisierung-marker.bats am vendored Baum (ADR-0093 Festlegung 2).
 func NeutralizeConventionsTemplateRef(s string) string {
 	return neutralisiereWortlaut(conventionsTemplate, s)
 }
@@ -1055,8 +1053,8 @@ func maskQuotedCommentSyntax(s string) (string, map[string]string) {
 // Traegt der zu emittierende Quelltext dieselbe Byte-Folge bereits (die
 // Platzhalter beginnen mit dem Steuerzeichen-Paar \x00\x01), ueberschreibt
 // die Rueckuebersetzung diese fremde Stelle mit dem Inhalt einer anderen
-// Spanne. Weder der vendored `v6.18.0`- noch der emittierte Vorlagen-Satz
-// traegt ein NUL-Byte (`grep -rlP '\x00' .harness/baseline/v6.18.0/templates
+// Spanne. Weder der vendored `v6.18.1`- noch der emittierte Vorlagen-Satz
+// traegt ein NUL-Byte (`grep -rlP '\x00' .harness/baseline/v6.18.1/templates
 // internal/emit/templates` — leer, kein Erwartungswert, gilt fuer den
 // jeweils aktuellen Satz), die Grenze ist heute nicht ausloesbar.
 func unmaskQuotedCommentSyntax(s string, placeholders map[string]string) string {
@@ -1134,7 +1132,7 @@ func unmaskQuotedCommentSyntax(s string, placeholders map[string]string) string 
 // keine Probe: die Form ist per Konstruktion gerade-paarig und faellt aus
 // jeder Paritaets-Pruefung heraus.
 //
-//	T=.harness/baseline/v6.18.0/templates
+//	T=.harness/baseline/v6.18.1/templates
 //	grep -rn '``' "$T" --include='*.md' | grep -e '<!--' -e '\-\->'          # leer -- "Backtick-Lauf"
 //	grep -rn '``' internal/emit/templates/ | grep -e '<!--' -e '\-\->'       # leer -- dieselbe Form, zweiter Baum
 //	find "$T" -name '*.md' -print0 | xargs -0 awk \

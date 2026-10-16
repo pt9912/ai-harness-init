@@ -26,7 +26,7 @@ setup() {
   TABELLE="$(sed -n 's/^\t*{Vorlage: \([A-Za-z0-9_]*\), Alt: \([A-Za-z0-9_]*\), Neu: .*},$/\2:\1/p' "$SRC")"
   # Marker-Konstante:erwartete Treffer in ihrer Vorlage am gepinnten Stand.
   ERWARTUNG="carveoutsDoneRefOld:1
-conventionsPathRefOld:1
+conventionsPathRefOld:0
 roadmapDoneLink:0"
 }
 
