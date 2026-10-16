@@ -57,7 +57,7 @@ Anlass: Shard 2 des Laufs vom 2026-10-16: Grün-Vorlauf `make test-bats` in der 
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): Priorisierung durch den Planner. Kein Vorgänger-Slice.
+**Start** (`next` → `in-progress`): Priorisierung durch den Planner; Reihenfolge nach `slice-span-sperre-haelt-den-test-unter-last` (WIP-Limit 1, deterministisch rote Fälle zuerst). Kein fachlicher Vorgänger; die Verdikte des Architect berühren diesen Slice nicht.
 
 **Rückführungen:**
 

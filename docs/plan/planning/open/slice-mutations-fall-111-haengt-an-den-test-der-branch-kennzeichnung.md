@@ -1,4 +1,4 @@
-# Slice slice-verbrauchte-mutations-faelle-111-und-305-bekommen-ihren-zahn: Zwei verbrauchte Mutations-Fälle (111, 305) bekommen ihren Zahn zurück
+# Slice slice-mutations-fall-111-haengt-an-den-test-der-branch-kennzeichnung: Mutations-Fall 111 hängt am Test der branch-Kennzeichnung
 
 **Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese
 Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
@@ -11,11 +11,11 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 
 **Welle:** ohne Welle — reaktiv (ein Sensor hat gefeuert), keine Closure-Bedingung jenseits der DoD ([`MR-037`](../../../../harness/conventions.md#mr-037)).
 
-**Bezug:** [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) (ein Zahn, der nicht aus dem behaupteten Grund fällt, ist ein stilles Grün), [`LH-FA-15`](../../../../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung), [`MR-071`](../../../../harness/conventions.md#mr-071), [`AGENTS.md`](../../../../AGENTS.md) §3.6 und §3.5.
+**Bezug:** [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) (ein Zahn, der nicht aus dem behaupteten Grund fällt, ist ein stilles Grün), [`LH-FA-13`](../../../../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans), [`MR-071`](../../../../harness/conventions.md#mr-071), [`AGENTS.md`](../../../../AGENTS.md) §3.6.
 
-**Berührte Spec-Stellen:** `SPEC-061` (Bindungs-Spalte nennt `TestMandatoryFieldsAlwaysPresent` auch für `branch`) — Zeiger auf den Architect, siehe §6.
+**Berührte Spec-Stellen:** `SPEC-061` (Satz und Bindungs-Spalte), `SPEC-087` und `SPEC-014` (Bindungs-Spalte) in `spec/spezifikation.md`.
 
-**Verantwortlich:** — bis zur Priorisierung.
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-10-16.
 
@@ -23,21 +23,24 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 
 ## 1. Ziel und Abgrenzung
 
-**Ziel:** Jeder der zwei Mutations-Fälle, die der geplante CI-Lauf `mutate` deterministisch aus „falschem Grund“ rot färbt (111 und 305), trägt wieder einen Zahn über der Zusage, die er benennt — oder gibt ihn mit einem Verdikt des Architect ab; und für Fall 171 steht gemessen, ob er dasselbe Muster trägt.
+**Ziel:** Mutations-Fall 111 trägt wieder einen Zahn über einer wahren Zusage: `branch` ist Pflichtfeld der Draht-Form und trägt ohne ableitbare Referenz die Kennzeichnung *nicht bekannt* (`SPEC-087`, `SPEC-014`); die Spec-Bindung von `SPEC-061` nennt `branch` nicht mehr als Fall von `omitempty`.
 
-Anlass: der Lauf `schedule` vom 2026-10-16, Shards mit Fall 111 und 305. Beide Fälle sind auf `HEAD` rot, der Sprung auf `v6.18.1` berührt sie nicht. **111:** die Mutation hängt `omitempty` an `json:"branch"`; seit der Kennzeichnung *nicht bekannt* liefert `gitRef()` nie einen leeren String, `TestMandatoryFieldsAlwaysPresent` kann nicht mehr fallen, real fällt ein anderer Test der Feldliste. **305:** die Mutation kürzt `CanonicalRoles` auf fünf Namen; `harness/tools/full-smoke.sh` fährt die Stufe *Handbuch-Baum* vor `rollen_typen_im_ziel`, die Mutation fällt dort und erreicht `FEHLER — Rollen-Typ fehlt` nie. Der Zahn über der Schleife `rollen_typen_im_ziel` ist ungedeckt. **171:** scheiterte an den Vortagen mit „falscher Grund“, vermutlich dasselbe Muster, **ungemessen**.
+Anlass: der geplante CI-Lauf `mutate` vom 2026-10-16. Die Mutation hängt `omitempty` an `json:"branch"`; seit der Kennzeichnung liefert `gitRef()` nie einen leeren String, `TestMandatoryFieldsAlwaysPresent` kann für `branch` nicht mehr fallen, real fällt ein anderer Test der Feldliste.
+
+**Entschieden (Architect-Bericht, ohne ADR, Carveout oder Spec-Änderung durch ihn):** `make mutate` ist kein Gate (`harness/README.md` §Werkzeuge), das Umhängen eines Falls senkt keine Schwelle nach `AGENTS.md` §3.5; es bleibt §3.6 (zugesagt wird, was ein Zahn hält). Die Spec-Bindung zieht dieser Slice nach: keine Quelle benennt eine schreibende Rolle für `spec/spezifikation.md`, bisher schrieb der Implementer sie im Slice mit.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
-- **Norm-Text zur Zahn-Abgabe** (`AGENTS.md` §3.5/§3.6, ADR). Ob das Abhängen von 305 an `Handbuch-Baum` eine Senkung ist, entscheidet der Architect (Übergabe A1, §4); der Implementer schreibt keinen Norm-Text (`AGENTS.md` §3.8, Schicht-Abgrenzung).
-- **Das Last-Flake (Shard 7) und der rote Grün-Vorlauf (Shard 2).** Anderer Vorgang, andere Schicht (Produktcode bzw. Treiber): `slice-span-sperre-haelt-den-test-unter-last`, `slice-roter-gruen-vorlauf-des-mutate-treibers-zeigt-sein-log`.
-- **Eine Mechanisierung „Fall bleibt aus dem behaupteten Grund rot“.** Kein Sensor liest den Grund gegen die Zusage; das ist ein anderer Werkzeug-Vorgang, kein Teil der Reparatur dreier Fälle. Bestand bleibt bewusst stehen: andere Fälle werden hier nicht geprüft.
+- **Fälle 110 und 130.** Sie binden `tool_use_id` und `tool`, deren Mutation `TestMandatoryFieldsAlwaysPresent` weiter färbt; unberührter Bestand.
+- **Fälle 305 und 171.** Anderer Gegenstand (E2E-Stufe, nicht Spec-Bindung): `slice-mutations-faelle-305-und-171-bekommen-ihren-zahn-oder-nennen-die-luecke`.
+- **Last-Flake und roter Grün-Vorlauf.** Anderer Vorgang, andere Schicht: `slice-span-sperre-haelt-den-test-unter-last`, `slice-roter-gruen-vorlauf-des-mutate-treibers-zeigt-sein-log`.
+- **Eine Mechanisierung „Fall bleibt aus dem behaupteten Grund rot“.** Anderer Werkzeug-Vorgang; Bestand bleibt bewusst stehen, andere Fälle werden hier nicht geprüft.
+- **Die schreibende Rolle der Spec.** Anderer Vorgang: `slice-151-spec-straten-haben-eine-schreibende-rolle` in `next/`.
 
 ## 2. Definition of Done
 
-- [ ] Fall 111: `# expect:` und Kopfkommentar nennen den Test, der real und aus dem behaupteten Grund fällt (gelesene Meldung, nicht nur Rot); trägt kein Test den Grund, steht das als Verdikt des Architect (A1) statt als Umhängen.
-- [ ] Fall 305: die Wahl (i) oder (ii) aus A1 ist vollzogen; bei (ii) färbt die Mutation `FEHLER — Rollen-Typ fehlt` in der Stufe `rollen_typen_im_ziel` rot, gesehen an `make mutate-auswahl` über einen CI-Branch (`make full-smoke` läuft auf macOS nicht, nur `full-smoke-host`).
-- [ ] Fall 171: gemessen, ob das Muster vorliegt; Befund in §7 mit Wortlaut der Fehlermeldung aus dem CI-Log, bei Vorliegen derselbe Ausgang wie 305.
+- [ ] Fall 111 umgehängt: `# expect:` trägt `TestFeldliste_KennzeichnungNenntGenauDieFaelleDerSpezifikation` (`internal/span/fieldlist_test.go`), der Kopfkommentar nennt die heute wahre Eigenschaft (*branch ist Pflichtfeld der Draht-Form mit Kennzeichnung nicht bekannt*, `SPEC-087`/`SPEC-014`). Vor Annahme ist die Meldung gelesen und gezeigt, dass **nur** dieser Test fällt (kein zweiter, siehe §8); `make mutate-greift` grün.
+- [ ] Spec nachgezogen: in `SPEC-061` entfällt `branch` im Satz („an `tool_use_id`, an `branch` und an `tool`“) und die Zeile `111` der Bindungs-Spalte; Fall 111 und der Test stehen in der Bindung von `SPEC-087` bzw. `SPEC-014`. Eigener Implementer-Commit, die Spec-Stellen stehen im Kopf.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -51,30 +54,26 @@ Anlass: der Lauf `schedule` vom 2026-10-16, Shards mit Fall 111 und 305. Beide F
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `test/mutations/111-span-korrelationsfeld-verschwindet.sh` | update | `# expect:` und Kopfkommentar auf den real fallenden Test ([`MR-071`](../../../../harness/conventions.md#mr-071)) |
-| `test/mutations/305-rollenachse-ziel-verliert-rolle-fullsmoke.sh` | update | Wahl (i) `# expect:` oder (ii) Mutation, die den Handbuch-Baum grün lässt |
-| `test/mutations/171-feldliste-ausserhalb-des-geprueften-bereichs.sh` | prüfen | Mess-Punkt, Änderung nur bei Befund |
+| `test/mutations/111-span-korrelationsfeld-verschwindet.sh` | update | `# expect:` und Kopfkommentar auf die wahre Eigenschaft ([`MR-071`](../../../../harness/conventions.md#mr-071)) |
+| [`spec/spezifikation.md`](../../../../spec/spezifikation.md) | update | `SPEC-061` ohne `branch`/111; Bindung von `SPEC-087`/`SPEC-014` |
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): Priorisierung durch den Planner **und** das Verdikt des Architect zu A1 liegt als Artefakt vor (ADR, Carveout oder „keine ADR nötig“ mit Grund).
-
-**Übergabe A1 an den Architect** (Quellen: `AGENTS.md` §3.5, §3.6, §3.11; `test/mutations/305-rollenachse-ziel-verliert-rolle-fullsmoke.sh`; `harness/tools/full-smoke.sh` Stufe *Handbuch-Baum* vor `rollen_typen_im_ziel`): Option (i) hängt `# expect:` auf *Handbuch-Baum* — der Fall bleibt grün, die Schleife `rollen_typen_im_ziel` hat dann **keinen** Zahn; ist das eine Senkung (ADR) oder ein Carveout mit Trigger und Folge-Slice? Option (ii) ändert die Mutation so, dass der Handbuch-Baum grün bleibt; kein Gate wird gelockert, die Wahl ist reine Fall-Pflege. Frage: ist (ii) vorzuziehen, und wenn (ii) mit `sed` nicht herstellbar ist — ist (i) ohne ADR zulässig? Dasselbe gilt für 111, falls kein Test den Grund trägt.
+**Start** (`next` → `in-progress`): Priorisierung durch den Planner; die Übergaben A1 (Fall 111) und A3 (Spec-Bindung) sind vom Architect entschieden, siehe §1.
 
 **Rückführungen:**
 
-- `in-progress` → `next` (zu groß): wenn die Messung zu 171 eine eigene Reparatur über eine zweite Stufe verlangt.
-- `in-progress` → `open` (blockiert): wenn A1 nicht entschieden ist oder (ii) und (i) beide an einer Norm hängen.
+- `in-progress` → `next` (zu groß): wenn die Spec-Bindung mehr als die genannten drei Zeilen verlangt.
+- `in-progress` → `open` (blockiert): wenn kein Test der Feldliste allein fällt — dann ist der Fall ohne Zahn und der Architect zu fragen (kein Umhängen auf einen von mehreren).
 
 ## 5. Closure-Trigger
 
-DoD vollständig, `make mutate-auswahl` über den Branch zeigt 111, 305 (und 171) aus dem benannten Grund rot, Review ohne blockierenden Befund, Closure-Notiz geschrieben.
+DoD vollständig, `make mutate-greift` und ein lokaler Lauf des Falls 111 zeigen den benannten Test allein rot, Review ohne blockierenden Befund, Closure-Notiz geschrieben.
 
 ## 6. Risiken und offene Punkte
 
-- `SPEC-061` nennt für `branch` einen Wächter, der es nicht mehr trägt (der Test kann nicht fallen, solange `gitRef()` nie leer liefert) — **Ausgang:** weiter offen → Übergabe A3 an den Architect (Spec-Bindung nachziehen oder benannte Lücke); bei Closure entschieden.
-- 305 lässt sich per `sed` nicht ohne Handbuch-Baum-Bruch herstellen — **Ausgang:** eingetreten wäre Option (i) mit A1-Verdikt; bis dahin offen, bei Closure aufzulösen.
-- 171 ist unmessbar auf macOS und nur über den CI-Branch zu sehen — **Ausgang:** entfallen, sobald der Branch-Lauf den Wortlaut liefert (Messung ist Liefer-Punkt 3).
+- Die Mutation färbt neben dem benannten Test einen zweiten — **Ausgang:** weiter offen → `BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere`; bei Eintritt ist der Fall zu schneiden oder der Architect zu fragen.
+- `SPEC-061` nennt nach dem Nachzug `branch` nirgends mehr als `omitempty`-Fall, und `SPEC-087`/`SPEC-014` tragen die Bindung — **Ausgang:** entfallen, sobald der Nachzug steht; sonst bleibt die Zeile benannte Lücke.
 
 ## 7. Closure-Notiz
 
@@ -88,6 +87,6 @@ DoD vollständig, `make mutate-auswahl` über den Branch zeigt 111, 305 (und 171
 
 **Vorgelagert — Sub-Area-Wahl prüfen:** berührte Sub-Area `*` (gesamtes Repo, [`harness/conventions.md`](../../../../harness/conventions.md#modus-deklaration-pro-sub-area)); Schwelle erfüllt.
 
-**Vorgelagert — offene Beobachtungen sichten:** Register durchgegangen. Treffer, jeweils als **Nähe**, nicht als gleiche Klasse: [`BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet`](../observations/BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet/observation.md) (8 Belege, verkörpert) — dort greift der Patch nicht mehr, hier greift er und fällt aus falschem Grund; [`BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere`](../observations/BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere/observation.md) (8, verkörpert); [`BEO-ALL/neue-isolation-entzahnt-bestehende-waechter`](../observations/BEO-ALL/neue-isolation-entzahnt-bestehende-waechter/observation.md) (1, offen) — eine vorgelagerte Stufe (hier *Handbuch-Baum*) macht den Zahn stumm, ohne ihn anzufassen; ein zweiter Beleg wäre dieser Slice. Ob Fall 111 und 305 eine neue Beobachtung oder ein Beleg bestehender sind, ordnet die Closure zu; ein Eintrag erreicht mit diesem Slice nicht ungeprüft 3×.
+**Vorgelagert — offene Beobachtungen sichten:** Register durchgegangen. Treffer, jeweils als **Nähe**: [`BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere`](../observations/BEO-ALL/mutations-fall-nennt-einen-test-die-mutation-faerbt-mehrere/observation.md) (8 Belege, verkörpert) — dieselbe Klasse, wenn die Mutation mehrere Tests färbt; [`BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet`](../observations/BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet/observation.md) (8, verkörpert). Ob Fall 111 eine neue Beobachtung oder ein Beleg bestehender ist, ordnet die Closure zu; ein Eintrag erreicht mit diesem Slice nicht ungeprüft 3×.
 
 **Modus-Begründungsblock — Umfang:** alle berührten Sub-Areas GF.
