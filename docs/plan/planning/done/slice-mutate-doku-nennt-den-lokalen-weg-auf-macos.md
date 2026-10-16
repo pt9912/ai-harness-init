@@ -45,7 +45,7 @@ Anlass: der Ausgang *geplant* von `BEO-ALL/lokaler-full-smoke-scheitert-auf-maco
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert; der Stand von `BEO-ALL/lokaler-full-smoke-scheitert-auf-macos-host` trägt den Beleg dieses Slice als Verkörperung.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -88,7 +88,7 @@ Geschrieben vom Planner in eigenem Kontext bei der Closure ([`AGENTS.md`](../../
 - **Folge-Slices:** `slice-mess-rezept-nennt-seine-host-voraussetzungen` (Architect-Verdikt zur Klasse) — ist eine Datei in `open/`. `slice-doku-zusage-nennt-den-test-nur-fuer-das-was-er-misst` bleibt in `open/`, nicht gestartet: er braucht ein Architect-Verdikt und die Priorisierung des Auftraggebers.
 - **Risiken aus §6:** Mehr-Fall-Lauf nicht zugesagt — weiter offen → `BEO-ALL/paralleler-mutate-lauf-verliert-das-image-eines-workers` (der Slice hat ihn weder gefahren noch widerlegt).
 - **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines. ADR-Re-Evaluierungs-Trigger: keiner berührt. Hard Rules: keine mit eingetretenem Auflösungs-Trigger.
-- **Drei Paarungen:** nach dem `git mv` (siehe unten).
+- **Drei Paarungen:** Anker: kein Eintrag trägt `liegt in`, nichts zu paaren · Folge-Slice: `slice-mess-rezept-nennt-seine-host-voraussetzungen` liegt in `open/` · Register: die genannten Verzeichnisse (`mess-rezept-setzt-unbenannte-host-konfiguration-voraus`, `mutate-treiber-braucht-bash-4-und-bricht-auf-macos-bash-32`, `lokaler-full-smoke-scheitert-auf-macos-host`, `fall-kopf-nennt-andere-ursache-als-die-rote-stelle`, `paralleler-mutate-lauf-verliert-das-image-eines-workers`) existieren mit nicht leerem `evidence/`, `make register-ausgang` 0 Befunde. Über das ganze Register ohne `evidence/*.md` und nicht von diesem Slice berührt: `cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`, `einstiegs-datei-weicht-von-der-pflichtgliederung-ab` (Bestand, die Hälfte nicht als getragen behauptet).
 - **Archivierung:** entfällt ([`MR-078`](../../../../harness/conventions.md#mr-078); `archive-slice` ist nicht gebaut).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
