@@ -18,7 +18,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 [`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) (Vorlagen wandern ins Ziel),
 [`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) (Template-Ablage),
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6),
-[`ADR-0093`](../../adr/0093-ziel-fassung-regiert-den-sprung-v6181.md) (regierende Fassung des Sprungs und Emissions-Urteil; `Proposed`),
+[`ADR-0093`](../../adr/0093-ziel-fassung-regiert-den-sprung-v6181.md) (regierende Fassung des Sprungs und Emissions-Urteil; `Accepted`),
 [`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md) (Muster der regierenden Fassung),
 [`MR-007`](../../../../harness/conventions.md#mr-007) (Vendoring),
 [`MR-025`](../../../../harness/conventions.md#mr-025).
@@ -156,8 +156,8 @@ Zwei Liefer-Punkte, einer je Achse (Baseline · Emission).
 ## 4. Trigger
 
 **Start** (`next` → `in-progress`): `in-progress/` trägt keinen Slice; die Übergaben A1 und A2 liegen mit
-[`ADR-0093`](../../adr/0093-ziel-fassung-regiert-den-sprung-v6181.md) als Architect-Commit vor, **offene Startbedingung:** die Annahme
-(`Accepted`) von [`ADR-0093`](../../adr/0093-ziel-fassung-regiert-den-sprung-v6181.md) durch den Auftraggeber (Stand dieses Plans: ausstehend); `make baseline-freshness` meldet keinen neueren Tag als `v6.18.1`; einmal Netz für
+[`ADR-0093`](../../adr/0093-ziel-fassung-regiert-den-sprung-v6181.md) als Architect-Commit vor, **erfüllte Startbedingung:** die Annahme
+von [`ADR-0093`](../../adr/0093-ziel-fassung-regiert-den-sprung-v6181.md) (`Accepted`, Beleg: ADR-Kopf und ADR-Index); `make baseline-freshness` meldet keinen neueren Tag als `v6.18.1`; einmal Netz für
 `make vendor-baseline` und `make regelwerk-check`; WIP-Limit frei. Der Zug nach `in-progress/` landet auf dem Hauptzweig.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
