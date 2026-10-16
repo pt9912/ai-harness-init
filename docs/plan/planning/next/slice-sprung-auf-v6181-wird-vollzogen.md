@@ -104,11 +104,11 @@ Die Proben im Kommentar von `StripCommentHints` gelten laut ihrem Wortlaut je f�
 - **A1 — entschieden:** eigene Kurz-ADR, [`ADR-0093`](../../adr/0093-ziel-fassung-regiert-den-sprung-v6181.md) (Bezug
   [`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md), kein `supersedes`); liegt als Architect-Commit vor,
   Status `Proposed`.
-- **A2 — entschieden:** Verdikt in `ADR-0093` Festlegung 2, siehe Emission oben; liegt mit ihr als Architect-Commit vor.
+- **A2 — entschieden:** Verdikt in [`ADR-0093`](../../adr/0093-ziel-fassung-regiert-den-sprung-v6181.md) Festlegung 2, siehe Emission oben; liegt mit ihr als Architect-Commit vor.
 - **A3 — nach dem Vollzug:** Buchung §Baseline in [`harness/conventions.md`](../../../../harness/conventions.md);
-  Sprung-Zeile in [`harness/migration.md`](../../../../harness/migration.md) §1 (zitiert `ADR-0093`) samt der tag-tragenden Pfade
-  des Instanz-Registers; Freshness-Verdikt über die Kandidaten `MR-008`, `MR-020`, `MR-026`, `MR-028`, `MR-029`, `MR-031`,
-  `MR-034`, `MR-038`, `MR-045`, `MR-060`, `MR-072` (`ADR-0093` Festlegung 1) **vor** dem Entfernen von `v6.18.0/`
+  Sprung-Zeile in [`harness/migration.md`](../../../../harness/migration.md) §1 (zitiert [`ADR-0093`](../../adr/0093-ziel-fassung-regiert-den-sprung-v6181.md)) samt der tag-tragenden Pfade
+  des Instanz-Registers; Freshness-Verdikt über die Kandidaten [`MR-008`](../../../../harness/conventions.md#mr-008), [`MR-020`](../../../../harness/conventions.md#mr-020), [`MR-026`](../../../../harness/conventions.md#mr-026), [`MR-028`](../../../../harness/conventions.md#mr-028), [`MR-029`](../../../../harness/conventions.md#mr-029), [`MR-031`](../../../../harness/conventions.md#mr-031),
+  [`MR-034`](../../../../harness/conventions.md#mr-034), [`MR-038`](../../../../harness/conventions.md#mr-038), [`MR-045`](../../../../harness/conventions.md#mr-045), [`MR-060`](../../../../harness/conventions.md#mr-060), [`MR-072`](../../../../harness/conventions.md#mr-072) ([`ADR-0093`](../../adr/0093-ziel-fassung-regiert-den-sprung-v6181.md) Festlegung 1) **vor** dem Entfernen von `v6.18.0/`
   (Register `freshness-verdikt-faellt-nach-dem-entfernen-des-alten-baums`).
 
 ## 2. Definition of Done
@@ -157,7 +157,7 @@ Zwei Liefer-Punkte, einer je Achse (Baseline · Emission).
 
 **Start** (`next` → `in-progress`): `in-progress/` trägt keinen Slice; die Übergaben A1 und A2 liegen mit
 [`ADR-0093`](../../adr/0093-ziel-fassung-regiert-den-sprung-v6181.md) als Architect-Commit vor, **offene Startbedingung:** die Annahme
-(`Accepted`) von `ADR-0093` durch den Auftraggeber (Stand dieses Plans: ausstehend); `make baseline-freshness` meldet keinen neueren Tag als `v6.18.1`; einmal Netz für
+(`Accepted`) von [`ADR-0093`](../../adr/0093-ziel-fassung-regiert-den-sprung-v6181.md) durch den Auftraggeber (Stand dieses Plans: ausstehend); `make baseline-freshness` meldet keinen neueren Tag als `v6.18.1`; einmal Netz für
 `make vendor-baseline` und `make regelwerk-check`; WIP-Limit frei. Der Zug nach `in-progress/` landet auf dem Hauptzweig.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
