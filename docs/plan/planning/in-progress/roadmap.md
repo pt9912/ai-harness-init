@@ -18,6 +18,8 @@ nicht hier.
 
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
 
+**Nichts in Arbeit.**
+
 ## Nächste Wellen
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
