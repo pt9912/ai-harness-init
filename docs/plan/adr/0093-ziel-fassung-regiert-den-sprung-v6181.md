@@ -1,6 +1,6 @@
 # ADR-0093: Die Ziel-Fassung regiert den Sprung `v6.18.0` → `v6.18.1` — die umgeschriebenen Vorlagen-Adressen bleiben im Emitter unverändert stehen
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-10-16
 
@@ -156,6 +156,7 @@ eigener Wächter; gemessen ist es hier am Scratch-Repo, Träger ist `make full-s
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-10-16 | Proposed | Architect-Lauf, Übergaben A1/A2 des Sprung-Slice |
+| 2026-10-16 | **Accepted** | Annahme durch den Auftraggeber am 2026-10-16; die Datei trägt keinen Acceptance-Trigger ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1), kein Review-Report zu dieser ADR |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
