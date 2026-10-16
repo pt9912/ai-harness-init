@@ -15,7 +15,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 
 **Berührte Spec-Stellen:** `SPEC-063` (liegengebliebenes Lock-Verzeichnis) und `SPEC-060` (Nebenläufigkeit der Nummernvergabe) — beide nennen kein Sperr-Budget; gemessen: `grep -n -iE 'lockTries|Sperr-Budget|lockWait' spec/spezifikation.md` → keine Zeile.
 
-**Verantwortlich:** — bis zur Priorisierung.
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-10-16.
 
@@ -57,7 +57,7 @@ Anlass: Shard 7 des Laufs `mutate` ist flaky (2026-10-14 rot, 10-15 grün, 10-16
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): Priorisierung durch den Planner; Reihenfolge nach `slice-mutations-fall-111-haengt-an-den-test-der-branch-kennzeichnung` und `slice-mutations-faelle-305-und-171-bekommen-ihren-zahn-oder-nennen-die-luecke` (WIP-Limit 1). A2 ist entschieden (§1).
+**Start** (`next` → `in-progress`): Priorisierung durch den Planner; Reihenfolge nach `slice-mutations-fall-111-haengt-an-den-test-der-branch-kennzeichnung` und `slice-mutations-faelle-305-und-171-bekommen-ihren-zahn-oder-nennen-die-luecke` (WIP-Limit 1). A2 ist entschieden (§1). **Erfüllter Zustand:** beide Vorgänger liegen in `done/` (Beleg: `ls docs/plan/planning/done/slice-mutations-fall-111-haengt-an-den-test-der-branch-kennzeichnung.md docs/plan/planning/done/slice-mutations-faelle-305-und-171-bekommen-ihren-zahn-oder-nennen-die-luecke.md`), `in-progress/` trägt danach nur `roadmap.md` (`ls docs/plan/planning/in-progress/`), WIP-Limit frei.
 
 **Rückführungen:**
 
@@ -72,6 +72,7 @@ DoD vollständig; der Test in zehn aufeinanderfolgenden Läufen unter erzeugter 
 
 - Der Fix verschiebt die Last-Schwelle nur — **Ausgang:** weiter offen → `BEO-ALL/neue-isolation-entzahnt-bestehende-waechter` bzw. in der Closure als neue Beobachtung (Auslastung des Runners als Ursache roter Grün-Vorläufe, 2 Läufe in 3 Tagen).
 - Ein sterbender Worker lässt die übrigen Fälle ohne Ergebnis (32 von 65) — **Ausgang:** weiter offen → in der Closure als Beobachtung zum Treiber zu führen; kein Slice, solange das Sterben nicht ohne rotes Grün-Vorlauf eintritt.
+- Docker-Aussetzer des Hosts (Tag-Kollision der Worker, colima `Unavailable`) verfälschen die Messung — **Ausgang:** entfallen — die Messung ist ein Go-Test (`make test-go`, gezielte Einzelläufe von `TestConcurrentEmittersGetDistinctSeq`), kein `make mutate`-Mehrfachlauf, und fährt einzeln und lokal; ein Docker-Fehler im Lauf ist ein Wiederholungsgrund für den Aufruf, kein Messwert (Docker-Daemon am 2026-10-16 neu gestartet).
 - Budget-Erhöhung verlängert den Worst-Case des Hooks — **Ausgang:** entfallen, falls die Messung Test-Seite wählt; sonst die Worst-Case-Rechnung gegen den Hook-`timeout` in §7 (`make hook-overhead` ist als Beleg blind).
 
 ## 7. Closure-Notiz
