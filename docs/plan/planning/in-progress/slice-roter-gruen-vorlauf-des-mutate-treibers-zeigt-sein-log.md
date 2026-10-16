@@ -38,15 +38,15 @@ Anlass: Shard 2 des Laufs vom 2026-10-16: Grün-Vorlauf `make test-bats` in der 
 
 ## 2. Definition of Done
 
-- [ ] Bei rotem Grün-Vorlauf nennt die Meldung des Treibers jede fehlgeschlagene Zeile (`not ok`) samt ihren Diagnose-Zeilen, auch wenn spätere Zeilen `ok` sind; die Menge ist nicht auf zwölf Zeilen begrenzt, sondern auf die Fehlschläge.
-- [ ] Rot gesehen: ein bats-Fall des Treibers lässt den Grün-Vorlauf mit einem frühen `not ok` und späteren `ok`-Zeilen fallen und erwartet das `not ok` in der Meldung; mit dem alten `tail -n 12` färbt er rot.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] Bei rotem Grün-Vorlauf nennt die Meldung des Treibers jede fehlgeschlagene Zeile (`not ok`) samt ihren Diagnose-Zeilen, auch wenn spätere Zeilen `ok` sind; die Menge ist nicht auf zwölf Zeilen begrenzt, sondern auf die Fehlschläge. **Grenze:** erfüllt für die bats-Form; bei Go nennt die Meldung nur die `--- FAIL`-Zeile, nicht deren Ursache.
+- [x] Rot gesehen: ein bats-Fall des Treibers lässt den Grün-Vorlauf mit einem frühen `not ok` und späteren `ok`-Zeilen fallen und erwartet das `not ok` in der Meldung; mit dem alten `tail -n 12` färbt er rot.
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -72,18 +72,27 @@ DoD vollständig; Review ohne blockierenden Befund; Closure-Notiz geschrieben. O
 
 ## 6. Risiken und offene Punkte
 
-- Das `not ok` steht auch im vollen Protokoll nicht (Prozess hart beendet) — **Ausgang:** weiter offen → neue Beobachtung in der Closure; der Slice ändert an der Sichtbarkeit dann nichts.
+- Das `not ok` steht auch im vollen Protokoll nicht (Prozess hart beendet) — **Ausgang:** weiter offen → [`BEO-ALL/gruen-vorlauf-eines-mutate-workers-faellt-unter-runner-last`](../observations/BEO-ALL/gruen-vorlauf-eines-mutate-workers-faellt-unter-runner-last/observation.md) (kein neuer Eintrag: derselbe rote Grün-Vorlauf von Shard 2 steht dort als *benannt, nicht gezählt*; ein Lauf, der es zeigt, fehlt noch); der Slice ändert an der Sichtbarkeit dann nichts.
 - Die Ursache bleibt unbelegt (Lastflake nur vermutet) — **Ausgang:** weiter offen → [`BEO-ALL/gruen-vorlauf-eines-mutate-workers-faellt-unter-runner-last`](../observations/BEO-ALL/gruen-vorlauf-eines-mutate-workers-faellt-unter-runner-last/observation.md) (angelegt vom Vorgänger-Slice, 1 Beleg; ein Beleg dieses Slice nur bei einem Lauf, der den Grund des roten Vorlaufs benennt).
-- Ein Docker-/colima-Aussetzer in `make artifact-host` wird als „BEFUND … falscher Grund“ gemeldet und verfälscht den Befund, den der Slice sichtbar machen soll — **Ausgang:** weiter offen → in der Closure als Beobachtung (Fehlklassifikation eines Umgebungsfehlers durch den Treiber); der Slice ändert die Klassifikation nicht.
-- Beim Wiederholen des Lokal-Belegs (Einzel- statt Mehrfachlauf) tritt die Tag-Kollision paralleler Worker auf — **Ausgang:** entfallen, falls der bats-Fall des Treibers einzeln fährt (kein `make mutate`-Mehrfachlauf, wie im Vorgänger); sonst weiter offen → `BEO-ALL/paralleler-mutate-lauf-verliert-das-image-eines-workers`.
+- Ein Docker-/colima-Aussetzer in `make artifact-host` wird als „BEFUND … falscher Grund“ gemeldet und verfälscht den Befund, den der Slice sichtbar machen soll — **Ausgang:** weiter offen → [`BEO-ALL/docker-aussetzer-im-vorlauf-wird-als-falscher-grund-gemeldet`](../observations/BEO-ALL/docker-aussetzer-im-vorlauf-wird-als-falscher-grund-gemeldet/observation.md) (neu, 1 Beleg); der Slice ändert die Klassifikation nicht.
+- Beim Wiederholen des Lokal-Belegs (Einzel- statt Mehrfachlauf) tritt die Tag-Kollision paralleler Worker auf — **Ausgang:** entfallen: der Beleg läuft über den bats-Fall allein (`make test-bats BATS_TARGET=test/mutate-driver.bats`, ein Worker, kein `make mutate`-Mehrfachlauf); die Verifikation fuhr ihn so, ohne `No such image`.
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
+Geschrieben vom Planner in eigenem Kontext bei der Closure ([`AGENTS.md`](../../../../AGENTS.md)
+§3.10).
+**Rolle:** Planner · **Datum:** 2026-10-16
+
+- **Was hat funktioniert:** Gebaut ist `show_failures` in `harness/tools/mutate.sh`: bei rotem Grün-Vorlauf nennt die Meldung jedes bats-`not ok` samt `#`-Diagnose und jede Go-Zeile `--- FAIL`, vor dem Tail; der Abbruch (`rc -ne 0`, `return 1`) ist unverändert, der Grün-Vorlauf bleibt hart. Review: 0 HIGH, 0 MEDIUM, 2 LOW, 2 INFO; beide LOW im Implementer-Commit `ef34622a` behoben (Go-Zweig bekam Fall 19, `mutate.md` und Kommentar nennen die Grenze). **Gemessen** (Verifikation `…-verify`, HEAD `ef34622a`): Rot selbst gefahren — ohne den `show_failures`-Aufruf fallen Fall 18 und 19, ohne den Go-Zweig allein Fall 19; `make gates` Exit 0, Stempel == HEAD; `make mutate-greift` 653/653; `test/mutations/` unberührt.
+- **Was ging anders als geplant:** **(1) D1 trägt für bats, für Go nur zur Hälfte:** „samt Diagnose“ gilt für bats; bei Go zeigt die Meldung die `--- FAIL`-Zeile, nicht deren eingerückte Ursache, und ein Go-Build-Fehler bleibt beim Tail. Der Planner hat das Häkchen mit dieser Grenze im Wortlaut gesetzt. **(2) Vorher/Nachher ist am Stub gemessen:** am realen `green_prerun` beider Fassungen mit demselben `make`-Stub; der Stub ist kein echter CI-Lauf. Das echte Log (Run 38865723125, Job `mutate (2)`) trägt nur den Tail `ok 524`–`533`, kein `not ok`: ob das `not ok` oben im bats-Output stand oder der Prozess hart endete, ist **weder bestätigt noch widerlegt**. **(3) Kein Mutations-Fall:** `make mutate-auswahl` führt zum CI-Branch (Exit 10), nichts gepusht; der Slice legt keinen Fall an, [`MR-071`](../../../../harness/conventions.md#mr-071) greift nicht — die Zähne tragen allein die zwei bats-Fälle. **Nicht belegt und so geführt:** die Ursache des roten Grün-Vorlaufs; der Slice liefert Sicht für den nächsten roten Lauf (§5).
+- **Steering-Loop-Eintrag:** **geschärfte Regel nur als Beobachtung**: eine Doku-Zusage, die einen Test als Halter nennt, sagt, welche Form er misst — hier nannte `mutate.md` die Go-Zeile mit dem bats-Fall als Halter, und das Löschen der Go-Zeile ließ die Datei grün (Review LOW-1). Auslöser: `BEO-ALL/doku-zusage-nennt-den-test-dessen-fall-nur-einen-ausschnitt-misst` (`2026-09-25-releasing-md-schritt-7-vorbehalte-f-1-bis-f-3-kurzrunde`, `slice-tap-check-liest-keine-version-ist-gebunden`, `slice-roter-gruen-vorlauf-des-mutate-treibers-zeigt-sein-log` — 3×). Ausgang *geplant*, nicht verkörpert (kein Zielort-Feld): `slice-doku-zusage-nennt-den-test-nur-fuer-das-was-er-misst`.
+- **Beobachtungs-Register (`../observations/`):**
+  - Neu: [`BEO-ALL/docker-aussetzer-im-vorlauf-wird-als-falscher-grund-gemeldet`](../observations/BEO-ALL/docker-aussetzer-im-vorlauf-wird-als-falscher-grund-gemeldet/observation.md) — 1 Beleg (`evidence/slice-mutations-faelle-305-und-171-bekommen-ihren-zahn-oder-nennen-die-luecke.md`, Review INFO-2), `offen`. Dieser Slice trägt keinen zweiten Beleg: sein Anlass ist derselbe lokale Lauf, ein Vorgang zählt einmal. Kein bestehender Eintrag deckt den Gegenstand (`paralleler-mutate-lauf-…` hat anderes Symptom).
+  - Beleg ergänzt: `evidence/slice-roter-gruen-vorlauf-des-mutate-treibers-zeigt-sein-log.md` in `BEO-ALL/doku-zusage-nennt-den-test-dessen-fall-nur-einen-ausschnitt-misst/` — Zähler steht damit bei 3×; `state.md` trägt `geplant` mit der Kennung des Folge-Slice (`make register-ausgang`).
+  - **Kein Beleg:** `BEO-ALL/gruen-vorlauf-eines-mutate-workers-faellt-unter-runner-last` (bleibt 1×) — kein Lauf nennt den Grund des roten Vorlaufs; `BEO-ALL/paralleler-mutate-lauf-verliert-das-image-eines-workers` (bleibt 1×) — nicht aufgetreten; `BEO-ALL/neue-isolation-entzahnt-bestehende-waechter` und `BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet` — Nähe über denselben Treiber, aber keine Isolation und kein entwaffneter Fall.
+- **Folge-Slices:** `slice-doku-zusage-nennt-den-test-nur-fuer-das-was-er-misst` (Hard-Rule-Entscheidung zur Klasse) — ist eine Datei in `open/`. Der nächste rote Grün-Vorlauf ist Beobachtung der Folgezeit, kein Slice.
+- **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines. ADR-Re-Evaluierungs-Trigger: keiner berührt. Hard Rules: keine mit eingetretenem Auflösungs-Trigger.
+- **Archivierung:** entfällt ([`MR-078`](../../../../harness/conventions.md#mr-078); `archive-slice` ist nicht gebaut).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
