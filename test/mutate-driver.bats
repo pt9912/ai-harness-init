@@ -299,6 +299,32 @@ STUB
   grep -qF 'VORLAUF-MARKE-STDERR' <<<"$output"
 }
 
+# Ein frühes `not ok` steht in TAP-Ausgabe vor den späten `ok`-Zeilen; die letzten zwölf
+# Zeilen allein zeigen es nicht. Der make-Stub druckt `not ok` samt Diagnose zuerst und dann
+# mehr als zwölf `ok`-Zeilen. Die Meldung nennt das `not ok` und seine Diagnose, auch
+# wenn spätere Zeilen `ok` sind (LH-QA-02).
+@test "driver: der abgebrochene Gruen-Vorlauf nennt ein fruehes not ok trotz spaeterer ok-Zeilen" {
+  local iso stub
+  iso="$(mktemp -d)"; stub="$iso/bin"
+  mkdir -p "$iso/kopie" "$stub"
+  cat >"$stub/make" <<'STUB'
+#!/usr/bin/env bash
+printf '%s\n' '1..30' 'ok 1 erster'
+printf '%s\n' 'not ok 2 FRUEHER-FEHLSCHLAG' '# DIAGNOSE-ZEILE-A' '# DIAGNOSE-ZEILE-B'
+for i in $(seq 3 30); do printf 'ok %s spaeter\n' "$i"; done
+exit 1
+STUB
+  chmod +x "$stub/make"
+  run env "PATH=$stub:$PATH" bash -c "source '$DRIVER' 2>/dev/null || true
+    WORK='$iso/kopie'
+    green_prerun test"
+  rm -rf "$iso"
+  [ "$status" -ne 0 ]
+  grep -qF 'not ok 2 FRUEHER-FEHLSCHLAG' <<<"$output"
+  grep -qF 'DIAGNOSE-ZEILE-A' <<<"$output"
+  grep -qF 'DIAGNOSE-ZEILE-B' <<<"$output"
+}
+
 # Das Protokoll des Vorlaufs liegt AUSSERHALB des Repos — dieselbe Ortsregel wie fuer
 # die isolierte Kopie und aus demselben Grund: harness/tools/working-tree-hash.sh rechnet
 # den MR-003-Stempel ueber getrackte UND untrackte Dateien, und der Vorlauf schreibt sein

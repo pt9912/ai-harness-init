@@ -112,6 +112,17 @@ Bericht (`report_times`); Isolationskopie und Grün-Vorlauf fallen je Worker an,
 Fall-Anteil. Gehalten wird das von `test/mutate-driver.bats` (Blöcke „Teillauf: MUTATE_CASES") und
 den Fällen 453 bis 458 in `test/mutations/`.
 
+## Meldung eines roten Grün-Vorlaufs
+
+Ist `make <modus>` in der Isolationskopie ohne Mutation rot (`green_prerun`), nennt die Meldung
+auf stderr zuerst die Fehlschläge des Logs — jedes bats-`not ok` samt seinen folgenden
+`#`-Diagnose-Zeilen und jede Go-Zeile `--- FAIL`, nicht auf eine Zeilenzahl begrenzt (nur, wenn
+das Log eine solche Zeile trägt) — und danach die letzten zwölf Zeilen des Logs. Ein Absturz ohne
+TAP-Zeile (hart beendeter Prozess) trägt keine Fehlschlag-Zeile; dann bleibt nur der Tail.
+Gehalten wird das von `test/mutate-driver.bats`, Fall „der abgebrochene Gruen-Vorlauf nennt ein
+fruehes not ok trotz spaeterer ok-Zeilen". Die Meldung nennt nicht die Ursache der Fehlschläge,
+und sie unterscheidet einen Umgebungsfehler (Docker-Aussetzer) nicht von einem Test-Fehlschlag.
+
 ## Zwei Läufe, eine Aussage
 
 Ein voller Lauf, der Bilder baut und Container startet, kann an der Infrastruktur enden

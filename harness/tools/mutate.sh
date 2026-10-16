@@ -684,6 +684,20 @@ select_cases() {
 # sagt nicht, was der Sensor gesehen hat.
 show_tail() { sed -e 's/^/    | /' <(tail -n 12 "$1") >&2; }
 
+# show_failures zeigt jede Fehlschlag-Zeile des Sensor-Logs $1 eingerueckt auf stderr: jedes
+# bats-`not ok` samt den folgenden `#`-Diagnose-Zeilen und jede Go-Zeile `--- FAIL`. Die Menge
+# ist durch die Fehlschlaege begrenzt, nicht durch eine Zeilenzahl — ein fruehes `not ok`
+# steht in TAP-Ausgabe vor den spaeten `ok`-Zeilen, die show_tail allein zeigt. Ohne
+# Fehlschlag-Zeile (Absturz, Sensor ohne TAP) schreibt die Funktion nichts und endet mit 0.
+show_failures() {
+  awk '
+    /^not ok / { print; blk = 1; next }
+    blk && /^#/ { print; next }
+    { blk = 0 }
+    /^--- FAIL/ { print }
+  ' "$1" | sed -e 's/^/    | /' >&2
+}
+
 run_case() {
   local case_file="$1"
   local name files expect verify form
@@ -945,8 +959,8 @@ greift_main() {
 # Je Sensor, den irgendein Fall benutzt — sonst liefe ein smoke-Fall auf einem bereits
 # roten smoke los und "bestuende".
 #
-# Der Lauf jedes Modus geht in ein Protokoll, und der Abbruch zeigt dessen letzte
-# Zeilen. Ein Vorlauf, der beide Stroeme des Sensors verwirft, laesst als Evidenz einen
+# Der Lauf jedes Modus geht in ein Protokoll, und der Abbruch zeigt dessen
+# Fehlschlag-Zeilen (show_failures) und dessen letzte Zeilen. Ein Vorlauf, der beide Stroeme des Sensors verwirft, laesst als Evidenz einen
 # Exit-Code und einen Satz zurueck; welcher Zustand den Sensor rot gemacht hat, steht
 # dann in keinem Protokoll (test/mutate-driver.bats haelt beide Stroeme).
 #
@@ -994,6 +1008,10 @@ green_prerun() {
       echo "mutate: ABBRUCH — make $m ist in der isolierten Kopie ohne Mutation rot." >&2
       echo "  Ein Fall gegen diesen Sensor waere danach ebenfalls rot, aber nicht" >&2
       echo "  wegen SEINER Mutation." >&2
+      if grep -qE '^(not ok |--- FAIL)' "$log"; then
+        echo "  Die Fehlschlaege von make $m (jedes 'not ok' samt Diagnose, jedes '--- FAIL'):" >&2
+        show_failures "$log"
+      fi
       echo "  Die letzten Zeilen von make $m:" >&2
       show_tail "$log"
       return 1
