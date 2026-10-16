@@ -1,7 +1,7 @@
 # Benutzerhandbuch: ai-harness-init
 
-**Software-Stand:** `v0.7.0` — vorgefertigte Programme für sechs Plattformen (linux · macos · windows × amd64 · arm64). Siehe [Aufgaben](#4-aufgaben) (Bootstrap, `--lang`, `add-lang`), [`--arch`](#ein-geschichtetes-grundgerüst-wählen---arch) und [Betriebs-Operationen](#betriebs-operationen).
-**Stand:** 2026-10-10
+**Software-Stand:** `v0.8.0` — vorgefertigte Programme für sechs Plattformen (linux · macos · windows × amd64 · arm64). Siehe [Aufgaben](#4-aufgaben) (Bootstrap, `--lang`, `add-lang`), [`--arch`](#ein-geschichtetes-grundgerüst-wählen---arch) und [Betriebs-Operationen](#betriebs-operationen).
+**Stand:** 2026-10-16
 **Verantwortlich:** ai-harness-init-Team (pt9912)
 
 ---
@@ -78,7 +78,7 @@ Eine lokale Installation der Zielsprache (Go-Toolchain, C++-Toolchain, JDK, Grad
 
 ### Das Werkzeug bereitstellen
 
-Es gibt **drei Wege**. Empfohlen ist der **Download** — fertige Programme für sechs Plattformen; **aktuell ausgeliefert wird `v0.7.0`**. Den Bau aus dem Quellcode brauchen Sie nur, wenn Sie einen Stand **ohne** Versions-Kennzeichnung verwenden wollen. Für macOS und Linux steht der dritte Weg über das **Homebrew-Tap** bereit (siehe [Weg C](#weg-c--über-ein-homebrew-tap-macos-linux)).
+Es gibt **drei Wege**. Empfohlen ist der **Download** — fertige Programme für sechs Plattformen; **aktuell ausgeliefert wird `v0.8.0`**. Den Bau aus dem Quellcode brauchen Sie nur, wenn Sie einen Stand **ohne** Versions-Kennzeichnung verwenden wollen. Für macOS und Linux steht der dritte Weg über das **Homebrew-Tap** bereit (siehe [Weg C](#weg-c--über-ein-homebrew-tap-macos-linux)).
 
 #### Weg A — fertiges Programm herunterladen (empfohlen)
 
