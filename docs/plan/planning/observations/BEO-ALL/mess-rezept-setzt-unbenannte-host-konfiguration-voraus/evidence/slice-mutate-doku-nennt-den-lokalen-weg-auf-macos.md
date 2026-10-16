@@ -1,0 +1,2 @@
+**Vorgang:** slice-mutate-doku-nennt-den-lokalen-weg-auf-macos
+**Fund:** Verifikation F-1: Der Aufruf-Block in der Sensor-Datei von `make mutate` reproduziert auf einem frischen macOS-Host nicht, weil er GNU-`sed` vor dem BSD-`sed` im `PATH` voraussetzt und es nicht nennt; gemessen wurde auf dem Host des Implementers mit GNU-`sed`. Dieselbe Lage zeigt der Treiber an einer zweiten, ebenfalls ungenannten Voraussetzung (Bash ≥ 4, `BEO-ALL/mutate-treiber-braucht-bash-4-und-bricht-auf-macos-bash-32`) — ein Vorgang, ein Beleg.
