@@ -10,11 +10,12 @@
 # aus ADR-0022 Festlegung 7 ist nicht die Anwesenheit, sondern der GEPRUEFTE Bereich —
 # dorthin gehoert eine Aussage an den Adopter, weil sein Doku-Gate sie dort liest.
 #
-# WARUM DER PFAD STEHEN BLEIBT: verschoeben wir die Datei (FieldListPath unter .harness/),
-# faellt die Stufe Handbuch-Baum in harness/tools/full-smoke.sh vor der Feldlisten-Stufe,
-# und der Lauf erreicht die Zusage nie. Mit unverrueckter Ablage sieht allein der Zahn
-# im Ziel — ein toter Verweis in der Feldliste, den docs-check des Ziels melden muss — die
-# Ausnahme.
+# WARUM DER PFAD STEHEN BLEIBT: die Stufe Handbuch-Baum in harness/tools/full-smoke.sh
+# steht vor der Feldlisten-Stufe und haelt die im Handbuch genannten Pfade gegen den Bestand
+# des frischen Ziels; der Pfad harness/erfassung-feldliste.md ist dort genannt, die Faelle 614
+# und 615 halten diese Stufe fuer die Ablage dieser Datei. Bei unverrueckter Ablage bleibt
+# die Stufe gruen, und die Ausnahme sieht allein der Zahn im Ziel — ein toter Verweis in
+# der Feldliste, den docs-check des Ziels melden muss.
 #
 # WARUM `full-smoke` DIE SCHMALSTE AUSREICHENDE STUFE IST: welcher Baum geprueft wird,
 # entscheidet die emittierte .d-check.yml IM ZIEL, und das zeigt nur ein Lauf, der
