@@ -32,7 +32,7 @@ Auslöser: Auftrag des Auftraggebers vom 2026-10-16 — nach dem Sprung auf `v6.
 ## 1. Ziel und Abgrenzung
 
 **Ziel:** Das Release `v0.8.0` ist veröffentlicht und vollzogen gemeldet: Träger und emittierte Vorlagen tragen den
-Stand von [`slice-sprung-auf-v6181-wird-vollzogen`](../next/slice-sprung-auf-v6181-wird-vollzogen.md), der Pin zeigt auf den geschnittenen Stand,
+Stand von [`slice-sprung-auf-v6181-wird-vollzogen`](../in-progress/slice-sprung-auf-v6181-wird-vollzogen.md), der Pin zeigt auf den geschnittenen Stand,
 und das Benutzerhandbuch beschreibt den Ist-Zustand.
 
 **Versionswahl:** `v0.8.0`; der vorige Tag ist `v0.7.0` (`git tag --sort=-v:refname | head -1`). Die Wahl folgt dem Minor-Schritt
@@ -41,7 +41,7 @@ der Auftraggeber hat sie am 2026-10-16 entschieden.
 
 **Gegenstände des Schnitts:** gemessen mit `git log --oneline v0.7.0..HEAD -- internal/ cmd/`; am Planungs-Stand `79801cd8`
 ist die Menge leer, der Gegenstand ist allein der Sprung auf `v6.18.1` samt Emitter-Folge
-([`slice-sprung-auf-v6181-wird-vollzogen`](../next/slice-sprung-auf-v6181-wird-vollzogen.md)). Der Implementer misst am Tag-Baum neu und trägt jeden
+([`slice-sprung-auf-v6181-wird-vollzogen`](../in-progress/slice-sprung-auf-v6181-wird-vollzogen.md)). Der Implementer misst am Tag-Baum neu und trägt jeden
 weiteren Commit mit seinem Slice in diese Tabelle, bevor er ihn liefert.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
@@ -118,7 +118,7 @@ Reihenfolge der Rollen:
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): [`slice-sprung-auf-v6181-wird-vollzogen`](../next/slice-sprung-auf-v6181-wird-vollzogen.md) liegt in `done/`; kein Slice liegt in `in-progress/`
+**Start** (`next` → `in-progress`): [`slice-sprung-auf-v6181-wird-vollzogen`](../in-progress/slice-sprung-auf-v6181-wird-vollzogen.md) liegt in `done/`; kein Slice liegt in `in-progress/`
 (`ls docs/plan/planning/in-progress/` nennt nur die Roadmap); `git tag --sort=-v:refname | head -1` nennt `v0.7.0`; der Auftraggeber bestätigt die
 Tag-Wahl `v0.8.0` (entschieden am 2026-10-16); WIP-Limit frei.
 
