@@ -1,0 +1,2 @@
+**Vorgang:** slice-mutations-faelle-305-und-171-bekommen-ihren-zahn-oder-nennen-die-luecke
+**Fund:** Verifikation F-1 (INFO): der Kopf von `test/mutations/171-feldliste-ausserhalb-des-geprueften-bereichs.sh` nennt „die Fälle 614 und 615“ als Halter der Stufe für die Ablage der Feldliste; Fall 614 mutiert `docs/plan/carveouts` (`.gitkeep`), nicht die Feldliste — die Prosa nennt einen Halter, den die rote Stelle nicht trägt. `# expect:` und Zahn stimmen; die Zusage an Fall 615 ist voll belegt.

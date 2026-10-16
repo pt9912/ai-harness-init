@@ -1,4 +1,9 @@
-**Stand:** offen (2×)
+**Stand:** geplant
+
+Kennung: `slice-mutate-doku-nennt-den-lokalen-weg-auf-macos` — er nennt den lokalen Weg für
+`make mutate` auf einem Nicht-Linux-Host in der Doku des Treibers. Der 3×-Übertritt ist mit dem
+Beleg `evidence/slice-mutations-faelle-305-und-171-bekommen-ihren-zahn-oder-nennen-die-luecke.md`
+erreicht; der Ausgang ist *geplant*, nicht *verkörpert*: die Regel steht noch nicht geschrieben.
 
 Für `make full-smoke`/`make smoke` besteht zusätzlich ein additiver, für den Host
 cross-kompilierender Pfad (`make full-smoke-host`/`make smoke-host`, Ziele in `Makefile`), der auf

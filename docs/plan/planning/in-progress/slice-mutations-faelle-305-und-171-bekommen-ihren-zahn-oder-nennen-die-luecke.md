@@ -38,15 +38,15 @@ Anlass: der geplante CI-Lauf `mutate` vom 2026-10-16. **305:** die Mutation kür
 
 ## 2. Definition of Done
 
-- [ ] Fall 305: gemessen, ob die Datei-Anlage-Variante (ii) `make mutate-greift` besteht und die Mutation `FEHLER — Rollen-Typ fehlt` in `rollen_typen_im_ziel` rot färbt (gesehen über `make mutate-auswahl`/CI-Branch; `make full-smoke` läuft auf macOS nicht, nur `full-smoke-host`). Besteht sie, ist (ii) der Fall. Sonst (i) mit den Auflagen: Kopf von Fall 305 und der Kommentar an `rollen_typen_im_ziel` in `full-smoke.sh` sagen weder „kein anderer Fall deckt sie“ noch „Dieser Fall ist der Zahn“, sondern nennen die Lücke (Meldungs-Zweig durch keinen Fall rot gesehen; ein Defekt dort fällt vorher am Handbuch-Baum).
-- [ ] Fall 171: gemessen, ob das Muster vorliegt (Wortlaut der Fehlermeldung aus dem Lauf in §7); bei Vorliegen derselbe Ausgang wie 305 ((ii) wenn herstellbar, sonst (i) mit benannter Lücke), sonst unverändert mit Befund in §7.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] Fall 305: gemessen, ob die Datei-Anlage-Variante (ii) `make mutate-greift` besteht und die Mutation `FEHLER — Rollen-Typ fehlt` in `rollen_typen_im_ziel` rot färbt (gesehen über `make mutate-auswahl`/CI-Branch; `make full-smoke` läuft auf macOS nicht, nur `full-smoke-host`). Besteht sie, ist (ii) der Fall. Sonst (i) mit den Auflagen: Kopf von Fall 305 und der Kommentar an `rollen_typen_im_ziel` in `full-smoke.sh` sagen weder „kein anderer Fall deckt sie“ noch „Dieser Fall ist der Zahn“, sondern nennen die Lücke (Meldungs-Zweig durch keinen Fall rot gesehen; ein Defekt dort fällt vorher am Handbuch-Baum).
+- [x] Fall 171: gemessen, ob das Muster vorliegt (Wortlaut der Fehlermeldung aus dem Lauf in §7); bei Vorliegen derselbe Ausgang wie 305 ((ii) wenn herstellbar, sonst (i) mit benannter Lücke), sonst unverändert mit Befund in §7.
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -72,17 +72,64 @@ DoD vollständig, `make mutate-auswahl` über den Branch zeigt 305 (und 171) aus
 
 ## 6. Risiken und offene Punkte
 
-- 305 lässt sich per `sed` nicht ohne Handbuch-Baum-Bruch herstellen — **Ausgang:** eingetreten (gemessen bestätigt, Architect-Bericht) → Variante (ii) per Datei-Anlage, sonst (i) mit benannter Lücke (DoD-Punkt 1).
-- Die Docker-Tag-Kollision der Worker von `make mutate` (`ai-harness-init:test`, gemessen im Fünfer-Lauf des Falls 111) kann die Messung stören: ein Einzellauf (`MUTATE_CASES=<ein Fall>`) hat einen Worker und ist nicht betroffen, ein Lauf mit mehreren Fällen auf diesem Host ist betroffen; ob ein CI-Shard mehrere Worker auf einem Runner fährt, ist **ungemessen**. `make mutate-greift` läuft ohne Worker-Image. Die Messung zu 305 und 171 fährt darum je Fall einzeln; ein Ergebnis aus einem Mehrfach-Lauf mit fehlenden Fällen zählt nicht als Befund zum Fall — **Ausgang:** weiter offen → `BEO-ALL/paralleler-mutate-lauf-verliert-das-image-eines-workers`.
-- 171 ist unmessbar auf macOS und nur über den CI-Branch zu sehen — **Ausgang:** entfallen, sobald der Branch-Lauf den Wortlaut liefert (DoD-Punkt 2).
+- 305 lässt sich per `sed` nicht ohne Handbuch-Baum-Bruch herstellen — **Ausgang:** eingetreten (gemessen bestätigt, Architect-Bericht) → Variante (ii) per Datei-Anlage, sonst (i) mit benannter Lücke (DoD-Punkt 1). **Eingetreten, Ausgang getragen:** am Emissions-Code allein gemessen bestätigt (Kontrast-Lauf fällt am Handbuch-Baum); Variante (ii) gebaut, aber als Zwei-Dateien-Mutation (`726cdd93`), nicht als Datei-Anlage — kein Folge-Slice nötig.
+- Die Docker-Tag-Kollision der Worker von `make mutate` (`ai-harness-init:test`, gemessen im Fünfer-Lauf des Falls 111) kann die Messung stören: ein Einzellauf (`MUTATE_CASES=<ein Fall>`) hat einen Worker und ist nicht betroffen, ein Lauf mit mehreren Fällen auf diesem Host ist betroffen; ob ein CI-Shard mehrere Worker auf einem Runner fährt, ist **ungemessen**. `make mutate-greift` läuft ohne Worker-Image. Die Messung zu 305 und 171 fährt darum je Fall einzeln; ein Ergebnis aus einem Mehrfach-Lauf mit fehlenden Fällen zählt nicht als Befund zum Fall — **Ausgang:** weiter offen → `BEO-ALL/paralleler-mutate-lauf-verliert-das-image-eines-workers` (Zähler unverändert). Die Messung lief je Fall einzeln; die Tag-Kollision trat nicht auf. Der einzige Docker-Fehler (Review INFO-2: `rpc error: code = Unavailable` im Einzellauf von 305, Wiederholung grün) hat eine andere Ursache und ist weder Beleg noch Befund zum Fall.
+- 171 ist unmessbar auf macOS und nur über den CI-Branch zu sehen — **Ausgang:** entfallen — nicht eingetreten: der Wortlaut des alten Befunds steht in den CI-Logs der Läufe 38698945568, 38529836984 und 38376387942 (Shard 2), vom Verifier gelesen; lokal ist 171 über `SMOKE_ARTIFACT_TARGET=artifact-host` im Einzellauf messbar (`ok`), kein Branch-Lauf nötig.
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
+Geschrieben vom Planner in eigenem Kontext bei der Closure ([`AGENTS.md`](../../../../AGENTS.md)
+§3.10).
+**Rolle:** Planner · **Datum:** 2026-10-16
+
+- **Was hat funktioniert:** DoD 1 bis 3 bestätigt
+  ([Verifikation](../../../reviews/2026-10-16-slice-mutations-faelle-305-und-171-bekommen-ihren-zahn-oder-nennen-die-luecke-verify.md),
+  `ed76d044`). **Fall 305** ist ein Zwei-Dateien-Fall (`# files: internal/span/emit.go docs/user/benutzerhandbuch.md`):
+  gekürzt werden `CanonicalRoles` und die Zeile `│       └── validator.md` im Baum von §6 des Handbuchs; der
+  Handbuch-Baum bleibt grün, und es fällt allein `rollen_typen_im_ziel` mit `FEHLER — Rollen-Typ fehlt`. Kontrast: nur
+  `emit.go` gekürzt → `FEHLER — Handbuch-Baum` vorgelagert. **Fall 171:** das Muster lag vor (Wortlaut in den CI-Logs
+  der Läufe 38698945568, 38529836984, 38376387942, Shard 2: `FEHLER — Handbuch-Baum (dokument-only) … [harness/erfassung-feldliste.md]`);
+  die Mutation hängt `harness/erfassung-feldliste.md` an `scan.ignore` der emittierten `.d-check.yml`, `# expect:` ist
+  `laesst das docs-check des Ziels GRUEN`, und der Fall misst die Zusage aus ADR-0022 Festlegung 7 (GEPRÜFTER
+  Bereich). Beide Einzelläufe `1 ok, 0 Befund(e)`; `make mutate-greift` 653 von 653; `make gates` Exit 0,
+  Stempel == HEAD; `harness/tools/full-smoke.sh` und `harness/tools/mutate.sh` unverändert. Review (`fbf3225b`):
+  0 HIGH, 0 MEDIUM, 2 LOW (Köpfe im Konjunktiv; danach im Implementer-Commit `d8e4cb5e` behoben), 2 INFO.
+- **Was ging anders als geplant:** die Planannahme (Plan und Architect), (ii) sei für 305 am Emissions-Code **nicht
+  herstellbar** und allein per Datei-Anlage möglich, ist am **Handbuch** widerlegt, nicht am Emissions-Code: der
+  Emissions-Code allein bleibt unherstellbar (Kontrast-Lauf), herstellbar wird (ii), weil der Handbuch-Baum eine Zeile
+  führt, die im Gleichschritt mitwandert. Der Fallback (i) und eine Änderung an `full-smoke.sh` blieben unnötig.
+  `make mutate-auswahl` über den CI-Branch ist nicht gefahren (kein Push); gemessen ist über Einzelläufe lokal. Ein erster
+  Einzellauf von 305 fiel an einem Docker/colima-Aussetzer, die Wiederholung war grün (Review INFO-2, nicht gezählt).
+- **Steering-Loop-Eintrag:** drei Beobachtungen, keine verkörpert (kein `liegt in`).
+  (i) Eine vorgelagerte Stufe fängt die Mutation ab, bevor sie die gemessene Stelle erreicht — die Mutation wird im
+  Gleichschritt mit der Stufe geführt (hier: Handbuch im selben Fall); gezählt als zweiter Beleg der
+  Klasse *neue Isolation entzahnt bestehende Wächter*, mit benannter Grenze in dem Beleg: die Ursache ist eine
+  Prüfstufe, keine Isolation; wer die Klasse enger liest, zählt 1×. (ii) Der Kopf von Fall 171 nennt mit 614 einen
+  Halter, den die rote Stelle nicht trägt (Verifikation F-1): zweiter Beleg der Klasse *Fall-Kopf nennt andere Ursache*.
+  (iii) Der lokale Weg `SMOKE_ARTIFACT_TARGET=artifact-host` für `make mutate` steht in keiner Doku: dritter
+  Beleg, **Lese-Schritt: Ausgang *geplant*** → `slice-mutate-doku-nennt-den-lokalen-weg-auf-macos`. Gegen einen Folge-Slice und
+  gegen den Register-Weg abgewogen: die Doku-Pflege an `harness/sensors/mutate.md` ist Implementer-Arbeit und trägt mit dem
+  Kopf-Satz zu 171 zwei Liefer-Punkte; weil der Zähler bei 3× steht, verlangt der Ausgang eine Kennung, kein Notiz-Satz.
+  Dieser Abschluss schrieb keinen Produktionscode.
+- **Beobachtungs-Register (`../observations/`):**
+  - [`BEO-ALL/lokaler-full-smoke-scheitert-auf-macos-host`](../observations/BEO-ALL/lokaler-full-smoke-scheitert-auf-macos-host/observation.md):
+    `evidence/slice-mutations-faelle-305-und-171-bekommen-ihren-zahn-oder-nennen-die-luecke.md` ergänzt — Zähler
+    steht damit bei 3×; `state.md` trägt *geplant* mit der Kennung des Folge-Slice (`make register-ausgang`).
+  - [`BEO-ALL/neue-isolation-entzahnt-bestehende-waechter`](../observations/BEO-ALL/neue-isolation-entzahnt-bestehende-waechter/observation.md):
+    Beleg ergänzt — 2×, `offen`. **Ein Vorgang zählt einmal:** die Fälle 305 und 171 sind ein Beleg, nicht zwei.
+  - [`BEO-ALL/fall-kopf-nennt-andere-ursache-als-die-rote-stelle`](../observations/BEO-ALL/fall-kopf-nennt-andere-ursache-als-die-rote-stelle/observation.md):
+    Beleg ergänzt — 2×, `offen`; der Kopf-Satz zu 171 wird im Folge-Slice nachgezogen.
+  - Kein Beleg: `BEO-ALL/paralleler-mutate-lauf-verliert-das-image-eines-workers` — nicht aufgetreten.
+  - Keine neue Beobachtung angelegt: alle drei Funde passten auf vorhandene Einträge.
+- **F-1 und die Doku-Lücke, Entscheidung:** F-1 (INFO) ist Beleg 2 an `fall-kopf-nennt-andere-ursache-als-die-rote-stelle`;
+  die undokumentierte Fahrbarkeit ist Beleg 3 an `lokaler-full-smoke-scheitert-auf-macos-host` mit Ausgang *geplant*;
+  beide Korrekturen tragen sich im Folge-Slice, nicht in diesem (kein Produktionscode im Abschluss).
+- **Folge-Slices:** `slice-mutate-doku-nennt-den-lokalen-weg-auf-macos` (Doku des Treibers + Kopf von Fall 171) — ist
+  eine Datei in `open/`.
+- **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines. ADR-Re-Evaluierungs-Trigger: keiner berührt.
+  Hard Rules: keine mit eingetretenem Auflösungs-Trigger.
+- **Archivierung:** entfällt ([`MR-078`](../../../../harness/conventions.md#mr-078); `archive-slice` ist nicht gebaut, wie beim Vorgänger).
+- **Risiken aus §6:** drei Zeilen, je ein Ausgang (eingetreten · weiter offen · entfallen).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
