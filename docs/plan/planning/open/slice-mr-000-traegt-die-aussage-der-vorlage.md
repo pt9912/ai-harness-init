@@ -49,7 +49,7 @@ Stichprobe über die Abschnitte von `modul-14`, `modul-15` und `modul-16` mit de
 
 ## 2. Definition of Done
 
-- [ ] [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) trägt die Aussage der Vorlage oder deklariert die Verschärfung vollständig (Architect-Commit); Beleg: Kommando gegen `.harness/baseline/v6.18.0/templates/harness/conventions.template.md`.
+- [ ] [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage) trägt die Aussage der Vorlage oder deklariert die Verschärfung vollständig (Architect-Commit); Beleg: Kommando gegen `.harness/baseline/v6.18.1/templates/harness/conventions.template.md`.
 - [ ] Stichprobe über `modul-14`, `modul-15`, `modul-16`: je Abschnitt Regel, Träger im Repo oder Zustand, mit Kommando; Befund *Muster* oder *kein Muster* in §7. Bei *Muster* liegt der Kandidat als Datei in `open/`.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`).
@@ -64,7 +64,7 @@ Stichprobe über die Abschnitte von `modul-14`, `modul-15` und `modul-16` mit de
 |---|---|---|
 | [`harness/conventions/MR-000-baseline-aussage.md`](../../../../harness/conventions/MR-000-baseline-aussage.md) | update | Aussage der Vorlage oder vollständige Deklaration; Form (Kopf-Marke oder neuer Eintrag) entscheidet der Architect |
 | `harness/conventions.md` | update | Index-Zeile von [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage), derivativ |
-| `.harness/baseline/v6.18.0/regelwerk/modul-14-docker-harness.md`, `modul-15-observability.md`, `modul-16-produktiver-betrieb.md` | lesen | Stichproben-Gegenstand |
+| `.harness/baseline/v6.18.1/regelwerk/modul-14-docker-harness.md`, `modul-15-observability.md`, `modul-16-produktiver-betrieb.md` | lesen | Stichproben-Gegenstand |
 
 ## 4. Trigger
 
