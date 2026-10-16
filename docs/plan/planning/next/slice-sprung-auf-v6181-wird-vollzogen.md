@@ -1,0 +1,212 @@
+# Slice slice-sprung-auf-v6181-wird-vollzogen: Jeder Träger des Tags steht auf `v6.18.1`, und die Emission folgt den umgeschriebenen Vorlagen-Adressen
+
+**Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese
+Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
+wechselt nur durch `git mv`, siehe
+Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
+Übernimmt ein anderer Slice den Gegenstand oder entfällt er, geht diese Datei
+aus `open/` oder `next/` nach `done/` — §7 nennt in der Zeile `Gegenstand:`
+Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
+(§Ein Slice, dessen Gegenstand ein anderer übernimmt).
+
+**Welle:** ohne Welle — keine Closure-Bedingung beobachtet mehr als die DoD dieses Slice
+(`make gates`, `make baseline-verify` und `make full-smoke` stehen in §2); Baseline-Regelwerk
+`modul-06-roadmap.md` §Wann Arbeit eine Welle braucht.
+
+**Bezug:**
+[`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (Tag-Klammer),
+[`LH-FA-09`](../../../../spec/lastenheft.md#lh-fa-09--regelwerk-emittieren) (Vorlagen wandern ins Ziel),
+[`LH-FA-02`](../../../../spec/lastenheft.md#lh-fa-02--zweiklassige-template-ablage-f3) (Template-Ablage),
+[`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6),
+[`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md) (Muster der regierenden Fassung; ob für
+`v6.18.1` eine eigene ADR nötig ist, entscheidet der Architect, Übergabe A1),
+[`MR-007`](../../../../harness/conventions.md#mr-007) (Vendoring),
+[`MR-025`](../../../../harness/conventions.md#mr-025).
+Auslöser: Auftrag des Auftraggebers vom 2026-10-16 — der Patch-Sprung ist klein, die Emission darf nicht vergessen werden.
+
+**Berührte Spec-Stellen:** —
+
+**Verantwortlich:** Implementer (pt9912).
+
+**Autor:** Planner. **Datum:** 2026-10-16.
+
+---
+
+## 1. Ziel und Abgrenzung
+
+**Ziel:** Der Sprung `v6.18.0` → `v6.18.1` ist vollzogen — vendored Baum, fünf gekoppelte Pins, Mess-Tag,
+Symlinks und jede lebende Adresse stehen auf `v6.18.1` — **und** der Emitter folgt den im Delta
+umgeschriebenen Vorlagen-Adressen, so dass ein frisch gebootstrapptes Ziel grün startet.
+
+**Delta**, gemessen am 2026-10-16 (keine Erwartungswerte, [`MR-025`](../../../../harness/conventions.md#mr-025) Setzung 2):
+
+```sh
+gh api repos/pt9912/ai-harness-course/compare/v6.18.0...v6.18.1 --jq '[.files[].filename]'
+#   CHANGELOG.md · docs/roadmap.md · tools/rewrite-template-links.sh   (3 Commits; kurs/de und lab/regelwerk nicht berührt)
+gh release view v6.18.1 -R pt9912/ai-harness-course --json assets --jq '.assets[]|[.name,.digest]|@tsv'
+#   lab-regelwerk.zip  sha256:c3a256ed971b27c15286588760add53770c52766054641cdf8487db6524bed31 · SHA256SUMS
+diff -rq .harness/baseline/v6.18.0 <entpacktes Asset>        # Asset in ein eigenes leeres Verzeichnis
+diff -r  .harness/baseline/v6.18.0/regelwerk <entpackt>/regelwerk | grep '^[<>]' | grep -vc 'Quelle:'   # Regelwerk-Inhalt
+diff -r  .harness/baseline/v6.18.0/templates <entpackt>/templates | grep '^[<>]'                       # Vorlagen
+```
+
+Inhalt: Der Bundle-Bau schreibt in Vorlagen jeden Code-Span-Pfad, der auf `.template.md` endet und im
+Vorlagen-Baum existiert, auf `.harness/baseline/<tag>/templates/<pfad>` um (Kurs-Welle 162, fünf Treffer in vier
+Vorlagen). Gemessen am Asset: das Regelwerk trägt nur den neuen Tag in den `Quelle:`-Kommentaren und in
+zwei Kurs-URLs der `README.md` (der Inhalts-Diff ohne `Quelle:`-Zeilen zählt 4 Zeilen); fünf Vorlagen
+weichen ab — die Vorlagen von Reviewer-Skill, Closure-Note-Reviewer, Harness-README und Konventionsspeicher (Adress-Umschreibung)
+und die `AGENTS`-Vorlage (Tag der Release-URL). Die Release-Assets heißen `lab-regelwerk.zip` und `SHA256SUMS`; der
+Digest des Assets ist am 2026-10-16 an `gh` und an `shasum -a 256` des heruntergeladenen Assets gemessen
+und gleich — der Implementer misst beim Tausch neu.
+
+**Träger, gemessen über dem Arbeitsbaum dieses Plans** (keine Erwartungswerte):
+
+```sh
+grep -nE '^BASELINE_(TAG|ZIP_SHA256)' Makefile                        # kanonisch
+grep -n 'lab-regelwerk' -A 1 .d-check.yml
+grep -nE 'Default(Tag|BaselineSHA256) =' internal/fetch/baseline.go
+grep -n 'const InventurMessTag' internal/emit/baumaussage.go
+readlink .claude/rules/*.md | grep -c 'baseline/v6\.18\.0'
+PS=( '*.md' ':!.harness/baseline' ':!docs/reviews' ':!docs/plan/planning/done' \
+     ':!docs/plan/carveouts/done' ':!docs/plan/planning/observations' )
+git grep -oE '\]\([^)]*\.harness/baseline/v6\.18\.0[^)]*\)' -- "${PS[@]}" | wc -l   # Links
+git grep -oE '`[^`]*\.harness/baseline/v6\.18\.0[^`]*`'     -- "${PS[@]}" | wc -l   # Inline-Pfade
+git grep -l 'baseline/v6.18.0' -- ':!*.md' ':!.harness/baseline'                    # nicht-Markdown-Träger
+```
+
+**Emission — was der Plan misst und was er offen lässt.** Der emittierte Vorlagen-Satz kommt aus dem
+vendored Baum (`internal/emit/templates.go`). Gelesen am Wortlaut: der Marker `conventionsPathRefOld`
+(zwei Zeilen, `` `harness/conventions/MR-NNN-titel.template.md` ``) trifft den Text von `v6.18.1` nicht mehr, weil
+die Adresse dort das Präfix `.harness/baseline/<tag>/templates/` trägt; die Erwartung
+`conventionsPathRefOld:1` in `test/neutralisierung-marker.bats` hält genau diesen Treffer
+(der Lauf am neuen Baum steht aus). **Nicht gemessen** ist, ob das emittierte `codepaths` die Inline-Pfade mit
+dem Literal `<tag>` im frischen Ziel als `codepath-missing` meldet; der grüne Start in `make full-smoke` beantwortet es.
+Die Proben im Kommentar von `StripCommentHints` gelten laut ihrem Wortlaut je für den Satz, gegen den sie gefahren wurden.
+
+**Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
+
+- **Der Release `v0.7.1` und sein Tag-Push.** *Folge-Slice:* [`slice-release-schnitt-v071-liefert-die-baseline-v6181`](../open/slice-release-schnitt-v071-liefert-die-baseline-v6181.md)
+  nimmt ihn an; sein Start-Trigger ist dieser Slice in `done/`.
+- **`reviews` im Dogfood scharf schalten.** *Folge-Slice:* [`slice-review-deckung-laeuft-im-dogfood`](../open/slice-review-deckung-laeuft-im-dogfood.md)
+  trägt es; das Delta berührt Modul 10 nicht.
+- **Dogfood-Instanzen der Vorlagen** (Reviewer-Skill, `harness/README.md`, `harness/conventions.md`) auf die neuen Adressen ziehen.
+  *Bestand bleibt bewusst stehen:* das Delta ändert die Bundle-Form der Adresse; die Instanzen tragen Pfade, die im eigenen Repo auflösen.
+- **Eingefrorene Adressen** (`done/**`, `docs/plan/carveouts/done/**`, Register, `Accepted`-ADRs).
+  *Bestand bleibt stehen* ([`AGENTS.md`](../../../../AGENTS.md) §3.4, §3.11); trägt eine `Accepted`-ADR einen Link in
+  `v6.18.0/`, wird ihre Deckung **vor** dem Tausch beim Architect angefragt.
+- **Norm-Texte.** *Schicht-Abgrenzung:* die Übergaben unten schreibt der Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
+
+**Übergaben an den Architect** (keine Liefer-Punkte; je eigener Commit):
+
+- **A1 — Muss `v6.18.1` eine eigene Ziel-Fassungs-ADR bekommen?** Empfehlung des Planners: nein — das Delta ändert
+  keine Regel (Regelwerk: nur Tag-Zeilen; Vorlagen: Adress-Form), und [`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md)
+  regiert den Zielstand der `v6.18`-Linie. Prüfen: trägt ihre Festlegung 1 den Patch ohne neue Abwägung?
+- **A2 — Verdikt vor dem Start: Wie behandelt der Emitter die umgeschriebenen Adressen?** Zur Wahl stehen: Einsetzen des
+  Tags beim Emittieren (der Pfad löst im Ziel auf, wo der Baum liegt), eine neue Neutralisierungs-Zeile, oder Stehenlassen
+  mit Begründung — gemessen am frischen Ziel. Ob die Wahl eine ADR oder einen MR braucht, sagt der Architect.
+- **A3 — nach dem Vollzug:** Buchung §Baseline in [`harness/conventions.md`](../../../../harness/conventions.md);
+  Sprung-Zeile in [`harness/migration.md`](../../../../harness/migration.md) §1 samt der tag-tragenden Pfade des Instanz-Registers;
+  Freshness-Verdikt über die Kandidaten (wer die fünf Vorlagen oder ihre Adressen nennt) **vor** dem Entfernen von `v6.18.0/`
+  (Register `freshness-verdikt-faellt-nach-dem-entfernen-des-alten-baums`).
+
+## 2. Definition of Done
+
+Zwei Liefer-Punkte, einer je Achse (Baseline · Emission).
+
+- [ ] **1 — Jeder Träger des Tags steht auf `v6.18.1`, und keine lebende Adresse bleibt auf `v6.18.0`.** Baum über
+      [`make vendor-baseline`](../../../../harness/sensors/vendor-baseline.md) aus dem verifizierten Asset (einmal Netz,
+      [`MR-007`](../../../../harness/conventions.md#mr-007)); `make baseline-verify` meldet `v6.18.1 OK`; fünf Pins gesetzt,
+      sha256 am Asset gemessen, Kommando im Tausch-Commit; `make regelwerk-check` → `0 Befund(e)`; Mess-Tag und
+      Symlinks auf `v6.18.1`; das Link-Kommando aus §1 liefert **0** außerhalb von `ignore-refs`-Paaren. Tausch- und
+      Nachzugs-Commit in einem Push, Nachzug je Eigentümer ein Commit mit Rolle.
+      **Rot gesehen** ([`AGENTS.md`](../../../../AGENTS.md) §3.6): ein echter Pin-Wert bleibt einmal auf `v6.18.0`, ein
+      Pin-Wächter wird mit einer Meldung über genau diese Stelle rot.
+- [ ] **2 — Die Emission folgt den umgeschriebenen Adressen.** Der Emitter behandelt jeden der fünf Treffer nach Verdikt A2;
+      `test/neutralisierung-marker.bats` meldet je Marker die erwartete Trefferzahl am neuen Baum; die drei Proben im Kommentar
+      von `StripCommentHints` sind gegen den neuen Satz gefahren und leer; `make full-smoke` startet am frischen Ziel grün,
+      und im emittierten Satz steht keine Adresse, die im Ziel nicht auflöst (Kommando im Beleg).
+      **Rot gesehen:** die Behandlung wird an der **realen** Quelle aufgehoben (der vendorte Baum, nicht die Fixture) —
+      Bats-Fall oder `full-smoke` wird mit der Meldung über genau diese Stelle rot.
+- [ ] `make gates` grün über dem Liefer-Stand; `make full-smoke` endet EXIT 0.
+- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), volle Slice-Kennung im
+      Dateinamen — Rollenwechsel nach Schritt 8 des Minimal Agent Workflow, kein Self-Review (Modul 8).
+- [ ] Doku-Update: die Architect-Übergaben A1–A3 liegen als eigene Commits vor.
+- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben, oder „keine Beobachtung" in §7.
+- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [ ] Die drei Paarungen sind getragen — das Repo fährt Wellen; sie prüft die nächste Welle-Closure.
+
+## 3. Plan (vor Code)
+
+| Datei / Komponente | Änderungs-Art | Begründung |
+|---|---|---|
+| `.harness/baseline/v6.18.1/` · `.harness/baseline/v6.18.0/` | neu · entfernt (nach A3-Verdikt) | Liefer-Punkt 1 |
+| `Makefile`, `.d-check.yml` (`sources`), `internal/fetch/baseline.go` | update | fünf Pins (1) |
+| `internal/emit/baumaussage.go`, `internal/emit/templates.go` (Kommentar-Adressen), `.claude/rules/*.md` | update | Mess-Tag, Adressen, Symlinks (1) |
+| lebende Markdown-Artefakte mit Adresse | update | 1 — je Eigentümer ein Commit |
+| `internal/emit/templates.go` (Tabelle `WortlautNeutralisierungen`), `internal/emit/*_test.go` | update | 2, nach Verdikt A2 |
+| `test/neutralisierung-marker.bats`, `test/mutations/` | update · neu | Wächter für 2 (reale Quelle) |
+| `harness/tools/full-smoke.sh`, `docs/user/e2e-abdeckung.md` | update, falls A2 eine Stufe verlangt | Beleg am frischen Ziel (2) |
+| `test/sources-pin.bats`, `internal/fetch/*_test.go` | unverändert | Wächter für 1 |
+
+## 4. Trigger
+
+**Start** (`next` → `in-progress`): `in-progress/` trägt keinen Slice; die Übergaben A1 und A2 liegen als Commits vor
+(Stand dieses Plans: ausstehend); `make baseline-freshness` meldet keinen neueren Tag als `v6.18.1`; einmal Netz für
+`make vendor-baseline` und `make regelwerk-check`; WIP-Limit frei. Der Zug nach `in-progress/` landet auf dem Hauptzweig.
+
+**Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
+
+- `in-progress` → `next`: Liefer-Punkt 2 übersteigt eine Review-Sitzung (Emitter-Änderung samt neuer `full-smoke`-Stufe) —
+  er wird eigener Slice, mit der Release-Bedingung *kein Tag zwischen den Vorgängen*.
+- `in-progress` → `open`, jede Bedingung für sich hinreichend: **(a)** der am Asset gemessene sha256 weicht ab, oder
+  `make vendor-baseline` bricht an seiner Sperre ab; **(b)** das frische Ziel startet mit der nach A2 gewählten Behandlung
+  nicht grün — der Architect urteilt neu; **(c)** eine `Accepted`-ADR trägt einen Link in `v6.18.0/`, und ihre Deckung ist vor dem Tausch nicht entschieden.
+
+## 5. Closure-Trigger
+
+1. `make baseline-verify` meldet `v6.18.1 OK`; `make gates` grün; das Link-Kommando aus §1 und
+   `readlink .claude/rules/*.md | grep '\.harness/baseline/' | grep -vc 'baseline/v6\.18\.1/'` liefern **0**;
+   `make full-smoke` EXIT 0 mit dem Beleg aus Liefer-Punkt 2.
+2. Die Architect-Übergaben A1–A3 liegen als Commits vor; Review und Verifikation liegen unter `docs/reviews/`.
+
+**Lerneintrag** in einer der drei Formen, §7. Die Closure schreibt der Planner in frischem Kontext und eigenem Commit
+([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+
+## 6. Risiken und offene Punkte
+
+- **Die Neutralisierung fällt am neuen Stand still aus** — `conventionsPathRefOld` trifft nicht mehr; ohne Wächter am realen
+  Baum bliebe ein Test über einer Fixture grün. Der Wächter ist `test/neutralisierung-marker.bats`.
+  **Ausgang:** bei der Closure.
+- **Das frische Ziel startet nicht grün** — Inline-Pfade mit dem Literal `<tag>` im emittierten Satz. Das wäre das dritte Auftreten von
+  [`BEO-ALL/vendored-vorlage-nennt-pfad-den-das-adoptierende-repo-nicht-fuehrt`](../observations/BEO-ALL/vendored-vorlage-nennt-pfad-den-das-adoptierende-repo-nicht-fuehrt/observation.md)
+  (heute 2×) und bekäme einen eigenen Folge-Slice. **Ausgang:** bei der Closure.
+- **Tag-tragende Adresse überlebt den Tausch nicht** — das Link-Kommando aus §1 fängt es
+  ([`BEO-ALL/tag-tragende-adresse-ueberlebt-den-baseline-tausch-nicht`](../observations/BEO-ALL/tag-tragende-adresse-ueberlebt-den-baseline-tausch-nicht/observation.md), Stand `geplant`).
+  **Ausgang:** bei der Closure.
+- **Asset → vendored Baum bleibt ungehalten** — `SHA256SUMS` ist selbst erzeugt; die Herkunft hält allein der Vendoring-Vorgang
+  ([`MR-007`](../../../../harness/conventions.md#mr-007)). **Ausgang:** bei der Closure.
+
+## 7. Closure-Notiz
+
+Wird vom Planner bei der Closure in frischem Kontext geschrieben ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+
+## 8. Sub-Area-Prüfungen und Modus-Begründung
+
+**Vorgelagert — Sub-Area-Wahl prüfen:** berührt ist `*` (gesamtes Repo) — Tag und Vorlagen stehen in `Makefile`,
+`.d-check.yml`, `internal/`, `.claude/rules/`, `harness/`, `docs/`. `TOOLS` ist nur über `harness/tools/full-smoke.sh` berührt,
+falls A2 eine Stufe verlangt, ohne neue Mechanik; `CODEX` nicht.
+
+**Vorgelagert — offene Beobachtungen sichten:** Register am gemergten Stand (`79801cd8`) gesichtet, alle Einträge führen `*`;
+Zähler = `ls <eintrag>/evidence/*.md | wc -l`, gemessen am 2026-10-16, keine Erwartungswerte.
+
+| Eintrag | Zähler | Berührung |
+|---|---|---|
+| `vendored-vorlage-nennt-pfad-den-das-adoptierende-repo-nicht-fuehrt` | 2 (offen) | Liefer-Punkt 2 — ein drittes Auftreten ist in §6 benannt |
+| `tag-tragende-adresse-ueberlebt-den-baseline-tausch-nicht` | 3 (geplant) | Liefer-Punkt 1, Link-Kommando |
+| `freshness-verdikt-faellt-nach-dem-entfernen-des-alten-baums` | 1 (offen) | A3 verlangt das Verdikt vor dem Entfernen |
+| `re-baseline-ohne-inventur-slice` | 2 (offen) | kein Auftreten — das Delta ist in §1 gemessen |
+| `emittierter-stand-laeuft-dem-dogfood-voraus` | 2 (offen) | kein Auftreten — die Dogfood-Instanzen bleiben bewusst stehen (§1) |
+| `baseline-sprungweite-treibt-kosten` | 3 (verkörpert) | kein Auftreten — ein Patch-Abstand |
+
+**Alle berührten Sub-Areas GF** ([`harness/conventions.md`](../../../../harness/conventions.md) §Modus-Deklaration pro Sub-Area).
