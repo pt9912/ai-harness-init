@@ -15,7 +15,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 
 **Berührte Spec-Stellen:** —.
 
-**Verantwortlich:** — bis zur Priorisierung.
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-10-16.
 
@@ -59,7 +59,7 @@ Anlass: der geplante CI-Lauf `mutate` vom 2026-10-16. **305:** die Mutation kür
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): Priorisierung durch den Planner; die Reihenfolge ist Slice `slice-mutations-fall-111-haengt-an-den-test-der-branch-kennzeichnung` zuerst (WIP-Limit 1). Die Verdikte des Architect (§1) liegen als Bericht vor.
+**Start** (`next` → `in-progress`): Priorisierung durch den Planner; die Reihenfolge ist Slice `slice-mutations-fall-111-haengt-an-den-test-der-branch-kennzeichnung` zuerst (WIP-Limit 1). Die Verdikte des Architect (§1) liegen als Bericht vor. **Erfüllter Zustand:** `slice-mutations-fall-111-haengt-an-den-test-der-branch-kennzeichnung` liegt in `done/` (Beleg: `ls docs/plan/planning/done/slice-mutations-fall-111-haengt-an-den-test-der-branch-kennzeichnung.md`), `in-progress/` trägt danach nur `roadmap.md`, WIP-Limit frei.
 
 **Rückführungen:**
 
@@ -73,6 +73,7 @@ DoD vollständig, `make mutate-auswahl` über den Branch zeigt 305 (und 171) aus
 ## 6. Risiken und offene Punkte
 
 - 305 lässt sich per `sed` nicht ohne Handbuch-Baum-Bruch herstellen — **Ausgang:** eingetreten (gemessen bestätigt, Architect-Bericht) → Variante (ii) per Datei-Anlage, sonst (i) mit benannter Lücke (DoD-Punkt 1).
+- Die Docker-Tag-Kollision der Worker von `make mutate` (`ai-harness-init:test`, gemessen im Fünfer-Lauf des Falls 111) kann die Messung stören: ein Einzellauf (`MUTATE_CASES=<ein Fall>`) hat einen Worker und ist nicht betroffen, ein Lauf mit mehreren Fällen auf diesem Host ist betroffen; ob ein CI-Shard mehrere Worker auf einem Runner fährt, ist **ungemessen**. `make mutate-greift` läuft ohne Worker-Image. Die Messung zu 305 und 171 fährt darum je Fall einzeln; ein Ergebnis aus einem Mehrfach-Lauf mit fehlenden Fällen zählt nicht als Befund zum Fall — **Ausgang:** weiter offen → `BEO-ALL/paralleler-mutate-lauf-verliert-das-image-eines-workers`.
 - 171 ist unmessbar auf macOS und nur über den CI-Branch zu sehen — **Ausgang:** entfallen, sobald der Branch-Lauf den Wortlaut liefert (DoD-Punkt 2).
 
 ## 7. Closure-Notiz
