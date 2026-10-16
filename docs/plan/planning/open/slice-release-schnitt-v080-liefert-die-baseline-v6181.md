@@ -23,7 +23,7 @@ Auslöser: Auftrag des Auftraggebers vom 2026-10-16 — nach dem Sprung auf `v6.
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** — (gesetzt beim Übergang `open` → `next`)
+**Verantwortlich:** Implementer (pt9912)
 
 **Autor:** Planner. **Datum:** 2026-10-16.
 
@@ -39,9 +39,9 @@ und das Benutzerhandbuch beschreibt den Ist-Zustand.
 von [`releasing.md`](../../../user/releasing.md) §Versionsnummer (Sprung der adoptierten Baseline und geänderte emittierte Dateien);
 der Auftraggeber hat sie am 2026-10-16 entschieden.
 
-**Gegenstände des Schnitts:** gemessen mit `git log --oneline v0.7.0..HEAD -- internal/ cmd/`; am Planungs-Stand `79801cd8`
-ist die Menge leer, der Gegenstand ist allein der Sprung auf `v6.18.1` samt Emitter-Folge
-([`slice-sprung-auf-v6181-wird-vollzogen`](../done/slice-sprung-auf-v6181-wird-vollzogen.md)). Der Implementer misst am Tag-Baum neu und trägt jeden
+**Gegenstände des Schnitts:** gemessen mit `git log --oneline v0.7.0..HEAD -- internal/ cmd/`; am Stand `a2800a86`
+nennt die Menge zwei Commits (`1d79137b`, `26ef8f20`), beide aus
+[`slice-sprung-auf-v6181-wird-vollzogen`](../done/slice-sprung-auf-v6181-wird-vollzogen.md): der Sprung auf `v6.18.1` samt Emitter-Folge. Der Implementer misst am Tag-Baum neu und trägt jeden
 weiteren Commit mit seinem Slice in diese Tabelle, bevor er ihn liefert.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
@@ -118,9 +118,9 @@ Reihenfolge der Rollen:
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): [`slice-sprung-auf-v6181-wird-vollzogen`](../done/slice-sprung-auf-v6181-wird-vollzogen.md) liegt in `done/`; kein Slice liegt in `in-progress/`
-(`ls docs/plan/planning/in-progress/` nennt nur die Roadmap); `git tag --sort=-v:refname | head -1` nennt `v0.7.0`; der Auftraggeber bestätigt die
-Tag-Wahl `v0.8.0` (entschieden am 2026-10-16); WIP-Limit frei.
+**Start** (`next` → `in-progress`), Stand `a2800a86`: erfüllt — [`slice-sprung-auf-v6181-wird-vollzogen`](../done/slice-sprung-auf-v6181-wird-vollzogen.md) liegt in `done/`;
+`ls docs/plan/planning/in-progress/` nennt nur die Roadmap; `git tag --sort=-v:refname | head -1` nennt `v0.7.0`; Tag-Wahl `v0.8.0` vom Auftraggeber
+am 2026-10-16 entschieden; WIP-Limit frei. Der Freigabe-Vermerk für Schritt P (§3) bleibt unberührt.
 
 **Rückführungen:**
 
