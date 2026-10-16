@@ -112,6 +112,34 @@ Bericht (`report_times`); Isolationskopie und Grün-Vorlauf fallen je Worker an,
 Fall-Anteil. Gehalten wird das von `test/mutate-driver.bats` (Blöcke „Teillauf: MUTATE_CASES") und
 den Fällen 453 bis 458 in `test/mutations/`.
 
+## Lokaler Weg für `# verify: full-smoke`-Fälle auf einem Nicht-Linux-Host
+
+Auf einem Host, dessen Betriebssystem oder Architektur nicht Linux/amd64 ist (gemessen: macOS),
+läuft ein Fall mit `# verify: full-smoke` so:
+
+```sh
+SMOKE_ARTIFACT_TARGET=artifact-host MUTATE_CASES=<voller Fallname> make mutate
+```
+
+Die Variable wählt, wie bei `make full-smoke-host`, das Make-Ziel `artifact-host` (Träger für den
+Host cross-kompiliert) statt `artifact`. **Ohne sie** bootstrappt `full-smoke` mit dem
+Linux-Binary des Containers auf dem Host und endet mit `cannot execute binary file: Exec format
+error` und `full-smoke: FEHLER — der Bootstrap (sprachlos) … ist NICHT Exit 0 (Exit 126)`; der
+Treiber meldet dann `BEFUND  worker-1 …` und der Lauf endet über `make` mit 2.
+
+Grenzen, gemessen am Fall `171-feldliste-ausserhalb-des-geprueften-bereichs` (macOS, `make mutate`
+mit der Variable: `mutate: 1 ok, 0 Befund(e)`, 194 s Wanduhr, davon Grün-Vorlauf 157 s, der Fall
+selbst 16,6 s; ohne die Variable endet derselbe Aufruf nach 20 s mit Exit 2 und der Meldung oben):
+
+- Gemessen sind Einzel-Fälle. Mehrere Worker, die zugleich Images bauen, kollidieren auf diesem
+  Host an der Docker-Tag-Vergabe; ein Mehr-Fall-Lauf ist nicht zugesagt.
+- `MUTATE_CASES` verlangt den vollen Fallnamen (ohne `.sh`); mehrere Namen trennt ein Leerzeichen,
+  kein Komma.
+- Den Grün-Vorlauf zahlt jeder Aufruf neu; die Messung (157 s) ist ein Einzelwert auf einem Host,
+  kein Erwartungswert — die Größenordnung liegt bei mehreren Minuten je Aufruf.
+- Kein Wächter hält diese Aussage: keine Prüfung liest den Aufruf dieses Abschnitts gegen den
+  Treiber oder das `Makefile`. Träger ist der Lauf, der sie schreibt.
+
 ## Meldung eines roten Grün-Vorlaufs
 
 Ist `make <modus>` in der Isolationskopie ohne Mutation rot (`green_prerun`), nennt die Meldung

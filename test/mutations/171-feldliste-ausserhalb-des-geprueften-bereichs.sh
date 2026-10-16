@@ -12,8 +12,8 @@
 #
 # WARUM DER PFAD STEHEN BLEIBT: die Stufe Handbuch-Baum in harness/tools/full-smoke.sh
 # steht vor der Feldlisten-Stufe und haelt die im Handbuch genannten Pfade gegen den Bestand
-# des frischen Ziels; der Pfad harness/erfassung-feldliste.md ist dort genannt, die Faelle 614
-# und 615 halten diese Stufe fuer die Ablage dieser Datei. Bei unverrueckter Ablage bleibt
+# des frischen Ziels; der Pfad harness/erfassung-feldliste.md ist dort genannt, der Fall 615
+# haelt diese Stufe fuer die Ablage dieser Datei. Bei unverrueckter Ablage bleibt
 # die Stufe gruen, und die Ausnahme sieht allein der Zahn im Ziel — ein toter Verweis in
 # der Feldliste, den docs-check des Ziels melden muss.
 #
