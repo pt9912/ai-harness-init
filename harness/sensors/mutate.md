@@ -121,6 +121,20 @@ Gemessen ist dieser Weg auf macOS (Docker über Colima). Auf einem solchen Host 
 SMOKE_ARTIFACT_TARGET=artifact-host MUTATE_CASES=<voller Fallname> make mutate
 ```
 
+**Voraussetzung: GNU-`sed` vor dem BSD-`sed` im `PATH`.** Gemessen ist Homebrew `gnu-sed`:
+
+```sh
+PATH=/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH SMOKE_ARTIFACT_TARGET=artifact-host MUTATE_CASES=<voller Fallname> make mutate
+```
+
+Ohne GNU-`sed` scheitert das Fall-Skript, und der Treiber meldet `BEFUND … Mutations-Skript
+scheiterte: sed: 1: "internal/span/emit.go ": command i expects \ followed by text` mit
+`0 ok, 1 Befund(e)`; auch `make mutate-greift` und damit `make gates` sind rot
+(`mutate-greift: 653 Fall/Faelle, 7 greifen, 646 Befund(e)`; mit GNU-`sed`: `653 greifen, 0
+Befund(e)`). Ob ein anderer Installationsweg für GNU-`sed` dasselbe leistet, ist ungemessen. Zu den
+übrigen GNU-Werkzeugen steht der Absatz „Der Modus braucht GNU-Werkzeuge auf dem Host“ weiter unten.
+Die Aufrufe unten setzen den `PATH` voraus und nennen ihn der Kürze halber nicht mehr.
+
 Die Variable wählt, wie bei `make full-smoke-host`, das Make-Ziel `artifact-host` (Träger für den
 Host cross-kompiliert) statt `artifact`. **Ohne sie** bootstrappt `full-smoke` mit dem
 Linux-Binary des Containers auf dem Host und endet mit `cannot execute binary file: Exec format
@@ -250,7 +264,10 @@ dem Fall-Bestand. Nicht gemessen ist die Laufzeit auf dem CI-Runner und bei kalt
   (`grep -l 'sed -i' test/mutations/*.sh | wc -l`) und `\t` im Muster
   (`grep -lF '\t' test/mutations/*.sh | wc -l`), der Treiber `mktemp -d -p`. Das sind GNU-Formen;
   `AGENTS.md` §3.9 nennt als Host-Bedarf `git`, `docker` und GNU `make`, nicht GNU `sed`. Auf
-  einem Host mit BSD-Werkzeugen ist das Verhalten nicht gemessen. Mit `make comment-claims`
+  macOS mit BSD-`sed` scheitern die Fall-Skripte (`sed: 1: "…": command i expects \ followed by
+  text`; `make mutate-greift`: `7 greifen, 646 Befund(e)`), mit Homebrew `gnu-sed` vor dem BSD-`sed`
+  im `PATH` greifen alle (`653 greifen, 0 Befund(e)`). Für `mktemp` und `sha256sum` auf einem Host
+  mit BSD-Werkzeugen ist das Verhalten nicht gemessen. Mit `make comment-claims`
   teilt der Modus nur die Ausführung ohne Container; `harness/tools/comment-claims.sh` nutzt
   keine dieser Formen (`grep -cE 'sed -i|mktemp -d -p' harness/tools/comment-claims.sh` → 0).
   Die CI läuft auf einem GNU-Runner; das deckt den Lauf dort, nicht einen anderen Host.
