@@ -15,7 +15,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 
 **Berührte Spec-Stellen:** —.
 
-**Verantwortlich:** — bis zur Priorisierung.
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-10-16.
 
@@ -32,7 +32,9 @@ Anlass: Shard 2 des Laufs vom 2026-10-16: Grün-Vorlauf `make test-bats` in der 
 - **Die Ursache des roten `make test-bats`.** Ungemessen; erst das vollständige Log macht sie messbar. Wird sie gefunden, ist sie ein eigener Slice (eigener Gegenstand und vermutlich eigene Schicht).
 - **Ein Wiederholungslauf bei rotem Grün-Vorlauf.** Wäre eine Sensor-Lockerung ([`AGENTS.md`](../../../../AGENTS.md) §3.5, ADR-pflichtig); der Slice liefert Sicht, kein anderes Urteil.
 - **Artefakt-Upload des vollen Logs im Workflow.** Eine zweite Schicht (`mutate.yml`); bleibt aus, solange die Ausgabe der Treiber-Meldung trägt. Trägt sie nicht, ist das der Grund für einen Folge-Slice.
-- **Das Sterben des Workers.** Siehe `slice-span-sperre-haelt-den-test-unter-last` §1; der Slice macht den Grund sichtbar, die Treiber-Robustheit bleibt anderer Vorgang.
+- **Das Sterben des Workers.** Siehe `slice-span-sperre-haelt-den-test-unter-last` §1; der Slice macht den Grund sichtbar, die Treiber-Robustheit bleibt anderer Vorgang. Dazu gehört gemessen: ein sterbender Worker lässt die übrigen stehen (Status 3/1, 32 von 65 Fällen ohne Ergebnis) — Treiber-Robustheit, keine Sicht.
+- **Die Docker-Tag-Kollision paralleler Worker** (`No such image: sha256:…` im Grün-Vorlauf). Eigene Ursache am gemeinsamen Image-Tag, nicht an der Meldung; Träger ist die Beobachtung `BEO-ALL/paralleler-mutate-lauf-verliert-das-image-eines-workers`. Der Slice zeigt ihre Zeile im Log, wenn sie auftritt, behebt sie nicht.
+- **Die Fehlklassifikation eines Docker-/colima-Aussetzers in `make artifact-host` als „BEFUND … falscher Grund“.** Gemessen am lokalen Lauf; der Treiber unterscheidet einen Umgebungsfehler des Vorlaufs nicht von einem falschen Grund des Falls. Andere Meldung (Fehlerklasse statt Fehlschlag-Zeilen), ein eigener Vorgang; bleibt in §6 benannt.
 
 ## 2. Definition of Done
 
@@ -57,7 +59,7 @@ Anlass: Shard 2 des Laufs vom 2026-10-16: Grün-Vorlauf `make test-bats` in der 
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): Priorisierung durch den Planner; Reihenfolge nach `slice-span-sperre-haelt-den-test-unter-last` (WIP-Limit 1, deterministisch rote Fälle zuerst). Kein fachlicher Vorgänger; die Verdikte des Architect berühren diesen Slice nicht.
+**Start** (`next` → `in-progress`): Priorisierung durch den Planner; Reihenfolge nach `slice-span-sperre-haelt-den-test-unter-last` (WIP-Limit 1, deterministisch rote Fälle zuerst). Kein fachlicher Vorgänger; die Verdikte des Architect berühren diesen Slice nicht. **Erfüllter Zustand:** der Vorgänger liegt in `done/` (Beleg: `ls docs/plan/planning/done/slice-span-sperre-haelt-den-test-unter-last.md`), `in-progress/` trägt danach nur `roadmap.md` (`ls docs/plan/planning/in-progress/`), WIP-Limit frei; `Verantwortlich:` gesetzt.
 
 **Rückführungen:**
 
@@ -71,7 +73,9 @@ DoD vollständig; Review ohne blockierenden Befund; Closure-Notiz geschrieben. O
 ## 6. Risiken und offene Punkte
 
 - Das `not ok` steht auch im vollen Protokoll nicht (Prozess hart beendet) — **Ausgang:** weiter offen → neue Beobachtung in der Closure; der Slice ändert an der Sichtbarkeit dann nichts.
-- Die Ursache bleibt unbelegt (Lastflake nur vermutet) — **Ausgang:** weiter offen → Register-Eintrag zu roten Grün-Vorläufen unter Last, gemeinsam mit `slice-span-sperre-haelt-den-test-unter-last`.
+- Die Ursache bleibt unbelegt (Lastflake nur vermutet) — **Ausgang:** weiter offen → [`BEO-ALL/gruen-vorlauf-eines-mutate-workers-faellt-unter-runner-last`](../observations/BEO-ALL/gruen-vorlauf-eines-mutate-workers-faellt-unter-runner-last/observation.md) (angelegt vom Vorgänger-Slice, 1 Beleg; ein Beleg dieses Slice nur bei einem Lauf, der den Grund des roten Vorlaufs benennt).
+- Ein Docker-/colima-Aussetzer in `make artifact-host` wird als „BEFUND … falscher Grund“ gemeldet und verfälscht den Befund, den der Slice sichtbar machen soll — **Ausgang:** weiter offen → in der Closure als Beobachtung (Fehlklassifikation eines Umgebungsfehlers durch den Treiber); der Slice ändert die Klassifikation nicht.
+- Beim Wiederholen des Lokal-Belegs (Einzel- statt Mehrfachlauf) tritt die Tag-Kollision paralleler Worker auf — **Ausgang:** entfallen, falls der bats-Fall des Treibers einzeln fährt (kein `make mutate`-Mehrfachlauf, wie im Vorgänger); sonst weiter offen → `BEO-ALL/paralleler-mutate-lauf-verliert-das-image-eines-workers`.
 
 ## 7. Closure-Notiz
 
@@ -85,6 +89,6 @@ DoD vollständig; Review ohne blockierenden Befund; Closure-Notiz geschrieben. O
 
 **Vorgelagert — Sub-Area-Wahl prüfen:** berührte Sub-Area `*` (gesamtes Repo, [`harness/conventions.md`](../../../../harness/conventions.md#modus-deklaration-pro-sub-area)); Schwelle erfüllt.
 
-**Vorgelagert — offene Beobachtungen sichten:** Register durchgegangen. Treffer: [`BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet`](../observations/BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet/observation.md) (8, verkörpert: [`MR-090`](../../../../harness/conventions.md#mr-090) und [`MR-071`](../../../../harness/conventions.md#mr-071) tragen den Treiber-Teil) als Nähe über denselben Treiber; [`BEO-ALL/neue-isolation-entzahnt-bestehende-waechter`](../observations/BEO-ALL/neue-isolation-entzahnt-bestehende-waechter/observation.md) (1, offen). Kein Eintrag erreicht mit diesem Slice 3×.
+**Vorgelagert — offene Beobachtungen sichten:** Register durchgegangen. Treffer: [`BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet`](../observations/BEO-ALL/mutations-fall-wird-von-berechtigter-aenderung-entwaffnet/observation.md) (8, verkörpert: [`MR-090`](../../../../harness/conventions.md#mr-090) und [`MR-071`](../../../../harness/conventions.md#mr-071) tragen den Treiber-Teil) als Nähe über denselben Treiber; [`BEO-ALL/neue-isolation-entzahnt-bestehende-waechter`](../observations/BEO-ALL/neue-isolation-entzahnt-bestehende-waechter/observation.md) (2, offen); [`BEO-ALL/gruen-vorlauf-eines-mutate-workers-faellt-unter-runner-last`](../observations/BEO-ALL/gruen-vorlauf-eines-mutate-workers-faellt-unter-runner-last/observation.md) (1, offen) — der Gegenstand dieses Slice; [`BEO-ALL/paralleler-mutate-lauf-verliert-das-image-eines-workers`](../observations/BEO-ALL/paralleler-mutate-lauf-verliert-das-image-eines-workers/observation.md) (1, offen) als Nähe über denselben Treiber. Kein Eintrag erreicht mit diesem Slice 3×.
 
 **Modus-Begründungsblock — Umfang:** alle berührten Sub-Areas GF.
