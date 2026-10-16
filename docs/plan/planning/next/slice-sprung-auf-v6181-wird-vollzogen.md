@@ -85,7 +85,7 @@ Die Proben im Kommentar von `StripCommentHints` gelten laut ihrem Wortlaut je f�
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
-- **Der Release `v0.7.1` und sein Tag-Push.** *Folge-Slice:* [`slice-release-schnitt-v071-liefert-die-baseline-v6181`](../open/slice-release-schnitt-v071-liefert-die-baseline-v6181.md)
+- **Der Release `v0.8.0` und sein Tag-Push.** *Folge-Slice:* [`slice-release-schnitt-v080-liefert-die-baseline-v6181`](../open/slice-release-schnitt-v080-liefert-die-baseline-v6181.md)
   nimmt ihn an; sein Start-Trigger ist dieser Slice in `done/`.
 - **`reviews` im Dogfood scharf schalten.** *Folge-Slice:* [`slice-review-deckung-laeuft-im-dogfood`](../open/slice-review-deckung-laeuft-im-dogfood.md)
   trägt es; das Delta berührt Modul 10 nicht.

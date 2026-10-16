@@ -1,4 +1,4 @@
-# Slice slice-release-schnitt-v071-liefert-die-baseline-v6181: Der Release-Schnitt `v0.7.1` liefert die Baseline `v6.18.1` im gebootstrappten Ziel
+# Slice slice-release-schnitt-v080-liefert-die-baseline-v6181: Der Release-Schnitt `v0.8.0` liefert die Baseline `v6.18.1` im gebootstrappten Ziel
 
 **Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese
 Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
@@ -31,16 +31,13 @@ Auslöser: Auftrag des Auftraggebers vom 2026-10-16 — nach dem Sprung auf `v6.
 
 ## 1. Ziel und Abgrenzung
 
-**Ziel:** Das Release `v0.7.1` ist veröffentlicht und vollzogen gemeldet: Träger und emittierte Vorlagen tragen den
+**Ziel:** Das Release `v0.8.0` ist veröffentlicht und vollzogen gemeldet: Träger und emittierte Vorlagen tragen den
 Stand von [`slice-sprung-auf-v6181-wird-vollzogen`](../next/slice-sprung-auf-v6181-wird-vollzogen.md), der Pin zeigt auf den geschnittenen Stand,
 und das Benutzerhandbuch beschreibt den Ist-Zustand.
 
-**Versionswahl:** `v0.7.1`, **vom Auftraggeber gewählt** (2026-10-16); der vorige Tag ist `v0.7.0`
-(`git tag --sort=-v:refname | head -1`). **Abweichung, benannt statt umgedeutet:** [`releasing.md`](../../../user/releasing.md)
-§Versionsnummer zählt einen Sprung der adoptierten Baseline und eine geänderte emittierte Datei zu `minor`; `patch` ist
-für einen Schnitt, der nur Fehler behebt. Dieser Schnitt trägt einen Baseline-Patch-Sprung ohne Regel-Änderung und emittierte
-Vorlagen mit anderer Adress-Form. Die Tag-Wahl ist Entscheidung des Auftraggebers; wählt er `v0.8.0`, ersetzt der Implementer
-`v0.7.1` an allen Stellen von §3 — und die Kennung dieses Slice nennt dann einen überholten Stand (§6).
+**Versionswahl:** `v0.8.0`; der vorige Tag ist `v0.7.0` (`git tag --sort=-v:refname | head -1`). Die Wahl folgt dem Minor-Schritt
+von [`releasing.md`](../../../user/releasing.md) §Versionsnummer (Sprung der adoptierten Baseline und geänderte emittierte Dateien);
+der Auftraggeber hat sie am 2026-10-16 entschieden.
 
 **Gegenstände des Schnitts:** gemessen mit `git log --oneline v0.7.0..HEAD -- internal/ cmd/`; am Planungs-Stand `79801cd8`
 ist die Menge leer, der Gegenstand ist allein der Sprung auf `v6.18.1` samt Emitter-Folge
@@ -60,8 +57,8 @@ weiteren Commit mit seinem Slice in diese Tabelle, bevor er ihn liefert.
 Liefer-Punkte (drei):
 
 - [ ] **L1 — Tag-Baum vorbereitet und verifiziert** (Schritte 1 bis 4 der Prozedur). `TRAEGER_TAG` in
-      `internal/emit/templates/enforce/traeger.mk` und der Tag-Wert in `test/traeger-fetch.bats` zeigen auf `v0.7.1`;
-      `make release-artifacts DEST=dist TRAEGER_VERSION=v0.7.1` baut die sechs Binaries und `dist/SHA256SUMS`;
+      `internal/emit/templates/enforce/traeger.mk` und der Tag-Wert in `test/traeger-fetch.bats` zeigen auf `v0.8.0`;
+      `make release-artifacts DEST=dist TRAEGER_VERSION=v0.8.0` baut die sechs Binaries und `dist/SHA256SUMS`;
       `bash harness/tools/release-sums.sh verify dist` endet mit Exit 0; `TRAEGER_TAG` und die sechs `TRAEGER_SHA256_*` im
       `Makefile` tragen den Tag und die gemessenen Digests; `make gates` ist grün auf dem Commit, der den Tag tragen wird.
   - Rot (ohne Netz): ein Byte eines Assets in einer Kopie von `dist/` ändern — `release-sums.sh verify` endet mit Exit ≠ 0 und
@@ -69,7 +66,7 @@ Liefer-Punkte (drei):
   - Rot an der realen Quelle: einen Digest im realen `Makefile` verfälschen und `bats test/traeger-fetch.bats` fahren; färbt kein Fall,
     steht die bekannte Lücke („realer `Makefile`-Digest ungebunden") im Bericht, nicht verdeckt durch Fixture-Grün.
 - [ ] **L2 — Handbuch im Ist-Zustand** (`docs/user/benutzerhandbuch.md`; Zeilen am Tag-Baum neu messen):
-  - Stand: `grep -n 'v0\.7\.0' docs/user/benutzerhandbuch.md` → `**Software-Stand:**` und „aktuell ausgeliefert wird" auf `v0.7.1`.
+  - Stand: `grep -n 'v0\.7\.0' docs/user/benutzerhandbuch.md` → `**Software-Stand:**` und „aktuell ausgeliefert wird" auf `v0.8.0`.
   - Baseline: `grep -n 'v6\.18\.0' docs/user/benutzerhandbuch.md README.md` — die Beispiel-Ausgabe des Bootstraps nennt die Baseline des Ziels; sie
     steht auf `v6.18.1`, sobald der Träger sie so ausgibt.
   - Weitere Versions-Pins: `grep -n -E 'v0\.8[0-9]|v0\.2[0-9]|v6\.1[0-9]' docs/user/benutzerhandbuch.md README.md` messen; nur ziehen, was ein Ist-Zustand nennt.
@@ -77,14 +74,14 @@ Liefer-Punkte (drei):
     der Reviewer liest sie gegen die Vorlagen am Tag-Baum.
 - [ ] **L3 — Veröffentlicht, belegt, gemeldet** (Schritte 5 bis 8). Der Tag-Push ist ein eigener, benannter Schritt (**Schritt P** in §3)
   und braucht die ausdrückliche Freigabe des Auftraggebers; der Release trägt acht Assets
-  (`gh release view v0.7.1 --json assets --jq '.assets | length'` → `8`); `make traeger-fetch` hält das veröffentlichte Asset gegen den Pin;
+  (`gh release view v0.8.0 --json assets --jq '.assets | length'` → `8`); `make traeger-fetch` hält das veröffentlichte Asset gegen den Pin;
   `ci` an `main` und am Tag grün (gefallene `full-smoke`-Jobs nach abgeschlossener Publikation per `gh run rerun --failed`);
-  Job `tap` grün und `make tap-check TAG=v0.7.1` Exit 0, die Meldung trägt dessen Ausgabezeile; der Release-Text trägt Stand, Assets, Grenze,
-  die Gegenstände aus §1 und, falls der Vergleich zweier frischer Emissionen (Träger `v0.7.0` gegen `v0.7.1`,
+  Job `tap` grün und `make tap-check TAG=v0.8.0` Exit 0, die Meldung trägt dessen Ausgabezeile; der Release-Text trägt Stand, Assets, Grenze,
+  die Gegenstände aus §1 und, falls der Vergleich zweier frischer Emissionen (Träger `v0.7.0` gegen `v0.8.0`,
   [`releasing.md`](../../../user/releasing.md) Schritt 5) Dateien der zweiten Klasse ändert, den Abschnitt **Bestand**.
   - Rot (Pin passt nicht zum Asset): ein verfälschter `TRAEGER_SHA256_*` lässt `make traeger-fetch` mit Exit ≠ 0 enden, bevor etwas
     abgelegt wird — nach der Publikation fahren und belegen; sonst steht es als Lücke in §7.
-  - Fällt der Job `tap`: `make tap-nachzug TAG=v0.7.1` mit `TAP_TOKEN` des Auftraggebers, danach `make tap-check`.
+  - Fällt der Job `tap`: `make tap-nachzug TAG=v0.8.0` mit `TAP_TOKEN` des Auftraggebers, danach `make tap-check`.
 
 Gate-Läufe und Closure-Pflichten:
 
@@ -113,7 +110,7 @@ Reihenfolge der Rollen:
 3. **Verifier** — am Tag-Baum, vor dem Tag-Push: Digests eigenständig nachgerechnet, `make gates` frisch auf dem finalen Commit, bewusstes Brechen des realen Pins.
 4. **Schritt P — Push von `main` und Tag-Push** (Implementer-Kontext, zweiter Lauf; Schritte 5 bis 7 der Prozedur). Erst nach grünem
    Verifier-Bericht **und** grünem `make gates` auf dem dann finalen Commit. **Der Tag-Push ist nach außen wirksam und wird erst gefahren,
-   wenn der Auftraggeber ihn ausdrücklich freigibt — der Auftraggeber hat `v0.7.1` gewählt und will vor dem Tag-Push noch einmal gefragt werden.**
+   wenn der Auftraggeber ihn ausdrücklich freigibt — die Entscheidung der Version ist keine Freigabe des Pushes; der Auftraggeber will vor dem Tag-Push noch einmal gefragt werden.**
    `main` und Tag gehen in einem Zug nach der Freigabe, der Tag unmittelbar nach `main`: `make release-warten` trägt nur innerhalb seiner
    Grenze ([`BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases`](../observations/BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases/observation.md)).
    **Freigabe-Vermerk:** ausstehend — der Implementer trägt hier Datum und Wortlaut der Freigabe ein, bevor er pusht.
@@ -123,7 +120,7 @@ Reihenfolge der Rollen:
 
 **Start** (`next` → `in-progress`): [`slice-sprung-auf-v6181-wird-vollzogen`](../next/slice-sprung-auf-v6181-wird-vollzogen.md) liegt in `done/`; kein Slice liegt in `in-progress/`
 (`ls docs/plan/planning/in-progress/` nennt nur die Roadmap); `git tag --sort=-v:refname | head -1` nennt `v0.7.0`; der Auftraggeber bestätigt die
-Tag-Wahl `v0.7.1`; WIP-Limit frei.
+Tag-Wahl `v0.8.0` (entschieden am 2026-10-16); WIP-Limit frei.
 
 **Rückführungen:**
 
@@ -132,14 +129,12 @@ Tag-Wahl `v0.7.1`; WIP-Limit frei.
 
 ## 5. Closure-Trigger
 
-DoD vollständig, Verifier-Bericht am Tag-Baum ohne Blocker, `ci` an `main` und am Tag grün, `make tap-check TAG=v0.7.1` mit Exit 0, Meldung an den
+DoD vollständig, Verifier-Bericht am Tag-Baum ohne Blocker, `ci` an `main` und am Tag grün, `make tap-check TAG=v0.8.0` mit Exit 0, Meldung an den
 Auftraggeber und Closure-Notiz mit Lerneintrag. Nicht Closure-Trigger: ein gepushter Tag allein.
 
 ## 6. Risiken und offene Punkte
 
 - Ein Plattform-Asset baut nicht — **Ausgang:** bei der Closure.
-- Die Tag-Wahl `patch` weicht vom Wortlaut von [`releasing.md`](../../../user/releasing.md) ab; ein Adopter liest `v0.7.1` als reine Fehlerbehebung —
-  **Ausgang:** bei der Closure; die Entscheidung des Auftraggebers steht in §1.
 - Der Gates-Beleg reist nicht mit dem Tag; Report-Commits ändern den Baum nach dem Stempel — **Ausgang:** bei der Closure
   ([`BEO-ALL/ge-tagter-stand-traegt-keinen-gates-beleg`](../observations/BEO-ALL/ge-tagter-stand-traegt-keinen-gates-beleg/observation.md)).
 - `ci` fällt im `full-smoke` mit 404, falls der `release`-Lauf nicht innerhalb der Grenze von `make release-warten` publiziert — **Ausgang:** bei der Closure
