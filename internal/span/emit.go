@@ -30,14 +30,20 @@ const (
 	maxHash = 64 << 20
 
 	// Das Sperr-Budget ist lockTries x lockWait = 1,5 s nominal, 30 % des
-	// Hook-timeout von 5 s (.claude/settings.json): der Emitter gibt fail-open auf,
-	// bevor der Hook beendet wird. Grenze: nominal — Schlafzeiten können unter Last
-	// länger dauern, die Wanduhr-Zeit ist dann größer als 1,5 s und nicht begrenzt;
-	// und hält ein Prozess die Sperre länger als das Budget (er läuft unter Last
-	// nicht), verliert der Wartende seinen Span.
+	// Hook-timeout von 5 s (.claude/settings.json). Reicht es nicht, gibt acquire
+	// einen Fehler zurück; der Aufrufer (mustEmit/clamp in
+	// cmd/ai-harness-init/span_emit.go) fängt ihn, und der Hook endet mit Exit 0:
+	// der Wartende verliert seinen Span, der Tool-Call läuft weiter (fail-open).
+	// Preis im Haltefall: jeder wartende Tool-Call blockiert bis zu 1,5 s nominal
+	// statt 0,4 s. Grenze: nominal — Schlafzeiten können unter Last länger dauern,
+	// die Wanduhr-Zeit ist dann größer als 1,5 s und nicht begrenzt.
 	// `make hook-overhead` misst unbeanspruchte Aufrufe und sieht dieses Budget nicht.
-	// TestConcurrentEmittersGetDistinctSeq bindet das Budget: mit einem Versuch
-	// fällt er mit „Sperre nicht erhalten“.
+	// TestConcurrentEmittersGetDistinctSeq hält die Sperre überhaupt und die
+	// Seq-Vergabe bei 8 gleichzeitigen Emittern; er fällt nur bei praktisch null
+	// Versuchen (mit einem Versuch: „Sperre nicht erhalten“) und unterscheidet 750
+	// nicht von 200. Nicht gemessen ist die Wirkung dieses Wertes für CI-Runner
+	// unter Last, der Anlass der Erhöhung: die Ursache ließ sich lokal nicht
+	// reproduzieren.
 	lockTries = 750
 	lockWait  = 2 * time.Millisecond
 
