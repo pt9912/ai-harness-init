@@ -20,8 +20,8 @@ ausgeschlossene Zustand.
 
 **Mess-Grundlage.** Die vier Regelblöcke sind die `###`-Abschnitte *Span-/Audit-Attribut-Regeln*,
 *Token-Attributions-Regeln*, *Cache-Counter-Regeln* und *Doku-Konsistenz-Drift-Regeln* von
-`.harness/baseline/v6.18.0/regelwerk/modul-15-observability.md`
-(`grep -n '^### ' .harness/baseline/v6.18.0/regelwerk/modul-15-observability.md`). Die Welle ist
+`.harness/baseline/v6.18.1/regelwerk/modul-15-observability.md`
+(`grep -n '^### ' .harness/baseline/v6.18.1/regelwerk/modul-15-observability.md`). Die Welle ist
 gegen die Fassung von `v5.18.0` geschnitten; maßgeblich ist der Bestand, nicht der Schnitt-Tag:
 die Überschriften stehen in beiden Fassungen in derselben Reihenfolge, und keine Zelle der Matrix
 in §3 bewegt sich durch den Baum-Tausch ([welle-10](done/welle-10-re-baseline.md) §2 misst es mit
@@ -45,7 +45,7 @@ jedes andere Repo. Die Ebenen haben verschiedene Verträge (§3), aber es ist ei
 **Begründung.** Modul 15 ist adoptiert, in keinem Block umgesetzt und nie entschieden worden; die
 Welle entscheidet es. Die Baseline behauptet keine Umsetzung jeder Regel, sondern strukturelle
 Konformität: die vendored Vorlage grenzt ihre Aussage ausdrücklich ein
-(`grep -n 'Verzeichniskonvention' .harness/baseline/v6.18.0/templates/harness/conventions.template.md`
+(`grep -n 'Verzeichniskonvention' .harness/baseline/v6.18.1/templates/harness/conventions.template.md`
 → Zeile 105, *„für Verzeichniskonvention, Lifecycle-Regeln, Carveout-Disziplin, ID-Schema"*).
 [`MR-000`](../../../harness/conventions.md#mr-000--baseline-aussage) führt die Aufzählung nicht
 und ist damit gegenüber der Vorlage eine nirgends deklarierte Verschärfung; sie gehört in
