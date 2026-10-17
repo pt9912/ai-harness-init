@@ -41,6 +41,8 @@ Abweichung") ist eingetreten. Gemessen von Implementer, Reviewer und Verifier un
 Der Pfad-Unterschied `harness/tools` gegen `tools/harness` zieht sich durch zwei Paare und ist der
 gemeinsame Normalisierungs-Kandidat.
 
+**Übernimmt:** `slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor` (dessen Punkt (c)).
+
 **Liefer-Punkte (drei):**
 
 1. `history-range-guard`: Vergleich mit den zwei benannten Abweichungen (Test-Einstiege, Meldungstext).

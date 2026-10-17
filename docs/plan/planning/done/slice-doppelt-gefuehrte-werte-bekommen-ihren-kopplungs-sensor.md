@@ -140,6 +140,8 @@ Geschrieben vom Planner in eigenem Kontext bei der Closure ([`AGENTS.md`](../../
   steht nur im Skriptkopf unter GRENZE (Verifikation: tragfähig, aber dünn). **(4) Die Hauptschleife
   war bis zum Review ungebunden:** die Zusage „Exit 0/1/2“ trug allein der einmalige Handlauf; sie ist
   jetzt über einen Stub gebunden, das Gegenstück zur Registry bleibt allein `make freshness-digest`.
+- **Gegenstand:** (c) übernommen von `slice-zwei-fassungen-eines-waechters-bekommen-ihren-vergleichenden-sensor`;
+  (a) und (b) sind geliefert, (c) nicht.
 - **Steering-Loop-Eintrag:** **neuer Sensor (Fallbacks):** `test/pin-fallbacks.bats` koppelt die
   wert-hardcodenden Fallbacks in `smoke.sh` und `full-smoke.sh` an den Pin im `Makefile`, netzlos in
   `make gates` — liegt in `test/pin-fallbacks.bats`. Auslöser: `BEO-ALL/pin-digest-ohne-waechter`
