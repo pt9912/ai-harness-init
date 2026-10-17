@@ -1,6 +1,6 @@
 # ADR-0095: Python-Skelett — Toolchain und Schicht-Auflösung
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-10-17
 
@@ -48,8 +48,8 @@ Sprach-Fragment (`grep -n '^BLOCKED=' internal/emit/templates/enforce/pretooluse
 Wir wählen **ein Python-Einzelprojekt im `src`-Layout ohne Build-Backend, `pip` mit exakt gepinnten
 Direkt-Werkzeugen, pytest als Test, ruff und mypy (strict) als Lint, Layouts `flat` und `hexslice`**.
 Werkzeug- und Versionswahl, bei der mehrere Optionen gleichwertig tragen, hat der Auftraggeber
-entschieden (Abschnitt „Entscheidungen des Auftraggebers"); die Festlegungen 1, 2, 3 und 6 tragen
-diese Entscheidung unbedingt.
+entschieden (Abschnitt „Entscheidungen des Auftraggebers“); die Festlegungen 1, 2 und 3 tragen
+diese Entscheidung unbedingt. Der Guard-Umfang (Festlegung 6) ist Linie des Architect.
 
 **1. Projekt-Form und Paket-Werkzeug.** Ein Projekt, Paket `app` unter `src/app/`, Tests unter
 `tests/`. `pyproject.toml` trägt **nur Werkzeug-Konfiguration** (pytest, ruff, mypy), kein `[project]`
@@ -60,8 +60,11 @@ installiert sie per `pip install -r` im Bild-Build (Netz beim `docker build` des
 [ADR-0088](0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md) Festlegung 2 — kein
 Host-Python, [`AGENTS.md`](../../../AGENTS.md) §3.9). **Transitive Abhängigkeiten sind nicht
 gepinnt** (Messung 2 zeigt die aufgelöste Menge): Ein statisch erzeugtes Skelett kann keinen
-Lock-File mitführen, der zur Laufzeit des Ziels stimmt; ein Adopter friert selbst ein. Das ist das
-akzeptierte Negativ gegenüber [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit).
+Lock-File mitführen, der zur Laufzeit des Ziels stimmt; ein Adopter friert selbst ein. Das ist eine
+**Grenze der Messmethode** von [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit),
+keine Lockerung des Lastenhefts: Gepinnt sind Image-Tag und die drei Direkt-Werkzeuge exakt, die
+Generator-Ausgabe ist davon unberührt (byte-identisch); die Messmethode vergleicht aber keine zwei
+Bauten des Images (siehe Lücke unter „Fitness Function“).
 
 **2. Image und Pin.** Image `python:<tag>`, per **Tag** gepinnt (kein Digest im Gerüst, damit der
 Knopf wirkt — dieselbe Form wie Kotlin und Java), Knopf `SKEL_PYTHON_VERSION` →
@@ -78,11 +81,16 @@ Präzedenz-Erweiterung des gemischten Roots unverändert. `test` = `python -m py
 --check .` **und** `mypy` (`strict = true`, `files = ["src", "tests"]`, `mypy_path = "src"`) —
 `lint` bündelt Stil und Typprüfung. `build` = `python -m compileall -q src` (Syntax-Prüfung; es gibt
 kein Artefakt, weil kein Build-Backend). Ruff-Regeln `E`, `F`, `I`, `B`, dazu `TID` mit
-`ban-relative-imports = "all"` (schließt die Lücke relativer Importe bei a-check, Festlegung 5).
-**Gebunden** ist allein, dass `F` (`F401`, unbenutzter Import) und mypy-strict im `lint`-Rezept
-stehen — die Fälle, die die Lint-Zeile der Fitness Function rot färben; der übrige Regel-Satz ist
-Gerüst-Inhalt, und eine Config ohne `F` ließe die Zeile ungeprüft, statt zu brechen. Ein dritter Weg
-(pylint, bandit, pyright) braucht eine Folge-ADR.
+`ban-relative-imports = "all"`. **Gebunden** sind drei Dinge: `F` (`F401`, unbenutzter Import) und
+mypy-strict im `lint`-Rezept — die Fälle, die die Lint-Zeile der Fitness Function rot färben; eine
+Config ohne `F` ließe die Zeile ungeprüft, statt zu brechen — und `TID` mit
+`ban-relative-imports = "all"` (`TID252`), weil allein sie die Lücke relativer Importe bei a-check
+schließt (Festlegung 5(a)): eine Config ohne `TID` ließe die Zeile „Relativer Import“ der Fitness
+Function ungeprüft, und `domain` liefe über `from ...adapters.driven.store import Store` grün durch
+a-check und `lint`. **Wächter-Zusage:** `slice-python-skelett` trägt als DoD-Punkt einen Test oder
+Mutationsfall, der in der emittierten `pyproject.toml` `TID` und `ban-relative-imports = "all"` hält
+und beim Entfernen rot wird; er ist Zusage, nicht gefahren. Der übrige Regel-Satz ist Gerüst-Inhalt.
+Ein dritter Weg (pylint, bandit, pyright) braucht eine Folge-ADR.
 
 **4. Gate-Targets und Fragment-Form.** `harness/mk/<modul>.mk` wie bei Java: Root unscoped (`docker
 build .`), Subdir modul-scoped (`test-<modul>` …, `docker build <pfad>`), gemischter Root mit
@@ -107,7 +115,8 @@ entstehen. Gemessen erkannt: `from … import`, `import a.b.c`, `from a.b import
 Funktions-lokaler Import, mehrzeiliger Klammer-Import, Import unter `TYPE_CHECKING`,
 `core-impurity`, `lateral-adapter` (Messung 4). **Nicht erkannt:** (a) ein **relativer Import**
 (`from ...adapters.driven.store import Store` → `0 Befund(e)`, Hinweis „relativer Import — von diesem
-Backend nicht extrahiert", EXIT=0, Fall 6) — vom Skelett über ruff `TID252` geschlossen, Messung 3;
+Backend nicht extrahiert", EXIT=0, Fall 6) — vom Skelett über die gebundene ruff-Regel `TID252`
+geschlossen (Festlegung 3), Messung 3;
 (b) ein voll qualifizierter Name ohne Import (Fall 8) und (c) ein dynamischer Import
 (`importlib.import_module`, Fall 14) — Grenzen von a-check am Pin, vom Skelett nicht schließbar.
 
@@ -116,29 +125,42 @@ pipx` stehen **nicht** darin: der gebackene Boden führt sie, und die Union ist 
 Boden ist in `make full-smoke` gemessen: `pip install x` blockt auch ohne Fragment). `uv`, `uvx`
 und `poetry` stehen darin, obwohl das Gerüst sie nicht nutzt: der Guard blockt Host-Aufrufe, nicht
 nur die genutzte Toolchain, und sie sind der naheliegende Host-Umweg an den verworfenen Alternativen
-— dieselbe Linie wie `mvn`/`mvnw` neben Gradle in [ADR-0094](0094-java-skelett-toolchain-und-schicht-aufloesung.md).
+— dieselbe Linie wie `mvn`/`mvnw` neben Gradle in [ADR-0094](0094-java-skelett-toolchain-und-schicht-aufloesung.md). Das ist
+**Linie des Architect**, keine Entscheidung des Auftraggebers für Python; bei Java folgte der
+Auftraggeber der Empfehlung „Guard inklusive nicht genutzter Toolchain“, für Python hat er es nicht
+ausdrücklich gesagt.
 `flake8` und `black` stehen nicht darin: sie sind verworfen, werden aber kein Host-Umweg des Gerüsts
 (kein Folgeaufruf wie bei `uv` neben `pip`); ein Name im Set ist eine Zusage des Tests. Keine
 Überschneidung mit go, cpp, kotlin, java; die Kopplung an `gen.SupportedLangs` hält der bestehende
 Test, und die Union mit anderen Fragmenten ist unschädlich, weil der Guard die Menge als Union liest.
+**Grenze (Stolperdraht, keine Sandbox):** der Guard vergleicht den Befehlskopf eines Segments als
+exaktes Wort (`in_set` in `internal/emit/templates/enforce/pretooluse-command-guard.sh`). Ein
+versionierter Interpreter-Name (`python3.14`) und ein Wrapper (`pyenv exec pytest`) stehen nicht im Set
+und blocken nicht; `python -m pip install x` blockt über den Kopf `python`. Der Wortvergleich ist am
+Skript gelesen; die Block-Probe dazu steht im Review, nicht in den Messungen dieser ADR.
 
 ## Entscheidungen des Auftraggebers
 
-Getroffen am 2026-10-17 und in Festlegung 1, 2, 3 und 6 getragen; die verworfenen Optionen stehen
+Getroffen am 2026-10-17 und in Festlegung 1, 2 und 3 getragen; die verworfenen Optionen stehen
 mit ihrem Grund unter „Verglichene Alternativen".
 
 - **Python-Version:** `3.14.8-slim`. Verworfen: `3.13.16-slim` und `3.15.0-slim`; alle drei laufen in
   allen Stages grün (Messung 2). Python hat keine LTS-Auszeichnung; der Tag ist ein Wert, der mit dem
   Pin wandert.
 - **Paket-Werkzeug:** `pip` + `requirements-dev.txt`, kein `uv`.
-- **Lint/Format:** `ruff` (check + format), nicht `flake8` + `black`.
+- **Lint/Format:** `ruff` (check + format), nicht `flake8` + `black`. Der Auftraggeber wählte ruff
+  ausdrücklich, weil ein Rule-Satz die Relativ-Import-Lücke von a-check schließt; daraus folgt die
+  Bindung von `TID252` in Festlegung 3.
+
+Nicht vom Auftraggeber entschieden, sondern Linie des Architect: der Guard-Umfang `uv`/`uvx`/`poetry`
+(Festlegung 6) und der Zuschnitt `flat` + `hexslice`.
 
 ## Verglichene Alternativen
 
 | Option | Pro | Contra |
 |---|---|---|
 | A — nichts tun (Python bleibt ungerendert) | kein Aufwand | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) nennt Python; die Welle hätte keinen Gegenstand |
-| B — `uv` als Paket-Werkzeug | schneller: 0,89 s gegen 4,35 s je Stage in einer Einzelmessung (Messung 5) | zweiter Pin; Lock-File-Vorteil nicht nutzbar (statisch nicht erzeugbar, Festlegung 1); nur Geschwindigkeit — vom Auftraggeber verworfen |
+| B — `uv` als Paket-Werkzeug | schneller: Einzelmessung 0,89 s (nur `uv pip install`, ohne den Schritt `pip install uv==0.13.1`) gegen 4,35 s (`pip install -r`) — nicht dieselbe Menge, keine Aussage über die Stage-Dauer (Messung 5) | zweiter Pin; Lock-File-Vorteil nicht nutzbar (statisch nicht erzeugbar, Festlegung 1); nur Geschwindigkeit — vom Auftraggeber verworfen |
 | C — poetry/hatch/setuptools als Backend (`pip install -e .[dev]`) | Paket-Metadaten, Entry-Points | `build-system.requires` ungepinnt oder Zusatz-Pin; `requires-python` driftet gegen den Knopf; nicht gemessen |
 | D — Multi-Projekt je Schicht | Import-Grenze durch Paket-Grenze | Gerüstung arch-abhängig → bricht [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) AC *Arch-Achse*, nur mit CR |
 | E — `unittest` statt pytest | keine Abhängigkeit | nicht gemessen; schwächere Ausgabe, kein `pythonpath`-Schalter |
@@ -156,7 +178,7 @@ mit ihrem Grund unter „Verglichene Alternativen".
 - Negativ (akzeptiert): je Python-Stufe ein `docker build` mit `pip install` verlängert `make
   full-smoke`; der Zuwachs wird je Slice gemessen.
 - Negativ (akzeptiert): transitive Abhängigkeiten sind ungepinnt (Festlegung 1); relative Importe
-  schließt nur die Lint-Regel, nicht a-check; ein voll qualifizierter Name und ein dynamischer Import
+  schließt nur die gebundene Lint-Regel, nicht a-check; ein voll qualifizierter Name und ein dynamischer Import
   entgehen dem Arch-Gate (Festlegung 5).
 - Negativ (akzeptiert): der Pin ist ein Tag. Kein Freshness-Lauf sieht den Python-Pin:
   `bash harness/tools/digest-freshness.sh --pins` führt go, golangci-lint, d-check und a-check, keinen
@@ -168,6 +190,8 @@ mit ihrem Grund unter „Verglichene Alternativen".
   Kanten-Menge (Festlegung 5). Kein Sensor hält sie.
 - Folgepflicht: die a-check-Zeile der Fitness Function hat ihren Träger (eine `make full-smoke`-Stufe
   mit rotem Domain→Adapter-Import) erst mit dem Layout-Slice; bis dahin ist sie Zusage.
+- Folgepflicht: der Wächter der `TID252`-Bindung (Festlegung 3) ist DoD-Punkt von `slice-python-skelett`;
+  bis er läuft, ist die Zeile „Relativer Import“ Zusage.
 
 ## Fitness Function (falls maschinell prüfbar)
 
@@ -176,13 +200,14 @@ mit ihrem Grund unter „Verglichene Alternativen".
 | a-check (gepinnt) über dem Python-`hexslice`-Ziel | ein Import aus `app.hexagon.domain` nach `app.adapters` färbt a-check rot mit `core-impurity`, ein Import `driving → driven` mit `lateral-adapter`; beide rot gesehen am Probe-Projekt (Messung 4, Fälle 1, C), am gebootstrappten Ziel noch nicht. `app-impurity` und `wrong-direction` sind **nicht** gefahren: Zusage | `make full-smoke` (kein Gate), Stufe mit dem Layout-Slice |
 | Code-Gate-Fragment ↔ Dockerfile | jedes Ziel `test`/`lint`/`build` des Python-Fragments hat seine Stage — Zusage eines eigenen Tests nach dem Muster `TestJavaCodeGateFragment_TargetsMatchStages`; Zusage, nicht Beleg | `make test` |
 | Lint, Typprüfung, Test, Build rot | unbenutzter Import → `F401`, Format-Verstoß → `ruff format --check`, Typfehler → mypy `[return-value]`, falsche Assertion → pytest `FAILED`, Syntaxfehler → `compileall`; je Exit 1 des `docker build`, rot gesehen am Probe-Projekt (Messung 2) | `make gates` im Ziel |
-| Relativer Import | `from . import main` färbt `lint` rot mit `TID252` (Messung 3); am gebootstrappten Ziel noch nicht | `make gates` im Ziel |
+| Relativer Import | `from . import main` färbt `lint` rot mit `TID252` (Messung 3); am gebootstrappten Ziel noch nicht. Wächter der Bindung (Festlegung 3): Test/Mutationsfall in `slice-python-skelett`, der `TID` + `ban-relative-imports` in der emittierten Config hält — DoD-Zusage, nicht gefahren | `make gates` im Ziel; `make test` für den Wächter |
 | Guard ↔ `gen.SupportedLangs` | ein Profil ohne `blockedByLang`-Eintrag färbt den bestehenden Kopplungs-Test rot; für `python` Zusage, Beleg entsteht mit dem Eintrag; dazu ein Test auf die Namen von Festlegung 6 nach dem Muster der Java-Namensprüfung in `internal/emit/enforce_test.go` | `make test` |
 
 Lücke: kein Sensor hält die Probe-Messung gegen das emittierte Skelett — bis das Skelett existiert,
-tragen die Zeilen Zusage statt Beleg ([`AGENTS.md`](../../../AGENTS.md) §3.6). Lücke:
-[`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) verlangt Reproduzierbarkeit
-gemessen als Vergleich zweier Bauten desselben Tags; kein Lauf vergleicht sie
+tragen die Zeilen Zusage statt Beleg ([`AGENTS.md`](../../../AGENTS.md) §3.6). Lücke (Grenze der
+Messmethode, keine Lockerung):
+[`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) misst Reproduzierbarkeit
+als Vergleich zweier Bauten desselben Tags; kein Lauf vergleicht sie
 (`BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`), das Python-Image erbt das, und
 die ungepinnten transitiven Abhängigkeiten (Festlegung 1) verschärfen es.
 
@@ -314,6 +339,7 @@ vollständige Beschreibung.
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-10-17 | Proposed | `slice-python-skelett` |
+| 2026-10-17 | **Accepted** | Review `2026-10-17-adr-0095-review` (0 HIGH; M-1 und L-1 bis L-3 vor der Annahme eingearbeitet; I-1 als Grenze der Messmethode gefasst und als Frage an Planner/Verifier übergeben), Entscheidungen des Auftraggebers vom 2026-10-17 einschließlich ruff wegen `TID252`, Annahme durch den Auftraggeber am 2026-10-17 ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1). Diese Datei trägt **keinen** Acceptance-Trigger; der Review-Report ist Prüfung, kein Trigger-Beleg, und eine zweite Runde war mangels blockierendem Befund nicht verlangt ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2) |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
