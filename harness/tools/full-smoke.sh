@@ -2807,6 +2807,95 @@ if ! grep -q '"decision": "block"' <<<"$ktguard_out"; then
 	exit 1
 fi
 
+# LH-FA-04/ADR-0094: add-lang java ergaenzt eine VIERTE Sprache demselben Mono-Repo — das
+# JVM-Gradle-Einzelmodul (settings.gradle.kts, build.gradle.kts, config/checkstyle/checkstyle.xml,
+# Dockerfile) plus modul-scoped Code-Gate-Fragment und blocked/java. Danach faehrt
+# `make -j gates` zusaetzlich die realen Java-Gates im gradle-Image (assemble, test,
+# checkstyle). Der Lint ist rot UND gruen belegt: ein unbenutzter Import in Main.java faerbt
+# lint-apps-java rot mit [UnusedImports] an dieser Datei, die zurueckgenommene Datei haelt ihn
+# wieder gruen. Der Guard blockt mvn, das allein blocked/java fuehrt. Nur flat ist getragen:
+# `--arch hexslice` endet mit Exit 2 ohne Artefakt.
+echo "full-smoke: add-lang java apps/java ins Mono-Repo (vierte Sprache, JVM-Gradle) ..."
+	e2e_abdeckung "LH-FA-04 LH-FA-06 LH-QA-01" "Eine vierte Sprache (Java, flat) im selben Ziel, mit den realen Gradle-Gates (assemble, test, checkstyle), dem roten und dem gruenen Lint-Fall (unbenutzter Import faerbt lint rot mit UnusedImports) und dem Guard, der mvn blockt; NICHT gemessen: hexslice (add-lang java --arch hexslice endet mit Exit 2, nicht mehr), der Root-Bootstrap mit Gate-Lauf, ein gemischter Root mit Java" "Java-Gate kaputt"
+java_start=$SECONDS
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang java apps/java )
+for rel in apps/java/settings.gradle.kts apps/java/build.gradle.kts apps/java/Dockerfile \
+           apps/java/config/checkstyle/checkstyle.xml \
+           apps/java/src/main/java/app/Main.java apps/java/src/test/java/app/MainTest.java \
+           harness/mk/apps-java.mk tools/harness/blocked/java; do
+	if [ ! -e "$tmprepo_doc/$rel" ]; then
+		echo "full-smoke: FEHLER — add-lang java dropte $rel nicht (vierte Sprache kaputt)." >&2
+		exit 1
+	fi
+done
+java_rc=0
+java_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || java_rc=$?
+printf '%s\n' "$java_out"
+if [ "$java_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — make gates nach add-lang java ist NICHT Exit 0 (Java-Gate kaputt)." >&2
+	einordnen "make -j gates nach add-lang java (apps/java)" "$java_out"
+	exit 1
+fi
+# Die drei Java-Gates MUESSEN real gelaufen sein: je Ziel die Recipe-Zeile des modul-scoped
+# Fragments (Kontext apps/java) und der checkstyle-Schritt der lint-Stage im BuildKit-Protokoll
+# — er steht dort auch, wenn die Schicht aus dem Cache kommt.
+java_missing=""
+for marker in "--target test -t apps-java:test apps/java" "--target lint -t apps-java:lint apps/java" \
+              "--target build -t apps-java:build apps/java" "RUN gradle --no-daemon checkstyleMain checkstyleTest"; do
+	grep -qF -- "$marker" <<<"$java_out" || java_missing="$java_missing [$marker]"
+done
+if [ -n "$java_missing" ]; then
+	echo "full-smoke: FEHLER — make gates nach add-lang java ohne Beleg fuer:$java_missing — Java-Gate lief nicht?" >&2
+	exit 1
+fi
+# Der Guard blockt jetzt mvn (blocked/java via add-lang); mvn steht in keinem anderen Fragment.
+javaguard_out="$(printf '%s' '{"tool_input":{"command":"mvn clean package"}}' | bash "$guard_doc" || true)"
+if ! grep -q '"decision": "block"' <<<"$javaguard_out"; then
+	echo "full-smoke: FEHLER — Guard blockt 'mvn' nach add-lang java NICHT (blocked/java kaputt). Ausgabe: [$javaguard_out]" >&2
+	exit 1
+fi
+# Der rote Lint-Fall: ein unbenutzter Import in Main.java (Zeile 4, hinter der package-Zeile).
+java_main="$tmprepo_doc/apps/java/src/main/java/app/Main.java"
+cp "$java_main" "$java_main.orig"
+psed_i 's|^package app;$|&\
+\
+import java.util.List;|' "$java_main"
+javalint_rc=0
+javalint_out="$( make -C "$tmprepo_doc" lint-apps-java 2>&1 )" || javalint_rc=$?
+mv "$java_main.orig" "$java_main"
+if [ "$javalint_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — das Java-Lint bleibt bei einem unbenutzten Import gruen (zahnloses Gate, AGENTS.md §3.6/LH-QA-01; Java-Gate kaputt)." >&2
+	printf '%s\n' "$javalint_out" >&2
+	exit 1
+fi
+if ! grep -qF -- 'Main.java:4:8: Unused import - java.util.List. [UnusedImports]' <<<"$javalint_out"; then
+	echo "full-smoke: FEHLER — Java-Lint rot, aber nicht mit [UnusedImports] an Main.java (rot aus falschem Grund?). Ausgabe:" >&2
+	printf '%s\n' "$javalint_out" >&2
+	einordnen "make lint-apps-java (Lint-Zahn, java)" "$javalint_out"
+	exit 1
+fi
+echo "full-smoke: Java-Lint-Zahn belegt (unbenutzter Import faerbt lint rot, danach zurueckgenommen):"
+grep -F -- 'UnusedImports' <<<"$javalint_out" | sed -n '1,2s/^/full-smoke:   /p'
+javalint2_rc=0
+javalint2_out="$( make -C "$tmprepo_doc" lint-apps-java 2>&1 )" || javalint2_rc=$?
+if [ "$javalint2_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — das Java-Lint ist nach der Ruecknahme des Imports NICHT gruen (Java-Gate kaputt)." >&2
+	einordnen "make lint-apps-java (nach Ruecknahme)" "$javalint2_out"
+	exit 1
+fi
+# Nur flat ist getragen: hexslice endet mit Exit 2 und legt kein Modul an.
+javahex_rc=0
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang java apps/javahex --arch hexslice ) || javahex_rc=$?
+if [ "$javahex_rc" -ne 2 ]; then
+	echo "full-smoke: FEHLER — add-lang java --arch hexslice rc=$javahex_rc, want 2 (nicht getragene Kombination wird nicht abgelehnt)." >&2
+	exit 1
+fi
+if [ -e "$tmprepo_doc/apps/javahex/build.gradle.kts" ]; then
+	echo "full-smoke: FEHLER — die nicht getragene Kombination java+hexslice legte ein Geruestung-Artefakt an (still statt Exit 2)." >&2
+	exit 1
+fi
+echo "full-smoke: Java-Stufe dauerte $(( SECONDS - java_start ))s (add-lang, make -j gates, Lint-Zahn, Exit-2-Fall)."
+
 # Der GEMISCHTE ROOT (LH-FA-04/LH-QA-01): zwei Sprach-Fragmente am selben Root
 # (harness/mk/go.mk + harness/mk/cpp.mk). Die gemischte Fassung komponiert: ein Fragment
 # traegt die unscoped Rezepte, das andere modul-scoped Targets plus Praezedenz-
