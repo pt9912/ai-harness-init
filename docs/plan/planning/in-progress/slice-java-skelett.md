@@ -9,7 +9,7 @@
 **Bezug:** [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) ·
 [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) ·
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) ·
-[`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit). `ADR-0094`
+[`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit). [`ADR-0094`](../../adr/0094-java-skelett-toolchain-und-schicht-aufloesung.md)
 (Toolchain, Pins, Gate-Targets, Arch-Unterstützung) ist die Entscheidungsgrundlage.
 
 **Berührte Spec-Stellen:** [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4); `ARC-009`, `ARC-010` (über die ADR, soweit sie Layout und
@@ -24,9 +24,9 @@ Arch-Achse berührt).
 ## 1. Ziel und Abgrenzung
 
 **Ziel:** `add-lang java` (Layout `flat`) rendert ein Java-Skelett mit Code-Gate-Fragment und Guard-Set
-nach `ADR-0094`, das im gebootstrappten Ziel `make gates` grün fährt.
+nach [`ADR-0094`](../../adr/0094-java-skelett-toolchain-und-schicht-aufloesung.md), das im gebootstrappten Ziel `make gates` grün fährt.
 
-**Vorbedingung — der Architect schreibt zuerst.** `ADR-0094` (Accepted) legt Toolchain
+**Vorbedingung — der Architect schreibt zuerst.** [`ADR-0094`](../../adr/0094-java-skelett-toolchain-und-schicht-aufloesung.md) (Accepted) legt Toolchain
 (Gradle, JDK 21, Knopf `SKEL_JAVA_VERSION`), Checkstyle mit eigener Config
 `config/checkstyle/checkstyle.xml`, Gate-Targets und Layouts fest. Dieser Plan entscheidet nichts davon. Der Renderer legt zusätzlich `build.gradle.kts` mit gepinnten Versionen an;
 `blockedByLang("java")` führt `mvn`/`mvnw` zusätzlich zur Kotlin-Menge.
@@ -36,7 +36,7 @@ nach `ADR-0094`, das im gebootstrappten Ziel `make gates` grün fährt.
 (Image-Tag, Knopf `SKEL_KOTLIN_VERSION`), `blockedByLang`, `gen.CodeGateFragment`. Java läuft wie
 Kotlin auf der JVM; ob das Gradle-Gerüst und das Image-Muster von
 [ADR-0088](../../adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md) tragen, beantwortet
-`ADR-0094` (Festlegung 1: ja, unverändert). Dort steht auch die Auflösung `fixed-root` mit `package_base` für a-check (Paket gleich
+[`ADR-0094`](../../adr/0094-java-skelett-toolchain-und-schicht-aufloesung.md) (Festlegung 1: ja, unverändert). Dort steht auch die Auflösung `fixed-root` mit `package_base` für a-check (Paket gleich
 Verzeichnis) als gemessener Fall für Kotlin.
 
 **Ausdrücklich NICHT in diesem Slice:**
@@ -53,7 +53,7 @@ Verzeichnis) als gemessener Fall für Kotlin.
 
 ## 2. Definition of Done
 
-- [ ] Renderer `java` (Layout `flat`) in `internal/gen/` nach `ADR-0094`: Gerüst inkl. `build.gradle.kts`
+- [ ] Renderer `java` (Layout `flat`) in `internal/gen/` nach [`ADR-0094`](../../adr/0094-java-skelett-toolchain-und-schicht-aufloesung.md): Gerüst inkl. `build.gradle.kts`
       und `config/checkstyle/checkstyle.xml`, Gate-Stages `test`/`lint`/`build`,
       Image-Pin (`gradle:9.8.1-jdk21`, eigene Konstante) mit Knopf `SKEL_JAVA_VERSION` → `gen.DefaultVersion("java")`; Test Fragment↔Stages
       nach dem Muster der Kotlin- und C++-Tests, einmal rot gesehen (Stage entfernt);
@@ -92,7 +92,7 @@ Verzeichnis) als gemessener Fall für Kotlin.
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): `welle-sprachprofile-java-python-csharp` eröffnet, `ADR-0094`
+**Start** (`next` → `in-progress`): `welle-sprachprofile-java-python-csharp` eröffnet, [`ADR-0094`](../../adr/0094-java-skelett-toolchain-und-schicht-aufloesung.md)
 `Accepted`, WIP-Slot frei.
 
 **Rückführungen — vorab benennen:**

@@ -7,7 +7,7 @@
 **Welle:** `welle-sprachprofile-java-python-csharp`.
 
 **Bezug:** [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) ·
-[`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren). `ADR-0094`
+[`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren). [`ADR-0094`](../../adr/0094-java-skelett-toolchain-und-schicht-aufloesung.md)
 (Accepted) legt die Layouts
 `flat` und `hexslice` fest, Festlegung 4 trägt Pfade und Auflösung.
 
