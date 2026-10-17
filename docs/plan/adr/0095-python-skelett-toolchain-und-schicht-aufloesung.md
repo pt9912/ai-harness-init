@@ -47,9 +47,9 @@ Sprach-Fragment (`grep -n '^BLOCKED=' internal/emit/templates/enforce/pretooluse
 
 Wir wählen **ein Python-Einzelprojekt im `src`-Layout ohne Build-Backend, `pip` mit exakt gepinnten
 Direkt-Werkzeugen, pytest als Test, ruff und mypy (strict) als Lint, Layouts `flat` und `hexslice`**.
-Werkzeug- und Versionswahl, bei der mehrere Optionen gleichwertig tragen, ist als **O1 bis O3**
-unten dem Auftraggeber vorgelegt; die Festlegungen 1, 2, 3 und 6 stehen mit der **Empfehlung**
-eingesetzt und gelten **bedingt** auf seine Antwort. Alles übrige ist unabhängig davon.
+Werkzeug- und Versionswahl, bei der mehrere Optionen gleichwertig tragen, hat der Auftraggeber
+entschieden (Abschnitt „Entscheidungen des Auftraggebers"); die Festlegungen 1, 2, 3 und 6 tragen
+diese Entscheidung unbedingt.
 
 **1. Projekt-Form und Paket-Werkzeug.** Ein Projekt, Paket `app` unter `src/app/`, Tests unter
 `tests/`. `pyproject.toml` trägt **nur Werkzeug-Konfiguration** (pytest, ruff, mypy), kein `[project]`
@@ -65,7 +65,7 @@ akzeptierte Negativ gegenüber [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02
 
 **2. Image und Pin.** Image `python:<tag>`, per **Tag** gepinnt (kein Digest im Gerüst, damit der
 Knopf wirkt — dieselbe Form wie Kotlin und Java), Knopf `SKEL_PYTHON_VERSION` →
-`gen.DefaultVersion("python")` mit eigener Konstante `DefaultPythonVersion`. Empfehlung (O1):
+`gen.DefaultVersion("python")` mit eigener Konstante `DefaultPythonVersion`. Default:
 **`3.14.8-slim`**. Gemessen ist, dass der Tag existiert, sein Digest, und dass das Gerüst auf
 `3.13.16-slim`, `3.14.8-slim` und `3.15.0-slim` in allen drei Stages grün läuft (Messung 1, 2). Die
 Make-Variable heißt `PYTHON_TAG` (kein Namenskonflikt mit `GRADLE_TAG` oder `JAVA_GRADLE_TAG`).
@@ -89,9 +89,10 @@ build .`), Subdir modul-scoped (`test-<modul>` …, `docker build <pfad>`), gemi
 Präzedenz-Erweiterung ohne eigenes Rezept; `GATE_CHECKS += lint build test`. Kein neues Muster.
 
 **5. Layouts und Schicht-Auflösung.** Diese ADR legt für `python` die Layouts `flat` und `hexslice`
-fest; `hexagonal` legt sie nicht fest (Trigger 3). Ein Layout steht in `langArchs()` nur, wenn sein
-Renderer es rendert, sonst gibt `add-lang python … --arch hexslice` Exit 2 statt eines stillen
-Gerüst-only-Skeletts; `flat` trägt kein Arch-Gate (kein Prüfbereich,
+fest; `hexagonal` legt sie nicht fest (Trigger 3). Welcher Slice `hexslice` liefert, ist
+Zuschnitt des Planners (Layout-Slice); die Festlegung gilt unabhängig davon. Ein Layout steht in
+`langArchs()` nur, wenn sein Renderer es rendert, sonst gibt `add-lang python … --arch hexslice`
+Exit 2 statt eines stillen Gerüst-only-Skeletts; `flat` trägt kein Arch-Gate (kein Prüfbereich,
 [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Pfade nach
 [ADR-0060](0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md): `src/app/hexagon/{domain,application}/…`,
 `src/app/adapters/{driving,driven}/…`, Composition Root `src/app/main.py`, Tests unter `tests/`.
@@ -113,34 +114,39 @@ Backend nicht extrahiert", EXIT=0, Fall 6) — vom Skelett über ruff `TID252` g
 **6. Guard.** `blockedByLang("python")`: `python python3 pytest ruff mypy uv uvx poetry`. `pip pip3
 pipx` stehen **nicht** darin: der gebackene Boden führt sie, und die Union ist die eine Quelle (der
 Boden ist in `make full-smoke` gemessen: `pip install x` blockt auch ohne Fragment). `uv`, `uvx`
-und `poetry` stehen darin, obwohl das Gerüst sie nicht nutzt: sie sind der naheliegende Host-Umweg
-an den verworfenen Alternativen (wie `mvn` bei Java). Keine Überschneidung mit go, cpp, kotlin,
-java; die Kopplung an `gen.SupportedLangs` hält der bestehende Test, und die Union mit anderen
-Fragmenten ist unschädlich, weil der Guard die Menge als Union liest. Wird O3 anders entschieden,
-tritt `flake8 black` an die Stelle von `ruff`.
+und `poetry` stehen darin, obwohl das Gerüst sie nicht nutzt: der Guard blockt Host-Aufrufe, nicht
+nur die genutzte Toolchain, und sie sind der naheliegende Host-Umweg an den verworfenen Alternativen
+— dieselbe Linie wie `mvn`/`mvnw` neben Gradle in [ADR-0094](0094-java-skelett-toolchain-und-schicht-aufloesung.md).
+`flake8` und `black` stehen nicht darin: sie sind verworfen, werden aber kein Host-Umweg des Gerüsts
+(kein Folgeaufruf wie bei `uv` neben `pip`); ein Name im Set ist eine Zusage des Tests. Keine
+Überschneidung mit go, cpp, kotlin, java; die Kopplung an `gen.SupportedLangs` hält der bestehende
+Test, und die Union mit anderen Fragmenten ist unschädlich, weil der Guard die Menge als Union liest.
 
-## Offene Entscheidungen des Auftraggebers
+## Entscheidungen des Auftraggebers
 
-Nicht vorentschieden; die Festlegungen oben tragen die Empfehlung bedingt.
+Getroffen am 2026-10-17 und in Festlegung 1, 2, 3 und 6 getragen; die verworfenen Optionen stehen
+mit ihrem Grund unter „Verglichene Alternativen".
 
-| | Frage | Optionen | Empfehlung, Messbasis |
-|---|---|---|---|
-| O1 | Python-Version | `3.13.16-slim` · `3.14.8-slim` · `3.15.0-slim` | **3.14.8-slim**: alle drei in allen Stages grün (Messung 2); 3.14 ist die jüngste Linie mit Patch-Reife, 3.15.0 ist gerade erschienen und hat den jüngsten Ökosystem-Stand zu tragen. Python hat keine LTS-Auszeichnung; der Tag ist ein Wert, der mit dem Pin wandert |
-| O2 | Paket-Werkzeug | `pip` + `requirements-dev.txt` · `uv` | **pip**: uv sparte in einer Einzelmessung 3,5 s je Stage (0,89 s gegen 4,35 s, Messung 5), brächte aber einen zweiten Pin und seinen Lock-File-Vorteil nicht (statisch nicht erzeugbar, Festlegung 1) |
-| O3 | Lint/Format | `ruff` (check + format) · `flake8` + `black` | **ruff**: eine Binärdatei, ein Pin, `TID252` schließt die Relativ-Import-Lücke; flake8+black läuft grün (Messung 6), braucht zwei Pins und hat keine Entsprechung zu `TID252` im Basis-Satz (nicht gemessen) |
+- **Python-Version:** `3.14.8-slim`. Verworfen: `3.13.16-slim` und `3.15.0-slim`; alle drei laufen in
+  allen Stages grün (Messung 2). Python hat keine LTS-Auszeichnung; der Tag ist ein Wert, der mit dem
+  Pin wandert.
+- **Paket-Werkzeug:** `pip` + `requirements-dev.txt`, kein `uv`.
+- **Lint/Format:** `ruff` (check + format), nicht `flake8` + `black`.
 
 ## Verglichene Alternativen
 
 | Option | Pro | Contra |
 |---|---|---|
 | A — nichts tun (Python bleibt ungerendert) | kein Aufwand | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) nennt Python; die Welle hätte keinen Gegenstand |
-| B — `uv` als Paket-Werkzeug | schneller (Messung 5) | zweiter Pin; kein statischer Lock-File; nur Geschwindigkeit |
+| B — `uv` als Paket-Werkzeug | schneller: 0,89 s gegen 4,35 s je Stage in einer Einzelmessung (Messung 5) | zweiter Pin; Lock-File-Vorteil nicht nutzbar (statisch nicht erzeugbar, Festlegung 1); nur Geschwindigkeit — vom Auftraggeber verworfen |
 | C — poetry/hatch/setuptools als Backend (`pip install -e .[dev]`) | Paket-Metadaten, Entry-Points | `build-system.requires` ungepinnt oder Zusatz-Pin; `requires-python` driftet gegen den Knopf; nicht gemessen |
 | D — Multi-Projekt je Schicht | Import-Grenze durch Paket-Grenze | Gerüstung arch-abhängig → bricht [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) AC *Arch-Achse*, nur mit CR |
 | E — `unittest` statt pytest | keine Abhängigkeit | nicht gemessen; schwächere Ausgabe, kein `pythonpath`-Schalter |
 | F — pyright statt mypy | schneller | braucht eine Node-Laufzeit im Bild; nicht gemessen |
 | G — Alpine statt slim | kleineres Bild | nicht gemessen; musl gegenüber Binär-Wheels |
 | H — zusätzlich `hexagonal` | volle Achse | ohne benannten Bedarf |
+| J — `flake8` + `black` statt ruff | etabliert; grün gemessen (Messung 6) | zwei Pins; keine Entsprechung zu `TID252` im Basis-Satz (nicht gemessen); rot nicht gefahren — vom Auftraggeber verworfen |
+| K — `3.13.16-slim` oder `3.15.0-slim` als Default | beide grün (Messung 2) | ältere bzw. gerade erschienene Linie; vom Auftraggeber nicht gewählt, über den Knopf weiter wählbar |
 | **I — pip + `requirements-dev.txt`, pytest, ruff+mypy, flat+hexslice, `3.14.8-slim`** | gleiches Muster wie Java/Kotlin; a-check löst Python auf; Lint rot/grün gemessen; kein Build-Backend | transitive Abhängigkeiten ungepinnt; `lint` bündelt Stil und Typprüfung; Schicht-Grenze nur über a-check |
 
 ## Konsequenzen
@@ -158,13 +164,16 @@ Nicht vorentschieden; die Festlegungen oben tragen die Empfehlung bedingt.
   `requirements-dev.txt` sieht gar kein Lauf. Ein Python-Freshness-Werkzeug ist nicht Gegenstand dieser
   ADR und hat keinen Nehmer: der Pin altert unbemerkt (akzeptiertes Negativ).
 - Folgepflicht: `spec/architecture.md` (Layout je Sprache) für `hexslice` nachziehen — Träger ist der
-  Layout-Slice für Python (DoD-Punkt dort, Kennung vergibt der Planner); kein Sensor hält sie.
+  Layout-Slice (Planner); er trägt sie als DoD-Punkt, ebenso die Entscheidung von Ports-Ordnern und
+  Kanten-Menge (Festlegung 5). Kein Sensor hält sie.
+- Folgepflicht: die a-check-Zeile der Fitness Function hat ihren Träger (eine `make full-smoke`-Stufe
+  mit rotem Domain→Adapter-Import) erst mit dem Layout-Slice; bis dahin ist sie Zusage.
 
 ## Fitness Function (falls maschinell prüfbar)
 
 | Tooling | Regel | Make-Target |
 |---|---|---|
-| a-check (gepinnt) über dem Python-`hexslice`-Ziel | ein Import aus `app.hexagon.domain` nach `app.adapters` färbt a-check rot mit `core-impurity`, ein Import `driving → driven` mit `lateral-adapter`; beide rot gesehen am Probe-Projekt (Messung 4, Fälle 1, C), am gebootstrappten Ziel noch nicht. `app-impurity` und `wrong-direction` sind **nicht** gefahren: Zusage | `make full-smoke` (kein Gate) |
+| a-check (gepinnt) über dem Python-`hexslice`-Ziel | ein Import aus `app.hexagon.domain` nach `app.adapters` färbt a-check rot mit `core-impurity`, ein Import `driving → driven` mit `lateral-adapter`; beide rot gesehen am Probe-Projekt (Messung 4, Fälle 1, C), am gebootstrappten Ziel noch nicht. `app-impurity` und `wrong-direction` sind **nicht** gefahren: Zusage | `make full-smoke` (kein Gate), Stufe mit dem Layout-Slice |
 | Code-Gate-Fragment ↔ Dockerfile | jedes Ziel `test`/`lint`/`build` des Python-Fragments hat seine Stage — Zusage eines eigenen Tests nach dem Muster `TestJavaCodeGateFragment_TargetsMatchStages`; Zusage, nicht Beleg | `make test` |
 | Lint, Typprüfung, Test, Build rot | unbenutzter Import → `F401`, Format-Verstoß → `ruff format --check`, Typfehler → mypy `[return-value]`, falsche Assertion → pytest `FAILED`, Syntaxfehler → `compileall`; je Exit 1 des `docker build`, rot gesehen am Probe-Projekt (Messung 2) | `make gates` im Ziel |
 | Relativer Import | `from . import main` färbt `lint` rot mit `TID252` (Messung 3); am gebootstrappten Ziel noch nicht | `make gates` im Ziel |
@@ -252,7 +261,7 @@ Fall  R / Änderung                  Zeile 1 / Körper                          
 8     src/app                       Körper: s = app.adapters.driven.store.Store          0 Befund(e)                               0
 9     src/app                       Import innerhalb einer Methode (Zeile 3)             core-impurity …greeting.py:3              1
 10    src/app                       from … import (\n    Store,\n)                        core-impurity                             1
-11    src/app                       store.py importiert domain.greeting.Greeting         0 Befund(e)                               0
+11    src/app                       store.py importiert domain.greeting.Greeting         0 Befund(e) (Kante driven_adapters→domain erlaubt)  0
 12    src/app, Schlüssel `py`       (wie 1)                                              a-check: unbekannte Sprache "py" (cpp|…|python|…)  2
 13    src/app                       Import unter `if TYPE_CHECKING:` (Zeile 3)           core-impurity                             1
 14    src/app                       Körper: importlib.import_module("app.adapters.…")    0 Befund(e) + „0 von 1 Import-Symbolen"   0
