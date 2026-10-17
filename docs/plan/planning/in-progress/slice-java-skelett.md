@@ -53,7 +53,7 @@ Verzeichnis) als gemessener Fall für Kotlin.
 
 ## 2. Definition of Done
 
-- [ ] Renderer `java` (Layout `flat`) in `internal/gen/` nach [`ADR-0094`](../../adr/0094-java-skelett-toolchain-und-schicht-aufloesung.md): Gerüst inkl. `build.gradle.kts`
+- [x] Renderer `java` (Layout `flat`) in `internal/gen/` nach [`ADR-0094`](../../adr/0094-java-skelett-toolchain-und-schicht-aufloesung.md): Gerüst inkl. `build.gradle.kts`
       und `config/checkstyle/checkstyle.xml`, Gate-Stages `test`/`lint`/`build`,
       Image-Pin (`gradle:9.8.1-jdk21`, eigene Konstante) mit Knopf `SKEL_JAVA_VERSION` → `gen.DefaultVersion("java")`; Test Fragment↔Stages
       nach dem Muster der Kotlin- und C++-Tests, einmal rot gesehen (Stage entfernt);
@@ -61,20 +61,20 @@ Verzeichnis) als gemessener Fall für Kotlin.
       geprüft)
       ([`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4),
       [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)).
-- [ ] `make full-smoke`: `add-lang java` ins Mono-Repo, Skelett-Dateien liegen, `make gates` grün mit
+- [x] `make full-smoke`: `add-lang java` ins Mono-Repo, Skelett-Dateien liegen, `make gates` grün mit
       Beleg, dass das Java-Code-Gate lief, und der Guard blockt die Host-Toolchain; `e2e_abdeckung`-Kopfzeile
       nennt die Sprache und eine Teilmessung an derselben Stelle, `docs/user/e2e-abdeckung.md` neu
       erzeugt; Laufzeit-Zuwachs vorher/nachher mit Image-Lage und Variante
       ([`MR-089`](../../../../harness/conventions.md#mr-089)).
-- [ ] Hilfetext nennt `java` und `SKEL_JAVA_VERSION` (öffentlicher Vertrag), Test in
+- [x] Hilfetext nennt `java` und `SKEL_JAVA_VERSION` (öffentlicher Vertrag), Test in
       `cmd/ai-harness-init/main_test.go`.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`),
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`),
       kein Self-Review.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine
       Beobachtung anfiel.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen prüft die Closure von `welle-sprachprofile-java-python-csharp`; nach dem
       Move gefahren, §7.
 
@@ -108,17 +108,46 @@ DoD vollständig, die Java-Stufe in `make full-smoke` grün, Closure-Notiz mit L
 
 ## 6. Risiken und offene Punkte
 
-- Image-Pull und Dependency-Auflösung verlängern `make full-smoke` — **Ausgang:** bei der Closure,
-  Form nach [`MR-089`](../../../../harness/conventions.md#mr-089) (Image-Lage und Variante der Messung).
+- Image-Pull und Dependency-Auflösung verlängern `make full-smoke` — **Ausgang:** weiter offen — der
+  Zuwachs ist gemessen (§7), der Image-Pull auf frischem Host nicht: `BEO-ALL/kosten-einer-emittierten-pruefung-im-ziel-ungemessen`.
 - Das Image-Muster misst die Reproduzierbarkeit nicht nach [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit): kein Lauf vergleicht zwei Bauten
   desselben Tags (`BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`) —
-  **Ausgang:** bei der Closure.
+  **Ausgang:** weiter offen — `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`.
 - Checkstyle mit eigener Config läuft mit dem gepinnten Image nicht rot/grün wie die ADR misst —
-  **Ausgang:** bei der Closure; Lint rot und grün am gebootstrappten Ziel gesehen.
+  **Ausgang:** entfallen — Lint rot und grün am gebootstrappten Ziel gesehen, Fälle 683 und 684 färben mit der behaupteten Meldung.
 
 ## 7. Closure-Notiz
 
-<!-- Erst bei der Closure füllen. -->
+- **Was hat funktioniert:** Das Kotlin-Muster (`composeSkeleton`, Fragment, Stufe) trug Java ohne
+  Umbau; die Java-Stufe fährt Gradle-Gates, Lint rot und grün und den Guard im Mono-Repo.
+- **Was ging anders als geplant:** Nicht geplant geliefert: der Sprachlisten-Nachzug in `README.md`
+  (öffentlicher Vertrag, [`AGENTS.md`](../../../../AGENTS.md) §6 Schritt 7; bleibt, Reviewer und Verifier
+  bestätigen die Zulässigkeit) sowie Listen-Nachzüge in `cmd/ai-harness-init/kennungen_test.go` und
+  `internal/gen/archgate_test.go`. Der `dupl`-Befund zwischen Kotlin- und Java-Testcode wurde durch
+  einen gemeinsamen Helfer behoben.
+- **Laufzeit ([`MR-089`](../../../../harness/conventions.md#mr-089)):** `make full-smoke-host`, macOS/arm64
+  (Colima), warm (Image `gradle:9.8.1-jdk21` und Layer lokal vorhanden, kein Pull), Variante Mono-Repo mit
+  `add-lang` go, cpp, kotlin (+ java): Stand `d10447d6` 132 s, Stand `fb5840c2` 145 s (+13 s); die
+  Java-Stufe allein 14 s (`Java-Stufe dauerte 14s`). Je ein Lauf je Stand. **Ungemessen:** kalter
+  Cache und Image-Pull; keine Aussage über andere Varianten.
+- **Benannte Grenzen (Verifier V-2, V-3):** `maxWarnings = 0` der Checkstyle-Config hat nur einen
+  Text-Wächter (Fall 681), keinen Lauf-Zahn im Ziel; die Stufe prüft einen error-Befund
+  (`UnusedImports`). Die Fassung des Java-Fragments am gemischten Root und `assemble` als eigener Marker
+  sind nicht real gemessen; die Abdeckungs-Zeile nennt den gemischten Root als nicht gemessen.
+- **Steering-Loop-Eintrag:** geschärfte Regel (Vorschlag, nicht verkörpert): ein Slice-Plan, dessen DoD
+  eine Messzahl der Closure verlangt, nennt Kommando und Träger der Messung im Plan; V-1 des Verifiers
+  führte den Punkt als unbelegt, weil nur §6 „bei der Closure" sagte. Der Eintrag ist gezählt, nicht
+  verkörpert.
+- **Beobachtungs-Register (`../observations/`):** neu angelegt, je Beleg `evidence/slice-java-skelett.md`:
+  `BEO-ALL/gleichnamige-make-variable-zweier-sprach-fragmente-im-selben-ziel`,
+  `BEO-ALL/dupl-meldet-aehnlichen-testcode-zweier-sprach-skelette`,
+  `BEO-ALL/commit-message-datei-im-scratchpad-ist-fuer-den-docker-daemon-unsichtbar` (je 1×);
+  ergänzt: `BEO-ALL/kosten-einer-emittierten-pruefung-im-ziel-ungemessen` (5×, verkörpert) und
+  `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht` (1×, offen; erster Beleg). Kein
+  Eintrag erreicht mit diesem Slice neu 3×.
+- **Folge-Slices:** `slice-java-hexslice-layout` — ist eine Datei in `open/`
+- **Risiken aus §6:** Risiko 1 weiter offen (Register), Risiko 2 weiter offen (Register), Risiko 3
+  entfallen — je einmal in §6.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
