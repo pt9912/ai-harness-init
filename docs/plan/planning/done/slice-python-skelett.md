@@ -85,7 +85,7 @@ nichts davon.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine
       Beobachtung anfiel.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen prüft die Closure von `welle-sprachprofile-java-python-csharp`; nach dem
+- [x] Die drei Paarungen prüft die Closure von `welle-sprachprofile-java-python-csharp`; nach dem
       Move gefahren, §7.
 
 ## 3. Plan (vor Code)
@@ -189,6 +189,7 @@ DoD vollständig, die Python-Stufe in `make full-smoke` grün, Closure-Notiz mit
   `BEO-ALL/dupl-meldet-aehnlichen-testcode-zweier-sprach-skelette`: Python hat beides von Anfang an
   vermieden, es gab kein Auftreten. Kein Eintrag erreicht mit diesem Slice neu 3×.
 - **Folge-Slices:** `slice-python-hexslice-layout` — ist eine Datei in `open/`
+- **Paarungen (nach dem Move):** Anker-Paarung: kein Eintrag trägt `liegt in`, nichts zu paaren. Folge-Slice-Paarung: `slice-python-hexslice-layout` liegt in `open/`. Register-Paarung: jede genannte Beobachtung existiert mit nicht leerem `evidence/`; `make register-ausgang` 0 Befund(e).
 - **Risiken aus §6:** Risiko 1 weiter offen (Register), Risiko 2 entfallen, Risiko 3 weiter offen
   (Register), Risiko 4 entfallen, Risiko 5 entfallen, Risiko 6 entfallen, Risiko 7 weiter offen
   (Register) — je einmal in §6.
