@@ -11,7 +11,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 **Bezug:** [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) (Befund
 Z. 122), [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) (Z. 172),
 [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) (Z. 39),
-[`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) (Grenz-Notiz, Entscheidung offen),
+[`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) (Grenz-Notiz, umformuliert nach Entscheidung 2026-10-17),
 [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)
 Setzung 2 (eigener Commit, vor dem Start),
 [`MR-042`](../../../../harness/conventions.md#mr-042--der-anlass-einer-lastenheft-änderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz)
@@ -24,7 +24,7 @@ Setzung 2 (eigener Commit, vor dem Start),
 [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) · `spec/architecture.md` Kopf (Hard-Rule-Zeile) und §5 (Zeile zur a-check-Emission).
 `spec/spezifikation.md` bleibt unberührt (Messung in §3 dieses Plans).
 
-**Verantwortlich:** — .
+**Verantwortlich:** Implementer (pt9912).
 
 **Autor:** Planner. **Datum:** 2026-10-17.
 
@@ -72,13 +72,15 @@ liefert nur diese Zeile); der Slice stützt sich auf den Auftrag, nicht auf eine
 
 Liefer-Punkte (drei):
 
-- [ ] **(1) Umformulierung:** Jeder Befund der Klasse A in §3 steht in `spec/lastenheft.md` und
-      `spec/architecture.md` im Indikativ des Zielbilds; jeder Befund der Klasse C ist nach der Entscheidung
-      des Auftraggebers umformuliert oder mit Begründung stehen gelassen.
-- [ ] **(2) CR-Eintrag:** `spec/lastenheft.md` trägt Version und Historie-Zeile nach [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler): Verweis
+- [ ] **(1) Umformulierung:** Jeder Befund der Klasse A und B (`LH` Z. 39) in §3 steht in `spec/lastenheft.md` und
+      `spec/architecture.md` im Indikativ des Zielbilds; jeder Befund der Klasse C ist umformuliert (Entscheidung
+      des Auftraggebers 2026-10-17). Der `LH`-Teil liegt im Commit `b7999710` (Lastenheft 0.27.0), der
+      `AR`-Teil (Kopf, §5, Z. 170) ist Arbeit des Implementers in diesem Slice.
+- [ ] **(2) CR-Eintrag:** `spec/lastenheft.md` trägt Version 0.27.0 und Historie-Zeile nach [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler): Verweis
       `Nutzer-Entscheidung 2026-10-17`, der Anlass steht nicht in der Zeile
       ([`MR-042`](../../../../harness/conventions.md#mr-042--der-anlass-einer-lastenheft-änderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz)),
       Stufe nach dem Präzedenz-Fall 0.15.0: Minor, weil ein normativer Abschnitt seine Aussage-Form ändert.
+      Geliefert im Commit `b7999710`; der Implementer prüft ihn, er schreibt ihn nicht neu.
 - [ ] **(3) Messbeleg mit Rot:** Die drei Messkommandos aus §3 zeigen nach der Änderung nur die in §3 als
       stehengelassen benannten Zeilen; ein einmal eingefügter Satz *„… folgt …"* im Rumpf lässt das
       Kommando um 1 steigen (Gegenprobe im Arbeitsbaum, danach zurückgenommen, nicht committet).
@@ -129,13 +131,13 @@ gefunden, nicht über die Nummer:
 | A | `LH` Z. 212 ([`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren)) | „nicht **mehr** Vorbedingung (die **frühere** Picker-Setzung entfällt)" — beschreibt abwesenden Text | „Eine Kurs-Upstream-Ergänzung ist keine Vorbedingung." |
 | A | `AR` Z. 6 | „Die zeitliche Schicht lebt in docs/plan/planning/ *(folgt)*" — die Schicht besteht | `*(folgt)*` entfällt |
 | A | `AR` Z. 186 | „`--print-mk`, **real ab v0.15.0**" | Voraussetzung ohne Versionsbezug, wie `LH` Z. 172 |
-| B | `LH` Z. 39 ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)) | „Das Sprachskelett **folgt** als separater, wiederholbarer Schritt" — Reihenfolge im Ablauf, aber als Lieferung lesbar | Empfehlung: „ist ein eigener, wiederholbarer Schritt, der nach der Entscheidung … läuft" — gleiche Bedeutung ohne Mehrdeutigkeit |
+| B | `LH` Z. 39 ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)) | „Das Sprachskelett **folgt** als separater, wiederholbarer Schritt" — Reihenfolge im Ablauf, aber als Lieferung lesbar | umgesetzt (F3, 2026-10-17): „ist ein eigener, wiederholbarer Schritt, der nach der Entscheidung … läuft" — gleiche Bedeutung ohne Mehrdeutigkeit |
 | B | `LH` Z. 648 (Glossar) | „bleibt co-located für **spätere** Instanzen" — *spätere* meint spätere Verwendungen im Zielrepo | stehen lassen: Ablauf, kein Lieferzeitpunkt |
 | B | `SP` Z. 93 | „jedes andere Feld einer **künftigen** Payload wird nicht still mitgeschrieben" — Regel über fremde Payloads | stehen lassen: Geschlossenheits-Regel, kein Lieferstand |
-| C | `LH` Z. 80 | Hinweis „Titel historisch … siehe Historie (§7, v0.7.0)" | Entscheidung Auftraggeber (F2) |
-| C | [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix), Z. 612/616/625 | „erst mit Plattform-Runnern", „läuft **heute** schlicht nicht", „**offen und nicht zugesagt**" — Aussage über den Lieferstand der CI in einer Grenz-Notiz einer Messmethode | Entscheidung Auftraggeber (F2); Vorschlag: Indikativ der Grenze („belegt ist linux/amd64; ein Voll-Smoke auf linux/arm64 braucht arm64-fähige Gate-Images"), ohne die Messmethode zu ändern |
-| C | `LH` Z. 146 | „seine Vorlage ist eine **offene** Ergänzung" | Entscheidung Auftraggeber (F2) |
-| C | `AR` Z. 170 | „ein Entry-Point wie **heute**" | Entscheidung Auftraggeber (F2) |
+| C | `LH` Z. 80 | Hinweis „Titel historisch … siehe Historie (§7, v0.7.0)" | umformuliert (Entscheidung F2, 2026-10-17) |
+| C | [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix), Z. 612/616/625 | „erst mit Plattform-Runnern", „läuft **heute** schlicht nicht", „**offen und nicht zugesagt**" — Aussage über den Lieferstand der CI in einer Grenz-Notiz einer Messmethode | umformuliert (Entscheidung F2, 2026-10-17), Richtung: Indikativ der Grenze („belegt ist linux/amd64; ein Voll-Smoke auf linux/arm64 braucht arm64-fähige Gate-Images"), ohne die Messmethode zu ändern |
+| C | `LH` Z. 146 | „seine Vorlage ist eine **offene** Ergänzung" | umformuliert (Entscheidung F2, 2026-10-17) |
+| C | `AR` Z. 170 | „ein Entry-Point wie **heute**" | umformuliert (Entscheidung F2, 2026-10-17) |
 | C | `LH` Z. 118 und 620 | „gemessen 2026-07-27", „gemessen 2026-07-26" — datierte Messung | stehen lassen: ein Messbeleg nennt sein Datum |
 | harmlos | `LH` Z. 355, 607 | „nicht zugesagt" als Zusage-Grenze | stehen lassen |
 | harmlos | `SP` Z. 150, 199 | „kein Programm folgt" (Syntax), `Folgenummer` in der Test-Bindung | stehen lassen |
@@ -148,9 +150,9 @@ in frischem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): Der Auftraggeber priorisiert (`open → next`) und beantwortet F1 bis F3;
-der Lastenheft-Commit (a) liegt im Hauptzweig, bevor der Slice nach `in-progress/` geht. Die Planung
-startet den Slice nicht.
+**Start** (`next` → `in-progress`): erfüllt am 2026-10-17 — der Auftraggeber hat priorisiert (der Auftrag
+selbst) und F1 bis F3 beantwortet (§6); der Lastenheft-Commit (a) `b7999710` liegt im Hauptzweig; das
+WIP-Limit ist frei (`in-progress/` trug keinen Slice).
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
@@ -176,18 +178,23 @@ daraus wird, entscheidet der Architect.
   (*sobald*, *ab Version*, *wird eingeführt*) schlagen nicht an — **Ausgang:** offen bis Closure; wandert dann
   als benannte Grenze in den Register-Beleg.
 - Die Spezifikation führt heute keinen Befund der Klasse A; ein Treffer, den die Messung am Tag des Starts
-  zusätzlich zeigt, ist eine Änderung an Rang 2 — **Ausgang:** offen bis Closure; Zuständigkeit offen
+  zusätzlich zeigt, ist eine Änderung an Rang 2 — **Ausgang:** offen bis Closure; Zuständigkeit: F1 entschieden, Implementer-Nachzug im Slice
   (F1), siehe [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md).
 
-**Fragen vor dem Start** (der Auftraggeber beantwortet; der Slice entscheidet sie nicht):
+**Entschieden vom Auftraggeber am 2026-10-17:**
 
-- **F1 — Rolle:** Wer schreibt `spec/architecture.md` (und `spec/spezifikation.md`)? Offen in
-  [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md); bisher lief ein Spec-Nachzug als
-  Implementer-Commit im Slice. Zwei Ausgänge: slice-151 vorher klären, oder der Slice trägt den Nachzug und die
-  Closure nennt das als Übergabe an den Architect.
-- **F2 — Klasse C:** [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)-Grenze, Z. 80, Z. 146 und `AR` Z. 170 umformulieren oder stehen lassen? Ohne
-  Antwort bleiben sie stehen und stehen als Grenzfall mit Begründung in der Closure-Notiz.
-- **F3 — Klasse B:** Z. 39 wie empfohlen umformulieren, oder als Ablauf-Reihenfolge stehen lassen?
+- **F1 — Rolle:** Der Implementer schreibt den Nachzug in `spec/architecture.md` im Slice (wie bisher bei
+  Spec-Nachzügen); die Closure übergibt die Rollenfrage
+  ([slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md)) an den Architect.
+- **F2 — Klasse C: umformulieren.** [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)-Grenze (Z. 612/616/625),
+  Z. 80, Z. 146 und `AR` Z. 170 als Zielbild im Indikativ ohne Zeit- und Versionsbezug, bedeutungstreu (was
+  gilt, nicht wann). Bleiben: die datierten Messungen (`LH` Z. 118/620 — ein Messbeleg nennt sein Datum) und
+  „nicht zugesagt" als Zusage-Grenze (Z. 355, 607, 625).
+- **F3 — Klasse B:** Z. 39 umformuliert („ist ein eigener, wiederholbarer Schritt, der nach dem Init läuft").
+- **Stufe:** Minor (0.27.0), wie 0.15.0; der Auftraggeber hat nicht widersprochen.
+
+**Größe:** bleibt bei drei Liefer-Punkten; die Entscheidungen erweitern Punkt (1) um Stellen derselben Art
+(Umformulierung eines Satzes), nicht um einen neuen Gegenstand. Schichten: nur Spec-Text.
 
 ## 7. Closure-Notiz
 
