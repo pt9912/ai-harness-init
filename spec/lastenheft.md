@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.26.0
+**Version:** 0.27.0
 
 **Status:** Draft
 
@@ -36,9 +36,9 @@ Modus-Wahl, AGENTS.md) — das bleibt Mensch/Agent.
 die **sprach-agnostische** Harness-Struktur an: Templates (zweiklassig), den
 Doc-Chain (lastenheft/spezifikation/architecture), die Doc-Gate-Baseline, die
 Durchsetzung und ein **sprach-agnostisches** `make gates` (Doc-Gate); Projektname
-gestempelt — **`--lang` ist optional**. Das **Sprachskelett** folgt als separater,
+gestempelt — **`--lang` ist optional**. Das **Sprachskelett** ist ein eigener,
 wiederholbarer Schritt ([`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)),
-erst nachdem die Ziel-Architektur + ihr Sprach-ADR es entscheiden (die Sprachwahl
+der nach dem Init läuft, erst nachdem die Ziel-Architektur + ihr Sprach-ADR es entscheiden (die Sprachwahl
 ist eine ADR-Entscheidung des Adopters, kein Init-Argument).
 
 **Akzeptanzkriterien:**
@@ -75,9 +75,9 @@ der Gate-Config wächst mit den Artefakten.
 
 ### LH-FA-04 — Sprachskelett-Picker (F4)
 
-> **Titel historisch.** „Picker" benennt die ursprüngliche Fetch-Variante; die
-> Anforderung ist auf einen **deterministischen Generator** (Tool-als-Quelle)
-> umgestellt — siehe Historie (§7, v0.7.0). Der Heading-Anker bleibt bewusst
+> **Titel und Anker.** „Picker" ist ein Name, keine Beschreibung; die
+> Anforderung ist ein **deterministischer Generator** (Tool-als-Quelle), kein
+> Fetch. Der Heading-Anker bleibt bewusst
 > stabil, damit bestehende Verweise nicht rotten.
 
 **Beschreibung:** Das Tool **generiert** das Sprachskelett — Verzeichnis-Layout
@@ -119,7 +119,7 @@ Arch-Gate einen realen Prüfbereich gibt.
 - **Negative:** Given unbekannte Sprache, when `add-lang <X>`, then Exit 2 + sortierte Profil-Liste. Given unbekannte Architektur, when `add-lang go <pfad> --arch <Y>`, then Exit 2 + sortierte Architektur-Liste.
 
 **Unterstützte Sprachen:** `go`, `python`, `kotlin`, `java`, `csharp`, `cpp`.
-`cpp` (C++/CMake: cmake/ctest/clang-tidy) folgt; der Generator bleibt
+`cpp` trägt C++/CMake (cmake/ctest/clang-tidy); der Generator ist
 sprach-agnostisch (ein Sprach-Renderer je Sprache, komponiert mit dem Arch-Layout).
 **Unterstützte Architekturen:** `flat` (Default), `hexagonal`, `hexslice` (weitere nur mit
 belegtem Bedarf, kein spekulatives Layout). **`hexagonal`** trägt die drei klassischen
@@ -143,7 +143,7 @@ Guard, Gate-Nachweis) bringt das Tool selbst mit — **Tool-als-Quelle**, je `--
 parametriert (wie das Sprachskelett [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)).
 Der **Reviewer-Skill** bleibt aus dem Kurs-Template-Satz **gefetcht** (er liegt dort);
 `CLAUDE.md` ist ein **Briefing** wie `AGENTS.md` → **autort**, nicht tool-generiert
-(seine Vorlage ist eine offene Ergänzung).
+(seine Vorlage ist eine Ergänzung des Kurses).
 
 **Akzeptanzkriterien:**
 
@@ -169,8 +169,8 @@ das ist eine **strukturelle** Bedingung (das Layout trägt eine Rolle, die weder
 noch Toolchain-Test noch Composition Root ist), **keine Liste von Architektur-Namen**: sonst
 verliert das nächste Layout sein Gate, ohne dass eine Prüfung anschlägt
 ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-**Vorbedingung erfüllt:** a-check ist — wie d-check — als gepinntes Image mit
-`--print-mk` real verfügbar (v0.15.0, Digest-gepinnt); die Umsetzung stützt sich auf diesen Beleg.
+**Voraussetzung:** a-check ist — wie d-check — ein Digest-gepinntes Image mit
+`--print-mk`.
 
 **Akzeptanzkriterien:**
 
@@ -209,7 +209,7 @@ aus den Kurs-Prozess-Modulen und dem erprobten Dogfood-Stand, je `--lang` parame
 adaptierbaren Markern (wie das Sprachskelett [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)).
 **Kein** aus dem Nichts generiertes Command: die Fassung ist real erprobt (Dogfood) und kurs-geerdet
 (Prozess-Module), so wie das generierte Skelett sprach-geerdet ist ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-Eine Kurs-Upstream-Ergänzung ist damit **nicht** mehr Vorbedingung (die frühere Picker-Setzung entfällt).
+Eine Kurs-Upstream-Ergänzung ist damit **nicht** Vorbedingung.
 
 **Abgrenzung zu [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren).** LH-FA-06 emittiert die **Durchsetzung** (Stop-Hook,
 Gate-Nachweis, Command-Guard, `CLAUDE.md`, Reviewer-Skill — was den Prozess *erzwingt*);
@@ -609,11 +609,11 @@ emittierte Datei zu ändern.
   durchläuft. Diese Lücke wird ausgewiesen, statt sie durch eine Zusage zu
   überdecken, die kein Lauf einlöst
   ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-  Sie schließt sich erst mit Plattform-Runnern, die Linux-Container fahren.
+  Sie schließt sich nur mit Plattform-Runnern, die Linux-Container fahren.
 - **Und eine zweite, technisch andere Grenze — `linux/arm64`.** Sie steht hier
   getrennt, weil die Begründung oben für sie **nicht** trägt: ein Linux-ARM-Runner
   fährt Linux-Container und *könnte* den Voll-Smoke prinzipiell tragen. Er läuft
-  dort heute schlicht **nicht** — der Voll-Smoke ist ein einzelner Job auf
+  dort schlicht **nicht** — der Voll-Smoke ist ein einzelner Job auf
   `ubuntu-24.04` (amd64), keine Matrix. Der Wortlaut beschreibt damit, was real
   läuft, statt eine breitere Abdeckung zuzusagen, die kein Lauf einlöst
   ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
@@ -621,8 +621,7 @@ emittierte Datei zu ändern.
   gepinnte d-check-Image ist ein **Single-Arch-`amd64`-Manifest**
   (`application/vnd.docker.distribution.manifest.v2+json`, Config `architecture: amd64`),
   und `docs-check` ist ein `gates`-Prerequisite — der Voll-Smoke bräuchte dort also
-  zuerst arm64-fähige Gate-Images. Was diese Grenze auflöst, ist damit **offen und
-  nicht zugesagt**; ein Weg dorthin ist eine eigene Entscheidung mit eigenem Trigger.
+  zuerst arm64-fähige Gate-Images. Was diese Grenze auflöst, ist damit **nicht zugesagt**; ein Weg dorthin ist eine eigene Entscheidung mit eigenem Trigger.
 
 ## 5. Globale Out-of-Scope-Punkte
 
@@ -637,8 +636,8 @@ emittierte Datei zu ändern.
   + Abdeckungs-Sicht ([`LH-FA-12`](../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren))
   per **Tool-als-Quelle** (generische, aus Dogfood + Kurs-Prozess-Modulen abgeleitete
   Fassung — die tragende Entscheidung steht in der Historie, §7 zu 0.9.0);
-  das Sprachskelett per **deterministischem Generator** (Tool-als-Quelle). Weitere
-  Sprachen folgen sprach-agnostisch über je einen Renderer.
+  das Sprachskelett per **deterministischem Generator** (Tool-als-Quelle). Jede
+  weitere Sprache ist ein eigener Renderer des sprach-agnostischen Generators.
 
 ## 6. Glossar
 
@@ -681,3 +680,4 @@ emittierte Datei zu ändern.
 | 0.25.0 | 2026-10-08 | CR: **Kennzeichnung *nicht bekannt* statt leerem Wert** — [`LH-FA-15`](../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) Kriterium „Rolle wird abgeleitet": bei unbekannter Rolle (`general-purpose`, Haupt-Kontext) trägt das Feld die Kennzeichnung samt Quelle statt leer zu bleiben, die Auswertung zählt den Lauf im Sammelposten wie bisher. [`LH-FA-13`](../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) Kriterium „Leer heißt unbekannt" wird „Leer heißt keiner, unbekannt ist gekennzeichnet": `[]` einer Korrelations-Achse heißt *keiner*, ein unbekannter Wert trägt die Kennzeichnung, nie einen leeren Wert | Nutzer-Entscheidung 2026-10-08 |
 | 0.25.1 | 2026-10-08 | CR: **Folgestellen der Kennzeichnung *nicht bekannt* aus 0.25.0 nachgezogen** — [`LH-FA-13`](../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) Kriterium „Zweig und Stand": ist die Ableitung nicht möglich, tragen beide Felder die Kennzeichnung statt leer zu sein. [`LH-FA-15`](../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) Kriterium „Rolle besetzt": eine unbekannte Rolle trägt die Kennzeichnung; Kriterium „Lesevorschrift": die Auswertung liest die Kennzeichnung und, für den Bestand davor, das leere Rollenfeld als unbekannt. Keine neue Anforderung | Nutzer-Entscheidung 2026-10-08 |
 | 0.26.0 | 2026-10-09 | CR: **Schutz des Bestands genau benannt** — [`LH-FA-14`](../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) Kriterium „Redaktion — was zugesagt ist und was nicht": der Bestand ist gitignored und nicht verschlüsselt; seine Dateien sind nur für den Eigentümer lesbar, das Verzeichnis bleibt für andere auflistbar. Minor, weil sich die Aussage eines Akzeptanzkriteriums ändert; keine neue Anforderung | Nutzer-Entscheidung 2026-10-09 |
+| 0.27.0 | 2026-10-17 | CR: **Zeit- und Liefer-Sätze im Rumpf als Zielbild im Indikativ gefasst** — [`LH-FA-01`](../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) (Sprachskelett ist ein eigener Schritt nach dem Init), [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) (Hinweis zum Titel, `cpp`-Satz, Sprach-Renderer in §5), [`LH-FA-07`](../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) (Voraussetzung), [`LH-FA-08`](../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) (Kurs-Upstream-Ergänzung), Briefing-Vorlage in [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren), Grenz-Notiz [`LH-QA-04`](../spec/lastenheft.md#lh-qa-04--plattform-matrix). Minor, weil normative Abschnitte ihre Aussage-Form ändern; keine neue Anforderung, keine Zusage entfällt, Heading-Anker bleiben stabil, datierte Messungen bleiben | Nutzer-Entscheidung 2026-10-17 |
