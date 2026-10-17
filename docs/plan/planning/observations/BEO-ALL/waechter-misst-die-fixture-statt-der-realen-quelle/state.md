@@ -1,6 +1,6 @@
 **Stand:** geplant
 
-Kennung: [`slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor`](../../../next/slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor.md)
+Kennung: [`slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor`](../../../in-progress/slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor.md)
 — eine Fixture, die einen realen Wert nachbaut, ist ein doppelt geführter Wert; der Kopplungs-Sensor
 hält sie gegen ihre Quelle. Die Zeile in `AGENTS.md` §3.6 unten bleibt verkörpert, bis der Slice
 liefert.
