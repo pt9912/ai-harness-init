@@ -50,20 +50,20 @@ eine Welle braucht beobachtet keine Closure-Bedingung mehr als diese DoD.
 
 Drei Liefer-Punkte, jeder mit dem Kommando, das ihn rot färbt ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 
-- [ ] **1 — golangci-lint steht auf `v2.15.0` an jeder Pin-Stelle, mit belegtem Digest.** Makefile
+- [x] **1 — golangci-lint steht auf `v2.15.0` an jeder Pin-Stelle, mit belegtem Digest.** Makefile
       `GOLANGCI_LINT_VERSION`, Dockerfile `ARG GOLANGCI_LINT_VERSION` und der `golangci-lint`-`@sha256`,
       `golangciVersion` in `internal/gen/golang.go`. Digest: Manifest-Digest des Tags `golangci/golangci-lint:v2.15.0`,
       Kommando im Commit. Rot: `make freshness-golangci` (Exit 1 bei zurückgedrehtem Makefile-Pin) und
       `TestGoProfile_PinsMatchRepo` bei Halbstand.
-- [ ] **2 — `make lint` läuft unter dem neuen Image ohne Befund und ohne Suppression.** Neue Befunde sind im Code behoben;
+- [x] **2 — `make lint` läuft unter dem neuen Image ohne Befund und ohne Suppression.** Neue Befunde sind im Code behoben;
       `git diff` enthält kein `//nolint` und keine Abschwächung von `.golangci.yml`. Rot: `make lint` (Befund).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -112,7 +112,15 @@ Verifikations-Report liegen vor; Closure-Notiz mit Lerneintrag, die den Release-
 
 ## 7. Closure-Notiz
 
-Wird bei der Closure vom Planner geschrieben.
+- **Was hat funktioniert:** golangci-lint steht auf `v2.15.0` an jeder Pin-Stelle des Plans (Makefile, Dockerfile-`ARG` und Manifest-Digest `sha256:fbfcfd12…c481`, `golangciVersion`); `make freshness-golangci` meldet `aktuell`, `make lint` liest `0 issues.` ohne `//nolint` und ohne Änderung an `.golangci.yml`, `make gates` grün, `make full-smoke-host` Exit 0 mit demselben Pin im Ziel. Review: 0 HIGH/0 MEDIUM/0 LOW/1 INFO; Verifikation bestätigt DoD 1 und 2 und fuhr den Rot-Beleg selbst (`golangciVersion` bzw. Dockerfile-`ARG` auf `v2.14.0` → `TestGoProfile_PinsMatchRepo` rot, richtiger Grund, beide Richtungen) (`docs/reviews/2026-10-17-slice-golangci-lint-pin-folgt-dem-freshness-drift.md`, `…-verify.md`).
+- **Was ging anders als geplant:** nichts am Umfang, keine Lint-Befunde aus v2.15.0. Messgrenzen der Verifikation: der Makefile-Pin ist nur per `make -n` in der `.git`-losen Kopie geprüft (kein voller `make gates` mit gebrochenem Pin); der falsche, real existierende Digest wurde diesmal nicht gebrochen gefahren. Nicht belegt: CI auf anderem Host (erst nächster Push oder Nacht-Lauf); kein Mutations-Fall in `test/mutations/`, keine Mutations-Probe.
+- **Steering-Loop-Eintrag:** benannte Lücke, kein neuer Sensor: der Test hält allein `ARG GOLANGCI_LINT_VERSION` gegen `golangciVersion`; Makefile-Pin (nur `freshness-golangci`, Netz, nicht in `make gates`) und `@sha256`-Digest haben weiter keinen Wächter. Zum achten Mal fällt dieselbe Klasse an, jetzt für den zweiten Pin desselben Sprungs; neu ist nichts, den schärferen Fall (falscher, existierender Digest) belegt bereits der Vorgänger-Slice. Träger ist der Folge-Slice `slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor`; bis dahin der Lauf, der den Pin zieht.
+- **Trigger-Audit:** keine ADR und kein Eintrag verlangt eine Änderung: ADR-0003, ADR-0007, ADR-0008, ADR-0009, ADR-0088 und MR-002, MR-007, MR-014, MR-048, MR-050 nennen golangci-lint nur als Werkzeug oder Kontext, keiner nennt einen Pin-Wert. Der Fall von `BEO-ALL/pin-sprung-feuert-adr-trigger-ohne-nennung` ist hier nicht aufgetreten.
+- **Beobachtungs-Register (`../observations/`):** [`BEO-ALL/pin-digest-ohne-waechter`](../observations/BEO-ALL/pin-digest-ohne-waechter/observation.md): weitere Evidence-Datei (achter Beleg, ein weiterer Vorgang), Stand bleibt `geplant`. [`BEO-ALL/pin-sprung-feuert-adr-trigger-ohne-nennung`](../observations/BEO-ALL/pin-sprung-feuert-adr-trigger-ohne-nennung/observation.md): nicht aufgetreten, keine Datei. [`BEO-ALL/kennung-traegt-den-stand-den-ein-release-ueberholt`](../observations/BEO-ALL/kennung-traegt-den-stand-den-ein-release-ueberholt/observation.md): die Kennung trägt bewusst keine Version, kein Auftreten, keine Datei. [`BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle`](../observations/BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/observation.md): der Slice brach an der realen Quelle (Dockerfile-`ARG`, `golangciVersion`), kein Beleg.
+- **Release-Hinweis (kein Beschluss):** `golangciVersion` wird ins Ziel emittiert; gebootstrappte Ziele bekommen `v2.15.0` erst mit dem nächsten Release. Zusammen mit dem Go-Pin `1.27.2` aus dem Vorgänger-Slice ist die Emission zweier Pins gegenüber `v0.8.0` verändert. Ob und wann geschnitten wird, entscheidet der Auftraggeber.
+- **Folge-Slices:** `slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor` (Abgrenzung §1 und Ausgang des Registers).
+- **Risiken aus §6:** 1 entfallen (v2.15.0 bringt keinen Lint-Befund: `0 issues.`, kein Code geändert) · 2 weiter offen → Register `BEO-ALL/pin-digest-ohne-waechter` · 3 entfallen (kein neuerer Stand erschienen, `make freshness-golangci` meldet `aktuell`).
+- **Drei Paarungen:** Anker: kein `liegt in`-Feld, nichts zu paaren; Folge-Slice: der genannte liegt im Planning-Lifecycle; Register: die zitierten Pfade existieren (nach dem Move geprüft).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
@@ -130,5 +138,8 @@ berührt Digest und Fallbacks erneut, ein weiterer Beleg ist zu erwarten, die Sc
 Zähler 1, `offen`; die Kennung dieses Slice nennt darum keinen Versionsstand.
 [`BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle`](../observations/BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/observation.md) — verkörpert;
 der Slice berührt die Klasse nur, wo der Implementer die reale Quelle (Dockerfile, Makefile) bricht.
+
+**Stand nach der Closure:** `BEO-ALL/pin-digest-ohne-waechter` — Zähler 8, Stand `geplant` (Ausgang unverändert);
+`pin-sprung-feuert-adr-trigger-ohne-nennung` und `kennung-traegt-den-stand-den-ein-release-ueberholt` — Zähler 1, `offen`.
 
 **Alle berührten Sub-Areas GF.**
