@@ -54,23 +54,23 @@ eine Welle braucht beobachtet keine Closure-Bedingung mehr als diese DoD.
 
 Drei Liefer-Punkte, jeder mit dem Kommando, das ihn rot färbt ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 
-- [ ] **1 — Go steht auf `1.27.2` an jeder Pin-Stelle, mit belegtem Digest.** Makefile `GO_VERSION`, Dockerfile
+- [x] **1 — Go steht auf `1.27.2` an jeder Pin-Stelle, mit belegtem Digest.** Makefile `GO_VERSION`, Dockerfile
       `ARG GO_VERSION` und der `golang`-`@sha256`, `internal/gen/golang.go` `DefaultGoVersion`, Fallbacks in
       `harness/tools/smoke.sh` und `full-smoke.sh`. Der Digest ist der Manifest-Digest des Tags `golang:1.27.2`,
       Kommando im Commit. Rot: `make freshness-go` (Exit 1 bei zurückgedrehtem Makefile-Pin) und
       `TestGoProfile_PinsMatchRepo` bei Halbstand Dockerfile/`DefaultGoVersion`.
-- [ ] **2 — Das emittierte Skelett trägt `1.27.2` und bleibt gekoppelt.** `make test` grün, darunter
+- [x] **2 — Das emittierte Skelett trägt `1.27.2` und bleibt gekoppelt.** `make test` grün, darunter
       `TestGoProfile_PinsMatchRepo`; ein stehengebliebener Skelett-Wert färbt ihn rot (Mutation: `DefaultGoVersion`
       zurückdrehen). Kein Release in diesem Slice.
-- [ ] **3 — `make build`, `make test` und `make gates` laufen unter dem neuen Image ohne Befund.** Kein `//nolint`,
+- [x] **3 — `make build`, `make test` und `make gates` laufen unter dem neuen Image ohne Befund.** Kein `//nolint`,
       keine Abschwächung von `.golangci.yml`. Rot: `make gates` (Exit ≠ 0).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -115,14 +115,22 @@ Closure-Notiz mit Lerneintrag, die den Release-Hinweis (Emission) nennt.
 
 ## 6. Risiken und offene Punkte
 
-- Das Docker-Hub-Image `golang:1.27.2` fehlt noch — **Ausgang:** weiter offen bis zur Umsetzung; tritt es ein, §4 (`open`).
-- Ein vergessener Digest oder Fallback färbt nichts rot — **Ausgang:** weiter offen → `BEO-ALL/pin-digest-ohne-waechter` im Register.
+- Das Docker-Hub-Image `golang:1.27.2` fehlt noch — **Ausgang:** entfallen: das Image existiert, der Manifest-Digest ist ermittelt und belegt (§7).
+- Ein vergessener Digest oder Fallback färbt nichts rot — **Ausgang:** weiter offen → `BEO-ALL/pin-digest-ohne-waechter` im Register (siebter Beleg).
 - Das Ziel bekommt `1.27.2` erst mit einem Release — **Ausgang:** entfallen für diesen Slice: Release ist ein anderer Vorgang
   (§1); der Hinweis steht in der Closure-Notiz.
 
 ## 7. Closure-Notiz
 
-Wird bei der Closure vom Planner geschrieben.
+- **Was hat funktioniert:** Go steht auf `1.27.2` an jeder Pin-Stelle des Plans (Makefile, Dockerfile-`ARG` und Manifest-Digest, `DefaultGoVersion`, beide Fallbacks); `make freshness-go` meldet `aktuell`, `make gates` grün, kein `//nolint`, keine Lockerung. Review: 0 HIGH/0 MEDIUM/0 LOW/1 INFO; Verifikation bestätigt DoD 1-3 und fuhr beide Rot-Belege selbst (`DefaultGoVersion` bzw. Dockerfile-`ARG` auf `1.27.1` → `TestGoProfile_PinsMatchRepo` rot, richtiger Grund); der Digest `sha256:820153…62d8` gehört zum Tag `golang:1.27.2`, `1.27.1` trägt einen anderen (`docs/reviews/2026-10-17-slice-go-toolchain-pin-folgt-dem-freshness-drift.md`, `…-verify.md`).
+- **Was ging anders als geplant:** nichts am Umfang. Messgrenze der Verifikation: in der Kopie lief `make test` statt `make gates`; ein roter bats-Fall dort ist ein Artefakt der `.git`-losen Kopie. Nicht belegt: CI auf anderem Host (erst nächster Push oder Nacht-Lauf); keine Mutations-Fälle.
+- **Steering-Loop-Eintrag:** benannte Lücke, kein neuer Sensor: Digest und Fallbacks haben weiter keinen Wächter, und der Verifier belegte erstmals den schärferen Fall — ein real existierender, aber falscher Digest (der von `1.27.1` an dem Tag `1.27.2`) baut und färbt nichts; der Makefile-Pin färbt nur `freshness-go` (Netz, nicht in `make gates`). Die Fallbacks `${GO_VERSION:-…}` wirken nur bei direktem Skript-Aufruf, denn alle vier `make`-Rezepte übergeben `GO_VERSION` (Review INFO-1). Träger ist der Folge-Slice `slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor`; bis dahin der Lauf, der den Pin zieht.
+- **Trigger-Audit:** keine ADR und kein Eintrag verlangt eine Änderung: [`MR-092`](../../../../harness/conventions.md#mr-092) und [`MR-093`](../../../../harness/conventions.md#mr-093) nennen die Go-Version nur datiert, und keine Datei unter `docs/plan/adr` nennt `GO_VERSION` oder `1.27`. Der Fall von `BEO-ALL/pin-sprung-feuert-adr-trigger-ohne-nennung` (ein Sprung feuert den Trigger einer ADR) ist hier nicht aufgetreten.
+- **Beobachtungs-Register (`../observations/`):** [`BEO-ALL/pin-digest-ohne-waechter`](../observations/BEO-ALL/pin-digest-ohne-waechter/observation.md): weitere Evidence-Datei (siebter Beleg, dasselbe Muster mit belegtem Fall des falschen, aber existierenden Digests), Stand bleibt `geplant`. [`BEO-ALL/pin-sprung-feuert-adr-trigger-ohne-nennung`](../observations/BEO-ALL/pin-sprung-feuert-adr-trigger-ohne-nennung/observation.md): nicht aufgetreten, keine Datei. [`BEO-ALL/kennung-traegt-den-stand-den-ein-release-ueberholt`](../observations/BEO-ALL/kennung-traegt-den-stand-den-ein-release-ueberholt/observation.md): die Kennung trägt bewusst keine Version, kein Auftreten, keine Datei. [`BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle`](../observations/BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/observation.md): der Slice brach an der realen Quelle, kein Beleg.
+- **Release-Hinweis (kein Beschluss):** `DefaultGoVersion` wird ins Ziel emittiert; gebootstrappte Ziele bekommen `1.27.2` erst mit dem nächsten Release. Ob und wann geschnitten wird, entscheidet der Auftraggeber.
+- **Folge-Slices:** `slice-golangci-lint-pin-folgt-dem-freshness-drift` (Abgrenzung §1); `slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor` (Ausgang des Registers).
+- **Risiken aus §6:** 1 entfallen (Image existiert, Digest belegt) · 2 weiter offen → Register `BEO-ALL/pin-digest-ohne-waechter` · 3 entfallen (Release ist ein anderer Vorgang, Hinweis oben).
+- **Drei Paarungen:** Anker: kein `liegt in`-Feld, nichts zu paaren; Folge-Slice: beide genannten liegen im Planning-Lifecycle; Register: die zitierten Pfade existieren.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
@@ -140,5 +148,8 @@ berührt Digest und Fallbacks erneut, ein weiterer Beleg ist zu erwarten, die Sc
 Zähler 1, `offen`; die Kennung dieses Slice nennt darum keinen Versionsstand.
 [`BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle`](../observations/BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle/observation.md) — verkörpert;
 der Slice berührt die Klasse nur, wo der Implementer die reale Quelle (Dockerfile, Makefile) bricht.
+
+**Stand nach der Closure:** `BEO-ALL/pin-digest-ohne-waechter` — Zähler 7, Stand `geplant` (Ausgang unverändert);
+`pin-sprung-feuert-adr-trigger-ohne-nennung` und `kennung-traegt-den-stand-den-ein-release-ueberholt` — Zähler 1, `offen`.
 
 **Alle berührten Sub-Areas GF.**
