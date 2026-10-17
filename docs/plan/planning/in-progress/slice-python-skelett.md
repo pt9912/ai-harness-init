@@ -65,7 +65,7 @@ nichts davon.
       einmal rot gesehen (Stage entfernt); `blockedByLang("python")` mit Kopplung an
       `gen.SupportedLangs`, dazu ein Test auf die Guard-Namen der ADR Festlegung 6
       (`internal/emit/enforce_test.go`, Muster der Java-Namensprüfung; `pip`/`pip3`/`pipx` nicht im Set);
-      Wächter der `TID252`-Bindung (ADR-0095 Festlegung 3): ein Test oder Mutationsfall hält in der
+      Wächter der `TID252`-Bindung ([`ADR-0095`](../../adr/0095-python-skelett-toolchain-und-schicht-aufloesung.md) Festlegung 3): ein Test oder Mutationsfall hält in der
       emittierten `pyproject.toml` `TID` in `select` und `ban-relative-imports = "all"`, einmal rot
       gesehen (je eine der beiden Zeilen entfernt)
       ([`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4),
@@ -134,7 +134,7 @@ DoD vollständig, die Python-Stufe in `make full-smoke` grün, Closure-Notiz mit
   (`BEO-ALL/dupl-meldet-aehnlichen-testcode-zweier-sprach-skelette`, 1×) —
   **Ausgang:** bei der Closure; gemeinsamer Helfer von Anfang an (§3).
 - Der Wächter der `TID252`-Bindung hält nur den Text der emittierten Config, nicht, dass `lint` am
-  gebootstrappten Ziel einen relativen Import tatsächlich rot färbt (ADR-0095: am Ziel nicht gefahren) —
+  gebootstrappten Ziel einen relativen Import tatsächlich rot färbt ([`ADR-0095`](../../adr/0095-python-skelett-toolchain-und-schicht-aufloesung.md): am Ziel nicht gefahren) —
   **Ausgang:** bei der Closure; Grenze im Wächter benannt, oder die Wirkung rot gesehen (Fall in
   `make full-smoke` oder benannte Lücke).
 - Transitive Abhängigkeiten sind ungepinnt (Festlegung 1 der ADR, akzeptiertes Negativ): zwei Bauten
