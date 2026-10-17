@@ -10,14 +10,13 @@
 [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) ·
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) ·
 [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) ·
-[`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten). Die ADR des Architect für
-Python (Toolchain, Pins, Gate-Targets, Arch-Unterstützung) ist die Entscheidungsgrundlage; ihre
-Kennung steht hier, sobald sie `Accepted` ist.
+[`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten). [`ADR-0095`](../../adr/0095-python-skelett-toolchain-und-schicht-aufloesung.md)
+(Toolchain, Pins, Gate-Targets, Arch-Unterstützung) ist die Entscheidungsgrundlage.
 
 **Berührte Spec-Stellen:** [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4); `ARC-009`, `ARC-010` (über die ADR, soweit sie Layout und
 Arch-Achse berührt).
 
-**Verantwortlich:** —
+**Verantwortlich:** dburkard
 
 **Autor:** Planner. **Datum:** 2026-10-17.
 
@@ -28,7 +27,7 @@ Arch-Achse berührt).
 **Ziel:** `add-lang python` (Layout `flat`) rendert ein Python-Skelett mit Code-Gate-Fragment und
 Guard-Set nach der ADR, das im gebootstrappten Ziel `make gates` grün fährt — ohne Host-Python.
 
-**Vorbedingung — der Architect schreibt zuerst.** Die ADR des Architect (Proposed) legt fest:
+**Vorbedingung — der Architect schreibt zuerst.** [`ADR-0095`](../../adr/0095-python-skelett-toolchain-und-schicht-aufloesung.md) (Accepted) legt fest:
 Projekt im `src`-Layout ohne Build-Backend, Image `python:3.14.8-slim` (Knopf `SKEL_PYTHON_VERSION`,
 Konstante `DefaultPythonVersion`, Make-Variable `PYTHON_TAG`), `pip` mit `requirements-dev.txt`
 (kein `uv`), pytest, ruff (`E,F,I,B,TID`, `ban-relative-imports = "all"`; gebunden `F401`,
@@ -65,7 +64,10 @@ nichts davon.
       `gen.DefaultVersion("python")`; Test Fragment↔Stages nach dem Muster der Kotlin- und C++-Tests,
       einmal rot gesehen (Stage entfernt); `blockedByLang("python")` mit Kopplung an
       `gen.SupportedLangs`, dazu ein Test auf die Guard-Namen der ADR Festlegung 6
-      (`internal/emit/enforce_test.go`, Muster der Java-Namensprüfung; `pip`/`pip3`/`pipx` nicht im Set)
+      (`internal/emit/enforce_test.go`, Muster der Java-Namensprüfung; `pip`/`pip3`/`pipx` nicht im Set);
+      Wächter der `TID252`-Bindung (ADR-0095 Festlegung 3): ein Test oder Mutationsfall hält in der
+      emittierten `pyproject.toml` `TID` in `select` und `ban-relative-imports = "all"`, einmal rot
+      gesehen (je eine der beiden Zeilen entfernt)
       ([`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4),
       [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)).
 - [ ] `make full-smoke`: `add-lang python` ins Mono-Repo, Skelett-Dateien liegen, `make gates` grün mit
@@ -131,6 +133,10 @@ DoD vollständig, die Python-Stufe in `make full-smoke` grün, Closure-Notiz mit
 - Der Test-Code des Skeletts wird von `dupl` als Klon des Kotlin-/Java-Testcodes gemeldet
   (`BEO-ALL/dupl-meldet-aehnlichen-testcode-zweier-sprach-skelette`, 1×) —
   **Ausgang:** bei der Closure; gemeinsamer Helfer von Anfang an (§3).
+- Der Wächter der `TID252`-Bindung hält nur den Text der emittierten Config, nicht, dass `lint` am
+  gebootstrappten Ziel einen relativen Import tatsächlich rot färbt (ADR-0095: am Ziel nicht gefahren) —
+  **Ausgang:** bei der Closure; Grenze im Wächter benannt, oder die Wirkung rot gesehen (Fall in
+  `make full-smoke` oder benannte Lücke).
 - Transitive Abhängigkeiten sind ungepinnt (Festlegung 1 der ADR, akzeptiertes Negativ): zwei Bauten
   desselben Tags können sich unterscheiden — **Ausgang:** weiter offen — Register, mit der
   Reproduzierbarkeits-Beobachtung oben.
