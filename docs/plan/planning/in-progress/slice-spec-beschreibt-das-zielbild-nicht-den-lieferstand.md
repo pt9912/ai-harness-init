@@ -72,28 +72,28 @@ liefert nur diese Zeile); der Slice stützt sich auf den Auftrag, nicht auf eine
 
 Liefer-Punkte (drei):
 
-- [ ] **(1) Umformulierung:** Jeder Befund der Klasse A und B (`LH` Z. 39) in §3 steht in `spec/lastenheft.md` und
+- [x] **(1) Umformulierung:** Jeder Befund der Klasse A und B (`LH` Z. 39) in §3 steht in `spec/lastenheft.md` und
       `spec/architecture.md` im Indikativ des Zielbilds; jeder Befund der Klasse C ist umformuliert (Entscheidung
       des Auftraggebers 2026-10-17). Der `LH`-Teil liegt im Commit `b7999710` (Lastenheft 0.27.0) und `d4e63263` (0.27.1), der
       `AR`-Teil (Kopf, §5, Z. 170) ist Arbeit des Implementers in diesem Slice.
-- [ ] **(2) CR-Eintrag:** `spec/lastenheft.md` trägt Version 0.27.1 und Historie-Zeilen 0.27.0 und 0.27.1 nach [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler): Verweis
+- [x] **(2) CR-Eintrag:** `spec/lastenheft.md` trägt Version 0.27.1 und Historie-Zeilen 0.27.0 und 0.27.1 nach [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler): Verweis
       `Nutzer-Entscheidung 2026-10-17`, der Anlass steht nicht in der Zeile
       ([`MR-042`](../../../../harness/conventions.md#mr-042--der-anlass-einer-lastenheft-änderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz)),
       Stufe nach dem Präzedenz-Fall 0.15.0: Minor, weil ein normativer Abschnitt seine Aussage-Form ändert.
       Geliefert in den Commits `b7999710` (0.27.0) und `d4e63263` (0.27.1, Patch: zwei nachgezogene Stellen, Z. 100 und Z. 146); der Implementer prüft ihn, er schreibt ihn nicht neu.
-- [ ] **(3) Messbeleg mit Rot:** Die drei Messkommandos aus §3 zeigen nach der Änderung nur die in §3 als
+- [x] **(3) Messbeleg mit Rot:** Die drei Messkommandos aus §3 zeigen nach der Änderung nur die in §3 als
       stehengelassen benannten Zeilen; ein einmal eingefügter Satz *„… folgt …"* im Rumpf lässt das
       Kommando um 1 steigen (Gegenprobe im Arbeitsbaum, danach zurückgenommen, nicht committet).
 
 Pflichten, die mit dem Umfang nicht wachsen:
 
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -172,16 +172,19 @@ daraus wird, entscheidet der Architect.
 
 ## 6. Risiken und offene Punkte
 
-- Eine Umformulierung ändert die Bedeutung einer Anforderung (Z. 39, QA-04) — **Ausgang:** offen bis Closure;
-  Gegenprobe ist der Vorher/Nachher-Vergleich je Satz in der Closure-Notiz.
+- Eine Umformulierung ändert die Bedeutung einer Anforderung (Z. 39, QA-04) — **Ausgang:** entfallen: die
+  Bedeutungstreue-Prüfung der Verifikation fand keinen Befund, keine Zusage entfällt (§7, Vorher/Nachher).
 - Die Reihenfolge nach [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Setzung 2 kippt: Der Lastenheft-Commit liegt erst nach dem Start —
-  **Ausgang:** offen bis Closure; der Beleg ist `git log --stat -- spec/lastenheft.md`.
+  **Ausgang:** entfallen: der Lastenheft-Commit 0.27.0 lag vor dem Move nach `in-progress/`; der Commit 0.27.1 kam
+  danach, als Patch zu zwei Folgestellen aus dem Review, mit eigenem Commit nur dieser Datei.
 - Der Messbereich (Wortliste P1/P2) ist enger als der Gegenstand: andere Formulierungen von Zeit-/Liefer-Aussagen
-  (*sobald*, *ab Version*, *wird eingeführt*) schlagen nicht an — **Ausgang:** offen bis Closure; wandert dann
-  als benannte Grenze in den Register-Beleg.
+  (*sobald*, *ab Version*, *wird eingeführt*) schlagen nicht an — **Ausgang:** weiter offen →
+  `BEO-ALL/spec-nennt-den-lieferstand-statt-des-zielbilds` (Messgrenze benannt).
 - Die Spezifikation führt heute keinen Befund der Klasse A; ein Treffer, den die Messung am Tag des Starts
-  zusätzlich zeigt, ist eine Änderung an Rang 2 — **Ausgang:** offen bis Closure; Zuständigkeit: F1 entschieden, Implementer-Nachzug im Slice
-  (F1), siehe [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md).
+  zusätzlich zeigt, ist eine Änderung an Rang 2 — **Ausgang:** eingetreten: die erweiterte Suche der Verifikation
+  fand zwei Zeitbezüge (`SPEC-039`, `SPEC-093`); sie blieben unberührt, Folge-Slice
+  `slice-spezifikation-nennt-zeitbezuege-als-zielbild`; Rollenfrage bei
+  [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md).
 
 **Entschieden vom Auftraggeber am 2026-10-17:**
 
@@ -200,16 +203,63 @@ daraus wird, entscheidet der Architect.
 
 ## 7. Closure-Notiz
 
-Wird bei der Closure im Planner-Kontext geschrieben ([`AGENTS.md`](../../../../AGENTS.md) §3.10) — nicht im
-Lauf, der die Arbeit trägt. Pflicht-Inhalt, den die Planung vorgibt:
+Geschrieben im Planner-Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10), getrennt von der Arbeit.
 
-- **Anlass der Lastenheft-Änderung** (gehört nach [`MR-042`](../../../../harness/conventions.md#mr-042--der-anlass-einer-lastenheft-änderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz)
-  hierher und nicht in die Historie): Feststellung des Auftraggebers vom 2026-10-17, dass die Specs das Zielbild
-  definieren und Zeit-/Liefer-Sätze dort nichts verloren haben.
-- **Vorher/Nachher je Satz** der Klasse A und der entschiedenen Klasse C; die Antworten zu F1 bis F3.
-- **Register:** Beleg für die Klasse „Spec nennt den Lieferstand statt des Zielbilds" (neues Verzeichnis
-  `BEO-ALL/<slug>` oder Beleg in einem vorhandenen), samt der Grenze des Messbereichs; Sensor-Frage als
-  Empfehlung, nicht als Folge-Slice.
+- **Anlass der Lastenheft-Änderung** (nach [`MR-042`](../../../../harness/conventions.md#mr-042--der-anlass-einer-lastenheft-änderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz)
+  hier und nicht in der Historie): Auftraggeber-Hinweis vom 2026-10-17, sinngemäß: *in den Specs, auch im Lastenheft,
+  wird das Zielbild definiert; Sätze wie „folgt auf" haben dort nichts verloren.* Ausgelöst durch die Frage, welche
+  Zielsprachen noch nicht unterstützt werden, und den Satz „`cpp` … folgt" in `LH-FA-04`, obwohl `cpp` ein Profil ist.
+- **Was hat funktioniert:** Lastenheft 0.27.0 und 0.27.1, `spec/architecture.md` (Marker 2026-10-17). Review:
+  0 HIGH/0 MEDIUM/2 LOW/4 INFO; die zwei LOW (Z. 146 eine erfundene Herkunftsbehauptung zur CLAUDE.md-Vorlage, Z. 100
+  *„das heutige Verhalten"*) behob 0.27.1. Verifikation: alle DoD-Punkte erfüllt; Messung Lastenheft 4 Treffer,
+  Spezifikation 3, Architektur 2, jeder benannt und begründet; Rot-Gegenprobe je Datei (ein eingefügter Satz hebt die Zählung um 1:
+  4→5, 3→4, 2→3); `heutige` steht nur noch als Protokoll-Zitat in der Historie-Zeile 0.27.1; Bedeutungstreue ohne Befund;
+  `make gates` grün, Stempel gleich HEAD (`docs/reviews/2026-10-17-slice-spec-beschreibt-das-zielbild-nicht-den-lieferstand.md`, `…-verify.md`).
+- **Vorher/Nachher je Satz** (Anker über den Wortlaut, nicht über Zeilen): `LH-FA-04` *„`cpp` … folgt; der Generator bleibt"* →
+  *„`cpp` trägt C++/CMake …; der Generator ist"* · §5 *„Weitere Sprachen folgen … je einen Renderer"* → *„Jede weitere Sprache
+  ist ein eigener Renderer des sprach-agnostischen Generators"* · `LH-FA-07` *„Vorbedingung erfüllt … (v0.15.0 …); die Umsetzung stützt
+  sich auf diesen Beleg"* → *„Voraussetzung: a-check ist — wie d-check — ein Digest-gepinntes Image mit `--print-mk`"* ·
+  `LH-FA-08` *„nicht mehr Vorbedingung (die frühere Picker-Setzung entfällt)"* → *„nicht Vorbedingung"* · `LH-FA-01` *„folgt als
+  separater, wiederholbarer Schritt"* → *„ist ein eigener, wiederholbarer Schritt, der nach dem Init läuft"* (F3) · Klasse C (F2):
+  Titel-Hinweis in `LH-FA-04`, Default `flat` ohne Zeitbezug, Klammer der CLAUDE.md-Vorlage in `LH-FA-06` entfällt,
+  `LH-QA-04`-Grenze im Indikativ ohne *erst/heute/offen und*, Messmethode unverändert · Architektur: *„*(folgt)*"* entfällt,
+  *„real ab v0.15.0"* entfällt, *„byte-identisch zum heutigen"* → *„zur Ausgabe ohne `--arch`"*, *„Entry-Point wie heute"* →
+  *„Entry-Point"*. Antworten: **F1** der Implementer schreibt den Nachzug in `spec/architecture.md`; **F2** Klasse C umformuliert, datierte
+  Messungen und *„nicht zugesagt"* als Zusage-Grenze bleiben; **F3** Klasse B (`LH-FA-01`) umformuliert.
+- **Was ging anders als geplant:** zwei Folgestellen (Review LOW-1/LOW-2) führten zu 0.27.1 als Patch. **Abweichung zwischen
+  Auftrag und Lieferung, benannt:** der Auftraggeber setzte das Prinzip für *die Specs, auch das Lastenheft*; der Plan führte die
+  Spezifikation als unberührt, weil seine Muster dort keinen Befund der Klasse A fanden. Die erweiterte Suche der Verifikation fand
+  zwei Zeitbezüge, `SPEC-039` (*„die Aussage entfällt, sobald …"*) und `SPEC-093` (*„seit dem Feld `rule_version` …"*); sie blieben
+  unangetastet. **Entscheidung: Folge-Slice statt Register allein** — ein Register-Beleg zählt Wiederkehr und trägt keine
+  Arbeit; die zwei Stellen sind ein benannter, endlicher Gegenstand mit eigener Prüf-Frage (Zielbild oder Grenze?), und der
+  Auftrag ist ohne sie nicht erfüllt. Adresse: `slice-spezifikation-nennt-zeitbezuege-als-zielbild` in `open/`, nicht priorisiert.
+  Messgrenzen der Verifikation: die Muster P1/P2 erfassen keine Formulierung ohne Signalwort, keine implizite Lieferaussage und
+  nicht die Wahrheit der Aussage; der erste Rot-Versuch mit BSD-`sed` scheiterte an der Syntax, gültig ist der `awk`-Lauf.
+- **Steering-Loop-Eintrag:** **benannte Spec-Lücke, kein neuer Sensor und keine Regel:** „Specs beschreiben das Zielbild" steht in
+  keiner Quelle über der Architektur-Sicht (`modul-03-spec.md` sagt es allein für sie, meilensteinfrei); der Auftraggeber-Hinweis
+  ist die einzige Quelle, ein Wächter besteht nicht. Träger ist der Lauf, der die Spec schreibt, und der Verifier mit erweiterter
+  Suche. Ob daraus eine Hard Rule wird, entscheidet der Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
+- **Übergaben an den Architect (nicht hier entschieden):** (a) die Rollenfrage für `spec/architecture.md` und
+  `spec/spezifikation.md` liegt bei [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md); dieser Slice lief
+  unter F1 des Auftraggebers und zählt als **kein** Beleg für `BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet`,
+  weil die Frage entschieden wurde statt faktisch beantwortet; ob F1 in dessen Residuum zählt, prüft der Architect am Trigger 2 von
+  [`ADR-0062`](../../../../docs/plan/adr/0062-eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-nicht-beantwortet.md). (b) Ob
+  „Specs beschreiben das Zielbild" eine Hard Rule wird.
+- **Lieferstand der Sprachen (Abgrenzung §1):** dass `python`, `java` und `csharp` kein Profil in `internal/gen/` tragen, bleibt
+  Rückverfolgbarkeit. [slice-192](../open/slice-192-rtm-sieht-alle-anforderungen.md) trägt den Gegenstand nicht (Matrix über Anforderungen, nicht über
+  Teilabdeckung einer Anforderung); der Hinweis steht als *benannt, nicht gezählt* im Register-Eintrag, ein eigener Slice entsteht nicht.
+- **Beobachtungs-Register (`../observations/`):** neu angelegt
+  [`BEO-ALL/spec-nennt-den-lieferstand-statt-des-zielbilds`](../observations/BEO-ALL/spec-nennt-den-lieferstand-statt-des-zielbilds/observation.md)
+  mit Beleg `evidence/slice-spec-beschreibt-das-zielbild-nicht-den-lieferstand.md` — Zähler 1, Stand `offen`; Messgrenze in `state.md`.
+  Geprüft, ohne Beleg: [`BEO-ALL/spec-zeile-enger-als-der-code-den-sie-beschreibt`](../observations/BEO-ALL/spec-zeile-enger-als-der-code-den-sie-beschreibt/observation.md)
+  (andere Fehlerrichtung: dort beschreibt die Spec den Code zu eng), [`BEO-ALL/spec-aenderung-ohne-historie-zeile`](../observations/BEO-ALL/spec-aenderung-ohne-historie-zeile/observation.md)
+  (Lastenheft trägt die Zeilen 0.27.0/0.27.1, die Architektur-Sicht keine Historie), [`BEO-ALL/werkzeug-zelle-traegt-einen-ist-stand-der-vom-ausgelieferten-abweicht`](../observations/BEO-ALL/werkzeug-zelle-traegt-einen-ist-stand-der-vom-ausgelieferten-abweicht/observation.md)
+  (anderer Gegenstand). Kein 3×-Übertritt durch diesen Slice (Lese-Schritt: keine Beobachtung dieser Closure erreicht 3×).
+- **Trigger-Audit:** keine ADR und kein Eintrag verlangt eine Änderung; `LH-FA-04` Z. 80 nannte *„Picker"* als historisch, die Anker
+  bleiben stabil.
+- **Folge-Slices:** `slice-spezifikation-nennt-zeitbezuege-als-zielbild` — ist eine Datei in `open/`.
+- **Risiken aus §6:** 1 entfallen · 2 entfallen · 3 weiter offen → Register · 4 eingetreten → Folge-Slice (Begründung je Punkt in §6).
+- **Drei Paarungen:** nach dem Move geprüft (Anker: kein `liegt in`-Feld, nichts zu paaren; Folge-Slice: liegt im Planning-Lifecycle; Register: die zitierten Pfade existieren).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
@@ -227,6 +277,9 @@ zählt `BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext` (10 Belege) 
 `BEO-ALL/eigentums-frage-ohne-quelle-wird-im-laufenden-vorgang-beantwortet` (13 Belege): beide sind über der
 Schwelle und gehören zu slice-151, nicht hierher. Zähler am 2026-10-17 gemessen
 (`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence | wc -l`), keine Erwartungswerte.
+
+**Stand nach der Closure:** `BEO-ALL/spec-nennt-den-lieferstand-statt-des-zielbilds` — Zähler 1, `offen`;
+`spec-zeile-enger-als-der-code-den-sie-beschreibt` (2), `spec-aenderung-ohne-historie-zeile` unverändert.
 
 **Modus-Begründungsblock:** alle berührten Sub-Areas GF — Doc führt, Code folgt nicht; der Slice ändert allein Text
 der Specs.
