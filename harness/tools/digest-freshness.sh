@@ -24,7 +24,11 @@
 # Dockerfiles der Vorlage fuehren keinen Digest.
 #
 # Exit: 0 = jeder Digest gehoert zu seinem Tag, 1 = mindestens einer nicht, 2 = Pin nicht
-# lesbar oder Aufloesung fehlgeschlagen (KEIN Urteil; ein Befund 1 geht vor 2).
+# lesbar oder Aufloesung fehlgeschlagen (KEIN Urteil; ein Befund 1 geht vor 2). Diese
+# Abbildung der Hauptschleife haelt test/digest-freshness.bats ueber einen PATH-Stub `docker`
+# gegen die realen Pin-Dateien; die Aufloesung gegen die Registry fuehrt allein
+# `make freshness-digest`. Ein anonymes Hub-Rate-Limit (429) endet je Hub-Pin als FETCH-FEHLER
+# mit Exit 2 und faerbt den Nacht-Lauf auch ohne Digest-Defekt.
 # `--pins` gibt die gelesenen Pins aus (netzlos), `--compare <name> <ref> <pinned> <actual>`
 # ruft nur den Vergleicher. bash + sed + docker.
 set -euo pipefail
