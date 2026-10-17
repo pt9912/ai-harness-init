@@ -75,7 +75,7 @@ Verzeichnis) als gemessener Fall für Kotlin.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine
       Beobachtung anfiel.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen prüft die Closure von `welle-sprachprofile-java-python-csharp`; nach dem
+- [x] Die drei Paarungen prüft die Closure von `welle-sprachprofile-java-python-csharp`; nach dem
       Move gefahren, §7.
 
 ## 3. Plan (vor Code)
@@ -148,6 +148,7 @@ DoD vollständig, die Java-Stufe in `make full-smoke` grün, Closure-Notiz mit L
 - **Folge-Slices:** `slice-java-hexslice-layout` — ist eine Datei in `open/`
 - **Risiken aus §6:** Risiko 1 weiter offen (Register), Risiko 2 weiter offen (Register), Risiko 3
   entfallen — je einmal in §6.
+
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
