@@ -2896,6 +2896,118 @@ if [ -e "$tmprepo_doc/apps/javahex/build.gradle.kts" ]; then
 fi
 echo "full-smoke: Java-Stufe dauerte $(( SECONDS - java_start ))s (add-lang, make -j gates, Lint-Zahn, Exit-2-Fall)."
 
+# LH-FA-04/ADR-0095: add-lang python ergaenzt eine FUENFTE Sprache demselben Mono-Repo — das
+# Einzelprojekt im src-Layout (pyproject.toml, requirements-dev.txt, Dockerfile, src/app,
+# tests) plus modul-scoped Code-Gate-Fragment und blocked/python. Danach faehrt
+# `make -j gates` zusaetzlich die realen Python-Gates im python-Image (compileall, pytest,
+# ruff, mypy). Der Lint hat zwei rote Faelle und einen gruenen (test/mutations/695 bis 697):
+# ein unbenutzter Import in main.py faerbt lint-apps-python rot mit F401 an dieser Datei, ein
+# relativer Import in rel.py faerbt es rot mit TID252 (ban-relative-imports = "all"), und die
+# zurueckgenommenen Dateien halten es wieder gruen. Der Guard blockt pytest, das allein
+# blocked/python fuehrt. Nur flat ist getragen: `--arch hexslice` endet mit Exit 2 ohne
+# Artefakt.
+echo "full-smoke: add-lang python apps/python ins Mono-Repo (fuenfte Sprache, pip + pytest/ruff/mypy) ..."
+e2e_abdeckung "LH-FA-04 LH-FA-06 LH-QA-01" "Eine fuenfte Sprache (Python, flat) im selben Ziel, mit den realen Gates (compileall, pytest, ruff, mypy strict), den roten Lint-Faellen (unbenutzter Import faerbt lint rot mit F401, ein relativer Import mit TID252), dem gruenen Fall nach der Ruecknahme und dem Guard, der pytest blockt; NICHT gemessen: hexslice (add-lang python --arch hexslice endet mit Exit 2, nicht mehr), der Root-Bootstrap mit Gate-Lauf, ein gemischter Root mit Python, die Reproduzierbarkeit zweier Bauten (transitive Abhaengigkeiten ungepinnt)" "Python-Gate kaputt"
+python_start=$SECONDS
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang python apps/python )
+for rel in apps/python/pyproject.toml apps/python/requirements-dev.txt apps/python/Dockerfile \
+           apps/python/src/app/__init__.py apps/python/src/app/main.py apps/python/tests/test_main.py \
+           harness/mk/apps-python.mk tools/harness/blocked/python; do
+	if [ ! -e "$tmprepo_doc/$rel" ]; then
+		echo "full-smoke: FEHLER — add-lang python dropte $rel nicht (fuenfte Sprache kaputt)." >&2
+		exit 1
+	fi
+done
+python_rc=0
+python_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || python_rc=$?
+printf '%s\n' "$python_out"
+if [ "$python_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — make gates nach add-lang python ist NICHT Exit 0 (Python-Gate kaputt)." >&2
+	einordnen "make -j gates nach add-lang python (apps/python)" "$python_out"
+	exit 1
+fi
+# Die drei Python-Gates MUESSEN real gelaufen sein: je Ziel die Recipe-Zeile des modul-scoped
+# Fragments (Kontext apps/python) und die zwei Schritte der Stages im BuildKit-Protokoll — die
+# Paket-Installation der toolchain-Stage und der Lint-Aufruf stehen dort auch, wenn die
+# Schicht aus dem Cache kommt.
+python_missing=""
+for marker in "--target test -t apps-python:test apps/python" "--target lint -t apps-python:lint apps/python" \
+              "--target build -t apps-python:build apps/python" "RUN pip install -r requirements-dev.txt" \
+              "RUN ruff check . && ruff format --check . && mypy"; do
+	grep -qF -- "$marker" <<<"$python_out" || python_missing="$python_missing [$marker]"
+done
+if [ -n "$python_missing" ]; then
+	echo "full-smoke: FEHLER — make gates nach add-lang python ohne Beleg fuer:$python_missing — Python-Gate lief nicht?" >&2
+	exit 1
+fi
+# Der Guard blockt jetzt pytest (blocked/python via add-lang); pytest steht in keinem anderen Fragment.
+pythonguard_out="$(printf '%s' '{"tool_input":{"command":"pytest -q"}}' | bash "$guard_doc" || true)"
+if ! grep -q '"decision": "block"' <<<"$pythonguard_out"; then
+	echo "full-smoke: FEHLER — Guard blockt 'pytest' nach add-lang python NICHT (blocked/python kaputt). Ausgabe: [$pythonguard_out]" >&2
+	exit 1
+fi
+# Der rote Lint-Fall F401: ein unbenutzter Import in main.py (Zeile 3, hinter dem Docstring).
+python_main="$tmprepo_doc/apps/python/src/app/main.py"
+cp "$python_main" "$python_main.orig"
+psed_i 's|^"""Command app.*$|&\
+\
+import os|' "$python_main"
+pythonlint_rc=0
+pythonlint_out="$( make -C "$tmprepo_doc" lint-apps-python 2>&1 )" || pythonlint_rc=$?
+mv "$python_main.orig" "$python_main"
+if [ "$pythonlint_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — das Python-Lint bleibt bei einem unbenutzten Import gruen (zahnloses Gate, AGENTS.md §3.6/LH-QA-01; Python-Gate kaputt)." >&2
+	printf '%s\n' "$pythonlint_out" >&2
+	exit 1
+fi
+if ! grep -qF -- 'F401 [*] `os` imported but unused' <<<"$pythonlint_out" || ! grep -qF -- 'src/app/main.py:3:8' <<<"$pythonlint_out"; then
+	echo "full-smoke: FEHLER — Python-Lint rot, aber nicht mit F401 an main.py (rot aus falschem Grund?). Ausgabe:" >&2
+	printf '%s\n' "$pythonlint_out" >&2
+	einordnen "make lint-apps-python (Lint-Zahn F401, python)" "$pythonlint_out"
+	exit 1
+fi
+echo "full-smoke: Python-Lint-Zahn F401 belegt (unbenutzter Import faerbt lint rot, danach zurueckgenommen):"
+grep -F -- 'F401' <<<"$pythonlint_out" | sed -n '1s/^/full-smoke:   /p'
+# Der rote Lint-Fall TID252: ein Geschwister-Import `from . import main` in rel.py. Die Datei
+# nutzt den Import, damit F401 nicht mitfaerbt — rot ist allein ban-relative-imports = "all".
+python_rel="$tmprepo_doc/apps/python/src/app/rel.py"
+printf '%s\n' '"""Relative-import probe."""' '' 'from . import main' '' '' 'def probe() -> str:' '    return main.greeting("x")' >"$python_rel"
+pythonrel_rc=0
+pythonrel_out="$( make -C "$tmprepo_doc" lint-apps-python 2>&1 )" || pythonrel_rc=$?
+rm -f "$python_rel"
+if [ "$pythonrel_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — das Python-Lint bleibt bei einem relativen Import gruen (ban-relative-imports wirkt nicht; Python-Gate kaputt)." >&2
+	printf '%s\n' "$pythonrel_out" >&2
+	exit 1
+fi
+if ! grep -qF -- 'TID252 Prefer absolute imports over relative imports' <<<"$pythonrel_out" || ! grep -qF -- 'src/app/rel.py:3:1' <<<"$pythonrel_out"; then
+	echo "full-smoke: FEHLER — Python-Lint rot, aber nicht mit TID252 an rel.py (rot aus falschem Grund?). Ausgabe:" >&2
+	printf '%s\n' "$pythonrel_out" >&2
+	einordnen "make lint-apps-python (Lint-Zahn TID252, python)" "$pythonrel_out"
+	exit 1
+fi
+echo "full-smoke: Python-Lint-Zahn TID252 belegt (relativer Import faerbt lint rot, danach zurueckgenommen):"
+grep -F -- 'TID252' <<<"$pythonrel_out" | sed -n '1s/^/full-smoke:   /p'
+pythonlint2_rc=0
+pythonlint2_out="$( make -C "$tmprepo_doc" lint-apps-python 2>&1 )" || pythonlint2_rc=$?
+if [ "$pythonlint2_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — das Python-Lint ist nach der Ruecknahme der Proben NICHT gruen (Python-Gate kaputt)." >&2
+	einordnen "make lint-apps-python (nach Ruecknahme)" "$pythonlint2_out"
+	exit 1
+fi
+# Nur flat ist getragen: hexslice endet mit Exit 2 und legt kein Modul an.
+pythonhex_rc=0
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang python apps/pythonhex --arch hexslice ) || pythonhex_rc=$?
+if [ "$pythonhex_rc" -ne 2 ]; then
+	echo "full-smoke: FEHLER — add-lang python --arch hexslice rc=$pythonhex_rc, want 2 (nicht getragene Kombination wird nicht abgelehnt)." >&2
+	exit 1
+fi
+if [ -e "$tmprepo_doc/apps/pythonhex/pyproject.toml" ]; then
+	echo "full-smoke: FEHLER — die nicht getragene Kombination python+hexslice legte ein Geruestung-Artefakt an (still statt Exit 2)." >&2
+	exit 1
+fi
+echo "full-smoke: Python-Stufe dauerte $(( SECONDS - python_start ))s (add-lang, make -j gates, Lint-Zaehne, Exit-2-Fall)."
+
 # Der GEMISCHTE ROOT (LH-FA-04/LH-QA-01): zwei Sprach-Fragmente am selben Root
 # (harness/mk/go.mk + harness/mk/cpp.mk). Die gemischte Fassung komponiert: ein Fragment
 # traegt die unscoped Rezepte, das andere modul-scoped Targets plus Praezedenz-
