@@ -75,7 +75,7 @@ oder der Auftraggeber benennt sie für diesen Slice; WIP-Limit frei.
 
 **Rückführungen:**
 
-- `in-progress` → `next`: die Fassung verändert eine Zusage und verlangt eine Entscheidung zu `LH-FA-13`.
+- `in-progress` → `next`: die Fassung verändert eine Zusage und verlangt eine Entscheidung zu [`LH-FA-13`](../../../../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans).
 - `in-progress` → `open`: die schreibende Rolle bleibt offen.
 
 ## 5. Closure-Trigger

@@ -208,24 +208,24 @@ Geschrieben im Planner-Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10), ge
 - **Anlass der Lastenheft-Änderung** (nach [`MR-042`](../../../../harness/conventions.md#mr-042--der-anlass-einer-lastenheft-änderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz)
   hier und nicht in der Historie): Auftraggeber-Hinweis vom 2026-10-17, sinngemäß: *in den Specs, auch im Lastenheft,
   wird das Zielbild definiert; Sätze wie „folgt auf" haben dort nichts verloren.* Ausgelöst durch die Frage, welche
-  Zielsprachen noch nicht unterstützt werden, und den Satz „`cpp` … folgt" in `LH-FA-04`, obwohl `cpp` ein Profil ist.
+  Zielsprachen noch nicht unterstützt werden, und den Satz „`cpp` … folgt" in [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), obwohl `cpp` ein Profil ist.
 - **Was hat funktioniert:** Lastenheft 0.27.0 und 0.27.1, `spec/architecture.md` (Marker 2026-10-17). Review:
   0 HIGH/0 MEDIUM/2 LOW/4 INFO; die zwei LOW (Z. 146 eine erfundene Herkunftsbehauptung zur CLAUDE.md-Vorlage, Z. 100
   *„das heutige Verhalten"*) behob 0.27.1. Verifikation: alle DoD-Punkte erfüllt; Messung Lastenheft 4 Treffer,
   Spezifikation 3, Architektur 2, jeder benannt und begründet; Rot-Gegenprobe je Datei (ein eingefügter Satz hebt die Zählung um 1:
   4→5, 3→4, 2→3); `heutige` steht nur noch als Protokoll-Zitat in der Historie-Zeile 0.27.1; Bedeutungstreue ohne Befund;
   `make gates` grün, Stempel gleich HEAD (`docs/reviews/2026-10-17-slice-spec-beschreibt-das-zielbild-nicht-den-lieferstand.md`, `…-verify.md`).
-- **Vorher/Nachher je Satz** (Anker über den Wortlaut, nicht über Zeilen): `LH-FA-04` *„`cpp` … folgt; der Generator bleibt"* →
+- **Vorher/Nachher je Satz** (Anker über den Wortlaut, nicht über Zeilen): [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) *„`cpp` … folgt; der Generator bleibt"* →
   *„`cpp` trägt C++/CMake …; der Generator ist"* · §5 *„Weitere Sprachen folgen … je einen Renderer"* → *„Jede weitere Sprache
-  ist ein eigener Renderer des sprach-agnostischen Generators"* · `LH-FA-07` *„Vorbedingung erfüllt … (v0.15.0 …); die Umsetzung stützt
+  ist ein eigener Renderer des sprach-agnostischen Generators"* · [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) *„Vorbedingung erfüllt … (v0.15.0 …); die Umsetzung stützt
   sich auf diesen Beleg"* → *„Voraussetzung: a-check ist — wie d-check — ein Digest-gepinntes Image mit `--print-mk`"* ·
-  `LH-FA-08` *„nicht mehr Vorbedingung (die frühere Picker-Setzung entfällt)"* → *„nicht Vorbedingung"* · `LH-FA-01` *„folgt als
+  [`LH-FA-08`](../../../../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) *„nicht mehr Vorbedingung (die frühere Picker-Setzung entfällt)"* → *„nicht Vorbedingung"* · [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) *„folgt als
   separater, wiederholbarer Schritt"* → *„ist ein eigener, wiederholbarer Schritt, der nach dem Init läuft"* (F3) · Klasse C (F2):
-  Titel-Hinweis in `LH-FA-04`, Default `flat` ohne Zeitbezug, Klammer der CLAUDE.md-Vorlage in `LH-FA-06` entfällt,
-  `LH-QA-04`-Grenze im Indikativ ohne *erst/heute/offen und*, Messmethode unverändert · Architektur: *„*(folgt)*"* entfällt,
+  Titel-Hinweis in [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), Default `flat` ohne Zeitbezug, Klammer der CLAUDE.md-Vorlage in [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) entfällt,
+  [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)-Grenze im Indikativ ohne *erst/heute/offen und*, Messmethode unverändert · Architektur: *„*(folgt)*"* entfällt,
   *„real ab v0.15.0"* entfällt, *„byte-identisch zum heutigen"* → *„zur Ausgabe ohne `--arch`"*, *„Entry-Point wie heute"* →
   *„Entry-Point"*. Antworten: **F1** der Implementer schreibt den Nachzug in `spec/architecture.md`; **F2** Klasse C umformuliert, datierte
-  Messungen und *„nicht zugesagt"* als Zusage-Grenze bleiben; **F3** Klasse B (`LH-FA-01`) umformuliert.
+  Messungen und *„nicht zugesagt"* als Zusage-Grenze bleiben; **F3** Klasse B ([`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)) umformuliert.
 - **Was ging anders als geplant:** zwei Folgestellen (Review LOW-1/LOW-2) führten zu 0.27.1 als Patch. **Abweichung zwischen
   Auftrag und Lieferung, benannt:** der Auftraggeber setzte das Prinzip für *die Specs, auch das Lastenheft*; der Plan führte die
   Spezifikation als unberührt, weil seine Muster dort keinen Befund der Klasse A fanden. Die erweiterte Suche der Verifikation fand
@@ -255,7 +255,7 @@ Geschrieben im Planner-Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10), ge
   (andere Fehlerrichtung: dort beschreibt die Spec den Code zu eng), [`BEO-ALL/spec-aenderung-ohne-historie-zeile`](../observations/BEO-ALL/spec-aenderung-ohne-historie-zeile/observation.md)
   (Lastenheft trägt die Zeilen 0.27.0/0.27.1, die Architektur-Sicht keine Historie), [`BEO-ALL/werkzeug-zelle-traegt-einen-ist-stand-der-vom-ausgelieferten-abweicht`](../observations/BEO-ALL/werkzeug-zelle-traegt-einen-ist-stand-der-vom-ausgelieferten-abweicht/observation.md)
   (anderer Gegenstand). Kein 3×-Übertritt durch diesen Slice (Lese-Schritt: keine Beobachtung dieser Closure erreicht 3×).
-- **Trigger-Audit:** keine ADR und kein Eintrag verlangt eine Änderung; `LH-FA-04` Z. 80 nannte *„Picker"* als historisch, die Anker
+- **Trigger-Audit:** keine ADR und kein Eintrag verlangt eine Änderung; [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) Z. 80 nannte *„Picker"* als historisch, die Anker
   bleiben stabil.
 - **Folge-Slices:** `slice-spezifikation-nennt-zeitbezuege-als-zielbild` — ist eine Datei in `open/`.
 - **Risiken aus §6:** 1 entfallen · 2 entfallen · 3 weiter offen → Register · 4 eingetreten → Folge-Slice (Begründung je Punkt in §6).
