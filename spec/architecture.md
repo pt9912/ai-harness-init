@@ -1,9 +1,9 @@
 # Architektur — ai-harness-init
 
-**Status:** Aktiv. **Letzte Änderung:** 2026-09-18.
+**Status:** Aktiv. **Letzte Änderung:** 2026-10-17.
 
 **Hard Rule:** sprach- und meilensteinfrei — keine Wellen, Slices oder
-Commit-Hashes. Die zeitliche Schicht lebt in docs/plan/planning/ *(folgt)*.
+Commit-Hashes. Die zeitliche Schicht lebt in docs/plan/planning/.
 
 ---
 
@@ -94,7 +94,7 @@ nennt die `ARC-*` aus §1, die sie umfasst.
 | `ARC-004` | Gate-Emitter | Root-Makefile als **dünnen Aggregator** (benannter Glob-Include) + Gate-Fragmente je Belang; die Checks akkumulieren in eine Variable, der Nachweis läuft via **Ordnungskante** strikt zuletzt | Gate ohne existierendes Target aktivieren; ein Fragment in-place editieren; `make -j` serialisieren |
 | `ARC-005` | Enforce-Emitter | Durchsetzung (Hooks, Gate-Nachweis, Working-Tree-Hash, Command-Guard mit **gebackenem universellem Boden** + Union der blocked-Fragmente) schreiben | den Guard fail-open lassen (Boden greift immer); node/jq/OCI als Guard-Dep verlangen |
 | `ARC-006` | Commands-/Skills-Emitter | Agenten-Workflow-Commands (mit ANPASSEN-Marker) + Reviewer-Skills ins Ziel schreiben, **skip-if-present**; einen liegenden Skill, der von der mitgelieferten Fassung abweicht, samt der Vorlage im vendored Baum melden | Repo-Quell-Identität in die Artefakte tragen; einen liegenden Skill überschreiben |
-| `ARC-009` | Generator | Skelett **deterministisch** je `add-lang` erzeugen (Tool-als-Quelle), **gemäß ADR**; **`lang-renderer × arch-layout` komponieren** — arch-invariante Bau-Gerüstung + arch-gegatetes Code-Layout (`flat` byte-identisch zum heutigen Skelett, `hexslice` = `domain`/`application` (Use-Case-Slices)/`ports`/`adapters` + Composition Root `cmd/`, `hexagonal` = `core`/`port`/`driven`/`driving` + Composition Root `cmd/`) | nicht-reproduzierbare/floating Ausgabe; ohne ADR generieren; die Bau-Gerüstung an die Architektur koppeln (sie ist arch-invariant); zwei Layouts zu einem mit zwei Kanten-Mengen verschmelzen (ihre Verzeichnisnamen sind disjunkt) |
+| `ARC-009` | Generator | Skelett **deterministisch** je `add-lang` erzeugen (Tool-als-Quelle), **gemäß ADR**; **`lang-renderer × arch-layout` komponieren** — arch-invariante Bau-Gerüstung + arch-gegatetes Code-Layout (`flat` = das arch-lose Skelett, byte-identisch zur Ausgabe ohne `--arch`, `hexslice` = `domain`/`application` (Use-Case-Slices)/`ports`/`adapters` + Composition Root `cmd/`, `hexagonal` = `core`/`port`/`driven`/`driving` + Composition Root `cmd/`) | nicht-reproduzierbare/floating Ausgabe; ohne ADR generieren; die Bau-Gerüstung an die Architektur koppeln (sie ist arch-invariant); zwei Layouts zu einem mit zwei Kanten-Mengen verschmelzen (ihre Verzeichnisnamen sind disjunkt) |
 | `ARC-010` | Verdrahtung | Skelett am Ziel-Root platzieren + Code-Gate-Fragment + Guard-blocked-Fragment **droppen** (kein In-Place-Edit); das **a-check-Fragment (`.a-check.yml` + `a-check.mk`) nur bei schichten-tragendem Layout** droppen | nicht-laufende Targets emittieren; a-check über einem flachen (leeren) Prüfbereich aktivieren |
 
 ## 3. Externe Abhängigkeiten
@@ -166,8 +166,8 @@ byte-identisch). `--lang <X>` beim Init ist die One-Shot-Kurzform (Init + ein
 - **Architektur-Achse und konditionale a-check-Emission:** der Generator komponiert
   `lang-renderer × arch-layout` — die **Bau-/Toolchain-Gerüstung** (Dockerfile-Stages,
   Manifeste, Lint-Config) ist **arch-invariant** und immer präsent (sonst bräche der
-  Code-Gate-Lauf), das **Code-Layout** ist arch-gegatet (`flat` = ein Entry-Point wie
-  heute; `hexslice` = `domain`/`application` (Use-Case-Slices mit
+  Code-Gate-Lauf), das **Code-Layout** ist arch-gegatet (`flat` = ein Entry-Point;
+  `hexslice` = `domain`/`application` (Use-Case-Slices mit
   `handler`/`validator` und ihren `ports`; der inbound-Port trägt den
   Request-/Result-Vertrag, den der treibende Adapter spricht)/`ports`
   (gegliedert nach `inbound`/`outbound`)/`adapters` (`driving`/`driven`)
@@ -183,7 +183,7 @@ byte-identisch). `--lang <X>` beim Init ist die One-Shot-Kurzform (Init + ein
   Doc-Gate: `a-check.mk` (+ Aggregator-Anschluss) **konvergent**, `.a-check.yml`
   **skip-if-present** (der Adopter passt die Schicht-Config an). Voraussetzung der
   a-check-Emission ist die Verfügbarkeit des a-check-Tools (gepinntes Image mit
-  `--print-mk`, real ab v0.15.0) — dieselbe Tool-als-Quelle-Linie wie d-check.
+  `--print-mk`) — dieselbe Tool-als-Quelle-Linie wie d-check.
 - **Ein zweites schichten-tragendes Layout: `hexagonal`.** Es ist **kein Strenge-Grad**
   von `hexslice`, sondern ein eigenes Layout mit **disjunkten** Verzeichnisnamen: ein Kern
   (`core` — Domäne **und** Use-Case in *einer* geprüften Schicht, Rolle `app`), eine
