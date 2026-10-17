@@ -10,7 +10,7 @@ Closure-Bedingung jenseits der DoD.
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** — bis zur Priorisierung.
+**Verantwortlich:** Implementer (pt9912)
 
 **Autor:** Planner. **Datum:** 2026-10-08.
 
@@ -64,7 +64,7 @@ Paare kommen mit dem nächsten Register-Beleg, nicht mit diesem Ausgang.
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): priorisiert, `Verantwortlich:` gesetzt.
+**Start** (`next` → `in-progress`) — erfüllt: priorisiert, `Verantwortlich:` gesetzt; WIP-Limit 1 frei (`ls docs/plan/planning/in-progress/slice-*.md` nennt keinen); (b) ergänzt einen Schritt im Muster der vorhandenen `freshness-*`-Schritte von `upstream-drift.yml` (`grep -n freshness .github/workflows/upstream-drift.yml`), keine neue CI-Regime-Frage; Schichten: Werkzeug und Tests (a, c), CI-Workflow mit Makefile (b).
 
 - `in-progress` → `next`: eines der drei Paare braucht mehr als eine benannte Abweichung — dann ist
   (c) ein eigener Slice.
