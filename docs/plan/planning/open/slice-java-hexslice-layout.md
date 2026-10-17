@@ -7,8 +7,8 @@
 **Welle:** `welle-sprachprofile-java-python-csharp`.
 
 **Bezug:** [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) ·
-[`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren). Die ADR des
-Architect für Java (Proposed; ihre Kennung steht hier, sobald sie `Accepted` ist) legt die Layouts
+[`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren). `ADR-0094`
+(Accepted) legt die Layouts
 `flat` und `hexslice` fest, Festlegung 4 trägt Pfade und Auflösung.
 
 **Berührte Spec-Stellen:** `spec/architecture.md` Layout je Sprache; `ARC-009`, `ARC-010` (über die ADR
