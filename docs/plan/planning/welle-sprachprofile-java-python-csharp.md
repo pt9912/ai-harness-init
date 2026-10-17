@@ -54,7 +54,8 @@ Go, C++ und Kotlin grün (§3).
 |---|---|---|
 | `slice-java-skelett` | Java als Sprachskelett mit Code-Gate und Guard | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
 | `slice-java-hexslice-layout` | Java-hexslice mit emittiertem Arch-Gate und core-impurity-Zahn (nach `slice-java-skelett`) | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
-| `slice-python-skelett` | Python als Sprachskelett mit Code-Gate und Guard | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
+| `slice-python-skelett` | Python als Sprachskelett mit Code-Gate und Guard (Layout `flat`) | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
+| `slice-python-hexslice-layout` | Python-hexslice mit emittiertem Arch-Gate und core-impurity-Zahn (nach `slice-python-skelett`) | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
 | `slice-csharp-skelett` | C# als Sprachskelett mit Code-Gate und Guard | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
 
 Offene Beobachtungen sind gesichtet in §8 jedes Slice-Plans; Treffer der Eröffnung (Schritt 2):
@@ -66,7 +67,8 @@ unter der Schwelle; keiner erreicht mit der Eröffnung 3×.
 
 ## 5. Abhängigkeiten
 
-- Binnen-Kanten: `slice-java-hexslice-layout` setzt `slice-java-skelett` voraus (Renderer und Gerüst).
+- Binnen-Kanten: `slice-java-hexslice-layout` setzt `slice-java-skelett` voraus, und
+  `slice-python-hexslice-layout` setzt `slice-python-skelett` voraus (je Renderer und Gerüst).
   Sonst keine tragende. Der Reihenfolge-Vorschlag `slice-java-skelett`,
   `slice-python-skelett`, `slice-csharp-skelett` ordnet nur — die Slices berühren dieselben Dateien
   (`internal/gen/gen.go`, `harness/tools/full-smoke.sh`), und das WIP-Limit lässt ohnehin einen
