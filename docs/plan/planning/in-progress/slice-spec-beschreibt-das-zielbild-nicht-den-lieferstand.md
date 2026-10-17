@@ -74,13 +74,13 @@ Liefer-Punkte (drei):
 
 - [ ] **(1) Umformulierung:** Jeder Befund der Klasse A und B (`LH` Z. 39) in §3 steht in `spec/lastenheft.md` und
       `spec/architecture.md` im Indikativ des Zielbilds; jeder Befund der Klasse C ist umformuliert (Entscheidung
-      des Auftraggebers 2026-10-17). Der `LH`-Teil liegt im Commit `b7999710` (Lastenheft 0.27.0), der
+      des Auftraggebers 2026-10-17). Der `LH`-Teil liegt im Commit `b7999710` (Lastenheft 0.27.0) und `d4e63263` (0.27.1), der
       `AR`-Teil (Kopf, §5, Z. 170) ist Arbeit des Implementers in diesem Slice.
-- [ ] **(2) CR-Eintrag:** `spec/lastenheft.md` trägt Version 0.27.0 und Historie-Zeile nach [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler): Verweis
+- [ ] **(2) CR-Eintrag:** `spec/lastenheft.md` trägt Version 0.27.1 und Historie-Zeilen 0.27.0 und 0.27.1 nach [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler): Verweis
       `Nutzer-Entscheidung 2026-10-17`, der Anlass steht nicht in der Zeile
       ([`MR-042`](../../../../harness/conventions.md#mr-042--der-anlass-einer-lastenheft-änderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz)),
       Stufe nach dem Präzedenz-Fall 0.15.0: Minor, weil ein normativer Abschnitt seine Aussage-Form ändert.
-      Geliefert im Commit `b7999710`; der Implementer prüft ihn, er schreibt ihn nicht neu.
+      Geliefert in den Commits `b7999710` (0.27.0) und `d4e63263` (0.27.1, Patch: zwei nachgezogene Stellen, Z. 100 und Z. 146); der Implementer prüft ihn, er schreibt ihn nicht neu.
 - [ ] **(3) Messbeleg mit Rot:** Die drei Messkommandos aus §3 zeigen nach der Änderung nur die in §3 als
       stehengelassen benannten Zeilen; ein einmal eingefügter Satz *„… folgt …"* im Rumpf lässt das
       Kommando um 1 steigen (Gegenprobe im Arbeitsbaum, danach zurückgenommen, nicht committet).
@@ -101,6 +101,8 @@ Pflichten, die mit dem Umfang nicht wachsen:
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `spec/lastenheft.md` (Rumpf, Version, §7-Zeile) | update | Liefer-Punkte (1) und (2); eigener Commit nur dieser Datei, **vor** dem Start ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Setzung 2) |
+| `spec/lastenheft.md` Z. 100 ([`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), Architektur-Achse) | update | „das heutige Verhalten" → „das Verhalten ohne `--arch`"; Zeitbezug, vom Muster P1 nicht erfasst (`heutige`); Commit `d4e63263` |
+| `spec/lastenheft.md` Z. 146 ([`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren), CLAUDE.md-Vorlage) | update | Klammersatz zur Herkunft der Vorlage entfällt: im vendored Baum liegt keine (`find .harness/baseline/v6.18.1/templates -iname '*claude*'` → leer), Z. 145 sagt „autort, nicht tool-generiert"; Commit `d4e63263` |
 | `spec/architecture.md` (Kopf, §5) | update | Liefer-Punkt (1); Marker `**Letzte Änderung:**` mitziehen; die Architektur-Sicht führt keine Historie |
 | `docs/plan/planning/done/slice-053-cpp-hexslice-renderer.md` | unberührt | zitiert den alten Wortlaut von Z. 641; ein Zeitdokument bleibt, wie es ist |
 
@@ -191,7 +193,7 @@ daraus wird, entscheidet der Architect.
   gilt, nicht wann). Bleiben: die datierten Messungen (`LH` Z. 118/620 — ein Messbeleg nennt sein Datum) und
   „nicht zugesagt" als Zusage-Grenze (Z. 355, 607, 625).
 - **F3 — Klasse B:** Z. 39 umformuliert („ist ein eigener, wiederholbarer Schritt, der nach dem Init läuft").
-- **Stufe:** Minor (0.27.0), wie 0.15.0; der Auftraggeber hat nicht widersprochen.
+- **Stufe:** Minor (0.27.0), wie 0.15.0; der Auftraggeber hat nicht widersprochen. Die zwei Folgestellen (Review LOW-1/LOW-2) tragen Patch 0.27.1, wie 0.25.1.
 
 **Größe:** bleibt bei drei Liefer-Punkten; die Entscheidungen erweitern Punkt (1) um Stellen derselben Art
 (Umformulierung eines Satzes), nicht um einen neuen Gegenstand. Schichten: nur Spec-Text.
