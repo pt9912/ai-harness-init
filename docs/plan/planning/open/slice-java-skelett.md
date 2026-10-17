@@ -24,13 +24,14 @@ Arch-Achse berührt).
 
 ## 1. Ziel und Abgrenzung
 
-**Ziel:** `add-lang java` rendert ein Java-Skelett mit Code-Gate-Fragment und Guard-Set nach der ADR,
-das im gebootstrappten Ziel `make gates` grün fährt.
+**Ziel:** `add-lang java` (Layout `flat`) rendert ein Java-Skelett mit Code-Gate-Fragment und Guard-Set
+nach der ADR, das im gebootstrappten Ziel `make gates` grün fährt.
 
-**Vorbedingung — der Architect schreibt zuerst.** Der Architect legt vor dem Start eine ADR für
-Java fest: Toolchain und Image-Pins, Gate-Targets und Lint-Werkzeug, Modul-Schnitt und welche
-Layouts (`flat`, `hexslice`, …) mit welcher a-check-Auflösung getragen sind. Dieser Plan schreibt
-keine ADR und entscheidet nichts davon.
+**Vorbedingung — der Architect schreibt zuerst.** Die ADR des Architect (Proposed) legt Toolchain
+(Gradle, JDK 21, Knopf `SKEL_JAVA_VERSION`), Checkstyle mit eigener Config
+`config/checkstyle/checkstyle.xml`, Gate-Targets und Layouts fest. Dieser Plan schreibt keine ADR und
+entscheidet nichts davon. Der Renderer legt zusätzlich `build.gradle.kts` mit gepinnten Versionen an;
+`blockedByLang("java")` führt `mvn`/`mvnw` zusätzlich zur Kotlin-Menge.
 
 **Hinweis zur Wiederverwendung — nicht entschieden.** `internal/gen/kotlin.go` zeigt das Muster:
 `composeSkeleton(scaffolding, role, version, arch)`, die Rollen-Renderer, `DefaultKotlinVersion`
@@ -42,21 +43,24 @@ Verzeichnis) als gemessener Fall für Kotlin.
 
 **Ausdrücklich NICHT in diesem Slice:**
 - `python` und `csharp` — übernehmen `slice-python-skelett` und `slice-csharp-skelett`.
-- Layouts und Arch-Gate über das hinaus, was die Java-ADR festlegt — ohne ADR wäre ein Layout eine
-  ungetragene Entscheidung; trägt die ADR mehr, als §2 in drei Liefer-Punkten fasst, geht der Slice
-  zurück zum Schneiden (§4).
-- Ein Freshness-Werkzeug für den Java-Pin — anderer Vorgang; der Vollständigkeits-Wächter für
-  kuratierte Listen steht als Zeile in *Nächste Wellen* der Roadmap.
+- `--arch hexslice` samt a-check-Config und Arch-Zahn — übernimmt `slice-java-hexslice-layout`
+  (setzt diesen Slice voraus); bis dahin steht `hexslice` nicht in `langArchs()`, und
+  `add-lang java … --arch hexslice` endet mit Exit 2 statt mit einem Gerüst-only-Skelett.
+- `hexagonal` und weitere Layouts — die ADR legt sie nicht fest; ohne ADR eine ungetragene Entscheidung.
+- Ein Freshness-Werkzeug für den Java-Pin — anderer Vorgang (Wartung des Pins, nicht Skelett);
+  der Vollständigkeits-Wächter für kuratierte Listen steht als Zeile in *Nächste Wellen* der Roadmap.
 - Release, Handbuch-Nachzug — gehören in den Release-Schnitt (§6 der Welle).
-- `spec/architecture.md` — Folgepflicht aus der ADR, soweit sie eine auslöst, nicht Gegenstand dieses
-  Skelett-Slice.
+- `spec/architecture.md` Layout je Sprache — die Folgepflicht hängt am Layout `hexslice` und liegt bei
+  `slice-java-hexslice-layout`.
 
 ## 2. Definition of Done
 
-- [ ] Renderer `java` in `internal/gen/` nach der ADR: Gerüst, Gate-Stages `test`/`lint`/`build`,
-      Image-Pin mit Knopf `SKEL_JAVA_VERSION` → `gen.DefaultVersion("java")`; Test Fragment↔Stages
+- [ ] Renderer `java` (Layout `flat`) in `internal/gen/` nach der ADR: Gerüst inkl. `build.gradle.kts`
+      und `config/checkstyle/checkstyle.xml`, Gate-Stages `test`/`lint`/`build`,
+      Image-Pin (`gradle:9.8.1-jdk21`, eigene Konstante) mit Knopf `SKEL_JAVA_VERSION` → `gen.DefaultVersion("java")`; Test Fragment↔Stages
       nach dem Muster der Kotlin- und C++-Tests, einmal rot gesehen (Stage entfernt);
-      `blockedByLang("java")` mit Kopplung an `gen.SupportedLangs`
+      `blockedByLang("java")` inkl. `mvn`/`mvnw` mit Kopplung an `gen.SupportedLangs` (Kopplungstest
+      geprüft)
       ([`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4),
       [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)).
 - [ ] `make full-smoke`: `add-lang java` ins Mono-Repo, Skelett-Dateien liegen, `make gates` grün mit
@@ -94,8 +98,9 @@ Verzeichnis) als gemessener Fall für Kotlin.
 Java `Accepted`, WIP-Slot frei.
 
 **Rückführungen — vorab benennen:**
-- `in-progress` → `next`: die ADR trägt mehr Layouts oder Gate-Targets, als drei Liefer-Punkte fassen
-  — je Layout ein eigener Slice.
+- `in-progress` → `next`: der flat-Schnitt braucht mehr als die drei Liefer-Punkte (etwa ein weiteres
+  Gate-Target der ADR) — zurück zur Zerlegung; Layouts darüber hinaus gehören
+  `slice-java-hexslice-layout`.
 - `in-progress` → `open`: Toolchain oder Lint-Werkzeug der ADR laufen mit dem gepinnten Stand nicht
   grün (Re-Evaluierungs-Trigger der ADR) — Architect.
 
@@ -110,8 +115,8 @@ DoD vollständig, die Java-Stufe in `make full-smoke` grün, Closure-Notiz mit L
 - Das Image-Muster misst die Reproduzierbarkeit nicht nach [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit): kein Lauf vergleicht zwei Bauten
   desselben Tags (`BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`) —
   **Ausgang:** bei der Closure.
-- a-check trägt die Auflösung für das Java-Layout nicht, wie die ADR sie annimmt —
-  **Ausgang:** bei der Closure; Gegenbeispiel rot gesehen oder Layout aus dem Slice genommen.
+- Checkstyle mit eigener Config läuft mit dem gepinnten Image nicht rot/grün wie die ADR misst —
+  **Ausgang:** bei der Closure; Lint rot und grün am gebootstrappten Ziel gesehen.
 
 ## 7. Closure-Notiz
 
