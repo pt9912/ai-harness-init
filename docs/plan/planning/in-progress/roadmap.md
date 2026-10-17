@@ -18,8 +18,7 @@ nicht hier.
 
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
 
-**In Arbeit:** wellenlose Arbeit — [`in-progress/`](../in-progress) trägt einen Slice
-(`ls docs/plan/planning/in-progress/slice-*.md` nennt ihn).
+**Nichts in Arbeit.**
 
 ## Nächste Wellen
 

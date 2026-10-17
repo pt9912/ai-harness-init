@@ -59,7 +59,7 @@ Paare kommen mit dem nächsten Register-Beleg, nicht mit diesem Ausgang.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben, siehe §7.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — geprüft nach dem Move, siehe §7.
 
 ## 3. Plan (vor Code)
 
@@ -190,7 +190,7 @@ Geschrieben vom Planner in eigenem Kontext bei der Closure ([`AGENTS.md`](../../
   Closure).
 - **Trigger-Audit:** Carveouts: keiner berührt. Bootstrap-aware Gates: keines. ADR-Re-Evaluierungs-Trigger:
   keiner berührt. Hard Rules: keine mit eingetretenem Auflösungs-Trigger.
-- **Drei Paarungen:** — nach dem `git mv`.
+- **Drei Paarungen:** geprüft am 2026-10-17, nach dem `git mv`. Anker: die zwei `liegt in` — `test/pin-fallbacks.bats` und `harness/tools/digest-freshness.sh` existieren ab Repo-Wurzel und tragen je einmal `seit slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor` (`grep -c`: 1 und 1) · Folge-Slice: `slice-zwei-fassungen-eines-waechters-bekommen-ihren-vergleichenden-sensor` liegt in `open/` · Register: die genannten Verzeichnisse (`pin-digest-ohne-waechter`, `zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`, `waechter-misst-die-fixture-statt-der-realen-quelle`, `anonymes-hub-rate-limit-faerbt-den-nacht-lauf-der-digest-achse`, `zusage-ohne-herstellbares-gegenbeispiel`, `zusage-mit-bats-bindung-ohne-eigenen-mutations-fall`) existieren mit nicht leerem `evidence/`; `make register-ausgang` meldet 0 Befunde. Über das ganze Register ohne `evidence/*.md`: nicht neu gemessen, von diesem Slice nicht berührt — die Hälfte wird nicht als getragen behauptet.
 - **Archivierung:** entfällt ([`MR-078`](../../../../harness/conventions.md#mr-078); `archive-slice` ist nicht gebaut).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
