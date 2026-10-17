@@ -1,9 +1,9 @@
-**Stand:** geplant
+**Stand:** verkörpert
 
-Kennung: [`slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor`](../../../in-progress/slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor.md)
-— eine Fixture, die einen realen Wert nachbaut, ist ein doppelt geführter Wert; der Kopplungs-Sensor
-hält sie gegen ihre Quelle. Die Zeile in `AGENTS.md` §3.6 unten bleibt verkörpert, bis der Slice
-liefert.
+Der Slice [`slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor`](../../../in-progress/slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor.md)
+liefert für die Pin-Kopplung (Fallbacks, Digest) den Rot-Beleg am **realen** Wert; einen Sensor, der
+eine Fixture allgemein gegen ihre Quelle hält, baut er nicht und kann ihn nicht bauen. Die Zeile in
+`AGENTS.md` §3.6 unten trägt die Klasse weiter.
 
 Zielort: [`AGENTS.md`](../../../../../../AGENTS.md) §3.6 — das vierte Falsch/Richtig-Paar: ein
 Wächter, der grün bleibt, weil er über einer nachgebauten Eingabe statt der realen Quelle läuft.
