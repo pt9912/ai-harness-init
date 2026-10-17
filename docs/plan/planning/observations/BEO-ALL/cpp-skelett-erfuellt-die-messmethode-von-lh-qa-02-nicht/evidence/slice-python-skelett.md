@@ -1,0 +1,2 @@
+**Vorgang:** slice-python-skelett
+**Fund:** Das Python-Skelett pinnt das Image per Tag (`python:3.14.8-slim`) und `requirements-dev.txt` nur für `pytest`, `ruff` und `mypy`; deren transitive Abhängigkeiten sind ungepinnt, kein Lauf vergleicht zwei Bauten desselben Tags (§6 Risiko 3 und 7, Ausgang weiter offen). Die Lage ist gegenüber dem Java-Beleg verschärft, weil die Paketauflösung zusätzlich wandert.

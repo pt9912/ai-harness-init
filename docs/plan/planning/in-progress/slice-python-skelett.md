@@ -57,7 +57,7 @@ nichts davon.
 
 ## 2. Definition of Done
 
-- [ ] Renderer `python` (Layout `flat`) in `internal/gen/` nach der ADR des Architect: Gerüst inkl.
+- [x] Renderer `python` (Layout `flat`) in `internal/gen/` nach der ADR des Architect: Gerüst inkl.
       `pyproject.toml` (nur Werkzeug-Konfiguration) und `requirements-dev.txt` mit exakten Versionen,
       Gate-Stages `test`/`lint`/`build`, Image-Pin (`python:3.14.8-slim`, eigene Konstante
       `DefaultPythonVersion`, Make-Variable `PYTHON_TAG`) mit Knopf `SKEL_PYTHON_VERSION` →
@@ -70,21 +70,21 @@ nichts davon.
       gesehen (je eine der beiden Zeilen entfernt)
       ([`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4),
       [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)).
-- [ ] `make full-smoke`: `add-lang python` ins Mono-Repo, Skelett-Dateien liegen, `make gates` grün mit
+- [x] `make full-smoke`: `add-lang python` ins Mono-Repo, Skelett-Dateien liegen, `make gates` grün mit
       Beleg, dass das Python-Code-Gate lief, und der Guard blockt die Host-Toolchain;
       `e2e_abdeckung`-Kopfzeile nennt die Sprache und eine Teilmessung an derselben Stelle,
       `docs/user/e2e-abdeckung.md` neu erzeugt; Laufzeit-Zuwachs als Vorher/Nachher
       `make full-smoke-host` (ein Lauf je Stand, Träger: die Zeile `Python-Stufe dauerte <n>s` und die
       Gesamtdauer) mit Image-Lage und Variante ([`MR-089`](../../../../harness/conventions.md#mr-089)).
-- [ ] Hilfetext nennt `python` und `SKEL_PYTHON_VERSION` (öffentlicher Vertrag), Test in
+- [x] Hilfetext nennt `python` und `SKEL_PYTHON_VERSION` (öffentlicher Vertrag), Test in
       `cmd/ai-harness-init/main_test.go`.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`),
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`),
       kein Self-Review.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine
       Beobachtung anfiel.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen prüft die Closure von `welle-sprachprofile-java-python-csharp`; nach dem
       Move gefahren, §7.
 
@@ -119,31 +119,79 @@ DoD vollständig, die Python-Stufe in `make full-smoke` grün, Closure-Notiz mit
 
 ## 6. Risiken und offene Punkte
 
-- Image-Pull und Paket-Auflösung verlängern `make full-smoke` — **Ausgang:** bei der Closure, Form
-  nach [`MR-089`](../../../../harness/conventions.md#mr-089) (Image-Lage und Variante der Messung).
+- Image-Pull und Paket-Auflösung verlängern `make full-smoke` — **Ausgang:** weiter offen — der
+  Zuwachs ist gemessen (§7), Image-Pull und PyPI auf frischem Host nicht:
+  `BEO-ALL/kosten-einer-emittierten-pruefung-im-ziel-ungemessen`.
 - Der Guard-Boden (`pip`) und das Guard-Set der Sprache überlappen oder lassen eine Lücke —
-  **Ausgang:** bei der Closure; Gegenbeispiel (Host-Aufruf wird geblockt) rot gesehen.
+  **Ausgang:** entfallen — `pip`/`pip3`/`pipx` stehen nicht im Set (Fall 688 färbt
+  `TestBlockedFragment_PythonTraegtDieNamenDerAdr`), und die Stufe belegt am emittierten Guard, dass
+  `pytest -q` geblockt wird.
 - Das Image-Muster misst die Reproduzierbarkeit nicht nach [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit): kein Lauf vergleicht zwei Bauten
   desselben Tags (`BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`) —
-  **Ausgang:** bei der Closure.
+  **Ausgang:** weiter offen — `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`.
 - `PYTHON_TAG` oder ein anderer Variablen-Name des Fragments kollidiert im gemischten Root mit dem
   Fragment einer anderen Sprache
   (`BEO-ALL/gleichnamige-make-variable-zweier-sprach-fragmente-im-selben-ziel`, 1×) —
-  **Ausgang:** bei der Closure; Namen gegen die Fragmente der anderen Sprachen gelesen.
+  **Ausgang:** entfallen — `PYTHON_TAG` kommt in keinem anderen Fragment vor (gelesen gegen
+  `GRADLE_TAG` und `JAVA_GRADLE_TAG`; Fall 692 färbt `…EigeneTagVariable`).
 - Der Test-Code des Skeletts wird von `dupl` als Klon des Kotlin-/Java-Testcodes gemeldet
   (`BEO-ALL/dupl-meldet-aehnlichen-testcode-zweier-sprach-skelette`, 1×) —
-  **Ausgang:** bei der Closure; gemeinsamer Helfer von Anfang an (§3).
+  **Ausgang:** entfallen — der gemeinsame Helfer (`skeleton_helpers_test.go`) stand von Anfang an,
+  `make lint` und `make gates` grün.
 - Der Wächter der `TID252`-Bindung hält nur den Text der emittierten Config, nicht, dass `lint` am
   gebootstrappten Ziel einen relativen Import tatsächlich rot färbt ([`ADR-0095`](../../adr/0095-python-skelett-toolchain-und-schicht-aufloesung.md): am Ziel nicht gefahren) —
-  **Ausgang:** bei der Closure; Grenze im Wächter benannt, oder die Wirkung rot gesehen (Fall in
-  `make full-smoke` oder benannte Lücke).
+  **Ausgang:** entfallen — die Wirkung am gebootstrappten Ziel ist rot gesehen: Fall 696 entfernt
+  `ban-relative-imports = "all"` aus der Quelle, der reale ruff-Lauf der lint-Stage färbt `from . import
+  main` nicht mehr, und die Stufe meldet es; ungemutiert meldet der Lauf `TID252` an `src/app/rel.py:3:1`.
 - Transitive Abhängigkeiten sind ungepinnt (Festlegung 1 der ADR, akzeptiertes Negativ): zwei Bauten
   desselben Tags können sich unterscheiden — **Ausgang:** weiter offen — Register, mit der
-  Reproduzierbarkeits-Beobachtung oben.
+  Reproduzierbarkeits-Beobachtung oben
+  (`BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`).
 
 ## 7. Closure-Notiz
 
-<!-- Erst bei der Closure füllen. -->
+- **Was hat funktioniert:** Das Muster aus Kotlin und Java trug Python ohne Umbau; die Stufe fährt
+  `compileall`, pytest, ruff und mypy strict im Mono-Repo, den Guard (`pytest` geblockt) und zwei
+  Lint-Zähne im Ziel (F401 an `main.py:3:8`, TID252 an `rel.py:3:1`, je rot und nach Rücknahme grün).
+  Der gemeinsame Test-Helfer von Anfang an ersparte den `dupl`-Befund.
+- **Was ging anders als geplant:** Nicht in §3 geführt, geliefert: der Sprachlisten-Nachzug in
+  `README.md` (öffentlicher Vertrag, [`AGENTS.md`](../../../../AGENTS.md) §6 Schritt 7), der Umbau von
+  `internal/gen/java_test.go` auf die gemeinsamen Helfer (die in §3 verlangte Extraktion, Java-Fälle
+  675/677/679/682 danach grün) sowie Listen-Nachzüge in `internal/gen/archgate_test.go` und
+  `cmd/ai-harness-init/kennungen_test.go`. Review INFO-4 und Verifier bestätigen die Zulässigkeit.
+  Ein Erstlauf von Fall 695 meldete BEFUND ohne ermittelte Ursache; zwei Wiederholungen waren grün (V-2).
+- **Laufzeit ([`MR-089`](../../../../harness/conventions.md#mr-089)):** zwei Messungen, je
+  `make full-smoke-host`, macOS/arm64 (Colima), warm (Image `python:3.14.8-slim` und Layer lokal, kein
+  Pull), Variante Mono-Repo mit `add-lang` go, cpp, kotlin, java (+ python), je ein Lauf je Stand.
+  Implementer: Vorher (909d9954) rund 182 s, Nachher (62600796) rund 220 s, Python-Stufe 7 s. Verifier:
+  Vorher (909d9954) 157 s, Nachher (HEAD) 162 s, Python-Stufe 6 s. Die Gesamtdauern schwanken zwischen
+  den Läufen um bis zu rund 25 s (die Java-Stufe schwankte im ersten Lauf um 8 s), das ist Rauschen der
+  Einzelläufe: belastbar ist die Stufenzeit von 6 s bis 7 s, die Gesamtdifferenz nur als Spanne (+5 s
+  bis +38 s). **Ungemessen:** kalter Cache, Image-Pull, PyPI; keine Aussage über andere Varianten.
+- **Benannte Grenzen (Verifier V-3, Review INFO-2):** Format-, mypy- und pytest-Rotfall haben keinen
+  Lauf-Zahn im Ziel; die Abdeckungs-Zeile behauptet sie nicht. Die F401-Prüfung besteht aus drei
+  unabhängigen `grep -qF`, die Ko-Okkurrenz auf einer Zeile ist gelockert. Pins (Image, pytest, ruff,
+  mypy) hält kein Wächter gegen die Registry (INFO-3, akzeptiertes Negativ der ADR).
+- **Steering-Loop-Eintrag:** geschärfte Regel (Vorschlag, nicht verkörpert): Ein Wächter, dessen Zusage
+  das gebootstrappte Ziel real durchsetzt, bekommt den Lauf-Zahn im Ziel in derselben Lieferung wie den
+  Text-Wächter. Java ließ die Zusage `maxWarnings = 0` beim Text-Wächter (benannte Grenze); Python
+  schloss dieselbe Klasse für TID252 mit Fall 696 an der realen Quelle. Der Lauf bestätigt im Übrigen
+  die Java-Lehre zur Messzahl: obwohl der Plan Kommando und Träger nannte, stand die Laufzeit im
+  Lieferstand nicht (V-1 LOW); die Zahl trägt allein die Closure, sie liegt hier. Gezählt über
+  `BEO-ALL/kosten-einer-emittierten-pruefung-im-ziel-ungemessen` (verkörpert), nicht neu verkörpert.
+- **Beobachtungs-Register (`../observations/`):** je Beleg `evidence/slice-python-skelett.md`:
+  `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht` (2×, offen; Belege Java und
+  Python, das C++-Vorkommen bleibt benannt, nicht gezählt, unter der Schwelle),
+  `BEO-ALL/kosten-einer-emittierten-pruefung-im-ziel-ungemessen` (6×, verkörpert); neu angelegt:
+  `BEO-ALL/marker-pruefung-in-full-smoke-wird-fuer-shell-lint-aufgespalten` und
+  `BEO-ALL/full-smoke-fall-erstlauf-befund-ohne-ursache` (je 1×). Kein Beleg für
+  `BEO-ALL/gleichnamige-make-variable-zweier-sprach-fragmente-im-selben-ziel` und
+  `BEO-ALL/dupl-meldet-aehnlichen-testcode-zweier-sprach-skelette`: Python hat beides von Anfang an
+  vermieden, es gab kein Auftreten. Kein Eintrag erreicht mit diesem Slice neu 3×.
+- **Folge-Slices:** `slice-python-hexslice-layout` — ist eine Datei in `open/`
+- **Risiken aus §6:** Risiko 1 weiter offen (Register), Risiko 2 entfallen, Risiko 3 weiter offen
+  (Register), Risiko 4 entfallen, Risiko 5 entfallen, Risiko 6 entfallen, Risiko 7 weiter offen
+  (Register) — je einmal in §6.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
