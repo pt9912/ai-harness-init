@@ -362,51 +362,80 @@ func TestRun_AddLangCpp(t *testing.T) {
 	}
 }
 
-// TestRun_AddLangJava (LH-FA-04, LH-FA-06, ADR-0094): `add-lang java apps/jv` dropt das
-// Gradle-Geruest samt Checkstyle-Config, das modul-scoped Fragment und blocked/java mit
-// mvn und mvnw. Ein Eingriff, der den Dispatch der Sprache aus add-lang nimmt, laesst das
+// assertAddLangDropt: `add-lang <lang> <pfad>` dropt die Skelett-Dateien <rels> (relativ zum
+// Repo), das modul-scoped Fragment und blocked/<lang>, und blocked/<lang> nennt jedes Wort aus
+// <blockedWorte>. Ein Eingriff, der den Dispatch der Sprache aus add-lang nimmt, laesst das
 // Modul fehlen.
-func TestRun_AddLangJava(t *testing.T) {
+func assertAddLangDropt(t *testing.T, lang, pfad string, rels, blockedWorte []string) {
+	t.Helper()
 	dir := initializedRepo(t)
 	var out, errb bytes.Buffer
-	if code := run([]string{"add-lang", "java", "apps/jv"}, dir, testSources(t), &out, &errb); code != 0 {
-		t.Fatalf("add-lang java exit %d, stderr: %q", code, errb.String())
+	if code := run([]string{"add-lang", lang, pfad}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("add-lang %s exit %d, stderr: %q", lang, code, errb.String())
 	}
-	for _, rel := range []string{
-		"apps/jv/settings.gradle.kts", "apps/jv/build.gradle.kts", "apps/jv/Dockerfile",
-		"apps/jv/config/checkstyle/checkstyle.xml",
-		"apps/jv/src/main/java/app/Main.java", "apps/jv/src/test/java/app/MainTest.java",
-		"harness/mk/apps-jv.mk", "tools/harness/blocked/java",
-	} {
+	for _, rel := range append(rels, "tools/harness/blocked/"+lang) {
 		if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel))); err != nil {
 			t.Errorf("%s nicht gedroppt: %v", rel, err)
 		}
 	}
-	blocked := readFile(t, filepath.Join(dir, filepath.FromSlash("tools/harness/blocked/java")))
-	for _, want := range []string{"gradle", "javac", "checkstyle", "mvn", "mvnw"} {
+	blocked := readFile(t, filepath.Join(dir, filepath.FromSlash("tools/harness/blocked/"+lang)))
+	for _, want := range blockedWorte {
 		if !strings.Contains(blocked, want) {
-			t.Errorf("blocked/java enthaelt %q nicht:\n%s", want, blocked)
+			t.Errorf("blocked/%s enthaelt %q nicht:\n%s", lang, want, blocked)
 		}
 	}
 }
 
-// TestRun_AddLangJavaHexsliceIstExit2 (ADR-0094 Festlegung 4): `add-lang java --arch
-// hexslice` endet mit Exit 2 und der Liste der Sprache (flat), ohne ein Modul abzulegen —
-// kein Geruest-only-Skelett. Ein Eintrag hexslice in langArchs("java") liesse den Lauf mit
-// Exit 0 enden.
-func TestRun_AddLangJavaHexsliceIstExit2(t *testing.T) {
+// assertAddLangHexsliceIstExit2: `add-lang <lang> <pfad> --arch hexslice` endet mit Exit 2 und
+// der Liste der Sprache (flat), ohne ein Modul abzulegen — kein Geruest-only-Skelett. Ein
+// Eintrag hexslice in langArchs(<lang>) liesse den Lauf mit Exit 0 enden.
+func assertAddLangHexsliceIstExit2(t *testing.T, lang, pfad string) {
+	t.Helper()
 	dir := initializedRepo(t)
 	var out, errb bytes.Buffer
-	code := run([]string{"add-lang", "java", "apps/jv", "--arch", "hexslice"}, dir, testSources(t), &out, &errb)
+	code := run([]string{"add-lang", lang, pfad, "--arch", "hexslice"}, dir, testSources(t), &out, &errb)
 	if code != 2 {
-		t.Fatalf("add-lang java --arch hexslice exit %d, want 2; stderr: %q", code, errb.String())
+		t.Fatalf("add-lang %s --arch hexslice exit %d, want 2; stderr: %q", lang, code, errb.String())
 	}
 	if !strings.Contains(errb.String(), "verfuegbar: flat") {
 		t.Errorf("Meldung nennt die Liste der Sprache nicht: %q", errb.String())
 	}
-	if _, err := os.Stat(filepath.Join(dir, "apps", "jv")); !os.IsNotExist(err) {
-		t.Errorf("abgelehnte Kombination legte apps/jv an: %v", err)
+	if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(pfad))); !os.IsNotExist(err) {
+		t.Errorf("abgelehnte Kombination legte %s an: %v", pfad, err)
 	}
+}
+
+// TestRun_AddLangJava (LH-FA-04, LH-FA-06, ADR-0094): `add-lang java apps/jv` dropt das
+// Gradle-Geruest samt Checkstyle-Config, das modul-scoped Fragment und blocked/java mit
+// mvn und mvnw.
+func TestRun_AddLangJava(t *testing.T) {
+	assertAddLangDropt(t, "java", "apps/jv", []string{
+		"apps/jv/settings.gradle.kts", "apps/jv/build.gradle.kts", "apps/jv/Dockerfile",
+		"apps/jv/config/checkstyle/checkstyle.xml",
+		"apps/jv/src/main/java/app/Main.java", "apps/jv/src/test/java/app/MainTest.java",
+		"harness/mk/apps-jv.mk",
+	}, []string{"gradle", "javac", "checkstyle", "mvn", "mvnw"})
+}
+
+// TestRun_AddLangJavaHexsliceIstExit2 (ADR-0094 Festlegung 4): java rendert nur flat.
+func TestRun_AddLangJavaHexsliceIstExit2(t *testing.T) {
+	assertAddLangHexsliceIstExit2(t, "java", "apps/jv")
+}
+
+// TestRun_AddLangPython (LH-FA-04, LH-FA-06, ADR-0095): `add-lang python apps/py` dropt
+// pyproject.toml, requirements-dev.txt, Dockerfile, Paket und Test, das modul-scoped Fragment
+// und blocked/python mit den Werkzeug-Namen der ADR.
+func TestRun_AddLangPython(t *testing.T) {
+	assertAddLangDropt(t, "python", "apps/py", []string{
+		"apps/py/pyproject.toml", "apps/py/requirements-dev.txt", "apps/py/Dockerfile",
+		"apps/py/src/app/__init__.py", "apps/py/src/app/main.py", "apps/py/tests/test_main.py",
+		"harness/mk/apps-py.mk",
+	}, []string{"python", "pytest", "ruff", "mypy", "uv", "poetry"})
+}
+
+// TestRun_AddLangPythonHexsliceIstExit2 (ADR-0095 Festlegung 5): python rendert nur flat.
+func TestRun_AddLangPythonHexsliceIstExit2(t *testing.T) {
+	assertAddLangHexsliceIstExit2(t, "python", "apps/py")
 }
 
 // TestRun_AddLangRoot: `add-lang go .` verortet am Root und liefert die UNSCOPED Fassung

@@ -234,6 +234,28 @@ func TestBlockedFragment_JavaTraegtDieHostToolchain(t *testing.T) {
 	}
 }
 
+// TestBlockedFragment_PythonTraegtDieNamenDerAdr (ADR-0095 Festlegung 6): das Fragment
+// blocked/python nennt den Interpreter, die drei Gate-Werkzeuge und die Umwege uv, uvx und
+// poetry, obwohl das Geruest sie nicht nutzt. pip, pip3 und pipx stehen NICHT darin: der
+// gebackene Boden des Guards fuehrt sie, und die Union ist die eine Quelle.
+func TestBlockedFragment_PythonTraegtDieNamenDerAdr(t *testing.T) {
+	worte := strings.Fields(emit.BlockedFragmentForLang("python"))
+	set := map[string]bool{}
+	for _, w := range worte {
+		set[w] = true
+	}
+	for _, want := range []string{"python", "python3", "pytest", "ruff", "mypy", "uv", "uvx", "poetry"} {
+		if !set[want] {
+			t.Errorf("blocked/python nennt %q nicht: %v", want, worte)
+		}
+	}
+	for _, boden := range []string{"pip", "pip3", "pipx"} {
+		if set[boden] {
+			t.Errorf("blocked/python doppelt %q aus dem Guard-Boden: %v", boden, worte)
+		}
+	}
+}
+
 // TestEnforce_GuardBashAwkOnly (LH-QA-03): der emittierte Guard nutzt awk als
 // JSON-Parser (nicht jq/node) und referenziert den Extraktor am emittierten
 // tools/harness/-Pfad (MR-005). Ein reiner String-Grep auf „jq"/„node" waere

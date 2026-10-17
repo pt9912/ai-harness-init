@@ -1,7 +1,6 @@
 package gen_test
 
 import (
-	"errors"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -13,11 +12,7 @@ import (
 // genJavaWith generiert das Java-Skelett mit einem expliziten gradle-Tag.
 func genJavaWith(t *testing.T, version string) string {
 	t.Helper()
-	dir := t.TempDir()
-	if err := gen.Generate(dir, "java", version); err != nil {
-		t.Fatalf("Generate(java, %q): %v", version, err)
-	}
-	return dir
+	return generateWith(t, "java", version)
 }
 
 // TestGenerate_JavaProfile: --lang java erzeugt GENAU den erwarteten Skelett-Satz
@@ -73,16 +68,7 @@ func TestGenerate_JavaProfile(t *testing.T) {
 // TestGenerate_JavaDeterministic haelt LH-QA-02 fuer java: zwei Laeufe mit gleichem Tag
 // liefern byte-identische Dateien.
 func TestGenerate_JavaDeterministic(t *testing.T) {
-	d1, d2 := genJavaWith(t, gen.DefaultJavaVersion), genJavaWith(t, gen.DefaultJavaVersion)
-	rels := walkRel(t, d1)
-	if strings.Join(rels, ",") != strings.Join(walkRel(t, d2), ",") {
-		t.Fatal("zwei java-Laeufe erzeugten verschiedene Datei-Saetze")
-	}
-	for _, rel := range rels {
-		if mustRead(t, filepath.Join(d1, filepath.FromSlash(rel))) != mustRead(t, filepath.Join(d2, filepath.FromSlash(rel))) {
-			t.Errorf("%s unterscheidet sich zwischen zwei java-Laeufen", rel)
-		}
-	}
+	assertDeterministic(t, "java", gen.DefaultJavaVersion)
 }
 
 // TestJavaLintConfig_TraegtUnusedImportsUndMaxWarnings (ADR-0094 Festlegung 3): gebunden
@@ -119,20 +105,7 @@ func TestJavaLintConfig_TraegtUnusedImportsUndMaxWarnings(t *testing.T) {
 // apps/jv, gemischter Root), je unter dem Namen der Fassung.
 func javaFragmente(t *testing.T, version string) map[string]string {
 	t.Helper()
-	out := map[string]string{}
-	for name, pfad := range map[string]string{"root": ".", "subdir": "apps/jv"} {
-		mk, err := gen.CodeGateFragment("java", pfad, version)
-		if err != nil {
-			t.Fatalf("CodeGateFragment(java, %s): %v", pfad, err)
-		}
-		out[name] = mk
-	}
-	mixed, err := gen.CodeGateFragmentMixed("java", ".", version)
-	if err != nil {
-		t.Fatalf("CodeGateFragmentMixed(java, .): %v", err)
-	}
-	out["gemischt"] = mixed
-	return out
+	return fragmentFassungen(t, "java", "apps/jv", version)
 }
 
 // TestJavaCodeGateFragment_TargetsMatchStages ist der LH-QA-01-Anker fuer java (ADR-0094
@@ -141,48 +114,14 @@ func javaFragmente(t *testing.T, version string) map[string]string {
 // die drei Gate-Ziele test/lint/build sind jeweils gerufen.
 func TestJavaCodeGateFragment_TargetsMatchStages(t *testing.T) {
 	df := mustRead(t, filepath.Join(genJavaWith(t, gen.DefaultJavaVersion), "Dockerfile"))
-	stages := map[string]bool{}
-	for _, m := range regexp.MustCompile(`\bAS (\w+)`).FindAllStringSubmatch(df, -1) {
-		stages[m[1]] = true
-	}
-	for name, mk := range javaFragmente(t, gen.DefaultJavaVersion) {
-		gerufen := map[string]bool{}
-		for _, m := range regexp.MustCompile(`--target (\w+)`).FindAllStringSubmatch(mk, -1) {
-			gerufen[m[1]] = true
-			if !stages[m[1]] {
-				t.Errorf("java-Fragment (%s) ruft `--target %s`, aber Dockerfile hat keine Stage `AS %s`", name, m[1], m[1])
-			}
-		}
-		for _, ziel := range []string{"test", "lint", "build"} {
-			if !gerufen[ziel] {
-				t.Errorf("java-Fragment (%s) ruft `--target %s` nicht — das Gate fehlt", name, ziel)
-			}
-		}
-	}
+	assertTargetsMatchStages(t, "java", df, javaFragmente(t, gen.DefaultJavaVersion))
 }
 
 // TestJavaCodeGateFragment_RootUndSubdir: die Root-Fassung haengt lint/build/test an
 // GATE_CHECKS und baut im Root-Kontext; die Subdir-Fassung traegt modul-scoped Targets und
 // keine unscoped; die gemischte Fassung traegt die gemeinsame Form.
 func TestJavaCodeGateFragment_RootUndSubdir(t *testing.T) {
-	fassungen := javaFragmente(t, gen.DefaultJavaVersion)
-	erwartet := map[string][]string{
-		"root":   {"GATE_CHECKS += lint build test", "--target test -t $(IMAGE):test ."},
-		"subdir": {"GATE_CHECKS += lint-apps-jv build-apps-jv test-apps-jv", "--target test -t apps-jv:test apps/jv"},
-	}
-	for name, wants := range erwartet {
-		for _, want := range wants {
-			if !strings.Contains(fassungen[name], want) {
-				t.Errorf("java-Fragment (%s) enthaelt %q nicht:\n%s", name, want, fassungen[name])
-			}
-		}
-	}
-	for _, forbidden := range []string{"\ntest:", "\nlint:", "\nbuild:"} {
-		if strings.Contains(fassungen["subdir"], forbidden) {
-			t.Errorf("modul-scoped java-Fragment traegt unscoped Target %q:\n%s", forbidden, fassungen["subdir"])
-		}
-	}
-	mixedFragmentFest(t, fassungen["gemischt"], "java", []string{"--target test -t java:test ."})
+	assertRootUndSubdir(t, "java", "apps-jv", "apps/jv", javaFragmente(t, gen.DefaultJavaVersion))
 }
 
 // TestJavaCodeGateFragment_EigeneTagVariable: der Versions-Default steht in allen drei
@@ -190,14 +129,7 @@ func TestJavaCodeGateFragment_RootUndSubdir(t *testing.T) {
 // Ziel setzt GRADLE_TAG mit `?=`; teilten sich beide den Namen, gaelte der erste gelesene
 // Wert fuer beide Sprachen und SKEL_JAVA_VERSION waere kein eigener Knopf.
 func TestJavaCodeGateFragment_EigeneTagVariable(t *testing.T) {
-	for name, mk := range javaFragmente(t, "7.7.7-jdk21") {
-		if got := firstSub(t, regexp.MustCompile(`(?m)^JAVA_GRADLE_TAG \?= (\S+)$`), mk); got != "7.7.7-jdk21" {
-			t.Errorf("java-Fragment (%s): JAVA_GRADLE_TAG-Default = %q, want 7.7.7-jdk21", name, got)
-		}
-		if regexp.MustCompile(`(?m)^GRADLE_TAG\b`).MatchString(mk) {
-			t.Errorf("java-Fragment (%s) setzt GRADLE_TAG — der Name gehoert dem Kotlin-Fragment:\n%s", name, mk)
-		}
-	}
+	assertTagVariable(t, "java", "JAVA_GRADLE_TAG", []string{"GRADLE_TAG"}, javaFragmente(t, "7.7.7-jdk21"), "7.7.7-jdk21")
 }
 
 
@@ -221,18 +153,5 @@ func TestGenerate_JavaVersionThreaded(t *testing.T) {
 // Java-Renderer nicht — Exit-2-Klasse mit der Liste der Sprache (flat), ohne Artefakte, kein
 // Geruest-only-Skelett. hexslice steht erst in langArchs, wenn sein Renderer es rendert.
 func TestGenerateArch_JavaNurFlat(t *testing.T) {
-	for _, arch := range []string{"hexslice", "hexagonal"} {
-		dir := t.TempDir()
-		err := gen.GenerateArch(dir, "java", gen.DefaultJavaVersion, arch)
-		var uae *gen.UnknownArchError
-		if !errors.As(err, &uae) {
-			t.Fatalf("erwartete *UnknownArchError fuer java+%s, got %v", arch, err)
-		}
-		if strings.Join(uae.Available, ",") != "flat" {
-			t.Errorf("Available = %v, want [flat]", uae.Available)
-		}
-		if rels := walkRel(t, dir); len(rels) != 0 {
-			t.Errorf("abgelehnte Kombination java+%s hat Artefakte geschrieben: %v", arch, rels)
-		}
-	}
+	assertNurFlat(t, "java", gen.DefaultJavaVersion)
 }

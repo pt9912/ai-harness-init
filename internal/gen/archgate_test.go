@@ -313,6 +313,9 @@ func TestArchGateConfig_OnlyLayered(t *testing.T) {
 		{"java", "flat", false},
 		{"java", "hexslice", false}, // ADR-0094 Festlegung 4: erst mit seinem Renderer in langArchs
 		{"java", "hexagonal", false}, // ADR-0094 legt das Layout fuer java nicht fest
+		{"python", "flat", false},
+		{"python", "hexslice", false},  // ADR-0095 Festlegung 5: erst mit seinem Renderer in langArchs
+		{"python", "hexagonal", false}, // ADR-0095 legt das Layout fuer python nicht fest
 		{"go", "onion", false},
 	} {
 		if _, ok := gen.ArchGateConfig(tc.lang, tc.arch); ok != tc.want {

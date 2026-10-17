@@ -119,6 +119,7 @@ Umgebung (bewusster Opt-in-Override der gepinnten Werte):
   SKEL_<LANG>_VERSION  Toolchain-Version des Skeletts je Sprache (SKEL_GO_VERSION, SKEL_CPP_VERSION,
                        SKEL_KOTLIN_VERSION = Tag des gradle-Images;
                        SKEL_JAVA_VERSION = Tag des gradle-Images;
+                       SKEL_PYTHON_VERSION = Tag des python-Images (<ver>-slim);
                        Default gepinnt, deterministisch)
   AI_HARNESS_INIT_BASELINE_URL_BASE  Basis-URL des Baseline-Fetches (Default: der gepinnte
                        GitHub-Release-Pfad des Kurses). Nur für Tests/Entwicklung gedacht —
@@ -288,7 +289,7 @@ Mono-Repo. <pfad>=. verortet am Repo-Root. Idempotent: das Fragment/blocked
 wird konvergent kanonisch geschrieben, vorhandener Skelett-Code bleibt unberuehrt.
 
 Argumente:
-  <sprache>   Zielsprache (gen-Profil: go, cpp, kotlin, java)
+  <sprache>   Zielsprache (gen-Profil: go, cpp, kotlin, java, python)
   <pfad>      Zielort des Moduls (. = Repo-Root)
   --arch      Ziel-Architektur (flat|hexagonal|hexslice, Default flat).
               Eine von der Sprache nicht getragene Architektur (z.B. cpp+hexagonal) -> Exit 2
