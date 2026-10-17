@@ -8,7 +8,7 @@
 # per @sha256 auf seinen Manifest-Digest gepinnt (Drift melden make freshness-go/-golangci).
 # Kein Host-go/-golangci-lint (Docker-only, ADR-0003) — die Aufrufe leben hier im Dockerfile, nicht im Bash.
 ARG GO_VERSION=1.27.2
-ARG GOLANGCI_LINT_VERSION=v2.14.0
+ARG GOLANGCI_LINT_VERSION=v2.15.0
 
 # ---- deps ------------------------------------------------------------------
 FROM golang:${GO_VERSION}@sha256:820153096fda4de6ac1b7194d12e416b7dd8f4e9a33d17e0345b111b945162d8 AS deps
@@ -56,7 +56,7 @@ COPY . .
 RUN CGO_ENABLED=0 go build -o /tmp/ai-harness-init ./cmd/ai-harness-init
 
 # ---- lint ------------------------------------------------------------------
-FROM golangci/golangci-lint:${GOLANGCI_LINT_VERSION}@sha256:ad862ba6b3798cbe0fd9fd7408d498fd74fbd2623a92406b2fd3898faf0bf98f AS lint
+FROM golangci/golangci-lint:${GOLANGCI_LINT_VERSION}@sha256:fbfcfd12a6f8d7f1b97b3362ca80fc2a244d46863148c73cb88e7793af96c481 AS lint
 WORKDIR /src
 ENV GOFLAGS="-buildvcs=false"
 COPY --from=deps /go/pkg/mod /go/pkg/mod

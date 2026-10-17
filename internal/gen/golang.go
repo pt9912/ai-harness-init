@@ -11,7 +11,7 @@ import "strings"
 const DefaultGoVersion = "1.27.2"
 
 // golangciVersion ist der gepinnte golangci-lint-Tag des generierten Skeletts.
-const golangciVersion = "v2.14.0"
+const golangciVersion = "v2.15.0"
 
 // goProfile ist das Go-SKELETT fuer die gegebene Go-Version (ADR-0003 Docker-only):
 // Go-Gates als Dockerfile-Stages; dazu go.mod + .golangci.yml und ein baubares
