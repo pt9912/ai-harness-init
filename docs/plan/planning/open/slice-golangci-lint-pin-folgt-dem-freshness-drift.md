@@ -19,7 +19,7 @@ eine Welle braucht beobachtet keine Closure-Bedingung mehr als diese DoD.
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** —
+**Verantwortlich:** Implementer (pt9912)
 
 **Autor:** Planner. **Datum:** 2026-10-17.
 
@@ -87,8 +87,9 @@ Commit-Message. Ein geratener Digest ist ausgeschlossen.
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): `slice-go-toolchain-pin-folgt-dem-freshness-drift` liegt in `done/` (WIP-Limit 1, und die
-Toolchain steht vor dem Linter); der Drift ist gemessen (`make freshness-golangci`: `v2.14.0` gegen `v2.15.0`).
+**Start** (`next` → `in-progress`) — erfüllt: `slice-go-toolchain-pin-folgt-dem-freshness-drift` liegt in `done/`
+(`ls docs/plan/planning/done/slice-go-toolchain-pin-folgt-dem-freshness-drift.md`; WIP-Limit 1 frei, die Toolchain steht vor dem Linter); der Drift ist gemessen (`make freshness-golangci`: `v2.14.0`
+gegen `v2.15.0`).
 
 **Rückführungen:**
 
