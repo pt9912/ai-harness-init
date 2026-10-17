@@ -119,6 +119,7 @@ func profiles() map[string]func(version, arch string) map[string]string {
 		"go":     goProfile,
 		"cpp":    cppProfile,
 		"kotlin": kotlinProfile,
+		"java":   javaProfile,
 	}
 }
 
@@ -135,7 +136,8 @@ const DefaultArch = archFlat
 // INFO-1).
 //
 // STAND: go traegt flat + hexslice + hexagonal, cpp und kotlin tragen flat + hexslice
-// (ADR-0088).
+// (ADR-0088), java traegt flat (ADR-0094 Festlegung 4: hexslice steht erst hier, wenn sein
+// Renderer es rendert).
 // Die sprach-spezifische zweite Stufe der Arch-Validierung ist damit wieder von aussen
 // ERREICHBAR und bewacht — `cpp --arch hexagonal` ist eine existierende Architektur, die
 // dieser Renderer nicht rendert (TestGenerateArch_LangSpecificArchRejected haelt es fest,
@@ -148,6 +150,7 @@ func langArchs() map[string][]string {
 		"go":     {archFlat, archHexslice, archHexagonal},
 		"cpp":    {archFlat, archHexslice},
 		"kotlin": {archFlat, archHexslice},
+		"java":   {archFlat},
 	}
 }
 
@@ -183,6 +186,8 @@ func DefaultVersion(lang string) string {
 		return DefaultCppVersion
 	case "kotlin":
 		return DefaultKotlinVersion
+	case "java":
+		return DefaultJavaVersion
 	}
 	return ""
 }
@@ -248,6 +253,7 @@ func fragmentsMixed() map[string]func(modul, context, version string) string {
 		"go":     goFragmentMixed,
 		"cpp":    cppFragmentMixed,
 		"kotlin": kotlinFragmentMixed,
+		"java":   javaFragmentMixed,
 	}
 }
 
@@ -273,5 +279,6 @@ func fragments() map[string]func(modul, context, version string) string {
 		"go":     goFragment,
 		"cpp":    cppFragment,
 		"kotlin": kotlinFragment,
+		"java":   javaFragment,
 	}
 }

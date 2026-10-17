@@ -217,6 +217,23 @@ func TestBlockedFragment_CoversAllGenProfiles(t *testing.T) {
 	}
 }
 
+// TestBlockedFragment_JavaTraegtDieHostToolchain (ADR-0094 Festlegung 5): das Fragment
+// blocked/java nennt die Host-Toolchain des Gradle-Geruests und die Maven-Umwege mvn und
+// mvnw, obwohl das Geruest kein Maven nutzt — sie sind der naheliegende Host-Umweg an der
+// verworfenen Alternative.
+func TestBlockedFragment_JavaTraegtDieHostToolchain(t *testing.T) {
+	worte := strings.Fields(emit.BlockedFragmentForLang("java"))
+	set := map[string]bool{}
+	for _, w := range worte {
+		set[w] = true
+	}
+	for _, want := range []string{"gradle", "gradlew", "java", "javac", "jar", "jshell", "checkstyle", "mvn", "mvnw"} {
+		if !set[want] {
+			t.Errorf("blocked/java nennt %q nicht: %v", want, worte)
+		}
+	}
+}
+
 // TestEnforce_GuardBashAwkOnly (LH-QA-03): der emittierte Guard nutzt awk als
 // JSON-Parser (nicht jq/node) und referenziert den Extraktor am emittierten
 // tools/harness/-Pfad (MR-005). Ein reiner String-Grep auf „jq"/„node" waere

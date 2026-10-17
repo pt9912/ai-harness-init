@@ -206,6 +206,7 @@ func TestEmittierteDateienTragenNurImZielAufloesendeKennungen(t *testing.T) {
 		{"cpp-hexslice", []string{"--lang", "cpp", "--arch", "hexslice"}, false, nil},
 		{"kotlin-flat", []string{"--lang", "kotlin"}, false, nil},
 		{"kotlin-hexslice", []string{"--lang", "kotlin", "--arch", "hexslice"}, false, nil},
+		{"java-flat", []string{"--lang", "java"}, false, nil},
 		{"sprachlos-add-lang", nil, false, [][]string{
 			{"add-lang", "kotlin", "apps/kt", "--arch", "hexslice"},
 			{"add-lang", "cpp", "apps/cp"},

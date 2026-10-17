@@ -362,6 +362,53 @@ func TestRun_AddLangCpp(t *testing.T) {
 	}
 }
 
+// TestRun_AddLangJava (LH-FA-04, LH-FA-06, ADR-0094): `add-lang java apps/jv` dropt das
+// Gradle-Geruest samt Checkstyle-Config, das modul-scoped Fragment und blocked/java mit
+// mvn und mvnw. Ein Eingriff, der den Dispatch der Sprache aus add-lang nimmt, laesst das
+// Modul fehlen.
+func TestRun_AddLangJava(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	if code := run([]string{"add-lang", "java", "apps/jv"}, dir, testSources(t), &out, &errb); code != 0 {
+		t.Fatalf("add-lang java exit %d, stderr: %q", code, errb.String())
+	}
+	for _, rel := range []string{
+		"apps/jv/settings.gradle.kts", "apps/jv/build.gradle.kts", "apps/jv/Dockerfile",
+		"apps/jv/config/checkstyle/checkstyle.xml",
+		"apps/jv/src/main/java/app/Main.java", "apps/jv/src/test/java/app/MainTest.java",
+		"harness/mk/apps-jv.mk", "tools/harness/blocked/java",
+	} {
+		if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel))); err != nil {
+			t.Errorf("%s nicht gedroppt: %v", rel, err)
+		}
+	}
+	blocked := readFile(t, filepath.Join(dir, filepath.FromSlash("tools/harness/blocked/java")))
+	for _, want := range []string{"gradle", "javac", "checkstyle", "mvn", "mvnw"} {
+		if !strings.Contains(blocked, want) {
+			t.Errorf("blocked/java enthaelt %q nicht:\n%s", want, blocked)
+		}
+	}
+}
+
+// TestRun_AddLangJavaHexsliceIstExit2 (ADR-0094 Festlegung 4): `add-lang java --arch
+// hexslice` endet mit Exit 2 und der Liste der Sprache (flat), ohne ein Modul abzulegen —
+// kein Geruest-only-Skelett. Ein Eintrag hexslice in langArchs("java") liesse den Lauf mit
+// Exit 0 enden.
+func TestRun_AddLangJavaHexsliceIstExit2(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	code := run([]string{"add-lang", "java", "apps/jv", "--arch", "hexslice"}, dir, testSources(t), &out, &errb)
+	if code != 2 {
+		t.Fatalf("add-lang java --arch hexslice exit %d, want 2; stderr: %q", code, errb.String())
+	}
+	if !strings.Contains(errb.String(), "verfuegbar: flat") {
+		t.Errorf("Meldung nennt die Liste der Sprache nicht: %q", errb.String())
+	}
+	if _, err := os.Stat(filepath.Join(dir, "apps", "jv")); !os.IsNotExist(err) {
+		t.Errorf("abgelehnte Kombination legte apps/jv an: %v", err)
+	}
+}
+
 // TestRun_AddLangRoot: `add-lang go .` verortet am Root und liefert die UNSCOPED Fassung
 // (harness/mk/go.mk, test/lint/build, docker build .) — dieselbe wie der --lang-One-Shot.
 func TestRun_AddLangRoot(t *testing.T) {
