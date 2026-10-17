@@ -64,3 +64,8 @@ jobs:
       # Gradle-Achse bei fester JDK-Achse des Pins.
       - if: '!cancelled()'
         run: make freshness-kotlin
+      # Digest-Achse (LH-QA-02): jeder `@sha256`-Digest eines Image-Pins gegen seinen Tag.
+      # Ein Digest, der nicht zu seinem Tag gehoert, faerbt den Lauf; ein Registry-Ausfall
+      # faerbt nur diesen Nacht-Lauf, keinen Push.
+      - if: '!cancelled()'
+        run: make freshness-digest

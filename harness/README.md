@@ -101,6 +101,7 @@ ist (`make help` listet sie).
 | `make regelwerk-check` | Upstream-Content-Drift des Baseline-ZIP auditieren (Netz) | kein Gate — nur nächtlich |
 | `make baseline-freshness` | neueren Upstream-Tag als `BASELINE_TAG` melden (Netz, read-only) | kein Gate — nur nächtlich |
 | `make freshness-kotlin` | meldet, ob Seite 1 der Docker-Hub-Tags von `gradle` (100, sortiert nach `last_updated`) einen höheren Tag `X.Y.Z-jdk<NN>` mit dem JDK von `DefaultKotlinVersion` führt — Varianten zählen nicht; Pin über jedem gelieferten Tag: kein Urteil (Netz, read-only) | kein Gate — nur nächtlich · [ADR-0088](../docs/plan/adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md) |
+| `make freshness-digest` | hält den `@sha256`-Digest jedes tag-tragenden Image-Pins gegen den Manifest-Digest seines Tags (fünf Pins, Liste im Kopf von `harness/tools/digest-freshness.sh`); Pins ohne Tag neben dem Digest sind nicht erfasst; Fehlschlag über `make`: Exit 2 (Netz) | kein Gate — nur nächtlich · [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 | `make record-gates` | Working-Tree-Hash-Nachweis für den Stop-Hook | kein Gate |
 
 ## Traceability
