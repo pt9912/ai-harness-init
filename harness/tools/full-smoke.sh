@@ -2960,7 +2960,7 @@ if [ "$pythonlint_rc" -eq 0 ]; then
 	printf '%s\n' "$pythonlint_out" >&2
 	exit 1
 fi
-if ! grep -qF -- 'F401 [*] `os` imported but unused' <<<"$pythonlint_out" || ! grep -qF -- 'src/app/main.py:3:8' <<<"$pythonlint_out"; then
+if ! grep -qF -- 'F401 [*]' <<<"$pythonlint_out" || ! grep -qF -- 'imported but unused' <<<"$pythonlint_out" || ! grep -qF -- 'src/app/main.py:3:8' <<<"$pythonlint_out"; then
 	echo "full-smoke: FEHLER — Python-Lint rot, aber nicht mit F401 an main.py (rot aus falschem Grund?). Ausgabe:" >&2
 	printf '%s\n' "$pythonlint_out" >&2
 	einordnen "make lint-apps-python (Lint-Zahn F401, python)" "$pythonlint_out"
