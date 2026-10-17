@@ -1,6 +1,6 @@
 **Stand:** verkörpert
 
-Der Slice [`slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor`](../../../in-progress/slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor.md)
+Der Slice [`slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor`](../../../done/slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor.md)
 liefert für die Pin-Kopplung (Fallbacks, Digest) den Rot-Beleg am **realen** Wert; einen Sensor, der
 eine Fixture allgemein gegen ihre Quelle hält, baut er nicht und kann ihn nicht bauen. Die Zeile in
 `AGENTS.md` §3.6 unten trägt die Klasse weiter.

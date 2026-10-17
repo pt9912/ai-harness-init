@@ -94,7 +94,7 @@ grep -c 'HOOKS_DIR' Makefile                                                    
   beiseitezulegen.
 - **Ein Vergleichs-Sensor zwischen Dogfood-Fassung und Fragment** — **anderer Vorgang:** ein Sensor
   ist keine E2E-Stufe. Die Klasse ist im Register auf
-  [slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor](../in-progress/slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor.md)
+  [slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor](../done/slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor.md)
   geplant; das Paar `hooks-install` nennt jener Plan nicht (`grep -c hooks-install` darüber → 0) —
   ob er es aufnimmt, entscheidet sein eigener Schnitt.
 - **Ein Eingriff in die emittierte Ebene (Fragment, Prüfung, `internal/emit/**`)** —
