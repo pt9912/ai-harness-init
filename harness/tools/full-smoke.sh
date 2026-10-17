@@ -2811,10 +2811,10 @@ fi
 # JVM-Gradle-Einzelmodul (settings.gradle.kts, build.gradle.kts, config/checkstyle/checkstyle.xml,
 # Dockerfile) plus modul-scoped Code-Gate-Fragment und blocked/java. Danach faehrt
 # `make -j gates` zusaetzlich die realen Java-Gates im gradle-Image (assemble, test,
-# checkstyle). Der Lint ist rot UND gruen belegt: ein unbenutzter Import in Main.java faerbt
-# lint-apps-java rot mit [UnusedImports] an dieser Datei, die zurueckgenommene Datei haelt ihn
-# wieder gruen. Der Guard blockt mvn, das allein blocked/java fuehrt. Nur flat ist getragen:
-# `--arch hexslice` endet mit Exit 2 ohne Artefakt.
+# checkstyle). Der Lint hat einen roten und einen gruenen Fall (test/mutations/683, 684): ein
+# unbenutzter Import in Main.java faerbt lint-apps-java rot mit [UnusedImports] an dieser Datei,
+# die zurueckgenommene Datei haelt ihn wieder gruen. Der Guard blockt mvn, das allein
+# blocked/java fuehrt. Nur flat ist getragen: `--arch hexslice` endet mit Exit 2 ohne Artefakt.
 echo "full-smoke: add-lang java apps/java ins Mono-Repo (vierte Sprache, JVM-Gradle) ..."
 	e2e_abdeckung "LH-FA-04 LH-FA-06 LH-QA-01" "Eine vierte Sprache (Java, flat) im selben Ziel, mit den realen Gradle-Gates (assemble, test, checkstyle), dem roten und dem gruenen Lint-Fall (unbenutzter Import faerbt lint rot mit UnusedImports) und dem Guard, der mvn blockt; NICHT gemessen: hexslice (add-lang java --arch hexslice endet mit Exit 2, nicht mehr), der Root-Bootstrap mit Gate-Lauf, ein gemischter Root mit Java" "Java-Gate kaputt"
 java_start=$SECONDS

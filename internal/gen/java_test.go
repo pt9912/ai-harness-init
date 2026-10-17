@@ -115,6 +115,26 @@ func TestJavaLintConfig_TraegtUnusedImportsUndMaxWarnings(t *testing.T) {
 	}
 }
 
+// javaFragmente liefert das Java-Code-Gate-Fragment in seinen drei Fassungen (Root, Subdir
+// apps/jv, gemischter Root), je unter dem Namen der Fassung.
+func javaFragmente(t *testing.T, version string) map[string]string {
+	t.Helper()
+	out := map[string]string{}
+	for name, pfad := range map[string]string{"root": ".", "subdir": "apps/jv"} {
+		mk, err := gen.CodeGateFragment("java", pfad, version)
+		if err != nil {
+			t.Fatalf("CodeGateFragment(java, %s): %v", pfad, err)
+		}
+		out[name] = mk
+	}
+	mixed, err := gen.CodeGateFragmentMixed("java", ".", version)
+	if err != nil {
+		t.Fatalf("CodeGateFragmentMixed(java, .): %v", err)
+	}
+	out["gemischt"] = mixed
+	return out
+}
+
 // TestJavaCodeGateFragment_TargetsMatchStages ist der LH-QA-01-Anker fuer java (ADR-0094
 // §Fitness Function): jedes `docker build --target <X>` im Fragment hat eine gleichnamige
 // Dockerfile-Stage `AS <X>` — in allen drei Fassungen (Root, Subdir, gemischter Root) —, und
@@ -125,16 +145,7 @@ func TestJavaCodeGateFragment_TargetsMatchStages(t *testing.T) {
 	for _, m := range regexp.MustCompile(`\bAS (\w+)`).FindAllStringSubmatch(df, -1) {
 		stages[m[1]] = true
 	}
-	fassungen := map[string]func() (string, error){
-		"root":     func() (string, error) { return gen.CodeGateFragment("java", ".", gen.DefaultJavaVersion) },
-		"subdir":   func() (string, error) { return gen.CodeGateFragment("java", "apps/jv", gen.DefaultJavaVersion) },
-		"gemischt": func() (string, error) { return gen.CodeGateFragmentMixed("java", ".", gen.DefaultJavaVersion) },
-	}
-	for name, build := range fassungen {
-		mk, err := build()
-		if err != nil {
-			t.Fatalf("Fragment (%s): %v", name, err)
-		}
+	for name, mk := range javaFragmente(t, gen.DefaultJavaVersion) {
 		gerufen := map[string]bool{}
 		for _, m := range regexp.MustCompile(`--target (\w+)`).FindAllStringSubmatch(mk, -1) {
 			gerufen[m[1]] = true
@@ -154,34 +165,24 @@ func TestJavaCodeGateFragment_TargetsMatchStages(t *testing.T) {
 // GATE_CHECKS und baut im Root-Kontext; die Subdir-Fassung traegt modul-scoped Targets und
 // keine unscoped; die gemischte Fassung traegt die gemeinsame Form.
 func TestJavaCodeGateFragment_RootUndSubdir(t *testing.T) {
-	root, err := gen.CodeGateFragment("java", ".", gen.DefaultJavaVersion)
-	if err != nil {
-		t.Fatalf("CodeGateFragment(java, .): %v", err)
+	fassungen := javaFragmente(t, gen.DefaultJavaVersion)
+	erwartet := map[string][]string{
+		"root":   {"GATE_CHECKS += lint build test", "--target test -t $(IMAGE):test ."},
+		"subdir": {"GATE_CHECKS += lint-apps-jv build-apps-jv test-apps-jv", "--target test -t apps-jv:test apps/jv"},
 	}
-	for _, want := range []string{"GATE_CHECKS += lint build test", "--target test -t $(IMAGE):test ."} {
-		if !strings.Contains(root, want) {
-			t.Errorf("java-Root-Fragment enthaelt %q nicht:\n%s", want, root)
-		}
-	}
-	sub, err := gen.CodeGateFragment("java", "apps/jv", gen.DefaultJavaVersion)
-	if err != nil {
-		t.Fatalf("CodeGateFragment(java, apps/jv): %v", err)
-	}
-	for _, want := range []string{"GATE_CHECKS += lint-apps-jv build-apps-jv test-apps-jv", "--target test -t apps-jv:test apps/jv"} {
-		if !strings.Contains(sub, want) {
-			t.Errorf("modul-scoped java-Fragment enthaelt %q nicht:\n%s", want, sub)
+	for name, wants := range erwartet {
+		for _, want := range wants {
+			if !strings.Contains(fassungen[name], want) {
+				t.Errorf("java-Fragment (%s) enthaelt %q nicht:\n%s", name, want, fassungen[name])
+			}
 		}
 	}
 	for _, forbidden := range []string{"\ntest:", "\nlint:", "\nbuild:"} {
-		if strings.Contains(sub, forbidden) {
-			t.Errorf("modul-scoped java-Fragment traegt unscoped Target %q:\n%s", forbidden, sub)
+		if strings.Contains(fassungen["subdir"], forbidden) {
+			t.Errorf("modul-scoped java-Fragment traegt unscoped Target %q:\n%s", forbidden, fassungen["subdir"])
 		}
 	}
-	mixed, err := gen.CodeGateFragmentMixed("java", ".", gen.DefaultJavaVersion)
-	if err != nil {
-		t.Fatalf("CodeGateFragmentMixed(java, .): %v", err)
-	}
-	mixedFragmentFest(t, mixed, "java", []string{"--target test -t java:test ."})
+	mixedFragmentFest(t, fassungen["gemischt"], "java", []string{"--target test -t java:test ."})
 }
 
 // TestJavaCodeGateFragment_EigeneTagVariable: der Versions-Default steht in allen drei
@@ -189,16 +190,7 @@ func TestJavaCodeGateFragment_RootUndSubdir(t *testing.T) {
 // Ziel setzt GRADLE_TAG mit `?=`; teilten sich beide den Namen, gaelte der erste gelesene
 // Wert fuer beide Sprachen und SKEL_JAVA_VERSION waere kein eigener Knopf.
 func TestJavaCodeGateFragment_EigeneTagVariable(t *testing.T) {
-	fassungen := map[string]func() (string, error){
-		"root":     func() (string, error) { return gen.CodeGateFragment("java", ".", "7.7.7-jdk21") },
-		"subdir":   func() (string, error) { return gen.CodeGateFragment("java", "apps/jv", "7.7.7-jdk21") },
-		"gemischt": func() (string, error) { return gen.CodeGateFragmentMixed("java", ".", "7.7.7-jdk21") },
-	}
-	for name, build := range fassungen {
-		mk, err := build()
-		if err != nil {
-			t.Fatalf("Fragment (%s): %v", name, err)
-		}
+	for name, mk := range javaFragmente(t, "7.7.7-jdk21") {
 		if got := firstSub(t, regexp.MustCompile(`(?m)^JAVA_GRADLE_TAG \?= (\S+)$`), mk); got != "7.7.7-jdk21" {
 			t.Errorf("java-Fragment (%s): JAVA_GRADLE_TAG-Default = %q, want 7.7.7-jdk21", name, got)
 		}
@@ -207,6 +199,7 @@ func TestJavaCodeGateFragment_EigeneTagVariable(t *testing.T) {
 		}
 	}
 }
+
 
 // TestGenerate_JavaVersionThreaded: der uebergebene gradle-Tag faedelt ins Dockerfile-ARG,
 // und DefaultVersion("java") liefert den Default dorthin — der Knopf SKEL_JAVA_VERSION ist am
