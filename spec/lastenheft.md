@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.27.0
+**Version:** 0.27.1
 
 **Status:** Draft
 
@@ -97,7 +97,7 @@ ein sprachloses Ziel bleibt gültig (nur Doc-Gate). `--lang <X>` beim Init ist d
 
 **Architektur-Achse (`--arch`, parallel zur Sprach-Achse).** Die Struktur des
 emittierten Skeletts ist eine **eigene Achse** neben der Sprache: `--arch <arch>`,
-Default **`flat`** (das heutige Verhalten), opt-in **`hexagonal`** (die drei klassischen
+Default **`flat`** (das Verhalten ohne `--arch`), opt-in **`hexagonal`** (die drei klassischen
 Schichten: `core` / `port` / `adapter` + Composition Root) oder **`hexslice`** (HexSlice =
 Hexagonal + Vertical Slice: `domain` / `application` (Use-Case-Slices) / `ports` /
 `adapters`).
@@ -142,8 +142,7 @@ Command-Guard. **Quelle:** die ausführbare Durchsetzungs-**Mechanik** (Stop-Hoo
 Guard, Gate-Nachweis) bringt das Tool selbst mit — **Tool-als-Quelle**, je `--lang`
 parametriert (wie das Sprachskelett [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)).
 Der **Reviewer-Skill** bleibt aus dem Kurs-Template-Satz **gefetcht** (er liegt dort);
-`CLAUDE.md` ist ein **Briefing** wie `AGENTS.md` → **autort**, nicht tool-generiert
-(seine Vorlage ist eine Ergänzung des Kurses).
+`CLAUDE.md` ist ein **Briefing** wie `AGENTS.md` → **autort**, nicht tool-generiert.
 
 **Akzeptanzkriterien:**
 
@@ -681,3 +680,4 @@ emittierte Datei zu ändern.
 | 0.25.1 | 2026-10-08 | CR: **Folgestellen der Kennzeichnung *nicht bekannt* aus 0.25.0 nachgezogen** — [`LH-FA-13`](../spec/lastenheft.md#lh-fa-13--erfassungs-schema-der-spans) Kriterium „Zweig und Stand": ist die Ableitung nicht möglich, tragen beide Felder die Kennzeichnung statt leer zu sein. [`LH-FA-15`](../spec/lastenheft.md#lh-fa-15--rolle-der-erfassung) Kriterium „Rolle besetzt": eine unbekannte Rolle trägt die Kennzeichnung; Kriterium „Lesevorschrift": die Auswertung liest die Kennzeichnung und, für den Bestand davor, das leere Rollenfeld als unbekannt. Keine neue Anforderung | Nutzer-Entscheidung 2026-10-08 |
 | 0.26.0 | 2026-10-09 | CR: **Schutz des Bestands genau benannt** — [`LH-FA-14`](../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) Kriterium „Redaktion — was zugesagt ist und was nicht": der Bestand ist gitignored und nicht verschlüsselt; seine Dateien sind nur für den Eigentümer lesbar, das Verzeichnis bleibt für andere auflistbar. Minor, weil sich die Aussage eines Akzeptanzkriteriums ändert; keine neue Anforderung | Nutzer-Entscheidung 2026-10-09 |
 | 0.27.0 | 2026-10-17 | CR: **Zeit- und Liefer-Sätze im Rumpf als Zielbild im Indikativ gefasst** — [`LH-FA-01`](../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) (Sprachskelett ist ein eigener Schritt nach dem Init), [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) (Hinweis zum Titel, `cpp`-Satz, Sprach-Renderer in §5), [`LH-FA-07`](../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) (Voraussetzung), [`LH-FA-08`](../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) (Kurs-Upstream-Ergänzung), Briefing-Vorlage in [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren), Grenz-Notiz [`LH-QA-04`](../spec/lastenheft.md#lh-qa-04--plattform-matrix). Minor, weil normative Abschnitte ihre Aussage-Form ändern; keine neue Anforderung, keine Zusage entfällt, Heading-Anker bleiben stabil, datierte Messungen bleiben | Nutzer-Entscheidung 2026-10-17 |
+| 0.27.1 | 2026-10-17 | CR: **Zwei Folgestellen zu 0.27.0 nachgezogen** — [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) Architektur-Achse: Default `flat` ist „das Verhalten ohne `--arch`" statt „das heutige Verhalten". [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) Briefing-Vorlage: der Klammersatz zur Herkunft der Vorlage entfällt; `CLAUDE.md` ist autort, nicht tool-generiert. Patch, weil beide Stellen die Aussage von 0.27.0 nur zu Ende führen; keine neue Anforderung, keine Zusage entfällt | Nutzer-Entscheidung 2026-10-17 |
