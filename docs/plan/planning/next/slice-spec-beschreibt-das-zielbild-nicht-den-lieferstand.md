@@ -49,7 +49,7 @@ liefert nur diese Zeile); der Slice stützt sich auf den Auftrag, nicht auf eine
   (`grep -n 'func profiles' -A 6 internal/gen/gen.go` nennt `go`, `cpp`, `kotlin`), ist ein Lieferstand und
   gehört in die Rückverfolgbarkeit (`make doc-trace`, `trace:` in [`.d-check.yml`](../../../../.d-check.yml)),
   nicht in den Vertrag — anderer Vorgang. Ein Eintrag dazu besteht nicht: weder
-  [slice-192](slice-192-rtm-sieht-alle-anforderungen.md) noch ein Verzeichnis unter
+  [slice-192](../open/slice-192-rtm-sieht-alle-anforderungen.md) noch ein Verzeichnis unter
   `docs/plan/planning/observations/BEO-ALL/` nennt die Sprachen (`grep -rliE 'python|csharp' docs/plan/planning/observations/BEO-ALL/*/observation.md`
   → keine Datei).
 - **Kein Sensor für Zeit-/Liefer-Sätze in Specs.** Ein Wortlisten-Sensor wäre baubar, trifft aber
