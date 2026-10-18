@@ -1,0 +1,2 @@
+**Vorgang:** slice-python-hexslice-layout
+**Fund:** Fall 742 (Kante `driven_adapters → ports_outbound` entfernt) färbte `make gates` im Ziel rot; `# expect:` pinnte nur „NICHT Exit 0", die Meldung der Stufe ist bei jedem roten Gate dieselbe. Der Review fand es (I-2); `ceca3bc8` pinnt `wrong-direction driven_adapters -> ports_outbound`, der Verifier las es real rot. Das Risiko stand im Plan §6 und in DoD 2, und der Lauf hatte es trotzdem.

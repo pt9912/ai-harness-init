@@ -47,7 +47,7 @@ von `internal/gen/kotlin.go`, `internal/gen/arch.go` und
 
 ## 2. Definition of Done
 
-- [ ] hexslice-Renderer mit den Pfaden der ADR Festlegung 5 (`src/app/hexagon/{domain,application}/…`,
+- [x] hexslice-Renderer mit den Pfaden der ADR Festlegung 5 (`src/app/hexagon/{domain,application}/…`,
       `src/app/adapters/{driving,driven}/…`, Composition Root `src/app/main.py`, Tests unter `tests/`);
       `archGateConfigs()` mit `languages: python: ["**/*.py"]`, `exclude: ["tests/**"]` und
       `resolution: python: {mode: fixed-root, roots: ["src/app"], package_base: "app"}`; `python` in
@@ -58,7 +58,7 @@ von `internal/gen/kotlin.go`, `internal/gen/arch.go` und
       gegen das Ziel, nicht gegen eine Fixture). **Je Config-Schlüssel ein Text-Wächter, und der
       Lauf-Zahn im Ziel (rot an `core-impurity`) kommt in derselben Lieferung** (Fälle ab 731;
       [`BEO-ALL/waechter-haelt-config-text-wirkung-im-ziel-ohne-lauf-zahn`](../observations/BEO-ALL/waechter-haelt-config-text-wirkung-im-ziel-ohne-lauf-zahn/observation.md)).
-- [ ] `make full-smoke`: `add-lang python <pfad> --arch hexslice` grün; mit Import aus
+- [x] `make full-smoke`: `add-lang python <pfad> --arch hexslice` grün; mit Import aus
       `app.hexagon.domain` nach `app.adapters` rot mit `core-impurity` (Meldung gelesen), Gegenprobe
       grün; Stufe mit `e2e_abdeckung`-Kopfzeile, `docs/user/e2e-abdeckung.md` neu erzeugt; jeder neue
       Full-Smoke-Fall pinnt die Ursache im `# expect:` (nicht nur „rot").
@@ -69,14 +69,14 @@ von `internal/gen/kotlin.go`, `internal/gen/arch.go` und
       keinen Zuwachs allein. Der Verifier hält die Zahl gegen seine eigene Messung
       (`slice-messzahl-der-dod-liegt-im-lieferstand`
       entscheidet den dauerhaften Ort; bis dahin gilt diese Zeile).
-- [ ] `spec/architecture.md` Layout je Sprache um Python nachgezogen (Folgepflicht der ADR).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`),
+- [x] `spec/architecture.md` Layout je Sprache um Python nachgezogen (Folgepflicht der ADR).
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`),
       kein Self-Review.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine
       Beobachtung anfiel.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen prüft die Closure von `welle-sprachprofile-java-python-csharp`; nach dem
       Move gefahren, §7.
 
@@ -125,7 +125,86 @@ DoD vollständig, Arch-Zahn rot und Gegenprobe grün in `make full-smoke`, Closu
 
 ## 7. Closure-Notiz
 
-<!-- Erst bei der Closure füllen. -->
+- **Was hat funktioniert:** Das Java-Muster trug Python ohne Umbau am Seam: Rollen-Renderer
+  (`internal/gen/python_hexslice.go`), `languages: python`, `fixed-root` auf `src/app` mit `package_base: app`, sieben
+  Kanten einschließlich `driven_adapters → ports_outbound`, `exclude: tests/**`. Im gebootstrappten Ziel meldet
+  a-check `0 Befund(e)` ohne Hinweis auf nicht auflösende Import-Symbole; ein Import aus `app.hexagon.domain` nach
+  `app.adapters` färbt `make gates` rot mit `core-impurity` an `greeting.py:3`, die Gegenprobe ist grün. Drei
+  Lauf-Zähne in derselben Lieferung wie die Text-Wächter (Fälle 739 Rolle, 740 Resolution, 742 Port-Kante); die
+  Kante `driven_adapters → ports_outbound` ist grün (ein Adapter erbt und importiert den Port) und rot ohne sie
+  (`wrong-direction` an `in_memory_repository.py:4`, Handprobe des Verifiers). Die Lehren aus Java hielten:
+  Rename und Inhalt von Fall 690 in zwei Commits (`c069e697` reiner `git mv`, R100; `67f93340` Inhalt; Verifier
+  `git log -M --name-status`), die Messzahl stand im Baum (Commit-Message `a4fc68be`).
+- **Was ging anders als geplant:** Nicht in §3 geführt, geliefert: die Anpassung der Zeile in `README.md`;
+  `spec/architecture.md` durch den Implementer (Review I-4 und Verifier: zulässig, [`AGENTS.md`](../../../../AGENTS.md)
+  §3.8 bindet nur Hard Rules und Adaptions-Block); die geteilten Helfer `archConfigResolution` und die
+  Ausnahme-Funktion in `assertGlobsMatchSkeleton` mit Berührung der Java-Tests (Verhalten unverändert, Java-Fälle 720
+  und 723 vom Verifier gefahren, kein Zahn verloren); die Endform von Fall 690 (siehe Lerneintrag); der
+  Korrektur-Commit `b37cdf0c` (die `einordnen`-Zählung in `test/full-smoke-ausgang.bats`, Fall 177: eine Stufe, die
+  `einordnen` aufruft, ändert die Zählgleichung). Der Review (0 HIGH, 0 MEDIUM, 2 LOW, 5 INFO) wurde in `244254bb`
+  (L-1, L-2: Kommentare zu den Paket-Markern auf die gemessene Lage — mypy verlangt nur den Wurzel-Marker, ein
+  Marker-Import in eine Schicht fällt als `wrong-direction`) und `ceca3bc8` (I-2, Fall 742) behoben; der Verifier
+  hat beide Korrekturen am Ziel real nachgefahren.
+- **Laufzeit ([`MR-089`](../../../../harness/conventions.md#mr-089)):** Kommando `make full-smoke-host`,
+  macOS/arm64 (Colima), Variante `artifact-host`, Image warm. Implementer (Commit-Message von `a4fc68be`, je zwei
+  Läufe): Vorher 313 s und 311 s, Nachher 330 s und 341 s (Zuwachs 17 s bis 30 s), Stufe Python-hexSlice 9 s und 9 s,
+  Python-flat 7 s und 8 s gegen 10 s und 9 s. Verifier (je ein Lauf je Stand): Stufe Python-hexSlice 9 s, Python-flat
+  7 s nachher und 8 s vorher; die Gesamtdauer hat er nicht gemessen (V-2). **Belastbar ist allein die Stufenzeit von
+  9 s.** Der Gesamtzuwachs der Handoff-Reihe liegt im Rauschen von rund 25 s und ist weder gestützt noch widerlegt;
+  was über die Stufenzeit hinausgeht, ist nicht erklärt. **Ungemessen:** kalter Cache, Image-Pull; keine Aussage
+  über andere Varianten.
+- **Benannte Grenzen (Review I-1, L-2, Verifier V-3):** Die Kanten außer `core-impurity` und der Port-Kante haben nur
+  den Text-Wächter; die Abdeckungs-Zeile nennt die übrigen Richtungs-Regeln, den relativen Import, den voll
+  qualifizierten Namen, den dynamischen Import und den Marker-Import mit schichtlosem oder nicht auflösendem Ziel
+  unter NICHT gemessen. Der Hinweis „6 gescannte Datei(en) liegen in keiner Schicht" (leere `__init__.py`) steht bei
+  jedem a-check-Lauf des Ziels; er folgt aus `exclude: tests/**` nach [`ADR-0095`](../../adr/0095-python-skelett-toolchain-und-schicht-aufloesung.md)
+  Festlegung 4 und ist kein Defekt (Review INFO-1, Verifier V-3). Ob die Marker in `exclude` gehören, ist eine
+  Config-Entscheidung des Architect, kein Gegenstand dieses Slice. Pins hält kein Wächter gegen die Registry.
+- **Verifier V-1 (INFO):** Plan §3 trug „Fall 690 wird gegenstandslos"; gebaut ist die Endform des Falls als Wächter
+  für `hexagonal` ohne Renderer (Anker `"python": {archFlat, archHexslice},` in `internal/gen/gen.go`). §3 bleibt
+  stehen; die Annahme ist hier widerlegt.
+- **Steering-Loop-Eintrag:** geschärfte Regel (Vorschlag, nicht verkörpert): Eine Annahme des Plans über den Wegfall
+  eines Wächters (hier „Fall 690 wird gegenstandslos") steht im Plan als **Prüfauftrag an den Implementer** und nicht
+  als Tatsache; der Fall bleibt Wächter, bis seine Zusage am Quell-Bestand als überholt gemessen ist. Hier trug die
+  Formulierung „wird mit dem Renderer gegenstandslos" die Annahme in den Plan, der Implementer widerlegte sie am
+  Fall und hielt ihn als Wächter für die verbleibende Zusage (`hexagonal` bleibt Exit 2); ein Sensor dafür ist nicht
+  gebaut, Träger ist der Planner beim Schnitt. Zweite Lehre, gezählt: das `# expect:` des Falls 742 pinnte die
+  Ursache nicht, trotz der Zusage in §6 Risiko 5 und DoD 2; erst der Review fand es (I-2). Beleg zu
+  `BEO-ALL/full-smoke-fall-expect-pinnt-nicht-die-ursache` (2×, offen, Java 727 und Python 742); unter der Schwelle,
+  der Lese-Schritt einer späteren Closure entscheidet. Bestätigt statt neu: der Lauf-Zahn im Ziel in derselben
+  Lieferung wie der Text-Wächter (vierte Sprache in Folge), die Messzahl im Baum und die Trennung von Rename und
+  Inhalt.
+- **Nicht gezählt, Entscheidung des Auftraggebers:** Die Kanten außer `core-impurity` und der Port-Kante tragen in
+  Python wie in Java und C# nur den Text-Wächter; das ist dasselbe Auftreten wie `BEO-ALL/waechter-haelt-config-text-wirkung-im-ziel-ohne-lauf-zahn`
+  (2×) und wäre sein drittes. Der Beleg `evidence/slice-python-hexslice-layout.md` ist **nicht** angelegt: ab 3× verlangt
+  der Lese-Schritt einen Ausgang (*verkörpert*, *geplant* oder *gestrichen*), und den weist der Auftraggeber zu —
+  die Eintragung ist offen und im Bericht an ihn benannt.
+- **Folge-Arbeit:** Der relative Import am hexslice-Ziel ist nicht gefahren (Risiko 2, unten); der Beleg steht in der
+  neuen Beobachtung. `exclude` für die leeren Marker: Architect, kein Slice, kein Register-Eintrag (kein Defekt, kein
+  Wiederauftreten).
+- **Nicht geplante Lieferungen:** `README.md`-Zeile, `spec/architecture.md`, die geteilten Helfer mit Java-Berührung,
+  Endform von Fall 690, Korrektur-Commit `b37cdf0c`. Alle gelesen, zulässig (Review, Verifier).
+- **Beobachtungs-Register (`../observations/`):** je Beleg `evidence/slice-python-hexslice-layout.md`:
+  `BEO-ALL/full-smoke-fall-expect-pinnt-nicht-die-ursache` (2×, offen),
+  `BEO-ALL/kosten-einer-emittierten-pruefung-im-ziel-ungemessen` (verkörpert); neu angelegt:
+  `BEO-ALL/relativer-import-am-hexslice-ziel-ungefahren` (1×, offen). Kein Beleg für
+  `BEO-ALL/move-und-umschreiben-in-einem-commit` (zwei Commits, kein Auftreten) und
+  `BEO-ALL/messzahl-der-dod-liegt-bei-der-uebergabe-nicht-im-baum` (die Zahl stand im Baum). Offen bis zur
+  Entscheidung: `BEO-ALL/waechter-haelt-config-text-wirkung-im-ziel-ohne-lauf-zahn` (oben).
+- **Folge-Slices:** keiner angelegt; `slice-csharp-hexslice-layout` bleibt in `open/` (Priorisierung beim
+  Auftraggeber).
+- **Paarungen (nach dem Move):** wird nach dem Move eingetragen.
+- **Risiken aus §6:** Risiko 1 (Gegenbeispiel färbt am Ziel nicht rot) entfallen — nicht eingetreten:
+  `core-impurity` am Ziel rot gesehen (`greeting.py:3`), Gegenprobe grün, Fälle 739 und 740; Risiko 2 (relativer
+  Import entgeht a-check, nur `TID252`) weiter offen (Register, `BEO-ALL/relativer-import-am-hexslice-ziel-ungefahren`):
+  die lint-Stage des flachen Python-Ziels färbt ihn rot ([`slice-python-skelett`](../done/slice-python-skelett.md)), am hexslice-Ziel
+  ist er nicht gefahren; Risiko 3 (Messzahl nicht im Baum oder nur im Rauschen) entfallen — nicht eingetreten: die
+  Zahl steht in `a4fc68be` mit Kommando, Lage und Variante, der Verifier hat die Stufenzeit gegengemessen; Risiko 4
+  (Fall 690 Rename plus Inhalt in einem Commit) entfallen — nicht eingetreten: `c069e697` und `67f93340`;
+  Risiko 5 (grobes `# expect:`) entfallen — eingetreten und im Slice behoben, nichts bleibt offen: Fall 742 pinnte die Ursache nicht (Review I-2), `ceca3bc8`
+  pinnt `wrong-direction driven_adapters -> ports_outbound`, vom Verifier real rot gelesen; Beleg im Register, kein
+  Folge-Slice nötig; Risiko 6 (qualifizierter Name, dynamischer Import) entfallen — nicht eingetreten als Defekt, die
+  Grenze ist in der Abdeckungs-Zeile der Stufe benannt — je einmal in §6.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
