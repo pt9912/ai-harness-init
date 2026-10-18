@@ -1,6 +1,7 @@
 package gen_test
 
 import (
+	"errors"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -153,9 +154,20 @@ func TestGenerate_PythonVersionThreaded(t *testing.T) {
 	}
 }
 
-// TestGenerateArch_PythonNurFlat (ADR-0095 Festlegung 5): hexslice und hexagonal rendert der
-// Python-Renderer nicht — Exit-2-Klasse mit der Liste der Sprache (flat), ohne Artefakte.
-// hexslice steht erst in langArchs, wenn sein Renderer es rendert.
-func TestGenerateArch_PythonNurFlat(t *testing.T) {
-	assertNurFlat(t, "python", gen.DefaultPythonVersion)
+// TestGenerateArch_PythonOhneHexagonal: hexagonal rendert der Python-Renderer nicht —
+// Exit-2-Klasse mit der Liste der Sprache (flat, hexslice), ohne Artefakte (ADR-0095
+// Festlegung 5 legt das Layout nicht fest).
+func TestGenerateArch_PythonOhneHexagonal(t *testing.T) {
+	dir := t.TempDir()
+	err := gen.GenerateArch(dir, "python", gen.DefaultPythonVersion, "hexagonal")
+	var uae *gen.UnknownArchError
+	if !errors.As(err, &uae) {
+		t.Fatalf("erwartete *UnknownArchError fuer python+hexagonal, got %v", err)
+	}
+	if strings.Join(uae.Available, ",") != "flat,hexslice" {
+		t.Errorf("Available = %v, want [flat hexslice]", uae.Available)
+	}
+	if rels := walkRel(t, dir); len(rels) != 0 {
+		t.Errorf("abgelehnte Kombination python+hexagonal hat Artefakte geschrieben: %v", rels)
+	}
 }

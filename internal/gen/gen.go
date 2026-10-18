@@ -160,7 +160,7 @@ func langArchs() map[string][]string {
 		"cpp":    {archFlat, archHexslice},
 		"kotlin": {archFlat, archHexslice},
 		"java":   {archFlat, archHexslice},
-		"python": {archFlat},
+		"python": {archFlat, archHexslice},
 		"csharp": {archFlat},
 	}
 }

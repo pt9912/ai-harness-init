@@ -467,11 +467,44 @@ func TestRun_AddLangPython(t *testing.T) {
 	}, []string{"python", "pytest", "ruff", "mypy", "uv", "poetry"})
 }
 
-// TestRun_AddLangPythonHexsliceIstExit2 (ADR-0095 Festlegung 5): python rendert nur flat.
-func TestRun_AddLangPythonHexsliceIstExit2(t *testing.T) {
-	assertAddLangHexsliceIstExit2(t, "python", "apps/py")
+// TestRun_AddLangPythonHexslice (LH-FA-04, LH-FA-07, ADR-0095 Festlegung 5): `add-lang python
+// apps/py --arch hexslice` dropt die Schicht-Verzeichnisse, die Schicht-Config im Modul und das
+// Arch-Gate-Fragment.
+func TestRun_AddLangPythonHexslice(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	code := run([]string{"add-lang", "python", "apps/py", "--arch", "hexslice"}, dir, testSources(t), &out, &errb)
+	if code != 0 {
+		t.Fatalf("add-lang python --arch hexslice exit %d, stderr: %q", code, errb.String())
+	}
+	for _, rel := range []string{
+		"apps/py/src/app/hexagon/domain/example/greeting.py",
+		"apps/py/src/app/adapters/driven/notify/stdout_notifier.py",
+		"apps/py/src/app/main.py", "apps/py/tests/test_greet.py",
+		"apps/py/.a-check.yml", "harness/mk/apps-py.mk", "harness/mk/arch-apps-py.mk",
+	} {
+		if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel))); err != nil {
+			t.Errorf("%s nicht gedroppt: %v", rel, err)
+		}
+	}
 }
 
+// TestRun_AddLangPythonHexagonalIstExit2 (ADR-0095 Festlegung 5): python rendert flat und
+// hexslice, hexagonal nicht — Exit 2 mit der Liste der Sprache, ohne Modul.
+func TestRun_AddLangPythonHexagonalIstExit2(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	code := run([]string{"add-lang", "python", "apps/py", "--arch", "hexagonal"}, dir, testSources(t), &out, &errb)
+	if code != 2 {
+		t.Fatalf("add-lang python --arch hexagonal exit %d, want 2; stderr: %q", code, errb.String())
+	}
+	if !strings.Contains(errb.String(), "verfuegbar: flat, hexslice") {
+		t.Errorf("Meldung nennt die Liste der Sprache nicht: %q", errb.String())
+	}
+	if _, err := os.Stat(filepath.Join(dir, "apps", "py")); !os.IsNotExist(err) {
+		t.Errorf("abgelehnte Kombination legte apps/py an: %v", err)
+	}
+}
 // TestRun_AddLangCsharp (LH-FA-04, LH-FA-06, ADR-0096): `add-lang csharp apps/cs` dropt Solution,
 // beide Projekte, Directory.Build.props, .editorconfig und Dockerfile, das modul-scoped Fragment
 // und blocked/csharp mit den Namen der ADR.

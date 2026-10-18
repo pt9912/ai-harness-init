@@ -30,8 +30,9 @@ func pythonScaffolding(version string) map[string]string {
 	}
 }
 
-// pythonRole rendert eine Code-Rolle als Python-Datei. Getragen ist allein das Layout flat
-// (langArchs): Entry-Point unter src/app, Test unter tests. Jede andere Rolle -> nil.
+// pythonRole rendert eine Code-Rolle als Python-Datei. Getragen sind die Layouts flat
+// (Entry-Point unter src/app, Test unter tests) und hexslice (python_hexslice.go); jede andere
+// Rolle (hexagonal) -> nil.
 func pythonRole(r codeRole) map[string]string {
 	switch r {
 	case roleEntrypoint:
@@ -39,7 +40,7 @@ func pythonRole(r codeRole) map[string]string {
 	case roleTest:
 		return map[string]string{"tests/test_main.py": pythonTest}
 	}
-	return nil
+	return pythonHexslice(r)
 }
 
 // pythonFragment liefert das Python-Code-Gate-Fragment: am Root (context ".") die UNSCOPED

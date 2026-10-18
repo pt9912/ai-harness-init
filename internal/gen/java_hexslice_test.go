@@ -75,22 +75,7 @@ func TestJavaHexslice_PaketGleichVerzeichnis(t *testing.T) {
 // die Aussage, die er traegt.
 func javaConfigResolution(t *testing.T, cfg string) (langGlob, mode string, roots []string, base string) {
 	t.Helper()
-	lm := regexp.MustCompile(`(?m)^languages:\n  java: \["([^"]+)"\]$`).FindStringSubmatch(cfg)
-	i := strings.Index(cfg, "\nresolution:\n  java:\n")
-	if lm == nil || i < 0 {
-		t.Fatalf("kein languages-java-Eintrag oder kein resolution-Block java in der Config:\n%s", cfg)
-	}
-	block := cfg[i:]
-	mm := regexp.MustCompile(`(?m)^    mode: (\S+)$`).FindStringSubmatch(block)
-	rm := regexp.MustCompile(`(?m)^    roots: \[((?:"[^"]+"(?:, )?)+)\]$`).FindStringSubmatch(block)
-	bm := regexp.MustCompile(`(?m)^    package_base: "([^"]+)"$`).FindStringSubmatch(block)
-	if mm == nil || rm == nil || bm == nil {
-		t.Fatalf("resolution-Block java ohne mode, roots oder package_base:\n%s", block)
-	}
-	for _, r := range regexp.MustCompile(`"([^"]+)"`).FindAllStringSubmatch(rm[1], -1) {
-		roots = append(roots, r[1])
-	}
-	return lm[1], mm[1], roots, bm[1]
+	return archConfigResolution(t, cfg, "java")
 }
 
 // TestArchGateConfig_JavaResolution (ADR-0094 Festlegung 4, LH-FA-07): die Config traegt

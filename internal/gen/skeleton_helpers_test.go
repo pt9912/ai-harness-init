@@ -183,13 +183,13 @@ func assertPaketGleichVerzeichnis(t *testing.T, dir, lang, ext, abschluss string
 // spezifischste Glob bestimmt die Schicht, und jeder Glob ist fuer mindestens eine Datei der
 // spezifischste (ein Glob ohne Datei ist der stille Rest, aus dem ein Gate ueber leerem
 // Bereich wird, LH-QA-01). want steht ausgeschrieben, nicht aus der Config abgeleitet.
-func assertGlobsMatchSkeleton(t *testing.T, cfg, dir, ext, mainRel string, want map[string]string) {
+func assertGlobsMatchSkeleton(t *testing.T, cfg, dir, ext, mainRel string, want map[string]string, ausgenommen ...func(rel string) bool) {
 	t.Helper()
 	globs := archGlobs(t, cfg)
 	hits := map[string]int{}
 	seen := map[string]bool{}
 	for _, rel := range walkRel(t, dir) {
-		if !strings.HasSuffix(rel, ext) || strings.HasPrefix(rel, "src/test/") || rel == mainRel {
+		if !strings.HasSuffix(rel, ext) || strings.HasPrefix(rel, "src/test/") || rel == mainRel || ausgenommenVon(rel, ausgenommen) {
 			continue // exclude bzw. composition_root
 		}
 		seen[rel] = true
@@ -216,4 +216,38 @@ func assertGlobsMatchSkeleton(t *testing.T, cfg, dir, ext, mainRel string, want 
 			}
 		}
 	}
+}
+
+// ausgenommenVon sagt, ob eine der Ausnahme-Funktionen die Datei rel aus dem Pruefbereich
+// nimmt (Tests ausserhalb von src/test/, leere Paket-Marker).
+func ausgenommenVon(rel string, fs []func(rel string) bool) bool {
+	for _, f := range fs {
+		if f(rel) {
+			return true
+		}
+	}
+	return false
+}
+
+// archConfigResolution zieht languages-Glob, mode, roots und package_base der Sprache lang aus
+// der .a-check.yml. Jeder Schluessel wird einzeln und woertlich gelesen: ein verfaelschter Wert
+// faerbt genau die Aussage, die er traegt.
+func archConfigResolution(t *testing.T, cfg, lang string) (langGlob, mode string, roots []string, base string) {
+	t.Helper()
+	lm := regexp.MustCompile(`(?m)^languages:\n  ` + lang + `: \["([^"]+)"\]$`).FindStringSubmatch(cfg)
+	i := strings.Index(cfg, "\nresolution:\n  "+lang+":\n")
+	if lm == nil || i < 0 {
+		t.Fatalf("kein languages-%s-Eintrag oder kein resolution-Block %s in der Config:\n%s", lang, lang, cfg)
+	}
+	block := cfg[i:]
+	mm := regexp.MustCompile(`(?m)^    mode: (\S+)$`).FindStringSubmatch(block)
+	rm := regexp.MustCompile(`(?m)^    roots: \[((?:"[^"]+"(?:, )?)+)\]$`).FindStringSubmatch(block)
+	bm := regexp.MustCompile(`(?m)^    package_base: "([^"]+)"$`).FindStringSubmatch(block)
+	if mm == nil || rm == nil || bm == nil {
+		t.Fatalf("resolution-Block %s ohne mode, roots oder package_base:\n%s", lang, block)
+	}
+	for _, r := range regexp.MustCompile(`"([^"]+)"`).FindAllStringSubmatch(rm[1], -1) {
+		roots = append(roots, r[1])
+	}
+	return lm[1], mm[1], roots, bm[1]
 }

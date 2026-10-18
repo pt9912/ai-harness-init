@@ -151,6 +151,7 @@ func archGateConfigs() map[string]map[string]string {
 		"cpp":    {archHexslice: cppHexArchConfig},
 		"kotlin": {archHexslice: kotlinHexArchConfig},
 		"java":   {archHexslice: javaHexArchConfig},
+		"python": {archHexslice: pythonHexArchConfig},
 	}
 }
 
