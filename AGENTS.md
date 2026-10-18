@@ -149,6 +149,21 @@ liest die Kurzbeschreibung gegen den Körper ihrer Stufe, und eine Stufe, die ih
 nie benannt hat, bleibt unbemerkt. Träger ist der Lauf, der die Deklaration schreibt, und
 der Test, der die erzeugte Datei hält · seit slice-emittierte-zusage-nennt-was-der-lauf-im-ziel-misst.
 
+**Falsch:** ein Wächter, der eine an das gebootstrappte Ziel gebundene Konfigurationszeile als
+Text hält — ein Go-Test über den emittierten Text, ein Mutations-Fall auf den Quelltext der
+Zeile —, während sein Name oder seine Zusage die **Wirkung im Ziel** behauptet. Er bleibt
+grün, wenn das Ziel die Zeile nicht durchsetzt.
+**Richtig:** die Zusage nennt, was der Text-Wächter hält und was nicht. Behauptet sie eine
+Wirkung im Ziel, kommt der **Lauf-Zahn im Ziel** in derselben Lieferung: der echte Lauf im
+gebootstrappten Ziel wird rot, wenn die Zeile fehlt oder verfälscht ist (im Bestand die Fälle
+`test/mutations/695`, `696`, `716`, `717`, `724`, `725`, `727`, `739`, `740`, `742`). Wo er
+fehlt, steht die Lücke am selben Ort benannt — in der Abdeckungs-Kurzbeschreibung als „NICHT
+gemessen", im Config-Kommentar —, statt durch den Text-Wächter verdeckt zu werden.
+**Ein Wächter existiert nicht:** kein Sensor liest die Zusage gegen den Lauf. `make comment-claims`
+prüft, ob ein genannter Sensor existiert, nicht ob er die Wirkung misst, und `make mutate-greift`
+meldet, ob ein Patch Dateien ändert, nicht ob ein Wächter rot wird. Träger ist der Lauf, der den
+Wächter schreibt · seit slice-python-hexslice-layout.
+
 **Falsch:** eine Zeile zu `make <ziel>`, die „Exit 1" oder „Exit 10" zusagt, gemessen am
 direkten Aufruf des Skripts.
 **Richtig:** die Zusage nennt den Aufruf, an dem sie gemessen ist. Über `make` endet jeder
