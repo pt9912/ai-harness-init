@@ -3088,7 +3088,7 @@ if [ "$pyhexarch2_rc" -ne 0 ]; then
 	einordnen "make a-check-apps-pythonhexslice (nach Ruecknahme)" "$pyhexarch2_out"
 	exit 1
 fi
-echo "full-smoke: Python-hexSlice-Stufe dauerte $(( SECONDS - pythonhexslice_start ))s (make -j gates samt add-lang, Arch-Zahn und Gegenprobe)."
+echo "full-smoke: Python-hexSlice-Stufe dauerte $(( SECONDS - pythonhexslice_start ))s (make -j gates samt add-lang, Arch-Zaehne und Gegenproben)."
 
 # LH-FA-04/ADR-0096: add-lang csharp ergaenzt eine SECHSTE Sprache demselben Mono-Repo — zwei
 # Projekte (src/App, tests/App.Tests) in einer klassischen Solution mit Directory.Build.props,
@@ -3212,17 +3212,23 @@ if [ -e "$tmprepo_doc/apps/csharptag/Directory.Build.props" ]; then
 fi
 echo "full-smoke: C#-Stufe dauerte $(( SECONDS - csharp_start ))s (add-lang, make -j gates, Zaehne, Exit-2-Faelle)."
 
-# LH-FA-07/ADR-0096 Festlegung 5: dasselbe Schicht-Layout in C#. Die Schichten sind PascalCase-
-# Verzeichnisse, der Namensraum ist der Pfad, a-check loest `using App.…;` nur ueber den
-# resolution-Block der emittierten .a-check.yml auf (fixed-root, Root src/App, package_base App).
-# Loest kein using auf, bleibt das Gate gruen und a-check gibt den Hinweis "0 von N
-# Import-Symbolen" aus — darum prueft die Stufe dessen Abwesenheit im gruenen Lauf (in dem
-# InMemoryRepository das Port-Interface implementiert und importiert: die Kante driven_adapters ->
-# ports_outbound) und danach den roten Fall: ein using aus der Domain in einen Adapter faerbt das
-# Arch-Gate mit core-impurity, an genau dieser Datei. Die Gates lint (dotnet format mit IDE0005 und
-# IDE0130), test und build laufen im selben make gates ueber dem Skelett.
+# LH-FA-07/ADR-0096 Festlegung 5, ADR-0097: dasselbe Schicht-Layout in C#. Die Schichten sind
+# PascalCase-Verzeichnisse, die Richtungs-Ordner unter Ports heissen klein (inbound, outbound), der
+# Namensraum ist der Pfad, a-check loest `using App.…;` nur ueber den resolution-Block der
+# emittierten .a-check.yml auf (fixed-root, Root src/App, package_base App). Loest kein using auf,
+# bleibt das Gate gruen und a-check gibt den Hinweis "0 von N Import-Symbolen" aus — darum prueft
+# die Stufe dessen Abwesenheit im gruenen Lauf (in dem InMemoryRepository das Port-Interface
+# implementiert und importiert: die Kante driven_adapters -> ports_outbound) und danach den roten
+# Fall: ein using aus der Domain in einen Adapter faerbt das Arch-Gate mit core-impurity, an genau
+# dieser Datei. Das Richtungs-Segment zieht a-check nur kleingeschrieben ab; ein grosses Segment
+# laesst port-locality aus (Hinweis "erreichen den App-Baum nicht", Gate gruen) — darum legt die
+# Stufe eine zweite Slice an und faerbt a-check mit einem fremden Port-using im Handler rot mit
+# port-locality. Die Gates lint (dotnet format mit IDE0005 und IDE0130), test und build laufen im
+# selben make gates ueber dem Skelett. Die Schreibweise der Richtungs-Ordner beim Adopter hat
+# keinen Sensor; Config-Kommentar, spec/architecture.md, diese Zeile und die Abdeckungs-Zeile
+# sagen dasselbe, und kein Sensor haelt die Uebereinstimmung.
 echo "full-smoke: add-lang csharp apps/csharphexslice --arch hexslice (Arch-Achse, C#) ..."
-e2e_abdeckung "LH-FA-04 LH-FA-07 LH-QA-01" "Das Schicht-Layout in C# (PascalCase-Verzeichnisse, Namensraum gleich Verzeichnis) mit Arch-Gate: make gates gruen ohne den Hinweis auf nicht aufloesende Import-Symbole (ein Adapter, der sein Port-Interface implementiert, ist gruen), ein using aus der Domain in einen Adapter faerbt das Arch-Gate rot mit core-impurity; NICHT gemessen: die uebrigen Richtungs-Regeln, port-locality (a-check laesst sie fuer die PascalCase-Port-Globs aus und meldet einen Hinweis), ein Namensraum ausserhalb seines Verzeichnisses und ein Verzeichnis in Kleinschreibung (ein Test haelt den Renderer, im Ziel nicht gefahren; beide geben ein stilles Gruen im Arch-Gate), ein voll qualifizierter Name ohne using, ein <Using> in der .csproj, Reflection, exclude tests/** (an keiner Fixture gemessen)" "C#-hexSlice-Gate kaputt"
+e2e_abdeckung "LH-FA-04 LH-FA-07 LH-QA-01" "Das Schicht-Layout in C# (PascalCase-Verzeichnisse, die Richtungs-Ordner unter Ports klein, Namensraum gleich Verzeichnis) mit Arch-Gate: make gates gruen ohne den Hinweis auf nicht aufloesende Import-Symbole (ein Adapter, der sein Port-Interface implementiert, ist gruen), ein using aus der Domain in einen Adapter faerbt das Arch-Gate rot mit core-impurity, eine zweite Slice nach der Vorschrift des Config-Kommentars und ein fremder Port-using im Handler faerben es rot mit port-locality an Handler.cs, nach der Ruecknahme ist es gruen ohne den Hinweis auf Port-Globs, die den App-Baum nicht erreichen; NICHT gemessen: die uebrigen Richtungs-Regeln (app-impurity, wrong-direction, lateral-adapter als rote Faelle), die Schreibweise der Richtungs-Ordner beim Adopter (kein Sensor; ein Test haelt den Renderer, ein gross geschriebenes Segment laesst port-locality aus und gibt ein gruenes Gate), die Gegenrichtung (Verzeichnis klein, Namensraum gross: rot nur, wenn ein Adapter den Port importiert), ein Namensraum ausserhalb seines Verzeichnisses und ein Verzeichnis in anderer Schreibweise ausser dem Richtungs-Segment (ein Test haelt den Renderer, im Ziel nicht gefahren; beide geben ein stilles Gruen im Arch-Gate), ein voll qualifizierter Name ohne using, ein <Using> in der .csproj, Reflection, exclude tests/** (an keiner Fixture gemessen), der Lauf auf dem CI-Linux-Dateisystem" "C#-hexSlice-Gate kaputt"
 csharphexslice_start=$SECONDS
 ( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang csharp apps/csharphexslice --arch hexslice )
 for rel in apps/csharphexslice/src/App/Hexagon/Domain/Example/Greeting.cs \
@@ -3290,7 +3296,55 @@ if [ "$cshexarch2_rc" -ne 0 ]; then
 	einordnen "make a-check-apps-csharphexslice (nach Ruecknahme)" "$cshexarch2_out"
 	exit 1
 fi
-echo "full-smoke: C#-hexSlice-Stufe dauerte $(( SECONDS - csharphexslice_start ))s (make -j gates samt add-lang, Arch-Zahn und Gegenprobe)."
+# Lauf-Zahn port-locality (ADR-0097): eine zweite Slice nach der Vorschrift des Config-Kommentars
+# (Verzeichnis und Namensraum .../Other/Ports/<richtung>, app-Glob und Port-Glob der Richtung in
+# die Config) und ein fremder Port-using im Handler der Greet-Slice faerben a-check rot mit
+# port-locality an Handler.cs. Das Richtungs-Segment der neuen Slice folgt dem gerenderten
+# Greet-Verzeichnis, der Port-Glob der Config-Zeile der Greet-Slice: eine gross geschriebene
+# Richtung im Renderer oder in der Config bringt den Hinweis "erreichen den App-Baum nicht" und
+# laesst die Regel aus. Nach der Ruecknahme ist das Gate gruen und traegt den Hinweis nicht.
+cshex_app="$tmprepo_doc/apps/csharphexslice"
+cshex_cfg="$cshex_app/.a-check.yml"
+cshex_area="$cshex_app/src/App/Hexagon/Application/Example"
+cshex_richt="$(basename "$(dirname "$(find "$cshex_area/Greet/Ports" -name INotifier.cs)")")"
+mkdir -p "$cshex_area/Other/Ports/$cshex_richt"
+printf 'namespace App.Hexagon.Application.Example.Other.Ports.%s;\n\npublic interface IOther\n{\n    void Run();\n}\n' "$cshex_richt" >"$cshex_area/Other/Ports/$cshex_richt/IOther.cs"
+cp "$cshex_cfg" "$cshex_cfg.orig"
+sed -e '/Example\/Greet\/\*\*"/{p;s/Greet/Other/;}' -e '/Example\/Greet\/Ports\/[oO]utbound\/\*\*"/{p;s/Greet/Other/;}' "$cshex_cfg.orig" >"$cshex_cfg"
+cshex_handler="$cshex_area/Greet/Handler.cs"
+cp "$cshex_handler" "$cshex_handler.orig"
+{ printf 'using App.Hexagon.Application.Example.Other.Ports.%s;\n' "$cshex_richt"; cat "$cshex_handler.orig"; } >"$cshex_handler"
+cshexloc_rc=0
+cshexloc_out="$( make -C "$tmprepo_doc" a-check-apps-csharphexslice 2>&1 )" || cshexloc_rc=$?
+mv "$cshex_handler.orig" "$cshex_handler"
+if [ "$cshexloc_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — das emittierte C#-Arch-Gate bleibt bei einem fremden Port-using im Handler gruen (port-locality an Handler.cs bleibt aus, AGENTS.md §3.6/LH-QA-01)." >&2
+	printf '%s\n' "$cshexloc_out" >&2
+	exit 1
+fi
+if ! grep -qF -- 'Handler.cs:1: port-locality: app außerhalb Port-Scope' <<<"$cshexloc_out" || ! grep -qF -- 'Example/Other' <<<"$cshexloc_out"; then
+	echo "full-smoke: FEHLER — C#-Arch-Gate rot, aber nicht mit port-locality an Handler.cs gegen die Slice Other (rot aus falschem Grund?). Ausgabe:" >&2
+	printf '%s\n' "$cshexloc_out" >&2
+	einordnen "make a-check-apps-csharphexslice (port-locality-Zahn, csharp)" "$cshexloc_out"
+	exit 1
+fi
+echo "full-smoke: C#-port-locality-Zahn belegt (zweite Slice Other, fremder Port-using im Handler faerbt a-check rot, danach zurueckgenommen):"
+grep -F -- 'port-locality' <<<"$cshexloc_out" | sed -n '1,2s/^/full-smoke:   /p'
+cshexloc2_rc=0
+cshexloc2_out="$( make -C "$tmprepo_doc" a-check-apps-csharphexslice 2>&1 )" || cshexloc2_rc=$?
+if [ "$cshexloc2_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — das C#-Arch-Gate ist nach der Ruecknahme des fremden Port-using NICHT gruen (C#-hexSlice-Gate kaputt)." >&2
+	einordnen "make a-check-apps-csharphexslice (nach Ruecknahme des Port-using)" "$cshexloc2_out"
+	exit 1
+fi
+if grep -qF -- 'erreichen den App-Baum nicht' <<<"$cshexloc2_out"; then
+	echo "full-smoke: FEHLER — das gruene C#-Arch-Gate meldet Port-Globs, die den App-Baum nicht erreichen (port-locality ungeprueft, Schreibweise des Richtungs-Segments?):" >&2
+	grep -F -- 'erreichen den App-Baum nicht' -A 4 <<<"$cshexloc2_out" >&2
+	exit 1
+fi
+mv "$cshex_cfg.orig" "$cshex_cfg"
+rm -rf "$cshex_area/Other"
+echo "full-smoke: C#-hexSlice-Stufe dauerte $(( SECONDS - csharphexslice_start ))s (make -j gates samt add-lang, Arch-Zaehne und Gegenproben)."
 
 # Der GEMISCHTE ROOT (LH-FA-04/LH-QA-01): zwei Sprach-Fragmente am selben Root
 # (harness/mk/go.mk + harness/mk/cpp.mk). Die gemischte Fassung komponiert: ein Fragment
@@ -3766,7 +3820,7 @@ if [ "$jvhexarch2_rc" -ne 0 ]; then
 	einordnen "make a-check-apps-javahexslice (nach Ruecknahme)" "$jvhexarch2_out"
 	exit 1
 fi
-echo "full-smoke: Java-hexSlice-Stufe dauerte $(( SECONDS - javahex_start ))s (make -j gates samt add-lang, Arch-Zahn und Gegenprobe)."
+echo "full-smoke: Java-hexSlice-Stufe dauerte $(( SECONDS - javahex_start ))s (make -j gates samt add-lang, Arch-Zaehne und Gegenproben)."
 
 # slice-046, ROOT-Modul: der Init-One-Shot `--lang go --arch hexslice` verortet das Modul
 # am Repo-Root — das Arch-Gate mountet dann das GANZE Ziel, samt der vendored Baseline.
