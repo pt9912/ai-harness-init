@@ -52,7 +52,7 @@ ist damit *geplant*.
 - [ ] §7 trägt je Sprache die Pin-Form von Image und Paketen und das Ergebnis zweier Generator-Läufe über demselben
       Tag (byte-gleich ja oder nein), gelesen am realen Binär und an der emittierten Quelle, nicht an einer Fixture
       ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
-- [ ] §7 trägt den Wortlaut-Entwurf für `LH-QA-02` (Anforderung, Messmethode, Drift als benannte Grenze) und den Entwurf
+- [ ] §7 trägt den Wortlaut-Entwurf für [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (Anforderung, Messmethode, Drift als benannte Grenze) und den Entwurf
       der Historie-Zeile; jede Zusage des Entwurfs nennt, was sie brechen müsste, und die Messung dazu ist einmal rot gesehen
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Der Vermerk *Entscheidung des Nutzers ausstehend* steht dabei.
 - [ ] `make gates` grün.

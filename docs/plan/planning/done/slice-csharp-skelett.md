@@ -196,12 +196,12 @@ DoD vollständig, die C#-Stufe in `make full-smoke` grün, Closure-Notiz mit Ler
   per Tag pinnt und im Ziel Pakete per Netz holt. Auslöser:
   `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht` (`slice-java-skelett`, `slice-python-skelett`,
   `slice-csharp-skelett` — 3×; das C++-Vorkommen bleibt benannt, nicht gezählt). Lese-Schritt: Ausgang *geplant*, auf
-  Entscheidung des Nutzers vom 2026-10-18 — ein Change Request an `LH-QA-02`, vorbereitet von
+  Entscheidung des Nutzers vom 2026-10-18 — ein Change Request an [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), vorbereitet von
   `slice-lh-qa-02-messmethode-bekommt-ihren-change-request`; ein Digest-Pin im Skelett ist verworfen. Zweiter Eintrag,
   gezählt, nicht verkörpert: die Messzahl der DoD fehlt bei der Übergabe im Baum (`slice-java-skelett`,
   `slice-python-skelett`, `slice-csharp-skelett` — 3×, neu angelegt als
   `BEO-ALL/messzahl-der-dod-liegt-bei-der-uebergabe-nicht-im-baum`, Ausgang *geplant*:
-  `slice-messzahl-der-dod-liegt-im-lieferstand`); `MR-089` trägt die Form der Aussage, nicht den Ort der Zahl.
+  `slice-messzahl-der-dod-liegt-im-lieferstand`); [`MR-089`](../../../../harness/conventions.md#mr-089) trägt die Form der Aussage, nicht den Ort der Zahl.
 - **Beobachtungs-Register (`../observations/`):** je Beleg `evidence/slice-csharp-skelett.md`:
   `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht` (3×, Ausgang *geplant*),
   `BEO-ALL/kosten-einer-emittierten-pruefung-im-ziel-ungemessen` (7×, verkörpert); neu angelegt:
