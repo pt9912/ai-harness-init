@@ -132,37 +132,9 @@ func TestArchGateConfig_PythonResolution(t *testing.T) {
 	if !ok {
 		t.Fatal("python+hexslice traegt keine Arch-Gate-Config")
 	}
-	langGlob, mode, roots, base := pythonConfigResolution(t, cfg)
-	if langGlob != "**/*.py" {
-		t.Errorf("languages python = %q, want **/*.py", langGlob)
-	}
-	if mode != "fixed-root" {
-		t.Errorf("resolution python mode = %q, want fixed-root", mode)
-	}
-	if len(roots) != 1 || roots[0] != "src/app" {
-		t.Errorf("resolution python roots = %v, want [src/app]", roots)
-	}
-	if base != "app" {
-		t.Errorf("resolution python package_base = %q, want app", base)
-	}
-	if len(roots) != 1 || !strings.HasSuffix(roots[0], "/"+base) {
-		t.Errorf("Root %v endet nicht im package_base-Verzeichnis %q (a-check streift package_base vor dem Root ab)", roots, base)
-	}
-	const mainPy = "src/app/main.py"
-	if !strings.Contains(cfg, "\ncomposition_root: [\""+mainPy+"\"]\n") {
-		t.Errorf("composition_root ist nicht %s:\n%s", mainPy, cfg)
-	}
-	if !strings.Contains(cfg, "\nexclude:\n  - \"tests/**\"\n") {
-		t.Errorf("exclude ist nicht [tests/**]:\n%s", cfg)
-	}
-	for _, rel := range walkRel(t, genPythonHexslice(t)) {
-		if !strings.HasPrefix(rel, "src/") || rel == mainPy || !strings.HasSuffix(rel, ".py") {
-			continue
-		}
-		if len(roots) == 1 && !strings.HasPrefix(rel, roots[0]+"/") {
-			t.Errorf("%s liegt nicht unter dem Root %s der Config (a-check loeste keinen Import dorthin auf)", rel, roots[0])
-		}
-	}
+	assertArchConfigResolution(t, cfg, genPythonHexslice(t), archKeys{
+		lang: "python", ext: ".py", langGlob: "**/*.py", root: "src/app", base: "app", composition: "src/app/main.py",
+	})
 }
 
 // TestArchGateConfig_PythonMatchesSkeleton (ADR-0095 Festlegung 5, LH-FA-07): jede

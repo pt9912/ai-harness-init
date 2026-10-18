@@ -230,3 +230,47 @@ func archConfigResolution(t *testing.T, cfg, lang string) (langGlob, mode string
 	}
 	return lm[1], mm[1], roots, bm[1]
 }
+
+// archKeys nennt die Werte, die die .a-check.yml einer Sprache je Schluessel woertlich tragen muss.
+type archKeys struct {
+	lang, ext, langGlob, root, base, composition string
+}
+
+// assertArchConfigResolution haelt languages-Glob, resolution (mode fixed-root, Root, package_base),
+// composition_root und exclude `tests/**` der Config je Schluessel woertlich; der Root endet im
+// package_base-Verzeichnis (a-check streift package_base vor dem Root ab), und jede gerenderte
+// Produktionsdatei ausser dem Composition Root liegt unter dem Root. Ein verfaelschter Schluessel
+// faerbt genau die Zeile, die ihn traegt.
+func assertArchConfigResolution(t *testing.T, cfg, dir string, want archKeys) {
+	t.Helper()
+	langGlob, mode, roots, base := archConfigResolution(t, cfg, want.lang)
+	if langGlob != want.langGlob {
+		t.Errorf("languages %s = %q, want %s", want.lang, langGlob, want.langGlob)
+	}
+	if mode != "fixed-root" {
+		t.Errorf("resolution %s mode = %q, want fixed-root", want.lang, mode)
+	}
+	if len(roots) != 1 || roots[0] != want.root {
+		t.Errorf("resolution %s roots = %v, want [%s]", want.lang, roots, want.root)
+	}
+	if base != want.base {
+		t.Errorf("resolution %s package_base = %q, want %s", want.lang, base, want.base)
+	}
+	if len(roots) != 1 || !strings.HasSuffix(roots[0], "/"+base) {
+		t.Errorf("Root %v endet nicht im package_base-Verzeichnis %q (a-check streift package_base vor dem Root ab)", roots, base)
+	}
+	if !strings.Contains(cfg, "\ncomposition_root: [\""+want.composition+"\"]\n") {
+		t.Errorf("composition_root ist nicht %s:\n%s", want.composition, cfg)
+	}
+	if !strings.Contains(cfg, "\nexclude:\n  - \"tests/**\"\n") {
+		t.Errorf("exclude ist nicht [tests/**]:\n%s", cfg)
+	}
+	for _, rel := range walkRel(t, dir) {
+		if !strings.HasPrefix(rel, "src/") || rel == want.composition || !strings.HasSuffix(rel, want.ext) {
+			continue
+		}
+		if len(roots) == 1 && !strings.HasPrefix(rel, roots[0]+"/") {
+			t.Errorf("%s liegt nicht unter dem Root %s der Config (a-check loeste keinen Import dorthin auf)", rel, roots[0])
+		}
+	}
+}

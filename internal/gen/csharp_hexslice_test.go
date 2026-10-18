@@ -64,37 +64,9 @@ func TestArchGateConfig_CsharpResolution(t *testing.T) {
 	if !ok {
 		t.Fatal("csharp+hexslice traegt keine Arch-Gate-Config")
 	}
-	langGlob, mode, roots, base := csharpConfigResolution(t, cfg)
-	if langGlob != "**/*.cs" {
-		t.Errorf("languages csharp = %q, want **/*.cs", langGlob)
-	}
-	if mode != "fixed-root" {
-		t.Errorf("resolution csharp mode = %q, want fixed-root", mode)
-	}
-	if len(roots) != 1 || roots[0] != "src/App" {
-		t.Errorf("resolution csharp roots = %v, want [src/App]", roots)
-	}
-	if base != "App" {
-		t.Errorf("resolution csharp package_base = %q, want App", base)
-	}
-	if len(roots) != 1 || !strings.HasSuffix(roots[0], "/"+base) {
-		t.Errorf("Root %v endet nicht im package_base-Verzeichnis %q (a-check streift package_base vor dem Root ab)", roots, base)
-	}
-	const program = "src/App/Program.cs"
-	if !strings.Contains(cfg, "\ncomposition_root: [\""+program+"\"]\n") {
-		t.Errorf("composition_root ist nicht %s:\n%s", program, cfg)
-	}
-	if !strings.Contains(cfg, "\nexclude:\n  - \"tests/**\"\n") {
-		t.Errorf("exclude ist nicht [tests/**]:\n%s", cfg)
-	}
-	for _, rel := range walkRel(t, genCsharpHexslice(t)) {
-		if !strings.HasPrefix(rel, "src/") || rel == program || !strings.HasSuffix(rel, ".cs") {
-			continue
-		}
-		if len(roots) == 1 && !strings.HasPrefix(rel, roots[0]+"/") {
-			t.Errorf("%s liegt nicht unter dem Root %s der Config (a-check loeste kein using dorthin auf)", rel, roots[0])
-		}
-	}
+	assertArchConfigResolution(t, cfg, genCsharpHexslice(t), archKeys{
+		lang: "csharp", ext: ".cs", langGlob: "**/*.cs", root: "src/App", base: "App", composition: "src/App/Program.cs",
+	})
 }
 
 // TestArchGateConfig_CsharpMatchesSkeleton (ADR-0096 Festlegung 5, LH-FA-07): jede
