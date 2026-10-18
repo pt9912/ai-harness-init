@@ -13,7 +13,7 @@
 **Berührte Spec-Stellen:** `spec/architecture.md` Layout je Sprache; `ARC-009`, `ARC-010` (über die ADR
 des Architect).
 
-**Verantwortlich:** —
+**Verantwortlich:** dburkard
 
 **Autor:** Planner. **Datum:** 2026-10-17.
 
@@ -25,8 +25,14 @@ des Architect).
 [ADR-0060](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)) samt `.a-check.yml`,
 und ein Import aus dem Kern in einen Adapter färbt das emittierte Arch-Gate rot.
 
-**Abhängigkeit:** setzt `slice-python-skelett` voraus (Renderer, Gerüst, Stufe im Mono-Repo); Start
-erst, wenn der in `done/` liegt.
+**Abhängigkeit:** setzt `slice-python-skelett` voraus (Renderer, Gerüst, Stufe im Mono-Repo); er liegt
+in `done/`.
+
+**Vom Layout-Slice zu entscheiden** ([ADR-0095](../../adr/0095-python-skelett-toolchain-und-schicht-aufloesung.md)
+Festlegung 5 lässt es offen): die Ports-Ordner und die Kanten-Menge der `.a-check.yml` nach dem Muster
+von `internal/gen/kotlin.go`, `internal/gen/arch.go` und
+[`slice-java-hexslice-layout`](../done/slice-java-hexslice-layout.md) (sieben Kanten einschließlich
+`driven_adapters → ports_outbound`, im Ziel gemessen, nicht an der Vier-Schichten-Probe).
 
 **Ausdrücklich NICHT in diesem Slice:**
 
@@ -46,16 +52,23 @@ erst, wenn der in `done/` liegt.
       `archGateConfigs()` mit `languages: python: ["**/*.py"]`, `exclude: ["tests/**"]` und
       `resolution: python: {mode: fixed-root, roots: ["src/app"], package_base: "app"}`; `python` in
       `langArchs()` führt `hexslice`; **Entscheidung von Ports-Ordnern und Kanten-Menge** ([ADR-0060](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
-      Festlegung 4, Kotlin-Muster; die Kante `driven_adapters → ports_outbound` ist nur über einer
-      Vier-Schichten-Probe gemessen) im Plan §7 und im Test festgehalten; im gebootstrappten Ziel
-      meldet a-check keinen Hinweis „0 von N Import-Symbolen lösen auf" (Probe gegen das Ziel, nicht
-      gegen eine Fixture).
+      Festlegung 4, Java-Muster) im Plan §7 und im Test festgehalten; die Kante
+      `driven_adapters → ports_outbound` im Ziel grün gesehen (ein Adapter, der den Port importiert);
+      im gebootstrappten Ziel meldet a-check keinen Hinweis „0 von N Import-Symbolen lösen auf" (Probe
+      gegen das Ziel, nicht gegen eine Fixture). **Je Config-Schlüssel ein Text-Wächter, und der
+      Lauf-Zahn im Ziel (rot an `core-impurity`) kommt in derselben Lieferung** (Fälle ab 731;
+      [`BEO-ALL/waechter-haelt-config-text-wirkung-im-ziel-ohne-lauf-zahn`](../observations/BEO-ALL/waechter-haelt-config-text-wirkung-im-ziel-ohne-lauf-zahn/observation.md)).
 - [ ] `make full-smoke`: `add-lang python <pfad> --arch hexslice` grün; mit Import aus
       `app.hexagon.domain` nach `app.adapters` rot mit `core-impurity` (Meldung gelesen), Gegenprobe
-      grün; Stufe mit `e2e_abdeckung`-Kopfzeile, `docs/user/e2e-abdeckung.md` neu erzeugt;
-      Laufzeit-Zuwachs als Vorher/Nachher `make full-smoke-host` mit Image-Lage und Variante
-      ([`MR-089`](../../../../harness/conventions.md#mr-089)); Kommando und Träger der Messung stehen
-      damit im Plan.
+      grün; Stufe mit `e2e_abdeckung`-Kopfzeile, `docs/user/e2e-abdeckung.md` neu erzeugt; jeder neue
+      Full-Smoke-Fall pinnt die Ursache im `# expect:` (nicht nur „rot").
+      **Laufzeit-Zuwachs ([`MR-089`](../../../../harness/conventions.md#mr-089)); die Zahl steht bei der
+      Übergabe im Baum:** Kommando `make full-smoke-host`, Lage (Image warm oder kalt), Variante, mindestens
+      zwei Läufe je Stand (vorher/nachher) stehen in einer Commit-Message des Implementers oder einer Datei
+      des Lieferstands. Belastbar ist die Stufenzeit; die Gesamtdauer rauscht um bis zu rund 25 s und trägt
+      keinen Zuwachs allein. Der Verifier hält die Zahl gegen seine eigene Messung
+      (`slice-messzahl-der-dod-liegt-im-lieferstand`
+      entscheidet den dauerhaften Ort; bis dahin gilt diese Zeile).
 - [ ] `spec/architecture.md` Layout je Sprache um Python nachgezogen (Folgepflicht der ADR).
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`),
@@ -74,11 +87,11 @@ erst, wenn der in `done/` liegt.
 | `internal/gen/python.go`, `internal/gen/arch.go` (+ Tests) | update | Rollen-Renderer, `archGateConfigs()`, `langArchs()`; Test-Helfer gemeinsam mit den anderen Sprach-Tests, kein Klon |
 | `harness/tools/full-smoke.sh`, `docs/user/e2e-abdeckung.md` | update | Stufe und Arch-Zahn, erzeugte Sicht; Berührungspunkt `emittiertes-gate-am-gemischten-root-baut-das-dockerfile-einer-anderen-sprache` |
 | `spec/architecture.md` | update | Layout je Sprache |
-| `test/mutations/` | neu / update | ein Fall je neuem Wächter ([`MR-071`](../../../../harness/conventions.md#mr-071)) |
+| `test/mutations/` | neu / update | ein Fall je neuem Wächter ([`MR-071`](../../../../harness/conventions.md#mr-071)), neue Nummern ab 731; Fall 690 `python-hexslice-ohne-renderer` wird mit dem Renderer gegenstandslos und per reinem `git mv` auf `python-hexagonal-ohne-renderer` umbenannt, **die Inhaltsänderung danach in einem eigenen Commit** ([`AGENTS.md`](../../../../AGENTS.md) §3.3, [`BEO-ALL/move-und-umschreiben-in-einem-commit`](../observations/BEO-ALL/move-und-umschreiben-in-einem-commit/observation.md)) |
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): `slice-python-skelett` liegt in `done/`, die ADR für Python ist
+**Start** (`next` → `in-progress`): `slice-python-skelett` liegt in `done/` (erfüllt), die ADR für Python ist
 `Accepted`, WIP-Slot frei.
 
 **Rückführungen — vorab benennen:**
@@ -100,6 +113,13 @@ DoD vollständig, Arch-Zahn rot und Gegenprobe grün in `make full-smoke`, Closu
 - Ein relativer Import entgeht a-check (Hinweis „nicht extrahiert", Exit 0) und ist nur über ruff
   `TID252` geschlossen — **Ausgang:** bei der Closure; ob `TID252` am gebootstrappten Ziel `lint` rot
   färbt, ist dort zu sehen (Skelett-Slice trägt die Regel, dieser Slice das Layout).
+- Die Messzahl steht bei der Übergabe nicht im Baum oder trägt nur über das Rauschen der Gesamtdauer
+  (Java: Gesamtzuwachs nicht reproduziert) — **Ausgang:** bei der Closure; DoD 2 nennt Kommando, Lage,
+  Variante und Läufe, der Verifier misst gegen.
+- Ein Umbau von Fall 690 (Rename plus Inhalt) liegt in einem Commit — **Ausgang:** bei der Closure;
+  zwei Commits, der Move zuerst, Plan §3.
+- Ein neuer Full-Smoke-Fall färbt an der falschen Ursache rot (grobes `# expect:`) — **Ausgang:** bei der
+  Closure; das `# expect:` pinnt die Ursache, der Verifier prüft per Handprobe.
 - Voll qualifizierter Name ohne Import und dynamischer Import entgehen dem Arch-Gate (Grenze von
   a-check am Pin) — **Ausgang:** bei der Closure; Grenze in der Abdeckungs-Zeile der Stufe benannt.
 
@@ -113,7 +133,7 @@ DoD vollständig, Arch-Zahn rot und Gegenprobe grün in `make full-smoke`, Closu
 `harness/tools/full-smoke.sh`, für die die Modus-Deklaration keine eigene Sub-Area führt.
 
 **Vorgelagert — offene Beobachtungen sichten** (Zähler je
-`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence | wc -l`, gelesen 2026-10-17):
+`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence | wc -l`, gelesen 2026-10-18):
 `neuer-waechter-ohne-mutations-fall` — 20, geplant; jeder neue Test ist ein neuer Wächter ·
 `pin-digest-ohne-waechter` — 8, verkörpert; der a-check-Pin besteht schon ·
 `waechter-misst-die-fixture-statt-der-realen-quelle` — 10, verkörpert; die Probe läuft gegen das Ziel,
@@ -122,6 +142,10 @@ nicht gegen eine Fixture ·
 davon berührt ·
 `lokaler-full-smoke-scheitert-auf-macos-host` — 3, verkörpert; die Stufe erbt es ·
 `emittiertes-gate-am-gemischten-root-baut-das-dockerfile-einer-anderen-sprache` — 1, offen; die Stufe
-fährt den Mono-Repo-Pfad, ein Fund am gemischten Root wäre der zweite Beleg.
+fährt den Mono-Repo-Pfad, ein Fund am gemischten Root wäre der zweite Beleg ·
+`waechter-haelt-config-text-wirkung-im-ziel-ohne-lauf-zahn` — 2, offen; Lauf-Zahn im Ziel in derselben
+Lieferung (DoD 1) ·
+`move-und-umschreiben-in-einem-commit` — 1, offen; Fall 690 (§3) ·
+`full-smoke-fall-expect-pinnt-nicht-die-ursache` — 1, offen; DoD 2.
 
 **Modus:** alle berührten Sub-Areas GF.
