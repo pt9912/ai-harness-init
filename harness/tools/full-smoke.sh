@@ -3038,7 +3038,7 @@ printf '%s\n' "$pyhex_out"
 if [ "$pyhex_rc" -ne 0 ]; then
 	if grep -qF -- 'wrong-direction: driven_adapters -> ports_outbound' <<<"$pyhex_out"; then
 		echo "full-smoke: FEHLER — make gates nach add-lang python --arch hexslice faellt an wrong-direction driven_adapters -> ports_outbound: die Kante fehlt in der emittierten .a-check.yml, obwohl der Adapter seinen Port erbt." >&2
-		einordnen "make -j gates nach add-lang python --arch hexslice (apps/pythonhexslice)" "$pyhex_out"
+		grep -F -- 'wrong-direction' <<<"$pyhex_out" >&2
 		exit 1
 	fi
 	echo "full-smoke: FEHLER — make gates nach add-lang python --arch hexslice ist NICHT Exit 0 (Python-hexSlice-Gate kaputt)." >&2
