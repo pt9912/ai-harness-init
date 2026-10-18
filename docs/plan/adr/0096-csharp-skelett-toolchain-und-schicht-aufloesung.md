@@ -172,7 +172,7 @@ Nicht entschieden; die Festlegungen oben tragen die Empfehlung nur bedingt.
 Nicht vom Auftraggeber zu entscheiden, sondern Linie des Architect: Projekt-Form, TFM-Ableitung, Gate- und
 Fragment-Form, Layout-Menge `flat` + `hexslice` (bedingt), Namensraum-Regel.
 
-## Lage für `LH-QA-02` (Messbasis, keine Entscheidung)
+## Lage für die Reproduzierbarkeit (Messbasis, keine Entscheidung)
 
 [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) misst Reproduzierbarkeit als Vergleich
 zweier Bauten desselben Tags; kein Lauf vergleicht sie
@@ -248,7 +248,7 @@ Zeilen Zusage statt Beleg ([`AGENTS.md`](../../../AGENTS.md) §3.6). Lücke: die
 Festlegung 5 hat keinen Sensor. Lücke: der Test-Stage-Exit bei kaputtem Bau — im Lauf mit SDK 8.0.426 und
 TFM `net10.0` meldete `dotnet test --no-restore` Exit 0 ohne Ausgabe (Ursache nicht untersucht); die Zeile
 „falsche Assertion → `test`“ gilt für ein baubares Gerüst, und `build` im selben `GATE_CHECKS` fängt den
-Fall. Lücke (Grenze der Messmethode, keine Lockerung): siehe den Abschnitt „Lage für LH-QA-02“.
+Fall. Lücke (Grenze der Messmethode, keine Lockerung): siehe den Abschnitt „Lage für die Reproduzierbarkeit“.
 
 ## Messungen
 
