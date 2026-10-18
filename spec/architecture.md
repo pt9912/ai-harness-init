@@ -223,8 +223,8 @@ byte-identisch). `--lang <X>` beim Init ist die One-Shot-Kurzform (Init + ein
   Sprach-Renderers bildet dessen reale Erfüllungs-Form ab; eine Kante aus einer anderen
   Sprache zu übernehmen oder zu streichen, färbt das Gate des generierten Skeletts rot.
   Das Schicht-Layout selbst bleibt über alle Sprachen dasselbe.
-- **Layout je Sprache.** `go` trägt `flat`, `hexslice` und `hexagonal`; `cpp`, `kotlin` und
-  `java` tragen `flat` und `hexslice` — eine Architektur, die ein Renderer nicht trägt,
+- **Layout je Sprache.** `go` trägt `flat`, `hexslice` und `hexagonal`; `cpp`, `kotlin`, `java` und
+  `python` tragen `flat` und `hexslice` — eine Architektur, die ein Renderer nicht trägt,
   endet mit Exit 2 und der Liste seiner Layouts. Die Verzeichnisse folgen der
   Bau-Gerüstung der Sprache: `go` unter `internal/` mit Composition Root `cmd/`, `cpp`
   unter `src/` mit Composition Root `src/main.cpp`, `kotlin` und `java` als **ein**
@@ -240,7 +240,14 @@ byte-identisch). `--lang <X>` beim Init ist die One-Shot-Kurzform (Init + ein
   im Verzeichnis des `package_base`). Ein Paket, das nicht in seinem Verzeichnis liegt,
   entgeht dem Gate, bei Java ebenso ein voll qualifizierter Name im Code ohne `import`;
   die Kanten-Menge ist die der Vererbungs-Erfüllung wie bei C++
-  (`driven_adapters→ports_outbound`).
+  (`driven_adapters→ports_outbound`). Für `python` sind die Schichten **Verzeichnisse** unter
+  `src/app/…` (`hexagon/{domain,application}`, `adapters/{driving,driven}`), Composition Root
+  `src/app/main.py`, Tests unter `tests/` (a-check-`exclude`): der Dateipfad ist das Modul, ein
+  Paket außerhalb seines Verzeichnisses kann nicht entstehen. Die emittierte Config trägt den
+  `resolution`-Block (`fixed-root`, Root `src/app`, `package_base` `app`); die Kanten-Menge ist die
+  der Vererbung vom Port wie bei Java. Ein relativer Import, ein voll qualifizierter Name ohne
+  Import und ein dynamischer Import entgehen dem Gate; den relativen Import schließt im
+  Python-Skelett die Lint-Regel `TID252` (`ban-relative-imports`).
 - **Ein ausführbares Artefakt, und eine Klasse außerhalb des versionierten Baums.** Die
   Emission legt nicht nur Text ab: der **Träger** der Erfassung ist das laufende
   Produkt-Binär selbst, kopiert in den gitignorierten Zustands-Bereich des Ziels
