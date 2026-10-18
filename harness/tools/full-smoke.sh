@@ -3539,7 +3539,7 @@ echo "full-smoke: Kotlin-hexSlice-Stufe dauerte $(( SECONDS - kthex_start ))s (m
 # roten Fall: ein Import aus der Domain in einen Adapter faerbt das Arch-Gate mit
 # core-impurity, an genau dieser Datei.
 echo "full-smoke: add-lang java apps/javahex --arch hexslice (Arch-Achse, Java) ..."
-	e2e_abdeckung "LH-FA-04 LH-FA-07 LH-QA-01" "Das Schicht-Layout in Java (Pakete, Paket gleich Verzeichnis) mit Arch-Gate: make gates gruen ohne den Hinweis auf nicht aufloesende Import-Symbole (ein Adapter, der seinen Port implementiert, ist gruen), ein Import aus der Domain in einen Adapter faerbt das Arch-Gate rot mit core-impurity; NICHT gemessen: die uebrigen Richtungs-Regeln, ein Paket ausserhalb seines Verzeichnisses, ein voll qualifizierter Name ohne import" "Java-hexSlice-Gate kaputt"
+	e2e_abdeckung "LH-FA-04 LH-FA-07 LH-QA-01" "Das Schicht-Layout in Java (Pakete) mit Arch-Gate: make gates gruen ohne den Hinweis auf nicht aufloesende Import-Symbole (ein Adapter, der seinen Port implementiert, ist gruen), ein Import aus der Domain in einen Adapter faerbt das Arch-Gate rot mit core-impurity; NICHT gemessen: die uebrigen Richtungs-Regeln, Paket gleich Verzeichnis (haelt der Go-Test TestJavaHexslice_PaketGleichVerzeichnis, nicht die Stufe), ein Paket ausserhalb seines Verzeichnisses, ein voll qualifizierter Name ohne import" "Java-hexSlice-Gate kaputt"
 javahex_start=$SECONDS
 ( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang java apps/javahexslice --arch hexslice )
 for rel in apps/javahexslice/src/main/java/app/hexagon/domain/example/Greeting.java \
