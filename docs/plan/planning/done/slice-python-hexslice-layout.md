@@ -179,6 +179,12 @@ DoD vollständig, Arch-Zahn rot und Gegenprobe grün in `make full-smoke`, Closu
   (2×) und wäre sein drittes. Der Beleg `evidence/slice-python-hexslice-layout.md` ist **nicht** angelegt: ab 3× verlangt
   der Lese-Schritt einen Ausgang (*verkörpert*, *geplant* oder *gestrichen*), und den weist der Auftraggeber zu —
   die Eintragung ist offen und im Bericht an ihn benannt.
+- **Nachtrag zur Closure (Planner, Entscheidung des Auftraggebers 2026-10-18; die Notiz ist ergänzt, nicht umgeschrieben):**
+  Ausgang *verkörpert* für `BEO-ALL/waechter-haelt-config-text-wirkung-im-ziel-ohne-lauf-zahn` (3×); der Beleg
+  `evidence/slice-python-hexslice-layout.md` ist angelegt und löst den Absatz „Nicht gezählt" darüber ab.
+  **Steering-Loop-Eintrag — geschärfte Regel:** Paar „Text-Wächter einer Ziel-Konfigurationszeile braucht den
+  Lauf-Zahn im Ziel oder die benannte Lücke" — liegt in `AGENTS.md §3.6` (Anker `seit slice-python-hexslice-layout`
+  steht dort). Auslöser: `BEO-ALL/waechter-haelt-config-text-wirkung-im-ziel-ohne-lauf-zahn` (3×).
 - **Folge-Arbeit:** Der relative Import am hexslice-Ziel ist nicht gefahren (Risiko 2, unten); der Beleg steht in der
   neuen Beobachtung. `exclude` für die leeren Marker: Architect, kein Slice, kein Register-Eintrag (kein Defekt, kein
   Wiederauftreten).
