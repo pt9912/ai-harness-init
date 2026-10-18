@@ -2904,10 +2904,10 @@ echo "full-smoke: Java-Stufe dauerte $(( SECONDS - java_start ))s (add-lang, mak
 # ein unbenutzter Import in main.py faerbt lint-apps-python rot mit F401 an dieser Datei, ein
 # relativer Import in rel.py faerbt es rot mit TID252 (ban-relative-imports = "all"), und die
 # zurueckgenommenen Dateien halten es wieder gruen. Der Guard blockt pytest, das allein
-# blocked/python fuehrt. Nur flat ist getragen: `--arch hexslice` endet mit Exit 2 ohne
+# blocked/python fuehrt. `--arch hexagonal` ist nicht getragen und endet mit Exit 2 ohne
 # Artefakt.
 echo "full-smoke: add-lang python apps/python ins Mono-Repo (fuenfte Sprache, pip + pytest/ruff/mypy) ..."
-e2e_abdeckung "LH-FA-04 LH-FA-06 LH-QA-01" "Eine fuenfte Sprache (Python, flat) im selben Ziel, mit den realen Gates (compileall, pytest, ruff, mypy strict), den roten Lint-Faellen (unbenutzter Import faerbt lint rot mit F401, ein relativer Import mit TID252), dem gruenen Fall nach der Ruecknahme und dem Guard, der pytest blockt; NICHT gemessen: hexslice (add-lang python --arch hexslice endet mit Exit 2, nicht mehr), der Root-Bootstrap mit Gate-Lauf, ein gemischter Root mit Python, die Reproduzierbarkeit zweier Bauten (transitive Abhaengigkeiten ungepinnt)" "Python-Gate kaputt"
+e2e_abdeckung "LH-FA-04 LH-FA-06 LH-QA-01" "Eine fuenfte Sprache (Python, flat) im selben Ziel, mit den realen Gates (compileall, pytest, ruff, mypy strict), den roten Lint-Faellen (unbenutzter Import faerbt lint rot mit F401, ein relativer Import mit TID252), dem gruenen Fall nach der Ruecknahme und dem Guard, der pytest blockt; add-lang python --arch hexagonal endet mit Exit 2 ohne Artefakt; NICHT gemessen: der Root-Bootstrap mit Gate-Lauf, ein gemischter Root mit Python, die Reproduzierbarkeit zweier Bauten (transitive Abhaengigkeiten ungepinnt)" "Python-Gate kaputt"
 python_start=$SECONDS
 ( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang python apps/python )
 for rel in apps/python/pyproject.toml apps/python/requirements-dev.txt apps/python/Dockerfile \
@@ -2995,18 +2995,95 @@ if [ "$pythonlint2_rc" -ne 0 ]; then
 	einordnen "make lint-apps-python (nach Ruecknahme)" "$pythonlint2_out"
 	exit 1
 fi
-# Nur flat ist getragen: hexslice endet mit Exit 2 und legt kein Modul an.
-pythonhex_rc=0
-( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang python apps/pythonhex --arch hexslice ) || pythonhex_rc=$?
-if [ "$pythonhex_rc" -ne 2 ]; then
-	echo "full-smoke: FEHLER — add-lang python --arch hexslice rc=$pythonhex_rc, want 2 (nicht getragene Kombination wird nicht abgelehnt)." >&2
+# hexagonal ist nicht getragen: Exit 2 und kein Modul.
+pythonhexagonal_rc=0
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang python apps/pythonhexagonal --arch hexagonal ) || pythonhexagonal_rc=$?
+if [ "$pythonhexagonal_rc" -ne 2 ]; then
+	echo "full-smoke: FEHLER — add-lang python --arch hexagonal rc=$pythonhexagonal_rc, want 2 (nicht getragene Kombination wird nicht abgelehnt)." >&2
 	exit 1
 fi
-if [ -e "$tmprepo_doc/apps/pythonhex/pyproject.toml" ]; then
-	echo "full-smoke: FEHLER — die nicht getragene Kombination python+hexslice legte ein Geruestung-Artefakt an (still statt Exit 2)." >&2
+if [ -e "$tmprepo_doc/apps/pythonhexagonal/pyproject.toml" ]; then
+	echo "full-smoke: FEHLER — die nicht getragene Kombination python+hexagonal legte ein Geruestung-Artefakt an (still statt Exit 2)." >&2
 	exit 1
 fi
 echo "full-smoke: Python-Stufe dauerte $(( SECONDS - python_start ))s (add-lang, make -j gates, Lint-Zaehne, Exit-2-Fall)."
+
+# LH-FA-07/ADR-0095 Festlegung 5: dasselbe Schicht-Layout in Python. Die Schichten sind
+# Verzeichnisse, der Dateipfad ist das Modul, a-check loest `from app.… import …` nur ueber den
+# resolution-Block der emittierten .a-check.yml auf (fixed-root, Root src/app, package_base app).
+# Loest kein Import auf, bleibt das Gate gruen und a-check gibt den Hinweis "0 von N
+# Import-Symbolen" aus — darum prueft die Stufe dessen Abwesenheit im gruenen Lauf (in dem
+# InMemoryRepository den Port erbt und importiert: die Kante driven_adapters -> ports_outbound)
+# und danach den roten Fall: ein Import aus der Domain in einen Adapter faerbt das Arch-Gate mit
+# core-impurity, an genau dieser Datei. Die Gates lint (ruff, mypy strict), test und build laufen
+# im selben make gates ueber dem Skelett.
+echo "full-smoke: add-lang python apps/pythonhexslice --arch hexslice (Arch-Achse, Python) ..."
+e2e_abdeckung "LH-FA-04 LH-FA-07 LH-QA-01" "Das Schicht-Layout in Python (Verzeichnisse) mit Arch-Gate: make gates gruen ohne den Hinweis auf nicht aufloesende Import-Symbole (ein Adapter, der seinen Port erbt, ist gruen), ein Import aus der Domain in einen Adapter faerbt das Arch-Gate rot mit core-impurity; NICHT gemessen: die uebrigen Richtungs-Regeln, ein relativer Import (a-check extrahiert ihn nicht, ruff TID252 faerbt nur den Lint-Fall der flat-Stufe), ein voll qualifizierter Name ohne Import, ein dynamischer Import, Importe in den Paket-Markern __init__.py (liegen in keiner Schicht)" "Python-hexSlice-Gate kaputt"
+pythonhexslice_start=$SECONDS
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang python apps/pythonhexslice --arch hexslice )
+for rel in apps/pythonhexslice/src/app/hexagon/domain/example/greeting.py \
+           apps/pythonhexslice/src/app/hexagon/application/example/greet/handler.py \
+           apps/pythonhexslice/src/app/adapters/driven/memory/example/in_memory_repository.py \
+           apps/pythonhexslice/src/app/adapters/driven/notify/stdout_notifier.py \
+           apps/pythonhexslice/src/app/main.py apps/pythonhexslice/tests/test_greet.py \
+           apps/pythonhexslice/.a-check.yml harness/mk/apps-pythonhexslice.mk harness/mk/arch-apps-pythonhexslice.mk; do
+	if [ ! -e "$tmprepo_doc/$rel" ]; then
+		echo "full-smoke: FEHLER — add-lang python --arch hexslice dropte $rel nicht." >&2
+		exit 1
+	fi
+done
+pyhex_rc=0
+pyhex_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || pyhex_rc=$?
+printf '%s\n' "$pyhex_out"
+if [ "$pyhex_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — make gates nach add-lang python --arch hexslice ist NICHT Exit 0 (Python-hexSlice-Gate kaputt)." >&2
+	einordnen "make -j gates nach add-lang python --arch hexslice (apps/pythonhexslice)" "$pyhex_out"
+	exit 1
+fi
+pyhex_missing=""
+for marker in "--target test -t apps-pythonhexslice:test apps/pythonhexslice" "--target lint -t apps-pythonhexslice:lint apps/pythonhexslice" \
+              "--target build -t apps-pythonhexslice:build apps/pythonhexslice" 'apps/pythonhexslice":/src:ro'; do
+	grep -qF -- "$marker" <<<"$pyhex_out" || pyhex_missing="$pyhex_missing [$marker]"
+done
+if [ -n "$pyhex_missing" ]; then
+	echo "full-smoke: FEHLER — make gates ohne Beleg fuer:$pyhex_missing — Python-hexSlice-Gate oder sein Arch-Gate lief nicht?" >&2
+	exit 1
+fi
+if grep -qF -- 'Import-Symbolen' <<<"$pyhex_out"; then
+	echo "full-smoke: FEHLER — das Python-Arch-Gate ist gruen, loest aber keinen Import auf (resolution der emittierten .a-check.yml?):" >&2
+	grep -F -- 'Import-Symbolen' <<<"$pyhex_out" >&2
+	exit 1
+fi
+pyhex_layer="$tmprepo_doc/apps/pythonhexslice/src/app/hexagon/domain/example/greeting.py"
+cp "$pyhex_layer" "$pyhex_layer.orig"
+psed_i '1a\
+\
+from app.adapters.driven.notify.stdout_notifier import StdoutNotifier' "$pyhex_layer"
+pyhexarch_rc=0
+pyhexarch_out="$( make -C "$tmprepo_doc" a-check-apps-pythonhexslice 2>&1 )" || pyhexarch_rc=$?
+mv "$pyhex_layer.orig" "$pyhex_layer"
+if [ "$pyhexarch_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — das emittierte Python-Arch-Gate bleibt bei einem Import aus der Domain in einen Adapter gruen (zahnloses Gate, AGENTS.md §3.6/LH-QA-01)." >&2
+	printf '%s\n' "$pyhexarch_out" >&2
+	exit 1
+fi
+if ! grep -qF -- 'greeting.py:3: core-impurity: Kern importiert app.adapters.driven.notify.stdout_notifier' <<<"$pyhexarch_out"; then
+	echo "full-smoke: FEHLER — Python-Arch-Gate rot, aber nicht mit core-impurity an der Domain-Datei (rot aus falschem Grund?). Ausgabe:" >&2
+	printf '%s\n' "$pyhexarch_out" >&2
+	einordnen "make a-check-apps-pythonhexslice (Arch-Gate-Zahn, python)" "$pyhexarch_out"
+	exit 1
+fi
+echo "full-smoke: Python-Arch-Gate-Zaehne belegt (Import aus der Domain in einen Adapter faerbt a-check rot, danach zurueckgenommen):"
+grep -F -- 'core-impurity' <<<"$pyhexarch_out" | sed -n '1,2s/^/full-smoke:   /p'
+# Gegenprobe: nach der Ruecknahme ist das Arch-Gate wieder gruen.
+pyhexarch2_rc=0
+pyhexarch2_out="$( make -C "$tmprepo_doc" a-check-apps-pythonhexslice 2>&1 )" || pyhexarch2_rc=$?
+if [ "$pyhexarch2_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — das Python-Arch-Gate ist nach der Ruecknahme des Imports NICHT gruen (Python-hexSlice-Gate kaputt)." >&2
+	einordnen "make a-check-apps-pythonhexslice (nach Ruecknahme)" "$pyhexarch2_out"
+	exit 1
+fi
+echo "full-smoke: Python-hexSlice-Stufe dauerte $(( SECONDS - pythonhexslice_start ))s (make -j gates samt add-lang, Arch-Zahn und Gegenprobe)."
 
 # LH-FA-04/ADR-0096: add-lang csharp ergaenzt eine SECHSTE Sprache demselben Mono-Repo — zwei
 # Projekte (src/App, tests/App.Tests) in einer klassischen Solution mit Directory.Build.props,
