@@ -2814,9 +2814,9 @@ fi
 # checkstyle). Der Lint hat einen roten und einen gruenen Fall (test/mutations/683, 684): ein
 # unbenutzter Import in Main.java faerbt lint-apps-java rot mit [UnusedImports] an dieser Datei,
 # die zurueckgenommene Datei haelt ihn wieder gruen. Der Guard blockt mvn, das allein
-# blocked/java fuehrt. Nur flat ist getragen: `--arch hexslice` endet mit Exit 2 ohne Artefakt.
+# blocked/java fuehrt. `--arch hexagonal` ist nicht getragen und endet mit Exit 2 ohne Artefakt.
 echo "full-smoke: add-lang java apps/java ins Mono-Repo (vierte Sprache, JVM-Gradle) ..."
-	e2e_abdeckung "LH-FA-04 LH-FA-06 LH-QA-01" "Eine vierte Sprache (Java, flat) im selben Ziel, mit den realen Gradle-Gates (assemble, test, checkstyle), dem roten und dem gruenen Lint-Fall (unbenutzter Import faerbt lint rot mit UnusedImports) und dem Guard, der mvn blockt; NICHT gemessen: hexslice (add-lang java --arch hexslice endet mit Exit 2, nicht mehr), der Root-Bootstrap mit Gate-Lauf, ein gemischter Root mit Java" "Java-Gate kaputt"
+	e2e_abdeckung "LH-FA-04 LH-FA-06 LH-QA-01" "Eine vierte Sprache (Java, flat) im selben Ziel, mit den realen Gradle-Gates (assemble, test, checkstyle), dem roten und dem gruenen Lint-Fall (unbenutzter Import faerbt lint rot mit UnusedImports) und dem Guard, der mvn blockt; add-lang java --arch hexagonal endet mit Exit 2 ohne Artefakt; NICHT gemessen: der Root-Bootstrap mit Gate-Lauf, ein gemischter Root mit Java" "Java-Gate kaputt"
 java_start=$SECONDS
 ( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang java apps/java )
 for rel in apps/java/settings.gradle.kts apps/java/build.gradle.kts apps/java/Dockerfile \
@@ -2883,15 +2883,15 @@ if [ "$javalint2_rc" -ne 0 ]; then
 	einordnen "make lint-apps-java (nach Ruecknahme)" "$javalint2_out"
 	exit 1
 fi
-# Nur flat ist getragen: hexslice endet mit Exit 2 und legt kein Modul an.
+# hexagonal ist nicht getragen: add-lang endet mit Exit 2 und legt kein Modul an (hexslice: eigene Stufe).
 javahex_rc=0
-( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang java apps/javahex --arch hexslice ) || javahex_rc=$?
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang java apps/javahex --arch hexagonal ) || javahex_rc=$?
 if [ "$javahex_rc" -ne 2 ]; then
-	echo "full-smoke: FEHLER — add-lang java --arch hexslice rc=$javahex_rc, want 2 (nicht getragene Kombination wird nicht abgelehnt)." >&2
+	echo "full-smoke: FEHLER — add-lang java --arch hexagonal rc=$javahex_rc, want 2 (nicht getragene Kombination wird nicht abgelehnt)." >&2
 	exit 1
 fi
 if [ -e "$tmprepo_doc/apps/javahex/build.gradle.kts" ]; then
-	echo "full-smoke: FEHLER — die nicht getragene Kombination java+hexslice legte ein Geruestung-Artefakt an (still statt Exit 2)." >&2
+	echo "full-smoke: FEHLER — die nicht getragene Kombination java+hexagonal legte ein Geruestung-Artefakt an (still statt Exit 2)." >&2
 	exit 1
 fi
 echo "full-smoke: Java-Stufe dauerte $(( SECONDS - java_start ))s (add-lang, make -j gates, Lint-Zahn, Exit-2-Fall)."
@@ -3529,6 +3529,82 @@ fi
 echo "full-smoke: Kotlin-Arch-Gate-Zaehne belegt (Import aus der Domain in einen Adapter faerbt a-check rot, danach zurueckgenommen):"
 grep -F -- 'core-impurity' <<<"$kthexarch_out" | sed -n '1,2s/^/full-smoke:   /p'
 echo "full-smoke: Kotlin-hexSlice-Stufe dauerte $(( SECONDS - kthex_start ))s (make -j gates samt add-lang und Arch-Zahn)."
+
+# LH-FA-07/ADR-0094 Festlegung 4: dasselbe Schicht-Layout in Java. Die Schichten sind Pakete,
+# a-check loest `import app.…;` nur ueber den resolution-Block der emittierten .a-check.yml
+# auf (fixed-root, Root src/main/java/app, package_base app). Loest kein Import auf, bleibt
+# das Gate gruen und a-check gibt den Hinweis "0 von N Import-Symbolen" aus — darum prueft
+# die Stufe dessen Abwesenheit im gruenen Lauf (in dem InMemoryRepository den Port
+# implementiert und importiert: die Kante driven_adapters -> ports_outbound) und danach den
+# roten Fall: ein Import aus der Domain in einen Adapter faerbt das Arch-Gate mit
+# core-impurity, an genau dieser Datei.
+echo "full-smoke: add-lang java apps/javahex --arch hexslice (Arch-Achse, Java) ..."
+	e2e_abdeckung "LH-FA-04 LH-FA-07 LH-QA-01" "Das Schicht-Layout in Java (Pakete, Paket gleich Verzeichnis) mit Arch-Gate: make gates gruen ohne den Hinweis auf nicht aufloesende Import-Symbole (ein Adapter, der seinen Port implementiert, ist gruen), ein Import aus der Domain in einen Adapter faerbt das Arch-Gate rot mit core-impurity; NICHT gemessen: die uebrigen Richtungs-Regeln, ein Paket ausserhalb seines Verzeichnisses, ein voll qualifizierter Name ohne import" "Java-hexSlice-Gate kaputt"
+javahex_start=$SECONDS
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang java apps/javahexslice --arch hexslice )
+for rel in apps/javahexslice/src/main/java/app/hexagon/domain/example/Greeting.java \
+           apps/javahexslice/src/main/java/app/hexagon/application/example/greet/Handler.java \
+           apps/javahexslice/src/main/java/app/adapters/driven/memory/example/InMemoryRepository.java \
+           apps/javahexslice/src/main/java/app/adapters/driven/notify/StdoutNotifier.java \
+           apps/javahexslice/src/main/java/app/Main.java apps/javahexslice/src/test/java/app/GreetTest.java \
+           apps/javahexslice/.a-check.yml harness/mk/apps-javahexslice.mk harness/mk/arch-apps-javahexslice.mk; do
+	if [ ! -e "$tmprepo_doc/$rel" ]; then
+		echo "full-smoke: FEHLER — add-lang java --arch hexslice dropte $rel nicht." >&2
+		exit 1
+	fi
+done
+jvhex_rc=0
+jvhex_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || jvhex_rc=$?
+printf '%s\n' "$jvhex_out"
+if [ "$jvhex_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — make gates nach add-lang java --arch hexslice ist NICHT Exit 0 (Java-hexSlice-Gate kaputt)." >&2
+	einordnen "make -j gates nach add-lang java --arch hexslice (apps/javahexslice)" "$jvhex_out"
+	exit 1
+fi
+jvhex_missing=""
+for marker in "--target test -t apps-javahexslice:test apps/javahexslice" "--target lint -t apps-javahexslice:lint apps/javahexslice" \
+              "--target build -t apps-javahexslice:build apps/javahexslice" 'apps/javahexslice":/src:ro'; do
+	grep -qF -- "$marker" <<<"$jvhex_out" || jvhex_missing="$jvhex_missing [$marker]"
+done
+if [ -n "$jvhex_missing" ]; then
+	echo "full-smoke: FEHLER — make gates ohne Beleg fuer:$jvhex_missing — Java-hexSlice-Gate oder sein Arch-Gate lief nicht?" >&2
+	exit 1
+fi
+if grep -qF -- 'Import-Symbolen' <<<"$jvhex_out"; then
+	echo "full-smoke: FEHLER — das Java-Arch-Gate ist gruen, loest aber keinen Import auf (resolution der emittierten .a-check.yml?):" >&2
+	grep -F -- 'Import-Symbolen' <<<"$jvhex_out" >&2
+	exit 1
+fi
+jvhex_layer="$tmprepo_doc/apps/javahexslice/src/main/java/app/hexagon/domain/example/Greeting.java"
+cp "$jvhex_layer" "$jvhex_layer.orig"
+psed_i 's|^package app.hexagon.domain.example;$|&\
+\
+import app.adapters.driven.notify.StdoutNotifier;|' "$jvhex_layer"
+jvhexarch_rc=0
+jvhexarch_out="$( make -C "$tmprepo_doc" a-check-apps-javahexslice 2>&1 )" || jvhexarch_rc=$?
+mv "$jvhex_layer.orig" "$jvhex_layer"
+if [ "$jvhexarch_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — das emittierte Java-Arch-Gate bleibt bei einem Import aus der Domain in einen Adapter gruen (zahnloses Gate, AGENTS.md §3.6/LH-QA-01)." >&2
+	printf '%s\n' "$jvhexarch_out" >&2
+	exit 1
+fi
+if ! grep -qF -- 'Greeting.java:4: core-impurity: Kern importiert app.adapters.driven.notify.StdoutNotifier' <<<"$jvhexarch_out"; then
+	echo "full-smoke: FEHLER — Java-Arch-Gate rot, aber nicht mit core-impurity an der Domain-Datei (rot aus falschem Grund?). Ausgabe:" >&2
+	printf '%s\n' "$jvhexarch_out" >&2
+	einordnen "make a-check-apps-javahexslice (Arch-Gate-Zahn, java)" "$jvhexarch_out"
+	exit 1
+fi
+echo "full-smoke: Java-Arch-Gate-Zaehne belegt (Import aus der Domain in einen Adapter faerbt a-check rot, danach zurueckgenommen):"
+grep -F -- 'core-impurity' <<<"$jvhexarch_out" | sed -n '1,2s/^/full-smoke:   /p'
+# Gegenprobe: nach der Ruecknahme ist das Arch-Gate wieder gruen.
+jvhexarch2_rc=0
+jvhexarch2_out="$( make -C "$tmprepo_doc" a-check-apps-javahexslice 2>&1 )" || jvhexarch2_rc=$?
+if [ "$jvhexarch2_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — das Java-Arch-Gate ist nach der Ruecknahme des Imports NICHT gruen (Java-hexSlice-Gate kaputt)." >&2
+	einordnen "make a-check-apps-javahexslice (nach Ruecknahme)" "$jvhexarch2_out"
+	exit 1
+fi
+echo "full-smoke: Java-hexSlice-Stufe dauerte $(( SECONDS - javahex_start ))s (make -j gates samt add-lang, Arch-Zahn und Gegenprobe)."
 
 # slice-046, ROOT-Modul: der Init-One-Shot `--lang go --arch hexslice` verortet das Modul
 # am Repo-Root — das Arch-Gate mountet dann das GANZE Ziel, samt der vendored Baseline.
