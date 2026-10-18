@@ -1,9 +1,11 @@
 package gen
 
-// Das hexSlice-Layout fuer C# (ADR-0096 Festlegung 5): die Schichten sind PascalCase-Verzeichnisse
-// unter src/App, und der Namensraum einer Datei ist ihr Verzeichnispfad ab App (IDE0130 haelt das
-// in lint). a-check bildet den Namensraum eines `using` auf einen Pfad ab, nicht auf die
-// Deklaration; ein Verzeichnis in anderer Schreibweise als der Namensraum loest darum nicht auf.
+// Das hexSlice-Layout fuer C# (ADR-0096 Festlegung 5, ADR-0097): die Schichten sind PascalCase-
+// Verzeichnisse unter src/App, die Richtungs-Ordner unter Ports heissen klein (inbound, outbound),
+// und der Namensraum einer Datei ist ihr Verzeichnispfad ab App (IDE0130 haelt das in lint).
+// a-check bildet den Namensraum eines `using` auf einen Pfad ab, nicht auf die Deklaration; ein
+// Verzeichnis in anderer Schreibweise als der Namensraum loest darum nicht auf. Das Richtungs-
+// Segment zieht a-check nur kleingeschrieben ab (port-locality greift nur dann).
 // Die Typnamen tragen das I-Praefix der Schnittstellen (IGreet) oder ein Suffix (GreetCli), damit
 // kein Typ den Namen eines Namensraums seines Pfades traegt.
 
@@ -19,9 +21,9 @@ func csharpHexslice(r codeRole) map[string]string {
 		return map[string]string{hex + "Domain/Example/Greeting.cs": csHexDomain}
 	case rolePorts:
 		return map[string]string{
-			area + "Greet/Ports/Inbound/IGreet.cs":          csHexInboundPort,
-			area + "Greet/Ports/Outbound/INotifier.cs":      csHexSlicePort,
-			area + "Ports/Outbound/IGreetingRepository.cs": csHexAreaPort,
+			area + "Greet/Ports/inbound/IGreet.cs":          csHexInboundPort,
+			area + "Greet/Ports/outbound/INotifier.cs":      csHexSlicePort,
+			area + "Ports/outbound/IGreetingRepository.cs": csHexAreaPort,
 		}
 	case roleAppSlice:
 		return map[string]string{area + "Greet/Handler.cs": csHexHandler}
@@ -51,7 +53,7 @@ public sealed record Greeting(string Message)
 }
 `
 
-const csHexInboundPort = `namespace App.Hexagon.Application.Example.Greet.Ports.Inbound;
+const csHexInboundPort = `namespace App.Hexagon.Application.Example.Greet.Ports.inbound;
 
 // Port-Schicht (inbound, Greet): der Vertrag, ueber den die Welt die Use-Case ruft. Er spricht
 // schlichte Typen und importiert die Domain nicht.
@@ -61,7 +63,7 @@ public interface IGreet
 }
 `
 
-const csHexSlicePort = `namespace App.Hexagon.Application.Example.Greet.Ports.Outbound;
+const csHexSlicePort = `namespace App.Hexagon.Application.Example.Greet.Ports.outbound;
 
 // Port-Schicht (outbound, slice-lokal, Greet): der Kanal, ueber den die Use-Case meldet.
 public interface INotifier
@@ -72,7 +74,7 @@ public interface INotifier
 
 const csHexAreaPort = `using App.Hexagon.Domain.Example;
 
-namespace App.Hexagon.Application.Example.Ports.Outbound;
+namespace App.Hexagon.Application.Example.Ports.outbound;
 
 // Port-Schicht (outbound, business-area-geteilt): importiert nur die Domain.
 public interface IGreetingRepository
@@ -81,9 +83,9 @@ public interface IGreetingRepository
 }
 `
 
-const csHexHandler = `using App.Hexagon.Application.Example.Greet.Ports.Inbound;
-using App.Hexagon.Application.Example.Greet.Ports.Outbound;
-using App.Hexagon.Application.Example.Ports.Outbound;
+const csHexHandler = `using App.Hexagon.Application.Example.Greet.Ports.inbound;
+using App.Hexagon.Application.Example.Greet.Ports.outbound;
+using App.Hexagon.Application.Example.Ports.outbound;
 using App.Hexagon.Domain.Example;
 
 namespace App.Hexagon.Application.Example.Greet;
@@ -115,7 +117,7 @@ public sealed class Handler : IGreet
 }
 `
 
-const csHexDrivingCLI = `using App.Hexagon.Application.Example.Greet.Ports.Inbound;
+const csHexDrivingCLI = `using App.Hexagon.Application.Example.Greet.Ports.inbound;
 
 namespace App.Adapters.Driving.Cli.Example;
 
@@ -134,7 +136,7 @@ public sealed class GreetCli
 `
 
 const csHexDrivenRepo = `using System.Collections.Generic;
-using App.Hexagon.Application.Example.Ports.Outbound;
+using App.Hexagon.Application.Example.Ports.outbound;
 using App.Hexagon.Domain.Example;
 
 namespace App.Adapters.Driven.Memory.Example;
@@ -152,7 +154,7 @@ public sealed class InMemoryRepository : IGreetingRepository
 `
 
 const csHexDrivenNotify = `using System.IO;
-using App.Hexagon.Application.Example.Greet.Ports.Outbound;
+using App.Hexagon.Application.Example.Greet.Ports.outbound;
 
 namespace App.Adapters.Driven.Notify;
 
@@ -223,7 +225,7 @@ public class GreetTests
 `
 
 // csharpHexArchConfig — die .a-check.yml des hexSlice-C#-Moduls (ADR-0096 Festlegung 5,
-// LH-FA-07). MODUL-relativ (der Gate-Lauf mountet das Modul-Verzeichnis). Der resolution-Block
+// LH-FA-07, ADR-0097). MODUL-relativ (der Gate-Lauf mountet das Modul-Verzeichnis). Der resolution-Block
 // ist tragend: ohne ihn loest kein using auf eine Schicht auf, und das Gate bleibt ueber jedem
 // using gruen. Der Root endet im package_base-Verzeichnis, weil a-check "App." vom Namensraum
 // abstreift, bevor es den Root voranstellt. Die Ports-Ordner (use-case-lokal inbound/outbound,
@@ -242,26 +244,35 @@ const csharpHexArchConfig = `# .a-check.yml — Architektur-Gate (HexSlice = hex
 # "0 von N Import-Symbolen loesen auf". Ein Namensraum, der keinem Verzeichnis folgt, loest
 # ebenfalls nicht auf und faerbt nichts; IDE0130 haelt Namensraum und Verzeichnis zusammen,
 # unterscheidet aber Gross- und Kleinschreibung nicht, a-check unterscheidet sie. Halte die
-# Verzeichnisse in PascalCase. Nicht erkannt wird ein voll qualifizierter Name im Code ohne
-# using; ein <Using Include=...> in einer .csproj-Datei liegt ausserhalb des Globs **/*.cs.
+# Verzeichnisse in PascalCase — ausser den Richtungs-Ordnern unter Ports. Nicht erkannt wird
+# ein voll qualifizierter Name im Code ohne using; ein <Using Include=...> in einer .csproj-Datei
+# liegt ausserhalb des Globs **/*.cs.
 #
-# Die Slice-Globs (.../Greet/**) und Port-Globs (.../Ports/<Richtung>/**) tragen
-# bewusst literale Verzeichnis-Praefixe. An den Slice-Globs haengt die Vertical-Slice-Regel
-# lateral-slice (eine Slice importiert keine andere derselben Schicht). Die Regel
-# port-locality (ein slice-lokaler Port bleibt in seiner Slice) prueft a-check fuer diese
-# PascalCase-Port-Globs nicht: es meldet den Hinweis "Port-Glob(s) erreichen den App-Baum
-# nicht" und laesst die Regel aus; ein Port-Ordner "ports" in Kleinschreibung nimmt den
-# Hinweis, braeuchte aber einen Namensraum in Kleinschreibung. Behalte jede Port-Glob-Endung
-# auf ihrer Richtung.
+# Die Richtungs-Ordner heissen KLEIN: Ports/inbound und Ports/outbound, im Namensraum
+# Ports.inbound und Ports.outbound, im Glob .../Ports/inbound/** und .../Ports/outbound/**.
+# a-check zieht das Richtungs-Segment der Port-Schichten (direction) nur kleingeschrieben vom
+# Namensraum ab. Mit einem grossgeschriebenen Segment (Inbound, Outbound) loest der Port-Glob
+# nicht auf den App-Baum, a-check meldet den Hinweis "Port-Glob(s) erreichen den App-Baum
+# nicht" und laesst port-locality fuer diesen Port aus; das Gate bleibt dabei gruen. Der Ordner
+# Ports selbst ist PascalCase (Ports und ports gelten gleich).
+#
+# Die Slice-Globs (.../Greet/**) und Port-Globs (.../Ports/<richtung>/**) tragen bewusst
+# literale Verzeichnis-Praefixe. An den Slice-Globs haengt die Vertical-Slice-Regel
+# lateral-slice (eine Slice importiert keine andere derselben Schicht), an den Port-Globs die
+# Regel port-locality (ein slice-lokaler Port bleibt in seiner Slice). Behalte jede Port-Glob-
+# Endung auf ihrer Richtung.
 #
 # DIESE DATEI IST DEINE: sie wird beim Re-Bootstrap nicht ueberschrieben, also
 # waechst sie nur, wenn du sie pflegst. Zwei Faelle:
 #   - Area/Slice UMBENANNT  -> die Globs mitziehen.
-#   - Slice HINZUGEFUEGT    -> je einen app-Glob (.../<NeueSlice>/**) und, falls
-#     sie Ports traegt, je einen ports-Glob (.../<NeueSlice>/Ports/<Richtung>/**)
-#     ERGAENZEN. Vergisst du es, faellt der neue Code unter keine Schicht: importiert
-#     er eine (Domain/Ports), meldet a-check wrong-direction und faellt — importiert
-#     er keine, bleibt er still gruen und ungeprueft.
+#   - Slice HINZUGEFUEGT    -> je einen app-Glob (.../<NeueSlice>/**) und, falls sie Ports
+#     traegt, je einen ports-Glob (.../<NeueSlice>/Ports/inbound/** bzw. .../outbound/**)
+#     ERGAENZEN; Verzeichnis .../<NeueSlice>/Ports/outbound/, Namensraum
+#     App.<Pfad>.<NeueSlice>.Ports.outbound, Richtung klein. Vergisst du es, faellt der neue
+#     Code unter keine Schicht: importiert er eine (Domain/Ports), meldet a-check
+#     wrong-direction und faellt — importiert er keine, bleibt er still gruen und ungeprueft.
+#     Schreibst du die Richtung gross, bleibt der Port ohne port-locality; ein Sensor dafuer
+#     gibt es beim Adopter nicht.
 version: 1
 
 languages:
@@ -273,13 +284,13 @@ layers:
     role: domain
   ports_inbound:
     globs:
-      - "src/App/Hexagon/Application/Example/Greet/Ports/Inbound/**"   # use-case-lokal
+      - "src/App/Hexagon/Application/Example/Greet/Ports/inbound/**"   # use-case-lokal
     role: port
     direction: inbound      # von der Use-Case angeboten; ein driving Adapter ruft ihn
   ports_outbound:
     globs:
-      - "src/App/Hexagon/Application/Example/Greet/Ports/Outbound/**"   # use-case-lokal
-      - "src/App/Hexagon/Application/Example/Ports/Outbound/**"         # business-area-geteilt
+      - "src/App/Hexagon/Application/Example/Greet/Ports/outbound/**"   # use-case-lokal
+      - "src/App/Hexagon/Application/Example/Ports/outbound/**"         # business-area-geteilt
     role: port
     direction: outbound     # von der Use-Case gebraucht; ein driven Adapter erfuellt ihn
   app:

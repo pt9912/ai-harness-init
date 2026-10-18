@@ -21,7 +21,8 @@ func genCsharpHexslice(t *testing.T) string {
 
 // TestGenerate_CsharpHexsliceProfile_FileSet (LH-FA-04, ADR-0096 Festlegung 5): --arch hexslice
 // erzeugt GENAU die Rollen-Dateien unter src/App/{Hexagon,Adapters} plus Composition Root, Test
-// und die arch-invariante Geruestung — nicht mehr, nicht weniger. Die Verzeichnisse sind PascalCase.
+// und die arch-invariante Geruestung — nicht mehr, nicht weniger. Die Verzeichnisse sind PascalCase, die
+// Richtungs-Ordner unter Ports klein (ADR-0097).
 func TestGenerate_CsharpHexsliceProfile_FileSet(t *testing.T) {
 	got := walkRel(t, genCsharpHexslice(t))
 	const a, h = "src/App/Adapters/", "src/App/Hexagon/"
@@ -32,9 +33,9 @@ func TestGenerate_CsharpHexsliceProfile_FileSet(t *testing.T) {
 		a + "Driving/Cli/Example/GreetCli.cs",
 		"src/App/App.csproj",
 		h + "Application/Example/Greet/Handler.cs",
-		h + "Application/Example/Greet/Ports/Inbound/IGreet.cs",
-		h + "Application/Example/Greet/Ports/Outbound/INotifier.cs",
-		h + "Application/Example/Ports/Outbound/IGreetingRepository.cs",
+		h + "Application/Example/Greet/Ports/inbound/IGreet.cs",
+		h + "Application/Example/Greet/Ports/outbound/INotifier.cs",
+		h + "Application/Example/Ports/outbound/IGreetingRepository.cs",
 		h + "Domain/Example/Greeting.cs",
 		"src/App/Program.cs",
 		"tests/App.Tests/App.Tests.csproj", "tests/App.Tests/GreetTests.cs",
@@ -81,9 +82,9 @@ func TestArchGateConfig_CsharpMatchesSkeleton(t *testing.T) {
 	const hex, ad = "src/App/Hexagon/", "src/App/Adapters/"
 	want := map[string]string{
 		hex + "Domain/Example/Greeting.cs":                                "domain",
-		hex + "Application/Example/Greet/Ports/Inbound/IGreet.cs":         "ports_inbound",
-		hex + "Application/Example/Greet/Ports/Outbound/INotifier.cs":     "ports_outbound",
-		hex + "Application/Example/Ports/Outbound/IGreetingRepository.cs": "ports_outbound",
+		hex + "Application/Example/Greet/Ports/inbound/IGreet.cs":         "ports_inbound",
+		hex + "Application/Example/Greet/Ports/outbound/INotifier.cs":     "ports_outbound",
+		hex + "Application/Example/Ports/outbound/IGreetingRepository.cs": "ports_outbound",
 		hex + "Application/Example/Greet/Handler.cs":                      "app",
 		ad + "Driving/Cli/Example/GreetCli.cs":                            "driving_adapters",
 		ad + "Driven/Memory/Example/InMemoryRepository.cs":                "driven_adapters",
@@ -110,8 +111,10 @@ func csharpVerzeichnisse(t *testing.T, dir string) map[string]bool {
 // Pflicht (b)): das literale Praefix jedes Schicht-Globs der Config (der Pfad vor dem `/**`) ist
 // ein gerendertes Verzeichnis oder ein Vorfahr eines solchen, und zwar in genau derselben
 // Gross-/Kleinschreibung: a-check unterscheidet sie, IDE0130 nicht. Das haelt den Renderer; ein
-// Adopter, der Verzeichnisse umbenennt, bleibt ungehalten. Rot gesehen: test/mutations/756
-// schreibt die Hexagon-Verzeichnisse klein.
+// Adopter, der Verzeichnisse umbenennt, bleibt ungehalten. Rot faerben test/mutations/756
+// (Hexagon-Verzeichnisse klein gerendert) und 766 (Richtungs-Glob der Config gross, Renderer
+// klein). Schreiben Renderer UND Config dieselbe Grossschreibung, haelt diesen Test nichts:
+// das haelt TestCsharpHexslice_RichtungsOrdnerKlein.
 func TestArchGateConfig_CsharpGlobsMatchRenderedDirs(t *testing.T) {
 	cfg, _ := gen.ArchGateConfig("csharp", "hexslice")
 	dirs := csharpVerzeichnisse(t, genCsharpHexslice(t))
@@ -137,6 +140,46 @@ func TestArchGateConfig_CsharpGlobsMatchRenderedDirs(t *testing.T) {
 	}
 	if n == 0 {
 		t.Fatal("die Config traegt keinen Schicht-Glob")
+	}
+}
+
+// TestCsharpHexslice_RichtungsOrdnerKlein (ADR-0097 Festlegung 1 und 2): jedes gerenderte
+// Verzeichnis unter einem Ordner `Ports` heisst genau `inbound` oder `outbound` (klein), und jeder
+// Port-Glob der Config (Schichten ports_inbound und ports_outbound) endet auf `/Ports/inbound/**`
+// bzw. `/Ports/outbound/**`, passend zur Richtung seiner Schicht. a-check zieht das Richtungs-
+// Segment nur kleingeschrieben ab; ein grosses Segment in Renderer und Config zugleich haelt
+// TestArchGateConfig_CsharpGlobsMatchRenderedDirs nicht auf, dieser Test schon. Ob a-check im
+// Ziel port-locality prueft, belegt allein die Stufe in full-smoke; test/mutations/765 faerbt
+// diesen Test.
+func TestCsharpHexslice_RichtungsOrdnerKlein(t *testing.T) {
+	cfg, _ := gen.ArchGateConfig("csharp", "hexslice")
+	rich := map[string]bool{"inbound": true, "outbound": true}
+	n := 0
+	for d := range csharpVerzeichnisse(t, genCsharpHexslice(t)) {
+		parts := strings.Split(d, "/")
+		for i, p := range parts {
+			if p != "Ports" || i+1 >= len(parts) {
+				continue
+			}
+			n++
+			if !rich[parts[i+1]] {
+				t.Errorf("Verzeichnis %s: das Richtungs-Segment unter Ports ist %q, erwartet inbound oder outbound (klein)", d, parts[i+1])
+			}
+		}
+	}
+	if n == 0 {
+		t.Fatal("kein Richtungs-Verzeichnis unter Ports gerendert")
+	}
+	globs := archGlobs(t, cfg)
+	for layer, want := range map[string]string{"ports_inbound": "inbound", "ports_outbound": "outbound"} {
+		if len(globs[layer]) == 0 {
+			t.Errorf("Schicht %s fehlt in der Config", layer)
+		}
+		for _, g := range globs[layer] {
+			if !strings.HasSuffix(g, "/Ports/"+want+"/**") {
+				t.Errorf("Schicht %s: Glob %q endet nicht auf /Ports/%s/**", layer, g, want)
+			}
+		}
 	}
 }
 
