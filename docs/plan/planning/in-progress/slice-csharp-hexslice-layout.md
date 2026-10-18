@@ -57,7 +57,7 @@ in `done/`.
 
 ## 2. Definition of Done
 
-- [ ] hexslice-Renderer mit den Pfaden der [`ADR-0096`](../../adr/0096-csharp-skelett-toolchain-und-schicht-aufloesung.md) Festlegung 5 (`src/App/Hexagon/{Domain,Application}/…`,
+- [x] hexslice-Renderer mit den Pfaden der [`ADR-0096`](../../adr/0096-csharp-skelett-toolchain-und-schicht-aufloesung.md) Festlegung 5 (`src/App/Hexagon/{Domain,Application}/…`,
       `src/App/Adapters/{Driving,Driven}/…`, Composition Root `src/App/Program.cs`, Tests unter
       `tests/App.Tests`) **und den kleinen Richtungs-Ordnern der [`ADR-0097`](../../adr/0097-csharp-hexslice-richtungs-ordner-klein.md)**
       (`…/Ports/{inbound,outbound}/`; Verzeichnisse und Namensräume, z. B.
@@ -85,7 +85,7 @@ in `done/`.
       `port-locality: app außerhalb Port-Scope …/<Slice>`); die grüne Ausgabe des unveränderten Ziels
       trägt den Hinweis nicht. Fälle ab 748. Wo ein Schlüssel nur den Text-Wächter trägt, nennt die
       Abdeckungs-Zeile die Lücke am selben Ort.
-- [ ] `make full-smoke`: `add-lang csharp <pfad> --arch hexslice` grün; mit `using` aus
+- [x] `make full-smoke`: `add-lang csharp <pfad> --arch hexslice` grün; mit `using` aus
       `App.Hexagon.Domain` nach `App.Adapters` rot mit `core-impurity` (Meldung gelesen), Gegenprobe
       grün; Stufe mit `e2e_abdeckung`-Kopfzeile (Grenzen von a-check am Pin am selben Ort: voll
       qualifizierter Name, `<Using>` im `.csproj`, Reflection, Namensraum ≠ Verzeichnis,
@@ -108,16 +108,16 @@ in `done/`.
       für den `port-locality`-Lauf-Zahn**, rot herstellbar durch Großschreiben des Richtungs-Segments;
       jede Umbenennung eines Falls zuerst als reiner `git mv`, der Inhalt danach in eigenem Commit
       ([`AGENTS.md`](../../../../AGENTS.md) §3.3).
-- [ ] `spec/architecture.md` Layout je Sprache um C# nachgezogen, mit den kleinen Richtungs-Ordnern und
+- [x] `spec/architecture.md` Layout je Sprache um C# nachgezogen, mit den kleinen Richtungs-Ordnern und
       der Aussage, dass `port-locality` geprüft ist (Folgepflicht der [`ADR-0096`](../../adr/0096-csharp-skelett-toolchain-und-schicht-aufloesung.md) und
       [ADR-0097](../../adr/0097-csharp-hexslice-richtungs-ordner-klein.md)).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`),
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`),
       kein Self-Review.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine
       Beobachtung anfiel.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen prüft die Closure von `welle-sprachprofile-java-python-csharp`; nach dem
       Move gefahren, §7.
 
@@ -186,7 +186,77 @@ Implementer fährt sie beim Neumessen von Fall 756 mit und hält das Ergebnis in
 
 ## 7. Closure-Notiz
 
-<!-- Erst bei der Closure füllen. -->
+- **Was hat funktioniert:** Nach der Nacharbeit trägt der Slice das Layout mit kleinen Richtungs-Ordnern
+  (`Ports/inbound`, `Ports/outbound`, übrige Verzeichnisse und Namensräume PascalCase), `languages: csharp`, `fixed-root` auf
+  `src/App`, sieben Kanten einschließlich `driven_adapters → ports_outbound`. Im gebootstrappten Ziel (Probe des Verifiers, nicht Fixture)
+  meldet a-check `0 Befund(e)` ohne die zwei Hinweise; `core-impurity` (Fall 761), die Auflösung (762), die Port-Kante (763) und
+  `port-locality` (764: zweite Slice nach der Vorschrift des Config-Kommentars, fremder Port-`using` im Handler, `Handler.cs:1`) haben je
+  einen Lauf-Zahn, dazu Text-Wächter je Schlüssel (748 bis 760, 765, 766) in derselben Lieferung; der Verifier fuhr 705, 749, 755 bis 758 und
+  761 bis 766 rot und las die Ursache. Der Lauf `ci` auf `e1b5fa08` (Linux) ist grün, sein `full-smoke` belegt den `port-locality`-Zahn
+  (`port-locality: 1` an `Handler.cs:1`), Stufe 29 s.
+- **Was ging anders als geplant:** Der Erst-Stand `3e91174c..6964b9c7` (PascalCase-Richtung nach [`ADR-0096`](../../adr/0096-csharp-skelett-toolchain-und-schicht-aufloesung.md)
+  Festlegung 5) war nach dem Erst-Review (F1 falsche Ursache im Config-Kommentar, F2 `port-locality` ungeprüft) in Teilen neu zu bauen: Die Messung
+  des Reviewers am Ziel (a-check zieht das Richtungs-Segment nur kleingeschrieben ab) widerlegte die Layout-Festlegung, der Architect löste drei
+  Sätze davon durch [`ADR-0097`](../../adr/0097-csharp-hexslice-richtungs-ordner-klein.md) ab, der Planner zog die Abnahme nach (Plan-Kopf), Renderer,
+  Config, Stufe, Abdeckungs-Zeile und Fälle folgten (`4541d7e9..e1b5fa08`), die Gegenrichtung `ddbee1df`. Nicht in §3 geführt, geliefert (Review und
+  Verifier lasen den Diff, zulässig): die Fälle 765 und 766 (Text-Wächter für `inbound` und den Port-Glob, aus
+  [`ADR-0097`](../../adr/0097-csharp-hexslice-richtungs-ordner-klein.md) Festlegung 1 und 2); die Zeile in `README.md`; der geteilte Helfer
+  `assertArchConfigResolution` (Python und C#, `dupl`; Fälle 734, 745 und 720 fuhren ohne Zahn-Verlust); `spec/architecture.md` durch den Implementer
+  (Rollenfrage `slice-151` offen; [`AGENTS.md`](../../../../AGENTS.md) §3.8 bindet nur Hard Rules und Adaptions-Block); die Pausen `sleep 2` in der
+  Stufe.
+- **Laufzeit ([`MR-089`](../../../../harness/conventions.md#mr-089)):** Kommando `make full-smoke-host`, macOS/arm64 (Colima), Image warm, Variante
+  Mono-Repo mit allen Sprachen und der C#-hexSlice-Stufe. Erst-Stand-Reihe (Message von `61306d52`): Vorher 313 s und 330 s, Nachher 495 s und 318 s,
+  Stufe 11 s und 23 s; der 495-s-Lauf lief auf einem durch Mutationsläufe veränderten Cache. Nacharbeits-Reihe (Message von `1765e7aa`, V, N, V, N
+  abwechselnd): Gesamt 362, 334, 331, 372 s, Stufe 11, 19, 10, 22 s, davon 6 s Pausen. Verifier (je ein Lauf je Stand): Stufe V 12 s, N 28 s.
+  **Belastbar ist allein die Größenordnung der Stufenzeit: rund 10 bis 16 s Zuwachs, davon 6 s Pausen**; die Gesamtdauer rauscht um rund 25 s und trägt
+  keinen Zuwachs. CI (Linux, `make full-smoke`): Stufe 29 s, andere Variante und Lage, nicht gleichzusetzen. **Ungemessen:** kalter Cache, Image-Pull.
+- **Benannte Grenzen (Review L-1, Verifier L-1, L-2, I-3):** Die Pausen `sleep 2` haben keine Gegenprobe (Beobachtung beim Implementer, vom Reviewer in
+  9 Versuchen und vom Verifier nicht reproduziert; Register). Der Zuwachs der Stufenzeit ist je Stand mit einem Lauf gegengemessen (16 s gegen 9 bis
+  12 s der Implementer-Reihe). Die Abdeckungs-Zeile sagt „stilles Gruen" für ein Verzeichnis in anderer Schreibweise, der Config-Kommentar nennt
+  `wrong-direction`, wo ein Adapter importiert; gemessen ist beides nur für das Richtungs-Segment. `IDE1006`, `CA1707`, `CS8981` stehen in
+  [`ADR-0097`](../../adr/0097-csharp-hexslice-richtungs-ordner-klein.md) als nicht gemessen, nicht in der Zeile. Die Zeile führt „CI-Linux" unter
+  NICHT gemessen; für `e1b5fa08` ist der Lauf grün. Die drei Sätze sind ein Implementer-Nachtrag (klein), kein Slice: Die Regel steht in
+  [`AGENTS.md`](../../../../AGENTS.md) §3.6, wer die Zeile berührt, zieht sie nach; Beleg `BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`.
+  Die Rollenfrage `spec/` bleibt bei `slice-151-spec-straten-haben-eine-schreibende-rolle`; Alternative C (a-check-Anforderung) bleibt
+  Re-Evaluierungs-Trigger 1 von [`ADR-0097`](../../adr/0097-csharp-hexslice-richtungs-ordner-klein.md), kein Slice.
+- **Steering-Loop-Eintrag:** geschärfte Regel (Vorschlag, nicht verkörpert): Eine Layout-Festlegung, die Globs oder Schreibweisen eines Fremd-Gates
+  trägt, ist an **jedem** Schlüssel des Gates gemessen, den ihre Pfade berühren, bevor sie in der ADR steht, oder führt den ungemessenen Schlüssel
+  in der Liste „nicht gemessen". [`ADR-0096`](../../adr/0096-csharp-skelett-toolchain-und-schicht-aufloesung.md) Festlegung 5 maß die Auflösung,
+  nicht `port-locality`; die Lücke fiel erst in der Messung des Erst-Reviews auf und kostete den halben Slice. Neuer Sensor, in derselben Lieferung:
+  der Lauf-Zahn 764 hält die Wirkung der Festlegung am Ziel, 765 und 766 halten die Schreibweise im Renderer und in der Config; er hält diese eine
+  Festlegung, nicht die Klasse. Ein Sensor auf die Klasse ist nicht baubar (ob eine ADR jeden Schlüssel nennt, ist ein Urteil über Bedeutung);
+  Träger ist der Architect beim Annehmen und der Reviewer, der am Ziel misst. Gezählt in der neuen Beobachtung
+  `BEO-ALL/adr-festlegung-bindet-gate-schluessel-die-ihre-messung-nicht-trug` (1×, offen); unter der Schwelle, der Lese-Schritt einer späteren
+  Closure entscheidet. Zweite Lehre, bestätigt statt neu: der Lauf-Zahn im Ziel in derselben Lieferung wie der Text-Wächter hielt (zum vierten Mal in
+  Folge) und die Fälle 761 bis 764 pinnen die Ursache im `# expect:`.
+- **Beobachtungs-Register (`../observations/`):** je Beleg `evidence/slice-csharp-hexslice-layout.md`:
+  `BEO-ALL/kosten-einer-emittierten-pruefung-im-ziel-ungemessen` (verkörpert),
+  `BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht` (verkörpert); neu angelegt:
+  `BEO-ALL/adr-festlegung-bindet-gate-schluessel-die-ihre-messung-nicht-trug`,
+  `BEO-ALL/bind-mount-sicht-auf-umgeschriebene-dateien-ist-unter-macos-verzoegert` (Nachbarn `lokaler-full-smoke-scheitert-auf-macos-host` und
+  `gruen-vorlauf-eines-mutate-workers-faellt-unter-runner-last` gelesen: anderer Mechanismus, kein Beleg dort),
+  `BEO-ALL/csharp-hexslice-adopter-form-ohne-sensor` (je 1×, offen). Kein Beleg, kein Auftreten: `BEO-ALL/full-smoke-fall-expect-pinnt-nicht-die-ursache`
+  (alle neuen `# expect:` pinnen die Ursache, 764 pinnt `port-locality` und `Handler.cs`), `BEO-ALL/move-und-umschreiben-in-einem-commit` (Fall 705:
+  reiner `git mv` `50b65502`, Inhalt `fc260961`), `BEO-ALL/neuer-waechter-ohne-mutations-fall` (jeder neue Wächter trägt einen Fall),
+  `BEO-ALL/emittiertes-gate-am-gemischten-root-baut-das-dockerfile-einer-anderen-sprache`. **Zitiert ohne Beleg:**
+  `BEO-ALL/waechter-haelt-config-text-wirkung-im-ziel-ohne-lauf-zahn` (verkörpert in [`AGENTS.md`](../../../../AGENTS.md) §3.6): der Slice hielt die
+  Regel für Rolle, Root, Port-Kante und `port-locality` ein; text-gehalten bleiben die übrigen Kanten, `languages`, `exclude` und die Adopter-Form,
+  benannt in der Abdeckungs-Zeile wie bei Python. Ob diese Restmenge ein viertes Auftreten ist, steht beim Auftraggeber (Bericht); Gegenrichtung und
+  Adopter-Schreibweise haben nur Text- und Doku-Grenze.
+- **Folge-Slices:** keine angelegt. `slice-151-spec-straten-haben-eine-schreibende-rolle` — ist eine Datei in `next/` (Rollenfrage, hier nur zitiert).
+- **Paarungen (nach dem Move):** Anker-Paarung: kein Eintrag trägt das Feld `liegt in`, nichts zu paaren. Folge-Slice-Paarung:
+  `slice-151-spec-straten-haben-eine-schreibende-rolle` ist eine Datei in `next/`. Register-Paarung: jede genannte Beobachtung existiert mit nicht
+  leerem `evidence/`; `make register-ausgang` 0 Befund(e).
+- **Risiken aus §6:** Risiko 1 (Gegenbeispiel färbt am Ziel nicht rot) entfallen — nicht eingetreten: `core-impurity` am Ziel rot (Fall 761, Probe des
+  Verifiers); Risiko 2 (Verzeichnis-Schreibweise ohne Sensor) weiter offen (Register, `BEO-ALL/csharp-hexslice-adopter-form-ohne-sensor`); Risiko 3
+  (Schreibweise der Richtungs-Ordner) weiter offen (dasselbe Register-Paar); Risiko 4 (Gegenrichtung nur bei Adapter-Import rot) weiter offen
+  (dasselbe); Risiko 5 (Bind-Mount und CI-Linux) entfallen — nicht eingetreten: der Zahn färbt im Lauf `ci` auf `e1b5fa08` (Linux) und im
+  `full-smoke-host` über Bind-Mount rot, Trigger 3 der [`ADR-0097`](../../adr/0097-csharp-hexslice-richtungs-ordner-klein.md) nicht ausgelöst; die
+  Pausen sind eigener Register-Eintrag (`BEO-ALL/bind-mount-sicht-auf-umgeschriebene-dateien-ist-unter-macos-verzoegert`); Risiko 6 (voll
+  qualifizierter Name, `<Using>`, Reflection) weiter offen (Register, `BEO-ALL/csharp-hexslice-adopter-form-ohne-sensor`); Risiko 7 (Kante
+  `driven_adapters → ports_outbound`) entfallen — nicht eingetreten: grün im Ziel, rot ohne sie (Fall 763, `wrong-direction`); Risiko 8 (Messzahl)
+  entfallen — nicht eingetreten: Zahl im Baum, Verifier gegengemessen (oben); Risiko 9 (grobes `# expect:`) entfallen — nicht eingetreten: 761 bis
+  764 pinnen die Ursache, Verifier prüfte; Risiko 10 (Fall 177) entfallen — nicht eingetreten: `make test` grün — je einmal in §6.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

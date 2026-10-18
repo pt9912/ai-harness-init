@@ -1,0 +1,2 @@
+**Vorgang:** slice-csharp-hexslice-layout
+**Fund:** Schreibweise des Richtungs-Segments, Gegenrichtung (nur bei Adapter-Import rot, Messung 6 der `ADR-0097`), voll qualifizierter Name, `<Using>` und Reflection sind beim Adopter ungehalten; die Abdeckungs-Zeile nennt sie unter NICHT gemessen, der Verifier las sie gegen den Config-Kommentar (L-1).

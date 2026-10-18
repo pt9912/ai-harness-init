@@ -1,0 +1,2 @@
+**Vorgang:** slice-csharp-hexslice-layout
+**Fund:** `ADR-0096` Festlegung 5 legte PascalCase-Verzeichnisse fest und maß die Auflösung, nicht `port-locality`; der Erst-Review maß am Ziel, dass a-check das Richtungs-Segment nur kleingeschrieben abzieht und `port-locality` bei `Inbound`/`Outbound` ungeprüft bleibt (F2). Folge: `ADR-0097` (Teil-Ablösung), Plan-Änderung der Abnahme, Renderer, Config, Stufe, Fälle in Teilen neu gebaut.

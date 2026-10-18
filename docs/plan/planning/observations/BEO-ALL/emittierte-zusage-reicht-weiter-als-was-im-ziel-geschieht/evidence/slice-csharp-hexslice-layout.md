@@ -1,0 +1,2 @@
+**Vorgang:** slice-csharp-hexslice-layout
+**Fund:** Die Abdeckungs-Zeile der C#-hexSlice-Stufe nennt „ein Verzeichnis in anderer Schreibweise … stilles Gruen", der Config-Kommentar eine Abweichung als `wrong-direction`, wo ein Adapter in die Slice importiert; gemessen ist beides nur für das Richtungs-Segment (Verifier L-1). `IDE1006`, `CA1707` und `CS8981` stehen in `ADR-0097` als nicht gemessen, nicht in der Zeile (Verifier I-3).
