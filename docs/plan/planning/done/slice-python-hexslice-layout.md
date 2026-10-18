@@ -77,7 +77,7 @@ von `internal/gen/kotlin.go`, `internal/gen/arch.go` und
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine
       Beobachtung anfiel.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen prüft die Closure von `welle-sprachprofile-java-python-csharp`; nach dem
+- [x] Die drei Paarungen prüft die Closure von `welle-sprachprofile-java-python-csharp`; nach dem
       Move gefahren, §7.
 
 ## 3. Plan (vor Code)
@@ -193,7 +193,9 @@ DoD vollständig, Arch-Zahn rot und Gegenprobe grün in `make full-smoke`, Closu
   Entscheidung: `BEO-ALL/waechter-haelt-config-text-wirkung-im-ziel-ohne-lauf-zahn` (oben).
 - **Folge-Slices:** keiner angelegt; `slice-csharp-hexslice-layout` bleibt in `open/` (Priorisierung beim
   Auftraggeber).
-- **Paarungen (nach dem Move):** wird nach dem Move eingetragen.
+- **Paarungen (nach dem Move):** Anker-Paarung: kein Eintrag trägt das Feld `liegt in`, nichts zu paaren.
+  Folge-Slice-Paarung: kein Folge-Slice genannt, nichts zu paaren. Register-Paarung: jede genannte Beobachtung
+  existiert mit nicht leerem `evidence/`; `make register-ausgang` 0 Befund(e).
 - **Risiken aus §6:** Risiko 1 (Gegenbeispiel färbt am Ziel nicht rot) entfallen — nicht eingetreten:
   `core-impurity` am Ziel rot gesehen (`greeting.py:3`), Gegenprobe grün, Fälle 739 und 740; Risiko 2 (relativer
   Import entgeht a-check, nur `TID252`) weiter offen (Register, `BEO-ALL/relativer-import-am-hexslice-ziel-ungefahren`):
