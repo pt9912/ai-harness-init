@@ -66,7 +66,9 @@ func TestGenerate_PythonHexsliceProfile_FileSet(t *testing.T) {
 
 // TestPythonHexslice_InitsLeer: jede __init__.py des hexSlice-Skeletts ist leer. Die Config
 // ordnet nur Dateien einer Schicht zu, die einen Import tragen koennen; ein Paket-Marker mit
-// Import faellt ausserhalb einer Schicht (src/app/hexagon/__init__.py) unter keinen Glob.
+// Import faellt ausserhalb einer Schicht (src/app/hexagon/__init__.py) unter keinen Glob. a-check
+// meldet seinen Import in eine Schicht als wrong-direction; ungeprueft bliebe nur ein Import, dessen
+// Ziel selbst in keiner Schicht liegt oder nicht aufloest.
 // Rot-Gegenbeispiel: test/mutations/732 legt Inhalt in die Marker.
 func TestPythonHexslice_InitsLeer(t *testing.T) {
 	dir := genPythonHexslice(t)

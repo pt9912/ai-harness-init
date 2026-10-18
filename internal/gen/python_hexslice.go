@@ -5,8 +5,9 @@ package gen
 // ausschliesslich ueber absolute `from app.… import …`-Zeilen; genau diese Form loest die
 // a-check-Config (resolution python, fixed-root mit package_base app) auf einen Pfad auf.
 // Ein relativer Import erkennt a-check nicht; ihn schliesst die ruff-Regel TID252 der
-// pyproject.toml. Jedes Paket-Verzeichnis traegt eine leere __init__.py: mypy bildet den
-// Modulnamen ueber sie.
+// pyproject.toml. Das Skelett rendert in jedem Paket-Verzeichnis eine leere __init__.py
+// (TestPythonHexslice_InitsLeer); mypy verlangt davon nur den Wurzel-Marker src/app/__init__.py,
+// sonst bricht es mit "Source file found twice under different module names" ab.
 
 const pyHexSrc = "src/app/"
 
@@ -252,7 +253,9 @@ const pythonHexArchConfig = `# .a-check.yml — Architektur-Gate (HexSlice = hex
 #
 # Die leeren __init__.py ausserhalb der Schichten (src/app/__init__.py, hexagon/, application/ ...)
 # erscheinen im Hinweis "gescannte Dateien liegen in keiner Schicht": sie tragen keinen Import.
-# Traegt eine davon einen, ist sie ungeprueft, bis eine Schicht sie deckt.
+# Importiert ein Marker in eine Schicht, meldet a-check wrong-direction ("(ohne Schicht) ->
+# <Schicht>"); ungeprueft bleibt ein Marker-Import nur, wenn sein Ziel selbst in keiner Schicht
+# liegt oder nicht aufloest.
 #
 # Die Slice-Globs (.../greet/**) und Port-Globs (.../ports/<richtung>/**) tragen
 # bewusst literale Verzeichnis-Praefixe. Nur daran haengen die beiden Vertical-
