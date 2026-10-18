@@ -3018,7 +3018,7 @@ echo "full-smoke: Python-Stufe dauerte $(( SECONDS - python_start ))s (add-lang,
 # core-impurity, an genau dieser Datei. Die Gates lint (ruff, mypy strict), test und build laufen
 # im selben make gates ueber dem Skelett.
 echo "full-smoke: add-lang python apps/pythonhexslice --arch hexslice (Arch-Achse, Python) ..."
-e2e_abdeckung "LH-FA-04 LH-FA-07 LH-QA-01" "Das Schicht-Layout in Python (Verzeichnisse) mit Arch-Gate: make gates gruen ohne den Hinweis auf nicht aufloesende Import-Symbole (ein Adapter, der seinen Port erbt, ist gruen), ein Import aus der Domain in einen Adapter faerbt das Arch-Gate rot mit core-impurity; NICHT gemessen: die uebrigen Richtungs-Regeln, ein relativer Import (a-check extrahiert ihn nicht, ruff TID252 faerbt nur den Lint-Fall der flat-Stufe), ein voll qualifizierter Name ohne Import, ein dynamischer Import, Importe in den Paket-Markern __init__.py (liegen in keiner Schicht)" "Python-hexSlice-Gate kaputt"
+e2e_abdeckung "LH-FA-04 LH-FA-07 LH-QA-01" "Das Schicht-Layout in Python (Verzeichnisse) mit Arch-Gate: make gates gruen ohne den Hinweis auf nicht aufloesende Import-Symbole (ein Adapter, der seinen Port erbt, ist gruen), ein Import aus der Domain in einen Adapter faerbt das Arch-Gate rot mit core-impurity; NICHT gemessen: die uebrigen Richtungs-Regeln, ein relativer Import (a-check extrahiert ihn nicht, ruff TID252 faerbt nur den Lint-Fall der flat-Stufe), ein voll qualifizierter Name ohne Import, ein dynamischer Import, ein Import in einem Paket-Marker __init__.py, dessen Ziel selbst in keiner Schicht liegt oder nicht aufloest (a-check meldet nur den Import in eine Schicht)" "Python-hexSlice-Gate kaputt"
 pythonhexslice_start=$SECONDS
 ( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang python apps/pythonhexslice --arch hexslice )
 for rel in apps/pythonhexslice/src/app/hexagon/domain/example/greeting.py \
@@ -3036,6 +3036,11 @@ pyhex_rc=0
 pyhex_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || pyhex_rc=$?
 printf '%s\n' "$pyhex_out"
 if [ "$pyhex_rc" -ne 0 ]; then
+	if grep -qF -- 'wrong-direction: driven_adapters -> ports_outbound' <<<"$pyhex_out"; then
+		echo "full-smoke: FEHLER — make gates nach add-lang python --arch hexslice faellt an wrong-direction driven_adapters -> ports_outbound: die Kante fehlt in der emittierten .a-check.yml, obwohl der Adapter seinen Port erbt." >&2
+		einordnen "make -j gates nach add-lang python --arch hexslice (apps/pythonhexslice)" "$pyhex_out"
+		exit 1
+	fi
 	echo "full-smoke: FEHLER — make gates nach add-lang python --arch hexslice ist NICHT Exit 0 (Python-hexSlice-Gate kaputt)." >&2
 	einordnen "make -j gates nach add-lang python --arch hexslice (apps/pythonhexslice)" "$pyhex_out"
 	exit 1
