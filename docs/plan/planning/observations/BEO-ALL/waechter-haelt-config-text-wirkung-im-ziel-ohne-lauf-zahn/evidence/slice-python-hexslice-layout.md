@@ -1,0 +1,2 @@
+**Vorgang:** slice-python-hexslice-layout
+**Fund:** Die Kanten der Python-hexslice-Config außer `core-impurity` und `driven_adapters → ports_outbound` haben wie bei Java nur den Text-Wächter, keinen Lauf im Ziel; die Abdeckungs-Zeile nennt sie unter NICHT gemessen. Drei andere Bindungen derselben Config (Rolle, Root-Auflösung, Port-Kante) tragen ihren Lauf-Zahn in derselben Lieferung (Fälle 739, 740, 742) — der Vorgang schließt die Klasse dort und lässt sie hier offen.
