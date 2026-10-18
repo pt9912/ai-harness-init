@@ -260,7 +260,9 @@ byte-identisch). `--lang <X>` beim Init ist die One-Shot-Kurzform (Init + ein
   Schreibweise als der Namensraum (`IDE0130` unterscheidet Groß- und Kleinschreibung nicht, a-check
   schon). Die Regel `port-locality` ist geprüft: a-check zieht das Richtungs-Segment einer
   Port-Schicht nur kleingeschrieben ab, ein groß geschriebenes Segment lässt die Regel für diesen
-  Port aus (Hinweis, Gate grün). Die Schreibweise der Richtungs-Ordner beim Adopter hält kein
+  Port aus (Hinweis, Gate grün). Die Gegenrichtung (Verzeichnis klein, Namensraum groß) meldet
+  a-check als `wrong-direction`, wenn ein Adapter in die Slice importiert; ohne Adapter-Import
+  in die Slice bleibt die abweichende Schreibweise still. Die Schreibweise der Richtungs-Ordner beim Adopter hält kein
   Sensor; den Renderer hält ein Test.
 - **Ein ausführbares Artefakt, und eine Klasse außerhalb des versionierten Baums.** Die
   Emission legt nicht nur Text ab: der **Träger** der Erfassung ist das laufende

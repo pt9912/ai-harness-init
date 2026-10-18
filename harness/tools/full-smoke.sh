@@ -3225,8 +3225,10 @@ echo "full-smoke: C#-Stufe dauerte $(( SECONDS - csharp_start ))s (add-lang, mak
 # Stufe eine zweite Slice an und faerbt a-check mit einem fremden Port-using im Handler rot mit
 # port-locality. Die Gates lint (dotnet format mit IDE0005 und IDE0130), test und build laufen im
 # selben make gates ueber dem Skelett. Die Schreibweise der Richtungs-Ordner beim Adopter hat
-# keinen Sensor; Config-Kommentar, spec/architecture.md, diese Zeile und die Abdeckungs-Zeile
-# sagen dasselbe, und kein Sensor haelt die Uebereinstimmung.
+# keinen Sensor; die Gegenrichtung (Verzeichnis klein, Namensraum gross) meldet a-check nur bei
+# einem Adapter-Import in die Slice als wrong-direction, sonst bleibt sie still. Config-Kommentar,
+# spec/architecture.md, diese Zeile und die Abdeckungs-Zeile sagen dasselbe, und kein Sensor
+# haelt die Uebereinstimmung.
 echo "full-smoke: add-lang csharp apps/csharphexslice --arch hexslice (Arch-Achse, C#) ..."
 e2e_abdeckung "LH-FA-04 LH-FA-07 LH-QA-01" "Das Schicht-Layout in C# (PascalCase-Verzeichnisse, die Richtungs-Ordner unter Ports klein, Namensraum gleich Verzeichnis) mit Arch-Gate: make gates gruen ohne den Hinweis auf nicht aufloesende Import-Symbole (ein Adapter, der sein Port-Interface implementiert, ist gruen), ein using aus der Domain in einen Adapter faerbt das Arch-Gate rot mit core-impurity, eine zweite Slice nach der Vorschrift des Config-Kommentars und ein fremder Port-using im Handler faerben es rot mit port-locality an Handler.cs, nach der Ruecknahme ist es gruen ohne den Hinweis auf Port-Globs, die den App-Baum nicht erreichen; NICHT gemessen: die uebrigen Richtungs-Regeln (app-impurity, wrong-direction, lateral-adapter als rote Faelle), die Schreibweise der Richtungs-Ordner beim Adopter (kein Sensor; ein Test haelt den Renderer, ein gross geschriebenes Segment laesst port-locality aus und gibt ein gruenes Gate), die Gegenrichtung (Verzeichnis klein, Namensraum gross: rot nur, wenn ein Adapter den Port importiert), ein Namensraum ausserhalb seines Verzeichnisses und ein Verzeichnis in anderer Schreibweise ausser dem Richtungs-Segment (ein Test haelt den Renderer, im Ziel nicht gefahren; beide geben ein stilles Gruen im Arch-Gate), ein voll qualifizierter Name ohne using, ein <Using> in der .csproj, Reflection, exclude tests/** (an keiner Fixture gemessen), der Lauf auf dem CI-Linux-Dateisystem" "C#-hexSlice-Gate kaputt"
 csharphexslice_start=$SECONDS
