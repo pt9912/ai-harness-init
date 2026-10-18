@@ -120,6 +120,7 @@ Umgebung (bewusster Opt-in-Override der gepinnten Werte):
                        SKEL_KOTLIN_VERSION = Tag des gradle-Images;
                        SKEL_JAVA_VERSION = Tag des gradle-Images;
                        SKEL_PYTHON_VERSION = Tag des python-Images (<ver>-slim);
+                       SKEL_CSHARP_VERSION = Tag des dotnet-sdk-Images (<major>.<minor>[.<patch>]);
                        Default gepinnt, deterministisch)
   AI_HARNESS_INIT_BASELINE_URL_BASE  Basis-URL des Baseline-Fetches (Default: der gepinnte
                        GitHub-Release-Pfad des Kurses). Nur für Tests/Entwicklung gedacht —
@@ -289,7 +290,7 @@ Mono-Repo. <pfad>=. verortet am Repo-Root. Idempotent: das Fragment/blocked
 wird konvergent kanonisch geschrieben, vorhandener Skelett-Code bleibt unberuehrt.
 
 Argumente:
-  <sprache>   Zielsprache (gen-Profil: go, cpp, kotlin, java, python)
+  <sprache>   Zielsprache (gen-Profil: go, cpp, kotlin, java, python, csharp)
   <pfad>      Zielort des Moduls (. = Repo-Root)
   --arch      Ziel-Architektur (flat|hexagonal|hexslice, Default flat).
               Eine von der Sprache nicht getragene Architektur (z.B. cpp+hexagonal) -> Exit 2
@@ -666,7 +667,8 @@ func skelVersion(lang string) string {
 
 // callExitCode bildet einen Generator-Fehler auf den Exit-Code ab: ein AUFRUF-Fehler —
 // unbekannte Sprache (gen.UnknownLangError) ODER sprach-fremde/unbekannte Architektur
-// (gen.UnknownArchError, slice-045b) — ist Exit 2, sonst Emit-Fehler (1). Rein/netzlos
+// (gen.UnknownArchError, slice-045b) oder nicht ableitbare Toolchain-Version
+// (gen.InvalidVersionError, ADR-0096 Festlegung 2) — ist Exit 2, sonst Emit-Fehler (1). Rein/netzlos
 // testbar.
 func callExitCode(err error) int {
 	if err == nil {
@@ -674,7 +676,8 @@ func callExitCode(err error) int {
 	}
 	var ule *gen.UnknownLangError
 	var uae *gen.UnknownArchError
-	if errors.As(err, &ule) || errors.As(err, &uae) {
+	var ive *gen.InvalidVersionError
+	if errors.As(err, &ule) || errors.As(err, &uae) || errors.As(err, &ive) {
 		return 2
 	}
 	return 1

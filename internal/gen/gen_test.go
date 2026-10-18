@@ -243,8 +243,8 @@ func TestGenerate_UnknownLang(t *testing.T) {
 	if ule.Lang != "rust" {
 		t.Errorf("Lang = %q, want rust", ule.Lang)
 	}
-	if strings.Join(ule.Available, ",") != "cpp,go,java,kotlin,python" {
-		t.Errorf("Available = %v, want [cpp go java kotlin python] (sortiert)", ule.Available)
+	if strings.Join(ule.Available, ",") != "cpp,csharp,go,java,kotlin,python" {
+		t.Errorf("Available = %v, want [cpp csharp go java kotlin python] (sortiert)", ule.Available)
 	}
 }
 
@@ -254,7 +254,7 @@ func TestSupportedLangs(t *testing.T) {
 	if !sort.StringsAreSorted(langs) {
 		t.Errorf("SupportedLangs nicht sortiert: %v", langs)
 	}
-	for _, want := range []string{"go", "cpp", "kotlin", "java", "python"} {
+	for _, want := range []string{"go", "cpp", "kotlin", "java", "python", "csharp"} {
 		found := false
 		for _, l := range langs {
 			if l == want {
@@ -270,7 +270,7 @@ func TestSupportedLangs(t *testing.T) {
 // TestDefaultVersion koppelt die Default-Aufloesung je Sprache (slice-039): go -> die
 // Go-Version, cpp -> der ubuntu-Base-Tag, unbekannt -> "" (Generate faengt sie separat).
 func TestDefaultVersion(t *testing.T) {
-	cases := map[string]string{"go": gen.DefaultGoVersion, "cpp": gen.DefaultCppVersion, "kotlin": gen.DefaultKotlinVersion, "java": gen.DefaultJavaVersion, "python": gen.DefaultPythonVersion, "rust": ""}
+	cases := map[string]string{"go": gen.DefaultGoVersion, "cpp": gen.DefaultCppVersion, "kotlin": gen.DefaultKotlinVersion, "java": gen.DefaultJavaVersion, "python": gen.DefaultPythonVersion, "csharp": gen.DefaultCsharpVersion, "rust": ""}
 	for lang, want := range cases {
 		if got := gen.DefaultVersion(lang); got != want {
 			t.Errorf("DefaultVersion(%q) = %q, want %q", lang, got, want)

@@ -247,6 +247,7 @@ func blockedByLang() map[string]string {
 		"kotlin": "gradle gradlew kotlin kotlinc java javac jar jshell detekt ktlint\n",
 		"java":   "gradle gradlew java javac jar jshell checkstyle mvn mvnw\n",
 		"python": "python python3 pytest ruff mypy uv uvx poetry\n",
+		"csharp": "dotnet msbuild nuget csc\n",
 	}
 }
 

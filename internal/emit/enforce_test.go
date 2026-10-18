@@ -256,6 +256,31 @@ func TestBlockedFragment_PythonTraegtDieNamenDerAdr(t *testing.T) {
 	}
 }
 
+// TestBlockedFragment_CsharpTraegtDieNamenDerAdr (ADR-0096 Festlegung 6): das Fragment
+// blocked/csharp nennt genau dotnet, msbuild, nuget und csc — die Toolchain des Geruests und die
+// naheliegenden Host-Umwege, obwohl das Geruest sie nicht nutzt. Die Namen des Guard-Bodens
+// (pip, pip3, pipx) stehen NICHT darin: die Union ist die eine Quelle.
+func TestBlockedFragment_CsharpTraegtDieNamenDerAdr(t *testing.T) {
+	worte := strings.Fields(emit.BlockedFragmentForLang("csharp"))
+	set := map[string]bool{}
+	for _, w := range worte {
+		set[w] = true
+	}
+	for _, want := range []string{"dotnet", "msbuild", "nuget", "csc"} {
+		if !set[want] {
+			t.Errorf("blocked/csharp nennt %q nicht: %v", want, worte)
+		}
+	}
+	for _, boden := range []string{"pip", "pip3", "pipx"} {
+		if set[boden] {
+			t.Errorf("blocked/csharp doppelt %q aus dem Guard-Boden: %v", boden, worte)
+		}
+	}
+	if len(worte) != 4 {
+		t.Errorf("blocked/csharp fuehrt %v, want genau dotnet msbuild nuget csc", worte)
+	}
+}
+
 // TestEnforce_GuardBashAwkOnly (LH-QA-03): der emittierte Guard nutzt awk als
 // JSON-Parser (nicht jq/node) und referenziert den Extraktor am emittierten
 // tools/harness/-Pfad (MR-005). Ein reiner String-Grep auf „jq"/„node" waere

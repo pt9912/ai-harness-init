@@ -438,6 +438,46 @@ func TestRun_AddLangPythonHexsliceIstExit2(t *testing.T) {
 	assertAddLangHexsliceIstExit2(t, "python", "apps/py")
 }
 
+// TestRun_AddLangCsharp (LH-FA-04, LH-FA-06, ADR-0096): `add-lang csharp apps/cs` dropt Solution,
+// beide Projekte, Directory.Build.props, .editorconfig und Dockerfile, das modul-scoped Fragment
+// und blocked/csharp mit den Namen der ADR.
+func TestRun_AddLangCsharp(t *testing.T) {
+	assertAddLangDropt(t, "csharp", "apps/cs", []string{
+		"apps/cs/app.sln", "apps/cs/Directory.Build.props", "apps/cs/.editorconfig", "apps/cs/Dockerfile",
+		"apps/cs/src/App/App.csproj", "apps/cs/src/App/Program.cs",
+		"apps/cs/tests/App.Tests/App.Tests.csproj", "apps/cs/tests/App.Tests/ProgramTests.cs",
+		"harness/mk/apps-cs.mk",
+	}, []string{"dotnet", "msbuild", "nuget", "csc"})
+}
+
+// TestRun_AddLangCsharpHexsliceIstExit2 (ADR-0096 Festlegung 5): csharp rendert in dieser
+// Lieferung nur flat.
+func TestRun_AddLangCsharpHexsliceIstExit2(t *testing.T) {
+	assertAddLangHexsliceIstExit2(t, "csharp", "apps/cs")
+}
+
+// TestRun_AddLangCsharpTagOhneMajorMinorIstExit2 (ADR-0096 Festlegung 2): ein Wert von
+// SKEL_CSHARP_VERSION ohne Major.Minor beendet add-lang mit Exit 2 und legt weder das Modul noch
+// das gestagte Skelett an. Die Klasse des Fehlers (Exit 2 statt 1) haelt callExitCode.
+func TestRun_AddLangCsharpTagOhneMajorMinorIstExit2(t *testing.T) {
+	for _, tag := range []string{"latest", "10"} {
+		t.Setenv("SKEL_CSHARP_VERSION", tag)
+		dir := initializedRepo(t)
+		var out, errb bytes.Buffer
+		if code := run([]string{"add-lang", "csharp", "apps/cs"}, dir, testSources(t), &out, &errb); code != 2 {
+			t.Fatalf("add-lang csharp mit SKEL_CSHARP_VERSION=%s: exit %d, want 2; stderr: %q", tag, code, errb.String())
+		}
+		if !strings.Contains(errb.String(), "Major.Minor") {
+			t.Errorf("Meldung nennt Major.Minor nicht: %q", errb.String())
+		}
+		for _, rel := range []string{"apps/cs", ".harness/skeleton/Directory.Build.props"} {
+			if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel))); !os.IsNotExist(err) {
+				t.Errorf("abgelehnter Wert %s legte %s an: %v", tag, rel, err)
+			}
+		}
+	}
+}
+
 // TestRun_AddLangRoot: `add-lang go .` verortet am Root und liefert die UNSCOPED Fassung
 // (harness/mk/go.mk, test/lint/build, docker build .) — dieselbe wie der --lang-One-Shot.
 func TestRun_AddLangRoot(t *testing.T) {

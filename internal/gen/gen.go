@@ -81,6 +81,13 @@ func GenerateArch(destDir, lang, version, arch string) error {
 	if !archSupported(lang, arch) {
 		return &UnknownArchError{Arch: arch, Available: archsForLang(lang)}
 	}
+	// Die Version ist Eingabe des Aufrufers; ein Renderer, der aus ihr ableitet (C#: die TFM aus
+	// Major.Minor des Tags), meldet einen nicht ableitbaren Wert hier, bevor etwas geschrieben wird.
+	if check, ok := versionValidators()[lang]; ok {
+		if err := check(version); err != nil {
+			return err
+		}
+	}
 	prof := build(version, arch)
 	rels := make([]string, 0, len(prof))
 	for rel := range prof {
@@ -121,6 +128,7 @@ func profiles() map[string]func(version, arch string) map[string]string {
 		"kotlin": kotlinProfile,
 		"java":   javaProfile,
 		"python": pythonProfile,
+		"csharp": csharpProfile,
 	}
 }
 
@@ -138,7 +146,7 @@ const DefaultArch = archFlat
 //
 // STAND: go traegt flat + hexslice + hexagonal, cpp und kotlin tragen flat + hexslice
 // (ADR-0088), java traegt flat (ADR-0094 Festlegung 4: hexslice steht erst hier, wenn sein
-// Renderer es rendert), python traegt flat (ADR-0095 Festlegung 5, ebenso).
+// Renderer es rendert), python traegt flat (ADR-0095 Festlegung 5, ebenso), csharp traegt flat (ADR-0096 Festlegung 5, ebenso).
 // Die sprach-spezifische zweite Stufe der Arch-Validierung ist damit wieder von aussen
 // ERREICHBAR und bewacht — `cpp --arch hexagonal` ist eine existierende Architektur, die
 // dieser Renderer nicht rendert (TestGenerateArch_LangSpecificArchRejected haelt es fest,
@@ -153,6 +161,7 @@ func langArchs() map[string][]string {
 		"kotlin": {archFlat, archHexslice},
 		"java":   {archFlat},
 		"python": {archFlat},
+		"csharp": {archFlat},
 	}
 }
 
@@ -192,6 +201,8 @@ func DefaultVersion(lang string) string {
 		return DefaultJavaVersion
 	case "python":
 		return DefaultPythonVersion
+	case "csharp":
+		return DefaultCsharpVersion
 	}
 	return ""
 }
@@ -259,6 +270,7 @@ func fragmentsMixed() map[string]func(modul, context, version string) string {
 		"kotlin": kotlinFragmentMixed,
 		"java":   javaFragmentMixed,
 		"python": pythonFragmentMixed,
+		"csharp": csharpFragmentMixed,
 	}
 }
 
@@ -286,5 +298,18 @@ func fragments() map[string]func(modul, context, version string) string {
 		"kotlin": kotlinFragment,
 		"java":   javaFragment,
 		"python": pythonFragment,
+		"csharp": csharpFragment,
+	}
+}
+
+// versionValidators bildet Sprache -> Pruefung des Versions-Werts, fuer Renderer, die aus der
+// Version ableiten (csharp: csharpTFM). Eine Sprache ohne Eintrag nimmt jeden Wert an. Der
+// Fehler ist *InvalidVersionError (Aufruf-Fehler, Exit 2).
+func versionValidators() map[string]func(version string) error {
+	return map[string]func(string) error{
+		"csharp": func(version string) error {
+			_, err := csharpTFM(version)
+			return err
+		},
 	}
 }
