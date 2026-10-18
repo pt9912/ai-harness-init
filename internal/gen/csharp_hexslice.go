@@ -243,10 +243,11 @@ const csharpHexArchConfig = `# .a-check.yml — Architektur-Gate (HexSlice = hex
 # package_base-Verzeichnis; ein Root src loest kein using auf, und a-check meldet dann
 # "0 von N Import-Symbolen loesen auf". Ein Namensraum, der keinem Verzeichnis folgt, loest
 # ebenfalls nicht auf; IDE0130 haelt Namensraum und Verzeichnis zusammen,
-# unterscheidet aber Gross- und Kleinschreibung nicht, a-check unterscheidet sie. Eine solche
-# Abweichung in der Schreibweise faerbt a-check nur, wo ein Adapter in die betroffene Slice
-# importiert: dann meldet es wrong-direction (gemessen mit Verzeichnis klein, Namensraum gross).
-# Ohne Adapter-Import in die Slice bleibt es still. Das haelt kein Sensor beim Adopter. Halte die
+# unterscheidet aber Gross- und Kleinschreibung nicht, a-check unterscheidet sie. Gemessen ist
+# nur das Richtungs-Segment (Verzeichnis klein, Namensraum gross): a-check meldet
+# wrong-direction, wenn ein Adapter in die Slice importiert, sonst bleibt es still. Fuer ein
+# anderes Verzeichnis in abweichender Schreibweise ist das nicht gemessen. Das haelt kein Sensor
+# beim Adopter. Halte die
 # Verzeichnisse in PascalCase — ausser den Richtungs-Ordnern unter Ports. Nicht erkannt wird
 # ein voll qualifizierter Name im Code ohne using; ein <Using Include=...> in einer .csproj-Datei
 # liegt ausserhalb des Globs **/*.cs.

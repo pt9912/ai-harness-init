@@ -256,9 +256,10 @@ byte-identisch). `--lang <X>` beim Init ist die One-Shot-Kurzform (Init + ein
   den Namensraum eines `using` auf einen Pfad ab. Die emittierte Config trägt den
   `resolution`-Block (`fixed-root`, Root `src/App`, `package_base` `App`); die Kanten-Menge ist die
   der Implementierung des Port-Interfaces wie bei Java. Entgehen dem Gate: ein voll qualifizierter
-  Name ohne `using`, ein `<Using>` in der `.csproj`, und ein Verzeichnis in anderer
-  Schreibweise als der Namensraum (`IDE0130` unterscheidet Groß- und Kleinschreibung nicht, a-check
-  schon). Die Regel `port-locality` ist geprüft: a-check zieht das Richtungs-Segment einer
+  Name ohne `using`, ein `<Using>` in der `.csproj`, und ein Namensraum außerhalb seines
+  Verzeichnisses; für ein Verzeichnis in anderer Schreibweise als der Namensraum (`IDE0130`
+  unterscheidet Groß- und Kleinschreibung nicht, a-check schon) ist nur das Richtungs-Segment
+  gemessen, jedes andere Verzeichnis nicht. Die Regel `port-locality` ist geprüft: a-check zieht das Richtungs-Segment einer
   Port-Schicht nur kleingeschrieben ab, ein groß geschriebenes Segment lässt die Regel für diesen
   Port aus (Hinweis, Gate grün). Die Gegenrichtung (Verzeichnis klein, Namensraum groß) meldet
   a-check als `wrong-direction`, wenn ein Adapter in die Slice importiert; ohne Adapter-Import
