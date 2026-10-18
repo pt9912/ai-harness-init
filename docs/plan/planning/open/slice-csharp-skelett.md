@@ -9,14 +9,13 @@
 **Bezug:** [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) ·
 [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) ·
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) ·
-[`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit). Die ADR des Architect (Proposed)
-für C# (Toolchain, Pins, Gate-Targets, Arch-Unterstützung) ist die Entscheidungsgrundlage; ihre Kennung
-steht hier, sobald sie `Accepted` ist.
+[`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit). [`ADR-0096`](../../adr/0096-csharp-skelett-toolchain-und-schicht-aufloesung.md)
+(Toolchain, Pins, Gate-Targets, Arch-Unterstützung) ist die Entscheidungsgrundlage.
 
 **Berührte Spec-Stellen:** [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4); `ARC-009`, `ARC-010` (über die ADR, soweit sie Layout und
 Arch-Achse berührt).
 
-**Verantwortlich:** —
+**Verantwortlich:** dburkard
 
 **Autor:** Planner. **Datum:** 2026-10-17.
 
@@ -27,7 +26,7 @@ Arch-Achse berührt).
 **Ziel:** `add-lang csharp` (Layout `flat`) rendert ein C#-Skelett mit Code-Gate-Fragment und
 Guard-Set nach der ADR, das im gebootstrappten Ziel `make gates` grün fährt — ohne Host-.NET.
 
-**Vorbedingung — der Architect schreibt zuerst.** Die ADR des Architect (Proposed) legt fest:
+**Vorbedingung — der Architect schreibt zuerst.** [`ADR-0096`](../../adr/0096-csharp-skelett-toolchain-und-schicht-aufloesung.md) (Accepted) legt fest:
 Image `mcr.microsoft.com/dotnet/sdk:10.0.402` (Knopf `SKEL_CSHARP_VERSION`, Konstante
 `DefaultCsharpVersion`, Make-Variable `DOTNET_TAG`), zwei Projekte `src/App` und `tests/App.Tests` in
 klassischer `app.sln`, TFM aus Major.Minor des Tags abgeleitet (Literal in `Directory.Build.props`),
@@ -72,12 +71,17 @@ xunit 2.9.3 mit `Microsoft.NET.Test.Sdk` und `xunit.runner.visualstudio`, Lint =
       der ADR Festlegung 6 (`internal/emit/enforce_test.go`, Muster der Java-Namensprüfung;
       `pip`/`pip3`/`pipx` nicht im Set). **Drei Wächter-Zusagen der ADR, je einmal rot gesehen:**
       (a) die TFM-Ableitung — ein Test hält die gerenderte TFM gegen Major.Minor des Tags, Verfälschen
-      färbt rot; (b) die Bindungen — Text-Wächter je Zeile hält in der emittierten `.editorconfig`
-      `IDE0005 = error` und `IDE0130 = error` und in `Directory.Build.props` `TreatWarningsAsErrors`,
-      jede der drei Zeilen einzeln entfernt färbt rot; (c) der Lauf-Zahn im Ziel in derselben
-      Lieferung, denn die Text-Prüfung hält nicht, dass `dotnet format` die Regel am gebootstrappten
-      Ziel meldet (Lehre des Python-Lerneintrags): ein Mutations-Fall entfernt die `IDE0005`-Zeile aus
-      der Quelle, und der reale `lint`-Lauf der Stufe färbt einen unbenutzten `using` nicht mehr
+      färbt rot, dazu ein zweiter Fall: ein Knopf-Wert ohne Major.Minor (`latest`, `10`) bricht den
+      Generator mit Exit 2 ab ([`ADR-0096`](../../adr/0096-csharp-skelett-toolchain-und-schicht-aufloesung.md) Festlegung 2), einmal rot gesehen (Abbruch entfernt);
+      (b) die Bindungen — Text-Wächter je Zeile hält in der emittierten `.editorconfig`
+      `IDE0005 = error` und `IDE0130 = error` und in `Directory.Build.props` `TreatWarningsAsErrors`
+      und `AnalysisLevel latest-recommended`, jede der vier Zeilen einzeln entfernt färbt rot;
+      (c) der Lauf-Zahn im Ziel in derselben Lieferung, denn die Text-Prüfung hält nicht, dass
+      `dotnet format` bzw. `build` die Regel am gebootstrappten Ziel meldet (Lehre des
+      Python-Lerneintrags): ein Mutations-Fall entfernt die `IDE0005`-Zeile aus der Quelle, und der
+      reale `lint`-Lauf der Stufe färbt einen unbenutzten `using` nicht mehr; ein zweiter entfernt
+      `AnalysisLevel latest-recommended`, und der reale `build`-Lauf färbt eine nicht-statische
+      Methode ohne Instanzzugriff (`CA1822`) nicht mehr
       ([`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4),
       [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)).
 - [ ] `make full-smoke`: `add-lang csharp` ins Mono-Repo, Skelett-Dateien liegen, `make gates` grün mit

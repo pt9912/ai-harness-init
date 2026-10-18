@@ -8,9 +8,8 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 **Welle:** `welle-sprachprofile-java-python-csharp`.
 
 **Bezug:** [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) ·
-[`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren). Die ADR des Architect
-(Proposed) legt die Layouts `flat` und `hexslice` fest, Festlegung 5 trägt Pfade und Auflösung; ihre
-Kennung steht hier, sobald sie `Accepted` ist.
+[`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren). [`ADR-0096`](../../adr/0096-csharp-skelett-toolchain-und-schicht-aufloesung.md)
+(Accepted) legt die Layouts `flat` und `hexslice` fest, Festlegung 5 trägt Pfade und Auflösung.
 
 **Berührte Spec-Stellen:** `spec/architecture.md` Layout je Sprache; `ARC-009`, `ARC-010` (über die ADR
 des Architect).
