@@ -49,10 +49,10 @@ Kotlin, Java, Python); das trägt Festlegung 5.
 
 Wir wählen **ein .NET-Gerüst aus zwei Projekten (`App`, `App.Tests`) in einer klassischen `.sln`, die
 `dotnet`-CLI im SDK-Image als einziges Werkzeug (Restore, Build, Test, `dotnet format`), die TFM aus dem
-Image-Tag abgeleitet, Layouts `flat` und `hexslice` (bedingt)**. Werkzeug- und Versionswahl, bei der mehrere
-Optionen gleichwertig tragen, ist **noch nicht** vom Auftraggeber entschieden (Abschnitt „Offene
-Entscheidungen des Auftraggebers“); die Festlegungen 2 und 3 nennen dort jeweils die Empfehlung und tragen sie
-bedingt. Projekt-Form, TFM-Ableitung, Gate-Form, Layout-Menge und Namensraum-Regel (Festlegungen 1, 4, 5)
+Image-Tag abgeleitet, Layouts `flat` und `hexslice` (dieses unter den Bedingungen der Festlegung 5)**.
+Werkzeug- und Versionswahl, bei der mehrere Optionen gleichwertig tragen, hat der Auftraggeber entschieden
+(Abschnitt „Entscheidungen des Auftraggebers“); die Festlegungen 2, 3 und 6 tragen diese Entscheidung
+unbedingt. Projekt-Form, TFM-Ableitung, Gate-Form, Layout-Menge und Namensraum-Regel (Festlegungen 1, 4, 5)
 sind Linie des Architect.
 
 **1. Projekt-Form.** `src/App/App.csproj` (`OutputType Exe`, `Program.cs`) und
@@ -71,9 +71,9 @@ mit festen GUIDs). `Directory.Build.props` am Root trägt die gemeinsamen Eigens
 Gerüst, damit der Knopf wirkt — dieselbe Form wie Kotlin, Java, Python), Knopf `SKEL_CSHARP_VERSION` →
 `gen.DefaultVersion("csharp")` mit eigener Konstante `DefaultCsharpVersion`; Make-Variable `DOTNET_TAG`
 (Treffer von `grep -rn 'DOTNET' Makefile harness d-check.mk .d-check.yml internal` vor dieser ADR: keiner;
-keine Kollision mit `GRADLE_TAG`, `JAVA_GRADLE_TAG`, `PYTHON_TAG`). **Empfehlung (offen, Frage 1):
-`10.0.402`**; die Messung zeigt den Tag mit Digest, linux/amd64 und linux/arm64, und das Gerüst grün (Messung
-1, 2, 8). Die **TFM wird vom Generator aus Major.Minor des Tags abgeleitet** (`10.0.402` → `net10.0`) und als
+keine Kollision mit `GRADLE_TAG`, `JAVA_GRADLE_TAG`, `PYTHON_TAG`). Default: **`10.0.402`**; die Messung zeigt
+den Tag mit Digest, linux/amd64 und linux/arm64, und das Gerüst grün (Messung 1, 2, 8). Die **TFM wird vom
+Generator aus Major.Minor des Tags abgeleitet** (`10.0.402` → `net10.0`) und als
 Literal in `Directory.Build.props` geschrieben: der Ausdruck `net$(NETCoreAppMaximumVersion)` ist dort leer und
 färbt Restore und Build rot (Messung 2, Lauf 0); eine feste TFM gegen ein anderes SDK scheitert mit
 `NETSDK1045` (Messung 2, Lauf 3). **Wächter-Zusage:** `slice-csharp-skelett` trägt als DoD-Punkt einen Test,
@@ -85,10 +85,10 @@ Alpine-Variante ist nicht gemessen (der Tag `10.0.402-alpine` existiert nicht).
 drei Targets, **kein viertes**, damit die Präzedenz-Erweiterung des gemischten Roots unverändert greift.
 `build` = `dotnet build --no-restore -c Release`, `test` = `dotnet test --no-restore`, `lint` =
 `dotnet format --verify-no-changes --no-restore`; der Restore läuft einmal in der `toolchain`-Stage.
-**Test-Framework — Empfehlung (offen, Frage 2): xunit 2.9.3** mit `Microsoft.NET.Test.Sdk 17.14.1` und
+**Test-Framework: xunit 2.9.3** mit `Microsoft.NET.Test.Sdk 17.14.1` und
 `xunit.runner.visualstudio 3.1.4` (die Vorgaben der SDK-Vorlage; Messung 2 zeigt die aufgelöste Menge,
-Messung 7 NUnit und MSTest). **Lint-Form — Empfehlung (offen, Frage 3):** die im SDK enthaltenen Analyzer
-plus `dotnet format` über `.editorconfig`, kein NuGet-Analyzer. **Welche Regel welchen Zahn färbt, ist
+Messung 7 NUnit und MSTest). **Lint-Form:** die im SDK enthaltenen Analyzer plus `dotnet format` über
+`.editorconfig`, kein NuGet-Analyzer. **Welche Regel welchen Zahn färbt, ist
 gemessen (Messung 2/3):** ein unbenutztes `using` → `IDE0005` in `lint` (`dotnet format`, Exit 2), nicht in
 `build`; eine unbenutzte Variable → `CS0219` in `build` (Exit 1), nicht in `lint`; ein Format-Verstoß →
 `lint`; Nullable-Fehler `CS8602`, unbenutztes privates Feld `CS0414`, Syntaxfehler → `build`; falsche
@@ -140,37 +140,42 @@ schließbar): ein voll qualifizierter Name im Code ohne `using` (Fall 7: `0 Befu
 Include=…>` im `.csproj` (liegt außerhalb des Glob `**/*.cs`; aus dem Glob abgeleitet, nicht gefahren);
 Reflection (nicht gefahren).
 
-**6. Guard.** `blockedByLang("csharp")`: Mindestmenge `dotnet`, die Toolchain des Gerüsts. **Empfehlung
-(offen, Frage 4): `dotnet msbuild nuget csc`.** Keine Überschneidung mit dem Boden (`apt apt-get brew pip pip3
-pipx npm pnpm yarn npx corepack cargo rustup gem conda`) und keinem der fünf Profile, am Skript und an
-`blockedByLang()` gelesen; die Union ist die eine Quelle. `msbuild`/`nuget`/`csc` stehen in der Empfehlung,
-obwohl das Gerüst sie nicht nutzt: der Guard blockt Host-Aufrufe, nicht nur die genutzte Toolchain, und sie
-sind der naheliegende Host-Umweg — dieselbe Linie wie `mvn` neben Gradle
-([ADR-0094](0094-java-skelett-toolchain-und-schicht-aufloesung.md)); ob der Auftraggeber sie teilt, ist die
-Frage. **Grenze (Stolperdraht, keine Sandbox):** der Guard vergleicht den Befehlskopf eines Segments als
-exaktes Wort (`in_set` im Guard-Skript), nach Abzug des Pfad-Präfix. `/usr/share/dotnet/dotnet` blockt über
-den Kopf `dotnet`; `dotnet-format` (ein eigener Name), ein Wrapper-Skript und `mono` stehen nicht im Set und
-blocken nicht. Am Skript gelesen, nicht gefahren; die Block-Probe gehört in den Review. Die Kopplung an
-`gen.SupportedLangs` hält der bestehende Test.
+**6. Guard.** `blockedByLang("csharp")`: **`dotnet msbuild nuget csc`.** Keine Überschneidung mit dem Boden
+(`apt apt-get brew pip pip3 pipx npm pnpm yarn npx corepack cargo rustup gem conda`) und keinem der fünf
+Profile, am Skript und an `blockedByLang()` gelesen; die Union ist die eine Quelle. `dotnet` ist die Toolchain
+des Gerüsts; `msbuild`, `nuget` und `csc` stehen darin, obwohl das Gerüst sie nicht nutzt: der Guard blockt
+Host-Aufrufe, nicht nur die genutzte Toolchain, und sie sind der naheliegende Host-Umweg — dieselbe Linie wie
+`mvn`/`mvnw` neben Gradle ([ADR-0094](0094-java-skelett-toolchain-und-schicht-aufloesung.md)) und
+`uv`/`uvx`/`poetry` neben `pip` ([ADR-0095](0095-python-skelett-toolchain-und-schicht-aufloesung.md)). **Wessen
+Entscheidung das ist:** der Architect empfahl die Menge, der Auftraggeber folgte der Empfehlung (Minimum
+`dotnet` verworfen, Alternative N); der Umfang über das Gerüst hinaus ist damit seine Entscheidung, nicht
+allein Linie des Architect. **Grenze (Stolperdraht, keine Sandbox):** der Guard vergleicht den Befehlskopf eines
+Segments als exaktes Wort (`in_set` im Guard-Skript), nach Abzug des Pfad-Präfix. `/usr/share/dotnet/dotnet`
+blockt über den Kopf `dotnet`; `dotnet-format` (ein eigener Name), ein Wrapper-Skript und `mono` stehen nicht im
+Set und blocken nicht; ein Windows-Name wie `msbuild.exe` ist nicht gelesen und steht nicht im Set. Am Skript
+gelesen, nicht gefahren; die Block-Probe gehört in den Review. Die Kopplung an `gen.SupportedLangs` hält der
+bestehende Test.
 
-## Offene Entscheidungen des Auftraggebers
+## Entscheidungen des Auftraggebers
 
-Nicht entschieden; die Festlegungen oben tragen die Empfehlung nur bedingt.
+Getroffen am 2026-10-18 und in Festlegung 2, 3 und 6 getragen; die verworfenen Optionen stehen mit ihrem
+Grund unter „Verglichene Alternativen“.
 
-1. **SDK-Version / LTS.** Empfehlung `10.0.402` (die LTS-Linie 10; Messung 1, 2, 8). Alternative `8.0.426`:
-   Basislauf grün (Messung 2, Lauf 2); `9.0` ist nur als Digest gemessen, nicht gebaut. Ob eine Linie LTS ist
-   und bis wann sie gepflegt wird, ist **nicht gemessen** (Microsoft-Support-Policy nicht gelesen). Hängt
-   daran: Default der Konstante, TFM des Gerüsts, Digest-Zeile der Messung.
-2. **Test-Framework.** Empfehlung xunit 2.9.3. NUnit 4.3.2 und MSTest 4.0.2 laufen grün (Messung 7); xunit v3
-   ist nicht gemessen (kein Template im SDK). Hängt daran: die drei Paket-Pins der Festlegung 3 und der Test.
-3. **Lint-Form.** Empfehlung SDK-Analyzer plus `dotnet format` (Festlegung 3). Alternative: ein NuGet-Analyzer
-   (StyleCop/Roslynator) — nicht gemessen, bräuchte Folge-ADR. Hängt daran: Festlegung 3 und die Bindungen.
-4. **Guard-Umfang.** Empfehlung `dotnet msbuild nuget csc`; Minimum `dotnet`. Hängt daran: Festlegung 6 und
-   der Test auf die Namen.
-5. **[`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit).** Nicht entschieden und hier nicht beantwortet; die Lage steht im Abschnitt darunter.
+- **SDK-Version:** `10.0.402`. Verworfen: `8.0.426` (Basislauf grün, Messung 2, Lauf 2) und `9.0` (nur als
+  Digest gemessen, nicht gebaut). Ob eine Linie LTS ist und bis wann sie gepflegt wird, ist **nicht
+  gemessen** (Microsoft-Support-Policy nicht gelesen); die Wahl stützt sich auf die gemessenen Läufe, nicht
+  auf eine Support-Aussage.
+- **Test-Framework:** xunit 2.9.3. Verworfen: NUnit 4.3.2 und MSTest 4.0.2 (beide grün, Messung 7).
+- **Lint-Form:** SDK-Analyzer plus `dotnet format` über `.editorconfig`, kein NuGet-Analyzer.
+- **Guard-Umfang:** `dotnet msbuild nuget csc` — der Auftraggeber folgte der Empfehlung des Architect
+  (Festlegung 6).
 
-Nicht vom Auftraggeber zu entscheiden, sondern Linie des Architect: Projekt-Form, TFM-Ableitung, Gate- und
-Fragment-Form, Layout-Menge `flat` + `hexslice` (bedingt), Namensraum-Regel.
+[`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) ist keine Entscheidung des
+Auftraggebers in dieser ADR; die Lage steht im Abschnitt darunter.
+
+Linie des Architect, nicht Entscheidung des Auftraggebers: Projekt-Form, TFM-Ableitung, Gate- und
+Fragment-Form, Layout-Menge `flat` + `hexslice` (unter den Bedingungen der Festlegung 5), Namensraum-Regel,
+Ubuntu-Variante des Images.
 
 ## Lage für die Reproduzierbarkeit (Messbasis, keine Entscheidung)
 
@@ -203,10 +208,12 @@ Für C# gilt, ohne dass diese ADR es als Lockerung fasst — es ist die Grenze d
 | E — TFM als `net$(NETCoreAppMaximumVersion)` | Knopf wirkt ohne Generator-Ableitung | gemessen rot: der Wert ist in `Directory.Build.props` leer (Messung 2, Lauf 0) |
 | F — feste TFM `net10.0` | einfach | der Knopf wählt ein SDK, das sie nicht baut: `NETSDK1045` (Messung 2, Lauf 3) |
 | G — `EnforceCodeStyleInBuild` + `GenerateDocumentationFile` für `IDE0005` im Build | der Zahn färbt auch `build` | braucht eine erzeugte Dokumentationsdatei (A4); `lint` braucht beides nicht (Messung 3, A2/A3); ob dazu `NoWarn CS1591` nötig wäre, ist nicht gemessen |
-| H — NUnit oder MSTest | beide grün (Messung 7) | Auftraggeber-Frage 2 |
-| I — NuGet-Analyzer (StyleCop, Roslynator) | strengere Regeln | zusätzliche Pins; nicht gemessen |
+| H — NUnit oder MSTest | beide grün (Messung 7) | vom Auftraggeber verworfen; xunit trägt die SDK-Vorlage, NUnit bringt zusätzlich `NUnit.Analyzers` und einen Adapter-Pin (Messung 7) |
+| I — NuGet-Analyzer (StyleCop, Roslynator) | strengere Regeln | zusätzliche Pins; nicht gemessen; vom Auftraggeber verworfen |
 | J — zusätzlich `hexagonal` | volle Achse | ohne benannten Bedarf |
 | K — `flat` ohne `hexslice` | kein Schreibweisen-Loch (Festlegung 5) | der Layout-Slice hätte keinen Gegenstand; a-check löst C# auf |
+| M — SDK `8.0.426` oder `9.0` als Default | `8.0.426`: Basislauf grün (Messung 2, Lauf 2) | `9.0` nur als Digest gemessen, nicht gebaut; Support-Zeiträume nicht gemessen; vom Auftraggeber nicht gewählt, über den Knopf weiter wählbar — ein SDK 8 mit der TFM eines anderen Tags bleibt `NETSDK1045` (Messung 2, Lauf 3) |
+| N — Guard nur `dotnet` (Minimum) | kleinste Menge, deckt die Toolchain des Gerüsts | `msbuild`, `nuget` und `csc` blieben als Host-Umweg offen; vom Auftraggeber verworfen |
 | **L — zwei Projekte, `.sln`, `dotnet`-CLI, TFM aus dem Tag, `IDE0005`/`IDE0130` über `.editorconfig`, flat + hexslice** | gleiches Muster wie Python/Java; a-check löst `using` auf; Lint rot/grün gemessen | Schreibweise der Verzeichnisse nur über den Renderer gehalten; ein `<Using>` im `.csproj` und ein voll qualifizierter Name entgehen dem Arch-Gate; Restore braucht Netz |
 
 ## Konsequenzen
@@ -248,7 +255,8 @@ Zeilen Zusage statt Beleg ([`AGENTS.md`](../../../AGENTS.md) §3.6). Lücke: die
 Festlegung 5 hat keinen Sensor. Lücke: der Test-Stage-Exit bei kaputtem Bau — im Lauf mit SDK 8.0.426 und
 TFM `net10.0` meldete `dotnet test --no-restore` Exit 0 ohne Ausgabe (Ursache nicht untersucht); die Zeile
 „falsche Assertion → `test`“ gilt für ein baubares Gerüst, und `build` im selben `GATE_CHECKS` fängt den
-Fall. Lücke (Grenze der Messmethode, keine Lockerung): siehe den Abschnitt „Lage für die Reproduzierbarkeit“.
+Fall; mit dem gewählten SDK `10.0.402` ist die Lage nicht gefahren und bleibt benannte Lücke. Lücke (Grenze der
+Messmethode, keine Lockerung): siehe den Abschnitt „Lage für die Reproduzierbarkeit“.
 
 ## Messungen
 
