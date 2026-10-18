@@ -71,8 +71,9 @@ func csharpScaffolding(version string) map[string]string {
 	}
 }
 
-// csharpRole rendert eine Code-Rolle als C#-Datei. Getragen ist allein das Layout flat
-// (langArchs): Entry-Point unter src/App, Test unter tests/App.Tests. Jede andere Rolle -> nil.
+// csharpRole rendert eine Code-Rolle als C#-Datei. Getragen sind die Layouts flat (Entry-Point
+// unter src/App, Test unter tests/App.Tests) und hexslice (csharp_hexslice.go); jede andere Rolle
+// (hexagonal) -> nil.
 func csharpRole(r codeRole) map[string]string {
 	switch r {
 	case roleEntrypoint:
@@ -80,7 +81,7 @@ func csharpRole(r codeRole) map[string]string {
 	case roleTest:
 		return map[string]string{"tests/App.Tests/ProgramTests.cs": csharpTest}
 	}
-	return nil
+	return csharpHexslice(r)
 }
 
 // csharpFragment liefert das C#-Code-Gate-Fragment: am Root (context ".") die UNSCOPED

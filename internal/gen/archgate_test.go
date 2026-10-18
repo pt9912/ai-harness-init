@@ -317,7 +317,7 @@ func TestArchGateConfig_OnlyLayered(t *testing.T) {
 		{"python", "hexslice", true},
 		{"python", "hexagonal", false}, // ADR-0095 legt das Layout fuer python nicht fest
 		{"csharp", "flat", false},
-		{"csharp", "hexslice", false},  // ADR-0096 Festlegung 5: erst mit seinem Renderer in langArchs
+		{"csharp", "hexslice", true},
 		{"csharp", "hexagonal", false}, // ADR-0096 legt das Layout fuer csharp nicht fest
 		{"go", "onion", false},
 	} {

@@ -161,7 +161,7 @@ func langArchs() map[string][]string {
 		"kotlin": {archFlat, archHexslice},
 		"java":   {archFlat, archHexslice},
 		"python": {archFlat, archHexslice},
-		"csharp": {archFlat},
+		"csharp": {archFlat, archHexslice},
 	}
 }
 

@@ -386,25 +386,6 @@ func assertAddLangDropt(t *testing.T, lang, pfad string, rels, blockedWorte []st
 	}
 }
 
-// assertAddLangHexsliceIstExit2: `add-lang <lang> <pfad> --arch hexslice` endet mit Exit 2 und
-// der Liste der Sprache (flat), ohne ein Modul abzulegen — kein Geruest-only-Skelett. Ein
-// Eintrag hexslice in langArchs(<lang>) liesse den Lauf mit Exit 0 enden.
-func assertAddLangHexsliceIstExit2(t *testing.T, lang, pfad string) {
-	t.Helper()
-	dir := initializedRepo(t)
-	var out, errb bytes.Buffer
-	code := run([]string{"add-lang", lang, pfad, "--arch", "hexslice"}, dir, testSources(t), &out, &errb)
-	if code != 2 {
-		t.Fatalf("add-lang %s --arch hexslice exit %d, want 2; stderr: %q", lang, code, errb.String())
-	}
-	if !strings.Contains(errb.String(), "verfuegbar: flat") {
-		t.Errorf("Meldung nennt die Liste der Sprache nicht: %q", errb.String())
-	}
-	if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(pfad))); !os.IsNotExist(err) {
-		t.Errorf("abgelehnte Kombination legte %s an: %v", pfad, err)
-	}
-}
-
 // TestRun_AddLangJava (LH-FA-04, LH-FA-06, ADR-0094): `add-lang java apps/jv` dropt das
 // Gradle-Geruest samt Checkstyle-Config, das modul-scoped Fragment und blocked/java mit
 // mvn und mvnw.
@@ -517,10 +498,43 @@ func TestRun_AddLangCsharp(t *testing.T) {
 	}, []string{"dotnet", "msbuild", "nuget", "csc"})
 }
 
-// TestRun_AddLangCsharpHexsliceIstExit2 (ADR-0096 Festlegung 5): csharp rendert in dieser
-// Lieferung nur flat.
-func TestRun_AddLangCsharpHexsliceIstExit2(t *testing.T) {
-	assertAddLangHexsliceIstExit2(t, "csharp", "apps/cs")
+// TestRun_AddLangCsharpHexslice (LH-FA-04, LH-FA-07, ADR-0096 Festlegung 5): `add-lang csharp
+// apps/cs --arch hexslice` dropt die Schicht-Verzeichnisse, die Schicht-Config im Modul und das
+// Arch-Gate-Fragment.
+func TestRun_AddLangCsharpHexslice(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	code := run([]string{"add-lang", "csharp", "apps/cs", "--arch", "hexslice"}, dir, testSources(t), &out, &errb)
+	if code != 0 {
+		t.Fatalf("add-lang csharp --arch hexslice exit %d, stderr: %q", code, errb.String())
+	}
+	for _, rel := range []string{
+		"apps/cs/src/App/Hexagon/Domain/Example/Greeting.cs",
+		"apps/cs/src/App/Adapters/Driven/Notify/StdoutNotifier.cs",
+		"apps/cs/src/App/Program.cs", "apps/cs/tests/App.Tests/GreetTests.cs",
+		"apps/cs/.a-check.yml", "harness/mk/apps-cs.mk", "harness/mk/arch-apps-cs.mk",
+	} {
+		if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel))); err != nil {
+			t.Errorf("%s nicht gedroppt: %v", rel, err)
+		}
+	}
+}
+
+// TestRun_AddLangCsharpHexagonalIstExit2 (ADR-0096 Festlegung 5): csharp rendert flat und
+// hexslice, hexagonal nicht — Exit 2 mit der Liste der Sprache, ohne Modul.
+func TestRun_AddLangCsharpHexagonalIstExit2(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	code := run([]string{"add-lang", "csharp", "apps/cs", "--arch", "hexagonal"}, dir, testSources(t), &out, &errb)
+	if code != 2 {
+		t.Fatalf("add-lang csharp --arch hexagonal exit %d, want 2; stderr: %q", code, errb.String())
+	}
+	if !strings.Contains(errb.String(), "verfuegbar: flat, hexslice") {
+		t.Errorf("Meldung nennt die Liste der Sprache nicht: %q", errb.String())
+	}
+	if _, err := os.Stat(filepath.Join(dir, "apps", "cs")); !os.IsNotExist(err) {
+		t.Errorf("abgelehnte Kombination legte apps/cs an: %v", err)
+	}
 }
 
 // TestRun_AddLangCsharpTagOhneMajorMinorIstExit2 (ADR-0096 Festlegung 2): ein Wert von

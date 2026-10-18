@@ -1,7 +1,6 @@
 package gen_test
 
 import (
-	"errors"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -123,26 +122,6 @@ func assertTagVariable(t *testing.T, lang, variable string, fremde []string, fas
 		}
 		if m := setzt.FindStringSubmatch(mk); m == nil || m[1] != wert {
 			t.Errorf("%s-Fragment (%s): %s-Default nicht %s:\n%s", lang, name, variable, wert, mk)
-		}
-	}
-}
-
-// assertNurFlat: hexslice und hexagonal rendert der Renderer der Sprache nicht — Exit-2-Klasse
-// mit der Liste der Sprache (flat), ohne Artefakte, kein Geruest-only-Skelett.
-func assertNurFlat(t *testing.T, lang, version string) {
-	t.Helper()
-	for _, arch := range []string{"hexslice", "hexagonal"} {
-		dir := t.TempDir()
-		err := gen.GenerateArch(dir, lang, version, arch)
-		var uae *gen.UnknownArchError
-		if !errors.As(err, &uae) {
-			t.Fatalf("erwartete *UnknownArchError fuer %s+%s, got %v", lang, arch, err)
-		}
-		if strings.Join(uae.Available, ",") != "flat" {
-			t.Errorf("Available = %v, want [flat]", uae.Available)
-		}
-		if rels := walkRel(t, dir); len(rels) != 0 {
-			t.Errorf("abgelehnte Kombination %s+%s hat Artefakte geschrieben: %v", lang, arch, rels)
 		}
 	}
 }

@@ -201,9 +201,20 @@ func TestGenerate_CsharpVersionThreaded(t *testing.T) {
 	}
 }
 
-// TestGenerateArch_CsharpNurFlat (ADR-0096 Festlegung 5): hexslice und hexagonal rendert der
-// C#-Renderer in dieser Lieferung nicht — Exit-2-Klasse mit der Liste der Sprache (flat), ohne
-// Artefakte. hexslice steht erst in langArchs, wenn sein Renderer es rendert.
-func TestGenerateArch_CsharpNurFlat(t *testing.T) {
-	assertNurFlat(t, "csharp", gen.DefaultCsharpVersion)
+// TestGenerateArch_CsharpOhneHexagonal: hexagonal rendert der C#-Renderer nicht — Exit-2-Klasse
+// mit der Liste der Sprache (flat, hexslice), ohne Artefakte (ADR-0096 Festlegung 5 legt das
+// Layout nicht fest).
+func TestGenerateArch_CsharpOhneHexagonal(t *testing.T) {
+	dir := t.TempDir()
+	err := gen.GenerateArch(dir, "csharp", gen.DefaultCsharpVersion, "hexagonal")
+	var uae *gen.UnknownArchError
+	if !errors.As(err, &uae) {
+		t.Fatalf("erwartete *UnknownArchError fuer csharp+hexagonal, got %v", err)
+	}
+	if strings.Join(uae.Available, ",") != "flat,hexslice" {
+		t.Errorf("Available = %v, want [flat hexslice]", uae.Available)
+	}
+	if rels := walkRel(t, dir); len(rels) != 0 {
+		t.Errorf("abgelehnte Kombination csharp+hexagonal hat Artefakte geschrieben: %v", rels)
+	}
 }
