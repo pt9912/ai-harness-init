@@ -9,10 +9,18 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
 **Bezug:** [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) ·
 [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren). [`ADR-0096`](../../adr/0096-csharp-skelett-toolchain-und-schicht-aufloesung.md)
-(Accepted) legt die Layouts `flat` und `hexslice` fest, Festlegung 5 trägt Pfade und Auflösung.
+(Accepted) legt die Layouts `flat` und `hexslice` fest, Festlegung 5 trägt Pfade und Auflösung;
+[`ADR-0097`](../../adr/0097-csharp-hexslice-richtungs-ordner-klein.md) (Accepted) löst davon drei Sätze ab
+(Supersedes (Teil)): die Richtungs-Ordner `inbound`/`outbound` unter `Ports` sind klein, `Ports` und alles
+übrige PascalCase, damit `port-locality` greift.
 
-**Berührte Spec-Stellen:** `spec/architecture.md` Layout je Sprache; `ARC-009`, `ARC-010` (über die ADR
-des Architect).
+**Berührte Spec-Stellen:** `spec/architecture.md` Layout je Sprache; `ARC-009`, `ARC-010` (über die ADRs
+des Architect, [`ADR-0096`](../../adr/0096-csharp-skelett-toolchain-und-schicht-aufloesung.md) und [`ADR-0097`](../../adr/0097-csharp-hexslice-richtungs-ordner-klein.md)).
+
+**Planner-Änderung der Abnahme (2026-10-18, nach [`ADR-0097`](../../adr/0097-csharp-hexslice-richtungs-ordner-klein.md)):** DoD 1 bis 3 tragen die kleine Richtung; neu
+in der Abnahme sind der Lauf-Zahn `port-locality`, die Adopter-Anleitung im Config-Kommentar, der
+Fall für den Lauf-Zahn und die Abdeckungs-Aussage ohne „port-locality ungeprüft". Der Implementer-Stand
+`3e91174c..6964b9c7` (PascalCase-Richtung) erfüllt sie nicht und wird nachgezogen.
 
 **Verantwortlich:** dburkard
 
@@ -22,10 +30,12 @@ des Architect).
 
 ## 1. Ziel und Abgrenzung
 
-**Ziel:** `add-lang csharp --arch hexslice` rendert die Rollen-Verzeichnisse der ADR (Pfade nach
-[ADR-0060](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md), PascalCase,
-Verzeichnis gleich Namensraum) samt `.a-check.yml`, und ein `using` aus dem Kern in einen Adapter färbt
-das emittierte Arch-Gate rot.
+**Ziel:** `add-lang csharp --arch hexslice` rendert die Rollen-Verzeichnisse der ADRs (Pfade nach
+[ADR-0060](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md), PascalCase außer den
+Richtungs-Ordnern `inbound`/`outbound` unter `Ports` nach
+[ADR-0097](../../adr/0097-csharp-hexslice-richtungs-ordner-klein.md); Verzeichnis gleich Namensraum) samt
+`.a-check.yml`; ein `using` aus dem Kern in einen Adapter färbt das emittierte Arch-Gate rot
+(`core-impurity`), ein fremder Port-`using` im Handler ebenso (`port-locality`).
 
 **Abhängigkeit:** setzt `slice-csharp-skelett` voraus (Renderer, Gerüst, Stufe im Mono-Repo); er liegt
 in `done/`.
@@ -39,15 +49,20 @@ in `done/`.
   (Re-Evaluierungs-Trigger der ADR); dann Rückführung.
 - `app-impurity`, `wrong-direction` und `lateral-adapter` als rote Fälle — die ADR hat sie nicht
   gefahren; die Stufe misst `core-impurity`, die übrigen bleiben Zusage.
-- Ein Sensor für die Verzeichnis-Schreibweise beim Adopter — die ADR benennt die Lücke (`IDE0130`
+- Ein Sensor für die Verzeichnis-Schreibweise beim Adopter — die ADRs benennen die Lücke (`IDE0130`
   unterscheidet Groß-/Kleinschreibung nicht); der Slice hält den Renderer, nicht den Adopter.
+- Eine Anforderung an a-check, das Richtungs-Segment ohne Beachtung der Schreibweise abzuziehen
+  (Alternative C der [`ADR-0097`](../../adr/0097-csharp-hexslice-richtungs-ordner-klein.md)) — Re-Evaluierungs-Trigger der ADR, vom Auftraggeber nicht jetzt gestellt.
 - Ein C#-Freshness-Werkzeug — anderer Vorgang als das Layout.
 
 ## 2. Definition of Done
 
-- [ ] hexslice-Renderer mit den Pfaden der ADR Festlegung 5 (`src/App/Hexagon/{Domain,Application}/…`,
+- [ ] hexslice-Renderer mit den Pfaden der [`ADR-0096`](../../adr/0096-csharp-skelett-toolchain-und-schicht-aufloesung.md) Festlegung 5 (`src/App/Hexagon/{Domain,Application}/…`,
       `src/App/Adapters/{Driving,Driven}/…`, Composition Root `src/App/Program.cs`, Tests unter
-      `tests/App.Tests`); `archGateConfigs()` mit `languages: csharp: ["**/*.cs"]`,
+      `tests/App.Tests`) **und den kleinen Richtungs-Ordnern der [`ADR-0097`](../../adr/0097-csharp-hexslice-richtungs-ordner-klein.md)**
+      (`…/Ports/{inbound,outbound}/`; Verzeichnisse und Namensräume, z. B.
+      `App.Hexagon.Application.Example.Greet.Ports.inbound`; `Ports` und alles übrige PascalCase);
+      `archGateConfigs()` mit `languages: csharp: ["**/*.cs"]`,
       `exclude: ["tests/**"]` und `resolution: csharp: {mode: fixed-root, roots: ["src/App"],
       package_base: "App"}`; `csharp` in `langArchs()` führt `hexslice`; **Entscheidung von
       Ports-Ordnern und Kanten-Menge** ([ADR-0060](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
@@ -56,26 +71,46 @@ in `done/`.
       und [`slice-python-hexslice-layout`](../done/slice-python-hexslice-layout.md): sieben Kanten
       einschließlich `driven_adapters → ports_outbound`, im Ziel gemessen) im Plan §7 und im Test
       festgehalten; **ein Test hält die gerenderten Verzeichnis-Globs der `.a-check.yml` gegen die
-      gerenderten Pfade** (PascalCase-Schreibweise; einmal rot gesehen mit einem klein geschriebenen
-      Verzeichnis); im gebootstrappten Ziel meldet a-check keinen Hinweis „0 von N Import-Symbolen
-      lösen auf" (Probe gegen das Ziel, nicht gegen eine Fixture). **Je Config-Schlüssel ein
-      Text-Wächter, und der Lauf-Zahn im Ziel (rot an `core-impurity`, Kante `driven_adapters → ports_outbound`
-      grün) kommt in derselben Lieferung** ([`AGENTS.md`](../../../../AGENTS.md) §3.6); Fälle ab 748.
-      Wo ein Schlüssel nur den Text-Wächter trägt, nennt die Abdeckungs-Zeile die Lücke am selben Ort.
+      gerenderten Pfade** (Richtungs-Segment klein, übrige PascalCase; einmal rot gesehen durch Großschreiben
+      eines Richtungs-Segments in Renderer oder Config); die **emittierte Config** trägt Port-Globs
+      `…/Ports/{inbound,outbound}/**`, und ihr Kommentar nennt die gemessene Ursache — das
+      kleingeschriebene Richtungs-Segment, nicht den Ordner `ports` (Review F1) — samt Anleitung für eine
+      neue Slice (Verzeichnis, Namensraum und Glob mit kleiner Richtung); im gebootstrappten Ziel meldet
+      a-check weder „0 von N Import-Symbolen lösen auf" noch den Hinweis „erreichen den App-Baum nicht"
+      (Probe gegen das Ziel, nicht gegen eine Fixture). **Je Config-Schlüssel ein Text-Wächter, und die
+      Lauf-Zähne im Ziel kommen in derselben Lieferung** ([`AGENTS.md`](../../../../AGENTS.md) §3.6):
+      `core-impurity` rot, Kante `driven_adapters → ports_outbound` grün, und **`port-locality`**: eine
+      zweite Slice, angelegt nach der Vorschrift des Config-Kommentars, und ein fremder Port-`using` im
+      Handler färben a-check rot mit `port-locality … Handler.cs:<Zeile>` (wörtlich
+      `port-locality: app außerhalb Port-Scope …/<Slice>`); die grüne Ausgabe des unveränderten Ziels
+      trägt den Hinweis nicht. Fälle ab 748. Wo ein Schlüssel nur den Text-Wächter trägt, nennt die
+      Abdeckungs-Zeile die Lücke am selben Ort.
 - [ ] `make full-smoke`: `add-lang csharp <pfad> --arch hexslice` grün; mit `using` aus
       `App.Hexagon.Domain` nach `App.Adapters` rot mit `core-impurity` (Meldung gelesen), Gegenprobe
       grün; Stufe mit `e2e_abdeckung`-Kopfzeile (Grenzen von a-check am Pin am selben Ort: voll
       qualifizierter Name, `<Using>` im `.csproj`, Reflection, Namensraum ≠ Verzeichnis,
-      Kleinschreibung; `exclude: tests/**` als nicht gemessene Gerüst-Wahl), `docs/user/e2e-abdeckung.md`
-      neu erzeugt; jeder neue Full-Smoke-Fall pinnt die Ursache im `# expect:` (nicht nur „rot");
+      Schreibweise des Richtungs-Segments beim Adopter ohne Sensor; `exclude: tests/**` als nicht gemessene
+      Gerüst-Wahl; die Aussage „port-locality ungeprüft" entfällt, `port-locality` ist gemessen), die
+      Aussage steht übereinstimmend an den vier Orten Config-Kommentar, `spec/architecture.md`,
+      Abdeckungs-Zeile und Stufen-Kopf (kein Sensor hält die Übereinstimmung, [`ADR-0097`](../../adr/0097-csharp-hexslice-richtungs-ordner-klein.md) nennt die Lücke),
+      `docs/user/e2e-abdeckung.md` neu erzeugt; jeder neue Full-Smoke-Fall pinnt die Ursache im
+      `# expect:` (nicht nur „rot"), der Fall für `port-locality` pinnt `port-locality` und `Handler.cs`;
       die Stufen-Selbstprüfung `test/full-smoke-ausgang.bats` (Fall 177 zählt die `einordnen`-Aufrufe der
       Stufen) bleibt grün. **Laufzeit-Zuwachs ([`MR-089`](../../../../harness/conventions.md#mr-089));
       die Zahl steht bei der Übergabe im Baum:** Kommando `make full-smoke-host`, Lage (Image warm oder
       kalt), Variante, mindestens zwei Läufe je Stand (vorher/nachher) in einer Commit-Message des
-      Implementers oder einer Datei des Lieferstands. Belastbar ist die Stufenzeit; die Gesamtdauer
-      rauscht um rund 25 s und trägt keinen Zuwachs allein; der Verifier hält die Zahl gegen seine
-      eigene Messung.
-- [ ] `spec/architecture.md` Layout je Sprache um C# nachgezogen (Folgepflicht der ADR).
+      Implementers oder einer Datei des Lieferstands; die Läufe wechseln sich ab (V, N, V, N), damit ein
+      Ausreißer (der erste Nachher-Lauf lag bei 495 s, erklärt, nicht gemessen) sich nicht an einem Stand
+      festsetzt. Belastbar ist die Stufenzeit; die Gesamtdauer rauscht um rund 25 s und trägt keinen
+      Zuwachs allein; der Verifier hält die Zahl gegen seine eigene Messung.
+      **Mutations-Fälle 748 bis 763** (Pfade, Muster, `# expect:` auf die kleine Richtung; Fall 756
+      (Glob gegen Verzeichnis) und Fall 760 (Namensraum) am Quell-Bestand neu gemessen), **ein neuer Fall
+      für den `port-locality`-Lauf-Zahn**, rot herstellbar durch Großschreiben des Richtungs-Segments;
+      jede Umbenennung eines Falls zuerst als reiner `git mv`, der Inhalt danach in eigenem Commit
+      ([`AGENTS.md`](../../../../AGENTS.md) §3.3).
+- [ ] `spec/architecture.md` Layout je Sprache um C# nachgezogen, mit den kleinen Richtungs-Ordnern und
+      der Aussage, dass `port-locality` geprüft ist (Folgepflicht der [`ADR-0096`](../../adr/0096-csharp-skelett-toolchain-und-schicht-aufloesung.md) und
+      [ADR-0097](../../adr/0097-csharp-hexslice-richtungs-ordner-klein.md)).
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`),
       kein Self-Review.
@@ -90,10 +125,10 @@ in `done/`.
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `internal/gen/csharp.go`, `internal/gen/arch.go` (+ Tests) | update | Rollen-Renderer, `archGateConfigs()`, `langArchs()`; Glob-gegen-Pfad-Test; Test-Helfer gemeinsam mit den anderen Sprach-Tests aus `internal/gen/skeleton_helpers_test.go`, kein Klon |
-| `harness/tools/full-smoke.sh`, `docs/user/e2e-abdeckung.md` | update | Stufe und Arch-Zahn, erzeugte Sicht; Berührungspunkt `emittiertes-gate-am-gemischten-root-baut-das-dockerfile-einer-anderen-sprache` |
+| `internal/gen/csharp.go`, `internal/gen/arch.go` (+ Tests) | update | Rollen-Renderer mit kleinen Richtungs-Ordnern, `archGateConfigs()` (Globs, Kommentar), `langArchs()`; Glob-gegen-Pfad-Test; Test-Helfer gemeinsam mit den anderen Sprach-Tests aus `internal/gen/skeleton_helpers_test.go`, kein Klon |
+| `harness/tools/full-smoke.sh`, `docs/user/e2e-abdeckung.md` | update | Stufe, Arch-Zähne (`core-impurity`, `port-locality`), Stufen-Kopf, erzeugte Sicht; Berührungspunkt `emittiertes-gate-am-gemischten-root-baut-das-dockerfile-einer-anderen-sprache` |
 | `spec/architecture.md` | update | Layout je Sprache |
-| `test/mutations/` | neu / update | ein Fall je neuem Wächter ([`MR-071`](../../../../harness/conventions.md#mr-071)), neue Nummern ab 748; **Prüfauftrag an den Implementer:** Fall 705 `csharp-hexslice-ohne-renderer` (erwartet `TestGenerateArch_CsharpNurFlat`) ist am Quell-Bestand zu messen — bleibt seine Zusage mit dem Renderer wahr (dann Wächter, ggf. Umbenennung auf `csharp-hexagonal-ohne-renderer` wie Fall 690 bei Python), oder ist sie überholt; bei Umbenennung reiner `git mv` zuerst, Inhalt in eigenem Commit ([`AGENTS.md`](../../../../AGENTS.md) §3.3, [`BEO-ALL/move-und-umschreiben-in-einem-commit`](../observations/BEO-ALL/move-und-umschreiben-in-einem-commit/observation.md)) |
+| `test/mutations/` | neu / update | ein Fall je neuem Wächter ([`MR-071`](../../../../harness/conventions.md#mr-071)), Fälle 748 bis 763 auf die kleine Richtung gezogen, dazu ein Fall für den `port-locality`-Lauf-Zahn (neue Nummer); **Prüfauftrag an den Implementer:** Fall 705 `csharp-hexslice-ohne-renderer` (erwartet `TestGenerateArch_CsharpNurFlat`) ist am Quell-Bestand zu messen — bleibt seine Zusage mit dem Renderer wahr (dann Wächter, ggf. Umbenennung auf `csharp-hexagonal-ohne-renderer` wie Fall 690 bei Python), oder ist sie überholt; bei Umbenennung reiner `git mv` zuerst, Inhalt in eigenem Commit ([`AGENTS.md`](../../../../AGENTS.md) §3.3, [`BEO-ALL/move-und-umschreiben-in-einem-commit`](../observations/BEO-ALL/move-und-umschreiben-in-einem-commit/observation.md)) |
 
 ## 4. Trigger
 
@@ -103,7 +138,8 @@ in `done/`.
 **Rückführungen — vorab benennen:**
 
 - `in-progress` → `next`: der Rollen-Renderer verlangt eine Änderung am sprach-agnostischen Seam
-  `internal/gen/arch.go` — eigener Schnitt.
+  `internal/gen/arch.go` — eigener Schnitt. Nach dem Urteil des Architect ([`ADR-0097`](../../adr/0097-csharp-hexslice-richtungs-ordner-klein.md)) **nicht ausgelöst**:
+  die kleine Richtung ändert Renderer und C#-Config, nicht den Seam.
 - `in-progress` → `open`: eine auflösende Config bleibt grün (Trigger der ADR) — Anforderung an a-check
   über den Auftraggeber.
 
@@ -120,6 +156,17 @@ DoD vollständig, Arch-Zahn rot und Gegenprobe grün in `make full-smoke`, Closu
   nicht; ein klein geschriebenes Verzeichnis gibt ein stilles Grün im Arch-Gate) — **Ausgang:** bei der
   Closure; der Glob-gegen-Pfad-Test hält den Renderer, die Lücke bleibt in der Abdeckungs-Zeile der
   Stufe benannt.
+- Die Schreibweise der Richtungs-Ordner beim Adopter hat keinen Sensor: ein groß geschriebenes
+  `Inbound`/`Outbound` bringt den Hinweis zurück und `port-locality` geht für den Port verloren
+  ([ADR-0097](../../adr/0097-csharp-hexslice-richtungs-ordner-klein.md) Festlegung 4; `make gates` bleibt
+  grün) — **Ausgang:** bei der Closure; der Renderer ist gehalten (Text-Wächter), die Lücke steht im
+  Config-Kommentar und in der Abdeckungs-Zeile; weiter offen heißt Register-Eintrag.
+- Die Gegenrichtung zu Messung 5 der [`ADR-0097`](../../adr/0097-csharp-hexslice-richtungs-ordner-klein.md) (Verzeichnis klein, Namensraum groß) färbt nur, wenn ein
+  Adapter den Port importiert; eine Slice ohne Adapter-Import bliebe still (nicht gefahren) —
+  **Ausgang:** bei der Closure; als Grenze in der Abdeckungs-Zeile benannt, ungeprüft gelassen.
+- Der Lauf der Stufe über Bind-Mount und der CI-Linux-Lauf sind für `port-locality` ungemessen ([`ADR-0097`](../../adr/0097-csharp-hexslice-richtungs-ordner-klein.md)
+  Messung 6: Bind-Mount und `docker cp` gleich; CI-Linux nicht) — **Ausgang:** bei der Closure; färbt der
+  Lauf-Zahn in CI nicht, gilt Trigger 3 der ADR (Config und Schreibweise zuerst prüfen), sonst *weiter offen*.
 - Voll qualifizierter Name ohne `using`, `<Using>` im `.csproj` und Reflection entgehen dem Arch-Gate
   (Grenze von a-check am Pin bzw. des Glob-Prüfbereichs) — **Ausgang:** bei der Closure; Grenze in
   der Abdeckungs-Zeile der Stufe benannt.
@@ -131,6 +178,11 @@ DoD vollständig, Arch-Zahn rot und Gegenprobe grün in `make full-smoke`, Closu
   Closure; das `# expect:` pinnt die Ursache, der Verifier prüft per Handprobe.
 - Eine neue Stufe, die `einordnen` aufruft, bricht die Zählgleichung in `test/full-smoke-ausgang.bats`
   (Fall 177) — **Ausgang:** bei der Closure; der Lieferstand fährt den Test vor der Übergabe.
+
+**Einordnung der Review-Befunde** (`docs/reviews/2026-10-18-slice-csharp-hexslice-layout.md`):
+F1 (Config-Kommentar nennt die falsche Ursache) und F2 (`port-locality` ungeprüft) sind Abnahme und stehen
+in DoD 1 und 2. F3 (Mutation allein an den Config-Globs nicht gefahren) ist Hinweis, kein DoD-Punkt: der
+Implementer fährt sie beim Neumessen von Fall 756 mit und hält das Ergebnis in §7 fest.
 
 ## 7. Closure-Notiz
 
