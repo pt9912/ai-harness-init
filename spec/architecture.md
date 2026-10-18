@@ -249,7 +249,8 @@ byte-identisch). `--lang <X>` beim Init ist die One-Shot-Kurzform (Init + ein
   Import und ein dynamischer Import entgehen dem Gate; den relativen Import schließt im
   Python-Skelett die Lint-Regel `TID252` (`ban-relative-imports`). Für `csharp` sind die Schichten
   **PascalCase-Verzeichnisse** unter `src/App/…` (`Hexagon/{Domain,Application}`,
-  `Adapters/{Driving,Driven}`), Composition Root `src/App/Program.cs`, Tests unter
+  `Adapters/{Driving,Driven}`), die Richtungs-Ordner der Ports **klein** (`…/Ports/inbound/`,
+  `…/Ports/outbound/`; `Ports` selbst PascalCase), Composition Root `src/App/Program.cs`, Tests unter
   `tests/App.Tests` (a-check-`exclude` `tests/**`): der **Namensraum** einer Datei ist ihr
   Verzeichnispfad ab `App` (die Analyzer-Regel `IDE0130` hält das im `lint`), denn a-check bildet
   den Namensraum eines `using` auf einen Pfad ab. Die emittierte Config trägt den
@@ -257,7 +258,10 @@ byte-identisch). `--lang <X>` beim Init ist die One-Shot-Kurzform (Init + ein
   der Implementierung des Port-Interfaces wie bei Java. Entgehen dem Gate: ein voll qualifizierter
   Name ohne `using`, ein `<Using>` in der `.csproj`, und ein Verzeichnis in anderer
   Schreibweise als der Namensraum (`IDE0130` unterscheidet Groß- und Kleinschreibung nicht, a-check
-  schon). Die Regel `port-locality` prüft a-check für die PascalCase-Port-Verzeichnisse nicht.
+  schon). Die Regel `port-locality` ist geprüft: a-check zieht das Richtungs-Segment einer
+  Port-Schicht nur kleingeschrieben ab, ein groß geschriebenes Segment lässt die Regel für diesen
+  Port aus (Hinweis, Gate grün). Die Schreibweise der Richtungs-Ordner beim Adopter hält kein
+  Sensor; den Renderer hält ein Test.
 - **Ein ausführbares Artefakt, und eine Klasse außerhalb des versionierten Baums.** Die
   Emission legt nicht nur Text ab: der **Träger** der Erfassung ist das laufende
   Produkt-Binär selbst, kopiert in den gitignorierten Zustands-Bereich des Ziels
