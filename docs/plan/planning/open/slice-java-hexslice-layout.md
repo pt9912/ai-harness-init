@@ -14,7 +14,7 @@
 **Berührte Spec-Stellen:** `spec/architecture.md` Layout je Sprache; `ARC-009`, `ARC-010` (über die ADR
 des Architect).
 
-**Verantwortlich:** —
+**Verantwortlich:** dburkard
 
 **Autor:** Planner. **Datum:** 2026-10-17.
 
@@ -26,8 +26,14 @@ des Architect).
 [ADR-0060](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)) samt `.a-check.yml`,
 und ein Import aus dem Kern in einen Adapter färbt das emittierte Arch-Gate rot.
 
-**Abhängigkeit:** setzt `slice-java-skelett` voraus (Renderer, Gerüst, Stufe im Mono-Repo); Start erst,
-wenn der in `done/` liegt.
+**Abhängigkeit:** setzt `slice-java-skelett` voraus (Renderer, Gerüst, Stufe im Mono-Repo); er liegt
+in `done/`.
+
+**Vom Layout-Slice zu entscheiden** (Übergabe des ADR-Reviews, L-4; [`ADR-0094`](../../adr/0094-java-skelett-toolchain-und-schicht-aufloesung.md)
+Festlegung 4 lässt es offen): die Ports-Ordner und die Kanten-Menge der `.a-check.yml` nach dem
+Kotlin-Muster (`internal/gen/kotlin.go`, `internal/gen/arch.go`), einschließlich der Vererbungs-Kante
+`driven_adapters → ports_outbound` (`implements` importiert den Port). Diese Kante ist am Java-Fall nicht
+gemessen; der Slice misst sie im Ziel (DoD 1).
 
 **Ausdrücklich NICHT in diesem Slice:**
 
@@ -44,12 +50,19 @@ wenn der in `done/` liegt.
       `src/main/java/app/adapters/…`, `Main.java`, Tests unter `src/test/java/app/`), Paket == Verzeichnis;
       `archGateConfigs()` mit `languages: java` und
       `resolution: java: {mode: fixed-root, roots: ["src/main/java/app"], package_base: "app"}`;
-      `java` in `langArchs()` führt `hexslice`; im gebootstrappten Ziel meldet a-check keinen Hinweis
-      „0 von N Import-Symbolen lösen auf" (Probe gegen das Ziel, nicht gegen eine Fixture).
+      `java` in `langArchs()` führt `hexslice`; Ports-Ordner und Kanten-Menge entschieden, die Kante
+      `driven_adapters → ports_outbound` im Ziel grün gesehen (ein Adapter, der den Port `implements`);
+      im gebootstrappten Ziel meldet a-check keinen Hinweis „0 von N Import-Symbolen lösen auf" (Probe
+      gegen das Ziel, nicht gegen eine Fixture).
 - [ ] `make full-smoke`: `add-lang java <pfad> --arch hexslice` grün; mit Import aus
       `app.hexagon.domain` nach `app.adapters` rot mit `core-impurity` (Meldung gelesen); Stufe mit
       `e2e_abdeckung`-Kopfzeile, `docs/user/e2e-abdeckung.md` neu erzeugt; Laufzeit-Zuwachs mit
-      Image-Lage und Variante ([`MR-089`](../../../../harness/conventions.md#mr-089)).
+      Image-Lage und Variante ([`MR-089`](../../../../harness/conventions.md#mr-089)). **Die Zahl steht
+      bei der Übergabe im Baum:** Kommando `make full-smoke-host`, Lage (Image warm oder kalt), Variante,
+      Läufe vorher und nachher stehen in einer Commit-Message des Implementers oder einer Datei des
+      Lieferstands; der Verifier hält sie gegen seine eigene Messung. Träger ist der Implementer-Handoff
+      (`slice-messzahl-der-dod-liegt-im-lieferstand` entscheidet den dauerhaften Ort; bis dahin gilt diese
+      Zeile).
 - [ ] `spec/architecture.md` Layout je Sprache um Java nachgezogen (Folgepflicht der ADR).
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`),
@@ -92,6 +105,12 @@ DoD vollständig, Arch-Zahn rot und Gegenprobe grün in `make full-smoke`, Closu
   gesehen) — **Ausgang:** bei der Closure; zuerst die Config prüfen, Layout sonst aus dem Slice nehmen.
 - Ein Paket außerhalb seines Verzeichnisses entgeht der Auflösung — **Ausgang:** bei der Closure;
   Skelett-Test hält Paket == Verzeichnis, Adopter-Fall ist Konsequenz der ADR.
+- Die Kante `driven_adapters → ports_outbound` ist am Java-Fall nicht gemessen; die Config färbt einen
+  legitimen `implements` rot oder lässt den Port-Import ungeprüft — **Ausgang:** bei der Closure; DoD 1
+  verlangt den grünen Fall im Ziel, bei Rot ist die Kanten-Menge zu korrigieren, nicht der Fall zu streichen.
+- Ein Wächter, dessen Zusage das Ziel durchsetzt (Config-Text), hat nur den Text-Wächter — **Ausgang:**
+  bei der Closure; der Lauf-Zahn im Ziel (rot an `core-impurity`) kommt in derselben Lieferung wie der
+  Text-Wächter ([`BEO-ALL/waechter-haelt-config-text-wirkung-im-ziel-ohne-lauf-zahn`](../observations/BEO-ALL/waechter-haelt-config-text-wirkung-im-ziel-ohne-lauf-zahn/observation.md)).
 
 ## 7. Closure-Notiz
 
@@ -103,12 +122,17 @@ DoD vollständig, Arch-Zahn rot und Gegenprobe grün in `make full-smoke`, Closu
 `harness/tools/full-smoke.sh`, für die die Modus-Deklaration keine eigene Sub-Area führt.
 
 **Vorgelagert — offene Beobachtungen sichten** (Zähler je
-`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence | wc -l`, gelesen 2026-10-17):
+`ls docs/plan/planning/observations/BEO-ALL/<slug>/evidence | wc -l`, gelesen 2026-10-18):
 `neuer-waechter-ohne-mutations-fall` — 20, geplant; jeder neue Test ist ein neuer Wächter ·
 `pin-digest-ohne-waechter` — 8, verkörpert; der a-check-Pin besteht schon ·
 `waechter-misst-die-fixture-statt-der-realen-quelle` — 10, geplant; die Probe läuft gegen das Ziel, nicht
 gegen eine Fixture ·
 `strukturtest-sieht-den-import-alias-nicht` — 2, offen; der Paket-Test des Skeletts ist davon berührt ·
-`lokaler-full-smoke-scheitert-auf-macos-host` — 3, verkörpert; die Stufe erbt es.
+`lokaler-full-smoke-scheitert-auf-macos-host` — 3, verkörpert; die Stufe erbt es ·
+`waechter-haelt-config-text-wirkung-im-ziel-ohne-lauf-zahn` — 1, offen; der Arch-Zahn im Ziel ist
+sein Lauf-Zahn (ein zweiter Beleg hier würde ihn auf 2× heben) ·
+`messzahl-der-dod-liegt-bei-der-uebergabe-nicht-im-baum` — 3, geplant (`slice-messzahl-der-dod-liegt-im-lieferstand`);
+die Messzahl-Zeile in DoD 2 trägt es bis dahin ·
+`kosten-einer-emittierten-pruefung-im-ziel-ungemessen` — 7, verkörpert; der Kaltlauf bleibt ungemessen.
 
 **Modus:** alle berührten Sub-Areas GF.
