@@ -149,9 +149,3 @@ func TestGenerate_JavaVersionThreaded(t *testing.T) {
 	}
 }
 
-// TestGenerateArch_JavaNurFlat (ADR-0094 Festlegung 4): hexslice und hexagonal rendert der
-// Java-Renderer nicht — Exit-2-Klasse mit der Liste der Sprache (flat), ohne Artefakte, kein
-// Geruest-only-Skelett. hexslice steht erst in langArchs, wenn sein Renderer es rendert.
-func TestGenerateArch_JavaNurFlat(t *testing.T) {
-	assertNurFlat(t, "java", gen.DefaultJavaVersion)
-}

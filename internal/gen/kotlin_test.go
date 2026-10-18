@@ -210,30 +210,7 @@ func TestGenerate_KotlinHexsliceProfile_FileSet(t *testing.T) {
 // entginge dem Arch-Gate. Rot-Gegenbeispiel: test/mutations/623 verschiebt das Paket der
 // Domain-Datei.
 func TestKotlinHexslice_PaketGleichVerzeichnis(t *testing.T) {
-	dir := genKotlinHexslice(t)
-	pkgRe := regexp.MustCompile(`(?m)^package ([a-z.]+)$`)
-	n := 0
-	for _, rel := range walkRel(t, dir) {
-		if !strings.HasSuffix(rel, ".kt") {
-			continue
-		}
-		n++
-		parts := strings.SplitN(rel, "/", 4) // src/<set>/kotlin/<paket-pfad>/<Datei>.kt
-		if len(parts) != 4 || parts[0] != "src" || parts[2] != "kotlin" {
-			t.Errorf("%s liegt nicht unter src/<set>/kotlin/", rel)
-			continue
-		}
-		want := strings.ReplaceAll(filepath.ToSlash(filepath.Dir(parts[3])), "/", ".")
-		m := pkgRe.FindStringSubmatch(mustRead(t, filepath.Join(dir, filepath.FromSlash(rel))))
-		if m == nil {
-			t.Errorf("%s traegt keine package-Zeile", rel)
-		} else if m[1] != want {
-			t.Errorf("%s deklariert package %s, das Verzeichnis verlangt %s", rel, m[1], want)
-		}
-	}
-	if n == 0 {
-		t.Fatal("keine .kt-Datei im hexSlice-Skelett")
-	}
+	assertPaketGleichVerzeichnis(t, genKotlinHexslice(t), "kotlin", ".kt", "")
 }
 
 // kotlinResolution zieht roots und package_base aus dem resolution-Block der Config.
@@ -257,7 +234,6 @@ func TestArchGateConfig_KotlinMatchesSkeleton(t *testing.T) {
 	if !ok {
 		t.Fatal("kotlin+hexslice traegt keine Arch-Gate-Config")
 	}
-	globs := archGlobs(t, cfg)
 	const hex, ad = "src/main/kotlin/app/hexagon/", "src/main/kotlin/app/adapters/"
 	want := map[string]string{
 		hex + "domain/example/Greeting.kt":                                 "domain",
@@ -269,36 +245,7 @@ func TestArchGateConfig_KotlinMatchesSkeleton(t *testing.T) {
 		ad + "driven/memory/example/InMemoryRepository.kt":               "driven_adapters",
 		ad + "driven/notify/StdoutNotifier.kt":                           "driven_adapters",
 	}
-	hits := map[string]int{}
-	seen := map[string]bool{}
-	for _, rel := range walkRel(t, genKotlinHexslice(t)) {
-		if !strings.HasSuffix(rel, ".kt") || strings.HasPrefix(rel, "src/test/") || rel == "src/main/kotlin/app/Main.kt" {
-			continue // exclude bzw. composition_root
-		}
-		seen[rel] = true
-		layer, glob := mostSpecific(globs, rel)
-		hits[glob]++
-		switch {
-		case layer == "":
-			t.Errorf("%s faellt unter KEINE Schicht (Loch im Pruefbereich)", rel)
-		case want[rel] == "":
-			t.Errorf("%s ist neu im Skelett, aber in der Erwartung nicht gefuehrt", rel)
-		case layer != want[rel]:
-			t.Errorf("%s faellt unter Schicht %q, want %q", rel, layer, want[rel])
-		}
-	}
-	for rel := range want {
-		if !seen[rel] {
-			t.Errorf("erwartete Skelett-Datei %s fehlt (Rollen-Pfad gewandert?)", rel)
-		}
-	}
-	for layer, gs := range globs {
-		for _, g := range gs {
-			if hits[g] == 0 {
-				t.Errorf("Schicht %s: Glob %q ist fuer keine Datei der spezifischste (LH-QA-01)", layer, g)
-			}
-		}
-	}
+	assertGlobsMatchSkeleton(t, cfg, genKotlinHexslice(t), ".kt", "src/main/kotlin/app/Main.kt", want)
 }
 
 // TestArchGateConfig_KotlinEdgesMatchSkeleton (ADR-0088 Festlegung 4, LH-FA-07): jeder

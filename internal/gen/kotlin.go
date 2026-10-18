@@ -30,41 +30,18 @@ func kotlinScaffolding(version string) map[string]string {
 }
 
 // kotlinRole rendert eine Code-Rolle als Kotlin-Datei. Getragen sind flat und hexslice
-// (langArchs); Paket == Verzeichnis (ADR-0088 Festlegung 4). hexslice rendert die Schichten
-// unter src/main/kotlin/app/{hexagon/{domain,application},adapters/{driving,driven}}; der
+// (langArchs); Paket == Verzeichnis. hexslice rendert die Schichten unter
+// src/main/kotlin/app/{hexagon/{domain,application},adapters/{driving,driven}}; der
 // Composition Root src/main/kotlin/app/Main.kt traegt zusaetzlich den Test, weil der Test
 // ueber alle Schichten verdrahtet. Eine nicht getragene Rolle -> nil.
 func kotlinRole(r codeRole) map[string]string {
-	const hex = "src/main/kotlin/app/hexagon/"
-	const adapters = "src/main/kotlin/app/adapters/"
-	switch r {
-	case roleEntrypoint:
-		return map[string]string{"src/main/kotlin/app/Main.kt": kotlinMain}
-	case roleTest:
-		return map[string]string{"src/test/kotlin/app/MainTest.kt": kotlinTest}
-	case roleDomain:
-		return map[string]string{hex + "domain/example/Greeting.kt": kotlinHexDomain}
-	case rolePorts:
-		return map[string]string{
-			hex + "application/example/greet/ports/inbound/Greet.kt":          kotlinHexInboundPort,
-			hex + "application/example/greet/ports/outbound/Notifier.kt":      kotlinHexSlicePort,
-			hex + "application/example/ports/outbound/GreetingRepository.kt": kotlinHexAreaPort,
-		}
-	case roleAppSlice:
-		return map[string]string{hex + "application/example/greet/Handler.kt": kotlinHexHandler}
-	case roleAdapters:
-		return map[string]string{
-			adapters + "driving/cli/example/Cli.kt":                   kotlinHexDrivingCLI,
-			adapters + "driven/memory/example/InMemoryRepository.kt": kotlinHexDrivenRepo,
-			adapters + "driven/notify/StdoutNotifier.kt":             kotlinHexDrivenNotify,
-		}
-	case roleCompositionRoot:
-		return map[string]string{
-			"src/main/kotlin/app/Main.kt":     kotlinHexMain,
-			"src/test/kotlin/app/GreetTest.kt": kotlinHexTest,
-		}
-	}
-	return nil
+	return jvmLayout{
+		srcMain: "src/main/kotlin/app/", srcTest: "src/test/kotlin/app/", ext: ".kt",
+		flatMain: kotlinMain, flatTest: kotlinTest,
+		domain: kotlinHexDomain, inboundPort: kotlinHexInboundPort, slicePort: kotlinHexSlicePort,
+		areaPort: kotlinHexAreaPort, handler: kotlinHexHandler, cli: kotlinHexDrivingCLI,
+		repo: kotlinHexDrivenRepo, notify: kotlinHexDrivenNotify, main: kotlinHexMain, test: kotlinHexTest,
+	}.role(r)
 }
 
 // kotlinFragment liefert das Kotlin-Code-Gate-Fragment: am Root (context ".") die UNSCOPED

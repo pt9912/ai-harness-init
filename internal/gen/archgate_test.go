@@ -311,7 +311,7 @@ func TestArchGateConfig_OnlyLayered(t *testing.T) {
 		{"kotlin", "hexslice", true},
 		{"kotlin", "hexagonal", false}, // ADR-0088 legt das Layout fuer kotlin nicht fest
 		{"java", "flat", false},
-		{"java", "hexslice", false}, // ADR-0094 Festlegung 4: erst mit seinem Renderer in langArchs
+		{"java", "hexslice", true},
 		{"java", "hexagonal", false}, // ADR-0094 legt das Layout fuer java nicht fest
 		{"python", "flat", false},
 		{"python", "hexslice", false},  // ADR-0095 Festlegung 5: erst mit seinem Renderer in langArchs

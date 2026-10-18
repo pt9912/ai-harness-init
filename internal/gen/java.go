@@ -30,17 +30,19 @@ func javaScaffolding(version string) map[string]string {
 	}
 }
 
-// javaRole rendert eine Code-Rolle als Java-Datei. Getragen ist allein das Layout flat
-// (langArchs): Entry-Point und Test unter src/{main,test}/java/app, Paket == Verzeichnis.
-// Jede andere Rolle -> nil.
+// javaRole rendert eine Code-Rolle als Java-Datei. Getragen sind flat und hexslice
+// (langArchs); Paket == Verzeichnis. hexslice rendert die Schichten unter
+// src/main/java/app/{hexagon/{domain,application},adapters/{driving,driven}}; der
+// Composition Root src/main/java/app/Main.java traegt zusaetzlich den Test, weil der Test
+// ueber alle Schichten verdrahtet. Eine nicht getragene Rolle -> nil.
 func javaRole(r codeRole) map[string]string {
-	switch r {
-	case roleEntrypoint:
-		return map[string]string{"src/main/java/app/Main.java": javaMain}
-	case roleTest:
-		return map[string]string{"src/test/java/app/MainTest.java": javaTest}
-	}
-	return nil
+	return jvmLayout{
+		srcMain: "src/main/java/app/", srcTest: "src/test/java/app/", ext: ".java",
+		flatMain: javaMain, flatTest: javaTest,
+		domain: javaHexDomain, inboundPort: javaHexInboundPort, slicePort: javaHexSlicePort,
+		areaPort: javaHexAreaPort, handler: javaHexHandler, cli: javaHexDrivingCLI,
+		repo: javaHexDrivenRepo, notify: javaHexDrivenNotify, main: javaHexMain, test: javaHexTest,
+	}.role(r)
 }
 
 // javaFragment liefert das Java-Code-Gate-Fragment: am Root (context ".") die UNSCOPED

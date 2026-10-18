@@ -417,9 +417,43 @@ func TestRun_AddLangJava(t *testing.T) {
 	}, []string{"gradle", "javac", "checkstyle", "mvn", "mvnw"})
 }
 
-// TestRun_AddLangJavaHexsliceIstExit2 (ADR-0094 Festlegung 4): java rendert nur flat.
-func TestRun_AddLangJavaHexsliceIstExit2(t *testing.T) {
-	assertAddLangHexsliceIstExit2(t, "java", "apps/jv")
+// TestRun_AddLangJavaHexslice (LH-FA-04, LH-FA-07, ADR-0094 Festlegung 4): `add-lang java
+// apps/jv --arch hexslice` dropt die Schicht-Pakete, die Schicht-Config im Modul und das
+// Arch-Gate-Fragment.
+func TestRun_AddLangJavaHexslice(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	code := run([]string{"add-lang", "java", "apps/jv", "--arch", "hexslice"}, dir, testSources(t), &out, &errb)
+	if code != 0 {
+		t.Fatalf("add-lang java --arch hexslice exit %d, stderr: %q", code, errb.String())
+	}
+	for _, rel := range []string{
+		"apps/jv/src/main/java/app/hexagon/domain/example/Greeting.java",
+		"apps/jv/src/main/java/app/adapters/driven/notify/StdoutNotifier.java",
+		"apps/jv/src/main/java/app/Main.java", "apps/jv/src/test/java/app/GreetTest.java",
+		"apps/jv/.a-check.yml", "harness/mk/apps-jv.mk", "harness/mk/arch-apps-jv.mk",
+	} {
+		if _, err := os.Stat(filepath.Join(dir, filepath.FromSlash(rel))); err != nil {
+			t.Errorf("%s nicht gedroppt: %v", rel, err)
+		}
+	}
+}
+
+// TestRun_AddLangJavaHexagonalIstExit2 (ADR-0094 Festlegung 4): java rendert flat und
+// hexslice, hexagonal nicht — Exit 2 mit der Liste der Sprache, ohne Modul.
+func TestRun_AddLangJavaHexagonalIstExit2(t *testing.T) {
+	dir := initializedRepo(t)
+	var out, errb bytes.Buffer
+	code := run([]string{"add-lang", "java", "apps/jv", "--arch", "hexagonal"}, dir, testSources(t), &out, &errb)
+	if code != 2 {
+		t.Fatalf("add-lang java --arch hexagonal exit %d, want 2; stderr: %q", code, errb.String())
+	}
+	if !strings.Contains(errb.String(), "verfuegbar: flat, hexslice") {
+		t.Errorf("Meldung nennt die Liste der Sprache nicht: %q", errb.String())
+	}
+	if _, err := os.Stat(filepath.Join(dir, "apps", "jv")); !os.IsNotExist(err) {
+		t.Errorf("abgelehnte Kombination legte apps/jv an: %v", err)
+	}
 }
 
 // TestRun_AddLangPython (LH-FA-04, LH-FA-06, ADR-0095): `add-lang python apps/py` dropt

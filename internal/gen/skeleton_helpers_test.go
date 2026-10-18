@@ -146,3 +146,74 @@ func assertNurFlat(t *testing.T, lang, version string) {
 		}
 	}
 }
+
+// assertPaketGleichVerzeichnis: jede <ext>-Datei unter src/<set>/<lang>/ in dir deklariert
+// genau das Paket ihres Verzeichnisses (`package a.b<abschluss>`; abschluss ist "" fuer Kotlin,
+// ";" fuer Java). a-check loest einen Import ueber den PFAD auf; ein Paket ausserhalb seines
+// Verzeichnisses entginge dem Arch-Gate.
+func assertPaketGleichVerzeichnis(t *testing.T, dir, lang, ext, abschluss string) {
+	t.Helper()
+	pkgRe := regexp.MustCompile(`(?m)^package ([a-z.]+)` + regexp.QuoteMeta(abschluss) + `$`)
+	n := 0
+	for _, rel := range walkRel(t, dir) {
+		if !strings.HasSuffix(rel, ext) {
+			continue
+		}
+		n++
+		parts := strings.SplitN(rel, "/", 4) // src/<set>/<lang>/<paket-pfad>/<Datei>
+		if len(parts) != 4 || parts[0] != "src" || parts[2] != lang {
+			t.Errorf("%s liegt nicht unter src/<set>/%s/", rel, lang)
+			continue
+		}
+		want := strings.ReplaceAll(filepath.ToSlash(filepath.Dir(parts[3])), "/", ".")
+		m := pkgRe.FindStringSubmatch(mustRead(t, filepath.Join(dir, filepath.FromSlash(rel))))
+		if m == nil {
+			t.Errorf("%s traegt keine package-Zeile", rel)
+		} else if m[1] != want {
+			t.Errorf("%s deklariert package %s, das Verzeichnis verlangt %s", rel, m[1], want)
+		}
+	}
+	if n == 0 {
+		t.Fatalf("keine %s-Datei im Skelett", ext)
+	}
+}
+
+// assertGlobsMatchSkeleton: jede <ext>-Produktionsdatei in dir ausser Tests (src/test/) und
+// Composition Root (mainRel) faellt unter den Schicht-Glob, den want fuer sie nennt; der
+// spezifischste Glob bestimmt die Schicht, und jeder Glob ist fuer mindestens eine Datei der
+// spezifischste (ein Glob ohne Datei ist der stille Rest, aus dem ein Gate ueber leerem
+// Bereich wird, LH-QA-01). want steht ausgeschrieben, nicht aus der Config abgeleitet.
+func assertGlobsMatchSkeleton(t *testing.T, cfg, dir, ext, mainRel string, want map[string]string) {
+	t.Helper()
+	globs := archGlobs(t, cfg)
+	hits := map[string]int{}
+	seen := map[string]bool{}
+	for _, rel := range walkRel(t, dir) {
+		if !strings.HasSuffix(rel, ext) || strings.HasPrefix(rel, "src/test/") || rel == mainRel {
+			continue // exclude bzw. composition_root
+		}
+		seen[rel] = true
+		layer, glob := mostSpecific(globs, rel)
+		hits[glob]++
+		switch {
+		case layer == "":
+			t.Errorf("%s faellt unter KEINE Schicht (Loch im Pruefbereich)", rel)
+		case want[rel] == "":
+			t.Errorf("%s ist neu im Skelett, aber in der Erwartung nicht gefuehrt", rel)
+		case layer != want[rel]:
+			t.Errorf("%s faellt unter Schicht %q, want %q", rel, layer, want[rel])
+		}
+	}
+	for rel := range want {
+		if !seen[rel] {
+			t.Errorf("erwartete Skelett-Datei %s fehlt (Rollen-Pfad gewandert?)", rel)
+		}
+	}
+	for layer, gs := range globs {
+		for _, g := range gs {
+			if hits[g] == 0 {
+				t.Errorf("Schicht %s: Glob %q ist fuer keine Datei der spezifischste (LH-QA-01)", layer, g)
+			}
+		}
+	}
+}
