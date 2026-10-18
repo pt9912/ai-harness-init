@@ -3307,16 +3307,22 @@ cshex_app="$tmprepo_doc/apps/csharphexslice"
 cshex_cfg="$cshex_app/.a-check.yml"
 cshex_area="$cshex_app/src/App/Hexagon/Application/Example"
 cshex_richt="$(basename "$(dirname "$(find "$cshex_area/Greet/Ports" -name INotifier.cs)")")"
+# Ein Bind-Mount unter macOS (colima) zeigt eine eben geschriebene Datei verzoegert, mit der Groesse
+# der vorigen Fassung; die Pausen nach jeder Aenderung halten a-check vor dieser veralteten Sicht.
+cshex_pause=2
 mkdir -p "$cshex_area/Other/Ports/$cshex_richt"
 printf 'namespace App.Hexagon.Application.Example.Other.Ports.%s;\n\npublic interface IOther\n{\n    void Run();\n}\n' "$cshex_richt" >"$cshex_area/Other/Ports/$cshex_richt/IOther.cs"
 cp "$cshex_cfg" "$cshex_cfg.orig"
 sed -e '/Example\/Greet\/\*\*"/{p;s/Greet/Other/;}' -e '/Example\/Greet\/Ports\/[oO]utbound\/\*\*"/{p;s/Greet/Other/;}' "$cshex_cfg.orig" >"$cshex_cfg"
+sleep "$cshex_pause"
 cshex_handler="$cshex_area/Greet/Handler.cs"
 cp "$cshex_handler" "$cshex_handler.orig"
 { printf 'using App.Hexagon.Application.Example.Other.Ports.%s;\n' "$cshex_richt"; cat "$cshex_handler.orig"; } >"$cshex_handler"
+sleep "$cshex_pause"
 cshexloc_rc=0
 cshexloc_out="$( make -C "$tmprepo_doc" a-check-apps-csharphexslice 2>&1 )" || cshexloc_rc=$?
-mv "$cshex_handler.orig" "$cshex_handler"
+cat "$cshex_handler.orig" >"$cshex_handler"
+rm "$cshex_handler.orig"
 if [ "$cshexloc_rc" -eq 0 ]; then
 	echo "full-smoke: FEHLER — das emittierte C#-Arch-Gate bleibt bei einem fremden Port-using im Handler gruen (port-locality an Handler.cs bleibt aus, AGENTS.md §3.6/LH-QA-01)." >&2
 	printf '%s\n' "$cshexloc_out" >&2
@@ -3330,6 +3336,7 @@ if ! grep -qF -- 'Handler.cs:1: port-locality: app außerhalb Port-Scope' <<<"$c
 fi
 echo "full-smoke: C#-port-locality-Zahn belegt (zweite Slice Other, fremder Port-using im Handler faerbt a-check rot, danach zurueckgenommen):"
 grep -F -- 'port-locality' <<<"$cshexloc_out" | sed -n '1,2s/^/full-smoke:   /p'
+sleep "$cshex_pause"
 cshexloc2_rc=0
 cshexloc2_out="$( make -C "$tmprepo_doc" a-check-apps-csharphexslice 2>&1 )" || cshexloc2_rc=$?
 if [ "$cshexloc2_rc" -ne 0 ]; then
@@ -3342,7 +3349,8 @@ if grep -qF -- 'erreichen den App-Baum nicht' <<<"$cshexloc2_out"; then
 	grep -F -- 'erreichen den App-Baum nicht' -A 4 <<<"$cshexloc2_out" >&2
 	exit 1
 fi
-mv "$cshex_cfg.orig" "$cshex_cfg"
+cat "$cshex_cfg.orig" >"$cshex_cfg"
+rm "$cshex_cfg.orig"
 rm -rf "$cshex_area/Other"
 echo "full-smoke: C#-hexSlice-Stufe dauerte $(( SECONDS - csharphexslice_start ))s (make -j gates samt add-lang, Arch-Zaehne und Gegenproben)."
 
