@@ -1,0 +1,2 @@
+**Vorgang:** slice-csharp-skelett
+**Fund:** `IDE0130 = error` und `TreatWarningsAsErrors` haben nur den Text-Wächter (`TestCsharpConfig_TraegtDieGebundenenZeilen`); kein Lauf am gebootstrappten Ziel färbt einen falschen Namensraum oder eine unbenutzte Variable. Für `IDE0005` und `CA1822` schließen die Lauf-Zähne (Fälle 716, 717) dieselbe Klasse. Die Kurzbeschreibung in `docs/user/e2e-abdeckung.md` nennt die Lücke am selben Ort (Review INFO-2, Verifier V-3).

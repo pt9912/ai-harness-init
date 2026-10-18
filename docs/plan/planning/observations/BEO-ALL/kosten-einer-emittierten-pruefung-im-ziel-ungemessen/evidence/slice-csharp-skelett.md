@@ -1,0 +1,2 @@
+**Vorgang:** slice-csharp-skelett
+**Fund:** Der Laufzeit-Zuwachs von `make full-smoke-host` durch die C#-Stufe ist nur mit lokal liegendem Image (`mcr.microsoft.com/dotnet/sdk:10.0.402`) gemessen: Stufe 9 s bis 14 s (Implementer-Läufe), 10 s (Verifier, `C#-Stufe dauerte 10s`); die Gesamtdauer sank von 201 s/218 s auf 181 s/205 s, die Streuung (bis rund 25 s) übersteigt den Zuwachs. Kalter Cache, Image-Pull und NuGet-Restore sind ungemessen (§6 Risiko 1, Ausgang weiter offen).

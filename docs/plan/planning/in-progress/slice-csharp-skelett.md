@@ -61,7 +61,7 @@ xunit 2.9.3 mit `Microsoft.NET.Test.Sdk` und `xunit.runner.visualstudio`, Lint =
 
 ## 2. Definition of Done
 
-- [ ] Renderer `csharp` (Layout `flat`) in `internal/gen/` nach der ADR des Architect: Gerüst
+- [x] Renderer `csharp` (Layout `flat`) in `internal/gen/` nach der ADR des Architect: Gerüst
       (`app.sln` mit festen GUIDs, beide `.csproj`, `Directory.Build.props`, `.editorconfig`,
       `Program.cs`, ein xunit-Test), Gate-Stages `test`/`lint`/`build`, Image-Pin
       (`mcr.microsoft.com/dotnet/sdk:10.0.402`, eigene Konstante `DefaultCsharpVersion`, Make-Variable
@@ -84,7 +84,7 @@ xunit 2.9.3 mit `Microsoft.NET.Test.Sdk` und `xunit.runner.visualstudio`, Lint =
       Methode ohne Instanzzugriff (`CA1822`) nicht mehr
       ([`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4),
       [`LH-FA-06`](../../../../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren)).
-- [ ] `make full-smoke`: `add-lang csharp` ins Mono-Repo, Skelett-Dateien liegen, `make gates` grün mit
+- [x] `make full-smoke`: `add-lang csharp` ins Mono-Repo, Skelett-Dateien liegen, `make gates` grün mit
       Beleg, dass das C#-Code-Gate lief, und der Guard blockt die Host-Toolchain;
       `e2e_abdeckung`-Kopfzeile nennt die Sprache und eine Teilmessung an derselben Stelle
       (`--arch hexslice` und Arch-Gate nicht gemessen), `docs/user/e2e-abdeckung.md` neu erzeugt;
@@ -93,15 +93,15 @@ xunit 2.9.3 mit `Microsoft.NET.Test.Sdk` und `xunit.runner.visualstudio`, Lint =
       ([`MR-089`](../../../../harness/conventions.md#mr-089)); **die Messzahl liegt im Lieferstand
       (Handoff) vor, nicht erst in der Closure** — Lehre aus Java und Python, wo der Plan Kommando und
       Träger nannte und die Zahl im Lieferstand trotzdem fehlte.
-- [ ] Hilfetext nennt `csharp` und `SKEL_CSHARP_VERSION` (öffentlicher Vertrag), Test in
+- [x] Hilfetext nennt `csharp` und `SKEL_CSHARP_VERSION` (öffentlicher Vertrag), Test in
       `cmd/ai-harness-init/main_test.go`.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`),
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`),
       kein Self-Review.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine
       Beobachtung anfiel.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen prüft die Closure von `welle-sprachprofile-java-python-csharp`; nach dem
       Move gefahren, §7.
 
@@ -162,7 +162,64 @@ DoD vollständig, die C#-Stufe in `make full-smoke` grün, Closure-Notiz mit Ler
 
 ## 7. Closure-Notiz
 
-<!-- Erst bei der Closure füllen. -->
+- **Was hat funktioniert:** Das Muster aus Kotlin, Java und Python trug C# ohne Umbau; die Stufe fährt je Ziel
+  `test`, `lint` und `build`, den Guard (`dotnet build` geblockt), zwei Lauf-Zähne im Ziel (`IDE0005` an einem
+  unbenutzten `using`, `CA1822` an einer nicht-statischen Methode ohne Instanzzugriff, Fälle 716 und 717, je rot und
+  nach Rücknahme grün) und zwei Exit-2-Fälle (`--arch hexslice`, `SKEL_CSHARP_VERSION=latest`). Der Lauf-Zahn im Ziel
+  in derselben Lieferung wie der Text-Wächter (Lehre aus Python) hielt: der Text-Wächter allein hätte beide Verstöße
+  nicht gesehen. Der gemeinsame Test-Helfer von Anfang an ersparte den `dupl`-Befund, `DOTNET_TAG` kollidierte nicht.
+- **Was ging anders als geplant:** Nicht in §3 geführt, geliefert: der Sprachlisten-Nachzug in `README.md`
+  (öffentlicher Vertrag, [`AGENTS.md`](../../../../AGENTS.md) §6 Schritt 7); der gemeinsame Code `versionValidators()`,
+  `InvalidVersionError` und die Erweiterung von `callExitCode` — die erste sprachübergreifende Validierung des
+  Versions-Knopfs, die `add-lang` und Bootstrap teilen (Review (a)); Listen-Nachzüge in
+  `internal/gen/archgate_test.go` und `cmd/ai-harness-init/kennungen_test.go`; 19 Mutations-Fälle (700 bis 718) statt
+  der Mindestliste aus dem Plan. Review INFO-4 und Verifier bestätigen die Zulässigkeit der README-Zeile.
+- **Laufzeit ([`MR-089`](../../../../harness/conventions.md#mr-089)):** Kommando `make full-smoke-host`, macOS/arm64
+  (Colima), `make -j`, Variante Mono-Repo mit `add-lang` go, cpp, kotlin, java, python (+ csharp). Implementer
+  (Handoff, je zwei Läufe je Stand): Vorher 201 s und 218 s, Nachher 181 s und 205 s, Stufe 9 s, 13 s und 14 s; die Lage
+  der Handoff-Läufe (Image warm oder kalt) nennt der Handoff nicht. Verifier (ein Lauf je Stand, warm — Image
+  `mcr.microsoft.com/dotnet/sdk:10.0.402` und Layer lagen lokal, kein Pull): `C#-Stufe dauerte 10s`. Die Gesamtdauer
+  sank trotz der neuen Stufe; die Streuung der Gesamtdauer (bis rund 25 s, unveränderte Nachbarstufen 10 s bis 17 s)
+  übersteigt den Zuwachs, belastbar ist allein die Stufenzeit von 9 s bis 14 s. **Ungemessen:** kalter Cache,
+  Image-Pull, NuGet-Restore (328 MB Paket-Cache laut ADR); keine Aussage über andere Varianten.
+- **Benannte Grenzen (Review INFO-2, Verifier V-3):** `IDE0130 = error` und `TreatWarningsAsErrors` haben nur den
+  Text-Wächter, keinen Lauf-Zahn im Ziel; die Abdeckungs-Zeile nennt die Lücke am selben Ort. Der Restore braucht beim
+  `docker build` des Ziels Netz, und ein Paket ist transitiv ungepinnt; kein Lauf vergleicht zwei Bauten desselben
+  Tags. Pins (Image, xunit) hält kein Wächter gegen die Registry.
+- **Verifier V-1 (MEDIUM, Prozess):** Der Plan verlangte die Messzahl im Lieferstand; Commit-Messages und Baum trugen
+  keine, die Zahlen standen nur im Handoff. Sie steht jetzt in dieser Notiz, abgeglichen gegen die Messreihe des
+  Verifiers (kein Widerspruch: 10 s liegt in 9 s bis 14 s). Dritte Wiederholung nach Java und Python; V-2 und V-3 (INFO)
+  sind oben als Ungemessenes und benannte Grenze geführt. Die Verifier-Anregung, die README-Zeile in die Vorlage
+  §3 aufzunehmen, ist eine Vorlagen-Schärfung und nicht dieser Slice.
+- **Steering-Loop-Eintrag:** benannte Spec-Lücke [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit):
+  die Messmethode (*zwei Läufe mit gleichem Tag erzeugen identische Ausgabe*) erfüllt kein Sprach-Skelett, das ein Image
+  per Tag pinnt und im Ziel Pakete per Netz holt. Auslöser:
+  `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht` (`slice-java-skelett`, `slice-python-skelett`,
+  `slice-csharp-skelett` — 3×; das C++-Vorkommen bleibt benannt, nicht gezählt). Lese-Schritt: Ausgang *geplant*, auf
+  Entscheidung des Nutzers vom 2026-10-18 — ein Change Request an `LH-QA-02`, vorbereitet von
+  `slice-lh-qa-02-messmethode-bekommt-ihren-change-request`; ein Digest-Pin im Skelett ist verworfen. Zweiter Eintrag,
+  gezählt, nicht verkörpert: die Messzahl der DoD fehlt bei der Übergabe im Baum (`slice-java-skelett`,
+  `slice-python-skelett`, `slice-csharp-skelett` — 3×, neu angelegt als
+  `BEO-ALL/messzahl-der-dod-liegt-bei-der-uebergabe-nicht-im-baum`, Ausgang *geplant*:
+  `slice-messzahl-der-dod-liegt-im-lieferstand`); `MR-089` trägt die Form der Aussage, nicht den Ort der Zahl.
+- **Beobachtungs-Register (`../observations/`):** je Beleg `evidence/slice-csharp-skelett.md`:
+  `BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht` (3×, Ausgang *geplant*),
+  `BEO-ALL/kosten-einer-emittierten-pruefung-im-ziel-ungemessen` (7×, verkörpert); neu angelegt:
+  `BEO-ALL/messzahl-der-dod-liegt-bei-der-uebergabe-nicht-im-baum` (3×, je ein Beleg aus Java, Python und C#; Ausgang
+  *geplant*) und `BEO-ALL/waechter-haelt-config-text-wirkung-im-ziel-ohne-lauf-zahn` (1×; Java und Python tragen die
+  Klasse als benannte Grenze ohne Register-Beleg und sind nicht nachgezählt). Kein Beleg für
+  `BEO-ALL/gleichnamige-make-variable-zweier-sprach-fragmente-im-selben-ziel` (Test und Fall 707, Namen gegen die
+  Fragmente der anderen Sprachen gelesen) und `BEO-ALL/dupl-meldet-aehnlichen-testcode-zweier-sprach-skelette`
+  (gemeinsame Helfer von Anfang an): es gab kein Auftreten.
+- **Folge-Slices:** `slice-csharp-hexslice-layout` — ist eine Datei in `open/`;
+  `slice-lh-qa-02-messmethode-bekommt-ihren-change-request` — ist eine Datei in `open/`;
+  `slice-messzahl-der-dod-liegt-im-lieferstand` — ist eine Datei in `open/`
+- **Risiken aus §6:** Risiko 1 (Laufzeit) weiter offen (Register, kalter Wert; die Zahl selbst steht oben),
+  Risiko 2 (Messmethode) weiter offen (Register, Ausgang *geplant*), Risiko 3 (`DOTNET_TAG`-Kollision) entfallen
+  (Test und Fall 707, kein Auftreten), Risiko 4 (`dupl`) entfallen (gemeinsamer Helfer von Anfang an), Risiko 5
+  (Text-Wächter) weiter offen (Register; `IDE0005` und `CA1822` sind durch die Lauf-Zähne 716 und 717 gedeckt,
+  `IDE0130` und `TreatWarningsAsErrors` nicht), Risiko 6 (Restore, transitive Pakete) weiter offen (Register, mit
+  Risiko 2) — je einmal in §6.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
