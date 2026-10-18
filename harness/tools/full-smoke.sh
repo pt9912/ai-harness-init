@@ -3098,10 +3098,10 @@ echo "full-smoke: Python-hexSlice-Stufe dauerte $(( SECONDS - pythonhexslice_sta
 # unbenutztes using in Program.cs faerbt lint-apps-csharp rot mit IDE0005, eine nicht-statische
 # Methode ohne Instanzzugriff faerbt build-apps-csharp rot mit CA1822 (AnalysisLevel
 # latest-recommended), und die zurueckgenommenen Dateien halten beide wieder gruen. Der Guard
-# blockt dotnet, das allein blocked/csharp fuehrt. Nur flat ist getragen: `--arch hexslice` endet
+# blockt dotnet, das allein blocked/csharp fuehrt. `--arch hexagonal` ist nicht getragen und endet
 # mit Exit 2 ohne Artefakt, ebenso ein SDK-Tag ohne Major.Minor (SKEL_CSHARP_VERSION=latest).
 echo "full-smoke: add-lang csharp apps/csharp ins Mono-Repo (sechste Sprache, dotnet build/test/format) ..."
-e2e_abdeckung "LH-FA-04 LH-FA-06 LH-QA-01" "Eine sechste Sprache (C#, flat) im selben Ziel, mit den realen Gates (dotnet build, dotnet test mit xunit, dotnet format), den roten Zaehnen (ein unbenutztes using faerbt lint rot mit IDE0005, eine nicht-statische Methode ohne Instanzzugriff den build mit CA1822), dem gruenen Fall nach der Ruecknahme, dem Guard, der dotnet blockt, und dem Abbruch mit Exit 2 fuer einen SDK-Tag ohne Major.Minor; NICHT gemessen: hexslice und das Arch-Gate (add-lang csharp --arch hexslice endet mit Exit 2, nicht mehr), IDE0130 und TreatWarningsAsErrors am Ziel (nur der Text der Config ist gehalten), der Root-Bootstrap mit Gate-Lauf, ein gemischter Root mit C#, die Reproduzierbarkeit zweier Bauten (NuGet-Restore braucht Netz, transitive Pakete ungepinnt)" "C#-Gate kaputt"
+e2e_abdeckung "LH-FA-04 LH-FA-06 LH-QA-01" "Eine sechste Sprache (C#, flat) im selben Ziel, mit den realen Gates (dotnet build, dotnet test mit xunit, dotnet format), den roten Zaehnen (ein unbenutztes using faerbt lint rot mit IDE0005, eine nicht-statische Methode ohne Instanzzugriff den build mit CA1822), dem gruenen Fall nach der Ruecknahme, dem Guard, der dotnet blockt, und dem Abbruch mit Exit 2 fuer einen SDK-Tag ohne Major.Minor und dem Abbruch mit Exit 2 fuer add-lang csharp --arch hexagonal ohne Artefakt; NICHT gemessen: hexslice und das Arch-Gate (misst die Stufe darunter), IDE0130 und TreatWarningsAsErrors am Ziel (nur der Text der Config ist gehalten), der Root-Bootstrap mit Gate-Lauf, ein gemischter Root mit C#, die Reproduzierbarkeit zweier Bauten (NuGet-Restore braucht Netz, transitive Pakete ungepinnt)" "C#-Gate kaputt"
 csharp_start=$SECONDS
 ( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang csharp apps/csharp )
 for rel in apps/csharp/app.sln apps/csharp/Directory.Build.props apps/csharp/.editorconfig apps/csharp/Dockerfile \
@@ -3187,15 +3187,15 @@ if [ "$csharpgreen_rc" -ne 0 ]; then
 	einordnen "make lint-apps-csharp build-apps-csharp (nach Ruecknahme)" "$csharpgreen_out"
 	exit 1
 fi
-# Nur flat ist getragen: hexslice endet mit Exit 2 und legt kein Modul an.
-csharphex_rc=0
-( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang csharp apps/csharphex --arch hexslice ) || csharphex_rc=$?
-if [ "$csharphex_rc" -ne 2 ]; then
-	echo "full-smoke: FEHLER — add-lang csharp --arch hexslice rc=$csharphex_rc, want 2 (nicht getragene Kombination wird nicht abgelehnt)." >&2
+# hexagonal ist nicht getragen: Exit 2 und kein Modul.
+csharphexagonal_rc=0
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang csharp apps/csharphexagonal --arch hexagonal ) || csharphexagonal_rc=$?
+if [ "$csharphexagonal_rc" -ne 2 ]; then
+	echo "full-smoke: FEHLER — add-lang csharp --arch hexagonal rc=$csharphexagonal_rc, want 2 (nicht getragene Kombination wird nicht abgelehnt)." >&2
 	exit 1
 fi
-if [ -e "$tmprepo_doc/apps/csharphex/app.sln" ]; then
-	echo "full-smoke: FEHLER — die nicht getragene Kombination csharp+hexslice legte ein Geruestung-Artefakt an (still statt Exit 2)." >&2
+if [ -e "$tmprepo_doc/apps/csharphexagonal/app.sln" ]; then
+	echo "full-smoke: FEHLER — die nicht getragene Kombination csharp+hexagonal legte ein Geruestung-Artefakt an (still statt Exit 2)." >&2
 	exit 1
 fi
 # Ein SDK-Tag ohne Major.Minor ist ein Aufruf-Fehler: Exit 2 und kein Modul, statt einer
@@ -3211,6 +3211,86 @@ if [ -e "$tmprepo_doc/apps/csharptag/Directory.Build.props" ]; then
 	exit 1
 fi
 echo "full-smoke: C#-Stufe dauerte $(( SECONDS - csharp_start ))s (add-lang, make -j gates, Zaehne, Exit-2-Faelle)."
+
+# LH-FA-07/ADR-0096 Festlegung 5: dasselbe Schicht-Layout in C#. Die Schichten sind PascalCase-
+# Verzeichnisse, der Namensraum ist der Pfad, a-check loest `using App.…;` nur ueber den
+# resolution-Block der emittierten .a-check.yml auf (fixed-root, Root src/App, package_base App).
+# Loest kein using auf, bleibt das Gate gruen und a-check gibt den Hinweis "0 von N
+# Import-Symbolen" aus — darum prueft die Stufe dessen Abwesenheit im gruenen Lauf (in dem
+# InMemoryRepository das Port-Interface implementiert und importiert: die Kante driven_adapters ->
+# ports_outbound) und danach den roten Fall: ein using aus der Domain in einen Adapter faerbt das
+# Arch-Gate mit core-impurity, an genau dieser Datei. Die Gates lint (dotnet format mit IDE0005 und
+# IDE0130), test und build laufen im selben make gates ueber dem Skelett.
+echo "full-smoke: add-lang csharp apps/csharphexslice --arch hexslice (Arch-Achse, C#) ..."
+e2e_abdeckung "LH-FA-04 LH-FA-07 LH-QA-01" "Das Schicht-Layout in C# (PascalCase-Verzeichnisse, Namensraum gleich Verzeichnis) mit Arch-Gate: make gates gruen ohne den Hinweis auf nicht aufloesende Import-Symbole (ein Adapter, der sein Port-Interface implementiert, ist gruen), ein using aus der Domain in einen Adapter faerbt das Arch-Gate rot mit core-impurity; NICHT gemessen: die uebrigen Richtungs-Regeln, port-locality (a-check laesst sie fuer die PascalCase-Port-Globs aus und meldet einen Hinweis), ein Namensraum ausserhalb seines Verzeichnisses und ein Verzeichnis in Kleinschreibung (ein Test haelt den Renderer, im Ziel nicht gefahren; beide geben ein stilles Gruen im Arch-Gate), ein voll qualifizierter Name ohne using, ein <Using> in der .csproj, Reflection, exclude tests/** (an keiner Fixture gemessen)" "C#-hexSlice-Gate kaputt"
+csharphexslice_start=$SECONDS
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang csharp apps/csharphexslice --arch hexslice )
+for rel in apps/csharphexslice/src/App/Hexagon/Domain/Example/Greeting.cs \
+           apps/csharphexslice/src/App/Hexagon/Application/Example/Greet/Handler.cs \
+           apps/csharphexslice/src/App/Adapters/Driven/Memory/Example/InMemoryRepository.cs \
+           apps/csharphexslice/src/App/Adapters/Driven/Notify/StdoutNotifier.cs \
+           apps/csharphexslice/src/App/Program.cs apps/csharphexslice/tests/App.Tests/GreetTests.cs \
+           apps/csharphexslice/.a-check.yml harness/mk/apps-csharphexslice.mk harness/mk/arch-apps-csharphexslice.mk; do
+	if [ ! -e "$tmprepo_doc/$rel" ]; then
+		echo "full-smoke: FEHLER — add-lang csharp --arch hexslice dropte $rel nicht." >&2
+		exit 1
+	fi
+done
+cshex_rc=0
+cshex_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || cshex_rc=$?
+printf '%s\n' "$cshex_out"
+if [ "$cshex_rc" -ne 0 ]; then
+	if grep -qF -- 'wrong-direction: driven_adapters -> ports_outbound' <<<"$cshex_out"; then
+		echo "full-smoke: FEHLER — make gates nach add-lang csharp --arch hexslice faellt an wrong-direction driven_adapters -> ports_outbound: die Kante fehlt in der emittierten .a-check.yml, obwohl der Adapter sein Port-Interface implementiert." >&2
+		grep -F -- 'wrong-direction' <<<"$cshex_out" >&2
+		exit 1
+	fi
+	echo "full-smoke: FEHLER — make gates nach add-lang csharp --arch hexslice ist NICHT Exit 0 (C#-hexSlice-Gate kaputt)." >&2
+	einordnen "make -j gates nach add-lang csharp --arch hexslice (apps/csharphexslice)" "$cshex_out"
+	exit 1
+fi
+cshex_missing=""
+for marker in "--target test -t apps-csharphexslice:test apps/csharphexslice" "--target lint -t apps-csharphexslice:lint apps/csharphexslice" \
+              "--target build -t apps-csharphexslice:build apps/csharphexslice" 'apps/csharphexslice":/src:ro'; do
+	grep -qF -- "$marker" <<<"$cshex_out" || cshex_missing="$cshex_missing [$marker]"
+done
+if [ -n "$cshex_missing" ]; then
+	echo "full-smoke: FEHLER — make gates ohne Beleg fuer:$cshex_missing — C#-hexSlice-Gate oder sein Arch-Gate lief nicht?" >&2
+	exit 1
+fi
+if grep -qF -- 'Import-Symbolen' <<<"$cshex_out"; then
+	echo "full-smoke: FEHLER — das C#-Arch-Gate ist gruen, loest aber kein using auf (resolution der emittierten .a-check.yml?):" >&2
+	grep -F -- 'Import-Symbolen' <<<"$cshex_out" >&2
+	exit 1
+fi
+cshex_layer="$tmprepo_doc/apps/csharphexslice/src/App/Hexagon/Domain/Example/Greeting.cs"
+cp "$cshex_layer" "$cshex_layer.orig"
+{ printf 'using App.Adapters.Driven.Notify;\n'; cat "$cshex_layer.orig"; } >"$cshex_layer"
+cshexarch_rc=0
+cshexarch_out="$( make -C "$tmprepo_doc" a-check-apps-csharphexslice 2>&1 )" || cshexarch_rc=$?
+mv "$cshex_layer.orig" "$cshex_layer"
+if [ "$cshexarch_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — das emittierte C#-Arch-Gate bleibt bei einem using aus der Domain in einen Adapter gruen (zahnloses Gate, AGENTS.md §3.6/LH-QA-01)." >&2
+	printf '%s\n' "$cshexarch_out" >&2
+	exit 1
+fi
+if ! grep -qF -- 'Greeting.cs:1: core-impurity: Kern importiert App.Adapters.Driven.Notify' <<<"$cshexarch_out"; then
+	echo "full-smoke: FEHLER — C#-Arch-Gate rot, aber nicht mit core-impurity an der Domain-Datei (rot aus falschem Grund?). Ausgabe:" >&2
+	printf '%s\n' "$cshexarch_out" >&2
+	einordnen "make a-check-apps-csharphexslice (Arch-Gate-Zahn, csharp)" "$cshexarch_out"
+	exit 1
+fi
+echo "full-smoke: C#-Arch-Gate-Zaehne belegt (using aus der Domain in einen Adapter faerbt a-check rot, danach zurueckgenommen):"
+grep -F -- 'core-impurity' <<<"$cshexarch_out" | sed -n '1,2s/^/full-smoke:   /p'
+# Gegenprobe: nach der Ruecknahme ist das Arch-Gate wieder gruen.
+cshexarch2_rc=0
+cshexarch2_out="$( make -C "$tmprepo_doc" a-check-apps-csharphexslice 2>&1 )" || cshexarch2_rc=$?
+if [ "$cshexarch2_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — das C#-Arch-Gate ist nach der Ruecknahme des using NICHT gruen (C#-hexSlice-Gate kaputt)." >&2
+	einordnen "make a-check-apps-csharphexslice (nach Ruecknahme)" "$cshexarch2_out"
+	exit 1
+fi
+echo "full-smoke: C#-hexSlice-Stufe dauerte $(( SECONDS - csharphexslice_start ))s (make -j gates samt add-lang, Arch-Zahn und Gegenprobe)."
 
 # Der GEMISCHTE ROOT (LH-FA-04/LH-QA-01): zwei Sprach-Fragmente am selben Root
 # (harness/mk/go.mk + harness/mk/cpp.mk). Die gemischte Fassung komponiert: ein Fragment
