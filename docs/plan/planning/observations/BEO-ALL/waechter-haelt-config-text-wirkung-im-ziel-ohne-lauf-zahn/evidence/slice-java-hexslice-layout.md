@@ -1,0 +1,2 @@
+**Vorgang:** slice-java-hexslice-layout
+**Fund:** Die Kanten der Java-hexslice-Config außer `core-impurity` und `driven_adapters → ports_outbound` haben nur den Text-Wächter (`EdgesMatchSkeleton`), keinen Lauf im Ziel; die Abdeckungs-Zeile nennt sie unter NICHT gemessen. Drei andere Bindungen derselben Config (Rolle, Root, Port-Kante) tragen ihren Lauf-Zahn in derselben Lieferung (Fälle 724, 725, 727) — der Vorgang schließt die Klasse dort und lässt sie hier offen.

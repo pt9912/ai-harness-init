@@ -1,0 +1,2 @@
+**Vorgang:** slice-java-hexslice-layout
+**Fund:** Die Abdeckungs-Zeile der Java-hexslice-Stufe nannte „Paket gleich Verzeichnis" unter Gemessenem, obwohl die Stufe nur Import-Auflösung misst (Review L-2, Verifier V-2); behoben im Implementer-Nachtrag `7227e9bb`. Dieselbe Klammer steht unverändert in der Zeile der Kotlin-hexslice-Stufe (`harness/tools/full-smoke.sh`), die ebenfalls nur Import-Auflösung misst.
