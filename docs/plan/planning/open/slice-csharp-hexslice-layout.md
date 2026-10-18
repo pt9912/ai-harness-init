@@ -14,7 +14,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 **Berührte Spec-Stellen:** `spec/architecture.md` Layout je Sprache; `ARC-009`, `ARC-010` (über die ADR
 des Architect).
 
-**Verantwortlich:** —
+**Verantwortlich:** dburkard
 
 **Autor:** Planner. **Datum:** 2026-10-18.
 
@@ -27,8 +27,8 @@ des Architect).
 Verzeichnis gleich Namensraum) samt `.a-check.yml`, und ein `using` aus dem Kern in einen Adapter färbt
 das emittierte Arch-Gate rot.
 
-**Abhängigkeit:** setzt `slice-csharp-skelett` voraus (Renderer, Gerüst, Stufe im Mono-Repo); Start
-erst, wenn der in `done/` liegt.
+**Abhängigkeit:** setzt `slice-csharp-skelett` voraus (Renderer, Gerüst, Stufe im Mono-Repo); er liegt
+in `done/`.
 
 **Ausdrücklich NICHT in diesem Slice:**
 
@@ -52,17 +52,29 @@ erst, wenn der in `done/` liegt.
       package_base: "App"}`; `csharp` in `langArchs()` führt `hexslice`; **Entscheidung von
       Ports-Ordnern und Kanten-Menge** ([ADR-0060](../../adr/0060-adapter-und-ports-ordner-folgen-ihren-rollen-namen.md)
       Festlegung 4, Kotlin-Muster; die Kante `driven_adapters → ports_outbound` ist am C#-Fall nicht
-      gemessen) im Plan §7 und im Test festgehalten; **ein Test hält die gerenderten Verzeichnis-Globs
-      der `.a-check.yml` gegen die gerenderten Pfade** (PascalCase-Schreibweise; einmal rot gesehen mit
-      einem klein geschriebenen Verzeichnis); im gebootstrappten Ziel meldet a-check keinen Hinweis
-      „0 von N Import-Symbolen lösen auf" (Probe gegen das Ziel, nicht gegen eine Fixture).
+      gemessen; Kanten-Menge nach [`slice-java-hexslice-layout`](../done/slice-java-hexslice-layout.md)
+      und [`slice-python-hexslice-layout`](../done/slice-python-hexslice-layout.md): sieben Kanten
+      einschließlich `driven_adapters → ports_outbound`, im Ziel gemessen) im Plan §7 und im Test
+      festgehalten; **ein Test hält die gerenderten Verzeichnis-Globs der `.a-check.yml` gegen die
+      gerenderten Pfade** (PascalCase-Schreibweise; einmal rot gesehen mit einem klein geschriebenen
+      Verzeichnis); im gebootstrappten Ziel meldet a-check keinen Hinweis „0 von N Import-Symbolen
+      lösen auf" (Probe gegen das Ziel, nicht gegen eine Fixture). **Je Config-Schlüssel ein
+      Text-Wächter, und der Lauf-Zahn im Ziel (rot an `core-impurity`, Kante `driven_adapters → ports_outbound`
+      grün) kommt in derselben Lieferung** ([`AGENTS.md`](../../../../AGENTS.md) §3.6); Fälle ab 748.
+      Wo ein Schlüssel nur den Text-Wächter trägt, nennt die Abdeckungs-Zeile die Lücke am selben Ort.
 - [ ] `make full-smoke`: `add-lang csharp <pfad> --arch hexslice` grün; mit `using` aus
       `App.Hexagon.Domain` nach `App.Adapters` rot mit `core-impurity` (Meldung gelesen), Gegenprobe
       grün; Stufe mit `e2e_abdeckung`-Kopfzeile (Grenzen von a-check am Pin am selben Ort: voll
-      qualifizierter Name, `<Using>` im `.csproj`, Reflection), `docs/user/e2e-abdeckung.md` neu
-      erzeugt; Laufzeit-Zuwachs als Vorher/Nachher `make full-smoke-host` mit Image-Lage und Variante
-      ([`MR-089`](../../../../harness/conventions.md#mr-089)); Kommando und Träger der Messung stehen
-      damit im Plan, die Zahl im Lieferstand (Handoff).
+      qualifizierter Name, `<Using>` im `.csproj`, Reflection, Namensraum ≠ Verzeichnis,
+      Kleinschreibung; `exclude: tests/**` als nicht gemessene Gerüst-Wahl), `docs/user/e2e-abdeckung.md`
+      neu erzeugt; jeder neue Full-Smoke-Fall pinnt die Ursache im `# expect:` (nicht nur „rot");
+      die Stufen-Selbstprüfung `test/full-smoke-ausgang.bats` (Fall 177 zählt die `einordnen`-Aufrufe der
+      Stufen) bleibt grün. **Laufzeit-Zuwachs ([`MR-089`](../../../../harness/conventions.md#mr-089));
+      die Zahl steht bei der Übergabe im Baum:** Kommando `make full-smoke-host`, Lage (Image warm oder
+      kalt), Variante, mindestens zwei Läufe je Stand (vorher/nachher) in einer Commit-Message des
+      Implementers oder einer Datei des Lieferstands. Belastbar ist die Stufenzeit; die Gesamtdauer
+      rauscht um rund 25 s und trägt keinen Zuwachs allein; der Verifier hält die Zahl gegen seine
+      eigene Messung.
 - [ ] `spec/architecture.md` Layout je Sprache um C# nachgezogen (Folgepflicht der ADR).
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`),
@@ -81,11 +93,11 @@ erst, wenn der in `done/` liegt.
 | `internal/gen/csharp.go`, `internal/gen/arch.go` (+ Tests) | update | Rollen-Renderer, `archGateConfigs()`, `langArchs()`; Glob-gegen-Pfad-Test; Test-Helfer gemeinsam mit den anderen Sprach-Tests aus `internal/gen/skeleton_helpers_test.go`, kein Klon |
 | `harness/tools/full-smoke.sh`, `docs/user/e2e-abdeckung.md` | update | Stufe und Arch-Zahn, erzeugte Sicht; Berührungspunkt `emittiertes-gate-am-gemischten-root-baut-das-dockerfile-einer-anderen-sprache` |
 | `spec/architecture.md` | update | Layout je Sprache |
-| `test/mutations/` | neu / update | ein Fall je neuem Wächter ([`MR-071`](../../../../harness/conventions.md#mr-071)) |
+| `test/mutations/` | neu / update | ein Fall je neuem Wächter ([`MR-071`](../../../../harness/conventions.md#mr-071)), neue Nummern ab 748; **Prüfauftrag an den Implementer:** Fall 705 `csharp-hexslice-ohne-renderer` (erwartet `TestGenerateArch_CsharpNurFlat`) ist am Quell-Bestand zu messen — bleibt seine Zusage mit dem Renderer wahr (dann Wächter, ggf. Umbenennung auf `csharp-hexagonal-ohne-renderer` wie Fall 690 bei Python), oder ist sie überholt; bei Umbenennung reiner `git mv` zuerst, Inhalt in eigenem Commit ([`AGENTS.md`](../../../../AGENTS.md) §3.3, [`BEO-ALL/move-und-umschreiben-in-einem-commit`](../observations/BEO-ALL/move-und-umschreiben-in-einem-commit/observation.md)) |
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): `slice-csharp-skelett` liegt in `done/`, die ADR für C# ist
+**Start** (`next` → `in-progress`): `slice-csharp-skelett` liegt in `done/` (erfüllt), die ADR für C# ist
 `Accepted`, WIP-Slot frei.
 
 **Rückführungen — vorab benennen:**
@@ -113,6 +125,12 @@ DoD vollständig, Arch-Zahn rot und Gegenprobe grün in `make full-smoke`, Closu
   der Abdeckungs-Zeile der Stufe benannt.
 - Die Kante `driven_adapters → ports_outbound` ist am C#-Fall nicht gemessen — **Ausgang:** bei der
   Closure; Entscheidung und Messung im Test festgehalten (§2).
+- Die Messzahl steht bei der Übergabe nicht im Baum oder trägt nur über das Rauschen der Gesamtdauer —
+  **Ausgang:** bei der Closure; DoD 2 nennt Kommando, Lage, Variante und Läufe, der Verifier misst gegen.
+- Ein neuer Full-Smoke-Fall färbt an der falschen Ursache rot (grobes `# expect:`) — **Ausgang:** bei der
+  Closure; das `# expect:` pinnt die Ursache, der Verifier prüft per Handprobe.
+- Eine neue Stufe, die `einordnen` aufruft, bricht die Zählgleichung in `test/full-smoke-ausgang.bats`
+  (Fall 177) — **Ausgang:** bei der Closure; der Lieferstand fährt den Test vor der Übergabe.
 
 ## 7. Closure-Notiz
 
@@ -131,6 +149,12 @@ DoD vollständig, Arch-Zahn rot und Gegenprobe grün in `make full-smoke`, Closu
 nicht gegen eine Fixture ·
 `lokaler-full-smoke-scheitert-auf-macos-host` — 3, verkörpert; die Stufe erbt es ·
 `emittiertes-gate-am-gemischten-root-baut-das-dockerfile-einer-anderen-sprache` — 1, offen; die Stufe
-fährt den Mono-Repo-Pfad, ein Fund am gemischten Root wäre der zweite Beleg.
+fährt den Mono-Repo-Pfad, ein Fund am gemischten Root wäre der zweite Beleg ·
+`waechter-haelt-config-text-wirkung-im-ziel-ohne-lauf-zahn` — 3, verkörpert ([`AGENTS.md`](../../../../AGENTS.md)
+§3.6); Lauf-Zahn im Ziel in derselben Lieferung (DoD 1) ·
+`move-und-umschreiben-in-einem-commit` — 1, offen; Fall 705 (§3) ·
+`full-smoke-fall-expect-pinnt-nicht-die-ursache` — 2, offen; ein weiteres Auftreten wäre das dritte (DoD 2) ·
+`relativer-import-am-hexslice-ziel-ungefahren` — 1, offen; Python-spezifisch, C# berührt ihn nicht (der
+Namensraum-Fall ist die C#-Entsprechung, DoD 2).
 
 **Modus:** alle berührten Sub-Areas GF.
