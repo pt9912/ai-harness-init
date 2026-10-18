@@ -3472,7 +3472,7 @@ grep -E 'core-impurity|wrong-direction' <<<"$cpparch_out" | sed -n '1,2s/^/full-
 # danach den roten Fall: ein Import aus der Domain in einen Adapter faerbt das Arch-Gate
 # mit core-impurity, an genau dieser Datei.
 echo "full-smoke: add-lang kotlin apps/kthex --arch hexslice (Arch-Achse, Kotlin) ..."
-	e2e_abdeckung "LH-FA-04 LH-FA-07 LH-QA-01" "Das Schicht-Layout in Kotlin (Pakete, Paket gleich Verzeichnis) mit Arch-Gate: make gates gruen ohne den Hinweis auf nicht aufloesende Import-Symbole, ein Import aus der Domain in einen Adapter faerbt das Arch-Gate rot mit core-impurity; NICHT gemessen: die uebrigen Richtungs-Regeln, ein Paket ausserhalb seines Verzeichnisses" "Kotlin-hexSlice-Gate kaputt"
+	e2e_abdeckung "LH-FA-04 LH-FA-07 LH-QA-01" "Das Schicht-Layout in Kotlin (Pakete) mit Arch-Gate: make gates gruen ohne den Hinweis auf nicht aufloesende Import-Symbole, ein Import aus der Domain in einen Adapter faerbt das Arch-Gate rot mit core-impurity; NICHT gemessen: die uebrigen Richtungs-Regeln, Paket gleich Verzeichnis (haelt der Go-Test TestKotlinHexslice_PaketGleichVerzeichnis, nicht die Stufe), ein Paket ausserhalb seines Verzeichnisses" "Kotlin-hexSlice-Gate kaputt"
 kthex_start=$SECONDS
 ( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang kotlin apps/kthex --arch hexslice )
 for rel in apps/kthex/src/main/kotlin/app/hexagon/domain/example/Greeting.kt \
