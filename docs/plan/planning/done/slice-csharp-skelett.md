@@ -102,7 +102,7 @@ xunit 2.9.3 mit `Microsoft.NET.Test.Sdk` und `xunit.runner.visualstudio`, Lint =
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine
       Beobachtung anfiel.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen prüft die Closure von `welle-sprachprofile-java-python-csharp`; nach dem
+- [x] Die drei Paarungen prüft die Closure von `welle-sprachprofile-java-python-csharp`; nach dem
       Move gefahren, §7.
 
 ## 3. Plan (vor Code)
@@ -214,6 +214,10 @@ DoD vollständig, die C#-Stufe in `make full-smoke` grün, Closure-Notiz mit Ler
 - **Folge-Slices:** `slice-csharp-hexslice-layout` — ist eine Datei in `open/`;
   `slice-lh-qa-02-messmethode-bekommt-ihren-change-request` — ist eine Datei in `open/`;
   `slice-messzahl-der-dod-liegt-im-lieferstand` — ist eine Datei in `open/`
+- **Paarungen (nach dem Move):** Anker-Paarung: kein Eintrag trägt das Feld `liegt in`, nichts zu paaren.
+  Folge-Slice-Paarung: `slice-csharp-hexslice-layout`, `slice-lh-qa-02-messmethode-bekommt-ihren-change-request` und
+  `slice-messzahl-der-dod-liegt-im-lieferstand` sind Dateien in `open/`. Register-Paarung: jede genannte Beobachtung
+  existiert mit nicht leerem `evidence/`; `make register-ausgang` 0 Befund(e).
 - **Risiken aus §6:** Risiko 1 (Laufzeit) weiter offen (Register, kalter Wert; die Zahl selbst steht oben),
   Risiko 2 (Messmethode) weiter offen (Register, Ausgang *geplant*), Risiko 3 (`DOTNET_TAG`-Kollision) entfallen
   (Test und Fall 707, kein Auftreten), Risiko 4 (`dupl`) entfallen (gemeinsamer Helfer von Anfang an), Risiko 5
