@@ -71,7 +71,7 @@ gemessen; der Slice misst sie im Ziel (DoD 1).
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — oder in §7 notiert, dass keine
       Beobachtung anfiel.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen prüft die Closure von `welle-sprachprofile-java-python-csharp`; nach dem
+- [x] Die drei Paarungen prüft die Closure von `welle-sprachprofile-java-python-csharp`; nach dem
       Move gefahren, §7.
 
 ## 3. Plan (vor Code)
@@ -193,7 +193,9 @@ DoD vollständig, Arch-Zahn rot und Gegenprobe grün in `make full-smoke`, Closu
   `BEO-ALL/messzahl-der-dod-liegt-bei-der-uebergabe-nicht-im-baum` (kein Auftreten, oben).
 - **Folge-Slices:** `slice-messzahl-der-dod-liegt-im-lieferstand` — ist eine Datei in `open/` (Ausgang des
   Register-Eintrags zur Messzahl, hier nur zitiert).
-- **Paarungen (nach dem Move):** wird nach dem Move eingetragen.
+- **Paarungen (nach dem Move):** Anker-Paarung: kein Eintrag trägt das Feld `liegt in`, nichts zu paaren.
+  Folge-Slice-Paarung: `slice-messzahl-der-dod-liegt-im-lieferstand` ist eine Datei in `open/`. Register-Paarung:
+  jede genannte Beobachtung existiert mit nicht leerem `evidence/`; `make register-ausgang` 0 Befund(e).
 - **Risiken aus §6:** Risiko 1 (Gegenbeispiel färbt am Ziel nicht rot) entfallen — nicht eingetreten:
   `core-impurity` am Ziel rot gesehen (`Greeting.java:4`), Gegenprobe grün, Fälle 724 und 725; Risiko 2 (Paket
   außerhalb seines Verzeichnisses) weiter offen (Register, `BEO-ALL/jvm-paket-ausserhalb-seines-verzeichnisses-entgeht-der-aufloesung`);
