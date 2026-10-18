@@ -3008,6 +3008,128 @@ if [ -e "$tmprepo_doc/apps/pythonhex/pyproject.toml" ]; then
 fi
 echo "full-smoke: Python-Stufe dauerte $(( SECONDS - python_start ))s (add-lang, make -j gates, Lint-Zaehne, Exit-2-Fall)."
 
+# LH-FA-04/ADR-0096: add-lang csharp ergaenzt eine SECHSTE Sprache demselben Mono-Repo — zwei
+# Projekte (src/App, tests/App.Tests) in einer klassischen Solution mit Directory.Build.props,
+# .editorconfig und Dockerfile, plus modul-scoped Code-Gate-Fragment und blocked/csharp. Danach
+# faehrt `make -j gates` zusaetzlich die realen C#-Gates im dotnet-sdk-Image (dotnet build,
+# dotnet test, dotnet format). Zwei rote Zaehne und ein gruener (test/mutations/716 bis 718): ein
+# unbenutztes using in Program.cs faerbt lint-apps-csharp rot mit IDE0005, eine nicht-statische
+# Methode ohne Instanzzugriff faerbt build-apps-csharp rot mit CA1822 (AnalysisLevel
+# latest-recommended), und die zurueckgenommenen Dateien halten beide wieder gruen. Der Guard
+# blockt dotnet, das allein blocked/csharp fuehrt. Nur flat ist getragen: `--arch hexslice` endet
+# mit Exit 2 ohne Artefakt, ebenso ein SDK-Tag ohne Major.Minor (SKEL_CSHARP_VERSION=latest).
+echo "full-smoke: add-lang csharp apps/csharp ins Mono-Repo (sechste Sprache, dotnet build/test/format) ..."
+e2e_abdeckung "LH-FA-04 LH-FA-06 LH-QA-01" "Eine sechste Sprache (C#, flat) im selben Ziel, mit den realen Gates (dotnet build, dotnet test mit xunit, dotnet format), den roten Zaehnen (ein unbenutztes using faerbt lint rot mit IDE0005, eine nicht-statische Methode ohne Instanzzugriff den build mit CA1822), dem gruenen Fall nach der Ruecknahme, dem Guard, der dotnet blockt, und dem Abbruch mit Exit 2 fuer einen SDK-Tag ohne Major.Minor; NICHT gemessen: hexslice und das Arch-Gate (add-lang csharp --arch hexslice endet mit Exit 2, nicht mehr), IDE0130 und TreatWarningsAsErrors am Ziel (nur der Text der Config ist gehalten), der Root-Bootstrap mit Gate-Lauf, ein gemischter Root mit C#, die Reproduzierbarkeit zweier Bauten (NuGet-Restore braucht Netz, transitive Pakete ungepinnt)" "C#-Gate kaputt"
+csharp_start=$SECONDS
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang csharp apps/csharp )
+for rel in apps/csharp/app.sln apps/csharp/Directory.Build.props apps/csharp/.editorconfig apps/csharp/Dockerfile \
+           apps/csharp/src/App/App.csproj apps/csharp/src/App/Program.cs \
+           apps/csharp/tests/App.Tests/App.Tests.csproj apps/csharp/tests/App.Tests/ProgramTests.cs \
+           harness/mk/apps-csharp.mk tools/harness/blocked/csharp; do
+	if [ ! -e "$tmprepo_doc/$rel" ]; then
+		echo "full-smoke: FEHLER — add-lang csharp dropte $rel nicht (sechste Sprache kaputt)." >&2
+		exit 1
+	fi
+done
+csharp_rc=0
+csharp_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || csharp_rc=$?
+printf '%s\n' "$csharp_out"
+if [ "$csharp_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — make gates nach add-lang csharp ist NICHT Exit 0 (C#-Gate kaputt)." >&2
+	einordnen "make -j gates nach add-lang csharp (apps/csharp)" "$csharp_out"
+	exit 1
+fi
+# Die drei C#-Gates MUESSEN real gelaufen sein: je Ziel die Recipe-Zeile des modul-scoped
+# Fragments (Kontext apps/csharp) und der Restore der toolchain-Stage sowie der Lint-Aufruf im
+# BuildKit-Protokoll — beide stehen dort auch, wenn die Schicht aus dem Cache kommt.
+csharp_missing=""
+for marker in "--target test -t apps-csharp:test apps/csharp" "--target lint -t apps-csharp:lint apps/csharp" \
+              "--target build -t apps-csharp:build apps/csharp" "RUN dotnet restore" \
+              "RUN dotnet format --verify-no-changes --no-restore"; do
+	grep -qF -- "$marker" <<<"$csharp_out" || csharp_missing="$csharp_missing [$marker]"
+done
+if [ -n "$csharp_missing" ]; then
+	echo "full-smoke: FEHLER — make gates nach add-lang csharp ohne Beleg fuer:$csharp_missing — C#-Gate lief nicht?" >&2
+	exit 1
+fi
+# Der Guard blockt jetzt dotnet (blocked/csharp via add-lang); dotnet steht in keinem anderen Fragment.
+csharpguard_out="$(printf '%s' '{"tool_input":{"command":"dotnet build"}}' | bash "$guard_doc" || true)"
+if ! grep -q '"decision": "block"' <<<"$csharpguard_out"; then
+	echo "full-smoke: FEHLER — Guard blockt 'dotnet build' nach add-lang csharp NICHT (blocked/csharp kaputt). Ausgabe: [$csharpguard_out]" >&2
+	exit 1
+fi
+# Der rote Lint-Fall IDE0005: ein unbenutztes using in Zeile 1 von Program.cs.
+csharp_main="$tmprepo_doc/apps/csharp/src/App/Program.cs"
+cp "$csharp_main" "$csharp_main.orig"
+{ printf 'using System.Text;\n'; cat "$csharp_main.orig"; } >"$csharp_main"
+csharplint_rc=0
+csharplint_out="$( make -C "$tmprepo_doc" lint-apps-csharp 2>&1 )" || csharplint_rc=$?
+mv "$csharp_main.orig" "$csharp_main"
+if [ "$csharplint_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — das C#-Lint bleibt bei einem unbenutzten using gruen (zahnloses Gate, AGENTS.md §3.6/LH-QA-01; C#-Gate kaputt)." >&2
+	printf '%s\n' "$csharplint_out" >&2
+	exit 1
+fi
+if ! grep -qF -- 'src/App/Program.cs(1,1): error IDE0005: Using directive is unnecessary' <<<"$csharplint_out"; then
+	echo "full-smoke: FEHLER — C#-Lint rot, aber nicht mit IDE0005 an Program.cs (rot aus falschem Grund?). Ausgabe:" >&2
+	printf '%s\n' "$csharplint_out" >&2
+	einordnen "make lint-apps-csharp (Lint-Zahn IDE0005, csharp)" "$csharplint_out"
+	exit 1
+fi
+echo "full-smoke: C#-Lint-Zahn IDE0005 belegt (unbenutztes using faerbt lint rot, danach zurueckgenommen):"
+grep -F -- 'IDE0005' <<<"$csharplint_out" | sed -n '1s/^/full-smoke:   /p'
+# Der rote Build-Fall CA1822: eine nicht-statische Methode ohne Instanzzugriff am Ende von
+# Program.cs. Rot ist allein AnalysisLevel latest-recommended; ohne die Zeile baut sie gruen.
+cp "$csharp_main" "$csharp_main.orig"
+printf '\npublic class Probe\n{\n    public int Bar() => 1;\n}\n' >>"$csharp_main"
+csharpbuild_rc=0
+csharpbuild_out="$( make -C "$tmprepo_doc" build-apps-csharp 2>&1 )" || csharpbuild_rc=$?
+mv "$csharp_main.orig" "$csharp_main"
+if [ "$csharpbuild_rc" -eq 0 ]; then
+	echo "full-smoke: FEHLER — der C#-Build bleibt bei einer nicht-statischen Methode ohne Instanzzugriff gruen (AnalysisLevel wirkt nicht; C#-Gate kaputt)." >&2
+	printf '%s\n' "$csharpbuild_out" >&2
+	exit 1
+fi
+if ! grep -qF -- 'src/App/Program.cs(' <<<"$csharpbuild_out" || ! grep -qF -- 'error CA1822' <<<"$csharpbuild_out"; then
+	echo "full-smoke: FEHLER — C#-Build rot, aber nicht mit CA1822 an Program.cs (rot aus falschem Grund?). Ausgabe:" >&2
+	printf '%s\n' "$csharpbuild_out" >&2
+	einordnen "make build-apps-csharp (Build-Zahn CA1822, csharp)" "$csharpbuild_out"
+	exit 1
+fi
+echo "full-smoke: C#-Build-Zahn CA1822 belegt (nicht-statische Methode ohne Instanzzugriff faerbt build rot, danach zurueckgenommen):"
+grep -F -- 'CA1822' <<<"$csharpbuild_out" | sed -n '1s/^/full-smoke:   /p'
+csharpgreen_rc=0
+csharpgreen_out="$( make -C "$tmprepo_doc" lint-apps-csharp build-apps-csharp 2>&1 )" || csharpgreen_rc=$?
+if [ "$csharpgreen_rc" -ne 0 ]; then
+	echo "full-smoke: FEHLER — lint und build sind nach der Ruecknahme der Proben NICHT gruen (C#-Gate kaputt)." >&2
+	einordnen "make lint-apps-csharp build-apps-csharp (nach Ruecknahme)" "$csharpgreen_out"
+	exit 1
+fi
+# Nur flat ist getragen: hexslice endet mit Exit 2 und legt kein Modul an.
+csharphex_rc=0
+( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang csharp apps/csharphex --arch hexslice ) || csharphex_rc=$?
+if [ "$csharphex_rc" -ne 2 ]; then
+	echo "full-smoke: FEHLER — add-lang csharp --arch hexslice rc=$csharphex_rc, want 2 (nicht getragene Kombination wird nicht abgelehnt)." >&2
+	exit 1
+fi
+if [ -e "$tmprepo_doc/apps/csharphex/app.sln" ]; then
+	echo "full-smoke: FEHLER — die nicht getragene Kombination csharp+hexslice legte ein Geruestung-Artefakt an (still statt Exit 2)." >&2
+	exit 1
+fi
+# Ein SDK-Tag ohne Major.Minor ist ein Aufruf-Fehler: Exit 2 und kein Modul, statt einer
+# ungueltigen TFM, die erst im docker build rot wuerde.
+csharptag_rc=0
+( cd "$tmprepo_doc" && SKEL_CSHARP_VERSION=latest "$tmpbin/ai-harness-init" add-lang csharp apps/csharptag ) || csharptag_rc=$?
+if [ "$csharptag_rc" -ne 2 ]; then
+	echo "full-smoke: FEHLER — add-lang csharp mit SKEL_CSHARP_VERSION=latest rc=$csharptag_rc, want 2 (Tag ohne Major.Minor wird nicht abgelehnt)." >&2
+	exit 1
+fi
+if [ -e "$tmprepo_doc/apps/csharptag/Directory.Build.props" ]; then
+	echo "full-smoke: FEHLER — ein SDK-Tag ohne Major.Minor legte ein Geruestung-Artefakt an (still statt Exit 2)." >&2
+	exit 1
+fi
+echo "full-smoke: C#-Stufe dauerte $(( SECONDS - csharp_start ))s (add-lang, make -j gates, Zaehne, Exit-2-Faelle)."
+
 # Der GEMISCHTE ROOT (LH-FA-04/LH-QA-01): zwei Sprach-Fragmente am selben Root
 # (harness/mk/go.mk + harness/mk/cpp.mk). Die gemischte Fassung komponiert: ein Fragment
 # traegt die unscoped Rezepte, das andere modul-scoped Targets plus Praezedenz-
