@@ -33,8 +33,8 @@ func (e *InvalidVersionError) Error() string {
 }
 
 // csharpTFM leitet den Ziel-Framework-Moniker aus Major.Minor des SDK-Tags ab (`10.0.402` ->
-// `net10.0`). Ein Tag ohne Major.Minor ist fail-closed: *InvalidVersionError statt einer
-// ungueltigen TFM, die erst beim `docker build` des Ziels rot wuerde (ADR-0096 Festlegung 2).
+// `net10.0`). Ein Tag ohne Major.Minor liefert *InvalidVersionError und keine TFM; der Aufrufer
+// bricht mit Exit 2 ab und schreibt kein Artefakt (ADR-0096 Festlegung 2).
 func csharpTFM(version string) (string, error) {
 	m := csharpTagForm.FindStringSubmatch(version)
 	if m == nil {

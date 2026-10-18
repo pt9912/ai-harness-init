@@ -10,7 +10,7 @@ import (
 	"github.com/pt9912/ai-harness-init/internal/gen"
 )
 
-// Gemeinsame Pruefungen der Sprach-Skelette mit einem Dockerfile-Stage-Fragment (java, python):
+// Gemeinsame Pruefungen der Sprach-Skelette mit einem Dockerfile-Stage-Fragment:
 // je Sprache laufen dieselben Eigenschaften, nur Namen und Werte unterscheiden sich — ein
 // Helfer statt eines Klons je Sprache.
 
