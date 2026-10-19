@@ -485,12 +485,12 @@ fi
 # DER BAUM IM BENUTZERHANDBUCH IST DER BESTAND FRISCHER ZIELE. docs/user/benutzerhandbuch.md
 # §6 nennt jede Datei, die ein Bootstrap anlegt; harness/tools/handbuch-baum.sh haelt die
 # Pfad-Menge eines Baums gegen `find` ueber einem Ziel, in beide Richtungen. Die Soll-Menge
-# ist der reale Lauf aller Emissions-Stufen, keine Liste daneben: drei frische Ziele —
-# sprachlos, --lang go, --lang cpp —, die beiden Sprach-Ziele als Delta gegen das
-# sprachlose. Die Stufe steht VOR jeder anderen Ziel-Stufe, damit ein Pfad, den ein Lauf
+# ist der reale Lauf aller Emissions-Stufen, keine Liste daneben: sieben frische Ziele —
+# sprachlos und je --lang go, cpp, kotlin, java, python, csharp —, die sechs Sprach-Ziele
+# als Delta gegen das sprachlose. Die Stufe steht VOR jeder anderen Ziel-Stufe, damit ein Pfad, den ein Lauf
 # nicht mehr anlegt, zuerst hier und mit seinem Namen rot wird.
-echo "full-smoke: Handbuch-Baum gegen den Bestand frischer Ziele (sprachlos, --lang go, --lang cpp) ..."
-	e2e_abdeckung "LH-FA-02" "Der Baum in Paragraf 6 des Benutzerhandbuchs nennt genau die Pfade frischer Ziele (sprachlos, Delta von --lang go und --lang cpp), in beide Richtungen; gemessen ist die Pfad-Menge im Gelingens-Zweig der Traeger-Ablage, nicht die Etiketten und nicht die Ablage-Klassen selbst" "handbuch_baum_pruefen"
+echo "full-smoke: Handbuch-Baum gegen den Bestand frischer Ziele (sprachlos, --lang go, cpp, kotlin, java, python, csharp) ..."
+	e2e_abdeckung "LH-FA-02" "Der Baum in Paragraf 6 des Benutzerhandbuchs nennt genau die Pfade frischer Ziele (sprachlos, Delta von --lang go, cpp, kotlin, java, python und csharp), in beide Richtungen; gemessen ist die Pfad-Menge im Gelingens-Zweig der Traeger-Ablage und nur der Wurzel-Variante --lang, nicht die Etiketten hinter den Namen, nicht die --arch-Varianten, nicht add-lang unter einem Unterpfad und nicht die Ablage-Klassen selbst" "handbuch_baum_pruefen"
 handbuch_baum_pruefen() {
 	local variante="$1" ziel="$2" basis="${3:-}" aus
 	# Der Vergleich fordert kein Bild an; ein Fehlschlag ist darum ein Befund und kein
@@ -504,7 +504,7 @@ handbuch_baum_pruefen() {
 # Der erste Bootstrap dieser Schleife ist die erste Anfrage nach dem d-check-Bild (das
 # Werkzeug erzeugt das Doku-Gate-Fragment aus dessen --print-mk-Ausgabe); auf einem
 # frischen Laeufer liegt das Bild nicht lokal, darum ordnet ein Fehlschlag ein.
-for baum_lang in sprachlos go cpp; do
+for baum_lang in sprachlos go cpp kotlin java python csharp; do
 	baum_ziel="$tmprepo_baum/$baum_lang"
 	mkdir "$baum_ziel"
 	chmod 755 "$baum_ziel"

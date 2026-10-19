@@ -32,7 +32,8 @@
 # Rot-Gegenbeispiele: test/mutations/614-handbuch-baum-gitkeep-ohne-emission.sh (ein
 # Eintrag fehlt in der Emission), 615-handbuch-baum-feldliste-ohne-emission.sh (die
 # Erfassungs-Stufe schreibt die Feldliste nicht), 616-handbuch-baum-erfundener-pfad.sh
-# (ein Pfad im Handbuch, den kein Lauf anlegt); gefahren von harness/tools/full-smoke.sh.
+# (ein Pfad im Handbuch, den kein Lauf anlegt), 767 bis 770 (je ein Pfad aus dem Baum von
+# kotlin, java, python und csharp fehlt im Handbuch); gefahren von harness/tools/full-smoke.sh.
 #
 # GRENZE: geprueft ist die Pfad-Menge eines Laufs, dessen Traeger-Ablage gelingt, und
 # fuer Phase 2 die Wurzel-Variante (--lang). Ein Laufzeit-Zweig ohne Ablage, add-lang
