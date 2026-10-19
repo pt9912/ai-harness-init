@@ -4,6 +4,8 @@
 **Stand:** 2026-10-17
 **Verantwortlich:** ai-harness-init-Team (pt9912)
 
+> **Quellstand und Download.** Dieses Handbuch beschreibt sechs Sprachen: `go`, `cpp`, `kotlin`, `java`, `python` und `csharp`. `java`, `python` und `csharp` liegen im Quellbaum; ausgeliefert wird `v0.9.0`, und dieses Programm kennt sie nicht — erst das nächste Release liefert sie aus. Wer das Programm aus dem Download nutzt, wählt aus `go`, `cpp` und `kotlin`; wer aus dem Quellcode baut ([Weg B](#weg-b--aus-dem-quellcode-bauen)), hat alle sechs.
+
 ---
 
 `ai-harness-init` ist ein Kommandozeilen-Werkzeug. Dieses Handbuch beschreibt, **wie Sie damit ein Projekt-Repository aufsetzen** — nicht, wie das Werkzeug intern funktioniert. Sie kommen ans Ziel, ohne den Quellcode zu verstehen.
@@ -44,7 +46,7 @@ Auf dem Rechner, der `ai-harness-init` ausführt, brauchen Sie:
 * **Netzwerk-Zugang** — **einmalig** beim ersten Aufruf. `ai-harness-init` lädt das Regelwerk vom festgelegten Kurs-Stand. Danach ist Ihr Repository netzunabhängig.
 * **GNU `make`** — um das aufgesetzte Repository anschließend zu prüfen.
 
-Eine lokale Installation der Zielsprache (Go-Toolchain, C++-Toolchain, JDK, Gradle) ist **nicht** nötig — alles läuft über Docker.
+Eine lokale Installation der Zielsprache (Go-Toolchain, C++-Toolchain, JDK, Gradle, Python-Interpreter, .NET-SDK) ist **nicht** nötig — alles läuft über Docker.
 
 ---
 
@@ -325,7 +327,7 @@ Die erste sagt: der **Kern** sieht keinen Adapter — er kennt nur seine Ports. 
 
 **Wichtig für die Pflege:** `.a-check.yml` gehört Ihnen — ein erneutes Aufsetzen überschreibt sie nicht. Bei `hexslice` gilt: legen Sie einen **weiteren** Use-Case-Schnitt an, tragen Sie ihn dort nach (je ein Eintrag unter `app` und, falls er eigene Ports hat, unter `ports_inbound` bzw. `ports_outbound` — je nach Richtung, mit eigenem `direction:`). Vergessen Sie es, fällt der neue Code unter keine Schicht: importiert er eine, meldet das Gate `wrong-direction` — importiert er keine, bleibt er unbemerkt ungeprüft. Bei `hexagonal` wachsen neue Dateien in die bestehenden vier Schichten hinein; nachzutragen ist erst, wenn Sie ein **neues** Schicht-Verzeichnis anlegen.
 
-**Grenzen:** `--arch hexslice` liefern alle drei Zielsprachen (`go`, `cpp`, `kotlin`), `--arch hexagonal` nur der **Go**-Renderer. Eine Sprache, deren Renderer die gewählte Bauform nicht kennt (`cpp` oder `kotlin` mit `hexagonal`), endet mit Exit 2 und nennt die Bauformen, die **diese** Sprache kann — statt still ein Grundgerüst ohne Schichten anzulegen; eine unbekannte Bauform ebenso, mit Nennung der verfügbaren Werte.
+**Grenzen:** `--arch hexslice` liefern alle sechs Sprachen (`go`, `cpp`, `kotlin`, `java`, `python`, `csharp`), `--arch hexagonal` nur der **Go**-Renderer. Eine Sprache, deren Renderer die gewählte Bauform nicht kennt (`cpp`, `kotlin`, `java`, `python` oder `csharp` mit `hexagonal`), endet mit Exit 2 und nennt die Bauformen, die **diese** Sprache kann — statt still ein Grundgerüst ohne Schichten anzulegen; eine unbekannte Bauform ebenso, mit Nennung der verfügbaren Werte. Die Meldung für `--lang python --arch hexagonal` lautet `Fehler: unbekannte Architektur "hexagonal"; verfuegbar: flat, hexslice`. Im Download `v0.9.0` gilt das für `cpp` und `kotlin`; `java`, `python` und `csharp` kennt er nicht (siehe den Hinweis zum Quellstand am Kopf).
 
 ### Das aufgesetzte Repository prüfen
 
@@ -456,7 +458,7 @@ Alle fünf sind **keine Gates**: `make gates` fährt keine von ihnen mit. `archi
 
 | Option | Pflicht | Bedeutung |
 |---|---|---|
-| `--lang <sprache>` | nein | Zielsprache des Grundgerüsts (Kurzform für „aufsetzen + `add-lang(<sprache>, .)`“). Ohne sie: dokument-only. Unterstützt: `go`, `cpp` (C++ per CMake + clang-tidy), `kotlin` (JVM per Gradle + detekt). |
+| `--lang <sprache>` | nein | Zielsprache des Grundgerüsts (Kurzform für „aufsetzen + `add-lang(<sprache>, .)`“). Ohne sie: dokument-only. Unterstützt: `go`, `cpp` (C++ per CMake + clang-tidy), `kotlin` (JVM per Gradle + detekt), `java` (JVM per Gradle + checkstyle), `python` (pytest, ruff, mypy) und `csharp` (.NET-SDK, `dotnet format`). `java`, `python` und `csharp` liegen im Quellbaum; der Download `v0.9.0` kennt sie nicht (siehe den Hinweis zum Quellstand am Kopf). |
 | `--arch <arch>` | nein | Bauform des Grundgerüsts: `flat` (Standard), `hexagonal` (drei Schichten) oder `hexslice` (Schichten plus Use-Case-Schnitte); die beiden geschichteten bringen das Architektur-Gate mit. Wirkt nur zusammen mit `--lang`. Siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch). |
 | `--name <name>` | nein | Projektname; ersetzt den Platzhalter `<Projektname>` in den Vorlagen. |
 | `-h`, `--help` | nein | Hilfe anzeigen und beenden. |
@@ -481,6 +483,9 @@ Alle Umgebungsvariablen sind **optional**. Ohne sie gelten festgelegte, reproduz
 | `SKEL_GO_VERSION` | Go-Version des erzeugten Go-Grundgerüsts. |
 | `SKEL_CPP_VERSION` | Ubuntu-Basis-Tag des erzeugten C++-Grundgerüsts (bestimmt Compiler/CMake/clang-tidy). Allgemein: `SKEL_<SPRACHE>_VERSION` setzt die Toolchain-Version je Sprache. |
 | `SKEL_KOTLIN_VERSION` | Tag des `gradle`-Images des erzeugten Kotlin-Grundgerüsts (`<gradle-version>-jdk<NN>`; bestimmt Gradle und JDK der Prüf-Stufen; Standard `9.8.1-jdk21`). |
+| `SKEL_JAVA_VERSION` | Tag des `gradle`-Images des erzeugten Java-Grundgerüsts (`<gradle-version>-jdk<NN>`; bestimmt Gradle und JDK der Prüf-Stufen; Standard `9.8.1-jdk21`); unabhängig von `SKEL_KOTLIN_VERSION`. |
+| `SKEL_PYTHON_VERSION` | Tag des `python`-Images des erzeugten Python-Grundgerüsts (`<version>-slim`; bestimmt den Interpreter der Prüf-Stufen; Standard `3.14.8-slim`). |
+| `SKEL_CSHARP_VERSION` | Tag des `dotnet-sdk`-Images des erzeugten C#-Grundgerüsts (`<major>.<minor>[.<patch>]`; bestimmt das SDK der Prüf-Stufen und das Ziel-Framework; Standard `10.0.402`). |
 | `BASELINE_SHA256` | Erwartete Prüfsumme des heruntergeladenen Regelwerk-Pakets. |
 | `DCHECK_IMAGE` | Abweichende Referenz für das Dokumentations-Prüf-Image. |
 | `DCHECK_DIGEST` | Abweichende Prüfsumme (Digest) des Prüf-Images; sticht die Referenz. |
@@ -832,11 +837,11 @@ Die `.d-check.yml` gehört Ihnen, sobald sie da ist: eine vorhandene Datei bleib
 
 Alle Fehler von `ai-harness-init` beginnen auf der Fehlerausgabe mit `Fehler:` und liefern einen von Null verschiedenen Exit-Code (siehe [Anhang](#10-anhang)).
 
-### Fehler: `unbekannte Sprache "…"; verfuegbar: cpp, go, kotlin`
+### Fehler: `unbekannte Sprache "…"; verfuegbar: cpp, csharp, go, java, kotlin, python`
 
-**Ursache:** Sie haben eine Sprache angegeben, für die es kein Grundgerüst gibt.
+**Ursache:** Sie haben eine Sprache angegeben, für die es kein Grundgerüst gibt. Die Liste oben ist die Meldung eines Programms aus dem Quellbaum; die des Downloads `v0.9.0` nennt nur `cpp, go, kotlin` — `java`, `python` und `csharp` kennt er nicht (siehe den Hinweis zum Quellstand am Kopf).
 
-**Lösung:** Verwenden Sie eine der aufgelisteten Sprachen, `go`, `cpp` oder `kotlin`:
+**Lösung:** Verwenden Sie eine der aufgelisteten Sprachen, etwa `cpp`:
 
 ```bash
 ai-harness-init --lang cpp <zielordner>
@@ -882,7 +887,7 @@ ai-harness-init add-lang go apps/api
 ## 8. Häufige Fragen (FAQ)
 
 **Welche Sprachen werden unterstützt?**
-`go`, `cpp` (C++) und `kotlin`. Die Liste zeigt auch die Fehlermeldung zu einer unbekannten Sprache.
+`go`, `cpp` (C++), `kotlin`, `java`, `python` und `csharp`. Die Liste zeigt auch die Fehlermeldung zu einer unbekannten Sprache. `java`, `python` und `csharp` liegen im Quellbaum; der Download `v0.9.0` kennt sie nicht, erst das nächste Release liefert sie aus (siehe den Hinweis zum Quellstand am Kopf).
 
 **Muss ich Go installieren?**
 Nein. Sowohl das Bauen des Werkzeugs als auch die Prüfungen im aufgesetzten Repository laufen über Docker.
