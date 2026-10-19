@@ -78,7 +78,7 @@ neu und trägt jeden Commit mit Gegenstand in eine Tabelle (Commit · Gegenstand
 
 Liefer-Punkte (drei):
 
-- [ ] **L1 — Version gezogen, Tag-Baum vorbereitet und verifiziert** (Schritte 1 bis 4; Punkt (a) des Auftrags).
+- [x] **L1 — Version gezogen, Tag-Baum vorbereitet und verifiziert** (Schritte 1 bis 4; Punkt (a) des Auftrags).
   `TRAEGER_TAG` in `internal/emit/templates/enforce/traeger.mk` und der Tag-Wert in `test/traeger-fetch.bats` zeigen auf `v0.10.0`;
   `make release-artifacts DEST=dist TRAEGER_VERSION=v0.10.0` baut sechs Binaries und `dist/SHA256SUMS`;
   `bash harness/tools/release-sums.sh verify dist` endet mit Exit 0; `TRAEGER_TAG` und die sechs `TRAEGER_SHA256_*` im `Makefile` tragen Tag und
@@ -91,14 +91,14 @@ Liefer-Punkte (drei):
   - Rot: ein Byte eines Assets in einer Kopie von `dist/` ändern — `release-sums.sh verify` endet mit Exit ≠ 0 und nennt die Datei; den Tag
     der Vorlage vom Tag im `Makefile` trennen — die Kopplung in `test/traeger-fetch.bats` färbt rot; ein Digest im realen `Makefile` verfälscht,
     dann `bats test/traeger-fetch.bats` — färbt kein Fall, steht die bekannte Lücke („realer `Makefile`-Digest ungebunden") im Bericht.
-- [ ] **L2 — Release-Text bereit** (Punkt (b); [`releasing.md`](../../../user/releasing.md) Schritt 5). Eine Datei außerhalb des Repos
+- [x] **L2 — Release-Text bereit** (Punkt (b); [`releasing.md`](../../../user/releasing.md) Schritt 5). Eine Datei außerhalb des Repos
   (Scratchpad des Laufs) mit Titelzeile, **Stand**, **Assets**, **Grenze**, den Gegenständen aus §1 und der Zeile *Full Changelog*; ein Changelog im Repo
   verlangt `releasing.md` nicht und entsteht nicht. Abschnitt **Bestand** nach der Messaufgabe der Prozedur: Träger `v0.9.0` gegen Träger `v0.10.0`,
   je frisches Git-Repository, über neun Optionssätze — ohne `--lang` · `--lang go` · `go --arch hexagonal` · `go --arch hexslice` · `--lang cpp` ·
   `--lang kotlin` · `--lang java` · `--lang python` · `--lang csharp` (die drei neuen kennt der Vorgänger-Träger nicht; ihr Ergebnis ist „Exit 2 beim
   Vorgänger", kein Diff) —, `diff -rq -x .git <alt> <neu>`, beschränkt auf die zweite Klasse; der Abschnitt entfällt nur bei leerem Ergebnis aller Sätze.
   Die Zusage nennt, was sie misst; Laufzeit-Aussagen nach [`MR-089`](../../../../harness/conventions.md#mr-089).
-- [ ] **L3 — Veröffentlichung benannt, nicht gefahren** (Punkt (c)). §3 Schritt P nennt Vorbedingungen und Befehlsfolge, der Freigabe-Vermerk
+- [x] **L3 — Veröffentlichung benannt, nicht gefahren** (Punkt (c)). §3 Schritt P nennt Vorbedingungen und Befehlsfolge, der Freigabe-Vermerk
   steht „ausstehend". Vorbedingungen: L1 und L2 erfüllt; Review- und Verifier-Bericht am Tag-Baum **vor** dem Push; `make gates` frisch auf dem finalen Commit;
   `main` und Tag gehen unmittelbar nacheinander (`make release-warten` trägt nur innerhalb seiner Grenze). Befehle (Nutzer-freigegeben):
   `git tag -a v0.10.0 <commit>`, `git push origin main`, `git push origin v0.10.0`; danach Schritte 6 bis 8 (CI am Tag, `make tap-check TAG=v0.10.0`,
@@ -106,12 +106,12 @@ Liefer-Punkte (drei):
 
 Gate-Läufe und Closure-Pflichten:
 
-- [ ] `make gates` grün am Tag-Baum (siehe L1).
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), Verifier-Bericht am Tag-Baum **vor** dem Tag-Push — kein Self-Review.
-- [ ] Doku-Update: Handbuch (L1); [`releasing.md`](../../../user/releasing.md) bleibt unverändert, solange die Prozedur trägt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag, vom Planner in frischem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben oder „keine Beobachtung angefallen" in §7.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] `make gates` grün am Tag-Baum (siehe L1).
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor (`.harness/skills/reviewer.md`), Verifier-Bericht am Tag-Baum **vor** dem Tag-Push — kein Self-Review.
+- [x] Doku-Update: Handbuch (L1); [`releasing.md`](../../../user/releasing.md) bleibt unverändert, solange die Prozedur trägt.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag, vom Planner in frischem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben oder „keine Beobachtung angefallen" in §7.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
 
 ## 3. Plan (vor Code)
@@ -135,7 +135,7 @@ Reihenfolge der Rollen:
 2. **Reviewer** — Diff gegen Plan und Prozedur; liest die Handbuch-Aussagen gegen das gebaute Binary.
 3. **Verifier** — am Tag-Baum vor dem Push: Digests nachgerechnet, `make gates` frisch, bewusstes Brechen des realen Pins, Bestand-Messung wiederholt.
 4. **Schritt P — Push und Tag** (Schritte 5 bis 8), nur nach ausdrücklicher Freigabe des Nutzers und grünem Verifier-Bericht.
-   **Freigabe-Vermerk:** ausstehend.
+   **Freigabe-Vermerk:** erteilt und ausgeführt vom Nutzer am 2026-10-19 (Tag und Push; Messung im Hauptkontext, §7).
 5. **Planner-Closure** nach Schritt 8, eigener Commit.
 
 ## 4. Trigger
@@ -157,17 +157,51 @@ Nutzer und Closure-Notiz mit Lerneintrag. Nicht Closure-Trigger: ein gepushter T
 ## 6. Risiken und offene Punkte
 
 - Der Gates-Beleg reist nicht mit dem Tag; Report-Commits ändern den Baum nach dem Stempel — **Ausgang:** weiter offen → `BEO-ALL/ge-tagter-stand-traegt-keinen-gates-beleg` im Register (Ausgang bei Closure nach dem Lauf).
+  **Closure-Ausgang:** entfallen — nicht eingetreten: `.harness/state/gates-passed.head` nennt `d5f25549`, den Commit, auf dem der Tag steht.
 - `ci` fällt im `full-smoke` mit 404, wenn der Release-Lauf nicht innerhalb der Grenze von `make release-warten` publiziert — **Ausgang:** weiter offen → `BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases` im Register.
+  **Closure-Ausgang:** entfallen für `ci` — nicht eingetreten: beide `ci`-Läufe auf `d5f25549` grün; die Klasse trat im `mutate-branch`-Worker auf und ist als Beleg im Register gezählt (§7).
 - Der reale `Makefile`-Digest ist ungebunden, bis `make traeger-fetch` nach der Publikation läuft — **Ausgang:** weiter offen → `BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle` im Register.
+  **Closure-Ausgang:** weiter offen → `BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle`, Beleg angelegt; die Lücke dieses Release ist nach der Publikation gemessen geschlossen (§7).
 - Das Handbuch nennt nach dem Entfernen des Hinweises etwas, das das Binary nicht kann (Prosa der Sprachbäume ist ungehalten, `BEO-ALL/handbuch-sprachbaum-ohne-sensor-in-full-smoke`) — **Ausgang:** weiter offen → dieser Eintrag; der Reviewer liest die Prosa gegen das gebaute Binary.
+  **Closure-Ausgang:** entfallen — der Reviewer las die Aussagen gegen ein selbst gebautes Binary ohne Befund; die Grenze der Stufe steht in `BEO-ALL/handbuch-sprachbaum-ohne-sensor-in-full-smoke` (3×, verkörpert).
 - Ein Image-Pin der neuen Skelette ist beim Schnitt veraltet (Freshness nicht Teil der Prozedur) — **Ausgang:** weiter offen → Register, falls ein Befund anfällt; sonst entfallen mit dem Lauf als Beleg.
+  **Closure-Ausgang:** entfallen — der Hinweis-Lauf lief laut Implementer ohne Pin-Befund; der Satz „a-check aktuell" im Release-Text trug keinen Sensor (Review F-1) und wurde korrigiert.
 - Die Kennung trägt einen überholbaren Stand — **Ausgang:** entfallen; die Version ist vom Nutzer gesetzt, `v0.10.0` ist der höchste Tag nach dem Schnitt, Werkzeug-Stände stehen nicht im Namen.
 
 Entschieden vom Nutzer: (1) Der Freshness-Hinweis-Lauf (`make freshness-digest` und die übrigen `freshness-*`-Ziele, Netz, nur Hinweis) läuft einmal vor Schritt 1; Befunde stehen im Bericht, Pins ändert er nicht. (2) Der Slice schließt erst nach der Tag-Freigabe des Nutzers und nach Schritt 8 von [`releasing.md`](../../../user/releasing.md), nicht bei „bereit zur Freigabe“; die Veröffentlichung ist Teil dieses Slice.
 
 ## 7. Closure-Notiz
 
-Wird vom Planner in frischem Kontext geschrieben ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
+- **Was hat funktioniert:** `v0.10.0` ist veröffentlicht und vollzogen (Messung im Hauptkontext, nicht von diesem Lauf): Tag auf `d5f25549`, `release`-Workflow
+  und beide `ci`-Läufe grün, acht Assets, `make tap-check TAG=v0.10.0` gleich, `make traeger-fetch` legt das darwin-arm64-Asset ab, und die sechs `SHA256` der
+  veröffentlichten `SHA256SUMS` sind mit den sechs `TRAEGER_SHA256_*` im `Makefile` zeilengleich (`comm`: 0 Abweichungen; Runner-Architektur ohne Unterschied).
+  Rot gesehen (Verifier): ein Byte in einer Kopie von `dist/` → `release-sums.sh verify` Exit 1 mit Dateinamen; der Tag im realen `Makefile` getrennt → Fall 1 der
+  Kopplung rot. Review: kein HIGH; F-1 (MEDIUM, Release-Text) bis F-3 behoben, F-4 offen (Folge-Slice unten), F-5 und F-6 benannt.
+- **Was ging anders als geplant:** L3 sagt „benannt, nicht gefahren"; die Nutzer-Entscheidung (2) in §6 machte die Veröffentlichung zum Teil dieses Slice, der Nutzer
+  gab frei und führte aus (Freigabe-Vermerk in §3). Die Mutations-Probe lieferte 9 von 31 Fällen ohne Ergebnis (`305`, `553`, `554`, `616`, `617`, `767` bis `770`):
+  Das Log von Shard 0 zeigt den Grün-Vorlauf `make full-smoke` rot an `make traeger-fetch` mit 404 auf das damals unveröffentlichte Asset; die Logs der übrigen acht
+  Befund-Shards sind nicht gelesen. Das Nachholen im nächtlichen `mutate`-Vollsweep ist **ungemessen** (sein Ergebnis steht erst am Folgetag). Die Zähne der
+  Handbuch-Baum-Stufe und der Träger-Tag-Fälle im Ziel sind für diesen Schnitt damit **unbelegt**; Verifier F-1 (MEDIUM) ist als benannte Lücke getragen, nicht geschlossen.
+- **Laufzeit ([`MR-089`](../../../../harness/conventions.md#mr-089)):** keine Laufzeit-Aussage getroffen; die Zeiten im Verifier-Bericht stehen dort mit ihrer Lage.
+- **Steering-Loop-Eintrag:** benannte Lücke, keine Spec-Lücke und nicht verkörpert (kein `liegt in`): Ein Release-Schnitt kann die Mutations-Fälle, deren Wächter den Träger
+  im Ziel aus dem gepinnten Release holt, vor der Publikation nicht belegen; die Probe am Schnitt-Commit meldet sie als „kein Ergebnis", und der Schnitt schließt mit der
+  Lücke oder die Probe läuft danach. Ort: `state.md` von `BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases` (Grenze am Ort, geschärfte Regel als Vorschlag an den
+  Architect; ein Wächter existiert nicht). Auslöser: derselbe Fetch-404 wie in `slice-release-schnitt-v070-liefert-kotlin-und-v6180` und
+  `slice-release-schnitt-v027-liefert-den-altbestand-pfad`, nun im `mutate-branch`-Worker, der keinen Warte-Schritt hat.
+- **Beobachtungs-Register (`../observations/`):** `evidence/slice-release-schnitt-v0-10-0-liefert-java-python-csharp.md` ergänzt in
+  `BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases` (5×, verkörpert; `state.md` um die Grenze ergänzt) und in
+  `BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle` (11×, verkörpert). `BEO-ALL/handbuch-nennt-sprachen-die-der-download-nicht-kennt` bleibt 1× offen: die Bedingung
+  ist erfüllt, die Erfüllung ist kein Auftreten (`state.md` nachgeführt). `BEO-ALL/ge-tagter-stand-traegt-keinen-gates-beleg` nicht aufgetreten, keine Änderung.
+  Zitiert ohne Beleg: `BEO-ALL/gruen-vorlauf-eines-mutate-workers-faellt-unter-runner-last` (andere Ursache: 404 statt Last, nicht dieselbe Klasse).
+- **Folge-Slices:** `slice-gen-go-kommentar-nennt-die-layouts-aller-sprachen` (Review F-4, Frage der Digest-Wirkung in L2 des Slice) — ist eine Datei in `open/`.
+  Nicht angelegt: ein Slice für die Probe-nach-Publikation (Entscheidung beim Nutzer, siehe Bericht).
+- **Trigger-Audit dieser Closure:** Carveout `CO-001` bleibt *Auflösung fällig* mit Folge-Slice `slice-113-co-001-ist-faellig` in `open/`, `CO-002` permanent — beide unberührt;
+  kein bootstrap-aware Gate berührt; keine ADR mit Re-Evaluierungs-Trigger von diesem Slice berührt; Hard Rules tragen *permanent* oder ihren Trigger unverändert.
+  Nichts fällig durch diesen Slice.
+- **Archivierung ([`MR-078`](../../../../harness/conventions.md#mr-078)):** nicht ausgeführt, wie bei `slice-benutzerhandbuch-fuehrt-java-python-csharp`: `archive-welle` bricht an der
+  Untergrenze (kein `done/*/archiv.zip`); der Slice bleibt flach in `done/`.
+- **Risiken aus §6:** je einmal in §6 mit seinem Ausgang: Gates-Beleg entfallen, `ci`-Rennen entfallen (für `ci`), Digest-Lücke weiter offen → Register, Handbuch-Prosa entfallen,
+  Image-Pin entfallen, Kennung entfallen.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

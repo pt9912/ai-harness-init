@@ -6,3 +6,10 @@ Warte-Schritt trägt bis zu seiner Grenze: folgt der Tag dem Push von `main` sp�
 `make traeger-fetch` im frischen Klon, bis ein Re-Run nach der Publikation es hebt (Beleg
 `slice-release-schnitt-v070-liefert-kotlin-und-v6180`). Der operative Ausgang nach überschrittener Grenze steht in
 [`docs/user/releasing.md`](../../../../../../docs/user/releasing.md) §Prozedur, Schritt 6.
+
+**Grenze, am Ort benannt:** `make release-warten` steht im `ci`-Job; der Worker des Workflows `mutate-branch` hat keinen
+Warte-Schritt, sein Grün-Vorlauf `make full-smoke` fällt vor der Publikation an demselben Fetch (Beleg
+`slice-release-schnitt-v0-10-0-liefert-java-python-csharp`: 9 von 31 Fällen ohne Ergebnis). Fälle, deren Wächter den Träger im Ziel holt, sind
+vor der Publikation nicht belegbar; sie holt der nächtliche `mutate`-Vollsweep nach, dessen Ergebnis für diesen Schnitt ungemessen ist.
+Geschärfte Regel als Vorschlag an den Architect, nicht verkörpert: der Schnitt nennt die Fälle ohne Ergebnis im Bericht und schließt mit der
+benannten Lücke, oder die Probe läuft nach der Publikation; ein Wächter existiert nicht.
