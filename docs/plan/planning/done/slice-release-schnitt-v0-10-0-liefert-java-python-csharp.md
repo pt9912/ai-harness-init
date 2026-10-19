@@ -112,7 +112,7 @@ Gate-Läufe und Closure-Pflichten:
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag, vom Planner in frischem Kontext ([`AGENTS.md`](../../../../AGENTS.md) §3.10).
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben oder „keine Beobachtung angefallen" in §7.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
 
 ## 3. Plan (vor Code)
 
@@ -202,6 +202,12 @@ Entschieden vom Nutzer: (1) Der Freshness-Hinweis-Lauf (`make freshness-digest` 
   Untergrenze (kein `done/*/archiv.zip`); der Slice bleibt flach in `done/`.
 - **Risiken aus §6:** je einmal in §6 mit seinem Ausgang: Gates-Beleg entfallen, `ci`-Rennen entfallen (für `ci`), Digest-Lücke weiter offen → Register, Handbuch-Prosa entfallen,
   Image-Pin entfallen, Kennung entfallen.
+
+- **Drei Paarungen (nach dem Move, 2026-10-19):** Anker-Paarung: kein Eintrag trägt das Feld `liegt in` mit einem Zielort, nichts zu paaren.
+  Folge-Slice-Paarung: `slice-gen-go-kommentar-nennt-die-layouts-aller-sprachen` existiert in `open/`. Register-Paarung, erste Hälfte: jede genannte Beobachtung
+  existiert mit nicht leerem `evidence/` (5, 11, 1, 1, 3 und 1 Belege); zweite Hälfte: 1 Verzeichnis ohne Beleg, namentlich
+  `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen behauptet, vom Slice nicht berührt (Kommando: Schleife aus
+  `docs/plan/planning/observations/README.md`); `make register-ausgang` 268 Einträge, 0 Befund(e).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
