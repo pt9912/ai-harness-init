@@ -27,7 +27,7 @@ geliefert werden die Profile aus [`ADR-0094`](../../adr/0094-java-skelett-toolch
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** —
+**Verantwortlich:** dburkard
 
 **Autor:** Planner. **Datum:** 2026-10-19.
 
@@ -127,7 +127,7 @@ Gate-Läufe und Closure-Pflichten:
 **Freshness und Pins.** `releasing.md` verlangt vor dem Schnitt keinen Freshness-Lauf; `make freshness-digest` und die `freshness-*`-Ziele sind
 nur nächtlich (`upstream-drift.yml`) und nicht in `make gates`. Der Implementer fährt sie vor Schritt 1 einmal als Hinweis (Netz, read-only) und
 nennt jeden Befund im Bericht; ein Befund ändert die Pins nicht in diesem Slice (anderer Slice, siehe §1), er steht im Release-Text unter **Grenze**,
-wenn ein Image-Pin der neuen Skelette betroffen ist. Entscheidung des Nutzers siehe §6.
+wenn ein Image-Pin der neuen Skelette betroffen ist. Der Nutzer hat den Hinweis-Lauf gewollt (§6).
 
 Reihenfolge der Rollen:
 
@@ -163,7 +163,7 @@ Nutzer und Closure-Notiz mit Lerneintrag. Nicht Closure-Trigger: ein gepushter T
 - Ein Image-Pin der neuen Skelette ist beim Schnitt veraltet (Freshness nicht Teil der Prozedur) — **Ausgang:** weiter offen → Register, falls ein Befund anfällt; sonst entfallen mit dem Lauf als Beleg.
 - Die Kennung trägt einen überholbaren Stand — **Ausgang:** entfallen; die Version ist vom Nutzer gesetzt, `v0.10.0` ist der höchste Tag nach dem Schnitt, Werkzeug-Stände stehen nicht im Namen.
 
-Offene Fragen an den Nutzer: (1) Freshness-Lauf vor dem Schnitt als Hinweis (§3) — gewollt oder ohne? (2) Der Slice schließt erst nach Schritt 8, also nach Ihrer Tag-Freigabe; soll die Closure stattdessen schon bei „bereit zur Freigabe" erfolgen und die Veröffentlichung ein eigener Vorgang sein?
+Entschieden vom Nutzer: (1) Der Freshness-Hinweis-Lauf (`make freshness-digest` und die übrigen `freshness-*`-Ziele, Netz, nur Hinweis) läuft einmal vor Schritt 1; Befunde stehen im Bericht, Pins ändert er nicht. (2) Der Slice schließt erst nach der Tag-Freigabe des Nutzers und nach Schritt 8 von [`releasing.md`](../../../user/releasing.md), nicht bei „bereit zur Freigabe“; die Veröffentlichung ist Teil dieses Slice.
 
 ## 7. Closure-Notiz
 
