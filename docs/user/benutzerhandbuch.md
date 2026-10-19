@@ -326,6 +326,7 @@ Die erste sagt: der **Kern** sieht keinen Adapter — er kennt nur seine Ports. 
 **Wichtig für die Pflege:** `.a-check.yml` gehört Ihnen — ein erneutes Aufsetzen überschreibt sie nicht. Bei `hexslice` gilt: legen Sie einen **weiteren** Use-Case-Schnitt an, tragen Sie ihn dort nach (je ein Eintrag unter `app` und, falls er eigene Ports hat, unter `ports_inbound` bzw. `ports_outbound` — je nach Richtung, mit eigenem `direction:`). Vergessen Sie es, fällt der neue Code unter keine Schicht: importiert er eine, meldet das Gate `wrong-direction` — importiert er keine, bleibt er unbemerkt ungeprüft. Bei `hexagonal` wachsen neue Dateien in die bestehenden vier Schichten hinein; nachzutragen ist erst, wenn Sie ein **neues** Schicht-Verzeichnis anlegen.
 
 **Grenzen:** `--arch hexslice` liefern alle sechs Sprachen (`go`, `cpp`, `kotlin`, `java`, `python`, `csharp`), `--arch hexagonal` nur der **Go**-Renderer. Eine Sprache, deren Renderer die gewählte Bauform nicht kennt (`cpp`, `kotlin`, `java`, `python` oder `csharp` mit `hexagonal`), endet mit Exit 2 und nennt die Bauformen, die **diese** Sprache kann — statt still ein Grundgerüst ohne Schichten anzulegen; eine unbekannte Bauform ebenso, mit Nennung der verfügbaren Werte. Die Meldung für `--lang python --arch hexagonal` lautet `Fehler: unbekannte Architektur "hexagonal"; verfuegbar: flat, hexslice`.
+
 ### Das aufgesetzte Repository prüfen
 
 **Voraussetzung:** Der Aufsetz-Lauf war erfolgreich; Docker läuft.
