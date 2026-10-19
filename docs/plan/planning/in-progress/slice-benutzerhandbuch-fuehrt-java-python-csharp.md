@@ -86,7 +86,7 @@ dass `java`, `python` und `csharp` im Quellbaum liegen und erst das nächste Rel
 
 Liefer-Punkte (drei):
 
-- [ ] **L1 — Referenz und Kapitel auf den Ist-Zustand.** Jede Sprachaufzählung und jede Zahl über
+- [x] **L1 — Referenz und Kapitel auf den Ist-Zustand.** Jede Sprachaufzählung und jede Zahl über
   Sprachen in `docs/user/benutzerhandbuch.md` nennt die sechs Sprachen und stimmt mit
   `SupportedLangs()` und `langArchs()` überein: `--lang`-Tabelle, Kapitel *Bauform wählen*
   (hexagonal nur `go`; `hexslice` alle sechs; der Exit-2-Fall für eine Sprache ohne die Bauform),
@@ -94,11 +94,11 @@ Liefer-Punkte (drei):
   aus `ai-harness-init --help`), die Fehlermeldung *unbekannte Sprache* im Wortlaut der echten
   Meldung, FAQ, Toolchain-Voraussetzungen, wo das Handbuch sie für die übrigen Sprachen nennt; dazu
   der Quellstand-Hinweis aus §1.
-- [ ] **L2 — die drei Sprachbäume.** Unter „Phase 2“ stehen `java`, `python` und `csharp` mit
+- [x] **L2 — die drei Sprachbäume.** Unter „Phase 2“ stehen `java`, `python` und `csharp` mit
   `<!-- baum: <sprache> -->`-Marker, erzeugt aus dem Output eines echten Bootstraps (nicht aus dem
   Gedächtnis), und der Absatz zur geschichteten Bauform nennt den Code-Teil von `hexslice` je Sprache
   (Verzeichnisse und Namensräume, gelesen aus `spec/architecture.md` und dem Renderer).
-- [ ] **L3 — der Sensor.** Die Handbuch-Baum-Stufe in `harness/tools/full-smoke.sh` fährt die
+- [x] **L3 — der Sensor.** Die Handbuch-Baum-Stufe in `harness/tools/full-smoke.sh` fährt die
   Schleife über `kotlin`, `java`, `python` und `csharp` zusätzlich zu `sprachlos`, `go`, `cpp`;
   `docs/user/e2e-abdeckung.md` ist per `make e2e-abdeckung` neu erzeugt, die Deklaration der Stufe
   nennt die sieben Ziele und ihre Grenze (`--arch`, Etiketten); ein Fall in `test/mutations/` färbt die
@@ -107,14 +107,14 @@ Liefer-Punkte (drei):
 
 Pflichten, die nicht zählen:
 
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8, kein Self-Review.
-- [ ] Doku-Update: das Handbuch **ist** die Lieferung; `harness/sensors/full-smoke.md` nachgezogen,
+- [x] Doku-Update: das Handbuch **ist** die Lieferung; `harness/sensors/full-smoke.md` nachgezogen,
       wo es die drei Ziele der Stufe nennt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang.
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
 
 ## 3. Plan (vor Code)
@@ -173,20 +173,51 @@ einem verfälschten Baum rot gesehen; Closure-Notiz mit Lerneintrag geschrieben.
 ## 7. Closure-Notiz
 
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Gegenstand:** <übernommen von `slice-<Kennung>` | entfallen: <Grund>>
-  *(nur beim Ausgang ohne Arbeit; sonst Zeile löschen)*
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<KUERZEL>/<slug>` (<slice-kennung-a>, <slice-kennung-b>, <slice-kennung-c> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-<Kennung>.md` | `evidence/slice-<Kennung>.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+- **Was hat funktioniert:** Das Handbuch führt sechs Sprachen und den Quellstand-Hinweis (L1), die Bäume von `java`, `python` und
+  `csharp` stehen mit Marker und sind aus echten Bootstraps erzeugt (L2: 22, 16 und 19 Pfade), und die Handbuch-Baum-Stufe fährt sieben
+  Ziele (L3). Rot gesehen (Verifier): die Fälle 767 bis 770 auf einer Handbuch-Kopie je mit dem Rest des `# expect:`-Textes, Fall 768 über
+  `make mutate` und der Schleifen-Bruch (`java` aus der Schleife genommen → Fall meldet *blieb GRUEN*). Review: kein HIGH, kein MEDIUM; F2 (Grenze der
+  Prosa am Ort) behoben in `db5390e0`.
+- **Was ging anders als geplant:** Die Versionsnummer blieb `v0.9.0` (Ausschluss §1); der Quellstand-Hinweis trägt den Unterschied zum Download.
+  Der Verifier startete die Fall-Skripte 767 bis 770 einmal direkt im Arbeitsbaum, ein fehlgeschlagenes `sed` ließ sie gegen das echte Handbuch
+  laufen (vier Zeilen entfernt, per `git checkout --` zurückgesetzt, danach alle Belege auf Kopien oder in der Isolationskopie von `make mutate`).
+  Keine bestehende Beobachtung trifft das; benannt, nicht gezählt (kein Register-Eintrag, kein Beleg).
+- **Laufzeit ([`MR-089`](../../../../harness/conventions.md#mr-089)):** Kommando `make full-smoke-host` (Träger `artifact-host`), ein
+  macOS-Rechner mit Colima, Image-Cache warm, Variante: alle Ziele der Handbuch-Baum-Stufe. Gemessen sind vier Läufe, abwechselnd Nachher,
+  Vorher, Nachher, Vorher (Message von `91762ea2`): Stufe vorher 3 bis 4 s, nachher 8 bis 10 s; Gesamtdauer vorher 366 bis 372 s, nachher
+  378 bis 430 s, **ohne Deutung der Gesamtdauer**. **Ungemessen:** die Build-Cache-Lage (nicht erfasst), die kalte Lage, Linux und CI. Die
+  Message nennt diese Lücken nicht und ist Historie; Review F1 und Verifier V1 stehen damit hier getragen, nicht in einem Register-Eintrag
+  (die nächste Klasse, `BEO-ALL/zahl-in-commit-message-ohne-kommando`, trifft einen anderen Mangel: dort fehlt das Kommando, hier die Lage).
+  Gegenmessung des Verifiers: Grün-Vorlauf `make full-smoke` unter `artifact-host` 391 s und 395 s, Build-Cache-Lage nicht kontrolliert,
+  Stufenzeit allein nicht gemessen.
+- **Steering-Loop-Eintrag:** neuer Sensor: Die Stufe *Handbuch-Baum* in `harness/tools/full-smoke.sh` hält die Baum-Pfade der Wurzel-Variante
+  für `sprachlos`, `go`, `cpp`, `kotlin`, `java`, `python` und `csharp` gegen die Emission, mit Fällen 767 bis 770. Grenze am Ort: `--arch`-Bäume,
+  `add-lang`, Etiketten und Prosa sind ungehalten. Auslöser: `BEO-ALL/handbuch-sprachbaum-ohne-sensor-in-full-smoke` (`slice-java-hexslice-layout`,
+  `slice-release-schnitt-v070-liefert-kotlin-und-v6180`, dieser Slice — 3×); Lese-Schritt dieser Closure: Ausgang *verkörpert*, der Herkunfts-Anker
+  steht in `state.md` des Eintrags (der Abschluss berührt das Skript nicht, `AGENTS.md` §3.10), darum ohne Teil-Zeile `liegt in`. Zweite Lehre,
+  geschärfte Regel als Vorschlag, nicht verkörpert: Ein Fall-Skript aus `test/mutations/` läuft über `make mutate` oder auf einer Kopie, nie direkt im
+  Arbeitsbaum — dort schreibt es in die echte Quelle, sobald sein `sed` scheitert; Träger ist der Verifier-Lauf, ein Wächter existiert nicht.
+- **Beobachtungs-Register (`../observations/`):** `evidence/slice-benutzerhandbuch-fuehrt-java-python-csharp.md` ergänzt in
+  `BEO-ALL/handbuch-sprachbaum-ohne-sensor-in-full-smoke` (3×, verkörpert), `BEO-ALL/lokaler-full-smoke-scheitert-auf-macos-host` (4×, verkörpert,
+  Prosa-Form ausgeschöpft, ihre `state.md` nennt die offene Entscheidung) und `BEO-ALL/mutate-auswahl-paste-ohne-operand-bricht-auf-bsd` (2×, offen;
+  Quelle der Auftraggeber, nicht Review oder Verifier); neu angelegt `BEO-ALL/handbuch-nennt-sprachen-die-der-download-nicht-kennt` (1×, offen).
+  Zitiert ohne Beleg: `BEO-ALL/zeilen-adressen-im-handbuch-wandern-mit-umstrukturierung` (am Muster gefunden, keine Stelle verfehlt),
+  `BEO-ALL/doku-zusage-nennt-den-test-dessen-fall-nur-einen-ausschnitt-misst` (3×, geplant; die Deklaration der Stufe nennt, was sie misst),
+  `BEO-ALL/mutate-treiber-braucht-bash-4-und-bricht-auf-macos-bash-32` (nicht aufgetreten).
+- **Folge-Slices:** keine angelegt. Der Release-Schnitt hat noch keine Kennung; seine Bedingung trägt der neue Register-Eintrag.
+- **Trigger-Audit dieser Closure:** Carveout `CO-001` bleibt *Auflösung fällig* mit Folge-Slice `slice-113-co-001-ist-faellig` in `open/`, `CO-002`
+  permanent — beide von diesem Slice unberührt; kein bootstrap-aware Gate betroffen (`grep -i 'bootstrap-aware' Makefile d-check.mk` ohne Treffer);
+  keine ADR mit Re-Evaluierungs-Trigger von diesem Slice berührt; Hard Rules tragen *permanent* oder ihren Trigger unverändert. Nichts fällig durch
+  diesen Slice.
+- **Archivierung ([`MR-078`](../../../../harness/conventions.md#mr-078)):** nicht ausgeführt. Der Träger `archive-slice` ist kein `make`-Ziel
+  (`grep -n 'archive-slice' Makefile` ohne Treffer), und `archive-welle` bricht an der Untergrenze (kein `done/*/archiv.zip`); der Slice bleibt flach
+  in `done/`, wie die übrigen Slices bis zur Altbestand-Archivierung.
+- **Risiken aus §6:** Risiko 1 (Handbuch nennt Sprachen, die der Download nicht kennt) weiter offen — Register,
+  `BEO-ALL/handbuch-nennt-sprachen-die-der-download-nicht-kennt`, Bedingung an den Release-Schnitt; Risiko 2 (Pfad hängt vom Lauf ab) entfallen — gemessen: sieben
+  echte Bootstraps, Handbuch deckungsgleich (95, 13, 15, 20, 22, 16, 19 Pfade), kein versionsabhängiger Pfad; Risiko 3 (`--arch` und Prosa ohne Sensor)
+  weiter offen — Register, `BEO-ALL/handbuch-sprachbaum-ohne-sensor-in-full-smoke` (Grenze in `state.md`); Risiko 4 (`full-smoke` länger) entfallen —
+  nicht eingetreten: Stufe 3 bis 4 s auf 8 bis 10 s, Rückführung §4 nicht ausgelöst (Lage der Zahl: Laufzeit oben) — je einmal in §6.
+- **Drei Paarungen:** <wird nach dem Move geprüft>
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

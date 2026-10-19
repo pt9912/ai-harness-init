@@ -1,1 +1,7 @@
-**Stand:** offen
+**Stand:** verkörpert in [`harness/tools/full-smoke.sh`](../../../../../../harness/tools/full-smoke.sh) (Stufe *Handbuch-Baum*, `seit slice-benutzerhandbuch-fuehrt-java-python-csharp`)
+
+Drei Belege (`evidence/*.md`): `slice-java-hexslice-layout`, `slice-release-schnitt-v070-liefert-kotlin-und-v6180`, `slice-benutzerhandbuch-fuehrt-java-python-csharp`.
+
+**Was verkörpert ist, und was nicht.** Verkörpert ist der Sensor für die **Wurzel-Variante** (`--lang <sprache>`) je Ziel: Die Stufe fährt sieben Bootstraps (`sprachlos`, `go`, `cpp`, `kotlin`, `java`, `python`, `csharp`) und hält die Pfad-Menge des Handbuch-Baums gegen die Emission; Rot gesehen an den Fällen 767 bis 770 (Skript auf einer Handbuch-Kopie) und, für `java`, an Fall 768 über `make mutate` samt Schleifen-Bruch (Verifier).
+
+**Grenze der Verkörperung, benannt.** Ungehalten bleiben: die `--arch`-Bäume und `add-lang` unter einem Unterpfad; die Etiketten hinter den Baum-Namen; die Prosa des Handbuchs (Code-Teil von `hexslice` je Sprache, Standard-Tags der `SKEL_*_VERSION`-Knöpfe, Wortlaut der Fehlermeldungen) — ein Pin-Wechsel in `internal/gen` lässt sie still veralten. Die Grenze steht in der Deklaration der Stufe, in `harness/tools/handbuch-baum.sh` und in `docs/user/e2e-abdeckung.md`. Der Herkunfts-Anker steht in dieser Datei und nicht am Zielort: Der Abschluss des Slice berührt `harness/tools/full-smoke.sh` nicht (`AGENTS.md` §3.10). Träger der Prosa ist der Lauf, der das Handbuch schreibt.
