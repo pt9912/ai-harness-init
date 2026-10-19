@@ -687,9 +687,93 @@ mein-projekt/
 
 Das Kotlin-Grundgerüst ist ein einzelnes JVM-Gradle-Modul ohne Gradle-Wrapper; die Prüf-Stufen (`lint`, `build`, `test`) laufen im `Dockerfile` auf dem `gradle`-Image, dessen Tag `SKEL_KOTLIN_VERSION` bestimmt.
 
+Für `--lang java`:
+
+<!-- baum: java -->
+```text
+mein-projekt/
+├── Dockerfile                         Bau und Prüfung in Docker (lint, build, test)
+├── settings.gradle.kts                Gradle-Einstellungen (ein Modul)
+├── build.gradle.kts                   Build-Beschreibung (Java, checkstyle)
+├── config/
+│   └── checkstyle/
+│       └── checkstyle.xml             Lint-Konfiguration
+├── src/
+│   ├── main/
+│   │   └── java/
+│   │       └── app/
+│   │           └── Main.java          Einstiegspunkt
+│   └── test/
+│       └── java/
+│           └── app/
+│               └── MainTest.java
+├── harness/
+│   └── mk/
+│       └── java.mk                    Code-Gates der Sprache
+└── tools/
+    └── harness/
+        └── blocked/
+            └── java                   vom Command-Guard geblockte JVM-Werkzeuge
+```
+
+Das Java-Grundgerüst ist wie das Kotlin-Grundgerüst ein einzelnes JVM-Gradle-Modul ohne Gradle-Wrapper; die Prüf-Stufen (`lint`, `build`, `test`) laufen im `Dockerfile` auf dem `gradle`-Image, dessen Tag `SKEL_JAVA_VERSION` bestimmt — unabhängig von `SKEL_KOTLIN_VERSION`.
+
+Für `--lang python`:
+
+<!-- baum: python -->
+```text
+mein-projekt/
+├── Dockerfile                         Bau und Prüfung in Docker (lint, build, test)
+├── pyproject.toml                     Werkzeug-Konfiguration (pytest, ruff, mypy)
+├── requirements-dev.txt               die drei Entwicklungs-Werkzeuge, exakt gepinnt
+├── src/
+│   └── app/
+│       ├── __init__.py
+│       └── main.py                    Einstiegspunkt
+├── tests/
+│   └── test_main.py
+├── harness/
+│   └── mk/
+│       └── python.mk                  Code-Gates der Sprache
+└── tools/
+    └── harness/
+        └── blocked/
+            └── python                 vom Command-Guard geblockte Python-Werkzeuge
+```
+
+Das Python-Grundgerüst trägt keinen `[project]`-Abschnitt und kein Build-Backend (`pyproject.toml` enthält nur Werkzeug-Konfiguration); die Prüf-Stufen (`lint`, `build`, `test`) laufen im `Dockerfile` auf dem `python`-Image, dessen Tag `SKEL_PYTHON_VERSION` bestimmt.
+
+Für `--lang csharp`:
+
+<!-- baum: csharp -->
+```text
+mein-projekt/
+├── Dockerfile                         Bau und Prüfung in Docker (lint, build, test)
+├── app.sln                            Lösungsdatei
+├── Directory.Build.props              gemeinsame Projekt-Eigenschaften (Ziel-Framework)
+├── .editorconfig                      Lint-Konfiguration
+├── src/
+│   └── App/
+│       ├── App.csproj
+│       └── Program.cs                 Einstiegspunkt
+├── tests/
+│   └── App.Tests/
+│       ├── App.Tests.csproj
+│       └── ProgramTests.cs
+├── harness/
+│   └── mk/
+│       └── csharp.mk                  Code-Gates der Sprache
+└── tools/
+    └── harness/
+        └── blocked/
+            └── csharp                 vom Command-Guard geblockte .NET-Werkzeuge
+```
+
+Das C#-Grundgerüst liegt in einer Lösung mit einem Projekt und einem Testprojekt; die Prüf-Stufen (`lint`, `build`, `test`) laufen im `Dockerfile` auf dem `dotnet-sdk`-Image, dessen Tag `SKEL_CSHARP_VERSION` bestimmt; aus Haupt- und Nebenversion dieses Tags leitet das Werkzeug das Ziel-Framework in `Directory.Build.props` ab.
+
 Am Wurzelverzeichnis (`--lang go` bzw. `add-lang go .`) liegen sie neben den Basis-Dateien; in einem **Mono-Repo** (mehrere `add-lang`-Läufe mit verschiedenen `<pfad>`) je Modul ein solcher Satz unter seinem `<pfad>`, auch mit gemischten Sprachen. Erst mit einem Sprachmodul fährt `make gates` **zusätzlich** die Code-Gates (lint/build/test in Docker).
 
-Mit einer geschichteten Bauform sieht der Code-Teil anders aus (die Bau-Dateien bleiben gleich): statt eines einzelnen Einstiegspunkts entstehen Schichten — bei `hexslice` `internal/hexagon/{domain,application}` und `internal/adapters/{driving,driven}`, bei `hexagonal` `internal/hexagon/{core,port}` und `internal/adapter/{driven,driving}` —, dazu `cmd/<binary>/main.go` (bei `kotlin`: Pakete unter `src/main/kotlin/app/` — `hexagon/{domain,application}` und `adapters/{driving,driven}` —, der Composition Root `Main.kt` und der Test `src/test/kotlin/app/GreetTest.kt`) und **plus** das Architektur-Gate `<pfad>/.a-check.yml` und `a-check.mk`. Bei `flat` (dem Standard) entsteht keines von beidem. Siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch).
+Mit einer geschichteten Bauform sieht der Code-Teil anders aus (die Bau-Dateien bleiben gleich): statt eines einzelnen Einstiegspunkts entstehen Schichten — bei `hexslice` `internal/hexagon/{domain,application}` und `internal/adapters/{driving,driven}`, bei `hexagonal` `internal/hexagon/{core,port}` und `internal/adapter/{driven,driving}` —, dazu `cmd/<binary>/main.go` (bei `kotlin`: Pakete unter `src/main/kotlin/app/` — `hexagon/{domain,application}` und `adapters/{driving,driven}` —, der Composition Root `Main.kt` und der Test `src/test/kotlin/app/GreetTest.kt`; bei `java` dieselbe Form unter `src/main/java/app/` mit `Main.java` und dem Test `src/test/java/app/GreetTest.java`; bei `python` Verzeichnisse unter `src/app/` — `hexagon/{domain,application}` und `adapters/{driving,driven}`, jedes mit einer `__init__.py` —, der Composition Root `src/app/main.py` und der Test `tests/test_greet.py`; bei `csharp` PascalCase-Verzeichnisse unter `src/App/` — `Hexagon/{Domain,Application}` und `Adapters/{Driving,Driven}`, die Richtungs-Ordner der Ports klein, `Ports/inbound` und `Ports/outbound` —, der Composition Root `src/App/Program.cs` und der Test `tests/App.Tests/GreetTests.cs`; der Namensraum einer C#-Datei ist ihr Verzeichnispfad ab `App`) und **plus** das Architektur-Gate `<pfad>/.a-check.yml` und `a-check.mk`. Bei `flat` (dem Standard) entsteht keines von beidem. Siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch).
 
 ### Review-Skills und der Verweis-Abschnitt der README
 
