@@ -115,7 +115,7 @@ Pflichten, die nicht zählen:
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang.
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
 
 ## 3. Plan (vor Code)
 
@@ -217,7 +217,10 @@ einem verfälschten Baum rot gesehen; Closure-Notiz mit Lerneintrag geschrieben.
   echte Bootstraps, Handbuch deckungsgleich (95, 13, 15, 20, 22, 16, 19 Pfade), kein versionsabhängiger Pfad; Risiko 3 (`--arch` und Prosa ohne Sensor)
   weiter offen — Register, `BEO-ALL/handbuch-sprachbaum-ohne-sensor-in-full-smoke` (Grenze in `state.md`); Risiko 4 (`full-smoke` länger) entfallen —
   nicht eingetreten: Stufe 3 bis 4 s auf 8 bis 10 s, Rückführung §4 nicht ausgelöst (Lage der Zahl: Laufzeit oben) — je einmal in §6.
-- **Drei Paarungen:** <wird nach dem Move geprüft>
+- **Drei Paarungen (nach dem Move, 2026-10-19):** Anker-Paarung: kein Eintrag trägt das Feld `liegt in` mit einem Zielort, nichts zu paaren.
+  Folge-Slice-Paarung: kein Folge-Slice genannt. Register-Paarung, erste Hälfte: jede genannte Beobachtung existiert mit nicht leerem `evidence/`;
+  zweite Hälfte: 1 Verzeichnis ohne Beleg, namentlich `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen
+  behauptet, vom Slice nicht berührt (Kommando: Schleife aus `docs/plan/planning/observations/README.md`); `make register-ausgang` 0 Befund(e).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
