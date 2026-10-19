@@ -19,8 +19,8 @@ nicht hier.
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
 - [welle-sprachprofile-java-python-csharp — Sprachprofile java, python und csharp](../welle-sprachprofile-java-python-csharp.md)
 
-**Nichts in Arbeit.** [`in-progress/`](../in-progress) trägt keinen Slice
-(`ls docs/plan/planning/in-progress/slice-*.md` findet keinen); die Welle
+**In Arbeit:** wellenlose Arbeit — [`in-progress/`](../in-progress) trägt einen Slice ohne Welle
+(`ls docs/plan/planning/in-progress/slice-*.md` nennt ihn); die Welle
 [welle-sprachprofile-java-python-csharp](../welle-sprachprofile-java-python-csharp.md) bleibt offen.
 
 ## Nächste Wellen
