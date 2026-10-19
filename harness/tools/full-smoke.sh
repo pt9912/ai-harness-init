@@ -490,7 +490,7 @@ fi
 # als Delta gegen das sprachlose. Die Stufe steht VOR jeder anderen Ziel-Stufe, damit ein Pfad, den ein Lauf
 # nicht mehr anlegt, zuerst hier und mit seinem Namen rot wird.
 echo "full-smoke: Handbuch-Baum gegen den Bestand frischer Ziele (sprachlos, --lang go, cpp, kotlin, java, python, csharp) ..."
-	e2e_abdeckung "LH-FA-02" "Der Baum in Paragraf 6 des Benutzerhandbuchs nennt genau die Pfade frischer Ziele (sprachlos, Delta von --lang go, cpp, kotlin, java, python und csharp), in beide Richtungen; gemessen ist die Pfad-Menge im Gelingens-Zweig der Traeger-Ablage und nur der Wurzel-Variante --lang, nicht die Etiketten hinter den Namen, nicht die --arch-Varianten, nicht add-lang unter einem Unterpfad und nicht die Ablage-Klassen selbst" "handbuch_baum_pruefen"
+	e2e_abdeckung "LH-FA-02" "Der Baum in Paragraf 6 des Benutzerhandbuchs nennt genau die Pfade frischer Ziele (sprachlos, Delta von --lang go, cpp, kotlin, java, python und csharp), in beide Richtungen; gemessen ist die Pfad-Menge im Gelingens-Zweig der Traeger-Ablage und nur der Wurzel-Variante --lang, nicht die Etiketten hinter den Namen, nicht die --arch-Varianten, nicht add-lang unter einem Unterpfad, nicht die Ablage-Klassen selbst, und kein Sensor haelt die uebrige Sprach-Prosa des Handbuchs: den Code-Teil von hexslice je Sprache, die Standard-Tags der SKEL-Knoepfe und den Wortlaut der Fehlermeldungen" "handbuch_baum_pruefen"
 handbuch_baum_pruefen() {
 	local variante="$1" ziel="$2" basis="${3:-}" aus
 	# Der Vergleich fordert kein Bild an; ein Fehlschlag ist darum ein Befund und kein

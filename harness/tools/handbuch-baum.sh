@@ -38,7 +38,10 @@
 # GRENZE: geprueft ist die Pfad-Menge eines Laufs, dessen Traeger-Ablage gelingt, und
 # fuer Phase 2 die Wurzel-Variante (--lang). Ein Laufzeit-Zweig ohne Ablage, add-lang
 # unter einem Unterpfad und die --arch-Varianten stehen in §6 als Prosa und sind hier
-# nicht gehalten; ebenso wenig die Etiketten.
+# nicht gehalten; ebenso wenig die Etiketten. Kein Sensor haelt die uebrige Sprach-Prosa des
+# Handbuchs: den Code-Teil von hexslice je Sprache, die Standard-Tags der SKEL-Knoepfe (ein
+# Pin-Wechsel in internal/gen laesst den Handbuch-Text unbemerkt veralten) und den Wortlaut
+# der Fehlermeldungen.
 set -euo pipefail
 export LC_ALL=C
 
