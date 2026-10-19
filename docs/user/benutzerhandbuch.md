@@ -1,10 +1,8 @@
 # Benutzerhandbuch: ai-harness-init
 
-**Software-Stand:** `v0.9.0` — vorgefertigte Programme für sechs Plattformen (linux · macos · windows × amd64 · arm64). Siehe [Aufgaben](#4-aufgaben) (Bootstrap, `--lang`, `add-lang`), [`--arch`](#ein-geschichtetes-grundgerüst-wählen---arch) und [Betriebs-Operationen](#betriebs-operationen).
-**Stand:** 2026-10-17
+**Software-Stand:** `v0.10.0` — vorgefertigte Programme für sechs Plattformen (linux · macos · windows × amd64 · arm64). Siehe [Aufgaben](#4-aufgaben) (Bootstrap, `--lang`, `add-lang`), [`--arch`](#ein-geschichtetes-grundgerüst-wählen---arch) und [Betriebs-Operationen](#betriebs-operationen).
+**Stand:** 2026-10-19
 **Verantwortlich:** ai-harness-init-Team (pt9912)
-
-> **Quellstand und Download.** Dieses Handbuch beschreibt sechs Sprachen: `go`, `cpp`, `kotlin`, `java`, `python` und `csharp`. `java`, `python` und `csharp` liegen im Quellbaum; ausgeliefert wird `v0.9.0`, und dieses Programm kennt sie nicht — erst das nächste Release liefert sie aus. Wer das Programm aus dem Download nutzt, wählt aus `go`, `cpp` und `kotlin`; wer aus dem Quellcode baut ([Weg B](#weg-b--aus-dem-quellcode-bauen)), hat alle sechs.
 
 ---
 
@@ -80,7 +78,7 @@ Eine lokale Installation der Zielsprache (Go-Toolchain, C++-Toolchain, JDK, Grad
 
 ### Das Werkzeug bereitstellen
 
-Es gibt **drei Wege**. Empfohlen ist der **Download** — fertige Programme für sechs Plattformen; **aktuell ausgeliefert wird `v0.9.0`**. Den Bau aus dem Quellcode brauchen Sie nur, wenn Sie einen Stand **ohne** Versions-Kennzeichnung verwenden wollen. Für macOS und Linux steht der dritte Weg über das **Homebrew-Tap** bereit (siehe [Weg C](#weg-c--über-ein-homebrew-tap-macos-linux)).
+Es gibt **drei Wege**. Empfohlen ist der **Download** — fertige Programme für sechs Plattformen; **aktuell ausgeliefert wird `v0.10.0`**. Den Bau aus dem Quellcode brauchen Sie nur, wenn Sie einen Stand **ohne** Versions-Kennzeichnung verwenden wollen. Für macOS und Linux steht der dritte Weg über das **Homebrew-Tap** bereit (siehe [Weg C](#weg-c--über-ein-homebrew-tap-macos-linux)).
 
 #### Weg A — fertiges Programm herunterladen (empfohlen)
 
@@ -327,8 +325,7 @@ Die erste sagt: der **Kern** sieht keinen Adapter — er kennt nur seine Ports. 
 
 **Wichtig für die Pflege:** `.a-check.yml` gehört Ihnen — ein erneutes Aufsetzen überschreibt sie nicht. Bei `hexslice` gilt: legen Sie einen **weiteren** Use-Case-Schnitt an, tragen Sie ihn dort nach (je ein Eintrag unter `app` und, falls er eigene Ports hat, unter `ports_inbound` bzw. `ports_outbound` — je nach Richtung, mit eigenem `direction:`). Vergessen Sie es, fällt der neue Code unter keine Schicht: importiert er eine, meldet das Gate `wrong-direction` — importiert er keine, bleibt er unbemerkt ungeprüft. Bei `hexagonal` wachsen neue Dateien in die bestehenden vier Schichten hinein; nachzutragen ist erst, wenn Sie ein **neues** Schicht-Verzeichnis anlegen.
 
-**Grenzen:** `--arch hexslice` liefern alle sechs Sprachen (`go`, `cpp`, `kotlin`, `java`, `python`, `csharp`), `--arch hexagonal` nur der **Go**-Renderer. Eine Sprache, deren Renderer die gewählte Bauform nicht kennt (`cpp`, `kotlin`, `java`, `python` oder `csharp` mit `hexagonal`), endet mit Exit 2 und nennt die Bauformen, die **diese** Sprache kann — statt still ein Grundgerüst ohne Schichten anzulegen; eine unbekannte Bauform ebenso, mit Nennung der verfügbaren Werte. Die Meldung für `--lang python --arch hexagonal` lautet `Fehler: unbekannte Architektur "hexagonal"; verfuegbar: flat, hexslice`. Im Download `v0.9.0` gilt das für `cpp` und `kotlin`; `java`, `python` und `csharp` kennt er nicht (siehe den Hinweis zum Quellstand am Kopf).
-
+**Grenzen:** `--arch hexslice` liefern alle sechs Sprachen (`go`, `cpp`, `kotlin`, `java`, `python`, `csharp`), `--arch hexagonal` nur der **Go**-Renderer. Eine Sprache, deren Renderer die gewählte Bauform nicht kennt (`cpp`, `kotlin`, `java`, `python` oder `csharp` mit `hexagonal`), endet mit Exit 2 und nennt die Bauformen, die **diese** Sprache kann — statt still ein Grundgerüst ohne Schichten anzulegen; eine unbekannte Bauform ebenso, mit Nennung der verfügbaren Werte. Die Meldung für `--lang python --arch hexagonal` lautet `Fehler: unbekannte Architektur "hexagonal"; verfuegbar: flat, hexslice`.
 ### Das aufgesetzte Repository prüfen
 
 **Voraussetzung:** Der Aufsetz-Lauf war erfolgreich; Docker läuft.
@@ -458,7 +455,7 @@ Alle fünf sind **keine Gates**: `make gates` fährt keine von ihnen mit. `archi
 
 | Option | Pflicht | Bedeutung |
 |---|---|---|
-| `--lang <sprache>` | nein | Zielsprache des Grundgerüsts (Kurzform für „aufsetzen + `add-lang(<sprache>, .)`“). Ohne sie: dokument-only. Unterstützt: `go`, `cpp` (C++ per CMake + clang-tidy), `kotlin` (JVM per Gradle + detekt), `java` (JVM per Gradle + checkstyle), `python` (pytest, ruff, mypy) und `csharp` (.NET-SDK, `dotnet format`). `java`, `python` und `csharp` liegen im Quellbaum; der Download `v0.9.0` kennt sie nicht (siehe den Hinweis zum Quellstand am Kopf). |
+| `--lang <sprache>` | nein | Zielsprache des Grundgerüsts (Kurzform für „aufsetzen + `add-lang(<sprache>, .)`“). Ohne sie: dokument-only. Unterstützt: `go`, `cpp` (C++ per CMake + clang-tidy), `kotlin` (JVM per Gradle + detekt), `java` (JVM per Gradle + checkstyle), `python` (pytest, ruff, mypy) und `csharp` (.NET-SDK, `dotnet format`). |
 | `--arch <arch>` | nein | Bauform des Grundgerüsts: `flat` (Standard), `hexagonal` (drei Schichten) oder `hexslice` (Schichten plus Use-Case-Schnitte); die beiden geschichteten bringen das Architektur-Gate mit. Wirkt nur zusammen mit `--lang`. Siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch). |
 | `--name <name>` | nein | Projektname; ersetzt den Platzhalter `<Projektname>` in den Vorlagen. |
 | `-h`, `--help` | nein | Hilfe anzeigen und beenden. |
@@ -839,7 +836,7 @@ Alle Fehler von `ai-harness-init` beginnen auf der Fehlerausgabe mit `Fehler:` u
 
 ### Fehler: `unbekannte Sprache "…"; verfuegbar: cpp, csharp, go, java, kotlin, python`
 
-**Ursache:** Sie haben eine Sprache angegeben, für die es kein Grundgerüst gibt. Die Liste oben ist die Meldung eines Programms aus dem Quellbaum; die des Downloads `v0.9.0` nennt nur `cpp, go, kotlin` — `java`, `python` und `csharp` kennt er nicht (siehe den Hinweis zum Quellstand am Kopf).
+**Ursache:** Sie haben eine Sprache angegeben, für die es kein Grundgerüst gibt. Die Liste oben ist die Meldung des Programms ab `v0.10.0`; ein älteres Programm nennt weniger Sprachen (`v0.9.0` nennt `cpp, go, kotlin`).
 
 **Lösung:** Verwenden Sie eine der aufgelisteten Sprachen, etwa `cpp`:
 
@@ -887,7 +884,7 @@ ai-harness-init add-lang go apps/api
 ## 8. Häufige Fragen (FAQ)
 
 **Welche Sprachen werden unterstützt?**
-`go`, `cpp` (C++), `kotlin`, `java`, `python` und `csharp`. Die Liste zeigt auch die Fehlermeldung zu einer unbekannten Sprache. `java`, `python` und `csharp` liegen im Quellbaum; der Download `v0.9.0` kennt sie nicht, erst das nächste Release liefert sie aus (siehe den Hinweis zum Quellstand am Kopf).
+`go`, `cpp` (C++), `kotlin`, `java`, `python` und `csharp`. Die Liste zeigt auch die Fehlermeldung zu einer unbekannten Sprache. Ab `v0.10.0` liefert der Download alle sechs; `v0.9.0` kennt nur `go`, `cpp` und `kotlin`.
 
 **Muss ich Go installieren?**
 Nein. Sowohl das Bauen des Werkzeugs als auch die Prüfungen im aufgesetzten Repository laufen über Docker.
