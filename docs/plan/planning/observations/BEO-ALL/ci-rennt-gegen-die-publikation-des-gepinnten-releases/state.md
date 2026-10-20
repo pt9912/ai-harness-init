@@ -15,3 +15,5 @@ Geschärfte Regel als Vorschlag an den Architect, nicht verkörpert: der Schnitt
 benannten Lücke, oder die Probe läuft nach der Publikation; ein Wächter existiert nicht.
 
 **Neue Möglichkeit:** `make release-warten` im Worker-Vorlauf des Workflows `mutate-branch` (Verdikt `2026-10-20-welle-sprachprofile-java-python-csharp-architect-verdikt`, V-2). Die Grenze oben ist *geplant*: `slice-mutate-branch-worker-wartet-die-publikation-ab` (Auftrag des Auftraggebers nach V-2).
+
+**Worker-Hälfte der Grenze, nachgezogen:** `make release-warten` steht jetzt einmal im Job `plan` des Workflows `mutate-branch`, als eigener Schritt vor den Shards (Beleg `slice-mutate-branch-worker-wartet-die-publikation-ab`). Gedeckt ist die Verdrahtung (Text-Wächter, Fall 775 und 776); gemessen ist, dass der Schritt im Worker läuft und bei `TRAEGER_WARTEN_GRENZE=0` meldet (`release-warten: GRENZE ERREICHT`). **Nicht belegt:** dass der Worker ein später veröffentlichtes Release abwartet. Offen bleibt der Tag-Push nach Ablauf der Grenze; Träger ist `docs/user/releasing.md` §Prozedur, Schritt 6.
