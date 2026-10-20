@@ -18,7 +18,7 @@ Auslöser: Auftrag des Auftraggebers nach Verdikt V-2 ([`docs/reviews/2026-10-20
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** —
+**Verantwortlich:** dburkard
 
 **Autor:** Planner. **Datum:** 2026-10-20.
 
@@ -28,7 +28,7 @@ Auslöser: Auftrag des Auftraggebers nach Verdikt V-2 ([`docs/reviews/2026-10-20
 
 **Ziel:** Der Workflow `mutate-branch` fährt `make release-warten` als eigenen Schritt, bevor der Grün-Vorlauf `make full-smoke` des Workers den Träger holt, und `docs/user/releasing.md` trägt die Pflichtzeile, dass der Release-Bericht Fälle ohne Ergebnis nennt — heute hat der Worker keinen Warte-Schritt, und sein Vorlauf fiel am Schnitt `v0.10.0` für 9 von 31 Fällen an einem 404 auf das unveröffentlichte Asset (Verdikt V-2).
 
-**Ausgangslage (gemessen am Stand HEAD 0f5d67c0):** `make release-warten` steht im `ci`-Job `full-smoke`, nicht in `.github/workflows/mutate-branch.yml`; der Job `plan` schreibt die Ausgabe seines Schritts `lauf` per `>> "$GITHUB_OUTPUT"`. `release-warten.sh` urteilt nicht und endet bei bereits veröffentlichtem Release nach einem Versuch (Skriptkopf).
+**Ausgangslage (gemessen am Stand HEAD 343fc457, `grep -n 'release-warten' .github/workflows/mutate-branch.yml` findet nichts):** `make release-warten` steht im `ci`-Job `full-smoke`, nicht in `.github/workflows/mutate-branch.yml`; der Job `plan` schreibt die Ausgabe seines Schritts `lauf` per `>> "$GITHUB_OUTPUT"`. Das gepinnte Release `v0.10.0` (`TRAEGER_TAG` im `Makefile`) ist veröffentlicht und sein Asset abrufbar: der 404-Zustand des Anlasses liegt **vor** der Publikation und besteht am realen Pin nicht mehr. `release-warten.sh` urteilt nicht und endet bei bereits veröffentlichtem Release nach einem Versuch (Skriptkopf).
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
@@ -42,7 +42,7 @@ Auslöser: Auftrag des Auftraggebers nach Verdikt V-2 ([`docs/reviews/2026-10-20
 ## 2. Definition of Done
 
 - [ ] **L1 — Warte-Schritt im Worker-Vorlauf:** `.github/workflows/mutate-branch.yml` fährt `make release-warten` als **eigenen** Schritt (nicht innerhalb von `lauf`, dessen stdout nach `$GITHUB_OUTPUT` geht) vor dem Grün-Vorlauf. Den Ort — einmal im Job `plan` vor der Matrix oder je Shard — wählt der Slice nach Messung (Wartezeit bei veröffentlichtem Release, Shard-Startzeiten im `ci`-Log) und nennt Wahl und Messwert im Workflow-Kommentar; ein Warten je Shard bezahlt jeden Shard. Die Zusage nennt, was sie trägt: der Schritt urteilt nicht (Exit 0 auch nach der Grenze), das Urteil fällt weiter im Vorlauf.
-- [ ] **L2 — Wächter und Zahn:** `test/mutate-auswahl.bats` oder ein eigener Fall hält, dass der Schritt `make release-warten` im Workflow vor dem Vorlauf und getrennt von `lauf` steht (Text-Wächter über der Workflow-Datei); `test/mutations/<nächste freie Nummer>-mutate-branch-worker-ohne-release-warten.sh` nimmt den Schritt weg und färbt ihn rot; `make mutate-greift` grün, `MUTATE_CASES=<Nr>` einmal rot gesehen. Die Zusage nennt die Grenze: der Text-Wächter hält die Verdrahtung, **nicht** die Wirkung gegen ein unveröffentlichtes Release; die Wirkung belegt ein einmaliger Branch-Lauf (`mutate/<kennung>-<sha8>`) gegen einen nicht abrufbaren Tag mit `TRAEGER_WARTEN_GRENZE=0` im Log (`release-warten: GRENZE ERREICHT`), und nur dort — ist er nicht herstellbar, steht die Lücke in §7 benannt.
+- [ ] **L2 — Wächter und Zahn:** `test/mutate-auswahl.bats` oder ein eigener Fall hält, dass der Schritt `make release-warten` im Workflow vor dem Vorlauf und getrennt von `lauf` steht (Text-Wächter über der Workflow-Datei); `test/mutations/<nächste freie Nummer>-mutate-branch-worker-ohne-release-warten.sh` nimmt den Schritt weg und färbt ihn rot; `make mutate-greift` grün, `MUTATE_CASES=<Nr>` einmal rot gesehen. Die Zusage nennt die Grenze: der Text-Wächter hält die Verdrahtung, **nicht** die Wirkung gegen ein unveröffentlichtes Release; die Wirkung belegt ein einmaliger Branch-Lauf (`mutate/<kennung>-<sha8>`) mit `TRAEGER_WARTEN_GRENZE=0` im Log (`release-warten: GRENZE ERREICHT`), und nur dort. Weil `v0.10.0` veröffentlicht ist, läuft er nur über einen **abgeleiteten** Pin: ein Wegwerf-Branch, dessen `TRAEGER_TAG` einen nicht veröffentlichten Tag nennt — nicht der reale Pin im Zustand vor der Publikation. Er belegt, dass der Schritt im Worker läuft und meldet; dass der Worker ein später veröffentlichtes Release **abwartet**, belegt er nicht (Grenze 0). Ist er nicht herstellbar, steht die Lücke in §7 benannt.
 - [ ] **L3 — Pflichtzeile in der Prozedur:** `docs/user/releasing.md` trägt im Schritt zur Meldung des vollzogenen Schnitts die Zeile, dass der Bericht die Mutations-Fälle **ohne Ergebnis** nennt (Zahl und Kommando, das sie liefert) und mit der benannten Lücke schließt oder die Probe nach der Publikation fährt; `harness/sensors/mutate.md` nennt den Warte-Schritt am Ort der Grenze. Ein Wächter existiert nicht für die Pflichtzeile: kein Sensor liest den Bericht gegen die Zeile; Träger ist der Release-Schnitt. Im selben Punkt: der Kommentar an `STALL_SECONDS` in `harness/tools/mutate.sh` (Satz „NICHT gedeckt: … Heute gibt es keinen") nennt das gemessene Verhalten — der CI-Lauf auf `mutate/…-7cc9f961` hatte einen Fall, der die 900-s-Schranke im Worker riss (Fall 445; Fall 444 brauchte 862 s); die Zusage nach `AGENTS.md` §3.6/§3.7 nennt Fälle und Messort im Indikativ, ohne Chronik, und ändert nicht den Wert. Ein Wächter existiert nicht: kein Sensor liest den Kommentar gegen die CI-Laufzeit.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
@@ -96,7 +96,7 @@ DoD vollständig, `make gates` grün, Review- und Verifier-Report liegen vor, Cl
 
 **Vorgelagert — Sub-Area-Wahl prüfen:** berührt ist `*` (gesamtes Repo, Kürzel `ALL`, die einzige deklarierte Sub-Area der Beobachtungen); sie erfüllt die Schwelle.
 
-**Vorgelagert — offene Beobachtungen sichten:** Register durchgegangen (`ls -d docs/plan/planning/observations/BEO-ALL/*/`, gelesen am Stand HEAD 0f5d67c0). Treffer: `BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases` (5 Belege, `verkörpert`; die Grenze am Worker steht dort auf *geplant* mit dieser Kennung) und `BEO-ALL/gruen-vorlauf-eines-mutate-workers-faellt-unter-runner-last` (1 Beleg, `offen` — betrifft denselben Worker-Vorlauf; zeigt die Messung in L1 eine zusätzliche Last durch den Schritt, wäre es der zweite Beleg). Kein Eintrag erreicht mit diesem Slice 3×.
+**Vorgelagert — offene Beobachtungen sichten:** Register durchgegangen (`ls -d docs/plan/planning/observations/BEO-ALL/*/`, gelesen am Stand HEAD 0f5d67c0). Treffer: `BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases` (5 Belege, `verkörpert`; die Grenze am Worker steht dort auf *geplant* mit dieser Kennung) und `BEO-ALL/gruen-vorlauf-eines-mutate-workers-faellt-unter-runner-last` (1 Beleg, `offen`, plus zwei Nachträge ohne Beleg, zuletzt Nacht-Lauf 2026-10-20 — betrifft denselben Worker-Vorlauf; zeigt die Messung in L1 eine zusätzliche Last durch den Schritt, wäre es der zweite Beleg). Kein Eintrag erreicht mit diesem Slice 3×.
 
 alle berührten Sub-Areas GF
 
