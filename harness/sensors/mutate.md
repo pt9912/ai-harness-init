@@ -114,6 +114,14 @@ den Fällen 453 bis 458 in `test/mutations/`.
 
 ## Lokaler Weg für `# verify: full-smoke`-Fälle auf macOS
 
+**Eine Hilfe ohne Anspruch.** Host dieses Sensors (`make mutate`, ebenso `make mutate-auswahl` und
+`make mutate-greift`) ist Linux; macOS ist dafür nicht getragen, Beleg-Ort ist CI auf frischem Klon
+(`AGENTS.md` §3.9). Der Weg unten ist ein Umweg: ein Lauf darüber ist kein Beleg. Die Aussage
+betrifft die Dogfood-Läufer dieses Repos, nicht das Produkt-Binary — dessen Anforderungen
+([`LH-QA-03`](../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten),
+[`LH-QA-04`](../../spec/lastenheft.md#lh-qa-04--plattform-matrix)) bleiben unberührt. Ein Wächter für
+diese Deklaration existiert nicht: kein Test weist den Lauf auf einem Nicht-Linux-Host ab.
+
 Gemessen ist dieser Weg auf macOS (Docker über Colima). Auf einem solchen Host läuft ein Fall mit
 `# verify: full-smoke` so:
 

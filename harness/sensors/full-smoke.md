@@ -10,6 +10,13 @@ gebootstrapptes Repo out-of-the-box grün fährt (die Nutzer-Sicht, die
 [`make smoke`](smoke.md) mit seinen getrennten Schritten nicht nimmt). Host-Docker + ggf.
 Netz-Pull → nicht in `make gates`; gehört an DoD-Verify/CI/Wellen-Closure.
 
+**Host.** Host dieses Laufs ist Linux; macOS ist dafür nicht getragen, Beleg-Ort ist CI auf frischem
+Klon (`AGENTS.md` §3.9). `make full-smoke-host` und GNU-`sed` vorn im `PATH` sind Hilfen ohne
+Anspruch: ein Lauf darüber ist kein Beleg. Das betrifft die Dogfood-Läufer dieses Repos, nicht das
+Produkt-Binary ([`LH-QA-03`](../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten),
+[`LH-QA-04`](../../spec/lastenheft.md#lh-qa-04--plattform-matrix) bleiben unberührt). Ein Wächter für
+diese Deklaration existiert nicht.
+
 Die Stilllegungs-Kanten `open → done` und `next → done` des emittierten `make slice-mv` misst die
 Stufe `slice_mv_kanten_nach_done_im_ziel` an einem frisch emittierten sprachlosen Ziel; was sie
 hält und was der Dogfood-Wächter daneben hält, steht in [`slice-mv.md`](slice-mv.md) §Kanten
