@@ -54,7 +54,7 @@ Die Archivierung selbst trägt keine eigene `LH-*`-Anforderung (`grep -in archiv
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -111,7 +111,7 @@ DoD vollständig, `make gates` grün, Review- und Verifier-Report liegen vor, Cl
   (Colima), Image warm, drei Einzelmessungen ohne Abwechseln: 417,8 s und 425,5 s mit Host-`unzip`, 360,1 s mit der Leseprobe im Container. Keine Deutung;
   die Reihenfolge der Läufe ist nicht ausgeglichen, die Zahlen tragen keinen Vergleich. Ungemessen: kalter Cache, CI (Linux). Die CI-Probe-Wanduhr
   (896 s, 15 Fälle) ist eine andere Größe.
-- **Steering-Loop-Eintrag:** neuer Sensor, **verkörpert**: die Rückleseprobe `pruefeArchiv` (liegt in `internal/archive/anwenden.go`, Zusage: das Zip ist
+- **Steering-Loop-Eintrag:** neuer Sensor, **verkörpert**: die Rückleseprobe `pruefeArchiv` (steht in `internal/archive/anwenden.go`, ohne Herkunfts-Anker: kein 3×-Übertritt, kein `liegt in`-Feld; Zusage: das Zip ist
   *lesbar und byte-gleich zum Zeitpunkt vor dem Kürzen*, nicht dauerhaft) mit dem Wächter `TestAnwendenBrichtVorDemKuerzenAb`, dem Mutations-Fall 771
   und den E2E-Zähnen 772/773. Keine Regel-Prosa: kein Beobachtungs-Eintrag erreichte mit diesem Slice 3×. **Grenzen, benannt:** `archiv_gueltig`
   hält keine Byte-Gleichheit; die dritte Stelle hat keinen Mutationsfall; 772/773 sind in der CI-Probe nicht in der Auswahl (lokal über `make mutate`
@@ -133,7 +133,7 @@ DoD vollständig, `make gates` grün, Review- und Verifier-Report liegen vor, Cl
 - **Risiken aus §6:** (1) Dateisystem-Defekt nach der Probe — **entfallen:** die Zusage ist „lesbar und byte-gleich vor dem Kürzen", nicht Dauerhaftigkeit;
   so im Doc-Kommentar. (2) Fall pinnt die Ursache grob — **nicht eingetreten** für 772/773 (gezielt gepinnt); der Plan-Ausgang *weiter offen* gilt für
   die Klasse: `BEO-ALL/full-smoke-fall-expect-pinnt-nicht-die-ursache` bleibt offen, Zähler 2.
-- **Drei Paarungen:** —
+- **Drei Paarungen:** geprüft am 2026-10-20, nach dem `git mv`. (a) Anker: kein `liegt in`-Feld in §7, nichts zu prüfen. (b) Folge-Slice: keiner genannt. (c) Register: die vier genannten `BEO-ALL/`-Verzeichnisse (`repo-werkzeug-fuehrt-host-abhaengigkeit-ein`, `waechter-satz-stelle-ohne-mutationsfall-und-ohne-byte-gleichheit`, `full-smoke-fall-expect-pinnt-nicht-die-ursache`, `neuer-waechter-ohne-mutations-fall`) existieren und tragen je ein nicht leeres `evidence/`; `make register-ausgang` → `270 Eintraege, 78 ueber der Schwelle, 0 Befund(e)`. Zweite Hälfte (c) über das ganze Register: ein Verzeichnis ohne Beleg, namentlich `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen behauptet, gehört nicht zu diesem Slice.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
