@@ -4,9 +4,9 @@
 
 **Welle:** ohne Welle
 
-**Bezug:** `LH-QA-03` (Host braucht nur `git`, `docker`, GNU `make`), `LH-QA-02` (Reproduzierbarkeit), `AGENTS.md` §3.9.
+**Bezug:** [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (Host braucht nur `git`, `docker`, GNU `make`), [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (Reproduzierbarkeit), `AGENTS.md` §3.9.
 
-**Berührte Spec-Stellen:** `LH-QA-03`; der Anspruch an die Host-Plattform ist dort nicht ausdrücklich — Spec-Lücke, falls die Entscheidung *getragen* lautet.
+**Berührte Spec-Stellen:** [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten); der Anspruch an die Host-Plattform ist dort nicht ausdrücklich — Spec-Lücke, falls die Entscheidung *getragen* lautet.
 
 **Verantwortlich:** —
 
