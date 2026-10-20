@@ -18,7 +18,7 @@ Auslöser: Auftrag des Auftraggebers nach Verdikt V-1 ([`docs/reviews/2026-10-20
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** —
+**Verantwortlich:** dburkard
 
 **Autor:** Planner. **Datum:** 2026-10-20.
 
