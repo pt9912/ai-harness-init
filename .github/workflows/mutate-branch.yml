@@ -58,6 +58,19 @@ jobs:
         env:
           REF: ${{ github.ref_name }}
         run: make -s --no-print-directory mutate-branch SCHRITT=lauf >> "$GITHUB_OUTPUT"
+      # WARTEN: `make release-warten` laeuft einmal hier, nicht je Shard — `shard` hat
+      # `needs: plan`, also beginnt kein Gruen-Vorlauf (`make full-smoke` holt den Traeger
+      # des gepinnten Release) vor dem Ende dieses Schritts. Die Shards starten innerhalb von
+      # 2 s nebeneinander (Job-Zeiten zweier mutate-branch-Laeufe), ein Warten je Shard
+      # wuerde jeden einzeln bis zur Grenze zahlen; bei veroeffentlichtem Release kostet der
+      # Schritt einen Versuch (3 s Wanduhr lokal, `make release-warten`). Eigener Schritt,
+      # nicht Teil von `lauf`: dessen stdout geht nach $GITHUB_OUTPUT. Der Schritt urteilt
+      # nicht (Exit 0 auch nach der Grenze, harness/tools/release-warten.sh); das Urteil
+      # faellt im Gruen-Vorlauf der Shards. Ein Tip ohne Lauf wartet nicht.
+      # GRENZE: der Schritt belegt nur, dass ein Release abrufbar ist oder die Grenze
+      # erreicht war, nicht dass der Vorlauf danach gelingt.
+      - if: steps.lauf.outputs.laufen == 'true'
+        run: make release-warten
 
   shard:
     needs: plan
