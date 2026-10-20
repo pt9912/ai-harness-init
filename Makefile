@@ -52,7 +52,7 @@ TRAEGER_SHA256_WINDOWS_ARM64 ?= f87b07b42a627ecf476e43ca6fe8fd81b9961008a13c1189
 TRAEGER_CARRIER ?= .harness/state/bin/ai-harness-init
 export TRAEGER_TAG TRAEGER_SHA256_LINUX_AMD64 TRAEGER_SHA256_LINUX_ARM64 TRAEGER_SHA256_DARWIN_AMD64 TRAEGER_SHA256_DARWIN_ARM64 TRAEGER_SHA256_WINDOWS_AMD64 TRAEGER_SHA256_WINDOWS_ARM64 TRAEGER_CARRIER
 
-.PHONY: help gates record-gates test test-bats test-go test-go-pids-guard lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims register-ausgang history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp freshness-kotlin freshness-digest mutate mutate-greift slice-mv archive-welle traeger-fetch release-warten tap-check tap-nachzug vendor-baseline
+.PHONY: help gates record-gates test test-bats test-go test-go-pids-guard lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims register-ausgang history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp freshness-kotlin freshness-digest mutate mutate-greift slice-mv archive-welle traeger-fetch release-warten traeger-pins-check tap-checktap-nachzug vendor-baseline
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
@@ -609,6 +609,20 @@ traeger-fetch: ## Traeger aus dem gepinnten Release nachholen (braucht Netz, Tra
 # Braucht Netz an genau diesem Aufruf; Transport im Bild von traeger-fetch.
 release-warten: ## Begrenzt warten, bis das gepinnte Release abrufbar ist (braucht Netz, urteilt nicht) — NICHT in gates
 	@bash harness/tools/release-warten.sh
+
+# Haelt die sechs TRAEGER_SHA256_*-Pins dieses Makefile gegen die SHA256SUMS des
+# veroeffentlichten Releases (LH-QA-02, ADR-0058, ADR-0059): Pin gegen Publikation, nicht
+# Bau gegen Bau. Exit des Skripts: 0 gleich, 1 ein Pin weicht ab (die Meldung nennt die
+# Plattform), 2 nicht ausfuehrbar (Asset nicht abrufbar, Eintrag oder Pin fehlt); make
+# selbst endet bei jedem Fehlschlag mit 2. Die Klasse des Skripts steht in der letzten
+# stderr-Zeile DES SKRIPTS "traeger-pins-check: Exit <N>" (bei Exit 0 fehlt sie; bei
+# make <ziel> aus dem Wurzelverzeichnis ist sie die vorletzte Zeile der Ausgabe, GNU Make
+# schreibt danach seine eigene Meldung). Nicht zugesagt ist sie bei einem Signal und bei
+# nicht beschreibbarer stderr. Braucht Netz an genau diesem Aufruf, Transport im Bild
+# von traeger-fetch. KEIN Gate und in keiner Prerequisite-Kette. Tag und die sechs Pins
+# reisen als exportierte Variablen; TAG=<tag> waehlt einen anderen Tag als TRAEGER_TAG.
+traeger-pins-check: ## Traeger-Pins gegen die SHA256SUMS des Tags halten (TAG=<tag>, Default TRAEGER_TAG, braucht Netz, Transport im gepinnten Bild) — NICHT in gates
+	@bash harness/tools/traeger-pins-check.sh
 
 # Haelt die Formel am Kopf des Default-Branch des Tap byte-genau gegen das Asset des
 # Tags (ADR-0064 Festlegung 1 und 2): Exit 0 gleich oder Vorab-Tag, 1 Formel-Unterschied,

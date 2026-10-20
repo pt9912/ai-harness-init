@@ -178,7 +178,7 @@ structure:
 # span-report, hook-overhead, agent-watch, slice-mv,
 # archive-welle, vendor-baseline, regelwerk-check, baseline-freshness,
 # history-range-guard, adr-immutable, doc-immutable, doc-commits, record-gates,
-# commit-msg-check, traeger-fetch, release-warten, tap-check, tap-nachzug,
+# commit-msg-check, traeger-fetch, release-warten, traeger-pins-check, tap-check, tap-nachzug,
 # freshness-kotlin, freshness-digest.
 #
 # (b) reine Utility-/Advisory-Ziele ohne Prosa-Erwaehnung — jedes traegt seinen
@@ -221,6 +221,7 @@ targets:
     - commit-msg-check
     - traeger-fetch
     - release-warten
+    - traeger-pins-check
     - tap-check
     - tap-nachzug
     - hooks-install
