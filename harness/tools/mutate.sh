@@ -1222,8 +1222,15 @@ plan_self_contained() {
 # Bewusst grosszuegig: ein Haenger ist UNBEGRENZT, also loest ihn jede endliche Schranke aus,
 # waehrend eine knappe Schranke einen langsamen Runner roetet — und ein Sensor, der ohne
 # Befund rot wird, senkt seine eigene Aussage (LH-QA-01).
-# NICHT gedeckt: ein Fall, der langsamer als die Schranke, aber endlich ist. Heute gibt es
-# keinen; wer den ersten schreibt, faellt hierunter.
+# NICHT gedeckt: ein Fall, der langsamer als die Schranke, aber endlich ist. Die Schranke
+# trifft Faelle des Modus `full-smoke` im CI-Worker: im Worker der Mutations-Probe auf
+# `mutate/…-7cc9f961` riss Fall 445 (`445-traeger-meldung-nennt-die-sprachen-nicht-mehr-unter-verfuegbar`)
+# sie — Worker Status 137, "seit 900 s hat kein Worker einen Fall gezogen oder abgeschlossen",
+# der Fall hat kein Ergebnis —, Fall 444 (derselbe Modus) brauchte im selben Lauf 862 s. Lokal
+# liegt die laengste Stille von `full-smoke` bei 148,97 s (s. oben), in der CI nahe an der
+# Schranke und darueber. `mutate-ergebnis.txt` fuehrt einen Fall ohne Beleg als `FEHLT`.
+# Der Wert 900 bleibt; kein Sensor haelt diese Aussage gegen die CI-Laufzeit, sie steht als
+# Messung dieses einen Laufs.
 # Die Vorgabe steht HIER und nicht im Makefile — dieselbe Begruendung wie bei MUTATE_JOBS:
 # eine zweite Vorgabe waere eine zweite Quelle.
 # Sensor: test/mutate-driver.bats „driver: ein Lauf ohne Fortschritt endet an der

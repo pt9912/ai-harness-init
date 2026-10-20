@@ -319,7 +319,11 @@ Wächter
 meldet liegen gebliebene `mutate/*`-Branches oder eine Ergebnisdatei, die nach `main` gelangt; das
 Aufräumen ist Arbeit des Verifiers. Den Push des Ergebnis-Schritts und das Überspringen des
 Ergebnis-Tips hält der Test über einem `git`-Stub (Argumente des Push, Antwort auf
-`diff HEAD^ HEAD`), nicht über einem realen Remote.
+`diff HEAD^ HEAD`), nicht über einem realen Remote. Der Job `plan` fährt nach `lauf` als
+eigenen Schritt `make release-warten` (einmal, vor den Shards; urteilt nicht, Exit 0 auch nach
+der Grenze); `test/mutate-auswahl.bats` hält diese Verdrahtung über der Workflow-Datei als Text,
+nicht die Wirkung gegen ein später veröffentlichtes Release — ein Tag-Push nach Ablauf der Grenze
+fällt im Grün-Vorlauf weiter mit 404 (Zeilen dazu: `docs/user/releasing.md`, Schritt 6).
 
 **Die Basis ist der Claim-Commit, nicht der Slice.** `git diff <Claim-Commit> HEAD` umfasst jeden
 Commit nach dem Claim, auch die anderer Rollen und Slices auf `main`. Die Fallmenge kann dadurch
