@@ -32,6 +32,7 @@ Auslöser: Auftrag des Auftraggebers nach Verdikt V-2 ([`docs/reviews/2026-10-20
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
+- Die Zeitschranke selbst (`STALL_SECONDS`, 900 s) bleibt unverändert — der Befund *Fall 445 riss die Schranke im Worker* steht als Beobachtung im Register (`BEO-ALL/mutate-zeitschranke-trifft-den-full-smoke-fall-in-der-ci`, 1×) und wartet auf die 3×-Schwelle; hier wird nur ein Kommentar auf das gemessene Verhalten gebracht.
 - Keine Änderung an `release-warten.sh` und seiner Grenze — die Möglichkeit ist so, wie sie steht, baubar (Verdikt V-2); ein anderes Maß wäre ein anderer Gegenstand.
 - Keine Behebung der benannten Grenze *Tag-Push nach Ablauf der Grenze* — sie bleibt; ihr Träger ist die Prozedur in `docs/user/releasing.md`, und die Pflichtzeile ist deren Teil.
 - Kein Nachholen der 9 Fälle von `v0.10.0` — der nächtliche `mutate`-Vollsweep holt sie nach; sie sind kein Gegenstand eines Plans.
@@ -42,7 +43,7 @@ Auslöser: Auftrag des Auftraggebers nach Verdikt V-2 ([`docs/reviews/2026-10-20
 
 - [ ] **L1 — Warte-Schritt im Worker-Vorlauf:** `.github/workflows/mutate-branch.yml` fährt `make release-warten` als **eigenen** Schritt (nicht innerhalb von `lauf`, dessen stdout nach `$GITHUB_OUTPUT` geht) vor dem Grün-Vorlauf. Den Ort — einmal im Job `plan` vor der Matrix oder je Shard — wählt der Slice nach Messung (Wartezeit bei veröffentlichtem Release, Shard-Startzeiten im `ci`-Log) und nennt Wahl und Messwert im Workflow-Kommentar; ein Warten je Shard bezahlt jeden Shard. Die Zusage nennt, was sie trägt: der Schritt urteilt nicht (Exit 0 auch nach der Grenze), das Urteil fällt weiter im Vorlauf.
 - [ ] **L2 — Wächter und Zahn:** `test/mutate-auswahl.bats` oder ein eigener Fall hält, dass der Schritt `make release-warten` im Workflow vor dem Vorlauf und getrennt von `lauf` steht (Text-Wächter über der Workflow-Datei); `test/mutations/<nächste freie Nummer>-mutate-branch-worker-ohne-release-warten.sh` nimmt den Schritt weg und färbt ihn rot; `make mutate-greift` grün, `MUTATE_CASES=<Nr>` einmal rot gesehen. Die Zusage nennt die Grenze: der Text-Wächter hält die Verdrahtung, **nicht** die Wirkung gegen ein unveröffentlichtes Release; die Wirkung belegt ein einmaliger Branch-Lauf (`mutate/<kennung>-<sha8>`) gegen einen nicht abrufbaren Tag mit `TRAEGER_WARTEN_GRENZE=0` im Log (`release-warten: GRENZE ERREICHT`), und nur dort — ist er nicht herstellbar, steht die Lücke in §7 benannt.
-- [ ] **L3 — Pflichtzeile in der Prozedur:** `docs/user/releasing.md` trägt im Schritt zur Meldung des vollzogenen Schnitts die Zeile, dass der Bericht die Mutations-Fälle **ohne Ergebnis** nennt (Zahl und Kommando, das sie liefert) und mit der benannten Lücke schließt oder die Probe nach der Publikation fährt; `harness/sensors/mutate.md` nennt den Warte-Schritt am Ort der Grenze. Ein Wächter existiert nicht für die Pflichtzeile: kein Sensor liest den Bericht gegen die Zeile; Träger ist der Release-Schnitt.
+- [ ] **L3 — Pflichtzeile in der Prozedur:** `docs/user/releasing.md` trägt im Schritt zur Meldung des vollzogenen Schnitts die Zeile, dass der Bericht die Mutations-Fälle **ohne Ergebnis** nennt (Zahl und Kommando, das sie liefert) und mit der benannten Lücke schließt oder die Probe nach der Publikation fährt; `harness/sensors/mutate.md` nennt den Warte-Schritt am Ort der Grenze. Ein Wächter existiert nicht für die Pflichtzeile: kein Sensor liest den Bericht gegen die Zeile; Träger ist der Release-Schnitt. Im selben Punkt: der Kommentar an `STALL_SECONDS` in `harness/tools/mutate.sh` (Satz „NICHT gedeckt: … Heute gibt es keinen") nennt das gemessene Verhalten — der CI-Lauf auf `mutate/…-7cc9f961` hatte einen Fall, der die 900-s-Schranke im Worker riss (Fall 445; Fall 444 brauchte 862 s); die Zusage nach `AGENTS.md` §3.6/§3.7 nennt Fälle und Messort im Indikativ, ohne Chronik, und ändert nicht den Wert. Ein Wächter existiert nicht: kein Sensor liest den Kommentar gegen die CI-Laufzeit.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -59,6 +60,7 @@ Auslöser: Auftrag des Auftraggebers nach Verdikt V-2 ([`docs/reviews/2026-10-20
 | `.github/workflows/mutate-branch.yml` | update | eigener Schritt `make release-warten`, Ortswahl im Kommentar — L1 |
 | `test/mutate-auswahl.bats` (oder eigener Fall) | update | Schritt steht vor dem Vorlauf und getrennt von `lauf` — L2 |
 | `test/mutations/<nächste freie Nummer>-mutate-branch-worker-ohne-release-warten.sh` | neu | Schritt entfernt, Wächter wird rot — L2 |
+| `harness/tools/mutate.sh` | update | Kommentar an `STALL_SECONDS` auf das gemessene Verhalten, Wert unverändert — L3 |
 | `docs/user/releasing.md`, `harness/sensors/mutate.md` | update | Pflichtzeile im Bericht-Schritt, Warte-Schritt am Ort der Grenze — L3 |
 
 ## 4. Trigger
