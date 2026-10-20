@@ -65,8 +65,9 @@ Die Schritt-Folge:
    geschnittenen Stand
    ([`ADR-0058`](../plan/adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
    Festlegung 2). Dass die gemessenen Digests die des Workflows sind, belegt
-   nach der Publikation `make traeger-fetch`: es hält das veröffentlichte
-   Asset gegen den Pin.
+   nach der Publikation für die Plattform des Aufrufers `make traeger-fetch`:
+   es hält das veröffentlichte Asset dieser Plattform gegen den Pin. Alle
+   sechs Pins hält `make traeger-pins-check` nach Schritt 5.
 
 3. **Die Assets gegen die Prüfsummen halten.**
    `bash harness/tools/release-sums.sh verify <dir>` — fehlt die
@@ -124,6 +125,30 @@ Die Schritt-Folge:
    --json body --jq .body` zeigt ihn. Der manuelle Weg —
    `gh release create <tag> <dir>/*` nach dem `verify`-Modus von Schritt 3 —
    fährt dieselbe Haltung vor der Publikation.
+
+   **Die sechs Pins gegen die Publikation halten.** Nach der Publikation, vor
+   der Meldung (Schritt 8): `make traeger-pins-check TAG=<tag>` holt die
+   `SHA256SUMS` des Tags im gepinnten Bild des Fetch (Netz an genau diesem
+   Aufruf), paart je Plattform den Dateinamen des Assets mit seinem Digest und
+   hält ihn gegen den `TRAEGER_SHA256_*`-Pin dieser Plattform im Makefile
+   (`harness/tools/traeger-pins-check.sh`, Vertrag in
+   [`harness/sensors/traeger-pins-check.md`](../../harness/sensors/traeger-pins-check.md)).
+   Ohne `TAG` gilt `TRAEGER_TAG`. Die Klasse ist der Exit des **Skripts**: **0**
+   alle sechs gleich (die Ausgabe beginnt mit `traeger-pins-check: gleich`),
+   **1** mindestens ein Pin weicht ab (je abweichende Plattform eine Zeile mit
+   `TRAEGER_SHA256_<PLATTFORM> weicht ab`, Pin und Digest der `SHA256SUMS`),
+   **2** nicht ausführbar (Tag fehlt oder in falscher Form, ein Pin ist nicht
+   gesetzt, die `SHA256SUMS` sind nicht abrufbar oder leer, ein Eintrag fehlt
+   oder steht mehrfach). Über `make` endet jeder Fehlschlag mit Prozess-Exit 2;
+   die Klasse des Skripts trägt die Zeile `traeger-pins-check: Exit <N>` (bei
+   Exit 0 fehlt sie), und GNU Make schreibt danach seine eigene Meldung
+   (`Error <n>` bzw. `Fehler <n>`). Der Fall `Exit 1` hat den Prozess-Exit 2.
+   *Grenze:* das Werkzeug hält Pin gegen Publikation, nicht den Bau gegen den
+   Bau des Release-Workflows und nicht die Menge der Assets (Schritt 3); es ist
+   kein Gate, und der Bindepunkt ist dieser Schritt der Prozedur, nicht
+   `make gates`. Der Wächter `test/traeger-pins-check.bats` hält die
+   Paarungs-Logik über einer nachgebauten `SHA256SUMS`, nicht den realen Pin;
+   den hält allein dieser Lauf am Release.
 
 6. **CI am Tag abwarten, bevor der Schnitt vollzogen gemeldet wird.**
    `gh run list --commit <tag-commit-sha>` nennt die Läufe am Tag-Commit;
@@ -311,8 +336,9 @@ Die Schritt-Folge:
    nachgebildete Schnittstelle; am realen Tap belegt ihn erst ein realer Nachzug.
 
 8. **Meldung des vollzogenen Schnitts.** Die Meldung geht erst, wenn
-   `make tap-check TAG=<tag>` (Schritt 7) mit Exit 0 endet, und sie trägt
-   dessen Ausgabezeile als Beleg. Die Meldung trägt die Stand-Form: Zustand
+   `make traeger-pins-check TAG=<tag>` (Schritt 5) und
+   `make tap-check TAG=<tag>` (Schritt 7) mit Exit 0 enden, und sie trägt
+   deren Ausgabezeilen als Beleg. Die Meldung trägt die Stand-Form: Zustand
    und Beleg als auflösbarer Anker (Tag, Asset-Menge, Prüfsummen, Läufe, die
    Zeile von `tap-check`), keine Chronik. Der Release-Text aus Schritt 5
    samt jeder Ergänzung trägt dieselbe Stand-Form mit den Belegen, die zum
