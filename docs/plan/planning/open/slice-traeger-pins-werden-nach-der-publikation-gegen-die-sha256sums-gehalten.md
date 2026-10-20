@@ -44,7 +44,7 @@ Auslöser: Auftrag des Auftraggebers nach Verdikt V-1 ([`docs/reviews/2026-10-20
 
 - [ ] **L1 — Werkzeug:** `make traeger-pins-check` (`TAG=<tag>`, Default `TRAEGER_TAG`) holt die `SHA256SUMS` über den Transport von `traeger-fetch` (gepinntes Bild, Netz an genau diesem Aufruf), paart je Plattform Dateiname und Digest und vergleicht gegen die sechs `TRAEGER_SHA256_*`. Exit des Skripts 0 gleich, 1 Unterschied (nennt die Plattform), 2 nicht ausführbar (auch: Asset nicht abrufbar, Zeile fehlt); über `make` endet jeder Fehlschlag mit 2, die Klasse des Skripts steht in der letzten stderr-Zeile `traeger-pins-check: Exit <N>` ([`AGENTS.md`](../../../../AGENTS.md) §3.6, letztes Paar — die Zusage ist an `make traeger-pins-check` gemessen).
 - [ ] **L2 — Wächter über der Paarung:** `test/traeger-pins-check.bats` hält Paarung (Name gegen Digest, nicht Position) und die drei Exit-Klassen über einer Fixture-`SHA256SUMS`; `test/mutations/<nächste freie Nummer>-traeger-pins-paarung-nach-position.sh` paart nach Zeilenposition statt Name und färbt den Test rot; `make mutate-greift` grün, `MUTATE_CASES=<Nr>` einmal rot gesehen. Die Zusage nennt, was sie hält: die Paarungs-Logik, **nicht** den realen Pin — den hält L3.
-- [ ] **L3 — Rot an der realen Quelle:** Lauf am echten Release `v0.10.0` unverfälscht Exit 0; in einem Probe-Klon eine **Nicht-Host-Plattform** des `Makefile` (nicht `darwin-arm64`) verfälscht, Lauf endet rot und nennt genau diese Plattform; beide Läufe samt Ausgabe in §7. Bindepunkt: `docs/user/releasing.md` nach Schritt 5 vor dem Bericht, Satz in Schritt 2 („belegt nach der Publikation `make traeger-fetch`") auf die Plattform des Aufrufers eingeschränkt, Zeile in der Werkzeuge-Tabelle von `harness/README.md` (`kein Gate`) und `harness/sensors/traeger-pins-check.md`. Der Rot-Beleg ist eine Handlung des Laufs, kein Sensor: kein Wächter hält den realen Lauf; Träger ist der Release-Schnitt, der die Prozedur fährt.
+- [ ] **L3 — Rot an der realen Quelle:** Lauf am echten Release `v0.10.0` unverfälscht Exit 0; in einem Probe-Klon eine **Nicht-Host-Plattform** des `Makefile` (nicht `darwin-arm64`) verfälscht, Lauf endet rot und nennt genau diese Plattform; beide Läufe samt Ausgabe in §7. Bindepunkt: `docs/user/releasing.md` nach Schritt 5 vor dem Bericht, Satz in Schritt 2 („belegt nach der Publikation `make traeger-fetch`") auf die Plattform des Aufrufers eingeschränkt, Zeile in der Werkzeuge-Tabelle von `harness/README.md` (`kein Gate`) und `harness/sensors/traeger-pins-check.md` <!-- d-check:ignore (der Pfad entsteht mit dem Lauf des Slice) -->. Der Rot-Beleg ist eine Handlung des Laufs, kein Sensor: kein Wächter hält den realen Lauf; Träger ist der Release-Schnitt, der die Prozedur fährt.
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -58,11 +58,11 @@ Auslöser: Auftrag des Auftraggebers nach Verdikt V-1 ([`docs/reviews/2026-10-20
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `harness/tools/traeger-pins-check.sh` | neu | Holen, Paaren, Vergleichen; Transport und Bild-Pin wie `traeger-fetch.sh` gelesen, nicht zweimal geführt — L1 |
+| `harness/tools/traeger-pins-check.sh` <!-- d-check:ignore (der Pfad entsteht mit dem Lauf des Slice) --> | neu | Holen, Paaren, Vergleichen; Transport und Bild-Pin wie `traeger-fetch.sh` gelesen, nicht zweimal geführt — L1 |
 | `Makefile` | update | Ziel `traeger-pins-check` mit Kommentarblock (Exit-Aussage am `make`-Aufruf), Skript in die `shell-lint`-Liste — L1 |
 | `test/traeger-pins-check.bats` | neu | Paarung, Exit 0/1/2, Plattformname in der Meldung — L2 |
 | `test/mutations/<nächste freie Nummer>-traeger-pins-paarung-nach-position.sh` | neu | Paarung nach Position, Test wird rot — L2 |
-| `docs/user/releasing.md`, `harness/README.md`, `harness/sensors/traeger-pins-check.md` | update / update / neu | Bindepunkt, Werkzeuge-Zeile, Vertrag und Grenze — L3 |
+| `docs/user/releasing.md`, `harness/README.md`, `harness/sensors/traeger-pins-check.md` <!-- d-check:ignore (der Pfad entsteht mit dem Lauf des Slice) --> | update / update / neu | Bindepunkt, Werkzeuge-Zeile, Vertrag und Grenze — L3 |
 
 ## 4. Trigger
 
