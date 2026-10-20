@@ -9,6 +9,7 @@
 # `archive-welle ok`, Stubs stehen, das Archiv liegt an seinem Pfad — und ist nicht zu
 # oeffnen.
 #
+# Die Stufe "Archivierung im Ziel" in harness/tools/full-smoke.sh muss das Archiv lesen
 # (archiv_gueltig: `unzip -t` und `unzip -lq` im BATS_IMAGE) und mit der Meldung enden, dass
 # es die Leseprobe nicht besteht — ueber dem Traeger aus dem Arbeitsbaum, im Aufruf
 # `make archive-welle`.
