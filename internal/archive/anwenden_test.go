@@ -653,3 +653,118 @@ func baumListe(t *testing.T, root string) []string {
 	sort.Strings(out)
 	return out
 }
+
+// TestAnwendenBrichtVorDemKuerzenAb misst die Zusage der Rueckleseprobe: ein
+// Archiv, das nach dem Schreiben nicht lesbar oder nicht byte-gleich zu seinen
+// Quellen ist, beendet den Lauf, BEVOR ein Original zum Stub gekuerzt oder ein
+// Review-Report geloescht wird. Je Fall steht die Ursache im Fehlertext (Archiv
+// und, wo es einen gibt, der Eintrag); gemessen wird der Baum nach dem Abbruch:
+// die Volltexte stehen, der Report liegt, es gab weder `rm` noch `add` noch einen
+// zweiten Commit. Das Zip selbst bleibt liegen. Gegenbeispiel: den Aufruf der
+// Probe in inhaltsSchritt wirkungslos machen (test/mutations/771).
+func TestAnwendenBrichtVorDemKuerzenAb(t *testing.T) {
+	const (
+		done   = "docs/plan/planning/done/welle-10/"
+		zipRel = done + archivNameTest
+		erster = done + "slice-100-a.md"
+	)
+	faelle := []struct {
+		name   string
+		defekt func(t *testing.T, root, zielRel string, pfade []string) error
+		want   []string
+	}{
+		{"abgeschnitten", func(t *testing.T, root, zielRel string, pfade []string) error {
+			if err := archive.Zip(root, zielRel, pfade); err != nil {
+				return err
+			}
+			p := filepath.Join(root, filepath.FromSlash(zielRel))
+			b, err := os.ReadFile(p)
+			if err != nil {
+				return err
+			}
+			return os.WriteFile(p, b[:len(b)/2], 0o644)
+		}, []string{"Archiv " + zipRel + " nicht lesbar"}},
+		{"eintrag-bytes-verfaelscht", func(t *testing.T, root, zielRel string, pfade []string) error {
+			if err := archive.Zip(root, zielRel, pfade); err != nil {
+				return err
+			}
+			p := filepath.Join(root, filepath.FromSlash(zielRel))
+			b, err := os.ReadFile(p)
+			if err != nil {
+				return err
+			}
+			// Der erste lokale Header: Namenslaenge bei 26, Extra-Laenge bei 28,
+			// danach beginnen die Daten des ersten Eintrags.
+			start := 30 + int(b[26]) + int(b[27])<<8 + int(b[28]) + int(b[29])<<8
+			b[start] ^= 0xFF
+			b[start+1] ^= 0xFF
+			return os.WriteFile(p, b, 0o644)
+		}, []string{"Archiv " + zipRel + ", Eintrag " + erster + " nicht lesbar"}},
+		{"eintrag-gueltig-aber-andere-bytes", func(t *testing.T, root, zielRel string, pfade []string) error {
+			f, err := os.Create(filepath.Join(root, filepath.FromSlash(zielRel)))
+			if err != nil {
+				return err
+			}
+			zw := zip.NewWriter(f)
+			for i, rel := range pfade {
+				w, err := zw.Create(rel)
+				if err != nil {
+					return err
+				}
+				inhalt := lesen(t, root, rel)
+				if i == 0 {
+					inhalt = "VERFAELSCHT\n"
+				}
+				if _, err := w.Write([]byte(inhalt)); err != nil {
+					return err
+				}
+			}
+			if err := zw.Close(); err != nil {
+				return err
+			}
+			return f.Close()
+		}, []string{"Archiv " + zipRel + ", Eintrag " + erster + ": weicht von der Quelle ab"}},
+		{"eintrag-fehlt", func(t *testing.T, root, zielRel string, pfade []string) error {
+			return archive.Zip(root, zielRel, pfade[:len(pfade)-1])
+		}, []string{"Archiv " + zipRel + ": Eintrag docs/reviews/2026-05-05-slice-100-runde-1.md fehlt"}},
+	}
+	for _, fall := range faelle {
+		t.Run(fall.name, func(t *testing.T) {
+			root := baueBaum(t)
+			b := einsammeln(t, root, "welle-10")
+			g := &gitMitschreiber{root: root, beobachte: erster, zipPfad: zipRel}
+			t.Cleanup(archive.ZipSchreiberErsetzen(func(r, z string, p []string) error {
+				return fall.defekt(t, r, z, p)
+			}))
+			var aus bytes.Buffer
+
+			err := archive.Anwenden(root, b, indexDateien(t, root), g, &aus)
+
+			if err == nil {
+				t.Fatal("defektes Archiv: want Fehler, got nil — die Rueckleseprobe laeuft nicht")
+			}
+			for _, teil := range append(fall.want, "Abbruch nach Commit 1") {
+				if !strings.Contains(err.Error(), teil) {
+					t.Errorf("Fehlertext nennt %q nicht:\n%v", teil, err)
+				}
+			}
+			if got := lesen(t, root, erster); got != volltextSlice100 {
+				t.Errorf("das Original ist gekuerzt, obwohl das Archiv defekt ist:\n%q", got)
+			}
+			if _, err := os.Stat(filepath.Join(root, "docs", "reviews", "2026-05-05-slice-100-runde-1.md")); err != nil {
+				t.Errorf("der Review-Report ist geloescht, obwohl das Archiv defekt ist: %v", err)
+			}
+			if len(g.commits) != 1 || len(g.addPfade) != 0 {
+				t.Errorf("%d Commit(s), %d gestagte Pfade, want 1 und 0 — nach der Probe darf nichts mehr laufen", len(g.commits), len(g.addPfade))
+			}
+			for _, r := range g.rufe {
+				if r == "rm" {
+					t.Error("der Lauf hat die Review-Reports geloescht, obwohl das Archiv defekt ist")
+				}
+			}
+			if _, err := os.Stat(filepath.Join(root, filepath.FromSlash(zipRel))); err != nil {
+				t.Errorf("das defekte Zip liegt nicht mehr an seinem Pfad: %v", err)
+			}
+		})
+	}
+}

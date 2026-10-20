@@ -2,6 +2,7 @@ package archive
 
 import (
 	"archive/zip"
+	"bytes"
 	"errors"
 	"fmt"
 	"io"
@@ -181,7 +182,19 @@ func inhaltsSchritt(root string, b Bestand, dateien []string, vorlagen string, u
 		imArchiv = append(imArchiv, u.Neu)
 	}
 	imArchiv = append(imArchiv, b.Reviews...)
-	if err := Zip(root, zipRel, imArchiv); err != nil {
+	if err := schreibeZip(root, zipRel, imArchiv); err != nil {
+		return err
+	}
+
+	// ZUSAGE: das Archiv ist gelesen und byte-gleich zu seinen Quellen, BEVOR ein
+	// Original zum Stub gekuerzt oder ein Review-Report geloescht wird. Bei einem
+	// Befund endet der Lauf hier: kein Stub geschrieben, nichts geloescht, nichts
+	// gestagt, kein Commit 2 — auf Platte bleibt das defekte Zip an seinem Pfad
+	// liegen (der Rueckweg aus NachCommit1Fehler raeumt es). Die Zusage gilt fuer den
+	// Zeitpunkt der Probe, nicht fuer die Haltbarkeit der Datei danach.
+	// Gedeckt von TestAnwendenBrichtVorDemKuerzenAb;
+	// test/mutations/771-archiv-rueckleseprobe-ausgehebelt.sh macht die Probe wirkungslos.
+	if err := pruefeArchiv(root, zipRel, imArchiv); err != nil {
 		return err
 	}
 
@@ -344,6 +357,61 @@ func Zip(root, zielRel string, pfade []string) error {
 	}
 	if err := f.Close(); err != nil {
 		return fmt.Errorf("%s schliessen: %w", zielRel, err)
+	}
+	return nil
+}
+
+// schreibeZip ist der Schreibpunkt des Archivs; der Test ersetzt ihn, um zwischen
+// Schreiben und Rueckleseprobe ein defektes Zip zu legen (export_test.go).
+var schreibeZip = Zip
+
+// pruefeArchiv oeffnet das geschriebene Zip erneut, liest jeden Eintrag bis zum
+// Ende (der CRC-Vergleich liegt am Ende des Lesens) und haelt Namen und Bytes gegen
+// `pfade`, die repo-relativen Quellen, die das Zip aufnehmen sollte. Befund: das
+// Zip laesst sich nicht oeffnen, ein Eintrag ist nicht lesbar, traegt einen fremden
+// oder doppelten Namen oder andere Bytes als seine Quelle, oder eine Quelle fehlt.
+// Jede Meldung nennt das Archiv und, wo es einen gibt, den Eintrag.
+func pruefeArchiv(root, zipRel string, pfade []string) error {
+	zr, err := zip.OpenReader(filepath.Join(root, filepath.FromSlash(zipRel)))
+	if err != nil {
+		return fmt.Errorf("Archiv %s nicht lesbar: %w", zipRel, err)
+	}
+	defer func() { _ = zr.Close() }()
+
+	erwartet := make(map[string]bool, len(pfade))
+	for _, p := range pfade {
+		erwartet[filepath.ToSlash(p)] = true
+	}
+	gesehen := make(map[string]bool, len(pfade))
+	for _, f := range zr.File {
+		if !erwartet[f.Name] {
+			return fmt.Errorf("Archiv %s, Eintrag %s: gehoert nicht zu den Quellen", zipRel, f.Name)
+		}
+		if gesehen[f.Name] {
+			return fmt.Errorf("Archiv %s, Eintrag %s: doppelt", zipRel, f.Name)
+		}
+		gesehen[f.Name] = true
+		rc, err := f.Open()
+		if err != nil {
+			return fmt.Errorf("Archiv %s, Eintrag %s nicht lesbar: %w", zipRel, f.Name, err)
+		}
+		im, err := io.ReadAll(rc)
+		_ = rc.Close()
+		if err != nil {
+			return fmt.Errorf("Archiv %s, Eintrag %s nicht lesbar: %w", zipRel, f.Name, err)
+		}
+		quelle, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(f.Name)))
+		if err != nil {
+			return fmt.Errorf("Archiv %s, Eintrag %s: Quelle nicht lesbar: %w", zipRel, f.Name, err)
+		}
+		if !bytes.Equal(im, quelle) {
+			return fmt.Errorf("Archiv %s, Eintrag %s: weicht von der Quelle ab", zipRel, f.Name)
+		}
+	}
+	for _, p := range pfade {
+		if !gesehen[filepath.ToSlash(p)] {
+			return fmt.Errorf("Archiv %s: Eintrag %s fehlt", zipRel, filepath.ToSlash(p))
+		}
 	}
 	return nil
 }
