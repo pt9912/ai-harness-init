@@ -151,20 +151,19 @@ build: ## Go-Binary cross-compilieren (Dockerfile build-Stage, gepinntes Image) 
 #
 # BYTE-IDENTISCH, ABSICHTLICH (slice-048, LH-QA-04): kein TARGET_OS/TARGET_ARCH hier —
 # die build-Stage kompiliert dann fuer die Plattform des Build-Images (heute: Linux),
-# nicht fuer den Host. Auf einem Linux-Host faellt das zusammen; auf macOS/Windows nicht
-# (Docker baut dort ohnehin nie fuer den Host-Kernel) — `smoke`/`full-smoke` sind dort
-# LT LH-QA-04 nicht als grün zugesagt. Fuer einen lokal LAUFFAEHIGEN Smoke auf so einem
-# Host: `artifact-host` + `make smoke-host`/`full-smoke-host` (additiv, ruehrt dieses
-# Ziel nicht an).
+# nicht fuer den Host. Auf einem Linux-Host faellt das zusammen; der Host der
+# Host-Laeufer ist Linux (AGENTS.md §3.9). `artifact-host` + `make smoke-host`/`full-smoke-host` bauen und
+# fahren fuer die Plattform des Hosts — Hilfe ohne Anspruch, ein Lauf darueber ist kein
+# Beleg (additiv, ruehrt dieses Ziel nicht an).
 artifact: build ## Natives Release-Binary auf den Host ziehen (DEST=<dir>) — für die Smokes, Docker-only
 	@test -n "$(DEST)" || { echo "artifact: DEST=<dir> ist Pflicht (Zielverzeichnis)"; exit 2; }
 	@bash harness/tools/artifact-copy.sh ai-harness-init:build "$(DEST)" ai-harness-init
 
 # WIE `artifact`, aber fuer den HOST cross-kompiliert (wie `host-bin`) statt den
-# byte-identischen Default-Pfad zu nehmen (LH-QA-04, s. o.) — additiv, fuer lokale
-# Smokes auf einem Host, dessen Kernel/Architektur vom Docker-Build-Image abweicht
-# (macOS, Windows, ein abweichendes CPU-Arch). Rührt `artifact`/`build` nicht an.
-artifact-host: ## Wie artifact, aber fuer den HOST cross-kompiliert (DEST=<dir>) — additiv, für lokale Smokes auf Nicht-Linux-Hosts
+# byte-identischen Default-Pfad zu nehmen (LH-QA-04, s. o.) — additiv. Hilfe ohne
+# Anspruch: ein Lauf darueber ist kein Beleg (AGENTS.md §3.9); kein Sensor haelt diesen
+# Text. Rührt `artifact`/`build` nicht an.
+artifact-host: ## Wie artifact, aber fuer den HOST cross-kompiliert (DEST=<dir>) — Hilfe ohne Anspruch, AGENTS.md §3.9
 	@test -n "$(DEST)" || { echo "artifact-host: DEST=<dir> ist Pflicht (Zielverzeichnis)"; exit 2; }
 	docker build --build-arg GO_VERSION=$(GO_VERSION) \
 		--build-arg TARGET_OS=$(HOST_OS) --build-arg TARGET_ARCH=$(HOST_ARCH) \
@@ -218,10 +217,10 @@ smoke: ## Emit-Smoke: Doc-Gate in tmp-Repo emittieren + emittiertes docs-check r
 	@GO_VERSION='$(GO_VERSION)' bash harness/tools/smoke.sh
 
 # WIE `smoke`, aber mit einem fuer den HOST cross-kompilierten Binary (`artifact-host`
-# statt `artifact`) — additiv, LH-QA-04/slice-048 unberuehrt (s. `artifact`). Fuer einen
-# lokal LAUFFAEHIGEN Smoke auf einem Host, dessen Kernel/Architektur vom Docker-Build-
-# Image abweicht (macOS, Windows, abweichendes CPU-Arch).
-smoke-host: ## Wie smoke, mit einem fuer den HOST cross-kompilierten Binary — additiv, für Nicht-Linux-Devhosts
+# statt `artifact`) — additiv, LH-QA-04/slice-048 unberuehrt (s. `artifact`). Hilfe ohne
+# Anspruch: ein Lauf darueber ist kein Beleg (AGENTS.md §3.9); kein Sensor haelt diesen
+# Text.
+smoke-host: ## Wie smoke, mit einem fuer den HOST cross-kompilierten Binary — Hilfe ohne Anspruch, AGENTS.md §3.9
 	@SMOKE_ARTIFACT_TARGET=artifact-host GO_VERSION='$(GO_VERSION)' bash harness/tools/smoke.sh
 
 # Bootstrappt ein tmp-Repo und faehrt dort den zusammengefuehrten `make gates`
@@ -232,7 +231,7 @@ full-smoke: ## Voll-E2E: Bootstrap in tmp-Repo -> dort make gates out-of-the-box
 
 # WIE `full-smoke`, aber mit einem fuer den HOST cross-kompilierten Binary — additiv,
 # LH-QA-04/slice-048 unberuehrt (s. `artifact`/`smoke-host`).
-full-smoke-host: ## Wie full-smoke, mit einem fuer den HOST cross-kompilierten Binary — additiv, für Nicht-Linux-Devhosts
+full-smoke-host: ## Wie full-smoke, mit einem fuer den HOST cross-kompilierten Binary — Hilfe ohne Anspruch, AGENTS.md §3.9
 	@SMOKE_ARTIFACT_TARGET=artifact-host GO_VERSION='$(GO_VERSION)' bash harness/tools/full-smoke.sh
 
 # Die Abdeckungs-Tabelle liest den TEXT von harness/tools/full-smoke.sh — kein Docker,
