@@ -1,0 +1,2 @@
+**Vorgang:** slice-traeger-pins-werden-nach-der-publikation-gegen-die-sha256sums-gehalten
+**Fund:** Der Verifier musste für die bewussten Brüche auf eine Kopie unter `$HOME` ausweichen: Docker/colima teilt `/private/tmp` nicht; ein erster Versuch dort lief gar nicht und wurde nicht als grün gewertet. Dieselbe Ursache wie oben (der Daemon sieht den Scratchpad-Baum nicht), anderer Verbraucher: eine Arbeitskopie für die Mutations-Probe statt einer Message-Datei.

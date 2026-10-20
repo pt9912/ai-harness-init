@@ -16,3 +16,10 @@ gegen ihre reale Quelle; Träger bleibt der Lauf, der den Wächter schreibt.
 `full-smoke`-Stufe in CI. Der geplante Kopplungs-Sensor deckt sie nicht und muss es nicht (Verdikt `2026-10-09-welle-kotlin-skelett-architect-verdikt`, B-5).
 
 **Unterklasse Pin des realen `Makefile` vor der Publikation:** vor der Publikation ist kein Sensor möglich (das Asset existiert nicht); nach ihr ist ein Sensor benannt (Verdikt `2026-10-20-welle-sprachprofile-java-python-csharp-architect-verdikt`, V-1). Ausgang *geplant*: `slice-traeger-pins-werden-nach-der-publikation-gegen-die-sha256sums-gehalten` (Auftrag des Auftraggebers nach V-1).
+
+**Stand der Unterklasse *Pin des realen `Makefile` nach der Publikation*:** der Sensor steht — `make traeger-pins-check`
+([`harness/tools/traeger-pins-check.sh`](../../../../../../harness/tools/traeger-pins-check.sh), Vertrag
+[`harness/sensors/traeger-pins-check.md`](../../../../../../harness/sensors/traeger-pins-check.md), Bindepunkt
+[`docs/user/releasing.md`](../../../../../../docs/user/releasing.md) nach Schritt 5), Lauf-Zahn an der realen Release `v0.10.0` gesehen. Die
+Zeile in `AGENTS.md` §3.6 steht **nicht**: Ausgang bleibt *geplant*, Adresse ist die Architect-Übergabe in §7 von
+`slice-traeger-pins-werden-nach-der-publikation-gegen-die-sha256sums-gehalten`; *verkörpert* gilt für die Unterklasse erst, wenn die Zeile steht. Träger des Laufs ist der Release-Schnitt, ein Wächter hält ihn nicht.
