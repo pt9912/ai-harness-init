@@ -8,7 +8,7 @@
 
 **Berührte Spec-Stellen:** — (die Aussage bleibt unter [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) und `LH-QA-04`, Vertrag unverändert; Träger ist die Hard Rule `AGENTS.md` §3.9).
 
-**Verantwortlich:** —
+**Verantwortlich:** dburkard
 
 **Autor:** Planner. **Datum:** 2026-10-20.
 
