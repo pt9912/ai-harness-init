@@ -6,7 +6,7 @@
 
 **Bezug:** [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (Host braucht nur `git`, `docker`, GNU `make`), [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (Reproduzierbarkeit), `AGENTS.md` §3.9.
 
-**Berührte Spec-Stellen:** [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten); der Anspruch an die Host-Plattform ist dort nicht ausdrücklich — Spec-Lücke, falls die Entscheidung *getragen* lautet.
+**Berührte Spec-Stellen:** — (die Aussage bleibt unter [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) und `LH-QA-04`, Vertrag unverändert; Träger ist die Hard Rule `AGENTS.md` §3.9).
 
 **Verantwortlich:** —
 
@@ -16,33 +16,42 @@
 
 ## 1. Ziel und Abgrenzung
 
-**Ziel:** Die Auftraggeber-Entscheidung, ob macOS eine getragene Host-Plattform ist, ist gefallen und vollzogen — im Code (A) oder in der Doku (B).
+**Ziel:** Die Auftraggeber-Entscheidung **Option B** ist vollzogen: macOS ist ausdrücklich **nicht** getragene Host-Plattform der Host-Läufer (`make mutate`, `make mutate-auswahl`, `make mutate-greift`, `make full-smoke`). Linux ist der Host dieser Läufer, CI der Beleg-Ort. Die bekannten Umwege (GNU-`sed` im `PATH`, `make artifact-host` / `make full-smoke-host`) bleiben als dokumentierte Hilfen stehen — ohne Anspruch.
 
-**Option A — die Läufer laufen auf macOS.** `mutate.sh` ohne Bash-4-Bruch, `mutate-auswahl.sh` ohne operandloses `paste`, die Fall-Skripte ohne GNU-`sed -i`, der Treiber wählt auf Darwin selbst `artifact-host`; dazu ein Wächter, der es hält. Vorteil: die Klasse verschwindet, lokale Closure-Belege ohne CI-Umweg (~50 Minuten). Nachteil: 762 Fall-Skripte und mehrere Läufer anfassen, ohne Mac-CI bleibt die Zusage ungewacht; jede neue GNU-Annahme bricht sie wieder.
+**Option A verworfen** (Auftraggeber): Läufer auf macOS reparieren (762 Fall-Skripte, mehrere Läufer) ist ein großer Eingriff ohne Mac-CI, der ungewacht bliebe; klein und ehrlich statt groß und unbelegt.
 
-**Option B — macOS ist ausdrücklich nicht getragen.** `harness/README.md` und `harness/sensors/mutate.md` nennen Linux als Host der Läufer und CI als Beleg-Ort; die Plattform-Aussage steht an einem Zielort (Hard Rule oder Spec-Stelle, Architect). Vorteil: klein, ehrlich, kein Code. Nachteil: der Dev-Host des Auftraggebers bleibt für die Läufer unbrauchbar, jeder Mutations-Beleg läuft über CI.
+**Schichten:** Doku-/Harness-Texte, höchstens zwei, kein Produkt-Code.
+
+**Wer schreibt was.**
+
+- **Architect** (Übergabe-Artefakt dieses Plans; eigener Commit, nur Architect-Artefakte, Rolle in der Message, `AGENTS.md` §3.8): die Plattform-Aussage als Norm — eine Ergänzung der Hard Rule `AGENTS.md` §3.9 (Docker-only): Host der Host-Läufer ist Linux, macOS ist dafür nicht getragen, Beleg-Ort CI; dazu der Auflösungs-Trigger oder *permanent* (`modul-13-quality-gates.md` §Hard Rule). Ob dazu ein Eintrag im Adaptions-Block nötig ist (Ergänzung ohne Einschränkung der Baseline ist keine Adaption, vgl. `MR-000`), entscheidet der Architect. Der Commit liegt **vor** der Implementer-Arbeit, damit deren Texte auf eine vorhandene Norm zeigen.
+- **Implementer** (Nicht-Norm-Texte; zeigt auf die Hard Rule, schreibt sie nicht ab): `harness/README.md` (Zeilen der betroffenen Targets in §Werkzeuge), `harness/sensors/mutate.md`, `harness/sensors/full-smoke.md`, und `docs/user/*`, soweit dort ein Host-Lauf dieser Läufer beschrieben ist (`grep -rn 'artifact-host\|full-smoke-host\|gnubin' docs/user harness/` nennt die Stellen). Inhalt: Linux als Host, CI als Beleg-Ort, Umwege als Hilfe ohne Anspruch.
+
+**Verhältnis zum Lastenheft.** `LH-QA-03` (Bootstrap-Laufzeit braucht nur git + docker) und `LH-QA-04` (Produkt-Binary erstklassig auf linux/macos/windows) betreffen das **Produkt**; die Aussage hier betrifft die **Dogfood-Läufer dieses Repos** und bleibt darunter. Der Vertrag ändert sich nicht, kein Change Request (`MR-015`/`MR-036`). Die Doku-Texte benennen die Trennung (Produkt-Binary läuft auf macOS, die Host-Läufer des Dogfoods nicht), damit `LH-QA-04` nicht als widersprochen gelesen wird.
 
 **Ausdrücklich NICHT in diesem Slice:**
 
-- Die Norm-Änderung in `AGENTS.md` oder `harness/conventions*` — sie schreibt der Architect in eigenem Commit (`AGENTS.md` §3.8); dieser Slice liefert höchstens das Übergabe-Artefakt.
+- Reparatur der Läufer auf macOS (Option A) — verworfen, siehe oben.
+- Eine ADR: die Aussage nimmt einen Anspruch zurück statt ein Gate zu senken (`AGENTS.md` §3.5); ob der Auftraggeber dennoch eine ADR will, ist offen und seine Entscheidung (`ADR-0040`), kein Teil dieses Plans.
 - Mount-Verzögerung und Host-Konfiguration (`BEO-ALL/bind-mount-sicht-auf-umgeschriebene-dateien-ist-unter-macos-verzoegert`, `BEO-ALL/mess-rezept-setzt-unbenannte-host-konfiguration-voraus`) — anderer Mechanismus, eigener Eintrag.
 
 ## 2. Definition of Done
 
-- [ ] Die Entscheidung (A oder B) des Auftraggebers steht als Zeile in §7.
-- [ ] A: die vier Einzel-Befunde sind behoben und ein Wächter hält sie; B: die Plattform-Aussage steht an ihrem Zielort und in beiden Doku-Stellen.
+- [ ] Die Plattform-Aussage steht als Norm in `AGENTS.md` §3.9 (Architect-Commit, vor der Implementer-Arbeit).
+- [ ] Linux-als-Host, CI-als-Beleg-Ort und die Umwege-ohne-Anspruch stehen in `harness/README.md`, `harness/sensors/mutate.md`, `harness/sensors/full-smoke.md` und den betroffenen `docs/user/*`; die Trennung von Produkt-Binary (`LH-QA-04`) und Dogfood-Läufern steht dabei.
 - [ ] `make gates` grün.
-- [ ] Review und Verifikation durchgeführt; Closure-Notiz mit Steering-Loop-Lerneintrag; Beobachtungs-Register fortgeschrieben (`BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer` auf *verkörpert*); die drei Paarungen getragen.
+
+Closure (Planner, §3.10): Review und Verifikation durchgeführt; Closure-Notiz §7 mit Steering-Loop-Lerneintrag und der Zeile `Entscheidung: B`; Beobachtungs-Register `BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer` auf *verkörpert* (Zielort `AGENTS.md` §3.9); die drei Paarungen getragen.
 
 ## 3. Plan (vor Code)
 
-Wird nach der Entscheidung vom Implementer erweitert; die Dateiliste folgt der Option.
+Der Implementer erweitert den Plan um die Dateiliste nach dem Architect-Commit; Reihenfolge: Architect-Norm, dann die Doku-Stellen, dann Gates.
 
 ## 4. Trigger
 
-**Start** (`next` → `in-progress`): die Auftraggeber-Entscheidung liegt vor.
+**Start** (`next` → `in-progress`): die Auftraggeber-Entscheidung liegt vor (B, entschieden).
 
-- `in-progress` → `next`: Option A erweist sich als mehr als ein Review-Sitzungs-Umfang — dann in einen Slice je Läufer schneiden.
+- `in-progress` → `next`: der Architect verlangt eine ADR oder einen Change Request — dann zurück, bis der Auftraggeber entschieden hat.
 - `in-progress` → `open`: die Entscheidung wird zurückgenommen.
 
 ## 5. Closure-Trigger
@@ -51,7 +60,7 @@ DoD vollständig, Closure-Notiz mit Lerneintrag geschrieben, Register-Ausgang au
 
 ## 6. Risiken und offene Punkte
 
-- Option A bleibt ohne macOS-Lauf in CI ungewacht — **Ausgang:** weiter offen: → `BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer` im Register
+- Eine Plattform-Aussage ohne Wächter: kein Sensor hält die Doku-Zeilen gegen die Läufer — **Ausgang:** weiter offen: → `BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer` im Register
 
 ## 7. Closure-Notiz
 
