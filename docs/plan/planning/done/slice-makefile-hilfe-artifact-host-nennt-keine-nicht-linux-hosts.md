@@ -45,7 +45,7 @@ Die Texte zeigen auf `AGENTS.md` §3.9 und schreiben die Norm nicht ab. Kein Tes
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -84,7 +84,7 @@ DoD vollständig, Review und Verifikation durchgeführt, Closure-Notiz mit Lerne
 - **Risiken aus §6:** das eine Risiko (*Hilfezeile ohne Wächter*) bleibt **weiter offen** mit Zeiger auf `BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer`; der Ausgang trägt: das Verzeichnis existiert, ist *verkörpert* und nennt die Grenze (Deklaration ohne Sensor) in seiner `state.md`.
 - **Folge-Slices:** keine.
 - **Archivierung ([`MR-078`](../../../../harness/conventions.md#mr-078)):** `archive-welle` bricht voraussichtlich an `[untergrenze]` (`ls docs/plan/planning/done/*/archiv.zip` findet keines, kein Erwartungswert); der Slice bleibt flach in `done/`, nicht gelaufen.
-- **Drei Paarungen:** noch nicht geprüft; folgt nach dem `git mv`.
+- **Drei Paarungen:** geprüft am 2026-10-20, nach dem `git mv`. (a) Anker: kein `liegt in` in diesem Slice, nichts zu paaren (der Zielort `AGENTS.md` §3.9 des Vorgängers trägt `seit slice-macos-als-host-plattform-wird-entschieden-und-vollzogen`, `grep -c` auf `AGENTS.md` → 1). (b) Folge-Slice: keiner genannt. (c) Register: `BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer` existiert und trägt 7 Belege in `evidence/`; `make register-ausgang` → `276 Eintraege, 79 ueber der Schwelle, 0 Befund(e)`. Zweite Hälfte (c) über das ganze Register: ein Verzeichnis ohne Beleg, namentlich `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen behauptet, gehört nicht zu diesem Slice (Kommando: Schleife aus `docs/plan/planning/observations/README.md`).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
