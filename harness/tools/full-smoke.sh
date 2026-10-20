@@ -95,31 +95,33 @@ einordnen() {
 }
 
 # archiv_gueltig <zip> <Eintrag>... — das Archiv ist LESBAR und fuehrt jeden genannten
-# Eintrag. `unzip -tq` liest jeden Eintrag bis zum Ende (CRC) und endet sonst mit einem
-# Fehler; `unzip -Z1` listet die Namen. Die Funktion ist die Leseprobe des E2E, unabhaengig
-# von der des Traegers (internal/archive, pruefeArchiv): sie liest die Datei, die der Lauf
-# hinterlassen hat, mit dem Werkzeug, dem der Zeiger eines Stubs folgt (`unzip -p`).
+# Eintrag. Gelesen wird im gepinnten Bild des Repos, nicht auf dem Host: `unzip -t` (BusyBox
+# im BATS_IMAGE aus dem Makefile, derselbe Pin wie `make test-bats`) liest jeden Eintrag bis
+# zum Ende und vergleicht die CRC; `unzip -lq` listet die Namen. Die Funktion ist die
+# Leseprobe des E2E, unabhaengig von der des Traegers (internal/archive, pruefeArchiv):
+# sie liest die Datei, die der Lauf hinterlassen hat.
 # NICHT geprueft: dass die Bytes einer Quelle gleichen — das haelt allein die Probe des
-# Traegers; und dass die Datei nach dem Lauf lesbar BLEIBT. Braucht `unzip` auf dem Host
-# (bash, git, docker und make allein genuegen hier nicht); fehlt es, endet die Funktion
-# mit einer Meldung, die es nennt, statt das Archiv als gueltig durchzulassen.
+# Traegers; und dass die Datei nach dem Lauf lesbar BLEIBT. Der Lauf braucht Docker (nicht
+# `unzip`); der Pin wird aus dem Makefile gelesen, `BATS_IMAGE` aus der Umgebung geht vor.
 # Rueckgabe 0 gueltig, 1 mit dem Grund auf stdout.
 archiv_gueltig() {
-	local zip="$1" eintrag liste
+	local zip="$1" eintrag liste img out
 	shift
-	if ! command -v unzip >/dev/null 2>&1; then
-		echo "unzip fehlt auf dem Host — die Leseprobe des Archivs ist nicht gelaufen"
+	img="${BATS_IMAGE:-$(sed -n 's/^BATS_IMAGE ?= //p' "$HIER/../../Makefile")}"
+	if [ -z "$img" ]; then
+		echo "der Pin BATS_IMAGE ist nicht lesbar — die Leseprobe des Archivs ist nicht gelaufen"
 		return 1
 	fi
 	if [ ! -f "$zip" ]; then
 		echo "$zip liegt nicht"
 		return 1
 	fi
-	if ! unzip -tq "$zip" >/dev/null 2>&1; then
-		echo "$zip besteht die Leseprobe nicht (unzip -tq): $(unzip -tq "$zip" 2>&1 | tr -s '[:space:]' ' ')"
+	if ! out="$(docker run --rm --network none --entrypoint sh -v "$(dirname "$zip")":/mnt:ro -w /mnt "$img" \
+		-c 'unzip -t "$1" && unzip -lq "$1"' _ "$(basename "$zip")" 2>&1)"; then
+		echo "$zip besteht die Leseprobe nicht (unzip -t): $(tr -s '[:space:]' ' ' <<<"$out")"
 		return 1
 	fi
-	liste="$(unzip -Z1 "$zip")"
+	liste="$(awk '{print $NF}' <<<"$out")"
 	for eintrag in "$@"; do
 		if ! grep -qxF -- "$eintrag" <<<"$liste"; then
 			echo "$zip fuehrt den Eintrag $eintrag nicht"
