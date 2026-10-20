@@ -37,9 +37,10 @@
 
 ## 2. Definition of Done
 
-- [ ] Die Plattform-Aussage steht als Norm in `AGENTS.md` §3.9 (Architect-Commit, vor der Implementer-Arbeit).
-- [ ] Linux-als-Host, CI-als-Beleg-Ort und die Umwege-ohne-Anspruch stehen in `harness/README.md`, `harness/sensors/mutate.md`, `harness/sensors/full-smoke.md` und den betroffenen `docs/user/*`; die Trennung von Produkt-Binary ([`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)) und Dogfood-Läufern steht dabei.
-- [ ] `make gates` grün.
+- [x] Die Plattform-Aussage steht als Norm in `AGENTS.md` §3.9 (Architect-Commit, vor der Implementer-Arbeit).
+- [x] Linux-als-Host, CI-als-Beleg-Ort und die Umwege-ohne-Anspruch stehen in `harness/README.md`, `harness/sensors/mutate.md`, `harness/sensors/full-smoke.md` und den betroffenen `docs/user/*`; die Trennung von Produkt-Binary ([`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)) und Dogfood-Läufern steht dabei.
+- [x] `make gates` grün — lokal bestätigt; der Beleg-Ort im Sinne der Norm, CI auf frischem Klon, liegt nach dem Push (§7).
+- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — geprüft nach dem `git mv` (§7).
 
 Closure (Planner, §3.10): Review und Verifikation durchgeführt; Closure-Notiz §7 mit Steering-Loop-Lerneintrag und der Zeile `Entscheidung: B`; Beobachtungs-Register `BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer` auf *verkörpert* (Zielort `AGENTS.md` §3.9); die drei Paarungen getragen.
 
@@ -70,7 +71,19 @@ DoD vollständig, Closure-Notiz mit Lerneintrag geschrieben, Register-Ausgang au
 
 ## 7. Closure-Notiz
 
-Noch nicht geschlossen.
+- **Entscheidung: B** (Auftraggeber): macOS ist nicht getragene Host-Plattform der Host-Läufer; Linux ist ihr Host, CI der Beleg-Ort. Option A (Läufer auf macOS reparieren) verworfen: ein großer Eingriff über 762 Fall-Skripte und mehrere Läufer ohne Mac-CI, der ungewacht bliebe; klein und ehrlich statt groß und unbelegt.
+- **Was hat funktioniert:** Norm vor der Arbeit: `AGENTS.md` §3.9 trägt den Absatz (Architect-Commit `2634a855`, kein `MR` — Ergänzung ohne Einschränkung der Baseline, [`MR-000`](../../../../harness/conventions.md#mr-000); keine ADR — kein Gate gesenkt, `AGENTS.md` §3.5; kein Change Request — die Aussage liegt unter [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) und [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)). Die Doku-Stellen zeigen auf die Norm (`harness/README.md`, `harness/sensors/mutate.md`, `full-smoke.md`, `artifact-host.md`); `docs/user/*` blieb unverändert, weil keine Stelle einen macOS-Lauf der vier Läufer als Beleg anbietet. Review: 0 HIGH, 0 MEDIUM, 1 LOW (`artifact-host.md` nannte eine Plattform-Liste als vorgesehenen Einsatz, behoben in `da389393`), 3 INFO ([Report](../../../reviews/2026-10-20-slice-macos-als-host-plattform-wird-entschieden-und-vollzogen.md)). Verifier: DoD 1 und 2 bestätigt, DoD 3 lokal bestätigt ([Report](../../../reviews/2026-10-20-slice-macos-als-host-plattform-wird-entschieden-und-vollzogen-verify.md)).
+- **Was ging anders als geplant:** die Makefile-Hilfezeile von `artifact-host` und der Kommentar darüber nennen Nicht-Linux-Hosts als Einsatz und stehen in Spannung zur Norm; sie liegen außerhalb der Dateiliste in §3 und gehen als Folge-Slice weiter (unten).
+- **DoD 3 und der CI-Beleg:** `make gates` ist lokal grün (Stempel auf dem Stand der Closure). Dass die Norm den Beleg-Ort **CI auf frischem Klon** nennt, heißt: dieser Beleg steht aus, solange nichts gepusht ist. Es liegt hier **kein** CI-Lauf vor, und diese Notiz behauptet keinen; den CI-Lauf nach dem Push liest der Hauptkontext und liefert ihn nach.
+- **Laufzeit ([`MR-089`](../../../../harness/conventions.md#mr-089)):** keine neue Laufzeit- oder Kosten-Aussage; die einzige Zahl, 762 Fall-Skripte, steht neben ihrem Kommando in `test/mutations/` und ist der Zähler des Plans.
+- **Steering-Loop-Eintrag:** **geschärfte Regel** — der Absatz zu den Host-Läufern in `AGENTS.md` §3.9 ergänzt: Host der Läufer ist Linux, macOS nicht getragen, Umwege ohne Anspruch, mit Auflösungs-Trigger (nicht *permanent*) — liegt in `AGENTS.md §3.9`. Auslöser: `BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer` (7 Vorgänge, Ausgang *verkörpert*, `state.md` nachgezogen; die vier Einzel-Einträge behalten ihren Verweis). **Benannte Lücke:** der Absatz ist eine Deklaration ohne Sensor; kein Test weist einen Läufer auf einem Nicht-Linux-Host ab oder hält die Doku-Zeilen gegen die Norm, ein rotes Gegenbeispiel gibt es nicht. Träger ist die Doku der Läufer, die auf die Norm zeigt.
+- **Trigger-Audit dieser Closure:** der neue Absatz in `AGENTS.md` §3.9 trägt den Auflösungs-Trigger *macOS wird getragen, sobald eine macOS-CI die Läufer hält oder der Auftraggeber es entscheidet; dann entfällt der Absatz als DoD-Punkt des auslösenden Slice* — **nicht eingetreten**: keine macOS-CI, keine Entscheidung. `CO-001` und `CO-002` unberührt; kein bootstrap-aware Gate berührt; keine ADR mit Re-Evaluierungs-Trigger berührt; die übrigen Hard Rules tragen *permanent* oder ihren Trigger unverändert. Nichts fällig.
+- **Rückbau-Fundstellen:** entfällt der Absatz, sind die Doku-Texte mit `git grep -nE 'Host Linux, macOS nicht getragen|Hilfe ohne Anspruch' -- harness/ docs/ ':!docs/reviews'` auffindbar (heute `harness/README.md`, `harness/sensors/artifact-host.md`, `mutate.md`, `full-smoke.md`; die Norm nennt keine Rückbau-Liste, das Kommando liefert sie). Gemessen am Stand dieser Closure, kein Erwartungswert.
+- **Beobachtungs-Register (`../observations/`):** `BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer` auf *verkörpert* fortgeschrieben, kein neuer Beleg; keine weitere Beobachtung angefallen.
+- **Folge-Slices:** `slice-makefile-hilfe-artifact-host-nennt-keine-nicht-linux-hosts` (Hilfezeile und Kommentar von `artifact-host` im `Makefile`) — ist eine Datei in `open/`.
+- **Archivierung ([`MR-078`](../../../../harness/conventions.md#mr-078)):** nicht ausgeführt: `ls docs/plan/planning/done/*/archiv.zip` findet keines, `archive-welle` bricht an der Untergrenze (`[untergrenze]`); der Slice bleibt flach in `done/`. Ob `[haenger]` zusätzlich greift, ist nicht gemessen.
+- **Risiken aus §6:** das eine Risiko (*Plattform-Aussage ohne Wächter*) hat seinen Ausgang in §6, *weiter offen*; `BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer` trägt den Stand als *verkörpert* mit der benannten Grenze, die Lücke bleibt damit benannt statt geschlossen.
+- **Drei Paarungen:** werden nach dem `git mv` geprüft, Ergebnis im Commit danach.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
