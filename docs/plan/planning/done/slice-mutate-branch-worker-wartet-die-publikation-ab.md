@@ -51,7 +51,7 @@ Auslöser: Auftrag des Auftraggebers nach Verdikt V-2 ([`docs/reviews/2026-10-20
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -94,7 +94,7 @@ DoD vollständig, `make gates` grün, Review- und Verifier-Report liegen vor, Cl
 - **Trigger-Audit dieser Closure:** `CO-001` und `CO-002` unberührt; kein bootstrap-aware Gate berührt; [`MR-014`](../../../../harness/conventions.md#mr-014) berührt (`mutate-branch.yml`), seine Regelform bleibt: der Schritt ruft ein `make`-Ziel; keine ADR mit Re-Evaluierungs-Trigger berührt; Hard Rules tragen *permanent* oder ihren Trigger unverändert. Nichts fällig durch diesen Slice.
 - **Archivierung ([`MR-078`](../../../../harness/conventions.md#mr-078)):** nicht ausgeführt: `ls docs/plan/planning/done/*/archiv.zip` findet keines, `archive-welle` bricht an der Untergrenze (`[untergrenze]`); der Slice bleibt flach in `done/`. Ob `[haenger]` zusätzlich greift, ist nicht gemessen.
 - **Risiken aus §6:** alle drei haben ihren Ausgang in §6. Risiko 1 (*entfallen*): bestätigt — der Ort ist einmal im Job `plan`, die Shards starten innerhalb 2 s. Risiko 2 (*entfallen*): bestätigt — eigener Schritt, Test 22 hält die Trennung. Risiko 3 (*weiter offen*): `BEO-ALL/ci-rennt-gegen-die-publikation-des-gepinnten-releases` trägt den Stand; der Tag-Push nach Ablauf der Grenze bleibt unbehoben.
-- **Drei Paarungen:** —
+- **Drei Paarungen:** geprüft am 2026-10-20, nach dem `git mv`. (a) Anker: kein `liegt in`-Feld mit Zielort in §7, nichts zu prüfen. (b) Folge-Slice: keiner genannt. (c) Register: die fünf genannten `BEO-ALL/`-Verzeichnisse existieren und tragen je ein nicht leeres `evidence/` (2, 1, 1, 5 und 1 Belege); `make register-ausgang` → `275 Eintraege, 78 ueber der Schwelle, 0 Befund(e)`. Zweite Hälfte (c) über das ganze Register: ein Verzeichnis ohne Beleg, namentlich `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen behauptet, gehört nicht zu diesem Slice (Kommando: Schleife aus `docs/plan/planning/observations/README.md`).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
