@@ -47,6 +47,12 @@ Closure (Planner, §3.10): Review und Verifikation durchgeführt; Closure-Notiz 
 
 Der Implementer erweitert den Plan um die Dateiliste nach dem Architect-Commit; Reihenfolge: Architect-Norm, dann die Doku-Stellen, dann Gates.
 
+Dateiliste (Fundstellen: `git grep -nE 'macOS|Darwin|BSD|artifact-host|full-smoke-host|gnu-sed' -- harness/ docs/user/ README.md`):
+
+- `harness/README.md`: Bindung-Zellen der Zeilen `make mutate`, `make mutate-auswahl`, `make mutate-greift`, `make full-smoke`, `make artifact-host`, `make full-smoke-host`.
+- `harness/sensors/mutate.md`, `harness/sensors/full-smoke.md`, `harness/sensors/artifact-host.md`: je ein Absatz.
+- `docs/user/*`: unverändert — keine Stelle bietet einen macOS-Lauf der vier Läufer als Beleg an; `docs/user/benutzerhandbuch.md` nennt den vollständigen Durchlauf bereits auf Linux/Intel-AMD, macOS nur für das Programm.
+
 ## 4. Trigger
 
 **Start** (`next` → `in-progress`): die Auftraggeber-Entscheidung liegt vor (B, entschieden).
