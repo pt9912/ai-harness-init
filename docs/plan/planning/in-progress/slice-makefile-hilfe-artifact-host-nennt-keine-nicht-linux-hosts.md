@@ -37,14 +37,14 @@ Die Texte zeigen auf `AGENTS.md` §3.9 und schreiben die Norm nicht ab. Kein Tes
 
 ## 2. Definition of Done
 
-- [ ] Hilfezeilen und Kommentare von `artifact-host`, `smoke-host` und `full-smoke-host` im `Makefile` (Fundstellen §1) zeigen auf `AGENTS.md` §3.9 und nennen keinen Nicht-Linux-Host als vorgesehenen Einsatz; die Zusage nennt, was kein Sensor hält (nach `AGENTS.md` §3.6/§3.7).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] Hilfezeilen und Kommentare von `artifact-host`, `smoke-host` und `full-smoke-host` im `Makefile` (Fundstellen §1) zeigen auf `AGENTS.md` §3.9 und nennen keinen Nicht-Linux-Host als vorgesehenen Einsatz; die Zusage nennt, was kein Sensor hält (nach `AGENTS.md` §3.6/§3.7).
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -72,7 +72,19 @@ DoD vollständig, Review und Verifikation durchgeführt, Closure-Notiz mit Lerne
 
 ## 7. Closure-Notiz
 
-Noch nicht geschlossen.
+- **Gegenstand geliefert:** sechs Textstellen im `Makefile` (Kommentare über `artifact`, `artifact-host`, `smoke-host`; `## `-Hilfetexte von `artifact-host`, `smoke-host`, `full-smoke-host`) nennen den Umweg als *Hilfe ohne Anspruch* mit Zeiger auf `AGENTS.md` §3.9, keinen Nicht-Linux-Host als Einsatz (Commit `a0944093`, nur `Makefile`, 13+/14-, nur Text). Review: 0 HIGH, 0 MEDIUM, 0 LOW, 2 INFO ([Report](../../../reviews/2026-10-20-slice-makefile-hilfe-artifact-host-nennt-keine-nicht-linux-hosts.md)). Verifier: alle inhaltlichen DoD-Punkte bestätigt; `make -n` für sieben Ziele byte-gleich zur Basis, `make help` ändert nur die drei Hilfezeilen, `AGENTS.md` ohne Diff ([Report](../../../reviews/2026-10-20-slice-makefile-hilfe-artifact-host-nennt-keine-nicht-linux-hosts-verify.md)). `make gates` lokal grün.
+- **Mutations-Probe: nicht gemessen.** Die 21 von `make mutate-auswahl` gewählten Fälle (Auswahl nach `# files: Makefile`, nicht nach Zeile; Exit 10, Schwelle 8) wurden nicht gefahren: der Diff berührt keine Anker-Rezepte (am Diff gelesen, gestützt durch byte-gleiche `make -n`-Ausgaben der sieben Ziele). `make mutate-greift` → 762/762 belegt nur, dass die Patches ihre Datei ändern, nicht dass die Wächter rot werden. Kein Beleg behauptet.
+- **CI-Beleg ([`AGENTS.md`](../../../../AGENTS.md) §3.9):** der Beleg-Ort ist die CI auf frischem Klon nach dem Push; es liegt hier **kein** CI-Lauf vor, und diese Notiz behauptet keinen. Den Lauf liest der Hauptkontext und liefert ihn nach.
+- **Laufzeit ([`MR-089`](../../../../harness/conventions.md#mr-089)):** keine Laufzeit- oder Kosten-Aussage.
+- **Steering-Loop-Eintrag:** **benannte Lücke** — die Hilfetexte sind Deklarationen ohne Sensor: kein Sensor hält den Wortlaut der `## `-Zeilen oder der Makefile-Kommentare gegen die Norm (`make help` wird von keinem Test gelesen, das `targets`-Modul prüft Existenz, nicht Hilfetext); ein rotes Gegenbeispiel gibt es nicht. Träger ist der Lauf, der die Zeile schreibt. Kein `liegt in`: es ist keine neue Regel verkörpert, die Norm steht seit dem Vorgänger in `AGENTS.md` §3.9.
+- **Zu den zwei INFO des Reviews (benannt, nicht behoben):** (1) der Kommentar über `artifact` wiederholt den Halbsatz der Norm („der Host der Host-Laeufer ist Linux") neben dem Zeiger; bei Änderung von §3.9 ist der Zeiger maßgeblich. (2) „kein Sensor haelt diesen Text" steht bei `artifact-host` und `smoke-host`, nicht bei `full-smoke-host`; die Zusage ist für alle drei gleich wahr. Kein Folge-Slice: [`AGENTS.md`](../../../../AGENTS.md) §3.7 Cutoff — der Bestand ist kein Arbeitsauftrag, und kein Auftreten-Zähler trägt einen; wer die Zeilen ohnehin anfasst, zieht sie nach.
+- **Trigger-Audit:** der Absatz in `AGENTS.md` §3.9 trägt den Auflösungs-Trigger *macOS wird getragen, sobald eine macOS-CI die Läufer hält oder der Auftraggeber es entscheidet* — **nicht eingetreten**. `CO-001` und `CO-002` unberührt; kein bootstrap-aware Gate, keine ADR mit Re-Evaluierungs-Trigger berührt; die übrigen Hard Rules unverändert. Nichts fällig.
+- **Rückbau-Fundstellen:** entfällt der Absatz, findet `git grep -nE 'Host Linux, macOS nicht getragen|Hilfe ohne Anspruch' -- harness/ docs/ Makefile ':!docs/reviews'` auch die Makefile-Zeilen (`artifact`-Kommentar, `artifact-host`, `smoke-host`, `full-smoke-host`; heute dazu `harness/README.md`, `harness/sensors/artifact-host.md`, `mutate.md`, `full-smoke.md`). Das Kommando des Vorgängers führt `Makefile` nicht; er ist ein Zeitdokument und bleibt unverändert, das Makefile ist neu dazugekommen. Gemessen am Stand dieser Closure, kein Erwartungswert.
+- **Beobachtungs-Register (`../observations/`):** `BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer` (*verkörpert*, 7 Vorgänge) bekommt **keinen** Beleg und keine Änderung: dieser Slice vollzieht die Norm (zieht Texte an sie nach), er ist kein weiteres Auftreten der Fehlerklasse. Keine weitere Beobachtung angefallen.
+- **Risiken aus §6:** das eine Risiko (*Hilfezeile ohne Wächter*) bleibt **weiter offen** mit Zeiger auf `BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer`; der Ausgang trägt: das Verzeichnis existiert, ist *verkörpert* und nennt die Grenze (Deklaration ohne Sensor) in seiner `state.md`.
+- **Folge-Slices:** keine.
+- **Archivierung ([`MR-078`](../../../../harness/conventions.md#mr-078)):** `archive-welle` bricht voraussichtlich an `[untergrenze]` (`ls docs/plan/planning/done/*/archiv.zip` findet keines, kein Erwartungswert); der Slice bleibt flach in `done/`, nicht gelaufen.
+- **Drei Paarungen:** noch nicht geprüft; folgt nach dem `git mv`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
