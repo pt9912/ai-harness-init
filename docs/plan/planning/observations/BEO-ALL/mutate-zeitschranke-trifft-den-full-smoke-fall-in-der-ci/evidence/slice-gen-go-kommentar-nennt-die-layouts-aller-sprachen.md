@@ -1,0 +1,2 @@
+**Vorgang:** slice-gen-go-kommentar-nennt-die-layouts-aller-sprachen
+**Fund:** Mutations-CI-Probe auf `mutate/slice-gen-go-kommentar-nennt-die-layouts-aller-sprachen-7cc9f961` (13 Fälle): Fall `445-traeger-meldung-nennt-die-sprachen-nicht-mehr-unter-verfuegbar` ohne Ergebnis, im Log von Shard 1 die Zeitschranke von 900 s (Worker Status 137); Fall `444-…` (ebenfalls `full-smoke`) brauchte im selben Lauf 862 s; 445 lokal über `SMOKE_ARTIFACT_TARGET=artifact-host MUTATE_CASES=445-… MUTATE_JOBS=1 make mutate` rot gesehen.
