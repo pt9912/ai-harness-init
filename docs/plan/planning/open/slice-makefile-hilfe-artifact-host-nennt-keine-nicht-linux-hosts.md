@@ -8,7 +8,7 @@
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** —
+**Verantwortlich:** dburkard
 
 **Autor:** Planner. **Datum:** 2026-10-20.
 
@@ -16,17 +16,28 @@
 
 ## 1. Ziel und Abgrenzung
 
-**Ziel:** Die Texte im `Makefile`, die `artifact-host` als Mittel für Nicht-Linux-Hosts anbieten (Hilfezeile am Ziel `artifact-host` und der Kommentar darüber, der macOS und Windows nennt), stehen nicht mehr in Spannung zur Norm in `AGENTS.md` §3.9: sie nennen den Umweg als Hilfe ohne Anspruch, wie `harness/sensors/artifact-host.md`. Fundstellen: `git grep -nE 'Nicht-Linux|macOS, Windows' -- Makefile`.
+**Ziel:** Die Texte im `Makefile`, die `artifact-host`, `smoke-host` und `full-smoke-host` als Mittel für Nicht-Linux-Hosts anbieten, stehen nicht mehr in Spannung zur Norm in `AGENTS.md` §3.9: sie nennen den Umweg als Hilfe ohne Anspruch, wie `harness/sensors/artifact-host.md`. Der Zielname im Dateinamen nennt nur `artifact-host`; der Auftraggeber hat `full-smoke-host` (und mit ihm `smoke-host`) in diesen Slice genommen. Fundstellen (`git grep -nE 'Nicht-Linux|Devhost|macOS|Windows' -- Makefile`), nur Text:
+
+- Z. 154–158, Kommentar über `artifact`: „auf macOS/Windows nicht … smoke/full-smoke sind dort nicht als grün zugesagt … Für einen lokal LAUFFAEHIGEN Smoke auf so einem Host: `artifact-host` + `smoke-host`/`full-smoke-host`".
+- Z. 163–166, Kommentar über `artifact-host`: „(macOS, Windows, ein abweichendes CPU-Arch)".
+- Z. 167, `## `-Hilfetext `artifact-host`: „für lokale Smokes auf Nicht-Linux-Hosts".
+- Z. 220–223, Kommentar über `smoke-host`: „Host, dessen Kernel/Architektur … abweicht (macOS, Windows, abweichendes CPU-Arch)".
+- Z. 224, `## `-Hilfetext `smoke-host`: „für Nicht-Linux-Devhosts".
+- Z. 235, `## `-Hilfetext `full-smoke-host`: „für Nicht-Linux-Devhosts".
+- Z. 493 (Kommentar „macOS-Host … `make gates` rot"): beschreibt `host-bin`, kein Angebot der drei Targets — Bestand, nicht Gegenstand.
+
+Die Texte zeigen auf `AGENTS.md` §3.9 und schreiben die Norm nicht ab. Kein Test und kein Doku-Sensor hält den Wortlaut der `## `-Zeilen: `git grep` nach altem Wortlaut in `test/` und `harness/` findet nur Prosa in `harness/sensors/mutate.md` (Zeile 123, nicht die Hilfe); `harness/README.md` führt die Targets mit eigener Beschreibung, das `targets`-Modul prüft Existenz, nicht Hilfetext.
 
 **Ausdrücklich NICHT in diesem Slice:**
 
 - Änderung des Rezepts, des Zielnamens oder des Verhaltens von `artifact-host` und `full-smoke-host` — nur Text; ein anderer Vorgang.
-- Die Hilfezeile von `full-smoke-host` (`git grep -n 'Nicht-Linux-Devhosts' -- Makefile`): sie steht in derselben Spannung; ob sie in diesen Slice gehört, entscheidet das Messen der Fundstellen im Lauf — wird sie mitgenommen, steht das in der Dateiliste von §3, sonst als Bestand mit Grund in §7.
+- Die Norm selbst: `AGENTS.md` §3.9 schreibt der Architect; die Makefile-Texte zeigen darauf.
+- Der Kommentar bei Z. 493 (`host-bin`): Bestand, beschreibt kein Angebot der drei Targets.
 - Reparatur der Läufer auf macOS — verworfen mit der Entscheidung, die `AGENTS.md` §3.9 trägt.
 
 ## 2. Definition of Done
 
-- [ ] Hilfezeile und Kommentar von `artifact-host` im `Makefile` zeigen auf `AGENTS.md` §3.9 und nennen keinen Nicht-Linux-Host als vorgesehenen Einsatz; die Zusage nennt, was kein Sensor hält (nach `AGENTS.md` §3.6/§3.7).
+- [ ] Hilfezeilen und Kommentare von `artifact-host`, `smoke-host` und `full-smoke-host` im `Makefile` (Fundstellen §1) zeigen auf `AGENTS.md` §3.9 und nennen keinen Nicht-Linux-Host als vorgesehenen Einsatz; die Zusage nennt, was kein Sensor hält (nach `AGENTS.md` §3.6/§3.7).
 - [ ] `make gates` grün.
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
@@ -40,9 +51,9 @@
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `Makefile` | update | Hilfezeile am Ziel `artifact-host` und Kommentar darüber: Umweg ohne Anspruch, Zeiger auf `AGENTS.md` §3.9 statt „für Nicht-Linux-Hosts" |
+| `Makefile` | update | die sechs Textstellen aus §1 (Kommentare und `## `-Hilfetexte von `artifact`, `artifact-host`, `smoke-host`, `full-smoke-host`): Umweg ohne Anspruch, Zeiger auf `AGENTS.md` §3.9 statt „für Nicht-Linux-Hosts"; kein Rezept, kein Zielname, keine Variable |
 
-Der Implementer misst die Fundstellen (`git grep -nE 'Nicht-Linux|macOS, Windows' -- Makefile`) und ergänzt die Dateiliste; die Hilfezeile ist der Text, den `make help` ausgibt.
+Die `## `-Zeile ist der Text, den `make help` ausgibt.
 
 ## 4. Trigger
 
