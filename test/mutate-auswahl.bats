@@ -281,3 +281,32 @@ fall() {
   [ "$status" -eq 0 ]
   [ "$(cat "$FAKE_PUSH_LOG")" = "push origin HEAD:refs/heads/mutate/slice-x-0123abcd" ]
 }
+
+# Der Warte-Schritt steht im Job `plan` als eigener Schritt hinter `lauf`, und `shard` haengt
+# an `plan` (needs): so beginnt kein Gruen-Vorlauf eines Shards vor dem Ende des Schritts.
+# Gehalten ist die Verdrahtung ueber der Workflow-Datei als Text, nicht die Wirkung gegen ein
+# unveroeffentlichtes Release und nicht, dass GitHub die Reihenfolge so ausfuehrt.
+WORKFLOW_MB=".github/workflows/mutate-branch.yml"
+
+@test "workflow: make release-warten ist ein eigener Schritt im Job plan, nach lauf und vor shard" {
+  w="$REPO/$WORKFLOW_MB"
+  lauf="$(grep -n '^        run: make -s --no-print-directory mutate-branch SCHRITT=lauf ' "$w" | cut -d: -f1)"
+  warten="$(grep -n '^        run: make release-warten$' "$w" | cut -d: -f1)"
+  shard="$(grep -n '^  shard:$' "$w" | cut -d: -f1)"
+  [ "$(wc -l <<<"$lauf")" -eq 1 ] && [ -n "$lauf" ]
+  [ "$(wc -l <<<"$warten")" -eq 1 ] && [ -n "$warten" ]
+  [ "$lauf" -lt "$warten" ]
+  [ "$warten" -lt "$shard" ]
+}
+
+@test "workflow: der Warte-Schritt liegt nicht im Schritt lauf, dessen stdout nach GITHUB_OUTPUT geht" {
+  w="$REPO/$WORKFLOW_MB"
+  [ "$(grep -c 'release-warten' <(grep -v '^ *#' "$w"))" -eq 1 ]
+  # `!` vor einer Pipeline bricht den Test in bats nicht ab — darum if/false.
+  if grep -v '^ *#' "$w" | grep 'release-warten' | grep -q 'GITHUB_OUTPUT'; then false; fi
+  if grep -v '^ *#' "$w" | grep 'GITHUB_OUTPUT' | grep -q 'release-warten'; then false; fi
+}
+
+@test "workflow: shard haengt per needs an plan" {
+  awk '/^  shard:$/ { f = 1; next } f && /^  [a-z]/ { exit } f && /^    needs: plan$/ { ok = 1 } END { exit !ok }' "$REPO/$WORKFLOW_MB"
+}
