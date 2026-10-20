@@ -18,7 +18,7 @@ Regel: [`AGENTS.md`](../../../../AGENTS.md) §3.7.
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** —
+**Verantwortlich:** dburkard
 
 **Autor:** Planner. **Datum:** 2026-10-19.
 
@@ -50,7 +50,9 @@ Liefer-Punkte (zwei):
   Änderung; `diff <vorher>/SHA256SUMS <nachher>/SHA256SUMS`. Das Ergebnis steht im Bericht, gleich oder verschieden, mit der Zeilenzahl-Differenz
   des Kommentars. Frage, die der Lauf beantwortet und die der Planner nicht gemessen hat: der Bau läuft mit `-buildvcs=false`, `-trimpath` und
   `-ldflags="-s -w …"` (`Dockerfile`), also commit-unabhängig; ob eine Kommentar-Änderung mit **anderer Zeilenzahl** die Zeilen-Tabelle des Binarys
-  verschiebt und damit die Bytes, ist ungemessen.
+  verschiebt und damit die Bytes, ist ungemessen. Der Pin im `Makefile` (`TRAEGER_TAG`, `TRAEGER_SHA256_*`) zeigt auf das veröffentlichte Asset von
+  `v0.10.0`, nicht auf den Quellstand; er bleibt unverändert, auch wenn L2 verschiedene Digests zeigt — `TRAEGER_VERSION` ist nur die Fassungs-Injektion
+  des Baus, der Lauf schreibt allein nach `DEST`.
 
 Gate-Läufe und Closure-Pflichten:
 
