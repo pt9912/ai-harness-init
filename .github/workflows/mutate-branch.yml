@@ -60,8 +60,10 @@ jobs:
         run: make -s --no-print-directory mutate-branch SCHRITT=lauf >> "$GITHUB_OUTPUT"
       # WARTEN: `make release-warten` laeuft einmal hier, nicht je Shard — `shard` hat
       # `needs: plan`, also beginnt kein Gruen-Vorlauf (`make full-smoke` holt den Traeger
-      # des gepinnten Release) vor dem Ende dieses Schritts. Die Shards starten innerhalb von
-      # 2 s nebeneinander (Job-Zeiten zweier mutate-branch-Laeufe), ein Warten je Shard
+      # des gepinnten Release) vor dem Ende dieses Schritts. Gemessen an zwei Laeufen
+      # (`gh run view 39396435640 --json jobs` und `… 39383581246 …`): die Shards starten
+      # innerhalb von 2 s nebeneinander, `plan` dauert 6-7 s; nicht gemessen: Startzeiten unter
+      # Runner-Last und der Wartezeit im Runner mit kaltem Image-Pull. Ein Warten je Shard
       # wuerde jeden einzeln bis zur Grenze zahlen; bei veroeffentlichtem Release kostet der
       # Schritt einen Versuch (3 s Wanduhr lokal, `make release-warten`). Eigener Schritt,
       # nicht Teil von `lauf`: dessen stdout geht nach $GITHUB_OUTPUT. Der Schritt urteilt
