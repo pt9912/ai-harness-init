@@ -6,7 +6,7 @@
 
 **Bezug:** [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (Host braucht nur `git`, `docker`, GNU `make`), [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (Reproduzierbarkeit), `AGENTS.md` §3.9.
 
-**Berührte Spec-Stellen:** — (die Aussage bleibt unter [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) und `LH-QA-04`, Vertrag unverändert; Träger ist die Hard Rule `AGENTS.md` §3.9).
+**Berührte Spec-Stellen:** — (die Aussage bleibt unter [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) und [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix), Vertrag unverändert; Träger ist die Hard Rule `AGENTS.md` §3.9).
 
 **Verantwortlich:** dburkard
 
@@ -24,21 +24,21 @@
 
 **Wer schreibt was.**
 
-- **Architect** (Übergabe-Artefakt dieses Plans; eigener Commit, nur Architect-Artefakte, Rolle in der Message, `AGENTS.md` §3.8): die Plattform-Aussage als Norm — eine Ergänzung der Hard Rule `AGENTS.md` §3.9 (Docker-only): Host der Host-Läufer ist Linux, macOS ist dafür nicht getragen, Beleg-Ort CI; dazu der Auflösungs-Trigger oder *permanent* (`modul-13-quality-gates.md` §Hard Rule). Ob dazu ein Eintrag im Adaptions-Block nötig ist (Ergänzung ohne Einschränkung der Baseline ist keine Adaption, vgl. `MR-000`), entscheidet der Architect. Der Commit liegt **vor** der Implementer-Arbeit, damit deren Texte auf eine vorhandene Norm zeigen.
+- **Architect** (Übergabe-Artefakt dieses Plans; eigener Commit, nur Architect-Artefakte, Rolle in der Message, `AGENTS.md` §3.8): die Plattform-Aussage als Norm — eine Ergänzung der Hard Rule `AGENTS.md` §3.9 (Docker-only): Host der Host-Läufer ist Linux, macOS ist dafür nicht getragen, Beleg-Ort CI; dazu der Auflösungs-Trigger oder *permanent* (`modul-13-quality-gates.md` §Hard Rule). Ob dazu ein Eintrag im Adaptions-Block nötig ist (Ergänzung ohne Einschränkung der Baseline ist keine Adaption, vgl. [`MR-000`](../../../../harness/conventions.md#mr-000--baseline-aussage)), entscheidet der Architect. Der Commit liegt **vor** der Implementer-Arbeit, damit deren Texte auf eine vorhandene Norm zeigen.
 - **Implementer** (Nicht-Norm-Texte; zeigt auf die Hard Rule, schreibt sie nicht ab): `harness/README.md` (Zeilen der betroffenen Targets in §Werkzeuge), `harness/sensors/mutate.md`, `harness/sensors/full-smoke.md`, und `docs/user/*`, soweit dort ein Host-Lauf dieser Läufer beschrieben ist (`grep -rn 'artifact-host\|full-smoke-host\|gnubin' docs/user harness/` nennt die Stellen). Inhalt: Linux als Host, CI als Beleg-Ort, Umwege als Hilfe ohne Anspruch.
 
-**Verhältnis zum Lastenheft.** `LH-QA-03` (Bootstrap-Laufzeit braucht nur git + docker) und `LH-QA-04` (Produkt-Binary erstklassig auf linux/macos/windows) betreffen das **Produkt**; die Aussage hier betrifft die **Dogfood-Läufer dieses Repos** und bleibt darunter. Der Vertrag ändert sich nicht, kein Change Request (`MR-015`/`MR-036`). Die Doku-Texte benennen die Trennung (Produkt-Binary läuft auf macOS, die Host-Läufer des Dogfoods nicht), damit `LH-QA-04` nicht als widersprochen gelesen wird.
+**Verhältnis zum Lastenheft.** [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (Bootstrap-Laufzeit braucht nur git + docker) und [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) (Produkt-Binary erstklassig auf linux/macos/windows) betreffen das **Produkt**; die Aussage hier betrifft die **Dogfood-Läufer dieses Repos** und bleibt darunter. Der Vertrag ändert sich nicht, kein Change Request ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)/[`MR-036`](../../../../harness/conventions.md#mr-036--die-change-request-regel-bei-personalunion-steht-jetzt-in-der-adoptierten-baseline)). Die Doku-Texte benennen die Trennung (Produkt-Binary läuft auf macOS, die Host-Läufer des Dogfoods nicht), damit [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) nicht als widersprochen gelesen wird.
 
 **Ausdrücklich NICHT in diesem Slice:**
 
 - Reparatur der Läufer auf macOS (Option A) — verworfen, siehe oben.
-- Eine ADR: die Aussage nimmt einen Anspruch zurück statt ein Gate zu senken (`AGENTS.md` §3.5); ob der Auftraggeber dennoch eine ADR will, ist offen und seine Entscheidung (`ADR-0040`), kein Teil dieses Plans.
+- Eine ADR: die Aussage nimmt einen Anspruch zurück statt ein Gate zu senken (`AGENTS.md` §3.5); ob der Auftraggeber dennoch eine ADR will, ist offen und seine Entscheidung ([`ADR-0040`](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md)), kein Teil dieses Plans.
 - Mount-Verzögerung und Host-Konfiguration (`BEO-ALL/bind-mount-sicht-auf-umgeschriebene-dateien-ist-unter-macos-verzoegert`, `BEO-ALL/mess-rezept-setzt-unbenannte-host-konfiguration-voraus`) — anderer Mechanismus, eigener Eintrag.
 
 ## 2. Definition of Done
 
 - [ ] Die Plattform-Aussage steht als Norm in `AGENTS.md` §3.9 (Architect-Commit, vor der Implementer-Arbeit).
-- [ ] Linux-als-Host, CI-als-Beleg-Ort und die Umwege-ohne-Anspruch stehen in `harness/README.md`, `harness/sensors/mutate.md`, `harness/sensors/full-smoke.md` und den betroffenen `docs/user/*`; die Trennung von Produkt-Binary (`LH-QA-04`) und Dogfood-Läufern steht dabei.
+- [ ] Linux-als-Host, CI-als-Beleg-Ort und die Umwege-ohne-Anspruch stehen in `harness/README.md`, `harness/sensors/mutate.md`, `harness/sensors/full-smoke.md` und den betroffenen `docs/user/*`; die Trennung von Produkt-Binary ([`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)) und Dogfood-Läufern steht dabei.
 - [ ] `make gates` grün.
 
 Closure (Planner, §3.10): Review und Verifikation durchgeführt; Closure-Notiz §7 mit Steering-Loop-Lerneintrag und der Zeile `Entscheidung: B`; Beobachtungs-Register `BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer` auf *verkörpert* (Zielort `AGENTS.md` §3.9); die drei Paarungen getragen.
