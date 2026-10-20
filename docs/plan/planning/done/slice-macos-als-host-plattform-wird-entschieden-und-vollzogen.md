@@ -40,7 +40,7 @@
 - [x] Die Plattform-Aussage steht als Norm in `AGENTS.md` §3.9 (Architect-Commit, vor der Implementer-Arbeit).
 - [x] Linux-als-Host, CI-als-Beleg-Ort und die Umwege-ohne-Anspruch stehen in `harness/README.md`, `harness/sensors/mutate.md`, `harness/sensors/full-smoke.md` und den betroffenen `docs/user/*`; die Trennung von Produkt-Binary ([`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)) und Dogfood-Läufern steht dabei.
 - [x] `make gates` grün — lokal bestätigt; der Beleg-Ort im Sinne der Norm, CI auf frischem Klon, liegt nach dem Push (§7).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — geprüft nach dem `git mv` (§7).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — geprüft nach dem `git mv` (§7).
 
 Closure (Planner, §3.10): Review und Verifikation durchgeführt; Closure-Notiz §7 mit Steering-Loop-Lerneintrag und der Zeile `Entscheidung: B`; Beobachtungs-Register `BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer` auf *verkörpert* (Zielort `AGENTS.md` §3.9); die drei Paarungen getragen.
 
@@ -83,7 +83,7 @@ DoD vollständig, Closure-Notiz mit Lerneintrag geschrieben, Register-Ausgang au
 - **Folge-Slices:** `slice-makefile-hilfe-artifact-host-nennt-keine-nicht-linux-hosts` (Hilfezeile und Kommentar von `artifact-host` im `Makefile`) — ist eine Datei in `open/`.
 - **Archivierung ([`MR-078`](../../../../harness/conventions.md#mr-078)):** nicht ausgeführt: `ls docs/plan/planning/done/*/archiv.zip` findet keines, `archive-welle` bricht an der Untergrenze (`[untergrenze]`); der Slice bleibt flach in `done/`. Ob `[haenger]` zusätzlich greift, ist nicht gemessen.
 - **Risiken aus §6:** das eine Risiko (*Plattform-Aussage ohne Wächter*) hat seinen Ausgang in §6, *weiter offen*; `BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer` trägt den Stand als *verkörpert* mit der benannten Grenze, die Lücke bleibt damit benannt statt geschlossen.
-- **Drei Paarungen:** werden nach dem `git mv` geprüft, Ergebnis im Commit danach.
+- **Drei Paarungen:** geprüft am 2026-10-20, nach dem `git mv`. (a) Anker: `liegt in `AGENTS.md §3.9`` — der Zielort existiert und trägt `seit slice-macos-als-host-plattform-wird-entschieden-und-vollzogen` (`grep -c` auf `AGENTS.md` → 1). (b) Folge-Slice: `slice-makefile-hilfe-artifact-host-nennt-keine-nicht-linux-hosts` existiert in `open/`. (c) Register: `BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer` existiert und trägt 7 Belege in `evidence/`; `make register-ausgang` → `276 Eintraege, 79 ueber der Schwelle, 0 Befund(e)`. Zweite Hälfte (c) über das ganze Register: ein Verzeichnis ohne Beleg, namentlich `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen behauptet, gehört nicht zu diesem Slice (Kommando: Schleife aus `docs/plan/planning/observations/README.md`).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
