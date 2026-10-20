@@ -19,7 +19,7 @@ Die Archivierung selbst trägt keine eigene `LH-*`-Anforderung (`grep -in archiv
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** —
+**Verantwortlich:** dburkard
 
 **Autor:** Planner. **Datum:** 2026-10-19.
 
