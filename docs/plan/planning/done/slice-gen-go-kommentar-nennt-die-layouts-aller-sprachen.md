@@ -61,7 +61,7 @@ Gate-Läufe und Closure-Pflichten:
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben oder „keine Beobachtung angefallen" in §7.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen.
 
 ## 3. Plan (vor Code)
 
@@ -139,7 +139,11 @@ DoD vollständig, Review-Report liegt vor, Closure-Notiz mit Lerneintrag.
 - **Archivierung ([`MR-078`](../../../../harness/conventions.md#mr-078)):** nicht ausgeführt: `ls docs/plan/planning/done/*/archiv.zip` findet keines, `archive-welle` bricht an der
   Untergrenze; der Slice bleibt flach in `done/`.
 - **Risiken aus §6:** das eine Risiko hat seinen Ausgang in §6.
-- **Drei Paarungen:** —
+- **Drei Paarungen:** geprüft am 2026-10-20, nach dem `git mv`. (a) Anker: kein `liegt in`-Feld mit Zielort in §7, nichts zu prüfen. (b) Folge-Slice: keiner genannt;
+  `slice-mutate-branch-worker-wartet-die-publikation-ab` steht nur als Abgrenzung. (c) Register: die fünf genannten `BEO-ALL/`-Verzeichnisse existieren und tragen je ein
+  nicht leeres `evidence/` (1, 11, 1, 5 und 1 Belege); `make register-ausgang` → `271 Eintraege, 78 ueber der Schwelle, 0 Befund(e)`. Zweite Hälfte (c) über das ganze
+  Register: ein Verzeichnis ohne Beleg, namentlich `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen behauptet, gehört nicht zu diesem Slice
+  (Kommando: Schleife aus `docs/plan/planning/observations/README.md`).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
