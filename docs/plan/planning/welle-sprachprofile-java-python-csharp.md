@@ -93,4 +93,4 @@ unter der Schwelle; keiner erreicht mit der Eröffnung 3×.
 
 ## 7. Closure-Notiz
 
-<!-- Erst nach Welle-Abschluss füllen. -->
+Die Closure-Notiz steht in [`welle-sprachprofile-java-python-csharp-results.md`](welle-sprachprofile-java-python-csharp-results.md); geschlossen am 2026-10-20 ohne Schritt 4 (Archivierung).
