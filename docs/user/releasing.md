@@ -191,8 +191,12 @@ Die Schritt-Folge:
    Ergebnis.** Lief für den Schnitt eine Mutations-Probe über einen CI-Branch
    (`mutate/<kennung>-<sha8>`), nennt der Bericht die Fälle ohne Ergebnis mit Zahl und
    dem Kommando, das sie liefert (`git fetch origin mutate/<kennung>-<sha8> && git show
-   FETCH_HEAD:mutate-ergebnis.txt | grep -c '^FEHLT'`; die Datei führt einen Fall ohne
-   Beleg als `FEHLT`, `harness/tools/mutate-auswahl.sh`) — und schließt mit der
+   FETCH_HEAD:mutate-ergebnis.txt | grep -cE '^(FEHLT|BEFUND \(kein Ergebnis im Log\))'`;
+   die Datei führt einen Fall, den ein Shard gezogen hat und der im Log kein Ergebnis trägt, als
+   `BEFUND (kein Ergebnis im Log)`, einen Fall ohne Shard als `FEHLT`; aus
+   `harness/tools/mutate-auswahl.sh` gelesen und das Muster gegen nachgebaute Zeilen derselben
+   `printf`-Form gehalten, nicht an einer echten Ergebnisdatei gefahren; ein Shard ohne Beleg
+   steht als `Shard <n>: KEIN BELEG` und zählt dort nicht mit) — und schließt mit der
    benannten Lücke oder fährt die Probe nach der Publikation erneut. Der Workflow
    `mutate-branch` fährt `make release-warten` einmal im Job `plan`, bevor die Shards
    ihren Grün-Vorlauf beginnen; wie dort ist die Grenze benannt: ein Tag-Push nach

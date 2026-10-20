@@ -1222,15 +1222,14 @@ plan_self_contained() {
 # Bewusst grosszuegig: ein Haenger ist UNBEGRENZT, also loest ihn jede endliche Schranke aus,
 # waehrend eine knappe Schranke einen langsamen Runner roetet — und ein Sensor, der ohne
 # Befund rot wird, senkt seine eigene Aussage (LH-QA-01).
-# NICHT gedeckt: ein Fall, der langsamer als die Schranke, aber endlich ist. Die Schranke
-# trifft Faelle des Modus `full-smoke` im CI-Worker: im Worker der Mutations-Probe auf
-# `mutate/…-7cc9f961` riss Fall 445 (`445-traeger-meldung-nennt-die-sprachen-nicht-mehr-unter-verfuegbar`)
-# sie — Worker Status 137, "seit 900 s hat kein Worker einen Fall gezogen oder abgeschlossen",
-# der Fall hat kein Ergebnis —, Fall 444 (derselbe Modus) brauchte im selben Lauf 862 s. Lokal
-# liegt die laengste Stille von `full-smoke` bei 148,97 s (s. oben), in der CI nahe an der
-# Schranke und darueber. `mutate-ergebnis.txt` fuehrt einen Fall ohne Beleg als `FEHLT`.
-# Der Wert 900 bleibt; kein Sensor haelt diese Aussage gegen die CI-Laufzeit, sie steht als
-# Messung dieses einen Laufs.
+# NICHT gedeckt: ein Fall, der langsamer als die Schranke, aber endlich ist, und die
+# Unterscheidung langsam gegen haengend: die Schranke trifft jeden Fall, dessen Gruen-Vorlauf
+# (`make full-smoke`) oder Lauf laenger als STALL_SECONDS keinen Fall zieht oder abschliesst,
+# und sagt nicht, ob er haengt oder langsam ist. Ein `full-smoke`-Fall im CI-Worker kann sie
+# erreichen (belegt an einem CI-Lauf, Beobachtung `BEO-ALL/mutate-zeitschranke-trifft-den-full-smoke-fall-in-der-ci`);
+# lokal liegt die laengste Stille von `full-smoke` bei 148,97 s (s. oben). Ein Fall ohne
+# Ergebnis steht in `mutate-ergebnis.txt` als `BEFUND (kein Ergebnis im Log)`, ein Fall ohne
+# Shard als `FEHLT`. Der Wert 900 ist unveraendert.
 # Die Vorgabe steht HIER und nicht im Makefile — dieselbe Begruendung wie bei MUTATE_JOBS:
 # eine zweite Vorgabe waere eine zweite Quelle.
 # Sensor: test/mutate-driver.bats „driver: ein Lauf ohne Fortschritt endet an der
