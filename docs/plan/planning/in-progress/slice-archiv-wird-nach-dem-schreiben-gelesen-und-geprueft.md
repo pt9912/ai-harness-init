@@ -44,16 +44,16 @@ Die Archivierung selbst trägt keine eigene `LH-*`-Anforderung (`grep -in archiv
 
 ## 2. Definition of Done
 
-- [ ] **L1 — Rückleseprobe in der Operation:** nach dem Schreiben öffnet `internal/archive` das Zip per `zip.OpenReader`, liest jeden Eintrag bis zum Ende (CRC) und vergleicht Pfade und Bytes mit der Quelle; bei Befund bricht die Operation ab, bevor ein Original gekürzt oder ein Stub geschrieben wird (Arbeitsbaum unverändert, soweit der Code es hält — die Zusage nennt, was nach dem Abbruch noch vom Zip auf Platte liegt). Unit-Test mit **abgeschnittenem** und **verfälschtem** Zip (Eintrag manipuliert), rot gesehen mit gepinnter Ursache (die Fehlermeldung nennt Archiv und Eintrag), kein Original gekürzt.
-- [ ] **L2 — Zahn im E2E:** `full-smoke.sh` prüft an den drei Stellen Validität statt Existenz (im Werkzeuglauf lesend, ohne Host-Toolchain — Zahn im Docker-Lauf des Ziels bzw. im Träger); ein Fall mit verfälschtem Zip färbt den Lauf rot, `# expect:` pinnt die Ursache. Die Zusage nennt den Aufruf, an dem sie gemessen ist (über `make`: Exit 2, `AGENTS.md` §3.6).
-- [ ] **L3 — Mutations-Fall:** `test/mutations/771-archiv-rueckleseprobe-ausgehebelt.sh` (Nummer: höchste belegte ist 770) hebt die Rückleseprobe aus (Probe zum No-Op) und färbt den benannten Wächter aus L1 rot; `make mutate-greift` grün, `MUTATE_CASES=771` einmal rot gesehen.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] **L1 — Rückleseprobe in der Operation:** nach dem Schreiben öffnet `internal/archive` das Zip per `zip.OpenReader`, liest jeden Eintrag bis zum Ende (CRC) und vergleicht Pfade und Bytes mit der Quelle; bei Befund bricht die Operation ab, bevor ein Original gekürzt oder ein Stub geschrieben wird (Arbeitsbaum unverändert, soweit der Code es hält — die Zusage nennt, was nach dem Abbruch noch vom Zip auf Platte liegt). Unit-Test mit **abgeschnittenem** und **verfälschtem** Zip (Eintrag manipuliert), rot gesehen mit gepinnter Ursache (die Fehlermeldung nennt Archiv und Eintrag), kein Original gekürzt.
+- [x] **L2 — Zahn im E2E:** `full-smoke.sh` prüft an den drei Stellen Validität statt Existenz (im Werkzeuglauf lesend, ohne Host-Toolchain — Zahn im Docker-Lauf des Ziels bzw. im Träger); ein Fall mit verfälschtem Zip färbt den Lauf rot, `# expect:` pinnt die Ursache. Die Zusage nennt den Aufruf, an dem sie gemessen ist (über `make`: Exit 2, `AGENTS.md` §3.6).
+- [x] **L3 — Mutations-Fall:** `test/mutations/771-archiv-rueckleseprobe-ausgehebelt.sh` (Nummer: höchste belegte ist 770) hebt die Rückleseprobe aus (Probe zum No-Op) und färbt den benannten Wächter aus L1 rot; `make mutate-greift` grün, `MUTATE_CASES=771` einmal rot gesehen.
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -87,12 +87,52 @@ DoD vollständig, `make gates` grün, Review- und Verifier-Report liegen vor, Cl
 
 ## 7. Closure-Notiz
 
-- **Was hat funktioniert:** —
-- **Was ging anders als geplant:** —
-- **Steering-Loop-Eintrag:** —
-- **Beobachtungs-Register (`../observations/`):** —
-- **Folge-Slices:** —
-- **Risiken aus §6:** —
+- **Was hat funktioniert:** L1: `pruefeArchiv` in `internal/archive/anwenden.go` liest das geschriebene Zip nach dem Schreiben,
+  vor Stubs, Kürzen und Staging, jeden Eintrag bis zum Ende (CRC), Namen und Bytes gegen die Quelle (fehlt, fremd, doppelt);
+  `TestAnwendenBrichtVorDemKuerzenAb` hat sechs Unterfälle und pinnt Archiv und Eintrag in der Meldung. L2: `archiv_gueltig` in
+  `harness/tools/full-smoke.sh` liest an den drei Stellen per `unzip -t`/`unzip -lq` im `BATS_IMAGE` (`--network none`); die Fälle 772 und 773
+  pinnen die Ursache im `# expect:`. L3: Fall 771 hebt die Probe aus. Belege: Review
+  [`2026-10-20-slice-archiv-wird-nach-dem-schreiben-gelesen-und-geprueft`](../../../reviews/2026-10-20-slice-archiv-wird-nach-dem-schreiben-gelesen-und-geprueft.md)
+  (0 HIGH/MEDIUM, 2 LOW behoben in `c589bb0e`/`1ae09d73`, 2 INFO), Verifier
+  [`…-verify`](../../../reviews/2026-10-20-slice-archiv-wird-nach-dem-schreiben-gelesen-und-geprueft-verify.md) (L1 bestätigt, L2 bedingt, L3 bestätigt;
+  `make mutate-greift` 759 von 759, `MUTATE_CASES=771` rot). Mutations-CI-Probe auf `mutate/…-1ae09d73` (vom Hauptkontext gemessen, Branch danach
+  gelöscht): 15 von 15 Fällen ok, Urteil grün; 772 und 773 sind nicht in der Auswahl und lokal über `make mutate` rot gesehen (`2 ok, 0 Befund(e)`).
+- **Was ging anders als geplant:** (1) **L2-Wortlaut.** Der Plan sagt „Fall mit verfälschtem Zip"; 772/773 liefern ein **abgeschnittenes** Zip, die
+  Eintrags-Verfälschung steckt nur im Unit-Test von L1. Urteil: L2 ist für die Zusage *Validität statt Existenz* erfüllt (lesbar, vollständig,
+  Eintragsnamen), für das Wort *verfälscht* **nicht wortgleich** — `archiv_gueltig` prüft keine Byte-Gleichheit, das sagen sein Kopfkommentar und
+  `harness/sensors/full-smoke.md`; Byte-Gleichheit trägt allein die Probe des Trägers (L1). Das Plan-Abnahmekriterium bleibt stehen, die Lücke ist
+  **benannt, nicht gedeckt**: kein E2E-Fall mit bytegleich-langem, aber verändertem Eintrag. (2) **Dritte Stelle** (gefetchter Release-Träger) hat keinen
+  Mutationsfall; Stelle 1 und 2 sind rot gesehen. Benannt im Sensor-Doc, nicht im Plan vorhergesehen. (3) **Gebaut ohne Plan-Zeile:** Fälle 772/773,
+  `export_test.go`, Schreibpunkt-Parameter in `anwenden()` (Plan §3 Ansatz kündigte den injizierbaren Punkt an), Doku in `sensors/full-smoke.md`; dem
+  DoD L1/L2 zuordenbar. (4) **Host-Abhängigkeit:** die Erst-Fassung von `archiv_gueltig` rief `unzip` auf dem Host; der Hauptkontext fing es im
+  Handoff, Review und Verifier fanden es nicht; der Implementer legte die Leseprobe in den Container (`BATS_IMAGE`, kein neuer Pin). Verifier-Hinweis 4
+  (Kurzbeschreibung der Stufen 7/8 in `docs/user/e2e-abdeckung.md` nennt die Leseprobe nicht): bleibt wahr, ist enger als der Sensor — kein Befund.
+- **Laufzeit ([`MR-089`](../../../../harness/conventions.md#mr-089)):** Kommando `make full-smoke-host` (Grün-Vorlauf des Falls, `artifact-host`), macOS
+  (Colima), Image warm, drei Einzelmessungen ohne Abwechseln: 417,8 s und 425,5 s mit Host-`unzip`, 360,1 s mit der Leseprobe im Container. Keine Deutung;
+  die Reihenfolge der Läufe ist nicht ausgeglichen, die Zahlen tragen keinen Vergleich. Ungemessen: kalter Cache, CI (Linux). Die CI-Probe-Wanduhr
+  (896 s, 15 Fälle) ist eine andere Größe.
+- **Steering-Loop-Eintrag:** neuer Sensor, **verkörpert**: die Rückleseprobe `pruefeArchiv` (liegt in `internal/archive/anwenden.go`, Zusage: das Zip ist
+  *lesbar und byte-gleich zum Zeitpunkt vor dem Kürzen*, nicht dauerhaft) mit dem Wächter `TestAnwendenBrichtVorDemKuerzenAb`, dem Mutations-Fall 771
+  und den E2E-Zähnen 772/773. Keine Regel-Prosa: kein Beobachtungs-Eintrag erreichte mit diesem Slice 3×. **Grenzen, benannt:** `archiv_gueltig`
+  hält keine Byte-Gleichheit; die dritte Stelle hat keinen Mutationsfall; 772/773 sind in der CI-Probe nicht in der Auswahl (lokal über `make mutate`
+  rot); die Reihenfolge „Probe vor Kürzen" hat keine eigene Mutation. Hard-Rule- und ADR-Trigger-Audit: [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md)
+  berührt, keine Festlegung geändert, keine ihrer drei Re-Evaluierungs-Bedingungen eingetreten (gelesen: Kopf und Trigger-Liste); keine Hard Rule
+  mit eingetretenem Trigger gemessen. **Offene Frage an den Architect, keine Pflicht dieses Slice:** ob die Abbruch-Reihenfolge (Probe vor Kürzen) eine
+  eigene ADR braucht (Plan §1, *Hinweis für den Architect*; nicht entschieden).
+- **Beobachtungs-Register (`../observations/`):** zwei neue Verzeichnisse, je ein Beleg, `offen`:
+  [`BEO-ALL/repo-werkzeug-fuehrt-host-abhaengigkeit-ein`](../observations/BEO-ALL/repo-werkzeug-fuehrt-host-abhaengigkeit-ein/observation.md)
+  (Host-`unzip`, vom Hauptkontext gefangen; Docker-only, [`AGENTS.md`](../../../../AGENTS.md) §3.9) und
+  [`BEO-ALL/waechter-satz-stelle-ohne-mutationsfall-und-ohne-byte-gleichheit`](../observations/BEO-ALL/waechter-satz-stelle-ohne-mutationsfall-und-ohne-byte-gleichheit/observation.md)
+  (dritte Stelle, `archiv_gueltig`). Nicht gezählt: `neuer-waechter-ohne-mutations-fall` — dort fehlt **jeder** Fall, hier existieren 771 bis 773 und nur
+  eine Stelle hat keinen. [`BEO-ALL/full-smoke-fall-expect-pinnt-nicht-die-ursache`](../observations/BEO-ALL/full-smoke-fall-expect-pinnt-nicht-die-ursache/observation.md)
+  bleibt bei 2 Belegen: 772/773 pinnen die Ursache gezielt (Meldungstext der Leseprobe), das ist kein weiteres Auftreten; ein Vorgang zählt einmal.
+  `register-ausgang`: siehe Paarungen.
+- **Folge-Slices:** keine angelegt. Offener Vorgang außerhalb: die Archivierung nach [`MR-078`](../../../../harness/conventions.md#mr-078); dieser Slice
+  ist der erste, der die Archiv-Probe liefert, `archive-welle` sperrt voraussichtlich an `[untergrenze]` (kein `done/*/archiv.zip`), `archive-welle altbestand`
+  bleibt ein eigener Vorgang und wurde nicht gefahren.
+- **Risiken aus §6:** (1) Dateisystem-Defekt nach der Probe — **entfallen:** die Zusage ist „lesbar und byte-gleich vor dem Kürzen", nicht Dauerhaftigkeit;
+  so im Doc-Kommentar. (2) Fall pinnt die Ursache grob — **nicht eingetreten** für 772/773 (gezielt gepinnt); der Plan-Ausgang *weiter offen* gilt für
+  die Klasse: `BEO-ALL/full-smoke-fall-expect-pinnt-nicht-die-ursache` bleibt offen, Zähler 2.
 - **Drei Paarungen:** —
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
