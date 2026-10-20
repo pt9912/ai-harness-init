@@ -10,7 +10,7 @@ Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 (§Ein Slice, dessen Gegenstand ein anderer übernimmt).
 
 **Welle:** ohne Welle — die Closure-Bedingung ist die DoD dieses Slice. Die Welle
-[welle-sprachprofile-java-python-csharp](../welle-sprachprofile-java-python-csharp.md) schließt
+[welle-sprachprofile-java-python-csharp](welle-sprachprofile-java-python-csharp.md) schließt
 den Handbuch-Nachzug ausdrücklich aus (§6 dort); er ist darum kein Mitglied ihrer Slice-Liste.
 
 **Bezug:** [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) (die

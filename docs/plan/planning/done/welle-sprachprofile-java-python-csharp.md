@@ -15,7 +15,7 @@ zwei Positionen, nicht drei.
 
 ## 1. Welle-Ziel
 
-Das Lastenheft nennt sechs Sprachen ([`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4):
+Das Lastenheft nennt sechs Sprachen ([`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4):
 `go`, `python`, `kotlin`, `java`, `csharp`, `cpp`); `internal/gen/` trägt drei Profile (`go`, `cpp`,
 `kotlin`). Die Welle schließt die Lücke für `java`, `python` und `csharp`: `add-lang <sprache>` rendert
 je Sprache ein Skelett mit Code-Gate und Guard-Set, dessen Toolchain, Pins, Gate-Targets und
@@ -26,7 +26,7 @@ Go, C++ und Kotlin grün (§3).
 ## 2. Trigger (Welle startet)
 
 - `welle-kotlin-skelett` ist geschlossen (Muster-Welle, Renderer-Vorbild
-  [ADR-0088](../adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md)): `ls docs/plan/planning/done/welle-kotlin-skelett-results.md` findet die Datei. Die
+  [ADR-0088](../../adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md)): `ls docs/plan/planning/done/welle-kotlin-skelett-results.md` findet die Datei. Die
   Welle setzt auf dem Renderer-Muster und den Stufen auf, die jene Welle geliefert hat.
 - `gen.SupportedLangs()` führt `cpp`, `go`, `kotlin` und keine der drei Sprachen dieser Welle
   (`internal/gen/gen.go`, Funktion `SupportedLangs`) — die Lücke besteht.
@@ -36,7 +36,7 @@ Go, C++ und Kotlin grün (§3).
 - Alle Slices aus §4 liegen in `done/`.
 - `make gates` grün.
 - **`make full-smoke` grün, und `docs/user/e2e-abdeckung.md` führt je neuer Sprache mindestens eine
-  Stufe mit [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), deren Kurzbeschreibung die Sprache nennt.** Der Ist-Stand, gegen den der
+  Stufe mit [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), deren Kurzbeschreibung die Sprache nennt.** Der Ist-Stand, gegen den der
   Trigger formuliert ist: die Stufen 12 bis 14 fahren je Sprache ein Ziel mit `add-lang` im Mono-Repo
   (Go+Go, C++, Kotlin), und keine Stufe nennt `java`, `python` oder `csharp` (`grep -n -E 'java|csharp' harness/tools/full-smoke.sh docs/user/e2e-abdeckung.md`
   → kein Treffer; `python` steht dort nur in einem Kommentar über die Abwesenheit von `python`/`jq`
@@ -45,19 +45,19 @@ Go, C++ und Kotlin grün (§3).
   **mit Beleg, dass das Code-Gate der Sprache gelaufen ist**, und der Guard blockt die Host-Toolchain
   der Sprache. Layouts darüber hinaus (`hexslice` mit Arch-Gate, Root-Bootstrap) liefert ein Slice
   nur, soweit seine ADR sie trägt; was eine Stufe nicht misst, nennt ihre Kurzbeschreibung am selben
-  Ort ([`AGENTS.md`](../../../AGENTS.md) §3.6).
+  Ort ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 - Closure-Notiz in `welle-sprachprofile-java-python-csharp-results.md`.
 
 ## 4. Slices in dieser Welle
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| `slice-java-skelett` | Java als Sprachskelett mit Code-Gate und Guard | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
-| `slice-java-hexslice-layout` | Java-hexslice mit emittiertem Arch-Gate und core-impurity-Zahn (nach `slice-java-skelett`) | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
-| `slice-python-skelett` | Python als Sprachskelett mit Code-Gate und Guard (Layout `flat`) | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
-| `slice-python-hexslice-layout` | Python-hexslice mit emittiertem Arch-Gate und core-impurity-Zahn (nach `slice-python-skelett`) | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
-| `slice-csharp-skelett` | C# als Sprachskelett mit Code-Gate und Guard (Layout `flat`) | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
-| `slice-csharp-hexslice-layout` | C#-hexslice mit emittiertem Arch-Gate und core-impurity-Zahn (nach `slice-csharp-skelett`) | [`LH-FA-04`](../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-FA-07`](../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) |
+| `slice-java-skelett` | Java als Sprachskelett mit Code-Gate und Guard | [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
+| `slice-java-hexslice-layout` | Java-hexslice mit emittiertem Arch-Gate und core-impurity-Zahn (nach `slice-java-skelett`) | [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
+| `slice-python-skelett` | Python als Sprachskelett mit Code-Gate und Guard (Layout `flat`) | [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
+| `slice-python-hexslice-layout` | Python-hexslice mit emittiertem Arch-Gate und core-impurity-Zahn (nach `slice-python-skelett`) | [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
+| `slice-csharp-skelett` | C# als Sprachskelett mit Code-Gate und Guard (Layout `flat`) | [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) |
+| `slice-csharp-hexslice-layout` | C#-hexslice mit emittiertem Arch-Gate und core-impurity-Zahn (nach `slice-csharp-skelett`) | [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4), [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) |
 
 Offene Beobachtungen sind gesichtet in §8 jedes Slice-Plans; Treffer der Eröffnung (Schritt 2):
 `handbuch-sprachbaum-ohne-sensor-in-full-smoke` (1, offen),
