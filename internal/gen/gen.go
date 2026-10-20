@@ -137,23 +137,19 @@ func profiles() map[string]func(version, arch string) map[string]string {
 const DefaultArch = archFlat
 
 // langArchs bildet Sprache -> die Architekturen, die ihr Renderer WIRKLICH rendert.
-// Heute tragen go (slice-045a) und cpp (slice-053) beide Architekturen. Getrennt vom
-// Achsen-Vokabular SupportedArchs() (dem Union aller Werte): ein Achsen-Wert kann
-// existieren, bevor jeder Renderer ihn implementiert. GenerateArch validiert die
+// Getrennt vom Achsen-Vokabular SupportedArchs() (dem Union aller Werte): ein Achsen-Wert
+// kann existieren, bevor jeder Renderer ihn implementiert. GenerateArch validiert die
 // (lang, arch)-Kombination hiergegen, damit eine nicht getragene Kombination fail-fast
-// Exit 2 gibt, statt still ein Geruestung-only-Skelett zu schreiben (slice-045a-Review
-// INFO-1).
+// Exit 2 gibt, statt still ein Geruestung-only-Skelett zu schreiben.
 //
-// STAND: go traegt flat + hexslice + hexagonal, cpp, kotlin und java tragen flat + hexslice
-// (ADR-0088, ADR-0094 Festlegung 4: ein Layout steht erst hier, wenn sein Renderer es rendert),
-// python traegt flat (ADR-0095 Festlegung 5, ebenso), csharp traegt flat (ADR-0096 Festlegung 5, ebenso).
-// Die sprach-spezifische zweite Stufe der Arch-Validierung ist damit wieder von aussen
-// ERREICHBAR und bewacht — `cpp --arch hexagonal` ist eine existierende Architektur, die
-// dieser Renderer nicht rendert (TestGenerateArch_LangSpecificArchRejected haelt es fest,
-// full-smoke faehrt den Exit-2-Fall real). Zwischen slice-053 und slice-058 war sie
-// unerreichbar und ehrlich als unbewacht benannt; das ist mit dem dritten Achsen-Wert
-// hinfaellig. EINE Quelle: SupportedArchs() leitet den Union hieraus ab (kein
-// Doppel-Pflegepunkt).
+// STAND: go traegt flat + hexslice + hexagonal; cpp, kotlin, java, python und csharp tragen
+// flat + hexslice. Ein Layout steht erst hier, wenn sein Renderer es rendert (ADR-0088,
+// ADR-0094 Festlegung 4, ADR-0095 Festlegung 5, ADR-0096 Festlegung 5).
+// Die sprach-spezifische zweite Stufe der Arch-Validierung ist von aussen erreichbar:
+// `cpp --arch hexagonal` ist eine existierende Architektur, die dieser Renderer nicht rendert
+// (TestGenerateArch_LangSpecificArchRejected haelt es fest; full-smoke faehrt den Exit-2-Fall
+// real fuer `add-lang java --arch hexagonal`). EINE Quelle: SupportedArchs() leitet den Union
+// hieraus ab. Grenze: kein Sensor haelt diesen Kommentar gegen die Tabelle darunter.
 func langArchs() map[string][]string {
 	return map[string][]string{
 		"go":     {archFlat, archHexslice, archHexagonal},
