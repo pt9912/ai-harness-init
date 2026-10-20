@@ -397,6 +397,25 @@ Host ([`LH-QA-02`](spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)) — ein Hos
 liefert ein Ergebnis, das CI nicht wiederholt, und verlegt das Debugging auf den
 Unterschied statt auf den Fehler.
 
+**Host der Host-Läufer ist Linux; macOS ist dafür nicht getragen.** Die Host-Läufer dieses
+Repos — `make mutate`, `make mutate-auswahl`, `make mutate-greift`, `make full-smoke` — laufen auf
+einem Linux-Host; Beleg-Ort ist CI auf frischem Klon
+([`MR-014`](harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)). Auf macOS
+stößt ihr Lauf auf die Variante der Host-Werkzeuge (BSD- statt GNU-`sed`); das ist
+**kein** Anspruch, den dieses Repo trägt. Die Umwege — GNU-`sed` vorn im `PATH`,
+`make artifact-host` / `make full-smoke-host` — sind Hilfen **ohne Anspruch**: ein Lauf darüber
+ist kein Beleg. **Die Aussage liegt unter dem Vertrag:** sie betrifft die Dogfood-Läufer dieses
+Repos, nicht das Produkt — [`LH-QA-03`](spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)
+(Bootstrap-Laufzeit braucht git + docker) und
+[`LH-QA-04`](spec/lastenheft.md#lh-qa-04--plattform-matrix) (Binary erstklassig auf macOS) gelten
+unverändert; kein Change Request. **Auflösungs-Trigger:** macOS wird für diese Läufer getragen,
+sobald eine macOS-CI sie hält oder der Auftraggeber es entscheidet; dann entfällt dieser Absatz
+(DoD-Punkt des auslösenden Slice) · seit slice-macos-als-host-plattform-wird-entschieden-und-vollzogen.
+**Ein Wächter existiert nicht:** die Aussage ist eine Plattform-Deklaration; `git grep -n 'uname'
+-- harness/tools test Makefile` nennt Plattform-Abfragen (Träger-Fetch, `HOST_OS` im `Makefile`),
+aber keinen Test, der einen Läufer auf einem Nicht-Linux-Host abweist oder die Deklaration hält —
+ein rotes Gegenbeispiel gibt es nicht. Träger ist die Doku der Läufer, die auf diese Norm zeigt.
+
 **Grenze des Feedback-Quadranten, und sie ist zweifach.** Durchgesetzt wird die Regel
 vom PreToolUse-Guard, den `.claude/settings.json` verdrahtet: er prüft die
 Befehlsposition jedes Kommando-Segments und schlägt bei Parse-Zweifel fail-closed zu.
