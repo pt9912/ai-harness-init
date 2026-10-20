@@ -13,3 +13,5 @@ Warte-Schritt, sein Grün-Vorlauf `make full-smoke` fällt vor der Publikation a
 vor der Publikation nicht belegbar; sie holt der nächtliche `mutate`-Vollsweep nach, dessen Ergebnis für diesen Schnitt ungemessen ist.
 Geschärfte Regel als Vorschlag an den Architect, nicht verkörpert: der Schnitt nennt die Fälle ohne Ergebnis im Bericht und schließt mit der
 benannten Lücke, oder die Probe läuft nach der Publikation; ein Wächter existiert nicht.
+
+**Neue Möglichkeit:** `make release-warten` im Worker-Vorlauf des Workflows `mutate-branch` (Verdikt `2026-10-20-welle-sprachprofile-java-python-csharp-architect-verdikt`, V-2). Der Folge-Slice `slice-mutate-branch-worker-wartet-die-publikation-ab` ist vorgeschlagen, die Entscheidung des Auftraggebers steht offen; die Grenze oben wechselt auf *geplant* mit Kennung, sobald der Slice angelegt ist.

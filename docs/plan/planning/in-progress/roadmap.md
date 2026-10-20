@@ -17,11 +17,10 @@ Welle-Dateien; woran gearbeitet wird, sagt das `Welle:`-Feld der Slices in
 nicht hier.
 
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
-- [welle-sprachprofile-java-python-csharp — Sprachprofile java, python und csharp](../welle-sprachprofile-java-python-csharp.md)
 
 **Nichts in Arbeit.** [`in-progress/`](../in-progress) trägt keinen Slice
 (`ls docs/plan/planning/in-progress/slice-*.md` findet keinen); die Welle
-[welle-sprachprofile-java-python-csharp](../welle-sprachprofile-java-python-csharp.md) bleibt offen.
+[welle-09](../welle-09-modul-15-konformitaet.md) bleibt offen.
 
 ## Nächste Wellen
 
@@ -139,6 +138,7 @@ Ergebnis-Notiz, keine Nummernfolge.
 | [welle-erfassungsschicht-im-ziel](../done/welle-erfassungsschicht-im-ziel.md) | 2026-10-08 | [welle-erfassungsschicht-im-ziel-results.md](../done/welle-erfassungsschicht-im-ziel-results.md) |
 | [welle-handbuch-zeigt-den-bestand](../done/welle-handbuch-zeigt-den-bestand.md) | 2026-10-08 | [welle-handbuch-zeigt-den-bestand-results.md](../done/welle-handbuch-zeigt-den-bestand-results.md) |
 | [welle-kotlin-skelett](../done/welle-kotlin-skelett.md) | 2026-10-09 | [welle-kotlin-skelett-results.md](../done/welle-kotlin-skelett-results.md) |
+| [welle-sprachprofile-java-python-csharp](../done/welle-sprachprofile-java-python-csharp.md) | 2026-10-20 | [welle-sprachprofile-java-python-csharp-results.md](../done/welle-sprachprofile-java-python-csharp-results.md) |
 
 Die Tabelle ist nach Wellen-Nummer sortiert, nicht nach Abschluss-Datum; `welle-10` schloss nach
 `welle-12`, und `welle-emittierte-werkzeuge` sowie `welle-v021-faehigkeit` stehen am Ende, weil

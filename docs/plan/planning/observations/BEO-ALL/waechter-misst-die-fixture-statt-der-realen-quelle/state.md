@@ -14,3 +14,5 @@ gegen ihre reale Quelle; Träger bleibt der Lauf, der den Wächter schreibt.
 
 **Unterklasse Fremd-Werkzeug-Verhalten nachgebaut:** Halter der realen Quelle ist die
 `full-smoke`-Stufe in CI. Der geplante Kopplungs-Sensor deckt sie nicht und muss es nicht (Verdikt `2026-10-09-welle-kotlin-skelett-architect-verdikt`, B-5).
+
+**Unterklasse Pin des realen `Makefile` vor der Publikation:** vor der Publikation ist kein Sensor möglich (das Asset existiert nicht); nach ihr ist ein Sensor benannt (Verdikt `2026-10-20-welle-sprachprofile-java-python-csharp-architect-verdikt`, V-1). Der Folge-Slice `slice-traeger-pins-werden-nach-der-publikation-gegen-die-sha256sums-gehalten` ist vorgeschlagen, die Entscheidung des Auftraggebers steht offen; der Stand wechselt auf *geplant* mit Kennung, sobald der Slice angelegt ist.
