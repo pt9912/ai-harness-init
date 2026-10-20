@@ -173,6 +173,21 @@ Gegenbeispiel läuft über `make`. **Ein Wächter existiert nicht:** keine Prüf
 Exit-Satz einer Doku-Zeile gegen den Aufruf, den sie nennt. Träger ist der Lauf, der den Satz
 schreibt · seit slice-mutate-laeuft-ueber-einen-ci-branch.
 
+**Falsch:** ein grüner Wächter über einem nachgebauten Pin — einer erfundenen `SHA256SUMS`, einem
+Stub-`docker`, einem Pin aus der Umgebung des Tests —, dessen Name oder Zeile zusagt, das reale
+`Makefile` trage nach der Publikation die Digests des Release.
+**Richtig:** die Zusage nennt, was `make traeger-pins-check` hält: je Plattform der Matrix (alle
+sechs) der `TRAEGER_SHA256_*`-Pin gegen den `SHA256SUMS`-Eintrag des Tags, gepaart nach dem Namen
+des Assets, nicht nach der Zeilenposition. Die Paarungs-Logik und die Exit-Klassen halten
+`test/traeger-pins-check.bats` und der Fall `test/mutations/774-traeger-pins-paarung-nach-position.sh`
+über einer nachgebauten Fixture. **Grenze:** Pin gegen Publikation, nicht Bau gegen Bau — ob ein
+Neubau die Digests des Workflows trifft, und die Menge der Assets, hält der Sensor nicht. Den
+**realen** Pin gegen das **reale** Release hält allein der Lauf am Release-Schnitt; **ein Wächter
+existiert nicht**, der Schnitt kann ihn auslassen, und `make comment-claims` prüft nur, dass der
+Sensor existiert. Der Exit-Satz ist an `make` gemessen: die Klasse des Skripts steht in der Zeile
+`traeger-pins-check: Exit <N>`, der Exit von `make` ist bei jedem Fehlschlag 2. Träger ist der Lauf,
+der den Release-Schnitt fährt · seit slice-traeger-pins-werden-nach-der-publikation-gegen-die-sha256sums-gehalten.
+
 **Feedback:** `make mutate` (kein Gate; geführt in
 [`harness/README.md`](harness/README.md) §Werkzeuge) fährt ein kuratiertes Set aus
 *(Mutation → erwartet rot färbender Test)* und meldet jeden **gelisteten** Wächter,
