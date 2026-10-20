@@ -11,4 +11,4 @@
 # Rot faerbt der Fall "paarung nach name", dessen Fixture die Zeilen in anderer Folge fuehrt und
 # Exit 0 verlangt. Der Test haelt die Paarungs-Logik, nicht den realen Pin.
 set -euo pipefail
-sed -i 's~^\ttreffer="\$(printf .%s\\n. "\$sums" | awk -v a="\$asset" .\$2 == a { print \$1 }.)"$~\tnr=\$((nr + 1)); treffer="\$(printf \x27%s\\n\x27 "\$sums" | awk -v i="\$nr" \x27NR == i { print \$1 }\x27)"~' harness/tools/traeger-pins-check.sh
+sed -i 's~^\ttreffer="\x24(printf .%s\\n. "\x24sums" | awk -v a="\x24asset" .\x242 == a { print \x241 }.)"$~\tnr=\x24((nr + 1)); treffer="\x24(printf \x27%s\\n\x27 "\x24sums" | awk -v i="\x24nr" \x27NR == i { print \x241 }\x27)"~' harness/tools/traeger-pins-check.sh
