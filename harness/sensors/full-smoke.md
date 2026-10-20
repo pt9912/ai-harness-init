@@ -15,6 +15,15 @@ Stufe `slice_mv_kanten_nach_done_im_ziel` an einem frisch emittierten sprachlose
 hält und was der Dogfood-Wächter daneben hält, steht in [`slice-mv.md`](slice-mv.md) §Kanten
 `open → done` und `next → done`.
 
+**Host-Abhängigkeit der Archivierungs-Stufe.** An den drei Stellen, an denen ein `archiv.zip` nach
+einem Vollzug liegt (Welle, Altbestand, gefetchter Träger), liest die Stufe das Archiv mit
+`unzip -tq` und `unzip -Z1` (`archiv_gueltig` in `harness/tools/full-smoke.sh`) statt seine
+Existenz zu halten; `unzip` ist damit eine Host-Abhängigkeit dieses Targets (kein Gate), und fehlt
+es, endet der Lauf mit einer Meldung, die es nennt. Gelesen ist die Datei auf Lesbarkeit (CRC) und
+auf die genannten Einträge, nicht auf Byte-Gleichheit mit den Quellen — die hält die Rückleseprobe
+des Trägers (`internal/archive`). Die dritte Stelle fährt den Release-Träger; ein defektes Archiv
+ist dort nicht herstellbar, kein Mutations-Fall deckt sie.
+
 ### Deklaration der Stufen
 
 Jede Stufe nennt an sich selbst, welche Anforderung sie trägt. Unmittelbar nach ihrer

@@ -94,6 +94,41 @@ einordnen() {
 	bash "$HIER/full-smoke-ausgang.sh" "$1" <<<"$2" >&2
 }
 
+# archiv_gueltig <zip> <Eintrag>... — das Archiv ist LESBAR und fuehrt jeden genannten
+# Eintrag. `unzip -tq` liest jeden Eintrag bis zum Ende (CRC) und endet sonst mit einem
+# Fehler; `unzip -Z1` listet die Namen. Die Funktion ist die Leseprobe des E2E, unabhaengig
+# von der des Traegers (internal/archive, pruefeArchiv): sie liest die Datei, die der Lauf
+# hinterlassen hat, mit dem Werkzeug, dem der Zeiger eines Stubs folgt (`unzip -p`).
+# NICHT geprueft: dass die Bytes einer Quelle gleichen — das haelt allein die Probe des
+# Traegers; und dass die Datei nach dem Lauf lesbar BLEIBT. Braucht `unzip` auf dem Host
+# (bash, git, docker und make allein genuegen hier nicht); fehlt es, endet die Funktion
+# mit einer Meldung, die es nennt, statt das Archiv als gueltig durchzulassen.
+# Rueckgabe 0 gueltig, 1 mit dem Grund auf stdout.
+archiv_gueltig() {
+	local zip="$1" eintrag liste
+	shift
+	if ! command -v unzip >/dev/null 2>&1; then
+		echo "unzip fehlt auf dem Host — die Leseprobe des Archivs ist nicht gelaufen"
+		return 1
+	fi
+	if [ ! -f "$zip" ]; then
+		echo "$zip liegt nicht"
+		return 1
+	fi
+	if ! unzip -tq "$zip" >/dev/null 2>&1; then
+		echo "$zip besteht die Leseprobe nicht (unzip -tq): $(unzip -tq "$zip" 2>&1 | tr -s '[:space:]' ' ')"
+		return 1
+	fi
+	liste="$(unzip -Z1 "$zip")"
+	for eintrag in "$@"; do
+		if ! grep -qxF -- "$eintrag" <<<"$liste"; then
+			echo "$zip fuehrt den Eintrag $eintrag nicht"
+			return 1
+		fi
+	done
+	return 0
+}
+
 # e2e_abdeckung <Kennungen> <Kurzbeschreibung> <Anker> — DIE DEKLARATION EINER STUFE.
 #
 # WOZU: Diese Funktion gibt der Beziehung ANFORDERUNG -> STUFE einen ORT. Der Aufruf steht
@@ -1821,8 +1856,11 @@ SMOKEEOF
 		printf '%s\n' "$lauf" >&2
 		exit 1
 	fi
-	if [ ! -f "$plan_done/$welle/archiv.zip" ]; then
-		echo "full-smoke: FEHLER — $kennung: die Archivierung meldet Vollzug, aber $welle/archiv.zip fehlt — der Traeger ist damit nicht gelaufen." >&2
+	local zip_grund=""
+	if ! zip_grund="$(archiv_gueltig "$plan_done/$welle/archiv.zip" \
+		"docs/plan/planning/done/$welle/$welle.md" "docs/plan/planning/done/$welle/slice-999-archiv-smoke.md" \
+		"docs/reviews/slice-999-review.md")"; then
+		echo "full-smoke: FEHLER — $kennung: die Archivierung meldet Vollzug, aber $welle/archiv.zip ist nicht gelesen und vollstaendig: $zip_grund — der Traeger ist nicht gelaufen oder hat ein defektes Archiv abgelegt." >&2
 		exit 1
 	fi
 	local stub
@@ -1917,8 +1955,10 @@ SMOKEEOF
 		einordnen "make archive-welle WELLE=altbestand im Ziel ($kennung)" "$alt"
 		exit 1
 	fi
-	if [ ! -f "$plan_done/altbestand/archiv.zip" ]; then
-		echo "full-smoke: FEHLER — $kennung: der Altbestand-Lauf meldet Vollzug, aber altbestand/archiv.zip fehlt." >&2
+	local alt_grund=""
+	if ! alt_grund="$(archiv_gueltig "$plan_done/altbestand/archiv.zip" \
+		"docs/plan/planning/done/altbestand/slice-997-altbestand.md")"; then
+		echo "full-smoke: FEHLER — $kennung: der Altbestand-Lauf meldet Vollzug, aber altbestand/archiv.zip ist nicht gelesen und vollstaendig: $alt_grund" >&2
 		exit 1
 	fi
 	if [ ! -f "$plan_done/altbestand/slice-997-altbestand.md" ] || [ ! -f "$plan_done/slice-996-spaet.md" ] \
@@ -2211,8 +2251,10 @@ SMOKEEOF
 		printf '%s\n' "$gel" >&2
 		exit 1
 	fi
-	if [ ! -f "$done_fetch/$welle_fetch/archiv.zip" ]; then
-		echo "full-smoke: FEHLER — $kennung: der Vollzug wird gemeldet, aber $welle_fetch/archiv.zip fehlt — der gefetchte Traeger hat die Operation nicht abgelegt (ADR-0033 Festlegung 3)." >&2
+	local fetch_grund=""
+	if ! fetch_grund="$(archiv_gueltig "$done_fetch/$welle_fetch/archiv.zip" \
+		"docs/plan/planning/done/$welle_fetch/$welle_fetch.md" "docs/plan/planning/done/$welle_fetch/slice-997-fetch-smoke.md")"; then
+		echo "full-smoke: FEHLER — $kennung: der Vollzug wird gemeldet, aber $welle_fetch/archiv.zip ist nicht gelesen und vollstaendig: $fetch_grund — der gefetchte Traeger hat die Operation nicht abgelegt (ADR-0033 Festlegung 3)." >&2
 		exit 1
 	fi
 	echo "full-smoke: Konsumenten-Aufruf ($kennung): make archive-welle archiviert $welle_fetch mit dem aus dem gepinnten Release gefetchten Traeger — Vollzug gemeldet, Archiv mit Stubs gelegt."
