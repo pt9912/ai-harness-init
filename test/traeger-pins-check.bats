@@ -183,3 +183,10 @@ letzte_zeile() { printf '%s\n' "$output" | tail -n 1; }
   grep -qE '^traeger-pins-check: ##' "$REPO/Makefile"
   ! grep -E '^(gates|record-gates):' "$REPO/Makefile" | grep -qF 'traeger-pins-check'
 }
+
+@test "name exakt: ein Fremd-Eintrag, dessen Name den Asset-Namen enthaelt, stoert die Paarung nicht" {
+  printf 'bb01  ai-harness-init-linux-amd64.sig\nbb02  ai-harness-init-windows-arm64.exe.sig\n' >>"$STUB_SUMS"
+  run bash "$SKRIPT"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"gleich — alle 6 Pins"* ]]
+}
