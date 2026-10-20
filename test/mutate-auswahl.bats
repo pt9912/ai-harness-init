@@ -310,3 +310,10 @@ WORKFLOW_MB=".github/workflows/mutate-branch.yml"
 @test "workflow: shard haengt per needs an plan" {
   awk '/^  shard:$/ { f = 1; next } f && /^  [a-z]/ { exit } f && /^    needs: plan$/ { ok = 1 } END { exit !ok }' "$REPO/$WORKFLOW_MB"
 }
+
+@test "workflow: der Warte-Schritt laeuft nur, wenn lauf einen Lauf ergeben hat" {
+  w="$REPO/$WORKFLOW_MB"
+  warten="$(grep -n '^        run: make release-warten$' "$w" | cut -d: -f1)"
+  [ -n "$warten" ]
+  [ "$(sed -n "$((warten - 1))p" "$w")" = "      - if: steps.lauf.outputs.laufen == 'true'" ]
+}
