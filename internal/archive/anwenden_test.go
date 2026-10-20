@@ -727,6 +727,12 @@ func TestAnwendenBrichtVorDemKuerzenAb(t *testing.T) {
 		{"eintrag-fehlt", func(t *testing.T, root, zielRel string, pfade []string) error {
 			return archive.Zip(root, zielRel, pfade[:len(pfade)-1])
 		}, []string{"archiv " + zipRel + ": Eintrag docs/reviews/2026-05-05-slice-100-runde-1.md fehlt"}},
+		{"eintrag-fremd", func(t *testing.T, root, zielRel string, pfade []string) error {
+			return archive.Zip(root, zielRel, append(append([]string{}, pfade...), "fremd.txt"))
+		}, []string{"archiv " + zipRel + ", Eintrag fremd.txt: gehoert nicht zu den Quellen"}},
+		{"eintrag-doppelt", func(t *testing.T, root, zielRel string, pfade []string) error {
+			return archive.Zip(root, zielRel, append(append([]string{}, pfade...), pfade[0]))
+		}, []string{"archiv " + zipRel + ", Eintrag " + erster + ": doppelt"}},
 	}
 	for _, fall := range faelle {
 		t.Run(fall.name, func(t *testing.T) {
