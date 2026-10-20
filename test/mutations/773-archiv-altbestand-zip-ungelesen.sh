@@ -17,4 +17,4 @@
 set -euo pipefail
 sed -i 's|^\tif err := pruefeArchiv(root, zipRel, imArchiv); err != nil {$|\tif err := pruefeArchiv(root, zipRel, imArchiv); false \&\& err != nil {|' internal/archive/anwenden.go
 sed -i 's|^\tif err := zw.Close(); err != nil {$|\tif err := error(nil); err != nil {|' internal/archive/anwenden.go
-sed -i 's|^\tif ! zip_grund="\$(archiv_gueltig |\tif false \&\& ! zip_grund="$(archiv_gueltig |' harness/tools/full-smoke.sh
+sed -i 's|^\tif ! zip_grund=|\tif false \&\& ! zip_grund=|' harness/tools/full-smoke.sh

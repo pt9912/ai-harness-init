@@ -683,7 +683,7 @@ func TestAnwendenBrichtVorDemKuerzenAb(t *testing.T) {
 				return err
 			}
 			return os.WriteFile(p, b[:len(b)/2], 0o644)
-		}, []string{"Archiv " + zipRel + " nicht lesbar"}},
+		}, []string{"archiv " + zipRel + " nicht lesbar"}},
 		{"eintrag-bytes-verfaelscht", func(t *testing.T, root, zielRel string, pfade []string) error {
 			if err := archive.Zip(root, zielRel, pfade); err != nil {
 				return err
@@ -699,7 +699,7 @@ func TestAnwendenBrichtVorDemKuerzenAb(t *testing.T) {
 			b[start] ^= 0xFF
 			b[start+1] ^= 0xFF
 			return os.WriteFile(p, b, 0o644)
-		}, []string{"Archiv " + zipRel + ", Eintrag " + erster + " nicht lesbar"}},
+		}, []string{"archiv " + zipRel + ", Eintrag " + erster + " nicht lesbar"}},
 		{"eintrag-gueltig-aber-andere-bytes", func(t *testing.T, root, zielRel string, pfade []string) error {
 			f, err := os.Create(filepath.Join(root, filepath.FromSlash(zielRel)))
 			if err != nil {
@@ -723,22 +723,21 @@ func TestAnwendenBrichtVorDemKuerzenAb(t *testing.T) {
 				return err
 			}
 			return f.Close()
-		}, []string{"Archiv " + zipRel + ", Eintrag " + erster + ": weicht von der Quelle ab"}},
+		}, []string{"archiv " + zipRel + ", Eintrag " + erster + ": weicht von der Quelle ab"}},
 		{"eintrag-fehlt", func(t *testing.T, root, zielRel string, pfade []string) error {
 			return archive.Zip(root, zielRel, pfade[:len(pfade)-1])
-		}, []string{"Archiv " + zipRel + ": Eintrag docs/reviews/2026-05-05-slice-100-runde-1.md fehlt"}},
+		}, []string{"archiv " + zipRel + ": Eintrag docs/reviews/2026-05-05-slice-100-runde-1.md fehlt"}},
 	}
 	for _, fall := range faelle {
 		t.Run(fall.name, func(t *testing.T) {
 			root := baueBaum(t)
 			b := einsammeln(t, root, "welle-10")
 			g := &gitMitschreiber{root: root, beobachte: erster, zipPfad: zipRel}
-			t.Cleanup(archive.ZipSchreiberErsetzen(func(r, z string, p []string) error {
-				return fall.defekt(t, r, z, p)
-			}))
 			var aus bytes.Buffer
 
-			err := archive.Anwenden(root, b, indexDateien(t, root), g, &aus)
+			err := archive.AnwendenMitZip(root, b, indexDateien(t, root), g, &aus, func(r, z string, p []string) error {
+				return fall.defekt(t, r, z, p)
+			})
 
 			if err == nil {
 				t.Fatal("defektes Archiv: want Fehler, got nil — die Rueckleseprobe laeuft nicht")

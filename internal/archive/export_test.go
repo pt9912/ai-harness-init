@@ -1,9 +1,9 @@
 package archive
 
-// ZipSchreiberErsetzen tauscht den Schreibpunkt des Archivs und gibt die
-// Rueckstellung zurueck. Nur im Testbinaer vorhanden.
-func ZipSchreiberErsetzen(f func(root, zielRel string, pfade []string) error) (zurueck func()) {
-	alt := schreibeZip
-	schreibeZip = f
-	return func() { schreibeZip = alt }
+import "io"
+
+// AnwendenMitZip ist Anwenden mit ersetztem Schreibpunkt des Archivs. Nur im
+// Testbinaer vorhanden.
+func AnwendenMitZip(root string, b Bestand, dateien []string, g Git, out io.Writer, schreibe func(root, zielRel string, pfade []string) error) error {
+	return anwenden(root, b, dateien, g, out, schreibe)
 }

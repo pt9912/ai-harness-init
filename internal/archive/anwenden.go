@@ -88,6 +88,12 @@ func ZuStagen(b Bestand, nachgezogen []string) []string {
 // `dateien` ist der Suchraum-Eingang des Verweis-Nachzugs (git ls-files); `out`
 // nimmt den Fortschrittstext.
 func Anwenden(root string, b Bestand, dateien []string, g Git, out io.Writer) error {
+	return anwenden(root, b, dateien, g, out, Zip)
+}
+
+// anwenden ist Anwenden mit dem Schreibpunkt des Archivs als Parameter; der Test
+// legt darueber zwischen Schreiben und Rueckleseprobe ein defektes Zip (export_test.go).
+func anwenden(root string, b Bestand, dateien []string, g Git, out io.Writer, schreibeZip zipSchreiber) error {
 	altbestand := b.Welle == AltbestandSchluessel
 	// ZUSAGE (ADR-0090 Festlegung 1 und 3): der Schluessel AltbestandSchluessel laeuft nur
 	// mit einer nicht leeren Kennung des Aufrufers; ohne sie endet der Lauf hier — vor dem
@@ -123,7 +129,7 @@ func Anwenden(root string, b Bestand, dateien []string, g Git, out io.Writer) er
 	}
 
 	// Ab hier traegt der Baum Commit 1. Jeder Fehler bekommt den Rueckweg mit.
-	if err := inhaltsSchritt(root, b, dateien, vorlagen, umzuege, g, out); err != nil {
+	if err := inhaltsSchritt(root, b, dateien, vorlagen, umzuege, g, out, schreibeZip); err != nil {
 		return NachCommit1Fehler{Welle: b.Welle, Ziel: ziel, Ursache: err}
 	}
 	return nil
@@ -171,7 +177,7 @@ func (e NachCommit1Fehler) Unwrap() error { return e.Ursache }
 
 // inhaltsSchritt ist alles, was in Commit 2 landet: Zip, Stubs, Loeschung der
 // Review-Reports, Verweis-Nachzug, Staging.
-func inhaltsSchritt(root string, b Bestand, dateien []string, vorlagen string, umzuege []Umzug, g Git, out io.Writer) error {
+func inhaltsSchritt(root string, b Bestand, dateien []string, vorlagen string, umzuege []Umzug, g Git, out io.Writer, schreibeZip zipSchreiber) error {
 	ziel := doneDir + "/" + b.Welle
 	zipRel := ziel + "/" + archivName
 
@@ -361,9 +367,8 @@ func Zip(root, zielRel string, pfade []string) error {
 	return nil
 }
 
-// schreibeZip ist der Schreibpunkt des Archivs; der Test ersetzt ihn, um zwischen
-// Schreiben und Rueckleseprobe ein defektes Zip zu legen (export_test.go).
-var schreibeZip = Zip
+// zipSchreiber ist der Schreibpunkt des Archivs.
+type zipSchreiber func(root, zielRel string, pfade []string) error
 
 // pruefeArchiv oeffnet das geschriebene Zip erneut, liest jeden Eintrag bis zum
 // Ende (der CRC-Vergleich liegt am Ende des Lesens) und haelt Namen und Bytes gegen
@@ -374,7 +379,7 @@ var schreibeZip = Zip
 func pruefeArchiv(root, zipRel string, pfade []string) error {
 	zr, err := zip.OpenReader(filepath.Join(root, filepath.FromSlash(zipRel)))
 	if err != nil {
-		return fmt.Errorf("Archiv %s nicht lesbar: %w", zipRel, err)
+		return fmt.Errorf("archiv %s nicht lesbar: %w", zipRel, err)
 	}
 	defer func() { _ = zr.Close() }()
 
@@ -385,32 +390,32 @@ func pruefeArchiv(root, zipRel string, pfade []string) error {
 	gesehen := make(map[string]bool, len(pfade))
 	for _, f := range zr.File {
 		if !erwartet[f.Name] {
-			return fmt.Errorf("Archiv %s, Eintrag %s: gehoert nicht zu den Quellen", zipRel, f.Name)
+			return fmt.Errorf("archiv %s, Eintrag %s: gehoert nicht zu den Quellen", zipRel, f.Name)
 		}
 		if gesehen[f.Name] {
-			return fmt.Errorf("Archiv %s, Eintrag %s: doppelt", zipRel, f.Name)
+			return fmt.Errorf("archiv %s, Eintrag %s: doppelt", zipRel, f.Name)
 		}
 		gesehen[f.Name] = true
 		rc, err := f.Open()
 		if err != nil {
-			return fmt.Errorf("Archiv %s, Eintrag %s nicht lesbar: %w", zipRel, f.Name, err)
+			return fmt.Errorf("archiv %s, Eintrag %s nicht lesbar: %w", zipRel, f.Name, err)
 		}
 		im, err := io.ReadAll(rc)
 		_ = rc.Close()
 		if err != nil {
-			return fmt.Errorf("Archiv %s, Eintrag %s nicht lesbar: %w", zipRel, f.Name, err)
+			return fmt.Errorf("archiv %s, Eintrag %s nicht lesbar: %w", zipRel, f.Name, err)
 		}
 		quelle, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(f.Name)))
 		if err != nil {
-			return fmt.Errorf("Archiv %s, Eintrag %s: Quelle nicht lesbar: %w", zipRel, f.Name, err)
+			return fmt.Errorf("archiv %s, Eintrag %s: Quelle nicht lesbar: %w", zipRel, f.Name, err)
 		}
 		if !bytes.Equal(im, quelle) {
-			return fmt.Errorf("Archiv %s, Eintrag %s: weicht von der Quelle ab", zipRel, f.Name)
+			return fmt.Errorf("archiv %s, Eintrag %s: weicht von der Quelle ab", zipRel, f.Name)
 		}
 	}
 	for _, p := range pfade {
 		if !gesehen[filepath.ToSlash(p)] {
-			return fmt.Errorf("Archiv %s: Eintrag %s fehlt", zipRel, filepath.ToSlash(p))
+			return fmt.Errorf("archiv %s: Eintrag %s fehlt", zipRel, filepath.ToSlash(p))
 		}
 	}
 	return nil
