@@ -81,7 +81,7 @@ Die Sonde (frischer Klon unter `.harness/state/sonde`, `git mv` von `CO-001` nac
 Link-Befunde plus 1 Code-Pfad-Befund**, aus rund **40 Quellen**. Eingefroren sind darunter
 [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) (*Accepted*, zwei Pfad-Links),
 Zeitdokumente unter `docs/reviews/`, `docs/plan/planning/done/` (7 Slices und 14 Welle-Dateien)
-und `docs/plan/carveouts/done/CO-003`. Die Befundliste stammt aus dieser Sonde; das Mess-Kommando
+und der aufgelöste Carveout CO-003. Die Befundliste stammt aus dieser Sonde; das Mess-Kommando
 ist der Sonden-Lauf selbst (`make docs-check` im Klon nach dem `git mv`), nicht ein `grep` über
 diesen Baum, und die Entscheidung wiederholt ihn mit eigener Ausgabe (DoD 2).
 
