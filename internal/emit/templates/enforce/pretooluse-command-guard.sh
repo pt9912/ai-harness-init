@@ -7,7 +7,8 @@
 # tool_input.command aus der Hook-stdin-JSON; bei Parse-Zweifel (malformed,
 # abgeschnitten, \u-Escape im Befehl, zwei Strings ohne Trenner, ein Zeichen
 # ausserhalb von `: , } ]` und Leerraum hinter einem String-Ende)
-# -> fail-closed (block).
+# -> fail-closed (block). Die Klassen entscheidet der Extraktor mit Exit 3; die
+# Guard-Entscheidung auf eine solche Eingabe ist am emittierten Guard nicht gemessen.
 #
 # Geprueft wird die Befehlsposition jedes Kommando-Segments (Trennung an
 # ; & && || | $( ` ( und Zeilenenden) — `git commit -m "... pip ..."` bleibt

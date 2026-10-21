@@ -117,6 +117,10 @@ extract_in() { printf '%s' "$2" | awk -f "$1"; }
   done
 }
 
+# Grenze: dieser Fall faehrt den Guard dieses Repos. Der emittierte Guard loest seinen
+# Extraktor ueber tools/harness/… auf, das im Repo nicht existiert; die Zusage fuer die
+# emittierte Fassung traegt der Extraktor der Vorlage (Schleifenfaelle, Fall 781). Ein
+# realer emittierter Guard-Lauf mit Parse-Zweifel-Eingabe ist nicht gemessen.
 @test "guard: zwei Strings ohne Trenner -> block (der erste Befehl geht nicht verloren)" {
   run guard '{"tool_input":{"command":"pip x""make gates"}}'
   assert_blocked
