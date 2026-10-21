@@ -10,7 +10,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 Setzung 1: **(1) Bündel?** Nein — **ein** Gate-Rezept. **(2) Gemeinsames Closure-Kriterium?** Nein —
 jedes wäre die Abschrift der DoD. **(3) Auslöser?** Reaktiv: Der Auflösungs-Trigger von
 [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) ist eingetreten; dieser Slice ist die
-Gate-Arbeit, [slice-113](slice-113-co-001-ist-faellig.md) die Auflösung dahinter.
+Gate-Arbeit, [slice-113](../open/slice-113-co-001-ist-faellig.md) die Auflösung dahinter.
 
 **Ebene: Dogfood, nicht emittiert.** Gegenstand ist das `shell-lint`-Rezept **dieses**
 [`Makefile`](../../../../Makefile). Was ein emittiertes Repo an Shell-Lint bekommt, entscheidet der
@@ -76,14 +76,14 @@ keine ADR.** Mischform:
 Die Zahlen des Reports (173 Befunde, 55 ohne Suppression zu beheben, SC2154 auf 0) sind eine Messung des
 Architects vom 2026-10-21 auf HEAD `479a466a`, **keine Erwartungswerte**; der Implementer misst neu.
 
-**Übernimmt:** nichts. Der Gegenstand der Auflösung bleibt bei [slice-113](slice-113-co-001-ist-faellig.md).
+**Übernimmt:** nichts. Der Gegenstand der Auflösung bleibt bei [slice-113](../open/slice-113-co-001-ist-faellig.md).
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Eine `.shellcheckrc` an der Wurzel oder ein `-v …:rw`-Mount** — beides schaltet die Ausnahme auf
   andere Bäume aus bzw. berührt `MR-049`; das Verdikt schließt sie aus.
 - **Die Auflösung von `CO-001`** (Move nach `done/`, Pfad-Nachzug, zehntes `ignore-refs`-Paar, Absatz
-  *„GRENZE, keine Regel"*, Bindung und Index) — [slice-113](slice-113-co-001-ist-faellig.md) führt sie
+  *„GRENZE, keine Regel"*, Bindung und Index) — [slice-113](../open/slice-113-co-001-ist-faellig.md) führt sie
   aus und nimmt sie an (sein §1). Der Carveout bleibt bis dahin in `carveouts/`; zurückgenommen wird hier
   nur die Pfad-Ausnahme im Rezept, nicht das Dokument.
 - **Ein bats-natives Lint-Werkzeug** (zweite Technik aus `CO-001`) — kostet ein neues Image, einen
@@ -148,7 +148,7 @@ Drei slice-eigene Punkte (Modul 5 §Ziel-Form: ≤ 3).
 **Start** (`open` → `next` → `in-progress`): der Architect hat die Frage aus §1 beantwortet (Verdikt
 `2026-10-21-slice-bats-ruempfe-erreichen-shell-lint-architect-verdikt`, keine ADR nötig), der
 Auftraggeber hat den Slice priorisiert, und das WIP-Limit ist frei.
-[slice-113](slice-113-co-001-ist-faellig.md) beginnt erst, wenn dieser Slice in `done/` liegt.
+[slice-113](../open/slice-113-co-001-ist-faellig.md) beginnt erst, wenn dieser Slice in `done/` liegt.
 
 **Rückführungen — vorab benannt:**
 
@@ -156,7 +156,7 @@ Auftraggeber hat den Slice priorisiert, und das WIP-Limit ist frei.
   allein 36) ist in **einer** Review-Sitzung nicht prüfbar. Dann Re-Slice: (A) Verkettung mit Fuß und
   `--exclude` plus Fälle, (B) Befund-Behebung nach Regel-Klasse, nicht ein vierter DoD-Punkt.
 - `in-progress` → `open`: die Verkettung liefert keinen stabilen Extrakt. Dann bekommt `CO-001` den
-  gemessenen Grund und einen Trigger, der nicht eingetreten ist; [slice-113](slice-113-co-001-ist-faellig.md)
+  gemessenen Grund und einen Trigger, der nicht eingetreten ist; [slice-113](../open/slice-113-co-001-ist-faellig.md)
   entfällt mit diesem Grund.
 
 ## 5. Closure-Trigger
