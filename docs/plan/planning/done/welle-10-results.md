@@ -187,7 +187,7 @@ ein halluziniertes Gate.
 **Aus den Closures der Mitglieder, noch nicht geschlossen** (je Zeile der
 Mitglieds-Slice, der ihn nannte):
 
-- [slice-073](../done/slice-073-emittierte-doc-gate-module.md) ← slice-085 · [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md), [slice-142](../open/slice-142-verweis-form-vor-dem-einfrieren-hat-einen-waechter.md), [slice-143](../open/slice-143-datei-weiter-ausschluss-weicht-dem-referenz-ventil.md), [slice-141](../in-progress/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) ← slice-132 · [slice-114](../next/slice-114-jede-aussage-hat-einen-abschnitt.md) ← slice-081 · [slice-139](../done/slice-139-lastenheft-deckt-die-emit-disposition.md) ← slice-130 · [slice-146](../done/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) ← slice-084.
+- [slice-073](../done/slice-073-emittierte-doc-gate-module.md) ← slice-085 · [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md), [slice-142](../open/slice-142-verweis-form-vor-dem-einfrieren-hat-einen-waechter.md), [slice-143](../open/slice-143-datei-weiter-ausschluss-weicht-dem-referenz-ventil.md), [slice-141](../done/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) ← slice-132 · [slice-114](../next/slice-114-jede-aussage-hat-einen-abschnitt.md) ← slice-081 · [slice-139](../done/slice-139-lastenheft-deckt-die-emit-disposition.md) ← slice-130 · [slice-146](../done/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) ← slice-084.
 
 **Nicht aus dieser Welle**, obwohl von Mitgliedern zitiert:
 [slice-090](../done/slice-090-freshness-audit-im-ziel.md) und
@@ -238,7 +238,7 @@ Sensor-Läufe, je mit dem Baum, über dem sie liefen:
 
 - **Carveouts** (`ls docs/plan/carveouts/CO-*.md`):
   [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) **verlängert mit
-  Folge-Slice** ([slice-141](../in-progress/slice-141-co-001-aufloesung-ist-vorher-entschieden.md)
+  Folge-Slice** ([slice-141](../done/slice-141-co-001-aufloesung-ist-vorher-entschieden.md)
   entscheidet vorher, [slice-113](../open/slice-113-co-001-ist-faellig.md) führt
   aus) · [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) **permanent**,
   betroffenes Gate: keines. Das Welle-Kriterium *„`make gates` grün ohne offenen

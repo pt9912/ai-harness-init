@@ -115,7 +115,7 @@ zu vermuten:
 
 Er ist **nicht** die Heilung des Bestands — die 33 Vorkommen bleiben, wo sie sind
 ([`AGENTS.md`](../../../../AGENTS.md) §3.4). Und er ist **nicht** die Entscheidung über `CO-001`:
-die trägt [slice-141](../in-progress/slice-141-co-001-aufloesung-ist-vorher-entschieden.md), und sie hat einen
+die trägt [slice-141](../done/slice-141-co-001-aufloesung-ist-vorher-entschieden.md), und sie hat einen
 anderen Gegenstand — dort geht es um zwei bereits geschriebene Adressen, hier um jede künftige.
 
 ## 2. Definition of Done

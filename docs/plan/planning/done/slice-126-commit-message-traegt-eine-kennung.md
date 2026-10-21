@@ -369,7 +369,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtun
   eine `.bats`-Datei an, die **eigene Hilfsfunktionen mit Verzweigung** trägt
   (`hook()` mit `if`/`else`) — wörtlich der Auflösungs-Trigger jenes Carveouts, der bereits als
   *eingetreten* geführt wird und dessen Ausgang bei
-  [slice-141](../in-progress/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) liegt. Der Bestand
+  [slice-141](../done/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) liegt. Der Bestand
   wächst damit um einen weiteren Fall statt zu schrumpfen. Die Zeile *Letzte Prüfung* bleibt
   ungeschrieben: Sie wird in diesem Repo vom Welle-Trigger-Audit geführt, und zwei Schreiber
   desselben Feldes wären zwei Chroniken derselben Sache.

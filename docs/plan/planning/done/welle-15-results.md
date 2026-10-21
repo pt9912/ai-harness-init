@@ -346,7 +346,7 @@ Das ist das Übergabe-Artefakt *Verifier → Planner* aus
   Trigger **weiterhin eingetreten**, Ausgang unverändert *verlängert mit
   Folge-Slice* — die Datei nennt
   [slice-113](../open/slice-113-co-001-ist-faellig.md) als Folge-Slice, und
-  [slice-141](../in-progress/slice-141-co-001-aufloesung-ist-vorher-entschieden.md)
+  [slice-141](../done/slice-141-co-001-aufloesung-ist-vorher-entschieden.md)
   entscheidet vorher. Der Bestand ist gewachsen — `ls test/*.bats | wc -l` →
   **22**, keine Erwartungswerte —, die tragende Fundstelle des Carveouts ist
   unverändert.
