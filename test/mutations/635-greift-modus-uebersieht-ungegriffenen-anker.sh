@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # files: harness/tools/mutate.sh
-# expect: greift: die Fall-Fassungen 29/247 aus 98bfab0b^ greifen im Bestand nicht, der Befund nennt beide
+# expect: greift: die Fall-Fassungen 29/247 aus dem Vorgaenger-Stand von 98bfab0b greifen im Bestand nicht, der Befund nennt beide
 #
 # Der Greift-Modus sammelt eine unveraenderte Zieldatei nicht mehr: greift_case meldet
 # jeden Fall als greifend, auch wenn sein Anker im Bestand nichts trifft. `make gates`

@@ -636,6 +636,7 @@ failure_form() {
     # Bedingung 4 wirkungslos.
     full-smoke) printf '%s' 'full-smoke: FEHLER' ;;    # harness/tools/full-smoke.sh
     ci-lint) printf '%s' ':[0-9]+:[0-9]+:' ;;          # actionlint file:line:col: (nur bei Fehler)
+    shell-lint) printf '%s' '\[SC[0-9]+\]' ;;     # gcc-Format von Shellcheck: `datei:z:s: stufe: text [SCnnnn]` (nur bei Befund)
     *)       return 1 ;;
   esac
 }
@@ -866,7 +867,7 @@ run_case() {
 # endet mit Exit != 0, sobald einer fehlt. Beim Direktaufruf engt MUTATE_CASES ein wie beim
 # vollen Lauf; das Rezept `make mutate-greift` nimmt es aus der Umgebung heraus. Vorher- und
 # Nachher-Hash werden je exaktem Pfad verglichen, nicht ueber einen Teilstring.
-# Sensor: test/mutate-driver.bats „greift: die Fall-Fassungen 29/247 aus 98bfab0b^
+# Sensor: test/mutate-driver.bats „greift: die Fall-Fassungen 29/247 aus dem Vorgaenger-Stand von 98bfab0b
 # greifen im Bestand nicht, der Befund nennt beide" (Fixtures test/fixtures/mutate-greift/),
 # „greift: dieselben Faelle im Bestand greifen", „greift: ein Pfad, der Praefix eines
 # anderen in # files: ist, gilt nur als gegriffen, wenn er selbst sich aendert" und — fuer
@@ -1124,6 +1125,7 @@ mode_rank() {
     test-bats) printf '%s' '4' ;;
     test-go) printf '%s' '5' ;;
     ci-lint) printf '%s' '6' ;;
+    shell-lint) printf '%s' '7' ;;
     *) printf '%s' '9' ;;
   esac
 }

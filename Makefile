@@ -286,14 +286,18 @@ mutate-branch: ## Schritte des CI-Branch-Laufs der Mutations-Faelle (SCHRITT=lau
 mutate-greift: ## Greift jeder sed-Anker der Mutations-Faelle im Quellbestand? — ohne Container, jeder Fall, in gates (MR-071)
 	@unset MUTATE_CASES; bash harness/tools/mutate.sh --greift
 
-# shellcheck über die harness-eigenen Shell-Hooks/-Helfer. .bats ist
-# ausgenommen (shellcheck parst die @test-Syntax nicht); .awk ist kein Shell.
+# shellcheck über die harness-eigenen Shell-Hooks/-Helfer (erster Aufruf, volle Schwelle)
+# und über die Rümpfe aller test/*.bats (zweiter Aufruf: harness/tools/bats-lint.sh, das
+# bats-preprocess im BATS_IMAGE und shellcheck im SHELLCHECK_IMAGE verkettet; Pins kommen
+# von hier, die zwei Ausnahmen — SC2016 und der SC2154-Fuss — stehen mit ihrem Gegenstand im
+# Skript und gelten nur dort). .awk ist kein Shell.
 # .githooks/commit-msg und .githooks/pre-commit tragen keine .sh-Endung — git
 # verlangt den nackten Hook-Namen —, werden darum einzeln genannt statt ueber
 # einen Glob.
-shell-lint: ## Shell-Hooks/-Helfer linten (shellcheck) im gepinnten Image — Docker-only (ADR-0003)
+shell-lint: ## Shell-Hooks/-Helfer und bats-Rümpfe linten (shellcheck) im gepinnten Image — Docker-only (ADR-0003)
 	docker run --rm -v "$(CURDIR)":/mnt:ro -w /mnt $(SHELLCHECK_IMAGE) \
 		.claude/hooks/*.sh harness/tools/*.sh internal/emit/templates/*.sh internal/emit/templates/enforce/*.sh test/mutations/*.sh .githooks/commit-msg .githooks/pre-commit
+	BATS_IMAGE='$(BATS_IMAGE)' SHELLCHECK_IMAGE='$(SHELLCHECK_IMAGE)' bash harness/tools/bats-lint.sh
 
 # Haelt Kommentar-Behauptungen gegen ihre Sensoren (AGENTS.md 3.6). Hermetisch —
 # reines bash+awk auf dem Arbeitsbaum, kein Docker, kein Netz —, deshalb IN gates.

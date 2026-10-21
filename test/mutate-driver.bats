@@ -20,7 +20,7 @@ setup() {
 # den F-1-Zustand zurueck (rot aus falschem Grund wird als Beleg akzeptiert).
 @test "driver: failure_form liefert fuer jeden erlaubten Modus ein NICHT-leeres Muster" {
   local m
-  for m in test smoke; do
+  for m in test smoke shell-lint; do
     run bash -c "source '$DRIVER' 2>/dev/null || true; failure_form $m"
     [ -n "$output" ]
   done
@@ -1499,7 +1499,7 @@ vollauf() {
 # Stand 98bfab0b^ (byte-gleich zu `git show 98bfab0b^:test/mutations/<fall>.sh`); ihre
 # Anker zitieren Quellzeilen, die eine berechtigte Aenderung verschoben hat. Gegen den
 # heutigen Bestand greifen sie nicht, und der Befund nennt jeden Fall — LH-QA-01.
-@test "greift: die Fall-Fassungen 29/247 aus 98bfab0b^ greifen im Bestand nicht, der Befund nennt beide" {
+@test "greift: die Fall-Fassungen 29/247 aus dem Vorgaenger-Stand von 98bfab0b greifen im Bestand nicht, der Befund nennt beide" {
   run bash -c "source '$DRIVER' 2>/dev/null || true; greift_main '$REPO/test/fixtures/mutate-greift' '$REPO'"
   [ "$status" -ne 0 ]
   grep -qF 'BEFUND 29-roadmap-nicht-neutralisiert — Mutation hat nicht gegriffen bei: internal/emit/templates.go' <<<"$output"
