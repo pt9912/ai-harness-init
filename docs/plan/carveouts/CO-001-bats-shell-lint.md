@@ -50,7 +50,7 @@ internal/emit/templates/ und test/mutations/ bleiben **voll** gelintet — der
 Ausschluss betrifft ausschließlich die bats-Testdateien.
 
 **Folge-Slices, zwei:**
-[slice-bats-ruempfe-erreichen-shell-lint](../planning/in-progress/slice-bats-ruempfe-erreichen-shell-lint.md)
+[slice-bats-ruempfe-erreichen-shell-lint](../planning/done/slice-bats-ruempfe-erreichen-shell-lint.md)
 entscheidet zwischen den zwei unten genannten Techniken und nimmt die Pfad-Ausnahme zurück;
 [slice-113](../planning/open/slice-113-co-001-ist-faellig.md) führt danach die Auflösung aus (`git mv` nach
 `done/`; scheitert die Technik, Neufassung mit einem Trigger, der noch nicht eingetreten ist). Herkunft der

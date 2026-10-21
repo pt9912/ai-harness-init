@@ -17,7 +17,7 @@ Setzung 2 steht wellenlose Arbeit **nicht** in der Roadmap; ihr Zustand ist das 
 
 **Schnitt vom 2026-10-21.** Der Slice war als Gate-Arbeit **und** Auflösung geschnitten. Die
 Gate-Arbeit (Prüfbereich öffnen, Befunde beheben, Pfad-Ausnahme zurücknehmen) trägt jetzt
-[slice-bats-ruempfe-erreichen-shell-lint](../in-progress/slice-bats-ruempfe-erreichen-shell-lint.md); **dieser Slice
+[slice-bats-ruempfe-erreichen-shell-lint](../done/slice-bats-ruempfe-erreichen-shell-lint.md); **dieser Slice
 behält die Kennung und die Auflösung**, weil `CO-001`, [`ADR-0098`](../../adr/0098-co-001-aufloesung-reiner-move-nachzug-und-ein-namentliches-paar-fuer-adr-0021.md) und die Zeitdokumente ihn als
 Folge-Slice nennen. Er beginnt erst, wenn jener in `done/` liegt (§4).
 
@@ -45,7 +45,7 @@ rechtfertigt),
 **`CO-001` liegt in `docs/plan/carveouts/done/`, ohne dass der Move einen Befund erzeugt, den niemand
 beheben darf.** Voraussetzung ist, dass `shell-lint` die bats-Rümpfe liest und `make gates` ohne die
 Pfad-Ausnahme grün ist — das liefert
-[slice-bats-ruempfe-erreichen-shell-lint](../in-progress/slice-bats-ruempfe-erreichen-shell-lint.md), und dieser
+[slice-bats-ruempfe-erreichen-shell-lint](../done/slice-bats-ruempfe-erreichen-shell-lint.md), und dieser
 Slice prüft sie vor dem Move.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
@@ -157,7 +157,7 @@ Drei slice-eigene Punkte (Modul 5 §Ziel-Form: ≤ 3).
 ## 4. Trigger
 
 **Beginn (`open` → `next` → `in-progress`): das WIP-Limit ist frei,
-[slice-bats-ruempfe-erreichen-shell-lint](../in-progress/slice-bats-ruempfe-erreichen-shell-lint.md) liegt in `done/`,
+[slice-bats-ruempfe-erreichen-shell-lint](../done/slice-bats-ruempfe-erreichen-shell-lint.md) liegt in `done/`,
 [`ADR-0098`](../../adr/0098-co-001-aufloesung-reiner-move-nachzug-und-ein-namentliches-paar-fuer-adr-0021.md)
 trägt den Status `Accepted` **und**
 [slice-141](../done/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) liegt in `done/`.** Die
