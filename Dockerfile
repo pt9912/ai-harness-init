@@ -7,11 +7,11 @@
 # GO_VERSION + GOLANGCI_LINT_VERSION sind die Toolchain-Pins dieses Repos; jeder Base-Tag ist
 # per @sha256 auf seinen Manifest-Digest gepinnt (Drift melden make freshness-go/-golangci).
 # Kein Host-go/-golangci-lint (Docker-only, ADR-0003) — die Aufrufe leben hier im Dockerfile, nicht im Bash.
-ARG GO_VERSION=1.27.2
+ARG GO_VERSION=1.27.3
 ARG GOLANGCI_LINT_VERSION=v2.15.0
 
 # ---- deps ------------------------------------------------------------------
-FROM golang:${GO_VERSION}@sha256:820153096fda4de6ac1b7194d12e416b7dd8f4e9a33d17e0345b111b945162d8 AS deps
+FROM golang:${GO_VERSION}@sha256:957861185dbf29d93668ace41e011d091c6e779953d47f0316ef2cc58e28fe2b AS deps
 WORKDIR /src
 ENV GOFLAGS="-mod=readonly -buildvcs=false" \
     GOMODCACHE=/go/pkg/mod \

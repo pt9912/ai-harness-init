@@ -190,7 +190,7 @@ e2e_abdeckung() {
 	echo "full-smoke: Abdeckung der Stufe ab Zeile $start: $kennungen — $kurz (Anker aufgeloest in $quelle:$ort)."
 }
 
-GO_VERSION="${GO_VERSION:-1.27.2}"
+GO_VERSION="${GO_VERSION:-1.27.3}"
 tmpbin="$(mktemp -d -p "${TMPDIR:-/tmp}")"
 # Elternverzeichnis der Klone des Ziels tmprepo: der zwei, die der Vorlauf-Waechter-Abschnitt
 # derselben Quelle anlegt (flach und vollstaendig), und des unaktivierten Klons der Stufe
