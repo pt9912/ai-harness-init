@@ -195,7 +195,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Antwort und wird in §7 notiert. Das Reconciliation-Register entfällt dauerhaft: dieses Repo
       hat keinen Brownfield-Bootstrap.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste Welle-Closure, nicht
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste Welle-Closure, nicht
       dieser Slice — dieses Repo fährt Wellen-Betrieb, und das gilt auch für wellenlose Slices.
 
 ## 3. Plan (vor Code)
@@ -327,6 +327,11 @@ Träger ist der Plan-Text (slice-113 §4, ADR-0098 Festlegung 4), Gegenstück
 **Beobachtungs-Register.** Neu:
 [`BEO-ALL/ignore-refs-paar-aufnahme-hat-keinen-sensor`](../observations/BEO-ALL/ignore-refs-paar-aufnahme-hat-keinen-sensor/observation.md),
 ein Beleg (Ausgang des dritten Risikos aus §6).
+
+**Paarungen geprüft am 2026-10-21** (nach dem `git mv`): (a) Anker — kein Eintrag trägt `liegt in`,
+nichts zu paaren; (b) Folge-Slice — `ls docs/plan/planning/open/slice-113-co-001-ist-faellig.md` findet
+die Datei; (c) Register — das Verzeichnis `ignore-refs-paar-aufnahme-hat-keinen-sensor` existiert, und
+`ls …/evidence/*.md | wc -l` → **1**.
 
 ## 8. Sub-Area-Modus-Begründung
 
