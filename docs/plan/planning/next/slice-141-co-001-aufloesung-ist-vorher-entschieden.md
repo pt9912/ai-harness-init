@@ -10,7 +10,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 Setzung 1, alle drei Fragen beantwortet. **Bündel?** Nein — ein Slice, eine Entscheidung, und er
 wartet auf keinen zweiten. **Gemeinsames Closure-Kriterium?** Nein — jedes wäre die Abschrift
 seiner eigenen DoD. **Auslöser reaktiv oder gewollt?** Reaktiv: ein Auflösungs-Trigger ist
-eingetreten und sein Vollzug bricht zwei Adressen, die niemand heilen darf (§1). Der Gegenstand
+eingetreten und sein Vollzug bricht Adressen in rund 40 überwiegend eingefrorenen Quellen (§1). Der Gegenstand
 stammt **nicht** aus dem Re-Baseline-Delta und belegt kein Closure-Kriterium von
 [welle-10](../done/welle-10-re-baseline.md) §3; er gehört darum in keine Welle. Nach
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
@@ -21,8 +21,10 @@ Setzung 2 steht wellenlose Arbeit **nicht** in der Roadmap; ihr Zustand ist das 
 Gate, dessen einziger Befund unbehebbar ist, erzieht dazu, Rot zu überlesen — dieselbe Kehrseite
 des halluzinierten Gates, die schon
 [slice-132](../done/slice-132-adaptions-block-ohne-totes-ziel.md) getragen hat),
-[`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) (die Quelldatei der zwei
-Verweise, und Festlegung 5, die den nächsten Fall ausdrücklich einzeln stellt),
+[`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) (eine der eingefrorenen
+Quellen, und Festlegung 5, die den nächsten Fall ausdrücklich einzeln stellt),
+[`ADR-0040`](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) (die Annahme ist
+Auftraggeber-Entscheidung),
 [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md) (dieselbe Klasse, an
 [`ADR-0026`](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md) entschieden — sie
 deckt diesen Fall **nicht**, und Festlegung 3 bindet die Verweis-Form für künftige Artefakte),
@@ -30,7 +32,8 @@ deckt diesen Fall **nicht**, und Festlegung 3 bindet die Verweis-Form für künf
 Adresse*),
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 (der Schnitt-Test oben),
-[`AGENTS.md`](../../../../AGENTS.md) §3.4 (das Artefakt ist eingefroren) und §3.8 (die
+[`AGENTS.md`](../../../../AGENTS.md) §3.4 (das Artefakt ist eingefroren), §3.5 (jede Senkung eigene
+ADR), §3.11 (Adressen in einfrierenden Artefakten, beide Formen) und §3.8 (die
 Entscheidung schreibt der Architect — dieser Slice ist geschnitten, nicht ausgeführt vom Planner).
 
 **Berührte Spec-Stellen:** `—`. Der Slice bewegt eine Architektur-Entscheidung und eine
@@ -52,8 +55,15 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 ist einzeln lieferbar.
 
 **Wenn [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) nach `carveouts/done/` wandert, ist
-vorher entschieden, was mit den zwei Pfad-Links geschieht, die dieser Move in einem eingefrorenen
-Artefakt bricht.**
+vorher entschieden, was mit den Adressen geschieht, die dieser Move in rund 40 eingefrorenen
+Quellen bricht.** Der Gegenstand ist eine **Architect-Entscheidung** (ADR, §1 *Der Auftrag*); die
+Annahme einer ADR ist Auftraggeber-Entscheidung
+([`ADR-0040`](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md)).
+
+**Zur Neuzerlegung zurückgestellt.** Der Slice bleibt in `next/` (kein Claim, kein Move). Die
+Rückführungs-Bedingung aus §4 ist bei der Vorab-Messung **eingetreten**: der Befund ist eine
+Häufung, kein Einzelfall mit zwei Verweisen. Die frühere Fassung dieses §1 und die Zahl „zwei" sind
+durch den Messbefund unten ersetzt.
 
 ### Der Befund: ein fälliger Carveout mit einer geladenen Adresse
 
@@ -65,21 +75,30 @@ Prüfung ist der welle-12-Closure-Audit vom 2026-08-27, und sein Folge-Slice
 den Ausgang zur **Verzeichnis-Position**: der Carveout wandert per `git mv` nach `done/` — oder er
 bekommt einen Trigger, der noch nicht eingetreten ist.
 
-**Der Move bricht zwei Adressen, und ihre Quelldatei ist eingefroren.**
-[`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) trägt zwei Pfad-Links auf
-den **unaufgelösten** Ort:
+**Der Move bricht eine Häufung von Adressen, und ihre Quellen sind überwiegend eingefroren.**
+Die Sonde (frischer Klon unter `.harness/state/sonde`, `git mv` von `CO-001` nach
+`carveouts/done/`, dann `make docs-check`) misst: **2947 Dateien geprüft, 61 Befunde** — **60
+Link-Befunde plus 1 Code-Pfad-Befund**, aus rund **40 Quellen**. Eingefroren sind darunter
+[`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) (*Accepted*, zwei Pfad-Links),
+Zeitdokumente unter `docs/reviews/`, `docs/plan/planning/done/` (7 Slices und 14 Welle-Dateien)
+und `docs/plan/carveouts/done/CO-003`. Die Befundliste stammt aus dieser Sonde; das Mess-Kommando
+ist der Sonden-Lauf selbst (`make docs-check` im Klon nach dem `git mv`), nicht ein `grep` über
+diesen Baum, und die Entscheidung wiederholt ihn mit eigener Ausgabe (DoD 2).
 
-```sh
-grep -c '^\*\*Status:\*\* Accepted' docs/plan/adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md          # 1
-grep -cE '\]\(\.\./carveouts/(done/)?CO-001[^)]*\)' docs/plan/adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md  # 2
-```
-
-*Accepted* heißt nach [`AGENTS.md`](../../../../AGENTS.md) §3.4 eingefroren; die Reparatur im
-Artefakt ist gesperrt, und zwar für beide naheliegenden Formen — Adresse nachziehen und Adresse
-entfallen lassen. **Das ist Zeichen für Zeichen die Lage, die
+*Accepted* heißt nach [`AGENTS.md`](../../../../AGENTS.md) §3.4 eingefroren, und ein
+Zeitdokument ist Chronik von Beruf; die Reparatur in der Quelle ist gesperrt, und zwar für beide
+naheliegenden Formen — Adresse nachziehen und Adresse entfallen lassen. **Das ist die Klasse, die
 [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md) an
-[`ADR-0026`](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md) entschieden hat**
-— nur mit einem anderen Carveout, einer anderen Quelldatei und **zwei** Referenzen statt einer.
+[`ADR-0026`](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md) für eine
+einzelne Referenz entschieden hat** — hier als Häufung mit anderer Größenordnung. **Beide Adress-Formen**
+sind betroffen, Markdown-Link **und** Code-Span (die 60 Links und der eine Code-Pfad fallen auf
+verschiedene Module des Doku-Gates); die Entscheidung nach
+[`AGENTS.md`](../../../../AGENTS.md) §3.11 misst über beide.
+
+**„Drittes `ignore-refs`-Paar" ist veraltet.** Der Schlüssel führt inzwischen die Paare 1 bis 9
+plus Baum-Globs; jeder weitere Eintrag ist nach [`AGENTS.md`](../../../../AGENTS.md) §3.5 eine
+eigene ADR (Senkung, Auftraggeber-Entscheidung). Die Messung der Paar-Zahl steht in der
+Entscheidung neben ihrem Kommando (`grep -n 'ignore-refs' -A 40 .d-check.yml`), nicht hier.
 
 ### Warum die Entscheidung vor den Move gehört, und warum sie nicht abgeschrieben wird
 
@@ -104,12 +123,34 @@ Aufwand, sondern ein rotes Gate mit gesperrter Reparatur.
 
 Er ist **nicht** die Auflösung von [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) und
 **nicht** die shellcheck-Arbeit an den bats-Dateien — beides trägt
-[slice-113](../open/slice-113-co-001-ist-faellig.md), unverändert. Und er entscheidet **nicht** im Voraus,
-welches Instrument richtig ist: ein drittes `ignore-refs`-Paar, das Ziel-Ende aus
-[`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) Festlegung 5, oder ein
-vierter Weg, den die Messung im Lauf zeigt. **Welche Menge die Kandidaten bilden, ist hier nicht
-behauptet** — eine Aufzählung wäre eine Vollständigkeitsaussage über eine Menge, und die braucht
-ihr Kommando wie eine Zahl.
+[slice-113](../open/slice-113-co-001-ist-faellig.md), unverändert, und der bleibt hinter diesem Slice
+(§4). Er wählt auch **nicht** vorab zwischen den Optionen unten; das tut der Architect.
+
+### Der Auftrag an den Architect: vier Optionen, eine ADR
+
+Die ADR wählt eine der folgenden Optionen oder begründet eine fünfte, je mit der Messung aus
+DoD (2). **Die Aufzählung ist der Auftrag-Stand, keine Vollständigkeitsaussage.**
+
+- **(a) `CO-001` bleibt ortsfest, mit neuem Trigger.** Kein Move, keine gebrochene Adresse. Offen:
+  das widerspricht der Verzeichnis-Position als Zustand
+  (Baseline-Regelwerk `modul-07-carveouts.md`) — ein fälliger Carveout bliebe im aktiven
+  Verzeichnis.
+- **(b) Link-Nachzug in allen änderbaren Dateien plus Ventil oder Glob für die eingefrorenen
+  Quellen.** Eine Senkung nach [`AGENTS.md`](../../../../AGENTS.md) §3.5: eigene ADR,
+  **Auftraggeber-Entscheidung**; ein Glob widerspricht der extensionalen Grenze von
+  [`ADR-0026`](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md) und
+  [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md).
+- **(c) Eine ADR „Carveout-Adressen in eingefrorenen Artefakten stehen per Kennung"** —
+  [`AGENTS.md`](../../../../AGENTS.md) §3.11 für Carveouts — **plus einmalige Behandlung des
+  Bestands** (die rund 40 Quellen). Offen: wie der Bestand ohne Eingriff in eingefrorene Texte
+  behandelt wird.
+- **(d) `CO-001` nach `done/` verschieben und am alten Ort einen gekürzten Stub lassen** (Muster
+  der Archiv-Stubs: hält Verweise gültig, ohne Ventil, keine Senkung). Offen: verwischt ein Stub
+  im flachen `carveouts/` die Verzeichnis-Position als Zustand?
+
+**Die Annahme der ADR ist Auftraggeber-Entscheidung**
+([`ADR-0040`](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md)); der Architect
+schlägt vor, er nimmt nicht an.
 
 ## 2. Definition of Done
 
@@ -120,23 +161,22 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
 - [ ] **(1) Die Entscheidung liegt in einem Artefakt ihrer schreibenden Rolle und ist extensional
       geschnitten.** Eine neue ADR (Architect,
-      [`AGENTS.md`](../../../../AGENTS.md) §3.8) benennt das Instrument für die zwei Verweise, den
-      Lauf, der es setzt, und den Moment relativ zum `git mv`. **Extensional heißt: kein
-      Verzeichnis-Glob** — dieselbe Grenze, die
+      [`AGENTS.md`](../../../../AGENTS.md) §3.8) wählt eine der vier Optionen aus §1 (oder begründet eine
+      fünfte) für die Häufung, nennt den Lauf, der sie setzt, und den Moment relativ zum `git mv`.
+      Wo die Wahl ein Ventil ist, gilt die extensionale Grenze von
       [`ADR-0026`](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md) und
-      [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md) je ziehen, und
-      [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md) verwirft das Glob in ihrer
-      Alternativen-Zeile `F'` bereits mit Begründung. Fällt die Wahl auf ein `ignore-refs`-Paar,
-      ist es die **dritte** Senkung unter demselben Schlüssel und löst
-      [`AGENTS.md`](../../../../AGENTS.md) §3.5 erneut aus. **Ein Ergebnis, das nur in diesem Plan
-      steht, erfüllt den Punkt nicht.**
+      [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md), und jeder weitere
+      `ignore-refs`-Eintrag ist eine Senkung nach [`AGENTS.md`](../../../../AGENTS.md) §3.5 mit
+      eigener ADR. Die Annahme ist Auftraggeber-Entscheidung. **Ein Ergebnis, das nur in diesem
+      Plan steht, erfüllt den Punkt nicht.**
 - [ ] **(2) Der Fall ist gemessen und nicht aus
       [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md) übernommen.** In der
-      Entscheidung stehen, je mit dem Kommando, das sie ausgibt: die Zahl der Pfad-Links auf
-      `CO-001` aus [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md), der
-      Status jener Datei, und die Zahl der `docs-check`-Befunde, die der Move erzeugt — Letztere
-      an einer **Sonde**, nicht an einer Prognose: den `git mv` in einer Kopie außerhalb des
-      Arbeitsbaums vollziehen, `make docs-check` fahren, die Befundliste zitieren. Dazu, wenn das
+      Entscheidung stehen, je mit dem Kommando, das sie ausgibt: die Zahl der
+      Befunde, die der Move erzeugt, getrennt nach **beiden Adress-Formen** (Markdown-Link und
+      Code-Span), die Zahl und der Status der Quellen, und die Paar-Zahl des `ignore-refs`-Schlüssels
+      — die Befunde an einer **Sonde**, nicht an einer Prognose: den `git mv` in einem frischen
+      Klon außerhalb des Arbeitsbaums vollziehen, `make docs-check` fahren, die Befundliste
+      zitieren (Stand der Vorab-Messung: 2947 Dateien, 61 Befunde). Dazu, wenn das
       Instrument ein Ventil ist, **beide Skopen je an einer roten Gegenprobe** und der Nachweis,
       dass die geprüfte Datei-Zahl sich nicht bewegt — zwei Läufe, ein Vergleich, kein gemerkter
       Wert.
@@ -168,9 +208,10 @@ Aussagen-Berührung steht hier gar nicht.
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `docs/plan/adr/` | **neu**, durch den Architect | der Liefergegenstand aus DoD (1); dazu die Zeile im ADR-Index, der derselben Rolle gehört ([`ADR-0024`](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md)) |
-| [`.d-check.yml`](../../../../.d-check.yml) | **nur, wenn das Instrument ein Ventil ist**, durch den Implementer | die Config-Zeile folgt der Entscheidung, sie ersetzt sie nicht; Zeile **und** Config-Kommentar mit Zeiger auf die neue ADR, wie bei den zwei bestehenden Paaren |
+| [`.d-check.yml`](../../../../.d-check.yml) | **nur, wenn das Instrument ein Ventil ist (Option b)**, durch den Implementer | die Config-Zeile folgt der Entscheidung, sie ersetzt sie nicht; Zeile **und** Config-Kommentar mit Zeiger auf die neue ADR, wie bei den bestehenden Paaren |
+| änderbare Quellen mit Adresse auf `CO-001` | **nur nach Option b oder c**, durch den Implementer | Nachzug bzw. Kennungs-Form; die eingefrorenen Quellen bleiben unberührt |
 | [slice-113](../open/slice-113-co-001-ist-faellig.md) | update, durch den Planner | die Vorbedingung aus DoD (3) — §4-Trigger und der `git mv`-Punkt |
-| [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) | **unangetastet** | *Accepted*, [`AGENTS.md`](../../../../AGENTS.md) §3.4; die zwei Adressen bleiben, wie sie sind |
+| [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) | **unangetastet** | *Accepted*, [`AGENTS.md`](../../../../AGENTS.md) §3.4; eine von rund 40 eingefrorenen Quellen, ihre Adressen bleiben, wie sie sind |
 | [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) | **unangetastet** | der Move gehört [slice-113](../open/slice-113-co-001-ist-faellig.md); dieser Slice entscheidet, er vollzieht nicht |
 
 **Der Commit-Zuschnitt folgt aus den beteiligten Rollen.** Die ADR und ihre Index-Zeile liegen in
@@ -191,11 +232,11 @@ Formalie. **Zusätzlich:** [slice-113](../open/slice-113-co-001-ist-faellig.md) 
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
-- `in-progress` → `next` (zu groß, zurück zur Zerlegung): wenn die Messung aus DoD (2) zeigt, dass
-  der Move mehr als die zwei Verweise aus
-  [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) bricht. Dann ist der
-  Gegenstand eine **Häufung** und kein Einzelfall, und `modul-07-carveouts.md` §Werkzeug-Wahl führt
-  bei Häufung ausdrücklich weg vom punktuellen Werkzeug.
+- `in-progress` → `next` (zu groß, zurück zur Zerlegung): **eingetreten, vor dem Claim.** Die
+  Sonde (§1) zeigt 61 Befunde aus rund 40 Quellen statt der zwei Verweise aus
+  [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md): eine **Häufung**, und
+  `modul-07-carveouts.md` §Werkzeug-Wahl führt bei Häufung ausdrücklich weg vom punktuellen
+  Werkzeug. Der Slice ist daher in `next/` neu zerlegt (§1 *Der Auftrag*), nicht geclaimt.
 - `in-progress` → `open` (blockiert — Carveout?): wenn die Entscheidung eine Frage an eine höher
   rangierte Quelle aufwirft — etwa, ob [`AGENTS.md`](../../../../AGENTS.md) §3.4 das **Artefakt**
   oder seine **Aussage** bindet. [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md)
@@ -209,7 +250,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 Lerneintrag; ohne ihn ist der Slice nur abgelegt.
 
 Zwei beobachtbare Kriterien: **erstens** eine ADR mit Status *Accepted*, die das Instrument für die
-zwei Verweise benennt und ihren Geltungsbereich extensional schließt — sichtbar in einem
+zwei Verweise benennt (Annahme durch den Auftraggeber) — sichtbar in einem
 Architect-Commit (`git log --stat`), nicht in diesem Plan. **Zweitens** trägt
 [slice-113](../open/slice-113-co-001-ist-faellig.md) die Vorbedingung in seinem §4 und den
 `docs-check`-Nachweis in seinem `git mv`-Punkt
@@ -233,20 +274,26 @@ dasteht.
   Form dieses Risikos. — **Ausgang:** <entfallen: DoD (2) ist mit Kommandos über diesem Baum
   belegt, Sonde eingeschlossen | eingetreten: die Entscheidung zitiert fremde Zahlen und wird
   zurückgewiesen>
-- **Die dritte Senkung unter demselben Schlüssel ist eine Kaskade, wenn niemand sie zählt.** Nach
-  [`ADR-0026`](../../adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md) und
-  [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md) wäre ein Ventil hier das dritte
-  Paar. `modul-07-carveouts.md` führt eine **Häufung** ausdrücklich nicht in eine Kaskade, und drei
-  Fälle derselben Klasse in kurzer Folge sind der Anlass, die Klasse an der Wurzel zu fragen statt
-  am dritten Vertreter. — **Ausgang:** <entfallen: die Entscheidung wägt das Instrument gegen die
-  Wurzel ab und begründet die Wahl | eingetreten: die Wurzel-Frage bekommt einen eigenen Schnitt>
-- **Der Restbreite-Wächter deckt ein drittes Paar, aber nicht seine Berechtigung.**
+- **Ein Ventil für die Häufung ist eine Kaskade, wenn niemand sie zählt.** Der Schlüssel führt
+  bereits die Paare 1 bis 9 plus Baum-Globs; jeder weitere Eintrag ist eine eigene ADR nach
+  [`AGENTS.md`](../../../../AGENTS.md) §3.5 und Auftraggeber-Entscheidung. `modul-07-carveouts.md`
+  führt eine **Häufung** ausdrücklich nicht in eine Kaskade; die Optionen (c) und (d) in §1 fragen
+  die Klasse an der Wurzel (§3.11). — **Ausgang:** <entfallen: die Entscheidung wägt alle vier
+  Optionen gegeneinander ab und begründet die Wahl | eingetreten: die Wurzel-Frage bekommt einen
+  eigenen Schnitt>
+- **Der Restbreite-Wächter deckt ein weiteres Paar, aber nicht seine Berechtigung — und eine
+  Häufung nicht ohne Weiteres.**
   `test/ignore-refs-restbreite.bats` misst, dass ein Paar höchstens einen Markdown-Link seiner
   Quelldatei stumm schaltet — er läuft über die vollständige Paar-Liste und fasst jedes neue Paar
-  vom ersten Lauf an. Dass ein Paar **existieren darf**, misst er nicht; das hängt an
+  vom ersten Lauf an. Für rund 40 Quellen mit teils mehreren Links passt ein Paar-Ventil nicht in
+  diese Grenze. Dass ein Paar **existieren darf**, misst er nicht; das hängt an
   [`AGENTS.md`](../../../../AGENTS.md) §3.5, und der hat keinen Sensor. — **Ausgang:** <weiter
   offen: die Aufnahme-Grenze ist prozessual und bleibt es | entfallen: das gewählte Instrument ist
   kein Ventil>
+- **Option (d) verwischt die Verzeichnis-Position als Zustand.** Ein Stub im flachen `carveouts/`
+  könnte als aktiver Carveout gelesen werden; kein Sensor trennt Stub und Carveout dort. —
+  **Ausgang:** <entfallen: die Entscheidung wählt (d) nicht oder benennt die Unterscheidung |
+  weiter offen: Register-Eintrag>
 - **Der Slice hängt an einer Rolle, nicht an einem Kommando.** Ohne Architect-Lauf ist DoD (1)
   nicht erreichbar, und ein Planner- oder Implementer-Lauf, der ihn trotzdem „erledigt", verstößt
   gegen [`AGENTS.md`](../../../../AGENTS.md) §3.8. — **Ausgang:** <entfallen: die Entscheidung ist

@@ -179,9 +179,9 @@ Drei slice-eigene Punkte (Modul 5 §Ziel-Form: ≤ 3;
 [slice-141](../next/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) liegt in `done/`.** Der
 Auflösungs-Trigger des Carveouts ist eingetreten; damit ist der Slice fällig, nicht bloß möglich.
 
-**Warum die zweite Bedingung.** Der `git mv` aus DoD (3) bricht zwei Pfad-Links in
-[`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md), und deren Quelldatei ist
-eingefroren:
+**Warum die zweite Bedingung.** Der `git mv` aus DoD (3) bricht nach der Sonde von slice-141 61 Befunde in rund 40 überwiegend eingefrorenen Quellen, darunter
+zwei Pfad-Links in
+[`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md):
 
 ```sh
 grep -c '^\*\*Status:\*\* Accepted' docs/plan/adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md          # 1
