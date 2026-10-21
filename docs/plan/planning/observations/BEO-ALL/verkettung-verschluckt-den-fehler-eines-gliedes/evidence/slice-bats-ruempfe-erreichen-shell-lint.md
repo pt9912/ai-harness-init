@@ -1,0 +1,2 @@
+**Vorgang:** slice-bats-ruempfe-erreichen-shell-lint
+**Fund:** Der Review fand im Extrakt-Schritt von `bats-lint.sh`, dass nur der Exit der letzten Datei zählte und die Zählprüfung die je Datei gedruckte Trennzeile mitzählte; ein scheiternder `bats-preprocess` mitten im Strom ließ die Datei als geprüft gelten (F-1 MEDIUM, behoben im selben Slice, vom Verifier an drei Symlinks ins Leere rot gesehen).

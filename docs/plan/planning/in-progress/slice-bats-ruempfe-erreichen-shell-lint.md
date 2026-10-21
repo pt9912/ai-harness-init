@@ -99,20 +99,20 @@ Architects vom 2026-10-21 auf HEAD `479a466a`, **keine Erwartungswerte**; der Im
 
 Drei slice-eigene Punkte (Modul 5 §Ziel-Form: ≤ 3).
 
-- [ ] **(1) Die Verkettung steht, und ihre Erweiterung ist rot gesehen.** `bats-preprocess` im
+- [x] **(1) Die Verkettung steht, und ihre Erweiterung ist rot gesehen.** `bats-preprocess` im
       `BATS_IMAGE` und `shellcheck` im `SHELLCHECK_IMAGE` laufen verkettet über alle
       `git ls-files 'test/*.bats'`, Docker-only; `make shell-lint` ruft sie.
       **Rot:** ein absichtlicher Befund in einem `@test`-Rumpf färbt `make shell-lint` rot, und die
       Ausgabe nennt **Datei und Regel** (und die Zeile; trägt der Extrakt keine Rück-Zuordnung zur
       Original-Zeile, steht diese Grenze am Rezept, §6). **Heute ungedeckt:**
       `sed -n '/^shell-lint:/,/^$/p' Makefile | grep -c '\.bats'` → **0**.
-- [ ] **(2) Der Bestand ist grün, ohne Inline-Suppression und ohne die Pfad-Ausnahme.** Die Befunde
+- [x] **(2) Der Bestand ist grün, ohne Inline-Suppression und ohne die Pfad-Ausnahme.** Die Befunde
       sind behoben (die Klassen außer SC2154/SC2016, ohne Suppression); SC2154 und SC2016 stehen nach
       dem Verdikt aus §1 (Fuß, `--exclude` nur am bats-Aufruf) mit ihrem ganzen Gegenstand im
       Kommentar ([`AGENTS.md`](../../../../AGENTS.md) §3.2, §3.5). `make shell-lint` ist grün, das
       Rezept schließt keine bats-Datei mehr aus, `make gates` ist grün.
       **Rot:** `git grep -c 'shellcheck disable' -- 'test/*.bats'` findet eine Stelle.
-- [ ] **(3) Ein Prüfbereich, der wieder schrumpft, wird rot — zwei Mutations-Fälle.** In
+- [x] **(3) Ein Prüfbereich, der wieder schrumpft, wird rot — zwei Mutations-Fälle.** In
       `test/mutations/`: (a) ohne den Fuß färbt SC2154 den Lauf rot, (b) ohne `--exclude=SC2016` färbt
       SC2016 ihn rot; `make mutate` läuft beide grün-als-erwartet
       ([`AGENTS.md`](../../../../AGENTS.md) §3.6). **Grenze als Zusage-Satz im Skript, nicht als Wirkung
@@ -173,17 +173,82 @@ Verifikation nach Modul 11 ohne blockierenden Befund, Closure-Notiz in §7 mit S
 - **Der Mount wird schreibbar und berührt [`MR-049`](../../../../harness/conventions.md#mr-049--drei-eigene-gate-rezepte-reichen-den-baum-read-only-herein-statt-ihn-per-copy-ins-bild-zu-nehmen).** — **Ausgang:** entfallen: V1 schreibt auf stdout,
   der Host teilt; kein `-v …:rw`.
 - **Das Skript ist ein Werkzeug über Testdateien und selbst ungetestet, wenn niemand es bindet.** —
-  **Ausgang:** <…>
+  **Ausgang:** weiter offen: der Exit-Pfad von `bats-lint.sh` hat weder bats-Fall noch Mutations-Fall
+  (kein Fall baubar, §7); die Lücke steht als Eintrag im Beobachtungs-Register
+  ([`BEO-ALL/verkettung-verschluckt-den-fehler-eines-gliedes`](../observations/BEO-ALL/verkettung-verschluckt-den-fehler-eines-gliedes/observation.md)).
 - **Die Befund-Menge sprengt eine Review-Sitzung** (173 in 39 Dateien beim Vorlauf, keine
   Erwartungswerte); der Cutoff-Reflex *„ab jetzt, Bestand nicht"* trägt nicht, weil ein Lint-Lauf keine
-  Datei-Historie kennt. Rückführung `→ next` (§4). — **Ausgang:** <…>
+  Datei-Historie kennt. Rückführung `→ next` (§4). — **Ausgang:** entfallen: die zu behebende Menge
+  maß 55 (Architect), die Behebung ist ein Commit über 12 Dateien (+66/−57), und der Review trug sie in
+  einer Sitzung; die Zerlegung nach §4 war nicht nötig.
 - **SC2016 ohne Suppression heißt Umbau der Zusicherungen.** Das Register trägt den Fall, dass die
   Aufteilung einer Prüfung ihre Ko-Okkurrenz lockert
-  (`BEO-ALL/marker-pruefung-in-full-smoke-wird-fuer-shell-lint-aufgespalten`, 1×). — **Ausgang:** <…>
+  (`BEO-ALL/marker-pruefung-in-full-smoke-wird-fuer-shell-lint-aufgespalten`, 1×). — **Ausgang:**
+  entfallen: SC2016 ist nach dem Verdikt am bats-Aufruf ausgeschlossen, keine Zusicherung wurde dafür
+  aufgeteilt; der Eintrag bekommt keinen zweiten Beleg und bleibt bei 1×.
 
 ## 7. Closure-Notiz (nach `done/`)
 
-<!-- Erst nach Abschluss füllen. -->
+**Gegenstand: geliefert.** `make shell-lint` liest die Rümpfe aller `test/*.bats` über
+`harness/tools/bats-lint.sh`; die Pfad-Ausnahme gibt es im Rezept nicht mehr.
+
+**DoD-Verdikt** (Verifier-Report `2026-10-21-slice-bats-ruempfe-erreichen-shell-lint-verify`,
+[Report](../../../reviews/2026-10-21-slice-bats-ruempfe-erreichen-shell-lint-verify.md)). (1) bestätigt —
+`bats-lint: OK — 50 test/*.bats`; Rot an `test/guard.bats:31` (SC2164, Originalzeile) mit Datei, Regel
+und Zeile; Symlinks ins Leere `a-/m-/z-dangling.bats` je Exit 2 mit der Datei im Text. (2) bestätigt —
+`git grep -c 'shellcheck disable' -- 'test/*.bats'` leer, keine `.shellcheckrc`, kein `:rw`,
+`make test-bats` 569 ok. (3) bestätigt, mit einem dritten Fall — 777 (SC2154), 778 (SC2016),
+779 (SC2034) rot mit der gepinnten Ursache, `make mutate-greift` 765/765.
+
+**Review** (`2026-10-21-slice-bats-ruempfe-erreichen-shell-lint`,
+[Report](../../../reviews/2026-10-21-slice-bats-ruempfe-erreichen-shell-lint.md)): 1 MEDIUM, 3 LOW, 3 INFO.
+F-1 (fail-open im Extrakt-Schritt) behoben; F-3 (`mode_rank` shell-lint = 4, `fall_gewicht` = 27),
+F-2/F-5/F-6/F-7 behoben bzw. am Ort im Skriptkopf oder in Fall 779 benannt (alle `cfee9ab7`); F-4 siehe
+Plan-vs-Code. Das Architect-Verdikt
+([Report](../../../reviews/2026-10-21-slice-bats-ruempfe-erreichen-shell-lint-architect-verdikt.md)):
+Config-Ausnahme nach [`AGENTS.md`](../../../../AGENTS.md) §3.2, **keine** Senkung nach §3.5, keine ADR.
+
+**Plan-vs-Code** (F-4; folgt aus DoD (3), die Abnahme bleibt wie geschrieben). Über die Tabelle in §3
+hinaus geändert: `harness/tools/mutate.sh` (`failure_form`-Modus `shell-lint`, `mode_rank`),
+`harness/tools/mutate-auswahl.sh` (`fall_gewicht`), `test/mutate-driver.bats` (Modus in der
+`failure_form`-Schleife), Fall 635 (Testname und `expect:` umformuliert, weil der bats-Rumpf-Lint das
+`^`-Muster nicht trug), Fall 779 (SC2034, der `:`-Teil des Fußes aus dem Verdikt). Plan ohne Code: nichts.
+
+**Messung** ([`MR-089`](../../../../harness/conventions.md#mr-089)): ein `shell-lint`-Fall 27,46 s; die
+Mutations-CI-Probe auf `mutate/…-cfee9ab7` (Lauf 39592720466) 660 s Wanduhr, Fallmenge 74, 74 ok, Urteil
+grün, darunter 777, 778, 779 und 635. Image-Lage und Variante des Runners sind in den Belegen nicht
+genannt; keine Deutung. **Normbeleg fehlt:** Implementer, Reviewer und Verifier liefen auf macOS
+([`AGENTS.md`](../../../../AGENTS.md) §3.9); die CI auf frischem Klon nach dem Push des Closure-Stands
+liegt bei Abschluss dieser Notiz nicht vor.
+
+**Trigger-Audit.** [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md): nichts fällig; die
+Pfad-Ausnahme stand nie als Liste im Rezept (der erste Aufruf schloss bats nie als Pfad aus), und der
+Carveout wird von slice-113 aufgelöst, nicht hier. Vorbedingung von
+[`ADR-0098`](../../adr/0098-co-001-aufloesung-reiner-move-nachzug-und-ein-namentliches-paar-fuer-adr-0021.md)
+Festlegung 4 (*`make gates` ohne Ausnahme grün*): erfüllt, soweit der `make gates`-Lauf am Closure-Stand
+sie trägt; den Nachweis trägt die DoD von slice-113.
+
+**Steering-Loop-Eintrag (benannte Lücke + neuer Sensor).** Klasse *Verkettung verschluckt den Fehler eines
+Gliedes*: der Extrakt-Schritt lieferte nur den Exit der letzten Datei, die Zählprüfung zählte die immer
+gedruckte Trennzeile, das Verhalten hing an der Reihenfolge — ein stilles Grün im Gate. Neuer Sensor:
+Fälle 777/778/779 halten Fuß und `--exclude` am bats-Aufruf. **Lücke:** für den Exit-Pfad von
+`bats-lint.sh` ist kein Sensor baubar (kein Mutations-Fall: die Mutation machte den Lauf grün, den sie rot
+lassen soll; kein bats-Test: bats läuft im Image ohne `docker`); er ist nur von Hand rot gesehen. Ob
+dieselbe Klasse andere Verkettungs-Skripte trifft (etwa `harness/tools/traeger-pins-check.sh`), ist nicht
+gemessen und hier nicht geändert.
+
+**Beobachtungs-Register.** Neu:
+[`BEO-ALL/verkettung-verschluckt-den-fehler-eines-gliedes`](../observations/BEO-ALL/verkettung-verschluckt-den-fehler-eines-gliedes/observation.md),
+ein Beleg (Ausgang des ersten Risikos aus §6). `BEO-ALL/negation-mitten-im-bats-fall-ohne-wirkung`
+bleibt bei 2×: die Behebung berührte keine `!`-Zeile
+(`git diff 0dec6426^ 0dec6426 | grep -cE '^[-+]\s+! '` → **0**), ein dritter Beleg besteht nicht und
+wird nicht angelegt. `BEO-ALL/marker-pruefung-in-full-smoke-wird-fuer-shell-lint-aufgespalten` bleibt bei
+1× (§6). `BEO-ALL/ausnahmeliste-nur-auf-form-geprueft` (4×, Ausgang in seiner `state.md`) nicht berührt:
+die Ausnahme steht im Skript, keine Liste; ihr Gegenstands-Kommentar hat im Verdikt als benanntes
+Negativ keinen Wächter. Lese-Schritt: kein Eintrag erreicht mit diesem Slice 3×.
+
+**Folge:** [slice-113](../open/slice-113-co-001-ist-faellig.md) (Auflösung) — der Gegenstand der Pfad-Ausnahme
+bleibt dort, `Übernimmt:` hat dieser Slice nichts.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
