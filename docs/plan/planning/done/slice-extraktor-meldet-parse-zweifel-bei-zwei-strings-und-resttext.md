@@ -54,7 +54,7 @@ Die Ursache liegt im Scanner: nach einem String-Ende prüft er nicht, welches Ze
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -163,7 +163,20 @@ Host-awk-Varianten — weiter offen → Register `BEO-ALL/emittierte-zusage-reic
 **Folge-Slices:** [`slice-zwei-fassungen-eines-waechters-bekommen-ihren-vergleichenden-sensor`](../open/slice-zwei-fassungen-eines-waechters-bekommen-ihren-vergleichenden-sensor.md)
 — ist eine Datei in `open/`.
 
-**Drei Paarungen:** *(nach dem `git mv` zu füllen)*
+**Paarungen geprüft am 2026-10-21** (nach dem `git mv`): (a) Anker — das Feld des Eintrags steht in §7
+nicht (Zählung über §7 → **0**), nichts zu paaren; (b) Folge-Slice — `ls
+docs/plan/planning/open/slice-zwei-fassungen-eines-waechters-bekommen-ihren-vergleichenden-sensor.md` findet
+die Datei; (c) Register — beide genannten Verzeichnisse existieren, `ls …/evidence/*.md | wc -l` → **6**
+(`zwei-fassungen-…`) und **17** (`emittierte-zusage-…`); `make register-ausgang` → `0 Befund(e)`.
+**Register-Paarung (c), zweite Hälfte: 1 Verzeichnis ohne Beleg, namentlich
+`BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen behauptet** (Bestand,
+nicht aus diesem Slice).
+
+**Archivierung ([`MR-078`](../../../../harness/conventions.md#mr-078)):** nicht vollzogen. Die Vorschau
+(`archive-welle --vorschau slice-extraktor-meldet-parse-zweifel-bei-zwei-strings-und-resttext`) nennt
+`[untergrenze]` (235 wellenlose Slices flach in `done/`, kein `done/*/archiv.zip`), `[haenger]` (ein
+Review-Report mit eingehenden Verweisen) und `[ergebnisnotiz]` (keine `-results.md`); der Altbestand ist
+ein eigener Vorgang.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
