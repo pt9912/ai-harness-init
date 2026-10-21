@@ -1,6 +1,6 @@
 # ADR-0098: Die Auflösung von `CO-001` ist ein reiner Move mit Pfad-Nachzug — nur die zwei Links in einer `Accepted`-ADR bekommen ein namentliches Paar
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-10-21
 
@@ -228,6 +228,7 @@ die Markdown-Link-Achse; [`ADR-0021`](0021-verbrauchs-achse-je-rolle-ohne-quelle
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-10-21 | Proposed | Architect-Lauf zu `slice-141`; die Annahme ist Auftraggeber-Entscheidung ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md)) |
+| 2026-10-21 | **Accepted** | Review `2026-10-21-adr-0098-review` (0 HIGH, 0 MEDIUM; L-1 bis L-3 und I-2, I-4 vor der Annahme eingearbeitet, I-1 als Hinweis), Entscheidung des Auftraggebers vom 2026-10-21 einschließlich der Senkung nach §3.5 aus Festlegung 3 ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 1). Diese Datei trägt **keinen** Acceptance-Trigger; der Review-Report ist Prüfung, kein Trigger-Beleg, und eine zweite Runde war mangels blockierendem Befund nicht verlangt ([ADR-0040](0040-accept-uebergang-nennt-den-beleg-seines-triggers.md) Festlegung 2) |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit
