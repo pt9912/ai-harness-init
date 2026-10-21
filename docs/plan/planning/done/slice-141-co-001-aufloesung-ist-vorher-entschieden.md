@@ -10,7 +10,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 Setzung 1, alle drei Fragen beantwortet. **Bündel?** Nein — ein Slice, eine Entscheidung, und er
 wartet auf keinen zweiten. **Gemeinsames Closure-Kriterium?** Nein — jedes wäre die Abschrift
 seiner eigenen DoD. **Auslöser reaktiv oder gewollt?** Reaktiv: ein Auflösungs-Trigger ist
-eingetreten und sein Vollzug bricht Adressen in 30 (gemessen, ADR-0098) teils eingefrorenen Quellen (§1). Der Gegenstand
+eingetreten und sein Vollzug bricht Adressen in 30 (gemessen) teils eingefrorenen Quellen (§1). Der Gegenstand
 stammt **nicht** aus dem Re-Baseline-Delta und belegt kein Closure-Kriterium von
 [welle-10](../done/welle-10-re-baseline.md) §3; er gehört darum in keine Welle. Nach
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
@@ -55,7 +55,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 ist einzeln lieferbar.
 
 **Wenn [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) nach `carveouts/done/` wandert, ist
-vorher entschieden, was mit den Adressen geschieht, die dieser Move in 30 (gemessen, ADR-0098) teils eingefrorenen
+vorher entschieden, was mit den Adressen geschieht, die dieser Move in 30 (gemessen) teils eingefrorenen
 Quellen bricht.** Der Gegenstand ist eine **Architect-Entscheidung** (ADR, §1 *Der Auftrag*); die
 Annahme einer ADR ist Auftraggeber-Entscheidung
 ([`ADR-0040`](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md)).
@@ -211,7 +211,7 @@ Aussagen-Berührung steht hier gar nicht.
 | [`.d-check.yml`](../../../../.d-check.yml) | **nur, wenn das Instrument ein Ventil ist (Option b)**, durch den Implementer | die Config-Zeile folgt der Entscheidung, sie ersetzt sie nicht; Zeile **und** Config-Kommentar mit Zeiger auf die neue ADR, wie bei den bestehenden Paaren |
 | änderbare Quellen mit Adresse auf `CO-001` | **nur nach Option b oder c**, durch den Implementer | Nachzug bzw. Kennungs-Form; die eingefrorenen Quellen bleiben unberührt |
 | [slice-113](../open/slice-113-co-001-ist-faellig.md) | update, durch den Planner | die Vorbedingung aus DoD (3) — §4-Trigger und der `git mv`-Punkt |
-| [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) | **unangetastet** | *Accepted*, [`AGENTS.md`](../../../../AGENTS.md) §3.4; eine von 30 (gemessen, ADR-0098) teils eingefrorenen Quellen, ihre Adressen bleiben, wie sie sind |
+| [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) | **unangetastet** | *Accepted*, [`AGENTS.md`](../../../../AGENTS.md) §3.4; eine von 30 (gemessen) teils eingefrorenen Quellen, ihre Adressen bleiben, wie sie sind |
 | [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) | **unangetastet** | der Move gehört [slice-113](../open/slice-113-co-001-ist-faellig.md); dieser Slice entscheidet, er vollzieht nicht |
 
 **Der Commit-Zuschnitt folgt aus den beteiligten Rollen.** Die ADR und ihre Index-Zeile liegen in
@@ -308,11 +308,11 @@ Backticks).
 den ein anderer Slice übernimmt oder der entfällt, und dieser Slice hat seinen Gegenstand geliefert.
 
 **DoD-Verdikt.** (1) erfüllt — die ADR wählt G (reiner Move, Nachzug in 29 Quellen, ein namentliches
-Paar für `ADR-0021`), nennt den ausführenden Lauf (Implementer von slice-113) und den Moment (Move erst
+Paar für [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md)), nennt den ausführenden Lauf (Implementer von slice-113) und den Moment (Move erst
 nach der Annahme, Nachzug im zweiten Commit). (2) erfüllt — Sonde und alle Zählungen stehen mit ihrem
 Kommando in der ADR (§Kontext), beide Skopen des Paares je an einer roten Gegenprobe; die Review-Runde
 `2026-10-21-adr-0098-review` fand 0 HIGH und 0 MEDIUM. (3) erfüllt —
-`grep -c 'ADR-0098' docs/plan/planning/open/slice-113-co-001-ist-faellig.md` → **4**; sein §4 nennt die
+`grep -c 'adr/0098' docs/plan/planning/open/slice-113-co-001-ist-faellig.md` → **4**; sein §4 nennt die
 Vorbedingung, sein DoD (3) den `docs-check`-Nachweis. Ein Verifier-Lauf fand für diesen Slice nicht statt;
 die Prüfung der drei Punkte ist die des Planners mit den genannten Kommandos.
 
@@ -320,7 +320,7 @@ die Prüfung der drei Punkte ist die des Planners mit den genannten Kommandos.
 Dateien, 29 reparierbar, weil die Nachzug-Regel für Zeitdokumente erst nach dem Schnitt entschieden wurde.
 
 **Steering-Loop-Eintrag (benannte Lücke).** Kein Sensor liest die Reihenfolge *Entscheidung vor Move*;
-Träger ist der Plan-Text (slice-113 §4, ADR-0098 Festlegung 4), Gegenstück
+Träger ist der Plan-Text (slice-113 §4, [`ADR-0098`](../../adr/0098-co-001-aufloesung-reiner-move-nachzug-und-ein-namentliches-paar-fuer-adr-0021.md) Festlegung 4), Gegenstück
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6). Eine Prämisse
 über Zahl und Status von Quellen ist Prognose, bis eine Sonde sie misst.
 
