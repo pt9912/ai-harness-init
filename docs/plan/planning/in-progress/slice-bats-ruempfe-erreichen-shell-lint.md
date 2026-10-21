@@ -81,7 +81,7 @@ Architects vom 2026-10-21 auf HEAD `479a466a`, **keine Erwartungswerte**; der Im
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Eine `.shellcheckrc` an der Wurzel oder ein `-v …:rw`-Mount** — beides schaltet die Ausnahme auf
-  andere Bäume aus bzw. berührt `MR-049`; das Verdikt schließt sie aus.
+  andere Bäume aus bzw. berührt [`MR-049`](../../../../harness/conventions.md#mr-049--drei-eigene-gate-rezepte-reichen-den-baum-read-only-herein-statt-ihn-per-copy-ins-bild-zu-nehmen); das Verdikt schließt sie aus.
 - **Die Auflösung von `CO-001`** (Move nach `done/`, Pfad-Nachzug, zehntes `ignore-refs`-Paar, Absatz
   *„GRENZE, keine Regel"*, Bindung und Index) — [slice-113](../open/slice-113-co-001-ist-faellig.md) führt sie
   aus und nimmt sie an (sein §1). Der Carveout bleibt bis dahin in `carveouts/`; zurückgenommen wird hier
@@ -170,7 +170,7 @@ Verifikation nach Modul 11 ohne blockierenden Befund, Closure-Notiz in §7 mit S
 - **Der Extrakt verschiebt Zeilen.** — **Ausgang:** entfallen: `bats-preprocess` trägt die Originalzeile
   1:1 (Verdikt), der Fuß steht hinter dem Extrakt und verschiebt nichts; der Implementer bestätigt es
   am Trockenlauf, sonst Rückführung `→ open`.
-- **Der Mount wird schreibbar und berührt `MR-049`.** — **Ausgang:** entfallen: V1 schreibt auf stdout,
+- **Der Mount wird schreibbar und berührt [`MR-049`](../../../../harness/conventions.md#mr-049--drei-eigene-gate-rezepte-reichen-den-baum-read-only-herein-statt-ihn-per-copy-ins-bild-zu-nehmen).** — **Ausgang:** entfallen: V1 schreibt auf stdout,
   der Host teilt; kein `-v …:rw`.
 - **Das Skript ist ein Werkzeug über Testdateien und selbst ungetestet, wenn niemand es bindet.** —
   **Ausgang:** <…>
