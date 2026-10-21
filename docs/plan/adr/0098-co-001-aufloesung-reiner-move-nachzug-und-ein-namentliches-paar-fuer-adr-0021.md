@@ -155,11 +155,15 @@ neun Vorgänger gilt unverändert: jeder zusätzliche Eintrag, jedes Glob, jede 
 neue Senkung mit eigener ADR — auch bei gleicher Bedingung. Diese ADR erhöht die Zahl der Paare um
 eins, nicht die der Entscheidungen, die ein elftes braucht.
 
-**4. Die Reihenfolge ist Vorbedingung des ausführenden Slice:** Move und Nachzug beginnen erst mit
-dem Status `Accepted` dieser ADR, und der Nachweis ist `make docs-check` mit **0** Befunden im
-Nachzug-Commit. Ein Wächter für die Reihenfolge existiert nicht (kein Doku-Gate-Modul liest
-Lifecycle-Reihenfolgen, wie bei [ADR-0092](0092-aufgeloeste-welle-zieht-per-move-nach-done-die-adresse-folgt-im-zeitdokument.md));
-Träger ist der Plan-Text.
+**4. Die Reihenfolge ist Vorbedingung des ausführenden Slice, und der Beleg nennt, was angefasst wird.**
+Move und Nachzug beginnen erst mit dem Status `Accepted` dieser ADR. Die Vorbedingung der Auflösung
+selbst — Gate-Ausnahme zurückgenommen, `make gates` ohne sie grün (Status-Kopf von `CO-001`, Modul 7) —
+trägt die DoD von `slice-113`; diese ADR setzt sie nicht außer Kraft. Der Nachweis ist `make docs-check`
+mit **0** Befunden im Nachzug-Commit (Datei-Zahl 2947 in der Sonde; im Arbeitsbaum höher, weil diese Datei
+mitzählt, kein Erwartungswert). Der Beleg des Move-Laufs nennt die angefassten Dateien — 29 im Nachzug plus `.d-check.yml`
+([ADR-0042](0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 5). Ein Wächter für die
+Reihenfolge existiert nicht (kein Doku-Gate-Modul liest Lifecycle-Reihenfolgen, wie bei
+[ADR-0092](0092-aufgeloeste-welle-zieht-per-move-nach-done-die-adresse-folgt-im-zeitdokument.md)); Träger ist der Plan-Text.
 
 ## Verglichene Alternativen
 
@@ -170,6 +174,7 @@ Träger ist der Plan-Text.
 | C — nur die Kennungs-ADR *„Carveout-Adressen in eingefrorenen Artefakten stehen per Kennung"* | — | existiert bereits: [ADR-0027](0027-tote-adresse-in-eingefrorener-adr.md) Festlegung 3 und [`AGENTS.md`](../../../AGENTS.md) §3.11. Sie bindet den Schreiber, heilt aber keinen Bestand; ohne Nachzug und Paar bleiben 61 Befunde |
 | D — Stub am alten Ort (Muster der Archiv-Stubs) | alle 61 Adressen lösen auf, keine Senkung | der Archiv-Stub liegt in **demselben Zustand** wie sein Original (`done/`); ein Stub in `carveouts/` signalisiert *aktiv*, Modul 7 kennt ihn nicht (Baseline-Abweichung mit Adaptions-Eintrag, [`MR-046`](../../../harness/conventions.md#mr-046--die-verzeichnis-position-ist-binär-und-trägt-die-kopf-marke-nicht): die Position ist binär) — ein Dauer-Artefakt für **zwei** Links, die ein Paar billiger deckt. Bleibt die Rückfalloption, falls der Auftraggeber keine Senkung will |
 | E — nackter Move, Rot stehen lassen | nichts zu tun | 61 Befunde, 59 davon reparierbar; ein Dauer-Rot ist kein Sensor ([`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)) |
+| E2 — `scan.ignore` auf [`ADR-0021`](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) (Datei-Achse) | eine Zeile, ein bereits geführter Schlüssel | nimmt die **ganze Datei** aus dem Prüfbereich statt zwei Links (Datei-Zahl sinkt, [ADR-0027](0027-tote-adresse-in-eingefrorener-adr.md) Alternative E); von G dominiert |
 | F — Nachzug auch in [`ADR-0021`](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) | 0 Befunde ohne Senkung | Byte-Änderung an einer `Accepted`-ADR: [`AGENTS.md`](../../../AGENTS.md) §3.4, von [ADR-0042](0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 2 ausgenommen; die Einschränkung von §3.4 hat [ADR-0027](0027-tote-adresse-in-eingefrorener-adr.md) Alternative G verworfen. Ein Folge-ADR mit `supersedes` ändert den Wortlaut von [`ADR-0021`](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) nicht |
 | **G — gewählt: Move, Nachzug in 29 Dateien, ein Paar für [`ADR-0021`](0021-verbrauchs-achse-je-rolle-ohne-quelle.md)** | 59 von 61 Befunden heilen statt zu schweigen; die Senkung ist die kleinste mögliche (zwei Links, strukturell null Restbreite, Datei-Zahl unverändert); nutzt entschiedene Regeln statt neuer Form | eine weitere Senkung nach §3.5, das zehnte Paar; Handarbeit am Nachzug; die Reihenfolge hält kein Sensor |
 
@@ -182,6 +187,10 @@ Träger ist der Plan-Text.
   Kommentar, danach `make docs-check` (0 Befunde, Datei-Zahl vor und nach dem Paar gleich) und
   `make test` (das Paar vom Restbreite-Wächter gedeckt; `Deckung: 3` einmal rot sehen,
   [`AGENTS.md`](../../../AGENTS.md) §3.6). Beide Commits in denselben Push.
+- **Folgepflicht (Implementer von `slice-113`, derselbe Nachzug-Commit):** der Absatz *„GRENZE, keine
+  Regel"* im Kopfkommentar des `ignore-refs`-Blocks von `.d-check.yml` zählt die geschlossene Menge der
+  Paare auf und stimmt mit dem zehnten Paar nicht mehr; er wird um dieses Paar nachgezogen. Die Datei
+  schreibt der Implementer, nicht diese ADR.
 - **Folgepflicht (Planner):** `slice-113` nennt diese ADR als Vorbedingung (§4-Start-Trigger) und den
   `docs-check`-Nachweis im Move-Punkt; die Prämisse *„rund 40 überwiegend eingefrorene Quellen"* in
   `slice-141` und `slice-113` ist durch die Messung hier ersetzt.
@@ -199,13 +208,16 @@ alten Ort samt Adaptions-Eintrag) statt des Paares — Empfehlung: nicht vorab; 
 | bats `test/ignore-refs-restbreite.bats` | jedes Paar deckt genau seine deklarierte Zahl Links (`Deckung: 2`) | `make test` (in `make gates`) |
 
 **Lücke:** die Reihenfolge *Entscheidung vor Move* und die Commit-Trennung hält kein Sensor; ebenso
-die Aufnahme-Grenze für ein elftes Paar (Hard Rule §3.5 ohne Sensor). Der Restbreite-Wächter zählt nur
+die Aufnahme-Grenze für ein elftes Paar (Hard Rule §3.5 ohne Sensor). **Ebenso hält kein Wächter den
+Inhalt des Config-Kommentars:** `internal/ausnahmegrund` lässt ein Paar ohne Kommentar durch, dass der Kommentar
+„den ganzen Gegenstand nennt", ist Zusage des Implementers und Prüfpunkt des Reviews. Der Restbreite-Wächter zählt nur
 die Markdown-Link-Achse; [`ADR-0021`](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) trägt keinen Code-Span auf den Pfad (`grep -c 'CO-001-bats' docs/plan/adr/0021-*.md` → 2, beide Link-Form).
 
 ## Re-Evaluierungs-Trigger
 
-- **Wenn eine `Accepted`-ADR einen Carveout als Pfad-Link trägt, dessen Auflösung ansteht** (Kommando
-  im Kontext, Zeile 2): dann ist das ein neuer Einzelfall mit eigener Entscheidung.
+- **Wenn ein weiterer Carveout aufgelöst werden soll, auf den eine `Accepted`-ADR als Pfad-Link zeigt**
+  (Bestand heute: `git grep -lE '\]\(\.\./carveouts/(done/)?CO-[0-9][^)]*\)' -- 'docs/plan/adr/[0-9]*.md' | xargs grep -l '^\*\*Status:\*\* Accepted' | wc -l` → 5 Dateien; `CO-001` ist
+  durch diese ADR entschieden, `CO-002` ist ortsfest): dann ist das ein neuer Einzelfall mit eigener Entscheidung.
 - **Wenn [`AGENTS.md`](../../../AGENTS.md) §3.4 eingeschränkt wird:** dann ist das Paar zurückzunehmen
   und der Nachzug in [`ADR-0021`](0021-verbrauchs-achse-je-rolle-ohne-quelle.md) nachzuholen.
 - **Wenn die Baseline den `done/`-Move bei Auflösung nicht mehr verlangt:** dann fällt der Auslöser.
