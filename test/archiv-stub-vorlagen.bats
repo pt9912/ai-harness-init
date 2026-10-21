@@ -82,7 +82,7 @@ platzhalter() {
             echo "kein einfacher Konstanten-Name: '$konst' in: $zeile" >&2
             return 1 ;;
         esac
-        wert="$(sed -n "s/^[[:space:]]*$konst[[:space:]]*= \"\(.*\)\"\$/\1/p" "$KONST")"
+        wert="$(sed -n "s/^[[:space:]]*${konst}[[:space:]]*= \"\(.*\)\"\$/\1/p" "$KONST")"
         if [ -z "$wert" ]; then
           echo "Konstante '$konst' nicht in ${KONST##*/} aufloesbar: $zeile" >&2
           return 1

@@ -136,7 +136,7 @@ EOF
   load_functions "$fassung"
   mkdir -p "$TMP/docs/plan/planning/open"
   : > "$TMP/docs/plan/planning/open/slice-998-sibling.md"
-  cd "$TMP"
+  cd "$TMP" || return 1
   printf '[a](slice-998-sibling.md)\n' > moved.md
   run rewrite_outgoing_bare_in_file moved.md open
   [ "$status" -eq 0 ]
@@ -150,7 +150,7 @@ EOF
   load_functions "$fassung"
   mkdir -p "$TMP/docs/plan/planning/open"
   : > "$TMP/docs/plan/planning/open/slice-woertlich-benannt.md"
-  cd "$TMP"
+  cd "$TMP" || return 1
   printf '[a](slice-woertlich-benannt.md)\n' > moved.md
   run rewrite_outgoing_bare_in_file moved.md open
   [ "$status" -eq 0 ]
@@ -165,7 +165,7 @@ EOF
   mkdir -p "$TMP/docs/plan/planning/open"
   : > "$TMP/docs/plan/planning/open/slice-abc.md"
   : > "$TMP/docs/plan/planning/open/slice-abc-erweitert.md"
-  cd "$TMP"
+  cd "$TMP" || return 1
   cat > moved.md <<'EOF'
 [a](slice-abc.md)
 [b](slice-abc-erweitert.md)
@@ -183,7 +183,7 @@ EOF
   load_functions "$fassung"
   mkdir -p "$TMP/docs/plan/planning/open"
   : > "$TMP/docs/plan/planning/open/welle-01-x.md"
-  cd "$TMP"
+  cd "$TMP" || return 1
   printf '[a](welle-01-x.md)\n' > moved.md
   run rewrite_outgoing_bare_in_file moved.md open
   [ "$status" -eq 0 ]
@@ -196,7 +196,7 @@ EOF
   for fassung in "${FASSUNGEN[@]}"; do
   load_functions "$fassung"
   mkdir -p "$TMP/docs/plan/planning/open"
-  cd "$TMP"
+  cd "$TMP" || return 1
   printf '[a](slice-nicht-vorhanden.md)\n' > moved.md
   run rewrite_outgoing_bare_in_file moved.md open
   [ "$status" -eq 0 ]
@@ -226,7 +226,7 @@ EOF
 
 @test "docs/reviews: der Link auf den bewegten Slice wird nachgezogen, die vier Nicht-Link-Formen (Span, Operand, Block, Fliesstext) bleiben Byte fuer Byte (ADR-0070 Fitness 1)" {
   load_functions "$DOGFOOD"
-  cd "$TMP"
+  cd "$TMP" || return 1
   mkdir -p docs/reviews
   form_probe docs/reviews/probe.md
   run rewrite_incoming_nach_baum docs/reviews/probe.md "slice-999-x.md" "open" "next"
@@ -244,7 +244,7 @@ Fliesstext: Der Slice lag in docs/plan/planning/open/slice-999-x.md und wurde be
 
 @test "docs/reviews: eine Datei ohne Link auf den Slice bleibt unveraendert und gehoert nicht zum Nachzug (Status 1)" {
   load_functions "$DOGFOOD"
-  cd "$TMP"
+  cd "$TMP" || return 1
   mkdir -p docs/reviews
   printf '%s\n' '`docs/plan/planning/open/slice-999-x.md` und open/slice-999-x.md' > docs/reviews/nur-span.md
   cp docs/reviews/nur-span.md vorher.md
@@ -255,7 +255,7 @@ Fliesstext: Der Slice lag in docs/plan/planning/open/slice-999-x.md und wurde be
 
 @test "docs/reviews: jede Link-Tiefe, mit und ohne Anker und mit Code-Span als Link-Text, wird nachgezogen — verklebtes Wort, laengerer Name und anderes Verzeichnis bleiben" {
   load_functions "$DOGFOOD"
-  cd "$TMP"
+  cd "$TMP" || return 1
   mkdir -p docs/reviews
   cat > docs/reviews/tiefen.md <<'EOF'
 [a](../../docs/plan/planning/open/slice-999-x.md)
@@ -284,7 +284,7 @@ EOF
 
 @test "docs/reviews: mehrere Links in einer Zeile werden je fuer sich nachgezogen, auch ein Link unmittelbar hinter einem Code-Span — ein fremder Link derselben Zeile bleibt" {
   load_functions "$DOGFOOD"
-  cd "$TMP"
+  cd "$TMP" || return 1
   mkdir -p docs/reviews
   printf '%s\n' '[a](../open/slice-999-x.md) und [b](../open/slice-999-x.md#anker) und [c](../open/slice-998-y.md)' \
     '`x`[j](../open/slice-999-x.md)' > docs/reviews/mehrfach.md
@@ -299,7 +299,7 @@ EOF
 
 @test "docs/reviews: Link-Syntax als Zitat in einem Code-Span wird mitersetzt, der reine Pfad daneben nicht (benannte Grenze, ADR-0070 Festlegung 1 — bekommt ein Traeger eine Kontext-Erkennung, faellt dieser Fall: Trigger 6 der ADR)" {
   load_functions "$DOGFOOD"
-  cd "$TMP"
+  cd "$TMP" || return 1
   mkdir -p docs/reviews
   printf '%s\n' '`[a](../plan/planning/open/slice-999-x.md)` und `docs/plan/planning/open/slice-999-x.md`' > docs/reviews/zitat.md
   run rewrite_incoming_nach_baum docs/reviews/zitat.md "slice-999-x.md" "open" "next"
@@ -310,7 +310,7 @@ EOF
 
 @test "done: jede Form wird weiter ersetzt — Link, reiner Pfad-Span, Operand, Block und Fliesstext derselben Datei (ADR-0070 Fitness 5, die Form-Regel gilt nur unter docs/reviews/)" {
   load_functions "$DOGFOOD"
-  cd "$TMP"
+  cd "$TMP" || return 1
   mkdir -p docs/plan/planning/done
   form_probe docs/plan/planning/done/probe.md
   run rewrite_incoming_nach_baum docs/plan/planning/done/probe.md "slice-999-x.md" "open" "next"
@@ -321,7 +321,7 @@ EOF
 
 @test "docs/reviews: dieselbe Probe unter dem Ersetzer fuer jede Form faerbt alle fuenf Vorkommen um (Kontrolle: die Probe trennt Link-Form von den vier anderen)" {
   load_functions "$DOGFOOD"
-  cd "$TMP"
+  cd "$TMP" || return 1
   form_probe probe.md
   rewrite_incoming_in_file probe.md "slice-999-x.md" "open" "next"
   [ "$(grep -c 'next/slice-999-x\.md' probe.md)" -eq 5 ]
@@ -347,29 +347,29 @@ cat_scheitert() {
 
 @test "psed_i: scheitert der sed, bleibt die Zieldatei unveraendert und der Status ist 2 — auch unter ||, wo set -e nicht gilt" {
   load_functions "$DOGFOOD"
-  cd "$TMP"
+  cd "$TMP" || return 1
   printf 'Link: [a](../open/slice-999-x.md)\n' > ziel.md
   cp ziel.md vorher.md
   sed_scheitert
   st=0
-  ( PATH="$TMP/bin:$PATH"; psed_i -E 's/open/next/' ziel.md ) || st=$?
+  PATH="$TMP/bin:$PATH" psed_i -E 's/open/next/' ziel.md || st=$?
   [ "$st" -eq 2 ] || { echo "Status: $st"; return 1; }
   [ "$(cat ziel.md)" = "$(cat vorher.md)" ] || { echo "Zieldatei veraendert:"; cat ziel.md; return 1; }
 }
 
 @test "psed_i: scheitert das Zurueckschreiben, ist der Status 2" {
   load_functions "$DOGFOOD"
-  cd "$TMP"
+  cd "$TMP" || return 1
   printf 'Link: [a](../open/slice-999-x.md)\n' > ziel.md
   cat_scheitert
   st=0
-  ( PATH="$TMP/bin:$PATH"; psed_i -E 's/open/next/' ziel.md ) || st=$?
+  PATH="$TMP/bin:$PATH" psed_i -E 's/open/next/' ziel.md || st=$?
   [ "$st" -eq 2 ] || { echo "Status: $st"; return 1; }
 }
 
 @test "docs/reviews und done: scheitert die Ersetzung, endet der Nachzug mit Status 2 und die Datei bleibt unveraendert (Aufrufform aus main(), ohne die 0-Byte-Datei)" {
   load_functions "$DOGFOOD"
-  cd "$TMP"
+  cd "$TMP" || return 1
   mkdir -p docs/reviews docs/plan/planning/done
   form_probe docs/reviews/probe.md
   form_probe docs/plan/planning/done/probe.md
@@ -377,7 +377,7 @@ cat_scheitert() {
   sed_scheitert
   for datei in docs/reviews/probe.md docs/plan/planning/done/probe.md; do
     st=0
-    ( PATH="$TMP/bin:$PATH"; rewrite_incoming_nach_baum "$datei" "slice-999-x.md" "open" "next" ) || st=$?
+    PATH="$TMP/bin:$PATH" rewrite_incoming_nach_baum "$datei" "slice-999-x.md" "open" "next" || st=$?
     [ "$st" -eq 2 ] || { echo "Status fuer $datei: $st"; return 1; }
     [ "$(cat "$datei")" = "$(cat vorher.md)" ] || { echo "$datei veraendert:"; cat "$datei"; return 1; }
   done

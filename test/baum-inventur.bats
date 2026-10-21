@@ -20,7 +20,10 @@
 setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
   QUELLE="$REPO/internal/emit/baumaussage.go"
-  REGELWERK="$(ls -d "$REPO"/.harness/baseline/*/regelwerk 2>/dev/null | head -1)"
+  REGELWERK=""
+  for d in "$REPO"/.harness/baseline/*/regelwerk; do
+    if [ -d "$d" ]; then REGELWERK="$d"; break; fi
+  done
 }
 
 # Die Modul-Namen der Inventur: jede Zeile `{Modul: "<name>", …}` in der Quelle.
@@ -65,7 +68,10 @@ inventur_module() {
 }
 
 @test "der Anker des Blocks steht im realen Vorlagen-Satz" {
-  vorlage="$(ls -d "$REPO"/.harness/baseline/*/templates/harness/conventions.template.md | head -1)"
+  vorlage=""
+  for d in "$REPO"/.harness/baseline/*/templates/harness/conventions.template.md; do
+    if [ -f "$d" ]; then vorlage="$d"; break; fi
+  done
   [ -f "$vorlage" ]
   run grep -qxF '## Adaptions-Block' "$vorlage"
   [ "$status" -eq 0 ]

@@ -26,7 +26,8 @@ setup() {
   # Divergenz, aus der spaeter ein Fixture-Artefakt statt eines Befunds wird.
   ( cd "$TMP/.harness/baseline/vTESTTAG-1a2b" \
       && find . ! -type d -not -name SHA256SUMS | sed 's|^\./||' | LC_ALL=C sort \
-         | xargs sha256sum > SHA256SUMS )
+         | xargs sha256sum > "$TMP/SHA256SUMS.neu" ) \
+    && mv "$TMP/SHA256SUMS.neu" "$TMP/.harness/baseline/vTESTTAG-1a2b/SHA256SUMS"
 }
 
 teardown() { rm -rf "$TMP"; }

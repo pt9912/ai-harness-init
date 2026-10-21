@@ -40,7 +40,7 @@ enc() { printf '%s' "$1" | awk -f "$ENCODER"; }
 }
 
 @test "encode: C0-Steuerzeichen werden uXXXX-escapt (valides JSON)" {
-  bs='\'
+  bs=$'\\'
   run enc "$(printf 'a\fb')"
   [ "$output" = "a${bs}u000cb" ]
 }

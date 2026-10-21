@@ -113,7 +113,7 @@ prereqs() {
 		| grep -E "^${ziel}:([^=]|$)" \
 		| grep -v ':=' \
 		| sed -e 's/##.*//' -e "s/^${ziel}://" \
-		| tr ' \t' '\n\n' \
+		| tr -s '[:blank:]' '\n' \
 		| grep -v '=' \
 		| sed '/^$/d' || true
 }

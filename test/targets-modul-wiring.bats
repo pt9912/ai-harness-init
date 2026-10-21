@@ -23,7 +23,6 @@ setup() {
   YML="$REPO/.d-check.yml"
   MAKEFILE="$REPO/Makefile"
   DCHECK_MK="$REPO/d-check.mk"
-  AGENTS="$REPO/AGENTS.md"
   README="$REPO/harness/README.md"
 }
 

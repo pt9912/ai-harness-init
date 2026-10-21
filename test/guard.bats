@@ -68,7 +68,7 @@ assert_passed() {
   # sondern blockt — sonst koennte ein \u-kodierter Toolchain-Name am
   # Scan vorbei. Backslash aus Variable, damit das Escape im Testtext
   # nicht selbst dekodiert wird.
-  bs='\'
+  bs=$'\\'
   json="{\"tool_input\":{\"command\":\"${bs}u0067o build\"}}"
   run extract "$json"
   [ "$status" -ne 0 ]
@@ -186,14 +186,14 @@ assert_passed() {
 # fueher den Scanner (i+=4 ueber das schliessende ") -> leerer Befehl ->
 # Guard liess den echten Befehl durch. Muss fail-closed blocken.
 @test "extract: malformed \\u (nicht 4 Hex) vor command -> rc!=0" {
-  bs='\'
+  bs=$'\\'
   json="{\"tool_input\":{\"description\":\"x${bs}u\",\"command\":\"npm ci\"}}"
   run extract "$json"
   [ "$status" -ne 0 ]
 }
 
 @test "guard: malformed \\u vor command -> block (kein fail-open)" {
-  bs='\'
+  bs=$'\\'
   json="{\"tool_input\":{\"description\":\"x${bs}u\",\"command\":\"npm ci\"}}"
   run guard "$json"
   assert_blocked

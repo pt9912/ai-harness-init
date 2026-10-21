@@ -110,7 +110,7 @@ zeilen() { grep -c '^| \[' "$1"; }
   # gepruefte Baum wird gelesen, nicht geschrieben.
   mkdir -p "$TMP/sandkasten/harness/tools" "$TMP/sandkasten/docs/user"
   cp "$QUELLE" "$TMP/sandkasten/harness/tools/full-smoke.sh"
-  cd "$TMP/sandkasten"
+  cd "$TMP/sandkasten" || return 1
   run bash "$ERZEUGER" harness/tools/full-smoke.sh docs/user/tabelle.md
   [ "$status" -eq 0 ]
   run cmp -s docs/user/tabelle.md "$TABELLE"
@@ -148,7 +148,7 @@ EOF
 
 @test "emittiert: ueber einer Fixture entsteht je Stufe eine Zeile — und kein einziger Verweis" {
   fixture "$TMP/ziel"
-  cd "$TMP/ziel"
+  cd "$TMP/ziel" || return 1
   run env E2E_ABDECKUNG_QUELLE=tools/harness/mein-e2e.sh bash "$(emittiert)"
   [ "$status" -eq 0 ]
   [ "$(grep -c '^| .* | Stufe [0-9]' docs/user/e2e-abdeckung.md)" -eq 1 ]
@@ -164,7 +164,7 @@ EOF
 }
 @test "emittiert: null Stufen enden laut, mit Exit 1 und der Form, die eine Kopfzeile haben muss" {
   fixture "$TMP/leer"
-  cd "$TMP/leer"
+  cd "$TMP/leer" || return 1
   # Die Mutation belegen, statt sie zu behaupten: das Skript traegt danach keine
   # Stufen-Kopfzeile mehr, aber es liegt.
   printf '#!/usr/bin/env bash\necho "selbstpruefung: eine Zeile ohne die drei Punkte"\n' > tools/harness/mein-e2e.sh
@@ -184,7 +184,7 @@ EOF
 
 @test "emittiert: eine Stufe ohne Deklaration faerbt die emittierte Fassung rot" {
   fixture "$TMP/ohne"
-  cd "$TMP/ohne"
+  cd "$TMP/ohne" || return 1
   grep -v '^e2e_abdeckung "' tools/harness/mein-e2e.sh > "$TMP/ohne.sh"
   mv "$TMP/ohne.sh" tools/harness/mein-e2e.sh
   # Die Mutation belegen: die Stufe bleibt, der Aufruf ist weg.
@@ -202,7 +202,7 @@ EOF
   # bleiben, denn ihr Kopf nennt die Datei weiter. Eine Sicht, die auf nichts zeigt und
   # das verschweigt, behauptet Pruefbarkeit, die niemand einloesen kann.
   fixture "$TMP/mitspec"
-  cd "$TMP/mitspec"
+  cd "$TMP/mitspec" || return 1
   run env E2E_ABDECKUNG_QUELLE=tools/harness/mein-e2e.sh E2E_ABDECKUNG_ZIEL=docs/user/a.md bash "$(emittiert)"
   [ "$status" -eq 0 ]
   # Mit Spec-Datei sagt der Lauf dazu nichts, und der Kopf traegt den Fehl-Hinweis nicht.
@@ -261,7 +261,7 @@ EOF
 @test "emittiert: die mitgelieferte Selbstpruefung traegt eine Stufe mit ihrer Deklaration, und die Zelle bleibt ohne geratene Kennung" {
   mkdir -p "$TMP/mit/tools/harness" "$TMP/mit/docs/user"
   cp "$REPO/internal/emit/templates/enforce/selbstpruefung.sh" "$TMP/mit/tools/harness/"
-  cd "$TMP/mit"
+  cd "$TMP/mit" || return 1
   # Die Ausgangslage belegen: genau eine Stufe, genau eine Deklaration.
   [ "$(grep -cE "$STUFEN_MUSTER_ZIEL" tools/harness/selbstpruefung.sh)" -eq 1 ]
   [ "$(grep -cE "$RUF_MUSTER" tools/harness/selbstpruefung.sh)" -eq 1 ]
@@ -279,7 +279,7 @@ EOF
   mkdir -p "$TMP/ohnedekl/tools/harness" "$TMP/ohnedekl/docs/user"
   grep -v '^e2e_abdeckung "' "$REPO/internal/emit/templates/enforce/selbstpruefung.sh" \
     > "$TMP/ohnedekl/tools/harness/selbstpruefung.sh"
-  cd "$TMP/ohnedekl"
+  cd "$TMP/ohnedekl" || return 1
   # Die Mutation belegen: die Stufe steht noch, der Aufruf ist weg.
   [ "$(grep -cE "$STUFEN_MUSTER_ZIEL" tools/harness/selbstpruefung.sh)" -eq 1 ]
   [ "$(grep -cE "$RUF_MUSTER" tools/harness/selbstpruefung.sh)" -eq 0 ]
@@ -291,7 +291,7 @@ EOF
 
 @test "emittiert: ein zweiter Lauf ohne geaenderte Deklaration schreibt die Sicht nicht neu und sagt es" {
   fixture "$TMP/zweitlauf"
-  cd "$TMP/zweitlauf"
+  cd "$TMP/zweitlauf" || return 1
   run env E2E_ABDECKUNG_QUELLE=tools/harness/mein-e2e.sh bash "$(emittiert)"
   [ "$status" -eq 0 ]
   # GEMESSEN WIRD DER SCHREIB-ZEITSTEMPEL, nicht die Meldung: ein Schreiben setzt ihn neu.
@@ -316,7 +316,7 @@ EOF
   mkdir -p "$TMP/ohnestufe/tools/harness" "$TMP/ohnestufe/docs/user"
   grep -vE '^echo "selbstpruefung: .* \.\.\."$' "$REPO/internal/emit/templates/enforce/selbstpruefung.sh" \
     > "$TMP/ohnestufe/tools/harness/selbstpruefung.sh"
-  cd "$TMP/ohnestufe"
+  cd "$TMP/ohnestufe" || return 1
   # Die Mutation belegen: die Deklaration steht noch, die Kopfzeile ist weg. Das ist die
   # Gegenrichtung zu "Stufe ohne Deklaration" — hier gibt es gar keine Stufe.
   [ "$(grep -cE "$STUFEN_MUSTER_ZIEL" tools/harness/selbstpruefung.sh)" -eq 0 ]
@@ -336,7 +336,7 @@ EOF
   # `make docs-check`; die ausgelieferte kennt das Gate ihres Ziels nicht und behauptet
   # darum keinen Anker.
   fixture "$TMP/trenn"
-  cd "$TMP/trenn"
+  cd "$TMP/trenn" || return 1
 
   # (a) DIE AUSGELIEFERTE FASSUNG: Code-Span, obwohl die Ueberschrift auflosen WUERDE.
   run env E2E_ABDECKUNG_QUELLE=tools/harness/mein-e2e.sh bash "$(emittiert)"
@@ -354,7 +354,7 @@ EOF
 
 @test "emittiert: jeder der vier Marker lenkt den Lauf, gemessen an dem was entsteht" {
   mkdir -p "$TMP/marker/tools/harness" "$TMP/marker/anders" "$TMP/marker/sicht"
-  cd "$TMP/marker"
+  cd "$TMP/marker" || return 1
   # Quelle und Praefix weichen beide von der Vorgabe ab: laeuft der Lauf ohne gesetzte
   # Marker, findet er gar nichts — das macht den Test der zwei Marker unabhaengig von der
   # Vorgabe.
@@ -390,7 +390,7 @@ EOF
   # gehalten wird sie hier und, fuer den realen Bestand, vom Doku-Gate ueber
   # docs/user/e2e-abdeckung.md.
   mkdir -p "$TMP/roh/tools/harness" "$TMP/roh/spec" "$TMP/roh/docs/user"
-  cd "$TMP/roh"
+  cd "$TMP/roh" || return 1
   {
     printf '### RQ-A — [Zitat](../README.md) im Titel\n\nText.\n\n'
     printf '### RQ-B — Zitat »Wert«\n\nText.\n\n'

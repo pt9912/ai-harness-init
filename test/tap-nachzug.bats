@@ -150,7 +150,7 @@ formel() {
 # lauf <modus> <tag> [VAR=wert ...] — das Skript im leeren Arbeitsverzeichnis.
 lauf() {
   local modus="$1" tag="$2"; shift 2
-  cd "$CWD"
+  cd "$CWD" || return 1
   run env TAG="$tag" "$@" bash "$SKRIPT" "$modus"
 }
 
@@ -158,7 +158,7 @@ lauf() {
 # $output ist stdout, ${stderr_lines[@]} die Zeilen von stderr.
 lauf_getrennt() {
   local modus="$1" tag="$2"; shift 2
-  cd "$CWD"
+  cd "$CWD" || return 1
   run --separate-stderr env TAG="$tag" "$@" bash "$SKRIPT" "$modus"
 }
 
@@ -296,7 +296,7 @@ blob() { { printf 'blob %s\0' "$(wc -c <"$1")"; cat "$1"; } | sha1sum | awk '{pr
 
 @test "cache-fenster: die Wartezeit ohne Vorgabe sind 65 Sekunden" {
   sed '2s/.*/  desc "alt"/' "$TMP/asset" >"$TMP/tapalt"
-  cd "$CWD"
+  cd "$CWD" || return 1
   run env -u TAP_WAIT TAG=v0.2.3 STUB_TAP_1="$TMP/tapalt" bash "$SKRIPT" check
   [ "$status" -eq 1 ]
   [ "$(cat "$STUB_LOG_SLEEP")" = "65" ]
@@ -512,7 +512,7 @@ x'; do
 }
 
 @test "aufruf: ohne TAG endet der Lauf mit Exit 2 und nennt die Variable" {
-  cd "$CWD"
+  cd "$CWD" || return 1
   run env -u TAG bash "$SKRIPT" check
   [ "$status" -eq 2 ]
   [[ "$output" == *"TAG"* ]]
@@ -591,7 +591,7 @@ x'; do
   # dort mit Status 1 statt mit dem der Nutzlast (ADR-0066); eine im Container nicht beschreibbare
   # stderr aendert seinen Status nicht.
   printf 'pwd() { return 127; }\n' >"$TMP/defekt.sh"
-  cd "$CWD"
+  cd "$CWD" || return 1
   for ziel in '/dev/full' '&-'; do
     # Exit 2 in fehler(): falsche Tag-Form.
     run bash -c 'TAG="$1" exec bash "$2" check 2>'"$ziel" _ 'v1.0.0;x' "$SKRIPT"
@@ -628,7 +628,7 @@ nutzlast_direkt() {
   mkdir -p "$TMP/mktemp-$1"
   printf '#!/bin/sh\nexit %s\n' "$1" >"$TMP/mktemp-$1/mktemp"
   chmod 0755 "$TMP/mktemp-$1/mktemp"
-  cd "$CWD"
+  cd "$CWD" || return 1
   run --separate-stderr env PATH="$TMP/mktemp-$1:$PATH" TAP_MODE=check TAP_TAG=v0.2.3 TAP_WAIT=0 \
     TAP_ASSET_URL=https://x.invalid/releases/download/v0.2.3/a TAP_URL=https://x.invalid/contents/a \
     sh "$NUTZLAST"
@@ -652,7 +652,7 @@ nutzlast_direkt() {
 
 @test "unterschied: die Nutzlast meldet den Formel-Unterschied mit Status 10, nur er" {
   # Das Host-Skript bildet 10 auf seinen Exit 1 ab; der Status, den docker selbst liefert (1), ist es nicht.
-  cd "$CWD"
+  cd "$CWD" || return 1
   formel 0.2.2 >"$TMP/tap022"
   run env PATH="$TMP/bin:$PATH" TAP_MODE=check TAP_TAG=v0.2.3 TAP_WAIT=0 STUB_TAP_1="$TMP/tap022" \
     TAP_ASSET_URL=https://x.invalid/releases/download/v0.2.3/a TAP_URL=https://x.invalid/contents/a \
@@ -716,7 +716,7 @@ nutzlast_direkt() {
   done
   # Die Nutzlast fuehrt den Nachweis ein zweites Mal, falls sie ohne das Host-Skript laeuft: Exit 2, kein Schreibaufruf.
   zuruecksetzen
-  cd "$CWD"
+  cd "$CWD" || return 1
   run --separate-stderr env TAP_MODE=sync TAP_TAG=v0.2.3 TAP_WAIT=0 \
     TAP_ASSET_URL=https://x.invalid/releases/download/v0.2.3/a TAP_URL=https://x.invalid/contents/a sh "$NUTZLAST"
   [ "$status" -eq 2 ]

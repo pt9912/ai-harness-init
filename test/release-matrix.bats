@@ -243,7 +243,7 @@ mk_platforms() {
   # Die echte Datei am uebergebenen Ort: faellt.
   printf '#!/usr/bin/env bash\nexit 3\n' >"$dir/kandidat"
   chmod +x "$pathdir/kandidat" "$dir/kandidat"
-  cd "$dir"
+  cd "$dir" || return 1
   PATH="$pathdir:$PATH" run bash "$REPO/harness/tools/start-smoke.sh" kandidat
   cd /
   rm -rf "$dir" "$pathdir"
@@ -481,13 +481,15 @@ docker_stub() {
 @test "release: homebrew-formula-fill.sh befuellt alle sechs Platzhalter aus der SHA256SUMS" {
   local dir
   dir="$(mktemp -d)"
-  printf 'aaaa000000000000000000000000000000000000000000000000000000000  ai-harness-init-darwin-amd64\n' >"$dir/SHA256SUMS"
-  printf 'bbbb000000000000000000000000000000000000000000000000000000000  ai-harness-init-darwin-arm64\n' >>"$dir/SHA256SUMS"
-  printf 'cccc000000000000000000000000000000000000000000000000000000000  ai-harness-init-linux-amd64\n' >>"$dir/SHA256SUMS"
-  printf 'dddd000000000000000000000000000000000000000000000000000000000  ai-harness-init-linux-arm64\n' >>"$dir/SHA256SUMS"
-  # Ein fuenftes, nicht-brew-relevantes Asset (windows) darf mitreisen, ohne gebraucht
-  # zu werden — die Formel liest nur die vier Plattformen, die sie kennt.
-  printf 'eeee000000000000000000000000000000000000000000000000000000000  ai-harness-init-windows-amd64.exe\n' >>"$dir/SHA256SUMS"
+  {
+    printf 'aaaa000000000000000000000000000000000000000000000000000000000  ai-harness-init-darwin-amd64\n' 
+    printf 'bbbb000000000000000000000000000000000000000000000000000000000  ai-harness-init-darwin-arm64\n' 
+    printf 'cccc000000000000000000000000000000000000000000000000000000000  ai-harness-init-linux-amd64\n' 
+    printf 'dddd000000000000000000000000000000000000000000000000000000000  ai-harness-init-linux-arm64\n' 
+    # Ein fuenftes, nicht-brew-relevantes Asset (windows) darf mitreisen, ohne gebraucht
+    # zu werden — die Formel liest nur die vier Plattformen, die sie kennt.
+    printf 'eeee000000000000000000000000000000000000000000000000000000000  ai-harness-init-windows-amd64.exe\n' 
+  } >"$dir/SHA256SUMS"
   run bash "$REPO/harness/tools/homebrew-formula-fill.sh" v0.2.1 "$dir/SHA256SUMS" "$REPO/harness/tools/homebrew-formula.rb.tmpl" "$dir/ai-harness-init.rb"
   [ "$status" -eq 0 ]
   [ -f "$dir/ai-harness-init.rb" ]
