@@ -10,7 +10,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 Setzung 1, alle drei Fragen beantwortet. **Bündel?** Nein — ein Slice, eine Entscheidung, und er
 wartet auf keinen zweiten. **Gemeinsames Closure-Kriterium?** Nein — jedes wäre die Abschrift
 seiner eigenen DoD. **Auslöser reaktiv oder gewollt?** Reaktiv: ein Auflösungs-Trigger ist
-eingetreten und sein Vollzug bricht Adressen in rund 40 überwiegend eingefrorenen Quellen (§1). Der Gegenstand
+eingetreten und sein Vollzug bricht Adressen in 30 (gemessen, ADR-0098) teils eingefrorenen Quellen (§1). Der Gegenstand
 stammt **nicht** aus dem Re-Baseline-Delta und belegt kein Closure-Kriterium von
 [welle-10](../done/welle-10-re-baseline.md) §3; er gehört darum in keine Welle. Nach
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
@@ -55,7 +55,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 ist einzeln lieferbar.
 
 **Wenn [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) nach `carveouts/done/` wandert, ist
-vorher entschieden, was mit den Adressen geschieht, die dieser Move in rund 40 eingefrorenen
+vorher entschieden, was mit den Adressen geschieht, die dieser Move in 30 (gemessen, ADR-0098) teils eingefrorenen
 Quellen bricht.** Der Gegenstand ist eine **Architect-Entscheidung** (ADR, §1 *Der Auftrag*); die
 Annahme einer ADR ist Auftraggeber-Entscheidung
 ([`ADR-0040`](../../adr/0040-accept-uebergang-nennt-den-beleg-seines-triggers.md)).
@@ -142,7 +142,7 @@ DoD (2). **Die Aufzählung ist der Auftrag-Stand, keine Vollständigkeitsaussage
   [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md).
 - **(c) Eine ADR „Carveout-Adressen in eingefrorenen Artefakten stehen per Kennung"** —
   [`AGENTS.md`](../../../../AGENTS.md) §3.11 für Carveouts — **plus einmalige Behandlung des
-  Bestands** (die rund 40 Quellen). Offen: wie der Bestand ohne Eingriff in eingefrorene Texte
+  Bestands** (die 30 Quellen). Offen: wie der Bestand ohne Eingriff in eingefrorene Texte
   behandelt wird.
 - **(d) `CO-001` nach `done/` verschieben und am alten Ort einen gekürzten Stub lassen** (Muster
   der Archiv-Stubs: hält Verweise gültig, ohne Ventil, keine Senkung). Offen: verwischt ein Stub
@@ -159,7 +159,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **(1) Die Entscheidung liegt in einem Artefakt ihrer schreibenden Rolle und ist extensional
+- [x] **(1) Die Entscheidung liegt in einem Artefakt ihrer schreibenden Rolle und ist extensional
       geschnitten.** Eine neue ADR (Architect,
       [`AGENTS.md`](../../../../AGENTS.md) §3.8) wählt eine der vier Optionen aus §1 (oder begründet eine
       fünfte) für die Häufung, nennt den Lauf, der sie setzt, und den Moment relativ zum `git mv`.
@@ -169,7 +169,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       `ignore-refs`-Eintrag ist eine Senkung nach [`AGENTS.md`](../../../../AGENTS.md) §3.5 mit
       eigener ADR. Die Annahme ist Auftraggeber-Entscheidung. **Ein Ergebnis, das nur in diesem
       Plan steht, erfüllt den Punkt nicht.**
-- [ ] **(2) Der Fall ist gemessen und nicht aus
+- [x] **(2) Der Fall ist gemessen und nicht aus
       [`ADR-0027`](../../adr/0027-tote-adresse-in-eingefrorener-adr.md) übernommen.** In der
       Entscheidung stehen, je mit dem Kommando, das sie ausgibt: die Zahl der
       Befunde, die der Move erzeugt, getrennt nach **beiden Adress-Formen** (Markdown-Link und
@@ -180,21 +180,21 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       Instrument ein Ventil ist, **beide Skopen je an einer roten Gegenprobe** und der Nachweis,
       dass die geprüfte Datei-Zahl sich nicht bewegt — zwei Läufe, ein Vergleich, kein gemerkter
       Wert.
-- [ ] **(3) [slice-113](../open/slice-113-co-001-ist-faellig.md) trägt die Entscheidung als
+- [x] **(3) [slice-113](../open/slice-113-co-001-ist-faellig.md) trägt die Entscheidung als
       Vorbedingung.** Sein §4-Start-Trigger nennt sie, und sein DoD-Punkt zum `git mv` verlangt
       danach `make docs-check` mit **0** Befunden. Damit hängt die Reihenfolge an einem Plan-Text,
       den der ausführende Lauf liest, statt an dieser Notiz. **Ein Wächter dafür existiert nicht**
       — kein Modul des Doku-Gates liest Lifecycle-Reihenfolgen —, und das steht hier, statt einen
       zu behaupten
       ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
-- [ ] `make gates` grün.
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register fortgeschrieben: neue `BEO-<NNN>` oder Zähler +1 mit Beleg in
+- [x] `make gates` grün.
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register fortgeschrieben: neue `BEO-<NNN>` oder Zähler +1 mit Beleg in
       [`observations/README.md`](../observations/README.md) — *keine Beobachtung angefallen* ist ebenfalls eine
       Antwort und wird in §7 notiert. Das Reconciliation-Register entfällt dauerhaft: dieses Repo
       hat keinen Brownfield-Bootstrap.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste Welle-Closure, nicht
       dieser Slice — dieses Repo fährt Wellen-Betrieb, und das gilt auch für wellenlose Slices.
 
@@ -211,7 +211,7 @@ Aussagen-Berührung steht hier gar nicht.
 | [`.d-check.yml`](../../../../.d-check.yml) | **nur, wenn das Instrument ein Ventil ist (Option b)**, durch den Implementer | die Config-Zeile folgt der Entscheidung, sie ersetzt sie nicht; Zeile **und** Config-Kommentar mit Zeiger auf die neue ADR, wie bei den bestehenden Paaren |
 | änderbare Quellen mit Adresse auf `CO-001` | **nur nach Option b oder c**, durch den Implementer | Nachzug bzw. Kennungs-Form; die eingefrorenen Quellen bleiben unberührt |
 | [slice-113](../open/slice-113-co-001-ist-faellig.md) | update, durch den Planner | die Vorbedingung aus DoD (3) — §4-Trigger und der `git mv`-Punkt |
-| [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) | **unangetastet** | *Accepted*, [`AGENTS.md`](../../../../AGENTS.md) §3.4; eine von rund 40 eingefrorenen Quellen, ihre Adressen bleiben, wie sie sind |
+| [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) | **unangetastet** | *Accepted*, [`AGENTS.md`](../../../../AGENTS.md) §3.4; eine von 30 (gemessen, ADR-0098) teils eingefrorenen Quellen, ihre Adressen bleiben, wie sie sind |
 | [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) | **unangetastet** | der Move gehört [slice-113](../open/slice-113-co-001-ist-faellig.md); dieser Slice entscheidet, er vollzieht nicht |
 
 **Der Commit-Zuschnitt folgt aus den beteiligten Rollen.** Die ADR und ihre Index-Zeile liegen in
@@ -233,7 +233,7 @@ Formalie. **Zusätzlich:** [slice-113](../open/slice-113-co-001-ist-faellig.md) 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): **eingetreten, vor dem Claim.** Die
-  Sonde (§1) zeigt 61 Befunde aus rund 40 Quellen statt der zwei Verweise aus
+  Sonde (§1) zeigt 61 Befunde aus 30 Quellen statt der zwei Verweise aus
   [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md): eine **Häufung**, und
   `modul-07-carveouts.md` §Werkzeug-Wahl führt bei Häufung ausdrücklich weg vom punktuellen
   Werkzeug. Der Slice ist daher in `next/` neu zerlegt (§1 *Der Auftrag*), nicht geclaimt.
@@ -271,33 +271,25 @@ dasteht.
   Bedingung erfüllt"*, und
   [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) Festlegung 5 verlangt eine
   **eigene Messung**. Eine ADR, die kein Kommando über diesem Baum führt, ist die eingetretene
-  Form dieses Risikos. — **Ausgang:** <entfallen: DoD (2) ist mit Kommandos über diesem Baum
-  belegt, Sonde eingeschlossen | eingetreten: die Entscheidung zitiert fremde Zahlen und wird
-  zurückgewiesen>
+  Form dieses Risikos. — **Ausgang:** entfallen: [`ADR-0098`](../../adr/0098-co-001-aufloesung-reiner-move-nachzug-und-ein-namentliches-paar-fuer-adr-0021.md) führt die Sonde (61 Befunde, 30 Dateien) und jede Zählung mit ihrem Kommando; die Review-Runde hat sie bestätigt.
 - **Ein Ventil für die Häufung ist eine Kaskade, wenn niemand sie zählt.** Der Schlüssel führt
   bereits die Paare 1 bis 9 plus Baum-Globs; jeder weitere Eintrag ist eine eigene ADR nach
   [`AGENTS.md`](../../../../AGENTS.md) §3.5 und Auftraggeber-Entscheidung. `modul-07-carveouts.md`
   führt eine **Häufung** ausdrücklich nicht in eine Kaskade; die Optionen (c) und (d) in §1 fragen
-  die Klasse an der Wurzel (§3.11). — **Ausgang:** <entfallen: die Entscheidung wägt alle vier
-  Optionen gegeneinander ab und begründet die Wahl | eingetreten: die Wurzel-Frage bekommt einen
-  eigenen Schnitt>
+  die Klasse an der Wurzel (§3.11). — **Ausgang:** entfallen: die ADR wägt die Optionen A bis G in ihrer Alternativen-Tabelle gegeneinander ab und begründet G.
 - **Der Restbreite-Wächter deckt ein weiteres Paar, aber nicht seine Berechtigung — und eine
   Häufung nicht ohne Weiteres.**
   `test/ignore-refs-restbreite.bats` misst, dass ein Paar höchstens einen Markdown-Link seiner
   Quelldatei stumm schaltet — er läuft über die vollständige Paar-Liste und fasst jedes neue Paar
-  vom ersten Lauf an. Für rund 40 Quellen mit teils mehreren Links passt ein Paar-Ventil nicht in
+  vom ersten Lauf an. Für 30 Quellen mit teils mehreren Links passt ein Paar-Ventil nicht in
   diese Grenze. Dass ein Paar **existieren darf**, misst er nicht; das hängt an
-  [`AGENTS.md`](../../../../AGENTS.md) §3.5, und der hat keinen Sensor. — **Ausgang:** <weiter
-  offen: die Aufnahme-Grenze ist prozessual und bleibt es | entfallen: das gewählte Instrument ist
-  kein Ventil>
+  [`AGENTS.md`](../../../../AGENTS.md) §3.5, und der hat keinen Sensor. — **Ausgang:** weiter offen: die Aufnahme-Grenze ist prozessual und bleibt es, jetzt mit dem zehnten Paar — Register `BEO-ALL/ignore-refs-paar-aufnahme-hat-keinen-sensor`.
 - **Option (d) verwischt die Verzeichnis-Position als Zustand.** Ein Stub im flachen `carveouts/`
   könnte als aktiver Carveout gelesen werden; kein Sensor trennt Stub und Carveout dort. —
-  **Ausgang:** <entfallen: die Entscheidung wählt (d) nicht oder benennt die Unterscheidung |
-  weiter offen: Register-Eintrag>
+  **Ausgang:** entfallen: die ADR wählt D nicht und führt es als Rückfalloption, weil die Verzeichnis-Position binär ist.
 - **Der Slice hängt an einer Rolle, nicht an einem Kommando.** Ohne Architect-Lauf ist DoD (1)
   nicht erreichbar, und ein Planner- oder Implementer-Lauf, der ihn trotzdem „erledigt", verstößt
-  gegen [`AGENTS.md`](../../../../AGENTS.md) §3.8. — **Ausgang:** <entfallen: die Entscheidung ist
-  in einem Architect-Commit sichtbar (`git log --stat`) | eingetreten: Rückführung nach §4>
+  gegen [`AGENTS.md`](../../../../AGENTS.md) §3.8. — **Ausgang:** entfallen: die Entscheidung liegt in den Architect-Commits `ba622589`, `b44b9637` und `a5ee6205` (`git log --stat`, Rolle in der Message).
 
 ## 7. Closure-Notiz
 
@@ -309,7 +301,32 @@ Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
 wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
 Backticks).
 
-<!-- Erst nach Abschluss füllen. -->
+**Gegenstand: geliefert.** Die Entscheidung liegt in
+[`ADR-0098`](../../adr/0098-co-001-aufloesung-reiner-move-nachzug-und-ein-namentliches-paar-fuer-adr-0021.md)
+(`Accepted` am 2026-10-21, Architect-Commits `ba622589`, `b44b9637`, `a5ee6205`). Weg nach `done/` ist
+`in-progress → done` mit nachgeholtem Claim (WIP war frei): `open|next → done` verlangt einen Gegenstand,
+den ein anderer Slice übernimmt oder der entfällt, und dieser Slice hat seinen Gegenstand geliefert.
+
+**DoD-Verdikt.** (1) erfüllt — die ADR wählt G (reiner Move, Nachzug in 29 Quellen, ein namentliches
+Paar für `ADR-0021`), nennt den ausführenden Lauf (Implementer von slice-113) und den Moment (Move erst
+nach der Annahme, Nachzug im zweiten Commit). (2) erfüllt — Sonde und alle Zählungen stehen mit ihrem
+Kommando in der ADR (§Kontext), beide Skopen des Paares je an einer roten Gegenprobe; die Review-Runde
+`2026-10-21-adr-0098-review` fand 0 HIGH und 0 MEDIUM. (3) erfüllt —
+`grep -c 'ADR-0098' docs/plan/planning/open/slice-113-co-001-ist-faellig.md` → **4**; sein §4 nennt die
+Vorbedingung, sein DoD (3) den `docs-check`-Nachweis. Ein Verifier-Lauf fand für diesen Slice nicht statt;
+die Prüfung der drei Punkte ist die des Planners mit den genannten Kommandos.
+
+**Prämisse ersetzt.** *„Rund 40 überwiegend eingefrorene Quellen"* war eine Schätzung; gemessen sind es 30
+Dateien, 29 reparierbar, weil die Nachzug-Regel für Zeitdokumente erst nach dem Schnitt entschieden wurde.
+
+**Steering-Loop-Eintrag (benannte Lücke).** Kein Sensor liest die Reihenfolge *Entscheidung vor Move*;
+Träger ist der Plan-Text (slice-113 §4, ADR-0098 Festlegung 4), Gegenstück
+[`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6). Eine Prämisse
+über Zahl und Status von Quellen ist Prognose, bis eine Sonde sie misst.
+
+**Beobachtungs-Register.** Neu:
+[`BEO-ALL/ignore-refs-paar-aufnahme-hat-keinen-sensor`](../observations/BEO-ALL/ignore-refs-paar-aufnahme-hat-keinen-sensor/observation.md),
+ein Beleg (Ausgang des dritten Risikos aus §6).
 
 ## 8. Sub-Area-Modus-Begründung
 
