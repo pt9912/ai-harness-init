@@ -496,7 +496,7 @@ Backticks).
   und ein lautes Rot hinterlässt keine Konfiguration, die zurückzunehmen wäre.
 - **Trigger-Audit:** `CO-001` — Trigger weiterhin **eingetreten**, Ausgang unverändert
   *verlängert mit Folge-Slice*; die zwei Träger sind Dateien im Lifecycle
-  ([slice-141](../next/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) entscheidet vorher,
+  ([slice-141](../in-progress/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) entscheidet vorher,
   [slice-113](../open/slice-113-co-001-ist-faellig.md) führt aus). Die `Letzte Prüfung:`-Zeile
   jener Datei bleibt beim Stand des welle-10-Audits: In einem Repo mit Wellen-Betrieb ist das
   Carveout-Audit Schritt 2 der Welle-Closure, und eine zweite Eintragung desselben Ergebnisses

@@ -190,7 +190,7 @@ Drei slice-eigene Punkte (Modul 5 §Ziel-Form: ≤ 3;
 
 **Beginn (`open` → `next` → `in-progress`): das WIP-Limit ist frei, [`ADR-0098`](../../adr/0098-co-001-aufloesung-reiner-move-nachzug-und-ein-namentliches-paar-fuer-adr-0021.md)
 trägt den Status `Accepted` **und**
-[slice-141](../next/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) liegt in `done/`.** Der
+[slice-141](../in-progress/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) liegt in `done/`.** Der
 Auflösungs-Trigger des Carveouts ist eingetreten; damit ist der Slice fällig, nicht bloß möglich.
 Der Move und sein Nachzug beginnen erst mit der Annahme der ADR
 ([`ADR-0098`](../../adr/0098-co-001-aufloesung-reiner-move-nachzug-und-ein-namentliches-paar-fuer-adr-0021.md)

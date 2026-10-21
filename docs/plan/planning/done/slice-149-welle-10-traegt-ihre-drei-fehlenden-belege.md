@@ -357,7 +357,7 @@ Setzung 2):
 - **Folge-Slices:** keine neuen aus diesem Slice. Der Carveout-Ausgang
   *verlängert mit Folge-Slice* nennt zwei, die beide schon als Datei im
   Planning-Lifecycle liegen und nicht dieselbe Arbeit sind:
-  [slice-141](../next/slice-141-co-001-aufloesung-ist-vorher-entschieden.md)
+  [slice-141](../in-progress/slice-141-co-001-aufloesung-ist-vorher-entschieden.md)
   (`next/`) entscheidet **vorher** zwischen den zwei Techniken,
   [slice-113](../open/slice-113-co-001-ist-faellig.md) (`open/`) **führt aus**.
 - **Risiken aus §6:** fünf benannt

@@ -48,7 +48,7 @@ Aufzählung, nicht die Semantik.
 Zwei aktive Dateien (`ls docs/plan/carveouts/*.md | wc -l` → **2**).
 
 [`CO-001`](../plan/carveouts/CO-001-bats-shell-lint.md) (Gate `shell-lint`): Stand *verlängert mit
-Folge-Slice* — [slice-141](../plan/planning/next/slice-141-co-001-aufloesung-ist-vorher-entschieden.md)
+Folge-Slice* — [slice-141](../plan/planning/in-progress/slice-141-co-001-aufloesung-ist-vorher-entschieden.md)
 entscheidet vor, [slice-113](../plan/planning/open/slice-113-co-001-ist-faellig.md) führt aus; beide
 liegen im Lifecycle. Der Auflösungs-Trigger ist weiterhin eingetreten und der Ausgang ist gesetzt —
 **kein Widerspruch**, der eine Architect-Frage wäre.

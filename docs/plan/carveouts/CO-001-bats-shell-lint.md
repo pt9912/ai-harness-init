@@ -16,7 +16,7 @@ verschachtelten `for`-Schleifen im Rumpf von `lh_platforms()`. Die Zahl wandert 
 ist kein Erwartungswert
 ([`MR-025`](../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
 Setzung 2). Zwei Folge-Slices tragen den Ausgang, und sie sind nicht dieselbe Arbeit:
-[slice-141](../planning/next/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) entscheidet
+[slice-141](../planning/in-progress/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) entscheidet
 **vorher**, [slice-113](../planning/open/slice-113-co-001-ist-faellig.md) **führt aus**).
 **Vorherige Prüfung:** 2026-08-27 (welle-12-Closure-Audit:
 **Trigger EINGETRETEN**. Der Trigger fragt über den Bestand — *„sobald eine einzelne

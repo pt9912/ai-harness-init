@@ -297,7 +297,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   Modul-Liste der Gate-Config
   (`grep -m1 '^modules:' .d-check.yml` → acht Module, darunter `planning` und `targets`).
 - **Die zwei offenen Carveouts tragen ihren Stand** — `CO-001` *verlängert mit Folge-Slice*
-  ([slice-141](../next/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) entscheidet vor,
+  ([slice-141](../in-progress/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) entscheidet vor,
   [slice-113](../open/slice-113-co-001-ist-faellig.md) führt aus), `CO-002` *permanent* (in
   [`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) übergeführt). Ein
   Zahl-Befund in `CO-001` ist benannt und als Register-Beleg eingetragen.
