@@ -7,7 +7,9 @@
 # Reines bash + awk, KEIN node/jq/OCI (LH-QA-03, LH-FA-06): der awk-Extraktor
 # (harness/tools/extract-command.awk) zieht nur das eine Feld
 # tool_input.command aus der Hook-stdin-JSON; bei Parse-Zweifel (malformed,
-# abgeschnitten, \u-Escape im Befehl) -> fail-closed (block).
+# abgeschnitten, \u-Escape im Befehl, zwei Strings ohne Trenner, ein Zeichen
+# ausserhalb von `: , } ]` und Leerraum hinter einem String-Ende)
+# -> fail-closed (block).
 #
 # Geprueft wird die Befehlsposition jedes Kommando-Segments (Trennung an
 # ; & && || | $( ` ( und Zeilenenden) — `git commit -m "... pip ..."` bleibt
