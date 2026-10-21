@@ -1125,7 +1125,7 @@ mode_rank() {
     test-bats) printf '%s' '4' ;;
     test-go) printf '%s' '5' ;;
     ci-lint) printf '%s' '6' ;;
-    shell-lint) printf '%s' '7' ;;
+    shell-lint) printf '%s' '4' ;;
     *) printf '%s' '9' ;;
   esac
 }

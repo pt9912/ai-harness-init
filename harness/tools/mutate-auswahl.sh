@@ -121,7 +121,7 @@ fall_gewicht() {
     test-go) printf '%s' 60 ;;
     test-bats) printf '%s' 25 ;;
     ci-lint) printf '%s' 10 ;;
-    shell-lint) printf '%s' 40 ;;
+    shell-lint) printf '%s' 27 ;;
     *) printf '%s' 30 ;;
   esac
 }
