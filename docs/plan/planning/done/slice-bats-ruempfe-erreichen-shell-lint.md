@@ -247,6 +247,19 @@ wird nicht angelegt. `BEO-ALL/marker-pruefung-in-full-smoke-wird-fuer-shell-lint
 die Ausnahme steht im Skript, keine Liste; ihr Gegenstands-Kommentar hat im Verdikt als benanntes
 Negativ keinen Wächter. Lese-Schritt: kein Eintrag erreicht mit diesem Slice 3×.
 
+**Paarungen geprüft am 2026-10-21** (nach dem `git mv`): (a) Anker — `grep -c 'liegt in'` über dieser
+Datei → **0**, kein Eintrag trägt das Feld, nichts zu paaren; (b) Folge-Slice — `ls
+docs/plan/planning/open/slice-113-co-001-ist-faellig.md` findet die Datei; (c) Register — das Verzeichnis
+`verkettung-verschluckt-den-fehler-eines-gliedes` existiert, `ls …/evidence/*.md | wc -l` → **1**;
+`make register-ausgang` → `0 Befund(e)`. **Register-Paarung (c), zweite Hälfte: 1 Verzeichnis ohne
+Beleg, namentlich `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen
+behauptet** (Bestand, nicht aus diesem Slice).
+
+**Archivierung ([`MR-078`](../../../../harness/conventions.md#mr-078)):** nicht vollzogen. Die Vorschau
+(`archive-welle --vorschau slice-bats-ruempfe-erreichen-shell-lint`) nennt 3 Sperren, darunter
+`[untergrenze]` (234 wellenlose Slices flach in `done/`, kein `done/*/archiv.zip`) und `[haenger]`
+(ein Review-Report mit eingehenden Verweisen); der Altbestand ist ein eigener Vorgang.
+
 **Folge:** [slice-113](../open/slice-113-co-001-ist-faellig.md) (Auflösung) — der Gegenstand der Pfad-Ausnahme
 bleibt dort, `Übernimmt:` hat dieser Slice nichts.
 
