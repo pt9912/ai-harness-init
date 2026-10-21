@@ -1,7 +1,10 @@
 # extract-command.awk — zieht tool_input.command aus der PreToolUse-Hook-JSON.
 # POSIX-awk (busybox/gawk/BSD), kein gawk-Spezifikum. Stdout = dekodierter
 # Befehl; Exit 0 = ok (ggf. leer), Exit 3 = Parse-Zweifel/fail-closed — der
-# Guard blockt dann. \u-Escape im Befehl gilt als Zweifel (block): der Guard
+# Guard blockt dann. Parse-Zweifel sind: kein Objekt, abgeschnitten oder
+# unbalanciert, zwei Strings ohne Trenner (`"a""b"`) und ein Zeichen ausserhalb
+# von `: , } ]` und Leerraum hinter einem String-Ende (`"a" x`).
+# \u-Escape im Befehl gilt als Zweifel (block): der Guard
 # ist ein Stolperdraht, keine Sandbox. Vollstaendigkeit ist nicht das Ziel —
 # bei Unsicherheit lieber blocken (fail-closed).
 #
@@ -18,6 +21,7 @@ END {
   esc = 0         # letztes Zeichen war Backslash?
   buf = ""        # aktueller String-Inhalt (dekodiert)
   hadu = 0        # aktueller String enthielt \uXXXX
+  afterstr = 0    # letztes Nicht-Leerraum-Zeichen war das Ende eines Strings?
   sawobj = 0      # je ein Top-Level-Objekt gesehen?
   found = 0
   cmdval = ""
@@ -58,6 +62,7 @@ END {
           cmdval = buf
         }
         instr = 0
+        afterstr = 1
         continue
       }
       buf = buf c
@@ -65,6 +70,14 @@ END {
     }
 
     # ausserhalb eines Strings
+    # Hinter einem String-Ende folgt, von Leerraum abgesehen, genau eines von
+    # : , } ] — ein weiteres " (zwei Strings ohne Trenner) oder jedes andere
+    # Zeichen ist Parse-Zweifel (Exit 3).
+    if (afterstr) {
+      if (c == " " || c == "\t" || c == "\r" || c == "\n") continue
+      if (c != ":" && c != "," && c != "}" && c != "]") exit 3
+      afterstr = 0
+    }
     if (c == "\"") { instr = 1; buf = ""; hadu = 0; continue }
     if (c == "{") { depth++; sawobj = 1; ctype[depth] = "o"; wantkey[depth] = 1; curkey[depth] = ""; continue }
     if (c == "}") { if (depth > 0) depth--; continue }

@@ -12,6 +12,7 @@ setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
   GUARD="$REPO/.claude/hooks/pretooluse-command-guard.sh"
   EXTRACT="$REPO/harness/tools/extract-command.awk"
+  EMIT_EXTRACT="$REPO/internal/emit/templates/enforce/extract-command.awk"
 }
 
 guard()   { printf '%s' "$1" | bash "$GUARD"; }
@@ -72,6 +73,53 @@ assert_passed() {
   json="{\"tool_input\":{\"command\":\"${bs}u0067o build\"}}"
   run extract "$json"
   [ "$status" -ne 0 ]
+}
+
+# ---------- awk-Extraktor beider Fassungen: zwei Strings / Resttext hinter String ----------
+# Die Schleife laeuft ueber die Fassung dieses Repos und ueber die Vorlage, aus der
+# `Enforce` die emittierte Fassung schreibt (go:embed); die Vorlage ist die reale Quelle.
+
+extract_in() { printf '%s' "$2" | awk -f "$1"; }
+
+@test "extract (beide Fassungen): zwei Strings ohne Trenner -> Exit 3" {
+  for fassung in "$EXTRACT" "$EMIT_EXTRACT"; do
+    run extract_in "$fassung" '{"tool_input":{"command":"pip x""make gates"}}'
+    [ "$status" -eq 3 ] || { echo "$fassung: rc=$status [$output]"; return 1; }
+    run extract_in "$fassung" '{"tool_input":{"command":"pip x" "make gates"}}'
+    [ "$status" -eq 3 ] || { echo "$fassung: rc=$status [$output]"; return 1; }
+  done
+}
+
+@test "extract (beide Fassungen): Zeichen ausserhalb eines Strings hinter dem Feldwert -> Exit 3" {
+  for fassung in "$EXTRACT" "$EMIT_EXTRACT"; do
+    run extract_in "$fassung" '{"tool_input":{"command":"a" garbage }}'
+    [ "$status" -eq 3 ] || { echo "$fassung: rc=$status [$output]"; return 1; }
+    run extract_in "$fassung" '{"tool_input":{"command":"a"x}}'
+    [ "$status" -eq 3 ] || { echo "$fassung: rc=$status [$output]"; return 1; }
+  done
+}
+
+@test "extract (beide Fassungen): wohlgeformtes JSON bleibt Exit 0 mit dem richtigen Befehl" {
+  nl=$'\n'
+  for fassung in "$EXTRACT" "$EMIT_EXTRACT"; do
+    # Escapes \n und \", Unicode, Folgefelder, Literale, Zahlen, Array, Objekt
+    run extract_in "$fassung" '{"tool_name":"Bash","tool_input":{"command":"ok\nx é \"q\"","description":"d","timeout":5,"flag":true,"n":null,"o":{"k":"v"},"a":["x","y"]},"z":-1.5e3}'
+    [ "$status" -eq 0 ] || { echo "$fassung: rc=$status [$output]"; return 1; }
+    [ "$output" = "ok${nl}x é \"q\"" ] || { echo "$fassung: [$output]"; return 1; }
+    # Zeilenumbruch und Leerraum zwischen den Tokens, auch hinter dem Stringende
+    run extract_in "$fassung" "{ \"tool_input\" :${nl}  {${nl}\"command\"${nl}: \"make gates\" ${nl}, \"description\" : \"d\" ${nl}}${nl}}"
+    [ "$status" -eq 0 ] || { echo "$fassung: rc=$status [$output]"; return 1; }
+    [ "$output" = "make gates" ] || { echo "$fassung: [$output]"; return 1; }
+    # String als letzter Wert vor } und als Array-Element vor ]
+    run extract_in "$fassung" '{"a":["x"],"tool_input":{"command":"ls"}}'
+    [ "$status" -eq 0 ] || { echo "$fassung: rc=$status [$output]"; return 1; }
+    [ "$output" = "ls" ] || { echo "$fassung: [$output]"; return 1; }
+  done
+}
+
+@test "guard: zwei Strings ohne Trenner -> block (der erste Befehl geht nicht verloren)" {
+  run guard '{"tool_input":{"command":"pip x""make gates"}}'
+  assert_blocked
 }
 
 # ---------- Guard: erlaubte Kommandos passieren ----------
