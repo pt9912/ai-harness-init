@@ -57,22 +57,22 @@ keine Abweichung von der Baseline; die Vorgänger-Sprünge (`slice-go-toolchain-
 
 Drei Liefer-Punkte, je mit dem Kommando, das ihn rot färbt ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
 
-- [ ] **1 — Go steht auf `1.27.3` an jeder Pin-Stelle, mit belegtem Digest.** `Makefile` `GO_VERSION`, `Dockerfile` `ARG GO_VERSION` und
+- [x] **1 — Go steht auf `1.27.3` an jeder Pin-Stelle, mit belegtem Digest.** `Makefile` `GO_VERSION`, `Dockerfile` `ARG GO_VERSION` und
       `golang`-`@sha256`, `internal/gen/golang.go` `DefaultGoVersion`, die Fallbacks in `harness/tools/smoke.sh` und `full-smoke.sh`.
       Der Digest ist der Manifest-Digest des Tags `golang:1.27.3`, Kommando in der Commit-Message; kein geratener Wert.
       Rot: `make freshness-go` (Exit 1 bei zurückgedrehtem Makefile-Pin) und `make freshness-digest` (Digest eines anderen Tags, Netz).
-- [ ] **2 — Das emittierte Skelett trägt `1.27.3` und bleibt gekoppelt.** `make test` grün. Rot, an der realen Quelle gebrochen:
+- [x] **2 — Das emittierte Skelett trägt `1.27.3` und bleibt gekoppelt.** `make test` grün. Rot, an der realen Quelle gebrochen:
       `DefaultGoVersion` bzw. Dockerfile-`ARG` auf `1.27.2` → `TestGoProfile_PinsMatchRepo`; ein Fallback auf `1.27.2` → `test/pin-fallbacks.bats`.
       Ursache der Meldung lesen, nicht nur „rot".
-- [ ] **3 — `make build`, `make test` und `make gates` laufen unter dem neuen Image ohne Befund.** Kein `//nolint`, keine Abschwächung von
+- [x] **3 — `make build`, `make test` und `make gates` laufen unter dem neuen Image ohne Befund.** Kein `//nolint`, keine Abschwächung von
       `.golangci.yml`. Rot: `make gates` (Exit ≠ 0).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -120,20 +120,17 @@ Lerneintrag, die den Release-Hinweis (Emission, `TRAEGER_*` unverändert) nennt.
 ## 7. Closure-Notiz
 
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Gegenstand:** <übernommen von `slice-<Kennung>` | entfallen: <Grund>>
-  *(nur beim Ausgang ohne Arbeit; sonst Zeile löschen)*
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<KUERZEL>/<slug>` (<slice-kennung-a>, <slice-kennung-b>, <slice-kennung-c> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-<Kennung>.md` | `evidence/slice-<Kennung>.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+- **Gegenstand geliefert:** der Go-Pin steht auf `1.27.3` an den fünf Pin-Stellen (Commit `5c91a7a1`), der Dockerfile-Digest ist auf den Index-Digest `6928d94d…9261` nachgezogen (`0505bb60`), `TestGenerate_GoVersionThreaded` nutzt die nie gepinnte Eingabe `1.99.7` (`a16d1de6`). Review: 0 HIGH, 0 MEDIUM, 0 LOW, 3 INFO ([Report](../../../reviews/2026-10-21-slice-go-toolchain-pin-zieht-auf-1-27-3.md)), Re-Review 2 INFO ([Nachlauf](../../../reviews/2026-10-21-slice-go-toolchain-pin-zieht-auf-1-27-3-nachlauf.md)). Verifier: DoD 1 zunächst **nicht** bestätigt (der Dockerfile-Digest gehörte nicht mehr zum Tag), nach dem Nachzug bestätigt, `make freshness-digest` alle fünf Achsen aktuell, verfälschter Digest rot ([Report](../../../reviews/2026-10-21-slice-go-toolchain-pin-zieht-auf-1-27-3-verify.md), [Nachlauf](../../../reviews/2026-10-21-slice-go-toolchain-pin-zieht-auf-1-27-3-verify-nachlauf.md)). Nicht gemessen im Re-Review: der Digest gegen die Registry (Hub-429); gelesen ist die Übereinstimmung von Dockerfile und Commit `0505bb60`.
+- **Was ging anders als geplant:** der Tag `golang:1.27.3` wurde nach dem Pin umgesetzt (Annotation `created 2026-10-21T02:16Z`, Verifier): der zuerst belegte Digest `…fe2b` war veraltet, `…9261` gilt. Ein Tag, der nach dem Pin umgesetzt wird, kann bis zur CI den Digest wieder ändern; `make freshness-digest` prüft nur zum Aufrufzeitpunkt.
+- **CI-Beleg ([`AGENTS.md`](../../../../AGENTS.md) §3.9), vom Hauptkontext gemessen, nicht von dieser Closure:** (1) Mutations-Probe auf `5c91a7a1` (Lauf 39544032717): 46 Fälle, 45 ok, Befund `20-gen-go-version-threading: rot, aber 'TestGenerate_GoVersionThreaded' fällt nicht — falscher Grund`; `make gates` fing es nicht. (2) Probe auf `a16d1de6` (Lauf 39552971647): 46 Fälle, 40 ok inkl. Fall 20; 6 ohne Ergebnis (`106-archgate-kanten-zyklus`, `61-hexslice-role-fileset`, `582-register-ausgang-faellt-aus-der-kante` in Shard 7; `16-gen-profil-dateisatz`, `71-archgate-kante-auf-vorrat`, `402-fassungs-rezepte-ohne-durchreichung` in Shard 9), weil der Grün-Vorlauf `make test-bats` rot war (Shard 7 `has_amend_flag`, Shard 9 `go-freshness`, Status 141). Die sechs Fälle waren auf `5c91a7a1` ok; dass die Änderung zwischen beiden Ständen (`gen_test.go`, Dockerfile-Digest) sie nicht berührt, ist Lesung, nicht gemessen. Die sechs haben **kein** Ergebnis auf `a16d1de6`. Ein CI-Lauf auf dem Closure-Stand liegt nicht vor und wird nicht behauptet; den Lauf nach dem Push liest der Hauptkontext.
+- **Laufzeit ([`MR-089`](../../../../harness/conventions.md#mr-089)):** Mutations-CI-Branch-Lauf, 4 Worker je Shard auf geteiltem Runner: 1022 s Wanduhr (Lauf 39552971647), 960 s Wanduhr (Lauf 39544032717); Image-Cache des Runners ungemessen, Variante: Dogfood-Repo, keine Ziel-Variante; keine Deutung.
+- **Steering-Loop-Eintrag:** **neuer Sensor benannt, nicht gebaut — benannte Lücke:** ein Pin-Sprung zog die Eingabe eines Tests auf den Default und machte die Zusage „die Version wird durchgereicht" unsichtbar; `make gates` hielt sie nicht, die CI-Mutation fing sie. Muster für jeden künftigen Pin-Sprung: Test-Eingaben, die einem gepinnten Default gleichen, vor dem Sprung auf ungleiche Werte stellen. Der Sensor „Test-Eingabe ungleich Default" ist baubar und nicht gebaut (Zähler 1, `BEO-ALL/pin-sprung-macht-test-eingabe-gleich-default-die-zusage-unsichtbar`); ein roter Gegenfall setzt Eingabe gleich Default und lässt Fall `20-gen-go-version-threading` fallen. Kein `liegt in`: nichts verkörpert. Dass die Eingabe-ungleich-Default-Eigenschaft heute nur per Kommentar gehalten ist, benennt der Re-Review.
+- **Trigger-Audit:** keine ADR nennt `GO_VERSION` (`grep -rl GO_VERSION docs/plan/adr`, keine Treffer; am Plan gemessen); `pin-sprung-feuert-adr-trigger-ohne-nennung` bekommt **keinen** Beleg, denn kein Re-Evaluierungs-Trigger wurde berührt. `CO-001`/`CO-002` unberührt; kein bootstrap-aware Gate; keine Hard-Rule-Trigger fällig. Nichts fällig.
+- **Beobachtungs-Register (`../observations/`):** (a) `BEO-ALL/pin-sprung-macht-test-eingabe-gleich-default-die-zusage-unsichtbar/` neu angelegt, Beleg `evidence/slice-go-toolchain-pin-zieht-auf-1-27-3.md` — Zähler steht bei 1x. (b) `evidence/slice-go-toolchain-pin-zieht-auf-1-27-3.md` in `BEO-ALL/gruen-vorlauf-eines-mutate-workers-faellt-unter-runner-last/` ergänzt — Zähler steht damit bei 2x, **unter der Schwelle, kein Lese-Schritt**. Ein Vorgang zählt einmal: die zwei Fundstellen (`has_amend_flag`, `go-freshness`) im selben Lauf sind ein Beleg; der Nacht-Lauf 39387625541 und der Lauf vom 2026-10-17 haben keinen abgeschlossenen Vorgang und bleiben *benannt, nicht gezählt*. (c) Der Hub-429 des Re-Reviews bekommt keinen Beleg bei `anonymes-hub-rate-limit-faerbt-den-nacht-lauf-der-digest-achse` (anderer Ort: Review-Lauf, nicht Nacht-Lauf).
+- **Folge-Slices:** keine. Die SIGPIPE-/`pipefail`-Behebung (`has_amend_flag`, Quelle des 141) trägt die Schwelle nicht (2x); sie wartet auf das dritte Auftreten.
+- **Risiken aus §6:** (1) *Image fehlt* — **entfallen:** der Manifest-Digest ist ermittelt und belegt (Verifier-Nachlauf). (2) *Vergessener Digest/Fallback färbt nichts* — **eingetreten**, vom Wächter `make freshness-digest` gefangen (Verifier-Report); Nachzug `0505bb60`; kein Folge-Slice nötig, der Wächter hat gehalten (Register `pin-digest-ohne-waechter`, verkörpert). (3) *Neubau weicht vom Release-Asset ab* — **entfallen:** `TRAEGER_*` unverändert, kein Wächter gefärbt. (4) *emittiertes Lint-Rezept reicht `GO_VERSION` nicht weiter* — **weiter offen** → `BEO-ALL/emittiertes-lint-rezept-uebergibt-die-go-version-nicht` (Zähler 1).
+- **Release-Hinweis:** `TRAEGER_*` bleiben auf `v0.10.0`; das emittierte Skelett trägt `1.27.3` erst ab dem nächsten Release, den der Auftraggeber schneidet.
+- **Archivierung ([`MR-078`](../../../../harness/conventions.md#mr-078)):** `archive-welle` bricht voraussichtlich an `[untergrenze]` (kein `done/*/archiv.zip`); Slice bleibt flach in `done/`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
