@@ -302,15 +302,17 @@ func TestGoProfile_PinsMatchRepo(t *testing.T) {
 // TestGenerate_GoVersionThreaded belegt, dass die uebergebene Go-Version wirklich
 // ins Skelett faedelt: das Dockerfile-ARG traegt sie exakt, go.mod die major.minor-
 // Ableitung. Damit ist der SKEL_GO_VERSION-Knopf (cmd) am Generator verankert.
+// Die Eingabe 1.99.7 ist eine nie gepinnte Version, also ungleich DefaultGoVersion;
+// ein Pin-Sprung neutralisiert den Test nicht.
 func TestGenerate_GoVersionThreaded(t *testing.T) {
-	dir := genGoWith(t, "1.27.3")
+	dir := genGoWith(t, "1.99.7")
 	df := mustRead(t, filepath.Join(dir, "Dockerfile"))
-	if got := firstSub(t, regexp.MustCompile(`ARG GO_VERSION=(\S+)`), df); got != "1.27.3" {
-		t.Errorf("Dockerfile ARG GO_VERSION = %q, want 1.27.3", got)
+	if got := firstSub(t, regexp.MustCompile(`ARG GO_VERSION=(\S+)`), df); got != "1.99.7" {
+		t.Errorf("Dockerfile ARG GO_VERSION = %q, want 1.99.7", got)
 	}
 	gomod := mustRead(t, filepath.Join(dir, "go.mod"))
-	if got := firstSub(t, regexp.MustCompile(`go (\d+\.\d+)`), gomod); got != "1.27" {
-		t.Errorf("go.mod-Version = %q, want 1.27 (major.minor aus 1.27.3)", got)
+	if got := firstSub(t, regexp.MustCompile(`go (\d+\.\d+)`), gomod); got != "1.99" {
+		t.Errorf("go.mod-Version = %q, want 1.99 (major.minor aus 1.99.7)", got)
 	}
 }
 
