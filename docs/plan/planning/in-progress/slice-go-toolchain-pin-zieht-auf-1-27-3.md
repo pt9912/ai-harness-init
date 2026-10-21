@@ -85,7 +85,7 @@ Drei Liefer-Punkte, je mit dem Kommando, das ihn rot färbt ([`AGENTS.md`](../..
 | `harness/tools/smoke.sh`, `harness/tools/full-smoke.sh` (`${GO_VERSION:-…}`) | update | wert-hardcodende Fallbacks |
 
 **Pin-Menge, am Bestand gelesen:** `git grep -nE '1\.27\.2' -- . ':!.harness/baseline' ':!docs/reviews' ':!docs/plan/planning'` nennt
-genau diese fünf Stellen plus die datierte Prosa in `MR-092`/`MR-093` (bleibt) und die Literale `golang:1.27.2` in
+genau diese fünf Stellen plus die datierte Prosa in [`MR-092`](../../../../harness/conventions.md#mr-092)/[`MR-093`](../../../../harness/conventions.md#mr-093) (bleibt) und die Literale `golang:1.27.2` in
 `test/digest-freshness.bats` (Fixture-Strings der Vergleichs-Fälle, kein Pin; der Implementer nimmt sie nicht mit, es sei denn, ein Fall liest den Repo-Pin).
 `go.mod` bleibt. **Kopplung:** `TestGoProfile_PinsMatchRepo` (`internal/gen`) hält Dockerfile-`ARG` gegen `DefaultGoVersion`;
 `test/pin-fallbacks.bats` hält die Fallbacks gegen den Makefile-Pin; Makefile-Pin gegen Upstream nur `freshness-go`, Digest gegen Tag nur
