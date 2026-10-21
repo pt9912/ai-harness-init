@@ -1,4 +1,4 @@
-# Slice slice-113: `CO-001` ist fällig — der Auflösungs-Trigger ist eingetreten, und `shell-lint` erreicht die bats-Rümpfe
+# Slice slice-113: `CO-001` ist fällig — der Auflösungs-Trigger ist eingetreten, und die Auflösung wird vollzogen
 
 **Lifecycle:** Der Zustand dieses Slice ist das Verzeichnis, in dem diese
 Datei liegt — eines von `open/`, `next/`, `in-progress/`, `done/`. Er
@@ -7,33 +7,34 @@ wechselt nur durch `git mv`, siehe
 
 **Welle:** ohne Welle (Carveout-Auflösung, reaktiv). Die drei Fragen aus
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
-Setzung 1, hier beantwortet: **(1) Bündel?** Nein — der Gegenstand ist **ein** Carveout und **ein**
-Gate-Rezept; der Slice ist einzeln lieferbar und wartet auf keinen zweiten. **(2) Gemeinsames
-Closure-Kriterium?** Nein — jedes denkbare wäre die Abschrift seiner eigenen DoD. **(3) Auslöser
-reaktiv oder gewollt?** Reaktiv: der Auflösungs-Trigger von
+Setzung 1: **(1) Bündel?** Nein — der Gegenstand ist **ein** Carveout. **(2) Gemeinsames
+Closure-Kriterium?** Nein — jedes denkbare wäre die Abschrift seiner DoD. **(3) Auslöser reaktiv oder
+gewollt?** Reaktiv: der Auflösungs-Trigger von
 [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) ist eingetreten und beim vorangegangenen
-Audit nicht gesehen worden (§1). Kein Fähigkeits-Sprung — die emittierte Ebene bleibt unberührt,
-ein bestehender Gate bekommt den Prüfbereich, den sein Carveout ihm zugesagt hat. Nach
+Audit nicht gesehen worden (§1). Nach
 [`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
 Setzung 2 steht wellenlose Arbeit **nicht** in der Roadmap; ihr Zustand ist das Verzeichnis.
 
-**Ebene: Dogfood, nicht emittiert.** Gegenstand ist das `shell-lint`-Rezept **dieses**
-[`Makefile`](../../../../Makefile) und der Carveout dieses Repos. Was ein emittiertes Repo an
-Shell-Lint bekommt, entscheidet der Slice, der die Tool-Ebene entscheidet — nicht dieser.
+**Schnitt vom 2026-10-21.** Der Slice war als Gate-Arbeit **und** Auflösung geschnitten. Die
+Gate-Arbeit (Prüfbereich öffnen, Befunde beheben, Pfad-Ausnahme zurücknehmen) trägt jetzt
+[slice-bats-ruempfe-erreichen-shell-lint](slice-bats-ruempfe-erreichen-shell-lint.md); **dieser Slice
+behält die Kennung und die Auflösung**, weil `CO-001`, [`ADR-0098`](../../adr/0098-co-001-aufloesung-reiner-move-nachzug-und-ein-namentliches-paar-fuer-adr-0021.md) und die Zeitdokumente ihn als
+Folge-Slice nennen. Er beginnt erst, wenn jener in `done/` liegt (§4).
+
+**Ebene: Dogfood, nicht emittiert.** Gegenstand sind der Carveout dieses Repos und die
+Gate-Konfiguration [`.d-check.yml`](../../../../.d-check.yml). Was ein emittiertes Repo bekommt,
+entscheidet der Slice, der die Tool-Ebene entscheidet.
 
 **Bezug:**
 [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) (der Carveout selbst),
+[`ADR-0098`](../../adr/0098-co-001-aufloesung-reiner-move-nachzug-und-ein-namentliches-paar-fuer-adr-0021.md)
+(Reihenfolge, Paar, Grenz-Absatz),
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) (eine
-Gate-Ausnahme, deren Auflösungs-Trigger eingetreten ist und die weiterläuft, sagt einen
-Prüfbereich zu, den sie nicht mehr rechtfertigt),
-[`ADR-0003`](../../adr/0003-go-native-binaries.md) (Docker-only, gepinntes shellcheck-Image),
-[`AGENTS.md`](../../../../AGENTS.md) §3.2 (kein `# shellcheck disable` ohne begründeten zentralen
-Eintrag — die Regel, an der der neue Prüfbereich sofort hängt),
-[`AGENTS.md`](../../../../AGENTS.md) §3.6 (jede Zusage braucht ihr rot gesehenes Gegenbeispiel),
-[`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
-(jede Zahl unten steht neben ihrem Kommando),
-[`MR-016`](../../../../harness/conventions.md#mr-016--welle-oder-nicht-und-wo-wellenlose-arbeit-geführt-wird)
-(Verortung).
+Gate-Ausnahme, deren Auflösungs-Trigger eingetreten ist, sagt einen Prüfbereich zu, den sie nicht mehr
+rechtfertigt),
+[`AGENTS.md`](../../../../AGENTS.md) §3.3 (Move und Inhaltsänderung in zwei Commits), §3.4, §3.6,
+§3.11,
+[`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert).
 
 **Autor:** Planner. **Datum:** 2026-08-27.
 
@@ -41,11 +42,20 @@ Eintrag — die Regel, an der der neue Prüfbereich sofort hängt),
 
 ## 1. Ziel
 
-**`shell-lint` liest die Logik in den bats-Dateien, und
-[`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) liegt danach in
-`docs/plan/carveouts/done/` — oder der Lauf sagt, welche der zwei im Carveout genannten Techniken
-warum nicht trägt, und der Carveout wird mit diesem Grund neu gefasst statt stillschweigend
-verlängert.**
+**`CO-001` liegt in `docs/plan/carveouts/done/`, ohne dass der Move einen Befund erzeugt, den niemand
+beheben darf.** Voraussetzung ist, dass `shell-lint` die bats-Rümpfe liest und `make gates` ohne die
+Pfad-Ausnahme grün ist — das liefert
+[slice-bats-ruempfe-erreichen-shell-lint](slice-bats-ruempfe-erreichen-shell-lint.md), und dieser
+Slice prüft sie vor dem Move.
+
+**Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
+
+- **Die Gate-Arbeit** (Verkettung, Befunde, Rücknahme der Pfad-Ausnahme) — ein anderer Vorgang an
+  einer anderen Schicht (Makefile, Skript, bats-Dateien) und der Vorgänger dieses Slice; sie trägt die
+  Architect-Frage zur zentralen Ausnahme. Ein zweiter Verweis `CO-001` im `shell-lint`-Rezept entfällt
+  mit der Ausnahme.
+- **Die Neufassung des Carveouts** — nur der Ausgang des Vorgängers, falls die Verkettung scheitert; dann
+  entfällt dieser Slice mit Grund (§4).
 
 ### Die Ausgangslage: der Trigger ist eingetreten, gemessen an der Eigenschaft, die er nennt
 
@@ -96,189 +106,120 @@ eine `.bats`-Datei hinzugefügt, und trägt **die** Verzweigungen?"*. Der Trigge
 aus wellenloser Arbeit entsteht, fällt durch jede Wellen-Frage hindurch — und genau so ist es
 gekommen: slice-048 lief ohne Welle.
 
-### Der Nutzen ist gemessen, nicht behauptet: die Datei dokumentiert ihren eigenen Fund
-
-[`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) §Begründung trägt die Abwägung *„der Nutzen
-einer Teilabdeckung [trägt] den Aufwand aktuell nicht"*. Dieselbe Datei, die den Trigger auslöst,
-widerlegt sie an einem realen Fall: ihr Kommentar über
-[`test/release-matrix.bats`](../../../../test/release-matrix.bats)`:98-101` hält fest, dass eine
-mit `!` negierte Assertion unter `set -e` **nicht** greift, der Fehlschlag verschluckt wird und
-eine Mutation dadurch **grün durchlief** — gefunden im Review, von Hand
-(`sed -n '98,101p' test/release-matrix.bats`). Genau diese Klasse ist eine benannte
-shellcheck-Regel. Ein Sensor, der einen real eingetretenen stillen Grün-Fall gefunden hätte, ist
-keine Teilabdeckung ohne Nutzen.
-
 ### Ein zweiter Befund aus demselben Audit, hier mitgenommen statt nebenan vergessen
 
-[`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) §Geltungs-Konfiguration sagt zu über das
-`shell-lint`-Rezept: *„.bats nicht in der Liste — Grund im Kommentar; Verweis ‚CO-001'"*. Gemessen
-gibt es diesen Verweis nicht: `grep -c 'CO-001' Makefile` → **0** (Exit 1), und
-`git grep -c 'CO-00' -- Makefile .d-check.yml d-check.mk .github/` findet in **keiner**
-Gate-Konfiguration eine Carveout-Kennung (Exit 1). Modul 7 §Ziel-Form verlangt sie ausdrücklich —
-*„sonst ist die Pfad-Ausnahme im `make gates`-Output eine stille Senkung ohne Begründung"*. Löst
-dieser Slice den Carveout auf, entfällt die Ausnahme und mit ihr die Pflicht; löst er ihn **nicht**
-auf, ist der Verweis nachzutragen. Beide Ausgänge stehen in DoD (3).
-
-### Die Abwägung: zwei Techniken nennt der Carveout, eine wird gewählt
-
-- **(A) Die `@test`-Rümpfe extrahieren und mit `shellcheck --shell=bash` linten.** Der Weg, den
-  [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) zuerst nennt und den slice-008 als Folge
-  vorgesehen hat. Er braucht kein neues Image — `SHELLCHECK_IMAGE` ist gepinnt und läuft schon.
-- **(B) Ein bats-natives Lint-Werkzeug einführen.** Der zweite genannte Weg. Er kostet ein neues
-  gepinntes Image, einen Freshness-Eintrag und eine zweite Werkzeug-Achse.
-- **Die Wahl trifft der Lauf, nicht dieser Plan** — beide sind im Carveout gedeckt, und welcher
-  trägt, entscheidet sich an einem Trockenlauf über dem realen Bestand
-  ([`MR-009`](../../../../harness/conventions.md#mr-009--d-check-pin-sprung-und-codepath-ventile)/[`MR-011`](../../../../harness/conventions.md#mr-011--zitat-verifikation-via-d-check-adoptiert-check-lines)-Muster:
-  *„Trockenlauf vor dem Pin"*). Was der Plan festlegt, ist die **Reihenfolge**: erst der
-  Trockenlauf über allen 16 Dateien, dann die Wahl, dann das Rezept.
+Der fehlende Verweis `CO-001` im Kommentar des `shell-lint`-Rezepts
+(`grep -c 'CO-001' Makefile` → **0**, Exit 1) entfällt mit der Pfad-Ausnahme selbst; ihn trägt der
+Vorgänger-Slice, weil er die Ausnahme zurücknimmt. Die Abwägung der zwei Techniken des Carveouts
+(Extraktion oder bats-natives Werkzeug) steht dort in §1 und §3.
 
 ## 2. Definition of Done
 
-Drei slice-eigene Punkte (Modul 5 §Ziel-Form: ≤ 3;
-[`AGENTS.md`](../../../../AGENTS.md) §3.6).
+Drei slice-eigene Punkte (Modul 5 §Ziel-Form: ≤ 3).
 
-- [ ] **(1) `shell-lint` erreicht die Logik der bats-Dateien, und die Erweiterung ist rot
-      gesehen.** Der Prüfbereich wächst um die bats-Rümpfe; das Rezept nennt sie.
-      **Rot:** ein absichtlicher shellcheck-Befund in einem `@test`-Rumpf oder einer Hilfsfunktion
-      (z. B. die mit `!` negierte Assertion, die den Carveout-Nutzen belegt) färbt `make shell-lint`
-      rot, und die Ausgabe nennt **Datei, Zeile und Regel** — nicht nur einen Exit-Code
-      ([`AGENTS.md`](../../../../AGENTS.md) §3.6). Danach zurückgenommen.
-      **Heute rot-frei und damit ungedeckt:** `sed -n '/^shell-lint:/,/^$/p' Makefile | grep -c '\.bats'`
-      → **0** — das Rezept nennt die Endung in keiner seiner Pfad-Angaben.
-- [ ] **(2) Es gibt keine Inline-Suppression, und die Ausnahmen, die bleiben, stehen zentral mit
-      Grund.** Ein neu geöffneter Prüfbereich über sechzehn Dateien produziert Befunde; sie werden
-      **behoben** oder als zentraler, begründeter Eintrag geführt
-      ([`AGENTS.md`](../../../../AGENTS.md) §3.2).
-      **Rot:** `git grep -c 'shellcheck disable' -- 'test/*.bats'` liefert einen Treffer.
-- [ ] **(3) Der Carveout trägt seinen Ausgang, und der Ausgang ist eine Verzeichnis-Position.**
-      **Bei Auflösung — in der Reihenfolge von
+- [ ] **(1) Der Move ist ein reiner `git mv`, vor ihm steht die Entscheidung.** `make gates` ist ohne
+      Pfad-Ausnahme grün (Vorgänger in `done/`); dann
+      `git mv docs/plan/carveouts/CO-001-bats-shell-lint.md docs/plan/carveouts/done/` in einem
+      **eigenen** Commit ([`AGENTS.md`](../../../../AGENTS.md) §3.3,
       [`ADR-0098`](../../adr/0098-co-001-aufloesung-reiner-move-nachzug-und-ein-namentliches-paar-fuer-adr-0021.md)
-      Festlegung 4:** erst die Gate-Arbeit aus (1) und (2), `make gates` grün **ohne** Ausnahme;
-      dann der **reine** `git mv docs/plan/carveouts/CO-001-bats-shell-lint.md docs/plan/carveouts/done/`
-      in einem eigenen Commit; dann der Nachzug-Commit — der Pfad in den 29 reparierbaren Quellen
-      (in der bewegten Datei jedes `](../` zu `](../../`, im Carveout-Index und in `CO-002` die
-      Geschwister-Form), das zehnte `ignore-refs`-Paar mit `# Deckung: 2` und einem Kommentar, der
-      seinen ganzen Gegenstand nennt und auf die ADR zeigt, und der Absatz *„GRENZE, keine Regel"*
-      im Kopfkommentar des `ignore-refs`-Blocks von `.d-check.yml`, um dieses Paar nachgezogen.
-      Nachweis im Nachzug-Commit: `make docs-check` mit **0** Befunden und gleicher Datei-Zahl vor
-      und nach dem Paar, `make test` mit dem Paar vom Restbreite-Wächter gedeckt (`Deckung: 3`
-      einmal rot gesehen), der Beleg nennt die angefassten Dateien
+      Festlegung 4).
+      **Rot:** `ls docs/plan/carveouts/CO-001-*.md` findet eine Datei, oder
+      `ls docs/plan/carveouts/done/CO-001-*.md` keine.
+- [ ] **(2) Der Nachzug-Commit repariert, was reparierbar ist, und das Paar deckt den Rest.** Der Pfad in
+      den 29 reparierbaren Quellen (in der bewegten Datei jedes `](../` zu `](../../`, im Carveout-Index
+      und in `CO-002` die Geschwister-Form), das zehnte `ignore-refs`-Paar in
+      [`.d-check.yml`](../../../../.d-check.yml) mit `# Deckung: 2` und einem Kommentar, der seinen ganzen
+      Gegenstand nennt und auf die ADR zeigt, und der Absatz *„GRENZE, keine Regel"* im Kopfkommentar des
+      `ignore-refs`-Blocks, um dieses Paar nachgezogen.
+      **Nachweis im Commit:** `make docs-check` mit **0** Befunden und gleicher Datei-Zahl vor und nach dem
+      Paar, `make test` mit dem Paar vom Restbreite-Wächter gedeckt (`Deckung: 3` einmal rot gesehen), der
+      Beleg nennt die angefassten Dateien
       ([`ADR-0042`](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 5). Beide
-      Commits gehören in denselben Push. Zuletzt die Bindung des Carveouts in der Sensors-Tabelle von
-      [`harness/README.md`](../../../../harness/README.md) zurücksetzen, die Index-Zeile von *Aktiv* nach
-      *Aufgelöst* und die Verifikations-Checkliste des Carveouts abhaken. **Bei Nicht-Auflösung:** der Carveout wird mit dem gemessenen Grund neu gefasst —
-      welche der zwei Techniken woran scheitert —, sein Auflösungs-Trigger wird durch einen
-      ersetzt, der nicht bereits eingetreten ist, **und** der fehlende `# CO-001`-Verweis im
-      `shell-lint`-Rezept wird nachgetragen (§1).
-      **Rot in beiden Fällen:** `ls docs/plan/carveouts/CO-001-*.md` und
-      `grep -c 'CO-001' Makefile` — genau eine der beiden Antworten muss sich bewegt haben.
+      Commits gehören in denselben Push.
+- [ ] **(3) Index und Bindung folgen dem Move.** Die Zeile im Carveout-Index
+      ([`docs/plan/carveouts/README.md`](../../carveouts/README.md)) steht in *Aufgelöst* statt *Aktiv*,
+      die Verifikations-Checkliste des Carveouts ist abgehakt, und eine Bindung `CO-001` in der
+      Sensors-Tabelle von [`harness/README.md`](../../../../harness/README.md) ist zurückgesetzt, falls
+      der Lauf eine findet (`grep -c 'CO-001' harness/README.md` → beim Schnitt **0**).
+      **Rot:** `sed -n '/^## Aktiv/,/^## Permanent/p' docs/plan/carveouts/README.md | grep -c 'CO-001'`
+      findet die Zeile weiterhin in *Aktiv*.
 
 ## 3. Plan (vor Code)
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| [`Makefile`](../../../../Makefile) | update | das `shell-lint`-Rezept und sein Kommentar; die Datei-Liste des shellcheck-Aufrufs ist heute die Ausnahme selbst |
-| `harness/tools/` | neu, **nur bei Weg (A)** | der Extraktor der `@test`-Rümpfe. Er ist selbst ein Shell-Helfer und fällt damit in den bestehenden Prüfbereich |
-| `test/*.bats` | update, **soweit Befunde auftreten** | die Befunde des neuen Prüfbereichs werden behoben, nicht unterdrückt (DoD 2) |
-| [`docs/plan/carveouts/CO-001-bats-shell-lint.md`](../../carveouts/CO-001-bats-shell-lint.md) | `git mv` nach `done/` **oder** update | DoD (3); der Move ist ein eigener Commit ([`AGENTS.md`](../../../../AGENTS.md) §3.3) |
-| `test/mutations/` | neu | der neue Wächter braucht seinen Fall — ein Prüfbereich, der wieder schrumpft, muss rot werden ([`AGENTS.md`](../../../../AGENTS.md) §3.6) |
-| [`AGENTS.md`](../../../../AGENTS.md), [`harness/README.md`](../../../../harness/README.md) | update | die zwei Gate-Tabellen beschreiben den Vertrag von `shell-lint`; wächst sein Prüfbereich, wächst die Beschreibung mit. **Norm-Text ist es nicht** — die Zeilen liegen außerhalb der Hard Rules |
-| [`.harness/baseline`](../../../../.harness/baseline) | **unverändert** | byte-verifiziert |
-| `internal/emit/` | **unverändert** | Ebene Dogfood (Kopfzeile) |
+| [`docs/plan/carveouts/CO-001-bats-shell-lint.md`](../../carveouts/CO-001-bats-shell-lint.md) | `git mv` nach `done/`, danach update | DoD (1), (3); Move und Inhalt in zwei Commits |
+| die 29 reparierbaren Quellen der Sonde aus [`ADR-0098`](../../adr/0098-co-001-aufloesung-reiner-move-nachzug-und-ein-namentliches-paar-fuer-adr-0021.md) | update (Pfad-Nachzug) | DoD (2) |
+| [`.d-check.yml`](../../../../.d-check.yml) | update | zehntes Paar, Grenz-Absatz (DoD 2) |
+| [`docs/plan/carveouts/README.md`](../../carveouts/README.md), [`harness/README.md`](../../../../harness/README.md) | update | DoD (3) |
+| [`.harness/baseline`](../../../../.harness/baseline), `internal/emit/` | **unverändert** | Dogfood; Baseline byte-verifiziert |
 
 ## 4. Trigger
 
-**Beginn (`open` → `next` → `in-progress`): das WIP-Limit ist frei, [`ADR-0098`](../../adr/0098-co-001-aufloesung-reiner-move-nachzug-und-ein-namentliches-paar-fuer-adr-0021.md)
-trägt den Status `Accepted` **und**
-[slice-141](../done/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) liegt in `done/`.** Der
-Auflösungs-Trigger des Carveouts ist eingetreten; damit ist der Slice fällig, nicht bloß möglich.
-Der Move und sein Nachzug beginnen erst mit der Annahme der ADR
-([`ADR-0098`](../../adr/0098-co-001-aufloesung-reiner-move-nachzug-und-ein-namentliches-paar-fuer-adr-0021.md)
-Festlegung 4); die Reihenfolge der Schritte steht in DoD (3).
-
-**Warum die zweite Bedingung.** Der `git mv` aus DoD (3) bricht an der Sonde der ADR (Kommandos dort,
-§Kontext *Die Sonde*) 61 Befunde in 30 Quelldateien; **29 davon sind reparierbar** (Pfad-Nachzug,
-[`ADR-0042`](../../adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 1). Allein zwei
-Pfad-Links in
-[`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) bleiben, und die deckt ein
-namentliches Paar, das der Nachzug-Commit einträgt. Die frühere Prämisse *„rund 40 überwiegend
-eingefrorene Quellen"* ist durch diese Messung ersetzt:
-
-```sh
-grep -c '^\*\*Status:\*\* Accepted' docs/plan/adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md          # 1
-grep -cE '\]\(\.\./carveouts/(done/)?CO-001[^)]*\)' docs/plan/adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md  # 2
-```
-
-[`AGENTS.md`](../../../../AGENTS.md) §3.4 sperrt die Reparatur am Ziel; ein Lauf, der den Move
-ohne vorherige Entscheidung vollzieht, erzeugt einen Befund, den niemand beheben darf.
+**Beginn (`open` → `next` → `in-progress`): das WIP-Limit ist frei,
+[slice-bats-ruempfe-erreichen-shell-lint](slice-bats-ruempfe-erreichen-shell-lint.md) liegt in `done/`,
 [`ADR-0098`](../../adr/0098-co-001-aufloesung-reiner-move-nachzug-und-ein-namentliches-paar-fuer-adr-0021.md)
-hat das Instrument entschieden. **Ein Wächter für diese Reihenfolge existiert nicht** — kein Modul des Doku-Gates
-liest Lifecycle-Reihenfolgen —, und das steht hier, statt einen zu behaupten
+trägt den Status `Accepted` **und**
+[slice-141](../done/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) liegt in `done/`.** Die
+beiden letzten Bedingungen sind erfüllt; die erste ist die Abhängigkeit dieses Slice. Ein Wächter für
+diese Reihenfolge existiert nicht — kein Modul des Doku-Gates liest Lifecycle-Reihenfolgen — und das steht
+hier statt eines behaupteten
 ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)).
+
+**Warum die ADR-Bedingung.** Der `git mv` bricht an der Sonde der ADR (Kommandos dort, §Kontext
+*Die Sonde*) 61 Befunde in 30 Quelldateien; 29 davon sind reparierbar, allein zwei Pfad-Links in
+[`ADR-0021`](../../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) bleiben, und die deckt das
+namentliche Paar. [`AGENTS.md`](../../../../AGENTS.md) §3.4 sperrt die Reparatur am Ziel; ein Move ohne
+vorherige Entscheidung erzeugte einen Befund, den niemand beheben darf.
 
 **Rückführungen, vorab benannt:**
 
-- `in-progress` → `next`: der Trockenlauf liefert so viele Befunde, dass Prüfbereich-Öffnung und
-  Befund-Behebung zwei Landungen sind. Dann Re-Slice, nicht ein vierter DoD-Punkt.
-- `in-progress` → `open`: beide Techniken scheitern messbar. Dann ist DoD (3) über den zweiten Ast
-  zu erfüllen — der Carveout bekommt einen Trigger, der noch nicht eingetreten ist — und der Slice
-  geht mit diesem Ergebnis zurück, nicht mit einer Vertagung.
+- `in-progress` → `next`: der Move erzeugt nach dem Nachzug mehr Befunde als die Sonde nannte. Dann
+  Entscheidung **vor** dem Move ([`ADR-0098`](../../adr/0098-co-001-aufloesung-reiner-move-nachzug-und-ein-namentliches-paar-fuer-adr-0021.md)
+  Festlegung 4), nicht ein viertes Paar im Lauf.
+- `in-progress` → `open`: `make gates` ist ohne Ausnahme nicht grün, obwohl der Vorgänger in `done/` liegt.
+  Dann bleibt der Carveout aktiv und der Befund geht an den Vorgänger zurück.
+- **Entfällt**, wenn der Vorgänger mit `→ open` endet (Verkettung trägt nicht): `CO-001` wird neu gefasst,
+  §7 nennt den Grund.
 
 ## 5. Closure-Trigger
 
-DoD (1) bis (3) erfüllt, `make gates` grün, `make mutate` grün einschließlich des neuen Falls,
-Review nach Modul 10 und Verifikation nach Modul 11 ohne blockierenden Befund, Closure-Notiz in §7
-mit Steering-Loop-Eintrag.
+DoD (1) bis (3) erfüllt, `make gates` grün, `make docs-check` mit 0 Befunden, Review nach Modul 10 und
+Verifikation nach Modul 11 ohne blockierenden Befund, Closure-Notiz in §7 mit Steering-Loop-Eintrag.
 
 ## 6. Risiken und offene Punkte
 
-- **Der geöffnete Prüfbereich kann viele Befunde liefern.** Sechzehn Dateien, nie gelintet. Die
-  Rückführung `→ next` steht dafür in §4; der Cutoff-Reflex — *„ab jetzt, Bestand nicht"* — trägt
-  hier **nicht**, weil der Prüfbereich eines Lint-Laufs keine Datei-Historie kennt.
-- **Der Extraktor ist ein Werkzeug über Testdateien und selbst ungetestet, wenn niemand ihn
-  bindet.** Präzedenz ist [`harness/tools/start-smoke.sh`](../../../../harness/tools/start-smoke.sh):
-  Skript plus zwei bats-Tests plus Mutations-Fall.
-- **Der Bestand hat den Schnitt überholt, und der Trockenlauf an HEAD `a5ee6205` bestätigt die
-  Rückführungs-Bedingung aus §4.** `git ls-files 'test/*.bats' | wc -l` → **50** (beim Schnitt 16);
-  der awk-Sensor aus §1 trifft Hilfsfunktionen mit Verzweigung oder Schleife in 23 Dateien statt in
-  einer. Ein einmaliger Vorlauf — `bats-preprocess` aus dem gepinnten `BATS_IMAGE`
-  (`/opt/bats/libexec/bats-core/bats-preprocess`, mit `BATS_ROOT=/opt/bats BATS_LIBDIR=lib`), die
-  Ausgabe unter `.harness/state`, darüber `shellcheck --shell=bash` im gepinnten
-  `SHELLCHECK_IMAGE` — meldet **173** Befunde in 39 der 50 Dateien: SC2016 60, SC2154 58 (die
-  bats-Variablen `status`/`output`), SC2164 36, der Rest 19. Keine Erwartungswerte, das Skript liegt
-  nicht im Repo. Zwei Folgen: Weg (A) hat ein Vorverarbeitungs-Werkzeug im `BATS_IMAGE`, aber
-  `shellcheck` liegt in einem zweiten Image — die Verkettung ist ein Entwurf des Laufs. Und
-  SC2154/SC2016 ohne Inline-Suppression heißt zentrale Konfiguration; ob eine zentrale Ausnahme in
-  einem **neu geöffneten** Prüfbereich eine Senkung nach [`AGENTS.md`](../../../../AGENTS.md) §3.5
-  ist, ist eine Architect-Frage. **Der Slice wird erst geclaimt, wenn der Auftraggeber über den
-  Schnitt entschieden hat** — vorgeschlagen sind zwei Slices in dieser Reihenfolge: die Gate-Arbeit
-  (DoD 1 und 2) und danach die Auflösung (DoD 3, Move, Nachzug, Paar). —
-  **Ausgang:** <eingetreten: Neuschnitt vor dem Claim | entfallen: der Auftraggeber hält den Schnitt>
-- **Die Audit-Frage bleibt offen, auch wenn dieser Slice schließt.** Dass drei Audits nach der
-  **Welle** statt nach dem **Bestand** fragten, ist ein Befund über die Audit-Methode, nicht über
-  diesen Carveout. Er wird hier benannt und **nicht** mitgeschnitten; sein Ort ist die
-  Closure-Notiz von [welle-12](../done/welle-12-erfassungsschicht-emittieren.md), die ihn gefunden hat.
+- **Der Bestand hat den Schnitt überholt** (beim Schnitt 16 bats-Dateien, heute
+  `git ls-files 'test/*.bats' | wc -l` → 50; die Gate-Arbeit war kein ein-Sitzungs-Slice). —
+  **Ausgang:** eingetreten: slice-bats-ruempfe-erreichen-shell-lint
+- **Die Audit-Frage bleibt offen, auch wenn dieser Slice schließt.** Dass drei Audits nach der **Welle**
+  statt nach dem **Bestand** fragten, ist ein Befund über die Audit-Methode, nicht über diesen Carveout;
+  sein Ort ist die Closure-Notiz von
+  [welle-12](../done/welle-12-erfassungsschicht-emittieren.md), die ihn gefunden hat. —
+  **Ausgang:** <eingetreten: slice-<Kennung> | entfallen: Grund | weiter offen: → BEO>
+- **Zehn Paare machen die Grenz-Aussage des `ignore-refs`-Blocks länger.** Der Absatz wird um dieses Paar
+  nachgezogen; ein Sensor für die Aufnahme neuer Paare existiert nicht
+  (`BEO-ALL/ignore-refs-paar-aufnahme-hat-keinen-sensor`, §8). — **Ausgang:** <…>
 
 ## 7. Closure-Notiz (nach `done/`)
 
 <!-- Erst nach Abschluss füllen. -->
 
-## 8. Sub-Area-Modus-Begründung
+## 8. Sub-Area-Prüfungen und Modus-Begründung
 
-Alle berührten Sub-Areas GF (siehe Kurs Modul 5 §Worked Mini-Example). Begründung, weil der Slice
-einen Gate-Prüfbereich verändert:
+**Vorgelagert — Sub-Area-Wahl prüfen:** eine Sub-Area, *Carveout- und Gate-Konfiguration dieses Repos*
+(`docs/plan/carveouts/`, `.d-check.yml`, `harness/README.md`): Konvention (§3.3, §3.5, §3.11), Artefakte
+und Sensor (`docs-check`) tragen sie, Schwelle ≥ 2 von 3 erfüllt.
 
-### Sub-Area: Shell-Sensorik dieses Repos (`shell-lint` + `harness/tools/*.sh` + `test/*.bats`)
+**Vorgelagert — offene Beobachtungen sichten:** `BEO-ALL/ignore-refs-paar-aufnahme-hat-keinen-sensor` —
+**1×**, offen; dieser Slice trägt das zehnte Paar und berührt ihn damit, ein Beleg aus der Closure hebt
+ihn auf 2×. Sonst keine Treffer.
+
+### Sub-Area: Carveout- und Gate-Konfiguration dieses Repos
 
 - **Modus:** GF
-- **Konventionen-Dichte:** hoch — Docker-only mit gepinntem Image
-  ([`ADR-0003`](../../adr/0003-go-native-binaries.md)), Suppression-Verbot
-  ([`AGENTS.md`](../../../../AGENTS.md) §3.2), jeder Wächter mit `test/mutations/`-Fall
-  ([`AGENTS.md`](../../../../AGENTS.md) §3.6).
-- **Phase-Reife:** Phase 4 (Qualität) — der Gate läuft seit slice-008 und ist in beiden
-  Gate-Tabellen beschrieben.
-- **Evidenz-/Diskrepanz-Risiko:** mittel — der Prüfbereich wird zum ersten Mal geöffnet; wie viele
-  Befunde dort liegen, ist vor dem Trockenlauf unbekannt. Genau dafür steht der Trockenlauf **vor**
-  der Technik-Wahl in §1.
-- **Reconciliation-Aufwand:** S bis M, abhängig vom Trockenlauf. Graduation entfällt (kein BF);
-  die Rückführung `→ next` in §4 ist der Ausgang, falls M überschritten wird.
+- **Konventionen-Dichte:** hoch — Carveout-Lebenszyklus, [`ADR-0098`](../../adr/0098-co-001-aufloesung-reiner-move-nachzug-und-ein-namentliches-paar-fuer-adr-0021.md) Festlegungen 1 bis 4, §3.4/§3.11.
+- **Phase-Reife:** Phase 4 — `docs-check` und der Restbreite-Wächter laufen in `make gates`.
+- **Evidenz-/Diskrepanz-Risiko:** niedrig — die Sonde der ADR hat die Befund-Menge gemessen; Abweichung
+  ist die Rückführung `→ next`.
+- **Reconciliation-Aufwand:** S; Graduation entfällt.

@@ -49,9 +49,11 @@ Setzung 2). Die Shell-Hooks und -Helfer unter harness/tools/, .claude/hooks/,
 internal/emit/templates/ und test/mutations/ bleiben **voll** gelintet — der
 Ausschluss betrifft ausschließlich die bats-Testdateien.
 
-**Folge-Slice:** [slice-113](../planning/open/slice-113-co-001-ist-faellig.md) — er entscheidet
-zwischen den zwei unten genannten Techniken und führt den Ausgang aus (Auflösung mit `git mv` nach
-`done/` **oder** Neufassung mit einem Trigger, der noch nicht eingetreten ist). Herkunft der
+**Folge-Slices, zwei:**
+[slice-bats-ruempfe-erreichen-shell-lint](../planning/open/slice-bats-ruempfe-erreichen-shell-lint.md)
+entscheidet zwischen den zwei unten genannten Techniken und nimmt die Pfad-Ausnahme zurück;
+[slice-113](../planning/open/slice-113-co-001-ist-faellig.md) führt danach die Auflösung aus (`git mv` nach
+`done/`; scheitert die Technik, Neufassung mit einem Trigger, der noch nicht eingetreten ist). Herkunft der
 Aufgabe: [slice-008](../planning/done/slice-008-shell-lint-gate.md), §6-Folge-Punkt.
 
 ---
