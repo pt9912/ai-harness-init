@@ -27,7 +27,7 @@ Slice, der die Tool-Ebene entscheidet.
 
 **Berührte Spec-Stellen:** `—`.
 
-**Verantwortlich:** —
+**Verantwortlich:** dburkard
 
 **Autor:** Planner. **Datum:** 2026-10-21.
 
