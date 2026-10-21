@@ -11,7 +11,7 @@ Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als State Machine.
 
 **Berührte Spec-Stellen:** —
 
-**Verantwortlich:** — (bis zur Priorisierung durch den Auftraggeber).
+**Verantwortlich:** dburkard.
 
 **Autor:** Planner. **Datum:** 2026-10-21.
 
