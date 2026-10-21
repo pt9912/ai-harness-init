@@ -73,7 +73,7 @@ Drei Liefer-Punkte, je mit dem Kommando, das ihn rot färbt ([`AGENTS.md`](../..
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -131,6 +131,7 @@ Lerneintrag, die den Release-Hinweis (Emission, `TRAEGER_*` unverändert) nennt.
 - **Risiken aus §6:** (1) *Image fehlt* — **entfallen:** der Manifest-Digest ist ermittelt und belegt (Verifier-Nachlauf). (2) *Vergessener Digest/Fallback färbt nichts* — **eingetreten**, vom Wächter `make freshness-digest` gefangen (Verifier-Report); Nachzug `0505bb60`; kein Folge-Slice nötig, der Wächter hat gehalten (Register `pin-digest-ohne-waechter`, verkörpert). (3) *Neubau weicht vom Release-Asset ab* — **entfallen:** `TRAEGER_*` unverändert, kein Wächter gefärbt. (4) *emittiertes Lint-Rezept reicht `GO_VERSION` nicht weiter* — **weiter offen** → `BEO-ALL/emittiertes-lint-rezept-uebergibt-die-go-version-nicht` (Zähler 1).
 - **Release-Hinweis:** `TRAEGER_*` bleiben auf `v0.10.0`; das emittierte Skelett trägt `1.27.3` erst ab dem nächsten Release, den der Auftraggeber schneidet.
 - **Archivierung ([`MR-078`](../../../../harness/conventions.md#mr-078)):** `archive-welle` bricht voraussichtlich an `[untergrenze]` (kein `done/*/archiv.zip`); Slice bleibt flach in `done/`.
+- **Drei Paarungen:** geprüft am 2026-10-21, nach dem `git mv`. (a) Anker: kein `liegt in` in diesem Slice, nichts zu paaren. (b) Folge-Slice: keiner genannt. (c) Register: `BEO-ALL/pin-sprung-macht-test-eingabe-gleich-default-die-zusage-unsichtbar` (1 Beleg), `BEO-ALL/gruen-vorlauf-eines-mutate-workers-faellt-unter-runner-last` (2 Belege) und `BEO-ALL/emittiertes-lint-rezept-uebergibt-die-go-version-nicht` existieren mit nicht leerem `evidence/`; `make register-ausgang` → `277 Eintraege, 79 ueber der Schwelle, 0 Befund(e)`; `make docs-check` vor der Roadmap-Korrektur 1 Befund (`planning-drift`, Ruhe-Marker), danach `0 Befund(e)`. Zweite Hälfte (c) über das ganze Register: ein Verzeichnis ohne Beleg, namentlich `einstiegs-datei-weicht-von-der-pflichtgliederung-ab`; nicht als getragen behauptet, gehört nicht zu diesem Slice (Schleife aus `docs/plan/planning/observations/README.md`).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
