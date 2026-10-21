@@ -44,16 +44,16 @@ Die Ursache liegt im Scanner: nach einem String-Ende prüft er nicht, welches Ze
 
 ## 2. Definition of Done
 
-- [ ] **Extraktor:** beide Fassungen beenden die zwei Eingaben aus §1 mit Exit 3 (Prüfung: zwei Zeichen-Zustände nach String-Ende — `"` sofort danach, oder ein Zeichen außerhalb von `: , } ]` und Leerraum). Die Nicht-Kommentarzeilen beider Fassungen sind gleich (`diff <(grep -v '^#' a) <(grep -v '^#' b)` leer; einmalige Messung, kein Sensor).
-- [ ] **Probenmenge:** `test/guard.bats` führt je Fassung (Schleife über beide Pfade) die zwei Eingaben als Exit ≠ 0 und die Regressionsproben (Zeilenumbruch zwischen Tokens, `\n`/`\"`-Escapes, Unicode, Literale `1`/`true`/`null`, Folgefelder, bestehende Extraktor-Proben) als unverändert grün; ein Guard-Fall zeigt `block` für die erste Eingabe. Rot-Beleg an der **realen** Quelle: je Fassung ein Fall in `test/mutations/` (nimmt die Prüfung aus dem Extraktor heraus, erwartet den neuen Bats-Fall rot), dazu die Vorher-Messung (Exit 0 beider Eingaben, §1) und die Nachher-Messung (Exit 3) im Abschlussbericht, gemessen im `BATS_IMAGE`.
-- [ ] **Nachzug:** der Kopfkommentar von `.claude/hooks/pretooluse-command-guard.sh` und der emittierten `pretooluse-command-guard.sh` sowie der Kopf beider Extraktoren nennen die zwei neuen Parse-Zweifel-Klassen; `git grep -n 'extract-command' docs/user` auf eine Aussage geprüft, die die Klassen aufzählt.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] **Extraktor:** beide Fassungen beenden die zwei Eingaben aus §1 mit Exit 3 (Prüfung: zwei Zeichen-Zustände nach String-Ende — `"` sofort danach, oder ein Zeichen außerhalb von `: , } ]` und Leerraum). Die Nicht-Kommentarzeilen beider Fassungen sind gleich (`diff <(grep -v '^#' a) <(grep -v '^#' b)` leer; einmalige Messung, kein Sensor).
+- [x] **Probenmenge:** `test/guard.bats` führt je Fassung (Schleife über beide Pfade) die zwei Eingaben als Exit ≠ 0 und die Regressionsproben (Zeilenumbruch zwischen Tokens, `\n`/`\"`-Escapes, Unicode, Literale `1`/`true`/`null`, Folgefelder, bestehende Extraktor-Proben) als unverändert grün; ein Guard-Fall zeigt `block` für die erste Eingabe. Rot-Beleg an der **realen** Quelle: je Fassung ein Fall in `test/mutations/` (nimmt die Prüfung aus dem Extraktor heraus, erwartet den neuen Bats-Fall rot), dazu die Vorher-Messung (Exit 0 beider Eingaben, §1) und die Nachher-Messung (Exit 3) im Abschlussbericht, gemessen im `BATS_IMAGE`.
+- [x] **Nachzug:** der Kopfkommentar von `.claude/hooks/pretooluse-command-guard.sh` und der emittierten `pretooluse-command-guard.sh` sowie der Kopf beider Extraktoren nennen die zwei neuen Parse-Zweifel-Klassen; `git grep -n 'extract-command' docs/user` auf eine Aussage geprüft, die die Klassen aufzählt.
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -86,7 +86,84 @@ DoD vollständig, Review konform, Verifikation bestätigt, Closure-Notiz mit Ler
 
 ## 7. Closure-Notiz
 
-*(bei der Closure zu füllen: Was hat funktioniert · Was ging anders · Steering-Loop-Eintrag · Beobachtungs-Register · Folge-Slices · Risiken aus §6 · Drei Paarungen)*
+**Gegenstand: geliefert.** Beide Fassungen des Extraktors beenden `…"command":"pip x""make gates"…` und
+`…"command":"a" garbage …` mit Exit 3 und leerer Ausgabe; die Probenmenge hält es je Fassung.
+
+**DoD-Verdikt** (Verifier-Report `2026-10-21-slice-extraktor-meldet-parse-zweifel-bei-zwei-strings-und-resttext-verify`,
+[Report](../../../reviews/2026-10-21-slice-extraktor-meldet-parse-zweifel-bei-zwei-strings-und-resttext-verify.md)).
+(1) Extraktor bestätigt — Vorher (`0181e351`, beide Fassungen, busybox-awk 1.36.1 im `BATS_IMAGE`): beide
+Eingaben Exit 0 mit Ausgabe `make gates` bzw. `a`; HEAD: Exit 3 in beiden Fassungen, 10 wohlgeformte
+Eigenproben Exit 0; Code-Zeilen beider Fassungen gleich (Einmalmessung, kein Sensor). (2) Probenmenge
+bestätigt — `test/guard.bats` 32 Fälle grün, Schleife über `$EXTRACT` und `$EMIT_EXTRACT`; Fälle 780 bis 783
+je rot gegen den benannten Test, `make mutate-greift` 769/769. (3) Nachzug bestätigt — beide Guard-Köpfe und
+beide Extraktor-Köpfe nennen die zwei Klassen; `git grep -n 'extract-command' docs/user` trägt keine
+Aufzählung der Klassen.
+
+**Review** (`2026-10-21-slice-extraktor-meldet-parse-zweifel-bei-zwei-strings-und-resttext`,
+[Report](../../../reviews/2026-10-21-slice-extraktor-meldet-parse-zweifel-bei-zwei-strings-und-resttext.md)):
+0 HIGH, 0 MEDIUM, 1 LOW, 3 INFO. F1 (Grenze der emittierten Guard-Fassung am Ort) behoben; F3
+(Falsch-Positiv-Richtung ohne Fall) behoben durch die Fälle 782/783; F2 (Rest hinter dem Wurzelobjekt bleibt
+Exit 0) ist der Plan-Ausschluss aus §1; F4 INFO.
+
+**Plan-vs-Code** (Abnahme bleibt wie geschrieben). Über §3 hinaus: die Fälle 782 und 783
+(`test/mutations/`, Marke `afterstr` bleibt gesetzt) — §3 nennt zwei Fälle, gebaut sind vier; und die
+Grenze der emittierten Guard-Fassung am Ort (Guard-Fall-Kommentar, Kopf des Vorlagen-Guards). Plan ohne
+Code: nichts.
+
+**Messung** ([`MR-089`](../../../../harness/conventions.md#mr-089)): keine neue Laufzeit- oder
+Kosten-Aussage; die Exit-Messungen stehen im Verifier-Report mit Image (`BATS_IMAGE`, busybox 1.36.1,
+`--network none`). **Normbeleg fehlt:** Implementer, Reviewer und Verifier liefen auf macOS
+([`AGENTS.md`](../../../../AGENTS.md) §3.9); die CI auf frischem Klon nach dem Push des Closure-Stands
+liegt bei Abschluss dieser Notiz nicht vor.
+
+**Trigger-Audit.** [`ADR-0004`](../../adr/0004-durchsetzungs-emission.md) Festlegung 2 (Extraktor
+fail-closed) berührt: nichts fällig, die Festlegung wird durch den Slice gehalten, nicht verschoben. Kein
+Carveout berührt; kein bootstrap-aware Gate; keine Hard Rule mit Auflösungs-Trigger berührt.
+
+**Steering-Loop-Eintrag (neuer Sensor + benannte Lücken).** Klasse *Wächter-Zusage fail-closed deckt nur
+eine Auswahl der Parse-Zweifel-Eingaben*: die Zusage „bei Parse-Zweifel block" stand im Kopf, der Scanner
+prüfte aber nicht, welches Zeichen nach einem String-Ende folgen darf; ein Adopter fand die Lücke, kein
+Sensor des Repos. Neuer Sensor: die Schleifenfälle in `test/guard.bats` über beide Fassungen und die
+Mutations-Fälle 780 bis 783 (`test/mutations/`). **Benannte Lücken:** (a) kein Lauf-Zahn im Ziel —
+`full-smoke` hat keine Stufe, die einen realen emittierten Guard mit Parse-Zweifel-Eingabe fährt, die
+emittierte Fassung ist nur über den Vorlagen-Extraktor gedeckt; (b) gawk und mawk ungemessen, der Kopf sagt
+„POSIX-awk (busybox/gawk/BSD)", gemessen sind busybox 1.36.1 und BWK 20200816 (Host, kein Normbeleg);
+(c) Rest hinter dem Wurzelobjekt und Syntaxfehler ohne vorangehenden String bleiben Exit 0
+(Plan-Ausschluss, §1); (d) der Vergleichs-Sensor der zwei Fassungen liegt bei
+[`slice-zwei-fassungen-eines-waechters-bekommen-ihren-vergleichenden-sensor`](../open/slice-zwei-fassungen-eines-waechters-bekommen-ihren-vergleichenden-sensor.md).
+Nichts davon ist an einem Zielort mit Anker verkörpert; der Eintrag ist gezählt, nicht verkörpert.
+
+**Beobachtungs-Register** (`../observations/`). Zwei Belege ergänzt:
+`evidence/slice-extraktor-meldet-parse-zweifel-bei-zwei-strings-und-resttext.md` in
+[`BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor`](../observations/BEO-ALL/zwei-fassungen-eines-waechters-ohne-vergleichenden-sensor/observation.md)
+(Zähler damit 6×; die Fassungen waren nicht byte-gleich, die Gleichheit der Code-Zeilen hielt nur eine
+Handmessung; Ausgang `geplant` bleibt, die Schwelle war überschritten) und in
+[`BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht`](../observations/BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht/observation.md)
+(Ausgang des dritten Risikos aus §6 und die Lücke ohne Lauf-Zahn im Ziel; Ausgang `verkörpert` bleibt).
+Kein Beleg: `BEO-ALL/neuer-waechter-ohne-mutations-fall` — der Slice liefert die Fälle mit;
+`BEO-ALL/waechter-misst-die-fixture-statt-der-realen-quelle` — die Proben laufen über die reale Datei der
+Vorlage (go:embed), keine nachgebaute Eingabe; die Lücke ohne Lauf-Zahn im Ziel zählt unter
+`emittierte-zusage-…`, ein Vorgang zählt einmal. `BEO-ALL/waechter-satz-stelle-ohne-mutationsfall-und-ohne-byte-gleichheit`
+bleibt bei 2×, kein dritter Beleg. Lese-Schritt: die Überschreitungen der Schwelle stehen mit Ausgang in ihren `state.md`; kein Eintrag erreicht neu 3×.
+
+**Offene Frage an den Auftraggeber (Architect-Entscheidung).** Das Repo kennt keine Eingangsform für
+Change Requests von Adoptern; der Planner hat im Schnitt keine angelegt. Offen: ob eine Eingangsform
+entsteht (Architect). Die Antwort an den Absender des Change Requests
+`2026-10-21-cr-ai-harness-init-guard-extraktor-parse-zweifel` (Datei im Repo des Adopters) ist Sache des
+Auftraggebers; in dieses Repo schrieb die Closure nichts, in das andere keine Zeile.
+
+**Auslieferung.** Die emittierte Fassung reist im Produkt-Binär; Zielrepos sehen sie mit dem nächsten
+Release, `v0.10.0` bleibt unverändert.
+
+**Risiken aus §6:** Falsch-Positive — entfallen, gedeckt durch Test 10 der Schleife, die Fälle 782/783 und
+die 10 Eigenproben des Verifiers. Drift der Fassungen — eingetreten →
+[`slice-zwei-fassungen-eines-waechters-bekommen-ihren-vergleichenden-sensor`](../open/slice-zwei-fassungen-eines-waechters-bekommen-ihren-vergleichenden-sensor.md).
+Host-awk-Varianten — weiter offen → Register `BEO-ALL/emittierte-zusage-reicht-weiter-als-was-im-ziel-geschieht` (Beleg oben).
+
+**Folge-Slices:** [`slice-zwei-fassungen-eines-waechters-bekommen-ihren-vergleichenden-sensor`](../open/slice-zwei-fassungen-eines-waechters-bekommen-ihren-vergleichenden-sensor.md)
+— ist eine Datei in `open/`.
+
+**Drei Paarungen:** *(nach dem `git mv` zu füllen)*
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
