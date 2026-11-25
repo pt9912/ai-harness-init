@@ -152,6 +152,9 @@ func TestDCheckConfig_PlanningBlock(t *testing.T) {
 		"roadmap": "docs/plan/planning/in-progress/roadmap.md",
 		"heading": emit.RoadmapOffeneWellen,
 		"marker":  emit.RoadmapRuheMarker,
+		// waves ist ein Skalar-Träger-Block: der Schlüssel selbst ohne Wert; seine Zeilen
+		// haelt die Liste unten. Der Feldlauf liest nur die 2-Raum-Ebene.
+		"waves": "",
 	}
 	for k, v := range want {
 		if felder[k] != v {
