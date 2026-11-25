@@ -41,7 +41,7 @@ geschlossene Welle. Keiner dieser drei Belege steht in einer einzelnen DoD.
 ## 2. Trigger (Welle startet)
 
 - **Start-Trigger: der Slice `slice-gates-fastpfad-ueber-stempel` liegt in `done/`.**
-  Beobachtbar: [`slice-gates-fastpfad-ueber-stempel`](in-progress/slice-gates-fastpfad-ueber-stempel.md)
+  Beobachtbar: [`slice-gates-fastpfad-ueber-stempel`](done/slice-gates-fastpfad-ueber-stempel.md)
   führt `ls docs/plan/planning/in-progress/` nicht mehr — er liegt in `done/`.
   Er liegt in keiner
   Slice-Liste dieser Welle — er ist kein Ergebnis
