@@ -69,12 +69,31 @@ fi
 # wiederkehrende Vorlagen und derivative Indexe NICHT (referenziert aus vendored
 # bzw. Fuelle-wenn-Inhalt-da). Je ein positiver Vertreter aller drei Klassen:
 for rel in AGENTS.md docs/plan/adr/.gitkeep docs/plan/planning/in-progress/roadmap.md \
-	.harness/skills/reviewer.md docs/plan/planning/observations/README.md; do
+	.harness/skills/reviewer.md docs/plan/planning/observations/README.md \
+	harness/sensors/environment-check.md; do
 	if [ ! -f "$tmprepo/$rel" ]; then
 		echo "smoke: FEHLER — Template-Schicht unvollstaendig: $rel fehlt" >&2
 		exit 1
 	fi
 done
+# Das gestempelte environment-check-Singleton (LH-QA-02 · seit
+# slice-c4-environment-check-v7-0-0): die Quelle ist das gefetchte Template am
+# selben Pfad unter .harness/baseline/<tag>/templates/ mit seinem Vorlagen-Hinweis
+# ("Kopiere nach harness/sensors/environment-check.md"); die Vorlage ist
+# gate-neutral — ihr Titel nennt kein `make environment-check`, weil
+# NeutralizeMakeClaims das Target, das die Init-Phase nicht schreibt, entschaerft.
+# Gemessen ist hier die Existenz des Skeletts und dessen Gate-Neutralitaet —
+# NICHT ein Check im Verhalten: ein Skript existiert zu diesem Zug nicht, der
+# Check selbst entsteht erst als Ziel-Vorgang.
+vorlage="$(find "$tmprepo/.harness/baseline" -path '*/templates/harness/sensors/environment-check.template.md' -print -quit)"
+if [ -z "$vorlage" ] || ! grep -q 'Kopiere nach .harness/sensors/environment-check\.md.' "$vorlage"; then
+	echo "smoke: FEHLER — die Vorlage environment-check.template.md fehlt im Ziel-Baum oder traegt ihren Kopiere-Satz nicht" >&2
+	exit 1
+fi
+if grep -q 'make environment-check' "$tmprepo/harness/sensors/environment-check.md"; then
+	echo "smoke: FEHLER — das emittierte environment-check-Singleton traegt einen make-Anspruch auf ein Ziel, das der Bootstrap nicht schreibt" >&2
+	exit 1
+fi
 # Durchsetzungsschicht (slice-031/032, LH-FA-06/ADR-0006): Gate-Nachweis + Stop-Hook
 # + Command-Guard + awk-Extraktor als Tool-als-Quelle emittiert. Positive Vertreter
 # beider Zielorte (tools/harness/ + .claude/) und der Stempel-Ignore. Der geschlossene
