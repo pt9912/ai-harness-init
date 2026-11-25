@@ -167,3 +167,56 @@ Hälften.
 **Vorgelagert — offene Beobachtungen sichten:** Register durchgegangen. Treffer zur Sub-Area (Pin-Kette, Gate-Konfiguration), Stand gemessen auf dem Hauptzweig ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)): [`BEO-ALL/pin-digest-ohne-waechter`](../observations/BEO-ALL/pin-digest-ohne-waechter/observation.md) — `verkörpert`, 8 Belege; [`BEO-ALL/aussage-ueber-das-gepinnte-werkzeug-ohne-blick-in-seinen-stand`](../observations/BEO-ALL/aussage-ueber-das-gepinnte-werkzeug-ohne-blick-in-seinen-stand/observation.md) — `geplant`, 6 Belege; [`BEO-ALL/strenge-bilanz-eines-pin-sprungs-fehlt-im-umsetzungs-commit`](../observations/BEO-ALL/strenge-bilanz-eines-pin-sprungs-fehlt-im-umsetzungs-commit/observation.md) — `offen`, 1 Beleg; [`BEO-ALL/pin-sprung-feuert-adr-trigger-ohne-nennung`](../observations/BEO-ALL/pin-sprung-feuert-adr-trigger-ohne-nennung/observation.md) — `offen`, 1; [`BEO-ALL/pin-sprung-macht-test-eingabe-gleich-default-die-zusage-unsichtbar`](../observations/BEO-ALL/pin-sprung-macht-test-eingabe-gleich-default-die-zusage-unsichtbar/observation.md) — `offen`, 1; [`BEO-ALL/aufruf-ohne-wirkung-am-pin-traegt-nur-eine-fixture`](../observations/BEO-ALL/aufruf-ohne-wirkung-am-pin-traegt-nur-eine-fixture/observation.md) — `offen`, 1. Alle unter der Schwelle 3; der Sprung trägt die Antworten der Klassen durch die [`MR-063`](../../../../harness/conventions.md#mr-063--die-gegenmessung-eines-d-check-sprungs-gibt-jedem-aktiven-modul-eine-basis-und-lässt-die-symlinks-stehen)-Form und die [`MR-092`](../../../../harness/conventions.md#mr-092--d-check-pin-v0861-go-sicherheitsfix-prüfverhalten-unverändert)-Pin-Fassung — kein 3×-Übertritt, kein eigener Folge-Slice.
 
 **Modus-Begründungsblock:** alle berührten Sub-Areas GF (Deklaration [`harness/conventions.md`](../../../../harness/conventions.md) §Modus-Deklaration pro Sub-Area — `*` GF); der Begründungsblock je Sub-Area entfällt, der Hinweis genügt.
+
+---
+
+## 9. Übergabe (Implementer → Architect)
+
+Der MR-Eintrag (kommende Nummer der Reihe, `MR-092`-Form) und seine Index-Zeile sind
+Architect-Artefakte (§1, `AGENTS.md` §3.8); dieser Abschnitt trägt seine Eingabe. Sein
+Volltext liegt im Commit dieser Datei, nicht hier dupliziert:
+
+1. **Pin-Zug:** Dreifach-Kongruenz Release-Objekt (`gh api
+   repos/pt9912/d-check/releases/tags/v0.93.0`, Pin-Zeile im Body) → Registry-Index
+   (`docker buildx imagetools inspect ghcr.io/pt9912/d-check:v0.93.0`) → Pull. Werkzeug-Deltas
+   `v0.86.1` → `v0.93.0` am Fragment: Pin-Zeile, drei `--disable metrics --disable pinsync
+   --disable linelength`-Anhänge an denselben sechs fokussierten advisory-Recipes, vierzehntes
+   Target `doc-manual` (v0.89.0) verbatim hinter `doc-usage`, ohne `--enable`-Modul ohne Marke.
+   Hunk-Kommando im Kopf: 6.
+2. **Gegenmessung (`MR-063`, Stufenform wie in `MR-092`):** netzlos, je Digest ein Lauf über
+   `git archive`-Kopie von `625cdef0` (Klon aus dem lokalen Repo, kein Objektspeicher,
+   [`MR-065`](../../../../harness/conventions.md#mr-065--ein-history-lesender-lauf-einer-d-check-bilanz-nennt-woher-sein-klon-die-objekte-liest)
+   Setzung 1); Digest per Override.
+   - Stufe 1 (unveränderter Bestand): 2977 Dateien, 0 Befunde — alt/neu byte-gleich.
+   - Stufe 2 (Marker entwertet): 97 Befunde (60 `codepath-missing`, 37 `id-unlinked`) — byte-gleich.
+   - Stufe 3 (Sonden): 110 Befunde, 11 Grund-Codes, alle neun Module mit Basis — byte-gleich
+     (`span-unclosed` ohne eigene Sonden-Basis; Modul-Basis über `span-nested-link`/`fence-unclosed`).
+   - Stufe 4 (Ziel `--lang go` unverändert): 21 Dateien, 0 Befunde — byte-gleich.
+   - Stufe 5 (Ziel mit Sonden): 23 Dateien, 13 Befunde, 9 Grund-Codes, alle neun Module mit
+     Basis — byte-gleich. Gleiche Mengen in allen Stufen ⇒ kein ADR (§3.5-Begründung im Eintrag).
+3. **`linelength.exempt-tables`** (eingerückte Tabellenzeile, ≤ 3 Leerzeichen vor dem ersten
+   `|` gemessen): am neuen Pin mit Default-Ausnahme **0 Befunde** für den Sonden-Bestand
+   (eingerückte Zeile > 100 Zeichen ausgenommen), mit `exempt-tables: false` **2 Befunde**
+   (`line-chars-exceeded` je Zeile) — die Differenz ist die neue Zusage; am alten Pin ist das
+   Modul nicht vorhanden (`v0.92.0`), die Konfiguration Exit 2 (`field linelength not found`).
+   Opt-in, in keinem der beiden Prüfbereiche aktiv — keine Senkung im Gate.
+4. **`vcs --staged` Gitlink:** Sonde `spec.md` mit `<!-- immutable: sha256:<core-hash> -->`
+   (Core-Hash über die Whitespace-kollabierte Fassung berechnet; Basis `--range` je Pin
+   0 Befunde), danach Gitlink an dem Pfad im Index. Messung: **beide Pins 0 Befunde** — die
+   im CHANGELOG von v0.93.0 dokumentierte Differenz (Alt: Exit 2 `object not found`, neu:
+   `core-drift-vcs`) ist mit dieser Sonde **nicht reproduziert**; die Grenze gehört in den
+   MR-Eintrag, nicht verdeckt. Beide Module opt-in, in keinem Prüfbereich aktiv.
+5. **`MR-086`-Nachmessung** (Sonden mit aktivem `reviews`, emittiertes Ziel, am neuen Pin;
+   Kontroll am alten): leerer `done-dir` → fail-closed `review-missing`; `slice-cache` +
+   `slice-cache-warmup` mit Report nur für den längeren → `review-missing` für
+   `slice-cache` (`match: name` deckt nur den längsten passenden Basisnamen); Reports für
+   beide → Exit 0; Ziffern-Plan mit Report → Exit 0; alter Pin Exit 0. Die Positions-Aussage
+   bleibt, keine Kopf-Marke (Setzung 4-Fassung wie in `MR-092`).
+6. **`gate-undocumented`:** das neue `doc-manual` fiel im Lauf des Moduls `targets` auf; der
+   Ausspruch lebt als `exempt-targets`-Eintrag (Gruppe (b), Makefile-Hilfetext) in
+   `.d-check.yml`, nicht als Index-Zeile (§1).
+7. **Mutations-Treiber, 4 Worker:** die Fälle 786/787 starben im 4-Worker-Lauf am
+   Docker-Image-Namen-Rennen der parallelen `test-go`-Builds („No such image" nach dem
+   buildx-Export), mit `MUTATE_JOBS=1` rot gesehen; das Verdikt hängt laut Kopf von
+   [`harness/tools/mutate.sh`](../../../../harness/tools/mutate.sh) nicht an der Worker-Zahl.
+   Kandidat für einen Register-Eintrag (Schreib-Schritt der Closure, nicht dieser Lauf).
