@@ -1,0 +1,2 @@
+**Vorgang:** slice-gates-fastpfad-ueber-stempel
+**Fund:** Der Review-Report fand zwei Plan-Defekte in einem Vorgang: der Mutations-Probe-Weg je Schwelle fehlte in §2/§3, obwohl die Fall-Anlage am Slice die CI-Branch-Probe über der lokalen Schwelle erzwingt ([`MR-091`](../../../../../harness/conventions.md#mr-091--ab-neun-fällen-läuft-die-mutations-probe-eines-slice-über-einen-ci-branch-dessen-ergebnis-job-schreibt)); die Folge der gates-Zellen-Änderung auf `harness/conventions.md` (der Zusatzklassen-Messblock hebt seine Zähler) fehlte in §6.

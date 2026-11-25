@@ -50,17 +50,18 @@ Ausschluss ist besser als vier erfundene. -->
 
 <!-- je Zeile ein pruefbares Kriterium; drei Liefer-Punkte. -->
 
-- [ ] Fast-Pfad-Verdrahtung: `make gates` überspringt die Checks nur über dem gedeckten Stempel-Paar (`.harness/state/gates-passed.diffsha` **und** `.head` gegen [`harness/tools/working-tree-hash.sh`](../../../../harness/tools/working-tree-hash.sh) bzw. HEAD) und meldet die gedeckte Lage; fehlender, unlesbarer oder nicht mehr passender Stempel fährt fail-closed den vollen Lauf ([`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)-Semantik); Test: eine neue bats-Datei `test/gates-fastpfad.bats` — Happy (gedecktes Paar → SKIP-Meldung), Negative (Stempel fehlt / trägt fremden Hash / ist unlesbar → voller Lauf), Boundary (FORCE-Schalter zwingt den vollen Lauf über gedecktem Paar, Analogie `MUTATE_FORCE=1`, [`ADR-0035`](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md) Festlegung 4).
-- [ ] Zahn-Nachweis je Richtung ([`AGENTS.md`](../../../../AGENTS.md) §3.6): die gezogene Deckungsgleichheits-Annahme von [`test/gate-nachweis-kante.bats`](../../../../test/gate-nachweis-kante.bats) ist einmal aus dem richtigen Grund rot gesehen; zwei neue Mutations-Fälle unter `test/mutations/` (SKIP greift ohne gedecktes Paar färbt den Wächter rot am benannten Grund; Anker am Commit, [`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit)).
-- [ ] [`harness/README.md`](../../../../harness/README.md) §Sensors: die `make gates`-Zelle nennt den Fast-Pfad und verweist als Bindung auf die ADR des Architects; die SKIP-Meldung nennt den benannten Rest, den kein baum-abgeleiteter Schlüssel deckt (Docker-Cache-Zustand, Host-Werkzeuge — Wortlaut-Präzedenz [`ADR-0035`](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md) Festlegung 4).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] Fast-Pfad-Verdrahtung: `make gates` überspringt die Checks nur über dem gedeckten Stempel-Paar (`.harness/state/gates-passed.diffsha` **und** `.head` gegen [`harness/tools/working-tree-hash.sh`](../../../../harness/tools/working-tree-hash.sh) bzw. HEAD) und meldet die gedeckte Lage; fehlender, unlesbarer oder nicht mehr passender Stempel fährt fail-closed den vollen Lauf ([`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)-Semantik); Test: eine neue bats-Datei `test/gates-fastpfad.bats` — Happy (gedecktes Paar → SKIP-Meldung), Negative (Stempel fehlt / trägt fremden Hash / ist unlesbar → voller Lauf), Boundary (FORCE-Schalter zwingt den vollen Lauf über gedecktem Paar, Analogie `MUTATE_FORCE=1`, [`ADR-0035`](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md) Festlegung 4). — bestätigt (Verifier-Report: SKIP-Klassen 12/12 bats, Negative-Stempelklassen fail-closed, `GATES_FORCE=1` am gedeckten Paar).
+- [x] Zahn-Nachweis je Richtung ([`AGENTS.md`](../../../../AGENTS.md) §3.6): die gezogene Deckungsgleichheits-Annahme von [`test/gate-nachweis-kante.bats`](../../../../test/gate-nachweis-kante.bats) ist einmal aus dem richtigen Grund rot gesehen; zwei neue Mutations-Fälle unter `test/mutations/` (SKIP greift ohne gedecktes Paar färbt den Wächter rot am benannten Grund; Anker am Commit, [`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit)). — bestätigt (Rot-Belege 784/785 und 211/212 am benannten Grund; CI-Branch-Probe 23/23 grün vor der Verifikation, MR-091).
+- [x] [`harness/README.md`](../../../../harness/README.md) §Sensors: die `make gates`-Zelle nennt den Fast-Pfad und verweist als Bindung auf die ADR des Architects; die SKIP-Meldung nennt den benannten Rest, den kein baum-abgeleiteter Schlüssel deckt (Docker-Cache-Zustand, Host-Werkzeuge — Wortlaut-Präzedenz [`ADR-0035`](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md) Festlegung 4). — bestätigt (Zelle trägt ADR-0099; die SKIP-Meldung nennt den Rest wörtlich).
+- [x] `make gates` grün. — Stempel deckt `74f9efc2` (diffsha gegen den Arbeitsbaum, head gegen HEAD; der Lauf des Closures selbst ist nicht gefahren — siehe §5).
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
-      Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update für <Schnittstelle X> falls öffentlicher Vertrag berührt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+      Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8). —
+      `docs/reviews/2026-11-25-slice-gates-fastpfad-ueber-stempel.md`, 0 HIGH/1 MEDIUM/1 LOW.
+- [x] Doku-Update für die `make gates`-Schnittstelle — der öffentliche Vertrag in [`harness/README.md`](../../../../harness/README.md) §Sensors berührt: die Zelle verweist als Bindung auf `ADR-0099` und als Prosa auf [`harness/sensors/gates.md`](../../../../harness/sensors/gates.md) (benannter Rest, Grenze).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — **eine weitere Datei** in `BEO-ALL/baum-hash-deckt-nicht-jeden-pruefgegenstand/evidence/` **und ein neues Verzeichnis** `BEO-ALL/uebergaben-fehlen-im-slice-plan/` (siehe §7); **kein Zaehler wird gesetzt**, er folgt aus den Dateien.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
@@ -108,28 +109,63 @@ beide Richtungen sind damit nach der Lieferung am realen Wächter beobachtbar.
 
 ## 7. Closure-Notiz
 
-<!-- Reihenfolge: diese Sektion vor dem `git mv` nach done/ fuellen —
-einzige Ausnahme ist das letzte DoD-Item in §2 (die Paarungen suchen in
-`done/`, also nach dem `git mv`). Vorhandene `BEO-<KUERZEL>/<slug>` zitieren,
-nicht neu formulieren; das Feld `liegt in` steht nur, wenn hier wirklich
-etwas verkörpert wurde. Im Repo ohne Wellen-Betrieb braucht die Closure
-drei Commits: Inhalt, `git mv`, Haekchen. -->
-
-
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Gegenstand:** <übernommen von `slice-<Kennung>` | entfallen: <Grund>>
-  *(nur beim Ausgang ohne Arbeit; sonst Zeile löschen)*
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<KUERZEL>/<slug>` (<slice-kennung-a>, <slice-kennung-b>, <slice-kennung-c> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-<Kennung>.md` | `evidence/slice-<Kennung>.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+- **Was hat funktioniert:** der Fast-Pfad als Wrapper (`gates` zum Rezept, das
+  [`harness/tools/gates-fast.sh`](../../../../harness/tools/gates-fast.sh) startet) hielt die
+  Ordnungskante unverändert — alle fünf Zustände von
+  [`test/gate-nachweis-kante.bats`](../../../../test/gate-nachweis-kante.bats) umgezogen, keiner
+  gestrichen; die Fall-Anlage nach [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit)
+  deckte den zu breiten Anker von 212 selbst auf (Wächter blieb grün — verengt und neu rot
+  gesehen); der CI-Branch-Weg des Mutations-Satzes
+  ([`MR-091`](../../../../harness/conventions.md#mr-091--ab-neun-fällen-läuft-die-mutations-probe-eines-slice-über-einen-ci-branch-dessen-ergebnis-job-schreibt),
+  Fallmenge 23 über der lokalen Schwelle) lief mit Urteil `gruen` vor der Verifikation und wurde
+  nach dem Konsum gelöscht.
+- **Was ging anders als geplant:** die README-Zelle trägt statt Prosa den Zeiger auf
+  [`harness/sensors/gates.md`](../../../../harness/sensors/gates.md) (Zelle→Link-Umweg); die zwei
+  Bestands-Mutations-Fälle 211/212 mussten an die Wrapper-Form gezogen werden — ein Weg, den der
+  Plan nicht trug (siehe Lerneintrag); die CI-Branch-Runde lief über einen zweiten Commit
+  (`28da4709` statt `5ddbbc8d`) nach Infra-Unfällen und Re-Run; die Einzel-Archivierung blieb
+  aus — das Unterkommando `archive-slice` ist nicht im Bestand (`ADR-0077`
+  [Festlegung 3](../../adr/0077-wellenlose-slices-archivieren-bei-der-slice-closure.md)), und
+  solange es fehlt, wird der Weg nicht ausgeübt ([`MR-078`](../../../../harness/conventions.md#mr-078--wellenlose-slices-werden-bei-der-eigenen-closure-archiviert)
+  Grenze): der Slice bleibt flach, und die Wellen-Closure sammelt ihn ein (Rückfall, `ADR-0077`
+  Festlegung 1).
+- **Übergaben aus Review und Verifikation:**
+  - **Architektur-Zug (kein Folge-Slice).** Der Messblock [`harness/conventions.md`](../../../../harness/conventions.md)
+    §Zusatzklassen-Deklaration ist hinter dem Bestand — seine drei Messzeilen und der
+    Prosa-Satz sagen die Lage vor der gates-Zellen-Änderung; gemessen über die Kommandos des
+    Blocks selbst: `wc -l` über die Block-Zellen → 47 (Block notiert 31), `grep -cE
+    'ADR-[0-9]{4}'` → 15 (notiert 8), `grep -cE '^ *— *$'` → 0 (notiert 1). Tragend bleibt die
+    letzte Messzeile (Zähler 0 außerhalb der Deklarierten). Der Block ist ein Architect-Artefakt
+    ([`AGENTS.md`](../../../../AGENTS.md) §3.8) und gehört in einen eigenen Architect-Zug.
+  - **Grenze aus dem Verifikations-Report.** Die Negative-Klasse „HEAD unaufösbar" ist am
+    bats-Image (ohne `git`) fixture-mäßig nicht hermetisch testbar; sie liest im Code
+    fail-closed (`ist_head`-Fehler → voller Lauf) und ist im Skriptkopf benannt — benannte
+    Messgrenze, kein Wächter-Defekt.
+- **Steering-Loop-Eintrag:** geschärfte Regel für kommende Slice-Pläne: ein Plan nennt an
+  derselben Stelle wie seine Code-Artefakte auch die Wege und Folgen der Änderung außerhalb
+  des Codes — den Mutations-Probe-Weg je Schwelle
+  ([`MR-091`](../../../../harness/conventions.md#mr-091--ab-neun-fällen-läuft-die-mutations-probe-eines-slice-über-einen-ci-branch-dessen-ergebnis-job-schreibt))
+  und die Doku-/Conventions-Folge einer Gate-Zellen-Änderung. Noch nicht verkörpert — erstes
+  Auftreten; gezählt im Beobachtungs-Register.
+- **Beobachtungs-Register (`../observations/`):** `evidence/slice-gates-fastpfad-ueber-stempel.md`
+  in `BEO-ALL/baum-hash-deckt-nicht-jeden-pruefgegenstand/` ergänzt — Zähler 2× (Stempel-Schlüssel
+  als baum-abgeleiteter Schlüssel, Risiko 1 in §6); `BEO-ALL/uebergaben-fehlen-im-slice-plan/`
+  neu angelegt, Beleg `evidence/slice-gates-fastpfad-ueber-stempel.md` — 1× (Plan-Defekt-Klasse,
+  siehe Lerneintrag).
+- **Folge-Slices:** keine — die Architektur-Folge (Messblock) ist Übergabe an den Architect-Zug,
+  kein Slice dieses Slices.
+- **Risiken aus §6:** Stempel deckt Docker-Cache/Host-Werkzeuge nicht — **eingetreten**; SKIP nur
+  bei gedecktem Paar (diffsha **und** head), SKIP-Meldung nennt den benannten Rest,
+  `GATES_FORCE=1` erzwingt den vollen Lauf; Beleg im Register
+  (`BEO-ALL/baum-hash-deckt-nicht-jeden-pruefgegenstand`, 2×). Verhalten-Change in CI —
+  **entfallen**: fail-closed-Default (fehlender Stempel fährt voll, Negative-Fälle), CI ruft
+  `make gates` unverändert. Zweite Quelle für denselben Zustand — **entfallen**: der Fast-Pfad
+  schreibt keinen Stempel; `record-gates` blieb alleiniger Schreiber (byte-gleich vom
+  Kanten-Wächter gehalten). Späteres Gate-Audit übersieht Werkzeug-Änderung — **entfallen**:
+  der Baum-Hash trägt getrackte und untrackte Dateien; eine untrackte Zusatzdatei senkte den
+  Hash im Verifikations-Spot-Check und entdeckte das Paar — fail-closed, voller Lauf.
+- **Drei Paarungen:** geprüft nach dem Move — Ergebnis und DoD-Häkchen in dem Commit danach
+  (die Paarungen suchen in `done/`).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
