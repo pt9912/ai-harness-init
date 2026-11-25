@@ -22,8 +22,9 @@ nicht hier.
 Die Welle [welle-baseline-sprung-v7-0-0](../welle-baseline-sprung-v7-0-0.md) wartet auf
 ihren Start, [welle-09](../welle-09-modul-15-konformitaet.md) bleibt offen.
 
-**Nichts in Arbeit.** [`in-progress/`](../in-progress) trägt keinen Slice
-(`ls docs/plan/planning/in-progress/slice-*.md` findet keinen).
+**In Arbeit:** [`in-progress/`](../in-progress) trägt
+[slice-c2-template-renames-und-kennungs-formen-v7-0-0](../in-progress/slice-c2-template-renames-und-kennungs-formen-v7-0-0.md)
+(Welle-Bündel welle-baseline-sprung-v7-0-0, `Verantwortlich:` pt9912).
 
 ## Nächste Wellen
 

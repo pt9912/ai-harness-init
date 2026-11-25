@@ -131,7 +131,7 @@ nicht eine Konventions-Notiz: Drei Zeilen bilanzieren drei Werte, die ohne Notiz
 | Regel | Werkzeug / Trigger | Anmerkung |
 |---|---|---|
 | `docs-check` färbt bei Konfigurations-Bruch | [`make docs-check`](../../../harness/sensors/docs-check.md), in `make gates` | Exit 0 am gesunden Bestand; Bruch der `.d-check.yml`-Deklarationen färbt — bereits der laufende Sensor, kein Neubau |
-| Symlink-Smoke Setzung 2: Exit 0; Baseline-Zeiger, der nicht oder nicht in die Baseline auflöst → Meldung, Exit 1 | Bilanz-Lauf je d-check-Sprung (Rückwärts-Nachweis: einmal Ziel umbenennen, Zeile fällt auf Exit 1; danach zurücknehmen) | kein `make`-Target — bewusst: der Smoke misst einen Punkt an, kein Bestand ([Modul 13](../../../.harness/baseline/v6.18.1/regelwerk/modul-13-quality-gates.md) §Die dritte Lage) |
+| Symlink-Smoke Setzung 2: Exit 0; Baseline-Zeiger, der nicht oder nicht in die Baseline auflöst → Meldung, Exit 1 | Bilanz-Lauf je d-check-Sprung (Rückwärts-Nachweis: einmal Ziel umbenennen, Zeile fällt auf Exit 1; danach zurücknehmen) | kein `make`-Target — bewusst: der Smoke misst einen Punkt an, kein Bestand ([Modul 13](../../../.harness/baseline/v7.0.0/regelwerk/modul-13-quality-gates.md) §Die dritte Lage) |
 | Pin-Kopplung | `TestDefaultDigest_MatchesCanonical` o. dgl. | bereits Wächter der Pin-Kette, hier nur Zeile der Bilanz |
 
 **Lücke (benannt):** Dass die einheimische Fläche *strukturell* die Upstream-Fixtures nicht

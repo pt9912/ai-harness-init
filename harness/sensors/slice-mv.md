@@ -297,5 +297,5 @@ es nicht ablegt.
 
 ## Bindung
 
-Kein Gate-Versprechen; Träger von [Modul 5](../../.harness/baseline/v6.18.1/regelwerk/modul-05-planning-harness.md#lifecycle-als-state-machine)
+Kein Gate-Versprechen; Träger von [Modul 5](../../.harness/baseline/v7.0.0/regelwerk/modul-05-planning-harness.md#lifecycle-als-state-machine)
 und `BEO-ALL/verweise-brechen-beim-ortswechsel`.

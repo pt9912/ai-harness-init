@@ -16,7 +16,7 @@
   [`MR-021`](../conventions.md#mr-021--das-span-schema-zieht-ins-technik-stratum-sein-eintrag-wird-aufgehoben)
   Punkt 1 fort.
 - **Ersetzt-Baseline-Regel:**
-  [`modul-03-spec.md`](../../.harness/baseline/v6.18.1/regelwerk/modul-03-spec.md#ziel-form-spezifikation)
+  [`modul-03-spec.md`](../../.harness/baseline/v7.0.0/regelwerk/modul-03-spec.md#ziel-form-spezifikation)
   §Ziel-Form: Spezifikation — *„Technische Festlegungen leben in der Spezifikation
   (`templates/spec/spezifikation.template.md`)"*: die Vorlage führt in §3
   `ID · Name · Wert · Begründung` und in §5 `ID · Span · Pflicht-Attribute · Quelle`, jeweils ohne

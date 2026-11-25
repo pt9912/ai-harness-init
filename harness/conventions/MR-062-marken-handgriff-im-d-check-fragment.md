@@ -23,7 +23,7 @@
   für einen Werkzeug-Pin aus. Gemessen ist die Abweichung am adoptierten Stand `v6.9.0` (nächstes
   Feld).
 - **Ersetzt-Baseline-Regel:**
-  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v6.18.1/regelwerk/modul-02-harness-bootstrap.md#gate-fragment-d-checkmk-schritt-2)
+  [`modul-02-harness-bootstrap.md`](../../.harness/baseline/v7.0.0/regelwerk/modul-02-harness-bootstrap.md#gate-fragment-d-checkmk-schritt-2)
   §Gate-Fragment `d-check.mk` (Schritt 2) — *„Das Tool pflegt die Recipe-Form (`--network none`,
   Target-Set)"*
   (`grep -c 'Das Tool pflegt die Recipe-Form' .harness/baseline/v6.18.1/regelwerk/modul-02-harness-bootstrap.md`

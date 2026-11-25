@@ -30,7 +30,7 @@
   [`MR-039`](../conventions.md#mr-039--ein-fehlendes-pflichtfeld-wird-nachgetragen-ein-retirierter-eintrag-bekommt-keines)
   Setzung 3 in diesem Feld. Die Baseline kennt keine Angabe für einen history-lesenden Lauf. Nahe
   liegt
-  [`modul-13-quality-gates.md`](../../.harness/baseline/v6.18.1/regelwerk/modul-13-quality-gates.md#hard-rule-doku-disziplin)
+  [`modul-13-quality-gates.md`](../../.harness/baseline/v7.0.0/regelwerk/modul-13-quality-gates.md#hard-rule-doku-disziplin)
   §Hard Rule (Doku-Disziplin): *„Ein Gate ohne seine Grenze behauptet ebenfalls zu viel"*
   (`grep -c 'Ein Gate ohne seine Grenze behauptet ebenfalls zu viel' .harness/baseline/v6.18.1/regelwerk/modul-13-quality-gates.md`
   → **1**), und die Differenz wird dort mit dem Kommando benannt, das den Ausschnitt zeigt. Diese

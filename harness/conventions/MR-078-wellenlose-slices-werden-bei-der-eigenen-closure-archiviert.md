@@ -9,11 +9,11 @@
   [`ADR-0041`](../../docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md)
   unverändert.
 - **Ersetzt-Baseline-Regel:**
-  [`modul-06-roadmap.md`](../../.harness/baseline/v6.18.1/regelwerk/modul-06-roadmap.md#wann-arbeit-eine-welle-braucht-modul-6)
+  [`modul-06-roadmap.md`](../../.harness/baseline/v7.0.0/regelwerk/modul-06-roadmap.md#wann-arbeit-eine-welle-braucht-modul-6)
   §Wann Arbeit eine Welle braucht, Tabelle *Träger im Repo ohne Wellen*, Zeile *Zeitdokumente
   archivieren* (Träger: Slice-Closure), samt Schritt 4 der Wellen-Closure-Prozedur (die Welle
   sammelt die wellenlos Geschlossenen ein); und
-  [`modul-05-planning-harness.md`](../../.harness/baseline/v6.18.1/regelwerk/modul-05-planning-harness.md#lifecycle-als-state-machine)
+  [`modul-05-planning-harness.md`](../../.harness/baseline/v7.0.0/regelwerk/modul-05-planning-harness.md#lifecycle-als-state-machine)
   §Lifecycle als State Machine, der Absatz, der `done/slice-<Kennung>-archiv.zip` als Ablage
   nennt.
 - **Adaption:** Die Baseline weist die Slice-Archivierung der Slice-Closure des Repos **ohne**
@@ -26,7 +26,13 @@
   Baseline ein (Rückfall, Festlegung 1).
 - **Begründung:** Der flache Bestand wächst sonst bis zur nächsten Wellen-Closure; Schlüssel ist
   der Slice selbst, eine Zuordnung zu einer Welle entfällt. Die Abwägung gegen die Alternativen
-  steht in der ADR, nicht hier.
+  steht in der ADR, nicht hier. Die Stub-Vorlage, aus der der gekürzte Stub entsteht, nennt den
+  Archiv-Zeiger der **Wellen**-Archivierung seit dem v7.0.0-Sprung als
+  `unzip -p done/<wave-id>/archive.zip` (Namens-Form der Kennungs-Präfixe,
+  [`MR-057`](../conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
+  Setzung 1); die wellenlose Ablage-Form dieses Eintrags bleibt
+  `done/slice-<Kennung>-archiv.zip` — das emittierte Stub-Feld erbt die Zeiger-Form `archive.zip`,
+  nicht die Kennungs-Form dieses Wegs.
 - **Auflösungs-Trigger:** die Re-Evaluierungs-Trigger der
   [`ADR-0077`](../../docs/plan/adr/0077-wellenlose-slices-archivieren-bei-der-slice-closure.md)
   — insbesondere: dieses Repo fährt keine Wellen mehr (dann gilt die Baseline-Form unmittelbar

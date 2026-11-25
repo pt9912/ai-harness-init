@@ -18,7 +18,7 @@
   Fork**, aus demselben Grund wie bei [`MR-000`](../conventions.md#mr-000--baseline-aussage):
   Dieser Eintrag ist die **Deklaration, die die Baseline selbst verlangt**, nicht eine Adaption
   neben anderen.
-  [`grundlagen-source-precedence.md`](../../.harness/baseline/v6.18.1/regelwerk/grundlagen-source-precedence.md#vergabe-woher-die-nächste-kennung-kommt)
+  [`grundlagen-source-precedence.md`](../../.harness/baseline/v7.0.0/regelwerk/grundlagen-source-precedence.md#vergabe-woher-die-nächste-kennung-kommt)
   §Vergabe setzt *„Welle- und Slice-Kennungen sind Namen, nicht Nummern — unabhängig von der
   Schreiberzahl"* und verlangt daneben ausdrücklich *„Welche Form gilt, deklariert das Repo — in
   `harness/conventions.md`"*. Gemessen am adoptierten Stand `v6.9.0`, weil
@@ -88,13 +88,16 @@
   `<NNN>` trifft beide Klassen gleich
   ([`AGENTS.md`](../../AGENTS.md) §3.6). Eingefrorene Artefakte ziehen ohnehin nicht nach:
   `Accepted`-ADRs und die angenommenen Einträge dieses Blocks behalten ihren Wortlaut.
-- **Grenze — die Werkzeug-Ebene trägt die neue Form heute nicht, und das ist gemessen.** Zwei
-  Dogfood-Stellen binden die Slice-Kennung an Ziffern:
+- **Grenze — die Werkzeug-Ebene trägt die neue Form heute nicht, und das ist gemessen.** Drei
+  Dogfood-Stellen binden die Slice-Kennung an Ziffern; gemessen nach dem Form-Zug am
+  2026-11-25 (der Zug des Form-Verbands zieht an der Menge, [`MR-058`](../conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)
+  Setzung 2):
 
   ```sh
   git grep -lE 'slice-(\[0-9\]|\\d)' -- harness/tools internal cmd Makefile d-check.mk ':!internal/emit'
-  # harness/tools/slice-mv.sh   — der Verweis-Nachzug beim Lifecycle-Wechsel
-  # internal/archive/stub.go    — die Kennungs-Erkennung im Archiv-Stub
+  # cmd/ai-harness-init/kennungen_test.go            — das Kennungs-Muster des Commit-Traegers
+  # harness/tools/commit-msg-traceability.sh         — das Kennungs-Muster des Commit-Traegers
+  # harness/tools/full-smoke.sh                      — die E2E-Stufen-Deckung der Kennung
   ```
 
   **Kein Erwartungswert** — die Menge wandert mit dem Code. Solange sie so steht, findet
@@ -104,8 +107,10 @@
   Adaptions-Block ([`AGENTS.md`](../../AGENTS.md) §3.8), und er ist fällig, **bevor** die erste
   benannte Kennung vergeben wird — nicht mit diesem Eintrag. Die emittierte Ebene ist von dieser
   Grenze getrennt und bleibt außen vor: Dort steht dasselbe Muster als Vorlage
-  (`git grep -lE 'slice-(\[0-9\]|\\d)' -- internal/emit | wc -l` → **3**), und wer es bewegt,
-  ändert einen Vertrag gegenüber Zielrepos.
+  (`git grep -lE 'slice-(\[0-9\]|\\d)' -- internal/emit | wc -l` → **5**:
+  `internal/emit/agents_test.go`, `internal/emit/commands_test.go`, `internal/emit/emit.go`,
+  `internal/emit/emit_test.go`, `internal/emit/templates/enforce/commit-msg-traceability.sh`),
+  und wer es bewegt, ändert einen Vertrag gegenüber Zielrepos.
 - **Kein Wächter, und die Baseline sagt es selbst.** §Vergabe schließt mit *„Kein Sensor.
   Doppelvergabe ist heute ein Review-Griff, kein Gate"*
   (`grep -c 'Doppelvergabe ist heute ein Review-Griff' .harness/baseline/v6.18.1/regelwerk/grundlagen-source-precedence.md`
