@@ -53,6 +53,13 @@ als Übergabe-Artefakt.
   das neue Regelwerk) — übernimmt [`slice-baseline-delta-lesung-v7-0-0`](slice-baseline-delta-lesung-v7-0-0.md)
   samt der daraus geschnittenen Cluster-Slices; der Lesungs-Slice liest
   denselben neuen Baum und nimmt die Sendung an (Klasse 1).
+- **Die Template-Renames und Kennungs-Forms** (die 7 Umbenennungen der
+  `templates/`-Bäume, die Platzhalter `welle-`→`wave-` und
+  `archiv.zip`→`archive.zip`, die Kennungs-Formen des emittierten Bestands) —
+  übernimmt der Cluster C2 der Delta-Tafel (Zeilvorschlag
+  `slice-c2-template-renames-und-kennungs-formen-v7-0-0`,
+  [`welle-baseline-sprung-v7-0-0`](../welle-baseline-sprung-v7-0-0.md) §4; die
+  Slice-Datei entsteht beim Schnitt — Klasse 1, Adresse über die Tafel-Zeile).
 - **Der d-check-Pin-Sprung (v0.93.0)** — wellenloser nebellaufender Slice: die
   Werkzeug-Fassung (`d-check.mk`-Pin, [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)-Mechanik)
   ist ein anderer Vorgang und berührt den Regelwerk-Baum nicht (Klasse 3).
@@ -98,6 +105,9 @@ als Übergabe-Artefakt.
 | `.harness/baseline/<tag>/` | neu | committet vendored Baum aus dem Release-Asset (`make vendor-baseline`), `SHA256SUMS` frisch — [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
 | `.harness/baseline/v6.18.1/` | update (Abtritt) | der alte Baum wandert mit dem Sprung ab |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update | §Baseline: `Stand:`-Zeile an den neuen Tag |
+| [`internal/emit/baumaussage.go`](../../../../internal/emit/baumaussage.go) | update | `InventurMessTag` an die `v7.0.0`-Form — die Inventur-Zuordnung trägt sonst den abgelösten Stand ([`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)) |
+| [`internal/emit/templates/d-check.yml`](../../../../internal/emit/templates/d-check.yml) | prüfung | die Baseline-Pin-Zeile der emittierten Konfig, falls sie geführt wird — verifizieren, dann an den neuen Tag ziehen |
+| [`internal/emit/templates/baseline-verify.sh`](../../../../internal/emit/templates/baseline-verify.sh) | prüfung (erwartet keine Änderung) | tag-agnostisch verifiziert: `<tag>`-Politik mit keinem Pin-Wert im Skript — eine Änderung nur, wenn der neue Baum sie verlangt |
 | `test/sources-pin.bats` | update | Kopplungs-Fälle gegen die neue Quelle (bestehende Test-Klasse) |
 
 **Ansatz:** Die fünf Pin-Stellen ziehen in **einem** Zug — einzeln würde die
@@ -149,6 +159,13 @@ dasteht.
   Sätze ([`ADR-0059`](../../../../docs/plan/adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)). —
   **Ausgang:** <weiter offen: → die Lesung trägt die Zuordnung in der
   Delta-Tafel ([`welle-baseline-sprung-v7-0-0`](../welle-baseline-sprung-v7-0-0.md) §4)>
+- **Die Inventur-Aussage trägt den Stand** — bleibt `InventurMessTag` in
+  [`internal/emit/baumaussage.go`](../../../../internal/emit/baumaussage.go) auf
+  `v6.18.1` stehen, feuert [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
+  über die emittierte Inventur-Messung. — **Ausgang:** <weiter offen: die zwei
+  Kopplungs-Tests ([`test/sources-pin.bats`](../../../../test/sources-pin.bats),
+  `TestDefaultTag_MatchesBaseline`, `TestDefaultBaselineSHA256_MatchesMakefile`)
+  und `TestInventurMessTag_IstDerGefetchteStand` ziehen mit dem Zug>
 
 ## 7. Closure-Notiz
 

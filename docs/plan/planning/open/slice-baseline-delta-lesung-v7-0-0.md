@@ -69,10 +69,10 @@ Zeile nur mit Schätzung — das wäre eine Adresse, die niemand trägt.
       Welle §1 ist hierin keine Ausnahme, sondern der geplante Stand).
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor —
       kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — weitere
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — weitere
       Datei in `evidence/` je getroffenem Eintrag; kein Zähler wird gesetzt.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste
       Welle-Closure — hier die [`welle-baseline-sprung-v7-0-0`](../welle-baseline-sprung-v7-0-0.md)-Closure.
 
@@ -120,22 +120,51 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 dasteht.
 
 - **Die Lesung übersteigt einen Slice** (Befundmenge L, die Tafel wird zur
-  Unform). — **Ausgang:** <eingetreten: Rückführung nach §4 — Cluster vor der
-  Tafel | entfallen: die Tafel trägt>
+  Unform). — **Ausgang:** entfallen — die Lesung endete in der Delta-Tafel
+  ([`welle-baseline-sprung-v7-0-0`](../welle-baseline-sprung-v7-0-0.md) §4) als
+  geordnete Cluster-Zeilen (C1–C7, geordneter Vorschlag); keine Zeile fiel aus
+  der Tafel heraus, und das Cluster-Schneiden bleibt der Planung der Adaption
+  vorbehalten.
 - **[`BEO-ALL/re-baseline-ohne-inventur-slice`](../observations/BEO-ALL/re-baseline-ohne-inventur-slice/observation.md)
   erreicht mit dieser Lesung den dritten Beleg** (Zähler 2×, offen — für den
   Sprung v5.12.0→v5.18.0 trug der Diff-Katalog von slice-155 §9 die Klasse).
-  — **Ausgang:** <weiter offen: der Lese-Schritt weist den Ausgang bei der
-  Closure zu — die Lesung ist genau die Inventur-Form, die die Beobachtung
-  fordert; Anker `seit slice-baseline-delta-lesung-v7-0-0`>
+  — **Ausgang:** weiter offen → [`BEO-ALL/re-baseline-ohne-inventur-slice`](../observations/BEO-ALL/re-baseline-ohne-inventur-slice/observation.md);
+  die Evidence-Datei `evidence/slice-baseline-delta-lesung-v7-0-0.md` ist der
+  dritte Beleg (Anker `seit slice-baseline-delta-lesung-v7-0-0`), der Lese-Schritt
+  weist den Ausgang bei der Welle-Closure zu
 - **Befunde kollidieren mit Hard Rules ([`AGENTS.md`](../../../../AGENTS.md) §3)** —
-  der übernommene Regelwerk-Satz gegen die eigene Zeile. — **Ausgang:**
-  <weiter offen: → [`BEO-ALL/uebernommener-regelwerk-satz-kollidiert-mit-eigener-hard-rule`](../observations/BEO-ALL/uebernommener-regelwerk-satz-kollidiert-mit-eigener-hard-rule/observation.md);
-  die Tafel nennt jede Kollision, der Träger bleibt das Trigger-Audit>
+  der übernommene Regelwerk-Satz gegen die eigene Zeile. — **Ausgang:** entfallen —
+  die Lesung benannte keine Kollision mit einer Hard Rule (die Tafel trägt die
+  Feststellung `Keine Hard-Rule-Kollision benannt` in ihrer Kopfzeile); der
+  Träger für künftige bleibt das Trigger-Audit.
 
 ## 7. Closure-Notiz
 
-<!-- Erst nach Abschluss füllen. -->
+**Gegenstand:** entfallen als eigenständige Lieferung — die Delta-Lesung war ein
+read-only Auftraggeber-Auftrag **außerhalb** der Slice-Ablage (kein Commit, kein
+Plan-Artefakt); ihr geordneter Bestand trägt die **Delta-Tafel in
+[`welle-baseline-sprung-v7-0-0`](../welle-baseline-sprung-v7-0-0.md) §4**,
+geschrieben vom Planner-Lauf vom 2026-11-25. Dem Slice bleibt keine Arbeit —
+`open` → `done` ohne Liefer-Punkte, die Liefer-Punkte der DoD (1)–(3) bleiben
+leer (Baseline-Regelwerk `modul-05-planning-harness.md` §Ein Slice, dessen
+Gegenstand ein anderer übernimmt, Wegfall-Hälfte). Der Review-Item der DoD bleibt
+ebenfalls leer: der Slice hat nicht gearbeitet, und die Plan-Änderungen dieses
+Closures trägt der Planner-Commit selbst.
+
+**Lerneintrag (geschärfte Regel, Anker `seit slice-baseline-delta-lesung-v7-0-0`):**
+Die Inventur eines Baseline-Sprungs kann als read-only Lesung **vor** der
+Vendorung laufen — sie trägt keine Vendorung und senkt das rote Fenster der
+Adaption auf die Messung der Tafel; das Cluster-Schneiden folgt der getretenen
+Tafel statt einer Schätzung. Träger der Form bleibt der Plan-Workflow: der
+Lesungs-Slice schließt als Geber (Wegfall-Hälfte), wenn die Lesung außerhalb der
+Ablage lief, und die Tafel lebt in der Welle-Datei, nicht in einem Liefer-Slice.
+
+**Register:** [`BEO-ALL/re-baseline-ohne-inventur-slice`](../observations/BEO-ALL/re-baseline-ohne-inventur-slice/observation.md)
+trägt einen weiteren Beleg (`evidence/slice-baseline-delta-lesung-v7-0-0.md` —
+der dritte); der Lese-Schritt weist den Ausgang bei der Welle-Closure zu.
+**Folge-Slices:** keine benannt — die Cluster-Slices C2–C7 stehen als geordnete
+Vorschlag in der Delta-Tafel (C1 trägt der Bestand), ihre Slice-Dateien entstehen
+beim Schnitt.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

@@ -68,21 +68,65 @@ geschlossene Welle. Keiner dieser drei Belege steht in einer einzelnen DoD.
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| [`slice-baseline-vendorung-v7-0-0`](open/slice-baseline-vendorung-v7-0-0.md) | Vendorierung + Pin-Kopplung | [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache), [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 | [`slice-baseline-delta-lesung-v7-0-0`](open/slice-baseline-delta-lesung-v7-0-0.md) | Delta-Lesung mit Schätzung | [`MR-033`](../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist), [`MR-037`](../../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst) |
+| [`slice-baseline-vendorung-v7-0-0`](open/slice-baseline-vendorung-v7-0-0.md) | Vendorierung + Pin-Kopplung | [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache), [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 
-**Reihenfolge.** Erst die Vendorierung (Baum + Pins), dann die Lesung (Befunde
-am neuen Stand); die Cluster-Slices der Adaption werden aus der Lesung geschnitten
-und hier ergänzt — sie stehen bis dahin nicht in der Tabelle, und die Tabelle
-behauptet nichts über sie.
+**Reihenfolge (umgestellt am 2026-11-25 — Drift-Log-Eintrag in der
+[`roadmap.md`](in-progress/roadmap.md)).** Die Delta-Lesung lief als read-only
+Auftraggeber-Auftrag **vor** der Vendorung und ohne Artefakt; ihr Plan
+[`slice-baseline-delta-lesung-v7-0-0`](open/slice-baseline-delta-lesung-v7-0-0.md)
+schließt über den Geber-Weg nach `done/` (ohne Liefer-Punkte — §7 seines Plans).
+Der nächste Arbeitsstand der Welle ist die Vendorung
+([`slice-baseline-vendorung-v7-0-0`](open/slice-baseline-vendorung-v7-0-0.md) —
+Cluster C1 der Tafel unten). Die Cluster-Slices C2–C7 werden aus der Tafel
+geschnitten: ihre Kennungen stehen dort als geordneter Vorschlag, und bis zu
+ihrem Schnitt liegt von ihnen keine Slice-Datei vor.
 
-### Delta-Befunde (Les-Stand, geführt von slice-baseline-delta-lesung-v7-0-0)
+### Delta-Tafel (Les-Stand `v7.0.0`)
 
-Die Tafel entsteht mit der Lesung in dieser Datei (Klasse-1-Begründung in deren
-§1). Konsument sind die Cluster-Slices: **je Befundzeile** trägt eine
-Cluster-Slice-Kennung (Slice-Datei in `open/`), eine ausdrückliche
-**Ablehnung mit Grund** oder die **Deckung durch Bestand mit Zeiger** — keine
-Zeile nur mit Schätzung. Stand vor der Lesung: nicht geführt.
+**Geführt von** [`slice-baseline-delta-lesung-v7-0-0`](open/slice-baseline-delta-lesung-v7-0-0.md) —
+gelesen am 2026-11-25 gegen den Arbeitsbestand der Lesung (Entfaltung des
+`v7.0.0`-Release-Assets neben dem `v6.18.1`-Spiegel, beides read-only unter
+/tmp). **ZIP-Layout-Verdict: stabil** — gleicher Asset-Name, gleiche Bäume
+(`regelwerk/`, `templates/`); der Vendor-Zug braucht keinen neuen
+Entfaltungs-Handgriff, nur den neuen Pin.
+
+**Datei-Matrix** über `diff -rq /tmp/ai-course-v618-read/extracted
+/tmp/ai-course-v7-read/extracted` (53 Diff-Zeilen — Zahl am Kommando,
+[`MR-051`](../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)):
+**38 geändert**, **7 umbenannt** (Paare unter `templates/`:
+`spezifikation→specification`, `NNNN-titel→NNNN-title`, `welle→wave`,
+`welle-results→wave-results`, `archiv-stub-slice→archive-stub-slice`,
+`archiv-stub-welle→archive-stub-wave`, `MR-NNN-titel→MR-NNN-title`), **1 neu**
+(`templates/harness/sensors/environment-check.template.md`), **0 netto
+gelöscht** (7 `Only in` auf der `v6.18.1`-Seite sind die Rename-Paarhälften,
+8 auf der `v7`-Seite die 7 Partner + die Neuanlage). **Keine
+Hard-Rule-Kollision benannt:** die Lesung trat keine der
+[`AGENTS.md`](../../../AGENTS.md) §3-Linien an; keine ist auch eine Antwort.
+
+**Cluster — geordnete Vorschlag.** Je Zeile trägt der Ausgang eine
+Cluster-Slice-Kennung ([`MR-057`](../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)-Form):
+die Slice-Datei wird **beim Schnitt** aus der Zeile angelegt, bis dahin ist die
+Kennung Vorschlag; C1 trägt der Bestand. Die S/M/L-Ordner sind **Schätzung**
+(deklariert als solche — kein live-Kommando trägt sie); die Reihenfolge folgt
+der Adaption-Ebene.
+
+| # | Cluster | Gegenstand | S/M/L (Schätzung) | Ein-Satz-Begründung | betroffene Emissions-Dateien | Ausgang |
+|---|---|---|---|---|---|---|
+| C1 | Tag-Kern | Vendorung `v7.0.0` + Pin-Kopplung: [`BASELINE_TAG`](../../../Makefile)/`BASELINE_ZIP_SHA256`, das `sources`-Paar in [`.d-check.yml`](../../../.d-check.yml), `DefaultTag`/`DefaultBaselineSHA256` in [`internal/fetch/baseline.go`](../../../internal/fetch/baseline.go), `InventurMessTag` (C1-Emissions-Kante im Vendor-Slice §3), frische `SHA256SUMS`-Form | M | der Zug ist der Umfang, nicht der Baum: fünf Pin-Stellen in einem Zug, der Baum selbst wird gewechselt, nicht angepasst | [`Makefile`](../../../Makefile), [`internal/fetch/baseline.go`](../../../internal/fetch/baseline.go), [`internal/emit/baumaussage.go`](../../../internal/emit/baumaussage.go), [`test/sources-pin.bats`](../../../test/sources-pin.bats) | [`slice-baseline-vendorung-v7-0-0`](open/slice-baseline-vendorung-v7-0-0.md) (Bestand) |
+| C2 | Template-Renames + Kennungs-Form | die 7 Template-Renames (die Norm „Dateinamen sind englisch", `grundlagen-harness-dateien.md`), die Platzhalter `welle-`→`wave-` und `archiv.zip`→`archive.zip`, die Kennungs- und Verweis-Formen des emittierten Bestands ziehen nach | L | der Renames-Zug greift über die Dateinamen hinaus — jede emittierte Skeleton-Referenz auf die Vorlagen-Namen liest die alte Form | [`internal/emit/templates.go`](../../../internal/emit/templates.go) (Vorlagen-Namen `welle-results.template.md`/`MR-NNN-titel.template.md`/`NNNN-titel.template.md`), [`internal/emit/emit.go`](../../../internal/emit/emit.go) (`fremdeKennung` `welle-[0-9]+`, `roadmapDoneLink`), emittierte Skeleton-Referenzen unter `docs/plan/planning/` | `slice-c2-template-renames-und-kennungs-formen-v7-0-0` (Vorschlag; Slice-Datei entsteht beim Schnitt) |
+| C3 | d-check-Fächer | emittierte Doc-Gate-Konfig am neuen Regelwerk-Stand: `worktrees`-Ignore, kommentierte Standard-Blöcke `planning` und `pinsync`, `planning` verlangt d-check ≥ `v0.91.0` (hier `v0.93.0`) | L | die Konfig-Klassen ziehen je Modul einzeln, und die emittierte Startkonfiguration muss den neuen Stand decken, ohne ihr Modul-Set still zu erweitern ([`MR-054`](../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)) | [`internal/emit/templates/d-check.yml`](../../../internal/emit/templates/d-check.yml), [`.d-check.yml`](../../../.d-check.yml) | `slice-c3-d-check-faecher-v7-0-0` (Vorschlag; Slice-Datei entsteht beim Schnitt) |
+| C4 | environment-check | die neue Vorlage `templates/harness/sensors/environment-check.template.md` — Neuanlage im Baum, sie kommt mit dem C1-Zug mit | M | das neue Environment-Skript verlangt die Adaption, ob das emittierte Skelett es führt — hier wird entschieden, nicht still ausgespart | kein Pfad unter [`internal/emit/templates/`](../../../internal/emit/templates/) führt `harness/sensors/` (Verifikations-Aussage); die Adaption entscheidet über eine Sensor-Zeile | `slice-c4-environment-check-v7-0-0` (Vorschlag; Slice-Datei entsteht beim Schnitt) |
+| C5 | Vertrauensgrenzen | die Texte am neuen Stand, die Vertrauensgrenzen tragen — `architecture` §6, Modul-14-Umbau (Umgebungs-Zusage, Träger, Tool-Pin-Check), Modul-04 (Bedrohung/Grenze/Ausgang) | M | die Texte kommen als Baum mit (C1) und berühren die Referenz-Achse des Bestands — Anker und Verweise, keine Umsetzung | Referenz-Achse: [`.d-check.yml`](../../../.d-check.yml)-Anker-Deckung, [`harness/conventions/`](../../../harness/conventions.md)-Eintragsverweise; kein direkter Skeleton-Griff benannt | `slice-c5-vertrauensgrenzen-v7-0-0` (Vorschlag; Slice-Datei entsteht beim Schnitt) |
+| C6 | AGENTS-Vorlage | der AGENTS-Block der Vorlagen (`AGENTS.template.md`) — Docker-Betrieb und Parallele Läufe als übernommener Norm-Satz gegen die eigene §3.9-Lage | M | der Sockel-Norm-Text wird übernommen, wo das Skelett ihn emittiert — kein Regel-Bau, eine Referenz-Adaption | [`internal/emit/templates/agents/`](../../../internal/emit/templates/agents/) | `slice-c6-agents-vorlage-v7-0-0` (Vorschlag; Slice-Datei entsteht beim Schnitt) |
+| C7 | Adaption-Nachzüge | die Terminologie und Nachzüge am Adaptions-Block — [`MR-033`](../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist) feuert (die Inventur- und Stand-Aussagen tragen den neuen Tag), die Nachzüge [`MR-030`](../../../harness/conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen), [`MR-048`](../../../harness/conventions.md#mr-048--der-reproduzierbarkeits-anker-ist-die-rezept-form-die-emittierten-skelette-pinnen-per-tag), [`MR-057`](../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer), [`MR-059`](../../../harness/conventions.md#mr-059--jede-kennungs-erkennung-trägt-die-zugelassenen-formen-die-fundliste-steht-im-vorgang), [`MR-078`](../../../harness/conventions.md#mr-078--wellenlose-slices-werden-bei-der-eigenen-closure-archiviert) sind fällig | M | der Stand-Text zieht in die Aussagen des Konventionsspeichers, nicht in den Code | [`harness/conventions.md`](../../../harness/conventions.md) und die zitierten Eintrags-Dateien | `slice-c7-adaptions-nachzuege-v7-0-0` (Vorschlag; Slice-Datei entsteht beim Schnitt) |
+
+**Zahlen-Belege** ([`MR-051`](../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung),
+keine Erwartungswerte): die 53 Diff-Zeilen und ihre Aufteilung —
+`diff -rq /tmp/ai-course-v618-read/extracted /tmp/ai-course-v7-read/extracted`,
+`grep -c '^Files'`, `grep -c '^Only in …v618'`/`…v7`; der ZIP-Hash —
+`sha256sum /tmp/ai-course-v7-read/lab-regelwerk.zip`. Die S/M/L-Ordner tragen
+kein Kommando — Schätzung.
 
 ## 5. Abhängigkeiten
 
