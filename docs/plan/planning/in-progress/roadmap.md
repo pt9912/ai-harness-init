@@ -19,10 +19,10 @@ nicht hier.
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
 - [welle-baseline-sprung-v7-0-0 — Baseline-Sprung v6.18.1 → v7.0.0](../welle-baseline-sprung-v7-0-0.md)
 
-**Nichts in Arbeit.** [`in-progress/`](../in-progress) trägt keinen Slice
-(`ls docs/plan/planning/in-progress/slice-*.md` findet keinen); die Welle
-[welle-baseline-sprung-v7-0-0](../welle-baseline-sprung-v7-0-0.md) wartet auf
-ihren Start, [welle-09](../welle-09-modul-15-konformitaet.md) bleibt offen.
+Die Welle [welle-baseline-sprung-v7-0-0](../welle-baseline-sprung-v7-0-0.md) wartet auf
+ihren Start, [welle-09](../welle-09-modul-15-konformitaet.md) bleibt offen;
+[`in-progress/`](../in-progress) trägt
+[slice-d-check-sprung-v0930](../in-progress/slice-d-check-sprung-v0930.md).
 
 ## Nächste Wellen
 
