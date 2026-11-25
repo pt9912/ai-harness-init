@@ -4,19 +4,19 @@
 # Config-Fehler bzw. ein behaupteter, aber leerer Gate (Modul 13).
 scan:
   roots: ["."]
-# **/*.template.md: Ausfuell-Vorlagen tragen Platzhalter, die erst im ausgefuellten Artefakt
-# aufloesen. Der Bootstrap legt seine Vorlagen unter .harness/baseline/ ab; das Muster nimmt
-# eine Vorlage in jedem anderen Baum ebenso aus.
-# .tmp/**: Arbeitsablage der Laeufe, kein Artefakt.
-# .claude/worktrees/**: Arbeitsbaeume, die ein Werkzeug ins Repo legt (Claude Code legt sie
-# dort an), waeren fuer d-check eine zweite Kopie des Repos — d-check liest das Dateisystem,
-# nicht .gitignore (Baseline-Regelwerk modul-05-planning-harness.md §Lifecycle als State
-# Machine). Ein Arbeitsbaum neben dem Repo braucht keinen Eintrag.
-# .harness/**: was der Bootstrap unter .harness/ ablegt. Markdown liegt dort in zwei Baeumen:
-# .harness/baseline/ (der vendored Kurs-Stand, Regelwerk und Vorlagen — fremder Text, den
-# dieses Repo nicht schreibt) und .harness/skills/ (die Reviewer-Skills; sie gehoeren nach dem
-# Bootstrap dem Repo und bleiben trotzdem ungeprueft, ein Verweis darin faellt keinem Modul
-# auf). Daneben liegen dort das Sprachskelett-Staging und der Zustands-Bereich .harness/state/.
+  # **/*.template.md: Ausfuell-Vorlagen tragen Platzhalter, die erst im ausgefuellten Artefakt
+  # aufloesen. Der Bootstrap legt seine Vorlagen unter .harness/baseline/ ab; das Muster nimmt
+  # eine Vorlage in jedem anderen Baum ebenso aus.
+  # .tmp/**: Arbeitsablage der Laeufe, kein Artefakt.
+  # .claude/worktrees/**: Arbeitsbaeume, die ein Werkzeug ins Repo legt (Claude Code legt sie
+  # dort an), waeren fuer d-check eine zweite Kopie des Repos — d-check liest das Dateisystem,
+  # nicht .gitignore (Baseline-Regelwerk modul-05-planning-harness.md §Lifecycle als State
+  # Machine). Ein Arbeitsbaum neben dem Repo braucht keinen Eintrag.
+  # .harness/**: was der Bootstrap unter .harness/ ablegt. Markdown liegt dort in zwei Baeumen:
+  # .harness/baseline/ (der vendored Kurs-Stand, Regelwerk und Vorlagen — fremder Text, den
+  # dieses Repo nicht schreibt) und .harness/skills/ (die Reviewer-Skills; sie gehoeren nach dem
+  # Bootstrap dem Repo und bleiben trotzdem ungeprueft, ein Verweis darin faellt keinem Modul
+  # auf). Daneben liegen dort das Sprachskelett-Staging und der Zustands-Bereich .harness/state/.
   ignore: ["**/*.template.md", ".tmp/**", ".claude/worktrees/**", ".harness/**"]
 modules: [links, anchors, ids, matrix, codepaths, spans, planning, structure, targets]
 ids:
@@ -201,16 +201,16 @@ matrix:
     - {from: adr, to: slice, allow: false}
     - {from: adr, to: wave, allow: false}
   status: {forbidden: [superseded, deprecated]}
-# Die Status-Pruefung trifft jede klassifizierte Quelle unabhaengig von den Regeln;
-# mit aussen: ["**"] ist das jede Datei. Ausgenommen sind zwei Pfade, die einen zum
-# Schreibzeitpunkt aktiven Stand dauerhaft nennen und einer spaeteren Supersession
-# nicht folgen koennen: der ADR-Index (er fuehrt superseded ADRs, das ist seine
-# Aufgabe) und die Review-Reports.
-# Die Welle-Dateien in done/ stehen hier bewusst NICHT: In einem frischen Ziel hat
-# eine solche Ausnahme keinen Gegenstand, und ab dem ersten geschlossenen Buendel
-# naehme sie der Klasse wave oben ihre Status-Deckung — unsichtbar, weil diese Datei
-# nur an einem freien Pfad geschrieben wird. Wer die Ausnahme braucht, setzt sie in
-# seiner eigenen Kopie; bis dahin ist die Deckung die strengere Vorgabe.
+  # Die Status-Pruefung trifft jede klassifizierte Quelle unabhaengig von den Regeln;
+  # mit aussen: ["**"] ist das jede Datei. Ausgenommen sind zwei Pfade, die einen zum
+  # Schreibzeitpunkt aktiven Stand dauerhaft nennen und einer spaeteren Supersession
+  # nicht folgen koennen: der ADR-Index (er fuehrt superseded ADRs, das ist seine
+  # Aufgabe) und die Review-Reports.
+  # Die Welle-Dateien in done/ stehen hier bewusst NICHT: In einem frischen Ziel hat
+  # eine solche Ausnahme keinen Gegenstand, und ab dem ersten geschlossenen Buendel
+  # naehme sie der Klasse wave oben ihre Status-Deckung — unsichtbar, weil diese Datei
+  # nur an einem freien Pfad geschrieben wird. Wer die Ausnahme braucht, setzt sie in
+  # seiner eigenen Kopie; bis dahin ist die Deckung die strengere Vorgabe.
   exempt-paths: ["docs/plan/adr/README.md", "docs/reviews/**"]
   exclude-sections: [Geschichte]
 # planning (hermetisch, kein git): Ruhe-Marker der Roadmap gegen in-progress/; Herkunft und
