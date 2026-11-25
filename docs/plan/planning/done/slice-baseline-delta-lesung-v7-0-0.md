@@ -93,7 +93,7 @@ steht an der Zeile, nicht als Prosa daneben.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): [`slice-baseline-vendorung-v7-0-0`](../in-progress/slice-baseline-vendorung-v7-0-0.md)
+**Start** (`next` → `in-progress`): [`slice-baseline-vendorung-v7-0-0`](../done/slice-baseline-vendorung-v7-0-0.md)
 liegt in `done/` — die Befunde lesen sich erst am neuen Baum.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**

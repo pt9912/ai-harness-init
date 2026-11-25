@@ -11,7 +11,7 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 - **Stand:** `v7.0.0` — Zielstand-Setzung vollzogen am 2026-11-25; Delta-Nachweis in
   [`slice-baseline-delta-lesung-v7-0-0`](../docs/plan/planning/done/slice-baseline-delta-lesung-v7-0-0.md),
   vollzogen in
-  [`slice-baseline-vendorung-v7-0-0`](../docs/plan/planning/in-progress/slice-baseline-vendorung-v7-0-0.md)
+  [`slice-baseline-vendorung-v7-0-0`](../docs/plan/planning/done/slice-baseline-vendorung-v7-0-0.md)
 - **Regelwerk + Templates:** committet vendored unter
   `.harness/baseline/v6.18.1/` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); der Regelwerks-Stand
   steht im vendored Baum selbst — `regelwerk/README.md` trägt ihn
