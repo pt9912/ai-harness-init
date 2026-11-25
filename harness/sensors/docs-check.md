@@ -274,7 +274,7 @@ sie, ist der Block nicht aktiv und eine Abweichung bleibt still.
 denselben Wert trägt, und nicht das Go-Pin-Paar (`GO_VERSION ?=` im [`Makefile`](../../Makefile)
 gegen die `go`-Direktive in `go.mod`). Das Laufzeit-Gate (installierte Werkzeuge tragen den Pin)
 führt d-check nicht: es startet keine Programme (Ziel-Form
-`harness/sensors/environment-check.template.md`).
+`harness/sensors/environment-check.template.md` <!-- d-check:ignore: die Ziel-Form der Umgebungs-Zusage liegt in der vendored Baseline unter .harness/baseline/v7.0.0/templates/ — der Pfad entsteht im Ziel mit dem Bootstrap, hier ist er geplant, C4 entscheidet über die Adaption -->).
 
 ### Modul `matrix`
 
