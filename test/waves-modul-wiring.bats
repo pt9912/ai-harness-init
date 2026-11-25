@@ -43,7 +43,7 @@ waves_block() {
 waves_field() {
   waves_block | grep -E "^[[:space:]]+$1:" | head -1 \
     | sed -E "s/^[[:space:]]+$1:[[:space:]]*//" \
-    | sed -E 's/^"(.*)"$/\1/'
+    | tr -d "\"'"
 }
 
 @test "planning: waves ist ueber dir aktiviert" {
@@ -70,4 +70,12 @@ waves_field() {
 
 @test "planning: waves.mode ist many (Bijektion statt Singleton-Default)" {
   [ "$(waves_field mode)" = "many" ]
+}
+
+@test "planning: waves.glob traegt die Bestandsform welle-*" {
+  [ "$(waves_field glob)" = "welle-*.md" ]
+}
+
+@test "planning: waves.results-glob traegt die Bestandsform welle-*-results" {
+  [ "$(waves_field results-glob)" = "welle-*-results.md" ]
 }

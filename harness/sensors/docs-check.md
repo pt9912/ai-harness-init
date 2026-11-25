@@ -68,6 +68,25 @@ nicht aktiviert; anders als `closure` und `waves` trägt sie noch keinen eigenen
 führt die Lücke als offene Beobachtung, mit einer Drift-Log-Zeile in
 [`roadmap.md`](../../docs/plan/planning/in-progress/roadmap.md) daneben.
 
+**Die Glob-Zeilen tragen die Bestandsform ausdrücklich** [`· seit
+slice-c3-d-check-faecher-v7-0-0`](../../docs/plan/planning/in-progress/slice-c3-d-check-faecher-v7-0-0.md):
+[`.d-check.yml`](../../.d-check.yml) setzt `waves.glob: 'welle-*.md'` und
+`waves.results-glob: 'welle-*-results.md'` — dieselbe Form, die bis dahin der
+Werkzeug-Default trug. Die explizite Zeile hält die Bestandsform gegen ein stilles
+Umbenennen der Ablage oder des Defaults; die zwei Zeilen halten die Fälle
+`waves.glob`/`waves.results-glob` in
+[`test/waves-modul-wiring.bats`](../../test/waves-modul-wiring.bats) ohne Docker-Lauf, rot
+durch eine veränderte `glob`-Zeile.
+
+**Zweite Grenze am selben Block, die Kennungs-Form** [`· seit
+slice-c3-d-check-faecher-v7-0-0`](../../docs/plan/planning/in-progress/slice-c3-d-check-faecher-v7-0-0.md):
+`waves` liest eine Kennung als literales Glob-Präfix plus folgende Ziffernfolge. Die
+Namens-Form — die Kennungs-Form für neu vergebene Kennungen ([`MR-057`](../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer))
+— liest es nicht: der aktuelle Welle-Eintrag `welle-baseline-sprung-v7-0-0` unter „Offene
+Wellen" ist damit ungewächtert, die Listen-Hälfte deckt über dem Bestand nur die
+Ziffern-Form (`welle-09`). Benannt, nicht geschlossen — kein weiterer Wächter misst den
+Namens-Teil.
+
 **Was `closure` (zweite Fähigkeit von `planning`) deckt, und was nicht** (slice-129):
 [`.d-check.yml`](../../.d-check.yml) setzt `planning.closure.dir: docs/plan/planning/done` und hält
 damit Abschnitt 7 (Closure-Notiz) jedes Kandidaten gegen die Fähigkeit des Moduls: kein Abschnitt,
@@ -224,6 +243,38 @@ Ob ein abgehakter Punkt ein Liefer-Punkt ist, bleibt Urteil.
 
 **Kein Wächter hält die Tabelle.** Sie ist eine Messung gegen den genannten Digest; wandert der Pin
 in `d-check.mk`, gilt sie für den alten Stand, bis jemand neu misst.
+
+### Modul `pinsync`
+
+**Was das Modul `pinsync` in `docs-check` deckt, und was nicht** [`· seit
+slice-c3-d-check-faecher-v7-0-0`](../../docs/plan/planning/in-progress/slice-c3-d-check-faecher-v7-0-0.md):
+[`.d-check.yml`](../../.d-check.yml) aktiviert `pinsync` mit **einem** Pin (`d-check`) über zwei
+Quellen — `d-check.mk` (`DCHECK_IMAGE ?=`) und
+[`internal/emit/emit.go`](../../internal/emit/emit.go) (`DefaultImage`). Je Quelle ein Ausdruck
+mit genau einer Fanggruppe; verglichen wird byte-genau die Tag-Referenz
+(`ghcr.io/pt9912/d-check:v0.93.0` an beiden Stellen). Die Form-Zusicherung hält
+[`test/pinsync-modul-wiring.bats`](../../test/pinsync-modul-wiring.bats) ohne Docker-Lauf.
+
+**Rot an der realen Quelle gesehen** (Mutations-Anlage
+`test/mutations/790-d-check-pin-paarung-faerbt-pinsync-rot.sh`; der Lauf hier von Hand,
+`git checkout` danach, gleicher Digest wie `docs-check`):
+`DCHECK_IMAGE ?=` auf `ghcr.io/pt9912/d-check:v9.9.9` verfälscht, die zweite Quelle
+unverändert →
+
+```text
+internal/emit/emit.go:33  d-check  pinsync-mismatch  Pin "d-check": internal/emit/emit.go hat
+"ghcr.io/pt9912/d-check:v0.93.0", der Bezug d-check.mk hat "ghcr.io/pt9912/d-check:v9.9.9"
+d-check: 2994 Datei(en) geprüft, 1 Befund(e)
+```
+
+Positiver Beleg im grünen Lauf: die Zeile `pinsync: 1 Pin(s) geprüft, 2 Quelle(n) gelesen` — fehlt
+sie, ist der Block nicht aktiv und eine Abweichung bleibt still.
+
+**Grenzen:** das Modul hält die Tag-Referenz — nicht den Digest, der an denselben zwei Stellen
+denselben Wert trägt, und nicht das Go-Pin-Paar (`GO_VERSION ?=` im [`Makefile`](../../Makefile)
+gegen die `go`-Direktive in `go.mod`). Das Laufzeit-Gate (installierte Werkzeuge tragen den Pin)
+führt d-check nicht: es startet keine Programme (Ziel-Form
+`harness/sensors/environment-check.template.md`).
 
 ### Modul `matrix`
 
