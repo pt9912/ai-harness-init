@@ -249,6 +249,29 @@ Träger der Fall-Urteile.
 docs-check-Zeilen je Cluster (R4) trägt dieser Abschnitt am Kommando
 ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)). -->
 
+**Implementer-Übergabe (2026-11-25) — Review-F-Nachziehung, nicht die Closure:**
+
+- **F-1/F-2 (WAVE-Formzug trug nur zwei von drei Beinen) — geheilt:** die Rezept-Zeile
+  `internal/emit/templates/enforce/archivierung.mk:42` `$(WELLE)` → `$(WAVE)` und die
+  Dogfood-Variable `Makefile:592–596` (Kommentar, `ARCHIV_KENNUNG`-Filter, Hilfe-Zeile,
+  Pass-through) samt den drei sie beschreibenden Textstellen (`harness/sensors/archive-welle.md:11`,
+  `cmd/ai-harness-init/archive_welle_test.go:347f`, Mutations-Anker 255/256). Lauf-Zahn
+  ([`AGENTS.md`](../../../../AGENTS.md) §3.6): an einer isolierten Kopie von HEAD vor dem Fix
+  ergab `make -n archive-welle WAVE=wave-reviews-somesh-probe` ein leeres Argument
+  (`archive-welle  ""`); nach dem Fix trägt das Argument die Kennung
+  (`archive-welle  "wave-reviews-somesh-probe"`, gegenstands-los `""`,
+  `WAVE=altbestand KENNUNG=…` → `--kennung "…" "altbestand")`.
+- **Zahn-Grenze der Rezept-Zeile:** kein Wächter in `make gates` hält den
+  Kennungs-Pass-through der mk-Rezept-/Makefile-Zeile — die Test-Stelle
+  `cmd/ai-harness-init/archive_welle_test.go` (leere Kennung) misst den Binär-Parser, die
+  Hilf-Zeile hält `internal/emit/archivierung_test.go` als Text, und die Mutations-Anker 256 (Makefile),
+  509/511 (Fragment-Text) greifen auf Quelltext-Niveau; der Aufruf selbst läuft erst in einem
+  realen Ziel (`make full-smoke`). Die Grenze steht hier benannt ([`AGENTS.md`](../../../../AGENTS.md) §3.6-Form),
+  nicht still grün.
+- **docs-check am Stand nach dem Zug: `d-check: 2989 Datei(en) geprüft, 0 Befund(e)`** —
+  keine verbleibende Befundzeile, keine C3–C7-Zuordnung nötig (R4 entfallen am Kommando,
+  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)).
+
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
 **Vorgelagert — Sub-Area-Wahl prüfen:** berührt sind die Emittersebene

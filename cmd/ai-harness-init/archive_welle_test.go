@@ -344,8 +344,8 @@ func TestParseArchiveWelleGewinntDenSchalterAusDemArgument(t *testing.T) {
 // mit Usage auf stdout.
 //
 // Der Fall „leeres Argument" ist die Form, die der Bedien-Einstieg erzeugt: das
-// Rezept von `make archive-welle` gibt `"$(WELLE)"` weiter, und ohne gesetztes
-// WELLE ist das eine leere Zeichenkette — ein Argument, das die Schleife
+// Rezept von `make archive-welle` gibt `"1001 27 1000 1001WAVE)"` weiter, und ohne gesetztes
+// WAVE ist das eine leere Zeichenkette — ein Argument, das die Schleife
 // durchlaeuft, im Gegensatz zum leeren Argument-FELD daneben. Beide enden auf
 // derselben Pruefung nach der Schleife.
 // Gegenbeispiel: test/mutations/255-archive-welle-go-leere-kennung-akzeptiert.sh

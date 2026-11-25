@@ -8,7 +8,7 @@ nicht ([`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gate
 Träger ist das Produkt-Binär, die Operation sein Unterkommando
 ([`ADR-0033`](../../docs/plan/adr/0033-wellen-archivierung-als-unterkommando.md) Festlegung 1);
 das Target hängt an `host-bin` und fährt
-`.harness/state/bin/ai-harness-init archive-welle "$(WELLE)"`.
+`.harness/state/bin/ai-harness-init archive-welle "1001 27 1000 1001WAVE)"`.
 
 Eingesammelt wird **nach der Welle, nicht nach dem Verzeichnis**: die Slices, deren `Welle:`-Feld
 diese Welle nennt, und die wellenlosen, die seit der letzten Closure geschlossen wurden. Die

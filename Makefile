@@ -589,11 +589,11 @@ slice-mv: ## Lifecycle-Wechsel eines Slice inkl. Verweise (SLICE=<slice-NNN> TO=
 # traegt. Verengt jemand sie, bricht jeder Lauf hier an der eigenen
 # Sauberkeits-Sperre ab, und kein Gate zeigt den Zusammenhang.
 # KENNUNG=<K> haengt eine Kennung an beide Commits (ADR-0090 Festlegung 1); fuer
-# WELLE=altbestand ist ADR-0041 voreingestellt, die hier aufloest und der Grund des
+# WAVE=altbestand ist ADR-0041 voreingestellt, die hier aufloest und der Grund des
 # Laufs ist (ADR-0090 Festlegung 2). Das emittierte Fragment traegt keine Voreinstellung.
-ARCHIV_KENNUNG = $(or $(KENNUNG),$(if $(filter altbestand,$(WELLE)),ADR-0041))
-archive-welle: host-bin ## Zeitdokumente einer geschlossenen Welle archivieren (WELLE=<welle-id> [KENNUNG=<K>]) — NICHT in gates
-	@$(HOST_BIN) archive-welle $(if $(ARCHIV_KENNUNG),--kennung "$(ARCHIV_KENNUNG)") "$(WELLE)"
+ARCHIV_KENNUNG = $(or $(KENNUNG),$(if $(filter altbestand,$(WAVE)),ADR-0041))
+archive-welle: host-bin ## Zeitdokumente einer geschlossenen Welle archivieren (WAVE=<wave-id> [KENNUNG=<K>]) — NICHT in gates
+	@$(HOST_BIN) archive-welle $(if $(ARCHIV_KENNUNG),--kennung "$(ARCHIV_KENNUNG)") "$(WAVE)"
 
 # Holt den Traeger per Fetch aus dem gepinnten Release (ADR-0058 Festlegung 1-4):
 # sha256 je Asset VOR der Ablage verifiziert, Abweichung bricht ab, ohne den Traeger
