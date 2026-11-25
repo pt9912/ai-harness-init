@@ -30,14 +30,15 @@ scan:
   # Datei (ADR-0017). Jeder weitere Eintrag ist eine neue Senkung nach AGENTS.md 3.5
   # und braucht seine eigene ADR — auch dann, wenn er dieselbe Bedingung erfuellt.
   ignore: ["**/*.template.md", ".tmp/**", ".harness/baseline/**", "docs/user/claude-hooks-referenz.md", "docs/plan/adr/0013-technik-stratum-als-zielort.md"]
-modules: [links, anchors, ids, matrix, codepaths, spans, planning, targets, structure]
+modules: [links, anchors, ids, matrix, codepaths, spans, planning, targets, structure, pinsync]
 # planning (hermetisch, kein git, opt-in): haelt die Lifecycle-Invariante ueber dem
 # Abschnitt "## Offene Wellen" der Roadmap — der Ruhe-Marker steht dort genau dann,
 # wenn docs/plan/planning/in-progress/ keinen slice-*.md traegt (Grund-Code
 # planning-drift). heading/marker zeigen auf DIESEN Abschnitt, nicht auf den
 # Modul-Default "## Aktuelle Welle"/"Keine aktive Welle": er traegt die Zeiger-Liste
 # und den Ruhe-Marker als zwei getrennte Aussagen, ueber denen die Invariante pruefbar
-# ist. Die `waves`-Faehigkeit desselben Moduls (dir + mode: many) haelt zusaetzlich die
+# ist. Die `waves`-Faehigkeit desselben Moduls (dir + die zwei expliziten Glob-Zeilen in
+# Bestandsform + mode: many) haelt zusaetzlich die
 # Bijektion zwischen den Zeigern unter "## Offene Wellen" und den flachen Welle-Dateien in
 # `dir` — in BEIDEN Richtungen unter dem Grund-Code wave-drift (Datei ohne Zeiger UND Zeiger
 # ohne Datei) — und, als Folge derselben Aktivierung, dieselbe Bijektion fuer "## Abgeschlossene
@@ -49,6 +50,13 @@ modules: [links, anchors, ids, matrix, codepaths, spans, planning, targets, stru
 # Spalte 3 ("Wichtigste Slices") und fuer einen toten Vorschau-Zeiger OHNE jede Datei — Letzterer
 # faellt allein ueber `links` (target-missing). Fuenf gemessene Lagen und Beleg in
 # harness/sensors/docs-check.md.
+# Die zwei Glob-Zeilen unter `waves:` tragen die Bestandsform dieser Ablage ausdruecklich
+# nach — bislang liest sie das Modul am Werkzeug-Default; die explizite Zeile haelt die Form
+# gegen ein stilles Umbenennen der Ablage oder des Defaults.
+# GRENZE (Kennungs-Form): waves liest eine Kennung als literales Glob-Praefix plus folgende
+# Ziffernfolge; die Namens-Form (welle-baseline-sprung-v7-0-0, MR-057-Form des Altbestands)
+# liest es nicht — die Listen-Haelfte von "## Offene Wellen" bleibt bei Namens-Form ungewaechtert;
+# benannt (nicht geschlossen) in harness/sensors/docs-check.md §Grenze, Modul planning.
 # closure (zweite Faehigkeit desselben Moduls, opt-in im opt-in): haelt die
 # Struktur der Closure-Notiz (Abschnitt 7) ueber jedem Kandidaten FLACH in `dir`
 # (nicht rekursiv — Begruendung und Sonden-Beleg in harness/README.md). Der
@@ -67,7 +75,30 @@ planning:
     dir: docs/plan/planning/done
   waves:
     dir: docs/plan/planning
+    glob: 'welle-*.md'
+    results-glob: 'welle-*-results.md'
     mode: many
+# pinsync (hermetisch, kein git, kein Netz): haelt denselben Pin an mehreren Stellen
+# (Baseline-Regelwerk `modul-14-docker-harness.md` §Zwei Pruefungen derselben Zusage;
+# Doc-Gate-Schaerfung, MR-001-Form). Genau ein Pin, zwei
+# Quellen: der d-check-Werkzeug-Pin steht in d-check.mk (DCHECK_IMAGE ?=) und, als
+# Emit-Kante, in internal/emit/emit.go (DefaultImage) — die emittierte DCHECK_IMAGE-Zeile
+# schreibt der Lauf aus dem Quell-Wert. Je Quelle ein Ausdruck mit GENAU EINER Fanggruppe;
+# verglichen wird byte-genau die Tag-Referenz (die Fanggruppe legt die Feinheit fest — hier
+# die volle Referenz). Positiver Beleg in der Ausgabe: die Zeile
+# `pinsync: 1 Pin(s) geprueft` — fehlt sie, ist der Block nicht aktiv und eine Abweichung
+# bleibt still. GRENZEN: Das Modul haelt die Tag-Referenz — nicht den Digest (dieselbe
+# Wertelage an denselben zwei Stellen, unter demselben Pin-Paar) und nicht das
+# Go-Pin-Paar (GO_VERSION im Makefile gegen go in go.mod; Plan §1). Das Laufzeit-Gate
+# (installierte Werkzeuge tragen den Pin) fuehrt d-check nicht: es startet keine Programme.
+# Rot: ein verfaelschter Pin-Wert an genau einer Quelle faerbt docs-check rot (Mutations-Fall
+# unter test/mutations/).
+pinsync:
+  pins:
+    - name: d-check
+      sources:
+        - {file: d-check.mk, pattern: '^DCHECK_IMAGE \?= (ghcr\.io/pt9912/d-check:v[0-9]+\.[0-9]+\.[0-9]+)$'}
+        - {file: internal/emit/emit.go, pattern: 'DefaultImage\s*=\s*"(ghcr\.io/pt9912/d-check:v[0-9]+\.[0-9]+\.[0-9]+)"'}
 # structure (hermetisch, kein git, opt-in; die Bedingung open-tasks-require-marker traegt
 # d-check ab v0.76.0): haelt die Stilllegungs-Form eines Slice-Plans in done/ (v6.9.0 ·
 # modul-05-planning-harness.md §Ein Slice, dessen Gegenstand ein anderer uebernimmt). Traegt
