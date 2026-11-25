@@ -69,7 +69,7 @@ führt die Lücke als offene Beobachtung, mit einer Drift-Log-Zeile in
 [`roadmap.md`](../../docs/plan/planning/in-progress/roadmap.md) daneben.
 
 **Die Glob-Zeilen tragen die Bestandsform ausdrücklich** [`· seit
-slice-c3-d-check-faecher-v7-0-0`](../../docs/plan/planning/in-progress/slice-c3-d-check-faecher-v7-0-0.md):
+slice-c3-d-check-faecher-v7-0-0`](../../docs/plan/planning/done/slice-c3-d-check-faecher-v7-0-0.md):
 [`.d-check.yml`](../../.d-check.yml) setzt `waves.glob: 'welle-*.md'` und
 `waves.results-glob: 'welle-*-results.md'` — dieselbe Form, die bis dahin der
 Werkzeug-Default trug. Die explizite Zeile hält die Bestandsform gegen ein stilles
@@ -79,7 +79,7 @@ Umbenennen der Ablage oder des Defaults; die zwei Zeilen halten die Fälle
 durch eine veränderte `glob`-Zeile.
 
 **Zweite Grenze am selben Block, die Kennungs-Form** [`· seit
-slice-c3-d-check-faecher-v7-0-0`](../../docs/plan/planning/in-progress/slice-c3-d-check-faecher-v7-0-0.md):
+slice-c3-d-check-faecher-v7-0-0`](../../docs/plan/planning/done/slice-c3-d-check-faecher-v7-0-0.md):
 `waves` liest eine Kennung als literales Glob-Präfix plus folgende Ziffernfolge. Die
 Namens-Form — die Kennungs-Form für neu vergebene Kennungen ([`MR-057`](../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer))
 — liest es nicht: der aktuelle Welle-Eintrag `welle-baseline-sprung-v7-0-0` unter „Offene
@@ -249,7 +249,7 @@ in `d-check.mk`, gilt sie für den alten Stand, bis jemand neu misst.
 ### Modul `pinsync`
 
 **Was das Modul `pinsync` in `docs-check` deckt, und was nicht** [`· seit
-slice-c3-d-check-faecher-v7-0-0`](../../docs/plan/planning/in-progress/slice-c3-d-check-faecher-v7-0-0.md):
+slice-c3-d-check-faecher-v7-0-0`](../../docs/plan/planning/done/slice-c3-d-check-faecher-v7-0-0.md):
 [`.d-check.yml`](../../.d-check.yml) aktiviert `pinsync` mit **einem** Pin (`d-check`) über zwei
 Quellen — `d-check.mk` (`DCHECK_IMAGE ?=`) und
 [`internal/emit/emit.go`](../../internal/emit/emit.go) (`DefaultImage`). Je Quelle ein Ausdruck
