@@ -374,7 +374,11 @@ ignore-refs:
   # Deckung: 34
   - in: "docs/reviews/**"
     refs: [".harness/baseline/**"]
-  # Deckung: 4
+  # Deckung: 10
+  # der moved Plan slice-c4-environment-check-v7-0-0 trug 6 Markdown-Links in
+  # den vendored v7.0.0-Baum mit (Move-Zug, keine Verbreiterung des Eintrags:
+  # gleiche in/refs-Paare), gemessen am Wächter test/ignore-refs-restbreite.bats
+  # Fall 242
   - in: "docs/plan/planning/done/**"
     refs: [".harness/baseline/**"]
   # Deckung: 2
