@@ -209,7 +209,9 @@ fehlerfrei). **Der CI-Vorlauf bricht weiter** — an den Fall-Ankern 224/244/248
 nachgelieferten Stand `060e7e87` konsumiert — Urteil „BEFUND (kein Ergebnis im
 Log)" über alle 62 Fälle, Wanduhr 205 s —, beide `mutate/**`-Branches danach
 geräumt): dieselben drei Fälle, die `mutate-greift` lokal meldet, keine neue
-Befundklasse. **Nachlieferung 2 — die drei Anker re-angekert** (MR-071: die
+Befundklasse. **Nachlieferung 2 — die drei Anker re-angekert**
+([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand):
+die
 Anlage misst ihr sed-Muster gegen den Quell-Bestand; je Fall nur Namens-Anteile
 gepasst — `archiv-stub-*`→`archive-stub-*`, `<welle-id>`→`<wave-id>`,
 `archiv.zip`→`archive.zip`): Commit `88f85db3`, Beleg
