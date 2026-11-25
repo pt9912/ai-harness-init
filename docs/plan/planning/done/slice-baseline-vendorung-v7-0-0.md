@@ -234,7 +234,7 @@ gefallene Check stoppt die serielle Kante, die übrigen Checks einzeln gemessen
 | Check | Zustand | Befundlage |
 |---|---|---|
 | `baseline-verify` | grün | `v7.0.0 OK — 55 Dateien (Integritaet + Vollstaendigkeit, netzlos)` |
-| `docs-check` | rot | `2986 Datei(en) geprüft, 146 Befund(e)` — **145 × `target-missing`** (Verweise in den abgetretenen `.harness/baseline/v6.18.1/`-Baum: Einträge unter `harness/conventions/`, `harness/sensors/`, `.harness/skills/reviewer.md` u. a.) + **1 × `planning-drift`** (Ruhe-Marker „Nichts in Arbeit." in [`roadmap.md`](roadmap.md) bei belegtem `in-progress/`) |
+| `docs-check` | rot | `2986 Datei(en) geprüft, 146 Befund(e)` — **145 × `target-missing`** (Verweise in den abgetretenen `.harness/baseline/v6.18.1/`-Baum: Einträge unter `harness/conventions/`, `harness/sensors/`, `.harness/skills/reviewer.md` u. a.) + **1 × `planning-drift`** (Ruhe-Marker „Nichts in Arbeit." in [`roadmap.md`](../in-progress/roadmap.md) bei belegtem `in-progress/`) |
 | `lint` / `build` / `test` (go) | grün | `golangci-lint`, Dockerfile-`build`-Stage, `go test ./...` — alle `ok` |
 | `test-bats` | rot | 8 Fälle über zwei Fall-Klassen: **17/19/20** (Stub-Vorlagen: `archiv-stub-*`/`welle-results`-Namen in `templates/` des vendored Baums — die Rename-Paare des v7-Zugs) und **105–108** (Template-Fixture `courseSet`/Inventare, die den realen Vorlagen-Satz abbilden) — Heilung im Cluster C2; Fall **288** (Mutations-Fingerabdruck über den Baum) |
 | `shell-lint` / `ci-lint` | grün | shellcheck / actionlint ohne Meldung |
@@ -368,9 +368,29 @@ Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtungs-Register ·
   nicht-geschnittenen C2-Slice würde ins Leere zeigen
   (Review-F-2-Form).
 - **Risiken aus §6:** jede Zeile trägt einen Ausgang — siehe §6.
-- **Drei Paarungen:** geprüft nach dem `git mv` — Ergebnis folgt im
-  Paarungen-Commit nach dem Move (dieser Zeiger wird dort mit den drei
-  Ergebnissen gefüllt).
+- **Drei Paarungen (geprüft am 2026-11-25, nach dem `git mv`):**
+  - *(a) Anker:* §7 trägt kein `liegt in`-Feld — der Lern-Eintrag ist
+    gezählt, nicht verkörpert; kein Gegenstand. Die Setzung (kollektiver
+    CI-Sweep) hängt an der Welle-Closure, nicht an einem verkörperten
+    Zielort — ebenfalls kein Gegenstand der Paarung; die Grenze trägt §7.
+  - *(b) Folge-Slice:* §7 nennt keine Folge-Slice-Kennung. §1 nennt als
+    übernehmende Adresse
+    [`slice-baseline-delta-lesung-v7-0-0.md`](slice-baseline-delta-lesung-v7-0-0.md)
+    — liegt als Datei im Lifecycle (`done/`) — und die C2-Zeile der
+    Welle-Tafel; die Slice-Datei des C2 entsteht beim Schnitt, die Adresse
+    zeigt auf die Tafel-Zeile statt auf eine nicht existierende Datei
+    (Review-F-2-Form). Grün.
+  - *(c) Register:* die im Risiko-Ausgang und in §7 genannten Beobachtungen
+    existieren als Verzeichnis und tragen je mindestens einen Beleg —
+    [`BEO-ALL/mutations-ci-gruenvorlauf-bricht-unter-last`](../observations/BEO-ALL/mutations-ci-gruenvorlauf-bricht-unter-last/observation.md)
+    (2 Belege, offen, unter der Schwelle, [`state.md`](../observations/BEO-ALL/mutations-ci-gruenvorlauf-bricht-unter-last/state.md)),
+    [`BEO-ALL/freshness-verdikt-faellt-nach-dem-entfernen-des-alten-baums`](../observations/BEO-ALL/freshness-verdikt-faellt-nach-dem-entfernen-des-alten-baums/observation.md)
+    (1 Beleg). Grün.
+- **Ruhe-Marker:** [`roadmap.md`](../in-progress/roadmap.md) §Offene Wellen —
+  `in-progress/` trägt nach dem `git mv` nur ihr `roadmap.md`, der Marker
+  „Nichts in Arbeit.“ trifft den Zustand; der `planning-drift`-Befund
+  entfällt mit diesem Commit — geplant war er als rote Fläche, belegt in
+  der ersten Gates-Tabelle.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
