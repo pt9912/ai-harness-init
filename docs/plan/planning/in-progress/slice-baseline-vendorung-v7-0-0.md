@@ -69,31 +69,69 @@ als Übergabe-Artefakt.
 
 ## 2. Definition of Done
 
-- [ ] **(1) `make baseline-verify` → OK am neuen Stand:** `.harness/baseline/<tag>/`
+- [x] **(1) `make baseline-verify` → OK am neuen Stand:** `.harness/baseline/<tag>/`
       committet vendored, `SHA256SUMS` frisch erzeugt (Integrität +
       Vollständigkeit, netzlos) — [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache).
-- [ ] **(2) Die fünf Pin-Stellen fail-closed gekoppelt gezogen:**
+- [x] **(2) Die fünf Pin-Stellen fail-closed gekoppelt gezogen:**
       `BASELINE_TAG`/`BASELINE_ZIP_SHA256` im [`Makefile`](../../../../Makefile),
       das `sources`-Paar in [`.d-check.yml`](../../../../.d-check.yml),
       `DefaultTag`/`DefaultBaselineSHA256` in
       [`internal/fetch/baseline.go`](../../../../internal/fetch/baseline.go);
       die Kopplungs-Gruppe (`test/sources-pin.bats`, `TestDefaultTag_MatchesBaseline`,
       `TestDefaultBaselineSHA256_MatchesMakefile`) grün.
-- [ ] **(3) Der `make gates`-Lauf nach dem Zug ist ausgeführt und seine
+- [x] **(3) Der `make gates`-Lauf nach dem Zug ist ausgeführt und seine
       Befundlage in §7 dokumentiert** (erwartbar rot — Übergabe-Artefakt an
       den Lesungs-Slice), statt still geduldet oder mit Carveout verklebt.
-- [ ] Doku-Update: [`harness/conventions.md`](../../../../harness/conventions.md)
+- [x] Doku-Update: [`harness/conventions.md`](../../../../harness/conventions.md)
       §Baseline trägt den neuen `Stand:` (Zustandsfeld, Datum-Zeile daneben).
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — weiteres
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — weiteres
       Verzeichnis oder weitere Datei in `evidence/`; kein Zähler wird gesetzt,
       er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine
       Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste
       Welle-Closure — hier die [`welle-baseline-sprung-v7-0-0`](../welle-baseline-sprung-v7-0-0.md)-Closure.
+
+**Belege der Häkchen (Closure 2026-11-25, Planner in eigenem Kontext,
+[`AGENTS.md`](../../../../AGENTS.md) §3.10):**
+
+- *(1) Baseline-Verify:* Commit `7afa252c` (vendored Baum
+  `.harness/baseline/v7.0.0/`, `SHA256SUMS` frisch erzeugt — 55 Zeilen,
+  Baum-Form getrennt von der Asset-Form, [`ADR-0059`](../../../../docs/plan/adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md));
+  Review „Vendored Baum — geprüft, ohne Befund“.
+- *(2) Pin-Stellen:* Commit `51649824` (vier Stellen identisch `v7.0.0` /
+  `34a7866d…0e`, fail-closed gekoppelt); Review „Pin-Kopplung“ und
+  „Pin-Beleg gegen Publikation“ — Release-`SHA256SUMS` von Tag `v7.0.0`
+  je Asset-Name mit dem [`Makefile`](../../../../Makefile)-Pin gepaart; die
+  Kopplungs-Gruppe grün (§7-Tabelle — `go test ./...` und
+  `test-bats` ohne `sources-pin`-Befunde).
+- *(3) Gates-Lauf / Befundlage:* `make -k baseline-verify … span-check`,
+  2026-11-25, am Stand der drei Implementer-Commits — Tabelle in §7; die
+  145 Verweis-Befunde sind die geplante rote Fläche (C2), der
+  `planning-drift` entfällt mit dem `git mv` (Paarungen-Commit).
+- *Doku-Update:* Commit `1477e06c` — `Stand:` als Version, Datum-Zeile
+  daneben; Review „§Baseline — geprüft, ohne Befund“.
+- *Review:* [`docs/reviews/2026-11-25-slice-baseline-vendorung-v7-0-0.md`](../../../../docs/reviews/2026-11-25-slice-baseline-vendorung-v7-0-0.md)
+  (Commit `eba40817`) — Verdikt blockierend wegen F-1; geheilt durch die
+  §7-Berichtigung (`4f0bbd35` — F-1/F-2/F-5/F-6 · `fbd75827` — F-4),
+  geschrieben in Planner-Kontext, vor dem `git mv`.
+- *Mutations-CI-Belege:* 0 Fall-Urteile in allen drei Läufen —
+  **unurteilbar bis C2 (`test-bats`-Heilung)**; die Grenze trägt §7
+  (Lern-Eintrag), der kollektive CI-Sweep nach der Heilung hängt an der
+  Welle. Kein Mutations-DoD-Punkt dieses Slices behauptet ein Urteil —
+  die Pflicht ([`MR-091`](../../../../harness/conventions.md#mr-091--ab-neun-fällen-läuft-die-mutations-probe-eines-slice-über-einen-ci-branch-dessen-ergebnis-job-schreibt)
+  Setzung 1) ist im geplanten roten Zwischenstand strukturiert
+  unerfüllbar; die Kollision entscheidet die Welle.
+- *Verifier-Turn:* entfällt — die Verifikation der DoD-Punkte trägt die
+  Session-Verifikation, Stand im Übergabe-Bericht der Session; die Grenze
+  steht hier benannt, nicht durch einen Sensor verdeckt (Fassung wie beim
+  Vorgänger).
+- *Closure-Notiz / Register / Risiken:* §6–§7 dieser Datei (dieser
+  Inhalt-Commit); Register-Beleg neu angelegt im selben Zug. Die drei
+  Paarungen folgen im Paarungen-Commit nach dem `git mv` (Ergebnis §7).
 
 ## 3. Plan (vor Code)
 
@@ -154,19 +192,33 @@ dasteht.
 
 - **`make baseline-freshness` meldet nach dem Abtritt des alten Baums ein
   anderes Verdikt** (nächtliche Achse, nicht Pin-Kopplung). — **Ausgang:**
-  <weiter offen: → [`BEO-ALL/freshness-verdikt-faellt-nach-dem-entfernen-des-alten-baums`](../observations/BEO-ALL/freshness-verdikt-faellt-nach-dem-entfernen-des-alten-baums/observation.md) im Register>
+  **weiter offen** — die Beobachtung
+  [`BEO-ALL/freshness-verdikt-faellt-nach-dem-entfernen-des-alten-baums`](../observations/BEO-ALL/freshness-verdikt-faellt-nach-dem-entfernen-des-alten-baums/observation.md)
+  trägt den Ausgang im Register weiter (Stand: offen, 1 Beleg); ihr
+  Beleg-Zug ist der nächtliche Lauf nach dem Abtritt, nicht die DoD dieses
+  Slices.
 - **Die Pin-Achsen des Release werden verwechselt** — ZIP-Hash
   (`BASELINE_ZIP_SHA256`) und das als Asset reisende `SHA256SUMS` sind zwei
   Sätze ([`ADR-0059`](../../../../docs/plan/adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)). —
-  **Ausgang:** <weiter offen: → die Lesung trägt die Zuordnung in der
-  Delta-Tafel ([`welle-baseline-sprung-v7-0-0`](../welle-baseline-sprung-v7-0-0.md) §4)>
+  **Ausgang:** **weiter offen** — die Lesung trägt die Zuordnung in der
+  Delta-Tafel ([`welle-baseline-sprung-v7-0-0`](../welle-baseline-sprung-v7-0-0.md)
+  §4); der Beleg dieses Slices trennt die zwei Formen getrennt ab
+  (`7afa252c`: Baum-`SHA256SUMS` frisch erzeugt, Asset-`SHA256SUMS` vom Tag
+  — Review „Vendored Baum“/„Pin-Beleg gegen Publikation“), der Lese-Schritt
+  der Welle-Closure liest die Ausgangs-Zeile erneut.
 - **Die Inventur-Aussage trägt den Stand** — bleibt `InventurMessTag` in
   [`internal/emit/baumaussage.go`](../../../../internal/emit/baumaussage.go) auf
   `v6.18.1` stehen, feuert [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
-  über die emittierte Inventur-Messung. — **Ausgang:** <weiter offen: die zwei
-  Kopplungs-Tests ([`test/sources-pin.bats`](../../../../test/sources-pin.bats),
+  über die emittierte Inventur-Messung. — **Ausgang:** **entfallen**
+  (geheilt) — `InventurMessTag = "v7.0.0"` zog mit `1477e06c` in derselben
+  Lieferung (Review „Emissions-Kanten — geprüft, ohne Befund“: die
+  emittierte [`internal/emit/templates/d-check.yml`](../../../../internal/emit/templates/d-check.yml)
+  führt keine Baseline-Pin-Zeile, `grep` leer); die zwei Kopplungs-Tests
+  ([`test/sources-pin.bats`](../../../../test/sources-pin.bats),
   `TestDefaultTag_MatchesBaseline`, `TestDefaultBaselineSHA256_MatchesMakefile`)
-  und `TestInventurMessTag_IstDerGefetchteStand` ziehen mit dem Zug>
+  und `TestInventurMessTag_IstDerGefetchteStand` sind grün am neuen Stand
+  (§7-Tabelle) — [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)
+  feuert nicht.
 
 ## 7. Closure-Notiz
 
@@ -245,6 +297,80 @@ Branch `mutate/…-6a80cf3d` geräumt. Die Reste-2-Stelle
 (`internal/emit/templates.go`, Zeilen 1056–1057, 1135) und der übrige
 C2-Fixture-Satz (17, 19, 20, 105–108) unverändert. Die 145 Verweis-Befunde des
 Doc-Gate bleiben die geplante rote Fläche (Cluster C2).
+
+**Closure-Notiz (Planner, 2026-11-25, eigener Kontext —
+[`AGENTS.md`](../../../../AGENTS.md) §3.10).** Regeln dieser Sektion:
+Baseline-Regelwerk `modul-06-roadmap.md` §Das Beobachtungs-Register ·
+`modul-05-planning-harness.md` §Closure- und Lerneintrag-Regeln.
+
+- **Was hat funktioniert:** die Vendorung zog in einem Zug — vendored Baum
+  (`7afa252c`), fünf Pin-Stellen fail-closed gekoppelt (`51649824`),
+  §Baseline-Stand (`1477e06c`); der erwartbar rote Voll-Gate-Lauf lief mit
+  Check-Einzelsbilanz (Tabelle oben) und blieb als geplante rote Fläche
+  (145 Verweis-Befunde + sieben C2-Fixtur-Fälle) an den Lesungs-Bestand
+  adressierbar; der Review bestätigt Pin-Kopplung, Baum-Abtritt und
+  Retargeting ohne Befund.
+- **Was ging anders als geplant:** die drei Mutations-CI-Läufe — 1. Lauf
+  Vorlauf-Tod an den dangelnden Zeigern (geheilt `e8b7e822`), 2. Lauf
+  Exit 2 an den drei Fall-Ankern (geheilt `88f85db3`), 3. Lauf
+  Grün-Vorlauf-Abbruch an der geplant roten `test-bats`-Fläche — 0
+  Fall-Urteile in allen dreien; die erste Lesart des 3. Laufs (Aggregation
+  liest leer) war falsch und ist im Absatz oben berichtigt
+  (`4f0bbd35`/`fbd75827`). [`MR-091`](../../../../harness/conventions.md#mr-091--ab-neun-fällen-läuft-die-mutations-probe-eines-slice-über-einen-ci-branch-dessen-ergebnis-job-schreibt)
+  Setzung 1 ist in diesem Zwischenstand strukturiert unerfüllbar.
+- **Lern-Eintrag (Steering-Loop, gezählt, nicht verkörpert — kein
+  `liegt in`-Feld):** die **geplante rote `test-bats`-Fläche bricht den
+  Grün-Vorlauf der CI-Mutations-Proben** — ein Wellen-Slice kann seine
+  Mutations-Belege nicht bekommen, solange die Fläche im selben
+  Zwischenstand rot trägt; die zwei Normen (Probe vor Verifikation,
+  [`MR-091`](../../../../harness/conventions.md#mr-091--ab-neun-fällen-läuft-die-mutations-probe-eines-slice-über-einen-ci-branch-dessen-ergebnis-job-schreibt)
+  Setzung 1 · geplante rote Fläche) kollidieren, und die Kollision
+  entscheidet die Welle, nicht dieser Slice. Träger der Ausnahme: der
+  **kollektive CI-Sweep nach der Heilung** — die Anker der 65 Fälle zielen
+  auf den Bestand ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)),
+  nicht auf den Rerun; die Setzung trägt der **Lese-Schritt der
+  [`welle-baseline-sprung-v7-0-0`](../welle-baseline-sprung-v7-0-0.md)-Closure**,
+  den Fall-Beleg neben dem ADR-Beleg ([`ADR-0059`](../../../../docs/plan/adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md))
+  desselben Zugs. Kennung der Befunde: die drei Runs `45655913161` ·
+  `45661467791` · `45666751330` samt den Vorlauf-Log-Befundzeilen
+  (`ABBRUCH — make test-bats ist in SEINER Kopie ohne Mutation rot`,
+  Fixtur-Fälle 17/19/20/105–108) — Beleg-Anker ist der
+  [`docs/reviews/2026-11-25-slice-baseline-vendorung-v7-0-0.md`](../../../../docs/reviews/2026-11-25-slice-baseline-vendorung-v7-0-0.md)-Report
+  (Shard-Artefakte des 3. Laufs, `gh run download 45666751330`, Retention
+  3 Tage).
+- **Review-Findings — Klassen (Übergabe des Reports, [§3.6](../../../../AGENTS.md)
+  der recurring-class-Route):** `Übergabe-Artefakt behauptet
+  Lauf-Ergebnisse, die der Beleg nicht trägt` (F-1 — durch die
+  Berichtigung dieses Zugs geheilt) · `Folge-Adresse ohne Gegenstand`
+  (F-2 — Zeiger entfallen) · `Zusage trägt Anker-Treffer statt
+  Wächter-Rot als Beleg` (F-3 — unurteilbar bis C2, oben benannt) ·
+  `Neue Gate-Befundzeile außerhalb der geplanten roten Fläche` (F-4 —
+  `fbd75827`) · `Plan-Zeile ohne Code-Entsprechung, unkorrigiert` (F-5 —
+  `4f0bbd35`) · `Sendung am Nachbar-Eintrag begründet` (F-6 —
+  `4f0bbd35`).
+- **Beobachtungs-Register (`../observations/`):**
+  [`BEO-ALL/mutations-ci-gruenvorlauf-bricht-unter-last`](../observations/BEO-ALL/mutations-ci-gruenvorlauf-bricht-unter-last/observation.md)
+  — Beleg `evidence/slice-baseline-vendorung-v7-0-0.md` ergänzt (Zähler
+  2×, Stand: offen, unter der Schwelle). Zuordnungs-Urteil: Ergänzung
+  statt Eigen-Eintrag — beide Belege teilen die Klasse (die Vorlauf-Schicht
+  verliert, bevor ein Fall urteilt); die zwei Unter-Klassen
+  (infrastrukturelle Last · geplante rote Fläche) stehen in der Beleg-Datei
+  neben der Grenze.
+- **Archivierung:** entfällt hier — der Slice gehört der
+  [`welle-baseline-sprung-v7-0-0`](../welle-baseline-sprung-v7-0-0.md); deren
+  Closure archiviert ihre Zeitdokumente als Schritt 4 ihrer Prozedur
+  ([`MR-078`](../../../../harness/conventions.md#mr-078--wellenlose-slices-werden-bei-der-eigenen-closure-archiviert)
+  trägt die wellenlose Hälfte, nicht diese Zugehörigkeit); kein
+  `archive-slice`-Zeiger (wie beim Vorgänger-Slice bewusst nicht
+  vollzogen).
+- **Folge-Slices:** keiner aus diesem Slice — der kollektive CI-Sweep nach
+  der C2-Heilung hängt an der Welle (oben); ein Zeiger auf einen
+  nicht-geschnittenen C2-Slice würde ins Leere zeigen
+  (Review-F-2-Form).
+- **Risiken aus §6:** jede Zeile trägt einen Ausgang — siehe §6.
+- **Drei Paarungen:** geprüft nach dem `git mv` — Ergebnis folgt im
+  Paarungen-Commit nach dem Move (dieser Zeiger wird dort mit den drei
+  Ergebnissen gefüllt).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
