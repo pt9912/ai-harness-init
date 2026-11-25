@@ -1,0 +1,2 @@
+**Vorgang:** slice-c4-environment-check-v7-0-0
+**Fund:** Die zweite Messtelle in `make smoke` (Gate-Neutralität, `harness/tools/smoke.sh:93`) trug keinen eigenen Rot-Beleg — die Hand-Mutation an `emit.inScope` färbte allein die Existenz-Messtelle rot („smoke 3/5 … fehlt"); ihr Mechanismus ist auf Unit-Ebene über den Fall `test/mutations/153-ziel-anspruch-nicht-neutralisiert.sh` gebunden, und der läuft über einer Anspruchs-Fixtur statt über der realen `v7.0.0`-Vorlage. Die Grenze trägt die Grenz-Zeile der Closure-Notiz (§7 des Slice-Plans), F-1 (INFO, Review 2026-11-25).
