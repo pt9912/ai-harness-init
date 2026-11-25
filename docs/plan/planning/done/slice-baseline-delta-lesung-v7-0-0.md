@@ -130,8 +130,10 @@ dasteht.
   Sprung v5.12.0→v5.18.0 trug der Diff-Katalog von slice-155 §9 die Klasse).
   — **Ausgang:** weiter offen → [`BEO-ALL/re-baseline-ohne-inventur-slice`](../observations/BEO-ALL/re-baseline-ohne-inventur-slice/observation.md);
   die Evidence-Datei `evidence/slice-baseline-delta-lesung-v7-0-0.md` ist der
-  dritte Beleg (Anker `seit slice-baseline-delta-lesung-v7-0-0`), der Lese-Schritt
-  weist den Ausgang bei der Welle-Closure zu
+  dritte Beleg (Anker `seit slice-baseline-delta-lesung-v7-0-0`); der Lese-Schritt
+  dieser Closure hat ihn zugewiesen — **Stand des Eintrags: verkörpert** in
+  seiner `state.md` (gelesen am 2026-11-25, [`ADR-0085`](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md)
+  Festlegung 1)
 - **Befunde kollidieren mit Hard Rules ([`AGENTS.md`](../../../../AGENTS.md) §3)** —
   der übernommene Regelwerk-Satz gegen die eigene Zeile. — **Ausgang:** entfallen —
   die Lesung benannte keine Kollision mit einer Hard Rule (die Tafel trägt die
@@ -161,7 +163,10 @@ Ablage lief, und die Tafel lebt in der Welle-Datei, nicht in einem Liefer-Slice.
 
 **Register:** [`BEO-ALL/re-baseline-ohne-inventur-slice`](../observations/BEO-ALL/re-baseline-ohne-inventur-slice/observation.md)
 trägt einen weiteren Beleg (`evidence/slice-baseline-delta-lesung-v7-0-0.md` —
-der dritte); der Lese-Schritt weist den Ausgang bei der Welle-Closure zu.
+der dritte). Diese Closure ist der Lese-Schritt
+([`ADR-0085`](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md)
+Festlegung 1): der Ausgang ist damit zugewiesen — **Stand des Eintrags:
+verkörpert** (`state.md`), nicht an die nächste Welle-Closure zurückgestellt.
 **Folge-Slices:** keine benannt — die Cluster-Slices C2–C7 stehen als geordnete
 Vorschlag in der Delta-Tafel (C1 trägt der Bestand), ihre Slice-Dateien entstehen
 beim Schnitt.
