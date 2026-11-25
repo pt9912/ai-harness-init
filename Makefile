@@ -718,10 +718,20 @@ vendor-baseline: host-bin ## Eigenen vendored Baum aus dem verifizierten Release
 # Muster eingestellt — über jede weitere Schreibweise desselben Weges sagen sie nichts:
 #   `sed -n '/^ *\.IGNORE/p' Makefile d-check.mk | wc -l` -> 0
 #   `sed -n '/^\t[@+-]*-/p' Makefile d-check.mk | wc -l` -> 0
-# GESCHLOSSEN, gemessen: `make record-gates` ist mit `make gates` deckungsgleich — die
-# Kante zieht dort dieselben Checks mit (`diff <(make -n gates) <(make -n record-gates)`
-# ist leer).
+# FORM SEIT ADR-0099. Bis zum Fast-Pfad war `make record-gates` mit `make gates`
+# deckungsgleich (`diff <(make -n gates) <(make -n record-gates)` war leer). Seither ist
+# `gates` der Einsprung mit Skip (Wrapper harness/tools/gates-fast.sh) und nicht mehr
+# deckungsgleich mit `record-gates`; gemessen:
+#   make -n gates | tail -1          # -> bash harness/tools/gates-fast.sh
+#   make -n record-gates | tail -1   # -> bash harness/tools/record-gates.sh
+# Deckungsgleich BLIEB die Kante selbst: jeder Check ist nur an `record-gates: <checks>`
+# verdrahtet, und der Fast-Pfad fährt bei Nicht-Deckung exakt dieses Ziel. Was der
+# SKIP über den gedeckten Baum hinaus nicht deckt, nennt die SKIP-Meldung
+# (benannter Rest); `GATES_FORCE=1` erzwingt den vollen Lauf. Wächter:
+# test/gate-nachweis-kante.bats (die Verdrahtungs-Zusagen an der Wrapper-Form gezogen)
+# und test/gates-fastpfad.bats.
 record-gates: baseline-verify docs-check lint build test shell-lint ci-lint comment-claims register-ausgang mutate-greift host-bin span-check ## Checks + Gate-Nachweis (Working-Tree-Hash für den Stop-Hook)
 	@bash harness/tools/record-gates.sh
 
-gates: record-gates ## alle aktuell lauffähigen Gates + Nachweis
+gates: ## alle aktuell lauffähigen Gates + Nachweis — Fast-Pfad: SKIP über dem gedeckten Stempel-Paar (ADR-0099), sonst voller Lauf
+	@bash harness/tools/gates-fast.sh

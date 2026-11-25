@@ -58,7 +58,7 @@ wird dann zum Link auf die Datei.
 | [`make mutate-greift`](sensors/mutate.md) | Jeder Mutations-Fall greift: sein Patch ändert auf einer Kopie jede Datei aus `# files:` — ob der Wächter rot wird, sagt es nicht | [`MR-071`](conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand) · Host Linux, macOS nicht getragen ([`AGENTS.md`](../AGENTS.md) §3.9) |
 | `make host-bin` | Träger (Produkt-Binär) für die **Host**-Plattform gebaut und im gitignorierten Zustands-Bereich abgelegt (Docker-only, GOOS/GOARCH aus `uname`) | [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md) |
 | `make span-check` | Träger vorhanden **und** sein Unterkommando `span-emit` funktionsfähig; Ablageort real `git check-ignore`-geprüft | [`spec/spezifikation.md`](../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 |
-| `make gates` | alle aktuell lauffähigen Gates | — |
+| `make gates` | alle aktuell lauffähigen Gates; Fast-Pfad ([ADR-0099](../docs/plan/adr/0099-gates-fastpfad-ueber-gedecktem-stempel-paar.md)): SKIP nur über dem gedeckten Stempel-Paar (`gates-passed.diffsha` **und** `.head`), fail-closed bei jedem Zweifel, der SKIP nennt den benannten Rest (Docker-Cache-Zustand, Host-Werkzeuge), `GATES_FORCE=1` erzwingt den vollen Lauf | [ADR-0099](../docs/plan/adr/0099-gates-fastpfad-ueber-gedecktem-stempel-paar.md) |
 
 ### Werkzeuge (kein Gate)
 

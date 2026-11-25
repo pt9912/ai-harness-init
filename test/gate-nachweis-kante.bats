@@ -7,32 +7,40 @@
 # kostete jeden Gate ein zweites Mal. Gelesen wird der GELEBTE Makefile dieses Repos —
 # keine Nachbildung, die sich selbst misst.
 #
-# DIE FUENF ZUSAGEN, DIE HIER HAENGEN:
+# DIE FUENF ZUSAGEN, DIE HIER HAENGEN (SEIT ADR-0099 AN DER WRAPPER-FORM GEZOGEN:
+# `gates` ist der Einsprung mit Fast-Pfad, sein Rezept startet den Wrapper
+# harness/tools/gates-fast.sh, der bei Nicht-Deckung `make record-gates` faehrt —
+# die Kante selbst ist an `record-gates` unverändert):
 #   1. Die Kante existiert: record-gates hat Voraussetzungen. Ohne sie steht der
 #      Stempel NEBEN den Checks, und `make -k gates` schreibt ihn ueber rotem Stand; der
 #      Stop-Hook vergleicht genau diesen Hash und gaebe einen Abschluss frei, den er
 #      nicht decken darf.
-#   2. Kein Check steht neben record-gates: jede Voraussetzung von `gates` ausser
-#      record-gates selbst ist auch Voraussetzung von record-gates. Ein daneben
-#      gehaengter Check oeffnet das Loch fuer genau diesen Check wieder — dass er
-#      ZUSAETZLICH an der Kante haengt, schadet nicht, denn make baut ein Ziel mit
-#      gefallener Voraussetzung auch dann nicht.
-#   3. `gates` zieht den Nachweis ueberhaupt. Ohne diese Zusage waeren 1 und 2 auch
-#      dadurch erfuellt, dass gar kein Nachweis mehr entsteht.
-#   4. An der Kante haengen GENAU die erwarteten Checks. 1 bis 3 sind auch von einer
-#      Kante mit einer einzigen Voraussetzung erfuellt: die uebrigen fielen aus `gates`
-#      heraus, und der Stempel deckte einen Baum, ueber den sie nie geurteilt haben.
-#      Geprueft wird der Bestand, nicht die Reihenfolge — die haengt an Zusage 5.
-#   5. baseline-verify haengt als ERSTER an der Kante. Das ist die Reihenfolgen-Zusage,
+#   2. Die Fast-Pfad-Verdrahtung: `gates` haengt an KEINEN make-Voraussetzungen, und
+#      seine Rezept-Zeile startet NUR den Wrapper. Ein daneben gehaengter Check — an
+#      `gates` oder in seinem Rezept — oeffnete das Loch fuer genau diesen Check: er
+#      liefe an der Kante vorbei. Dass der Wrapper bei Nicht-Deckung exakt
+#      `make record-gates` faehrt, keinen Stempel schreibt und sonst kein `make` ruft,
+#      misst test/gates-fastpfad.bats — dort und nicht hier, damit die Zusaegen zum
+#      Wrapper nicht in zwei Fassungen driften.
+#   3. An der Kante haengen GENAU die erwarteten Checks. Ohne 2 waere auch eine
+#      schrumpfende Kante durch einen am Rezept haengenden Check verdeckt; beide
+#      zusammen messen, dass der Stempel einen Baum ueberspringt, ueber den diese
+#      Checks zuletzt ganz und mit diesen Checks geurteilt haben.
+#      Geprueft wird der Bestand, nicht die Reihenfolge — die haengt an Zusage 4.
+#   4. baseline-verify haengt als ERSTER an der Kante. Das ist die Reihenfolgen-Zusage,
 #      die im Makefile neben der Kante steht: steht die vendored Baseline nicht, ist jede
 #      Aussage der Folge-Gates ueber sie wertlos. Serielles make baut die Voraussetzungen
 #      in Listen-Reihenfolge ab; unter `-j` faellt die Zusage — gemessen in der Grenze
 #      unten, Haelfte (a).
+#   5. `gates` baut `record-gates` ueberhaupt — seit ADR-0099 ueber den Wrapper statt als
+#      Voraussetzung; die Weiterleitung steht in der Rezept-Zeile (Zusage 2) und wird an
+#      test/gates-fastpfad.bats ueber den Skripttext gehalten.
 #
-# ZUSAGE 4 IST STRENGER ALS ZUSAGE 1: eine leere Kante verletzt beide, 1 faellt also nie
-# allein. Sie bleibt trotzdem stehen, weil sie den Mechanismus benennt und ihre Diagnose
-# beim totalen Wegfall sagt, warum das Loch zurueck ist. Wer die Liste kuerzt, sieht 4
-# fallen; wer die Kante ganz entfernt, sieht 1, 4 und 5 zusammen fallen.
+# ZUSAGE 3 IST STRENGER ALS ZUSAGE 1: eine leere Kante verletzt beide — 2 verfaellt dann
+# in die Diagnose der leeren Verdrahtung, 1 wird durch sie verdeckt. Sie bleibt trotzdem
+# stehen, weil sie den Mechanismus benennt und ihre Diagnose beim totalen Wegfall sagt,
+# warum das Loch zurueck ist. Wer die Liste kuerzt, sieht 3 fallen; wer die Kante ganz
+# entfernt, sieht 1, 3 und 4 zusammen fallen.
 #
 # DIE ERWARTUNGSLISTE IN ZUSAGE 4 IST EINE ZWEITE BUCHFUEHRUNG, kein unabhaengiger
 # Beleg: welche Checks es geben SOLLTE, liest dieser Waechter nirgends. Er faengt das
@@ -127,26 +135,34 @@ prereqs() {
 	[ -n "$kante" ]
 }
 
-@test "gate-nachweis: kein Check steht neben record-gates" {
-	kante="$(prereqs record-gates)"
-	daneben=""
-	for ziel in $(prereqs gates); do
-		if [ "$ziel" = "record-gates" ]; then
-			continue
-		fi
-		if ! printf '%s\n' "$kante" | grep -qx -- "$ziel"; then
-			daneben="${daneben} ${ziel}"
-		fi
-	done
-	echo "Voraussetzungen von gates:        [$(prereqs gates | tr '\n' ' ')]"
-	echo "Voraussetzungen von record-gates: [$(printf '%s\n' "$kante" | tr '\n' ' ')]"
-	echo "steht daneben statt an der Kante: [${daneben}]"
-	[ -z "$daneben" ]
+# Die Rezept-Zeilen eines Ziels: alles Tab-eingerueckte nach der Regel-Zeile, bis zur
+# naechsten Regel; der `@`-Praefix bleibt drin, gelesen wird der gelebte Aufruf.
+rezept_von() {
+	local ziel="$1"
+	mk_joined \
+		| awk -v ziel="^${ziel}:([^=]|$)" '
+			$0 ~ ziel && $0 !~ /:=/ && !innen { innen=1; next }
+			innen { if ($0 !~ /^\t/) { innen=0 } else { sub(/^\t/, ""); print } }
+		'
 }
 
-@test "gate-nachweis: gates zieht den Gate-Nachweis ueber record-gates" {
-	echo "Voraussetzungen von gates: [$(prereqs gates | tr '\n' ' ')]"
-	prereqs gates | grep -qx 'record-gates'
+# Fast-Pfad (ADR-0099): gates haengt an keinen make-Voraussetzungen — der Einstieg liegt
+# vor der Kante, im Rezept.
+@test "gate-nachweis: gates haengt an keinen make-Voraussetzungen (Fast-Pfad-Form)" {
+	voraussetzungen="$(prereqs gates | tr '\n' ' ')"
+	echo "Voraussetzungen von gates: [${voraussetzungen}]"
+	echo "Ein Ziel an dieser Stelle wuerde vor dem Wrapper gebaut — ein Check an der Kante vorbei."
+	[ -z "${voraussetzungen//[[:blank:]]/}" ]
+}
+
+@test "gate-nachweis: das gates-Rezept startet nur den Fast-Pfad-Wrapper (kein Check an make vorbei)" {
+	rezept="$(rezept_von gates)"
+	echo "Rezept von gates: [${rezept}]"
+	echo "Die Weiterleitung an make record-gates misst test/gates-fastpfad.bats am Skripttext."
+	# Genau eine nichtleere Rezept-Zeile, und sie ist der Wrapper-Aufruf, sonst nichts.
+	gesamt="$(printf '%s\n' "$rezept" | sed '/^$/d' | grep -c . || true)"
+	[ "$gesamt" -eq 1 ]
+	printf '%s\n' "$rezept" | grep -Fqx '@bash harness/tools/gates-fast.sh'
 }
 
 # Die Erwartungsliste steht SORTIERT und wird gegen die sortierte Ist-Liste gehalten:
