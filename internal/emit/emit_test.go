@@ -27,6 +27,12 @@ func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 	if !strings.Contains(yml, "modules: [links, anchors, ids, matrix, codepaths, spans, planning, structure, targets]") {
 		t.Errorf("eingebettete .d-check.yml aktiviert nicht genau [links, anchors, ids, matrix, codepaths, spans, planning, structure, targets]:\n%s", yml)
 	}
+	// scan.ignore nimmt die Arbeitsbaeume .claude/worktrees/** aus — dort laege die zweite
+	// Kopie des Repos, die jedes Modul vom Dateisystem doppelt lesen wuerde (d-check liest
+	// nicht .gitignore). Die Begruendung steht im Kommentar der Zeile.
+	if !strings.Contains(yml, `.claude/worktrees/**`) {
+		t.Errorf("scan.ignore nimmt die Arbeitsbaeume .claude/worktrees/** nicht aus:\n%s", yml)
+	}
 	sawPrefixPattern := false
 	// letzteKlasse haelt die LETZTE Klassen-Zeile — nur innerhalb von matrix.classes:,
 	// sonst zaehlte jede spaetere Liste mit und die Positions-Zusicherung darunter
@@ -119,7 +125,10 @@ func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 // TestDCheckConfig_PlanningBlock haelt den Top-Level-Block planning: der eingebetteten
 // .d-check.yml (LH-FA-03): roadmap zeigt auf die emittierte Roadmap, heading und marker sind
 // dieselben Wortlaute, die die Roadmap-Emission setzt (emit.RoadmapOffeneWellen,
-// emit.RoadmapRuheMarker), und der Block fuehrt weder closure noch waves. Er liest die
+// emit.RoadmapRuheMarker), und closure steht nicht im Block. Die waves-Faehigkeit haelt mit
+// den Pflicht-Globs wave-*.md/wave-*-results.md die Bijektion der Welle-Laufsicht; der
+// Feldlauf unten liest nur die 2-Raum-Ebene des Blocks und sieht den 4-Raum-Sub-Block
+// nicht — die Zeilen haelt die Liste darunter. Er liest die
 // Vorlage; das Verhalten im Ziel belegt die full-smoke-Stufe planning_im_ziel.
 func TestDCheckConfig_PlanningBlock(t *testing.T) {
 	yml := emit.DCheckConfig()
@@ -152,6 +161,20 @@ func TestDCheckConfig_PlanningBlock(t *testing.T) {
 	for k := range felder {
 		if _, ok := want[k]; !ok {
 			t.Errorf("planning traegt das Feld %q ueber roadmap/heading/marker hinaus", k)
+		}
+	}
+	// Das waves-Sub-Block der Vorlage, Zeile fuer Zeile — der Feldlauf oben liest nur die
+	// 2-Raum-Ebene. Die Globs sind die Pflicht-Zeilen der Vorlagen-Form (wave-* gegen den
+	// Werkzeug-Default welle-*), mode: many die Bijektion gegen den Singleton-Default.
+	for _, z := range []string{
+		"  waves:",
+		"    dir: docs/plan/planning",
+		"    glob: 'wave-*.md'",
+		"    results-glob: 'wave-*-results.md'",
+		"    mode: many",
+	} {
+		if !strings.Contains(yml, z+"\n") {
+			t.Errorf("planning.waves traegt die Zeile %q nicht", z)
 		}
 	}
 }

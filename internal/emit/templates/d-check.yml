@@ -8,12 +8,16 @@ scan:
   # aufloesen. Der Bootstrap legt seine Vorlagen unter .harness/baseline/ ab; das Muster nimmt
   # eine Vorlage in jedem anderen Baum ebenso aus.
   # .tmp/**: Arbeitsablage der Laeufe, kein Artefakt.
+  # .claude/worktrees/**: Arbeitsbaeume, die ein Werkzeug ins Repo legt (Claude Code legt sie
+  # dort an), waeren fuer d-check eine zweite Kopie des Repos — d-check liest das Dateisystem,
+  # nicht .gitignore (Baseline-Regelwerk modul-05-planning-harness.md §Lifecycle als State
+  # Machine). Ein Arbeitsbaum neben dem Repo braucht keinen Eintrag.
   # .harness/**: was der Bootstrap unter .harness/ ablegt. Markdown liegt dort in zwei Baeumen:
   # .harness/baseline/ (der vendored Kurs-Stand, Regelwerk und Vorlagen — fremder Text, den
   # dieses Repo nicht schreibt) und .harness/skills/ (die Reviewer-Skills; sie gehoeren nach dem
   # Bootstrap dem Repo und bleiben trotzdem ungeprueft, ein Verweis darin faellt keinem Modul
   # auf). Daneben liegen dort das Sprachskelett-Staging und der Zustands-Bereich .harness/state/.
-  ignore: ["**/*.template.md", ".tmp/**", ".harness/**"]
+  ignore: ["**/*.template.md", ".tmp/**", ".claude/worktrees/**", ".harness/**"]
 modules: [links, anchors, ids, matrix, codepaths, spans, planning, structure, targets]
 ids:
   patterns:
@@ -144,16 +148,16 @@ codepaths:
 # traegt (Baseline-Regelwerk modul-06-roadmap.md §Roadmap-Struktur, Bullet Offene Wellen;
 # Grund-Code planning-drift in beide Richtungen). Die Vorlage fuehrt den Marker-Wortlaut
 # nicht; die emittierte Roadmap traegt ihn, weil ein frisches Ziel keinen Slice in
-# in-progress/ hat. Nur die Marker-Haelfte ist aktiv: closure und waves desselben Moduls
-# stehen nicht im Block. Grenze: beim Uebergang eines Slice nach in-progress/ und zurueck
+# in-progress/ hat. Aktiv sind die Marker-Haelfte und die waves-Faehigkeit; closure desselben
+# Moduls steht nicht im Block. Grenze: beim Uebergang eines Slice nach in-progress/ und zurueck
 # zieht make slice-mv den Marker nicht nach — das bleibt Handarbeit, und docs-check meldet
 # den vergessenen Nachzug.
 # Diese Datei wird nur an einem freien Pfad geschrieben: ein Ziel mit vorhandener
 # .d-check.yml behaelt seine Fassung und bekommt keine dieser Positionen. Der Nachzug
 # ist Handarbeit nach dieser Liste — die Praefix-Token slice- und wave-, die Regel
 # {from: spec-straten, to: wave}, das segment-tolerante ids-Muster fuer ADR, der
-# Bereichs-Praefix-Glob der adr-Klasse, der planning-Block samt Marker-Zeile in der
-# Roadmap, der structure-Block und der targets-Block samt
+# Bereichs-Praefix-Glob der adr-Klasse, der planning-Block samt Marker-Zeile und
+# waves-Faehigkeit in der Roadmap, der structure-Block und der targets-Block samt
 # Werkzeug-Teil (er entsteht mit dem naechsten Lauf, die Zeile in harness/README.md
 # darauf nicht); die Regeln mit dem Adaptions-Block als Quelle
 # fuehrt die Vorlage nicht.
@@ -210,11 +214,52 @@ matrix:
   exempt-paths: ["docs/plan/adr/README.md", "docs/reviews/**"]
   exclude-sections: [Geschichte]
 # planning (hermetisch, kein git): Ruhe-Marker der Roadmap gegen in-progress/; Herkunft und
-# Grenze im Kopfkommentar oben.
+# Grenze im Kopfkommentar oben. Die waves-Faehigkeit haelt zusaetzlich die Bijektion zwischen den
+# Zeigern unter "## Offene Wellen" und den flachen Welle-Dateien in dir — in beiden Richtungen
+# unter dem Grund-Code wave-drift — und, als Folge derselben Aktivierung, dieselbe Bijektion fuer
+# "## Abgeschlossene Wellen" gegen die Ergebnisnotizen im Ruheort (wave-unregistered/
+# wave-results-missing). Ein frisches Ziel startet mit dem Ruhe-Marker und einer leeren
+# Wellen-Menge: null Zeiger, null Dateien, 0 Befund(e).
 planning:
   roadmap: docs/plan/planning/in-progress/roadmap.md
   heading: "## Offene Wellen"
   marker: "Nichts in Arbeit."
+  # waves (Faehigkeit desselben Moduls, d-check >= v0.91.0). Die beiden Globs sind PFLICHT: Die
+  # Wellen-Kennung beginnt mit wave- (die Setzung dieser Vorlage), der Werkzeug-Default ist
+  # welle-*.md / welle-*-results.md — ohne die zwei Zeilen findet waves keine Welle-Datei und
+  # bleibt still.
+  # GRENZE (d-check >= v0.91.0): Die Kennung liest waves als literales Glob-Praefix plus
+  # folgende Ziffernfolge (wave-1-basis -> wave-1). Eine Kennung ohne Ziffern — ein reiner Name
+  # nach der Kennungs-Form der Vorlage, etwa wave-cache-warmup — liest es nicht: Datei ohne
+  # Zeiger und Zeiger ohne Datei bleiben dann still. Beginnt ein Ziel seine Wellen-Kennungen in
+  # Namens-Form, ist die Listen-Haelfte von "## Offene Wellen" ungewaechtert — im Gate-Index
+  # benennen (harness/README.md oder die Sensor-Datei unter harness/sensors/, Abschnitt Grenze).
+  waves:
+    dir: docs/plan/planning
+    glob: 'wave-*.md'
+    results-glob: 'wave-*-results.md'
+    mode: many
+# Stellen-Abgleich der Umgebungs-Zusage — derselbe Pin an mehreren Stellen
+# (Baseline-Regelwerk `modul-14-docker-harness.md` §Zwei Pruefungen derselben
+# Zusage). Aktivieren, sobald ein Pin an zwei Stellen steht — hier bis dahin
+# verfuegbar, ohne Gegenstand: ein frisches Ziel traegt einen Pin an einer Stelle.
+# Je Quelle ein Ausdruck
+# mit GENAU EINER Fanggruppe; verglichen wird byte-genau (`1.23` ist nicht
+# `1.23.0`), die Fanggruppe legt fest, wie fein. Der Pin unten ist ein Beispiel
+# (Go-Version im Base-Image des `Dockerfile` und in der `go`-Direktive von
+# `go.mod`) — Name, Dateien und Ausdruecke an das Repo anpassen. Den Pin des Pruefwerkzeugs selbst (DCHECK_DIGEST) aufnehmen, sobald
+# er an einer zweiten Stelle steht (etwa im CI-Workflow). Positiver Beleg, dass das
+# Modul lief: die Zeile `pinsync: <P> Pin(s) geprueft` in der Ausgabe — fehlt sie,
+# ist der Block nicht aktiv (zwei Schritte, oben), und eine Abweichung bleibt still.
+# Das Laufzeit-Gate (installierte Werkzeuge tragen den Pin) kann d-check nicht
+# leisten: es startet keine Programme. Ziel-Form dafuer:
+# `harness/sensors/environment-check.template.md`.
+# pinsync:                                                              # + `pinsync` in `modules` aufnehmen
+#   pins:
+#     - name: go
+#       sources:
+#         - {file: Dockerfile, pattern: '^FROM golang:([0-9]+\.[0-9]+)'}
+#         - {file: go.mod, pattern: '^go ([0-9]+\.[0-9]+)'}
 # targets (hermetisch, kein git): jedes Make-Target hat eine Tabellenzeile im Gate-Index und
 # jede Zeile ein Target; Herkunft und Grenzen im Kopfkommentar oben.
 targets:
