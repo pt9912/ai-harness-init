@@ -17,6 +17,7 @@ Welle-Dateien; woran gearbeitet wird, sagt das `Welle:`-Feld der Slices in
 nicht hier.
 
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
+- [welle-baseline-sprung-v7-0-0 — Baseline-Sprung v6.18.1 → v7.0.0](../welle-baseline-sprung-v7-0-0.md)
 
 **In Arbeit:** wellenlose Arbeit — [`in-progress/`](../in-progress) trägt den
 Slice `slice-gates-fastpfad-ueber-stempel` (`ls docs/plan/planning/in-progress/slice-*.md`
