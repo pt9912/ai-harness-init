@@ -109,7 +109,7 @@ als Eintrags-Zug trägt C7, siehe unten) — kein stiller Zug.
 
 ## 2. Definition of Done
 
-- [ ] **(1) Der Emitter trägt die v7-Formen:** die sieben Vorlagen-Namen in
+- [x] **(1) Der Emitter trägt die v7-Formen:** die sieben Vorlagen-Namen in
       [`internal/emit/templates.go`](../../../../internal/emit/templates.go)
       (case-Zeilen, Konstanten, Link-Texte — einschließlich der zwei
       `v6.18.1`-Kommentar-Stellen, Zeilen 1056/1135), die
@@ -121,32 +121,64 @@ als Eintrags-Zug trägt C7, siehe unten) — kein stiller Zug.
       `internal/emit/templates/{agents,enforce,commands}` — `go test ./...`
       grün, `make test-bats` trägt keinen Befund mehr in den
       C1-Fixtur-Fällen **17/19/20/105–108**.
-- [ ] **(2) Die 145 `target-missing`-Verweise zeigen auf die neuen Pfade** —
+- [x] **(2) Die 145 `target-missing`-Verweise zeigen auf die neuen Pfade** —
       `make docs-check` meldet nach dem Zug keinen Befund der Klasse
       `target-missing` mehr (Basismessung am Stand nach C1:
       `d-check: 2988 Datei(en) geprüft, 145 Befund(e)`, 2026-11-25); die
       übrigen Befund-Klassen der Cluster C3–C7 tragen deren DoD, §7 nennt die
       verbleibende Zahl am Kommando
       ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)).
-- [ ] **(3) Die Form-Fundlisten tragen die neuen Namen:** [`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
+- [x] **(3) Die Form-Fundlisten tragen die neuen Namen:** [`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)
       (Fundliste im Vorgang — Messung nach dem Zug, [`MR-058`](../../../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)),
       [`MR-059`](../../../../harness/conventions.md#mr-059--jede-kennungs-erkennung-trägt-die-zugelassenen-formen-die-fundliste-steht-im-vorgang),
       [`MR-078`](../../../../harness/conventions.md#mr-078--wellenlose-slices-werden-bei-der-eigenen-closure-archiviert)
       (die `archiv.zip`-Form erbt die `archive.zip`-Form im emittierten Stub);
       die [`MR-030`](../../../../harness/conventions.md#mr-030--der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen)-Aussage
       bleibt bewusst unberührt (Urteil oben, sie trägt C7).
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow ([`AGENTS.md`](../../../../AGENTS.md) §6), kein
       Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — Beleg oder
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — Beleg oder
       „keine Beobachtung angefallen" in §7; kein Zähler wird gesetzt, er folgt
       aus den Dateien.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) prüft die nächste
       Welle-Closure ([`welle-baseline-sprung-v7-0-0`](../welle-baseline-sprung-v7-0-0.md),
       auch für Slices ohne Wellen-Zugehörigkeit).
+
+**Belege der Häkchen (Closure 2026-11-25, Planner in eigenem Kontext,
+[`AGENTS.md`](../../../../AGENTS.md) §3.10):**
+
+- *(1) Emitter-Formen:* Emit-Zug `010bc6bd` (61 Dateien — sieben
+  Vorlagen-Namen, `fremdeKennung`-Regexp, Namens-Form in der emittierten
+  `d-check.yml`, Archiv-Keying) und Heilung `e20d8e7c` (F-1/F-2: Rezept
+  `"$(WAVE)"`, Dogfood-Variable); `make test-bats` →
+  `585 Fall/Faelle, 0 Befund(e)` (kein Rest-Befund in den C1-Fixtur-Fällen
+  **17/19/20/105–108**) und `go test ./...` grün — beides am Stand
+  `e20d8e7c` (`gates-passed.head` deckt `e20d8e7c`); Review
+  „Emissions-Komplett-Verdikt (7 Renames) — geprüft, ohne Befund".
+- *(2) Verweis-Zug:* `0a080df5` (76 Dateien); `make docs-check` →
+  `d-check: 2989 Datei(en) geprüft, 0 Befund(e)` am Stand nach dem Zug
+  (§7 Implementer-Übergabe, 2026-11-25) — kein `target-missing`-Befund der
+  Basismessung (`d-check: 2988 Datei(en) geprüft, 145 Befund(e)`) mehr;
+  die frische Messung der Paarungs-Prüfung steht in §7.
+- *(3) Fundlisten:* Emit- und Verweis-Zug samt Messung nach dem Vorgang
+  ([`MR-058`](../../../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)-Form)
+  — `0a080df5` plus Review-Negativbefunde „`MR-057`/`MR-058`-Messung …
+  frisch reproduziert", „`MR-059` … byte-gleich unberührt"; der
+  `archive.zip`-Form-Erbe an
+  [`MR-078`](../../../../harness/conventions.md#mr-078--wellenlose-slices-werden-bei-der-eigenen-closure-archiviert)
+  verifiziert (F-4, INFO — Vorgang `0a080df5`, Inhalt getragen).
+- *Review:* `974a8e71` — Report
+  [`docs/reviews/2026-11-25-slice-c2-template-renames-und-kennungs-formen-v7-0-0.md`](../../../../docs/reviews/2026-11-25-slice-c2-template-renames-und-kennungs-formen-v7-0-0.md);
+  HIGH 1 / MEDIUM 1 (F-1/F-2, geheilt `e20d8e7c`) · LOW 1 · INFO 3.
+- *Closure-Notiz + Register + Risiko-Ausgänge:* dieser Commit —
+  [`BEO-ALL/interface-formzug-ohne-rezept-nachziehung`](../observations/BEO-ALL/interface-formzug-ohne-rezept-nachziehung/observation.md)
+  neu angelegt, ein Beleg.
+- *Paarungen:* geprüft in der Paarungs-Prüfung nach dem `git mv` (§7),
+  zusätzlich Prüfung der Welle-Closure.
 
 ## 3. Plan (vor Code)
 
@@ -213,17 +245,21 @@ Träger der Fall-Urteile.
 - **R1 — Die `emitteddocs`-/Template-Fixtures tragen Form-Verträge je Sektion**
   (die sieben Befund-Zusagen des C1-Zugs, Fall-Klassen 17/19/20/105–108): der
   Form-Zug könnte je Form eine Test-Nachziehung brauchen, und eine Zusage, die
-  unter dem Zug ohne Nachziehung grün bleibt, bricht. — **Ausgang:** erwartbar
-  **entfallen** — der Zug trägt je Form die Fixtur-Nachziehung mit (die
-  Fixtures messen den realen v7-Satz als Quelle, nicht eine nachgebaute
-  Fixtur); bleibt eine Zusage ohne Nachziehung grün, wird sie an der Stelle
-  benannt und der Ausgang geändert (dann: weitere Öffnung → Register).
+  unter dem Zug ohne Nachziehung grün bleibt, bricht. — **Ausgang (2026-11-25):**
+  **entfallen** — die Fixtures messen den realen v7-Satz als Quelle; der Zug
+  trug je Form die Fixtur-Nachziehung mit (`go test ./...` und
+  `make test-bats` → `585 Fall/Faelle, 0 Befund(e)` am Stand nach
+  `e20d8e7c`, kein Rest-Befund in den C1-Fixtur-Fällen
+  17/19/20/105–108). Der eine Bruch (F-1) lag nicht an einer Fixtur,
+  sondern an der Rezept-Zeile, die kein Fixtur-Vertrag trägt — Eigen-Eintrag
+  ins Register (§7), keine Fixture-Lücke.
 - **R2 — [`MR-091`](../../../../harness/conventions.md#mr-091--ab-neun-fällen-läuft-die-mutations-probe-eines-slice-über-einen-ci-branch-dessen-ergebnis-job-schreibt)
   Setzung 1 (Mutations-Probe eines Slices über CI-Branch ab neun Fällen) ist im
   geplanten roten Welle-Zwischenstand strukturiert unerfüllbar** — die
   geplante rote `test-bats`-Fläche bricht den Grün-Vorlauf je Shard-Kopie
   fail-closed, bevor ein Fall urteilt (C1-Lern-Zeile, 0 Fall-Urteile in drei
-  Läufen). — **Ausgang:** **weiter offen** — die **Welle-Form** trägt den
+  Läufen). — **Ausgang (2026-11-25):**
+  **weiter offen** — die **Welle-Form** trägt den
   Beleg: der kollektive CI-Sweep nach der Heilung (Anker der Fälle zielen auf
   den Bestand, [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)),
   der Lese-Schritt der [`welle-baseline-sprung-v7-0-0`](../welle-baseline-sprung-v7-0-0.md)-Closure
@@ -232,16 +268,26 @@ Träger der Fall-Urteile.
   ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)
   Form — „an einem angenommenen Eintrag wird nichts nachträglich inhaltlich
   geändert"): die Nachziehung an [`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)/[`MR-059`](../../../../harness/conventions.md#mr-059--jede-kennungs-erkennung-trägt-die-zugelassenen-formen-die-fundliste-steht-im-vorgang)/[`MR-078`](../../../../harness/conventions.md#mr-078--wellenlose-slices-werden-bei-der-eigenen-closure-archiviert)
-  liest sich als Inhalts-Änderung. — **Ausgang:** erwartbar **entfallen** —
-  die Nachziehung trägt die **datierte Fundliste** (Messstelle im `Löst auf`-/
-  `Grenze`-Feld, [`MR-058`](../../../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)-Form),
-  nicht die Aussage; erweist sich eine Aussage (nicht die Liste) als betroffen,
-  ist sie **eingetreten** und trägt C7.
+  liest sich als Inhalts-Änderung. — **Ausgang (2026-11-25):**
+  **entfallen** — die Nachziehung trug die **datierte Fundliste**
+  (Messung nach dem Vorgang, [`MR-058`](../../../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)-Form);
+  die Review-Negativbefunde halten sie frisch:
+  [`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)/[`MR-058`](../../../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)
+  am 2026-11-25 reproduziert,
+  [`MR-059`](../../../../harness/conventions.md#mr-059--jede-kennungs-erkennung-trägt-die-zugelassenen-formen-die-fundliste-steht-im-vorgang)
+  byte-gleich unberührt (Fundliste per Verweis). Der einzige
+  Begründungs-Zusatz an
+  [`MR-078`](../../../../harness/conventions.md#mr-078--wellenlose-slices-werden-bei-der-eigenen-closure-archiviert)
+  ist vom Plan DoD (3) getragen und steht als Register-Facette (§7) —
+  keine betroffene Aussage, deshalb kein C7-Zug.
 - **R4 — Der `make docs-check`-Zwischenstand trägt nach diesem Zug weiter
   Befunde der übrigen Cluster (C3–C7)** — C2 könnte als „der
-  Welle-Zwischenstand ist grün" gelesen werden. — **Ausgang:** erwartbar
-  **entfallen** — §7 nennt die verbleibende Zahl am Kommando und ihre
-  Cluster-Zuordnung ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)).
+  Welle-Zwischenstand ist grün" gelesen werden. — **Ausgang (2026-11-25):**
+  **entfallen** — am Stand nach dem Verweis-Zug meldet `make docs-check`
+  keinen Befund (`d-check: 2989 Datei(en) geprüft, 0 Befund(e)`,
+  2026-11-25, §7 Implementer-Übergabe) — es gibt keine verbleibende
+  Befundzeile und keine C3–C7-Zuordnung zu benennen; die frische Messung
+  der Paarungs-Prüfung steht in §7.
 
 ## 7. Closure-Notiz
 
@@ -270,7 +316,53 @@ docs-check-Zeilen je Cluster (R4) trägt dieser Abschnitt am Kommando
   nicht still grün.
 - **docs-check am Stand nach dem Zug: `d-check: 2989 Datei(en) geprüft, 0 Befund(e)`** —
   keine verbleibende Befundzeile, keine C3–C7-Zuordnung nötig (R4 entfallen am Kommando,
-  [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)).
+  ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)).
+
+**Closure-Notiz (Planner, 2026-11-25, eigener Kontext —
+[`AGENTS.md`](../../../../AGENTS.md) §3.10).** Regeln dieser Sektion:
+Baseline-Regelwerk `modul-05-planning-harness.md` §Closure- und
+Lerneintrag-Regeln · `modul-06-roadmap.md` §Das Beobachtungs-Register.
+
+- **Was hat funktioniert:** der Form-Zug zog in einem Zug — Emit-Zug
+  `010bc6bd` (61 Dateien) und Verweis-Zug `0a080df5` (76 Dateien) tragen
+  denselben Bestandsstand; die Fixtures blieben am realen v7-Satz als
+  Quelle; der Review-Report meldet in allen elf Negativbefunden
+  „geprüft, ohne Befund" — darunter die Emissions-Komplett-Form der sieben
+  Renames und der 145-Verweis-Nachzug (Stichprobe 6 Klassen).
+- **Was ging anders als geplant:** der `WAVE=`-Formzug trug am Emissionssort
+  nur zwei von drei Beinen (F-1/F-2) — die Rezept-Zeile `$(WELLE)` lief
+  neben der gezogenen Kopfzeile weiter, und die Dogfood-Make-Variable trug
+  die alte Form; beides geheilt `e20d8e7c` (Rezept `"$(WAVE)"`,
+  Dogfood-Variable, Lauf-Zahn-Beleg Vorher/Nachher in der
+  Implementer-Übergabe oben). Die Mutations-CI-Probe bleibt in der
+  Welle-Form angelegt (R2, weiter offen) — lokal trägt
+  `make mutate-greift` → `775 Fall/Faelle, 775 greifen` am Stand nach
+  `e20d8e7c` die Anker-Treffer, nicht das Wächter-Rot
+  ([`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit)
+  §Grenze).
+- **Lern-Eintrag (Steering-Loop, gezählt, nicht verkörpert — kein
+  `liegt in`-Feld):** **Interface-Formzug ohne Rezept-Nachziehung** —
+  der Formzug am Emissions-Interface zog die Kopfzeilen; eine Rezept-Zeile,
+  die dieselbe Kennungs-Form weiterreichte, blieb am Stand davor; der
+  Text-Sensor über die Kopfzeile blieb grün und kein Lauf-Zahn las die
+  Rezept-Zeile am Aufruf. Erstes Auftreten — Eigen-Eintrag
+  [`BEO-ALL/interface-formzug-ohne-rezept-nachziehung`](../observations/BEO-ALL/interface-formzug-ohne-rezept-nachziehung/observation.md)
+  (Stand: offen, Beleg
+  `evidence/slice-c2-template-renames-und-kennungs-formen-v7-0-0.md`);
+  die sechs Finding-Klassen des Reviews stehen dort als Facetten
+  desselben Zugs. Zur Abgrenzung: der nächste Nachbar
+  [`BEO-ALL/waechter-haelt-config-text-wirkung-im-ziel-ohne-lauf-zahn`](../observations/BEO-ALL/waechter-haelt-config-text-wirkung-im-ziel-ohne-lauf-zahn/observation.md)
+  misst die *Bindung* einer emittierten Skelett-Config (lint-, Format-,
+  pytest-Bindungen), nicht die Form-Zieh-Kette am Tool-Interface.
+- **Archivierung:** entfällt hier — der Slice gehört
+  [`welle-baseline-sprung-v7-0-0`](../welle-baseline-sprung-v7-0-0.md); deren
+  Closure archiviert die Zeitdokumente als Schritt 4 ihrer Prozedur
+  ([`MR-078`](../../../../harness/conventions.md#mr-078--wellenlose-slices-werden-bei-der-eigenen-closure-archiviert)
+  trägt die wellenlose Hälfte, nicht diese Zugehörigkeit); kein
+  `archive-slice`-Zeiger (Form des Vorgänger-Slices).
+- **Folge-Slices:** keiner aus diesem Slice — C3–C7 sind Tafel-Adressen der
+  Vorbereitungs-Tafel, ihre Slice-Dateien entstehen beim jeweiligen Schnitt.
+- **Risiken aus §6:** jede Zeile trägt einen Ausgang — siehe §6.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
