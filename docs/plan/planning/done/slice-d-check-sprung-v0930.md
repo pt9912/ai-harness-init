@@ -86,7 +86,7 @@ Präzedenz [`slice-d-check-pin-bringt-den-go-sicherheitsfix`](../done/slice-d-ch
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). *(Häkchen und Ergebnis in Commit 3, nach dem `git mv` — die Paarungen suchen in `done/`.)*
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft; Ergebnis in §7, nach dem `git mv` (die Paarungen suchen in `done/`).
 
 **Belege der Häkchen (Closure 2026-11-25, Planner in eigenem Kontext, [`AGENTS.md`](../../../../AGENTS.md) §3.10):**
 
@@ -226,8 +226,18 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   ist nicht gebaut (wie beim Vorgänger-Slice bewusst nicht vollzogen).
 - **Folge-Slices:** keiner.
 - **Risiken aus §6:** jede Zeile mit Ausgang — siehe §6.
-- **Drei Paarungen:** *(Ergebnis in Commit 3, nach dem `git mv` — diesbezüglich die Haken der
-  DoD-Liste §2.)*
+- **Drei Paarungen (geprüft am 2026-11-25, nach dem `git mv`):**
+  - *(a) Anker:* §7 trägt kein `liegt in`-Feld — der Steering-Loop-Eintrag ist gezählt, nicht
+    verkörpert; kein Gegenstand. Die im Register *verkörperte* Klasse
+    `baum-hash-deckt-nicht-jeden-pruefgegenstand` ist in einer ADR verkörpert, nicht in einem
+    `liegt in`-Feld — ebenfalls kein Gegenstand der Paarung; die Grenze trägt §7 (kein
+    `seit …`-Anker am Zielort, benannt).
+  - *(b) Folge-Slice:* die in §1 genannten übernehmenden Slices existieren im Lifecycle —
+    [`open/slice-baseline-vendorung-v7-0-0.md`](../open/slice-baseline-vendorung-v7-0-0.md) und
+    [`open/slice-baseline-delta-lesung-v7-0-0.md`](../open/slice-baseline-delta-lesung-v7-0-0.md). Grün.
+  - *(c) Register:* beide in §7 genannten Beobachtungen existieren und tragen je mindestens einen
+    Beleg — [`../observations/BEO-ALL/mutations-ci-gruenvorlauf-bricht-unter-last/observation.md`](../observations/BEO-ALL/mutations-ci-gruenvorlauf-bricht-unter-last/observation.md),
+    [`../observations/BEO-ALL/baum-hash-deckt-nicht-jeden-pruefgegenstand/observation.md`](../observations/BEO-ALL/baum-hash-deckt-nicht-jeden-pruefgegenstand/observation.md). Grün.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
