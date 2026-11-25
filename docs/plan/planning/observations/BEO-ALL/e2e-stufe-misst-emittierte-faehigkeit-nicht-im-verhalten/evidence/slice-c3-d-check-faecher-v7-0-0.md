@@ -1,0 +1,2 @@
+**Vorgang:** slice-c3-d-check-faecher-v7-0-0
+**Fund:** Die emittierte planning-`waves`-Fähigkeit trägt am grünen Start keine automatisierte Verhaltens-Probe: Stufe `planning_im_ziel` deklariert „NICHT gemessen: … die Faehigkeiten closure/waves des Moduls" (`docs/user/e2e-abdeckung.md`, Stufe 34, `full-smoke.sh:4578`); die rote Bijektions-Probe am emittierten Bestand liegt als Bruchprobe in Kopie, nicht als Stufe (R3 — weiter offen, Adresse Welle-Closure).
