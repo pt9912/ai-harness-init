@@ -172,6 +172,30 @@ dasteht.
 <!-- Erst nach Abschluss füllen; die Befundlage des roten Voll-Gate-Laufs (DoD 3)
 steht hier als Übergabe-Artefakt, bevor der git mv nach done/ liegt. -->
 
+**Befundlage des Voll-Gate-Laufs (DoD 3) — Übergabe-Artefakt an den
+Lesung-Bestand und die Cluster-Slices.** `make gates` rot (Exit 2); der erste
+gefallene Check stoppt die serielle Kante, die übrigen Checks einzeln gemessen
+(`make -k`), alle am Stand der drei Implementer-Commits `51649824`/`7afa252c`/`1477e06c`
+(Messung `make -k baseline-verify … span-check`, 2026-11-25):
+
+| Check | Zustand | Befundlage |
+|---|---|---|
+| `baseline-verify` | grün | `v7.0.0 OK — 55 Dateien (Integritaet + Vollstaendigkeit, netzlos)` |
+| `docs-check` | rot | `2986 Datei(en) geprüft, 146 Befund(e)` — **145 × `target-missing`** (Verweise in den abgetretenen `.harness/baseline/v6.18.1/`-Baum: Einträge unter `harness/conventions/`, `harness/sensors/`, `.harness/skills/reviewer.md` u. a.) + **1 × `planning-drift`** (Ruhe-Marker „Nichts in Arbeit." in [`roadmap.md`](roadmap.md) bei belegtem `in-progress/`) |
+| `lint` / `build` / `test` (go) | grün | `golangci-lint`, Dockerfile-`build`-Stage, `go test ./...` — alle `ok` |
+| `test-bats` | rot | 8 Fälle über zwei Fall-Klassen: **17/19/20** (Stub-Vorlagen: `archiv-stub-*`/`welle-results`-Namen in `templates/` des vendored Baums — die Rename-Paare des v7-Zugs) und **105–108** (Template-Fixture `courseSet`/Inventare, die den realen Vorlagen-Satz abbilden) — Heilung im Cluster C2; Fall **288** (Mutations-Fingerabdruck über den Baum) |
+| `shell-lint` / `ci-lint` | grün | shellcheck / actionlint ohne Meldung |
+| `comment-claims` | grün | `101 Datei(en) geprueft, 0 Befund(e)` |
+| `register-ausgang` | grün | `281 Eintraege, 81 ueber der Schwelle, 0 Befund(e)` |
+| `mutate-greift` | rot | `775 Fall/Faelle, 772 greifen, 3 Befund(e)` — Fälle **224**, **244**, **248**: `# files:`-Muster auf `archiv-stub-*.template.md` lösen gegen den Bestand nicht (die neuen Namen heißen `archive-stub-*` und `wave-*`) — Re-Anker im Cluster C2 |
+| `host-bin` / `span-check` | grün | Träger gebaut; `span-emit` schreibt, Ablageort git-ignoriert |
+
+Zu den zwei Resten, die der Lauf nicht trägt: die 7 Baseline-Zeiger unter
+`.claude/rules/` zeigen auf den abgetretenen `v6.18.1`-Baum (Symlink-Smoke
+Exit 1, 7 Befunde; Retargeting ist Out-of-Scope, Cluster C2/C7) und
+`internal/emit/templates.go` führt `v6.18.1` in zwei Kommentar-/Rezept-Stellen
+(Zeilen 1056–1057, 1135 — C2-Kennungs-Form-Zug).
+
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
 **Vorgelagert — Sub-Area-Wahl prüfen:** berührt sind `.harness/baseline/`
