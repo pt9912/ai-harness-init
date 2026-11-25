@@ -104,6 +104,7 @@ als Übergabe-Artefakt.
 | [`.d-check.yml`](../../../../.d-check.yml) | update | `sources`-Paar an den neuen Stand |
 | `.harness/baseline/<tag>/` | neu | committet vendored Baum aus dem Release-Asset (`make vendor-baseline`), `SHA256SUMS` frisch — [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
 | `.harness/baseline/v6.18.1/` | update (Abtritt) | der alte Baum wandert mit dem Sprung ab |
+| `.claude/rules/*.md` (7 Baseline-Zeiger) | update (nachgetragen — Nachlieferung) | die 7 Zeiger hängen am abgetretenen `v6.18.1`-Baum dangeln und brachen den CI-Vorlauf der Mutations-Probe deterministisch (`sha256sum … No such file or directory` → `Schlüssel nicht berechenbar`); ohne Retargeting ist kein grüner CI-Beleg urteilbar — der CI-Vorlauf ist der Träger ([`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit)) |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update | §Baseline: `Stand:`-Zeile an den neuen Tag |
 | [`internal/emit/baumaussage.go`](../../../../internal/emit/baumaussage.go) | update | `InventurMessTag` an die `v7.0.0`-Form — die Inventur-Zuordnung trägt sonst den abgelösten Stand ([`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)) |
 | [`internal/emit/templates/d-check.yml`](../../../../internal/emit/templates/d-check.yml) | prüfung | die Baseline-Pin-Zeile der emittierten Konfig, falls sie geführt wird — verifizieren, dann an den neuen Tag ziehen |
@@ -195,6 +196,16 @@ Zu den zwei Resten, die der Lauf nicht trägt: die 7 Baseline-Zeiger unter
 Exit 1, 7 Befunde; Retargeting ist Out-of-Scope, Cluster C2/C7) und
 `internal/emit/templates.go` führt `v6.18.1` in zwei Kommentar-/Rezept-Stellen
 (Zeilen 1056–1057, 1135 — C2-Kennungs-Form-Zug).
+
+**Nachlieferung — Reste 1 geheilt (Retargeting).** Die 7 Baseline-Zeiger wurden
+auf `v7.0.0` umgehängt (je Zielpfad vorher einzeln per `test -f` geprüft — alle
+7 Regel-Dateien tragen unter `v7.0.0` denselben Namen, kein Umbenennen);
+Commit `e8b7e822`. Geheilt sind damit: der Symlink-Smoke-Befund (7 Befunde →
+0) und der CI-Vorlauf-Tod der Mutations-Probe (Fingerabdruck über die
+Zeiger-Ziele berechnet wieder; Working-Tree-Hash fehlerfrei). Die 145
+Verweis-Befunde des Doc-Gate bleiben die geplante rote Fläche (Cluster C2);
+das oben stehende „Reste"-Abhandlungssatz-Bild gilt für Reste 2
+(`templates.go`) unverändert.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
