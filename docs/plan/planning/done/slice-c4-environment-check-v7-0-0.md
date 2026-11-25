@@ -62,7 +62,7 @@ Standard-Pflichten je Slice:
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag — §7.
 - [x] Beobachtungs-Register ([`../observations/`](../../planning/observations/)) fortgeschritten — ein Verzeichnis neu (F-1-Fundklasse): je `observation.md`, `state.md`, `evidence/slice-c4-environment-check-v7-0-0.md` (§7).
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen) — je Zeile unten.
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) — von der Welle-Closure geprüft; im Repo der Wellen-Betriebs-Form — im Paarungs-Commit nach dem `git mv`, Ergebnis in §7.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) — von der Welle-Closure geprüft; im Repo der Wellen-Betriebs-Form — im Paarungs-Commit nach dem `git mv` getragen, Ergebnis in §7.
 
 ## 3. Plan (vor Code)
 
@@ -101,6 +101,12 @@ Der Emit-Zug hat die Vorlage im gebootstrappten Ziel abgelegt (`make smoke`-Bele
 - **Dogfood-Abwägung (LP3, Entscheidungs-Zeile):** *keine Kopie* der Sensor-Datei `environment-check.md` unter `harness/sensors/` — Klasse 3 (anderer Vorgang) und Klasse 2 (Bestand bleibt bewusst stehen), §1 zweiter Ausschluss: die Umgebungs-Zusage dieses Repos trägt der Docker-only-Deckel ([`AGENTS.md`](../../../../AGENTS.md) §3.9, [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)) mit `make traeger-pins-check`/`make traeger-fetch` je eigener Index-Zeile ([`harness/README.md`](../../../../harness/README.md) §Sensors, unberührt); **Weg B (kopieren) entfällt** — eine Vorlagen-Abbildung ohne Träger wäre ein behauptetes-Gate-Gegenstand ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Führt ein gebootstrapptes Ziel den Check selbst ein, ist das ein Ziel-Vorgang.
 - **Folge-Slices:** keine aus diesem Slice — C5–C7 sind Tafel-Adressen der [`welle-baseline-sprung-v7-0-0`](../welle-baseline-sprung-v7-0-0.md)-Tafel, ihre Slice-Dateien entstehen beim jeweiligen Schnitt (Form des Vorgänger-Slices).
 - **Risiken aus §6:** R1/R2/R3 entfallen, je Zeile ein Ausgang — R2 mit Grenze (oben).
+- **Drei Paarungen (geprüft am 2026-11-25, nach dem `git mv` — Form des Vorgänger-Slices):**
+  - *(a) Anker:* §7 trägt kein `liegt in`-Feld — der Lern-Eintrag ist gezählt, nicht verkörpert (Stand `offen`, Zähler 1). Grün.
+  - *(b) Folge-Slice:* §7 nennt keine Folge-Slice-Kennung; C5–C7 sind Tafel-Adressen (Form des Vorgänger-Slices). Grün.
+  - *(c) Register:* die eine in §7 genannte Beobachtung existiert als Verzeichnis und trägt einen nicht leeren Beleg — [`BEO-ALL/rot-beleg-einer-neuen-smoke-messtelle-nur-hinter-der-ersten-pruefung`](../observations/BEO-ALL/rot-beleg-einer-neuen-smoke-messtelle-nur-hinter-der-ersten-pruefung/) (1 Beleg). Grün.
+- **Ruhe-Marker:** [`roadmap.md`](../in-progress/roadmap.md) §Offene Wellen — `in-progress/` trägt nach dem `git mv` nur ihr `roadmap.md`; der Marker „Nichts in Arbeit." trifft den Zustand (Gegenstück der Form `c75c82ef` des c3-Zugs).
+- **Paarungen geprüft am 2026-11-25:** `make docs-check` → `d-check: 3009 Datei(en) geprüft, 0 Befund(e)` (frische Messung am Closure-Stand nach dem `git mv`; der Move-Stand trug 3009 Datei(en), 2 Befund(e) — die zwei Befundzeilen sind die hier getragenen Paarungs-Hebes: DoD-Häkchen der Paarungen und Ruhe-Marker).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
