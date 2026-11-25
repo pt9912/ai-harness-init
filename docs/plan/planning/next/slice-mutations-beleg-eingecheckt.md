@@ -41,7 +41,7 @@ Grüenvorlauf-Festlegung der registrierten Klasse ·
 ([`MR-091`](../../../../harness/conventions.md#mr-091--ab-neun-fällen-läuft-die-mutations-probe-eines-slice-über-einen-ci-branch-dessen-ergebnis-job-schreibt))
 landet dessen Ergebnis-Fassung (`mutate-ergebnis.txt`) **eingespeichert und
 getrackt** — Design-Vorschlag als Ausgangslage, der Architect verfeinert:
-Ablageort `docs/reviews/mutate/`, Dateiname `<slice-kennung>-<sha8>.txt`
+Ablageort `docs/reviews/mutate/` <!-- d-check:ignore (der Pfad entsteht erst im Implementations-Lauf dieses Slice) -->, Dateiname `<slice-kennung>-<sha8>.txt`
 (volle Kennung im Dateinamen, wie die Review-Reports ihre Ablage-Regel
 tragen, [`MR-072`](../../../../harness/conventions.md#mr-072--ein-review-report-bekommt-beim-archivieren-einen-stub-entgegen-dem-wortlaut-der-ziel-form));
 geschrieben vom **Konsum-Schritt** — der Verifier liest das Branch-File nach
@@ -62,7 +62,7 @@ weil der BEFUND-Beleg des zweiten Laufs genau diese Klasse belegt.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
-- **Kein Turn-Gate und kein Stop-Hook-Stempel im Sinne von ADR-0083** —
+- **Kein Turn-Gate und kein Stop-Hook-Stempel im Sinne von [`ADR-0083`](../../../../docs/plan/adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md)** —
   ein anderer Vorgang: das Handoff-Gate bindet den Arbeitsbaum an einen
   grünen `make gates`-Lauf (Klasse: Commit-Bindung an den eigenen Zustand);
   hier geht es um den Lauf-Beleg eines CI-Werkzeugs über Branches hinweg.
@@ -77,7 +77,7 @@ weil der BEFUND-Beleg des zweiten Laufs genau diese Klasse belegt.
   stehen: die Ergebnisform an der Branch-Wurzel und der Tip-Skip für
   reine Ergebnis-Commits sind geprüft (git-Stub-Tests, Grenze im Kopf von
   [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md));
-  der Beleg liest dieselbe Form, nur aus `docs/reviews/mutate/` statt von
+  der Beleg liest dieselbe Form, nur aus docs/reviews/mutate/ statt von
   der Branch-Wurzel.
 - **Keine Auslagerung des Belegs in den git-eigenen Isolations-Schlüssel** —
   [`ADR-0035`](../../../../docs/plan/adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md) trägt
@@ -88,7 +88,7 @@ weil der BEFUND-Beleg des zweiten Laufs genau diese Klasse belegt.
 ## 2. Definition of Done
 
 - [ ] ADR des Architects `Accepted` und abgelegt: der Form- und
-      Träger-Beschluss — Ablageort `docs/reviews/mutate/`, Namensform mit
+      Träger-Beschluss — Ablageort `docs/reviews/mutate/` <!-- d-check:ignore (der Pfad entsteht erst im Implementations-Lauf dieses Slice) -->, Namensform mit
       voller Slice-Kennung, Konsum-Schritt-Sender (wer schreibt, woraus,
       in welchem Rollen-Übergang) — Übergabe Planner → Architect →
       Planner gemäß Modul 8, vor der Implementation (Vorgänger-Muster
@@ -127,7 +127,7 @@ weil der BEFUND-Beleg des zweiten Laufs genau diese Klasse belegt.
 |---|---|---|
 | `docs/plan/adr/NNNN-<titel>.md` | neu (Architect) | Form- und Träger-Beschluss des Beleg-Ablageorts; Aufgabeneinheit ist Übergabe P → A → P |
 | `docs/reviews/mutate/slice-d-check-sprung-v0930-<sha8>.txt` (2 Dateien: Grün-Lauf, BEFUND-Lauf) | neu | der Retro-Beleg, aus dem Job-Log bzw. dem Branch-File entnommen, je Kopf mit Ausgabe-Kanal und Branch-Spitze |
-| `docs/reviews/mutate/` als Verzeichnis | neu | der Ablageort selbst; `docs/reviews/**` ist bereits außerhalb des Doc-Gate-Scans (`.d-check.yml`, `exempt-paths`) |
+| `docs/reviews/mutate/` als Verzeichnis <!-- d-check:ignore (entsteht erst im Implementations-Lauf) --> | neu | der Ablageort selbst; `docs/reviews/**` ist bereits außerhalb des Doc-Gate-Scans (`.d-check.yml`, `exempt-paths`) |
 | [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md) §CI-Branch | update | die Form-Zeile: Ablageort + Wächter-Grenze, in der bestehenden Ergebnisform-Prosa |
 | `../observations/BEO-ALL/mutations-ci-gruenvorlauf-bricht-unter-last/evidence/` | update | eine weitere Evidence-Datei je belegten Auftritt (BEFUND-Lauf) |
 
