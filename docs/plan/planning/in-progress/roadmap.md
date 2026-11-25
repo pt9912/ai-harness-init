@@ -23,7 +23,7 @@ Die Welle [welle-baseline-sprung-v7-0-0](../welle-baseline-sprung-v7-0-0.md) war
 ihren Start, [welle-09](../welle-09-modul-15-konformitaet.md) bleibt offen.
 
 **In Arbeit:** [`in-progress/`](../in-progress) trägt
-[slice-c2-template-renames-und-kennungs-formen-v7-0-0](../in-progress/slice-c2-template-renames-und-kennungs-formen-v7-0-0.md)
+[slice-c2-template-renames-und-kennungs-formen-v7-0-0](../done/slice-c2-template-renames-und-kennungs-formen-v7-0-0.md)
 (Welle-Bündel welle-baseline-sprung-v7-0-0, `Verantwortlich:` pt9912).
 
 ## Nächste Wellen
