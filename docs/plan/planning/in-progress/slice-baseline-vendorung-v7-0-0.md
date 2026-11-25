@@ -201,11 +201,18 @@ Exit 1, 7 Befunde; Retargeting ist Out-of-Scope, Cluster C2/C7) und
 auf `v7.0.0` umgehängt (je Zielpfad vorher einzeln per `test -f` geprüft — alle
 7 Regel-Dateien tragen unter `v7.0.0` denselben Namen, kein Umbenennen);
 Commit `e8b7e822`. Geheilt sind damit: der Symlink-Smoke-Befund (7 Befunde →
-0) und der CI-Vorlauf-Tod der Mutations-Probe (Fingerabdruck über die
-Zeiger-Ziele berechnet wieder; Working-Tree-Hash fehlerfrei). Die 145
-Verweis-Befunde des Doc-Gate bleiben die geplante rote Fläche (Cluster C2);
-das oben stehende „Reste"-Abhandlungssatz-Bild gilt für Reste 2
-(`templates.go`) unverändert.
+0) und die `sha256sum`-Hälfte des CI-Vorlauf-Tods der Mutations-Probe
+(Fingerabdruck über die Zeiger-Ziele berechnet wieder; Working-Tree-Hash
+fehlerfrei). **Der CI-Vorlauf bricht weiter** — an den Fall-Ankern 224/244/248
+(`# files: …archiv-stub-*.template.md` löst gegen den `v7.0.0`-Baum nicht, Exit
+2 in 2–3 s je Shard; CI-Run 45661467791, `mutate-ergebnis.txt` am
+nachgelieferten Stand `060e7e87` konsumiert — Urteil „BEFUND (kein Ergebnis im
+Log)" über alle 62 Fälle, Wanduhr 205 s —, beide `mutate/**`-Branches danach
+geräumt): dieselben drei Fälle, die `mutate-greift` lokal meldet, keine neue
+Befundklasse. Die Re-Anker gehören dem C2-Zug (MR-071), nicht diesem Slice.
+Die 145 Verweis-Befunde des Doc-Gate bleiben die geplante rote Fläche
+(Cluster C2); die Reste-2-Stelle (`internal/emit/templates.go`, Zeilen
+1056–1057, 1135) unverändert.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
