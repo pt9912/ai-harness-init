@@ -104,12 +104,12 @@ als Übergabe-Artefakt.
 | [`.d-check.yml`](../../../../.d-check.yml) | update | `sources`-Paar an den neuen Stand |
 | `.harness/baseline/<tag>/` | neu | committet vendored Baum aus dem Release-Asset (`make vendor-baseline`), `SHA256SUMS` frisch — [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
 | `.harness/baseline/v6.18.1/` | update (Abtritt) | der alte Baum wandert mit dem Sprung ab |
-| `.claude/rules/*.md` (7 Baseline-Zeiger) | update (nachgetragen — Nachlieferung) | die 7 Zeiger hängen am abgetretenen `v6.18.1`-Baum dangeln und brachen den CI-Vorlauf der Mutations-Probe deterministisch (`sha256sum … No such file or directory` → `Schlüssel nicht berechenbar`); ohne Retargeting ist kein grüner CI-Beleg urteilbar — der CI-Vorlauf ist der Träger ([`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit)) |
+| `.claude/rules/*.md` (7 Baseline-Zeiger) | update (nachgetragen — Nachlieferung) | die 7 Zeiger hingen am abgetretenen `v6.18.1`-Baum und brachen den CI-Vorlauf der Mutations-Probe deterministisch (`sha256sum … No such file or directory` → `Schlüssel nicht berechenbar`); die Pflicht, die den CI-Beleg urteilbar macht, ist die Probe vor der Verifikation ([`MR-091`](../../../../harness/conventions.md#mr-091--ab-neun-fällen-läuft-die-mutations-probe-eines-slice-über-einen-ci-branch-dessen-ergebnis-job-schreibt) Setzung 1) — der Zugehörigkeits-Anker der Fälle bleibt an [`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit) |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | update | §Baseline: `Stand:`-Zeile an den neuen Tag |
 | [`internal/emit/baumaussage.go`](../../../../internal/emit/baumaussage.go) | update | `InventurMessTag` an die `v7.0.0`-Form — die Inventur-Zuordnung trägt sonst den abgelösten Stand ([`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)) |
 | [`internal/emit/templates/d-check.yml`](../../../../internal/emit/templates/d-check.yml) | prüfung | die Baseline-Pin-Zeile der emittierten Konfig, falls sie geführt wird — verifizieren, dann an den neuen Tag ziehen |
 | [`internal/emit/templates/baseline-verify.sh`](../../../../internal/emit/templates/baseline-verify.sh) | prüfung (erwartet keine Änderung) | tag-agnostisch verifiziert: `<tag>`-Politik mit keinem Pin-Wert im Skript — eine Änderung nur, wenn der neue Baum sie verlangt |
-| `test/sources-pin.bats` | update | Kopplungs-Fälle gegen die neue Quelle (bestehende Test-Klasse) |
+| `test/sources-pin.bats` | prüfung (erwartet keine Änderung) | die Kopplungs-Fälle lesen die fail-closed gepinnte Quelle — der Sprung tritt die Quelle an, die Fälle bleiben byte-gleich; geprüft ohne Befund (Review „Pin-Kopplung"), nicht geändert — Berichtigung der vorherigen `update`-Fassung (Review F-5) |
 
 **Ansatz:** Die fünf Pin-Stellen ziehen in **einem** Zug — einzeln würde die
 fail-closed-Kopplung (die einen Teil der Stellen rot färbt, solange einer
@@ -215,14 +215,30 @@ gepasst — `archiv-stub-*`→`archive-stub-*`, `<welle-id>`→`<wave-id>`,
 `archiv.zip`→`archive.zip`): Commit `88f85db3`, Beleg
 `make mutate-greift` → `775 Fall/Faelle, 775 greifen, 0 Befund(e)`;
 `test-bats`-Fall 288 (Mutations-Fingerabdruck) damit mitgeheilt (8 → 7
-Befunde). **CI-Probe dritter Lauf (45666751330, geprüfter Commit `6a80cf3d`):**
-`Fallmenge: 65` (62 + die drei umgebauten Fall-Dateien), `Wanduhr gesamt:
-473 s`, alle 11 Shards grün mit echten Fall-Läufen (200–300 s je Shard, kein
-Vorlauf-Tod mehr) — und trotzdem `Urteil: BEFUND` über „kein Ergebnis im Log"
-aller 65: die Ergebnis-Aggregation liest die Shard-Belege erneut leer (dritte
-Wiederholung derselben Lese-Lücke, jetzt ohne Vorlauf-Bruch). Kein Rerun —
-dieselbe Klasse ist schon zweimal beobachtet; Träger der Heilung ist der
-Treiber-/Workflow-Zug, nicht dieses Slice. `mutate-ergebnis.txt` konsumiert,
+Befunde). **CI-Probe dritter Lauf (Run 45666751330, geprüfter Commit
+`6a80cf3d`) — Berichtigung** ([`docs/reviews/2026-11-25-slice-baseline-vendorung-v7-0-0.md`](../../../../docs/reviews/2026-11-25-slice-baseline-vendorung-v7-0-0.md),
+Commit `eba40817` — Findings F-1/F-2, Beleg-Methode zu F-1/F-2): die
+Shard-Artefakte des Laufs tragen **nicht** die vorher hier stehende Fassung
+(„alle 11 Shards success mit echten Fall-Läufen", „die Ergebnis-Aggregation
+liest die Shard-Belege erneut leer"), sondern ihr Gegenteil: **zehn**
+Shard-Jobs (0–9, nicht elf), **alle** mit `rc=2` und **keiner**
+`mutate: ok`-Zeile; je Shard brechen die vier Worker fail-closed im
+**Grün-Vorlauf** ab (`ABBRUCH — make test-bats ist in SEINER Kopie ohne
+Mutation rot`), die Vorlauf-Logs führen die sieben geplant-roten
+C2-Fixtur-Fälle **17/19/20/105–108** an. **Kein Fall lief, kein Fall
+urteilt — 0 Fall-Urteile in allen drei CI-Läufen** (`45655913161`,
+`45661467791`, `45666751330`). Der `ergebnis`-Schritt („Urteil: BEFUND" über
+„kein Ergebnis im Log" aller 65) las die Shard-Logs damit **richtig** — eine
+Aggregations-Lese-Lücke existiert in diesem Beleg **nicht**; der an dieser
+Stelle vorher genannte „Treiber-/Workflow-Zug" hat keinen Gegenstand und
+entfällt. Der reale Träger vor jedem Fall-Urteil ist die **geplante rote
+Fläche C2**: solange `test-bats` die Fixtur-Fälle 17/19/20/105–108 trägt,
+bricht der Grün-Vorlauf je Shard-Kopie fail-closed und macht die Probe —
+alle 65 Fälle, auch die re-angekerten **224/244/248** — **unurteilbar bis
+C2 (`test-bats`-Heilung)**; der lokale Beleg `make mutate-greift` →
+`775 Fall/Faelle, 775 greifen` hält ([`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit)
+§Grenze) den Anker-Treffer, nicht das Wächter-Rot.
+`mutate-ergebnis.txt` konsumiert,
 Branch `mutate/…-6a80cf3d` geräumt. Die Reste-2-Stelle
 (`internal/emit/templates.go`, Zeilen 1056–1057, 1135) und der übrige
 C2-Fixture-Satz (17, 19, 20, 105–108) unverändert. Die 145 Verweis-Befunde des
