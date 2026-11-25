@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# files: .harness/baseline/*/templates/docs/plan/planning/archiv-stub-welle.template.md
+# files: .harness/baseline/*/templates/docs/plan/planning/archive-stub-wave.template.md
 # expect: jeder Platzhalter steht in genau der Vorlage, die sein Block fuellt
 # verify: test-bats
 #
@@ -27,5 +27,5 @@
 # und nennt diesen Fall — vor jedem Fall-Lauf in mutation_targets bzw.
 # target_fingerprint (harness/sensors/mutate.md §Grenze), wie in Fall 219.
 set -euo pipefail
-sed -i 's|<welle-id>-results\.md|<welle-id>-ergebnisse.md|' \
-	.harness/baseline/*/templates/docs/plan/planning/archiv-stub-welle.template.md
+sed -i 's|<wave-id>-results\.md|<wave-id>-ergebnisse.md|' \
+	.harness/baseline/*/templates/docs/plan/planning/archive-stub-wave.template.md
