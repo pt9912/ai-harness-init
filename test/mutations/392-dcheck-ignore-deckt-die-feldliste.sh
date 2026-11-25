@@ -7,4 +7,4 @@
 # dem geprueften Doku-Bereich des Ziels, obwohl sie dort liegen soll (ADR-0022
 # Festlegung 7).
 set -euo pipefail
-sed -i 's@ignore: \["\*\*/\*\.template\.md", "\.tmp/\*\*", "\.harness/\*\*"\]@ignore: ["**/*.template.md", ".tmp/**", ".harness/**", "harness/**"]@' internal/emit/templates/d-check.yml
+sed -i 's@ignore: \["\*\*/\*\.template\.md", "\.tmp/\*\*", "\.claude/worktrees/\*\*", "\.harness/\*\*"\]@ignore: ["**/*.template.md", ".tmp/**", ".claude/worktrees/**", ".harness/**", "harness/**"]@' internal/emit/templates/d-check.yml

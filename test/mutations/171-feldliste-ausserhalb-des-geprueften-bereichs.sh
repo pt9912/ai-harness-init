@@ -22,4 +22,4 @@
 # bootstrappt und dort das Doku-Gate faehrt. Der Preis dieses Modus steht im Kopf von
 # harness/tools/mutate.sh.
 set -euo pipefail
-sed -i 's@^  ignore: \["\*\*/\*\.template\.md", "\.tmp/\*\*", "\.harness/\*\*"\]$@  ignore: ["**/*.template.md", ".tmp/**", ".harness/**", "harness/erfassung-feldliste.md"]@' internal/emit/templates/d-check.yml
+sed -i 's@^  ignore: \["\*\*/\*\.template\.md", "\.tmp/\*\*", "\.claude/worktrees/\*\*", "\.harness/\*\*"\]$@  ignore: ["**/*.template.md", ".tmp/**", ".claude/worktrees/**", ".harness/**", "harness/erfassung-feldliste.md"]@' internal/emit/templates/d-check.yml
