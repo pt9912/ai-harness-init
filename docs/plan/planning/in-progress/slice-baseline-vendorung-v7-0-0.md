@@ -209,10 +209,16 @@ fehlerfrei). **Der CI-Vorlauf bricht weiter** — an den Fall-Ankern 224/244/248
 nachgelieferten Stand `060e7e87` konsumiert — Urteil „BEFUND (kein Ergebnis im
 Log)" über alle 62 Fälle, Wanduhr 205 s —, beide `mutate/**`-Branches danach
 geräumt): dieselben drei Fälle, die `mutate-greift` lokal meldet, keine neue
-Befundklasse. Die Re-Anker gehören dem C2-Zug (MR-071), nicht diesem Slice.
-Die 145 Verweis-Befunde des Doc-Gate bleiben die geplante rote Fläche
-(Cluster C2); die Reste-2-Stelle (`internal/emit/templates.go`, Zeilen
-1056–1057, 1135) unverändert.
+Befundklasse. **Nachlieferung 2 — die drei Anker re-angekert** (MR-071: die
+Anlage misst ihr sed-Muster gegen den Quell-Bestand; je Fall nur Namens-Anteile
+gepasst — `archiv-stub-*`→`archive-stub-*`, `<welle-id>`→`<wave-id>`,
+`archiv.zip`→`archive.zip`): Commit `88f85db3`, Beleg
+`make mutate-greift` → `775 Fall/Faelle, 775 greifen, 0 Befund(e)`;
+`test-bats`-Fall 288 (Mutations-Fingerabdruck) damit mitgeheilt (8 → 7
+Befunde). Die Reste-2-Stelle (`internal/emit/templates.go`, Zeilen 1056–1057,
+1135) und der übrige C2-Fixture-Satz (17, 19, 20, 105–108) unverändert. Die
+145 Verweis-Befunde des Doc-Gate bleiben die geplante rote Fläche
+(Cluster C2).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
