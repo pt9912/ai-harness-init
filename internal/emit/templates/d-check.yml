@@ -230,10 +230,11 @@ planning:
 # bleibt still.
 # GRENZE (d-check >= v0.91.0): Die Kennung liest waves als literales Glob-Praefix plus
 # folgende Ziffernfolge (wave-1-basis -> wave-1). Eine Kennung ohne Ziffern — ein reiner Name
-# nach der Kennungs-Form der Vorlage, etwa wave-cache-warmup — liest es nicht: Datei ohne
-# Zeiger und Zeiger ohne Datei bleiben dann still. Beginnt ein Ziel seine Wellen-Kennungen in
-# Namens-Form, ist die Listen-Haelfte von "## Offene Wellen" ungewaechtert — im Gate-Index
-# benennen (harness/README.md oder die Sensor-Datei unter harness/sensors/, Abschnitt Grenze).
+# nach der Kennungs-Form der Vorlage, etwa wave-cache-warmup — liest es nicht: ein flaches
+# Wellendokument ohne Zeiger bleibt dann still. Ein Zeiger ohne Datei bleibt niemals still:
+# das links-Modul faerbt jedes tote Linkziel (target-missing). Die Datei-ohne-Zeiger-Richtung
+# bleibt bei Namens-Form ohne Wächter — im Gate-Index benennen (harness/README.md oder die
+# Sensor-Datei unter harness/sensors/, Abschnitt Grenze).
   waves:
     dir: docs/plan/planning
     glob: 'wave-*.md'

@@ -55,7 +55,8 @@ modules: [links, anchors, ids, matrix, codepaths, spans, planning, targets, stru
 # gegen ein stilles Umbenennen der Ablage oder des Defaults.
 # GRENZE (Kennungs-Form): waves liest eine Kennung als literales Glob-Praefix plus folgende
 # Ziffernfolge; die Namens-Form (welle-baseline-sprung-v7-0-0, MR-057-Form des Altbestands)
-# liest es nicht — die Listen-Haelfte von "## Offene Wellen" bleibt bei Namens-Form ungewaechtert;
+# liest es nicht — eine flache Datei in Namens-Form unter "## Offene Wellen" bleibt dann
+# unbeobachtet; ein Zeiger ohne Datei faerbt dagegen ueber `links` (target-missing);
 # benannt (nicht geschlossen) in harness/sensors/docs-check.md §Grenze, Modul planning.
 # closure (zweite Faehigkeit desselben Moduls, opt-in im opt-in): haelt die
 # Struktur der Closure-Notiz (Abschnitt 7) ueber jedem Kandidaten FLACH in `dir`

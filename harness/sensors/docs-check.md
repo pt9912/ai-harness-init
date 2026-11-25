@@ -85,7 +85,9 @@ Namens-Form — die Kennungs-Form für neu vergebene Kennungen ([`MR-057`](../..
 — liest es nicht: der aktuelle Welle-Eintrag `welle-baseline-sprung-v7-0-0` unter „Offene
 Wellen" ist damit ungewächtert, die Listen-Hälfte deckt über dem Bestand nur die
 Ziffern-Form (`welle-09`). Benannt, nicht geschlossen — kein weiterer Wächter misst den
-Namens-Teil.
+Namens-Teil. Die Grenze gilt nur für die **Datei-ohne-Zeiger**-Richtung: ein Zeiger ohne
+flache Datei bleibt auch bei Namens-Form nicht still — das Modul `links` färbt jedes nicht
+auflösende Linkziel (`target-missing`).
 
 **Was `closure` (zweite Fähigkeit von `planning`) deckt, und was nicht** (slice-129):
 [`.d-check.yml`](../../.d-check.yml) setzt `planning.closure.dir: docs/plan/planning/done` und hält
@@ -275,6 +277,10 @@ denselben Wert trägt, und nicht das Go-Pin-Paar (`GO_VERSION ?=` im [`Makefile`
 gegen die `go`-Direktive in `go.mod`). Das Laufzeit-Gate (installierte Werkzeuge tragen den Pin)
 führt d-check nicht: es startet keine Programme (Ziel-Form
 `harness/sensors/environment-check.template.md` <!-- d-check:ignore: die Ziel-Form der Umgebungs-Zusage liegt in der vendored Baseline unter .harness/baseline/v7.0.0/templates/ — der Pfad entsteht im Ziel mit dem Bootstrap, hier ist er geplant, C4 entscheidet über die Adaption -->).
+Der dauerhafte Mutations-Fall 790 hält die **Config-Zusicherung** (er entfernt die
+`d-check.mk`-Quellen-Zeile); für den Verhaltens-Zahn (`pinsync-mismatch` im `docs-check`-Lauf)
+besteht kein Treiber-Fall — der Treiber kennt keinen `docs-check`-Modus —, sein rot gesehenes
+Gegenbeispiel ist der Lauf oben an der realen Quelle.
 
 ### Modul `matrix`
 

@@ -47,7 +47,7 @@ wird dann zum Link auf die Datei.
 | Target | Vertrag | Bindung |
 |---|---|---|
 | `make baseline-verify` | Vendored Baseline unverändert: Integrität **und** Vollständigkeit, netzlos | [`MR-007`](conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
-| [`make docs-check`](sensors/docs-check.md) | Doku-Referenzen grün (links/anchors/ids/matrix/codepaths/spans/planning/targets/structure), netzlos (`--network none`) — im Prüfbereich seiner Module | [`MR-010`](conventions.md#mr-010--d-check-gate-fragment-tool-generiert) |
+| [`make docs-check`](sensors/docs-check.md) | Doku-Referenzen grün, netzlos (`--network none`) — im Prüfbereich seiner Module; die Liste nennt `grep -n '^modules:' .d-check.yml` | [`MR-010`](conventions.md#mr-010--d-check-gate-fragment-tool-generiert) |
 | `make test` | Command-Guard-Tests (bats) + Go-Unit-Tests (Dockerfile-`test`-Stage) grün | [`ADR-0004`](../docs/plan/adr/0004-durchsetzungs-emission.md), [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md) |
 | `make lint` | Go-Lint (golangci-lint, Dockerfile-`lint`-Stage) grün | [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md) |
 | `make build` | Go-Binary cross-compiliert (Dockerfile-`build`-Stage) | [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md) |
