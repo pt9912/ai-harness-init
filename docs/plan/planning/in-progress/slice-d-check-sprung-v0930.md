@@ -51,23 +51,50 @@ Präzedenz [`slice-d-check-pin-bringt-den-go-sicherheitsfix`](../done/slice-d-ch
   tragen der Zahl-Beleg der Commit-Message ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung))
   und §9 — Werkzeug-Deltas je Stufe §9.1, ADR-Wahl §9.2, Grenze der `vcs --staged`-Sonde §9.4;
   die Delta-Lesung bleibt als Kurzfassung in §3.
+- **F-1 (Review) — Aufteilung der Gegenmessung je Modul und Grund-Code** — Bestand bleibt bewusst
+  stehen (Auftraggeber-Setzung, 2026-11-25): die Gegenmessung bleibt in der Summen-Form je Stufe
+  (§9.2); die Verteilung je Modul und Grund-Code wird **nicht** nachgeliefert. Begründung: keine
+  funktionale Abweichung — alle fünf Stufen byte-gleich; der Mess-Kern (je Stufe alle neun Module
+  mit Basis) bleibt in den Zahl-Belegen der Commit-Messages `625cdef0`/`aa2cee57`
+  ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung));
+  die Fassung des Bestands
+  ([`MR-063`](../../../../harness/conventions.md#mr-063--die-gegenmessung-eines-d-check-sprungs-gibt-jedem-aktiven-modul-eine-basis-und-lässt-die-symlinks-stehen))
+  bleibt für künftige Sprünge unverändert.
+- **F-2 (Review) + Verifier-Turn — Kopie-Integritäts-Bedingung und separater
+  Verifikations-Lauf** — Auftraggeber-Setzung (2026-11-25, Zeitbudget „max 15 Minuten"): die
+  Symlink-/Kopie-Integritäts-Bedingung der Gegenmessung
+  ([`MR-063`](../../../../harness/conventions.md#mr-063--die-gegenmessung-eines-d-check-sprungs-gibt-jedem-aktiven-modul-eine-basis-und-lässt-die-symlinks-stehen)
+  Setzung 2, [`MR-067`](../../../../harness/conventions.md#mr-067--eine-aufbau-anleitung-nennt-ihre-prüf-bedingung-vor-ihren-kommandos))
+  bleibt unbenannt **und** der separate Verifier-Turn entfällt — beide unter demselben Beschluss.
+  Die Belege, die der Verifier sonst trug, trägt die Session-Verifikation: Stempel
+  `.harness/state/gates-passed.head` deckt `a5877411`, `make freshness-dcheck` Exit 0,
+  CI-Urteil der Mutations-Probe grün 82/82 (§9.7). Die Lücke ist an dieser Stelle benannt, nicht
+  durch einen grünen Sensor verdeckt.
 
 ## 2. Definition of Done
 
 <!-- je Zeile ein pruefbares Kriterium; zwei Liefer-Punkte. -->
 
-- [ ] **Pin-Stand** ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)): alle drei Pin-Leben tragen `v0.93.0` — `d-check.mk` (`DCHECK_IMAGE ?= ghcr.io/pt9912/d-check:v0.93.0`, `DCHECK_DIGEST ?= sha256:f7fb9080…`, Kopfkommentar mit Zustandssatz), `internal/emit/emit.go` (`DefaultImage`/`DefaultDigest`, Kopfkommentar) und die Pin-Fassung der Kommentar-Blöcke `reviews`/`codepaths` (`internal/emit/templates/d-check.yml`, [`MR-092`](../../../../harness/conventions.md#mr-092--d-check-pin-v0861-go-sicherheitsfix-prüfverhalten-unverändert)-Form); `d-check --print-mk` frisch erzeugt und byte-gegen die Ist-Form gemessen — Deltas nur aus dem vom Werkzeug neu geschriebenen Teil, die fünf Handgriffe ([`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert), [`MR-062`](../../../../harness/conventions.md#mr-062--ein-fragment-ziel-ohne-eigenen-config-block-trägt-eine-marke--der-fünfte-handgriff)) im Diff nachgemessen; Test: die gekoppelten Pin-Wächter (Implementer benennt die d-check-Form im ersten Lauf — `TestDefaultDigest_MatchesCanonical` hält den Digest, [`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)-Semantik).
-- [ ] **Gegenmessung** ([`MR-063`](../../../../harness/conventions.md#mr-063--die-gegenmessung-eines-d-check-sprungs-gibt-jedem-aktiven-modul-eine-basis-und-lässt-die-symlinks-stehen)): die Befund-Bilanz je aktivem Modul auf **Nicht-Null-Basis** (Dogfood-Stufenform wie in [`MR-092`](../../../../harness/conventions.md#mr-092--d-check-pin-v0861-go-sicherheitsfix-prüfverhalten-unverändert) — unveränderter Bestand, entwertete Marker, Sonden, emittierte Form) gemessen am Pin `v0.93.0`; die Tabelle trägt die Übergabe der Slice-Datei §9 (liegt vor) und den Zahl-Beleg der Commit-Message ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)), kein Wert wird erwartet.
-- [ ] **Mutations-Runde** ([`AGENTS.md`](../../../../AGENTS.md) §3.6, Teil der Lieferung): Fallanlage an den geänderten Pin-Orten nach [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit); `make mutate-auswahl` nach dem Claim, Push auf den CI-Branch mit dem letzten Implementer-Commit ([`MR-091`](../../../../harness/conventions.md#mr-091--ab-neun-fällen-läuft-die-mutations-probe-eines-slice-über-einen-ci-branch-dessen-ergebnis-job-schreibt)), Konsum vor der Verifikation.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] **Pin-Stand** ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)): alle drei Pin-Leben tragen `v0.93.0` — `d-check.mk` (`DCHECK_IMAGE ?= ghcr.io/pt9912/d-check:v0.93.0`, `DCHECK_DIGEST ?= sha256:f7fb9080…`, Kopfkommentar mit Zustandssatz), `internal/emit/emit.go` (`DefaultImage`/`DefaultDigest`, Kopfkommentar) und die Pin-Fassung der Kommentar-Blöcke `reviews`/`codepaths` (`internal/emit/templates/d-check.yml`, [`MR-092`](../../../../harness/conventions.md#mr-092--d-check-pin-v0861-go-sicherheitsfix-prüfverhalten-unverändert)-Form); `d-check --print-mk` frisch erzeugt und byte-gegen die Ist-Form gemessen — Deltas nur aus dem vom Werkzeug neu geschriebenen Teil, die fünf Handgriffe ([`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert), [`MR-062`](../../../../harness/conventions.md#mr-062--ein-fragment-ziel-ohne-eigenen-config-block-trägt-eine-marke--der-fünfte-handgriff)) im Diff nachgemessen; Test: die gekoppelten Pin-Wächter (Implementer benennt die d-check-Form im ersten Lauf — `TestDefaultDigest_MatchesCanonical` hält den Digest, [`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)-Semantik).
+- [x] **Gegenmessung** ([`MR-063`](../../../../harness/conventions.md#mr-063--die-gegenmessung-eines-d-check-sprungs-gibt-jedem-aktiven-modul-eine-basis-und-lässt-die-symlinks-stehen)): die Befund-Bilanz je aktivem Modul auf **Nicht-Null-Basis** (Dogfood-Stufenform wie in [`MR-092`](../../../../harness/conventions.md#mr-092--d-check-pin-v0861-go-sicherheitsfix-prüfverhalten-unverändert) — unveränderter Bestand, entwertete Marker, Sonden, emittierte Form) gemessen am Pin `v0.93.0`; die Tabelle trägt die Übergabe der Slice-Datei §9 (liegt vor) und den Zahl-Beleg der Commit-Message ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)), kein Wert wird erwartet.
+- [x] **Mutations-Runde** ([`AGENTS.md`](../../../../AGENTS.md) §3.6, Teil der Lieferung): Fallanlage an den geänderten Pin-Orten nach [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit); `make mutate-auswahl` nach dem Claim, Push auf den CI-Branch mit dem letzten Implementer-Commit ([`MR-091`](../../../../harness/conventions.md#mr-091--ab-neun-fällen-läuft-die-mutations-probe-eines-slice-über-einen-ci-branch-dessen-ergebnis-job-schreibt)), Konsum vor der Verifikation.
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update für die Pin-Segment-Fassung: die `v0.86.1`-Pin-Fassung der [`MR-092`](../../../../harness/conventions.md#mr-092--d-check-pin-v0861-go-sicherheitsfix-prüfverhalten-unverändert)-Form ist in der `v0.93.0`-Fassung fortgeschrieben; der Gate-Index bleibt unverändert (§1).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Doku-Update für die Pin-Segment-Fassung: die `v0.86.1`-Pin-Fassung der [`MR-092`](../../../../harness/conventions.md#mr-092--d-check-pin-v0861-go-sicherheitsfix-prüfverhalten-unverändert)-Form ist in der `v0.93.0`-Fassung fortgeschrieben; der Gate-Index bleibt unverändert (§1).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
+- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit). *(Häkchen und Ergebnis in Commit 3, nach dem `git mv` — die Paarungen suchen in `done/`.)*
+
+**Belege der Häkchen (Closure 2026-11-25, Planner in eigenem Kontext, [`AGENTS.md`](../../../../AGENTS.md) §3.10):**
+
+- *Pin-Stand / Gegenmessung / Mutations-Runde:* Commit `625cdef0` (Diff, Hunk-Kommando 6, §9.1), Gegenmessung §9.2 — fünf Stufen byte-gleich, Zahl-Belege `625cdef0`/`aa2cee57` ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)); Fallanlage 786–789 und CI-Konsum Run 45625795106, Attempt 3, Urteil grün 82/82 (§9.7, Träger Job-Log).
+- *`make gates`:* Stempel `.harness/state/gates-passed.head` = `a5877411` = Review-HEAD (Review-Negativbefund Stempel-Lage); der Schluss-Stempel-Lauf trägt der Session-Kontext — kein Verifier-Turn (§1, F-2).
+- *Review:* [`docs/reviews/2026-11-25-slice-d-check-sprung-v0930.md`](../../../reviews/2026-11-25-slice-d-check-sprung-v0930.md) — 0 HIGH, kein blockierendes Verdikt.
+- *Doku-Update:* keines nötig — kein Target neu, keine Zelle des Gate-Index geändert (§1); die Pin-Fassung der Kommentar-Blöcke zog in derselben Lieferung (`625cdef0`); pin-datierte Handbuch-Prosa bleibt benannter Rest (F-4, §7).
+- *Closure-Notiz / Register / Risiken:* §7 dieser Datei (dieser Commit); §6 — jede Zeile mit Ausgang.
 
 ## 3. Plan (vor Code)
 
@@ -115,11 +142,29 @@ DoD vollständig (Pin-Stand byte-geprüft, Gegenmessung in §9 mit dem Zahl-Bele
 
 ## 6. Risiken und offene Punkte
 
-- Frisch erzeugtes `d-check --print-mk` schreibt Zeilen, die die fünf Handgriffe ([`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert), [`MR-062`](../../../../harness/conventions.md#mr-062--ein-fragment-ziel-ohne-eigenen-config-block-trägt-eine-marke--der-fünfte-handgriff), Kopplung [`MR-061`](../../../../harness/conventions.md#mr-061--d-check-pin-v0760-ein-modul-und-eine-structure-bedingung-verfügbar-beide-nicht-aktiv)) nicht decken — neue Ziel-Zeilen (`doc-manual`), geänderte Hilfe-Zeilen oder Marken-Formen. — **Ausgang:** <eingetreten: CO-NNN / slice-<Kennung> | entfallen: Grund | weiter offen: → BEO-<KUERZEL>/<slug> im Register>
-- Die Fallmenge der Mutations-Fälle wächst über die neun ([`MR-091`](../../../../harness/conventions.md#mr-091--ab-neun-fällen-läuft-die-mutations-probe-eines-slice-über-einen-ci-branch-dessen-ergebnis-job-schreibt)): drei geänderte Pin-Orte × Fälle plus die Bestands-Fälle, die denselben sed-Anker fassen. Der CI-Branch-Weg ist **geplanter Teil der Lieferung**; ein zweiter Push nach Infra-Unfällen (Re-Run) ist möglich, wie beim Fast-Pfad-Slice. — **Ausgang:** <eingetreten: CO-NNN / slice-<Kennung> | entfallen: Grund | weiter offen: → BEO-<KUERZEL>/<slug> im Register>
-- Der emittierte Default-Pin driftet gegen `d-check.mk` — die fail-closed-Kopplung trägt ein Test-Set, das der Implementer benennt: [`TestDefaultDigest_MatchesCanonical`](../../../../internal/emit/) hält `DefaultDigest` an eine Kopie, aber kein Sensor hält den Pin gegen den Tag ([`BEO-ALL/pin-digest-ohne-waechter`](../observations/BEO-ALL/pin-digest-ohne-waechter/observation.md), verkörpert — 8 Belege); die Baseline-Klasse in `test/sources-pin.bats` pinnen den Baseline-Tag, nicht d-check. Fehlt eine d-check-koppelnde Form, trägt die Übergabe §9.4 die Grenze — die Sonde reproduziert die im CHANGELOG von v0.93.0 dokumentierte Differenz (Alt: Exit 2 `object not found`, neu: `core-drift-vcs`) nicht — nicht still ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung): Zahl-Beleg der Commit-Message). — **Ausgang:** <eingetreten: CO-NNN / slice-<Kennung> | entfallen: Grund | weiter offen: → BEO-<KUERZEL>/<slug> im Register>
-- Die zwei Verhaltens-Änderungen ohne Schlüssel (`vcs --staged` Gitlink, geänderte `linelength.exempt-tables`-Zusage, v0.93.0) treffen den dogfood- oder emittierten Lauf — die Gegenmessung misst sie je Stufe; eine abweichende Befundmenge wäre kein [`MR-092`](../../../../harness/conventions.md#mr-092--d-check-pin-v0861-go-sicherheitsfix-prüfverhalten-unverändert)-Fall mehr und würde die ADR-Wahl neu stellen — ihre Begründung (byte-gleich je Stufe) trägt §9.2 neben dem Zahl-Beleg der Commit-Message ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)). — **Ausgang:** <eingetreten: CO-NNN / slice-<Kennung> | entfallen: Grund | weiter offen: → BEO-<KUERZEL>/<slug> im Register>
-- Der Kopfkommentar-Zustandssatz in [`d-check.mk`](../../../../d-check.mk) wird vergessen — er nennt den Sprungstand und die fünf Handgriffe ([`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert), [`MR-062`](../../../../harness/conventions.md#mr-062--ein-fragment-ziel-ohne-eigenen-config-block-trägt-eine-marke--der-fünfte-handgriff)); ohne ihn liest der nächste Lauf einen alten Stand als gültigen Pin, daneben datiert [`MR-053`](../../../../harness/conventions.md#mr-053--ein-eintrag-datiert-seine-werkzeug-aussage-statt-den-lebenden-pin-zu-führen) die Werkzeug-Aussage. — **Ausgang:** <eingetreten: CO-NNN / slice-<Kennung> | entfallen: Grund | weiter offen: → BEO-<KUERZEL>/<slug> im Register>
+- Frisch erzeugtes `d-check --print-mk` schreibt Zeilen, die die fünf Handgriffe ([`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert), [`MR-062`](../../../../harness/conventions.md#mr-062--ein-fragment-ziel-ohne-eigenen-config-block-trägt-eine-marke--der-fünfte-handgriff), Kopplung [`MR-061`](../../../../harness/conventions.md#mr-061--d-check-pin-v0760-ein-modul-und-eine-structure-bedingung-verfügbar-beide-nicht-aktiv)) nicht decken — neue Ziel-Zeilen (`doc-manual`), geänderte Hilfe-Zeilen oder Marken-Formen. — **Ausgang:** entfallen — der frisch erzeugte Fragment-Diff trägt genau die
+  drei Deltas-Klassen der fünf Handgriffe: Pin-Zeile, drei `--disable`-Anhänge an denselben sechs
+  fokussierten advisory-Recipes, `doc-manual` verbatim hinter `doc-usage` und ohne
+  `--enable`-Modul (§9.1, Hunk-Kommando 6); das Target fällt unter den `exempt-targets`-Eintrag
+  (`exempt-targets`-Eintrag, kein Gate-Anspruch — Review-Negativbefund „Werkzeug-Deltas des
+  Fragments").
+- Die Fallmenge der Mutations-Fälle wächst über die neun ([`MR-091`](../../../../harness/conventions.md#mr-091--ab-neun-fällen-läuft-die-mutations-probe-eines-slice-über-einen-ci-branch-dessen-ergebnis-job-schreibt)): drei geänderte Pin-Orte × Fälle plus die Bestands-Fälle, die denselben sed-Anker fassen. Der CI-Branch-Weg ist **geplanter Teil der Lieferung**; ein zweiter Push nach Infra-Unfällen (Re-Run) ist möglich, wie beim Fast-Pfad-Slice. — **Ausgang:** weiter offen → `BEO-ALL/mutations-ci-gruenvorlauf-bricht-unter-last`
+  im Register (neu, 1 Beleg) — die Fallmenge (82) und der geplante CI-Branch-Weg haben getragen
+  (Run 45625795106, Attempt 3, Urteil grün 82/82, Konsum-Träger Job-Log, §9.7); offen bleibt der
+  Bruch des grünen Vorlaufs unter infrastruktureller Last, nicht die Fallzahl-Achse.
+- Der emittierte Default-Pin driftet gegen `d-check.mk` — die fail-closed-Kopplung trägt ein Test-Set, das der Implementer benennt: [`TestDefaultDigest_MatchesCanonical`](../../../../internal/emit/) hält `DefaultDigest` an eine Kopie, aber kein Sensor hält den Pin gegen den Tag ([`BEO-ALL/pin-digest-ohne-waechter`](../observations/BEO-ALL/pin-digest-ohne-waechter/observation.md), verkörpert — 8 Belege); die Baseline-Klasse in `test/sources-pin.bats` pinnen den Baseline-Tag, nicht d-check. Fehlt eine d-check-koppelnde Form, trägt die Übergabe §9.4 die Grenze — die Sonde reproduziert die im CHANGELOG von v0.93.0 dokumentierte Differenz (Alt: Exit 2 `object not found`, neu: `core-drift-vcs`) nicht — nicht still ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung): Zahl-Beleg der Commit-Message). — **Ausgang:** entfallen — die gekoppelte Form steht und ist
+  belegt: Fallanlage 786–789 am Quell-Bestand ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit), Review-Negativbefund Mutations-Fälle),
+  Wächter `TestDefaultDigest_MatchesCanonical`/`TestDefaultImage_MatchesCanonical`; die Grenze
+  der `vcs --staged`-Sonde trägt §9.4 wie geplant — benannt, nicht verdeckt.
+- Die zwei Verhaltens-Änderungen ohne Schlüssel (`vcs --staged` Gitlink, geänderte `linelength.exempt-tables`-Zusage, v0.93.0) treffen den dogfood- oder emittierten Lauf — die Gegenmessung misst sie je Stufe; eine abweichende Befundmenge wäre kein [`MR-092`](../../../../harness/conventions.md#mr-092--d-check-pin-v0861-go-sicherheitsfix-prüfverhalten-unverändert)-Fall mehr und würde die ADR-Wahl neu stellen — ihre Begründung (byte-gleich je Stufe) trägt §9.2 neben dem Zahl-Beleg der Commit-Message
+  ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)).
+  — **Ausgang:** entfallen — beide Module opt-in, in keinem Prüfbereich aktiv, je gemessen (§9.3
+  `linelength.exempt-tables`, §9.4 `vcs --staged`-Gitlink) und byte-gleich in §9.2; die ADR-Wahl
+  stellt sich nicht neu ([`MR-092`](../../../../harness/conventions.md#mr-092--d-check-pin-v0861-go-sicherheitsfix-prüfverhalten-unverändert)-Fall: gleiche Befundmengen, AGENTS §3.5).
+- Der Kopfkommentar-Zustandssatz in [`d-check.mk`](../../../../d-check.mk) wird vergessen — er nennt den Sprungstand und die fünf Handgriffe ([`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert), [`MR-062`](../../../../harness/conventions.md#mr-062--ein-fragment-ziel-ohne-eigenen-config-block-trägt-eine-marke--der-fünfte-handgriff)); ohne ihn liest der nächste Lauf einen alten Stand als gültigen Pin, daneben datiert [`MR-053`](../../../../harness/conventions.md#mr-053--ein-eintrag-datiert-seine-werkzeug-aussage-statt-den-lebenden-pin-zu-führen)
+  die Werkzeug-Aussage. — **Ausgang:** entfallen — der Zustandssatz trägt den Sprungstand und die
+  fünf Handgriffe (Commit `625cdef0`, Review-Negativbefund Pin-Stand); [`MR-053`](../../../../harness/conventions.md#mr-053--ein-eintrag-datiert-seine-werkzeug-aussage-statt-den-lebenden-pin-zu-führen)
+  wird beim nächsten Sprung weiter gelesen.
 
 ## 7. Closure-Notiz
 
@@ -142,20 +187,47 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Gegenstand:** <übernommen von `slice-<Kennung>` | entfallen: <Grund>>
-  *(nur beim Ausgang ohne Arbeit; sonst Zeile löschen)*
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<KUERZEL>/<slug>` (<slice-kennung-a>, <slice-kennung-b>, <slice-kennung-c> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-<Kennung>.md` | `evidence/slice-<Kennung>.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+**Rolle:** Planner · **Datum:** 2026-11-25
+
+- **Was hat funktioniert:** der Pin zog dreifach in einer Lieferung (`625cdef0` — `d-check.mk`,
+  `internal/emit/emit.go`, Pin-Fassung der Kommentar-Blöcke; Review-Negativbefund Pin-Stand), der
+  Fragment-Diff brachte genau 6 Werkzeug-Deltas (§9.1, Hunk-Kommando), die Gegenmessung lief
+  schlagfertig über alle fünf Stufen byte-gleich (§9.2), die CI-Runde lief parallel zum Review und
+  ihr Konsum war vor der Verifikation fertig (Run 45625795106, Attempt 3, Urteil grün 82/82, §9.7).
+- **Was ging anders als geplant:** drei CI-Versuche der Mutations-Probe — zwei Vorlauf-Abbrüche
+  unter Last (Versuche 1/2), das Docker-Image-Namen-Rennen im 4-worker-Lauf; Attempt 3 trug das
+  Urteil (§9.7). Der Auftraggeber stellte die MR-Eintrag-Praxis für diesen Sprung ab (§1) und
+  schloss mit dem Zeitbudget („max 15 Minuten") die Nachlieferung der Beleg-Form (F-1/F-2) und den
+  separaten Verifier-Turn aus — beides ausdrückliche Setzungen in §1.
+- **Benannte Reste (Review-Findings, nicht geliefert):**
+  - F-3 (LOW): der `roadmap.md`-Handgriff ist in §3 der Plan-Tabelle nicht verzeichnet — getragen
+    an der Commit-Message `625cdef0` (Handgriff wie `70ed9c0c`).
+  - F-4 (LOW): pin-datierte Handbuch-Prosa, [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md)
+    Zeilen 816/826 (`v0.86.1`/`v0.86.x`) — vom Diff unberührt, Bestand.
+  - F-5 (INFO): das `--trace`-Delta der Namens-Kennungen (v0.88.0) ohne Messstufe — wirksam nur in
+    den advisory-Targets `doc-trace`/`doc-complete`, kein Gate-Lauf.
+  - F-6 (INFO): der `ergebnis`-Job der Mutations-CI ist strukturell re-run-ungeeignet
+    (non-fast-forward) — Konsum-Träger bleibt das Job-Log (§9.7).
+- **Steering-Loop-Eintrag:** Beobachtung, gezählt nicht verkörpert (unter der Schwelle, kein
+  `liegt in`-Feld): `BEO-ALL/mutations-ci-gruenvorlauf-bricht-unter-last` — der grüne Vorlauf der
+  Mutations-Probe bricht unter infrastruktureller Last, bevor ein Fall urteilt; drei Auftreten
+  heute (2 Vorlauf-Abbrüche der Versuche 1/2, Docker-Image-Namen-Rennen im 4-worker-Lauf, §9.7),
+  alle in einem Vorgang — der Zähler folgt aus der Evidence-Datei.
+- **Beobachtungs-Register (`../observations/`):** `BEO-ALL/mutations-ci-gruenvorlauf-bricht-unter-last/`
+  neu angelegt, Beleg `evidence/slice-d-check-sprung-v0930.md` (Zähler 1×) ·
+  `evidence/slice-d-check-sprung-v0930.md` in `BEO-ALL/baum-hash-deckt-nicht-jeden-pruefgegenstand/`
+  ergänzt — Zähler 3×; Lese-Schritt dieser Closure: Ausgang *verkörpert* — die Klasse trägt als
+  bewusst benannter Rest in
+  [`ADR-0035`](../../../../docs/plan/adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
+  (Festlegung 4, Träger `MUTATE_FORCE`); der Zielort bestand vor dem Anker-System und trägt keinen
+  `seit …`-Anker (Immutabilität, [`AGENTS.md`](../../../../AGENTS.md) §3.4) — die Grenze benannt.
+- **Archivierung:** entfällt — wellenlos; das `archive-slice`-Unterkommando von
+  [`MR-078`](../../../../harness/conventions.md#mr-078--wellenlose-slices-werden-bei-der-eigenen-closure-archiviert)
+  ist nicht gebaut (wie beim Vorgänger-Slice bewusst nicht vollzogen).
+- **Folge-Slices:** keiner.
+- **Risiken aus §6:** jede Zeile mit Ausgang — siehe §6.
+- **Drei Paarungen:** *(Ergebnis in Commit 3, nach dem `git mv` — diesbezüglich die Haken der
+  DoD-Liste §2.)*
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
