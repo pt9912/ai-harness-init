@@ -166,8 +166,11 @@ als Eintrags-Zug trägt C7, siehe unten) — kein stiller Zug.
   die frische Messung der Paarungs-Prüfung steht in §7.
 - *(3) Fundlisten:* Emit- und Verweis-Zug samt Messung nach dem Vorgang
   ([`MR-058`](../../../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)-Form)
-  — `0a080df5` plus Review-Negativbefunde „`MR-057`/`MR-058`-Messung …
-  frisch reproduziert", „`MR-059` … byte-gleich unberührt"; der
+  — `0a080df5` plus Review-Negativbefunde:
+  [`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)/[`MR-058`](../../../../harness/conventions.md#mr-058--eine-messung-die-ihr-eigener-vorgang-bewegt-wird-nach-dem-vorgang-genommen)
+  am 2026-11-25 frisch reproduziert,
+  [`MR-059`](../../../../harness/conventions.md#mr-059--jede-kennungs-erkennung-trägt-die-zugelassenen-formen-die-fundliste-steht-im-vorgang)
+  byte-gleich unberührt (Fundliste per Verweis); der
   `archive.zip`-Form-Erbe an
   [`MR-078`](../../../../harness/conventions.md#mr-078--wellenlose-slices-werden-bei-der-eigenen-closure-archiviert)
   verifiziert (F-4, INFO — Vorgang `0a080df5`, Inhalt getragen).
@@ -363,6 +366,30 @@ Lerneintrag-Regeln · `modul-06-roadmap.md` §Das Beobachtungs-Register.
 - **Folge-Slices:** keiner aus diesem Slice — C3–C7 sind Tafel-Adressen der
   Vorbereitungs-Tafel, ihre Slice-Dateien entstehen beim jeweiligen Schnitt.
 - **Risiken aus §6:** jede Zeile trägt einen Ausgang — siehe §6.
+- **Drei Paarungen (geprüft am 2026-11-25, nach dem `git mv` —
+  [`AGENTS.md`](../../../../AGENTS.md) §3.10, Form des Vorgänger-Slices):**
+  - *(a) Anker:* §7 trägt kein `liegt in`-Feld — der Lern-Eintrag ist gezählt,
+    nicht verkörpert; kein Gegenstand der Paarung.
+  - *(b) Folge-Slice:* §7 nennt keine Folge-Slice-Kennung; die im §1
+    ausdrücklich übertragenen Adressen (C3–C7) stehen in den Tafel-Zeilen der
+    [`welle-baseline-sprung-v7-0-0`](../welle-baseline-sprung-v7-0-0.md)-Tafel —
+    die Slice-Dateien entstehen beim Schnitt, die Adresse zeigt auf die
+    Tafel-Zeile statt auf eine nicht existierende Datei (Form des
+    Vorgänger-Slices). Grün.
+  - *(c) Register:* die in §7 genannten Beobachtungen existieren als
+    Verzeichnis und tragen je mindestens einen Beleg —
+    [`BEO-ALL/interface-formzug-ohne-rezept-nachziehung`](../observations/BEO-ALL/interface-formzug-ohne-rezept-nachziehung/observation.md)
+    (1 Beleg), [`BEO-ALL/waechter-haelt-config-text-wirkung-im-ziel-ohne-lauf-zahn`](../observations/BEO-ALL/waechter-haelt-config-text-wirkung-im-ziel-ohne-lauf-zahn/observation.md)
+    (3 Belege; nur als Abgrenzungs-Nachbar genannt). Grün.
+- **Ruhe-Marker:** [`roadmap.md`](../in-progress/roadmap.md) §Offene Wellen —
+  `in-progress/` trägt nach dem `git mv` nur ihr `roadmap.md`, der Marker
+  „Nichts in Arbeit." trifft den Zustand (F-5: die widersprüchliche
+  „wartet auf ihren Start"-Prosa-Zeile kam mit demselben Commit nach).
+- **Paarungen geprüft am 2026-11-25:** `make docs-check` →
+  `d-check: 2993 Datei(en) geprüft, 0 Befund(e)` — frische Messung am
+  Closure-Stand nach dem `git mv` (der Stand nach dem Verweis-Zug trug
+  `2989 Datei(en) geprüft, 0 Befund(e)`; die Differenz von vier ist die
+  Beobachtungs-Einlage und der Move-Pfad, keine Befundklasse).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
