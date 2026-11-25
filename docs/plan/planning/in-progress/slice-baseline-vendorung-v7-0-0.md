@@ -215,10 +215,18 @@ gepasst — `archiv-stub-*`→`archive-stub-*`, `<welle-id>`→`<wave-id>`,
 `archiv.zip`→`archive.zip`): Commit `88f85db3`, Beleg
 `make mutate-greift` → `775 Fall/Faelle, 775 greifen, 0 Befund(e)`;
 `test-bats`-Fall 288 (Mutations-Fingerabdruck) damit mitgeheilt (8 → 7
-Befunde). Die Reste-2-Stelle (`internal/emit/templates.go`, Zeilen 1056–1057,
-1135) und der übrige C2-Fixture-Satz (17, 19, 20, 105–108) unverändert. Die
-145 Verweis-Befunde des Doc-Gate bleiben die geplante rote Fläche
-(Cluster C2).
+Befunde). **CI-Probe dritter Lauf (45666751330, geprüfter Commit `6a80cf3d`):**
+`Fallmenge: 65` (62 + die drei umgebauten Fall-Dateien), `Wanduhr gesamt:
+473 s`, alle 11 Shards grün mit echten Fall-Läufen (200–300 s je Shard, kein
+Vorlauf-Tod mehr) — und trotzdem `Urteil: BEFUND` über „kein Ergebnis im Log"
+aller 65: die Ergebnis-Aggregation liest die Shard-Belege erneut leer (dritte
+Wiederholung derselben Lese-Lücke, jetzt ohne Vorlauf-Bruch). Kein Rerun —
+dieselbe Klasse ist schon zweimal beobachtet; Träger der Heilung ist der
+Treiber-/Workflow-Zug, nicht dieses Slice. `mutate-ergebnis.txt` konsumiert,
+Branch `mutate/…-6a80cf3d` geräumt. Die Reste-2-Stelle
+(`internal/emit/templates.go`, Zeilen 1056–1057, 1135) und der übrige
+C2-Fixture-Satz (17, 19, 20, 105–108) unverändert. Die 145 Verweis-Befunde des
+Doc-Gate bleiben die geplante rote Fläche (Cluster C2).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
