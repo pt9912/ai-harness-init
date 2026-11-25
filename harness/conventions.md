@@ -8,9 +8,10 @@ Konflikt mit einer kanonischen Quelle gilt diese (Source Precedence).
 ## Baseline
 
 - **Konvention:** AI-Harness-Kurs
-- **Stand:** `v6.18.1` — Zielstand-Setzung vollzogen am 2026-10-16; Delta-Nachweis in
-  `slice-sprung-auf-v6181-wird-vollzogen`; regierende Fassung des Sprungs:
-  [`ADR-0093`](../docs/plan/adr/0093-ziel-fassung-regiert-den-sprung-v6181.md)
+- **Stand:** `v7.0.0` — Zielstand-Setzung vollzogen am 2026-11-25; Delta-Nachweis in
+  [`slice-baseline-delta-lesung-v7-0-0`](../docs/plan/planning/done/slice-baseline-delta-lesung-v7-0-0.md),
+  vollzogen in
+  [`slice-baseline-vendorung-v7-0-0`](../docs/plan/planning/in-progress/slice-baseline-vendorung-v7-0-0.md)
 - **Regelwerk + Templates:** committet vendored unter
   `.harness/baseline/v6.18.1/` ([`MR-007`](#mr-007--baseline-committet-vendored-statt-gefetchter-cache)); der Regelwerks-Stand
   steht im vendored Baum selbst — `regelwerk/README.md` trägt ihn
