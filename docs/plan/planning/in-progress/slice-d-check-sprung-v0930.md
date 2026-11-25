@@ -172,7 +172,7 @@ Hälften.
 
 ## 9. Übergabe (Implementer → Architect)
 
-Der MR-Eintrag (kommende Nummer der Reihe, `MR-092`-Form) und seine Index-Zeile sind
+Der MR-Eintrag (kommende Nummer der Reihe, [`MR-092`](../../../../harness/conventions.md#mr-092--d-check-pin-v0861-go-sicherheitsfix-prüfverhalten-unverändert)-Form) und seine Index-Zeile sind
 Architect-Artefakte (§1, `AGENTS.md` §3.8); dieser Abschnitt trägt seine Eingabe. Sein
 Volltext liegt im Commit dieser Datei, nicht hier dupliziert:
 
@@ -183,7 +183,7 @@ Volltext liegt im Commit dieser Datei, nicht hier dupliziert:
    --disable linelength`-Anhänge an denselben sechs fokussierten advisory-Recipes, vierzehntes
    Target `doc-manual` (v0.89.0) verbatim hinter `doc-usage`, ohne `--enable`-Modul ohne Marke.
    Hunk-Kommando im Kopf: 6.
-2. **Gegenmessung (`MR-063`, Stufenform wie in `MR-092`):** netzlos, je Digest ein Lauf über
+2. **Gegenmessung ([`MR-063`](../../../../harness/conventions.md#mr-063--die-gegenmessung-eines-d-check-sprungs-gibt-jedem-aktiven-modul-eine-basis-und-lässt-die-symlinks-stehen), Stufenform wie in [`MR-092`](../../../../harness/conventions.md#mr-092--d-check-pin-v0861-go-sicherheitsfix-prüfverhalten-unverändert)):** netzlos, je Digest ein Lauf über
    `git archive`-Kopie von `625cdef0` (Klon aus dem lokalen Repo, kein Objektspeicher,
    [`MR-065`](../../../../harness/conventions.md#mr-065--ein-history-lesender-lauf-einer-d-check-bilanz-nennt-woher-sein-klon-die-objekte-liest)
    Setzung 1); Digest per Override.
@@ -206,12 +206,12 @@ Volltext liegt im Commit dieser Datei, nicht hier dupliziert:
    im CHANGELOG von v0.93.0 dokumentierte Differenz (Alt: Exit 2 `object not found`, neu:
    `core-drift-vcs`) ist mit dieser Sonde **nicht reproduziert**; die Grenze gehört in den
    MR-Eintrag, nicht verdeckt. Beide Module opt-in, in keinem Prüfbereich aktiv.
-5. **`MR-086`-Nachmessung** (Sonden mit aktivem `reviews`, emittiertes Ziel, am neuen Pin;
+5. **[`MR-086`](../../../../harness/conventions.md#mr-086--das-modul-reviews-bleibt-als-dritte-position-aus-dem-emittierten-doc-gate)-Nachmessung** (Sonden mit aktivem `reviews`, emittiertes Ziel, am neuen Pin;
    Kontroll am alten): leerer `done-dir` → fail-closed `review-missing`; `slice-cache` +
    `slice-cache-warmup` mit Report nur für den längeren → `review-missing` für
    `slice-cache` (`match: name` deckt nur den längsten passenden Basisnamen); Reports für
    beide → Exit 0; Ziffern-Plan mit Report → Exit 0; alter Pin Exit 0. Die Positions-Aussage
-   bleibt, keine Kopf-Marke (Setzung 4-Fassung wie in `MR-092`).
+   bleibt, keine Kopf-Marke (Setzung 4-Fassung wie in [`MR-092`](../../../../harness/conventions.md#mr-092--d-check-pin-v0861-go-sicherheitsfix-prüfverhalten-unverändert)).
 6. **`gate-undocumented`:** das neue `doc-manual` fiel im Lauf des Moduls `targets` auf; der
    Ausspruch lebt als `exempt-targets`-Eintrag (Gruppe (b), Makefile-Hilfetext) in
    `.d-check.yml`, nicht als Index-Zeile (§1).
