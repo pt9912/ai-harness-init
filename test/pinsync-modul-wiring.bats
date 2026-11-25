@@ -48,16 +48,16 @@ pinsync_block() {
 }
 
 @test "pinsync: jeder pattern-Ausdruck traegt GENAU EINE Fanggruppe" {
-  local block line gefunden
+  local block line
   block="$(pinsync_block | grep 'pattern:')"
   [ -n "$block" ] || {
     echo "keine pattern-Zeile im pinsync-Block — die Paarung haette keine Quelle" >&2
     false
   }
   while IFS= read -r line; do
-    gefunden="$(awk -v s="$line" 'BEGIN{ gsub(/\\[()]/, "", s); if (gsub(/\(/, "", s) != 1) exit 1 }')" || {
-      echo "GENAU EINE Fanggruppe verlangt: $line" >&2
-      false
-    }
+    awk -v s="$line" 'BEGIN{ gsub(/\\[()]/, "", s); if (gsub(/\(/, "", s) != 1) { print "GENAU EINE Fanggruppe verlangt: " s; exit 1 } }' \
+      || {
+        false
+      }
   done <<<"$block"
 }
