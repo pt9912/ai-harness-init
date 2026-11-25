@@ -93,7 +93,7 @@ steht an der Zeile, nicht als Prosa daneben.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
-**Start** (`next` → `in-progress`): [`slice-baseline-vendorung-v7-0-0`](slice-baseline-vendorung-v7-0-0.md)
+**Start** (`next` → `in-progress`): [`slice-baseline-vendorung-v7-0-0`](../open/slice-baseline-vendorung-v7-0-0.md)
 liegt in `done/` — die Befunde lesen sich erst am neuen Baum.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
@@ -183,7 +183,7 @@ durchgegangen. Treffer: [`BEO-ALL/re-baseline-ohne-inventur-slice`](../observati
 [`BEO-ALL/adaptions-eintrag-nennt-einen-konfigurationswert-den-ein-slice-fortschreibt`](../observations/BEO-ALL/adaptions-eintrag-nennt-einen-konfigurationswert-den-ein-slice-fortschreibt/observation.md)
 (1×, offen — Werte, die Cluster-Slices fortschreiben, nennt die Tafel je Zeile),
 [`BEO-ALL/tag-tragende-adresse-ueberlebt-den-baseline-tausch-nicht`](../observations/BEO-ALL/tag-tragende-adresse-ueberlebt-den-baseline-tausch-nicht/observation.md)
-(3× — Bestandsdeckung: der Ausgang steht, [`slice-162-versions-sensor-baseline-pins`](slice-162-versions-sensor-baseline-pins.md)
+(3× — Bestandsdeckung: der Ausgang steht, [`slice-162-versions-sensor-baseline-pins`](../open/slice-162-versions-sensor-baseline-pins.md)
 ist die Adresse in `open/`). Keine weitere Berührung erreicht hier die
 Schwelle.
 

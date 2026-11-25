@@ -68,13 +68,13 @@ geschlossene Welle. Keiner dieser drei Belege steht in einer einzelnen DoD.
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| [`slice-baseline-delta-lesung-v7-0-0`](open/slice-baseline-delta-lesung-v7-0-0.md) | Delta-Lesung mit Schätzung | [`MR-033`](../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist), [`MR-037`](../../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst) |
+| [`slice-baseline-delta-lesung-v7-0-0`](done/slice-baseline-delta-lesung-v7-0-0.md) | Delta-Lesung mit Schätzung | [`MR-033`](../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist), [`MR-037`](../../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst) |
 | [`slice-baseline-vendorung-v7-0-0`](open/slice-baseline-vendorung-v7-0-0.md) | Vendorierung + Pin-Kopplung | [`MR-007`](../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache), [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 
 **Reihenfolge (umgestellt am 2026-11-25 — Drift-Log-Eintrag in der
 [`roadmap.md`](in-progress/roadmap.md)).** Die Delta-Lesung lief als read-only
 Auftraggeber-Auftrag **vor** der Vendorung und ohne Artefakt; ihr Plan
-[`slice-baseline-delta-lesung-v7-0-0`](open/slice-baseline-delta-lesung-v7-0-0.md)
+[`slice-baseline-delta-lesung-v7-0-0`](done/slice-baseline-delta-lesung-v7-0-0.md)
 schließt über den Geber-Weg nach `done/` (ohne Liefer-Punkte — §7 seines Plans).
 Der nächste Arbeitsstand der Welle ist die Vendorung
 ([`slice-baseline-vendorung-v7-0-0`](open/slice-baseline-vendorung-v7-0-0.md) —
@@ -84,7 +84,7 @@ ihrem Schnitt liegt von ihnen keine Slice-Datei vor.
 
 ### Delta-Tafel (Les-Stand `v7.0.0`)
 
-**Geführt von** [`slice-baseline-delta-lesung-v7-0-0`](open/slice-baseline-delta-lesung-v7-0-0.md) —
+**Geführt von** [`slice-baseline-delta-lesung-v7-0-0`](done/slice-baseline-delta-lesung-v7-0-0.md) —
 gelesen am 2026-11-25 gegen den Arbeitsbestand der Lesung (Entfaltung des
 `v7.0.0`-Release-Assets neben dem `v6.18.1`-Spiegel, beides read-only unter
 /tmp). **ZIP-Layout-Verdict: stabil** — gleicher Asset-Name, gleiche Bäume

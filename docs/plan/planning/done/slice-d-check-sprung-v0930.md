@@ -34,7 +34,7 @@ Präzedenz [`slice-d-check-pin-bringt-den-go-sicherheitsfix`](../done/slice-d-ch
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
-- **Sprung auf Baseline v7.0.0 (vendored Regelwerk)** — ein Folge-Slice übernimmt es: [`slice-baseline-vendorung-v7-0-0.md`](../open/slice-baseline-vendorung-v7-0-0.md) (Delta-Lesung: [`slice-baseline-delta-lesung-v7-0-0.md`](../open/slice-baseline-delta-lesung-v7-0-0.md)); hier berührt nur das **Werkzeug-Image**, nicht der vendored Kurs-Baum — zwei Pins, zwei Vorgänge, und die Baseline-Vorlagen von `d-check.mk`/`.d-check.yml` werden vom Sprung nicht gefasst.
+- **Sprung auf Baseline v7.0.0 (vendored Regelwerk)** — ein Folge-Slice übernimmt es: [`slice-baseline-vendorung-v7-0-0.md`](../open/slice-baseline-vendorung-v7-0-0.md) (Delta-Lesung: [`slice-baseline-delta-lesung-v7-0-0.md`](../done/slice-baseline-delta-lesung-v7-0-0.md)); hier berührt nur das **Werkzeug-Image**, nicht der vendored Kurs-Baum — zwei Pins, zwei Vorgänge, und die Baseline-Vorlagen von `d-check.mk`/`.d-check.yml` werden vom Sprung nicht gefasst.
 - **Gate-Index [`harness/README.md`](../../../../harness/README.md) §Sensors** — Bestand bleibt bewusst stehen: kein Target wird neu, umbenannt oder umgebaut; das neue vierzehnte Target `doc-manual` aus dem Fragment (v0.89.0) ist advisory und trägt keinen Gate-Anspruch — es muss den Index nicht erweitern ([`MR-062`](../../../../harness/conventions.md#mr-062--ein-fragment-ziel-ohne-eigenen-config-block-trägt-eine-marke--der-fünfte-handgriff) Marken-Form, kein `--enable`-Modul).
 - **CI-Workflows und Mutations-Branch-Mechanik** — ein anderer Vorgang: der Push auf den CI-Branch ist **Teil der Lieferung** ([`MR-091`](../../../../harness/conventions.md#mr-091--ab-neun-fällen-läuft-die-mutations-probe-eines-slice-über-einen-ci-branch-dessen-ergebnis-job-schreibt)), seine Mechanik bleibt byte-gleich; eine Änderung am Weg wäre eine eigene Entscheidung.
 - **Messblock [`harness/conventions.md`](../../../../harness/conventions.md) §Zusatzklassen-Deklaration** — Übergabe-Artefakt an den **Architect-Zug** (Architect-Artefakte, eigener Commit-Zuschnitt, `AGENTS.md` §3.8), der nach diesem Slice kommt (Auftragsreihenfolge 2 → 3 → 1); nicht im Commit dieses Slices.
@@ -234,7 +234,7 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
     `seit …`-Anker am Zielort, benannt).
   - *(b) Folge-Slice:* die in §1 genannten übernehmenden Slices existieren im Lifecycle —
     [`open/slice-baseline-vendorung-v7-0-0.md`](../open/slice-baseline-vendorung-v7-0-0.md) und
-    [`open/slice-baseline-delta-lesung-v7-0-0.md`](../open/slice-baseline-delta-lesung-v7-0-0.md). Grün.
+    [`done/slice-baseline-delta-lesung-v7-0-0.md`](../done/slice-baseline-delta-lesung-v7-0-0.md). Grün.
   - *(c) Register:* beide in §7 genannten Beobachtungen existieren und tragen je mindestens einen
     Beleg — [`../observations/BEO-ALL/mutations-ci-gruenvorlauf-bricht-unter-last/observation.md`](../observations/BEO-ALL/mutations-ci-gruenvorlauf-bricht-unter-last/observation.md),
     [`../observations/BEO-ALL/baum-hash-deckt-nicht-jeden-pruefgegenstand/observation.md`](../observations/BEO-ALL/baum-hash-deckt-nicht-jeden-pruefgegenstand/observation.md). Grün.

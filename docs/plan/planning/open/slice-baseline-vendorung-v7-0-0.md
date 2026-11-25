@@ -40,7 +40,7 @@ angepasst.
 
 **Erwartbare Befundlage — bewusst geplant, kein Carveout.** Der `make gates`-
 Lauf nach dem Zug ist erwartbar **rot**: Delta-Befunde unter dem neuen
-Regelwerk. Ihre Heilung trägt [`slice-baseline-delta-lesung-v7-0-0`](slice-baseline-delta-lesung-v7-0-0.md)
+Regelwerk. Ihre Heilung trägt [`slice-baseline-delta-lesung-v7-0-0`](../done/slice-baseline-delta-lesung-v7-0-0.md)
 und die daraus geschnittenen Cluster-Slices — **in derselben Welle**. Eine
 Carveout-Fassung wäre hier die falsche Antwort: der Zwischenzustand ist
 geplant, nicht geduldet. Die DoD hält die grüne Teil-Achse fest
@@ -50,7 +50,7 @@ als Übergabe-Artefakt.
 **Ausdrücklich NICHT in diesem Slice:**
 
 - **Die Delta-Adaption** (geschärfte Regeln, MR-Text, Anpassung des Bestands an
-  das neue Regelwerk) — übernimmt [`slice-baseline-delta-lesung-v7-0-0`](slice-baseline-delta-lesung-v7-0-0.md)
+  das neue Regelwerk) — übernimmt [`slice-baseline-delta-lesung-v7-0-0`](../done/slice-baseline-delta-lesung-v7-0-0.md)
   samt der daraus geschnittenen Cluster-Slices; der Lesungs-Slice liest
   denselben neuen Baum und nimmt die Sendung an (Klasse 1).
 - **Die Template-Renames und Kennungs-Forms** (die 7 Umbenennungen der
