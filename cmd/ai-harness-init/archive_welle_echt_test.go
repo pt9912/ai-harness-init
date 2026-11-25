@@ -120,7 +120,7 @@ func commitZahl(t *testing.T, root string) int {
 func sperrtAb(t *testing.T, root, dir, kennung string) {
 	t.Helper()
 	vorher := commitZahl(t, root)
-	aus, fehler, code := traegerLauf(t, dir, "archive-welle", "welle-10")
+	aus, fehler, code := traegerLauf(t, dir, "archive-welle", "wave-10")
 	if !strings.Contains(aus, "["+kennung+"]") {
 		t.Fatalf("die Sperre [%s] steht nicht im Bericht:\n%s\nstderr: %s", kennung, aus, fehler)
 	}
@@ -130,8 +130,8 @@ func sperrtAb(t *testing.T, root, dir, kennung string) {
 	if nachher := commitZahl(t, root); nachher != vorher {
 		t.Errorf("Commits %d -> %d — der Lauf hat trotz Sperre geschrieben", vorher, nachher)
 	}
-	if _, err := os.Stat(filepath.Join(root, filepath.FromSlash("docs/plan/planning/done/welle-10"))); err == nil {
-		t.Error("done/welle-10/ ist angelegt — der Lauf hat trotz Sperre geschrieben")
+	if _, err := os.Stat(filepath.Join(root, filepath.FromSlash("docs/plan/planning/done/wave-10"))); err == nil {
+		t.Error("done/wave-10/ ist angelegt — der Lauf hat trotz Sperre geschrieben")
 	}
 }
 
@@ -153,7 +153,7 @@ func sperrtAb(t *testing.T, root, dir, kennung string) {
 func TestArchiveWelleEchtSperrtAmUnsauberenArbeitsbaum(t *testing.T) {
 	root := echtesRepo(t, nil)
 	schreibeDatei(t, root, "docs/plan/planning/done/slice-100-a.md",
-		"# Slice slice-100: Der Gegenstand\n\n**Welle:** welle-10\n\nnoch nicht committet\n")
+		"# Slice slice-100: Der Gegenstand\n\n**Welle:** wave-10\n\nnoch nicht committet\n")
 
 	sperrtAb(t, root, filepath.Join(root, "docs"), "unsauber")
 }
@@ -193,7 +193,7 @@ func TestArchiveWelleEchtArchiviertUndSetztZweiCommits(t *testing.T) {
 	root := echtesRepo(t, nil)
 	vorher := commitZahl(t, root)
 
-	aus, fehler, code := traegerLauf(t, root, "archive-welle", "welle-10")
+	aus, fehler, code := traegerLauf(t, root, "archive-welle", "wave-10")
 	if code != 0 {
 		t.Fatalf("Exit %d, want 0:\n%s\nstderr: %s", code, aus, fehler)
 	}
@@ -206,7 +206,7 @@ func TestArchiveWelleEchtArchiviertUndSetztZweiCommits(t *testing.T) {
 	if _, err := os.Stat(filepath.Join(root, filepath.FromSlash(echterReport))); err == nil {
 		t.Error("der Review-Report liegt noch da — er sollte im Archiv stehen und geloescht sein")
 	}
-	stub, err := os.ReadFile(filepath.Join(root, filepath.FromSlash("docs/plan/planning/done/welle-10/slice-100-a.md")))
+	stub, err := os.ReadFile(filepath.Join(root, filepath.FromSlash("docs/plan/planning/done/wave-10/slice-100-a.md")))
 	if err != nil {
 		t.Fatalf("Stub an der neuen Adresse: %v", err)
 	}
@@ -230,10 +230,10 @@ func TestArchiveWelleEchtGrenzeLaesstDenSpaetenSliceLiegen(t *testing.T) {
 	gitLauf(t, root, "add", "-A")
 	gitLauf(t, root, "commit", "-q", "-m", "spaeter Slice")
 
-	// Der Exit-Code traegt hier nichts: der Baum hat kein done/*/archiv.zip, und
+	// Der Exit-Code traegt hier nichts: der Baum hat kein done/*/archive.zip, und
 	// [untergrenze] steht fuer den eingesammelten fruehen Slice. Gemessen werden
 	// die zwei Zahlen und die Abwesenheit der Grenz-Sperren.
-	aus, fehler, _ := traegerLauf(t, root, "archive-welle", "--vorschau", "welle-10")
+	aus, fehler, _ := traegerLauf(t, root, "archive-welle", "--vorschau", "wave-10")
 	for _, sperre := range []string{"[flacher-klon]", "[add-commit]"} {
 		if strings.Contains(aus, sperre) {
 			t.Fatalf("Sperre %s steht im vollen Repo:\n%s\nstderr: %s", sperre, aus, fehler)
@@ -257,7 +257,7 @@ func TestArchiveWelleEchtSperrtImFlachenKlon(t *testing.T) {
 	klon := filepath.Join(t.TempDir(), "klon")
 	gitLauf(t, root, "clone", "-q", "--depth", "1", "file://"+root, klon)
 
-	aus, fehler, code := traegerLauf(t, klon, "archive-welle", "--vorschau", "welle-10")
+	aus, fehler, code := traegerLauf(t, klon, "archive-welle", "--vorschau", "wave-10")
 	if !strings.Contains(aus, "[flacher-klon]") {
 		t.Fatalf("die Sperre [flacher-klon] steht nicht im Bericht:\n%s\nstderr: %s", aus, fehler)
 	}

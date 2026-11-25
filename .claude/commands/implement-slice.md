@@ -109,7 +109,7 @@ nicht pauschal alles:
     Kopf des Sensors **und** im Bericht, statt nur eine erfundene Zeile zu zeigen.
 14. **Jeden neu geschriebenen oder geänderten Kommentar** (Code, Konfiguration, Skripte, Workflows,
     Makefile, Skript-Köpfe) gegen `AGENTS.md` §3.7 prüfen: Ist-Zustand im Indikativ, Herkunft
-    höchstens als ein auflösbares Feld (`LH-*`, `ADR-*`, `· seit welle-<Kennung>` bzw.
+    höchstens als ein auflösbares Feld (`LH-*`, `ADR-*`, `· seit wave-<Kennung>` bzw.
     `· seit slice-<Kennung>`); keine Slice-Nummer als Begründung, kein Konjunktiv über
     Verworfenes oder Künftiges. Vor der Übergabe umformulieren.
 

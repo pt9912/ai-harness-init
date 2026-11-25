@@ -25,4 +25,4 @@
 # `want`-Liste, und der Test faellt genau dort (t.Errorf, "emittierter Bestand
 # weicht ab", diff zeigt AGENTS.md fehlend). Kompiliert weiter.
 set -euo pipefail
-sed -i 's/"welle-results.template.md", "MR-NNN-titel.template.md":/"welle-results.template.md", "MR-NNN-titel.template.md", "AGENTS.template.md":/' internal/emit/templates.go
+sed -i 's/"wave-results.template.md", "MR-NNN-title.template.md":/"wave-results.template.md", "MR-NNN-title.template.md", "AGENTS.template.md":/' internal/emit/templates.go

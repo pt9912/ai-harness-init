@@ -52,27 +52,27 @@ func (g *gitBewegend) Commit(nachricht string) error {
 }
 
 const altbestandStub = "# <Titel>\n\n> **ARCHIVIERT** — Volltext:\n" +
-	"> `unzip -p done/<welle-id>/archiv.zip <pfad-im-archiv>`\n\n" +
-	"**Welle:** <welle-id | ohne Welle>\n" +
-	"**Archiviert mit:** <welle-id> · **Geschlossen:** <JJJJ-MM-TT>\n"
+	"> `unzip -p done/<wave-id>/archive.zip <pfad-im-archiv>`\n\n" +
+	"**Welle:** <wave-id | ohne Welle>\n" +
+	"**Archiviert mit:** <wave-id> · **Geschlossen:** <JJJJ-MM-TT>\n"
 
 const doneRel = "docs/plan/planning/done/"
 
 // altbestandBaum: zwei wellenlose Slices mit je einem Review-Report, ein
-// Mitglied und ein Plan von welle-10 samt Ergebnisnotiz (bleiben flach), ein
-// fremder Slice (bleibt flach). Kein done/*/archiv.zip: die Untergrenze fehlt.
+// Mitglied und ein Plan von wave-10 samt Ergebnisnotiz (bleiben flach), ein
+// fremder Slice (bleibt flach). Kein done/*/archive.zip: die Untergrenze fehlt.
 func altbestandBaum(t *testing.T) string {
 	t.Helper()
 	root := t.TempDir()
 	vorlagen := ".harness/baseline/v9.99.0/templates/docs/plan/planning/"
-	schreibeDatei(t, root, vorlagen+"archiv-stub-slice.template.md", altbestandStub)
-	schreibeDatei(t, root, vorlagen+"archiv-stub-welle.template.md", altbestandStub)
+	schreibeDatei(t, root, vorlagen+"archive-stub-slice.template.md", altbestandStub)
+	schreibeDatei(t, root, vorlagen+"archive-stub-wave.template.md", altbestandStub)
 	schreibeDatei(t, root, doneRel+"slice-100-a.md", "# Slice slice-100: A\n\n**Welle:** ohne Welle\n")
 	schreibeDatei(t, root, doneRel+"slice-101-b.md", "# Slice slice-101: B\n\n**Welle:** ohne Welle — DoD\n")
-	schreibeDatei(t, root, doneRel+"slice-102-c.md", "# Slice slice-102: C\n\n**Welle:** welle-10\n")
-	schreibeDatei(t, root, doneRel+"slice-103-d.md", "# Slice slice-103: D\n\n**Welle:** welle-11\n")
-	schreibeDatei(t, root, doneRel+"welle-10-eine-welle.md", "# Welle welle-10: W\n\n## 1. Ziel\n")
-	schreibeDatei(t, root, doneRel+"welle-10-results.md", "# welle-10 — Ergebnisse\n\n**Abschluss:** 2026-06-06\n")
+	schreibeDatei(t, root, doneRel+"slice-102-c.md", "# Slice slice-102: C\n\n**Welle:** wave-10\n")
+	schreibeDatei(t, root, doneRel+"slice-103-d.md", "# Slice slice-103: D\n\n**Welle:** wave-11\n")
+	schreibeDatei(t, root, doneRel+"wave-10-eine-welle.md", "# Welle wave-10: W\n\n## 1. Ziel\n")
+	schreibeDatei(t, root, doneRel+"wave-10-results.md", "# wave-10 — Ergebnisse\n\n**Abschluss:** 2026-06-06\n")
 	schreibeDatei(t, root, "docs/reviews/2026-05-05-slice-100-r1.md", "# Review 100\n")
 	schreibeDatei(t, root, "docs/reviews/2026-05-06-slice-101-r1.md", "# Review 101\n")
 	return root
@@ -143,7 +143,7 @@ func TestArchiveWelleAltbestandSchreibtDieMengeDerVorschau(t *testing.T) {
 	if len(stubs) != wellenlos {
 		t.Errorf("%d Stubs unter done/altbestand/, die Vorschau nannte %d wellenlose", len(stubs), wellenlos)
 	}
-	eintraege := zipEintraege(t, filepath.Join(root, "docs", "plan", "planning", "done", "altbestand", "archiv.zip"))
+	eintraege := zipEintraege(t, filepath.Join(root, "docs", "plan", "planning", "done", "altbestand", "archive.zip"))
 	var imArchivReviews, imArchivSlices int
 	for _, e := range eintraege {
 		switch {
@@ -159,7 +159,7 @@ func TestArchiveWelleAltbestandSchreibtDieMengeDerVorschau(t *testing.T) {
 		t.Errorf("Archiv: %d Slices / %d Reports, Vorschau nannte %d / %d", imArchivSlices, imArchivReviews, wellenlos, reviews)
 	}
 
-	if got := strings.Join(flacheMd(t, root), ","); got != "slice-102-c.md,slice-103-d.md,welle-10-eine-welle.md,welle-10-results.md" {
+	if got := strings.Join(flacheMd(t, root), ","); got != "slice-102-c.md,slice-103-d.md,wave-10-eine-welle.md,wave-10-results.md" {
 		t.Errorf("flach in done/ nach dem Lauf: %s", got)
 	}
 	for _, r := range []string{"2026-05-05-slice-100-r1.md", "2026-05-06-slice-101-r1.md"} {
@@ -172,7 +172,7 @@ func TestArchiveWelleAltbestandSchreibtDieMengeDerVorschau(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, w := range []string{"**Welle:** ohne Welle\n", "**Archiviert mit:** altbestand · **Geschlossen:** —", "done/altbestand/archiv.zip"} {
+	for _, w := range []string{"**Welle:** ohne Welle\n", "**Archiviert mit:** altbestand · **Geschlossen:** —", "done/altbestand/archive.zip"} {
 		if !strings.Contains(string(stub), w) {
 			t.Errorf("Stub traegt %q nicht:\n%s", w, stub)
 		}
@@ -199,7 +199,7 @@ func TestArchiveWelleAltbestandSchreibtDieMengeDerVorschau(t *testing.T) {
 func TestArchiveWelleAltbestandNimmtDieUntergrenzeSperreWeg(t *testing.T) {
 	root := altbestandBaum(t)
 	var vorher, nachher, errb bytes.Buffer
-	archiveWelleLauf(root, einCommit(t, root), "welle-10", "", true, "", indexAttrappe(t, root), &gitBewegend{root: root}, &vorher, &errb)
+	archiveWelleLauf(root, einCommit(t, root), "wave-10", "", true, "", indexAttrappe(t, root), &gitBewegend{root: root}, &vorher, &errb)
 	if !strings.Contains(vorher.String(), "[untergrenze]") {
 		t.Fatalf("Vorbedingung: ohne Sammel-Archiv fehlt [untergrenze]:\n%s", vorher.String())
 	}
@@ -208,7 +208,7 @@ func TestArchiveWelleAltbestandNimmtDieUntergrenzeSperreWeg(t *testing.T) {
 	if code := archiveWelleLauf(root, einCommit(t, root), "altbestand", altKennung, false, "", indexAttrappe(t, root), &gitBewegend{root: root}, &out, &errb); code != 0 {
 		t.Fatalf("Lauf Exit %d:\n%s%s", code, out.String(), errb.String())
 	}
-	archiveWelleLauf(root, einCommit(t, root), "welle-10", "", true, "", indexAttrappe(t, root), &gitBewegend{root: root}, &nachher, &errb)
+	archiveWelleLauf(root, einCommit(t, root), "wave-10", "", true, "", indexAttrappe(t, root), &gitBewegend{root: root}, &nachher, &errb)
 	if strings.Contains(nachher.String(), "[untergrenze]") {
 		t.Errorf("nach dem Sammel-Archiv steht [untergrenze] noch:\n%s", nachher.String())
 	}

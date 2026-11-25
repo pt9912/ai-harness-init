@@ -44,7 +44,7 @@ func TestArchiveWelleSchreibendBrichtAnEinerSperreAb(t *testing.T) {
 	}
 	g := &gitStumm{}
 	var out, errb bytes.Buffer
-	code := archiveWelleLauf(root, einCommit(t, root), "welle-10", "", false, "?? fremd.txt\n", nil, g, &out, &errb)
+	code := archiveWelleLauf(root, einCommit(t, root), "wave-10", "", false, "?? fremd.txt\n", nil, g, &out, &errb)
 	if code != 3 {
 		t.Fatalf("Exit %d, want 3 (Sperre steht)", code)
 	}
@@ -77,7 +77,7 @@ func TestArchiveWelleVorschauSchreibtNichtsObwohlDerLaufLiefe(t *testing.T) {
 
 	g := &gitStumm{}
 	var out, errb bytes.Buffer
-	code := archiveWelleLauf(root, einCommit(t, root), "welle-10", "", true, "", dateien, g, &out, &errb)
+	code := archiveWelleLauf(root, einCommit(t, root), "wave-10", "", true, "", dateien, g, &out, &errb)
 
 	// Zuerst die Vorbedingung, und sie ist die einzige mit Fatal: ohne sie sagen
 	// die drei Pruefungen darunter nichts ueber den Schalter aus.
@@ -108,7 +108,7 @@ func TestArchiveWelleSchreibendLaeuftAmSelbenBaum(t *testing.T) {
 
 	g := &gitStumm{}
 	var out, errb bytes.Buffer
-	archiveWelleLauf(root, einCommit(t, root), "welle-10", "", false, "", dateien, g, &out, &errb)
+	archiveWelleLauf(root, einCommit(t, root), "wave-10", "", false, "", dateien, g, &out, &errb)
 
 	if len(g.rufe) == 0 {
 		t.Fatalf("ohne --vorschau keine einzige git-Operation — der Baum traegt eine Sperre:\n%s", out.String())
@@ -120,7 +120,7 @@ func TestArchiveWelleSchreibendLaeuftAmSelbenBaum(t *testing.T) {
 
 // sperrenfreierBaum legt den kleinsten Baum an, ueber dem KEINE der Sperren aus
 // archive.Vorschau steht: Ergebnisnotiz da, genau ein Welle-Plan, ein eingesammelter Slice, kein
-// done/welle-10/, kein wellenloser Slice (also keine Untergrenzen-Frage), kein
+// done/wave-10/, kein wellenloser Slice (also keine Untergrenzen-Frage), kein
 // Review-Report (also kein Haenger). Die zwei Stub-Vorlagen liegen mit, weil der
 // schreibende Zweig sonst schon vor seinem ersten Schreibzugriff ausfiele — und
 // der Baum-Abdruck dann nichts mehr zeigte.
@@ -131,14 +131,14 @@ func sperrenfreierBaum(t *testing.T) string {
 	vorlagen := filepath.Join(root, ".harness", "baseline", "v9.99.0",
 		"templates", "docs", "plan", "planning")
 	stub := "# <Titel>\n\n> **ARCHIVIERT** — Volltext:\n" +
-		"> `unzip -p done/<welle-id>/archiv.zip <pfad-im-archiv>`\n\n" +
+		"> `unzip -p done/<wave-id>/archive.zip <pfad-im-archiv>`\n\n" +
 		"**Geschlossen:** <JJJJ-MM-TT>\n"
 	for pfad, inhalt := range map[string]string{
-		filepath.Join(vorlagen, "archiv-stub-slice.template.md"): stub,
-		filepath.Join(vorlagen, "archiv-stub-welle.template.md"): stub,
-		filepath.Join(done, "welle-10-eine-welle.md"):            "# Welle welle-10: Der Plan\n\n## 1. Ziel\n",
-		filepath.Join(done, "welle-10-results.md"):               "# welle-10 — Ergebnisse\n\n**Abschluss:** 2026-06-06\n",
-		filepath.Join(done, "slice-100-a.md"):                    "# Slice slice-100: Der Gegenstand\n\n**Welle:** welle-10\n",
+		filepath.Join(vorlagen, "archive-stub-slice.template.md"): stub,
+		filepath.Join(vorlagen, "archive-stub-wave.template.md"): stub,
+		filepath.Join(done, "wave-10-eine-welle.md"):            "# Welle wave-10: Der Plan\n\n## 1. Ziel\n",
+		filepath.Join(done, "wave-10-results.md"):               "# wave-10 — Ergebnisse\n\n**Abschluss:** 2026-06-06\n",
+		filepath.Join(done, "slice-100-a.md"):                    "# Slice slice-100: Der Gegenstand\n\n**Welle:** wave-10\n",
 	} {
 		if err := os.MkdirAll(filepath.Dir(pfad), 0o755); err != nil {
 			t.Fatal(err)
@@ -262,7 +262,7 @@ func TestArchiveWelleReichtDenSchalterVomArgumentBisZumZweig(t *testing.T) {
 
 	g := &gitStumm{}
 	var out, errb bytes.Buffer
-	code := archiveWelleMit([]string{"--vorschau", "welle-10"}, attrappenEingang(t, root, g), &out, &errb)
+	code := archiveWelleMit([]string{"--vorschau", "wave-10"}, attrappenEingang(t, root, g), &out, &errb)
 
 	if !strings.Contains(out.String(), "Sperren: keine") {
 		t.Fatalf("der Prueftext traegt eine Sperre — gemessen waere die Vorpruefung, nicht der Schalter:\n%s", out.String())
@@ -287,7 +287,7 @@ func TestArchiveWelleOhneSchalterSchreibtAmSelbenArgumentFeld(t *testing.T) {
 
 	g := &gitStumm{}
 	var out, errb bytes.Buffer
-	archiveWelleMit([]string{"welle-10"}, attrappenEingang(t, root, g), &out, &errb)
+	archiveWelleMit([]string{"wave-10"}, attrappenEingang(t, root, g), &out, &errb)
 
 	if len(g.rufe) == 0 {
 		t.Fatalf("ohne `--vorschau` keine einzige git-Operation — der Baum traegt eine Sperre:\n%s (stderr: %q)", out.String(), errb.String())
@@ -312,9 +312,9 @@ func TestParseArchiveWelleGewinntDenSchalterAusDemArgument(t *testing.T) {
 		welle    string
 		vorschau bool
 	}{
-		{"Schalter vor der Kennung", "", []string{"--vorschau", "welle-10"}, "welle-10", true},
-		{"Schalter nach der Kennung", "", []string{"welle-10", "--vorschau"}, "welle-10", true},
-		{"ohne Schalter", "", []string{"welle-10"}, "welle-10", false},
+		{"Schalter vor der Kennung", "", []string{"--vorschau", "wave-10"}, "wave-10", true},
+		{"Schalter nach der Kennung", "", []string{"wave-10", "--vorschau"}, "wave-10", true},
+		{"ohne Schalter", "", []string{"wave-10"}, "wave-10", false},
 		{"Kennung als Paar", "LH-XY-42", []string{"--kennung", "LH-XY-42", "altbestand"}, "altbestand", false},
 		{"Kennung mit Gleichheitszeichen", "LH-XY-42", []string{"altbestand", "--kennung=LH-XY-42", "--vorschau"}, "altbestand", true},
 		{"leere Kennung", "", []string{"--kennung", "", "altbestand"}, "altbestand", false},
@@ -360,8 +360,8 @@ func TestArchiveWelleAufrufFehler(t *testing.T) {
 		{"ohne Argument", []string{}, 2},
 		{"leeres Argument", []string{""}, 2},
 		{"nur --vorschau", []string{"--vorschau"}, 2},
-		{"unbekanntes Flag", []string{"--bogus", "welle-10"}, 2},
-		{"zwei Kennungen", []string{"--vorschau", "welle-10", "welle-11"}, 2},
+		{"unbekanntes Flag", []string{"--bogus", "wave-10"}, 2},
+		{"zwei Kennungen", []string{"--vorschau", "wave-10", "wave-11"}, 2},
 		{"--kennung ohne Wert", []string{"altbestand", "--kennung"}, 2},
 	}
 	for _, f := range faelle {
@@ -416,7 +416,7 @@ func TestSubkommandoRouting_ArchiveWelleFaelltNichtInDenInitPfad(t *testing.T) {
 
 	var ee *exec.ExitError
 	if !errors.As(err, &ee) || ee.ExitCode() != 2 {
-		t.Fatalf("Exit %v, want 2 (Aufruf-Fehler ohne <welle-id>)", err)
+		t.Fatalf("Exit %v, want 2 (Aufruf-Fehler ohne <wave-id>)", err)
 	}
 	if stdout != "" {
 		t.Errorf("stdout nicht leer: %q", stdout)

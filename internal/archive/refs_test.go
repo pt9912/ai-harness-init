@@ -41,7 +41,7 @@ func TestZaehleGeschwisterUndAufsteigendSindDisjunkt(t *testing.T) {
 
 // TestVerweisFundDreiFormenInIhremSuchraum: jede Form wird genau dort gezaehlt,
 // wo ihr Link-Ziel die bewegte Datei ueberhaupt aufloest — die praefixlose aus
-// den flach in done/ liegenden Dateien, die aufsteigende aus done/<welle-x>/,
+// den flach in done/ liegenden Dateien, die aufsteigende aus done/<wave-x>/,
 // die Praefix-Form ueberall.
 func TestVerweisFundDreiFormenInIhremSuchraum(t *testing.T) {
 	root := t.TempDir()
@@ -53,7 +53,7 @@ func TestVerweisFundDreiFormenInIhremSuchraum(t *testing.T) {
 		"Siehe [slice-100](../planning/done/slice-100-a.md).\n")
 	schreibe(t, filepath.Join(done, "welle-10-results.md"),
 		"Geliefert: [slice-100](slice-100-a.md).\n")
-	schreibe(t, filepath.Join(done, "welle-09", "slice-090-x.md"),
+	schreibe(t, filepath.Join(done, "wave-09", "slice-090-x.md"),
 		"Folge-Slice: [slice-100](../slice-100-a.md).\n")
 	schreibe(t, filepath.Join(root, "docs", "plan", "planning", "next", "slice-900-y.md"),
 		"Geschwister im eigenen Verzeichnis: [x](slice-100-a.md).\n")
@@ -63,16 +63,16 @@ func TestVerweisFundDreiFormenInIhremSuchraum(t *testing.T) {
 	// trotzdem keinen Treffer ergeben.
 	schreibe(t, filepath.Join(done, "notiz.txt"),
 		"Kein Markdown: [x](slice-100-a.md).\n")
-	schreibe(t, filepath.Join(done, "welle-09", "notiz.txt"),
+	schreibe(t, filepath.Join(done, "wave-09", "notiz.txt"),
 		"Kein Markdown: [x](../slice-100-a.md).\n")
 
 	funde, err := archive.VerweisFund(root, []string{
 		"docs/reviews/2026-09-01-x.md",
 		"docs/plan/planning/done/welle-10-results.md",
-		"docs/plan/planning/done/welle-09/slice-090-x.md",
+		"docs/plan/planning/done/wave-09/slice-090-x.md",
 		"docs/plan/planning/next/slice-900-y.md",
 		"docs/plan/planning/done/notiz.txt",
-		"docs/plan/planning/done/welle-09/notiz.txt",
+		"docs/plan/planning/done/wave-09/notiz.txt",
 	}, []string{"slice-100-a.md"})
 	if err != nil {
 		t.Fatal(err)
@@ -87,7 +87,7 @@ func TestVerweisFundDreiFormenInIhremSuchraum(t *testing.T) {
 	if f := got["docs/plan/planning/done/welle-10-results.md"]; f.Geschwister != 1 || f.Summe() != 1 {
 		t.Errorf("Ergebnisnotiz: %+v, want genau 1 geschwister-relativen Treffer", f)
 	}
-	if f := got["docs/plan/planning/done/welle-09/slice-090-x.md"]; f.Aufsteigend != 1 || f.Summe() != 1 {
+	if f := got["docs/plan/planning/done/wave-09/slice-090-x.md"]; f.Aufsteigend != 1 || f.Summe() != 1 {
 		t.Errorf("Stub der Vorwelle: %+v, want genau 1 aufsteigenden Treffer", f)
 	}
 	if _, drin := got["docs/plan/planning/next/slice-900-y.md"]; drin {
@@ -95,7 +95,7 @@ func TestVerweisFundDreiFormenInIhremSuchraum(t *testing.T) {
 	}
 	for _, ohneMd := range []string{
 		"docs/plan/planning/done/notiz.txt",
-		"docs/plan/planning/done/welle-09/notiz.txt",
+		"docs/plan/planning/done/wave-09/notiz.txt",
 	} {
 		if _, drin := got[ohneMd]; drin {
 			t.Errorf("relative Link-Form in %s gezaehlt — ausserhalb einer Markdown-Datei loest sie gegen nichts auf", ohneMd)
@@ -143,7 +143,7 @@ func TestVerweisFundPraefixAusNichtMarkdownDatei(t *testing.T) {
 // TestVerweisFundUebergehtDenEigenenUmzugsgegenstand: die praefixlose Form zaehlt
 // nicht in einer Datei, die dieser Lauf selbst mitnimmt. Zwei Mitglieder
 // derselben Welle, die einander geschwister-relativ verlinken, wandern gemeinsam
-// nach done/<welle-id>/; ihre Links bleiben gueltig, und der Nachzug fasst sie
+// nach done/<wave-id>/; ihre Links bleiben gueltig, und der Nachzug fasst sie
 // nicht an. Wer sie zaehlt, meldet einen zu grossen Blast-Radius.
 func TestVerweisFundUebergehtDenEigenenUmzugsgegenstand(t *testing.T) {
 	root := t.TempDir()
@@ -183,7 +183,7 @@ func TestNachziehenSchreibtGenauDortWoVerweisFundZaehlt(t *testing.T) {
 			"Siehe [slice-100](../planning/done/slice-100-a.md).\n")
 		schreibe(t, filepath.Join(done, "welle-10-results.md"),
 			"Geliefert: [slice-100](slice-100-a.md).\n")
-		schreibe(t, filepath.Join(done, "welle-09", "slice-090-x.md"),
+		schreibe(t, filepath.Join(done, "wave-09", "slice-090-x.md"),
 			"Folge-Slice: [slice-100](../slice-100-a.md).\n")
 		schreibe(t, filepath.Join(root, "docs", "plan", "planning", "next", "slice-900-y.md"),
 			"Geschwister im eigenen Verzeichnis: [x](slice-100-a.md).\n")
@@ -191,7 +191,7 @@ func TestNachziehenSchreibtGenauDortWoVerweisFundZaehlt(t *testing.T) {
 		return root, []string{
 			"docs/reviews/2026-09-01-x.md",
 			"docs/plan/planning/done/welle-10-results.md",
-			"docs/plan/planning/done/welle-09/slice-090-x.md",
+			"docs/plan/planning/done/wave-09/slice-090-x.md",
 			"docs/plan/planning/next/slice-900-y.md",
 			"docs/plan/planning/done/slice-100-a.md",
 		}
@@ -218,7 +218,7 @@ func TestNachziehenSchreibtGenauDortWoVerweisFundZaehlt(t *testing.T) {
 	inhalte := map[string]string{
 		"docs/reviews/2026-09-01-x.md":                    "](../planning/done/welle-10/slice-100-a.md)",
 		"docs/plan/planning/done/welle-10-results.md":     "](welle-10/slice-100-a.md)",
-		"docs/plan/planning/done/welle-09/slice-090-x.md": "](../welle-10/slice-100-a.md)",
+		"docs/plan/planning/done/wave-09/slice-090-x.md": "](../welle-10/slice-100-a.md)",
 		"docs/plan/planning/next/slice-900-y.md":          "](slice-100-a.md)",
 	}
 	for datei, want := range inhalte {
@@ -429,7 +429,7 @@ func TestNachziehenUnterReviewsErsetztLinkSyntaxImCodeSpanMit(t *testing.T) {
 // Gegenbeispiel: test/mutations/469-archive-welle-go-form-regel-greift-in-done.sh.
 func TestNachziehenInDoneErsetztJedeForm(t *testing.T) {
 	root := t.TempDir()
-	rel := "docs/plan/planning/done/welle-09-results.md"
+	rel := "docs/plan/planning/done/wave-09-results.md"
 	schreibe(t, filepath.Join(root, filepath.FromSlash(rel)), bt(
 		"Link: [a](../done/slice-100-a.md)\n"+
 			"Span: §docs/plan/planning/done/slice-100-a.md§\n"+

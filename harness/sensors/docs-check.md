@@ -105,7 +105,7 @@ docs/plan/planning/done/welle-*-results.md | wc -l` → **8**. Die übrigen vier
 (`welle-06`, `welle-07`, `welle-08`, `welle-12`) tragen als H1 *„… — Results-Notiz"* und führen das
 Wort *Closure* in **keiner** Überschriften-Ebene (`grep -cE '^#{1,6} .*[Cc]losure'` → 0 je Datei) —
 sie weichen damit auch von der vendored Ziel-Form ab
-(`.harness/baseline/v6.18.1/templates/docs/plan/planning/welle-results.template.md:1`) und bleiben
+(`.harness/baseline/v6.18.1/templates/docs/plan/planning/wave-results.template.md:1`) und bleiben
 eine benannte, nicht nachgezogene Abweichung, kein zweiter Grund für den engen Filter. Gegen eine
 Kopie außerhalb des Repos, netzlos, mit `closure.glob: '*.md'`
 probeweise geweitet
@@ -150,7 +150,7 @@ Schritt 4) **vor der ersten Archivierung** verlangte Geltungsbereichs-Prüfung g
 Sensor als hiermit durchgeführt
 und mit **benannter Grenze** beantwortet, statt stillschweigend zu bestehen: sobald ein
 `make archive-welle`-Lauf (Werkzeug in Bau, [ADR-0033](../../docs/plan/adr/0033-wellen-archivierung-als-unterkommando.md))
-Slice-Stubs in ein `done/<welle-id>/`-Unterverzeichnis bewegt, deckt dieser Sensor sie nicht mehr —
+Slice-Stubs in ein `done/<wave-id>/`-Unterverzeichnis bewegt, deckt dieser Sensor sie nicht mehr —
 und die Stubs tragen nach der Ziel-Form ohnehin kein volles §7 mehr, sind also für `closure` kein
 sinnvoller Kandidat. Wer `archive-welle` produktiv nimmt, zieht den Geltungsbereich hier nach
 oder benennt an dieser Stelle, dass die Zusage ab dann nur für den flachen Bestand gilt.
@@ -374,7 +374,7 @@ docs/plan/planning/done/slice-sonde-stilllegung.md:89	docs/plan/planning/done/sl
   offen. Alle sieben stehen in `exempt-paths`. Ein künftiger regulärer Slice, der sie offen lässt,
   ist Lage V8. Das Rot folgt der Quelle (*Was es hält*): Die Baseline sieht für diese Zeile keine
   Ausnahme vor, das Werkzeug muss also keine bieten.
-- **Der Glob ist flach.** Ein Stub unter `done/<welle-id>/` liegt außerhalb. Trifft die Regel keine
+- **Der Glob ist flach.** Ein Stub unter `done/<wave-id>/` liegt außerhalb. Trifft die Regel keine
   Datei mehr, meldet sie `section-missing` auf ihrem Glob und behält dabei den Text des Werkzeugs
   (*„Regel trifft keine Datei … — das Gate liefe leer"*), nicht den `hint`. Gemessen in einer Kopie,
   deren Regel `files` auf ein Muster ohne Treffer zeigt. Der `hint` steht nur an Befunden einer

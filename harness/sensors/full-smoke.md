@@ -22,7 +22,7 @@ Stufe `slice_mv_kanten_nach_done_im_ziel` an einem frisch emittierten sprachlose
 hält und was der Dogfood-Wächter daneben hält, steht in [`slice-mv.md`](slice-mv.md) §Kanten
 `open → done` und `next → done`.
 
-**Leseprobe der Archivierungs-Stufe.** An den drei Stellen, an denen ein `archiv.zip` nach
+**Leseprobe der Archivierungs-Stufe.** An den drei Stellen, an denen ein `archive.zip` nach
 einem Vollzug liegt (Welle, Altbestand, gefetchter Träger), liest die Stufe das Archiv mit
 `unzip -t` und `unzip -lq` im Bild `BATS_IMAGE` aus dem `Makefile` (`archiv_gueltig` in
 `harness/tools/full-smoke.sh`; BusyBox, `docker run --network none`, Zip-Verzeichnis read-only

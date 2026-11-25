@@ -29,18 +29,18 @@ import (
 // der ihn einfuehrt, hat drei Formen:
 //
 //	KOPIERE-SATZ ("Kopiere … nach <pfad>.md") — so nennen ihn acht der elf,
-//	  darunter welle-results.template.md ("… docs/plan/planning/done/
+//	  darunter wave-results.template.md ("… docs/plan/planning/done/
 //	  welle-<Kennung>-results.md": eine je Welle, neben die Welle-Plan-Datei, die
-//	  ihrerseits aus welle.template.md kommt und schon hier steht),
-//	  MR-NNN-titel.template.md ("… harness/conventions/MR-<NNN>-<titel>.md …
+//	  ihrerseits aus wave.template.md kommt und schon hier steht),
+//	  MR-NNN-title.template.md ("… harness/conventions/MR-<NNN>-<titel>.md …
 //	  Ein Eintrag je Datei": eine je Adaption, dieselbe Form wie der ADR-Eintrag
-//	  NNNN-titel.template.md) und gate.template.md ("Kopiere nach
+//	  NNNN-title.template.md) und gate.template.md ("Kopiere nach
 //	  harness/sensors/<target>.md": eine je Gate mit mehr als einem Satz
 //	  Vertrag).
 //	VERBLEIB-SATZ ("… liegen bleibt (<verzeichnis>/)") — so nennen ihn die zwei
 //	  Archiv-Stubs. Sie werden nicht an einen Ort kopiert, sondern bleiben an der
 //	  Stelle des archivierten Volltexts liegen: unter
-//	  docs/plan/planning/done/<welle-id>/, je archiviertem Slice bzw. je
+//	  docs/plan/planning/done/<wave-id>/, je archiviertem Slice bzw. je
 //	  archiviertem Welle-Plan einer (Baseline-Regelwerk modul-06-roadmap.md
 //	  §Wellen-Closure-Prozedur, Schritt 4). Der Set-Index des vendored Satzes
 //	  (templates/README.md §Ein- vs. wiederkehrende Templates) fuehrt beide
@@ -83,12 +83,12 @@ import (
 // make mutate, der nicht in make gates steht. Neue Eintraege gehen davor.
 func isRecurring(base string) bool {
 	switch base {
-	case "NNNN-titel.template.md", "slice.template.md", "welle.template.md",
+	case "NNNN-title.template.md", "slice.template.md", "wave.template.md",
 		"carveout.template.md", "review-report.template.md",
-		"archiv-stub-slice.template.md", "archiv-stub-welle.template.md",
+		"archive-stub-slice.template.md", "archive-stub-wave.template.md",
 		"observation.template.md", "gate.template.md":
 		return true
-	case "welle-results.template.md", "MR-NNN-titel.template.md":
+	case "wave-results.template.md", "MR-NNN-title.template.md":
 		return true
 	}
 	return false
@@ -143,7 +143,7 @@ func isDerivativeIndex(rel string) bool {
 // beantworten, WIE sich eine Vorlage vervielfaeltigt (ein Ziel je Repo, Vorlage
 // danach verworfen; gegenueber: Vorlage bleibt co-located), nicht, OB ein gegebenes
 // Repo dieses Ziel hat. Eine geschlossene Taxonomie ist die Liste ebenfalls nicht:
-// derivative Indexe, Planning-Index, welle-results und MR-NNN-titel stehen in
+// derivative Indexe, Planning-Index, wave-results und MR-NNN-title stehen in
 // keinem der beiden Eimer. Im Adaptions-Block steht zu dieser Weiche kein
 // Eintrag; wo keiner steht, gilt die Baseline unveraendert (MR-000
 // Baseline-Aussage). Ob einer dazukommt, entscheidet der Architect (AGENTS 3.8)
@@ -663,19 +663,19 @@ const conventionsTemplate = "harness/conventions.template.md"
 
 // conventionsPathRefOld ist der zwei Zeilen lange Satzteil, der die
 // Eintrags-Vorlage unter einem baseline-relativen Pfad nennt
-// (`harness/conventions/MR-NNN-titel.template.md`) — im emittierten Ziel liest
+// (`harness/conventions/MR-NNN-title.template.md`) — im emittierten Ziel liest
 // ein Adopter ihn als repo-relativ, real liegt sie unter
 // `.harness/baseline/<tag>/templates/harness/conventions/`. Der volle,
 // tag-gebundene Pfad ist an dieser Stelle im Emitter nicht bekannt (kein
 // Baseline-Tag als Parameter durchgereicht); die Neutralisierung entfernt
 // darum die Pfad-FORM (ADR-0037 Festlegung 1, Fundstelle 1) statt einen
 // erratenen Pfad einzusetzen.
-const conventionsPathRefOld = "kopiert aus\n`harness/conventions/MR-NNN-titel.template.md` der vendored Baseline;"
-const conventionsPathRefNew = "kopiert aus der\ngleichnamigen Eintrags-Vorlage `MR-NNN-titel.template.md` der vendored Baseline;"
+const conventionsPathRefOld = "kopiert aus\n`harness/conventions/MR-NNN-title.template.md` der vendored Baseline;"
+const conventionsPathRefNew = "kopiert aus der\ngleichnamigen Eintrags-Vorlage `MR-NNN-title.template.md` der vendored Baseline;"
 
 // NeutralizeConventionsTemplateRef macht die emittierte harness/conventions.md
 // codepath-sicher: die Vorlage nennt ihren eigenen Quell-Pfad
-// (harness/conventions/MR-NNN-titel.template.md) baseline-relativ; im Ziel-Repo
+// (harness/conventions/MR-NNN-title.template.md) baseline-relativ; im Ziel-Repo
 // gibt es unter diesem Pfad nichts. Ersetzt wird die Pfad-Form durch eine
 // Nennung ohne Verzeichnis-Segment — der Dateiname bleibt lesbar, zeigt aber
 // nicht mehr auf einen Ort, den es im Ziel-Repo nicht gibt. Ohne den Satzteil
@@ -895,7 +895,7 @@ const placeholderPattern = `<[^<>]*>`
 //  3. Ein Link, dessen Text ueber einen Zeilenumbruch geht oder dessen Ziel Leerraum
 //     bzw. Klammern traegt, bleibt stehen (s. placeholderLinkPattern).
 //  4. Der Link-Text bleibt unveraendert. Traegt er selbst die Gestalt eines HTML-Tags
-//     (`<welle-NN-titel>`), liest ein Markdown-Renderer ihn als Tag — dieselbe Form,
+//     (`<wave-id>`), liest ein Markdown-Renderer ihn als Tag — dieselbe Form,
 //     die der Vorlagen-Satz in seinen Tabellen ohnehin fuehrt.
 //
 // Rot faerbt eine verlorene Wirkung TestTemplates_KeinPlatzhalterLinkImEmittiertenSatz

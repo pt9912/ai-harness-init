@@ -42,7 +42,7 @@ const (
 	doneName    = "done"
 	doneDir     = planningDir + "/" + doneName
 	reviewsDir  = "docs/reviews"
-	archivName  = "archiv.zip"
+	archivName  = "archive.zip"
 )
 
 // WelleFeld liefert den Rohtext hinter dem Kopf-Feld `**Welle:**` aus der ERSTEN
@@ -158,14 +158,14 @@ func reviewTraegt(name, kennung string) bool {
 // damit liefe, entscheiden die Sperren.
 type Bestand struct {
 	Welle       string
-	Plaene      []string // done/<welle-id>*.md ohne die Ergebnisnotiz — 0, 1 oder mehrdeutig viele
-	Ergebnis    string   // done/<welle-id>-results.md; leer, wenn sie fehlt
+	Plaene      []string // done/<wave-id>*.md ohne die Ergebnisnotiz — 0, 1 oder mehrdeutig viele
+	Ergebnis    string   // done/<wave-id>-results.md; leer, wenn sie fehlt
 	Mitglieder  []string
 	Wellenlose  []string
 	Fremde      []string
 	Reviews     []string
-	Untergrenze string // ein vorhandenes done/*/archiv.zip; leer = keines
-	Archiviert  bool   // done/<welle-id>/ existiert bereits
+	Untergrenze string // ein vorhandenes done/*/archive.zip; leer = keines
+	Archiviert  bool   // done/<wave-id>/ existiert bereits
 	// Die Grenze aus der Commit-Abstammung (ADR-0081): aktiv, sobald eine
 	// Ergebnisnotiz in done/ liegt. NachGrenze sind wellenlose Slices, die nicht
 	// in diesen Lauf gehoeren und flach liegen bleiben; OhneAdd die Pfade ohne
@@ -199,7 +199,7 @@ func (b Bestand) EinPlanVorhanden() bool {
 }
 
 // Bewegte sind die Basenamen der Dateien, die der schreibende Lauf nach
-// done/<welle-id>/ zoege: die eingesammelten Slices und der Welle-Plan. Sie sind
+// done/<wave-id>/ zoege: die eingesammelten Slices und der Welle-Plan. Sie sind
 // der Eingang des Verweis-Funds.
 func (b Bestand) Bewegte() []string {
 	var out []string
@@ -299,7 +299,7 @@ func (b *Bestand) einordnen(root, rel string) error {
 	return nil
 }
 
-// untergrenze sucht ein vorhandenes done/<welle-x>/archiv.zip. Es ist die
+// untergrenze sucht ein vorhandenes done/<wave-x>/archive.zip. Es ist die
 // beobachtbare Untergrenze fuer "wellenlos seit der letzten Closure"; ohne eines
 // umfasste die Klasse jeden wellenlosen Slice, den das Repo je geschlossen hat.
 // Der erste Fund genuegt — die Frage ist, OB eine Grenze existiert.

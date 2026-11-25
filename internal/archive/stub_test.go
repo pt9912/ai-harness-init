@@ -30,23 +30,23 @@ mehrzeilig, mit Leerzeile darin.
 -->
 
 > **ARCHIVIERT** — Volltext:
-> ` + "`unzip -p done/<welle-id>/archiv.zip <pfad-im-archiv>`" + `
+> ` + "`unzip -p done/<wave-id>/archive.zip <pfad-im-archiv>`" + `
 
-**Welle:** <welle-id | ohne Welle>
-**Archiviert mit:** <welle-id> · **Geschlossen:** <JJJJ-MM-TT>
+**Welle:** <wave-id | ohne Welle>
+**Archiviert mit:** <wave-id> · **Geschlossen:** <JJJJ-MM-TT>
 **Hervorgegangen:** <BEO-*, ADR-*, Folge-Slice — oder ` + "`— keine —`" + `>
 `
 
-const vorlageWelle = `# <welle-id> — <Titel>
+const vorlageWelle = `# <wave-id> — <Titel>
 
 > **Template-Hinweis.** ` + vorlagenMarker + ` — dieser Absatz faellt beim Kuerzen weg.
 
 ## Eine Abschnittsueberschrift, die der Stub nicht traegt
 
 > **ARCHIVIERT** — Volltext:
-> ` + "`unzip -p done/<welle-id>/archiv.zip <pfad-im-archiv>`" + `
+> ` + "`unzip -p done/<wave-id>/archive.zip <pfad-im-archiv>`" + `
 
-**Geschlossen:** <JJJJ-MM-TT> · **Ergebnisnotiz:** <welle-id>-results.md
+**Geschlossen:** <JJJJ-MM-TT> · **Ergebnisnotiz:** <wave-id>-results.md
 **Archivierte Vorgänge:** <N Slices, M Reviews>
 `
 
@@ -63,8 +63,8 @@ const vorlageWelle = `# <welle-id> — <Titel>
 func vorlagenBaum(t *testing.T, root string) string {
 	t.Helper()
 	dir := filepath.Join(root, ".harness", "baseline", pruefTag, "templates", "docs", "plan", "planning")
-	schreibe(t, filepath.Join(dir, "archiv-stub-slice.template.md"), vorlageSlice)
-	schreibe(t, filepath.Join(dir, "archiv-stub-welle.template.md"), vorlageWelle)
+	schreibe(t, filepath.Join(dir, "archive-stub-slice.template.md"), vorlageSlice)
+	schreibe(t, filepath.Join(dir, "archive-stub-wave.template.md"), vorlageWelle)
 	return dir
 }
 
@@ -94,7 +94,7 @@ func TestVorlagenVerzeichnisEntdecktDenEinenTag(t *testing.T) {
 func TestAusVorlageFaelltOhneVorlageAus(t *testing.T) {
 	root := t.TempDir()
 	dir := vorlagenBaum(t, root)
-	weg := filepath.Join(dir, "archiv-stub-slice.template.md")
+	weg := filepath.Join(dir, "archive-stub-slice.template.md")
 	if err := os.Remove(weg); err != nil {
 		t.Fatal(err)
 	}
@@ -115,10 +115,10 @@ func TestKuerzeLaesstNurH1ZeigerUndFeldblock(t *testing.T) {
 	want := "# slice-<Kennung> — <Titel>\n" +
 		"\n" +
 		"> **ARCHIVIERT** — Volltext:\n" +
-		"> `unzip -p done/<welle-id>/archiv.zip <pfad-im-archiv>`\n" +
+		"> `unzip -p done/<wave-id>/archive.zip <pfad-im-archiv>`\n" +
 		"\n" +
-		"**Welle:** <welle-id | ohne Welle>\n" +
-		"**Archiviert mit:** <welle-id> · **Geschlossen:** <JJJJ-MM-TT>\n" +
+		"**Welle:** <wave-id | ohne Welle>\n" +
+		"**Archiviert mit:** <wave-id> · **Geschlossen:** <JJJJ-MM-TT>\n" +
 		"**Hervorgegangen:** <BEO-*, ADR-*, Folge-Slice — oder `— keine —`>\n"
 	if got != want {
 		t.Fatalf("Kuerze =\n%q\nwant\n%q", got, want)
@@ -142,7 +142,7 @@ func TestFormOKMeldetStehengebliebeneUeberschrift(t *testing.T) {
 	if !strings.Contains(err.Error(), "Abschnittsueberschriften") {
 		t.Fatalf("Fehlertext nennt die Ueberschrift nicht: %v", err)
 	}
-	if err := archive.FormOK("# slice-100 — T\n\n**Welle:** welle-10\n"); err == nil {
+	if err := archive.FormOK("# slice-100 — T\n\n**Welle:** wave-10\n"); err == nil {
 		t.Fatal("Stub ohne Archiv-Zeiger: want Fehler, got nil")
 	}
 }
@@ -154,7 +154,7 @@ func TestTitelVonStreiftDenNamen(t *testing.T) {
 	faelle := []struct{ kopf, want string }{
 		{"# Slice slice-archivierung-erkennt-benannte-slices: Die Archivierung", "Die Archivierung"},
 		{"# slice-foo-bar — Der Titel", "Der Titel"},
-		{"# Welle welle-adopter-weg-im-ziel — Der Titel", "Der Titel"},
+		{"# Welle wave-adopter-weg-im-ziel — Der Titel", "Der Titel"},
 	}
 	for _, f := range faelle {
 		if got := archive.TitelVon(f.kopf); got != f.want {
@@ -173,8 +173,8 @@ func TestTitelVonLaesstDenNummernRestStehen(t *testing.T) {
 	faelle := []struct{ kopf, want string }{
 		{"# Slice slice-190: Der Titel", "Der Titel"},
 		{"# slice-190 — Der Titel", "Der Titel"},
-		{"# Welle welle-87: Der Titel", "Der Titel"},
-		{"# welle-87 — Der Titel", "Der Titel"},
+		{"# Welle wave-87: Der Titel", "Der Titel"},
+		{"# wave-87 — Der Titel", "Der Titel"},
 		{"# slice-001a - Der Titel", "Der Titel"},
 		{"# Ganz ohne Kennung", "Ganz ohne Kennung"},
 		{"# Slice 190: Der Titel", "190: Der Titel"},
@@ -229,13 +229,13 @@ func TestHervorgegangenBautAnkerLinks(t *testing.T) {
 		"- **Risiken:** ADR-0099 wird hier nicht als Datei gefuehrt",
 	}, "\n")
 
-	got := archive.Hervorgegangen(root, inhalt, "welle-10")
+	got := archive.Hervorgegangen(root, inhalt, "wave-10")
 	want := "[`BEO-ALL/commit-message-ohne-traceability-kennung`](../../observations/BEO-ALL/commit-message-ohne-traceability-kennung/observation.md) · " +
 		"[`ADR-0033`](../../../adr/0033-wellen-archivierung.md) · [slice-176](../../open/slice-176-folge.md)"
 	if got != want {
 		t.Fatalf("Hervorgegangen =\n%q\nwant\n%q", got, want)
 	}
-	if got := archive.Hervorgegangen(root, "## 7\n- **Was lief anders:** nichts\n", "welle-10"); got != "— keine —" {
+	if got := archive.Hervorgegangen(root, "## 7\n- **Was lief anders:** nichts\n", "wave-10"); got != "— keine —" {
 		t.Fatalf("ohne Ausgangs-Zeile = %q, want den Leerwert", got)
 	}
 }
@@ -246,7 +246,7 @@ func TestHervorgegangenBautAnkerLinks(t *testing.T) {
 // liefert den Leerwert statt eines Links, den niemand aufloesen koennte.
 func TestHervorgegangenAlteDreistelligeFormBleibtUnerkannt(t *testing.T) {
 	inhalt := "## 7\n- **Beobachtungs-Register:** BEO-009 auf 9x erhoeht\n"
-	if got := archive.Hervorgegangen(t.TempDir(), inhalt, "welle-10"); got != "— keine —" {
+	if got := archive.Hervorgegangen(t.TempDir(), inhalt, "wave-10"); got != "— keine —" {
 		t.Fatalf("Hervorgegangen = %q, want den Leerwert (alte Form nicht mehr erkannt)", got)
 	}
 }
@@ -262,7 +262,7 @@ func TestHervorgegangenUebernimmtBenannteSliceKennung(t *testing.T) {
 	schreibe(t, filepath.Join(root, "docs", "plan", "planning", "open", "slice-benannter-slug.md"), "# x\n")
 	inhalt := "## 7. Closure-Notiz\n- **Folge-Slices:** slice-benannter-slug (Titel) — liegt in `open/`\n"
 
-	got := archive.Hervorgegangen(root, inhalt, "welle-10")
+	got := archive.Hervorgegangen(root, inhalt, "wave-10")
 	want := "[slice-benannter-slug](../../open/slice-benannter-slug.md)"
 	if got != want {
 		t.Fatalf("Hervorgegangen = %q, want %q", got, want)
@@ -278,7 +278,7 @@ func TestHervorgegangenBenannteKennungOhneDateiBleibtBar(t *testing.T) {
 	root := t.TempDir()
 	inhalt := "## 7. Closure-Notiz\n- **Folge-Slices:** slice-nie-angelegter-slug (Titel) — liegt in `open/`\n"
 
-	got := archive.Hervorgegangen(root, inhalt, "welle-10")
+	got := archive.Hervorgegangen(root, inhalt, "wave-10")
 	want := "slice-nie-angelegter-slug"
 	if got != want {
 		t.Fatalf("Hervorgegangen = %q, want %q (kein Lifecycle-Treffer)", got, want)
@@ -295,7 +295,7 @@ func TestHervorgegangenMischtBenannteUndNummerierteSliceKennung(t *testing.T) {
 	schreibe(t, filepath.Join(root, "docs", "plan", "planning", "open", "slice-benannter-slug.md"), "# x\n")
 	inhalt := "## 7\n- **Folge-Slices:** slice-176 (A) und slice-benannter-slug (B) — liegt in `open/`\n"
 
-	got := archive.Hervorgegangen(root, inhalt, "welle-10")
+	got := archive.Hervorgegangen(root, inhalt, "wave-10")
 	want := "[slice-176](../../open/slice-176-folge.md) · [slice-benannter-slug](../../open/slice-benannter-slug.md)"
 	if got != want {
 		t.Fatalf("Hervorgegangen =\n%q\nwant\n%q", got, want)
@@ -311,7 +311,7 @@ func TestHervorgegangenMischtBenannteUndNummerierteSliceKennung(t *testing.T) {
 func TestSliceKennungAusTitelSuffixBleibtDieNummer(t *testing.T) {
 	inhalt := "## 7\n- **Folge-Slices:** slice-170-archivierungs-werkzeug — liegt in `open/`\n"
 
-	got := archive.Hervorgegangen(t.TempDir(), inhalt, "welle-10")
+	got := archive.Hervorgegangen(t.TempDir(), inhalt, "wave-10")
 	want := "slice-170"
 	if got != want {
 		t.Fatalf("Hervorgegangen = %q, want %q (Titel-Suffix darf nicht in die Kennung wandern)", got, want)
@@ -331,7 +331,7 @@ func TestHervorgegangenFliesstextTokenBleibtVonEchterKennungUnunterscheidbar(t *
 	root := t.TempDir()
 	inhalt := "## 7\n- **Folge-Slices:** keine; der Nachzug via `make slice-mv` genuegt\n"
 
-	got := archive.Hervorgegangen(root, inhalt, "welle-10")
+	got := archive.Hervorgegangen(root, inhalt, "wave-10")
 	want := "slice-mv"
 	if got != want {
 		t.Fatalf("Hervorgegangen = %q, want %q (dokumentierte Grenze, kein Existenz-Guard)", got, want)
@@ -349,28 +349,28 @@ func TestSlicePfadRelativLiefertDieAufsteigendeForm(t *testing.T) {
 	root := t.TempDir()
 	done := filepath.Join(root, "docs", "plan", "planning", "done")
 	schreibe(t, filepath.Join(done, "slice-176-flach.md"), "# x\n")
-	schreibe(t, filepath.Join(done, "welle-09", "slice-177-frueher.md"), "# x\n")
-	schreibe(t, filepath.Join(done, "welle-10", "slice-178-eigen.md"), "# x\n")
+	schreibe(t, filepath.Join(done, "wave-09", "slice-177-frueher.md"), "# x\n")
+	schreibe(t, filepath.Join(done, "wave-10", "slice-178-eigen.md"), "# x\n")
 	schreibe(t, filepath.Join(root, "docs", "plan", "planning", "next", "slice-179-offen.md"), "# x\n")
 	schreibe(t, filepath.Join(done, "slice-flach-benannt.md"), "# x\n")
-	schreibe(t, filepath.Join(done, "welle-09", "slice-frueher-benannt.md"), "# x\n")
-	schreibe(t, filepath.Join(done, "welle-10", "slice-eigen-benannt.md"), "# x\n")
+	schreibe(t, filepath.Join(done, "wave-09", "slice-frueher-benannt.md"), "# x\n")
+	schreibe(t, filepath.Join(done, "wave-10", "slice-eigen-benannt.md"), "# x\n")
 	schreibe(t, filepath.Join(root, "docs", "plan", "planning", "next", "slice-offen-benannt.md"), "# x\n")
 
 	faelle := []struct{ kennung, want string }{
 		{"178", "slice-178-eigen.md"},
 		{"176", "../slice-176-flach.md"},
-		{"177", "../welle-09/slice-177-frueher.md"},
+		{"177", "../wave-09/slice-177-frueher.md"},
 		{"179", "../../next/slice-179-offen.md"},
 		{"999", ""},
 		{"eigen-benannt", "slice-eigen-benannt.md"},
 		{"flach-benannt", "../slice-flach-benannt.md"},
-		{"frueher-benannt", "../welle-09/slice-frueher-benannt.md"},
+		{"frueher-benannt", "../wave-09/slice-frueher-benannt.md"},
 		{"offen-benannt", "../../next/slice-offen-benannt.md"},
 		{"nie-existierender-slug", ""},
 	}
 	for _, f := range faelle {
-		if got := archive.SlicePfadRelativ(root, f.kennung, "welle-10"); got != f.want {
+		if got := archive.SlicePfadRelativ(root, f.kennung, "wave-10"); got != f.want {
 			t.Errorf("SlicePfadRelativ(%s) = %q, want %q", f.kennung, got, f.want)
 		}
 	}

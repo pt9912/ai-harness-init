@@ -27,7 +27,13 @@ type Abstammung struct {
 
 // ergebnisMuster trifft die Ergebnisnotiz einer Welle in done/. Ihre
 // Add-Commits sind die Grenz-Commits (ADR-0081 Festlegung 1).
-var ergebnisMuster = regexp.MustCompile(`^welle-.+-results\.md$`)
+//
+// Beide Kennungs-Formen: `wave-` ist die Form der Kennungs-Erkennung seit dem
+// v7.0.0-Sprung, `welle-` bleibt stehen fuer den Bestand, den MR-057 als
+// unveraenderlich haelt — die Ergebnisnotizen dieses Repos sind benannte
+// welle-Kennungen und bleiben adressierbar. Die Fundliste der Formen steht in
+// slice-c2-template-renames-und-kennungs-formen-v7-0-0 §3.
+var ergebnisMuster = regexp.MustCompile(`^(?:welle|wave)-.+-results\.md$`)
 
 // AbstammungsPfade nennt die Pfade, deren Abstammung die Operation liest: die
 // Ergebnisnotizen in done/ (ihre Add-Commits sind die Grenz-Commits) und die

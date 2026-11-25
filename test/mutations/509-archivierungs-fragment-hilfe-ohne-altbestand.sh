@@ -6,4 +6,4 @@
 # Die `##`-Hilfezeile verliert den Schluessel altbestand; der Kopfkommentar
 # nennt ihn weiter.
 set -euo pipefail
-sed -i '/^archive-welle:/s/ | WELLE=altbestand//' internal/emit/templates/enforce/archivierung.mk
+sed -i '/^archive-welle:/s/ | WAVE=altbestand//' internal/emit/templates/enforce/archivierung.mk

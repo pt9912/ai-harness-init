@@ -4,7 +4,7 @@ Argument: $ARGUMENTS
 
 Dieser Command führt die **Planner**-Rolle für *eine* Welle (Modul 6). Der Zustand einer Welle ist
 ihre **Verzeichnis-Position**, kein `Status:`-Feld: die **eröffnete** Welle liegt flach in
-`docs/plan/planning/<welle-id>.md`, bei Closure wandert sie per `git mv` nach `done/`
+`docs/plan/planning/<wave-id>.md`, bei Closure wandert sie per `git mv` nach `done/`
 (`/close-welle`). Die Roadmap sequenziert; den Zustand sagt die Position.
 
 **Dieser Command vollzieht die Eröffnung — und die verlangt den eingetretenen Start-Trigger.**
@@ -25,7 +25,7 @@ der Kurs.
 
 - **`cp` aus dem vendored Template** (`.harness/baseline/<tag>/templates/…`), dann **in place** füllen
   (Edits). Ein `cp` mit anschließendem vollem `Write` ist derselbe Verstoß. Gilt für Welle-Plan
-  (`welle.template.md`) und jeden Slice (`slice.template.md`).
+  (`wave.template.md`) und jeden Slice (`slice.template.md`).
 - **Plan knapp halten.** Felder der Vorlage füllen; ihre Regel-Absätze („Regeln dieser Sektion"),
   `> **Template-Hinweis.**`-Blöcke und `<!-- -->`-Kommentare beim Füllen entfernen; nur, was der Slice
   trägt. Nach `sed`/`awk` über Plan-Dateien den Diff prüfen (kein Abschnitt geleert).
@@ -116,7 +116,7 @@ dieser Lauf, bis `slice-mv-kanten-nach-done-sind-bewacht` geschlossen ist.
 
 ## Welle-Plan anlegen und füllen
 
-6. **`cp`** `welle.template.md` nach `docs/plan/planning/<welle-id>.md` (flach, kein Lifecycle-Ordner);
+6. **`cp`** `wave.template.md` nach `docs/plan/planning/<wave-id>.md` (flach, kein Lifecycle-Ordner);
    `diff -q <template> <ziel>` belegt die Provenienz.
 7. **In place füllen:** Hinweis-Block und Guidance-Kommentare entfernen, Platzhalter ersetzen; die
    `Lifecycle:`-Note der Vorlage bleibt (kein `Status:`-Feld); Zielmeilenstein, Verantwortlich, Datum

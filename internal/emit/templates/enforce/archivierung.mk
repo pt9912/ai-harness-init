@@ -7,20 +7,20 @@
 #
 # DER AUFRUF BEWEGT, LOESCHT UND COMMITTET IM VERSIONIERTEN BAUM DIESES REPOS.
 # Er zieht die eingesammelten Slice-Dateien und den Welle-Plan nach
-# docs/plan/planning/done/<welle-id>/, daneben gekuerzte Stubs aus der vendored
+# docs/plan/planning/done/<wave-id>/, daneben gekuerzte Stubs aus der vendored
 # Vorlage, und packt die Volltexte in ein Archiv.
 # Er loescht die Review-Reports dieser Slices und committet zweimal.
 # Er laeuft nur auf ausdruecklichen Aufruf, nie nebenbei.
-# WELLE=altbestand archiviert die wellenlosen Slices samt ihren Review-Reports
+# WAVE=altbestand archiviert die wellenlosen Slices samt ihren Review-Reports
 # unter done/altbestand/; er ist die Untergrenze, an der `[untergrenze]` fuer die
 # erste Wellen-Archivierung haengt. Ein Traeger ohne Schreibpfad weist ihn ohne
 # --vorschau mit `[kein-schreib-pfad]` ab. KENNUNG=<K> nennt eine Kennung dieses
 # Repos, die beide Commits tragen und die sein commit-msg-Traeger annimmt; fuer
-# WELLE=altbestand ist sie Pflicht, ohne sie bricht der Lauf ab, bevor er etwas
+# WAVE=altbestand ist sie Pflicht, ohne sie bricht der Lauf ab, bevor er etwas
 # bewegt. Eine Voreinstellung gibt es nicht.
 # Liegt eine Ergebnisnotiz in done/, zieht die Commit-Abstammung die Grenze: ein
 # Lauf nimmt nur wellenlose Slices, deren Add-Commit Vorfahr des Add-Commits einer
-# Ergebnisnotiz ist (WELLE=<welle-id>: deren frueheste Closure diese Welle ist);
+# Ergebnisnotiz ist (WAVE=<wave-id>: deren frueheste Closure diese Welle ist);
 # spaeter geschlossene bleiben flach liegen und stehen in der Vorpruefung unter
 # "bleibt liegen (nach der Grenze)". Ein flacher Klon sperrt mit `[flacher-klon]`,
 # ein Pfad ohne Add-Commit mit `[add-commit]`.
@@ -37,7 +37,7 @@ ARCHIV_CARRIER ?= .harness/state/bin/ai-harness-init
 # Traeger ist kein Fehler des Repos, sondern der Zustand eines frischen Klons. Die
 # Faehigkeit liegt, wo der Traeger liegt; ein erneuter Lauf des Werkzeugs legt ihn
 # wieder ab.
-archive-welle: ## Zeitdokumente einer geschlossenen Welle archivieren (WELLE=<welle-id> | WELLE=altbestand KENNUNG=<K>) — KEIN Gate
+archive-welle: ## Zeitdokumente einer geschlossenen Welle archivieren (WAVE=<wave-id> | WAVE=altbestand KENNUNG=<K>) — KEIN Gate
 	@for c in "$(ARCHIV_CARRIER)" "$(ARCHIV_CARRIER).exe"; do \
 		if [ -x "$$c" ]; then exec "$$c" archive-welle $(if $(KENNUNG),--kennung "$(KENNUNG)") "$(WELLE)"; fi; \
 	done; \

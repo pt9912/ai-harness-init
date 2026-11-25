@@ -5,4 +5,4 @@
 #
 # Schritt 4 des emittierten close-welle verliert den Schluessel altbestand.
 set -euo pipefail
-sed -i 's/WELLE=altbestand/WELLE=<alt>/' internal/emit/templates/commands/close-welle.md
+sed -i 's/WAVE=altbestand/WAVE=<alt>/' internal/emit/templates/commands/close-welle.md

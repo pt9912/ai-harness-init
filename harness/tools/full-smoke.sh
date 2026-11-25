@@ -1660,13 +1660,13 @@ echo "full-smoke: Archivierung im Ziel — Sperren, Vollzug, Fehlt-Fall und Schl
 #       fehlgeschlagenes Rezept immer 2 zurueck —, die zwei Sperren stehen darum
 #       in der Ausgabe,
 #   (b) ueber demselben Bestand ohne die zwei Ausloeser laeuft die Operation real:
-#       Archiv und Stubs liegen danach in done/<welle-id>/,
+#       Archiv und Stubs liegen danach in done/<wave-id>/,
 #   (c) das Kommando ist KEIN Gate: die gates-Kette des Ziels nennt es nicht,
 #   (c2) ein Name, den die Anleitung nicht fuehrt, endet laut statt still: der
 #       Adopter, der das Ziel umbenennt und nur die skip-if-present-Anleitung
 #       zieht, faellt hier auf,
 #   (d) ohne Traeger sagt das Kommando das und endet mit 0 — der frische Klon,
-#   (e) der Schluessel `altbestand` erreicht den Traeger und legt altbestand/archiv.zip
+#   (e) der Schluessel `altbestand` erreicht den Traeger und legt altbestand/archive.zip
 #       an — ueber einem synthetischen Altbestand und dem Traeger aus dem Arbeitsbaum;
 #       die Grenze aus der Commit-Abstammung laesst einen nach der Closure von welle-1
 #       geschlossenen Slice in beiden Laeufen liegen, und ein realer flacher Klon
@@ -1737,7 +1737,7 @@ archivierung_im_ziel() {
 	# `make` bricht ueber dem unbekannten Namen ab und nennt ihn, statt still nichts
 	# zu tun.
 	local fremd="" fremd_rc=0
-	fremd="$( make --no-print-directory -C "$repo" archiv-welle WELLE="$welle" 2>&1 )" || fremd_rc=$?
+	fremd="$( make --no-print-directory -C "$repo" archiv-welle WAVE="$welle" 2>&1 )" || fremd_rc=$?
 	if [ "$fremd_rc" -eq 0 ]; then
 		echo "full-smoke: FEHLER — $kennung: make archiv-welle laeuft — ein Ziel, das kein Fragment dieses Repos fuehrt, ist damit still erreichbar." >&2
 		printf '%s\n' "$fremd" >&2
@@ -1782,7 +1782,7 @@ SMOKEEOF
 Nur fuer den E2E der Wellen-Archivierung angelegt.
 SMOKEEOF
 	# Zwei Ausloeser, je eine Sperre: ein wellenloser Slice ohne beobachtbare
-	# Untergrenze (kein done/*/archiv.zip existiert noch) und ein Review-Report, der
+	# Untergrenze (kein done/*/archive.zip existiert noch) und ein Review-Report, der
 	# bleibt und auf einen verschwindenden zeigt.
 	cat >"$plan_done/slice-998-ohne-welle.md" <<'SMOKEEOF'
 # Slice slice-998: wellenlos
@@ -1816,7 +1816,7 @@ SMOKEEOF
 	# nachzubauen. Der Exit-Code des Traegers kommt durch `make` nicht an — ein
 	# fehlgeschlagenes Rezept endet dort immer mit 2.
 	local gesperrt="" gesperrt_rc=0 gesperrt_flach="" fehlt="" sperre
-	gesperrt="$( make --no-print-directory -C "$repo" archive-welle WELLE="$welle" 2>&1 )" || gesperrt_rc=$?
+	gesperrt="$( make --no-print-directory -C "$repo" archive-welle WAVE="$welle" 2>&1 )" || gesperrt_rc=$?
 	gesperrt_flach="$(tr -s '[:space:]' ' ' <<<"$gesperrt")"
 	if [ "$gesperrt_rc" -eq 0 ]; then
 		echo "full-smoke: FEHLER — $kennung: make archive-welle endet ueber einem Bestand mit zwei Ausloesern mit Exit 0 — die Sperren des Unterkommandos erreichen den Aufruf nicht. Ausgabe:" >&2
@@ -1844,7 +1844,7 @@ SMOKEEOF
 	git -C "$repo" -c user.email=full-smoke@example.invalid -c user.name=full-smoke \
 		commit -q -m "Archivierungs-Smoke: die zwei Ausloeser entfernt (full-smoke)"
 	local lauf="" lauf_rc=0 lauf_flach=""
-	lauf="$( make --no-print-directory -C "$repo" archive-welle WELLE="$welle" 2>&1 )" || lauf_rc=$?
+	lauf="$( make --no-print-directory -C "$repo" archive-welle WAVE="$welle" 2>&1 )" || lauf_rc=$?
 	printf '%s\n' "$lauf"
 	lauf_flach="$(tr -s '[:space:]' ' ' <<<"$lauf")"
 	if [ "$lauf_rc" -ne 0 ]; then
@@ -1859,10 +1859,10 @@ SMOKEEOF
 		exit 1
 	fi
 	local zip_grund=""
-	if ! zip_grund="$(archiv_gueltig "$plan_done/$welle/archiv.zip" \
+	if ! zip_grund="$(archiv_gueltig "$plan_done/$welle/archive.zip" \
 		"docs/plan/planning/done/$welle/$welle.md" "docs/plan/planning/done/$welle/slice-999-archiv-smoke.md" \
 		"docs/reviews/slice-999-review.md")"; then
-		echo "full-smoke: FEHLER — $kennung: die Archivierung meldet Vollzug, aber $welle/archiv.zip ist nicht gelesen und vollstaendig: $zip_grund — der Traeger ist nicht gelaufen oder hat ein defektes Archiv abgelegt." >&2
+		echo "full-smoke: FEHLER — $kennung: die Archivierung meldet Vollzug, aber $welle/archive.zip ist nicht gelesen und vollstaendig: $zip_grund — der Traeger ist nicht gelaufen oder hat ein defektes Archiv abgelegt." >&2
 		exit 1
 	fi
 	local stub
@@ -1876,7 +1876,7 @@ SMOKEEOF
 		echo "full-smoke: FEHLER — $kennung: der Review-Report des archivierten Slice liegt noch flach in docs/reviews/ — er gehoert ins Archiv." >&2
 		exit 1
 	fi
-	echo "full-smoke: Archivierung im Ziel ($kennung): make archive-welle archiviert real — $welle/archiv.zip mit $welle.md und slice-999-archiv-smoke.md als Stubs, der Review-Report des Slice ist fort."
+	echo "full-smoke: Archivierung im Ziel ($kennung): make archive-welle archiviert real — $welle/archive.zip mit $welle.md und slice-999-archiv-smoke.md als Stubs, der Review-Report des Slice ist fort."
 
 	# (e) DER SCHLUESSEL altbestand erreicht den Traeger, und die Grenze aus der
 	# Commit-Abstammung haelt (ADR-0081). Drei Commits in dieser Reihenfolge: ein
@@ -1910,27 +1910,27 @@ SMOKEEOF
 	git -C "$klon" config user.email full-smoke@example.invalid
 	git -C "$klon" config user.name full-smoke
 	vorher_klon="$(git -C "$klon" rev-parse HEAD)"
-	flach="$( make --no-print-directory -C "$klon" archive-welle WELLE=altbestand 2>&1 )" || true
+	flach="$( make --no-print-directory -C "$klon" archive-welle WAVE=altbestand 2>&1 )" || true
 	flach_flach="$(tr -s '[:space:]' ' ' <<<"$flach")"
 	if ! grep -qF -- '[flacher-klon]' <<<"$flach_flach" || [ -e "$klon/docs/plan/planning/done/altbestand" ] \
 		|| [ "$(git -C "$klon" rev-parse HEAD)" != "$vorher_klon" ] || [ -n "$(git -C "$klon" status --porcelain)" ]; then
-		echo "full-smoke: FEHLER — $kennung: im flachen Klon (git clone --depth 1) sperrt make archive-welle WELLE=altbestand nicht mit [flacher-klon], oder done/ ist veraendert (ADR-0081 Festlegung 4). Ausgabe:" >&2
+		echo "full-smoke: FEHLER — $kennung: im flachen Klon (git clone --depth 1) sperrt make archive-welle WAVE=altbestand nicht mit [flacher-klon], oder done/ ist veraendert (ADR-0081 Festlegung 4). Ausgabe:" >&2
 		printf '%s\n' "$flach" >&2
 		exit 1
 	fi
 	rm -rf "$klon"
-	echo "full-smoke: flacher Klon ($kennung): make archive-welle WELLE=altbestand sperrt mit [flacher-klon], HEAD und done/ unveraendert."
+	echo "full-smoke: flacher Klon ($kennung): make archive-welle WAVE=altbestand sperrt mit [flacher-klon], HEAD und done/ unveraendert."
 
 	# (e0) Ohne KENNUNG: das emittierte Fragment traegt keine Voreinstellung, der
 	# Traeger bricht ab, bevor er etwas bewegt, und nennt das Argument (ADR-0090
 	# Festlegung 1 und 2).
 	local ohne_k="" ohne_k_rc=0 vorher_k
 	vorher_k="$(git -C "$repo" rev-parse HEAD)"
-	ohne_k="$( make --no-print-directory -C "$repo" archive-welle WELLE=altbestand 2>&1 )" || ohne_k_rc=$?
+	ohne_k="$( make --no-print-directory -C "$repo" archive-welle WAVE=altbestand 2>&1 )" || ohne_k_rc=$?
 	if [ "$ohne_k_rc" -eq 0 ] || ! grep -qF -- '--kennung' <<<"$ohne_k" || [ -e "$plan_done/altbestand" ] \
 		|| [ "$(git -C "$repo" rev-parse HEAD)" != "$vorher_k" ] || [ -n "$(git -C "$repo" status --porcelain)" ]; then
-		echo "full-smoke: FEHLER — $kennung: make archive-welle WELLE=altbestand ohne KENNUNG bricht nicht vor dem Move ab (Exit $ohne_k_rc), nennt --kennung nicht, oder Baum/HEAD sind veraendert (ADR-0090 Festlegung 1). Ausgabe:" >&2
-		einordnen "make archive-welle WELLE=altbestand ohne KENNUNG im Ziel ($kennung)" "$ohne_k"
+		echo "full-smoke: FEHLER — $kennung: make archive-welle WAVE=altbestand ohne KENNUNG bricht nicht vor dem Move ab (Exit $ohne_k_rc), nennt --kennung nicht, oder Baum/HEAD sind veraendert (ADR-0090 Festlegung 1). Ausgabe:" >&2
+		einordnen "make archive-welle WAVE=altbestand ohne KENNUNG im Ziel ($kennung)" "$ohne_k"
 		printf '%s\n' "$ohne_k" >&2
 		exit 1
 	fi
@@ -1941,7 +1941,7 @@ SMOKEEOF
 	# Die Aktivierung gilt nur fuer diesen Lauf — die Welle-Laeufe danach tragen keine.
 	local alt="" alt_rc=0 alt_flach="" alt_betreffe=""
 	git -C "$repo" config core.hooksPath .githooks
-	alt="$( make --no-print-directory -C "$repo" archive-welle WELLE=altbestand KENNUNG=LH-FA-01 2>&1 )" || alt_rc=$?
+	alt="$( make --no-print-directory -C "$repo" archive-welle WAVE=altbestand KENNUNG=LH-FA-01 2>&1 )" || alt_rc=$?
 	git -C "$repo" config --unset core.hooksPath
 	alt_betreffe="$(git -C "$repo" log -2 --format=%s)"
 	if [ "$alt_rc" -eq 0 ] && { [ "$(grep -c ', LH-FA-01)$' <<<"$alt_betreffe")" -ne 2 ] || grep -qF -- 'ADR-0041' <<<"$alt_betreffe"; }; then
@@ -1952,15 +1952,15 @@ SMOKEEOF
 	printf '%s\n' "$alt"
 	alt_flach="$(tr -s '[:space:]' ' ' <<<"$alt")"
 	if [ "$alt_rc" -ne 0 ] || ! grep -qF -- "archive-welle ok: altbestand" <<<"$alt_flach"; then
-		echo "full-smoke: FEHLER — $kennung: make archive-welle WELLE=altbestand meldet den Vollzug nicht (Exit $alt_rc) — der Schluessel erreicht den Traeger nicht, oder der Lauf sperrt aus anderem Grund. Ausgabe:" >&2
+		echo "full-smoke: FEHLER — $kennung: make archive-welle WAVE=altbestand meldet den Vollzug nicht (Exit $alt_rc) — der Schluessel erreicht den Traeger nicht, oder der Lauf sperrt aus anderem Grund. Ausgabe:" >&2
 		printf '%s\n' "$alt" >&2
-		einordnen "make archive-welle WELLE=altbestand im Ziel ($kennung)" "$alt"
+		einordnen "make archive-welle WAVE=altbestand im Ziel ($kennung)" "$alt"
 		exit 1
 	fi
 	local alt_grund=""
-	if ! alt_grund="$(archiv_gueltig "$plan_done/altbestand/archiv.zip" \
+	if ! alt_grund="$(archiv_gueltig "$plan_done/altbestand/archive.zip" \
 		"docs/plan/planning/done/altbestand/slice-997-altbestand.md")"; then
-		echo "full-smoke: FEHLER — $kennung: der Altbestand-Lauf meldet Vollzug, aber altbestand/archiv.zip ist nicht gelesen und vollstaendig: $alt_grund" >&2
+		echo "full-smoke: FEHLER — $kennung: der Altbestand-Lauf meldet Vollzug, aber altbestand/archive.zip ist nicht gelesen und vollstaendig: $alt_grund" >&2
 		exit 1
 	fi
 	if [ ! -f "$plan_done/altbestand/slice-997-altbestand.md" ] || [ ! -f "$plan_done/slice-996-spaet.md" ] \
@@ -1969,12 +1969,12 @@ SMOKEEOF
 		printf '%s\n' "$alt" >&2
 		exit 1
 	fi
-	echo "full-smoke: Altbestand im Ziel ($kennung): make archive-welle WELLE=altbestand legt altbestand/archiv.zip mit dem fruehen Slice an; der spaete bleibt liegen (nach der Grenze)."
+	echo "full-smoke: Altbestand im Ziel ($kennung): make archive-welle WAVE=altbestand legt altbestand/archive.zip mit dem fruehen Slice an; der spaete bleibt liegen (nach der Grenze)."
 
 	# (e2) Der nachgeholte Welle-Lauf: welle-1 nimmt ihr Mitglied, der spaete
 	# wellenlose Slice bleibt flach (ADR-0081 Festlegung 3).
 	local w1="" w1_rc=0 w1_flach=""
-	w1="$( make --no-print-directory -C "$repo" archive-welle WELLE=welle-1 2>&1 )" || w1_rc=$?
+	w1="$( make --no-print-directory -C "$repo" archive-welle WAVE=welle-1 2>&1 )" || w1_rc=$?
 	printf '%s\n' "$w1"
 	w1_flach="$(tr -s '[:space:]' ' ' <<<"$w1")"
 	if [ "$w1_rc" -ne 0 ] || ! grep -qF -- "archive-welle ok: welle-1" <<<"$w1_flach" \
@@ -1982,15 +1982,15 @@ SMOKEEOF
 		|| [ -e "$plan_done/welle-1/slice-996-spaet.md" ] || ! grep -qF -- 'bleibt liegen (nach der Grenze): 1' <<<"$w1_flach"; then
 		echo "full-smoke: FEHLER — $kennung: archive-welle welle-1 nimmt den nach ihrer Closure geschlossenen Slice mit oder laeuft nicht (Exit $w1_rc; ADR-0081 Festlegung 3). Ausgabe:" >&2
 		printf '%s\n' "$w1" >&2
-		einordnen "make archive-welle WELLE=welle-1 im Ziel ($kennung)" "$w1"
+		einordnen "make archive-welle WAVE=welle-1 im Ziel ($kennung)" "$w1"
 		exit 1
 	fi
-	echo "full-smoke: Welle-Lauf nach dem Altbestand ($kennung): make archive-welle WELLE=welle-1 archiviert ihr Mitglied, slice-996 bleibt flach liegen."
+	echo "full-smoke: Welle-Lauf nach dem Altbestand ($kennung): make archive-welle WAVE=welle-1 archiviert ihr Mitglied, slice-996 bleibt flach liegen."
 
 	# (d) OHNE TRAEGER: Meldung, Exit 0, nichts geschrieben. Der Fall des frischen Klons.
 	mv "$carrier" "$carrier.beiseite"
 	local ohne="" ohne_rc=0 ohne_flach=""
-	ohne="$( make --no-print-directory -C "$repo" archive-welle WELLE=welle-zweit 2>&1 )" || ohne_rc=$?
+	ohne="$( make --no-print-directory -C "$repo" archive-welle WAVE=welle-zweit 2>&1 )" || ohne_rc=$?
 	mv "$carrier.beiseite" "$carrier"
 	ohne_flach="$(tr -s '[:space:]' ' ' <<<"$ohne")"
 	if [ "$ohne_rc" -ne 0 ]; then
@@ -2012,7 +2012,7 @@ SMOKEEOF
 }
 
 archivierung_im_ziel "$tmprepo" "golang"
-e2e_abdeckung "LH-FA-01 LH-QA-01 LH-QA-02" "Das Ziel archiviert real: Sperren, Vollzug, Fehlt-Fall des Traegers, der Schluessel altbestand und die Grenze aus der Commit-Abstammung — altbestand nimmt nur den Slice vor der Closure von welle-1, der nachgeholte Lauf welle-1 laesst den spaeteren flach liegen, ein realer git clone --depth 1 sperrt mit [flacher-klon] (synthetischer Altbestand, lineare Historie ohne Merge, Traeger aus dem Arbeitsbaum, nicht der gepinnte Release-Traeger); die Reproduzierbarkeit ist nur teilweise gemessen (QA-02: nur dass ein flacher Klon sperrt statt abweichend zu archivieren, nicht der Pin, nicht dieselbe Ausgabe ueber zwei Laeufe)" "WELLE=altbestand"
+e2e_abdeckung "LH-FA-01 LH-QA-01 LH-QA-02" "Das Ziel archiviert real: Sperren, Vollzug, Fehlt-Fall des Traegers, der Schluessel altbestand und die Grenze aus der Commit-Abstammung — altbestand nimmt nur den Slice vor der Closure von welle-1, der nachgeholte Lauf welle-1 laesst den spaeteren flach liegen, ein realer git clone --depth 1 sperrt mit [flacher-klon] (synthetischer Altbestand, lineare Historie ohne Merge, Traeger aus dem Arbeitsbaum, nicht der gepinnte Release-Traeger); die Reproduzierbarkeit ist nur teilweise gemessen (QA-02: nur dass ein flacher Klon sperrt statt abweichend zu archivieren, nicht der Pin, nicht dieselbe Ausgabe ueber zwei Laeufe)" "WAVE=altbestand"
 
 # klon_traeger_fetch <klon> [<var=wert>...] — make traeger-fetch im Klon unter
 # ADOPTER-BEDINGUNG: der Pin des Laufs ist der des emittierten harness/mk/traeger.mk.
@@ -2125,7 +2125,7 @@ traeger_fetch_im_ziel() {
 
 	# (a) DER FEHLT-FALL BLEIBT.
 	local ohne="" ohne_rc=0 ohne_flach=""
-	ohne="$( make --no-print-directory -C "$klon" archive-welle WELLE=welle-smoke 2>&1 )" || ohne_rc=$?
+	ohne="$( make --no-print-directory -C "$klon" archive-welle WAVE=welle-smoke 2>&1 )" || ohne_rc=$?
 	ohne_flach="$(tr -s '[:space:]' ' ' <<<"$ohne")"
 	if [ "$ohne_rc" -ne 0 ]; then
 		echo "full-smoke: FEHLER — $kennung: ohne Traeger endet make archive-welle im frischen Klon mit Exit $ohne_rc — ein fehlender Traeger ist kein Fehler des Repos (ADR-0033 Festlegung 4); der Fetch ist kein Prerequisite (ADR-0058 Festlegung 3). Ausgabe:" >&2
@@ -2240,7 +2240,7 @@ SMOKEEOF
 	git -C "$klon" config user.email full-smoke@example.invalid
 	git -C "$klon" config user.name full-smoke
 	local gel="" gel_rc=0 gel_flach=""
-	gel="$( make --no-print-directory -C "$klon" archive-welle WELLE="$welle_fetch" 2>&1 )" || gel_rc=$?
+	gel="$( make --no-print-directory -C "$klon" archive-welle WAVE="$welle_fetch" 2>&1 )" || gel_rc=$?
 	gel_flach="$(tr -s '[:space:]' ' ' <<<"$gel")"
 	if [ "$gel_rc" -ne 0 ]; then
 		echo "full-smoke: FEHLER — $kennung: der Konsumenten-Aufruf endet mit Exit $gel_rc — der gefetchte Traeger aus dem gepinnten Release fuehrt das Unterkommando nicht, und der Aufruf faellt statt in den laut-Bruch (ADR-0058 Festlegung 2). Ausgabe:" >&2
@@ -2254,9 +2254,9 @@ SMOKEEOF
 		exit 1
 	fi
 	local fetch_grund=""
-	if ! fetch_grund="$(archiv_gueltig "$done_fetch/$welle_fetch/archiv.zip" \
+	if ! fetch_grund="$(archiv_gueltig "$done_fetch/$welle_fetch/archive.zip" \
 		"docs/plan/planning/done/$welle_fetch/$welle_fetch.md" "docs/plan/planning/done/$welle_fetch/slice-997-fetch-smoke.md")"; then
-		echo "full-smoke: FEHLER — $kennung: der Vollzug wird gemeldet, aber $welle_fetch/archiv.zip ist nicht gelesen und vollstaendig: $fetch_grund — der gefetchte Traeger hat die Operation nicht abgelegt (ADR-0033 Festlegung 3)." >&2
+		echo "full-smoke: FEHLER — $kennung: der Vollzug wird gemeldet, aber $welle_fetch/archive.zip ist nicht gelesen und vollstaendig: $fetch_grund — der gefetchte Traeger hat die Operation nicht abgelegt (ADR-0033 Festlegung 3)." >&2
 		exit 1
 	fi
 	echo "full-smoke: Konsumenten-Aufruf ($kennung): make archive-welle archiviert $welle_fetch mit dem aus dem gepinnten Release gefetchten Traeger — Vollzug gemeldet, Archiv mit Stubs gelegt."
@@ -3979,7 +3979,7 @@ fi
 # GRENZE: eine Kennung in anderer Gestalt (Kleinbuchstaben-Praefix, Namensform) erkennt die
 # Stufe nicht; gelesen ist das Root-Modul-Ziel (--lang go --arch hexslice), dessen
 # a-check.mk dieselbe Adaption traegt wie das eines add-lang-Moduls.
-FREMDE_KENNUNG_RE='(^|[^A-Za-z0-9_-])([A-Z]{2,}(-[A-Z]+)*-[0-9]+|slice-[0-9]+|welle-[0-9]+)([^A-Za-z0-9_-]|$)'
+FREMDE_KENNUNG_RE='(^|[^A-Za-z0-9_-])([A-Z]{2,}(-[A-Z]+)*-[0-9]+|slice-[0-9]+|wave-[0-9]+)([^A-Za-z0-9_-]|$)'
 fremde_kennungen_im_fragment() {
 	local repo="$1" datei treffer funde=""
 	for datei in d-check.mk a-check.mk; do

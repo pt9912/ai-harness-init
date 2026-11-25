@@ -13,7 +13,7 @@
 # (archiv_gueltig: `unzip -t` und `unzip -lq` im BATS_IMAGE) und mit der Meldung enden, dass
 # es die Leseprobe nicht besteht — ueber dem Traeger aus dem Arbeitsbaum, im Aufruf
 # `make archive-welle`.
-# Ein Lauf, der nur die Existenz von archiv.zip haelt, bleibt gruen.
+# Ein Lauf, der nur die Existenz von archive.zip haelt, bleibt gruen.
 #
 # BRAUCHT NETZ, wie jeder full-smoke-Lauf.
 set -euo pipefail

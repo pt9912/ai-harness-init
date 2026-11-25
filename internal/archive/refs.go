@@ -15,7 +15,7 @@ type Fund struct {
 	Datei       string // repo-relativ
 	Praefix     int    // "done/<datei>", jede Aufstiegstiefe; unter docs/reviews/ nur als Link-Ziel
 	Geschwister int    // "](<datei>)" in den flach in done/ liegenden Dateien
-	Aufsteigend int    // "](../<datei>)" in den Dateien unter done/<welle-x>/
+	Aufsteigend int    // "](../<datei>)" in den Dateien unter done/<wave-x>/
 }
 
 // Summe ist die Zahl der Verweise dieser Datei ueber alle drei Formen.
@@ -88,7 +88,7 @@ func ZaehleGeschwister(inhalt, base string) int {
 }
 
 // ZaehleAufsteigend zaehlt die aufsteigende Form "](../<base>)": ein Link-Ziel
-// aus einer Datei unter done/<welle-x>/ zeigt eine Ebene hoeher auf die flache
+// aus einer Datei unter done/<wave-x>/ zeigt eine Ebene hoeher auf die flache
 // done/-Ebene, aus der die bewegte Datei gerade verschwindet. Diese Form
 // schreibt das Werkzeug selbst in die Stubs, wenn ein Folge-Slice noch flach in
 // done/ liegt.
@@ -119,7 +119,7 @@ func ZaehleAufsteigend(inhalt, base string) int {
 // Treffer, die kein Umzug beruehrt.
 //
 // ABGRENZUNG: die praefixlose Form zaehlt nicht in einer Datei, die dieser Lauf
-// SELBST nach done/<welle-id>/ zoege. Ihre Geschwister-Links bleiben nach dem
+// SELBST nach done/<wave-id>/ zoege. Ihre Geschwister-Links bleiben nach dem
 // gemeinsamen Umzug gueltig, und der Nachzug fasst sie nicht an.
 // TestVerweisFundUebergehtDenEigenenUmzugsgegenstand haelt das.
 //
@@ -185,7 +185,7 @@ func fundIn(inhalt, datei string, bewegte []string, zieht map[string]bool) Fund 
 }
 
 // ErsetzePraefix haengt die eingehende Form MIT Verzeichnis-Praefix um:
-// "done/<base>" wird zu "done/<welle-id>/<base>", an derselben Wortgrenze, an
+// "done/<base>" wird zu "done/<wave-id>/<base>", an derselben Wortgrenze, an
 // der ZaehlePraefix zaehlt. Liefert den neuen Inhalt und die Zahl der
 // Ersetzungen.
 func ErsetzePraefix(inhalt, base, welleID string) (string, int) {
@@ -202,7 +202,7 @@ func ErsetzePraefix(inhalt, base, welleID string) (string, int) {
 }
 
 // ErsetzePraefixLink haengt die Praefix-Form in der Fassung fuer docs/reviews/
-// um: "done/<base>" wird zu "done/<welle-id>/<base>", nur dort, wo
+// um: "done/<base>" wird zu "done/<wave-id>/<base>", nur dort, wo
 // ZaehlePraefixLink zaehlt — unmittelbar hinter "](" und bis ")" oder "#". Alles
 // andere in der Datei bleibt Byte fuer Byte. Liefert den neuen Inhalt und die
 // Zahl der Ersetzungen.
@@ -226,7 +226,7 @@ func ErsetzePraefixLink(inhalt, base, welleID string) (string, int) {
 }
 
 // ErsetzeGeschwister haengt die geschwister-relative Form um: "](<base>)" wird zu
-// "](<welle-id>/<base>)". Sie trifft nur in einer Datei, die flach in done/
+// "](<wave-id>/<base>)". Sie trifft nur in einer Datei, die flach in done/
 // liegen BLEIBT — die Zuordnung macht ersetzeIn, nicht diese Funktion.
 func ErsetzeGeschwister(inhalt, base, welleID string) (string, int) {
 	if base == "" {
@@ -241,7 +241,7 @@ func ErsetzeGeschwister(inhalt, base, welleID string) (string, int) {
 }
 
 // ErsetzeAufsteigend haengt die aufsteigende Form um: "](../<base>)" wird zu
-// "](../<welle-id>/<base>)".
+// "](../<wave-id>/<base>)".
 //
 // ZUSAGE, und sie ist ADR-0033 Abnahme-Kriterium 3: diese Form schreibt das
 // Werkzeug SELBST in die Stubs (SlicePfadRelativ liefert sie fuer einen

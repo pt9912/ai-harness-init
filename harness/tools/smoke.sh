@@ -120,7 +120,7 @@ fi
 # Mutation, gegen die sie gerichtet ist, wirkungslos (Review-Befund slice-026 F-2 —
 # Falsch-Beispiel 1 aus AGENTS Paragraph 3.6, woertlich).
 for rel in \
-	docs/plan/planning/slice.template.md docs/plan/adr/NNNN-titel.template.md \
+	docs/plan/planning/slice.template.md docs/plan/adr/NNNN-title.template.md \
 	docs/plan/adr/README.md docs/plan/carveouts/README.md \
 	README.md.md Makefile.md .d-check.yml.md project-readme.md; do
 	if [ -e "$tmprepo/$rel" ]; then

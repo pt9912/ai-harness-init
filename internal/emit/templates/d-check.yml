@@ -44,9 +44,9 @@ codepaths:
 # Slice-Plans unter done-dir, deckt er nur den laengeren: der Report zu slice-<name>-<mehr>
 # deckt slice-<name> nicht. require-promises meldet den Leerlauf: Slice-Plaene unter
 # done-dir, unter denen keine einzige Zusage erkannt wird. recursive nimmt die Stubs unter
-# done/<welle-id>/ in die Menge, skip-pattern nimmt einen archivierten Stub an seiner
+# done/<wave-id>/ in die Menge, skip-pattern nimmt einen archivierten Stub an seiner
 # Marker-Zeile wieder heraus — der Stub, den das Archivieren aus der Vorlage
-# archiv-stub-slice.template.md schreibt, traegt sie; ein lebender Plan, der die Marker-Zeile
+# archive-stub-slice.template.md schreibt, traegt sie; ein lebender Plan, der die Marker-Zeile
 # woertlich zitiert, faellt ebenso heraus. skip-allows-empty laesst die Menge leer, wenn alle
 # Plaene archiviert sind. Die vier Schluessel stehen in der Baseline-Vorlage; ohne die drei
 # letzten wird das Modul nach dem Archivieren rot, obwohl nichts fehlt. Aus bleibt das Modul,
@@ -73,11 +73,11 @@ codepaths:
 # hier steht das Praefix slice-, weil grundlagen-source-precedence.md §Vergabe Slice-
 # und Welle-Kennungen als Namen setzt: das Praefix faengt den Namen und die Nummer.
 # Acht Positionen gehen darueber hinaus:
-# Die welle-Klasse samt dem Praefix welle- und die Regeln {from: adr, to: welle} und
-# {from: spec-straten, to: welle}: Die Matrix-Tabelle setzt die Spalte Welle in der
+# Die wave-Klasse samt dem Praefix wave- und die Regeln {from: adr, to: wave} und
+# {from: spec-straten, to: wave}: Die Matrix-Tabelle setzt die Spalte Welle in der
 # ADR-Zeile und in allen drei Straten-Zeilen; die Klasse steht vor aussen, also faengt
 # aussen eine Welle-Datei nicht, und die Regel aus spec-straten ist die einzige Deckung.
-# Das Praefix welle- ist die Setzung dieser Vorlage aus der Spalte Welle; der Gate-Text
+# Das Praefix wave- ist die Setzung dieser Vorlage aus der Spalte Welle; der Gate-Text
 # des Regelwerks nennt nur ADR- und slice-. exclude-sections traegt nur Geschichte,
 # nicht Historie/"7. Historie"/"8. Historie": Die ADR-Vorlage fuehrt in ihrem Geschichte-Abschnitt
 # eine Verweis-Spalte, deren erste Zeile eine Slice-Datei nennt — legitime
@@ -150,8 +150,8 @@ codepaths:
 # den vergessenen Nachzug.
 # Diese Datei wird nur an einem freien Pfad geschrieben: ein Ziel mit vorhandener
 # .d-check.yml behaelt seine Fassung und bekommt keine dieser Positionen. Der Nachzug
-# ist Handarbeit nach dieser Liste — die Praefix-Token slice- und welle-, die Regel
-# {from: spec-straten, to: welle}, das segment-tolerante ids-Muster fuer ADR, der
+# ist Handarbeit nach dieser Liste — die Praefix-Token slice- und wave-, die Regel
+# {from: spec-straten, to: wave}, das segment-tolerante ids-Muster fuer ADR, der
 # Bereichs-Praefix-Glob der adr-Klasse, der planning-Block samt Marker-Zeile in der
 # Roadmap, der structure-Block und der targets-Block samt
 # Werkzeug-Teil (er entsteht mit dem naechsten Lauf, die Zeile in harness/README.md
@@ -167,10 +167,10 @@ codepaths:
 # ueber matrix, wo ihn die Regel aus spec-straten auf die Spec-Straten begrenzt.
 matrix:
   classes:
-    - {name: spec-straten, paths: [spec/lastenheft.md, spec/spezifikation.md, spec/architecture.md], order: [spec/lastenheft.md, spec/spezifikation.md, spec/architecture.md], direction: no-downward}
+    - {name: spec-straten, paths: [spec/lastenheft.md, spec/specification.md, spec/architecture.md], order: [spec/lastenheft.md, spec/specification.md, spec/architecture.md], direction: no-downward}
     - {name: adr, paths: ["docs/plan/adr/[0-9]*.md", "docs/plan/adr/[A-Z]*-[0-9]*.md"]}
     - {name: slice, paths: ["docs/plan/planning/**/slice-*.md"], token: 'slice-'}
-    - {name: welle, paths: ["docs/plan/planning/**/welle-*.md"], token: 'welle-'}
+    - {name: wave, paths: ["docs/plan/planning/**/wave-*.md"], token: 'wave-'}
     # Das Kennungs-Muster faengt die blosse MR-Kennung im Fliesstext, die kein
     # Link-Sensor sieht. Begrenzend ist die Regel darunter, nicht die Klassifikation:
     # Gefangen wird die Kennung nur in einer Quelle der Klasse spec-straten. Die
@@ -179,7 +179,7 @@ matrix:
     - {name: adaptionsblock, paths: ["harness/conventions.md", "harness/conventions/**"], token: 'MR-\d{3}'}
     # Letzte Klasse, First-Match: was keine fruehere faengt, ist aussen. Ein
     # Spec-Stratum nennt damit kein Artefakt ausserhalb der Spec, nicht nur keines
-    # unterhalb. Die ** der slice- und der welle-Klasse bleiben stehen: Das Ziel
+    # unterhalb. Die ** der slice- und der wave-Klasse bleiben stehen: Das Ziel
     # bekommt denselben Planning-Lifecycle, baut seinen Register-Bestand aber selbst
     # auf — eine engere Pfad-Liste waere hier eine Zusage ueber einen Dateibestand,
     # den an dieser Stelle niemand messen kann.
@@ -187,7 +187,7 @@ matrix:
   rules:
     - {from: spec-straten, to: adr, allow: false}
     - {from: spec-straten, to: slice, allow: false}
-    - {from: spec-straten, to: welle, allow: false}
+    - {from: spec-straten, to: wave, allow: false}
     - {from: spec-straten, to: adaptionsblock, allow: false}
     - {from: spec-straten, to: aussen, allow: false}
     # Eine Accepted-ADR nennt eine Slice-/Welle-Kennung nur als deklarierte Provenance
@@ -195,7 +195,7 @@ matrix:
     # Zeilen-Marker <!-- d-check:status-provenance --> nimmt die Zeile aus. Er ist der
     # vorgesehene Ausweg.
     - {from: adr, to: slice, allow: false}
-    - {from: adr, to: welle, allow: false}
+    - {from: adr, to: wave, allow: false}
   status: {forbidden: [superseded, deprecated]}
   # Die Status-Pruefung trifft jede klassifizierte Quelle unabhaengig von den Regeln;
   # mit aussen: ["**"] ist das jede Datei. Ausgenommen sind zwei Pfade, die einen zum
@@ -204,7 +204,7 @@ matrix:
   # Aufgabe) und die Review-Reports.
   # Die Welle-Dateien in done/ stehen hier bewusst NICHT: In einem frischen Ziel hat
   # eine solche Ausnahme keinen Gegenstand, und ab dem ersten geschlossenen Buendel
-  # naehme sie der Klasse welle oben ihre Status-Deckung — unsichtbar, weil diese Datei
+  # naehme sie der Klasse wave oben ihre Status-Deckung — unsichtbar, weil diese Datei
   # nur an einem freien Pfad geschrieben wird. Wer die Ausnahme braucht, setzt sie in
   # seiner eigenen Kopie; bis dahin ist die Deckung die strengere Vorgabe.
   exempt-paths: ["docs/plan/adr/README.md", "docs/reviews/**"]

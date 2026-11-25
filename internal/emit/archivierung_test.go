@@ -174,7 +174,7 @@ func hilfezeile(t *testing.T, frag string) string {
 }
 
 // TestArchivierungFragment_HilfeNenntDenAltbestandSchluessel: die Hilfezeile des
-// Ziels nennt neben WELLE=<welle-id> den Schluessel WELLE=altbestand, und der
+// Ziels nennt neben WAVE=<wave-id> den Schluessel WAVE=altbestand, und der
 // Kopfkommentar nennt `[kein-schreib-pfad]`, die Ablehnung eines Traegers ohne
 // Schreibpfad.
 //
@@ -183,7 +183,7 @@ func hilfezeile(t *testing.T, frag string) string {
 func TestArchivierungFragment_HilfeNenntDenAltbestandSchluessel(t *testing.T) {
 	frag := archivierungsFragmentMitTraeger(t)
 	hilfe := hilfezeile(t, frag)
-	for _, teil := range []string{"WELLE=<welle-id>", "WELLE=altbestand"} {
+	for _, teil := range []string{"WAVE=<wave-id>", "WAVE=altbestand"} {
 		if !strings.Contains(hilfe, teil) {
 			t.Errorf("die Hilfezeile von %s nennt %q nicht: %s", zielArchiv, teil, hilfe)
 		}

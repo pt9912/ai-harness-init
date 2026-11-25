@@ -112,7 +112,7 @@ func TestCommands_SkipIfPresent(t *testing.T) {
 func TestCommands_CloseWelleNenntAltbestandUndUntergrenze(t *testing.T) {
 	const rel = ".claude/commands/close-welle.md"
 	s := string(emit.CommandFile(rel))
-	for _, begriff := range []string{"WELLE=altbestand", "[untergrenze]", "[kein-schreib-pfad]"} {
+	for _, begriff := range []string{"WAVE=altbestand", "[untergrenze]", "[kein-schreib-pfad]"} {
 		if !strings.Contains(s, begriff) {
 			t.Errorf("%s nennt %q nicht", rel, begriff)
 		}

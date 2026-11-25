@@ -71,10 +71,10 @@ func TestDCheckConfig_EntschiedeneModulListe(t *testing.T) {
 	if !strings.Contains(idsADR, "link-policy: always") {
 		t.Errorf("das ADR-Muster von ids traegt nicht link-policy: always (Zeile: %q):\n%s", idsADR, yml)
 	}
-	if !strings.Contains(yml, "{from: adr, to: slice, allow: false}") || !strings.Contains(yml, "{from: adr, to: welle, allow: false}") {
+	if !strings.Contains(yml, "{from: adr, to: slice, allow: false}") || !strings.Contains(yml, "{from: adr, to: wave, allow: false}") {
 		t.Errorf("die beiden neuen matrix-Regeln (adr->slice, adr->welle) fehlen:\n%s", yml)
 	}
-	if !strings.Contains(yml, "order: [spec/lastenheft.md, spec/spezifikation.md, spec/architecture.md]") || !strings.Contains(yml, "direction: no-downward") {
+	if !strings.Contains(yml, "order: [spec/lastenheft.md, spec/specification.md, spec/architecture.md]") || !strings.Contains(yml, "direction: no-downward") {
 		t.Errorf("die Richtungspruefung (order:/direction: no-downward) auf spec-straten fehlt:\n%s", yml)
 	}
 	// Die Klasse aussen ist die LETZTE in classes: — sie faengt, was keine fruehere
@@ -161,7 +161,7 @@ func TestDCheckConfig_PlanningBlock(t *testing.T) {
 // zweiter Aufruf setzt ihn nicht doppelt. Der Ausschnitt folgt dem Abschnitt der Vorlage
 // nach den Neutralisierungen (Regel-Zeile, entlinkter Platzhalter, naechste Ueberschrift).
 func TestInjectRoadmapRuheMarker(t *testing.T) {
-	in := "# Roadmap\n\n## Offene Wellen\n\nRegeln dieser Sektion: Text.\n\n- <welle-id>\n\n## Nächste Wellen\n\n| Welle |\n"
+in := "# Roadmap\n\n## Offene Wellen\n\nRegeln dieser Sektion: Text.\n\n- <wave-id>\n\n## Nächste Wellen\n\n| Welle |\n"
 	got := emit.InjectRoadmapRuheMarker(in)
 	start := strings.Index(got, "## Offene Wellen")
 	ende := strings.Index(got, "## Nächste Wellen")
@@ -194,7 +194,7 @@ func TestInjectRoadmapRuheMarker(t *testing.T) {
 // Jede Zusicherung urteilt ueber genau eine Stelle; die acht Faelle 435 bis 442 faerben
 // darum je genau einen Unterfall, eine Mutation ausserhalb der Faelle kann mehrere faerben
 // (ein Token ganz weg faerbt token_slice und token_menge). Die Stellen: die Token je Klasse
-// (token_slice, token_welle), die Zahl der Token
+// (token_slice, token_wave), die Zahl der Token
 // (token_menge), je erwartete Regel eine Zusicherung, die Regeln ausserhalb der Liste
 // (regel_menge), das ids-Muster, die Klasse adr und die Ziffern-Form in allen uebrigen Zeilen.
 // Rot-Gegenbeispiele: test/mutations/435-emittierte-token-slice-kehrt-in-die-ziffern-form-zurueck.sh,
@@ -239,13 +239,13 @@ func TestDCheckConfig_KennungsForm(t *testing.T) {
 			t.Errorf("die Klasse slice traegt nicht das Praefix-Token slice-: %q", klassen["slice"])
 		}
 	})
-	t.Run("token_welle", func(t *testing.T) {
-		if !strings.HasSuffix(klassen["welle"], "token: 'welle-'}") {
-			t.Errorf("die Klasse welle traegt nicht das Praefix-Token welle-: %q", klassen["welle"])
+	t.Run("token_wave", func(t *testing.T) {
+		if !strings.HasSuffix(klassen["wave"], "token: 'wave-'}") {
+			t.Errorf("die Klasse wave traegt nicht das Praefix-Token wave-: %q", klassen["wave"])
 		}
 	})
 	t.Run("token_menge", func(t *testing.T) {
-		// Drei Klassen tragen ein token: slice, welle und adaptionsblock. Die Zahl haengt nicht
+		// Drei Klassen tragen ein token: slice, wave und adaptionsblock. Die Zahl haengt nicht
 		// am Wert eines Tokens, sondern an der Menge der Klassen, die eines tragen.
 		n := 0
 		for _, z := range klassenZeilen {
@@ -254,18 +254,18 @@ func TestDCheckConfig_KennungsForm(t *testing.T) {
 			}
 		}
 		if n != 3 {
-			t.Errorf("%d Klassen tragen ein token: statt drei (slice, welle, adaptionsblock):\n%s", n, strings.Join(klassenZeilen, "\n"))
+			t.Errorf("%d Klassen tragen ein token: statt drei (slice, wave, adaptionsblock):\n%s", n, strings.Join(klassenZeilen, "\n"))
 		}
 	})
 
 	erwartet := []string{
 		"{from: spec-straten, to: adr, allow: false}",
 		"{from: spec-straten, to: slice, allow: false}",
-		"{from: spec-straten, to: welle, allow: false}",
+		"{from: spec-straten, to: wave, allow: false}",
 		"{from: spec-straten, to: adaptionsblock, allow: false}",
 		"{from: spec-straten, to: aussen, allow: false}",
 		"{from: adr, to: slice, allow: false}",
-		"{from: adr, to: welle, allow: false}",
+		"{from: adr, to: wave, allow: false}",
 	}
 	vorhanden := map[string]bool{}
 	for _, z := range regelZeilen {
@@ -303,7 +303,7 @@ func TestDCheckConfig_KennungsForm(t *testing.T) {
 		}
 	})
 	t.Run("keine_ziffern_form", func(t *testing.T) {
-		// Die Klassen-Zeilen urteilen token_slice und token_welle; hier stehen alle uebrigen
+		// Die Klassen-Zeilen urteilen token_slice und token_wave; hier stehen alle uebrigen
 		// Zeilen, Kommentare eingeschlossen.
 		for _, line := range strings.Split(yml, "\n") {
 			if strings.HasPrefix(strings.TrimSpace(line), "- {name: ") {

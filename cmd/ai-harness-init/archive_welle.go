@@ -54,18 +54,18 @@ import (
 	"github.com/pt9912/ai-harness-init/internal/span"
 )
 
-const archiveWelleUsage = `ai-harness-init archive-welle [--vorschau] [--kennung <K>] <welle-id>
+const archiveWelleUsage = `ai-harness-init archive-welle [--vorschau] [--kennung <K>] <wave-id>
 
 Archiviert die Zeitdokumente einer GESCHLOSSENEN Welle: Slice-Dateien,
 Welle-Plan und Review-Reports wandern nach
-docs/plan/planning/done/<welle-id>/archiv.zip, an der Stelle von Slice und Plan
+docs/plan/planning/done/<wave-id>/archive.zip, an der Stelle von Slice und Plan
 bleibt je ein gekuerzter Stub aus der vendored Vorlage. Die Ergebnisnotiz bleibt
 vollstaendig und flach. Verlangt einen sauberen Arbeitsbaum und setzt zwei
 getrennte Commits: zuerst den reinen Move, danach Archiv, Stubs und
 Verweis-Nachzug.
 
-<welle-id> kann der Schluessel altbestand sein: das einzelne Sammel-Archiv fuer
-den wellenlosen Bestand (done/altbestand/archiv.zip, ohne Welle-Plan); er traegt
+<wave-id> kann der Schluessel altbestand sein: das einzelne Sammel-Archiv fuer
+den wellenlosen Bestand (done/altbestand/archive.zip, ohne Welle-Plan); er traegt
 genau einen Lauf.
 
 Liegt eine Ergebnisnotiz in done/, zieht die Commit-Abstammung die Grenze:
@@ -85,7 +85,7 @@ Add-Commit ([add-commit]).
                 Nachricht tragen und die sein commit-msg-Traeger annimmt; das
                 Werkzeug prueft sie nicht. Pflicht fuer altbestand — ohne sie
                 bricht der Lauf ab, bevor er etwas bewegt (Exit 2); fuer eine
-                <welle-id> optional.
+                <wave-id> optional.
 
 Exit-Codes:
   0   Lauf (bzw. Vorschau) gefahren, keine Sperre.
@@ -282,13 +282,13 @@ func parseArchiveWelle(args []string, out, errOut io.Writer) (welle, kennung str
 		case welle == "":
 			welle = a
 		default:
-			fmt.Fprintln(errOut, "Fehler: archive-welle nimmt genau eine <welle-id>")
+			fmt.Fprintln(errOut, "Fehler: archive-welle nimmt genau eine <wave-id>")
 			fmt.Fprint(errOut, archiveWelleUsage)
 			return "", "", false, 2
 		}
 	}
 	if welle == "" {
-		fmt.Fprintln(errOut, "Fehler: archive-welle braucht eine <welle-id>")
+		fmt.Fprintln(errOut, "Fehler: archive-welle braucht eine <wave-id>")
 		fmt.Fprint(errOut, archiveWelleUsage)
 		return "", "", false, 2
 	}

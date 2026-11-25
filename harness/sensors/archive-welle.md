@@ -2,7 +2,7 @@
 
 ## Vertrag
 
-`make archive-welle WELLE=<welle-id>` archiviert die Zeitdokumente einer geschlossenen Welle —
+`make archive-welle WAVE=<wave-id>` archiviert die Zeitdokumente einer geschlossenen Welle —
 Schritt 4 der Wellen-Closure. Kein Gate, in keiner Prerequisite-Kette: es archiviert, es prüft
 nicht ([`LH-QA-01`](../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)). Der
 Träger ist das Produkt-Binär, die Operation sein Unterkommando
@@ -13,7 +13,7 @@ das Target hängt an `host-bin` und fährt
 Eingesammelt wird **nach der Welle, nicht nach dem Verzeichnis**: die Slices, deren `Welle:`-Feld
 diese Welle nennt, und die wellenlosen, die seit der letzten Closure geschlossen wurden. Die
 Slice-Dateien, der Welle-Plan und die Review-Reports dieser Slices wandern nach
-`docs/plan/planning/done/<welle-id>/archiv.zip`; an der Stelle von Slice und Plan bleibt je ein
+`docs/plan/planning/done/<wave-id>/archive.zip`; an der Stelle von Slice und Plan bleibt je ein
 gekürzter Stub aus den zwei vendored Vorlagen, die Ergebnisnotiz bleibt vollständig und flach,
 Review-Reports bekommen keinen. Gepackt wird aus der Go-Standardbibliothek — kein gepinntes Bild
 und kein `zip`-Binär; kein Eintrag trägt einen Zeitstempel aus der Uhr des Laufs, zwei Läufe über
@@ -23,20 +23,20 @@ demselben Inhalt liefern also dieselben Bytes
 Voraussetzung ist ein **sauberer Arbeitsbaum** — gemessen mit `git status --porcelain`,
 einschließlich untrackter Dateien, weil der Inhalts-Commit der Wave-Self-Close-Punkt ist. Der Lauf
 setzt **zwei getrennte Commits** (Hard Rule 3.3): zuerst der reine `git mv` nach
-`done/<welle-id>/`, danach Archiv, Stubs und Verweis-Nachzug, gestagt über benannte Pfade statt
+`done/<wave-id>/`, danach Archiv, Stubs und Verweis-Nachzug, gestagt über benannte Pfade statt
 über den ganzen Baum. Der Nachzug läuft in drei Formen — mit Verzeichnis-Präfix,
 geschwister-relativ und aufsteigend (`](../../<datei>)` in den Dateien unter `done/<welle-x>/`);
 die Präfix-Form schreibt er unter `docs/reviews/` nur als Ziel eines Markdown-Links (§Grenze
 Punkt 8), in jedem anderen Baum in jeder Form.
 
-`ai-harness-init archive-welle --vorschau <welle-id>` sagt, was derselbe Lauf täte, und schreibt
+`ai-harness-init archive-welle --vorschau <wave-id>` sagt, was derselbe Lauf täte, und schreibt
 dabei nichts: der Schalter hält den Aufruf nach der Vorprüfung an. Erreicht wird er über denselben
-Träger, `.harness/state/bin/ai-harness-init archive-welle --vorschau <welle-id>`; ein eigenes
+Träger, `.harness/state/bin/ai-harness-init archive-welle --vorschau <wave-id>`; ein eigenes
 `make`-Ziel hat er nicht. Er ist keine zweite Fassung der Operation, sondern derselbe Code: die
 Vorschau ist die Vorprüfung des schreibenden Laufs, und was sie an Sperren nennt, sind genau die
 Ausgänge, an denen er abbricht.
 
-`<welle-id>` kann auch der Schlüssel `altbestand` sein
+`<wave-id>` kann auch der Schlüssel `altbestand` sein
 ([`ADR-0041`](../../docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md)
 Festlegung 2): das einzelne Sammel-Archiv für den wellenlosen Bestand, der nie eine Welle-Closure
 hatte, die ihn hätte einsammeln können. Der Schlüssel ist keine Welle-Kennung, ortsfest und trägt
@@ -66,14 +66,14 @@ genau einen Lauf.
    Festlegung 2); die Vorprüfung selbst findet einen Verweis dort trotzdem, weil sie den vollen
    Suchraum behält.
 4. **Auf eine Welle dieses Repos ist das Werkzeug noch nicht anwendbar**, und das ist eine
-   Messung, keine Vorsicht: der Altbestand hat keine Untergrenze (kein `done/*/archiv.zip`), und
+   Messung, keine Vorsicht: der Altbestand hat keine Untergrenze (kein `done/*/archive.zip`), und
    die Review-Reports der einzusammelnden Slices tragen lebende Verweise aus
    [`spec/lastenheft.md`](../../spec/lastenheft.md), aus `docs/plan/carveouts/done/`, aus nach
    [`AGENTS.md`](../../AGENTS.md) §3.4 eingefrorenen ADRs und aus anderen Review-Reports, die
    einander quer über Wellen-Grenzen verlinken. Beides sind eigene Vorgänge, die vor der ersten
    Archivierung liegen — permanent, bis sie einzeln aufgelöst sind. Der Schlüssel `altbestand`
    (§Vertrag) nimmt der Untergrenzen-Hälfte ihren Gegenstand — für ihn gibt es keine Welle-Form, an
-   der `untergrenze` hängen könnte; sein Lauf legt `done/altbestand/archiv.zip` an, und danach
+   der `untergrenze` hängen könnte; sein Lauf legt `done/altbestand/archive.zip` an, und danach
    meldet die Vorschau jeder Welle kein `untergrenze` mehr. An der zweiten Hälfte ändert er
    nichts: `haenger` bleibt auch unter diesem Schlüssel stehen.
 5. **Vier Grenzen bleiben unabhängig vom Bestand, alle permanent:** der Nachzug hängt Pfade um,
@@ -191,14 +191,14 @@ umgekehrt nur dort auf** (§Grenze Punkt 7). Jede Zeile nennt die Kennung, wie s
 Abbruch-Meldung führt:
 
 - `unsauber` — `git status --porcelain` meldet Änderungen → committen oder verwerfen
-- `archiviert` — `done/<welle-id>/archiv.zip` existiert bereits → keine zweite Archivierung
-- `ergebnisnotiz` **†** — `done/<welle-id>-results.md` fehlt → Closure-Notiz zuerst schreiben
-- `kein-plan` **†** — keine passende `<welle-id>.md` in `done/` → genau eine flache Datei
+- `archiviert` — `done/<wave-id>/archive.zip` existiert bereits → keine zweite Archivierung
+- `ergebnisnotiz` **†** — `done/<wave-id>-results.md` fehlt → Closure-Notiz zuerst schreiben
+- `kein-plan` **†** — keine passende `<wave-id>.md` in `done/` → genau eine flache Datei
   bereitstellen
 - `mehrdeutiger-plan` **†** — mehr als eine passende Datei → auf eine reduzieren
-- `kein-slice` — weder wellengebundene noch wellenlose Kandidaten gefunden → `WELLE=` prüfen oder
+- `kein-slice` — weder wellengebundene noch wellenlose Kandidaten gefunden → `WAVE=` prüfen oder
   die Closure-Zuordnung der Slices
-- `untergrenze` **†** — kein `done/*/archiv.zip` im wellenlosen Bestand → Altbestand als eigenen
+- `untergrenze` **†** — kein `done/*/archive.zip` im wellenlosen Bestand → Altbestand als eigenen
   Vorgang archivieren, bevor die erste Welle läuft
 - `haenger` — ein noch referenziertes Zeitdokument würde bewegt oder gelöscht → den Verweis lösen
   oder den betroffenen Vorgang aus dieser Welle herausnehmen
@@ -206,8 +206,8 @@ Abbruch-Meldung führt:
   oder Ergebnisnotiz), die der Lauf nicht bewegt → die Datei entfernen oder umbenennen
 
 Zwei Ausgänge stehen daneben, weil sie am ruhenden Baum nicht beobachtbar sind: das fehlende
-`WELLE=` fängt der Aufrufer vorher ab, und ein Fehler des Inhalts-Schritts bricht **zwischen** den
-zwei Commits ab und nennt den Rückweg (`git reset --hard HEAD~1 && git clean -fd -- docs/plan/planning/done/<welle-id>`).
+`WAVE=` fängt der Aufrufer vorher ab, und ein Fehler des Inhalts-Schritts bricht **zwischen** den
+zwei Commits ab und nennt den Rückweg (`git reset --hard HEAD~1 && git clean -fd -- docs/plan/planning/done/<wave-id>`).
 `Anwenden` verpackt jeden Fehler dieses Schritts in `NachCommit1Fehler` — die verletzte Stub-Form
 ebenso wie ein Schreibfehler des Verweis-Nachzugs, der eine Datei halbgeschrieben zurücklassen
 kann; der Nachzug schreibt an Ort und Stelle und macht kein Rollback, und schon nachgezogene

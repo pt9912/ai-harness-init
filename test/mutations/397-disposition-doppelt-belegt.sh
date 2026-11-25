@@ -10,4 +10,4 @@
 # Festlegung 1, Rot-Bedingung 2: Disjunktheit) — roadmap.template.md steht
 # danach in ZWEI Mengen zugleich. Kompiliert weiter.
 set -euo pipefail
-sed -i 's/"welle-results.template.md", "MR-NNN-titel.template.md":/"welle-results.template.md", "MR-NNN-titel.template.md", "roadmap.template.md":/' internal/emit/templates.go
+sed -i 's/"wave-results.template.md", "MR-NNN-title.template.md":/"wave-results.template.md", "MR-NNN-title.template.md", "roadmap.template.md":/' internal/emit/templates.go

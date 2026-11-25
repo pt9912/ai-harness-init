@@ -70,7 +70,7 @@ func (g *gitMitschreiber) Commit(nachricht string) error {
 
 const volltextSlice100 = `# Slice slice-100: Der erste Gegenstand
 
-**Welle:** welle-10
+**Welle:** wave-10
 
 ## 7. Closure-Notiz
 
@@ -91,19 +91,19 @@ const volltextSlice101 = `# Slice slice-101: Der wellenlose
 
 const volltextSlice102 = `# Slice slice-102: Der fremde
 
-**Welle:** welle-11
+**Welle:** wave-11
 
 ## 1. Ziel
 `
 
-const volltextPlan = `# Welle welle-10: Der Wellen-Titel
+const volltextPlan = `# Welle wave-10: Der Wellen-Titel
 
 ## 1. Ziel
 
 Etwas.
 `
 
-// baueBaum legt den synthetischen Repo-Baum an: eine geschlossene welle-10 mit
+// baueBaum legt den synthetischen Repo-Baum an: eine geschlossene wave-10 mit
 // einem Mitglied, einem wellenlosen und einem fremden Slice, Welle-Plan,
 // Ergebnisnotiz, einem Review-Report und je einem Verweis in allen drei Formen.
 func baueBaum(t *testing.T) string {
@@ -111,13 +111,13 @@ func baueBaum(t *testing.T) string {
 	root := t.TempDir()
 	vorlagenBaum(t, root)
 	done := filepath.Join(root, "docs", "plan", "planning", "done")
-	schreibe(t, filepath.Join(done, "welle-10-eine-welle.md"), volltextPlan)
-	schreibe(t, filepath.Join(done, "welle-10-results.md"),
-		"# welle-10 — Ergebnisse\n\n**Abschluss:** 2026-06-06\n\nGeliefert: [slice-100](slice-100-a.md).\n")
+	schreibe(t, filepath.Join(done, "wave-10-eine-welle.md"), volltextPlan)
+	schreibe(t, filepath.Join(done, "wave-10-results.md"),
+		"# wave-10 — Ergebnisse\n\n**Abschluss:** 2026-06-06\n\nGeliefert: [slice-100](slice-100-a.md).\n")
 	schreibe(t, filepath.Join(done, "slice-100-a.md"), volltextSlice100)
 	schreibe(t, filepath.Join(done, "slice-101-b.md"), volltextSlice101)
 	schreibe(t, filepath.Join(done, "slice-102-c.md"), volltextSlice102)
-	schreibe(t, filepath.Join(done, "welle-09", archivNameTest), "PK-Attrappe\n")
+	schreibe(t, filepath.Join(done, "wave-09", archivNameTest), "PK-Attrappe\n")
 	schreibe(t, filepath.Join(root, "docs", "reviews", "2026-05-05-slice-100-runde-1.md"), "# Review\n")
 	schreibe(t, filepath.Join(root, "docs", "plan", "adr", "0033-x.md"),
 		"Siehe [slice-100](../planning/done/slice-100-a.md).\n")
@@ -127,7 +127,7 @@ func baueBaum(t *testing.T) string {
 	return root
 }
 
-const archivNameTest = "archiv.zip"
+const archivNameTest = "archive.zip"
 
 // indexDateien ist der Suchraum-Eingang, den der Aufrufer im Betrieb aus
 // `git ls-files` bekommt: jede getrackte Datei. Die Attrappe fuehrt jede Datei
@@ -177,11 +177,11 @@ func einsammeln(t *testing.T, root, welle string) archive.Bestand {
 // dann traegt der erste Schnappschuss den Stub.
 func TestAnwendenTrenntMoveVonInhalt(t *testing.T) {
 	root := baueBaum(t)
-	b := einsammeln(t, root, "welle-10")
+	b := einsammeln(t, root, "wave-10")
 	g := &gitMitschreiber{
 		root:      root,
-		beobachte: "docs/plan/planning/done/welle-10/slice-100-a.md",
-		zipPfad:   "docs/plan/planning/done/welle-10/" + archivNameTest,
+		beobachte: "docs/plan/planning/done/wave-10/slice-100-a.md",
+		zipPfad:   "docs/plan/planning/done/wave-10/" + archivNameTest,
 	}
 	var aus bytes.Buffer
 	if err := archive.Anwenden(root, b, indexDateien(t, root), g, &aus); err != nil {
@@ -221,10 +221,10 @@ func TestAnwendenTrenntMoveVonInhalt(t *testing.T) {
 // Gegenbeispiel: test/mutations/241-archive-welle-go-staging-explizit.sh.
 func TestZuStagenNenntNurArchivStubsUndNachgezogene(t *testing.T) {
 	root := baueBaum(t)
-	b := einsammeln(t, root, "welle-10")
+	b := einsammeln(t, root, "wave-10")
 	g := &gitMitschreiber{root: root,
-		beobachte: "docs/plan/planning/done/welle-10/slice-100-a.md",
-		zipPfad:   "docs/plan/planning/done/welle-10/" + archivNameTest}
+		beobachte: "docs/plan/planning/done/wave-10/slice-100-a.md",
+		zipPfad:   "docs/plan/planning/done/wave-10/" + archivNameTest}
 	var aus bytes.Buffer
 	if err := archive.Anwenden(root, b, indexDateien(t, root), g, &aus); err != nil {
 		t.Fatal(err)
@@ -232,11 +232,11 @@ func TestZuStagenNenntNurArchivStubsUndNachgezogene(t *testing.T) {
 	got := append([]string{}, g.addPfade...)
 	sort.Strings(got)
 	want := []string{
-		"docs/plan/planning/done/welle-10-results.md",
-		"docs/plan/planning/done/welle-10/archiv.zip",
-		"docs/plan/planning/done/welle-10/slice-100-a.md",
-		"docs/plan/planning/done/welle-10/slice-101-b.md",
-		"docs/plan/planning/done/welle-10/welle-10-eine-welle.md",
+		"docs/plan/planning/done/wave-10-results.md",
+		"docs/plan/planning/done/wave-10/archive.zip",
+		"docs/plan/planning/done/wave-10/slice-100-a.md",
+		"docs/plan/planning/done/wave-10/slice-101-b.md",
+		"docs/plan/planning/done/wave-10/wave-10-eine-welle.md",
 	}
 	if strings.Join(got, "\n") != strings.Join(want, "\n") {
 		t.Fatalf("gestagte Pfade =\n%s\nwant\n%s", strings.Join(got, "\n"), strings.Join(want, "\n"))
@@ -255,23 +255,23 @@ func TestZuStagenNenntNurArchivStubsUndNachgezogene(t *testing.T) {
 // faellt, ist TestAnwendenOhneVorlageNenntDenRueckweg.
 func TestAnwendenSchreibtBeideStubArtenAusDerVorlage(t *testing.T) {
 	root := baueBaum(t)
-	b := einsammeln(t, root, "welle-10")
+	b := einsammeln(t, root, "wave-10")
 	g := &gitMitschreiber{root: root,
-		beobachte: "docs/plan/planning/done/welle-10/slice-100-a.md",
-		zipPfad:   "docs/plan/planning/done/welle-10/" + archivNameTest}
+		beobachte: "docs/plan/planning/done/wave-10/slice-100-a.md",
+		zipPfad:   "docs/plan/planning/done/wave-10/" + archivNameTest}
 	var aus bytes.Buffer
 	if err := archive.Anwenden(root, b, indexDateien(t, root), g, &aus); err != nil {
 		t.Fatal(err)
 	}
 
-	mitglied := lesen(t, root, "docs/plan/planning/done/welle-10/slice-100-a.md")
+	mitglied := lesen(t, root, "docs/plan/planning/done/wave-10/slice-100-a.md")
 	wantMitglied := "# slice-100 — Der erste Gegenstand\n" +
 		"\n" +
 		"> **ARCHIVIERT** — Volltext:\n" +
-		"> `unzip -p docs/plan/planning/done/welle-10/archiv.zip docs/plan/planning/done/welle-10/slice-100-a.md`\n" +
+		"> `unzip -p docs/plan/planning/done/wave-10/archive.zip docs/plan/planning/done/wave-10/slice-100-a.md`\n" +
 		"\n" +
-		"**Welle:** [welle-10](welle-10-eine-welle.md)\n" +
-		"**Archiviert mit:** welle-10 · **Geschlossen:** 2026-05-05\n" +
+		"**Welle:** [wave-10](wave-10-eine-welle.md)\n" +
+		"**Archiviert mit:** wave-10 · **Geschlossen:** 2026-05-05\n" +
 		// Der Folge-Slice slice-176 liegt in diesem Baum nirgends — er steht
 		// darum ohne Link statt mit einem toten.
 		"**Hervorgegangen:** [`BEO-ALL/commit-message-ohne-traceability-kennung`]" +
@@ -280,29 +280,29 @@ func TestAnwendenSchreibtBeideStubArtenAusDerVorlage(t *testing.T) {
 		t.Errorf("Slice-Stub (Mitglied) =\n%q\nwant\n%q", mitglied, wantMitglied)
 	}
 
-	wellenlos := lesen(t, root, "docs/plan/planning/done/welle-10/slice-101-b.md")
+	wellenlos := lesen(t, root, "docs/plan/planning/done/wave-10/slice-101-b.md")
 	if !strings.Contains(wellenlos, "**Welle:** ohne Welle\n") {
 		t.Errorf("wellenloser Stub traegt die Zugehoerigkeit falsch:\n%q", wellenlos)
 	}
-	if !strings.Contains(wellenlos, "**Archiviert mit:** welle-10 · **Geschlossen:** 2026-06-06\n") {
+	if !strings.Contains(wellenlos, "**Archiviert mit:** wave-10 · **Geschlossen:** 2026-06-06\n") {
 		t.Errorf("wellenloser Stub: ohne eigenes Datum gilt das der Welle:\n%q", wellenlos)
 	}
 
-	plan := lesen(t, root, "docs/plan/planning/done/welle-10/welle-10-eine-welle.md")
-	wantPlan := "# welle-10 — Der Wellen-Titel\n" +
+	plan := lesen(t, root, "docs/plan/planning/done/wave-10/wave-10-eine-welle.md")
+	wantPlan := "# wave-10 — Der Wellen-Titel\n" +
 		"\n" +
 		"> **ARCHIVIERT** — Volltext:\n" +
-		"> `unzip -p docs/plan/planning/done/welle-10/archiv.zip docs/plan/planning/done/welle-10/welle-10-eine-welle.md`\n" +
+		"> `unzip -p docs/plan/planning/done/wave-10/archive.zip docs/plan/planning/done/wave-10/wave-10-eine-welle.md`\n" +
 		"\n" +
-		"**Geschlossen:** 2026-06-06 · **Ergebnisnotiz:** [welle-10-results.md](../welle-10-results.md)\n" +
+		"**Geschlossen:** 2026-06-06 · **Ergebnisnotiz:** [wave-10-results.md](../wave-10-results.md)\n" +
 		"**Archivierte Vorgänge:** 2 Slices, 1 Reviews\n"
 	if plan != wantPlan {
 		t.Errorf("Welle-Stub =\n%q\nwant\n%q", plan, wantPlan)
 	}
 
 	for _, p := range []string{
-		"docs/plan/planning/done/welle-10/slice-100-a.md",
-		"docs/plan/planning/done/welle-10/welle-10-eine-welle.md",
+		"docs/plan/planning/done/wave-10/slice-100-a.md",
+		"docs/plan/planning/done/wave-10/wave-10-eine-welle.md",
 	} {
 		if strings.Contains(lesen(t, root, p), vorlagenMarker) {
 			t.Errorf("%s traegt den Vorlagen-Hinweis — die Kuerzung hat ihn nicht genommen", p)
@@ -322,15 +322,15 @@ func TestAnwendenSchreibtBeideStubArtenAusDerVorlage(t *testing.T) {
 // die der Stub als `unzip -p`-Zeiger abdruckt.
 func TestAnwendenPacktJedesZeitdokumentInsArchiv(t *testing.T) {
 	root := baueBaum(t)
-	b := einsammeln(t, root, "welle-10")
+	b := einsammeln(t, root, "wave-10")
 	g := &gitMitschreiber{root: root,
-		beobachte: "docs/plan/planning/done/welle-10/slice-100-a.md",
-		zipPfad:   "docs/plan/planning/done/welle-10/" + archivNameTest}
+		beobachte: "docs/plan/planning/done/wave-10/slice-100-a.md",
+		zipPfad:   "docs/plan/planning/done/wave-10/" + archivNameTest}
 	var aus bytes.Buffer
 	if err := archive.Anwenden(root, b, indexDateien(t, root), g, &aus); err != nil {
 		t.Fatal(err)
 	}
-	zr, err := zip.OpenReader(filepath.Join(root, "docs", "plan", "planning", "done", "welle-10", archivNameTest))
+	zr, err := zip.OpenReader(filepath.Join(root, "docs", "plan", "planning", "done", "wave-10", archivNameTest))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -349,9 +349,9 @@ func TestAnwendenPacktJedesZeitdokumentInsArchiv(t *testing.T) {
 		got[f.Name] = buf.String()
 	}
 	want := []string{
-		"docs/plan/planning/done/welle-10/slice-100-a.md",
-		"docs/plan/planning/done/welle-10/slice-101-b.md",
-		"docs/plan/planning/done/welle-10/welle-10-eine-welle.md",
+		"docs/plan/planning/done/wave-10/slice-100-a.md",
+		"docs/plan/planning/done/wave-10/slice-101-b.md",
+		"docs/plan/planning/done/wave-10/wave-10-eine-welle.md",
 		"docs/reviews/2026-05-05-slice-100-runde-1.md",
 	}
 	if len(got) != len(want) {
@@ -362,7 +362,7 @@ func TestAnwendenPacktJedesZeitdokumentInsArchiv(t *testing.T) {
 			t.Errorf("Zip-Eintrag fehlt: %s", w)
 		}
 	}
-	if got["docs/plan/planning/done/welle-10/slice-100-a.md"] != volltextSlice100 {
+	if got["docs/plan/planning/done/wave-10/slice-100-a.md"] != volltextSlice100 {
 		t.Error("das Archiv traegt nicht den Volltext, sondern etwas anderes")
 	}
 }
@@ -399,14 +399,14 @@ func TestZipIstUeberZweiLaeufeByteGleich(t *testing.T) {
 func TestAnwendenOhneVorlageNenntDenRueckweg(t *testing.T) {
 	root := baueBaum(t)
 	weg := filepath.Join(root, ".harness", "baseline", pruefTag, "templates",
-		"docs", "plan", "planning", "archiv-stub-slice.template.md")
+		"docs", "plan", "planning", "archive-stub-slice.template.md")
 	if err := os.Remove(weg); err != nil {
 		t.Fatal(err)
 	}
-	b := einsammeln(t, root, "welle-10")
+	b := einsammeln(t, root, "wave-10")
 	g := &gitMitschreiber{root: root,
-		beobachte: "docs/plan/planning/done/welle-10/slice-100-a.md",
-		zipPfad:   "docs/plan/planning/done/welle-10/" + archivNameTest}
+		beobachte: "docs/plan/planning/done/wave-10/slice-100-a.md",
+		zipPfad:   "docs/plan/planning/done/wave-10/" + archivNameTest}
 	var aus bytes.Buffer
 	err := archive.Anwenden(root, b, indexDateien(t, root), g, &aus)
 	if err == nil {
@@ -429,8 +429,8 @@ const vorlageSliceOhneZeiger = `# slice-<Kennung> — <Titel>
 
 > **Template-Hinweis.** ` + vorlagenMarker + ` — dieser Absatz faellt beim Kuerzen weg.
 
-**Welle:** <welle-id | ohne Welle>
-**Archiviert mit:** <welle-id> · **Geschlossen:** <JJJJ-MM-TT>
+**Welle:** <wave-id | ohne Welle>
+**Archiviert mit:** <wave-id> · **Geschlossen:** <JJJJ-MM-TT>
 **Hervorgegangen:** <BEO-*, ADR-*, Folge-Slice — oder ` + "`— keine —`" + `>
 `
 
@@ -453,11 +453,11 @@ const vorlageSliceOhneZeiger = `# slice-<Kennung> — <Titel>
 func TestAnwendenBrichtBeiVerletzterStubFormAb(t *testing.T) {
 	root := baueBaum(t)
 	schreibe(t, filepath.Join(root, ".harness", "baseline", pruefTag, "templates",
-		"docs", "plan", "planning", "archiv-stub-slice.template.md"), vorlageSliceOhneZeiger)
-	b := einsammeln(t, root, "welle-10")
+		"docs", "plan", "planning", "archive-stub-slice.template.md"), vorlageSliceOhneZeiger)
+	b := einsammeln(t, root, "wave-10")
 	g := &gitMitschreiber{root: root,
-		beobachte: "docs/plan/planning/done/welle-10/slice-100-a.md",
-		zipPfad:   "docs/plan/planning/done/welle-10/" + archivNameTest}
+		beobachte: "docs/plan/planning/done/wave-10/slice-100-a.md",
+		zipPfad:   "docs/plan/planning/done/wave-10/" + archivNameTest}
 	var aus bytes.Buffer
 
 	err := archive.Anwenden(root, b, indexDateien(t, root), g, &aus)
@@ -473,29 +473,29 @@ func TestAnwendenBrichtBeiVerletzterStubFormAb(t *testing.T) {
 	if len(g.commits) != 1 {
 		t.Errorf("%d Commits, want 1 (nur der Move — der Inhalts-Commit kommt nicht mehr)", len(g.commits))
 	}
-	if got := lesen(t, root, "docs/plan/planning/done/welle-10/slice-100-a.md"); got != volltextSlice100 {
+	if got := lesen(t, root, "docs/plan/planning/done/wave-10/slice-100-a.md"); got != volltextSlice100 {
 		t.Errorf("der form-widrige Stub steht im Baum — FormOK laeuft nach dem Schreibzugriff:\n%q", got)
 	}
 }
 
 // TestZweiterLaufZiehtDenAufsteigendenStubVerweisNach ist ADR-0033
 // Abnahme-Kriterium 3, gefahren als das, was es ist: ZWEI Laeufe. Der erste
-// archiviert welle-09 und schreibt dabei selbst einen Verweis der aufsteigenden
+// archiviert wave-09 und schreibt dabei selbst einen Verweis der aufsteigenden
 // Form — der Folge-Slice slice-100 liegt noch flach in done/, also steht im Stub
-// `](../slice-100-a.md)`. Der zweite archiviert welle-10 und zieht slice-100 eine
+// `](../slice-100-a.md)`. Der zweite archiviert wave-10 und zieht slice-100 eine
 // Ebene tiefer; ohne die aufsteigende Ersetzungsrichtung zeigte der Verweis
 // danach ins Leere, und keine der beiden anderen Regeln erreichte ihn.
 // Gegenbeispiel: test/mutations/240-archive-welle-go-aufsteigender-verweis.sh.
 func TestZweiterLaufZiehtDenAufsteigendenStubVerweisNach(t *testing.T) {
 	root := baueBaum(t)
 	done := filepath.Join(root, "docs", "plan", "planning", "done")
-	schreibe(t, filepath.Join(done, "welle-09-vorwelle.md"), "# Welle welle-09: Die Vorwelle\n\n## 1. Ziel\n")
-	schreibe(t, filepath.Join(done, "welle-09-results.md"), "# welle-09 — Ergebnisse\n\n**Abschluss:** 2026-04-04\n")
+	schreibe(t, filepath.Join(done, "wave-09-vorwelle.md"), "# Welle wave-09: Die Vorwelle\n\n## 1. Ziel\n")
+	schreibe(t, filepath.Join(done, "wave-09-results.md"), "# wave-09 — Ergebnisse\n\n**Abschluss:** 2026-04-04\n")
 	schreibe(t, filepath.Join(done, "slice-090-x.md"),
-		"# Slice slice-090: Der Vorgaenger\n\n**Welle:** welle-09\n\n## 7. Closure-Notiz\n\n- **Folge-Slices:** slice-100 (Nachfolger)\n")
+		"# Slice slice-090: Der Vorgaenger\n\n**Welle:** wave-09\n\n## 7. Closure-Notiz\n\n- **Folge-Slices:** slice-100 (Nachfolger)\n")
 	// Das Archiv-Verzeichnis der Vorwelle wird von diesem Lauf selbst angelegt;
 	// die Attrappe aus baueBaum liegt im Weg.
-	if err := os.RemoveAll(filepath.Join(done, "welle-09")); err != nil {
+	if err := os.RemoveAll(filepath.Join(done, "wave-09")); err != nil {
 		t.Fatal(err)
 	}
 
@@ -512,16 +512,16 @@ func TestZweiterLaufZiehtDenAufsteigendenStubVerweisNach(t *testing.T) {
 		return g
 	}
 
-	lauf("welle-09")
-	stub := "docs/plan/planning/done/welle-09/slice-090-x.md"
+	lauf("wave-09")
+	stub := "docs/plan/planning/done/wave-09/slice-090-x.md"
 	nachLauf1 := lesen(t, root, stub)
 	if !strings.Contains(nachLauf1, "[slice-100](../slice-100-a.md)") {
 		t.Fatalf("Lauf 1 schreibt die aufsteigende Form nicht:\n%s", nachLauf1)
 	}
 
-	g2 := lauf("welle-10")
+	g2 := lauf("wave-10")
 	nachLauf2 := lesen(t, root, stub)
-	if !strings.Contains(nachLauf2, "[slice-100](../welle-10/slice-100-a.md)") {
+	if !strings.Contains(nachLauf2, "[slice-100](../wave-10/slice-100-a.md)") {
 		t.Fatalf("Lauf 2 zieht den aufsteigenden Verweis nicht nach:\n%s", nachLauf2)
 	}
 	gestagt := strings.Join(g2.addPfade, "\n")
@@ -549,13 +549,13 @@ func TestAnwendenSchreibtDenStubEinesBenanntenSlice(t *testing.T) {
 	schreibe(t, filepath.Join(done, "slice-der-benannte.md"),
 		"# Slice slice-der-benannte: Der benannte Gegenstand\n\n**Welle:** ohne Welle\n\n## 7. Closure-Notiz\n\n- **Folge-Slices:** keine\n")
 	schreibe(t, filepath.Join(root, "docs", "reviews", "2026-05-06-slice-der-benannte-r2.md"), "# Review\n")
-	b := einsammeln(t, root, "welle-10")
-	g := &gitMitschreiber{root: root, zipPfad: "docs/plan/planning/done/welle-10/" + archivNameTest}
+	b := einsammeln(t, root, "wave-10")
+	g := &gitMitschreiber{root: root, zipPfad: "docs/plan/planning/done/wave-10/" + archivNameTest}
 	var aus bytes.Buffer
 	if err := archive.Anwenden(root, b, indexDateien(t, root), g, &aus); err != nil {
 		t.Fatal(err)
 	}
-	stub := lesen(t, root, "docs/plan/planning/done/welle-10/slice-der-benannte.md")
+	stub := lesen(t, root, "docs/plan/planning/done/wave-10/slice-der-benannte.md")
 	if kopf := strings.SplitN(stub, "\n", 2)[0]; kopf != "# slice-der-benannte — Der benannte Gegenstand" {
 		t.Errorf("Stub-Kopfzeile = %q", kopf)
 	}
@@ -606,7 +606,7 @@ func TestAnwendenAltbestandOhneKennungBrichtVorDemMoveAb(t *testing.T) {
 func TestAnwendenTraegtDieKennungDesAufrufersInBeidenCommits(t *testing.T) {
 	const k = "LH-XY-42"
 	root := baueBaum(t)
-	b := einsammeln(t, root, "welle-10")
+	b := einsammeln(t, root, "wave-10")
 	b.Kennung = k
 	g := &gitMitschreiber{root: root}
 	var aus bytes.Buffer
@@ -664,7 +664,7 @@ func baumListe(t *testing.T, root string) []string {
 // Probe in inhaltsSchritt wirkungslos machen (test/mutations/771).
 func TestAnwendenBrichtVorDemKuerzenAb(t *testing.T) {
 	const (
-		done   = "docs/plan/planning/done/welle-10/"
+		done   = "docs/plan/planning/done/wave-10/"
 		zipRel = done + archivNameTest
 		erster = done + "slice-100-a.md"
 	)
@@ -737,7 +737,7 @@ func TestAnwendenBrichtVorDemKuerzenAb(t *testing.T) {
 	for _, fall := range faelle {
 		t.Run(fall.name, func(t *testing.T) {
 			root := baueBaum(t)
-			b := einsammeln(t, root, "welle-10")
+			b := einsammeln(t, root, "wave-10")
 			g := &gitMitschreiber{root: root, beobachte: erster, zipPfad: zipRel}
 			var aus bytes.Buffer
 

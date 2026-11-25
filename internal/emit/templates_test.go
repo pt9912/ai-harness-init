@@ -30,12 +30,12 @@ func courseSet() fs.FS {
 	// bleibt nach dem Emit stehen, weil ihr Pfad aufloest. Dass die Fixture die
 	// Formen des realen Satzes fuehrt, haelt test/courseset-fixture.bats fest.
 	spitz := "\n1. [<zuerst — z. B. `AGENTS.md`>](<pfad>)\n"
-	eingebettet := "\n- [<welle-NN-titel>](../<welle-NN-titel>.md)\n"
+	eingebettet := "\n- [<wave-id>](../<wave-id>.md)\n"
 	nurAnker := "\n[`MR-<NNN>`](../conventions.md#mr-<NNN>)\n"
 	// conventionsPathQuirk traegt den baseline-relativen Vorlagen-Pfad der Kurs-Staende
 	// bis v6.18.0 (ADR-0037 Festlegung 1, Fundstelle 1) — NeutralizeConventionsTemplateRef
 	// muss ihn beim Emit entschaerfen; der gepinnte Stand traegt ihn nicht mehr.
-	conventionsPathQuirk := "\nJede Adaption ist eine eigene Datei unter `harness/conventions/`, kopiert aus\n`harness/conventions/MR-NNN-titel.template.md` der vendored Baseline;\n"
+	conventionsPathQuirk := "\nJede Adaption ist eine eigene Datei unter `harness/conventions/`, kopiert aus\n`harness/conventions/MR-NNN-title.template.md` der vendored Baseline;\n"
 	// adaptionsBlockAnker traegt die Ueberschrift, VOR die InjectBaumAussage den
 	// Baum-Aussage-Block setzt. Sie steht im realen Vorlagen-Satz; ohne sie hier
 	// braeche der Emit der Fixture-conventions, statt die Injektion zu messen. Dass die
@@ -51,7 +51,7 @@ func courseSet() fs.FS {
 		"AGENTS.template.md":                    f(hint + body),
 		"spec/lastenheft.template.md":           f(hint + body),
 		"spec/architecture.template.md":         f(hint + body),
-		"spec/spezifikation.template.md":        f(hint + body),
+		"spec/specification.template.md":        f(hint + body),
 		"harness/README.template.md":            f(hint + body + spitz + "\n## Sensors (Feedback-Gates)\n\nTabellen.\n"),
 		"harness/conventions.template.md":       f(hint + body + nurAnker + conventionsPathQuirk + adaptionsBlockAnker),
 		"docs/plan/adr/README.template.md":      f(hint + body),
@@ -65,20 +65,20 @@ func courseSet() fs.FS {
 		"docs/plan/planning/roadmap.template.md": f(hint + "# Roadmap\n" + eingebettet),
 		// in scope — Wiederkehrende (LH-FA-02 0.8.0: NICHT emittiert, referenziert
 		// aus der vendored Baseline) und derivative Indexe (nicht emittiert)
-		"docs/plan/adr/NNNN-titel.template.md":       f(hint + body),
+		"docs/plan/adr/NNNN-title.template.md":       f(hint + body),
 		"docs/plan/planning/slice.template.md":       f(hint + body),
-		"docs/plan/planning/welle.template.md":       f(hint + body),
+		"docs/plan/planning/wave.template.md":       f(hint + body),
 		"docs/plan/carveouts/carveout.template.md":   f(hint + body),
 		"docs/reviews/review-report.template.md":     f(hint + body),
 		// mit v5.12.0 dazugekommen, ebenfalls wiederkehrend: eine je Welle bzw. eine
 		// je Adaption (emit.isRecurring nennt die Ziel-Pfade beider)
-		"docs/plan/planning/welle-results.template.md": f(hint + body),
-		"harness/conventions/MR-NNN-titel.template.md": f(hint + body),
+		"docs/plan/planning/wave-results.template.md": f(hint + body),
+		"harness/conventions/MR-NNN-title.template.md": f(hint + body),
 		// ebenfalls wiederkehrend, nur ohne Kopiere-Satz: die Archiv-Stubs bleiben
-		// je archiviertem Slice bzw. Welle-Plan unter done/<welle-id>/ liegen
+		// je archiviertem Slice bzw. Welle-Plan unter done/<wave-id>/ liegen
 		// (emit.isRecurring, Verbleib-Satz)
-		"docs/plan/planning/archiv-stub-slice.template.md": f(hint + body),
-		"docs/plan/planning/archiv-stub-welle.template.md": f(hint + body),
+		"docs/plan/planning/archive-stub-slice.template.md": f(hint + body),
+		"docs/plan/planning/archive-stub-wave.template.md": f(hint + body),
 		// ebenfalls wiederkehrend, eigene dritte Form (Lege-Satz statt Kopiere- oder
 		// Verbleib-Satz): eine Vorlage je Beobachtung, seit die Verzeichnis-Form die
 		// stehende Register-Datei abloest (ADR-0034, emit.isRecurring Lege-Satz)
@@ -86,6 +86,13 @@ func courseSet() fs.FS {
 		// ebenfalls wiederkehrend, wieder ein Kopiere-Satz: eine Sensor-Datei je
 		// Gate mit mehr als einem Satz Vertrag (emit.isRecurring)
 		"harness/sensors/gate.template.md": f(hint + body),
+
+		// seit v7.0.0 upstream dazugekommen (Baseline-Vorlage harness/sensors/
+		// environment-check.template.md): als Singleton default-disponiert
+		// (ADR-0057 Festlegung 1, "wer hier eine Vorlage nicht eintraegt,
+		// entscheidet Singleton") — die Sensor-Entscheidung zu seinem Inhalt
+		// traegt slice-c4-environment-check-v7-0-0.
+		"harness/sensors/environment-check.template.md": f(hint + body),
 		// in scope, aber modus-gebunden: das Reconciliation-Register braucht nur ein
 		// Repo aus dem Brownfield-Bootstrap (emit.isBrownfieldOnly)
 		"docs/plan/planning/reconciliation.template.md": f(hint + body),
@@ -150,7 +157,7 @@ func TestTemplates_Layout(t *testing.T) {
 	}
 	singletons := []string{
 		"AGENTS.md",
-		"spec/lastenheft.md", "spec/architecture.md", "spec/spezifikation.md",
+		"spec/lastenheft.md", "spec/architecture.md", "spec/specification.md",
 		"harness/README.md", "harness/conventions.md",
 		"docs/plan/planning/README.md",
 		"docs/plan/planning/in-progress/roadmap.md", // Sonderfall: in-progress/, nicht flach
@@ -181,9 +188,9 @@ func TestTemplates_Layout(t *testing.T) {
 	// NICHT emittiert (0.8.0): wiederkehrende Vorlagen (referenziert aus vendored),
 	// derivative Indexe (Fuelle-wenn-Inhalt-da), Set-Index-README; roadmap NICHT flach.
 	absent := []string{
-		"docs/plan/adr/NNNN-titel.template.md",
+		"docs/plan/adr/NNNN-title.template.md",
 		"docs/plan/planning/slice.template.md",
-		"docs/plan/planning/welle.template.md",
+		"docs/plan/planning/wave.template.md",
 		"docs/plan/carveouts/carveout.template.md",
 		"docs/reviews/review-report.template.md",
 		"docs/plan/adr/README.md",       // derivativer ADR-Index
@@ -239,25 +246,25 @@ func TestTemplates_RecurringNichtEmittiert(t *testing.T) {
 	}
 	for _, rel := range []string{
 		// co-located (alte 0.7.0-Form)
-		"docs/plan/adr/NNNN-titel.template.md",
+		"docs/plan/adr/NNNN-title.template.md",
 		"docs/plan/planning/slice.template.md",
-		"docs/plan/planning/welle.template.md",
+		"docs/plan/planning/wave.template.md",
 		"docs/plan/carveouts/carveout.template.md",
 		"docs/reviews/review-report.template.md",
-		"docs/plan/planning/welle-results.template.md",
-		"harness/conventions/MR-NNN-titel.template.md",
-		"docs/plan/planning/archiv-stub-slice.template.md",
-		"docs/plan/planning/archiv-stub-welle.template.md",
+		"docs/plan/planning/wave-results.template.md",
+		"harness/conventions/MR-NNN-title.template.md",
+		"docs/plan/planning/archive-stub-slice.template.md",
+		"docs/plan/planning/archive-stub-wave.template.md",
 		// transformierte .md-Form (falls die isRecurring-Weiche auf Singleton faellt)
-		"docs/plan/adr/NNNN-titel.md",
+		"docs/plan/adr/NNNN-title.md",
 		"docs/plan/planning/slice.md",
-		"docs/plan/planning/welle.md",
+		"docs/plan/planning/wave.md",
 		"docs/plan/carveouts/carveout.md",
 		"docs/reviews/review-report.md",
-		"docs/plan/planning/welle-results.md",
-		"harness/conventions/MR-NNN-titel.md",
-		"docs/plan/planning/archiv-stub-slice.md",
-		"docs/plan/planning/archiv-stub-welle.md",
+		"docs/plan/planning/wave-results.md",
+		"harness/conventions/MR-NNN-title.md",
+		"docs/plan/planning/archive-stub-slice.md",
+		"docs/plan/planning/archive-stub-wave.md",
 	} {
 		if _, err := os.Stat(filepath.Join(dir, rel)); err == nil {
 			t.Errorf("wiederkehrendes Template emittiert (darf nicht, 0.8.0): %s", rel)
@@ -296,9 +303,10 @@ func TestTemplates_EmittierterBestandVollstaendig(t *testing.T) {
 		"harness/conventions.md",
 		"spec/architecture.md",
 		"spec/lastenheft.md",
-		"spec/spezifikation.md",
+		"spec/specification.md",
 		".harness/skills/reviewer.md",
 		".harness/skills/closure-note-reviewer.md",
+		"harness/sensors/environment-check.md",
 		// .gitkeep der Struktur-Verzeichnisse
 		"docs/plan/adr/.gitkeep",
 		"docs/plan/carveouts/.gitkeep",
@@ -799,12 +807,12 @@ func TestTemplates_KeineKommentarHilfenImEmittiertenSatz(t *testing.T) {
 // baseline-relative Vorlagen-Pfad verliert sein Verzeichnis-Segment, der
 // Dateiname bleibt lesbar, ohne Marker unveraendert.
 func TestNeutralizeConventionsTemplateRef(t *testing.T) {
-	in := "Jede Adaption ist eine eigene Datei unter `harness/conventions/`, kopiert aus\n`harness/conventions/MR-NNN-titel.template.md` der vendored Baseline;\n"
+	in := "Jede Adaption ist eine eigene Datei unter `harness/conventions/`, kopiert aus\n`harness/conventions/MR-NNN-title.template.md` der vendored Baseline;\n"
 	got := emit.NeutralizeConventionsTemplateRef(in)
-	if strings.Contains(got, "`harness/conventions/MR-NNN-titel.template.md`") {
+	if strings.Contains(got, "`harness/conventions/MR-NNN-title.template.md`") {
 		t.Errorf("baseline-relativer Pfad nicht neutralisiert:\n%s", got)
 	}
-	if !strings.Contains(got, "`MR-NNN-titel.template.md`") {
+	if !strings.Contains(got, "`MR-NNN-title.template.md`") {
 		t.Errorf("Dateiname verloren:\n%s", got)
 	}
 	const plain = "kein Pfad hier\n"
@@ -814,7 +822,7 @@ func TestNeutralizeConventionsTemplateRef(t *testing.T) {
 }
 
 // TestTemplates_ConventionsTemplateRefGateSafe: die emittierte harness/conventions.md
-// traegt KEINEN Inline-Code-Pfad mehr, der auf harness/conventions/MR-NNN-titel.template.md
+// traegt KEINEN Inline-Code-Pfad mehr, der auf harness/conventions/MR-NNN-title.template.md
 // zeigt. Wiring-Probe — die Fixture traegt den baseline-relativen Pfad der
 // Kurs-Staende bis v6.18.0 (courseSet() §conventionsPathQuirk).
 func TestTemplates_ConventionsTemplateRefGateSafe(t *testing.T) {
@@ -826,7 +834,7 @@ func TestTemplates_ConventionsTemplateRefGateSafe(t *testing.T) {
 	if err != nil {
 		t.Fatalf("harness/conventions.md lesen: %v", err)
 	}
-	if strings.Contains(string(got), "`harness/conventions/MR-NNN-titel.template.md`") {
+	if strings.Contains(string(got), "`harness/conventions/MR-NNN-title.template.md`") {
 		t.Errorf("emittierte harness/conventions.md traegt noch den baseline-relativen Pfad:\n%s", got)
 	}
 }
@@ -906,8 +914,8 @@ func TestNeutralizePlaceholderLinks(t *testing.T) {
 		},
 		{
 			"eingebetteter Platzhalter im Pfad",
-			"- [<welle-NN-titel>](../<welle-NN-titel>.md)\n",
-			"- <welle-NN-titel>\n",
+			"- [<wave-id>](../<wave-id>.md)\n",
+			"- <wave-id>\n",
 		},
 		{
 			"zwei Links in einer Zeile, beide getroffen",
@@ -1006,7 +1014,7 @@ func TestTemplates_KeinPlatzhalterLinkImEmittiertenSatz(t *testing.T) {
 	if err != nil {
 		t.Fatalf("roadmap.md lesen: %v", err)
 	}
-	if !strings.Contains(string(roadmap), "<welle-NN-titel>") {
+	if !strings.Contains(string(roadmap), "<wave-id>") {
 		t.Errorf("der Link-TEXT der neutralisierten Zeile fehlt in der emittierten Roadmap — die Zeile bleibt als Form-Beispiel stehen, sie faellt nicht weg:\n%s", roadmap)
 	}
 }
@@ -1053,23 +1061,24 @@ func TestDispositionen_DeckenBezugsmengeVollstaendigUndDisjunkt(t *testing.T) {
 	// Festlegung 1 — im Dispatch von planTemplates der stille Default
 	// ("wer hier eine Vorlage nicht eintraegt, entscheidet Singleton"),
 	// hier eine BENANNTE Liste im Pruefbereich dieses Waechters. Sie
-	// fuehrt die zehn Singleton-Vorlagen, die courseSet() traegt
-	// (Zaehlung: 24 in-scope minus 11 wiederkehrend minus 2 derivative
+	// fuehrt die elf Singleton-Vorlagen, die courseSet() traegt
+	// (Zaehlung: 25 in-scope minus 11 wiederkehrend minus 2 derivative
 	// Indexe minus 1 brownfield-only, test/courseset-fixture.bats haelt
-	// die 24 gegen den realen Satz). Das tool-autorierte, nicht aus src
+	// die 25 gegen den realen Satz). Das tool-autorierte, nicht aus src
 	// gelesene Beobachtungs-Register (observationsReadme) ist keine
 	// Vorlage dieser Bezugsmenge und steht darum nicht hier.
 	singletonBezugsmenge := map[string]bool{
 		"AGENTS.template.md":                                true,
 		"spec/lastenheft.template.md":                        true,
 		"spec/architecture.template.md":                      true,
-		"spec/spezifikation.template.md":                     true,
+		"spec/specification.template.md":                     true,
 		"harness/README.template.md":                         true,
 		"harness/conventions.template.md":                    true,
 		"docs/plan/planning/README.template.md":               true,
 		".harness/skills/reviewer.template.md":                true,
 		".harness/skills/closure-note-reviewer.template.md":   true,
 		"docs/plan/planning/roadmap.template.md":              true,
+		"harness/sensors/environment-check.template.md": true,
 	}
 	// dispositionsAussagen ordnet jede der vier Dispositionen aus
 	// ADR-0057 Festlegung 1 einer Aussage in LH-FA-02 zu. isRecurring,

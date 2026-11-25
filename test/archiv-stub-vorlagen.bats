@@ -56,7 +56,7 @@ vorlage_datei() {
 # getroffen:
 #
 #   {"<NNN>", nummer},                        -> der Zeichenketten-Literal
-#   {"done/<welle-id>/" + archivName, zipRel} -> Literal + Konstante, aufgeloest
+#   {"done/<wave-id>/" + archivName, zipRel} -> Literal + Konstante, aufgeloest
 #
 # ZUSAGE: eine Zeile, die keine der zwei Formen trifft, laesst die Funktion
 # FALLEN statt sie zu ueberspringen. Ein Extraktions-Muster, das enger ist als
@@ -96,8 +96,8 @@ platzhalter() {
 }
 
 @test "beide Stub-Vorlagen liegen im vendored Baum" {
-  [ -f "$TDIR/archiv-stub-slice.template.md" ]
-  [ -f "$TDIR/archiv-stub-welle.template.md" ]
+  [ -f "$TDIR/archive-stub-slice.template.md" ]
+  [ -f "$TDIR/archive-stub-wave.template.md" ]
 }
 
 # Die Deckungs-Aussage des Falls darunter, jetzt je Block: die Extraktion loest
@@ -149,10 +149,10 @@ platzhalter() {
 # Absatz. Faellt einer weg, schreibt der Lauf einen Stub ohne Zeiger oder ohne
 # Felder — und FormOK meldet nur den fehlenden Zeiger, nicht die leeren Felder.
 @test "beide Vorlagen tragen H1, Archiv-Zeiger und einen Feld-Block als letzten Absatz" {
-  for f in "$TDIR/archiv-stub-slice.template.md" "$TDIR/archiv-stub-welle.template.md"; do
+  for f in "$TDIR/archive-stub-slice.template.md" "$TDIR/archive-stub-wave.template.md"; do
     head -n 1 "$f" | grep -q '^# '
     grep -q '^> \*\*ARCHIVIERT\*\*' "$f"
-    grep -q 'archiv\.zip' "$f"
+    grep -q 'archive.zip' "$f"
     tail -n 1 "$f" | grep -q '^\*\*'
   done
 }

@@ -23,7 +23,7 @@ type Git interface {
 	Commit(nachricht string) error
 }
 
-// Umzug ist eine Datei, die der Lauf nach done/<welle-id>/ zieht — alter und
+// Umzug ist eine Datei, die der Lauf nach done/<wave-id>/ zieht — alter und
 // neuer Pfad, repo-relativ und Forward-Slash-normalisiert wie in Markdown-Links.
 type Umzug struct {
 	Alt string
@@ -311,12 +311,12 @@ func sliceStub(root, vorlagen string, b Bestand, planBase, wDatum, zipRel, neu, 
 	return AusVorlage(filepath.Join(vorlagen, stubVorlageSlice), []Ersetzung{
 		{"<Kennung>", nummer},
 		{"<Titel>", TitelVon(Kopfzeile(inhalt))},
-		{"<welle-id | ohne Welle>", welleFeld},
+		{"<wave-id | ohne Welle>", welleFeld},
 		{"<JJJJ-MM-TT>", GeschlossenDatum(inhalt, wDatum)},
 		{"<BEO-*, ADR-*, Folge-Slice — oder `— keine —`>", Hervorgegangen(root, inhalt, b.Welle)},
-		{"done/<welle-id>/" + archivName, zipRel},
+		{"done/<wave-id>/" + archivName, zipRel},
 		{"<pfad-im-archiv>", neu},
-		{"<welle-id>", b.Welle},
+		{"<wave-id>", b.Welle},
 	})
 }
 
@@ -327,11 +327,11 @@ func welleStub(vorlagen string, b Bestand, wDatum, zipRel, neu, inhalt string) (
 	return AusVorlage(filepath.Join(vorlagen, stubVorlageWelle), []Ersetzung{
 		{"<Titel>", TitelVon(Kopfzeile(inhalt))},
 		{"<JJJJ-MM-TT>", wDatum},
-		{"<welle-id>-results.md", "[" + ergebnisBase + "](../" + ergebnisBase + ")"},
+		{"<wave-id>-results.md", "[" + ergebnisBase + "](../" + ergebnisBase + ")"},
 		{"<N Slices, M Reviews>", fmt.Sprintf("%d Slices, %d Reviews", len(b.Slices()), len(b.Reviews))},
-		{"done/<welle-id>/" + archivName, zipRel},
+		{"done/<wave-id>/" + archivName, zipRel},
 		{"<pfad-im-archiv>", neu},
-		{"<welle-id>", b.Welle},
+		{"<wave-id>", b.Welle},
 	})
 }
 

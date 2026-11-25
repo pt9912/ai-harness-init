@@ -41,7 +41,7 @@ func grenzBaum(t *testing.T) string {
 	for _, s := range []string{"slice-301-frueh", "slice-302-mitte", "slice-303-spaet"} {
 		schreibe(t, filepath.Join(done, s+".md"), "# Slice\n\n**Welle:** ohne Welle\n")
 	}
-	schreibe(t, filepath.Join(done, "welle-0", "archiv.zip"), "PK\n")
+	schreibe(t, filepath.Join(done, "welle-0", "archive.zip"), "PK\n")
 	schreibe(t, filepath.Join(root, "docs", "reviews", "2026-01-01-slice-303-review.md"), "# Review\n")
 	return root
 }

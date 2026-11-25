@@ -81,18 +81,21 @@ in_scope() {
   }
 }
 
-@test "fixture: der reale Satz liefert genau 24 in-scope-Templates" {
-  # Die Zahl ist kein Selbstzweck: von 24 in-scope-Templates emittiert der Tool genau
-  # 11 als Singletons (inkl. der 2 Durchsetzungs-Skills und des
+@test "fixture: der reale Satz liefert genau 25 in-scope-Templates" {
+  # Die Zahl ist kein Selbstzweck: von 25 in-scope-Templates emittiert der Tool genau
+  # 12 als Singletons (inkl. der 2 Durchsetzungs-Skills und des
   # Beobachtungs-Registers); ununemittiert bleiben 2 derivative Indexe
   # (emit.isDerivativeIndex), 10 wiederkehrende (emit.isRecurring) und 1 modus-gebundenes
-  # Register (emit.isBrownfieldOnly). Bewegt sich die Zahl, hat upstream etwas
+  # Register (emit.isBrownfieldOnly). Der v7.0.0-Stand fuehrt neu
+  # harness/sensors/environment-check.template.md; sie ist Singleton nach dem
+  # stillen Default (ADR-0057 Festlegung 1) — die Adaption ihrer Sensor-Rolle
+  # traegt slice-c4-environment-check-v7-0-0. Bewegt sich die Zahl, hat upstream etwas
   # hinzugefuegt oder entfernt — und die Aufzaehlungen brauchen dann eine Entscheidung,
   # statt das Neue still als Singleton zu behandeln.
   local n
   n="$(real_paths | in_scope | wc -l | tr -d ' ')"
-  [ "$n" -eq 24 ] || {
-    echo "in-scope-Templates: $n, erwartet 24"
+  [ "$n" -eq 25 ] || {
+    echo "in-scope-Templates: $n, erwartet 25"
     real_paths | in_scope
     return 1
   }
@@ -111,15 +114,15 @@ in_scope() {
   # und realer Satz sie GEMEINSAM verlieren.
   local rel
   for rel in \
-    docs/plan/adr/NNNN-titel.template.md \
+    docs/plan/adr/NNNN-title.template.md \
     docs/plan/planning/slice.template.md \
-    docs/plan/planning/welle.template.md \
+    docs/plan/planning/wave.template.md \
     docs/plan/carveouts/carveout.template.md \
     docs/reviews/review-report.template.md \
-    docs/plan/planning/welle-results.template.md \
-    harness/conventions/MR-NNN-titel.template.md \
-    docs/plan/planning/archiv-stub-slice.template.md \
-    docs/plan/planning/archiv-stub-welle.template.md \
+    docs/plan/planning/wave-results.template.md \
+    harness/conventions/MR-NNN-title.template.md \
+    docs/plan/planning/archive-stub-slice.template.md \
+    docs/plan/planning/archive-stub-wave.template.md \
     docs/plan/planning/observation.template.md \
     harness/sensors/gate.template.md
   do
@@ -161,7 +164,7 @@ in_scope() {
 # faellt rot. test/mutations/220 faehrt genau diese Umformulierung.
 #
 # Die Wortstellung ist nicht konstruiert: der Hinweis von
-# harness/conventions/MR-NNN-titel.template.md fuehrt "wandert die Datei per
+# harness/conventions/MR-NNN-title.template.md fuehrt "wandert die Datei per
 # `git mv` nach `done/`" im selben Blockquote — dort steht sie hinter dem Ziel-Pfad
 # statt davor.
 #

@@ -21,5 +21,5 @@
 # gelesen, keine gepflegte Liste. Die Lauf-Haelfte derselben Klasse steht daneben
 # in harness/tools/full-smoke.sh und kostet einen Bootstrap-Lauf.
 set -euo pipefail
-sed -i 's/make archive-welle WELLE=<welle-id>/make archiv-welle WELLE=<welle-id>/' \
+sed -i 's/make archive-welle WAVE=<wave-id>/make archiv-welle WAVE=<wave-id>/' \
 	internal/emit/templates/commands/close-welle.md

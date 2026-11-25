@@ -7,5 +7,5 @@
 # — ohne sie faerbt er rot.
 set -euo pipefail
 sed -i \
-  's/, order: \[spec\/lastenheft.md, spec\/spezifikation.md, spec\/architecture.md\], direction: no-downward}/}/' \
+  's/, order: \[spec\/lastenheft.md, spec\/specification.md, spec\/architecture.md\], direction: no-downward}/}/' \
   internal/emit/templates/d-check.yml

@@ -5,7 +5,7 @@ Argument: $ARGUMENTS
 Dieser Command führt die **Planner**-Rolle für *eine* Welle (Modul 6 — Roadmap Engineering). Eine
 Welle ist ein **Bündel von Slices**, das gemeinsam geplant und geschlossen wird. Der Welle-Status ist
 die **Verzeichnis-Position**, **kein `Status:`-Feld**: eine **offene** Welle liegt **flach** in
-`docs/plan/planning/<welle-id>.md`, bei Closure wandert sie per `git mv` nach `done/` (das schließt
+`docs/plan/planning/<wave-id>.md`, bei Closure wandert sie per `git mv` nach `done/` (das schließt
 `/close-welle`). Der Roadmap-Abschnitt *Offene Wellen* ist derivativ — ein Zeiger je flacher
 Welle-Datei; woran gerade gearbeitet wird, sagt das `Welle:`-Feld der Slices in `in-progress/`.
 
@@ -23,7 +23,7 @@ Lies den Adaptions-Block („MR-Block") in `harness/conventions.md`; die planung
 - **Neue Artefakte per `cp` aus den vendored Templates** (`.harness/baseline/<tag>/templates/…`),
   dann **in-place** ausfüllen — **keine handgeschriebenen Kopien und kein Modellieren auf ein
   bestehendes Artefakt.** Ein `cp` gefolgt von vollem Überschreiben (`Write`) ist derselbe Verstoß,
-  weil der `cp` verworfen wird. Das gilt für den Welle-Plan (`welle.template.md`) **und** jeden neuen
+  weil der `cp` verworfen wird. Das gilt für den Welle-Plan (`wave.template.md`) **und** jeden neuen
   Slice (`slice.template.md`).
 - **Strenges Doc-Gate (d-check).** Jede `LH-`/`ADR-`/`MR-`-Kennung in einer gescannten `.md` muss ein
   klickbarer Anker-Link sein (link-policy: always) — ein bares Kennungs-Token bricht `docs-check`. Der
@@ -71,8 +71,8 @@ die Antwort und wird notiert.
 
 ## Welle-Plan per cp anlegen und füllen (der Kern-Schritt)
 
-7. **`cp` aus `.harness/baseline/<tag>/templates/docs/plan/planning/welle.template.md` nach
-   `docs/plan/planning/<welle-id>.md`** — flach in `planning/`, kein Lifecycle-Ordner. Provenienz mit
+7. **`cp` aus `.harness/baseline/<tag>/templates/docs/plan/planning/wave.template.md` nach
+   `docs/plan/planning/<wave-id>.md`** — flach in `planning/`, kein Lifecycle-Ordner. Provenienz mit
    `diff -q <template> <ziel>` belegen (byte-identisch, dann füllen).
 8. **In-place füllen** (Edits, **kein** Voll-Überschreiben): den `> **Template-Hinweis.**`-Block
    strippen, alle Platzhalter ersetzen, die `<!-- -->`-Guidance-Kommentare entfernen. Die

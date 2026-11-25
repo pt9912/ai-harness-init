@@ -32,11 +32,11 @@ func slicePfad(root, name string) string {
 // Gegenbeispiel: test/mutations/234-archive-welle-go-klasse-mitglied.sh.
 func TestKlasseVonMitgliedNenntDieWelle(t *testing.T) {
 	faelle := []struct{ feld, welle string }{
-		{"[welle-10](welle-10-re-baseline.md).", "welle-10"},
-		{"welle-10.", "welle-10"},
+		{"[wave-10](wave-10-re-baseline.md).", "wave-10"},
+		{"wave-10.", "wave-10"},
 		{"welle-05", "welle-05"},
 		{"[welle-02-fetch-und-readme](welle-02-fetch-und-readme.md).", "welle-02"},
-		{"[welle-09](../welle-09-modul-15.md) — die Tool-Ebene", "welle-09"},
+		{"[wave-09](../wave-09-modul-15.md) — die Tool-Ebene", "wave-09"},
 	}
 	for _, f := range faelle {
 		if got := archive.KlasseVon(f.feld, f.welle); got != archive.Mitglied {
@@ -54,7 +54,7 @@ func TestKlasseVonWellenlosOhneWelle(t *testing.T) {
 		"ohne Welle — der Schnitt-Test aus",
 		"ohne Welle",
 	} {
-		if got := archive.KlasseVon(feld, "welle-10"); got != archive.Wellenlos {
+		if got := archive.KlasseVon(feld, "wave-10"); got != archive.Wellenlos {
 			t.Errorf("KlasseVon(%q) = %q, want %q", feld, got, archive.Wellenlos)
 		}
 	}
@@ -66,11 +66,11 @@ func TestKlasseVonWellenlosOhneWelle(t *testing.T) {
 // Gegenbeispiel: test/mutations/236-archive-welle-go-klasse-fremd.sh.
 func TestKlasseVonFremdBleibtLiegen(t *testing.T) {
 	faelle := []struct{ feld, welle string }{
-		{"[welle-14](welle-14-re-baseline.md).", "welle-10"},
-		{"—", "welle-10"},
-		{"", "welle-10"},
+		{"[welle-14](welle-14-re-baseline.md).", "wave-10"},
+		{"—", "wave-10"},
+		{"", "wave-10"},
 		{"[welle-14](welle-14-re-baseline.md).", "welle-1"},
-		{"ohne Wellenbetrieb", "welle-10"},
+		{"ohne Wellenbetrieb", "wave-10"},
 	}
 	for _, f := range faelle {
 		if got := archive.KlasseVon(f.feld, f.welle); got != archive.Fremd {
@@ -80,8 +80,8 @@ func TestKlasseVonFremdBleibtLiegen(t *testing.T) {
 }
 
 func TestWelleFeldLiestErsteZeile(t *testing.T) {
-	inhalt := "# Slice slice-100: X\n\n**Welle:** [welle-10](welle-10-re-baseline.md).\n\n**Welle:** welle-99.\n"
-	if got := archive.WelleFeld(inhalt); got != "[welle-10](welle-10-re-baseline.md)." {
+	inhalt := "# Slice slice-100: X\n\n**Welle:** [wave-10](wave-10-re-baseline.md).\n\n**Welle:** welle-99.\n"
+	if got := archive.WelleFeld(inhalt); got != "[wave-10](wave-10-re-baseline.md)." {
 		t.Fatalf("WelleFeld = %q", got)
 	}
 	if got := archive.WelleFeld("# ohne Kopf-Feld\n"); got != "" {
@@ -93,7 +93,7 @@ func TestSliceNummerTraegtDenReSchnittSuffix(t *testing.T) {
 	faelle := map[string]string{
 		"slice-170-titel.md":         "170",
 		"slice-001a-cli-skeleton.md": "001a",
-		"welle-10-re-baseline.md":    "",
+		"wave-10-re-baseline.md":    "",
 		"2026-09-01-slice-170-r1.md": "",
 	}
 	for name, want := range faelle {
@@ -129,9 +129,9 @@ func TestReviewTrifftSuffixGrenze(t *testing.T) {
 func baumMitWelle(t *testing.T) string {
 	t.Helper()
 	root := t.TempDir()
-	schreibe(t, slicePfad(root, "welle-10-re-baseline.md"), "# Welle welle-10: Re-Baseline\n")
-	schreibe(t, slicePfad(root, "welle-10-results.md"), "# Ergebnis\n\n**Abschluss:** 2026-09-01\n")
-	schreibe(t, slicePfad(root, "slice-100-a.md"), "# Slice slice-100: A\n\n**Welle:** [welle-10](welle-10-re-baseline.md).\n")
+	schreibe(t, slicePfad(root, "wave-10-re-baseline.md"), "# Welle wave-10: Re-Baseline\n")
+	schreibe(t, slicePfad(root, "wave-10-results.md"), "# Ergebnis\n\n**Abschluss:** 2026-09-01\n")
+	schreibe(t, slicePfad(root, "slice-100-a.md"), "# Slice slice-100: A\n\n**Welle:** [wave-10](wave-10-re-baseline.md).\n")
 	schreibe(t, slicePfad(root, "slice-101-b.md"), "# Slice slice-101: B\n\n**Welle:** ohne Welle (Harness-Wartung).\n")
 	schreibe(t, slicePfad(root, "slice-102-c.md"), "# Slice slice-102: C\n\n**Welle:** [welle-14](welle-14-x.md).\n")
 	schreibe(t, slicePfad(root, "slice-103-d.md"), "# Slice slice-103: D\n\n**Welle:** —\n")
@@ -143,7 +143,7 @@ func baumMitWelle(t *testing.T) string {
 // Vorschau-Lauf benutzt.
 func TestEinsammelnDreiKlassen(t *testing.T) {
 	root := baumMitWelle(t)
-	b, err := archive.Einsammeln(root, "welle-10", archive.Abstammung{})
+	b, err := archive.Einsammeln(root, "wave-10", archive.Abstammung{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -156,8 +156,8 @@ func TestEinsammelnDreiKlassen(t *testing.T) {
 	if len(b.Fremde) != 2 {
 		t.Errorf("Fremde = %v, want 2", b.Fremde)
 	}
-	if len(b.Plaene) != 1 || filepath.Base(b.Plaene[0]) != "welle-10-re-baseline.md" {
-		t.Errorf("Plaene = %v, want [welle-10-re-baseline.md]", b.Plaene)
+	if len(b.Plaene) != 1 || filepath.Base(b.Plaene[0]) != "wave-10-re-baseline.md" {
+		t.Errorf("Plaene = %v, want [wave-10-re-baseline.md]", b.Plaene)
 	}
 	if b.Ergebnis == "" {
 		t.Error("Ergebnisnotiz nicht gefunden")
@@ -183,7 +183,7 @@ func TestEinsammelnReviewsAnDerSuffixGrenze(t *testing.T) {
 	} {
 		schreibe(t, filepath.Join(root, "docs", "reviews", n), "x\n")
 	}
-	b, err := archive.Einsammeln(root, "welle-10", archive.Abstammung{})
+	b, err := archive.Einsammeln(root, "wave-10", archive.Abstammung{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -199,14 +199,14 @@ func TestEinsammelnReviewsAnDerSuffixGrenze(t *testing.T) {
 
 // TestEinsammelnPlanAnDerZiffernGrenze haelt die dritte Zuordnungs-Stelle an
 // derselben Grenze wie die zwei anderen: "welle-1" trifft die Dateien von
-// "welle-10" und "welle-14" nicht. Ohne sie stuende die Ergebnisnotiz einer
+// "wave-10" und "welle-14" nicht. Ohne sie stuende die Ergebnisnotiz einer
 // fremden Welle als Kandidat in der Sperre 'mehrdeutiger-plan'.
 func TestEinsammelnPlanAnDerZiffernGrenze(t *testing.T) {
 	root := t.TempDir()
 	schreibe(t, slicePfad(root, "welle-1-erste.md"), "# Welle welle-1\n")
 	schreibe(t, slicePfad(root, "welle-1-results.md"), "# Ergebnis\n")
-	schreibe(t, slicePfad(root, "welle-10-re-baseline.md"), "# Welle welle-10\n")
-	schreibe(t, slicePfad(root, "welle-10-results.md"), "# Ergebnis\n")
+	schreibe(t, slicePfad(root, "wave-10-re-baseline.md"), "# Welle wave-10\n")
+	schreibe(t, slicePfad(root, "wave-10-results.md"), "# Ergebnis\n")
 	schreibe(t, slicePfad(root, "welle-14-x.md"), "# Welle welle-14\n")
 
 	b, err := archive.Einsammeln(root, "welle-1", archive.Abstammung{})
@@ -225,20 +225,20 @@ func TestEinsammelnPlanAnDerZiffernGrenze(t *testing.T) {
 // Untergrenzen-Merkmals: ohne ein bestehendes Archiv leer, mit einem gesetzt.
 func TestEinsammelnFindetUntergrenze(t *testing.T) {
 	root := baumMitWelle(t)
-	b, err := archive.Einsammeln(root, "welle-10", archive.Abstammung{})
+	b, err := archive.Einsammeln(root, "wave-10", archive.Abstammung{})
 	if err != nil {
 		t.Fatal(err)
 	}
 	if b.Untergrenze != "" {
 		t.Fatalf("Untergrenze = %q, want leer", b.Untergrenze)
 	}
-	schreibe(t, slicePfad(root, filepath.Join("welle-09", "archiv.zip")), "PK\n")
-	b, err = archive.Einsammeln(root, "welle-10", archive.Abstammung{})
+	schreibe(t, slicePfad(root, filepath.Join("wave-09", "archive.zip")), "PK\n")
+	b, err = archive.Einsammeln(root, "wave-10", archive.Abstammung{})
 	if err != nil {
 		t.Fatal(err)
 	}
 	if b.Untergrenze == "" {
-		t.Fatal("Untergrenze nicht gefunden, obwohl done/welle-09/archiv.zip liegt")
+		t.Fatal("Untergrenze nicht gefunden, obwohl done/wave-09/archive.zip liegt")
 	}
 }
 
@@ -246,13 +246,13 @@ func TestEinsammelnFindetUntergrenze(t *testing.T) {
 // Welle archiviert.
 func TestEinsammelnMeldetArchivierteWelle(t *testing.T) {
 	root := baumMitWelle(t)
-	schreibe(t, slicePfad(root, filepath.Join("welle-10", "archiv.zip")), "PK\n")
-	b, err := archive.Einsammeln(root, "welle-10", archive.Abstammung{})
+	schreibe(t, slicePfad(root, filepath.Join("wave-10", "archive.zip")), "PK\n")
+	b, err := archive.Einsammeln(root, "wave-10", archive.Abstammung{})
 	if err != nil {
 		t.Fatal(err)
 	}
 	if !b.Archiviert {
-		t.Fatal("done/welle-10/ liegt, Archiviert ist trotzdem false")
+		t.Fatal("done/wave-10/ liegt, Archiviert ist trotzdem false")
 	}
 }
 
@@ -317,7 +317,7 @@ func TestEinsammelnReviewsBenannterSlices(t *testing.T) {
 	} {
 		schreibe(t, filepath.Join(root, "docs", "reviews", n), "x\n")
 	}
-	b, err := archive.Einsammeln(root, "welle-10", archive.Abstammung{})
+	b, err := archive.Einsammeln(root, "wave-10", archive.Abstammung{})
 	if err != nil {
 		t.Fatal(err)
 	}

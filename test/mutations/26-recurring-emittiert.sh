@@ -8,4 +8,4 @@
 # Bestand weicht damit von der Zielmenge ab. Kompiliert weiter (path.Base/isRecurring
 # bleiben gerufen) — sonst waere das Rot ein Build-Fehler, kein Waechter-Rot.
 set -euo pipefail
-sed -i 's/"NNNN-titel.template.md", "slice.template.md", "welle.template.md",/"NNNN-titel.template.md", "__slice-neutralisiert__.template.md", "welle.template.md",/' internal/emit/templates.go
+sed -i 's/"NNNN-title.template.md", "slice.template.md", "wave.template.md",/"NNNN-title.template.md", "__slice-neutralisiert__.template.md", "wave.template.md",/' internal/emit/templates.go

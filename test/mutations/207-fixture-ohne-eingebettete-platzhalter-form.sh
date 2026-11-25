@@ -10,4 +10,4 @@
 # steht in derselben Datei ein zweites Mal, als Eingabe eines Falls von
 # TestNeutralizePlaceholderLinks. Mutiert wird die Fixture, und nur sie.
 set -euo pipefail
-sed -i '/^func courseSet(/,/^}/ s|\[<welle-NN-titel>\](\.\./<welle-NN-titel>\.md)|[welle-NN-titel](../welle-NN-titel.md)|' internal/emit/templates_test.go
+sed -i '/^func courseSet(/,/^}/ s|\[<wave-id>\](\.\./<wave-id>\.md)|[wave-id](../wave-id.md)|' internal/emit/templates_test.go

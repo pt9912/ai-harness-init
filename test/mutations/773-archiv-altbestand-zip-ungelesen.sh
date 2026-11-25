@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # files: internal/archive/anwenden.go harness/tools/full-smoke.sh
-# expect: altbestand/archiv.zip ist nicht gelesen und vollstaendig
+# expect: altbestand/archive.zip ist nicht gelesen und vollstaendig
 # verify: full-smoke
 #
 # DIE LESEPROBE DER ERSTEN STELLE ENTFAELLT, DAS ARCHIV BLEIBT ABGESCHNITTEN: wie Fall 772
 # (Zip schliesst den Writer nicht, die Probe des Traegers ist wirkungslos), und die
 # Pruefung der Stufe "Archivierung im Ziel" nach dem Lauf fuer welle-smoke wird nicht
 # mehr ausgewertet. Der Lauf erreicht den Altbestand-Lauf, dessen eigene Pruefung
-# (archiv_gueltig ueber altbestand/archiv.zip) das abgeschnittene Archiv melden muss.
+# (archiv_gueltig ueber altbestand/archive.zip) das abgeschnittene Archiv melden muss.
 # Haelt sie nur die Existenz der Datei, bleibt der Lauf gruen.
 #
 # Die dritte Stelle (gefetchter Traeger aus dem gepinnten Release) ist hier nicht

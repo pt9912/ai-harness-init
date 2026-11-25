@@ -11,16 +11,16 @@ import (
 )
 
 const (
-	stubVorlageSlice = "archiv-stub-slice.template.md"
-	stubVorlageWelle = "archiv-stub-welle.template.md"
+	stubVorlageSlice = "archive-stub-slice.template.md"
+	stubVorlageWelle = "archive-stub-wave.template.md"
 	templatesUnter   = "templates/docs/plan/planning"
 	leerwert         = "— keine —"
 )
 
 // Ersetzung ist ein Platzhalter der Vorlage und der Wert, der an seine Stelle
-// tritt. Die Reihenfolge einer Ersetzungs-Liste ist TRAGEND: `<welle-id>` ist
-// Teilzeichenkette von `<welle-id>-results.md` und von
-// `done/<welle-id>/archiv.zip`, also stehen die zusammengesetzten Platzhalter
+// tritt. Die Reihenfolge einer Ersetzungs-Liste ist TRAGEND: `<wave-id>` ist
+// Teilzeichenkette von `<wave-id>-results.md` und von
+// `done/<wave-id>/archive.zip`, also stehen die zusammengesetzten Platzhalter
 // vor dem einfachen. Gedeckt von TestAnwendenSchreibtBeideStubArtenAusDerVorlage:
 // sein Welle-Stub traegt `**Ergebnisnotiz:** [welle-10-results.md](…)` — bei
 // umgedrehter Reihenfolge stuende dort `welle-10-results.md` ohne Link.
@@ -148,7 +148,7 @@ func FormOK(inhalt string) error {
 // Gedankenstrich steht als ALTERNATIVE und nicht in einer Zeichenklasse — Go
 // liest die Datei als UTF-8, und die Alternative sagt dasselbe ohne die
 // Byte-Frage aufzuwerfen. Gedeckt von TestTitelVonStreiftDenNamen.
-var kennungRE = regexp.MustCompile(`^(?:slice|welle)-[0-9A-Za-z][A-Za-z0-9-]*\s*(?::|—|-)\s*`)
+var kennungRE = regexp.MustCompile(`^(?:slice|wave)-[0-9A-Za-z][A-Za-z0-9-]*\s*(?::|—|-)\s*`)
 
 var rautenRE = regexp.MustCompile(`^#\s*`)
 var wortRE = regexp.MustCompile(`^(?:Slice|Welle)\s+`)
@@ -358,7 +358,7 @@ func sliceDateiMuster(kennungTeil string) []string {
 	}
 }
 
-// SlicePfadRelativ liefert den Pfad von docs/plan/planning/done/<welle-id>/ zu
+// SlicePfadRelativ liefert den Pfad von docs/plan/planning/done/<wave-id>/ zu
 // einer Slice-Datei, die noch irgendwo im Lifecycle liegt — nummeriert wie
 // benannt (sliceDateiMuster). Gesucht wird in vier Lagen, in dieser
 // Reihenfolge: im Ziel-Verzeichnis dieses Laufs · flach in done/ · in einem

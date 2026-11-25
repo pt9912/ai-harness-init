@@ -4,14 +4,14 @@
 # verify: test-bats
 #
 # BENENNT EINEN PLATZHALTER UM, DEN BEIDE VORLAGEN TRAGEN — und zwar in genau
-# EINER von ihnen. Der Archiv-Zeiger `done/<welle-id>/archiv.zip` wird im
+# EINER von ihnen. Der Archiv-Zeiger `done/<wave-id>/archive.zip` wird im
 # Welle-Stub zu `abgelegt/…`; die Slice-Vorlage bleibt unberuehrt.
 #
 # Das ist die Form, die eine Frage ueber der VEREINIGUNG beider Vorlagen nicht
 # sieht: der Platzhalter steht ja noch — nur in der anderen Datei. Der Lauf
 # schreibt danach einen Welle-Stub, dessen Zeiger auf einen Pfad zeigt, den es
 # nicht gibt, waehrend der Slice-Stub daneben korrekt ist; `FormOK` faengt es
-# nicht, denn `archiv.zip` steht weiter im Text. Der Zeiger ist das Einzige, was
+# nicht, denn `archive.zip` steht weiter im Text. Der Zeiger ist das Einzige, was
 # nach der Archivierung vom Volltext uebrig bleibt.
 #
 # Fall 244 daneben trifft die EXTRAKTION (ein Platzhalter, der nicht auf `>`

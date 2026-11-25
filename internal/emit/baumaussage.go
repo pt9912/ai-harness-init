@@ -94,7 +94,7 @@ func traegerInventur() []TraegerEintrag {
 			Text: "Kein Sensor prüft, ob upstream ein neuerer Stand erschienen ist — er bräuchte Netzzugriff über `bash`, `git` und `docker` hinaus. Dauerhaft, solange diese drei die einzigen Host-Abhängigkeiten sind; der Audit ist die Handlung, die der Abschnitt darüber beschreibt.",
 			Abwesend: "tools/harness/"},
 		{Modul: "modul-03-spec.md", Wert: TraegerKommtMit,
-			Text: "`spec/lastenheft.md`, `spec/spezifikation.md` und `spec/architecture.md` liegen als ausgefüllte Dateien; die Klasse `spec-straten` des Doku-Gates hält ihre Richtung."},
+			Text: "`spec/lastenheft.md`, `spec/specification.md` und `spec/architecture.md` liegen als ausgefüllte Dateien; die Klasse `spec-straten` des Doku-Gates hält ihre Richtung."},
 		{Modul: "modul-04-adrs.md", Wert: TraegerKommtMit,
 			Text: "`docs/plan/adr/` ist angelegt, die ADR-Vorlage liegt im mitgelieferten Vorlagen-Baum, und `.d-check.yml` verlangt für jede ADR-Kennung einen auflösenden Link."},
 		{Modul: "modul-05-planning-harness.md", Wert: TraegerKommtMit,

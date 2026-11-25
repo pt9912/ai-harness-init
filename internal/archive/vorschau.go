@@ -165,7 +165,7 @@ func planSperre(b Bestand) []Sperre {
 
 // untergrenzeSperre traegt den Untergrenzen-Waechter: "wellenlos seit der
 // letzten Closure" hat nur dort eine beobachtbare Untergrenze, wo schon einmal
-// archiviert wurde. Solange kein done/<welle-x>/archiv.zip existiert, umfasste
+// archiviert wurde. Solange kein done/<wave-x>/archive.zip existiert, umfasste
 // die Klasse jeden wellenlosen Slice, den das Repo je geschlossen hat — der Lauf
 // raet dann nicht, sondern faellt fail-closed aus.
 // Gedeckt von TestVorschauSperrtOhneUntergrenze.
