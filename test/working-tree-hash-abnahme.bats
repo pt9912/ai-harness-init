@@ -25,9 +25,16 @@
 #     Ausnehmen), gemessen im Fall
 #     test/mutations/792-working-tree-stamp-ausnahme-schweigt-still.sh.
 #   - Fall 3 (enge) und Fall 4 (Determinismus) tragen die Umkehrung gegen den
-#     unveränderten Baum; ihr rot faerbendes Gegenbeispiel ist der Fall 791
-#     selbst — die Ausnahme auf jeden Pfad ausgeweitet (= nichts ausgenommen)
-#     haelt beide rot.
+#     unveränderten Baum. Das gemeinsame rot färbende Gegenbeispiel beider ist
+#     der fremd-Bruch-Fall — die fremd-Prüfung von Fall 2 über den Stamp-Baum
+#     hinaus ausgeweitet, bricht beide mit Exit 2; einen kuratierten Fall
+#     trägt die Ausweitung nicht, sie ist benannt, nicht gebaut. Der Fall 791
+#     selbst färbt nur die Stamp-Form-Fälle: Fall 3 bleibt unter 791 grün —
+#     die Stamp-Form-Mutation wirkt im Stamp-Inneren, der enge Fall misst
+#     außerhalb von .harness/stamp/ — und Fall 4 färbt rot, sein Setup
+#     enthält Stamp-Inhalt, der unter der entleerten Liste über denselben
+#     fail-closed-Zweig bricht (denselben Bruch-Fall in der
+#     Determinismus-Fassung).
 
 REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
 WTH="$REPO/harness/tools/working-tree-hash.sh"

@@ -1,4 +1,4 @@
-# ADR-0103: Mutations-Records ziehen nach `.harness/stamp/mutate/`, und der Working-Tree-Hash nimmt `.harness/stamp/**` aus
+# ADR-0103: Mutations-Records ziehen nach `.harness/stamp/mutate/`, und der Working-Tree-Hash nimmt `.harness/stamp/mutate` aus; übriger Inhalt unter `.harness/stamp/` fail-closed (Festlegung 2)
 
 **Status:** Accepted
 
@@ -115,7 +115,7 @@ Vier Festlegungen:
 | Tooling | Regel | Make-Target |
 |---|---|---|
 | `test/working-tree-hash-abnahme.bats` | Ein Pfad unter der deklarierten Ausnahme bewegt den Hash nicht; der unveränderte Baum bleibt unverändert; ein Pfad unter `.harness/stamp/` außerhalb der Liste endet rot mit Meldung | `make test` (in `make gates`) |
-| `test/mutations/791-working-tree-stamp-ausnahme-ohne-zaehne.sh` | Nimmt der Ausnahme-Prefix seine Zahn-Funktion, färbt der zweite bats-Fall über dem realen Skript rot | `make mutate` |
+| `test/mutations/791-working-tree-stamp-ausnahme-ohne-zaehne.sh` | Nimmt der Ausnahme-Prefix seine Zahn-Funktion, färbt der erste bats-Fall („ein Pfad unter .harness/stamp/mutate bewegt den Hash nicht“) über dem realen Skript rot | `make mutate` |
 
    **Was kein Wächter hält, und das gehört dazu:** ob die Ausnahme
    **berechtigt** ist — ob wirklich kein Gate unter `.harness/stamp/` urteilt —,

@@ -334,7 +334,7 @@ kein zweiter Träger des Handoff-Gate-Zustands); der Workflow pusht unverändert
 `main`, und nur der `ergebnis`-Job trägt `contents: write` — auf seinen Branch. Der Records-Baum
 ist die committete Stempel-Klasse neben dem nicht-committeten Nachweis-Stempel in
 `.harness/state/` ([ADR-0103](../../docs/plan/adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md)
-Festlegungen 1/2, Namens-Kontrast-Zeile); der Working-Tree-Hash nimmt `.harness/stamp/` aus —
+Festlegungen 1/2, Namens-Kontrast-Zeile); der Working-Tree-Hash nimmt `.harness/stamp/mutate` aus, übriger Inhalt unter `.harness/stamp/` beendet den Lauf fail-closed (Festlegung 2) —
 eine Änderung allein unter den Records bewegt den Hash nicht und hält den Nachweis gültig.
 **Grenze (ungenannt wäre die Zusage zu viel):** kein Wächter hält diese Ablage-Form —
 die Form-Zeile hier wird von keinem Modul des Doku-Gates gelesen, und `.harness/stamp/**`
