@@ -93,7 +93,7 @@ Liefer-Punkte (drei; gezählt nach [`MR-051`](../../../../harness/conventions.md
 | [`AGENTS.md`](../../../../AGENTS.md) (§3.9 Docker-Block, „Parallele Läufe"-Absatz) | update | LP1/LP2 — die zwei Formen der Vorlage ins Hard-Rule-Briefing ziehen; der Commit trägt die Rolle selbst (Sub-Zug-Kennzeichnung §1, [`AGENTS.md`](../../../../AGENTS.md) §3.8) |
 | `internal/emit/` | inspect — keine Änderung | LP3 — das Walk-Verdikt ist eine Lesung: die Quelle der AGENTS-Kern-Formen ist der Walk über den vendored `/templates/`-Baum, nicht der Code (Ausschluss §1) |
 | `.d-check.yml` (`ignore-refs`) | entfällt | Ausschluss §1 Punkt 2 — die Fundstellen-Form (`d-check:ignore` am Fundort) trägt R2; eine Verbreiterung eines Eintrags verlangt eine eigene ADR |
-| `harness/conventions/` (Rümpfe [`MR-047`](../../../../harness/conventions.md#mr-047--der-ort-der-ausführbaren-harness-tools-ist-keine-abweichung-mehr), [`MR-048`](../../../../harness/conventions.md#mr-048--der-reproduzierbarkeits-anker-ist-die-rezept-form-die-emittierten-skelette-pinnen-per-tag)) | entfällt | Ausschluss §1 Punkt 3 — die Terminologie-Nachzüge sind der C7-Zug ([`slice-c7-adaptions-nachzuege-v7-0-0`](../in-progress/slice-c7-adaptions-nachzuege-v7-0-0.md)) |
+| `harness/conventions/` (Rümpfe [`MR-047`](../../../../harness/conventions.md#mr-047--der-ort-der-ausführbaren-harness-tools-ist-keine-abweichung-mehr), [`MR-048`](../../../../harness/conventions.md#mr-048--der-reproduzierbarkeits-anker-ist-die-rezept-form-die-emittierten-skelette-pinnen-per-tag)) | entfällt | Ausschluss §1 Punkt 3 — die Terminologie-Nachzüge sind der C7-Zug ([`slice-c7-adaptions-nachzuege-v7-0-0`](../done/slice-c7-adaptions-nachzuege-v7-0-0.md)) |
 
 **Ansatz als Liste** — die zwei Formen reisen byte-genau aus dem vendored `v7.0.0`-Baum:
 
@@ -135,7 +135,7 @@ belegt in §7; jeder §6-Risiko mit Ausgang, Lern-Eintrag in §7.
   2026-11-26):** *entfallen* — kein Konventions-Rumpf berührt: `git show --stat` je
   Zugs-Commit führt `AGENTS.md` bzw. Plan + `roadmap.md`, kein `harness/conventions*`
   (Report Prüffeld 1, Negativbefunde-Zeile 1). Die C7-Kennung bleibt Adresse
-  ([`slice-c7-adaptions-nachzuege-v7-0-0`](../in-progress/slice-c7-adaptions-nachzuege-v7-0-0.md),
+  ([`slice-c7-adaptions-nachzuege-v7-0-0`](../done/slice-c7-adaptions-nachzuege-v7-0-0.md),
   Stand vor dieser Closure).
 - **R2 — der Worktree-Inline-Code-Pfad färbt `codepaths` (`repo-escape`):** die
   Vorlagen-Form `../<repo>-<lauf>` löst von AGENTS.md nach draußen auf. Ausgang:
@@ -234,7 +234,7 @@ trifft die AGENTS-Vorlagen-Formen.
 - *(a) Anker:* §7 trägt kein `liegt in`-Feld — der Lern-Eintrag ist gezählt, nicht
   verkörpert (Beleg: Register, 2 Belege je neuer Klasse). Grün.
 - *(b) Folge-Slice:* §6 R1 nennt
-  [`slice-c7-adaptions-nachzuege-v7-0-0`](../in-progress/slice-c7-adaptions-nachzuege-v7-0-0.md)
+  [`slice-c7-adaptions-nachzuege-v7-0-0`](../done/slice-c7-adaptions-nachzuege-v7-0-0.md)
   als Adresse — die Datei liegt im Planning-Lifecycle (`next/`) und nimmt den
   Terminologie-Posten an. Grün.
 - *(c) Register:* die in §7 genannten Beobachtungen existieren als Verzeichnisse

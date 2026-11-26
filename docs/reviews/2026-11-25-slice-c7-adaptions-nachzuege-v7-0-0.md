@@ -3,7 +3,7 @@
 **Review-Range:** `c3687763..cf8e88a3` (13 Commits: 0f4e3b0d, 97195c79, 6d721a64,
 8243ead5, b3a646c5, 46dfb1b1, 78d0a0c4, a807b933, 7c750972, 39a5c7ba, a55b2ef1,
 12c01f9c, cf8e88a3) · **Plan:**
-[`docs/plan/planning/in-progress/slice-c7-adaptions-nachzuege-v7-0-0.md`](../plan/planning/in-progress/slice-c7-adaptions-nachzuege-v7-0-0.md)
+[`docs/plan/planning/in-progress/slice-c7-adaptions-nachzuege-v7-0-0.md`](../plan/planning/done/slice-c7-adaptions-nachzuege-v7-0-0.md)
 · **Datum:** 2026-11-26 · **Rollinhaber:** Reviewer (Modul 10, Skill-Version 2.3.0)
 
 **Findings:** 0 HIGH · 1 MEDIUM · 4 LOW · 2 INFO
