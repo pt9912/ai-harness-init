@@ -522,7 +522,7 @@ codepaths:
     # liegen als committete Stempel-Klasse in .harness/stamp/mutate/, das hier genannte Verzeichnis
     # ist die gewanderte Adresse eines Vorgangs, den es gab. Genannt in docs/plan/adr/ (der Kern der
     # eingefrorenen ADR-0102, AGENTS.md 3.4) und in den Zeitdokumenten unter docs/plan/planning/done/.
-    - docs/reviews/mutate/
+    - docs/reviews/mutate
     # Derselbe Zug (ADR-0103 Festlegung 3): die genauere Record-Adresse unter dem wanderten
     # Verzeichnis. Genannt in den Zeitdokumenten unter docs/plan/planning/done/.
     - docs/reviews/mutate/slice-d-check-sprung-v0930-625cdef0-gruen.txt

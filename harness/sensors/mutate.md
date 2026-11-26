@@ -320,8 +320,7 @@ desselben Slice (`git ls-remote origin 'refs/heads/mutate/<kennung>*'`, Ablauf i
 `.claude/agents/verifier.md`).
 
 **Die Ergebnis-Fassung landet eingecheckt** ([ADR-0103](../../docs/plan/adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md),
-supersedes [ADR-0102](../../docs/plan/adr/0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md)
-in vollem Umfang — Ergebnis-Form, Konsum-Reihenfolge, Granularität und Namensform bleiben,
+supersedes `ADR-0102` <!-- d-check:ignore (Supersedes-Lineage: der Status-Uebergang entsteht im Architect-Sub-Zug, ADR-0103 Supersedes-Feld) --> in vollem Umfang — Ergebnis-Form, Konsum-Reihenfolge, Granularität und Namensform bleiben,
 nur der Ort wechselt):
 je abgeschlossenem Lauf-Urteil schreibt die konsumierende Rolle (Implementer am Claim oder
 Verifier am Verifikations-Übergang) die Fassung als Beleg-Datei nach

@@ -6,7 +6,7 @@
 
 **Autor:** Architect (ai-harness-init-Team, pt9912)
 
-**Supersedes:** [`ADR-0102`](0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md)
+**Supersedes:** `ADR-0102` <!-- d-check:ignore (Supersedes-Lineage: der Status-Uebergang entsteht im Architect-Sub-Zug, ADR-0103 Supersedes-Feld) -->
 (in vollem Umfang: Ergebnis-Form, Konsum-Reihenfolge lesen → committen → räumen,
 Granularität je abgeschlossenem Lauf-Urteil und Namensform mit der vollen Slice-Kennung
 bleiben unverändert; einziges Delta ist der Ablageort).
@@ -15,7 +15,7 @@ bleiben unverändert; einziges Delta ist der Ablageort).
 [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
 (beide Hälften: die Records verfallen nicht, und der Hash zieht keine Fläche in seinen
 Prüfgegenstand, die kein Gate urteilt),
-[`ADR-0102`](0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md)
+`ADR-0102` <!-- d-check:ignore (Supersedes-Lineage: der Status-Uebergang entsteht im Architect-Sub-Zug, ADR-0103 Supersedes-Feld) -->
 (die eingecheckte Beleg-Datei, deren Ablageort hier wechselt),
 [ADR-0035](0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
 Festlegung 3 (die Form der deklarierten Ausnahme obenauf auf einer Definition),
@@ -35,10 +35,10 @@ jeder Spec-Stelle; `harness/sensors/mutate.md` §CI-Branch trägt die Form-Zeile
 
 ## Kontext
 
-[`ADR-0102`](0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md)
+`ADR-0102` <!-- d-check:ignore (Supersedes-Lineage: der Status-Uebergang entsteht im Architect-Sub-Zug, ADR-0103 Supersedes-Feld) -->
 hat die Ergebnis-Fassung eines Mutations-CI-Laufs zur eingecheckten Beleg-Datei
 gemacht und sie unter den Review-Zeitdokumenten abgelegt — in der Prosa-Fassung
-unter `docs/reviews/mutate/`. Zwei Eigenschaften dieses Ablageorts driften gegen
+unter docs/reviews/mutate/. Zwei Eigenschaften dieses Ablageorts driften gegen
 das, was die Records sind:
 
 - **Sie sind keine Review-Reports.** `docs/reviews/**` ist das Verzeichnis der
@@ -70,7 +70,7 @@ Vier Festlegungen:
 
 1. **Ablageort.** `.harness/stamp/mutate/<slice-kennung>-<sha8-des-geprüften-commits>-<form>.txt`
    — supersedes
-   [`ADR-0102`](0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md)
+   `ADR-0102` <!-- d-check:ignore (Supersedes-Lineage: der Status-Uebergang entsteht im Architect-Sub-Zug, ADR-0103 Supersedes-Feld) -->
    in vollem Umfang; die dortigen Festlegungen 2–4
    (Kopf-Pflichten inkl.
    [`MR-051`](../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)-Form,

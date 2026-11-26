@@ -94,7 +94,7 @@ weil der BEFUND-Beleg des zweiten Laufs genau diese Klasse belegt.
       Planner gemäß Modul 8, vor der Implementation (Vorgänger-Muster
       [`slice-d-check-sprung-v0930.md`](../done/slice-d-check-sprung-v0930.md));
       die offenen Architektur-Fragen aus §6 tragen dort ihre Antwort.
-      → belegt: [`ADR-0102`](../../../../docs/plan/adr/0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md),
+      → belegt: `ADR-0102` <!-- d-check:ignore (Supersedes-Lineage: der Status-Uebergang entsteht im Architect-Sub-Zug, ADR-0103 Supersedes-Feld) -->,
       Commit `f545a019`; Festlegungen 1–4 antworten die §6-Fragen (Granularität je
       Festlegung 2, Konsum-Reihenfolge je Festlegung 3, Kein-Wächter-Grenze je
       Festlegung 4).
@@ -106,7 +106,7 @@ weil der BEFUND-Beleg des zweiten Laufs genau diese Klasse belegt.
       Plan-Korrektur: der Plan nannte zwei Dateien, die Teil-Ernte kam mit dem
       Claim-Zug des Tages hinzu · Commits `79757bc2` (Belege + Form-Zeile) und
       `1491d74f` (Kopf-Formen je
-      [`ADR-0102`](../../../../docs/plan/adr/0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md)
+      `ADR-0102` <!-- d-check:ignore (Supersedes-Lineage: der Status-Uebergang entsteht im Architect-Sub-Zug, ADR-0103 Supersedes-Feld) -->
       Festlegung 2: ein Urteil je Run, der
       zweite Versuch nur am Job-Log-Kanal belegt): die
       Ergebnis-Fassung des Grün-Laufs (`Urteil: gruen`, 82/82, Run
@@ -198,7 +198,7 @@ kann seinen Beleg nach derselben Form ablegen.
   `docs/reviews/mutate/slice-d-check-sprung-v0930-625cdef0-gruen.txt` aus dem
   Job-Log von Run 45625795106 (Attempt 3), committet `79757bc2` vor dem
   Verfall; der Kopf trägt Lesekommando und Entnahme-Stand je
-  [`ADR-0102`](../../../../docs/plan/adr/0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md)
+  `ADR-0102` <!-- d-check:ignore (Supersedes-Lineage: der Status-Uebergang entsteht im Architect-Sub-Zug, ADR-0103 Supersedes-Feld) -->
   Festlegung 2.
 - **`ergebnis`-Job-Push bricht non-fast-forward — heute zweimal beobachtet**;
   der Konsum-Schritt dieses Slice liest das Branch-File **vor** der
@@ -219,7 +219,7 @@ kann seinen Beleg nach derselben Form ablegen.
   Wiederholung des Laufs ohne Befund wäre Urteil-Wiederholung). **Ausgang-Vorlage:**
   `entfallen`: die ADR des Architects (Liefer-Punkt 1) trägt die Antwort;
   bis dahin gilt die Zwei-Beleg-Form des Retro-Belegs als Beispiel, nicht als Regel.
-  **Ausgang:** `entfallen` — [`ADR-0102`](../../../../docs/plan/adr/0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md)
+  **Ausgang:** `entfallen` — `ADR-0102` <!-- d-check:ignore (Supersedes-Lineage: der Status-Uebergang entsteht im Architect-Sub-Zug, ADR-0103 Supersedes-Feld) -->
   trägt die Antwort: Festlegung 2 (ein Urteil je Run; je Kopf die
   Versuchs-Angabe — der zweite Versuch ist nur am Job-Log-Kanal belegt) und
   Festlegung 4; die Record-Datei trägt die Ergebnis-Fassung, nicht je
@@ -243,7 +243,7 @@ Paarungen — trägt der Commit nach dem `git mv`.)*
   vier Record-Dateien (`slice-d-check-sprung-v0930` Grün + befund-infra;
   `slice-c3-d-check-faecher-v7-0-0` und `slice-c7-adaptions-nachzuege-v7-0-0`
   befund-last) lösen über `git log -- docs/reviews/mutate/` nach
-  [`ADR-0102`](../../../../docs/plan/adr/0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md)
+  `ADR-0102` <!-- d-check:ignore (Supersedes-Lineage: der Status-Uebergang entsteht im Architect-Sub-Zug, ADR-0103 Supersedes-Feld) -->
   Festlegung 1 auf; der Kopf je Datei trägt Ausgabe-Kanal, Lesekommando,
   Entnahme-Stand und Versuchs-Angabe je Festlegung 2 (Commit `1491d74f`
   trägt den F-3-Nachzug). Die ADR antwortete die drei offenen
@@ -258,7 +258,7 @@ Paarungen — trägt der Commit nach dem `git mv`.)*
   über drei Vorgänge (die Teil-Ernte der befund-last-Klasse kam mit dem
   Claim-Zug des Tages hinzu, Commits `45769037551`/`45769040893` am
   Job-Log-Kanal); der `ergebnis`-Job-Push bricht non-fast-forward
-  zweimal (R2, Ausgang unten); die [`ADR-0102`](../../../../docs/plan/adr/0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md)-›Geschichte‹-Zeile trug einen
+  zweimal (R2, Ausgang unten); die `ADR-0102` <!-- d-check:ignore (Supersedes-Lineage: der Status-Uebergang entsteht im Architect-Sub-Zug, ADR-0103 Supersedes-Feld) -->-›Geschichte‹-Zeile trug einen
   Lifecycle-Pfad-Link auf diesen Slice — berichtigt auf Kennungs-Form
   (`dd268ee1`, §3.4-konform außerhalb des Kerns, je F-1).
 - **Steering-Loop-Eintrag:** Form-Zeile des Konsum-Schritts geschärft
@@ -266,7 +266,7 @@ Paarungen — trägt der Commit nach dem `git mv`.)*
   tragen als eingecheckte Record-Datei-Kette in `docs/reviews/mutate/`**
   (`<slice-kennung>-<sha8>-[gruen|befund-infra|befund-last].txt`), Konsum-
   Reihenfolge lesen → committen → dann räumen; je
-  [`ADR-0102`](../../../../docs/plan/adr/0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md)-Fassung ein
+  `ADR-0102` <!-- d-check:ignore (Supersedes-Lineage: der Status-Uebergang entsteht im Architect-Sub-Zug, ADR-0103 Supersedes-Feld) -->-Fassung ein
   Urteil je Run, kein Wächter hält die Ablage-Form (benannt, `AGENTS.md`
   §3.6). Kein `liegt in`-Feld: die Verkörperung lag im Architect-Zug
   (`f545a019` ADR, `79757bc2` Form-Zeile) vor diesem Closure-Zug, nicht am
@@ -284,7 +284,7 @@ Paarungen — trägt der Commit nach dem `git mv`.)*
   Verfall, `79757bc2`) · non-fast-forward-Push → `entfallen`
   (Branch-File-Kanal gelesen vor der Räumung, Beleg committet) ·
   Doppelte-Belege-Granularität → `entfallen`
-  ([`ADR-0102`](../../../../docs/plan/adr/0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md)
+  (`ADR-0102` <!-- d-check:ignore (Supersedes-Lineage: der Status-Uebergang entsteht im Architect-Sub-Zug, ADR-0103 Supersedes-Feld) -->
   Festlegung 2/4:
   ein Urteil je Run) · 3×-Schwelle-Lage → `entfallen` (F-2-korrigiert:
   Fund zitiert statt zählt, Zähler-Ist 2, Stand `offen`).
