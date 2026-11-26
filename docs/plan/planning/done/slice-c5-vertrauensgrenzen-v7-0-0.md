@@ -62,7 +62,7 @@ Liefer-Punkte (drei, [`MR-057`](../../../../harness/conventions.md#mr-057--die-k
 Standard-Pflichten je Slice:
 
 - [x] `make gates` grün — am Zug-Ende; die frische Messung steht in der Paarungs-Zeile §7.
-- [x] Review durchgeführt, Report unter `docs/reviews/` mit der **vollständigen** Kennung im Dateinamen — Rollenwechsel nach Schritt 8 des Minimal Agent Workflow ([`AGENTS.md`](../../../../AGENTS.md) §6), kein Self-Review. ✓ [`../../../docs/reviews/2026-11-25-slice-c5-vertrauensgrenzen-v7-0-0.md`](../../../docs/reviews/2026-11-25-slice-c5-vertrauensgrenzen-v7-0-0.md) — HIGH 0 · MEDIUM 1 · LOW 0 · INFO 2.
+- [x] Review durchgeführt, Report unter `docs/reviews/` mit der **vollständigen** Kennung im Dateinamen — Rollenwechsel nach Schritt 8 des Minimal Agent Workflow ([`AGENTS.md`](../../../../AGENTS.md) §6), kein Self-Review. ✓ [`../../../../docs/reviews/2026-11-25-slice-c5-vertrauensgrenzen-v7-0-0.md`](../../../../docs/reviews/2026-11-25-slice-c5-vertrauensgrenzen-v7-0-0.md) — HIGH 0 · MEDIUM 1 · LOW 0 · INFO 2.
 - [x] Doku-Update — trifft nicht: kein LP1-Fund in einem der Index-Artefakte (F1 = 0, Beleg: §7).
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register ([`../observations/`](../../planning/observations/)) fortgeschrieben — neues Verzeichnis oder `evidence/`-Nachtrag, kein Zähler-Feld. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert. ✓ `evidence/`-Nachtrag [`BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt`](../../planning/observations/BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt/evidence/slice-c5-vertrauensgrenzen-v7-0-0.md) (Form: [`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung); Beleg in §7).
@@ -105,14 +105,20 @@ LP1 trägt die Fundliste (oder die 0-Fund-Antwort) mit je Fund einem geleisteten
 
 **Was hat funktioniert:** der Zug blieb eine Lesung ohne Code-Griff — F1 lief 0-fundig, die drei
 Negativ-Diffs (LP2/LP3) blieben leer, das Walk-Verdikt brauchte keinen Emitter-Griff. Review:
-Report unter [`../../../docs/reviews/2026-11-25-slice-c5-vertrauensgrenzen-v7-0-0.md`](../../../docs/reviews/2026-11-25-slice-c5-vertrauensgrenzen-v7-0-0.md)
+Report unter [`../../../../docs/reviews/2026-11-25-slice-c5-vertrauensgrenzen-v7-0-0.md`](../../../../docs/reviews/2026-11-25-slice-c5-vertrauensgrenzen-v7-0-0.md)
 — HIGH 0 · MEDIUM 1 · LOW 0 · INFO 2; die Auflage des MEDIUM-1 (Lesungs-Belege als §7-Text statt
 Übergabe-Meldung) ist mit dieser Notiz getragen.
 
 **LP1 — Fundlisten je Kommando** ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)-Form, jede Zahl am Kommando):
 
 - **F1** — `git grep -nE 'Bedrohung, Grenze, Ausgang|prüfbare Eigenschaft, die eine Bedrohung|Kontext-Eingang' -- AGENTS.md .d-check.yml harness/ ':!harness/conventions/done' ':!.harness/baseline'` → **Exit 1 = 0 in-scope Treffer** (am Closure-Stand 2026-11-26). Die Fundliste trägt die Antwort als 0: kein Nachzugs-Zug aus den fünf Anker-Formen (Form der Tafel: *keine Treffer sind ebenfalls eine Antwort*).
-- **F2** — `grep -n 'v5\.12\.0' harness/conventions/MR-031-die-kommentar-regel-steht-in-der-adoptierten-baseline.md` → **8 Zitat-Stellen: Z. 38, 40, 42, 56, 86, 87, 106, 107**. Byte-Substanz am v7-Baum (Review-Nachlauf, wiederholt am Closure-Stand): `grep -c '^### 3\.7 Ein Kommentar beschreibt, was da ist$' .harness/baseline/v7.0.0/templates/AGENTS.template.md` → **1**, `grep -c '^### Was ein Kommentar trägt — Code, Konfiguration, Skripte$' .harness/baseline/v7.0.0/regelwerk/grundlagen-harness-dateien.md` → **1** — der Fund ist die Pfad-Form, nicht die Substanz (Eintrag: [`MR-031`](../../../../harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline)).
+- **F2** —
+
+  ```sh
+  grep -n 'v5\.12\.0' harness/conventions/MR-031-die-kommentar-regel-steht-in-der-adoptierten-baseline.md   # 8 Zeilen
+  ```
+
+  → **8 Zitat-Stellen: Z. 38, 40, 42, 56, 86, 87, 106, 107** (Eintrag: [`MR-031`](../../../../harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline); der Pfad steht im fenced Block — dieselbe Kommando-Form wie die Messung). Byte-Substanz am v7-Baum (Review-Nachlauf, wiederholt am Closure-Stand): `grep -c '^### 3\.7 Ein Kommentar beschreibt, was da ist$' .harness/baseline/v7.0.0/templates/AGENTS.template.md` → **1**, `grep -c '^### Was ein Kommentar trägt — Code, Konfiguration, Skripte$' .harness/baseline/v7.0.0/regelwerk/grundlagen-harness-dateien.md` → **1** — der Fund ist die Pfad-Form, nicht die Substanz.
 - **F3** — `grep -n 'v6\.18\.1' harness/migration.md` → **41 Fundstellen** (Instanz-Register Z. 121–145, Vorlagen-Zuordnung Z. 169–177, Streu-Zeilen Z. 55, 63, 113, 114, 185, 192, 315); die vom Review adressierten Registerzeilen: **Z. 140–144**.
 - **Die zwei C7-Adressen namentlich:** (a) [`harness/conventions/MR-031-die-kommentar-regel-steht-in-der-adoptierten-baseline.md`](../../../../harness/conventions/MR-031-die-kommentar-regel-steht-in-der-adoptierten-baseline.md) Z. 106–107 — die `v5.12.0`-Pfadzitate der Reviewer-Skill-Messung; (b) [`harness/migration.md`](../../../../harness/migration.md) Z. 140–144 — die `v6.18.1`-Instanz-Registerzeilen. Beide Posten fallen unter die Tafel-C7-Zelle (Terminologie und Stand-Zeilen des Konventionsspeichers, [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)-Träger); Übergabe-Adresse: `slice-c7-adaptions-nachzuege-v7-0-0` (Tafel-Vorschlag, die Slice-Datei entsteht beim Schnitt).
 
