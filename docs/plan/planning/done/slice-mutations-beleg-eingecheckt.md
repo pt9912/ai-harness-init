@@ -117,7 +117,7 @@ weil der BEFUND-Beleg des zweiten Laufs genau diese Klasse belegt.
       §CI-Branch ergänzt: der Konsum-Schritt nennt den Ablageort und die
       Grenze, dass kein Wächter die Ablage-Form hält (`AGENTS.md` §3.6 —
       benannt statt erfunden) — belegt Commit `79757bc2`, Nachzug der
-      `MR-051`-Link-Form `7f466d0c`.
+      [`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)-Link-Form `7f466d0c`.
 - [x] `make gates` grün — belegt Lauf mit Stempel auf `1491d74f`.
 - [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — belegt
@@ -195,7 +195,8 @@ kann seinen Beleg nach derselben Form ablegen.
   **Ausgang:** `entfallen` — der Beleg ist entnommen:
   `docs/reviews/mutate/slice-d-check-sprung-v0930-625cdef0-gruen.txt` aus dem
   Job-Log von Run 45625795106 (Attempt 3), committet `79757bc2` vor dem
-  Verfall; der Kopf trägt Lesekommando und Entnahme-Stand je ADR-0102
+  Verfall; der Kopf trägt Lesekommando und Entnahme-Stand je
+  [`ADR-0102`](../../../../docs/plan/adr/0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md)
   Festlegung 2.
 - **`ergebnis`-Job-Push bricht non-fast-forward — heute zweimal beobachtet**;
   der Konsum-Schritt dieses Slice liest das Branch-File **vor** der
