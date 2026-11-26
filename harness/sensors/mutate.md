@@ -325,7 +325,7 @@ Verifier am Verifikations-Übergang) die Fassung als Beleg-Datei nach
 `docs/reviews/mutate/<slice-kennung>-<sha8-des-geprüften-commits>-<form>.txt` — `gruen` oder
 `befund` mit optionalem Qualifikator (`infra`/`last`) für die Klasse aus dem
 Beobachtungs-Register —, Kopf mit Run-Id, Attempt, geprüftem Commit und dem Lesekommando ihres
-Ausgabe-Kanals ([`MR-051`](../../conventions/MR-051-zahl-beleg-bindet-commit-message-und-register-zaehler.md)-Form)
+Ausgabe-Kanals ([`MR-051`](../../harness/conventions/MR-051-zahl-beleg-bindet-commit-message-und-register-zaehler.md)-Form)
 darunter byte-gleich die Fassung. Die Konsum-Reihenfolge ist lesen → committen (auf `main`)
 → **dann räumen** ([ADR-0083](../../docs/plan/adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md):
 kein zweiter Träger des Handoff-Gate-Zustands); der Workflow pusht unverändert nicht auf
