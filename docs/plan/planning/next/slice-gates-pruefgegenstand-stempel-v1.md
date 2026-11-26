@@ -202,7 +202,7 @@ Zweifel der volle Lauf über `make record-gates` (fail-closed).
    je-Check-Key und keinen*; beide Anlage-Formen nach
    [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit),
    gemessen über dem realen Skript.
-7. **Die ADR-0103-Ablage (inline-Code-Kennform) bleibt, die ADR-0108-Synthese fasst die Formen** —
+7. **Die ADR-0103-Ablage (inline-Code-Kennform) bleibt, die Synthese der begleitenden ADR fasst die Formen** —
    die Hash-Ausnahme `.harness/stamp/**` bleibt unverändert in Kraft; die
    begleitende ADR des Architect-Sub-Zugs (Start-Trigger §4) nennt die zwei
    Stempel-Klassen bei dieser Erweiterung — `.harness/state/` (je Check +
