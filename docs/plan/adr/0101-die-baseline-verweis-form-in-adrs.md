@@ -121,3 +121,4 @@ eintritt:
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-11-26 | Accepted; supersedes [ADR-0100](0100-die-gegenmessung-schrumpft-auf-die-einheimische-flaeche.md) — die Pfad-Zeile Z. 134 am Entstehungsstand `39f57f73` zurückgenommen | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) · slice-c7-adaptions-nachzuege-v7-0-0 |
+| 2026-11-26 | Berichtigung — die zwei „Festlegung 2“-Verweise im Kern (Kontext-Terminal, Konsequenzen-Negativ-Bullet) zeigen auf keine nummerierte Festlegung dieser ADR; der verwiesene Inhalt trägt als Konsequenzen-Bullet (die tote Adresse, das Ventil). Der Kern bleibt mit den Verweisen unverändert ([`AGENTS.md`](../../../AGENTS.md) §3.4: Nachzug darf nicht); die nachgelagerte Verweis-Stelle der Gate-Konfiguration zeigt auf das Konsequenzen-Bullet | Review [`2026-11-25-slice-c7-adaptions-nachzuege-v7-0-0.md`](../../reviews/2026-11-25-slice-c7-adaptions-nachzuege-v7-0-0.md) F-3 |

@@ -2,7 +2,7 @@
 
 > **ÜBERHOLT: der Halbsatz im Feld Geltungsbereich, die zwei Regeln aus `modul-14-docker-harness.md` §Multi-Stage-Build *„bleiben dort offen"* bei slice-146 → [`MR-088`](../conventions.md#mr-088--zwei-multi-stage-regeln-aus-modul-14-bleiben-unentschieden-und-ohne-träger).** Die übrigen Aussagen gelten fort.
 >
-> **Terminologie-Stand:** der Begriff, den der Titel führt — *Reproduzierbarkeits-Anker* — heißt in der `v7.0.0`-Fassung des Moduls 14 *Träger der Umgebungs-Zusage* (§Die Umgebungs-Zusage — Anforderung vor Träger; §Zwei Formen des Belegs beim Docker-Träger). Die Titel-Zeile bleibt die Adresse (`AGENTS.md` §3.11); die Zellen unten tragen die Formen, in denen der Eintrag sie schreibt.
+> **Terminologie-Stand:** der Begriff, den der Titel führt — *Reproduzierbarkeits-Anker* — heißt in der `v7.0.0`-Fassung des Moduls 14 *Träger der Umgebungs-Zusage* (§Die Umgebungs-Zusage — Anforderung vor Träger; §Zwei Formen des Belegs beim Docker-Träger). Die Titel-Zeile bleibt die Adresse (`AGENTS.md` §3.11); die Zellen unten tragen die Formen, in denen der Eintrag sie schreibt. Der Nachzug geschieht **in situ** (die Begriffs-Zellen gezogen, keine Aussage des Eintrags abgelöst), nicht als Kopf-Marke in der Form von [`MR-032`](../conventions.md#mr-032--ein-überholter-eintrag-trägt-eine-kopf-marke-auf-seinen-nachfolger) — keine Teil-Ablösung gegenüber einem nachfolgenden Eintrag liegt vor · seit slice-c7-adaptions-nachzuege-v7-0-0.
 
 - **Datum:** 2026-09-03
 - **Wirksamkeits-Anlass:** slice-160 — die Docker-Form dieses Repos gegen die Ziel-Fassung.

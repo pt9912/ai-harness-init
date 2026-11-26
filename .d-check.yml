@@ -402,7 +402,9 @@ ignore-refs:
   # 39f57f73 liest v6.18.1 — die Adresse ist nach dem Sprung v7.0.0 tot, und die
   # Quelldatei ist nach AGENTS.md 3.4 eingefroren; der Befund ist in ihr nicht
   # behebbar. Warum daraus eine Ausnahme folgt und keine Reparatur, steht in
-  # ADR-0101. `refs` ist baum-weit aus demselben Grund wie bei ADR-0079 Festlegung 1.
+  # ADR-0101 (das Konsequenzen-Bullet zum Ventil); ADR-0101 trägt im Kern die zwei
+  # „Festlegung 2“-Verweise unverändert, Berichtigungs-Zeile in deren Geschichte.
+  # `refs` ist baum-weit aus demselben Grund wie bei ADR-0079 Festlegung 1.
   # Die Restbreite ist strukturell null: eine eingefrorene Datei bekommt keine
   # zweite Referenz.
   # GRENZE, keine Regel: EXTENSIONAL GESCHLOSSEN auf dieses eine Paar (ADR-0101). Jeder
