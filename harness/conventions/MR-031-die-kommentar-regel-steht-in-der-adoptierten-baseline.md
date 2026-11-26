@@ -103,8 +103,8 @@
   ```sh
   grep -c 'Kommentar trägt keine' .harness/skills/reviewer.md                                                      # 0
   grep -c 'Zustandsfeld' .harness/skills/reviewer.md                                                               # 0
-  grep -c 'Kommentar trägt keine' .harness/baseline/v5.12.0/templates/.harness/skills/reviewer.template.md          # 1
-  grep -c 'Zustandsfeld trägt Chronik' .harness/baseline/v5.12.0/templates/.harness/skills/reviewer.template.md     # 1
+  grep -c 'Kommentar trägt keine' .harness/baseline/v7.0.0/templates/.harness/skills/reviewer.template.md          # 1
+  grep -c 'Zustandsfeld trägt Chronik' .harness/baseline/v7.0.0/templates/.harness/skills/reviewer.template.md     # 1
   ```
 
   **Keine Erwartungswerte** ([`MR-025`](../conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)

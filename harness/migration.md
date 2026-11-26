@@ -137,11 +137,11 @@ Zuordnung Vorlage → Instanz (dazu [§6](#6-offene-fragen)).
 | `.harness/baseline/v6.18.1/templates/harness/conventions.template.md` | [`harness/conventions.md`](conventions.md) | eine Instanz, Index des Adaptions-Blocks |
 | `.harness/baseline/v6.18.1/templates/harness/README.template.md` | [`harness/README.md`](README.md) | eine Instanz |
 | `.harness/baseline/v6.18.1/templates/harness/sensors/gate.template.md` | `harness/sensors/*.md` | 15 Instanzen (`ls harness/sensors/*.md \| wc -l`, kein Erwartungswert) |
-| `.harness/baseline/v6.18.1/templates/.harness/skills/closure-note-reviewer.template.md` | keine Instanz | dieses Repo führt bislang nur eine Skill-Datei (`ls .harness/skills/*.md \| wc -l` → **1**, kein Erwartungswert); `v6.9.0` · `regelwerk/modul-08-agentenrollen.md` §Welche Rolle braucht welche Artefaktklasse verlangt diese Skill nur, wenn das Urteil inferential **und** aus keinem Artefakt ableitbar ist — bislang nicht eingetreten |
-| `.harness/baseline/v6.18.1/templates/.harness/skills/reviewer.template.md` | [`.harness/skills/reviewer.md`](../.harness/skills/reviewer.md) | eine Instanz |
-| `.harness/baseline/v6.18.1/templates/project-readme.template.md` | [`README.md`](../README.md) | eine Instanz, Repo-Wurzel |
-| `.harness/baseline/v6.18.1/templates/spec/architecture.template.md` | [`spec/architecture.md`](../spec/architecture.md) | eine Instanz |
-| `.harness/baseline/v6.18.1/templates/spec/lastenheft.template.md` | [`spec/lastenheft.md`](../spec/lastenheft.md) | eine Instanz |
+| `.harness/baseline/v7.0.0/templates/.harness/skills/closure-note-reviewer.template.md` | keine Instanz | dieses Repo führt bislang nur eine Skill-Datei (`ls .harness/skills/*.md \| wc -l` → **1**, kein Erwartungswert); `v6.9.0` · `regelwerk/modul-08-agentenrollen.md` §Welche Rolle braucht welche Artefaktklasse verlangt diese Skill nur, wenn das Urteil inferential **und** aus keinem Artefakt ableitbar ist — bislang nicht eingetreten |
+| `.harness/baseline/v7.0.0/templates/.harness/skills/reviewer.template.md` | [`.harness/skills/reviewer.md`](../.harness/skills/reviewer.md) | eine Instanz |
+| `.harness/baseline/v7.0.0/templates/project-readme.template.md` | [`README.md`](../README.md) | eine Instanz, Repo-Wurzel |
+| `.harness/baseline/v7.0.0/templates/spec/architecture.template.md` | [`spec/architecture.md`](../spec/architecture.md) | eine Instanz |
+| `.harness/baseline/v7.0.0/templates/spec/lastenheft.template.md` | [`spec/lastenheft.md`](../spec/lastenheft.md) | eine Instanz |
 | `.harness/baseline/v6.18.1/templates/spec/spezifikation.template.md` | [`spec/spezifikation.md`](../spec/spezifikation.md) | eine Instanz |
 
 **Vollständigkeit** ist die Übereinstimmung der Zeilenzahl oben (25) mit
