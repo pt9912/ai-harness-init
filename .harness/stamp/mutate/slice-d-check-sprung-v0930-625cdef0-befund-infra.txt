@@ -1,4 +1,4 @@
-# Mutations-CI-Beleg — slice-d-check-sprung-v0930 — Form: BEFUND, Infra-Anteil — eingecheckt nach ADR-0102.
+# Mutations-CI-Beleg — slice-d-check-sprung-v0930 — Form: BEFUND, Infra-Anteil — eingecheckt nach ADR-0102, abgelegt je ADR-0103 in .harness/stamp/mutate/.
 # Run 45647457778, Attempt 1 (ergebnis-Job 139336130415). Gepruefter Commit: 625cdef096cfeec27cda3f3fcfd9cbb0960b2212.
 #Ausgabe-Kanal: Branch-File —
 #   git fetch origin mutate/slice-d-check-sprung-v0930-625cdef0

@@ -1,4 +1,4 @@
-# Mutations-CI-Beleg — slice-d-check-sprung-v0930 — Form: gruen (Urteil) — eingecheckt nach ADR-0102.
+# Mutations-CI-Beleg — slice-d-check-sprung-v0930 — Form: gruen (Urteil) — eingecheckt nach ADR-0102, abgelegt je ADR-0103 in .harness/stamp/mutate/.
 # Run 45625795106, Attempt 3 (ergebnis-Job 139305369935). Gepruefter Commit: 625cdef096cfeec27cda3f3fcfd9cbb0960b2212.
 # Ausgabe-Kanal: Job-Log — das Urteil stand NUR dort: der Push des Versuchs 3 scheiterte non-fast-forward,
 #   und der nachfolgende BEFUND-Lauf (Run 45647457778) überschrieb die Branch-Wurzel mit seiner Ergebnis-Fassung;

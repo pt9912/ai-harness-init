@@ -1,4 +1,4 @@
-# Mutations-CI-Beleg — slice-c7-adaptions-nachzuege-v7-0-0 — Form: BEFUND, Last-Anteil — eingecheckt nach ADR-0102.
+# Mutations-CI-Beleg — slice-c7-adaptions-nachzuege-v7-0-0 — Form: BEFUND, Last-Anteil — eingecheckt nach ADR-0102, abgelegt je ADR-0103 in .harness/stamp/mutate/.
 # Run 45769040893 (mutate-branch), Fassung geschrieben und gepusht vom Attempt 1
 #   (ergebnis-Job 139739801664 — Job-Log-Kommando: gh api repos/pt9912/ai-harness-init/actions/jobs/139739801664/logs).
 # Attempt 2 (ergebnis-Job 139745524916) urteilte byte-gleich (gh api .../139745524916/logs); sein Push
