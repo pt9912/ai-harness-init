@@ -254,14 +254,15 @@ Paarungen — trägt der Commit nach dem `git mv`.)*
   über drei Vorgänge (die Teil-Ernte der befund-last-Klasse kam mit dem
   Claim-Zug des Tages hinzu, Commits `45769037551`/`45769040893` am
   Job-Log-Kanal); der `ergebnis`-Job-Push bricht non-fast-forward
-  zweimal (R2, Ausgang unten); die ADR-0102-›Geschichte‹-Zeile trug einen
+  zweimal (R2, Ausgang unten); die [`ADR-0102`](../../../../docs/plan/adr/0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md)-›Geschichte‹-Zeile trug einen
   Lifecycle-Pfad-Link auf diesen Slice — berichtigt auf Kennungs-Form
   (`dd268ee1`, §3.4-konform außerhalb des Kerns, je F-1).
 - **Steering-Loop-Eintrag:** Form-Zeile des Konsum-Schritts geschärft
   (Guide, `harness/sensors/mutate.md` §CI-Branch): **Mutations-Run-Urteile
   tragen als eingecheckte Record-Datei-Kette in `docs/reviews/mutate/`**
   (`<slice-kennung>-<sha8>-[gruen|befund-infra|befund-last].txt`), Konsum-
-  Reihenfolge lesen → committen → dann räumen; je ADR-0102-Fassung ein
+  Reihenfolge lesen → committen → dann räumen; je
+  [`ADR-0102`](../../../../docs/plan/adr/0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md)-Fassung ein
   Urteil je Run, kein Wächter hält die Ablage-Form (benannt, `AGENTS.md`
   §3.6). Kein `liegt in`-Feld: die Verkörperung lag im Architect-Zug
   (`f545a019` ADR, `79757bc2` Form-Zeile) vor diesem Closure-Zug, nicht am
@@ -278,7 +279,9 @@ Paarungen — trägt der Commit nach dem `git mv`.)*
 - **Risiken aus §6:** Log-Verfall → `entfallen` (Beleg entnommen vor dem
   Verfall, `79757bc2`) · non-fast-forward-Push → `entfallen`
   (Branch-File-Kanal gelesen vor der Räumung, Beleg committet) ·
-  Doppelte-Belege-Granularität → `entfallen` (ADR-0102 Festlegung 2/4:
+  Doppelte-Belege-Granularität → `entfallen`
+  ([`ADR-0102`](../../../../docs/plan/adr/0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md)
+  Festlegung 2/4:
   ein Urteil je Run) · 3×-Schwelle-Lage → `entfallen` (F-2-korrigiert:
   Fund zitiert statt zählt, Zähler-Ist 2, Stand `offen`).
 - **Drei Paarungen:** Anker — kein Eintrag der §7 trägt das `liegt in`-Feld
