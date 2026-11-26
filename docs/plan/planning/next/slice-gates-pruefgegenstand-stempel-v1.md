@@ -174,7 +174,7 @@ Zweifel der volle Lauf über `make record-gates` (fail-closed).
    oder nicht zeigbar deckbarer Check, `GATES_FORCE=1` → voller Lauf über
    `make record-gates` (fail-closed). CI läuft unverändert voll — kein
    Stempel-Konzept auf CI.
-4. **Der benannte Rest bleibt der ADR-0099-Rest** — der lokale Docker-Cache-
+4. **Der benannte Rest bleibt der Rest je ADR-0099** — der lokale Docker-Cache-
    Zustand und die Host-Werkzeuge stehen außerhalb jedes baum-abgeleiteten
    Schlüssels ([ADR-0035](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
    Festlegung 4; [ADR-0099](../../adr/0099-gates-fastpfad-ueber-gedecktem-stempel-paar.md)
