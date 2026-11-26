@@ -27,14 +27,14 @@ dieses Repos; die Anforderungs-Seite steht in der `LH-QA`-ID des Felds Bezug.
 **Ziel:** Die C5-Formen des v7-Stands reisen als Baumbestand mit dem C1-Zug —
 C5 trägt die **Referenz-Achse dieses Bestands** (Tafel-Zeile: *keine Umsetzung*):
 die Bestands-Lesung des Dogfood gegen die fünf neuen Anker-Formen —
-[`modul-04-adrs.md` §Bedrohung, Grenze, Ausgang](../../../../.harness/baseline/v7.0.0/regelwerk/modul-04-adrs.md)
+`modul-04-adrs.md` §Bedrohung, Grenze, Ausgang (Pfad: `.harness/baseline/v7.0.0/regelwerk/modul-04-adrs.md`)
 (Anker am Zug-Stand verifiziert, `### Bedrohung, Grenze, Ausgang`), der
-§6-Vertrag der [`architecture.template.md`](../../../../.harness/baseline/v7.0.0/templates/spec/architecture.template.md),
+§6-Vertrag der `architecture.template.md` (Pfad: `.harness/baseline/v7.0.0/templates/spec/architecture.template.md`),
 der erweiterte Kontext-Eingang und die erweiterte Klassifikation der
-[`reviewer.template.md`](../../../../.harness/baseline/v7.0.0/templates/.harness/skills/reviewer.template.md),
-die QA-Form der [`lastenheft.template.md`](../../../../.harness/baseline/v7.0.0/templates/spec/lastenheft.template.md)
+`reviewer.template.md` (Pfad: `.harness/baseline/v7.0.0/templates/.harness/skills/reviewer.template.md`),
+die QA-Form der `lastenheft.template.md` (Pfad: `.harness/baseline/v7.0.0/templates/spec/lastenheft.template.md`)
 (*eine prüfbare Eigenschaft, die eine Bedrohung abwehrt — nicht die Bedrohung selbst*)
-und der Bedrohungs-Absatz der [`NNNN-title.template.md`](../../../../.harness/baseline/v7.0.0/templates/docs/plan/adr/NNNN-title.template.md) —,
+und der Bedrohungs-Absatz der `NNNN-title.template.md` (Pfad: `.harness/baseline/v7.0.0/templates/docs/plan/adr/NNNN-title.template.md`) —,
 das Walk-Verdikt je Form (Emitter kopiert aus der Baseline, kein Code-Zug),
 und die **Dogfood-vs.-Emittierend-Abwägung** des Review-Skills als Setzung,
 die in der Closure-Notiz steht. Der §6-Vertrag dieses Slices:
@@ -171,8 +171,22 @@ nach dem `git mv` nur ihr `roadmap.md`; der Marker „Nichts in Arbeit." trifft 
 
 **Paarungen geprüft am 2026-11-26:** `make docs-check` → 3012 Datei(en) geprüft, 0 Befund(e)
 (frische Messung am Paarungs-Commit; der Move-Stand trug Post-Move-Zustand ohne die hier
-getragenen Hälften — Paarungs-Häkchen, Ruhe-Marker). `make gates` — grün am Zug-Ende gemessen
-nach diesem Paarungs-Commit (Stempel deckt HEAD).
+getragenen Hälften — Paarungs-Häkchen, Ruhe-Marker). `make gates` — grün am Zug-Ende, gemessen
+nach den Bestands-Korrekturen unten (Stempel deckt HEAD).
+
+**Bestands-Korrekturen am Zug-Ende (2026-11-26):** der Wächter
+`test/ignore-refs-restbreite.bats` (Fall *„jede Top-Level-ignore-refs-Ausnahme deckt genau
+die an ihr deklarierte Anzahl Markdown-Links"*) meldete das Paar
+`docs/plan/planning/done/** → .harness/baseline/**` mit 16 aufgelösten Links gegen
+`# Deckung: 10` — die sechs Baseline-Verweise dieser Datei (§1, §8) trugen Link-Form und
+zogen mit dem Move in den gezählten Baum. Korrektur am **Bestand** (Inline-Code-Form mit
+`Pfad:`-Angabe), nicht an der Deklaration: eine Verbreiterung des Eintrags verlangt eine
+eigene ADR ([ADR-0026](../../../../docs/plan/adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md),
+[ADR-0039](../../../../docs/plan/adr/0039-eingefrorene-adresse-in-den-vendored-baum.md)).
+
+**Offene Reste:** der Deckungs-Zähler hält keinen Puffer für Baseline-Verweise, die Slice-Dateien
+beim Move in `done/` einziehen — jede künftige Closure steht vor derselben Wahl (Bestand korrigieren
+oder ADR). Benannt, nicht geschlossen.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
@@ -181,4 +195,4 @@ Beide vorgelagerten Prüfungen vor dem Block:
 1. **Sub-Area-Wahl prüfen:** die berührte Sub-Area ist `*` (gesamtes Repo) — der Zug ist eine Referenz-Achsen-Lesung über den Bestand, kein Pfad-Ensemble; Kürzel `ALL`. Schwelle erfüllt.
 2. **Offene Beobachtungen sichten:** das Register ([`../observations/BEO-ALL/`](../../planning/observations/BEO-ALL/)) trägt keine Beobachtung, die die Vertrauensgrenzen-Referenz-Achse, den Review-Skill-Urteils-Typ oder die ARC-*-Formen berührt (Lesung je Suchmuster, 2026-11-25) — **keine Treffer sind ebenfalls eine Antwort**; Zähler-Stand `—`.
 
-**Modus-Begründung:** alle berührten Sub-Areas GF — der Sprung ist ein Baumbestand-Übernahme-Form, kein Bestands-Rückbau; Phase-Reife des berührten Bestands (Dogfood-Referenz-Achse) Phase 3 aus der Phase × Modus-Matrix ([`modul-02-harness-bootstrap.md`](../../../../.harness/baseline/v7.0.0/regelwerk/modul-02-harness-bootstrap.md)); Evidenz-/Diskrepanz-Risiko niedrig (die Lesung ist grep-getragen am Zug-Stand, kein Inventur-Risiko einer Code-Fassung); Reconciliation-Aufwand kein — die Tafel-C5-Zelle verlangt keinen Inventur-Split, ein Carveout ist nicht angelegt, ein Graduation-Trigger entfällt (GF).
+**Modus-Begründung:** alle berührten Sub-Areas GF — der Sprung ist ein Baumbestand-Übernahme-Form, kein Bestands-Rückbau; Phase-Reife des berührten Bestands (Dogfood-Referenz-Achse) Phase 3 aus der Phase × Modus-Matrix (`modul-02-harness-bootstrap.md`, Pfad: `.harness/baseline/v7.0.0/regelwerk/modul-02-harness-bootstrap.md`); Evidenz-/Diskrepanz-Risiko niedrig (die Lesung ist grep-getragen am Zug-Stand, kein Inventur-Risiko einer Code-Fassung); Reconciliation-Aufwand kein — die Tafel-C5-Zelle verlangt keinen Inventur-Split, ein Carveout ist nicht angelegt, ein Graduation-Trigger entfällt (GF).
