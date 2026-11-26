@@ -1,5 +1,10 @@
 # Mutations-CI-Beleg — slice-c7-adaptions-nachzuege-v7-0-0 — Form: BEFUND, Last-Anteil — eingecheckt nach ADR-0102.
-# Run 45769040893 (mutate-branch). Gepruefter Commit: 3880063fc75c6cae1986f33fe6cbb74f87c4f1b0.
+# Run 45769040893 (mutate-branch), Fassung geschrieben und gepusht vom Attempt 1
+#   (ergebnis-Job 139739801664 — Job-Log-Kommando: gh api repos/pt9912/ai-harness-init/actions/jobs/139739801664/logs).
+# Attempt 2 (ergebnis-Job 139745524916) urteilte byte-gleich (gh api .../139745524916/logs); sein Push
+#   blieb non-fast-forward — die Result-Form traegt den Versuch nicht; je Attempt ein Urteil, das
+#   zweite ist hier nur am Job-Log-Kanal belegt (Kommandos je MR-051).
+# Gepruefter Commit: 3880063fc75c6cae1986f33fe6cbb74f87c4f1b0.
 # Ausgabe-Kanal: Branch-File —
 #   git fetch origin mutate/slice-c7-adaptions-nachzuege-v7-0-0-3880063f
 #   git show FETCH_HEAD:mutate-ergebnis.txt
