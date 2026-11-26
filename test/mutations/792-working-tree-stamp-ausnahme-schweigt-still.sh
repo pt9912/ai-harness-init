@@ -10,4 +10,4 @@
 # Liste endet rot` in test/working-tree-hash-abnahme.bats rot; die Entleerung der
 # Ausnahme-Liste (Fall 791) trifft diesen Zweig nicht.
 set -euo pipefail
-sed -i 's@if ! ausnahme "\$f"; then@if false \&\& ! ausnahme "$f"; then@' harness/tools/working-tree-hash.sh
+sed -i "s@if ! ausnahme \"\$f\"; then@if false \&\& ! ausnahme \"\$f\"; then@" harness/tools/working-tree-hash.sh
