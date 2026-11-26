@@ -956,6 +956,189 @@ greift_main() {
   [ "$fails" -eq 0 ]
 }
 
+# --- STAMP-RECORDS (`mutate.sh --stamp-records <result-file> <run-id> <attempt>`) ---------
+# Der Konsum des Mutations-CI-Result-Files in Fall-Form (ADR-0107 Festlegung 1-3;
+# ADR-0103: Ablageort und Hash-Ausnahme). Je per-Fall-Verdikt-Zeile (`ok`/`BEFUND`) des
+# mutate-ergebnis.txt haengt der Lauf eine Urteils-Zeile an das Fall-File
+# .harness/stamp/mutate/<fall-kennung>.txt:
+#   <datum> · commit <sha8> · form ok|befund[ · qualifikator infra|last] · run <id> attempt <n>
+# je neuem Fall-File einen Kopf mit Run, Attempt und geprüftem Commit (MR-051-Form, in
+# der Fall-Form statt der Lauf-Form). FEHLT ist kein Urteil und wird nicht angehängt.
+#
+# FAIL-CLOSED, alle Grenzen vor dem ersten Anhang: fehlendes, leeres oder unlesbares
+# Result-File · doppelte Bestimmung (derselbe Fall zweimal im Result-File, oder das Paar
+# (fall, run, attempt) steht bereits im Fall-File) · unbekannte oder mehrdeutige
+# Fall-Kennung — jede bricht mit Meldung, ohne den Fall-File-Bestand anzutasten
+# (ADR-0107 Festlegung 3). Der Lauf urteilt nicht — der Exit meldet nur die
+# Transformation; Fall-Files sind Stempel-Klasse und blocken kein Turn-Ende (ADR-0083).
+#
+# Die Fall-Kennung löst gegen genau EINE Datei unter test/mutations/ auf: exakter
+# Fall-Name oder eindeutiger Präfix. Run-Id und Attempt sind Pflicht-Argumente — die
+# Fall-Zeile trägt sie je Festlegung-1-Form und der Kopf je Festlegung-5-Form, ohne sie
+# wäre die (fall, run, attempt)-Bestimmung leer. MUTATE_STAMP_QUALIFIKATOR (optional,
+# leer oder infra|last) qualifiziert BEFUND-Zeilen; ein ok-Verdikt trägt ihn nie.
+stamp_abbruch() {
+  echo "mutate-stamp: ABBRUCH — $1" >&2
+}
+
+# stamp_kennung_loesen liefert zu <1> den Fall-Namen, der unter <2> GENAU eine Datei
+# <name>.sh trägt: exakter Name zuerst, sonst eindeutiger Präfix. Kein Treffer oder
+# mehr als einer bricht mit dem Fall-Namen und der Fundliste ab (ADR-0107 Festlegung 2).
+stamp_kennung_loesen() {
+  local kennung="$1" cases_dir="$2" f stem
+  local -a dateien=() treffer=()
+  shopt -s nullglob
+  dateien=("$cases_dir"/*.sh)
+  shopt -u nullglob
+  for f in "${dateien[@]}"; do
+    if [ "$(basename "$f" .sh)" = "$kennung" ]; then
+      printf '%s\n' "$kennung"
+      return 0
+    fi
+  done
+  for f in "${dateien[@]}"; do
+    stem="$(basename "$f" .sh)"
+    case "$stem" in "$kennung"*) treffer+=("$stem") ;; esac
+  done
+  if [ "${#treffer[@]}" -eq 0 ]; then
+    stamp_abbruch "unbekannte Fall-Kennung '$kennung' — keine Datei unter $cases_dir trägt sie (MR-059-Formen: exakter Fall-Name oder eindeutiger Präfix) — kein Anhang."
+    return 1
+  fi
+  local liste
+  printf -v liste '%s, ' "${treffer[@]}"
+  stamp_abbruch "mehrdeutige Fall-Kennung '$kennung' — ${#treffer[@]} Dateien unter $cases_dir treffen den Präfix: ${liste%, } — kein Anhang."
+  return 1
+}
+
+# stamp_records_zeile schreibt EINE Urteils-Zeile je ADR-0107-Festlegung-1-Form auf
+# stdout: <1> ist form ok|befund, der Qualifikator (nur befund) kommt aus
+# MUTATE_STAMP_QUALIFIKATOR; Run, Attempt und Commit trägt der Aufruf des Konsums.
+stamp_records_zeile() {
+  local form="$1" q="${MUTATE_STAMP_QUALIFIKATOR:-}"
+  if [ "$form" = befund ] && [ -n "$q" ]; then
+    printf '%s · commit %s · form befund · qualifikator %s · run %s attempt %s\n' \
+      "$(date +%F)" "${STAMP_COMMIT:0:8}" "$q" "$STAMP_RUN" "$STAMP_ATTEMPT"
+  else
+    printf '%s · commit %s · form %s · run %s attempt %s\n' \
+      "$(date +%F)" "${STAMP_COMMIT:0:8}" "$form" "$STAMP_RUN" "$STAMP_ATTEMPT"
+  fi
+}
+
+stamp_records_main() {
+  local result="${2:-}" run_id="${3:-}" attempt="${4:-}"
+  local stamp_dir="$REPO/.harness/stamp/mutate"
+  local q="${MUTATE_STAMP_QUALIFIKATOR:-}" commit kennung_anzahl pair fall form bestand
+  local ok_n=0 befund_n=0 i_n=0
+  local -a falls=() forms=() aufgeloest=()
+  local -A gesehene=()
+
+  # Grenze 0 — Aufruf-Form: Run-Id und Attempt sind Pflicht (Festlegung 1: die
+  # Fall-Zeile trägt run <id> attempt <n>; Festlegung 5: der Kopf trägt den
+  # Erst-Anhang). Ein Konsum ohne sie schriebe Zeilen, die nicht die Form tragen.
+  if [ "$#" -lt 4 ] || [ -z "$result" ] || [ -z "$run_id" ] || [ -z "$attempt" ]; then
+    stamp_abbruch "Result-File, Run-Id und Attempt sind Pflicht — Aufruf: --stamp-records <mutate-ergebnis.txt> <run-id> <attempt> — kein Anhang."
+    return 1
+  fi
+  case "$run_id" in
+    '' | *[!0-9]*)
+      stamp_abbruch "Run-Id '$run_id' ist keine Zahl — kein Anhang."
+      return 1
+      ;;
+  esac
+  case "$attempt" in
+    '' | 0 | *[!0-9]*)
+      stamp_abbruch "Attempt '$attempt' ist keine ganze Zahl >= 1 — kein Anhang."
+      return 1
+      ;;
+  esac
+  case "$q" in
+    '' | infra | last) ;;
+    *)
+      stamp_abbruch "MUTATE_STAMP_QUALIFIKATOR '$q' ist weder leer noch infra oder last — kein Anhang."
+      return 1
+      ;;
+  esac
+
+  # Grenze 1 — Result-File fehlend, leer, unlesbar oder nicht die Ergebnis-Fassung
+  # (mutate-ergebnis.txt, wie der Schritt `ergebnis` sie schreibt): ohne die
+  # 'gepruefter Commit:'-Zeile und die Kennungs-Zeile ist sie nicht konsumierbar.
+  if [ ! -f "$result" ]; then
+    stamp_abbruch "Result-File '$result' fehlt — kein Anhang."
+    return 1
+  fi
+  if [ ! -s "$result" ]; then
+    stamp_abbruch "Result-File '$result' ist leer — kein Anhang."
+    return 1
+  fi
+  if [ ! -r "$result" ]; then
+    stamp_abbruch "Result-File '$result' ist nicht lesbar — kein Anhang."
+    return 1
+  fi
+  kennung_anzahl="$(awk '/^mutate-ergebnis: / {n++} END {print n + 0}' "$result")"
+  commit="$(sed -n 's/^gepruefter Commit: \([0-9a-f]\{40\}\)$/\1/p' "$result")"
+  if [ "$kennung_anzahl" -ne 1 ] || [ -z "$commit" ]; then
+    stamp_abbruch "Result-File '$result' trägt nicht genau eine 'mutate-ergebnis:'-Zeile und eine 'gepruefter Commit:'-Zeile — unlesbare Fassung, kein Anhang."
+    return 1
+  fi
+  STAMP_RUN="$run_id"
+  STAMP_ATTEMPT="$attempt"
+  STAMP_COMMIT="$commit"
+
+  # Grenze 2 — je Fall im Result-File genau ein Verdikt, und jeder Fall löst gegen
+  # genau eine Datei unter test/mutations/ auf; das Paar (fall, run, attempt) steht
+  # im Fall-File noch nicht. Die Prüfung liest, sie schreibt nichts.
+  mapfile -t verdikte < <(awk 'NF == 4 && ($1 == "ok" || $1 == "BEFUND") && $3 == "Shard" && $4 ~ /^[0-9]+$/ {print $2, $1}' "$result")
+  if [ "${#verdikte[@]}" -eq 0 ]; then
+    stamp_abbruch "Result-File '$result' trägt keinen Fall-Verdikt (ok/BEFUND) — kein Anhang."
+    return 1
+  fi
+  for pair in "${verdikte[@]}"; do
+    fall="${pair%% *}"
+    form="${pair#* }"
+    if [ -n "${gesehene[$fall]+x}" ]; then
+      stamp_abbruch "doppelte Bestimmung: Fall '$fall' steht mehrfach im Result-File — kein Anhang."
+      return 1
+    fi
+    gesehene[$fall]=1
+    falls+=("$fall")
+    # Die Fall-Zeile trägt die Festlegung-1-Form (form ok|befund) — das Result-File
+    # schreibt das Verdikt groß (`BEFUND   <fall>`), die Zeile klein.
+    forms+=("${form,,}")
+    if ! fall="$(stamp_kennung_loesen "$fall" "$CASES_DIR")"; then
+      return 1
+    fi
+    aufgeloest+=("$fall")
+    bestand="$stamp_dir/$fall.txt"
+    if [ -f "$bestand" ] && grep -Eq -- "· run ${run_id} attempt ${attempt}\$" "$bestand"; then
+      stamp_abbruch "doppelte Bestimmung: Paar (fall, run, attempt) steht bereits in $bestand — kein Anhang."
+      return 1
+    fi
+  done
+
+  # Erst NUN wird angehängt (Festlegung 3): je verdiktem Fall eine Zeile, je neuem
+  # Fall-File der Kopf je MR-051-Form (Run, Attempt, geprüfter Commit des Erstanhangs).
+  mkdir -p "$stamp_dir"
+  local i
+  for ((i = 0; i < ${#falls[@]}; i++)); do
+    bestand="$stamp_dir/${aufgeloest[$i]}.txt"
+    if [ ! -f "$bestand" ]; then
+      {
+        echo "# Mutations-Fall-File — ${aufgeloest[$i]} — Fall-Zeilen je ADR-0107 Festlegung 1, angehängt von:"
+        echo "#   bash harness/tools/mutate.sh --stamp-records $result $run_id $attempt"
+        echo "# Run $run_id, Attempt $attempt; geprüfter Commit des Erstanhangs: ${commit:0:8} (Zeile 'gepruefter Commit:' des Result-Files)."
+      } >"$bestand"
+    fi
+    stamp_records_zeile "${forms[$i]}" >>"$bestand"
+    if [ "${forms[$i]}" = ok ]; then
+      ok_n=$((ok_n + 1))
+    else
+      befund_n=$((befund_n + 1))
+    fi
+  done
+  echo "mutate-stamp: $i Zeile(n) angehängt ($ok_n ok, $befund_n befund${q:+ · qualifikator $q}) über Result-File '$result' (Run $run_id, Attempt $attempt) — Fall-Files unter .harness/stamp/mutate/"
+  return 0
+}
+
 # green_prerun faehrt jeden uebergebenen Modus EINMAL, bevor die erste Mutation laeuft
 # (Review-Befund slice-026 F-6). Ohne ihn wuerde jeder Fall auf einem bereits roten
 # Baum "bestehen" — aus dem falschen Grund. Der Fall ist nicht theoretisch: waehrend des
@@ -2003,6 +2186,8 @@ main() {
 if [ "${BASH_SOURCE[0]}" = "$0" ]; then
   if [ "${1:-}" = "--greift" ]; then
     greift_main "$CASES_DIR" "$REPO"
+  elif [ "${1:-}" = "--stamp-records" ]; then
+    stamp_records_main "$@"
   else
     main "$@"
   fi

@@ -343,6 +343,41 @@ Festlegung 3, `scan.ignore`); erzwingen kann sie nur der Vorgang, der sie schrei
 Ein ausgelassener Konsum-Schritt trägt sein Urteil weiter nur an den zwei Kanälen,
 die verfallen bzw. überschrieben werden.
 
+**Die Granularität der neuen Läufe ist je Fall** ([ADR-0107](../../docs/plan/adr/0107-die-mutations-record-granularitaet-ist-je-fall.md),
+supersedes [`ADR-0103`](../../docs/plan/adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md)
+begrenzt auf die Ablage-Granularität): je per-Fall-Verdikt-Zeile (`ok`, `BEFUND`) des
+Result-Files hängt der Konsum eine Urteils-Zeile
+`<datum> · commit <sha8> · form ok|befund[ · qualifikator infra|last] · run <id> attempt <n>`
+an das Fall-File `.harness/stamp/mutate/<fall-kennung>.txt`, je neuem Fall-File einen
+Kopf mit Run, Attempt und geprüfter Commit unter dem Lesekommando des Anhangs
+([`MR-051`](../conventions/MR-051-zahl-beleg-bindet-commit-message-und-register-zaehler.md)-Form
+in der Fall-Form statt der Lauf-Form). Der Konsum ist das Treiber-Unterkommando
+`bash harness/tools/mutate.sh --stamp-records <result-file> <run-id> <attempt>` —
+Run-Id und Attempt sind Pflicht-Argumente (die Zeilen-Form trägt `run <id> attempt <n>`,
+ohne sie wäre die Bestimmung leer); `MUTATE_STAMP_QUALIFIKATOR` (leer oder `infra`/`last`)
+qualifiziert die `befund`-Zeilen, nie die `ok`-Zeilen. Die Fall-Kennung löst gegen genau
+eine Datei unter `test/mutations/` auf — exakter Fall-Name oder eindeutiger Präfix
+([`MR-059`](../conventions/MR-059-kennungs-erkennung-traegt-die-zugelassenen-formen.md)-Formen).
+Der Lauf liest das Result-File einmal vollständig und bricht **vor** jedem Anhang
+fail-closed — fehlendes, leeres oder unlesbares Result-File · doppelte Bestimmung
+(derselbe Fall zweimal im Result-File, oder das Paar `(fall, run, attempt)` steht bereits
+im Fall-File) · unbekannte oder mehrdeutige Fall-Kennung —; jede Grenze meldet
+`mutate-stamp: ABBRUCH …` und lässt den Fall-File-Bestand unverändert. `FEHLT` ist kein
+Urteil und wird nicht angehängt; der Lauf urteilt nicht — der Exit meldet nur die
+Transformation, und Fall-Files blocken kein Turn-Ende
+([`ADR-0083`](../../docs/plan/adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md)).
+Die Konsum-Reihenfolge bleibt lesen → stampen → committen → **dann** räumen. Die vier
+Lauf-Urteil-Files des Erstbestands (Retro-Fassung nach
+[`ADR-0103`](../../docs/plan/adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md))
+bleiben als datierte Belege der Lauf-Urteil-Granularität stehen — kein Nachrüsten; neue
+Läufe schreiben in der Fall-Form. **Grenze (ungenannt wäre die Zusage zu viel):** der
+Wächter der Anhangs- und Kopf-Form samt der fail-closed-Grenzen ist
+[`test/stamp-records-mechanik.bats`](../../test/stamp-records-mechanik.bats)
+über dem realen Werkzeug auf Isolationskopie plus der Mutations-Fall
+`test/mutations/795-stamp-records-paar-bestimmung-verliert-zaehne.sh` — kein Modul des
+Doku-Gates liest die Record-Bytes; der "nicht lesbar"-Zweig des Result-Files ist Code
+ohne Bats-Fall, weil eine als root laufende Test-Stufe jede `chmod`-000-Datei liest.
+
 **Grenze.** Gewählt wird über `# files:`: ein Fall, dessen Wächter-Test sich änderte, dessen
 `# files:` aber keine geänderte Datei nennt, läuft nicht; zeigt `# files:` auf die falsche
 Datei, fehlt der Fall. Das lokale Urteil misst `HEAD`, nicht den Arbeitsbaum. Die Gewichte sind
