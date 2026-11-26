@@ -55,18 +55,18 @@ Vertrauensgrenzen in Dogfood-Artefakten.
 
 Liefer-Punkte (drei, [`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)-Form der Kennung; gezählt nach [`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)):
 
-- [ ] **LP1 — Referenz-Achsen-Lesung, Nachzug je Fund:** die Bestands-Lesung läuft (je Kommando eine Fundliste, [`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)-Form) gegen die fünf neuen Anker-Formen; je Fund aus dem Bestand (`.d-check.yml`-Anker-Deckung, `harness/conventions/`-Eintragsverweise, `AGENTS.md`, `harness/README.md` §Sensors) läuft ein Nachzugs-Zug; bei **0 Funden trägt die Fundliste die Antwort** (Form der Tafel: *keine Treffer sind ebenfalls eine Antwort*). Messung: die Fundliste im §7 der Closure; `make docs-check` grün am Zug-Stand.
-- [ ] **LP2 — Walk-Verdikt je Form, kein Code-Zug:** die fünf Formen verifiziert **byte-genau aus dem Baseline-Baum** (Integrität: am C1-Pin), kein Pfad unter `internal/emit/templates/`, keine in-code Konstante der fünf Formen in `internal/emit/`-Quellen — Messung: `ls internal/emit/templates/` + `grep -l 'architecture.template\|lastenheft.template\|reviewer.template' internal/emit/*.go` (nur Referenz-Zeilen, keine Inhalte), §7 trägt die Ausgabe-Muster; Änderung an Emitter-Dateien: keine (Negativ-Aussage je git-Diff des Zugs).
-- [ ] **LP3 — Dogfood-Setzung je Form:** die Dogfood-vs.-Emittierend-Abwägung steht als §7-Entscheidungs-Zeile — der Review-Skill bleibt Bestand (Ausschluss §1 Punkt 2), der §6-Vertrag der Sicht ist der eigene Vorgang; Dogfood-Dateien des Skills/der Sicht/Stand-Zeilen: **unverändert** (Negativ-Aussage je git-Diff des Zugs).
+- [x] **LP1 — Referenz-Achsen-Lesung, Nachzug je Fund:** die Bestands-Lesung läuft (je Kommando eine Fundliste, [`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)-Form) gegen die fünf neuen Anker-Formen; je Fund aus dem Bestand (`.d-check.yml`-Anker-Deckung, `harness/conventions/`-Eintragsverweise, `AGENTS.md`, `harness/README.md` §Sensors) läuft ein Nachzugs-Zug; bei **0 Funden trägt die Fundliste die Antwort** (Form der Tafel: *keine Treffer sind ebenfalls eine Antwort*). Messung: die Fundliste im §7 der Closure; `make docs-check` grün am Zug-Stand.
+- [x] **LP2 — Walk-Verdikt je Form, kein Code-Zug:** die fünf Formen verifiziert **byte-genau aus dem Baseline-Baum** (Integrität: am C1-Pin), kein Pfad unter `internal/emit/templates/`, keine in-code Konstante der fünf Formen in `internal/emit/`-Quellen — Messung: `ls internal/emit/templates/` + `grep -l 'architecture.template\|lastenheft.template\|reviewer.template' internal/emit/*.go` (nur Referenz-Zeilen, keine Inhalte), §7 trägt die Ausgabe-Muster; Änderung an Emitter-Dateien: keine (Negativ-Aussage je git-Diff des Zugs).
+- [x] **LP3 — Dogfood-Setzung je Form:** die Dogfood-vs.-Emittierend-Abwägung steht als §7-Entscheidungs-Zeile — der Review-Skill bleibt Bestand (Ausschluss §1 Punkt 2), der §6-Vertrag der Sicht ist der eigene Vorgang; Dogfood-Dateien des Skills/der Sicht/Stand-Zeilen: **unverändert** (Negativ-Aussage je git-Diff des Zugs).
 
 Standard-Pflichten je Slice:
 
 - [ ] `make gates` grün — am Zug-Ende; die frische Messung steht in der Paarungs-Zeile §7.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` mit der **vollständigen** Kennung im Dateinamen — Rollenwechsel nach Schritt 8 des Minimal Agent Workflow ([`AGENTS.md`](../../../../AGENTS.md) §6), kein Self-Review.
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist — nur bei LP1-Fund in einem der Index-Artefakte.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register ([`../observations/`](../../planning/observations/)) fortgeschrieben — neues Verzeichnis oder `evidence/`-Nachtrag, kein Zähler-Feld. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen) — je Zeile unten.
+- [x] Review durchgeführt, Report unter `docs/reviews/` mit der **vollständigen** Kennung im Dateinamen — Rollenwechsel nach Schritt 8 des Minimal Agent Workflow ([`AGENTS.md`](../../../../AGENTS.md) §6), kein Self-Review. ✓ [`../../../docs/reviews/2026-11-25-slice-c5-vertrauensgrenzen-v7-0-0.md`](../../../docs/reviews/2026-11-25-slice-c5-vertrauensgrenzen-v7-0-0.md) — HIGH 0 · MEDIUM 1 · LOW 0 · INFO 2.
+- [x] Doku-Update — trifft nicht: kein LP1-Fund in einem der Index-Artefakte (F1 = 0, Beleg: §7).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register ([`../observations/`](../../planning/observations/)) fortgeschrieben — neues Verzeichnis oder `evidence/`-Nachtrag, kein Zähler-Feld. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert. ✓ `evidence/`-Nachtrag [`BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt`](../../planning/observations/BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt/evidence/slice-c5-vertrauensgrenzen-v7-0-0.md) (Form: [`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung); Beleg in §7).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen) — je Zeile unten. ✓ R1 mit der C7-Kennung, R2 mit Grenze, R3 weiter offen mit Zeiger (`slice-c5-vertrauensgrenzen-v7-0-0` §7).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) — von der Welle-Closure geprüft; im Repo der Wellen-Betriebs-Form — im Paarungs-Commit nach dem `git mv` getragen, Ergebnis in §7.
 
 ## 3. Plan (vor Code)
@@ -97,15 +97,53 @@ LP1 trägt die Fundliste (oder die 0-Fund-Antwort) mit je Fund einem geleisteten
 
 ## 6. Risiken und offene Punkte
 
-- **R1 — Nachzugsfläche größer als die Tafel schätzt:** die Lesung findet Nachzüge, die ein Umsetzungs-Teil brauchen (§1-Ausschluss trifft sie) oder deren Zahl die drei Liefer-Punkte sprengt. Ausgang: *eingetreten* → je eigenem Nachzug ein Fund im LP1-Katalog und der Nachzugs-Zug im Slice; sprengt die Zahl die M-Schätzung → Rückführung `next` (§4), die Fundliste bleibt der Beleg. *(Ausgang je Tatsache bei Closure gesetzt.)*
-- **R2 — Review-Konsequenzen über die Slice-Grenze:** künftige Dogfood-Reviews laufen mit der Bestands-Fassung des Skills — die v7-HIGH-Abschwächung („es sei denn, eine aktive ADR akzeptiert genau diese Bedrohung") und die v7-MEDIUM-Kategorie greifen im Dogfood vor einer eigenen Schärfung nicht; im Moment läuft kein aktives Review, und die Formen der Welle (C2–C7) sind Planungs- und Werkzeug-Artefakte ohne laufenden Review-Beleg. Ausgang: *entfallen* mit Grenze — die Grenze steht als Ausschluss §1 Punkt 2 und als §7-Zeile, nicht still grün; läuft vor der Welle-Closure ein echtes Review an, wandert der Ausgang zu *weiter offen* (das Register trägt die Klasse).
-- **R3 — der Kontext-Eingang-Teil wäre nicht leere Verträge:** die v7-Kontext-Zusätze (architecture-Sicht, `Schärft:`-ADRs, `open/`-Slices) finden im Dogfood reale Adressen (`ARC-*`, `Schärft:`-ADRs) — ihr Einzug in den Skill ist real nachzugsfähig, nicht nur ein Stillstand. Ausgang: *weiter offen* → die Anlage (Skill-Kontext-Zeilen + §6-Form der Sicht) ist der eigene Vorgang aus §1 Punkt 2; er wird in §7 als Vorbild-Zeile benannt, kein stiller Bestand.
+- **R1 — Nachzugsfläche größer als die Tafel schätzt:** die Lesung findet Nachzüge, die ein Umsetzungs-Teil brauchen (§1-Ausschluss trifft sie) oder deren Zahl die drei Liefer-Punkte sprengt. Ausgang: *eingetreten* → je eigenem Nachzug ein Fund im LP1-Katalog und der Nachzugs-Zug im Slice; sprengt die Zahl die M-Schätzung → Rückführung `next` (§4), die Fundliste bleibt der Beleg. **Ausgang (Closure 2026-11-26):** *eingetreten* — die Fundliste (F2/F3, §7) führt die Nachzugs-Posten, und der Nachzugs-Zug für sie ist der Tafel-Zug C7; Adresse: `slice-c7-adaptions-nachzuege-v7-0-0` (Tafel-Kennung, die Slice-Datei entsteht beim Schnitt). Keine Rückführung (§4): die Zahl bleibt in der M-Schätzung.
+- **R2 — Review-Konsequenzen über die Slice-Grenze:** künftige Dogfood-Reviews laufen mit der Bestands-Fassung des Skills — die v7-HIGH-Abschwächung („es sei denn, eine aktive ADR akzeptiert genau diese Bedrohung") und die v7-MEDIUM-Kategorie greifen im Dogfood vor einer eigenen Schärfung nicht; im Moment läuft kein aktives Review, und die Formen der Welle (C2–C7) sind Planungs- und Werkzeug-Artefakte ohne laufenden Review-Beleg. Ausgang: *entfallen* mit Grenze — die Grenze steht als Ausschluss §1 Punkt 2 und als §7-Zeile, nicht still grün; läuft vor der Welle-Closure ein echtes Review an, wandert der Ausgang zu *weiter offen* (das Register trägt die Klasse). **Ausgang (Closure 2026-11-26):** *entfallen* mit Grenze — im Zug lief kein Review; die Grenze (Bestands-Kategorien bis zu einer eigenen Schärfung) steht in Ausschluss §1 Punkt 2 („Die Grenze dieser Auslassung steht hier") und als LP3-Zeile in §7.
+- **R3 — der Kontext-Eingang-Teil wäre nicht leere Verträge:** die v7-Kontext-Zusätze (architecture-Sicht, `Schärft:`-ADRs, `open/`-Slices) finden im Dogfood reale Adressen (`ARC-*`, `Schärft:`-ADRs) — ihr Einzug in den Skill ist real nachzugsfähig, nicht nur ein Stillstand. Ausgang: *weiter offen* → die Anlage (Skill-Kontext-Zeilen + §6-Form der Sicht) ist der eigene Vorgang aus §1 Punkt 2; er wird in §7 als Vorbild-Zeile benannt, kein stiller Bestand. **Ausgang (Closure 2026-11-26):** *weiter offen* — der Zeiger auf den eigenen Vorgang steht in der LP3-Zeile von §7; die Registers-Sichtung (§8) hielt.
 
 ## 7. Closure-Notiz
 
-Wird bei der Closure vor dem `git mv` nach `done/` gefüllt — Form des
-Vorgänger-Slices: Fundliste und Walk-Verdikt je Kommando, Entscheidungs-Zeile
-der Dogfood-Abwägung, Lern-Eintrag, Risiko-Ausgänge, drei Paarungen.
+**Was hat funktioniert:** der Zug blieb eine Lesung ohne Code-Griff — F1 lief 0-fundig, die drei
+Negativ-Diffs (LP2/LP3) blieben leer, das Walk-Verdikt brauchte keinen Emitter-Griff. Review:
+Report unter [`../../../docs/reviews/2026-11-25-slice-c5-vertrauensgrenzen-v7-0-0.md`](../../../docs/reviews/2026-11-25-slice-c5-vertrauensgrenzen-v7-0-0.md)
+— HIGH 0 · MEDIUM 1 · LOW 0 · INFO 2; die Auflage des MEDIUM-1 (Lesungs-Belege als §7-Text statt
+Übergabe-Meldung) ist mit dieser Notiz getragen.
+
+**LP1 — Fundlisten je Kommando** ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)-Form, jede Zahl am Kommando):
+
+- **F1** — `git grep -nE 'Bedrohung, Grenze, Ausgang|prüfbare Eigenschaft, die eine Bedrohung|Kontext-Eingang' -- AGENTS.md .d-check.yml harness/ ':!harness/conventions/done' ':!.harness/baseline'` → **Exit 1 = 0 in-scope Treffer** (am Closure-Stand 2026-11-26). Die Fundliste trägt die Antwort als 0: kein Nachzugs-Zug aus den fünf Anker-Formen (Form der Tafel: *keine Treffer sind ebenfalls eine Antwort*).
+- **F2** — `grep -n 'v5\.12\.0' harness/conventions/MR-031-die-kommentar-regel-steht-in-der-adoptierten-baseline.md` → **8 Zitat-Stellen: Z. 38, 40, 42, 56, 86, 87, 106, 107**. Byte-Substanz am v7-Baum (Review-Nachlauf, wiederholt am Closure-Stand): `grep -c '^### 3\.7 Ein Kommentar beschreibt, was da ist$' .harness/baseline/v7.0.0/templates/AGENTS.template.md` → **1**, `grep -c '^### Was ein Kommentar trägt — Code, Konfiguration, Skripte$' .harness/baseline/v7.0.0/regelwerk/grundlagen-harness-dateien.md` → **1** — der Fund ist die Pfad-Form, nicht die Substanz.
+- **F3** — `grep -n 'v6\.18\.1' harness/migration.md` → **41 Fundstellen** (Instanz-Register Z. 121–145, Vorlagen-Zuordnung Z. 169–177, Streu-Zeilen Z. 55, 63, 113, 114, 185, 192, 315); die vom Review adressierten Registerzeilen: **Z. 140–144**.
+- **Die zwei C7-Adressen namentlich:** (a) [`harness/conventions/MR-031-die-kommentar-regel-steht-in-der-adoptierten-baseline.md`](../../../../harness/conventions/MR-031-die-kommentar-regel-steht-in-der-adoptierten-baseline.md) Z. 106–107 — die `v5.12.0`-Pfadzitate der Reviewer-Skill-Messung; (b) [`harness/migration.md`](../../../../harness/migration.md) Z. 140–144 — die `v6.18.1`-Instanz-Registerzeilen. Beide Posten fallen unter die Tafel-C7-Zelle (Terminologie und Stand-Zeilen des Konventionsspeichers, [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist)-Träger); Übergabe-Adresse: `slice-c7-adaptions-nachzuege-v7-0-0` (Tafel-Vorschlag, die Slice-Datei entsteht beim Schnitt).
+
+**LP2 — Walk-Verdikt je Form, kein Code-Zug:**
+
+- `ls internal/emit/templates/` → `agents · baseline-verify.sh · commands · d-check.yml · enforce · observations` — keiner der fünf Form-Pfade liegt darunter.
+- `grep -l 'architecture.template\|lastenheft.template\|reviewer.template' internal/emit/*.go` → `internal/emit/emitteddocs_test.go · internal/emit/templates_test.go · internal/emit/templates.go` — Referenz-Zeilen, keine Form-Inhalte; die Quelle der fünf Formen bleibt der Walk über den vendored `/templates/`-Baum.
+- Negativ-Diff je Ausschluss-Gruppe: `git diff --name-only ae34e38f..d29be86c -- internal/ .harness/skills/ spec/ Makefile .harness/baseline/` → **leer** — die fünf Formen reisen byte-genau als Baumbestand (Integrität am C1-Pin, Review-Stichprobe `make baseline-verify` → `v7.0.0 OK`, 55 Dateien).
+
+**LP3 — Dogfood-Setzung je Form (Entscheidungs-Zeile):** Der Review-Skill
+[`../../../../.harness/skills/reviewer.md`](../../../../.harness/skills/reviewer.md) bleibt Bestand
+(Ausschluss §1 Punkt 2 — eigener Urteils-Typ, `v2.3.0`); künftige Dogfood-Reviews laufen bis zu
+einer eigenen Schärfung mit den Kategorien des Bestands — die v7-MEDIUM-Kategorie und die
+v7-HIGH-Abschwächung greifen im Dogfood bis dahin nicht (R2-Grenze, benannt, nicht still). Die
+§6-Form der Sicht ([`../../../../spec/architecture.md`](../../../../spec/architecture.md)) ist der
+eigene Vorgang: die Anlage (Skill-Kontext-Zeilen + §6-Form) ist der Vorbild-Zeiger aus R3, kein
+stiller Bestand.
+
+**Lern-Eintrag (geschärfte Regel, `· seit slice-c5-vertrauensgrenzen-v7-0-0`):** Lesungs-Übergaben
+— Fundlisten je Kommando, Byte-Belege, Walk-Verdikt — trägt die Slice-Closure als Text in §7
+([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)-Form),
+nicht als Übergabe-Meldung; eine Mess-Pflicht in §7 (LP1) liest der Verifier gegen kein Kommando,
+solange die Fundliste nur im Lauf-Kontext liegt. Quelle: MEDIUM-1 — Findings HIGH 0 · MEDIUM 1 ·
+LOW 0 · INFO 2.
+
+**Beobachtungen:** die MEDIUM-1-Klasse („Übergabe-Beleg steht nur im Lauf-Kontext") zählt als
+Beobachtung unter [`BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt`](../observations/BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt/observation.md);
+Beleg (`evidence/slice-c5-vertrauensgrenzen-v7-0-0.md`) in der Closure nachgetragen, der Stand des
+Eintrags (`verkörpert`) bleibt. Sonst keine Beobachtung angefallen — die §8-Sichtung hielt (keine
+Register-Zeile trifft die Referenz-Achse; die einzige `ARC-`-Erwähnung des Registers betrifft
+nicht sie, Review-Urteil 4).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
