@@ -16,13 +16,13 @@ wäre die Abschrift der eigenen DoD). Wellenlose Arbeit erscheint nicht in der
 Roadmap (Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht).
 
 **Bezug:**
-[`LH-QA-01`](../../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
+[`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
 (der SKIP behauptet kein Verdikt, das der Schlüssel nicht deckt — das
 Zulässigkeits-Kriterium, [ADR-0035](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
 Festlegung 2),
-[`LH-QA-02`](../../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)
+[`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)
 (dieselbe Eingabe, dasselbe Verdikt — die Invariante des Beleg-Übersprungs),
-[`LH-QA-03`](../../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)
+[`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)
 (der Key entsteht aus dem, was der Host ohnehin trägt),
 [ADR-0035](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
 (Form-Präzedenz: Beleg statt Lauf, Prüfgegenstand-Bezugsmenge, benannter Rest, fail-closed),
@@ -119,7 +119,7 @@ Zweifel der volle Lauf über `make record-gates` (fail-closed).
       nennt ihn ([ADR-0035](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
       Festlegung 4). CI läuft unverändert voll — kein Stempel-Konzept auf CI,
       alle Keys unformal → alle Checks gedriftet (dasselbe Verhältnis wie
-      Tier-1, [`LH-QA-02`](../../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
+      Tier-1, [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
 - [ ] **Liefer-Punkt 3:** der Stop-Hook blockt über der Mischform — HEAD-Kante
       unverändert ([ADR-0083](../../adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md)),
       die je-Check-Keys als Deckungs-Kriterium daneben; unlesbarer oder
