@@ -61,13 +61,13 @@ Liefer-Punkte (drei, [`MR-057`](../../../../harness/conventions.md#mr-057--die-k
 
 Standard-Pflichten je Slice:
 
-- [ ] `make gates` grün — am Zug-Ende; die frische Messung steht in der Paarungs-Zeile §7.
+- [x] `make gates` grün — am Zug-Ende; die frische Messung steht in der Paarungs-Zeile §7.
 - [x] Review durchgeführt, Report unter `docs/reviews/` mit der **vollständigen** Kennung im Dateinamen — Rollenwechsel nach Schritt 8 des Minimal Agent Workflow ([`AGENTS.md`](../../../../AGENTS.md) §6), kein Self-Review. ✓ [`../../../docs/reviews/2026-11-25-slice-c5-vertrauensgrenzen-v7-0-0.md`](../../../docs/reviews/2026-11-25-slice-c5-vertrauensgrenzen-v7-0-0.md) — HIGH 0 · MEDIUM 1 · LOW 0 · INFO 2.
 - [x] Doku-Update — trifft nicht: kein LP1-Fund in einem der Index-Artefakte (F1 = 0, Beleg: §7).
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register ([`../observations/`](../../planning/observations/)) fortgeschrieben — neues Verzeichnis oder `evidence/`-Nachtrag, kein Zähler-Feld. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert. ✓ `evidence/`-Nachtrag [`BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt`](../../planning/observations/BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt/evidence/slice-c5-vertrauensgrenzen-v7-0-0.md) (Form: [`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung); Beleg in §7).
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen) — je Zeile unten. ✓ R1 mit der C7-Kennung, R2 mit Grenze, R3 weiter offen mit Zeiger (`slice-c5-vertrauensgrenzen-v7-0-0` §7).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) — von der Welle-Closure geprüft; im Repo der Wellen-Betriebs-Form — im Paarungs-Commit nach dem `git mv` getragen, Ergebnis in §7.
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) — von der Welle-Closure geprüft; im Repo der Wellen-Betriebs-Form — im Paarungs-Commit nach dem `git mv` getragen, Ergebnis in §7.
 
 ## 3. Plan (vor Code)
 
@@ -144,6 +144,29 @@ Beleg (`evidence/slice-c5-vertrauensgrenzen-v7-0-0.md`) in der Closure nachgetra
 Eintrags (`verkörpert`) bleibt. Sonst keine Beobachtung angefallen — die §8-Sichtung hielt (keine
 Register-Zeile trifft die Referenz-Achse; die einzige `ARC-`-Erwähnung des Registers betrifft
 nicht sie, Review-Urteil 4).
+
+**Drei Paarungen (geprüft am 2026-11-26, nach dem `git mv` — Form der Vorgänger-Slices):**
+
+- *(a) Anker:* §7 trägt kein `liegt in`-Feld — der Lern-Eintrag ist gezählt, nicht verkörpert
+  (Beleg: Register, `evidence/slice-c5-vertrauensgrenzen-v7-0-0.md`). Grün.
+- *(b) Folge-Slice:* §7 nennt als R1-Risiko-Ausgang die Kennung `slice-c7-adaptions-nachzuege-v7-0-0`
+  — Tafel-Kennung des C7-Zugs, wie auf der C6/C7-Zeile der
+  [Delta-Tafel](../../../../docs/plan/planning/welle-baseline-sprung-v7-0-0.md) §4
+  (*„Vorschlag; Slice-Datei entsteht beim Schnitt"*); keine Datei-Adresse genannt, die Paarung
+  trägt sie beim Schnitt. Grün — mit dem Grenz-Vermerk, dass die Kennung bis zum Schnitt nur die
+  Tafel trägt.
+- *(c) Register:* die eine in §7 genannte Beobachtung existiert als Verzeichnis und trägt einen
+  nicht leeren Beleg — [`BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt`](../observations/BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt/observation.md)
+  (8 Belege). Grün.
+
+**Ruhe-Marker:** [`roadmap.md`](../in-progress/roadmap.md) §Offene Wellen — `in-progress/` trägt
+nach dem `git mv` nur ihr `roadmap.md`; der Marker „Nichts in Arbeit." trifft den Zustand
+(Gegenstück der Zug-Form `d29be86c`).
+
+**Paarungen geprüft am 2026-11-26:** `make docs-check` → 3012 Datei(en) geprüft, 0 Befund(e)
+(frische Messung am Paarungs-Commit; der Move-Stand trug Post-Move-Zustand ohne die hier
+getragenen Hälften — Paarungs-Häkchen, Ruhe-Marker). `make gates` — grün am Zug-Ende gemessen
+nach diesem Paarungs-Commit (Stempel deckt HEAD).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
