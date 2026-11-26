@@ -29,7 +29,10 @@ scan:
   # GRENZE, keine Regel: der Eintrag ist EXTENSIONAL GESCHLOSSEN auf genau diese eine
   # Datei (ADR-0017). Jeder weitere Eintrag ist eine neue Senkung nach AGENTS.md 3.5
   # und braucht seine eigene ADR — auch dann, wenn er dieselbe Bedingung erfuellt.
-  ignore: ["**/*.template.md", ".tmp/**", ".harness/baseline/**", "docs/user/claude-hooks-referenz.md", "docs/plan/adr/0013-technik-stratum-als-zielort.md"]
+  # .harness/stamp/**: die committete Stempel-Klasse — Roh-Ergebniskoerper der Mutations-CI-Laeufe
+  # (ADR-0103 Festlegungen 1 und 3; kein Lauf-Urteil ist Doku-Material). Getroffen ist der Baum
+  # .harness/stamp/ in seiner Gesamtheit, heute als .txt-Records, nicht nur sein heutiger Inhalt.
+  ignore: ["**/*.template.md", ".tmp/**", ".harness/baseline/**", ".harness/stamp/**", "docs/user/claude-hooks-referenz.md", "docs/plan/adr/0013-technik-stratum-als-zielort.md"]
 modules: [links, anchors, ids, matrix, codepaths, spans, planning, targets, structure, pinsync]
 # planning (hermetisch, kein git, opt-in): haelt die Lifecycle-Invariante ueber dem
 # Abschnitt "## Offene Wellen" der Roadmap — der Ruhe-Marker steht dort genau dann,
@@ -515,6 +518,14 @@ codepaths:
     # docs/plan/planning/done/ (Adresse eines Vorgangs, den es gab) und im Beobachtungs-Register
     # docs/plan/planning/observations/ (eine Beobachtung beschreibt den Wegfall der Datei).
     - docs/plan/planning/observations.md
+    # Mutations-Records (ADR-0103, supersedes ADR-0102): das Verzeichnis wanderte — die Records
+    # liegen als committete Stempel-Klasse in .harness/stamp/mutate/, das hier genannte Verzeichnis
+    # ist die gewanderte Adresse eines Vorgangs, den es gab. Genannt in docs/plan/adr/ (der Kern der
+    # eingefrorenen ADR-0102, AGENTS.md 3.4) und in den Zeitdokumenten unter docs/plan/planning/done/.
+    - docs/reviews/mutate/
+    # Derselbe Zug (ADR-0103 Festlegung 3): die genauere Record-Adresse unter dem wanderten
+    # Verzeichnis. Genannt in den Zeitdokumenten unter docs/plan/planning/done/.
+    - docs/reviews/mutate/slice-d-check-sprung-v0930-625cdef0-gruen.txt
 # vcs (git-basiert, braucht .git + eine Commit-Range — strikt opt-in, NICHT in
 # modules: oben: ein hermetischer docs-check-Lauf ohne Range liefe damit ins
 # Leere, LH-QA-01). Haelt den Kern einer angenommenen ADR ueber die Range
