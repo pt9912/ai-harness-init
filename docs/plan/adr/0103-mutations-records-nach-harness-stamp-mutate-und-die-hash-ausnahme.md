@@ -169,3 +169,4 @@ Permanent in der Form „gilt unbefristet" — bis eine dieser Bedingungen eintr
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-11-26 | Accepted; supersedes [`ADR-0102`](0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md) — Ablageort `.harness/stamp/mutate/` und Hash-Ausnahme `.harness/stamp/` | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| 2026-11-26 | Festlegung 4 abgelöst durch [ADR-0104](0104-die-fall-beleg-zeile-der-festlegung-4-von-adr-0103-der-erste-bats-fall-ist-rot.md) — die Fall-Beleg-Zeile trägt die erste-bats-Fall-Fassung; der übrige Kern bleibt unverändert | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
