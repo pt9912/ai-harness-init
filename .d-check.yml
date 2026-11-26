@@ -485,7 +485,15 @@ matrix:
   # das zurueck, was die Klasse aussen hinzufuegt. Die Slice-Dateien in done/ bleiben
   # ausdruecklich drin — ein done/** naehme sie aus der Status-Pruefung heraus, und das
   # waere eine Senkung nach AGENTS.md §3.5.
-  exempt-paths: ["docs/plan/adr/README.md", "docs/reviews/**", "docs/plan/planning/done/welle-*.md"]
+  # Vierte Ausnahme, eigene Entscheidung (ADR-0105): die ADR-0103 traegt in ihrem
+  # Kern und ihrer Geschichte-Zeile Markdown-Links auf die supersedete ADR-0102 und
+  # ist nach AGENTS.md 3.4 eingefroren - der Status-Befund (matrix-inactive, 4
+  # Fundstellen) ist in ihr nicht behebbar, und die ignore-refs-Paare schalten die
+  # Status-Achse der matrix nicht stumm (Sonden-Messung je ADR-0105). Der Gegenstand
+  # ist genau diese eine eingefrorene Datei; die Restbreite ist strukturell null.
+  # Senkung nach AGENTS.md 3.5, getragen von ADR-0105 mit Entfall-Trigger.
+  # GRENZE, keine Regel: dieses eine Pfad-Element entfaellt erst mit ADR-0105.
+  exempt-paths: ["docs/plan/adr/README.md", "docs/plan/adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md", "docs/reviews/**", "docs/plan/planning/done/welle-*.md"]
   exclude-sections: [Historie, "7. Historie", "8. Historie", Geschichte]
 codepaths:
   roots: [spec, docs, harness]                                  # tools/cmd/internal folgen mit dem Go-Code (Phase 3); Harness-Tools liegen unter harness/tools/ (MR-005)
