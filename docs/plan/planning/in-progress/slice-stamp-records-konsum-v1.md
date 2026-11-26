@@ -56,7 +56,7 @@ Spec-Stelle ([`ADR-0107`](../../adr/0107-die-mutations-record-granularitaet-ist-
 trägt [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md)
 §CI-Branch. Der Verweis zeigt **aufwärts**: Die Spec nennt diesen Slice nie.
 
-**Verantwortlich:** pt9912
+**Verantwortlich:** pt9912 (Zweig impl/slice-stamp-records-konsum-v1)
 <!-- BEDIENHINWEIS: Verantwortlich hält die Arbeit — der Rolleninhaber der
 Implementer-Rolle, gesetzt beim Übergang open→next (Baseline-Regelwerk
 modul-05-planning-harness.md §Lifecycle als State Machine). Der Autor schrieb
