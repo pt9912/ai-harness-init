@@ -415,6 +415,21 @@ ignore-refs:
   # Deckung: 1
   - in: "docs/plan/adr/0100-die-gegenmessung-schrumpft-auf-die-einheimische-flaeche.md"
     refs: [".harness/baseline/**"]
+  # Elftes Paar, eigene Entscheidung (ADR-0105): die vier Supersedes-Verweis-Zeilen und
+  # die Geschichte-Zeile der ADR-0103 tragen Markdown-Links auf die supersedete ADR-0102;
+  # deren Status („Superseded by [ADR-0103](…)" je 075b84a4) faerbt sie in der Quelldatei
+  # (matrix-inactive, 4 Fundstellen im Kern). Die Quelldatei ist nach AGENTS.md 3.4 eingefroren
+  # — der Befund ist in ihr nicht behebbar; die Marker-Form waere die Reparatur gewesen, ist
+  # aber selbst ein Kern-Nachzug und ist je ADR-0105 auf den Accept-Stand zurueckgenommen.
+  # Warum daraus eine Ausnahme folgt und keine Reparatur, steht in ADR-0105.
+  # `refs` ist der AUFGELOESTE Pfad (ADR-0034, Sonden-Tabelle); die Deckung misst die
+  # Markdown-Achse: 5 resolved Inline-Links aus der Quelldatei (4 im Kern, 1 Geschichte-Zeile),
+  # gemessen an test/ignore-refs-restbreite.bats.
+  # GRENZE, keine Regel: EXTENSIONAL GESCHLOSSEN auf dieses eine Paar (ADR-0105). Jeder
+  # weitere Eintrag ist eine neue Senkung nach AGENTS.md 3.5 und braucht seine eigene ADR.
+  # Deckung: 5
+  - in: "docs/plan/adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md"
+    refs: ["docs/plan/adr/0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md"]
 # Kennungen sind linkpflichtig (auch in Inline-Code, link-policy: always) —
 # "klickbar zur Quelle" als gemessenes Property. Literal-schwere Artefakte
 # (Review-Reports, CHANGELOG) ausgenommen.
