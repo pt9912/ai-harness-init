@@ -1,10 +1,12 @@
 # MR-048 — Der Reproduzierbarkeits-Anker ist die Rezept-Form, die emittierten Skelette pinnen per Tag
 
 > **ÜBERHOLT: der Halbsatz im Feld Geltungsbereich, die zwei Regeln aus `modul-14-docker-harness.md` §Multi-Stage-Build *„bleiben dort offen"* bei slice-146 → [`MR-088`](../conventions.md#mr-088--zwei-multi-stage-regeln-aus-modul-14-bleiben-unentschieden-und-ohne-träger).** Die übrigen Aussagen gelten fort.
+>
+> **Terminologie-Stand:** der Begriff, den der Titel führt — *Reproduzierbarkeits-Anker* — heißt in der `v7.0.0`-Fassung des Moduls 14 *Träger der Umgebungs-Zusage* (§Die Umgebungs-Zusage — Anforderung vor Träger; §Zwei Formen des Belegs beim Docker-Träger). Die Titel-Zeile bleibt die Adresse (`AGENTS.md` §3.11); die Zellen unten tragen die Formen, in denen der Eintrag sie schreibt.
 
 - **Datum:** 2026-09-03
 - **Wirksamkeits-Anlass:** slice-160 — die Docker-Form dieses Repos gegen die Ziel-Fassung.
-- **Geltungsbereich:** die **Anker-Frage** auf beiden Ebenen, getrennt beantwortet —
+- **Geltungsbereich:** die **Träger-Frage** (§Zwei Formen des Belegs beim Docker-Träger) auf beiden Ebenen, getrennt beantwortet —
   `Dockerfile`, `Makefile` und `d-check.mk` (Dogfood) sowie die Skelett-Vorlagen in
   [`internal/gen/golang.go`](../../internal/gen/golang.go) und
   [`internal/gen/cpp.go`](../../internal/gen/cpp.go) (emittierte Ebene). **Nicht** die zwei
@@ -51,12 +53,12 @@
   (Go-Toolchain) auf **Tag/Digest** gepinnt — kein floating main"* und lässt beide Formen
   ausdrücklich zu. Ein Digest im Skelett nähme dem Adopter den Knopf, den die Vorlage ihm gibt
   (`GO_VERSION`, `CXX_VERSION`), ohne dass eine Quelle dieses Repos ihm die Rezept-Form
-  vorschreibt: **welche Anker-Form ein emittiertes Repo führt, entscheidet sein Betreiber.**
+  vorschreibt: **welche Träger-Form ein emittiertes Repo führt, entscheidet sein Betreiber.**
   Dieses Repo liefert eine Vorlage, keine Reproduzierbarkeits-Zusage über fremde Bäume.
 - **Gemessen gegen den Text, nicht gegen das Thema.**
   [`ADR-0003`](../../docs/plan/adr/0003-go-native-binaries.md) §Entscheidung streicht das eigene
   OCI-Image als *Vertriebsmittel* und ist damit der Grund, warum keine Archiv-Form besteht — die
-  **Anker-Frage** entscheidet sie nicht: *aufbewahren, um einen Lauf zu wiederholen* und
+  **Träger-Frage** entscheidet sie nicht: *aufbewahren, um einen Lauf zu wiederholen* und
   *ausliefern* sind zwei Vorgänge, und die ADR spricht nur über den zweiten. Der Kurzschluss,
   den [`BEO-008`](../../docs/plan/planning/observations/BEO-ALL/adaptions-achse-1-kurzschluss/observation.md) führt, ist hier ausdrücklich
   vermieden.
