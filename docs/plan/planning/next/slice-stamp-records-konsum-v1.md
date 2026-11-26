@@ -104,8 +104,10 @@ Festlegung 1–5; der Anhang urteilt nicht, er verwandelt.
   Treiber ausdrücklich aus (§1, Abgrenzung 1, *„anderer Vorgang"*); seine
   Keys und seine Kante werden weder angetastet noch hier fortgeschrieben.
 - *(Bestand bleibt bewusst stehen.)* Die vier Lauf-Urteil-Files des
-  Erstbestands unter `.harness/stamp/mutate/` bleiben in der
-  ADR-0102-Retro-Form ohne Nachrüsten
+  Erstbestands unter `.harness/stamp/mutate/` bleiben ohne Nachrüsten in der
+  Beleg-Form der Lauf-Urteil-Granularität — der Fassung, die
+  [`ADR-0103`](../../adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md)
+  beim Ablageort-Wechsel unverändert von ihrer Vorgänger-Fassung nahm
   ([`ADR-0107`](../../adr/0107-die-mutations-record-granularitaet-ist-je-fall.md)
   Festlegung 4) — neue Läufe schreiben in der Fall-Form, der Altbestand wird
   nicht konvertiert und nicht konsumiert.
@@ -178,7 +180,6 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md)
       §CI-Branch, getragen als Liefer-Punkt 3.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Reconciliation-Register (`../reconciliation.md`) fortgeschrieben, **falls dieser Slice einen Inventur-Fund auflöst** — Zeile mit Datum und auflösendem Artefakt nach *Aufgelöste Einträge* verschoben. Repos ohne Brownfield-Bootstrap haben die Datei nicht; dann entfällt das Item.
 - [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
@@ -345,8 +346,9 @@ Record-Ablage); falls im Lauf eine anfällt, trägt sie die Closure
 - **Phase-Reife:** Phase 5 — die Tools laufen in `make gates`, ihr Wächter
   (`mutate`) in der Nacht-CI.
 - **Evidenz-/Diskrepanz-Risiko:** niedrig — der Konsum ist neu (GF), die
-  Grenzen der ADR-0107 trägt die Form selbst; keine offene Beobachtung an
-  dieser Ebene.
+  Grenzen trägt
+  [`ADR-0107`](../../adr/0107-die-mutations-record-granularitaet-ist-je-fall.md)
+  in der Form selbst; keine offene Beobachtung an dieser Ebene.
 - **Reconciliation-Aufwand:** kein Inventur-Fund im Zug; Graduation-Trigger
   nichts — der Unterbaum `HASH_AUSNMEN` trägt die Fall-Files bereits.
 
