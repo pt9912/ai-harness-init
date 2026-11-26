@@ -74,7 +74,7 @@ Zweifel der volle Lauf über `make record-gates` (fail-closed).
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Der Mutations-Treiber bleibt, wie er ist** — sein Beleg-Slot und sein
-  SKIP sind von seiner eigenen Ablage getragen (ADR-0035-Festlegung 5), nicht
+  SKIP sind von seiner eigenen Ablage getragen (Festlegung 5 je ADR-0035, inline-Code-Kennform), nicht
   von dieser Stempel-Ablage; das wäre ein anderer Vorgang. Ob die Festlegungen
   1/2/4 als allgemeine Regel taugen, prüft Re-Evaluierungs-Trigger 3 von
   [ADR-0035](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md);
@@ -202,7 +202,7 @@ Zweifel der volle Lauf über `make record-gates` (fail-closed).
    je-Check-Key und keinen*; beide Anlage-Formen nach
    [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit),
    gemessen über dem realen Skript.
-7. **Die ADR-0103-Ablage bleibt, die ADR-0108-Synthese fasst die Formen** —
+7. **Die ADR-0103-Ablage (inline-Code-Kennform) bleibt, die ADR-0108-Synthese fasst die Formen** —
    die Hash-Ausnahme `.harness/stamp/**` bleibt unverändert in Kraft; die
    begleitende ADR des Architect-Sub-Zugs (Start-Trigger §4) nennt die zwei
    Stempel-Klassen bei dieser Erweiterung — `.harness/state/` (je Check +
