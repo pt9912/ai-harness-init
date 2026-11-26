@@ -9,20 +9,20 @@ aus `open/` oder `next/` nach `done/` — §7 nennt in der Zeile `Gegenstand:`
 Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 (§Ein Slice, dessen Gegenstand ein anderer übernimmt).
 
-**Welle:** ohne Welle ([`MR-037`](../../../../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst):
+**Welle:** ohne Welle ([`MR-037`](../../../../harness/conventions.md#mr-037--wellenlose-arbeit-ist-jetzt-baseline-default-ihr-auslöser-test-ist-neu-gefasst):
 der Baseline-Test ist das *Mehr* — eine beobachtbare Closure-Bedingung, die mehr
 beobachtet als die DoD dieses Slice; es gibt keine, der Closure-Trigger unten
 wäre die Abschrift der eigenen DoD). Wellenlose Arbeit erscheint nicht in der
 Roadmap (Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht).
 
 **Bezug:**
-[`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
+[`LH-QA-01`](../../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
 (der SKIP behauptet kein Verdikt, das der Schlüssel nicht deckt — das
 Zulässigkeits-Kriterium, [ADR-0035](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
 Festlegung 2),
-[`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)
+[`LH-QA-02`](../../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)
 (dieselbe Eingabe, dasselbe Verdikt — die Invariante des Beleg-Übersprungs),
-[`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)
+[`LH-QA-03`](../../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)
 (der Key entsteht aus dem, was der Host ohnehin trägt),
 [ADR-0035](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
 (Form-Präzedenz: Beleg statt Lauf, Prüfgegenstand-Bezugsmenge, benannter Rest, fail-closed),
@@ -32,10 +32,10 @@ Festlegung 2),
 (der Stempelvertrag des Stop-Hooks),
 [ADR-0103](../../adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md)
 (die Hash-Ausnahme `.harness/stamp/**` — Record-Konsum rotiert nichts),
-[`MR-050`](../../../../../harness/conventions.md#mr-050--zwei-gate-ziele-fahren-ohne---no-cache-filter-weil-ihr-cache-schlüssel-den-prüfgegenstand-deckt)
+[`MR-050`](../../../../harness/conventions.md#mr-050--zwei-gate-ziele-fahren-ohne---no-cache-filter-weil-ihr-cache-schlüssel-den-prüfgegenstand-deckt)
 (das Deckungs-Kriterium),
-[`MR-071`](../../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)
-/ [`MR-090`](../../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit)
+[`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)
+/ [`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit)
 (Anlage-Disziplin der neuen Mutations-Fälle).
 
 **Berührte Spec-Stellen:** `spec/architecture.md` §5 — die Ordnungskante
@@ -111,7 +111,7 @@ Zweifel der volle Lauf über `make record-gates` (fail-closed).
       (Mengen-Messung gegen den im Lauf gelesenen Bestand), nicht angenommen —
       Messrezept je Check im Kopf des Satzerzeugers. Ein Check ohne
       verwertbare Definition fährt voll (fail-closed,
-      [`MR-017`](../../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)).
+      [`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)).
 - [ ] **Liefer-Punkt 2:** `make gates` fährt nur die gedrifteten Checks —
       SKIP nur über dem vollständig gedeckten je-Check-Satz, Teildrift fährt
       genau die gedrifteten Checks und schreibt nur deren Stempel;
@@ -119,7 +119,7 @@ Zweifel der volle Lauf über `make record-gates` (fail-closed).
       nennt ihn ([ADR-0035](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
       Festlegung 4). CI läuft unverändert voll — kein Stempel-Konzept auf CI,
       alle Keys unformal → alle Checks gedriftet (dasselbe Verhältnis wie
-      Tier-1, [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
+      Tier-1, [`LH-QA-02`](../../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
 - [ ] **Liefer-Punkt 3:** der Stop-Hook blockt über der Mischform — HEAD-Kante
       unverändert ([ADR-0083](../../adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md)),
       die je-Check-Keys als Deckungs-Kriterium daneben; unlesbarer oder
@@ -132,8 +132,8 @@ Zweifel der volle Lauf über `make record-gates` (fail-closed).
 - [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: die Zeile `make gates` in [`harness/README.md`](../../../../../harness/README.md)
-      und [`harness/sensors/gates.md`](../../../../../harness/sensors/gates.md)
+- [ ] Doku-Update: die Zeile `make gates` in [`harness/README.md`](../../../../harness/README.md)
+      und [`harness/sensors/gates.md`](../../../../harness/sensors/gates.md)
       §Fast-Pfad nennt die Tier-2-Form — öffentlicher Vertrag berührt.
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben —
@@ -181,7 +181,7 @@ Zweifel der volle Lauf über `make record-gates` (fail-closed).
    Festlegung 2); je-Check-Betroffenheit: alle Image-fahrenden Checks
    (`lint`, `build`, `test`, `host-bin` — die Image-Digests stehen in
    getrackten Dateien und sind transitiv im Key, der Cache-*Zustand* ist
-   keine Adresse [`MR-050`](../../../../../harness/conventions.md#mr-050--zwei-gate-ziele-fahren-ohne---no-cache-filter-weil-ihr-cache-schlüssel-den-prüfgegenstand-deckt)),
+   keine Adresse [`MR-050`](../../../../harness/conventions.md#mr-050--zwei-gate-ziele-fahren-ohne---no-cache-filter-weil-ihr-cache-schlüssel-den-prüfgegenstand-deckt)),
    ebenso die übrigen über Host-Werkzeuge. Träger bleibt `GATES_FORCE=1`
    samt Meldung; auf der je-Check-Ebene nennt jede SKIP-Meldung den Rest.
 5. **Stop-Hook: Mischform** — die HEAD-Kante bleibt unverändert
@@ -190,17 +190,17 @@ Zweifel der volle Lauf über `make record-gates` (fail-closed).
    alle Check-Stempel und vergleicht je Prüfgegenstand-Hash gegen den
    Satzerzeuger; ein nicht deckender Check blockt. Fail-closed in beide
    Richtungen: fehlender oder unformaler Stempel und Satzerzeuger-Fehler
-   blocken, statt freizugeben ([`MR-017`](../../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)).
+   blocken, statt freizugeben ([`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)).
 6. **Mutations-Bestand zieht nach, zwei Fälle kommen** — die Fälle
    212 (Wrapper-Verdrahtung), 213 (Kanten-Liste), 214 (baseline-verify
    als erster), 637 (`MUTATE_CASES`-Verbot) greifen weiter, weil die Kante
    unverändert bleibt; ihre Anker werden gegen den Quell-Bestand erneut
-   gemessen ([`MR-071`](../../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)).
+   gemessen ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)).
    Je neu: (a) *drifted-Check läuft, ungeändert-Check fährt keinen Lauf und
    behält seinen Stempel byte-gleich*; (b) *Record-only-Commit fährt nichts —
    ein Commit, der allein `.harness/stamp/**` bewegt, rotiert keinen
    je-Check-Key und keinen*; beide Anlage-Formen nach
-   [`MR-071`](../../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[`MR-090`](../../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit),
+   [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit),
    gemessen über dem realen Skript.
 7. **Die ADR-0103-Ablage bleibt, die ADR-0108-Synthese fasst die Formen** —
    die Hash-Ausnahme `.harness/stamp/**` bleibt unverändert in Kraft; die
@@ -214,13 +214,13 @@ Zweifel der volle Lauf über `make record-gates` (fail-closed).
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `harness/tools/gates-keys.sh` (Name beim Implementer) | neu | Schlüssel-Satzerzeuger je Check: je Check der Kante eine deklarierte Bezugsmenge (Tafel unten) — **eine** Definition, drei Leser (Schreiber, Fast-Pfad, Stop-Hook); fail-closed: unbekannter oder undefinierter Check → voller Lauf ([`MR-017`](../../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)) |
+| `harness/tools/gates-keys.sh` <!-- d-check:ignore (Platzhalter: entsteht im Implementer-Zug, MR-071-Form) --> (Name beim Implementer) | neu | Schlüssel-Satzerzeuger je Check: je Check der Kante eine deklarierte Bezugsmenge (Tafel unten) — **eine** Definition, drei Leser (Schreiber, Fast-Pfad, Stop-Hook); fail-closed: unbekannter oder undefinierter Check → voller Lauf ([`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)) |
 | `harness/tools/gates-fast.sh` | update | die SKIP-Bedingung tritt vom Stempel-Paar (Tier-1) auf den je-Check-Satz (Tier-2); bei Teildrift Fahrt der gedrifteten Checks über `make <check>` |
 | `harness/tools/record-gates.sh` | update | schreibt je Check nach dessen grünem Exit seinen je-Check-Key; die zwei Gesamt-Dateien bleiben ([ADR-0083](../../adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md)) |
 | `.claude/hooks/stop-require-gates.sh` | update | Block-Kriterium: HEAD-Kante unverändert, je-Check-Deckung daneben (Festlegung 5) |
 | `Makefile` | update | die Kante selbst bleibt — `record-gates: <Checks>` unverändert (Mutations-Fälle 213/214 greifen weiter); Rezept-Kommentar nennt die Tier-2-Form |
 | `test/gate-nachweis-kante.bats`, `test/gates-fastpfad.bats` | update | Wächter-Bestand auf die je-Check-Form gezogen; die Zusagen des Kanten-Wächters bleiben, keiner gestrichen (Form des Tier-1-Closures) |
-| `test/mutations/212`, `213`, `214`, `637` | update | Anker gegen den Quell-Bestand erneut gemessen ([`MR-071`](../../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)); die vier greifen über der neuen Form weiter |
+| `test/mutations/212`, `213`, `214`, `637` | update | Anker gegen den Quell-Bestand erneut gemessen ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)); die vier greifen über der neuen Form weiter |
 | `test/mutations/<zwei neue Fälle>` | neu | die zwei Fälle aus Festlegung 6 (je Testart: Anlage-Form gemessen am Bestand, Negative/Happy) |
 | `harness/README.md`, `harness/sensors/gates.md` | update | die Zeile `make gates` nennt die Tier-2-Form und die Grenze der Gesamt-Deckung (kein Abschnitt geleert) |
 
