@@ -1102,7 +1102,7 @@ matrixdown_doc="$tmprepo/spec/lastenheft.md"
 cp "$matrixdown_doc" "$matrixdown_doc.orig"
 psed_i '5a\
 \
-Siehe [spec/spezifikation.md](spezifikation.md) fuer Details (Abwaertslink, Zahn).
+Siehe [spec/specification.md](specification.md) fuer Details (Abwaertslink, Zahn).
 ' "$matrixdown_doc"
 matrixdownzahn_rc=0
 matrixdownzahn_out="$( make -C "$tmprepo" docs-check 2>&1 )" || matrixdownzahn_rc=$?
