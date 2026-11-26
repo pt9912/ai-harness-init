@@ -5,5 +5,5 @@
   nicht ausgelöst durch einen Baseline-Stand, sondern durch die
   Auftraggeber-Entscheidung vom 2026-11-25: d-check testet das Werkzeug selbst
   upstream; die Bilanz eines d-check-Sprungs ist die einheimische Fläche
-  ([ADR-0100](../../../docs/plan/adr/0100-die-gegenmessung-schrumpft-auf-die-einheimische-flaeche.md)).
+  (`ADR-0100` <!-- d-check:ignore (Supersedes-Lineage: die Setzungen stehen unverändert in der Teil-supersededten ADR-0100, ADR-0101 Supersedes-Feld) -->).
   Den Rumpf trägt `git`.

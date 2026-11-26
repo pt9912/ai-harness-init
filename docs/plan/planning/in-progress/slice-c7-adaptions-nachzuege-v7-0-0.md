@@ -30,13 +30,13 @@ Commit mit Rollen-Kennzeichnung, Fundlisten je Kommando ([`MR-051`](../../../../
 - **(a) Architect-Sub-Zug — CI-Nachheilung Architektur (rote Jobs `adr-immutable`
   des Laufs `d29be86c`):** der C2-Verweis-Zug `0a080df5` änderte eine Pfad-Zeile
   (`v6.18.1` → `v7.0.0`, Modul-13-Link der Bilanz-Zeile, Z. 134) **im Kern einer
-  `Accepted`-ADR** [`0100-die-gegenmessung-schrumpft-auf-die-einheimische-flaeche.md`](../../../../docs/plan/adr/0100-die-gegenmessung-schrumpft-auf-die-einheimische-flaeche.md) —
+  `Accepted`-ADR** `ADR-0100` <!-- d-check:ignore (Supersedes-Lineage: der Status-Übergang entsteht im Architektur-Sub-Zug, LP1) --> —
   Heilung: **Kern-Revert** auf den Entstehungsstand `39f57f73` nur in dieser
-  Pfad-Zeile, plus **Folge-ADR `ADR-0101` mit `supersedes`** <!-- d-check:ignore (entsteht mit dem Architektur-Sub-Zug, LP1) --> für die korrigierte
+  Pfad-Zeile, plus **Folge-ADR [`ADR-0101`](../../../../docs/plan/adr/0101-die-baseline-verweis-form-in-adrs.md) mit `supersedes`** für die korrigierte
   Verweis-Form der Baseline-Verweise in ADRs (Anker-Form: Inline-Code mit
   Pfad-Angabe statt Markdown-Link auf den rotierenden `.harness/baseline/<tag>/`-Baum),
   damit der nächste Sprung den ADR-Kern nicht mehr berührt; ADR-Index-Update
-  ([`AGENTS.md`](../../../../AGENTS.md) §5). Commit-Form: `Rolle Architect: ADR-0101 …` <!-- d-check:ignore (entsteht mit dem Architektur-Sub-Zug, LP1) -->.
+  ([`AGENTS.md`](../../../../AGENTS.md) §5). Commit-Form: `Rolle Architect: ADR-0101 …` für den Umzug der ADR-0101-Datei in den Index<!-- d-check:ignore (Form-Zitat der Commit-Message, kein Bestand) -->.
 - **(b) Implementer-Sub-Zug — CI-Nachheilung Bestand (roter Job `full-smoke`)
   + C5-Übergaben:** [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md)
   — die Skelett-Zahl Z. 513 (`55` → `56`; am Plangrund gemessen:
@@ -83,7 +83,7 @@ Span färbt, im fenced Block nicht).
 
 Liefer-Punkte (drei; gezählt nach [`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)):
 
-- [ ] **LP1 — Architektur-Form-Heilung (Architect-Sub-Zug):** [`ADR-0100`](../../../../docs/plan/adr/0100-die-gegenmessung-schrumpft-auf-die-einheimische-flaeche.md)-Kern
+- [ ] **LP1 — Architektur-Form-Heilung (Architect-Sub-Zug):** `ADR-0100` <!-- d-check:ignore (Supersedes-Lineage: der Status-Übergang entsteht im Architektur-Sub-Zug, LP1) -->-Kern
   byte-genau am Entstehungsstand je Pfad-Zeile 134 (Revert), [`ADR-0101`](../../../../docs/plan/adr/)
   mit `supersedes` angenommen (Anker-Form der Baseline-Verweise in ADRs),
   ADR-Index-Update; Messung: `make adr-immutable` grün je Range ab `39f57f73`
@@ -126,7 +126,7 @@ in §7, Fundlisten je Sub-Zug.
 
 - **R1 — der Revert liest in einer inzwischen gewanderten Umgebung:** nach dem
   Revert verweist die Z. 134 auf den `v6.18.1`-Baum, der Bestand daneben auf
-  `v7.0.0`. Ausgang: *eingetreten* → `ADR-0101` <!-- d-check:ignore (entsteht mit dem Architektur-Sub-Zug, LP1) --> nennt die Anker-Form und die
+  `v7.0.0`. Ausgang: *eingetreten* → [`ADR-0101`](../../../../docs/plan/adr/0101-die-baseline-verweis-form-in-adrs.md) nennt die Anker-Form und die
   beiden Stande; *entfallen* → keine zweite Kern-Zeile (Fundliste des Diffs
   trägt die 0).
 - **R2 — Inventur-Texte an Tests hängend:** die Zellen der

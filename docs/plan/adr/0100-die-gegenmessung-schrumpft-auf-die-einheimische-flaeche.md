@@ -1,6 +1,6 @@
 # ADR-0100: Upstream testet das Werkzeug — die Gegenmessung eines d-check-Sprungs schrumpft auf die einheimische Fläche
 
-**Status:** Accepted
+**Status:** Superseded by [ADR-0101](0101-die-baseline-verweis-form-in-adrs.md)
 
 **Datum:** 2026-11-25
 

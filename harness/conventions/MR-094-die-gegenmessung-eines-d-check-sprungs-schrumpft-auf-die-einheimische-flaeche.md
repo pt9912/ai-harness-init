@@ -19,7 +19,7 @@
   [`AGENTS.md`](../../AGENTS.md) §3.5) entfallen als Form künftiger Sprünge. Sein eigener
   [`Auflösungs-Trigger`](../conventions.md#mr-063--die-gegenmessung-eines-d-check-sprungs-gibt-jedem-aktiven-modul-eine-basis-und-lässt-die-symlinks-stehen)
   trat nicht ein; die Ablösung ist eine Auftrags-Entscheidung
-  ([ADR-0100](../../docs/plan/adr/0100-die-gegenmessung-schrumpft-auf-die-einheimische-flaeche.md)),
+  (`ADR-0100` <!-- d-check:ignore (Supersedes-Lineage: die Setzungen stehen unverändert in der Teil-supersededten ADR-0100, ADR-0101 Supersedes-Feld) -->),
   kein Trigger-Artefakt.
 - **Ausgelöst durch Baseline-Stand:** keiner — dieselbe Lage wie
   [`MR-053`](../conventions.md#mr-053--ein-eintrag-datiert-seine-werkzeug-aussage-statt-den-lebenden-pin-zu-führen)
@@ -63,16 +63,16 @@
   lokal kein Beweis — die Sonden-Form von `MR-063` trug das als Fassung, hier entfällt sie. Der
   Rest hängt an einem Upstream-Beleg und ist hier nicht mechanisch fassbar; den Nachweis, dass das
   Werkzeug upstream testet, liest der Lauf aus der Werkzeug-Suiten-Lage am Sprung, und die
-  Re-Evaluierungs-Bedingungen von [ADR-0100](../../docs/plan/adr/0100-die-gegenmessung-schrumpft-auf-die-einheimische-flaeche.md)
+  Re-Evaluierungs-Bedingungen von `ADR-0100` <!-- d-check:ignore (Supersedes-Lineage: die Setzungen stehen unverändert in der Teil-supersededten ADR-0100, ADR-0101 Supersedes-Feld) -->
   fangen den Fall, dass ein Modul gegen die einheimische Fläche struktur-unterschiedlich bleibt.
   Kein `make`-Target trägt den Symlink-Smoke — bewusst: der Smoke misst einen Punkt am Sprung,
   kein Bestand. **Ein Wächter für die Bilanz selbst existiert nicht:** Träger ist der Lauf, der
   den Sprung bilanziert.
 - **Begründung.** d-check testet das Werkzeug selbst upstream; die je-Modul-Sonden missten
   Werkzeug-Verhalten, das die Werkzeug-Testsuite an der Quelle fährt, und ihr Inventar wuchs mit
-  jedem Modul. [ADR-0100](../../docs/plan/adr/0100-die-gegenmessung-schrumpft-auf-die-einheimische-flaeche.md)
+  jedem Modul. `ADR-0100` <!-- d-check:ignore (Supersedes-Lineage: die Setzungen stehen unverändert in der Teil-supersededten ADR-0100, ADR-0101 Supersedes-Feld) -->
   trägt die Abwägung.
 - **Auflösungs-Trigger:** permanent bis ein Upstream-Tests-Nachweis die einheimische Fläche
-  übernimmt (Bedingung 1 von [ADR-0100](../../docs/plan/adr/0100-die-gegenmessung-schrumpft-auf-die-einheimische-flaeche.md));
+  übernimmt (Bedingung 1 von `ADR-0100` <!-- d-check:ignore (Supersedes-Lineage: die Setzungen stehen unverändert in der Teil-supersededten ADR-0100, ADR-0101 Supersedes-Feld) -->);
   fängt ein Modul gegen die einheimische Fläche struktur-unterschiedlich zu bleiben
   (Bedingung 2), tritt die Form zur Neuentscheidung — Folge-ADR mit `supersedes`.

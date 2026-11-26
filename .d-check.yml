@@ -397,6 +397,19 @@ ignore-refs:
   # Deckung: 2
   - in: "docs/plan/adr/0076-ausgaenge-zu-spec-5-luecken-ebene-und-traeger-offener-saetze.md"
     refs: [".harness/baseline/**"]
+  # Zehntes Paar, eigene Entscheidung (ADR-0101): der Kern-Revert einer Accepted-ADR
+  # (ADR-0100 Z. 134, Modul-13-Link der Symlink-Smoke-Bilanz) am Entstehungsstand
+  # 39f57f73 liest v6.18.1 — die Adresse ist nach dem Sprung v7.0.0 tot, und die
+  # Quelldatei ist nach AGENTS.md 3.4 eingefroren; der Befund ist in ihr nicht
+  # behebbar. Warum daraus eine Ausnahme folgt und keine Reparatur, steht in
+  # ADR-0101. `refs` ist baum-weit aus demselben Grund wie bei ADR-0079 Festlegung 1.
+  # Die Restbreite ist strukturell null: eine eingefrorene Datei bekommt keine
+  # zweite Referenz.
+  # GRENZE, keine Regel: EXTENSIONAL GESCHLOSSEN auf dieses eine Paar (ADR-0101). Jeder
+  # weitere Eintrag ist eine neue Senkung nach AGENTS.md 3.5 und braucht seine eigene ADR.
+  # Deckung: 1
+  - in: "docs/plan/adr/0100-die-gegenmessung-schrumpft-auf-die-einheimische-flaeche.md"
+    refs: [".harness/baseline/**"]
 # Kennungen sind linkpflichtig (auch in Inline-Code, link-policy: always) —
 # "klickbar zur Quelle" als gemessenes Property. Literal-schwere Artefakte
 # (Review-Reports, CHANGELOG) ausgenommen.
