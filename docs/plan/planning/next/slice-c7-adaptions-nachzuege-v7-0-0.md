@@ -32,11 +32,11 @@ Commit mit Rollen-Kennzeichnung, Fundlisten je Kommando ([`MR-051`](../../../../
   (`v6.18.1` → `v7.0.0`, Modul-13-Link der Bilanz-Zeile, Z. 134) **im Kern einer
   `Accepted`-ADR** [`0100-die-gegenmessung-schrumpft-auf-die-einheimische-flaeche.md`](../../../../docs/plan/adr/0100-die-gegenmessung-schrumpft-auf-die-einheimische-flaeche.md) —
   Heilung: **Kern-Revert** auf den Entstehungsstand `39f57f73` nur in dieser
-  Pfad-Zeile, plus **Folge-ADR `ADR-0101` mit `supersedes`** für die korrigierte
+  Pfad-Zeile, plus **Folge-ADR `ADR-0101` mit `supersedes`** <!-- d-check:ignore (entsteht mit dem Architektur-Sub-Zug, LP1) --> für die korrigierte
   Verweis-Form der Baseline-Verweise in ADRs (Anker-Form: Inline-Code mit
   Pfad-Angabe statt Markdown-Link auf den rotierenden `.harness/baseline/<tag>/`-Baum),
   damit der nächste Sprung den ADR-Kern nicht mehr berührt; ADR-Index-Update
-  ([`AGENTS.md`](../../../../AGENTS.md) §5). Commit-Form: `Rolle Architect: ADR-0101 …`.
+  ([`AGENTS.md`](../../../../AGENTS.md) §5). Commit-Form: `Rolle Architect: ADR-0101 …` <!-- d-check:ignore (entsteht mit dem Architektur-Sub-Zug, LP1) -->.
 - **(b) Implementer-Sub-Zug — CI-Nachheilung Bestand (roter Job `full-smoke`)
   + C5-Übergaben:** [`docs/user/benutzerhandbuch.md`](../../../../docs/user/benutzerhandbuch.md)
   — die Skelett-Zahl Z. 513 (`55` → `56`; am Plangrund gemessen:
@@ -59,7 +59,7 @@ Commit mit Rollen-Kennzeichnung, Fundlisten je Kommando ([`MR-051`](../../../../
   `freshness`-Doku-Formen; je veränderte Aussage der Test-Nachzug im selben Zug
   (Rot-Beleg je Zusage, Modul-11-Form). Fundlisten je Sub-Zug stehen in §7.
 
-**MR-057-Fundlisten-Form der C5-F2-Schreibweisen:** Pfad-Angaben in Fundlisten
+**[`MR-057`](../../../../harness/conventions.md#mr-057--die-kennungs-form-für-neue-slices-und-wellen-ist-der-name-nicht-die-nummer)-Fundlisten-Form der C5-F2-Schreibweisen:** Pfad-Angaben in Fundlisten
 stehen im fenced Block, nicht als Inline-Span (die C5-Form: blanke Kennung im
 Span färbt, im fenced Block nicht).
 
@@ -69,7 +69,7 @@ Span färbt, im fenced Block nicht).
   AGENTS.md §3.9-Docker-Form nebst dem Umgebungs-Mechanik-Satz). Klasse 1
   (Folge-Slice der Tafel); kein Zweitzug an dieselbe Stelle.
 - **Die Verbreiterung eines `ignore-refs`-Eintrags der [`.d-check.yml`](../../../../.d-check.yml)** —
-  Klasse 3 wie in C6: ADR-Pflicht (ADR-0026/ADR-0039-Form), je Fundstelle der
+  Klasse 3 wie in C6: ADR-Pflicht (Formen [`ADR-0026`](../../../../docs/plan/adr/0026-eingefrorene-referenz-referenz-weit-ausgenommen.md)/[`ADR-0039`](../../../../docs/plan/adr/0039-eingefrorene-adresse-in-den-vendored-baum.md)), je Fundstelle der
   `d-check:ignore`-Kommentar.
 - **Die übrigen `v6.18.1`-Fundstellen von [`harness/migration.md`](../../../../harness/migration.md)
   jenseits der Registerzeilen Z. 140–144** — Klasse 2: datierte Messung je
@@ -83,18 +83,18 @@ Span färbt, im fenced Block nicht).
 
 Liefer-Punkte (drei; gezählt nach [`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)):
 
-- [ ] **LP1 — Architektur-Form-Heilung (Architect-Sub-Zug):** ADR-0100-Kern
+- [ ] **LP1 — Architektur-Form-Heilung (Architect-Sub-Zug):** [`ADR-0100`](../../../../docs/plan/adr/0100-die-gegenmessung-schrumpft-auf-die-einheimische-flaeche.md)-Kern
   byte-genau am Entstehungsstand je Pfad-Zeile 134 (Revert), [`ADR-0101`](../../../../docs/plan/adr/)
   mit `supersedes` angenommen (Anker-Form der Baseline-Verweise in ADRs),
   ADR-Index-Update; Messung: `make adr-immutable` grün je Range ab `39f57f73`
   (der Wächter über der Kern-Form), `make docs-check` grün.
 - [ ] **LP2 — Bestands-Nachzüge (Implementer-Sub-Zug):** die benannten Stellen
-  des benutzerhandbuchs (Z. 513, 529, 816/826), MR-031-Z. 106–107 und
+  des benutzerhandbuchs (Z. 513, 529, 816/826), [`MR-031`](../../../../harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline)-Z. 106–107 und
   migration.md-Z. 140–144 je Fundstellen-Form; Fundliste je Kommando in §7;
   `make docs-check` grün; CI-Klasse (`full-smoke`-Befund) am Welle-Closure-Replay
   belegt.
 - [ ] **LP3 — Terminologie-Formen Modul-14 (Implementer-Sub-Zug):** die
-  benannten Stellen — MR-048/MR-047 (Begriff/Titel-Formen), baumaussage.go
+  benannten Stellen — [`MR-048`](../../../../harness/conventions.md#mr-048--der-reproduzierbarkeits-anker-ist-die-rezept-form-die-emittierten-skelette-pinnen-per-tag)/[`MR-047`](../../../../harness/conventions.md#mr-047--der-ort-der-ausführbaren-harness-tools-ist-keine-abweichung-mehr) (Begriff/Titel-Formen), baumaussage.go
   Inventur-Texte, traeger-pins-check/freshness-Doku — in der v7-Termini-Form;
   je geänderte Code-Text-Zelle ihr Test-Mitziehen; `make test` (Go-Anteil) grün.
 
@@ -126,7 +126,7 @@ in §7, Fundlisten je Sub-Zug.
 
 - **R1 — der Revert liest in einer inzwischen gewanderten Umgebung:** nach dem
   Revert verweist die Z. 134 auf den `v6.18.1`-Baum, der Bestand daneben auf
-  `v7.0.0`. Ausgang: *eingetreten* → `ADR-0101` nennt die Anker-Form und die
+  `v7.0.0`. Ausgang: *eingetreten* → `ADR-0101` <!-- d-check:ignore (entsteht mit dem Architektur-Sub-Zug, LP1) --> nennt die Anker-Form und die
   beiden Stande; *entfallen* → keine zweite Kern-Zeile (Fundliste des Diffs
   trägt die 0).
 - **R2 — Inventur-Texte an Tests hängend:** die Zellen der
@@ -135,7 +135,7 @@ in §7, Fundlisten je Sub-Zug.
   Text-Aussage der Test-Nachzug im selben Zug mit Rot-Beleg (Modul-11-Form);
   ein Test, der nur die heutige Formulierung misst, liest die Zusage neu.
 - **R3 — die Fundstellen der zwei C5-Adressen sind größer als die Übergaben
-  nennen** (MR-031: 8 Fundstellen je F2-Kommando; migration.md: 41 je F3 — nur
+  nennen** ([`MR-031`](../../../../harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline): 8 Fundstellen je F2-Kommando; migration.md: 41 je F3 — nur
   5 ziehen): der Zug findet Nachzugs-Zeilen, die keine Übergabe nannte. Ausgang:
   *eingetreten* → je Fund ein Absatz in der Fundliste, je Umsetzungs-Fund der
   Zug im Slice; sprengt es die M-Schätzung → Rückführung `next` (§4). *entfallen* →
@@ -144,7 +144,7 @@ in §7, Fundlisten je Sub-Zug.
 ## 7. Closure-Notiz
 
 <!-- Bei der Closure füllen (Implementer/Planner): Fundlisten je Sub-Zug je
-Kommando (MR-051-Form, fenced Block je Pfad-Muster), Lern-Eintrag,
+Kommando ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)-Form, fenced Block je Pfad-Muster), Lern-Eintrag,
 Risiko-Ausgänge, Register-Paarung. -->
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
