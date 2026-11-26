@@ -1,0 +1,108 @@
+# Mutations-CI-Beleg — slice-d-check-sprung-v0930 — Form: gruen (Urteil) — eingecheckt nach ADR-0102.
+# Run 45625795106, Attempt 3 (ergebnis-Job 139305369935). Gepruefter Commit: 625cdef096cfeec27cda3f3fcfd9cbb0960b2212.
+# Ausgabe-Kanal: Job-Log — das Urteil stand NUR dort: der Push des Versuchs 3 scheiterte non-fast-forward,
+#   und der nachfolgende BEFUND-Lauf (Run 45647457778) überschrieb die Branch-Wurzel mit seiner Ergebnis-Fassung;
+#   eine Branch-Fassung dieses Urteils existiert nicht.
+# Lesekommando am Entnahme-Stand 2026-11-26 (Job-Log-Verfall ~90 Tage):
+#   gh api repos/pt9912/ai-harness-init/actions/jobs/139305369935/logs
+#   (Ernte: Zeilen 209-306 des Logs, Zeitstempel-Spalte gestript; byte-identisch zur
+#    Ergebnis-Fassung, die Job 139305369935 an die Branch geschrieben haette.)
+# --- unten: mutate-ergebnis.txt, wie er im Job-Log des Versuchs 3 steht ---
+mutate-ergebnis: slice-d-check-sprung-v0930
+gepruefter Commit: 625cdef096cfeec27cda3f3fcfd9cbb0960b2212
+Basis (Claim-Commit): 8f012d585a74a1c6ab88353425241760eb783779
+Shard 0: Exit 0, 1389 s, Faelle: 171-feldliste-ausserhalb-des-geprueften-bereichs 295-emittierte-modulliste-verliert-matrix 375-emittierter-welle-pfad-kehrt-zurueck 441-emittierte-matrix-fuehrt-ein-weiteres-token 579-ausnahme-grund-verliert-einen-baum-im-repo 269-planning-modul-aus-modules-entfernt 282-vcs-paths-klasse-verfehlt 302-targets-exempt-eintrag-entfernt 516-zellenlaenge-spaltenname-weicht-von-der-vorlage-ab
+Shard 1: Exit 0, 893 s, Faelle: 329-doc-gate-fragment-ohne-fail-closed 296-emittierte-matrix-regel-adr-zu-welle-fehlt 376-emittierte-matrix-klasse-aussen-nicht-zuletzt 442-emittierte-matrix-fuehrt-eine-weitere-regel 580-emittierter-ausnahme-grund-verliert-einen-baum 270-planning-heading-auf-modul-default-zurueckgesetzt 283-vcs-immutable-when-verfehlt-kopfzeile 309-drittes-c-ziel-ohne-marke 524-config-ohne-benannten-slice
+Shard 2: Exit 0, 945 s, Faelle: 330-ziel-zeile-ohne-rezept-bindet 297-emittierte-matrix-richtungspruefung-fehlt 392-dcheck-ignore-deckt-die-feldliste 443-emittiertes-ids-muster-adr-verliert-link-policy-always 638-dcheck-adaption-laesst-fremde-kennung-stehen 271-planning-marker-zeile-entfernt 284-vcs-head-allow-duplikat 319-waves-dir-entfernt
+Shard 3: Exit 0, 787 s, Faelle: 331-unbekannter-probe-ausgang-bindet 298-emittierte-matrix-exclude-sections-faellt-zurueck 40-docgate-fragment-wiring 517-zellenlaenge-grenze-der-spalte-tut-was-weicht-ab 651-streiche-fremde-kennungen-trifft-utf8 272-planning-heading-auf-marker-lose-sektion 285-closure-dir-entfernt 320-waves-mode-auf-one-zurueckgesetzt
+Shard 4: Exit 0, 811 s, Faelle: 332-zweiter-probe-aufruf-mit-falschem-ziel 325-vorlauf-waechter-verliert-doc-immutable 435-emittierte-token-slice-kehrt-in-die-ziffern-form-zurueck 568-emittierter-reviews-block-unkommentiert 666-emittierter-reviews-kommentar-nennt-alten-pin 273-planning-block-rumpf-entfernt 286-closure-glob-hinzugefuegt 321-waves-dir-anderer-pfad
+Shard 5: Exit 0, 801 s, Faelle: 333-kommandozeile-setzt-die-entscheidung 327-vorbindungs-pruefung-ohne-target-liste 436-emittierte-token-welle-kehrt-in-die-ziffern-form-zurueck 569-emittierte-modulliste-verliert-planning 667-emittierter-reviews-block-verliert-match-name 277-vcs-head-allow-bare-kennung 287-closure-placeholder-aktiviert 322-waves-block-vollstaendig-entfernt
+Shard 6: Exit 0, 1045 s, Faelle: 514-zellenlaenge-modul-fehlt-in-der-emittierten-liste 351-emittierte-config-fuehrt-eine-zweite-kennungs-menge 437-emittierte-matrix-regel-spec-straten-zu-welle-fehlt 570-emittierter-planning-marker-weicht-ab 786-kanonischer-digest-driftet 278-vcs-exclude-sections-ohne-geschichte 288-closure-dir-anderer-pfad 323-waves-dir-zeigt-auf-nichtexistierenden-pfad
+Shard 7: Exit 0, 1062 s, Faelle: 515-zellenlaenge-block-ohne-wirksame-grenze 372-emittierte-matrix-klasse-aussen-fehlt 438-emittiertes-ids-muster-adr-verliert-das-segment 573-emittierte-modulliste-verliert-codepaths 787-kanonischer-tag-driftet 279-vcs-in-modules-aktiviert 289-closure-dir-nicht-existent 341-kopplung-config-verliert-ein-muster
+Shard 8: Exit 0, 1762 s, Faelle: 572-planning-gegenbeispiel-im-ziel-ohne-modul 373-emittiertes-mr-token-fehlt 439-emittierte-adr-klasse-verliert-den-bereichs-praefix 575-emittierter-codepaths-block-verliert-eine-wurzel 788-emitted-digest-driftet 280-vcs-head-allow-ohne-endanker 290-closure-boilerplate-gesetzt 474-codepaths-reviews-ausnahme-entfaellt
+Shard 9: Exit 0, 1326 s, Faelle: 574-codepaths-zahn-im-ziel-ohne-modul 374-emittierte-matrix-exempt-paths-weicht-ab 440-emittierte-ziffern-form-steht-im-kommentar 576-emittierter-codepaths-block-verliert-exempt-paths 789-emitted-tag-driftet 281-vcs-status-line-entfernt 301-targets-modul-deaktiviert 475-codepaths-reviews-ausnahme-wandert-in-einen-nachbar-block
+ok       171-feldliste-ausserhalb-des-geprueften-bereichs         Shard 0
+ok       295-emittierte-modulliste-verliert-matrix                Shard 0
+ok       375-emittierter-welle-pfad-kehrt-zurueck                 Shard 0
+ok       441-emittierte-matrix-fuehrt-ein-weiteres-token          Shard 0
+ok       579-ausnahme-grund-verliert-einen-baum-im-repo           Shard 0
+ok       269-planning-modul-aus-modules-entfernt                  Shard 0
+ok       282-vcs-paths-klasse-verfehlt                            Shard 0
+ok       302-targets-exempt-eintrag-entfernt                      Shard 0
+ok       516-zellenlaenge-spaltenname-weicht-von-der-vorlage-ab   Shard 0
+ok       329-doc-gate-fragment-ohne-fail-closed                   Shard 1
+ok       296-emittierte-matrix-regel-adr-zu-welle-fehlt           Shard 1
+ok       376-emittierte-matrix-klasse-aussen-nicht-zuletzt        Shard 1
+ok       442-emittierte-matrix-fuehrt-eine-weitere-regel          Shard 1
+ok       580-emittierter-ausnahme-grund-verliert-einen-baum       Shard 1
+ok       270-planning-heading-auf-modul-default-zurueckgesetzt    Shard 1
+ok       283-vcs-immutable-when-verfehlt-kopfzeile                Shard 1
+ok       309-drittes-c-ziel-ohne-marke                            Shard 1
+ok       524-config-ohne-benannten-slice                          Shard 1
+ok       330-ziel-zeile-ohne-rezept-bindet                        Shard 2
+ok       297-emittierte-matrix-richtungspruefung-fehlt            Shard 2
+ok       392-dcheck-ignore-deckt-die-feldliste                    Shard 2
+ok       443-emittiertes-ids-muster-adr-verliert-link-policy-always Shard 2
+ok       638-dcheck-adaption-laesst-fremde-kennung-stehen         Shard 2
+ok       271-planning-marker-zeile-entfernt                       Shard 2
+ok       284-vcs-head-allow-duplikat                              Shard 2
+ok       319-waves-dir-entfernt                                   Shard 2
+ok       331-unbekannter-probe-ausgang-bindet                     Shard 3
+ok       298-emittierte-matrix-exclude-sections-faellt-zurueck    Shard 3
+ok       40-docgate-fragment-wiring                               Shard 3
+ok       517-zellenlaenge-grenze-der-spalte-tut-was-weicht-ab     Shard 3
+ok       651-streiche-fremde-kennungen-trifft-utf8                Shard 3
+ok       272-planning-heading-auf-marker-lose-sektion             Shard 3
+ok       285-closure-dir-entfernt                                 Shard 3
+ok       320-waves-mode-auf-one-zurueckgesetzt                    Shard 3
+ok       332-zweiter-probe-aufruf-mit-falschem-ziel               Shard 4
+ok       325-vorlauf-waechter-verliert-doc-immutable              Shard 4
+ok       435-emittierte-token-slice-kehrt-in-die-ziffern-form-zurueck Shard 4
+ok       568-emittierter-reviews-block-unkommentiert              Shard 4
+ok       666-emittierter-reviews-kommentar-nennt-alten-pin        Shard 4
+ok       273-planning-block-rumpf-entfernt                        Shard 4
+ok       286-closure-glob-hinzugefuegt                            Shard 4
+ok       321-waves-dir-anderer-pfad                               Shard 4
+ok       333-kommandozeile-setzt-die-entscheidung                 Shard 5
+ok       327-vorbindungs-pruefung-ohne-target-liste               Shard 5
+ok       436-emittierte-token-welle-kehrt-in-die-ziffern-form-zurueck Shard 5
+ok       569-emittierte-modulliste-verliert-planning              Shard 5
+ok       667-emittierter-reviews-block-verliert-match-name        Shard 5
+ok       277-vcs-head-allow-bare-kennung                          Shard 5
+ok       287-closure-placeholder-aktiviert                        Shard 5
+ok       322-waves-block-vollstaendig-entfernt                    Shard 5
+ok       514-zellenlaenge-modul-fehlt-in-der-emittierten-liste    Shard 6
+ok       351-emittierte-config-fuehrt-eine-zweite-kennungs-menge  Shard 6
+ok       437-emittierte-matrix-regel-spec-straten-zu-welle-fehlt  Shard 6
+ok       570-emittierter-planning-marker-weicht-ab                Shard 6
+ok       786-kanonischer-digest-driftet                           Shard 6
+ok       278-vcs-exclude-sections-ohne-geschichte                 Shard 6
+ok       288-closure-dir-anderer-pfad                             Shard 6
+ok       323-waves-dir-zeigt-auf-nichtexistierenden-pfad          Shard 6
+ok       515-zellenlaenge-block-ohne-wirksame-grenze              Shard 7
+ok       372-emittierte-matrix-klasse-aussen-fehlt                Shard 7
+ok       438-emittiertes-ids-muster-adr-verliert-das-segment      Shard 7
+ok       573-emittierte-modulliste-verliert-codepaths             Shard 7
+ok       787-kanonischer-tag-driftet                              Shard 7
+ok       279-vcs-in-modules-aktiviert                             Shard 7
+ok       289-closure-dir-nicht-existent                           Shard 7
+ok       341-kopplung-config-verliert-ein-muster                  Shard 7
+ok       572-planning-gegenbeispiel-im-ziel-ohne-modul            Shard 8
+ok       373-emittiertes-mr-token-fehlt                           Shard 8
+ok       439-emittierte-adr-klasse-verliert-den-bereichs-praefix  Shard 8
+ok       575-emittierter-codepaths-block-verliert-eine-wurzel     Shard 8
+ok       788-emitted-digest-driftet                               Shard 8
+ok       280-vcs-head-allow-ohne-endanker                         Shard 8
+ok       290-closure-boilerplate-gesetzt                          Shard 8
+ok       474-codepaths-reviews-ausnahme-entfaellt                 Shard 8
+ok       574-codepaths-zahn-im-ziel-ohne-modul                    Shard 9
+ok       374-emittierte-matrix-exempt-paths-weicht-ab             Shard 9
+ok       440-emittierte-ziffern-form-steht-im-kommentar           Shard 9
+ok       576-emittierter-codepaths-block-verliert-exempt-paths    Shard 9
+ok       789-emitted-tag-driftet                                  Shard 9
+ok       281-vcs-status-line-entfernt                             Shard 9
+ok       301-targets-modul-deaktiviert                            Shard 9
+ok       475-codepaths-reviews-ausnahme-wandert-in-einen-nachbar-block Shard 9
+Fallmenge: 82 (Slice: 82)
+Wanduhr gesamt (erster Shard-Start bis letztes Shard-Ende): 1775 s
+Urteil: gruen

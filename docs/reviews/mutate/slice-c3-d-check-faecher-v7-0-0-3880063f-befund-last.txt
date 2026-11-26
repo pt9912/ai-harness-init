@@ -1,0 +1,112 @@
+# Mutations-CI-Beleg — slice-c3-d-check-faecher-v7-0-0 — Form: BEFUND, Last-Anteil — eingecheckt nach ADR-0102.
+# Run 45769037551 (mutate-branch). Gepruefter Commit: 3880063fc75c6cae1986f33fe6cbb74f87c4f1b0.
+# Ausgabe-Kanal: Branch-File —
+#   git fetch origin mutate/slice-c3-d-check-faecher-v7-0-0-3880063f
+#   git show FETCH_HEAD:mutate-ergebnis.txt
+# gelesen am Entnahme-Stand 2026-11-26 mit dem Kommando oben. Teil-Urteil unter Last:
+#   30 der 87 Faelle ok, 57 trugen "BEFUND (kein Ergebnis im Log)", alle zehn Shards kehrten Exit 2 zurueck,
+#   Fallmenge 87 (Slice: 87), Wanduhr 573 s, Urteil: BEFUND.
+# --- unten: mutate-ergebnis.txt, wie er an der Branch-Wurzel steht ---
+mutate-ergebnis: slice-c3-d-check-faecher-v7-0-0
+gepruefter Commit: 3880063fc75c6cae1986f33fe6cbb74f87c4f1b0
+Basis (Claim-Commit): c7ad9c6d94361ff5a47f8c7cb2872bb6b2a49212
+Shard 0: Exit 2, 346 s, Faelle: 171-feldliste-ausserhalb-des-geprueften-bereichs 767-handbuch-baum-kotlin-pfad-ohne-nennung 442-emittierte-matrix-fuehrt-eine-weitere-regel 576-emittierter-codepaths-block-verliert-exempt-paths 281-vcs-status-line-entfernt 301-targets-modul-deaktiviert 474-codepaths-reviews-ausnahme-entfaellt
+Shard 1: Exit 2, 349 s, Faelle: 305-rollenachse-ziel-verliert-rolle-fullsmoke 768-handbuch-baum-java-pfad-ohne-nennung 443-emittiertes-ids-muster-adr-verliert-link-policy-always 579-ausnahme-grund-verliert-einen-baum-im-repo 282-vcs-paths-klasse-verfehlt 302-targets-exempt-eintrag-entfernt 475-codepaths-reviews-ausnahme-wandert-in-einen-nachbar-block
+Shard 2: Exit 2, 477 s, Faelle: 338-archivierung-ohne-traeger-schweigt 769-handbuch-baum-python-pfad-ohne-nennung 509-archivierungs-fragment-hilfe-ohne-altbestand 580-emittierter-ausnahme-grund-verliert-einen-baum 283-vcs-immutable-when-verfehlt-kopfzeile 319-waves-dir-entfernt 516-zellenlaenge-spaltenname-weicht-von-der-vorlage-ab
+Shard 3: Exit 2, 352 s, Faelle: 367-zweiter-varianten-aufruf-mit-falschem-ziel 770-handbuch-baum-csharp-pfad-ohne-nennung 510-archivierungs-fragment-ohne-kein-schreib-pfad 666-emittierter-reviews-kommentar-nennt-alten-pin 284-vcs-head-allow-duplikat 320-waves-mode-auf-one-zurueckgesetzt 524-config-ohne-benannten-slice
+Shard 4: Exit 2, 351 s, Faelle: 514-zellenlaenge-modul-fehlt-in-der-emittierten-liste 773-archiv-altbestand-zip-ungelesen 517-zellenlaenge-grenze-der-spalte-tut-was-weicht-ab 667-emittierter-reviews-block-verliert-match-name 285-closure-dir-entfernt 321-waves-dir-anderer-pfad 668-pin-fallback-smoke-veraltet
+Shard 5: Exit 2, 349 s, Faelle: 515-zellenlaenge-block-ohne-wirksame-grenze 295-emittierte-modulliste-verliert-matrix 337-archivierung-haengt-an-gate-checks 375-emittierter-welle-pfad-kehrt-zurueck 437-emittierte-matrix-regel-spec-straten-zu-welle-fehlt 568-emittierter-reviews-block-unkommentiert 190-abdeckung-einordnung-entfernt 273-planning-block-rumpf-entfernt 286-closure-glob-hinzugefuegt 322-waves-block-vollstaendig-entfernt 669-pin-fallback-full-smoke-veraltet
+Shard 6: Exit 2, 359 s, Faelle: 572-planning-gegenbeispiel-im-ziel-ohne-modul 296-emittierte-matrix-regel-adr-zu-welle-fehlt 351-emittierte-config-fuehrt-eine-zweite-kennungs-menge 376-emittierte-matrix-klasse-aussen-nicht-zuletzt 438-emittiertes-ids-muster-adr-verliert-das-segment 569-emittierte-modulliste-verliert-planning 269-planning-modul-aus-modules-entfernt 277-vcs-head-allow-bare-kennung 287-closure-placeholder-aktiviert 323-waves-dir-zeigt-auf-nichtexistierenden-pfad 790-d-check-pin-paarung-faerbt-pinsync-rot
+Shard 7: Exit 2, 359 s, Faelle: 574-codepaths-zahn-im-ziel-ohne-modul 297-emittierte-matrix-richtungspruefung-fehlt 372-emittierte-matrix-klasse-aussen-fehlt 392-dcheck-ignore-deckt-die-feldliste 439-emittierte-adr-klasse-verliert-den-bereichs-praefix 570-emittierter-planning-marker-weicht-ab 270-planning-heading-auf-modul-default-zurueckgesetzt 278-vcs-exclude-sections-ohne-geschichte 288-closure-dir-anderer-pfad 336-archivierungs-unterkommando-umbenannt
+Shard 8: Exit 2, 347 s, Faelle: 616-handbuch-baum-erfundener-pfad 298-emittierte-matrix-exclude-sections-faellt-zurueck 373-emittiertes-mr-token-fehlt 435-emittierte-token-slice-kehrt-in-die-ziffern-form-zurueck 440-emittierte-ziffern-form-steht-im-kommentar 573-emittierte-modulliste-verliert-codepaths 271-planning-marker-zeile-entfernt 279-vcs-in-modules-aktiviert 289-closure-dir-nicht-existent 341-kopplung-config-verliert-ein-muster
+Shard 9: Exit 2, 356 s, Faelle: 617-handbuch-baum-emittiert-ungenannt 335-archivierungs-fragment-ohne-preis 374-emittierte-matrix-exempt-paths-weicht-ab 436-emittierte-token-welle-kehrt-in-die-ziffern-form-zurueck 441-emittierte-matrix-fuehrt-ein-weiteres-token 575-emittierter-codepaths-block-verliert-eine-wurzel 272-planning-heading-auf-marker-lose-sektion 280-vcs-head-allow-ohne-endanker 290-closure-boilerplate-gesetzt 362-e2e-stufe-ohne-deklaration
+BEFUND (kein Ergebnis im Log) 171-feldliste-ausserhalb-des-geprueften-bereichs         Shard 0
+BEFUND (kein Ergebnis im Log) 767-handbuch-baum-kotlin-pfad-ohne-nennung               Shard 0
+BEFUND (kein Ergebnis im Log) 442-emittierte-matrix-fuehrt-eine-weitere-regel          Shard 0
+BEFUND (kein Ergebnis im Log) 576-emittierter-codepaths-block-verliert-exempt-paths    Shard 0
+ok       281-vcs-status-line-entfernt                             Shard 0
+ok       301-targets-modul-deaktiviert                            Shard 0
+ok       474-codepaths-reviews-ausnahme-entfaellt                 Shard 0
+BEFUND (kein Ergebnis im Log) 305-rollenachse-ziel-verliert-rolle-fullsmoke            Shard 1
+BEFUND (kein Ergebnis im Log) 768-handbuch-baum-java-pfad-ohne-nennung                 Shard 1
+BEFUND (kein Ergebnis im Log) 443-emittiertes-ids-muster-adr-verliert-link-policy-always Shard 1
+BEFUND (kein Ergebnis im Log) 579-ausnahme-grund-verliert-einen-baum-im-repo           Shard 1
+ok       282-vcs-paths-klasse-verfehlt                            Shard 1
+ok       302-targets-exempt-eintrag-entfernt                      Shard 1
+ok       475-codepaths-reviews-ausnahme-wandert-in-einen-nachbar-block Shard 1
+BEFUND (kein Ergebnis im Log) 338-archivierung-ohne-traeger-schweigt                   Shard 2
+BEFUND (kein Ergebnis im Log) 769-handbuch-baum-python-pfad-ohne-nennung               Shard 2
+BEFUND (kein Ergebnis im Log) 509-archivierungs-fragment-hilfe-ohne-altbestand         Shard 2
+BEFUND (kein Ergebnis im Log) 580-emittierter-ausnahme-grund-verliert-einen-baum       Shard 2
+ok       283-vcs-immutable-when-verfehlt-kopfzeile                Shard 2
+ok       319-waves-dir-entfernt                                   Shard 2
+ok       516-zellenlaenge-spaltenname-weicht-von-der-vorlage-ab   Shard 2
+BEFUND (kein Ergebnis im Log) 367-zweiter-varianten-aufruf-mit-falschem-ziel           Shard 3
+BEFUND (kein Ergebnis im Log) 770-handbuch-baum-csharp-pfad-ohne-nennung               Shard 3
+BEFUND (kein Ergebnis im Log) 510-archivierungs-fragment-ohne-kein-schreib-pfad        Shard 3
+BEFUND (kein Ergebnis im Log) 666-emittierter-reviews-kommentar-nennt-alten-pin        Shard 3
+ok       284-vcs-head-allow-duplikat                              Shard 3
+ok       320-waves-mode-auf-one-zurueckgesetzt                    Shard 3
+ok       524-config-ohne-benannten-slice                          Shard 3
+BEFUND (kein Ergebnis im Log) 514-zellenlaenge-modul-fehlt-in-der-emittierten-liste    Shard 4
+BEFUND (kein Ergebnis im Log) 773-archiv-altbestand-zip-ungelesen                      Shard 4
+BEFUND (kein Ergebnis im Log) 517-zellenlaenge-grenze-der-spalte-tut-was-weicht-ab     Shard 4
+BEFUND (kein Ergebnis im Log) 667-emittierter-reviews-block-verliert-match-name        Shard 4
+ok       285-closure-dir-entfernt                                 Shard 4
+ok       321-waves-dir-anderer-pfad                               Shard 4
+ok       668-pin-fallback-smoke-veraltet                          Shard 4
+BEFUND (kein Ergebnis im Log) 515-zellenlaenge-block-ohne-wirksame-grenze              Shard 5
+BEFUND (kein Ergebnis im Log) 295-emittierte-modulliste-verliert-matrix                Shard 5
+BEFUND (kein Ergebnis im Log) 337-archivierung-haengt-an-gate-checks                   Shard 5
+BEFUND (kein Ergebnis im Log) 375-emittierter-welle-pfad-kehrt-zurueck                 Shard 5
+BEFUND (kein Ergebnis im Log) 437-emittierte-matrix-regel-spec-straten-zu-welle-fehlt  Shard 5
+BEFUND (kein Ergebnis im Log) 568-emittierter-reviews-block-unkommentiert              Shard 5
+ok       190-abdeckung-einordnung-entfernt                        Shard 5
+ok       273-planning-block-rumpf-entfernt                        Shard 5
+BEFUND (kein Ergebnis im Log) 286-closure-glob-hinzugefuegt                            Shard 5
+BEFUND (kein Ergebnis im Log) 322-waves-block-vollstaendig-entfernt                    Shard 5
+ok       669-pin-fallback-full-smoke-veraltet                     Shard 5
+BEFUND (kein Ergebnis im Log) 572-planning-gegenbeispiel-im-ziel-ohne-modul            Shard 6
+BEFUND (kein Ergebnis im Log) 296-emittierte-matrix-regel-adr-zu-welle-fehlt           Shard 6
+BEFUND (kein Ergebnis im Log) 351-emittierte-config-fuehrt-eine-zweite-kennungs-menge  Shard 6
+BEFUND (kein Ergebnis im Log) 376-emittierte-matrix-klasse-aussen-nicht-zuletzt        Shard 6
+BEFUND (kein Ergebnis im Log) 438-emittiertes-ids-muster-adr-verliert-das-segment      Shard 6
+BEFUND (kein Ergebnis im Log) 569-emittierte-modulliste-verliert-planning              Shard 6
+ok       269-planning-modul-aus-modules-entfernt                  Shard 6
+ok       277-vcs-head-allow-bare-kennung                          Shard 6
+BEFUND (kein Ergebnis im Log) 287-closure-placeholder-aktiviert                        Shard 6
+BEFUND (kein Ergebnis im Log) 323-waves-dir-zeigt-auf-nichtexistierenden-pfad          Shard 6
+ok       790-d-check-pin-paarung-faerbt-pinsync-rot               Shard 6
+BEFUND (kein Ergebnis im Log) 574-codepaths-zahn-im-ziel-ohne-modul                    Shard 7
+BEFUND (kein Ergebnis im Log) 297-emittierte-matrix-richtungspruefung-fehlt            Shard 7
+BEFUND (kein Ergebnis im Log) 372-emittierte-matrix-klasse-aussen-fehlt                Shard 7
+BEFUND (kein Ergebnis im Log) 392-dcheck-ignore-deckt-die-feldliste                    Shard 7
+BEFUND (kein Ergebnis im Log) 439-emittierte-adr-klasse-verliert-den-bereichs-praefix  Shard 7
+BEFUND (kein Ergebnis im Log) 570-emittierter-planning-marker-weicht-ab                Shard 7
+ok       270-planning-heading-auf-modul-default-zurueckgesetzt    Shard 7
+ok       278-vcs-exclude-sections-ohne-geschichte                 Shard 7
+ok       288-closure-dir-anderer-pfad                             Shard 7
+BEFUND (kein Ergebnis im Log) 336-archivierungs-unterkommando-umbenannt                Shard 7
+BEFUND (kein Ergebnis im Log) 616-handbuch-baum-erfundener-pfad                        Shard 8
+BEFUND (kein Ergebnis im Log) 298-emittierte-matrix-exclude-sections-faellt-zurueck    Shard 8
+BEFUND (kein Ergebnis im Log) 373-emittiertes-mr-token-fehlt                           Shard 8
+BEFUND (kein Ergebnis im Log) 435-emittierte-token-slice-kehrt-in-die-ziffern-form-zurueck Shard 8
+BEFUND (kein Ergebnis im Log) 440-emittierte-ziffern-form-steht-im-kommentar           Shard 8
+BEFUND (kein Ergebnis im Log) 573-emittierte-modulliste-verliert-codepaths             Shard 8
+ok       271-planning-marker-zeile-entfernt                       Shard 8
+ok       279-vcs-in-modules-aktiviert                             Shard 8
+ok       289-closure-dir-nicht-existent                           Shard 8
+BEFUND (kein Ergebnis im Log) 341-kopplung-config-verliert-ein-muster                  Shard 8
+BEFUND (kein Ergebnis im Log) 617-handbuch-baum-emittiert-ungenannt                    Shard 9
+BEFUND (kein Ergebnis im Log) 335-archivierungs-fragment-ohne-preis                    Shard 9
+BEFUND (kein Ergebnis im Log) 374-emittierte-matrix-exempt-paths-weicht-ab             Shard 9
+BEFUND (kein Ergebnis im Log) 436-emittierte-token-welle-kehrt-in-die-ziffern-form-zurueck Shard 9
+BEFUND (kein Ergebnis im Log) 441-emittierte-matrix-fuehrt-ein-weiteres-token          Shard 9
+BEFUND (kein Ergebnis im Log) 575-emittierter-codepaths-block-verliert-eine-wurzel     Shard 9
+ok       272-planning-heading-auf-marker-lose-sektion             Shard 9
+ok       280-vcs-head-allow-ohne-endanker                         Shard 9
+ok       290-closure-boilerplate-gesetzt                          Shard 9
+BEFUND (kein Ergebnis im Log) 362-e2e-stufe-ohne-deklaration                           Shard 9
+Fallmenge: 87 (Slice: 87)
+Wanduhr gesamt (erster Shard-Start bis letztes Shard-Ende): 573 s
+Urteil: BEFUND

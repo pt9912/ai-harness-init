@@ -319,6 +319,24 @@ Der Verifier liest einmal, gleicht den Commit ab und löscht danach diesen Branc
 desselben Slice (`git ls-remote origin 'refs/heads/mutate/<kennung>*'`, Ablauf in
 `.claude/agents/verifier.md`).
 
+**Die Ergebnis-Fassung landet eingecheckt** ([ADR-0102](../../docs/plan/adr/0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md)):
+je abgeschlossenem Lauf-Urteil schreibt die konsumierende Rolle (Implementer am Claim oder
+Verifier am Verifikations-Übergang) die Fassung als Beleg-Datei nach
+`docs/reviews/mutate/<slice-kennung>-<sha8-des-geprüften-commits>-<form>.txt` — `gruen` oder
+`befund` mit optionalem Qualifikator (`infra`/`last`) für die Klasse aus dem
+Beobachtungs-Register —, Kopf mit Run-Id, Attempt, geprüftem Commit und dem Lesekommando ihres
+Ausgabe-Kanals ([`MR-051`](../../conventions/MR-051-zahl-beleg-bindet-commit-message-und-register-zaehler.md)-Form)
+darunter byte-gleich die Fassung. Die Konsum-Reihenfolge ist lesen → committen (auf `main`)
+→ **dann räumen** ([ADR-0083](../../docs/plan/adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md):
+kein zweiter Träger des Handoff-Gate-Zustands); der Workflow pusht unverändert nicht auf
+`main`, und nur der `ergebnis`-Job trägt `contents: write` — auf seinen Branch.
+**Grenze (ungenannt wäre die Zusage zu viel):** kein Wächter hält diese Ablage-Form —
+die Form-Zeile hier wird von keinem Modul des Doku-Gates gelesen
+(`grep -rn 'docs/reviews/mutate' .d-check.yml d-check.mk` → **0**) und `docs/reviews/**`
+nimmt der Scan ohnehin aus; erzwingen kann sie nur der Vorgang, der sie schreibt.
+Ein ausgelassener Konsum-Schritt trägt sein Urteil weiter nur an den zwei Kanälen,
+die verfallen bzw. überschrieben werden.
+
 **Grenze.** Gewählt wird über `# files:`: ein Fall, dessen Wächter-Test sich änderte, dessen
 `# files:` aber keine geänderte Datei nennt, läuft nicht; zeigt `# files:` auf die falsche
 Datei, fehlt der Fall. Das lokale Urteil misst `HEAD`, nicht den Arbeitsbaum. Die Gewichte sind
