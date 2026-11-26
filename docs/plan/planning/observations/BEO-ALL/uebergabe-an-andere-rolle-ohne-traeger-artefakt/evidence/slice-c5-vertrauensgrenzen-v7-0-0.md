@@ -6,5 +6,5 @@ alleiniger Träger war die Übergabe-Meldung (MEDIUM-1, HIGH 0 · MEDIUM 1 · LO
 Review 2026-11-25, `docs/reviews/2026-11-25-slice-c5-vertrauensgrenzen-v7-0-0.md`). Die Klasse
 liegt hier in der Closure-Richtung: das benannte Übergabe-Artefakt war §7 der Slice-Closure
 (LP1 verlangt die Fundliste dort), und es war nicht angelegt. Die Closure schreibt die
-Fundlisten samt Kommando-Form in §7 (`MR-051`-Zahl-Beleg-Form); die geschärfte Regel trägt
+Fundlisten samt Kommando-Form in §7 ([`MR-051`](../../../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)-Zahl-Beleg-Form); die geschärfte Regel trägt
 `· seit slice-c5-vertrauensgrenzen-v7-0-0`.
