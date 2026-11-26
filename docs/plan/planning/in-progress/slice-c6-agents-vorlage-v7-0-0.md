@@ -124,6 +124,32 @@ belegt in §7; jeder §6-Risiko mit Ausgang, Lern-Eintrag in §7.
 <!-- Bei der Closure füllen (Implementer/Planner): Fundlisten je Kommando,
 Walk-Verdikt, Lern-Eintrag, Risiko-Ausgänge, Register-Paarung. -->
 
+### Übergabe-Artefakte des Implementer-Zugs (2026-11-26, AGENTS-Commit `a45df66b`; Formal-Closure je [`AGENTS.md`](../../../../AGENTS.md) §3.10 beim Planner)
+
+- **LP3 — Walk-Verdikt:** `git grep -n 'AGENTS.template.md' internal/emit/templates.go` → eine Fundstelle im Walk-Eintrag:
+  `internal/emit/templates.go:206: "AGENTS.template.md",` (Kommentar am Rename-Schutz, Zeile 165);
+  `ls internal/emit/` → **Korrektur zur Formel §1**: `agents.go`
+  existiert und trägt die Rollen-Typen (embed `templates/agents`, die `.claude/agents/*`-Quellen
+  — kein AGENTS-Kern); `grep -c 'Docker\|Parallele' internal/emit/agents.go` → `0`.
+  Verdikt je Form: Walk-Quelle, der Emitter-Code-Zug entfällt — ein AGENTS-Kern-Konstanten-Griff
+  gibt es nicht.
+- **Dogfood-Abwägung (LP1), 2 Zeilen:** der v7-Träger-Satz (*„Toolchain-Reproduzierbarkeit —
+  Docker ist hier der Träger der Umgebungs-Zusage"*) und der Dogfood-Begründungs-Satz
+  (*„Reproduzierbar ist ein Lauf über das gepinnte Image"*) sind byte-differenziert — die
+  Dogfood-Fassung behält ihre Begründung und trägt den v7-Satz als eigenen
+  **Umgebungs-Zusage**-Absatz; der Tool-/Versions-Check-Verweis nennt statt der Vorlagen-Datei
+  <!-- Platzhalter-Pfad je LP1 (d-check:ignore am Fundort in AGENTS.md) -->
+  die Träger-Form (Docker-only-Deckel, gepinnte Digests, `make traeger-pins-check` /
+  `make traeger-fetch`), die Verweis-Form der Vorlage bleibt am Fundort mit `d-check:ignore`
+  markiert.
+- **R2 — beobachtete Form:** `codepaths` misst auch `AGENTS.md` (Befund `codepath-missing` an
+  AGENTS.md:404 am ersten Lauf) — die Fundstellen-Form (`d-check:ignore` am Fundort) trägt die
+  Zeile; **keine** Verbreiterung eines `ignore`-Eintrags nötig. Der
+  Ruhe-Pfad `.claude/worktrees/` des Parallel-Läufe-Absatzes färbt nicht (`.gitignore`
+  führt die Zeile, `grep -n worktrees .d-check.yml` → 0 — die v7-Ignore-Form trägt die
+  emittierte Vorlage, `scan.ignore` des Dogfoods bleibt unverändert je
+  [`slice-c3-d-check-faecher-v7-0-0`](../done/slice-c3-d-check-faecher-v7-0-0.md) §1).
+
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
 Beide vorgelagerten Prüfungen vor dem Block:
