@@ -93,7 +93,7 @@ Liefer-Punkte (drei; gezählt nach [`MR-051`](../../../../harness/conventions.md
 | [`AGENTS.md`](../../../../AGENTS.md) (§3.9 Docker-Block, „Parallele Läufe"-Absatz) | update | LP1/LP2 — die zwei Formen der Vorlage ins Hard-Rule-Briefing ziehen; der Commit trägt die Rolle selbst (Sub-Zug-Kennzeichnung §1, [`AGENTS.md`](../../../../AGENTS.md) §3.8) |
 | `internal/emit/` | inspect — keine Änderung | LP3 — das Walk-Verdikt ist eine Lesung: die Quelle der AGENTS-Kern-Formen ist der Walk über den vendored `/templates/`-Baum, nicht der Code (Ausschluss §1) |
 | `.d-check.yml` (`ignore-refs`) | entfällt | Ausschluss §1 Punkt 2 — die Fundstellen-Form (`d-check:ignore` am Fundort) trägt R2; eine Verbreiterung eines Eintrags verlangt eine eigene ADR |
-| `harness/conventions/` (Rümpfe [`MR-047`](../../../../harness/conventions.md#mr-047--der-ort-der-ausfuehrbaren-harness-tools-ist-keine-abweichung-mehr), [`MR-048`](../../../../harness/conventions.md#mr-048--der-reproduzierbarkeits-anker-ist-die-rezept-form-die-emittierten-skelette-pinnen-per-tag)) | entfällt | Ausschluss §1 Punkt 3 — die Terminologie-Nachzüge sind der C7-Zug ([`slice-c7-adaptions-nachzuege-v7-0-0`](../next/slice-c7-adaptions-nachzuege-v7-0-0.md)) |
+| `harness/conventions/` (Rümpfe [`MR-047`](../../../../harness/conventions.md#mr-047--der-ort-der-ausführbaren-harness-tools-ist-keine-abweichung-mehr), [`MR-048`](../../../../harness/conventions.md#mr-048--der-reproduzierbarkeits-anker-ist-die-rezept-form-die-emittierten-skelette-pinnen-per-tag)) | entfällt | Ausschluss §1 Punkt 3 — die Terminologie-Nachzüge sind der C7-Zug ([`slice-c7-adaptions-nachzuege-v7-0-0`](../next/slice-c7-adaptions-nachzuege-v7-0-0.md)) |
 
 **Ansatz als Liste** — die zwei Formen reisen byte-genau aus dem vendored `v7.0.0`-Baum:
 
@@ -243,6 +243,16 @@ trifft die AGENTS-Vorlagen-Formen.
   und
   [`BEO-ALL/marker-ziehung-folgt-dem-claim-mit-versatz`](../observations/BEO-ALL/marker-ziehung-folgt-dem-claim-mit-versatz/observation.md)
   (je 2 Belege). Grün.
+
+**Ruhe-Marker:** [`roadmap.md`](../in-progress/roadmap.md) §Offene Wellen — `in-progress/`
+trägt nach dem `git mv` nur ihr `roadmap.md`; der Marker „Nichts in Arbeit." steht und trifft
+den Zustand (Paarungs-Commit, Form der Zug-Korrektur `f4a94a75`; die Versatz-Frage zählt im
+Register, F-3 oben).
+
+**Paarungen geprüft am 2026-11-26:** `make docs-check` → 3023 Datei(en) geprüft, 0 Befund(e)
+(frische Messung am Paarungs-Commit; der Move-Stand trug die zwei Befunde der hier getragenen
+Hälften — der [`MR-047`](../../../../harness/conventions.md#mr-047--der-ort-der-ausführbaren-harness-tools-ist-keine-abweichung-mehr)-Anker-Ausschnitt und der Ruhe-Marker). `make gates` zum Zug-Ende — grün,
+Stempel deckt HEAD.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
