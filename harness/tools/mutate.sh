@@ -1028,7 +1028,7 @@ stamp_records_main() {
   local result="${2:-}" run_id="${3:-}" attempt="${4:-}"
   local stamp_dir="$REPO/.harness/stamp/mutate"
   local q="${MUTATE_STAMP_QUALIFIKATOR:-}" commit kennung_anzahl pair fall form bestand
-  local ok_n=0 befund_n=0 i_n=0
+  local ok_n=0 befund_n=0
   local -a falls=() forms=() aufgeloest=()
   local -A gesehene=()
 
