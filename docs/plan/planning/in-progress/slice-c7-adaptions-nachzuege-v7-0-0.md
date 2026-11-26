@@ -83,20 +83,41 @@ Span färbt, im fenced Block nicht).
 
 Liefer-Punkte (drei; gezählt nach [`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)):
 
-- [ ] **LP1 — Architektur-Form-Heilung (Architect-Sub-Zug):** `ADR-0100` <!-- d-check:ignore (Supersedes-Lineage: der Status-Übergang entsteht im Architektur-Sub-Zug, LP1) -->-Kern
+- [x] **LP1 — Architektur-Form-Heilung (Architect-Sub-Zug):** `ADR-0100` <!-- d-check:ignore (Supersedes-Lineage: der Status-Übergang entsteht im Architektur-Sub-Zug, LP1) -->-Kern
   byte-genau am Entstehungsstand je Pfad-Zeile 134 (Revert), [`ADR-0101`](../../../../docs/plan/adr/)
   mit `supersedes` angenommen (Anker-Form der Baseline-Verweise in ADRs),
   ADR-Index-Update; Messung: `make adr-immutable` grün je Range ab `39f57f73`
   (der Wächter über der Kern-Form), `make docs-check` grün.
-- [ ] **LP2 — Bestands-Nachzüge (Implementer-Sub-Zug):** die benannten Stellen
+  **Beleg (Sub-Zug (a), `6d721a64` + `8243ead5`):** der Revert ist byte-gleich am
+  Entstehungsstand (§7a-Diff leer), drei Ranges grün (`0a080df5^..HEAD`,
+  `39f57f73^..HEAD`, `39f57f73..HEAD` → je `0 Befund(e)`), Gegenprobe über der
+  roten Basis `97195c79..HEAD` → 1 Befund (`core-drift-vcs`, Z. 3) je §7a;
+  der Rot-Beleg des zehnten Paars steht in §7a (F-1-Heilung, `612f8ec5`);
+  `make docs-check` → 0 Befund(e).
+- [x] **LP2 — Bestands-Nachzüge (Implementer-Sub-Zug):** die benannten Stellen
   des benutzerhandbuchs (Z. 513, 529, 816/826), [`MR-031`](../../../../harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline)-Z. 106–107 und
   migration.md-Z. 140–144 je Fundstellen-Form; Fundliste je Kommando in §7;
   `make docs-check` grün; CI-Klasse (`full-smoke`-Befund) am Welle-Closure-Replay
   belegt.
-- [ ] **LP3 — Terminologie-Formen Modul-14 (Implementer-Sub-Zug):** die
+  **Beleg (Sub-Zug (b), `b3a646c5`; R3-Trail `78d0a0c4`/`a807b933` + `7c750972`):**
+  Z. 513 (`56` am `find`-Kommando je §7b), Z. 529 (Zielform `specification.md`),
+  Z. 816/826 (Pin `v0.93.0`), [`MR-031`](../../../../harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline)-Z. 106–107 und
+  migration.md-Z. 140–144 je Fundstellen-Form (Rest-Fundliste §7b); die drei
+  voll-smoke-Funde des R3-Trails stehen in §7b (Baum-Zeile, matrix-downward-Probe,
+  `"$(WAVE)"`-Rezept-Zeile nebst Wächter); der `full-smoke`-Lauf färbt bis zur
+  Traeger-Fetch-Stufe grün — deren Rest ist der *weiter offen*-Ausgang am Register
+  [`BEO-ALL/gefetchter-traeger-sperrt-die-archivierungs-stufe`](../observations/BEO-ALL/gefetchter-traeger-sperrt-die-archivierungs-stufe/observation.md).
+- [x] **LP3 — Terminologie-Formen Modul-14 (Implementer-Sub-Zug):** die
   benannten Stellen — [`MR-048`](../../../../harness/conventions.md#mr-048--der-reproduzierbarkeits-anker-ist-die-rezept-form-die-emittierten-skelette-pinnen-per-tag)/[`MR-047`](../../../../harness/conventions.md#mr-047--der-ort-der-ausführbaren-harness-tools-ist-keine-abweichung-mehr) (Begriff/Titel-Formen), baumaussage.go
   Inventur-Texte, traeger-pins-check/freshness-Doku — in der v7-Termini-Form;
   je geänderte Code-Text-Zelle ihr Test-Mitziehen; `make test` (Go-Anteil) grün.
+  **Beleg (Sub-Zug (c), `46dfb1b1`):** [`MR-048`](../../../../harness/conventions.md#mr-048--der-reproduzierbarkeits-anker-ist-die-rezept-form-die-emittierten-skelette-pinnen-per-tag)
+  trägt die drei Zellen + Terminologie-Merk (Anker-Slug unverändert,
+  Review-Urteil 4), [`MR-047`](../../../../harness/conventions.md#mr-047--der-ort-der-ausführbaren-harness-tools-ist-keine-abweichung-mehr)
+  trägt keine solche Zelle (Kommando je §7c → 0), baumaussage.go
+  0-Fund-Zeilen je §7c (korrigierte Fundliste), `InventurMessTag` auf `v7.0.0`
+  je §7c; kein Code-Text-Zug, kein Test-Nachzug (R2: *entfallen*); `make test`
+  (Go-Anteil) grün — der gates-Stempel deckt `cf8e88a3`, hinter dem Sub-Zug.
 
 ## 4. Trigger
 
@@ -126,20 +147,33 @@ in §7, Fundlisten je Sub-Zug.
 
 - **R1 — der Revert liest in einer inzwischen gewanderten Umgebung:** nach dem
   Revert verweist die Z. 134 auf den `v6.18.1`-Baum, der Bestand daneben auf
-  `v7.0.0`. Ausgang: *eingetreten* → [`ADR-0101`](../../../../docs/plan/adr/0101-die-baseline-verweis-form-in-adrs.md) nennt die Anker-Form und die
-  beiden Stande; *entfallen* → keine zweite Kern-Zeile (Fundliste des Diffs
-  trägt die 0).
+  `v7.0.0`.
+  **Ausgang (Planner 2026-11-26):** *entfallen* — keine zweite Kern-Zeile (der
+  Revert ist byte-gleich am Entstehungsstand, §7a-Diff leer; die Fundliste des
+  Diffs trägt die 0); [`ADR-0101`](../../../../docs/plan/adr/0101-die-baseline-verweis-form-in-adrs.md) trägt die Anker-Form und die
+  beiden Stande; der `adr-immutable`-Übergang liest *einmal rot über der Basis*
+  (`97195c79..HEAD` → `core-drift-vcs` an Z. 3, der Status-Zeile), *danach
+  grün* — je §7a-Wortlaut.
 - **R2 — Inventur-Texte an Tests hängend:** die Zellen der
   [`internal/emit/baumaussage.go`](../../../../internal/emit/baumaussage.go)
-  halten Wächter (`TestTraegerInventur_…`). Ausgang: *eingetreten* → je
-  Text-Aussage der Test-Nachzug im selben Zug mit Rot-Beleg (Modul-11-Form);
-  ein Test, der nur die heutige Formulierung misst, liest die Zusage neu.
+  halten Wächter (`TestTraegerInventur_…`).
+  **Ausgang (Planner 2026-11-26):** *entfallen* — kein Code-Text-Zug an den
+  Inventur-Zellen (0-Fund-Zeilen je Kommando, §7c in der korrigierten Form je
+  F-7), damit kein Test-Nachzug nötig (die Modul-11-Form verlangt ihn je
+  geänderter Code-Text-Aussage — keine wurde geändert); die Träger-/Begriffs-Formen
+  sitzen im [`MR-048`](../../../../harness/conventions.md#mr-048--der-reproduzierbarkeits-anker-ist-die-rezept-form-die-emittierten-skelette-pinnen-per-tag)-Terminologie-Merk (`46dfb1b1`).
 - **R3 — die Fundstellen der zwei C5-Adressen sind größer als die Übergaben
   nennen** ([`MR-031`](../../../../harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline): 8 Fundstellen je F2-Kommando; migration.md: 41 je F3 — nur
-  5 ziehen): der Zug findet Nachzugs-Zeilen, die keine Übergabe nannte. Ausgang:
-  *eingetreten* → je Fund ein Absatz in der Fundliste, je Umsetzungs-Fund der
-  Zug im Slice; sprengt es die M-Schätzung → Rückführung `next` (§4). *entfallen* →
-  die Übergabenzahl hält (§7 trägt das Kommando).
+  5 ziehen): der Zug findet Nachzugs-Zeilen, die keine Übergabe nannte.
+  **Ausgang (Planner 2026-11-26):** *entfallen* — die Übergabenzahl hält:
+  [`MR-031`](../../../../harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline) 8 je F2 (zwei gezogen, sechs Rest-datiert je Fundliste §7b),
+  migration.md 41 je F3 (fünf gezogen, 36 Rest-datiert je Fundliste). Der
+  R3-Trail trägt die drei voll-smoke-Funde jenseits der Übergaben in §7b —
+  *eingetreten*, je Fund Absatz in der Fundliste, Umsetzung `78d0a0c4`/
+  `a807b933`/`7c750972` im selben Zug, M-Schätzung nicht gesprengt → keine
+  Rückführung nach §4; der Traeger-Fetch-Rest ist der *weiter offen*-Ausgang
+  am Register [`BEO-ALL/gefetchter-traeger-sperrt-die-archivierungs-stufe`](../observations/BEO-ALL/gefetchter-traeger-sperrt-die-archivierungs-stufe/observation.md)
+  (Ausgang trägt die Welle-Closure + der Release-Schnitt).
 
 ## 7. Closure-Notiz
 
@@ -184,9 +218,22 @@ in §7, Fundlisten je Sub-Zug.
   ```
   der weitere Treffer der früheren Weite — `harness/sensors/commit-msg-check.md:47` („Zwei Formen erkennt der Matcher nicht…") — gehört der Matcher-Form des Commit-Aufrufs und trägt die Modul-14-Träger-Terminologie nicht; das Verzeichnis „harness/mk“ entsteht erst im gebootstrappten Ziel und kommt in keiner Dogfood-Messung als Operand vor. Die Schlussfolgerung trägt weiter: Kein Code-Text-Zug, damit kein Test-Nachzug (R2: *entfallen*). Die Träger-/Begriffs-Formen sitzen in [`MR-048`](../../../../harness/conventions.md#mr-048--der-reproduzierbarkeits-anker-ist-die-rezept-form-die-emittierten-skelette-pinnen-per-tag) (drei Zellen + Terminologie-Merk) und im Index-Ausschnitt; [`MR-047`](../../../../harness/conventions.md#mr-047--der-ort-der-ausführbaren-harness-tools-ist-keine-abweichung-mehr) trägt keine solche Zelle (das Kommando `grep 'Anker\|Repro'` über die Datei desselben Falls → **0**). InventurMessTag steht je C1-Zug auf `v7.0.0` (`grep -n 'const InventurMessTag' internal/emit/baumaussage.go`).
 
-<!-- Bei der Closure füllen (Implementer/Planner): Fundlisten je Sub-Zug je
-Kommando ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)-Form, fenced Block je Pfad-Muster), Lern-Eintrag,
-Risiko-Ausgänge, Register-Paarung. -->
+**Lern-Einträge (geschärfte Regeln, `· seit slice-c7-adaptions-nachzuege-v7-0-0`; kein `liegt in`-Feld — gezählt, nicht verkörpert):**
+
+- **(a) Der Rot-Beleg eines Wächters trägt das Übergabe-Artefakt, nicht die
+  Commit-Meldung** — die Klasse liest die C5-Fassung *Übergabe-Beleg steht nur
+  im Neben-Kontext* ([`BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt`](../observations/BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt/observation.md);
+  zweites Auftreten, Beleg `evidence/slice-c7-adaptions-nachzuege-v7-0-0.md`):
+  der Rot-Lauf des zehnten `ignore-refs`-Paars (Restbreite-Befund, §7a oben)
+  trug zuerst allein die Meldung von `8243ead5`; die Heilung trägt §7a
+  (`612f8ec5`).
+- **(b) Rezept-Nachziehung am Emissions-Interface, zweites Auftreten** — die
+  Rezept-Zeile des emittierten Archivierungs-Fragments reichte den Träger-Aufruf
+  mit dem entstellten Keying-Schlüssel weiter; gezählt unter
+  [`BEO-ALL/interface-formzug-ohne-rezept-nachziehung`](../observations/BEO-ALL/interface-formzug-ohne-rezept-nachziehung/observation.md)
+  (Beleg `evidence/slice-c7-adaptions-nachzuege-v7-0-0.md`); Heilung `7c750972`,
+  Wächter `TestArchivierungFragment_RezeptRuftMitWaveKeying` samt Rot-Beleg je
+  §7b (R3-Trail, *eingetreten*).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
