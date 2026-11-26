@@ -192,3 +192,22 @@ func TestArchivierungFragment_HilfeNenntDenAltbestandSchluessel(t *testing.T) {
 		t.Errorf("%s nennt die Ablehnung [kein-schreib-pfad] nicht", emit.ArchivierungMkPath)
 	}
 }
+
+// TestArchivierungFragment_RezeptRuftMitWaveKeying haelt die Rezept-Zeile des
+// Traeger-Aufrufs gegen die Schluessel-Form des Aufrufs: der Aufrufer ueberreicht
+// `WAVE=<wave-id>` (Zielform der Hilfezeile), das Rezept reicht denselben Wert als
+// `"$(WAVE)"` ans Unterkommando durch; die Schlüssel-Kette trägt der reale Lauf im
+// gebootstrappten Ziel (harness/tools/full-smoke.sh, Abschnitt Archivierung im
+// Ziel) · seit slice-c7-adaptions-nachzuege-v7-0-0.
+//
+// Rot-Gegenbeispiel: die Zeile auf `"1001 27 1000 1001WAVE)"` oder `"$(WELLE)"`
+// verwandeln und den Rezept-Text lesen — `make archive-welle WAVE=<wave-id>` im
+// Ziel uebergibt dann einen leeren bzw. falschen Schluessel, und make test hält
+// die Form, der Lauf die Kette.
+func TestArchivierungFragment_RezeptRuftMitWaveKeying(t *testing.T) {
+	frag := archivierungsFragmentMitTraeger(t)
+	rezept := `exec "$$c" archive-welle $(if $(KENNUNG),--kennung "$(KENNUNG)") "$(WAVE)"`
+	if !strings.Contains(frag, rezept) {
+		t.Errorf("die Ziel-Zeile von %s ruft das Unterkommando nicht mit der WAVE-Form auf — sie trägt:\n%s", emit.ArchivierungMkPath, frag)
+	}
+}

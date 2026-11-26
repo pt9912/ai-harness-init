@@ -39,7 +39,7 @@ ARCHIV_CARRIER ?= .harness/state/bin/ai-harness-init
 # wieder ab.
 archive-welle: ## Zeitdokumente einer geschlossenen Welle archivieren (WAVE=<wave-id> | WAVE=altbestand KENNUNG=<K>) — KEIN Gate
 	@for c in "$(ARCHIV_CARRIER)" "$(ARCHIV_CARRIER).exe"; do \
-		if [ -x "$$c" ]; then exec "$$c" archive-welle $(if $(KENNUNG),--kennung "$(KENNUNG)") "1001 27 1000 1001WAVE)"; fi; \
+		if [ -x "$$c" ]; then exec "$$c" archive-welle $(if $(KENNUNG),--kennung "$(KENNUNG)") "$(WAVE)"; fi; \
 	done; \
 	echo "archive-welle: der Traeger liegt nicht ($(ARCHIV_CARRIER)) — dieses Repo archiviert seine Wellen nicht."; \
 	echo "archive-welle: ein erneuter Lauf des Werkzeugs legt ihn wieder ab."
