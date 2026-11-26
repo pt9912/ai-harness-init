@@ -239,10 +239,11 @@ Paarungen — trägt der Commit nach dem `git mv`.)*
   Branch räumte, und committet ihn ein, bevor der Job-Log-Verfall greift —
   vier Record-Dateien (`slice-d-check-sprung-v0930` Grün + befund-infra;
   `slice-c3-d-check-faecher-v7-0-0` und `slice-c7-adaptions-nachzuege-v7-0-0`
-  befund-last) lösen über `git log -- docs/reviews/mutate/` nach ADR-0102
+  befund-last) lösen über `git log -- docs/reviews/mutate/` nach
+  [`ADR-0102`](../../../../docs/plan/adr/0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md)
   Festlegung 1 auf; der Kopf je Datei trägt Ausgabe-Kanal, Lesekommando,
   Entnahme-Stand und Versuchs-Angabe je Festlegung 2 (Commit `1491d74f`
-  trägt den F-3-Nachzug). ADR-0102 antwortete die drei offenen
+  trägt den F-3-Nachzug). Die ADR antwortete die drei offenen
   Architektur-Fragen der §6 vor der Implementation.
 - **Was ging anders als geplant:** Die Plan-§8-Formel rechnete für den
   BEFUND-Fund einen Zähler-Auftritt 1→2 und plante eine zweite
