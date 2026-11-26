@@ -319,21 +319,28 @@ Der Verifier liest einmal, gleicht den Commit ab und löscht danach diesen Branc
 desselben Slice (`git ls-remote origin 'refs/heads/mutate/<kennung>*'`, Ablauf in
 `.claude/agents/verifier.md`).
 
-**Die Ergebnis-Fassung landet eingecheckt** ([ADR-0102](../../docs/plan/adr/0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md)):
+**Die Ergebnis-Fassung landet eingecheckt** ([ADR-0103](../../docs/plan/adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md),
+supersedes [ADR-0102](../../docs/plan/adr/0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md)
+in vollem Umfang — Ergebnis-Form, Konsum-Reihenfolge, Granularität und Namensform bleiben,
+nur der Ort wechselt):
 je abgeschlossenem Lauf-Urteil schreibt die konsumierende Rolle (Implementer am Claim oder
 Verifier am Verifikations-Übergang) die Fassung als Beleg-Datei nach
-`docs/reviews/mutate/<slice-kennung>-<sha8-des-geprüften-commits>-<form>.txt` — `gruen` oder
+`.harness/stamp/mutate/<slice-kennung>-<sha8-des-geprüften-commits>-<form>.txt` — `gruen` oder
 `befund` mit optionalem Qualifikator (`infra`/`last`) für die Klasse aus dem
 Beobachtungs-Register —, Kopf mit Run-Id, Attempt, geprüftem Commit und dem Lesekommando ihres
 Ausgabe-Kanals ([`MR-051`](../../harness/conventions/MR-051-zahl-beleg-bindet-commit-message-und-register-zaehler.md)-Form)
 darunter byte-gleich die Fassung. Die Konsum-Reihenfolge ist lesen → committen (auf `main`)
 → **dann räumen** ([ADR-0083](../../docs/plan/adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md):
 kein zweiter Träger des Handoff-Gate-Zustands); der Workflow pusht unverändert nicht auf
-`main`, und nur der `ergebnis`-Job trägt `contents: write` — auf seinen Branch.
+`main`, und nur der `ergebnis`-Job trägt `contents: write` — auf seinen Branch. Der Records-Baum
+ist die committete Stempel-Klasse neben dem nicht-committeten Nachweis-Stempel in
+`.harness/state/` ([ADR-0103](../../docs/plan/adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md)
+Festlegungen 1/2, Namens-Kontrast-Zeile); der Working-Tree-Hash nimmt `.harness/stamp/` aus —
+eine Änderung allein unter den Records bewegt den Hash nicht und hält den Nachweis gültig.
 **Grenze (ungenannt wäre die Zusage zu viel):** kein Wächter hält diese Ablage-Form —
-die Form-Zeile hier wird von keinem Modul des Doku-Gates gelesen
-(`grep -rn 'docs/reviews/mutate' .d-check.yml d-check.mk` → **0**) und `docs/reviews/**`
-nimmt der Scan ohnehin aus; erzwingen kann sie nur der Vorgang, der sie schreibt.
+die Form-Zeile hier wird von keinem Modul des Doku-Gates gelesen, und `.harness/stamp/**`
+nimmt der Scan aus ([ADR-0103](../../docs/plan/adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md)
+Festlegung 3, `scan.ignore`); erzwingen kann sie nur der Vorgang, der sie schreibt.
 Ein ausgelassener Konsum-Schritt trägt sein Urteil weiter nur an den zwei Kanälen,
 die verfallen bzw. überschrieben werden.
 
