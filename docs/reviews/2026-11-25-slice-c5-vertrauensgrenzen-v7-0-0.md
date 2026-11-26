@@ -3,7 +3,7 @@
 **Range:** `d47e1611` (Claim, reiner Move `next/` → `in-progress/`, 0/0 Zeilen) · `d29be86c`
 (Ruhe-Marker der Offenen Wellen gezogen, allein `roadmap.md`, −2 Zeilen). Der Diff ist
 Planungs-Artefakt; kein Code-Griff. Geprüft gegen den Plan
-[`../plan/planning/in-progress/slice-c5-vertrauensgrenzen-v7-0-0.md`](../plan/planning/in-progress/slice-c5-vertrauensgrenzen-v7-0-0.md),
+[`../plan/planning/in-progress/slice-c5-vertrauensgrenzen-v7-0-0.md`](../plan/planning/done/slice-c5-vertrauensgrenzen-v7-0-0.md),
 den Tafel-Zeilen C5/C7 der
 [`../plan/planning/welle-baseline-sprung-v7-0-0.md`](../plan/planning/welle-baseline-sprung-v7-0-0.md)
 und den Hard Rules [`../../AGENTS.md`](../../AGENTS.md) §3.
@@ -18,7 +18,7 @@ und den Hard Rules [`../../AGENTS.md`](../../AGENTS.md) §3.
 
 - `kategorie`: MEDIUM
 - `quelle`: [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)
-- `pfad`: [`../plan/planning/in-progress/slice-c5-vertrauensgrenzen-v7-0-0.md`](../plan/planning/in-progress/slice-c5-vertrauensgrenzen-v7-0-0.md):104–108 (§7) · :58 (LP1) · :59 (LP2) · :60 (LP3)
+- `pfad`: [`../plan/planning/in-progress/slice-c5-vertrauensgrenzen-v7-0-0.md`](../plan/planning/done/slice-c5-vertrauensgrenzen-v7-0-0.md):104–108 (§7) · :58 (LP1) · :59 (LP2) · :60 (LP3)
 - `befund`: Die Fundlisten je Kommando, die Byte-Diff-Ergebnisse je Form und die
   Sensor-Ausgänge der Lesung existieren allein in der Übergabe-Meldung; die Slice-Datei
   trägt in §7 den ungefüllten Closure-Platzhalter (*„Wird bei der Closure … gefüllt"*),
@@ -34,7 +34,7 @@ und den Hard Rules [`../../AGENTS.md`](../../AGENTS.md) §3.
 
 - `kategorie`: INFO
 - `quelle`: Maintainability
-- `pfad`: [`../plan/planning/in-progress/slice-c5-vertrauensgrenzen-v7-0-0.md`](../plan/planning/in-progress/slice-c5-vertrauensgrenzen-v7-0-0.md):31
+- `pfad`: [`../plan/planning/in-progress/slice-c5-vertrauensgrenzen-v7-0-0.md`](../plan/planning/done/slice-c5-vertrauensgrenzen-v7-0-0.md):31
 - `befund`: Der Plan zitiert den Modul-04-Anker als `` `### Bedrohung, Grenze, Ausgang` ``;
   der Ist-Anker am `v7.0.0`-Stand lautet `### Bedrohung, Grenze, Ausgang (Modul 4)`
   (`grep -n '^### Bedrohung, Grenze, Ausgang' .harness/baseline/v7.0.0/regelwerk/modul-04-adrs.md`
