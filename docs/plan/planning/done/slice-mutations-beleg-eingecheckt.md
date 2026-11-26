@@ -105,7 +105,9 @@ weil der BEFUND-Beleg des zweiten Laufs genau diese Klasse belegt.
       und `slice-c7-adaptions-nachzuege-v7-0-0` je `3880063f` befund-last) —
       Plan-Korrektur: der Plan nannte zwei Dateien, die Teil-Ernte kam mit dem
       Claim-Zug des Tages hinzu · Commits `79757bc2` (Belege + Form-Zeile) und
-      `1491d74f` (Kopf-Formen je ADR-0102 Festlegung 2: ein Urteil je Run, der
+      `1491d74f` (Kopf-Formen je
+      [`ADR-0102`](../../../../docs/plan/adr/0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md)
+      Festlegung 2: ein Urteil je Run, der
       zweite Versuch nur am Job-Log-Kanal belegt): die
       Ergebnis-Fassung des Grün-Laufs (`Urteil: gruen`, 82/82, Run
       45625795106, Attempt 3 — Quellnachweis über das `gh api`-Log-Kommando
