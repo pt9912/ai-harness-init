@@ -26,7 +26,7 @@ Festlegung 2),
 (der Key entsteht aus dem, was der Host ohnehin trägt),
 [ADR-0035](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
 (Form-Präzedenz: Beleg statt Lauf, Prüfgegenstand-Bezugsmenge, benannter Rest, fail-closed),
-[ADR-0099](../../adr/0099-gates-fastpfad-ueber-stempel.md)
+[ADR-0099](../../adr/0099-gates-fastpfad-ueber-gedecktem-stempel-paar.md)
 (der Tier-1-Fast-Pfad, den dieser Slice je Check verfeinert),
 [ADR-0083](../../adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md)
 (der Stempelvertrag des Stop-Hooks),
@@ -66,7 +66,7 @@ einem Implementer-Lauf. -->
 je Check der Ordnungskante ein Prüfgegenstand-Schlüssel (Inhalt-Hash über
 seine Bezugsmenge, [ADR-0035](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
 Festlegungen 2/3-Form) und ein Grün-Stempel an genau einer Stempel-Ablage; der
-Fast-Pfad ([ADR-0099](../../adr/0099-gates-fastpfad-ueber-stempel.md), Tier 2)
+Fast-Pfad ([ADR-0099](../../adr/0099-gates-fastpfad-ueber-gedecktem-stempel-paar.md), Tier 2)
 fährt bei Teildrift nur die Checks, deren Schlüssel seit dem letzten grünen
 Lauf driftete, und SKIPpt über dem vollständig gedeckten Satz — bei jedem
 Zweifel der volle Lauf über `make record-gates` (fail-closed).
@@ -97,7 +97,7 @@ Zweifel der volle Lauf über `make record-gates` (fail-closed).
   `record-gates: <Checks>` verdrahtet (Zusage 3 von
   `test/gate-nachweis-kante.bats`); der je-Check-Stempel-Schreiber wird vom
   vollen Lauf getragen, der SKIP-Anteil bleibt Wrapper
-  ([ADR-0099](../../adr/0099-gates-fastpfad-ueber-stempel.md) Festlegung 1-Form:
+  ([ADR-0099](../../adr/0099-gates-fastpfad-ueber-gedecktem-stempel-paar.md) Festlegung 1-Form:
   Schreiber bleibt `record-gates`).
 
 ## 2. Definition of Done
@@ -177,7 +177,7 @@ Zweifel der volle Lauf über `make record-gates` (fail-closed).
 4. **Der benannte Rest bleibt der ADR-0099-Rest** — der lokale Docker-Cache-
    Zustand und die Host-Werkzeuge stehen außerhalb jedes baum-abgeleiteten
    Schlüssels ([ADR-0035](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
-   Festlegung 4; [ADR-0099](../../adr/0099-gates-fastpfad-ueber-stempel.md)
+   Festlegung 4; [ADR-0099](../../adr/0099-gates-fastpfad-ueber-gedecktem-stempel-paar.md)
    Festlegung 2); je-Check-Betroffenheit: alle Image-fahrenden Checks
    (`lint`, `build`, `test`, `host-bin` — die Image-Digests stehen in
    getrackten Dateien und sind transitiv im Key, der Cache-*Zustand* ist
@@ -261,13 +261,13 @@ Festlegung 4-Form, je Check):
 
 **Start** (`next` → `in-progress`): der Auftrag des Auftraggebers ist
 eingetreten (dieser Slice liegt priorisiert in `next/`), und die
-begleitende ADR des Architect-Sub-Zugs — benannt `ADR-0108` als
+begleitende ADR des Architect-Sub-Zugs — A-Form je Plan-Übergabe: `ADR-0108` — entsteht im Architect-Sub-Zug, Kennungs-Form bis dahin, als <!-- d-check:ignore (Platzhalter: entsteht im Architect-Sub-Zug, ADR-0104-Form) -->
 *Stempel-Synthese*, nach der
-[Fastpfad-Präzedenz](../../plan/planning/done/slice-gates-fastpfad-ueber-stempel.md)
-([ADR-0099](../../adr/0099-gates-fastpfad-ueber-stempel.md) vor
+Fastpfad-Präzedenz `slice-gates-fastpfad-ueber-stempel`
+([ADR-0099](../../adr/0099-gates-fastpfad-ueber-gedecktem-stempel-paar.md) vor
 `slice-gates-fastpfad-ueber-stempel`) — liegt `Accepted` vor. Ihr Gegenstand:
 die je-Check-Stempel-Form gegenüber
-[ADR-0083](../../adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md)/[ADR-0099](../../adr/0099-gates-fastpfad-ueber-stempel.md)
+[ADR-0083](../../adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md)/[ADR-0099](../../adr/0099-gates-fastpfad-ueber-gedecktem-stempel-paar.md)
 (Festlegungen zu Key, Ablage, je-Check-Betroffenheit des benannten Rests und
 der [ADR-0103](../../adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md)-Ausnahme
 auf **einer** Definition). Rollen-Sequenz Modul 8 — der Architect-Zug kommt
@@ -282,7 +282,7 @@ vor der Implementation.
   deklarierter Bestand ([ADR-0035](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
   Festlegung 4-Form) — der Slice verkleinert den Fast-Pfad auf die gezeigten
   Checks, statt still weiterzuschließen (Form der
-  [Tier-1-Rückführung](../../plan/planning/done/slice-gates-fastpfad-ueber-stempel.md):
+  Tier-1-Rückführung `slice-gates-fastpfad-ueber-stempel`:
   „nur für eine Klasse geschnitten").
 - `in-progress` → `open` (blockiert — Carveout?): ein Check urteilt über
   etwas, das kein baum-abgeleiteter Schlüssel darstellt (Lauf-Zustand als
@@ -310,7 +310,7 @@ Zusätzlich: Closure-Notiz mit Lerneintrag geschrieben.
   (Messung je [ADR-0035](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
   Festlegung 2) — **Ausgang (vorgesehen):** eingetreten → der betroffene
   Check fährt voll als deklarierter Bestand (Festlegung 4-Form, je Check in
-  der ADR-0108 benannt); der Slice schneidet weiter mit den zeigbaren Checks.
+  der begleitenden ADR benannt); der Slice schneidet weiter mit den zeigbaren Checks.
   Ein Befund über der Mehrheit → Rückführung §4.
 - **Lokal fährt der Fast-Pfad je-Check, CI immer voll** (kein Stempel-Konzept
   auf CI) — **Ausgang (vorgesehen):** entfallen mit Grund — dasselbe
@@ -396,7 +396,7 @@ Hälften.
 
 **Vorgelagert — Sub-Area-Wahl prüfen:** berührt sind `harness/tools/`
 (Kürzel `TOOLS`) und `*` (gesamtes Repo, Kürzel `ALL`) — beide stehen in der
-Modus-Deklaration ([`harness/conventions.md`](../../../../../harness/conventions.md)
+Modus-Deklaration (`harness/conventions.md`
 §Modus-Deklaration pro Sub-Area); beide erfüllen die Schwelle ≥ 2 von 3
 Achsen — Strukturregeln über den Adaptions-Block (MR-Einträge) bzw. über die
 Modus-Deklaration selbst, Phase-Reife Phase 5 (die Tools laufen in
