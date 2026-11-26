@@ -133,4 +133,5 @@ eintritt:
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
-| 2026-11-26 | Accepted | [`slice-mutations-beleg-eingecheckt`-Plan](../../plan/planning/in-progress/slice-mutations-beleg-eingecheckt.md) §2, Architektur-Frage aus §6 Risiko 3 |
+| 2026-11-26 | Accepted | Slice `slice-mutations-beleg-eingecheckt` §2, Architektur-Frage aus §6 Risiko 3; Ablageort `docs/reviews/mutate/` |
+| 2026-11-26 | Berichtigung — die Verweis-Zeile der Accepted-Zeile trägt die Kennung statt eines Pfad-Links in den Planning-Lifecycle; der Plan wandert bei der Closure nach `done/`, und der Verweise-Zug liest eingehende Verweise aus `docs/plan/adr/**` nicht nach. Der Kern bleibt unverändert ([`AGENTS.md`](../../../AGENTS.md) §3.4) | Review [`2026-11-25-slice-mutations-beleg-eingecheckt.md`](../../reviews/2026-11-25-slice-mutations-beleg-eingecheckt.md) F-1 |
