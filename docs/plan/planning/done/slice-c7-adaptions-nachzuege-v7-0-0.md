@@ -235,6 +235,37 @@ in §7, Fundlisten je Sub-Zug.
   Wächter `TestArchivierungFragment_RezeptRuftMitWaveKeying` samt Rot-Beleg je
   §7b (R3-Trail, *eingetreten*).
 
+**Drei Paarungen (geprüft am 2026-11-26, nach dem `git mv` —
+[`AGENTS.md`](../../../../AGENTS.md) §3.10, Form der Vorgänger-Slices):**
+
+- *(a) Anker:* §7 trägt kein `liegt in`-Feld — die zwei Lern-Einträge sind
+  gezählt, nicht verkörpert; kein Gegenstand der Paarung. Grün.
+- *(b) Folge-Slice:* §6/§7 nennen keine offene Folge-Slice-Kennung; die
+  C6-Nennung in §1 ist die Übergabe-Kennung eines geschlossenen Slices
+  ([`slice-c6-agents-vorlage-v7-0-0`](slice-c6-agents-vorlage-v7-0-0.md) liegt
+  in `done/`); der Traeger-Fetch-Rest trägt seinen Ausgang am Register, nicht
+  an einer Slice-Adresse. Grün.
+- *(c) Register:* die in §6/§7 genannten Beobachtungen existieren als
+  Verzeichnis und tragen je mindestens einen Beleg —
+  [`BEO-ALL/gefetchter-traeger-sperrt-die-archivierungs-stufe`](../observations/BEO-ALL/gefetchter-traeger-sperrt-die-archivierungs-stufe/observation.md)
+  (1 Beleg; Stand *offen*, Ausgang trägt die Welle-Closure + der Release-Schnitt),
+  [`BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt`](../observations/BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt/observation.md)
+  (9 Belege; Stand *verkörpert*), [`BEO-ALL/interface-formzug-ohne-rezept-nachziehung`](../observations/BEO-ALL/interface-formzug-ohne-rezept-nachziehung/observation.md)
+  (2 Belege). Grün.
+
+**Ruhe-Marker:** [`roadmap.md`](../in-progress/roadmap.md) §Offene Wellen —
+`in-progress/` trägt nach dem `git mv` nur ihr `roadmap.md`; der Marker
+„Nichts in Arbeit." trifft den Zustand.
+
+**Trigger-Audit:** kein Carveout berührt; die Re-Evaluierungs-Trigger von
+[`ADR-0101`](../../adr/0101-die-baseline-verweis-form-in-adrs.md) sind
+*permanent*; kein Hard-Rule-Auflösungs-Trigger in Reichweite;
+der `full-smoke`-Replay-Beleg für LP2 verbleibt an der Welle-Closure.
+
+**Paarungen geprüft am 2026-11-26:** `make docs-check` → 3030 Datei(en) geprüft, 0
+Befund(e) (frische Messung am Paarungs-Commit). `make gates` — grün am
+Zug-Ende (Stempel deckt HEAD).
+
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
 Beide vorgelagerten Prüfungen vor dem Block:

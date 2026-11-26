@@ -3,7 +3,8 @@
 **Fund:** die Rezept-Zeile des emittierten Archivierungs-Fragments
 (`internal/emit/templates/enforce/archivierung.mk`) reichte den Träger-Aufruf
 mit dem entstellt gebliebenen Schlüssel `"1001 27 1000 1001WAVE)"` weiter statt
-der Zielform `"$(WAVE)"` (Make-Aufruf `WAVE=<wave-id>`, ADR-0090) —
+der Zielform `"$(WAVE)"` (Make-Aufruf `WAVE=<wave-id>`,
+[`ADR-0090`](../../../../../../plan/adr/0090-altbestand-commit-traegt-die-kennung-des-aufrufers.md)) —
 `make full-smoke` (Abschnitt Archivierung im Ziel) brach an drei Sperren statt
 der geplanten zwei. Die Text-Prüfschicht über die Kopfzeilen blieb grün
 (`internal/emit/archivierung_test.go` hielt andere Zellen); der Bruch zeigte
