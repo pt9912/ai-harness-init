@@ -397,6 +397,14 @@ Host ([`LH-QA-02`](spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)) — ein Hos
 liefert ein Ergebnis, das CI nicht wiederholt, und verlegt das Debugging auf den
 Unterschied statt auf den Fehler.
 
+**Umgebungs-Zusage:** Docker ist hier der Träger der Umgebungs-Zusage (Baseline-Regelwerk
+`modul-14-docker-harness.md`); das Inventar des Tool-/Versions-Checks tragen hier der
+Docker-only-Deckel mit den gepinnten Image-Digests und `make traeger-pins-check` /
+`make traeger-fetch` je eigener Index-Zeile ([`harness/README.md`](harness/README.md)
+§Sensors) — die Verweis-Datei der Vorlage, `harness/sensors/environment-check.md`, <!-- d-check:ignore (Platzhalter-Pfad: kein Träger im Dogfood — die Abwägung verlinkt der Absatz unten) --> hat hier keinen Träger; ihr Fehlen ist die Abwägung von
+[`slice-c4-environment-check-v7-0-0`](docs/plan/planning/done/slice-c4-environment-check-v7-0-0.md)
+(Weg B entfällt), keine Lücke.
+
 **Host der Host-Läufer ist Linux; macOS ist dafür nicht getragen.** Die Host-Läufer dieses
 Repos — `make mutate`, `make mutate-auswahl`, `make mutate-greift`, `make full-smoke` — laufen auf
 einem Linux-Host; Beleg-Ort ist CI auf frischem Klon
@@ -540,6 +548,20 @@ Modul `targets`).
 6. Repo-weiten Gate-Lauf vor Handoff (`make gates`).
 7. Doku/Indizes aktualisieren, falls ein öffentlicher Vertrag berührt.
 8. Ausgeführte Sensors und Risiken berichten — keine Erfolgsmeldung ohne Gate-Lauf.
+
+**Parallele Läufe.** Das WIP-Limit zählt pro Lauf — je Lauf ein `git worktree`
+(oder ein weiterer Klon) und ein Zweig. Läuft dieser Workflow parallel zu einem
+anderen, bekommt er nach dem Anspruchs-Commit auf dem Hauptzweig seinen eigenen
+Zweig **und** Arbeitsbaum —
+`git worktree add ../<repo>-<lauf> -b <branch-name>` oder ein weiterer Klon —,
+und `Verantwortlich:` nennt Person und Zweig. Nie zwei Läufe in derselben
+Arbeitskopie: Der zweite überschreibt den ersten still. Der Arbeitsbaum liegt
+neben dem Repo, nicht darin, sonst sehen die Gates ihn als zweite Kopie. Ein
+`.gitignore`-Eintrag hilft dem Gate nicht, für git gehört der Pfad trotzdem
+hinein; legt ein Werkzeug ihn ins Repo (etwa Claude Code unter
+`.claude/worktrees/`), steht der Pfad im `ignore` der `.d-check.yml`. Ein Slice
+gehört einem Implementer-Lauf (Baseline-Regelwerk
+`modul-05-planning-harness.md` §Lifecycle als State Machine).
 
 Dieser Workflow deckt ausschließlich die Implementer-Rolle ab. Schritt 8
 ist der Rollenwechsel, kein Abschluss: Bericht → Handoff an Reviewer
