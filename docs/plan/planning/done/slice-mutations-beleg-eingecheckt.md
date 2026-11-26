@@ -134,7 +134,7 @@ weil der BEFUND-Beleg des zweiten Laufs genau diese Klasse belegt.
       mit der bestehenden Evidence-Datei („ein Vorgang zählt einmal");
       keine dritte Evidence-Datei, kein Zähler gesetzt.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang — §7 dieses Commits.
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen —
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen —
       im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen
       von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
@@ -281,7 +281,15 @@ Paarungen — trägt der Commit nach dem `git mv`.)*
   Doppelte-Belege-Granularität → `entfallen` (ADR-0102 Festlegung 2/4:
   ein Urteil je Run) · 3×-Schwelle-Lage → `entfallen` (F-2-korrigiert:
   Fund zitiert statt zählt, Zähler-Ist 2, Stand `offen`).
-- **Drei Paarungen:** *(wird nach dem `git mv` getragen — letzter DoD-Punkt)*
+- **Drei Paarungen:** Anker — kein Eintrag der §7 trägt das `liegt in`-Feld
+  (die Verkörperung kam aus Plan/ADR, nicht über den Register-3×-Weg; die
+  Lage steht oben) → kein Prüfling · Folge-Slice — keine genannte Kennung
+  → kein Prüfling · Register —
+  [`BEO-ALL/mutations-ci-gruenvorlauf-bricht-unter-last/`](../observations/BEO-ALL/mutations-ci-gruenvorlauf-bricht-unter-last/observation.md)
+  existiert als Verzeichnis, und die in §7 genannte Zeile trägt zwei
+  Belege (`evidence/slice-d-check-sprung-v0930.md`,
+  `evidence/slice-baseline-vendorung-v7-0-0.md`) → grün · geprüft im
+  Commit nach dem `git mv` nach `done/`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
