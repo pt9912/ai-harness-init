@@ -1,6 +1,6 @@
 # ADR-0102: Mutations-CI-Ergebnisse tragen als eingecheckte Beleg-Datei in `docs/reviews/mutate/`
 
-**Status:** Accepted
+**Status:** Superseded by [ADR-0103](0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md)
 
 **Datum:** 2026-11-26
 
@@ -135,3 +135,4 @@ eintritt:
 |---|---|---|
 | 2026-11-26 | Accepted | Slice `slice-mutations-beleg-eingecheckt` §2, Architektur-Frage aus §6 Risiko 3; Ablageort `docs/reviews/mutate/` |
 | 2026-11-26 | Berichtigung — die Verweis-Zeile der Accepted-Zeile trägt die Kennung statt eines Pfad-Links in den Planning-Lifecycle; der Plan wandert bei der Closure nach `done/`, und der Verweise-Zug liest eingehende Verweise aus `docs/plan/adr/**` nicht nach. Der Kern bleibt unverändert ([`AGENTS.md`](../../../AGENTS.md) §3.4) | Review [`2026-11-25-slice-mutations-beleg-eingecheckt.md`](../../reviews/2026-11-25-slice-mutations-beleg-eingecheckt.md) F-1 |
+| 2026-11-26 | Superseded — [ADR-0103](0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md) nimmt den Gegenstand in vollem Umfang weiter (Ergebnis-Form, Konsum-Reihenfolge, Granularität, Namensform); einziges Delta ist der Ablageort: aus dem Verzeichnis der Review-Zeitdokumente wurde die Stempel-Klasse .harness/stamp/mutate/. Der Kern bleibt unverändert ([`AGENTS.md`](../../../AGENTS.md) §3.4) | [ADR-0103](0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md) |
