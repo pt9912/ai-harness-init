@@ -1,0 +1,54 @@
+mutate-ergebnis: slice-stamp-records-konsum-v1
+gepruefter Commit: b63291e64d00b392b7fba415e7e3f09063e1ea8b
+Basis (Claim-Commit): 2b578a44860b583d736cf11934e127e3de49caa1
+Shard 0: Exit 0, 317 s, Faelle: 09-treiber-failure-form 200-mutate-signal-raeumt-vor-dem-bericht 453-mutate-teillauf-schreibt-den-beleg-slot 72-mutate-isolation-im-repo
+Shard 1: Exit 0, 346 s, Faelle: 191-mutate-zeitbilanz-ohne-nenner 201-mutate-worker-trap-kehrt-zurueck 454-mutate-teillauf-entwertet-den-beleg-slot 73-mutate-fingerprint-leer
+Shard 2: Exit 0, 407 s, Faelle: 192-mutate-worker-vorlauf-ohne-abbruch 202-mutate-einsammeln-ohne-schranke 455-mutate-teillauf-sagt-beleg 74-mutate-kopie-ohne-git
+Shard 3: Exit 0, 393 s, Faelle: 193-mutate-bericht-ohne-fehlenden-fall 203-mutate-zeitvorgabe-ungeprueft 456-mutate-teillauf-uebersprung-mit-filter 75-mutate-kopie-im-repo
+Shard 4: Exit 0, 317 s, Faelle: 194-mutate-serielle-spur-nicht-fail-closed 204-mutate-bericht-wird-wiederholt 457-mutate-filter-uebergeht-unbekannte-namen 76-mutate-mittenpruefung
+Shard 5: Exit 0, 317 s, Faelle: 195-mutate-spur-haengt-am-aufrufer 205-mutate-zweites-signal-schweigt 458-mutate-voller-lauf-nennt-den-schluessel 77-mutate-abbruch
+Shard 6: Exit 0, 313 s, Faelle: 196-mutate-statuszeile-ohne-inhalt 262-mutate-schluessel-ausnahme-nicht-deklariert 496-mutate-form-matched-live-pipe-verwirft-treffer 795-stamp-records-paar-bestimmung-verliert-zaehne
+Shard 7: Exit 0, 345 s, Faelle: 197-mutate-worker-ohne-errexit 263-mutate-beleg-ueberlebt-abbruch 500-mutate-vollauf-sperre-entfernt 97-mutate-sensorwahl
+Shard 8: Exit 0, 290 s, Faelle: 198-mutate-mutex-schranke-meldet-leer 264-mutate-uebersprung-ohne-schluesselvergleich 635-greift-modus-uebersieht-ungegriffenen-anker
+Shard 9: Exit 0, 458 s, Faelle: 199-mutate-zeitschranke-greift-nie 324-mutate-files-schranke-erlaubt-mehrfachtreffer 636-greift-einstieg-faehrt-den-modus-nicht
+ok       09-treiber-failure-form                                  Shard 0
+ok       200-mutate-signal-raeumt-vor-dem-bericht                 Shard 0
+ok       453-mutate-teillauf-schreibt-den-beleg-slot              Shard 0
+ok       72-mutate-isolation-im-repo                              Shard 0
+ok       191-mutate-zeitbilanz-ohne-nenner                        Shard 1
+ok       201-mutate-worker-trap-kehrt-zurueck                     Shard 1
+ok       454-mutate-teillauf-entwertet-den-beleg-slot             Shard 1
+ok       73-mutate-fingerprint-leer                               Shard 1
+ok       192-mutate-worker-vorlauf-ohne-abbruch                   Shard 2
+ok       202-mutate-einsammeln-ohne-schranke                      Shard 2
+ok       455-mutate-teillauf-sagt-beleg                           Shard 2
+ok       74-mutate-kopie-ohne-git                                 Shard 2
+ok       193-mutate-bericht-ohne-fehlenden-fall                   Shard 3
+ok       203-mutate-zeitvorgabe-ungeprueft                        Shard 3
+ok       456-mutate-teillauf-uebersprung-mit-filter               Shard 3
+ok       75-mutate-kopie-im-repo                                  Shard 3
+ok       194-mutate-serielle-spur-nicht-fail-closed               Shard 4
+ok       204-mutate-bericht-wird-wiederholt                       Shard 4
+ok       457-mutate-filter-uebergeht-unbekannte-namen             Shard 4
+ok       76-mutate-mittenpruefung                                 Shard 4
+ok       195-mutate-spur-haengt-am-aufrufer                       Shard 5
+ok       205-mutate-zweites-signal-schweigt                       Shard 5
+ok       458-mutate-voller-lauf-nennt-den-schluessel              Shard 5
+ok       77-mutate-abbruch                                        Shard 5
+ok       196-mutate-statuszeile-ohne-inhalt                       Shard 6
+ok       262-mutate-schluessel-ausnahme-nicht-deklariert          Shard 6
+ok       496-mutate-form-matched-live-pipe-verwirft-treffer       Shard 6
+ok       795-stamp-records-paar-bestimmung-verliert-zaehne        Shard 6
+ok       197-mutate-worker-ohne-errexit                           Shard 7
+ok       263-mutate-beleg-ueberlebt-abbruch                       Shard 7
+ok       500-mutate-vollauf-sperre-entfernt                       Shard 7
+ok       97-mutate-sensorwahl                                     Shard 7
+ok       198-mutate-mutex-schranke-meldet-leer                    Shard 8
+ok       264-mutate-uebersprung-ohne-schluesselvergleich          Shard 8
+ok       635-greift-modus-uebersieht-ungegriffenen-anker          Shard 8
+ok       199-mutate-zeitschranke-greift-nie                       Shard 9
+ok       324-mutate-files-schranke-erlaubt-mehrfachtreffer        Shard 9
+ok       636-greift-einstieg-faehrt-den-modus-nicht               Shard 9
+Fallmenge: 38 (Slice: 38)
+Wanduhr gesamt (erster Shard-Start bis letztes Shard-Ende): 464 s
+Urteil: gruen
