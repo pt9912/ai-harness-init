@@ -26,7 +26,7 @@ dieses Repos; die Anforderungs-Seite steht in der `LH-QA`-ID des Felds Bezug.
 
 **Ziel:** Die AGENTS-Kern-Formen der v7-Vorlage in die eigene [`AGENTS.md`](../../../../AGENTS.md)
 ziehen — (a) die **Docker-Block-Neufassung** von §3.9: der Tool-/Versions-Check-Verweis
-auf `harness/sensors/environment-check.md` und der Umgebungs-Mechanik-Satz
+auf `harness/sensors/environment-check.md` <!-- d-check:ignore (Platzhalter-Pfad: legt LP1 dieses Zugs an) --> und der Umgebungs-Mechanik-Satz
 (Docker ist Träger der Umgebungs-Zusage, Modul-14-Termini), Form-Quelle die
 v7-Vorlage §3.1 `### 3.1 Docker-only` (Pfad: `.harness/baseline/v7.0.0/templates/AGENTS.template.md`,
 Zeilen 97–109); (b) der **„Parallele Läufe"-Absatz** je der Vorlage (Zeilen
@@ -66,7 +66,8 @@ existiert nicht) — der Code-Zug entfällt je Form, belegt in §7.
 Liefer-Punkte (drei; gezählt nach [`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)):
 
 - [ ] **LP1 — Docker-Block-Neufassung §3.9:** §3.9 der [`AGENTS.md`](../../../../AGENTS.md)
-  trägt den Tool-/Versions-Check-Verweis (`harness/sensors/environment-check.md`)
+  trägt den Tool-/Versions-Check-Verweis (`harness/sensors/environment-check.md`) <!-- d-check:ignore (Platzhalter-Pfad: legt LP1 dieses Zugs an) -->
+
   und den Umgebungs-Mechanik-Satz (Träger-Form der Umgebungs-Zusage), Form-Quelle
   v7-Vorlage §3.1 (Pfad-Angabe im Plan oben). Messung: je git-Diff des Zugs die
   zwei Formen; `make docs-check` grün am Zug-Stand.
@@ -104,7 +105,7 @@ belegt in §7; jeder §6-Risiko mit Ausgang, Lern-Eintrag in §7.
 ## 6. Risiken und offene Punkte
 
 - **R1 — die Docker-Block-Neufassung zieht Terminologie-Nachzüge nach:** der
-  Umgebungs-Zusage-Satz berührt `MR-048`/`MR-047`-Begriffe, deren Eintrags-Rümpfe
+  Umgebungs-Zusage-Satz berührt [`MR-048`](../../../../harness/conventions.md#mr-048--der-reproduzierbarkeits-anker-ist-die-rezept-form-die-emittierten-skelette-pinnen-per-tag)/[`MR-047`](../../../../harness/conventions.md#mr-047--der-ort-der-ausführbaren-harness-tools-ist-keine-abweichung-mehr)-Begriffe, deren Eintrags-Rümpfe
   §1 Punkt 3 ausschließt. Ausgang: *eingetreten* → die Formen stehen der
   C7-Kennung in dessen §8-Sichtung frei (Adresse: `slice-c7-adaptions-nachzuege-v7-0-0`);
   *entfallen* → keine Berührung (Fundliste trägt die 0).
