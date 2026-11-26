@@ -143,6 +143,21 @@ in §7, Fundlisten je Sub-Zug.
 
 ## 7. Closure-Notiz
 
+**Fundlisten der drei Sub-Züge (Implementer, Übergabe-Belege je Kommando, [`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)-Form, gelesen am Stand `46dfb1b1`, 2026-11-26):**
+
+- **(a) Architect-Sub-Zug** — der Kern-Drift ist eine Zeile, byte-genau der Rest am Entstehungsstand:
+  `diff <(git show 39f57f73:docs/plan/adr/0100-die-gegenmessung-schrumpft-auf-die-einheimische-flaeche.md | sed -n '134p') <(sed -n '134p' docs/plan/adr/0100-die-gegenmessung-schrumpft-auf-die-einheimische-flaeche.md)` → **leer** (byte-gleich). `make adr-immutable RANGE=0a080df5^..HEAD` → `0 Befund(e)`, `RANGE=39f57f73^..HEAD` → `0 Befund(e)`, `RANGE=39f57f73..HEAD` → `0 Befund(e)`. Gegenprobe über der roten Basis: `RANGE=97195c79..HEAD` → `1 Befund` — `core-drift-vcs` an Z. 3, der Status-Zeile; der Übergang `Accepted` → `Superseded by` zählt dort als Kern-Differenz, solange die Basis die rote Spitze trägt. Die Referenz-Form der Superseded-ADR heißt Inline-Code plus je-Fundstellen-Marker (Vorbild: [`ADR-0005`](../../../../docs/plan/adr/0005-ziel-repo-distribution.md) `Supersedes`-Feld) — der Zeilen-Marker schaltet das Modul `matrix` nicht stumm (Fund: [`MR-030`](../../../../harness/conventions/MR-030-der-rollen-name-der-baseline-und-der-bezeichner-fallen-zusammen.md) §Feld). `make docs-check` je Commit → `0 Befund(e)`.
+- **(b) Implementer-Sub-Zug** —
+  ```sh
+  find .harness/baseline -type f | wc -l                        # 56
+  ls .harness/baseline/v7.0.0/templates/spec/                   # specification.template.md
+  grep -n 'DCHECK_IMAGE' d-check.mk                             # v0.93.0
+  grep -c 'Kommentar trägt keine' .harness/baseline/v7.0.0/templates/.harness/skills/reviewer.template.md   # 1
+  grep -c 'Zustandsfeld trägt Chronik' .harness/baseline/v7.0.0/templates/.harness/skills/reviewer.template.md # 1
+  ```
+  Rest-Fundstellen unter der Schwelle, datiert geblieben ([`MR-053`](../../../../harness/conventions.md#mr-053--ein-eintrag-datiert-seine-werkzeug-aussage-statt-den-lebenden-pin-zu-führen)-Form): [`MR-031`](../../../../harness/conventions.md#mr-031--die-kommentar-regel-steht-in-der-adoptierten-baseline) sechs weitere `v5.12.0`-Zeilen (F2: 38, 40, 42, 56, 86, 87), `harness/migration.md` 36 weitere `v6.18.1`-Fundstellen (F3: Registerzeilen Z. 121–139, 145, Vorlagen-Zuordnung, Streu-Zeilen).
+- **(c) Terminologie-Sub-Zug** — 0-Fund je Kommando: `grep -c 'Reproduzierbarkeits\|Zwei Formen' internal/emit/*.go` → **0** (InventurMessTag steht je C1-Zug auf `v7.0.0`, `grep -n 'const InventurMessTag' internal/emit/baumaussage.go`), `grep -rn 'Reproduzierbarkeits\|Zwei Formen' harness/sensors/ harness/mk/` → **0**. Die Träger-/Begriffs-Formen sitzen in [`MR-048`](../../../../harness/conventions.md#mr-048--der-reproduzierbarkeits-anker-ist-die-rezept-form-die-emittierten-skelette-pinnen-per-tag) (drei Zellen + Terminologie-Merk) und im Index-Ausschnitt; [`MR-047`](../../../../harness/conventions.md#mr-047--der-ort-der-ausführbaren-harness-tools-ist-keine-abweichung-mehr) trägt keine solche Zelle (das Kommando `grep 'Anker\|Repro'` über die Datei desselben Falls → **0**). Kein Code-Text-Zug, damit kein Test-Nachzug (R2: *entfallen*).
+
 <!-- Bei der Closure füllen (Implementer/Planner): Fundlisten je Sub-Zug je
 Kommando ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)-Form, fenced Block je Pfad-Muster), Lern-Eintrag,
 Risiko-Ausgänge, Register-Paarung. -->
