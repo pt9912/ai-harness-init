@@ -96,6 +96,17 @@ in der Fall-Form statt der Lauf-Form). Die Form und ihre Grenzen trägt
 [`ADR-0107`](../../adr/0107-die-mutations-record-granularitaet-ist-je-fall.md)
 Festlegung 1–5; der Anhang urteilt nicht, er verwandelt.
 
+**Übernimmt:** [`slice-gates-pruefgegenstand-stempel-v1`](../done/slice-gates-pruefgegenstand-stempel-v1.md)
+— die zwei Design-Posten aus dessen §3/§6/§7: (a) der **Zuordnungs-Rest** der
+Tafel-Mengen — `bash harness/tools/gates-keys.sh rest` nennt 34 Dateien
+außerhalb jeder Menge; ob sie je Check in die Mengen aufgenommen werden oder
+als benannter Rest deklariert bleiben, ist eine Plan-Entscheidung je
+[`ADR-0108`](../../adr/0108-stempel-synthese-je-check-pruefgegenstand.md)
+Abwägung E — und (b) der **Record-only-Vertrag** an der engeren Menge
+`.harness/stamp/mutate/` ([`ADR-0103`](../../adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md)
+Festlegung 2); die Plan-Fassung des Gebers las `.harness/stamp/**`, die
+Schärfung liegt in dessen §3/§6 (Closure-Zug `623a6798`).
+
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - *(Folge-Slice übernimmt es.)* Die Tier-2-Fast-Pfad-Kante (je-Check-Prüfgegenstände
