@@ -1,6 +1,6 @@
 # ADR-0061: Ein Review-Report bekommt beim Archivieren einen Stub — die eingehende Adresse bleibt gültig, statt gebrochen oder stummgeschaltet zu werden
 
-**Status:** Proposed
+**Status:** Accepted
 
 **Datum:** 2026-09-22
 
@@ -277,6 +277,7 @@ der schreibt.
 | Datum | Ereignis | Verweis |
 |---|---|---|
 | 2026-09-22 | **Proposed** | Architect-Lauf zu `slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang`; Acceptance-Trigger: eine Reviewer-Runde prüft diese Entscheidung gegen [ADR-0033](0033-wellen-archivierung-als-unterkommando.md), [ADR-0039](0039-eingefrorene-adresse-in-den-vendored-baum.md) und [ADR-0042](0042-verweis-nachzug-im-eingefrorenen-artefakt.md) auf Konsistenz; ihr Report liegt ohne blockierenden Befund in `docs/reviews/` (Baseline-Regelwerk `modul-08-agentenrollen.md` §Rollen-Regeln: *„ADR-Änderung: Architect schreibt; Reviewer prüft auf Konsistenz"*) |
+| 2026-11-27 | **Accepted** | **Entscheidung des Auftraggebers vom 2026-11-27, vollzogen in der Architect-Rolle.** Der Acceptance-Trigger ist eingelöst: die Reviewer-Runde vom 2026-09-22 (Bericht 2026-09-22 zu `slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang`, Kennung im Dateinamen, Ort `docs/reviews/`) hat diese Entscheidung gegen [ADR-0033](0033-wellen-archivierung-als-unterkommando.md), [ADR-0039](0039-eingefrorene-adresse-in-den-vendored-baum.md) und [ADR-0042](0042-verweis-nachzug-im-eingefrorenen-artefakt.md) auf Konsistenz geprüft und **keinen blockierenden Befund** gemeldet (0 HIGH · 2 MEDIUM · 1 LOW, Verdikt „Merge-blockierend: nein"); Festlegung 2 greift nicht, weil keine der MEDIUM-Findings blockierend war. Anlass des Accepts ist der Altbestand-Archiv-Lauf: seine `[haenger]`-Vorschau zählt 107 Fundstellen, deren Report-Anteil (Report→Report 43 · Evidence 42 · `Accepted`-ADR 11 · Closure-Notizen/Carveouts 6 · `open/` 5) genau die Klasse dieser Entscheidung trägt; der Architect-Vermerk dazu steht in der Wellen-Notiz `welle-ohne-docker`, und [`MR-072`](../../../harness/conventions.md#mr-072) trägt die Form, die den Report-Anteil der 107 Fundstellen auffängt. Über die Status-Zeile und diese Zeile hinaus wurde kein Byte dieser Datei geändert — Inhalt unverändert. **Ab hier bindet [`AGENTS.md`](../../../AGENTS.md) §3.4:** Korrekturen entstehen als Folge-ADR mit `Supersedes ADR-0061`. |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit

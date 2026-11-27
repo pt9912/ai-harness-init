@@ -2,7 +2,7 @@
 
 - **Datum:** 2026-09-22
 - **Wirksamkeits-Anlass:** [ADR-0061](../../docs/plan/adr/0061-review-report-bekommt-beim-archivieren-einen-stub.md)
-  (`Proposed`) — Architect-Lauf zu `slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang`.
+  (`Accepted` seit 2026-11-27) — Architect-Lauf zu `slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang`.
   Der Bestand widerspricht der Baseline-Annahme messbar: **171** von **520** Report-Dateien sind
   Ziel eines eingehenden Links (`for r in docs/reviews/*.md; do rb="${r##*/}"; git grep -lF -e
   "]($rb)" -- ':!.harness/baseline' | grep -vxF "$r" | sed "s|.*|$rb|"; done | sort -u | wc -l`),
