@@ -53,10 +53,10 @@ Gate-Lauf an ihm, bevor ein Gate gegen fehlendes Werkzeug falsch färbt
 
 - **Die Gate-Rezepte selbst stehen** — der Check fährt **an** der
   Gates-Kante, die Rezepte hinter den Stufen baut
-  [`slice-labor-gates-host-rezepte`](slice-labor-gates-host-rezepte.md)
+  [`slice-labor-gates-host-rezepte`](../open/slice-labor-gates-host-rezepte.md)
   (Schicht-Abgrenzung); hier entsteht nur die Vorbedingung.
 - **Beschaffung von Binären (d-check, Träger)** — ein eigenes Slice:
-  [`slice-binraire-ziehen-ohne-docker`](slice-binraire-ziehen-ohne-docker.md);
+  [`slice-binraire-ziehen-ohne-docker`](../open/slice-binraire-ziehen-ohne-docker.md);
   der Check prüft Anwesenheit und Version, wie die Binäre herkommen, steht
   woanders.
 - **Der PreToolUse-Guard wird nicht geändert** — er blockt die
@@ -136,7 +136,7 @@ geschrieben.
 
 - **`curl` steht am Host nicht** (Träger-Beschaffung braucht Netz) —
   **Ausgang:** das Inventar trägt ihn als `optional`-Eintrag; die Beschaffung
-  selbst ist [`slice-binraire-ziehen-ohne-docker`](slice-binraire-ziehen-ohne-docker.md)
+  selbst ist [`slice-binraire-ziehen-ohne-docker`](../open/slice-binraire-ziehen-ohne-docker.md)
   und sein Netz-Aufruf nennt seinen Träger.
 - **Der Guard blockt den Implementer beim Testen des Checks** (direkte
   `go`/`bats`-Positionen) — **Ausgang:** der Guard bleibt in Kraft
