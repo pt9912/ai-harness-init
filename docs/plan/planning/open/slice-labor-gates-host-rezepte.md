@@ -65,7 +65,7 @@ Sobald alle sechs laufen, ist `make gates` docker-los.
 
 - [ ] **Liefer-Punkt 1:** die sechs Image-Rezepte fahren host-native
       Äquivalente mit Pin aus der Inventar-Form
-      ([`slice-environment-check-fuehrt-die-gates`](../next/slice-environment-check-fuehrt-die-gates.md));
+      ([`slice-environment-check-fuehrt-die-gates`](../in-progress/slice-environment-check-fuehrt-die-gates.md));
       die gepinnten Image-Pfade bleiben als opt-in Weg gepinnt (Pin-Zeilen
       unverändert) und tragen denselben Exit-Vertrag.
 - [ ] **Liefer-Punkt 2:** `make gates` fährt auf diesem Host **ohne**
@@ -102,7 +102,7 @@ Sobald alle sechs laufen, ist `make gates` docker-los.
 ## 4. Trigger
 
 **Start** (`next` → `in-progress`):
-[`slice-environment-check-fuehrt-die-gates`](../next/slice-environment-check-fuehrt-die-gates.md)
+[`slice-environment-check-fuehrt-die-gates`](../in-progress/slice-environment-check-fuehrt-die-gates.md)
 und [`slice-binraire-ziehen-ohne-docker`](slice-binraire-ziehen-ohne-docker.md)
 liegen in `done/` — die Inventar-Pins und das d-check-Binary stehen als
 Voraussetzungen.

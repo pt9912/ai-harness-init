@@ -115,7 +115,7 @@ mit Lerneintrag geschrieben.
 
 - **Runner-Setup schweift ab vom Inventar-Pin** — **Ausgang:** der Setup
   liest seinen Pin aus dem Inventar (eine Quelle); `pinsync`
-  ([`slice-environment-check-fuehrt-die-gates`](../next/slice-environment-check-fuehrt-die-gates.md))
+  ([`slice-environment-check-fuehrt-die-gates`](../in-progress/slice-environment-check-fuehrt-die-gates.md))
   hält die Stellen gegeneinander; weichens Abweichung bricht an
   `environment-check`.
 - **Die Nacht-Shard-Zeiten verschieben sich docker-los** — **Ausgang:**
