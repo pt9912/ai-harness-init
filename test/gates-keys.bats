@@ -60,8 +60,8 @@ setup() {
 }
 
 @test "keys: key ist deterministisch (zwei Laeufe, derselbe Wert)" {
-	k1="$(bash "$KEYS" --wurzel "$REPO" key docs-check)"
-	k2="$(bash "$KEYS" --wurzel "$REPO" key docs-check)"
+	k1="$(bash "$KEYS" --wurzel "$REPO" key docs-check-host)"
+	k2="$(bash "$KEYS" --wurzel "$REPO" key docs-check-host)"
 	[ -n "$k1" ] && [ "$k1" = "$k2" ]
 }
 
@@ -91,15 +91,15 @@ setup() {
 	FIX=$(mktemp -d)
 	(
 		mkdir -p "$FIX/docs" "$FIX/.harness/stamp/mutate"
-		printf 'record-gates: docs-check ## Checks + Gate-Nachweis\n\ndocs-check: ## x\n\t@echo x\n' > "$FIX/Makefile"
+		printf 'record-gates: docs-check-host ## Checks + Gate-Nachweis\n\ndocs-check-host: ## x\n\t@echo x\n' > "$FIX/Makefile"
 		printf 'scan:\n  roots: ["."]\n' > "$FIX/.d-check.yml"
 		printf 'DCHECK_IMAGE ?= f\n' > "$FIX/d-check.mk"
 		printf 'inhalt\n' > "$FIX/docs/a.md"
-		k1="$(bash "$KEYS" --wurzel "$FIX" key docs-check)"
+		k1="$(bash "$KEYS" --wurzel "$FIX" key docs-check-host)"
 		printf 'record-only\n' > "$FIX/.harness/stamp/mutate/beleg.md"
-		k2="$(bash "$KEYS" --wurzel "$FIX" key docs-check)"
+		k2="$(bash "$KEYS" --wurzel "$FIX" key docs-check-host)"
 		printf 'real\n' > "$FIX/docs/b.md"
-		k3="$(bash "$KEYS" --wurzel "$FIX" key docs-check)"
+		k3="$(bash "$KEYS" --wurzel "$FIX" key docs-check-host)"
 		printf 'vor=%s nach-record=%s nach-real=%s\n' "$k1" "$k2" "$k3"
 		[ -n "$k1" ]
 		[ "$k1" = "$k2" ]
