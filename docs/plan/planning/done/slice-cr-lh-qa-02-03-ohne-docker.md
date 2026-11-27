@@ -60,7 +60,7 @@ bzw. Tool-Pin mit Inventar-Soll). Der CR-Eintrag steht in §7 Historie in der
   [`slice-labor-gates-host-rezepte`](../open/slice-labor-gates-host-rezepte.md).
 - **Keine Spezifikations-Festlegung hier** — das Soll-Form-Wahl (Mischform,
   Inventar, `pinsync`) ist Architektur (Bestimmung in
-  [`slice-adr-gates-laeufen-host-native`](../next/slice-adr-gates-laeufen-host-native.md));
+  [`slice-adr-gates-laeufen-host-native`](../in-progress/slice-adr-gates-laeufen-host-native.md));
   das Lastenheft nennt Anforderung und Messmethode, nicht Mechanik.
 - **Keine Code-Änderung** — der CR ist ein Doku-Slice (Schicht-Abgrenzung);
   Läufer, Makefile, Workflows und Templates rührt er nicht.
@@ -194,7 +194,7 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 - **Folge-Slices und Übergaben** (keine Slice-Datei von dieser Closure gelegt;
   die Welle schneidet):
   - F-5 aus dem Review (das `AGENTS.md`-§3.9-Zitat in der Spec trägt die alte
-    Fassung) → [`slice-adr-gates-laeufen-host-native`](../next/slice-adr-gates-laeufen-host-native.md)
+    Fassung) → [`slice-adr-gates-laeufen-host-native`](../in-progress/slice-adr-gates-laeufen-host-native.md)
     (Architect-Slice der Welle).
   - Vier Superset-Sätze in `spec/lastenheft.md` (Zeilen 156, 298, 483, 563 —
     sie nennen `git + docker` als geschlossene Abhängigkeits-Menge) →
