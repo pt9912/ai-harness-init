@@ -59,7 +59,16 @@ case "$1" in
     pwd
     ;;
   ls-files)
-    find . \( -name .git -prune \) -o \( -type f -o -type l \) -print0 | sed 's|^\./||'
+    # Der Strip von "./" pro NUL-Record, nicht per sed-Anker: sed ohne -z
+    # teilt nach NEWLINE — mit -print0-Eingabe traefe der ^-Anker nur den
+    # ERSTEN Record, und spaetere Pfaede behielten ihr "./"-Praefix (dann
+    # liest die Ausnahme-Klammer der realen Skripts die Stamp-Pfade nicht
+    # und der Hash bewegte sie mit). Die Bash-Loop ist weg-agnostisch
+    # (GNU- und BusyBox-sed; seit slice-labor-gates-host-rezepte laeuft
+    # make test-bats am Host).
+    while IFS= read -r -d '' p; do
+      printf "%s\0" "${p#./}"
+    done < <(find . \( -name .git -prune \) -o \( -type f -o -type l \) -print0)
     ;;
   *)
     echo "stub-git: Anruf nicht gedeckt: $*" >&2

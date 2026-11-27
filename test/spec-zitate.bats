@@ -15,10 +15,13 @@
 # steht oder die Spezifikation nur ueber `SPEC-<NNN>` nennt, und der Sinn eines Zitats —
 # nur sein Wortlaut. Netzlos, laeuft in `make test`. Docker-only (bats-Image).
 #
-# ZAEHLUNG: Fenster und Zitatgrenzen zaehlen Bytes, nicht Zeichen — das `awk` des
-# bats-Images kennt keine Mehrbyte-Zeichen (ein Umlaut zaehlt doppelt, die 250 sind Bytes).
-# Ein UTF-8-faehiges `awk` (Host) kuerzt `substr(rest, s + 3)` das Zitat um zwei Zeichen;
-# der Sensor ist an das Image-`awk` gebunden und laeuft nur ueber `make test`.
+# ZAEHLUNG: Fenster und Zitatgrenzen zaehlen Bytes, nicht Zeichen — der Sensor
+# legt LC_ALL=C um das `awk`: die Zitat-Delimiter „ und “ sind 3-Byte-UTF-8 und
+# `substr(rest, s + 3)` rechnet in Bytes. Ein UTF-8-faehiges `awk` in einer
+# UTF-8-Locale (Host-awk) rechnet dieselben Routinen zeichenweise — ohne
+# LC_ALL=C kuerzt es das Zitat um zwei Zeichen; die Byte-Semantik ist damit
+# bewusst gebunden, nicht mehr an das `awk` des bats-Images (seit
+# slice-labor-gates-host-rezepte: make test-bats laeuft am Host).
 #
 # BELEGLAGE: Der Bestand traegt heute kein reales Zitat der Spezifikation; die einzige
 # Fundstelle ist der Kommentar des Falls `503-spec-zitat-ohne-fundstelle`, der sich ueber
@@ -33,7 +36,7 @@ setup() {
 
 # zitate <datei>... — je Zitat eine Zeile "<datei>: <zitat>".
 zitate() {
-  awk '
+  LC_ALL=C awk '
     function fertig(   rest, vor, win, s, e, l, a, frag) {
       rest = block; vor = ""
       while ((s = index(rest, "„")) > 0) {
