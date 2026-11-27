@@ -170,3 +170,87 @@ docker-los (Bats-Läufe am Host, Bruchproben in Kopien unter `/tmp/rvw-slice-bin
 - `make mutate-greift` → 788 Fälle, 785 greifen, Befund 784/785/794 (Vorbefunde).
 - Bruchproben für 799/801 an Kopien `/tmp/rvw-slice-binraire/{a,b}` — Baum nach Prüfung
   residue-frei (Kopien standen ausschließlich unter `/tmp`).
+
+---
+
+# Addendum — Abgleich-Runde zu Commit `edf99b05` (Fixes F-1 bis F-6)
+
+**Lauf:** Reviewer-Folge, 2026-11-27 · Diff `edf99b05` (5 Dateien, +91/−66).
+Methodik wie der Erstlauf: Fassungen gelesen, Bats am Host gefahren, Anker-Kommentare der
+Mutations-Fälle gegen Bruchproben gehalten.
+
+## Abgleich je Befund
+
+| Befund | Stand | Beleg |
+| --- | --- | --- |
+| F-1 (HIGH, Weg-Wahl-Abwägung im Skriptkopf) | **gelöst** | Kopf trägt nur Zustand + `VERTRAG: harness/sensors/dcheck-fetch.md` als Rang-Zeiger (`git show edf99b05 -- harness/tools/dcheck-fetch.sh`); `(a)`/`(c)` und das Messungs-Protokoll sind entfallen; die Abwägung steht allein in der Sensor-Datei §Weg. `grep -n 'ZUORDNUNG\|KEIN Asset\|wäre' harness/tools/dcheck-fetch.sh` → keine Treffer (nur „Ref-Zerlegung"-Beispiel-Notation und der Zeiger-Text) |
+| F-5 (LOW, Zuordnung doppelt) | **gelöst** | Die Kette steht nur noch in `harness/sensors/dcheck-fetch.md` §Die Zuordnung; der Skriptkopf nennt sie ausdrücklich als Rang-Zeiger „keine zweite Fassung" — Behauptung und Bestand stimmen jetzt |
+| F-2 (LOW, Form-Probe zu weit) | **gelöst** | Probe ist `[[ "$DCHECK_DIGEST" =~ ^sha256:[0-9a-f]{64}$ ]]` (64 exakt); permanente Zähne: dcheck-fetch.bats Test 1 trägt 63-hex- und 65-hex-Fälle je Exit 2 (grün im Lauf gefahren) |
+| F-3 (LOW, Registry doppelt abgeleitet) | **gelöst** | Harter Vergleich `[ "$registry" != "ghcr.io" ]` vor dem Token-Zug, fail-closed Exit 2; Wächter-Case ergänzt (`docker.io/…` → Exit 2, „die gepraegte Quelle (ghcr.io)", Shim-Log leer); Sensor-Datei trägt §Registry-Ursprung als Zustands-Doku |
+| F-4 (LOW, gzip/plain-Kommentar ohne Code) | **gelöst, mit Rest s. N-1** | Verzweigung implementiert: `*+gzip) zflag="z"` · `*v1.tar) zflag=""` · sonst Exit 2; `tar -t${zflag}f`/`-x${zflag}f` je Eintrag |
+| F-6 (LOW, unvollständige Rot-Mengen) | **gelöst** | Bruchproben an Kopien unter `/tmp/rvw-slice-binraire-r2` bestätigen die Kommentare wortgenau: 799 → rot 2/4/5, grün 1/3/6 (Test 3 mit Begründung, warum er grün bleibt); 801 → rot 1/2/7, grün 3/4/5/6 — die gemessenen Mengen stehen vollständig in den Anker-Kommentaren |
+
+Neue Gesamtläufe am Host nach dem Fix: `bats test/dcheck-fetch.bats test/traeger-fetch-host.bats` →
+**13/13 ok** (docker-los, netzlos).
+
+## Verbleibend offen (aus dem Erstlauf)
+
+- **F-7 (INFO)** — JSON-Feldreihenfolge- und Layer-Media-Typ-Annahmen des Plattform-/Layer-Match
+  (`harness/tools/dcheck-fetch.sh`: `grep -oE '"mediaType"…"digest"…"size"…"platform"…'`);
+  die Layer-Menge umfasst weiter nur `*image.layer.v1.tar*`-Formen; beide Grenzen brechen
+  laut, stehen aber in Skriptkopf und Sensor-Text unverändert nicht. **Offen.**
+- **F-8 (INFO)** — Fetch-Default der Ablage CWD-relativ vs Probe REPO_ROOT-verankert;
+  Deckung nur über `make`. **Offen.**
+- **F-9 (INFO, für den Verifier — korrigierte Deutung übernommen)** — Der Test-5-Fehlschlag
+  von `test/environment-check.bats` am Host ist die Test-eigene Verdrahtung:
+  `run env PATH="$S:/nonexistent" bash "$SCRIPT"` lässt die shebang-ENV (`#!/usr/bin/env bash`)
+  kein `bash` finden (`env: 'bash': No such file or directory`, Exit 127) — **das ist der
+  Fehlschlag-Modus, keine Umwelt-Divergenz „env vs gepinntes Image"**. Nicht von 15cb3586
+  verursacht (Hunks beginnen bei −119; der Mechanismus läuft vor dem Skript). Offen für den
+  Verifier: der Vorbefund ist als hermeticity-Bruch des Tests zu tragen, nicht als
+  Umgebungs-Befund; die Deutung in der Vorlage ist an der Fehlschlag-Ausgabe zu berichtigen.
+
+## Neue Befunde am Fix-Commit
+
+### N-1 — LOW
+
+- `kategorie`: LOW
+- `quelle`: Reviewer-Skill „Mehrteilige Regel-Zusage im Kommentar ohne Mutations-Deckung je Teil"
+- `pfad`: `harness/tools/dcheck-fetch.sh` (Medienform-Zweig, F-4-Lösung) · `harness/sensors/dcheck-fetch.md` (Kopf/Zusage)
+- `befund`: Die neue Mehrteil-Zusage — Medienform je Layer entschieden als gzip / plain /
+  sonst fail-closed — trägt Mutations-Deckung nur für die gzip-Hälfte (Happy-Fall färbt bei
+  entzauntem z-Glied). Der plain-Zweig und der sonst-fail-closed-Zweig haben keinen bindenden
+  Bats-Fall (Fixture baut nur `tar+gzip`); ein plain-Layer im gepinnten Image ist praktisch
+  erreichbar und würde den ungebundenen Zweig tragen.
+- `verifizierbar`: ja — Mutations-Patch auf den plain-Bin (`*v1.tar) zflag="z"`) oder bats-Fall mit plain-Layer-Fixture.
+- `klasse`: Mehrteil-Zusage mit Deckung nur je einer Teil-Grenze
+
+### N-2 — INFO
+
+- `kategorie`: INFO
+- `quelle`: Rest von F-3 (Ursprungs-Ableitung, zweite Hälfte)
+- `pfad`: `harness/tools/dcheck-fetch.sh:55-58` vs `d-check.mk:83-88`
+- `befund`: Die Registry-Hartdiagnose fixt das Präfix; das **Repo**-Segement bleibt aus
+  `DCHECK_IMAGE` abgeleitet (`repo="${ref#*/}"`), während der Image-Weg `pt9912/d-check`
+  hart verdrahtet. Eine `DCHECK_IMAGE`-Abweichung im Repo-Teil brächte den Zug dazu, denselben
+  Digest aus einem fremden Reponamen zu suchen — die Summe fängt die Bytes, ein fehlendes
+  Objekt bricht laut; kein Reopening von F-3, Rest benannt.
+
+### N-3 — LOW
+
+- `kategorie`: LOW
+- `quelle`: Doku-Drift (Prosa-Liste unvollständig)
+- `pfad`: `harness/sensors/dcheck-fetch.md` §Wächter
+- `befund`: Die Wächter-Aufzählung nennt Happy, Negative (Index-/Blob-/Member) und Vorab-Fälle
+  (fehlende Prüfsumme, falsche Prüfform) — die im Fix ergänzten Cases (63/65-hex als
+  Prüfform-Untermenge gedeckt; der **Registry-Präfix-Fall** nicht) sind nicht nachgezogen:
+  der Registry-Präfix-Fall fällt unter keine der genannten Klassen.
+- `verifizierbar`: ja — Leselauf; kein Sensor hält die Liste.
+- `klasse`: Wächter-Aufzählung hinter dem Suite-Bestand
+
+## Lauf (Addendum)
+
+- `bats test/dcheck-fetch.bats test/traeger-fetch-host.bats` → 13/13 ok (host, netzlos).
+- Bruchproben 799/801 an Kopien `/tmp/rvw-slice-binraire-r2/{a,b}` — Mengen wortgenau wie in
+  den Anker-Kommentaren; Baum residue-frei (Kopien nur unter `/tmp`).
+- Keine Änderung außer diesem Report; Report uncommitted.
