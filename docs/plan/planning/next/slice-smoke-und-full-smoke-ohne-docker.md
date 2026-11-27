@@ -69,7 +69,7 @@ Die Stufen-Deklarationen der E2E-Abdeckung bleiben — der Prüfgegenstand
 - [ ] **Liefer-Punkt 3:** der Mutations-Nachweis über einem schweren Fall
       (`MUTATE_CASES='<ein `# verify: full-smoke`-Fall>'`) docker-los grün —
       der Befund-Nachweis (manipulierte Inventar-Zeile → Umgebungs-Befund)
-      aus [`slice-mutate-treiber-host-modi`](../in-progress/slice-mutate-treiber-host-modi.md)
+      aus [`slice-mutate-treiber-host-modi`](../done/slice-mutate-treiber-host-modi.md)
       bleibt in Kraft; neue/wanderede Fälle je [
       `MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[
       `MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit).
