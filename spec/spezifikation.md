@@ -1,6 +1,6 @@
 # Spezifikation — ai-harness-init
 
-**Status:** Aktiv. **Letzte Änderung:** 2026-10-07.
+**Status:** Aktiv. **Letzte Änderung:** 2026-11-27.
 
 **Bezug zum Lastenheft:** Diese Spezifikation präzisiert die in
 [`spec/lastenheft.md`](lastenheft.md) formulierten Anforderungen (`LH-*`-IDs). Bei
@@ -240,6 +240,10 @@ das Werkzeug genau eine Anforderung durch, steht die Festlegung als deren Verfei
 hier. Womit das Werkzeug selbst gedeckt ist, steht nicht hier, sondern bei ihm. Die Tabelle trägt
 die Spalten `ID` · `Werkzeug` · `Festlegung` · `Präzisiert` und entsteht mit ihrer ersten Zeile.
 
+| ID | Werkzeug | Festlegung | Präzisiert |
+|---|---|---|---|
+| `SPEC-099` | `make environment-check` | Der Tool-/Versions-Check liest ein Inventar (`harness/tools/environment-inventory.txt`, zeilenweise, `|`-getrennt, sechs Spalten: Werkzeug · Prüfform · Pflichtgrad · Soll · Kontext · Grund; `#`-Zeilen und Leerzeilen fallen aus). Die Prüfform ist die geschlossene Menge — *Anwesenheit* (das Binär ist im `PATH` auffindbar), *Mindestversion* (nummerisch, Punkt-komponentenweise, abwärtskompatibel; Gleichheit trägt), *Fähigkeit* (die Probe des Skripts misst die genutzte Aufrufform, nicht die Distribution — ein Varianten-Digest oder eine BSD-Fassung trägt die Probe, wenn die Aufrufform trägt), *exakt* (byte-genau). Das Soll-Feld trägt seine Quelle als Präfix: `manifest:<wert>` (das Inventar trägt den Wert), `abgeleitet:<wert>` (der Wert ist von der Pin-Stelle abgeleitet; sein byte-genauer Abgleich gegen diese trägt die Doku-Gate-Konfiguration, nicht der Check), `manifest:probe:<id>` und `manifest:anwesend` (je nur zur Prüfform *Fähigkeit* beziehungsweise *Anwesenheit*); je Prüfform/Soll-Präfix-Paar die feste Kombination, abweichend ist Auform. Rot ist der Umgebungs-Befund je Werkzeug — eine Zeile `Werkzeug · Soll · Ist` — und Exit 1, wenn ein Pflicht-Werkzeug sein Soll nicht trägt; fehlt ein `optional`-Eintrag, steht eine Warnzeile (eine Warnung ist kein Rot) und der Lauf endet 0, wenn jedes Pflicht-Werkzeug trägt; Exit 2 ist die Aufruf- oder Inventar-Auform — unlesbares oder leeres Inventar, Zeile mit anderer Spaltenzahl, unbekannte Prüfform, unbekannter Pflichtgrad, Soll ohne Quelle oder ohne passende Prüfform, unstimmige Probe-ID, unbekannter Aufruf (fail-closed); unterhalb der Inventar-Mindestversion 4.0 endet der Lauf mit Diagnose statt Syntaxfehler (der Guard steht als erster Top-Level-Befehl, nur mit Builtins) | [LH-QA-02](lastenheft.md#lh-qa-02--reproduzierbarkeit), [LH-QA-03](lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
+
 ## 8. Historie
 
 | Datum | Änderung |
@@ -258,3 +262,4 @@ die Spalten `ID` · `Werkzeug` · `Festlegung` · `Präzisiert` und entsteht mit
 | 2026-10-07 | §5: Der Cache-Status (`SPEC-024`) ist Pflicht; ohne Zähler trägt er die Kennzeichnung *nicht bekannt* (`SPEC-087`), `SPEC-055` nennt die Quelle, `SPEC-076`/`SPEC-077` die Draht-Form im Fehlschlag; `SPEC-011`/`SPEC-012` ordnen `[]` als Wert ein |
 | 2026-10-08 | §5: Ein unbekannter Wert trägt die Kennzeichnung *nicht bekannt* auch in `agent_role`, `branch`/`commit` und den Korrelations-Listen (`SPEC-087`); `SPEC-043` ist keine Abweichung mehr, `SPEC-044` liest Kennzeichnung und leeres Feld gleich; Fassung 5 (`SPEC-096`), Zusicherungen `SPEC-097`/`SPEC-098` |
 | 2026-10-16 | §5: `SPEC-061` nennt `branch` nicht mehr als `omitempty`-Fall (`branch` ist Pflichtfeld mit Kennzeichnung, `SPEC-087`); Fall 111 bindet an `SPEC-014` über den Test der Feldliste statt an `SPEC-061` |
+| 2026-11-27 | §7: die Tabelle trägt ihre erste Zeile — `SPEC-099` legt Prüfformen, Soll-Quellen-Präfixe, die Pflichtgrad-Zweileilung (Warnung ist kein Rot) und die drei Exit-Klassen des Tool-/Versions-Checks fest (`make environment-check`, erster Check der Gates-Kante) |

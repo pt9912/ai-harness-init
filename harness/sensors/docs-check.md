@@ -250,11 +250,19 @@ in `d-check.mk`, gilt sie für den alten Stand, bis jemand neu misst.
 
 **Was das Modul `pinsync` in `docs-check` deckt, und was nicht** [`· seit
 slice-c3-d-check-faecher-v7-0-0`](../../docs/plan/planning/done/slice-c3-d-check-faecher-v7-0-0.md):
-[`.d-check.yml`](../../.d-check.yml) aktiviert `pinsync` mit **einem** Pin (`d-check`) über zwei
+[`.d-check.yml`](../../.d-check.yml) aktiviert `pinsync` mit **zwei** Pins: dem
+`d-check`-Werkzeug-Pin über zwei
 Quellen — `d-check.mk` (`DCHECK_IMAGE ?=`) und
-[`internal/emit/emit.go`](../../internal/emit/emit.go) (`DefaultImage`). Je Quelle ein Ausdruck
-mit genau einer Fanggruppe; verglichen wird byte-genau die Tag-Referenz
-(`ghcr.io/pt9912/d-check:v0.93.0` an beiden Stellen). Die Form-Zusicherung hält
+[`internal/emit/emit.go`](../../internal/emit/emit.go) (`DefaultImage`) — und, seit
+slice-environment-check-fuehrt-die-gates, dem Pin `go` über die `GO_VERSION ?=`-Stelle des
+[`Makefile`](../../Makefile) und die Inventar-Soll-Zeile
+(`abgeleitet:<wert>` in
+[`harness/tools/environment-inventory.txt`](../../harness/tools/environment-inventory.txt);
+Mischform, [`MR-098`](../conventions.md#mr-098--die-umgebungs-zusage-trägt-mischform-die-dogfood-gates-und-lab-läufer-fahren-am-host)).
+Je Quelle ein Ausdruck
+mit genau einer Fanggruppe; verglichen wird byte-genau — beim `d-check`-Pin die Tag-Referenz
+(`ghcr.io/pt9912/d-check:v0.93.0` an beiden Stellen), beim `go`-Pin die Versions-Fassung. Die
+Form-Zusicherung hält
 [`test/pinsync-modul-wiring.bats`](../../test/pinsync-modul-wiring.bats) ohne Docker-Lauf.
 
 **Rot an der realen Quelle gesehen** (Mutations-Anlage
@@ -269,14 +277,25 @@ internal/emit/emit.go:33  d-check  pinsync-mismatch  Pin "d-check": internal/emi
 d-check: 2994 Datei(en) geprüft, 1 Befund(e)
 ```
 
-Positiver Beleg im grünen Lauf: die Zeile `pinsync: 1 Pin(s) geprüft, 2 Quelle(n) gelesen` — fehlt
-sie, ist der Block nicht aktiv und eine Abweichung bleibt still.
+Positiver Beleg im grünen Lauf: die Zeile `pinsync: <P> Pin(s) geprüft, <Q> Quelle(n) gelesen` —
+fehlt sie, ist der Block nicht aktiv und eine Abweichung bleibt still. Über dem Bestand dieser
+Konfiguration trägt sie je Pin: `d-check` zwei Quellen (`d-check.mk`, `internal/emit/emit.go`),
+`go` zwei Quellen (`Makefile`, `harness/tools/environment-inventory.txt`) — der Lauf, der die
+Zahlen am Stempel trägt, ist docker-gebunden; der Mustervergleich der `go`-Paarung gegen den
+realen Bestand ist docker-los nachgeführt (beider Ausdrücke Fanggruppe byte-gleich, Protokoll
+im Skriptkopf von
+[`harness/tools/environment-check.sh`](../../harness/tools/environment-check.sh)).
 
 **Grenzen:** das Modul hält die Tag-Referenz — nicht den Digest, der an denselben zwei Stellen
-denselben Wert trägt, und nicht das Go-Pin-Paar (`GO_VERSION ?=` im [`Makefile`](../../Makefile)
-gegen die `go`-Direktive in `go.mod`). Das Laufzeit-Gate (installierte Werkzeuge tragen den Pin)
+denselben Wert trägt. Beim Pin `go` hält es die Inventar-Zeile gegen die `GO_VERSION ?=`-Stelle
+des Makefile — nicht die Dockerfile-`ARG GO_VERSION`-Stelle desselben Pins (dieselbe Wertelage
+an einer dritten Stelle, ungepaart benannt) und nicht das Go-Pin-Paar (`GO_VERSION ?=` im
+[`Makefile`](../../Makefile) gegen die `go`-Direktive in `go.mod`). Das Laufzeit-Gate
+(installierte Werkzeuge tragen den Pin)
 führt d-check nicht: es startet keine Programme (Ziel-Form
-`harness/sensors/environment-check.template.md` <!-- d-check:ignore: die Ziel-Form der Umgebungs-Zusage liegt in der vendored Baseline unter .harness/baseline/v7.0.0/templates/ — der Pfad entsteht im Ziel mit dem Bootstrap, hier ist er geplant, C4 entscheidet über die Adaption -->).
+`.harness/baseline/v7.0.0/templates/harness/sensors/environment-check.template.md`; ihre
+ausgefüllte Form trägt hier
+[`harness/sensors/environment-check.md`](environment-check.md)).
 Der dauerhafte Mutations-Fall 790 hält die **Config-Zusicherung** (er entfernt die
 `d-check.mk`-Quellen-Zeile); für den Verhaltens-Zahn (`pinsync-mismatch` im `docs-check`-Lauf)
 besteht kein Treiber-Fall — der Treiber kennt keinen `docs-check`-Modus —, sein rot gesehenes

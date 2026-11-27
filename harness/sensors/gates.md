@@ -14,7 +14,8 @@ Stop-Hook; `kein-commit` wird wie eine SHA verglichen). Jeder Zweifel —
 fehlender, leerer, unlesbarer, gestutzter oder fremd geformter Stempel, HEAD
 unaufösbar, Parser-Zweifel — fährt fail-closed den vollen Lauf über
 `make record-gates`, dasselbe Rezept mit derselben Kante
-(`record-gates: baseline-verify … span-check`, unverändert).
+(`record-gates: environment-check baseline-verify … span-check`; die Kante trägt seit
+slice-environment-check-fuehrt-die-gates den Umgebungs-Check als ersten Eintrag).
 
 ## Der benannte Rest
 

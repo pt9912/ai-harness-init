@@ -46,6 +46,7 @@ wird dann zum Link auf die Datei.
 
 | Target | Vertrag | Bindung |
 |---|---|---|
+| [`make environment-check`](sensors/environment-check.md) | Umgebungs-Befund je Werkzeug (Mischform: abgeleitet/Manifest), docker-los — erster Check der Kante, ein Rot endet dem Lauf vor den Gates | [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit), [`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
 | `make baseline-verify` | Vendored Baseline unverändert: Integrität **und** Vollständigkeit, netzlos | [`MR-007`](conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache) |
 | [`make docs-check`](sensors/docs-check.md) | Doku-Referenzen grün, netzlos (`--network none`) — im Prüfbereich seiner Module; die Liste nennt `grep -n '^modules:' .d-check.yml` | [`MR-010`](conventions.md#mr-010--d-check-gate-fragment-tool-generiert) |
 | `make test` | Command-Guard-Tests (bats) + Go-Unit-Tests (Dockerfile-`test`-Stage) grün | [`ADR-0004`](../docs/plan/adr/0004-durchsetzungs-emission.md), [`ADR-0003`](../docs/plan/adr/0003-go-native-binaries.md) |
