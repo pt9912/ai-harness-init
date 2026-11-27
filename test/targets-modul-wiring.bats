@@ -41,8 +41,12 @@ field() {
     | sed -E "s/^  $1:[[:space:]]*//"
 }
 
+# Sortier-Form fest in der Datei: alle Listen-Vergleiche treffen auf C-Kollation
+# (LC_ALL=C an den sort- und comm-Stellen) — der Wächter misst die Host-Locale
+# nicht mit; dieselbe Form trägt der Bestand bereits in test/mutate-driver.bats und
+# test/courseset-fixture.bats · seit slice-waechter-umgebungs-robustheit.
 makefile_rule_targets() {
-  grep -hE '^[a-zA-Z][a-zA-Z0-9._-]*:' "$MAKEFILE" "$DCHECK_MK" | sed -E 's/:.*//' | sort -u
+  grep -hE '^[a-zA-Z][a-zA-Z0-9._-]*:' "$MAKEFILE" "$DCHECK_MK" | sed -E 's/:.*//' | LC_ALL=C sort -u
 }
 
 # Scope: nur der Abschnitt "## Sensors (Feedback-Gates)" bis zur naechsten "## "-Ueberschrift.
@@ -54,7 +58,7 @@ makefile_rule_targets() {
 authority_table_targets() {
   awk '/^## Sensors \(Feedback-Gates\)/{p=1;next} p&&/^#/{exit} p' "$README" \
     | grep -E '^\|.*`make [a-z][a-z0-9-]*`.*\|$' | grep -oE '`make [a-z][a-z0-9-]*`' \
-    | tr -d '`' | sed 's/^make //' | sort -u
+    | tr -d '`' | sed 's/^make //' | LC_ALL=C sort -u
 }
 
 exempt_targets() {
@@ -63,7 +67,7 @@ exempt_targets() {
     /^  exempt-targets:[[:space:]]*$/ { inlist = 1; next }
     inlist && /^    - /                { print; next }
     inlist                             { inlist = 0 }
-  ' | sed -E 's/^[[:space:]]*-[[:space:]]*//' | sort -u
+  ' | sed -E 's/^[[:space:]]*-[[:space:]]*//' | LC_ALL=C sort -u
 }
 
 @test "targets ist in modules: aktiviert" {
@@ -90,7 +94,7 @@ exempt_targets() {
   local rules authdoc undocumented exempt
   rules="$(makefile_rule_targets)"
   authdoc="$(authority_table_targets)"
-  undocumented="$(comm -23 <(echo "$rules") <(echo "$authdoc"))"
+  undocumented="$(LC_ALL=C comm -23 <(echo "$rules") <(echo "$authdoc"))"
   exempt="$(exempt_targets)"
   diff <(echo "$undocumented") <(echo "$exempt")
 }
@@ -100,6 +104,6 @@ exempt_targets() {
   exempt="$(exempt_targets)"
   authdoc="$(authority_table_targets)"
   local overlap
-  overlap="$(comm -12 <(echo "$exempt") <(echo "$authdoc"))"
+  overlap="$(LC_ALL=C comm -12 <(echo "$exempt") <(echo "$authdoc"))"
   [ -z "$overlap" ]
 }
