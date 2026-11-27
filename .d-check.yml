@@ -413,11 +413,13 @@ ignore-refs:
   # Deckung: 34
   - in: "docs/reviews/**"
     refs: [".harness/baseline/**"]
-  # Deckung: 10
+  # Deckung: 11
   # der moved Plan slice-c4-environment-check-v7-0-0 trug 6 Markdown-Links in
   # den vendored v7.0.0-Baum mit (Move-Zug, keine Verbreiterung des Eintrags:
   # gleiche in/refs-Paare), gemessen am Wächter test/ignore-refs-restbreite.bats
-  # Fall 242
+  # Fall 242; der danach geschlossene Plan slice-adr-gates-laeufen-host-native
+  # brachte den Link Zeile 145 (Modul-7-Verweis in den vendored v7.0.0-Baum) mit —
+  # der gleiche Move-Zug, Deklaration 10 -> 11 je Wächter-Form
   - in: "docs/plan/planning/done/**"
     refs: [".harness/baseline/**"]
   # Deckung: 2
