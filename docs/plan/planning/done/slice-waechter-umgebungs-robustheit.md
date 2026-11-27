@@ -60,7 +60,7 @@ Prosa-Grenze am Sensor-Text (F-3).
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Die Emittier-Rezepte des Ziels** — sind
-  [`slice-emittierte-gates-host-pfad`](../next/slice-emittierte-gates-host-pfad.md)
+  [`slice-emittierte-gates-host-pfad`](../in-progress/slice-emittierte-gates-host-pfad.md)
   (Schicht-Abgrenzung); hier stehen nur die Dogfood-Wächter.
 - **Der Fall `810` der Mutations-Anlage** — seine Fassung liegt im
   Implementer-Commit-Set des Vorgänger-Slices; der neue Fall ist nur
@@ -247,7 +247,7 @@ und die Review-Klassen des Reports
   test-go` zwei Klassen (Stop-Hook-KommitBindung in `internal/emit`;
   `TestGoProfile_PinsMatchRepo` GO_VERSION 1.27.3 generiert vs 1.27.4 im
   Repo-Dockerfile). Die Nachzüge tragen die laufenden Slices der Welle
-  ([`slice-emittierte-gates-host-pfad`](../next/slice-emittierte-gates-host-pfad.md)
+  ([`slice-emittierte-gates-host-pfad`](../in-progress/slice-emittierte-gates-host-pfad.md)
   und die in-progress-Slices `slice-gates-pruefgegenstand-stempel-v1`,
   `slice-stamp-records-konsum-v1`); kein Carveout-Artefakt — die roten Fälle
   bleiben rot sichtbar. (2) LP 3 ist in der gelesenen Form bestätigt, mit
@@ -278,7 +278,7 @@ und die Review-Klassen des Reports
   der Schwelle.
 - **Drei Paarungen:** Anker — der Lerneintrag oben ist gezählt, es gibt
   keinen `liegt in` · Folge-Slices —
-  [`slice-emittierte-gates-host-pfad`](../next/slice-emittierte-gates-host-pfad.md)
+  [`slice-emittierte-gates-host-pfad`](../in-progress/slice-emittierte-gates-host-pfad.md)
   (Emittier-Rezepte, in §1 ausgeschlossene Schicht) und der offene
   Fall-273-Präzedenz-Nachzug (Posten der Welle, kein eigener Slice) ·
   Register — der Eintrag oben (Zähler 2×, unter der Schwelle). Die Prüfung

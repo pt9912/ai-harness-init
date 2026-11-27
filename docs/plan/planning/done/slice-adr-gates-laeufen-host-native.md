@@ -220,7 +220,7 @@ mit Lerneintrag geschrieben.
   [slice-doku-nachzug-ohne-docker](../next/slice-doku-nachzug-ohne-docker.md)
   (Sicht-Doku-Zeilen, siehe Lerneintrag); [`ARC-012`](../../../../spec/architecture.md)
   — die Verifier-Übergabe nennt
-  [slice-emittierte-gates-host-pfad](../next/slice-emittierte-gates-host-pfad.md)
+  [slice-emittierte-gates-host-pfad](../in-progress/slice-emittierte-gates-host-pfad.md)
   bzw. [slice-doku-nachzug-ohne-docker](../next/slice-doku-nachzug-ohne-docker.md),
   keines der beiden führt die Stelle heute in seinem §1 — die konkrete
   Zuordnung trägt die Welle-Closure (Lese-Schritt); notfalls per Übernahme

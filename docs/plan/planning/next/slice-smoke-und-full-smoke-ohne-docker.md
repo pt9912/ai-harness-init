@@ -40,7 +40,7 @@ und `harness/tools/full-smoke.sh` bauen ihr Prüf-Binary ohne `docker build`
 (host `go build` mit Inventar-Pin oder Träger-Fetch, je Stufe der richtige
 Träger), bootstrappen das Ziel-Repo und fahren dort die emittierten
 host-native Gates
-([`slice-emittierte-gates-host-pfad`](slice-emittierte-gates-host-pfad.md)).
+([`slice-emittierte-gates-host-pfad`](../in-progress/slice-emittierte-gates-host-pfad.md)).
 Die Stufen-Deklarationen der E2E-Abdeckung bleiben — der Prüfgegenstand
 (LH-QA-01 over-the-box) ist derselbe, nur der Träger der Umgebung wechselt.
 
@@ -101,7 +101,7 @@ Die Stufen-Deklarationen der E2E-Abdeckung bleiben — der Prüfgegenstand
 ## 4. Trigger
 
 **Start** (`next` → `in-progress`):
-[`slice-emittierte-gates-host-pfad`](slice-emittierte-gates-host-pfad.md)
+[`slice-emittierte-gates-host-pfad`](../in-progress/slice-emittierte-gates-host-pfad.md)
 liegt in `done/` — die emittierten Gates im Ziel laufen host-native, und
 [`slice-labor-gates-host-rezepte`](../done/slice-labor-gates-host-rezepte.md)
 steht (die host-Rezepte des Labors existieren).
