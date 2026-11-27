@@ -27,9 +27,13 @@
 #      zusammen messen, dass der Stempel einen Baum ueberspringt, ueber den diese
 #      Checks zuletzt ganz und mit diesen Checks geurteilt haben.
 #      Geprueft wird der Bestand, nicht die Reihenfolge — die haengt an Zusage 4.
-#   4. baseline-verify haengt als ERSTER an der Kante. Das ist die Reihenfolgen-Zusage,
-#      die im Makefile neben der Kante steht: steht die vendored Baseline nicht, ist jede
-#      Aussage der Folge-Gates ueber sie wertlos. Serielles make baut die Voraussetzungen
+#   4. environment-check haengt als ERSTER an der Kante (seit
+#      slice-environment-check-fuehrt-die-gates), baseline-verify als ZWEITER.
+#      Das ist die Reihenfolgen-Zusage, die im Makefile neben der Kante steht: fehlt
+#      einem Pflicht-Werkzeug des Inventars sein Soll, endet der Lauf an ihm, bevor
+#      ein Gate gegen fehlendes Werkzeug falsch faerbt (Umgebungs-Befund-Klasse);
+#      steht die vendored Baseline nicht, ist jede Aussage der Folge-Gates ueber sie
+#      wertlos. Serielles make baut die Voraussetzungen
 #      in Listen-Reihenfolge ab; unter `-j` faellt die Zusage — gemessen in der Grenze
 #      unten, Haelfte (a).
 #   5. `gates` baut `record-gates` ueberhaupt — seit ADR-0099 ueber den Wrapper statt als
@@ -168,7 +172,7 @@ rezept_von() {
 # Die Erwartungsliste steht SORTIERT und wird gegen die sortierte Ist-Liste gehalten:
 # so faerbt ein Umsortieren der Kante diesen Test nicht mit — dafuer steht der naechste.
 @test "gate-nachweis: an der Kante haengen genau die erwarteten Checks" {
-	erwartet="baseline-verify build ci-lint comment-claims docs-check host-bin lint mutate-greift register-ausgang shell-lint span-check test"
+	erwartet="baseline-verify build ci-lint comment-claims docs-check environment-check host-bin lint mutate-greift register-ausgang shell-lint span-check test"
 	ist="$(prereqs record-gates | LC_ALL=C sort | tr '\n' ' ' | sed 's/ $//')"
 	echo "erwartet: [${erwartet}]"
 	echo "ist:      [${ist}]"
@@ -176,9 +180,16 @@ rezept_von() {
 	[ "$ist" = "$erwartet" ]
 }
 
-@test "gate-nachweis: baseline-verify haengt als erster an der Kante" {
+@test "gate-nachweis: environment-check haengt als erster an der Kante" {
 	erster="$(prereqs record-gates | head -1)"
 	echo "erste Voraussetzung von record-gates: [${erster}]"
-	echo "Steht die vendored Baseline nicht, ist jede Aussage der Folge-Gates ueber sie wertlos."
-	[ "$erster" = "baseline-verify" ]
+	echo "Fehlt einem Pflicht-Werkzeug des Inventars sein Soll, endet der Lauf an ihm, bevor ein Gate gegen fehlendes Werkzeug falsch faerbt."
+	[ "$erster" = "environment-check" ]
+}
+
+@test "gate-nachweis: baseline-verify haengt als zweiter an der Kante" {
+	zweiter="$(prereqs record-gates | sed -n 2p)"
+	echo "zweite Voraussetzung von record-gates: [${zweiter}]"
+	echo "Steht die vendored Baseline nicht, ist jede Aussage der Folge-Gates ueber sie wertlos (die Form des zweiten Eintrags seit slice-environment-check-fuehrt-die-gates)."
+	[ "$zweiter" = "baseline-verify" ]
 }

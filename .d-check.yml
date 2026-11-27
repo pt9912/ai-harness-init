@@ -97,12 +97,32 @@ planning:
 # (installierte Werkzeuge tragen den Pin) fuehrt d-check nicht: es startet keine Programme.
 # Rot: ein verfaelschter Pin-Wert an genau einer Quelle faerbt docs-check rot (Mutations-Fall
 # unter test/mutations/).
+# ZWEITER Pin (seit slice-environment-check-fuehrt-die-gates): das abgeleitete Soll des
+# Inventars (harness/tools/environment-inventory.txt, Zeile go, Feld `abgeleitet:<wert>`)
+# gegen die Pin-Stelle GO_VERSION im Makefile — die Mischform der Umgebungs-Zusage
+# (Adaption "Soll-Herkunft: Mischform", MR-098): der Pin legt fest, das Inventar-Soll
+# belegt ihn byte-genau an dieser Kopie (`pin legt fest, Check belegt`; der Check ist
+# `make environment-check`, erster Check der Kante). Je Quelle ein Ausdruck mit GENAU
+# EINER Fanggruppe. Grenzen: ungepaart bleiben die Dockerfile-ARG-Stelle desselben Pins
+# (dieselbe Wertelage an einer dritten Stelle, unter diesem Pfad-Paar nicht erfasst) und
+# das Go-Pin-Paar GO_VERSION gegen die go-Direktive in go.mod. Rot: ein abweichender Wert
+# an GENAU EINER der beiden Quellen faerbt docs-check mit Grund-Code `pinsync-mismatch`
+# rot. Positiver Beleg im gruenen Lauf: die Zeile `pinsync: 2 Pin(s) geprueft, 4 Quelle(n)
+# gelesen` — der Lauf ist docker-gebunden; der Mustervergleich gegen den realen Bestand
+# ist docker-los im Skriptkopf von harness/tools/environment-check.sh protokolliert.
+# Waechter der Form: test/pinsync-modul-wiring.bats; Mutations-Anlagen:
+# test/mutations/795-go-pin-paarung-verliert-inventar-quelle.sh (Quellen-Zeile weg) und
+# test/mutations/796-go-soll-driftet-gegen-makefile-pin.sh (Wert verfaelscht).
 pinsync:
   pins:
     - name: d-check
       sources:
         - {file: d-check.mk, pattern: '^DCHECK_IMAGE \?= (ghcr\.io/pt9912/d-check:v[0-9]+\.[0-9]+\.[0-9]+)$'}
         - {file: internal/emit/emit.go, pattern: 'DefaultImage\s*=\s*"(ghcr\.io/pt9912/d-check:v[0-9]+\.[0-9]+\.[0-9]+)"'}
+    - name: go
+      sources:
+        - {file: Makefile, pattern: '^GO_VERSION \?= ([0-9]+\.[0-9]+\.[0-9]+)$'}
+        - {file: harness/tools/environment-inventory.txt, pattern: '^go\|exakt\|pflicht\|abgeleitet:([0-9]+\.[0-9]+\.[0-9]+)\|'}
 # structure (hermetisch, kein git, opt-in; die Bedingung open-tasks-require-marker traegt
 # d-check ab v0.76.0): haelt die Stilllegungs-Form eines Slice-Plans in done/ (v6.9.0 ·
 # modul-05-planning-harness.md §Ein Slice, dessen Gegenstand ein anderer uebernimmt). Traegt

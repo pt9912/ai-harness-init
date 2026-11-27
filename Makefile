@@ -52,7 +52,7 @@ TRAEGER_SHA256_WINDOWS_ARM64 ?= f87b07b42a627ecf476e43ca6fe8fd81b9961008a13c1189
 TRAEGER_CARRIER ?= .harness/state/bin/ai-harness-init
 export TRAEGER_TAG TRAEGER_SHA256_LINUX_AMD64 TRAEGER_SHA256_LINUX_ARM64 TRAEGER_SHA256_DARWIN_AMD64 TRAEGER_SHA256_DARWIN_ARM64 TRAEGER_SHA256_WINDOWS_AMD64 TRAEGER_SHA256_WINDOWS_ARM64 TRAEGER_CARRIER
 
-.PHONY: help gates record-gates test test-bats test-go test-go-pids-guard lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims register-ausgang history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp freshness-kotlin freshness-digest mutate mutate-greift slice-mv archive-welle traeger-fetch release-warten traeger-pins-check tap-check tap-nachzug vendor-baseline
+.PHONY: help gates record-gates environment-check test test-bats test-go test-go-pids-guard lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims register-ausgang history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp freshness-kotlin freshness-digest mutate mutate-greift slice-mv archive-welle traeger-fetch release-warten traeger-pins-check tap-check tap-nachzug vendor-baseline
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
@@ -692,13 +692,26 @@ tap-nachzug: ## Formel des Tags ins Tap nachziehen (TAG=<tag>, TAP_TOKEN in der 
 vendor-baseline: host-bin ## Eigenen vendored Baum aus dem verifizierten Release-Asset anlegen — NICHT in gates
 	@$(HOST_BIN) vendor-baseline "$(BASELINE_TAG)" "$(BASELINE_ZIP_SHA256)"
 
+# Tool-/Versions-Check der Umgebungs-Zusage (MR-098, ADR-0109): feststellend an
+# harness/tools/environment-inventory.txt, docker-los am Host (LH-QA-02/LH-QA-03).
+# Erster Check der Kante: ein Rot hier ist ein Umgebungs-Befund und endet dem Lauf,
+# bevor ein Gate gegen fehlendes Werkzeug falsch faerbt. Der je-Check-Key (ADR-0108)
+# entsteht nicht für ihn: der Satzerzeuger traegt seine Tafel-Menge nicht — ein Kanten-
+# Check ohne zeigbare Tafel-Zeile faehrt voll (ADR-0108 Festlegung 1, fail-closed).
+# Vertrag: spec/spezifikation.md SPEC-099 · seit slice-environment-check-fuehrt-die-gates
+environment-check: ## Umgebungs-Befund je Werkzeug: Inventar-Soll docker-los feststellen — IN gates (LH-QA-02, LH-QA-03)
+	@bash harness/tools/environment-check.sh
+
 # ORDNUNGSKANTE: die Checks hängen AN record-gates, sie stehen nicht daneben. `make`
 # baut ein Ziel, dessen Voraussetzung gefallen ist, auch unter `-k` nicht — über einem
 # roten Check entsteht damit kein Nachweis, während `-k` weiterhin JEDES rote Ziel
 # meldet. Wächter: test/gate-nachweis-kante.bats.
 #
-# Die Reihenfolge der Voraussetzungen ist tragend: baseline-verify als ERSTER — warum,
-# sagt Zusage 5 im Kopf des Wächters. Serielles `make` baut sie in dieser Reihenfolge
+# Die Reihenfolge der Voraussetzungen ist tragend: environment-check als ERSTER — die
+# Umgebungs-Zusage ist die Bedingung des Laufs (MR-098, siehe Target-Kommentar oben) —
+# und baseline-verify als ZWEITER: steht die vendored Baseline nicht, ist jede Aussage
+# der Folge-Gates ueber sie wertlos — warum der zweite Platz sie traegt, sagt Zusage 5
+# im Kopf des Wächters. Serielles `make` baut sie in dieser Reihenfolge
 # ab; `-j` tut es nicht. Bewacht sind beide Hälften dieser Liste — ihr Bestand und ihr
 # erster Eintrag — in derselben bats-Datei: wer hier einen Check einträgt oder streicht,
 # trägt ihn dort mit.
@@ -736,7 +749,7 @@ vendor-baseline: host-bin ## Eigenen vendored Baum aus dem verifizierten Release
 # Host-Werkzeuge); `GATES_FORCE=1` erzwingt den vollen Lauf. Wächter:
 # test/gate-nachweis-kante.bats (die Verdrahtungs-Zusagen an der Wrapper-Form gezogen),
 # test/gates-fastpfad.bats und test/gates-keys.bats.
-record-gates: baseline-verify docs-check lint build test shell-lint ci-lint comment-claims register-ausgang mutate-greift host-bin span-check ## Checks + Gate-Nachweis (Working-Tree-Hash für den Stop-Hook)
+record-gates: environment-check baseline-verify docs-check lint build test shell-lint ci-lint comment-claims register-ausgang mutate-greift host-bin span-check ## Checks + Gate-Nachweis (Working-Tree-Hash für den Stop-Hook)
 	@bash harness/tools/record-gates.sh
 
 gates: ## alle aktuell lauffähigen Gates + Nachweis — Fast-Pfad Tier 2 (ADR-0108): SKIP über dem vollständig gedeckten je-Check-Satz, bei Teildrift genau die gedrifteten Checks, sonst voller Lauf

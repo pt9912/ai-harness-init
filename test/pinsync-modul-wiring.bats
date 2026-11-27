@@ -1,12 +1,15 @@
 #!/usr/bin/env bats
 # pinsync-modul-wiring.bats — haelt das d-check-Modul `pinsync` an seine Config-Entscheidung
-# gebunden: genau ein Pin (`d-check`), zwei Quellen (`d-check.mk` ueber `DCHECK_IMAGE ?=`,
-# `internal/emit/emit.go` ueber `DefaultImage`), je Quelle ein Ausdruck mit GENAU EINER
-# Fanggruppe; verglichen wird byte-genau die Tag-Referenz. Der Verhaltens-Zahn — `docs-check`
+# gebunden: zwei Pins — der d-check-Werkzeug-Pin (`d-check.mk` ueber `DCHECK_IMAGE ?=`,
+# `internal/emit/emit.go` ueber `DefaultImage`) und, seit
+# slice-environment-check-fuehrt-die-gates, das Pin `go` (Inventar-Soll-Zeile
+# `abgeleitet:<wert>` in harness/tools/environment-inventory.txt gegen die
+# `GO_VERSION ?=`-Stelle des Makefile) — je Quelle ein Ausdruck mit GENAU EINER
+# Fanggruppe; verglichen wird byte-genau. Der Verhaltens-Zahn — `docs-check`
 # faerbt einen verfaelschten Pin-Wert an genau einer Quelle mit dem Grund-Code
-# `pinsync-mismatch` rot — ist am realen Bestand gemessen (Mutations-Fall unter `test/mutations/`,
-# Beleg in harness/sensors/docs-check.md §Grenze, Modul pinsync); dieser Wächter hält die
-# Config-Entscheidung ohne Docker-Lauf.
+# `pinsync-mismatch` rot — ist am realen Bestand gemessen (Mutations-Faelle unter
+# `test/mutations/`, Beleg in harness/sensors/docs-check.md §Grenze, Modul pinsync);
+# dieser Wächter hält die Config-Entscheidung ohne Docker-Lauf.
 #
 # NETZLOS (nur Datei-Lesen), laeuft in `make gates` ueber `make test` -> `test-bats`.
 
@@ -45,6 +48,20 @@ pinsync_block() {
   grep -qF 'DefaultImage\s*=\s*"(ghcr\.io/pt9912/d-check:v[0-9]+\.[0-9]+\.[0-9]+)"' <<<"$block"
   grep -qF '{file: d-check.mk,' <<<"$block"
   grep -qF '{file: internal/emit/emit.go,' <<<"$block"
+}
+
+@test "pinsync: das Pin go paart die Inventar-Soll-Zeile abgeleitet gegen die GO_VERSION-Stelle des Makefile" {
+  local block
+  block="$(pinsync_block)"
+  grep -qF '^GO_VERSION \?= ([0-9]+\.[0-9]+\.[0-9]+)$' <<<"$block"
+  grep -qF '^go\|exakt\|pflicht\|abgeleitet:([0-9]+\.[0-9]+\.[0-9]+)\|' <<<"$block"
+  grep -qF '{file: Makefile,' <<<"$block"
+  grep -qF '{file: harness/tools/environment-inventory.txt,' <<<"$block"
+  local wert Quelle
+  wert="$(sed -n 's/^GO_VERSION \?= //p' "$REPO/Makefile")"
+  Quelle="$(grep -E '^go\|exakt\|pflicht\|abgeleitet:' "$REPO/harness/tools/environment-inventory.txt" | sed -E 's/^go\|exakt\|pflicht\|abgeleitet:([0-9]+\.[0-9]+\.[0-9]+)\|.*/\1/')"
+  echo "Pin-Stelle Makefile: [$wert]; Inventar-Soll: [$Quelle] (Zusage: byte-gleich)"
+  [ -n "$wert" ] && [ "$wert" = "$Quelle" ]
 }
 
 @test "pinsync: jeder pattern-Ausdruck traegt GENAU EINE Fanggruppe" {
