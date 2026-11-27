@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.27.1
+**Version:** 0.28.0
 
 **Status:** Draft
 
@@ -574,18 +574,22 @@ emittierte Datei zu ändern.
 
 ### LH-QA-02 — Reproduzierbarkeit
 
-- **Anforderung:** Templates, Sprachskelett, d-check-Image **und das Tool-Build-Image (Go-Toolchain)** auf Tag/Digest gepinnt — kein floating main.
-- **Messmethode:** zwei Läufe mit gleichem Tag erzeugen identische Ausgabe.
+- **Anforderung:** Templates, Sprachskelett, d-check-Image **und das Tool-Build-Image (Go-Toolchain)** auf Tag/Digest gepinnt — kein floating main; dieselbe Disziplin trägt der **docker-los Gate-Weg** als **Tool-Pin** (je Werkzeug Image-Digest bzw. Tag mit Prüfsumme; das Inventar-Soll führt die Pin-Form).
+- **Messmethode:** zwei Läufe mit gleichem Stand erzeugen identische Ausgabe — über dasselbe Image (Image-Weg) bzw. über dieselben Inventar-Pins (docker-los Weg).
 
 ### LH-QA-03 — Minimale Abhängigkeiten
 
-- **Anforderung:** Das Tool ist ein **natives Go-Binary**; die Laufzeit beim
-  Bootstrap braucht nur **git + docker** (keine Host-Sprachlaufzeit, kein
-  Paketmanager). Der **Tool-Build** läuft reproduzierbar im gepinnten Image
-  (Go-Toolchain, Cross-Compile) — **kein Host-`go`** (Docker-only). Emittierte
-  Ziel-Repos bleiben make/docker-getrieben.
-- **Messmethode:** `golangci-lint`-clean + `go test` grün (im Image); Smoke:
-  Binary auf frischem System mit nur git + docker → Bootstrap grün.
+- **Anforderung:** Das Tool ist ein **natives Go-Binary**; der Bootstrap braucht
+  nur **git** (keine Host-Sprachlaufzeit, kein Paketmanager). Die **Gates** der
+  emittierten Ziel-Repos bleiben **make-getrieben** und führen je Gate-Werkzeug
+  die gepinnte Version — über **Tool-Pin + Tool-/Versions-Check** am Host
+  (docker-los Weg) oder über die **gepinnten Images** (Weg mit Docker-Daemon);
+  `docker` ist damit **Weg, keine Pflicht**. Der **Tool-Build** (Release) läuft
+  reproduzierbar im gepinnten Image (Go-Toolchain, Cross-Compile) — kein
+  Host-`go` im Release-Bau.
+- **Messmethode:** `golangci-lint`-clean + `go test` grün (im Image — Tool-Build);
+  Smoke: Binary auf frischem System mit git → Bootstrap grün; `make gates` im
+  Ziel grün je Gate-Weg (docker-los mit Inventar-Pins, oder Images).
 
 ### LH-QA-04 — Plattform-Matrix
 
@@ -681,3 +685,4 @@ emittierte Datei zu ändern.
 | 0.26.0 | 2026-10-09 | CR: **Schutz des Bestands genau benannt** — [`LH-FA-14`](../spec/lastenheft.md#lh-fa-14--redaktion-und-erfassungs-umfang) Kriterium „Redaktion — was zugesagt ist und was nicht": der Bestand ist gitignored und nicht verschlüsselt; seine Dateien sind nur für den Eigentümer lesbar, das Verzeichnis bleibt für andere auflistbar. Minor, weil sich die Aussage eines Akzeptanzkriteriums ändert; keine neue Anforderung | Nutzer-Entscheidung 2026-10-09 |
 | 0.27.0 | 2026-10-17 | CR: **Zeit- und Liefer-Sätze im Rumpf als Zielbild im Indikativ gefasst** — [`LH-FA-01`](../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) (Sprachskelett ist ein eigener Schritt nach dem Init), [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) (Hinweis zum Titel, `cpp`-Satz, Sprach-Renderer in §5), [`LH-FA-07`](../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) (Voraussetzung), [`LH-FA-08`](../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) (Kurs-Upstream-Ergänzung), Briefing-Vorlage in [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren), Grenz-Notiz [`LH-QA-04`](../spec/lastenheft.md#lh-qa-04--plattform-matrix). Minor, weil normative Abschnitte ihre Aussage-Form ändern; keine neue Anforderung, keine Zusage entfällt, Heading-Anker bleiben stabil, datierte Messungen bleiben | Nutzer-Entscheidung 2026-10-17 |
 | 0.27.1 | 2026-10-17 | CR: **Zwei Folgestellen zu 0.27.0 nachgezogen** — [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) Architektur-Achse: Default `flat` ist „das Verhalten ohne `--arch`" statt „das heutige Verhalten". [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) Briefing-Vorlage: der Klammersatz zur Herkunft der Vorlage entfällt; `CLAUDE.md` ist autort, nicht tool-generiert. Patch, weil beide Stellen die Aussage von 0.27.0 nur zu Ende führen; keine neue Anforderung, keine Zusage entfällt | Nutzer-Entscheidung 2026-10-17 |
+| 0.28.0 | 2026-11-27 | CR: **docker-los als Pflicht-Weg — [`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) und [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) umgestellt.** [`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten): der Bootstrap braucht nur **git**; die Gates der emittierten Ziel-Repos bleiben make-getrieben und führen je Werkzeug die gepinnte Version — über **Tool-Pin + Tool-/Versions-Check** am Host (docker-los Weg) oder über die gepinnten Images; `docker` ist **Weg, keine Pflicht**. Tool-Build (Release) bleibt im gepinnten Image (kein Host-`go` im Release-Bau). [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit): dieselbe Pin-Disziplin trägt der docker-los Weg als Tool-Pin (Tag+Prüfsumme, Inventar-Soll); Messmethode nennt beide Wege. Minor (Anforderung + Messmethode je Weg). **Abweichung von [`MR-015`](../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Setzung 2, ausdrücklich benannt statt kaschiert** (Präzedenz 0.18.0): dieser CR liegt **nach** dem `open → in-progress`-Move von slice-cr-lh-qa-02-03-ohne-docker — er wurde vor dem Move noch nicht geschärft formuliert; die Form (eigener Commit, nur diese Datei) ist eingehalten. Getrieben von welle-ohne-docker (Auftraggeber-Beschluss 2026-11-27: Docker-Daemon bleibt aus, Labor und Produkt färbt ein docker-los Gate-Weg) | Nutzer-Entscheidung 2026-11-27 |
