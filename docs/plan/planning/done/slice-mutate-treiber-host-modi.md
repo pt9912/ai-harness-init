@@ -25,7 +25,7 @@ der Welle beobachtet mehr als ein Slice-DoD trägt (Baseline-Regelwerk
 
 **Berührte Spec-Stellen:** — *(der Treiber ist kein Spec-Artefakt; die
 Sensor-Texte `harness/sensors/mutate.md`/`gates.md` tragen den Vertrag —
-Doku-Nachzug: [`slice-doku-nachzug-ohne-docker`](slice-doku-nachzug-ohne-docker.md)).*
+Doku-Nachzug: [`slice-doku-nachzug-ohne-docker`](../next/slice-doku-nachzug-ohne-docker.md)).*
 
 **Verantwortlich:** pt9912
 
@@ -83,7 +83,7 @@ Sperren-Meldung unterscheidet die Ursache: Umgebungs-Befund ≠ Test-Fehlschlag
       (`.harness/skills/reviewer.md`) — kein Self-Review (Modul 8).
 [x] Doku-Update: [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md)
       (Vertrag, Grenzen) — Doku-Nachzug im
-      [`slice-doku-nachzug-ohne-docker`](slice-doku-nachzug-ohne-docker.md),
+      [`slice-doku-nachzug-ohne-docker`](../next/slice-doku-nachzug-ohne-docker.md),
       hier nur die Zeilen, die *der Treiber-Vertrag* nennt.
 [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 [x] Beobachtungs-Register (`../observations/`) fortgeschrieben —

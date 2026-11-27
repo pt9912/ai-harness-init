@@ -68,7 +68,7 @@ CI läuft auf frischem Klon, nur ohne Daemon-Annahme.
 - [ ] Doku-Update: [`harness/sensors/gates.md`](../../../../harness/sensors/gates.md),
       [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md)
       (CI-Verhältnis) — Doku-Nachzug im
-      [`slice-doku-nachzug-ohne-docker`](slice-doku-nachzug-ohne-docker.md).
+      [`slice-doku-nachzug-ohne-docker`](../next/slice-doku-nachzug-ohne-docker.md).
 - [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben —
       `evidence/`-Datei ergänzen, wo eine Beobachtung anfiel; **kein Zähler
