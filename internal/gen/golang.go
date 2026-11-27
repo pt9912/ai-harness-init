@@ -1095,7 +1095,7 @@ func InventoryRows(lang, version string) []string {
 	}
 	return []string{
 		"go|exakt|pflicht|abgeleitet:" + version + "|Toolchain der Go-Gates am Host (go test/lint/build, harness/mk/<modul>.mk)|Soll abgeleitet von der Pin-Stelle GO_VERSION im Go-Code-Gate-Fragment; der Paarungs-Waechter haelt die Zeile gegen die Stelle (internal/gen/inventory_rows_test.go) — bei einer Pin-Veraenderung faerbt er die Emission rot, bevor der Check still ein altes Soll tragt",
-		"golangci-lint|exakt|pflicht|abgeleitet:" + golangciVersion + "|Go-Lint der docker-losen Go-Gates (golangci-lint run am Host)|Soll abgeleitet von der Pin-Stelle GOLANGCI_LINT_VERSION im Go-Code-Gate-Fragment (Paarungs-Waechter wie die go-Zeile) und im Dockerfile (opt-in); die Anwesenheit ist die reine PATH-Probe — die Besorgung des Werkzeugs traegt die Umgebung, der Check belegt sie",
+		"golangci-lint|exakt|pflicht|abgeleitet:" + strings.TrimPrefix(golangciVersion, "v") + "|Go-Lint der docker-losen Go-Gates (golangci-lint run am Host)|Soll abgeleitet von der Pin-Stelle GOLANGCI_LINT_VERSION im Go-Code-Gate-Fragment (Paarungs-Waechter wie die go-Zeile) mit gestrichenem Tag-Praefix v — die exakte Pruefform vergleicht die Version-Ausgabe des Werkzeugs, und die traegt den Tag-Wert ohne Praefix; die Parity zur Lab-Fassung haelt der Abgleich am Inventar (inventory_rows_test.go), die Version-Zeile im Ziel selbst der reale Lauf. Die Anwesenheit ist die reine PATH-Probe — die Besorgung des Werkzeugs traegt die Umgebung, der Check belegt sie",
 	}
 }
 
