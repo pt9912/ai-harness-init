@@ -66,32 +66,47 @@ Gate-Lauf an ihm, bevor ein Gate gegen fehlendes Werkzeug falsch färbt
 
 ## 2. Definition of Done
 
-- [ ] **Liefer-Punkt 1:** das Check-Skript + Inventar-Datei + die
+- [x] **Liefer-Punkt 1:** das Check-Skript + Inventar-Datei + die
       `SPEC-<NNN>`-Festlegung (Prüfformen, Vergleich, rot/Warnung) — je
       Inventar-Zeile Werkzeug · Prüfform · Soll (Pin-Stelle oder Manifest-
       Wert) · Kontext · Grund; die Mischform steht an **einer** Quelle; der
       Sensor-Text `harness/sensors/environment-check.md` trägt Vertrag,
-      Inventar-Ort und Grenzen (Vorlagen-Form).
-- [ ] **Liefer-Punkt 2:** der Check hängt als **erster** Check der
+      Inventar-Ort und Grenzen (Vorlagen-Form). — erfüllt: Skript + Inventar
+      (13 Zeilen) in 81fc3ddc, die `SPEC-099`-Festlegung in
+      `spec/spezifikation.md` in 9297bd70.
+- [x] **Liefer-Punkt 2:** der Check hängt als **erster** Check der
       Gates-Kante (`record-gates`-Liste vor `baseline-verify`) und in
-      `make gates`; die Index-Zeile in `harness/README.md` §Sensors nennen
+      `make gates` — erfüllt: `record-gates`-Kante in 81fc3ddc, Index-Zeile in
+      9297bd70; die Index-Zeile in `harness/README.md` §Sensors nennen
       den Target mit Bindung [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)/[`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten).
-- [ ] **Liefer-Punkt 3:** der d-check-Schaufel-Block `pinsync` (Stellen-
+- [x] **Liefer-Punkt 3:** der d-check-Schaufel-Block `pinsync` (Stellen-
       Abgleich) vergleicht die Manifest-Sollwerte gegen die Pin-Stellen byte-
-      genau; die Fassung steht in `.d-check.yml`. Rot gesehen über ein
+      genau; die Fassung steht in `.d-check.yml`. — erfüllt: pinsync-Block +
+      Fälle 795–798 in 81fc3ddc; Fall-796-Anker gegen den Bestand
+      nachgezogen in 44e0594b. Rot gesehen über ein
       manipuliertes Inventar-Soll (Mutations-Fälle je
       [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit)).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
-      (`.harness/skills/reviewer.md`) — kein Self-Review (Modul 8).
-- [ ] Doku-Update: Sensor-Index-Zeile + Sensor-Text (offentlicher Vertrag).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben —
+- [x] `make gates` grün — über
+      [`CO-007`](../../carveouts/CO-007-ci-rot-vorgefunden-gates-und-full-smoke.md)
+      bedingt (CI-Rot vorgefunden, Trigger: Abschluss von
+      [`welle-ohne-docker`](../welle-ohne-docker.md)); der lokale
+      Kanten-Lauf endet am Inventar an `d-check · Ist: fehlt` — by design
+      (fail-closed; die Beschaffung ist
+      `slice-binraire-ziehen-ohne-docker`).
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+      (`.harness/skills/reviewer.md`) — kein Self-Review (Modul 8). — Report
+      2e8140fb; F-1/F-2 gelöst, Abgleich-Addendum d4da2fde (kein
+      HIGH/MEDIUM offen).
+- [x] Doku-Update: Sensor-Index-Zeile + Sensor-Text (offentlicher Vertrag). —
+      9297bd70.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag. — §7.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben —
       `evidence/`-Datei ergänzen, wo eine Beobachtung anfiel; **kein Zähler
       wird gesetzt**. Keine Beobachtung anfallen ist ebenfalls eine Antwort
-      und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
-      weiter offen).
+      und wird in §7 notiert. — erfüllt: `evidence/`-Datei ergänzt (siehe §7);
+      die `.viper.sh`-Erwähnung ist nicht-zählend benannt (§7).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
+      weiter offen). — beide in §7 (entfallen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
       nächsten Welle-Closure geprüft.
 
@@ -135,11 +150,11 @@ geschrieben.
 ## 6. Risiken und offene Punkte
 
 - **`curl` steht am Host nicht** (Träger-Beschaffung braucht Netz) —
-  **Ausgang:** das Inventar trägt ihn als `optional`-Eintrag; die Beschaffung
+  **Ausgang (ist):** entfallen — das Inventar trägt ihn als `optional`-Eintrag; die Beschaffung
   selbst ist [`slice-binraire-ziehen-ohne-docker`](../open/slice-binraire-ziehen-ohne-docker.md)
   und sein Netz-Aufruf nennt seinen Träger.
 - **Der Guard blockt den Implementer beim Testen des Checks** (direkte
-  `go`/`bats`-Positionen) — **Ausgang:** der Guard bleibt in Kraft
+  `go`/`bats`-Positionen) — **Ausgang (ist):** entfallen, nicht eingetreten — der Guard bleibt in Kraft
   ([ADR-0109](docs/plan/planning/done/) <!-- d-check:ignore (Platzhalter-Kennung: ADR-0109-Form, entsteht im Architect-Slice) -->);
   der Prüf-Weg läuft über `make`-Rezepte; wo ein Test eine direkte Position
   braucht, ist das der Befund und wird an den ADR zurückgemeldet, nicht
@@ -152,13 +167,79 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 formulieren — sonst zählt das Register zwei Namen getrennt) ·
 `grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln.
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <… | keine Beobachtung angefallen>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** Anker · Folge-Slice · Register, Ergebnis
+- **Was hat funktioniert:** das Inventar trägt 13 Zeilen je Werkzeug ·
+  Prüfform · Pflichtgrad · Soll (Quelle als Präfix) · Kontext · Grund, das
+  Soll als **Mischform an einer Quelle** (`SPEC-099`; abgeleitet nur für
+  `go` gegen die `GO_VERSION`-Pin-Stelle, Manifest-Wert für die übrigen,
+  Probe für *Fähigkeit*) — die Form blieb maschinen-lesbar ohne Parser
+  (§4-Rückführung „Inventar maschinen-unlesbar" nicht angetroffen). Die
+  Gates-Kante ist zweifach verdrahtet: `record-gates`-Liste an erster Stelle
+  (81fc3ddc), Index-Zeile in `harness/README.md` §Sensors mit Bindung
+  LH-QA-02/LH-QA-03 (9297bd70). Die lokalen Rot-Belege liefen am realen
+  Quell-Skript; die Verifier-Nachprobe nahm sie am /tmp-Tree-Archiv des
+  Laufs nach. Der Guard-Blocker trat nicht ein — alle Prüf-Wegs liefen über
+  `make` bzw. Skript-Aufrufe im Rahmen des Guards.
+- **Was ging anders als geplant:** der Tier-2-Schlüssel-Rückenstand — der
+  Schlüssel-Satzerzeuger trägt auf main noch keine `environment-check`-Zeile —
+  lässt den Check stets voll fahren; das ist fail-closed by design (am
+  Makefile-Kommentar der Kante deklariert) und trägt seine Nehmer-Seite im
+  Kopf von `slice-gates-pruefgegenstand-stempel-v1` (§1 `Übernimmt:`,
+  b4491b3d) — der Rückstand ist kein Defekt des Vorgängers, sondern die
+  noch nicht geschriebene Zeile des Nehmers. Der pinsync-Stellen-Abgleich
+  ist doppelt dokumentiert (Konfigurations-Kommentar und Sensor-Text); seine
+  Form wurde am Bestand verifiziert, nicht halluziniert (2 Pins / 4
+  Quellen). Der Pin-Bump `GO_VERSION` 1.27.3 → 1.27.4 ging als eigene
+  Transaktion im Range (44e0594b), das abgeleitete Inventar-Soll im selben
+  Zug nachgezogen.
+- **Steering-Loop-Eintrag:** gezählt, nicht verkörpert — kein Zielort, darum
+  kein `liegt in`-Feld (`grundlagen-traceability.md` §Herkunfts-Anker). Der
+  Inventar-Check ist der Gegen-Typ der zitierten Beobachtung, aber ein
+  Sensor-Artefakt dieses Slices (`SPEC-099`), nicht die vom Ausgang
+  zugewiesene Regel; die Regel trägt die Kennung
+  `slice-mess-rezept-nennt-seine-host-voraussetzungen`, und ein zweiter
+  Zielort daneben wäre die Drift-Form aus zwei Definitionen desselben
+  Wortes. Auslöser:
+  [`BEO-ALL/mess-rezept-setzt-unbenannte-host-konfiguration-voraus`](../observations/BEO-ALL/mess-rezept-setzt-unbenannte-host-konfiguration-voraus/observation.md).
+- **Beobachtungs-Register (`../observations/`):**
+  `evidence/slice-environment-check-fuehrt-die-gates.md` in
+  [`BEO-ALL/mess-rezept-setzt-unbenannte-host-konfiguration-voraus/`](../observations/BEO-ALL/mess-rezept-setzt-unbenannte-host-konfiguration-voraus/observation.md)
+  ergänzt — Zähler steht damit bei 4×, `state.md` unverändert (`geplant`,
+  Kennung des Träger-Slices). Dazu eine **nicht-zählende Erwähnung** (kein
+  Auftreten, bekommt keine Datei unter `evidence/` — README der Ablage):
+  `.viper.sh` (Ablage 7cb85890, Repo-Wurzel, ohne Make-Target) ist vom
+  Verifier als unreferenziertes Hilfsskript ohne Abdeckungs-Anker benannt —
+  bewusster Bestand-Entscheid, Einzel-Vorkommen, keine wiederkehrende
+  Versagensklasse; die Grenze trägt der Kopf des Skripts selbst. Kein
+  `BEO-`-Verzeichnis dafür angelegt.
+- **Folge-Slices:** keine neuen; die §1-Abgrenzungen bleiben —
+  [`slice-binraire-ziehen-ohne-docker`](../open/slice-binraire-ziehen-ohne-docker.md)
+  (Beschaffung d-check/Träger) und
+  [`slice-labor-gates-host-rezepte`](../open/slice-labor-gates-host-rezepte.md)
+  (Gate-Rezepte), beide in `open/`.
+- **MR-042-Anlass:** nicht gegeben — das Lastenheft ist nicht berührt; die
+  Änderung wächst die Spezifikation (Rang 2) um `SPEC-099`, ohne
+  Vertragsänderung.
+- **Rest-Übergaben:** die docker-gebundenen Zähne — der pinsync-Verhaltens-
+  Lauf, die bats-Stufe des Test-Gates und die Mutations-Verifikation der
+  Fälle 795–798 — bleiben der Heilung von
+  [`welle-ohne-docker`](../welle-ohne-docker.md) zugeordnet; der
+  make-level `SPEC-099`-Protokoll-Lauf (voller Kanten-Lauf) hängt an der
+  d-check-Binary (`slice-binraire-ziehen-ohne-docker`) und an
+  [`CO-007`](../../carveouts/CO-007-ci-rot-vorgefunden-gates-und-full-smoke.md).
+- **Risiken aus §6:** beide **entfallen** — `curl`: das Inventar trägt ihn
+  als `optional`-Zeile (Warnung ist kein Rot, Inventar-Kommentar); die
+  Beschaffung ist `slice-binraire-ziehen-ohne-docker`, dessen Netz-Aufruf
+  seinen Träger nennt. Guard: nicht eingetreten — alle Prüf-Wegs liefen
+  über `make` bzw. Skript-Aufrufe; der Guard stand keinem Weg im Weg.
+- **Drei Paarungen:** Anker — kein `liegt in`-Feld, nichts zu paaren ·
+  Folge-Slice — keiner neu genannt (die zwei `open/`-Slices sind
+  §1-Abgrenzung, keine Übernahme) · Register — die berührten
+  `BEO-`-Verzeichnisse tragen Belege (`BEO-ALL/mess-rezept-…` 4×,
+  `BEO-ALL/host-werkzeug-variante-…` unverändert) und das Kommando der
+  README (Verzeichnisse ohne `evidence/*.md`) wurde nicht von diesem Lauf
+  belastet. Ergebnis: keine Befunde; das Paarungs-Kästchen (§2) bleibt für
+  die Welle-Closure [`welle-ohne-docker`](../welle-ohne-docker.md) offen —
+  sie prüft die Paarungen erneut.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
