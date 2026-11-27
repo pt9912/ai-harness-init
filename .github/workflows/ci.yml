@@ -20,9 +20,11 @@
 # RUNNER-WERKZEUGE (ADR-0109): der docker-lose Pflicht-Weg adressiert das Werkzeug
 # über den PATH des Runners — jeder Job, der ein Gates-/Smoke-Target faehrt, legt die
 # Werkzeuge vorher per `make ci-runner-setup` ab (die SOLL-Werte liest das Skript aus
-# dem Inventar; keine Version steht hier literal) und den d-check-Carrier per
-# `make dcheck-fetch`. Der gepinnte Image-Weg bleibt opt-in (stellt hier kein Glied der
-# Gates-Kette): keine Zeile dieser Datei setzt einen Docker-Daemon voraus.
+# dem Inventar; keine Versions-Nennung steht hier literal) und den d-check-Carrier per
+# `make dcheck-fetch`. Die Gates- und Smoke-Ketten dieser Datei rufen nur make-Ziele.
+# Daemon-gebundene Rest-Spuren dieser Datei: der full-smoke-Job (Rest-Stufen,
+# GRENZE-Kommentar am Job) und der adr-immutable-Job (vcs-Modul-Lauf im gepinnten
+# Bild, d-check.mk) — je Grenze am Job angeschrieben.
 #
 # CHECKOUT-TIEFE: drei der vier `actions/checkout` unten bleiben bei der
 # Default-Tiefe 1 — `make gates`/`smoke`/`full-smoke` loesen keinen
