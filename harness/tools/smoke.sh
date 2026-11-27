@@ -112,10 +112,6 @@ if [ -z "$vorlage" ] || ! grep -q 'Kopiere nach .harness/sensors/environment-che
 	echo "smoke: FEHLER — die Vorlage environment-check.template.md fehlt im Ziel-Baum oder traegt ihren Kopiere-Satz nicht" >&2
 	exit 1
 fi
-if [ ! -f "$tmprepo/harness/sensors/environment-check.md" ]; then
-	echo "smoke: FEHLER — das environment-check-Singleton fehlt im Ziel-Baum" >&2
-	exit 1
-fi
 # Das environment-check ist ein EMITTIERTES Target (tools/harness/environment-check.sh
 # + harness/mk/environment.mk, erster Check der Kette — slice-emittierte-gates-host-pfad):
 # der make-Anspruch im Singleton ist darum die Wahrheit ueber das Ziel, nicht das
@@ -124,15 +120,26 @@ fi
 # die Paarung beider Seiten: der Anspruch ohne das Target dahinter waere ein
 # halluzinierter Gate (LH-QA-01), und ein Target ohne den Anspruch im Singleton
 # haette ein stiller Check an der Sensor-Doku verloren.
-if ! grep -q 'make environment-check' "$tmprepo/harness/sensors/environment-check.md"; then
-	echo "smoke: FEHLER — das emittierte environment-check-Singleton traegt seinen make-Anspruch nicht, obwohl der Bootstrap das Target dahinter schreibt" >&2
-	exit 1
-fi
-if [ ! -f "$tmprepo/tools/harness/environment-check.sh" ] \
-	|| ! grep -q '^GATE_CHECKS := environment-check' "$tmprepo/harness/mk/environment.mk"; then
-	echo "smoke: FEHLER — das Target hinter dem make-Anspruch fehlt (tools/harness/environment-check.sh oder die GATE_CHECKS-Verdrahtung in harness/mk/environment.mk)" >&2
-	exit 1
-fi
+# Die Paarungs-Proben stehen als Funktion (smoke.sh ist ein linearer Lauf — die
+# Funktion ist an der Stelle gerufen und faehrt denselben Pfad); test/smoke-
+# ohne-docker.bats liest sie aus DIESER Datei und faehrt sie je Form.
+umgebung_paarung_pruefen() {
+	local ziel="$1"
+	if [ ! -f "$ziel/harness/sensors/environment-check.md" ]; then
+		echo "smoke: FEHLER — das environment-check-Singleton fehlt im Ziel-Baum" >&2
+		return 1
+	fi
+	if ! grep -q 'make environment-check' "$ziel/harness/sensors/environment-check.md"; then
+		echo "smoke: FEHLER — das emittierte environment-check-Singleton traegt seinen make-Anspruch nicht, obwohl der Bootstrap das Target dahinter schreibt" >&2
+		return 1
+	fi
+	if [ ! -f "$ziel/tools/harness/environment-check.sh" ] \
+		|| ! grep -q '^GATE_CHECKS := environment-check' "$ziel/harness/mk/environment.mk"; then
+		echo "smoke: FEHLER — das Target hinter dem make-Anspruch fehlt (tools/harness/environment-check.sh oder die GATE_CHECKS-Verdrahtung in harness/mk/environment.mk)" >&2
+		return 1
+	fi
+}
+umgebung_paarung_pruefen "$tmprepo"
 # Durchsetzungsschicht (slice-031/032, LH-FA-06/ADR-0006): Gate-Nachweis + Stop-Hook
 # + Command-Guard + awk-Extraktor als Tool-als-Quelle emittiert. Positive Vertreter
 # beider Zielorte (tools/harness/ + .claude/) und der Stempel-Ignore. Der geschlossene
