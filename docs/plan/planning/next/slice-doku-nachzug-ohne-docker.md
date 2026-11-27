@@ -45,7 +45,7 @@ die ADR-0109-Platzhalter-Fassung — keine zweite Quelle desselben Satzes.
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Die emittierten Ziel-Doki** — sie wandert mit dem emitter-Slice
-  ([`slice-emittierte-gates-host-pfad`](../in-progress/slice-emittierte-gates-host-pfad.md));
+  ([`slice-emittierte-gates-host-pfad`](../done/slice-emittierte-gates-host-pfad.md));
   hier steht nur die laufende Doku (Schicht-Abgrenzung).
 - **Keine neue Zahl ohne Kommando** ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert))
   — Messwerte der anderen Slices wandern nur, wo sie als Beleg-Zeile mit
@@ -95,7 +95,7 @@ die ADR-0109-Platzhalter-Fassung — keine zweite Quelle desselben Satzes.
 ([`slice-labor-gates-host-rezepte`](../done/slice-labor-gates-host-rezepte.md),
 [`slice-mutate-treiber-host-modi`](slice-mutate-treiber-host-modi.md),
 [`slice-smoke-und-full-smoke-ohne-docker`](slice-smoke-und-full-smoke-ohne-docker.md),
-[`slice-emittierte-gates-host-pfad`](../in-progress/slice-emittierte-gates-host-pfad.md),
+[`slice-emittierte-gates-host-pfad`](../done/slice-emittierte-gates-host-pfad.md),
 [`slice-ci-runner-ohne-docker`](slice-ci-runner-ohne-docker.md))
 liegen in `done/` — die Doku trägt den Bestand, nicht einen Plan.
 
