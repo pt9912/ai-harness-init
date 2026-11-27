@@ -10,8 +10,10 @@ Nacharbeit. Für Teams, die den Prozess nicht von Hand zusammenkopieren wollen.
 
 ## Was kann ich heute tun?
 
-**Nötig:** Docker, git, GNU make — und beim allerersten Lauf einmal Internet (danach arbeitet das
-Repo netzunabhängig). Eine Go-Installation ist nicht nötig, alles läuft in Docker. Die ausführliche
+**Nötig:** git und GNU make — und beim allerersten Lauf einmal Internet (danach arbeitet das
+Repo netzunabhängig). Docker ist der Weg, keine Pflicht: die Doku-Prüfung läuft per
+`make dcheck-fetch` am Host-Carrier (Host-curl), die gepinnten Image-Ziele bleiben der opt-in
+Weg. Eine Go-Installation ist nicht nötig. Die ausführliche
 Schritt-für-Schritt-Anleitung steht im [Benutzerhandbuch](docs/user/benutzerhandbuch.md).
 
 **Ein Repo aufsetzen** — der Zielordner als Argument benennt das frisch mit `git init`
@@ -71,10 +73,11 @@ im Programm gepinnt.
 (linux · macos · windows × amd64 · arm64) liegen am
 [GitHub-Release](https://github.com/pt9912/ai-harness-init/releases/latest) — herunterladen,
 ausführbar machen, fertig. Wer einen Stand **ohne** Versions-Kennzeichnung braucht, baut einmalig
-aus dem Quellcode; das geschieht komplett in Docker:
+aus dem Quellcode; das geschieht am Host (go build):
 
 ```bash
-make artifact DEST=./bin
+make build
+# -> .harness/state/bin/ai-harness-init.build  (opt-in Bild-Weg: make artifact DEST=./bin)
 ```
 
 Beide Wege Schritt für Schritt im [Benutzerhandbuch](docs/user/benutzerhandbuch.md).
@@ -103,8 +106,8 @@ dasteht.
 - **Prozess:** [`AGENTS.md`](AGENTS.md) (Hard Rules), [`harness/README.md`](harness/README.md) (Source Precedence, Sensors).
 - **Verträge:** [`spec/lastenheft.md`](spec/lastenheft.md) (`LH-*`-IDs mit Akzeptanzkriterien).
 - **Entscheidungen:** [`docs/plan/adr/`](docs/plan/adr/) — z. B. [`ADR-0005`](docs/plan/adr/0005-ziel-repo-distribution.md) (Ziel-Repo-Distributionsmodell).
-- **Gates:** `make gates` bündelt sieben — `make baseline-verify` (vendored Baseline netzlos), `make docs-check` (links/anchors/ids/codepaths), `make lint`/`make build` (Go via Dockerfile-Stages), `make test` (Command-Guard bats + Go-Unit-Tests), `make shell-lint` (shellcheck), `make ci-lint` (actionlint) — alle grün. Das Architektur-Gate a-check ist **nicht** dabei: es wird in Zielrepos mit geschichtetem Grundgerüst **emittiert**, hier hätte es einen leeren Prüfbereich.
-- **Absicherung + Herkunft:** `make gates` läuft grün und Docker-only; CI fährt ihn pro Push auf einem frischen Klon. Regelwerk und Vorlagen liegen committet vendored unter `.harness/baseline/` (netzunabhängig, reproduzierbar). Der Voll-E2E-Smoke `make full-smoke` bootstrappt real in ein Wegwerf-Repo und lässt dort `make gates` grün laufen.
+- **Gates:** `make gates` bündelt die Kante mit `make environment-check` als erstem Check (ein Umgebungs-Befund endet dem Lauf vor den Gates — Bindung und Kanten-Index: [`harness/README.md`](harness/README.md) §Sensors) → `baseline-verify` → `docs-check-host` (links/anchors/ids/codepaths, fetched Binary) → `lint`/`build`/`test` (Go am Host, Command-Guard bats) → `shell-lint` → `ci-lint` → weiter bis `span-check`. Das Architektur-Gate a-check ist **nicht** dabei: es wird in Zielrepos mit geschichtetem Grundgerüst **emittiert**, hier hätte es einen leeren Prüfbereich.
+- **Absicherung + Herkunft:** `make gates` läuft docker-los am Host ([`ADR-0109`](docs/plan/adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)); CI fährt ihn pro Push auf einem frischen Klon. Regelwerk und Vorlagen liegen committet vendored unter `.harness/baseline/` (netzunabhängig, reproduzierbar). Der Voll-E2E-Smoke `make full-smoke` bootstrappt real in ein Wegwerf-Repo und lässt dort `make gates` grün laufen.
 
 ## Lizenz
 

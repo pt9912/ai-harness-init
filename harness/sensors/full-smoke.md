@@ -7,8 +7,12 @@ Bootstrap in ein tmp-Repo, dann dort der **zusammengeführte** `make gates`
 Go-Gates in einem Lauf) — der Happy-Path-Beweis
 ([`LH-FA-01`](../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)), dass ein frisch
 gebootstrapptes Repo out-of-the-box grün fährt (die Nutzer-Sicht, die
-[`make smoke`](smoke.md) mit seinen getrennten Schritten nicht nimmt). Host-Docker + ggf.
-Netz-Pull → nicht in `make gates`; gehört an DoD-Verify/CI/Wellen-Closure.
+[`make smoke`](smoke.md) mit seinen getrennten Schritten nicht nimmt). Eingeht docker-los
+(Träger aus `make host-bin`, d-check-Carrier, [`ADR-0109`](../../docs/plan/adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md));
+die daemon-gebundenen Rest-Stufen (d-check.mk-Modul-Läufe doc-commits/doc-immutable,
+Archiv-Leseprobe, hexslice-/hexagonal-Bootstrap, Netz-Pull ggf.) trägt
+[`slice-full-smoke-gates-echt-gruen`](../../docs/plan/planning/next/slice-full-smoke-gates-echt-gruen.md)
+— nicht in `make gates`; gehört an DoD-Verify/CI/Wellen-Closure.
 
 **Host.** Host dieses Laufs ist Linux; macOS ist dafür nicht getragen, Beleg-Ort ist CI auf frischem
 Klon (`AGENTS.md` §3.9). `make full-smoke-host` und GNU-`sed` vorn im `PATH` sind Hilfen ohne

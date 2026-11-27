@@ -39,12 +39,12 @@ Entwicklerinnen, Entwickler und Teams, die ein neues Projekt mit dem AI-Harness-
 
 Auf dem Rechner, der `ai-harness-init` ausführt, brauchen Sie:
 
-* **Docker** — läuft und ist bedienbar (das Werkzeug ruft während des Aufsetzens Docker auf).
 * **git** — für das Projekt-Repository.
-* **Netzwerk-Zugang** — **einmalig** beim ersten Aufruf. `ai-harness-init` lädt das Regelwerk vom festgelegten Kurs-Stand. Danach ist Ihr Repository netzunabhängig.
 * **GNU `make`** — um das aufgesetzte Repository anschließend zu prüfen.
+* **Docker oder das d-check-Programm** — das Werkzeug ruft die Doku-Prüfung auf dem Standard-Weg im Container auf; ohne Docker genügt eine d-check-Programmdatei am Host (`DCHECK_CARRIER`, siehe Fehlerbehebung unten). Docker ist damit der Weg, keine Pflicht.
+* **Netzwerk-Zugang** — **einmalig** beim ersten Aufruf. `ai-harness-init` lädt das Regelwerk vom festgelegten Kurs-Stand. Danach ist Ihr Repository netzunabhängig.
 
-Eine lokale Installation der Zielsprache (Go-Toolchain, C++-Toolchain, JDK, Gradle, Python-Interpreter, .NET-SDK) ist **nicht** nötig — alles läuft über Docker.
+Für die Gates im aufgesetzten Go-Repository brauchen Sie danach die Host-Werkzeuge (Go-Toolchain und golangci-lint) — `environment-check` prüft sie gegen das Inventar und meldet ein Fehlen als Umgebungs-Befund; die gepinnten Bild-Wege (`lint-image`, `build-image`, `test-image`) stehen daneben als opt-in Weg. Für die übrigen Sprachen bleibt der Bild-Weg der Träger der Prüf-Stufen.
 
 ---
 
@@ -52,8 +52,8 @@ Eine lokale Installation der Zielsprache (Go-Toolchain, C++-Toolchain, JDK, Grad
 
 ### Systemanforderungen
 
-* Ein Betriebssystem mit Docker — Linux, macOS oder Windows (für alle drei gibt es fertige Programme; was auf welcher Plattform geprüft wird, steht im Kasten unten).
-* `git` und GNU `make` auf dem Pfad.
+* Ein Betriebssystem — Linux, macOS oder Windows (was auf welcher Plattform geprüft wird, steht im Kasten unten); auf dem Gates-Weg des Ziels sind es die Host-Werkzeuge gegen das Inventar, nicht ein Docker-Daemon.
+* `git` und GNU `make` auf dem Pfad; Docker nur für den Standard-Weg der Doku-Prüfung im Werkzeug oder die opt-in Bild-Wege.
 * Beim ersten Aufruf: Internet-Zugang.
 
 > **Was wo geprüft wird — damit Sie wissen, worauf Sie sich stützen.** Zwei verschiedene Prüfungen,
@@ -127,7 +127,7 @@ Trägt ein Programm keine Fassung — etwa ein Bau ohne Release-Injektion —, m
 
 #### Weg B — aus dem Quellcode bauen
 
-Sie bauen das Programm einmalig selbst — das geschieht komplett in Docker, Sie brauchen dafür keine Go-Installation.
+Sie bauen das Programm einmalig selbst — `make build` kompiliert am Host (Go-Toolchain nötig); der Baustein im gepinnten Bild (`make artifact`) ist der opt-in Weg.
 
 **Vorgehen**
 
@@ -141,7 +141,9 @@ Sie bauen das Programm einmalig selbst — das geschieht komplett in Docker, Sie
 2. Bauen Sie das Programm und legen Sie es in einen Ordner Ihrer Wahl (im Beispiel den Ordner **bin**):
 
    ```bash
-   make artifact DEST=./bin
+   make build
+   mkdir -p ./bin && cp .harness/state/bin/ai-harness-init.build ./bin/ai-harness-init
+   # opt-in Bild-Weg: make artifact DEST=./bin
    ```
 
 3. Prüfen Sie, dass es läuft:
@@ -154,7 +156,7 @@ Sie bauen das Programm einmalig selbst — das geschieht komplett in Docker, Sie
 
 Im Ordner **bin** liegt das ausführbare Programm `ai-harness-init`. Kopieren Sie es bei Bedarf an eine Stelle auf Ihrem Pfad (zum Beispiel nach `~/.local/bin`), damit Sie es überall unter dem kurzen Namen aufrufen können.
 
-> **Hinweis:** Weg B baut den Stand, den Sie geklont haben (Schritt 1 holt den aktuellen Entwicklungsstand, nicht die veröffentlichte Version) — die Angaben hier beziehen sich darauf. `make artifact DEST=./bin` verlangt die Angabe `DEST`. Ohne sie bricht der Befehl mit einer klaren Meldung ab. Den Zielordner müssen Sie **nicht** vorher anlegen — er wird erstellt, falls er fehlt.
+> **Hinweis:** Weg B baut den Stand, den Sie geklont haben (Schritt 1 holt den aktuellen Entwicklungsstand, nicht die veröffentlichte Version) — die Angaben hier beziehen sich darauf. `make build` legt das Binary am Pfad `.harness/state/bin/ai-harness-init.build` ab; der opt-in Bild-Weg `make artifact DEST=./bin` verlangt die Angabe `DEST` und bricht ohne sie mit einer klaren Meldung ab. Den Zielordner müssen Sie **nicht** vorher anlegen — er wird erstellt, falls er fehlt.
 
 > **Hinweis:** Dieser Bau trägt **keine** Fassung: `ai-harness-init --version` meldet `ai-harness-init: keine Fassung injiziert — dieser Bau traegt keinen geschnittenen Tag; die Fassung kommt nur mit einem Release-Bau.` und bricht mit **Exit 2** ab. Die Fassungs-Kennzeichnung gehört zum Release-Bau (Weg A und Weg C) — am Quell-Bau ist der Fehlt-Fall der dokumentierte Zustand.
 
@@ -218,7 +220,7 @@ Dieser Abschnitt beschreibt die häufigsten Aufgaben Schritt für Schritt.
 
 ### Ein neues Projekt aufsetzen
 
-**Voraussetzung:** Ein leeres oder frisch mit `git init` angelegtes Verzeichnis, Docker läuft, Netzwerk ist erreichbar.
+**Voraussetzung:** Ein leeres oder frisch mit `git init` angelegtes Verzeichnis, Netzwerk ist erreichbar — und für die Doku-Prüfung Docker (Standard-Weg) oder eine d-check-Programmdatei am Host (`DCHECK_CARRIER`).
 
 **Vorgehen**
 
@@ -329,7 +331,7 @@ Die erste sagt: der **Kern** sieht keinen Adapter — er kennt nur seine Ports. 
 
 ### Das aufgesetzte Repository prüfen
 
-**Voraussetzung:** Der Aufsetz-Lauf war erfolgreich; Docker läuft.
+**Voraussetzung:** Der Aufsetz-Lauf war erfolgreich; die Host-Werkzeuge tragen das Inventar-Soll (der erste Check meldet ein Fehlen als Umgebungs-Befund) und das d-check-Programm liegt an seiner Ablage — `make dcheck-fetch` holt es einmalig (Netz an diesem Aufruf).
 
 **Vorgehen**
 
@@ -434,7 +436,7 @@ SKEL_GO_VERSION=1.26.4 ai-harness-init --lang go --name "Mein Projekt" <zielordn
 
 ### Betriebs-Operationen
 
-**Voraussetzung:** Ein aufgesetztes Repository. Docker braucht nur `traeger-fetch` — der Transport läuft im gepinnten Bild. Von den vier übrigen rufen `archive-welle` und `span-report` den bereits abgelegten **Träger** (die `ai-harness-init`-Programmdatei im gitignorierten Zustands-Bereich `.harness/state/bin/`) direkt auf; `span-clean` braucht weder den Träger noch Docker, es räumt nur den lokalen Erfassungs-Bestand weg; `slice-mv` braucht weder den Träger noch Docker, es arbeitet mit `git` auf dem versionierten Baum.
+**Voraussetzung:** Ein aufgesetztes Repository. Docker braucht keiner der fünf — `traeger-fetch` läuft docker-los am Host (Host-curl + HTTPS + Prüfsumme, Netz an diesem Aufruf); der Transport im gepinnten Bild ist der opt-in Weg (`traeger-fetch-image`). Von den vier übrigen rufen `archive-welle` und `span-report` den bereits abgelegten **Träger** (die `ai-harness-init`-Programmdatei im gitignorierten Zustands-Bereich `.harness/state/bin/`) direkt auf; `span-clean` braucht weder den Träger noch Docker, es räumt nur den lokalen Erfassungs-Bestand weg; `slice-mv` braucht weder den Träger noch Docker, es arbeitet mit `git` auf dem versionierten Baum.
 
 Alle fünf sind **keine Gates**: `make gates` fährt keine von ihnen mit. `archive-welle` und `span-report` melden fehlenden Träger, statt rot zu färben (siehe [Ein bereits aufgesetztes Repository geklont](#das-aufgesetzte-repository-prüfen)); `traeger-fetch` legt ihn bei Bedarf erst ab; `span-clean` prüft den Träger gar nicht — sein Rezept löscht bedingungslos.
 
@@ -893,7 +895,7 @@ ai-harness-init add-lang go apps/api
 `go`, `cpp` (C++), `kotlin`, `java`, `python` und `csharp`. Die Liste zeigt auch die Fehlermeldung zu einer unbekannten Sprache. Ab `v0.10.0` liefert der Download alle sechs; `v0.9.0` kennt nur `go`, `cpp` und `kotlin`.
 
 **Muss ich Go installieren?**
-Nein. Sowohl das Bauen des Werkzeugs als auch die Prüfungen im aufgesetzten Repository laufen über Docker.
+Für das fertige Programm von den Releases: Nein. Wer aus dem Quellcode baut, baut am Host (`make build`, Go-Toolchain nötig) oder im gepinnten Bild (opt-in). Die Prüfungen im aufgesetzten Go-Repository tragen die Host-Werkzeuge (Go-Toolchain, golangci-lint — `environment-check` prüft sie); die gepinnten Bild-Wege stehen daneben als opt-in.
 
 **Braucht das Werkzeug dauerhaft Internet?**
 Nein, nur **einmalig** beim ersten Aufsetzen (Regelwerk-Download). Danach arbeitet Ihr Repository netzunabhängig.
@@ -949,9 +951,9 @@ Ihre gefüllten Dateien (Dokumente, `README.md`, Ihr Quellcode) **nicht** — vo
 
 * Im Quellcode-Repository liegt **kein** eingecheckt vorliegendes Binary und kein `run`-Ziel. Fertige Programme gibt es **an den Releases**; wer aus dem Quellcode baut, arbeitet gegen den Repo-Stand und hat dann keine Versions-Kennzeichnung.
 * Der erste Lauf benötigt Netzwerk; danach ist das Repository netzunabhängig.
-* `ai-harness-init` und die Prüfungen im Zielrepository benötigen Docker.
+* `ai-harness-init` ruft die Doku-Prüfung auf dem Standard-Weg im Container auf (mit `DCHECK_CARRIER` stattdessen am Host); die Gates im Zielrepository laufen docker-los am Host, die gepinnten Bild-Wege sind der opt-in Weg.
 * Voreingestellte Versionen (Kurs-Stand, Go-Version, Prüf-Image) sind festgelegt und reproduzierbar; Abweichungen nur über die Umgebungsvariablen aus [Konfiguration](#5-konfiguration).
-* **Sicherheit:** Das Regelwerk wird beim Download gegen eine feste Prüfsumme verifiziert (`BASELINE_SHA256`); das aufgesetzte Repository fängt riskante Befehle über den Command-Guard ab und lässt die Prüfungen nur in Docker laufen.
+* **Sicherheit:** Das Regelwerk wird beim Download gegen eine feste Prüfsumme verifiziert (`BASELINE_SHA256`); das aufgesetzte Repository fängt riskante Befehle über den Command-Guard ab, und die Prüfungen laufen über `make` — docker-los am Host (Pflicht-Weg) oder im opt-in Bild-Weg.
 
 ### Support und Kontakt
 

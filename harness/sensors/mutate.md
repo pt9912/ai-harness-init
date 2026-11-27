@@ -73,7 +73,7 @@ beendet, mit 2.
 - `mutate: ABBRUCH — unbekannter '# verify: …'` — ein Fall nennt eine Prüfart ohne bekanntes
   Fehlschlag-Muster → den Fall berichtigen.
 - `mutate: ABBRUCH — Umgebungs-Befund: die Werkzeuge dieses Hosts tragen ihr Inventar-Soll nicht; kein Fall laeuft.` — der Inventar-Check des Hosts fiel §Umgebungs-Vorbedingung; seine `umgebung: <werkzeug> · Soll: … · Ist: …`-Zeilen stehen über der Meldung.
-- `mutate: ABBRUCH — Umgebungs-Befund: docker · Soll: erreichbarer Docker-Daemon · Ist: …` — der Fall-Satz faßt einen der zwei noch daemon-gebundenen Modi (§Umgebungs-Vorbedingung).
+- `mutate: ABBRUCH — Umgebungs-Befund: docker · Soll: erreichbarer Docker-Daemon · Ist: …` — der Fall-Satz faßt einen der daemon-gebundenen Modi (§Umgebungs-Vorbedingung).
 - `mutate: ABBRUCH — WORK …` — die Isolations-Wurzel ist leer, liegt im Repo oder ist kein
   Verzeichnis; ohne Isolation wird nicht mutiert.
 
@@ -108,19 +108,23 @@ als Umgebungs-Fehler. Gehalten wird das von `test/mutate-driver.bats` (Blöcke
 „Umgebungs-Vorbedingung (host-Rezepte)“); der Abbruch-Zug wird dort am **realen** Inventar-Check
 über einer Fixture-Inventar-Zeile gemessen.
 
-Zweite Vorbedingung derselben Klasse, modus-gebunden: faßt der Fall-Satz einen `# verify: smoke`
-oder `full-smoke`, prüft der Treiber den Docker-Daemon und bricht vor der Isolationskopie mit
+Zweite Vorbedingung derselben Klasse, modus-gebunden: faßt der Fall-Satz einen `# verify: full-smoke`,
+prüft der Treiber den Docker-Daemon und bricht vor der Isolationskopie mit
 `mutate: ABBRUCH — Umgebungs-Befund: docker · Soll: erreichbarer Docker-Daemon · Ist: …`
-(Exit 4) ab — bis [`slice-smoke-und-full-smoke-ohne-docker`](../../docs/plan/planning/done/slice-smoke-und-full-smoke-ohne-docker.md)
-bootstrappen diese zwei Modi tmp-Repos mit Docker-Gates, und ihre Werkzeug-Abwesenheit ist so
-benannt, nicht an einem Fall-Ausgang lesbar. Danach trägt keiner dieser Modi mehr einen
-Docker-Zug im Rezept, und die Zweite fällt weg.
+(Exit 4) ab — `full-smoke` trägt seine daemon-gebundenen Rest-Stufen (d-check.mk-Modul-Läufe
+doc-commits/doc-immutable ohne Host-Carrier-Fassung, Docker-Builds der nicht-Go-Gates); die
+Werkzeug-Abwesenheit ist so benannt, nicht an einem Fall-Ausgang lesbar. `smoke` ist aus
+dieser Prüfung raus: sein Rezept fährt host-native (Träger aus `make host-bin`, print-mk und
+docs-check am d-check-Carrier) — der Abbruch, den sein Rezept selbst am Carrier-losen Host
+macht, liest sich dort als `smoke:`-Umgebungs-Befund, nicht als Fall-Ausgang.
 
 **Spur-Grenze:** die Seriell-Klassifikation (`plan_self_contained`) verlangt, dass jede Zeile
-des Trockenplans ein `docker build`/`docker run` trägt; über den host-Rezepten trägt das heute
-kein Modus, jeder Fall läuft in der seriellen Spur (Worker 1), und `MUTATE_JOBS` verteilt keinen
-Fall — benannte Grenze bis ein Treiber-Schnitt die Spur-Klassifikation an die host-Rezept-Pläne
-nachzieht, gemessen an den Trockenplänen von `test-go`, `test-bats`, `ci-lint` und `full-smoke`.
+des Trockenplans aus `docker build`/`docker run` besteht; das Kriterium ist die Delegation
+(fremde Skripte sind nicht gelesenes Urteil) — kein Modus trägt heute einen solche Plan
+(`full-smoke` delegiert an sein Rezept), jeder Fall läuft in der seriellen Spur (Worker 1), und
+`MUTATE_JOBS` verteilt keinen Fall — benannte Grenze bis ein Treiber-Schnitt die
+Spur-Klassifikation an die host-Rezept-Pläne nachzieht, gemessen an den Trockenplänen von
+`test-go`, `test-bats`, `ci-lint` und `full-smoke`.
 
 ## Teillauf
 
@@ -307,7 +311,8 @@ dem Fall-Bestand. Nicht gemessen ist die Laufzeit auf dem CI-Runner und bei kalt
   `mktemp` und `sha256sum` des Hosts. Die Fall-Skripte nutzen `sed -i` ohne Suffix-Argument
   (`grep -l 'sed -i' test/mutations/*.sh | wc -l`) und `\t` im Muster
   (`grep -lF '\t' test/mutations/*.sh | wc -l`), der Treiber `mktemp -d -p`. Das sind GNU-Formen;
-  `AGENTS.md` §3.9 nennt als Host-Bedarf `git`, `docker` und GNU `make`, nicht GNU `sed`. Auf
+  `AGENTS.md` §3.9 nennt als Host-Bedarf `git`, GNU `make` und die Inventar-Werkzeuge
+  (`docker` ist Werkzeug-Weg, keine Gate-Pflicht), nicht GNU `sed`. Auf
   macOS mit BSD-`sed` scheitern die Fall-Skripte (`sed: 1: "…": command i expects \ followed by
   text`; `make mutate-greift`: `7 greifen, 646 Befund(e)`), mit Homebrew `gnu-sed` vor dem BSD-`sed`
   im `PATH` greifen alle (`653 greifen, 0 Befund(e)`). Für `mktemp` und `sha256sum` auf einem Host
