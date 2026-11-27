@@ -6,7 +6,7 @@
 
 **Autor:** pt9912
 
-**Bezug:** [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (docker ist Weg, keine Pflicht — vertraglich durch CR 0.28.0/0.28.1, [`§7 Historie`](../../../spec/lastenheft.md#7-historie)), [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (Pin-Disziplin je Weg), [`LH-QA-04`](../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) (je Gate-Weg die dortige Werkzeug-Form), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) (kein Gate ohne Träger), [ADR-0003](0003-go-native-binaries.md) (Tool-Build bleibt docker-getrieben), [ADR-0004](0004-durchsetzungs-emission.md) (durchgesetzte Emission bleibt)
+**Bezug:** [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (docker ist Weg, keine Pflicht — vertraglich durch CR 0.28.0/0.28.1, [`§7 Historie`](../../../spec/lastenheft.md#7-historie)), [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (Pin-Disziplin je Weg), [`LH-QA-04`](../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) (je Gate-Weg die dortige Werkzeug-Form), [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) (kein Gate ohne Träger), [ADR-0003](0003-go-native-binaries.md) (Tool-Build bleibt docker-getrieben), [ADR-0004](0004-durchsetzung-emission.md) (durchgesetzte Emission bleibt)
 
 **Schärft:** [architecture.md §3 Externe Abhängigkeiten](../../../spec/architecture.md) — `ARC-012` (docker) wird von einer unbedingten Abhängigkeit zu einer wegwahl-abhängigen: der Gate-Anteil der Zeile läuft am Host ohne Docker-Daemon, der Tool-Build-Anteil bleibt im gepinnten Image. Aufwärts-Deklaration der Änderungskopplung: wer diese ADR ändert, zieht `ARC-012` und [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)/[`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) nach.
 
@@ -179,8 +179,8 @@ eine Ebene tiefer). Der rot-sehende Nachweis ist Übergabe, nicht Bestand.
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
-| 2026-11-27 | Proposed | [slice-adr-gates-laeufen-host-native](../planning/done/slice-adr-gates-laeufen-host-native.md) |
-| 2026-11-27 | Accepted — der Auftraggeber-Beschluss trägt die Entscheidung (CR 0.28.0/0.28.1 des Lastenhefts); keine Proposed-Review-Runde | [slice-adr-gates-laeufen-host-native](../planning/done/slice-adr-gates-laeufen-host-native.md) |
+| 2026-11-27 | Proposed | [slice-adr-gates-laeufen-host-native](../../plan/planning/in-progress/slice-adr-gates-laeufen-host-native.md) |
+| 2026-11-27 | Accepted — der Auftraggeber-Beschluss trägt die Entscheidung (CR 0.28.0/0.28.1 des Lastenhefts); keine Proposed-Review-Runde | [slice-adr-gates-laeufen-host-native](../../plan/planning/in-progress/slice-adr-gates-laeufen-host-native.md) |
 
 Nach `Accepted` wird diese Datei **nicht mehr inhaltlich überschrieben**.
 Spätere Korrekturen oder Schärfungen entstehen als neue ADR mit

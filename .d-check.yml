@@ -466,6 +466,23 @@ ignore-refs:
   # Deckung: 5
   - in: "docs/plan/adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md"
     refs: ["docs/plan/adr/0102-mutations-ci-ergebnisse-tragen-als-eingecheckte-beleg-datei.md"]
+  # Zwölftes und dreizehntes Paar, eine Entscheidung zu zweit (ADR-0110): die ADR-0109
+  # traegt am Accept-Stand 525749b4 die zwei toten Adressen — den falsch geschriebenen
+  # Ziel-Name am ADR-0004-Verweis (Zeile 9, tot seit dem Schreiben, Reparatur bis zum
+  # Accept-Stand legal, danach unbehebbar) und die zwei Geschichte-Zeilen auf den Slice
+  # slice-adr-gates-laeufen-host-native VOR dessen Closure-Move (Zeilen 182-183, tot
+  # durch den vorgeschriebenen git mv nach Modul 5). Die Quelldatei ist nach AGENTS.md 3.4
+  # eingefroren — der Befund ist in ihr nicht behebbar. Warum daraus eine Ausnahme folgt
+  # und keine Reparatur, steht in ADR-0110.
+  # GRENZE, keine Regel: EXTENSIONAL GESCHLOSSEN auf genau diese zwei Paare (ADR-0110).
+  # Jeder weitere Eintrag ist eine neue Senkung nach AGENTS.md 3.5 und braucht seine
+  # eigene ADR — auch dann, wenn er dieselbe Bedingung erfuellt.
+  # Deckung: 1
+  - in: "docs/plan/adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md"
+    refs: ["docs/plan/adr/0004-durchsetzung-emission.md"]
+  # Deckung: 2
+  - in: "docs/plan/adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md"
+    refs: ["docs/plan/planning/in-progress/slice-adr-gates-laeufen-host-native.md"]
 # Kennungen sind linkpflichtig (auch in Inline-Code, link-policy: always) —
 # "klickbar zur Quelle" als gemessenes Property. Literal-schwere Artefakte
 # (Review-Reports, CHANGELOG) ausgenommen.
