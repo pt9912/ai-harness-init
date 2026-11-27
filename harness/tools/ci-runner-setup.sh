@@ -18,8 +18,11 @@
 # nicht zum Inventar, bricht der Lauf an environment-check (Umgebungs-Befund).
 #
 # WAS ES TUT. Ein exakt-Werkzeug (go, golangci-lint), dessen PATH-Fassung nicht das
-# Soll trägt, wird nach .harness-ci/bin installiert; ein Anwesenheits-Werkzeug
-# (bats, shellcheck, actionlint), das am PATH fehlt, läuft über apt (Runner-Sudo).
+# Soll trägt, wird nach .harness-ci/bin installiert; Anwesenheits-Werkzeuge, die am
+# PATH fehlen, tragen ihre Besorgung je Werkzeug: bats/shellcheck über apt
+# (Runner-Sudo), actionlint über brew — das Ubuntu-Repo trägt das Paket nicht, der
+# homebrew-core schon, und die gepinnten GitHub-Runner tragen Linuxbrew
+# voreinstalliert am PATH.
 # Der d-check-Carrier ist hier nicht: der Transport trägt `make dcheck-fetch`
 # (dcheck-fetch.sh — OCI-Digest-Kette, abgelegter Carrier-Pfad der Inventar-Zeile).
 # Idempotent: ein Lauf meldet je Werkzeug Soll · Ist · Entscheidung.
@@ -31,6 +34,13 @@
 # fehlender Installation (er stellt fest, er erlegt nicht an). Der Job-Step hängt das
 # PREFIX an $GITHUB_PATH, weil der PATH-Umzug zwischen zwei Steps nicht durch eine
 # Shell-Variable reist.
+#
+# GRENZE brew. Der brew-Zug trägt die gepinnten GitHub-Runner (Linuxbrew
+# voreinstalliert); ein self-hosted Runner ohne brew bricht an der Aufform (Exit 2,
+# fail-closed — die Anwesenheit von actionlint ist Vorab-Form seiner Gates). Die
+# actionlint-Version trägt der homebrew-core-Stand der Besorgung; eine Abweichung
+# vom gepinnten Image-Digest (ACTIONLINT_IMAGE, opt-in Weg) ist Umgebungs-Befund,
+# `make environment-check` belegt die Anwesenheit.
 
 set -euo pipefail
 
@@ -138,11 +148,11 @@ else
 	fi
 fi
 
-# Anwesenheit: bats, shellcheck, actionlint — fehlt eins am PATH, kommt es über
-# apt (Runner-Sudo). Die Version trägt keine Pin-Stelle (Prüfform Anwesenheit,
+# Anwesenheit: bats, shellcheck — fehlt eins am PATH, kommt es über apt
+# (Runner-Sudo). Die Version trägt keine Pin-Stelle (Prüfform Anwesenheit,
 # Inventar-Zeile); `make environment-check` belegt die Anwesenheit.
 fehlen=()
-for werkzeug in bats shellcheck actionlint; do
+for werkzeug in bats shellcheck; do
 	if command -v "$werkzeug" >/dev/null 2>&1; then
 		meldung "$werkzeug" "anwesend" "anwesend" "am PATH — OK"
 	elif [ -n "$PLAN_MODE" ]; then
@@ -161,4 +171,28 @@ if [ "${#fehlen[@]}" -gt 0 ]; then
 	for werkzeug in "${fehlen[@]}"; do
 		meldung "$werkzeug" "anwesend" "fehlte" "über apt installiert"
 	done
+fi
+
+# actionlint: brew-Zug statt apt — das Ubuntu-Repo trägt das Paket nicht (apt bricht
+# an der Zeile), der homebrew-core schon; die Form ist die Host-erprobte Zusage aus
+# .viper.sh (brew install ... actionlint, ohne Flag-Form apt-parallel). Der brew-Pfad
+# kommt am Runner am PATH (Linuxbrew voreinstalliert); trägt der PATH nicht, tritt
+# der Pflicht-Lager-Pfad ein. Der brew-bin-Verzeichniszug ist am Runner-PATH
+# voreingestellt — $GITHUB_PATH braucht keinen Eintrag. Version je homebrew-core-Stand
+# (Prüfform bleibt Anwesenheit, siehe Grenze brew oben); brew fehlt → Exit 2,
+# fail-closed.
+brewform="$(command -v brew || true)"
+if [ -z "$brewform" ] && [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
+	brewform=/home/linuxbrew/.linuxbrew/bin/brew
+fi
+if command -v actionlint >/dev/null 2>&1; then
+	meldung actionlint anwesend anwesend "am PATH — OK"
+elif [ -n "$PLAN_MODE" ]; then
+	meldung actionlint anwesend "fehlt am PATH" "Install ausgesetzt (PLAN)"
+elif [ -n "$brewform" ]; then
+	"$brewform" install actionlint
+	meldung actionlint anwesend "fehlt am PATH" "über brew installiert"
+else
+	echo "ci-runner-setup: actionlint fehlt am PATH und brew trägt nicht am Runner" >&2
+	exit 2
 fi
