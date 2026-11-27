@@ -76,31 +76,31 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst — die
 Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 
-- [ ] **Liefer-Punkt 1:** die Wächter-Setups restaurieren je Setup die
+[x] **Liefer-Punkt 1:** die Wächter-Setups restaurieren je Setup die
       Umgebung, die sie brauchen (PATH/Shims, `BATS_ROOT`/`BATS_LIBDIR`,
       `LC_ALL` am sort/comm- und awk-Benutzungsort), messbar an
       `test/traeger-fetch.bats` (Ziel-Modus-Fälle) und
       `test/targets-modul-wiring.bats` (Fall 6).
-- [ ] **Liefer-Punkt 2:** dieselben Wächter-Dateien liefern einzeln und im
+[x] **Liefer-Punkt 2:** dieselben Wächter-Dateien liefern einzeln und im
       vollen `test/`-Sweep dieselbe Rot-Menge (gemessen je Wächter-Datei
       mindestens einmal beider Formen, dokumentiert im Verifikations-Bericht).
-- [ ] **Liefer-Punkt 3:** die Rezept-Wächter tragen an beiden Wegen
+[x] **Liefer-Punkt 3:** die Rezept-Wächter tragen an beiden Wegen
       (`make test-bats` und opt-in `make test-bats-image`) denselben
       Exit-Vertrag — oder die Grenze steht in der Sensors-Zelle
       (`harness/sensors/`) und die Prosa des `docs-check`-Sensor-Texts nennt
       den gefetchten Carrier-Weg (Review-Befund F-3).
 - [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+[x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist
+[x] Doku-Update, falls ein öffentlicher Vertrag berührt ist
       (`harness/README.md` §Sensors).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben —
+[x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+[x] Beobachtungs-Register (`../observations/`) fortgeschrieben —
       weiteres Vorkommen in `evidence/`; **kein Zaehler wird gesetzt**, er
       folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine
       Antwort und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
+[x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
       Repo **mit** Wellen-Betrieb von der nächsten Welle-Closure.
@@ -120,11 +120,13 @@ Aussagen-Berührung steht hier gar nicht.
 | `harness/sensors/docs-check.md` | update | Prosa trägt den gefetchten Carrier-Weg (F-3) |
 
 **Ist-Stand gegen die Tabelle (Implementer, 2026-11-27):** die Zeilen
-`test/rezept-host.bats`/`test/dockerfile-teststufe.bats` (Weg-Agnostik der Rezept-Wächter,
-Review-Befund F-2) und `harness/sensors/docs-check.md` (Carrier-Prosa, F-3) sowie die
+`test/rezept-host.bats`/`test/dockerfile-teststufe.bats` (Rezept-Grep-Form, Weg-Agnostik
+der Rezept-Wächter, Review-Befund F-2 des Vorgänger-Reviews) trägt der Vorgänger-Commit
+`be63da5d`; `harness/sensors/docs-check.md` (Carrier-Prosa, F-3) und die
 `BATS_ROOT`/`BATS_LIBDIR`-Restauration am Host-Weg in `harness/tools/bats-lint.sh` (F-1)
-trägt der Vorgänger-Commit `be63da5d` — der Bestand erfüllt diese drei Zeilen vor diesem
-Lauf. Dieser Lauf berührt `test/traeger-fetch.bats` und `test/targets-modul-wiring.bats`
+trägt `9c788a9c` (`git log -S BATS_ROOT -- harness/tools/bats-lint.sh`,
+`git blame harness/sensors/docs-check.md`) — der Bestand erfüllt diese drei Zeilen vor
+diesem Lauf. Dieser Lauf berührt `test/traeger-fetch.bats` und `test/targets-modul-wiring.bats`
 (Liefer-Punkt 1) und ergänzt die Grenz-Zeile im Kopf von `test/dockerfile-teststufe.bats`
 (die Grenz-Form des Kopfes von `test/rezept-host.bats` steht schon). **Zweite Instanz derselben
 Klasse, gemessen im vollen Sweep** (`make test-bats BATS_TARGET=test/`, 6 rot):
@@ -195,15 +197,20 @@ dasteht.
 - **Die Ursache liegt nicht im Setup, sondern im Läufer-Werkzeug selbst**
   (bats-Version am Host; Varianten der Host-Werkzeuge — der Bestand
   [`BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer`](../observations/BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer/state.md)
-  steht mit 7 Vorgängen im Register) — **Ausgang:** bei Closure messen; liegt
-  sie am Läufer, geht der Slice zurück in `open/` und der Carveout-Zweig
-  kommt an die ADR-Fassung.
+  steht mit 7 Vorgängen im Register) — **Ausgang:** entfallen — die Bruchprobe
+  an der realen Route isoliert die geerbten Pin-Mengen als Auslöser, nicht den
+  Läufer: Setups ihres `unset`-Entkleids über das Rezept mit vollem
+  `Makefile:61`-Export liefern die Plan-§3-Rot-Mengen ({3, 5, 7, 9} ·
+  {603, 605, 606, 607, 608}), die restaurierten Setups liefern 0 rot
+  (Verifikations-Bericht L-7); kein Carveout.
 - **Die Restaurierung am Wächter-Setup dreht am Symptom, am Host-Profile
   vorbei** (der Sweep-Defekt könnte an der Reihenfolge des `bats`-Dateilaufs
-  selbst hängen, nicht an Exporten früherer Setups) — **Ausgang:** bei
-  Closure messen (Fall-Diagnostik je früherem Setup isolieren); trägt die
-  Reihenfolge des Läufers, steht der Grenz-Fund im Verifikations-Bericht
-  und in der Sensors-Zelle.
+  selbst hängen, nicht an Exporten früherer Setups) — **Ausgang:** entfallen —
+  der volle Sweep liefert an dem Stand mit restaurierten Setups exakt die
+  Vorlauf-Rot (Fall 273, Vorbestand) und keinen Fall aus dem Diff, und die
+  Einzelläufe je Wächter liefern dieselbe Rot-Menge wie der Sweep
+  (Verifikations-Bericht L-1 … L-6); die Grenze (docker trägt den Image-Weg
+  nicht) steht im Verifikations-Bericht.
 
 ## 7. Closure-Notiz
 
@@ -219,7 +226,63 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-- *(wird bei dessen Closure gefüllt)*
+**Closure-Notiz (Rolle Planner, 2026-11-27)** — Quellen: eigener Lauf, die
+offenen Punkte des Implementer-/Verifier-Berichts
+([`docs/reviews/2026-11-27-slice-waechter-umgebungs-robustheit-verify.md`](../../reviews/2026-11-27-slice-waechter-umgebungs-robustheit-verify.md))
+und die Review-Klassen des Reports
+([`docs/reviews/2026-11-27-slice-waechter-umgebungs-robustheit.md`](../../reviews/2026-11-27-slice-waechter-umgebungs-robustheit.md)).
+
+- **Was hat funktioniert:** der Setup-Ausmerz trägt — nach dem Fix liefern
+  Einzellauf und voller Sweep dieselbe Rot-Menge je Wächter (Verifikations-
+  Bericht L-1 … L-6; LP 1 und 2), und die Bruchproben an der realen Route
+  bestätigen die geerbten Pin-Mengen als Auslöser (L-7), so dass beide
+  §6-Risiken ohne Carveout entfallen.
+- **Was ging anders als geplant:** (1) der DoD-Posten `make gates` grün ist
+  an dieser Closure **offen** — rot an fünf **vorbestehenden** Klassen, keine
+  aus dem Slice-Diff (am Claim-Commit `e3c4cfd2` bestandsidentisch belegt,
+  Verifikations-Bericht L-8 … L-11): docs-check 102 Befunde (Planungs-Baum/
+  Index-Nachzug), bats Fall 273 ignore-refs 11/10 (Präzedenz-Nachzug über die
+  `9321ffcc`-Route), shell-lint SC2254 in `harness/tools/gates-keys.sh` ×4 +
+  SC2016 in `test/mutations/785`, Mutations-Anker 784/785 veraltet, `make
+  test-go` zwei Klassen (Stop-Hook-KommitBindung in `internal/emit`;
+  `TestGoProfile_PinsMatchRepo` GO_VERSION 1.27.3 generiert vs 1.27.4 im
+  Repo-Dockerfile). Die Nachzüge tragen die laufenden Slices der Welle
+  ([`slice-emittierte-gates-host-pfad`](../next/slice-emittierte-gates-host-pfad.md)
+  und die in-progress-Slices `slice-gates-pruefgegenstand-stempel-v1`,
+  `slice-stamp-records-konsum-v1`); kein Carveout-Artefakt — die roten Fälle
+  bleiben rot sichtbar. (2) LP 3 ist in der gelesenen Form bestätigt, mit
+  Grenze: docker trägt auf dem Host nicht, das Image-Weg-Urteil über den
+  Exit-Vertrag reist nach CI; bis dahin tragen die Grenz-Zeile im Kopf des
+  Wächters und die docs-check-Prosa. (3) LP 1 über den Plan hinaus: auch
+  `test/traeger-fetch-host.bats` trug die geerbte-Pin-Klasse — als zweite
+  Instanz in §3 nachgezogen. (4) Fall 273 bleibt Planner-Posten (Deckungs-
+  Deklaration nach dem Move nachziehen, keine Verbreiterung des Eintrags).
+- **Steering-Loop-Eintrag:** geschärfte Regel (gezählt, nicht verkörpert —
+  kein `liegt in`, mit diesem Slice wurde nichts an einen Zielort
+  verkörpert): **die Weg-Agnostik der Wächter endet an den Werkzeugen und der
+  Umgebung des Ausführungsorts** — der Wächter-Setup trägt seine eigene
+  Umgebung (Export-Erbe `TRAEGER_*`, Locale an `sort`/`comm`), statt sie aus
+  früheren Setups des Sweeps oder dem Host-Profil zu erben. Grenze der
+  Klasse (Review F-1 des Reports 2026-11-27, ungebundener Teil): die
+  Kollations-Festlegung bindet ihre Zahnstange an den vier `sort`-Stellen;
+  der `comm`-Teil der Zusage trägt keinen eigenen Mutations-Fall — ein
+  späterer Weg der `comm`-Präfixe verfälscht die Zusage nicht, öffnet aber
+  die spurious-rote Seite einer Host-Kollation. Die Kommentar-Ergänzung dieser
+  Grenze geht als Übergabe-Artefakt an den nächsten Planner-Posten der Welle;
+  sie ist hier gelesen, nicht in den Bestand geschrieben.
+- **Beobachtungs-Register (`../observations/`):**
+  [`BEO-ALL/waechter-rot-menge-schwankt-mit-umgebungs-variante`](../observations/BEO-ALL/waechter-rot-menge-schwankt-mit-umgebungs-variante/state.md)
+  — Ausgang dieses Slices, Beleg
+  [`evidence/slice-waechter-umgebungs-robustheit.md`](../observations/BEO-ALL/waechter-rot-menge-schwankt-mit-umgebungs-variante/evidence/slice-waechter-umgebungs-robustheit.md).
+  Kein weiteres Vorkommen angefallen; der Zähler steht damit bei 2×, unter
+  der Schwelle.
+- **Drei Paarungen:** Anker — der Lerneintrag oben ist gezählt, es gibt
+  keinen `liegt in` · Folge-Slices —
+  [`slice-emittierte-gates-host-pfad`](../next/slice-emittierte-gates-host-pfad.md)
+  (Emittier-Rezepte, in §1 ausgeschlossene Schicht) und der offene
+  Fall-273-Präzedenz-Nachzug (Posten der Welle, kein eigener Slice) ·
+  Register — der Eintrag oben (Zähler 2×, unter der Schwelle). Die Prüfung
+  der Paarungen trägt die schließende Welle.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
