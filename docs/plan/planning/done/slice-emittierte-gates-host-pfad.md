@@ -133,7 +133,7 @@ Closure-Notiz mit Lerneintrag geschrieben.
 - **`full-smoke` fährt die emittierte Ebene** — **Ausgang:** eingetreten —
   der reale Beleg der emittierten Gates-Ebene im gebootstrappten Ziel läuft
   über
-  [`slice-smoke-und-full-smoke-ohne-docker`](slice-smoke-und-full-smoke-ohne-docker.md);
+  [`slice-smoke-und-full-smoke-ohne-docker`](../in-progress/slice-smoke-und-full-smoke-ohne-docker.md);
   bis dahin trägt der manuelle Lauf des Verifikations-Berichts (V-5) den
   Beleg.
 - **Bootstrap-Henne-Ei des Carrier-Wegs** (Review F-6): `DCHECK_CARRIER`
@@ -213,7 +213,7 @@ Behebungszug `9bd6f440..6cabbee6`) und der F-9-Zug (`0be90f31`).
   Zähler 1. Die zwei §8-Treffer (gemischtes Root 1×, GNU-only-bats 2×)
   bleiben unter der Schwelle — in diesem Lauf nicht angefallen.
 - **Folge-Slices:**
-  [`slice-smoke-und-full-smoke-ohne-docker`](../next/slice-smoke-und-full-smoke-ohne-docker.md)
+  [`slice-smoke-und-full-smoke-ohne-docker`](../in-progress/slice-smoke-und-full-smoke-ohne-docker.md)
   (reale Beleg-Posten der emittierten Ebene, LP-2-Träger) · Mikroslice
   Carrier-Besorgung (richtet der Welle-Plan neben dem Folge-Slice ein,
   getragen vom Register-Eintrag oben).
@@ -222,7 +222,7 @@ Behebungszug `9bd6f440..6cabbee6`) und der F-9-Zug (`0be90f31`).
   Register-Eintrag oben.
 - **Drei Paarungen:** Anker — der Lerneintrag oben ist gezählt, es gibt
   keinen `liegt in` · Folge-Slices —
-  [`slice-smoke-und-full-smoke-ohne-docker`](../next/slice-smoke-und-full-smoke-ohne-docker.md)
+  [`slice-smoke-und-full-smoke-ohne-docker`](../in-progress/slice-smoke-und-full-smoke-ohne-docker.md)
   und der Register-Eintrag (weiter offen) · Register —
   [`BEO-ALL/bootstrap-braucht-den-carrier-von-aussen`](../observations/BEO-ALL/bootstrap-braucht-den-carrier-von-aussen/state.md)
   (Zähler 1). Die Prüfung der Paarungen trägt die schließende Welle.

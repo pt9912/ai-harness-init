@@ -93,7 +93,7 @@ CI läuft auf frischem Klon, nur ohne Daemon-Annahme.
 
 **Start** (`next` → `in-progress`):
 [`slice-labor-gates-host-rezepte`](../done/slice-labor-gates-host-rezepte.md),
-[`slice-smoke-und-full-smoke-ohne-docker`](slice-smoke-und-full-smoke-ohne-docker.md)
+[`slice-smoke-und-full-smoke-ohne-docker`](../in-progress/slice-smoke-und-full-smoke-ohne-docker.md)
 und [`slice-binraire-ziehen-ohne-docker`](../done/slice-binraire-ziehen-ohne-docker.md)
 liegen in `done/`.
 

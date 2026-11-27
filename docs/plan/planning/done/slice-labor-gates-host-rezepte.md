@@ -57,7 +57,7 @@ Sobald alle sechs laufen, ist `make gates` docker-los.
   hier steht nur das Labor-Makefile.
 - **`fullbuild`, `mutate`, `smoke`/`full-smoke` selbst** — die Treiber-Skripte
   baut [`slice-mutate-treiber-host-modi`](../done/slice-mutate-treiber-host-modi.md)
-  und [`slice-smoke-und-full-smoke-ohne-docker`](../next/slice-smoke-und-full-smoke-ohne-docker.md);
+  und [`slice-smoke-und-full-smoke-ohne-docker`](../in-progress/slice-smoke-und-full-smoke-ohne-docker.md);
   die Rezept-Umstellung reicht an sie, ohne sie zu ändern — die
   `mutate`-Sperren bleiben in Kraft wie sie sind.
 
