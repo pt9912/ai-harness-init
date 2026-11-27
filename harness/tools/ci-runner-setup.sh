@@ -126,8 +126,14 @@ else
 fi
 
 # golangci-lint: exakt — die Release-Form trägt das v-Praefix, das Inventar-Soll
-# die bloße Nummern-Form der Pin-Stelle GOLANGCI_LINT_VERSION; der Install über
-# die offizielle install.sh nach PREFIX.
+# die bloße Nummern-Form der Pin-Stelle GOLANGCI_LINT_VERSION; der Install ist
+# der Asset-Weg nach PREFIX. install.sh aus raw.githubusercontent trägt der
+# Install nicht mehr: seine Tag-Auflösung läuft über api.github.com und fiel
+# dort dauerhaft als 504 aus · seit slice-ci-runner-ohne-docker. Der Asset-Name
+# trägt die Nummern-Form ohne v-Praefix (v2-Release-Assets:
+# golangci-lint-<Soll>-linux-<arch>.tar.gz), das Archiv legt die Binary unter
+# dem Verzeichnis gleichen Namens ab; beide Namens-Formen belegt erst der reale
+# Runner-Lauf (die Stub-Fahrt trägt die Ablage-Form).
 golangci_ist="$(version_ist golangci-lint)"
 if [ "$golangci_ist" = "$golangci_soll" ]; then
 	meldung golangci-lint "v$golangci_soll" "$golangci_ist" "am PATH — OK"
@@ -142,8 +148,21 @@ else
 	elif [ -n "$PLAN_MODE" ]; then
 		meldung golangci-lint "v$golangci_soll" "${golangci_ist:-fehlt}" "Install ausgesetzt (PLAN)"
 	else
-		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh \
-			| sh -s -- -b "$PREFIX" "v$golangci_soll"
+		case "$(uname -m)" in
+			x86_64) golangci_arch=amd64 ;;
+			aarch64) golangci_arch=arm64 ;;
+			*) echo "ci-runner-setup: uname '$(uname -m)' trägt keine golangci-lint-Archiv-Form" >&2; exit 2 ;;
+		esac
+		mkdir -p "$REPO/.harness/state"
+		tmp="$(mktemp -d -p "$REPO/.harness/state")"
+		curl -fsSL --retry 3 "https://github.com/golangci/golangci-lint/releases/download/v${golangci_soll}/golangci-lint-${golangci_soll}-linux-${golangci_arch}.tar.gz" \
+			-o "$tmp/golangci-lint.tgz"
+		tar -xzf "$tmp/golangci-lint.tgz" -C "$tmp" "golangci-lint-${golangci_soll}-linux-${golangci_arch}/golangci-lint"
+		zug="$REPO/.harness-ci/golangci-lint-$golangci_soll"
+		rm -rf "$zug"
+		mv "$tmp/golangci-lint-${golangci_soll}-linux-${golangci_arch}/golangci-lint" "$zug"
+		ln -sf "$zug" "$PREFIX/golangci-lint"
+		rm -rf "$tmp"
 		meldung golangci-lint "v$golangci_soll" "${golangci_ist:-fehlt}" "installiert nach .harness-ci/bin"
 	fi
 fi
