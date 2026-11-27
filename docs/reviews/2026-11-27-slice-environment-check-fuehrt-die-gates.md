@@ -192,3 +192,51 @@ Keine gefahrene Form fällt außerhalb der im Kopf genannten Aufzählung; die Au
   `make gates`-Echtlauf auf diesem Host (Closure-Trigger §5) und CI-Nachweis stehen aus — Verifier.
 - `make test` → `test-bats` fährt im gepinnten bats-Image: bei ausgelassenem Daemon färbt die
   Kante am Docker vor dem ersten Wächter — Rückstand der Welle-ohne-docker, deklariert.
+
+---
+
+## Addendum — Abgleich-Runde (2026-11-27, Commit `4a61da9f`)
+
+Die Implementer hat F-1 und F-2 im Commit `4a61da9f` gelöst (nur die vier Fall-Anlagen +
+`.d-check.yml`). Belege dieses Addendums sind gelesen und byte-genau gegen den Bestand geprüft;
+`make mutate-greift` (Implementer-Lauf) meldet 795–798 ohne Befund, die drei vorgefundenen Befunde
+(784/785/794 — gates-*-Maschinerie des Schwesterslice `slice-gates-pruefgegenstand-stempel-v1`)
+unverändert.
+
+### F-1 · gelöst
+
+Die vier `# expect:`-Köpfe tragen jetzt wortgenau den Titel des Wächters, den die Mutation färbt,
+byte-genau gegen die `not ok`-Zeilen (`grep -qF`-Form des Treibers):
+
+- 795/796: `pinsync: das Pin go paart die Inventar-Soll-Zeile abgeleitet gegen die GO_VERSION-Stelle
+  des Makefile` — byte-identisch mit dem `@test`-Titel in `test/pinsync-modul-wiring.bats:53`
+  (Probe: `grep -qF … test/pinsync-modul-wiring.bats` → Treffer).
+- 797: `environment-check: exakte Abweichung färbt Umgebungs-Befund mit Werkzeug, Soll und Ist` —
+  byte-identisch mit `test/environment-check.bats:46`.
+- 798: `environment-check: Inventar-Aufform färbt fail-closed` — byte-identisch mit
+  `test/environment-check.bats:91`.
+- Fall 796 nennt im Körper zusätzlich den faerbenden Wächter und den Pin-Nachzug (1.27.4,
+  `44e0594b`); die `sed`-Muster greifen unverändert am Bestand (MR-071-Anker unberührt).
+- Der `make mutate-greift`-Lauf bestätigt die Zähne (781 griffen, 795–798 ohne Befund).
+
+### F-2 · gelöst
+
+Der pinsync-Kommentar in `.d-check.yml` trägt jetzt zwei Pins im Indikativ („Zwei Pins: der
+d-check-Werkzeug-Pin paart … der go-Pin paart …"), die Positiv-Beleg-Zeile ist auf
+`pinsync: 2 Pin(s) geprueft, 4 Quelle(n) gelesen` nachgezogen, die Mutations-Anker sind je Pin
+benannt (790 d-check-Pin, 795/796 go-Pin) — die Kontradiktion zum ZWEITER-Pin-Block und zu
+`sensors/docs-check.md` ist entfallen.
+
+### Verbleibend offen
+
+- **F-3 · INFO** — die Fast-Pfad-Kopplung des Target-Kommentars („Kanten-Check ohne zeigbare
+  Tafel-Zeile fährt voll") misst am Rückenstand (`gates-keys.sh == gates-fast.sh`, kein
+  Satzerzeuger) und steht weiterhin nur am Target, nicht in der Sensor-Doku; deklarierte Grenze,
+  Träger ist das Schwesterslice `slice-gates-pruefgegenstand-stempel-v1`. Kein weiterer Zug in
+  diesem Slice.
+- **F-4a · LOW → widerlegt** — der Auftraggeber-Lauf hat die Zeile `.viper.sh` empirisch
+  ausgeführt (Werkzeuge am Host installiert) und die Behauptung „scheitert an `-y`" damit
+  außerhalb dieses Laufs widerlegt; die Beobachtung dieses Reviews war nur gelesen, nie gefahren.
+  Refuted nur mit Beleg: der Beleg ist der Auftraggeber-Lauf, nicht ein Sensor dieses Repos.
+- **F-4b · INFO** — bleibt Deklaration (unreferenziertes Hilfsskript ohne Träger und Abdeckung);
+  bewusste Designnotiz des Fremdcommits, kein Zug angefordert.
