@@ -122,6 +122,13 @@ func erlaubteKennungen() map[string][]string {
 	return map[string][]string{
 		"harness/mk/selbstpruefung.mk":    {"LH-FA-01"},
 		"tools/harness/selbstpruefung.sh": {"LH-FA-01"},
+		// Engine-Kopien der Lab-Fassung: ihr Kopf traegt die Herkunft und den Weg
+		// (ADR-0109) und, beim Tool-/Versions-Check, den Verweis auf den Vertrag
+		// SPEC-099; der Koerper ist byte-genau der der Lab-Fassung. Im Ziel loesen
+		// sie nicht auf — die Ausnahme ist die der selbstpruefung.sh: Funktions-Nutz-
+		// last am Ort, keine zweite Norm-Fassung.
+		"tools/harness/dcheck-fetch.sh":      {"ADR-0059", "ADR-0109", "LH-QA-02"},
+		"tools/harness/environment-check.sh": {"ADR-0109", "LH-QA-03", "SPEC-099"},
 	}
 }
 

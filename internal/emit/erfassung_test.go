@@ -470,7 +470,7 @@ func TestErfassung_NichtInDerGatesKette(t *testing.T) {
 
 	// Vorbedingung: die Huelle traegt wirklich die Gate-Kette. Ohne sie liefe der
 	// Waechter ueber einem leeren Ergebnis und saehe nie etwas.
-	for _, noetig := range []string{"record-gates", "baseline-verify", "docs-check"} {
+	for _, noetig := range []string{"record-gates", "baseline-verify", "docs-check-host"} {
 		if !kette[noetig] {
 			t.Fatalf("die gelesene gates-Kette traegt %q nicht — der Waechter misst nichts (gelesen: %v)", noetig, sortiert(kette))
 		}

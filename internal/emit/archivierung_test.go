@@ -70,7 +70,7 @@ func gatesHuelle(t *testing.T) map[string]bool {
 	}
 	// Vorbedingung: die Huelle traegt wirklich die Gate-Kette — sie ist der
 	// Pruefbereich des Waechters, und ein leeres Ergebnis hat keinen.
-	for _, noetig := range []string{"record-gates", "baseline-verify", "docs-check"} {
+	for _, noetig := range []string{"record-gates", "baseline-verify", "docs-check-host"} {
 		if !huelle[noetig] {
 			t.Fatalf("die gelesene gates-Kette traegt %q nicht — der Waechter misst nichts (gelesen: %v)", noetig, sortiert(huelle))
 		}

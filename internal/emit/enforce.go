@@ -92,6 +92,17 @@ func enforceFiles() []enforceFile {
 	files := []enforceFile{
 		{src: "templates/enforce/working-tree-hash.sh", dst: "tools/harness/working-tree-hash.sh", mode: 0o755, class: Konvergent},
 		{src: "templates/enforce/record-gates.sh", dst: "tools/harness/record-gates.sh", mode: 0o755, class: Konvergent},
+		// Tool-/Versions-Check der emittierten Gates (ADR-0109, erster Check der Kante):
+		// Skript und Inventar-Basissatz hier (Enforce-Schicht, konvergent), das
+		// Fragment und die Sprach-Anhaenge in environment.go — die Begruendung der
+		// Stellen traegt environment.go.
+		{src: "templates/enforce/environment-check.sh", dst: "tools/harness/environment-check.sh", mode: 0o755, class: Konvergent},
+		{src: "templates/enforce/environment-inventory.txt", dst: "tools/harness/environment-inventory.txt", mode: 0o644, class: Konvergent},
+		// Beschaffungsweg des d-check-Binary (die fetched Ablage, die die
+		// d-check-Anwesenheit im Inventar traegt): der Fetch-Zug entsteht aus
+		// denselben Fragmenten wie im Labor — nicht doppelt gefuehrt (Kopf der
+		// emittierten Kopie).
+		{src: "templates/enforce/dcheck-fetch.sh", dst: "tools/harness/dcheck-fetch.sh", mode: 0o755, class: Konvergent},
 		{src: "templates/enforce/stop-require-gates.sh", dst: ".claude/hooks/stop-require-gates.sh", mode: 0o755, class: Konvergent},
 		{src: "templates/enforce/settings.json", dst: ".claude/settings.json", mode: 0o644, class: Konvergent},
 		{src: "templates/enforce/gitignore", dst: ".harness/.gitignore", mode: 0o644, class: Konvergent},
@@ -336,6 +347,13 @@ func Enforce(targetDir string, notice io.Writer) error {
 		if err := writeEnforceFile(targetDir, f, content, notice); err != nil {
 			return err
 		}
+	}
+	// Der Tool-/Versions-Check haengt sein Fragment selbst an (erster Check der
+	// Gates-Kante, ADR-0109); die Sprach-Anhaenge an das Inventar entlaufen
+	// wireLang (EnsureInventoryRows), weil die Pin-Werte erst mit dem Sprach-
+	// Fragment entstehen.
+	if err := EnvironmentCheck(targetDir); err != nil {
+		return err
 	}
 	if !captured {
 		return nil

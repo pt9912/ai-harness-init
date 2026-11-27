@@ -446,16 +446,17 @@ func TestStreicheFremdeKennungenTrifftNurDieRegister(t *testing.T) {
 	}
 }
 
-// TestDocGate_FragmentWiresDocsCheck: das Doc-Gate-Fragment haengt docs-check an
-// GATE_CHECKS und bindet d-check.mk ein — der netzlose Waechter auf die Verdrahtung
-// (DocGate selbst braucht Docker; ersetzt zusammen mit full-smoke die Deckung des
-// entfernten Mutations-Falls 21, Review-Befund slice-034 F-1). test/mutations/40 bricht
-// die GATE_CHECKS-Zeile -> dieser Test wird rot.
+// TestDocGate_FragmentWiresDocsCheck: das Doc-Gate-Fragment haengt den HOST-Weg
+// docs-check-host an GATE_CHECKS und bindet d-check.mk ein (dessen docker-Lauf
+// docs-check bleibt opt-in, ADR-0109) — der netzlose Waechter auf die Verdrahtung
+// (DocGate selbst braucht den print-mk-Zugang; ersetzt zusammen mit full-smoke die
+// Deckung des entfernten Mutations-Falls 21, Review-Befund slice-034 F-1).
+// test/mutations/40 bricht die GATE_CHECKS-Zeile -> dieser Test wird rot.
 func TestDocGate_FragmentWiresDocsCheck(t *testing.T) {
 	frag := emit.DocGateMk()
-	for _, want := range []string{"include d-check.mk", "GATE_CHECKS += docs-check"} {
+	for _, want := range []string{"include d-check.mk", "GATE_CHECKS += docs-check-host"} {
 		if !strings.Contains(frag, want) {
-			t.Errorf("Doc-Gate-Fragment enthaelt %q nicht (docs-check nicht in gates verdrahtet):\n%s", want, frag)
+			t.Errorf("Doc-Gate-Fragment enthaelt %q nicht (docs-check-host nicht in gates verdrahtet):\n%s", want, frag)
 		}
 	}
 }

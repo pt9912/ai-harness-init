@@ -1,0 +1,23 @@
+# Umgebungs-Inventar des emittierten Ziels — gelesen von
+# tools/harness/environment-check.sh (erster Check der Gates-Kante,
+# harness/mk/environment.mk). Form: zeilenweise, `|`-getrennt, sechs Spalten:
+#   werkzeug|pruefform|pflichtgrad|soll|kontext|grund
+# pruefform: Anwesenheit | Mindestversion | Faehigkeit | exakt (geschlossene Menge)
+# pflichtgrad: pflicht | optional
+# soll: manifest:<wert> | abgeleitet:<wert> | manifest:probe:<id> | manifest:anwesend
+# Kommentarzeilen (#) und Leerzeilen fallen aus; kein Spaltenwert traegt ein `|`
+# oder fuehrendes/nachfolgendes Leerzeichen.
+# Der Basissatz schreibt jeder Bootstrap-Lauf neu; die Sprach-Zeilen haengt der
+# Bootstrap an (dedupliert je Werkzeugname, geaendertes Soll gewinnt). Soll
+# "abgeleitet" steht gegen die Pin-Stelle im Sprach-Fragment
+# (harness/mk/<lang>.mk), gehalten vom Emissions-Waechter in
+# internal/emit/environment_test.go des erzeugenden Werkzeugs.
+# An dem Inventar ausdruecklich NICHT gemessen: awk (das Doc-Gate-Fragment misst
+# seine Probe selbst unter DOC_GATE_ZIEL, mit lautem Abbruch) und die Werkzeuge des
+# gepinnten Image-Wegs (opt-in; dort adressiert der Digest, der Check vergleicht
+# nicht).
+bash|Mindestversion|pflicht|manifest:4.0|Interpreter der Gate-Werkzeuge (tools/harness)|Die Gate-Skripte setzen die Bash-Sprachform 4.0 voraus; unterhalb endet der Check mit Diagnose statt Syntaxfehler — der Guard steht als erster Befehl des Skripts
+git|Faehigkeit|pflicht|manifest:probe:git-version|Gate-Nachweis und Stop-Hook (record-gates, working-tree-hash)|Probe: git --version traegt die Draht-Form ^git version — der Revisions-Zugriff ist Kontext des Laufs, nicht der Umgebung, und wird hier nicht gemessen
+make|Faehigkeit|pflicht|manifest:probe:make-gnu|Einziger Rezept-Lauefer (gates und die Fragmente)|Probe: make --version nennt GNU Make in der ersten Zeile — die Rezepte setzen GNU-make-Syntax voraus (include, lastword)
+sha256sum|Faehigkeit|pflicht|manifest:probe:sha256-abc|Baseline-Integritaet (baseline-verify) und der Traeger-Fetch|Probe: der sha256-Digest der Probe-Eingabe ABC traegt den festen Wert b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78 — die Pruefform misst Korrektheit, nicht die Distribution
+d-check|Anwesenheit|pflicht|manifest:anwesend|docs-check-host (Doku-Gate), docker-los|die Probe sieht den PATH UND die fetched Ablage .harness/state/bin/d-check (make dcheck-fetch, OCI-Pull nach dem DCHECK_DIGEST-Pin aus d-check.mk); die Version traegt keine Pin-Stelle — Anwesenheit; die Binaer-Beschaffung traegt der Fetch

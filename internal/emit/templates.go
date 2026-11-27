@@ -758,9 +758,10 @@ const (
 // jemand beheben kann.
 func initFragments() (map[string]string, error) {
 	out := map[string]string{
-		MakefilePath:   aggregatorMakefile,
-		BaselineMkPath: baselineMk,
-		DocGateMkPath:  docGateMk,
+		MakefilePath:       aggregatorMakefile,
+		BaselineMkPath:     baselineMk,
+		DocGateMkPath:      docGateMk,
+		EnvironmentMkPath:  environmentMk,
 	}
 	for _, f := range enforceFiles() {
 		if !strings.HasSuffix(f.dst, ".mk") {
@@ -824,6 +825,11 @@ func InitInvariantTargets() ([]string, error) {
 			}
 		}
 	}
+	// docs-check traegt das tool-generierte d-check.mk je Bootstrap-Lauf (Befund-Gate,
+	// der opt-in Image-Weg; der Host-Weg docs-check-host lebt im Doc-Gate-Fragment oben).
+	// Das Fragment selbst ist nicht statisch, das Ziel ist init-invariant — die Nennung
+	// hier ist die Anspruchs-Menge, nicht das Rezept.
+	seen["docs-check"] = true
 	targets := make([]string, 0, len(seen))
 	for t := range seen {
 		targets = append(targets, t)

@@ -438,6 +438,13 @@ func wireLang(targetDir, skelDir, path, lang, version, arch string, archMK emit.
 	if err := os.WriteFile(dst, []byte(frag), 0o644); err != nil {
 		return fmt.Errorf("%s schreiben: %w", filepath.ToSlash(fragRel), err)
 	}
+	// Inventar-Zeilen des Tool-/Versions-Checks (erster Check der Gates-Kante,
+	// ADR-0109): der Bootstrap haengt die Sprach-Zeilen ans emittierte Inventar an —
+	// Soll abgeleitet vom Pin im Fragment (emit.EnvironmentMk/goGateFragment). Der
+	// Lauf ist konvergent und dedupliert je Werkzeugname (emit.EnsureInventoryRows).
+	if _, err := emit.EnsureInventoryRows(targetDir, gen.InventoryRows(lang, version)); err != nil {
+		return fmt.Errorf("inventar-Zeilen %s: %w", filepath.ToSlash(fragRel), err)
+	}
 	// Arch-Gate KONDITIONAL (slice-046, LH-FA-07/LH-QA-01): nur wenn (lang, arch) ein
 	// schichten-tragendes Layout rendert, gibt es einen Pruefbereich — sonst waere
 	// a-check ein Gate ueber leerer Flaeche. gen entscheidet das (dieselbe Quelle wie

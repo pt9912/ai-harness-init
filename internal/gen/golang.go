@@ -105,11 +105,11 @@ func goRole(r codeRole) map[string]string {
 }
 
 // goFragment liefert das Go-Code-Gate-Fragment (harness/mk/<modul>.mk-Inhalt): am Root
-// (context ".") die bestehende UNSCOPED Fassung (Targets test/lint/build, `docker build
-// .`) byte-identisch — rueckwaertskompatibel mit dem --lang-One-Shot, smoke.sh und
-// full-smoke; im Subdir die MODUL-SCOPED Fassung (test-<modul>/lint-<modul>/build-<modul>,
-// `docker build <context>`), kollisionsfrei wenn ein Mono-Repo mehrere Module gleicher
-// Sprache traegt. Jedes `docker build --target <stage>` referenziert eine gleichnamige
+// (context ".") die UNSCOPED Fassung (Targets test/lint/build am Host, ADR-0109; die
+// docker build-Stages stehen daneben als opt-in -image-Variante); im Subdir die
+// MODUL-SCOPED Fassung (test-<modul>/lint-<modul>/build-<modul>, Kontext {{CONTEXT}}),
+// kollisionsfrei wenn ein Mono-Repo mehrere Module gleicher Sprache traegt. Jedes
+// `docker build --target <stage>` der -image-Variante referenziert eine gleichnamige
 // Dockerfile-Stage (test/lint/build) — kein halluziniertes Gate (LH-QA-01),
 // TestCodeGateFragment_TargetsMatchStages haelt die Kopplung fest.
 func goFragment(modul, context, version string) string {
@@ -931,10 +931,11 @@ exclude:
 `
 
 const goDockerfileTmpl = `# syntax=docker/dockerfile:1.7
-# Dockerfile — generiert von ai-harness-init (Go-Skelett). Jede Go-Gate ist eine
-# Stage (docker build --target <stage>); die Images sind TAG-gepinnt
-# (kein floating). Digest bewusst weggelassen, damit GO_VERSION ein echter Knopf
-# bleibt; wer Digest-Pinning will, haengt @sha256:… an.
+# Dockerfile — generiert von ai-harness-init (Go-Skelett). Jede Go-Gate hat eine
+# opt-in Stage (docker build --target <stage>, die Gate-Eintraege
+# test/lint/build fahren am Host, die Stages sind der Image-Weg); die Images sind
+# TAG-gepinnt (kein floating). Digest bewusst weggelassen, damit GO_VERSION ein
+# echter Knopf bleibt; wer Digest-Pinning will, haengt @sha256:… an.
 ARG GO_VERSION={{GO_VERSION}}
 ARG GOLANGCI_LINT_VERSION={{GOLANGCI_VERSION}}
 
@@ -963,24 +964,39 @@ COPY . .
 RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/app ./cmd/app
 `
 
-// goMkFragmentTmpl — das Go-Code-Gate-Fragment (harness/mk/go.mk): lint/build/test als
-// Dockerfile-Stages, an GATE_CHECKS gehaengt. Die Recipe-Zeilen sind TAB-eingerueckt.
+// goMkFragmentTmpl — das Go-Code-Gate-Fragment (harness/mk/go.mk): lint/build/test
+// AM HOST (ADR-0109), die Dockerfile-Stages bleiben opt-in (test-image/lint-image/
+// build-image, docker build --target <stage>, PINS unverändert). Die Toolchain-
+// Fassung am Host haelt der Tool-/Versions-Check (environment-check) gegen die Pins:
+// der Bootstrap haengt die Inventar-Zeilen an (Soll abgeleitet von GO_VERSION/
+// GOLANGCI_LINT_VERSION). Die Recipe-Zeilen sind TAB-eingerueckt.
 const goMkFragmentTmpl = `# harness/mk/go.mk — Go-Code-Gate-Fragment, generiert von ai-harness-init. Die
-# Go-Gates sind Dockerfile-Stages (Docker-only); dieses Fragment haengt
-# lint/build/test an GATE_CHECKS, der Root-Aggregator faehrt sie via make gates.
+# Go-Gates fahren am Host mit dem PATH-Werkzeug; die Fassung der
+# Toolchain haelt der Tool-/Versions-Check (environment-check) gegen die Pins. Die
+# Dockerfile-Stages bleiben opt-in: test-image/lint-image/build-image, das Image
+# digest-gepinnt im Dockerfile.
 GO_VERSION ?= {{GO_VERSION}}
 GOLANGCI_LINT_VERSION ?= {{GOLANGCI_VERSION}}
 IMAGE ?= app
 
-.PHONY: test lint build
+.PHONY: test lint build test-image lint-image build-image
 
-test: ## Go-Unit-Tests (Dockerfile test-Stage) — Docker-only
+test: ## Go-Unit-Tests (go test am Host) — IN gates (docker-los)
+	go test ./...
+
+lint: ## Go-Lint (golangci-lint am Host) — IN gates (docker-los)
+	golangci-lint run ./...
+
+build: ## Go-Binary kompilieren (go build am Host) — IN gates (docker-los)
+	CGO_ENABLED=0 go build -trimpath ./...
+
+test-image: ## Go-Unit-Tests (Dockerfile test-Stage) — opt-in Image
 	docker build --no-cache-filter test --build-arg GO_VERSION=$(GO_VERSION) --target test -t $(IMAGE):test .
 
-lint: ## Go-Lint (golangci-lint, Dockerfile lint-Stage) — Docker-only
+lint-image: ## Go-Lint (golangci-lint, Dockerfile lint-Stage) — opt-in Image
 	docker build --build-arg GOLANGCI_LINT_VERSION=$(GOLANGCI_LINT_VERSION) --target lint -t $(IMAGE):lint .
 
-build: ## Go-Binary bauen (Dockerfile build-Stage) — Docker-only
+build-image: ## Go-Binary bauen (Dockerfile build-Stage) — opt-in Image
 	docker build --build-arg GO_VERSION=$(GO_VERSION) --target build -t $(IMAGE):build .
 
 GATE_CHECKS += lint build test
@@ -996,23 +1012,33 @@ GATE_CHECKS += lint build test
 // (record-gates dedupliziert Praezedenz-Listen); die scoped Namen stehen NICHT daneben —
 // sonst liefe der Go-Kontext in gates doppelt.
 const goMixedMkFragmentTmpl = `# harness/mk/{{MODULE}}.mk — Go-Code-Gate-Fragment (Modul {{MODULE}}), generiert von
-# ai-harness-init. Go-Gates als Dockerfile-Stages (Docker-only); modul-scoped
-# Targets, Build-Kontext {{CONTEXT}} — ein zweites Sprach-Fragment liegt am Root, darum
+# ai-harness-init. Go-Gates AM HOST mit dem PATH-Werkzeug; modul-scoped
+# Targets, Kontext {{CONTEXT}} — ein zweites Sprach-Fragment liegt am Root, darum
 # traegt dieses Fragment die unscoped Ziele test/lint/build nur als Praezedenz-Erweiterung
 # ohne eigenes Rezept: make haengt Praezedenz-Listen mehrerer Regeln zusammen. Welches
-# Fragment das eigene Rezept traegt, haengt vom Verlauf der add-lang-Aufrufe ab.
+# Fragment das eigene Rezept traegt, haengt vom Verlauf der add-lang-Aufrufe ab. Die
+# Dockerfile-Stages bleiben opt-in (die -image-Varianten, PINS unveraendert).
 GO_VERSION ?= {{GO_VERSION}}
 GOLANGCI_LINT_VERSION ?= {{GOLANGCI_VERSION}}
 
-.PHONY: test lint build test-{{MODULE}} lint-{{MODULE}} build-{{MODULE}}
+.PHONY: test lint build test-{{MODULE}} lint-{{MODULE}} build-{{MODULE}} test-{{MODULE}}-image lint-{{MODULE}}-image build-{{MODULE}}-image
 
-test-{{MODULE}}: ## Go-Unit-Tests Modul {{MODULE}} (test-Stage) — Docker-only
+test-{{MODULE}}: ## Go-Unit-Tests Modul {{MODULE}} (go test am Host) — IN gates (docker-los)
+	cd {{CONTEXT}} && go test ./...
+
+lint-{{MODULE}}: ## Go-Lint Modul {{MODULE}} (golangci-lint am Host) — IN gates (docker-los)
+	cd {{CONTEXT}} && golangci-lint run ./...
+
+build-{{MODULE}}: ## Go-Binary Modul {{MODULE}} kompilieren (go build am Host) — IN gates (docker-los)
+	cd {{CONTEXT}} && CGO_ENABLED=0 go build -trimpath ./...
+
+test-{{MODULE}}-image: ## Go-Unit-Tests Modul {{MODULE}} (test-Stage) — opt-in Image
 	docker build --no-cache-filter test --build-arg GO_VERSION=$(GO_VERSION) --target test -t {{MODULE}}:test {{CONTEXT}}
 
-lint-{{MODULE}}: ## Go-Lint Modul {{MODULE}} (golangci-lint, lint-Stage) — Docker-only
+lint-{{MODULE}}-image: ## Go-Lint Modul {{MODULE}} (golangci-lint, lint-Stage) — opt-in Image
 	docker build --build-arg GOLANGCI_LINT_VERSION=$(GOLANGCI_LINT_VERSION) --target lint -t {{MODULE}}:lint {{CONTEXT}}
 
-build-{{MODULE}}: ## Go-Binary Modul {{MODULE}} bauen (build-Stage) — Docker-only
+build-{{MODULE}}-image: ## Go-Binary Modul {{MODULE}} bauen (build-Stage) — opt-in Image
 	docker build --build-arg GO_VERSION=$(GO_VERSION) --target build -t {{MODULE}}:build {{CONTEXT}}
 
 test: test-{{MODULE}}
@@ -1028,25 +1054,50 @@ GATE_CHECKS += test lint build
 // (nicht `.`), der Image-Tag ist der Modul-Name (inline, kein IMAGE-Var-Kollisionsrisiko).
 // Recipe-Zeilen sind TAB-eingerueckt.
 const goScopedMkFragmentTmpl = `# harness/mk/{{MODULE}}.mk — Go-Code-Gate-Fragment (Modul {{MODULE}}), generiert von
-# ai-harness-init. Go-Gates als Dockerfile-Stages (Docker-only); modul-scoped
+# ai-harness-init. Go-Gates AM HOST mit dem PATH-Werkzeug; modul-scoped
 # Targets (kollisionsfrei im Mono-Repo), Build-Kontext {{CONTEXT}}. Haengt an GATE_CHECKS,
-# der Root-Aggregator faehrt sie via make gates.
+# der Root-Aggregator faehrt sie via make gates. Die Dockerfile-Stages bleiben opt-in
+# (die -image-Varianten, PINS unveraendert).
 GO_VERSION ?= {{GO_VERSION}}
 GOLANGCI_LINT_VERSION ?= {{GOLANGCI_VERSION}}
 
-.PHONY: test-{{MODULE}} lint-{{MODULE}} build-{{MODULE}}
+.PHONY: test-{{MODULE}} lint-{{MODULE}} build-{{MODULE}} test-{{MODULE}}-image lint-{{MODULE}}-image build-{{MODULE}}-image
 
-test-{{MODULE}}: ## Go-Unit-Tests Modul {{MODULE}} (test-Stage) — Docker-only
+test-{{MODULE}}: ## Go-Unit-Tests Modul {{MODULE}} (go test am Host) — IN gates (docker-los)
+	cd {{CONTEXT}} && go test ./...
+
+lint-{{MODULE}}: ## Go-Lint Modul {{MODULE}} (golangci-lint am Host) — IN gates (docker-los)
+	cd {{CONTEXT}} && golangci-lint run ./...
+
+build-{{MODULE}}: ## Go-Binary Modul {{MODULE}} kompilieren (go build am Host) — IN gates (docker-los)
+	cd {{CONTEXT}} && CGO_ENABLED=0 go build -trimpath ./...
+
+test-{{MODULE}}-image: ## Go-Unit-Tests Modul {{MODULE}} (test-Stage) — opt-in Image
 	docker build --no-cache-filter test --build-arg GO_VERSION=$(GO_VERSION) --target test -t {{MODULE}}:test {{CONTEXT}}
 
-lint-{{MODULE}}: ## Go-Lint Modul {{MODULE}} (golangci-lint, lint-Stage) — Docker-only
+lint-{{MODULE}}-image: ## Go-Lint Modul {{MODULE}} (golangci-lint, lint-Stage) — opt-in Image
 	docker build --build-arg GOLANGCI_LINT_VERSION=$(GOLANGCI_LINT_VERSION) --target lint -t {{MODULE}}:lint {{CONTEXT}}
 
-build-{{MODULE}}: ## Go-Binary Modul {{MODULE}} bauen (build-Stage) — Docker-only
+build-{{MODULE}}-image: ## Go-Binary Modul {{MODULE}} bauen (build-Stage) — opt-in Image
 	docker build --build-arg GO_VERSION=$(GO_VERSION) --target build -t {{MODULE}}:build {{CONTEXT}}
 
 GATE_CHECKS += lint-{{MODULE}} build-{{MODULE}} test-{{MODULE}}
 `
+
+// InventoryRows liefert die Umgebungs-Inventar-Zeilen eines Sprach-Skeletts (Soll
+// "abgeleitet" vom Pin im Go-Code-Gate-Fragment, Werte wie dort); die Werte haelt der
+// Tool-/Versions-Check im Ziel gegen die Fragmente. Andere Sprachen liefern NIL —
+// ihre Skelett-Gates stehen nicht am Host-Weg, sie bekommen deshalb keine Zeile hier
+// (Rueckfuehrungs-Abgrenzung slice-emittierte-gates-host-pfad §4/§6).
+func InventoryRows(lang, version string) []string {
+	if lang != "go" {
+		return nil
+	}
+	return []string{
+		"go|exakt|pflicht|abgeleitet:" + version + "|Toolchain der Go-Gates am Host (go test/lint/build, harness/mk/<modul>.mk)|Soll abgeleitet von der Pin-Stelle GO_VERSION im Go-Code-Gate-Fragment; der Emissions-Waechter haelt die Zeile gegen die Stelle — bei einer Pin-Veraenderung faerbt er die Emission rot, bevor der Check still ein altes Soll tragt",
+		"golangci-lint|exakt|pflicht|abgeleitet:" + golangciVersion + "|Go-Lint der docker-losen Go-Gates (golangci-lint run am Host)|Soll abgeleitet von der Pin-Stelle GOLANGCI_LINT_VERSION im Go-Code-Gate-Fragment und im Dockerfile (opt-in); die Anwesenheit ist die reine PATH-Probe — die Besorgung des Werkzeugs traegt die Umgebung, der Check belegt sie",
+	}
+}
 
 // goGolangci — kuratiert reiche Config: die volle Linter-Enable-Liste unseres
 // Dogfood-.golangci.yml + Settings + _test.go-Exclusions, ABER ohne die

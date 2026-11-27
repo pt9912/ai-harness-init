@@ -163,6 +163,7 @@ func emittierteKernpfade() []string {
 		BaselineVerifyPath,
 		BaselineMkPath,
 		DocGateMkPath,
+		EnvironmentMkPath,
 		FieldListPath,
 		".d-check.yml",
 		"d-check.mk",

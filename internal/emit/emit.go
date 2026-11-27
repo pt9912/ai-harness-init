@@ -6,8 +6,9 @@
 // Zwei Artefakte mit bewusst verschiedener Herkunft:
 //   - .d-check.yml — vom Tool AUTORIERTE Config; welche Module aktiv sind, steht
 //     in internal/emit/templates/d-check.yml selbst (DCheckConfig()).
-//   - d-check.mk   — zur BOOTSTRAP-Zeit erzeugt via `docker run <d-check> --print-mk`
-//     (Docker ist die geforderte Bootstrap-Abhaengigkeit, LH-QA-03) und mechanisch
+//   - d-check.mk   — zur BOOTSTRAP-Zeit erzeugt via `--print-mk` (ADR-0109:
+//     mit gesetztem DCHECK_CARRIER am Host, sonst `docker run <d-check>` — der
+//     docker-Lauf bleibt Rueffall des opt-in Wegs) und mechanisch
 //     adaptiert (AdaptMK). So traegt das Tool kein driftendes Fragment, nur den Pin
 //     + die Transform; das emittierte Fragment ist immer das aktuelle d-check-Target-Set
 //     mit exakt dem Digest, der es erzeugt hat (LH-QA-02).
@@ -19,6 +20,7 @@ import (
 	_ "embed" // fuer die //go:embed-Direktive (dcheckConfig)
 	"errors"
 	"fmt"
+	"os"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -117,12 +119,30 @@ doc-commits:
 	@exit 2
 endif
 
-GATE_CHECKS += docs-check
+# HOST-WEG des Doku-Gates (die docker-los Form): der Pflicht-Weg des Ziels faehrt das
+# gelieferte d-check-Binary (DCHECK_CARRIER) am Host; der docker-Lauf aus
+# d-check.mk (docs-check) bleibt opt-in Weg. Die Ablage fehlt im frischen Klon —
+# make dcheck-fetch legt sie an (curl + sha256sum + tar, Netz an genau diesem
+# Aufruf, Digest-Kette gegen den DCHECK_DIGEST-Pin aus d-check.mk). Bis dahin
+# bricht docs-check-host am Diagnose-Ausgang (Exit 2, fail-closed), nicht am Bild.
+DCHECK_CARRIER ?= .harness/state/bin/d-check
+
+.PHONY: dcheck-fetch docs-check-host
+
+dcheck-fetch: ## d-check-Binary nach .harness/state/bin/ ziehen (docker-los, Netz an diesem Aufruf) — kein Gate
+	@bash tools/harness/dcheck-fetch.sh
+
+docs-check-host: ## Doku-Referenzen pruefen docker-los (fetched d-check, make dcheck-fetch) — IN gates (docker-los); der Way im Image bleibt opt-in (d-check.mk)
+	@[ -x "$(DCHECK_CARRIER)" ] || { echo "docs-check-host: $(DCHECK_CARRIER) fehlt — make dcheck-fetch legt die fetched Ablage an (braucht Netz an genau diesem Aufruf)." >&2; exit 2; }
+	"$(DCHECK_CARRIER)"
+
+GATE_CHECKS += docs-check-host
 `
 
 // DocGateMk liefert den Inhalt des Doc-Gate-Fragments (fuer Tests/Inspektion) — der
-// netzlose Waechter auf die docs-check-Verdrahtung, weil DocGate selbst Docker braucht
-// (--print-mk). Ohne ihn traege nur full-smoke die Zusage „docs-check haengt in gates".
+// netzlose Waechter auf die docs-check-Verdrahtung, weil DocGate selbst den print-mk-
+// Zugang braucht (Carrier, sonst docker). Ohne ihn traege nur full-smoke die Zusage
+// „docs-check-host haengt in gates".
 func DocGateMk() string { return docGateMk }
 
 // vorbindungsTargets sind die zwei history-lesenden Targets, an die das Doc-Gate-Fragment den
@@ -236,11 +256,22 @@ func AdaptMK(raw []byte, digest string) ([]byte, error) {
 	return []byte(adopterHeader + streicheFremdeKennungen(body)), nil
 }
 
-// printMK ruft `docker run <ref> --print-mk` und liefert die rohe Ausgabe.
-// --network none haertet den Lauf (--print-mk braucht kein Netz; der Image-Pull,
-// falls noetig, laeuft ueber den Daemon, nicht das Container-Netz). Tool-neutral:
-// d-check und a-check teilen dieselbe --print-mk-Konvention.
+// printMK ruft `--print-mk` auf und liefert die rohe Ausgabe. ADR-0109: ist
+// DCHECK_CARRIER gesetzt und ausfuehrbar, faehrt der Lauf das Binary am Host (der
+// Carrier-Weg, wie ihn `make dcheck-fetch` in diesem Repo und im Ziel anlegt); der
+// docker-Lauf (`docker run <ref> --print-mk`) bleibt unveraenderter Rueffall fuer den
+// opt-in Weg mit Daemon. --network none haertet den docker-Lauf (--print-mk braucht
+// kein Netz; der Image-Pull, falls noetig, laeuft ueber den Daemon, nicht das
+// Container-Netz). Tool-neutral: d-check und a-check teilen dieselbe
+// --print-mk-Konvention.
 func printMK(ctx context.Context, ref string) ([]byte, error) {
+	if carrier := os.Getenv("DCHECK_CARRIER"); carrier != "" {
+		out, err := exec.CommandContext(ctx, carrier, "--print-mk").Output()
+		if err != nil {
+			return nil, fmt.Errorf("%s --print-mk: %w", carrier, execErr(err))
+		}
+		return out, nil
+	}
 	out, err := exec.CommandContext(ctx, "docker", "run", "--rm", "--network", "none", ref, "--print-mk").Output()
 	if err != nil {
 		return nil, fmt.Errorf("docker run %s --print-mk: %w", ref, execErr(err))
