@@ -42,8 +42,9 @@
 # Deckung; `rest` liest sie als Rest mit (Exit 0), Inhalt ausserhalb jeder Menge UND
 # dieser Liste bleibt der fail-closed Gap-Detektor (Liste und Exit 1, MR-017).
 # Zuschlaege an eine Menge und Eintraege in MENGE_REST sind eine Plan-Entscheidung
-# mit eigener Begruendung, kein stiller Eintrag (Plan slice-stamp-records-konsum-v1
-# §3, Mess-Beleg: der Stop-Hook-Mischform-Zug — approve an der deklarierten Form).
+# mit eigener Begruendung, kein stiller Eintrag
+# (Herkunft: Plan slice-stamp-records-konsum-v1 §3; gelesen wird die deklarierte
+# Form von .claude/hooks/stop-require-gates.sh).
 #
 # MESSREZEPT JE CHECK (Plan slice-gates-pruefgegenstand-stempel-v1 §3): je
 # Tafel-Zeile die Lesung am realen Rezept — was der Check liest, dass die

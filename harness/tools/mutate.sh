@@ -987,6 +987,11 @@ greift_main() {
 # Aufrufer-Reihenfolge. Sensor: test/stamp-records-mechanik.bats; Mutations-Fall
 # test/mutations/810-stamp-records-konsum-bricht-mit-meldung.sh (Anker am Commit,
 # MR-090).
+# GRENZE (Review F-2, keine Anlagen-Tiefe je Zweig): der Wächter misst die drei
+# ADR-0107-Festlegung-3-Klassen und die Zweig-Formen 11-17 (zwei Commit-Zeilen, keine
+# Commit-Zeile, keine Fall-Urteil-Zeile, Kennungs-Doppelung nach Auflösung,
+# Fall-Verzeichnis, Aufruf-Vorbedingungen) als Verhaltens-Zug; ein eigener
+# Mutations-Fall trägt allein die fehlt-/leer-Prüfung-Klasse (Fall 810).
 stamp_records_abbruch() {
   echo "stamp-records: ABBRUCH — $1" >&2
   exit 1

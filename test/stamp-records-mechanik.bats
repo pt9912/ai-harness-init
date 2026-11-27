@@ -25,6 +25,15 @@
 #      angehaengt — kein Fall-File entsteht fuer sie.
 #   4. Ein RETRY desselben Sweep-Ergebnisses mit neuer run-id haengt an (kein bruch);
 #      die Doppelung desselben geprueften Commits ist am Kopf lesbar (Plan §6, Risiko 3).
+#   5. JEDE fail-closed-Zweig-Form bricht eigen (Review F-2, Ergaenzung): zwei
+#      'gepruefter Commit:'-Zeilen, keine Commit-Zeile, keine Fall-Urteil-Zeile,
+#      zwei Kennungs-Formen auf dieselbe Fall-Datei, fehlendes Fall-Verzeichnis und
+#      die Aufruf-Vorbedingungen (attempt-Nummer, qualifikator-Wert).
+#
+# WAS HIER NICHT GEMESSEN WIRD (Grenze, F-2-Form): die Anlagen-Tiefe — je neuem
+# Zweig-Fall steht KEIN Mutations-Fall; die Anlagen-Form traegt allein die
+# 810-Klasse (die fehlt/leer-Pruefung an der Meldung-Zusage). Ein Regress an den
+# Zwoeg der Tests 11-17 bindet der Verhaltens-Zug, nicht die Anlage.
 
 setup() {
 	REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
@@ -183,5 +192,85 @@ baue_fixture() {
 	[ "$status" -ne 0 ]
 	[[ "$output" == *"Fall-Kennung '810-foo-bar'"* ]]
 	[ "$geschichte" = "$(cat "$FIX/.harness/stamp/mutate/810-foo-bar.txt")" ]
+	rm -rf "$FIX"
+}
+
+@test "stamp-records: zwei 'gepruefter Commit:'-Zeilen sind eine doppelte Bestimmung" {
+	baue_fixture
+	sed -i "2a gepruefter Commit: 1111111111111111111111111111111111111111" "$Ergebnis"
+	run bash "$MUT" --stamp-records "$Ergebnis" --run 42 --attempt 1 --wurzel "$FIX"
+	echo "exit=$status Meldung=[$output] (Zusage: ABBRUCH 'zwei gepruefter Commit-Zeilen', keine Ablage)"
+	[ "$status" -ne 0 ]
+	[[ "$output" == *"zwei 'gepruefter Commit:'-Zeilen"* ]]
+	[ ! -d "$FIX/.harness/stamp/mutate" ]
+	rm -rf "$FIX"
+}
+
+@test "stamp-records: ein Result-File ohne 'gepruefter Commit:'-Zeile bricht" {
+	baue_fixture
+	sed -i '/^gepruefter Commit: /d' "$Ergebnis"
+	run bash "$MUT" --stamp-records "$Ergebnis" --run 42 --attempt 1 --wurzel "$FIX"
+	echo "exit=$status Meldung=[$output] (Zusage: ABBRUCH 'traegt keine gepruefter Commit-Zeile', keine Ablage)"
+	[ "$status" -ne 0 ]
+	[[ "$output" == *"traegt keine 'gepruefter Commit:'-Zeile"* ]]
+	[ ! -d "$FIX/.harness/stamp/mutate" ]
+	rm -rf "$FIX"
+}
+
+@test "stamp-records: ein Result-File ohne Fall-Urteil-Zeile bricht (nur FEHLT ist kein Anhang)" {
+	# Der reale Vorgang kann diese Fassung schreiben (ergebnis_schreiben): jeder
+	# Shard ohne Beleg laesst alle Faelle als FEHLT stehen — kein Fall-Urteil,
+	# kein Anhang, und der Konsum bricht statt still anzuhängen.
+	baue_fixture
+	grep -vE '^(ok|BEFUND)' "$Ergebnis" > "$FIX/ohne-faelle.txt"
+	run bash "$MUT" --stamp-records "$FIX/ohne-faelle.txt" --run 42 --attempt 1 --wurzel "$FIX"
+	echo "exit=$status Meldung=[$output] (Zusage: ABBRUCH 'traegt keine Fall-Urteil-Zeile', keine Ablage)"
+	[ "$status" -ne 0 ]
+	[[ "$output" == *"traegt keine Fall-Urteil-Zeile"* ]]
+	[ ! -d "$FIX/.harness/stamp/mutate" ]
+	rm -rf "$FIX"
+}
+
+@test "stamp-records: zwei Kennungs-Formen, die auf dieselbe Fall-Datei loesen, sind eine doppelte Bestimmung" {
+	# Die Aufloesungs-Doppelung: '810-foo-bar' (voller Name) und 'foo-bar'
+	# (Slug-Form) loesen auf dieselbe Datei — über ein bearbeitetes Result-File
+	# erreichbar, das der Konsum laut liest.
+	baue_fixture
+	sed -i 's/^BEFUND   811-bar      Shard 1$/ok       foo-bar       Shard 1/' "$Ergebnis"
+	run bash "$MUT" --stamp-records "$Ergebnis" --run 42 --attempt 1 --wurzel "$FIX"
+	echo "exit=$status Meldung=[$output] (Zusage: ABBRUCH 'loesen beide auf 810-foo-bar')"
+	[ "$status" -ne 0 ]
+	[[ "$output" == *"loesen beide auf"* ]]
+	[ ! -d "$FIX/.harness/stamp/mutate" ]
+	rm -rf "$FIX"
+}
+
+@test "stamp-records: ein fehlendes Fall-Verzeichnis bricht" {
+	baue_fixture
+	rm -rf "$FIX/test/mutations"
+	run bash "$MUT" --stamp-records "$Ergebnis" --run 42 --attempt 1 --wurzel "$FIX"
+	echo "exit=$status Meldung=[$output] (Zusage: ABBRUCH 'kein Fall-Verzeichnis')"
+	[ "$status" -ne 0 ]
+	[[ "$output" == *"kein Fall-Verzeichnis"* ]]
+	rm -rf "$FIX"
+}
+
+@test "stamp-records: --attempt 0 ist keine Attempt-Nummer" {
+	baue_fixture
+	run bash "$MUT" --stamp-records "$Ergebnis" --run 42 --attempt 0 --wurzel "$FIX"
+	echo "exit=$status Meldung=[$output] (Zusage: ABBRUCH 'keine positive Attempt-Nummer', keine Ablage)"
+	[ "$status" -ne 0 ]
+	[[ "$output" == *"--attempt ist keine positive Attempt-Nummer"* ]]
+	[ ! -d "$FIX/.harness/stamp/mutate" ]
+	rm -rf "$FIX"
+}
+
+@test "stamp-records: ein unbekannter --qualifikator-Wert bricht" {
+	baue_fixture
+	run bash "$MUT" --stamp-records "$Ergebnis" --run 42 --attempt 1 --qualifikator beides --wurzel "$FIX"
+	echo "exit=$status Meldung=[$output] (Zusage: ABBRUCH 'qualifikator ist infra|last', keine Ablage)"
+	[ "$status" -ne 0 ]
+	[[ "$output" == *"--qualifikator ist infra|last"* ]]
+	[ ! -d "$FIX/.harness/stamp/mutate" ]
 	rm -rf "$FIX"
 }

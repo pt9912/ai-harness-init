@@ -402,7 +402,9 @@ bash harness/tools/mutate.sh --stamp-records <result-file> --run <id> --attempt 
 ```
 
 Es liest das Result-File **einmal vollständig**, prüft **vor** jedem Anhang und hängt
-dann je Fall eine Zeile an:
+dann je Fall eine Zeile an. `--wurzel <dir>` trägt allein die hermetische
+Fixture-Lesart (`test/stamp-records-mechanik.bats`); im Konsum-Aufruf am Repo entfällt
+sie:
 
 ```
 <datum> · commit <sha8> · form ok|befund[ · qualifikator infra|last] · run <id> attempt <n>
