@@ -46,22 +46,6 @@ environment-check: ## Umgebungs-Befund je Werkzeug: Inventar-Soll am Host festst
 	@bash tools/harness/environment-check.sh
 `
 
-// inventoryBasissatz sind die Inventar-Zeilen jedes Ziels: die Werkzeuge, die die
-// immer emittierten Gates (record-gates, baseline-verify, doc-gate) am Host brauchen.
-// Pruefformen und Spaltenform sind die des Check-Skripts (SPEC-099); die d-check-
-// Anwesenheit traegt die fetched Ablage (make dcheck-fetch) wie in der Lab-Fassung.
-// Am Inventar ausdruecklich NICHT gemessen: awk — das Doc-Gate-Fragment misst die
-// seine Probe selbst (DOC_GATE_ZIEL, lautem Abbruch, wenn awk fehlt); und die
-// Werkzeuge des gepinnten Image-Wegs (opt-in) — dort adressiert der Digest, der Check
-// vergleicht sie nicht.
-var inventoryBasissatz = []string{
-	"bash|Mindestversion|pflicht|manifest:4.0|Interpreter der Gate-Werkzeuge (tools/harness)|Die Gate-Skripte setzen die Bash-Sprachform 4.0 voraus; unterhalb endet der Check mit Diagnose statt Syntaxfehler — der Guard steht als erster Befehl des Skripts",
-	"git|Faehigkeit|pflicht|manifest:probe:git-version|Gate-Nachweis und Stop-Hook (record-gates, working-tree-hash)|Probe: git --version traegt die Draht-Form ^git version — der Revisions-Zugriff ist Kontext des Laufs, nicht der Umgebung, und wird hier nicht gemessen",
-	"make|Faehigkeit|pflicht|manifest:probe:make-gnu|Einziger Rezept-Lauefer (gates und die Fragmente)|Probe: make --version nennt GNU Make in der ersten Zeile — die Rezepte setzen GNU-make-Syntax voraus (include, lastword)",
-	"sha256sum|Faehigkeit|pflicht|manifest:probe:sha256-abc|Baseline-Integritaet (baseline-verify) und der Traeger-Fetch|Probe: der sha256-Digest der Probe-Eingabe ABC traegt den festen Wert b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78 — die Pruefform misst Korrektheit, nicht die Distribution",
-	"d-check|Anwesenheit|pflicht|manifest:anwesend|docs-check-host (Doku-Gate), docker-los|die Probe sieht den PATH UND die fetched Ablage .harness/state/bin/d-check (make dcheck-fetch, OCI-Pull nach dem DCHECK_DIGEST-Pin aus d-check.mk); die Version traegt keine Pin-Stelle — Anwesenheit; die Binaer-Beschaffung traegt der Fetch",
-}
-
 // EnsureInventoryRows fuegt die Zeilen eines Sprach-Skeletts in das liegende Inventar
 // ein und schreibt es kanonisch neu: je Werkzeug-Namen die EINE Zeile — fehlt sie,
 // kommt sie dazu; traegt sie ein anderes Soll, gewinnt die neu angebotene Zeile
@@ -131,8 +115,24 @@ func inventarZeileFuer(inventar, werkzeug string) string {
 // waere.
 func EnvironmentMk() string { return environmentMk }
 
-// InventoryBasissatz liefert die Basis-Zeilen des Inventars (fuer Tests/Inspektion).
-func InventoryBasissatz() []string { return inventoryBasissatz }
+// InventoryBasissatz liefert je Aufruf eine eigene Grund-Slice mit den Basis-Zeilen
+// des Inventars (fuer Tests/Inspektion): die Werkzeuge, die die immer emittierten
+// Gates (record-gates, baseline-verify, doc-gate) am Host brauchen. Pruefformen und
+// Spaltenform sind die des Check-Skripts (SPEC-099); die d-check-Anwesenheit traegt
+// die fetched Ablage (make dcheck-fetch) wie in der Lab-Fassung. Am Inventar
+// ausdruecklich NICHT gemessen: awk — das Doc-Gate-Fragment misst die seine Probe
+// selbst (DOC_GATE_ZIEL, lautem Abbruch, wenn awk fehlt); und die Werkzeuge des
+// gepinnten Image-Wegs (opt-in) — dort adressiert der Digest, der Check vergleicht
+// sie nicht.
+func InventoryBasissatz() []string {
+	return []string{
+		"bash|Mindestversion|pflicht|manifest:4.0|Interpreter der Gate-Werkzeuge (tools/harness)|Die Gate-Skripte setzen die Bash-Sprachform 4.0 voraus; unterhalb endet der Check mit Diagnose statt Syntaxfehler — der Guard steht als erster Befehl des Skripts",
+		"git|Faehigkeit|pflicht|manifest:probe:git-version|Gate-Nachweis und Stop-Hook (record-gates, working-tree-hash)|Probe: git --version traegt die Draht-Form ^git version — der Revisions-Zugriff ist Kontext des Laufs, nicht der Umgebung, und wird hier nicht gemessen",
+		"make|Faehigkeit|pflicht|manifest:probe:make-gnu|Einziger Rezept-Lauefer (gates und die Fragmente)|Probe: make --version nennt GNU Make in der ersten Zeile — die Rezepte setzen GNU-make-Syntax voraus (include, lastword)",
+		"sha256sum|Faehigkeit|pflicht|manifest:probe:sha256-abc|Baseline-Integritaet (baseline-verify) und der Traeger-Fetch|Probe: der sha256-Digest der Probe-Eingabe ABC traegt den festen Wert b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78 — die Pruefform misst Korrektheit, nicht die Distribution",
+		"d-check|Anwesenheit|pflicht|manifest:anwesend|docs-check-host (Doku-Gate), docker-los|die Probe sieht den PATH UND die fetched Ablage .harness/state/bin/d-check (make dcheck-fetch, OCI-Pull nach dem DCHECK_DIGEST-Pin aus d-check.mk); die Version traegt keine Pin-Stelle — Anwesenheit; die Binaer-Beschaffung traegt der Fetch",
+	}
+}
 
 // EnvironmentCheck emittiert harness/mk/environment.mk nach targetDir; das Skript
 // und der Inventar-Basissatz schreiben die Enforce-Emission (Klassentabelle in
