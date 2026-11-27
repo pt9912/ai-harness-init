@@ -105,18 +105,47 @@ _kein_docker() {
 	grep -q '/.harness/state/bin/d-check' "$WF/mutate-branch.yml"
 }
 
-@test "die Soll-Werte von go und golangci-lint stehen nicht literal in den drei Workflows" {
-	for datei in "$WF/ci.yml" "$WF/mutate.yml" "$WF/mutate-branch.yml"; do
-		treffer="$(grep -nE '([ \t@=])(v?1\.27\.4|v?2\.15\.0)\b' "$datei" || true)"
-		[ -z "$treffer" ] || { echo "$datei: $treffer" >&2; return 1; }
+# _kein_soll_literal <datei…> — die Eigenschaft hinter der "eine Quelle"-Zusage:
+# die Soll-Spalte kommt AUS DEM INVENTAR, also trägt der Funktions-Text der Ziele
+# keine Versions-Nennung der exakt-Werkzeuge — je Zeile der realen Inventar-Datei
+# gelesen (Werkzeug-Menge kommt aus ihr), nicht die heutigen Pin-Werte literal im
+# Wächter (F-1: auch ein künftiger Pin-Wert fällt unter dieselbe Bindung).
+# Gelesen wird der kommentar-bereinigte Text: ein Kommentar nennt einen Wert,
+# ohne ihn zu fahren (die Action-Pin-Zeilen `# v5.1.0` sind Nennungen, kein Soll).
+_kein_soll_literal() {
+	local datei werkzeug pruef grad soll rest treffer muster
+	for datei in "$@"; do
+		while IFS='|' read -r werkzeug pruef grad soll rest; do
+			case "$werkzeug" in '#'*) continue ;; esac
+			[ "$pruef" = "exakt" ] || continue
+			muster="$(soll_anker "$werkzeug")"
+			treffer="$(sed 's/#.*//' "$datei" | grep -nE -- "$muster" || true)"
+			[ -z "$treffer" ] || { echo "$datei: $werkzeug (Soll aus Inventar) — $treffer" >&2; return 1; }
+		done < "$REPO/harness/tools/environment-inventory.txt"
 	done
 }
 
-@test "das Setup-Skript liest das Inventar und trägt kein Soll literal" {
+# soll_anker <werkzeug> — die Musterform, an der eine Soll-Nennung des Werkzeugs im
+# Funktions-Text erkennbar ist: die Versions-Stelle an dessen Namen (env-Form,
+# Setup-Step-Form, Download-URL-Form). Ein noch unbekanntes exakt-Werkzeug fällt
+# unter die generische Namens-Anker-Form — die Werkzeug-MENGE kommt aus dem
+# Inventar, der Anker aus dem Werkzeug-Namen, kein Literal eines Pin-Werts.
+soll_anker() {
+	case "$1" in
+		go) printf '%s' 'go-version[ \t]*:[ \t]*[0-9]|GO_VERSION[ \t]*[=:][ \t]*["'"'"']?[Vv]?[0-9]|go[0-9]+(\.[0-9]+)+|go\.dev/dl/go[0-9]|go[ \t]+version[ \t]*["'"'"']?[0-9]' ;;
+		golangci-lint | golangci) printf '%s' 'GOLANGCI_LINT_VERSION[ \t]*[=:][ \t]*["'"'"']?[Vv]?[0-9]|golangci.*[Vv]?[0-9]+\.[0-9]+' ;;
+		*) printf '%s' "$1"'.*["'"'"']?[Vv]?[0-9]+\.[0-9]+' ;;
+	esac
+}
+
+@test "kein Inventar-Soll-Wert steht literal in den drei Workflows" {
+	_kein_soll_literal "$WF/ci.yml" "$WF/mutate.yml" "$WF/mutate-branch.yml"
+}
+
+@test "das Setup-Skript liest das Inventar und trägt kein Inventar-Soll-Wert literal" {
 	grep -q 'environment-inventory.txt' "$REPO/harness/tools/ci-runner-setup.sh" \
 		|| { echo "Skript liest das Inventar nicht" >&2; return 1; }
-	treffer="$(grep -nE '(v?1\.27\.4|v?2\.15\.0)\b' "$REPO/harness/tools/ci-runner-setup.sh" || true)"
-	[ -z "$treffer" ] || { echo "$treffer" >&2; return 1; }
+	_kein_soll_literal "$REPO/harness/tools/ci-runner-setup.sh"
 }
 
 @test "der Tag-Workflow bleibt gepinnt-image-getrieben" {
