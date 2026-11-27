@@ -31,7 +31,7 @@ nicht als Quelle), `spec/architecture.md` §Komponenten (Gates-Sicht). Der
 Verweis zeigt **aufwärts** (Baseline-Regelwerk `grundlagen-referenz-richtung.md`
 §Referenz-Richtung (SDP)).
 
-**Verantwortlich:** — *(Architect-Rolle: ADR + `AGENTS.md` §3.9 + Adaptions-Einträge;
+**Verantwortlich:** pt9912 *(Architect-Rolle: ADR + `AGENTS.md` §3.9 + Adaptions-Einträge;
 Commit-Zuschnitt je `AGENTS.md` §3.8 — eigener Commit, nur Architect-Artefakte)*
 
 **Autor:** pt9912. **Datum:** 2026-11-27.
