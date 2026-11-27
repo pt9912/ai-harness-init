@@ -81,8 +81,8 @@ go_ist="$(version_ist go)"
 if [ "$go_ist" = "$go_soll" ]; then
 	meldung go "$go_soll" "$go_ist" "am PATH — OK"
 else
-	if [ -x "$PREFIX/bin/go" ] \
-		&& [ "$("$PREFIX/bin/go" version 2>/dev/null | grep -oE '[0-9]+(\.[0-9]+)*' | head -n 1)" = "$go_soll" ]; then
+	if [ -x "$PREFIX/go" ] \
+		&& [ "$("$PREFIX/go" version 2>/dev/null | grep -oE '[0-9]+(\.[0-9]+)*' | head -n 1)" = "$go_soll" ]; then
 		meldung go "$go_soll" "$go_soll" "im PREFIX — OK"
 	elif [ -n "$PLAN_MODE" ]; then
 		meldung go "$go_soll" "${go_ist:-fehlt}" "Install ausgesetzt (PLAN)"
@@ -92,12 +92,20 @@ else
 			aarch64) go_arch=arm64 ;;
 			*) echo "ci-runner-setup: uname '$(uname -m)' trägt keine go-Archiv-Form" >&2; exit 2 ;;
 		esac
-		mkdir -p "$REPO/.harness/state"
+		# Volle Toolchain-Ablage (GOROOT-vollständig) unter .harness-ci/go-<Soll>,
+		# das Binary als Symlink an $PREFIX/go — gleiche Zielform wie der
+		# golangci-lint-Zweig ($PREFIX/golangci-lint): $PREFIX ist der PATH-Zusatz
+		# des Job-Steps, ein Binary unter $PREFIX/bin wäre nicht am PATH. go liest
+		# GOROOT über den aufgelösten Binary-Pfad (/proc/self/exe löst den Symlink
+		# auf das Archiv-Baum-Layout); die GOROOT-Auflösung trägt der reale
+		# Runner-Lauf (LP2), die Stub-Layout-Probe die Ablage-/Prüfform.
 		tmp="$(mktemp -d -p "$REPO/.harness/state")"
+		zug="$REPO/.harness-ci/go-$go_soll"
 		curl -fsSL "https://go.dev/dl/go${go_soll}.linux-${go_arch}.tar.gz" -o "$tmp/go.tgz"
 		tar -xzf "$tmp/go.tgz" -C "$tmp"
-		mv "$tmp/go/bin/"* "$PREFIX/"
-		mv "$tmp/go/pkg" "$PREFIX/pkg"
+		rm -rf "$zug"
+		mv "$tmp/go" "$zug"
+		ln -sf "$zug/bin/go" "$PREFIX/go"
 		rm -rf "$tmp"
 		meldung go "$go_soll" "${go_ist:-fehlt}" "installiert nach .harness-ci/bin"
 	fi
