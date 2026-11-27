@@ -18,6 +18,7 @@ nicht hier.
 
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
 - [welle-baseline-sprung-v7-0-0 — Baseline-Sprung v6.18.1 → v7.0.0](../welle-baseline-sprung-v7-0-0.md)
+- [welle-ohne-docker — Gates und Lab-Läufer docker-los](../welle-ohne-docker.md)
 
 **Nichts in Arbeit.**
 
