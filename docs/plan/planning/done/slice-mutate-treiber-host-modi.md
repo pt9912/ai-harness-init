@@ -25,7 +25,7 @@ der Welle beobachtet mehr als ein Slice-DoD trägt (Baseline-Regelwerk
 
 **Berührte Spec-Stellen:** — *(der Treiber ist kein Spec-Artefakt; die
 Sensor-Texte `harness/sensors/mutate.md`/`gates.md` tragen den Vertrag —
-Doku-Nachzug: [`slice-doku-nachzug-ohne-docker`](../next/slice-doku-nachzug-ohne-docker.md)).*
+Doku-Nachzug: [`slice-doku-nachzug-ohne-docker`](../in-progress/slice-doku-nachzug-ohne-docker.md)).*
 
 **Verantwortlich:** pt9912
 
@@ -83,7 +83,7 @@ Sperren-Meldung unterscheidet die Ursache: Umgebungs-Befund ≠ Test-Fehlschlag
       (`.harness/skills/reviewer.md`) — kein Self-Review (Modul 8).
 [x] Doku-Update: [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md)
       (Vertrag, Grenzen) — Doku-Nachzug im
-      [`slice-doku-nachzug-ohne-docker`](../next/slice-doku-nachzug-ohne-docker.md),
+      [`slice-doku-nachzug-ohne-docker`](../in-progress/slice-doku-nachzug-ohne-docker.md),
       hier nur die Zeilen, die *der Treiber-Vertrag* nennt.
 [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 [x] Beobachtungs-Register (`../observations/`) fortgeschrieben —
@@ -202,14 +202,14 @@ F-1 LOW im Fix `3f29742d` behoben).
 - **Folge-Slices:**
   [`slice-smoke-und-full-smoke-ohne-docker`](../done/slice-smoke-und-full-smoke-ohne-docker.md)
   (Entkoppelung der 64 schweren Fälle, §6-Risiko 1) ·
-  [`slice-doku-nachzug-ohne-docker`](../next/slice-doku-nachzug-ohne-docker.md)
+  [`slice-doku-nachzug-ohne-docker`](../in-progress/slice-doku-nachzug-ohne-docker.md)
   (Rest des Doku-Nachzugs).
 - **Risiken aus §6:** 64 schwere Fälle — eingetreten, Folge-Slice oben ·
   Beleg-Slot — entfallen (oben).
 - **Drei Paarungen:** Anker — der Lerneintrag oben ist gezählt, es gibt
   keinen `liegt in` · Folge-Slices —
   [`slice-smoke-und-full-smoke-ohne-docker`](../done/slice-smoke-und-full-smoke-ohne-docker.md)
-  und [`slice-doku-nachzug-ohne-docker`](../next/slice-doku-nachzug-ohne-docker.md)
+  und [`slice-doku-nachzug-ohne-docker`](../in-progress/slice-doku-nachzug-ohne-docker.md)
   · Register —
   [`BEO-ALL/docker-aussetzer-im-vorlauf-wird-als-falscher-grund-gemeldet`](../observations/BEO-ALL/docker-aussetzer-im-vorlauf-wird-als-falscher-grund-gemeldet/state.md)
   (Zähler 2). Die Prüfung der Paarungen trägt die schließende Welle.

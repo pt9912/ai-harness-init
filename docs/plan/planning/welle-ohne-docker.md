@@ -108,7 +108,7 @@ vergessen wird.
 | [slice-smoke-und-full-smoke-ohne-docker](done/slice-smoke-und-full-smoke-ohne-docker.md) | `smoke` und `full-smoke` laufen ohne Docker | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-full-smoke-gates-echt-gruen](next/slice-full-smoke-gates-echt-gruen.md) | Restmenge: `full-smoke` laeuft ohne Docker vollgruen | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-ci-runner-ohne-docker](done/slice-ci-runner-ohne-docker.md) | CI auf frischem Klon — ohne Docker-Daemon | [`MR-014`](../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions) |
-| [slice-doku-nachzug-ohne-docker](next/slice-doku-nachzug-ohne-docker.md) | Doku-Nachzug der docker-los-Form | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-doku-nachzug-ohne-docker](in-progress/slice-doku-nachzug-ohne-docker.md) | Doku-Nachzug der docker-los-Form | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 
 ## 5. Abhängigkeiten
 
