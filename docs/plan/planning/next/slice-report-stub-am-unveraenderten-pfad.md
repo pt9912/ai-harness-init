@@ -34,7 +34,7 @@ Implementation löst seinen Report-Anteil),
 in derselben Grenze übernommen),
 [`MR-041`](../../../../harness/conventions.md#mr-041--die-referenz-statt-kopie-setzung-für-ausfüll-templates-steht-jetzt-in-der-adoptierten-baseline)
 (bindet **vendored** Vorlagen; die Stub-Vorlage dieser Klasse ist deshalb
-bewusst repo-eigen — ADR-0061 Festlegung 2),
+bewusst repo-eigen — [`ADR-0061`](../../adr/0061-review-report-bekommt-beim-archivieren-einen-stub.md) Festlegung 2),
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
 (kein Sensor hält den Status eines Artefakts gegen die Form seiner Adressen —
 die drei Gegenformen bleiben benannt),
@@ -66,8 +66,7 @@ Fundstellen (`archive-welle --vorschau altbestand`, Architektur-Bericht
 2026-11-27), deren Report-Anteil je [`ADR-0061`](../../adr/0061-review-report-bekommt-beim-archivieren-einen-stub.md)-Klasse
 entfällt — Report→Report **43** · Evidence **42** · `Accepted`-ADR **11** ·
 Closure-Notizen/Carveouts **6** · `open/` **5** (je `grep`-Messung beim
-Implementer-Zug gegen den Bestand wiederholen, [
-`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)-Form).
+Implementer-Zug gegen den Bestand wiederholen, [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)-Form).
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
@@ -93,7 +92,7 @@ Implementer-Zug gegen den Bestand wiederholen, [
       `docs/plan/planning/` (Name beim Implementer, Platzhalter
       `archive-stub-report.template.md` <!-- d-check:ignore (Platzhalter: entsteht im Implementer-Zug, MR-071-Form) -->)
       als Nachbar der vendored Vorlage
-      [`.harness/baseline/v7.0.0/templates/docs/plan/planning/archive-stub-slice.template.md`](../../../.harness/baseline/v7.0.0/templates/docs/plan/planning/archive-stub-slice.template.md)
+      [`.harness/baseline/v7.0.0/templates/docs/plan/planning/archive-stub-slice.template.md`](../../../../.harness/baseline/v7.0.0/templates/docs/plan/planning/archive-stub-slice.template.md)
       — dieselbe Grundform (Überschrift, Archiv-Zeiger, Zustand), auf einen
       Review-Report angewandt; der Träger `archive-welle` liest sie selbst
       ([`MR-041`](../../../../harness/conventions.md#mr-041--die-referenz-statt-kopie-setzung-für-ausfüll-templates-steht-jetzt-in-der-adoptierten-baseline)-Grenze
@@ -143,7 +142,7 @@ zählen nicht mit.
 | `docs/plan/planning/archive-stub-report.template.md` <!-- d-check:ignore (Platzhalter: entsteht im Implementer-Zug, MR-071-Form) --> (Name beim Implementer) | neu | die repo-eine Report-Stub-Form (LP 1) — Referenz statt Kopie über die Vorlagen-Verdratung des Trägers |
 | [`internal/archive/anwenden.go`](../../../../internal/archive/anwenden.go) | update | statt `g.Rm(b.Reviews)` die Stub-Emission je Review an unveränderter Adresse, staged; Zip-Logik unverändert voll (LP 2) |
 | `internal/archive/` (Tests) | update | Wächter je Fitness-Tafel: Stub bleibt am Pfad, Archiv-Zeiger und Zustand im Stub, Vorschau ohne Report-Ziele (LP 2) |
-| [`harness/tools/archive-welle.sh`](../../../../harness/tools/archive-welle.sh) bzw. die Verdrahtung im Träger | update | liest die neue Vorlage für die Review-Klasse ([`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) Träger-Form) — LP 1/LP 3 |
+| [`Makefile`](../../../../Makefile) (`archive-welle`-Rezept) | update | liest die neue Vorlage für die Review-Klasse ([`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) Träger-Form) — LP 1/LP 3 |
 
 ## 4. Trigger
 
