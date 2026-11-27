@@ -64,6 +64,9 @@ jobs:
           set -euo pipefail
           cases="$(make -s --no-print-directory mutate-auswahl SLICE=--alle SHARDS='${{ strategy.job-total }}' SHARD='${{ matrix.shard }}')"
           echo "cases=$cases" >> "$GITHUB_OUTPUT"
+      - name: d-check-Carrier ablegen (die smoke-Faelle fahren den Smokedocker-los, harness/tools/smoke.sh braucht das Binary am Carrier-Pfad)
+        run: make dcheck-fetch
       - run: make mutate
         env:
           MUTATE_CASES: ${{ steps.shard.outputs.cases }}
+          DCHECK_CARRIER: ${{ github.workspace }}/.harness/state/bin/d-check

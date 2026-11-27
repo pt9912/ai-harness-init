@@ -1701,9 +1701,10 @@ main() {
   # LOCK gegen parallele Laeufe. Seine URSPRUENGLICHE Begruendung ist mit slice-047
   # entfallen: zwei Laeufe mutieren nicht mehr denselben Arbeitsbaum (jeder hat seine
   # eigene Kopie). Was bleibt, ist die geteilte RESSOURCE: beide Laeufe fahren dieselben
-  # Rezept-Werkzeuge am Host — und solange smoke/full-smoke im Fall-Satz sind, dieselben
-  # Docker-Image-Tags (`ai-harness-init:test` …) und denselben Build-Cache; ein
-  # `make smoke`-Fall kollidierte sonst in seinen tmp-Ressourcen. Der Lock bleibt also,
+  # Rezept-Werkzeuge am Host; solange full-smoke im Fall-Satz ist, dieselben
+  # Docker-Image-Tags (`ai-harness-init:test` …) und denselben Build-Cache, und die
+  # tmp-Repos der E2E-Modi teilen denselben TMPDIR (smoke und full-smoke). Der Lock
+  # bleibt also,
   # mit geaenderter Begruendung — nicht mehr Baum-Schutz, sondern Ressourcen-Serialisierung.
   # `mkdir` ist atomar, also ein portabler Mutex ohne flock. Er steht IN main(), nicht
   # im Top-Level: test/mutate-driver.bats sourct die Datei fuer ihre Funktionen, und ein
@@ -1920,18 +1921,22 @@ main() {
     echo "mutate: serielle Spur fuer:${HEAVY_MODES% } — ihr Plan besteht nicht nur aus docker-Aufrufen, ihr Urteil ist damit nicht vollstaendig gelesen."
   fi
 
-  # DIE DAEMON-ABHAENGIGEN MODI ALS UMGEBUNGS-VORBEDINGUNG: smoke und full-smoke
-  # bootstrappen tmp-Repos und fahren dort Docker-Gates — ist der Daemon nicht
-  # erreichbar, endet ihr Gruen-Vorlauf an einem Docker-Aussetzer, und dessen
-  # Ursache liest sich sonst wie ein Test-Fehlschlag. Der Lauf bricht darum vor der
-  # ersten Isolationskopie als Umgebungs-Befund ab (dieselbe Klasse und
+  # DIE DAEMON-ABHAENGIGEN MODI ALS UMGEBUNGS-VORBEDINGUNG: full-smoke bootstrapt
+  # tmp-Repos und faehrt dort an den Docker-bundenen Stufen Docker-Gates — ist der
+  # Daemon nicht erreichbar, endet der Gruen-Vorlauf an einem Docker-Aussetzer, und
+  # dessen Ursache liest sich sonst wie ein Test-Fehlschlag. Der Lauf bricht darum vor
+  # der ersten Isolationskopie als Umgebungs-Befund ab (dieselbe Klasse und
   # Exit-Klasse wie der Inventar-Check oben): die Werkzeug-Abwesenheit ist benannt,
-  # nicht still. Die Liste entfaellt mit slice-smoke-und-full-smoke-ohne-docker —
-  # danach traegt keiner dieser Modi mehr einen Docker-Zug im Rezept.
+  # nicht still. Grenze: smoke ist seit slice-smoke-und-full-smoke-ohne-docker aus
+  # dieser Liste raus — sein Rezept faehrt host-native (Traeger aus `make host-bin`,
+  # print-mk und docs-check am d-check-Carrier). full-smoke bleibt: seine hexslice-/
+  # hexagonal-Bootstraps holen a-check --print-mk ohne Host-Carrier-Fassung, und die
+  # nicht-Go-Code-Gates des Mono-Repos fahren Docker-Builds; bis ein Folgeslice diese
+  # Restmenge traegt, gilt der Abbruch.
   local daemons=" " mode_w docker_ist="nicht erreichbar (docker info schlug fehl)"
   for mode_w in $used_modes; do
     case "$mode_w" in
-      smoke | full-smoke) daemons="$daemons$mode_w " ;;
+      full-smoke) daemons="$daemons$mode_w " ;;
     esac
   done
   if [ -n "${daemons// /}" ]; then
@@ -1944,7 +1949,8 @@ main() {
     fi
     if [ -n "$docker_ist" ]; then
       echo "mutate: ABBRUCH — Umgebungs-Befund: docker · Soll: erreichbarer Docker-Daemon · Ist: $docker_ist." >&2
-      echo "  Die Fall-Modi:${daemons% } bootstrappen tmp-Repos mit Docker-Gates; der Abbruch liegt vor der" >&2
+      echo "  Die Fall-Modi:${daemons% } bootstrappen tmp-Repos an Docker-bundenen Stufen (a-check" >&2
+      echo "  --print-mk ohne Host-Carrier, Docker-Builds der nicht-Go-Gates); der Abbruch liegt vor der" >&2
       echo "  ersten Isolationskopie und ist der Umgebungs-Klasse zugeordnet (Exit 4), nicht einem Fall." >&2
       exit 4
     fi
