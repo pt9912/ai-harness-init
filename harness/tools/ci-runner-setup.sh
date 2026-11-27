@@ -140,8 +140,8 @@ fi
 # kommt mit dem Weg, kein Traeger-Musterzug hier. go selbst trägt der
 # go-Zweig davor (am PATH oder im PREFIX); die Übergabe des PREFIX an den
 # PATH des Install-Aufrufs verdrahtet die PREFIX-Ablage des go-Zweigs nach.
-# Grenze: ein im Runner-Umfeld gesetztes GOFLAGS/trägt die Umgebungs-Form —
-# belegt erst der reale Runner-Lauf; das Toolchain-Nachziehen (GOTOOLCHAIN)
+# Grenze: ein im Runner-Umfeld gesetztes GOFLAGS trägt die Umgebungs-Form —
+# ihr Ort ist der reale Runner-Lauf; das Toolchain-Nachziehen (GOTOOLCHAIN)
 # bleibt unverändert.
 golangci_ist="$(version_ist golangci-lint)"
 if [ "$golangci_ist" = "$golangci_soll" ]; then
