@@ -18,12 +18,14 @@ nicht hier.
 
 - [welle-09 — Modul-15-Konformität](../welle-09-modul-15-konformitaet.md)
 - [welle-baseline-sprung-v7-0-0 — Baseline-Sprung v6.18.1 → v7.0.0](../welle-baseline-sprung-v7-0-0.md)
-- [welle-ohne-docker — Gates und Lab-Läufer docker-los](../welle-ohne-docker.md)
+- [welle-ohne-docker — Gates und Lab-Läufer docker-los](../done/welle-ohne-docker.md)
 
-**In Arbeit:** [welle-ohne-docker](../welle-ohne-docker.md); daneben wellenlos
+**In Arbeit:** wellenlos
 [slice-gates-pruefgegenstand-stempel-v1](slice-gates-pruefgegenstand-stempel-v1.md)
-und [slice-stamp-records-konsum-v1](slice-stamp-records-konsum-v1.md) — der
-Doku-Nachzug liegt in `done/`.
+und [slice-stamp-records-konsum-v1](slice-stamp-records-konsum-v1.md);
+[doku-nachzug-ohne-docker](done/slice-doku-nachzug-ohne-docker.md) und die
+welle-ohne-docker-Slices liegen in `done/` — das Wellen-Closure-Log steht in
+[Abgeschlossene Wellen](#abgeschlossene-wellen).
 
 ## Nächste Wellen
 
@@ -142,6 +144,7 @@ Ergebnis-Notiz, keine Nummernfolge.
 | [welle-handbuch-zeigt-den-bestand](../done/welle-handbuch-zeigt-den-bestand.md) | 2026-10-08 | [welle-handbuch-zeigt-den-bestand-results.md](../done/welle-handbuch-zeigt-den-bestand-results.md) |
 | [welle-kotlin-skelett](../done/welle-kotlin-skelett.md) | 2026-10-09 | [welle-kotlin-skelett-results.md](../done/welle-kotlin-skelett-results.md) |
 | [welle-sprachprofile-java-python-csharp](../done/welle-sprachprofile-java-python-csharp.md) | 2026-10-20 | [welle-sprachprofile-java-python-csharp-results.md](../done/welle-sprachprofile-java-python-csharp-results.md) |
+| [welle-ohne-docker](../done/welle-ohne-docker.md) | 2026-11-27 | [welle-ohne-docker-results.md](../done/welle-ohne-docker-results.md) |
 
 Die Tabelle ist nach Wellen-Nummer sortiert, nicht nach Abschluss-Datum; `welle-10` schloss nach
 `welle-12`, und `welle-emittierte-werkzeuge` sowie `welle-v021-faehigkeit` stehen am Ende, weil
