@@ -384,6 +384,47 @@ Festlegung 3, `scan.ignore`); erzwingen kann sie nur der Vorgang, der sie schrei
 Ein ausgelassener Konsum-Schritt trägt sein Urteil weiter nur an den zwei Kanälen,
 die verfallen bzw. überschrieben werden.
 
+**Die Fall-Granularität** ([ADR-0107](../../docs/plan/adr/0107-die-mutations-record-granularitaet-ist-je-fall.md)
+Festlegungen 1–5) steht neben dem Lauf-Urteil-File der ADR-0103 — die Lauf-Form bleibt
+für den Altbestand, die Fall-Form trägt **neue** Läufe (Festlegung 4, Erstbestand):
+je Fall des `mutate-ergebnis.txt` eine Urteils-Zeile in
+`.harness/stamp/mutate/<fall-kennung>.txt`, das der Fall-File-Name ist die Fall-Kennung —
+sie löst gegen genau eine Datei unter `test/mutations/` auf (zugelassene Formen:
+der volle Fall-Name, die Slug-Form hinter dem Anker-Präfix, die reine Nummern-Form —
+[`MR-059`](../../harness/conventions/MR-059-kennungs-erkennung-traegt-die-zugelassenen-formen.md);
+unbekannt oder mehrdeutig bricht der Lauf fail-closed). Das Unterkommando übernimmt
+den Anhang:
+
+```sh
+bash harness/tools/mutate.sh --stamp-records <result-file> --run <id> --attempt <n> [--qualifikator infra|last]
+```
+
+Es liest das Result-File **einmal vollständig**, prüft **vor** jedem Anhang und hängt
+dann je Fall eine Zeile an:
+
+```
+<datum> · commit <sha8> · form ok|befund[ · qualifikator infra|last] · run <id> attempt <n>
+```
+
+Je neuem Fall-File steht vor der ersten Urteils-Zeile der Kopf mit Run, Attempt und
+geprüftem Commit — Run und Attempt als Argumente des Konsum-Laufs, der geprüfte Commit
+aus der `gepruefter Commit:`-Zeile des Result-Files
+([`MR-051`](../../harness/conventions/MR-051-zahl-beleg-bindet-commit-message-und-register-zaehler.md)-Form:
+je Zahl ein Kommando). Die fail-closed-Grenzen: fehlendes, leeres oder unlesbares
+Result-File · doppelte Bestimmung (derselbe Fall zweimal im Result-File, oder das Paar
+`(fall, run, attempt)` steht bereits im Fall-File) · unbekannte oder mehrdeutige
+Fall-Kennung. KEIN Anhängen für die Zeilen ohne Fall-Urteil: `FEHLT`, `UNERWARTET` und
+Fall-Zeilen der Form `BEFUND (kein Ergebnis im Log)` tragen keinen Fall-Ausgang, und
+ein Anhang behauptete ein Verdikt, das der Kanal nicht trägt (Festlegung 1: ein
+`FEHLT`-Ergebnis wird nicht angehängt). Der Konsum **urteilt nicht** — der Exit meldet
+nur die Transformation — und **committe nicht und räumt nicht**: lesen → stampen →
+committen → dann räumen bleibt der Aufrufer-Reihenfolge (Festlegung 3/4). Wächter am
+Konsum: `test/stamp-records-mechanik.bats` (Happy: je Fall eine Zeile, Kopf je neuem
+File; die Grenzen je mit behaupteter Meldung, Bestand byte-gleich) und der
+Mutations-Fall `test/mutations/810-stamp-records-konsum-bricht-mit-meldung.sh`, Anlage
+nach [`MR-071`](../../harness/conventions/MR-071-die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand.md)
+/ [`MR-090`](../../harness/conventions/MR-090-ein-sensor-haelt-den-anker-am-commit.md).
+
 **Grenze.** Gewählt wird über `# files:`: ein Fall, dessen Wächter-Test sich änderte, dessen
 `# files:` aber keine geänderte Datei nennt, läuft nicht; zeigt `# files:` auf die falsche
 Datei, fehlt der Fall. Das lokale Urteil misst `HEAD`, nicht den Arbeitsbaum. Die Gewichte sind
