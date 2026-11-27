@@ -32,7 +32,7 @@ Träger des Fetches wechselt),
 **Berührte Spec-Stellen:** `spec/spezifikation.md` §Pins/Fetch (d-check-Quelle
 und Träger-Fetch). Der Verweis zeigt **aufwärts**.
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912
 
 **Autor:** pt9912. **Datum:** 2026-11-27.
 
