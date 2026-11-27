@@ -9,6 +9,18 @@ Prüft die gesamte Repo-Doku netzlos (`--network none`) mit dem in
 dem Kommando aus [`AGENTS.md`](../../AGENTS.md) §3.8. Grün heißt: im Prüfbereich **dieser** Module ist kein
 Befund offen, nicht mehr.
 
+## Zwei Wege, ein Urteil
+
+Das Urteil kommt aus beiden Fassungen vom selben Binary am selben `DCHECK_DIGEST`-Pin; die Wege
+unterscheiden nur den Transport. Der Image-Weg (`make docs-check`, d-check.mk) hält
+`docker run --rm --network none` mit dem Digest. Der Pflicht-Weg `make docs-check-host`
+([ADR-0109](../../docs/plan/adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)) führt
+`$(DCHECK_CARRIER)` direkt vom Host — die Ablage (`.harness/state/bin/d-check`) entsteht
+einmalig durch [`make dcheck-fetch`](dcheck-fetch.md) (Digest geprüft, fail-closed) und wird
+von der Werkzeug-Anschaffung (`.viper.sh`) gepflegt. **Was der Host-Weg nicht deckt:** die
+Transport-Prüfung des Image-Wegs — die OCI-Blob-Kette fährt der Fetch
+([`harness/sensors/dcheck-fetch.md`](dcheck-fetch.md)), nicht dieser Gate-Lauf.
+
 ## Grenze — was das Grün nicht abdeckt
 
 ### Modul `planning`

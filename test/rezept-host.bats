@@ -72,6 +72,24 @@ setup() {
     [[ "$bildliste" == *"BATS_IMAGE="*"bash harness/tools/bats-lint.sh"* ]]
 }
 
+@test "shell-lint Host-Weg: bats-preprocess erhaelt das BATS_ROOT/BATS_LIBDIR-Paar" {
+    # bats-preprocess sourced common.bash relativ zu $BATS_ROOT/$BATS_LIBDIR; ohne
+    # das Paar bricht der Aufruf an //bats-core/common.bash (rot gesehen am Host,
+    # Fix slice-labor-gates-host-rezepte). Der Stub lebt im bats-Layout
+    # libexec/bats-core/ und scheitert laut mit den erhaltenen Werten — der
+    # abgeleitete Root (preprocess-Lage /../../) und lib muessen ankommen.
+    # GRENZE: die Env-Ueberschreibung von BATS_ROOT/BATS_LIBDIR misst der Test
+    # nicht; er faehrt den abgeleiteten Weg (BATS_ROOT/BATS_LIBDIR geleert).
+    stamm="$(mktemp -d)"
+    mkdir -p "$stamm/libexec/bats-core"
+    printf '#!/usr/bin/env bash\necho "bats-lint: FEHLER — Paar <$BATS_ROOT> | <$BATS_LIBDIR>" >&2\nexit 1\n' > "$stamm/libexec/bats-core/bats-preprocess"
+    chmod +x "$stamm/libexec/bats-core/bats-preprocess"
+    run env -u BATS_ROOT -u BATS_LIBDIR BATS_HOST=1 BATS_HOST_PREPROCESS="$stamm/libexec/bats-core/bats-preprocess" bash "$REPO/harness/tools/bats-lint.sh"
+    rm -rf "$stamm"
+    [ "$status" -eq 2 ]
+    [[ "$output" == *"Paar <$stamm> | <lib>"* ]]
+}
+
 @test "rezept: ci-lint ruft actionlint am Host, ci-lint-image im gepinnten Image" {
     run make -C "$REPO" -n ci-lint
     [ "$status" -eq 0 ]

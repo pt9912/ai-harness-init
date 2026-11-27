@@ -51,12 +51,14 @@
 # Schwelle laesst, laesst sich nicht rot faerben, solange kein Rumpf dort ein `$` in
 # Einzelquotes traegt; sie haelt allein die Trennung der beiden shellcheck-Aufrufe. Kein
 # Waechter liest diesen Kommentar gegen die Flags (akzeptiertes Negativ, Reviewer liest ihn).
-# KEIN bats-Test und kein Mutations-Fall deckt dieses Skript selbst: bats laeuft im Image
-# ohne docker, und ein Fall muesste eine Mutation rot faerben, waehrend die Fehler-
-# auswertung (bats-preprocess scheitert an einer Datei -> Exit 2, Datei im Text) einen
-# Lauf gruen lassen soll. Von Hand gesehen: ein Symlink ins Leere test/{a,m,z}-dangling.bats
-# faerbt den Lauf in jeder Reihenfolge rot; der Container beendet die Schleife erst nach
-# der letzten Datei und meldet jede gescheiterte.
+# ZAEHNE AM SKRIPT. Das Auflagen-Paar BATS_ROOT/BATS_LIBDIR des Host-Wegs deckt ein
+# bats-Test hermetisch (test/rezept-host.bats, Stub-preprocess ueber BATS_HOST_PREPROCESS,
+# kein docker) und ein Mutations-Fall haelt ihn scharf; ohne Paar faerbt der Test rot. Der
+# Rest der Fehlerauswertung (bats-preprocess scheitert an einer Datei -> Exit 2, Datei im
+# Text) traegt kein Wächter: bats laeuft im Image ohne docker, und ein Fall muesste eine
+# Mutation rot faerben, waehrend ein Lauf gruen lassen soll. Von Hand gesehen: ein Symlink
+# ins Leere test/{a,m,z}-dangling.bats faerbt den Lauf in jeder Reihenfolge rot; der
+# Container beendet die Schleife erst nach der letzten Datei und meldet jede gescheiterte.
 set -euo pipefail
 
 # Pins nur am Image-Weg: BATS_HOST=1 setzt die Anwesenheits-Auflage statt der
@@ -99,10 +101,18 @@ extrahiere() {
 			preprocess="$(cd "$(dirname "$(readlink -f "$batsbin")")/.." && printf '%s/libexec/bats-core/bats-preprocess' "$PWD")"
 		fi
 		[ -x "$preprocess" ] || { echo "bats-lint: bats-preprocess nicht gefunden ($preprocess) — BATS_HOST_PREPROCESS setzt den Pfad." >&2; return 2; }
+		# bats-preprocess sourced common.bash relativ zu $BATS_ROOT/$BATS_LIBDIR — dasselbe
+		# Auflagen-Paar wie am Image-Weg (-e BATS_ROOT=/opt/bats -e BATS_LIBDIR=lib). Das
+		# Host-Root leitet sich von der preprocess-Lage ab (libexec/bats-core/...); gesetzt
+		# ist es nur am Aufruf der preprocess-Fassung hier, nicht im Umfeld des Laufs.
+		# Grenze: eine standalone preprocess-Fassung ohne bats-Layout braucht BATS_ROOT aus
+		# der Umgebung — sonst bricht sie laut an common.bash (dasselbe laut wie ohne Paar).
+		bats_root="${BATS_ROOT:-$(cd "$(dirname "$preprocess")/../.." && printf '%s' "$PWD")}"
+		bats_libdir="${BATS_LIBDIR:-lib}"
 		rc=0
 		for f in "${dateien[@]}"; do
 			printf '\n%s%s\n' "$marke" "$f"
-			"$preprocess" "$f" || { echo "bats-lint: FEHLER — bats-preprocess scheitert an $f" >&2; rc=1; }
+			BATS_ROOT="$bats_root" BATS_LIBDIR="$bats_libdir" "$preprocess" "$f" || { echo "bats-lint: FEHLER — bats-preprocess scheitert an $f" >&2; rc=1; }
 		done
 		return "$rc"
 	fi
