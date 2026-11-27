@@ -21,12 +21,13 @@ type stopHookFassung struct {
 	record   string // Quelle von record-gates.sh
 	hash     string // Quelle von working-tree-hash.sh
 	toolsDir string // Ort der zwei Werkzeuge im Repo
+	keys     string // Quelle des je-Check-Satzerzeugers; leer, wenn die Fassung keinen traegt (Tier 1, ADR-0108)
 }
 
 func stopHookFassungen() []stopHookFassung {
 	return []stopHookFassung{
-		{"dogfood", "../../.claude/hooks/stop-require-gates.sh", "../../harness/tools/record-gates.sh", "../../harness/tools/working-tree-hash.sh", "harness/tools"},
-		{"ziel", "templates/enforce/stop-require-gates.sh", "templates/enforce/record-gates.sh", "templates/enforce/working-tree-hash.sh", "tools/harness"},
+		{"dogfood", "../../.claude/hooks/stop-require-gates.sh", "../../harness/tools/record-gates.sh", "../../harness/tools/working-tree-hash.sh", "harness/tools", "../../harness/tools/gates-keys.sh"},
+		{"ziel", "templates/enforce/stop-require-gates.sh", "templates/enforce/record-gates.sh", "templates/enforce/working-tree-hash.sh", "tools/harness", ""},
 	}
 }
 
@@ -116,6 +117,24 @@ func (r *stopRepo) hook(stdin string, extraEnv ...string) (string, int) {
 	return r.run(".claude/hooks/stop-require-gates.sh", stdin, extraEnv...)
 }
 
+// pinsMakefile ist das Fixture-Makefile der Dogfood-Fassung: der Satzerzeuger
+// liest je Check die Pin-Zeilen und den Rezept-Block aus dem Makefile — es traegt
+// alle Pin-Namen der Tafel-Mengen, damit je Check ein Key rechnet (leere Menge
+// waere fail-closed, MR-017).
+const pinsMakefile = `GO_VERSION ?= t
+GOLANGCI_LINT_VERSION ?= t
+TRAEGER_VERSION ?= t
+SHELLCHECK_IMAGE ?= t
+BATS_IMAGE ?= t
+ACTIONLINT_IMAGE ?= t
+HOST_OS ?= t
+HOST_ARCH ?= t
+HOST_BIN ?= t
+BASELINE_TAG ?= t
+BASELINE_ZIP_SHA256 ?= t
+record-gates: baseline-verify docs-check lint build test shell-lint ci-lint comment-claims register-ausgang mutate-greift host-bin span-check ## Checks + Nachweis
+`
+
 // newStopRepo legt das tmp-Repo an; mitCommit=false laesst es ohne einzigen Commit.
 func newStopRepo(t *testing.T, f stopHookFassung, mitCommit bool) *stopRepo {
 	t.Helper()
@@ -124,6 +143,10 @@ func newStopRepo(t *testing.T, f stopHookFassung, mitCommit bool) *stopRepo {
 	r.copy(f.hook, ".claude/hooks/stop-require-gates.sh")
 	r.copy(f.record, f.toolsDir+"/record-gates.sh")
 	r.copy(f.hash, f.toolsDir+"/working-tree-hash.sh")
+	if f.keys != "" {
+		r.copy(f.keys, f.toolsDir+"/gates-keys.sh")
+		r.write("Makefile", pinsMakefile, 0o644)
+	}
 	r.write(".harness/.gitignore", "state/\n", 0o644)
 	r.write("inhalt.txt", "eins\n", 0o644)
 	if mitCommit {
@@ -145,14 +168,26 @@ func wantDecision(t *testing.T, out string, rc int, want string) {
 	}
 }
 
+// fassungHaertet — die Tier-2-Fassung (Mischform, ADR-0108 Festlegung 5) haertet die
+// Freigaben je Check: ein Zug, der je-Check-Keys driftet, blockt, wo die Tier-1-Fassung
+// ueber der HEAD-Kante frei gab. Der benannte Preis des ADR-0108-Kontexts.
+func fassungHaertet(f stopHookFassung) bool { return f.keys != "" }
+
 func TestStopHook_CommitBindung(t *testing.T) {
 	for _, f := range stopHookFassungen() {
 		t.Run(f.name, func(t *testing.T) {
-			t.Run("ohne_neuen_HEAD_mit_ungedeckter_Aenderung_frei", func(t *testing.T) {
+			t.Run("ohne_neuen_HEAD_driftender_Key_blockt_Tier1_frei", func(t *testing.T) {
 				r := newStopRepo(t, f, true)
 				r.mustRecord()
 				r.write("inhalt.txt", "zwei\n", 0o644)
 				out, rc := r.hook("{}")
+				if fassungHaertet(f) {
+					wantDecision(t, out, rc, stopBlock)
+					if !strings.Contains(out, "per-check") {
+						t.Fatalf("Mischform: erwartet Block am je-Check-Key, bekommen:\n%s", out)
+					}
+					return
+				}
 				wantDecision(t, out, rc, stopApprove)
 			})
 			t.Run("neuer_HEAD_ohne_gruenen_Lauf_blockiert", func(t *testing.T) {
@@ -193,6 +228,15 @@ func TestStopHook_CommitBindung(t *testing.T) {
 				r.mustRecord()
 				r.write("inhalt.txt", "zwei\n", 0o644)
 				out, rc := r.hook("{}", "STOP_GATE_STRENG=true")
+				if fassungHaertet(f) {
+					// Der Streng-Schalter sagt nichts (true ist nicht 1); der Block
+					// kommt allein aus der Mischform — der Grund benennt den Key.
+					wantDecision(t, out, rc, stopBlock)
+					if !strings.Contains(out, "per-check") {
+						t.Fatalf("Mischform: der Block kommt vom je-Check-Key, nicht vom Streng-Schalter:\n%s", out)
+					}
+					return
+				}
 				wantDecision(t, out, rc, stopApprove)
 			})
 			t.Run("fehlender_HEAD_Stempel_bei_ungedeckter_Aenderung_blockiert", func(t *testing.T) {
@@ -214,6 +258,15 @@ func TestStopHook_CommitBindung(t *testing.T) {
 				}
 				r.write("inhalt.txt", "zwei\n", 0o644)
 				out, rc := r.hook("{}")
+				if fassungHaertet(f) {
+					// Mischform: der uncommittete Zug driftet den je-Check-Key auch
+					// am ungeborenen Zweig — der ADR-0108-Preis, benannt im Kontext.
+					wantDecision(t, out, rc, stopBlock)
+					if !strings.Contains(out, "per-check") {
+						t.Fatalf("Mischform: erwartet Block am je-Check-Key, bekommen:\n%s", out)
+					}
+					return
+				}
 				wantDecision(t, out, rc, stopApprove)
 			})
 			t.Run("HEAD_auf_fehlenden_Ref_record_rot_ohne_Stempel_Hook_Exit_2", func(t *testing.T) {
@@ -255,6 +308,53 @@ func TestStopHook_CommitBindung(t *testing.T) {
 				out, rc := r.hook(`{"stop_hook_active": true}`)
 				wantDecision(t, out, rc, stopApprove)
 			})
+
+			if fassungHaertet(f) {
+				t.Run("Teildrift_gestempelte_Keys_geben_uncommitteten_Zug_frei", func(t *testing.T) {
+					// Das Protokoll des Plans §5: der Fast-Pfad faehrt GENAU den
+					// gedrifteten Check und stuempelt nur dessen Key; der Stop-Hook
+					// liest die je-Check-Deckung als Alternative zur Hash-Kante.
+					r := newStopRepo(t, f, true)
+					r.mustRecord()
+					r.write("inhalt.txt", "zwei\n", 0o644)
+					// inhalt.txt liegt allein in der Bauch-Menge des Satzerzeugers;
+					// genau der gedriftete Check stuempelt.
+					if out, rc := r.run(f.toolsDir+"/gates-keys.sh", "stamp", "comment-claims"); rc != 0 {
+						t.Fatalf("Satzerzeuger-Stempel: Exit %d:\n%s", rc, out)
+					}
+					out, rc := r.hook("{}")
+					wantDecision(t, out, rc, stopApprove)
+				})
+				t.Run("Record_only_Zug_rotiert_keinen_Key_und_gibt_frei", func(t *testing.T) {
+					// ADR-0103 Festlegung 2 über neuem HEAD lesbar (ADR-0108
+					// Festlegung 5): der Record-only-Commit bewegt die zwei Gesamt-
+					// Werte nicht und keinen je-Check-Key; der Hook gibt frei.
+					r := newStopRepo(t, f, true)
+					r.mustRecord()
+					keys_vor := map[string]string{}
+					for _, s := range []string{"comment-claims", "docs-check", "lint"} {
+						b, err := os.ReadFile(filepath.Join(r.dir, ".harness/state/gates-passed-"+s+".key"))
+						if err != nil {
+							t.Fatal(err)
+						}
+						keys_vor[s] = string(b)
+					}
+					r.write(".harness/stamp/mutate/slice-x-befund-last.txt", "record-only\n", 0o644)
+					r.git("add", "-A")
+					r.git("commit", "-q", "-m", "record")
+					out, rc := r.hook("{}")
+					wantDecision(t, out, rc, stopApprove)
+					for _, s := range []string{"comment-claims", "docs-check", "lint"} {
+						b, err := os.ReadFile(filepath.Join(r.dir, ".harness/state/gates-passed-"+s+".key"))
+						if err != nil {
+							t.Fatal(err)
+						}
+						if string(b) != keys_vor[s] {
+							t.Fatalf("je-Check-Key %s rotierte mit dem Record-only-Zug: %q -> %q", s, keys_vor[s], string(b))
+						}
+					}
+				})
+			}
 		})
 	}
 }

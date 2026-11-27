@@ -1,113 +1,163 @@
 #!/usr/bin/env bash
-# gates-fast — Einsprung des Targets `make gates` (ADR-0099): SKIP greift nur über
-# dem vollständig gedeckten Stempel-Paar — demselben Urteil, das der Stop-Hook am
-# Turn-Ende fällt (ADR-0083 Festlegung 1) — und sonst, bei jedem Zweifel, fährt der
-# volle Lauf über `make record-gates` (fail-closed, ADR-0099 Festlegung 4).
+# gates-fast — Einsprung des Targets `make gates` (Tier 2 je ADR-0108, nach der
+# Fastpfad-Form ADR-0099): SKIP greift nur ueber dem VOLLSTAENDIG gedeckten
+# je-Check-Satz — jeder Key unter .harness/state/gates-passed-<check>.key vorhanden,
+# formal (64 Hex) und gleich dem, den der Satzerzeuger aus seiner Tafel-Menge
+# (harness/tools/gates-keys.sh) berechnet. Bei Teildrift faehrt der Lauf GENAU die
+# gedrifteten Checks und stuempelt nur deren Keys; jedes andere Zeichen (Key fehlt,
+# fremder oder unformaler Stempel, Satzerzeuger-Fehler) faehrt den vollen Lauf ueber
+# `make record-gates` — fail-closed (MR-017).
 #
-# SCHREIBER BLEIBT record-gates: dieses Skript schreibt nichts und löscht nichts —
-# `.harness/state/gates-passed.diffsha` und `.harness/state/gates-passed.head`
-# entstehen allein im Rezept `record-gates` und werden vom Stop-Hook unverändert
-# konsumiert (ADR-0099 Festlegung 1).
+# SCHREIBER: die je-Check-Keys der gefahrenen Checks entstehen hier nach deren
+# gruennem Exit ueber `gates-keys.sh stamp`. Der Stempel-Aufruf folgt dem make-Lauf;
+# endet dieser rot, entsteht kein neuer Stempel, und ein stehender entwertet nicht —
+# sein Wert bleibt, und die Leser sehen die Drift (ADR-0108 Festlegung 3, ADR-0035
+# Festlegung 5-Form). DIE ZWEI GESAMT-DATEIEN (.harness/state/gates-passed.diffsha,
+# .harness/state/gates-passed.head) entstehen wie bisher ALLEIN im Rezept
+# `record-gates` (ADR-0083 Festlegung 3, weitere Leser) — dieser Wrapper schreibt sie
+# nie (ADR-0108 Festlegung 2).
 #
-# DER BENANNTE REST (ADR-0099 Festlegung 2): der lokale Docker-Cache-Zustand und die
-# Host-Werkzeuge (bash, tar, git, docker) liegen außerhalb jedes baum-abgeleiteten
-# Schlüssels; die SKIP-Meldung nennt ihn. `GATES_FORCE=1` erzwingt den vollen Lauf
-# (Festlegung 3) — jeder andere Wert und das Fehlen sagen nichts.
+# DER BENANNTE REST (ADR-0108 Festlegung 4, je Tier-1): der lokale Docker-Cache-
+# Zustand und die Host-Werkzeuge (bash, tar, git, docker) liegen ausserhalb jedes
+# baum-abgeleiteten Schluessels; jede SKIP-Meldung nennt ihn. `GATES_FORCE=1`
+# erzwingt den vollen Lauf — jeder andere Wert und das Fehlen sagen nichts.
 #
-# HERMETISCH TESTBAR ist die reine Entscheidung über den Modus `--entscheide`
-# (5 Fixture-Werte) — das gepinnte bats-Image führt weder `git` noch `make`
-# (Abschnitt ENTSCHEIDUNG im Kopf von harness/tools/pre-commit-amend-guard.sh,
-# dieselbe Grenze). Die Verdrahtung (Makefile-Rezept, Weiterleitung an
-# `make record-gates`, kein Stempel-Schreiben) misst test/gates-fastpfad.bats
-# strukturell; das reale Rot-vor/Gruen-nach am vollen Pfad trägt `make gates`
-# selbst: der erste Lauf über einem geänderten Baum fährt voll, jeder weitere
-# über unverändertem Baum SKIPpt.
+# HERMETISCH TESTBAR ist die reine Klassifikation ueber den Modus
+# `--entscheide <bericht> [force]`: eine Bericht-Datei, je Zeile `check stamp ist`
+# (derselbe Aufbau wie im Lauf aus Stempel-Datei und Satzerzeuger). Ausgabe die
+# gedrifteten Checks, zeilenweise; Exit 0 ohne Ausgabe = SKIP, Exit 0 mit Ausgabe =
+# Teildrift, Exit 1 = voller Lauf, Exit 2 = Aufruf-Form. Das gepinnte bats-Image
+# fuehrt weder `git` noch `make`. Die Verdrahtung misst test/gates-fastpfad.bats
+# strukturell; das reale Rot-vor/Gruen-nach am vollen Pfad traegt `make gates`
+# selbst: der erste Lauf nach Aenderung faehrt voll, jeder weitere ueber
+# unveraendertem Baum SKIPpt (der zweite-Runde-Beleg der Einweihung, ADR-0108
+# Fitness-Tabelle).
 #
-# KOPPLUNG: head_wert ist exakt dieselbe Fassung wie in harness/tools/record-gates.sh
-# und .claude/hooks/stop-require-gates.sh — drei Fassungen gleich halten; der
-# Gleichheits-Wächter über den drei Funktionstexten steht in test/gates-fastpfad.bats.
+# GEKOPPELT: der Satzerzeuger ist die EINE Definition je Menge (ADR-0108 Festlegung
+# 1); der Fast-Pfad und der Stop-Hook rufen ihn an, keine zweite Form. `head_wert`
+# fuehrt hier NICHT mehr — die SKIP-Bedingung ist vom Stempel-Paar (Tier 1, ADR-0099)
+# auf den je-Check-Satz (Tier 2) getreten; die zwei Gesamt-Werte beurteilt allein der
+# Stop-Hook an seiner HEAD-Kante und seiner je-Check-Deckung (ADR-0108 Festlegung 5).
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
-diffsha_file=".harness/state/gates-passed.diffsha"
-head_file=".harness/state/gates-passed.head"
+key_file() { printf '%s\n' ".harness/state/gates-passed-${1}.key"; }
 
-# head_wert — exakt dieselbe Fassung wie record-gates.sh und der Stop-Hook:
-# die aufgelöste SHA von HEAD; `kein-commit` nur auf einem ungeborenen Zweig
-# in einem Repo ohne einzigen Commit; jede andere Lage ist ein Git-Fehler (Exit 1)
-# und fährt hier den vollen Lauf.
-head_wert() {
-  local sha alle
-  if sha="$(git rev-parse --verify -q HEAD)"; then
-    printf '%s\n' "$sha"
-    return 0
-  fi
-  git symbolic-ref -q HEAD >/dev/null || return 1
-  alle="$(git rev-list -n1 --all)" || return 1
-  [ -z "$alle" ] || return 1
-  printf '%s\n' kein-commit
-}
-
-# Baum-Hash-Form: die Ausgabe von harness/tools/working-tree-hash.sh ist ein
-# 64-stelliger Hex-String; alles andere (leer, gestutzt, fremdes Format) ist
-# Parser-Zweifel und fährt den vollen Lauf (ADR-0099 Festlegung 4, MR-017).
-stammt_aus_baum() {
+# die Form eines Schluessel-Werts: 64 Hex — die Form der Satzerzeuger-Ausgabe und
+# jedes Stempels (die Form von harness/tools/working-tree-hash.sh); alles andere ist
+# Parser-Zweifel (die fail-closed-Klasse, MR-017).
+ist_keyform() {
   [[ "$1" =~ ^[0-9a-f]{64}$ ]]
 }
 
-# HEAD-Wert-Form: die SHA von rev-parse (40 bis 64 Hex) oder `kein-commit`;
-# alles andere ist Parser-Zweifel.
-stammt_von_head() {
-  [[ "$1" =~ ^(kein-commit|[0-9a-f]{40,64})$ ]]
+# deck_oder_drift — die reine Klassifikation einer Berichts-Zeile:
+#   <1> Stempel-Wert, <2> Satzerzeuger-Wert, <3> Check-Name.
+#   Exit 0 ohne Ausgabe: gedeckt. Exit 0 mit Ausgabe: der Name driftet (beide formal,
+#   ungleich). Exit 1: Satzerzeuger unformal, Stempel fehlt (leer) oder unformal —
+#   die Klasse "voller Lauf", nicht eine je-Check-Drift.
+deck_oder_drift() {
+  if ! ist_keyform "$2"; then return 1; fi        # Satzerzeuger unformal -> voll
+  if [ "$1" = "$2" ]; then return 0; fi            # gedeckt
+  if ! ist_keyform "$1"; then return 1; fi         # Stempel fehlt/unformal -> voll
+  printf '%s\n' "$3"
 }
 
-# entscheide — die reine SKIP-Bedingung (ADR-0099 Festlegungen 1/3/4):
-# Exit 0 = SKIP (gedecktes Paar, der FORCE-Wert sagt nichts), Exit 1 = voller Lauf.
-# Jede Unform der Stempel-Werte fällt in Exit 1 — der SKIP urteilt nie über das
-# hinaus, was er sicher lesen kann.
+# entscheide — die reine SKIP-Bedingung ueber dem je-Check-Bericht:
+# `entscheide <datei|-> [force]`, je Zeile `check stamp ist`. Druckt die gedrifteten
+# Checks zeilenweise auf stdout; Exit 0 ohne Ausgabe = SKIP, Exit 0 mit Ausgabe =
+# Teildrift, Exit 1 = voller Lauf. Der FORCE-Schalter gilt VOR jeder Klassifikation.
 entscheide() {
-  local stamp_diff="$1" stamp_head="$2" ist_diff="$3" ist_head="$4" force="$5"
-  [ "$force" = "1" ] && return 1
-  stammt_aus_baum "$stamp_diff" || return 1
-  stammt_von_head "$stamp_head" || return 1
-  [ "$stamp_diff" = "$ist_diff" ] || return 1
-  [ "$stamp_head" = "$ist_head" ] || return 1
-  return 0
+  local bericht="$1" force="${2:-}" line="" name="" rest="" stamp="" ist="" out=""
+  if [ "$force" = "1" ]; then return 1; fi
+  if [ "$bericht" = "-" ]; then bericht="/dev/stdin"; fi
+  while IFS= read -r line || [ -n "$line" ]; do
+    [ -n "$line" ] || continue
+    name="${line%% *}"
+    rest="${line#* }"
+    stamp="${rest%% *}"
+    ist="${rest#* }"
+    if ! out="$(deck_oder_drift "$stamp" "$ist" "$name")"; then return 1; fi
+    if [ -n "$out" ]; then printf '%s\n' "$out"; fi
+  done <"$bericht"
 }
 
 skip_meldung() {
-  printf 'gates: SKIP — der Gate-Stempel (gates-passed.diffsha + gates-passed.head) deckt Arbeitsbaum-Hash und HEAD (ADR-0099 Festlegung 1).\n'
-  printf 'gates: Rest, den kein baum-abgeleiteter Schluessel deckt (ADR-0099 Festlegung 2): der lokale Docker-Cache-Zustand und die Host-Werkzeuge (bash, tar, git, docker). GATES_FORCE=1 erzwingt den vollen Lauf.\n'
+  printf 'gates: SKIP — der je-Check-Stempel deckt den vollstaendigen Satz: %s (ADR-0108 Festlegung 3).\n' "$1"
+  printf 'gates: Rest, den kein baum-abgeleiteter Schluessel deckt (ADR-0108 Festlegung 4): der lokale Docker-Cache-Zustand und die Host-Werkzeuge (bash, tar, git, docker). GATES_FORCE=1 erzwingt den vollen Lauf.\n'
+}
+
+rest_meldung() {
+  printf 'gates: Rest, den kein baum-abgeleiteter Schluessel deckt (ADR-0108 Festlegung 4): der lokale Docker-Cache-Zustand und die Host-Werkzeuge (bash, tar, git, docker). GATES_FORCE=1 erzwingt den vollen Lauf.\n'
+}
+
+voll_meldung() {
+  printf 'gates: voller Lauf — %s (fail-closed, ADR-0108 Festlegung 1, MR-017).\n' "$1" >&2
 }
 
 if [ "${1:-}" = "--entscheide" ]; then
-  if [ "$#" -ne 6 ]; then
-    echo "gates-fast: --entscheide braucht 5 Fixture-Werte: Stempel-diffsha Stempel-head ist-diffsha ist-head GATES_FORCE" >&2
+  if [ "$#" -lt 2 ] || [ "$#" -gt 3 ]; then
+    echo "gates-fast: --entscheide braucht einen Bericht-Pfad und optional den FORCE-Wert" >&2
     exit 2
   fi
-  if entscheide "$2" "$3" "$4" "$5" "$6"; then
-    skip_meldung
+  if out="$(entscheide "$2" "${3:-}")"; then
+    if [ -n "$out" ]; then
+      printf 'gates: TEILDRIFT — fahre genau die gedrifteten Checks: %s; die uebrigen Checks sind gedeckt und fahren keinen Lauf (ADR-0108 Festlegung 3).\n' "$(printf '%s\n' "$out" | tr '\n' ' ' | sed 's/ $//')"
+		else
+      printf 'gates: SKIP — der je-Check-Stempel deckt den vollstaendigen Satz: %s (ADR-0108 Festlegung 3).\n' "$(cut -d' ' -f1 "$2" | tr '\n' ' ' | sed 's/ $//')"
+    fi
+    rest_meldung
     exit 0
   fi
   exit 1
 fi
 
+# Lauf-Pfad: Bericht aus Stempel-Dateien und Satzerzeuger bauen, klassifizieren,
+# dann SKIP, Teildrift oder voller Lauf (fail-closed). Der Bericht-Pfad liegt unter
+# $TMPDIR, nie im Baum — ein ungetrackter Brief dort verschoebe den MR-003-Nachweis.
 force="${GATES_FORCE:-}"
-stamp_diff="$(cat "$diffsha_file" 2>/dev/null || true)"
-stamp_head="$(cat "$head_file" 2>/dev/null || true)"
-
-if ! ist_diff="$(bash harness/tools/working-tree-hash.sh)"; then
-  echo "gates-fast: Arbeitsbaum-Hash nicht lesbar — voller Lauf (fail-closed, ADR-0099 Festlegung 4)." >&2
-  exec make record-gates
-fi
-if ! ist_head="$(head_wert)"; then
-  echo "gates-fast: HEAD nicht aufloesbar, das Repo auch nicht als commitlos erkannt — voller Lauf (fail-closed, ADR-0099 Festlegung 4)." >&2
+if [ "$force" = "1" ]; then
+  voll_meldung "GATES_FORCE=1"
   exec make record-gates
 fi
 
-if entscheide "$stamp_diff" "$stamp_head" "$ist_diff" "$ist_head" "$force"; then
-  skip_meldung
+if ! checks="$(bash harness/tools/gates-keys.sh liste)"; then
+  voll_meldung "der Satzerzeuger bietet die Kanten-Checks nicht"
+  exec make record-gates
+fi
+
+bericht="$(mktemp -p "${TMPDIR:-/tmp}" gates-fast.XXXXXX)"
+
+while IFS= read -r check; do
+  [ -n "$check" ] || continue
+  stamp="$(cat "$(key_file "$check")" 2>/dev/null || true)"
+  if ! ist="$(bash harness/tools/gates-keys.sh key "$check" 2>/dev/null)"; then
+    rm -f "$bericht"
+    voll_meldung "Satzerzeuger-Fehler bei $check"
+    exec make record-gates
+  fi
+  printf '%s %s %s\n' "$check" "$stamp" "$ist" >>"$bericht"
+done <<<"$checks"
+
+if ! drifts="$(entscheide "$bericht")"; then
+  rm -f "$bericht"
+  voll_meldung "ein je-Check-Key fehlt, traegt einen fremden oder unformalen Wert, oder der Satzerzeuger war unformal"
+  exec make record-gates
+fi
+rm -f "$bericht"
+
+if [ -z "$drifts" ]; then
+  skip_meldung "$(printf '%s\n' "$checks" | tr '\n' ' ' | sed 's/ $//')"
   exit 0
 fi
 
-exec make record-gates
+printf 'gates: TEILDRIFT — fahre genau die gedrifteten Checks: %s; die uebrigen Checks sind gedeckt und fahren keinen Lauf (ADR-0108 Festlegung 3).\n' "$(printf '%s\n' "$drifts" | tr '\n' ' ' | sed 's/ $//')"
+rest_meldung
+
+drifted=()
+while IFS= read -r d; do
+  [ -n "$d" ] || continue
+  drifted+=("$d")
+done <<<"$drifts"
+
+make "${drifted[@]}" || exit $?
+bash harness/tools/gates-keys.sh stamp "${drifted[@]}"

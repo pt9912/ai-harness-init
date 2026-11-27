@@ -45,3 +45,11 @@ fi
 mkdir -p .harness/state
 bash harness/tools/working-tree-hash.sh > .harness/state/gates-passed.diffsha
 printf '%s\n' "$head" > .harness/state/gates-passed.head
+
+# JE-CHECK-KEYS (ADR-0108 Festlegungen 2/3): die Checks der Kante sind ALLE gruen,
+# bevor dieses Rezept gebaut wird (Ordnungskante, Zusage 1 im Kopf von
+# test/gate-nachweis-kante.bats) — jeder je-Check-Key entsteht damit nach dessen
+# gruennem Exit. Ein Satzerzeuger-Fehler faerbt dieses Rezept rot statt stumm einen
+# fehlerhaften Stempel zu schreiben (fail-closed, MR-017); die zwei Gesamt-Dateien
+# oben bleiben Format, Schreiber und Leser unverändert (ADR-0083 Festlegung 3).
+bash harness/tools/gates-keys.sh alle

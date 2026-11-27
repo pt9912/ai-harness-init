@@ -724,14 +724,20 @@ vendor-baseline: host-bin ## Eigenen vendored Baum aus dem verifizierten Release
 # deckungsgleich mit `record-gates`; gemessen:
 #   make -n gates | tail -1          # -> bash harness/tools/gates-fast.sh
 #   make -n record-gates | tail -1   # -> bash harness/tools/record-gates.sh
-# Deckungsgleich BLIEB die Kante selbst: jeder Check ist nur an `record-gates: <checks>`
-# verdrahtet, und der Fast-Pfad fährt bei Nicht-Deckung exakt dieses Ziel. Was der
-# SKIP über den gedeckten Baum hinaus nicht deckt, nennt die SKIP-Meldung
-# (benannter Rest); `GATES_FORCE=1` erzwingt den vollen Lauf. Wächter:
-# test/gate-nachweis-kante.bats (die Verdrahtungs-Zusagen an der Wrapper-Form gezogen)
-# und test/gates-fastpfad.bats.
+# SEIT ADR-0108 (Tier 2): dieses Rezept schreibt NEBEN den zwei Gesamt-Dateien je Check
+# der Kante seinen je-Check-Key (harness/tools/gates-keys.sh, EINE Definition je
+# Tafel-Menge des Plans, drei Leser — Schreiber, Fast-Pfad, Stop-Hook); der Fast-Pfad
+# SKIPpt über dem vollständig gedeckten je-Check-Satz und fährt bei Teildrift genau die
+# gedrifteten Checks, deren Stempel der Wrapper je Check nach dem grünen Exit schreibt.
+# Die zwei Gesamt-Dateien bleiben Schreiber, Format und Leser unverändert
+# (ADR-0083 Festlegung 3); ein Record-only-Commit (allein .harness/stamp/mutate/)
+# rotiert keinen Key und keine der zwei. Was der SKIP über den je-Check-Deckungen
+# hinaus nicht deckt, nennt jede SKIP-Meldung (benannter Rest: Docker-Cache-Zustand,
+# Host-Werkzeuge); `GATES_FORCE=1` erzwingt den vollen Lauf. Wächter:
+# test/gate-nachweis-kante.bats (die Verdrahtungs-Zusagen an der Wrapper-Form gezogen),
+# test/gates-fastpfad.bats und test/gates-keys.bats.
 record-gates: baseline-verify docs-check lint build test shell-lint ci-lint comment-claims register-ausgang mutate-greift host-bin span-check ## Checks + Gate-Nachweis (Working-Tree-Hash für den Stop-Hook)
 	@bash harness/tools/record-gates.sh
 
-gates: ## alle aktuell lauffähigen Gates + Nachweis — Fast-Pfad: SKIP über dem gedeckten Stempel-Paar (ADR-0099), sonst voller Lauf
+gates: ## alle aktuell lauffähigen Gates + Nachweis — Fast-Pfad Tier 2 (ADR-0108): SKIP über dem vollständig gedeckten je-Check-Satz, bei Teildrift genau die gedrifteten Checks, sonst voller Lauf
 	@bash harness/tools/gates-fast.sh
