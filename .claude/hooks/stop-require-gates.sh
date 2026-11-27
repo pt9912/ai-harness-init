@@ -116,6 +116,18 @@ if grep -q '"stop_hook_active"[[:space:]]*:[[:space:]]*true' <<<"$input"; then
   approve
 fi
 
+# TEMPORÄRE AUSSETZUNG (Auftraggeber-Beschluss 2026-11-27, bis welle-ohne-docker
+# geschlossen ist): Die Gates fahren im gepinnten Docker-Image; mit ausgeschaltetem
+# Daemon blockt sonst jedes Turn-Ende mit Arbeitsbaum-Änderung. Existiert die Datei
+# .harness/state/stop-gate-ausgesetzt (nicht-committete .harness/state/-Klasse),
+# gibt dieser Hook frei UND sagt es — in keinem anderen Zweig verhält er sich anders.
+# Die Aussetzung ist lokal und endet mit dem Löschen der Datei; das Netz dort bleibt
+# CI auf dem Push (ADR-0083).
+if [ -e .harness/state/stop-gate-ausgesetzt ]; then
+  printf '%s\n' "stop-gate: AUSGESETZT (.harness/state/stop-gate-ausgesetzt) — der Inhalt ist NICHT durch einen make gates-Lauf gedeckt und wird nicht verdeckt; Ende mit dem Schliessen von welle-ohne-docker." >&2
+  approve
+fi
+
 current_head="$(head_wert)"
 
 streng=0
