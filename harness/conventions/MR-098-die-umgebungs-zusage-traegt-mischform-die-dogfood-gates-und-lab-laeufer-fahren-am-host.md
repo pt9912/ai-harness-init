@@ -5,20 +5,20 @@
   [`AGENTS.md`](../../AGENTS.md) §3.8 — eigener Commit, nur Architect-Artefakte).
 - **Geltungsbereich:** die Soll-Herkunft **je Werkzeug** und der **Ausführungsort**
   des Tool-/Versions-Checks der Dogfood-Gates — die Begriffe trägt
-  [`ADR-0109`](../docs/plan/adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)
+  [`ADR-0109`](../../docs/plan/adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)
   (docker-los als Pflicht-Weg, Image-Weg opt-in, Mischform, `pinsync`, erster
   Check). **Ziel-Bild, nicht Bestand:** die Inventar-Datei, das Check-Skript mit
   seinem Break-Test, die Host-Rezepte der Läufer und die Sensoren-Datei
   `harness/sensors/environment-check.md` mit ihrer Sensors-Zeile im
-  [`harness/README.md`](../harness/README.md) §Sensors — sie entstehen mit der
+  [`harness/README.md`](../../harness/README.md) §Sensors — sie entstehen mit der
   Implementations-Fassung des Umbaus; die Bindung der Sensor-Zeile verweist
   dieser Eintrag, angelegt wird sie vom Implementier-Slice. **Nicht** der
-  Release-Bau (er bleibt docker-getrieben, [ADR-0003](../docs/plan/adr/0003-go-native-binaries.md)),
+  Release-Bau (er bleibt docker-getrieben, [ADR-0003](../../docs/plan/adr/0003-go-native-binaries.md)),
   **nicht** der d-check-Pin und seine Form
   ([`MR-053`](../conventions.md#mr-053--ein-eintrag-datiert-seine-werkzeug-aussage-statt-den-lebenden-pin-zu-führen)),
   **nicht** die Rezept-Texte des Makefiles.
 - **Ersetzt-Baseline-Regel:** keine — das Baseline-Regelwerk
-  [`modul-14-docker-harness.md`](../.harness/baseline/v7.0.0/regelwerk/modul-14-docker-harness.md)
+  [`modul-14-docker-harness.md`](../../.harness/baseline/v7.0.0/regelwerk/modul-14-docker-harness.md)
   stellt die Träger-Wahl ausdrücklich frei („Die Wahl trifft das Repo … Die Wahl
   ist eine Adaption der Baseline und steht als `MR-<NNN>`"); die Setzungen sind
   Adaption, keine Ersetzung.
@@ -38,7 +38,7 @@
      Image mit; die im Image adressierten Werkzeuge (der docker-getriebene
      Tool-Bau) bleiben über den Digest **adressiert, nicht verglichen** — die
      Lücke der Zeile „nur Host" aus
-     [`modul-14-docker-harness.md`](../.harness/baseline/v7.0.0/regelwerk/modul-14-docker-harness.md) §Inventar, Stufen, Kontext, hier ausdrücklich benannt.
+     [`modul-14-docker-harness.md`](../../.harness/baseline/v7.0.0/regelwerk/modul-14-docker-harness.md) §Inventar, Stufen, Kontext, hier ausdrücklich benannt.
   3. **Grenze: die GNU-Werkzeuge-Annahme am Host ist Linux.** Für macOS bleibt
      die bestehende Nicht-Tragung der Host-Läufer — [`AGENTS.md`](../../AGENTS.md)
      §3.9 nennt den Umfang — mit ihrem Auflösungs-Trigger; wo Varianten
@@ -62,5 +62,5 @@
   Soll ins Ableiten, und die Manifest-Zeile der Setzung 1 wird je Werkzeug
   zurückgenommen; und/oder eine macOS-CI hält die Host-Läufer — dann entfällt
   die Grenz-Zeile der Setzung 3. Die Weg-Form selbst ist keine Setzung dieses
-  Eintrags — sie trägt [`ADR-0109`](../docs/plan/adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)
+  Eintrags — sie trägt [`ADR-0109`](../../docs/plan/adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)
   und folgt deren Re-Evaluierungs-Triggern.
