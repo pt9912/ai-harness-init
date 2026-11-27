@@ -42,7 +42,7 @@ host-native Äquivalente ohne Docker-Daemon: `test-go` (host `go test`, Pin
 `GO_VERSION` aus Inventar), `test-bats` (host `bats`), `lint` (host
 golangci-lint), `build` (host `go build` cross), `shell-lint` (host
 shellcheck), `ci-lint` (host actionlint), dazu `docs-check` über das
-d-check-Binary aus [`slice-binraire-ziehen-ohne-docker`](../next/slice-binraire-ziehen-ohne-docker.md).
+d-check-Binary aus [`slice-binraire-ziehen-ohne-docker`](../in-progress/slice-binraire-ziehen-ohne-docker.md).
 Exit-Klassen, Urteile und die Rezepte-Hilfekommentare bleiben dieselben —
 nur der Träger der Umgebung wechselt (Tool-Pin statt Image-Digest allein).
 Sobald alle sechs laufen, ist `make gates` docker-los.
@@ -50,7 +50,7 @@ Sobald alle sechs laufen, ist `make gates` docker-los.
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Der d-check-Beschaffungsweg** — ist
-  [`slice-binraire-ziehen-ohne-docker`](../next/slice-binraire-ziehen-ohne-docker.md)
+  [`slice-binraire-ziehen-ohne-docker`](../in-progress/slice-binraire-ziehen-ohne-docker.md)
   (Schicht-Abgrenzung); hier wird das Binary nur **aufgerufen**.
 - **Die emittierten Ziel-Repos** — sie tragen ihre Rezepte aus
   [`slice-emittierte-gates-host-pfad`](slice-emittierte-gates-host-pfad.md);
@@ -103,7 +103,7 @@ Sobald alle sechs laufen, ist `make gates` docker-los.
 
 **Start** (`next` → `in-progress`):
 [`slice-environment-check-fuehrt-die-gates`](../done/slice-environment-check-fuehrt-die-gates.md)
-und [`slice-binraire-ziehen-ohne-docker`](../next/slice-binraire-ziehen-ohne-docker.md)
+und [`slice-binraire-ziehen-ohne-docker`](../in-progress/slice-binraire-ziehen-ohne-docker.md)
 liegen in `done/` — die Inventar-Pins und das d-check-Binary stehen als
 Voraussetzungen.
 
