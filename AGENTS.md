@@ -380,30 +380,49 @@ eines Commits gegen die Rolle, die ihn schreibt. `full-smoke` liest sie, um den 
 Die Regel liegt im Feedforward-Quadranten: benannt, nicht geschlossen; ihr Träger ist der
 Rollen-Wechsel vor der Änderung, nicht ein Gate danach.
 
-### 3.9 Docker-only
+### 3.9 Gates docker-los (Pflicht-Weg) — Rezepte laufen über make, der Image-Weg bleibt opt-in
 
-Kein Host-Paketmanager und keine Host-Toolchain. Checks, Builds und Gates laufen
-über `make`, das die gepinnten Images fährt; der Host braucht `git`, `docker` und
-GNU `make`, sonst nichts ([`LH-QA-03`](spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten),
-[`ADR-0003`](docs/plan/adr/0003-go-native-binaries.md)).
+Checks und Builds laufen über `make`. Die Dogfood-Gates und Lab-Läufer fahren
+**docker-los am Host** — [`ADR-0109`](docs/plan/adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)
+setzt den docker-los Weg als **Pflicht-Weg**, die gepinnten Image-Rezepte
+bleiben als **opt-in Weg** gepinnt und ungestrichen. Der Host braucht `git`,
+GNU `make` und die Inventar-Werkzeuge der Gates; `docker` ist Werkzeug-Weg,
+nicht Gate-Pflicht ([`LH-QA-03`](spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten):
+docker ist Weg, keine Pflicht). Die Rezept-Umstellung — Inventar,
+Tool-/Versions-Check, Host-Ziele der Lab-Läufer, CI-Jobs — schreibt die
+Implementation; bis sie liegt, fahren die gepinnten Image-Rezepte weiter.
 
 **Falsch:** die Go-Toolchain, `pip`, `npm`, `cargo`, `apt` oder `brew` in der
 Befehlsposition — auch in einer Sub-Shell, auch nur lesend.
 **Richtig:** das `make`-Ziel, das den Schritt fährt. Fehlt eines, ist **das** der
 Befund; der Host ist nicht der Ausweg.
 
-**Begründung:** Reproduzierbar ist ein Lauf über das gepinnte Image, nicht über den
-Host ([`LH-QA-02`](spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)) — ein Host-Lauf
-liefert ein Ergebnis, das CI nicht wiederholt, und verlegt das Debugging auf den
-Unterschied statt auf den Fehler.
+**Begründung:** Reproduzierbar ist ein Lauf je Weg
+([`LH-QA-02`](spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)) — der Image-Weg
+über den Digest, der docker-los Weg über Inventar-Pin und Tool-/Versions-Check.
+Ein Host-Lauf ohne Beleg liefert ein Ergebnis, das CI nicht wiederholt, und
+verlegt das Debugging auf den Unterschied statt auf den Fehler.
 
-**Umgebungs-Zusage:** Docker ist hier der Träger der Umgebungs-Zusage (Baseline-Regelwerk
-`modul-14-docker-harness.md`); das Inventar des Tool-/Versions-Checks tragen hier der
-Docker-only-Deckel mit den gepinnten Image-Digests und `make traeger-pins-check` /
-`make traeger-fetch` je eigener Index-Zeile ([`harness/README.md`](harness/README.md)
-§Sensors) — die Verweis-Datei der Vorlage, `harness/sensors/environment-check.md`, <!-- d-check:ignore (Platzhalter-Pfad: kein Träger im Dogfood — die Abwägung verlinkt der Absatz unten) --> hat hier keinen Träger; ihr Fehlen ist die Abwägung von
+**Umgebungs-Zusage:** Mischform — Soll-Form und Ausführungsort stehen als
+Adaption im Adaptions-Block
+([`MR-098`](harness/conventions.md#mr-098--die-umgebungs-zusage-trägt-mischform-die-dogfood-gates-und-lab-läufer-fahren-am-host),
+Baseline-Regelwerk `modul-14-docker-harness.md` §Der zweite Träger: Tool-Pin und
+Tool-/Versions-Check): ableiten, wo eine maschinen-lesbare Pin-Stelle existiert
+(die `GO_VERSION`-Stelle, die Image-Digests), Manifest je übriges Werkzeug. Der
+Check ist feststellend — Pin legt fest, Check belegt; wo Docker nicht trägt, ist
+der Check selbst der Träger, und er steht als erster Check in `make gates`. Der
+d-check-Stellen-Abgleich (Modul `pinsync`) hält Manifest gegen Pin-Stellen; die
+Inventar-Anbindung schreibt die Implementation — der Tool-/Versions-Check kehrt
+damit als Träger der Zusage zu den Gates zurück. Bis dahin ist die Zusage am
+Dogfood trägerfrei wie zuvor: die Fassung, die
+`harness/sensors/environment-check.md` <!-- d-check:ignore (Platzhalter-Pfad: kein Träger im Dogfood, bis die Implementation die Datei legt) --> keinen Träger
+gab — ihre Abwägung steht in
 [`slice-c4-environment-check-v7-0-0`](docs/plan/planning/done/slice-c4-environment-check-v7-0-0.md)
-(Weg B entfällt), keine Lücke.
+(Weg B entfallen) — ist durch [`ADR-0109`](docs/plan/adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)
+**überholt, nicht gelöscht.** Für den Image-Weg bleiben der Docker-only-Deckel
+mit den gepinnten Image-Digests und `make traeger-pins-check` /
+`make traeger-fetch` je eigener Index-Zeile ([`harness/README.md`](harness/README.md)
+§Sensors).
 
 **Host der Host-Läufer ist Linux; macOS ist dafür nicht getragen.** Die Host-Läufer dieses
 Repos — `make mutate`, `make mutate-auswahl`, `make mutate-greift`, `make full-smoke` — laufen auf
@@ -414,7 +433,7 @@ stößt ihr Lauf auf die Variante der Host-Werkzeuge (BSD- statt GNU-`sed`); das
 `make artifact-host` / `make full-smoke-host` — sind Hilfen **ohne Anspruch**: ein Lauf darüber
 ist kein Beleg. **Die Aussage liegt unter dem Vertrag:** sie betrifft die Dogfood-Läufer dieses
 Repos, nicht das Produkt — [`LH-QA-03`](spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)
-(Bootstrap-Laufzeit braucht git + docker) und
+(Bootstrap-Laufzeit braucht git; docker ist Weg, keine Pflicht) und
 [`LH-QA-04`](spec/lastenheft.md#lh-qa-04--plattform-matrix) (Binary erstklassig auf macOS) gelten
 unverändert; kein Change Request. **Auflösungs-Trigger:** macOS wird für diese Läufer getragen,
 sobald eine macOS-CI sie hält oder der Auftraggeber es entscheidet; dann entfällt dieser Absatz
