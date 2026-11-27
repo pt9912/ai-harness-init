@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
-# smoke.sh — Tier-2 Bootstrap-Smoke (Host-Docker + Netz, NICHT in gates). Verifiziert,
-# dass der Bootstrap end-to-end laeuft, host-orchestriert (die Binary ruft selbst
-# `docker run <d-check> --print-mk`, generiert das Skelett lokal und fetcht die
-# Baseline per Netz — kein DinD, kein Netz im Container). `make gates` bleibt
+# smoke.sh — Tier-2 Bootstrap-Smoke (docker-los Träger + Netz an den fetchenden Stufen,
+# NICHT in gates). Verifiziert, dass der Bootstrap end-to-end laeuft, host-orchestriert:
+# das Binary entsteht per `make host-bin` (go am Host, je Lauf frisch — ADR-0109), print-mk
+# und das emittierte docs-check laufen am Host am d-check-Binary (dem Carrier, env
+# DCHECK_CARRIER oder die fetched Ablage .harness/state/bin/d-check), und die Baseline
+# kommt per Netz (fetchende Stufe, unveranderter Vertrag). `make gates` bleibt
 # offline-schlank (LH-QA-01); dieser Smoke
 # gehoert an DoD-Verify/CI/Wellen-Closure.
 #
 # Belege:
-#   1. Natives Release-Binary auf den Host ziehen (`make artifact`, docker cp).
+#   1. Produkt-Binary fuer den Host bauen (`make host-bin DEST=...`, go am Host).
 #   2. `--lang go` bootstrappen: Doc-Gate (Runtime-Codegen, slice-002) + Template-
 #      Baseline (slice-003) + Sprachskelett-Generierung (slice-023, lokal/
 #      deterministisch, kein Netz) + vendored Baseline mit Verifier (slice-022a,
@@ -25,11 +27,10 @@
 set -euo pipefail
 
 GO_VERSION="${GO_VERSION:-1.27.4}"
-# ARTIFACT_TARGET waehlt, WIE das Binary auf den Host kommt: `artifact` (Default,
-# byte-identisch, slice-048/LH-QA-04) oder `artifact-host` (fuer den Host
-# cross-kompiliert — additiv, fuer Hosts, deren Kernel/Architektur vom Docker-
-# Build-Image abweicht; s. Makefile `smoke-host`).
-ARTIFACT_TARGET="${SMOKE_ARTIFACT_TARGET:-artifact}"
+# ARTIFACT_TARGET waehlt, WIE das Binary auf den Host kommt: `host-bin` (Default,
+# go am Host, je Lauf frisch — ADR-0109) oder die Docker-Formen `artifact`/
+# `artifact-host` (opt-in Weg, byte-identisch, slice-048/LH-QA-04; s. Makefile).
+ARTIFACT_TARGET="${SMOKE_ARTIFACT_TARGET:-host-bin}"
 tmpbin="$(mktemp -d -p "${TMPDIR:-/tmp}")"
 tmprepo="$(mktemp -d -p "${TMPDIR:-/tmp}")"
 git init -q "$tmprepo"
@@ -39,11 +40,32 @@ trap cleanup EXIT
 # 0700-Mount nicht traversieren. Ein echtes Adopter-Git-Repo hat 0755.
 chmod 755 "$tmprepo"
 
-echo "smoke: 1/5 natives Release-Binary auf den Host extrahieren (make $ARTIFACT_TARGET) ..."
+# DER D-CHECK-CARRIER (ADR-0109): print-mk beim Bootstrap und das emittierte
+# docs-check-host laufen am d-check-Binary statt am Daemon. Die Quelle liegt OUTSIDE
+# dieses Laufs: env DCHECK_CARRIER oder die fetched Ablage dieses Labors
+# (make dcheck-fetch — Netz an genau diesem Aufruf). Fehlt beides, bricht der Lauf
+# vor dem Bootstrap LAUT ab (Umgebungs-Befund, nicht "smoke: FEHLER" — die Meldung ist
+# mutierte-code-unsichtbar; der Docker-Rueckfall gilt nicht als vorhanden). Grenze:
+# am Carrier-losen Host mit Daemon bleibt `make smoke` mit
+# SMOKE_ARTIFACT_TARGET unset ohne den Carrier abgebrochen — der opt-in Image-Weg
+# fuer print-mk/docs-check ist im Skript nicht vorgesehen; die Daemon-Form des
+# docs-check in d-check.mk bleibt dem Ziel-Rest vorbehalten.
+hier="$(cd "$(dirname "$0")" && pwd)"
+carrier="${DCHECK_CARRIER:-}"
+if [ -z "$carrier" ]; then
+	lab_ablage="$hier/../../.harness/state/bin/d-check"
+	if [ -x "$lab_ablage" ]; then carrier="$(cd "$(dirname "$lab_ablage")" && pwd)/$(basename "$lab_ablage")"; fi
+fi
+if [ ! -x "$carrier" ]; then
+	echo "smoke: ABBRUCH — Umgebungs-Befund: d-check-Carrier · Soll: ausfuehrbares d-check-Binary aus der Umgebung (env DCHECK_CARRIER) oder der fetched Ablage (.harness/state/bin/d-check, make dcheck-fetch) · Ist: $carrier liegt nicht oder ist nicht ausfuehrbar." >&2
+	exit 1
+fi
+
+echo "smoke: 1/5 Produkt-Binary fuer den HOST bauen (make $ARTIFACT_TARGET) ..."
 make "$ARTIFACT_TARGET" DEST="$tmpbin" GO_VERSION="$GO_VERSION"
 
 echo "smoke: 2/5 Bootstrap (--lang go): Doc-Gate + Templates + Skelett-Generierung (lokal) ..."
-( "$tmpbin/ai-harness-init" --lang go --name smoke "$tmprepo" )
+( export DCHECK_CARRIER="$carrier"; "$tmpbin/ai-harness-init" --lang go --name smoke "$tmprepo" )
 
 echo "smoke: 3/5 Skelett an den Ziel-Root verdrahtet? (slice-004b) + Templates emittiert? (slice-022b) ..."
 if [ ! -f "$tmprepo/Makefile" ] || [ ! -f "$tmprepo/go.mod" ]; then
@@ -90,8 +112,25 @@ if [ -z "$vorlage" ] || ! grep -q 'Kopiere nach .harness/sensors/environment-che
 	echo "smoke: FEHLER — die Vorlage environment-check.template.md fehlt im Ziel-Baum oder traegt ihren Kopiere-Satz nicht" >&2
 	exit 1
 fi
-if grep -q 'make environment-check' "$tmprepo/harness/sensors/environment-check.md"; then
-	echo "smoke: FEHLER — das emittierte environment-check-Singleton traegt einen make-Anspruch auf ein Ziel, das der Bootstrap nicht schreibt" >&2
+if [ ! -f "$tmprepo/harness/sensors/environment-check.md" ]; then
+	echo "smoke: FEHLER — das environment-check-Singleton fehlt im Ziel-Baum" >&2
+	exit 1
+fi
+# Das environment-check ist ein EMITTIERTES Target (tools/harness/environment-check.sh
+# + harness/mk/environment.mk, erster Check der Kette — slice-emittierte-gates-host-pfad):
+# der make-Anspruch im Singleton ist darum die Wahrheit ueber das Ziel, nicht das
+# Neutralisat der Vorlage (das Target, das die Init-Phase nicht schrieb, bleibt die
+# Vorlagen-Regel; schreibt sie es, traegt das Singleton den Anspruch). Gemessen ist
+# die Paarung beider Seiten: der Anspruch ohne das Target dahinter waere ein
+# halluzinierter Gate (LH-QA-01), und ein Target ohne den Anspruch im Singleton
+# haette ein stiller Check an der Sensor-Doku verloren.
+if ! grep -q 'make environment-check' "$tmprepo/harness/sensors/environment-check.md"; then
+	echo "smoke: FEHLER — das emittierte environment-check-Singleton traegt seinen make-Anspruch nicht, obwohl der Bootstrap das Target dahinter schreibt" >&2
+	exit 1
+fi
+if [ ! -f "$tmprepo/tools/harness/environment-check.sh" ] \
+	|| ! grep -q '^GATE_CHECKS := environment-check' "$tmprepo/harness/mk/environment.mk"; then
+	echo "smoke: FEHLER — das Target hinter dem make-Anspruch fehlt (tools/harness/environment-check.sh oder die GATE_CHECKS-Verdrahtung in harness/mk/environment.mk)" >&2
 	exit 1
 fi
 # Durchsetzungsschicht (slice-031/032, LH-FA-06/ADR-0006): Gate-Nachweis + Stop-Hook
@@ -150,7 +189,12 @@ done
 
 echo "smoke: 4/5 emittiertes docs-check laeuft + meldet 0 Befunde out-of-the-box (slice-028, LH-QA-01) ..."
 dc_rc=0
-out="$(make -C "$tmprepo" -f d-check.mk docs-check 2>&1)" || dc_rc=$?
+# docs-check-host statt dem Docker-Lauf (docs-check aus d-check.mk): derselbe
+# d-check — denselben Befund-Satz faehrt der Carrier am Host, und er ist das Target,
+# das die emittierte Gates-Kette fuehrt (GATE_CHECKS, ADR-0109). Der Carrier-Pfad
+# muss ABSOLUT sein: make -C wechselt die Wurzel, und der Default des Fragments
+# (DCHECK_CARRIER ?= .harness/state/bin/d-check) loest am Ziel auf.
+out="$(make -C "$tmprepo" docs-check-host "DCHECK_CARRIER=$carrier" 2>&1)" || dc_rc=$?
 # Erst: lief es ueberhaupt (kein Config-Crash)?
 if ! printf '%s\n' "$out" | grep -q "geprüft"; then
 	echo "smoke: FEHLER — d-check lief nicht (Config-Crash / halluzinierte Config?):" >&2

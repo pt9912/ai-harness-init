@@ -294,26 +294,34 @@ compile: ## Schnelles Compile-Feedback (Dockerfile compile-Stage, ohne Tests/Lin
 # NICHT in gates (die bleiben offline-schlank, LH-QA-01). Die Logik liegt in
 # harness/tools/, damit shell-lint sie deckt — der Rezeptkoerper hier liegt
 # ausserhalb von dessen Pruefbereich.
-smoke: ## Emit-Smoke: Doc-Gate in tmp-Repo emittieren + emittiertes docs-check real gruen (Host-Docker) — NICHT in gates
+# Docker-los (ADR-0109): der Traeger kommt aus `host-bin` (go am Host, je Lauf frisch
+# gebaut); das d-check-Binary fuert print-mk und docs-check-host am Host und kommt aus
+# der Umgebung (DCHECK_CARRIER oder die fetched Ablage, make dcheck-fetch) — die
+# Docker-Formen (`artifact`, `artifact-host`, `docs-check`) bleiben der opt-in Weg.
+smoke: ## Emit-Smoke: Doc-Gate in tmp-Repo emittieren + emittiertes docs-check real gruen (docker-los Träger, ADR-0109) — NICHT in gates
 	@GO_VERSION='$(GO_VERSION)' bash harness/tools/smoke.sh
 
-# WIE `smoke`, aber mit einem fuer den HOST cross-kompilierten Binary (`artifact-host`
-# statt `artifact`) — additiv, LH-QA-04/slice-048 unberuehrt (s. `artifact`). Hilfe ohne
-# Anspruch: ein Lauf darueber ist kein Beleg (AGENTS.md §3.9); kein Sensor haelt diesen
-# Text.
-smoke-host: ## Wie smoke, mit einem fuer den HOST cross-kompilierten Binary — Hilfe ohne Anspruch, AGENTS.md §3.9
-	@SMOKE_ARTIFACT_TARGET=artifact-host GO_VERSION='$(GO_VERSION)' bash harness/tools/smoke.sh
+# Der Träger kommt fuer den HOST gebaut aus `host-bin` — dasselbe wie `smoke`; die
+# Docker-Form `artifact-host` bleibt im Skript waehlbar (SMOKE_ARTIFACT_TARGET), fuer
+# Hosts, deren Kernel/Architektur vom Docker-Build-Image abweicht. macOS bleibt
+# ungetragen (AGENTS.md §3.9).
+smoke-host: ## Wie smoke — Träger fuer die HOST-Plattform (host-bin, docker-los, ADR-0109)
+	@GO_VERSION='$(GO_VERSION)' bash harness/tools/smoke.sh
 
 # Bootstrappt ein tmp-Repo und faehrt dort den zusammengefuehrten `make gates`
-# (docs-check + Go-Gates in einem Lauf, MR-010) — der Happy-Path aus Nutzersicht
-# (LH-FA-01). Host-Docker und ggf. Netz-Pull, deshalb NICHT in gates (LH-QA-01).
-full-smoke: ## Voll-E2E: Bootstrap in tmp-Repo -> dort make gates out-of-the-box gruen (Host-Docker) — NICHT in gates
+# (emittierte Gates in einem Lauf, MR-010) — der Happy-Path aus Nutzersicht
+# (LH-FA-01). Eingang docker-los (Traeger aus `host-bin`); die doc-only/go-Stufen
+# des Laufs fahren am Carrier (d-check, ADR-0109); die Rest-Stufen (hexslice-
+# Bootstraps ueber a-check --print-mk, nicht-Go-Code-Gates, Archiv-Leseprobe) bleiben
+# am Daemon (opt-in Weg). Netz-Pull ggf., deshalb NICHT in gates (LH-QA-01).
+full-smoke: ## Voll-E2E: Bootstrap in tmp-Repo -> dort make gates out-of-the-box gruen (Träger docker-los, Rest am Daemon, ADR-0109) — NICHT in gates
 	@GO_VERSION='$(GO_VERSION)' bash harness/tools/full-smoke.sh
 
-# WIE `full-smoke`, aber mit einem fuer den HOST cross-kompilierten Binary — additiv,
-# LH-QA-04/slice-048 unberuehrt (s. `artifact`/`smoke-host`).
-full-smoke-host: ## Wie full-smoke, mit einem fuer den HOST cross-kompilierten Binary — Hilfe ohne Anspruch, AGENTS.md §3.9
-	@SMOKE_ARTIFACT_TARGET=artifact-host GO_VERSION='$(GO_VERSION)' bash harness/tools/full-smoke.sh
+# Der Träger kommt fuer den HOST gebaut aus `host-bin` — dasselbe wie `full-smoke`; die
+# Docker-Form `artifact-host` bleibt im Skript waehlbar (SMOKE_ARTIFACT_TARGET). macOS
+# bleibt ungetragen (AGENTS.md §3.9).
+full-smoke-host: ## Wie full-smoke — Träger fuer die HOST-Plattform (host-bin, docker-los, ADR-0109)
+	@GO_VERSION='$(GO_VERSION)' bash harness/tools/full-smoke.sh
 
 # Die Abdeckungs-Tabelle liest den TEXT von harness/tools/full-smoke.sh — kein Docker,
 # kein E2E-Lauf, deshalb auch hostlaeufig. KEIN GATE (LH-QA-01): die Tabelle aendert
@@ -598,11 +606,16 @@ HOST_BIN := .harness/state/bin/ai-harness-init
 HOST_OS   := $(shell uname -s | tr 'A-Z' 'a-z')
 HOST_ARCH := $(shell uname -m | sed -e 's/^x86_64$$/amd64/' -e 's/^aarch64$$/arm64/')
 
-host-bin: ## Traeger (Produkt-Binary) fuer die HOST-Plattform in den Zustands-Bereich legen — docker-los (ADR-0109); Release-Bau bleibt docker-getrieben (ADR-0003)
-	@mkdir -p "$(dir $(HOST_BIN))"
+# OHNE DEST landet der Traeger im gitignoerierten Zustands-Bereich (span-check,
+# span-report, hook-overhead). MIT DEST=<dir> baut dieselbe Rezeptform ihn DORTHIN —
+# die Träger-Ablage, aus der die Smokes ihr Prüf-Binary holen (smoke.sh, full-smoke.sh):
+# EIN Bau-Rezept statt eines zweiten daneben, und je Lauf ein frischer Bau aus dem
+# Baum-Stand, nicht ein wiederverwendeter Ablage-Stand.
+host-bin: ## Traeger (Produkt-Binary) fuer die HOST-Plattform bauen (go am Host, docker-los — ADR-0109); ohne DEST in den Zustands-Bereich, mit DEST=<dir> dahin — Release-Bau bleibt docker-getrieben (ADR-0003)
+	@mkdir -p "$(if $(DEST),$(DEST),$(dir $(HOST_BIN)))"
 	CGO_ENABLED=0 GOOS=$(HOST_OS) GOARCH=$(HOST_ARCH) go build -trimpath \
 		-ldflags="-s -w$(if $(TRAEGER_VERSION), -X main.fassung=$(TRAEGER_VERSION))" \
-		-o "$(HOST_BIN)" ./cmd/ai-harness-init
+		-o "$(if $(DEST),$(DEST)/$(notdir $(HOST_BIN)),$(HOST_BIN))" ./cmd/ai-harness-init
 
 # OPT-IN (ADR-0109): derselbe Traeger-Bau im gepinnten build-Image (die vormals
 # einzige Fassung; Transport-Antwort an ADR-0022 bleibt dieselbe Ablage).
