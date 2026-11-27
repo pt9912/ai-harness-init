@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.28.0
+**Version:** 0.28.1
 
 **Status:** Draft
 
@@ -192,8 +192,9 @@ verliert das nächste Layout sein Gate, ohne dass eine Prüfung anschlägt
   `.a-check.yml` mit Exit 2 ab. Bei `--arch flat` (kein schichten-tragendes Layout) wird das
   Gate begründet **nicht** emittiert — statt ein arch-Gate über einem leeren Prüfbereich leer
   grün melden zu lassen.
-- **Minimal ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)):** a-check läuft Docker-only, netzlos, read-only — das emittierte
-  Repo braucht über `git + docker` hinaus nichts.
+- **Minimal ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)):** a-check läuft make-getrieben, netzlos, read-only — das emittierte
+  Repo braucht über `git` hinaus nichts außer den Gate-Werkzeugen des jeweiligen
+  Gate-Wegs ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten): Tool-/Versions-Check am Host oder gepinnte Images).
 
 ### LH-FA-08 — Agenten-Workflow-Commands emittieren
 
@@ -595,8 +596,10 @@ emittierte Datei zu ändern.
 
 - **Anforderung:** Native Binaries für **linux · macos · windows** ×
   **amd64 · arm64**, cross-kompiliert im gepinnten Image. Erstklassig auf
-  allen dreien ohne WSL2-Zwang — das Tool ruft Host-`docker` (Docker Desktop
-  liefert die docker-CLI auf macOS/Windows).
+  allen dreien ohne WSL2-Zwang — je Gate-Weg trägt das Tool die dortige
+  Werkzeug-Form ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)):
+  gepinnte Images über Host-`docker` (Docker Desktop liefert die docker-CLI
+  auf macOS/Windows) oder den Tool-/Versions-Check des docker-los Wegs.
 - **Messmethode:** Release liefert ein Binary je `GOOS`/`GOARCH`. Plattform-Nachweis
   in der CI-Matrix, **abgestuft nach dem, was die Runner hergeben**:
   - **linux/amd64:** **Voll-Smoke** — Bootstrap in ein tmp-Repo, dort `make gates` grün
@@ -686,3 +689,4 @@ emittierte Datei zu ändern.
 | 0.27.0 | 2026-10-17 | CR: **Zeit- und Liefer-Sätze im Rumpf als Zielbild im Indikativ gefasst** — [`LH-FA-01`](../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) (Sprachskelett ist ein eigener Schritt nach dem Init), [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) (Hinweis zum Titel, `cpp`-Satz, Sprach-Renderer in §5), [`LH-FA-07`](../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) (Voraussetzung), [`LH-FA-08`](../spec/lastenheft.md#lh-fa-08--agenten-workflow-commands-emittieren) (Kurs-Upstream-Ergänzung), Briefing-Vorlage in [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren), Grenz-Notiz [`LH-QA-04`](../spec/lastenheft.md#lh-qa-04--plattform-matrix). Minor, weil normative Abschnitte ihre Aussage-Form ändern; keine neue Anforderung, keine Zusage entfällt, Heading-Anker bleiben stabil, datierte Messungen bleiben | Nutzer-Entscheidung 2026-10-17 |
 | 0.27.1 | 2026-10-17 | CR: **Zwei Folgestellen zu 0.27.0 nachgezogen** — [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) Architektur-Achse: Default `flat` ist „das Verhalten ohne `--arch`" statt „das heutige Verhalten". [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) Briefing-Vorlage: der Klammersatz zur Herkunft der Vorlage entfällt; `CLAUDE.md` ist autort, nicht tool-generiert. Patch, weil beide Stellen die Aussage von 0.27.0 nur zu Ende führen; keine neue Anforderung, keine Zusage entfällt | Nutzer-Entscheidung 2026-10-17 |
 | 0.28.0 | 2026-11-27 | CR: **docker-los als Pflicht-Weg — [`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) und [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) umgestellt.** [`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten): der Bootstrap braucht nur **git**; die Gates der emittierten Ziel-Repos bleiben make-getrieben und führen je Werkzeug die gepinnte Version — über **Tool-Pin + Tool-/Versions-Check** am Host (docker-los Weg) oder über die gepinnten Images; `docker` ist **Weg, keine Pflicht**. Tool-Build (Release) bleibt im gepinnten Image (kein Host-`go` im Release-Bau). [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit): dieselbe Pin-Disziplin trägt der docker-los Weg als Tool-Pin (Tag+Prüfsumme, Inventar-Soll); Messmethode nennt beide Wege. Minor (Anforderung + Messmethode je Weg). **Abweichung von [`MR-015`](../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Setzung 2, ausdrücklich benannt statt kaschiert** (Präzedenz 0.18.0): dieser CR liegt **nach** dem `open → in-progress`-Move von slice-cr-lh-qa-02-03-ohne-docker — er wurde vor dem Move noch nicht geschärft formuliert; die Form (eigener Commit, nur diese Datei) ist eingehalten. Getrieben von welle-ohne-docker (Auftraggeber-Beschluss 2026-11-27: Docker-Daemon bleibt aus, Labor und Produkt färbt ein docker-los Gate-Weg) | Nutzer-Entscheidung 2026-11-27 |
+| 0.28.1 | 2026-11-27 | CR: **Folgestellen von 0.28.0 nachgezogen** — [`LH-FA-07`](../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)-Minimal-Satz („a-check läuft Docker-only … über `git + docker` hinaus nichts") und [`LH-QA-04`](../spec/lastenheft.md#lh-qa-04--plattform-matrix)-Anforderung („das Tool ruft Host-`docker`") auf die Gate-Weg-Fassung umgeschrieben; zwei Widersprüche im selben abnahmebindenden Dokument, der Review-Befund 2026-11-27 (F-1/F-2 in `docs/reviews/2026-11-27-slice-cr-lh-qa-02-03-ohne-docker.md`) trug sie vor. Zugleich: die Übergangs-Aussage **ausdrücklich** — das Inventar-Soll und der Tool-/Versions-Check sind Ziel-Bild; die Mechanik folgt in welle-ohne-docker ([`MR-015`](../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Doc-führt, Präzedenz 0.6.0). **Korrektur an 0.28.0 dokumentiert** (Zeile ist Protokoll und bleibt unverändert): die Klausel „Getrieben von welle-ohne-docker" in der Änderungs-Spalte entbehrt nach [`MR-042`](../harness/conventions/MR-042-der-anlass-einer-lastenheft-aenderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz.md) des Orts — der Anlass steht in der Closure-Notiz des Slices. Patch, weil 0.28.1 die Aussage von 0.28.0 über die Folgestellen zu Ende führt; keine neue Anforderung, keine Messmethode geändert | Nutzer-Entscheidung 2026-11-27 |
