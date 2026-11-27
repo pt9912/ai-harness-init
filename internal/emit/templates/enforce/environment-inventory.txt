@@ -11,7 +11,7 @@
 # Bootstrap an (dedupliert je Werkzeugname, geaendertes Soll gewinnt). Soll
 # "abgeleitet" steht gegen die Pin-Stelle im Sprach-Fragment
 # (harness/mk/<lang>.mk), gehalten vom Emissions-Waechter in
-# internal/emit/environment_test.go des erzeugenden Werkzeugs.
+# internal/gen/inventory_rows_test.go des erzeugenden Werkzeugs.
 # An dem Inventar ausdruecklich NICHT gemessen: awk (das Doc-Gate-Fragment misst
 # seine Probe selbst unter DOC_GATE_ZIEL, mit lautem Abbruch) und die Werkzeuge des
 # gepinnten Image-Wegs (opt-in; dort adressiert der Digest, der Check vergleicht
