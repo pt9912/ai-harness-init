@@ -57,7 +57,7 @@ Adaption der Baseline und steht als `MR-<NNN>` in `harness/conventions.md`"*).
 
 - **Kein Makefile-, Skript-, Workflow-Code** — der Architect schreibt ADR und
   Norm-Artefakte (`AGENTS.md` §3.8); die Rezepte baut
-  [`slice-labor-gates-host-rezepte`](slice-labor-gates-host-rezepte.md).
+  [`slice-labor-gates-host-rezepte`](../open/slice-labor-gates-host-rezepte.md).
 - **Kein Release-Bau-Wechsel** — der Tool-Build bleibt im gepinnten Image
   ([ADR-0003](../../adr/0003-go-native-binaries.md), CI-Runner tragen Docker).
 - **Kein macOS-Tragungs-Beschluss als Gegenstand** — die ADR nennt die
