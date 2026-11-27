@@ -156,7 +156,7 @@ löst sich erst hier, nicht mit dessen Lieferung.
       und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind hier geprüft
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind hier geprüft
       — Repo ohne Wellen-Betrieb, nach dem `git mv`.
 
 ## 3. Plan (vor Code)
@@ -439,7 +439,17 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   vor/nach; die ausgenommene Menge ist die engere `.harness/stamp/mutate/`
   je [ADR-0103](../../adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md) Festlegung 2); 4. Zuordnungs-Rest + Record-only-Vertrag —
   **weiter offen** → `slice-stamp-records-konsum-v1`.
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+- **Drei Paarungen:** geprüft am 2026-11-27, im Plan-Commit nach dem Move —
+  (a) *Anker:* 0 Einträge mit `liegt in` in diesem Zug; der Lerneintrag ist
+  gezählt, nicht verkörpert, es gibt keinen Anker zu prüfen; (b)
+  *Folge-Slice:* `slice-stamp-records-konsum-v1` ist eine Datei in
+  `in-progress/` (`ls docs/plan/planning/*/slice-stamp-records-konsum-v1.md`);
+  (c) *Register:* beide genannten Verzeichnisse tragen nicht-leeres
+  `evidence/` — `baum-hash-deckt-nicht-jeden-pruefgegenstand` 4 Belege,
+  `mutate-cases-leakt-in-den-bats-gruen-vorlauf` 1 Beleg. Zweite Hälfte von
+  (c) über das ganze Register: **1** Verzeichnis ohne Beleg, namentlich
+  `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab/`; nicht als
+  getragen behauptet.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
