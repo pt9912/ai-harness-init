@@ -115,6 +115,19 @@ in `done/`, keine offen.
   - Der `full-smoke`-Rest-Träger 1a–1d — **geplant**,
     [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md)
     (in `next/`).
+  - **Schritt 4 (Archivierung) ist fail-closed abgebrochen:** `make
+    archive-welle` (Exit 3 über `make`) meldet Verweise aus Nicht-Zeit-Dokumenten
+    auf die zu archivierenden Berichte —
+    [`harness/conventions/MR-025-eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert.md`](../../../conventions/MR-025-eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert.md)
+    (2 alte Reports 2026-08-28),
+    [`spec/lastenheft.md`](../../../spec/lastenheft.md) (Report 2026-07-28,
+    der Wave-eigene CR-Report) — der Werkzeug-Vertrag verlangt, die Verweise
+    erst aufzulösen oder die Referenz im Doku-Gate auszunehmen, mit einer
+    ADR ([`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md)
+    Festlegung 3 trägt die Ablage-Form derReports). **Übergabe-Posten an die
+    Architect-Entscheidung vor dem Archiv-Lauf**; der Self-Close-Zug von
+    Schritt 5 vollzieht den Planungs-Lifecycle (Welle-Plan und Ergebnisnotiz
+    nach `done/`) und lässt die Berichte an ihrem Ort.
 
 ## Steering-Loop-Einträge
 
