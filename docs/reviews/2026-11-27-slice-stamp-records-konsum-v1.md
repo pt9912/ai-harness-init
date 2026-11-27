@@ -52,8 +52,8 @@ Keine HIGH. Kein Rollenwiderspruch-Fall (Modul 8 Konflikt-Pfad läuft nicht an).
   unmöglich macht. Die erste Fassung des Falls (a9e71fac, Bereichs-Löschung
   des ganzen if-Blocks) hatte den behaupteten Mechanismus; der lint-Zug
   90699185 hat sie gegen die Mitten-Löschung getauscht.
-- `verifizierbar`: ja — `sed` auf Kopie + `bash -n` + `bash <kopie>
-  --stamp-records <fehlt>` (Protokoll unten). Ein Bereichs-Anker
+- `verifizierbar`: ja — `sed` auf Kopie + `bash -n` +
+  `bash <kopie> --stamp-records <fehlt>` (Protokoll unten). Ein Bereichs-Anker
   (`if [ ! -f …` bis `fi` in der lint-clean-Form) würde den
   Zusage-Mechanismus und das Rot in denselben Fall setzen.
 - `klasse`: „Mutations-Anlage beschreibt einen Nach-Mutations-Mechanismus, der
