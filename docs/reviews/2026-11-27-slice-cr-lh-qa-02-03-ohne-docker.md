@@ -2,7 +2,7 @@
 
 **Datum:** 2026-11-27 · **Reviewer:** Modul 10 (frischer Kontext)
 **Diff:** Commit `a87c7bcc` (CR 0.28.0: docker-los als Pflicht-Weg) — ändert ausschließlich `spec/lastenheft.md` (15+, 10−); Abgleich-Runde auf Commit `083323e1` (CR 0.28.1: Folgestellen) im Addendum unten
-**Plan:** [`docs/plan/planning/in-progress/slice-cr-lh-qa-02-03-ohne-docker.md`](../plan/planning/in-progress/slice-cr-lh-qa-02-03-ohne-docker.md)
+**Plan:** [`docs/plan/planning/in-progress/slice-cr-lh-qa-02-03-ohne-docker.md`](../plan/planning/done/slice-cr-lh-qa-02-03-ohne-docker.md)
 **Kontext-Eingang:** der Slice-Plan · `spec/lastenheft.md` (LH-QA-01…04, LH-FA-06…09, Historie) · `MR-015`, `MR-042` · `AGENTS.md` §3 (§3.5–3.9 im Fokus) · Commit-Kette `7631f2b5`→`55f3038f`→`a87c7bcc`. Vorherige Reports unter `docs/reviews/` (letzte ~5) geladen; keiner trägt wiederkehrenden Befund zu Spec-Änderungs-Commits.
 
 ## Findings
