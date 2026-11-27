@@ -60,7 +60,7 @@ Prosa-Grenze am Sensor-Text (F-3).
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Die Emittier-Rezepte des Ziels** — sind
-  [`slice-emittierte-gates-host-pfad`](../open/slice-emittierte-gates-host-pfad.md)
+  [`slice-emittierte-gates-host-pfad`](../next/slice-emittierte-gates-host-pfad.md)
   (Schicht-Abgrenzung); hier stehen nur die Dogfood-Wächter.
 - **Der Fall `810` der Mutations-Anlage** — seine Fassung liegt im
   Implementer-Commit-Set des Vorgänger-Slices; der neue Fall ist nur

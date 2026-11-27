@@ -53,11 +53,11 @@ Sobald alle sechs laufen, ist `make gates` docker-los.
   [`slice-binraire-ziehen-ohne-docker`](../done/slice-binraire-ziehen-ohne-docker.md)
   (Schicht-Abgrenzung); hier wird das Binary nur **aufgerufen**.
 - **Die emittierten Ziel-Repos** — sie tragen ihre Rezepte aus
-  [`slice-emittierte-gates-host-pfad`](../open/slice-emittierte-gates-host-pfad.md);
+  [`slice-emittierte-gates-host-pfad`](../next/slice-emittierte-gates-host-pfad.md);
   hier steht nur das Labor-Makefile.
 - **`fullbuild`, `mutate`, `smoke`/`full-smoke` selbst** — die Treiber-Skripte
-  baut [`slice-mutate-treiber-host-modi`](../open/slice-mutate-treiber-host-modi.md)
-  und [`slice-smoke-und-full-smoke-ohne-docker`](../open/slice-smoke-und-full-smoke-ohne-docker.md);
+  baut [`slice-mutate-treiber-host-modi`](../next/slice-mutate-treiber-host-modi.md)
+  und [`slice-smoke-und-full-smoke-ohne-docker`](../next/slice-smoke-und-full-smoke-ohne-docker.md);
   die Rezept-Umstellung reicht an sie, ohne sie zu ändern — die
   `mutate`-Sperren bleiben in Kraft wie sie sind.
 
