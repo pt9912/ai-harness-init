@@ -62,29 +62,29 @@ Bootstrap braucht nur git.
 
 ## 2. Definition of Done
 
-- [ ] **Liefer-Punkt 1:** die emittierten Gates-Fragmente (`internal/emit/templates/`
+[x] **Liefer-Punkt 1:** die emittierten Gates-Fragmente (`internal/emit/templates/`
       + mk-Fragmente) tragen die host-native Form mit Inventar-Emittierung;
       `environment-check` fährt emittiert als erster Gates-Check
       (`LH-QA-01`-Messung bleibt full-smoke).
 - [ ] **Liefer-Punkt 2:** ein frisch gebootstrapptes Ziel fährt `make gates`
       out-of-the-box grün auf einem Host ohne Docker-Daemon — belegt im
       realen Lauf (Verifikations-Bericht), nicht als Prosa.
-- [ ] **Liefer-Punkt 3:** Go-Emitter-Tests (`internal/emit/*_test.go`) tragen
+[x] **Liefer-Punkt 3:** Go-Emitter-Tests (`internal/emit/*_test.go`) tragen
       die Form (Happy über die emittierten Rezepte, Negative über
       fehlender Inventar-Zeile) und die Mutations-Fälle, deren Anker an der
       Template-Ebene liegt, sind neu gemessen
       ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit)).
 - [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+[x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — kein Self-Review (Modul 8).
-- [ ] Doku-Update: emitter-Doku (`docs/user/`, README), sofern die
+[x] Doku-Update: emitter-Doku (`docs/user/`, README), sofern die
       emittierte Gates-Ebene öffentlich berührt (Bootstrap-Verhältnis git-only).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben —
+[x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+[x] Beobachtungs-Register (`../observations/`) fortgeschrieben —
       `evidence/`-Datei ergänzen, wo eine Beobachtung anfiel; **kein Zähler
       wird gesetzt**. Keine Beobachtung anfallen ist ebenfalls eine Antwort
       und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
+[x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
       nächsten Welle-Closure geprüft.
@@ -125,23 +125,30 @@ Closure-Notiz mit Lerneintrag geschrieben.
 
 - **Die Sprach-Skelett-Toolchains (Kotlin, Java, Python, Csharp) tragen
   ihre eigene Pin-Form** ([`ADR-0088`](docs/plan/adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md)-Nachfolger)
-  — **Ausgang:** je Skelett die Form benennen, wo sie docker-los lauffähig
-  ist; wo nicht, ist es die Rückführung §4, nicht stiller Bestand.
-- **`full-smoke` fährt die emittierte Ebene** — **Ausgang:** der reale Beleg
-  der emittierten Form läuft über
+  — **Ausgang:** entfallen — kein K/J/P/C-Skelett-Fragment im Diff umgestellt;
+  die Inventar-Ableitung liefert für die übrigen Sprachen `nil` je benannter
+  Begründung, und der Paarungs-Wächter hält auch die Leer-Menge; docker-los
+  lauffähig ist jede Form, die der Host trägt — die Frage ist in diesem Lauf
+  nicht aufgetreten (Verifikations-Bericht, Ausgangs-Vorschläge).
+- **`full-smoke` fährt die emittierte Ebene** — **Ausgang:** eingetreten —
+  der reale Beleg der emittierten Gates-Ebene im gebootstrappten Ziel läuft
+  über
   [`slice-smoke-und-full-smoke-ohne-docker`](slice-smoke-und-full-smoke-ohne-docker.md);
-  bis dahin ist der Beleg der manuelle Lauf oben.
+  bis dahin trägt der manuelle Lauf des Verifikations-Berichts (V-5) den
+  Beleg.
 - **Bootstrap-Henne-Ei des Carrier-Wegs** (Review F-6): `DCHECK_CARRIER`
   muss vor dem Bootstrap-Lauf von außen kommen (Umgebungsaufgabe) — der
   Default-Weg ohne sie bleibt Docker-getrieben; die Zusage „Bootstrap
-  braucht nur git" ist auf dem Carrier-Weg **nicht** erreicht. **Ausgang
-  (Vorschlag, Scoping beim Planner-Closure):** weiter offen →
-  Beobachtungs-Register; als Adresse benennbar ist ein eigener Mikroslice
+  braucht nur git" ist auf dem Carrier-Weg **nicht** erreicht. **Ausgang:**
+  weiter offen — Beobachtungs-Register
+  [`BEO-ALL/bootstrap-braucht-den-carrier-von-aussen`](../observations/BEO-ALL/bootstrap-braucht-den-carrier-von-aussen/state.md);
+  als Adresse benennbar ist ein eigener Mikroslice
   (Carrier-Besorgung im Bootstrap-Lauf, fail-closed ohne Netz an genau
   diesem Aufruf) — der Welle-Plan
-  [`welle-ohne-docker`](../welle-ohne-docker.md) könnte ihn neben
-  `slice-smoke-und-full-smoke-ohne-docker` einrichten; der Lauf hat allein
-  die Lücke benannt und nicht entschieden. Der Code-Umfang bleibt die
+  [`welle-ohne-docker`](../welle-ohne-docker.md) richtet ihn neben
+  `slice-smoke-und-full-smoke-ohne-docker` ein; die Messung des
+  Verifikations-Berichts (V-5, Schritt 2) belegt die Lücke real. Der Code-Umfang
+  bleibt die
   Abgrenzung §1 (keine zweite Beschaffungs-Mechanik im Bootstrap — der
   Fetch-Zug entsteht aus denselben Fragmenten).
 
@@ -152,13 +159,73 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 formulieren — sonst zählt das Register zwei Namen getrennt) ·
 `grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln.
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <… | keine Beobachtung angefallen>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** Anker · Folge-Slice · Register, Ergebnis
+**Closure-Notiz (Rolle Planner, 2026-11-27)** — Quellen: eigener Lauf, der
+Verifikations-Bericht
+([`docs/reviews/2026-11-27-slice-emittierte-gates-host-pfad-verify.md`](../../reviews/2026-11-27-slice-emittierte-gates-host-pfad-verify.md)),
+der Review-Report
+([`docs/reviews/2026-11-27-slice-emittierte-gates-host-pfad.md`](../../reviews/2026-11-27-slice-emittierte-gates-host-pfad.md),
+Behebungszug `9bd6f440..6cabbee6`) und der F-9-Zug (`0be90f31`).
+
+- **Was hat funktioniert:** die emitter-Ebene spiegelt die Labor-Form statt
+  sie zweit zu definieren (§4-Vorbild); `environment-check` fährt emittiert
+  als erster Check der Kette, die Inventar-Zeilen werden je Werkzeug aus der
+  Pin-Stelle abgeleitet (Paarungs-Wächter Zeile↔Pin-Stelle, rot-gesehen),
+  und der reale LP2-Lauf (V-5: `make host-bin` → Bootstrap eines tmp-Ziels
+  mit extern geliefertem `DCHECK_CARRIER` → `make gates` im Ziel) erreichte
+  die Fragment-Assembly und riss an der ersten-Check-Semantik — der Kette
+  wirkt.
+- **Was ging anders als geplant:** (1) LP 2 „out-of-the-box grün" ist am Host
+  **nicht erreicht** — reale Kette gefahren, drei Grenzen benannt (Carrier
+  extern, d-check-Ablage einmalig über `dcheck-fetch` mit Netz, exakter
+  Pin-Träger des Hosts): vollgrüner Lauf trägt CI mit Pass-Matrix; der DoD-
+  Posten bleibt offen benannt, das „out-of-the-box"-Ziel steht im
+  Benutzerhandbuch weiter. (2) Der neue Befund des Verifikations-Laufs (die
+  emittierte golangci-Soll-Form trug das v-Pin-Präfix und war von keinem
+  Träger erreichbar) ist im F-9-Zug `0be90f31` behoben — v-freie Ableitung in
+  der Dogfood-Form, Parity-Wächter gegen die Dogfood-Inventar-Zeile,
+  Mutations-Fall 813 mit belegtem Rot-Zug. (3) `make gates` ist an dieser
+  Closure rot an den **fünf vorbestehenden Klassen** — docs-check 106
+  Befunde (am Claim-Stand `ef1ac86f` byte-identisch abzüglich drei
+  Zeilenverschiebungen aus dem §6-Eintrag, V-6), bats Fall 273, shell-lint
+  SC2254/SC2016, Mutations-Anker 784/785, `make test-go` zwei Klassen —
+  keine aus dem Slice-Diff, kein Carveout-Artefakt. (4) Der
+  Fall-40-Mutations-Vorlauf bricht an den zwei vorbestehenden test-go-
+  Klassen; der Rot-Beleg trägt am Hand-Sed an der realen Quelle (V-3, 8
+  rot, darunter der Anker `TestDocGate_FragmentWiresDocsCheck`) — der
+  Branch-Push für `make mutate-auswahl` am neuen Tip ist ein CI-Posten.
+- **Steering-Loop-Eintrag:** geschärfte Regel (gezählt, nicht verkörpert —
+  kein `liegt in`): **die emittierte Zusage misst die Ausgabe-Form des
+  Werkzeugs, nicht die Form der Pin-Stelle, von der sie abgeleitet ist** —
+  die Ableitung aus einem Pin (Modul-Tag) ist nicht die Prüfform des Checks
+  (Version-Ausgabe des Werkzeugs), und die Kopplung trägt erst der Lauf im
+  gebootstrappten Ziel, kein Wächter über der abgeleiteten Zeile allein
+  (§3.6, Wächter über nachgebauter Eingabe). Grenze des ungebundenen Teils
+  (Review INFO): die Präferenz-Zusage („`environment-check` erster Check")
+  trägt **keinen** Fall in der Mutations-Anlage — ihr Rot-Zug existiert als
+  Test-Form, nicht als Fall. Entscheidung (kleine Form, §3.6): die Lücke
+  wird **am Ort benennen** — als Übergabe-Artefakt an den nächsten
+  Implementer-Posten der Welle; hier nur entschieden, nicht geschrieben.
+- **Beobachtungs-Register (`../observations/`):**
+  [`BEO-ALL/bootstrap-braucht-den-carrier-von-aussen`](../observations/BEO-ALL/bootstrap-braucht-den-carrier-von-aussen/state.md)
+  neu angelegt (Ausgang des §6-Risikos „Bootstrap-Henne-Ei", weiter offen),
+  Beleg
+  [`evidence/slice-emittierte-gates-host-pfad.md`](../observations/BEO-ALL/bootstrap-braucht-den-carrier-von-aussen/evidence/slice-emittierte-gates-host-pfad.md),
+  Zähler 1. Die zwei §8-Treffer (gemischtes Root 1×, GNU-only-bats 2×)
+  bleiben unter der Schwelle — in diesem Lauf nicht angefallen.
+- **Folge-Slices:**
+  [`slice-smoke-und-full-smoke-ohne-docker`](../next/slice-smoke-und-full-smoke-ohne-docker.md)
+  (reale Beleg-Posten der emittierten Ebene, LP-2-Träger) · Mikroslice
+  Carrier-Besorgung (richtet der Welle-Plan neben dem Folge-Slice ein,
+  getragen vom Register-Eintrag oben).
+- **Risiken aus §6:** Skelett-Toolchains — entfallen (oben) · full-smoke —
+  eingetreten, Folge-Slice oben · Bootstrap-Henne-Ei — weiter offen,
+  Register-Eintrag oben.
+- **Drei Paarungen:** Anker — der Lerneintrag oben ist gezählt, es gibt
+  keinen `liegt in` · Folge-Slices —
+  [`slice-smoke-und-full-smoke-ohne-docker`](../next/slice-smoke-und-full-smoke-ohne-docker.md)
+  und der Register-Eintrag (weiter offen) · Register —
+  [`BEO-ALL/bootstrap-braucht-den-carrier-von-aussen`](../observations/BEO-ALL/bootstrap-braucht-den-carrier-von-aussen/state.md)
+  (Zähler 1). Die Prüfung der Paarungen trägt die schließende Welle.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
