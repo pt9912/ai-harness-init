@@ -119,6 +119,26 @@ Aussagen-Berührung steht hier gar nicht.
 | `test/rezept-host.bats`, `test/dockerfile-teststufe.bats` | update | Grenzmarkierung der Werkzeug-Abhängigkeiten (`make`, `git`) gegen den opt-in Image-Weg |
 | `harness/sensors/docs-check.md` | update | Prosa trägt den gefetchten Carrier-Weg (F-3) |
 
+**Ist-Stand gegen die Tabelle (Implementer, 2026-11-27):** die Zeilen
+`test/rezept-host.bats`/`test/dockerfile-teststufe.bats` (Weg-Agnostik der Rezept-Wächter,
+Review-Befund F-2) und `harness/sensors/docs-check.md` (Carrier-Prosa, F-3) sowie die
+`BATS_ROOT`/`BATS_LIBDIR`-Restauration am Host-Weg in `harness/tools/bats-lint.sh` (F-1)
+trägt der Vorgänger-Commit `be63da5d` — der Bestand erfüllt diese drei Zeilen vor diesem
+Lauf. Dieser Lauf berührt `test/traeger-fetch.bats` und `test/targets-modul-wiring.bats`
+(Liefer-Punkt 1) und ergänzt die Grenz-Zeile im Kopf von `test/dockerfile-teststufe.bats`
+(die Grenz-Form des Kopfes von `test/rezept-host.bats` steht schon).
+
+**Mess-Protokoll (Implementer, 2026-11-27):** die Rot-Menge von
+[`test/traeger-fetch.bats`](../../../../test/traeger-fetch.bats) ist vor dem Fix eine
+Funktion der ambienten [``TRAEGER_*``](../../../../Makefile)-Teilmenge — der
+`make test-bats`-Rezept-Weg exportiert Tag und die sechs Digest-Pins ins
+bats-Environment: voller Pin-Satz 3× → {3, 5, 7, 9} rot; die Teilmenge nur
+`TRAEGER_SHA256_DARWIN_AMD64` → {3, 5, 9} rot; ohne ambient → 10/10 grün.
+[„Fall 6"](../../../../test/targets-modul-wiring.bats) bricht unter
+`LANG=en_US.UTF-8` an `comm -23` (`file 1 is not in sorted order`), grün unter
+`LC_ALL=C`. Nach dem Fix: `make test-bats BATS_TARGET=test/traeger-fetch.bats` 3× →
+0 rot, Fall 6 grün unter beiden Locale-Varianten.
+
 ## 4. Trigger
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`

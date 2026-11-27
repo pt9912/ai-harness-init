@@ -16,6 +16,14 @@
 # Container-Kontext durchsetzt; der Host-Weg traegt sie NICHT (benannte Grenze,
 # Kommentar bei TEST_PIDS_LIMIT) — gemessen gegen test-go-image, nicht gegen
 # test-go.
+#
+# WERKZEUG-UMFANG: die Rezept-Faelle lesen die Formen aus der Datei (grep), kein
+# make/git/docker zur Laufzeit; dieselbe Grenz-Form traegt der Kopf von
+# test/rezept-host.bats. Der gepinnte bats-Image-Weg (test-bats-image, opt-in)
+# traegt deren Werkzeuge, und die Suite liefert an beiden Wegen (make test-bats
+# und make test-bats-image) denselben Exit-Vertrag · seit
+# slice-waechter-umgebungs-robustheit. Das Urteil ueber die Rezepte selbst
+# tragen die Gate-Laeufe je Weg · seit slice-labor-gates-host-rezepte.
 
 setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
