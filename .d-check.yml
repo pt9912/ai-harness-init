@@ -300,6 +300,7 @@ targets:
     - test-go
     - artifact
     - release-artifacts
+    - ci-runner-setup
     - compile
     - freshness-golangci
     - freshness-dcheck
