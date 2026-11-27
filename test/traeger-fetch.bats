@@ -42,6 +42,18 @@
 
 setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
+  # Umgebungs-Zusage: die TRAEGER_*-Stellen setzt jeder Fall unten je eigenem
+  # Zustand per `env` — geerbt duerfen sie nicht sein, sonst kippen die
+  # Ziel-Modus-Faelle still in den Pin-Modus und verifizieren gegen einen Pin,
+  # der zu ihrem Fixture nicht passt. Der Rezept-Weg exportiert die Pin-Stellen
+  # ins bats-Environment (Makefile-Zeile `export TRAEGER_...`). · seit
+  # slice-waechter-umgebungs-robustheit
+  for v in TRAEGER_TAG TRAEGER_SHA256_LINUX_AMD64 TRAEGER_SHA256_LINUX_ARM64 \
+           TRAEGER_SHA256_DARWIN_AMD64 TRAEGER_SHA256_DARWIN_ARM64 \
+           TRAEGER_SHA256_WINDOWS_AMD64 TRAEGER_SHA256_WINDOWS_ARM64 \
+           TRAEGER_CARRIER TRAEGER_IMAGE TRAEGER_OS TRAEGER_ARCH; do
+    unset -v "$v"
+  done
   MK="$REPO/Makefile"
   FRAG="$REPO/internal/emit/templates/enforce/traeger.mk"
   SKRIPT="$REPO/harness/tools/traeger-fetch.sh"
