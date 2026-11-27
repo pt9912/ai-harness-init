@@ -27,7 +27,7 @@ Wächter-Rahmenform, nicht nur der Anker).
 **Berührte Spec-Stellen:** `spec/spezifikation.md` §9 (Sensors und
 Abdeckung) — der Verweis zeigt **aufwärts**.
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912
 
 **Autor:** pt9912 (Rolle Planner, Closure-Lauf slice-labor-gates-host-rezepte). **Datum:** 2026-11-27.
 
