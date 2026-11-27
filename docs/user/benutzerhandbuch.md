@@ -339,9 +339,9 @@ make gates
 
 **Ergebnis:** Alle Prüfungen laufen durch (Exit-Code 0). Dazu gehören die Dokumentations-Prüfung und die Go-Prüfungen (Kompilieren, Test, Linter). Ein grüner Lauf bestätigt: Das Repository ist aufsetzbereit und korrekt verdrahtet.
 
-**Hinweise:** `make gates` nutzt Docker. Läuft Docker nicht, schlägt die Prüfung mit einer Docker-Fehlermeldung fehl — kein Fehler des Repositorys.
+**Hinweise:** `make gates` fährt am Host — docker-los. Der erste Check (`environment-check`) prüft die Werkzeuge der Umgebung gegen das Inventar (`tools/harness/environment-inventory.txt`); die Dokumentations-Prüfung fährt das d-check-Programm, das `make dcheck-fetch` einmalig aus dem gepinnten Release-Programm ablgt (dieser Aufruf braucht Netz). Wer den gepinnten Bild-Weg fahren will (`docs-check`, die `-image`-Ziele), braucht Docker — das ist der Weg, keine Pflicht.
 
-**Ein bereits aufgesetztes Repository geklont — kein eigener `ai-harness-init`-Lauf.** Haben Sie ein Repository geklont, das jemand anderes (oder eine CI) bereits aufgesetzt hat, brauchen Sie keinen eigenen Lauf: `make gates` funktioniert unverändert, denn die Gates prüfen nur Docker und den versionierten Inhalt.
+**Ein bereits aufgesetztes Repository geklont — kein eigener `ai-harness-init`-Lauf.** Haben Sie ein Repository geklont, das jemand anderes (oder eine CI) bereits aufgesetzt hat, brauchen Sie keinen eigenen Lauf: `make gates` funktioniert unverändert, denn die Gates prüfen die Host-Werkzeuge (environment-check) und den versionierten Inhalt.
 
 **Was dabei fehlt:** Der **Träger** — die `ai-harness-init`-Programmdatei selbst, die das Repository für zwei der fünf [Betriebs-Operationen](#betriebs-operationen) (`archive-welle`, `span-report`) braucht — liegt in einem **gitignorierten** Zustands-Bereich (`.harness/state/bin/`) und reist deshalb **nicht** mit einem Klon. `make gates` bleibt davon unberührt, ebenso `make span-clean`, das den Träger gar nicht anfasst. `make archive-welle`/`make span-report` melden nach einem frischen Klon: *„der Traeger liegt nicht … dieses Repo … nicht"* — kein Fehler, kein rotes Gate, nur eine Aussage über den fehlenden Träger.
 
@@ -775,7 +775,7 @@ mein-projekt/
 
 Das C#-Grundgerüst liegt in einer Lösung mit einem Projekt und einem Testprojekt; die Prüf-Stufen (`lint`, `build`, `test`) laufen im `Dockerfile` auf dem `dotnet-sdk`-Image, dessen Tag `SKEL_CSHARP_VERSION` bestimmt; aus Haupt- und Nebenversion dieses Tags leitet das Werkzeug das Ziel-Framework in `Directory.Build.props` ab.
 
-Am Wurzelverzeichnis (`--lang go` bzw. `add-lang go .`) liegen sie neben den Basis-Dateien; in einem **Mono-Repo** (mehrere `add-lang`-Läufe mit verschiedenen `<pfad>`) je Modul ein solcher Satz unter seinem `<pfad>`, auch mit gemischten Sprachen. Erst mit einem Sprachmodul fährt `make gates` **zusätzlich** die Code-Gates (lint/build/test in Docker).
+Am Wurzelverzeichnis (`--lang go` bzw. `add-lang go .`) liegen sie neben den Basis-Dateien; in einem **Mono-Repo** (mehrere `add-lang`-Läufe mit verschiedenen `<pfad>`) je Modul ein solcher Satz unter seinem `<pfad>`, auch mit gemischten Sprachen. Erst mit einem Sprachmodul fährt `make gates` **zusätzlich** die Code-Gates (`lint`, `build`, `test`) — beim Go-Modul mit den Host-Werkzeugen (`go test`, `golangci-lint run`, `go build`); die Docker-Stage-Wege stehen daneben als `test-image`/`lint-image`/`build-image` (opt-in).
 
 Mit einer geschichteten Bauform sieht der Code-Teil anders aus (die Bau-Dateien bleiben gleich): statt eines einzelnen Einstiegspunkts entstehen Schichten — bei `hexslice` `internal/hexagon/{domain,application}` und `internal/adapters/{driving,driven}`, bei `hexagonal` `internal/hexagon/{core,port}` und `internal/adapter/{driven,driving}` —, dazu `cmd/<binary>/main.go` (bei `kotlin`: Pakete unter `src/main/kotlin/app/` — `hexagon/{domain,application}` und `adapters/{driving,driven}` —, der Composition Root `Main.kt` und der Test `src/test/kotlin/app/GreetTest.kt`; bei `java` dieselbe Form unter `src/main/java/app/` mit `Main.java` und dem Test `src/test/java/app/GreetTest.java`; bei `python` Verzeichnisse unter `src/app/` — `hexagon/{domain,application}` und `adapters/{driving,driven}`, jedes mit einer `__init__.py` —, der Composition Root `src/app/main.py` und der Test `tests/test_greet.py`; bei `csharp` PascalCase-Verzeichnisse unter `src/App/` — `Hexagon/{Domain,Application}` und `Adapters/{Driving,Driven}`, die Richtungs-Ordner der Ports klein, `Ports/inbound` und `Ports/outbound` —, der Composition Root `src/App/Program.cs` und der Test `tests/App.Tests/GreetTests.cs`; der Namensraum einer C#-Datei ist ihr Verzeichnispfad ab `App`) und **plus** das Architektur-Gate `<pfad>/.a-check.yml` und `a-check.mk`. Bei `flat` (dem Standard) entsteht keines von beidem. Siehe [Ein geschichtetes Grundgerüst wählen](#ein-geschichtetes-grundgerüst-wählen---arch).
 
@@ -865,9 +865,9 @@ ai-harness-init add-lang go apps/api
 
 ### Der Lauf hängt oder bricht mit einem Docker-Fehler ab
 
-**Ursache:** Docker läuft nicht oder ist nicht erreichbar. `ai-harness-init` ruft Docker auf, um die Prüf-Konfiguration zu erzeugen.
+**Ursache:** Docker läuft nicht oder ist nicht erreichbar. `ai-harness-init` ruft Docker auf, um die Prüf-Konfiguration zu erzeugen — mit gesetztem `DCHECK_CARRIER` fährt der Lauf stattdessen dieses Programm am Host.
 
-**Lösung:** Starten Sie Docker und prüfen Sie mit `docker ps`, dass es bedienbar ist. Wiederholen Sie den Aufruf.
+**Lösung:** Starten Sie Docker und prüfen Sie mit `docker ps`, dass es bedienbar ist — oder setzen Sie `DCHECK_CARRIER` auf eine ausführbare d-check-Programmdatei. Wiederholen Sie den Aufruf.
 
 ### Der Lauf bricht mit einem Netzwerk- oder Download-Fehler ab
 
@@ -877,9 +877,9 @@ ai-harness-init add-lang go apps/api
 
 ### `make gates` schlägt im aufgesetzten Repository fehl
 
-**Ursache:** In aller Regel läuft Docker nicht — die Prüfungen sind Docker-basiert. Ein frisch aufgesetztes Repository ist andernfalls grün.
+**Ursache:** Zwei Klassen: Ein Werkzeug aus dem Inventar fehlt oder weicht vom Soll ab (`environment-check` meldet es als Umgebungs-Befund, als erster Check der Kette) — oder das d-check-Programm liegt nicht an seiner Ablage (`docs-check-host` bricht mit einer Diagnose ab). Ein frisch aufgesetztes Repository ist andernfalls grün.
 
-**Lösung:** Docker starten und `make gates` erneut ausführen. Bleibt der Fehler bestehen, prüfen Sie, ob Sie erzeugte Dateien verändert haben.
+**Lösung:** Stellen Sie das genannte Werkzeug bereit, bzw. holen Sie das d-check-Programm einmalig mit `make dcheck-fetch` (Netz an diesem Aufruf) und führen Sie `make gates` erneut aus. Bleibt der Fehler bestehen, prüfen Sie, ob Sie erzeugte Dateien verändert haben.
 
 ---
 
