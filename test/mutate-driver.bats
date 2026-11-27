@@ -1563,19 +1563,22 @@ vollauf() {
 
 @test "driver: fehlt der Daemon fuer einen Daemon-Modus, bricht der Lauf als Umgebungs-Befund VOR der Isolationskopie" {
   teillauf_fake
+  # Der Fall traegt den EINEN Traeger der Daemon-Vorbedingung: seit
+  # slice-smoke-und-full-smoke-ohne-docker ist der smoke-Modus aus der Liste
+  # entlassen (Rezept host-native), full-smoke bleibt in ihr.
   printf '%s\n' '#!/usr/bin/env bash' '# files: datei.txt' '# expect: erwartet-x' \
-    '# verify: smoke' 'set -euo pipefail' "sed -i 's/inhalt/mutiert/' datei.txt" \
-    >"$TL_FAKE/test/mutations/04-smoke.sh"
+    '# verify: full-smoke' 'set -euo pipefail' "sed -i 's/inhalt/mutiert/' datei.txt" \
+    >"$TL_FAKE/test/mutations/04-full-smoke.sh"
   cat >"$TL_ROOT/bin/docker" <<'DD'
 #!/usr/bin/env bash
 exit 1
 DD
   chmod +x "$TL_ROOT/bin/docker"
   run env "PATH=$TL_ROOT/bin:$PATH" MUTATE_JOBS=1 "TMPDIR=$TL_ROOT/tmp" \
-    MUTATE_CASES='04-smoke' bash "$TL_FAKE/harness/tools/mutate.sh"
+    MUTATE_CASES='04-full-smoke' bash "$TL_FAKE/harness/tools/mutate.sh"
   [ "$status" -eq 4 ]
   grep -qF 'ABBRUCH — Umgebungs-Befund: docker · Soll: erreichbarer Docker-Daemon · Ist: nicht erreichbar' <<<"$output"
-  grep -qF 'Die Fall-Modi: smoke bootstrappen tmp-Repos mit Docker-Gates' <<<"$output"
+  grep -qF 'Die Fall-Modi: full-smoke bootstrappen tmp-Repos an Docker-bundenen Stufen' <<<"$output"
   # Keine Isolationskopie: unter TMPDIR liegt kein Isolations-Baum (`*/repo`).
   [ -z "$(find "$TL_ROOT/tmp" -maxdepth 2 -name repo 2>/dev/null)" ]
   rm -rf "$TL_ROOT"
