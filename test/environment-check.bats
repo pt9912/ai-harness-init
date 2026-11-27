@@ -58,7 +58,16 @@ fixture() {
 @test "environment-check: fehlendes Pflicht-Werkzeug färbt Ist fehlt" {
     F="$(fixture 'go|exakt|pflicht|abgeleitet:1.27.3|k|g')"
     S="$(mktemp -d)"
-    run env PATH="$S:/usr/bin:/bin" bash "$SCRIPT" --inventar "$F"
+    # Der END-PUNKT des Falls ist das Stub-Verzeichnis: die Erwartung ist
+    # Abwesenheit und haengt nicht mehr am System-Tail (/usr/bin, /bin) — dort
+    # trägt der Runner installiertes Werkzeug (apt-Zug, brew-Zug, GITHUB_PATH),
+    # das der Fall sonst als Ist liest (gemessen am Runner: Ist: 1.27.0 statt
+    # fehlt). Die Maschinerie des Skripts (Basis-Werkzeuge) liegt als Verweise
+    # im Stub-Verzeichnis, und der PATH des Falls endet dort.
+    for m in bash sed cut sha256sum grep head; do
+        [ "$(command -v "$m" 2>/dev/null)" ] && ln -s "$(command -v "$m")" "$S/$m" || true
+    done
+    run env PATH="$S" bash "$SCRIPT" --inventar "$F"
     echo "Ausgabe: [$output] (Zusage: Ist fehlt)"
     [ "$status" -eq 1 ]
     [[ "$output" == *"umgebung: go · Soll: 1.27.3 · Ist: fehlt"* ]]
