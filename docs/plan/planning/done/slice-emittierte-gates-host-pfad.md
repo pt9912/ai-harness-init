@@ -20,8 +20,8 @@ der Welle beobachtet mehr als ein Slice-DoD trägt (Baseline-Regelwerk
 (jeder emittierte Gate-Target läuft auf frischem Checkout),
 [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)
 (emittierte Ziel-Reports bleiben make-getrieben, docker Weg statt Pflicht),
-[ADR-0004](../../adr/0004-durchsetzung-emission.md) (durchgesetzte Emission),
-[ADR-0109](../../adr/0109-…-gates-laeufen-docker-los.md) <!-- d-check:ignore (Platzhalter-Kennung: entsteht im Architect-Slice slice-adr-gates-laeufen-host-native, ADR-0109-Form) -->,
+[ADR-0004](../../adr/0004-durchsetzungs-emission.md) (durchgesetzte Emission),
+[ADR-0109](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md) <!-- d-check:ignore (Platzhalter-Kennung: entsteht im Architect-Slice slice-adr-gates-laeufen-host-native, ADR-0109-Form) -->,
 `slice-c4-environment-check-v7-0-0` ([docs/plan/planning/done/](../done/slice-c4-environment-check-v7-0-0.md)
 — die emittierte `environment-check`-Vorlage wird zum Träger).
 
@@ -65,7 +65,7 @@ Bootstrap braucht nur git.
 [x] **Liefer-Punkt 1:** die emittierten Gates-Fragmente (`internal/emit/templates/`
       + mk-Fragmente) tragen die host-native Form mit Inventar-Emittierung;
       `environment-check` fährt emittiert als erster Gates-Check
-      (`LH-QA-01`-Messung bleibt full-smoke).
+      ([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Messung bleibt full-smoke).
 - [ ] **Liefer-Punkt 2:** ein frisch gebootstrapptes Ziel fährt `make gates`
       out-of-the-box grün auf einem Host ohne Docker-Daemon — belegt im
       realen Lauf (Verifikations-Bericht), nicht als Prosa.
@@ -86,7 +86,7 @@ Bootstrap braucht nur git.
       und wird in §7 notiert.
 [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
       nächsten Welle-Closure geprüft.
 
 ## 3. Plan (vor Code)
@@ -113,7 +113,7 @@ sie (dieselbe Form, keine zweite Definition).
   ein Sprach-Skelett je Teil.
 - `in-progress` → `open` (blockiert — Carveout?): ein emittiertes Skelett
   hat keinen host-Toolchain-Weg (Kotlin-Gradle-Toolchain ohne Container?) —
-  dann die Skelett-Toolchain-Frage an die ADR-0109-Platzhalter-Synthese.
+  dann die Skelett-Toolchain-Frage an die [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)-Platzhalter-Synthese.
 
 ## 5. Closure-Trigger
 
@@ -124,7 +124,7 @@ Closure-Notiz mit Lerneintrag geschrieben.
 ## 6. Risiken und offene Punkte
 
 - **Die Sprach-Skelett-Toolchains (Kotlin, Java, Python, Csharp) tragen
-  ihre eigene Pin-Form** ([`ADR-0088`](docs/plan/adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md)-Nachfolger)
+  ihre eigene Pin-Form** ([`ADR-0088`](../../adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md)-Nachfolger)
   — **Ausgang:** entfallen — kein K/J/P/C-Skelett-Fragment im Diff umgestellt;
   die Inventar-Ableitung liefert für die übrigen Sprachen `nil` je benannter
   Begründung, und der Paarungs-Wächter hält auch die Leer-Menge; docker-los
@@ -154,6 +154,8 @@ Closure-Notiz mit Lerneintrag geschrieben.
 
 ## 7. Closure-Notiz
 
+**Gegenstand:** offene §2-Items: `make gates` grün und Liefer-Punkt 2 — Vorbestand-Rotmenge der Gates-Kette; LP 2 trägt der reale CI-Lauf (ci.yml), nicht dieser Slice.
+
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Das Beobachtungs-Register (vorhandene `BEO-<KUERZEL>/<slug>` **zitieren** statt neu
 formulieren — sonst zählt das Register zwei Namen getrennt) ·
@@ -161,9 +163,9 @@ formulieren — sonst zählt das Register zwei Namen getrennt) ·
 
 **Closure-Notiz (Rolle Planner, 2026-11-27)** — Quellen: eigener Lauf, der
 Verifikations-Bericht
-([`docs/reviews/2026-11-27-slice-emittierte-gates-host-pfad-verify.md`](../../reviews/2026-11-27-slice-emittierte-gates-host-pfad-verify.md)),
+([`docs/reviews/2026-11-27-slice-emittierte-gates-host-pfad-verify.md`](../../../reviews/2026-11-27-slice-emittierte-gates-host-pfad-verify.md)),
 der Review-Report
-([`docs/reviews/2026-11-27-slice-emittierte-gates-host-pfad.md`](../../reviews/2026-11-27-slice-emittierte-gates-host-pfad.md),
+([`docs/reviews/2026-11-27-slice-emittierte-gates-host-pfad.md`](../../../reviews/2026-11-27-slice-emittierte-gates-host-pfad.md),
 Behebungszug `9bd6f440..6cabbee6`) und der F-9-Zug (`0be90f31`).
 
 - **Was hat funktioniert:** die emitter-Ebene spiegelt die Labor-Form statt

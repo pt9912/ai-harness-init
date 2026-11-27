@@ -18,7 +18,7 @@ der Welle beobachtet mehr als ein Slice-DoD trägt (Baseline-Regelwerk
 (die Messmethode „make gates grün out-of-the-box" — jetzt docker-los),
 [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) ,
 [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) ,
-[ADR-0109](../../adr/0109-…-gates-laeufen-docker-los.md) <!-- d-check:ignore (Platzhalter-Kennung: entsteht im Architect-Slice slice-adr-gates-laeufen-host-native, ADR-0109-Form) -->,
+[ADR-0109](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md) <!-- d-check:ignore (Platzhalter-Kennung: entsteht im Architect-Slice slice-adr-gates-laeufen-host-native, ADR-0109-Form) -->,
 [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)
 (die `SMOKE_ARTIFACT_TARGET`-Hilfe entfällt oder wird umgebund — im
 Linux-Hauptweg ohne Docker-Abhängigkeit).
@@ -42,7 +42,7 @@ Träger), bootstrappen das Ziel-Repo und fahren dort die emittierten
 host-native Gates
 ([`slice-emittierte-gates-host-pfad`](../done/slice-emittierte-gates-host-pfad.md)).
 Die Stufen-Deklarationen der E2E-Abdeckung bleiben — der Prüfgegenstand
-(LH-QA-01 over-the-box) ist derselbe, nur der Träger der Umgebung wechselt.
+([`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) over-the-box) ist derselbe, nur der Träger der Umgebung wechselt.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
@@ -81,13 +81,13 @@ Die Stufen-Deklarationen der E2E-Abdeckung bleiben — der Prüfgegenstand
       (`MUTATE_CASES='<ein `# verify: full-smoke`-Fall>'`) docker-los grün —
       der Befund-Nachweis (manipulierte Inventar-Zeile → Umgebungs-Befund)
       aus [`slice-mutate-treiber-host-modi`](../done/slice-mutate-treiber-host-modi.md)
-      bleibt in Kraft; neue/wanderede Fälle je [
-      `MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[
-      `MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit).
+      bleibt in Kraft; neue/wanderede Fälle je
+      [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/
+      [`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit).
 - [ ] `make gates` grün.
 [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — kein Self-Review (Modul 8).
-- [ ] Doku-Update: [`harness/sensors/smoke.md`](../../../../harness/sensors/smoke.md),
+- [x] Doku-Update: [`harness/sensors/smoke.md`](../../../../harness/sensors/smoke.md),
       [`harness/sensors/full-smoke.md`](../../../../harness/sensors/full-smoke.md)
       — Doku-Nachzug im [`slice-doku-nachzug-ohne-docker`](../in-progress/slice-doku-nachzug-ohne-docker.md).
 [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
@@ -97,7 +97,7 @@ Die Stufen-Deklarationen der E2E-Abdeckung bleiben — der Prüfgegenstand
       und wird in §7 notiert.
 [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
       nächsten Welle-Closure geprüft.
 
 ## 3. Plan (vor Code)
@@ -124,8 +124,9 @@ steht (die host-Rezepte des Labors existieren).
   (dokument-only, go, cpp, …) nicht in einen Träger-Pfad fällt → re-slicen.
 - `in-progress` → `open` (blockiert — Carveout?): eine E2E-Stufe hat
   keinen host-Prüfen-Weg (etwa die `full-smoke`-Stufe, die Docker-Behauptungen
-  der emittierten Ebene messen will) — dann die Abgrenzung an die ADR-0109-
-  Platzhalter-Synthese und die Stufen-Deklaration wird neu formuliert —
+  der emittierten Ebene messen will) — dann die Abgrenzung an die
+  [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)-Platzhalter-Synthese
+  und die Stufen-Deklaration wird neu formuliert —
   nicht still geändert.
 
 ## 5. Closure-Trigger
@@ -136,7 +137,7 @@ Bericht. Zusätzlich: Closure-Notiz mit Lerneintrag geschrieben.
 
 ## 6. Risiken und offene Punkte
 
-- **Der `LH-QA-01`-Nachweis über `make full-smoke` wird schwächer gelesen**
+- **Der [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)-Nachweis über `make full-smoke` wird schwächer gelesen**
   (docker-los E2E trägt keine Docker-Isolation) — **Ausgang:** entfallen —
   die Pin-Form trägt die Messmethode (Tool-Pin je Werkzeug,
   Inventar-Emittierung im Ziel), der opt-in Image-Pfad bleibt als starker
@@ -157,6 +158,8 @@ Bericht. Zusätzlich: Closure-Notiz mit Lerneintrag geschrieben.
 
 ## 7. Closure-Notiz
 
+**Gegenstand:** offene §2-Items: `make gates` grün, Liefer-Punkt 2/3 — Vorbestand-Rotmenge der Gates-Kette; LP 2/3 tragen der CI-Lauf und der Mutations-Nachweis (je Zeile oben benannt), nicht dieser Slice.
+
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Das Beobachtungs-Register (vorhandene `BEO-<KUERZEL>/<slug>` **zitieren** statt neu
 formulieren — sonst zählt das Register zwei Namen getrennt) ·
@@ -164,9 +167,9 @@ formulieren — sonst zählt das Register zwei Namen getrennt) ·
 
 **Closure-Notiz (Rolle Planner, 2026-11-27)** — Quellen: eigener Lauf, der
 Verifikations-Bericht
-([`docs/reviews/2026-11-27-slice-smoke-und-full-smoke-ohne-docker-verify.md`](../../reviews/2026-11-27-slice-smoke-und-full-smoke-ohne-docker-verify.md))
+([`docs/reviews/2026-11-27-slice-smoke-und-full-smoke-ohne-docker-verify.md`](../../../reviews/2026-11-27-slice-smoke-und-full-smoke-ohne-docker-verify.md))
 und der Review-Report
-([`docs/reviews/2026-11-27-slice-smoke-und-full-smoke-ohne-docker.md`](../../reviews/2026-11-27-slice-smoke-und-full-smoke-ohne-docker.md),
+([`docs/reviews/2026-11-27-slice-smoke-und-full-smoke-ohne-docker.md`](../../../reviews/2026-11-27-slice-smoke-und-full-smoke-ohne-docker.md),
 F-1..F-7, behoben in `95988195`/`2108567e`/`5ee7d555`/`1e3ffbdc`, V-1 im
 Fix `64cd1dd7`).
 
@@ -202,7 +205,7 @@ Fix `64cd1dd7`).
   Fixture-Doppel) und dreht je Form die emittierte Seite; ihre Zusage erstreckt
   sich nicht auf die Verdrahtung, die der Lauf im Ziel misst. Grenze des
   ungebundenen Teils (V-1, behoben): ein Fall-Anker veraltet, wenn ein
-  Implementer-Zug die Form seiner Ziel-Stelle ändert — `MR-071` misst die
+  Implementer-Zug die Form seiner Ziel-Stelle ändert — [`MR-071`](../../../../harness/conventions/MR-071-die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand.md) misst die
   Anlage gegen den Bestand zum Anlage-Zeitpunkt, nicht gegen spätere
   Form-Wechsel; der Nachzug bindet die Fall-Anlagen in die
   Commit-Routine der berührenden Züge (Übergabe an die Welle-Planung).

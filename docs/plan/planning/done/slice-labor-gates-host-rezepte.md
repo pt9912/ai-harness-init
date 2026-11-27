@@ -21,7 +21,7 @@ der Welle beobachtet mehr als ein Slice-DoD trägt (Baseline-Regelwerk
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
 (Exit-Klassen und Urteile bleiben dieselben),
 [ADR-0003](../../adr/0003-go-native-binaries.md),
-[ADR-0109](../../adr/0109-…-gates-laeufen-docker-los.md) <!-- d-check:ignore (Platzhalter-Kennung: entsteht im Architect-Slice slice-adr-gates-laeufen-host-native, ADR-0109-Form) -->
+[ADR-0109](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md) <!-- d-check:ignore (Platzhalter-Kennung: entsteht im Architect-Slice slice-adr-gates-laeufen-host-native, ADR-0109-Form) -->
 (docker-los Default, Image-Pfade opt-in),
 [`MR-024`](../../../../harness/conventions/MR-024-d-check-pin-v0620-structure-verfuegbar.md)-Form
 (d-check-Pin-Disziplin).
@@ -92,7 +92,7 @@ Sobald alle sechs laufen, ist `make gates` docker-los.
       und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
       nächsten Welle-Closure geprüft. *(die Prüfung läuft an der schließenden
       Welle; die Paarungen selbst stehen in §7.)*
 
@@ -119,7 +119,7 @@ Voraussetzungen.
   Config-Set am Host braucht, das das Image nicht trägt → re-slicen.
 - `in-progress` → `open` (blockiert — Carveout?): ein Rezept hat kein
   host-Äquivalent, das die Exit-Klasse tragen kann — dann Carveout-Klärung
-  an der ADR-0109-Platzhalter-Synthese, Slice steht off.
+  an der [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)-Platzhalter-Synthese, Slice steht off.
 
 ## 5. Closure-Trigger
 
@@ -146,6 +146,8 @@ Zusätzlich: Closure-Notiz mit Lerneintrag geschrieben.
   ([`BEO-ALL/waechter-rot-menge-schwankt-mit-umgebungs-variante`](../observations/BEO-ALL/waechter-rot-menge-schwankt-mit-umgebungs-variante/state.md)).
 
 ## 7. Closure-Notiz
+
+**Gegenstand:** offene §2-Items: `make gates` grün und Liefer-Punkt 2 — Vorbestand-Rotmenge der Gates-Kette; LP 2 trägt der reale CI-Lauf (ci.yml), nicht dieser Slice.
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Das Beobachtungs-Register (vorhandene `BEO-<KUERZEL>/<slug>` **zitieren** statt neu

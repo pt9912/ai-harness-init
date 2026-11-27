@@ -37,7 +37,7 @@ fahren ohne Docker-Daemon: die Runner-Setup-Steps installieren die
 Inventar-Werkzeuge (go/bats/shellcheck/actionlint/d-check-Binary, Version je
 Pin aus dem Inventar), die Gates- und Mutations-Jobs rufen nur `make`-Targets,
 der Release-Bau (Tag-Workflow) bleibt im gepinnten Image
-([ADR-0003](../../adr/0003-go-native-binaries.md)). `MR-014` bleibt in Kraft —
+([ADR-0003](../../adr/0003-go-native-binaries.md)). [`MR-014`](../../../../harness/conventions/MR-014-ci-auf-frischem-klon-github-actions.md) bleibt in Kraft —
 CI läuft auf frischem Klon, nur ohne Daemon-Annahme.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
@@ -79,7 +79,7 @@ CI läuft auf frischem Klon, nur ohne Daemon-Annahme.
 - [ ] `make gates` grün.
 [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — kein Self-Review (Modul 8).
-- [ ] Doku-Update: [`harness/sensors/gates.md`](../../../../harness/sensors/gates.md),
+- [x] Doku-Update: [`harness/sensors/gates.md`](../../../../harness/sensors/gates.md),
       [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md)
       (CI-Verhältnis) — Doku-Nachzug im
       [`slice-doku-nachzug-ohne-docker`](../in-progress/slice-doku-nachzug-ohne-docker.md).
@@ -90,7 +90,7 @@ CI läuft auf frischem Klon, nur ohne Daemon-Annahme.
       und wird in §7 notiert.
 [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
       nächsten Welle-Closure geprüft.
 
 ## 3. Plan (vor Code)
@@ -146,6 +146,8 @@ Closure-Notiz mit Lerneintrag geschrieben.
 
 ## 7. Closure-Notiz
 
+**Gegenstand:** offene §2-Items: `make gates` grün und Liefer-Punkte 2/3 — Vorbestand-Rotmenge der Gates-Kette; LP 2/3 trägt der reale CI-Lauf (ci.yml-Push/Nacht-Shard, je Zeile oben benannt), nicht dieser Slice.
+
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Das Beobachtungs-Register (vorhandene `BEO-<KUERZEL>/<slug>` **zitieren** statt neu
 formulieren — sonst zählt das Register zwei Namen getrennt) ·
@@ -153,9 +155,9 @@ formulieren — sonst zählt das Register zwei Namen getrennt) ·
 
 **Closure-Notiz (Rolle Planner, 2026-11-27)** — Quellen: eigener Lauf, der
 Verifikations-Bericht
-([`docs/reviews/2026-11-27-slice-ci-runner-ohne-docker-verify.md`](../../reviews/2026-11-27-slice-ci-runner-ohne-docker-verify.md))
+([`docs/reviews/2026-11-27-slice-ci-runner-ohne-docker-verify.md`](../../../reviews/2026-11-27-slice-ci-runner-ohne-docker-verify.md))
 und der Review-Report
-([`docs/reviews/2026-11-27-slice-ci-runner-ohne-docker.md`](../../reviews/2026-11-27-slice-ci-runner-ohne-docker.md),
+([`docs/reviews/2026-11-27-slice-ci-runner-ohne-docker.md`](../../../reviews/2026-11-27-slice-ci-runner-ohne-docker.md),
 F-1..F-7, behoben `cb965055`/`bc46815d`/`678e4f7e`/`6f0b50ca`/`b20ffd8b`).
 
 - **Was hat funktioniert:** die hermetische Form steht — Runner-Setup je
@@ -180,7 +182,7 @@ F-1..F-7, behoben `cb965055`/`bc46815d`/`678e4f7e`/`6f0b50ca`/`b20ffd8b`).
   Push. (4) O-6: Fall 818s kuratierte Entstehung trägt der Lauf nach dem
   Vorbestand-Fix (Grenze am Fall-Kopf). (5) Die Plan-Zeile des
   Platzhalter-Befunds (Zeile 22, `target-missing`) ist in diesem
-  Closure-Zug auf die reale ADR-0109-Datei umgestellt — der
+  Closure-Zug auf die reale [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)-Datei umgestellt — der
   `d-check:ignore`-Kommentar wirkte dort nicht.
 - **Steering-Loop-Eintrag:** geschärfte Regel (gezählt, nicht verkörpert —
   kein `liegt in`): **ein Soll trägt EINE Quelle; der Wächter hält die

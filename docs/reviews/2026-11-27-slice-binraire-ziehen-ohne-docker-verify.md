@@ -71,7 +71,7 @@ Host-bats gefahren. **Geprüfter Stand:** HEAD `c6b4d798`; Kern `15cb3586`, Fixe
 ### `make gates` grün — **nicht bestätigt (Umwelt; Träger ist CI)**
 
 - Auf dem Auftraggeber-Host ungenehmigt und docker-gebunden; nicht gefahren. Der Träger
-  ist CI ([`MR-014`](../spec/lastenheft.md)) auf dem frischen Klon.
+  ist CI ([`MR-014`](../../spec/lastenheft.md)) auf dem frischen Klon.
 - **CI-Stand:** Lauf `45961494310` (HEAD `c6b4d798`) **in progress**. Der Vorläufer
   `45960465554` (Push `a6c70467`, nur der Review-Report) ist **rot**: Job
   `full-smoke` — die E2E-Ausgangs-Zusammenfassung läuft an
@@ -178,7 +178,7 @@ Host-bats gefahren. **Geprüfter Stand:** HEAD `c6b4d798`; Kern `15cb3586`, Fixe
    `make build`/`make docs-check` ungenau an keinen Stand des Slices gefahren — das
    DoD-Häkchen „make gates grün" trägt CI.
 4. **Test-5-Hermeticity:** der Vorbefund ist als Hermeticity-Bruch des Tests
-   (`PATH-Streifung entfernt `bash``) zu tragen, nicht als Umwelt-Befund; die
+   (PATH-Streifung entfernt `bash`) zu tragen, nicht als Umwelt-Befund; die
    Befundung in der Test-Fixtur-Deckung der Docker-Stage (CI grün?) klären —
    ggf. Folge-Fix (PATH des Stubs um bash erweitern).
 5. **Befund-Rückstand 784/785/794** (Anker „veraltet" am Schwesterslice gates-fast/

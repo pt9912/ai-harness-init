@@ -18,7 +18,7 @@ kommt aus der Host-Umstellung der Gates-Kante in genau dieser Welle
 (kein Wächter-Urteil, das an der Host-Umgebung hängt, statt am Prüfgegenstand),
 [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)
 (docker-los-Pflicht-Weg der Gates),
-[ADR-0109](../../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)
+[ADR-0109](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)
 (zwei Wege, ein Exit-Vertrag beide Wege),
 [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)
 (die Fall-Anlage misst ihre Muster gegen den Quell-Bestand — auch die
@@ -102,7 +102,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       Antwort und wird in §7 notiert.
 [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im
       Repo **mit** Wellen-Betrieb von der nächsten Welle-Closure.
 
 ## 3. Plan (vor Code)
@@ -173,7 +173,7 @@ committet anliegend.
   je Wächter-Klasse (Transport/Setups vor Sortier-Semantik).
 - `in-progress` → `open` (blockiert — Carveout?): die Ursache liegt im
   bats-Läufer selbst (Version am Host), nicht im Setup — dann Carveout-Klärung
-  an der ADR-0109-Fassung.
+  an der [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)-Fassung.
 
 ## 5. Closure-Trigger
 
@@ -214,6 +214,8 @@ dasteht.
 
 ## 7. Closure-Notiz
 
+**Gegenstand:** offene §2-Zeile `make gates` grün — Vorbestand-Rotmenge der Gates-Kette, nicht in diesem Slice geliefert (Träger: die Gates-Posten der Welle).
+
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Das Beobachtungs-Register (vorhandene `BEO-<KUERZEL>/<slug>` **zitieren** statt neu
 formulieren — sonst zählt das Register zwei Namen getrennt) ·
@@ -228,9 +230,9 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 
 **Closure-Notiz (Rolle Planner, 2026-11-27)** — Quellen: eigener Lauf, die
 offenen Punkte des Implementer-/Verifier-Berichts
-([`docs/reviews/2026-11-27-slice-waechter-umgebungs-robustheit-verify.md`](../../reviews/2026-11-27-slice-waechter-umgebungs-robustheit-verify.md))
+([`docs/reviews/2026-11-27-slice-waechter-umgebungs-robustheit-verify.md`](../../../reviews/2026-11-27-slice-waechter-umgebungs-robustheit-verify.md))
 und die Review-Klassen des Reports
-([`docs/reviews/2026-11-27-slice-waechter-umgebungs-robustheit.md`](../../reviews/2026-11-27-slice-waechter-umgebungs-robustheit.md)).
+([`docs/reviews/2026-11-27-slice-waechter-umgebungs-robustheit.md`](../../../reviews/2026-11-27-slice-waechter-umgebungs-robustheit.md)).
 
 - **Was hat funktioniert:** der Setup-Ausmerz trägt — nach dem Fix liefern
   Einzellauf und voller Sweep dieselbe Rot-Menge je Wächter (Verifikations-
@@ -307,7 +309,7 @@ Treffer:
   der Slice ist sein Ausgang, kein 3×-Übertritt.
 - [`BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer`](../observations/BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer/state.md)
   — 7 Vorgänge, Ausgang verkörpert; der Host-Ist-Zustand trägt sein Linux-Ein-
-  Stand in ADR-0109-Fassung — kein 3×-Übertritt.
+  Stand in [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)-Fassung — kein 3×-Übertritt.
 - [`BEO-ALL/gruen-vorlauf-eines-mutate-workers-faellt-unter-runner-last`](../observations/BEO-ALL/gruen-vorlauf-eines-mutate-workers-faellt-unter-runner-last/state.md)
   — 2 Vorgänge (< 3×), Umgebungs-Vorlauf-Familie, hier nicht zu bearbeiten.
 

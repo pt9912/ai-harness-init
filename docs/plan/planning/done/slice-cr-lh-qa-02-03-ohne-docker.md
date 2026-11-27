@@ -26,10 +26,10 @@ einem Runner ohne Docker-Daemon) beobachtet mehr als ein Slice-DoD trägt
 [ADR-0003](../../adr/0003-go-native-binaries.md)
 (natives Binary bleiben; der *Tool-Build* im gepinnten Image bleibt unberührt).
 
-**Berührte Spec-Stellen:** `spec/lastenheft.md` §3 (LH-FA-07), §4 (LH-QA-02,
-LH-QA-03, LH-QA-04) und §7 (Historie). Nachzugs-Übergabe der Verifikation: der
-ursprüngliche Kopf nannte §4 nur mit LH-QA-02/03; der Folgestellen-Nachzug
-(CR 0.28.1) zog LH-FA-07 und LH-QA-04 in denselben Zustand (siehe §6,
+**Berührte Spec-Stellen:** `spec/lastenheft.md` §3 ([`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)), §4 ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit),
+[`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten), [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)) und §7 (Historie). Nachzugs-Übergabe der Verifikation: der
+ursprüngliche Kopf nannte §4 nur mit [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)/03; der Folgestellen-Nachzug
+(CR 0.28.1) zog [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren) und [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) in denselben Zustand (siehe §6,
 Risiko-1-Ausgang). Der Verweis zeigt **aufwärts**: Die Spec nennt diesen Slice
 nie (Baseline-Regelwerk `grundlagen-referenz-richtung.md` §Referenz-Richtung
 (SDP)).
@@ -44,10 +44,10 @@ nie (Baseline-Regelwerk `grundlagen-referenz-richtung.md` §Referenz-Richtung
 
 **Ziel:** die Entscheidung des Auftraggebers vom 2026-11-27 (Docker-Daemon
 bleibt aus; Labor und Produkt-Aktivierung laufen vollständig docker-los) ist
-vertraglich verankert: `LH-QA-03` nennt docker als **Weg, nicht als Pflicht**
+vertraglich verankert: [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) nennt docker als **Weg, nicht als Pflicht**
 (die Bootstrap-Laufzeit braucht nur git; die Gates der emittierten Repos
 führen je Werkzeug die gepinnte Version — Image-Pfad *oder* Tool-Pin über den
-Laufzeit-Check), und `LH-QA-02` trägt die Reproduzierbarkeit je Weg (Image-Digest
+Laufzeit-Check), und [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) trägt die Reproduzierbarkeit je Weg (Image-Digest
 bzw. Tool-Pin mit Inventar-Soll). Der CR-Eintrag steht in §7 Historie in der
 [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)-Form.
 
@@ -71,10 +71,10 @@ bzw. Tool-Pin mit Inventar-Soll). Der CR-Eintrag steht in §7 Historie in der
       Auftraggeber-Beschluss vom 2026-11-27 (docker-los) in der
       [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)-Form
       (Zeilen 0.28.0 und 0.28.1).
-- [x] **Liefer-Punkt 2:** `LH-QA-03` neue Fassung — Bootstrap-Laufzeit
+- [x] **Liefer-Punkt 2:** [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) neue Fassung — Bootstrap-Laufzeit
       braucht nur git; docker ist Weg, nicht Pflicht; emittierte Ziel-Repos
       bleiben make-getrieben und führen je Gate-Werkzeug die gepinnte Version.
-- [x] **Liefer-Punkt 3:** `LH-QA-02` neue Fassung — Reproduzierbarkeit je
+- [x] **Liefer-Punkt 3:** [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) neue Fassung — Reproduzierbarkeit je
       Weg: Image-Digest (Image-Pfad) bzw. Tool-Pin mit Inventar-Soll
       (docker-los-Pfad); Messmethode nennt beide.
 - [x] `make gates` grün — **bedingt über den
@@ -93,7 +93,7 @@ bzw. Tool-Pin mit Inventar-Soll). Der CR-Eintrag steht in §7 Historie in der
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — zwei neue
       Einträge mit je einem Beleg (siehe §7).
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (siehe §6 und §7).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
       nächsten Welle-Closure geprüft — Übergabe an die Welle-Closure
       (Welle-Betrieb).
 
@@ -101,7 +101,7 @@ bzw. Tool-Pin mit Inventar-Soll). Der CR-Eintrag steht in §7 Historie in der
 
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
-| `spec/lastenheft.md` | update | §4: LH-QA-02/03 neue Fassung samt Messmethoden; §7: CR-Eintrag |
+| `spec/lastenheft.md` | update | §4: [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)/03 neue Fassung samt Messmethoden; §7: CR-Eintrag |
 | [`docs/reviews/slice-cr-lh-qa-02-03-ohne-docker…`] | neu | Review-Report nach `.harness/skills/reviewer.md` |
 
 ## 4. Trigger
@@ -112,7 +112,7 @@ eingetreten (dieser Slice liegt priorisiert in `next/`).
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
 
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): mehr als die drei
-  Liefer-Punkte — etwa, wenn die neue LH-QA-03-Fassung eine vierte
+  Liefer-Punkte — etwa, wenn die neue [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)-Fassung eine vierte
   Anforderung (etwa Speicher-/Netz-Randbedingungen) nötig macht → re-slicen.
 - `in-progress` → `open` (blockiert — Carveout?): Auftraggeber zieht die
   CR-Entscheidung zurück — dann entfällt der Gegenstand ganz.
@@ -124,13 +124,13 @@ Wirkung des CRs. Zusätzlich: Closure-Notiz mit Lerneintrag geschrieben.
 
 ## 6. Risiken und offene Punkte
 
-- **Die neue LH-QA-03-Fassung kollidiert mit [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)**
+- **Die neue [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)-Fassung kollidiert mit [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)**
   (Docker Desktop auf macOS/Windows liefert die docker-CLI) — **Ausgang:**
   bei Closure zu bewerten; Kollision wäre ein ADR-Gegenstand des
   Architect-Slices, nicht eine stille Fassungs-Schärfung hier.
   **Ausgang (entfallen):** die Kollision trat nicht an — der CR 0.28.1
   desselben Slices zog [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)
-  (und `LH-FA-07`) selbst auf die Gate-Weg-Fassung, nicht still (Historie-Zeile
+  (und [`LH-FA-07`](../../../../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)) selbst auf die Gate-Weg-Fassung, nicht still (Historie-Zeile
   0.28.1, Review-Befund F-1/F-2); die Architektur-Festlegung (Soll-Form,
   Inventar, `pinsync`) bleibt beim Architect-Slice der Welle.
 - **CI fährt `make gates` docker-los erst nach der Welle** — bis dahin
@@ -142,6 +142,8 @@ Wirkung des CRs. Zusätzlich: Closure-Notiz mit Lerneintrag geschrieben.
   welle-ohne-docker, danach die CI-Heilung als eigener Zug.
 
 ## 7. Closure-Notiz
+
+**Gegenstand:** offene §2-Zeile `make gates` grün — Vorbestand-Rotmenge der Gates-Kette, nicht in diesem Slice geliefert (Träger: die Gates-Posten der Welle).
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Das Beobachtungs-Register (vorhandene `BEO-<KUERZEL>/<slug>` **zitieren** statt neu
@@ -162,10 +164,10 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   Review-Abgleich
   ([`../../../reviews/2026-11-27-slice-cr-lh-qa-02-03-ohne-docker.md`](../../../reviews/2026-11-27-slice-cr-lh-qa-02-03-ohne-docker.md))
   traf kein HIGH; die 4 MEDIUM wurden durch 0.28.1 gelöst. Die Verifikation
-  (frischer Kontext) bestätigte die drei Liefer-Punkte, den MR-015/MR-042-Formkörper
+  (frischer Kontext) bestätigte die drei Liefer-Punkte, den [`MR-015`](../../../../harness/conventions/MR-015-change-request-bei-personalunion-von-auftraggeber-und-entwickler.md)/[`MR-042`](../../../../harness/conventions/MR-042-der-anlass-einer-lastenheft-aenderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz.md)-Formkörper
   und die Widerspruchsfreiheit. `make mutate-auswahl` lief docker-los mit
   Exit 0 ("kein Fall beruehrt — kein Lauf noetig").
-- **Was ging anders als geplant:** die LH-QA-04-Kollision ging nicht über die
+- **Was ging anders als geplant:** die [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)-Kollision ging nicht über die
   geplante ADR-Route des Architect-Slices, sondern über die
   Folgestellen-Route im Slice selbst (CR 0.28.1; Ausgang in §6). Setzung-2-Korrektur
   ([`MR-042`](../../../../harness/conventions/MR-042-der-anlass-einer-lastenheft-aenderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz.md)):
@@ -209,7 +211,7 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
     das `mutate-auswahl`-Urteil beruht auf der leeren Schnittmenge — benannt,
     kein Bruch; ob ein Fall über das Lastenheft gebraucht wird, schneidet die
     Lese-Schritt-Ebene.
-- **Risiken aus §6:** Risiko 1 (LH-QA-04-Kollision) — **entfallen** mit Grund
+- **Risiken aus §6:** Risiko 1 ([`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)-Kollision) — **entfallen** mit Grund
   (CR 0.28.1, siehe §6). Risiko 2 (CI-Nachweis) — **eingetreten**, Ausgang
   Carveout CO-007 mit dem Trigger Abschluss von welle-ohne-docker.
 - **Drei Paarungen:** Anker — keiner gesetzt (keine Verkörperung in dieser
@@ -236,19 +238,19 @@ Hälften.
 Kürzel `ALL`) mit der Modus-Deklaration (`harness/conventions.md`
 §Modus-Deklaration pro Sub-Area); die Schwelle ≥ 2 von 3 Achsen ist erfüllt —
 Strukturregeln im Adaptions-Block, Phase-Reife Phase 5, Evidenz-Risiko
-speziell an LH-QA-02 (der Messmethode-Text berührt die Vendoring-Zusagen).
+speziell an [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (der Messmethode-Text berührt die Vendoring-Zusagen).
 
 **Vorgelagert — offene Beobachtungen sichten:** Register gemergt gelesen
 (`docs/plan/planning/observations/`). Treffer für die berührten Aussagen:
 
 - [`BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht`](../observations/BEO-ALL/cpp-skelett-erfuellt-die-messmethode-von-lh-qa-02-nicht/state.md)
-  — 1 Vorgang (< 3×); berührt die Messmethode von LH-QA-02 — die neue
+  — 1 Vorgang (< 3×); berührt die Messmethode von [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) — die neue
   Fassung nennt je Weg eine Messmethode, der Bestand bleibt.
 - [`BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer`](../observations/BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer/state.md)
   — 7 Vorgänge, Ausgang *verkörpert* (Zielort `AGENTS.md` §3.9 mit
   Auflösungs-Trigger „Auftraggeber entscheidet"); dieser CR ist **kein**
   macOS-Tragungs-Beschluss — der Trigger bleibt unbefriedigt, solange kein
-  macOS-CI die Host-Läufer hält. In der neuen LH-QA-03-Fassung wird dies
+  macOS-CI die Host-Läufer hält. In der neuen [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)-Fassung wird dies
   benannt, nicht gelöst.
 
 Keine Treffer unter der Schwelle in den berührten Sub-Areas jenseits der

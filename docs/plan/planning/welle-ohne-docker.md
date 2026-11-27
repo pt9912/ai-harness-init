@@ -97,7 +97,7 @@ vergessen wird.
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| [slice-cr-lh-qa-02-03-ohne-docker](done/slice-cr-lh-qa-02-03-ohne-docker.md) | CR — Lastenheft-Fortschreibung LH-QA-02/03 | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) · [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
+| [slice-cr-lh-qa-02-03-ohne-docker](done/slice-cr-lh-qa-02-03-ohne-docker.md) | CR — Lastenheft-Fortschreibung [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)/03 | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) · [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
 | [slice-adr-gates-laeufen-host-native](done/slice-adr-gates-laeufen-host-native.md) | ADR — Gates und Lab-Läufer docker-los, §3.9-Passung (Architect) | [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
 | [slice-environment-check-fuehrt-die-gates](done/slice-environment-check-fuehrt-die-gates.md) | Tool-/Versions-Check als erster Gate-Check | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 | [slice-binraire-ziehen-ohne-docker](done/slice-binraire-ziehen-ohne-docker.md) | Binär-Beschaffung ohne Docker (d-check, Träger) | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
@@ -139,7 +139,7 @@ der Closure-Trigger unerreichbar wird.
 
 - **Der Release-Schnitt (Tag-Workflow, Tool-Build) bleibt docker-getrieben** —
   er läuft im gepinnten Image, CI-Runner tragen Docker
-  ([ADR-0003](../../adr/0003-go-native-binaries.md)); die Welle ändert ihn
+  ([ADR-0003](../adr/0003-go-native-binaries.md)); die Welle ändert ihn
   nicht ([LH-QA-03](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)
   nennt den Tool-Build unverändert).
 - **Die gepinnten Image-Pfade entfallen nicht** — sie bleiben opt-in Weg und

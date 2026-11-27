@@ -19,7 +19,7 @@ der Welle beobachtet mehr als ein Slice-DoD trägt (Baseline-Regelwerk
 [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)
 (docker-los-Pfad — der erste Gate-Check fährt nur mit Host-Werkzeugen),
 [ADR-0003](../../adr/0003-go-native-binaries.md),
-[ADR-0109](../../adr/0109-…-gates-laeufen-docker-los.md) <!-- d-check:ignore (Platzhalter-Kennung: entsteht im Architect-Slice slice-adr-gates-laeufen-host-native, ADR-0109-Form) -->
+[ADR-0109](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md) <!-- d-check:ignore (Platzhalter-Kennung: entsteht im Architect-Slice slice-adr-gates-laeufen-host-native, ADR-0109-Form) -->
 (Soll-Form Mischform, Ausführungsort Host+CI),
 `slice-c4-environment-check-v7-0-0` ([docs/plan/planning/done/](../done/slice-c4-environment-check-v7-0-0.md);
 die frühere Entscheidung „Weg B entfällt" wandert um — der Träger kehrt als
@@ -60,7 +60,7 @@ Gate-Lauf an ihm, bevor ein Gate gegen fehlendes Werkzeug falsch färbt
   der Check prüft Anwesenheit und Version, wie die Binäre herkommen, steht
   woanders.
 - **Der PreToolUse-Guard wird nicht geändert** — er blockt die
-  Befehlsposition und bleibt in Kraft ([ADR-0109-Platzhalter]); das
+  Befehlsposition und bleibt in Kraft ([`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)-Platzhalter); das
   Check-Skript läuft über `bash`, seine Werkzeug-Aufrufe leben im Skript.
   Bestand bleibt bewusst stehen.
 
@@ -107,7 +107,7 @@ Gate-Lauf an ihm, bevor ein Gate gegen fehlendes Werkzeug falsch färbt
       die `.viper.sh`-Erwähnung ist nicht-zählend benannt (§7).
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen). — beide in §7 (entfallen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
       nächsten Welle-Closure geprüft.
 
 ## 3. Plan (vor Code)
@@ -155,12 +155,14 @@ geschrieben.
   und sein Netz-Aufruf nennt seinen Träger.
 - **Der Guard blockt den Implementer beim Testen des Checks** (direkte
   `go`/`bats`-Positionen) — **Ausgang (ist):** entfallen, nicht eingetreten — der Guard bleibt in Kraft
-  ([ADR-0109](docs/plan/planning/done/) <!-- d-check:ignore (Platzhalter-Kennung: ADR-0109-Form, entsteht im Architect-Slice) -->);
+  ([ADR-0109](../../carveouts/done/CO-003-mutate-ohne-zeitschranke.md) <!-- d-check:ignore (Platzhalter-Kennung: ADR-0109-Form, entsteht im Architect-Slice) -->);
   der Prüf-Weg läuft über `make`-Rezepte; wo ein Test eine direkte Position
   braucht, ist das der Befund und wird an den ADR zurückgemeldet, nicht
   still umgangen.
 
 ## 7. Closure-Notiz
+
+**Gegenstand:** offene §2-Zeile `make gates` grün — Vorbestand-Rotmenge der Gates-Kette, nicht in diesem Slice geliefert (Träger: die Gates-Posten der Welle).
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Das Beobachtungs-Register (vorhandene `BEO-<KUERZEL>/<slug>` **zitieren** statt neu
@@ -175,7 +177,7 @@ formulieren — sonst zählt das Register zwei Namen getrennt) ·
   (§4-Rückführung „Inventar maschinen-unlesbar" nicht angetroffen). Die
   Gates-Kante ist zweifach verdrahtet: `record-gates`-Liste an erster Stelle
   (81fc3ddc), Index-Zeile in `harness/README.md` §Sensors mit Bindung
-  LH-QA-02/LH-QA-03 (9297bd70). Die lokalen Rot-Belege liefen am realen
+  [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)/[`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) (9297bd70). Die lokalen Rot-Belege liefen am realen
   Quell-Skript; die Verifier-Nachprobe nahm sie am /tmp-Tree-Archiv des
   Laufs nach. Der Guard-Blocker trat nicht ein — alle Prüf-Wegs liefen über
   `make` bzw. Skript-Aufrufe im Rahmen des Guards.
@@ -216,7 +218,7 @@ formulieren — sonst zählt das Register zwei Namen getrennt) ·
   (Beschaffung d-check/Träger) und
   [`slice-labor-gates-host-rezepte`](../done/slice-labor-gates-host-rezepte.md)
   (Gate-Rezepte), beide in `open/`.
-- **MR-042-Anlass:** nicht gegeben — das Lastenheft ist nicht berührt; die
+- **[`MR-042`](../../../../harness/conventions/MR-042-der-anlass-einer-lastenheft-aenderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz.md)-Anlass:** nicht gegeben — das Lastenheft ist nicht berührt; die
   Änderung wächst die Spezifikation (Rang 2) um `SPEC-099`, ohne
   Vertragsänderung.
 - **Rest-Übergaben:** die docker-gebundenen Zähne — der pinsync-Verhaltens-

@@ -19,14 +19,14 @@ der Welle beobachtet mehr als ein Slice-DoD trägt (Baseline-Regelwerk
 [`slice-cr-lh-qa-02-03-ohne-docker`](../done/slice-cr-lh-qa-02-03-ohne-docker.md)),
 [ADR-0003](../../adr/0003-go-native-binaries.md) (Tool-Build bleibt im
 gepinnten Image; der Docker-only-Satz der Dogfood-Läufer wandert),
-[ADR-0004](../../adr/0004-durchsetzung-emission.md) (durchgesetzte Emission der
+[ADR-0004](../../adr/0004-durchsetzungs-emission.md) (durchgesetzte Emission der
 Gates bleibt),
 [ADR-0088](../../adr/0088-kotlin-skelett-toolchain-und-schicht-aufloesung.md)
 (Prezedenz: Sprach-Skelett-Toolchain-Entscheidung als ADR-Form),
 [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
 (vendored Baseline bleibt von der Docker-Frage unabhängig).
 
-**Berührte Spec-Stellen:** `spec/lastenheft.md` §4 (LH-QA-03 — als Bezugs-Satz,
+**Berührte Spec-Stellen:** `spec/lastenheft.md` §4 ([`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) — als Bezugs-Satz,
 nicht als Quelle), `spec/architecture.md` §Komponenten (Gates-Sicht). Der
 Verweis zeigt **aufwärts** (Baseline-Regelwerk `grundlagen-referenz-richtung.md`
 §Referenz-Richtung (SDP)).
@@ -41,10 +41,10 @@ Commit-Zuschnitt je `AGENTS.md` §3.8 — eigener Commit, nur Architect-Artefakt
 ## 1. Ziel und Abgrenzung
 
 **Ziel:** die Architektur-Entscheidung hinter der Docker-los-Umstellung steht
-an **einer** Quelle: `ADR-0109` entscheidet die Weg-Form (docker-los als
+an **einer** Quelle: [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md) entscheidet die Weg-Form (docker-los als
 **Default** der Dogfood-Gates und Lab-Läufer; die gepinnten Image-Pfade
-bleiben als **opt-in Weg** gepinnt und nicht gestrichen — [
-`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) trägt
+bleiben als **opt-in Weg** gepinnt und nicht gestrichen —
+[`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) trägt
 beide), die Soll-Form der Umgebungs-Zusage (**Mischform** nach Baseline-Regelwerk
 `modul-14-docker-harness.md` §Der zweite Träger: ableiten, wo eine Pin-Stelle
 existiert; Manifest je übriges Werkzeug; `pinsync` hält Stellen gegeneinander),
@@ -66,7 +66,7 @@ Adaption der Baseline und steht als `MR-<NNN>` in `harness/conventions.md`"*).
 
 ## 2. Definition of Done
 
-- [x] **Liefer-Punkt 1:** `ADR-0109` liegt `Accepted` vor — Weg-Form (docker-los
+- [x] **Liefer-Punkt 1:** [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md) liegt `Accepted` vor — Weg-Form (docker-los
       Default, Image-Pfad opt-in), Soll-Form (Mischform, je Werkzeug eine
       Quelle), Ausführungsort (Host + CI), die Grenze je Weg, Konsequenzen je
       gestrichenem Weg mit Verweis; ADR-Index ergänzt —
@@ -77,7 +77,7 @@ Adaption der Baseline und steht als `MR-<NNN>` in `harness/conventions.md`"*).
       Link-Nachzug `815bee43` (F-1).
 - [x] **Liefer-Punkt 3:** Adaptions-Einträge im
       [`harness/conventions.md`](../../../../harness/conventions.md)-Index +
-      Eintrags-Datei unter `harness/conventions/` als `MR-098`: Soll-Form
+      Eintrags-Datei unter `harness/conventions/` als [`MR-098`](../../../../harness/conventions/MR-098-die-umgebungs-zusage-traegt-mischform-die-dogfood-gates-und-lab-laeufer-fahren-am-host.md): Soll-Form
       (Mischform) und Ausführungsort in **einem** Eintrag
       (Plan-Abweichung, siehe §7) — `daa4aad2`. Der Index-Eintrag verweist die
       Sensoren-Zeile der [`harness/sensors/environment-check.md`](../../../../harness/sensors/environment-check.md)
@@ -103,7 +103,7 @@ Adaption der Baseline und steht als `MR-<NNN>` in `harness/conventions.md`"*).
       keine weitere Beobachtung angefallen (§7); **kein Zähler gesetzt**.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen) — siehe §7.
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
       nächsten Welle-Closure geprüft.
 
 ## 3. Plan (vor Code)
@@ -147,7 +147,7 @@ Implementation).
 
 ## 5. Closure-Trigger
 
-DoD (§2) vollständig — `ADR-0109` ist `Accepted`, die §3.9-Fassung ist
+DoD (§2) vollständig — [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md) ist `Accepted`, die §3.9-Fassung ist
 committet, die Adaptions-Einträge stehen im Index. Zusätzlich: Closure-Notiz
 mit Lerneintrag geschrieben.
 
@@ -165,8 +165,10 @@ mit Lerneintrag geschrieben.
 
 ## 7. Closure-Notiz
 
+**Gegenstand:** offene §2-Zeile `make gates` grün — Vorbestand-Rotmenge der Gates-Kette, nicht in diesem Slice geliefert (Träger: die Gates-Posten der Welle).
+
 - **Was hat funktioniert:** die Rollen-Sequenz ohne Widerspruch — Architect-Zug
-  (`525749b4` ADR + Index, `cdaf7d52` `AGENTS.md` §3.9, `daa4aad2` `MR-098`,
+  (`525749b4` ADR + Index, `cdaf7d52` `AGENTS.md` §3.9, `daa4aad2` [`MR-098`](../../../../harness/conventions/MR-098-die-umgebungs-zusage-traegt-mischform-die-dogfood-gates-und-lab-laeufer-fahren-am-host.md),
   `815bee43` F-1-Links), Review
   ([`../../../reviews/2026-11-27-slice-adr-gates-laeufen-host-native.md`](../../../reviews/2026-11-27-slice-adr-gates-laeufen-host-native.md),
   kein HIGH/MEDIUM), Verifikation — alle drei Liefer-Punkte bestätigt,
@@ -178,31 +180,31 @@ mit Lerneintrag geschrieben.
   1. Ein statt zwei MR-Einträge: der Plan (§3) bestellte Soll-Form und
      Ausführungsort als zwei Adaptionen; Baseline-Regelwerk
      `modul-14-docker-harness.md` §Der zweite Träger bindet beide in dieselbe
-     MR — `daa4aad2` liefert sie als einen Eintrag `MR-098`, die Abweichung
+     MR — `daa4aad2` liefert sie als einen Eintrag [`MR-098`](../../../../harness/conventions/MR-098-die-umgebungs-zusage-traegt-mischform-die-dogfood-gates-und-lab-laeufer-fahren-am-host.md), die Abweichung
      ist im Eintrag benannt. Die Zusammenschaltung ist die tragende: Ausführungsort
      und Soll-Form sind dieselbe Aussage über dieselben Werkzeuge.
-  2. **ADR-Zustands-Nachzug:** `ADR-0109` §Konsequenzen trägt den Stand
+  2. **ADR-Zustands-Nachzug:** [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md) §Konsequenzen trägt den Stand
      „die vier Superset-Sätze lesen außen-stehend als `git + docker`-Fassung;
      keine CR-Zeile angelegt — Übergabe an die Planung des Umbaus“. Seit
-     `94b3de1a` (CR 0.28.2 — von `ADR-0109` selbst ausgelöst) sind die Sätze
+     `94b3de1a` (CR 0.28.2 — von [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md) selbst ausgelöst) sind die Sätze
      auf die Gate-Weg-Fassung umgeschrieben; der in der ADR beschriebene
      Zustand ist überholt. Die ADR ist `Accepted` und eingefroren (§3.4),
      der Nachzug ist nicht in-place: die Auflösung trägt diese Zeile — die
-     CR-Zeile 0.28.2 verweist selbst auf `ADR-0109` als Ursprung —, nichts an
+     CR-Zeile 0.28.2 verweist selbst auf [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md) als Ursprung —, nichts an
      der ADR geändert, keine Folge-ADR.
-  3. F-1 (Review, LOW): sechs relative Links der `MR-098`-Eintrags-Datei um
+  3. F-1 (Review, LOW): sechs relative Links der [`MR-098`](../../../../harness/conventions/MR-098-die-umgebungs-zusage-traegt-mischform-die-dogfood-gates-und-lab-laeufer-fahren-am-host.md)-Eintrags-Datei um
      die fehlende `../`-Stufe gehoben (`815bee43`) — nach der Review-Runde,
      daher erst vom Verifikations-Lauf gesehen; kein Produktcode im Diff.
 - **Steering-Loop-Eintrag:** benannte Folgestellen, **nicht verkörpert** — kein
-  `liegt in`. Die Soll-Form-in-einer-MR-Zusammenschaltung ist als `MR-098`
+  `liegt in`. Die Soll-Form-in-einer-MR-Zusammenschaltung ist als [`MR-098`](../../../../harness/conventions/MR-098-die-umgebungs-zusage-traegt-mischform-die-dogfood-gates-und-lab-laeufer-fahren-am-host.md)
   verkörpert, folgt aber keinem Beobachtungs-Muster: sie ist die Ausführung
-  der `ADR-0109`-Weg-Form unter der modul-14-Bindung, ohne Vorgänger im
+  der [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)-Weg-Form unter der modul-14-Bindung, ohne Vorgänger im
   Register. Lerneintrag in der Form **benannte Spec-Stelle mit Träger**:
   [`ARC-012`](../../../../spec/architecture.md) — die Sicht sagt docker
-  „substituierbar: nein“ und liest sich seit `ADR-0109` überholt;
+  „substituierbar: nein“ und liest sich seit [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md) überholt;
   [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)
   trägt die CR-Fassung 0.28.2, die Stelle ist ohne CR fortschreibbar und ihr
-  Träger ist das Doku-Update der Mechanik (`ADR-0109` §Konsequenzen). Derselbe
+  Träger ist das Doku-Update der Mechanik ([`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md) §Konsequenzen). Derselbe
   Nachzug gilt für die Sicht-Doku, die die alte §3.9-Fassung zitiert
   ([`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md)
   Host-Bedarf „git, docker und GNU make“, `harness/README.md` Docker-only-Satz)
@@ -229,7 +231,7 @@ mit Lerneintrag geschrieben.
   - „`pinsync` deckt ein Inventar-Werkzeug nicht“ — **entfallen** als Risiko
     dieser Setzung: die ADR nennt je Werkzeug seine Soll-Quelle; wo keine
     Pin-Stelle existiert, trägt das Manifest den Wert selbst (Mischform); die
-    Adaption steht als `MR-098` mit den Soll-Herkünften je Werkzeug (Ableiten
+    Adaption steht als [`MR-098`](../../../../harness/conventions/MR-098-die-umgebungs-zusage-traegt-mischform-die-dogfood-gates-und-lab-laeufer-fahren-am-host.md) mit den Soll-Herkünften je Werkzeug (Ableiten
     an `GO_VERSION` und den Image-Digests, Manifest je übriges Werkzeug mit
     Grund). Dass die Maschine die Stellen hält, ist Aufgabe des
     `pinsync`-Moduls mit den Mechanik-Slices — kein Risiko dieser Setzung mehr.

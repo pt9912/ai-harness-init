@@ -18,7 +18,7 @@ der Welle beobachtet mehr als ein Slice-DoD trägt (Baseline-Regelwerk
 (docker-los-Pfad — der Treiber fährt ohne Daemon),
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
 (die Sperren bleiben fail-closed; die Diagnose nennt die Ursache),
-[ADR-0109](../../adr/0109-…-gates-laeufen-docker-los.md) <!-- d-check:ignore (Platzhalter-Kennung: entsteht im Architect-Slice slice-adr-gates-laeufen-host-native, ADR-0109-Form) -->,
+[ADR-0109](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md) <!-- d-check:ignore (Platzhalter-Kennung: entsteht im Architect-Slice slice-adr-gates-laeufen-host-native, ADR-0109-Form) -->,
 [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand),
 [`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit)
 (Anlage-Disziplin je neuem Fall).
@@ -92,7 +92,7 @@ Sperren-Meldung unterscheidet die Ursache: Umgebungs-Befund ≠ Test-Fehlschlag
       und wird in §7 notiert.
 [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
       nächsten Welle-Closure geprüft.
 
 ## 3. Plan (vor Code)
@@ -118,7 +118,7 @@ Sperren-Meldung unterscheidet die Ursache: Umgebungs-Befund ≠ Test-Fehlschlag
   kein host-Äquivalent (nach
   [`slice-labor-gates-host-rezepte`](../done/slice-labor-gates-host-rezepte.md)), und
   der Treiber kann ihn nicht fail-closed auswerten → Carveout-Kläung an der
-  ADR-0109-Platzhalter-Synthese.
+  [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)-Platzhalter-Synthese.
 
 ## 5. Closure-Trigger
 
@@ -147,6 +147,8 @@ Isolationskopie). Zusätzlich: Closure-Notiz mit Lerneintrag geschrieben.
 
 ## 7. Closure-Notiz
 
+**Gegenstand:** offene §2-Zeile `make gates` grün — Vorbestand-Rotmenge der Gates-Kette, nicht in diesem Slice geliefert (Träger: die Gates-Posten der Welle).
+
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Das Beobachtungs-Register (vorhandene `BEO-<KUERZEL>/<slug>` **zitieren** statt neu
 formulieren — sonst zählt das Register zwei Namen getrennt) ·
@@ -154,9 +156,9 @@ formulieren — sonst zählt das Register zwei Namen getrennt) ·
 
 **Closure-Notiz (Rolle Planner, 2026-11-27)** — Quellen: eigener Lauf, der
 Verifikations-Bericht
-([`docs/reviews/2026-11-27-slice-mutate-treiber-host-modi-verify.md`](../../reviews/2026-11-27-slice-mutate-treiber-host-modi-verify.md))
+([`docs/reviews/2026-11-27-slice-mutate-treiber-host-modi-verify.md`](../../../reviews/2026-11-27-slice-mutate-treiber-host-modi-verify.md))
 und der Review-Report
-([`docs/reviews/2026-11-27-slice-mutate-treiber-host-modi.md`](../../reviews/2026-11-27-slice-mutate-treiber-host-modi.md),
+([`docs/reviews/2026-11-27-slice-mutate-treiber-host-modi.md`](../../../reviews/2026-11-27-slice-mutate-treiber-host-modi.md),
 F-1 LOW im Fix `3f29742d` behoben).
 
 - **Was hat funktioniert:** die Vorbedingungs-Kette trägt — der Umgebungs-

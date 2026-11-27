@@ -11,11 +11,11 @@ LP2/LP3-Lieferpunkte von
 (Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht).
 
 **Bezug:**
-[`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
+[`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
 (die Messmethode „`make gates` grün out-of-the-box" — der volle Nachweis),
-[`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten),
-[`ADR-0109`](../../../docs/plan/adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md),
-[`MR-090`](../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit)
+[`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten),
+[`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md),
+[`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit)
 (Anlage-Disziplin je neuem Fall).
 
 **Berührte Spec-Stellen:** `spec/spezifikation.md` — die E2E-Stufen-Deklarationen
@@ -49,12 +49,12 @@ Die vier Rest-Klassen, je eine Stufe-Gruppe des `full-smoke`-Skripts:
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Die Stufen-Deklarationen der E2E-Abdeckung** — sie werden nicht still
-  geändert ([`MR-090`](../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit));
+  geändert ([`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit));
   ein Wegfall einer Deklaration ist eine Senkung mit ADR (§3.5), kein Teil
   dieses Slices.
 - **Die Mutations-Fälle der `smoke`-Spur** — die sind entlassen und tragen
   (Bestand bleibt bewusst stehen).
-- **Der Release-Schnitt am Tag** ([`LH-QA-04`](../../../spec/lastenheft.md#lh-qa-04--plattform-matrix))
+- **Der Release-Schnitt am Tag** ([`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix))
   — ein anderer Vorgang.
 
 ## 2. Definition of Done
@@ -83,7 +83,7 @@ Die vier Rest-Klassen, je eine Stufe-Gruppe des `full-smoke`-Skripts:
 | `harness/tools/full-smoke.sh` | update | die Stufen-Gruppen 1a–1d je Host-Form |
 | `harness/tools/mutate.sh` | update | Entlassung der full-smoke-Spur aus der Daemon-Vorbedingung, wenn die Restmenge trägt |
 | `Makefile` / emittierte `d-check.mk`-Vorlage | update | host-native Module je Stufe |
-| `test/mutations/` (je Fall) | neu | Färbung-Nachweis je neuem Fall (MR-071/MR-090) |
+| `test/mutations/` (je Fall) | neu | Färbung-Nachweis je neuem Fall ([`MR-071`](../../../../harness/conventions/MR-071-die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand.md)/[`MR-090`](../../../../harness/conventions/MR-090-ein-sensor-haelt-den-anker-am-commit.md)) |
 
 ## 4. Trigger
 
@@ -98,7 +98,7 @@ Abbruchpunkt.
 - `in-progress` → `next`: mehr als drei Liefer-Punkte — etwa, wenn eine
   Stufe-Gruppe je Bootstrap-Layout re-slicen braucht → re-slicen je Gruppe.
 - `in-progress` → `open`: eine Stufe-Gruppe hat keinen host-nativen Träger,
-  den der Host-Vorrat trägt — dann Carveout-Klärung an der ADR-0109-Fassung
+  den der Host-Vorrat trägt — dann Carveout-Klärung an der [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)-Fassung
   und die Stufen-Deklaration wird neu formuliert, nicht still geändert.
 
 ## 5. Closure-Trigger
@@ -140,7 +140,7 @@ Treffer:
 - [`BEO-ALL/full-smoke-fall-expect-pinnt-nicht-die-ursache`](../observations/BEO-ALL/full-smoke-fall-expect-pinnt-nicht-die-ursache/state.md)
   — 2 Vorgänge (< 3×): die Stufen-Deklarationen werden nicht umgeschrieben;
   bei der LP-2-Färbung die `# expect:`-Form je neuem Fall nach
-  `MR-071`/`MR-090` führen.
+  [`MR-071`](../../../../harness/conventions/MR-071-die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand.md)/[`MR-090`](../../../../harness/conventions/MR-090-ein-sensor-haelt-den-anker-am-commit.md) führen.
 
 **Modus-Begründungsblock — Umfang:** alle berührten Sub-Areas GF — der
 Modus-Begründungsblock entfällt.

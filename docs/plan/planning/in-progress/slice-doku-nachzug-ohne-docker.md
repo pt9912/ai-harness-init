@@ -17,9 +17,9 @@ der Welle beobachtet mehr als ein Slice-DoD trägt (Baseline-Regelwerk
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
 (keine halluzinierten Gates — die Index-Zeilen nennen nur existierende Targets),
 [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert),
-[`MR-042`](../../../../harness/conventions/MR-042-der-anlass-einer-lastenheft-änderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz.md)-Art
+[`MR-042`](../../../../harness/conventions/MR-042-der-anlass-einer-lastenheft-aenderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz.md)-Art
 (Anlass in der Closure-Notiz, nicht in der Doku),
-[ADR-0109](../../adr/0109-…-gates-laeufen-docker-los.md) <!-- d-check:ignore (Platzhalter-Kennung: entsteht im Architect-Slice slice-adr-gates-laeufen-host-native, ADR-0109-Form) -->.
+[ADR-0109](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md).
 
 **Berührte Spec-Stellen:** —
 
@@ -40,7 +40,7 @@ der Welle beobachtet mehr als ein Slice-DoD trägt (Baseline-Regelwerk
 die Index-Zeilen ([`harness/README.md`](../../../../harness/README.md)),
 das Benutzerhandbuch (`docs/user/`) und die README nennen denselben Verhältnis-
 Zug (docker-los Pflicht-Pfad, Image-Pfade opt-in) mit denselben Begriffen wie
-die ADR-0109-Platzhalter-Fassung — keine zweite Quelle desselben Satzes.
+die [ADR-0109](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)-Fassung — keine zweite Quelle desselben Satzes.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
@@ -105,7 +105,7 @@ liegen in `done/` — die Doku trägt den Bestand, nicht einen Plan.
   Liefer-Punkte.
 - `in-progress` → `open` (blockiert — Carveout?): emittierte Doku und
   laufende Doku lassen sich nicht trennen (derselbe Satz an beiden) — dann
-  die Quelle-Entscheidung an die ADR-0109-Platzhalter-Synthese, Slice steht off.
+  die Quelle-Entscheidung an die [ADR-0109](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)-Synthese, Slice steht off.
 
 ## 5. Closure-Trigger
 

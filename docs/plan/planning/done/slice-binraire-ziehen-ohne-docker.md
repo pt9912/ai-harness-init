@@ -24,7 +24,7 @@ den Image-Digest allein),
 Träger des Fetches wechselt),
 [ADR-0059](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
 (SHA256SUMS reisen als Release-Asset — die Prüfform bleibt),
-[`ADR-0109`](../../adr/0109-…-gates-laeufen-docker-los.md) <!-- d-check:ignore (Platzhalter-Kennung: entsteht im Architect-Slice slice-adr-gates-laeufen-host-native, ADR-0109-Form) -->
+[`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md) <!-- d-check:ignore (Platzhalter-Kennung: entsteht im Architect-Slice slice-adr-gates-laeufen-host-native, ADR-0109-Form) -->
 (docker-los Default),
 [`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)
 (Baseline bleibt committet vendored — kein Fetch pro Lauf).
@@ -44,7 +44,7 @@ und Träger-Fetch). Der Verweis zeigt **aufwärts**.
 Docker-Daemon läuft: (a) das **d-check-Binary** — heute nur über den gepinnten
 Image-Digest ziehbar (`docker run … ghcr.io/pt9912/d-check@sha256:…`) — bekommt
 einen docker-losen Beschaffungsweg mit Pin (Tag + Prüfsumme gegen eine
-Prüfsummen-Ablage, ADR-0059-Form), (b) der **Träger-Fetch** (`make traeger-fetch`,
+Prüfsummen-Ablage, [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)-Form), (b) der **Träger-Fetch** (`make traeger-fetch`,
 [ADR-0058](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md))
 kehrt vom curl-Container auf einen docker-losen Fetch um, der denselben Pin
 (`TRAEGER_TAG`) und dieselbe Prüfsummen-Form trägt. Netz darf an genau diesen
@@ -58,7 +58,7 @@ Aufrufen — derselbe Vertrag wie heute.
   `baseline-freshness`/`vendor-baseline` bleiben, wie sie sind).
 - **Die Image-Pfade entfallen nicht** — `docker`-fahrende Fassungen bleiben
   als opt-in Weg gepinnt ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit),
-  ADR-0109-Platzhalter); der Host-Weg kommt dazu, statt sie zu ersetzen.
+  [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)-Platzhalter); der Host-Weg kommt dazu, statt sie zu ersetzen.
 - **Kein Gates-Verdrahtung** — der d-check-Host-Pfad wird von
   [`slice-labor-gates-host-rezepte`](../done/slice-labor-gates-host-rezepte.md) an die
   Rezepte angedockt; hier entsteht nur die Beschaffung (`make`-Ziele für den
@@ -103,7 +103,7 @@ Aufrufen — derselbe Vertrag wie heute.
       (Abschluss von welle-ohne-docker), nicht Slice-Code. Die Slice-eigene
       Werkzeug-Abdeckung trägt der Verifikations-Bericht (812f80b9).
 - [x] Review durchgeführt, Report liegt vor:
-      [`docs/reviews/2026-11-27-slice-binraire-ziehen-ohne-docker.md`](../../reviews/2026-11-27-slice-binraire-ziehen-ohne-docker.md)
+      [`docs/reviews/2026-11-27-slice-binraire-ziehen-ohne-docker.md`](../../../reviews/2026-11-27-slice-binraire-ziehen-ohne-docker.md)
       (a6c70467; Addendum c6b4d798) — F-1 HIGH, F-2..F-6 LOW gelöst
       (edf99b05), N-1/N-3 nachgezogen (5f0c0598); kein Self-Review (Modul 8).
 - [x] Doku-Update: `harness/README.md` §Sensors-Zeilen (15cb3586;
@@ -112,7 +112,7 @@ Aufrufen — derselbe Vertrag wie heute.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben —
       `evidence/`-Datei in der bestehenden Klasse
       `BEO-ALL/mutations-fall-skript-direkt-im-arbeitsbaum-gestartet`
-      (3. Beleg), Ausgang im selben Commit (ADR-0085 Festlegung 1).
+      (3. Beleg), Ausgang im selben Commit ([`ADR-0085`](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md) Festlegung 1).
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen) — §7.
 - [x] Die drei Paarungen (Anker · Folge-Slice · Register) — Ergebnis in §7;
@@ -133,7 +133,7 @@ Aufrufen — derselbe Vertrag wie heute.
   pinierbares Release-Binary führt, wird vor dem Schnitt gemessen (§7 trägt
   das Ergebnis); trägt es keines, fällt der Weg auf „Repository-Klon bei
   Pin-Commit + `go build` mit Inventar-Pin `GO_VERSION`" mit demselben
-  Prüfsummen-Vertrag — die Entscheidung steht dann in der ADR-0109-Platz-
+  Prüfsummen-Vertrag — die Entscheidung steht dann in der [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)-Platz-
   halter-Synthese, nicht still im Skript.
 
 ## 4. Trigger
@@ -150,8 +150,9 @@ nennt curl/d-check als Inventar-Zeile (der Check sagt, was der Fetch braucht).
   Liefer-Punkte — etwa, wenn d-check ein eigenes Prüfsummen-Format braucht
   (Signatur statt SHA256) → re-slicen, dann ein Binär je Teil.
 - `in-progress` → `open` (blockiert — Carveout?): upstream führt **kein**
-  pinierbares Artefakt für d-check — dann Carveout-Kläung an der ADR-0109-
-  Synthese (Klon+Build-Weg ist der Vorschlag oben) und der Slice steht off.
+  pinierbares Artefakt für d-check — dann Carveout-Kläung an der
+  [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)-Synthese
+  (Klon+Build-Weg ist der Vorschlag oben) und der Slice steht off.
 
 ## 5. Closure-Trigger
 
@@ -164,7 +165,7 @@ Closure-Notiz mit Lerneintrag geschrieben.
 
 - **Upstream d-check führt kein pinierbares Release** — **Ausgang:** der
   Klon+Build-Weg mit inventar-gepintem `GO_VERSION` ist der Vorschlag im
-  Ansatz; die Entscheidung trägt die ADR-0109-Platzhalter-Synthese.
+  Ansatz; die Entscheidung trägt die [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)-Platzhalter-Synthese.
 - **Netz-Aufrufe breiten sich aus** (jedes Ziel zieht eigene Bytes) —
   **Ausgang:** der Netz-Vertrag bleibt derselbe wie heute (Netz an genau
   diesen Aufrufen, sonst keine Netzannahme); ein neuer Aufruf ohne Index-
@@ -208,7 +209,7 @@ formulieren — sonst zählt das Register zwei Namen getrennt) ·
   beobachtend, nicht verkörpert; die Verkörperung ist Entscheidung der
   Welle-Closure (Zug 3b). Eintrag: die Klasse
   [`BEO-ALL/mutations-fall-skript-direkt-im-arbeitsbaum-gestartet`](../observations/BEO-ALL/mutations-fall-skript-direkt-im-arbeitsbaum-gestartet/state.md)
-  erreicht mit diesem Slice 3× (Lese-Schritt ist diese Closure, ADR-0085
+  erreicht mit diesem Slice 3× (Lese-Schritt ist diese Closure, [`ADR-0085`](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md)
   Festlegung 1). Kandidaten-Regel für die Verkörperung: *kein
   Mutations-Fall-Skript direkt im Arbeitsbaum starten* — Kopie oder
   `make mutate`/`make mutate-greift`; Zielort-Kandidaten sind die
@@ -223,7 +224,7 @@ formulieren — sonst zählt das Register zwei Namen getrennt) ·
   `BEO-ALL/mutations-fall-skript-direkt-im-arbeitsbaum-gestartet` — kein
   neues Verzeichnis; dritter Beleg als
   [`evidence/slice-binraire-ziehen-ohne-docker.md`](../observations/BEO-ALL/mutations-fall-skript-direkt-im-arbeitsbaum-gestartet/evidence/slice-binraire-ziehen-ohne-docker.md),
-  Ausgang `geplant` im selben Commit (ADR-0085 Festlegung 1). Paarung (c)
+  Ausgang `geplant` im selben Commit ([`ADR-0085`](../../adr/0085-slice-closure-mit-schwellen-uebertritt-ist-lese-schritt.md) Festlegung 1). Paarung (c)
   über das ganze Register: ein Verzeichnis ohne `evidence/*.md` —
   `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab/`.
 - **Folge-Slices / Rest-Übergaben:** kein Folge-Slice neu angelegt; die
@@ -250,7 +251,7 @@ formulieren — sonst zählt das Register zwei Namen getrennt) ·
   mit Ereignis-Trigger (Abschluss von welle-ohne-docker).
 - **Risiken aus §6:** *Upstream d-check führt kein pinierbares Release* —
   **eingetreten:** die Messung bestätigte es (`"assets": []`); geschultert
-  über die ADR-0109-Synthese (Weg-D-Form,
+  über die [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)-Synthese (Weg-D-Form,
   [`slice-adr-gates-laeufen-host-native`](../done/slice-adr-gates-laeufen-host-native.md)
   in done/) und die Weg-Wahl dieses Slices
   ([`harness/sensors/dcheck-fetch.md`](../../../../harness/sensors/dcheck-fetch.md)
