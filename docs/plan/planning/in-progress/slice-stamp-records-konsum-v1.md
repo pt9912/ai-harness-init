@@ -209,7 +209,7 @@ nicht hinreichend und eine Aussagen-Berührung steht hier nicht.
 | `test/mutations/<nr>-stamp-records-konsum-bricht-mit-meldung.sh` | neu | Mutations-Fall über dem realen Werkzeug (`<nr>` folgt aus dem Bestands-Stand): der Patch nimmt die Konsum-Prüfung heraus, sein Wächter färbt rot — Anlage misst den `sed`-Anker gegen den Quell-Bestand ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)), Anker am Commit ([`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit)) — LP 2 |
 | [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md) | update | §CI-Branch: die Granularitäts-Zeile trägt die Fall-Form und nennt Ort, Zeilen-Form, Unterkommando und Grenzen — LP 3 |
 
-**Plan-Fortschreibung §3 (Implementer-Zug, vor dem Code, ADR-0108 Abwägung E je
+**Plan-Fortschreibung §3 (Implementer-Zug, vor dem Code, [`ADR-0108`](../../adr/0108-stempel-synthese-je-check-pruefgegenstand.md) Abwägung E je
 Posten)** — die zwei übernommenen Design-Posten:
 
 - **Posten (a) Zuordnungs-Rest — gemischte Form, je Rest-Datei an der
@@ -228,7 +228,8 @@ Posten)** — die zwei übernommenen Design-Posten:
   `.gitkeep`, `docs/user/images/`, das Homebrew-Formular, die
   Erfassungs-awk-Helper, Wächter-Verdrahtung): als **deklarierter
   Zuordnungs-Rest** an genau einer Stelle im Satzerzeuger deklariert
-  (ADR-0035 Festlegung 3-Form: je Klasse-Glob einer Zeile mit genanntem
+  ([`ADR-0035`](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
+  Festlegung 3-Form: je Klasse-Glob einer Zeile mit genanntem
   Grund, als Rest gezählt statt als Deckung), aus der `rest`-Beurteilung
   ausgenommen — `rest` leer → Exit 0; Inhalt außerhalb jeder Menge und
   jeder deklarierten Klasse → Liste und Exit 1 (der fail-closed
@@ -238,7 +239,7 @@ Posten)** — die zwei übernommenen Design-Posten:
   „files outside every declared Menge"); am Ende der Zug fährt er über der
   deklarierten Form approve. Undeklarierte Rest-Neuzugänge drehen den
   `rest ist leer`-Wächter (neuer Mutations-Fall je
-  `MR-071`/`MR-090`-Form).
+  [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit)-Form).
 - **Posten (b) Record-only-Vertrag — Wächter-Fassung der engeren Menge.**
   Die engere Menge ist in Bestand (`HASH_AUSNMEN` trägt
   `.harness/stamp/mutate`, `rest`-Walk und `MENGE_AUSSCHLUESS` tragen die
@@ -252,7 +253,7 @@ Posten)** — die zwei übernommenen Design-Posten:
 |---|---|---|
 | `harness/tools/gates-keys.sh` | update | die `test`-Menge-Zuschläge, die deklarierten Rest-Klassen am Kopf je Eintrag mit Grund, das `rest`-Lesen der deklarierten Klasse | Posten (a) |
 | `test/gates-keys.bats` | update | Wächter über dem Rest-Zustand (`rest ist leer`) und dem Record-only-Vertrag (`menge`/`rest` trägt keine Record-Ablage, Vorlagen-Zuschlag dreht den `test`-Key) | Posten (a)/(b) |
-| `test/mutations/<nr>-deklarierter-rest-entzaubert.sh` | neu | Mutation an der Rest-Deklaration; der `rest ist leer`-Wächter färbt rot (MR-071/MR-090-Form) | Posten (a) |
+| `test/mutations/<nr>-deklarierter-rest-entzaubert.sh` | neu | Mutation an der Rest-Deklaration; der `rest ist leer`-Wächter färbt rot ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit)-Form) | Posten (a) |
 
 ## 4. Trigger
 

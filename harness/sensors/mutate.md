@@ -385,7 +385,9 @@ Ein ausgelassener Konsum-Schritt trägt sein Urteil weiter nur an den zwei Kanä
 die verfallen bzw. überschrieben werden.
 
 **Die Fall-Granularität** ([ADR-0107](../../docs/plan/adr/0107-die-mutations-record-granularitaet-ist-je-fall.md)
-Festlegungen 1–5) steht neben dem Lauf-Urteil-File der ADR-0103 — die Lauf-Form bleibt
+Festlegungen 1–5) steht neben dem Lauf-Urteil-File der
+[`ADR-0103`](../../docs/plan/adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md)
+— die Lauf-Form bleibt
 für den Altbestand, die Fall-Form trägt **neue** Läufe (Festlegung 4, Erstbestand):
 je Fall des `mutate-ergebnis.txt` eine Urteils-Zeile in
 `.harness/stamp/mutate/<fall-kennung>.txt`, das der Fall-File-Name ist die Fall-Kennung —
