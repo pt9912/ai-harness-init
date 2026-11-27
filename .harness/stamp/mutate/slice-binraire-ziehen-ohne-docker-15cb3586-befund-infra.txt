@@ -1,0 +1,53 @@
+Run-Id: 45959944410
+Attempt: 1
+Gepruefter Commit: 15cb3586d54128d124db91415ac1009261a0dfc2
+Lesen: git fetch origin mutate/slice-binraire-ziehen-ohne-docker-15cb3586 && git show FETCH_HEAD:mutate-ergebnis.txt
+Urteilsklasse: befund-infra (Shards 2-9 KEIN BELEG, Exit 143/SIGTERM; die 4 gelaufenen Faelle ohne Log -- Runner-Ressourcen, nicht Fall-Defekte; lokale Hand-Mutationstraeger der Faelle tragen)
+
+mutate-ergebnis: slice-binraire-ziehen-ohne-docker
+gepruefter Commit: 15cb3586d54128d124db91415ac1009261a0dfc2
+Basis (Claim-Commit): f64c4944ed93f3699ad99ba9e767e0cd08b1a071
+Shard 0: Exit 2, 240 s, Faelle: 608-feldliste-quelle-spec-gegenstand-umbenannt 800-dcheck-fetch-pin-faehrt-ohne-pruefsumme
+Shard 1: Exit 2, 244 s, Faelle: 609-feldliste-quelle-spec-abschnitt-umnummeriert 801-traeger-host-digest-entzaubert
+Shard 2: KEIN BELEG
+Shard 3: KEIN BELEG
+Shard 4: KEIN BELEG
+Shard 5: KEIN BELEG
+Shard 6: KEIN BELEG
+Shard 7: KEIN BELEG
+Shard 8: KEIN BELEG
+Shard 9: KEIN BELEG
+BEFUND (kein Ergebnis im Log) 608-feldliste-quelle-spec-gegenstand-umbenannt           Shard 0
+BEFUND (kein Ergebnis im Log) 800-dcheck-fetch-pin-faehrt-ohne-pruefsumme              Shard 0
+BEFUND (kein Ergebnis im Log) 609-feldliste-quelle-spec-abschnitt-umnummeriert         Shard 1
+BEFUND (kein Ergebnis im Log) 801-traeger-host-digest-entzaubert                       Shard 1
+FEHLT    210-gate-nachweis-kante-entfernt
+FEHLT    211-gate-nachweis-check-daneben
+FEHLT    213-gate-nachweis-kante-gekuerzt
+FEHLT    214-gate-nachweis-baseline-nicht-erster
+FEHLT    254-archive-welle-makefile-name-vertippt
+FEHLT    256-hostbin-zweite-nennung-in-derselben-zeile
+FEHLT    259-hostbin-name-mit-ziffer
+FEHLT    402-fassungs-rezepte-ohne-durchreichung
+FEHLT    403-fassungs-pin-default
+FEHLT    498-testgo-pids-limit-entfernt
+FEHLT    499-testgo-memory-limit-entfernt
+FEHLT    501-spec-praezisiert-spalte-gestrichen
+FEHLT    502-spec-praezisiert-zelle-leer
+FEHLT    582-register-ausgang-faellt-aus-der-kante
+FEHLT    612-fassungs-ausnahme-zweiter-wert-im-makefile-gleich-form
+FEHLT    637-greift-rezept-laesst-mutate-cases-durch
+FEHLT    661-mutate-branch-ref-als-literal
+FEHLT    78-release-matrix-unvollstaendig
+FEHLT    79-release-windows-ohne-exe
+FEHLT    796-go-soll-driftet-gegen-makefile-pin
+FEHLT    797-exakt-paarung-zerzaegt
+FEHLT    798-aufform-faehrt-still-durch
+FEHLT    799-dcheck-fetch-byte-kette-entzaubert
+FEHLT    80-release-default-plattform
+FEHLT    802-env-check-dcheck-ablage-zweig-entzaubert
+FEHLT    81-release-dest-pflicht
+FEHLT    98-teststufe-count
+Fallmenge: 4 (Slice: 31)
+Wanduhr gesamt (erster Shard-Start bis letztes Shard-Ende): 245 s
+Urteil: BEFUND
