@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # files: .d-check.yml
-# expect: pinsync: das Pin go verliert seine Inventar-Quelle — die Paarung Inventar-Soll gegen die GO_VERSION-Stelle haelt dann nur noch die Pin-Stelle
+# expect: pinsync: das Pin go paart die Inventar-Soll-Zeile abgeleitet gegen die GO_VERSION-Stelle des Makefile
 # verify: test-bats
 #
 # Entfernt die Quellen-Zeile harness/tools/environment-inventory.txt aus dem Pin go:

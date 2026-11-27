@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # files: harness/tools/environment-check.sh
-# expect: environment-check: die Aufform exit-Klasse (2) faehrt still durch — die Auform-Zusaigen (unlesbares Inventar, unbekannte Pruefform) laufen gruen weiter
+# expect: environment-check: Inventar-Aufform färbt fail-closed
 # verify: test-bats
 #
 # Verwandelt den Exit der Aufform-Funktion von 2 in : (weitersagen) — die Aufform

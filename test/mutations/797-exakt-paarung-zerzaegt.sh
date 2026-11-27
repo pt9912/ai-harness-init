@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # files: harness/tools/environment-check.sh
-# expect: environment-check: die exakte Soll-Paarung wird zersaegt — der Check laesst JEDES vorhandene Werkzeug tragen, gleichgültig welcher Version
+# expect: environment-check: exakte Abweichung färbt Umgebungs-Befund mit Werkzeug, Soll und Ist
 # verify: test-bats
 #
 # Zersaegt die exakte Soll-Paarung der Pruefform exakt: `[ "$ist" = "$anzeige" ]`
