@@ -48,6 +48,7 @@ bleibt still grün — Existenz und Eindeutigkeit sind geprüft, Richtigkeit ist
 |---|---|
 | 0 | jeder Fall färbte seinen Wächter rot (`mutate: <n> ok, 0 Befund(e)`), oder ein Beleg über demselben Prüfgegenstand lag vor und kein Fall lief (`mutate: Beleg fuer Pruefgegenstand … liegt vor`), oder jeder gewählte Fall eines Teillaufs färbte seinen Wächter rot (`mutate: TEILLAUF <n> von <total> — kein Beleg …`) |
 | 1 | mindestens ein Befund (`mutate: BEFUND  <fall>  <grund>` je Fund, Summe in `mutate: <n> ok, <m> Befund(e)`), oder eine Sperre griff |
+| 4 | ein Umgebungs-Befund endete den Lauf vor Beleg-Lesung, Beleg-Entwertung und Isolationskopie (§Umgebungs-Vorbedingung) — keine Fall-Zahl behauptet |
 | 130 | ein Signal beendete den Lauf; berichtet ist, was bis dahin gemessen war, gekennzeichnet `ABGEBROCHEN` |
 
 Die Tabelle nennt den Exit des Skripts. Über `make mutate` endet ein Lauf, den das Skript mit 1
@@ -71,11 +72,14 @@ beendet, mit 2.
   eine `# files:`-Angabe nicht genau eine Datei auflöst (§Grenze) → die Angabe berichtigen.
 - `mutate: ABBRUCH — unbekannter '# verify: …'` — ein Fall nennt eine Prüfart ohne bekanntes
   Fehlschlag-Muster → den Fall berichtigen.
+- `mutate: ABBRUCH — Umgebungs-Befund: die Werkzeuge dieses Hosts tragen ihr Inventar-Soll nicht; kein Fall laeuft.` — der Inventar-Check des Hosts fiel §Umgebungs-Vorbedingung; seine `umgebung: <werkzeug> · Soll: … · Ist: …`-Zeilen stehen über der Meldung.
+- `mutate: ABBRUCH — Umgebungs-Befund: docker · Soll: erreichbarer Docker-Daemon · Ist: …` — der Fall-Satz faßt einen der zwei noch daemon-gebundenen Modi (§Umgebungs-Vorbedingung).
 - `mutate: ABBRUCH — WORK …` — die Isolations-Wurzel ist leer, liegt im Repo oder ist kein
   Verzeichnis; ohne Isolation wird nicht mutiert.
 
 Diese Sperren enden beim Direktaufruf mit 1, über `make mutate` mit 2, bevor ein Fall läuft
-(`harness/tools/mutate.sh`, `main`). Die
+(`harness/tools/mutate.sh`, `main`); die zwei Umgebungs-Vorbedingungs-Abbrüche enden
+beim Direktaufruf mit 4 (§Umgebungs-Vorbedingung). Die
 folgende greift während des Laufs:
 
 - Stille über `MUTATE_STALL_SECONDS` hinweg (kein Worker zieht oder schließt einen Fall ab) → Lauf
@@ -85,6 +89,38 @@ folgende greift während des Laufs:
 **Die Sperre sitzt am Treiber, nicht am Rezept.** Die Rezept-Zeile von `make mutate` setzt
 weder `MUTATE_CASES` noch `MUTATE_FORCE`; träte sie eines davon bei, disarmierte das die
 Sperre für den Rezept-Weg lautlos — benannte Grenze, kein Wächter hält sie.
+
+## Umgebungs-Vorbedingung
+
+Der Treiber fährt Gruen-Vorlauf und Fall-Sensor-Lauf über die host-Rezepte (`make <modus>` in der
+Isolationskopie, [`LH-QA-03`](../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)). Sein
+erster Zug ist deshalb der Inventar-Check wie in den Gates: `make environment-check` im
+Host-Baum, dieselbe Zusage wie der erste Check der Kante ([`SPEC-099`](../../spec/spezifikation.md#7-festlegungen-der-harness-werkzeuge));
+die `umgebung: <werkzeug> · Soll: … · Ist: …`-Zeilen trägt der echte Check. Fehlt ein Werkzeug
+oder weicht es ab, bricht der Lauf **vor** Beleg-Lesung, Beleg-Entwertung und Isolationskopie ab
+(`mutate: ABBRUCH — Umgebungs-Befund: …; kein Fall laeuft.`), **kein Fall läuft, keine
+Isolationskopie entsteht, der Beleg-Slot bleibt unberührt** — auch bei einem stehenden Beleg:
+der Beleg deckt Host-Werkzeuge ausdrücklich nicht ([`ADR-0035`](../../docs/plan/adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
+Festlegung 4), der Check steht darum vor dem Beleg-Übersprung. Die Abbruch-Klasse ist von den
+Test-Ausgängen getrennt: beim Direktaufruf **Exit 4**, über `make` mit 2, mit eigener Meldung —
+eine Werkzeug-Abwesenheit liest sich damit nicht als Test-Fehlschlag und ein Fall-Urteil nicht
+als Umgebungs-Fehler. Gehalten wird das von `test/mutate-driver.bats` (Blöcke
+„Umgebungs-Vorbedingung (host-Rezepte)“); der Abbruch-Zug wird dort am **realen** Inventar-Check
+über einer Fixture-Inventar-Zeile gemessen.
+
+Zweite Vorbedingung derselben Klasse, modus-gebunden: faßt der Fall-Satz einen `# verify: smoke`
+oder `full-smoke`, prüft der Treiber den Docker-Daemon und bricht vor der Isolationskopie mit
+`mutate: ABBRUCH — Umgebungs-Befund: docker · Soll: erreichbarer Docker-Daemon · Ist: …`
+(Exit 4) ab — bis [`slice-smoke-und-full-smoke-ohne-docker`](../../docs/plan/planning/next/slice-smoke-und-full-smoke-ohne-docker.md)
+bootstrappen diese zwei Modi tmp-Repos mit Docker-Gates, und ihre Werkzeug-Abwesenheit ist so
+benannt, nicht an einem Fall-Ausgang lesbar. Danach trägt keiner dieser Modi mehr einen
+Docker-Zug im Rezept, und die Zweite fällt weg.
+
+**Spur-Grenze:** die Seriell-Klassifikation (`plan_self_contained`) verlangt, dass jede Zeile
+des Trockenplans ein `docker build`/`docker run` trägt; über den host-Rezepten trägt das heute
+kein Modus, jeder Fall läuft in der seriellen Spur (Worker 1), und `MUTATE_JOBS` verteilt keinen
+Fall — benannte Grenze bis ein Treiber-Schnitt die Spur-Klassifikation an die host-Rezept-Pläne
+nachzieht, gemessen an den Trockenplänen von `test-go`, `test-bats`, `ci-lint` und `full-smoke`.
 
 ## Teillauf
 
