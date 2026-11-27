@@ -1,0 +1,2 @@
+**Vorgang:** slice-adr-gates-laeufen-host-native
+**Fund:** Auftreten der Klasse in diesem Vorgang; der Architect-Zug schreibt den `AGENTS.md`-Absatz §3.9 nach der Weg-Form `ADR-0109` um und benennt die Plattform-Grenze („Host der Host-Läufer ist Linux“) weiter — der Auflösungs-Trigger dieser Klasse (macOS getragen) bleibt unbefriedigt. Wortlaut nur per Verweis: `AGENTS.md` §3.9 (Absatz *Host der Host-Läufer ist Linux*), Fassung durch `525749b4`/`cdaf7d52`/`815bee43`.
