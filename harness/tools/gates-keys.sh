@@ -9,7 +9,8 @@
 #   stamp <checks…>  — je Check den Key nach .harness/state/gates-passed-<check>.key
 #   alle             — `stamp` ueber der ganzen Kante (der Schreiber bleibt
 #                      `record-gates`; dieser Modus ist sein Rezept-Aufruf)
-#   rest             — Dateien des Bauch-Walks ausserhalb jeder Tafel-Menge;
+#   rest             — Dateien des Bauch-Walks ausserhalb jeder Tafel-Menge UND
+#                      jeder deklarierten Rest-Klasse (MENGE_REST unten);
 #                      Exit 0 leer, sonst Liste und Exit 1 (fail-closed, MR-017)
 # Hermetisch: `--wurzel <dir>` loest die Wurzel auf, wenn kein git faehrt
 # (gepinntes bats-Image, Fixture); ohne `--wurzel` gilt das git-Toplevel, und
@@ -30,13 +31,19 @@
 # (scan.ignore-Klasse, kein Artefakt). Waechst diese Liste, ist DAS der
 # sichtbare Ort; jeder weitere Eintrag traegt seine Begruendung am Eintrag.
 #
-# ZUORDNUNGS-REST — Klassen, die kein Gate urteilt und die darum in keiner
-# Menge liegen (LICENSE, root-Repo-Metadaten, .gitkeep, docs/user/images/, das
-# Homebrew-Formular-Template, die zwei d-check-ignore-Referenzen, die
-# extract-*.awk-Helper): `rest` nennt sie, und die Mischform gibt fail-closed
-# nicht frei (MR-017) — der Fast-Pfad schrumpft mit der Tafel-Vereinigung
-# (ADR-0108 Abwaegung E). Zuschlaege an eine Menge sind eine Plan-Entscheidung
-# mit eigener Begruendung, kein stiller Eintrag.
+# ZUORDNUNGS-REST — je ADR-0108 Abwaegung E zwei Formen. *Aufnahme-Form:* Dateien,
+# deren Lesung durch einen Check gezeigt ist, liegen in dessen Menge — `test` liest
+# die Vorlagen (`go:embed all:templates/enforce|agents|commands`, Golden-Tests in
+# internal/emit) und die emit-Testdata-Datei: beide Baumaenge liegen in der
+# `test`-Menge (Eintraege im case-Zweig tafel_menge). *Deklarations-Form*
+# (ADR-0035 Festlegung 3, deklarierte Ausnahme obenauf einer Definition): Dateien,
+# ueber die kein Check der Kante urteilt, liegen in MENGE_REST unterhalb — je
+# Klasse-Glob einer Zeile mit genanntem Grund am Eintrag, als Rest gezaehlt statt als
+# Deckung; `rest` liest sie als Rest mit (Exit 0), Inhalt ausserhalb jeder Menge UND
+# dieser Liste bleibt der fail-closed Gap-Detektor (Liste und Exit 1, MR-017).
+# Zuschlaege an eine Menge und Eintraege in MENGE_REST sind eine Plan-Entscheidung
+# mit eigener Begruendung, kein stiller Eintrag (Plan slice-stamp-records-konsum-v1
+# §3, Mess-Beleg: der Stop-Hook-Mischform-Zug — approve an der deklarierten Form).
 #
 # MESSREZEPT JE CHECK (Plan slice-gates-pruefgegenstand-stempel-v1 §3): je
 # Tafel-Zeile die Lesung am realen Rezept — was der Check liest, dass die
@@ -58,7 +65,12 @@
 #                       die Pin-Kopplung bleibt konservativ, sie ist lauf-fern.
 #   lint, build, test:  lesen das Rezept (Makefile), die Go-Quellen und go.mod
 #                       am Host-Weg — go.sum liegt im Bestand nicht (kein
-#                       Eintrag); Dockerfile bleibt als Image-Weg-Kopplung;
+#                       Eintrag); Dockerfile bleibt als Image-Weg-Kopplung,
+#                       .dockerignore traegt docker vor beiden Stufen in den
+#                       Kontext (lint, build); der test-Check liest dazu die
+#                       Vorlagen-Baume der //go:embed-Direktiven und die
+#                       emit-Testdata-Datei (Zuschlag je Plan
+#                       slice-stamp-records-konsum-v1 §3);
 #                       Rest: die Go-Toolchain- und bats-Fassung (Host-Werkzeug,
 #                       ADR-0108 Festlegung 4).
 #   shell-lint:         liest das Rezept (Makefile) und genau die
@@ -97,6 +109,24 @@ MENGE_AUSSCHLUESS=(
     './.tmp/**'             # Arbeitsablage der Laeufe (.d-check.yml scan.ignore-Klasse), kein Artefakt
 )
 MENGE_AUSSCHLUESS_RE=()
+
+# MENGE_REST — der deklarierte Zuordnungs-Rest (siehe Kopf): je Klasse-Glob einer
+# Zeile mit genanntem Grund am Eintrag (ADR-0035 Festlegung 3-Form). Wächst diese
+# Liste, ist DAS der sichtbare Ort; ein Eintrag, dessen Check-Lesung je später
+# gezeigt wird, wandert in die Menge und aus ihr heraus.
+MENGE_REST=(
+    './.claude/settings.json'  # Wächter-Verdrahtung (PreToolUse-Guard): kein Check der Kante urteilt
+    './.codex/hooks.json'      # Wächter-Verdrahtung (SessionStart-Injektor): kein Check urteilt
+    './.gitattributes'         # VCS-Werkgabe (Zeilenenden-Normalisierung): kein Check urteilt
+    './.gitignore'             # Walk-Semantik: kein Check urteilt
+    './.viper.sh'              # Werkzeug-Anschaffung des Inventars: kein Check urteilt
+    './LICENSE'                # Lizenztext: kein Check urteilt
+    './*.gitkeep'              # Platzhalter leerer Lifecycle-Verzeichnisse: kein Check urteilt
+    './docs/user/images/*'     # Bilder der Operations-Doku (der Scan liest .md): kein Check urteilt
+    './harness/tools/*.awk'    # Erfassungs-Helper (smoke und SessionStart-Hook, kein Gate der Kante): kein Check urteilt
+    './harness/tools/homebrew-formula.rb.tmpl'  # Release-Formular (tap-nachzug, kein Gate der Kante): kein Check urteilt
+)
+MENGE_REST_RE=()
 
 # glob_zu_regex — die Glob-Zeile der Mengen als ERE: `*` -> `.*`, `?` -> `.`
 # (beide durchqueren Trenner, wie der Muster-Kontext sie liest — `./x/*` deckt
@@ -160,6 +190,7 @@ tafel_menge() {
         './Makefile' \
         './.golangci.yml' \
         './Dockerfile' \
+        './.dockerignore' \
         './go.mod' \
         './internal/*.go' \
         './cmd/*.go' \
@@ -169,18 +200,26 @@ tafel_menge() {
       printf '%s\n' \
         './Makefile' \
         './Dockerfile' \
+        './.dockerignore' \
         './go.mod' \
         './internal/*.go' \
         './cmd/*.go'
         ;;
     test)
+      # go:embed all:templates/… liest die Vorlagen beim Kompilieren der
+      # Test-Pakete und die emit-Golden-Tests lesen den Vorlagen-Baum; eine
+      # veraenderte oder geloeschte Vorlage erreicht zuerst diesen Check
+      # (deletion bricht am Kompilieren der mitkompilieren Tests). lint und
+      # build urteilen ueber Vorlagen-Inhalt nicht (Daten, kein Code).
       printf '%s\n' \
         './Makefile' \
         './Dockerfile' \
         './go.mod' \
         './internal/*.go' \
         './cmd/*.go' \
-        './test/*'
+        './test/*' \
+        './internal/emit/templates/*' \
+        './internal/emit/testdata/*'
         ;;
     shell-lint)
       # .claude/settings.json und .codex/hooks.json sind Wächter-Verdrahtung,
@@ -292,6 +331,22 @@ for e1 in "${MENGE_AUSSCHLUESS[@]}"; do
   MENGE_AUSSCHLUESS_RE+=("$(glob_zu_regex "$e1")")
 done
 unset e1
+
+# die deklarierten Rest-Klassen in derselben Lesung
+for e1 in "${MENGE_REST[@]}"; do
+  MENGE_REST_RE+=("$(glob_zu_regex "$e1")")
+done
+unset e1
+
+# ist_rest_zeile — 0, wenn der Pfad in einer deklarierten Rest-Klasse liegt (siehe
+# Kopf): `rest` liest sie als Rest mit, sonst nichts.
+ist_rest_zeile() {
+  local p="./$1" e
+  for e in "${MENGE_REST_RE[@]}"; do
+    [[ "$p" =~ ^($e)$ ]] && return 0
+  done
+  return 1
+}
 
 tafel_laden() {
   local check v
@@ -500,10 +555,13 @@ case "$mode" in
     ;;
   rest)
     # Der Bauch ausserhalb jeder Tafel-Menge: leer → Exit 0, sonst Liste und
-    # Exit 1 (die Mischform entzieht der Alternative die Basis, MR-017).
+    # Exit 1 (die Mischform entzieht der Alternative die Basis, MR-017). Die
+    # Ablage-Ausschluesse und der deklarierte Zuordnungs-Rest (beide im Kopf
+    # je Eintrag mit Grund) bleiben aus.
     rest_zeilen=""
     for f in "${DATEIEN[@]}"; do
       ist_ausgeschlossen "$f" && continue
+      ist_rest_zeile "$f" && continue
       for e in "${PAARE_MENGE[@]}"; do
         p="${e#*$'\v'}"
         [[ "./$f" =~ ^($p)$ ]] && continue 2

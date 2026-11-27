@@ -82,11 +82,12 @@ setup() {
 	done < <(bash "$KEYS" --wurzel "$REPO" liste)
 }
 
-# Zusage 2, die eigentliche Zähne: der FIXTURE-Record-Zug. In eine Mini-Wurzel
-# wird unter .harness/stamp/mutate/ eine Ablage geschrieben (beleg.md) — wenn der
-# Schlüssel sie deckte, rotierte jeder Record-only-Commit den Key. Die Kontrolle
-# daneben beweist, dass der Schlüssel INHALT-tragend ist: dieselbe Schreibweise
-# unter docs/ bewegt ihn.
+# Zusaegen 2 und 4 (Record-Zug + deklarierte Rest-Klassen) am selben Fixture: der
+# Record-only-Vertrag (die engere ADR-0103-Menge .harness/stamp/mutate) misst beide
+# Richtungen — `menge` und `rest` tragen die Record-Ablage nicht — und der deklarierte
+# Zuordnungs-Rest (ADR-0108 Abwaegung E, Deklarations-Form) bleibt aus der
+# rest-Beurteilung heraus, ein undeklarierter Neuzugang faellt als List-Zeile auf
+# (fail-closed, MR-017).
 @test "keys: ein Record-Zug unter .harness/stamp bewegt keinen je-Check-Key" {
 	FIX=$(mktemp -d)
 	(
@@ -96,7 +97,14 @@ setup() {
 		printf 'DCHECK_IMAGE ?= f\n' > "$FIX/d-check.mk"
 		printf 'inhalt\n' > "$FIX/docs/a.md"
 		k1="$(bash "$KEYS" --wurzel "$FIX" key docs-check-host)"
+		# Record-only-Vertrag (ADR-0103 Festlegung 2, enge Menge): die Record-Datei
+		# taucht in keiner menge- und keiner rest-Ausgabe auf.
 		printf 'record-only\n' > "$FIX/.harness/stamp/mutate/beleg.md"
+		menge_leak="$(bash "$KEYS" --wurzel "$FIX" menge docs-check-host | grep -E '^\.harness/stamp' || true)"
+		rest_leak="$(bash "$KEYS" --wurzel "$FIX" rest 2>/dev/null | grep -E '^\.harness/stamp' || true)"
+		printf 'menge-Leak=[%s] rest-Leak=[%s] (Zusage: beides leer)\n' "$menge_leak" "$rest_leak"
+		[ -z "$menge_leak" ]
+		[ -z "$rest_leak" ]
 		k2="$(bash "$KEYS" --wurzel "$FIX" key docs-check-host)"
 		printf 'real\n' > "$FIX/docs/b.md"
 		k3="$(bash "$KEYS" --wurzel "$FIX" key docs-check-host)"
@@ -104,6 +112,64 @@ setup() {
 		[ -n "$k1" ]
 		[ "$k1" = "$k2" ]
 		[ "$k1" != "$k3" ]
+	)
+	rm -rf "$FIX"
+}
+
+@test "keys: der Walk liegt ganz in der Tafel-Vereinigung oder einer deklarierten Rest-Klasse; ein undeklarierter Neuzugang faellt auf" {
+	# Zusaetze der Aufrufer-Reihenfolge: erst die deklarierte Form (rest leer, Exit 0),
+	# dann der Gap-Detektor am Fixture (eine Datei ausserhalb jeder Menge und Klasse →
+	# List-Zeile und Exit 1).
+	run bash "$KEYS" --wurzel "$REPO" rest
+	rest_leer="$(printf '%s' "$output" | grep -cvE '^$' || true)"
+	echo "rest-Zeilen: $rest_leer (Zusage: 0 — die Bauch-Flache liegt ganz in Menge oder Deklaration)"
+	[ "$status" -eq 0 ]
+	[ "$rest_leer" -eq 0 ]
+	FIX=$(mktemp -d)
+	(
+		mkdir -p "$FIX"
+		printf 'record-gates: docs-check-host ## Checks + Gate-Nachweis\n\ndocs-check-host: ## x\n\t@echo x\n' > "$FIX/Makefile"
+		printf 'scan:\n  roots: ["."]\n' > "$FIX/.d-check.yml"
+		printf 'DCHECK_IMAGE ?= f\n' > "$FIX/d-check.mk"
+		printf 'inhalt\n' > "$FIX/README.md"
+		printf 'lizenz\n' > "$FIX/LICENSE"
+		: > "$FIX/platzhalter.gitkeep"
+		mkdir -p "$FIX/docs/user/images"
+		printf 'x' > "$FIX/docs/user/images/bild.png"
+		run bash "$KEYS" --wurzel "$FIX" rest
+		[ "$status" -eq 0 ]
+		[ -z "$output" ]
+		printf 'undeckbar\n' > "$FIX/neu-beliebig.txt"
+		run bash "$KEYS" --wurzel "$FIX" rest
+		[ "$status" -eq 1 ]
+		grep -qxF 'neu-beliebig.txt' <<<"$output"
+	)
+	rm -rf "$FIX"
+}
+
+@test "keys: die test-Menge deckt die geembedeten Vorlagen-Baume und die emit-Testdata (Zuschlag, Plan-Fortschreibung §3)" {
+	run bash "$KEYS" --wurzel "$REPO" menge test
+	[ "$status" -eq 0 ]
+	for form in 'internal/emit/templates/enforce/repo.mk' 'internal/emit/templates/d-check.yml' 'internal/emit/testdata/raw-print-mk.txt'; do
+		[ -f "$REPO/$form" ] || continue
+		echo "test-Menge-Deckung fuer [$form] (Zusage: eine Zeile der Menge)"
+		grep -qxF "$form" <<<"$output"
+	done
+	# Die Zaehne am Fixture: ein Vorlagen-Edit dreht den test-Key.
+	FIX=$(mktemp -d)
+	(
+		mkdir -p "$FIX/internal/emit/templates/enforce" "$FIX/test" "$FIX/internal"
+		printf 'record-gates: test ## x\n\ntest: ## x\n\t@echo x\n' > "$FIX/Makefile"
+		printf 'module x\n' > "$FIX/go.mod"
+		printf 'main\n' > "$FIX/main.go"
+		printf 'inhalt\n' > "$FIX/internal/emit/templates/enforce/vorlage.mk"
+		printf 'inhalt\n' > "$FIX/test/ein-bats.txt"
+		k1="$(bash "$KEYS" --wurzel "$FIX" key test)"
+		printf 'geaendert\n' > "$FIX/internal/emit/templates/enforce/vorlage.mk"
+		k2="$(bash "$KEYS" --wurzel "$FIX" key test)"
+		printf 'vor=%s nach-vorlage-edit=%s\n' "$k1" "$k2"
+		[ -n "$k1" ] && [ -n "$k2" ]
+		[ "$k1" != "$k2" ]
 	)
 	rm -rf "$FIX"
 }
