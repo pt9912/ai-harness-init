@@ -1160,23 +1160,28 @@ FALL
 @test "driver: main() loescht einen bestehenden Beleg SOFORT, wenn der Lauf danach abbricht (kein Ueberleben)" {
   local fake
   fake="$(mktemp -d)"
-  mkdir -p "$fake"/{harness/tools,test/mutations,.harness/state}
+  mkdir -p "$fake"/{harness/tools,test/mutations,.harness/state,bin}
   cp "$DRIVER" "$fake/harness/tools/mutate.sh"
   printf '%s\n' '#!/usr/bin/env bash' '# files: datei.txt' '# expect: irgendwas' \
     '# verify: unbekannter-modus' 'set -euo pipefail' 'true' >"$fake/test/mutations/01-demo.sh"
   printf 'inhalt\n' >"$fake/datei.txt"
+  # make-Stub auf dem PATH: die Umgebungs-Vorbedingung steht im main-Einstieg, der
+  # Inventar-Check wird hier gruen gefahrt, damit der Abbruch am Gegenstand des Tests
+  # (Entwertung, Sperre) faellt und nicht an der Werkzeug-Umgebung.
+  printf '#!/usr/bin/env bash\nexit 0\n' >"$fake/bin/make"
+  chmod +x "$fake/bin/make"
   bash -c "source '$fake/harness/tools/mutate.sh' 2>/dev/null || true; isolation_key" \
     >"$fake/.harness/state/mutate-passed.key"
   [ -s "$fake/.harness/state/mutate-passed.key" ]
 
-  run env MUTATE_FORCE=1 bash "$fake/harness/tools/mutate.sh"
+  run env "PATH=$fake/bin:$PATH" MUTATE_FORCE=1 bash "$fake/harness/tools/mutate.sh"
   [ "$status" -eq 1 ]
   [ ! -f "$fake/.harness/state/mutate-passed.key" ]
 
   # Ohne Force: der zweite Lauf misst die unveraenderte Folgelage — der geloeschte
   # Beleg entlastet nicht, der Lauf faellt an der Vollauf-Sperre statt zu ueberspringen
   # ('Kein Fall-Lauf' traegt nur der Uebersprung).
-  run bash "$fake/harness/tools/mutate.sh"
+  run env "PATH=$fake/bin:$PATH" bash "$fake/harness/tools/mutate.sh"
   [ "$status" -eq 1 ]
   ! grep -qF 'Kein Fall-Lauf' <<<"$output"
   grep -qF 'ohne MUTATE_CASES faehrt hier kein Vollauf' <<<"$output"
@@ -1194,10 +1199,14 @@ FALL
 @test "driver: main() ueberspringt NUR bei einem Beleg, der dem aktuellen Schluessel entspricht" {
   local fake
   fake="$(mktemp -d)"
-  mkdir -p "$fake"/{harness/tools,test/mutations,.harness/state}
+  mkdir -p "$fake"/{harness/tools,test/mutations,.harness/state,bin}
   cp "$DRIVER" "$fake/harness/tools/mutate.sh"
   printf '%s\n' '#!/usr/bin/env bash' '# files: datei.txt' '# expect: irgendwas' \
     '# verify: unbekannter-modus' 'set -euo pipefail' 'true' >"$fake/test/mutations/01-demo.sh"
+  # make-Stub auf dem PATH: dieselbe Begruendung wie im Test darueber — der
+  # Inventar-Check wird gruen gefahrt, der Abbruch faellt am Gegenstand des Tests.
+  printf '#!/usr/bin/env bash\nexit 0\n' >"$fake/bin/make"
+  chmod +x "$fake/bin/make"
   printf 'inhalt\n' >"$fake/datei.txt"
   printf 'VOELLIG-FALSCHER-SCHLUESSEL\n' >"$fake/.harness/state/mutate-passed.key"
 
@@ -1205,7 +1214,7 @@ FALL
   # den der Testname behauptet — ein Force oder eine Sperre davor wuerde ihn
   # kursschliessen. Der falsche Schluessel entlastet nicht: der Lauf faellt an der
   # Vollauf-Sperre statt zu ueberspringen ('Kein Fall-Lauf' traegt nur der Uebersprung).
-  run bash "$fake/harness/tools/mutate.sh"
+  run env "PATH=$fake/bin:$PATH" bash "$fake/harness/tools/mutate.sh"
   [ "$status" -eq 1 ]
   ! grep -qF 'Kein Fall-Lauf' <<<"$output"
   grep -qF 'ohne MUTATE_CASES faehrt hier kein Vollauf' <<<"$output"
@@ -1236,8 +1245,23 @@ teillauf_fake() {
   tl_case 03-ungewaehlt datei.txt erwartet-z
   printf 'inhalt\n' >"$TL_FAKE/datei.txt"
   printf 'inhalt\n' >"$TL_FAKE/andere.txt"
+  # Der Inventar-Fixture fuer TL_UMGEBUNG_BEFUND: das reale Inventar mit einem
+  # abweichenden exakt-Soll fuer go — der Check liefert die reale Umgebungs-
+  # Befund-Zeile (Werkzeug · Soll · Ist), nicht eine nachgebaute. Die Ableitung
+  # an der Pin-Stelle bleibt unberuehrt: das Soll wird je Lauf gegen 99.99.0
+  # gesetzt, unabhaengig vom aktuellen GO_VERSION.
+  sed 's@^go|exakt|pflicht|abgeleitet:[0-9.]*@go|exakt|pflicht|abgeleitet:99.99.0@' \
+    "$REPO/harness/tools/environment-inventory.txt" >"$TL_ROOT/inventar-befund.txt"
   cat >"$TL_ROOT/bin/make" <<'STUB'
 #!/usr/bin/env bash
+if [ -n "${TL_MAKE_LOG:-}" ]; then printf '%s\n' "$*" >>"$TL_MAKE_LOG"; fi
+if [ -n "${TL_UMGEBUNG_BEFUND:-}" ]; then
+  for a in "$@"; do
+    if [ "$a" = "environment-check" ]; then
+      exec bash "__REPO__/harness/tools/environment-check.sh" --inventar "__FIXTURE__"
+    fi
+  done
+fi
 for a in "$@"; do
   if [ "$a" = "-n" ]; then echo "docker build ."; exit 0; fi
 done
@@ -1245,6 +1269,7 @@ if grep -q mutiert datei.txt 2>/dev/null; then echo "not ok 1 erwartet-x"; exit 
 exit 0
 STUB
   chmod +x "$TL_ROOT/bin/make"
+  sed -i "s@__REPO__@$REPO@; s@__FIXTURE__@$TL_ROOT/inventar-befund.txt@" "$TL_ROOT/bin/make"
   tl_probe mktemp cp tar
   TL_KEY="$(bash -c "source '$TL_FAKE/harness/tools/mutate.sh' 2>/dev/null || true; isolation_key")"
   [ -n "$TL_KEY" ]
@@ -1491,6 +1516,68 @@ vollauf() {
   # mktemp sichtbar.
   [ "$(grep -c '^mktemp ' "$TL_ROOT/probe.log")" -eq 0 ]
   [ -z "$(ls -A "$TL_ROOT/tmp")" ]
+  rm -rf "$TL_ROOT"
+}
+
+# --- Umgebungs-Vorbedingung (host-Rezepte) -------------------------------------
+# Der Treiber faehrt Vorlauf und Fall-Sensor-Lauf ueber die host-Rezepte
+# (`make <modus>` am Host, ADR-0109); sein erster Zug ist der Inventar-Check wie in
+# den Gates. Diese drei Tests halten Ordnung, Umgebungs-Abbruchklasse und die
+# Daemon-Vorbedingung der zwei noch daemon-gebundenen Modi hermetisch: der Fake
+# make-Stub beantwortet `environment-check`, und der Umgebungs-Abbruch kommt vom
+# REALen Inventar-Check ueber eine Fixture-Inventar-Zeile (inventar-befund.txt) —
+# kein nachgebauter Befund.
+
+@test "driver: die Umgebungs-Vorbedingung faehrt VOR Beleg-Entwertung und Isolationskopie" {
+  teillauf_fake
+  TL_MAKE_LOG="$TL_ROOT/make.log"
+  run env "PATH=$TL_ROOT/bin:$PATH" MUTATE_JOBS=1 "TMPDIR=$TL_ROOT/tmp" \
+    "TL_MAKE_LOG=$TL_MAKE_LOG" MUTATE_CASES='01-ok' \
+    bash "$TL_FAKE/harness/tools/mutate.sh"
+  [ "$status" -eq 0 ]
+  grep -qF '1 ok, 0 Befund' <<<"$output"
+  # Erster make-Zug des Laufs ist der Inventar-Check — vor Beleg-Lesung, dem
+  # `-n`-Trockenlauf und dem Fall-Sensor-Lauf.
+  [ "$(head -1 "$TL_MAKE_LOG")" = "--no-print-directory environment-check" ]
+  rm -rf "$TL_ROOT"
+}
+
+@test "driver: ein Umgebungs-Befund bricht vor Beleg-Entwertung und Isolationskopie ab; die Diagnose nennt Werkzeug · Soll · Ist" {
+  teillauf_fake
+  printf 'stehender-beleg\n' >"$TL_FAKE/.harness/state/mutate-passed.key"
+  run env "PATH=$TL_ROOT/bin:$PATH" MUTATE_JOBS=1 "TMPDIR=$TL_ROOT/tmp" \
+    TL_UMGEBUNG_BEFUND=1 MUTATE_FORCE=1 \
+    bash "$TL_FAKE/harness/tools/mutate.sh"
+  [ "$status" -eq 4 ]
+  grep -qF 'ABBRUCH — Umgebungs-Befund: die Werkzeuge dieses Hosts tragen ihr Inventar-Soll nicht; kein Fall laeuft.' <<<"$output"
+  # Die Zeile stammt aus dem REALen Inventar-Check: Werkzeug · Soll · Ist.
+  grep -qF 'umgebung: go · Soll: 99.99.0 · Ist:' <<<"$output"
+  # Voller Lauf (MUTATE_FORCE=1) mit stehendem Beleg: Der Abbruch liegt vor der
+  # Entwertung — der Beleg bleibt byte-gleich, und es entsteht keine Isolationskopie.
+  # (Der mktemp-Wrapper ist hier kein Zeuge: der Check-Skript mktemp-Probe schreibt
+  # in sein eigenes Probe-Verzeichnis, und das faerbe die Wrapperaufrufe mit.)
+  [ -z "$(find "$TL_ROOT/tmp" -maxdepth 2 -name repo 2>/dev/null)" ]
+  [ "$(cat "$TL_FAKE/.harness/state/mutate-passed.key")" = "stehender-beleg" ]
+  rm -rf "$TL_ROOT"
+}
+
+@test "driver: fehlt der Daemon fuer einen Daemon-Modus, bricht der Lauf als Umgebungs-Befund VOR der Isolationskopie" {
+  teillauf_fake
+  printf '%s\n' '#!/usr/bin/env bash' '# files: datei.txt' '# expect: erwartet-x' \
+    '# verify: smoke' 'set -euo pipefail' "sed -i 's/inhalt/mutiert/' datei.txt" \
+    >"$TL_FAKE/test/mutations/04-smoke.sh"
+  cat >"$TL_ROOT/bin/docker" <<'DD'
+#!/usr/bin/env bash
+exit 1
+DD
+  chmod +x "$TL_ROOT/bin/docker"
+  run env "PATH=$TL_ROOT/bin:$PATH" MUTATE_JOBS=1 "TMPDIR=$TL_ROOT/tmp" \
+    MUTATE_CASES='04-smoke' bash "$TL_FAKE/harness/tools/mutate.sh"
+  [ "$status" -eq 4 ]
+  grep -qF 'ABBRUCH — Umgebungs-Befund: docker · Soll: erreichbarer Docker-Daemon · Ist: nicht erreichbar' <<<"$output"
+  grep -qF 'Die Fall-Modi: smoke bootstrappen tmp-Repos mit Docker-Gates' <<<"$output"
+  # Keine Isolationskopie: unter TMPDIR liegt kein Isolations-Baum (`*/repo`).
+  [ -z "$(find "$TL_ROOT/tmp" -maxdepth 2 -name repo 2>/dev/null)" ]
   rm -rf "$TL_ROOT"
 }
 

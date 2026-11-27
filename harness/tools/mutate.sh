@@ -1700,12 +1700,11 @@ report_key() {
 main() {
   # LOCK gegen parallele Laeufe. Seine URSPRUENGLICHE Begruendung ist mit slice-047
   # entfallen: zwei Laeufe mutieren nicht mehr denselben Arbeitsbaum (jeder hat seine
-  # eigene Kopie). Was bleibt, ist die geteilte RESSOURCE: beide Laeufe bauen dieselben
-  # Docker-Image-Tags (`ai-harness-init:test` …) und wuerden einander die Tags und den
-  # Build-Cache unter den Fuessen wegziehen — die Ergebnisse blieben zwar korrekt (jeder
-  # Build hat seinen eigenen Kontext), aber die Laufzeit vervielfachte sich und ein
-  # `make smoke`-Fall kollidierte in seinen tmp-Ressourcen. Der Lock bleibt also, mit
-  # geaenderter Begruendung — nicht mehr Baum-Schutz, sondern Ressourcen-Serialisierung.
+  # eigene Kopie). Was bleibt, ist die geteilte RESSOURCE: beide Laeufe fahren dieselben
+  # Rezept-Werkzeuge am Host — und solange smoke/full-smoke im Fall-Satz sind, dieselben
+  # Docker-Image-Tags (`ai-harness-init:test` …) und denselben Build-Cache; ein
+  # `make smoke`-Fall kollidierte sonst in seinen tmp-Ressourcen. Der Lock bleibt also,
+  # mit geaenderter Begruendung — nicht mehr Baum-Schutz, sondern Ressourcen-Serialisierung.
   # `mkdir` ist atomar, also ein portabler Mutex ohne flock. Er steht IN main(), nicht
   # im Top-Level: test/mutate-driver.bats sourct die Datei fuer ihre Funktionen, und ein
   # Lock beim Sourcen wuerde die Tests verschmutzen (von genau diesen Tests gefangen).
@@ -1737,6 +1736,28 @@ main() {
     echo "  Eine Vorgabe unterhalb der laengsten legitimen Stille roetet einen gesunden Lauf;" >&2
     echo "  die Vorgabe des Treibers und ihre Herleitung stehen bei STALL_SECONDS." >&2
     exit 1
+  fi
+
+  # UMGEBUNGS-VORBEDINGUNG — wie in den Gates (`record-gates`, environment-check als
+  # erster Check der Kante) traegt der Inventar-Check die Werkzeug-Zusage des Laufs
+  # (LH-QA-02/LH-QA-03): der Treiber fährt host-native Rezepte, sein Gruen-Vorlauf und
+  # sein Fall-Sensor-Lauf scheitern darum an fehlender oder abweichender Werkzeug-
+  # Umgebung — und ein solcher Umgebungs-Befund ist von einem Test-Ausgang GETRENNT:
+  # eigene Meldungsklasse und eigene Exit-Klasse (4), die Diagnose nennt
+  # Werkzeug · Soll · Ist, und der Abbruch liegt vor Beleg-Lesung, Beleg-Entwertung
+  # und Isolationskopie — kein Fall laeuft, der Beleg-Slot bleibt unberuehrt. Der
+  # Beleg deckt Host-Werkzeuge ausdruecklich nicht (ADR-0035 Festlegung 4); der Check
+  # steht darum VOR dem Beleg-Uebersprung. Der Modus ist das Gates-Rezept selbst —
+  # der Host-Baum-Zug des Targets `environment-check`, nicht das Check-Skript
+  # zweiteilig nachgebaut; die Diagnose-Zeilen traegt der echte Check.
+  local umgebung_aus
+  if ! umgebung_aus="$(cd "$REPO" && env -u MAKEFLAGS -u MAKELEVEL -u MFLAGS \
+      make --no-print-directory environment-check 2>&1)"; then
+    printf '%s\n' "$umgebung_aus" | sed 's/^/    | /' >&2
+    echo "mutate: ABBRUCH — Umgebungs-Befund: die Werkzeuge dieses Hosts tragen ihr Inventar-Soll nicht; kein Fall laeuft." >&2
+    echo "  Die Klasse ist von Test-Ausgaengen getrennt (Exit 4): die Diagnose nennt Werkzeug · Soll · Ist," >&2
+    echo "  nicht einen Waechter; Beleg-Slot und Isolationskopie bleiben unberuehrt." >&2
+    exit 4
   fi
 
   [ -d "$CASES_DIR" ] || { echo "mutate: $CASES_DIR fehlt" >&2; exit 1; }
@@ -1899,6 +1920,36 @@ main() {
     echo "mutate: serielle Spur fuer:${HEAVY_MODES% } — ihr Plan besteht nicht nur aus docker-Aufrufen, ihr Urteil ist damit nicht vollstaendig gelesen."
   fi
 
+  # DIE DAEMON-ABHAENGIGEN MODI ALS UMGEBUNGS-VORBEDINGUNG: smoke und full-smoke
+  # bootstrappen tmp-Repos und fahren dort Docker-Gates — ist der Daemon nicht
+  # erreichbar, endet ihr Gruen-Vorlauf an einem Docker-Aussetzer, und dessen
+  # Ursache liest sich sonst wie ein Test-Fehlschlag. Der Lauf bricht darum vor der
+  # ersten Isolationskopie als Umgebungs-Befund ab (dieselbe Klasse und
+  # Exit-Klasse wie der Inventar-Check oben): die Werkzeug-Abwesenheit ist benannt,
+  # nicht still. Die Liste entfaellt mit slice-smoke-und-full-smoke-ohne-docker —
+  # danach traegt keiner dieser Modi mehr einen Docker-Zug im Rezept.
+  local daemons=" " mode_w docker_ist="nicht erreichbar (docker info schlug fehl)"
+  for mode_w in $used_modes; do
+    case "$mode_w" in
+      smoke | full-smoke) daemons="$daemons$mode_w " ;;
+    esac
+  done
+  if [ -n "${daemons// /}" ]; then
+    if ! command -v docker >/dev/null 2>&1; then
+      docker_ist="fehlt am PATH"
+    elif ! docker info >/dev/null 2>&1; then
+      :
+    else
+      docker_ist=""
+    fi
+    if [ -n "$docker_ist" ]; then
+      echo "mutate: ABBRUCH — Umgebungs-Befund: docker · Soll: erreichbarer Docker-Daemon · Ist: $docker_ist." >&2
+      echo "  Die Fall-Modi:${daemons% } bootstrappen tmp-Repos mit Docker-Gates; der Abbruch liegt vor der" >&2
+      echo "  ersten Isolationskopie und ist der Umgebungs-Klasse zugeordnet (Exit 4), nicht einem Fall." >&2
+      exit 4
+    fi
+  fi
+
   # Zwei Warteschlangen: die schwere laeuft in EINER Spur, die leichte leeren alle
   # Worker dynamisch. Der Rang steht beim Sortieren vorn und faellt danach weg; die
   # Schlange traegt Nummer, Modus und Fall-Datei.
@@ -1926,17 +1977,18 @@ main() {
   done
   echo "mutate: $JOBS isolierte Kopie(n) unter $ISO_ROOT — der Host-Baum wird NICHT veraendert."
 
-  # DAS BILD EINMAL VOR DEM FORK. `make test-go` uebersetzt die deps- und warm-Stufen
-  # des Dockerfile; ohne diesen Lauf konkurrierten JOBS gleichzeitige Builds um denselben
-  # BuildKit-Cache und uebersetzten die Standardbibliothek mehrfach. Es ist zugleich ein
-  # vollwertiger Gruen-Vorlauf fuer Kopie 1 — derselbe Modus, dieselbe Kopie, keine
-  # Mutation —, deshalb startet Worker 1 mit test-go als bereits gruen gesehen.
-  # Uebersprungen, wenn kein Fall eine Go-Stufe faehrt: dann gaebe es nichts vorzuwaermen.
+  # DER GO-VORLAUF EINMAL VOR DEM FORK. `make test-go` ist mit den host-Rezepten
+  # (ADR-0109) der docker-los Weg (`go test -count=1 ./...` am Host). Es ist noch immer
+  # ein vollwertiger Gruen-Vorlauf fuer Kopie 1 — derselbe Modus, dieselbe Kopie, keine
+  # Mutation —, deshalb startet Worker 1 mit test-go als bereits gruen gesehen, und
+  # ein ROTER Go-Baum bricht hier laut ab, bevor irgendein Fall faehrt. Der Vorlauf
+  # der uebrigen Worker bleibt faul je Kopie und Modus (worker_main).
+  # Uebersprungen, wenn kein Fall eine Go-Stufe faehrt: dann gibt es keinen Vorlauf-Zug.
   local warm_seen=""
   if grep -qF " test-go " <<<"$used_modes" || grep -qF " test " <<<"$used_modes"; then
     WORK="$ISO_ROOT/w1/repo"
     require_isolated || exit 1
-    echo "mutate: Bild einmal vor dem Fork (Kopie 1) — sonst baeuten $JOBS Worker dieselben Stufen gleichzeitig."
+    echo "mutate: Gruen-Vorlauf einmal vor dem Fork (Kopie 1) — Go-Stufe, keine Mutation; ein roter Baum bricht hier, bevor ein Fall faehrt."
     green_prerun test-go || exit 1
     warm_seen="test-go"
   fi
