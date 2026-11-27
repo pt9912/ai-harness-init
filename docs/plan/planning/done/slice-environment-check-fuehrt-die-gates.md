@@ -56,7 +56,7 @@ Gate-Lauf an ihm, bevor ein Gate gegen fehlendes Werkzeug falsch färbt
   [`slice-labor-gates-host-rezepte`](../open/slice-labor-gates-host-rezepte.md)
   (Schicht-Abgrenzung); hier entsteht nur die Vorbedingung.
 - **Beschaffung von Binären (d-check, Träger)** — ein eigenes Slice:
-  [`slice-binraire-ziehen-ohne-docker`](../in-progress/slice-binraire-ziehen-ohne-docker.md);
+  [`slice-binraire-ziehen-ohne-docker`](../done/slice-binraire-ziehen-ohne-docker.md);
   der Check prüft Anwesenheit und Version, wie die Binäre herkommen, steht
   woanders.
 - **Der PreToolUse-Guard wird nicht geändert** — er blockt die
@@ -151,7 +151,7 @@ geschrieben.
 
 - **`curl` steht am Host nicht** (Träger-Beschaffung braucht Netz) —
   **Ausgang (ist):** entfallen — das Inventar trägt ihn als `optional`-Eintrag; die Beschaffung
-  selbst ist [`slice-binraire-ziehen-ohne-docker`](../in-progress/slice-binraire-ziehen-ohne-docker.md)
+  selbst ist [`slice-binraire-ziehen-ohne-docker`](../done/slice-binraire-ziehen-ohne-docker.md)
   und sein Netz-Aufruf nennt seinen Träger.
 - **Der Guard blockt den Implementer beim Testen des Checks** (direkte
   `go`/`bats`-Positionen) — **Ausgang (ist):** entfallen, nicht eingetreten — der Guard bleibt in Kraft
@@ -212,7 +212,7 @@ formulieren — sonst zählt das Register zwei Namen getrennt) ·
   Versagensklasse; die Grenze trägt der Kopf des Skripts selbst. Kein
   `BEO-`-Verzeichnis dafür angelegt.
 - **Folge-Slices:** keine neuen; die §1-Abgrenzungen bleiben —
-  [`slice-binraire-ziehen-ohne-docker`](../in-progress/slice-binraire-ziehen-ohne-docker.md)
+  [`slice-binraire-ziehen-ohne-docker`](../done/slice-binraire-ziehen-ohne-docker.md)
   (Beschaffung d-check/Träger) und
   [`slice-labor-gates-host-rezepte`](../open/slice-labor-gates-host-rezepte.md)
   (Gate-Rezepte), beide in `open/`.

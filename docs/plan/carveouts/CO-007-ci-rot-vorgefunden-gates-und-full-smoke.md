@@ -15,7 +15,7 @@ Das Gate trägt keine Schwelle — kein ADR-Verweis nach dieser Zeile.
 verweist; nicht andere Gates und nicht die lokalen Targets einzeln.
 
 **Folge-Slice:** der Träger-Teil (a) trägt an
-[`slice-binraire-ziehen-ohne-docker`](../planning/in-progress/slice-binraire-ziehen-ohne-docker.md);
+[`slice-binraire-ziehen-ohne-docker`](../planning/done/slice-binraire-ziehen-ohne-docker.md);
 die Fork-Erschöpfung (b) ist im Beobachtungs-Register geführt
 (`BEO-ALL/gates-keys-fork-erschoepfung-bricht-den-ci-gates-lauf`) und hat von
 der anlegenden Closure keinen eigenen Slice in `open/` bekommen — ob die
@@ -61,7 +61,7 @@ steht unter *Abgeschlossene Wellen*). **Danach** die CI-Heilung als eigener
 Zug, zwei Befund-Klassen:
 
 - **(a) Träger-Vertrag** — die Unterkommando-Fassung des `archive-welle`-Teils
-  zieht [`slice-binraire-ziehen-ohne-docker`](../planning/in-progress/slice-binraire-ziehen-ohne-docker.md).
+  zieht [`slice-binraire-ziehen-ohne-docker`](../planning/done/slice-binraire-ziehen-ohne-docker.md).
 - **(b) Fork-Erschöpfung in `harness/tools/gates-keys.sh`** — Befund gegen
   `slice-gates-pruefgegenstand-stempel-v1`, Register-Zeile oben; ob sie einen
   eigenen Folge-Slice trägt, schneidet die Welle-Closure.

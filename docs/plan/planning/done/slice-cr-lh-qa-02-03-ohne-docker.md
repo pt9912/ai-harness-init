@@ -201,7 +201,7 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
     derselbe Architect-Slice; Folgestellen beim Emittieren der docker-los-Mechanik
     in welle-ohne-docker.
   - Träger-Vertrags-Teil des `full-smoke`-Befunds →
-    [`slice-binraire-ziehen-ohne-docker`](../in-progress/slice-binraire-ziehen-ohne-docker.md).
+    [`slice-binraire-ziehen-ohne-docker`](../done/slice-binraire-ziehen-ohne-docker.md).
   - Fork-Erschöpfung → Register-Zeile und Carveout-Zug (CO-007), kein eigener
     Eintrag in `open/` von dieser Closure.
   - Rest-Lücke Mutations-Bestand: kein Fall im Bestand führt
