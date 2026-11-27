@@ -56,6 +56,18 @@ Die Stufen-Deklarationen der E2E-Abdeckung bleiben — der Prüfgegenstand
   Bestand bleibt; mit Host-Build über Inventar-Pin läuft der Hauptweg über
   dieselbe Form — macOS bleibt ungetragen
   ([`BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer`](../observations/BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer/state.md)).
+- **Die LP2/LP3-Restmenge des docker-losen `full-smoke`** — ein Folge-Slice
+  übernimmt es: [«Übernimmt: slice-full-smoke-gates-echt-gruen»](../next/slice-full-smoke-gates-echt-gruen.md)
+  <!-- d-check:ignore (Platzhalter-Kennung: die Slice-Datei legt der Planner-Closure in next/ an) --> —
+  Vorlauf-Wächter-/Doku-Zahn-Stufen über dem emittierten d-check.mk
+  (`doc-commits`/`doc-immutable`), die Archiv-Leseprobe (unzip am Inventar), die
+  hexslice-/hexagonal-Bootstraps (a-check --print-mk ohne Host-Carrier) und die
+  carrier-gebundenen `gates`-Läufe des Mono-Repos. Begründung: LP2 („grün ohne
+  Daemon“) und LP3 (Färbung über einem `# verify: full-smoke`-Fall) sind an der
+  Restmenge nicht erreichbar; die Treiber-Daemon-Vorbedingung bleibt in Kraft für
+  full-smoke, und keine Stufen-Deklaration wird still geändert (§4) — der
+  reale Lauf brach am `doc-commits`-Zahn, belegt im Register-Eintrag
+  [`BEO-ALL/docker-aussetzer-im-vorlauf-wird-als-falscher-grund-gemeldet`](../observations/BEO-ALL/docker-aussetzer-im-vorlauf-wird-als-falscher-grund-gemeldet/state.md).
 
 ## 2. Definition of Done
 
@@ -131,6 +143,13 @@ Bericht. Zusätzlich: Closure-Notiz mit Lerneintrag geschrieben.
   starker Weg — beide tragen den Nachweis, einer ist Pflicht.
 - **Netz-Abruf im E2E-Lauf** — **Ausgang:** derselbe Vertrag wie heute
   (Netz nur bei den fetchenden Stufen; sonst kein Netz-Annahme).
+- **Die emittierten Docker-Formen der Rest-Stufen haben keinen Host-Weg** —
+  **Ausgang:** eingetreten — der reale Lauf brach an der Vorlauf-Wächter-Stufe
+  (`make -f d-check.mk doc-commits`), gemessen am Register-Eintrag
+  [`BEO-ALL/docker-aussetzer-im-vorlauf-wird-als-falscher-grund-gemeldet`](../observations/BEO-ALL/docker-aussetzer-im-vorlauf-wird-als-falscher-grund-gemeldet/state.md);
+  die Restmenge übernimmt der Nehmer aus §1. Bis dahin
+  bleiben LP2 („grün“) und LP3 (Färbung am `full-smoke`-Fall) mit dem Teilstand
+  benannt — der smoke-Modus ist am Treiber entlassen, full-smoke nicht.
 
 ## 7. Closure-Notiz
 
