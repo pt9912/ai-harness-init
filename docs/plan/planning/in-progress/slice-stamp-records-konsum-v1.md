@@ -209,6 +209,51 @@ nicht hinreichend und eine Aussagen-Berührung steht hier nicht.
 | `test/mutations/<nr>-stamp-records-konsum-bricht-mit-meldung.sh` | neu | Mutations-Fall über dem realen Werkzeug (`<nr>` folgt aus dem Bestands-Stand): der Patch nimmt die Konsum-Prüfung heraus, sein Wächter färbt rot — Anlage misst den `sed`-Anker gegen den Quell-Bestand ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)), Anker am Commit ([`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit)) — LP 2 |
 | [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md) | update | §CI-Branch: die Granularitäts-Zeile trägt die Fall-Form und nennt Ort, Zeilen-Form, Unterkommando und Grenzen — LP 3 |
 
+**Plan-Fortschreibung §3 (Implementer-Zug, vor dem Code, ADR-0108 Abwägung E je
+Posten)** — die zwei übernommenen Design-Posten:
+
+- **Posten (a) Zuordnungs-Rest — gemischte Form, je Rest-Datei an der
+  Abwägung E entschieden.** *Aufnahme-Form* für die Dateien, deren Lesung
+  gezeigt ist: die `test`-Menge erweitert um `./internal/emit/templates/*`
+  und `./internal/emit/testdata/*` — `go:embed all:templates/enforce|agents|commands`
+  liest die Vorlagen beim Kompilieren der Test-Pakete und die
+  emit-Golden-Tests (`templates_test.go`) lesen den Vorlagen-Baum; eine
+  veränderte oder gelöschte Vorlage erreicht zuerst den `test`-Check
+  (Kompilier-Existenz und Golden-Lesung), `lint` und `build` urteilen über
+  Vorlagen-Inhalt nicht (Daten, kein Code — eine Deletion bricht am
+  `test`-Kompilieren, das sie mitkompilieren). Rot-Beleg: der
+  Vorlagen-Edit im Fixture dreht den `test`-Key (Wächter am
+  `test/gates-keys.bats`). *Deklarations-Form* für die übrigen — Dateien,
+  über die kein Check der Kante urteilt (`LICENSE`, Root-Repo-Metadaten,
+  `.gitkeep`, `docs/user/images/`, das Homebrew-Formular, die
+  Erfassungs-awk-Helper, Wächter-Verdrahtung): als **deklarierter
+  Zuordnungs-Rest** an genau einer Stelle im Satzerzeuger deklariert
+  (ADR-0035 Festlegung 3-Form: je Klasse-Glob einer Zeile mit genanntem
+  Grund, als Rest gezählt statt als Deckung), aus der `rest`-Beurteilung
+  ausgenommen — `rest` leer → Exit 0; Inhalt außerhalb jeder Menge und
+  jeder deklarierten Klasse → Liste und Exit 1 (der fail-closed
+  Gap-Detektor bleibt). Mess-Beleg: der Stop-Hook-Mischform-Zug — über
+  `eb7619e2` blockt der Hook über deckenden Keys an der unzugeordneten
+  Rest-Menge (rot gesehene Gegenbeispiel, `stop-require-gates.sh`-Aufruf,
+  „files outside every declared Menge"); am Ende der Zug fährt er über der
+  deklarierten Form approve. Undeklarierte Rest-Neuzugänge drehen den
+  `rest ist leer`-Wächter (neuer Mutations-Fall je
+  `MR-071`/`MR-090`-Form).
+- **Posten (b) Record-only-Vertrag — Wächter-Fassung der engeren Menge.**
+  Die engere Menge ist in Bestand (`HASH_AUSNMEN` trägt
+  `.harness/stamp/mutate`, `rest`-Walk und `MENGE_AUSSCHLUESS` tragen die
+  Ablage-Klasse); die fehlende Hälfte am Wächter-Satz ist die
+  `rest`-Richtung: der Fixtures-Record-Zug in `test/gates-keys.bats`
+  assertiert, dass eine Record-Datei in keiner `menge`- und keiner
+  `rest`-Ausgabe auftaucht (Form des Record-Zug-Tests am selben
+  Fixture).
+
+| Datei / Komponente | Änderungs-Art | Begründung |
+|---|---|---|
+| `harness/tools/gates-keys.sh` | update | die `test`-Menge-Zuschläge, die deklarierten Rest-Klassen am Kopf je Eintrag mit Grund, das `rest`-Lesen der deklarierten Klasse | Posten (a) |
+| `test/gates-keys.bats` | update | Wächter über dem Rest-Zustand (`rest ist leer`) und dem Record-only-Vertrag (`menge`/`rest` trägt keine Record-Ablage, Vorlagen-Zuschlag dreht den `test`-Key) | Posten (a)/(b) |
+| `test/mutations/<nr>-deklarierter-rest-entzaubert.sh` | neu | Mutation an der Rest-Deklaration; der `rest ist leer`-Wächter färbt rot (MR-071/MR-090-Form) | Posten (a) |
+
 ## 4. Trigger
 
 **Start** (`next` → `in-progress`):
