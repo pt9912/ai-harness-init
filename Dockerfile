@@ -7,7 +7,7 @@
 # GO_VERSION + GOLANGCI_LINT_VERSION sind die Toolchain-Pins dieses Repos; jeder Base-Tag ist
 # per @sha256 auf seinen Manifest-Digest gepinnt (Drift melden make freshness-go/-golangci).
 # Kein Host-go/-golangci-lint (Docker-only, ADR-0003) — die Aufrufe leben hier im Dockerfile, nicht im Bash.
-ARG GO_VERSION=1.27.3
+ARG GO_VERSION=1.27.4
 ARG GOLANGCI_LINT_VERSION=v2.15.0
 
 # ---- deps ------------------------------------------------------------------
