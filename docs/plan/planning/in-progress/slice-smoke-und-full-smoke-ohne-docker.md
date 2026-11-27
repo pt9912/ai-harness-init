@@ -70,7 +70,7 @@ Die Stufen-Deklarationen der E2E-Abdeckung bleiben — der Prüfgegenstand
 
 ## 2. Definition of Done
 
-- [ ] **Liefer-Punkt 1:** `make smoke` läuft auf einem Host **ohne**
+[x] **Liefer-Punkt 1:** `make smoke` läuft auf einem Host **ohne**
       Docker-Daemon grün — der Bootstrapped-Zustand wird ohne Container-
       Weg erreicht (Träger aus Inventar-Pin-Bau oder Träger-Fetch), die
       Stufen-Deklarationen unverändert.
@@ -85,17 +85,17 @@ Die Stufen-Deklarationen der E2E-Abdeckung bleiben — der Prüfgegenstand
       `MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[
       `MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit).
 - [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+[x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — kein Self-Review (Modul 8).
 - [ ] Doku-Update: [`harness/sensors/smoke.md`](../../../../harness/sensors/smoke.md),
       [`harness/sensors/full-smoke.md`](../../../../harness/sensors/full-smoke.md)
       — Doku-Nachzug im [`slice-doku-nachzug-ohne-docker`](slice-doku-nachzug-ohne-docker.md).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben —
+[x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+[x] Beobachtungs-Register (`../observations/`) fortgeschrieben —
       `evidence/`-Datei ergänzen, wo eine Beobachtung anfiel; **kein Zähler
       wird gesetzt**. Keine Beobachtung anfallen ist ebenfalls eine Antwort
       und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
+[x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
       nächsten Welle-Closure geprüft.
@@ -137,18 +137,23 @@ Bericht. Zusätzlich: Closure-Notiz mit Lerneintrag geschrieben.
 ## 6. Risiken und offene Punkte
 
 - **Der `LH-QA-01`-Nachweis über `make full-smoke` wird schwächer gelesen**
-  (docker-los E2E trägt keine Docker-Isolation) — **Ausgang:** die Pin-Form
-  tragt es (Tool-Pin je Werkzeug; Inventar); der opt-in Image-Pfad bleibt als
-  starker Weg — beide tragen den Nachweis, einer ist Pflicht.
-- **Netz-Abruf im E2E-Lauf** — **Ausgang:** derselbe Vertrag wie heute
-  (Netz nur bei den fetchenden Stufen; sonst kein Netz-Annahme).
+  (docker-los E2E trägt keine Docker-Isolation) — **Ausgang:** entfallen —
+  die Pin-Form trägt die Messmethode (Tool-Pin je Werkzeug,
+  Inventar-Emittierung im Ziel), der opt-in Image-Pfad bleibt als starker
+  Weg — beide tragen denselben Prüfgegenstand, keiner still.
+- **Netz-Abruf im E2E-Lauf** — **Ausgang:** entfallen — derselbe Vertrag
+  blieb: Netz nur an den fetchenden Stufen (`traeger-fetch`/`dcheck-fetch`),
+  der restliche Lauf blieb netzlos (Verifikations-Bericht).
 - **Die emittierten Docker-Formen der Rest-Stufen haben keinen Host-Weg** —
   **Ausgang:** eingetreten — der reale Lauf brach an der Vorlauf-Wächter-Stufe
   (`make -f d-check.mk doc-commits`), gemessen am Register-Eintrag
   [`BEO-ALL/docker-aussetzer-im-vorlauf-wird-als-falscher-grund-gemeldet`](../observations/BEO-ALL/docker-aussetzer-im-vorlauf-wird-als-falscher-grund-gemeldet/state.md);
-  die Restmenge übernimmt der Nehmer aus §1. Bis dahin
-  bleiben LP2 („grün“) und LP3 (Färbung am `full-smoke`-Fall) mit dem Teilstand
-  benannt — der smoke-Modus ist am Treiber entlassen, full-smoke nicht.
+  die Restmenge (1a–1d) übernimmt
+  [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md).
+  Bis dahin bleiben LP2 („grün“) und LP3 (Färbung am `full-smoke`-Fall) mit
+  dem Teilstand benannt — der smoke-Modus ist am Treiber entlassen,
+  full-smoke nicht (Exit 4 an der Vorbedingung, Beleg im
+  Verifikations-Bericht).
 
 ## 7. Closure-Notiz
 
@@ -157,13 +162,69 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 formulieren — sonst zählt das Register zwei Namen getrennt) ·
 `grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln.
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <… | keine Beobachtung angefallen>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** Anker · Folge-Slice · Register, Ergebnis
+**Closure-Notiz (Rolle Planner, 2026-11-27)** — Quellen: eigener Lauf, der
+Verifikations-Bericht
+([`docs/reviews/2026-11-27-slice-smoke-und-full-smoke-ohne-docker-verify.md`](../../reviews/2026-11-27-slice-smoke-und-full-smoke-ohne-docker-verify.md))
+und der Review-Report
+([`docs/reviews/2026-11-27-slice-smoke-und-full-smoke-ohne-docker.md`](../../reviews/2026-11-27-slice-smoke-und-full-smoke-ohne-docker.md),
+F-1..F-7, behoben in `95988195`/`2108567e`/`5ee7d555`/`1e3ffbdc`, V-1 im
+Fix `64cd1dd7`).
+
+- **Was hat funktioniert:** `make smoke` läuft docker-los Exit 0 (5/5
+  Stufen, kein Docker-Aufruf), der Paarungs-Wächter steht 5/5 und Fall 817
+  färbt am realen Bestand (Rot-Zug am `environment.go`-Anker, Meldung nennt
+  die fehlende `GATE_CHECKS`-Verdrahtung); `make full-smoke` kommt in der
+  echten Reihenfolge bis zum 3/3-Zug und erreicht dort grün die host-nativ
+  emittierten Gates im Ziel (`environment-check: grün — 7/7`), bevor der
+  erste Daemon-gebundene Zahn (`doc-commits`) bricht — die 1a–1d-Ordnung des
+  Kopfkommentars ist am realen Lauf an der Stelle belegt.
+- **Was ging anders als geplant:** (1) LP 2 und LP 3 sind **bedingt** — die
+  Restmenge (1a Vorlauf-Wächter-/Doku-Zähne, 1b Archiv-Leseprobe, 1c
+  hexslice-/hexagonal-Bootstraps, 1d carrier-gebundene Gates-Läufe) trägt
+  [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md),
+  dessen Slice-Datei dieser Closure-Lauf in `next/` eingerichtet hat; die
+  `# verify: full-smoke`-Spur des Treibers bleibt in der Daemon-Vorbedingung
+  (Exit 4, Ursache benannt). (2) `make gates` bleibt rot an den
+  vorbestehenden Klassen plus der **einen** dokumentierten F-3-Zeile
+  (die Platzhalter-Verlinkung des Nehmers — mit dessen Einrichtung aufgelöst)
+  und dem V-1-Befund (Fall 816, veralteter Anker), der im Fix `64cd1dd7`
+  behoben ist — `make mutate-greift` meldet wieder 0 Befunde. (3) Der
+  Branch-Lauf `make mutate-auswahl` am gepinnten Tip ist CI-Posten
+  (Exit 10, Push-Form `mutate/slice-smoke-und-full-smoke-ohne-docker-<sha8>`),
+  keine Rolle ohne Push-Befehl der Kette. (4) Doku-Zellen
+  (`smoke.md`/`full-smoke.md`) tragen als Posten
+  [`slice-doku-nachzug-ohne-docker`](../next/slice-doku-nachzug-ohne-docker.md)
+  — offene DoD-Zeile, Form per Verifikations-Bericht stimmt.
+- **Steering-Loop-Eintrag:** geschärfte Regel (gezählt, nicht verkörpert —
+  kein `liegt in`): **der make-Anspruch trägt nur mit Target dahinter; der
+  Träger der Probe ist der reale Lauf an der Emissionsquelle** — die
+  Paarung-Probe liest den Anspruch aus dem Quell-Bestand (kein
+  Fixture-Doppel) und dreht je Form die emittierte Seite; ihre Zusage erstreckt
+  sich nicht auf die Verdrahtung, die der Lauf im Ziel misst. Grenze des
+  ungebundenen Teils (V-1, behoben): ein Fall-Anker veraltet, wenn ein
+  Implementer-Zug die Form seiner Ziel-Stelle ändert — `MR-071` misst die
+  Anlage gegen den Bestand zum Anlage-Zeitpunkt, nicht gegen spätere
+  Form-Wechsel; der Nachzug bindet die Fall-Anlagen in die
+  Commit-Routine der berührenden Züge (Übergabe an die Welle-Planung).
+- **Beobachtungs-Register (`../observations/`):**
+  [`BEO-ALL/docker-aussetzer-im-vorlauf-wird-als-falscher-grund-gemeldet`](../observations/BEO-ALL/docker-aussetzer-im-vorlauf-wird-als-falscher-grund-gemeldet/state.md)
+  — Stand *verkörpert* (Treiber-Vorbedingung), Beleg
+  [`evidence/slice-smoke-und-full-smoke-ohne-docker.md`](../observations/BEO-ALL/docker-aussetzer-im-vorlauf-wird-als-falscher-grund-gemeldet/evidence/slice-smoke-und-full-smoke-ohne-docker.md),
+  Belegzahl 3, Schwelle erreicht; der `full-smoke`-Rest ist dort bei der
+  Nehmer-Kennung benannt. Keine weitere Beobachtung anfallen — die zwei
+  §8-Treffer bleiben in ihrem Stand (macOS: 4×, verkörpert; Fall-Expect:
+  2×, < 3×).
+- **Folge-Slices:**
+  [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md)
+  (Restmenge, LP-2/LP-3-Träger; F-7 als §6-Risiko dort) ·
+  [`slice-doku-nachzug-ohne-docker`](../next/slice-doku-nachzug-ohne-docker.md)
+  (Doku-Zellen).
+- **Risiken aus §6:** Nachweis-Stärke — entfallen · Netz-Abruf — entfallen ·
+  Rest-Stufen — eingetreten, Nehmer oben.
+- **Drei Paarungen:** Anker — der Lerneintrag oben ist gezählt, es gibt
+  keinen `liegt in` · Folge-Slices — Nehmer und Doku-Nachzug oben ·
+  Register — der Eintrag oben (Belegzahl 3). Die Prüfung der Paarungen
+  trägt die schließende Welle.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
