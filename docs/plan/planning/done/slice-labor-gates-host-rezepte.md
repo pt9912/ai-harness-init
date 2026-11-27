@@ -192,7 +192,7 @@ formulieren — sonst zählt das Register zwei Namen getrennt) ·
   `make`/`git` im gepinnten bats-Image (F-2), Reihenfolge-Flakiness des
   Bats-Sweeps, Sortier-/Zeichen-Semantik des Hosts (Fall-6-Divergenz,
   F-4). Der Gegenstand übernimmt
-  [`slice-waechter-umgebungs-robustheit`](../in-progress/slice-waechter-umgebungs-robustheit.md);
+  [`slice-waechter-umgebungs-robustheit`](../done/slice-waechter-umgebungs-robustheit.md);
   verkörpert ist, was dort liegt — bis dahin steht der Lerneintrag gezählt
   im Register (Ausgang dort: geplant).
 - **Beobachtungs-Register (`../observations/`):**
@@ -200,13 +200,13 @@ formulieren — sonst zählt das Register zwei Namen getrennt) ·
   neu angelegt, Beleg `evidence/slice-labor-gates-host-rezepte.md` — der
   Zähler steht damit bei 1×.
 - **Folge-Slices:**
-  [`slice-waechter-umgebungs-robustheit`](../in-progress/slice-waechter-umgebungs-robustheit.md)
+  [`slice-waechter-umgebungs-robustheit`](../done/slice-waechter-umgebungs-robustheit.md)
   (die Wächter-Suite misst unabhängig von der Werkzeug-Umgebung des Laufs)
   — ist eine Datei in `next/`, in der Welle §4 nachgetragen.
 - **Risiken aus §6:** beide entfallen (oben), je mit Grenze.
 - **Drei Paarungen:** Anker — mit diesem Slice wurde nichts verkörpert, es
   gibt keinen (der Lerneintrag ist gezählt) · Folge-Slice —
-  [`slice-waechter-umgebungs-robustheit`](../in-progress/slice-waechter-umgebungs-robustheit.md),
+  [`slice-waechter-umgebungs-robustheit`](../done/slice-waechter-umgebungs-robustheit.md),
   übernimmt die Klassen und trägt F-3 (Prosa des `docs-check`-Sensor-Texts)
   als Liefer-Punkt 3 · Register —
   [`BEO-ALL/waechter-rot-menge-schwankt-mit-umgebungs-variante`](../observations/BEO-ALL/waechter-rot-menge-schwankt-mit-umgebungs-variante/state.md)
