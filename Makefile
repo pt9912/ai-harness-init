@@ -69,7 +69,7 @@ export TRAEGER_TAG TRAEGER_SHA256_LINUX_AMD64 TRAEGER_SHA256_LINUX_ARM64 TRAEGER
 # sie. Ein Override, wie bei TRAEGER_CARRIER.
 DCHECK_CARRIER ?= .harness/state/bin/d-check
 
-.PHONY: help gates record-gates environment-check test test-bats test-bats-image test-go test-go-image test-go-pids-guard lint lint-image build build-image compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint shell-lint-image ci-lint ci-lint-image docs-check-host comment-claims register-ausgang history-range-guard adr-immutable commit-msg-check hooks-install host-bin host-bin-image span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp freshness-kotlin freshness-digest mutate mutate-greift slice-mv archive-welle traeger-fetch traeger-fetch-image dcheck-fetch release-warten traeger-pins-check tap-check tap-nachzug vendor-baseline
+.PHONY: help gates record-gates environment-check test test-bats test-bats-image test-go test-go-image test-go-pids-guard lint lint-image build build-image compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint shell-lint-image ci-lint ci-lint-image docs-check-host ci-runner-setup comment-claims register-ausgang history-range-guard adr-immutable commit-msg-check hooks-install host-bin host-bin-image span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp freshness-kotlin freshness-digest mutate mutate-greift slice-mv archive-welle traeger-fetch traeger-fetch-image dcheck-fetch release-warten traeger-pins-check tap-check tap-nachzug vendor-baseline
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
@@ -749,6 +749,18 @@ traeger-fetch-image: ## Träger aus dem gepinnten Release nachholen (opt-in, Tra
 # Braucht Netz an genau diesem Aufruf. KEIN Gate, KEIN Prerequisite.
 dcheck-fetch: ## d-check-Binary nach .harness/state/bin/ ziehen (docker-los per OCI-Digest, braucht Netz) — NICHT in gates
 	@DCHECK_IMAGE="$(DCHECK_IMAGE)" DCHECK_DIGEST="$(DCHECK_DIGEST)" bash harness/tools/dcheck-fetch.sh
+
+# Runner-Setup der CI-Jobs (ci.yml, mutate.yml, mutate-branch.yml; ADR-0109, MR-014):
+# die Pflicht-Werkzeuge des Inventars an deren Soll stellen — exakt-Werkzeuge (go,
+# golangci-lint) nach .harness-ci/bin (der Step im Workflow haengt den PREFIX an
+# $GITHUB_PATH), Anwesenheits-Werkzeuge (bats, shellcheck, actionlint) über apt. Das
+# Skript liest den Soll-Wert je Werkzeug aus dem Inventar (EINE Quelle; pinsync hält
+# die abgeleitete Zeile gegen die Pin-Stellen) — kein Soll-Wert steht im Workflow oder
+# im Skript literal. Der d-check-Carrier trägt make dcheck-fetch, nicht dieses Rezept.
+# Braucht Netz an den Install-Zweigen und Runner-Sudo; zu dem lokal gemessenen Bestand-Zweig
+# sagt der Skriptkopf. KEIN Gate und KEIN Prerequisite. Sensor: test/ci-runner-ohne-docker.bats.
+ci-runner-setup: ## Runner-Werkzeuge je Inventar-Soll installieren (braucht Netz an den Install-Zweigen, Runner-Sudo) — CI-Setup, NICHT in gates
+	@bash harness/tools/ci-runner-setup.sh
 
 # Wartet begrenzt, bis das gepinnte Release (TRAEGER_TAG) SHA256SUMS und das
 # Linux-amd64-Asset fuehrt; der ci-Job full-smoke faehrt es vor make full-smoke.

@@ -248,7 +248,7 @@ structure:
 # (b) reine Utility-/Advisory-Ziele ohne Prosa-Erwaehnung — jedes traegt seinen
 # eigenen `## `-Hilfetext, sichtbar ueber `make help` bzw. `make doc-help`, und
 # ist kein Gate-Versprechen: help, test-bats, test-go, artifact,
-# release-artifacts, compile, freshness-golangci, freshness-dcheck,
+# release-artifacts, ci-runner-setup, compile, freshness-golangci, freshness-dcheck,
 # freshness-go, freshness-cpp, doc-trace, doc-complete, doc-doctor, doc-repair,
 # doc-planning, doc-tracked, doc-targets, doc-structure, doc-usage, doc-help, doc-manual
 targets:

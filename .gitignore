@@ -24,3 +24,9 @@
 # .d-check.yml scan.ignore waere eine Gate-Senkung nach AGENTS.md §3.5 und
 # braucht eine eigene ADR.
 .claude/worktrees/
+
+# Der Runner-Setup-Praefix der CI-Jobs (make ci-runner-setup) — installierte
+# go/golangci-lint-Fassungen, gitignored wie der Laufzustand; die von docs-check
+# gescannte Flaeche liest ihn nicht (scan.ignore respektiert .gitignore nicht, hier
+# steht kein gescannter Text).
+.harness-ci/
