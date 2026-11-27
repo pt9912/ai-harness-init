@@ -50,6 +50,18 @@ CI läuft auf frischem Klon, nur ohne Daemon-Annahme.
 - **macOS- oder Windows-Runner für die Host-Läufer** — [`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)
   bleibt Linux-CI; die macOS-Tragung ist ein ADR-Gegenstand (Bestand:
   [`BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer`](../observations/BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer/state.md)).
+- **Die daemon-gebundene Rest-Spur des `full-smoke`-Jobs in `ci.yml`** — dieselbe
+  Klasse wie der smoke/full-smoke-Zug: der CI-Job fährt die Rest-Stufen am
+  Runner-Daemon, der Daemon-Gang selbst trägt
+  [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md);
+  die docker-lose LP2-Form gilt für die Gates- und Smoke-Kette, nicht für diese
+  Rest-Spur (LP2, §5).
+- **`.github/workflows/upstream-drift.yml` bleibt, wie er ist** — sein
+  `regelwerk-check` fährt den sources-Modul-Lauf im gepinnten Bild desselben
+  d-check-Pins, die übrigen Stufen tragen die curl-Form: der docker-lose
+  Pflicht-Weg (Bezug oben) verlangt ihn für Gates- und Lab-Läufer, nicht für die
+  Netz-Freshness-Sensoren — der Modul-Lauf am Bild ist opt-in Weg, Bestand bleibt
+  bewusst stehen.
 
 ## 2. Definition of Done
 
@@ -57,8 +69,10 @@ CI läuft auf frischem Klon, nur ohne Daemon-Annahme.
       Runner-Setup-Steps gemäß Inventar-Pins; kein Job setzt Docker-Daemon
       voraus (der daemon-fahrende Tag-Workflow bleibt gepinnt).
 - [ ] **Liefer-Punkt 2:** ein Push/PR-Lauf (`ci.yml`) auf frischem Klon
-      läuft grün — `make gates` + `make smoke` + `make full-smoke` docker-los
-      (der reale Lauf im Verifikations-Bericht).
+      läuft grün — `make gates` + `make smoke` docker-los (der reale Lauf im
+      Verifikations-Bericht); der `full-smoke`-Job ist die daemon-gebundene
+      Rest-Spur (§1), sein Ausgang trägt
+      [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md).
 - [ ] **Liefer-Punkt 3:** der Nacht-Workflow (`mutate.yml`) fährt einen
       Shard docker-los grün (reale Messung — Wall-Clock und je-Case-Ausgang
       im Bericht); die `mutate-branch`-Schritte bleiben wirksam.
@@ -107,9 +121,11 @@ liegen in `done/`.
 
 ## 5. Closure-Trigger
 
-DoD (§2) vollständig; die zwei reale CI-Läufe (Push-Lauf + Nacht-Shard)
-doker-los grün stehen im Verifikations-Bericht. Zusätzlich: Closure-Notiz
-mit Lerneintrag geschrieben.
+DoD (§2) vollständig; die zwei realen CI-Läufe (Push-Lauf + Nacht-Shard)
+stehen im Verifikations-Bericht — der Push-Lauf trägt die Trennung: die
+Gates- und Smoke-Kette grün docker-los, der `full-smoke`-Job an der
+daemon-gebundenen Rest-Spur (§1, sein Ausgang beim Nehmer). Zusätzlich:
+Closure-Notiz mit Lerneintrag geschrieben.
 
 ## 6. Risiken und offene Punkte
 
