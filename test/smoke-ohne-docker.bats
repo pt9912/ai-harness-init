@@ -57,6 +57,7 @@ _paarung_target() {
 }
 
 @test 'Paarung gruen: Singleton-Aussage, Target-Skript und GATE_CHECKS-Verdrahtung liegen' {
+  # shellcheck source=/dev/null
   source "$TMP/funktion.sh"
   ziel="$(_paarung_target 1 1 1 1)"
   run umgebung_paarung_pruefen "$ziel"
@@ -64,6 +65,7 @@ _paarung_target() {
 }
 
 @test 'Paarung rot, wenn die GATE_CHECKS-Verdrahtung faellt' {
+  # shellcheck source=/dev/null
   source "$TMP/funktion.sh"
   ziel="$(_paarung_target 1 1 0 1)"
   run umgebung_paarung_pruefen "$ziel"
@@ -72,6 +74,7 @@ _paarung_target() {
 }
 
 @test 'Paarung rot, wenn das Target-Skript fehlt' {
+  # shellcheck source=/dev/null
   source "$TMP/funktion.sh"
   ziel="$(_paarung_target 1 0 1 1)"
   run umgebung_paarung_pruefen "$ziel"
@@ -80,6 +83,7 @@ _paarung_target() {
 }
 
 @test 'Paarung rot, wenn der make-Anspruch im Singleton fehlt' {
+  # shellcheck source=/dev/null
   source "$TMP/funktion.sh"
   ziel="$(_paarung_target 0 1 1 1)"
   run umgebung_paarung_pruefen "$ziel"
@@ -88,6 +92,7 @@ _paarung_target() {
 }
 
 @test 'Paarung rot, wenn das Singleton fehlt' {
+  # shellcheck source=/dev/null
   source "$TMP/funktion.sh"
   ziel="$(_paarung_target 1 1 1 0)"
   run umgebung_paarung_pruefen "$ziel"

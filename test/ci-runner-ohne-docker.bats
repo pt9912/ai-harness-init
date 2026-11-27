@@ -113,9 +113,9 @@ _kein_docker() {
 # Gelesen wird der kommentar-bereinigte Text: ein Kommentar nennt einen Wert,
 # ohne ihn zu fahren (die Action-Pin-Zeilen `# v5.1.0` sind Nennungen, kein Soll).
 _kein_soll_literal() {
-	local datei werkzeug pruef grad soll rest treffer muster
+	local datei werkzeug pruef rest treffer muster
 	for datei in "$@"; do
-		while IFS='|' read -r werkzeug pruef grad soll rest; do
+		while IFS='|' read -r werkzeug pruef _ _ rest; do
 			case "$werkzeug" in '#'*) continue ;; esac
 			[ "$pruef" = "exakt" ] || continue
 			muster="$(soll_anker "$werkzeug")"

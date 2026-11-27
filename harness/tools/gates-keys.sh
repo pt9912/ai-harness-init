@@ -46,11 +46,38 @@ MENGE_AUSSCHLUESS=(
     './.harness/state/**'   # die Key- und Gesamt-Ablage — ein Key deckt sich nicht selbst
     './.tmp/**'             # Arbeitsablage der Laeufe (.d-check.yml scan.ignore-Klasse), kein Artefakt
 )
+MENGE_AUSSCHLUESS_RE=()
+
+# glob_zu_regex — die Glob-Zeile der Mengen als ERE: `*` -> `.*`, `?` -> `.`
+# (beide durchqueren Trenner, wie der Muster-Kontext sie liest — `./x/*` deckt
+# x in jeder Tiefe); jedes uebrige Regex-Metazeichen bleibt literal. Der
+# Aufrufer haengt Zeilen-Anfang und -Ende an. Die Deklaration bleibt in der
+# Glob-Form des Plans §3; diese Lesung ist die EINE. Grenze: eine Zeichenklasse
+# `[...]` liest diese Lesung literal, der case-Glob waere sie als Klasse — die
+# Tafel fuehrt keine; eine kuenftige Classe-Eintraege braucht eine erweiterte
+# Lesung, nicht eine still anders gelesene.
+glob_zu_regex() {
+  local roh="$1" zeichen era=""
+  local metas="\\.[{]^\$()+|}"
+  while [ -n "$roh" ]; do
+    zeichen="${roh:0:1}"
+    case "$zeichen" in
+      '*') era="${era}.*" ;;
+      '?') era="${era}." ;;
+      *) if [ "${metas#*"$zeichen"}" != "$metas" ]; then
+           era="${era}\\${zeichen}"
+         else
+           era="${era}${zeichen}"
+         fi ;;
+    esac
+    roh="${roh:1}"
+  done
+  printf '%s\n' "$era"
+}
 
 # tafel_menge <check> — die Tafel-Menge des Checks (ADR-0035 Festlegung 3,
-# je Zeile der Form des Plans §3): Glob-Zeilen mit ./-Praefix; der Match-
-# Kontext ist case-Glob, `*` durchquert Trenner, `./x/*` deckt x in jeder
-# Tiefe. Ein Check ohne Zeilen ausserhalb des case-Zweigs ist unbekannt.
+# je Zeile der Form des Plans §3): Glob-Zeilen mit ./-Praefix. Ein Check ohne
+# Zeilen ausserhalb des case-Zweigs ist unbekannt.
 tafel_menge() {
   case "$1" in
     environment-check)
@@ -187,11 +214,18 @@ kante() {
 }
 
 # Der einmal geladene Tafel-Bestand: PAARE_MENGE / PAARE_AUSSCHLUESS führen
-# je Zeile `check\vGlob`. Der per-Paar-Präfix-Vergleich filtert auf den Check,
-# der case-Glob urteilt über den Pfad — so lädt die Tafel einmal pro
-# Aufruf statt je (Check × Datei) wieder neu.
+# je Zeile `check\vERE` (die Glob-Zeile der Tafel, von glob_zu_regex gelesen).
+# Der per-Paar-Präfix-Vergleich filtert auf den Check, der Glob urteilt über
+# den Pfad — so lädt die Tafel einmal pro Aufruf statt je (Check × Datei)
+# wieder neu.
 PAARE_MENGE=()
 PAARE_AUSSCHLUESS=()
+
+# die Ausschluss-Zeilen des Kopf-Ausschlusses in derselben Lesung
+for e1 in "${MENGE_AUSSCHLUESS[@]}"; do
+  MENGE_AUSSCHLUESS_RE+=("$(glob_zu_regex "$e1")")
+done
+unset e1
 
 tafel_laden() {
   local check v
@@ -199,19 +233,19 @@ tafel_laden() {
     [ -n "$check" ] || continue
     while IFS= read -r v; do
       [ -n "$v" ] || continue
-      PAARE_MENGE+=("${check}"$'\v'"${v}")
+      PAARE_MENGE+=("${check}"$'\v'"$(glob_zu_regex "$v")")
     done < <(tafel_menge "$check")
     while IFS= read -r v; do
       [ -n "$v" ] || continue
-      PAARE_AUSSCHLUESS+=("${check}"$'\v'"${v}")
+      PAARE_AUSSCHLUESS+=("${check}"$'\v'"$(glob_zu_regex "$v")")
     done < <(tafel_ausschluss "$check")
   done < <(kante)
 }
 
 ist_ausgeschlossen() {
   local e
-  for e in "${MENGE_AUSSCHLUESS[@]}"; do
-    case "./$1" in $e) return 0 ;; esac
+  for e in "${MENGE_AUSSCHLUESS_RE[@]}"; do
+    [[ "./$1" =~ ^($e)$ ]] && return 0
   done
   return 1
 }
@@ -221,12 +255,12 @@ in_menge() {
   for e in "${PAARE_AUSSCHLUESS[@]}"; do
     [ "${e%%$'\v'*}" = "$check" ] || continue
     p="${e#*$'\v'}"
-    case "$f" in $p) return 1 ;; esac
+    [[ "$f" =~ ^($p)$ ]] && return 1
   done
   for e in "${PAARE_MENGE[@]}"; do
     [ "${e%%$'\v'*}" = "$check" ] || continue
     p="${e#*$'\v'}"
-    case "$f" in $p) return 0 ;; esac
+    [[ "$f" =~ ^($p)$ ]] && return 0
   done
   return 1
 }
@@ -406,7 +440,7 @@ case "$mode" in
       ist_ausgeschlossen "$f" && continue
       for e in "${PAARE_MENGE[@]}"; do
         p="${e#*$'\v'}"
-        case "./$f" in $p) continue 2 ;; esac
+        [[ "./$f" =~ ^($p)$ ]] && continue 2
       done
       rest_zeilen="${rest_zeilen}${f}"$'\n'
     done

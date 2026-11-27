@@ -15,4 +15,4 @@
 # zufaellig denselben Wortlaut — die Meldung allein misst den Zahn nicht; die
 # Happy-Faelle tragen die Bedingung.
 set -euo pipefail
-sed -i 's/\[ "$ist" != "$sha" \]/[ -n "$ist" ]/' harness/tools/traeger-fetch-host.sh
+sed -i "s/\[ \"\$ist\" != \"\$sha\" \]/[ -n \"\$ist\" ]/" harness/tools/traeger-fetch-host.sh

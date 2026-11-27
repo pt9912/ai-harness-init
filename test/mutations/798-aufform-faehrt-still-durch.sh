@@ -10,4 +10,4 @@
 # und deren Folgzeile (Range, kein Zeilennummer-Anker) — der bash-Guard mit demselben
 # Exit 2 bleibt unberuehrt.
 set -euo pipefail
-sed -i '/AUFFORM — \$1/,+1s/exit 2/:/' harness/tools/environment-check.sh
+sed -i "/AUFFORM — \\\$1/,+1s/exit 2/:/" harness/tools/environment-check.sh

@@ -11,4 +11,4 @@
 # und der Skript-Vergleich; das reale Rot der Umgebungs-Zusage am Host ist am
 # Skriptkopf protokolliert — Skriptkopf §Protokoll der Break-Tests).
 set -euo pipefail
-sed -i 's/elif \[ "\$ist" = "\$anzeige" \]; then/elif [ -n "$ist" ]; then/' harness/tools/environment-check.sh
+sed -i "s/elif \[ \"\\\$ist\" = \"\\\$anzeige\" \]; then/elif [ -n \"\$ist\" ]; then/" harness/tools/environment-check.sh

@@ -15,4 +15,4 @@
 # unter der Mutation zufaellig denselben Wortlaut — der tragende Zahn ist der
 # Happy-Fall; die Meldung allein misst ihn nicht.
 set -euo pipefail
-sed -i 's/\[ "$ist" != "$2" \]/[ -n "$ist" ]/' harness/tools/dcheck-fetch.sh
+sed -i "s/\[ \"\$ist\" != \"\$2\" \]/[ -n \"\$ist\" ]/" harness/tools/dcheck-fetch.sh

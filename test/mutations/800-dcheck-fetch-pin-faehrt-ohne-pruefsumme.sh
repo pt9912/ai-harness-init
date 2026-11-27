@@ -12,4 +12,4 @@
 # die Stelle, die die Mutation still verschweigt). Rot gesehene Gegenprobe:
 # Hand-Mutation an der realen Datei, Test 1 fiel.
 set -euo pipefail
-sed -i 's|\[ -n "$DCHECK_DIGEST" \]|[ "" = "" ]|' harness/tools/dcheck-fetch.sh
+sed -i "s|\[ -n \"\$DCHECK_DIGEST\" \]|[ \"\" = \"\" ]|" harness/tools/dcheck-fetch.sh
