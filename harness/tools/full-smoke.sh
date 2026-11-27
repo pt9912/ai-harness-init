@@ -586,10 +586,11 @@ for baum_lang in sprachlos go cpp kotlin java python csharp; do
 	[ "$baum_lang" = sprachlos ] || baum_args=(--lang "$baum_lang" "${baum_args[@]}")
 	baum_rc=0
 	# Der Env-Prefix richtet beides: den print-mk-Lauf am Carrier, wenn er liegt, und
-	# den Go-Skelett-Pin am GO_VERSION des Labors (der Tool-Default 1.27.3 und der
-	# Labor-Pin 1.27.4 driften, und der Tool-/Versions-Check im Ziel haelt das
-	# emittierte Soll gegen die Host-Version — ohne den Prefix faerbt der Ziel-gates
-	# der go-Variante an der go-Zeile des Inventars).
+	# den Go-Skelett-Pin am GO_VERSION des Labors — das emittierte Skeleton-Soll tragen
+	# Tool-Default (internal/gen DefaultGoVersion, gegen das Repo-Dockerfile gekoppelt,
+	# TestGoProfile_PinsMatchRepo) und Labor-Pin je fuer sich; der Prefix haelt das Soll
+	# am Labor-Pin, auch wenn eine der zwei Pin-Stellen zuerst bewegt wird — ohne den
+	# Prefix faerbt der Ziel-gates der go-Variante an der go-Zeile des Inventars.
 	baum_out="$( DCHECK_CARRIER="$dcheck_carrier" SKEL_GO_VERSION="$GO_VERSION" "$tmpbin/ai-harness-init" "${baum_args[@]}" "$baum_ziel" 2>&1 )" || baum_rc=$?
 	if [ "$baum_rc" -ne 0 ]; then
 		printf '%s\n' "$baum_out"
@@ -614,8 +615,9 @@ echo "full-smoke: 2/3 Bootstrap (--lang go --name full-smoke) in ein leeres tmp-
 init_rc=0
 # Env-Prefix wie in der Stufe Handbuch-Baum: print-mk am Carrier (wenn er liegt,
 # leer -> Daemon-Rueckfall) und der Go-Skelett-Pin am Labor-Pin GO_VERSION — ohne ihn
-# traegt das emittierte Inventar das Soll des Tool-Defaults (1.27.3) und der
-# Ziel-gates faerbt am Tool-/Versions-Check (go-Zeile), bevor er misst.
+# traegt das emittierte Inventar das Soll des Tool-Defaults, das vom Labor-Pin
+# abweichen kann, und der Ziel-gates faerbt am Tool-/Versions-Check (go-Zeile),
+# bevor er misst.
 init_out="$( DCHECK_CARRIER="$dcheck_carrier" SKEL_GO_VERSION="$GO_VERSION" "$tmpbin/ai-harness-init" --lang go --name full-smoke "$tmprepo" 2>&1 )" || init_rc=$?
 printf '%s\n' "$init_out"
 if [ "$init_rc" -ne 0 ]; then
