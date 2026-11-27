@@ -2,7 +2,7 @@
 
 ## Vertrag
 
-legt den Träger (`.harness/state/bin/ai-harness-init`) per Fetch aus dem gepinnten Release (Tag: `TRAEGER_TAG` im `Makefile`, `grep -n '^TRAEGER_TAG' Makefile`) ab — das Asset wird vor der Ablage gegen seinen Digest verifiziert, fail-closed ohne Ablage; die Prüfsummen-Quelle ist der eigene Makefile-Pin (`TRAEGER_SHA256_*`, **zwei Kanäle** — Makefile in git, Asset über den Release-Kanal) oder, ohne Pin, der `SHA256SUMS`-Eintrag desselben Releases (ADR-0059-Form); kein Prerequisite; braucht Netz an genau diesem Aufruf
+legt den Träger (`.harness/state/bin/ai-harness-init`) per Fetch aus dem gepinnten Release (Tag: `TRAEGER_TAG` im `Makefile`, `grep -n '^TRAEGER_TAG' Makefile`) ab — das Asset wird vor der Ablage gegen seinen Digest verifiziert, fail-closed ohne Ablage; die Prüfsummen-Quelle ist der eigene Makefile-Pin (`TRAEGER_SHA256_*`, **zwei Kanäle** — Makefile in git, Asset über den Release-Kanal) oder, ohne Pin, der `SHA256SUMS`-Eintrag desselben Releases ([ADR-0059](../../docs/plan/adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)-Form); kein Prerequisite; braucht Netz an genau diesem Aufruf
 
 ## Weg (seit slice-binraire-ziehen-ohne-docker)
 

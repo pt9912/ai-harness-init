@@ -23,6 +23,14 @@
 # bewusst gebunden, nicht mehr an das `awk` des bats-Images (seit
 # slice-labor-gates-host-rezepte: make test-bats laeuft am Host).
 #
+# LOCALE-AUFLAGE DES ROT-BELEGS: `LC_ALL=C` setzt die Byte-Semantik
+# bedingungslos — der Sensor ist darum locale-fest. Der Mutations-Fall
+# 810 entfernt `LC_ALL=C` und faerbt den Sensor NUR dort, wo das
+# geerbte `awk`-Locale zeichenrechnet (CI-Runner: C.UTF-8); auf einem
+# Host, dessen Umgebung `awk` byte-rechnet, bleibt der Fall auch ohne
+# `LC_ALL=C` gruen — die Byte-Semantik traegt dort bereits der Default,
+# und der Fall behauptet keinen Befund, den es dort nicht gibt.
+#
 # BELEGLAGE: Der Bestand traegt heute kein reales Zitat der Spezifikation; die einzige
 # Fundstelle ist der Kommentar des Falls `503-spec-zitat-ohne-fundstelle`, der sich ueber
 # seine `# files:`-Zeile selbst als Zitat der Spezifikation liest. Dass der Sensor ein

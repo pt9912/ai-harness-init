@@ -3,9 +3,12 @@
 # (slice-labor-gates-host-rezepte, ADR-0109): die sechs Gate-Rezepte fahren am
 # Host, die gepinnten Image-Fassungen bleiben opt-in (*-image) und ungestrichen.
 #
-# HERMETISCH: die Formen werden über `make -n` gelesen (Trockenlauf — zeigt die
-# aufgelösten Rezept-Zeilen, Variablen expandiert) und gegen die Text-Form der
-# Makefile-Datei gehalten; kein Docker, kein Netz, kein voller Gate-Lauf im Test.
+# HERMETISCH: die Formen werden gegen die Text-Form der Makefile-Datei gehalten
+# (Rezept-Zeilen per sed, Pin-Zeilen per grep); kein Docker, kein Netz, kein
+# voller Gate-Lauf, und kein `make`/`git` zur Laufzeit — der gepinnte
+# bats-Image-Weg (`test-bats-image`, opt-in) trägt keines von beiden, und die
+# Form-Lektüre ist der gemeinsame Träger beider Wege · seit
+# slice-labor-gates-host-rezepte.
 #
 # WAS HIER NICHT GEMESSEN WIRD — die Grenze des Form-Wächters:
 #   1. Das URTEIL des Laufs trägt der Gate-Lauf selbst (`make gates`); ein
@@ -17,6 +20,12 @@
 #      Umgebungs-Befund: test/environment-check.bats hält die Negative
 #      (Ist fehlt, exakte Abweichung je Weg — go und golangci-lint); die
 #      Rezepte unten messen darum auch die Abwesenheit der Pin-Nutzung.
+#   4. Die Make-Syntax (Zieltabelle parsen, Variablen expandieren) liest
+#      dieser Form-Wächter nicht — er hält den Text der Datei; das
+#      Expandierungs-Urteil trägt der Gate-Lauf selbst (`make gates`). Die
+#      git-eigene Lesung der .gitignore (check-ignore, Präfix-/Ordner-Muster)
+#      trägt `make span-check` (Ablageort); hier steht die Text-Form des
+#      Eintrags.
 #
 # NETZLOS, in `make gates` über `make test` -> `test-bats`.
 
@@ -24,40 +33,35 @@ setup() {
     REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
 }
 
+# rezept_zeilen <ziel> — die Rezept-Zeilen des Ziels in der Text-Form, ohne
+# die Target-Zeile mit Hilfetext; gelesen aus der Makefile-Datei (kein make).
+rezept_zeilen() {
+    sed -n "/^$1:/,/^\$/p" "$REPO/Makefile" | sed -n '2,$p'
+}
+
 @test "rezept: test-bats ruft bats am Host mit BATS_TARGET" {
-    # BATS_TARGET EXPLIZIT setzen: der Lauf dieser Tests geschieht selbst unter
-    # `make test-bats`, das die Variable als Kommandozeilen-Variable exportiert —
-    # ein Aufruf ohne Setzung erbe das enge Ziel des Wächter-Laufs.
-    run make -C "$REPO" -n test-bats BATS_TARGET=test/
-    [ "$status" -eq 0 ]
-    [[ "$output" == *"bats \"test/\""* ]]
-    run make -C "$REPO" -n test-bats BATS_TARGET=test/xyz.bats
-    [[ "$output" == *"bats \"test/xyz.bats\""* ]]
+    rezept="$(rezept_zeilen test-bats)"
+    [[ "$rezept" == *'bats "$(BATS_TARGET)"'* ]]
 }
 
 @test "rezept: test-bats-image ruft dasselbe Ziel im gepinnten Image" {
-    run make -C "$REPO" -n test-bats-image BATS_TARGET=test/
-    [ "$status" -eq 0 ]
-    [[ "$output" == *"docker run --rm --network none"* ]]
-    [[ "$output" == *"bats/bats@sha256:"* ]]
-    [[ "$output" == *"\"test/\""* ]]
-    run make -C "$REPO" -n test-bats-image BATS_TARGET=test/xyz.bats
-    [[ "$output" == *"\"test/xyz.bats\""* ]]
+    rezept="$(rezept_zeilen test-bats-image)"
+    [[ "$rezept" == *"docker run --rm --network none"* ]]
+    [[ "$rezept" == *'$(BATS_IMAGE)'* ]]
+    [[ "$rezept" == *'"$(BATS_TARGET)"'* ]]
+    grep -qE '^BATS_IMAGE \?= bats/bats@sha256:' "$REPO/Makefile"
 }
 
 @test "rezept: test-go läuft am Host und schreibt keine zweite Pin-Stelle" {
-    run make -C "$REPO" -n test-go
-    [ "$status" -eq 0 ]
-    [[ "$output" == *"go test -count=1 ./..."* ]]
-    [[ "$output" != *"GO_VERSION"* ]]  # Pin trägt der Inventar-Check (abgeleitet), nicht das Rezept
+    rezept="$(rezept_zeilen test-go)"
+    [[ "$rezept" == *"go test -count=1 ./..."* ]]
+    [[ "$rezept" != *"GO_VERSION"* ]]  # Pin trägt der Inventar-Check (abgeleitet), nicht das Rezept
 }
 
 @test "rezept: test-go-image baut die gepinnte test-Stufe und fährt denselben -count=1-Lauf" {
-    go_pin="$(grep -E '^GO_VERSION \?= ' "$REPO/Makefile" | sed 's/GO_VERSION ?= //')"
-    run make -C "$REPO" -n test-go-image
-    [ "$status" -eq 0 ]
-    [[ "$output" == *"--build-arg GO_VERSION=$go_pin"* ]]
-    [[ "$output" == *"go test -count=1 ./..."* ]]
+    rezept="$(rezept_zeilen test-go-image)"
+    [[ "$rezept" == *'--build-arg GO_VERSION=$(GO_VERSION)'* ]]
+    [[ "$rezept" == *"go test -count=1 ./..."* ]]
 }
 
 @test "rezept: shell-lint hält dieselbe Pfadliste wie der Image-Weg und schaltet bats-lint auf Host" {
@@ -91,50 +95,44 @@ setup() {
 }
 
 @test "rezept: ci-lint ruft actionlint am Host, ci-lint-image im gepinnten Image" {
-    run make -C "$REPO" -n ci-lint
-    [ "$status" -eq 0 ]
-    [[ "$output" == *"actionlint"* ]]
-    [[ "$output" != *"docker"* ]]
-    run make -C "$REPO" -n ci-lint-image
-    [[ "$output" == *"docker run --rm"* ]]
-    [[ "$output" == *"actionlint@sha256:"* ]]
+    rezept_host="$(rezept_zeilen ci-lint)"
+    [[ "$rezept_host" == *"actionlint"* ]]
+    [[ "$rezept_host" != *"docker"* ]]
+    rezept_image="$(rezept_zeilen ci-lint-image)"
+    [[ "$rezept_image" == *"docker run --rm"* ]]
+    [[ "$rezept_image" == *'$(ACTIONLINT_IMAGE)'* ]]
+    grep -qE '^ACTIONLINT_IMAGE \?= .*actionlint@sha256:' "$REPO/Makefile"
 }
 
 @test "rezept: lint ruft das PATH-Binary ohne Ablage-Fallback" {
-    run make -C "$REPO" -n lint
-    [ "$status" -eq 0 ]
-    [[ "$output" == *"golangci-lint run ./..."* ]]
+    rezept="$(rezept_zeilen lint)"
+    [[ "$rezept" == *"golangci-lint run ./..."* ]]
     # Die Besorgung trägt die Umgebung, der Check belegt sie — das Rezept
     # schreibt keinen Ablage-Fallback und keine zweite Pin-Stelle.
-    [[ "$output" != *".harness/state/bin/golangci-lint"* ]]
-    [[ "$output" != *"GOLANGCI_LINT_CARRIER"* ]]
+    [[ "$rezept" != *".harness/state/bin/golangci-lint"* ]]
+    [[ "$rezept" != *"GOLANGCI_LINT_CARRIER"* ]]
 }
 
 @test "rezept: lint-image baut die gepinnte lint-Stage ohne Cache-Filter" {
-    pin="$(grep -E '^GOLANGCI_LINT_VERSION \?= ' "$REPO/Makefile" | sed 's/GOLANGCI_LINT_VERSION ?= //')"
-    run make -C "$REPO" -n lint-image
-    [ "$status" -eq 0 ]
-    [[ "$output" == *"docker build --no-cache-filter lint"* ]]
-    [[ "$output" == *"--build-arg GOLANGCI_LINT_VERSION=$pin"* ]]
+    rezept="$(rezept_zeilen lint-image)"
+    [[ "$rezept" == *"docker build --no-cache-filter lint"* ]]
+    [[ "$rezept" == *'--build-arg GOLANGCI_LINT_VERSION=$(GOLANGCI_LINT_VERSION)'* ]]
 }
 
 @test "rezept: build kompiliert am Host in den gitignorierten Zustands-Bereich" {
-    run make -C "$REPO" -n build
-    [ "$status" -eq 0 ]
-    [[ "$output" == *"CGO_ENABLED=0 go build -trimpath"* ]]
-    [[ "$output" == *"-o .harness/state/bin/ai-harness-init.build"* ]]
+    rezept="$(rezept_zeilen build)"
+    [[ "$rezept" == *"CGO_ENABLED=0 go build -trimpath"* ]]
+    [[ "$rezept" == *"-o .harness/state/bin/ai-harness-init.build"* ]]
     # TRAEGER_VERSION-Injektion: der Operand fehlt im leeren Default (byte-identisch)
-    [[ "$output" == *'-ldflags="-s -w"'* ]]
     ldflags_zeile="$(sed -n '/^build:/,/^$/p' "$REPO/Makefile" | grep 'ldflags=')"
     [[ "$ldflags_zeile" == *'$(if $(TRAEGER_VERSION), -X main.fassung=$(TRAEGER_VERSION))'* ]]
-    git -C "$REPO" check-ignore -q .harness/state/bin/x || { echo ".harness/state/bin ist nicht gitignored (MR-003)." >&2; return 1; }
+    grep -q '^\.harness/state/$' "$REPO/.gitignore" || { echo ".harness/state fehlt in der .gitignore (MR-003); die git-eigene Lesung traegt make span-check." >&2; return 1; }
 }
 
 @test "rezept: build-image baut die gepinnte build-Stage" {
-    run make -C "$REPO" -n build-image
-    [ "$status" -eq 0 ]
-    [[ "$output" == *"docker build --build-arg GO_VERSION"* ]]
-    [[ "$output" == *"--target build -t ai-harness-init:build ."* ]]
+    rezept="$(rezept_zeilen build-image)"
+    [[ "$rezept" == *"docker build --build-arg GO_VERSION"* ]]
+    [[ "$rezept" == *"--target build -t ai-harness-init:build ."* ]]
 }
 
 @test "rezept: docs-check-host ruft das fetched Binary ohne zweite Flags-Definition" {

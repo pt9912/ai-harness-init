@@ -47,7 +47,7 @@ setup() {
 }
 
 @test "makefile: der Host-Testlauf traegt den Ressourcen-Deckel NICHT (benannte Grenze)" {
-  run make -n test-go
+  run grep -A 2 "^test-go:" "$REPO/Makefile"
   [ "$status" -eq 0 ]
   [[ "$output" == *"go test -count=1 ./..."* ]]
   [[ "$output" != *"--pids-limit"* ]]
