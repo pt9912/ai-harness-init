@@ -115,8 +115,8 @@ else
 	else
 		prefix_ist=""
 	fi
-	if [ "$prefix_ist" = "v$golangci_soll" ]; then
-		meldung golangci-lint "v$golangci_soll" "v$golangci_soll" "im PREFIX — OK"
+	if [ "$prefix_ist" = "$golangci_soll" ]; then
+		meldung golangci-lint "v$golangci_soll" "$prefix_ist" "im PREFIX — OK"
 	elif [ -n "$PLAN_MODE" ]; then
 		meldung golangci-lint "v$golangci_soll" "${golangci_ist:-fehlt}" "Install ausgesetzt (PLAN)"
 	else
