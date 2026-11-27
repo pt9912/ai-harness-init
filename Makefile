@@ -52,7 +52,7 @@ TRAEGER_SHA256_WINDOWS_ARM64 ?= f87b07b42a627ecf476e43ca6fe8fd81b9961008a13c1189
 TRAEGER_CARRIER ?= .harness/state/bin/ai-harness-init
 export TRAEGER_TAG TRAEGER_SHA256_LINUX_AMD64 TRAEGER_SHA256_LINUX_ARM64 TRAEGER_SHA256_DARWIN_AMD64 TRAEGER_SHA256_DARWIN_ARM64 TRAEGER_SHA256_WINDOWS_AMD64 TRAEGER_SHA256_WINDOWS_ARM64 TRAEGER_CARRIER
 
-.PHONY: help gates record-gates environment-check test test-bats test-go test-go-pids-guard lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims register-ausgang history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp freshness-kotlin freshness-digest mutate mutate-greift slice-mv archive-welle traeger-fetch release-warten traeger-pins-check tap-check tap-nachzug vendor-baseline
+.PHONY: help gates record-gates environment-check test test-bats test-go test-go-pids-guard lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims register-ausgang history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp freshness-kotlin freshness-digest mutate mutate-greift slice-mv archive-welle traeger-fetch traeger-fetch-image dcheck-fetch release-warten traeger-pins-check tap-check tap-nachzug vendor-baseline
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
@@ -595,14 +595,36 @@ ARCHIV_KENNUNG = $(or $(KENNUNG),$(if $(filter altbestand,$(WAVE)),ADR-0041))
 archive-welle: host-bin ## Zeitdokumente einer geschlossenen Welle archivieren (WAVE=<wave-id> [KENNUNG=<K>]) — NICHT in gates
 	@$(HOST_BIN) archive-welle $(if $(ARCHIV_KENNUNG),--kennung "$(ARCHIV_KENNUNG)") "$(WAVE)"
 
-# Holt den Traeger per Fetch aus dem gepinnten Release (ADR-0058 Festlegung 1-4):
+# Holt den Traeger per Fetch aus dem gepinnten Release (ADR-0058):
 # sha256 je Asset VOR der Ablage verifiziert, Abweichung bricht ab, ohne den Traeger
-# zu legen; der Transport laeuft im gepinnten Bild. KEIN Gate und KEIN Prerequisite —
-# der Fehlt-Fall der Konsumenten ("Exit 0, nennt das Fehlende, schreibt nichts") wird
-# nicht angetastet; der Fetch ist der ausdrueckliche Weg aus dem Zustand, den sie
-# benennen (ADR-0058 Festlegung 3 und 5). Braucht Netz an genau diesem Aufruf.
-traeger-fetch: ## Traeger aus dem gepinnten Release nachholen (braucht Netz, Transport im gepinnten Bild) — NICHT in gates
+# zu legen. SEIT slice-binraire-ziehen-ohne-docker docker-los am Host (ADR-0109: die
+# Dogfood-Laeufer fahren host-native): curl + HTTPS + sha256sum am Host, dieselbe
+# Pin-Kopplung (Tag-Pin + sechs Digest-Pins vs SHA256SUMS) und derselbe Ablageort.
+# KEIN Gate und KEIN Prerequisite — der Fehlt-Fall der Konsumenten ("Exit 0, nennt
+# das Fehlende, schreibt nichts") wird nicht angetastet; der Fetch ist der
+# ausdrueckliche Weg aus dem Zustand, den sie benennen (ADR-0058 Festlegung 3 und 5).
+# Braucht Netz an genau diesem Aufruf. DER PIN-ZUGANG ist docker-los Pflichtweg;
+# der Transport im gepinnten Bild bleibt opt-in (traeger-fetch-image).
+traeger-fetch: ## Träger aus dem gepinnten Release nachholen (docker-los per Host-curl, braucht Netz) — NICHT in gates
+	@bash harness/tools/traeger-fetch-host.sh
+
+# OPT-IN-Fassung des Traeger-Fetch (ADR-0109: der Weg bleibt, nicht gestrichen
+# — er prueft den Image-Vertrag statt der Inventar-Umgebung), mit dem gepinnten
+# Transport-Bild und derselben Pin-Kopplung (Transport: harness/tools/traeger-fetch.sh).
+traeger-fetch-image: ## Träger aus dem gepinnten Release nachholen (opt-in, Transport im gepinnten Bild, braucht Netz) — NICHT in gates
 	@bash harness/tools/traeger-fetch.sh
+
+# Zieht das d-check-Binary docker-los aus dem digest-gepinnten OCI-Image
+# (slice-binraire-ziehen-ohne-docker, LH-QA-02/LH-QA-03): anonymer OCI-Pull nach
+# dem DCHECK_DIGEST-Pin aus d-check.mk — SELBE Pin-Stelle wie der Image-Weg
+# (`docker run …@sha256:` referenziert dieselbe Summe); Kette Index↔Manifest↔Layer
+# je Blob-Digest geprueft, fail-closed vor der Ablage, Zuordnung und Grenze im
+# Skriptkopf von harness/tools/dcheck-fetch.sh. Ablageort: gitignoriertes
+# .harness/state/bin/d-check (die d-check-Zeile des Inventars sieht den PATH UND
+# diese Ablage). Der gepinnte Image-Weg der Rezepte bleibt opt-in (d-check.mk).
+# Braucht Netz an genau diesem Aufruf. KEIN Gate, KEIN Prerequisite.
+dcheck-fetch: ## d-check-Binary nach .harness/state/bin/ ziehen (docker-los per OCI-Digest, braucht Netz) — NICHT in gates
+	@DCHECK_IMAGE="$(DCHECK_IMAGE)" DCHECK_DIGEST="$(DCHECK_DIGEST)" bash harness/tools/dcheck-fetch.sh
 
 # Wartet begrenzt, bis das gepinnte Release (TRAEGER_TAG) SHA256SUMS und das
 # Linux-amd64-Asset fuehrt; der ci-Job full-smoke faehrt es vor make full-smoke.

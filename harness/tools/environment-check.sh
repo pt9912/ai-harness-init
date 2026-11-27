@@ -31,6 +31,10 @@
 #      festen sha256-Digest gleich.
 #   4. Versions-Zusagen fehlen an bats/shellcheck/actionlint/d-check
 #      (Anwesenheit): keine Pin-Stelle traegt sie (Grenze im Inventar-Grund).
+#      Die d-check-Anwesenheit ist AUSDRUECKLICH erweitert (nicht still): außer
+#      dem PATH traegt sie die fetched Ablage .harness/state/bin/d-check
+#      (probe_dcheck_ablage, make dcheck-fetch) — Inventar-Zeile d-check,
+#      Grund-Spalte · seit slice-binraire-ziehen-ohne-docker.
 #   5. Kontexte, in denen er nicht laeuft: der gepinnte Image-Weg (opt-in) —
 #      die dort adressierten Werkzeuge bleiben ueber den Digest adressiert,
 #      nicht verglichen (MR-098, Luecke der Zeile "nur Host").
@@ -68,6 +72,10 @@ case "$0" in
     */*) SKRIPT_DIR="${0%/*}" ;;
     *) SKRIPT_DIR="." ;;
 esac
+# Repo-Wurzel an $0 abgleitet (nicht cwd): das Skript liegt unter harness/tools/,
+# die Ablage-Fassung der d-check-Anwesenheit unten ist repo-bezogen; `make
+# environment-check` ist die einzige Verdrahtung.
+REPO_ROOT="$(cd "${SKRIPT_DIR}/../.." && pwd)"
 INVENTAR="${SKRIPT_DIR}/environment-inventory.txt"
 FORM_ONLY=0
 
@@ -153,6 +161,18 @@ probe_sha256_abc() {
     [ "$d" = "b5d4045c3f466fa91fe2cc6abe79232a1a57cdf104f7a26e716e0a1e2789df78" ]
 }
 
+# Anwesenheit des fetched d-check an der Ablage (make dcheck-fetch legt nach
+# .harness/state/bin/): der PATH führt das Binary am Host meist nicht, die
+# Anwesenheits-Prüfform sieht darum AUSDRÜCKLICH auch die Ablage — als benannte
+# Erweiterung, nicht still (Inventar-Zeile d-check, Grund-Spalte, gleiche Herkunft).
+# Zusage: die Probe misst Anwesenheit und Ausführbar-Form — NICHT, dass es die
+# gepinnte Fassung ist; die trägt der Fetch mit seiner Digest-Kette (Kopf von
+# harness/tools/dcheck-fetch.sh). DCHECK_CARRIER überschreibt (absolute Form).
+probe_dcheck_ablage() {
+    local p="${DCHECK_CARRIER:-$REPO_ROOT/.harness/state/bin/d-check}"
+    [ -x "$p" ]
+}
+
 # probe_id_fuer <werkzeug> -> die Probe-ID, die das Skript für das Faehigkeits-
 # Werkzeug traegt; leer, wenn keines existiert. Unstimmig mit dem Inventar-
 # Soll ist AUFFORM — die zwei Faecher driften nicht still.
@@ -229,8 +249,15 @@ while IFS= read -r line || [ -n "$line" ]; do
     ist=""
     gut=1
     if ! command -v "$w" >/dev/null 2>&1; then
-        ist="fehlt"
-        gut=0
+        # d-check: außerhalb des PATH trägt die fetched Ablage (probe_dcheck_ablage,
+        # make dcheck-fetch) die Anwesenheit — die benannte Erweiterung der
+        # Prüfform-Auflage, nicht still; ohne Ablage bleibt der Befund "fehlt".
+        if [ "$w" = "d-check" ] && probe_dcheck_ablage; then
+            gut=1
+        else
+            ist="fehlt"
+            gut=0
+        fi
     else
         case "$pf" in
             Anwesenheit)

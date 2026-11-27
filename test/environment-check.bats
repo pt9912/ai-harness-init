@@ -119,3 +119,32 @@ fixture() {
     [[ "$output" == *"grün — 2/2 Pflicht-Werkzeuge tragen ihr Soll."* ]]
     rm -rf "$F" "$S"
 }
+
+# Die d-check-Anwesenheit ist AUSDRÜCKLICH erweitert (slice-binraire-ziehen-ohne-
+# docker): außer dem PATH trägt sie die fetched Ablage (probe_dcheck_ablage,
+# make dcheck-fetch) — Inventar-Zeile d-check, Grund-Spalte. Die zwei Seiten der
+# Erweiterung — Grün an der Ablage, Rot ohne PATH und ohne Ablage:
+@test "environment-check: d-check trägt Anwesenheit auch an der fetched Ablage (PATH sieht es nicht)" {
+    F="$(fixture 'd-check|Anwesenheit|pflicht|manifest:anwesend|k|g')"
+    S="$(mktemp -d)"
+    mkdir -p "$S/ablage"
+    ABLAGE="$S/ablage/d-check"
+    printf '#!/usr/bin/env sh\necho ok\n' > "$ABLAGE"
+    chmod +x "$ABLAGE"
+    run env PATH="$S:/usr/bin:/bin" DCHECK_CARRIER="$ABLAGE" bash "$SCRIPT" --inventar "$F"
+    echo "Ausgabe: [$output] (Zusage: grün 1/1, kein Befund)"
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"grün — 1/1 Pflicht-Werkzeuge tragen ihr Soll."* ]]
+    rm -rf "$F" "$S"
+}
+
+@test "environment-check: ohne PATH und ohne Ablage bleibt d-check ein Befund (Ist fehlt)" {
+    F="$(fixture 'd-check|Anwesenheit|pflicht|manifest:anwesend|k|g')"
+    S="$(mktemp -d)"
+    run env PATH="$S:/usr/bin:/bin" \
+        DCHECK_CARRIER="$S/nirgends/d-check" bash "$SCRIPT" --inventar "$F"
+    echo "Ausgabe: [$output] (Zusage: umgebung: d-check · Ist: fehlt, exit 1)"
+    [ "$status" -eq 1 ]
+    [[ "$output" == *"umgebung: d-check · Soll: anwesend · Ist: fehlt"* ]]
+    rm -rf "$F" "$S"
+}
