@@ -18,6 +18,10 @@ Fail-closed: fehlt der Digest-Pin, haftet die Prüfform `sha256:<64-hex>` nicht,
 
 Die `d-check`-Zeile des Inventars (`harness/tools/environment-inventory.txt`) trägt eine **ausdrücklich benannte** Erweiterung der Anwesenheit: außer dem `PATH` sieht die Prüfform die fetched Ablage (`probe_dcheck_ablage` in `harness/tools/environment-check.sh`, `DCHECK_CARRIER` überschreibt) — ohne Ablage bleibt der Umgebungs-Befund „Ist: fehlt". Die Probe misst Anwesenheit und Ausführbar-Form, nicht, dass es die gepinnte Fassung ist; die trägt dieser Fetch mit seiner Digest-Kette.
 
+## Registry-Ursprung
+
+Registry und Repo stehen an derselben `DCHECK_IMAGE`-Stelle wie beim Image-Weg — beide Wege lesen denselben Pin aus derselben Quelle. Der Zug hält das Registry-Präfix **hart** gegen die geprägte Quelle (`ghcr.io`, die einzige, gegen die der Token-Handshake geprägt ist) und bricht fail-closed bei jedem fremden Präfix, statt denselben Digest still aus einem anderen Ursprung zu ziehen.
+
 ## Wächter
 
 `test/dcheck-fetch.bats` hält die Kette hermetisch (Stubs für den Registry-Zug): Happy (Member gelegt, lauffähig, Kette je Aufruf), Negative für Index-, Blob- und Member-Abweichung je fail-closed ohne Ablage, Vorab-Fälle für fehlende Prüfsumme und falsche Prüfform.

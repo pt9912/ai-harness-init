@@ -131,6 +131,27 @@ ENDE
   [ "$status" -eq 2 ]
   printf '%s' "$output" | grep -qF 'Pruefform sha256'
   [ "$(grep -c . "$DCHK_SHIM_LOG")" -eq 0 ]
+  # F-2-Form: die Probe misst GENAU 64 hex — 63-fach und 65-hex tragen die
+  # Pruefform nicht (beide rot gesehene Gegenproben am realen Aufruf).
+  run env DCHECK_IMAGE='ghcr.io/pt9912/d-check:v0.99.0' \
+    DCHECK_DIGEST="sha256:$(printf '0%.0s' $(seq 63))" \
+    DCHECK_CARRIER="$TMP/ablage/d-check" bash "$SKRIPT"
+  [ "$status" -eq 2 ]
+  printf '%s' "$output" | grep -qF 'Pruefform sha256'
+  run env DCHECK_IMAGE='ghcr.io/pt9912/d-check:v0.99.0' \
+    DCHECK_DIGEST="sha256:$(printf '0%.0s' $(seq 65))" \
+    DCHECK_CARRIER="$TMP/ablage/d-check" bash "$SKRIPT"
+  [ "$status" -eq 2 ]
+  # F-3-Form: ein fremdes Registry-Praefix am DCHECK_IMAGE liesse die zwei Wege
+  # denselben Pin aus verschiedenen Urspruengen lesen — der Lauf bricht hart.
+  run env DCHK_SHIM_MAP="$DCHK_SHIM_MAP" DCHK_SHIM_LOG="$DCHK_SHIM_LOG" \
+    DCHECK_IMAGE='docker.io/pt9912/d-check:v0.99.0' \
+    DCHECK_DIGEST="sha256:$index_sha" \
+    DCHECK_CARRIER="$TMP/ablage/d-check" \
+    bash "$SKRIPT"
+  [ "$status" -eq 2 ]
+  printf '%s' "$output" | grep -qF 'die gepraegte Quelle (ghcr.io)'
+  [ "$(grep -c . "$DCHK_SHIM_LOG")" -eq 0 ]
 }
 
 @test "happy: die Kette Pin↔Index↔Manifest↔Blobs traegt, das Member wird gelegt und startet, docker-los" {
