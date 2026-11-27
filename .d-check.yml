@@ -289,6 +289,12 @@ targets:
     - tap-check
     - tap-nachzug
     - hooks-install
+    - dcheck-fetch
+    - traeger-fetch-image
+    - test-bats-image
+    - lint-image
+    - shell-lint-image
+    - ci-lint-image
     - help
     - test-bats
     - test-go
