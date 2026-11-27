@@ -162,7 +162,7 @@ func newStopRepo(t *testing.T, f stopHookFassung, mitCommit bool) *stopRepo {
 		// je Check der Kante eine Tafel-Datei, deren Menge im walked Bestand
 		// nicht leer bleibt (die anderen Checks decken sich uber die kopierten
 		// Werkzeuge und das Fixture-Makefile selbst).
-		r.write("SHA256SUMS", "fixture\n", 0o644)       // baseline-verify
+		r.write("harness/tools/baseline-verify.sh", "fixture\n", 0o644) // baseline-verify
 		r.write(".d-check.yml", "fixture\n", 0o644)     // docs-check-host
 		r.write(".golangci.yml", "fixture\n", 0o644)    // lint
 		r.write("Dockerfile", "fixture\n", 0o644)       // build
