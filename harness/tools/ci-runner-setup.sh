@@ -127,8 +127,8 @@ else
 fi
 
 # Anwesenheit: bats, shellcheck, actionlint — fehlt eins am PATH, kommt es über
-# apt (Runner-Sudo); die Version trägt keine Pin-Stelle, der Check belegt die
-# Anwesenheit (Inventar-Zeile, Prüfform Anwesenheit).
+# apt (Runner-Sudo). Die Version trägt keine Pin-Stelle (Prüfform Anwesenheit,
+# Inventar-Zeile); `make environment-check` belegt die Anwesenheit.
 fehlen=()
 for werkzeug in bats shellcheck actionlint; do
 	if command -v "$werkzeug" >/dev/null 2>&1; then
