@@ -16,7 +16,7 @@ der Welle beobachtet mehr als ein Slice-DoD trägt (Baseline-Regelwerk
 **Bezug:**
 [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)
 (docker wird Weg, nicht Pflicht — der CR-Träger:
-[`slice-cr-lh-qa-02-03-ohne-docker`](slice-cr-lh-qa-02-03-ohne-docker.md)),
+[`slice-cr-lh-qa-02-03-ohne-docker`](../next/slice-cr-lh-qa-02-03-ohne-docker.md)),
 [ADR-0003](../../adr/0003-go-native-binaries.md) (Tool-Build bleibt im
 gepinnten Image; der Docker-only-Satz der Dogfood-Läufer wandert),
 [ADR-0004](../../adr/0004-durchsetzung-emission.md) (durchgesetzte Emission der
@@ -107,7 +107,7 @@ Adaption der Baseline und steht als `MR-<NNN>` in `harness/conventions.md`"*).
 **Ansatz als Liste (ergänzt die Tabelle):**
 
 - Der ADR-Kontext nennt die Entscheidung des Auftraggebers als
-  CR-Bezug ([`slice-cr-lh-qa-02-03-ohne-docker`](slice-cr-lh-qa-02-03-ohne-docker.md))
+  CR-Bezug ([`slice-cr-lh-qa-02-03-ohne-docker`](../next/slice-cr-lh-qa-02-03-ohne-docker.md))
   und die [ADR-0003](../../adr/0003-go-native-binaries.md)-Grenze (Tool-Build
   bleibt docker-getrieben) — die zwei Wege leben nebeneinander, einer ist
   Pflicht, der andere opt-in.
@@ -118,7 +118,7 @@ Adaption der Baseline und steht als `MR-<NNN>` in `harness/conventions.md`"*).
 ## 4. Trigger
 
 **Start** (`next` → `in-progress`):
-[`slice-cr-lh-qa-02-03-ohne-docker`](slice-cr-lh-qa-02-03-ohne-docker.md)
+[`slice-cr-lh-qa-02-03-ohne-docker`](../next/slice-cr-lh-qa-02-03-ohne-docker.md)
 liegt in `done/` — die Architektur-Entscheidung setzt auf der vertragsseitigen
 Fassung auf (Rollen-Sequenz Modul 8: Architect-Zug nach Planner, vor
 Implementation).
