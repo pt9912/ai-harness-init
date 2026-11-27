@@ -37,6 +37,50 @@
 # nicht frei (MR-017) — der Fast-Pfad schrumpft mit der Tafel-Vereinigung
 # (ADR-0108 Abwaegung E). Zuschlaege an eine Menge sind eine Plan-Entscheidung
 # mit eigener Begruendung, kein stiller Eintrag.
+#
+# MESSREZEPT JE CHECK (Plan slice-gates-pruefgegenstand-stempel-v1 §3): je
+# Tafel-Zeile die Lesung am realen Rezept — was der Check liest, dass die
+# Menge es deckt, und der Rest, den kein baum-abgeleiteter Schluessel traegt.
+# Das Messrezept benennt den Rest je Zeile, schliesst ihn nicht; deckt die
+# Menge den gelesenen Bestand eines Checks nicht, faehrt der Check voll
+# (Plan §6, Ausgang: deklarierter Bestand). Die Glob-Lesung deckt jede Tiefe
+# (glob_zu_regex: `*` durchlaeuft Trenner); die Walk-Zeilen sind ./-frei.
+#   environment-check:  liest sein Skript, das Inventar und die SPEC-099-Zeile
+#                       in spec/spezifikation.md — ./spec/*.md deckt die Datei.
+#   docs-check-host:    liest .d-check.yml, d-check.mk und alle .md des
+#                       Pruefbereichs vermindert um die scan.ignore-Ausschluesse
+#                       (tafel_ausschluss); Rest: der d-check-Traeger
+#                       (Zustands-Ablage, kein Walk-Artefakt).
+#   baseline-verify:    liest sein Skript und den vendored Baum inkl.
+#                       SHA256SUMS im Tag-Verzeichnis (am Wurzelpfad liegt
+#                       keine — der Eintrag dort entfaellt); die Pin-Kopplung
+#                       bleibt konservativ, sie ist lauf-fern.
+#   lint, build, test:  lesen die Go-Quellen und die Modul-Daten am Host-Weg —
+#                       Dockerfile bleibt als Image-Weg-Kopplung; Rest: die
+#                       Go-Toolchain- und bats-Fassung (Host-Werkzeug,
+#                       ADR-0108 Festlegung 4).
+#   shell-lint:         liest genau die Rezept-Listen (shellcheck ueber die
+#                       vier Quell-Baeume plus .githooks, bats-lint ueber
+#                       test/*.bats); .claude/settings.json und
+#                       .codex/hooks.json liegen im Zuordnungs-Rest
+#                       (Waechter-Verdrahtung, kein Check urteilt).
+#   ci-lint:            actionlint liest .github/** (jede Tiefe, Workflows und
+#                       lokale Actions); der Makefile-Eintrag koppelt die
+#                       Pin-Stelle.
+#   comment-claims:     liest genau die ls-files-Listen des Rezepts (Go ohne
+#                       _test.go — derselbe Ausschluss in tafel_ausschluss).
+#   register-ausgang:   liest sein Skript und das Register unter observations.
+#   mutate-greift:      liest den Treiber, die Fall-Skripte und das Rezept
+#                       (Makefile); test/fixtures konservativ.
+#   host-bin:           go build kompiliert die cmd-Quellen samt ihrer
+#                       internal-Abhaengigkeiten und liest die Modul-Daten
+#                       (go.mod, go.sum); Rest: die Plattform-Auswertung
+#                       (uname) und die Versions-Aufloesung (git).
+#   span-check:         liest sein Skript, das Rezept (Traeger-Pfad) und die
+#                       Deklaration der Verdrahtungssaetze in
+#                       spec/spezifikation.md §5 — ./spec/*.md deckt die
+#                       Datei; Rest: der gebaute Traeger (Zustands-Ablage,
+#                       benutzt, nicht gemessen).
 set -euo pipefail
 
 # MENGE_AUSSCHLUESS — siehe Kopf; jeder Eintrag traegt den ./-Praefix, der
@@ -88,8 +132,11 @@ tafel_menge() {
         './spec/*.md'
         ;;
     baseline-verify)
+      # das eigene Werkzeug-Skript liest der Lauf ein — ohne den Eintrag SKIPpt
+      # der Fast-Pfad am Skript-Drift; die SHA256SUMS-Stelle lebt im
+      # Tag-Verzeichnis (der Baum-Glob deckt sie, am Wurzelpfad liegt keine).
       printf '%s\n' \
-        './SHA256SUMS' \
+        './harness/tools/baseline-verify.sh' \
         './.harness/baseline/*' \
         './internal/fetch/baseline.go'
         ;;
@@ -164,9 +211,15 @@ tafel_menge() {
         './test/fixtures/*'
         ;;
     host-bin)
+      # go build kompiliert die cmd-Quellen samt internal-Abhaengigkeiten und
+      # liest die Modul-Daten — ohne den Eintrag SKIPpt der Fast-Pfad am
+      # Bau-Drift, ohne den Bau zu fahren (Rezept-Form, nicht Traeger-Inhalt).
       printf '%s\n' \
         './Makefile' \
-        './cmd/*.go'
+        './go.mod' \
+        './go.sum' \
+        './cmd/*.go' \
+        './internal/*.go'
         ;;
     span-check)
       printf '%s\n' \

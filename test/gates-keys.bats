@@ -108,6 +108,41 @@ setup() {
 	rm -rf "$FIX"
 }
 
+@test "keys: je Check mit Werkzeug-Skript deckt die Menge ihr eigenes Skript" {
+	# JEDES Check-Rezept der Kante, das `bash harness/tools/<check>.sh` faehrt,
+	# liest sein Skript ein — die Menge deckt es (Plan §3, Messrezept: die
+	# Deckung ist gezeigt, nicht angenommen). Deckt sie nicht, SKIPpt der
+	# Fast-Pfad am Skript-Drift des Checks.
+	while IFS= read -r check; do
+		[ -n "$check" ] || continue
+		skript="harness/tools/${check}.sh"
+		[ -f "$REPO/$skript" ] || continue
+		run bash "$KEYS" --wurzel "$REPO" menge "$check"
+		[ "$status" -eq 0 ]
+		echo "Check [$check]: Skript-Deckung fuer [$skript] (Zusage: eine Zeile der Menge)"
+		grep -qxF "$skript" <<<"$output"
+	done < <(bash "$KEYS" --wurzel "$REPO" liste)
+}
+
+@test "keys: die kompilierte Menge des host-bin deckt die Baubasis (Makefile, go.mod, go.sum, cmd- und internal-Quellen)" {
+	# Der Rezept-Form nach kompiliert `go build` die cmd-Quellen samt ihrer
+	# internal-Abhaengigkeiten und liest die Modul-Daten. Deckt die Menge einen
+	# Bestandteil nicht, SKIPpt der Fast-Pfad am Bau-Drift, ohne den Bau zu
+	# fahren. go.sum liegt im Bestand NICHT vor (der Modul-Kontext traegt keine
+	# Abhaengigkeit) — die Menge-Zeile ist inert fuer den heutigen Walk, dieselbe
+	# Form liest lint/build/test; gemessen wird der Bestand, nicht seine Zukunft.
+	run bash "$KEYS" --wurzel "$REPO" menge host-bin
+	[ "$status" -eq 0 ]
+	for form in 'Makefile' 'go.mod' 'go.sum'; do
+		[ -f "$REPO/$form" ] || continue
+		echo "Baubasis [$form] (Zusage: eine Zeile der Menge)"
+		grep -qxF "$form" <<<"$output"
+	done
+	echo "cmd-Quelle (Zusage: mindestens eine Zeile unter cmd/, internal-Quelle dito unter internal/)"
+	[ -n "$(grep '^cmd/' <<<"$output" | head -1)" ]
+	[ -n "$(grep '^internal/' <<<"$output" | head -1)" ]
+}
+
 @test "keys: der Schreiber bleibt record-gates (voller Lauf schreibt je Check)" {
 	schreibt="$(grep -vE '^[[:blank:]]*#' "$REPO/harness/tools/record-gates.sh" | grep -c 'gates-keys\.sh alle' || true)"
 	stempelt="$(grep -vE '^[[:blank:]]*#' "$REPO/harness/tools/gates-fast.sh" | grep -cE 'gates-keys\.sh stamp' || true)"
