@@ -89,7 +89,7 @@ Die vier Rest-Klassen, je eine Stufe-Gruppe des `full-smoke`-Skripts:
 
 **Start** (`next` → `in-progress`):
 [`slice-smoke-und-full-smoke-ohne-docker`](../done/slice-smoke-und-full-smoke-ohne-docker.md)
-liegt in `done/` und [`slice-ci-runner-ohne-docker`](../in-progress/slice-ci-runner-ohne-docker.md)
+liegt in `done/` und [`slice-ci-runner-ohne-docker`](../done/slice-ci-runner-ohne-docker.md)
 sind abgelöst — die reale Lauf-Kette steht mit ihrem exakten
 Abbruchpunkt.
 
