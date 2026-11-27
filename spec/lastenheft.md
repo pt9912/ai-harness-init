@@ -1,6 +1,6 @@
 # Lastenheft — ai-harness-init
 
-**Version:** 0.28.1
+**Version:** 0.28.2
 
 **Status:** Draft
 
@@ -152,8 +152,10 @@ Der **Reviewer-Skill** bleibt aus dem Kurs-Template-Satz **gefetcht** (er liegt 
 - **Guard:** Der Command-Guard ist **bash + awk** (kein node/jq/OCI),
   fail-closed bei Parse-Zweifel; sein BLOCKED-Set ist auf `--lang`/Build-Model
   des Ziels abgestimmt.
-- **Minimal:** Das emittierte Repo braucht über `bash + git + docker` hinaus
-  nichts (awk ist POSIX-Basis).
+- **Minimal:** Das emittierte Repo braucht über `bash + git` hinaus nichts außer
+  den Gate-Werkzeugen des jeweiligen Gate-Wegs
+  ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)) —
+  awk ist POSIX-Basis.
 
 ### LH-FA-07 — Arch-Gate-Baseline emittieren
 
@@ -295,7 +297,7 @@ Regelwerk darüber.
 - **Reproduzierbar ([`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)):**
   dieselbe Tool-Version → derselbe Träger im Ziel.
 - **Minimal/netzlos ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)):**
-  das Zielrepo bleibt über `bash + git + docker` geschlossen; für seine Gates braucht es
+  das Zielrepo bleibt make-getrieben und je Gate-Weg gepinnt geschlossen; für seine Gates braucht es
   nach dem Bootstrap kein Netz.
 - **Kein Halluzinat ([`LH-QA-01`](../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)):**
   kann der Träger nicht emittiert werden, wird begründet **nichts** abgelegt — kein
@@ -480,7 +482,8 @@ Beleg eines gelaufenen Prozesses; dieses E2E **prüft** die Durchsetzung, die ih
   eigenen E2E; kein erfundenes Ziel-E2E.
 - **Minimal ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)):** das
   Ziel-E2E fügt dem Ziel keine neue Abhängigkeit hinzu — es klont lokal und fährt `make gates`
-  im Klon; über `git + docker` braucht es nichts.
+  im Klon; über `bash + git` hinaus braucht es nichts außer den Gate-Werkzeugen
+  des jeweiligen Gate-Wegs ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
 - **Messung im Emitter-Lauf:** Given `make full-smoke`, when der Lauf das gebootstrappte Ziel
   erreicht, then fährt er dort das ziel-eigene E2E **einmal** durch und liest dessen Ausgabe —
   der Träger liegt im Ziel, `core.hooksPath` ist **vor** der Aktivierung leer.
@@ -559,8 +562,9 @@ emittierte Datei zu ändern.
   Abdeckungs-Sicht des Emitters über sein eigenes E2E, und der Emitter-Lauf fährt sie im
   gebootstrappten Ziel einmal durch.
 - **Minimal ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)):** Der
-  Erzeuger fügt dem Ziel keine Abhängigkeit hinzu — er liest Text; über `bash + git +
-  docker` braucht er nichts, kein Netz und keinen Container.
+  Erzeuger fügt dem Ziel keine Abhängigkeit hinzu — er liest Text; über `bash + git`
+  hinaus braucht er nichts außer den Gate-Werkzeugen des jeweiligen Gate-Wegs
+  ([`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)), kein Netz.
 - **Benannte Grenze:** Zugesagt ist die Sicht auf die **deklarierte** Zuordnung.
   **Nicht** zugesagt ist, dass eine Deklaration zutrifft: Löst eine genannte Kennung in
   der Spec des Ziels nicht auf, steht sie als Code-Span ohne Verweis statt als Befund,
@@ -690,3 +694,4 @@ emittierte Datei zu ändern.
 | 0.27.1 | 2026-10-17 | CR: **Zwei Folgestellen zu 0.27.0 nachgezogen** — [`LH-FA-04`](../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4) Architektur-Achse: Default `flat` ist „das Verhalten ohne `--arch`" statt „das heutige Verhalten". [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) Briefing-Vorlage: der Klammersatz zur Herkunft der Vorlage entfällt; `CLAUDE.md` ist autort, nicht tool-generiert. Patch, weil beide Stellen die Aussage von 0.27.0 nur zu Ende führen; keine neue Anforderung, keine Zusage entfällt | Nutzer-Entscheidung 2026-10-17 |
 | 0.28.0 | 2026-11-27 | CR: **docker-los als Pflicht-Weg — [`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) und [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) umgestellt.** [`LH-QA-03`](../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten): der Bootstrap braucht nur **git**; die Gates der emittierten Ziel-Repos bleiben make-getrieben und führen je Werkzeug die gepinnte Version — über **Tool-Pin + Tool-/Versions-Check** am Host (docker-los Weg) oder über die gepinnten Images; `docker` ist **Weg, keine Pflicht**. Tool-Build (Release) bleibt im gepinnten Image (kein Host-`go` im Release-Bau). [`LH-QA-02`](../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit): dieselbe Pin-Disziplin trägt der docker-los Weg als Tool-Pin (Tag+Prüfsumme, Inventar-Soll); Messmethode nennt beide Wege. Minor (Anforderung + Messmethode je Weg). **Abweichung von [`MR-015`](../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Setzung 2, ausdrücklich benannt statt kaschiert** (Präzedenz 0.18.0): dieser CR liegt **nach** dem `open → in-progress`-Move von slice-cr-lh-qa-02-03-ohne-docker — er wurde vor dem Move noch nicht geschärft formuliert; die Form (eigener Commit, nur diese Datei) ist eingehalten. Getrieben von welle-ohne-docker (Auftraggeber-Beschluss 2026-11-27: Docker-Daemon bleibt aus, Labor und Produkt färbt ein docker-los Gate-Weg) | Nutzer-Entscheidung 2026-11-27 |
 | 0.28.1 | 2026-11-27 | CR: **Folgestellen von 0.28.0 nachgezogen** — [`LH-FA-07`](../spec/lastenheft.md#lh-fa-07--arch-gate-baseline-emittieren)-Minimal-Satz („a-check läuft Docker-only … über `git + docker` hinaus nichts") und [`LH-QA-04`](../spec/lastenheft.md#lh-qa-04--plattform-matrix)-Anforderung („das Tool ruft Host-`docker`") auf die Gate-Weg-Fassung umgeschrieben; zwei Widersprüche im selben abnahmebindenden Dokument, der Review-Befund 2026-11-27 (F-1/F-2 in `docs/reviews/2026-11-27-slice-cr-lh-qa-02-03-ohne-docker.md`) trug sie vor. Zugleich: die Übergangs-Aussage **ausdrücklich** — das Inventar-Soll und der Tool-/Versions-Check sind Ziel-Bild; die Mechanik folgt in welle-ohne-docker ([`MR-015`](../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) Doc-führt, Präzedenz 0.6.0). **Korrektur an 0.28.0 dokumentiert** (Zeile ist Protokoll und bleibt unverändert): die Klausel „Getrieben von welle-ohne-docker" in der Änderungs-Spalte entbehrt nach [`MR-042`](../harness/conventions/MR-042-der-anlass-einer-lastenheft-aenderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz.md) des Orts — der Anlass steht in der Closure-Notiz des Slices. Patch, weil 0.28.1 die Aussage von 0.28.0 über die Folgestellen zu Ende führt; keine neue Anforderung, keine Messmethode geändert | Nutzer-Entscheidung 2026-11-27 |
+| 0.28.2 | 2026-11-27 | CR: **Folgestellen von 0.28.0 nachgezogen, zweite Auslage** — die vier Superset-Sätze, die [`ADR-0109`](../docs/plan/adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md) §Konsequenzen trägt, auf die Gate-Weg-Fassung umgeschrieben: [`LH-FA-06`](../spec/lastenheft.md#lh-fa-06--durchsetzungsschicht-emittieren) Minimal („über `bash + git + docker` hinaus nichts" → „über `bash + git` hinaus nichts außer den Gate-Werkzeugen des jeweiligen Gate-Wegs"), [`LH-FA-10`](../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) Minimal/netzlos („über `bash + git + docker` geschlossen" → „make-getrieben und je Gate-Weg gepinnt geschlossen"), [`LH-FA-11`](../spec/lastenheft.md#lh-fa-11--selbstprüfung-der-durchsetzungsschicht-emittieren) Minimal, [`LH-FA-12`](../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren) Minimal (je dieselbe Umform). Patch, weil die Zeilen die Aussage der 0.28.0-Fassung nur zu Ende führen (Präzedenz 0.25.1/0.28.1); keine neue Anforderung, keine Messmethode geändert. Anlass: dieselbe Auftraggeber-Entscheidung 2026-11-27 (docker-los Pflicht-Weg) | Nutzer-Entscheidung 2026-11-27 |
