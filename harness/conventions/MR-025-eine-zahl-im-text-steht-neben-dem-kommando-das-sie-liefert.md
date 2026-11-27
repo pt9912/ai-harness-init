@@ -147,6 +147,6 @@
   Messung hängt an `3ce4ea3`, nicht am heutigen Baum — über diesem fände sie sich selbst.
   Gefunden hat die Klasse in genau jenem Lauf etwas anderes: zwei getrennte Kontexte, Review nach
   Modul 10 und Verifikation nach Modul 11, meldeten **unabhängig** dieselbe falsche Zeile
-  ([Review](../../docs/reviews/2026-08-28-slice-122-review.md) HIGH-1,
-  [Verifikation](../../docs/reviews/2026-08-28-slice-122-verify.md) V-2). Das ist die
+  (Review `2026-08-28-slice-122-review` HIGH-1,
+  Verifikation `2026-08-28-slice-122-verify` V-2). Das ist die
   Trägerschaft, die diese Setzung hat.
