@@ -23,7 +23,7 @@ nicht hier.
 **In Arbeit:** wellenlos
 [slice-gates-pruefgegenstand-stempel-v1](slice-gates-pruefgegenstand-stempel-v1.md)
 und [slice-stamp-records-konsum-v1](slice-stamp-records-konsum-v1.md);
-[doku-nachzug-ohne-docker](done/slice-doku-nachzug-ohne-docker.md) und die
+`doku-nachzug-ohne-docker` und die
 welle-ohne-docker-Slices liegen in `done/` — das Wellen-Closure-Log steht in
 [Abgeschlossene Wellen](#abgeschlossene-wellen).
 

@@ -53,7 +53,7 @@ Carveout, nicht unter stiller Duldung.
 
 ## Auflösungs-Trigger
 
-**Abschluss von [welle-ohne-docker](../planning/welle-ohne-docker.md)** — ihr
+**Abschluss von [welle-ohne-docker](../planning/done/welle-ohne-docker.md)** — ihr
 Übergangs-DoD (voller Mutations-Vollauf docker-los und `make gates` grün auf
 einem Runner ohne Docker-Daemon) ist das nächste Ereignis, an dem beide
 Störstellen angetroffen werden; der Zustand ist an der Roadmap prüfbar (Welle

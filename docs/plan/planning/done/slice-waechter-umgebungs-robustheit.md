@@ -9,7 +9,7 @@ aus `open/` oder `next/` nach `done/` — §7 nennt in der Zeile `Gegenstand:`
 Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 (§Ein Slice, dessen Gegenstand ein anderer übernimmt).
 
-**Welle:** [welle-ohne-docker](../welle-ohne-docker.md) — der Lernstand
+**Welle:** [welle-ohne-docker](../done/welle-ohne-docker.md) — der Lernstand
 kommt aus der Host-Umstellung der Gates-Kante in genau dieser Welle
 (Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht).
 

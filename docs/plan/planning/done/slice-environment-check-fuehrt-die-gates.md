@@ -9,7 +9,7 @@ aus `open/` oder `next/` nach `done/` — §7 nennt in der Zeile `Gegenstand:`
 Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 (§Ein Slice, dessen Gegenstand ein anderer übernimmt).
 
-**Welle:** [welle-ohne-docker](../welle-ohne-docker.md) — der Closure-Trigger
+**Welle:** [welle-ohne-docker](../done/welle-ohne-docker.md) — der Closure-Trigger
 der Welle beobachtet mehr als ein Slice-DoD trägt (Baseline-Regelwerk
 `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht).
 
@@ -89,7 +89,7 @@ Gate-Lauf an ihm, bevor ein Gate gegen fehlendes Werkzeug falsch färbt
 - [x] `make gates` grün — über
       [`CO-007`](../../carveouts/CO-007-ci-rot-vorgefunden-gates-und-full-smoke.md)
       bedingt (CI-Rot vorgefunden, Trigger: Abschluss von
-      [`welle-ohne-docker`](../welle-ohne-docker.md)); der lokale
+      [`welle-ohne-docker`](../done/welle-ohne-docker.md)); der lokale
       Kanten-Lauf endet am Inventar an `d-check · Ist: fehlt` — by design
       (fail-closed; die Beschaffung ist
       `slice-binraire-ziehen-ohne-docker`).
@@ -224,7 +224,7 @@ formulieren — sonst zählt das Register zwei Namen getrennt) ·
 - **Rest-Übergaben:** die docker-gebundenen Zähne — der pinsync-Verhaltens-
   Lauf, die bats-Stufe des Test-Gates und die Mutations-Verifikation der
   Fälle 795–798 — bleiben der Heilung von
-  [`welle-ohne-docker`](../welle-ohne-docker.md) zugeordnet; der
+  [`welle-ohne-docker`](../done/welle-ohne-docker.md) zugeordnet; der
   make-level `SPEC-099`-Protokoll-Lauf (voller Kanten-Lauf) hängt an der
   d-check-Binary (`slice-binraire-ziehen-ohne-docker`) und an
   [`CO-007`](../../carveouts/CO-007-ci-rot-vorgefunden-gates-und-full-smoke.md).
@@ -240,7 +240,7 @@ formulieren — sonst zählt das Register zwei Namen getrennt) ·
   `BEO-ALL/host-werkzeug-variante-…` unverändert) und das Kommando der
   README (Verzeichnisse ohne `evidence/*.md`) wurde nicht von diesem Lauf
   belastet. Ergebnis: keine Befunde; das Paarungs-Kästchen (§2) bleibt für
-  die Welle-Closure [`welle-ohne-docker`](../welle-ohne-docker.md) offen —
+  die Welle-Closure [`welle-ohne-docker`](../done/welle-ohne-docker.md) offen —
   sie prüft die Paarungen erneut.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung

@@ -9,7 +9,7 @@ aus `open/` oder `next/` nach `done/` — §7 nennt in der Zeile `Gegenstand:`
 Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 (§Ein Slice, dessen Gegenstand ein anderer übernimmt).
 
-**Welle:** [welle-ohne-docker](../welle-ohne-docker.md) — der Closure-Trigger
+**Welle:** [welle-ohne-docker](../done/welle-ohne-docker.md) — der Closure-Trigger
 der Welle („`make gates` grün auf einem Runner ohne Docker-Daemon") ist
 genau die Übergabe dieses Slices plus die der Rezept-Slices.
 

@@ -9,7 +9,7 @@ aus `open/` oder `next/` nach `done/` — §7 nennt in der Zeile `Gegenstand:`
 Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 (§Ein Slice, dessen Gegenstand ein anderer übernimmt).
 
-**Welle:** [welle-ohne-docker](../welle-ohne-docker.md) — der Closure-Trigger
+**Welle:** [welle-ohne-docker](../done/welle-ohne-docker.md) — der Closure-Trigger
 der Welle beobachtet mehr als ein Slice-DoD trägt (Baseline-Regelwerk
 `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht).
 
@@ -86,7 +86,7 @@ Adaption der Baseline und steht als `MR-<NNN>` in `harness/conventions.md`"*).
 - [x] `make gates` grün — lokal nicht herstellbar (Docker-Daemon aus); die
       CI-Jobs `gates`/`full-smoke` sind rot **vorgefunden** vorgängig — bedingt
       über [CO-007](../../carveouts/CO-007-ci-rot-vorgefunden-gates-und-full-smoke.md),
-      Trigger = Abschluss der [Welle](../welle-ohne-docker.md); der Nachweis
+      Trigger = Abschluss der [Welle](../done/welle-ohne-docker.md); der Nachweis
       der Architektur liegt im CI-Lauf der gepushten Commits
       (`mutate-auswahl` Exit 0 — kein Fall berührt).
 - [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor

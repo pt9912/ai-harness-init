@@ -9,7 +9,7 @@ aus `open/` oder `next/` nach `done/` — §7 nennt in der Zeile `Gegenstand:`
 Kennung oder Grund, die Liefer-Punkte der DoD bleiben leer
 (§Ein Slice, dessen Gegenstand ein anderer übernimmt).
 
-**Welle:** [welle-ohne-docker](../welle-ohne-docker.md) — der Closure-Trigger
+**Welle:** [welle-ohne-docker](../done/welle-ohne-docker.md) — der Closure-Trigger
 der Welle beobachtet mehr als ein Slice-DoD trägt (Baseline-Regelwerk
 `modul-06-roadmap.md` §Wann Arbeit eine Welle braucht).
 

@@ -27,8 +27,8 @@ out-of-the-box auf einem Host mit nur git + GNU-Basis-Werkzeugen, und ein
 voller Mutations-Vollsweep über allen 316 Fällen endet im Bericht statt an
 einer Umgebungssperre. Der Container-Weg (gepinnte Images) bleibt als opt-in
 Weg gepinnt und ungestrichen — er ist Werkzeug, nicht Pflicht
-([`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit),
-[`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
+([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit),
+[`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
 Die Umgebung docker-los ist **festgelegt und belegt** nach
 Baseline-Regelwerk `modul-14-docker-harness.md` §Der zweite Träger: der
 Tool-Pin legt fest, der Tool-/Versions-Check (`make environment-check`, erster
@@ -38,7 +38,7 @@ Zwischenzustände sind **geplant, nicht geduldet**: Bis der letzte Rezept-Slice
 schließt, bleibt der Image-Pfad lauffähig unter Docker; der Stop-Hook und die
 CI tragen die Übergangs-Mengen, die Slices ihrer selbst tragen. Ein Carveout
 ist hier die falsche Antwort — genau wie in
-[welle-baseline-sprung-v7-0-0](welle-baseline-sprung-v7-0-0.md) §1.
+[welle-baseline-sprung-v7-0-0](../welle-baseline-sprung-v7-0-0.md) §1.
 
 ## 2. Trigger (Welle startet)
 
@@ -97,18 +97,18 @@ vergessen wird.
 
 | Slice | Titel | Bezug |
 |---|---|---|
-| [slice-cr-lh-qa-02-03-ohne-docker](done/slice-cr-lh-qa-02-03-ohne-docker.md) | CR — Lastenheft-Fortschreibung [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)/03 | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) · [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
-| [slice-adr-gates-laeufen-host-native](done/slice-adr-gates-laeufen-host-native.md) | ADR — Gates und Lab-Läufer docker-los, §3.9-Passung (Architect) | [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
-| [slice-environment-check-fuehrt-die-gates](done/slice-environment-check-fuehrt-die-gates.md) | Tool-/Versions-Check als erster Gate-Check | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
-| [slice-binraire-ziehen-ohne-docker](done/slice-binraire-ziehen-ohne-docker.md) | Binär-Beschaffung ohne Docker (d-check, Träger) | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
-| [slice-labor-gates-host-rezepte](done/slice-labor-gates-host-rezepte.md) | die Gate-Rezepte des Labors laufen host-native | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
-| [slice-waechter-umgebungs-robustheit](done/slice-waechter-umgebungs-robustheit.md) | die Wächter-Suite misst unabhängig von der Werkzeug-Umgebung des Laufs | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
-| [slice-emittierte-gates-host-pfad](done/slice-emittierte-gates-host-pfad.md) | die emittierten Gates fahren host-native | [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
-| [slice-mutate-treiber-host-modi](done/slice-mutate-treiber-host-modi.md) | der Mutations-Treiber fährt docker-los | [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
-| [slice-smoke-und-full-smoke-ohne-docker](done/slice-smoke-und-full-smoke-ohne-docker.md) | `smoke` und `full-smoke` laufen ohne Docker | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
-| [slice-full-smoke-gates-echt-gruen](next/slice-full-smoke-gates-echt-gruen.md) | Restmenge: `full-smoke` laeuft ohne Docker vollgruen | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
-| [slice-ci-runner-ohne-docker](done/slice-ci-runner-ohne-docker.md) | CI auf frischem Klon — ohne Docker-Daemon | [`MR-014`](../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions) |
-| [slice-doku-nachzug-ohne-docker](done/slice-doku-nachzug-ohne-docker.md) | Doku-Nachzug der docker-los-Form | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-cr-lh-qa-02-03-ohne-docker](slice-cr-lh-qa-02-03-ohne-docker.md) | CR — Lastenheft-Fortschreibung [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)/03 | [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) · [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
+| [slice-adr-gates-laeufen-host-native](slice-adr-gates-laeufen-host-native.md) | ADR — Gates und Lab-Läufer docker-los, §3.9-Passung (Architect) | [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
+| [slice-environment-check-fuehrt-die-gates](slice-environment-check-fuehrt-die-gates.md) | Tool-/Versions-Check als erster Gate-Check | [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
+| [slice-binraire-ziehen-ohne-docker](slice-binraire-ziehen-ohne-docker.md) | Binär-Beschaffung ohne Docker (d-check, Träger) | [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
+| [slice-labor-gates-host-rezepte](slice-labor-gates-host-rezepte.md) | die Gate-Rezepte des Labors laufen host-native | [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-waechter-umgebungs-robustheit](slice-waechter-umgebungs-robustheit.md) | die Wächter-Suite misst unabhängig von der Werkzeug-Umgebung des Laufs | [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-emittierte-gates-host-pfad](slice-emittierte-gates-host-pfad.md) | die emittierten Gates fahren host-native | [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
+| [slice-mutate-treiber-host-modi](slice-mutate-treiber-host-modi.md) | der Mutations-Treiber fährt docker-los | [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
+| [slice-smoke-und-full-smoke-ohne-docker](slice-smoke-und-full-smoke-ohne-docker.md) | `smoke` und `full-smoke` laufen ohne Docker | [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-full-smoke-gates-echt-gruen](../next/slice-full-smoke-gates-echt-gruen.md) | Restmenge: `full-smoke` laeuft ohne Docker vollgruen | [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-ci-runner-ohne-docker](slice-ci-runner-ohne-docker.md) | CI auf frischem Klon — ohne Docker-Daemon | [`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions) |
+| [slice-doku-nachzug-ohne-docker](slice-doku-nachzug-ohne-docker.md) | Doku-Nachzug der docker-los-Form | [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 
 ## 5. Abhängigkeiten
 
@@ -117,8 +117,8 @@ vergessen wird.
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Roadmap-Struktur: fünf Abschnitte.
 
-- **Blockiert nichts** — die offenen Wellen ([welle-09](welle-09-modul-15-konformitaet.md),
-  [welle-baseline-sprung-v7-0-0](welle-baseline-sprung-v7-0-0.md)) und die
+- **Blockiert nichts** — die offenen Wellen ([welle-09](../welle-09-modul-15-konformitaet.md),
+  [welle-baseline-sprung-v7-0-0](../welle-baseline-sprung-v7-0-0.md)) und die
   wellenlosen `in-progress`-Slices benutzen die Image-Pfade als lauffähig;
   bis der jeweilige Rezept-Slice schließt (siehe §1). Parallele
   Implementer-Läufe folgen dem WIP-Limit je Lauf (Modul 5).
@@ -139,23 +139,23 @@ der Closure-Trigger unerreichbar wird.
 
 - **Der Release-Schnitt (Tag-Workflow, Tool-Build) bleibt docker-getrieben** —
   er läuft im gepinnten Image, CI-Runner tragen Docker
-  ([ADR-0003](../adr/0003-go-native-binaries.md)); die Welle ändert ihn
-  nicht ([LH-QA-03](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)
+  ([ADR-0003](../../adr/0003-go-native-binaries.md)); die Welle ändert ihn
+  nicht ([LH-QA-03](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)
   nennt den Tool-Build unverändert).
 - **Die gepinnten Image-Pfade entfallen nicht** — sie bleiben opt-in Weg und
-  gepinnt ([LH-QA-02](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)):
+  gepinnt ([LH-QA-02](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)):
   docker-los wird der Pflicht-Pfad, der Image-Pfad bleibt Werkzeug. Ein
   Rückschritt wäre eine Senkung nach §3.5 und brauch eine neue ADR, kein
   Slice dieser Welle.
 - **Die 316 Mutations-Fälle werden nicht umgeschrieben** — der Fall-Bestand
   bleibt; nur die Träger ihrer `# verify:`-Modi wandern (Fall-Anker gemessen
-  je [`MR-071`](../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)).
-- **Die Fall-Plattform-Matrix des Produkts** ([`LH-QA-04`](../../../spec/lastenheft.md#lh-qa-04--plattform-matrix))
+  je [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)).
+- **Die Fall-Plattform-Matrix des Produkts** ([`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix))
   — Cross-Compile und Start-Smoke der sechs GOOS/GOARCH-Kombinationen bleiben,
   wie sie sind; nur der Träger des Voll-Smoke-Nachweises (linux/amd64) wechselt.
 - **macOS- oder Windows-CI für die Host-Läufer** — die Tragung ist eine
   eigene Architektur-Entscheidung, nicht diese Welle. Der Bestand bleibt:
-  [`BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer`](observations/BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer/state.md)
+  [`BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer`](../observations/BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer/state.md)
   (7 Vorgänge, Ausgang *verkörpert*, Auflösungs-Trigger unbefriedigt).
 
 ## 7. Closure-Notiz

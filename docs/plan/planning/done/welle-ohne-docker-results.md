@@ -13,8 +13,8 @@
   `environment-check` erster Check der Kette, `mutate`/`mutate-auswahl`/
   `mutate-branch`, `smoke`/`full-smoke` (host-Bau über Inventar-Pin) — alle
   über `make` am Host ohne Daemon; der opt-in Image-Weg bleibt gepinnt und
-  ungestrichen ([`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit),
-  [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten),
+  ungestrichen ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit),
+  [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten),
   [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)).
 - **Die emittierte Ebene kennt den Weg** — die emittierten Gates-Fragmente
   (mk-Fragen, Dockerfile-Stages, environment-check-Vorlage, Inventar) tragen
@@ -109,7 +109,7 @@ in `done/`, keine offen.
     [`slice-stamp-records-konsum-v1`](../in-progress/slice-stamp-records-konsum-v1.md)
     (in `in-progress/`).
   - Tier-2-Rest-Pfad-Design (Mischform-Rest, Stop-Hook `rest`-Vertrag,
-    [`ADR-0108`](../../adr/0108-die-mischform-der-stop-hook-freigabe.md)) —
+    [`ADR-0108`](../../adr/0108-stempel-synthese-je-check-pruefgegenstand.md)) —
     **geplant**, wellenloser Posten `slice-stamp-records-konsum-v1`
     (derselbe).
   - Der `full-smoke`-Rest-Träger 1a–1d — **geplant**,
@@ -118,9 +118,9 @@ in `done/`, keine offen.
   - **Schritt 4 (Archivierung) ist fail-closed abgebrochen:** `make
     archive-welle` (Exit 3 über `make`) meldet Verweise aus Nicht-Zeit-Dokumenten
     auf die zu archivierenden Berichte —
-    [`harness/conventions/MR-025-eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert.md`](../../../conventions/MR-025-eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert.md)
+    [`harness/conventions/MR-025-eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert.md`](../../../../harness/conventions/MR-025-eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert.md)
     (2 alte Reports 2026-08-28),
-    [`spec/lastenheft.md`](../../../spec/lastenheft.md) (Report 2026-07-28,
+    [`spec/lastenheft.md`](../../../../spec/lastenheft.md) (Report 2026-07-28,
     der Wave-eigene CR-Report) — der Werkzeug-Vertrag verlangt, die Verweise
     erst aufzulösen oder die Referenz im Doku-Gate auszunehmen, mit einer
     ADR ([`ADR-0091`](../../adr/0091-ziel-fassung-regiert-den-sprung-v6180.md)
@@ -198,7 +198,7 @@ in `done/`, keine offen.
 - **Mischform-Grenze der Stop-Hook-Freigabe:** der Stop-Hook fragt
   `gates-keys.sh rest`; solange der Rest nicht leer ist, bleibt die
   je-Check-Freigabe fail-closed — der Rest-Pfad (28 Dateien) ist ein
-  Design-/Plan-Posten je [`ADR-0108`](../../adr/0108-die-mischform-der-stop-hook-freigabe.md),
+  Design-/Plan-Posten je [`ADR-0108`](../../adr/0108-stempel-synthese-je-check-pruefgegenstand.md),
   seine Ausgangs-Belege stehen in den zwei wellenlosen Posten oben.
 
 ## Paarungen je Slice (geprüft, Schritt 3c)
