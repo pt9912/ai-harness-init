@@ -36,15 +36,19 @@
 # Shell-Variable reist.
 #
 # GRENZE brew. Der brew-Zug trägt die gepinnten GitHub-Runner (Linuxbrew
-# voreinstalliert); ein self-hosted Runner ohne brew bricht an der Aufform (Exit 2,
-# fail-closed — die Anwesenheit von actionlint ist Vorab-Form seiner Gates). Die
-# actionlint-Version trägt der homebrew-core-Stand der Besorgung; eine Abweichung
-# vom gepinnten Image-Digest (ACTIONLINT_IMAGE, opt-in Weg) ist Umgebungs-Befund,
+# voreinstalliert, aber NICHT im PATH — der brew-bin-Verzeichniszug reist
+# deshalb an $GITHUB_PATH, sobald brew anwesend ist; der Runner-Form des
+# Environment-Checks belegt das Folgerschritt-PATH). Ein self-hosted Runner
+# ohne brew bricht an der Aufform (Exit 2, fail-closed — die Anwesenheit von
+# actionlint ist Vorab-Form seiner Gates). Die actionlint-Version trägt der
+# homebrew-core-Stand der Besorgung; eine Abweichung vom gepinnten
+# Image-Digest (ACTIONLINT_IMAGE, opt-in Weg) ist Umgebungs-Befund,
 # `make environment-check` belegt die Anwesenheit.
 
 set -euo pipefail
 
 REPO="$(cd "$(dirname "$0")/../.." && pwd)"
+BREW_BIN="/home/linuxbrew/.linuxbrew/bin"
 PLAN_MODE=""
 if [ "${CI_RUNNER_SETUP_PLAN:-}" = "1" ]; then PLAN_MODE=1; fi
 INVENTAR="$REPO/harness/tools/environment-inventory.txt"
@@ -191,15 +195,20 @@ fi
 
 # actionlint: brew-Zug statt apt — das Ubuntu-Repo trägt das Paket nicht (apt bricht
 # an der Zeile), der homebrew-core schon; die Form ist die Host-erprobte Zusage aus
-# .viper.sh (brew install ... actionlint, ohne Flag-Form apt-parallel). Der brew-Pfad
-# kommt am Runner am PATH (Linuxbrew voreinstalliert); trägt der PATH nicht, tritt
-# der Pflicht-Lager-Pfad ein. Der brew-bin-Verzeichniszug ist am Runner-PATH
-# voreingestellt — $GITHUB_PATH braucht keinen Eintrag. Version je homebrew-core-Stand
-# (Prüfform bleibt Anwesenheit, siehe Grenze brew oben); brew fehlt → Exit 2,
-# fail-closed.
+# .viper.sh (brew install ... actionlint, ohne Flag-Form apt-parallel). Trägt der PATH
+# keinen brew, tritt der Pflicht-Lager-Pfad ($BREW_BIN) ein — und sofern der Lauf ein
+# Runner-Job ist ($GITHUB_PATH gesetzt), reist das brew-bin-Verzeichnis an
+# $GITHUB_PATH: der Runner trägt Linuxbrew voreinstalliert, aber NICHT im PATH, ohne
+# den Eintrag sieht der Folgerschritt (environment-check) die installierte Binary
+# nicht. Der Host-Lauf ohne $GITHUB_PATH trägt seinen PATH selbst (.viper.sh-Form) —
+# Grenze hier. Version je homebrew-core-Stand (Prüfform bleibt Anwesenheit, siehe
+# Grenze brew oben); brew fehlt → Exit 2, fail-closed.
 brewform="$(command -v brew || true)"
-if [ -z "$brewform" ] && [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
-	brewform=/home/linuxbrew/.linuxbrew/bin/brew
+if [ -z "$brewform" ] && [ -x "$BREW_BIN/brew" ]; then
+	brewform="$BREW_BIN/brew"
+fi
+if [ -n "$brewform" ] && [ -n "${GITHUB_PATH:-}" ]; then
+	printf '%s\n' "$(dirname "$brewform")" >> "$GITHUB_PATH"
 fi
 if command -v actionlint >/dev/null 2>&1; then
 	meldung actionlint anwesend anwesend "am PATH — OK"
