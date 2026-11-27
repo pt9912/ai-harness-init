@@ -71,6 +71,17 @@ fährt bei Teildrift nur die Checks, deren Schlüssel seit dem letzten grünen
 Lauf driftete, und SKIPpt über dem vollständig gedeckten Satz — bei jedem
 Zweifel der volle Lauf über `make record-gates` (fail-closed).
 
+**Übernimmt:** `slice-environment-check-fuehrt-die-gates` — den je-Check-Key
+für `environment-check` samt seiner Tafel-Menge: das Check-Skript
+`harness/tools/environment-check.sh`, das Inventar
+`harness/tools/environment-inventory.txt` und die `SPEC-099`-Zeile
+(`spec/spezifikation.md`) als eigene Check-Zeile der Prüfgegenstand-Tafel
+(§3) und des Schlüssel-Satzerzeugers. Bis diese Zeile steht, fährt der Check
+stets voll — fail-closed, kein verwertbarer Schlüssel (Festlegung 4-Form, deklariert
+am Makefile-Kommentar der Kante); der Tier-2-Schlüssel-Rückenstand des
+Vorgänger-Slices ist kein Defekt, sondern die Nehmer-Seite dieses Plans, und
+löst sich erst hier, nicht mit dessen Lieferung.
+
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Der Mutations-Treiber bleibt, wie er ist** — sein Beleg-Slot und sein
