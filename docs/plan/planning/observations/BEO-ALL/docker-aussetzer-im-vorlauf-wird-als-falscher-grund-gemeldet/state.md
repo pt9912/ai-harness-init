@@ -13,5 +13,5 @@ Dem `smoke`-Modus ist sie mit
 aus der Vorbedingung entlassen (Rezept host-native: Traeger aus `make host-bin`,
 print-mk und docs-check am d-check-Carrier); `full-smoke` bleibt in ihr, bis die
 Restmenge den Host-Weg trägt — übernimmt
-<!-- d-check:ignore (Platzhalter-Kennung: die Slice-Datei legt der Planner-Closure in next/ an) -->
-`slice-full-smoke-gates-echt-gruen` (§1/§6 der Slice-Datei).
+[slice-full-smoke-gates-echt-gruen](../../../next/slice-full-smoke-gates-echt-gruen.md)
+(§1/§6 der Slice-Datei).

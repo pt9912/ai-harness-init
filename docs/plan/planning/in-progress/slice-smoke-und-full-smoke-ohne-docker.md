@@ -57,8 +57,7 @@ Die Stufen-Deklarationen der E2E-Abdeckung bleiben — der Prüfgegenstand
   dieselbe Form — macOS bleibt ungetragen
   ([`BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer`](../observations/BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer/state.md)).
 - **Die LP2/LP3-Restmenge des docker-losen `full-smoke`** — ein Folge-Slice
-  übernimmt es: [«Übernimmt: slice-full-smoke-gates-echt-gruen»](../next/slice-full-smoke-gates-echt-gruen.md)
-  <!-- d-check:ignore (Platzhalter-Kennung: die Slice-Datei legt der Planner-Closure in next/ an) --> —
+  übernimmt es: [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md) —
   Vorlauf-Wächter-/Doku-Zahn-Stufen über dem emittierten d-check.mk
   (`doc-commits`/`doc-immutable`), die Archiv-Leseprobe (unzip am Inventar), die
   hexslice-/hexagonal-Bootstraps (a-check --print-mk ohne Host-Carrier) und die
