@@ -14,7 +14,10 @@
 # akkumulieren in GATE_CHECKS und record-gates stempelt zuletzt via Ordnungskante)
 # — die Sicht des echten Nutzers, die `make smoke` bewusst NICHT nimmt.
 #
-# Host-Docker + ggf. Netz-Pull -> NICHT in `make gates` (offline-schlank, LH-QA-01);
+# Eingang docker-los (Traeger aus `host-bin`, ADR-0109) + die doc-only/go-Stufen am
+# d-check-Carrier (wenn er vorliegt); die Rest-Stufen (Archiv-Leseprobe, hexslice-/
+# hexagonal-Bootstraps ueber a-check --print-mk, nicht-Go-Code-Gates) bleiben am
+# Daemon — ggf. Netz-Pull -> NICHT in `make gates` (offline-schlank, LH-QA-01);
 # gehoert an DoD-Verify/CI/Wellen-Closure. Logik in harness/tools/ (shell-lint deckt sie).
 set -euo pipefail
 
@@ -103,6 +106,9 @@ einordnen() {
 # NICHT geprueft: dass die Bytes einer Quelle gleichen — das haelt allein die Probe des
 # Traegers; und dass die Datei nach dem Lauf lesbar BLEIBT. Der Lauf braucht Docker (nicht
 # `unzip`); der Pin wird aus dem Makefile gelesen, `BATS_IMAGE` aus der Umgebung geht vor.
+# Grenze: die Leseprobe ist am Daemon-weg — am Host traegt das Inventar kein `unzip`
+# (harness/tools/environment-inventory.txt), seine docker-los Fassung ist ein eigener
+# Schnitt; bis dahin endet der docker-lose Teillauf an dieser Stufe.
 # Rueckgabe 0 gueltig, 1 mit dem Grund auf stdout.
 archiv_gueltig() {
 	local zip="$1" eintrag liste img out
@@ -503,8 +509,25 @@ review_vorlagen_im_ziel() {
 # ARTIFACT_TARGET waehlt, WIE das Binary auf den Host kommt: `artifact` (Default,
 # byte-identisch, slice-048/LH-QA-04) oder `artifact-host` (fuer den Host
 # cross-kompiliert — additiv, fuer Hosts, deren Kernel/Architektur vom Docker-
-# Build-Image abweicht; s. Makefile `full-smoke-host`).
-ARTIFACT_TARGET="${SMOKE_ARTIFACT_TARGET:-artifact}"
+# Build-Image abweicht; s. Makefile `full-smoke-host`) — docker-los Default ist
+# `host-bin` (go am Host, je Lauf frisch — ADR-0109).
+ARTIFACT_TARGET="${SMOKE_ARTIFACT_TARGET:-host-bin}"
+
+# DER D-CHECK-CARRIER — wenn er vorliegt (Umgebung DCHECK_CARRIER oder die fetched
+# Ablage dieses Labors, make dcheck-fetch), faehrt ihn jede Bootstrap- und
+# gates-Auflage unten per Umgebungs-Prefix; LEER laesst den Docker-Rueckfall (opt-in
+# Weg, ADR-0109). Nicht exportiert: die hexslice-/hexagonal-Bootstraps holen
+# a-check --print-mk, und d-check-Carrier und a-check-Bild sind zwei Binary — ein
+# globaler Export wuerde dort "unerwartete --print-mk-ausgabe" statt des Daemon-Zugs
+# melden. Grenze der docker-losen Deckung: die Archiv-Leseprobe liest ihr Archiv im
+# gepinnten Bild (archiv_gueltig, BATS_IMAGE) — unzip traegt das Inventar am Host
+# nicht; weiter die hexslice-/hexagonal-Bootstraps (a-check ohne Host-Carrier) und
+# die nicht-Go-Code-Gates des Mono-Repos (Docker-Builds) — alles Daemon-weg.
+dcheck_carrier="${DCHECK_CARRIER:-}"
+if [ -z "$dcheck_carrier" ] && [ -x "$HIER/../../.harness/state/bin/d-check" ]; then
+	dcheck_carrier="$HIER/../../.harness/state/bin/d-check"
+fi
+
 echo "full-smoke: 1/3 natives Release-Binary auf den Host extrahieren (make $ARTIFACT_TARGET) ..."
 	e2e_abdeckung "LH-FA-01" "Produkt-Traeger liegt auf dem Host; ohne ihn laeuft kein Ziel-Bootstrap" "das Release-Binary kam nicht auf den Host"
 # Die Ausgabe wird EINGEFANGEN und danach gedruckt, statt zu stroemen: nur eingefangen
@@ -549,7 +572,12 @@ for baum_lang in sprachlos go cpp kotlin java python csharp; do
 	baum_args=(--name full-smoke-baum)
 	[ "$baum_lang" = sprachlos ] || baum_args=(--lang "$baum_lang" "${baum_args[@]}")
 	baum_rc=0
-	baum_out="$( "$tmpbin/ai-harness-init" "${baum_args[@]}" "$baum_ziel" 2>&1 )" || baum_rc=$?
+	# Der Env-Prefix richtet beides: den print-mk-Lauf am Carrier, wenn er liegt, und
+	# den Go-Skelett-Pin am GO_VERSION des Labors (der Tool-Default 1.27.3 und der
+	# Labor-Pin 1.27.4 driften, und der Tool-/Versions-Check im Ziel haelt das
+	# emittierte Soll gegen die Host-Version — ohne den Prefix faerbt der Ziel-gates
+	# der go-Variante an der go-Zeile des Inventars).
+	baum_out="$( DCHECK_CARRIER="$dcheck_carrier" SKEL_GO_VERSION="$GO_VERSION" "$tmpbin/ai-harness-init" "${baum_args[@]}" "$baum_ziel" 2>&1 )" || baum_rc=$?
 	if [ "$baum_rc" -ne 0 ]; then
 		printf '%s\n' "$baum_out"
 		echo "full-smoke: FEHLER — der Bootstrap ($baum_lang) der Stufe Handbuch-Baum ist NICHT Exit 0 (Exit $baum_rc)." >&2
@@ -571,7 +599,11 @@ echo "full-smoke: 2/3 Bootstrap (--lang go --name full-smoke) in ein leeres tmp-
 # Arbeitsverzeichnis des Laufs ist nicht das Ziel — die Ziel-Aufloesung aus dem
 # Argument (LH-FA-01) wird hier am echten Lauf gemessen.
 init_rc=0
-init_out="$( "$tmpbin/ai-harness-init" --lang go --name full-smoke "$tmprepo" 2>&1 )" || init_rc=$?
+# Env-Prefix wie in der Stufe Handbuch-Baum: print-mk am Carrier (wenn er liegt,
+# leer -> Daemon-Rueckfall) und der Go-Skelett-Pin am Labor-Pin GO_VERSION — ohne ihn
+# traegt das emittierte Inventar das Soll des Tool-Defaults (1.27.3) und der
+# Ziel-gates faerbt am Tool-/Versions-Check (go-Zeile), bevor er misst.
+init_out="$( DCHECK_CARRIER="$dcheck_carrier" SKEL_GO_VERSION="$GO_VERSION" "$tmpbin/ai-harness-init" --lang go --name full-smoke "$tmprepo" 2>&1 )" || init_rc=$?
 printf '%s\n' "$init_out"
 if [ "$init_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — der Bootstrap (--lang go) ist NICHT Exit 0 (Exit $init_rc)." >&2
@@ -601,7 +633,10 @@ git init -q "$tmprepo"
 echo "full-smoke: 3/3 im Ziel: make -j gates (der zusammengefuehrte Einstiegspunkt, Fragment-Assembly slice-034) ..."
 	e2e_abdeckung "LH-FA-01 LH-FA-03 LH-FA-06 LH-FA-08 LH-FA-09 LH-FA-10 LH-FA-13 LH-FA-15 LH-FA-16 LH-FA-17 LH-QA-01 LH-QA-03" "Das gates des Ziels laeuft vollstaendig, nicht als stille Teilmenge; die Erfassung ist nur teilweise gemessen (FA-13: Pflichtfeld-Schluessel und Feldlisten-Abgleich; FA-15: Rolle besetzt und leer heisst unbekannt, nicht tool_response.agentType, nicht die Lesevorschrift; FA-16: Aufbewahrung und fail-open fuer einen gueltigen Payload; FA-17: nur Abdeckung zuerst)" "stilles Teilmengen-Gate"
 gates_rc=0
-gates_out="$( make -j -C "$tmprepo" gates 2>&1 )" || gates_rc=$?
+# Der Carrier-Prefix (wenn er liegt, leer -> Daemon-Rueckfall) richtet den
+# docs-check-host der emittierten Kette am Host; ohne ihn faerbt der Lauf an der
+# fail-closed Diagnose des Fragments, bevor die Go-Gates messen.
+gates_out="$( DCHECK_CARRIER="$dcheck_carrier" make -j -C "$tmprepo" gates 2>&1 )" || gates_rc=$?
 printf '%s\n' "$gates_out"
 if [ "$gates_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates im emittierten Repo ist NICHT Exit 0 (LH-FA-01 Happy-Path verletzt)." >&2
@@ -611,7 +646,9 @@ fi
 
 # LH-QA-01: `make gates` muss die BEHAUPTETEN Gates WIRKLICH fahren, nicht still eine
 # Teilmenge. Belege im Lauf-Output, dass ALLE Checks liefen: die drei Go-Gates
-# (Dockerfile-Stages, per make-Recipe-Echo `--target <stage>`), das Doc-Gate (d-check
+# (emittiert host-native, per make-Recipe-Echo `golangci-lint run` / `go build` /
+# `go test ./...` — die Docker-Stage-Fassung echo't `--target <stage>` und bleibt der
+# opt-in Weg), das Doc-Gate (d-check
 # druckt "… Datei(en) geprueft") UND baseline-verify (seit slice-034 verdrahtet, sein
 # Erfolgs-Satz "Integritaet + Vollstaendigkeit"). Ein gruenes make gates ueber einer
 # stillen Teilmenge waere ein halluziniertes Gate. Die Marker decken zugleich die
@@ -627,7 +664,7 @@ fi
 # schreibt noch, wenn grep frueh matcht) -> in CI beim langen apt-Log des C++-Bildes rot,
 # lokal gruen (Race). Der Here-String hat keinen Producer-Prozess -> kein EPIPE (slice-039).
 missing=""
-for marker in "--target lint" "--target build" "--target test" "geprüft" "Integritaet + Vollstaendigkeit"; do
+for marker in "golangci-lint run" "go build -trimpath" "go test ./" "geprüft" "Integritaet + Vollstaendigkeit"; do
 	grep -qF -- "$marker" <<<"$gates_out" || missing="$missing [$marker]"
 done
 if [ -n "$missing" ]; then
@@ -1706,7 +1743,9 @@ archivierung_im_ziel() {
 	# DIE VORBEDINGUNG STEHT ZUERST: die Zusicherung "archive-welle steht nicht in
 	# der Kette" ist ueber einer leeren Kette still gruen. Gelesen wird darum, dass
 	# die Kette die Gate-Rezepte traegt, die jeder Bootstrap fahrt — der Nachweis,
-	# die Baseline-Pruefung und der Modul-Lauf in seinem Bild. Die Marker sind
+	# die Baseline-Pruefung und der Modul-Lauf des Doku-Gates, emittiert am
+	# Carrier-Ablagepfad (docs-check-host, ".harness/state/bin/d-check"; die Docker-
+	# Fassung des Laufs bleibt der opt-in Weg). Die Marker sind
 	# REZEPT-Zeilen: `make -n` druckt die Befehle, nicht die Ziel-Namen.
 	local kette="" kette_rc=0 fehlt=""
 	kette="$( make --no-print-directory -C "$repo" -n gates 2>&1 )" || kette_rc=$?
@@ -1716,7 +1755,7 @@ archivierung_im_ziel() {
 		exit 1
 	fi
 	local noetig
-	for noetig in 'record-gates.sh' 'baseline-verify.sh' 'docker run'; do
+	for noetig in 'record-gates.sh' 'baseline-verify.sh' 'state/bin/d-check'; do
 		grep -qF -- "$noetig" <<<"$kette" || fehlt="$fehlt [$noetig]"
 	done
 	if [ -n "$fehlt" ]; then
@@ -2395,7 +2434,7 @@ SMOKEEOF
 		printf '%s\n' "$kette" >&2
 		exit 1
 	fi
-	for noetig in 'record-gates.sh' 'baseline-verify.sh' 'docker run'; do
+	for noetig in 'record-gates.sh' 'baseline-verify.sh' 'state/bin/d-check'; do
 		grep -qF -- "$noetig" <<<"$kette" || fehlt="$fehlt [$noetig]"
 	done
 	if [ -n "$fehlt" ]; then
@@ -2653,7 +2692,7 @@ fi
 # tmp-Repo (der --lang-go-Lauf oben bleibt der One-Shot).
 echo "full-smoke: doc-only Bootstrap (OHNE --lang) in ein zweites tmp-Repo ..."
 	e2e_abdeckung "LH-FA-01 LH-FA-10 LH-FA-13" "Dieselbe Harness ohne Sprachskelett; die zweite Bootstrap-Variante" "die Rollen-Typen sind sprach-agnostisch und UNBEDINGT"
-( "$tmpbin/ai-harness-init" --name full-smoke-doc "$tmprepo_doc" )
+( DCHECK_CARRIER="$dcheck_carrier" "$tmpbin/ai-harness-init" --name full-smoke-doc "$tmprepo_doc" )
 # slice-097, zweite Variante: die Rollen-Typen sind sprach-agnostisch und UNBEDINGT —
 # sie haengen an keinem Laufzeit-Ausgang. Auch hier vor dem Gate-Lauf.
 baum_aussagen_im_ziel "$tmprepo_doc" "sprachlos"
@@ -2665,7 +2704,7 @@ git init -q "$tmprepo_doc"
 echo "full-smoke: doc-only im Ziel: make -j gates (docs-check + baseline-verify + record-gates, KEIN Code-Gate) ..."
 	e2e_abdeckung "LH-FA-01 LH-FA-06 LH-FA-10 LH-FA-13 LH-FA-15 LH-FA-16 LH-FA-17 LH-QA-01" "Das sprachlose Ziel faehrt ein reines Doku-Gate, ohne Code-Gate; die Erfassung ist nur teilweise gemessen (FA-13: Pflichtfeld-Schluessel und Feldlisten-Abgleich; FA-15: Rolle besetzt und leer heisst unbekannt, nicht tool_response.agentType, nicht die Lesevorschrift; FA-16: Aufbewahrung und fail-open fuer einen gueltigen Payload; FA-17: nur Abdeckung zuerst)" "sprachloser make gates ist NICHT Exit 0"
 doc_rc=0
-doc_out="$( make -j -C "$tmprepo_doc" gates 2>&1 )" || doc_rc=$?
+doc_out="$( DCHECK_CARRIER="$dcheck_carrier" make -j -C "$tmprepo_doc" gates 2>&1 )" || doc_rc=$?
 printf '%s\n' "$doc_out"
 if [ "$doc_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — sprachloser make gates ist NICHT Exit 0 (doc-only-Gate verletzt, LH-FA-01/slice-035)." >&2
@@ -2724,8 +2763,8 @@ traeger_im_ziel "$tmprepo_doc" "sprachlos"
 # faehrt danach ZUSAETZLICH die modul-scoped Go-Gates BEIDER Module (Build-Kontext je <pfad>).
 echo "full-smoke: add-lang go apps/api + apps/web ins doc-only-Repo (Mono-Repo, wiederholbar, slice-037) ..."
 	e2e_abdeckung "LH-FA-04 LH-QA-01" "Zwei Sprachmodule in einem Ziel koexistieren, ihre Gates laufen beide" "Mono-Repo/Wiederholbarkeit kaputt"
-( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang go apps/api )
-( cd "$tmprepo_doc" && "$tmpbin/ai-harness-init" add-lang go apps/web )
+( cd "$tmprepo_doc" && DCHECK_CARRIER="$dcheck_carrier" SKEL_GO_VERSION="$GO_VERSION" "$tmpbin/ai-harness-init" add-lang go apps/api )
+( cd "$tmprepo_doc" && DCHECK_CARRIER="$dcheck_carrier" SKEL_GO_VERSION="$GO_VERSION" "$tmpbin/ai-harness-init" add-lang go apps/web )
 for rel in apps/api/go.mod apps/api/Dockerfile apps/api/cmd/app/main.go harness/mk/apps-api.mk \
            apps/web/go.mod harness/mk/apps-web.mk tools/harness/blocked/go; do
 	if [ ! -e "$tmprepo_doc/$rel" ]; then
@@ -2734,19 +2773,21 @@ for rel in apps/api/go.mod apps/api/Dockerfile apps/api/cmd/app/main.go harness/
 	fi
 done
 addlang_rc=0
-addlang_out="$( make -j -C "$tmprepo_doc" gates 2>&1 )" || addlang_rc=$?
+addlang_out="$( DCHECK_CARRIER="$dcheck_carrier" make -j -C "$tmprepo_doc" gates 2>&1 )" || addlang_rc=$?
 printf '%s\n' "$addlang_out"
 if [ "$addlang_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates nach add-lang ist NICHT Exit 0 (Mono-Repo-Modul kaputt, slice-037)." >&2
 	einordnen "make -j gates nach add-lang go (apps/api + apps/web)" "$addlang_out"
 	exit 1
 fi
-# Beide modul-scoped Go-Gates MUESSEN gelaufen sein: die --target-Echos (Go-Gate lief) UND
-# beide Build-Kontexte (apps/api + apps/web) im Recipe-Echo — waere ein Target kollidiert
+# Beide modul-scoped Go-Gates MUESSEN gelaufen sein: die Recipe-Echos der emittierten
+# host-native Ziele (cd apps/<m> && golangci-lint/go test — der Marker "golangci-lint
+# run" ist je Modul-Ziel gleich, die Kontexte stehen im cd-echo) UND beide
+# Build-Kontexte (apps/api + apps/web) im Recipe-Echo — waere ein Target kollidiert
 # (unscoped `test`), liefe nur EIN Modul, ein Kontext fehlte -> hier rot (LH-QA-01,
 # Mono-Repo-Kollisionsfreiheit).
 addlang_missing=""
-for marker in "--target lint" "--target build" "--target test" "apps/api" "apps/web"; do
+for marker in "golangci-lint run" "go test ./" "apps/api" "apps/web"; do
 	grep -qF -- "$marker" <<<"$addlang_out" || addlang_missing="$addlang_missing [$marker]"
 done
 if [ -n "$addlang_missing" ]; then
@@ -5474,7 +5515,7 @@ kennungs_traeger_im_ziel() {
 		exit 1
 	fi
 	local noetig
-	for noetig in 'record-gates.sh' 'baseline-verify.sh' 'docker run'; do
+	for noetig in 'record-gates.sh' 'baseline-verify.sh' 'state/bin/d-check'; do
 		grep -qF -- "$noetig" <<<"$kette" || fehlt="$fehlt [$noetig]"
 	done
 	if [ -n "$fehlt" ]; then

@@ -545,6 +545,7 @@ mein-projekt/
 │       ├── doc-gate.mk                make history-range-guard, doc-immutable, doc-commits
 │       ├── e2e-abdeckung.mk           make e2e-abdeckung
 │       ├── enforce.mk                 make record-gates
+│       ├── environment.mk             make environment-check (erster Check der Kette)
 │       ├── erfassung.mk               make span-report, span-clean
 │       ├── hooks-install.mk           make hooks-install
 │       ├── selbstpruefung.mk          make selbstpruefung
@@ -575,7 +576,10 @@ mein-projekt/
 │       ├── .gitattributes             Zeilenenden LF
 │       ├── baseline-verify.sh         prüft das mitgelieferte Regelwerk gegen seine Prüfsummen
 │       ├── commit-msg-traceability.sh prüft eine Commit-Message auf eine Kennung
+│       ├── dcheck-fetch.sh            holt das d-check-Programm nach der Ablage (Netz an diesem Aufruf)
 │       ├── e2e-abdeckung.sh           erzeugt die Abdeckungs-Sicht
+│       ├── environment-check.sh       prüft die Werkzeuge der Umgebung gegen das Inventar
+│       ├── environment-inventory.txt  das Inventar des Tool-/Versions-Checks
 │       ├── extract-command.awk        zerlegt einen Befehl für den Command-Guard
 │       ├── history-range-guard.sh     prüft eine Commit-Range vor einem history-lesenden Lauf
 │       ├── record-gates.sh            schreibt den Nachweis eines grünen make gates
