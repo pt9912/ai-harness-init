@@ -45,36 +45,42 @@
 # Menge den gelesenen Bestand eines Checks nicht, faehrt der Check voll
 # (Plan §6, Ausgang: deklarierter Bestand). Die Glob-Lesung deckt jede Tiefe
 # (glob_zu_regex: `*` durchlaeuft Trenner); die Walk-Zeilen sind ./-frei.
-#   environment-check:  liest sein Skript, das Inventar und die SPEC-099-Zeile
+#   environment-check:  liest das Rezept (Makefile), sein Skript, das Inventar
+#                       und die SPEC-099-Zeile
 #                       in spec/spezifikation.md — ./spec/*.md deckt die Datei.
-#   docs-check-host:    liest .d-check.yml, d-check.mk und alle .md des
-#                       Pruefbereichs vermindert um die scan.ignore-Ausschluesse
-#                       (tafel_ausschluss); Rest: der d-check-Traeger
-#                       (Zustands-Ablage, kein Walk-Artefakt).
-#   baseline-verify:    liest sein Skript und den vendored Baum inkl.
-#                       SHA256SUMS im Tag-Verzeichnis (am Wurzelpfad liegt
-#                       keine — der Eintrag dort entfaellt); die Pin-Kopplung
-#                       bleibt konservativ, sie ist lauf-fern.
-#   lint, build, test:  lesen die Go-Quellen und die Modul-Daten am Host-Weg —
-#                       Dockerfile bleibt als Image-Weg-Kopplung; Rest: die
-#                       Go-Toolchain- und bats-Fassung (Host-Werkzeug,
+#   docs-check-host:    liest das Rezept (Makefile), .d-check.yml, d-check.mk
+#                       und alle .md des Pruefbereichs vermindert um die
+#                       scan.ignore-Ausschluesse (tafel_ausschluss); Rest: der
+#                       d-check-Traeger (Zustands-Ablage, kein Walk-Artefakt).
+#   baseline-verify:    liest das Rezept (Makefile), sein Skript und den
+#                       vendored Baum inkl. SHA256SUMS im Tag-Verzeichnis (am
+#                       Wurzelpfad liegt keine — der Eintrag dort entfaellt);
+#                       die Pin-Kopplung bleibt konservativ, sie ist lauf-fern.
+#   lint, build, test:  lesen das Rezept (Makefile), die Go-Quellen und go.mod
+#                       am Host-Weg — go.sum liegt im Bestand nicht (kein
+#                       Eintrag); Dockerfile bleibt als Image-Weg-Kopplung;
+#                       Rest: die Go-Toolchain- und bats-Fassung (Host-Werkzeug,
 #                       ADR-0108 Festlegung 4).
-#   shell-lint:         liest genau die Rezept-Listen (shellcheck ueber die
-#                       vier Quell-Baeume plus .githooks, bats-lint ueber
-#                       test/*.bats); .claude/settings.json und
-#                       .codex/hooks.json liegen im Zuordnungs-Rest
-#                       (Waechter-Verdrahtung, kein Check urteilt).
+#   shell-lint:         liest das Rezept (Makefile) und genau die
+#                       Rezept-Listen (shellcheck ueber die vier Quell-Baeume
+#                       plus .githooks, bats-lint ueber test/*.bats);
+#                       .claude/settings.json und .codex/hooks.json liegen im
+#                       Zuordnungs-Rest (Waechter-Verdrahtung, kein Check
+#                       urteilt).
 #   ci-lint:            actionlint liest .github/** (jede Tiefe, Workflows und
 #                       lokale Actions); der Makefile-Eintrag koppelt die
 #                       Pin-Stelle.
-#   comment-claims:     liest genau die ls-files-Listen des Rezepts (Go ohne
-#                       _test.go — derselbe Ausschluss in tafel_ausschluss).
-#   register-ausgang:   liest sein Skript und das Register unter observations.
+#   comment-claims:     liest das Rezept (Makefile) und genau die
+#                       ls-files-Listen des Rezepts (Go ohne _test.go — derselbe
+#                       Ausschluss in tafel_ausschluss).
+#   register-ausgang:   liest das Rezept (Makefile), sein Skript und das
+#                       Register unter observations.
 #   mutate-greift:      liest den Treiber, die Fall-Skripte und das Rezept
 #                       (Makefile); test/fixtures konservativ.
 #   host-bin:           go build kompiliert die cmd-Quellen samt ihrer
 #                       internal-Abhaengigkeiten und liest die Modul-Daten
-#                       (go.mod, go.sum); Rest: die Plattform-Auswertung
+#                       (go.mod; go.sum liegt im Bestand nicht — kein Eintrag);
+#                       Rest: die Plattform-Auswertung
 #                       (uname) und die Versions-Aufloesung (git).
 #   span-check:         liest sein Skript, das Rezept (Traeger-Pfad) und die
 #                       Deklaration der Verdrahtungssaetze in
@@ -127,6 +133,7 @@ tafel_menge() {
     environment-check)
       # die SPEC-099-Zeile lebt in der Datei — die Menge deckt die Datei (nicht kleiner).
       printf '%s\n' \
+        './Makefile' \
         './harness/tools/environment-check.sh' \
         './harness/tools/environment-inventory.txt' \
         './spec/*.md'
@@ -136,39 +143,41 @@ tafel_menge() {
       # der Fast-Pfad am Skript-Drift; die SHA256SUMS-Stelle lebt im
       # Tag-Verzeichnis (der Baum-Glob deckt sie, am Wurzelpfad liegt keine).
       printf '%s\n' \
+        './Makefile' \
         './harness/tools/baseline-verify.sh' \
         './.harness/baseline/*' \
         './internal/fetch/baseline.go'
         ;;
     docs-check-host)
       printf '%s\n' \
+        './Makefile' \
         './.d-check.yml' \
         './d-check.mk' \
         './*.md'
         ;;
     lint)
       printf '%s\n' \
+        './Makefile' \
         './.golangci.yml' \
         './Dockerfile' \
         './go.mod' \
-        './go.sum' \
         './internal/*.go' \
         './cmd/*.go' \
         './internal/emit/templates/enforce/*.sh'
         ;;
     build)
       printf '%s\n' \
+        './Makefile' \
         './Dockerfile' \
         './go.mod' \
-        './go.sum' \
         './internal/*.go' \
         './cmd/*.go'
         ;;
     test)
       printf '%s\n' \
+        './Makefile' \
         './Dockerfile' \
         './go.mod' \
-        './go.sum' \
         './internal/*.go' \
         './cmd/*.go' \
         './test/*'
@@ -177,6 +186,7 @@ tafel_menge() {
       # .claude/settings.json und .codex/hooks.json sind Wächter-Verdrahtung,
       # die kein Check urteilt — sie liegen im deklarierten Zuordnungs-Rest.
       printf '%s\n' \
+        './Makefile' \
         './.claude/hooks/*.sh' \
         './.githooks/*' \
         './harness/tools/*.sh' \
@@ -192,6 +202,7 @@ tafel_menge() {
         ;;
     comment-claims)
       printf '%s\n' \
+        './Makefile' \
         './internal/*.go' \
         './cmd/*.go' \
         './harness/tools/*.sh' \
@@ -200,6 +211,7 @@ tafel_menge() {
         ;;
     register-ausgang)
       printf '%s\n' \
+        './Makefile' \
         './harness/tools/register-ausgang.sh' \
         './docs/plan/planning/observations/*'
         ;;
@@ -212,12 +224,13 @@ tafel_menge() {
         ;;
     host-bin)
       # go build kompiliert die cmd-Quellen samt internal-Abhaengigkeiten und
-      # liest die Modul-Daten — ohne den Eintrag SKIPpt der Fast-Pfad am
-      # Bau-Drift, ohne den Bau zu fahren (Rezept-Form, nicht Traeger-Inhalt).
+      # liest die Modul-Daten (go.mod; go.sum liegt im Bestand nicht und der
+      # Eintrag entfaellt hier je Form der Menge) — ohne den Eintrag SKIPpt der
+      # Fast-Pfad am Bau-Drift, ohne den Bau zu fahren (Rezept-Form, nicht
+      # Traeger-Inhalt).
       printf '%s\n' \
         './Makefile' \
         './go.mod' \
-        './go.sum' \
         './cmd/*.go' \
         './internal/*.go'
         ;;

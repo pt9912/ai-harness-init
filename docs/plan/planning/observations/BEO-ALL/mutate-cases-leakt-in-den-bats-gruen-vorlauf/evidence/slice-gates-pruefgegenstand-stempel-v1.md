@@ -17,9 +17,13 @@ ist unschuldig: dieselbe Hand-Mutation an der realen Datei mit direktem
 `make test-bats BATS_TARGET=<datei>` faärbt die erwartete Rot-Menge
 (`801`: Tests 1/2/7 von `test/traeger-fetch-host.bats`, gemessen 2026-11-27).
 
-Grenze der Messung: die zwei `make mutate`-Teilläufe des Belegs enden jeweils
-mit den Befunden `vollstaendigkeit`/`zeit-bilanz` (kein Fall-Ergebnis); die
-Lage wurde drei Mal gesehen (zwei 801-Teilläufe bei Stallschranke 900 s und
-2700 s, einer davon mit dem Zusatzbefund `host-baum` durch einen parallelen
-Lauf). Nicht gemessen: ob CI-Shards (`mutate.yml`) dieselbe Lesung tragen —
-derselbe Mechanismus spricht dafür, die CI-Loge ist nicht gelesen.
+Grenze der Messung: die Lage wurde 3x gesehen, je Sicht ein Teillauf desselben
+Falls `801-traeger-host-digest-entzaubert` — (1) bei Stallschranke 900 s,
+(2) bei Stallschranke 900 s mit dem Zusatzbefund `host-baum` (der Zusatzbefund
+gehoert dem parallelen Lauf, der waehrend des Zugs eine Fall-Zieldatei
+anfasste, und schliesst nicht aus, dass die Lage dieselbe ist), (3) bei
+vergroesserter Stallschranke 2700 s. Sichten 1 und 2 enden mit den Befunden
+`vollstaendigkeit`/`zeit-bilanz` (kein Fall-Ergebnis); Sicht 3 dito bei der
+vergroesserten Schranke. Nicht gemessen: ob CI-Shards (`mutate.yml`) dieselbe
+Lesung tragen — derselbe Mechanismus spricht dafuer, die CI-Logs sind nicht
+gelesen.

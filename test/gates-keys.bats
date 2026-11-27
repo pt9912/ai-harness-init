@@ -129,8 +129,9 @@ setup() {
 	# internal-Abhaengigkeiten und liest die Modul-Daten. Deckt die Menge einen
 	# Bestandteil nicht, SKIPpt der Fast-Pfad am Bau-Drift, ohne den Bau zu
 	# fahren. go.sum liegt im Bestand NICHT vor (der Modul-Kontext traegt keine
-	# Abhaengigkeit) — die Menge-Zeile ist inert fuer den heutigen Walk, dieselbe
-	# Form liest lint/build/test; gemessen wird der Bestand, nicht seine Zukunft.
+	# Abhaengigkeit) — die Menge traegt den Eintrag nicht (Review F-3); der
+	# Form-Schritt unten schraenkt auf bestehende Dateien, ein kuenftiger
+	# go.sum-Beitrag ist ein Menge-Zuschlag mit eigener Begruendung am Eintrag.
 	run bash "$KEYS" --wurzel "$REPO" menge host-bin
 	[ "$status" -eq 0 ]
 	for form in 'Makefile' 'go.mod' 'go.sum'; do
@@ -141,6 +142,39 @@ setup() {
 	echo "cmd-Quelle (Zusage: mindestens eine Zeile unter cmd/, internal-Quelle dito unter internal/)"
 	[ -n "$(grep '^cmd/' <<<"$output" | head -1)" ]
 	[ -n "$(grep '^internal/' <<<"$output" | head -1)" ]
+}
+
+@test "keys: die Rezeptzeilen der Kante liegen in den Mengen (Makefile je Check)" {
+	# JEDES Check-Rezept der Kante lebt im Makefile — deckt die Menge es nicht,
+	# entzaubert der Rezept-Edit den je-Check-Key (golangci-lint run driftet
+	# keinen Key, der Fast-Pfad SKIPpt über alter Urteils-Basis; Review F-1).
+	while IFS= read -r check; do
+		[ -n "$check" ] || continue
+		run bash "$KEYS" --wurzel "$REPO" menge "$check"
+		[ "$status" -eq 0 ]
+		echo "Check [$check]: Rezept-Kopplung fuer [Makefile] (Zusage: eine Zeile der Menge)"
+		grep -qxF 'Makefile' <<<"$output"
+	done < <(bash "$KEYS" --wurzel "$REPO" liste)
+}
+
+@test "keys: der Rezept-Edit der Kante dreht den je-Check-Key" {
+	# DIE ZAEHNE des Rezept-Koppels am Minibestand: Rezept-Zeile im Makefile der
+	# Fixture-Wurzel ändern, und der lint-Key driftet — dieselbe Form wie der
+	# Rezept-Edit am gelebten Makefile. Der .golangci.yml-Füller hält die Menge
+	# vor dem Fix nicht leer (leere Menge wäre fail-closed-Rot am falschen Grund).
+	FIX=$(mktemp -d)
+	(
+		mkdir -p "$FIX"
+		printf '%s\n' 'record-gates: lint ## Checks + Nachweis' '' 'lint: ## x' '	golangci-lint run ./...' > "$FIX/Makefile"
+		printf 'inhalt\n' > "$FIX/.golangci.yml"
+		k1="$(bash "$KEYS" --wurzel "$FIX" key lint)"
+		sed -i 's/^\t\(golangci-lint run \)\.\/\.\.\./\t\1.\/... -einstellung/' "$FIX/Makefile"
+		k2="$(bash "$KEYS" --wurzel "$FIX" key lint)"
+		printf 'vor=%s nach-rezept=%s\n' "$k1" "$k2"
+		[ -n "$k1" ] && [ -n "$k2" ]
+		[ "$k1" != "$k2" ]
+	)
+	rm -rf "$FIX"
 }
 
 @test "keys: der Schreiber bleibt record-gates (voller Lauf schreibt je Check)" {
