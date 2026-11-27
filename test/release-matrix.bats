@@ -132,12 +132,23 @@ mk_platforms() {
 }
 
 @test "release: die Bau-Rezepte reichen TRAEGER_VERSION an die build-Stage" {
+  # Zwei Wege, dieselbe Injektion (ADR-0109): die drei Image-Rezepte per
+  # --build-arg, die zwei Host-Rezepte per ldflags-Operand — der leere Wert
+  # laesst den Operanden in beiden Faellen FEHLEN (byte-identischer Default-Pfad).
   local ziel rezept
-  for ziel in build artifact-host host-bin release-artifacts; do
+  for ziel in build-image artifact-host host-bin-image release-artifacts; do
     rezept="$(sed -n "/^$ziel:/,/^$/p" "$MK")"
     [ -n "$rezept" ]
     if ! grep -qF -- '--build-arg TRAEGER_VERSION="$(TRAEGER_VERSION)"' <<<"$rezept"; then
       echo "Rezept $ziel reicht TRAEGER_VERSION nicht durch" >&2
+      return 1
+    fi
+  done
+  for ziel in build host-bin; do
+    rezept="$(sed -n "/^$ziel:/,/^$/p" "$MK")"
+    [ -n "$rezept" ]
+    if ! grep -qF -- '-s -w$(if $(TRAEGER_VERSION), -X main.fassung=$(TRAEGER_VERSION))' <<<"$rezept"; then
+      echo "Host-Rezept $ziel injiziert TRAEGER_VERSION nicht (ldflags-Form)" >&2
       return 1
     fi
   done

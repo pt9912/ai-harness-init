@@ -34,16 +34,22 @@
 #      Die d-check-Anwesenheit ist AUSDRUECKLICH erweitert (nicht still): außer
 #      dem PATH traegt sie die fetched Ablage .harness/state/bin/d-check
 #      (probe_dcheck_ablage, make dcheck-fetch) — Inventar-Zeile d-check,
-#      Grund-Spalte · seit slice-binraire-ziehen-ohne-docker.
+#      Grund-Spalte · seit slice-binraire-ziehen-ohne-docker. Die
+#      golangci-lint-Zeile trägt dagegen die reine PATH-Probe (wie die
+#      bats-/shellcheck-/actionlint-Zeilen): die Besorgung des Werkzeugs
+#      trägt die Umgebung
+#      (Baseline-Regelwerk modul-14 §Der zweite Träger), der Check belegt sie;
+#      seine Prüfform ist exakt mit abgeleitetem Versions-Soll
+#      (GOLANGCI_LINT_VERSION, pinsync byte-genau) · seit slice-labor-gates-host-rezepte.
 #   5. Kontexte, in denen er nicht laeuft: der gepinnte Image-Weg (opt-in) —
 #      die dort adressierten Werkzeuge bleiben ueber den Digest adressiert,
 #      nicht verglichen (MR-098, Luecke der Zeile "nur Host").
 #
 # PROTOKOLL DER BREAK-TESTS (rot gesehene Gegenbeispiele, Stand des Skripts):
 #   bash harness/tools/environment-check.sh
-#     -> UMFELD-BEFUND je Pflicht-Werkzeug ohne Soll (hier: go, bats,
-#        shellcheck, actionlint, d-check fehlen am Host; mktemp/sha256sum als
-#        uutils-Varianten tragen ihre Faehigkeits-Proben), Exit 1.
+#     -> UMFELD-BEFUND je Pflicht-Werkzeug ohne Soll (hier: go, bats und die
+#        nicht gelieferte Auflage aus shellcheck/actionlint/d-check; mktemp/sha256sum
+#        als uutils-Varianten tragen ihre Faehigkeits-Proben), Exit 1.
 #   env PATH=/tmp/stub:/usr/bin:/bin bash harness/tools/environment-check.sh \
 #       --inventar <fixture-mit-go-ohne-soll-wert>
 #     -> umgebung: go · Soll: 1.27.3 · Ist: 1.99.0, Exit 1 (exakt-Abweichung).
@@ -258,7 +264,8 @@ while IFS= read -r line || [ -n "$line" ]; do
             ist="fehlt"
             gut=0
         fi
-    else
+    fi
+    if [ "$gut" -eq 1 ] && command -v "$w" >/dev/null 2>&1; then
         case "$pf" in
             Anwesenheit)
                 gut=1

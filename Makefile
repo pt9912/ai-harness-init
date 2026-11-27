@@ -4,13 +4,21 @@
 # (golangci-lint/go build) kommen mit dem Go-Code (keine halluzinierten Gates).
 include d-check.mk
 
-# Tool-Images digest-gepinnt (Reproduzierbarkeit, LH-QA-02; Docker-only, ADR-0003).
+# Tool-Images digest-gepinnt (Reproduzierbarkeit, LH-QA-02). ADR-0109: diese
+# Pins tragen den OPT-IN Image-Weg (`test-bats-image`, `shell-lint-image`, …);
+# der Pflicht-Weg der Gates fährt docker-los am Host, sein Werkzeug-Soll steht
+# im Inventar (harness/tools/environment-inventory.txt) — Pin legt fest, Check
+# belegt; die Image-Pins bleiben Andressierung für den Weg, der den
+# Image-Vertrag prüfen will (MR-098: adressiert, nicht verglichen).
 BATS_IMAGE ?= bats/bats@sha256:e8f18e0acd4ea933bf019130b85033be75e8ce081db299e93578de83d7874e33
 SHELLCHECK_IMAGE ?= koalaman/shellcheck@sha256:bb596a0d169b85ddd81d8b6d3a2ff6d5baf5fca10b97f575ebc647c3dff62b3d
 ACTIONLINT_IMAGE ?= rhysd/actionlint@sha256:b1934ee5f1c509618f2508e6eb47ee0d3520686341fec936f3b79331f9315667
 # Go-Toolchain-Version (Dockerfile-Stages, a-check gespiegelt); der Base-Digest
-# steht digest-gepinnt im Dockerfile (LH-QA-02). Go-Gates leben im Makefile
-# (NICHT d-check.mk) und treiben Dockerfile-Stages via `docker build --target`.
+# steht digest-gepinnt im Dockerfile (LH-QA-02). ADR-0109: am docker-los
+# Pflicht-Weg trägt NICHT das Rezept diesen Pin — der Inventar-Check (exakt,
+# abgeleitet) hält den Wert gegen diese Stelle und belegt am Host, dass
+# `go` exakt diese Fassung trägt. Die Dockerfile-Stages (opt-in) lesen ihn als
+# --build-arg; die Go-Gates leben im Makefile (NICHT d-check.mk).
 GO_VERSION ?= 1.27.4
 GOLANGCI_LINT_VERSION ?= v2.15.0
 
@@ -52,7 +60,16 @@ TRAEGER_SHA256_WINDOWS_ARM64 ?= f87b07b42a627ecf476e43ca6fe8fd81b9961008a13c1189
 TRAEGER_CARRIER ?= .harness/state/bin/ai-harness-init
 export TRAEGER_TAG TRAEGER_SHA256_LINUX_AMD64 TRAEGER_SHA256_LINUX_ARM64 TRAEGER_SHA256_DARWIN_AMD64 TRAEGER_SHA256_DARWIN_ARM64 TRAEGER_SHA256_WINDOWS_AMD64 TRAEGER_SHA256_WINDOWS_ARM64 TRAEGER_CARRIER
 
-.PHONY: help gates record-gates environment-check test test-bats test-go test-go-pids-guard lint build compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint ci-lint comment-claims register-ausgang history-range-guard adr-immutable commit-msg-check hooks-install host-bin span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp freshness-kotlin freshness-digest mutate mutate-greift slice-mv archive-welle traeger-fetch traeger-fetch-image dcheck-fetch release-warten traeger-pins-check tap-check tap-nachzug vendor-baseline
+# Ablage-Pfad des docker-los d-check-Zugangs (ADR-0109): `make dcheck-fetch`
+# (OCI-Digest-Pin, slice-binraire-ziehen-ohne-docker). Die Anwesenheits-Lesung
+# der d-check-Inventar-Zeile sieht ihn als benannte Erweiterung; die übrigen
+# Werkzeuge (bats, shellcheck, actionlint, golangci-lint, go) leitet der Check
+# aus dem PATH — `pin legt fest, Check belegt`; die Besorgung trägt die
+# Umgebung (Baseline-Regelwerk modul-14 §Der zweite Träger), der Check belegt
+# sie. Ein Override, wie bei TRAEGER_CARRIER.
+DCHECK_CARRIER ?= .harness/state/bin/d-check
+
+.PHONY: help gates record-gates environment-check test test-bats test-bats-image test-go test-go-image test-go-pids-guard lint lint-image build build-image compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint shell-lint-image ci-lint ci-lint-image docs-check-host comment-claims register-ausgang history-range-guard adr-immutable commit-msg-check hooks-install host-bin host-bin-image span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp freshness-kotlin freshness-digest mutate mutate-greift slice-mv archive-welle traeger-fetch traeger-fetch-image dcheck-fetch release-warten traeger-pins-check tap-check tap-nachzug vendor-baseline
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
@@ -64,7 +81,7 @@ help: ## Targets anzeigen
 	@grep -hE '^[a-zA-Z0-9_-]+:.*?## ' $(MAKEFILE_LIST) | LC_ALL=C sort -t: -k1,1 | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  %-18s %s\n", $$1, $$2}'
 
-test: test-bats test-go ## Harness-Tests (bats) + Go-Unit-Tests (go test in Docker) — Docker-only (ADR-0003/0004)
+test: test-bats test-go ## Harness-Tests (bats) + Go-Unit-Tests — docker-los am Host (ADR-0109); die gepinnten Image-Wege bleiben opt-in (*-image)
 
 # Die zwei Stufen sind einzeln aufrufbar, damit `make mutate` je Fall nur die
 # Stufe faehrt, deren Rot er erwartet. `test` bleibt die Summe beider, in
@@ -72,10 +89,17 @@ test: test-bats test-go ## Harness-Tests (bats) + Go-Unit-Tests (go test in Dock
 # `BATS_TARGET` (Pfad relativ zur Repo-Wurzel) engt den Lauf auf eine Datei ein; der
 # Standard `test/` ist der Lauf von `make test` und `make gates`.
 BATS_TARGET ?= test/
-test-bats: ## Nur die Harness-Tests (bats) — Docker-only; BATS_TARGET=test/<datei>.bats engt auf eine Datei ein
+test-bats: ## Nur die Harness-Tests (bats am Host) — docker-los (ADR-0109); BATS_TARGET=test/<datei>.bats engt auf eine Datei ein
+	bats "$(BATS_TARGET)"
+
+# OPT-IN (ADR-0109): derselbe Lauf im digest-gepinnten bats-Image — mit
+# demselben BATS_TARGET-Vertrag; die Umgebung ist der gepinnte Digest (Pin
+# legt fest), der Inventar-Check trägt sie NICHT (MR-098: adressiert, nicht
+# verglichen).
+test-bats-image: ## Nur die Harness-Tests (bats im gepinnten Image) — opt-in (ADR-0109); BATS_TARGET wie test-bats
 	docker run --rm --network none -v "$(CURDIR)":/code:ro -w /code $(BATS_IMAGE) "$(BATS_TARGET)"
 
-# Ressourcen-Deckel des Go-Testlaufs: NUR `docker run --pids-limit`/`--memory` setzen ihn
+# Ressourcen-Deckel des IMAGE-Testlaufs unten: NUR `docker run --pids-limit`/`--memory` setzen ihn
 # durch — `docker build --resource`/`--ulimit` nehmen dieselben Werte an, ohne sie
 # durchzusetzen. Der reale Bedarf der vollen Suite (alle Pakete, kompiliert und
 # getestet, auf einem 20-Kern-Host) liegt bei rund 190 MB und rund 230 gleichzeitigen
@@ -83,7 +107,12 @@ test-bats: ## Nur die Harness-Tests (bats) — Docker-only; BATS_TARGET=test/<da
 # damit Compiler, Testbinaries und der re-exec'ende Kind-Prozess aus
 # cmd/ai-harness-init/span_emit_test.go Platz haben, ohne den Deckel wirkungslos weit
 # zu setzen. internal/resourcecap/resourcecap_test.go (make test-go-pids-guard) prueft
-# die Wirkung des pids-Deckels selbst.
+# die Wirkung des pids-Deckels selbst — der Deckel ist eine Eigenschaft des
+# gepinnten Image-Wegs: er kommt aus den docker-Flags, die der Container-Kontext
+# durchsetzt. Der docker-los Pflicht-Weg (`test-go` oben) traegt denselben
+# -count=1-Vertrag und KEINEN solchen Deckel — am Host gibt es beide Kappen
+# nicht; dieser Deckel-Unterschied ist die benannte Grenze des Host-Wegs, kein
+# stiller (harness/README.md §Sensors-Zeile test; ADR-0109).
 TEST_PIDS_LIMIT ?= 512
 TEST_MEMORY ?= 1024m
 
@@ -91,8 +120,8 @@ TEST_MEMORY ?= 1024m
 # Container bekommt kein Host-Mount. `docker run` wird nie gecacht — jeder Lauf misst
 # wirklich neu; -count=1 verhindert zusaetzlich, dass go test selbst unveraenderte
 # Pakete unter warmem Kompilat-Cache "(cached)" ueberspringt (Dockerfile-Stufe warm). `make mutate` erbt
-# diesen Deckel strukturell: seine Faelle mit `# verify: test-go` (und der volle
-# `make test`) rufen genau dieses Ziel.
+# dieses Ziel strukturell: seine Faelle mit `# verify: test-go` (und der volle
+# `make test`) rufen es je nach Weg (`test-go` am Host, `test-go-image` hier).
 #
 # `--iidfile` statt eines gelesenen `-t`-Namens: `make mutate` faehrt mehrere Worker mit
 # je einer eigenen Baumkopie parallel (MUTATE_JOBS), jeder ruft dieses Ziel fuer sich,
@@ -109,7 +138,25 @@ TEST_MEMORY ?= 1024m
 # nicht, eine zusaetzliche `mkdir`-Zeile bräche wiederum plan_self_contained. `/tmp`
 # existiert immer; `$(subst /,_,$(CURDIR))` macht den Namen ohne Verzeichnis-Anlage
 # eindeutig je Worker-Baumkopie (`$(CURDIR)` ist deren Pfad).
-test-go: ## Nur die Go-Unit-Tests (docker run, Ressourcen-Deckel, kein Mount) — Docker-only
+# Der Testlauf am HOST: das Toolchain-Soll trägt der Inventar-Check (exakt,
+# abgeleitet von GO_VERSION — ein fehlendes oder abweichendes go faerbt
+# environment-check rot, bevor dieses Ziel an die Reihe kommt), das Rezept
+# schreibt keine zweite Pin-Stelle. -count=1 trägt dieselbe Zusage wie im
+# Image-Weg: jeder Lauf misst wirklich neu — host go teilt seinen Kompilat-Cache
+# über Läufe, -count=1 verhindert das "(cached)"-Überspringen. Die
+# Ressourcen-Decken trägt NICHT dieser Weg (Grenze, siehe Kommentar bei
+# TEST_PIDS_LIMIT); der Build-Tag `resourcecap` hält die Deckel-Wache aus
+# diesem Lauf heraus wie zuvor.
+test-go: ## Nur die Go-Unit-Tests (go test am Host, -count=1) — docker-los (ADR-0109); KEIN Ressourcen-Deckel (benannte Grenze, Kommentar bei TEST_PIDS_LIMIT)
+	go test -count=1 ./...
+
+# OPT-IN (ADR-0109): derselbe Testlauf im gepinnten Image — der Weg, der die
+# Ressourcen-Decken (pids/memory, docker-Flags oben) durchsetzt. Kein `-v`: der
+# Quellcode kommt per COPY ins Image (Dockerfile, Stufe test), der Container
+# bekommt kein Host-Mount. `--iidfile` aus demselben Grund wie oben beschrieben
+# (kein gelesener `-t`-Name bei parallelen mutate-Workern, Ablage `/tmp`,
+# `$(subst /,_,$(CURDIR))` je Baumkopie) — der Kommentar bei den Deckels steht.
+test-go-image: ## Nur die Go-Unit-Tests (docker run im gepinnten Image, Ressourcen-Deckel, kein Mount) — opt-in (ADR-0109)
 	docker build --build-arg GO_VERSION=$(GO_VERSION) --iidfile=/tmp/.ai-harness-test-go-$(subst /,_,$(CURDIR)).iid --target test -t ai-harness-init:test .
 	docker run --rm --network none --pids-limit $(TEST_PIDS_LIMIT) --memory $(TEST_MEMORY) "$$(cat /tmp/.ai-harness-test-go-$(subst /,_,$(CURDIR)).iid)" go test -count=1 ./...
 
@@ -128,7 +175,22 @@ test-go-pids-guard: ## Wirkungs-Waechter fuer den pids-Deckel (DoD 2) — Docker
 	docker build --build-arg GO_VERSION=$(GO_VERSION) --iidfile=/tmp/.ai-harness-test-go-pids-guard-$(subst /,_,$(CURDIR)).iid --target test -t ai-harness-init:test .
 	docker run --rm --network none --pids-limit $(TEST_PIDS_LIMIT) --memory $(TEST_MEMORY) "$$(cat /tmp/.ai-harness-test-go-pids-guard-$(subst /,_,$(CURDIR)).iid)" go test -tags resourcecap -run TestFesteLastUeberschreitetPidsDeckel -count=1 ./internal/resourcecap/...
 
-lint: ## Go-Lint (golangci-lint, Dockerfile lint-Stage, gepinntes Image) — Docker-only (ADR-0003)
+# Go-Lint am HOST: das Rezept ruft das PATH-Binary — wie bats/shellcheck/
+# actionlint leitet der Inventar-Check die Anwesenheit aus dem PATH ab. Die
+# Version-Soll trägt der Inventar-Check (exakt, abgeleitet von
+# GOLANGCI_LINT_VERSION; pinsync haelt die Ableitung byte-genau gegen die
+# Pin-Stelle Makefile/Dockerfile) — das Rezept schreibt keine zweite
+# Pin-Stelle und keinen Ablage-Fallback: die Besorgung des Werkzeugs trägt die
+# Umgebung (Baseline-Regelwerk modul-14 §Der zweite Träger), der Check belegt
+# sie. Ein Binär fehlt am PATH, faerbt environment-check als Umgebungs-Befund —
+# beabsichtigt: der Befund an der Kante statt eines falschen Test-Rots in
+# diesem Rezept.
+lint: ## Go-Lint (golangci-lint run ./... am Host über den PATH, Fassung über Inventar abgeleitet) — docker-los (ADR-0109)
+	golangci-lint run ./...
+
+# OPT-IN (ADR-0109): dieselbe Prüfung im gepinnten lint-Image; die Fassung ist
+# dort durch den Image-Digest adressiert (MR-098: adressiert, nicht verglichen).
+lint-image: ## Go-Lint (golangci-lint, Dockerfile lint-Stage, gepinntes Image) — opt-in (ADR-0109)
 	docker build --no-cache-filter lint --build-arg GO_VERSION=$(GO_VERSION) --build-arg GOLANGCI_LINT_VERSION=$(GOLANGCI_LINT_VERSION) --target lint -t ai-harness-init:lint .
 
 # Fassungs-Injektion (ADR-0063 Festlegung 1): TRAEGER_VERSION traegt den Tag,
@@ -140,10 +202,29 @@ lint: ## Go-Lint (golangci-lint, Dockerfile lint-Stage, gepinntes Image) — Doc
 # Festlegung 2). Die Rezepte unten reichen die Variable an die build-Stage durch;
 # der Default-Pfad (leer) bleibt byte-identisch, denn der ldflags-Operand fehlt
 # dann im Bau, statt einen leeren Wert zu setzen.
-build: ## Go-Binary cross-compilieren (Dockerfile build-Stage, gepinntes Image) — Docker-only (ADR-0003)
+
+# Go-Binary kompilieren am HOST (ADR-0109: docker-los Pflicht-Weg der Gates):
+# dieselbe Bau-Form wie die build-Stage (CGO_ENABLED=0, -trimpath, ldflags
+# "-s -w", TRAEGER_VERSION-Injektion als fehlender Operand wenn leer — der
+# Default-Pfad bleibt byte-identisch), TARGET_OS/TARGET_ARCH leer = Plattform
+# des Hosts, dieselbe Semantik wie die leeren Stage-ARGs. Ausgabe in den
+# gitignorierten Zustands-Bereich (MR-003): ein Gate-Lauf verschiebt keinen
+# Working-Tree-Hash. KEIN Cross-Compile der Plattform-Matrix hier: der
+# Release-Bau bleibt docker-getrieben (ADR-0003/ADR-0109, Release-Schnitt im
+# gepinnten Image — Welle §6); dieses Ziel kompiliert einmal und belegt damit
+# die kompilerende Fassung des Baums.
+build: ## Go-Binary kompilieren (go build am Host, Bau-Form der build-Stage) — docker-los (ADR-0109); Release-Bau bleibt docker-getrieben
+	@mkdir -p .harness/state/bin
+	CGO_ENABLED=0 go build -trimpath \
+		-ldflags="-s -w$(if $(TRAEGER_VERSION), -X main.fassung=$(TRAEGER_VERSION))" \
+		-o .harness/state/bin/ai-harness-init.build ./cmd/ai-harness-init
+
+# OPT-IN (ADR-0109): derselbe Bau in der build-Stage (gepinntes Image), der
+# bisherige Zugang der Smokes (`artifact` haengt daran) und des Release-Schnitts.
+build-image: ## Go-Binary cross-compilieren (Dockerfile build-Stage, gepinntes Image) — opt-in (ADR-0109)
 	docker build --build-arg GO_VERSION=$(GO_VERSION) --build-arg TRAEGER_VERSION="$(TRAEGER_VERSION)" --target build -t ai-harness-init:build .
 
-# Natives Release-Binary auf den Host ziehen (DEST=<dir>). Baut EINMAL (Prereq build,
+# Natives Release-Binary auf den Host ziehen (DEST=<dir>). Baut EINMAL (Prereq build-image,
 # taggt ai-harness-init:build) und KOPIERT dann GETRENNT aus einem Wegwerf-Container —
 # Build und Copy entkoppelt (kein --output-Fusion). Kein OCI-Image als Vertriebsmittel
 # (ADR-0003); die Smokes lassen die Binary auf dem Host laufen (sie ruft selbst docker).
@@ -155,7 +236,7 @@ build: ## Go-Binary cross-compilieren (Dockerfile build-Stage, gepinntes Image) 
 # Host-Laeufer ist Linux (AGENTS.md §3.9). `artifact-host` + `make smoke-host`/`full-smoke-host` bauen und
 # fahren fuer die Plattform des Hosts — Hilfe ohne Anspruch, ein Lauf darueber ist kein
 # Beleg (additiv, ruehrt dieses Ziel nicht an).
-artifact: build ## Natives Release-Binary auf den Host ziehen (DEST=<dir>) — für die Smokes, Docker-only
+artifact: build-image ## Natives Release-Binary auf den Host ziehen (DEST=<dir>) — für die Smokes, Docker-only (opt-in Weg)
 	@test -n "$(DEST)" || { echo "artifact: DEST=<dir> ist Pflicht (Zielverzeichnis)"; exit 2; }
 	@bash harness/tools/artifact-copy.sh ai-harness-init:build "$(DEST)" ai-harness-init
 
@@ -288,13 +369,20 @@ mutate-greift: ## Greift jeder sed-Anker der Mutations-Faelle im Quellbestand? �
 
 # shellcheck über die harness-eigenen Shell-Hooks/-Helfer (erster Aufruf, volle Schwelle)
 # und über die Rümpfe aller test/*.bats (zweiter Aufruf: harness/tools/bats-lint.sh, das
-# bats-preprocess im BATS_IMAGE und shellcheck im SHELLCHECK_IMAGE verkettet; Pins kommen
-# von hier, die zwei Ausnahmen — SC2016 und der SC2154-Fuss — stehen mit ihrem Gegenstand im
-# Skript und gelten nur dort). .awk ist kein Shell.
+# bats-preprocess und shellcheck verkettet — am Host über bats-lint.sh im
+# BATS_HOST-Modus, beide Pins liegen im PATH; die zwei Ausnahmen — SC2016 und der
+# SC2154-Fuss — stehen mit ihrem Gegenstand im Skript und gelten nur dort). .awk ist kein Shell.
 # .githooks/commit-msg und .githooks/pre-commit tragen keine .sh-Endung — git
 # verlangt den nackten Hook-Namen —, werden darum einzeln genannt statt ueber
 # einen Glob.
-shell-lint: ## Shell-Hooks/-Helfer und bats-Rümpfe linten (shellcheck) im gepinnten Image — Docker-only (ADR-0003)
+shell-lint: ## Shell-Hooks/-Helfer und bats-Rümpfe linten (shellcheck am Host) — docker-los (ADR-0109)
+	shellcheck \
+		.claude/hooks/*.sh harness/tools/*.sh internal/emit/templates/*.sh internal/emit/templates/enforce/*.sh test/mutations/*.sh .githooks/commit-msg .githooks/pre-commit
+	BATS_HOST=1 bash harness/tools/bats-lint.sh
+
+# OPT-IN (ADR-0109): dieselbe Prüfung in den gepinnten Images (gleiche
+# Argument-Liste; BATS_IMAGE/SHELLCHECK_IMAGE aus dem Makefile-Pin-Block).
+shell-lint-image: ## Shell-Hooks/-Helfer und bats-Rümpfe linten (shellcheck) im gepinnten Image — opt-in (ADR-0109)
 	docker run --rm -v "$(CURDIR)":/mnt:ro -w /mnt $(SHELLCHECK_IMAGE) \
 		.claude/hooks/*.sh harness/tools/*.sh internal/emit/templates/*.sh internal/emit/templates/enforce/*.sh test/mutations/*.sh .githooks/commit-msg .githooks/pre-commit
 	BATS_IMAGE='$(BATS_IMAGE)' SHELLCHECK_IMAGE='$(SHELLCHECK_IMAGE)' bash harness/tools/bats-lint.sh
@@ -318,7 +406,11 @@ register-ausgang: ## Register-Eintraege ueber der 3x-Schwelle tragen einen Ausga
 # ein Syntaxfehler ist so lokal vor dem Push fangbar statt erst im Actions-Lauf.
 # Ohne -color: die Ausgabe wird geloggt und gegrept, ANSI-Escapes zerstueckeln
 # das `file:line:col:`-Praefix.
-ci-lint: ## GitHub-Actions-Workflows linten (actionlint) im gepinnten Image — Docker-only, IN gates
+ci-lint: ## GitHub-Actions-Workflows linten (actionlint am Host) — docker-los, IN gates (ADR-0109)
+	actionlint
+
+# OPT-IN (ADR-0109): derselbe Lauf im gepinnten actionlint-Image.
+ci-lint-image: ## GitHub-Actions-Workflows linten (actionlint) im gepinnten Image — opt-in (ADR-0109)
 	docker run --rm -v "$(CURDIR)":/repo:ro -w /repo $(ACTIONLINT_IMAGE)
 
 # Vorlauf-Waechter fuer history-lesende d-check-Module (`vcs`/`commits`, Targets
@@ -482,8 +574,15 @@ freshness-digest: ## Digest jedes Image-Pins gegen seinen Tag halten (read-only,
 
 # Der Traeger ist ein HOST-Binary: der Hook ruft ihn je Tool-Call, ein Container-Start
 # je Aufruf waere um zwei Groessenordnungen teurer als der Schreiber selbst. Gebaut
-# wird er trotzdem Docker-only im gepinnten Image (ADR-0003) und danach herausgeholt,
-# wie bei `make artifact`. Er liegt im gitignorierten Zustands-Bereich, damit er den
+# wird er am HOST im docker-los Pflicht-Weg (ADR-0109 Festlegung 1: die Gates
+# fahren docker-los — ein Gate-Kante-Glied, das einen Daemon braucht, waere der
+# restlichen docker-losen Kante entgegengesetzt); dieselbe Bau-Form wie die
+# build-Stage (CGO_ENABLED=0, -trimpath, ldflags "-s -w", TARGET_OS/TARGET_ARCH
+# auf die HOST-Plattform). Grenze, benannt: der RELEASE-Bau bleibt
+# docker-getrieben (ADR-0003, Release-Schnitt im gepinnten Image); dies ist
+# die Gate-seitige Träger-Bau-Form, nicht der Release-Schnitt — der opt-in
+# Image-Weg bleibt unter host-bin-image bestehen.
+# Er liegt im gitignorierten Zustands-Bereich, damit er den
 # working-tree-hash nicht verschiebt (MR-003).
 #
 # Es ist das PRODUKT-Binary, nicht ein zweites daneben (ADR-0022 Festlegung 2):
@@ -492,14 +591,22 @@ freshness-digest: ## Digest jedes Image-Pins gegen seinen Tag halten (read-only,
 HOST_BIN := .harness/state/bin/ai-harness-init
 
 # Plattform des Aufrufers, abgeleitet fuer den Bau des Traegers: er laeuft auf dem
-# HOST, gebaut wird er im gepinnten Linux-Image. Ohne diese Ableitung entstuende
+# HOST und wird fuer genau diese Plattform gebaut. Ohne diese Ableitung entstuende
 # immer ein Linux-ELF, und `make gates` waere auf einem macOS-Host rot ohne
 # inhaltlichen Defekt. Dieselben Schalter wie die Plattform-Matrix (LH-QA-04), nur
 # auf genau eine Plattform gerichtet.
 HOST_OS   := $(shell uname -s | tr 'A-Z' 'a-z')
 HOST_ARCH := $(shell uname -m | sed -e 's/^x86_64$$/amd64/' -e 's/^aarch64$$/arm64/')
 
-host-bin: ## Traeger (Produkt-Binary) fuer die HOST-Plattform in den Zustands-Bereich legen — Docker-only (ADR-0003)
+host-bin: ## Traeger (Produkt-Binary) fuer die HOST-Plattform in den Zustands-Bereich legen — docker-los (ADR-0109); Release-Bau bleibt docker-getrieben (ADR-0003)
+	@mkdir -p "$(dir $(HOST_BIN))"
+	CGO_ENABLED=0 GOOS=$(HOST_OS) GOARCH=$(HOST_ARCH) go build -trimpath \
+		-ldflags="-s -w$(if $(TRAEGER_VERSION), -X main.fassung=$(TRAEGER_VERSION))" \
+		-o "$(HOST_BIN)" ./cmd/ai-harness-init
+
+# OPT-IN (ADR-0109): derselbe Traeger-Bau im gepinnten build-Image (die vormals
+# einzige Fassung; Transport-Antwort an ADR-0022 bleibt dieselbe Ablage).
+host-bin-image: ## Traeger fuer die HOST-Plattform bauen (gepinntes Image) und herausziehen — opt-in (ADR-0109)
 	docker build --build-arg GO_VERSION=$(GO_VERSION) \
 		--build-arg TARGET_OS=$(HOST_OS) --build-arg TARGET_ARCH=$(HOST_ARCH) \
 		--build-arg TRAEGER_VERSION="$(TRAEGER_VERSION)" \
@@ -724,6 +831,19 @@ vendor-baseline: host-bin ## Eigenen vendored Baum aus dem verifizierten Release
 environment-check: ## Umgebungs-Befund je Werkzeug: Inventar-Soll docker-los feststellen — IN gates (LH-QA-02, LH-QA-03)
 	@bash harness/tools/environment-check.sh
 
+# Doku-Gate docker-los (ADR-0109): das fetched d-check-Binary (make
+# dcheck-fetch — seine Digest-Kette gegen den DCHECK_DIGEST-Pin aus d-check.mk
+# traegt die Zuordnung Binary↔Pin) an derselben .d-check.yml. KEINE zweite
+# Flags-Definition hier: das Befund-Gate traegt im Fragment keine --enable/
+# --disable-Flags, der Lauf liest die Konfiguration wie der Image-Weg; der
+# Transport ist der einzige Wechsel (gepinntes Image → fetched Binary), die
+# Module-Menge ist dieselbe. Der Fragment-Weg `docs-check` (d-check.mk,
+# tool-generiert, MR-010) bleibt als opt-in stehen — nicht umbenannt und nicht
+# abgeleitet, damit keine zweite Fassung des tool-generierten Fragments
+# entsteht.
+docs-check-host: ## Doku-Referenzen pruefen docker-los (fetched d-check, make dcheck-fetch) — IN gates; Image-Weg `docs-check` bleibt opt-in (d-check.mk)
+	"$(DCHECK_CARRIER)"
+
 # ORDNUNGSKANTE: die Checks hängen AN record-gates, sie stehen nicht daneben. `make`
 # baut ein Ziel, dessen Voraussetzung gefallen ist, auch unter `-k` nicht — über einem
 # roten Check entsteht damit kein Nachweis, während `-k` weiterhin JEDES rote Ziel
@@ -771,7 +891,7 @@ environment-check: ## Umgebungs-Befund je Werkzeug: Inventar-Soll docker-los fes
 # Host-Werkzeuge); `GATES_FORCE=1` erzwingt den vollen Lauf. Wächter:
 # test/gate-nachweis-kante.bats (die Verdrahtungs-Zusagen an der Wrapper-Form gezogen),
 # test/gates-fastpfad.bats und test/gates-keys.bats.
-record-gates: environment-check baseline-verify docs-check lint build test shell-lint ci-lint comment-claims register-ausgang mutate-greift host-bin span-check ## Checks + Gate-Nachweis (Working-Tree-Hash für den Stop-Hook)
+record-gates: environment-check baseline-verify docs-check-host lint build test shell-lint ci-lint comment-claims register-ausgang mutate-greift host-bin span-check ## Checks + Gate-Nachweis (Working-Tree-Hash für den Stop-Hook)
 	@bash harness/tools/record-gates.sh
 
 gates: ## alle aktuell lauffähigen Gates + Nachweis — Fast-Pfad Tier 2 (ADR-0108): SKIP über dem vollständig gedeckten je-Check-Satz, bei Teildrift genau die gedrifteten Checks, sonst voller Lauf

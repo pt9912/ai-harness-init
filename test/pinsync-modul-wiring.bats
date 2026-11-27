@@ -58,7 +58,11 @@ pinsync_block() {
   grep -qF '{file: Makefile,' <<<"$block"
   grep -qF '{file: harness/tools/environment-inventory.txt,' <<<"$block"
   local wert Quelle
-  wert="$(sed -n 's/^GO_VERSION \?= //p' "$REPO/Makefile")"
+  # GNU-portable Lesung (seit slice-labor-gates-host-rezepte): die vormals
+  # geformte Lesung 'GO_VERSION \?= ' liest GNU-sed als BRE-QUANTIFIKATOR
+  # (\? = optional) — am gepinnten BusyBox-bats-Image las es literal '?'. Der
+  # byte-gleiche Vergleich misst den Wert, nicht die sed-Dialekt-Form.
+  wert="$(grep -oE '^GO_VERSION \?= [0-9]+\.[0-9]+\.[0-9]+' "$REPO/Makefile" | sed 's/^GO_VERSION .= //')"
   Quelle="$(grep -E '^go\|exakt\|pflicht\|abgeleitet:' "$REPO/harness/tools/environment-inventory.txt" | sed -E 's/^go\|exakt\|pflicht\|abgeleitet:([0-9]+\.[0-9]+\.[0-9]+)\|.*/\1/')"
   echo "Pin-Stelle Makefile: [$wert]; Inventar-Soll: [$Quelle] (Zusage: byte-gleich)"
   [ -n "$wert" ] && [ "$wert" = "$Quelle" ]
@@ -77,4 +81,21 @@ pinsync_block() {
         false
       }
   done <<<"$block"
+}
+
+@test "pinsync: das Pin golangci-lint paart die Inventar-Soll-Zeile abgeleitet gegen die GOLANGCI_LINT_VERSION-Stellen" {
+  local block wert quelle
+  block="$(pinsync_block)"
+  grep -qF '^GOLANGCI_LINT_VERSION \?= v(2\.[0-9]+\.[0-9]+)$' <<<"$block"
+  grep -qF '^ARG GOLANGCI_LINT_VERSION=v(2\.[0-9]+\.[0-9]+)$' <<<"$block"
+  grep -qF '^golangci-lint\|exakt\|pflicht\|abgeleitet:(2\.[0-9]+\.[0-9]+)\|' <<<"$block"
+  grep -qF '{file: Makefile,' <<<"$block"
+  grep -qF '{file: Dockerfile,' <<<"$block"
+  grep -qF '{file: harness/tools/environment-inventory.txt,' <<<"$block"
+  # byte-gleich über der gelebten Pin-Stelle: beide Quellen tragen v-Prefix, das
+  # Inventar den Zahl-Wert — die Paarung liest die Fanggruppe (ohne v).
+  wert="$(grep -oE '^GOLANGCI_LINT_VERSION \?= v2\.[0-9]+\.[0-9]+' "$REPO/Makefile" | sed 's/^GOLANGCI_LINT_VERSION .= v//')"
+  quelle="$(grep -E '^golangci-lint\|exakt\|pflicht\|abgeleitet:' "$REPO/harness/tools/environment-inventory.txt" | sed -E 's/^golangci-lint\|exakt\|pflicht\|abgeleitet:(2\.[0-9]+\.[0-9]+)\|.*/\1/')"
+  echo "Pin-Stelle Makefile: [$wert]; Inventar-Soll: [$quelle] (Zusage: byte-gleich)"
+  [ -n "$wert" ] && [ "$wert" = "$quelle" ]
 }

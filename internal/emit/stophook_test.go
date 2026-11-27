@@ -331,13 +331,13 @@ func TestStopHook_CommitBindung(t *testing.T) {
 					// Werte nicht und keinen je-Check-Key; der Hook gibt frei.
 					r := newStopRepo(t, f, true)
 					r.mustRecord()
-					keys_vor := map[string]string{}
+					keysVor := map[string]string{}
 					for _, s := range []string{"comment-claims", "docs-check", "lint"} {
 						b, err := os.ReadFile(filepath.Join(r.dir, ".harness/state/gates-passed-"+s+".key"))
 						if err != nil {
 							t.Fatal(err)
 						}
-						keys_vor[s] = string(b)
+						keysVor[s] = string(b)
 					}
 					r.write(".harness/stamp/mutate/slice-x-befund-last.txt", "record-only\n", 0o644)
 					r.git("add", "-A")
@@ -349,8 +349,8 @@ func TestStopHook_CommitBindung(t *testing.T) {
 						if err != nil {
 							t.Fatal(err)
 						}
-						if string(b) != keys_vor[s] {
-							t.Fatalf("je-Check-Key %s rotierte mit dem Record-only-Zug: %q -> %q", s, keys_vor[s], string(b))
+						if string(b) != keysVor[s] {
+							t.Fatalf("je-Check-Key %s rotierte mit dem Record-only-Zug: %q -> %q", s, keysVor[s], string(b))
 						}
 					}
 				})

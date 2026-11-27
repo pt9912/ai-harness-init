@@ -38,13 +38,29 @@ die genutzte Aufrufform, nicht die Distribution), *exakt*.
 das Inventar leitet das Soll ab, wo eine maschinen-lesbare Pin-Stelle existiert
 (Go über die `GO_VERSION`-Stelle im [`Makefile`](../../Makefile) — der Wert
 steht als `abgeleitet:` und der Stellen-Abgleich hält ihn byte-genau gegen den
-Pin), und trägt es selbst, wo keine Pin-Stelle trägt (`manifest:` — git, bash,
-make, die GNU-Werkzeuge, bats, shellcheck, actionlint, das d-check-Binary).
+Pin; golangci-lint über die `GOLANGCI_LINT_VERSION`-Stelle in
+[`Makefile`](../../Makefile) und [`Dockerfile`](../../Dockerfile) — Pin-Quellen
+zwei, dazu die Inventar-Zeile als dritte, seit slice-labor-gates-host-rezepte),
+und trägt es selbst, wo keine
+Pin-Stelle trägt (`manifest:` — git, bash, make, die GNU-Werkzeuge, bats,
+shellcheck, actionlint, das d-check-Binary).
 Der Stellen-Abgleich steht im
 [`pinsync`-Block](../../.d-check.yml) der
-Doku-Gate-Konfiguration (Pin `go`: Inventar-Zeile gegen `GO_VERSION ?=`; die
+Doku-Gate-Konfiguration (Pin `go`: Inventar-Zeile gegen `GO_VERSION ?=`; Pin
+`golangci-lint`: Inventar-Zeile gegen `GOLANGCI_LINT_VERSION ?=` und
+`ARG GOLANGCI_LINT_VERSION=`; die
 Config-Form hält
 [`test/pinsync-modul-wiring.bats`](../../test/pinsync-modul-wiring.bats)).
+
+**Anwesenheit über eine fetched Ablage (ein benannter Fall).** Wenn der
+`PATH` das Binary nicht führt, sieht die d-check-Probe zusätzlich die fetched
+Ablage (`.harness/state/bin/d-check`, `make dcheck-fetch`) · seit
+slice-binraire-ziehen-ohne-docker. Die übrigen Werkzeuge leitet die Probe aus
+dem `PATH` ab — ihre Besorgung trägt die Umgebung, der Check belegt sie
+(Baseline-Regelwerk `modul-14` §Der zweite Träger); ein Werkzeug ohne
+Versions-Pin-Stelle am `PATH` fehlt, bleibt ein Umgebungs-Befund und färbt
+nicht still ab (etwa `golangci-lint`, Prüfform `exakt`, seit
+slice-labor-gates-host-rezepte).
 
 **Ausführungsort:** Host und CI-Runner — der docker-lose Pflicht-Weg führt
 keinen zweiten Kontext-Lauf im Image mit; die im gepinnten Image adressierten

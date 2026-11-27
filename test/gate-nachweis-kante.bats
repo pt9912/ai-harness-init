@@ -172,7 +172,7 @@ rezept_von() {
 # Die Erwartungsliste steht SORTIERT und wird gegen die sortierte Ist-Liste gehalten:
 # so faerbt ein Umsortieren der Kante diesen Test nicht mit — dafuer steht der naechste.
 @test "gate-nachweis: an der Kante haengen genau die erwarteten Checks" {
-	erwartet="baseline-verify build ci-lint comment-claims docs-check environment-check host-bin lint mutate-greift register-ausgang shell-lint span-check test"
+	erwartet="baseline-verify build ci-lint comment-claims docs-check-host environment-check host-bin lint mutate-greift register-ausgang shell-lint span-check test"
 	ist="$(prereqs record-gates | LC_ALL=C sort | tr '\n' ' ' | sed 's/ $//')"
 	echo "erwartet: [${erwartet}]"
 	echo "ist:      [${ist}]"

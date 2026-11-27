@@ -127,6 +127,11 @@ pinsync:
       sources:
         - {file: Makefile, pattern: '^GO_VERSION \?= ([0-9]+\.[0-9]+\.[0-9]+)$'}
         - {file: harness/tools/environment-inventory.txt, pattern: '^go\|exakt\|pflicht\|abgeleitet:([0-9]+\.[0-9]+\.[0-9]+)\|'}
+    - name: golangci-lint
+      sources:
+        - {file: Makefile, pattern: '^GOLANGCI_LINT_VERSION \?= v(2\.[0-9]+\.[0-9]+)$'}
+        - {file: Dockerfile, pattern: '^ARG GOLANGCI_LINT_VERSION=v(2\.[0-9]+\.[0-9]+)$'}
+        - {file: harness/tools/environment-inventory.txt, pattern: '^golangci-lint\|exakt\|pflicht\|abgeleitet:(2\.[0-9]+\.[0-9]+)\|'}
 # structure (hermetisch, kein git, opt-in; die Bedingung open-tasks-require-marker traegt
 # d-check ab v0.76.0): haelt die Stilllegungs-Form eines Slice-Plans in done/ (v6.9.0 ·
 # modul-05-planning-harness.md §Ein Slice, dessen Gegenstand ein anderer uebernimmt). Traegt

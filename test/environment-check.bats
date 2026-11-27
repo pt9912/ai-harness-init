@@ -78,12 +78,16 @@ fixture() {
 }
 
 @test "environment-check: fehlendes optionales Werkzeug warnt, kein Rot" {
-    F="$(fixture 'tar|Anwesenheit|optional|manifest:anwesend|k|g')"
+    F="$(fixture 'nichtvorhanden-werkzeug|Anwesenheit|optional|manifest:anwesend|k|g')"
     S="$(mktemp -d)"
-    run env PATH="$S:/nonexistent" bash "$SCRIPT" --inventar "$F"
+    # Ein Werkzeug, das kein Host und kein Image im PATH trägt — der
+    # Warn-Fall "optional fehlt" hängt an der Abwesenheit, nicht am Namen;
+    # das gelebte `tar` trägt der PATH des Hosts, der Warn-Fall bliebe dort
+    # konstruiert. (Warn-Stellung am Namen ungeändert.)
+    run env PATH="$S:/usr/bin:/bin" bash "$SCRIPT" --inventar "$F"
     echo "Ausgabe: [$output] (Zusage: Warnzeile, exit 0)"
     [ "$status" -eq 0 ]
-    [[ "$output" == *"umgebung-warn: tar · Soll: anwesend · Ist: fehlt"* ]]
+    [[ "$output" == *"umgebung-warn: nichtvorhanden-werkzeug · Soll: anwesend · Ist: fehlt"* ]]
     [[ "$output" == *"grün"* ]]
     rm -rf "$F" "$S"
 }
@@ -146,5 +150,42 @@ fixture() {
     echo "Ausgabe: [$output] (Zusage: umgebung: d-check · Ist: fehlt, exit 1)"
     [ "$status" -eq 1 ]
     [[ "$output" == *"umgebung: d-check · Soll: anwesend · Ist: fehlt"* ]]
+    rm -rf "$F" "$S"
+}
+
+# Die golangci-lint-Zeile (seit slice-labor-gates-host-rezepte) traegt exakt
+# mit abgeleitetem Soll und die reine PATH-Probe wie bats/shellcheck/actionlint
+# (die Besorgung des Werkzeugs traegt die Umgebung, der Check belegt sie).
+@test "environment-check: golangci-lint trägt exakt-Soll an der PATH-Fassung" {
+    F="$(fixture 'golangci-lint|exakt|pflicht|abgeleitet:2.15.0|k|g')"
+    S="$(mktemp -d)"
+    printf '#!/usr/bin/env sh\necho "golangci-lint has version 2.15.0 compiled with go1.27.4"\n' > "$S/golangci-lint"
+    chmod +x "$S/golangci-lint"
+    run env PATH="$S:/usr/bin:/bin" bash "$SCRIPT" --inventar "$F"
+    echo "Ausgabe: [$output] (Zusage: grün 1/1, kein Befund)"
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"grün — 1/1 Pflicht-Werkzeuge tragen ihr Soll."* ]]
+    rm -rf "$F" "$S"
+}
+
+@test "environment-check: abweichende golangci-lint-Fassung am PATH färbt exakt-Befund" {
+    F="$(fixture 'golangci-lint|exakt|pflicht|abgeleitet:2.15.0|k|g')"
+    S="$(mktemp -d)"
+    printf '#!/usr/bin/env sh\necho "golangci-lint has version 9.99.0 compiled with go1.27.4"\n' > "$S/golangci-lint"
+    chmod +x "$S/golangci-lint"
+    run env PATH="$S:/usr/bin:/bin" bash "$SCRIPT" --inventar "$F"
+    echo "Ausgabe: [$output] (Zusage: umgebung: golangci-lint · Soll · Ist)"
+    [ "$status" -eq 1 ]
+    [[ "$output" == *"umgebung: golangci-lint · Soll: 2.15.0 · Ist: 9.99.0"* ]]
+    rm -rf "$F" "$S"
+}
+
+@test "environment-check: ohne PATH-Fassung bleibt golangci-lint ein Befund (Ist fehlt)" {
+    F="$(fixture 'golangci-lint|exakt|pflicht|abgeleitet:2.15.0|k|g')"
+    S="$(mktemp -d)"
+    run env PATH="$S:/usr/bin:/bin" bash "$SCRIPT" --inventar "$F"
+    echo "Ausgabe: [$output] (Zusage: umgebung: golangci-lint · Ist: fehlt, exit 1)"
+    [ "$status" -eq 1 ]
+    [[ "$output" == *"umgebung: golangci-lint · Soll: 2.15.0 · Ist: fehlt"* ]]
     rm -rf "$F" "$S"
 }
