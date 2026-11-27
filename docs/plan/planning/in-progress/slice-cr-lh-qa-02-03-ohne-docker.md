@@ -26,11 +26,15 @@ einem Runner ohne Docker-Daemon) beobachtet mehr als ein Slice-DoD trägt
 [ADR-0003](../../adr/0003-go-native-binaries.md)
 (natives Binary bleiben; der *Tool-Build* im gepinnten Image bleibt unberührt).
 
-**Berührte Spec-Stellen:** `spec/lastenheft.md` §4 (LH-QA-02, LH-QA-03) und
-§7 (Historie). Der Verweis zeigt **aufwärts**: Die Spec nennt diesen Slice nie
-(Baseline-Regelwerk `grundlagen-referenz-richtung.md` §Referenz-Richtung (SDP)).
+**Berührte Spec-Stellen:** `spec/lastenheft.md` §3 (LH-FA-07), §4 (LH-QA-02,
+LH-QA-03, LH-QA-04) und §7 (Historie). Nachzugs-Übergabe der Verifikation: der
+ursprüngliche Kopf nannte §4 nur mit LH-QA-02/03; der Folgestellen-Nachzug
+(CR 0.28.1) zog LH-FA-07 und LH-QA-04 in denselben Zustand (siehe §6,
+Risiko-1-Ausgang). Der Verweis zeigt **aufwärts**: Die Spec nennt diesen Slice
+nie (Baseline-Regelwerk `grundlagen-referenz-richtung.md` §Referenz-Richtung
+(SDP)).
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912
 
 **Autor:** pt9912. **Datum:** 2026-11-27.
 
@@ -63,30 +67,35 @@ bzw. Tool-Pin mit Inventar-Soll). Der CR-Eintrag steht in §7 Historie in der
 
 ## 2. Definition of Done
 
-- [ ] **Liefer-Punkt 1:** CR-Eintrag in `spec/lastenheft.md` §7 Historie —
+- [x] **Liefer-Punkt 1:** CR-Eintrag in `spec/lastenheft.md` §7 Historie —
       Auftraggeber-Beschluss vom 2026-11-27 (docker-los) in der
-      [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)-Form.
-- [ ] **Liefer-Punkt 2:** `LH-QA-03` neue Fassung — Bootstrap-Laufzeit
+      [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)-Form
+      (Zeilen 0.28.0 und 0.28.1).
+- [x] **Liefer-Punkt 2:** `LH-QA-03` neue Fassung — Bootstrap-Laufzeit
       braucht nur git; docker ist Weg, nicht Pflicht; emittierte Ziel-Repos
       bleiben make-getrieben und führen je Gate-Werkzeug die gepinnte Version.
-- [ ] **Liefer-Punkt 3:** `LH-QA-02` neue Fassung — Reproduzierbarkeit je
+- [x] **Liefer-Punkt 3:** `LH-QA-02` neue Fassung — Reproduzierbarkeit je
       Weg: Image-Digest (Image-Pfad) bzw. Tool-Pin mit Inventar-Soll
       (docker-los-Pfad); Messmethode nennt beide.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
-      (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
-      Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt (hier: `spec/` ist
-      der Vertrag).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben —
-      `evidence/`-Datei ergänzen, wo eine Beobachtung anfiel; **kein Zähler
-      wird gesetzt**. Keine Beobachtung anfallen ist ebenfalls eine Antwort
-      und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
-      weiter offen).
+- [x] `make gates` grün — **bedingt über den
+      [Carveout CO-007](../../carveouts/CO-007-ci-rot-vorgefunden-gates-und-full-smoke.md)**:
+      die zwei CI-Störstellen sind vorgefunden (Lauf 45939443193, vorgängig;
+      am HEAD-Stand wiederholt sich die Fork-Signatur im gates-Job, Lauf
+      45944570095), der lokale Nachweis ist nicht herstellbar (Docker-Daemon
+      aus). Trigger der Auflösung: Abschluss von welle-ohne-docker.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+      (`../../../reviews/2026-11-27-slice-cr-lh-qa-02-03-ohne-docker.md`) —
+      Rollenwechsel nach Schritt 8 des Minimal Agent Workflow (`AGENTS.md`
+      §6), kein Self-Review (Modul 8).
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt (hier: `spec/` ist
+      der Vertrag — die CR-Zeilen und die §4-Fassungen).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag (§7).
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — zwei neue
+      Einträge mit je einem Beleg (siehe §7).
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (siehe §6 und §7).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
-      nächsten Welle-Closure geprüft.
+      nächsten Welle-Closure geprüft — Übergabe an die Welle-Closure
+      (Welle-Betrieb).
 
 ## 3. Plan (vor Code)
 
@@ -119,9 +128,18 @@ Wirkung des CRs. Zusätzlich: Closure-Notiz mit Lerneintrag geschrieben.
   (Docker Desktop auf macOS/Windows liefert die docker-CLI) — **Ausgang:**
   bei Closure zu bewerten; Kollision wäre ein ADR-Gegenstand des
   Architect-Slices, nicht eine stille Fassungs-Schärfung hier.
+  **Ausgang (entfallen):** die Kollision trat nicht an — der CR 0.28.1
+  desselben Slices zog [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)
+  (und `LH-FA-07`) selbst auf die Gate-Weg-Fassung, nicht still (Historie-Zeile
+  0.28.1, Review-Befund F-1/F-2); die Architektur-Festlegung (Soll-Form,
+  Inventar, `pinsync`) bleibt beim Architect-Slice der Welle.
 - **CI fährt `make gates` docker-los erst nach der Welle** — bis dahin
   bleibt die alte Fassung die laufende; der CR trägt das als Übergangs-Satz
   (Auftraggeber-Beschluss ≠ abgeschlossener Umbau).
+  **Ausgang (eingetreten → Carveout):**
+  [CO-007](../../carveouts/CO-007-ci-rot-vorgefunden-gates-und-full-smoke.md)
+  — beide CI-Störstellen vorgefunden; Trigger der Heilung: Abschluss von
+  welle-ohne-docker, danach die CI-Heilung als eigener Zug.
 
 ## 7. Closure-Notiz
 
@@ -137,13 +155,68 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <… | keine Beobachtung angefallen>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** Anker · Folge-Slice · Register, Ergebnis
+- **Was hat funktioniert:** die
+  [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)-Form
+  zweistufig — CR 0.28.0 trägt den Grundsatz (docker-los als Weg, nicht
+  Pflicht), CR 0.28.1 den Folgestellen-Nachzug als Patch-Zeile. Der
+  Review-Abgleich
+  ([`../../../reviews/2026-11-27-slice-cr-lh-qa-02-03-ohne-docker.md`](../../../reviews/2026-11-27-slice-cr-lh-qa-02-03-ohne-docker.md))
+  traf kein HIGH; die 4 MEDIUM wurden durch 0.28.1 gelöst. Die Verifikation
+  (frischer Kontext) bestätigte die drei Liefer-Punkte, den MR-015/MR-042-Formkörper
+  und die Widerspruchsfreiheit. `make mutate-auswahl` lief docker-los mit
+  Exit 0 ("kein Fall beruehrt — kein Lauf noetig").
+- **Was ging anders als geplant:** die LH-QA-04-Kollision ging nicht über die
+  geplante ADR-Route des Architect-Slices, sondern über die
+  Folgestellen-Route im Slice selbst (CR 0.28.1; Ausgang in §6). Setzung-2-Korrektur
+  ([`MR-042`](../../../../harness/conventions/MR-042-der-anlass-einer-lastenheft-aenderung-steht-nicht-in-der-historie-sondern-in-der-closure-notiz.md)):
+  die 0.28.0-Historie-Zeile trug den Anlass an falschem Ort — sie bleibt
+  Protokoll, die Korrektur ist als eigene Zeile dokumentiert, und der Anlass
+  steht hier: **Auftraggeber-Beschluss 2026-11-27 — der Docker-Daemon bleibt
+  aus; Labor- und Produkt-Aktivierung färben auf einen docker-los Gate-Weg.**
+  Der CI-Nachweis der DoD-Zeile `make gates` ist nicht grün: beide Störstellen
+  sind vorgefunden und tragen unter dem
+  [Carveout CO-007](../../carveouts/CO-007-ci-rot-vorgefunden-gates-und-full-smoke.md)
+  (Trigger: Abschluss von welle-ohne-docker) — nicht unter stiller Duldung.
+- **Steering-Loop-Eintrag:** benannte Lücke, **nicht verkörpert** — kein
+  `liegt in`, da in dieser Closure nichts verkörpert wurde: Die CR-Form des
+  Lastenhefts lässt Folgestellen in anderen Spec-Stellen liegen; zum zweiten
+  Vorgang geführt (Präzedenz 0.25.1 als Patch-Zeile — dort ohne abgeschlossenen
+  Vorgang benannt, nicht gezählt), in diesem Slice durch den CR 0.28.1
+  geheilt. Geführt im Register: [`../observations/BEO-ALL/cr-folgestellen-in-anderen-spec-stellen-bleiben-liegen/observation.md`](../observations/BEO-ALL/cr-folgestellen-in-anderen-spec-stellen-bleiben-liegen/observation.md).
+  Bei der dritten Führung schneidet der Lese-Schritt den Träger; die Norm-Arbeit
+  läge bei der Architect-Rolle (`AGENTS.md` §3.8).
+- **Beobachtungs-Register (`../observations/`):** zwei neue Einträge, je ein
+  Beleg (dieser Slice): [`../observations/BEO-ALL/gates-keys-fork-erschoepfung-bricht-den-ci-gates-lauf/observation.md`](../observations/BEO-ALL/gates-keys-fork-erschoepfung-bricht-den-ci-gates-lauf/observation.md)
+  — CI-Job `gates` bricht an Fork-Erschöpfung, `docs-check` fährt nie; und
+  [`../observations/BEO-ALL/cr-folgestellen-in-anderen-spec-stellen-bleiben-liegen/observation.md`](../observations/BEO-ALL/cr-folgestellen-in-anderen-spec-stellen-bleiben-liegen/observation.md)
+  — siehe Lerneintrag. Kein bestehender Eintrag wurde getroffen; die zwei
+  vorgelagert gesichteten (§8) bleiben unverändert.
+- **Folge-Slices und Übergaben** (keine Slice-Datei von dieser Closure gelegt;
+  die Welle schneidet):
+  - F-5 aus dem Review (das `AGENTS.md`-§3.9-Zitat in der Spec trägt die alte
+    Fassung) → [`slice-adr-gates-laeufen-host-native`](../open/slice-adr-gates-laeufen-host-native.md)
+    (Architect-Slice der Welle).
+  - Vier Superset-Sätze in `spec/lastenheft.md` (Zeilen 156, 298, 483, 563 —
+    sie nennen `git + docker` als geschlossene Abhängigkeits-Menge) →
+    derselbe Architect-Slice; Folgestellen beim Emittieren der docker-los-Mechanik
+    in welle-ohne-docker.
+  - Träger-Vertrags-Teil des `full-smoke`-Befunds →
+    [`slice-binraire-ziehen-ohne-docker`](../open/slice-binraire-ziehen-ohne-docker.md).
+  - Fork-Erschöpfung → Register-Zeile und Carveout-Zug (CO-007), kein eigener
+    Eintrag in `open/` von dieser Closure.
+  - Rest-Lücke Mutations-Bestand: kein Fall im Bestand führt
+    `spec/lastenheft.md` (die Fall-`files:`-Zeilen über der Spec führen `spec/spezifikation.md`),
+    das `mutate-auswahl`-Urteil beruht auf der leeren Schnittmenge — benannt,
+    kein Bruch; ob ein Fall über das Lastenheft gebraucht wird, schneidet die
+    Lese-Schritt-Ebene.
+- **Risiken aus §6:** Risiko 1 (LH-QA-04-Kollision) — **entfallen** mit Grund
+  (CR 0.28.1, siehe §6). Risiko 2 (CI-Nachweis) — **eingetreten**, Ausgang
+  Carveout CO-007 mit dem Trigger Abschluss von welle-ohne-docker.
+- **Drei Paarungen:** Anker — keiner gesetzt (keine Verkörperung in dieser
+  Closure, kein `liegt in`). Folge-Slice — die Übergaben oben benannt; die
+  Adressen sind Slices der offenen Welle. Register — zwei Einträge mit je
+  einem Beleg. Ergebnis der Prüfung: von der Welle-Closure zu fahren (Übergabe,
+  siehe das leere Kästchen in §2).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

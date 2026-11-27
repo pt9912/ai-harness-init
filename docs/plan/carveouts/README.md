@@ -14,6 +14,7 @@ Formalisierung 2026-07-21, Roadmap §Backlog Cluster E).
 | ID | Titel | Betroffenes Gate | Angelegt |
 |---|---|---|---|
 | [CO-001](CO-001-bats-shell-lint.md) | shell-lint deckt die bats-Dateien nicht ab | `shell-lint` | 2026-07-21 |
+| [CO-007](CO-007-ci-rot-vorgefunden-gates-und-full-smoke.md) | CI auf main rot vorgefunden — `gates` (Runner-Erschöpfung), `full-smoke` (Träger ohne `archive-welle`) | `make gates` (CI-Jobs `gates`, `full-smoke`) | 2026-11-27 |
 
 ## Permanent — in eine ADR übergeführt
 
