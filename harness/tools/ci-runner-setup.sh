@@ -99,6 +99,10 @@ else
 		# GOROOT über den aufgelösten Binary-Pfad (/proc/self/exe löst den Symlink
 		# auf das Archiv-Baum-Layout); die GOROOT-Auflösung trägt der reale
 		# Runner-Lauf (LP2), die Stub-Layout-Probe die Ablage-/Prüfform.
+		# .harness/state/ ist gitignored — ein frischer CI-Klon trägt es nicht
+		# (der lokale Host schon); mktemp -p bricht daran. Install-Zweig allein:
+		# der PLAN-Modus verzweigt vorher ab und erreicht kein mktemp.
+		mkdir -p "$REPO/.harness/state"
 		tmp="$(mktemp -d -p "$REPO/.harness/state")"
 		zug="$REPO/.harness-ci/go-$go_soll"
 		curl -fsSL "https://go.dev/dl/go${go_soll}.linux-${go_arch}.tar.gz" -o "$tmp/go.tgz"
