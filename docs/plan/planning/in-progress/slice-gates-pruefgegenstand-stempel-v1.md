@@ -113,7 +113,7 @@ löst sich erst hier, nicht mit dessen Lieferung.
 
 ## 2. Definition of Done
 
-- [ ] **Liefer-Punkt 1:** je Check sein Prüfgegenstand — der
+- [x] **Liefer-Punkt 1:** je Check sein Prüfgegenstand — der
       Schlüssel-Satzerzeuger trägt je Check der Kante eine deklarierte
       Bezugsmenge an **einer** Definition ([ADR-0035](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
       Festlegung 3), je Check eine Grün-Stempel-Ablage mit dem Inhalt-Key, und
@@ -123,7 +123,7 @@ löst sich erst hier, nicht mit dessen Lieferung.
       Messrezept je Check im Kopf des Satzerzeugers. Ein Check ohne
       verwertbare Definition fährt voll (fail-closed,
       [`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)).
-- [ ] **Liefer-Punkt 2:** `make gates` fährt nur die gedrifteten Checks —
+- [x] **Liefer-Punkt 2:** `make gates` fährt nur die gedrifteten Checks —
       SKIP nur über dem vollständig gedeckten je-Check-Satz, Teildrift fährt
       genau die gedrifteten Checks und schreibt nur deren Stempel;
       `GATES_FORCE=1` bleibt Träger des benannten Rests, die SKIP-Meldung
@@ -131,7 +131,7 @@ löst sich erst hier, nicht mit dessen Lieferung.
       Festlegung 4). CI läuft unverändert voll — kein Stempel-Konzept auf CI,
       alle Keys unformal → alle Checks gedriftet (dasselbe Verhältnis wie
       Tier-1, [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
-- [ ] **Liefer-Punkt 3:** der Stop-Hook blockt über der Mischform — HEAD-Kante
+- [x] **Liefer-Punkt 3:** der Stop-Hook blockt über der Mischform — HEAD-Kante
       unverändert ([ADR-0083](../../adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md)),
       die je-Check-Keys als Deckungs-Kriterium daneben; unlesbarer oder
       fehlender Stempel blockt (fail-closed). Wächter- und Mutations-Bestand
@@ -139,19 +139,22 @@ löst sich erst hier, nicht mit dessen Lieferung.
       und die Fälle 212/213/214/637 auf die je-Check-Form; neu die zwei
       Fälle der §3-Liste (drifteter Check läuft, ungedrifteter behält den
       Stempel byte-gleich · Record-only-Commit rotiert nichts).
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — Rollenwechsel nach Schritt 8 des
       Minimal Agent Workflow (`AGENTS.md` §6), kein Self-Review (Modul 8).
-- [ ] Doku-Update: die Zeile `make gates` in [`harness/README.md`](../../../../harness/README.md)
+- [x] Doku-Update: die Zeile `make gates` in [`harness/README.md`](../../../../harness/README.md)
       und [`harness/sensors/gates.md`](../../../../harness/sensors/gates.md)
-      §Fast-Pfad nennt die Tier-2-Form — öffentlicher Vertrag berührt.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben —
+      §Vertrag nennt die Tier-2-Form der Tafel (Titel „make gates —
+      Fast-Pfad je-Check-Satz (Tier 2)"; der Anker „§Fast-Pfad" nennt keine
+      Überschrift, die Form steht im Titel und in §Vertrag) — öffentlicher
+      Vertrag berührt.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben —
       `evidence/`-Datei ergänzen, wo eine Beobachtung anfiel; **kein Zähler
       wird gesetzt**. Keine Beobachtung anfallen ist ebenfalls eine Antwort
       und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind hier geprüft
       — Repo ohne Wellen-Betrieb, nach dem `git mv`.
@@ -209,8 +212,10 @@ löst sich erst hier, nicht mit dessen Lieferung.
    gemessen ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)).
    Je neu: (a) *drifted-Check läuft, ungeändert-Check fährt keinen Lauf und
    behält seinen Stempel byte-gleich*; (b) *Record-only-Commit fährt nichts —
-   ein Commit, der allein `.harness/stamp/**` bewegt, rotiert keinen
-   je-Check-Key und keinen*; beide Anlage-Formen nach
+   ein Commit, der allein `.harness/stamp/mutate/` bewegt, rotiert keinen
+   je-Check-Key und keinen* (die engere Menge je
+   [ADR-0103](../../adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md)
+   Festlegung 2; der Vertrags-Rest → §6); beide Anlage-Formen nach
    [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit),
    gemessen über dem realen Skript.
 7. **Die [ADR-0103](../../adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md)-Ablage bleibt, die Synthese der begleitenden ADR fasst die Formen** —
@@ -238,11 +243,14 @@ löst sich erst hier, nicht mit dessen Lieferung.
 **Die Prüfgegenstand-Tafel je Check** (Menge als Form; je Zeile der Rest des
 Gelesen-Bestands im Messrezept benannt, nicht geschlossen —
 [ADR-0035](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md)
-Festlegung 4-Form, je Check):
+Festlegung 4-Form, je Check; je Check gemessen — jede Menge trägt auch die
+Rezeptzeile der Kante in `Makefile`, 13/13: `bash harness/tools/gates-keys.sh
+menge <check> | grep -cE '^Makefile$'` → `1` je Check, und der Rezept-Edit
+dreht den je-Check-Key, Rot-Züge `bash test/gates-keys.bats` Tests 7–10):
 
 | Check | Menge (Form) | Begründung |
 |---|---|---|
-| `baseline-verify` | `SHA256SUMS` + der vendored Baum `.harness/baseline/` + die Pin-Zeilen `BASELINE_TAG`/`BASELINE_ZIP_SHA256` und die vier gekoppelten Pin-Stellen (`.d-check.yml` `sources`, `internal/fetch/baseline.go` Defaults) | der Check urteilt exakt über die Integritäts-/Vollständigkeits- und Pin-Kopplung; alles andere ist ihm verdikt-irrelevant |
+| `baseline-verify` | das Rezept `harness/tools/baseline-verify.sh` + der vendored Baum `.harness/baseline/` mit der `SHA256SUMS` **im Tag-Verzeichnis** (`.harness/baseline/<tag>/SHA256SUMS`) und der Baseline-Kopie `templates/.d-check.yml` + die Pin-Zeilen `BASELINE_TAG`/`BASELINE_ZIP_SHA256` im `Makefile` (transitiv über die Rezeptzeile); das Wurzel-`.d-check.yml` liegt NICHT in der Menge | der Check urteilt über Integrität/Vollständigkeit des Tag-Verzeichnisses und die Pin-Kopplung; die Pin-Zeilen liest er unter dem `make`-Rezept — an die gefahrene Tafel angepasst, Form des Befunds als Tafel-Drift (Review-Befund F-2, je Wahrheitsgehalt gerechtfertigt) |
 | `docs-check` | die gescannte Menge: `.d-check.yml`, `d-check.mk` und alle `.md` im Prüfbereich, vermindert um die `scan.ignore`-Ausschlüsse | das Gate urteilt über Doku-Referenzen in genau dieser Menge — dieselben Ausschlüsse, damit dieselbe Deckung wie der Lauf |
 | `lint` | Go-Quellen `internal/**`, `cmd/**`, `go.mod`/`go.sum`, Lint-Config, die Dockerfile-`lint`-Stage | genau das liest golangci-lint in der Stage; der Docker-Cache-Zustand bleibt benannter Rest (Festlegung 4) |
 | `build` | dieselbe Gelesen-Menge wie `lint`, in der `build`-Stage | dieselbe Stufen-Kette; eine Trennung wäre eine zweite Form desselben Gelesens ([ADR-0035](../../adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md) Festlegung 3) |
@@ -252,8 +260,17 @@ Festlegung 4-Form, je Check):
 | `comment-claims` | die Prüfbereich-Menge des Sensors über der Gate-Config (Quell- und Doku-Bäume, wie der Sensor sie scannt) | der Sensor urteilt über Kommentar-Behauptungen in genau dieser Menge |
 | `register-ausgang` | `docs/plan/planning/observations/**/state.md` + die `evidence/`-Mengen + das auswertende Skript | genau die gelesenen Zustandsfelder und der Zähler-Source |
 | `mutate-greift` | `test/mutations/**`, `harness/tools/mutate.sh`, das `mutate-greift`-Rezept im `Makefile` | genau der Fall-Bestand und der Treiber, den das Rezept fährt |
-| `host-bin` | die Traeger-Verdrahtung (Rezept, `harness/tools/`-Anteile, `TRAEGER_TAG`-Auswertung) — der Traeger wird benutzt, nicht gemessen (Prerequisite-Vorbild `archive-welle`) | das Rezept urteilt über seine Verdrahtung, nicht über den Traeger-Inhalt |
+| `host-bin` | das Rezept im `Makefile` (inkl. der `TRAEGER_TAG`-Auswertung) + `go.mod` + die cmd-/internal-Quellen (Modul-Daten, 113 Einträge gemessen); `harness/tools/`-Anteile keine — der Traeger wird benutzt, nicht gemessen (Prerequisite-Vorbild `archive-welle`) | das Rezept kompiliert die Quellen mit ihren Modul-Daten — an die gefahrene Tafel angepasst (Review-Befund F-2, zweite Zeile) |
 | `span-check` | die span-Prüf-Skripte + die Träger-/Ablageort-Verdrahtung, die der Check liest (+ die Deklaration in `spec/spezifikation.md` §5, deren Verdrahtungssätze er hält) | der Check urteilt über Verdrahtung, nicht über Lauf-Ergebnisse |
+
+**Design-Posten, die dieser Slice nach der Messung nicht mehr selbst trägt** —
+beide übernommen vom Nehmer `slice-stamp-records-konsum-v1` (liegt
+in `in-progress/`, s. §6):
+der **Zuordnungs-Rest** des Stop-Hook-Approve-Zweigs (`gates-keys.sh rest`
+nennt 34 Dateien außerhalb jeder Tafel-Menge) und der **Record-only-Vertrag**
+(die ausgenommene Hash-Menge ist `.harness/stamp/mutate/`, nicht ganz
+`.harness/stamp/**` — [ADR-0103](../../adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md)
+Festlegung 2; Festlegung 6 (b) oben an die engere Menge geschärft).
 
 **Ansatz als Liste (ergänzt die Tabelle):**
 
@@ -307,11 +324,21 @@ vor der Implementation.
 DoD (§2) vollständig, und die zwei reale Protokoll-Läufe stehen im Verifikations-Bericht:
 
 1. ein **Doku-only-Commit** fährt nach einem grünen Lauf denselben
-   Fast-Pfad, der die nicht-doku-gelesenen Checks SKIPpt und `docs-check`
-   fährt; ein **Code-only-Commit** fährt nur die Code-Checks — der SKIP über
-   dem vollständig gedeckten Satz in derselben Ausgabe;
-2. ein **Record-only-Commit** (nur `.harness/stamp/**`) SKIPpt vollständig
-   und rotiert keinen Stempel (Festlegung 6, Fall (b)).
+   Fast-Pfad, der die nicht-doku-gelesenen Checks SKIPpt und genau
+   `docs-check-host` fährt — **gefahren** (Commit `97792eec`, nur README.md;
+   d-check grün, 0 Befunde, je-Check-Stempel gesetzt). Der **Code-only**-
+   Halbteil der ursprünglichen Zusage 1 ist an dieser Messung nicht gefahren —
+   die Zusage galt breiter als ihre Messung; sie gilt an der Messung: die
+   Sensitivität der Code-Checks trägt die Tafel-Menge samt der Rot-Züge
+   (`test/gates-keys.bats`, Tests 7/8), den Halt am vollen Lauf trägt der
+   Verifikations-Zug jeder Closure (`GATES_FORCE=1 make gates`, LP 2 (c)).
+2. ein **Record-only-Commit** SKIPpt vollständig und rotiert keinen Stempel —
+   **gefahren** (Commit `d12581ad`, nur `.harness/stamp/mutate/`; Keys
+   byte-gleich vor/nach): die ausgenommene Hash-Menge ist die engere
+   `.harness/stamp/mutate/`, nicht ganz `.harness/stamp/**`
+   ([ADR-0103](../../adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md)
+   Festlegung 2); der Rest ist Design-Posten des
+   `slice-stamp-records-konsum-v1` (§6).
 
 Zusätzlich: Closure-Notiz mit Lerneintrag geschrieben.
 
@@ -335,6 +362,17 @@ Zusätzlich: Closure-Notiz mit Lerneintrag geschrieben.
   Ausnahme-Liste, ist das der sichtbare Ort
   ([ADR-0103](../../adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md)
   Festlegung 2-Form).
+- **Der Zuordnungs-Rest des Stop-Hook-Approve-Zweigs und der Record-only-Vertrag
+  in der Breite der Plan-Fassung** — der `gates-keys.sh rest`-Walk nennt 34
+  Dateien außerhalb jeder Tafel-Menge; solange sie unzugeordnet sind, blockt
+  der Hook auch über deckenden je-Check-Keys (fail-closed) und trägt der
+  volle `record-gates`-Lauf am neuen HEAD plus die `stop_hook_active`-Freigabe
+  des zweiten Versuchs; der Record-only-Vertrag las die Plan-Fassung als
+  `.harness/stamp/**`, die ausgenommene Menge ist `.harness/stamp/mutate/`
+  ([ADR-0103](../../adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md) Festlegung 2). — **Ausgang:** weiter offen →
+  `slice-stamp-records-konsum-v1` (Nehmer-Kennung in §3); die Aufnahme des
+  Rests je Check in die Mengen ist eine Plan-Entscheidung je
+  [ADR-0108](../../adr/0108-stempel-synthese-je-check-pruefgegenstand.md) (Abwägung E), kein stiller Eintrag.
 
 ## 7. Closure-Notiz
 
@@ -357,38 +395,50 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-<!-- BEDIENHINWEIS — keine Norm; faellt beim Kopieren weg (README.md
-§Verwendung, Schritt 5) und darf deshalb nichts Tragendes halten. Reihenfolge:
-diese Sektion vor dem `git mv` nach done/ fuellen — einzige Ausnahme ist das
-letzte DoD-Item in §2 (die Paarungen suchen in `done/`, also nach dem `git mv`).
-Im Repo ohne Wellen-Betrieb braucht die Closure dadurch drei Commits: Inhalt,
-`git mv`, Haekchen — das folgt aus der Hard Rule, es widerspricht ihr nicht. -->
-
-Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
-§Das Beobachtungs-Register (vorhandene `BEO-<KUERZEL>/<slug>` **zitieren** statt neu
-formulieren — sonst zählt das Register zwei Namen getrennt) ·
-`grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln (das
-Feld `liegt in` steht **nur**, wenn mit diesem Slice wirklich etwas verkörpert
-wurde; Feld und Zielort auf **einer** Zeile, Sektionsangabe innerhalb der
-Backticks). Ging der Gegenstand an einen anderen Slice oder entfiel er, trägt
-diese Sektion die Zeile `Gegenstand:` mit Kennung oder Grund und jedes Risiko
-aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
-(`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
-übernimmt).
-
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Gegenstand:** <übernommen von `slice-<Kennung>` | entfallen: <Grund>>
-  *(nur beim Ausgang ohne Arbeit; sonst Zeile löschen)*
-- **Steering-Loop-Eintrag:** <Guide oder Sensor> <geschärft/ergänzt>: <was genau>
-  — liegt in `<AGENTS.md §X | Makefile:<target> | .harness/skills/…>`.
-  Auslöser: `BEO-<KUERZEL>/<slug>` (<slice-kennung-a>, <slice-kennung-b>, <slice-kennung-c> — 3×).
-  *(Wurde mit diesem Slice nichts verkörpert — der Normalfall —, entfällt die
-  Teil-Zeile `— liegt in …` ersatzlos. Der Eintrag ist dann gezählt, nicht
-  verkörpert.)*
-- **Beobachtungs-Register (`../observations/`):** <`BEO-<KUERZEL>/<slug>/` neu angelegt, Beleg `evidence/slice-<Kennung>.md` | `evidence/slice-<Kennung>.md` in `BEO-<KUERZEL>/<slug>/` ergaenzt — Zaehler steht damit bei <N>x | keine Beobachtung angefallen>
-- **Folge-Slices:** <slice-<Kennung> (<Titel>) — ist eine Datei in `open/`>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
+- **Was hat funktioniert:** der Schlüssel-Satzerzeuger
+  (`harness/tools/gates-keys.sh`) trägt je Check eine deklarierte Menge an
+  **einer** Definition, drei Leser (Schreiber, Fast-Pfad, Stop-Hook); die
+  Kante (`record-gates: <Checks>`) blieb in Bestand, Reihenfolge und
+  Wächtern unverändert, die vier Alt-Fälle greifen weiter, 804 Mutationen in
+  804 greifen.
+- **Was ging anders als geplant:** die gefahrene Tafel driftete in zwei
+  Zeilen von der Plan-Tafel (baseline-verify: `SHA256SUMS` im Tag-Verzeichnis,
+  Wurzel-`.d-check.yml` nicht in der Menge, Pin-Zeilen transitiv über das
+  `Makefile`; host-bin: Modul-Daten statt `harness/tools/`-Anteile) — der
+  Nachzug trägt diesem Zug (§3, je Wahrheitsgehalt gerechtfertigt); Zusage 1
+  in §5 galt breiter als ihre Messung (der Code-only-Halt ist ungemessen) —
+  an der Messung geschärft, nicht still; der Record-only-Vertrag las
+  `.harness/stamp/**`, die ausgenommene Menge ist `.harness/stamp/mutate/`.
+- **Steering-Loop-Eintrag:** geschärfte Regel — die Rezeptzeilen der Kante
+  liegen je Check in den Tafel-Mengen (gemessen 13/13:
+  `bash harness/tools/gates-keys.sh menge <check> | grep -cE '^Makefile$'` →
+  `1` je Check) und der Rezept-Edit dreht den je-Check-Key (Rot-Züge je
+  `bash test/gates-keys.bats`, Rezeptzeilen- und Rezept-Edit-Klasse).
+  Gezählt, nicht verkörpert — die Regel verkörpert sich im Wächter-Bestand
+  vor der Regel-Zeit; die Teil-Zeile `liegt in` entfällt ersatzlos. Auslöser:
+  die wiederkehrende Review-Finding-Klasse der Kante (F-Summary im
+  `docs/reviews/2026-11-27-slice-gates-pruefgegenstand-stempel-v1.md`:
+  Rezeptzeilen der Kante in 8 von 12 Mengen) und der Register-Beleg
+  `evidence/slice-gates-pruefgegenstand-stempel-v1.md` in
+  [`BEO-ALL/baum-hash-deckt-nicht-jeden-pruefgegenstand/`](../observations/BEO-ALL/baum-hash-deckt-nicht-jeden-pruefgegenstand/).
+- **Beobachtungs-Register (`../observations/`):** `evidence/slice-gates-pruefgegenstand-stempel-v1.md`
+  in [`BEO-ALL/baum-hash-deckt-nicht-jeden-pruefgegenstand/`](../observations/BEO-ALL/baum-hash-deckt-nicht-jeden-pruefgegenstand/)
+  ergänzt — der Eintrag ist schon verkörpert, seine Belege wachsen, die
+  Zähler-Frage entfällt an der verkörperten Form; `BEO-ALL/mutate-cases-leakt-in-den-bats-gruen-vorlauf/`
+  trägt seinen Beleg schon aus dem Implementer-Zug (Zähler 1). Kein Eintrag
+  über der Schwelle mit diesem Zug.
+- **Folge-Slices:** `slice-stamp-records-konsum-v1` (Nehmer der zwei
+  Design-Posten aus §3/§6 — Zuordnungs-Rest, Record-only-Vertrag) — ist eine
+  Datei in `in-progress/`.
+- **Risiken aus §6:** 1. Mengen-Deckung — **entfallen** (gezeigt: alle 13
+  Checks decken ihren gelesenen Bestand, Messung und Rot-Züge im
+  Verifikations-Bericht); 2. CI immer voll — **entfallen** (dasselbe
+  Verhältnis wie Tier-1: kein Stempel-Konzept auf CI, der lokale Fast-Pfad
+  war nie CI-Behauptung); 3. Record-Konsum rotiert je-Check-Keys —
+  **entfallen** (gemessen: Record-only-Commit `d12581ad`, Keys byte-gleich
+  vor/nach; die ausgenommene Menge ist die engere `.harness/stamp/mutate/`
+  je [ADR-0103](../../adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md) Festlegung 2); 4. Zuordnungs-Rest + Record-only-Vertrag —
+  **weiter offen** → `slice-stamp-records-konsum-v1`.
 - **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
