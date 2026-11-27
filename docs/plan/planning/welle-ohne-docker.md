@@ -98,7 +98,7 @@ vergessen wird.
 | Slice | Titel | Bezug |
 |---|---|---|
 | [slice-cr-lh-qa-02-03-ohne-docker](done/slice-cr-lh-qa-02-03-ohne-docker.md) | CR — Lastenheft-Fortschreibung LH-QA-02/03 | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) · [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
-| [slice-adr-gates-laeufen-host-native](in-progress/slice-adr-gates-laeufen-host-native.md) | ADR — Gates und Lab-Läufer docker-los, §3.9-Passung (Architect) | [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
+| [slice-adr-gates-laeufen-host-native](done/slice-adr-gates-laeufen-host-native.md) | ADR — Gates und Lab-Läufer docker-los, §3.9-Passung (Architect) | [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
 | [slice-environment-check-fuehrt-die-gates](open/slice-environment-check-fuehrt-die-gates.md) | Tool-/Versions-Check als erster Gate-Check | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 | [slice-binraire-ziehen-ohne-docker](open/slice-binraire-ziehen-ohne-docker.md) | Binär-Beschaffung ohne Docker (d-check, Träger) | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 | [slice-labor-gates-host-rezepte](open/slice-labor-gates-host-rezepte.md) | die Gate-Rezepte des Labors laufen host-native | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |

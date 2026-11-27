@@ -117,7 +117,7 @@ Aufrufen — derselbe Vertrag wie heute.
 ## 4. Trigger
 
 **Start** (`next` → `in-progress`):
-[`slice-adr-gates-laeufen-host-native`](../in-progress/slice-adr-gates-laeufen-host-native.md)
+[`slice-adr-gates-laeufen-host-native`](../done/slice-adr-gates-laeufen-host-native.md)
 liegt in `done/` (die Weg-Form steht), und
 [`slice-environment-check-fuehrt-die-gates`](slice-environment-check-fuehrt-die-gates.md)
 nennt curl/d-check als Inventar-Zeile (der Check sagt, was der Fetch braucht).

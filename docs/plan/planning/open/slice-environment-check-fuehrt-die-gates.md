@@ -110,7 +110,7 @@ Gate-Lauf an ihm, bevor ein Gate gegen fehlendes Werkzeug falsch färbt
 ## 4. Trigger
 
 **Start** (`next` → `in-progress`):
-[`slice-adr-gates-laeufen-host-native`](../in-progress/slice-adr-gates-laeufen-host-native.md)
+[`slice-adr-gates-laeufen-host-native`](../done/slice-adr-gates-laeufen-host-native.md)
 liegt in `done/` — der Soll-Weg (Mischform) steht als Architektur-Entscheidung.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
