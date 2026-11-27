@@ -38,7 +38,7 @@ Keine HIGH. Kein Rollenwiderspruch-Fall (Modul 8 Konflikt-Pfad läuft nicht an).
 - `befund`: Die Anlage löscht nur die Mitte des dreizeiligen if-Blocks; das
   mutierte Werkzeug ist ab da gar nicht mehr parsbar. Bruchprobe auf Kopie
   (Scratchpad, kein Rest im Baum): nach dem sed ergibt `bash -n` „syntax error
-  near unexpected token `fi'" (Exit 2; Minimal-Form bestätigt: ein if-Body mit
+  near unexpected token `fi`" (Exit 2; Minimal-Form bestätigt: ein if-Body mit
   leerem List-Ast ist in bash 5.3 ein Parse-Fehler), und der Lauf gegen ein
   fehlendes Result-File bricht sofort am Parse — der im Fall-Kopf behauptete
   Nach-Mutations-Mechanismus („der Konsum liest ein fehlendes oder leeres
@@ -223,8 +223,8 @@ Trenner-Verwechslung.
   am Kopf (List-Lauf = genau 15 Zeilen) — die Deklaration ist **nicht größer**
   als der Ist-Bestand; der fail-closed Gap-Detektor bleibt (Test 7,
   Fixture `neu-beliebig.txt` → List-Zeile und Exit 1).
-- **Posten (a), test-Menge-Zuschlag:** `//go:embed all:templates/{enforce,
-  agents,commands}` + `templates/d-check.yml`/`templates/baseline-verify.sh`/
+- **Posten (a), test-Menge-Zuschlag:** `//go:embed all:templates/{enforce, agents,commands}` +
+  `templates/d-check.yml`/`templates/baseline-verify.sh`/
   `templates/observations/README.md` lesen die Vorlagen beim Kompilieren;
   `internal/emit/testdata/raw-print-mk.txt` wird in
   `internal/emit/emit_test.go:391/537` per `os.ReadFile` gelesen — die
