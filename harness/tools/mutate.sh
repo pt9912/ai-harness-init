@@ -997,21 +997,16 @@ stamp_records_abbruch() {
 # sie mit Meldung und der Fundliste (fail-closed, MR-017; die Fundliste steht in der
 # Meldung, MR-059).
 stamp_records_kennung_benennen() {
-  local kennung="$1" cases="$2" f cand
+  local kennung="$1" fall_dir="$2" f cand
   local -a treffer=()
   shopt -s nullglob
-  for f in "$cases"/*.sh; do
+  for f in "$fall_dir"/*.sh; do
     cand="$(basename "$f" .sh)"
-    case "$cand" in
-      "$kennung") treffer+=("$cand") ;;
-      *-"$kennung") treffer+=("$cand") ;;
-      *)
-        case "$kennung" in
-          *[!0-9]*) : ;;
-          *) case "$cand" in "$kennung"-*) treffer+=("$cand") ;; esac ;;
-        esac
-        ;;
-    esac
+    if [ "$cand" = "$kennung" ] || [[ "$cand" == *-"$kennung" ]]; then
+      treffer+=("$cand")
+    elif [[ "$kennung" =~ ^[0-9]+$ ]] && [[ "$cand" == "$kennung"-* ]]; then
+      treffer+=("$cand")
+    fi
   done
   shopt -u nullglob
   if [ "${#treffer[@]}" -eq 0 ]; then
@@ -1026,7 +1021,7 @@ stamp_records_kennung_benennen() {
 }
 
 stamp_records_main() {
-  local resultfile="" run="" attempt="" qualifikator="" wurzel="$REPO" datum arg
+  local resultfile="" run="" attempt="" qualifikator="" wurzel="$REPO" datum
   local line st fall v sha="" form_str
   local cases stamp_dir sha8
   local -a faelle=() formen=() ohne_bestimmung=() zielnamen=()
@@ -1151,7 +1146,7 @@ stamp_records_main() {
         printf '# Fall-File je ADR-0107 Festlegung 1: je Sweep-Lauf eine Urteils-Zeile; der Datei-Name ist die Fall-Kennung (%s), aufgeloest gegen test/mutations/.\n' "${zielnamen[$i]}"
         printf '# Run %s, Attempt %s — Argumente des Konsum-Laufs:\n' "$run" "$attempt"
         printf '#   bash harness/tools/mutate.sh --stamp-records <result-file> --run %s --attempt %s\n' "$run" "$attempt"
-        printf '# Gepruefter Commit %s — gelesen aus der Zeile `gepruefter Commit:` des Result-Files\n' "$sha"
+        printf '# Gepruefter Commit %s — gelesen aus der Zeile "gepruefter Commit:" des Result-Files\n' "$sha"
         printf '#   (git fetch origin mutate/<kennung>-<sha8> && git show FETCH_HEAD:mutate-ergebnis.txt; MR-051-Form: je Zahl ein Kommando).\n'
       } >"$ziel"
     fi
