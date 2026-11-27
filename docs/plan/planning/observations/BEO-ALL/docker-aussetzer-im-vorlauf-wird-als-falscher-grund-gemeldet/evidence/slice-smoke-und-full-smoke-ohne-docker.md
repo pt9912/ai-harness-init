@@ -1,4 +1,4 @@
-**Vorgang:** [slice-smoke-und-full-smoke-ohne-docker](../../../../in-progress/slice-smoke-und-full-smoke-ohne-docker.md)
+**Vorgang:** [slice-smoke-und-full-smoke-ohne-docker](../../../../done/slice-smoke-und-full-smoke-ohne-docker.md)
 **Fund:** Realer `make full-smoke`-Lauf am daemon-losen Host (2026-11-27): die
 Vorlauf-Wächter-Stufe über dem vollständigen Klon brach an
 `make -f d-check.mk doc-commits` — der docker-Lauf der emittierten

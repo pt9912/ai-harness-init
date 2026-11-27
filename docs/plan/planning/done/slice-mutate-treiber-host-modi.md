@@ -130,9 +130,9 @@ Isolationskopie). Zusätzlich: Closure-Notiz mit Lerneintrag geschrieben.
 ## 6. Risiken und offene Punkte
 
 - **Die 64 schweren Fälle (`smoke`/`full-smoke`) laufen erst nach
-  [`slice-smoke-und-full-smoke-ohne-docker`](../in-progress/slice-smoke-und-full-smoke-ohne-docker.md)**
+  [`slice-smoke-und-full-smoke-ohne-docker`](../done/slice-smoke-und-full-smoke-ohne-docker.md)**
   — **Ausgang:** eingetreten — die Entkoppelung trägt
-  [`slice-smoke-und-full-smoke-ohne-docker`](../in-progress/slice-smoke-und-full-smoke-ohne-docker.md);
+  [`slice-smoke-und-full-smoke-ohne-docker`](../done/slice-smoke-und-full-smoke-ohne-docker.md);
   bis dahin brechen die 64 Fälle an der gebauten Daemon-Vorbedingung
   (Umgebungs-Befund, Exit 4), nicht an einem Fall-Ausgang; die
   Werkzeug-Abwesenheit ist benannt, nicht still (Verifikations-Bericht,
@@ -200,7 +200,7 @@ F-1 LOW im Fix `3f29742d` behoben).
   4 Vorgänge über der Schwelle) — kein Übertritt: der Beleg-Vertrag blieb
   unverändert, sein Bestands-Ausgang steht (Treiber-Rest).
 - **Folge-Slices:**
-  [`slice-smoke-und-full-smoke-ohne-docker`](../in-progress/slice-smoke-und-full-smoke-ohne-docker.md)
+  [`slice-smoke-und-full-smoke-ohne-docker`](../done/slice-smoke-und-full-smoke-ohne-docker.md)
   (Entkoppelung der 64 schweren Fälle, §6-Risiko 1) ·
   [`slice-doku-nachzug-ohne-docker`](../next/slice-doku-nachzug-ohne-docker.md)
   (Rest des Doku-Nachzugs).
@@ -208,7 +208,7 @@ F-1 LOW im Fix `3f29742d` behoben).
   Beleg-Slot — entfallen (oben).
 - **Drei Paarungen:** Anker — der Lerneintrag oben ist gezählt, es gibt
   keinen `liegt in` · Folge-Slices —
-  [`slice-smoke-und-full-smoke-ohne-docker`](../in-progress/slice-smoke-und-full-smoke-ohne-docker.md)
+  [`slice-smoke-und-full-smoke-ohne-docker`](../done/slice-smoke-und-full-smoke-ohne-docker.md)
   und [`slice-doku-nachzug-ohne-docker`](../next/slice-doku-nachzug-ohne-docker.md)
   · Register —
   [`BEO-ALL/docker-aussetzer-im-vorlauf-wird-als-falscher-grund-gemeldet`](../observations/BEO-ALL/docker-aussetzer-im-vorlauf-wird-als-falscher-grund-gemeldet/state.md)

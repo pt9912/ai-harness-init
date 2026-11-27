@@ -105,7 +105,7 @@ vergessen wird.
 | [slice-waechter-umgebungs-robustheit](done/slice-waechter-umgebungs-robustheit.md) | die Wächter-Suite misst unabhängig von der Werkzeug-Umgebung des Laufs | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-emittierte-gates-host-pfad](done/slice-emittierte-gates-host-pfad.md) | die emittierten Gates fahren host-native | [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
 | [slice-mutate-treiber-host-modi](done/slice-mutate-treiber-host-modi.md) | der Mutations-Treiber fährt docker-los | [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
-| [slice-smoke-und-full-smoke-ohne-docker](in-progress/slice-smoke-und-full-smoke-ohne-docker.md) | `smoke` und `full-smoke` laufen ohne Docker | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-smoke-und-full-smoke-ohne-docker](done/slice-smoke-und-full-smoke-ohne-docker.md) | `smoke` und `full-smoke` laufen ohne Docker | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-full-smoke-gates-echt-gruen](next/slice-full-smoke-gates-echt-gruen.md) | Restmenge: `full-smoke` laeuft ohne Docker vollgruen | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-ci-runner-ohne-docker](next/slice-ci-runner-ohne-docker.md) | CI auf frischem Klon — ohne Docker-Daemon | [`MR-014`](../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions) |
 | [slice-doku-nachzug-ohne-docker](next/slice-doku-nachzug-ohne-docker.md) | Doku-Nachzug der docker-los-Form | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |

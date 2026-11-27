@@ -111,7 +111,7 @@ als Umgebungs-Fehler. Gehalten wird das von `test/mutate-driver.bats` (Blöcke
 Zweite Vorbedingung derselben Klasse, modus-gebunden: faßt der Fall-Satz einen `# verify: smoke`
 oder `full-smoke`, prüft der Treiber den Docker-Daemon und bricht vor der Isolationskopie mit
 `mutate: ABBRUCH — Umgebungs-Befund: docker · Soll: erreichbarer Docker-Daemon · Ist: …`
-(Exit 4) ab — bis [`slice-smoke-und-full-smoke-ohne-docker`](../../docs/plan/planning/in-progress/slice-smoke-und-full-smoke-ohne-docker.md)
+(Exit 4) ab — bis [`slice-smoke-und-full-smoke-ohne-docker`](../../docs/plan/planning/done/slice-smoke-und-full-smoke-ohne-docker.md)
 bootstrappen diese zwei Modi tmp-Repos mit Docker-Gates, und ihre Werkzeug-Abwesenheit ist so
 benannt, nicht an einem Fall-Ausgang lesbar. Danach trägt keiner dieser Modi mehr einen
 Docker-Zug im Rezept, und die Zweite fällt weg.
