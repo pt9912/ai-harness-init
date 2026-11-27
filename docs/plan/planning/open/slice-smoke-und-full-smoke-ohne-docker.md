@@ -103,7 +103,7 @@ Die Stufen-Deklarationen der E2E-Abdeckung bleiben — der Prüfgegenstand
 **Start** (`next` → `in-progress`):
 [`slice-emittierte-gates-host-pfad`](slice-emittierte-gates-host-pfad.md)
 liegt in `done/` — die emittierten Gates im Ziel laufen host-native, und
-[`slice-labor-gates-host-rezepte`](slice-labor-gates-host-rezepte.md)
+[`slice-labor-gates-host-rezepte`](../next/slice-labor-gates-host-rezepte.md)
 steht (die host-Rezepte des Labors existieren).
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**

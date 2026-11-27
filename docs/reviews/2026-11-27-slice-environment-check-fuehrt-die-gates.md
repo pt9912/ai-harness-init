@@ -173,7 +173,7 @@ Keine gefahrene Form fällt außerhalb der im Kopf genannten Aufzählung; die Au
   Mengen-nicht-leer-Sonde (`zeilen -ge 10`, mit echo'd Soll) über dem neuen Vertrag; die
   Assertions sind Teilzeichenketten über stabilen Ausgabe-Formen; die docker-gebundene bats-Stufe
   selbst ist unverändert Rückstand — im Kopf der Datei als Grenze deklariert („was hier nicht
-  gemessen wird"), im Plan §1 als Schicht-Abgrenzung ([`slice-labor-gates-host-rezepte`](../../docs/plan/planning/open/slice-labor-gates-host-rezepte.md)).
+  gemessen wird"), im Plan §1 als Schicht-Abgrenzung ([`slice-labor-gates-host-rezepte`](../../docs/plan/planning/next/slice-labor-gates-host-rezepte.md)).
 - **Pin-Nachzug `44e0594b`** (nach den Slice-Commits): Dockerfile, Makefile, Inventar-Soll,
   Go-Fallbacks der Smoke-Skripte und Fall-796-Anker im selben Zug — die pinsync-Paarung trägt
   byte-gleich; nichts vom Slice-Vertrag ist durch den Nachzug still geworden.

@@ -57,7 +57,7 @@ Adaption der Baseline und steht als `MR-<NNN>` in `harness/conventions.md`"*).
 
 - **Kein Makefile-, Skript-, Workflow-Code** — der Architect schreibt ADR und
   Norm-Artefakte (`AGENTS.md` §3.8); die Rezepte baut
-  [`slice-labor-gates-host-rezepte`](../open/slice-labor-gates-host-rezepte.md).
+  [`slice-labor-gates-host-rezepte`](../next/slice-labor-gates-host-rezepte.md).
 - **Kein Release-Bau-Wechsel** — der Tool-Build bleibt im gepinnten Image
   ([ADR-0003](../../adr/0003-go-native-binaries.md), CI-Runner tragen Docker).
 - **Kein macOS-Tragungs-Beschluss als Gegenstand** — die ADR nennt die
@@ -82,7 +82,7 @@ Adaption der Baseline und steht als `MR-<NNN>` in `harness/conventions.md`"*).
       (Plan-Abweichung, siehe §7) — `daa4aad2`. Der Index-Eintrag verweist die
       Sensoren-Zeile der [`harness/sensors/environment-check.md`](../../../../harness/sensors/environment-check.md)
       als Bindung; ihr Träger-Slice bleibt
-      [slice-labor-gates-host-rezepte](../open/slice-labor-gates-host-rezepte.md).
+      [slice-labor-gates-host-rezepte](../next/slice-labor-gates-host-rezepte.md).
 - [x] `make gates` grün — lokal nicht herstellbar (Docker-Daemon aus); die
       CI-Jobs `gates`/`full-smoke` sind rot **vorgefunden** vorgängig — bedingt
       über [CO-007](../../carveouts/CO-007-ci-rot-vorgefunden-gates-und-full-smoke.md),

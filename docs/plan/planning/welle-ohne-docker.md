@@ -101,7 +101,7 @@ vergessen wird.
 | [slice-adr-gates-laeufen-host-native](done/slice-adr-gates-laeufen-host-native.md) | ADR — Gates und Lab-Läufer docker-los, §3.9-Passung (Architect) | [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
 | [slice-environment-check-fuehrt-die-gates](done/slice-environment-check-fuehrt-die-gates.md) | Tool-/Versions-Check als erster Gate-Check | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
 | [slice-binraire-ziehen-ohne-docker](done/slice-binraire-ziehen-ohne-docker.md) | Binär-Beschaffung ohne Docker (d-check, Träger) | [`LH-QA-02`](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) |
-| [slice-labor-gates-host-rezepte](open/slice-labor-gates-host-rezepte.md) | die Gate-Rezepte des Labors laufen host-native | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
+| [slice-labor-gates-host-rezepte](next/slice-labor-gates-host-rezepte.md) | die Gate-Rezepte des Labors laufen host-native | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |
 | [slice-emittierte-gates-host-pfad](open/slice-emittierte-gates-host-pfad.md) | die emittierten Gates fahren host-native | [`LH-FA-01`](../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) |
 | [slice-mutate-treiber-host-modi](open/slice-mutate-treiber-host-modi.md) | der Mutations-Treiber fährt docker-los | [`LH-QA-03`](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) |
 | [slice-smoke-und-full-smoke-ohne-docker](open/slice-smoke-und-full-smoke-ohne-docker.md) | `smoke` und `full-smoke` laufen ohne Docker | [`LH-QA-01`](../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) |

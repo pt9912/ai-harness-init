@@ -39,7 +39,7 @@ Doku-Nachzug: [`slice-doku-nachzug-ohne-docker`](slice-doku-nachzug-ohne-docker.
 Vorlauf-Zug vollständig ohne Docker-Daemon: der Grün-Vorlauf (`green_prerun`)
 und je Fall der Sensor-Lauf (`run_case`, `( cd "$WORK" && make "$verify" )`)
 laufen über die host-native Gate-Rezepte
-([`slice-labor-gates-host-rezepte`](slice-labor-gates-host-rezepte.md)); der
+([`slice-labor-gates-host-rezepte`](../next/slice-labor-gates-host-rezepte.md)); der
 Treiber startet mit einer `environment-check`-Vorbedingung — fehlt ein
 Werkzeug oder weicht es vom Pin ab, bricht der Lauf mit Umgebungs-Befund ab
 (die Diagnose nennt Werkzeug · Soll · Ist), nicht an einem Fall-Ausgang. Die
@@ -51,7 +51,7 @@ Sperren-Meldung unterscheidet die Ursache: Umgebungs-Befund ≠ Test-Fehlschlag
 - **Die Fall-Anlage (316 Fälle) wird nicht umgeschrieben** — die Fälle
   bleiben; nur das, was ihre `# verify:`-Modi ausführen, hat geändert
   (host-Rezepte). Fall-Anker am Rezept-Text werden in
-  [`slice-labor-gates-host-rezepte`](slice-labor-gates-host-rezepte.md)
+  [`slice-labor-gates-host-rezepte`](../next/slice-labor-gates-host-rezepte.md)
   nachgemessen ([`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)).
 - **`mutate-greift` bleibt, wie es ist** — es läuft schon docker-los
   (Sensors-Text [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md)
@@ -106,7 +106,7 @@ Sperren-Meldung unterscheidet die Ursache: Umgebungs-Befund ≠ Test-Fehlschlag
 ## 4. Trigger
 
 **Start** (`next` → `in-progress`):
-[`slice-labor-gates-host-rezepte`](slice-labor-gates-host-rezepte.md) liegt in
+[`slice-labor-gates-host-rezepte`](../next/slice-labor-gates-host-rezepte.md) liegt in
 `done/` — die host-Rezepte stehen; der Treiber ruft sie.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
@@ -116,7 +116,7 @@ Sperren-Meldung unterscheidet die Ursache: Umgebungs-Befund ≠ Test-Fehlschlag
   Umgebungs-Vorbedingung eine je-Worker-Messung braucht → re-slicen.
 - `in-progress` → `open` (blockiert — Carveout?): ein `# verify:`-Modus hat
   kein host-Äquivalent (nach
-  [`slice-labor-gates-host-rezepte`](slice-labor-gates-host-rezepte.md)), und
+  [`slice-labor-gates-host-rezepte`](../next/slice-labor-gates-host-rezepte.md)), und
   der Treiber kann ihn nicht fail-closed auswerten → Carveout-Kläung an der
   ADR-0109-Platzhalter-Synthese.
 
