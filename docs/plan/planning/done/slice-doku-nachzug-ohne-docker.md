@@ -78,7 +78,7 @@ die [ADR-0109](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)-Fass
       und wird in §7 notiert.
 [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
       nächsten Welle-Closure geprüft.
 
 ## 3. Plan (vor Code)
@@ -128,21 +128,23 @@ formulieren — sonst zählt das Register zwei Namen getrennt) ·
 
 **Closure-Notiz (Rolle Planner, 2026-11-27)** — Quellen: eigener Lauf, das
 Review
-([`docs/reviews/2026-11-27-slice-doku-nachzug-ohne-docker.md`](../../reviews/2026-11-27-slice-doku-nachzug-ohne-docker.md),
+([`docs/reviews/2026-11-27-slice-doku-nachzug-ohne-docker.md`](../../../reviews/2026-11-27-slice-doku-nachzug-ohne-docker.md),
 F-1..F-6) und der volle Gates-Lauf (Exit 0, Stempel-Set `d8c91e7d`: bats
 664/664, test-go 9/9, shell-lint 0, mutate-greift 802/802, docs-check 0,
 lint 0).
 
 - **Was hat funktioniert:** die laufende Doku trägt den Bestand, nicht einen
   Plan — Sensor-Texte (`gates` Tier-2 je-Check, `mutate` Vorbedingung mit
-  entlassener smoke-Spur, `smoke`/`full-smoke` Rest-Spur), `harness/README`
+  entlassener smoke-Spur, `smoke`/`full-smoke` Rest-Spur), `harness/README.md`
   Kante und Zellen, Benutzerhandbuch git-only-Bootstrap und zwei Gate-Wege,
   und die E2E-Abdeckung trägt mit `d8c91e7d` die Ort-Zeilen der Stufen
   (Text-Nachzug byte-identisch gegen den Bestand, Fall 5 des Halter-Wächters
   rot vor dem Nachzug, grün danach).
 - **Was ging anders als geplant:** (1) **F-1 HIGH** — `95415a38` heilt die
-  Accepted-ADR-0109 still an der Adresse; die Einzel-Entscheidung trägt
-  ADR-0110 (Rückstellung auf den Accept-Stand `525749b4`, zwei namentliche
+  Accepted-[`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)
+  still an der Adresse; die Einzel-Entscheidung trägt
+  [`ADR-0110`](../../adr/0110-die-stillheilung-einer-accepted-adr-wird-zurueckgenommen.md)
+  (Rückstellung auf den Accept-Stand `525749b4`, zwei namentliche
   `ignore-refs`-Paare als Ventil, Commits `dceb3b8c`/`640fa16b`). (2) **F-2
   HIGH** — dieselbe Commit schaltet neun fremde Paarungen-Häkchen im
   ausführenden Kontext auf; die Prüfung legitimiert sie im
