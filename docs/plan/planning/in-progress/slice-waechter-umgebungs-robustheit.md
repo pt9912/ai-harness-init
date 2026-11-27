@@ -126,7 +126,21 @@ Review-Befund F-2) und `harness/sensors/docs-check.md` (Carrier-Prosa, F-3) sowi
 trägt der Vorgänger-Commit `be63da5d` — der Bestand erfüllt diese drei Zeilen vor diesem
 Lauf. Dieser Lauf berührt `test/traeger-fetch.bats` und `test/targets-modul-wiring.bats`
 (Liefer-Punkt 1) und ergänzt die Grenz-Zeile im Kopf von `test/dockerfile-teststufe.bats`
-(die Grenz-Form des Kopfes von `test/rezept-host.bats` steht schon).
+(die Grenz-Form des Kopfes von `test/rezept-host.bats` steht schon). **Zweite Instanz derselben
+Klasse, gemessen im vollen Sweep** (`make test-bats BATS_TARGET=test/`, 6 rot):
+[`test/traeger-fetch-host.bats`](../../../../test/traeger-fetch-host.bats) trägt dieselbe
+geerbte-Pin-Klasse an den Manifest-Modus-Fällen ({603, 605, 606, 607, 608} mit voller/teiler
+ambienten Pin-Menge) — derselbe Ausmerz wie im traeger-fetch-Setup, die Datei steht darum
+unten nicht in §3; die Rückführungs-Schwelle („mehr als drei berührte Wächter-Dateien") ist
+damit nicht gerissen: über den Plan hinaus berührt dieser Lauf genau eine Wächter-Datei.
+**Ein dritter roter Fall im Sweep ist kein Gegenstand dieses Slices** (vom Claim-Commit an
+rot, im Worktree an `e3c4cfd2` nachgemessen): Fall 273 des Wächters
+`test/ignore-refs-restbreite.bats` (`done/** → .harness/baseline/**`:
+11 auflösende Links, deklariert 10) — die Deckungs-Deklaration ist beim Move des
+[done](../../../../docs/plan/planning/done/slice-adr-gates-laeufen-host-native.md)-Plans
+(`8e249284`) nicht nachgezogen; der Nachzug läuft über den Präzedenz-Commit `9321ffcc`
+(Rolle Planner, „Deckungs-Deklaration nach dem Move nachgezogen", keine Verbreiterung des
+Eintrags, keine ADR-Pflicht).
 
 **Mess-Protokoll (Implementer, 2026-11-27):** die Rot-Menge von
 [`test/traeger-fetch.bats`](../../../../test/traeger-fetch.bats) ist vor dem Fix eine

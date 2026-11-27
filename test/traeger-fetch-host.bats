@@ -23,6 +23,19 @@
 setup() {
   bats_require_minimum_version 1.5.0
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
+  # Umgebungs-Zusage: die TRAEGER_*-Stellen setzt jeder Fall unten je eigenem
+  # Zustand per `env` — geerbt duerfen sie nicht sein, sonst kippen die
+  # Manifest-Modus-Faelle still in den Pin-Modus und verifizieren gegen einen
+  # Pin, der zu ihrer Fixture nicht passt (dieselbe Klasse wie im
+  # traeger-fetch-Setup). Der Rezept-Weg exportiert die Pin-Stellen ins
+  # bats-Environment (Makefile-Zeile `export TRAEGER_...`). · seit
+  # slice-waechter-umgebungs-robustheit
+  for v in TRAEGER_TAG TRAEGER_SHA256_LINUX_AMD64 TRAEGER_SHA256_LINUX_ARM64 \
+           TRAEGER_SHA256_DARWIN_AMD64 TRAEGER_SHA256_DARWIN_ARM64 \
+           TRAEGER_SHA256_WINDOWS_AMD64 TRAEGER_SHA256_WINDOWS_ARM64 \
+           TRAEGER_CARRIER; do
+    unset -v "$v"
+  done
   SKRIPT="$REPO/harness/tools/traeger-fetch-host.sh"
   TMP="$BATS_TEST_TMPDIR"
   SHIM="$TMP/bin"
