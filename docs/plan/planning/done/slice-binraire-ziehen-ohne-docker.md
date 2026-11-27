@@ -60,7 +60,7 @@ Aufrufen — derselbe Vertrag wie heute.
   als opt-in Weg gepinnt ([`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit),
   ADR-0109-Platzhalter); der Host-Weg kommt dazu, statt sie zu ersetzen.
 - **Kein Gates-Verdrahtung** — der d-check-Host-Pfad wird von
-  [`slice-labor-gates-host-rezepte`](../next/slice-labor-gates-host-rezepte.md) an die
+  [`slice-labor-gates-host-rezepte`](../in-progress/slice-labor-gates-host-rezepte.md) an die
   Rezepte angedockt; hier entsteht nur die Beschaffung (`make`-Ziele für den
   Binär-Zugang und ihre Pin-Prüfung).
 
