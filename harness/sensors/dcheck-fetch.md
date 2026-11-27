@@ -24,4 +24,4 @@ Registry und Repo stehen an derselben `DCHECK_IMAGE`-Stelle wie beim Image-Weg �
 
 ## Wächter
 
-`test/dcheck-fetch.bats` hält die Kette hermetisch (Stubs für den Registry-Zug): Happy (Member gelegt, lauffähig, Kette je Aufruf), Negative für Index-, Blob- und Member-Abweichung je fail-closed ohne Ablage, Vorab-Fälle für fehlende Prüfsumme und falsche Prüfform.
+`test/dcheck-fetch.bats` hält die Kette hermetisch (Stubs für den Registry-Zug): Happy (Member gelegt, lauffähig, Kette je Aufruf), Negative für Index-, Blob- und Member-Abweichung je fail-closed ohne Ablage, Vorab-Fälle für fehlende Prüfsumme, falsche Prüfform (auf exakt 64 hex — 63-fach und 65-hex tragen sie nicht) und fremdes Registry-Präfix (Hardiagnose gegen die geprägte Quelle `ghcr.io`), Medienform-Verzweigung je Layer (plain `v1.tar` zieht und legt ab, ein fremder Media-Type bricht mit nennender Meldung vor dem Blob-Zug). Mutations-Anlagen: 799 (Byte-Verifizierung der Kette), 800 (fehlende Prüfsumme), 803 (plain-Medienform); die sonst-Zweig-Deckung des Medienform-Zweigs trägt kein Mutations-Fall — Grenze im Anker von 803 benannt.

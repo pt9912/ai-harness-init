@@ -51,10 +51,29 @@ setup() {
     printf '{"schemaVersion":2,"mediaType":"application/vnd.oci.image.manifest.v1+json","config":{"mediaType":"application/vnd.oci.image.config.v1+json","digest":"sha256:%064d","size":100},"layers":[{"mediaType":"application/vnd.oci.image.layer.v1.tar+gzip","digest":"%s","size":100}]}' \
       1 "$blob_digest" >"$out"
   }
+  # build_manifest_form <media> <blob-digest> <out> — Parameter für den plain-
+  # (v1.tar) und den fremd-Media-Fall (N-1); der gzip-Fall nutzt build_manifest.
+  build_manifest_form() {
+    local media="$1" blob_digest="$2" out="$3"
+    printf '{"schemaVersion":2,"mediaType":"application/vnd.oci.image.manifest.v1+json","config":{"mediaType":"application/vnd.oci.image.config.v1+json","digest":"sha256:%064d","size":100},"layers":[{"mediaType":"%s","digest":"%s","size":100}]}' \
+      1 "$media" "$blob_digest" >"$out"
+  }
   build_manifest "sha256:$blob_sha" "$TMP/manifest-amd64.json"
   manifest_sha="$(sha256sum "$TMP/manifest-amd64.json" | awk '{print $1}')"
   build_manifest "sha256:$blob2_sha" "$TMP/manifest-leer.json"
   manifest_leer_sha="$(sha256sum "$TMP/manifest-leer.json" | awk '{print $1}')"
+
+  # Plain-Blob (N-1a): UNVERDICHTETES tar mit dem Member d-check — der plain-Zweig
+  # der Medienform-Verzweigung, praktisch erreichbar an einem v1.tar-Layer.
+  (cd "$TMP" && tar -cf "$TMP/blob-plain.bin" d-check)
+  blob_plain_sha="$(sha256sum "$TMP/blob-plain.bin" | awk '{print $1}')"
+  build_manifest_form 'application/vnd.oci.image.layer.v1.tar' "sha256:$blob_plain_sha" "$TMP/manifest-plain.json"
+  manifest_plain_sha="$(sha256sum "$TMP/manifest-plain.json" | awk '{print $1}')"
+
+  # Fremd-Media-Kette (N-1b): ein Layer-Media-Type, den die Verzweigung nicht
+  # traegt — bricht fail-closed mit nennender Meldung.
+  build_manifest_form 'application/vnd.oci.image.layer.v1.tar+zstd' "sha256:$blob_sha" "$TMP/manifest-zstd.json"
+  manifest_zstd_sha="$(sha256sum "$TMP/manifest-zstd.json" | awk '{print $1}')"
 
   # Index-Bytes: traegt den Manifest-Digest der Plattform-Eintraege; der
   # Index-Digest ist DER Pin (DCHECK_DIGEST) des Tests.
@@ -67,6 +86,10 @@ setup() {
   index_sha="$(sha256sum "$TMP/index.json" | awk '{print $1}')"
   build_index "sha256:$manifest_leer_sha" "$TMP/index-leer.json"
   index_leer_sha="$(sha256sum "$TMP/index-leer.json" | awk '{print $1}')"
+  build_index "sha256:$manifest_plain_sha" "$TMP/index-plain.json"
+  index_plain_sha="$(sha256sum "$TMP/index-plain.json" | awk '{print $1}')"
+  build_index "sha256:$manifest_zstd_sha" "$TMP/index-zstd.json"
+  index_zstd_sha="$(sha256sum "$TMP/index-zstd.json" | awk '{print $1}')"
 
   # curl-Stub: Registry-Zug ohne Netz — Token-Handshake auf stdout, Index/
   # Manifest/Blob je Digest aus einer Byte-Map an die Zielstelle.
@@ -106,13 +129,19 @@ ENDE
   export PATH="$SHIM:$PATH"
   export DCHK_SHIM_LOG="$TMP/shim.log"
   : >"$DCHK_SHIM_LOG"
-  printf '%s\t%s\n%s\t%s\n%s\t%s\n%s\t%s\n' \
-    "sha256:$blob_sha" "$TMP/blob.bin" \
-    "sha256:$blob2_sha" "$TMP/blob2.bin" \
-    "sha256:$manifest_sha" "$TMP/manifest-amd64.json" \
-    "sha256:$manifest_leer_sha" "$TMP/manifest-leer.json" >"$TMP/map"
-  printf 'sha256:%s\t%s\n' "$index_leer_sha" "$TMP/index-leer.json" >>"$TMP/map"
-  printf 'sha256:%s\t%s\n' "$index_sha" "$TMP/index.json" >>"$TMP/map"
+  {
+    printf 'sha256:%s\t%s\n' "$blob_sha" "$TMP/blob.bin"
+    printf 'sha256:%s\t%s\n' "$blob2_sha" "$TMP/blob2.bin"
+    printf 'sha256:%s\t%s\n' "$manifest_sha" "$TMP/manifest-amd64.json"
+    printf 'sha256:%s\t%s\n' "$manifest_leer_sha" "$TMP/manifest-leer.json"
+    printf 'sha256:%s\t%s\n' "$index_leer_sha" "$TMP/index-leer.json"
+    printf 'sha256:%s\t%s\n' "$blob_plain_sha" "$TMP/blob-plain.bin"
+    printf 'sha256:%s\t%s\n' "$manifest_plain_sha" "$TMP/manifest-plain.json"
+    printf 'sha256:%s\t%s\n' "$index_plain_sha" "$TMP/index-plain.json"
+    printf 'sha256:%s\t%s\n' "$manifest_zstd_sha" "$TMP/manifest-zstd.json"
+    printf 'sha256:%s\t%s\n' "$index_zstd_sha" "$TMP/index-zstd.json"
+    printf 'sha256:%s\t%s\n' "$index_sha" "$TMP/index.json"
+  } >"$TMP/map"
   export DCHK_SHIM_MAP="$TMP/map"
 }
 
@@ -223,4 +252,39 @@ ENDE
     DCHECK_ARCH=sparc64 DCHECK_CARRIER="$TMP/ablage/d-check" bash "$SKRIPT"
   [ "$status" -eq 2 ]
   printf '%s' "$output" | grep -qF 'unbekannte Architektur'
+}
+
+@test "mediaform plain: ein v1.tar-Layer (ohne gzip) zieht und legt ab" {
+  # N-1 (slice-binraire-ziehen-ohne-docker): der plain-Zweig der Medienform-
+  # Verzweigung — die Kette ist byte-neu gebaut (Blob ohne gzip, Manifest mit
+  # v1.tar-Media-Type); der Happy-Fall misst, dass der gelegte Binary STARTET.
+  run env DCHECK_IMAGE='ghcr.io/pt9912/d-check:v0.99.0' \
+    DCHECK_DIGEST="sha256:$index_plain_sha" \
+    DCHECK_ARCH=amd64 \
+    DCHECK_CARRIER="$TMP/ablage-plain/d-check" \
+    bash "$SKRIPT"
+  [ "$status" -eq 0 ]
+  printf '%s' "$output" | grep -qF "Pull nach sha256:$index_plain_sha"
+  [ -x "$TMP/ablage-plain/d-check" ]
+  run "$TMP/ablage-plain/d-check"
+  [ "$status" -eq 0 ]
+  [ "$output" = "dcheck-echo-ok" ]
+  grep -qF "/blobs/sha256:$blob_plain_sha" "$DCHK_SHIM_LOG"
+}
+
+@test "mediaform unbekannt: ein fremder Media-Type bricht fail-closed mit nennender Meldung" {
+  # N-1: die Verzweigung nennt den gelesenen Media-Type, wenn sie ihn nicht
+  # traegt — der Lauf bricht VOR dem Blobs-Zug, ohne abzulegen.
+  run env DCHECK_IMAGE='ghcr.io/pt9912/d-check:v0.99.0' \
+    DCHECK_DIGEST="sha256:$index_zstd_sha" \
+    DCHECK_ARCH=amd64 \
+    DCHECK_CARRIER="$TMP/ablage-zstd/d-check" \
+    bash "$SKRIPT"
+  echo "Ausgabe: [$output] (Zusage: fail-closed mit nennender Meldung, exit 2)"
+  [ "$status" -eq 2 ]
+  printf '%s' "$output" | grep -qF 'tar+zstd'
+  printf '%s' "$output" | grep -qF 'nicht getragen'
+  [ ! -d "$TMP/ablage-zstd" ]
+  # Der Bruch faellt vor dem Blob-Zug: kein blobs-Aufruf im Log.
+  run ! grep -qF '/blobs/' "$DCHK_SHIM_LOG"
 }

@@ -121,7 +121,7 @@ verifiziere "$tmp/index.json" "${DCHECK_DIGEST#sha256:}" "Index-Bytes gegen den 
 index_flat="$(tr -d '[:space:]' <"$tmp/index.json")"
 manifest_digest="$(printf '%s' "$index_flat" \
 	| grep -oE '"mediaType":"(application/vnd\.oci\.image\.manifest\.v1\+json|application/vnd\.docker\.distribution\.manifest\.v2\+json)","digest":"sha256:[a-f0-9]{64}","size":[0-9]+,"platform":\{"architecture":"'"$a"'","os":"linux"\}' \
-	| grep -oE 'sha256:[a-f0-9]{64}' | head -n1)"
+	| grep -oE 'sha256:[a-f0-9]{64}' | head -n1 || true)"
 [ -n "$manifest_digest" ] || {
 	echo "dcheck-fetch: der Index des Pins traegt kein linux/$a-Plattform-Manifest." >&2
 	exit 2
@@ -136,7 +136,7 @@ verifiziere "$tmp/platform.json" "${manifest_digest#sha256:}" "Plattform-Manifes
 platform_flat="$(tr -d '[:space:]' <"$tmp/platform.json")"
 geladen=0
 layereintraege="$(printf '%s' "$platform_flat" \
-	| grep -oE '"mediaType":"[^"]*image\.layer\.v1\.tar(\+gzip)?","digest":"sha256:[a-f0-9]{64}"')"
+	| grep -oE '"mediaType":"[^"]*image\.layer[^"]*","digest":"sha256:[a-f0-9]{64}"' || true)"
 [ -n "$layereintraege" ] || {
 	echo "dcheck-fetch: das Plattform-Manifest nennt keinen tar-Layer — Medienform nicht getragen." >&2
 	exit 2
