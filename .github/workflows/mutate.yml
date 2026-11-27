@@ -18,7 +18,10 @@
 #     vollen Satz sofort will statt bis zur Nacht zu warten.
 #
 # Wie die beiden anderen Workflows: nur `make`-Targets, keine zweite
-# Gate-Definition (MR-010-Geist). Docker-only (ADR-0003).
+# Gate-Definition (MR-010-Geist). Die Shard-Jobs fahren die host-native Rezeptform
+# (ADR-0109): `make ci-runner-setup` legt die Werkzeuge an deren Inventar-Soll ab,
+# `make dcheck-fetch` den Carrier; keine Zeile dieser Datei setzt einen
+# Docker-Daemon voraus.
 #
 # CHECKOUT-TIEFE: der eine `actions/checkout` unten bleibt bei der Default-Tiefe 1
 # — `make mutate` loest keinen history-lesenden d-check-Modul-Lauf aus.
@@ -58,6 +61,10 @@ jobs:
         shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: Runner-Werkzeuge je Inventar-Soll (make ci-runner-setup)
+        run: |
+          make ci-runner-setup
+          echo "$PWD/.harness-ci/bin" >> "$GITHUB_PATH"
       - name: Shard-Zuteilung berechnen (gewichtet, harness/tools/mutate-auswahl.sh)
         id: shard
         run: |

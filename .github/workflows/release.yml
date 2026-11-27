@@ -23,6 +23,12 @@
 # workflow_dispatch wie in upstream-drift.yml: der Plattform-Nachweis ist damit VOR
 # einem Tag manuell anstossbar — sonst kaeme das Feedback erst beim Release.
 #
+# GRENZE (ADR-0109): dieser Workflow bleibt im gepinnten Bild — der Release-Bau ist
+# die docker-getriebene Bauform (LH-QA-03: docker als Weg, ADR-0003). Die Gates- und
+# Mutations-Workflows (ci.yml, mutate.yml, mutate-branch.yml) fahren den docker-losen
+# Pflicht-Weg; diese Datei braucht ihr gepinntes Bild weiter — der Runner-Daemon
+# ist hier Weg, nicht Voraussetzung der Gates-Kette.
+#
 # CHECKOUT-TIEFE: die drei `actions/checkout` unten bleiben bei der
 # Default-Tiefe 1 — `make release-artifacts` baut Binaries, `start-smoke.sh`
 # startet sie, `make tap-nachzug` liest Formel und Asset ueber das Netz; keiner

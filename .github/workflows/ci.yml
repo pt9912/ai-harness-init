@@ -17,8 +17,12 @@
 # §Klassifikation: *"nach Merge : Mutation Tests"*, *"teurer, aber tolerierbar"* —
 # und der Lauf vorher ~50 Minuten je Push kostete.
 #
-# Docker-only (ADR-0003): die Runner bringen Docker mit; keine Host-Go-Toolchain,
-# kein `actions/setup-go`. Alles laeuft in den gepinnten Images der make-Targets.
+# RUNNER-WERKZEUGE (ADR-0109): der docker-lose Pflicht-Weg adressiert das Werkzeug
+# über den PATH des Runners — jeder Job, der ein Gates-/Smoke-Target faehrt, legt die
+# Werkzeuge vorher per `make ci-runner-setup` ab (die SOLL-Werte liest das Skript aus
+# dem Inventar; keine Version steht hier literal) und den d-check-Carrier per
+# `make dcheck-fetch`. Der gepinnte Image-Weg bleibt opt-in (stellt hier kein Glied der
+# Gates-Kette): keine Zeile dieser Datei setzt einen Docker-Daemon voraus.
 #
 # CHECKOUT-TIEFE: drei der vier `actions/checkout` unten bleiben bei der
 # Default-Tiefe 1 — `make gates`/`smoke`/`full-smoke` loesen keinen
@@ -68,16 +72,33 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: Runner-Werkzeuge je Inventar-Soll (make ci-runner-setup)
+        run: |
+          make ci-runner-setup
+          echo "$PWD/.harness-ci/bin" >> "$GITHUB_PATH"
+      - name: d-check-Carrier ablegen (docs-check-host trägt die fetched Ablage, make dcheck-fetch)
+        run: make dcheck-fetch
       - run: make gates
 
-  # Tier-2-Emit-Smoke (Host-Docker, ggf. Netz-Pull des d-check-Image).
+  # Tier-2-Emit-Smoke: der Bootstrap-Einstieg fährt den Träger aus host-bin
+  # (docker-los, ADR-0109), die fetchenden Stufen brauchen Netz an genau diesem Aufruf.
   smoke:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: Runner-Werkzeuge je Inventar-Soll (make ci-runner-setup)
+        run: |
+          make ci-runner-setup
+          echo "$PWD/.harness-ci/bin" >> "$GITHUB_PATH"
+      - name: d-check-Carrier ablegen (den Carrier-Pfad sieht die Probe des Checks)
+        run: make dcheck-fetch
       - run: make smoke
 
   # Voll-E2E-Smoke (slice-024): Bootstrap -> im Ziel der ZUSAMMENGEFUEHRTE make gates
+  # GRENZE (ADR-0109): die daemon-gebundenen Rest-Stufen des docker-losen full-smoke
+  # (d-check.mk-Modul-Läufe doc-commits/doc-immutable, Archiv-Leseprobe, hexslice-/
+  # hexagonal-Bootstrap) trägt slice-full-smoke-gates-echt-gruen; bis dahin ist dieser
+  # Job die daemon-gebundene Rest-Spur dieses Workflows, kein docker-loses Glied —
   # (MR-010: docs-check + Go-Gates in einem Lauf) — der LH-FA-01-Happy-Path, dass ein
   # frisch gebootstrapptes Repo out-of-the-box gruen faehrt. Host-Docker + ggf.
   # Netz-Pull, wie smoke; der Sensor braucht diesen mechanischen Pro-Push-Ausloeser,
@@ -98,6 +119,12 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: Runner-Werkzeuge je Inventar-Soll (make ci-runner-setup)
+        run: |
+          make ci-runner-setup
+          echo "$PWD/.harness-ci/bin" >> "$GITHUB_PATH"
+      - name: d-check-Carrier ablegen (den Carrier-Pfad sehen die Carrier-gebundenen Stufen)
+        run: make dcheck-fetch
       - run: make release-warten
       - run: make full-smoke
 
@@ -117,6 +144,10 @@ jobs:
   # Befund.
   adr-immutable:
     runs-on: ubuntu-24.04
+    # GRENZE: `make doc-immutable` faehrt den vcs-Modul-Lauf ueber das gepinnte
+    # d-check-Bild (d-check.mk) — der Carrier-Weg der d-check.mk-Stufen traegt
+    # slice-full-smoke-gates-echt-gruen; bis dahin bleibt dieser Job das gepinnte
+    # Bild (opt-in) als Träger.
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:

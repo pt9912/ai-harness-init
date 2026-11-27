@@ -8,7 +8,11 @@
 # Werkzeug, Ergebnisform und Grenze: harness/sensors/mutate.md §CI-Branch.
 #
 # Nur `make`-Targets (MR-014): jede Pruefung und jeder Schreibschritt liegt in
-# harness/tools/mutate-auswahl.sh, der Workflow ruft ihn auf.
+# harness/tools/mutate-auswahl.sh, der Workflow ruft ihn auf. Der shard-Job faehrt
+# die host-native Rezeptform (ADR-0109): die Fall-Sensor-Laueufe rufen die Host-Rezepte,
+# der Setup liest das Soll aus dem Inventar (make ci-runner-setup), der Carrier kommt
+# per `make dcheck-fetch` vor dem ersten Fall; keine Zeile setzt einen Docker-Daemon
+# voraus.
 #
 # SCHREIBRECHT: `contents: write` traegt allein der Job `ergebnis`; der Workflow selbst und alle
 # anderen Jobs lesen nur. Der Schreibschritt bricht ab, wenn der Ref nicht die Form `mutate/<kennung>-<sha8>` hat,
@@ -86,11 +90,21 @@ jobs:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
+      - name: Runner-Werkzeuge je Inventar-Soll (make ci-runner-setup)
+        run: |
+          make ci-runner-setup
+          echo "$PWD/.harness-ci/bin" >> "$GITHUB_PATH"
+      - name: d-check-Carrier ablegen (den Carrier-Pfad sehen die Fall-Sensor-Läufe)
+        run: make dcheck-fetch
       - env:
           SLICE: ${{ needs.plan.outputs.kennung }}
           SHARDS: ${{ needs.plan.outputs.shards }}
           SHARD: ${{ matrix.shard }}
           ERGEBNIS_DIR: ${{ runner.temp }}/shard-${{ matrix.shard }}
+          # Der Carrier-Pfad ist absolut (dcheck-fetch legt ihn hier im Workspace
+          # ab): die Isolationskopien je Fall lesen ihn aus der Umgebung desselben
+          # Shards — dieselbe Form wie in mutate.yml.
+          DCHECK_CARRIER: ${{ github.workspace }}/.harness/state/bin/d-check
         run: make --no-print-directory mutate-branch SCHRITT=shard
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: always()
