@@ -45,7 +45,7 @@ CI läuft auf frischem Klon, nur ohne Daemon-Annahme.
 - **Der Tag-Workflow/Release** — bleibt docker-getrieben (Tool-Build im
   gepinnten Image über den Runner-Daemon; [`LH-QA-03`](../../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten)).
 - **Die d-check-Pin-Ebene** — kommt aus
-  [`slice-binraire-ziehen-ohne-docker`](slice-binraire-ziehen-ohne-docker.md);
+  [`slice-binraire-ziehen-ohne-docker`](../next/slice-binraire-ziehen-ohne-docker.md);
   hier wird sie an die Runner-Stufen verdrahtet.
 - **macOS- oder Windows-Runner für die Host-Läufer** — [`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)
   bleibt Linux-CI; die macOS-Tragung ist ein ADR-Gegenstand (Bestand:
@@ -94,7 +94,7 @@ CI läuft auf frischem Klon, nur ohne Daemon-Annahme.
 **Start** (`next` → `in-progress`):
 [`slice-labor-gates-host-rezepte`](slice-labor-gates-host-rezepte.md),
 [`slice-smoke-und-full-smoke-ohne-docker`](slice-smoke-und-full-smoke-ohne-docker.md)
-und [`slice-binraire-ziehen-ohne-docker`](slice-binraire-ziehen-ohne-docker.md)
+und [`slice-binraire-ziehen-ohne-docker`](../next/slice-binraire-ziehen-ohne-docker.md)
 liegen in `done/`.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**

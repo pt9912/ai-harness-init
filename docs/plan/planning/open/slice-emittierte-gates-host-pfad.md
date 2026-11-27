@@ -56,7 +56,7 @@ Bootstrap braucht nur git.
   Gates-Ebene wandert.
 - **Der d-check-Binary-Zugang im Ziel** — der emittierte Weg benennt seine
   Quelle (Pin + Beschaffung, dieselbe Form wie
-  [`slice-binraire-ziehen-ohne-docker`](slice-binraire-ziehen-ohne-docker.md));
+  [`slice-binraire-ziehen-ohne-docker`](../next/slice-binraire-ziehen-ohne-docker.md));
   die Labor-Mechanik wird nicht doppelt geführt — der emittierte Pin trägt
   den Tag, der Fetch-Zug entsteht aus denselben Fragments.
 
