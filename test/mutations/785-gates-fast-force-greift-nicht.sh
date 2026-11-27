@@ -22,9 +22,12 @@
 # ohne literales Dollar), und die Wert-Seite einer `"1"` ist drei, nicht vier Zeichen.
 #
 # ERWARTETER ROT-GRUND: `fastpfad: GATES_FORCE=1 ueber gedecktem Satz -> voller
-# Lauf` wird rot (`GATES_FORCE=1` SKIPpt fortan ueber dem gedeckten Satz, Exit 0
-# statt 1), und mit ihm `fastpfad: GATES_FORCE=0 sagt nichts` (Exit 1 statt 0) —
-# die zwei Boundary-Klassen des Schalters fallen; die ungedeckten Zustaende urteilen
-# weiter fail-closed.
+# Lauf` wird rot — unter der Mutation vergleicht der Schalter kein `1` mehr und
+# `GATES_FORCE=1` SKIPpt fortan ueber dem gedeckten Satz (Exit 0 statt 1) —
+# `test/gates-fastpfad.bats:116`. Die ungedeckten Zustaende urteilen weiter
+# fail-closed. GRENZE: der andere Rand des Schalters faellt hier NICHT mit — der
+# Vergleich trifft nur die zwei `force = "1"`-Zeilen, und
+# `fastpfad: GATES_FORCE=0 sagt nichts (gedeckter Satz bleibt SKIP)`
+# (`test/gates-fastpfad.bats:122`) bleibt darueber gebunden, nicht durch diesen Fall.
 set -euo pipefail
 sed -i 's@\[ ..force. = .1. \]@[ ..force. = ..0. ]@' harness/tools/gates-fast.sh
