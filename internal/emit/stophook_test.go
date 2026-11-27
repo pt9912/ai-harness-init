@@ -117,22 +117,35 @@ func (r *stopRepo) hook(stdin string, extraEnv ...string) (string, int) {
 	return r.run(".claude/hooks/stop-require-gates.sh", stdin, extraEnv...)
 }
 
+// runArgs faehrt bash <rel> mit Skript-Argumenten — die Argument-Form des
+// Modus-Aufrufs des Satzerzeugers (`gates-keys.sh stamp <check>`); run reicht
+// nur stdin und Umgebung, das bash-Kommando traegt keine Argumente.
+func (r *stopRepo) runArgs(rel string, args ...string) (string, int) {
+	r.t.Helper()
+	var out bytes.Buffer
+	cmd := exec.Command("bash", append([]string{rel}, args...)...)
+	cmd.Dir = r.dir
+	cmd.Env = stopEnv()
+	cmd.Stdin = strings.NewReader("")
+	cmd.Stdout, cmd.Stderr = &out, &out
+	err := cmd.Run()
+	var ee *exec.ExitError
+	switch {
+	case err == nil:
+		return out.String(), 0
+	case errors.As(err, &ee):
+		return out.String(), ee.ExitCode()
+	default:
+		r.t.Fatalf("bash %s %s: %v", rel, strings.Join(args, " "), err)
+	}
+	return "", -1
+}
+
 // pinsMakefile ist das Fixture-Makefile der Dogfood-Fassung: der Satzerzeuger
-// liest je Check die Pin-Zeilen und den Rezept-Block aus dem Makefile — es traegt
-// alle Pin-Namen der Tafel-Mengen, damit je Check ein Key rechnet (leere Menge
-// waere fail-closed, MR-017).
-const pinsMakefile = `GO_VERSION ?= t
-GOLANGCI_LINT_VERSION ?= t
-TRAEGER_VERSION ?= t
-SHELLCHECK_IMAGE ?= t
-BATS_IMAGE ?= t
-ACTIONLINT_IMAGE ?= t
-HOST_OS ?= t
-HOST_ARCH ?= t
-HOST_BIN ?= t
-BASELINE_TAG ?= t
-BASELINE_ZIP_SHA256 ?= t
-record-gates: baseline-verify docs-check lint build test shell-lint ci-lint comment-claims register-ausgang mutate-greift host-bin span-check ## Checks + Nachweis
+// liest die Kante `record-gates:` aus dem Makefile und die Tafel-Mengen aus dem
+// walked Bestand — je Check der Kante liegt wenigstens eine Tafel-Datei im
+// Fixture (leere Menge waere fail-closed, MR-017).
+const pinsMakefile = `record-gates: baseline-verify docs-check-host lint build test shell-lint ci-lint comment-claims register-ausgang mutate-greift host-bin span-check ## Checks + Nachweis
 `
 
 // newStopRepo legt das tmp-Repo an; mitCommit=false laesst es ohne einzigen Commit.
@@ -146,9 +159,26 @@ func newStopRepo(t *testing.T, f stopHookFassung, mitCommit bool) *stopRepo {
 	if f.keys != "" {
 		r.copy(f.keys, f.toolsDir+"/gates-keys.sh")
 		r.write("Makefile", pinsMakefile, 0o644)
+		// je Check der Kante eine Tafel-Datei, deren Menge im walked Bestand
+		// nicht leer bleibt (die anderen Checks decken sich uber die kopierten
+		// Werkzeuge und das Fixture-Makefile selbst).
+		r.write("SHA256SUMS", "fixture\n", 0o644)       // baseline-verify
+		r.write(".d-check.yml", "fixture\n", 0o644)     // docs-check-host
+		r.write(".golangci.yml", "fixture\n", 0o644)    // lint
+		r.write("Dockerfile", "fixture\n", 0o644)       // build
+		r.write("test/probe.txt", "fixture\n", 0o644)   // test
+		r.write("harness/tools/register-ausgang.sh", "", 0o644) // register-ausgang
 	}
-	r.write(".harness/.gitignore", "state/\n", 0o644)
-	r.write("inhalt.txt", "eins\n", 0o644)
+	// Die .harness/state-Ablage bleibt aus dem Walk ausgeschlossen — aber als
+	// .gitignore-Datei im Baum waere sie eine Walk-Zeile ausserhalb jeder
+	// Tafel-Menge; der Rest-Vertrag des Satzerzeugers endet dort fail-closed
+	// (MR-017), der Hook gaebe nicht mehr frei. Der Ausschluss liegt darum in
+	// .git (info/exclude), der kein Walk-Zweig listet.
+	r.write(".git/info/exclude", "state/\n", 0o644)
+	// Inhalt-Marker: liegt in der Tafel-Menge von docs-check-host (./*.md) —
+	// jede Sub-Stufe, die ihn driften laesst, driftet genau diesen Key oder
+	// faehrt ueber die Hash-Kante.
+	r.write("inhalt.md", "eins\n", 0o644)
 	if mitCommit {
 		r.git("add", "-A")
 		r.git("commit", "-q", "-m", "basis")
@@ -179,7 +209,7 @@ func TestStopHook_CommitBindung(t *testing.T) {
 			t.Run("ohne_neuen_HEAD_driftender_Key_blockt_Tier1_frei", func(t *testing.T) {
 				r := newStopRepo(t, f, true)
 				r.mustRecord()
-				r.write("inhalt.txt", "zwei\n", 0o644)
+				r.write("inhalt.md", "zwei\n", 0o644)
 				out, rc := r.hook("{}")
 				if fassungHaertet(f) {
 					wantDecision(t, out, rc, stopBlock)
@@ -193,14 +223,14 @@ func TestStopHook_CommitBindung(t *testing.T) {
 			t.Run("neuer_HEAD_ohne_gruenen_Lauf_blockiert", func(t *testing.T) {
 				r := newStopRepo(t, f, true)
 				r.mustRecord()
-				r.write("inhalt.txt", "zwei\n", 0o644)
+				r.write("inhalt.md", "zwei\n", 0o644)
 				r.git("commit", "-q", "-am", "neu")
 				out, rc := r.hook("{}")
 				wantDecision(t, out, rc, stopBlock)
 			})
 			t.Run("neuer_HEAD_gedeckten_Inhalts_frei", func(t *testing.T) {
 				r := newStopRepo(t, f, true)
-				r.write("inhalt.txt", "zwei\n", 0o644)
+				r.write("inhalt.md", "zwei\n", 0o644)
 				r.mustRecord()
 				r.git("commit", "-q", "-am", "neu")
 				out, rc := r.hook("{}")
@@ -212,21 +242,21 @@ func TestStopHook_CommitBindung(t *testing.T) {
 				r.git("add", "-A")
 				r.git("commit", "-q", "-m", "streng")
 				r.mustRecord()
-				r.write("inhalt.txt", "zwei\n", 0o644)
+				r.write("inhalt.md", "zwei\n", 0o644)
 				out, rc := r.hook("{}")
 				wantDecision(t, out, rc, stopBlock)
 			})
 			t.Run("streng_per_Umgebung_1_ohne_neuen_HEAD_blockiert", func(t *testing.T) {
 				r := newStopRepo(t, f, true)
 				r.mustRecord()
-				r.write("inhalt.txt", "zwei\n", 0o644)
+				r.write("inhalt.md", "zwei\n", 0o644)
 				out, rc := r.hook("{}", "STOP_GATE_STRENG=1")
 				wantDecision(t, out, rc, stopBlock)
 			})
 			t.Run("Umgebung_true_wirkt_wie_Default", func(t *testing.T) {
 				r := newStopRepo(t, f, true)
 				r.mustRecord()
-				r.write("inhalt.txt", "zwei\n", 0o644)
+				r.write("inhalt.md", "zwei\n", 0o644)
 				out, rc := r.hook("{}", "STOP_GATE_STRENG=true")
 				if fassungHaertet(f) {
 					// Der Streng-Schalter sagt nichts (true ist nicht 1); der Block
@@ -245,7 +275,7 @@ func TestStopHook_CommitBindung(t *testing.T) {
 				if err := os.Remove(filepath.Join(r.dir, ".harness/state/gates-passed.head")); err != nil {
 					t.Fatal(err)
 				}
-				r.write("inhalt.txt", "zwei\n", 0o644)
+				r.write("inhalt.md", "zwei\n", 0o644)
 				out, rc := r.hook("{}")
 				wantDecision(t, out, rc, stopBlock)
 			})
@@ -256,7 +286,7 @@ func TestStopHook_CommitBindung(t *testing.T) {
 				if err != nil || string(b) != "kein-commit\n" {
 					t.Fatalf("HEAD-Stempel: erwartet \"kein-commit\\n\", bekommen %q (%v)", b, err)
 				}
-				r.write("inhalt.txt", "zwei\n", 0o644)
+				r.write("inhalt.md", "zwei\n", 0o644)
 				out, rc := r.hook("{}")
 				if fassungHaertet(f) {
 					// Mischform: der uncommittete Zug driftet den je-Check-Key auch
@@ -303,7 +333,7 @@ func TestStopHook_CommitBindung(t *testing.T) {
 			t.Run("stop_hook_active_frei", func(t *testing.T) {
 				r := newStopRepo(t, f, true)
 				r.mustRecord()
-				r.write("inhalt.txt", "zwei\n", 0o644)
+				r.write("inhalt.md", "zwei\n", 0o644)
 				r.git("commit", "-q", "-am", "neu")
 				out, rc := r.hook(`{"stop_hook_active": true}`)
 				wantDecision(t, out, rc, stopApprove)
@@ -316,10 +346,11 @@ func TestStopHook_CommitBindung(t *testing.T) {
 					// liest die je-Check-Deckung als Alternative zur Hash-Kante.
 					r := newStopRepo(t, f, true)
 					r.mustRecord()
-					r.write("inhalt.txt", "zwei\n", 0o644)
-					// inhalt.txt liegt allein in der Bauch-Menge des Satzerzeugers;
-					// genau der gedriftete Check stuempelt.
-					if out, rc := r.run(f.toolsDir+"/gates-keys.sh", "stamp", "comment-claims"); rc != 0 {
+					r.write("test/probe.txt", "zwei\n", 0o644)
+					// test/probe.txt liegt allein in der Menge von `test` — genau der
+					// gedriftete Check stuempelt; eine Drift ausserhalb jeder Menge
+					// entzoege der Deckung die Basis (fail-closed, MR-017).
+					if out, rc := r.runArgs(f.toolsDir+"/gates-keys.sh", "stamp", "test"); rc != 0 {
 						t.Fatalf("Satzerzeuger-Stempel: Exit %d:\n%s", rc, out)
 					}
 					out, rc := r.hook("{}")
@@ -332,7 +363,7 @@ func TestStopHook_CommitBindung(t *testing.T) {
 					r := newStopRepo(t, f, true)
 					r.mustRecord()
 					keysVor := map[string]string{}
-					for _, s := range []string{"comment-claims", "docs-check", "lint"} {
+					for _, s := range []string{"comment-claims", "docs-check-host", "lint"} {
 						b, err := os.ReadFile(filepath.Join(r.dir, ".harness/state/gates-passed-"+s+".key"))
 						if err != nil {
 							t.Fatal(err)
@@ -344,7 +375,7 @@ func TestStopHook_CommitBindung(t *testing.T) {
 					r.git("commit", "-q", "-m", "record")
 					out, rc := r.hook("{}")
 					wantDecision(t, out, rc, stopApprove)
-					for _, s := range []string{"comment-claims", "docs-check", "lint"} {
+					for _, s := range []string{"comment-claims", "docs-check-host", "lint"} {
 						b, err := os.ReadFile(filepath.Join(r.dir, ".harness/state/gates-passed-"+s+".key"))
 						if err != nil {
 							t.Fatal(err)
