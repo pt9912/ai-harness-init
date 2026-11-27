@@ -89,7 +89,7 @@ Die Stufen-Deklarationen der E2E-Abdeckung bleiben — der Prüfgegenstand
       (`.harness/skills/reviewer.md`) — kein Self-Review (Modul 8).
 - [ ] Doku-Update: [`harness/sensors/smoke.md`](../../../../harness/sensors/smoke.md),
       [`harness/sensors/full-smoke.md`](../../../../harness/sensors/full-smoke.md)
-      — Doku-Nachzug im [`slice-doku-nachzug-ohne-docker`](slice-doku-nachzug-ohne-docker.md).
+      — Doku-Nachzug im [`slice-doku-nachzug-ohne-docker`](../next/slice-doku-nachzug-ohne-docker.md).
 [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 [x] Beobachtungs-Register (`../observations/`) fortgeschrieben —
       `evidence/`-Datei ergänzen, wo eine Beobachtung anfiel; **kein Zähler

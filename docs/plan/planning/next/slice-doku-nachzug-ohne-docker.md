@@ -96,7 +96,7 @@ die ADR-0109-Platzhalter-Fassung — keine zweite Quelle desselben Satzes.
 [`slice-mutate-treiber-host-modi`](../done/slice-mutate-treiber-host-modi.md),
 [`slice-smoke-und-full-smoke-ohne-docker`](../done/slice-smoke-und-full-smoke-ohne-docker.md),
 [`slice-emittierte-gates-host-pfad`](../done/slice-emittierte-gates-host-pfad.md),
-[`slice-ci-runner-ohne-docker`](slice-ci-runner-ohne-docker.md))
+[`slice-ci-runner-ohne-docker`](../in-progress/slice-ci-runner-ohne-docker.md))
 liegen in `done/` — die Doku trägt den Bestand, nicht einen Plan.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**
