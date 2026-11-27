@@ -57,7 +57,7 @@ bzw. Tool-Pin mit Inventar-Soll). Der CR-Eintrag steht in §7 Historie in der
   nennt den Tool-Build unverändert docker-getrieben; CI-Runner tragen Docker
   ([ADR-0003](../../adr/0003-go-native-binaries.md) bleibt in diesem Punkt
   unangetastet). Der Dogfood-Läufer-Umbau ist
-  [`slice-labor-gates-host-rezepte`](../in-progress/slice-labor-gates-host-rezepte.md).
+  [`slice-labor-gates-host-rezepte`](../done/slice-labor-gates-host-rezepte.md).
 - **Keine Spezifikations-Festlegung hier** — das Soll-Form-Wahl (Mischform,
   Inventar, `pinsync`) ist Architektur (Bestimmung in
   [`slice-adr-gates-laeufen-host-native`](../done/slice-adr-gates-laeufen-host-native.md));

@@ -92,7 +92,7 @@ die ADR-0109-Platzhalter-Fassung — keine zweite Quelle desselben Satzes.
 ## 4. Trigger
 
 **Start** (`next` → `in-progress`): die Implementer-Slices
-([`slice-labor-gates-host-rezepte`](../in-progress/slice-labor-gates-host-rezepte.md),
+([`slice-labor-gates-host-rezepte`](../done/slice-labor-gates-host-rezepte.md),
 [`slice-mutate-treiber-host-modi`](slice-mutate-treiber-host-modi.md),
 [`slice-smoke-und-full-smoke-ohne-docker`](slice-smoke-und-full-smoke-ohne-docker.md),
 [`slice-emittierte-gates-host-pfad`](slice-emittierte-gates-host-pfad.md),

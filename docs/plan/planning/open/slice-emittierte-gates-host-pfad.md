@@ -49,7 +49,7 @@ Bootstrap braucht nur git.
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Der Labor-Baum (dieses Repo)** — seine eigenen Rezepte baut
-  [`slice-labor-gates-host-rezepte`](../in-progress/slice-labor-gates-host-rezepte.md);
+  [`slice-labor-gates-host-rezepte`](../done/slice-labor-gates-host-rezepte.md);
   hier steht die emitter-Ebene (Schicht-Abgrenzung).
 - **Der Bootstrap-Code (Go) selbst, außer der Gate-Fragmente** — die
   Bootstrap-Kette bleibt (Phase-Struktur, hooks, Sprachskelett); nur die
@@ -100,7 +100,7 @@ Bootstrap braucht nur git.
 ## 4. Trigger
 
 **Start** (`next` → `in-progress`):
-[`slice-labor-gates-host-rezepte`](../in-progress/slice-labor-gates-host-rezepte.md) liegt in
+[`slice-labor-gates-host-rezepte`](../done/slice-labor-gates-host-rezepte.md) liegt in
 `done/` — die laborseitige Form steht als Vorbild, die emitter-Seite spiegelt
 sie (dieselbe Form, keine zweite Definition).
 

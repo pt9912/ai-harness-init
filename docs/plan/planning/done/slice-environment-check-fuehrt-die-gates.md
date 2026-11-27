@@ -53,7 +53,7 @@ Gate-Lauf an ihm, bevor ein Gate gegen fehlendes Werkzeug falsch färbt
 
 - **Die Gate-Rezepte selbst stehen** — der Check fährt **an** der
   Gates-Kante, die Rezepte hinter den Stufen baut
-  [`slice-labor-gates-host-rezepte`](../in-progress/slice-labor-gates-host-rezepte.md)
+  [`slice-labor-gates-host-rezepte`](../done/slice-labor-gates-host-rezepte.md)
   (Schicht-Abgrenzung); hier entsteht nur die Vorbedingung.
 - **Beschaffung von Binären (d-check, Träger)** — ein eigenes Slice:
   [`slice-binraire-ziehen-ohne-docker`](../done/slice-binraire-ziehen-ohne-docker.md);
@@ -214,7 +214,7 @@ formulieren — sonst zählt das Register zwei Namen getrennt) ·
 - **Folge-Slices:** keine neuen; die §1-Abgrenzungen bleiben —
   [`slice-binraire-ziehen-ohne-docker`](../done/slice-binraire-ziehen-ohne-docker.md)
   (Beschaffung d-check/Träger) und
-  [`slice-labor-gates-host-rezepte`](../in-progress/slice-labor-gates-host-rezepte.md)
+  [`slice-labor-gates-host-rezepte`](../done/slice-labor-gates-host-rezepte.md)
   (Gate-Rezepte), beide in `open/`.
 - **MR-042-Anlass:** nicht gegeben — das Lastenheft ist nicht berührt; die
   Änderung wächst die Spezifikation (Rang 2) um `SPEC-099`, ohne
