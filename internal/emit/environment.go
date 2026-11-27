@@ -21,7 +21,7 @@ const EnvironmentInventoryPath = "tools/harness/environment-inventory.txt"
 // EnvironmentMkPath ist der Ort des Tool-/Versions-Check-Fragments. Konvergent.
 const EnvironmentMkPath = "harness/mk/environment.mk"
 
-// environmentMk ist der Inhalt des Tool-/Versions-Check-Fragments. Die Praepenziell-
+// environmentMk ist der Inhalt des Tool-/Versions-Check-Fragments. Die Praeferenz-
 // Form in GATE_CHECKS stellt environment-check vor alle bereits akkumulierten Checks
 // und — weil spaeter eingebundene Fragmente ihre Checks nur hinten anhaengen — vor
 // ALLE Checks der Kante: ein Umgebungs-Befund endet dem Gate-Lauf, bevor ein Gate
@@ -33,6 +33,11 @@ const environmentMk = `# harness/mk/environment.mk — Tool-/Versions-Check-Frag
 # Ordnung dieses Fragments — spaeter eingebundene Fragmente haengen ihre Checks nur
 # hinten an. Ein Umgebungs-Befund endet dem Lauf, bevor ein Gate gegen fehlendes
 # Werkzeug falsch faerbt (erster Check der Gates-Kante).
+#
+# Grenze der Reihenfolge: die Zeile traegt die Prerequisite-Reihenfolge der
+# Aggregator-Kette, keine Parallelitaets-Zusage — mit make -j laufen die Checks
+# parallel; die Reihenfolge sagt, was zuerst anfaerbt, nicht dass der Lauf
+# zeitlich am Umgebungs-Befund endet.
 GATE_CHECKS := environment-check $(GATE_CHECKS)
 
 .PHONY: environment-check

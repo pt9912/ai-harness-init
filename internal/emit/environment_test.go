@@ -37,11 +37,10 @@ func anweisungsZeilen(t *testing.T, pfad string) []string {
 
 func gleichZeilenweise(t *testing.T, ziel, lab []string) {
 	t.Helper()
-	n := len(lab)
-	if len(ziel) < n {
-		t.Fatalf("Kopie traegt %d Anweisungs-Zeilen, die Lab-Fassung %d — die Kopie ist kleiner als ihr Original", len(ziel), n)
+	if len(ziel) != len(lab) {
+		t.Fatalf("Kopie traegt %d Anweisungs-Zeilen, die Lab-Fassung %d — die Mengen sind nicht identisch", len(ziel), len(lab))
 	}
-	for i := 0; i < n; i++ {
+	for i := 0; i < len(lab); i++ {
 		if ziel[i] != lab[i] {
 			t.Errorf("Zeile %d weicht ab (Kopie vs Lab-Fassung):\n  Kopie: %s\n  Lab:   %s", i+1, ziel[i], lab[i])
 		}

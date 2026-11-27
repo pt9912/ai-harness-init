@@ -461,6 +461,23 @@ func TestDocGate_FragmentWiresDocsCheck(t *testing.T) {
 	}
 }
 
+// TestDocGateMk_FetchRezeptExportiertDiePins: das dcheck-fetch-Rezept des Fragments
+// reicht den DCHECK_IMAGE-/DCHECK_DIGEST-Pin aus d-check.mk an das Fetch-Skript
+// EXPORTIERT durch — dieselbe Form wie die Lab-Vorlage (Makefile `dcheck-fetch`).
+// Ohne die Export-Form liest tools/harness/dcheck-fetch.sh den Pin nicht (leere
+// Umgebungs-Zeile) und bricht fail-closed an "DCHECK_IMAGE ist nicht gesetzt".
+// Rot-Zug: die Export-Formen aus dem Rezept streichen -> dieser Test wird rot.
+func TestDocGateMk_FetchRezeptExportiertDiePins(t *testing.T) {
+	frag := emit.DocGateMk()
+	for _, want := range []string{
+		"DCHECK_IMAGE=\"$(DCHECK_IMAGE)\" DCHECK_DIGEST=\"$(DCHECK_DIGEST)\" bash tools/harness/dcheck-fetch.sh",
+	} {
+		if !strings.Contains(frag, want) {
+			t.Errorf("dcheck-fetch-Rezept exportiert die Pins nicht in der Lab-Form:\n%s", frag)
+		}
+	}
+}
+
 // TestDocGateMk_BindetDenVorlaufWaechter: das Doc-Gate-Fragment haengt den Vorlauf-Waechter
 // als Vorbedingung vor die zwei history-lesenden Targets — ohne deren Rezept anzuruehren
 // (die Rezepte kommen aus dem tool-generierten d-check.mk und werden bei jedem Bootstrap

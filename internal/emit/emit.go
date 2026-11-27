@@ -130,9 +130,9 @@ DCHECK_CARRIER ?= .harness/state/bin/d-check
 .PHONY: dcheck-fetch docs-check-host
 
 dcheck-fetch: ## d-check-Binary nach .harness/state/bin/ ziehen (docker-los, Netz an diesem Aufruf) — kein Gate
-	@bash tools/harness/dcheck-fetch.sh
+	@DCHECK_IMAGE="$(DCHECK_IMAGE)" DCHECK_DIGEST="$(DCHECK_DIGEST)" bash tools/harness/dcheck-fetch.sh
 
-docs-check-host: ## Doku-Referenzen pruefen docker-los (fetched d-check, make dcheck-fetch) — IN gates (docker-los); der Way im Image bleibt opt-in (d-check.mk)
+docs-check-host: ## Doku-Referenzen pruefen docker-los (fetched d-check, make dcheck-fetch) — IN gates (docker-los); der Image-Weg bleibt opt-in (d-check.mk)
 	@[ -x "$(DCHECK_CARRIER)" ] || { echo "docs-check-host: $(DCHECK_CARRIER) fehlt — make dcheck-fetch legt die fetched Ablage an (braucht Netz an genau diesem Aufruf)." >&2; exit 2; }
 	"$(DCHECK_CARRIER)"
 
