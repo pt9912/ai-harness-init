@@ -208,7 +208,7 @@ mit Lerneintrag geschrieben.
   Nachzug gilt für die Sicht-Doku, die die alte §3.9-Fassung zitiert
   ([`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md)
   Host-Bedarf „git, docker und GNU make“, `harness/README.md` Docker-only-Satz)
-  — Träger [slice-doku-nachzug-ohne-docker](../in-progress/slice-doku-nachzug-ohne-docker.md)
+  — Träger [slice-doku-nachzug-ohne-docker](../done/slice-doku-nachzug-ohne-docker.md)
   (§1 führt beide Sicht-Doku-Zeilen).
 - **Beobachtungs-Register (`../observations/`):** ein bestehender Eintrag
   getroffen:
@@ -219,11 +219,11 @@ mit Lerneintrag geschrieben.
   8 Beleg-Dateien) — kein Zähler gesetzt. Keine weitere Beobachtung angefallen.
 - **Folge-Slices:** keine aus diesem Slice angelegt — die zwei Folgestellen
   stehen als INFO im Review-Report, die Träger in der Welle:
-  [slice-doku-nachzug-ohne-docker](../in-progress/slice-doku-nachzug-ohne-docker.md)
+  [slice-doku-nachzug-ohne-docker](../done/slice-doku-nachzug-ohne-docker.md)
   (Sicht-Doku-Zeilen, siehe Lerneintrag); [`ARC-012`](../../../../spec/architecture.md)
   — die Verifier-Übergabe nennt
   [slice-emittierte-gates-host-pfad](../done/slice-emittierte-gates-host-pfad.md)
-  bzw. [slice-doku-nachzug-ohne-docker](../in-progress/slice-doku-nachzug-ohne-docker.md),
+  bzw. [slice-doku-nachzug-ohne-docker](../done/slice-doku-nachzug-ohne-docker.md),
   keines der beiden führt die Stelle heute in seinem §1 — die konkrete
   Zuordnung trägt die Welle-Closure (Lese-Schritt); notfalls per Übernahme
   (`Übernimmt:`).

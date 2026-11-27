@@ -2,7 +2,7 @@
 
 **Rolle:** Reviewer · **Datum:** 2026-11-27 · **Geprüft:** `6152f65b..16acdb56`
 (4 Implementer-Commits) · **Plan:**
-[`docs/plan/planning/in-progress/slice-doku-nachzug-ohne-docker.md`](../plan/planning/in-progress/slice-doku-nachzug-ohne-docker.md)
+[`docs/plan/planning/in-progress/slice-doku-nachzug-ohne-docker.md`](../plan/planning/done/slice-doku-nachzug-ohne-docker.md)
 · **Geprüfter Stand:** HEAD `16acdb56`
 
 Sensors am eigenen Stand: `make docs-check-host` → `3093 Datei(en) geprüft,

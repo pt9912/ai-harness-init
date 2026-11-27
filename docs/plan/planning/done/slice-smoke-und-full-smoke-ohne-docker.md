@@ -89,7 +89,7 @@ Die Stufen-Deklarationen der E2E-Abdeckung bleiben — der Prüfgegenstand
       (`.harness/skills/reviewer.md`) — kein Self-Review (Modul 8).
 - [x] Doku-Update: [`harness/sensors/smoke.md`](../../../../harness/sensors/smoke.md),
       [`harness/sensors/full-smoke.md`](../../../../harness/sensors/full-smoke.md)
-      — Doku-Nachzug im [`slice-doku-nachzug-ohne-docker`](../in-progress/slice-doku-nachzug-ohne-docker.md).
+      — Doku-Nachzug im [`slice-doku-nachzug-ohne-docker`](../done/slice-doku-nachzug-ohne-docker.md).
 [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 [x] Beobachtungs-Register (`../observations/`) fortgeschrieben —
       `evidence/`-Datei ergänzen, wo eine Beobachtung anfiel; **kein Zähler
@@ -196,7 +196,7 @@ Fix `64cd1dd7`).
   (Exit 10, Push-Form `mutate/slice-smoke-und-full-smoke-ohne-docker-<sha8>`),
   keine Rolle ohne Push-Befehl der Kette. (4) Doku-Zellen
   (`smoke.md`/`full-smoke.md`) tragen als Posten
-  [`slice-doku-nachzug-ohne-docker`](../in-progress/slice-doku-nachzug-ohne-docker.md)
+  [`slice-doku-nachzug-ohne-docker`](../done/slice-doku-nachzug-ohne-docker.md)
   — offene DoD-Zeile, Form per Verifikations-Bericht stimmt.
 - **Steering-Loop-Eintrag:** geschärfte Regel (gezählt, nicht verkörpert —
   kein `liegt in`): **der make-Anspruch trägt nur mit Target dahinter; der
@@ -220,7 +220,7 @@ Fix `64cd1dd7`).
 - **Folge-Slices:**
   [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md)
   (Restmenge, LP-2/LP-3-Träger; F-7 als §6-Risiko dort) ·
-  [`slice-doku-nachzug-ohne-docker`](../in-progress/slice-doku-nachzug-ohne-docker.md)
+  [`slice-doku-nachzug-ohne-docker`](../done/slice-doku-nachzug-ohne-docker.md)
   (Doku-Zellen).
 - **Risiken aus §6:** Nachweis-Stärke — entfallen · Netz-Abruf — entfallen ·
   Rest-Stufen — eingetreten, Nehmer oben.

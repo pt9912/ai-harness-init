@@ -82,7 +82,7 @@ CI läuft auf frischem Klon, nur ohne Daemon-Annahme.
 - [x] Doku-Update: [`harness/sensors/gates.md`](../../../../harness/sensors/gates.md),
       [`harness/sensors/mutate.md`](../../../../harness/sensors/mutate.md)
       (CI-Verhältnis) — Doku-Nachzug im
-      [`slice-doku-nachzug-ohne-docker`](../in-progress/slice-doku-nachzug-ohne-docker.md).
+      [`slice-doku-nachzug-ohne-docker`](../done/slice-doku-nachzug-ohne-docker.md).
 [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 [x] Beobachtungs-Register (`../observations/`) fortgeschrieben —
       `evidence/`-Datei ergänzen, wo eine Beobachtung anfiel; **kein Zähler
@@ -203,7 +203,7 @@ F-1..F-7, behoben `cb965055`/`bc46815d`/`678e4f7e`/`6f0b50ca`/`b20ffd8b`).
   §8-Treffer (Actions-Minuten 1×, Shard-Kosten 1×) bleiben — die reale
   Messung trägt CI, kein neuer Stand.
 - **Folge-Slices:**
-  [`slice-doku-nachzug-ohne-docker`](../in-progress/slice-doku-nachzug-ohne-docker.md)
+  [`slice-doku-nachzug-ohne-docker`](../done/slice-doku-nachzug-ohne-docker.md)
   (Sensor-Zellen `gates.md`/`mutate.md`, O-5) ·
   [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md)
   (Rest-Spur full-smoke + adr-immutable).
