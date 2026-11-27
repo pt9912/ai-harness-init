@@ -125,15 +125,20 @@ else
 	fi
 fi
 
-# golangci-lint: exakt — die Release-Form trägt das v-Praefix, das Inventar-Soll
-# die bloße Nummern-Form der Pin-Stelle GOLANGCI_LINT_VERSION; der Install ist
-# der Asset-Weg nach PREFIX. install.sh aus raw.githubusercontent trägt der
-# Install nicht mehr: seine Tag-Auflösung läuft über api.github.com und fiel
-# dort dauerhaft als 504 aus · seit slice-ci-runner-ohne-docker. Der Asset-Name
-# trägt die Nummern-Form ohne v-Praefix (v2-Release-Assets:
-# golangci-lint-<Soll>-linux-<arch>.tar.gz), das Archiv legt die Binary unter
-# dem Verzeichnis gleichen Namens ab; beide Namens-Formen belegt erst der reale
-# Runner-Lauf (die Stub-Fahrt trägt die Ablage-Form).
+# golangci-lint: exakt — die Release-Form trägt das v-Praefix (Meldung), das
+# Inventar-Soll die bloße Nummern-Form der Pin-Stelle GOLANGCI_LINT_VERSION;
+# der Install ist die go install-Form der Host-Erprobung (.viper.sh). GOBIN
+# setzt die Ablage auf denselben PREFIX — eine Zielform, keine zweite Ablage.
+# install.sh aus raw.githubusercontent trägt der Install nicht mehr: seine
+# Tag-Auflösung läuft über api.github.com und fiel dort dauerhaft als 504 aus
+# · seit slice-ci-runner-ohne-docker. proxy.golang.org trägt die CDN-Form der
+# Abholung, sum.golang.org die Modul-Verifikation am Lauf — die Checksum-Form
+# kommt mit dem Weg, kein Traeger-Musterzug hier. go selbst trägt der
+# go-Zweig davor (am PATH oder im PREFIX); die Übergabe des PREFIX an den
+# PATH des Install-Aufrufs verdrahtet die PREFIX-Ablage des go-Zweigs nach.
+# Grenze: ein im Runner-Umfeld gesetztes GOFLAGS/trägt die Umgebungs-Form —
+# belegt erst der reale Runner-Lauf; das Toolchain-Nachziehen (GOTOOLCHAIN)
+# bleibt unverändert.
 golangci_ist="$(version_ist golangci-lint)"
 if [ "$golangci_ist" = "$golangci_soll" ]; then
 	meldung golangci-lint "v$golangci_soll" "$golangci_ist" "am PATH — OK"
@@ -148,21 +153,13 @@ else
 	elif [ -n "$PLAN_MODE" ]; then
 		meldung golangci-lint "v$golangci_soll" "${golangci_ist:-fehlt}" "Install ausgesetzt (PLAN)"
 	else
-		case "$(uname -m)" in
-			x86_64) golangci_arch=amd64 ;;
-			aarch64) golangci_arch=arm64 ;;
-			*) echo "ci-runner-setup: uname '$(uname -m)' trägt keine golangci-lint-Archiv-Form" >&2; exit 2 ;;
-		esac
-		mkdir -p "$REPO/.harness/state"
-		tmp="$(mktemp -d -p "$REPO/.harness/state")"
-		curl -fsSL --retry 3 "https://github.com/golangci/golangci-lint/releases/download/v${golangci_soll}/golangci-lint-${golangci_soll}-linux-${golangci_arch}.tar.gz" \
-			-o "$tmp/golangci-lint.tgz"
-		tar -xzf "$tmp/golangci-lint.tgz" -C "$tmp" "golangci-lint-${golangci_soll}-linux-${golangci_arch}/golangci-lint"
-		zug="$REPO/.harness-ci/golangci-lint-$golangci_soll"
-		rm -rf "$zug"
-		mv "$tmp/golangci-lint-${golangci_soll}-linux-${golangci_arch}/golangci-lint" "$zug"
-		ln -sf "$zug" "$PREFIX/golangci-lint"
-		rm -rf "$tmp"
+		golangci_go="$(command -v go || true)"
+		[ -n "$golangci_go" ] || golangci_go="$PREFIX/go"
+		[ -x "$golangci_go" ] || {
+			echo "ci-runner-setup: go trägt nicht für die golangci-Install (weder PATH noch $PREFIX/go)" >&2
+			exit 2
+		}
+		GOBIN="$PREFIX" PATH="$PREFIX:$PATH" "$golangci_go" install "github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v$golangci_soll"
 		meldung golangci-lint "v$golangci_soll" "${golangci_ist:-fehlt}" "installiert nach .harness-ci/bin"
 	fi
 fi
