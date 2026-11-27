@@ -311,9 +311,13 @@ smoke-host: ## Wie smoke — Träger fuer die HOST-Plattform (host-bin, docker-l
 # Bootstrappt ein tmp-Repo und faehrt dort den zusammengefuehrten `make gates`
 # (emittierte Gates in einem Lauf, MR-010) — der Happy-Path aus Nutzersicht
 # (LH-FA-01). Eingang docker-los (Traeger aus `host-bin`); die doc-only/go-Stufen
-# des Laufs fahren am Carrier (d-check, ADR-0109); die Rest-Stufen (hexslice-
-# Bootstraps ueber a-check --print-mk, nicht-Go-Code-Gates, Archiv-Leseprobe) bleiben
-# am Daemon (opt-in Weg). Netz-Pull ggf., deshalb NICHT in gates (LH-QA-01).
+# des Laufs fahren am Carrier (d-check, ADR-0109). Daemon-gebundene Rest-Stufen,
+# am daemon-losen Host die ersten Abbruch-Punkte: die Vorlauf-Waechter-/Doku-Zahn-
+# Stufen ueber dem emittierten d-check.mk (`make -f d-check.mk doc-commits`/
+# `doc-immutable`), die Archiv-Leseprobe (BATS_IMAGE) und die hexslice-/
+# hexagonal-Bootstraps (a-check --print-mk ohne Host-Carrier). Die weiter gates-
+# Laeufe des Mono-Repos sind CARRIER-gebunden (docs-check-host, fail-closed ohne
+# Ablage), nicht daemon-gebunden. Netz-Pull ggf., deshalb NICHT in gates (LH-QA-01).
 full-smoke: ## Voll-E2E: Bootstrap in tmp-Repo -> dort make gates out-of-the-box gruen (Träger docker-los, Rest am Daemon, ADR-0109) — NICHT in gates
 	@GO_VERSION='$(GO_VERSION)' bash harness/tools/full-smoke.sh
 

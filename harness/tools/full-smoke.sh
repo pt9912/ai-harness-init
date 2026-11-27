@@ -15,9 +15,18 @@
 # — die Sicht des echten Nutzers, die `make smoke` bewusst NICHT nimmt.
 #
 # Eingang docker-los (Traeger aus `host-bin`, ADR-0109) + die doc-only/go-Stufen am
-# d-check-Carrier (wenn er vorliegt); die Rest-Stufen (Archiv-Leseprobe, hexslice-/
-# hexagonal-Bootstraps ueber a-check --print-mk, nicht-Go-Code-Gates) bleiben am
-# Daemon — ggf. Netz-Pull -> NICHT in `make gates` (offline-schlank, LH-QA-01);
+# d-check-Carrier (wenn er vorliegt). Die DaEMON-gebundenen Rest-Stufen, am
+# daemon-losen Host in dieser Reihenfolge die ersten Abbruch-Punkte: (a) die
+# Vorlauf-Waechter-/Doku-Zahn-Stufen ueber den EMITTIERTEN d-check.mk-Zielen
+# (`make -f d-check.mk doc-commits`/`doc-immutable` — docker-Lauf, der Modul-Lauf im
+# Bild); (b) die Archiv-Leseprobe (`archiv_gueltig`, BATS_IMAGE — unzip traegt das
+# Inventar am Host nicht); (c) die hexslice-/hexagonal-Bootstraps (a-check --print-mk
+# ohne Host-Carrier). DAVON GETRENNT die carrier-gebundenen Zuege: die weiter
+# `make gates`-Laeufe des Mono-Repos (cpp/kotlin/java/python/csharp- und repo.mk-Stufen)
+# brauchen fuer den emittierten docs-check-host (fail-closed ohne Ablage) den CARRIER,
+# nicht den Daemon — mit Host-Carrier sind ihre Doku-Anteile docker-oesbar; die
+# Docker-Builds ihrer Code-Gates bleiben am opt-in Weg. Ggf. Netz-Pull -> NICHT in
+# `make gates` (offline-schlank, LH-QA-01);
 # gehoert an DoD-Verify/CI/Wellen-Closure. Logik in harness/tools/ (shell-lint deckt sie).
 set -euo pipefail
 
@@ -519,16 +528,20 @@ ARTIFACT_TARGET="${SMOKE_ARTIFACT_TARGET:-host-bin}"
 # Weg, ADR-0109). Nicht exportiert: die hexslice-/hexagonal-Bootstraps holen
 # a-check --print-mk, und d-check-Carrier und a-check-Bild sind zwei Binary — ein
 # globaler Export wuerde dort "unerwartete --print-mk-ausgabe" statt des Daemon-Zugs
-# melden. Grenze der docker-losen Deckung: die Archiv-Leseprobe liest ihr Archiv im
-# gepinnten Bild (archiv_gueltig, BATS_IMAGE) — unzip traegt das Inventar am Host
-# nicht; weiter die hexslice-/hexagonal-Bootstraps (a-check ohne Host-Carrier) und
-# die nicht-Go-Code-Gates des Mono-Repos (Docker-Builds) — alles Daemon-weg.
+# melden. Grenze der docker-losen Deckung: am daemon-losen Host ist die ERSTE
+# Abbruch-Stufe der Vorlauf-Waechter ueber dem emittierten d-check.mk
+# (make -f d-check.mk doc-commits — docker-Lauf des Moduls); danach die Archiv-
+# Leseprobe (archiv_gueltig, BATS_IMAGE — unzip traegt das Inventar am Host nicht)
+# und die hexslice-/hexagonal-Bootstraps (a-check --print-mk ohne Host-Carrier).
+# Die weiter gates-Laeufe des Mono-Repos sind CARRIER-gebunden (docs-check-host
+# fail-closed ohne Ablage), nicht daemon-gebunden — mit Host-Carrier sind ihre
+# Doku-Anteile docker-oesbar; die Docker-Builds ihrer Code-Gates bleiben am opt-in Weg.
 dcheck_carrier="${DCHECK_CARRIER:-}"
 if [ -z "$dcheck_carrier" ] && [ -x "$HIER/../../.harness/state/bin/d-check" ]; then
 	dcheck_carrier="$HIER/../../.harness/state/bin/d-check"
 fi
 
-echo "full-smoke: 1/3 natives Release-Binary auf den Host extrahieren (make $ARTIFACT_TARGET) ..."
+echo "full-smoke: 1/3 Produkt-Binary fuer den HOST bauen (make $ARTIFACT_TARGET) ..."
 	e2e_abdeckung "LH-FA-01" "Produkt-Traeger liegt auf dem Host; ohne ihn laeuft kein Ziel-Bootstrap" "das Release-Binary kam nicht auf den Host"
 # Die Ausgabe wird EINGEFANGEN und danach gedruckt, statt zu stroemen: nur eingefangen
 # steht sie der Einordnung zur Verfuegung. Unter pipefail traegt der Zuweisungs-Exit
