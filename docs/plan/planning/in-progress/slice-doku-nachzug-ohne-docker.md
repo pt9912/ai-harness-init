@@ -56,27 +56,27 @@ die [ADR-0109](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)-Fass
 
 ## 2. Definition of Done
 
-- [ ] **Liefer-Punkt 1:** die fünf Sensor-Texte tragen die Verhältnis-Fassung
+[x] **Liefer-Punkt 1:** die fünf Sensor-Texte tragen die Verhältnis-Fassung
       (docker-los Pflicht, Image opt-in) — derselbe Satz an einem Ort, je
       Verweis von den übrigen (keine zweite Quelle); die `SMOKE_ARTIFACT_TARGET`-Hilfe
       trägt ihre neue Bedeutung (Hilfe, nicht Pflicht-Träger).
-- [ ] **Liefer-Punkt 2:** `harness/README.md` §Sensors und `README.md`
+[x] **Liefer-Punkt 2:** `harness/README.md` §Sensors und `README.md`
       nennen `make environment-check` samt Bindung; die Docker-Annahmen der
       §3.9-verweisenden Doku-Zeilen (`AGENTS.md` bleibt Architect-Artefakt)
       sind als Wirkungs-Grenzen benannt.
-- [ ] **Liefer-Punkt 3:** das Benutzerhandbuch (`docs/user/`) trägt den
+[x] **Liefer-Punkt 3:** das Benutzerhandbuch (`docs/user/`) trägt den
       Bootstrap-Verhältnis git-only und die zwei Gate-Wege; die E2E-Abdeckung
       (`docs/user/e2e-abdeckung.md`) nennt, was die Stufen im Ziel messen —
       unverändert, wo die Stufen unverändert sind.
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+[x] `make gates` grün.
+[x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — kein Self-Review (Modul 8).
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben —
+[x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+[x] Beobachtungs-Register (`../observations/`) fortgeschrieben —
       `evidence/`-Datei ergänzen, wo eine Beobachtung anfiel; **kein Zähler
       wird gesetzt**. Keine Beobachtung anfallen ist ebenfalls eine Antwort
       und wird in §7 notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
+[x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
       nächsten Welle-Closure geprüft.
@@ -114,10 +114,10 @@ Verweis-Lage. Zusätzlich: Closure-Notiz mit Lerneintrag geschrieben.
 
 ## 6. Risiken und offene Punkte
 
-- **Die §3.10-Herkunfts-Anker der neuen Doku-Zeilen** — **Ausgang:** Anker
-  `seit slice-<Kennung>` je Zeile der neuen Verhältnis-Fassung — Form nach
-  Baseline-Regelwerk `grundlagen-traceability.md` §Herkunfts-Anker für
-  Steering-Loop-Regeln.
+- **Die §3.10-Herkunfts-Anker der neuen Doku-Zeilen** — **Ausgang:**
+  entfallen — die neuen Verhältnis-Zeilen tragen je `seit slice-<Kennung>`
+  am Ort (Sensor-Texte, README-Zellen, Benutzerhandbuch; Gates-Lauf grün,
+  Stempel-Set `d8c91e7d`), kein 3×-Fall.
 
 ## 7. Closure-Notiz
 
@@ -126,13 +126,58 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 formulieren — sonst zählt das Register zwei Namen getrennt) ·
 `grundlagen-traceability.md` §Herkunfts-Anker für Steering-Loop-Regeln.
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <… | keine Beobachtung angefallen>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** Anker · Folge-Slice · Register, Ergebnis
+**Closure-Notiz (Rolle Planner, 2026-11-27)** — Quellen: eigener Lauf, das
+Review
+([`docs/reviews/2026-11-27-slice-doku-nachzug-ohne-docker.md`](../../reviews/2026-11-27-slice-doku-nachzug-ohne-docker.md),
+F-1..F-6) und der volle Gates-Lauf (Exit 0, Stempel-Set `d8c91e7d`: bats
+664/664, test-go 9/9, shell-lint 0, mutate-greift 802/802, docs-check 0,
+lint 0).
+
+- **Was hat funktioniert:** die laufende Doku trägt den Bestand, nicht einen
+  Plan — Sensor-Texte (`gates` Tier-2 je-Check, `mutate` Vorbedingung mit
+  entlassener smoke-Spur, `smoke`/`full-smoke` Rest-Spur), `harness/README`
+  Kante und Zellen, Benutzerhandbuch git-only-Bootstrap und zwei Gate-Wege,
+  und die E2E-Abdeckung trägt mit `d8c91e7d` die Ort-Zeilen der Stufen
+  (Text-Nachzug byte-identisch gegen den Bestand, Fall 5 des Halter-Wächters
+  rot vor dem Nachzug, grün danach).
+- **Was ging anders als geplant:** (1) **F-1 HIGH** — `95415a38` heilt die
+  Accepted-ADR-0109 still an der Adresse; die Einzel-Entscheidung trägt
+  ADR-0110 (Rückstellung auf den Accept-Stand `525749b4`, zwei namentliche
+  `ignore-refs`-Paare als Ventil, Commits `dceb3b8c`/`640fa16b`). (2) **F-2
+  HIGH** — dieselbe Commit schaltet neun fremde Paarungen-Häkchen im
+  ausführenden Kontext auf; die Prüfung legitimiert sie im
+  Wellen-Closure-Zug dieser Welle, Beleg je Slice in der
+  Wellen-Ergebnisnotiz. (3) **F-3/F-4/F-6** — die 24 außerplan- berührte
+  Bestand-Dokumente des selben Commits (Stop-Hook-Dogfood-Fixture,
+  lint-/shell-lint-Vorbestand-Fixes, Go-Pin 1.27.4, Restbreite-Wächter,
+  e2e-abdeckung) sind **Übergabe-Arbeit, hier als Bestand-Übergabe benannt,
+  nicht als stiller Übernahme-Befund** — die Review-Klasse der
+  Plan-Reichweite löst sich mit der Wellen-Trägerschaft: geliefert, belegt
+  im Gates-Stempel `d8c91e7d`, die zwei `Gegenstand:`-Zeilen ohne Kennung
+  tragen [`slice-ci-runner-ohne-docker`](slice-ci-runner-ohne-docker.md)
+  (F-4, je Zeile geändert). (4) **Fall 801** — Anker am älteren
+  Test-Bestand, keine heutige Rotform: Übergabe-Posten (bekannt, kein
+  stiller Fix). (5) Der `mutate-auswahl`-Hang (> 10 min; Hand-Nachbau 9
+  Fälle) — §7-Beobachtung, Klasse „Werkzeug-Lauf-Dauer über dem Bestand",
+  Träger Nacht-Lauf; kein stiller Fix.
+- **Steering-Loop-Eintrag:** geschärfte Regel (gezählt, nicht verkörpert —
+  kein `liegt in`): **die e2e-abdeckung-Deklaration trägt die Ort-Zeilen der
+  Stufen; der Text-Nachzug reist mit `make e2e-abdeckung`** — die
+  Stufen-Deklaration ist die eine Quelle für Text und Ort-Spalte, die
+  Erzeugung liest den Bestand und schreibt die Datei; ein Doku-Zug, der die
+  Ort-Zeilen von Hand trägt, wird vom Halter-Wächter gehalten (Fall 5, rot
+  vor, grün nach dem Nachzug).
+- **Beobachtungs-Register (`../observations/`):** keine Beobachtung
+  angefallen — der §8-Treffer (macOS-Hälfte der Host-Läufer, 7×, verkörpert)
+  trägt unverändert; kein neuer Eintrag.
+- **Folge-Slices:** [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md)
+  (Rest-Spur, open) · die wellenlosen Posten `slice-gates-pruefgegenstand-stempel-v1`
+  und `slice-stamp-records-konsum-v1` (in `next/`).
+- **Risiken aus §6:** Herkunfts-Anker — entfallen (oben).
+- **Drei Paarungen:** Anker — der Lerneintrag oben ist gezählt, es gibt
+  keinen `liegt in` · Folge-Slices — Nehmer und wellenlose Posten oben ·
+  Register — der Befund-Verbleib oben. Die Prüfung trägt die Welle-Closure
+  dieser Welle.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 

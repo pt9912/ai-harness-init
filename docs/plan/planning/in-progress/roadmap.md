@@ -20,7 +20,7 @@ nicht hier.
 - [welle-baseline-sprung-v7-0-0 — Baseline-Sprung v6.18.1 → v7.0.0](../welle-baseline-sprung-v7-0-0.md)
 - [welle-ohne-docker — Gates und Lab-Läufer docker-los](../welle-ohne-docker.md)
 
-**In Arbeit:** [welle-ohne-docker](../welle-ohne-docker.md) — der Doku-Nachzug; daneben wellenlos [slice-gates-pruefgegenstand-stempel-v1](slice-gates-pruefgegenstand-stempel-v1.md) und [slice-stamp-records-konsum-v1](slice-stamp-records-konsum-v1.md).
+**In Arbeit:** [welle-ohne-docker](../welle-ohne-docker.md) — der Doku-Nachzug; daneben wellenlos, jeweils in `next/`: [slice-gates-pruefgegenstand-stempel-v1](next/slice-gates-pruefgegenstand-stempel-v1.md) und [slice-stamp-records-konsum-v1](next/slice-stamp-records-konsum-v1.md).
 
 ## Nächste Wellen
 

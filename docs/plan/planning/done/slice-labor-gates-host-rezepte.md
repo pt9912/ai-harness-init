@@ -147,7 +147,7 @@ Zusätzlich: Closure-Notiz mit Lerneintrag geschrieben.
 
 ## 7. Closure-Notiz
 
-**Gegenstand:** offene §2-Items: `make gates` grün und Liefer-Punkt 2 — Vorbestand-Rotmenge der Gates-Kette; LP 2 trägt der reale CI-Lauf (ci.yml), nicht dieser Slice.
+**Gegenstand:** offene §2-Items: `make gates` grün und Liefer-Punkt 2 — Vorbestand-Rotmenge der Gates-Kette; LP 2 trägt [`slice-ci-runner-ohne-docker`](slice-ci-runner-ohne-docker.md) (reale CI-Läufe, ci.yml), nicht dieser Slice.
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Das Beobachtungs-Register (vorhandene `BEO-<KUERZEL>/<slug>` **zitieren** statt neu
