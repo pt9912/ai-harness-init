@@ -102,7 +102,7 @@ in `done/`, keine offen.
     Einrichtung neben `slice-full-smoke-gates-echt-gruen`.
   - Fall-801-Nachzug (Anker am älteren Test-Bestand, keine heutige Rotform)
     — **geplant**, wellenloser Posten
-    [`slice-gates-pruefgegenstand-stempel-v1`](../in-progress/slice-gates-pruefgegenstand-stempel-v1.md)
+    [`slice-gates-pruefgegenstand-stempel-v1`](../done/slice-gates-pruefgegenstand-stempel-v1.md)
     (in `in-progress/`).
   - commit-msg-Guard-Träger an der docker-losen Form (Werkzeug-Commits
     schreibender Pfade) — **geplant**, wellenloser Posten
@@ -177,7 +177,7 @@ in `done/`, keine offen.
 
 - [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md)
   (Nehmer der LP2/LP3-Restmenge, in `next/`) · die wellenlosen Posten
-  [`slice-gates-pruefgegenstand-stempel-v1`](../in-progress/slice-gates-pruefgegenstand-stempel-v1.md)
+  [`slice-gates-pruefgegenstand-stempel-v1`](../done/slice-gates-pruefgegenstand-stempel-v1.md)
   und [`slice-stamp-records-konsum-v1`](../in-progress/slice-stamp-records-konsum-v1.md)
   (in `in-progress/`) tragen die offen gebliebenen Audit-Posten oben.
 

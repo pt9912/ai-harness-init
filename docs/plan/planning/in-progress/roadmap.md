@@ -21,7 +21,7 @@ nicht hier.
 - [welle-ohne-docker — Gates und Lab-Läufer docker-los](../done/welle-ohne-docker.md)
 
 **In Arbeit:** wellenlos
-[slice-gates-pruefgegenstand-stempel-v1](slice-gates-pruefgegenstand-stempel-v1.md)
+[slice-gates-pruefgegenstand-stempel-v1](../done/slice-gates-pruefgegenstand-stempel-v1.md)
 und [slice-stamp-records-konsum-v1](slice-stamp-records-konsum-v1.md);
 `doku-nachzug-ohne-docker` und die
 welle-ohne-docker-Slices liegen in `done/` — das Wellen-Closure-Log steht in
