@@ -752,7 +752,7 @@ dcheck-fetch: ## d-check-Binary nach .harness/state/bin/ ziehen (docker-los per 
 
 # Runner-Setup der CI-Jobs (ci.yml, mutate.yml, mutate-branch.yml; ADR-0109, MR-014):
 # die Pflicht-Werkzeuge des Inventars an deren Soll stellen — exakt-Werkzeuge (go,
-# golangci-lint) nach .harness-ci/bin (der Step im Workflow haengt den PREFIX an
+# golangci-lint) nach ${RUNNER_TEMP:-/tmp}/ai-harness-ci/bin (der Step im Workflow haengt den PREFIX an
 # $GITHUB_PATH), Anwesenheits-Werkzeuge je Besorgung: bats/shellcheck über apt,
 # actionlint über brew (das Ubuntu-Repo trägt das Paket nicht). Das
 # Skript liest den Soll-Wert je Werkzeug aus dem Inventar (EINE Quelle; pinsync hält

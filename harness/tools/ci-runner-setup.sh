@@ -18,7 +18,11 @@
 # nicht zum Inventar, bricht der Lauf an environment-check (Umgebungs-Befund).
 #
 # WAS ES TUT. Ein exakt-Werkzeug (go, golangci-lint), dessen PATH-Fassung nicht das
-# Soll trägt, wird nach .harness-ci/bin installiert; Anwesenheits-Werkzeuge, die am
+# Soll trägt, wird nach $HARNESS_CI_DIR/bin installiert — die Install-Ablage liegt
+# AUSSERHALB des Repo-Baums (RUNNER_TEMP-Form am Runner, /tmp-Fallback am Host-Lauf);
+# im Baum lag sie unter .harness-ci/ und der Doku-Scan las die Go-Doku im
+# Toolchain-Baum mit (Go verteilt doc/*.md) · seit slice-ci-runner-ohne-docker.
+# Anwesenheits-Werkzeuge, die am
 # PATH fehlen, tragen ihre Besorgung je Werkzeug: bats/shellcheck über apt
 # (Runner-Sudo), actionlint über brew — das Ubuntu-Repo trägt das Paket nicht, der
 # homebrew-core schon, und die gepinnten GitHub-Runner tragen Linuxbrew
@@ -52,7 +56,8 @@ BREW_BIN="/home/linuxbrew/.linuxbrew/bin"
 PLAN_MODE=""
 if [ "${CI_RUNNER_SETUP_PLAN:-}" = "1" ]; then PLAN_MODE=1; fi
 INVENTAR="$REPO/harness/tools/environment-inventory.txt"
-PREFIX="$REPO/.harness-ci/bin"
+HARNESS_CI_DIR="${RUNNER_TEMP:-/tmp}/ai-harness-ci"
+PREFIX="$HARNESS_CI_DIR/bin"
 
 [ -r "$INVENTAR" ] || { echo "ci-runner-setup: Inventar unlesbar: $INVENTAR" >&2; exit 2; }
 mkdir -p "$PREFIX"
@@ -106,7 +111,7 @@ else
 			aarch64) go_arch=arm64 ;;
 			*) echo "ci-runner-setup: uname '$(uname -m)' trägt keine go-Archiv-Form" >&2; exit 2 ;;
 		esac
-		# Volle Toolchain-Ablage (GOROOT-vollständig) unter .harness-ci/go-<Soll>,
+		# Volle Toolchain-Ablage (GOROOT-vollständig) unter $HARNESS_CI_DIR/go-<Soll>,
 		# das Binary als Symlink an $PREFIX/go — gleiche Zielform wie der
 		# golangci-lint-Zweig ($PREFIX/golangci-lint): $PREFIX ist der PATH-Zusatz
 		# des Job-Steps, ein Binary unter $PREFIX/bin wäre nicht am PATH. go liest
@@ -118,14 +123,14 @@ else
 		# der PLAN-Modus verzweigt vorher ab und erreicht kein mktemp.
 		mkdir -p "$REPO/.harness/state"
 		tmp="$(mktemp -d -p "$REPO/.harness/state")"
-		zug="$REPO/.harness-ci/go-$go_soll"
+		zug="$HARNESS_CI_DIR/go-$go_soll"
 		curl -fsSL "https://go.dev/dl/go${go_soll}.linux-${go_arch}.tar.gz" -o "$tmp/go.tgz"
 		tar -xzf "$tmp/go.tgz" -C "$tmp"
 		rm -rf "$zug"
 		mv "$tmp/go" "$zug"
 		ln -sf "$zug/bin/go" "$PREFIX/go"
 		rm -rf "$tmp"
-		meldung go "$go_soll" "${go_ist:-fehlt}" "installiert nach .harness-ci/bin"
+		meldung go "$go_soll" "${go_ist:-fehlt}" "installiert nach $PREFIX"
 	fi
 fi
 
@@ -164,7 +169,7 @@ else
 			exit 2
 		}
 		GOBIN="$PREFIX" PATH="$PREFIX:$PATH" "$golangci_go" install "github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v$golangci_soll"
-		meldung golangci-lint "v$golangci_soll" "${golangci_ist:-fehlt}" "installiert nach .harness-ci/bin"
+		meldung golangci-lint "v$golangci_soll" "${golangci_ist:-fehlt}" "installiert nach $PREFIX"
 	fi
 fi
 

@@ -64,7 +64,7 @@ jobs:
       - name: Runner-Werkzeuge je Inventar-Soll (make ci-runner-setup)
         run: |
           make ci-runner-setup
-          echo "$PWD/.harness-ci/bin" >> "$GITHUB_PATH"
+          echo "${RUNNER_TEMP:-/tmp}/ai-harness-ci/bin" >> "$GITHUB_PATH"
       - name: Shard-Zuteilung berechnen (gewichtet, harness/tools/mutate-auswahl.sh)
         id: shard
         run: |

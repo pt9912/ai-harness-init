@@ -77,7 +77,7 @@ jobs:
       - name: Runner-Werkzeuge je Inventar-Soll (make ci-runner-setup)
         run: |
           make ci-runner-setup
-          echo "$PWD/.harness-ci/bin" >> "$GITHUB_PATH"
+          echo "${RUNNER_TEMP:-/tmp}/ai-harness-ci/bin" >> "$GITHUB_PATH"
       - name: d-check-Carrier ablegen (docs-check-host trägt die fetched Ablage, make dcheck-fetch)
         run: make dcheck-fetch
       - run: make gates
@@ -91,7 +91,7 @@ jobs:
       - name: Runner-Werkzeuge je Inventar-Soll (make ci-runner-setup)
         run: |
           make ci-runner-setup
-          echo "$PWD/.harness-ci/bin" >> "$GITHUB_PATH"
+          echo "${RUNNER_TEMP:-/tmp}/ai-harness-ci/bin" >> "$GITHUB_PATH"
       - name: d-check-Carrier ablegen (den Carrier-Pfad sieht die Probe des Checks)
         run: make dcheck-fetch
       - run: make smoke
@@ -125,7 +125,7 @@ jobs:
       - name: Runner-Werkzeuge je Inventar-Soll (make ci-runner-setup)
         run: |
           make ci-runner-setup
-          echo "$PWD/.harness-ci/bin" >> "$GITHUB_PATH"
+          echo "${RUNNER_TEMP:-/tmp}/ai-harness-ci/bin" >> "$GITHUB_PATH"
       - name: d-check-Carrier ablegen (den Carrier-Pfad sehen die Carrier-gebundenen Stufen)
         run: make dcheck-fetch
       - run: make release-warten
