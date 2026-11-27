@@ -341,7 +341,7 @@ make gates
 
 **Hinweise:** `make gates` fährt am Host — docker-los. Der erste Check (`environment-check`) prüft die Werkzeuge der Umgebung gegen das Inventar (`tools/harness/environment-inventory.txt`); die Dokumentations-Prüfung fährt das d-check-Programm, das `make dcheck-fetch` einmalig aus dem gepinnten Release-Programm ablgt (dieser Aufruf braucht Netz). Wer den gepinnten Bild-Weg fahren will (`docs-check`, die `-image`-Ziele), braucht Docker — das ist der Weg, keine Pflicht.
 
-**Ein bereits aufgesetztes Repository geklont — kein eigener `ai-harness-init`-Lauf.** Haben Sie ein Repository geklont, das jemand anderes (oder eine CI) bereits aufgesetzt hat, brauchen Sie keinen eigenen Lauf: `make gates` funktioniert unverändert, denn die Gates prüfen die Host-Werkzeuge (environment-check) und den versionierten Inhalt.
+**Ein bereits aufgesetztes Repository geklont — kein eigener `ai-harness-init`-Lauf.** Haben Sie ein Repository geklont, das jemand anderes (oder eine CI) bereits aufgesetzt hat, brauchen Sie keinen eigenen Lauf: `make gates` funktioniert unverändert, denn die Gates prüfen die Host-Werkzeuge (environment-check) und den versionierten Inhalt. **Grenze der diagnose-Form:** wenn die d-check-Ablage (`.harness/state/bin/d-check`) an diesem Klon nicht liegt, bricht `docs-check-host` mit der Diagnose ab (Exit 2) — der Schritt ist `make dcheck-fetch` (einmalig Netz), danach läuft `make gates` wieder.
 
 **Was dabei fehlt:** Der **Träger** — die `ai-harness-init`-Programmdatei selbst, die das Repository für zwei der fünf [Betriebs-Operationen](#betriebs-operationen) (`archive-welle`, `span-report`) braucht — liegt in einem **gitignorierten** Zustands-Bereich (`.harness/state/bin/`) und reist deshalb **nicht** mit einem Klon. `make gates` bleibt davon unberührt, ebenso `make span-clean`, das den Träger gar nicht anfasst. `make archive-welle`/`make span-report` melden nach einem frischen Klon: *„der Traeger liegt nicht … dieses Repo … nicht"* — kein Fehler, kein rotes Gate, nur eine Aussage über den fehlenden Träger.
 
@@ -867,7 +867,7 @@ ai-harness-init add-lang go apps/api
 
 **Ursache:** Docker läuft nicht oder ist nicht erreichbar. `ai-harness-init` ruft Docker auf, um die Prüf-Konfiguration zu erzeugen — mit gesetztem `DCHECK_CARRIER` fährt der Lauf stattdessen dieses Programm am Host.
 
-**Lösung:** Starten Sie Docker und prüfen Sie mit `docker ps`, dass es bedienbar ist — oder setzen Sie `DCHECK_CARRIER` auf eine ausführbare d-check-Programmdatei. Wiederholen Sie den Aufruf.
+**Lösung:** Starten Sie Docker und prüfen Sie mit `docker ps`, dass es bedienbar ist — oder setzen Sie `DCHECK_CARRIER` auf eine ausführbare d-check-Programmdatei. Wiederholen Sie den Aufruf. **Grenze:** das Programm muss vor dem Lauf da sein — *auf dem Carrier-Weg* ist es eine Umgebungsaufgabe, die der Bootstrap nicht selbst auslöst; erst *im Ziel* legt `make dcheck-fetch` die Ablage selbst an (Netz an diesem Aufruf). Der Default-Weg ohne `DCHECK_CARRIER` bleibt Docker-getrieben.
 
 ### Der Lauf bricht mit einem Netzwerk- oder Download-Fehler ab
 

@@ -94,7 +94,8 @@ Bootstrap braucht nur git.
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `internal/emit/templates/**` (mk-Fragmente, Dockerfile, environment-check-Vorlage) | update | host-native Gate-Form + Inventar + opt-in Image-Pins |
-| `internal/emit/**_test.go` | update / neu | Emitter-Tests je oben |
+| `internal/gen/golang.go` (das Go-Skelett-Fragment + die Dockerfile-Kommentarnahme) | update | die Go-Gates `test/lint/build` fahren host-native, die Stage-Wege bleiben als `-image`-Ziele gepinnt (Form-Abweichung: die Skelett-Fragmente liegen in der gen-Ebene, nicht im emit-Baum; nur Go, §4) |
+| `internal/emit/**_test.go`, `internal/gen/*_test.go` | update / neu | Emitter-Tests je oben |
 | `docs/user/**`, `README.md` | update | Bootstrap-Verhältnis (git-only) und die zwei Gate-Wege |
 
 ## 4. Trigger
@@ -130,6 +131,19 @@ Closure-Notiz mit Lerneintrag geschrieben.
   der emittierten Form läuft über
   [`slice-smoke-und-full-smoke-ohne-docker`](slice-smoke-und-full-smoke-ohne-docker.md);
   bis dahin ist der Beleg der manuelle Lauf oben.
+- **Bootstrap-Henne-Ei des Carrier-Wegs** (Review F-6): `DCHECK_CARRIER`
+  muss vor dem Bootstrap-Lauf von außen kommen (Umgebungsaufgabe) — der
+  Default-Weg ohne sie bleibt Docker-getrieben; die Zusage „Bootstrap
+  braucht nur git" ist auf dem Carrier-Weg **nicht** erreicht. **Ausgang
+  (Vorschlag, Scoping beim Planner-Closure):** weiter offen →
+  Beobachtungs-Register; als Adresse benennbar ist ein eigener Mikroslice
+  (Carrier-Besorgung im Bootstrap-Lauf, fail-closed ohne Netz an genau
+  diesem Aufruf) — der Welle-Plan
+  [`welle-ohne-docker`](../welle-ohne-docker.md) könnte ihn neben
+  `slice-smoke-und-full-smoke-ohne-docker` einrichten; der Lauf hat allein
+  die Lücke benannt und nicht entschieden. Der Code-Umfang bleibt die
+  Abgrenzung §1 (keine zweite Beschaffungs-Mechanik im Bootstrap — der
+  Fetch-Zug entsteht aus denselben Fragmenten).
 
 ## 7. Closure-Notiz
 
