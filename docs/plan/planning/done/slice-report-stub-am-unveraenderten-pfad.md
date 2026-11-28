@@ -132,7 +132,7 @@ zählen nicht mit.
       notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind hier geprüft
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind hier geprüft
       — Repo ohne Wellen-Betrieb, nach dem `git mv`.
 
 ## 3. Plan (vor Code)
@@ -281,8 +281,20 @@ Ausgang; die Liefer-Punkte der DoD bleiben leer
   Carveout und kein Folge-Slice, der Preis steht so in den Konsequenzen
   der ADR.
 
-- **Drei Paarungen:** nach dem `git mv` geprüft und in dem darauffolgenden
-  Commit am Ruheort eingetragen (§2, letzter Punkt).
+- **Drei Paarungen** — geprüft nach dem `git mv`, Pfade vom Ruheort
+  (`done/`) gelesen: **Anker** — in dieser Closure ist keine Regel mit
+  `liegt in`-Feld entstanden (gezählt, nicht verkörpert, siehe
+  Steering-Loop-Eintrag oben); es gibt keinen Anker-Gegenstand.
+  **Folge-Slice** — keiner neu; der zitierte
+  [`../open/slice-der-mutations-treiber-sieht-bindung-und-abdeckung.md`](../open/slice-der-mutations-treiber-sieht-bindung-und-abdeckung.md)
+  liegt in `open/` und trägt den Ausgang der gezählten Klasse.
+  **Register** — beide Belege lösen vom Ruheort einstufig auf
+  ([`../observations/BEO-ALL/zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel/evidence/slice-report-stub-am-unveraenderten-pfad.md`](../observations/BEO-ALL/zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel/evidence/slice-report-stub-am-unveraenderten-pfad.md)
+  und
+  [`../observations/BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt/evidence/slice-report-stub-am-unveraenderten-pfad.md`](../observations/BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt/evidence/slice-report-stub-am-unveraenderten-pfad.md)),
+  die Stand-Zeilen der zwei Einträge tragen ihre Ausgänge (*verkörpert* /
+  *geplant*) und bleiben unverändert — keine zweiten Namen, nichts still
+  eingeschrieben.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
