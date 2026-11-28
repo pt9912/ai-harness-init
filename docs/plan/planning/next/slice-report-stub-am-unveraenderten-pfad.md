@@ -46,7 +46,7 @@ Spec-Stratum ([`ADR-0061`](../../adr/0061-review-report-bekommt-beim-archivieren
 *„Prozess-ADR ohne Spec-Stratum"*). Der Verweis zeigt **aufwärts**: Die Spec
 nennt diesen Slice nie.
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912
 
 **Autor:** pt9912 (Rolle Planner, Architektur-Skizze zum Accept von
 [`ADR-0061`](../../adr/0061-review-report-bekommt-beim-archivieren-einen-stub.md),
