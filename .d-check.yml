@@ -593,11 +593,6 @@ codepaths:
     # Repo-Kopie einer Ausfuell-Vorlage (MR-008). Genannt in harness/conventions/ und in den
     # Zeitdokumenten unter docs/plan/planning/done/ (Adresse eines Vorgangs, den es gab).
     - docs/reviews/review-report.template.md
-    # Shell-Helfer der Wellen-Archivierung: die Operation liegt als Unterkommando des
-    # Produkt-Binaers in internal/archive (ADR-0033 Festlegung 1 und 2), zwei Fassungen
-    # nebeneinander gibt es nicht. Genannt in den Zeitdokumenten unter docs/plan/planning/done/
-    # (Adresse eines Vorgangs, den es gab).
-    - harness/tools/archive-welle.sh
     # Die flache Register-Datei (ADR-0034): v6.0.0 ersetzt sie ersatzlos durch die
     # Verzeichnis-Ablage, keine zweite Fassung bleibt stehen. Genannt in den Zeitdokumenten unter
     # docs/plan/planning/done/ (Adresse eines Vorgangs, den es gab) und im Beobachtungs-Register
@@ -610,7 +605,6 @@ codepaths:
     - docs/reviews/mutate
     # Derselbe Zug (ADR-0103 Festlegung 3): die genauere Record-Adresse unter dem wanderten
     # Verzeichnis. Genannt in den Zeitdokumenten unter docs/plan/planning/done/.
-    - docs/reviews/mutate/slice-d-check-sprung-v0930-625cdef0-gruen.txt
 # vcs (git-basiert, braucht .git + eine Commit-Range — strikt opt-in, NICHT in
 # modules: oben: ein hermetischer docs-check-Lauf ohne Range liefe damit ins
 # Leere, LH-QA-01). Haelt den Kern einer angenommenen ADR ueber die Range
