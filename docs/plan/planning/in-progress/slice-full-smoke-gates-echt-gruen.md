@@ -101,6 +101,37 @@ Abbruchpunkt.
   den der Host-Vorrat trägt — dann Carveout-Klärung an der [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md)-Fassung
   und die Stufen-Deklaration wird neu formuliert, nicht still geändert.
 
+**Nachgetragen beim Übergang (Rückführung, 2026-11-28, Rolle Planner) —
+`in-progress` → `next`:** der vorab benannte `in-progress` → `next`-Trigger
+trat ein. Zustand des Bestands am Übergang:
+
+- **Geliefert über die Kennung dieses Slices** — die Stufen-Gruppen 1a und 1b
+  tragen am Host: die Vorlauf-Wächter-/Doku-Zahn-Stufen fahren mit env
+  `DCHECK_CARRIER` an ihren Rezept-führenden Aufrufen, und die
+  Archiv-Leseprobe liest durch das Träger-Unterkommando `archive-lesen`; der
+  docker-Lauf der Leseprobe ist entfallen. Die zwei Änderungs-Arten der
+  `harness/tools/full-smoke.sh`-Zeile in §3 sind damit verbaut.
+- **Nicht getragen — LP1-Teil 1c** (Hexslice-/Hexagonal-Bootstraps): die
+  Bootstraps holen `a-check --print-mk` ohne Host-Carrier-Fassung —
+  erster benannter daemon-loser Abbruchpunkt im Kopf von
+  `harness/tools/full-smoke.sh`.
+- **Nicht getragen — LP1-Teil 1d** (Mono-Repo-`make gates`-Läufe): die
+  Docker-Builds der nicht-Go-Code-Gates fehlen am Host-Weg — der
+  `full-smoke`-Job der `.github/workflows/ci.yml` fährt sie am Host-Docker
+  und nennt sich daemon-gebundene Rest-Spur.
+- **Nicht getragen — LP2** (Mutate-Spur): der Mutations-Treiber listet
+  `full-smoke` weiter unter den daemon-abhängigen Modi
+  (`harness/tools/mutate.sh`, Umgebungs-Vorbedingung vor der ersten
+  Isolationskopie); kein `# verify: full-smoke`-Fall färbt docker-los.
+- **Nachzug-Posten des Re-slices:** der ci.yml-Kommentar nennt die
+  Archiv-Leseprobe noch unter den daemon-gebundenen Rest-Stufen — sie liest
+  am Host. Die Stufen-Deklarationen der E2E-Abdeckung stehen unangefasten
+  (§1 Abgrenzung).
+- **Schnitt des Re-slices:** je Rest-Gruppe ein Slice — 1c je
+  Bootstrap-Layout, 1d Mono-Repo-Gates, LP2 Mutate-Spur; der Re-slice nimmt
+  den Lieferstand oben als Voraussetzung und prüft je §8 die offenen
+  Beobachtungen neu.
+
 ## 5. Closure-Trigger
 
 DoD (§2) vollständig; der reale Lauf `make full-smoke` (vollgrün, Exit 0)
