@@ -11,7 +11,7 @@ gebootstrapptes Repo out-of-the-box grün fährt (die Nutzer-Sicht, die
 (Träger aus `make host-bin`, d-check-Carrier, [`ADR-0109`](../../docs/plan/adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md));
 die daemon-gebundenen Rest-Stufen (d-check.mk-Modul-Läufe doc-commits/doc-immutable,
 Archiv-Leseprobe, hexslice-/hexagonal-Bootstrap, Netz-Pull ggf.) trägt
-[`slice-full-smoke-gates-echt-gruen`](../../docs/plan/planning/next/slice-full-smoke-gates-echt-gruen.md)
+[`slice-full-smoke-gates-echt-gruen`](../../docs/plan/planning/in-progress/slice-full-smoke-gates-echt-gruen.md)
 — nicht in `make gates`; gehört an DoD-Verify/CI/Wellen-Closure.
 
 **Host.** Host dieses Laufs ist Linux; macOS ist dafür nicht getragen, Beleg-Ort ist CI auf frischem

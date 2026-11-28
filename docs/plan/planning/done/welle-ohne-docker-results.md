@@ -30,7 +30,7 @@
   smoke 5/5 Docker-los, full-smoke bestätigt die 1a–1d-Ordnung am realen
   Lauf und trägt den Nehmer
   ([slice-smoke-und-full-smoke-ohne-docker](slice-smoke-und-full-smoke-ohne-docker.md),
-  [slice-full-smoke-gates-echt-gruen](../next/slice-full-smoke-gates-echt-gruen.md)).
+  [slice-full-smoke-gates-echt-gruen](../in-progress/slice-full-smoke-gates-echt-gruen.md)).
 - **CI rüstet ohne Daemon auf** — Runner-Setup je Job gemäß Inventar-Pin
   (eine Quelle, wertrauch-unabhängige Wächter), Carrier-Tisch
   `make dcheck-fetch` je Job, der Tag-Workflow im gepinnten Bild
@@ -113,7 +113,7 @@ in `done/`, keine offen.
     **geplant**, wellenloser Posten `slice-stamp-records-konsum-v1`
     (derselbe).
   - Der `full-smoke`-Rest-Träger 1a–1d — **geplant**,
-    [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md)
+    [`slice-full-smoke-gates-echt-gruen`](../in-progress/slice-full-smoke-gates-echt-gruen.md)
     (in `next/`).
   - **Schritt 4 (Archivierung) ist fail-closed abgebrochen:** `make
     archive-welle` (Exit 3 über `make`) meldet Verweise aus Nicht-Zeit-Dokumenten
@@ -175,7 +175,7 @@ in `done/`, keine offen.
 
 ## Folge-Slices
 
-- [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md)
+- [`slice-full-smoke-gates-echt-gruen`](../in-progress/slice-full-smoke-gates-echt-gruen.md)
   (Nehmer der LP2/LP3-Restmenge, in `next/`) · die wellenlosen Posten
   [`slice-gates-pruefgegenstand-stempel-v1`](../done/slice-gates-pruefgegenstand-stempel-v1.md)
   und [`slice-stamp-records-konsum-v1`](../done/slice-stamp-records-konsum-v1.md)

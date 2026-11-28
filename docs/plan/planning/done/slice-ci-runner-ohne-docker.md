@@ -53,7 +53,7 @@ CI läuft auf frischem Klon, nur ohne Daemon-Annahme.
 - **Die daemon-gebundene Rest-Spur des `full-smoke`-Jobs in `ci.yml`** — dieselbe
   Klasse wie der smoke/full-smoke-Zug: der CI-Job fährt die Rest-Stufen am
   Runner-Daemon, der Daemon-Gang selbst trägt
-  [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md);
+  [`slice-full-smoke-gates-echt-gruen`](../in-progress/slice-full-smoke-gates-echt-gruen.md);
   die docker-lose LP2-Form gilt für die Gates- und Smoke-Kette, nicht für diese
   Rest-Spur (LP2, §5).
 - **`.github/workflows/upstream-drift.yml` bleibt, wie er ist** — sein
@@ -72,7 +72,7 @@ CI läuft auf frischem Klon, nur ohne Daemon-Annahme.
       läuft grün — `make gates` + `make smoke` docker-los (der reale Lauf im
       Verifikations-Bericht); der `full-smoke`-Job ist die daemon-gebundene
       Rest-Spur (§1), sein Ausgang trägt
-      [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md).
+      [`slice-full-smoke-gates-echt-gruen`](../in-progress/slice-full-smoke-gates-echt-gruen.md).
 - [ ] **Liefer-Punkt 3:** der Nacht-Workflow (`mutate.yml`) fährt einen
       Shard docker-los grün (reale Messung — Wall-Clock und je-Case-Ausgang
       im Bericht); die `mutate-branch`-Schritte bleiben wirksam.
@@ -205,7 +205,7 @@ F-1..F-7, behoben `cb965055`/`bc46815d`/`678e4f7e`/`6f0b50ca`/`b20ffd8b`).
 - **Folge-Slices:**
   [`slice-doku-nachzug-ohne-docker`](../done/slice-doku-nachzug-ohne-docker.md)
   (Sensor-Zellen `gates.md`/`mutate.md`, O-5) ·
-  [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md)
+  [`slice-full-smoke-gates-echt-gruen`](../in-progress/slice-full-smoke-gates-echt-gruen.md)
   (Rest-Spur full-smoke + adr-immutable).
 - **Risiken aus §6:** Setup-Abweichung — entfallen (entwaffnet) ·
   Shard-Zeiten — weiter offen, Register oben.
