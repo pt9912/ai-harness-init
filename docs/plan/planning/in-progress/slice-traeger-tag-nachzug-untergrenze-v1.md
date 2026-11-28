@@ -24,7 +24,7 @@ Festlegung 2 (der Release-Schnitt als Folge-Posten) trägt je Slice.
 **Berührte Spec-Stellen:** — (keine: der Slice berührt nur Pin-Stellen der
 Werkzeug-Ebene; der Verweis zeigt **aufwärts**, die Spec nennt diesen Slice nie).
 
-**Verantwortlich:** pt9912
+**Verantwortlich:** pt9912 (Zweig slice-traeger-tag-nachzug-untergrenze-v1)
 
 **Autor:** pt9912 (Rolle Planner). **Datum:** 2026-11-28.
 
