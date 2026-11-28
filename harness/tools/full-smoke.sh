@@ -69,6 +69,22 @@ if make --version 2>/dev/null | head -1 | grep -qE 'GNU Make ([4-9]|[0-9]{2,})\.
 	MAKE_JFLAGS=(-j -Otarget)
 fi
 
+# Der Baum-Hash am LAUF-START (ADR-0111 Festlegung 4): der E2E-Stempel am Gruen-
+# Ende unten traegt genau diesen Wert — die tmp-Repos der E2E liegen ausserhalb
+# des Baums, und die committete Stempel-Klasse ist Hash-Ausnahme
+# (working-tree-hash.sh HASH_AUSNAHMEN). Der E2E-Skip-Griff (ADR-0111 Festlegung
+# 2/4) liest in derselben Stelle die Umgebung FULL_SMOKE_SKIP_KONSULT, gesetzt
+# nur vom push-auf-main-Job der CI; am Host bleibt sie ungesetzt und der Lauf
+# faehrt voll — er ist der Schreiber des Stempels (Festlegung 5). Der Griff
+# SKIPpt nur bei Deckung und nennt den benannten Rest (Festlegung 4); jeder
+# Zweifel faellt auf den vollen Lauf zurueck (fail-closed, MR-017).
+E2E_BAUM_HASH_START="$(bash "$HIER/working-tree-hash.sh")"
+if [ "${FULL_SMOKE_SKIP_KONSULT:-}" = "1" ]; then
+	if bash "$HIER/full-smoke-skip.sh" --entscheide .harness/state/full-smoke-passed.key "$E2E_BAUM_HASH_START"; then
+		exit 0
+	fi
+fi
+
 # einordnen sagt fuer einen fehlgeschlagenen Abschnitt, welcher der zwei Ausgaenge
 # vorliegt: eine ausgehende Anfrage nach einem gepinnten Artefakt blieb unbeantwortet
 # (LEITUNG) oder der gepruefte Baum ist rot (BAUM). Der Aufruf steht NEBEN der
@@ -6044,3 +6060,9 @@ echo "full-smoke: OK — KLASSE DES COMMIT-TRAEGERS (ADR-0054 Festlegung 1 und 3
 echo "full-smoke: OK — SELBSTPRUEFUNG IM ZIEL (LH-FA-11): das gebootstrappte Repo faehrt make selbstpruefung ueber einem frischen Klon seiner selbst — der Klon traegt keinen core.hooksPath, der Aktivierungsschritt setzt ihn, danach faellt ein Commit OHNE Kennung (HEAD unbewegt) und geht einer MIT Kennung durch, und das Gate-Kommando laeuft im Klon gruen; danach gibt der Stop-Hook im Klon ein Turn-Ende ohne Commit im Default frei, haelt es streng auf und haelt einen Commit ohne Nachweis auf (ADR-0083); die Ausgaenge stehen in EINEM Lauf, das Kommando haengt an keiner gates-Kette des Ziels, und ein am Aufruf gesetzter Marker lenkt den Gate-Schritt (LH-FA-02)."
 echo "full-smoke: OK — E2E-ABDECKUNG IM ZIEL: das gebootstrappte Repo erzeugt mit make e2e-abdeckung die Sicht ueber seine eigenen E2E-Stufen — eine Zeile aus der einen Stufe der mitgelieferten Selbstpruefung, mit dem Gedankenstrich statt einer geratenen Kennung und dem Ort in tools/harness/selbstpruefung.sh; es steht in make help des Ziels (dem einen Index, den ein gebootstrapptes Repo von sich aus fuehrt) und haengt an keiner gates-Kette (LH-QA-01), der zweite Lauf meldet unveraendert, ein am Aufruf gesetzter Ziel-Marker lenkt die geschriebene Datei (LH-FA-02), und eine Stufe ohne Deklaration faerbt den Erzeuger rot."
 echo "full-smoke: OK — ZEILENENDEN IM KLON (ADR-0067): ein Klon des committeten Ziels mit core.autocrlf=true traegt in .harness, .claude/hooks, .githooks, harness/mk und tools/harness kein CR — der git-eigene Traeger laeuft ueber seine Shebang-Zeile, bash tools/harness/baseline-verify.sh endet mit OK, und der Command-Guard blockt das letzte Wort seiner Wortliste; der Kontrollklon mit ausdruecklich gesetztem core.autocrlf=false traegt in denselben Verzeichnissen keines und laesst dieselben Konsumenten laufen; die Restmenge ausserhalb der fuenf Verzeichnisse wird ausgegeben, nicht zugesagt. Gemessen ist der Smudge-Filter von git unter Linux, kein Windows-Lauf (LH-QA-04, Grenze der Messmethode)."
+
+# Der E2E-Stempel (ADR-0111 Festlegung 4): committete Datei, zwei Zeilen, maschinengeschrieben nach dem gruenden Ende. Der baum-hash ist der Wert am Lauf-START (oben gerechnet) — die tmp-Repos der E2E liegen ausserhalb des Baums; die committete Stempel-Klasse ist Hash-Ausnahme (working-tree-hash.sh), der eigene Schreibzug rotiert also den getragenen Vergleichswert nicht. `varianten` zaehlt die E2E-Abschnitte dieses Laufes (die Zusagen-Zeilen "full-smoke: OK" — die Zaehlbasis steht am Eintrag); die Matrix lebt im Skript-Inhalt und ist transitiv im Baum-Hash. Kein Commit-SHA-Feld (Festlegung 3: zirkulaer), kein Datumsfeld (die Chronik traegt git). Make committiert nicht (Festlegung 5) — der implementierende Zug committet die Datei mit ihrem Inhalt.
+mkdir -p .harness/state
+varianten="$(grep -c "^echo \"full-smoke: OK —" "$HIER/full-smoke.sh")"
+printf 'baum-hash %s\nvarianten %s\n' "$E2E_BAUM_HASH_START" "$varianten" > .harness/state/full-smoke-passed.key
+echo "full-smoke: E2E-Stempel geschrieben (.harness/state/full-smoke-passed.key, ADR-0111 Festlegung 4): baum-hash $E2E_BAUM_HASH_START, varianten $varianten; der committende Zug traegt die Datei mit ihrem Inhalt (Festlegung 5)."

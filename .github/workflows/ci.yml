@@ -69,7 +69,14 @@ concurrency:
 
 jobs:
   # Der Kern: make gates auf FRISCHEM Klon. Genau der Fall, den der lokale
-  # Stop-Hook nicht pruefen kann (MR-003).
+  # Stop-Hook nicht pruefen kann (MR-003). Seit ADR-0111 Festlegung 2 reisen die
+  # je-Check-Keys committed mit dem Klon: der push-auf-main-Job konsultiert den
+  # transportierten Satz ueber unveraendertes `make gates` (der Fast-Pfad
+  # gaeht am frischen Klon durch die committeten Keys von selbst), pull_request
+  # und jeder Nicht-main-Push fahren ueber GATES_FORCE=1 voll — dieselbe
+  # erzwungene Form wie am host (ADR-0099 Festlegung 3); die Skip-Konsultation
+  # bleibt an den main-Push-Schutz gebunden, der PR faehrt die Pruefung seines
+  # eigenen Baums (Festlegung 2).
   gates:
     runs-on: ubuntu-24.04
     steps:
@@ -80,7 +87,13 @@ jobs:
           echo "${RUNNER_TEMP:-/tmp}/ai-harness-ci/bin" >> "$GITHUB_PATH"
       - name: d-check-Carrier ablegen (docs-check-host trägt die fetched Ablage, make dcheck-fetch)
         run: make dcheck-fetch
-      - run: make gates
+      - name: Gates — push-main ueber dem transportierten Stempel, sonst erzwungen voll (ADR-0111 Festlegung 2)
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            make gates
+          else
+            GATES_FORCE=1 make gates
+          fi
 
   # Tier-2-Emit-Smoke: der Bootstrap-Einstieg fährt den Träger aus host-bin
   # (docker-los, ADR-0109), die fetchenden Stufen brauchen Netz an genau diesem Aufruf.
@@ -132,7 +145,18 @@ jobs:
       - name: d-check-Carrier ablegen (den Carrier-Pfad sehen die Carrier-gebundenen Stufen)
         run: make dcheck-fetch
       - run: make release-warten
-      - run: make full-smoke
+      # ADR-0111 Festlegung 2/4: der E2E-Skip-Griff laeuft NUR im push-auf-main-
+      # Job — die Umgebung schaltet die Stempel-Konsultation im Rezept an (SKIP
+      # bei Deckung gegen den frischen Baum-Hash, fail-closed); pull_request und
+      # jeder Nicht-main-Push fahren make full-smoke ungesetzter Umgebung voll.
+      # Die Skip-Meldung nennt den benannten Rest je Kante (Festlegung 4).
+      - name: Voll-E2E — push-main mit Skip-Griff, sonst voll (ADR-0111 Festlegung 2/4)
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            FULL_SMOKE_SKIP_KONSULT=1 make full-smoke
+          else
+            make full-smoke
+          fi
 
   # Der Mutations-Sensor zu AGENTS.md 3.6 (slice-026). Hier bekommt seine
   # Durchsetzung erstmals einen mechanischen Ausloeser PRO PUSH — die

@@ -57,3 +57,107 @@ tmp_gitignore_repo() {
   done
   rm -rf "$root"
 }
+
+# --- CI-Verdrahtung (LP 2/LP 3, ADR-0111 Festlegung 2/4) --------------------
+
+gates_job_block() {
+  awk '/^  gates:/{p=1;next} p&&/^  [a-z]/{p=0} p' "$REPO/.github/workflows/ci.yml"
+}
+
+full_smoke_job_block() {
+  awk '/^  full-smoke:/{p=1;next} p&&/^  [a-z]/{p=0} p' "$REPO/.github/workflows/ci.yml"
+}
+
+@test "ci-verdrahtung: der push-main-Gates-Job konsultiert die transportierten Keys unforced, die uebrigen Klassen fahren GATES_FORCE=1 (ADR-0111 Festlegung 2)" {
+  local block
+  block="$(gates_job_block)"
+  # push-main: der unforced Aufruf — der Fast-Pfad entscheidet ueber den
+  # committeten Keys selbst (kein zweiter Massstab, Festlegung 2).
+  [ "$(grep -cE '^[[:space:]]+make gates$' <<<"$block")" -eq 1 ]
+  # alle uebrigen Klassen (pull_request, Nicht-main-Push, Tags): erzwungen voll.
+  grep -qF 'GATES_FORCE=1 make gates' <<<"$block"
+  grep -qF 'github.event_name' <<<"$block"
+  grep -qF 'refs/heads/main' <<<"$block"
+}
+
+@test "ci-verdrahtung: der E2E-Skip-Griff laeuft nur am push-main-Job, die uebrigen Klassen fahren make full-smoke voll (ADR-0111 Festlegung 2/4)" {
+  local block
+  block="$(full_smoke_job_block)"
+  # push-main: die Konsult-Umgebung schaltet den Griff im Rezept an — der Lauf
+  # bleibt derselbe make-Aufruf, die CI traegt keine zweite Definition.
+  [ "$(grep -cE '^[[:space:]]+make full-smoke$' <<<"$block")" -eq 1 ]
+  grep -qF 'FULL_SMOKE_SKIP_KONSULT=1 make full-smoke' <<<"$block"
+  grep -qF 'github.event_name' <<<"$block"
+  grep -qF 'refs/heads/main' <<<"$block"
+}
+
+@test "rezept-verdrahtung: full-smoke rechnet den Baum-Hash am Lauf-Start und faehrt den Griff nur bei gesetzter Konsult-Umgebung (ADR-0111 Festlegung 2/4)" {
+  local skript="$REPO/harness/tools/full-smoke.sh"
+  # der Lauf-Start-Wert ist derselbe, den der Stempel am Gruen-Ende traegt
+  grep -qF 'E2E_BAUM_HASH_START="$(bash "$HIER/working-tree-hash.sh")"' "$skript"
+  # der Griff hoert auf GENAU die eine Lesung (gezaehlt ausserhalb der Kommentare);
+  # jede andere Umgebung laeuft unberuehrt voll
+  [ "$(grep -vE '^[[:space:]]*#' "$skript" | grep -cF 'FULL_SMOKE_SKIP_KONSULT')" -eq 1 ]
+  grep -qF '[ "${FULL_SMOKE_SKIP_KONSULT:-}" = "1" ]' "$skript"
+  grep -qF -- '--entscheide .harness/state/full-smoke-passed.key "$E2E_BAUM_HASH_START"' "$skript"
+}
+
+# --- die hermetische Klassifikation des Skip-Griffs (harness/tools/full-smoke-skip.sh,
+# dieselbe --entscheide-Form wie test/gates-fastpfad.bats) -------------------
+
+SKIP="$REPO/harness/tools/full-smoke-skip.sh"
+STAPEL="$(mktemp)"
+
+teardown() {
+  [ -f "${STAPEL:-}" ] && rm -f "$STAPEL"
+  return 0
+}
+
+H1="1111111111111111111111111111111111111111111111111111111111111111"
+H2="2222222222222222222222222222222222222222222222222222222222222222"
+
+@test "e2e-skip: deckender Stempel in der Zwei-Zeilen-Form -> SKIP, Meldung nennt Rest und Konservierungs-Form" {
+  printf 'baum-hash %s\nvarianten 24\n' "$H1" > "$STAPEL"
+  run bash "$SKIP" --entscheide "$STAPEL" "$H1"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"SKIP"* ]]
+  [[ "$output" == *"Traeger-Releases"* ]]
+  [[ "$output" == *"Runner-Fassung"* ]]
+  [[ "$output" == *"Runner-Verdikt"* ]]
+}
+
+@test "e2e-skip: fehlender Stempel -> voller Lauf (fail-closed)" {
+  run bash "$SKIP" --entscheide "$STAPEL" "$H1"
+  [ "$status" -eq 1 ]
+}
+
+@test "e2e-skip: baum-hash fehlt in der Zwei-Zeilen-Form -> voller Lauf (fail-closed)" {
+  printf 'varianten 24\n' > "$STAPEL"
+  run bash "$SKIP" --entscheide "$STAPEL" "$H1"
+  [ "$status" -eq 1 ]
+}
+
+@test "e2e-skip: unformaler baum-hash -> voller Lauf (fail-closed, MR-017)" {
+  printf 'baum-hash %s\nvarianten 24\n' "${H1:0:40}" > "$STAPEL"
+  run bash "$SKIP" --entscheide "$STAPEL" "$H1"
+  [ "$status" -eq 1 ]
+}
+
+@test "e2e-skip: fremder baum-hash -> voller Lauf (fail-closed)" {
+  printf 'baum-hash %s\nvarianten 24\n' "$H2" > "$STAPEL"
+  run bash "$SKIP" --entscheide "$STAPEL" "$H1"
+  [ "$status" -eq 1 ]
+}
+
+@test "e2e-skip: unformale Frisch-Rechnung -> voller Lauf (fail-closed)" {
+  printf 'baum-hash %s\n' "$H1" > "$STAPEL"
+  run bash "$SKIP" --entscheide "$STAPEL" "fremd"
+  [ "$status" -eq 1 ]
+}
+
+@test "e2e-skip: fremde Aufruf-Form -> Exit 2" {
+  run bash "$SKIP" --entscheide "$STAPEL"
+  [ "$status" -eq 2 ]
+  run bash "$SKIP"
+  [ "$status" -eq 2 ]
+}
