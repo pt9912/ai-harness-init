@@ -201,7 +201,7 @@ Lerneintrag geschrieben.
   [ADR-0113](../../adr/0113-der-e2e-stempel-wird-je-variante-gestempelt.md)
   als Revision von Festlegung 4: die `varianten`-Zeile entfällt mit der
   einen Stempel-Datei, die Varianten-Menge steht als Tafel des
-  Satzerzeugers; der schneidende Lauf ist derjenige von ADR-0113, nicht
+  Satzerzeugers; der schneidende Lauf ist derjenige von [`ADR-0113`](../../adr/0113-der-e2e-stempel-wird-je-variante-gestempelt.md), nicht
   dieser Slice.
   die Lesart wäre ein Festlegung-Zug des Architect, kein stiller Edit.
 - **Die Deckung der Tafel-Mengen auf CI-Runner-Fassungen** — die Runner- und
