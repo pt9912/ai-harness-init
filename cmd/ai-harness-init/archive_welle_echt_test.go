@@ -16,7 +16,7 @@ import (
 // darum nie; hier startet der Traeger als PROZESS in einem echten git-Repo, und
 // die vier Felder der Verdrahtung tragen den Lauf: repoWurzel loest die Wurzel
 // ueber dem Arbeitsverzeichnis auf, gitStatusPorcelain und gitLsFiles starten
-// `git`, gitSchreibend fuehrt die vier schreibenden Operationen aus.
+// `git`, gitSchreibend fuehrt die drei schreibenden Operationen aus.
 //
 // DIE ZWEI SPERREN SIND DER MASSSTAB, beide fail-closed: der unsaubere
 // Arbeitsbaum haengt an gitStatusPorcelain, der Haenger-Schutz an gitLsFiles. Ein
@@ -203,12 +203,12 @@ func TestArchiveWelleEchtArchiviertMitReportVerweisAusFremdemRang(t *testing.T) 
 	}
 }
 
-// TestArchiveWelleEchtArchiviertUndSetztZweiCommits ist die Gegenprobe zu den
-// zwei Faellen darueber und zugleich der einzige Fall, der die vier schreibenden
-// git-Aufrufe wirklich ausfuehrt: derselbe Baum ohne die zwei Defekte, und dann
+// TestArchiveWelleEchtArchiviertUndSetztZweiCommits ist die Gegenprobe zur
+// Sperre dazu und zugleich der einzige Fall, der die drei schreibenden
+// git-Aufrufe wirklich ausfuehrt: derselbe Baum ohne jeden Defekt, und dann
 // laeuft die Operation durch.
 //
-// Ohne diesen Fall blieben die zwei Sperren-Faelle gruen, auch wenn das
+// Ohne diesen Fall blieb der Sperren-Fall gruen, auch wenn das
 // Unterkommando gar nichts mehr taete — "bricht ab" ist keine Aussage, solange
 // niemand misst, dass es sonst laeuft.
 //

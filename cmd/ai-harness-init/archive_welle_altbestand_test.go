@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-// gitBewegend ist die Test-Verdrahtung der vier schreibenden git-Operationen
+// gitBewegend ist die Test-Verdrahtung der drei schreibenden git-Operationen
 // ueber einem synthetischen Baum: Mv und Rm bewegen wirklich (die Schritte
 // danach finden die Dateien an der neuen Adresse), Add und Commit schreiben mit.
 // altKennung ist die Kennung, die die Faelle dieser Datei als Aufrufer nennen — eine

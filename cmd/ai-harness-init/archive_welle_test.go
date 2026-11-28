@@ -210,7 +210,7 @@ func baumAbdruck(t *testing.T, root string) string {
 
 // attrappenEingang verdrahtet die Strecke zwischen Parser und Zweig auf einen
 // synthetischen Baum: die Wurzel ist gesetzt, der Arbeitsbaum sauber, der
-// Suchraum ist der Baum selbst, und die vier schreibenden git-Operationen gehen
+// Suchraum ist der Baum selbst, und die drei schreibenden git-Operationen gehen
 // an den Mitschreiber. Kein Prozess, kein Repo — gemessen wird der Weg des
 // geparsten Schalters, nicht git.
 func attrappenEingang(t *testing.T, root string, g archive.Git) laufEingang {

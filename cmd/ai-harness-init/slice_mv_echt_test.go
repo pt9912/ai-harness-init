@@ -70,7 +70,7 @@ func sliceMvRepo(t *testing.T) string {
 // Review-Report auf dieselbe zu bewegende Slice-Datei (das gepinnte BATS_IMAGE
 // fuehrt kein git, s. Skriptkopf slice-mv.sh Abschnitt BELEG — dieser Test
 // laeuft darum in test-go, wo `git` real verfuegbar ist, wie schon
-// TestArchiveWelleEchtSperrtAmHaengendenVerweis in dieser Datei zeigt).
+// TestArchiveWelleEchtArchiviertMitReportVerweisAusFremdemRang zeigt).
 //
 // ADR-0042 Festlegung 2: der Verweis-Nachzug laesst die ADR unberuehrt.
 // ADR-0070 Festlegung 1 und 2: docs/reviews/** bleibt im Nachzug, der
