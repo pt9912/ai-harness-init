@@ -849,7 +849,13 @@ func TestAnwendenSchreibtDenUmzugsStubAnDerFlachenAdresse(t *testing.T) {
 		"> **UMZUGEZOGEN** — der Volltext liegt an der neuen Arbeitsbaum-Adresse:\n" +
 		"> `docs/plan/planning/done/wave-10/slice-100-a.md`\n" +
 		"\n" +
-		"**Archiviert mit:** wave-10\n"
+		"**Archiviert mit:** wave-10\n" +
+		"## 2. Definition of Done\n" +
+		"## 7. Closure-Notiz\n" +
+		"- **Gegenstand:** wave-10 — der Volltext dieses Slices liegt byte-genau an der Adresse, die der Umzugs-Zeiger nennt. " +
+		"Der Umzugs-Stub behält diese Zeile an der alten Pfad-Adresse, weil ein Baum, den der Verweis-Nachzug nicht erreicht, auf sie verweist. " +
+		"Die Referenz löst nach dem Ablage-Lauf an dieser Adresse weiter auf, statt ins Leere zu zeigen. " +
+		"Der Originaltext liegt in der Archiv-Abgabe des Laufs, der Stub trägt die weiter auflösenden Adressen je eingehender Verweis.\n"
 	if got := lesen(t, root, altAdresse); got != want {
 		t.Errorf("Umzugs-Stub an der Alt-Adresse =\n%q\nwant\n%q", got, want)
 	}

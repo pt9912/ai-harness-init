@@ -30,6 +30,15 @@ const (
 const (
 	archivZeigerMarke = "> **ARCHIVIERT**"
 	umzugsZeigerMarke = "> **UMZUGEZOGEN**"
+	// Die zwei Überschriften, die die Umzugs-Stub-Form zusätzlich trägt. Die
+	// structure-Regel der Gate-Konfiguration liest die Stub-Datei unter
+	// done/slice-*.md als geschlossenen Slice und verlangt die §2-Sektion (leer
+	// reicht — die DoD-Sektion braucht kein Häkchen), das planning-Modul die
+	// §7-Stillgelegt-Fassung mit der **Gegenstand:**-Zeile ·
+	// seit slice-altbestand-stubs-voll-v1. Jede andere Überschrift bleibt
+	// form-widrig.
+	umzugsDoDHeaderUeberschrift   = "## 2. Definition of Done"
+	umzugsClosureNotizUeberschrift = "## 7. Closure-Notiz"
 )
 
 // Ersetzung ist ein Platzhalter der Vorlage und der Wert, der an seine Stelle
@@ -159,7 +168,7 @@ func FormOK(inhalt string) error {
 	if !strings.Contains(inhalt, archivZeigerMarke) || !strings.Contains(inhalt, archivName) {
 		fehlt = append(fehlt, "kein Archiv-Zeiger ("+archivZeigerMarke+" … "+archivName+")")
 	}
-	fehlt = ohneUeberschriften(inhalt, fehlt)
+	fehlt = ohneUeberschriften(inhalt, fehlt, nil)
 	if len(fehlt) == 0 {
 		return nil
 	}
@@ -168,11 +177,14 @@ func FormOK(inhalt string) error {
 
 // FormOKUmzug ist die Umzugsvariante der Stub-FORM (ADR-0112 Festlegung 2): der
 // Stub traegt den Umzugs-Zeiger auf die neue Arbeitsbaum-Adresse, und er traegt
-// gerade KEINEN Archiv-Zeiger und keine Abschnittsueberschrift — ein Stub mit
-// Umzugs-Zeiger und vollem Text waere der Umzug, der nicht stattfand. Die
-// zweite Haelfte ist die tragende, wie bei FormOK; die Abwesenheit des
-// Archiv-Zeigers ist die dieser Klasse eigene: ihr Volltext liegt byte-genau an
-// der neuen Adresse, nicht im Archiv-Zip. Gedeckt von
+// gerade KEINEN Archiv-Zeiger und sonst keine Abschnittsüberschrift — ein Stub
+// mit Umzugs-Zeiger und vollem Text waere der Umzug, der nicht stattfand. Die
+// EINE erlaubten Überschriften sind die zwei der Stillgelegt-Fassung
+// (umzugsStillgelegtUeberschriften), die structure-Regel und planning-Modul von
+// einem done/-slice-Plan verlangen. Die zweite Haelfte ist die tragende, wie
+// bei FormOK; die
+// Abwesenheit des Archiv-Zeigers ist die dieser Klasse eigene: ihr Volltext
+// liegt byte-genau an der neuen Adresse, nicht im Archiv-Zip. Gedeckt von
 // TestFormOKUmzugMeldetDieFehlendeMarke; die Verdrahtung misst
 // TestAnwendenBrichtBeiVerletzterUmzugStubFormAb
 // (test/mutations/825-archive-welle-go-umzug-stub-form-verdrahtung.sh).
@@ -184,7 +196,10 @@ func FormOKUmzug(inhalt string) error {
 	if strings.Contains(inhalt, archivZeigerMarke) {
 		fehlt = append(fehlt, "Archiv-Zeiger im Umzugs-Stub — der Volltext liegt an der neuen Adresse, nicht im Archiv")
 	}
-	fehlt = ohneUeberschriften(inhalt, fehlt)
+	fehlt = ohneUeberschriften(inhalt, fehlt, map[string]bool{
+		umzugsDoDHeaderUeberschrift:   true,
+		umzugsClosureNotizUeberschrift: true,
+	})
 	if len(fehlt) == 0 {
 		return nil
 	}
@@ -192,13 +207,19 @@ func FormOKUmzug(inhalt string) error {
 }
 
 // ohneUeberschriften haelt die Haelfte, die FormOK und FormOKUmzug teilen:
-// stehengebliebene Abschnittsueberschriften melden. Eine zweite Fassung dieser
-// Schleife in zwei Formen haette gedriftet; 239 enthemmt sie — fuer beide
-// Stub-Formen zugleich, weil die Halte-Funktion geteilt ist — und die
-// Verdrahtung der Umzugsvariante misst 821.
-func ohneUeberschriften(inhalt string, fehlt []string) []string {
+// stehengebliebene Abschnittsueberschriften melden. `erlaubte` nennt die
+// Überschriften, die der Rufende zulaesst — FormOK keine, die Umzugsvariante die
+// Stillgelegt-Fassung. Eine zweite Fassung dieser Schleife in zwei Formen haette
+// gedriftet; 239 enthemmt sie — fuer beide Stub-Formen zugleich, weil die
+// Halte-Funktion geteilt ist — und die Verdrahtung der Umzugsvariante misst 821.
+// Gedeckt von TestFormOKMeldetStehengebliebeneUeberschrift und der
+// erlaubten-Fassung in TestFormOKUmzugMeldetDieFehlendeMarke.
+func ohneUeberschriften(inhalt string, fehlt []string, erlaubte map[string]bool) []string {
 	for _, zeile := range strings.Split(inhalt, "\n") {
 		if strings.HasPrefix(zeile, "##") {
+			if erlaubte[strings.TrimSpace(zeile)] {
+				continue
+			}
 			return append(fehlt, "noch Abschnittsueberschriften — gekuerzt ist er damit nicht")
 		}
 	}

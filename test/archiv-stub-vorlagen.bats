@@ -206,15 +206,20 @@ platzhalter() {
   done
 }
 
-# Die Form der Umzugs-Stub-Vorlage (ADR-0112 Festlegung 2): H1, Umzugs-Zeiger,
-# Zustand als letzten Absatz — und KEINEN Archiv-Zeiger, denn ihr Volltext liegt
-# byte-genau an der neuen Arbeitsbaum-Adresse, nicht im Archiv-Zip.
-@test "die Umzugs-Stub-Vorlage trägt H1, Umzugs-Zeiger und Zustand, keinen Archiv-Zeiger" {
+# Die Form der Umzugs-Stub-Vorlage (ADR-0112 Festlegung 2, Stillgelegt-Fassung
+# des planning-Moduls): H1, Umzugs-Zeiger, Zustand, und die §7-Closure-Notiz mit
+# der Gegenstand-Zeile als letztem Absatz — der Absatz, den die Kuerzung traegt.
+# KEINEN Archiv-Zeiger, denn ihr Volltext liegt byte-genau an der neuen
+# Arbeitsbaum-Adresse, nicht im Archiv-Zip.
+@test "die Umzugs-Stub-Vorlage trägt H1, Umzugs-Zeiger, Zustand und die Stillgelegt-Fassung, keinen Archiv-Zeiger" {
   vorlage="$(vorlage_pfad stubVorlageUmzug)" || false
   head -n 1 "$vorlage" | grep -q '^# '
   grep -q '^> \*\*UMZUGEZOGEN\*\*' "$vorlage"
   grep -q 'done/<wave-id>/<pfad-im-arbeitsbaum>' "$vorlage"
-  tail -n 1 "$vorlage" | grep -q '^\*\*'
+  grep -q '^## 2. Definition of Done' "$vorlage"
+  grep -q '^## 7. Closure-Notiz' "$vorlage"
+  grep -q '^- \*\*Gegenstand:\*\* <wave-id | altbestand> — der Volltext dieses Slices liegt byte-genau an der Adresse, die der Umzugs-Zeiger nennt' "$vorlage"
+  tail -n 1 "$vorlage" | grep -q '^- \*\*Gegenstand:\*\*'
   if grep -q '^> \*\*ARCHIVIERT\*\*' "$vorlage" || grep -q 'archive.zip' "$vorlage"; then
     echo "die Umzugs-Stub-Vorlage traegt einen Archiv-Zeiger — ihr Volltext liegt an der neuen Adresse, nicht im Zip" >&2
     false

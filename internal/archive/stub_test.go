@@ -79,6 +79,9 @@ Regeln dieses Artefakts: irgendwo im Regelwerk, und der Absatz faellt weg.
 > ` + "`done/<wave-id>/<pfad-im-arbeitsbaum>`" + `
 
 **Archiviert mit:** <wave-id | altbestand>
+## 2. Definition of Done
+## 7. Closure-Notiz
+- **Gegenstand:** <wave-id | altbestand> — der Volltext dieses Slices liegt byte-genau an der Adresse, die der Umzugs-Zeiger nennt. Der Umzugs-Stub behält diese Zeile an der alten Pfad-Adresse, weil ein Baum, den der Verweis-Nachzug nicht erreicht, auf sie verweist. Die Referenz löst nach dem Ablage-Lauf an dieser Adresse weiter auf, statt ins Leere zu zeigen. Der Originaltext liegt in der Archiv-Abgabe des Laufs, der Stub trägt die weiter auflösenden Adressen je eingehender Verweis.
 `
 
 // vorlageUmzugOhneZeiger ist die Umzugs-Stub-Vorlage ohne ihren Zeiger-Block —
@@ -202,8 +205,10 @@ func TestFormOKUmzugMeldetDieFehlendeMarke(t *testing.T) {
 	if err := archive.FormOKUmzug(gut); err != nil {
 		t.Fatalf("Umzugs-Form erfuellt: %v", err)
 	}
-	if err := archive.FormOKUmzug(gut + "\n## Ziel\n\nvoller Text\n"); err == nil {
-		t.Fatal("Abschnittsueberschrift im Umzugs-Stub: want Fehler, got nil")
+	if err := archive.FormOKUmzug(gut + "\n## 2. Definition of Done\n## 7. Closure-Notiz\n- **Gegenstand:** altbestand — der Volltext liegt an der neuen Adresse, die der Umzugs-Zeiger nennt. Der Umzugs-Stub behält diese Zeile an der alten Pfad-Adresse, weil ein Baum den Verweis nicht erreicht. Die Referenz löst weiter auf. Der Originaltext liegt in der Archiv-Abgabe.\n"); err != nil {
+		t.Fatalf("die Stillgelegt-Fassung gehört zur Umzugs-Form, wie sie das planning-Modul verlangt: %v", err)
+	}
+	if err := archive.FormOKUmzug(gut + "\n## Ziel\n\nvoller Text\n"); err == nil {		t.Fatal("Abschnittsueberschrift im Umzugs-Stub: want Fehler, got nil")
 	}
 	if err := archive.FormOKUmzug("# T\n\n**Archiviert mit:** altbestand\n"); err == nil {
 		t.Fatal("Umzugs-Stub ohne Umzugs-Zeiger: want Fehler, got nil")

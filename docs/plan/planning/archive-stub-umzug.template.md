@@ -4,15 +4,21 @@
 > an der ALTEN Adresse `done/<base>` eines bewegten Zeitdokuments liegen
 > bleibt, wenn ein Baum, den der Verweis-Nachzug nicht erreicht, auf es
 > verweist (ADR-0112 Festlegung 1 — das Suchraum-Differenzial). Kopiere,
-> ersetze Platzhalter, lösche diesen Block. Der Stub trägt drei Dinge und
+> ersetze Platzhalter, lösche diesen Block. Der Stub trägt vier Dinge und
 > sonst nichts: Identität (die H1-Zeile des Volltexts), den Umzugs-Zeiger auf
 > die neue Arbeitsbaum-Adresse (`done/<wave-id>/…` bzw. `done/altbestand/…`),
-> den Zustand (`Archiviert mit:` der Schlüssel, dessen Lauf gezogen hat) —
+> den Zustand (`Archiviert mit:` der Schlüssel, dessen Lauf gezogen hat) und
+> die Stillgelegt-Fassung im letzten Absatz —
 > der Volltext liegt byte-genau an der neuen Adresse, nicht nur im
 > Archiv-Zip; darum kein Archiv-Zeiger hier. Er trägt keine
-> Abschnittsüberschriften — das Merkmal, an dem die Kürzung form-prüfbar ist.
-> Gegenstück: `archive-stub-report.template.md` — derselbe Stub-Mechanismus am
-> unveränderten Pfad eines Review-Reports (ADR-0061).
+> Abschnittsüberschriften außer der Stillgelegt-Fassung (`## 2. Definition of
+> Done` leer und `## 7. Closure-Notiz` mit der `**Gegenstand:**`-Zeile) —
+> genau diese zwei erlaubt FormOKUmzug, weil die structure-Regel und das
+> planning-Modul des Doku-Gates die Stub-Datei unter
+> `done/slice-*.md` als geschlossenen Slice lesen und §2 samt §7 mit
+> Kennung oder Grund verlangen. Gegenstück: `archive-stub-report.template.md`
+> — derselbe Stub-Mechanismus am unveränderten Pfad eines Review-Reports
+> (ADR-0061).
 
 > **Zitier-Form** *(bleibt stehen — Norm, kein Ausfüll-Hinweis).* Dieses
 > Artefakt friert ein; was es zitiert, bewegt sich weiter. Deshalb: **Kennung,
@@ -34,3 +40,6 @@ der Kurs-Satz die Klasse nicht führt und kein Vorkommen zu referenzieren gibt.
 > `done/<wave-id>/<pfad-im-arbeitsbaum>`
 
 **Archiviert mit:** <wave-id | altbestand>
+## 2. Definition of Done
+## 7. Closure-Notiz
+- **Gegenstand:** <wave-id | altbestand> — der Volltext dieses Slices liegt byte-genau an der Adresse, die der Umzugs-Zeiger nennt. Der Umzugs-Stub behält diese Zeile an der alten Pfad-Adresse, weil ein Baum, den der Verweis-Nachzug nicht erreicht, auf sie verweist. Die Referenz löst nach dem Ablage-Lauf an dieser Adresse weiter auf, statt ins Leere zu zeigen. Der Originaltext liegt in der Archiv-Abgabe des Laufs, der Stub trägt die weiter auflösenden Adressen je eingehender Verweis.
