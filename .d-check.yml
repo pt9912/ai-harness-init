@@ -417,16 +417,18 @@ ignore-refs:
   # GRENZE, keine Regel: EXTENSIONAL GESCHLOSSEN auf genau diese drei Quell-Baeume und diesen
   # einen `refs`-Wert (ADR-0039 Festlegung 3). Ein vierter Baum, ein anderer `refs`-Wert und jede
   # Verbreiterung sind eine neue Senkung nach AGENTS.md 3.5 und brauchen ihre eigene ADR.
-  # Deckung: 34
+  # Deckung: 33
+  # der Altbestand-Ablage-Lauf stubte einen gescannten Report am Pfad ( seine
+  # Baseline-Verweise stehen je Stub ohne Verweis-Zeile), die Deklaration trägt
+  # den Ist je Wächter test/ignore-refs-restbreite.bats
   - in: "docs/reviews/**"
     refs: [".harness/baseline/**"]
-  # Deckung: 11
-  # der moved Plan slice-c4-environment-check-v7-0-0 trug 6 Markdown-Links in
-  # den vendored v7.0.0-Baum mit (Move-Zug, keine Verbreiterung des Eintrags:
-  # gleiche in/refs-Paare), gemessen am Wächter test/ignore-refs-restbreite.bats
-  # Fall 242; der danach geschlossene Plan slice-adr-gates-laeufen-host-native
-  # brachte den Link Zeile 145 (Modul-7-Verweis in den vendored v7.0.0-Baum) mit —
-  # der gleiche Move-Zug, Deklaration 10 -> 11 je Wächter-Form
+  # Deckung: 7
+  # der Altbestand-Ablage-Lauf (5fe20502) zog die geclaimten
+  # done-Slices nach done/altbestand/ (Volltexte im Archiv, Stub am Pfad ohne
+  # Baseline-Verweis): die Deklaration trägt den Ist je Wächter
+  # test/ignore-refs-restbreite.bats; die Vorgänger-Fassungen (4 -> 10 -> 11)
+  # stehen in der Vorbild-Historie des Moves je Move-Zug
   - in: "docs/plan/planning/done/**"
     refs: [".harness/baseline/**"]
   # Deckung: 2
