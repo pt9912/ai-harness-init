@@ -173,6 +173,8 @@ wörtlich: kein Pflicht-Pfad dieses Repos braucht docker.
 | `test/mutations/<Nr>-release-bau-plattformzeile-gestrichen.sh` | neu | a-1 — Plattform-Zeile still gestrichen → Matrix-Wächter rot; je [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit) |
 | `test/mutations/<Nr>-release-bau-ldflags-injektion-entfallen.sh` | neu | a-2 — Fassungs-Injektion fällt still weg → rot am `--version`-Fehlt-Fall; je [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit) |
 | `test/mutations/<Nr>-release-ci-step-ruft-docker-oder-inline.sh` | neu | b-1 — Step ruft das Docker-Target oder ein Inline-Compile statt des make-Ziels → rot; je [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit) |
+| `test/ci-runner-ohne-docker.bats` (Fall `releasegrenze`) | update | der Bestand-Wächter hielt die alte Grenze (`release-artifacts` im gepinnten Bild, kein `ci-runner-setup`) — [`ADR-0115`](../../adr/0115-release-bau-docker-los-in-ci.md) Festlegung 1 kehrt die Grenze um; Umstellung auf Host-Form, Rot-Beleg als Hand-Mutation am realen release.yml (Bericht) |
+| Homebrew-Formel-Stufe im Target | neu | ein Teil-Lauf über `RELEASE_PLATFORMS` bricht am fail-closed Fill des Skeletts (vier brew-Plattformen fehlen) — die Stufe meldet dann den Fehlt statt den Lauf zu brechen; der vollständige Lauf füllt die Formel |
 | `harness/README.md` (Sensor-Zeile `make build`) | update | Release-Bau-Zelle in der host-Form; opt-in Weg bleibt je [`ADR-0109`](../../adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md) |
 | `harness/sensors/artifact-host.md` | update | Release-Bau-Züge in der host-Form (Festlegung 5, Konsequenz-Folgepflicht) |
 | `docs/user/releasing.md` | update | Bau-Züge des Release-Workflows in der host-Form (Zeilen 43/164/290) |
@@ -227,7 +229,7 @@ die drei Mutations-Fälle greifen je `make mutate` (`MUTATE_CASES`);
   Runner-Verdikt.
 - **Byte-identische SUMS brechen:** zwei Läufe desselben Baums mit derselben
   Pin-Fassung liefern abweichende `SHA256SUMS` — **Ausgang:** bei Closure
-  entscheiden — eingetreten: Folge-ADR (`Supersedes [ADR-0115](../../adr/0115-release-bau-docker-los-in-ci.md)`, Rückfall-Form
+  entscheiden — eingetreten: Folge-ADR (`Supersedes` [ADR-0115](../../adr/0115-release-bau-docker-los-in-ci.md), Rückfall-Form
   Option D je Re-Evaluierungs-Trigger 1); entfallen: der Zweitlauf-Beleg der
   `test/release-host-bau.bats` zeigt byte-identische SUMS.
 - **Start-Smoke-Drift:** der Bau-Zug ändert Binary-Namen oder `.exe`-Form, und

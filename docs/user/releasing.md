@@ -40,8 +40,12 @@ Die Schritt-Folge:
    `test/traeger-fetch.bats` auf den Tag, der geschnitten wird. Die Vorlage
    ist im Binary eingebettet: ein Bau vor diesem Zug trägt den Tag des
    vorigen Schnitts, und seine Digests sind nicht die der Binaries, die der
-   Release-Workflow am Tag baut. Dann baut `make release-artifacts DEST=dist
-   TRAEGER_VERSION=<tag>` die sechs Binaries der Plattform-Matrix —
+   Release-Workflow am Tag baut. Dann baut `make release-artifacts-host DEST=dist
+   TRAEGER_VERSION=<tag>` die sechs Binaries der Plattform-Matrix — am HOST
+   cross-kompiliert, docker-los mit `CGO_ENABLED=0`/`-trimpath` (docker braucht
+   kein Pflicht-Pfad mehr, [`ADR-0115`](../plan/adr/0115-release-bau-docker-los-in-ci.md)
+   Festlegung 1; der gepinnte Image-Weg bleibt als opt-in Weg gepinnt —
+   `make release-artifacts`, Festlegung 2) —
    `linux/amd64`, `linux/arm64`, `darwin/amd64`, `darwin/arm64`,
    `windows/amd64`, `windows/arm64`
    ([`LH-QA-04`](../../spec/lastenheft.md#lh-qa-04--plattform-matrix)) — und
@@ -52,7 +56,7 @@ Die Schritt-Folge:
    Tag übergibt und den `--version` meldet
    ([`ADR-0063`](../plan/adr/0063-das-werkzeug-sagt-seine-fassung.md)
    Festlegung 1); ohne ihn baut der Lauf ein anderes Binary als der
-   Workflow.
+   Workflow, und die Homebrew-Formel entfällt — das Skeleton trägt den Tag.
 
 2. **Digests messen und den Pin ziehen.** Die `SHA256SUMS`-Zeilen sind die
    gemessenen Digests der sechs Assets; der Pin trägt Version und Digest,
