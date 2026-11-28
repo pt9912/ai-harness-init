@@ -193,7 +193,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
 - [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
 - [x] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind getragen — im Repo **ohne** Wellen-Betrieb hier geprüft, im Repo **mit** Wellen von der nächsten Welle-Closure (auch für Slices ohne Wellen-Zugehörigkeit).
 
 ## 3. Plan (vor Code)
 
@@ -401,7 +401,17 @@ aus §6 seinen Ausgang; die Liefer-Punkte der DoD bleiben leer
   CI-Branch-Zug trägt der Verifier). Bis dahin ist auch die offene Hälfte von
   B-2 benannt: der reale Konsum-Stamp an einem echten Result-File über der
   verifizierten Kette (`mutate-auswahl` → Push → Konsum) fehlt.
-- **Drei Paarungen:** *(nach dem `git mv` gefüllt — Ergebnis im Häkchen-Commit)*
+- **Drei Paarungen:** geprüft am 2026-11-28, nach dem `git mv` — (a) Anker:
+  kein Steering-Loop-Eintrag mit `liegt in` getragen (der §7-Eintrag ist gezählt
+  statt verkörpert, die Teil-Zeile entfällt); (b) Folge-Slice:
+  `ls docs/plan/planning/*/slice-mutate-cases-leakt-nicht-am-teillauf.md` →
+  genau eine Datei (`next/`); (c) Register: `BEO-ALL/stamp-abbruch-hinterlaesst-teilbestand`
+  und `BEO-ALL/mutate-cases-leakt-in-den-bats-gruen-vorlauf` existieren mit
+  nicht leerem `evidence/` (je Belegdatei); **zweite Hälfte: 1 Verzeichnis
+  ohne Beleg**, namentlich `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`
+  (`for d in docs/plan/planning/observations/BEO-ALL/*/; do …; done`-Lauf,
+  [ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  Festlegung 2) — nicht als getragen behauptet.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
