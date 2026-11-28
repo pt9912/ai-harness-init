@@ -102,10 +102,13 @@ jobs:
   # Netz-Pull, wie smoke; der Sensor braucht diesen mechanischen Pro-Push-Ausloeser,
   # sonst laeuft er nie (dasselbe Muster, das slice-027 fuer make mutate schloss).
   # GRENZE (ADR-0109): die daemon-gebundenen Rest-Stufen des docker-losen full-smoke
-  # (d-check.mk-Modul-Läufe doc-commits/doc-immutable, Archiv-Leseprobe, hexslice-/
-  # hexagonal-Bootstrap) trägt slice-full-smoke-gates-echt-gruen — bis dahin ist dieser
+  # (Archiv-Leseprobe, hexslice-/hexagonal-Bootstrap) trägt slice-full-smoke-gates-echt-gruen
+  # — bis dahin ist dieser
   # Job eine der zwei daemon-gebundenen Rest-Spuren dieses Workflows (die zweite faehrt
   # der adr-immutable-Job am gepinnten Bild, Kopf-Kommentar oben), kein docker-loses Glied.
+  # Die Vorlauf-Wächter-/Doku-Zahn-Stufen über den emittierten d-check.mk-Zielen
+  # (doc-commits/doc-immutable, docs-check-Zähne) sind es nicht mehr: ihre Rezept-Auswahl
+  # $(DCHECK_RUN) faehrt den Carrier aus make dcheck-fetch, der docker-Lauf bleibt Rueffall.
   # Vor dem Lauf wartet `make release-warten` begrenzt (Default 15 Minuten), bis das
   # gepinnte Release (TRAEGER_TAG) SHA256SUMS und das Linux-amd64-Asset fuehrt — am
   # Tag-Commit faehrt release.yml parallel und publiziert erst danach. Das Warten

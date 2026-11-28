@@ -15,13 +15,15 @@
 # — die Sicht des echten Nutzers, die `make smoke` bewusst NICHT nimmt.
 #
 # Eingang docker-los (Traeger aus `host-bin`, ADR-0109) + die doc-only/go-Stufen am
-# d-check-Carrier (wenn er vorliegt). Die DaEMON-gebundenen Rest-Stufen, am
-# daemon-losen Host in dieser Reihenfolge die ersten Abbruch-Punkte: (a) die
-# Vorlauf-Waechter-/Doku-Zahn-Stufen ueber den EMITTIERTEN d-check.mk-Zielen
-# (`make -f d-check.mk doc-commits`/`doc-immutable` — docker-Lauf, der Modul-Lauf im
-# Bild); (b) die Archiv-Leseprobe (`archiv_gueltig`, BATS_IMAGE — unzip traegt das
-# Inventar am Host nicht); (c) die hexslice-/hexagonal-Bootstraps (a-check --print-mk
-# ohne Host-Carrier). DAVON GETRENNT die carrier-gebundenen Zuege: die weiter
+# d-check-Carrier (wenn er vorliegt). DIE VORLAUF-WAECHTER-/DOKU-ZAHN-STUFEN ueber den
+# EMITTIERTEN d-check.mk-Zielen (`make -f d-check.mk doc-commits`/`doc-immutable` und
+# die docs-check-Zaehne) sind es nicht mehr: die Rezept-Auswahl des emittierten
+# Fragments ($(DCHECK_RUN)) faehrt den Carrier — jede Stufe unten haengt der env
+# DCHECK_CARRIER an ihre Rezept-fuehrenden make-Aufrufe — und der docker-Lauf bleibt
+# Rueffall am opt-in Weg. Am daemon-losen Host sind die ersten Abbruch-Punkte: (a) die
+# Archiv-Leseprobe (`archiv_gueltig`, BATS_IMAGE — unzip traegt das Inventar am Host
+# nicht); (b) die hexslice-/hexagonal-Bootstraps (a-check --print-mk ohne Host-Carrier).
+# DAVON GETRENNT die carrier-gebundenen Zuege: die weiter
 # `make gates`-Laeufe des Mono-Repos (cpp/kotlin/java/python/csharp- und repo.mk-Stufen)
 # brauchen fuer den emittierten docs-check-host (fail-closed ohne Ablage) den CARRIER,
 # nicht den Daemon — mit Host-Carrier sind ihre Doku-Anteile docker-oesbar; die
@@ -528,11 +530,13 @@ ARTIFACT_TARGET="${SMOKE_ARTIFACT_TARGET:-host-bin}"
 # Weg, ADR-0109). Nicht exportiert: die hexslice-/hexagonal-Bootstraps holen
 # a-check --print-mk, und d-check-Carrier und a-check-Bild sind zwei Binary — ein
 # globaler Export wuerde dort "unerwartete --print-mk-ausgabe" statt des Daemon-Zugs
-# melden. Grenze der docker-losen Deckung: am daemon-losen Host ist die ERSTE
-# Abbruch-Stufe der Vorlauf-Waechter ueber dem emittierten d-check.mk
-# (make -f d-check.mk doc-commits — docker-Lauf des Moduls); danach die Archiv-
-# Leseprobe (archiv_gueltig, BATS_IMAGE — unzip traegt das Inventar am Host nicht)
-# und die hexslice-/hexagonal-Bootstraps (a-check --print-mk ohne Host-Carrier).
+# melden; dieselbe Ablage faehrt ueber die env DCHECK_CARRIER unten auch die Stufen
+# der emittierten d-check.mk-Ziele, deren Rezept-Auswahl den Carrier waehlt, wenn sie
+# gesetzt und die Ablage laeuft, und den docker-Lauf als Rueffall am opt-in Weg haelt.
+# Grenze der docker-losen Deckung: am daemon-losen Host ist die ERSTE Abbruch-Stufe
+# die Archiv-Leseprobe (archiv_gueltig, BATS_IMAGE — unzip traegt das Inventar am
+# Host nicht); danach die hexslice-/hexagonal-Bootstraps (a-check --print-mk ohne
+# Host-Carrier).
 # Die weiter gates-Laeufe des Mono-Repos sind CARRIER-gebunden (docs-check-host
 # fail-closed ohne Ablage), nicht daemon-gebunden — mit Host-Carrier sind ihre
 # Doku-Anteile docker-oesbar; die Docker-Builds ihrer Code-Gates bleiben am opt-in Weg.
@@ -731,7 +735,7 @@ fi
 waechter_bricht_ab() {
 	local repo="$1" ziel="$2" range="$3" erwartet="$4" kennung="$5"
 	local out="" rc=0 grund="" flach
-	out="$( make --no-print-directory -C "$repo" "$ziel" RANGE="$range" 2>&1 )" || rc=$?
+	out="$( DCHECK_CARRIER="$dcheck_carrier" make --no-print-directory -C "$repo" "$ziel" RANGE="$range" 2>&1 )" || rc=$?
 	flach="$(tr -s '[:space:]' ' ' <<<"$out")"
 	if [ "$rc" -eq 0 ]; then
 		grund="make $ziel blieb ueber '$range' GRUEN (Exit 0)"
@@ -781,7 +785,7 @@ blind_gruen_ohne_waechter() {
 	local repo="$1" ziel="$2" kennung="$3" aufbau="${4-}"
 	local roh="" roh_rc=0 rohgrund="" rohflach=""
 	leere_range_vorbedingung "$repo" "$ziel" "$kennung" "$aufbau"
-	roh="$( make --no-print-directory -C "$repo" -f d-check.mk "$ziel" RANGE=HEAD..HEAD 2>&1 )" || roh_rc=$?
+	roh="$( DCHECK_CARRIER="$dcheck_carrier" make --no-print-directory -C "$repo" -f d-check.mk "$ziel" RANGE=HEAD..HEAD 2>&1 )" || roh_rc=$?
 	rohflach="$(tr -s '[:space:]' ' ' <<<"$roh")"
 	if [ "$roh_rc" -ne 0 ]; then
 		rohgrund="das Modul ohne den Waechter endet mit Exit $roh_rc statt mit 0"
@@ -807,7 +811,7 @@ leerfall_laut_ohne_waechter() {
 	local repo="$1" ziel="$2" kennung="$3" aufbau="${4-}"
 	local roh="" roh_rc=0 rohgrund="" rohflach=""
 	leere_range_vorbedingung "$repo" "$ziel" "$kennung" "$aufbau"
-	roh="$( make --no-print-directory -C "$repo" -f d-check.mk "$ziel" RANGE=HEAD..HEAD 2>&1 )" || roh_rc=$?
+	roh="$( DCHECK_CARRIER="$dcheck_carrier" make --no-print-directory -C "$repo" -f d-check.mk "$ziel" RANGE=HEAD..HEAD 2>&1 )" || roh_rc=$?
 	rohflach="$(tr -s '[:space:]' ' ' <<<"$roh")"
 	if [ "$roh_rc" -eq 0 ]; then
 		rohgrund="das Modul ohne den Waechter bleibt ueber der leeren Range gruen (Exit 0) — der gepinnte Stand faengt den Leerfall nicht selbst ab"
@@ -834,7 +838,7 @@ leerfall_laut_ohne_waechter() {
 vorbindung_ohne_zieldefinition() {
 	local repo="$1" ziel="$2" kennung="$3"
 	local out="" rc=0 flach="" grund=""
-	out="$( make --no-print-directory -C "$repo" "$ziel" RANGE=HEAD~1..HEAD 2>&1 )" || rc=$?
+	out="$( DCHECK_CARRIER="$dcheck_carrier" make --no-print-directory -C "$repo" "$ziel" RANGE=HEAD~1..HEAD 2>&1 )" || rc=$?
 	flach="$(tr -s '[:space:]' ' ' <<<"$out")"
 	if [ "$rc" -eq 0 ]; then
 		grund="make $ziel blieb ueber einem d-check.mk OHNE die Ziel-Definition GRUEN (Exit 0) — die Vorbindung hat dort kein Rezept"
@@ -857,7 +861,7 @@ vorbindung_ohne_zieldefinition() {
 vorbindung_mit_zieldefinition() {
 	local repo="$1" ziel="$2" kennung="$3"
 	local out="" rc=0 flach="" grund=""
-	out="$( make --no-print-directory -C "$repo" "$ziel" RANGE=HEAD~1..HEAD 2>&1 )" || rc=$?
+	out="$( DCHECK_CARRIER="$dcheck_carrier" make --no-print-directory -C "$repo" "$ziel" RANGE=HEAD~1..HEAD 2>&1 )" || rc=$?
 	flach="$(tr -s '[:space:]' ' ' <<<"$out")"
 	if [ "$rc" -ne 0 ]; then
 		grund="derselbe Aufruf endet ueber dem unverfaelschten d-check.mk mit Exit $rc statt mit 0"
@@ -925,7 +929,7 @@ vorlauf_waechter_im_ziel() {
 	local repo="$1" kennung="$2"
 	local klon="$tmpklon/flach" voll="$tmpklon/voll"
 	local kette="" kette_rc=0 kette_commits="" kette_commits_rc=0
-	local z_guard="" z_docker="" fehlt="" tiefe=""
+	local z_guard="" z_modul="" fehlt="" tiefe=""
 
 	# (a) DIE KETTE DES ZIELS, an SEINER Kante gelesen (`make -n` fuehrt kein Rezept aus):
 	# der Waechter steht VOR dem Modul-Lauf, nicht daneben. Belegt wird die ORDNUNG — ein
@@ -939,11 +943,14 @@ vorlauf_waechter_im_ziel() {
 		exit 1
 	fi
 	z_guard="$(grep -nF 'history-range-guard.sh' <<<"$kette" | sed -n '1p' | cut -d: -f1)"
-	z_docker="$(grep -nF 'docker run' <<<"$kette" | sed -n '1p' | cut -d: -f1)"
+	# Der Modul-Lauf liest sich ueber beiden Weg-Formen: die Rezept-Auswahl des emittierten
+	# d-check.mk expandiert zu $(DCHECK_RUN) — der Carrier-Pfad oder der docker-Rueffall, und
+	# beide tragen den Namen des Binary.
+	z_modul="$(grep -nF 'd-check' <<<"$kette" | sed -n '1p' | cut -d: -f1)"
 	if [ -z "$z_guard" ]; then fehlt="$fehlt [doc-immutable nennt den Waechter nicht]"; fi
-	if [ -z "$z_docker" ]; then fehlt="$fehlt [doc-immutable nennt den Modul-Lauf nicht]"; fi
-	if [ -n "$z_guard" ] && [ -n "$z_docker" ] && [ "$z_guard" -ge "$z_docker" ]; then
-		fehlt="$fehlt [der Waechter steht NACH dem Modul-Lauf: Zeile $z_guard gegen $z_docker]"
+	if [ -z "$z_modul" ]; then fehlt="$fehlt [doc-immutable nennt den Modul-Lauf nicht]"; fi
+	if [ -n "$z_guard" ] && [ -n "$z_modul" ] && [ "$z_guard" -ge "$z_modul" ]; then
+		fehlt="$fehlt [der Waechter steht NACH dem Modul-Lauf: Zeile $z_guard gegen $z_modul]"
 	fi
 	if ! grep -qF 'history-range-guard.sh' <<<"$kette_commits"; then
 		fehlt="$fehlt [doc-commits nennt den Waechter nicht]"
@@ -1010,7 +1017,7 @@ vorlauf_waechter_im_ziel() {
 	# mit der Range, die der flache Klon nicht aufloesen konnte. Er bleibt gruen — der
 	# Waechter faerbt nichts rot, wo Historie da ist, und das Modul laeuft wirklich.
 	local voll_out="" voll_rc=0 vollgrund="" vollflach=""
-	voll_out="$( make --no-print-directory -C "$voll" doc-immutable RANGE=HEAD~1..HEAD 2>&1 )" || voll_rc=$?
+	voll_out="$( DCHECK_CARRIER="$dcheck_carrier" make --no-print-directory -C "$voll" doc-immutable RANGE=HEAD~1..HEAD 2>&1 )" || voll_rc=$?
 	vollflach="$(tr -s '[:space:]' ' ' <<<"$voll_out")"
 	if [ "$voll_rc" -ne 0 ]; then
 		vollgrund="derselbe Aufruf endet auf dem vollstaendigen Klon mit Exit $voll_rc statt mit 0"
@@ -1079,7 +1086,7 @@ feld_doc="$tmprepo/$FELDLISTE_REL"
 cp "$feld_doc" "$feld_doc.orig"
 printf '\n[toter Verweis](./gibt-es-nicht.md)\n' >>"$feld_doc"
 feldzahn_rc=0
-feldzahn_out="$( make -C "$tmprepo" docs-check 2>&1 )" || feldzahn_rc=$?
+feldzahn_out="$( DCHECK_CARRIER="$dcheck_carrier" make -C "$tmprepo" docs-check 2>&1 )" || feldzahn_rc=$?
 mv "$feld_doc.orig" "$feld_doc"
 if [ "$feldzahn_rc" -eq 0 ]; then
 	echo "full-smoke: FEHLER — ein toter Verweis in $FELDLISTE_REL laesst das docs-check des Ziels GRUEN: das Dokument liegt ausserhalb des geprueften Bereichs (slice-098/AGENTS.md §3.6)." >&2
@@ -1110,7 +1117,7 @@ modul_zahn_alte_module_gruen() {
 	local out="" rc=0
 	cp "$repo/.d-check.yml" "$repo/.d-check.yml.zahn-bak"
 	psed_i 's/^modules: \[.*\]$/modules: [links, anchors]/' "$repo/.d-check.yml"
-	out="$( make -C "$repo" docs-check 2>&1 )" || rc=$?
+	out="$( DCHECK_CARRIER="$dcheck_carrier" make -C "$repo" docs-check 2>&1 )" || rc=$?
 	mv "$repo/.d-check.yml.zahn-bak" "$repo/.d-check.yml"
 	if [ "$rc" -ne 0 ]; then
 		echo "full-smoke: FEHLER — $kennung: dieselbe Verletzung faerbt auch unter dem VORHERIGEN modules: [links, anchors] rot — der Zahn belegt nicht, dass ERST das neue Modul sie findet (slice-073)." >&2
@@ -1130,7 +1137,7 @@ psed_i '5a\
 Siehe [ADR-9999](../docs/plan/adr/9999-smoke-zahn.md) fuer Kontext.
 ' "$matrix_doc"
 matrixzahn_rc=0
-matrixzahn_out="$( make -C "$tmprepo" docs-check 2>&1 )" || matrixzahn_rc=$?
+matrixzahn_out="$( DCHECK_CARRIER="$dcheck_carrier" make -C "$tmprepo" docs-check 2>&1 )" || matrixzahn_rc=$?
 if [ "$matrixzahn_rc" -eq 0 ]; then
 	echo "full-smoke: FEHLER — matrix-Zahn: eine spec-straten->adr Referenz laesst docs-check im Ziel GRUEN: matrix nicht wirksam (slice-073/AGENTS.md §3.6)." >&2
 	printf '%s\n' "$matrixzahn_out" >&2
@@ -1157,7 +1164,7 @@ psed_i '5a\
 Siehe [spec/specification.md](specification.md) fuer Details (Abwaertslink, Zahn).
 ' "$matrixdown_doc"
 matrixdownzahn_rc=0
-matrixdownzahn_out="$( make -C "$tmprepo" docs-check 2>&1 )" || matrixdownzahn_rc=$?
+matrixdownzahn_out="$( DCHECK_CARRIER="$dcheck_carrier" make -C "$tmprepo" docs-check 2>&1 )" || matrixdownzahn_rc=$?
 if [ "$matrixdownzahn_rc" -eq 0 ]; then
 	echo "full-smoke: FEHLER — matrix-downward-Zahn: ein Abwaertslink Vertrag->Technik laesst docs-check im Ziel GRUEN: order:/direction: nicht wirksam (slice-073/AGENTS.md §3.6)." >&2
 	printf '%s\n' "$matrixdownzahn_out" >&2
@@ -1184,7 +1191,7 @@ psed_i '5a\
 Siehe [README](../README.md) fuer den Ueberblick (Referenz nach aussen, Zahn).
 ' "$matrixaussen_doc"
 matrixaussenzahn_rc=0
-matrixaussenzahn_out="$( make -C "$tmprepo" docs-check 2>&1 )" || matrixaussenzahn_rc=$?
+matrixaussenzahn_out="$( DCHECK_CARRIER="$dcheck_carrier" make -C "$tmprepo" docs-check 2>&1 )" || matrixaussenzahn_rc=$?
 if [ "$matrixaussenzahn_rc" -eq 0 ]; then
 	echo "full-smoke: FEHLER — matrix-aussen-Zahn: eine Referenz aus einem Spec-Stratum nach aussen laesst docs-check im Ziel GRUEN: die Klasse aussen ist nicht wirksam (AGENTS.md §3.6)." >&2
 	printf '%s\n' "$matrixaussenzahn_out" >&2
@@ -1210,7 +1217,7 @@ psed_i '5a\
 Siehe ADR-9998 fuer Kontext (bare Kennung, kein Link).
 ' "$ids_doc"
 idszahn_rc=0
-idszahn_out="$( make -C "$tmprepo" docs-check 2>&1 )" || idszahn_rc=$?
+idszahn_out="$( DCHECK_CARRIER="$dcheck_carrier" make -C "$tmprepo" docs-check 2>&1 )" || idszahn_rc=$?
 if [ "$idszahn_rc" -eq 0 ]; then
 	echo "full-smoke: FEHLER — ids-Zahn: eine bare ADR-Kennung laesst docs-check im Ziel GRUEN: ids nicht wirksam (slice-073/AGENTS.md §3.6)." >&2
 	printf '%s\n' "$idszahn_out" >&2
@@ -1238,7 +1245,7 @@ psed_i '5a\
 Siehe MR-001 fuer die Abweichung (bare Kennung, kein Link).
 ' "$matrixmr_doc"
 matrixmrzahn_rc=0
-matrixmrzahn_out="$( make -C "$tmprepo" docs-check 2>&1 )" || matrixmrzahn_rc=$?
+matrixmrzahn_out="$( DCHECK_CARRIER="$dcheck_carrier" make -C "$tmprepo" docs-check 2>&1 )" || matrixmrzahn_rc=$?
 if [ "$matrixmrzahn_rc" -eq 0 ]; then
 	echo "full-smoke: FEHLER — matrix-MR-Zahn: eine bare MR-Kennung laesst docs-check im Ziel GRUEN: das token: der Klasse adaptionsblock ist nicht wirksam (AGENTS.md §3.6)." >&2
 	printf '%s\n' "$matrixmrzahn_out" >&2
@@ -1260,7 +1267,7 @@ spans_doc="$tmprepo/spec/lastenheft.md"
 cp "$spans_doc" "$spans_doc.orig"
 printf '\nEin `ungeschlossener Code-Span.\n' >>"$spans_doc"
 spanszahn_rc=0
-spanszahn_out="$( make -C "$tmprepo" docs-check 2>&1 )" || spanszahn_rc=$?
+spanszahn_out="$( DCHECK_CARRIER="$dcheck_carrier" make -C "$tmprepo" docs-check 2>&1 )" || spanszahn_rc=$?
 if [ "$spanszahn_rc" -eq 0 ]; then
 	echo "full-smoke: FEHLER — spans-Zahn: ein ungeschlossener Code-Span laesst docs-check im Ziel GRUEN: spans nicht wirksam (slice-073/AGENTS.md §3.6)." >&2
 	printf '%s\n' "$spanszahn_out" >&2
@@ -1282,7 +1289,7 @@ codepaths_doc="$tmprepo/spec/lastenheft.md"
 cp "$codepaths_doc" "$codepaths_doc.orig"
 printf '\nDie Festlegung steht in %s (erfundener Pfad, Zahn).\n' "\`docs/zahn-nicht-vorhanden.md\`" >>"$codepaths_doc"
 codepathszahn_rc=0
-codepathszahn_out="$( make -C "$tmprepo" docs-check 2>&1 )" || codepathszahn_rc=$?
+codepathszahn_out="$( DCHECK_CARRIER="$dcheck_carrier" make -C "$tmprepo" docs-check 2>&1 )" || codepathszahn_rc=$?
 if [ "$codepathszahn_rc" -eq 0 ]; then
 	echo "full-smoke: FEHLER — codepaths-Zahn: ein Inline-Code-Pfad ohne Ziel laesst docs-check im Ziel GRUEN: codepaths nicht wirksam (AGENTS.md §3.6)." >&2
 	printf '%s\n' "$codepathszahn_out" >&2

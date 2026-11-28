@@ -9,8 +9,11 @@ Go-Gates in einem Lauf) — der Happy-Path-Beweis
 gebootstrapptes Repo out-of-the-box grün fährt (die Nutzer-Sicht, die
 [`make smoke`](smoke.md) mit seinen getrennten Schritten nicht nimmt). Eingeht docker-los
 (Träger aus `make host-bin`, d-check-Carrier, [`ADR-0109`](../../docs/plan/adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md));
-die daemon-gebundenen Rest-Stufen (d-check.mk-Modul-Läufe doc-commits/doc-immutable,
-Archiv-Leseprobe, hexslice-/hexagonal-Bootstrap, Netz-Pull ggf.) trägt
+die Stufen über den emittierten `d-check.mk`-Zielen (Vorlauf-Wächter/Zahn-Läufe
+`doc-commits`/`doc-immutable` und die `docs-check`-Zähne) fahren über die Rezept-Auswahl
+`$(DCHECK_RUN)` des emittierten Fragmentes am Carrier, wenn die Ablage liegt, sonst bleibt
+der docker-Lauf der Rückfall am opt-in Weg; die daemon-gebundenen Rest-Stufen (Archiv-Leseprobe,
+hexslice-/hexagonal-Bootstrap, Netz-Pull ggf.) trägt
 [`slice-full-smoke-gates-echt-gruen`](../../docs/plan/planning/in-progress/slice-full-smoke-gates-echt-gruen.md)
 — nicht in `make gates`; gehört an DoD-Verify/CI/Wellen-Closure.
 
