@@ -1,27 +1,34 @@
 #!/usr/bin/env bats
 # archiv-stub-vorlagen.bats — koppelt die Stub-Erzeugung des Traegers an die
-# ECHTEN vendored Vorlagen (ADR-0033 Festlegung 3).
+# ECHTEN Vorlagen (ADR-0033 Festlegung 3).
 #
 # WARUM HIER UND NICHT IN GO. `.dockerignore` haelt `.harness/baseline` aus dem
 # Build-Kontext der Go-Test-Stufe; die Go-Tests von internal/archive fahren
-# darum ueber synthetischen Vorlagen. Das bats-Bild bekommt den Baum
-# read-only gemountet und sieht die echten. Ohne diese Datei kaeme eine
-# Form-Aenderung der Baseline erst beim naechsten Archivierungslauf ans Licht —
-# als Stub mit einem stehengebliebenen Platzhalter.
+# darum ueber synthetischen Vorlagen. Der bats-Host-Lauf sieht die echten
+# (ADR-0109); ohne diese Datei kaeme eine Form-Aenderung der Baseline erst beim
+# naechsten Archivierungslauf ans Licht — als Stub mit einem stehengebliebenen
+# Platzhalter.
 #
-# JE VORLAGE EINZELN, nicht ueber ihrer Vereinigung. Es gibt drei Bloecke und
-# drei Vorlagen, und der Block fuellt GENAU EINE davon: `sliceStub` die
-# Slice-Vorlage, `welleStub` die Welle-Vorlage, `reportStub` den Report-Stub. Ein Platzhalter, den beide
-# Bloecke ersetzen, steht auch in beiden Vorlagen — eine Umbenennung in genau
-# einer bliebe unter einer Vereinigungs-Frage gruen, waehrend der Lauf dort einen
-# Stub mit stehengebliebenem Platzhalter schriebe. Die Zuordnung Block -> Datei
-# kommt aus den Konstanten, die der Code selbst benutzt, nicht aus einer zweiten
-# Liste hier.
+# JE VORLAGE EINZELN, nicht ueber ihrer Vereinigung. Es gibt vier Stub-Vorlagen
+# und vier Bloecke, und der Block fuellt GENAU EINE davon: `sliceStub` die
+# Slice-Vorlage, `welleStub` die Welle-Vorlage, `reportStub` den Report-Stub
+# (ADR-0061), `umzugStub` die Umzugs-Stub-Vorlage (ADR-0112). Ein Platzhalter,
+# den mehrere Bloecke ersetzen, steht auch in den zugehoerigen Vorlagen — eine
+# Umbenennung in genau einer bliebe unter einer Vereinigungs-Frage gruen,
+# waehrend der Lauf dort einen Stub mit stehengebliebenem Platzhalter schriebe.
+# Die Zuordnung Block -> Datei kommt aus den Konstanten, die der Code selbst
+# benutzt, nicht aus einer zweiten Liste hier.
+#
+# Die Umzugs-Vorlage traegt bewusst KEINEN Archiv-Zeiger: ihr Volltext liegt an
+# der neuen Arbeitsbaum-Adresse, nicht im Archiv-Zip (ADR-0112 Festlegung 2).
+# Darum tritt sie nicht in den Archiv-Zeiger-Test der drei ADR-0061-FASSUNGEN
+# (ARCHIV_BLOECKE); ihr eigener Testsatz haelt Umzugs-Zeiger, die Abwesenheit
+# des Archiv-Zeigers und die byte-gleiche mitgetragene Fassung fest.
 #
 # GRENZE, benannt statt verschwiegen: geprueft wird die Richtung
 # Code -> Vorlage. Ein Platzhalter, den die Vorlage traegt und der Code nicht
 # ersetzt, faellt hier nicht auf; er faellt im Stub auf, wo er stehen bleibt.
-# NETZLOS (nur Datei-Vergleich), laeuft in `make gates`. Docker-only (bats-Image).
+# NETZLOS (nur Datei-Vergleich), laeuft in `make gates`.
 
 setup() {
   REPO="$(cd "$BATS_TEST_DIRNAME/.." && pwd)"
@@ -30,19 +37,22 @@ setup() {
   VORLAGEN_KONST="$REPO/internal/archive/stub.go"
   TDIR="$(echo "$REPO"/.harness/baseline/*/templates/docs/plan/planning)"
   PLANNING="$REPO/docs/plan/planning"
-  # Die drei Bloecke, benannt ueber die Konstante, mit der der Code seine Vorlage
-  # waehlt — dieselbe Zeichenkette traegt den Block-Anfang und die Aufloesung des
-  # Dateinamens. Wer eine vierte Stub-Art baut, ohne sie hier zu ergaenzen, faellt
+  # Die vier Bloecke, benannt ueber die Konstante, mit der der Code seine Vorlage
+  # waehlt. Wer eine fuenfte Stub-Art baut, ohne sie hier zu ergaenzen, faellt
   # am Deckungs-Fall unten auf.
-  BLOECKE="stubVorlageSlice stubVorlageWelle stubVorlageReport"
+  BLOECKE="stubVorlageSlice stubVorlageWelle stubVorlageReport stubVorlageUmzug"
+  # Die drei Klassen mit Archiv-Zeiger (ADR-0061-Fassungen); der Umzugs-Stub
+  # traegt den Umzugs-Zeiger statt dessen und hat seinen eigenen Test.
+  ARCHIV_BLOECKE="stubVorlageSlice stubVorlageWelle stubVorlageReport"
 }
 
 # ersetzungs_zeilen <konstante> liefert die Ersetzungs-Literale GENAU DES Blocks,
 # der die mit dieser Konstante benannte Vorlage fuellt — die Bezugsmenge, ueber
 # die die Faelle unten quantifizieren. Sie ist die Zeilen-Menge dieses Blocks,
-# nicht eine Auswahl daraus und nicht die Vereinigung beider.
+# nicht eine Auswahl daraus und nicht die Vereinigung mehrerer. Der Start-Anker
+# ermoeglicht das Zwischenargument (die Umzugs-Marke steht im selben Ruf).
 ersetzungs_zeilen() {
-  sed -n "/$1), \[\]Ersetzung{\$/,/^\t})\$/p" "$QUELLE" | grep -E '^[[:space:]]+\{'
+  sed -n "/$1), .*Ersetzung{\$/,/^\t})\$/p" "$QUELLE" | grep -E '^[[:space:]]+\{'
 }
 
 # vorlage_pfad <konstante> loest den Dateinamen auf, den der Code unter dieser
@@ -126,6 +136,10 @@ platzhalter() {
   [ -f "$PLANNING/archive-stub-report.template.md" ]
 }
 
+@test "die Umzugs-Stub-Vorlage liegt repo-eigen unter docs/plan/planning" {
+  [ -f "$PLANNING/archive-stub-umzug.template.md" ]
+}
+
 # Die Kopplung der beiden Faesser derselben Form: der Bootstrap traegt die
 # Report-Stub-Vorlage in das Ziel-Repo (internal/emit/templates/planning/),
 # der Träger liest sie dort am selben Pfad — byte-gleich zur repo-eigenen
@@ -133,6 +147,11 @@ platzhalter() {
 @test "die Report-Stub-Vorlage ist byte-gleich zur mitgetragenen des Bootstraps" {
   cmp "$PLANNING/archive-stub-report.template.md" \
       "$REPO/internal/emit/templates/planning/archive-stub-report.template.md"
+}
+
+@test "die Umzugs-Stub-Vorlage ist byte-gleich zur mitgetragenen des Bootstraps" {
+  cmp "$PLANNING/archive-stub-umzug.template.md" \
+      "$REPO/internal/emit/templates/planning/archive-stub-umzug.template.md"
 }
 
 # Die Deckungs-Aussage des Falls darunter, jetzt je Block: die Extraktion loest
@@ -171,16 +190,33 @@ platzhalter() {
   }
 }
 
-# Die drei Teile, aus denen die Kuerzung (internal/archive/stub.go, Kuerze) den
-# Stub baut: H1 in Zeile 1, der Archiv-Zeiger-Block, der Feld-Block als LETZTER
-# Absatz. Faellt einer weg, schreibt der Lauf einen Stub ohne Zeiger oder ohne
-# Felder — und FormOK meldet nur den fehlenden Zeiger, nicht die leeren Felder.
-@test "alle Stub-Vorlagen tragen H1, Archiv-Zeiger und einen Feld-Block als letzten Absatz" {
-  for k in $BLOECKE; do
+# Die drei Teile, aus denen die Kuerzung (internal/archive/stub.go, Kuerze) die
+# drei ARCHIV-Stub-Arten baut: H1 in Zeile 1, der Archiv-Zeiger-Block, der
+# Feld-Block als LETZTER Absatz. Faellt einer weg, schreibt der Lauf einen Stub
+# ohne Zeiger oder ohne Felder — und FormOK meldet nur den fehlenden Zeiger,
+# nicht die leeren Felder. Der Umzugs-Stub tritt an derselben Kuerzung an
+# (kuerzeAn, Marke des Umzugs) — der eigene Fall unten.
+@test "alle Archiv-Stub-Vorlagen tragen H1, Archiv-Zeiger und einen Feld-Block als letzten Absatz" {
+  for k in $ARCHIV_BLOECKE; do
     vorlage="$(vorlage_pfad "$k")" || false
     head -n 1 "$vorlage" | grep -q '^# '
     grep -q '^> \*\*ARCHIVIERT\*\*' "$vorlage"
     grep -q 'archive.zip' "$vorlage"
     tail -n 1 "$vorlage" | grep -q '^\*\*'
   done
+}
+
+# Die Form der Umzugs-Stub-Vorlage (ADR-0112 Festlegung 2): H1, Umzugs-Zeiger,
+# Zustand als letzten Absatz — und KEINEN Archiv-Zeiger, denn ihr Volltext liegt
+# byte-genau an der neuen Arbeitsbaum-Adresse, nicht im Archiv-Zip.
+@test "die Umzugs-Stub-Vorlage trägt H1, Umzugs-Zeiger und Zustand, keinen Archiv-Zeiger" {
+  vorlage="$(vorlage_pfad stubVorlageUmzug)" || false
+  head -n 1 "$vorlage" | grep -q '^# '
+  grep -q '^> \*\*UMZUGEZOGEN\*\*' "$vorlage"
+  grep -q 'done/<wave-id>/<pfad-im-arbeitsbaum>' "$vorlage"
+  tail -n 1 "$vorlage" | grep -q '^\*\*'
+  if grep -q '^> \*\*ARCHIVIERT\*\*' "$vorlage" || grep -q 'archive.zip' "$vorlage"; then
+    echo "die Umzugs-Stub-Vorlage traegt einen Archiv-Zeiger — ihr Volltext liegt an der neuen Adresse, nicht im Zip" >&2
+    false
+  fi
 }

@@ -134,6 +134,9 @@ func erlaubteKennungen() map[string][]string {
 		// Festlegung 2). Im Ziel loest sie nicht auf und braucht es nicht: die
 		// Norm traegt die Vorlage nicht, der Träger liest die Form aus der Datei.
 		"docs/plan/planning/archive-stub-report.template.md": {"ADR-0061"},
+		// Die Umzugs-Stub-Vorlage wie oben (ADR-0112 Festlegung 2): Kennung statt
+		// Adresse auf die Process-Norm der Klasse und ihr Gegenstueck ADR-0061.
+		"docs/plan/planning/archive-stub-umzug.template.md": {"ADR-0061", "ADR-0112"},
 		// Dieselbe Kennung in der emittierten Gate-Konfiguration: die
 		// scan.ignore-Begruendungs-Zeile nennt die Report-Stub-Vorlage als
 		// getroffenen Baum (ausnahmegrund, AGENTS.md 3.5 — die Begründung nennt

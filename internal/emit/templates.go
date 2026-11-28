@@ -453,6 +453,11 @@ func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
 	// vendored Stub-Vorlagen. skip-if-present gilt sie: ein Ziel, das seine
 	// Report-Stub-Form angepasst hat, ueberlebt unberuehrt.
 	out[reportStubVorlageTarget] = bytes.Clone(reportStubVorlage)
+	// Die Umzugs-Stub-Vorlage wie oben: Ausfüll-Vorlage mit Platzhaltern, tool-autoriert
+	// (ADR-0112 Festlegung 2 — der Kurs-Satz führt die Klasse nicht), skip-if-present
+	// durch die Idempotenz-Klasse des Laufs, Inhalt byte-gleich zur repo-eigenen
+	// Vorlage — die Kopplung haelt test/archiv-stub-vorlagen.bats.
+	out[umzugStubVorlageTarget] = bytes.Clone(umzugStubVorlage)
 	return out, nil
 }
 
@@ -557,6 +562,19 @@ var reportStubVorlage []byte
 // reportVorlagePfad liest — und nicht unter dem vendored Satz, weil die Klasse
 // dort nicht gefuehrt wird.
 const reportStubVorlageTarget = "docs/plan/planning/archive-stub-report.template.md"
+
+// umzugStubVorlage traegt die Umzugs-Stub-Form tool-autoriert (ADR-0112
+// Festlegung 2 — dieselbe Disposition wie reportStubVorlage). Der Zielpfad ist
+// derselbe Ort, an dem der Träger (archive-welle, internal/archive) sie liest;
+// der Inhalt ist byte-gleich zur repo-eigenen Vorlage dieses Repos — die
+// Kopplung haelt test/archiv-stub-vorlagen.bats.
+//
+//go:embed templates/planning/archive-stub-umzug.template.md
+var umzugStubVorlage []byte
+
+// umzugStubVorlageTarget ist der Ziel-Relpfad der Umzugs-Stub-Vorlage im
+// gebootstrappten Ziel — planningVorlagePfad liest dort.
+const umzugStubVorlageTarget = "docs/plan/planning/archive-stub-umzug.template.md"
 
 // observationsReadmeTarget ist der Ziel-Relpfad des Registers (ADR-0037 Festlegung 2,
 // ADR-0034 Festlegung 1).

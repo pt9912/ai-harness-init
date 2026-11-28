@@ -320,6 +320,8 @@ func TestTemplates_EmittierterBestandVollstaendig(t *testing.T) {
 		// Report-Stub-Vorlage: tool-autoriert (der Kurs-Satz fuehrt die Klasse
 		// nicht, ADR-0061 Festlegung 2) — der Träger liest sie im Ziel an diesem Pfad
 		"docs/plan/planning/archive-stub-report.template.md",
+		// Umzugs-Stub-Vorlage: tool-autoriert wie oben (ADR-0112 Festlegung 2)
+		"docs/plan/planning/archive-stub-umzug.template.md",
 	}
 	sort.Strings(want)
 	got := emittedTree(t, dir)
@@ -481,6 +483,7 @@ func TestTemplates_MinimalQuelle(t *testing.T) {
 		"harness/conventions/.gitkeep",
 		"docs/plan/planning/observations/README.md",
 		"docs/plan/planning/archive-stub-report.template.md",
+		"docs/plan/planning/archive-stub-umzug.template.md",
 	}
 	sort.Strings(want)
 	if got := emittedTree(t, dir); strings.Join(got, "\n") != strings.Join(want, "\n") {
