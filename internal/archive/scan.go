@@ -136,8 +136,9 @@ func SuchraumNachzug(dateien []string) []string {
 // Umzugs-Stubs abliest.
 //
 // LESEND: die Menge entscheidet nicht, sie sagt, WO der Nachzug nicht erreicht.
-// Was auf dieser Basis referenziert ist, fuehrt ReferenzierteUmzuege (schreibender
-// Lauf) und UmzugsFunde (Vorschau).
+// Was auf dieser Basis referenziert ist, fuehren referenzierteUmzuege
+// (schreibender Lauf) und UmzugsFunde (Vorschau); ihre Gleichheit am Lauf haelt
+// TestFundeZeileUndGeschriebeneStubMengeHaltenAmLauf.
 func SuchraumDifferenzial(dateien []string) []string {
 	out := make([]string, 0, len(dateien))
 	for _, d := range Suchraum(dateien) {

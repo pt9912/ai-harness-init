@@ -9,7 +9,7 @@
 # Nachzug nicht erreicht und der Umzugs-Stub traegt (ADR-0112 Festlegung 3).
 #
 # Der Fall haelt die Verdrahtung am Bericht (lesende Seite, Festlegung 3), nicht
-# den Schreiber der Stubs — den misst 822. Fail-closed bleibt ueber die Zeile
+# den Schreiber der Stubs — den misst 826. Fail-closed bleibt ueber die Zeile
 # erhalten: sie stellt die Stub-Menge als Pflicht vor die zwei Commits; ohne
 # Stub-Mechanik im Werkzeug bricht der Lauf an ihr.
 set -euo pipefail

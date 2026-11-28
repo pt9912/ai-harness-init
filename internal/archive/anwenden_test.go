@@ -951,3 +951,69 @@ func TestUmzugsStubVorDemNachziehenGesehen(t *testing.T) {
 		t.Fatalf("der Nachzug hat den Umzugs-Stub nicht gesehen — der Verweis blieb veraltet:\n%s", stub)
 	}
 }
+
+// TestFundeZeileUndGeschriebeneStubMengeHaltenAmLauf bindet die zwei Fassungen
+// des Differenzial-Kriteriums am selben Lauf: die Funde-Zeile der Vorschau
+// (UmzugsFunde ueber den Haenger-Apparat) und die Stub-Menge des schreibenden
+// Laufs (referenzierteUmzuege ueber zieleTrifft) sind zwei getrennte
+// Traversierungen desselben Suchraum-Differenzials — was der Bericht an
+// Stub-Pflicht meldet und was der Lauf an der Alt-Adresse schreibt, ist
+// dieselbe Menge. Der Baum traegt dafuer zwei Formen: die ADR verweist auf
+// slice-100-a (Funde-Zeile und Stub an der Alt-Adresse), slice-103-d ist
+// wave-10-Mitglied und unverweist — er wird bewegt und bekommt keinen Stub,
+// seine Adresse bleibt leer. Weichen die Fassungen auseinander, meldet der
+// Bericht eine Stub-Pflicht, die der Lauf nicht schreibt, oder der Lauf
+// schreibt Stubs, die keine Funde-Zeile nennt.
+// Gegenbeispiele: test/mutations/830-archive-welle-go-umzug-stub-schreiber-deaktiviert.sh
+// (Schreiber-Seite leer) und test/mutations/827-archive-welle-go-umzug-funde-verdrahtung.sh
+// (lesende Seite leer, die Stub-Menge bleibt).
+func TestFundeZeileUndGeschriebeneStubMengeHaltenAmLauf(t *testing.T) {
+	root := baueBaum(t)
+	schreibe(t, filepath.Join(root, "docs", "plan", "planning", "done", "slice-103-d.md"),
+		"# Slice slice-103: Der zweite\n\n**Welle:** wave-10\n\n"+
+			"## 7. Closure-Notiz\n\n- **Folge-Slices:** keine\n")
+	ber := vorschauVon(t, root, "wave-10", "")
+	ziele := make(map[string]bool, len(ber.UmzugsStubs))
+	for _, zeile := range ber.UmzugsStubs {
+		teile := strings.SplitN(zeile, " -> ", 2)
+		if len(teile) != 2 {
+			t.Fatalf("Funde-Zeile ohne Ziel: %q", zeile)
+		}
+		ziele[teile[1]] = true
+	}
+	if len(ziele) != 1 {
+		t.Fatalf("die Fixture fuehrt genau einen referenzierten Umzug, Funde-Ziele: %v", ziele)
+	}
+
+	g := &gitMitschreiber{root: root, zipPfad: "docs/plan/planning/done/wave-10/" + archivNameTest}
+	var aus bytes.Buffer
+	if err := archive.Anwenden(root, ber.Bestand, indexDateien(t, root), g, &aus); err != nil {
+		t.Fatal(err)
+	}
+
+	stubs := make(map[string]bool, len(ziele))
+	done := filepath.Join(root, "docs", "plan", "planning", "done")
+	eintraege, err := os.ReadDir(done)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, e := range eintraege {
+		if e.IsDir() || !strings.HasSuffix(e.Name(), ".md") {
+			continue
+		}
+		rel := "docs/plan/planning/done/" + e.Name()
+		if strings.Contains(lesen(t, root, rel), "> **UMZUGEZOGEN**") {
+			stubs[rel] = true
+		}
+	}
+	for ziel := range ziele {
+		if !stubs[ziel] {
+			t.Errorf("die Funde-Zeile nennt %s, der Lauf schreibt keinen Stub dazu", ziel)
+		}
+	}
+	for stub := range stubs {
+		if !ziele[stub] {
+			t.Errorf("der Lauf schreibt den Stub %s, die Funde-Zeile nennt ihn nicht", stub)
+		}
+	}
+}
