@@ -59,7 +59,7 @@ wird dann zum Link auf die Datei.
 | [`make mutate-greift`](sensors/mutate.md) | Jeder Mutations-Fall greift: sein Patch ändert auf einer Kopie jede Datei aus `# files:` — ob der Wächter rot wird, sagt es nicht | [`MR-071`](conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand) · Host Linux, macOS nicht getragen ([`AGENTS.md`](../AGENTS.md) §3.9) |
 | `make host-bin` | Träger (Produkt-Binär) für die **Host**-Plattform gebaut, gitignoriert abgelegt (go build, GOOS/GOARCH aus `uname`); opt-in Weg `make host-bin-image` | [`ADR-0109`](../docs/plan/adr/0109-gates-lauefer-docker-los-image-weg-opt-in.md) |
 | `make span-check` | Träger vorhanden **und** sein Unterkommando `span-emit` funktionsfähig; Ablageort real `git check-ignore`-geprüft | [`spec/spezifikation.md`](../spec/spezifikation.md#5-metriken-und-tracing-felder) §5 |
-| `make gates` | alle aktuell lauffähigen Gates; SKIP über dem gedeckten je-Check-Satz, bei Teildrift die gedrifteten Checks, sonst voll — `sensors/gates.md` | [ADR-0099](../docs/plan/adr/0099-gates-fastpfad-ueber-gedecktem-stempel-paar.md), [ADR-0108](../docs/plan/adr/0108-stempel-synthese-je-check-pruefgegenstand.md) |
+| `make gates` | alle aktuell lauffähigen Gates; SKIP je gedecktem je-Check-Satz, Teildrift, sonst voll; Keys committed, CI-Konsum am push-`main` — `sensors/gates.md` | [ADR-0099](../docs/plan/adr/0099-gates-fastpfad-ueber-gedecktem-stempel-paar.md), [ADR-0108](../docs/plan/adr/0108-stempel-synthese-je-check-pruefgegenstand.md), [ADR-0111](../docs/plan/adr/0111-ci-stempel-eingecheckt-committed-je-check-keys.md) |
 
 ### Werkzeuge (kein Gate)
 
@@ -72,7 +72,7 @@ ist (`make help` listet sie).
 | Target | Tut was | Bindung |
 |---|---|---|
 | [`make smoke`](sensors/smoke.md) | Tier-2-Emit-Smoke: emittiertes `docs-check` real gegen ein tmp-Repo | kein Gate |
-| [`make full-smoke`](sensors/full-smoke.md) | Voll-E2E: Bootstrap in tmp-Repo → dort `make gates` out-of-the-box grün | kein Gate · [`LH-FA-01`](../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) · Host Linux, macOS nicht getragen ([`AGENTS.md`](../AGENTS.md) §3.9) |
+| [`make full-smoke`](sensors/full-smoke.md) | Voll-E2E: Bootstrap in tmp-Repo → dort `make gates` out-of-the-box grün; schreibt den E2E-Stempel `.harness/state/full-smoke-passed.key`, CI-Konsum am push-`main`-Job ([ADR-0111](../docs/plan/adr/0111-ci-stempel-eingecheckt-committed-je-check-keys.md)) | kein Gate · [`LH-FA-01`](../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) · Host Linux, macOS nicht getragen ([`AGENTS.md`](../AGENTS.md) §3.9) |
 | [`make artifact-host`](sensors/artifact-host.md) | wie `artifact`, aber für den HOST cross-kompiliert | kein Gate · Hilfe ohne Anspruch ([`AGENTS.md`](../AGENTS.md) §3.9) |
 | `make smoke-host` | wie `make smoke`, mit `artifact-host` statt `artifact` | kein Gate |
 | `make full-smoke-host` | wie `make full-smoke`, mit `artifact-host` statt `artifact` | kein Gate · Hilfe ohne Anspruch, ein Lauf darüber ist kein Beleg ([`AGENTS.md`](../AGENTS.md) §3.9) |

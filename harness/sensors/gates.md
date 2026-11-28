@@ -38,6 +38,23 @@ Festlegung 2, Wortlaut-Präzedenz
 Festlegung 4). Jeder SKIP- und Teildrift-Meldung nennt ihn; `GATES_FORCE=1` erzwingt den
 vollen Lauf, jeder andere Wert und das Fehlen sagen nichts (Festlegung 3).
 
+## Der transportierte Konsum (CI)
+
+Die je-Check-Keys sind committet und reisen mit dem Klon
+([ADR-0111](../../docs/plan/adr/0111-ci-stempel-eingecheckt-committed-je-check-keys.md)
+Festlegung 1; die committete Klasse liegt ebenso außerhalb des Baum-Hash als
+deklarierte Hash-Ausnahme in `working-tree-hash.sh`). Der push-`main`-Job der
+CI konsultiert den transportierten Satz über **unverändertes** `make gates` —
+der Fast-Pfad entscheidet am frischen Klon am selben Satzerzeuger, kein
+zweiter Maßstab (Festlegung 2). `pull_request` und jeder Nicht-main-Push fahren
+`GATES_FORCE=1` voll: die Skip-Konsultation ist an den main-Push-Schutz
+gebunden, der PR läuft die Prüfung seines eigenen Baums (Festlegung 2). Auf CI
+schreibt der Lauf bei Teildrift keinen Stempel zurück — der Read-only-Kontext
+der CI bleibt, der Rück-Stempel ist Host-Pflicht des Implementer-Zugs
+(Festlegung 3/5). Die zwei Gesamt-Dateien reisen nicht
+(Festlegung 3, host-Klasse über
+[ADR-0083](../../docs/plan/adr/0083-handoff-gate-bindet-an-den-commit-nicht-an-jedes-turn-ende.md)).
+
 ## Wächter
 
 - [`test/gates-fastpfad.bats`](../../test/gates-fastpfad.bats) — die Klassifikation über
@@ -49,6 +66,26 @@ vollen Lauf, jeder andere Wert und das Fehlen sagen nichts (Festlegung 3).
 - [`test/gate-nachweis-kante.bats`](../../test/gate-nachweis-kante.bats) — Kante
   an `record-gates` byte-gleich, `gates` ohne `make`-Prerequisites, Rezept startet
   nur den Wrapper
+- [`test/ci-stempel-committed.bats`](../../test/ci-stempel-committed.bats) — die
+  committete Klasse: `git check-ignore` je Klasse (Key-Klasse und E2E-Stempel
+  transportiert, Gesamt-Dateien und die übrigen state-Ablagen lokal,
+  [ADR-0111](../../docs/plan/adr/0111-ci-stempel-eingecheckt-committed-je-check-keys.md)
+  Festlegung 1/3/4) und die Verdrahtung der Workflows (push-`main` unforced,
+  `pull_request` erzwungen voll); die Gitignore-Umstellung selbst rotiert keinen
+  Baum-Hash, das hält
+  [`test/working-tree-hash-abnahme.bats`](../../test/working-tree-hash-abnahme.bats)
+  an den deklarierten Hash-Ausnahmen
+
+## Grenze
+
+Der SKIP urteilt nie über das hinaus, was er sicher lesen kann; was er nicht
+deckt, ist der benannte Rest und die Re-Evaluierungs-Trigger der ADR (bei jedem
+künftigen Check im Kanten-Satz neu zu zeigen), nicht ein weiterer Sensor. Auf
+CI kommt der Rest der Runner- und Netz-Fassung hinzu: die konsultierten Keys
+conservieren das Verdikt eines Host-Laufs; die Verdrahtung der Workflows belegt
+der reale CI-Lauf selbst, nicht der Wächter
+([`MR-003`](../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)-Form:
+die CI ist dort das Netz).
 
 ## Grenze
 

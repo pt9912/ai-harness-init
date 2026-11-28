@@ -111,6 +111,43 @@ Deklaration* nicht auf, weil die Region dann zur vorigen Stufe gehört. Beide Se
 dasselbe Muster aus derselben Datei; es steht an zwei Stellen, weil der Aufruf zur
 Laufzeit kein zweites Werkzeug ruft, und wer es ändert, ändert beide.
 
+## Der E2E-Stempel und der Skip-Griff
+
+Der grüne Lauf schreibt am Ende den committeten E2E-Stempel
+`.harness/state/full-smoke-passed.key`, zwei Zeilen
+([ADR-0111](../../docs/plan/adr/0111-ci-stempel-eingecheckt-committed-je-check-keys.md)
+Festlegung 4): `baum-hash <64-hex>` — der Wert von
+[`harness/tools/working-tree-hash.sh`](../../harness/tools/working-tree-hash.sh) am
+**Lauf-Start** (die tmp-Repos der E2E liegen außerhalb des Baums; die committete
+Stempel-Klasse ist als deklarierte Hash-Ausnahme aus dem Baum-Hash genommen, der
+eigene Schreibzug rotiert den getragenen Vergleichswert also nicht) — und
+`varianten <n>`, die Anzahl der E2E-Varianten des Laufes — gelesen als die
+`full-smoke: OK`-Zusagen (die E2E-Abschnitte); die Matrix lebt im Skript-Inhalt
+und ist transitiv im Baum-Hash, kein Commit-SHA-Feld
+(Festlegung 3: zirkulär), kein Datumsfeld). `make` committiert nicht
+(Festlegung 5) — der implementierende Zug committet die Datei mit ihrem Inhalt.
+
+Der Skip-Griff läuft **nur am push-`main`-Job der CI** (Festlegung 2): der Job
+setzt `FULL_SMOKE_SKIP_KONSULT=1`, das Rezept konsultiert das `baum-hash`-Feld
+gegen den frisch gerechneten Baum-Hash über
+[`harness/tools/full-smoke-skip.sh`](../../harness/tools/full-smoke-skip.sh) und SKIPpt
+nur bei Deckung, mit dem benannten Rest je Kante (Festlegung 4: die Verfügbarkeit
+des Traeger-Releases, Registry- und Netz-Zustände, die Runner-Fassung). Fehlende,
+unformale oder fremde Werte und Parser-Zweifel fahren voll (fail-closed,
+[`MR-017`](../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)).
+Am Host bleibt die Umgebung ungesetzt: der Lauf ist der Schreiber des Stempels und
+fährt unverändert voll. Wächter:
+[`test/ci-stempel-committed.bats`](../../test/ci-stempel-committed.bats) — die
+Verdrahtung (nur push-`main` setzt die Konsult-Umgebung) und die hermetische
+Klassifikation über `--entscheide` (deckender Stempel → SKIP mit Rest, fehlend,
+unformal oder fremd → voll); Mutations-Fälle 822 (push-main erzwungen voll) und
+823 (fremdes Feld) an
+[`test/mutations/`](../../test/mutations/). Die Verdrahtung der Workflows belegt
+der reale CI-Lauf selbst ([`MR-003`](../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)-Form:
+die CI ist dort das Netz). Was der Stempel nicht deckt: Runner-Fassung und
+Netz-Zustand der CI (Festlegung 4), die Schreiber-Kette am `main`-Push (der
+benannte Rest der ADR, kein Wächter).
+
 ## Ausgabe und Ausgänge
 
 | Exit | Bedeutung |

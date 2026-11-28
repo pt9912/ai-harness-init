@@ -24,7 +24,9 @@ Frisch-Rechnung gegen Transport, Skip nur auf main — Festlegung 2,
 Gesamt-Dateien gitignored — Festlegung 3, E2E-Stempel-Feld — Festlegung 4,
 `make` committiert nicht — Festlegung 5, dieses Slice — Festlegung 6),
 [`ADR-0108`](../../adr/0108-stempel-synthese-je-check-pruefgegenstand.md)
-(deren Festlegung 3 — der CI-Satz — durch ADR-0111 revidiert ist; ihre
+(deren Festlegung 3 — der CI-Satz — durch
+[`ADR-0111`](../../adr/0111-ci-stempel-eingecheckt-committed-je-check-keys.md)
+revidiert ist; ihre
 übrigen Festlegungen und Zusagen bleiben unberührt),
 [`ADR-0103`](../../adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md)
 (die Hash-Ausnahme-Form, die
@@ -43,7 +45,8 @@ um die zwei committeten Ablage-Klassen wächst),
 
 **Berührte Spec-Stellen:** `—` — die Entscheidung trägt die Prozess-ADR;
 [`ADR-0108`](../../adr/0108-stempel-synthese-je-check-pruefgegenstand.md) §5
-(beobachtbar an der ADR-Index-Zelle: „revidiert durch ADR-0111"). Der Verweis
+(beobachtbar an der ADR-Index-Zelle: „revidiert durch
+[`ADR-0111`](../../adr/0111-ci-stempel-eingecheckt-committed-je-check-keys.md)"). Der Verweis
 zeigt **aufwärts**: Die Spec nennt diesen Slice nie.
 
 **Verantwortlich:** pt9912
