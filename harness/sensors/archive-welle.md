@@ -19,7 +19,20 @@ der Stelle des Review-Reports bleibt sein Stub am **unveränderten Pfad**
 `docs/reviews/<datei>.md` — aus der repo-eigenen Vorlage
 `docs/plan/planning/archive-stub-report.template.md`, die der Träger selbst liest
 ([`ADR-0061`](../../docs/plan/adr/0061-review-report-bekommt-beim-archivieren-einen-stub.md)
-Festlegungen 1 und 2); der volle Report-Inhalt liegt wie bisher im Archiv-Zip (Festlegung 3). Gepackt wird aus der Go-Standardbibliothek — kein gepinntes Bild
+Festlegungen 1 und 2); der volle Report-Inhalt liegt wie bisher im Archiv-Zip (Festlegung 3).
+
+Darüber hinaus bleibt je **referenziertem Umzug** ein **Umzugs-Stub** an der ALTEN Pfad-Adresse
+`done/<base>` stehen (ADR-0061 Festlegung 1, fünfte Klasse derselben Mechanik): verweist eine
+Datei, die der Verweis-Nachzug nicht erreicht — mit
+[`ADR-0042`](../../docs/plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 2
+sind das heute die `Accepted`-ADRs unter `docs/plan/adr`, gelesen über das
+Suchraum-Differenzial — auf einen der bewegten Slices oder Pläne, traegt der Stub die
+Referenzen, die der Nachzug nicht erreicht: Identität (H1), Umzugs-Zeiger auf die neue
+Arbeitsbaum-Adresse statt Archiv-Zeiger, Zustand. Seine Vorlage ist repo-eigen unter
+`docs/plan/planning/archive-stub-umzug.template.md`, die der Träger selbst liest
+([`ADR-0112`](../../docs/plan/adr/0112-umzugs-stub-traegt-die-referenzen-die-der-nachzug-nicht-erreicht.md)
+Festlegungen 1 und 2); der Volltext liegt byte-genau an der neuen Adresse, nicht nur im
+Archiv-Zip. Gepackt wird aus der Go-Standardbibliothek — kein gepinntes Bild
 und kein `zip`-Binär; kein Eintrag trägt einen Zeitstempel aus der Uhr des Laufs, zwei Läufe über
 demselben Inhalt liefern also dieselben Bytes
 ([`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)).
@@ -38,7 +51,12 @@ dabei nichts: der Schalter hält den Aufruf nach der Vorprüfung an. Erreicht wi
 Träger, `.harness/state/bin/ai-harness-init archive-welle --vorschau <wave-id>`; ein eigenes
 `make`-Ziel hat er nicht. Er ist keine zweite Fassung der Operation, sondern derselbe Code: die
 Vorschau ist die Vorprüfung des schreibenden Laufs, und was sie an Sperren nennt, sind genau die
-Ausgänge, an denen er abbricht.
+Ausgänge, an denen er abbricht. Neben den Verweis-Funden und den Sperren nennt er die
+`Umzugs-Stubs`-Funde-Zeile: je verweisender Datei des Differenzials die umzogene Ziel-Datei
+([`ADR-0112`](../../docs/plan/adr/0112-umzugs-stub-traegt-die-referenzen-die-der-nachzug-nicht-erreicht.md)
+Festlegung 3); ohne ausgenommene-Baum-Referenz steht sie ausgeschrieben als leer, und die
+`[haenger]`-Sperre bleibt für diese Klasse leer — der Lauf traegt die Pflicht selbst, die
+Funde-Zeile stellt die Stub-Menge als Pflicht vor die zwei Commits.
 
 `<wave-id>` kann auch der Schlüssel `altbestand` sein
 ([`ADR-0041`](../../docs/plan/adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md)

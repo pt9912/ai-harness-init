@@ -29,6 +29,13 @@ type Bericht struct {
 	Bestand Bestand
 	Funde   []Fund
 	Sperren []Sperre
+	// UmzugsStubs sind die Funde-Zeilen des Differenzials (ADR-0112 Festlegung 3):
+	// je verweisender Datei aus Suchraum \ SuchraumNachzug die bewegte Ziel-Datei,
+	// "<Datei> -> <Ziel>" — was der Nachzug nicht erreicht und der Umzugs-Stub
+	// traegt. Sie sind KEINE Sperren: dieser Lauf traegt die Pflicht selbst, der
+	// schreibende Lauf schreibt je Fund den Stub; die [haenger]-Sperre bleibt auf
+	// ihrer Rolle fuer ersatzlos geloeschte Klassen.
+	UmzugsStubs []string
 }
 
 // Vorschau liest den Baum unter root und sagt, was eine Archivierung von welleID
@@ -47,6 +54,14 @@ func Vorschau(root, welleID, porcelain string, dateien []string, a Abstammung) (
 	if ber.Funde, err = VerweisFund(root, dateien, b.Bewegte()); err != nil {
 		return Bericht{}, err
 	}
+	// ADR-0112 Festlegung 3: die Funde-Zeile nennt je verweisender Datei des
+	// Differenzials die umzogene Ziel-Datei — ohne ausgenommene-Baum-Referenz ist
+	// die Menge leer und wird ausgeschrieben (schreibeUmzugsFunde). Die
+	// referenzierten Umzugs-Ziele wandern damit zugleich in die Vorschau: sie sind
+	// die Haenger-Ziele der Klasse, die der schreibende Lauf selbst traegt.
+	if ber.UmzugsStubs, err = UmzugsFunde(root, dateien, b.Verschwindend()); err != nil {
+		return Bericht{}, err
+	}
 	// Seit ADR-0061 loescht der Lauf kein Zeitdokument mehr ersatzlos: jeder
 	// Review-Report ueberlebt als Stub an unveranderter Adresse, die Bewegten
 	// ziehen mit ihrem Nachzug. Die Haenger-Ziele sind darum leer und die
@@ -59,6 +74,19 @@ func Vorschau(root, welleID, porcelain string, dateien []string, a Abstammung) (
 	}
 	ber.Sperren = sperren(b, porcelain, haenger)
 	return ber, nil
+}
+
+// UmzugsFunde uebergibt die referenzierten Umzugs-Ziele als Haenger-Ziele —
+// ueber den Haenger-Apparat selbst (ADR-0112 Festlegung 3), aber NUR ueber dem
+// Suchraum-Differenzial: der Suchraum des Haenger-Waechters ist hier der Baum,
+// in dem der Nachzug nicht erreicht. `verschwindend` sind volle Pfade; ein Fund
+// lautet "<verweisende Datei> -> <umzogene Ziel-Datei>".
+func UmzugsFunde(root string, dateien, verschwindend []string) ([]string, error) {
+	diff := SuchraumDifferenzial(dateien)
+	if len(diff) == 0 {
+		return nil, nil
+	}
+	return Haenger(root, diff, verschwindend, verschwindend)
 }
 
 // sperren zaehlt die fail-closed-Ausgaenge auf, die der schreibende Lauf naehme.
@@ -210,8 +238,28 @@ func Schreibe(b Bericht) string {
 	fmt.Fprintf(&sb, "  fremd (andere Welle, bleibt liegen):  %d\n", len(be.Fremde))
 	fmt.Fprintf(&sb, "  Review-Reports (mit Stub):            %d\n", len(be.Reviews))
 	schreibeVerweise(&sb, b.Funde)
+	schreibeUmzugsFunde(&sb, b.UmzugsStubs)
 	schreibeSperren(&sb, b.Sperren)
 	return sb.String()
+}
+
+// schreibeUmzugsFunde nennt die Funde des Differenzials — je verweisender Datei
+// die umzogene Ziel-Datei (ADR-0112 Festlegung 3). Null Treffer ist eine Aussage
+// und wird ausgeschrieben; die Sperren-Liste bleibt davon unberuehrt.
+func schreibeUmzugsFunde(sb *strings.Builder, funde []string) {
+	if len(funde) == 0 {
+		sb.WriteString("  Umzugs-Stubs: keine — keine Datei ausserhalb des Nachzugs-Suchraums referenziert einen Umzug.\n")
+		return
+	}
+	dateien := map[string]bool{}
+	for _, z := range funde {
+		dateien[strings.SplitN(z, " -> ", 2)[0]] = true
+	}
+	fmt.Fprintf(sb, "  Umzugs-Stubs (Referenz aus dem Baum, den der Verweis-Nachzug nicht erreicht): %d Datei(en), %d Fundstelle(n)\n",
+		len(dateien), len(funde))
+	for _, z := range funde {
+		fmt.Fprintf(sb, "    %s\n", z)
+	}
 }
 
 // schreibeVerweise nennt den Blast-Radius: die betroffenen Dateien mit ihrer

@@ -375,3 +375,42 @@ func TestSchreibeSagtKeineSperre(t *testing.T) {
 		t.Fatalf("Ausgabe sagt nicht, dass keine Sperre steht:\n%s", archive.Schreibe(b))
 	}
 }
+
+// TestVorschauNenntUmzugsStubsJeVerweisenderDatei haelt ADR-0112 Festlegung 3
+// an der Vorschau: eine Accepted-ADR verweist auf einen Umzug — die Funde-Zeile
+// nennt je verweisender Datei die umzogene Ziel-Datei (Haenger-Ziele der
+// Klasse), und die [haenger]-Sperre bleibt LEER, weil der schreibende Lauf die
+// Pflicht selbst traegt. Gegenbeispiel:
+// test/mutations/827-archive-welle-go-umzug-funde-verdrahtung.sh.
+func TestVorschauNenntUmzugsStubsJeVerweisenderDatei(t *testing.T) {
+	root := vollstaendigerBaum(t)
+	schreibe(t, filepath.Join(root, "docs", "plan", "adr", "0033-x.md"),
+		"Siehe [slice-100](../planning/done/slice-100-a.md).\n")
+	b := vorschauVon(t, root, "wave-10", "")
+
+	want := "docs/plan/adr/0033-x.md -> docs/plan/planning/done/slice-100-a.md"
+	if len(b.UmzugsStubs) != 1 || b.UmzugsStubs[0] != want {
+		t.Fatalf("UmzugsStubs = %v, want [%s]", b.UmzugsStubs, want)
+	}
+	if hatSperre(b, "haenger") {
+		t.Fatal("die [haenger]-Sperre steht — ihre Rolle bleibt fuer ersatzlos geloeschte Klassen")
+	}
+	text := archive.Schreibe(b)
+	if !strings.Contains(text, want) {
+		t.Fatalf("die Funde-Zeile fehlt im Bericht:\n%s", text)
+	}
+}
+
+// TestVorschauSagtKeinenUmzugsStubOhneReferenz: ohne ausgenommene-Baum-Referenz
+// ist die Funde-Zeile leer — ausgeschrieben (ADR-0112 §Fitness Function).
+func TestVorschauSagtKeinenUmzugsStubOhneReferenz(t *testing.T) {
+	root := vollstaendigerBaum(t)
+	b := vorschauVon(t, root, "wave-10", "")
+	if len(b.UmzugsStubs) != 0 {
+		t.Fatalf("UmzugsStubs = %v, want leer", b.UmzugsStubs)
+	}
+	text := archive.Schreibe(b)
+	if !strings.Contains(text, "Umzugs-Stubs: keine") {
+		t.Fatalf("die leere Funde-Zeile steht nicht ausgeschrieben:\n%s", text)
+	}
+}
