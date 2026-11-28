@@ -6,7 +6,7 @@
 
 **Berührte Spec-Stellen:** `—` — die `.claude/`-Emit-Struktur trägt keine Kennung in Lastenheft, Spezifikation oder Architektur; die Spezifikation nennt den Emitter ausschließlich für die Span-Erfassung (`SPEC-056`–`SPEC-065`), und die `.claude/rules/`-Kontext-Form ist Werkzeug-Ebene ([MR-035](../../../../harness/conventions.md#mr-035--der-automatische-claude-kontext-trägt-eine-benannte-geschlossene-modul-auswahl), Geltungsbereich). Nicht ausgeschlossen, sondern nicht vorhanden: Es gibt kein Zielelement, auf das der Verweis in einem Hop auflöste.
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912 (Zweig slice-rules-pointer-emission-v1)
 
 **Autor:** pt9912 (Rolle Planner). **Datum:** 2026-11-28.
 
