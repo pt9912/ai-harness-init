@@ -72,18 +72,16 @@ if make --version 2>/dev/null | head -1 | grep -qE 'GNU Make ([4-9]|[0-9]{2,})\.
 	MAKE_JFLAGS=(-j -Otarget)
 fi
 
-# Der Baum-Hash am LAUF-START (ADR-0111 Festlegung 4): der E2E-Stempel am Gruen-
-# Ende unten traegt genau diesen Wert — die tmp-Repos der E2E liegen ausserhalb
-# des Baums, und die committete Stempel-Klasse ist Hash-Ausnahme
-# (working-tree-hash.sh HASH_AUSNAHMEN). Der E2E-Skip-Griff (ADR-0111 Festlegung
-# 2/4) liest in derselben Stelle die Umgebung FULL_SMOKE_SKIP_KONSULT, gesetzt
-# nur vom push-auf-main-Job der CI; am Host bleibt sie ungesetzt und der Lauf
-# faehrt voll — er ist der Schreiber des Stempels (Festlegung 5). Der Griff
-# SKIPpt nur bei Deckung und nennt den benannten Rest (Festlegung 4); jeder
-# Zweifel faellt auf den vollen Lauf zurueck (fail-closed, MR-017).
-E2E_BAUM_HASH_START="$(bash "$HIER/working-tree-hash.sh")"
+# Der E2E-Skip-Griff (ADR-0111 Festlegung 2, ADR-0113 Festlegung 3): die Umgebung
+# FULL_SMOKE_SKIP_KONSULT, gesetzt nur vom push-auf-main-Job der CI; am Host bleibt
+# sie ungesetzt und der Lauf faehrt voll — er ist der Schreiber der sieben Stempel
+# (ADR-0113 Festlegung 4). Der Konsum liest die sieben committeten Stempel-Dateien
+# je gegen die frisch gerechnete Vorlagen-Menge des Satzerzeugers (kein zweiter
+# Massstab, LH-QA-02); SKIP nur bei voller Deckung aller sieben (ADR-0113
+# Festlegung 3); jeder Zweifel faellt auf den vollen Lauf zurueck (fail-closed,
+# MR-017).
 if [ "${FULL_SMOKE_SKIP_KONSULT:-}" = "1" ]; then
-	if bash "$HIER/full-smoke-skip.sh" --entscheide .harness/state/full-smoke-passed.key "$E2E_BAUM_HASH_START"; then
+	if bash "$HIER/full-smoke-skip.sh" --entscheide; then
 		exit 0
 	fi
 fi
@@ -2316,7 +2314,11 @@ SMOKEEOF
 	gel="$( make --no-print-directory -C "$klon" archive-welle WAVE="$welle_fetch" 2>&1 )" || gel_rc=$?
 	gel_flach="$(tr -s '[:space:]' ' ' <<<"$gel")"
 	if [ "$gel_rc" -ne 0 ]; then
-		echo "full-smoke: FEHLER — $kennung: der Konsumenten-Aufruf endet mit Exit $gel_rc — der gefetchte Traeger aus dem gepinnten Release fuehrt das Unterkommando nicht, und der Aufruf faellt statt in den laut-Bruch (ADR-0058 Festlegung 2). Ausgabe:" >&2
+		if grep -qE '\[(untergrenze|flacher-klon|unsauber|archiviert|haenger)\]' <<<"$gel_flach"; then
+			echo "full-smoke: FEHLER — $kennung: der Konsumenten-Aufruf endet mit Exit $gel_rc an einer Sperre des gefetchten Traegers — der Pin dispatcht das Unterkommando, aber seine Fassung sperrt ueber dem Bestand des Klons (die Sperre steht unten); die Kopplung Pin zu Werkzeug-Fassung traegt der Release-Schnitt (ADR-0058 Festlegung 2, Folgepflicht 3). Ausgabe:" >&2
+		else
+			echo "full-smoke: FEHLER — $kennung: der Konsumenten-Aufruf endet mit Exit $gel_rc — der gefetchte Traeger aus dem gepinnten Release fuehrt das Unterkommando nicht, und der Aufruf faellt statt in den laut-Bruch (ADR-0058 Festlegung 2). Ausgabe:" >&2
+		fi
 		printf '%s\n' "$gel" >&2
 		einordnen "make archive-welle mit dem gefetchten Traeger ($kennung)" "$gel"
 		exit 1
@@ -6051,8 +6053,27 @@ echo "full-smoke: OK — SELBSTPRUEFUNG IM ZIEL (LH-FA-11): das gebootstrappte R
 echo "full-smoke: OK — E2E-ABDECKUNG IM ZIEL: das gebootstrappte Repo erzeugt mit make e2e-abdeckung die Sicht ueber seine eigenen E2E-Stufen — eine Zeile aus der einen Stufe der mitgelieferten Selbstpruefung, mit dem Gedankenstrich statt einer geratenen Kennung und dem Ort in tools/harness/selbstpruefung.sh; es steht in make help des Ziels (dem einen Index, den ein gebootstrapptes Repo von sich aus fuehrt) und haengt an keiner gates-Kette (LH-QA-01), der zweite Lauf meldet unveraendert, ein am Aufruf gesetzter Ziel-Marker lenkt die geschriebene Datei (LH-FA-02), und eine Stufe ohne Deklaration faerbt den Erzeuger rot."
 echo "full-smoke: OK — ZEILENENDEN IM KLON (ADR-0067): ein Klon des committeten Ziels mit core.autocrlf=true traegt in .harness, .claude/hooks, .githooks, harness/mk und tools/harness kein CR — der git-eigene Traeger laeuft ueber seine Shebang-Zeile, bash tools/harness/baseline-verify.sh endet mit OK, und der Command-Guard blockt das letzte Wort seiner Wortliste; der Kontrollklon mit ausdruecklich gesetztem core.autocrlf=false traegt in denselben Verzeichnissen keines und laesst dieselben Konsumenten laufen; die Restmenge ausserhalb der fuenf Verzeichnisse wird ausgegeben, nicht zugesagt. Gemessen ist der Smudge-Filter von git unter Linux, kein Windows-Lauf (LH-QA-04, Grenze der Messmethode)."
 
-# Der E2E-Stempel (ADR-0111 Festlegung 4): committete Datei, zwei Zeilen, maschinengeschrieben nach dem gruenden Ende. Der baum-hash ist der Wert am Lauf-START (oben gerechnet) — die tmp-Repos der E2E liegen ausserhalb des Baums; die committete Stempel-Klasse ist Hash-Ausnahme (working-tree-hash.sh), der eigene Schreibzug rotiert also den getragenen Vergleichswert nicht. `varianten` zaehlt die E2E-Abschnitte dieses Laufes (die Zusagen-Zeilen "full-smoke: OK" — die Zaehlbasis steht am Eintrag); die Matrix lebt im Skript-Inhalt und ist transitiv im Baum-Hash. Kein Commit-SHA-Feld (Festlegung 3: zirkulaer), kein Datumsfeld (die Chronik traegt git). Make committiert nicht (Festlegung 5) — der implementierende Zug committet die Datei mit ihrem Inhalt.
+# Der E2E-Stempel je Variante (ADR-0113 Festlegungen 1 und 4): sieben committete
+# Dateien .harness/state/full-smoke-passed-<variante>.key, je zwei Zeilen,
+# maschinengeschrieben nach dem gruenden Ende. Der mengen-hash ist der am Gruen-Ende
+# frisch gerechnete Wert des Satzerzeugers (full-smoke-varianten.sh, Modus `alle`) —
+# die tmp-Repos der E2E liegen ausserhalb des Baums; die committete Stempel-Klasse
+# ist Hash-Ausnahme (working-tree-hash.sh HASH_AUSNAHMEN), der eigene Schreibzug
+# rotiert also keinen getragenen Vergleichswert. Kein Baum-Hash-Feld (der Wert ist
+# der Vorlagen-Menge, nicht dem Baum — ADR-0113 Festlegung 1), kein Commit-SHA-Feld
+# (ADR-0111 Festlegung 3: zirkulaer), kein Datumsfeld (die Chronik traegt git), die
+# `varianten`-Zeile des Ein-Schluessels tritt mit ihm aus. Make committiert nicht
+# (ADR-0111 Festlegung 5) — der committende Zug traegt die sieben Dateien mit ihrem
+# Inhalt.
 mkdir -p .harness/state
-varianten="$(grep -c "^echo \"full-smoke: OK —" "$HIER/full-smoke.sh")"
-printf 'baum-hash %s\nvarianten %s\n' "$E2E_BAUM_HASH_START" "$varianten" > .harness/state/full-smoke-passed.key
-echo "full-smoke: E2E-Stempel geschrieben (.harness/state/full-smoke-passed.key, ADR-0111 Festlegung 4): baum-hash $E2E_BAUM_HASH_START, varianten $varianten; der committende Zug traegt die Datei mit ihrem Inhalt (Festlegung 5)."
+stempel_ernte="$(bash "$HIER/full-smoke-varianten.sh" alle)"
+if [ "$(printf '%s\n' "$stempel_ernte" | grep -c .)" -ne 7 ]; then
+	echo "full-smoke: FEHLER — die Satzerzeuger-Ernte traegt nicht die sieben Varianten der Stempel-Klasse (ADR-0113 Festlegung 1):" >&2
+	printf '%s\n' "$stempel_ernte" >&2
+	exit 1
+fi
+printf '%s\n' "$stempel_ernte" | while IFS= read -r stempelzeile; do
+	[ -n "$stempelzeile" ] || continue
+	printf 'variante %s\nmengen-hash %s\n' "${stempelzeile%% *}" "${stempelzeile##* }" > ".harness/state/full-smoke-passed-${stempelzeile%% *}.key"
+done
+echo "full-smoke: E2E-Stempel geschrieben (sieben Dateien .harness/state/full-smoke-passed-<variante>.key, ADR-0113 Festlegungen 1/4, Frisch-Rechnung am Gruen-Ende ueber dem Satzerzeuger); der committende Zug traegt die sieben Dateien mit ihrem Inhalt (ADR-0111 Festlegung 5)."
