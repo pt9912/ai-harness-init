@@ -126,10 +126,12 @@ genau einen Lauf.
    mit `altbestand-plan` (§Sperren), statt ignoriert zu werden. Gedeckt von den Fällen
    `TestArchiveWelleAltbestand…` in `cmd/ai-harness-init/archive_welle_altbestand_test.go` über
    einem synthetischen Baum; `test/mutations/505` bis `508` nehmen je eine Sperre, die
-   Einsammel-Gleichheit und die Stub-Zeile weg. Die zwei Altbestand-`haenger`-Faelle
-   (`310`, `504`) sind mit dem Report-Stub-Weg entfallen — ihre Sperre traegt keinen Fall mehr
+   Einsammel-Gleichheit und die Stub-Zeile weg. Der Altbestand-`haenger`-Fall der Vorschau
+   (`310`) misst am Apparat (`SperrenFuerTest`), weil die Liste an der Vorschau seit dem
+   Report-Stub-Weg keinen Fall mehr trägt; der Lauf-Fall (`504`) ist entfallen — der schreibende
+   Lauf liest dieselbe Liste, deren Fall
    ([`ADR-0061`](../../docs/plan/adr/0061-review-report-bekommt-beim-archivieren-einen-stub.md)
-   Festlegung 1). **Nicht gefahren:** der Lauf am realen Bestand
+   Festlegung 1) weg ist. **Nicht gefahren:** der Lauf am realen Bestand
    dieses Repos — der ausführende Altbestand-Lauf ist ein eigener Zug und ist nicht gefahren;
    gemessen ist die Vorschau (§Grenze Punkt 6, 107 Fundstellen, Stand 2026-11-27). Die
    Stub-Platzhalter sind gegen nachgebildete Vorlagen gemessen; die Platzhalter-Kopplung hält

@@ -191,7 +191,39 @@ func TestAltbestandHebtWelleUndUntergrenzeSperrenAuf(t *testing.T) {
 	}
 }
 
-// TestAltbestandTraegtKeineReportVerweisSperre am ehemaligen Gegenstand von
+// TestAltbestandBehaeltHaengerSperre ist der Gegenstand von ADR-0041
+// Festlegung 4 am APPARAT: die Sperren-Verdrahtung hebt die vier
+// wellen- und untergrenzen-gebundenen Ausgaenge unter dem Schluessel auf und
+// laesst 'haenger' stehen. Der Fall konstruiert die Haenger-Liste ueber der
+// Test-Kante (SperrenFuerTest), weil sie an der Vorschau seit ADR-0061
+// Festlegung 1 keinen Fall mehr traegt; die Verdrahtung selbst misst er.
+// Rot zu sehen ist die Mutation an derselben Bedingung:
+// test/mutations/310-archive-welle-go-altbestand-hebt-haenger-mit-auf.sh.
+func TestAltbestandBehaeltHaengerSperre(t *testing.T) {
+	haenger := []string{"docs/notizen.md -> docs/reviews/x.md"}
+	s := archive.SperrenFuerTest(archive.AltbestandFuerTest(), "", haenger)
+	if !davon(s, "haenger") {
+		t.Fatal("Sperre 'haenger' fehlt unter dem Schluessel 'altbestand' — sie wurde mit aufgehoben")
+	}
+	for _, k := range []string{"ergebnisnotiz", "kein-plan", "mehrdeutiger-plan", "untergrenze"} {
+		if davon(s, k) {
+			t.Errorf("Sperre %q steht unter dem Schluessel 'altbestand', sie muss aufgehoben sein", k)
+		}
+	}
+}
+
+// davon sagt, ob eine Sperren-Kennung unter den gegebenen steht — dieselbe
+// Frage wie hatSperre, ueber einer Liste statt einem Bericht.
+func davon(s []archive.Sperre, kennung string) bool {
+	for _, sperre := range s {
+		if sperre.Kennung == kennung {
+			return true
+		}
+	}
+	return false
+}
+
+// TestAltbestandTraegtKeineReportVerweisSperre am ehemaligen Vorschau-Gegenstand von von
 // ADR-0041 Festlegung 4: die Verweis-Sperre lag immer ausserhalb der
 // Schluesse-Aufhebung, und ihre Sperren-Verdrahtung bleibt stehen — aber ihre
 // Report-Ziele tragen seit ADR-0061 Festlegung 1 keinen Fall mehr. Dieselbe
