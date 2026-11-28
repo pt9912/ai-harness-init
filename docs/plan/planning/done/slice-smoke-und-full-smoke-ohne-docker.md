@@ -57,7 +57,7 @@ Die Stufen-Deklarationen der E2E-Abdeckung bleiben — der Prüfgegenstand
   dieselbe Form — macOS bleibt ungetragen
   ([`BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer`](../observations/BEO-ALL/host-werkzeug-variante-auf-macos-bricht-die-host-laeufer/state.md)).
 - **Die LP2/LP3-Restmenge des docker-losen `full-smoke`** — ein Folge-Slice
-  übernimmt es: [`slice-full-smoke-gates-echt-gruen`](../in-progress/slice-full-smoke-gates-echt-gruen.md) —
+  übernimmt es: [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md) —
   Vorlauf-Wächter-/Doku-Zahn-Stufen über dem emittierten d-check.mk
   (`doc-commits`/`doc-immutable`), die Archiv-Leseprobe (unzip am Inventar), die
   hexslice-/hexagonal-Bootstraps (a-check --print-mk ohne Host-Carrier) und die
@@ -150,7 +150,7 @@ Bericht. Zusätzlich: Closure-Notiz mit Lerneintrag geschrieben.
   (`make -f d-check.mk doc-commits`), gemessen am Register-Eintrag
   [`BEO-ALL/docker-aussetzer-im-vorlauf-wird-als-falscher-grund-gemeldet`](../observations/BEO-ALL/docker-aussetzer-im-vorlauf-wird-als-falscher-grund-gemeldet/state.md);
   die Restmenge (1a–1d) übernimmt
-  [`slice-full-smoke-gates-echt-gruen`](../in-progress/slice-full-smoke-gates-echt-gruen.md).
+  [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md).
   Bis dahin bleiben LP2 („grün“) und LP3 (Färbung am `full-smoke`-Fall) mit
   dem Teilstand benannt — der smoke-Modus ist am Treiber entlassen,
   full-smoke nicht (Exit 4 an der Vorbedingung, Beleg im
@@ -184,7 +184,7 @@ Fix `64cd1dd7`).
 - **Was ging anders als geplant:** (1) LP 2 und LP 3 sind **bedingt** — die
   Restmenge (1a Vorlauf-Wächter-/Doku-Zähne, 1b Archiv-Leseprobe, 1c
   hexslice-/hexagonal-Bootstraps, 1d carrier-gebundene Gates-Läufe) trägt
-  [`slice-full-smoke-gates-echt-gruen`](../in-progress/slice-full-smoke-gates-echt-gruen.md),
+  [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md),
   dessen Slice-Datei dieser Closure-Lauf in `next/` eingerichtet hat; die
   `# verify: full-smoke`-Spur des Treibers bleibt in der Daemon-Vorbedingung
   (Exit 4, Ursache benannt). (2) `make gates` bleibt rot an den
@@ -218,7 +218,7 @@ Fix `64cd1dd7`).
   §8-Treffer bleiben in ihrem Stand (macOS: 4×, verkörpert; Fall-Expect:
   2×, < 3×).
 - **Folge-Slices:**
-  [`slice-full-smoke-gates-echt-gruen`](../in-progress/slice-full-smoke-gates-echt-gruen.md)
+  [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md)
   (Restmenge, LP-2/LP-3-Träger; F-7 als §6-Risiko dort) ·
   [`slice-doku-nachzug-ohne-docker`](../done/slice-doku-nachzug-ohne-docker.md)
   (Doku-Zellen).

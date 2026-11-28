@@ -172,7 +172,7 @@ lint 0).
 - **Beobachtungs-Register (`../observations/`):** keine Beobachtung
   angefallen — der §8-Treffer (macOS-Hälfte der Host-Läufer, 7×, verkörpert)
   trägt unverändert; kein neuer Eintrag.
-- **Folge-Slices:** [`slice-full-smoke-gates-echt-gruen`](../in-progress/slice-full-smoke-gates-echt-gruen.md)
+- **Folge-Slices:** [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md)
   (Rest-Spur, open) · die wellenlosen Posten `slice-gates-pruefgegenstand-stempel-v1`
   und `slice-stamp-records-konsum-v1` (in `next/`).
 - **Risiken aus §6:** Herkunfts-Anker — entfallen (oben).

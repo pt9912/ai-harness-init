@@ -15,7 +15,7 @@ die Stufen über den emittierten `d-check.mk`-Zielen (Vorlauf-Wächter/Zahn-Läu
 der docker-Lauf der Rückfall am opt-in Weg; die Archiv-Leseprobe liest am Host durch das
 Traeger-Unterkommando `archive-lesen`; die daemon-gebundenen Rest-Stufen (hexslice-/hexagonal-Bootstrap,
 Netz-Pull ggf.) trägt
-[`slice-full-smoke-gates-echt-gruen`](../../docs/plan/planning/in-progress/slice-full-smoke-gates-echt-gruen.md)
+[`slice-full-smoke-gates-echt-gruen`](../../docs/plan/planning/next/slice-full-smoke-gates-echt-gruen.md)
 — nicht in `make gates`; gehört an DoD-Verify/CI/Wellen-Closure.
 
 **Host.** Host dieses Laufs ist Linux; macOS ist dafür nicht getragen, Beleg-Ort ist CI auf frischem
