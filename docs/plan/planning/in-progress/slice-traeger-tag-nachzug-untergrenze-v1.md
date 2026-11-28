@@ -36,11 +36,14 @@ Werkzeug-Ebene; der Verweis zeigt **aufwärts**, die Spec nennt diesen Slice nie
 wird neu geschnitten und die Pin-Kette zieht nach: `TRAEGER_TAG` im
 Dogfood-`Makefile` (gemessen: `grep -n 'TRAEGER_TAG ?=' Makefile` → Zeile 53,
 `grep -cE '^TRAEGER_SHA256' Makefile` → 6) und der Tag-Pin des emittierten
-Fragmentes `harness/mk/traeger.mk` je
-[`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
-(der emit-Pin trägt nur den Tag; Quellpfad `internal/emit/templates/enforce/traeger.mk`,
+Fragmentes des Traeger-Fetch (Zielort des Ziels je
+[`ADR-0058`](../../adr/0058-traeger-per-fetch-aus-dem-gepinnten-release.md)
+Festlegung 3; Quellpfad `internal/emit/templates/enforce/traeger.mk`,
 gemessen: `grep -n 'TRAEGER_TAG ?=' internal/emit/templates/enforce/traeger.mk`
-→ Zeile 25). Danach trägt der gepinnte Traeger die Untergrenze-Fassung der
+→ Zeile 25) je
+[`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
+(der emit-Pin trägt nur den Tag). Danach trägt der gepinnte Traeger die
+Untergrenze-Fassung der
 `done/*/archive.zip`-Abgabe ([`ADR-0041`](../../adr/0041-wellenloser-altbestand-geht-in-ein-sammel-archiv.md)),
 die v0.10.0 nicht führt — je der Nehmer-Diagnose am Konsum-Bruch
 `[untergrenze]` (Frisch-Rechnung: der Quell-Stand meldet „Sperren: keine",
