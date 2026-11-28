@@ -1,6 +1,6 @@
 # Architektur — ai-harness-init
 
-**Status:** Aktiv. **Letzte Änderung:** 2026-10-17.
+**Status:** Aktiv. **Letzte Änderung:** 2026-11-28.
 
 **Hard Rule:** sprach- und meilensteinfrei — keine Wellen, Slices oder
 Commit-Hashes. Die zeitliche Schicht lebt in docs/plan/planning/.
@@ -102,12 +102,12 @@ nennt die `ARC-*` aus §1, die sie umfasst.
 | ID | System | Rolle | Substituierbar |
 |---|---|---|---|
 | `ARC-011` | git | Repo-Init/Checkout | nein |
-| `ARC-012` | docker | d-check-Image-Lauf (Gate) + Tool-Build-Image | nein |
-| `ARC-013` | Go-Toolchain (im gepinnten Build-Image) | Tool-Build / Cross-Compile, Docker-only | nein |
+| `ARC-012` | docker | opt-in Weg der gepinnten Bild-Rezepte (der Pflicht-Weg läuft docker-los, die Fassung trägt der Inventar-Pin) | ja |
+| `ARC-013` | Go-Toolchain (am Host, Fassung je Inventar-Pin) | Tool-Bau / Cross-Compile host-nativ (via make-Ziel, je `CGO_ENABLED=0`/`GOOS`/`GOARCH`/`-trimpath`) | nein |
 | `ARC-014` | Kurs-Release (gepinnt) | Regelwerk + Templates (Sprachskelette erzeugt der Generator, kein Fetch) | Tag wählbar |
 
 > Implementierung: **Go**; Auslieferung als **native Binaries** je `GOOS`/`GOARCH`,
-> cross-kompiliert im gepinnten Build-Image (Docker-only, kein Host-`go`).
+> cross-kompiliert host-nativ (docker-los, `CGO_ENABLED=0`, Fassung am Inventar-Pin).
 
 ## 4. Ablauf (Sequenzen)
 
