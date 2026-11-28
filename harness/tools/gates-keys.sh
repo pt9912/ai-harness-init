@@ -124,6 +124,7 @@ MENGE_REST=(
     './LICENSE'                # Lizenztext: kein Check urteilt
     './*.gitkeep'              # Platzhalter leerer Lifecycle-Verzeichnisse: kein Check urteilt
     './docs/user/images/*'     # Bilder der Operations-Doku (der Scan liest .md): kein Check urteilt
+    './docs/plan/planning/done/altbestand/**'  # das Sammel-Archiv der Altbestand-Ablage (Lauf-Urteil des archivierenden Vorgangs, ADR-0041): kein Check urteilt
     './harness/tools/*.awk'    # Erfassungs-Helper (smoke und SessionStart-Hook, kein Gate der Kante): kein Check urteilt
     './harness/tools/homebrew-formula.rb.tmpl'  # Release-Formular (tap-nachzug, kein Gate der Kante): kein Check urteilt
 )

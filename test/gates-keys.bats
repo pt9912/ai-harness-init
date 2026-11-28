@@ -136,6 +136,11 @@ setup() {
 		: > "$FIX/platzhalter.gitkeep"
 		mkdir -p "$FIX/docs/user/images"
 		printf 'x' > "$FIX/docs/user/images/bild.png"
+		# Die done/altbestand-Abgabe (ADR-0041): das Sammel-Archiv liegt in keiner
+		# Tafel-Menge und ist je deklarierter Rest-Klasse kein undeklarierter
+		# Neuzugang — rest bleibt leer.
+		mkdir -p "$FIX/docs/plan/planning/done/altbestand"
+		printf 'PK-Attrappe\n' > "$FIX/docs/plan/planning/done/altbestand/archive.zip"
 		run bash "$KEYS" --wurzel "$FIX" rest
 		[ "$status" -eq 0 ]
 		[ -z "$output" ]
