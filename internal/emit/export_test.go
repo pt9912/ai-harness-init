@@ -22,3 +22,14 @@ func InScope(rel string) bool { return inScope(rel) }
 // StreicheFremdeKennungen exportiert streicheFremdeKennungen fuers externe Testpaket —
 // dieselbe Sichtbarkeits-Bruecke, ausserhalb der vier Weichen oben.
 func StreicheFremdeKennungen(body string) string { return streicheFremdeKennungen(body) }
+
+// PointerZiele exportiert die Namens-und-Ziel-Abbildung der drei Quellen-Pointer fuers
+// externe Testpaket — der Waechter liest seine Erwartung aus derselben Quelle wie die
+// Emission, nicht aus einer zweiten Liste.
+func PointerZiele(tag string) map[string]string {
+	ziele := make(map[string]string)
+	for _, f := range pointerFiles(tag) {
+		ziele[f.name] = f.ziel
+	}
+	return ziele
+}

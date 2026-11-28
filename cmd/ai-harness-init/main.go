@@ -634,6 +634,14 @@ func emitAll(targetDir, skelDir, tag, name, lang, version, arch string, hasLang 
 	if err := emit.Agents(targetDir); err != nil {
 		return err
 	}
+	// Quellen-Pointer (MR-035/LH-FA-01): die drei Symlinks unter .claude/rules/ auf die
+	// kanonischen Quellen des Ziels und den Regelwerk-Index der Baseline. NACH
+	// fetch.Baseline (Phase 2): ohne den vendored Baseline-Zweig loest der
+	// Baseline-Pointer beim Anlegen ins Leere. Bestands-Behandlung je exaktem Name traegt
+	// emit.Rules.
+	if err := emit.Rules(targetDir, tag); err != nil {
+		return err
+	}
 	// Aggregator-Root-Makefile (slice-035, Init-Emitter) — IMMER, auch sprachlos: sie
 	// bindet die Gate-Fragmente per Glob ein (`make gates`).
 	if err := emit.Makefile(targetDir); err != nil {
