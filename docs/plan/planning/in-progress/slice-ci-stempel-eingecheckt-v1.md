@@ -90,7 +90,7 @@ Schichten (Harness-Mechanik + CI-Form), je der Festlegung-6-Skizze.
       (lokal — NUR state/)"*) ist an die committete Form angepasst; die
       committeten Ablage-Klassen tragen die deklarierte Hash-Ausnahme in
       [`harness/tools/working-tree-hash.sh`](../../../../harness/tools/working-tree-hash.sh)
-      (ADR-0103 Festlegung 2-Form, sichtbarer Ort im Skriptkopf, fail-closed
+      ([`ADR-0103`](../../adr/0103-mutations-records-nach-harness-stamp-mutate-und-die-hash-ausnahme.md) Festlegung 2-Form, sichtbarer Ort im Skriptkopf, fail-closed
       für nicht deklarierten committeten Inhalt unter `.harness/state/`); der
       Wächter (bats) hält die check-ignore-Formen je Klasse und die
       fail-closed-Form. Dazu der Mutations-Fall: die gitignore-Ausnahme fällt
@@ -148,7 +148,7 @@ zählen nicht mit.
 **Start** (`next` → `in-progress`): [`ADR-0111`](../../adr/0111-ci-stempel-eingecheckt-committed-je-check-keys.md)
 ist `Accepted` (beobachtbar an der Status-Zeile und der ADR-Index-Zelle von
 [`ADR-0108`](../../adr/0108-stempel-synthese-je-check-pruefgegenstand.md) —
-„revidiert durch ADR-0111"). Ein weiterer Architektur-Zug braucht es davor
+„revidiert durch [`ADR-0111`](../../adr/0111-ci-stempel-eingecheckt-committed-je-check-keys.md)"). Ein weiterer Architektur-Zug braucht es davor
 nicht: die Fassung trägt die ADR selbst (Festlegungen 1–6).
 
 **Rückführungen — vorab benennen:**
