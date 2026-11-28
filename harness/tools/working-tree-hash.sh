@@ -13,8 +13,8 @@ cd "$(git rev-parse --show-toplevel)"
 
 # HASH_AUSNAHMEN (ADR-0103 Festlegung 2, erweitert um die committeten
 # Ablage-Klassen je ADR-0111 Festlegung 1/4) — deklarierte Ausnahme obenauf auf der
-# ls-files-Menge: Eintraege mit Globs lesen case-seitig als Muster, reine Pfade als
-# Verzeichnis mit Kindern. Zwei Klassen fallen aus der Hashmenge heraus:
+# ls-files-Menge (die Lesung je Eintrag traegt passt() unten). Drei Eintraege fallen
+# aus der Hashmenge heraus:
 #   .harness/stamp/mutate             — die Mutations-Records sind Ausgaben jedes
 #                                       Konsum-Laufs und Pruefgegenstand keines
 #                                       Gates; nichts, worüber geurteilt wird, liegt
@@ -44,10 +44,9 @@ HASH_AUSNAHMEN=(
 
 # passt <pfad> <eintrag> — die Lesung eines deklarierten Eintrags: ohne Stern
 # liest der Eintrag als Verzeichnis (er deckt sich selbst und seine Kinder),
-# mit genau einem Stern als Praefix-*-Suffix-Muster. Die [[ == $e ]]- und die
-# case-$e-Fassung wuerden SC2053 bzw. SC2254 anmahnen — kein Inline-Suppression
-# (AGENTS.md §3.2), darum die explizite Teilung: quoted Teile literal, die
-# unquoted Sternstelle Muster.
+# mit genau einem Stern als Praefix-*-Suffix-Muster — quoted Teile literal, die
+# unquoted Sternstelle Muster. Die Teilung ist die Glob-Lesung in einer Form,
+# die shellcheck ohne Ausnahme liest (AGENTS.md §3.2: kein Inline-Suppression).
 passt() {
   local p="$1" e="$2" praefix suffix
   if [ "${e#*'*'}" = "$e" ]; then
