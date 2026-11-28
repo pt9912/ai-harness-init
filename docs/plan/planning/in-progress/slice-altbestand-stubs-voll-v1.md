@@ -86,7 +86,7 @@ Kriterium ihn ohne neue Entscheidung.
 
 ## 2. Definition of Done
 
-- [ ] **Liefer-Punkt 1:** das **Kriterium und der Schreiber-Zug** in
+- [x] **Liefer-Punkt 1:** das **Kriterium und der Schreiber-Zug** in
       [`internal/archive/anwenden.go`](../../../../internal/archive/anwenden.go)
       — das Suchraum-Differenzial (Basename aus `b.Verschindend()` ↔ Referenz
       in `Suchraum(…) \ SuchraumNachzug(…)`), der Umzugs-Stub-Write
@@ -104,16 +104,25 @@ Kriterium ihn ohne neue Entscheidung.
       [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit)
       — fällt das Differenzial still weg oder die `FormOK`-Variante rückt,
       färbt der Wächter rot.
-- [ ] **Liefer-Punkt 2:** die **repo-eigene Umzugs-Stub-Vorlage**
+- [x] **Liefer-Punkt 2:** die **repo-eigene Umzugs-Stub-Vorlage**
       `docs/plan/planning/archive-stub-umzug.template.md` <!-- d-check:ignore (Platzhalter: die Vorlage entsteht im Implementer-Zug, ADR-0112 Festlegung 2) --> (Name je
       [`ADR-0112`](../../adr/0112-umzugs-stub-traegt-die-referenzen-die-der-nachzug-nicht-erreicht.md)
       Festlegung 2) als Nachbar der Report-Vorlage — Identität (H1), der
       **Umzugs-Zeiger** auf die neue Arbeitsbaum-Adresse
       (`done/<wave-id>/…` bzw. `done/altbestand/…`), der Zustand
-      (`Archiviert mit: <der Schüssel>`); kein `##`-Glied — der Volltext
-      liegt byte-genau an der neuen Adresse (nicht nur im Zip), der Stub
-      ist die Adresse, die ihn liest.
-- [ ] **Liefer-Punkt 3:** die **Vorschau-Funde-Zeile je verweisender
+      (`Archiviert mit: <der Schüssel>`); kein `##`-Glied außer den zwei, die
+      das planning-Modul des Doku-Gates am Stub unter `done/slice-*.md`
+      verlangt — `## 2. Definition of Done` (leer) und `## 7. Closure-Notiz`
+      mit der `**Gegenstand:**`-Zeile; der Volltext liegt byte-genau an der
+      neuen Adresse (nicht nur im Zip), der Stub ist die Adresse, die ihn
+      liest.
+      *Plan-Korrektur je Fnd-4 (Review/Verifier 2026-11-28): die Erstablage
+      trug „kein `##`-Glied“ schlicht; gebaut ist `FormOKUmzug` mit den zwei
+      erlaubten Überschriften
+      (`internal/archive/stub.go` `FormOKUmzug`,
+      `docs/plan/planning/archive-stub-umzug.template.md`). Die Zusage „kein
+      Archiv-Zeiger“ bleibt unverändert.*
+- [x] **Liefer-Punkt 3:** die **Vorschau-Funde-Zeile je verweisender
       ADR-Datei** in
       [`internal/archive/vorschau.go`](../../../../internal/archive/vorschau.go)
       — die referenzierten Umzugs-Basenamen gehen als Haenger-Ziele an die
@@ -130,16 +139,17 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Ziel-Form: Slice — **≤ 3 Liefer-Punkte**; Gate-Läufe und die Closure-Pflichten
 zählen nicht mit.
 
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — kein Self-Review (Modul 8).
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben —
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist (Sensor-Doku
+      `harness/sensors/archive-welle.md` nachgezogen, Commit `a585983e`).
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben —
       `evidence/`-Datei ergänzen, wo eine Beobachtung anfiel; keine
       Beobachtung anfallen ist ebenfalls eine Antwort und wird in §7
       notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind hier geprüft
       — Repo ohne Wellen-Betrieb, nach dem `git mv`.
@@ -224,12 +234,78 @@ Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
+- **Was hat funktioniert:** der Altbestand-Lauf trug die Verleger-Form
+  ([`ADR-0112`](../../adr/0112-umzugs-stub-traegt-die-referenzen-die-der-nachzug-nicht-erreicht.md))
+  vollständig ein — die neun UMZUGEZOGEN-Stubs an der flachen alten Adresse
+  tragen die `- **Gegenstand:**`-Zeile in Werkzeug-Form und die zwei
+  Fall-Anker der Umzugs-Form-Verdrahtung stehen auf Fall 825 (Nachzug
+  `5569ea2c`, ohne den Haupt-Zug anzufassen); die Mutations-Anlage 825–828
+  ist voll und jeder Fall färbt seinen benannten Wächter rot
+  (Review-Messung); Vorlage und Emissions-Kopie sind byte-gleich; die
+  `[haenger]`-Sperre bleibt auf ihrer Rolle, die Funde-Zeile nennt je
+  verweisende ADR-Datei das umzogene Ziel.
+- **Was ging anders als geplant:** die Plan-Erstablage trug an LP 2 „kein
+  `##`-Glied“ schlicht; gebaut ist die Fassung mit den zwei erlaubten
+  Überschriften (`FormOKUmzug`) — Plan-Korrektur je Fnd-4 im
+  Plan-Korrektur-Commit vor diesem. Die Form-Divergenz der Stubs (Fnd-2)
+  wurde nicht im Haupt-Zug, sondern im Verifier-Nachzug (`5569ea2c`)
+  behoben. Die Review-Findings F-1 (Kommentar nennt eine nicht existierende
+  Kennung), F-3 (Funde-Zeile und Stub-Menge führen dasselbe Kriterium doppelt
+  ohne Gleichheits-Bindung), F-4/F-5 (Containment-Grenze und Zeiger-Teilform
+  benannt, nicht gefahren) sind LOW/INFO ohne Verhaltensbruch — kein eigenes
+  Werkzeug, kein Sensor; sie stehen hier als Finding-Klassen (Steering Loop,
+  1. Zählung je Klasse).
+- **Steering-Loop-Eintrag:** *neuer Sensor.* Regel — der Umzugs-Stub-Write
+  liegt **vor** dem Nachziehen; der Nachzug liest die Stub-Familie in der
+  Form, die sie vor dem Move hatte
+  ([`ADR-0112`](../../adr/0112-umzugs-stub-traegt-die-referenzen-die-der-nachzug-nicht-erreicht.md)
+  Festlegung 1). Stabile Bezeichnung:
+  `umzugs-stub-wird-geschrieben-bevor-der-nachzug-liest`. Belege: Anlage 828
+  (`test/mutations/828-archive-welle-go-umzug-stub-nach-dem-nachzug.sh`)
+  färbt `TestUmzugsStubVorDemNachziehenGesehen` rot; Anlass ist die
+  Anlage-828-Lektion — der Fall war zuerst am falschen Anker gehängt und
+  wurde an den Berührt-Anker umgehängt (`b1f12b9a`); der Fall-Kopf nennt den
+  Wächter, der ihn misst, nicht einen Nachbarn. Der Herkunfts-Anker am
+  Fall-Kopf (`· seit slice-altbestand-stubs-voll-v1`) trägt der Lauf, der
+  den Fall anfasst — Übergabe-Artefakt an den Implementer-Zug (eine Zeile im
+  Fall-Kopf), keine Änderung in dieser Closure.
+- **Beobachtungs-Register (`../observations/`):**
+  `BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt`
+  (`../../observations/BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt/state.md`)
+  — `evidence/slice-altbestand-stubs-voll-v1.md` ergänzt: die Vorab-Messung
+  über beide Adress-Formen fand die zu den bewegten Referenzen gehörenden
+  Pfade nur in den Frozen-Bäumen (kein beweglicher Treffer), die
+  Verleger-Form steht, und die fünf `seit slice-`-Anker lösen zweistufig
+  (Fund im Beleg). `state.md` bleibt auf der Stand-Zeile `verkörpert` — die
+  Verleger-Form ist der Ort der Verkörperung, nicht eine neue Stufe.
+- **Folge-Slices:** keiner aus dieser Closure. Offen benannt, ohne eigenen
+  Slice aus §6: ein Gleichheits-Wächter, der Funde-Zeile gegen die
+  geschriebene Stub-Menge am selben Lauf hält (F-3), und der Anker-Eintrag am
+  Fall-Kopf 828 (siehe Steering-Loop-Eintrag) — beide tragen künftige
+  Implementer-Züge, beide sind eine Zählung, keine Schwelle.
+- **M1-Urteil (Herkunfts-Anker nach dem Altbestand-Lauf):** entfallen mit
+  Grund — die fünf `seit slice-`-Anker in
+  [`AGENTS.md`](../../../../AGENTS.md) §3 (slice-emittierte-zusage-nennt-was-der-lauf-im-ziel-misst ·
+  slice-mutate-laeuft-ueber-einen-ci-branch · slice-traeger-pins-werden-nach-der-publikation-gegen-die-sha256sums-gehalten ·
+  slice-release-schnitt-v025-bereitet-vor · slice-macos-als-host-plattform-wird-entschieden-und-vollzogen)
+  lösen jeweils zweistufig: Kennung → Stub
+  `done/altbestand/slice-<Kennung>.md` (je Anker am Baum belegt, mit
+  `Archiviert mit:`- und `Hervorgegangen:`-Zeiger) →
+  `done/altbestand/archive.zip` (Volltext mit §7) — die deklarierte Fassung
+  des Anker-Regelwerks („Nach dem Archivieren ist es ein Hop mehr — erst der
+  Stub, dann sein Archiv-Zeiger", Baseline-Regelwerk
+  `grundlagen-traceability.md` §Herkunfts-Anker). Die Vorab-Messung über
+  beide Adress-Formen ergab keinen beweglichen Treffer auf diese Pfade
+  (Beleg im Register). Kein Folge-Slice.
+- **Risiken aus §6:** (1) Gegenformen am Umzugs-Stub — **weiter offen** ·
+  benannt, nicht geschlossen (ADR-0112 Festlegung 4); Träger bleibt der
+  Lauf, der schreibt; Re-Evaluierungs-Trigger der ADR greifen. (2)
+  Stub-Overhead — **entfallen** mit Grund: die Funde-Zeile macht je Lauf
+  sichtbar, was die Klasse kostet (am realen Altbestand-Lauf: neun Stubs);
+  wächst die Zahl, ist die Zeile der sichtbare Ort, kein Still-Leiden. (3)
+  Restbreite der zwei ADR-0016-`ignore-refs`-Paare — **weiter offen** ·
+  benannt; ihr Rückbau braucht eine eigene Schärfungs-ADR je
+  [`AGENTS.md`](../../../../AGENTS.md) §3.5.
 - **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
