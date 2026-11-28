@@ -141,8 +141,11 @@ zählen nicht mit.
 |---|---|---|
 | `docs/plan/planning/archive-stub-report.template.md` <!-- d-check:ignore (Platzhalter: entsteht im Implementer-Zug, MR-071-Form) --> (Name beim Implementer) | neu | die repo-eine Report-Stub-Form (LP 1) — Referenz statt Kopie über die Vorlagen-Verdratung des Trägers |
 | [`internal/archive/anwenden.go`](../../../../internal/archive/anwenden.go) | update | statt `g.Rm(b.Reviews)` die Stub-Emission je Review an unveränderter Adresse, staged; Zip-Logik unverändert voll (LP 2) |
-| `internal/archive/` (Tests) | update | Wächter je Fitness-Tafel: Stub bleibt am Pfad, Archiv-Zeiger und Zustand im Stub, Vorschau ohne Report-Ziele (LP 2) |
-| [`Makefile`](../../../../Makefile) (`archive-welle`-Rezept) | update | liest die neue Vorlage für die Review-Klasse ([`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) Träger-Form) — LP 1/LP 3 |
+| `internal/archive/` (Tests), `cmd/ai-harness-init/` (Tests) | update | Wächter je Fitness-Tafel: Stub bleibt am Pfad, Archiv-Zeiger und Zustand im Stub, Vorschau ohne Report-Ziele (LP 2) |
+| [`Makefile`](../../../../Makefile) (`archive-welle`-Rezept) | — | keine Änderung: der Träger liest die Report-Vorlage selbst über `internal/archive` (`stub.go`), das Rezept führt sie nicht — die Plan-Zeile „liest die neue Vorlage" ist gegen den Ist-Zustand berichtigt ([`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) Festlegung 1: die Logik liegt in `internal/archive`) |
+| `internal/emit/templates.go` | update | der Bootstrap trägt die Report-Vorlage in das Ziel-Repo (`docs/plan/planning/archive-stub-report.template.md`, skip-if-present) — ohne ihn bricht `archive-welle` im gebootstrappten Ziel fail-closed an der fehlenden Vorlage; byte-gleich zur repo-eigenen Vorlage, Kopplung in `test/archiv-stub-vorlagen.bats` (LP 2, Träger-Form) |
+| [`harness/tools/full-smoke.sh`](../../../../harness/tools/full-smoke.sh) | update | die E2E-Stufe der Archivierung folgt der Fähigkeit: der Report-Verweis ist kein `[haenger]`-Auslöser mehr, der Report bleibt als Stub; das Ziel-Repo startet mit der emittierten Vorlage (LP 2/LP 3) |
+| [`harness/sensors/archive-welle.md`](../../../../harness/sensors/archive-welle.md), [`cmd/ai-harness-init/main.go`](../../../../cmd/ai-harness-init/main.go) | update | der öffentliche Vertrag des Unterkommandos nennt den Report-Stub statt der Löschung (DoD „Doku-Update") |
 
 ## 4. Trigger
 

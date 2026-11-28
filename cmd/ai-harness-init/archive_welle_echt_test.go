@@ -158,22 +158,49 @@ func TestArchiveWelleEchtSperrtAmUnsauberenArbeitsbaum(t *testing.T) {
 	sperrtAb(t, root, filepath.Join(root, "docs"), "unsauber")
 }
 
-// TestArchiveWelleEchtSperrtAmHaengendenVerweis misst den Haenger-Schutz dort, wo
-// sein Suchraum entsteht: an der Liste von `git ls-files`, die echterEingang()
-// dem Zweig unterschiebt. Die Suchraum-LOGIK ist daneben gedeckt
-// (TestHaengerFindetVerweisAusReviewReport); was hier faellt, ist die Strecke aus
-// der Aussenwelt in sie hinein.
-//
-// Der lebende Verweis steht in spec/lastenheft.md — Rang 1 der Source Precedence
-// und ausserhalb von docs/. Faellt die Sperre, verschwindet der Report und der
-// Verweis zeigt ins Leere.
-// Gegenbeispiel: test/mutations/251-archive-welle-go-suchraum-leer.sh.
-func TestArchiveWelleEchtSperrtAmHaengendenVerweis(t *testing.T) {
+// TestArchiveWelleEchtArchiviertMitReportVerweisAusFremdemRang misst die
+// Eigenschaft, die ADR-0061 Festlegung 1 an der Adresse hängt, und die Strecke
+// aus der Aussenwelt in den Verweis-Nachzug hinein: `git ls-files` (echterEingang)
+// ist sein Suchraum-Eingang. Zwei Verweise liegen im Rang über docs/: der
+// Report-Verweis in spec/lastenheft.md — mit dem Report-Stub löst er NACH dem
+// Lauf unverändert weiter auf — und der Praefix-Verweis auf die bewegte
+// Slice-Datei in eigener Notiz, die der Nachzug auf die neue Adresse umhängt.
+// Fällt die Strecke, wird der Praefix-Verweis nicht umgehängt (Mutation
+// test/mutations/251-archive-welle-go-suchraum-leer.sh); fällt der Stub-Weg,
+// verschwindet der Report.
+func TestArchiveWelleEchtArchiviertMitReportVerweisAusFremdemRang(t *testing.T) {
 	root := echtesRepo(t, map[string]string{
 		"spec/lastenheft.md": "# Lastenheft\n\nBeleg: [Runde 1](../" + echterReport + ")\n",
+		"docs/notizen.md": "Siehe [den Slice](done/slice-100-a.md).\n",
 	})
-
-	sperrtAb(t, root, root, "haenger")
+	aus, fehler, code := traegerLauf(t, root, "archive-welle", "wave-10")
+	if code != 0 {
+		t.Fatalf("Exit %d, want 0:\n%s\nstderr: %s", code, aus, fehler)
+	}
+	report := filepath.Join(root, filepath.FromSlash(echterReport))
+	stub, err := os.ReadFile(report)
+	if err != nil {
+		t.Fatalf("der Report liegt nicht mehr an seiner unveränderten Adresse: %v", err)
+	}
+	for _, w := range []string{"> **ARCHIVIERT**", "**Archiviert mit:** wave-10", echterReport} {
+		if !strings.Contains(string(stub), w) {
+			t.Errorf("der Report-Stub traegt %q nicht:\n%s", w, stub)
+		}
+	}
+	lastenheft, err := os.ReadFile(filepath.Join(root, "spec", "lastenheft.md"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(lastenheft), echterReport) {
+		t.Errorf("der Verweis aus dem Lastenheft wurde angefasst:\n%s", lastenheft)
+	}
+	notizen, err := os.ReadFile(filepath.Join(root, "docs", "notizen.md"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(notizen), "done/wave-10/slice-100-a.md") {
+		t.Errorf("der Praefix-Verweis auf die bewegte Datei wurde nicht nachgezogen:\n%s", notizen)
+	}
 }
 
 // TestArchiveWelleEchtArchiviertUndSetztZweiCommits ist die Gegenprobe zu den
@@ -203,8 +230,12 @@ func TestArchiveWelleEchtArchiviertUndSetztZweiCommits(t *testing.T) {
 	if rest := gitLauf(t, root, "status", "--porcelain"); rest != "" {
 		t.Errorf("Arbeitsbaum nach dem Lauf nicht sauber — ein Schritt hat seinen Pfad nicht gestagt:\n%s", rest)
 	}
-	if _, err := os.Stat(filepath.Join(root, filepath.FromSlash(echterReport))); err == nil {
-		t.Error("der Review-Report liegt noch da — er sollte im Archiv stehen und geloescht sein")
+	reportStub, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(echterReport)))
+	if err != nil {
+		t.Fatalf("der Report liegt nicht mehr an seiner unveränderten Adresse: %v", err)
+	}
+	if !strings.Contains(string(reportStub), "> **ARCHIVIERT**") || !strings.Contains(string(reportStub), "**Archiviert mit:** wave-10") {
+		t.Errorf("der Report-Stub traegt Zeiger oder Zustand nicht:\n%s", reportStub)
 	}
 	stub, err := os.ReadFile(filepath.Join(root, filepath.FromSlash("docs/plan/planning/done/wave-10/slice-100-a.md")))
 	if err != nil {

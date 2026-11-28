@@ -9,9 +9,9 @@
 # Form-Aenderung der Baseline erst beim naechsten Archivierungslauf ans Licht —
 # als Stub mit einem stehengebliebenen Platzhalter.
 #
-# JE VORLAGE EINZELN, nicht ueber ihrer Vereinigung. Es gibt zwei Bloecke und
-# zwei Vorlagen, und der Block fuellt GENAU EINE davon: `sliceStub` die
-# Slice-Vorlage, `welleStub` die Welle-Vorlage. Ein Platzhalter, den beide
+# JE VORLAGE EINZELN, nicht ueber ihrer Vereinigung. Es gibt drei Bloecke und
+# drei Vorlagen, und der Block fuellt GENAU EINE davon: `sliceStub` die
+# Slice-Vorlage, `welleStub` die Welle-Vorlage, `reportStub` den Report-Stub. Ein Platzhalter, den beide
 # Bloecke ersetzen, steht auch in beiden Vorlagen — eine Umbenennung in genau
 # einer bliebe unter einer Vereinigungs-Frage gruen, waehrend der Lauf dort einen
 # Stub mit stehengebliebenem Platzhalter schriebe. Die Zuordnung Block -> Datei
@@ -29,11 +29,12 @@ setup() {
   KONST="$REPO/internal/archive/collect.go"
   VORLAGEN_KONST="$REPO/internal/archive/stub.go"
   TDIR="$(echo "$REPO"/.harness/baseline/*/templates/docs/plan/planning)"
-  # Die zwei Bloecke, benannt ueber die Konstante, mit der der Code seine Vorlage
+  PLANNING="$REPO/docs/plan/planning"
+  # Die drei Bloecke, benannt ueber die Konstante, mit der der Code seine Vorlage
   # waehlt — dieselbe Zeichenkette traegt den Block-Anfang und die Aufloesung des
-  # Dateinamens. Wer eine dritte Stub-Art baut, ohne sie hier zu ergaenzen, faellt
+  # Dateinamens. Wer eine vierte Stub-Art baut, ohne sie hier zu ergaenzen, faellt
   # am Deckungs-Fall unten auf.
-  BLOECKE="stubVorlageSlice stubVorlageWelle"
+  BLOECKE="stubVorlageSlice stubVorlageWelle stubVorlageReport"
 }
 
 # ersetzungs_zeilen <konstante> liefert die Ersetzungs-Literale GENAU DES Blocks,
@@ -44,11 +45,32 @@ ersetzungs_zeilen() {
   sed -n "/$1), \[\]Ersetzung{\$/,/^\t})\$/p" "$QUELLE" | grep -E '^[[:space:]]+\{'
 }
 
+# vorlage_pfad <konstante> loest den Dateinamen auf, den der Code unter dieser
+# Konstante fuehrt, und ordnet ihm seinen Ort zu — vendored ($TDIR) oder
+# repo-eigen ($PLANNING, ADR-0061 Festlegung 2). Ein Dateiname, der an keinem der
+# beiden Orte liegt, ist leer — der Fall unten faellt laut statt still. Ohne diese
+# Aufloesung stuende die Zuordnung Block -> Ort hier ein zweites Mal und koennte
+# gegen den Code driften.
+vorlage_pfad() {
+  local datei
+  datei="$(vorlage_datei "$1")" || return 1
+  if [ -f "$TDIR/$datei" ]; then
+    printf '%s\n' "$TDIR/$datei"
+  elif [ -f "$PLANNING/$datei" ]; then
+    printf '%s\n' "$PLANNING/$datei"
+  else
+    echo "Vorlage '$datei' (aus '$1') liegt weder unter $TDIR noch unter $PLANNING" >&2
+    return 1
+  fi
+}
+
 # vorlage_datei <konstante> loest den Dateinamen auf, den der Code unter dieser
 # Konstante fuehrt. Ohne diese Aufloesung stuende die Zuordnung Block -> Datei
 # hier ein zweites Mal und koennte gegen den Code driften.
 vorlage_datei() {
-  sed -n "s/^[[:space:]]*$1[[:space:]]*= \"\(.*\)\"\$/\1/p" "$VORLAGEN_KONST"
+  local datei
+  datei="$(sed -n "s/^[[:space:]]*$1[[:space:]]*= \"\(.*\)\"\$/\1/p" "$VORLAGEN_KONST")"
+  printf '%s\n' "$datei"
 }
 
 # platzhalter <konstante> loest jedes Literal des Blocks in seinen ERSTEN
@@ -95,9 +117,22 @@ platzhalter() {
   done < <(ersetzungs_zeilen "$1")
 }
 
-@test "beide Stub-Vorlagen liegen im vendored Baum" {
+@test "die zwei vendored Stub-Vorlagen liegen im vendored Baum" {
   [ -f "$TDIR/archive-stub-slice.template.md" ]
   [ -f "$TDIR/archive-stub-wave.template.md" ]
+}
+
+@test "die Report-Stub-Vorlage liegt repo-eigen unter docs/plan/planning" {
+  [ -f "$PLANNING/archive-stub-report.template.md" ]
+}
+
+# Die Kopplung der beiden Faesser derselben Form: der Bootstrap traegt die
+# Report-Stub-Vorlage in das Ziel-Repo (internal/emit/templates/planning/),
+# der Träger liest sie dort am selben Pfad — byte-gleich zur repo-eigenen
+# Vorlage dieses Repos. Treibt eine Seite die Form auseinander, faellt der Fall.
+@test "die Report-Stub-Vorlage ist byte-gleich zur mitgetragenen des Bootstraps" {
+  cmp "$PLANNING/archive-stub-report.template.md" \
+      "$REPO/internal/emit/templates/planning/archive-stub-report.template.md"
 }
 
 # Die Deckungs-Aussage des Falls darunter, jetzt je Block: die Extraktion loest
@@ -105,11 +140,11 @@ platzhalter() {
 # leer. Beides ist noetig: ein sed-Bereich, der ins Leere liefe, machte den
 # Vorlagen-Fall unten zu einer Quantifizierung ueber die leere Menge, und die ist
 # immer wahr.
-@test "die Extraktion loest jedes Ersetzungs-Literal beider Bloecke auf" {
+@test "die Extraktion loest jedes Ersetzungs-Literal aller Bloecke auf" {
   for k in $BLOECKE; do
     zeilen="$(ersetzungs_zeilen "$k" | grep -c . || true)"
-    [ "$zeilen" -ge 5 ] || {
-      echo "Block '$k': nur $zeilen Ersetzungs-Literale gefunden — der Bereich greift nicht" >&2
+    [ "$zeilen" -ge 1 ] || {
+      echo "Block '$k': keine Ersetzungs-Literale gefunden — der Bereich greift nicht (nicht-leer ist genug: die Aufloesung unten zaehlt jedes)" >&2
       false
     }
     aufgeloest="$(platzhalter "$k" | grep -c . || true)"
@@ -123,19 +158,11 @@ platzhalter() {
 @test "jeder Platzhalter steht in genau der Vorlage, die sein Block fuellt" {
   fehlend=""
   for k in $BLOECKE; do
-    datei="$(vorlage_datei "$k")"
-    [ -n "$datei" ] || {
-      echo "Konstante '$k' ist in ${VORLAGEN_KONST##*/} nicht aufloesbar" >&2
-      false
-    }
-    [ -f "$TDIR/$datei" ] || {
-      echo "Vorlage '$datei' (aus '$k') liegt nicht unter $TDIR" >&2
-      false
-    }
+    vorlage="$(vorlage_pfad "$k")" || false
     while IFS= read -r p; do
       [ -n "$p" ] || continue
-      grep -qF -- "$p" "$TDIR/$datei" || fehlend="$fehlend
-  $datei: $p"
+      grep -qF -- "$p" "$vorlage" || fehlend="$fehlend
+  $vorlage: $p"
     done < <(platzhalter "$k" | sort -u)
   done
   [ -z "$fehlend" ] || {
@@ -148,11 +175,12 @@ platzhalter() {
 # Stub baut: H1 in Zeile 1, der Archiv-Zeiger-Block, der Feld-Block als LETZTER
 # Absatz. Faellt einer weg, schreibt der Lauf einen Stub ohne Zeiger oder ohne
 # Felder — und FormOK meldet nur den fehlenden Zeiger, nicht die leeren Felder.
-@test "beide Vorlagen tragen H1, Archiv-Zeiger und einen Feld-Block als letzten Absatz" {
-  for f in "$TDIR/archive-stub-slice.template.md" "$TDIR/archive-stub-wave.template.md"; do
-    head -n 1 "$f" | grep -q '^# '
-    grep -q '^> \*\*ARCHIVIERT\*\*' "$f"
-    grep -q 'archive.zip' "$f"
-    tail -n 1 "$f" | grep -q '^\*\*'
+@test "alle Stub-Vorlagen tragen H1, Archiv-Zeiger und einen Feld-Block als letzten Absatz" {
+  for k in $BLOECKE; do
+    vorlage="$(vorlage_pfad "$k")" || false
+    head -n 1 "$vorlage" | grep -q '^# '
+    grep -q '^> \*\*ARCHIVIERT\*\*' "$vorlage"
+    grep -q 'archive.zip' "$vorlage"
+    tail -n 1 "$vorlage" | grep -q '^\*\*'
   done
 }

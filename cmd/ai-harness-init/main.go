@@ -96,9 +96,10 @@ Subkommando archive-welle [--vorschau] <wave-id>:
   Archiviert die Zeitdokumente einer geschlossenen Welle: Slice-Dateien,
   Welle-Plan und Review-Reports wandern nach done/<wave-id>/archive.zip, an der
   Stelle von Slice und Plan bleibt je ein gekuerzter Stub aus der vendored
-  Vorlage. Verlangt einen sauberen Arbeitsbaum, setzt zwei getrennte Commits
-  (reiner Move, dann Inhalt) und bricht an jeder Sperre ab, bevor er etwas
-  anfasst. Mit --vorschau wird nur gesagt, was der Lauf taete.
+  Vorlage, an der Stelle des Review-Reports ein Stub aus der repo-eigenen
+  Vorlage an unveranderter Adresse. Verlangt einen sauberen Arbeitsbaum, setzt
+  zwei getrennte Commits (reiner Move, dann Inhalt) und bricht an jeder Sperre
+  ab, bevor er etwas anfasst. Mit --vorschau wird nur gesagt, was der Lauf taete.
 
 Subkommando vendor-baseline <tag> <sha256>:
   Legt den vendored Baum DIESES Repos (.harness/baseline/<tag>/) aus dem

@@ -14,8 +14,8 @@ import (
 	"github.com/pt9912/ai-harness-init/internal/archive"
 )
 
-// gitMitschreiber ist die Test-Verdrahtung der vier git-Operationen: `Mv` und
-// `Rm` bewegen den synthetischen Baum wirklich (die folgenden Schritte muessen
+// gitMitschreiber ist die Test-Verdrahtung der drei git-Operationen: `Mv`
+// bewegt den synthetischen Baum wirklich (die folgenden Schritte muessen
 // die Dateien an ihrer neuen Adresse finden), `Add` und `Commit` schreiben mit.
 //
 // Bei JEDEM Commit haelt er einen Schnappschuss fest: den Inhalt der beobachteten
@@ -40,16 +40,6 @@ func (g *gitMitschreiber) Mv(alt, neu string) error {
 		return err
 	}
 	return os.Rename(filepath.Join(g.root, filepath.FromSlash(alt)), ziel)
-}
-
-func (g *gitMitschreiber) Rm(pfade []string) error {
-	g.rufe = append(g.rufe, "rm")
-	for _, p := range pfade {
-		if err := os.Remove(filepath.Join(g.root, filepath.FromSlash(p))); err != nil {
-			return err
-		}
-	}
-	return nil
 }
 
 func (g *gitMitschreiber) Add(pfade []string) error {
@@ -188,7 +178,7 @@ func TestAnwendenTrenntMoveVonInhalt(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	wantRufe := []string{"mv", "mv", "mv", "commit", "rm", "add", "commit"}
+	wantRufe := []string{"mv", "mv", "mv", "commit", "add", "commit"}
 	if strings.Join(g.rufe, ",") != strings.Join(wantRufe, ",") {
 		t.Fatalf("git-Aufrufe = %v, want %v", g.rufe, wantRufe)
 	}
@@ -237,6 +227,9 @@ func TestZuStagenNenntNurArchivStubsUndNachgezogene(t *testing.T) {
 		"docs/plan/planning/done/wave-10/slice-100-a.md",
 		"docs/plan/planning/done/wave-10/slice-101-b.md",
 		"docs/plan/planning/done/wave-10/wave-10-eine-welle.md",
+		// Der Report-Stub steht an UNVERAENDERTER Adresse — eine geaenderte,
+		// nicht eine geloeschte Datei (ADR-0061 Festlegung 3).
+		"docs/reviews/2026-05-05-slice-100-runde-1.md",
 	}
 	if strings.Join(got, "\n") != strings.Join(want, "\n") {
 		t.Fatalf("gestagte Pfade =\n%s\nwant\n%s", strings.Join(got, "\n"), strings.Join(want, "\n"))
@@ -308,12 +301,20 @@ func TestAnwendenSchreibtBeideStubArtenAusDerVorlage(t *testing.T) {
 			t.Errorf("%s traegt den Vorlagen-Hinweis — die Kuerzung hat ihn nicht genommen", p)
 		}
 	}
-	// Der fremde Slice bleibt liegen, der Review-Report ist ohne Stub verschwunden.
+	// Der fremde Slice bleibt liegen; der Review-Report bleibt an seiner
+	// Adresse als Stub (ADR-0061 Festlegung 1) — der Volltext ist fort, der
+	// Zeiger und die Zustaendigkeit stehen.
 	if _, err := os.Stat(filepath.Join(root, "docs", "plan", "planning", "done", "slice-102-c.md")); err != nil {
 		t.Errorf("der fremde Slice ist nicht liegen geblieben: %v", err)
 	}
-	if _, err := os.Stat(filepath.Join(root, "docs", "reviews", "2026-05-05-slice-100-runde-1.md")); !os.IsNotExist(err) {
-		t.Errorf("der Review-Report liegt noch: %v", err)
+	wantReport := "# Review\n" +
+		"\n" +
+		"> **ARCHIVIERT** — Volltext:\n" +
+		"> `unzip -p docs/plan/planning/done/wave-10/archive.zip docs/reviews/2026-05-05-slice-100-runde-1.md`\n" +
+		"\n" +
+		"**Archiviert mit:** wave-10\n"
+	if got := lesen(t, root, "docs/reviews/2026-05-05-slice-100-runde-1.md"); got != wantReport {
+		t.Errorf("Report-Stub am unveranderten Pfad =\n%q\nwant\n%q", got, wantReport)
 	}
 }
 
@@ -559,8 +560,15 @@ func TestAnwendenSchreibtDenStubEinesBenanntenSlice(t *testing.T) {
 	if kopf := strings.SplitN(stub, "\n", 2)[0]; kopf != "# slice-der-benannte — Der benannte Gegenstand" {
 		t.Errorf("Stub-Kopfzeile = %q", kopf)
 	}
-	if _, err := os.Stat(filepath.Join(root, "docs", "reviews", "2026-05-06-slice-der-benannte-r2.md")); err == nil {
-		t.Errorf("Report des benannten Slice liegt noch in docs/reviews/; Reviews = %v", b.Reviews)
+	// Der Report des benannten Slice bleibt an seiner Adresse als Stub — dieselbe
+	// Faehigkeit fuer die benannte Kennungs-Form (ADR-0061 Festlegung 1).
+	report := lesen(t, root, "docs/reviews/2026-05-06-slice-der-benannte-r2.md")
+	if !strings.Contains(report, "> **ARCHIVIERT**") ||
+		!strings.Contains(report, "docs/plan/planning/done/wave-10/archive.zip docs/reviews/2026-05-06-slice-der-benannte-r2.md") {
+		t.Errorf("Report-Stub des benannten Slice traegt Zeiger oder Adresse nicht:\n%s", report)
+	}
+	if !strings.Contains(report, "**Archiviert mit:** wave-10") {
+		t.Errorf("Report-Stub des benannten Slice traegt die Zustaendigkeit nicht:\n%s", report)
 	}
 }
 
@@ -656,12 +664,12 @@ func baumListe(t *testing.T, root string) []string {
 
 // TestAnwendenBrichtVorDemKuerzenAb misst die Zusage der Rueckleseprobe: ein
 // Archiv, das nach dem Schreiben nicht lesbar oder nicht byte-gleich zu seinen
-// Quellen ist, beendet den Lauf, BEVOR ein Original zum Stub gekuerzt oder ein
-// Review-Report geloescht wird. Je Fall steht die Ursache im Fehlertext (Archiv
-// und, wo es einen gibt, der Eintrag); gemessen wird der Baum nach dem Abbruch:
-// die Volltexte stehen, der Report liegt, es gab weder `rm` noch `add` noch einen
-// zweiten Commit. Das Zip selbst bleibt liegen. Gegenbeispiel: den Aufruf der
-// Probe in inhaltsSchritt wirkungslos machen (test/mutations/771).
+// Quellen ist, beendet den Lauf, BEVOR ein Original zum Stub gekuerzt wird —
+// ein Slice, ein Welle-Plan und ein Review-Report. Je Fall steht die Ursache im
+// Fehlertext (Archiv und, wo es einen gibt, der Eintrag); gemessen wird der Baum
+// nach dem Abbruch: die Volltexte stehen, auch der Report, es gab kein `add`
+// und keinen zweiten Commit. Das Zip selbst bleibt liegen. Gegenbeispiel: den
+// Aufruf der Probe in inhaltsSchritt wirkungslos machen (test/mutations/771).
 func TestAnwendenBrichtVorDemKuerzenAb(t *testing.T) {
 	const (
 		done   = "docs/plan/planning/done/wave-10/"
@@ -756,16 +764,11 @@ func TestAnwendenBrichtVorDemKuerzenAb(t *testing.T) {
 			if got := lesen(t, root, erster); got != volltextSlice100 {
 				t.Errorf("das Original ist gekuerzt, obwohl das Archiv defekt ist:\n%q", got)
 			}
-			if _, err := os.Stat(filepath.Join(root, "docs", "reviews", "2026-05-05-slice-100-runde-1.md")); err != nil {
-				t.Errorf("der Review-Report ist geloescht, obwohl das Archiv defekt ist: %v", err)
+			if got := lesen(t, root, "docs/reviews/2026-05-05-slice-100-runde-1.md"); got != "# Review\n" {
+				t.Errorf("der Report ist verkuerzt, obwohl das Archiv defekt ist:\n%q", got)
 			}
 			if len(g.commits) != 1 || len(g.addPfade) != 0 {
 				t.Errorf("%d Commit(s), %d gestagte Pfade, want 1 und 0 — nach der Probe darf nichts mehr laufen", len(g.commits), len(g.addPfade))
-			}
-			for _, r := range g.rufe {
-				if r == "rm" {
-					t.Error("der Lauf hat die Review-Reports geloescht, obwohl das Archiv defekt ist")
-				}
 			}
 			if _, err := os.Stat(filepath.Join(root, filepath.FromSlash(zipRel))); err != nil {
 				t.Errorf("das defekte Zip liegt nicht mehr an seinem Pfad: %v", err)

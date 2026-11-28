@@ -9,16 +9,18 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 )
 
 // Git ist die Menge der git-Operationen, die der schreibende Lauf braucht. Sie
 // steht als Schnittstelle, weil die zwei Eigenschaften, die an ihr haengen —
 // die Zwei-Commit-Trennung und das explizite Staging — sonst nur an einem
 // echten Repo pruefbar waeren. Der Aufrufer verdrahtet `git`, der Test einen
-// Mitschreiber ueber einem synthetischen Baum.
+// Mitschreiber ueber einem synthetischen Baum. `Rm` fehlt seit ADR-0061 mit
+// Bedacht: der Lauf loescht kein Zeitdokument mehr ersatzlos, jeder
+// Review-Report ueberlebt als Stub an unveranderter Adresse.
 type Git interface {
 	Mv(alt, neu string) error
-	Rm(pfade []string) error
 	Add(pfade []string) error
 	Commit(nachricht string) error
 }
@@ -31,8 +33,8 @@ type Umzug struct {
 }
 
 // Umzuege nennt die Dateien, die der Lauf bewegt: die eingesammelten Slices und
-// den Welle-Plan. Die Review-Reports stehen NICHT darin — sie verschwinden ohne
-// Stub und ohne neue Adresse.
+// den Welle-Plan. Die Review-Reports stehen NICHT darin — sie werden nicht
+// bewegt; ihr Stub tritt an dieselbe Adresse (ADR-0061 Festlegung 1).
 func Umzuege(b Bestand) []Umzug {
 	ziel := doneDir + "/" + b.Welle
 	var out []Umzug
@@ -44,14 +46,15 @@ func Umzuege(b Bestand) []Umzug {
 }
 
 // ZuStagen nennt die Pfade, die der Inhalts-Commit stagt: das Archiv, die Stubs
-// und die Dateien, deren Verweise nachgezogen wurden — und sonst nichts.
+// der bewegten Dateien, die Report-Stubs an ihren UNVERAENDERTEN Adressen
+// (geaenderte Dateien, kein geloeschter Pfad — ADR-0061 Festlegung 3) und die
+// Dateien, deren Verweise nachgezogen wurden — und sonst nichts.
 //
 // ZUSAGE, und sie ist ADR-0033 Abnahme-Kriterium 2 in seiner schreibenden
 // Haelfte: die Liste ist AUFGEZAEHLT, nicht `-A`. Der Inhalts-Commit ist der
 // Wave-Self-Close-Punkt, den ein Audit liest; traegt er fremden Inhalt, ist die
 // Zusage "der Archivierungs-Commit bezeugt die Vollstaendigkeit" gebrochen,
-// ohne dass etwas rot wird. Die Loeschung der Review-Reports steht nicht darin —
-// sie ist von `Rm` bereits gestagt.
+// ohne dass etwas rot wird.
 // Gedeckt von TestZuStagenNenntNurArchivStubsUndNachgezogene;
 // test/mutations/241-archive-welle-go-staging-explizit.sh nimmt die Aufzaehlung weg.
 func ZuStagen(b Bestand, nachgezogen []string) []string {
@@ -59,6 +62,9 @@ func ZuStagen(b Bestand, nachgezogen []string) []string {
 	menge := map[string]bool{ziel + "/" + archivName: true}
 	for _, u := range Umzuege(b) {
 		menge[u.Neu] = true
+	}
+	for _, r := range b.Reviews {
+		menge[filepath.ToSlash(r)] = true
 	}
 	for _, n := range nachgezogen {
 		menge[filepath.ToSlash(n)] = true
@@ -72,8 +78,8 @@ func ZuStagen(b Bestand, nachgezogen []string) []string {
 }
 
 // Anwenden fuehrt die Archivierung aus: Move und Commit 1, das Zip, beide
-// Stub-Arten aus der vendored Vorlage, das Loeschen der Review-Reports, der
-// Verweis-Nachzug und Commit 2.
+// Stub-Arten aus den vendored Vorlagen, den Report-Stub aus der repo-eigenen
+// Vorlage, der Verweis-Nachzug und Commit 2.
 //
 // ZWEI COMMITS, und die Trennung ist die von AGENTS.md 3.3: Commit 1 traegt den
 // reinen Move und kein Byte Inhalt, Commit 2 traegt Archiv, Stubs und Nachzug.
@@ -175,8 +181,8 @@ func (e NachCommit1Fehler) Error() string {
 
 func (e NachCommit1Fehler) Unwrap() error { return e.Ursache }
 
-// inhaltsSchritt ist alles, was in Commit 2 landet: Zip, Stubs, Loeschung der
-// Review-Reports, Verweis-Nachzug, Staging.
+// inhaltsSchritt ist alles, was in Commit 2 landet: Zip, Stubs der bewegten
+// Dateien, Report-Stubs an unveranderter Adresse, Verweis-Nachzug, Staging.
 func inhaltsSchritt(root string, b Bestand, dateien []string, vorlagen string, umzuege []Umzug, g Git, out io.Writer, schreibeZip zipSchreiber) error {
 	ziel := doneDir + "/" + b.Welle
 	zipRel := ziel + "/" + archivName
@@ -208,9 +214,26 @@ func inhaltsSchritt(root string, b Bestand, dateien []string, vorlagen string, u
 		return err
 	}
 
-	if len(b.Reviews) > 0 {
-		if err := g.Rm(b.Reviews); err != nil {
+	for _, r := range b.Reviews {
+		inhalt, ok, err := lies(root, r)
+		if err != nil {
 			return err
+		}
+		if !ok {
+			return fmt.Errorf("%s vor dem Stub nicht lesbar", r)
+		}
+		text, err := reportStub(root, b.Welle, zipRel, r, inhalt)
+		if err != nil {
+			return err
+		}
+		// Dieselbe Form-Verdrahtung wie ueber den Umzuegen: FormOK VOR dem
+		// Schreibzugriff, damit ein form-widriger Report-Stub den Baum nicht
+		// erreicht (Gedeckt von denselben Faellen).
+		if err := FormOK(text); err != nil {
+			return fmt.Errorf("%s: %v", r, err)
+		}
+		if err := os.WriteFile(filepath.Join(root, filepath.FromSlash(r)), []byte(text), 0o644); err != nil {
+			return fmt.Errorf("%s schreiben: %w", r, err)
 		}
 	}
 
@@ -240,7 +263,7 @@ func inhaltsSchritt(root string, b Bestand, dateien []string, vorlagen string, u
 	if groesse != nil {
 		bytes = groesse.Size()
 	}
-	fmt.Fprintf(out, "  Commit 2 (Inhalt): %s (%d Bytes), %d Stub(s), %d Review-Report(s) entfernt\n",
+	fmt.Fprintf(out, "  Commit 2 (Inhalt): %s (%d Bytes), %d Stub(s) bewegter Dateien, %d Report-Stub(s)\n",
 		archivName, bytes, len(umzuege), len(b.Reviews))
 	// Dieselbe Zeile wie in der Vorschau, aus derselben Funktion: zwei Fassungen
 	// derselben Ausgabe drifteten.
@@ -249,9 +272,10 @@ func inhaltsSchritt(root string, b Bestand, dateien []string, vorlagen string, u
 	return nil
 }
 
-// schreibeStubs ersetzt jede bewegte Datei durch ihren Stub. Der Welle-Plan
-// bekommt die Welle-Vorlage, jeder Slice die Slice-Vorlage; Review-Reports
-// bekommen keinen — sie haben keine Identitaet jenseits ihres Slice.
+// schreibeStubs ersetzt jede bewegte Datei durch ihren Stub und jeden
+// Review-Report durch seinen Stub an UNVERAENDERTER Adresse (ADR-0061
+// Festlegung 1). Der Welle-Plan bekommt die Welle-Vorlage, jeder Slice die
+// Slice-Vorlage, jeder Report die repo-eigene Report-Vorlage.
 func schreibeStubs(root string, b Bestand, vorlagen string, umzuege []Umzug, zipRel string) error {
 	// Der Schluessel AltbestandSchluessel hat weder Plan noch Ergebnisnotiz: kein
 	// Welle-Stub, und `Geschlossen:` traegt den Leerwert `—` (WelleDatum ohne Zeile).
@@ -317,6 +341,31 @@ func sliceStub(root, vorlagen string, b Bestand, planBase, wDatum, zipRel, neu, 
 		{"done/<wave-id>/" + archivName, zipRel},
 		{"<pfad-im-archiv>", neu},
 		{"<wave-id>", b.Welle},
+	})
+}
+
+// reportVorlagePfad ist der Pfad einer Vorlage unter docs/plan/planning/ — den
+// Report-Stub-Vorlagen-Ort REPO-EIGEN (ADR-0061 Festlegung 2): anders als die
+// zwei vendored Stub-Vorlagen liegt sie NICHT im Baseline-Baum, der Kurs-Satz
+// fuehrt die Klasse nicht. Fehlt die Datei, faellt der Lauf mit „Vorlage
+// fehlt" aus und erfindet keine Form (dieselbe AusVorlage-Setzung wie bei den
+// zwei vendored).
+func reportVorlagePfad(root string, name string) string {
+	return filepath.Join(root, filepath.FromSlash(planningDir), name)
+}
+
+// reportStub baut den Stub eines Review-Reports. Die H1-Zeile kommt aus dem
+// Volltext (die Identitaet ist die des Reports, die Adresse bleibt dieselbe —
+// ADR-0061 Festlegung 1), der Zeiger zeigt auf den Archiv-Eintrag unter dem
+// repo-relativen Pfad des Reports — demselben Pfad, an dem der Stub liegt —
+// und `Archiviert mit:` nennt den Lauf, der den Report eingesammelt hat.
+func reportStub(root, welle, zipRel, review, inhalt string) (string, error) {
+	titel := strings.TrimSpace(rautenRE.ReplaceAllString(strings.TrimRight(Kopfzeile(inhalt), "\r"), ""))
+	return AusVorlage(reportVorlagePfad(root, stubVorlageReport), []Ersetzung{
+		{"<Titel>", titel},
+		{"done/<wave-id>/" + archivName, zipRel},
+		{"<pfad-im-archiv>", review},
+		{"<wave-id | altbestand>", welle},
 	})
 }
 

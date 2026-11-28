@@ -33,16 +33,6 @@ func (g *gitBewegend) Mv(alt, neu string) error {
 	return os.Rename(filepath.Join(g.root, filepath.FromSlash(alt)), ziel)
 }
 
-func (g *gitBewegend) Rm(pfade []string) error {
-	g.rufe = append(g.rufe, "rm")
-	for _, p := range pfade {
-		if err := os.Remove(filepath.Join(g.root, filepath.FromSlash(p))); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 func (g *gitBewegend) Add([]string) error { g.rufe = append(g.rufe, "add"); return nil }
 
 func (g *gitBewegend) Commit(nachricht string) error {
@@ -56,17 +46,24 @@ const altbestandStub = "# <Titel>\n\n> **ARCHIVIERT** — Volltext:\n" +
 	"**Welle:** <wave-id | ohne Welle>\n" +
 	"**Archiviert mit:** <wave-id> · **Geschlossen:** <JJJJ-MM-TT>\n"
 
+const altbestandReportStub = "# <Titel> — Report-Stub\n\n> **ARCHIVIERT** — Volltext:\n" +
+	"> `unzip -p done/<wave-id>/archive.zip <pfad-im-archiv>`\n\n" +
+	"**Archiviert mit:** <wave-id | altbestand>\n"
+
 const doneRel = "docs/plan/planning/done/"
 
 // altbestandBaum: zwei wellenlose Slices mit je einem Review-Report, ein
 // Mitglied und ein Plan von wave-10 samt Ergebnisnotiz (bleiben flach), ein
 // fremder Slice (bleibt flach). Kein done/*/archive.zip: die Untergrenze fehlt.
+// Die Report-Vorlage liegt repo-eigen unter docs/plan/planning/ — dort liest
+// der Träger sie (ADR-0061 Festlegung 2).
 func altbestandBaum(t *testing.T) string {
 	t.Helper()
 	root := t.TempDir()
 	vorlagen := ".harness/baseline/v9.99.0/templates/docs/plan/planning/"
 	schreibeDatei(t, root, vorlagen+"archive-stub-slice.template.md", altbestandStub)
 	schreibeDatei(t, root, vorlagen+"archive-stub-wave.template.md", altbestandStub)
+	schreibeDatei(t, root, "docs/plan/planning/archive-stub-report.template.md", altbestandReportStub)
 	schreibeDatei(t, root, doneRel+"slice-100-a.md", "# Slice slice-100: A\n\n**Welle:** ohne Welle\n")
 	schreibeDatei(t, root, doneRel+"slice-101-b.md", "# Slice slice-101: B\n\n**Welle:** ohne Welle — DoD\n")
 	schreibeDatei(t, root, doneRel+"slice-102-c.md", "# Slice slice-102: C\n\n**Welle:** wave-10\n")
@@ -128,7 +125,7 @@ func TestArchiveWelleAltbestandSchreibtDieMengeDerVorschau(t *testing.T) {
 		t.Fatalf("Vorschau Exit %d, want 0:\n%s%s", code, vorschau.String(), errb.String())
 	}
 	wellenlos := zahlAus(t, vorschau.String(), "wellenlos (seit der letzten Closure):")
-	reviews := zahlAus(t, vorschau.String(), "Review-Reports (ohne Stub):")
+	reviews := zahlAus(t, vorschau.String(), "Review-Reports (mit Stub):")
 	if wellenlos != 2 || reviews != 2 {
 		t.Fatalf("Vorbedingung des Baums: wellenlos=%d reviews=%d, want 2/2", wellenlos, reviews)
 	}
@@ -163,8 +160,18 @@ func TestArchiveWelleAltbestandSchreibtDieMengeDerVorschau(t *testing.T) {
 		t.Errorf("flach in done/ nach dem Lauf: %s", got)
 	}
 	for _, r := range []string{"2026-05-05-slice-100-r1.md", "2026-05-06-slice-101-r1.md"} {
-		if _, err := os.Stat(filepath.Join(root, "docs", "reviews", r)); err == nil {
-			t.Errorf("Review-Report %s liegt noch da", r)
+		stub, err := os.ReadFile(filepath.Join(root, "docs", "reviews", r))
+		if err != nil {
+			t.Errorf("Review-Report %s liegt nicht mehr an seiner Adresse: %v", r, err)
+			continue
+		}
+		for _, w := range []string{"> **ARCHIVIERT**", "unzip -p docs/plan/planning/done/altbestand/archive.zip docs/reviews/" + r, "**Archiviert mit:** altbestand"} {
+			if !strings.Contains(string(stub), w) {
+				t.Errorf("Report-Stub %s traegt %q nicht:\n%s", r, w, stub)
+			}
+		}
+		if strings.Contains(string(stub), "\n##") {
+			t.Errorf("Report-Stub %s traegt eine Abschnittsueberschrift:\n%s", r, stub)
 		}
 	}
 
@@ -181,7 +188,7 @@ func TestArchiveWelleAltbestandSchreibtDieMengeDerVorschau(t *testing.T) {
 		t.Errorf("Stub traegt eine Abschnittsueberschrift:\n%s", stub)
 	}
 
-	if want := "mv,mv,commit,rm,add,commit"; strings.Join(g.rufe, ",") != want {
+	if want := "mv,mv,commit,add,commit"; strings.Join(g.rufe, ",") != want {
 		t.Errorf("git-Aufrufe = %v, want %s", g.rufe, want)
 	}
 	if len(g.commits) != 2 {
@@ -242,32 +249,6 @@ func TestArchiveWelleAltbestandZweiterLaufSperrtAnArchiviert(t *testing.T) {
 	}
 	if baumAbdruck(t, root) != vorher {
 		t.Error("der zweite Lauf hat den Baum veraendert")
-	}
-}
-
-// TestArchiveWelleAltbestandSperrtImLaufBeiHaenger haelt L2 (5) und ADR-0041
-// Festlegung 4 am schreibenden Lauf: ein bleibender Report verlinkt einen
-// Review-Report, der verschwinden soll. Exit 3, nichts geschrieben.
-func TestArchiveWelleAltbestandSperrtImLaufBeiHaenger(t *testing.T) {
-	root := altbestandBaum(t)
-	schreibeDatei(t, root, "docs/reviews/2026-09-02-slice-900-r1.md",
-		"# Fremder Report\n\nSiehe [Vorrunde](2026-05-05-slice-100-r1.md).\n")
-	vorher := baumAbdruck(t, root)
-
-	g := &gitBewegend{root: root}
-	var out, errb bytes.Buffer
-	code := archiveWelleLauf(root, einCommit(t, root), "altbestand", altKennung, false, "", indexAttrappe(t, root), g, &out, &errb)
-	if code != 3 {
-		t.Errorf("Exit %d, want 3:\n%s", code, out.String())
-	}
-	if !strings.Contains(out.String(), "[haenger]") {
-		t.Errorf("Sperre 'haenger' fehlt:\n%s", out.String())
-	}
-	if len(g.rufe) != 0 {
-		t.Errorf("git-Operationen trotz Sperre: %v", g.rufe)
-	}
-	if baumAbdruck(t, root) != vorher {
-		t.Error("der gesperrte Lauf hat den Baum veraendert")
 	}
 }
 

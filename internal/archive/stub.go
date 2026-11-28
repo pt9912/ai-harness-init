@@ -11,10 +11,11 @@ import (
 )
 
 const (
-	stubVorlageSlice = "archive-stub-slice.template.md"
-	stubVorlageWelle = "archive-stub-wave.template.md"
-	templatesUnter   = "templates/docs/plan/planning"
-	leerwert         = "— keine —"
+	stubVorlageSlice  = "archive-stub-slice.template.md"
+	stubVorlageWelle  = "archive-stub-wave.template.md"
+	stubVorlageReport = "archive-stub-report.template.md"
+	templatesUnter    = "templates/docs/plan/planning"
+	leerwert          = "— keine —"
 )
 
 // Ersetzung ist ein Platzhalter der Vorlage und der Wert, der an seine Stelle

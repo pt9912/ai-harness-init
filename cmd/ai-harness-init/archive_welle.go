@@ -216,16 +216,12 @@ func archiveWelleLauf(root string, abst archive.Abstammung, welle, kennung strin
 	return 0
 }
 
-// gitSchreibend verdrahtet die vier git-Operationen des schreibenden Laufs. Sie
+// gitSchreibend verdrahtet die drei git-Operationen des schreibenden Laufs. Sie
 // stehen hier und nicht in internal/archive, damit die Urteils-Logik dort ohne
 // git pruefbar bleibt — dieselbe Aufteilung wie bei den zwei lesenden Aufrufen.
 type gitSchreibend struct{ root string }
 
 func (g gitSchreibend) Mv(alt, neu string) error { return g.lauf("mv", "--", alt, neu) }
-
-func (g gitSchreibend) Rm(pfade []string) error {
-	return g.lauf(append([]string{"rm", "-q", "--"}, pfade...)...)
-}
 
 func (g gitSchreibend) Add(pfade []string) error {
 	return g.lauf(append([]string{"add", "--"}, pfade...)...)

@@ -1835,9 +1835,11 @@ SMOKEEOF
 
 Nur fuer den E2E der Wellen-Archivierung angelegt.
 SMOKEEOF
-	# Zwei Ausloeser, je eine Sperre: ein wellenloser Slice ohne beobachtbare
-	# Untergrenze (kein done/*/archive.zip existiert noch) und ein Review-Report, der
-	# bleibt und auf einen verschwindenden zeigt.
+	# Der Ausloeser ist der wellenlose Slice ohne beobachtbare Untergrenze
+	# (kein done/*/archive.zip existiert noch): [untergrenze]. Der Review-Report,
+	# auf den bleibt.md zeigt, ist KEIN Ausloeser mehr — seit ADR-0061
+	# Festlegung 1 ueberlebt er als Stub am unveranderten Pfad; bleibt.md bleibt
+	# als Resolutions-Nachweis im Baum und wird weiter unten gelesen.
 	cat >"$plan_done/slice-998-ohne-welle.md" <<'SMOKEEOF'
 # Slice slice-998: wellenlos
 
@@ -1878,11 +1880,11 @@ SMOKEEOF
 		einordnen "make archive-welle ueber zwei Ausloesern ($kennung)" "$gesperrt"
 		exit 1
 	fi
-	for sperre in '[untergrenze]' '[haenger]'; do
+	for sperre in '[untergrenze]'; do
 		grep -qF -- "$sperre" <<<"$gesperrt_flach" || fehlt="$fehlt [$sperre]"
 	done
 	if [ -n "$fehlt" ]; then
-		echo "full-smoke: FEHLER — $kennung: der gesperrte Lauf nennt nicht jede der zwei Sperren:$fehlt — rot aus falschem Grund? Ausgabe:" >&2
+		echo "full-smoke: FEHLER — $kennung: der gesperrte Lauf nennt die Sperre nicht:$fehlt — rot aus falschem Grund? Ausgabe:" >&2
 		printf '%s\n' "$gesperrt" >&2
 		exit 1
 	fi
@@ -1890,13 +1892,14 @@ SMOKEEOF
 		echo "full-smoke: FEHLER — $kennung: der gesperrte Lauf hat trotzdem geschrieben (done/$welle liegt) — die Vorschau steht vor dem Schreibzugriff, und der Lauf hat ihn getan." >&2
 		exit 1
 	fi
-	echo "full-smoke: Sperren erreichen den Aufruf ($kennung): make archive-welle endet ueber zwei Ausloesern nicht erfolgreich, nennt beide und schreibt nichts:"
-	grep -oE '\[(untergrenze|haenger)\]' <<<"$gesperrt_flach" | sort -u | sed 's/^/full-smoke:   /'
+	echo "full-smoke: Sperren erreichen den Aufruf ($kennung): make archive-welle endet ueber dem Ausloeser nicht erfolgreich, nennt ihn und schreibt nichts:"
+	grep -oE '\[(untergrenze)\]' <<<"$gesperrt_flach" | sort -u | sed 's/^/full-smoke:   /'
 
-	# (b) DERSELBE AUFRUF OHNE DIE ZWEI AUSLOESER laeuft real durch.
-	git -C "$repo" rm -q -- "$plan_done/slice-998-ohne-welle.md" "$reviews/bleibt.md"
+	# (b) DERSELBE AUFRUF OHNE DEN AUSLOESER laeuft real durch; bleibt.md bleibt
+	# liegen — sein Verweis loest am Report-Stub weiter auf (ADR-0061 Festlegung 1).
+	git -C "$repo" rm -q -- "$plan_done/slice-998-ohne-welle.md"
 	git -C "$repo" -c user.email=full-smoke@example.invalid -c user.name=full-smoke \
-		commit -q -m "Archivierungs-Smoke: die zwei Ausloeser entfernt (full-smoke)"
+		commit -q -m "Archivierungs-Smoke: der Ausloeser entfernt (full-smoke)"
 	local lauf="" lauf_rc=0 lauf_flach=""
 	lauf="$( make --no-print-directory -C "$repo" archive-welle WAVE="$welle" 2>&1 )" || lauf_rc=$?
 	printf '%s\n' "$lauf"
@@ -1926,11 +1929,17 @@ SMOKEEOF
 			exit 1
 		fi
 	done
-	if [ -e "$reviews/slice-999-review.md" ]; then
-		echo "full-smoke: FEHLER — $kennung: der Review-Report des archivierten Slice liegt noch flach in docs/reviews/ — er gehoert ins Archiv." >&2
+	report_stub="$(cat "$reviews/slice-999-review.md" 2>/dev/null)" || report_stub=""
+	if [ -z "$report_stub" ] || ! grep -qF -- '> **ARCHIVIERT**' <<<"$report_stub" \
+		|| ! grep -qF -- 'unzip -p docs/plan/planning/done/'"$welle"'/archive.zip docs/reviews/slice-999-review.md' <<<"$report_stub"; then
+		echo "full-smoke: FEHLER — $kennung: der Review-Report des archivierten Slice liegt nicht als Stub am unveränderten Pfad $reviews/slice-999-review.md — ADR-0061 Festlegung 1 verlangt ihn dort, den vollen Inhalt im Archiv." >&2
 		exit 1
 	fi
-	echo "full-smoke: Archivierung im Ziel ($kennung): make archive-welle archiviert real — $welle/archive.zip mit $welle.md und slice-999-archiv-smoke.md als Stubs, der Review-Report des Slice ist fort."
+	if ! grep -qF -- 'slice-999-review.md' "$reviews/bleibt.md"; then
+		echo "full-smoke: FEHLER — $kennung: der Verweis aus bleibt.md wurde angefasst — der Report-Stub steht am unveränderten Pfad, kein Verweis-Nachzug greift." >&2
+		exit 1
+	fi
+	echo "full-smoke: Archivierung im Ziel ($kennung): make archive-welle archiviert real — $welle/archive.zip mit $welle.md und slice-999-archiv-smoke.md als Stubs, der Review-Report des Slice als Stub am unveränderten Pfad; der Verweis aus bleibt.md loest unverändert auf."
 
 	# (e) DER SCHLUESSEL altbestand erreicht den Traeger, und die Grenze aus der
 	# Commit-Abstammung haelt (ADR-0081). Drei Commits in dieser Reihenfolge: ein
@@ -2066,7 +2075,7 @@ SMOKEEOF
 }
 
 archivierung_im_ziel "$tmprepo" "golang"
-e2e_abdeckung "LH-FA-01 LH-QA-01 LH-QA-02" "Das Ziel archiviert real: Sperren, Vollzug, Fehlt-Fall des Traegers, der Schluessel altbestand und die Grenze aus der Commit-Abstammung — altbestand nimmt nur den Slice vor der Closure von welle-1, der nachgeholte Lauf welle-1 laesst den spaeteren flach liegen, ein realer git clone --depth 1 sperrt mit [flacher-klon] (synthetischer Altbestand, lineare Historie ohne Merge, Traeger aus dem Arbeitsbaum, nicht der gepinnte Release-Traeger); die Reproduzierbarkeit ist nur teilweise gemessen (QA-02: nur dass ein flacher Klon sperrt statt abweichend zu archivieren, nicht der Pin, nicht dieselbe Ausgabe ueber zwei Laeufe)" "WAVE=altbestand"
+e2e_abdeckung "LH-FA-01 LH-QA-01 LH-QA-02" "Das Ziel archiviert real: Sperren, Vollzug, Fehlt-Fall des Traegers, der Schluessel altbestand, die Grenze aus der Commit-Abstammung und der Review-Report als Stub am unveranderten Pfad (ADR-0061 Festlegung 1, Verweis aus bleibt.md loest unverändert auf) — altbestand nimmt nur den Slice vor der Closure von welle-1, der nachgeholte Lauf welle-1 laesst den spaeteren flach liegen, ein realer git clone --depth 1 sperrt mit [flacher-klon] (synthetischer Altbestand, lineare Historie ohne Merge, Traeger aus dem Arbeitsbaum, nicht der gepinnte Release-Traeger); die Reproduzierbarkeit ist nur teilweise gemessen (QA-02: nur dass ein flacher Klon sperrt statt abweichend zu archivieren, nicht der Pin, nicht dieselbe Ausgabe ueber zwei Laeufe)" "WAVE=altbestand"
 
 # klon_traeger_fetch <klon> [<var=wert>...] — make traeger-fetch im Klon unter
 # ADOPTER-BEDINGUNG: der Pin des Laufs ist der des emittierten harness/mk/traeger.mk.

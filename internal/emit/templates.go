@@ -447,6 +447,12 @@ func planTemplates(src fs.FS, name string) (map[string][]byte, error) {
 	// vorhanden. Kopiert statt aliasiert: der Plan-Wert ist eigenstaendig und
 	// teilt sich das Backing-Array nicht mit dem eingebetteten Paket-Global.
 	out[observationsReadmeTarget] = bytes.Clone(observationsReadme)
+	// Der Report-Stub als AUSFUELL-VORLAGE (Platzhalter bleiben): der Lauf im
+	// Ziel liest sie ueber AusVorlage/Kuerze, das die Hinweis-Bloecke zum
+	// Kopieren selbst entfernt — dieselbe Rollen-Verteilung wie bei den zwei
+	// vendored Stub-Vorlagen. skip-if-present gilt sie: ein Ziel, das seine
+	// Report-Stub-Form angepasst hat, ueberlebt unberuehrt.
+	out[reportStubVorlageTarget] = bytes.Clone(reportStubVorlage)
 	return out, nil
 }
 
@@ -535,6 +541,22 @@ func structureGitkeeps() []string {
 //
 //go:embed templates/observations/README.md
 var observationsReadme []byte
+
+// reportStubVorlage traegt die Report-Stub-Form tool-autoriert (dieselbe
+// Disposition wie observationsReadme: der Kurs-Satz fuehrt die Klasse nicht,
+// es gibt kein vendored Original — ADR-0061 Festlegung 2). Der Zielpfad ist
+// derselbe, an dem der Träger (archive-welle, internal/archive) sie liest;
+// der Inhalt ist byte-gleich zur repo-eigenen Vorlage dieses Repos — die
+// Kopplung haelt test/archiv-stub-vorlagen.bats.
+//
+//go:embed templates/planning/archive-stub-report.template.md
+var reportStubVorlage []byte
+
+// reportStubVorlageTarget ist der Ziel-Relpfad der Report-Stub-Vorlage im
+// gebootstrappten Ziel. Sie liegt unter docs/plan/planning/ — der Ort, den
+// reportVorlagePfad liest — und nicht unter dem vendored Satz, weil die Klasse
+// dort nicht gefuehrt wird.
+const reportStubVorlageTarget = "docs/plan/planning/archive-stub-report.template.md"
 
 // observationsReadmeTarget ist der Ziel-Relpfad des Registers (ADR-0037 Festlegung 2,
 // ADR-0034 Festlegung 1).

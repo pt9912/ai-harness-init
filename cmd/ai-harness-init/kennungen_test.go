@@ -129,6 +129,16 @@ func erlaubteKennungen() map[string][]string {
 		// last am Ort, keine zweite Norm-Fassung.
 		"tools/harness/dcheck-fetch.sh":      {"ADR-0059", "ADR-0109", "LH-QA-02"},
 		"tools/harness/environment-check.sh": {"ADR-0109", "LH-QA-03", "SPEC-099"},
+		// Die Report-Stub-Vorlage traegt die Kennung der Process-Norm, die ihre
+		// Klasse entscheidet — Zitier-Form, Kennung statt Adresse (ADR-0061
+		// Festlegung 2). Im Ziel loest sie nicht auf und braucht es nicht: die
+		// Norm traegt die Vorlage nicht, der Träger liest die Form aus der Datei.
+		"docs/plan/planning/archive-stub-report.template.md": {"ADR-0061"},
+		// Dieselbe Kennung in der emittierten Gate-Konfiguration: die
+		// scan.ignore-Begruendungs-Zeile nennt die Report-Stub-Vorlage als
+		// getroffenen Baum (ausnahmegrund, AGENTS.md 3.5 — die Begründung nennt
+		// ihren ganzen Gegenstand) und die Norm, die die Klasse einbracht hat.
+		".d-check.yml": {"ADR-0061"},
 	}
 }
 

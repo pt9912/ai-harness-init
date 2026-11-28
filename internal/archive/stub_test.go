@@ -50,8 +50,26 @@ const vorlageWelle = `# <wave-id> — <Titel>
 **Archivierte Vorgänge:** <N Slices, M Reviews>
 `
 
+const vorlageReport = `# <Titel>
+
+> **Template-Hinweis.** ` + vorlagenMarker + ` — dieser Absatz faellt beim Kuerzen weg.
+
+## Eine Abschnittsueberschrift, die der Stub nicht traegt
+
+<!-- BEDIEHNHINWEIS, mehrzeilig.
+
+mit Leerzeile darin.
+-->
+
+> **ARCHIVIERT** — Volltext:
+> ` + "`unzip -p done/<wave-id>/archive.zip <pfad-im-archiv>`" + `
+
+**Archiviert mit:** <wave-id | altbestand>
+`
+
 // vorlagenBaum legt den synthetischen vendored Baum an und liefert sein
-// templates-Verzeichnis.
+// templates-Verzeichnis. Die Report-Vorlage liegt nebenbei im REPO-EIGENEN
+// planning-Baum — dort liest der Träger sie (ADR-0061 Festlegung 2).
 //
 // Die zwei Vorlagen sind ABSICHTLICH nicht die echten: sie tragen einen Marker,
 // den keine echte traegt. Ein Stub, der ihn abdruckt, hat seine Form aus der
@@ -65,6 +83,7 @@ func vorlagenBaum(t *testing.T, root string) string {
 	dir := filepath.Join(root, ".harness", "baseline", pruefTag, "templates", "docs", "plan", "planning")
 	schreibe(t, filepath.Join(dir, "archive-stub-slice.template.md"), vorlageSlice)
 	schreibe(t, filepath.Join(dir, "archive-stub-wave.template.md"), vorlageWelle)
+	schreibe(t, filepath.Join(root, "docs", "plan", "planning", "archive-stub-report.template.md"), vorlageReport)
 	return dir
 }
 

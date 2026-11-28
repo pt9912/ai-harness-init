@@ -4,8 +4,11 @@
 scan:
   roots: ["."]
   # **/*.template.md: Ausfuell-Vorlagen tragen Platzhalter-Pfade und -Kennungen, die erst im
-  # ausgefuellten Artefakt aufloesen. Getroffen werden sie heute allein unter .harness/baseline/
-  # (git ls-files '*.template.md'); das Muster nimmt jede kuenftige Vorlage in jedem Baum mit.
+  # ausgefuellten Artefakt aufloesen. Getroffen werden sie unter .harness/baseline/ und seit
+  # ADR-0061 Festlegung 2 unter internal/emit/templates/ — die dort mitgetragene
+  # Report-Stub-Vorlage ist dieselbe Klasse (Platzhalter, keine Ziel-Kennungen), tool-autoriert
+  # wie die Register-README; `git ls-files '*.template.md'` nennt beide Baeume. Das Muster
+  # nimmt jede kuenftige Vorlage in jedem Baum mit.
   # .tmp/**: Arbeitsablage der Laeufe, kein Artefakt.
   # .harness/baseline/: committet vendored Baseline (MR-007) — externer,
   # derivativer Inhalt, nicht repo-autoritativ; vom Doc-Gate ausgenommen. Sie

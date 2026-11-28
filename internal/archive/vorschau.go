@@ -47,7 +47,13 @@ func Vorschau(root, welleID, porcelain string, dateien []string, a Abstammung) (
 	if ber.Funde, err = VerweisFund(root, dateien, b.Bewegte()); err != nil {
 		return Bericht{}, err
 	}
-	haenger, err := Haenger(root, dateien, b.Reviews, b.Verschwindend())
+	// Seit ADR-0061 loescht der Lauf kein Zeitdokument mehr ersatzlos: jeder
+	// Review-Report ueberlebt als Stub an unveranderter Adresse, die Bewegten
+	// ziehen mit ihrem Nachzug. Die Haenger-Ziele sind darum leer und die
+	// Sperre traegt keine Report-Ziele mehr; der Waechter selbst bleibt als
+	// Apparat stehen (ADR-0033 Abnahme-Kriterium 1, Suchraum-Achse), und seine
+	// Sperre liegt ausserhalb der altbestand-Aufhebung (ADR-0041 Festlegung 4).
+	haenger, err := Haenger(root, dateien, nil, b.Verschwindend())
 	if err != nil {
 		return Bericht{}, err
 	}
@@ -196,7 +202,7 @@ func Schreibe(b Bericht) string {
 	fmt.Fprintf(&sb, "  wellenlos (seit der letzten Closure): %d\n", len(be.Wellenlose))
 	fmt.Fprintf(&sb, "  bleibt liegen (nach der Grenze):      %d\n", len(be.NachGrenze))
 	fmt.Fprintf(&sb, "  fremd (andere Welle, bleibt liegen):  %d\n", len(be.Fremde))
-	fmt.Fprintf(&sb, "  Review-Reports (ohne Stub):           %d\n", len(be.Reviews))
+	fmt.Fprintf(&sb, "  Review-Reports (mit Stub):            %d\n", len(be.Reviews))
 	schreibeVerweise(&sb, b.Funde)
 	schreibeSperren(&sb, b.Sperren)
 	return sb.String()

@@ -121,17 +121,27 @@ func TestVorschauSperrtBeiUnsauberemBaum(t *testing.T) {
 	}
 }
 
-// TestVorschauSperrtBeiHaenger fuehrt Abnahme-Kriterium 1 ueber die
-// Verdrahtung: ein bleibender Report verlinkt einen, der ins Archiv geht.
-func TestVorschauSperrtBeiHaenger(t *testing.T) {
+// TestVorschauFuehrtKeineReportZieleMehr misst die Aenderung, die ADR-0061
+// Festlegung 1 an der Haenger-Vorpruefung macht: ein Report, der ins Archiv
+// geht, ueberlebt als Stub an unveranderter Adresse — ein bleibender Report,
+// der auf ihn verlinkt, ist kein Haenger mehr, und die Sperre hat keinen
+// Gegenstand. Rot zu sehen ist die Umsetzung selbst: die Haenger-Ziele von
+// ADR-0061 rueckgaengig machen, und dieselbe Lage faerbt.
+func TestVorschauFuehrtKeineReportZieleMehr(t *testing.T) {
 	root := vollstaendigerBaum(t)
 	schreibe(t, filepath.Join(root, "docs", "reviews", "2026-09-01-slice-100-r1.md"), "# Runde 1\n")
 	schreibe(t, filepath.Join(root, "docs", "reviews", "2026-09-02-slice-900-r1.md"),
 		"# Fremder Report\n\nSiehe [Vorrunde](2026-09-01-slice-100-r1.md).\n")
 
 	b := vorschauVon(t, root, "wave-10", "")
-	if !hatSperre(b, "haenger") {
-		t.Fatalf("Sperre 'haenger' fehlt: %v", kennungen(b))
+	if hatSperre(b, "haenger") {
+		t.Fatalf("Sperre 'haenger' steht ueber einem Report-Verweis — die Report-Ziele der Haenger-Vorpruefung sind nicht abgenommen: %v", kennungen(b))
+	}
+	if len(b.Sperren) != 0 {
+		t.Fatalf("roter Grund ohne Haenger? Sperren = %v", kennungen(b))
+	}
+	if len(b.Bestand.Reviews) != 1 || b.Bestand.Reviews[0] != "docs/reviews/2026-09-01-slice-100-r1.md" {
+		t.Fatalf("der Report ist nicht Ziel des Laufs: %v", b.Bestand.Reviews)
 	}
 }
 
@@ -181,9 +191,13 @@ func TestAltbestandHebtWelleUndUntergrenzeSperrenAuf(t *testing.T) {
 	}
 }
 
-// TestAltbestandBehaeltHaengerSperre ist der Gegenstand von ADR-0041
-// Festlegung 4: die Betriebsart darf die Verweis-Sperre nicht mit aufheben.
-func TestAltbestandBehaeltHaengerSperre(t *testing.T) {
+// TestAltbestandTraegtKeineReportVerweisSperre am ehemaligen Gegenstand von
+// ADR-0041 Festlegung 4: die Verweis-Sperre lag immer ausserhalb der
+// Schluesse-Aufhebung, und ihre Sperren-Verdrahtung bleibt stehen — aber ihre
+// Report-Ziele tragen seit ADR-0061 Festlegung 1 keinen Fall mehr. Dieselbe
+// Lage, die vor dem Stub-Weg 'haenger' faerbte, faerbt unter dem Schluessel
+// nichts.
+func TestAltbestandTraegtKeineReportVerweisSperre(t *testing.T) {
 	root := t.TempDir()
 	done := filepath.Join(root, "docs", "plan", "planning", "done")
 	schreibe(t, filepath.Join(done, "slice-100-a.md"), "# Slice slice-100: A\n\n**Welle:** ohne Welle.\n")
@@ -192,8 +206,8 @@ func TestAltbestandBehaeltHaengerSperre(t *testing.T) {
 		"# Fremder Report\n\nSiehe [Vorrunde](2026-09-01-slice-100-r1.md).\n")
 
 	b := vorschauVon(t, root, "altbestand", "")
-	if !hatSperre(b, "haenger") {
-		t.Fatalf("Sperre 'haenger' fehlt unter dem Schluessel 'altbestand' — sie darf nicht mit aufgehoben werden: %v", kennungen(b))
+	if len(b.Sperren) != 0 {
+		t.Fatalf("Sperren unter dem Schluessel 'altbestand' ueber einem Report-Verweis: %v", kennungen(b))
 	}
 }
 
@@ -292,7 +306,7 @@ func TestSchreibeNenntDieVierZahlenUndDieSperren(t *testing.T) {
 		"Mitglieder (Welle-Feld nennt wave-10): 1",
 		"wellenlos (seit der letzten Closure): 0",
 		"fremd (andere Welle, bleibt liegen):  0",
-		"Review-Reports (ohne Stub):           0",
+		"Review-Reports (mit Stub):            0",
 		"Verweise:",
 		"[unsauber]",
 	} {

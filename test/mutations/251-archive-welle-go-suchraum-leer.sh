@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 # files: cmd/ai-harness-init/archive_welle.go
-# expect: TestArchiveWelleEchtSperrtAmHaengendenVerweis
+# expect: TestArchiveWelleEchtArchiviertMitReportVerweisAusFremdemRang
 # verify: test-go
 #
 # VERWIRFT DIE ANTWORT VON `git ls-files`: der Prozess laeuft weiter, sein Fehler
 # wird weiter durchgereicht — nur der Suchraum, in dem beide Zweige nach
-# Verweisen suchen, ist danach leer. Damit faellt der Haenger-Schutz: ein
-# Review-Report, auf den spec/lastenheft.md noch zeigt, wird geloescht, und der
-# Verweis in Rang 1 der Source Precedence zeigt ins Leere.
+# Verweisen suchen, ist danach leer. Damit faellt der Verweis-Nachzug: der
+# Praefix-Verweis auf die bewegte Slice-Datei (docs/notizen.md) wird nicht auf
+# ihre neue Adresse umgehaengt. Der Report-Verweis aus spec/lastenheft.md bleibt
+# darunter unberuehrt — seit ADR-0061 loest er am Stub weiter auf und braucht
+# keinen Nachzug.
 #
 # Das ist NICHT Fall 233. Der verengt den Suchraum in internal/archive um
 # docs/reviews/** und wird an einem Fall rot, der die Datei-Liste als WERT

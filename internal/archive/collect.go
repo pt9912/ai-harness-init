@@ -214,11 +214,11 @@ func (b Bestand) Bewegte() []string {
 }
 
 // Verschwindend sind die Dateien, die den Lauf NICHT ueberleben oder ihn nur
-// unter neuer Adresse ueberleben — die Bewegten und die Review-Reports. Ein
-// Verweis aus einer von ihnen ist kein Haenger.
+// unter neuer Adresse ueberleben — die Bewegten. Die Review-Reports stehen
+// NICHT darin: sie ueberleben an UNVERAENDERTER Adresse als Stub (ADR-0061
+// Festlegung 1), ein Verweis auf sie loest weiterhin auf.
 func (b Bestand) Verschwindend() []string {
 	out := append(b.Slices(), b.Plaene...)
-	out = append(out, b.Reviews...)
 	sort.Strings(out)
 	return out
 }

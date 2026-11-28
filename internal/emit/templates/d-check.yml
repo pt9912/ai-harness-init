@@ -5,7 +5,9 @@
 scan:
   roots: ["."]
   # **/*.template.md: Ausfuell-Vorlagen tragen Platzhalter, die erst im ausgefuellten Artefakt
-  # aufloesen. Der Bootstrap legt seine Vorlagen unter .harness/baseline/ ab; das Muster nimmt
+  # aufloesen. Getroffen sind sie unter .harness/baseline/ und unter docs/plan/ — die
+  # Report-Stub-Vorlage (docs/plan/planning/archive-stub-report.template.md, ADR-0061
+  # Festlegung 2) ist dieselbe Klasse: Platzhalter, keine Ziel-Kennungen. Das Muster nimmt
   # eine Vorlage in jedem anderen Baum ebenso aus.
   # .tmp/**: Arbeitsablage der Laeufe, kein Artefakt.
   # .claude/worktrees/**: Arbeitsbaeume, die ein Werkzeug ins Repo legt (Claude Code legt sie

@@ -16,14 +16,13 @@ import (
 	"github.com/pt9912/ai-harness-init/internal/archive"
 )
 
-// gitStumm ist die Test-Verdrahtung der vier schreibenden git-Operationen: sie
+// gitStumm ist die Test-Verdrahtung der drei schreibenden git-Operationen: sie
 // schreibt mit und tut nichts. Ein Lauf, der sie ueberhaupt beruehrt, hat die
 // Vorpruefung passiert — genau das misst der Fall darunter.
 type gitStumm struct{ rufe []string }
 
-func (g *gitStumm) Mv(alt, neu string) error  { g.rufe = append(g.rufe, "mv"); return nil }
-func (g *gitStumm) Rm(pfade []string) error   { g.rufe = append(g.rufe, "rm"); return nil }
-func (g *gitStumm) Add(pfade []string) error  { g.rufe = append(g.rufe, "add"); return nil }
+func (g *gitStumm) Mv(alt, neu string) error { g.rufe = append(g.rufe, "mv"); return nil }
+func (g *gitStumm) Add(pfade []string) error { g.rufe = append(g.rufe, "add"); return nil }
 func (g *gitStumm) Commit(nachricht string) error {
 	g.rufe = append(g.rufe, "commit")
 	return nil
@@ -120,10 +119,10 @@ func TestArchiveWelleSchreibendLaeuftAmSelbenBaum(t *testing.T) {
 
 // sperrenfreierBaum legt den kleinsten Baum an, ueber dem KEINE der Sperren aus
 // archive.Vorschau steht: Ergebnisnotiz da, genau ein Welle-Plan, ein eingesammelter Slice, kein
-// done/wave-10/, kein wellenloser Slice (also keine Untergrenzen-Frage), kein
-// Review-Report (also kein Haenger). Die zwei Stub-Vorlagen liegen mit, weil der
-// schreibende Zweig sonst schon vor seinem ersten Schreibzugriff ausfiele — und
-// der Baum-Abdruck dann nichts mehr zeigte.
+// done/wave-10/, kein wellenloser Slice (also keine Untergrenzen-Frage). Die
+// drei Stub-Vorlagen liegen mit — die zwei vendored und die repo-eigene
+// Report-Vorlage, weil der schreibende Zweig sonst schon vor seinem ersten
+// Schreibzugriff ausfiele — und der Baum-Abdruck dann nichts mehr zeigte.
 func sperrenfreierBaum(t *testing.T) string {
 	t.Helper()
 	root := t.TempDir()
@@ -133,9 +132,13 @@ func sperrenfreierBaum(t *testing.T) string {
 	stub := "# <Titel>\n\n> **ARCHIVIERT** — Volltext:\n" +
 		"> `unzip -p done/<wave-id>/archive.zip <pfad-im-archiv>`\n\n" +
 		"**Geschlossen:** <JJJJ-MM-TT>\n"
+	report := "# <Titel>\n\n> **ARCHIVIERT** — Volltext:\n" +
+		"> `unzip -p done/<wave-id>/archive.zip <pfad-im-archiv>`\n\n" +
+		"**Archiviert mit:** <wave-id | altbestand>\n"
 	for pfad, inhalt := range map[string]string{
 		filepath.Join(vorlagen, "archive-stub-slice.template.md"): stub,
-		filepath.Join(vorlagen, "archive-stub-wave.template.md"): stub,
+		filepath.Join(vorlagen, "archive-stub-wave.template.md"):  stub,
+		filepath.Join(root, "docs", "plan", "planning", "archive-stub-report.template.md"): report,
 		filepath.Join(done, "wave-10-eine-welle.md"):            "# Welle wave-10: Der Plan\n\n## 1. Ziel\n",
 		filepath.Join(done, "wave-10-results.md"):               "# wave-10 — Ergebnisse\n\n**Abschluss:** 2026-06-06\n",
 		filepath.Join(done, "slice-100-a.md"):                    "# Slice slice-100: Der Gegenstand\n\n**Welle:** wave-10\n",

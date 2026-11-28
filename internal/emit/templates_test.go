@@ -317,6 +317,9 @@ func TestTemplates_EmittierterBestandVollstaendig(t *testing.T) {
 		"harness/conventions/.gitkeep",
 		// Register-Ort: Datei mit Inhalt statt .gitkeep, tool-autoriert ohne Vorlage
 		"docs/plan/planning/observations/README.md",
+		// Report-Stub-Vorlage: tool-autoriert (der Kurs-Satz fuehrt die Klasse
+		// nicht, ADR-0061 Festlegung 2) — der Träger liest sie im Ziel an diesem Pfad
+		"docs/plan/planning/archive-stub-report.template.md",
 	}
 	sort.Strings(want)
 	got := emittedTree(t, dir)
@@ -477,6 +480,7 @@ func TestTemplates_MinimalQuelle(t *testing.T) {
 		"docs/plan/planning/open/.gitkeep", "docs/plan/planning/next/.gitkeep", "docs/plan/planning/done/.gitkeep",
 		"harness/conventions/.gitkeep",
 		"docs/plan/planning/observations/README.md",
+		"docs/plan/planning/archive-stub-report.template.md",
 	}
 	sort.Strings(want)
 	if got := emittedTree(t, dir); strings.Join(got, "\n") != strings.Join(want, "\n") {
