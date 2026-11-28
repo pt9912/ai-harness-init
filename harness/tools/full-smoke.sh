@@ -391,6 +391,53 @@ rollen_typen_im_ziel() {
 	echo "full-smoke: Rollen-Typen im Ziel ($label): $n kanonische Typen unter .claude/agents/, je mit ihrem Namen im Kopf."
 }
 
+# DIE DREI QUELLEN-POINTER STEHEN IM ZIEL (slice-rules-pointer-emission-v1 · MR-035 /
+# LH-FA-01). Je ein Symlink unter .claude/rules/ auf die kanonischen Quellen des Ziel-
+# Baums (AGENTS.md, harness/README.md) und auf den Regelwerk-Index der vendored
+# Baseline — der Agent-Kontext des Ziels liest beim Sitzungsstart seine eigenen Quellen.
+#
+# WOZU DIESE PRUEFUNG NEBEN DEM `make gates` DES ZIELS: die drei Pointer sind Eintraege
+# ohne durchsuchbaren Inhalt — der Doku-Scan des Ziels liest nicht-regulaere Eintraege
+# nicht (Lesestelle internal/archive/scan.go, lies()) und bliebe ueber einem fehlenden
+# Pointer gruen. Erst die Anwesenheit macht den Gate-Lauf zur Aussage ueber den
+# Kontext-Baum.
+#
+# GEMESSEN IST EXISTENZ UND AUFLOESUNG je Pointer. Nicht gemessen ist die
+# Sitzungsstart-Ladung der Werkzeugschicht — die liegt ausserhalb dieses Baums; und
+# Bestands-Behandlung (Reparatur des Tag-Pointers, Unberuehrtheit eines regular file)
+# misst der Go-Waechter unter internal/emit/rules_test.go am Emit, nicht dieser Lauf.
+#
+# Der Tag im Baseline-Zielpfad wird aus der Baseline GELESEN, die der Bootstrap
+# abgelegt hat, und genau die einen Anker verlangt: die Form lautet
+# .harness/baseline/<tag>/regelwerk/README.md. Es muss genau EINE Regelwerk-Ablage
+# stehen — ueber einer mehrdeutigen Menge waere der Pruefbereich nicht hermetisch.
+quellen_pointer_im_ziel() {
+	local repo="$1" label="$2" name ziel steht regelwerk tag
+	regelwerk="$(ls -d "$repo"/.harness/baseline/*/regelwerk 2>/dev/null)"
+	if [ "$(printf '%s\n' "$regelwerk" | grep -c .)" -ne 1 ]; then
+		echo "full-smoke: FEHLER — $label: genau EINE .harness/baseline/*/regelwerk-Ablage wird verlangt, gefunden $(printf '%s\n' "$regelwerk" | grep -c . | tr -d ' ')." >&2
+		exit 1
+	fi
+	tag="$(basename "$(dirname "$regelwerk")")"
+	for name in AGENTS.md harness-README.md regelwerk-README.md; do
+		case "$name" in
+			AGENTS.md) ziel="../../AGENTS.md" ;;
+			harness-README.md) ziel="../../harness/README.md" ;;
+			regelwerk-README.md) ziel="../../.harness/baseline/$tag/regelwerk/README.md" ;;
+		esac
+		if [ ! -L "$repo/.claude/rules/$name" ]; then
+			echo "full-smoke: FEHLER — $label: unter .claude/rules/ fehlt $name oder ist kein Symlink." >&2
+			exit 1
+		fi
+		steht="$(readlink "$repo/.claude/rules/$name")"
+		if [ "$steht" != "$ziel" ]; then
+			echo "full-smoke: FEHLER — $label: .claude/rules/$name loest auf [$steht], erwartet [$ziel]." >&2
+			exit 1
+		fi
+	done
+	echo "full-smoke: Quellen-Pointer im Ziel ($label): drei Symlinks unter .claude/rules/, je auf ihre Quelle aufgelöst (AGENTS, harness/README, Regelwerk-Index der Baseline $tag)."
+}
+
 # slice-098 (LH-FA-13 / ADR-0022 Festlegung 7 und 5(a)): DIE FELDLISTE LIEGT IM GEPRUEFTEN
 # DOKU-BEREICH DES ZIELS UND FUEHRT IHRE GRENZEN STEHEND.
 #
@@ -638,6 +685,10 @@ baum_aussagen_im_ziel "$tmprepo" "--lang go"
 rollen_typen_im_ziel "$tmprepo" "--lang go"
 # Aus demselben Grund vor dem Gate-Lauf: das Dokument liegt im geprueften Bereich (slice-098).
 feldliste_im_ziel "$tmprepo" "--lang go"
+
+echo "full-smoke: Quellen-Pointer im Ziel — drei Symlinks unter .claude/rules/ (--lang go) ..."
+	e2e_abdeckung "LH-FA-01" "Der Bootstrap legt die drei Quellen-Pointer unter .claude/rules/ an (AGENTS.md, harness/README.md, Regelwerk-Index der vendored Baseline); gemessen im Ziel sind Existenz und Aufloesung je Pointer — ein regular file am exakten Namen bleibt laut der Bestands-Behandlung stehen; NICHT gemessen: die Sitzungsstart-Ladung der Werkzeugschicht und die Bestands-Behandlung (Reparatur, Unberuehrtheit), die der Go-Waechter am Emit misst" "drei Symlinks unter .claude/rules/"
+quellen_pointer_im_ziel "$tmprepo" "--lang go"
 
 echo "full-smoke: Feldliste im Ziel — Verfuegbarkeit und Aufbewahrung (--lang go) ..."
 	e2e_abdeckung "LH-FA-13 LH-FA-16" "Die emittierte Feldliste fuehrt die Saetze zu Cache-Status, fehlender PR-Nummer, Haupt-Kontext ohne Zahl und Aufbewahrung; gemessen ist der Text im Ziel, nicht das Verhalten, das er beschreibt" "feldliste_verfuegbarkeit_im_ziel"
@@ -2733,6 +2784,7 @@ echo "full-smoke: doc-only Bootstrap (OHNE --lang) in ein zweites tmp-Repo ..."
 # sie haengen an keinem Laufzeit-Ausgang. Auch hier vor dem Gate-Lauf.
 baum_aussagen_im_ziel "$tmprepo_doc" "sprachlos"
 rollen_typen_im_ziel "$tmprepo_doc" "sprachlos"
+quellen_pointer_im_ziel "$tmprepo_doc" "sprachlos"
 # slice-098, zweite Variante: die Feldliste beschreibt eine sprach-agnostische Erfassung
 # und teilt darum keinen --lang-Zweig. Ein Zahn in nur einer Variante belegte das nicht.
 feldliste_im_ziel "$tmprepo_doc" "sprachlos"
@@ -6060,6 +6112,7 @@ echo "full-smoke: OK — ARCH-GATE ROBUST (slice-046, Review F-1/F-2): ZWEI hexS
 echo "full-smoke: OK — DRITTES LAYOUT (slice-058/ADR-0010): add-lang go apps/hexagonal --arch hexagonal dropt core/port/adapter{driven,driving} in den Pfaden der Familien-Konvention (nicht das --print-config-Geruest), make -j gates uebersetzt+lintet sie real und faehrt ihr a-check mit; cpp+hexagonal ist fail-fast Exit 2. ZAEHNE mit Regel-NAMEN: core->driven = app-impurity, driving->driven = lateral-adapter."
 echo "full-smoke: OK — IDEMPOTENT (slice-038): 2. Init-Lauf Exit 0, README (skip-if-present) unberuehrt, Makefile-Drift (konvergent) geheilt; sprachloser Re-Lauf prunt kein add-lang-Fragment (kein Prune)."
 echo "full-smoke: OK — ROLLEN-TYPEN (slice-097/LH-FA-10): 6 kanonische Typen unter .claude/agents/ in BEIDEN Bootstrap-Varianten, je mit ihrem Namen im Kopf; das make gates des Ziels laeuft ueber ihnen gruen; der 2. Init-Lauf laesst einen adopter-geaenderten Typ unberuehrt (skip-if-present)."
+echo "full-smoke: OK — QUELLEN-POINTER (slice-rules-pointer-emission-v1/MR-035/LH-FA-01): die drei Symlinks unter .claude/rules/ stehen in BEIDEN Bootstrap-Varianten, je byte-gleich auf ihre Quelle aufgeloest (AGENTS, harness/README, Regelwerk-Index der Baseline, eindeutige <tag>-Ablage); gemessen sind Existenz und Aufloesung, an der Werkzeugschicht-Ladung und an der Bestands-Behandlung misst der Go-Waechter (internal/emit/rules_test.go)."
 echo "full-smoke: OK — FELDLISTE (slice-098/LH-FA-13): $FELDLISTE_REL liegt in BEIDEN Bootstrap-Varianten im geprueften Doku-Bereich, fuehrt die drei stehenden Grenz-Saetze und deckt jeden Feldnamen der real geschriebenen Span-Zeile; ein toter Verweis darin faerbt das docs-check des Ziels rot (Ortswahl belegt); ein 2. Init-Lauf heilt eine von Hand geaenderte Fassung (konvergent, die einzige Zusage des Dokuments ueber sich selbst)."
 echo "full-smoke: OK — ARCHIVIERUNG IM ZIEL (ADR-0033 Festlegung 4 und 5): make archive-welle ist kein Gate und steht in keiner gates-Kette; ein Name daneben, den kein Fragment fuehrt, endet laut statt still; die zwei Sperren [untergrenze] und [haenger] halten den Aufruf auf, ueber demselben Bestand ohne sie laeuft die Operation real (Archiv + Stubs aus der vendored Vorlage), und ohne Traeger meldet das Kommando die Abwesenheit mit Exit 0."
 echo "full-smoke: OK — TRAEGER-FETCH IM ZIEL (ADR-0058): im frischen Klon eines gebootstrappten Repos bleibt der Fehlt-Fall der Konsumenten unangetastet (Exit 0, nennt das Fehlende, schreibt nichts — der Fetch ist kein Prerequisite); make traeger-fetch legt den Traeger per Fetch aus dem gepinnten Release real ab, ausfuehrbar, den Digest vor der Ablage gegen die SHA256SUMS des Release verifiziert (ohne geerbte Digest-Pins, der Kanal des Adopters) (Transport im gepinnten Bild, kein curl auf dem Host, LH-QA-03); ein allein gesetzter, verdrehter sha256-Pin der Host-Plattform schlaegt das Manifest und bricht denselben Aufruf nach einmal Laden laut mit der Digest-Abweichung und laesst den liegenden Traeger unangetastet; der gefetchte Traeger fuehrt den Konsumenten-Aufruf real — die Archivierung laeuft ueber einer geschlossenen Welle und meldet den Vollzug mit Archiv und Stubs; und ein Unterkommando, das der Traeger nicht fuehrt, bricht den Aufruf laut mit der Argument-Sperre statt still in den Init-Pfad zu starten (ADR-0058 Festlegung 2) — der v0.1.1-Stand ohne diese Sperren startete in derselben Lage still, die Kopplung Pin zu Werkzeug-Fassung traegt der Release-Schnitt (Festlegung 2, Folgepflicht 3)."
