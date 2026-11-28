@@ -1,0 +1,144 @@
+mutate-ergebnis: slice-traeger-tag-nachzug-untergrenze-v1
+gepruefter Commit: 8eb5c44cfc86b9ee79af8b87d214a2a33aecc76a
+Basis (Claim-Commit): 736495b73d658dd8b3677d74060594a2df4649d8
+Shard 0: Exit 2, 236 s, Faelle: 553-ausgang-unveroeffentlichter-traeger-tag 506-archive-welle-go-altbestand-lauf-sammelt-nicht-die-menge-der-vorschau 828-archive-welle-go-umzug-stub-nach-dem-nachzug 198-mutate-mutex-schranke-meldet-leer 213-gate-nachweis-kante-gekuerzt 271-planning-marker-zeile-entfernt 284-vcs-head-allow-duplikat 320-waves-mode-auf-one-zurueckgesetzt 455-mutate-teillauf-sagt-beleg 524-config-ohne-benannten-slice 73-mutate-fingerprint-leer 805-gates-rezept-koppel-entzaubert 823-e2e-skip-liest-fremdes-feld
+Shard 1: Exit 2, 256 s, Faelle: 554-traeger-tag-im-fragment-umbenannt-full-smoke 507-archive-welle-go-altbestand-stub-ohne-archiviert-mit 830-archive-welle-go-umzug-stub-schreiber-deaktiviert 199-mutate-zeitschranke-greift-nie 214-gate-nachweis-baseline-nicht-erster 272-planning-heading-auf-marker-lose-sektion 285-closure-dir-entfernt 321-waves-dir-anderer-pfad 456-mutate-teillauf-uebersprung-mit-filter 555-traeger-tag-im-fragment-umbenannt-pin-kopplung 74-mutate-kopie-ohne-git 806-shell-lint-rezept-ohne-host-schalter 832-e2e-skip-fremdes-feld
+Shard 2: Exit 2, 260 s, Faelle: 772-archiv-zip-abgeschnitten-und-probe-ausgehebelt 579-ausnahme-grund-verliert-einen-baum-im-repo 09-treiber-failure-form 200-mutate-signal-raeumt-vor-dem-bericht 254-archive-welle-makefile-name-vertippt 273-planning-block-rumpf-entfernt 286-closure-glob-hinzugefuegt 322-waves-block-vollstaendig-entfernt 457-mutate-filter-uebergeht-unbekannte-namen 582-register-ausgang-faellt-aus-der-kante 75-mutate-kopie-im-repo 807-kante-doksgate-zurueck-auf-fragment 835-release-bau-plattformzeile-gestrichen
+Shard 3: Exit 2, 287 s, Faelle: 773-archiv-altbestand-zip-ungelesen 585-archive-titelvon-streift-den-namen-nicht 191-mutate-zeitbilanz-ohne-nenner 201-mutate-worker-trap-kehrt-zurueck 256-hostbin-zweite-nennung-in-derselben-zeile 277-vcs-head-allow-bare-kennung 287-closure-placeholder-aktiviert 323-waves-dir-zeigt-auf-nichtexistierenden-pfad 458-mutate-voller-lauf-nennt-den-schluessel 612-fassungs-ausnahme-zweiter-wert-im-makefile-gleich-form 76-mutate-mittenpruefung 808-golangci-pin-ohne-dockerfile-quelle 836-release-bau-ldflags-injektion-entzogen
+Shard 4: Exit 2, 389 s, Faelle: 239-archive-welle-go-stub-ueberschrift 643-archive-welle-go-altbestand-ohne-kennungspflicht 192-mutate-worker-vorlauf-ohne-abbruch 202-mutate-einsammeln-ohne-schranke 259-hostbin-name-mit-ziffer 278-vcs-exclude-sections-ohne-geschichte 288-closure-dir-anderer-pfad 324-mutate-files-schranke-erlaubt-mehrfachtreffer 474-codepaths-reviews-ausnahme-entfaellt 613-fassungs-ausnahme-zweiter-wert-im-workflow-anfuehrungs-form 77-mutate-abbruch 809-lint-rezept-faellt-auf-ablage-zurueck 837-release-ci-step-ruft-docker-ziel
+Shard 5: Exit 2, 309 s, Faelle: 241-archive-welle-go-staging-explizit 644-archive-welle-go-kennung-konstant 193-mutate-bericht-ohne-fehlenden-fall 203-mutate-zeitvorgabe-ungeprueft 262-mutate-schluessel-ausnahme-nicht-deklariert 279-vcs-in-modules-aktiviert 289-closure-dir-nicht-existent 341-kopplung-config-verliert-ein-muster 475-codepaths-reviews-ausnahme-wandert-in-einen-nachbar-block 635-greift-modus-uebersieht-ungegriffenen-anker 78-release-matrix-unvollstaendig 81-release-dest-pflicht 838-release-formel-teillauf-meldung-enthemmt
+Shard 6: Exit 2, 306 s, Faelle: 243-archive-welle-go-stubform-verdrahtung 648-archive-welle-go-kennung-verloren 194-mutate-serielle-spur-nicht-fail-closed 204-mutate-bericht-wird-wiederholt 263-mutate-beleg-ueberlebt-abbruch 280-vcs-head-allow-ohne-endanker 290-closure-boilerplate-gesetzt 402-fassungs-rezepte-ohne-durchreichung 496-mutate-form-matched-live-pipe-verwirft-treffer 636-greift-einstieg-faehrt-den-modus-nicht 79-release-windows-ohne-exe 810-stamp-records-konsum-bricht-mit-meldung 97-mutate-sensorwahl
+Shard 7: Exit 2, 452 s, Faelle: 245-archive-welle-go-move-commit-entfaellt 771-archiv-rueckleseprobe-ausgehebelt 195-mutate-spur-haengt-am-aufrufer 205-mutate-zweites-signal-schweigt 264-mutate-uebersprung-ohne-schluesselvergleich 281-vcs-status-line-entfernt 301-targets-modul-deaktiviert 403-fassungs-pin-default 498-testgo-pids-limit-entfernt 637-greift-rezept-laesst-mutate-cases-durch 790-d-check-pin-paarung-faerbt-pinsync-rot 814-mutate-umgebungsvorbedingung-faehrt-nicht 98-teststufe-count
+Shard 8: Exit 2, 309 s, Faelle: 317-stub-slicere-verliert-benannte-kennung 819-archive-welle-go-report-stub-form-verdrahtung 196-mutate-statuszeile-ohne-inhalt 210-gate-nachweis-kante-entfernt 269-planning-modul-aus-modules-entfernt 282-vcs-paths-klasse-verfehlt 302-targets-exempt-eintrag-entfernt 453-mutate-teillauf-schreibt-den-beleg-slot 499-testgo-memory-limit-entfernt 661-mutate-branch-ref-als-literal 795-go-pin-paarung-verliert-inventar-quelle 815-mutate-umgebungs-befund-kehrt-in-die-sperren-klasse-zurueck
+Shard 9: Exit 2, 462 s, Faelle: 318-stub-slicere-alternativen-reihenfolge 825-archive-welle-go-umzug-stub-form-verdrahtung 197-mutate-worker-ohne-errexit 211-gate-nachweis-check-daneben 270-planning-heading-auf-modul-default-zurueckgesetzt 283-vcs-immutable-when-verfehlt-kopfzeile 319-waves-dir-entfernt 454-mutate-teillauf-entwertet-den-beleg-slot 500-mutate-vollauf-sperre-entfernt 72-mutate-isolation-im-repo 80-release-default-plattform 816-mutate-daemon-vorbedingung-verliert-die-modi
+BEFUND (kein Ergebnis im Log) 553-ausgang-unveroeffentlichter-traeger-tag              Shard 0
+BEFUND (kein Ergebnis im Log) 506-archive-welle-go-altbestand-lauf-sammelt-nicht-die-menge-der-vorschau Shard 0
+BEFUND (kein Ergebnis im Log) 828-archive-welle-go-umzug-stub-nach-dem-nachzug         Shard 0
+BEFUND (kein Ergebnis im Log) 198-mutate-mutex-schranke-meldet-leer                    Shard 0
+BEFUND (kein Ergebnis im Log) 213-gate-nachweis-kante-gekuerzt                         Shard 0
+BEFUND (kein Ergebnis im Log) 271-planning-marker-zeile-entfernt                       Shard 0
+BEFUND (kein Ergebnis im Log) 284-vcs-head-allow-duplikat                              Shard 0
+BEFUND (kein Ergebnis im Log) 320-waves-mode-auf-one-zurueckgesetzt                    Shard 0
+BEFUND (kein Ergebnis im Log) 455-mutate-teillauf-sagt-beleg                           Shard 0
+BEFUND (kein Ergebnis im Log) 524-config-ohne-benannten-slice                          Shard 0
+BEFUND (kein Ergebnis im Log) 73-mutate-fingerprint-leer                               Shard 0
+BEFUND (kein Ergebnis im Log) 805-gates-rezept-koppel-entzaubert                       Shard 0
+BEFUND (kein Ergebnis im Log) 823-e2e-skip-liest-fremdes-feld                          Shard 0
+BEFUND (kein Ergebnis im Log) 554-traeger-tag-im-fragment-umbenannt-full-smoke         Shard 1
+BEFUND (kein Ergebnis im Log) 507-archive-welle-go-altbestand-stub-ohne-archiviert-mit Shard 1
+BEFUND (kein Ergebnis im Log) 830-archive-welle-go-umzug-stub-schreiber-deaktiviert    Shard 1
+BEFUND (kein Ergebnis im Log) 199-mutate-zeitschranke-greift-nie                       Shard 1
+BEFUND (kein Ergebnis im Log) 214-gate-nachweis-baseline-nicht-erster                  Shard 1
+BEFUND (kein Ergebnis im Log) 272-planning-heading-auf-marker-lose-sektion             Shard 1
+BEFUND (kein Ergebnis im Log) 285-closure-dir-entfernt                                 Shard 1
+BEFUND (kein Ergebnis im Log) 321-waves-dir-anderer-pfad                               Shard 1
+BEFUND (kein Ergebnis im Log) 456-mutate-teillauf-uebersprung-mit-filter               Shard 1
+BEFUND (kein Ergebnis im Log) 555-traeger-tag-im-fragment-umbenannt-pin-kopplung       Shard 1
+BEFUND (kein Ergebnis im Log) 74-mutate-kopie-ohne-git                                 Shard 1
+BEFUND (kein Ergebnis im Log) 806-shell-lint-rezept-ohne-host-schalter                 Shard 1
+BEFUND (kein Ergebnis im Log) 832-e2e-skip-fremdes-feld                                Shard 1
+BEFUND (kein Ergebnis im Log) 772-archiv-zip-abgeschnitten-und-probe-ausgehebelt       Shard 2
+BEFUND (kein Ergebnis im Log) 579-ausnahme-grund-verliert-einen-baum-im-repo           Shard 2
+BEFUND (kein Ergebnis im Log) 09-treiber-failure-form                                  Shard 2
+BEFUND (kein Ergebnis im Log) 200-mutate-signal-raeumt-vor-dem-bericht                 Shard 2
+BEFUND (kein Ergebnis im Log) 254-archive-welle-makefile-name-vertippt                 Shard 2
+BEFUND (kein Ergebnis im Log) 273-planning-block-rumpf-entfernt                        Shard 2
+BEFUND (kein Ergebnis im Log) 286-closure-glob-hinzugefuegt                            Shard 2
+BEFUND (kein Ergebnis im Log) 322-waves-block-vollstaendig-entfernt                    Shard 2
+BEFUND (kein Ergebnis im Log) 457-mutate-filter-uebergeht-unbekannte-namen             Shard 2
+BEFUND (kein Ergebnis im Log) 582-register-ausgang-faellt-aus-der-kante                Shard 2
+BEFUND (kein Ergebnis im Log) 75-mutate-kopie-im-repo                                  Shard 2
+BEFUND (kein Ergebnis im Log) 807-kante-doksgate-zurueck-auf-fragment                  Shard 2
+BEFUND (kein Ergebnis im Log) 835-release-bau-plattformzeile-gestrichen                Shard 2
+BEFUND (kein Ergebnis im Log) 773-archiv-altbestand-zip-ungelesen                      Shard 3
+BEFUND (kein Ergebnis im Log) 585-archive-titelvon-streift-den-namen-nicht             Shard 3
+BEFUND (kein Ergebnis im Log) 191-mutate-zeitbilanz-ohne-nenner                        Shard 3
+BEFUND (kein Ergebnis im Log) 201-mutate-worker-trap-kehrt-zurueck                     Shard 3
+BEFUND (kein Ergebnis im Log) 256-hostbin-zweite-nennung-in-derselben-zeile            Shard 3
+BEFUND (kein Ergebnis im Log) 277-vcs-head-allow-bare-kennung                          Shard 3
+BEFUND (kein Ergebnis im Log) 287-closure-placeholder-aktiviert                        Shard 3
+BEFUND (kein Ergebnis im Log) 323-waves-dir-zeigt-auf-nichtexistierenden-pfad          Shard 3
+BEFUND (kein Ergebnis im Log) 458-mutate-voller-lauf-nennt-den-schluessel              Shard 3
+BEFUND (kein Ergebnis im Log) 612-fassungs-ausnahme-zweiter-wert-im-makefile-gleich-form Shard 3
+BEFUND (kein Ergebnis im Log) 76-mutate-mittenpruefung                                 Shard 3
+BEFUND (kein Ergebnis im Log) 808-golangci-pin-ohne-dockerfile-quelle                  Shard 3
+BEFUND (kein Ergebnis im Log) 836-release-bau-ldflags-injektion-entzogen               Shard 3
+BEFUND (kein Ergebnis im Log) 239-archive-welle-go-stub-ueberschrift                   Shard 4
+BEFUND (kein Ergebnis im Log) 643-archive-welle-go-altbestand-ohne-kennungspflicht     Shard 4
+BEFUND (kein Ergebnis im Log) 192-mutate-worker-vorlauf-ohne-abbruch                   Shard 4
+BEFUND (kein Ergebnis im Log) 202-mutate-einsammeln-ohne-schranke                      Shard 4
+BEFUND (kein Ergebnis im Log) 259-hostbin-name-mit-ziffer                              Shard 4
+BEFUND (kein Ergebnis im Log) 278-vcs-exclude-sections-ohne-geschichte                 Shard 4
+BEFUND (kein Ergebnis im Log) 288-closure-dir-anderer-pfad                             Shard 4
+BEFUND (kein Ergebnis im Log) 324-mutate-files-schranke-erlaubt-mehrfachtreffer        Shard 4
+BEFUND (kein Ergebnis im Log) 474-codepaths-reviews-ausnahme-entfaellt                 Shard 4
+BEFUND (kein Ergebnis im Log) 613-fassungs-ausnahme-zweiter-wert-im-workflow-anfuehrungs-form Shard 4
+BEFUND (kein Ergebnis im Log) 77-mutate-abbruch                                        Shard 4
+BEFUND (kein Ergebnis im Log) 809-lint-rezept-faellt-auf-ablage-zurueck                Shard 4
+BEFUND (kein Ergebnis im Log) 837-release-ci-step-ruft-docker-ziel                     Shard 4
+BEFUND (kein Ergebnis im Log) 241-archive-welle-go-staging-explizit                    Shard 5
+BEFUND (kein Ergebnis im Log) 644-archive-welle-go-kennung-konstant                    Shard 5
+BEFUND (kein Ergebnis im Log) 193-mutate-bericht-ohne-fehlenden-fall                   Shard 5
+BEFUND (kein Ergebnis im Log) 203-mutate-zeitvorgabe-ungeprueft                        Shard 5
+BEFUND (kein Ergebnis im Log) 262-mutate-schluessel-ausnahme-nicht-deklariert          Shard 5
+BEFUND (kein Ergebnis im Log) 279-vcs-in-modules-aktiviert                             Shard 5
+BEFUND (kein Ergebnis im Log) 289-closure-dir-nicht-existent                           Shard 5
+BEFUND (kein Ergebnis im Log) 341-kopplung-config-verliert-ein-muster                  Shard 5
+BEFUND (kein Ergebnis im Log) 475-codepaths-reviews-ausnahme-wandert-in-einen-nachbar-block Shard 5
+BEFUND (kein Ergebnis im Log) 635-greift-modus-uebersieht-ungegriffenen-anker          Shard 5
+BEFUND (kein Ergebnis im Log) 78-release-matrix-unvollstaendig                         Shard 5
+BEFUND (kein Ergebnis im Log) 81-release-dest-pflicht                                  Shard 5
+BEFUND (kein Ergebnis im Log) 838-release-formel-teillauf-meldung-enthemmt             Shard 5
+BEFUND (kein Ergebnis im Log) 243-archive-welle-go-stubform-verdrahtung                Shard 6
+BEFUND (kein Ergebnis im Log) 648-archive-welle-go-kennung-verloren                    Shard 6
+BEFUND (kein Ergebnis im Log) 194-mutate-serielle-spur-nicht-fail-closed               Shard 6
+BEFUND (kein Ergebnis im Log) 204-mutate-bericht-wird-wiederholt                       Shard 6
+BEFUND (kein Ergebnis im Log) 263-mutate-beleg-ueberlebt-abbruch                       Shard 6
+BEFUND (kein Ergebnis im Log) 280-vcs-head-allow-ohne-endanker                         Shard 6
+BEFUND (kein Ergebnis im Log) 290-closure-boilerplate-gesetzt                          Shard 6
+BEFUND (kein Ergebnis im Log) 402-fassungs-rezepte-ohne-durchreichung                  Shard 6
+BEFUND (kein Ergebnis im Log) 496-mutate-form-matched-live-pipe-verwirft-treffer       Shard 6
+BEFUND (kein Ergebnis im Log) 636-greift-einstieg-faehrt-den-modus-nicht               Shard 6
+BEFUND (kein Ergebnis im Log) 79-release-windows-ohne-exe                              Shard 6
+BEFUND (kein Ergebnis im Log) 810-stamp-records-konsum-bricht-mit-meldung              Shard 6
+BEFUND (kein Ergebnis im Log) 97-mutate-sensorwahl                                     Shard 6
+BEFUND (kein Ergebnis im Log) 245-archive-welle-go-move-commit-entfaellt               Shard 7
+BEFUND (kein Ergebnis im Log) 771-archiv-rueckleseprobe-ausgehebelt                    Shard 7
+BEFUND (kein Ergebnis im Log) 195-mutate-spur-haengt-am-aufrufer                       Shard 7
+BEFUND (kein Ergebnis im Log) 205-mutate-zweites-signal-schweigt                       Shard 7
+BEFUND (kein Ergebnis im Log) 264-mutate-uebersprung-ohne-schluesselvergleich          Shard 7
+BEFUND (kein Ergebnis im Log) 281-vcs-status-line-entfernt                             Shard 7
+BEFUND (kein Ergebnis im Log) 301-targets-modul-deaktiviert                            Shard 7
+BEFUND (kein Ergebnis im Log) 403-fassungs-pin-default                                 Shard 7
+BEFUND (kein Ergebnis im Log) 498-testgo-pids-limit-entfernt                           Shard 7
+BEFUND (kein Ergebnis im Log) 637-greift-rezept-laesst-mutate-cases-durch              Shard 7
+BEFUND (kein Ergebnis im Log) 790-d-check-pin-paarung-faerbt-pinsync-rot               Shard 7
+BEFUND (kein Ergebnis im Log) 814-mutate-umgebungsvorbedingung-faehrt-nicht            Shard 7
+BEFUND (kein Ergebnis im Log) 98-teststufe-count                                       Shard 7
+BEFUND (kein Ergebnis im Log) 317-stub-slicere-verliert-benannte-kennung               Shard 8
+BEFUND (kein Ergebnis im Log) 819-archive-welle-go-report-stub-form-verdrahtung        Shard 8
+BEFUND (kein Ergebnis im Log) 196-mutate-statuszeile-ohne-inhalt                       Shard 8
+BEFUND (kein Ergebnis im Log) 210-gate-nachweis-kante-entfernt                         Shard 8
+BEFUND (kein Ergebnis im Log) 269-planning-modul-aus-modules-entfernt                  Shard 8
+BEFUND (kein Ergebnis im Log) 282-vcs-paths-klasse-verfehlt                            Shard 8
+BEFUND (kein Ergebnis im Log) 302-targets-exempt-eintrag-entfernt                      Shard 8
+BEFUND (kein Ergebnis im Log) 453-mutate-teillauf-schreibt-den-beleg-slot              Shard 8
+BEFUND (kein Ergebnis im Log) 499-testgo-memory-limit-entfernt                         Shard 8
+BEFUND (kein Ergebnis im Log) 661-mutate-branch-ref-als-literal                        Shard 8
+BEFUND (kein Ergebnis im Log) 795-go-pin-paarung-verliert-inventar-quelle              Shard 8
+BEFUND (kein Ergebnis im Log) 815-mutate-umgebungs-befund-kehrt-in-die-sperren-klasse-zurueck Shard 8
+BEFUND (kein Ergebnis im Log) 318-stub-slicere-alternativen-reihenfolge                Shard 9
+BEFUND (kein Ergebnis im Log) 825-archive-welle-go-umzug-stub-form-verdrahtung         Shard 9
+BEFUND (kein Ergebnis im Log) 197-mutate-worker-ohne-errexit                           Shard 9
+BEFUND (kein Ergebnis im Log) 211-gate-nachweis-check-daneben                          Shard 9
+BEFUND (kein Ergebnis im Log) 270-planning-heading-auf-modul-default-zurueckgesetzt    Shard 9
+BEFUND (kein Ergebnis im Log) 283-vcs-immutable-when-verfehlt-kopfzeile                Shard 9
+BEFUND (kein Ergebnis im Log) 319-waves-dir-entfernt                                   Shard 9
+BEFUND (kein Ergebnis im Log) 454-mutate-teillauf-entwertet-den-beleg-slot             Shard 9
+BEFUND (kein Ergebnis im Log) 500-mutate-vollauf-sperre-entfernt                       Shard 9
+BEFUND (kein Ergebnis im Log) 72-mutate-isolation-im-repo                              Shard 9
+BEFUND (kein Ergebnis im Log) 80-release-default-plattform                             Shard 9
+BEFUND (kein Ergebnis im Log) 816-mutate-daemon-vorbedingung-verliert-die-modi         Shard 9
+Fallmenge: 128 (Slice: 128)
+Wanduhr gesamt (erster Shard-Start bis letztes Shard-Ende): 596 s
+Urteil: BEFUND
