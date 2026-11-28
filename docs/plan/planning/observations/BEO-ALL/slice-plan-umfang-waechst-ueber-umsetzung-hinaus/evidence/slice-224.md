@@ -3,8 +3,8 @@
 genau dieses Wachstum vorab als Risiko benannt:
 
 ```sh
-wc -l docs/plan/planning/done/slice-224-delta-nachweis-und-planungs-nachzug.md
-git grep -cE '^\| `lab/' -- docs/plan/planning/done/slice-224-delta-nachweis-und-planungs-nachzug.md
+wc -l docs/plan/planning/done/altbestand/slice-224-delta-nachweis-und-planungs-nachzug.md
+git grep -cE '^\| `lab/' -- docs/plan/planning/done/altbestand/slice-224-delta-nachweis-und-planungs-nachzug.md
 ```
 
 **Keine Erwartungswerte** ([`MR-025`](../../../../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)

@@ -150,14 +150,14 @@ die daraus schon gezogen wurde (Folge-Slice, Spec-Version).
 - **Zwei Re-Evaluierungs-Trigger von**
   [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) **sind
   mit diesem Sprung gefeuert**, und der Ausgang liegt außerhalb dieser Welle:
-  [slice-183](../done/slice-183-ausloeser-der-wellenlosen-archivierung.md)
+  [slice-183](../done/altbestand/slice-183-ausloeser-der-wellenlosen-archivierung.md)
   entscheidet den Auslöser der Zeitdokumente-Archivierung im wellenlosen
   Betrieb. Der Träger der Operation bleibt entschieden, der Auslöser nicht.
 - **Der Register-Umzug hat mehr Zitate gebrochen, als der Katalog kannte**, und
   die Reparatur ist zweigeteilt worden, weil das Eigentum es ist:
   [slice-186](slice-186-beobachtungs-kennungen-loesen-wieder-auf.md) zieht, was
   dem Planner gehört,
-  [slice-189](../done/slice-189-abgeschaffte-kennung-in-architect-artefakten.md)
+  [slice-189](../done/altbestand/slice-189-abgeschaffte-kennung-in-architect-artefakten.md)
   das, was in ADR und Adaptions-Block steht
   ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
 
@@ -283,21 +283,21 @@ das Original ist die Slice-Datei. Jeder genannte Folge-Slice muss als Datei im
 Planning-Lifecycle existieren; genannt ohne angelegt ist dieselbe Klasse wie
 ein halluziniertes Gate.
 
-- [slice-183](../done/slice-183-ausloeser-der-wellenlosen-archivierung.md) — der
+- [slice-183](../done/altbestand/slice-183-ausloeser-der-wellenlosen-archivierung.md) — der
   Auslöser der Zeitdokumente-Archivierung im wellenlosen Betrieb (Architect).
   Position **P-06** des Katalogs, von §6 dieser Welle ausdrücklich außerhalb
   gehalten.
-- [slice-188](../done/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md)
+- [slice-188](../done/altbestand/slice-188-archiv-stub-kennt-die-register-verzeichnis-form.md)
   — der Archiv-Stub kennt die Kennungs-Form des Registers; hervorgegangen aus
   [slice-184](slice-184-register-form-im-bestand-nachziehen.md).
-- [slice-189](../done/slice-189-abgeschaffte-kennung-in-architect-artefakten.md)
+- [slice-189](../done/altbestand/slice-189-abgeschaffte-kennung-in-architect-artefakten.md)
   — die Architect-Hälfte des Kennungs-Nachzugs; hervorgegangen aus
   [slice-186](slice-186-beobachtungs-kennungen-loesen-wieder-auf.md).
 
 **Zwei Slices sind in dieser Welle entstanden und sind trotzdem keine Folge von
-ihr:** [slice-187](../done/slice-187-d-check-pin-v0741.md) trägt den d-check-Pin
+ihr:** [slice-187](../done/altbestand/slice-187-d-check-pin-v0741.md) trägt den d-check-Pin
 `v0.65.0` → `v0.74.1` und tritt an die Stelle von
-[slice-135](../done/slice-135-d-check-pin-v0661.md). Sein Trigger ist
+[slice-135](../done/altbestand/slice-135-d-check-pin-v0661.md). Sein Trigger ist
 `make freshness-dcheck` und hängt an keiner Baseline-Version; §6 dieser Welle
 nennt die Linie namentlich als Out-of-Scope. Beide bleiben in `open/`.
 
@@ -346,7 +346,7 @@ Das ist das Übergabe-Artefakt *Verifier → Planner* aus
   Trigger **weiterhin eingetreten**, Ausgang unverändert *verlängert mit
   Folge-Slice* — die Datei nennt
   [slice-113](../open/slice-113-co-001-ist-faellig.md) als Folge-Slice, und
-  [slice-141](../done/slice-141-co-001-aufloesung-ist-vorher-entschieden.md)
+  [slice-141](../done/altbestand/slice-141-co-001-aufloesung-ist-vorher-entschieden.md)
   entscheidet vorher. Der Bestand ist gewachsen — `ls test/*.bats | wc -l` →
   **22**, keine Erwartungswerte —, die tragende Fundstelle des Carveouts ist
   unverändert.
@@ -365,9 +365,9 @@ Das ist das Übergabe-Artefakt *Verifier → Planner* aus
   existiert:
   [`ADR-0025`](../../adr/0025-register-mit-gemischten-originalen.md) und
   [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md)
-  → [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md),
+  → [slice-152](../done/altbestand/slice-152-adr-0029-acceptance-trigger.md),
   [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
-  → [slice-171](../done/slice-171-adr-0031-acceptance-trigger.md).
+  → [slice-171](../done/altbestand/slice-171-adr-0031-acceptance-trigger.md).
   [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) trägt
   ihren Acceptance-Trigger **in der Datei** (§Der Acceptance-Trigger: eine
   Reviewer-Runde gegen drei benannte ADRs, deren Report in `docs/reviews/`
@@ -384,7 +384,7 @@ Das ist das Übergabe-Artefakt *Verifier → Planner* aus
   (`git log --oneline --since=2026-09-04 -- harness/tools/mutate.sh` ist leer).
   Die zwei gefeuerten Trigger von
   [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md) tragen
-  [slice-183](../done/slice-183-ausloeser-der-wellenlosen-archivierung.md).
+  [slice-183](../done/altbestand/slice-183-ausloeser-der-wellenlosen-archivierung.md).
 
 **Schritt 4 — Archivierung: gefahren, fail-closed an zwei Sperren abgebrochen.**
 Träger ist `make archive-welle WELLE=welle-15`
@@ -415,7 +415,7 @@ Setzung 2). Beide Sperren sind unabhängig von dieser Welle:
   *wellenlos seit der letzten Closure* keine beobachtbare Untergrenze; die Klasse
   umfasste den gesamten Altbestand, und der Lauf rät nicht. Die Archivierung des
   Altbestands ist ein eigener Vorgang und braucht die Entscheidung, die
-  [slice-183](../done/slice-183-ausloeser-der-wellenlosen-archivierung.md)
+  [slice-183](../done/altbestand/slice-183-ausloeser-der-wellenlosen-archivierung.md)
   trägt — §6 dieser Welle hält beides ausdrücklich außerhalb.
 - `[haenger]` — Review-Reports sollen ins Archiv, auf die noch verwiesen wird;
   der Lauf listet **42** Verweis-Paare auf (`… -> docs/reviews/…`-Zeilen der

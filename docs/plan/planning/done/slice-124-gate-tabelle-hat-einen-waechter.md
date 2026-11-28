@@ -12,7 +12,7 @@ wechselt nur durch `git mv`, siehe
 emittierte Starter-Config bleibt `modules: [links, anchors]`
 ([`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed));
 ob ein Ziel-Repo `targets` bekommt, entscheidet
-[slice-073](../done/slice-073-emittierte-doc-gate-module.md) — dort ist die Frage gestellt, und sie ist
+[slice-073](../done/altbestand/slice-073-emittierte-doc-gate-module.md) — dort ist die Frage gestellt, und sie ist
 dort eine andere, weil ein frisch gebootstrapptes Ziel andere Utility-Targets hat als wir.
 
 **Bezug:**
@@ -194,7 +194,7 @@ Steering-Loop-Lerneintrag.
 | [`harness/README.md`](../../../../harness/README.md) | update | zweite `doc-tables`-Quelle; hier steht, was **außerhalb** von `make gates` läuft — genau die Unterscheidung, die `exempt-targets` mechanisch macht |
 | `test/` | neu | der Fall, der die Zusage aus DoD (1) rot färbt, plus sein `test/mutations/`-Zahn |
 | [`harness/conventions.md`](../../../../harness/conventions.md) | **nicht durch diesen Slice** | [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids) (Modul-Liste) und [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert) Setzung 2 (Grenzziehung) sind nachzuziehen — **Übergabe** an den Architect, DoD (3) |
-| [`internal/emit/`](../../../../internal/emit) | **unverändert** | Ebene Dogfood (Kopfzeile); die emittierte Modul-Liste entscheidet [slice-073](../done/slice-073-emittierte-doc-gate-module.md) |
+| [`internal/emit/`](../../../../internal/emit) | **unverändert** | Ebene Dogfood (Kopfzeile); die emittierte Modul-Liste entscheidet [slice-073](../done/altbestand/slice-073-emittierte-doc-gate-module.md) |
 
 ## 4. Trigger
 
@@ -410,7 +410,7 @@ Rahmen der Welle-Closure ([`AGENTS.md`](../../../../AGENTS.md) §3.8).
 
 Der Adaptions-Block trägt keinen Ort, an dem steht, dass dieses Repo `planning` und `targets` im
 Doc-Gate fährt. Die Übergabe hat einen Träger bekommen statt nur einen Satz in dieser Notiz:
-[slice-212](../done/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md) in `open/`. Der
+[slice-212](../done/altbestand/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md) in `open/`. Der
 zuerst gemeldete Posten an
 [`MR-010`](../../../../harness/conventions.md#mr-010--d-check-gate-fragment-tool-generiert)
 Setzung 2 ist entkräftet und wird **nicht** weitergereicht: Aktiviert wurde ein Modul *innerhalb*

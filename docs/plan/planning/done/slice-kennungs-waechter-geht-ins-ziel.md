@@ -65,7 +65,7 @@ Setzung 2) — alle drei wandern mit dem Baum. Der lokale Träger hat drei Hälf
 PreToolUse-Hook (`.claude/hooks/pretooluse-commit-msg-guard.sh`), das Kommando
 `make commit-msg-check`, das dieselbe Prüfung ohne Agenten fährt, und den git-eigenen Hook
 `.githooks/commit-msg`, den
-[slice-215](../done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) für den
+[slice-215](../done/altbestand/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) für den
 Dogfood entschieden hat. Die ersten zwei erreichen das Ziel nicht; die dritte ist die Form, die es
 bekommt. Auch die Modul-Liste der emittierten Gate-Konfiguration führt den Constraint nicht: sie
 liest `modules: [links, anchors, ids, matrix, spans]`.
@@ -78,7 +78,7 @@ dem, was es trägt.
 
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
-- **Die Träger-Wahl des Dogfoods für sich.** [slice-215](../done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md)
+- **Die Träger-Wahl des Dogfoods für sich.** [slice-215](../done/altbestand/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md)
   hat entschieden, wo der Wächter **dieses** Repos hängt, wenn der Aufruf nicht als Kommando
   erscheint; die emittierte Fassung erbt diese Entscheidung, statt sie vorwegzunehmen (§5 der
   Welle).
@@ -147,7 +147,7 @@ Aussagen-Berührung steht hier gar nicht.
 
 **Der Träger wird nicht neu erfunden.** Dieses Repo führt seine drei Hälften — den PreToolUse-Hook,
 das Kommando, das dieselbe Prüfung ohne Agenten fährt, und den git-eigenen Hook, den
-[slice-215](../done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) für den
+[slice-215](../done/altbestand/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) für den
 **Dogfood** entschieden hat. Die Emission übernimmt dessen Form: der git-eigene Hook ist der Träger
 im Ziel, der PreToolUse-Kanal bleibt hier. **Seine Grenze wandert mit:** `core.hooksPath` ist lokale
 Konfiguration, die kein Bootstrap setzt; der emittierte Wächter ist damit **optional**, und was er
@@ -160,7 +160,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 
 **Start** (`next` → `in-progress`): Der Slice ist priorisiert (`Verantwortlich:` gesetzt) und das
 WIP-Limit frei. **Der Träger des Dogfoods ist entschieden**
-([slice-215](../done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md)); dieser
+([slice-215](../done/altbestand/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md)); dieser
 Slice erbt die Form (§3) — die Richtung „erst die ausgeführte Fassung, dann die emittierte" (Welle
 §5) ist eine Ordnung, keine Sperre.
 
@@ -193,12 +193,12 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 dasteht.
 
 - **Der emittierte Wächter erbt eine Entscheidung, die noch nicht gefallen ist.**
-  [slice-215](../done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) bewegt den Träger des
+  [slice-215](../done/altbestand/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) bewegt den Träger des
   Dogfoods; eine emittierte Form, die davor geschrieben wird, ist mit seinem Ergebnis zu
   vergleichen und gegebenenfalls nachzuziehen. — **Ausgang: eingetreten —
   `slice-commit-traeger-wird-skip-if-present`** (eine Datei in `open/`, in diesem Closure-Lauf
   angelegt). Der Vergleich ist gefahren: die Form des Ziels ist die, die
-  [slice-215](../done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) entschieden
+  [slice-215](../done/altbestand/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) entschieden
   hat, und das **Nachziehen** betrifft nicht den Kanal, sondern die **Klasse** des Pfades — sie ist
   in [`ADR-0054`](../../adr/0054-emittierter-commit-traeger-skip-if-present.md) Festlegung 1
   entschieden und ihrer Folgepflicht 1 übergeben. Kein Carveout: kein Gate steht rot.
@@ -237,7 +237,7 @@ Backticks).
 
 - **Was hat funktioniert:** **Die Träger-Entscheidung lag vor, und die Emission hat sie geerbt
   statt sie zu wiederholen.** Der Träger des Ziels ist der git-eigene Hook — die Form hat
-  [slice-215](../done/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) für den
+  [slice-215](../done/altbestand/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) für den
   Dogfood entschieden, und dieser Slice hat sie übernommen; ein zweiter Kanal daneben wäre eine
   zweite Fassung derselben Zusage geworden. **Getragen hat zweitens der E2E:** die Sektion
   `kennungs_traeger_im_ziel` fährt die Kette im gebootstrappten Ziel — ein Commit **ohne** Kennung

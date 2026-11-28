@@ -127,7 +127,7 @@ Eingetreten:
   — kein Auflösungs-Trigger, an seine Stelle treten deren Re-Evaluierungs-Trigger. Der Kopf von
   `CO-002` trägt den Verdikt-Status (`grep -n '^\*\*Status:' docs/plan/carveouts/CO-002-token-achse-je-rolle.md`
   → `Permanent — übergeführt`), geschrieben von
-  [slice-089](done/slice-089-carveout-co-002-ueberfuehren.md), **keinem Mitglied** dieser Welle.
+  [slice-089](done/altbestand/slice-089-carveout-co-002-ueberfuehren.md), **keinem Mitglied** dieser Welle.
   **Jeder Zellwert steht an zwei Fundorten** — hier und in der **definierenden** Slice-Zeile der
   §4-Tabelle: `grep -n 'Token-Attribution × Repo\|Cache-Counter × Repo' docs/plan/planning/welle-09-modul-15-konformitaet.md`
   (der Treffer auf der Zeile des Kommandos zählt nicht mit).
@@ -186,7 +186,7 @@ tragen je eigene Pflicht-Angaben und eine eigene Festlegung in
 ([`ADR-0013`](../adr/0013-technik-stratum-als-zielort.md)). Block 2 hat eine Rechnung samt Zahn;
 Block 3 bekommt keine, der Eingang bleibt aus. Die Cache-Trennung (Hit-/Miss-Zähler) liegt im
 `usage`-Objekt eines Vordergrund-`Agent`-Aufrufs; der Vordergrund ist nicht anforderbar
-([slice-086](done/slice-086-vordergrund-per-updatedinput.md)), der Ausfall ist in
+([slice-086](done/altbestand/slice-086-vordergrund-per-updatedinput.md)), der Ausfall ist in
 [`ADR-0021`](../adr/0021-verbrauchs-achse-je-rolle-ohne-quelle.md) permanent entschieden. Die drei
 Pflicht-Labels und die Unerreichbarkeit führt [`spec/spezifikation.md`](../../../spec/spezifikation.md#5-metriken-und-tracing-felder)
 §5 Abweichung 1 ([`ADR-0011`](../adr/0011-telemetrie-erfassung-policy.md) Festlegung 1 Punkt 5).
@@ -240,7 +240,7 @@ ADR ruht auf dem vendored Vorlagen-Wortlaut).
   [`d-check.mk`](../../../d-check.mk) vor; im Repo steht das Modul in der Modul-Liste von
   [`.d-check.yml`](../../../.d-check.yml) (`grep -n '^modules:' .d-check.yml`), und die emittierte
   Vorlage führt es ebenfalls (`grep -n '^modules:' internal/emit/templates/d-check.yml`). Die
-  Aktivierung im emittierten Ziel liegt bei [slice-targets-modul-im-emittierten-doc-gate](done/slice-targets-modul-im-emittierten-doc-gate.md);
+  Aktivierung im emittierten Ziel liegt bei [slice-targets-modul-im-emittierten-doc-gate](done/altbestand/slice-targets-modul-im-emittierten-doc-gate.md);
   slice-063 hat keine Datei.
 - **Offen:** Das Gate-Fragment aus [slice-099](done/slice-099-leser-und-aufraeum-kommando.md) (zwei
   Init-invariante `make`-Ziele) gehört nach

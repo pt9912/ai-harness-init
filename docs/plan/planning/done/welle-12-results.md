@@ -133,10 +133,10 @@ den Slice-Notizen; hier steht, was sie **als Reihe** zeigen, und der eigene Eint
   Sichtbarkeit eines Textes, den ein grüner Lauf nie liest.** Das ist kein Zufall dieser Welle: sie
   hat zum ersten Mal Text **in ein fremdes Repo** geschrieben, und dort liest ihn niemand von uns.
 - **Der Ausgang der sechs ist gebündelt, nicht verstreut.** Fünf der neun Postens in
-  [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) stammen aus dieser Welle
-  (`grep -coE '^\*\*Und ein (fünfter|sechster|siebter|achter|neunter)' docs/plan/planning/done/slice-101-norm-postens-bekommen-einen-termin.md`
+  [slice-101](../done/altbestand/slice-101-norm-postens-bekommen-einen-termin.md) stammen aus dieser Welle
+  (`grep -coE '^\*\*Und ein (fünfter|sechster|siebter|achter|neunter)' docs/plan/planning/done/altbestand/slice-101-norm-postens-bekommen-einen-termin.md`
   → **5**). Damit hat diese Welle die Lehre aus
-  [„Lehre braucht Träger"](slice-100-vorlauf-nennt-den-grund.md) selbst angewandt: eine Regel ohne
+  [„Lehre braucht Träger"](altbestand/slice-100-vorlauf-nennt-den-grund.md) selbst angewandt: eine Regel ohne
   Träger ist ein Satz, den der Prozess nie wieder liest.
 - **Der eigene Eintrag dieser Closure — geschärfte Regel: ein Audit fragt über den Bestand, den
   seine Bedingung nennt, nicht über die Neuzugänge der Welle, die ihn führt.** Der Auflösungs-Trigger
@@ -158,13 +158,13 @@ den Slice-Notizen; hier steht, was sie **als Reihe** zeigen, und der eigene Eint
   über fünf Achsen gibt es hier keinen Replay-Lauf — kein `make`-Ziel, kein `evals/`-Layout, kein
   Modul-12-Vokabular außerhalb des vendored Baums, keine der acht bisherigen Closure-Notizen und
   keine Welle-Plan-Datei nennt ihn (Kommandos in
-  [slice-112](../done/slice-112-replay-schritt-hat-keinen-referenten.md) §1). Getragen wird der
+  [slice-112](../done/altbestand/slice-112-replay-schritt-hat-keinen-referenten.md) §1). Getragen wird der
   Schritt hier von den Sensoren, die [`harness/README.md`](../../../../harness/README.md)
   §Nicht-Gate-Verify ausdrücklich der **Wellen-Closure** zuweist — `make full-smoke` und
   `make mutate` neben `make gates` — plus den welle-eigenen Kriterien aus §3 der Plan-Datei. Diese
   Fassung wird gelebt, ist in **zwei** Anleitungen geschrieben und **eine davon wird emittiert** —
   und sie ist im Adaptions-Block nirgends deklariert. **Träger:**
-  [slice-112](../done/slice-112-replay-schritt-hat-keinen-referenten.md); der Text gehört dem
+  [slice-112](../done/altbestand/slice-112-replay-schritt-hat-keinen-referenten.md); der Text gehört dem
   Architect ([`AGENTS.md`](../../../../AGENTS.md) §3.8,
   [`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1), diese Closure
   liefert die Messung und den Termin.
@@ -187,17 +187,17 @@ einem bestehenden erzeugt. Was offen bleibt, in Klassen statt als Liste:
   `grep -c 'slice-110-erfassungs-waechter-fall-meldung-grenze' docs/plan/planning/done/slice-099-leser-und-aufraeum-kommando.md`
   → **8** Nennungen an einen einzigen Träger reicht. Nach
   [`AGENTS.md`](../../../../AGENTS.md) §3.6 gilt: wer keinen Fall hat, ist unbewacht. Träger:
-  [slice-103](../done/slice-103-traeger-waechter-decken-was-sie-sagen.md),
-  [slice-104](../done/slice-104-rollen-namen-haben-eine-quelle.md),
-  [slice-108](../done/slice-108-feldlisten-waechter-tragen-ihren-fall.md),
-  [slice-110](../done/slice-110-erfassungs-waechter-fall-meldung-grenze.md).
+  [slice-103](../done/altbestand/slice-103-traeger-waechter-decken-was-sie-sagen.md),
+  [slice-104](../done/altbestand/slice-104-rollen-namen-haben-eine-quelle.md),
+  [slice-108](../done/altbestand/slice-108-feldlisten-waechter-tragen-ihren-fall.md),
+  [slice-110](../done/altbestand/slice-110-erfassungs-waechter-fall-meldung-grenze.md).
 - **Texte, die mehr sagen als sie halten — im emittierten Produkt.** Die Feldliste behauptet
   Lesbarkeit für *„wer dieses Arbeitsverzeichnis lesen kann"* gegen gemessene Rechte; ihre
   Ortszusage gilt der emittierten `.d-check.yml` und wird von einer eigenen Adopter-Config
   aufgehoben, ohne dass das Dokument es sagt; `span.SchemaNotes()` ist eine zweite, von Hand
   gepflegte Ausfertigung dessen, was
   [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder) §5
-  schon trägt. Träger: [slice-109](../done/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md).
+  schon trägt. Träger: [slice-109](../done/altbestand/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md).
 - **Eine Entscheidung, die der Code nicht kennt.** Die geschriebene Span-Zeile trägt `sha256_16`,
   während [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
   Festlegung 6 *„ohne Inhalts-Hash"* sagt. ADRs sind ab *Accepted* immutabel
@@ -207,7 +207,7 @@ einem bestehenden erzeugt. Was offen bleibt, in Klassen statt als Liste:
 - **Vier Produktions-Fundorte für sechs Rollen-Namen, und der vierte geht als erster ins Ziel.**
   Die Kopplung, die [`ADR-0022`](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md)
   Festlegung 3 *„benannt, nicht geschlossen"* lässt, ist von dieser Welle **vergrößert** worden,
-  nicht geschlossen. Träger: [slice-104](../done/slice-104-rollen-namen-haben-eine-quelle.md).
+  nicht geschlossen. Träger: [slice-104](../done/altbestand/slice-104-rollen-namen-haben-eine-quelle.md).
 - **Der eigene Messwert der Welle nennt seine Grenzen nur zur Hälfte.** Der Kopf des Mess-Skripts
   führt zwei von drei Grenzen, seine Median-Spanne ist enger als seine eigenen Bedingungen
   hergeben, und kein Artefakt nennt einen Anlass, die Messung erneut zu fahren. Träger:
@@ -224,11 +224,11 @@ einem bestehenden erzeugt. Was offen bleibt, in Klassen statt als Liste:
   (`git diff --diff-filter=A --name-only de536bc 3f2da7e -- test/mutations/ | wc -l`). Dazu wirft
   der Grün-Vorlauf sein Protokoll bei Erfolg weg; ein
   grüner Lauf belegt also nicht, dass die neuen Zähne im `full-smoke` gelaufen sind. Träger:
-  [slice-105](../done/slice-105-mutate-messen-dann-teilen.md) — **erst messen, dann teilen** — und
-  [slice-106](../done/slice-106-rotes-ci-traegt-seinen-ausgang.md) für das Rot der CI, das heute
+  [slice-105](../done/altbestand/slice-105-mutate-messen-dann-teilen.md) — **erst messen, dann teilen** — und
+  [slice-106](../done/altbestand/slice-106-rotes-ci-traegt-seinen-ausgang.md) für das Rot der CI, das heute
   keinen Ausgang trägt.
 - **Fünf Norm-Postens ohne Termin, aus dieser Welle.** Sie liegen in
-  [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) (§4). Sie sind **nicht**
+  [slice-101](../done/altbestand/slice-101-norm-postens-bekommen-einen-termin.md) (§4). Sie sind **nicht**
   geliefert; geliefert ist, dass sie einen Ort haben, an dem der nächste Lauf sie findet.
 - **Und eine Schuld an [welle-09](../welle-09-modul-15-konformitaet.md), die der Plan vorab benannt
   hat.** Diese Welle legt ein Init-invariantes Gate-Fragment und neue emittierte `make`-Ziele ab;
@@ -305,7 +305,7 @@ Auflösung: [slice-113](../open/slice-113-co-001-ist-faellig.md) DoD (3) bindet 
 | Welle-eigenes Kriterium: Trennungs-Trigger scharf | Median **2,7 bis 2,8 ms** gegen **50 ms**; der schlechteste gesehene Median liegt um Faktor **13,9** darunter (`awk 'BEGIN{printf "%.3f\n", 50/3.6}'`) |
 | Carveout-Audit | §6 — **einer** von zwei Carveouts mit eingetretenem Trigger, Folge-Slice geschnitten; **keine** neuen aus dieser Welle |
 | Closure-Notiz mit Steering-Loop-Eintrag | diese Notiz, §4 |
-| **Replay-Lauf grün** (Modul 6 Schritt 1) | **Nicht erhoben — es gibt ihn hier nicht.** Gemessen über fünf Achsen (§4, Kommandos in [slice-112](../done/slice-112-replay-schritt-hat-keinen-referenten.md) §1). Getragen wird der Schritt von `make gates` · `make full-smoke` · `make mutate` plus den welle-eigenen Kriterien; deklariert ist diese Fassung nirgends, und genau das ist der Gegenstand von [slice-112](../done/slice-112-replay-schritt-hat-keinen-referenten.md) |
+| **Replay-Lauf grün** (Modul 6 Schritt 1) | **Nicht erhoben — es gibt ihn hier nicht.** Gemessen über fünf Achsen (§4, Kommandos in [slice-112](../done/altbestand/slice-112-replay-schritt-hat-keinen-referenten.md) §1). Getragen wird der Schritt von `make gates` · `make full-smoke` · `make mutate` plus den welle-eigenen Kriterien; deklariert ist diese Fassung nirgends, und genau das ist der Gegenstand von [slice-112](../done/altbestand/slice-112-replay-schritt-hat-keinen-referenten.md) |
 
 **Der erste `make gates`-Lauf dieser Closure war rot**, und das gehört genannt: `d-check` meldete
 **zwei** `codepath-missing`-Befunde. Der erste galt der Feldliste des **Zielrepos**, die in diesem <!-- d-check:ignore (Pfad im Zielrepo, nicht in diesem) -->
@@ -355,21 +355,21 @@ Setzung 1 und darum **nicht** in der Roadmap (Setzung 2):
 
 | Slice | Gegenstand |
 |---|---|
-| [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) | die offenen Norm-Postens bekommen einen Termin — fünf der neun kommen aus dieser Welle |
+| [slice-101](../done/altbestand/slice-101-norm-postens-bekommen-einen-termin.md) | die offenen Norm-Postens bekommen einen Termin — fünf der neun kommen aus dieser Welle |
 | [slice-102](../open/slice-102-messung-nennt-grenzen-und-anlass.md) | die Messung nennt ihre Grenzen und ihren Anlass |
-| [slice-103](../done/slice-103-traeger-waechter-decken-was-sie-sagen.md) | die Träger-Wächter decken, was sie sagen |
-| [slice-104](../done/slice-104-rollen-namen-haben-eine-quelle.md) | die Rollen-Namen haben eine Quelle statt vier Fundorte |
-| [slice-105](../done/slice-105-mutate-messen-dann-teilen.md) | `make mutate` wird erst gemessen, dann geteilt |
-| [slice-106](../done/slice-106-rotes-ci-traegt-seinen-ausgang.md) | jedes Rot der CI trägt einen Ausgang |
+| [slice-103](../done/altbestand/slice-103-traeger-waechter-decken-was-sie-sagen.md) | die Träger-Wächter decken, was sie sagen |
+| [slice-104](../done/altbestand/slice-104-rollen-namen-haben-eine-quelle.md) | die Rollen-Namen haben eine Quelle statt vier Fundorte |
+| [slice-105](../done/altbestand/slice-105-mutate-messen-dann-teilen.md) | `make mutate` wird erst gemessen, dann geteilt |
+| [slice-106](../done/altbestand/slice-106-rotes-ci-traegt-seinen-ausgang.md) | jedes Rot der CI trägt einen Ausgang |
 | [slice-107](../done/slice-107-inhalts-hash-traegt-eine-entscheidung.md) | der Inhalts-Hash bekommt seine Entscheidung |
-| [slice-108](../done/slice-108-feldlisten-waechter-tragen-ihren-fall.md) | die Feldlisten-Wächter tragen ihren Fall oder ihre Grenze |
-| [slice-109](../done/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md) | jede Aussage der Feldliste hat ihre Quelle |
-| [slice-110](../done/slice-110-erfassungs-waechter-fall-meldung-grenze.md) | die Wächter der Erfassungs-Ausgabe tragen Fall, Meldung und Grenze |
+| [slice-108](../done/altbestand/slice-108-feldlisten-waechter-tragen-ihren-fall.md) | die Feldlisten-Wächter tragen ihren Fall oder ihre Grenze |
+| [slice-109](../done/altbestand/slice-109-feldliste-jede-aussage-hat-ihre-quelle.md) | jede Aussage der Feldliste hat ihre Quelle |
+| [slice-110](../done/altbestand/slice-110-erfassungs-waechter-fall-meldung-grenze.md) | die Wächter der Erfassungs-Ausgabe tragen Fall, Meldung und Grenze |
 | [slice-111](../done/slice-111-was-ein-bootstrap-anlegt-steht-in-der-nutzerdoku.md) | was ein Bootstrap anlegt, steht in der Nutzer-Doku |
 
 Aus **dieser Closure** kommen zwei:
 
-- [slice-112](../done/slice-112-replay-schritt-hat-keinen-referenten.md) — Modul 6 Schritt 1 nennt
+- [slice-112](../done/altbestand/slice-112-replay-schritt-hat-keinen-referenten.md) — Modul 6 Schritt 1 nennt
   einen Sensor, den dieses Repo nicht hat; die gelebte Fassung bekommt ihren Ort. Der Adaptions-Text
   gehört dem Architect; der Slice liefert Messung und Termin.
 - [slice-113](../open/slice-113-co-001-ist-faellig.md) — der Auflösungs-Trigger von
@@ -381,6 +381,6 @@ adoptiert-aber-nicht-umgesetzt sind. Modul 15 war der erste gemessene Fall
 ([welle-09](../welle-09-modul-15-konformitaet.md), 2026-07-28), Modul 12 ist der zweite. Zwei
 Instanzen derselben Klasse sind in diesem Repo der Anlass, den Gegenstand zu benennen — sie sind
 **nicht** der Anlass, eine Inventur über fünfzehn weitere Module in eine Closure zu hängen. Der
-Befund steht in [slice-112](../done/slice-112-replay-schritt-hat-keinen-referenten.md) §1, und §6
+Befund steht in [slice-112](../done/altbestand/slice-112-replay-schritt-hat-keinen-referenten.md) §1, und §6
 jenes Slice führt die Rückführung, falls sein Lauf sich in die Inventur ausdehnt; wer sie schneidet,
 schneidet sie mit eigener Abwägung.

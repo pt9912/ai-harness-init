@@ -12,7 +12,7 @@ Gegenbeispiel-Paar und ein grüner Gate-Lauf, und beides steht in seiner eigenen
 **Bezug:**
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6) (der
 tragende Vertrag: die benannte Grenze, die
-[slice-201](../done/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md) in
+[slice-201](../done/altbestand/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md) in
 [`harness/README.md`](../../../../harness/README.md) §Sensors gesetzt hat, ist die Adresse, die
 dieser Slice einlöst),
 [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit) (jede Klassifikation
@@ -55,7 +55,7 @@ Artefakt, färbt `codepath-missing` — und jede Fundstelle, die trotzdem stumm 
 eine einzeln benannte, einzeln gemessene Ausnahme statt einer pauschalen Wurzel-Auslassung.
 
 **Der Ausgangsstand ist gemessen, nicht vermutet.**
-[slice-201](../done/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md) hat die Ursache
+[slice-201](../done/altbestand/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md) hat die Ursache
 belegt — `codepaths.roots` vergleicht Präfix-Zeichenketten, und `.harness` beginnt nicht mit
 `harness` — und den Ausgang *benannte Grenze* gewählt, weil die naheliegende Reparatur über hundert
 Befunde erzeugt, die keine Bugs sind. Der Bestand, den ein Prüfer vorfindet, steht neben dem
@@ -99,7 +99,7 @@ das Aufnehmen einer vierten Wurzel.
   kein Versehen — sie hier mitzunehmen hieße, eine Stufung ohne ihren Trigger aufzulösen.
 - **Die Link-Form derselben Adresse.** Sie ist bereits entschieden und bewacht —
   [`ADR-0039`](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) und
-  [slice-197](../done/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md), und diese
+  [slice-197](../done/altbestand/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md), und diese
   Kennung nimmt den Punkt an. Die zwei Vorgänge zeigen in verschiedene Richtungen: jener schaltet
   stumm, dieser deckt auf.
 - **Die emittierte Fassung der Gate-Konfiguration.** Was ein **Zielrepo** an Prüfbereich bekommt,

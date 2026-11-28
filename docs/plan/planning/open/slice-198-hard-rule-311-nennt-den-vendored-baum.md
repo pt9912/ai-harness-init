@@ -59,7 +59,7 @@ Schärfung erzeugt jeder Bump den Befund-Bestand neu.
 - **Das Referenz-Ventil und der Breiten-Wächter.** Sie sind die *heilende* Hälfte derselben
   Entscheidung und **Implementer-Artefakte**
   ([`ADR-0039`](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) §Kopplung); sie liegen
-  als [slice-197](../done/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md), und diese Kennung
+  als [slice-197](../done/altbestand/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md), und diese Kennung
   nimmt den Punkt an. **Beide Hälften in einem Lauf hieße, das Artefakt einer anderen Rolle im
   eigenen Kontext zu schreiben** — die Klasse
   [`BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext`](../observations/BEO-ALL/fremdes-rollen-artefakt-im-implementations-kontext/observation.md),
@@ -111,7 +111,7 @@ Gate-Läufe und die fünf Closure-Pflichten darunter zählen nicht mit.
       (`ls docs/plan/planning/reconciliation.md` → nicht vorhanden). Der Pfad steht als
       **Kommando-Operand**, weil die vendored Vorlage ihn als blanken Inline-Code führt und
       `codepaths` ihn dann als fehlendes Ziel meldet — dieselbe Stelle, die
-      [slice-193](../done/slice-193-baum-tausch-v650-pins-ziehen.md) §6 als offenen Punkt
+      [slice-193](../done/altbestand/slice-193-baum-tausch-v650-pins-ziehen.md) §6 als offenen Punkt
       führt.
 - [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben — neues Verzeichnis `BEO-<KUERZEL>/<slug>/` oder eine weitere Datei in dessen `evidence/`; **kein Zaehler wird gesetzt**, er folgt aus den Dateien. Keine Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7 notiert.
 - [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen / weiter offen).
@@ -145,7 +145,7 @@ Folgepflicht ist damit fällig; die Bedingung ist am Tag dieses Plans erfüllt u
 Bedingung, nicht als ihr heutiger Wert.
 
 **Keine Reihenfolge-Bedingung gegen
-[slice-197](../done/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md).** Die zwei sind
+[slice-197](../done/altbestand/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md).** Die zwei sind
 unabhängig: Dieser hier verhindert **neue** Adressen, jener räumt die **bestehenden**. Wer sie
 koppelte, machte aus zwei einzeln lieferbaren Slices ein Paar, das aufeinander wartet.
 
@@ -257,7 +257,7 @@ Erwartungswerte**, gelesen wird der gemergte Stand):
 | Eintrag | Zähler | Stand | Bezug zu diesem Slice |
 |---|---|---|---|
 | `vorgeschriebener-ortswechsel-macht-adresse-tot` | 4× | verkörpert | die verkörperte Regel **ist** §3.11; dieser Slice erweitert sie um den Fall, den sie heute ausnimmt |
-| `fremdes-rollen-artefakt-im-implementations-kontext` | 5× | verkörpert | der Grund, warum diese Hälfte **nicht** in [slice-197](../done/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md) liegt — §1 erster Ausschluss |
+| `fremdes-rollen-artefakt-im-implementations-kontext` | 5× | verkörpert | der Grund, warum diese Hälfte **nicht** in [slice-197](../done/altbestand/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md) liegt — §1 erster Ausschluss |
 | `mess-zusage-trifft-das-eigene-zitat` | 1× | offen | die Zitier-Form gilt für den Absatz, der sie einführt — §6 drittes Risiko |
 | `aussage-ueber-das-gepinnte-werkzeug-ohne-blick-in-seinen-stand` | 1× | offen | dieselbe Fehler-Richtung eine Ebene daneben: eine Aussage über einen Stand, ohne ihn zu messen — DoD 2 verlangt den Tag |
 

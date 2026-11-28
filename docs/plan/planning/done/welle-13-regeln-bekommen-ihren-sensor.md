@@ -87,7 +87,7 @@ aufgenommen hat.
    Sensor, der die vier Befunde meldet, meldet damit richtig und trägt keine Ausnahme.
 3. **Der Trockenlauf ist nicht geteilt.** Jedes Modul brauchte seinen eigenen Lauf mit seiner eigenen
    Config; der Pin-Trockenlauf aus
-   [slice-187](slice-187-d-check-pin-v0741.md) fuhr die zu seiner Zeit sechs **aktiven** Module
+   [slice-187](altbestand/slice-187-d-check-pin-v0741.md) fuhr die zu seiner Zeit sechs **aktiven** Module
    und sagt über die Kandidaten nichts. Genau deshalb liegt der Pin **nicht** in dieser Welle.
 4. **Zwei der vier sind in CI blind.** `grep -c 'fetch-depth' .github/workflows/ci.yml` → **0** bei
    **4** `actions/checkout`-Zeilen (`grep -c 'actions/checkout' .github/workflows/ci.yml`).
@@ -150,7 +150,7 @@ Spalte oben nennt ihn —, und dort werden sie beim jeweiligen Slice-Schnitt auf
 
 ## 2. Trigger (Welle startet)
 
-- **[slice-122](slice-122-d-check-pin-v0650.md) liegt in `done/`.** Beobachtbar ohne Rückfrage:
+- **[slice-122](altbestand/slice-122-d-check-pin-v0650.md) liegt in `done/`.** Beobachtbar ohne Rückfrage:
   `ls docs/plan/planning/done/slice-122-*.md`. Der Grund ist **tragend, nicht ordnend** — die
   Adoptions-Entscheidungen dieser Welle werden gegen das Verhalten eines Moduls getroffen, und das
   Verhalten hängt an der Version. Eine Config gegen ein Image zu schneiden, das im selben Zug
@@ -166,7 +166,7 @@ Spalte oben nennt ihn —, und dort werden sie beim jeweiligen Slice-Schnitt auf
   §Wellen-Closure-Prozedur, Schritt 4); damit ändert sich, was `done/` enthält und was eine
   Closure-Notiz ist. Es ist derselbe Grund wie beim Pin darüber: eine Config gegen ein Artefakt zu
   schneiden, das im selben Zug ausgetauscht wird.
-- **[slice-187](slice-187-d-check-pin-v0741.md) liegt in `done/`.** Beobachtbar ohne
+- **[slice-187](altbestand/slice-187-d-check-pin-v0741.md) liegt in `done/`.** Beobachtbar ohne
   Rückfrage: `ls docs/plan/planning/done/slice-187-*.md`. Der Grund ist **tragend** und derselbe wie
   beim Pin darüber, nur eine Version weiter: Der Slice zieht den d-check-Pin von `v0.65.0` — dem
   Stand, gegen den die Erstfassung dieser Welle maß — auf `v0.74.1`, und die Fläche, über die diese
@@ -248,7 +248,7 @@ ist falsch"*, nicht *„die DoD ist länger"*.
 
 ## 5. Abhängigkeiten
 
-- **Wird blockiert von:** [slice-122](slice-122-d-check-pin-v0650.md) (Pin, tragend) und
+- **Wird blockiert von:** [slice-122](altbestand/slice-122-d-check-pin-v0650.md) (Pin, tragend) und
   [welle-10](welle-10-re-baseline.md) (WIP, ordnend) — beide mit ihrer Begründung in §2.
 - **Blockiert:** nichts. [welle-11](welle-11-traeger-aussage.md) hängt an
   [welle-10](welle-10-re-baseline.md), nicht an dieser Welle; die Reihung ist damit
@@ -459,7 +459,7 @@ ist falsch"*, nicht *„die DoD ist länger"*.
   ([`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids):
   Anheben → Steering-Loop). Stellt sich in einem Slice heraus, dass die Adoption nur durch eine
   Lockerung woanders grün wird, ist das ein ADR und damit ein Rückführungs-Grund, kein Zwischenschritt.
-- **Der Pin selbst** ([slice-122](slice-122-d-check-pin-v0650.md)) — Trigger, nicht Mitglied.
+- **Der Pin selbst** ([slice-122](altbestand/slice-122-d-check-pin-v0650.md)) — Trigger, nicht Mitglied.
 
 ## 7. Closure-Notiz
 

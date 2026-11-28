@@ -210,15 +210,15 @@ Fall einen **Schnitt**, keine Auslegung:
 
 | Beobachtung | Zähler | Träger |
 |---|---|---|
-| `BEO-ALL/unbelegter-register-eintrag-faellt-durch-die-paarung` | 3× | [`slice-beleglose-register-eintraege-bekommen-eine-lesart`](../done/slice-beleglose-register-eintraege-bekommen-eine-lesart.md) |
+| `BEO-ALL/unbelegter-register-eintrag-faellt-durch-die-paarung` | 3× | [`slice-beleglose-register-eintraege-bekommen-eine-lesart`](../done/altbestand/slice-beleglose-register-eintraege-bekommen-eine-lesart.md) |
 
 **Zwei Adressen aus Norm-Text sind im selben Zug zu Plandateien geworden** — sie lösten vorher nur
 dort auf, und die Folge-Slice-Paarung fällt über eine genannte Kennung ohne Datei:
 
 | Norm-Text | Träger |
 |---|---|
-| [`MR-059`](../../../../harness/conventions.md#mr-059) Setzung 2 und 5 | [`slice-kennungs-erkennung-traegt-die-zugelassenen-formen`](../done/slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md) |
-| [ADR-0053](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) Festlegung 4 | [`slice-werkzeug-commits-tragen-eine-kennung`](../done/slice-werkzeug-commits-tragen-eine-kennung.md) |
+| [`MR-059`](../../../../harness/conventions.md#mr-059) Setzung 2 und 5 | [`slice-kennungs-erkennung-traegt-die-zugelassenen-formen`](../done/altbestand/slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md) |
+| [ADR-0053](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md) Festlegung 4 | [`slice-werkzeug-commits-tragen-eine-kennung`](../done/altbestand/slice-werkzeug-commits-tragen-eine-kennung.md) |
 
 **Der Zähler ist eine datierte Messung**
 ([`MR-051`](../../../../harness/conventions.md#mr-051--der-zahl-beleg-bindet-die-commit-message-und-ein-register-zähler-ist-eine-datierte-messung)
@@ -243,11 +243,11 @@ ohne angelegt ist dieselbe Klasse wie ein halluziniertes Gate.
 
 **Drei Träger, aus diesem Lauf geschnitten** (jeder liegt in `open/`):
 
-- [`slice-beleglose-register-eintraege-bekommen-eine-lesart`](../done/slice-beleglose-register-eintraege-bekommen-eine-lesart.md)
+- [`slice-beleglose-register-eintraege-bekommen-eine-lesart`](../done/altbestand/slice-beleglose-register-eintraege-bekommen-eine-lesart.md)
   (Architect) — der Träger des einzigen `geplant`-Ausgangs dieses Lese-Schritts.
-- [`slice-kennungs-erkennung-traegt-die-zugelassenen-formen`](../done/slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md)
+- [`slice-kennungs-erkennung-traegt-die-zugelassenen-formen`](../done/altbestand/slice-kennungs-erkennung-traegt-die-zugelassenen-formen.md)
   — die Fundliste aus [`MR-059`](../../../../harness/conventions.md#mr-059) Setzung 2.
-- [`slice-werkzeug-commits-tragen-eine-kennung`](../done/slice-werkzeug-commits-tragen-eine-kennung.md)
+- [`slice-werkzeug-commits-tragen-eine-kennung`](../done/altbestand/slice-werkzeug-commits-tragen-eine-kennung.md)
   — der Kandidat aus [ADR-0053](../../adr/0053-traeger-der-commit-kennung-am-commit-und-am-agenten.md)
   Festlegung 4.
 

@@ -72,7 +72,7 @@ gehört zurück zur Zerlegung. Gezählt wird nur, was mit dem Umfang wächst —
 Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
 
 - [x] **Ein frisch gebootstrapptes Ziel erreicht `archive-welle`** — auf dem Weg, den Festlegung
-      (d) aus [slice-172](../done/slice-172-adr-archivierung-als-unterkommando.md) wählt. Der Beleg
+      (d) aus [slice-172](../done/altbestand/slice-172-adr-archivierung-als-unterkommando.md) wählt. Der Beleg
       ist `make full-smoke` und **nur** er, nicht `make gates`: das Unterkommando ist bewusst kein
       Gate, und kein Unit-Test des Repos fährt das Ziel. Derselbe Beleg-Typ, mit dem
       [ADR-0022](../../adr/0022-erfassungsschicht-traeger-aus-dem-produkt-binaer.md) die
@@ -132,7 +132,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`):
-[slice-173](../done/slice-173-archive-welle-als-unterkommando.md) liegt in `done/` — vorher gibt es kein
+[slice-173](../done/altbestand/slice-173-archive-welle-als-unterkommando.md) liegt in `done/` — vorher gibt es kein
 Kommando, auf das der emittierte Anweisungssatz zeigen könnte, und ein Zeiger darauf wäre genau
 die halluzinierte Zusage aus
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6).
@@ -144,8 +144,8 @@ die halluzinierte Zusage aus
 trägt den Gegenstand dieses Slice. Ihre Annahme war die Bedingung; sie ist eingelöst, nicht offen.
 
 **Reihenfolge innerhalb von `next/`:** keine Kopplung an
-[slice-073](../done/slice-073-emittierte-doc-gate-module.md) oder
-[slice-140](../done/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md). Die drei berühren
+[slice-073](../done/altbestand/slice-073-emittierte-doc-gate-module.md) oder
+[slice-140](../done/altbestand/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md). Die drei berühren
 `internal/emit/` an getrennten Stellen — die Modul-Liste der emittierten Gate-Konfiguration, die
 Kommentar-Hilfen der Singleton-Ausgabe und die Command-Vorlage samt Fragment; keine Reihenfolge
 ist erzwungen.
@@ -155,7 +155,7 @@ ist erzwungen.
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): wenn die **Erreichbarkeit** im Ziel eine
   eigene Abzählung verlangt — der Träger liegt gitignored, und ein frischer Klon hat ihn nicht.
   Das ist eine Träger-Frage und gehört zu
-  [slice-172](../done/slice-172-adr-archivierung-als-unterkommando.md), nicht an die Emissionsstelle.
+  [slice-172](../done/altbestand/slice-172-adr-archivierung-als-unterkommando.md), nicht an die Emissionsstelle.
 - `in-progress` → `open` (blockiert — Carveout?): wenn Festlegung (d) die Emission verneint —
   dann hat dieser Slice keinen Gegenstand.
 
@@ -215,7 +215,7 @@ dasteht.
   Stub-Vorlagen unter `.harness/baseline/v5.18.0/`; vendored liegt allein der adoptierte Stand
   (`ls .harness/baseline/`). Das Kommando läuft so ins Leere, und kein Gate sagt es:
   `codepaths.roots` führt `[spec, docs, harness]`, ein Pfad unter `.harness` liegt außerhalb
-  ([slice-201](../done/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md)). — **Ausgang:**
+  ([slice-201](../done/altbestand/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md)). — **Ausgang:**
   *entfallen* — die Adresse ist auf den adoptierten Stand nachgezogen und die Zählung neu gefahren:
 
   ```sh

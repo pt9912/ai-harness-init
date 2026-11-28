@@ -131,7 +131,7 @@ Schnitt zugesteht.
 ### Die Welle ist aufgelöst — der Wellen-Test fällt negativ aus
 
 Der Gegenstand der drei Slices ist in
-[`slice-das-ziel-sagt-was-sein-vendored-baum-ist`](slice-das-ziel-sagt-was-sein-vendored-baum-ist.md)
+[`slice-das-ziel-sagt-was-sein-vendored-baum-ist`](altbestand/slice-das-ziel-sagt-was-sein-vendored-baum-ist.md)
 aufgegangen; der Nehmer steht ohne Welle. Nach Baseline-Regelwerk `modul-06-roadmap.md` §Wann Arbeit
 eine Welle braucht liegt eine Welle nur vor, wenn der Closure-Trigger **mehr** beobachtet, als die
 DoDs ihrer Slices belegen. Hier tut er es nicht: `make gates`, `make full-smoke` und die Inventur

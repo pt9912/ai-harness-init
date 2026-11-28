@@ -81,7 +81,7 @@ Beide Bedingungen sind **beobachtbar und heute erfüllt**; die Welle ist damit s
   [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren) ausdrücklich
   offen lässt (*„Der Weg der Emission ist nicht Gegenstand dieser Anforderung"*) — ohne sie hätte
   jeder Slice dieser Welle eine offene Architektur-Frage im Rücken.
-- **[slice-093](slice-093-mutations-treiber-erreicht-full-smoke.md) liegt in `done/`.** Ohne Rückfrage prüfbar: die Plan-Datei liegt neben den übrigen
+- **[slice-093](altbestand/slice-093-mutations-treiber-erreicht-full-smoke.md) liegt in `done/`.** Ohne Rückfrage prüfbar: die Plan-Datei liegt neben den übrigen
   geschlossenen Slices. **Tragend, nicht ordnend:** zwei Fitness-Zeilen der Entscheidung hängen
   ausschließlich an `make full-smoke`, und der Mutations-Treiber führt diesen Modus erst seit
   jenem Slice — `sed -n '/^failure_form()/,/^}/p' harness/tools/mutate.sh | grep -cE '^[[:space:]]+[a-z*-]+\)'`

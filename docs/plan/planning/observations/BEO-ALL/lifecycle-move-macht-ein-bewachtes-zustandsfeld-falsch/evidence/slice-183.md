@@ -12,8 +12,8 @@ Der Nachzug-Commit `bf842e61` zeigt beides in einer Datei â€” zwei Zeilen umgehÃ
 git grep -o -n '[^ (]*slice-183-ausloeser-der-wellenlosen-archivierung[^) ]*' bf842e61 \
   -- docs/plan/planning/in-progress/roadmap.md
 # :23  slice-183-ausloeser-der-wellenlosen-archivierung.md          praefixlos, steht noch
-# :155 ../done/slice-183-ausloeser-der-wellenlosen-archivierung.md  nachgezogen
-# :156 ../done/slice-183-ausloeser-der-wellenlosen-archivierung.md  nachgezogen
+# :155 ../done/altbestand/slice-183-ausloeser-der-wellenlosen-archivierung.md  nachgezogen
+# :156 ../done/altbestand/slice-183-ausloeser-der-wellenlosen-archivierung.md  nachgezogen
 ```
 
 Das ist die dritte der drei gemessenen Grenzen von `make slice-mv`

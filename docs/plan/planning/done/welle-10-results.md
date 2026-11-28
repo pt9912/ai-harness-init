@@ -41,7 +41,7 @@ funktionierte · was anders lief. Mit ID-Bezug, wo es einen gibt.
   falsche Durchgang-1-Ausgänge korrigiert).
 
 **Eine Vorbedingung dieser Closure ist kein Mitglied:**
-[slice-154](slice-154-eingefrorene-adr-zeigt-auf-den-wellenplan.md) ist
+[slice-154](altbestand/slice-154-eingefrorene-adr-zeigt-auf-den-wellenplan.md) ist
 **wellenlos** geschnitten und geschlossen. Er trägt
 [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md)
 — ohne sie hielte der `git mv` dieser Welle-Datei nach `done/` eine Adresse in
@@ -62,7 +62,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
   Konstruktion unerfüllbar: die Menge wächst mit jedem Architect-Lauf, den die
   Welle selbst auslöst.
 - **Das Beobachtungs-Register trug den dritten Risiko-Ausgang real.** Ab
-  [slice-137](slice-137-beobachtungs-register-bekommt-seinen-ort.md) gingen
+  [slice-137](altbestand/slice-137-beobachtungs-register-bekommt-seinen-ort.md) gingen
   offene Risiken als Registerzeile ein statt als Folge-Slice in `open/` —
   sichtbar an [slice-149](slice-149-welle-10-traegt-ihre-drei-fehlenden-belege.md),
   dessen zwei offene Risiken `BEO-010` und
@@ -104,7 +104,7 @@ die daraus schon gezogen wurde (Folge-Slice, Spec-Version).
   der nach [`AGENTS.md`](../../../../AGENTS.md) §3.4 eingefrorenen
   [`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md) tot; er ist
   erst beim Closure-Versuch aufgefallen, nicht beim Schnitt. Ausgang:
-  [slice-154](slice-154-eingefrorene-adr-zeigt-auf-den-wellenplan.md) mit
+  [slice-154](altbestand/slice-154-eingefrorene-adr-zeigt-auf-den-wellenplan.md) mit
   [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md),
   dessen Festlegung 4 die Entscheidung künftig **vor** den Move zieht. Die
   Klasse führt `BEO-017` (1×, unter der Schwelle) — mit
@@ -140,10 +140,10 @@ Setzung 2). Jede der drei bekommt hier ihren Lese-Schritt:
 - **Norm-Artefakt ohne benannte schreibende Rolle** — Teil-Ausgang über drei
   Artefaktklassen, zwei davon entschieden: Command-Artefakte über
   [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
-  (`Proposed`; Annahme trägt [slice-145](../done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)),
+  (`Proposed`; Annahme trägt [slice-145](../done/altbestand/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)),
   `.claude/agents/*.md` über
   [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md)
-  (`Proposed`; Annahme trägt [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md));
+  (`Proposed`; Annahme trägt [slice-152](../done/altbestand/slice-152-adr-0029-acceptance-trigger.md));
   für die **Spec-Straten** benennt keine Quelle eine Rolle, Träger ist
   [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md).
   Kein `liegt in`: verkörpert ist noch nichts, beide ADRs stehen auf `Proposed`.
@@ -181,19 +181,19 @@ ein halluziniertes Gate.
 **Aus dieser Closure** — alle drei **wellenlos**, kein Mitglied einer Welle:
 
 - [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md) — für die zwei Spec-Straten benennt eine Quelle die schreibende Rolle (`open/`).
-- [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md) — [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) durchläuft ihren Acceptance-Trigger (`open/`).
+- [slice-152](../done/altbestand/slice-152-adr-0029-acceptance-trigger.md) — [`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md) durchläuft ihren Acceptance-Trigger (`open/`).
 - [slice-153](../open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md) — die zwei Wellen-Anweisungssätze nennen die Abschnitte, die die Roadmap führt (`open/`).
 
 **Aus den Closures der Mitglieder, noch nicht geschlossen** (je Zeile der
 Mitglieds-Slice, der ihn nannte):
 
-- [slice-073](../done/slice-073-emittierte-doc-gate-module.md) ← slice-085 · [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md), [slice-142](../open/slice-142-verweis-form-vor-dem-einfrieren-hat-einen-waechter.md), [slice-143](../open/slice-143-datei-weiter-ausschluss-weicht-dem-referenz-ventil.md), [slice-141](../done/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) ← slice-132 · [slice-114](../next/slice-114-jede-aussage-hat-einen-abschnitt.md) ← slice-081 · [slice-139](../done/slice-139-lastenheft-deckt-die-emit-disposition.md) ← slice-130 · [slice-146](../done/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) ← slice-084.
+- [slice-073](../done/altbestand/slice-073-emittierte-doc-gate-module.md) ← slice-085 · [slice-101](../done/altbestand/slice-101-norm-postens-bekommen-einen-termin.md), [slice-142](../open/slice-142-verweis-form-vor-dem-einfrieren-hat-einen-waechter.md), [slice-143](../open/slice-143-datei-weiter-ausschluss-weicht-dem-referenz-ventil.md), [slice-141](../done/altbestand/slice-141-co-001-aufloesung-ist-vorher-entschieden.md) ← slice-132 · [slice-114](../next/slice-114-jede-aussage-hat-einen-abschnitt.md) ← slice-081 · [slice-139](../done/altbestand/slice-139-lastenheft-deckt-die-emit-disposition.md) ← slice-130 · [slice-146](../done/altbestand/slice-146-modul-14-multi-stage-build-abweichungen-deklarieren.md) ← slice-084.
 
 **Nicht aus dieser Welle**, obwohl von Mitgliedern zitiert:
 [slice-090](../done/slice-090-freshness-audit-im-ziel.md) und
 [slice-091](../done/slice-091-vendored-baum-ohne-anspruch.md) (Mitglieder von
 [welle-11](welle-11-traeger-aussage.md)) ·
-[slice-112](../done/slice-112-replay-schritt-hat-keinen-referenten.md) ·
+[slice-112](../done/altbestand/slice-112-replay-schritt-hat-keinen-referenten.md) ·
 [slice-125](../done/slice-125-roadmap-und-verzeichnis-stimmen-ueberein.md) ·
 [slice-134](../open/slice-134-adr-index-traegt-die-ziel-form.md).
 
@@ -238,7 +238,7 @@ Sensor-Läufe, je mit dem Baum, über dem sie liefen:
 
 - **Carveouts** (`ls docs/plan/carveouts/CO-*.md`):
   [`CO-001`](../../carveouts/CO-001-bats-shell-lint.md) **verlängert mit
-  Folge-Slice** ([slice-141](../done/slice-141-co-001-aufloesung-ist-vorher-entschieden.md)
+  Folge-Slice** ([slice-141](../done/altbestand/slice-141-co-001-aufloesung-ist-vorher-entschieden.md)
   entscheidet vorher, [slice-113](../open/slice-113-co-001-ist-faellig.md) führt
   aus) · [`CO-002`](../../carveouts/CO-002-token-achse-je-rolle.md) **permanent**,
   betroffenes Gate: keines. Das Welle-Kriterium *„`make gates` grün ohne offenen
@@ -252,7 +252,7 @@ Sensor-Läufe, je mit dem Baum, über dem sie liefen:
   Re-Evaluierungs-Trigger geprüft, **keiner feuert**; damit kein
   Architect-Verdikt und keine Folge-ADR. Zusätzlich sichtbar wurde, dass zwei
   `Proposed`-ADRs keinen Träger für ihren Acceptance-Trigger hatten — Ausgang
-  ist [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md).
+  ist [slice-152](../done/altbestand/slice-152-adr-0029-acceptance-trigger.md).
 
 **Schritt 3 — die drei Paarungen**, geprüft **nach** dem `git mv`:
 
@@ -276,5 +276,5 @@ Umfang, den der Nachzug schließt, und zugleich der Beleg, dass das dritte
 [`ADR-0030`](../../adr/0030-eingefrorene-adresse-auf-den-planning-lifecycle.md)
 trägt: der eine Befund in der eingefrorenen
 [`ADR-0018`](../../adr/0018-ziel-fassung-regiert-die-migration.md), den
-[slice-154](slice-154-eingefrorene-adr-zeigt-auf-den-wellenplan.md) §7 ohne die
+[slice-154](altbestand/slice-154-eingefrorene-adr-zeigt-auf-den-wellenplan.md) §7 ohne die
 Entscheidung gemessen hat, steht in keinem der beiden Läufe.

@@ -22,7 +22,7 @@ FLAGS=$(grep -A1 '^doc-structure:' d-check.mk | tail -1 | sed -E 's/.*\$\(DCHECK
 git archive HEAD | tar -x -C <kopie>
 sed -i '/^structure:$/,/^# targets (hermetisch/{/^# targets/!d}' <kopie>/.d-check.yml
 sed -i 's/^## 7\. Closure-Notiz$/## 7. Sonstiges/' \
-  <kopie>/docs/plan/planning/done/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md
+  <kopie>/docs/plan/planning/done/altbestand/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md
 docker run --rm --network none -v <kopie>:/repo:ro "ghcr.io/pt9912/d-check@$DIGEST" \
   $FLAGS --config /repo/.d-check.yml
 # ohne structure:-Block:  1601 Datei(en) geprüft, 0 Befund(e)
@@ -31,7 +31,7 @@ printf '\nstructure:\n  - files: "docs/plan/planning/done/slice-*.md"\n    secti
 docker run --rm --network none -v <kopie>:/repo:ro "ghcr.io/pt9912/d-check@$DIGEST" \
   $FLAGS --config /repo/.d-check.yml
 # mit dem Sonden-Block:  1601 Datei(en) geprüft, 100 Befund(e), darunter
-#   docs/plan/planning/done/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md:1 …
+#   docs/plan/planning/done/altbestand/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md:1 …
 #     … ## 7. Closure-Notiz    section-missing    kein Abschnitt passt auf den Selektor
 ```
 

@@ -90,7 +90,7 @@ Er ist **vierteilig**:
 3. Ein neuer Kommentar im Findings-Abschnitt spricht die Grenzwert-Frage direkt an (unten zitiert).
 4. Kopfzeile und Zitier-Form wechseln von `slice-NN`/`slice-NNN` auf `slice-<Kennung>`. **Dieser
    vierte Teil berührt weder Tabelle noch Grenze**; er kam mit der Adoption der Vorlage und liegt
-   als Bestands-Nachzug bei [slice-224](../done/slice-224-delta-nachweis-und-planungs-nachzug.md),
+   als Bestands-Nachzug bei [slice-224](../done/altbestand/slice-224-delta-nachweis-und-planungs-nachzug.md),
    nicht bei diesem Slice.
 
 **Am Reviewer-Skill selbst hat der Sprung nichts geändert** — die abgelöste und die adoptierte
@@ -219,7 +219,7 @@ welches Muster trägt und welcher Cutoff dahinter bleibt. Das ist DoD (2), keine
   Entscheidung. *(Klasse: andere Rolle — es wäre ein anderer Vorgang.)*
 - **Kein Adaptions-Eintrag für die Aktivierung von `structure`.** Denselben Block schreibt derselbe
   Architect; die **Form** dieser Buchung entscheidet
-  [slice-212](../done/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md). **Die Adresse
+  [slice-212](../done/altbestand/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md). **Die Adresse
   nimmt die Sendung nur unter einer Bedingung an:** slice-212 misst extensional gegen `planning` und
   `targets`; schließt er **vor** diesem Slice, trägt seine Entscheidung die Form, aber nicht diese
   dritte Aktivierung. Der Fall steht als Risiko in §6.
@@ -303,7 +303,7 @@ adoptiert** — der vendored Baum führt die Vorlage in der neuen Fassung
 (`ls .harness/baseline/v6.18.1/templates/docs/reviews/review-report.template.md`, §1). Damit ist die
 Form gedeckt; ohne sie schriebe DoD (1) eine Form, für die keine Quelle steht. Beobachtbar ohne
 Rückfrage, und **kein Ergebnis dieses Slice**: Den Baum tauschte
-[slice-223](../done/slice-223-baum-tausch-v672-pins-ziehen.md).
+[slice-223](../done/altbestand/slice-223-baum-tausch-v672-pins-ziehen.md).
 
 **Rückführungen — vorab benannt:**
 
@@ -352,7 +352,7 @@ Zwei beobachtbare Kriterien und ein Lerneintrag:
   [`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   in der Zellen-Form einlösbar bleibt, ist eine Form-Entscheidung der Reviewer-Rolle und liegt in
   DoD (1). — **Ausgang:** <…>
-- **Die Aktivierung vergrößert die in [slice-212](../done/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md)
+- **Die Aktivierung vergrößert die in [slice-212](../done/altbestand/slice-212-modul-aktivierung-hat-keinen-adaptions-eintrag.md)
   gemessene Differenz.** Schließt slice-212 vor diesem Slice, hat die dritte Aktivierung keinen
   Adress-Träger im Adaptions-Block — der Fall, den
   [`uebergabe-an-andere-rolle-ohne-traeger-artefakt`](../observations/BEO-ALL/uebergabe-an-andere-rolle-ohne-traeger-artefakt/observation.md)

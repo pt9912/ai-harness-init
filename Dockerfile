@@ -30,7 +30,7 @@ RUN mkdir -p "$GOMODCACHE" && go mod download
 # Warum eine Schicht und kein --mount=type=cache: der Mount ist in dieser Umgebung
 # zwar aktiv (eigenes Dateisystem im Build), aber sein Inhalt erreicht den naechsten
 # Build nicht — vier Erklaerungen wurden gemessen und ausgeschlossen, die Ursache
-# liegt tiefer (Messreihe in docs/plan/planning/done/slice-057-go-kompilat-cache.md).
+# liegt tiefer (Messreihe in docs/plan/planning/done/altbestand/slice-057-go-kompilat-cache.md).
 # Eine Schicht dagegen cacht Docker hier nachweislich; sie haengt nur am Basis-Image
 # und an go.mod. Die test-Stufe fuehrt den Testlauf selbst nicht mehr aus (s. u.) —
 # ihr Cache-Stand ist darum ohne Wirkung auf die Zusage "jeder Lauf misst wirklich neu".

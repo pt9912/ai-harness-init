@@ -7,7 +7,7 @@ tragen, ist seit der Anlage angefasst worden. Die Verifikations-Checkliste unten
 gehakt.
 
 **Datum angelegt:** 2026-09-08. **Letzte Prüfung:** 2026-09-08 (Auflösung durch
-[slice-197](../../planning/done/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md): drei
+[slice-197](../../planning/done/altbestand/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md): drei
 `ignore-refs`-Einträge in Glob-Form mit dem baum-weiten `refs`-Wert `.harness/baseline/**`, die
 Breiten-Deklaration an allen sieben Einträgen und der neue Maßstab des Wächters — `genau N` statt
 `höchstens 1`).
@@ -22,11 +22,11 @@ am Stichtag unten einzeln nachgefahren und grün.
 `docs/plan/planning/done/**` und `docs/plan/planning/observations/**`, und darin ausschließlich
 Markdown-Links, deren Ziel in `.harness/baseline/**` liegt. Lebende Artefakte liegen außerhalb:
 Der Adress-Nachzug hat sie gezogen, und was dort noch den abgelösten Tag nennt, sind die zwei in
-[slice-193](../../planning/done/slice-193-baum-tausch-v650-pins-ziehen.md) DoD 2 deklarierten
+[slice-193](../../planning/done/altbestand/slice-193-baum-tausch-v650-pins-ziehen.md) DoD 2 deklarierten
 Nicht-Zieh-Klassen — Tree-Operand und datierte Mess-Aussage nach
 [`MR-033`](../../../../harness/conventions.md#mr-033--eine-aussage-über-die-baseline-nennt-den-tag-gegen-den-sie-gemessen-ist).
 
-**Folge-Slice:** [`slice-197`](../../planning/done/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md)
+**Folge-Slice:** [`slice-197`](../../planning/done/altbestand/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md)
 
 Regeln: Baseline-Regelwerk `modul-07-carveouts.md` §Ziel-Form: Carveout — ein
 Carveout braucht immer einen Auflösungs-Trigger **und** einen Folge-Slice.
@@ -153,13 +153,13 @@ Festlegung 1 samt ihrer Breiten-Deklaration nach Festlegung 2.
       Commit, der Verweis-Nachzug als zweiter ([`AGENTS.md`](../../../../AGENTS.md) §3.3).
 - [x] `slice-197` liegt in `done/`. Sein Zustand ist sein Verzeichnis, und kein DoD-Punkt steht
       mehr offen
-      (`grep -c '^- \[ \]' docs/plan/planning/done/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md`
+      (`grep -c '^- \[ \]' docs/plan/planning/done/altbestand/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md`
       → **0**).
 
 ## Geschichte
 
 | Datum | Ereignis | Verweis |
 |---|---|---|
-| 2026-09-08 | Angelegt | [slice-193](../../planning/done/slice-193-baum-tausch-v650-pins-ziehen.md) §7, Ausgang des zweiten Risikos aus §6 |
-| 2026-09-08 | **Aufgelöst.** [ADR-0039](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) autorisiert das Referenz-Ventil in Glob-Form, [`.d-check.yml`](../../../../.d-check.yml) trägt die drei Einträge mit ihrer Breiten-Deklaration, und `test/ignore-refs-restbreite.bats` misst sie in `make gates` gegen `genau N` statt gegen die Konstante 1. Zwei Läufe über derselben Kopie belegen den Trigger: mit den Einträgen `0 Befund(e)`, ohne sie `36 Befund(e)`, bei identischer Datei-Zahl — kein geschrumpfter Prüfbereich. Die 16 Träger-Dateien sind seit der Anlage unverändert | [slice-197](../../planning/done/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md) |
-| 2026-09-08 | **Vollzogen**: `git mv` nach `done/` als eigener Commit, der Verweis-Nachzug als zweiter, Index-Zeile unter *Aufgelöst*. Status-Kopf, Checkliste und Index-Zelle sagen seither dasselbe wie der Ort | [slice-197](../../planning/done/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md) |
+| 2026-09-08 | Angelegt | [slice-193](../../planning/done/altbestand/slice-193-baum-tausch-v650-pins-ziehen.md) §7, Ausgang des zweiten Risikos aus §6 |
+| 2026-09-08 | **Aufgelöst.** [ADR-0039](../../adr/0039-eingefrorene-adresse-in-den-vendored-baum.md) autorisiert das Referenz-Ventil in Glob-Form, [`.d-check.yml`](../../../../.d-check.yml) trägt die drei Einträge mit ihrer Breiten-Deklaration, und `test/ignore-refs-restbreite.bats` misst sie in `make gates` gegen `genau N` statt gegen die Konstante 1. Zwei Läufe über derselben Kopie belegen den Trigger: mit den Einträgen `0 Befund(e)`, ohne sie `36 Befund(e)`, bei identischer Datei-Zahl — kein geschrumpfter Prüfbereich. Die 16 Träger-Dateien sind seit der Anlage unverändert | [slice-197](../../planning/done/altbestand/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md) |
+| 2026-09-08 | **Vollzogen**: `git mv` nach `done/` als eigener Commit, der Verweis-Nachzug als zweiter, Index-Zeile unter *Aufgelöst*. Status-Kopf, Checkliste und Index-Zelle sagen seither dasselbe wie der Ort | [slice-197](../../planning/done/altbestand/slice-197-eingefrorene-baseline-adresse-bekommt-ihr-ventil.md) |

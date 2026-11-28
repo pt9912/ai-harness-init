@@ -104,7 +104,7 @@ die daraus schon gezogen wurde (Folge-Slice, Spec-Version).
   keine Erwartungswerte
   ([`MR-025`](../../../../harness/conventions.md#mr-025--eine-zahl-im-text-steht-neben-dem-kommando-das-sie-liefert)
   Setzung 2). **Der Träger war
-  [slice-145](slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md) und
+  [slice-145](altbestand/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md) und
   ist wellenlos** — die Runden zählen nicht auf das Konto dieser Welle, aber
   [slice-158](slice-158-archivierungs-schritt.md) hing an ihrer Linie. Kein
   Befund traf die Entscheidung selbst: alle vier Runden fielen über die
@@ -191,7 +191,7 @@ Verkörperung und keine Übergabe an den Architect. Zwei davon
   steht jetzt auf `Accepted` (Command-Artefakte gehören der ausführenden Rolle).
   Offen bleiben `.claude/agents/*.md`
   ([`ADR-0029`](../../adr/0029-agenten-typkarten-derivativ-gemischte-originale.md),
-  `Proposed`; Träger [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md))
+  `Proposed`; Träger [slice-152](../done/altbestand/slice-152-adr-0029-acceptance-trigger.md))
   und die **Spec-Straten** (Träger
   [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md)).
   Kein `liegt in`: die Zeile schließt erst, wenn auch diese zwei eine
@@ -240,12 +240,12 @@ das Original ist die Slice-Datei. Jeder genannte Folge-Slice muss als Datei im
 Planning-Lifecycle existieren; genannt ohne angelegt ist dieselbe Klasse wie
 ein halluziniertes Gate.
 
-- [slice-171](../done/slice-171-adr-0031-acceptance-trigger.md) — Annahme-Träger
+- [slice-171](../done/altbestand/slice-171-adr-0031-acceptance-trigger.md) — Annahme-Träger
   für [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md).
   Geschnitten aus der ausdrücklichen *Offenen Übergabe an den Planner* in
   [slice-163](slice-163-regierende-fassung-des-sprungs.md) §7 und aus dem
   Trigger-Audit unten.
-- [slice-170](../done/slice-170-archivierungs-werkzeug.md) — das
+- [slice-170](../done/altbestand/slice-170-archivierungs-werkzeug.md) — das
   Archivierungs-Werkzeug der Wellen-Closure, hervorgegangen aus
   [slice-158](slice-158-archivierungs-schritt.md); es trägt die Start-Bedingung
   von Schritt 4 (siehe *Archivierung* unten).
@@ -313,7 +313,7 @@ Die fünf Closure-Kriterien aus §3 der Welle-Datei, jedes einzeln gefahren:
   aus [slice-163](slice-163-regierende-fassung-des-sprungs.md), dessen §7 das
   Schneiden ausdrücklich dem Planner übergibt. Der Audit hat sie aufgenommen und
   den Träger geschnitten:
-  [slice-171](../done/slice-171-adr-0031-acceptance-trigger.md). *Ein Trigger
+  [slice-171](../done/altbestand/slice-171-adr-0031-acceptance-trigger.md). *Ein Trigger
   ohne Wächter ist eine Absichtserklärung mit Verfallsdatum.*
   Ein zweiter Befund derselben ADR ist an `slice-171` DoD (2) weitergegeben:
   ihr vierter Re-Evaluierungs-Trigger nennt als beobachtbaren Anlass die
@@ -327,7 +327,7 @@ Die fünf Closure-Kriterien aus §3 der Welle-Datei, jedes einzeln gefahren:
 **Archivierung (Schritt 4) — nicht ausgeführt, Start-Bedingung nicht
 eingetreten.** Der Schritt verlangt in diesem Repo, dass das
 Archivierungs-Werkzeug vorliegt;
-[slice-170](../done/slice-170-archivierungs-werkzeug.md) liegt in `open/`, nicht
+[slice-170](../done/altbestand/slice-170-archivierungs-werkzeug.md) liegt in `open/`, nicht
 in `done/` (`ls docs/plan/planning/open/slice-170-*.md`). Diese Welle schließt
 deshalb **ohne** Schritt 4 — das ist die im Anweisungssatz vorgesehene
 Feststellung und kein Mangel. Von Hand archiviert niemand: die Vollständigkeit

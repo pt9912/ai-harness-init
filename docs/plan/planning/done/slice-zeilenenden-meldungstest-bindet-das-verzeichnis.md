@@ -238,7 +238,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`): der Slice `slice-emittierte-dateien-behalten-lf-im-autocrlf-klon`
-liegt in `done/` (`ls docs/plan/planning/done/slice-emittierte-dateien-behalten-lf-im-autocrlf-klon.md`
+liegt in `done/` (`ls docs/plan/planning/done/altbestand/slice-emittierte-dateien-behalten-lf-im-autocrlf-klon.md`
 nennt eine Datei), der Test und der Wortlaut der Meldung, die dieser Slice hält, stehen also fest. Keine
 weitere Abhängigkeit; das WIP-Limit ist frei.
 

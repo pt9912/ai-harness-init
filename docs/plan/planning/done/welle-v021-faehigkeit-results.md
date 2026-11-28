@@ -19,12 +19,12 @@ funktionierte · was anders lief. Mit ID-Bezug, wo es einen gibt.
 gezogen hat, zusammen ziehen. Alle sieben Slices der Welle (§4 des Welle-Plans) liegen in `done/`
 (`ls docs/plan/planning/done/ | grep -cE "zielordner|release-schnitt|releasing|adapter-und-ports|stumme-mutations|mutations-faelle-pruefen|fall-anlage|unscoped|benutzerhandbuch|tap-verteilt|waechter-der-erfassung|lifecycle-werkzeuge|emitter-aussagen|leser-und-aufraeum"` → **13** — die sieben Belegbasis-Slices aus §1 und die sieben Mitglieder der Tabelle, zwei Slices doppelt gezählt, keine Erwartungswerte):
 
-- [`slice-unscoped-ziele-kollidieren-nicht-im-mono-repo`](slice-unscoped-ziele-kollidieren-nicht-im-mono-repo.md) — [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)
+- [`slice-unscoped-ziele-kollidieren-nicht-im-mono-repo`](altbestand/slice-unscoped-ziele-kollidieren-nicht-im-mono-repo.md) — [`LH-FA-04`](../../../../spec/lastenheft.md#lh-fa-04--sprachskelett-picker-f4)
 - [`slice-benutzerhandbuch-nachzug-traegt-fuenf-posten`](slice-benutzerhandbuch-nachzug-traegt-fuenf-posten.md) — [`LH-FA-01`](../../../../spec/lastenheft.md#lh-fa-01--repo-bootstrappen)
 - [`slice-tap-verteilt-die-release-assets`](slice-tap-verteilt-die-release-assets.md) — [`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)
 - [`slice-waechter-der-erfassungsschicht-decken-was-sie-sagen`](slice-waechter-der-erfassungsschicht-decken-was-sie-sagen.md) — [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)
-- [`slice-lifecycle-werkzeuge-tragen-die-kennung`](slice-lifecycle-werkzeuge-tragen-die-kennung.md) — [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
-- [`slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt`](slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt.md) — [`LH-FA-12`](../../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren)
+- [`slice-lifecycle-werkzeuge-tragen-die-kennung`](altbestand/slice-lifecycle-werkzeuge-tragen-die-kennung.md) — [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6)
+- [`slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt`](altbestand/slice-emitter-aussagen-ueber-den-vorlagensatz-sind-gedeckt.md) — [`LH-FA-12`](../../../../spec/lastenheft.md#lh-fa-12--e2e-abdeckungs-sicht-emittieren)
 - [`slice-leser-und-aufraeum-waechter-decken-was-sie-sagen`](slice-leser-und-aufraeum-waechter-decken-was-sie-sagen.md) — [`LH-FA-10`](../../../../spec/lastenheft.md#lh-fa-10--erfassungsschicht-emittieren)
 
 Jeder der sieben trägt seine DoD-Belege in seiner eigenen Datei in `done/`; der

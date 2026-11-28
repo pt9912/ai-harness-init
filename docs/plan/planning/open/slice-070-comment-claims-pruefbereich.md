@@ -177,7 +177,7 @@ Achse bereits gefahren (§1); für die übrigen drei gehört sie in den ersten L
 **Was dieser Slice ausdrücklich nicht ist: eine Nennung.** Vier Verengungen desselben Gate-Skripts
 sind in vier Runden gemessen und benannt worden; ein Träger ohne Termin ist in diesem Repo dreimal
 vergeben und nullmal eingelöst worden
-([slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) §1, dort mit Kommando). Der Termin
+([slice-101](../done/altbestand/slice-101-norm-postens-bekommen-einen-termin.md) §1, dort mit Kommando). Der Termin
 ist dieser Schnitt — nicht die nächste Runde, die dieselbe Zeile wiederfindet.
 
 Rückführungen:
@@ -212,7 +212,7 @@ Move-Commit); Closure-Notiz mit Steering-Loop-Eintrag.
 - **Dieser Slice heilt die Klasse NICHT**, die ihn ausgelöst hat. Ein perfekt gescopetes
   `comment-claims` prüft weiterhin nur, dass ein genannter Sensor **existiert** — nie, ob er
   die genannte Zusicherung **bindet**. Das ist
-  [slice-069](../done/slice-069-zahn-bindet-zusicherung.md); beide zusammen decken die Wurzel, keiner
+  [slice-069](../done/altbestand/slice-069-zahn-bindet-zusicherung.md); beide zusammen decken die Wurzel, keiner
   allein.
 - **Nicht in diesem Slice:** die emittierte Ebene. Ob ein bootstrapptes Ziel denselben Sensor
   bekommt, entscheidet slice-062/063.

@@ -123,7 +123,7 @@ genau einen Lauf.
    Festlegung 4); ihre Report-Ziele tragen seit dem Report-Stub-Weg keinen Fall mehr — jeder
    Report überlebt am unveränderten Pfad
    ([`ADR-0061`](../../docs/plan/adr/0061-review-report-bekommt-beim-archivieren-einen-stub.md)
-   Festlegung 1), der Verweis von [`slice-216`](../../docs/plan/planning/done/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md)
+   Festlegung 1), der Verweis von [`slice-216`](../../docs/plan/planning/done/altbestand/slice-216-verweise-auf-review-reports-bekommen-ihren-ausgang.md)
    hat damit seinen Ausgang. Die normative Sperre aus
    [`ADR-0042`](../../docs/plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 5
    bindet den ersten Archiv-Move zusätzlich daran, dass beide Träger `docs/plan/adr/` ausnehmen

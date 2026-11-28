@@ -71,7 +71,7 @@ Setzung 2) — alle drei wandern mit dem Stand. Gemessen am adoptierten Stand `v
 zu einer Baseline-Aussage den Tag verlangt, gegen den sie gemessen ist.
 
 **Dieser Slice nimmt eine namentlich adressierte Sendung an.**
-[slice-224](../done/slice-224-delta-nachweis-und-planungs-nachzug.md) §9 führt die Zeile zu
+[slice-224](../done/altbestand/slice-224-delta-nachweis-und-planungs-nachzug.md) §9 führt die Zeile zu
 `lab/templates/.d-check.yml` mit dem Ziel `slice-225`; dessen §1 schloss die emittierte Vorlage
 aus und nannte vier Adressen, von denen keine sie annahm. Die Closure von `slice-225` hat den Fall
 als Risiko-Ausgang *eingetreten → Folge-Slice mit Kennung* aufgelöst, und **dieser Slice ist die

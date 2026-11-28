@@ -98,7 +98,7 @@ sagt erst ein Lauf gegen ein frisch gebootstrapptes Ziel. Genau den schuldet DoD
 - **Die `waves`- und `closure`-Fähigkeiten desselben Moduls.** Dieser Slice entscheidet über die
   Modul-Aktivierung und ihre Marker-Hälfte. Beide übrigen sind im Dogfood **aktiv** — `closure`
   seit [slice-129](../done/slice-129-closure-notiz-hat-einen-sensor.md), `waves` seit
-  [slice-offene-wellen-liste-hat-einen-waechter](../done/slice-offene-wellen-liste-hat-einen-waechter.md)
+  [slice-offene-wellen-liste-hat-einen-waechter](../done/altbestand/slice-offene-wellen-liste-hat-einen-waechter.md)
   (`grep -c 'waves:' .d-check.yml` → **1**, kein Erwartungswert) —, und damit ist für beide das
   **erste** der drei Kriterien aus
   [`MR-054`](../../../../harness/conventions.md#mr-054--ein-modul-geht-ins-emittierte-doc-gate-nur-mit-erprobung-grünem-start-und-rotem-gegenbeispiel)

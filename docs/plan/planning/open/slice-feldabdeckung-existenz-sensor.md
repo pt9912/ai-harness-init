@@ -27,7 +27,7 @@ Struktur-/Konsistenz-Regel zwischen zwei Artefakten).
 
 **Herkunft:** benannt im Architect-Verdikt
 `docs/reviews/2026-09-27-verdikt-kopplungsform-feldnotiz-spec.md` §3, als Folge-Slice zu
-[`slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt`](../done/slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt.md)
+[`slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt`](../done/altbestand/slice-kopplungsform-feldnotiz-spec-braucht-architektur-verdikt.md)
 (Kennung und Scope wie dort vorgeschlagen; angelegt durch den Planner nach
 [`AGENTS.md`](../../../../AGENTS.md) §3.10).
 

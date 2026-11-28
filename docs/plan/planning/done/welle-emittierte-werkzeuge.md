@@ -167,11 +167,11 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 - **Berührt, aber bindet nicht — die Dogfood-Zwillinge.** Vier offene Slices fassen dieselben
   Vorlagen auf der **Dogfood**-Seite an; die Mitglieder dieser Welle übernehmen ihr Ergebnis, statt
   es vorwegzunehmen:
-  [slice-226](slice-226-implementer-anweisungssatz-zieht-nach.md) (der ausgeführte
+  [slice-226](altbestand/slice-226-implementer-anweisungssatz-zieht-nach.md) (der ausgeführte
   `implement-slice.md` gegen die Ziel-Fassung),
   [slice-153](../open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md) (die zwei ausgeführten
   Wellen-Anweisungssätze gegen die Abschnitte, die die Roadmap führt),
-  [slice-215](slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) (der **Träger**
+  [slice-215](altbestand/slice-215-commit-waechter-sieht-auch-die-ungetippten-commits.md) (der **Träger**
   des Commit-Kennungs-Wächters — er entscheidet den Kanal, den ein emittierter Wächter erben würde)
   und [slice-ortswechsel-zieht-sein-zustandsfeld-nach](../open/slice-ortswechsel-zieht-sein-zustandsfeld-nach.md)
   (die dritte Hälfte eines Ortswechsels: das bewachte Zustandsfeld).
@@ -229,7 +229,7 @@ die Emission, die geschrieben wird — dieselbe Linie, die Modul 6 für die Arch
 
 **Der Nachzug des lokalen Anweisungssatzes — geprüft und ausgeschlossen, mit Kennung.**
 [slice-153](../open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md) und
-[slice-226](slice-226-implementer-anweisungssatz-zieht-nach.md) tragen ihn auf der
+[slice-226](altbestand/slice-226-implementer-anweisungssatz-zieht-nach.md) tragen ihn auf der
 **Dogfood**-Seite; die Welle nimmt sie **nicht** auf, und das ist eine Entscheidung, kein
 Übersehen. Ihr Gegenstand ist die **emittierte** Ebene, und ihr Closure-Trigger fährt die Werkzeuge
 im Ziel — die zwei Slices fahren Texte. Die Prüfung, ob sie den Gegenstand deckten, ist gefahren:
@@ -255,7 +255,7 @@ Reifestufen-Zweig und den Entscheidungs-Zweig. Das ist **kein** Posten dieser We
 fährt Werkzeuge im Ziel; dieser Befund ist eine **Drift zwischen zwei Textartefakten** und eine
 Unvollständigkeit gegen das Regelwerk. Er liegt auf derselben Fläche wie die zwei Slices darüber,
 und **keiner von beiden trägt den Schritt**: [slice-153](../open/slice-153-wellen-commands-nennen-die-roadmap-abschnitte.md)
-zieht die Roadmap-Abschnittsnamen nach, [slice-226](slice-226-implementer-anweisungssatz-zieht-nach.md)
+zieht die Roadmap-Abschnittsnamen nach, [slice-226](altbestand/slice-226-implementer-anweisungssatz-zieht-nach.md)
 die Plan-vor-Code-Blöcke. Eine **Kennung fehlt** — der Posten ist heute an keiner Datei; die Welle
 schneidet dafür keinen vierten Slice, weil ein Nachzug über zwei Ebenen desselben Ablaufs ein
 **eigener Vorgang** ist. Er wird hier benannt und geht über §3 in die Ergebnis-Notiz, damit er nicht

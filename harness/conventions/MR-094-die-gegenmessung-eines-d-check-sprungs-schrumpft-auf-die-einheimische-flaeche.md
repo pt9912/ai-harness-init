@@ -3,7 +3,7 @@
 - **Datum:** 2026-11-25
 - **Wirksamkeits-Anlass:** Auftraggeber-Entscheidung 2026-11-25 (keine Slice-Kennung — Architect-Zug,
   [`AGENTS.md`](../../AGENTS.md) §3.8); letzter Sprung unter der aufgelösten Form:
-  [`slice-d-check-sprung-v0930`](../../docs/plan/planning/done/slice-d-check-sprung-v0930.md),
+  [`slice-d-check-sprung-v0930`](../../docs/plan/planning/done/altbestand/slice-d-check-sprung-v0930.md),
   [`LH-QA-02`](../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit).
 - **Geltungsbereich:** die **Bilanz eines d-check-Sprungs** — das, was ein Sprung von
   `d-check.mk` (`DCHECK_IMAGE`/`DCHECK_DIGEST`) und dem emittierten Default-Pin

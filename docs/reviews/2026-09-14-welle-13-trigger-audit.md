@@ -48,7 +48,7 @@ Aufzählung, nicht die Semantik.
 Zwei aktive Dateien (`ls docs/plan/carveouts/*.md | wc -l` → **2**).
 
 [`CO-001`](../plan/carveouts/CO-001-bats-shell-lint.md) (Gate `shell-lint`): Stand *verlängert mit
-Folge-Slice* — [slice-141](../plan/planning/done/slice-141-co-001-aufloesung-ist-vorher-entschieden.md)
+Folge-Slice* — [slice-141](../plan/planning/done/altbestand/slice-141-co-001-aufloesung-ist-vorher-entschieden.md)
 entscheidet vor, [slice-113](../plan/planning/open/slice-113-co-001-ist-faellig.md) führt aus; beide
 liegen im Lifecycle. Der Auflösungs-Trigger ist weiterhin eingetreten und der Ausgang ist gesetzt —
 **kein Widerspruch**, der eine Architect-Frage wäre.
@@ -262,7 +262,7 @@ die Verengung, und das ist eine eigene ADR.
 
 Sie lautet: *„Ob die Grenze aus Festlegung 1 in `.harness/skills/reviewer.md` aufgenommen wird,
 entscheidet der Reviewer."* Ihr Träger ist
-[`slice-die-vorgangs-grenze-erreicht-den-reviewer-skill`](../plan/planning/done/slice-die-vorgangs-grenze-erreicht-den-reviewer-skill.md)
+[`slice-die-vorgangs-grenze-erreicht-den-reviewer-skill`](../plan/planning/done/altbestand/slice-die-vorgangs-grenze-erreicht-den-reviewer-skill.md)
 (in `next/`): sein §1 nennt ihn als **zweite Hälfte** des zweiteiligen Übergabe-Artefakts aus
 [ADR-0048](../plan/adr/0048-eigentum-haengt-am-vorgang-nicht-an-der-datei.md) §Konsequenzen, sein
 Verantwortlich-Feld weist ihn dem Reviewer zu
@@ -299,7 +299,7 @@ Adresse, an der die Reviewer-Frage fällt, und dieser Lauf hat sie ausgewertet.
   [ADR-0035](../plan/adr/0035-beleg-statt-lauf-und-die-bezugsmenge-des-schluessels.md) keinen
   Acceptance-Trigger **führt** und die Suche nach einem Träger-Slice leer ausgeht — die Klasse, die
   der `welle-14`-Audit für [ADR-0031](../plan/adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md)
-  mit [slice-171](../plan/planning/done/slice-171-adr-0031-acceptance-trigger.md) geschlossen hat.
+  mit [slice-171](../plan/planning/done/altbestand/slice-171-adr-0031-acceptance-trigger.md) geschlossen hat.
 - **Die zwei Carveouts** — bestätigt der Planner aus dem Bestand; ich habe sie nur auf den
   Widerspruch in §1 gelesen.
 

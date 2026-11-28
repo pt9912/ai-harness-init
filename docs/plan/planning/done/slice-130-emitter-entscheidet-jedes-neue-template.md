@@ -279,7 +279,7 @@ dasteht.
   fielen auf *wiederkehrend*; `emit.isRecurring` führt heute **sieben** Namen
   (`awk '/^func isRecurring\(/{f=1} f&&/^}/{f=0} f' internal/emit/templates.go | grep -oE '"[^"]+\.template\.md"' | wc -l`
   → **7**; `grep -c` zählte hier Zeilen und gäbe **3**), die Aufzählung fünf. Die Übergabe an die schreibende Rolle des Lastenhefts trägt
-  [slice-139](../done/slice-139-lastenheft-deckt-die-emit-disposition.md) — als Change Request,
+  [slice-139](../done/altbestand/slice-139-lastenheft-deckt-die-emit-disposition.md) — als Change Request,
   weil weder ADR noch Slice `LH-*` ändern dürfen
   ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)).
   Derselbe Slice führt [`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md), die dieselbe
@@ -460,7 +460,7 @@ Gate-Punkt in *Der Haken zu (4)*, die restlichen fünf hier.
 korrekt **nicht** angefasst worden: `git diff --name-only 7e6eb0b^..HEAD -- spec/ | wc -l` → **0**.
 Der Weg hinaus ist ein Change Request
 ([`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler)),
-sein Träger [slice-139](../done/slice-139-lastenheft-deckt-die-emit-disposition.md). Der gesamte
+sein Träger [slice-139](../done/altbestand/slice-139-lastenheft-deckt-die-emit-disposition.md). Der gesamte
 Code-Eingriff bleibt in zwei Dateien
 (`git diff --name-only 7e6eb0b^..HEAD -- internal/` → `internal/emit/templates.go`,
 `internal/emit/templates_test.go`).
@@ -472,7 +472,7 @@ Klasse.
 `ls docs/plan/planning/observations.md` → `Datei oder Verzeichnis nicht gefunden`. Das ist keine
 Auslassung, sondern die Folge einer Dogfood-Entscheidung, die dieser Slice ausdrücklich nicht
 trifft (§1, §3); ihr Träger ist
-[slice-137](../done/slice-137-beobachtungs-register-bekommt-seinen-ort.md). **Die Folge ist nicht
+[slice-137](../done/altbestand/slice-137-beobachtungs-register-bekommt-seinen-ort.md). **Die Folge ist nicht
 bloß buchhalterisch:** beide Lerneinträge unten und die gezählte Klasse gehörten dorthin, und die
 Klasse hat mit diesem Slice ihre fünfte Review-Runde erreicht, ohne dass ein Zähler sie hält. Sie stehen
 deshalb hier, wo ein späterer Lauf sie nur findet, wenn er diesen Slice liest. **Ohne Register gibt
@@ -492,7 +492,7 @@ offen**.
 Register prüft die [welle-10](welle-10-re-baseline.md)-Closure. Was sie von hier erbt, steht in
 einem Satz: **zwei** Steering-Loop-Einträge ohne `liegt in` (gezählt, nicht verkörpert), **null**
 *weiter offen*-Ausgänge in §6, **zwei** neue Folge-Slices in `open/` — und dieselbe Ursache wie bei
-[slice-138](../done/slice-138-nachweis-entsteht-nicht-ueber-rot.md) für alles, was ohne Zähler
+[slice-138](../done/altbestand/slice-138-nachweis-entsteht-nicht-ueber-rot.md) für alles, was ohne Zähler
 bleibt.
 
 ### Was funktionierte
@@ -562,7 +562,7 @@ zulässige Weg**, und zwar aus einem Grund, der die §4-Kante zugleich als tot a
 darf ein Slice `LH-*` **nie** ändern, weshalb die Bedingung *„ändern müsste"* von keinem Slice je
 erfüllbar ist. Eine Rückführung wäre hier keine Disziplin gewesen, sondern eine Blockade ohne
 Auflösungsweg — der Change Request braucht einen umsetzenden Slice, und der entsteht in `open/`
-([slice-139](../done/slice-139-lastenheft-deckt-die-emit-disposition.md)), nicht durch Zurücklegen
+([slice-139](../done/altbestand/slice-139-lastenheft-deckt-die-emit-disposition.md)), nicht durch Zurücklegen
 dieses Slice. **§4 bleibt unangetastet:** die Sektion beschreibt die vorab benannte Bedingung, und
 die drei Zeitdokumente dieser Kette (`ls docs/reviews/*slice-130* | wc -l` → **3**) haben gegen
 genau diesen Text gemessen.
@@ -617,7 +617,7 @@ Drift-Form einmal von Hand bauen, beide Lesarten darüber laufen lassen und die 
 *„die Zusage auf das einschränken, was der Code hält"* — dort steht heute, dass eine Zusage ihr
 Gegenbeispiel braucht, nicht, dass ein Wächter seinen **Fehlermodus** wählen kann. Damit gehört er
 dem **Architect** ([`AGENTS.md`](../../../../AGENTS.md) §3.8); den Termin trägt
-[slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md), der genau diese Klasse von
+[slice-101](../done/altbestand/slice-101-norm-postens-bekommen-einen-termin.md), der genau diese Klasse von
 Postens führt. **Dieser Lauf hat ihn dort nicht eingetragen** — das Feld `liegt in` entfällt darum
 ersatzlos, der Eintrag ist **gezählt, nicht verkörpert**
 (`grundlagen-traceability.md` §Herkunfts-Anker).
@@ -640,7 +640,7 @@ Ausnahme aus `CO-004`"*. `CO-005` bestand zu diesem Zeitpunkt bereits
 beiden Nachbar-Slices zeigen, dass die Form verfügbar war:
 [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) §2 schreibt *„soweit die
 Welle es zulässt"* und nennt beide Carveouts,
-[slice-138](../done/slice-138-nachweis-entsteht-nicht-ueber-rot.md) §2 schreibt *„keinen Befund
+[slice-138](../done/altbestand/slice-138-nachweis-entsteht-nicht-ueber-rot.md) §2 schreibt *„keinen Befund
 hervor, der diesem Slice zuzurechnen ist"*. Gemessen über die drei: **einer von drei** trägt die
 untragfähige Form.
 
@@ -651,7 +651,7 @@ Wächter wäre genau das stille Grün aus
 [`LH-QA-01`](../../../../spec/lastenheft.md#lh-qa-01--keine-halluzinierten-gates-f4-f5-f6).
 
 **Adressat und Grenze — und hier liegt dieselbe Sperre wie bei
-[slice-138](../done/slice-138-nachweis-entsteht-nicht-ueber-rot.md) §7 (II).** Der Regeltext gehört
+[slice-138](../done/altbestand/slice-138-nachweis-entsteht-nicht-ueber-rot.md) §7 (II).** Der Regeltext gehört
 in die **Ziel-Form des Slice-Plans**, also zum **Planner**; sein natürlicher Ort wäre
 `slice.template.md` der Baseline, und das ist committet vendored Fremd-Bestand
 ([`MR-007`](../../../../harness/conventions.md#mr-007--baseline-committet-vendored-statt-gefetchter-cache)),
@@ -668,7 +668,7 @@ Befunde:** [slice-081](../done/slice-081-baum-tauschen-pin-ziehen.md) `LOW-1` (e
 fünf Module, die Konfiguration führt sechs) ·
 [slice-133](../done/slice-133-emittierter-baum-ohne-platzhalter-links.md) `MEDIUM-1` (vier lebende
 Artefakte führen eine Aufteilung, die derselbe Commit widerlegt) ·
-[slice-138](../done/slice-138-nachweis-entsteht-nicht-ueber-rot.md) `MEDIUM-1` (eine
+[slice-138](../done/altbestand/slice-138-nachweis-entsteht-nicht-ueber-rot.md) `MEDIUM-1` (eine
 Grenz-Aufzählung zählt ihre Menge und trifft sie nicht) · dieser Slice, Runde 1 `INFO-2` (drei
 Kommentare zählen die Nicht-Emit-Gründe zu dritt, es sind vier) · Runde 2 `MEDIUM-2` und `LOW-1`
 (der neu gebaute Wächter zählt seine eigenen Grenzen ab und trifft sie nicht). **Die Zuordnung ist
@@ -687,7 +687,7 @@ Setzung 1 verlangt und die auf eine **Nachbarschaft** von Zahl und Kommando nich
 „N-fach", nicht mehr Sorgfalt.** Er ist hier **nicht** eingerichtet: eine Checkliste ohne Ort ist
 eine Ablage ohne Leser, und der Ort für Planner- und Reviewer-Ziel-Formen ist genau die Lücke, die
 Eintrag (II) oben benennt. Die **Antwort**-Regel auf die Klasse ist bereits formuliert und
-gezählt — [slice-138](../done/slice-138-nachweis-entsteht-nicht-ueber-rot.md) §7 (I): *auf „die
+gezählt — [slice-138](../done/altbestand/slice-138-nachweis-entsteht-nicht-ueber-rot.md) §7 (I): *auf „die
 Aussage reicht weiter als ihr Beleg" antwortet man, indem man die Aussage einschränkt*. Sie hat in
 `4da4f64` ihre erste gemessene Wirkung: die Zählung *„GRENZE, zweifach"* ist **ersatzlos**
 gestrichen worden, und keine vierte ist an ihre Stelle getreten
@@ -703,7 +703,7 @@ Block, beide unnummeriert).
 | Der Re-Evaluierungs-Trigger von [`ADR-0024`](../../adr/0024-derivatives-register-gehoert-der-rolle-seines-originals.md) ist eingetreten und nirgends vermerkt | Review 1 `HIGH-2` | **erledigt** — `a6d436c` legt [`ADR-0025`](../../adr/0025-register-mit-gemischten-originalen.md) an (`Proposed`); kein Satz dieses Slice hängt an ihr |
 | Kopf und Index-Zelle von `CO-004` sagen, der Move stehe aus | Review 1 `MEDIUM-1` | **erledigt** in `722e272`, an vier statt drei Stellen |
 | Der neue Unterscheider ist eine Zusage ohne Sensor | Review 1 `MEDIUM-2` | **erledigt** in `722e272` — die dritte bats-Achse, heute `ok 43`, mit den Zähnen `219`/`220` |
-| Vier Posten stehen nur in Commit-Messages | Review 1 `MEDIUM-3`, Review 2 `MEDIUM-3` | **erledigt** in `7ce375a` — zwei lebende Träger: [slice-139](../done/slice-139-lastenheft-deckt-die-emit-disposition.md) und [slice-140](../done/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md) |
+| Vier Posten stehen nur in Commit-Messages | Review 1 `MEDIUM-3`, Review 2 `MEDIUM-3` | **erledigt** in `7ce375a` — zwei lebende Träger: [slice-139](../done/altbestand/slice-139-lastenheft-deckt-die-emit-disposition.md) und [slice-140](../done/altbestand/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md) |
 | [`MR-017`](../../../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed) außerhalb seines Geltungsbereichs zitiert | Review 1 `LOW-1` | **erledigt** in `722e272` am Code; für den Plan **hier entschieden** (*Was ging anders als geplant*, §6 Risiko 3) |
 | Der Grenz-Absatz behauptet eine Offenheit, die `a6d436c` beendet hat | Review 2 `MEDIUM-1` | **erledigt** in `4da4f64` — der Satz nennt einen Register-**Zustand** statt einer Entscheidung |
 | Der Wächter zählt seine Grenzen ab; die dritte lässt still grün | Review 2 `MEDIUM-2` | **erledigt** in `4da4f64` — die Extraktion ist geändert, die Zählung ersatzlos gestrichen; Lerneintrag (I) |
@@ -715,7 +715,7 @@ Block, beide unnummeriert).
 | §4 und §6 decken denselben Auslöser mit unvereinbarer Folge | Verifikation `V-3` | **entschieden: §6 gefolgt, §4-Kante als nach [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler) unerfüllbar vermerkt** (*Was ging anders als geplant*); §4 unangetastet |
 | Zwei Zeilen in `TestTemplates_RecurringNichtEmittiert` können unter keiner Mutation rot werden | Verifikation `V-4` | **weiter offen, ohne Träger** — unten, erster Folge-Posten; keine DoD-Verletzung, das Muster ist geerbt |
 | Zwei bats-Fälle ohne kuratierten Mutations-Fall | Verifikation `V-5` | **weiter offen, ohne Träger** — unten, erster Folge-Posten (dieselbe Ursache) |
-| Das emittierte `observations.md` trägt zwei `BEDIENHINWEIS`-Blöcke, die von sich selbst sagen, sie fielen beim Kopieren weg | Review 1 `LOW-2` | **erledigt** in `7ce375a` — Träger [slice-140](../done/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md); gate-neutral (HTML-Kommentar, kein Link) |
+| Das emittierte `observations.md` trägt zwei `BEDIENHINWEIS`-Blöcke, die von sich selbst sagen, sie fielen beim Kopieren weg | Review 1 `LOW-2` | **erledigt** in `7ce375a` — Träger [slice-140](../done/altbestand/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md); gate-neutral (HTML-Kommentar, kein Link) |
 | `<ziel>/harness/conventions/` entsteht im emittierten Baum nicht mehr, ohne `.gitkeep` | Review 1 `INFO-1` | **entschieden: so gewollt** — das Verzeichnis entstand allein aus der falschen Singleton-Einordnung; die Erwartung des Vollständigkeits-Tests führt `harness/conventions.md` als Datei und kein Verzeichnis darunter (`sed -n '/want := \[\]string{/,/^\t}/p' internal/emit/templates_test.go \| grep -c 'conventions/'` → **0**) |
 | Drei Kommentare zählen die Nicht-Emit-Gründe zu dritt | Review 1 `INFO-2` | **weiter offen, unter dem Cutoff** — keine der Zeilen ist im Diff angefasst, [`AGENTS.md`](../../../../AGENTS.md) §3.7 bindet sie damit nicht; als Fundort der gezählten Klasse oben geführt |
 | Kein Sensor prüft die vier Entscheidungen am realen emittierten Baum | Verifikation `V-6` | **weiter offen, mit vorbereitetem Ort** — unten, dritter Folge-Posten |
@@ -723,11 +723,11 @@ Block, beide unnummeriert).
 ### Folge-Slices
 
 **Zwei neu, beide in `open/` und beide aus dieser Kette:**
-[slice-139](../done/slice-139-lastenheft-deckt-die-emit-disposition.md) (Lastenheft deckt die
+[slice-139](../done/altbestand/slice-139-lastenheft-deckt-die-emit-disposition.md) (Lastenheft deckt die
 Emit-Disposition — Change Request nach
 [`MR-015`](../../../../harness/conventions.md#mr-015--change-request-bei-personalunion-von-auftraggeber-und-entwickler),
 trägt zugleich [`ADR-0020`](../../adr/0020-emittierte-modul-15-regeln.md)) und
-[slice-140](../done/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md) (der emittierte Stand ohne
+[slice-140](../done/altbestand/slice-140-emittierter-stand-ohne-vorlagen-hilfen.md) (der emittierte Stand ohne
 Vorlagen-Hilfen — die `BEDIENHINWEIS`-Blöcke, die von sich selbst sagen, sie fielen beim Kopieren
 weg). Beide sind in `7ce375a` entstanden, also **vor** dieser Closure und im Planner-Kontext; diese
 Notiz legt keinen dritten an.

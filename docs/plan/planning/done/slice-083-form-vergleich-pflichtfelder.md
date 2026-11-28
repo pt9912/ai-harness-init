@@ -270,7 +270,7 @@ DoD vollständig, `make gates` grün, Closure-Notiz geschrieben.
   diesem Repo:** [slice-080](../done/slice-080-verweis-ueberlebt-tagwechsel.md) §7 hält zwei
   Fälle fest, in denen eine Beobachtung über ein **lebendes** Artefakt nur in einer
   Commit-Message stand und neunzehn Tage später neu gemacht werden musste. — **Ausgang: entfallen,
-  bereits entschieden.** Das Register ist adoptiert — [slice-137](../done/slice-137-beobachtungs-register-bekommt-seinen-ort.md)
+  bereits entschieden.** Das Register ist adoptiert — [slice-137](../done/altbestand/slice-137-beobachtungs-register-bekommt-seinen-ort.md)
   (außerhalb dieser Welle) hat `docs/plan/planning/observations.md` angelegt, und dieser Slice
   selbst schreibt keine Zeile hinein (keine Beobachtung dieses Laufs erreicht 1× einen neuen
   Sachverhalt außerhalb des bereits Protokollierten).

@@ -1,7 +1,7 @@
 **Vorgang:** slice-073
 **Fund:** Der Verweis-Nachzug hat in diesem Vorgang zweimal in eingefrorene Zeitdokumente
 geschrieben. Beim Lifecycle-Übergang eines Nachbar-Slice traf er
-`docs/plan/planning/done/slice-190-bootstrap-legt-die-versprochenen-orte-an.md` und den
+`docs/plan/planning/done/altbestand/slice-190-bootstrap-legt-die-versprochenen-orte-an.md` und den
 Review-Report `docs/reviews/2026-09-10-slice-073-emittierte-doc-gate-module.md` — im ersten Fall
 steht danach ein Link auf `next/` neben einem Prosa-Satz, der dieselbe Datei unverändert in `open/`
 verortet: Der Nachzug bewegt Pfade, keine Zustandssätze.

@@ -13,7 +13,7 @@
   Message) und mit einer anderen Zusage. Wie bei [`MR-002`](../conventions.md#mr-002--gate-nachweis-mechanik-und-claude-hooks)
   ändert kein Teil dieses Eintrags eine Komponenten-/Sequenzsicht oder eine Technik-Festlegung —
   ein ADR war deshalb nicht nötig (Architect-Verdikt in
-  [`done/slice-amend-haelt-den-index-pfadrein.md`](../../docs/plan/planning/done/slice-amend-haelt-den-index-pfadrein.md)
+  [`done/altbestand/slice-amend-haelt-den-index-pfadrein.md`](../../docs/plan/planning/done/altbestand/slice-amend-haelt-den-index-pfadrein.md)
   §1).
 - **Adaption:** Ein zweiter git-eigener Hook liegt neben `commit-msg`: `.githooks/pre-commit`. Er
   wirkt bei jedem `git commit` in diesem Klon, sobald `make hooks-install` gelaufen ist —
@@ -54,7 +54,7 @@
     Grenze.
   - **Kein Gate und kein genereller Index-Wächter.** Geprüft wird ausschließlich der `--amend`-Fall,
     nicht jeder Commit — dieselbe Abgrenzung, mit der
-    [`done/slice-amend-haelt-den-index-pfadrein.md`](../../docs/plan/planning/done/slice-amend-haelt-den-index-pfadrein.md)
+    [`done/altbestand/slice-amend-haelt-den-index-pfadrein.md`](../../docs/plan/planning/done/altbestand/slice-amend-haelt-den-index-pfadrein.md)
     §1 einen generellen Index-Wächter ausdrücklich ausschließt.
 - **Begründung:** Bewährte Mechanik — derselbe Trägertyp (git-nativer Hook statt Claude-Hook oder
   Rollen-Anweisungssatz), aus demselben Grund wie bei `commit-msg`: Reichweite über alle Rollen

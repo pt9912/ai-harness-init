@@ -98,7 +98,7 @@ und Linkziel dieselbe Kennung tragen und der Gate einen Befund daraus macht. `gr
   `2 Befund(e)`, beide `matrix-downward`; dasselbe Gegenbeispiel **ohne** die zwei Zeilen liefert
   `0 Befund(e)`. **Keine Erwartungswerte** — die Datei-Zahl wandert mit dem Baum; tragend ist die
   Kausalität. **Das emittierte Gegenstück fährt sie bereits** — es ist DoD (1) von
-  [slice-073](../done/slice-073-emittierte-doc-gate-module.md), und bis dieser Slice
+  [slice-073](../done/altbestand/slice-073-emittierte-doc-gate-module.md), und bis dieser Slice
   schließt, läuft das Ziel dem Dogfood voraus.
 - [ ] **(2) Der Zahn ist dauerhaft, und er kostet den Mutations-Sensor eine Zeile.** Heute kann
   **kein** Fall in `test/mutations/` einen `docs-check`-Wächter binden: `failure_form` in
@@ -191,7 +191,7 @@ Closure-Notiz mit Steering-Loop-Eintrag.
   Fall, nicht nur diesen. Sein eigener Wächter gehört deshalb in denselben Slice und nicht in
   einen Folge-Slice.
 - **Nicht in diesem Slice:** die Frage, ob ein Mutations-Fall die *genannte Zusicherung* bindet
-  ([slice-069](../done/slice-069-zahn-bindet-zusicherung.md)) und der Prüfbereich von `comment-claims`
+  ([slice-069](../done/altbestand/slice-069-zahn-bindet-zusicherung.md)) und der Prüfbereich von `comment-claims`
   ([slice-070](slice-070-comment-claims-pruefbereich.md)). Beide gehören derselben Familie an —
   Zusagen, die heute kein Sensor prüft —, hängen aber weder von diesem Slice ab noch er von
   ihnen. Ebenfalls **nicht** hier: die umgekehrte Richtung (ein Slice verweist auf eine ADR) —

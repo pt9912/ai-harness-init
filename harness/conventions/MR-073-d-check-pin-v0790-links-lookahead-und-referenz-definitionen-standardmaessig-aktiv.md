@@ -135,7 +135,7 @@
 
   | Modul | Sonde | Grund-Code |
   |---|---|---|
-  | `matrix` | Link `spec/architecture.md` → eine ADR (verbotene Referenz-Richtung `spec-straten` → `adr`); Link `done/slice-werkzeug-erkennt-die-benannte-kennung.md` → eine ersetzte ADR (superseded) — konkrete Kennungen im Commit `21afa8ba` | `matrix-forbidden`, `matrix-inactive` |
+  | `matrix` | Link `spec/architecture.md` → eine ADR (verbotene Referenz-Richtung `spec-straten` → `adr`); Link `done/altbestand/slice-werkzeug-erkennt-die-benannte-kennung.md` → eine ersetzte ADR (superseded) — konkrete Kennungen im Commit `21afa8ba` | `matrix-forbidden`, `matrix-inactive` |
   | `spans` | Opener klebt an Text; verschachtelter Link im Linktext; offene Fence am Dateiende | `span-unclosed`, `span-nested-link`, `fence-unclosed` |
   | `planning` | Ruhe-Marker unter *Offene Wellen*, während `in-progress/` einen Slice trägt | `planning-drift` |
   | `targets` | `make`-Zeile in `harness/README.md` ohne Makefile-Rezept | `gate-phantom` |

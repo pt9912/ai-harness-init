@@ -72,7 +72,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       sobald die geprüfte Datei eine Form trägt, die er nicht führt. **Rot zu sehen:** den Zweig
       des Dispatch umbenennen und die alte Marke in einen `/* … */`-Block derselben Datei setzen
       — heute bleibt `make test-bats` darüber grün, gemessen an
-      [slice-175](../done/slice-175-archive-welle-schreibender-pfad.md) §7. Der Fall gehört als
+      [slice-175](../done/altbestand/slice-175-archive-welle-schreibender-pfad.md) §7. Der Fall gehört als
       eigener Zahn nach `test/mutations/`. Im selben Zug nennt die Zusage in
       `test/unterkommando-kopplung.bats` und in
       [`harness/README.md`](../../../../harness/README.md) genau die Grenzen, die der Ausdruck
@@ -113,7 +113,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`):
-[slice-175](../done/slice-175-archive-welle-schreibender-pfad.md) liegt in `done/` — dessen
+[slice-175](../done/altbestand/slice-175-archive-welle-schreibender-pfad.md) liegt in `done/` — dessen
 Lese-Schritt weist [`BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht`](../observations/BEO-ALL/zusage-nennt-sensor-der-form-nicht-sieht/observation.md) diesen Slice als Ausgang zu, und vorher gibt
 es weder die dritte Instanz noch die Zuweisung.
 
@@ -159,7 +159,7 @@ dasteht.
   keinen Wächter.** Für `archive-welle` fängt `make test-go` denselben mutierten Baum auf — drei
   `--- FAIL:` in `cmd/ai-harness-init/archive_welle_echt_test.go`, das den Träger als Prozess
   durch den echten Dispatch fährt; für `span-report` steht daneben nichts in `make gates`
-  (gemessen in [slice-175](../done/slice-175-archive-welle-schreibender-pfad.md) §7). Wer
+  (gemessen in [slice-175](../done/altbestand/slice-175-archive-welle-schreibender-pfad.md) §7). Wer
   Liefer-Punkt 1 auf die
   Zusagen-Hälfte verkürzt, lässt genau diese Hälfte offen. — **Ausgang:** <eingetreten: CO-NNN /
   slice-NNN | entfallen: Grund | weiter offen: → BEO-NNN im Register>

@@ -19,7 +19,7 @@ welle-03.
 > **Distributions-Umbau**; Root-README und der Voll-E2E-Smoke wandern nach welle-03,
 > M2 mit ihnen. slice-004b ist re-gescopet (nicht aufgelöst), slice-005 umgehängt.
 > Vorbild für den Umgang: die Re-Scope-Spur von
-> [slice-015](slice-015-zitat-sensor.md). Drift-Log: Roadmap
+> [slice-015](altbestand/slice-015-zitat-sensor.md). Drift-Log: Roadmap
 > §Historische Trigger-Verschiebungen.
 
 ## 1. Welle-Ziel

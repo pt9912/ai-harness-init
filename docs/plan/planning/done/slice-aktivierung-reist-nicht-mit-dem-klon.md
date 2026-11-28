@@ -65,7 +65,7 @@ grep -c 'HOOKS_DIR' Makefile                                                    
 ```
 
 1. **Zwei der drei Klon-Lagen sind geliefert, die dritte nicht.**
-   [slice-das-ziel-prueft-seine-durchsetzung-selbst](../done/slice-das-ziel-prueft-seine-durchsetzung-selbst.md)
+   [slice-das-ziel-prueft-seine-durchsetzung-selbst](../done/altbestand/slice-das-ziel-prueft-seine-durchsetzung-selbst.md)
    fährt in der `full-smoke`-Stufe *Selbstpruefung im Ziel* (Satz *„der frische Klon traegt lokal
    keinen core.hooksPath"*) über `internal/emit/templates/enforce/selbstpruefung.sh` einen frischen
    Klon: Träger liegt (`test -f`), `core.hooksPath` leer, nach Aktivierung fällt ein Commit ohne
@@ -84,7 +84,7 @@ grep -c 'HOOKS_DIR' Makefile                                                    
 **Ausdrücklich NICHT in diesem Slice** — je Punkt mit Begründung:
 
 - **Die Klon-Lagen „Träger reist mit" und „`core.hooksPath` bleibt leer"** — **geliefert:**
-  [slice-das-ziel-prueft-seine-durchsetzung-selbst](../done/slice-das-ziel-prueft-seine-durchsetzung-selbst.md)
+  [slice-das-ziel-prueft-seine-durchsetzung-selbst](../done/altbestand/slice-das-ziel-prueft-seine-durchsetzung-selbst.md)
   fährt sie in der Stufe *Selbstpruefung im Ziel* (§1 Befund 1); sie hier zu wiederholen hieße,
   dieselbe Zusage zweimal zu liefern. Die neue Stufe darf sie als **Vorbedingung** lesen, nicht als
   eigene Aussage.
@@ -94,7 +94,7 @@ grep -c 'HOOKS_DIR' Makefile                                                    
   beiseitezulegen.
 - **Ein Vergleichs-Sensor zwischen Dogfood-Fassung und Fragment** — **anderer Vorgang:** ein Sensor
   ist keine E2E-Stufe. Die Klasse ist im Register auf
-  [slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor](../done/slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor.md)
+  [slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor](../done/altbestand/slice-doppelt-gefuehrte-werte-bekommen-ihren-kopplungs-sensor.md)
   geplant; das Paar `hooks-install` nennt jener Plan nicht (`grep -c hooks-install` darüber → 0) —
   ob er es aufnimmt, entscheidet sein eigener Schnitt.
 - **Ein Eingriff in die emittierte Ebene (Fragment, Prüfung, `internal/emit/**`)** —
@@ -168,8 +168,8 @@ Erwartungswerte). Ein Zahn über dem **Text** des Rezepts wäre die falsche Eben
 
 **Start** (`next` → `in-progress`): **kein Vorgänger** — der Slice ist rein additiv; die zwei
 Schreibenden auf denselben Dateien, die früher eine Serialisierung verlangten, liegen in `done/`
-([slice-commit-traeger-wird-skip-if-present](../done/slice-commit-traeger-wird-skip-if-present.md),
-[slice-das-ziel-prueft-seine-durchsetzung-selbst](../done/slice-das-ziel-prueft-seine-durchsetzung-selbst.md)).
+([slice-commit-traeger-wird-skip-if-present](../done/altbestand/slice-commit-traeger-wird-skip-if-present.md),
+[slice-das-ziel-prueft-seine-durchsetzung-selbst](../done/altbestand/slice-das-ziel-prueft-seine-durchsetzung-selbst.md)).
 Dazu `Verantwortlich:` gesetzt und das WIP-Limit frei.
 
 **Rückführungen:**

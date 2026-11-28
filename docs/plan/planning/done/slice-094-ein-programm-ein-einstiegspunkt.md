@@ -256,7 +256,7 @@ Kommando, sonst wandert die Zahl mit jedem weiteren. Die Sache selbst liegt in *
 `9bed2d7` (`git show --stat 9bed2d7` → `21 files changed, 354 insertions(+), 218 deletions(-)`).
 `851b1ee`, `957c209` sind reine Lifecycle-Moves, `44e164a` und `d686787` die Link-Züge danach,
 `ac5d7ef` und `cc2ba89` die Verdikte, `cf2e5ca` die Re-Verankerung von
-[slice-071](../done/slice-071-bilanz-nennt-ihren-bestand.md).
+[slice-071](../done/altbestand/slice-071-bilanz-nennt-ihren-bestand.md).
 
 **Die Herkunft von `cmd/ai-harness-init/span_report.go` ist über den neuen Pfad nicht mehr
 auffindbar, und deshalb steht sie hier.** Umzug und Umschreiben liegen in demselben Commit; die
@@ -359,7 +359,7 @@ findet nur, wer die Zusage bricht statt den Sensor zu starten.
 ([`ADR-0015`](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) Festlegung 1,
 [`AGENTS.md`](../../../../AGENTS.md) §3.8). Ein ADR braucht die Schärfung nicht: sie **hebt** eine
 Beleg-Anforderung an und senkt keine Schwelle ([`AGENTS.md`](../../../../AGENTS.md) §3.5). Ein
-neuer Termin ebenfalls nicht — [slice-093](../done/slice-093-mutations-treiber-erreicht-full-smoke.md)
+neuer Termin ebenfalls nicht — [slice-093](../done/altbestand/slice-093-mutations-treiber-erreicht-full-smoke.md)
 hat denselben Adressaten bereits mit einem fälligen Auflösungs-Trigger belegt.
 
 **Und der Eskalations-Trigger jener Closure hätte hier feuern müssen, tat es aber nicht — das ist

@@ -146,7 +146,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`): `slice-spec-5-wird-nach-adr-0074-umgebaut` liegt in `done/`
-(`ls docs/plan/planning/done/slice-spec-5-wird-nach-adr-0074-umgebaut.md` nennt die Datei) — die Aussagen stehen erst
+(`ls docs/plan/planning/done/altbestand/slice-spec-5-wird-nach-adr-0074-umgebaut.md` nennt die Datei) — die Aussagen stehen erst
 danach als Zeilen, aus denen der Lauf sie liest — **eingetreten**. Dazu `slice-agent-role-traegt-nicht-bekannt` in `done/`, sonst liest der Lauf `SPEC-056`/`SPEC-087` im alten Wortlaut.
 
 **Rückführungen — vorab benennen, nicht erst im Nachhinein begründen:**

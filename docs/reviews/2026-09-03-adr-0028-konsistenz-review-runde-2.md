@@ -7,7 +7,7 @@
 | **Gegenstand** | [`docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md`](../plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md), Status `Proposed` |
 | **Diff dieser Runde** | `88fb255` *„Rolle Architect: ADR-0028 vor der Annahme korrigiert — Belege tragen den Tag, Zahlen ihre Mess-Basis"* (2026-09-02 20:11 +0200), zwei Dateien: die ADR und der ADR-Index (`git show 88fb255 --stat --format=`) |
 | **Auftrag** | Baseline-Regelwerk `modul-08-agentenrollen.md` §Rollen-Regeln — *„ADR-Änderung: Architect schreibt; Reviewer prüft auf Konsistenz; Implementer liest als Constraint"*. Dieser Lauf ist die zweite ADR-Review-Runde; wer die Korrektur geschrieben hat, prüft sie nicht |
-| **Plan** | [`docs/plan/planning/done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md`](../plan/planning/done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md), DoD (1) |
+| **Plan** | [`docs/plan/planning/done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md`](../plan/planning/done/altbestand/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md), DoD (1) |
 | **Bindende ADRs** | `ADR-0015`, `ADR-0016`, `ADR-0024` (alle Accepted) · zur Kohärenz mitgelesen, **nicht bindend**: `ADR-0025`, `ADR-0029` (beide `Proposed`) |
 | **Anforderungen / Normen** | `AGENTS.md` §3.1, §3.4, §3.6, §3.7, §3.8 · `MR-000`, `MR-007`, `MR-018`, `MR-021`, `MR-025`, `MR-030`, `MR-033`, `MR-040`, `MR-045` · `LH-QA-01`, `LH-QA-02` |
 | **Vorherige Findings am gleichen Modul** | [`docs/reviews/2026-09-02-adr-0028-konsistenz-review.md`](2026-09-02-adr-0028-konsistenz-review.md) — 1 HIGH, 3 MEDIUM, 1 LOW, 1 INFO; jeder dieser sechs Befunde ist unten einzeln nachgemessen. Davor [`docs/reviews/2026-08-31-slice-144-review.md`](2026-08-31-slice-144-review.md) HIGH-1, der Auslöser der ADR |
@@ -201,7 +201,7 @@ Korrektur und diesen Lauf gefallen ist.
   (`for f in 0015 0016 0024 0025 0028 0029; do grep -c 'v[0-9]\+\.[0-9]\+\.[0-9]\+' docs/plan/adr/$f-*.md; done`
   → **20 · 25 · 7 · 9 · 17 · 1**; keine Erwartungswerte, sie wandern mit dem Text). Sie stützt
   sich in Festlegung 1 auf ADR-0028 und wird von
-  [`slice-152`](../plan/planning/done/slice-152-adr-0029-acceptance-trigger.md) zur Annahme
+  [`slice-152`](../plan/planning/done/altbestand/slice-152-adr-0029-acceptance-trigger.md) zur Annahme
   geführt — derselbe Übergang, dieselbe Vorbedingung aus `ADR-0016` Festlegung 3 (a), und
   inzwischen derselbe Stand-Wechsel auf `v5.18.0`.
 - **verifizierbar:** ja — das `for`-Kommando oben.

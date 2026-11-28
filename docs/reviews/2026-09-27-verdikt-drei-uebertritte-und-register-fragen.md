@@ -12,10 +12,10 @@ Beobachtungs-Register; `modul-08-agentenrollen.md`; `grundlagen-traceability.md`
 vollständig; das Vorgänger-Verdikt
 [`2026-09-26-verdikt-regel-rand-ohne-benannte-luecke-und-dod-haken-paarung.md`](2026-09-26-verdikt-regel-rand-ohne-benannte-luecke-und-dod-haken-paarung.md);
 `docs/plan/planning/observations/README.md`; §7 von
-[`done/slice-204-das-programm-feld-nennt-das-programm.md`](../plan/planning/done/slice-204-das-programm-feld-nennt-das-programm.md),
-[`done/slice-archive-welle-schreibt-in-reports-nur-die-link-form.md`](../plan/planning/done/slice-archive-welle-schreibt-in-reports-nur-die-link-form.md)
+[`done/slice-204-das-programm-feld-nennt-das-programm.md`](../plan/planning/done/altbestand/slice-204-das-programm-feld-nennt-das-programm.md),
+[`done/slice-archive-welle-schreibt-in-reports-nur-die-link-form.md`](../plan/planning/done/altbestand/slice-archive-welle-schreibt-in-reports-nur-die-link-form.md)
 und
-[`done/slice-form-regel-des-nachzugs-ist-an-die-codepaths-ausnahme-gekoppelt.md`](../plan/planning/done/slice-form-regel-des-nachzugs-ist-an-die-codepaths-ausnahme-gekoppelt.md);
+[`done/slice-form-regel-des-nachzugs-ist-an-die-codepaths-ausnahme-gekoppelt.md`](../plan/planning/done/altbestand/slice-form-regel-des-nachzugs-ist-an-die-codepaths-ausnahme-gekoppelt.md);
 `observation.md`, `state.md` und alle `evidence/*.md` der drei Gegenstände sowie ihrer vier
 genannten Nachbarn; die Reviewer- und Verifier-Reports aller drei belegenden Vorgänge (Runde 1/2 zu
 slice-204, je eine Runde zu den zwei Geschwistern); `.harness/skills/reviewer.md` v2.1.0 vollständig;

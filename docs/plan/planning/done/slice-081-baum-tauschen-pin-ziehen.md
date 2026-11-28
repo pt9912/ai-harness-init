@@ -60,7 +60,7 @@ Setzung 2) — beim Lauf neu zu erheben, wie bei den stummen Nennungen unten.
   repariert; ihre Datei tritt als einziger neuer `scan.ignore`-Eintrag aus dem Doku-Gate
   ([ADR-0017](../../adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md)).
 - **4 verlieren ihre Adresse, nicht ihren Text** — zwei in
-  `docs/plan/planning/done/slice-076-mr-018-umzug-technik-stratum.md`, je eine in
+  `docs/plan/planning/done/altbestand/slice-076-mr-018-umzug-technik-stratum.md`, je eine in
   `docs/reviews/2026-07-26-slice-050-impl-review-runde-5.md` und
   `docs/reviews/2026-07-26-slice-050-verification.md`.
 
@@ -253,7 +253,7 @@ Dazu drei Fixture-Namen in `test/sessionstart.bats`, die `grundlagen-konventione
 | `.d-check.yml` | update | `sources`-URL des gepinnten Assets (`make regelwerk-check`); **und** der eine `scan.ignore`-Eintrag aus [ADR-0017](../../adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) — eine namentlich genannte Datei, extensional geschlossen: jeder weitere Eintrag ist eine eigene Senkung nach [`AGENTS.md`](../../../../AGENTS.md) §3.5 und gehört nicht in diesen Slice |
 | [`spec/spezifikation.md`](../../../../spec/spezifikation.md#5-metriken-und-tracing-felder), [`harness/conventions.md`](../../../../harness/conventions.md#mr-000--baseline-aussage) | update | die nachziehbaren Links — die Menge erhebt der Lauf, nicht dieser Plan (§2) — und die stummen Inline-Nennungen, jede mit **einem** der drei Ausgänge aus §2 (gezogen · begründet stehen gelassen · an [slice-082](../done/slice-082-adaptions-durchgang.md) Achse 1 abgegeben). Dazu der **Adaptions-Block** als Zähl- und Klassifikations-Ort der `scan.ignore`-Einträge, und zwar als **neuer** Eintrag: [ADR-0017](../../adr/0017-doku-gate-ausnahme-fuer-ein-eingefrorenes-adr.md) Folgepflicht 2 nennt [`MR-001`](../../../../harness/conventions.md#mr-001--doc-gate-schärfung-matrix--link-pflicht--anker-ids), dessen Append-only-Disziplin das Hineinschreiben sperrt (§2) |
 | [ADR-0011](../../adr/0011-telemetrie-erfassung-policy.md), [ADR-0012](../../adr/0012-haupt-kontext-ohne-token-bilanz.md), [ADR-0013](../../adr/0013-technik-stratum-als-zielort.md), [ADR-0014](../../adr/0014-aufgehobener-eintrag-kopf-statt-rumpf.md), [ADR-0015](../../adr/0015-rollen-eigentum-an-norm-artefakten.md) | **unberührt** | alle fünf *Accepted* und damit unveränderlich ([`AGENTS.md`](../../../../AGENTS.md) §3.4); [ADR-0016](../../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 1 heilt den Bestand nicht. Die letztgenannte nennt den Baum ohnehin an keiner Stelle |
-| `docs/plan/planning/done/slice-076-mr-018-umzug-technik-stratum.md`, `docs/reviews/2026-07-26-slice-050-impl-review-runde-5.md`, `docs/reviews/2026-07-26-slice-050-verification.md` | update (nur Adresse) | [ADR-0016](../../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 4: der Markdown-Link wird zur reinen Nennung. Wer hier einen Satz ändert, verstößt gegen ihre Begründung |
+| `docs/plan/planning/done/altbestand/slice-076-mr-018-umzug-technik-stratum.md`, `docs/reviews/2026-07-26-slice-050-impl-review-runde-5.md`, `docs/reviews/2026-07-26-slice-050-verification.md` | update (nur Adresse) | [ADR-0016](../../adr/0016-verweis-traegt-tag-und-zitat.md) Festlegung 4: der Markdown-Link wird zur reinen Nennung. Wer hier einen Satz ändert, verstößt gegen ihre Begründung |
 | `test/sessionstart.bats` | update | drei Fixture-Namen heißen `grundlagen-konventionen.md` |
 
 ## 4. Trigger
@@ -602,7 +602,7 @@ ins Kommando gezogen wurde (`b1b1ab7`) — als Einzelfall, nicht als Regel.
 `[links, anchors, ids, matrix, codepaths, spans]`; keines davon führt ein Kommando aus und
 vergleicht seine Ausgabe mit der Ziffer daneben. `make comment-claims` hat keine Markdown-Datei im
 Prüfbereich. Ob ein solches Modul **baubar** ist, ist keine Frage an dieses Repo, sondern an
-d-check; der Pin-Zug [slice-135](../done/slice-135-d-check-pin-v0661.md) ist der Ort, an dem diese
+d-check; der Pin-Zug [slice-135](../done/altbestand/slice-135-d-check-pin-v0661.md) ist der Ort, an dem diese
 Frage ohnehin gestellt wird.
 
 **Der Träger, und er ist zweigeteilt — weil der Gegenstand es ist.**

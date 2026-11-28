@@ -44,7 +44,7 @@ Eigentum** — die Klasse, die dieses Repo als Architect-ADR führt
 selbst als
 [ADR-0051](../../adr/0051-anweisungssatz-eigentum-traegt-ueber-die-emissionsgrenze.md)); die zwei
 Slices derselben Klasse tragen dieselbe Besetzung —
-[slice-145](../done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md), das für genau
+[slice-145](../done/altbestand/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md), das für genau
 diesen Konflikt-Pfad direkt in `next/` abgelegt wurde, und
 [slice-151](../next/slice-151-spec-straten-haben-eine-schreibende-rolle.md). Das Feld weicht damit
 von der Default-Besetzung ab, die Baseline-Regelwerk `modul-05-planning-harness.md` §Lifecycle als

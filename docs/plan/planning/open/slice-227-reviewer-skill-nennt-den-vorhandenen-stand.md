@@ -99,8 +99,8 @@ trägt, nicht ob die Vorlage sich bewegt hat (Register-Klasse
   *Es wäre ein anderer Vorgang.*
 - **Kein anderer Anweisungssatz.**
   [`.claude/commands/implement-slice.md`](../../../../.claude/commands/implement-slice.md) liegt bei
-  [slice-226](../done/slice-226-implementer-anweisungssatz-zieht-nach.md), die zwei Planner-Commands sind von
-  [slice-224](../done/slice-224-delta-nachweis-und-planungs-nachzug.md) nachgezogen. *Es wäre
+  [slice-226](../done/altbestand/slice-226-implementer-anweisungssatz-zieht-nach.md), die zwei Planner-Commands sind von
+  [slice-224](../done/altbestand/slice-224-delta-nachweis-und-planungs-nachzug.md) nachgezogen. *Es wäre
   ein anderer Vorgang einer anderen Rolle*
   ([`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)).
 - **Keine Aktivierung des d-check-Moduls `reviews`.** Der Absatz, den `modul-10-review-harness.md`
@@ -108,7 +108,7 @@ trägt, nicht ob die Vorlage sich bewegt hat (Register-Klasse
   Pflicht; ob dieses Repo es einschaltet, ist eine Gate-Aktivierung mit eigener Erprobung und
   eigenem rotem Gegenbeispiel und liegt bei
   [slice-213](slice-213-review-report-laeuft-in-der-tabellen-form.md) und
-  [slice-225](../done/slice-225-gate-index-steht-einmal.md). *Folge-Slice übernimmt es.*
+  [slice-225](../done/altbestand/slice-225-gate-index-steht-einmal.md). *Folge-Slice übernimmt es.*
 - **Keine Rückschrift der Versionierungs-Historie im Kopf-Kommentar.** Sie ist Chronik von Beruf
   und wird fortgeschrieben, nicht umgeschrieben — die Skill-Datei versioniert nach Modul 10, statt
   zu überschreiben. *Bestand bleibt bewusst stehen.*
@@ -168,7 +168,7 @@ Aussagen-Berührung steht hier gar nicht.
 
 **Was hier bewusst fehlt:** eine Zeile für `.harness/baseline/**`. Der Baum ist hier
 **Mess-Grundlage**, nicht Gegenstand; getauscht hat ihn
-[slice-223](../done/slice-223-baum-tausch-v672-pins-ziehen.md).
+[slice-223](../done/altbestand/slice-223-baum-tausch-v672-pins-ziehen.md).
 
 ## 4. Trigger
 
@@ -176,7 +176,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Trigger je Lifecycle-Übergang und WIP-Limit.
 
 **Start** (`next` → `in-progress`):
-[slice-224](../done/slice-224-delta-nachweis-und-planungs-nachzug.md) liegt in `done/` —
+[slice-224](../done/altbestand/slice-224-delta-nachweis-und-planungs-nachzug.md) liegt in `done/` —
 ablesbar an `ls docs/plan/planning/done/slice-224-*.md` auf dem Hauptzweig. Beobachtbar ohne
 Rückfrage, und **kein Ergebnis dieses Slice**: Weder Kopf-Pin noch Delta-Antwort stehen in einer
 DoD-Zeile von §2 jenes Slice — sein §9 erzeugt für diese Datei ausdrücklich **keine** Zeile, und

@@ -96,7 +96,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
    `**Status:** Accepted`
    (`grep -c '^\*\*Status:\*\* Accepted' docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md`
    → **1**). Träger ist
-   [slice-145](../done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md). Vorher steht
+   [slice-145](../done/altbestand/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md). Vorher steht
    nicht fest, wer die zwei Anweisungssätze schreiben darf, die DoD 2 anfasst — und ein Lauf, der
    sie ohne diese Antwort ändert, ist genau der Vorgang, den `BEO-007` zählt.
    Der Slice liegt darum in `open/`, nicht in `next/`; dieselbe Platzierung aus demselben Grund
@@ -107,7 +107,7 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 - `in-progress` → `next` (zu groß, zurück zur Zerlegung): wenn der Sensor-Geltungsbereich mehr
   als eine Nachziehung verlangt — dann trägt die Sensor-Hälfte ein eigener Slice.
 - `in-progress` → `open` (blockiert — Carveout?): wenn der Reviewer-Durchgang aus
-  [slice-145](../done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)
+  [slice-145](../done/altbestand/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)
   [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) nicht annimmt und
   das Eigentum an den Command-Artefakten offen bleibt (`BEO-007`).
 
@@ -140,7 +140,7 @@ dasteht.
   [`ADR-0028`](../../adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md) trägt
   `**Status:** Accepted`
   (`grep -c '^\*\*Status:\*\* Accepted' docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md`
-  → **1**), und der Träger [slice-145](../done/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)
+  → **1**), und der Träger [slice-145](../done/altbestand/slice-145-adr-0028-acceptance-trigger-und-agents-zeiger.md)
   liegt in `done/`. Die Registerzeile bleibt davon unberührt — ihre zwei anderen Hälften stehen
   weiter offen.
 
@@ -157,7 +157,7 @@ Backticks).
 **Rolle:** Planner. **Datum:** 2026-09-03.
 
 **Die Entscheidung: Schritt 4 läuft in diesem Repo, und seine Start-Bedingung ist beobachtbar —
-[slice-170](../done/slice-170-archivierungs-werkzeug.md) (Archivierungs-Werkzeug) liegt in `done/`.**
+[slice-170](../done/altbestand/slice-170-archivierungs-werkzeug.md) (Archivierungs-Werkzeug) liegt in `done/`.**
 Sie steht dort, wo sie gelesen wird: in Schritt 4 der zwei Anweisungssätze. Keine benannte
 Abweichung, also kein `MR-<NNN>`: Die Bedingung kommt aus der Quelle selbst — *„Ob das Archiv
 vollständig ist, bezeugt nur der Archivierungs-Commit — deshalb gehört die Operation in ein Werkzeug
@@ -208,7 +208,7 @@ Setzung 2).
 - **Beobachtungs-Register (`../observations.md`):** `BEO-009` auf 8× erhöht, Beleg slice-158
   ergänzt — der Baum-Tausch bewegte die Ableitung (die Quelle führt sechs Schritte), die Zusage
   *„fünf Schritte"* stand daneben unverändert weiter, und kein Gate sieht sie.
-- **Folge-Slices:** [slice-170](../done/slice-170-archivierungs-werkzeug.md) (Das
+- **Folge-Slices:** [slice-170](../done/altbestand/slice-170-archivierungs-werkzeug.md) (Das
   Archivierungs-Werkzeug der Wellen-Closure) — ist eine Datei in `open/`, ohne Wellen-Zugehörigkeit
   und darum kein Mitglied von [welle-14](welle-14-re-baseline.md).
 - **Risiken aus §6:** zwei, je genau ein Ausgang, beide **entfallen** — mit Begründung in §6 selbst.

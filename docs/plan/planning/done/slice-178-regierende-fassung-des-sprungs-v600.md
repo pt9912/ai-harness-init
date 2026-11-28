@@ -10,7 +10,7 @@ Gegenstand eine Runde früher: [slice-163](../done/slice-163-regierende-fassung-
 diese Frage für den Sprung auf `v5.18.0` als Mitglied von
 [welle-14](../done/welle-14-re-baseline.md) und löste deren offene Übergabe aus §5 ein. Der Slice
 löst hier Übergabe 1 aus [welle-15](welle-15-re-baseline.md) §5. Der andere Kandidat,
-[slice-172](../done/slice-172-adr-archivierung-als-unterkommando.md), beantwortet die Frage nicht:
+[slice-172](../done/altbestand/slice-172-adr-archivierung-als-unterkommando.md), beantwortet die Frage nicht:
 Er lief wellenlos, weil zum Zeitpunkt seines Schnitts **keine Welle offen war** —
 `git merge-base --is-ancestor d0ad524 ea2dc71 && echo 'welle-14 war vor dem Schnitt geschlossen'`
 (die zwei Commits sind der `welle-14`-Self-Close und der Schnitt-Commit).
@@ -72,7 +72,7 @@ Gate-Läufe und die vier Closure-Pflichten darunter zählen nicht mit.
       abgeschriebenen. Sie zitiert das Ergebnis beider Mess-Stufen aus
       [slice-176](../done/slice-176-inventur-vor-dem-schnitt-v600.md) §9 als Zeiger, statt es zu
       wiederholen. `Status` steht in ihr; bei `Proposed` steht der Acceptance-Trigger daneben
-      (Präzedenz [slice-171](../done/slice-171-adr-0031-acceptance-trigger.md)).
+      (Präzedenz [slice-171](../done/altbestand/slice-171-adr-0031-acceptance-trigger.md)).
 - [x] **Die Abgrenzung ist ausgesprochen:** kein `Supersedes` auf
       [`ADR-0031`](../../adr/0031-regierende-fassung-und-ort-der-zielstand-setzung.md) und keine
       allgemeine Regel *„es regiert stets die Ziel-Fassung"* — die bleibt verworfen
@@ -155,8 +155,8 @@ dasteht.
   (`grep -c 'Eine Festlegung' docs/plan/adr/0036-ziel-fassung-regiert-den-sprung-v600.md` → **1**).
 - **Die ADR steht auf `Proposed` und bindet den Durchgang nicht.** Zwei Slice-Kennungen in `open/`
   tragen heute genau diese Restpflicht für ältere ADRs
-  ([slice-171](../done/slice-171-adr-0031-acceptance-trigger.md),
-  [slice-152](../done/slice-152-adr-0029-acceptance-trigger.md)); eine dritte wäre ein Muster.
+  ([slice-171](../done/altbestand/slice-171-adr-0031-acceptance-trigger.md),
+  [slice-152](../done/altbestand/slice-152-adr-0029-acceptance-trigger.md)); eine dritte wäre ein Muster.
   Der Acceptance-Trigger gehört darum in die ADR selbst. — **Ausgang: weiter offen**, ins
   Register als `BEO-041` (1×, Beleg `slice-178`). Die Mitigation ist
   angewandt — der Trigger steht in der Datei, ein dritter Slice in `open/` entsteht nicht
@@ -212,7 +212,7 @@ Backticks).
   (*„… und die haben ein Delta"* trägt für **eine** der vier Zieldateien, nicht für vier); ihre
   Festlegung 1 stützt sich auf denselben einen Delegaten und bleibt unberührt. Jene Datei steht
   auf `Proposed`, ihre Konsistenz-Prüfung ist ein eigener Vorgang mit eigenem Träger
-  ([slice-171](../done/slice-171-adr-0031-acceptance-trigger.md)) — dieser Lauf hat sie deshalb
+  ([slice-171](../done/altbestand/slice-171-adr-0031-acceptance-trigger.md)) — dieser Lauf hat sie deshalb
   **nicht** angefasst.
 - **Risiken aus §6:** drei, je genau ein Ausgang — *entfallen* · *entfallen* · *weiter offen*
   (`BEO-041`); siehe §6.

@@ -130,7 +130,7 @@ Adaptions-Einträge trennen Abweichung von Buchführung). Er ist der *geplant*-A
 im Register, und `BEO-014` ist genau der Eintrag, den §6 unten ausschließt.
 
 **Kein Mitglied, und nicht aus dem Katalog:**
-[slice-170](../done/slice-170-archivierungs-werkzeug.md) (das Archivierungs-Werkzeug der
+[slice-170](../done/altbestand/slice-170-archivierungs-werkzeug.md) (das Archivierungs-Werkzeug der
 Wellen-Closure) geht aus der Closure von
 [slice-158](slice-158-archivierungs-schritt.md) hervor und trägt dessen
 Start-Bedingung. Ein Werkzeug-Bau ist nicht der Gegenstand dieser Welle, und ihr Closure-Trigger
@@ -190,7 +190,7 @@ der Closure-Trigger unerreichbar wird.
   vor der Einführung schlossen, müssen nicht archiviert werden; ein Repo bleibt ohne das konform."*).
   Ob und ab wann die **laufende** Regel hier gilt, ist eine Position des Katalogs.
 - **Sensor-Neubauten** — sie tragen [welle-13](welle-13-regeln-bekommen-ihren-sensor.md).
-- **Der d-check-Pin** ([slice-135](../done/slice-135-d-check-pin-v0661.md)) — eigene Linie, eigener
+- **Der d-check-Pin** ([slice-135](../done/altbestand/slice-135-d-check-pin-v0661.md)) — eigene Linie, eigener
   Trigger; er hängt an keiner Baseline-Version.
 - **Jede Senkung einer bestehenden Schwelle.** Wird ein Gate nur durch eine Lockerung grün, ist das
   ein ADR ([`AGENTS.md`](../../../../AGENTS.md) §3.5) und ein Rückführungs-Grund, kein Zwischenschritt.
@@ -207,5 +207,5 @@ Die Ergebnis-Notiz ist [welle-14-results.md](welle-14-results.md), der Zähler
 auflösen.
 
 Diese Welle schloss **ohne Schritt 4** (Zeitdokumente archivieren): dessen Start-Bedingung —
-[slice-170](../done/slice-170-archivierungs-werkzeug.md) liegt in `done/` — war nicht eingetreten.
+[slice-170](../done/altbestand/slice-170-archivierungs-werkzeug.md) liegt in `done/` — war nicht eingetreten.
 Die Feststellung und ihr Grund stehen in der Ergebnis-Notiz.

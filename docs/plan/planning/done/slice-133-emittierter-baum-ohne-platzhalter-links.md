@@ -313,7 +313,7 @@ dasteht.
   *weiter offen* an das **Beobachtungs-Register**, und das Repo führt keines
   (`ls docs/plan/planning/observations.md` → `Datei oder Verzeichnis nicht gefunden`). Sein Träger
   ist seit dem 2026-08-29 geschnitten:
-  [slice-137](../done/slice-137-beobachtungs-register-bekommt-seinen-ort.md). Bis der läuft, ist
+  [slice-137](../done/altbestand/slice-137-beobachtungs-register-bekommt-seinen-ort.md). Bis der läuft, ist
   dieser Absatz der Ort — das ist die Grenze, nicht die Erledigung.
 - **Die drei Ziele sind Singletons, die der Adopter danach selbst füllt.** Eine Neutralisierung,
   die eine Zeile **löscht** statt sie zu entschärfen, nimmt ihm das Form-Beispiel — genau das, was
@@ -439,7 +439,7 @@ und ist rot gesehen. Der „Rest", den (b) meinte — ob die Emit-Regel einen **
 —, ist genau der Gegenstand, den DoD (2) am Code benannt haben will, und er steht dort. Zwei
 DoD-Punkte auf **einem** Gegenstand wären Doppel-Buchführung, und die Pflicht *„mit Grund **und**
 Folge-Slice"* hinge an einer Zusage ohne eigenen Gegenstand.
-[slice-110](../done/slice-110-erfassungs-waechter-fall-meldung-grenze.md) ist als **Präzedenz für
+[slice-110](../done/altbestand/slice-110-erfassungs-waechter-fall-meldung-grenze.md) ist als **Präzedenz für
 den Schnitt** richtig genannt und als **Adressat** falsch: sein DoD-(3)-Posten (e) betrifft
 `emitDokumentSatz` und `makeQuellenDesZiels`, eine andere Fixture-Grenze. Was bleibt, ist keine
 offene DoD-Pflicht, sondern ein **Bau-Problem mit eigenem Ort** — siehe *Übergabe* unten.
@@ -471,7 +471,7 @@ verlangt.
 (`ls docs/plan/planning/observations.md` → `Datei oder Verzeichnis nicht gefunden`); der Wegfall
 ist keine Auslassung, sondern die Folge einer Dogfood-Entscheidung, die dieser Slice nicht trifft
 (§1). **Seit dem 2026-08-29 hat sie einen Träger:**
-[slice-137](../done/slice-137-beobachtungs-register-bekommt-seinen-ort.md) legt das Register an und
+[slice-137](../done/altbestand/slice-137-beobachtungs-register-bekommt-seinen-ort.md) legt das Register an und
 gibt jedem seiner drei Schritte einen Ort. Das Reconciliation-Register entfällt aus einem anderen
 Grund und dauerhaft: das Repo hat keinen Brownfield-Bootstrap.
 
@@ -505,7 +505,7 @@ Code)"*, und ein nachträglich eingetragener Zusatz machte die Verifikation §8.
 gegen diesen Text gemessen hat. Der Ort für die Abweichung ist dieser Absatz. **Dieselbe Klasse ist
 am selben Modul schon einmal aufgetreten** (`docs/reviews/2026-08-25-slice-087-review.md` `F-2`,
 dieselbe Datei `readme.go`) — zweimal ist kein Einzelfall mehr; ihren Termin trägt
-[slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md) als neunter Posten (*Form der
+[slice-101](../done/altbestand/slice-101-norm-postens-bekommen-einen-termin.md) als neunter Posten (*Form der
 Plan-Tabelle*), sie braucht hier keinen zweiten Schnitt.
 
 **Der Review war blockierend, und sein tragender Befund war das Symptom seines schmalsten.** Beide
@@ -547,7 +547,7 @@ Wächter ziehen und die Messung über beiden Ständen fahren (DoD (3) oben, zehn
 **Adressat und Grenze.** Der Regeltext gehörte an
 [`AGENTS.md`](../../../../AGENTS.md) §3.6 und damit dem **Architect**
 ([`AGENTS.md`](../../../../AGENTS.md) §3.8); der Träger für seinen **Termin** ist
-[slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md), der genau diese Klasse von
+[slice-101](../done/altbestand/slice-101-norm-postens-bekommen-einen-termin.md), der genau diese Klasse von
 Postens führt. **Dieser Lauf hat ihn dort nicht eingetragen** — das ist die Grenze dieser Closure
 und steht hier, weil sie sonst nirgends stünde. Das Feld `liegt in` entfällt darum ersatzlos: der
 Eintrag ist **gezählt, nicht verkörpert**
@@ -560,7 +560,7 @@ Eintrag ist **gezählt, nicht verkörpert**
 | Der Wächter kann das Ereignis nicht anzeigen, für das er gebaut ist | Review `HIGH-1` | **mit `HIGH-2` gefallen** — über `f979b59` traf die Messung zu, über `6967691` nicht mehr: mit dem korrigierten Klassifikator kippt das Urteil über dem Tausch (Tabelle unter DoD (3), in diesem Lauf erhoben). Kein eigener Eingriff nötig; der Anlass des Lerneintrags ist, dass der Befund als **eigenständiger** geführt wurde |
 | Der Kommentar definiert `spitz` als *„das ganze Ziel"*, der Code prüft das erste Zeichen | Review `HIGH-2` | **erledigt** in `6967691` — heute `print (ziel ~ /^<[^<>]*>$/) ? "spitz" : "eingebettet"`, und Fall `209` hält die Bedingung fest; hier A/B gefahren (DoD (2)) |
 | Vier lebende Artefakte führen die Aufteilung `7`/`3` | Review `MEDIUM-1`, Verifikation `V-3` | **erledigt in diesem Zug** — `CO-004`, `slice-130`, `welle-10` und die Roadmap tragen jetzt `8`/`2` mit dem Grund (die Form-Regel kennt keine Namen); dazu die verschobenen Zeilenangaben in `CO-004` |
-| `internal/emit/readme.go` steht nicht in der Plan-Tabelle | Review `LOW-1`, Verifikation `V-5` | **hier vermerkt**, §3 unangetastet (*Was ging anders als geplant*); der Termin für die Regel liegt bei [slice-101](../done/slice-101-norm-postens-bekommen-einen-termin.md), neunter Posten |
+| `internal/emit/readme.go` steht nicht in der Plan-Tabelle | Review `LOW-1`, Verifikation `V-5` | **hier vermerkt**, §3 unangetastet (*Was ging anders als geplant*); der Termin für die Regel liegt bei [slice-101](../done/altbestand/slice-101-norm-postens-bekommen-einen-termin.md), neunter Posten |
 | Der Kopf von Fall `207` beschreibt eine Mutation, der `sed` erreicht zwei Zeilen | Review `LOW-2` | **weiter offen, ohne eigenen Schnitt** — für das Verdikt des Treibers folgenlos (`narrow_sensor` wählt `test-bats`, die Go-Stufe läuft nicht), und der Fall wird beim Fall von [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md) ohnehin zum ersten Mal mechanisch gefahren. Sein Ort ist dann [slice-130](../done/slice-130-emitter-entscheidet-jedes-neue-template.md)s Lauf, nicht dieser |
 | Die Ebenen-Entscheidung (Emitter ↔ emittierter Prüfbereich) ist unbelegt | Review `LOW-3` | **erledigt** in `6967691` — die Begründung steht am Code; Risiko 2 in §6 trägt die Messung |
 | `CO-004` zitiert verschobene Zeilennummern | Review `LOW-4` | **erledigt in diesem Zug** — `command grep -n '^@test' test/courseset-fixture.bats` → `59`, `77`, `93`, `165`; die Fall-**Nummern** `not ok 40`/`41` waren und bleiben richtig |
@@ -568,7 +568,7 @@ Eintrag ist **gezählt, nicht verkörpert**
 | Die Zusagen dieses Slice liegen zur Hälfte außerhalb von `make comment-claims` | Verifikation `V-4` | **weiter offen, benannt** — der Prüfbereich ist Gegenstand von [slice-070](../open/slice-070-comment-claims-pruefbereich.md); die Richtigkeit der bats-Stelle hängt heute an einem Rollen-Durchgang und an keinem Sensor |
 | `make mutate` ist der einzige Sensor dieses Slice ohne mechanischen Lauf | Verifikation `V-6` | **weiter offen, mit Träger** — der Abbruch hängt an [`CO-004`](../../carveouts/done/CO-004-emitter-klassifikation-offen.md), dessen Folge-Slice [slice-130](../done/slice-130-emitter-entscheidet-jedes-neue-template.md) ist; ich habe den tragenden Arm des Ersatzes selbst gefahren (DoD (2)) |
 | Antwort (b) ohne Folge-Slice | Verifikation `V-2` | **entschieden: (b) gestrichen** (DoD (3) oben) |
-| Risiko 3 hat keinen gültigen vorformulierten Ausgang | Verifikation `V-1` | **entschieden: weiter offen** (§6), mit dem Register-Träger [slice-137](../done/slice-137-beobachtungs-register-bekommt-seinen-ort.md) |
+| Risiko 3 hat keinen gültigen vorformulierten Ausgang | Verifikation `V-1` | **entschieden: weiter offen** (§6), mit dem Register-Träger [slice-137](../done/altbestand/slice-137-beobachtungs-register-bekommt-seinen-ort.md) |
 
 ### Folge-Slices
 
@@ -583,7 +583,7 @@ Ursache ist eine Zeile: `cat .dockerignore` → `.git`, `.harness`. Die go-test-
 vendored Satz nicht, die bats-Stufe hat keine Go-Toolchain. **Dieselbe Ursache trägt drei
 unabhängig gefundene Befunde:** `docs/reviews/2026-08-26-slice-099-review.md` `F-3` (der
 Gate-Tabellen-Wächter misst über der synthetischen Fixture),
-[slice-110](../done/slice-110-erfassungs-waechter-fall-meldung-grenze.md) DoD (3) Posten (e)
+[slice-110](../done/altbestand/slice-110-erfassungs-waechter-fall-meldung-grenze.md) DoD (3) Posten (e)
 (dieselbe Fixture-Grenze, als **Meldung** geschnitten) und der Rest dieses Slice. **Der Ort ist
 vorbereitet und nicht erfunden:** slice-110 §4 benennt die Rückführung vorab — *„`in-progress` →
 `next`, wenn der Ausgang von (e) den **Docker-Build-Kontext** berührt … dann ist die

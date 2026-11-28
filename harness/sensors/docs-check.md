@@ -402,7 +402,7 @@ sed -n '/^structure:/,/^# targets/p' .d-check.yml | grep -c '^      - "docs/plan
 
 Von den 31 Plänen mit offenen Items tragen 30 keine Marke in §7. Sie stehen namentlich in
 `exempt-paths`, sind Zeitdokumente und bleiben unverändert. Der 31. ist der stillgelegte
-[`slice-135`](../../docs/plan/planning/done/slice-135-d-check-pin-v0661.md). Er trägt
+[`slice-135`](../../docs/plan/planning/done/altbestand/slice-135-d-check-pin-v0661.md). Er trägt
 `- **Gegenstand:** entfallen: …` in §7, liegt im Prüfbereich und bleibt ohne Befund. Ohne
 Ausnahmeliste meldet derselbe Lauf 30 Befunde, und ihre Dateien sind genau die 30 der Liste. Ein
 Glob über die Kennungs-Form nähme mehr aus: Nummerierte Slices liegen auch dort, woher künftige
@@ -585,7 +585,7 @@ für beide Gruppen — die `exempt-targets`-Zeile sagt nur, dass keins dieser Re
 ### Modul `codepaths`
 
 **Was `codepaths` an toten Pfaden in den vendored Baum nicht sieht**
-([slice-201](../../docs/plan/planning/done/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md)):
+([slice-201](../../docs/plan/planning/done/altbestand/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md)):
 `codepaths.roots: [spec, docs, harness]` ist eine Liste von Wurzel-**Präfixen** — ein
 Inline-Code-Pfad wird nur existenzgeprüft, wenn er mit einem dieser drei Strings oder mit
 `./`/`../` beginnt. Ein Pfad unter `.harness/baseline/` beginnt mit `.harness`, nicht mit
@@ -686,7 +686,7 @@ Slice-Pläne, flache Welle-Pläne, die laufende Roadmap, eine nach
 [ADR-0028](../../docs/plan/adr/0028-anweisungssatz-gehoert-der-ausfuehrenden-rolle.md)
 Reviewer-eigene Skill-Datei), und ein Nachzug in einem einzelnen Implementations-Lauf griffe über
 mehrere Rollen-Grenzen hinweg — genau der Fall, den
-[slice-201](../../docs/plan/planning/done/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md)
+[slice-201](../../docs/plan/planning/done/altbestand/slice-201-codepaths-erreicht-den-vendored-baum-nicht.md)
 §1 mit *„findet sie viele, ist das ein eigener Vorgang"* für den Gesamtbestand vorwegnimmt, hier
 schon bei zwölf Fundstellen, weil die Eigentums-Grenze und nicht die Stückzahl den Ausschlag gibt.
 
