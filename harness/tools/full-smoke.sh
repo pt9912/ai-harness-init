@@ -2860,7 +2860,7 @@ cpp_rc=0
 # Progress, der ohne Output-Sync die make-Recipe-Echo-Zeilen ANDERER Targets zerhackt
 # (der Marker-Grep unten faende die Recipe-Zeile dann nicht). -Otarget puffert je Target
 # und gibt sie zusammenhaengend aus — semantik-neutral, nur die Ausgabe-Reihenfolge.
-cpp_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || cpp_rc=$?
+cpp_out="$( DCHECK_CARRIER="$dcheck_carrier" make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || cpp_rc=$?
 printf '%s\n' "$cpp_out"
 if [ "$cpp_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates nach add-lang cpp ist NICHT Exit 0 (C++-Gate kaputt, slice-039)." >&2
