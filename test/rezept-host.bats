@@ -126,7 +126,13 @@ rezept_zeilen() {
     # TRAEGER_VERSION-Injektion: der Operand fehlt im leeren Default (byte-identisch)
     ldflags_zeile="$(sed -n '/^build:/,/^$/p' "$REPO/Makefile" | grep 'ldflags=')"
     [[ "$ldflags_zeile" == *'$(if $(TRAEGER_VERSION), -X main.fassung=$(TRAEGER_VERSION))'* ]]
-    grep -q '^\.harness/state/$' "$REPO/.gitignore" || { echo ".harness/state fehlt in der .gitignore (MR-003); die git-eigene Lesung traegt make span-check." >&2; return 1; }
+    # Der Zustands-Bereich bleibt git-gemessen ignoriert (MR-003; gitignore je
+    # ADR-0111 Festlegung 1 in der Pflicht-Form): der Bau-Ablageort ist ignored,
+    # die committete Stempel-Klasse dagegen nicht — die check-ignore-Lesung des
+    # realen Ablageorts und die zwei Ausnahme-Zeilen tragen dieselbe Datei.
+    git -C "$REPO" check-ignore -q .harness/state/bin/ai-harness-init || { echo "der Bau-Ablageort .harness/state/bin ist nicht ignored (MR-003); die git-eigene Lesung traegt make span-check." >&2; return 1; }
+    grep -q '^!\.harness/state/gates-passed-\*\.key$' "$REPO/.gitignore" || { echo "die Ausnahme-Zeile der committeten je-Check-Keys fehlt (ADR-0111 Festlegung 1)." >&2; return 1; }
+    grep -q '^!\.harness/state/full-smoke-passed\.key$' "$REPO/.gitignore" || { echo "die Ausnahme-Zeile des E2E-Stempels fehlt (ADR-0111 Festlegung 4)." >&2; return 1; }
 }
 
 @test "rezept: build-image baut die gepinnte build-Stage" {
