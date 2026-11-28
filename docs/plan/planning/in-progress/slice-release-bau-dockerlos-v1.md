@@ -36,7 +36,7 @@ Festlegung 4,
 (`spec/architecture.md` §3 — die Festlegung-5-Fortschreibung trägt der
 Architect-Commit `90930bf8` bereits; dieser Slice liest sie als Soll). Der
 Verweis zeigt **aufwärts**: Die Spec nennt diesen Slice nie
-(Baseline-Regelwerk `grundlagen-referenz-richtung.md` §Referenz-Richtung (SDP)`).
+(Baseline-Regelwerk `grundlagen-referenz-richtung.md` §Referenz-Richtung (SDP)).
 
 **Verantwortlich:** pt9912
 
@@ -60,7 +60,7 @@ Festlegung 1 aus `TRAEGER_VERSION`, danach `harness/tools/release-sums.sh
 generate` und die Homebrew-Formel am selben Ort
 ([`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md)
 Folgepflicht 1). Der `artifacts`-Job der
-[release.yml](.github/workflows/release.yml) ruft nur dieses Target
+[release.yml](../../../../.github/workflows/release.yml) ruft nur dieses Target
 ([`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)
 Setzung 1, Form
 [`ADR-0111`](../../adr/0111-ci-stempel-eingecheckt-committed-je-check-keys.md)
@@ -125,7 +125,7 @@ wörtlich: kein Pflicht-Pfad dieses Repos braucht docker.
       [`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit)
       und färben ihren Wächter rot.
 - [ ] **Liefer-Punkt b — CI-Verdrahtung:** der `artifacts`-Job der
-      [release.yml](.github/workflows/release.yml) ruft nur
+      [release.yml](../../../../.github/workflows/release.yml) ruft nur
       `make release-artifacts-host` — kein Docker-Zug, kein Inline-Compile
       ([`MR-014`](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)
       Setzung 1); die Toolchain-Install richtet Go aus dem `GO_VERSION`-Pin
@@ -168,7 +168,7 @@ wörtlich: kein Pflicht-Pfad dieses Repos braucht docker.
 | Datei / Komponente | Änderungs-Art | Begründung |
 |---|---|---|
 | `Makefile` (Target-Block neben `host-bin`, Zeilen ~619 ff.; `RELEASE_PLATFORMS`, Zeile 268) | neu | `release-artifacts-host` — Cross-Compile je Plattform am Host, `release-sums.sh generate` + Homebrew-Formel am selben Ort; Tafel je `RELEASE_PLATFORMS` (Festlegung 1) |
-| [`.github/workflows/release.yml`](.github/workflows/release.yml) | update | `artifacts`-Job ruft nur das Target; Go-Install aus dem `GO_VERSION`-Pin; Kopfkommentar-Grenze entfallen-Gefasst; Formel-Fill-Zug wandert ins Target, der publish-Job liest nur noch |
+| [`.github/workflows/release.yml`](../../../../.github/workflows/release.yml) | update | `artifacts`-Job ruft nur das Target; Go-Install aus dem `GO_VERSION`-Pin; Kopfkommentar-Grenze entfallen-Gefasst; Formel-Fill-Zug wandert ins Target, der publish-Job liest nur noch |
 | `test/release-host-bau.bats` | neu | Happy/Negative/Boundary je [`LH-QA-02`](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)/[`LH-QA-04`](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)/[`ADR-0063`](../../adr/0063-das-werkzeug-sagt-seine-fassung.md) — je Fitness-Table der [`ADR-0115`](../../adr/0115-release-bau-docker-los-in-ci.md) |
 | `test/mutations/<Nr>-release-bau-plattformzeile-gestrichen.sh` | neu | a-1 — Plattform-Zeile still gestrichen → Matrix-Wächter rot; je [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit) |
 | `test/mutations/<Nr>-release-bau-ldflags-injektion-entfallen.sh` | neu | a-2 — Fassungs-Injektion fällt still weg → rot am `--version`-Fehlt-Fall; je [`MR-071`](../../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[`MR-090`](../../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit) |
@@ -211,7 +211,7 @@ Implementer-Auftrag übernimmt je WIP-Regel
 
 §2 vollständig; Belege: `test/release-host-bau.bats` grün einschließlich des
 byte-identischen Zweitlaufs und des `--version`-Fehlt-Falls; der reale
-workflow_dispatch-Lauf von [release.yml](.github/workflows/release.yml) belegt
+workflow_dispatch-Lauf von [release.yml](../../../../.github/workflows/release.yml) belegt
 die CI-Kette (Job ruft das Target, Toolchain aus dem Pin, Artefakte hängen an);
 die drei Mutations-Fälle greifen je `make mutate` (`MUTATE_CASES`);
 `make gates` grün; Closure-Notiz mit Lerneintrag.
@@ -227,7 +227,7 @@ die drei Mutations-Fälle greifen je `make mutate` (`MUTATE_CASES`);
   Runner-Verdikt.
 - **Byte-identische SUMS brechen:** zwei Läufe desselben Baums mit derselben
   Pin-Fassung liefern abweichende `SHA256SUMS` — **Ausgang:** bei Closure
-  entscheiden — eingetreten: Folge-ADR (`Supersedes ADR-0115`, Rückfall-Form
+  entscheiden — eingetreten: Folge-ADR (`Supersedes [ADR-0115](../../adr/0115-release-bau-docker-los-in-ci.md)`, Rückfall-Form
   Option D je Re-Evaluierungs-Trigger 1); entfallen: der Zweitlauf-Beleg der
   `test/release-host-bau.bats` zeigt byte-identische SUMS.
 - **Start-Smoke-Drift:** der Bau-Zug ändert Binary-Namen oder `.exe`-Form, und
@@ -250,7 +250,7 @@ Achsen: `ALL` trägt die Repo-weiten Strukturregeln (`AGENTS.md` §3,
 `harness/conventions.md`, Gate-Index) und die Phase-5-Reife des Dogfood;
 `TOOLS` den Werkzeug-Code mit `shell-lint`- und Mutations-Deckung. Ein
 weiteres Ausdifferenzieren ist nicht nötig — die Berührung ist die
-Bau-/CI-Kante je ADR-0115, keine neue Fläche.
+Bau-/CI-Kante je [ADR-0115](../../adr/0115-release-bau-docker-los-in-ci.md), keine neue Fläche.
 
 **Vorgelagert — offene Beobachtungen sichten:** Register gemergt gelesen
 (Kürzel `ALL`, Stand je `state.md`), die im Keyword-Sicht der Bau-/CI-Kante
