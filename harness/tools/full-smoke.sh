@@ -1871,7 +1871,7 @@ SMOKEEOF
 	# geschrieben: die Sperren liegen im Binaer, und der Aufruf erbt sie, statt sie
 	# nachzubauen. Der Exit-Code des Traegers kommt durch `make` nicht an — ein
 	# fehlgeschlagenes Rezept endet dort immer mit 2.
-	local gesperrt="" gesperrt_rc=0 gesperrt_flach="" fehlt="" sperre
+	local gesperrt="" gesperrt_rc=0 gesperrt_flach=""
 	gesperrt="$( make --no-print-directory -C "$repo" archive-welle WAVE="$welle" 2>&1 )" || gesperrt_rc=$?
 	gesperrt_flach="$(tr -s '[:space:]' ' ' <<<"$gesperrt")"
 	if [ "$gesperrt_rc" -eq 0 ]; then
@@ -1880,11 +1880,8 @@ SMOKEEOF
 		einordnen "make archive-welle ueber zwei Ausloesern ($kennung)" "$gesperrt"
 		exit 1
 	fi
-	for sperre in '[untergrenze]'; do
-		grep -qF -- "$sperre" <<<"$gesperrt_flach" || fehlt="$fehlt [$sperre]"
-	done
-	if [ -n "$fehlt" ]; then
-		echo "full-smoke: FEHLER — $kennung: der gesperrte Lauf nennt die Sperre nicht:$fehlt — rot aus falschem Grund? Ausgabe:" >&2
+	if ! grep -qF -- '[untergrenze]' <<<"$gesperrt_flach"; then
+		echo "full-smoke: FEHLER — $kennung: der gesperrte Lauf nennt die Sperre [untergrenze] nicht — rot aus falschem Grund? Ausgabe:" >&2
 		printf '%s\n' "$gesperrt" >&2
 		exit 1
 	fi
