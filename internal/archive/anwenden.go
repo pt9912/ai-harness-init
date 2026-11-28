@@ -432,7 +432,7 @@ func schreibeUmzugStubs(root string, b Bestand, umzuege []Umzug, dateien []strin
 		// die Pruefung VOR dem Schreibzugriff, damit ein form-widriger
 		// Umzugs-Stub den Baum nicht erreicht; der Lauf bricht zwischen den zwei
 		// Commits ab und nennt den Rueckweg. Gedeckt von
-		// TestAnwendenBrichtBeiVerletzterUmzugStubFormAb; 821 nimmt sie weg.
+		// TestAnwendenBrichtBeiVerletzterUmzugStubFormAb; 825 nimmt sie weg.
 		if ferr := umzugForm(text); ferr != nil {
 			return nil, fmt.Errorf("%s: %v", alt, ferr)
 		}

@@ -211,7 +211,7 @@ func FormOKUmzug(inhalt string) error {
 // Überschriften, die der Rufende zulaesst — FormOK keine, die Umzugsvariante die
 // Stillgelegt-Fassung. Eine zweite Fassung dieser Schleife in zwei Formen haette
 // gedriftet; 239 enthemmt sie — fuer beide Stub-Formen zugleich, weil die
-// Halte-Funktion geteilt ist — und die Verdrahtung der Umzugsvariante misst 821.
+// Halte-Funktion geteilt ist — und die Verdrahtung der Umzugsvariante misst 825.
 // Gedeckt von TestFormOKMeldetStehengebliebeneUeberschrift und der
 // erlaubten-Fassung in TestFormOKUmzugMeldetDieFehlendeMarke.
 func ohneUeberschriften(inhalt string, fehlt []string, erlaubte map[string]bool) []string {
