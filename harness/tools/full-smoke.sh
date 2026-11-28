@@ -3510,13 +3510,19 @@ for ziel in test lint build; do
 		exit 1
 	fi
 	# Beide Sprach-Fragmente MUessen gelaufen sein: die Recipe-Echo-Zeile des Go-Kontexts
-	# (Image app:) UND die des C++-Kontexts (Tag cpp:) — waere ein Rezept wieder
-	# ueberschrieben, stuende nur eins da (LH-QA-01, der direkte Aufruf verliert den
-	# zweiten Kontext nicht mehr). Die Marker sind die Recipe-Echo-Zeilen; der
-	# build-arg-Namen wechseln je Ziel (lint faedelt GOLANGCI_LINT_VERSION), der
-	# Ziel-/Tag-Anteil ist in allen drei Rezepten derselbe.
+	# UND die des C++-Kontexts (Tag cpp:) — waere ein Rezept wieder ueberschrieben,
+	# stuende nur eins da (LH-QA-01, der direkte Aufruf verliert den zweiten Kontext
+	# nicht mehr). Die Marker sind die Recipe-Echo-Zeilen; das Go-Fragment faehrt am
+	# Host (ADR-0109: test/lint/build laufen go test/go build/golangci-lint direkt, die
+	# Dockerfile-Stages bleiben opt-in test-image &c), der C++-Kontext bleibt docker
+	# und traegt den Ziel-/Tag-Anteil denselben je Rezept.
+	case "$ziel" in
+		test) go_marker="go test ./..." ;;
+		lint) go_marker="golangci-lint run" ;;
+		build) go_marker="go build -trimpath" ;;
+	esac
 	mixed_missing=""
-	for marker in "--target $ziel -t app:" "--target $ziel -t cpp:"; do
+	for marker in "$go_marker" "--target $ziel -t cpp:"; do
 		grep -qF -- "$marker" <<<"$mixed_out" || mixed_missing="$mixed_missing [$marker]"
 	done
 	if [ -n "$mixed_missing" ]; then
@@ -3554,8 +3560,13 @@ for ziel in test lint build; do
 		einordnen "make $ziel am gemischten Root mit Kotlin (direkter Aufruf)" "$mixedkt_out"
 		exit 1
 	fi
+	case "$ziel" in
+		test) go_marker="go test ./..." ;;
+		lint) go_marker="golangci-lint run" ;;
+		build) go_marker="go build -trimpath" ;;
+	esac
 	mixedkt_missing=""
-	for marker in "--target $ziel -t app:" "--target $ziel -t cpp:" "--target $ziel -t kotlin:"; do
+	for marker in "$go_marker" "--target $ziel -t cpp:" "--target $ziel -t kotlin:"; do
 		grep -qF -- "$marker" <<<"$mixedkt_out" || mixedkt_missing="$mixedkt_missing [$marker]"
 	done
 	if [ -n "$mixedkt_missing" ]; then
