@@ -203,7 +203,6 @@ Lerneintrag geschrieben.
   einen Stempel-Datei, die Varianten-Menge steht als Tafel des
   Satzerzeugers; der schneidende Lauf ist derjenige von [`ADR-0113`](../../adr/0113-der-e2e-stempel-wird-je-variante-gestempelt.md), nicht
   dieser Slice.
-  die Lesart wäre ein Festlegung-Zug des Architect, kein stiller Edit.
 - **Die Deckung der Tafel-Mengen auf CI-Runner-Fassungen** — die Runner- und
   Netz-Varianten der Werkzeuge können von der Host-Fassung abweichen; der
   Transport-Key rechnet gegen denselben Satzerzeuger am Runner
