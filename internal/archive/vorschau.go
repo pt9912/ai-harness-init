@@ -128,9 +128,15 @@ func sperren(b Bestand, porcelain string, haenger []string) []Sperre {
 	}
 	out = append(out, grenzSperren(b)...)
 	if len(haenger) > 0 {
+		// Seit ADR-0061 Festlegung 1 traegt die Liste keinen Fall mehr: kein
+		// Zeitdokument wird noch ersatzlos geloescht, jeder Review-Report
+		// ueberlebt als Stub an unveranderter Adresse. Der Zweig bleibt als
+		// Apparat stehen (ADR-0033 Abnahme-Kriterium 1) und ist an der
+		// Vorschau-Kante unerreicht; erreichbar ist er an der Test-Kante
+		// (SperrenFuerTest, TestAltbestandBehaeltHaengerSperre).
 		out = append(out, Sperre{
 			Kennung: "haenger",
-			Grund:   "ein Review-Report soll verschwinden, auf den noch verwiesen wird",
+			Grund:   "ein Zeitdokument-Pfad wuerde ersatzlos geloescht, auf den noch verwiesen wird",
 			Zeilen: append(append([]string{}, haenger...),
 				"erst den Verweis aufloesen (oder die Referenz im Doku-Gate ausnehmen, mit einer ADR — Gates werden nicht ohne ADR gelockert)"),
 		})

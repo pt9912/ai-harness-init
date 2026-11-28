@@ -223,12 +223,11 @@ func davon(s []archive.Sperre, kennung string) bool {
 	return false
 }
 
-// TestAltbestandTraegtKeineReportVerweisSperre am ehemaligen Vorschau-Gegenstand von von
-// ADR-0041 Festlegung 4: die Verweis-Sperre lag immer ausserhalb der
-// Schluesse-Aufhebung, und ihre Sperren-Verdrahtung bleibt stehen — aber ihre
-// Report-Ziele tragen seit ADR-0061 Festlegung 1 keinen Fall mehr. Dieselbe
-// Lage, die vor dem Stub-Weg 'haenger' faerbte, faerbt unter dem Schluessel
-// nichts.
+// TestAltbestandTraegtKeineReportVerweisSperre an der Vorschau unter dem
+// Schluessel 'altbestand': die Haenger-Ziele sind leer, die Sperre faerbt ueber
+// einem Report-Verweis nichts — ADR-0061 Festlegung 1 · seit
+// slice-report-stub-am-unveraenderten-pfad. Die Sperren-Verdrahtung am Apparat
+// haelt TestAltbestandBehaeltHaengerSperre (test/mutations/310).
 func TestAltbestandTraegtKeineReportVerweisSperre(t *testing.T) {
 	root := t.TempDir()
 	done := filepath.Join(root, "docs", "plan", "planning", "done")
