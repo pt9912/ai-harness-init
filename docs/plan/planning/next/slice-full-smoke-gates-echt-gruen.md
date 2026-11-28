@@ -21,7 +21,7 @@ LP2/LP3-Lieferpunkte von
 **Berührte Spec-Stellen:** `spec/spezifikation.md` — die E2E-Stufen-Deklarationen
 im Umfang der Rest-Stufen. Der Verweis zeigt **aufwärts**.
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912
 
 **Autor:** pt9912 (Rolle Planner, Closure-Lauf slice-smoke-und-full-smoke-ohne-docker). **Datum:** 2026-11-27.
 
