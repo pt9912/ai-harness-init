@@ -1,6 +1,6 @@
-**Stand:** offen
+**Stand:** geplant — `slice-mutate-cases-leakt-nicht-am-teillauf` (liegt in `next/`)
 
-Zähler 2 (`ls evidence | wc -l`), unter der Schwelle: ein Teillauf mit
+Zähler 3 (`ls evidence | wc -l`), an der Schwelle: ein Teillauf mit
 `verify: test-bats` kann seinen Grün-Vorlauf nicht abschließen, solange die
 `MUTATE_CASES`-Umgebungsvariable in die hermetische bats-Suite wirkt
 (`teillauf_fake`/`greift_main`-Fixtures in `test/mutate-driver.bats` lesen
