@@ -106,7 +106,7 @@ in `done/`, keine offen.
     (in `in-progress/`).
   - commit-msg-Guard-Träger an der docker-losen Form (Werkzeug-Commits
     schreibender Pfade) — **geplant**, wellenloser Posten
-    [`slice-stamp-records-konsum-v1`](../in-progress/slice-stamp-records-konsum-v1.md)
+    [`slice-stamp-records-konsum-v1`](../done/slice-stamp-records-konsum-v1.md)
     (in `in-progress/`).
   - Tier-2-Rest-Pfad-Design (Mischform-Rest, Stop-Hook `rest`-Vertrag,
     [`ADR-0108`](../../adr/0108-stempel-synthese-je-check-pruefgegenstand.md)) —
@@ -178,7 +178,7 @@ in `done/`, keine offen.
 - [`slice-full-smoke-gates-echt-gruen`](../next/slice-full-smoke-gates-echt-gruen.md)
   (Nehmer der LP2/LP3-Restmenge, in `next/`) · die wellenlosen Posten
   [`slice-gates-pruefgegenstand-stempel-v1`](../done/slice-gates-pruefgegenstand-stempel-v1.md)
-  und [`slice-stamp-records-konsum-v1`](../in-progress/slice-stamp-records-konsum-v1.md)
+  und [`slice-stamp-records-konsum-v1`](../done/slice-stamp-records-konsum-v1.md)
   (in `in-progress/`) tragen die offen gebliebenen Audit-Posten oben.
 
 ## Verifikation
