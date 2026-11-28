@@ -91,7 +91,7 @@ if [ "${1:-}" = "--entscheide" ]; then
     echo "full-smoke-skip: --entscheide nimmt hoechstens die Wurzel" >&2
     exit 2
   fi
-  wurzel="$1"
+  wurzel="${1:-}"
   if [ -z "$wurzel" ]; then
     if wurzel="$(git rev-parse --show-toplevel 2>/dev/null)"; then :; else wurzel="$PWD"; fi
   fi

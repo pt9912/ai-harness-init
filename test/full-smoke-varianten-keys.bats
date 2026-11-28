@@ -198,9 +198,16 @@ stuempeln() {
   [ "$status" -eq 2 ]
 }
 
+@test "e2e-skip: die no-Root-Form liest die Wurzel aus dem Arbeitsverzeichnis — die Konsult-Form der ci (full-smoke.sh, ohne Wurzel-Argument)" {
+  stuempeln
+  run bash -c "cd '$FIXTUR' && bash '$SKIP' --entscheide"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"SKIP"* ]]
+}
+
 # --- die Schreiber-Form am Treiber (b-1, ADR-0113 Festlegung 4) --------------
 
-@test "schreiber-form: der Treiber liest den Satzerzeuger `alle` und schreibt je Variante die Zwei-Zeilen-Form, ohne Baum-Hash (ADR-0113 Festlegung 4)" {
+@test "schreiber-form: der Treiber liest den Satzerzeuger-Modus alle und schreibt je Variante die Zwei-Zeilen-Form, ohne Baum-Hash (ADR-0113 Festlegung 4)" {
   local skript="$REPO/harness/tools/full-smoke.sh"
   # der Schreiber stempelt aus der Satzerzeuger-Ernte, nicht aus einer
   # Baum-Hash-Rechnung — der Wert ist die Vorlagen-Menge, nicht der Baum
