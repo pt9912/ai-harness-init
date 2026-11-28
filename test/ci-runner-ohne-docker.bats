@@ -18,9 +18,9 @@
 #     Workflows), färbt der Fall "daemonfrei" rot.
 #   - Fällt "eine Quelle" (ein Soll-Wert literal im Workflow oder Skript), färbt
 #     der Fall "einequelle" rot.
-#   - Fällt die Grenze des Tag-Workflows (release.yml verliert seinen
-#     release-artifacts-Aufruf oder gewinnt ci-runner-setup), färbt der Fall
-#     "releasegrenze" rot.
+#   - Fällt die Umstellung des Tag-Workflows am Host-Bau (release.yml verliert
+#     seinen release-artifacts-host-Aufruf oder sein ci-runner-setup), färbt der
+#     Fall "releasegrenze" rot (ADR-0115 Festlegung 1).
 #
 # GRENZE: die Prüfung liest die Form (Zeilenpositionen der make-Aufrufe in den
 # Job-Körpern), nicht die YAML-Semantik — ein Job-Kopf, der die 2-Spalten-Einrückung
@@ -148,9 +148,9 @@ soll_anker() {
 	_kein_soll_literal "$REPO/harness/tools/ci-runner-setup.sh"
 }
 
-@test "der Tag-Workflow bleibt gepinnt-image-getrieben" {
-	sed 's/#.*//' "$WF/release.yml" | grep -q 'make release-artifacts' \
-		|| { echo "release.yml verliert den release-artifacts-Aufruf" >&2; return 1; }
-	treffer="$(sed 's/#.*//' "$WF/release.yml" | grep -n 'ci-runner-setup' || true)"
-	[ -z "$treffer" ] || { echo "$treffer" >&2; return 1; }
+@test "der Tag-Workflow baut host-nativ am Runner-Setup (ADR-0115 Festlegung 1)" {
+	sed 's/#.*//' "$WF/release.yml" | grep -q 'make release-artifacts-host' \
+		|| { echo "release.yml verliert den release-artifacts-host-Aufruf" >&2; return 1; }
+	treffer="$(sed 's/#.*//' "$WF/release.yml" | grep -c 'ci-runner-setup' || true)"
+	[ "$treffer" -ge 1 ] || { echo "release.yml faehrt kein ci-runner-setup" >&2; return 1; }
 }

@@ -8,7 +8,8 @@
 # und kein Weiterreichen zwischen Workflows.
 #
 # MR-014 Setzung 1: ein Check wird NIE in dieser YAML definiert — er lebt versioniert
-# im Repo, der Step ruft ihn nur. Der Bau steckt in `make release-artifacts`; der
+# im Repo, der Step ruft ihn nur. Der Bau steckt in `make release-artifacts-host` (am
+# Host, das Runner-Setup richtet die Toolchain aus dem Inventar ein); der
 # Start-Smoke in `harness/tools/start-smoke.sh` (kein make-Target, weil make auf den
 # Windows-/macOS-Runnern fehlt — gemessen; der Aufruf ist auf ALLEN sechs Runnern
 # derselbe, ein Split erzeugte zwei Definitionen). Upload/Download zwischen Jobs und
@@ -23,14 +24,15 @@
 # workflow_dispatch wie in upstream-drift.yml: der Plattform-Nachweis ist damit VOR
 # einem Tag manuell anstossbar — sonst kaeme das Feedback erst beim Release.
 #
-# GRENZE (ADR-0109): dieser Workflow bleibt im gepinnten Bild — der Release-Bau ist
-# die docker-getriebene Bauform (LH-QA-03: docker als Weg, ADR-0003). Die Gates- und
-# Mutations-Workflows (ci.yml, mutate.yml, mutate-branch.yml) fahren den docker-losen
-# Pflicht-Weg; diese Datei braucht ihr gepinntes Bild weiter — der Runner-Daemon
-# ist hier Weg, nicht Voraussetzung der Gates-Kette.
+# ADR-0115 Festlegung 1: dieser Workflow baut host-nativ auf dem Linux-Runner —
+# der gepinnte Image-Weg des Bauens (`make release-artifacts`) bleibt als opt-in
+# Weg gepinnt und ungestrichen (ADR-0115 Festlegung 2, ADR-0109), und kein Lauf
+# der Pflicht-Kette ruft ihn mehr: kein Runner-Daemon ist hier Weg. Die
+# Homebrew-Formel befuellt das Target selbst (ADR-0059 Folgepflicht 1, ADR-0063
+# Festlegung 2) — ohne Tag entfaellt sie im DEST.
 #
 # CHECKOUT-TIEFE: die drei `actions/checkout` unten bleiben bei der
-# Default-Tiefe 1 — `make release-artifacts` baut Binaries, `start-smoke.sh`
+# Default-Tiefe 1 — `make release-artifacts-host` baut Binaries, `start-smoke.sh`
 # startet sie, `make tap-nachzug` liest Formel und Asset ueber das Netz; keiner
 # liest `git`-Historie. Begruendung und Gesamtbild (repo-weit neun Checkouts,
 # genau einer mit `fetch-depth: 0`) stehen im Kopf von ci.yml.
@@ -53,30 +55,27 @@ permissions:
   contents: read
 
 jobs:
-  # Bauen: EIN Linux-Runner cross-kompiliert alle sechs Binaries im gepinnten Image
-  # (Docker-only, ADR-0003). Die Plattform-Runner bauen nichts — sie starten nur.
+  # Bauen: EIN Linux-Runner cross-kompiliert alle sechs Binaries am HOST
+  # (make release-artifacts-host, docker-los, ADR-0115 Festlegung 1). Die
+  # Plattform-Runner bauen nichts — sie starten nur.
   artifacts:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
-      - run: make release-artifacts DEST=dist
+      - name: Runner-Werkzeuge je Inventar-Soll (make ci-runner-setup — das go-Soll ist abgeleitet von der GO_VERSION-Pin-Stelle des Makefiles)
+        run: |
+          make ci-runner-setup
+          echo "${RUNNER_TEMP:-/tmp}/ai-harness-ci/bin" >> "$GITHUB_PATH"
+      # Fassungs-Injektion (ADR-0063 Festlegung 1): der Tag, den der Pin-Zug
+      # vor dem Bau gesetzt hat — derselbe Wert, derselben Schnitt. LEER bei
+      # einem Nicht-Tag-Ref (workflow_dispatch auf einem Zweig): dann
+      # injiziert der Bau nicht, und die Binary meldet auf --version den
+      # Fehlt-Fall laut (ADR-0063 Festlegung 2); der Start-Smoke ruft
+      # --version nicht, und die Homebrew-Formel entfaellt im DEST — das
+      # Skeleton traegt den Tag.
+      - run: make release-artifacts-host DEST=dist
         env:
-          # Fassungs-Injektion (ADR-0063 Festlegung 1): der Tag, den der Pin-Zug
-          # vor dem Bau gesetzt hat — derselbe Wert, derselben Schnitt. LEER bei
-          # einem Nicht-Tag-Ref (workflow_dispatch auf einem Zweig): dann
-          # injiziert der Bau nicht, und die Binary meldet auf --version den
-          # Fehlt-Fall laut (ADR-0063 Festlegung 2); der Start-Smoke ruft
-          # --version nicht.
           TRAEGER_VERSION: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
-      # Tap-Verteilung (slice-tap-verteilt-die-release-assets, LH-QA-04): die
-      # Homebrew-Formel reist als weiteres Asset desselben Vorgangs — dieselbe
-      # Kopplung wie die SHA256SUMS-Erzeugung im Rezept darueber (ADR-0059
-      # Folgepflicht 1), nur fuer vier statt sechs Plattformen (Homebrew traegt
-      # Windows nicht). Die Mechanik liegt in harness/tools/homebrew-formula-fill.sh
-      # (test/release-matrix.bats deckt sie direkt), nicht inline hier — dieselbe
-      # Bauart wie release-sums.sh.
-      - name: Homebrew-Formel aus dem Skeleton befuellen
-        run: harness/tools/homebrew-formula-fill.sh "${GITHUB_REF_NAME}" dist/SHA256SUMS harness/tools/homebrew-formula.rb.tmpl dist/ai-harness-init.rb
       - name: Inventar zeigen (Beleg im Lauf-Log, nicht nur Exit 0)
         run: ls -l dist
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
