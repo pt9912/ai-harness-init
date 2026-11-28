@@ -69,7 +69,7 @@ export TRAEGER_TAG TRAEGER_SHA256_LINUX_AMD64 TRAEGER_SHA256_LINUX_ARM64 TRAEGER
 # sie. Ein Override, wie bei TRAEGER_CARRIER.
 DCHECK_CARRIER ?= .harness/state/bin/d-check
 
-.PHONY: help gates record-gates environment-check test test-bats test-bats-image test-go test-go-image test-go-pids-guard lint lint-image build build-image compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint shell-lint-image ci-lint ci-lint-image docs-check-host ci-runner-setup comment-claims register-ausgang history-range-guard adr-immutable commit-msg-check hooks-install host-bin host-bin-image span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp freshness-kotlin freshness-digest mutate mutate-greift slice-mv archive-welle traeger-fetch traeger-fetch-image dcheck-fetch release-warten traeger-pins-check tap-check tap-nachzug vendor-baseline
+.PHONY: help gates record-gates environment-check test test-bats test-bats-image test-go test-go-image test-go-pids-guard lint lint-image build build-image compile artifact artifact-host release-artifacts smoke smoke-host full-smoke full-smoke-host shell-lint shell-lint-image ci-lint ci-lint-image docs-check-host ci-runner-setup comment-claims register-ausgang history-range-guard adr-immutable commit-msg-check hooks-install host-bin host-bin-image release-artifacts-host span-check span-clean span-report hook-overhead agent-watch baseline-verify regelwerk-check baseline-freshness freshness-golangci freshness-dcheck freshness-go freshness-cpp freshness-kotlin freshness-digest mutate mutate-greift slice-mv archive-welle traeger-fetch traeger-fetch-image dcheck-fetch release-warten traeger-pins-check tap-check tap-nachzug vendor-baseline
 
 # d-check-Tag aus DCHECK_IMAGE (d-check.mk) fuer die Freshness-Achse: der Tag
 # steht rechts vom LETZTEN ':' (ghcr.io/pt9912/d-check:v0.74.1 -> v0.74.1). Aus
@@ -591,9 +591,9 @@ freshness-digest: ## Digest jedes Image-Pins gegen seinen Tag halten (read-only,
 # fahren docker-los — ein Gate-Kante-Glied, das einen Daemon braucht, waere der
 # restlichen docker-losen Kante entgegengesetzt); dieselbe Bau-Form wie die
 # build-Stage (CGO_ENABLED=0, -trimpath, ldflags "-s -w", TARGET_OS/TARGET_ARCH
-# auf die HOST-Plattform). Grenze, benannt: der RELEASE-Bau bleibt
-# docker-getrieben (ADR-0003, Release-Schnitt im gepinnten Image); dies ist
-# die Gate-seitige Träger-Bau-Form, nicht der Release-Schnitt — der opt-in
+# auf die HOST-Plattform). Grenze, benannt: der Release-Bau laeuft am HOST
+# (`release-artifacts-host`, docker-los, ADR-0115 Festlegung 1) — dies hier ist
+# die Gate-seitige Träger-Bau-Form, nicht der Release-Bau; der opt-in
 # Image-Weg bleibt unter host-bin-image bestehen.
 # Er liegt im gitignorierten Zustands-Bereich, damit er den
 # working-tree-hash nicht verschiebt (MR-003).
@@ -616,7 +616,7 @@ HOST_ARCH := $(shell uname -m | sed -e 's/^x86_64$$/amd64/' -e 's/^aarch64$$/arm
 # die Träger-Ablage, aus der die Smokes ihr Prüf-Binary holen (smoke.sh, full-smoke.sh):
 # EIN Bau-Rezept statt eines zweiten daneben, und je Lauf ein frischer Bau aus dem
 # Baum-Stand, nicht ein wiederverwendeter Ablage-Stand.
-host-bin: ## Traeger (Produkt-Binary) fuer die HOST-Plattform bauen (go am Host, docker-los — ADR-0109); ohne DEST in den Zustands-Bereich, mit DEST=<dir> dahin — Release-Bau bleibt docker-getrieben (ADR-0003)
+host-bin: ## Traeger (Produkt-Binary) fuer die HOST-Plattform bauen (go am Host, docker-los — ADR-0109); ohne DEST in den Zustands-Bereich, mit DEST=<dir> dahin — der Release-Bau laeuft separat ueber release-artifacts-host (ADR-0115)
 	@mkdir -p "$(if $(DEST),$(DEST),$(dir $(HOST_BIN)))"
 	CGO_ENABLED=0 GOOS=$(HOST_OS) GOARCH=$(HOST_ARCH) go build -trimpath \
 		-ldflags="-s -w$(if $(TRAEGER_VERSION), -X main.fassung=$(TRAEGER_VERSION))" \
@@ -630,6 +630,50 @@ host-bin-image: ## Traeger fuer die HOST-Plattform bauen (gepinntes Image) und h
 		--build-arg TRAEGER_VERSION="$(TRAEGER_VERSION)" \
 		--target build -t ai-harness-init:host .
 	@bash harness/tools/artifact-copy.sh ai-harness-init:host "$(dir $(HOST_BIN))" "$(notdir $(HOST_BIN))"
+
+# Release-Bau am HOST (ADR-0115 Festlegung 1): dieselbe Bau-Form wie `host-bin`,
+# generalisiert auf die Plattform-Matrix (LH-QA-04). Je RELEASE_PLATFORMS-Eintrag
+# ein Cross-Compile mit CGO_ENABLED=0, GOOS/GOARCH, -trimpath und der
+# Fassungs-Injektion aus TRAEGER_VERSION (ADR-0063 Festlegung 1): gesetzt reist der
+# Tag als Injektions-Operand ins Binary, leer faellt der Operand aus und das
+# Binary meldet auf `--version` den Fehlt-Fall (ADR-0063 Festlegung 2).
+# Danach die SHA256SUMS am selben Ort wie die Assets (ADR-0059 Folgepflicht 1)
+# und, bei gesetztem TRAEGER_VERSION, die Homebrew-Formel daneben — ohne Tag
+# entsteht keine Formel, denn das Skeleton traegt den Tag.
+# Die Matrix-Zusagen (genau die LH-QA-04-Menge, sechs Kombinationen, Windows-.exe)
+# haelt test/release-matrix.bats an derselben Tafel; die Lauf-Zusagen dieses Ziels
+# (byte-identischer Zweitlauf, Fehlt-Fall, Ziel-Menge) haelt
+# test/release-host-bau.bats. Der gepinnte Image-Weg (`release-artifacts`) bleibt
+# daneben als opt-in Weg gepinnt und ungestrichen (ADR-0115 Festlegung 2) — kein
+# Pflicht-Pfad ruft ihn mehr.
+# Grenze: die Ziel-Mengen-Zeile haelt nur die Menge gegen die Tafel DES LAUFS; die
+# Tafel selbst gegen das Lastenheft haelt der release-matrix-Waechter.
+release-artifacts-host: ## Release-Binaries der Plattform-Matrix am HOST cross-kompilieren (DEST=<dir>; docker-los — ADR-0115); SHA256SUMS + Homebrew-Formel am selben Ort (ADR-0059)
+	@test -n "$(DEST)" || { echo "release-artifacts-host: DEST=<dir> ist Pflicht (Zielverzeichnis)"; exit 2; }
+	@mkdir -p $(DEST)
+	@set -e; for p in $(RELEASE_PLATFORMS); do \
+		os="$${p%%/*}"; arch="$${p##*/}"; ext=""; \
+		[ "$$os" = "windows" ] && ext=".exe"; \
+		echo "release-artifacts-host: $$os/$$arch ..."; \
+		CGO_ENABLED=0 GOOS="$$os" GOARCH="$$arch" go build -trimpath \
+			-ldflags="-s -w$(if $(TRAEGER_VERSION), -X main.fassung=$(TRAEGER_VERSION))" \
+			-o "$(DEST)/ai-harness-init-$$os-$$arch$$ext" ./cmd/ai-harness-init; \
+	done
+	@bash harness/tools/release-sums.sh generate "$(DEST)"
+	@ist=$$(ls "$(DEST)"/ai-harness-init-* | wc -l); \
+	soll=$(words $(RELEASE_PLATFORMS)); \
+	if [ "$$ist" -ne "$$soll" ]; then \
+		echo "release-artifacts-host: $$ist Binaries in $(DEST), die Tafel traegt $$soll — die Menge der Binaries ist nicht die Menge der Matrix (LH-QA-04)" >&2; \
+		exit 2; \
+	fi
+	@if [ -z "$(TRAEGER_VERSION)" ]; then \
+		echo "release-artifacts-host: ohne TRAEGER_VERSION keine Formel — das Skeleton traegt den Tag (ADR-0063 Festlegung 2)"; \
+	elif [ "$$(grep -cE '  ai-harness-init-(darwin|linux)-(amd64|arm64)$$' "$(DEST)/SHA256SUMS" || true)" -eq 4 ]; then \
+		bash harness/tools/homebrew-formula-fill.sh "$(TRAEGER_VERSION)" "$(DEST)/SHA256SUMS" harness/tools/homebrew-formula.rb.tmpl "$(DEST)/ai-harness-init.rb"; \
+	else \
+		echo "release-artifacts-host: Teillauf ohne die vier brew-Plattformen (darwin/linux je amd64/arm64) in der SHA256SUMS — die Formel entfaellt im DEST" >&2; \
+	fi
+	@echo "release-artifacts-host: OK — $(words $(RELEASE_PLATFORMS)) Binaries + SHA256SUMS in $(DEST)"
 
 # OHNE Prerequisite auf host-bin, und das ist tragend: mit ihm koennte das Ziel den
 # Fehlt-Fall, den es prueft, nie melden — der Bau liefe unmittelbar davor. Einzeln
