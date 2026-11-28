@@ -16,5 +16,5 @@
 # (Variable ohne Vorbelegung, das Err-Handling am neuen Ort).
 set -euo pipefail
 sed -i -e '/^\tumzugsStubs, err := schreibeUmzugStubs(root, b, umzuege, dateien)$/,/^\t}$/d' \
-	-e 's|^\tnachgezogen, err := Nachziehen(root, dateien, b.Bewegte(), b.Welle)$|\tumzugsStubs := []string{}\n\tif u, e := schreibeUmzugStubs(root, b, umzuege, dateien); e != nil { return e } else { umzugsStubs = u }\n\tnachgezogen, err := Nachziehen(root, dateien, b.Bewegte(), b.Welle)|' \
+	-e 's|^\tberuehrt := make(\[\]string, 0, len(nachgezogen))$|\tumzugsStubs := []string{}\n\tif u, e := schreibeUmzugStubs(root, b, umzuege, dateien); e != nil { return e } else { umzugsStubs = u }\n\tberuehrt := make([]string, 0, len(nachgezogen))|' \
 	internal/archive/anwenden.go
