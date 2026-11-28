@@ -127,6 +127,27 @@ func SuchraumNachzug(dateien []string) []string {
 	return out
 }
 
+// SuchraumDifferenzial ist Suchraum(dateien) \ SuchraumNachzug(dateien): die
+// Dateien, in denen der Verweis-Nachzug nichts schreibt, die aber im Suchraum des
+// Haenger-Waechters stehen. Heute fuehrt die Menge nur `docs/plan/adr` (die Differenz
+// der zwei ausgenommenen Mengen, ADR-0042 Festlegung 2); entsteht ein vierter
+// ausgenommener Baum, traegt die Funktion ihn ohne neue Entscheidung — genau die
+// Containment-Form, an der ADR-0112 Festlegung 1 das Kriterium fuer die
+// Umzugs-Stubs abliest.
+//
+// LESEND: die Menge entscheidet nicht, sie sagt, WO der Nachzug nicht erreicht.
+// Was auf dieser Basis referenziert ist, fuehrt ReferenzierteUmzuege (schreibender
+// Lauf) und UmzugsFunde (Vorschau).
+func SuchraumDifferenzial(dateien []string) []string {
+	out := make([]string, 0, len(dateien))
+	for _, d := range Suchraum(dateien) {
+		if AusgenommenNachzug(d) {
+			out = append(out, d)
+		}
+	}
+	return out
+}
+
 // lies liefert den Inhalt einer Datei des Suchraums. Der zweite Rueckgabewert ist
 // false fuer die zwei Eintraege, hinter denen kein durchsuchbarer Inhalt steht:
 // ein Pfad, den der Index fuehrt und der Arbeitsbaum nicht (geloescht, noch nicht
@@ -192,6 +213,20 @@ func Haenger(root string, dateien, ziele, verschwindend []string) ([]string, err
 	}
 	sort.Strings(out)
 	return out, nil
+}
+
+// zieleTrifft nennt die Ziele der Liste, deren Basename im Inhalt der Datei
+// steht — dieselbe Containment-Form wie treffer, ohne sie zu schreiben: der
+// schreibende Umzug-Stub-Zweig braucht die Ziele selbst, die Funde-Zeile braucht
+// sie mit der verweisenden Datei (treffer).
+func zieleTrifft(inhalt string, ziele []string) []string {
+	var out []string
+	for _, ziel := range ziele {
+		if strings.Contains(inhalt, filepath.Base(ziel)) {
+			out = append(out, ziel)
+		}
+	}
+	return out
 }
 
 // treffer nennt die Ziele, deren Basename im Inhalt der Datei vorkommt.

@@ -67,9 +67,34 @@ mit Leerzeile darin.
 **Archiviert mit:** <wave-id | altbestand>
 `
 
+const vorlageUmzug = `# <Titel>
+
+> **Template-Hinweis.** ` + vorlagenMarker + ` — dieser Absatz faellt beim Kuerzen weg.
+
+Regeln dieses Artefakts: irgendwo im Regelwerk, und der Absatz faellt weg.
+
+## Eine Abschnittsueberschrift, die der Stub nicht traegt
+
+> **UMZUGEZOGEN** — der Volltext liegt an der neuen Arbeitsbaum-Adresse:
+> ` + "`done/<wave-id>/<pfad-im-arbeitsbaum>`" + `
+
+**Archiviert mit:** <wave-id | altbestand>
+`
+
+// vorlageUmzugOhneZeiger ist die Umzugs-Stub-Vorlage ohne ihren Zeiger-Block —
+// der Stub daraus ist form-widrig und bricht den Lauf an umzugForm
+// (TestAnwendenBrichtBeiVerletzterUmzugStubFormAb).
+const vorlageUmzugOhneZeiger = `# <Titel>
+
+> **Template-Hinweis.** ` + vorlagenMarker + ` — dieser Absatz faellt beim Kuerzen weg.
+
+**Archiviert mit:** <wave-id | altbestand>
+`
+
 // vorlagenBaum legt den synthetischen vendored Baum an und liefert sein
 // templates-Verzeichnis. Die Report-Vorlage liegt nebenbei im REPO-EIGENEN
-// planning-Baum — dort liest der Träger sie (ADR-0061 Festlegung 2).
+// planning-Baum — dort liest der Träger sie (ADR-0061 Festlegung 2), und die
+// Umzugs-Stub-Vorlage (ADR-0112 Festlegung 2) ebenso.
 //
 // Die zwei Vorlagen sind ABSICHTLICH nicht die echten: sie tragen einen Marker,
 // den keine echte traegt. Ein Stub, der ihn abdruckt, hat seine Form aus der
@@ -84,6 +109,7 @@ func vorlagenBaum(t *testing.T, root string) string {
 	schreibe(t, filepath.Join(dir, "archive-stub-slice.template.md"), vorlageSlice)
 	schreibe(t, filepath.Join(dir, "archive-stub-wave.template.md"), vorlageWelle)
 	schreibe(t, filepath.Join(root, "docs", "plan", "planning", "archive-stub-report.template.md"), vorlageReport)
+	schreibe(t, filepath.Join(root, "docs", "plan", "planning", "archive-stub-umzug.template.md"), vorlageUmzug)
 	return dir
 }
 
@@ -163,6 +189,29 @@ func TestFormOKMeldetStehengebliebeneUeberschrift(t *testing.T) {
 	}
 	if err := archive.FormOK("# slice-100 — T\n\n**Welle:** wave-10\n"); err == nil {
 		t.Fatal("Stub ohne Archiv-Zeiger: want Fehler, got nil")
+	}
+}
+
+// TestFormOKUmzugMeldetDieFehlendeMarke haelt die Form-Logik der Umzugsvariante
+// am Ort: Umzugs-Zeiger muss da sein, Archiv-Zeiger darf NICHT da sein (der
+// Volltext des Umzugs-Stubs liegt an der neuen Arbeitsbaum-Adresse, nicht im
+// Zip — ADR-0112 Festlegung 2), Ueberschrift bleibt die tragende Haelfte.
+// Gegenbeispiel zur Verdrahtung: test/mutations/825-archive-welle-go-umzug-stub-form-verdrahtung.sh.
+func TestFormOKUmzugMeldetDieFehlendeMarke(t *testing.T) {
+	gut := "# T\n\n> **UMZUGEZOGEN** — der Volltext liegt an der neuen Arbeitsbaum-Adresse:\n> `done/altbestand/slice-100-a.md`\n\n**Archiviert mit:** altbestand\n"
+	if err := archive.FormOKUmzug(gut); err != nil {
+		t.Fatalf("Umzugs-Form erfuellt: %v", err)
+	}
+	if err := archive.FormOKUmzug(gut + "\n## Ziel\n\nvoller Text\n"); err == nil {
+		t.Fatal("Abschnittsueberschrift im Umzugs-Stub: want Fehler, got nil")
+	}
+	if err := archive.FormOKUmzug("# T\n\n**Archiviert mit:** altbestand\n"); err == nil {
+		t.Fatal("Umzugs-Stub ohne Umzugs-Zeiger: want Fehler, got nil")
+	}
+	widrig := "# T\n\n> **ARCHIVIERT** — Volltext:\n> `unzip -p done/x/archive.zip x`\n\n**Archiviert mit:** altbestand\n"
+	err := archive.FormOKUmzug(widrig)
+	if err == nil || !strings.Contains(err.Error(), "Archiv-Zeiger") {
+		t.Fatalf("Archiv-Zeiger im Umzugs-Stub: want Fehler mit Archiv-Zeiger, got %v", err)
 	}
 }
 

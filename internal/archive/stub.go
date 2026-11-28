@@ -14,8 +14,22 @@ const (
 	stubVorlageSlice  = "archive-stub-slice.template.md"
 	stubVorlageWelle  = "archive-stub-wave.template.md"
 	stubVorlageReport = "archive-stub-report.template.md"
-	templatesUnter    = "templates/docs/plan/planning"
-	leerwert          = "— keine —"
+	// stubVorlageUmzug ist die Vorlage des Umzugs-Stubs (ADR-0112 Festlegung 2) —
+	// repo-eigen wie die Report-Vorlage, planningVorlagePfad liest dort.
+	stubVorlageUmzug = "archive-stub-umzug.template.md"
+	templatesUnter   = "templates/docs/plan/planning"
+	leerwert         = "— keine —"
+)
+
+// Die zwei Zeiger-Marken der Stub-Formen. archivZeigerMarke oeffnet den
+// Archiv-Zeiger-Block (Slice, Welle, Report), umzugsZeigerMarke den des
+// Umzugs-Stubs — der Umzugs-Stub traegt bewusst KEINEN Archiv-Zeiger: sein
+// Volltext liegt an der neuen Arbeitsbaum-Adresse, nicht im Archiv-Zip
+// (ADR-0112 Festlegung 2). Beide steuern Kuerze/FormOK (Archiv-Formen) und
+// KuerzeUmzug/FormOKUmzug (Umzugs-Form) aus einer Quelle.
+const (
+	archivZeigerMarke = "> **ARCHIVIERT**"
+	umzugsZeigerMarke = "> **UMZUGEZOGEN**"
 )
 
 // Ersetzung ist ein Platzhalter der Vorlage und der Wert, der an seine Stelle
@@ -64,6 +78,16 @@ func VorlagenVerzeichnis(root string) (string, error) {
 // mit einem Fehler aus und erfindet keine Form.
 // Gedeckt von TestAusVorlageFaelltOhneVorlageAus.
 func AusVorlage(vorlage string, ersetzungen []Ersetzung) (string, error) {
+	return AusVorlageAn(vorlage, archivZeigerMarke, ersetzungen)
+}
+
+// AusVorlageAn ist AusVorlage in der Fassung des Umzugs-Stubs: die Kuerzung
+// ankeret an der uebergebenen Zeiger-Marke statt am Archiv-Zeiger. Dieselbe
+// Setzung wie AusVorlage — die Form kommt aus der Vorlage, fehlt sie, faellt der
+// Aufruf aus. Gedeckt wie AusVorlage ueber TestAusVorlageFaelltOhneVorlageAus;
+// die Umzugs-Fassung haelt TestAnwendenBrichtBeiVerletzterUmzugStubFormAb am
+// Lauf (die Vorlage ohne ihren Zeiger-Block).
+func AusVorlageAn(vorlage, marke string, ersetzungen []Ersetzung) (string, error) {
 	roh, err := os.ReadFile(vorlage)
 	if errors.Is(err, os.ErrNotExist) {
 		return "", fmt.Errorf("%s: Vorlage fehlt", vorlage)
@@ -71,7 +95,7 @@ func AusVorlage(vorlage string, ersetzungen []Ersetzung) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("%s lesen: %w", vorlage, err)
 	}
-	text := Kuerze(string(roh))
+	text := kuerzeAn(string(roh), marke)
 	for _, e := range ersetzungen {
 		text = strings.ReplaceAll(text, e.Platzhalter, e.Wert)
 	}
@@ -79,14 +103,18 @@ func AusVorlage(vorlage string, ersetzungen []Ersetzung) (string, error) {
 }
 
 // Kuerze zieht aus einer Stub-Vorlage die drei Teile heraus, die die Ziel-Form
-// ausmachen: die H1-Zeile, den Archiv-Zeiger-Block (die zusammenhaengenden
-// `>`-Zeilen ab `> **ARCHIVIERT**`) und den LETZTEN Absatz — den Feld-Block.
-//
-// ABGRENZUNG: was dazwischen liegt, schreibt an den Kopierenden — Template-Hinweis,
-// Regel-Absatz, Bedienhinweis — und faellt weg, wie es die Vorlagen-Konvention
-// vorsieht. In hundert Stubs waeren es hundert Kopien einer Norm, die an einer
-// Stelle lebt.
-func Kuerze(inhalt string) string {
+// ausmachen: die H1-Zeile, den Archiv-Zeiger-Block und den LETZTEN Absatz — den
+// Feld-Block. Gedeckt von TestKuerzeLaesstNurH1ZeigerUndFeldblock.
+func Kuerze(inhalt string) string { return kuerzeAn(inhalt, archivZeigerMarke) }
+
+// kuerzeAn ist Kuerze mit der Zeiger-Marke als Parameter: der Zeiger-Block
+// beginnt an der zusammenhaengenden `>`-Zeile ab <marke>, alles Uebrige wie in
+// Kuerze. Eine zweite Fassung der Kuerzung haette driften koennen — die Umzugs-
+// Vorlage ankeret an ihrer eigenen Marke. ABGRENZUNG: was zwischen H1 und
+// Feld-Block liegt, schreibt an den Kopierenden — Template-Hinweis, Regel-Absatz,
+// Bedienhinweis — und faellt weg, wie es die Vorlagen-Konvention vorsieht. In
+// hundert Stubs waeren es hundert Kopien einer Norm, die an einer Stelle lebt.
+func kuerzeAn(inhalt, marke string) string {
 	var h1, zeiger, absatz []string
 	imZeiger := false
 	// Der abschliessende Zeilenumbruch der Datei ergaebe eine letzte, leere Zeile
@@ -97,7 +125,7 @@ func Kuerze(inhalt string) string {
 			continue
 		}
 		leer := strings.TrimSpace(zeile) == ""
-		if strings.HasPrefix(zeile, "> **ARCHIVIERT**") {
+		if strings.HasPrefix(zeile, marke) {
 			imZeiger = true
 		}
 		switch {
@@ -128,19 +156,53 @@ func Kuerze(inhalt string) string {
 // test/mutations/239-archive-welle-go-stub-ueberschrift.sh nimmt sie weg.
 func FormOK(inhalt string) error {
 	var fehlt []string
-	if !strings.Contains(inhalt, "> **ARCHIVIERT**") || !strings.Contains(inhalt, archivName) {
-		fehlt = append(fehlt, "kein Archiv-Zeiger (> **ARCHIVIERT** … "+archivName+")")
+	if !strings.Contains(inhalt, archivZeigerMarke) || !strings.Contains(inhalt, archivName) {
+		fehlt = append(fehlt, "kein Archiv-Zeiger ("+archivZeigerMarke+" … "+archivName+")")
 	}
-	for _, zeile := range strings.Split(inhalt, "\n") {
-		if strings.HasPrefix(zeile, "##") {
-			fehlt = append(fehlt, "noch Abschnittsueberschriften — gekuerzt ist er damit nicht")
-			break
-		}
-	}
+	fehlt = ohneUeberschriften(inhalt, fehlt)
 	if len(fehlt) == 0 {
 		return nil
 	}
 	return errors.New(strings.Join(fehlt, "; "))
+}
+
+// FormOKUmzug ist die Umzugsvariante der Stub-FORM (ADR-0112 Festlegung 2): der
+// Stub traegt den Umzugs-Zeiger auf die neue Arbeitsbaum-Adresse, und er traegt
+// gerade KEINEN Archiv-Zeiger und keine Abschnittsueberschrift — ein Stub mit
+// Umzugs-Zeiger und vollem Text waere der Umzug, der nicht stattfand. Die
+// zweite Haelfte ist die tragende, wie bei FormOK; die Abwesenheit des
+// Archiv-Zeigers ist die dieser Klasse eigene: ihr Volltext liegt byte-genau an
+// der neuen Adresse, nicht im Archiv-Zip. Gedeckt von
+// TestFormOKUmzugMeldetDieFehlendeMarke; die Verdrahtung misst
+// TestAnwendenBrichtBeiVerletzterUmzugStubFormAb
+// (test/mutations/825-archive-welle-go-umzug-stub-form-verdrahtung.sh).
+func FormOKUmzug(inhalt string) error {
+	var fehlt []string
+	if !strings.Contains(inhalt, umzugsZeigerMarke) || !strings.Contains(inhalt, doneName+"/") {
+		fehlt = append(fehlt, "kein Umzugs-Zeiger ("+umzugsZeigerMarke+" … "+doneName+"/…)")
+	}
+	if strings.Contains(inhalt, archivZeigerMarke) {
+		fehlt = append(fehlt, "Archiv-Zeiger im Umzugs-Stub — der Volltext liegt an der neuen Adresse, nicht im Archiv")
+	}
+	fehlt = ohneUeberschriften(inhalt, fehlt)
+	if len(fehlt) == 0 {
+		return nil
+	}
+	return errors.New(strings.Join(fehlt, "; "))
+}
+
+// ohneUeberschriften haelt die Haelfte, die FormOK und FormOKUmzug teilen:
+// stehengebliebene Abschnittsueberschriften melden. Eine zweite Fassung dieser
+// Schleife in zwei Formen haette gedriftet; 239 enthemmt sie — fuer beide
+// Stub-Formen zugleich, weil die Halte-Funktion geteilt ist — und die
+// Verdrahtung der Umzugsvariante misst 821.
+func ohneUeberschriften(inhalt string, fehlt []string) []string {
+	for _, zeile := range strings.Split(inhalt, "\n") {
+		if strings.HasPrefix(zeile, "##") {
+			return append(fehlt, "noch Abschnittsueberschriften — gekuerzt ist er damit nicht")
+		}
+	}
+	return fehlt
 }
 
 // kennungRE trifft eine Kennung am Anfang der Titelzeile, gefolgt von einem der

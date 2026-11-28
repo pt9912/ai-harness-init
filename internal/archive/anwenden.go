@@ -47,8 +47,10 @@ func Umzuege(b Bestand) []Umzug {
 
 // ZuStagen nennt die Pfade, die der Inhalts-Commit stagt: das Archiv, die Stubs
 // der bewegten Dateien, die Report-Stubs an ihren UNVERAENDERTEN Adressen
-// (geaenderte Dateien, kein geloeschter Pfad — ADR-0061 Festlegung 3) und die
-// Dateien, deren Verweise nachgezogen wurden — und sonst nichts.
+// (geaenderte Dateien, kein geloeschter Pfad — ADR-0061 Festlegung 3), die
+// Umzugs-Stubs an der ALTEN Adresse je referenziertem Umzug (ADR-0112
+// Festlegung 1) und die Dateien, deren Verweise nachgezogen wurden — und sonst
+// nichts.
 //
 // ZUSAGE, und sie ist ADR-0033 Abnahme-Kriterium 2 in seiner schreibenden
 // Haelfte: die Liste ist AUFGEZAEHLT, nicht `-A`. Der Inhalts-Commit ist der
@@ -57,7 +59,7 @@ func Umzuege(b Bestand) []Umzug {
 // ohne dass etwas rot wird.
 // Gedeckt von TestZuStagenNenntNurArchivStubsUndNachgezogene;
 // test/mutations/241-archive-welle-go-staging-explizit.sh nimmt die Aufzaehlung weg.
-func ZuStagen(b Bestand, nachgezogen []string) []string {
+func ZuStagen(b Bestand, umzugsStubs, nachgezogen []string) []string {
 	ziel := doneDir + "/" + b.Welle
 	menge := map[string]bool{ziel + "/" + archivName: true}
 	for _, u := range Umzuege(b) {
@@ -65,6 +67,9 @@ func ZuStagen(b Bestand, nachgezogen []string) []string {
 	}
 	for _, r := range b.Reviews {
 		menge[filepath.ToSlash(r)] = true
+	}
+	for _, s := range umzugsStubs {
+		menge[filepath.ToSlash(s)] = true
 	}
 	for _, n := range nachgezogen {
 		menge[filepath.ToSlash(n)] = true
@@ -218,6 +223,16 @@ func inhaltsSchritt(root string, b Bestand, dateien []string, vorlagen string, u
 		return err
 	}
 
+	// Der Umzugs-Stub-Write liegt VOR dem Nachziehen (ADR-0112 Festlegung 1): der
+	// Stub tritt der Stub-Familie bei, die der Nachzug danach als Teil des Baums
+	// liest — dieselbe Ordnung wie bei schreibeStubs/schreibeReportStubs. Er
+	// verlaesst sich nicht auf den Nachzug: die Referenzen, die er traegt, stehen
+	// in keinem Baum, den der Nachzug erreicht.
+	umzugsStubs, err := schreibeUmzugStubs(root, b, umzuege, dateien)
+	if err != nil {
+		return err
+	}
+
 	nachgezogen, err := Nachziehen(root, dateien, b.Bewegte(), b.Welle)
 	if err != nil {
 		return err
@@ -226,7 +241,7 @@ func inhaltsSchritt(root string, b Bestand, dateien []string, vorlagen string, u
 	for _, f := range nachgezogen {
 		beruehrt = append(beruehrt, f.Datei)
 	}
-	if err := g.Add(ZuStagen(b, beruehrt)); err != nil {
+	if err := g.Add(ZuStagen(b, umzugsStubs, beruehrt)); err != nil {
 		return err
 	}
 	if err := g.Commit("archive-welle: " + b.Welle + "  Archiv, Stubs und Verweis-Nachzug (Inhalt, getrennt vom Move: git mv und Inhaltsaenderung in zwei Commits" + kennungSuffix(b) + ")"); err != nil {
@@ -244,8 +259,8 @@ func inhaltsSchritt(root string, b Bestand, dateien []string, vorlagen string, u
 	if groesse != nil {
 		bytes = groesse.Size()
 	}
-	fmt.Fprintf(out, "  Commit 2 (Inhalt): %s (%d Bytes), %d Stub(s) bewegter Dateien, %d Report-Stub(s)\n",
-		archivName, bytes, len(umzuege), len(b.Reviews))
+	fmt.Fprintf(out, "  Commit 2 (Inhalt): %s (%d Bytes), %d Stub(s) bewegter Dateien, %d Report-Stub(s), %d Umzugs-Stub(s)\n",
+		archivName, bytes, len(umzuege), len(b.Reviews), len(umzugsStubs))
 	// Dieselbe Zeile wie in der Vorschau, aus derselben Funktion: zwei Fassungen
 	// derselben Ausgabe drifteten.
 	schreibeVerweise(out, nachgezogen)
@@ -361,13 +376,134 @@ func schreibeReportStubs(root string, b Bestand, zipRel string) error {
 	return nil
 }
 
-// reportVorlagePfad ist der Pfad einer Vorlage unter docs/plan/planning/ — den
-// Report-Stub-Vorlagen-Ort REPO-EIGEN (ADR-0061 Festlegung 2): anders als die
-// zwei vendored Stub-Vorlagen liegt sie NICHT im Baseline-Baum, der Kurs-Satz
-// fuehrt die Klasse nicht. Fehlt die Datei, faellt der Lauf mit „Vorlage
-// fehlt" aus und erfindet keine Form (dieselbe AusVorlage-Setzung wie bei den
-// zwei vendored).
-func reportVorlagePfad(root string, name string) string {
+// umzugForm ist die Form-Pruefung des Umzugs-Stubs. Eigene Funktion statt
+// direkter FormOKUmzug-Ruf am Ort, dieselbe Form wie reportForm: die
+// Mutations-Anlage enthemmt sie einzeln
+// (test/mutations/825-archive-welle-go-umzug-stub-form-verdrahtung.sh).
+func umzugForm(inhalt string) error { return FormOKUmzug(inhalt) }
+
+// schreibeUmzugStubs schreibt je REFERENZIERTEM Umzug einen Umzugs-Stub an der
+// flachen Alt-Adresse done/<base> (ADR-0112 Festlegung 1). Das Kriterium ist das
+// Suchraum-Differenzial: ein Basename aus b.Verschwindend(), der in einer Datei
+// aus Suchraum(…)\SuchraumNachzug(…) steht — heute allein docs/plan/adr; entsteht
+// ein vierter ausgenommener Baum, traegt SuchraumDifferenzial ihn ohne neue
+// Entscheidung. Ohne solchen Verweis schreibt die Funktion nichts.
+//
+// DIE STUB-FAMILIE UND DER NACHZUG: der Write liegt im inhaltsSchritt VOR dem
+// Nachziehen — der Nachzug liest den frisch geschriebenen Stub als Teil des
+// Baums, wie er es mit den Stub der bewegten Slices und den Report-Stubs liest
+// (TestUmzugsStubVorDemNachziehenGesehen haelt die Ordnung am Lauf).
+//
+// GRENZE: gefunden wird der BASENAME als Teilzeichenkette — dieselbe
+// fail-closed-Form wie beim Haenger-Waechter (treffer); ein gleichlautender Name
+// im Fliesstext loest ebenfalls einen Stub aus. Die Rueckgabe sind die
+// geschriebenen Alt-Adressen (repo-relativ) — die ZUSAETZLICHEN Pfade der
+// Staging-Aufzaehlung (ZuStagen).
+func schreibeUmzugStubs(root string, b Bestand, umzuege []Umzug, dateien []string) ([]string, error) {
+	ziele, err := referenzierteUmzuege(root, b, dateien)
+	if err != nil {
+		return nil, err
+	}
+	if len(ziele) == 0 {
+		return nil, nil
+	}
+	neuNachAlt := make(map[string]Umzug, len(umzuege))
+	for _, u := range umzuege {
+		neuNachAlt[u.Alt] = u
+	}
+	var geschriebene []string
+	for _, alt := range ziele {
+		u, da := neuNachAlt[alt]
+		if !da {
+			return nil, fmt.Errorf("referenzierter Umzug %s ohne Umzug des Laufs", alt)
+		}
+		inhalt, ok, err := lies(root, u.Neu)
+		if err != nil {
+			return nil, err
+		}
+		if !ok {
+			return nil, fmt.Errorf("%s nach dem Move nicht lesbar", u.Neu)
+		}
+		text, err := umzugStub(root, u, inhalt, b.Welle)
+		if err != nil {
+			return nil, err
+		}
+		// DIESELBE Verdrahtungs-Setzung wie ueber den Umzuegen und den Reports:
+		// die Pruefung VOR dem Schreibzugriff, damit ein form-widriger
+		// Umzugs-Stub den Baum nicht erreicht; der Lauf bricht zwischen den zwei
+		// Commits ab und nennt den Rueckweg. Gedeckt von
+		// TestAnwendenBrichtBeiVerletzterUmzugStubFormAb; 821 nimmt sie weg.
+		if ferr := umzugForm(text); ferr != nil {
+			return nil, fmt.Errorf("%s: %v", alt, ferr)
+		}
+		if err := os.WriteFile(filepath.Join(root, filepath.FromSlash(alt)), []byte(text), 0o644); err != nil {
+			return nil, fmt.Errorf("%s schreiben: %w", alt, err)
+		}
+		geschriebene = append(geschriebene, alt)
+	}
+	return geschriebene, nil
+}
+
+// referenzierteUmzuege liefert die Alt-Pfade der Umzuege, deren Basename eine
+// Datei des Suchraum-Differenzials referenziert — das Differenzial-Kriterium
+// gesammelt (ADR-0112 Festlegung 1). Diese Funktion ist der gemeinsame Kern des
+// Kriteriums: die Vorschau liest sie als Funde-Zeilen je verweisender Datei
+// (UmzugsFunde), der schreibende Lauf als Stub-Menge.
+func referenzierteUmzuege(root string, b Bestand, dateien []string) ([]string, error) {
+	diff := SuchraumDifferenzial(dateien)
+	if len(diff) == 0 {
+		return nil, nil
+	}
+	verschwindend := b.Verschwindend()
+	weg := make(map[string]bool, len(verschwindend))
+	for _, v := range verschwindend {
+		weg[filepath.ToSlash(v)] = true
+	}
+	ziele := make(map[string]bool)
+	for _, datei := range diff {
+		if weg[datei] {
+			continue
+		}
+		inhalt, ok, err := lies(root, datei)
+		if err != nil {
+			return nil, err
+		}
+		if !ok {
+			continue
+		}
+		for _, ziel := range zieleTrifft(inhalt, verschwindend) {
+			ziele[ziel] = true
+		}
+	}
+	alte := make([]string, 0, len(ziele))
+	for z := range ziele {
+		alte = append(alte, z)
+	}
+	sort.Strings(alte)
+	return alte, nil
+}
+
+// umzugStub baut den Stub eines bewegten Zeitdokuments an seiner ALTEN Adresse.
+// Die H1-Zeile kommt aus dem Volltext (die Identitaet ist die des Slices bzw.
+// Welle-Plans), der Umzugs-Zeiger druckt die repo-relative NEUE Arbeitsbaum-
+// Adresse ab (done/<wave-id>/… bzw. done/altbestand/…) und `Archiviert mit:`
+// nennt den Lauf, der gezogen hat (ADR-0112 Festlegung 2).
+func umzugStub(root string, u Umzug, inhalt, welle string) (string, error) {
+	titel := TitelVon(Kopfzeile(inhalt))
+	return AusVorlageAn(planningVorlagePfad(root, stubVorlageUmzug), umzugsZeigerMarke, []Ersetzung{
+		{"<Titel>", titel},
+		{"done/<wave-id>/<pfad-im-arbeitsbaum>", u.Neu},
+		{"<wave-id | altbestand>", welle},
+	})
+}
+
+// planningVorlagePfad ist der Pfad einer Stub-Vorlage unter docs/plan/planning/ —
+// der Report-Stub- (ADR-0061 Festlegung 2) und der Umzugs-Stub-Vorlagen-Ort
+// REPO-EIGEN (ADR-0112 Festlegung 2): anders als die zwei vendored Stub-Vorlagen
+// liegen sie NICHT im Baseline-Baum, der Kurs-Satz fuehrt die Klassen nicht.
+// Fehlt die Datei, faellt der Lauf mit „Vorlage fehlt" aus und erfindet keine
+// Form (dieselbe AusVorlage-Setzung wie bei den zwei vendored).
+func planningVorlagePfad(root string, name string) string {
 	return filepath.Join(root, filepath.FromSlash(planningDir), name)
 }
 
@@ -378,7 +514,7 @@ func reportVorlagePfad(root string, name string) string {
 // und `Archiviert mit:` nennt den Lauf, der den Report eingesammelt hat.
 func reportStub(root, welle, zipRel, review, inhalt string) (string, error) {
 	titel := strings.TrimSpace(rautenRE.ReplaceAllString(strings.TrimRight(Kopfzeile(inhalt), "\r"), ""))
-	return AusVorlage(reportVorlagePfad(root, stubVorlageReport), []Ersetzung{
+	return AusVorlage(planningVorlagePfad(root, stubVorlageReport), []Ersetzung{
 		{"<Titel>", titel},
 		{"done/<wave-id>/" + archivName, zipRel},
 		{"<pfad-im-archiv>", review},

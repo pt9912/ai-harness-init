@@ -190,6 +190,26 @@ func TestHaengerFindetVerweisAusADRTrotzNachzugAusnahme(t *testing.T) {
 	}
 }
 
+// TestSuchraumDifferenzialIstDieMengeOhneNachzug haelt die Form, in der ADR-0112
+// Festlegung 1 das Kriterium abliest: genau Suchraum \ SuchraumNachzug — die
+// Basis-Ausnahmen bleiben DRIN (der Haenger-Suchraum, ADR-0042 Festlegung 2
+// nimmt nur den Nachzug aus) und `docs/plan/adr` FAELLT. Entsteht ein vierter
+// ausgenommener Baum, tritt er hier ohne neue Entscheidung auf.
+func TestSuchraumDifferenzialIstDieMengeOhneNachzug(t *testing.T) {
+	dateien := []string{
+		"docs/plan/adr/0033-x.md",
+		"docs/reviews/runde-1.md",
+		"spec/lastenheft.md",
+		".harness/baseline/v9.99.0/templates/x.template.md",
+		".git/config",
+	}
+	got := archive.SuchraumDifferenzial(dateien)
+	want := []string{"docs/plan/adr/0033-x.md"}
+	if strings.Join(got, "|") != strings.Join(want, "|") {
+		t.Fatalf("SuchraumDifferenzial = %v, want %v", got, want)
+	}
+}
+
 // TestHaengerUebergehtFehlendeDatei: ein Pfad, den der Index fuehrt und der
 // Arbeitsbaum nicht, ist kein Lesefehler, sondern uebersprungen.
 func TestHaengerUebergehtFehlendeDatei(t *testing.T) {

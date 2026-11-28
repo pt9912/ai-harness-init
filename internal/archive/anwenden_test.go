@@ -222,13 +222,12 @@ func TestZuStagenNenntNurArchivStubsUndNachgezogene(t *testing.T) {
 	got := append([]string{}, g.addPfade...)
 	sort.Strings(got)
 	want := []string{
+		"docs/plan/planning/done/slice-100-a.md",
 		"docs/plan/planning/done/wave-10-results.md",
 		"docs/plan/planning/done/wave-10/archive.zip",
 		"docs/plan/planning/done/wave-10/slice-100-a.md",
 		"docs/plan/planning/done/wave-10/slice-101-b.md",
 		"docs/plan/planning/done/wave-10/wave-10-eine-welle.md",
-		// Der Report-Stub steht an UNVERAENDERTER Adresse — eine geaenderte,
-		// nicht eine geloeschte Datei (ADR-0061 Festlegung 3).
 		"docs/reviews/2026-05-05-slice-100-runde-1.md",
 	}
 	if strings.Join(got, "\n") != strings.Join(want, "\n") {
@@ -820,5 +819,135 @@ func TestAnwendenBrichtVorDemKuerzenAb(t *testing.T) {
 				t.Errorf("das defekte Zip liegt nicht mehr an seinem Pfad: %v", err)
 			}
 		})
+	}
+}
+
+// TestAnwendenSchreibtDenUmzugsStubAnDerFlachenAdresse misst ADR-0112 Festlegung 1
+// am Lauf: die ADR aus baueBaum verweist auf slice-100-a.md — der Nachzug nimmt
+// die ADR aus (SuchraumNachzug), und genau deshalb traegt der Umzugs-Stub die
+// Referenzen, die er nicht erreicht. Der Stub steht an der ALTEN Adresse
+// done/slice-100-a.md: Identitaet (H1 aus dem Volltext), Umzugs-Zeiger auf die
+// neue Arbeitsbaum-Adresse, Zustand `Archiviert mit:` — kein Archiv-Zeiger und
+// keine Ueberschrift (Form, ADR-0112 Festlegung 2). Die Fitness-Zeile der
+// ADR — ein ADR-Verweis loest nach dem Lauf an der alten Adresse weiter auf —
+// haelt dieselbe Probe: der Link-Pfad der ADR (../planning/done/slice-100-a.md)
+// ist nach dem Lauf die Stub-Datei, und die ADR selbst wurde nicht angefasst.
+// Gegenbeispiel: test/mutations/826-archive-welle-go-umzug-differenzial.sh.
+func TestAnwendenSchreibtDenUmzugsStubAnDerFlachenAdresse(t *testing.T) {
+	root := baueBaum(t)
+	b := einsammeln(t, root, "wave-10")
+	g := &gitMitschreiber{root: root,
+		beobachte: "docs/plan/planning/done/wave-10/slice-100-a.md",
+		zipPfad:   "docs/plan/planning/done/wave-10/" + archivNameTest}
+	var aus bytes.Buffer
+	if err := archive.Anwenden(root, b, indexDateien(t, root), g, &aus); err != nil {
+		t.Fatal(err)
+	}
+	altAdresse := "docs/plan/planning/done/slice-100-a.md"
+	want := "# Der erste Gegenstand\n" +
+		"\n" +
+		"> **UMZUGEZOGEN** — der Volltext liegt an der neuen Arbeitsbaum-Adresse:\n" +
+		"> `docs/plan/planning/done/wave-10/slice-100-a.md`\n" +
+		"\n" +
+		"**Archiviert mit:** wave-10\n"
+	if got := lesen(t, root, altAdresse); got != want {
+		t.Errorf("Umzugs-Stub an der Alt-Adresse =\n%q\nwant\n%q", got, want)
+	}
+	if _, err := os.Stat(filepath.Join(root, filepath.FromSlash(altAdresse))); err != nil {
+		t.Errorf("der ADR-Verweis loest nach dem Lauf nicht an der alten Adresse: %v", err)
+	}
+	if got := lesen(t, root, "docs/plan/adr/0033-x.md"); !strings.Contains(got, "(../planning/done/slice-100-a.md)") {
+		t.Errorf("die ADR wurde angefasst (ADR-0042 Festlegung 2):\n%s", got)
+	}
+}
+
+// TestAnwendenOhneReferenzSchreibtKeinenUmzugsStub ist die zweite Fitness-Zeile
+// der ADR: ohne ausgenommene-Baum-Referenz kein Stub — die Adresse bleibt leer,
+// statt die Umzugsflaeche mit ungekuerten Stub-Dateien zu strecken (ADR-0112
+// Verglichene Alternativen, Variante D Contra).
+func TestAnwendenOhneReferenzSchreibtKeinenUmzugsStub(t *testing.T) {
+	root := baueBaum(t)
+	if err := os.Remove(filepath.Join(root, "docs", "plan", "adr", "0033-x.md")); err != nil {
+		t.Fatal(err)
+	}
+	b := einsammeln(t, root, "wave-10")
+	g := &gitMitschreiber{root: root,
+		beobachte: "docs/plan/planning/done/wave-10/slice-100-a.md",
+		zipPfad:   "docs/plan/planning/done/wave-10/" + archivNameTest}
+	var aus bytes.Buffer
+	if err := archive.Anwenden(root, b, indexDateien(t, root), g, &aus); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(filepath.Join(root, "docs", "plan", "planning", "done", "slice-100-a.md")); err == nil {
+		t.Error("ohne ausgenommene-Baum-Referenz steht ein Umzugs-Stub an der flachen Adresse")
+	}
+	if !strings.Contains(aus.String(), "0 Umzugs-Stub(s)") {
+		t.Errorf("die Funde-Zeile nennt die Stub-Menge nicht:\n%s", aus.String())
+	}
+}
+
+// TestAnwendenBrichtBeiVerletzterUmzugStubFormAb misst die Form-VERDRAHTUNG des
+// Umzugs-Zweigs am Lauf selbst — dieselbe Form wie 243 (Slice-Stubs) und 819
+// (Report-Stubs): die Umzugs-Vorlage steht ohne ihren Zeiger-Block, und der
+// Umzugs-Zweig bricht an der verletzten Form ab. Der Abbruch liegt ZWISCHEN den
+// zwei Commits; die Pruefung laeuft VOR dem Schreibzugriff — die Alt-Adresse
+// traegt danach keinen form-widrigen Stub.
+// Gegenbeispiel: test/mutations/825-archive-welle-go-umzug-stub-form-verdrahtung.sh.
+func TestAnwendenBrichtBeiVerletzterUmzugStubFormAb(t *testing.T) {
+	root := baueBaum(t)
+	schreibe(t, filepath.Join(root, "docs", "plan", "planning", "archive-stub-umzug.template.md"), vorlageUmzugOhneZeiger)
+	b := einsammeln(t, root, "wave-10")
+	g := &gitMitschreiber{root: root,
+		beobachte: "docs/plan/planning/done/wave-10/slice-100-a.md",
+		zipPfad:   "docs/plan/planning/done/wave-10/" + archivNameTest}
+	var aus bytes.Buffer
+
+	err := archive.Anwenden(root, b, indexDateien(t, root), g, &aus)
+
+	if err == nil {
+		t.Fatal("form-widriger Umzugs-Stub: want Fehler, got nil — umzugForm ist nicht verdrahtet")
+	}
+	for _, teil := range []string{"kein Umzugs-Zeiger", "Abbruch nach Commit 1", "git reset --hard HEAD~1"} {
+		if !strings.Contains(err.Error(), teil) {
+			t.Errorf("Fehlertext nennt %q nicht:\n%v", teil, err)
+		}
+	}
+	if len(g.commits) != 1 {
+		t.Errorf("%d Commits, want 1 (nur der Move — der Inhalts-Commit kommt nicht mehr)", len(g.commits))
+	}
+	if _, statErr := os.Stat(filepath.Join(root, "docs", "plan", "planning", "done", "slice-100-a.md")); statErr == nil {
+		t.Error("der form-widrige Umzugs-Stub steht im Baum — die Pruefung laeuft nach dem Schreibzugriff")
+	}
+}
+
+// TestUmzugsStubVorDemNachziehenGesehen haelt die ORDNUNG des Umzugs-Stub-Write:
+// er liegt VOR dem Nachziehen (ADR-0112 Festlegung 1), und der Nachzug liest den
+// frisch geschriebenen Stub als Teil des Baums — dieselbe Ordnung, in der
+// TestZweiterLaufZiehtDenAufsteigendenStubVerweisNach den Nachzug ueber die
+// Slice-Stubs laufen laesst. Beobachtbar ist die Ordnung ueber einen Verweis im
+// Stub selbst: die H1-Zeile des Volltexts traegt hier die Referenz auf einen
+// ZWEITEN Umzug des Laufs in der Praefix-Form; mit der Ordnung schreibt der
+// Nachzug sie auf die neue Adresse um, steht der Write NACH dem Nachzug,
+// behaelt der Stub die veraltete Form — und der Verweis loest an der Stub-
+// Adresse, die der zweite Umzug hinterlaesst, ins Leere.
+// Gegenbeispiel: test/mutations/828-archive-welle-go-umzug-stub-nach-dem-nachzug.sh.
+func TestUmzugsStubVorDemNachziehenGesehen(t *testing.T) {
+	root := baueBaum(t)
+	done := filepath.Join(root, "docs", "plan", "planning", "done")
+	// slice-101-b.md wird bewegt, aber vom ausgenommenen Baum NICHT
+	// referenziert — der Verweis auf ihn steht allein im Titel des ersten
+	// Umzugs und kann folglich nur aus dem Stub selbst stammen.
+	verweist := strings.Replace(volltextSlice100, "# Slice slice-100: Der erste Gegenstand",
+		"# Slice slice-100: Verweist auf done/slice-101-b.md", 1)
+	schreibe(t, filepath.Join(done, "slice-100-a.md"), verweist)
+	b := einsammeln(t, root, "wave-10")
+	g := &gitMitschreiber{root: root, zipPfad: "docs/plan/planning/done/wave-10/" + archivNameTest}
+	var aus bytes.Buffer
+	if err := archive.Anwenden(root, b, indexDateien(t, root), g, &aus); err != nil {
+		t.Fatal(err)
+	}
+	stub := lesen(t, root, "docs/plan/planning/done/slice-100-a.md")
+	if !strings.Contains(stub, "done/wave-10/slice-101-b.md") {
+		t.Fatalf("der Nachzug hat den Umzugs-Stub nicht gesehen — der Verweis blieb veraltet:\n%s", stub)
 	}
 }
