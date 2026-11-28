@@ -161,7 +161,8 @@ wörtlich: kein Pflicht-Pfad dieses Repos braucht docker.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
-      nächsten Welle-Closure geprüft.
+      nächsten Welle-Closure geprüft — in diesem Repo **ohne** Wellen-Betrieb
+      hier geprüft, nach dem `git mv` (2026-11-28).
 
 ## 3. Plan (vor Code)
 
@@ -326,7 +327,23 @@ die drei Mutations-Fälle greifen je `make mutate` (`MUTATE_CASES`);
   Start-Smoke-Bestehen am Dispatch-Lauf 46155129162) · Mutations-Vollauf
   *weiter offen* → Träger `slice-traeger-tag-nachzug-untergrenze-v1`, gezählt
   in `BEO-ALL/gefetchter-traeger-sperrt-die-archivierungs-stufe`.
-- **Drei Paarungen:** *(nach dem `git mv` geprüft — steht in §7)*
+- **Drei Paarungen:** geprüft am 2026-11-28, nach dem `git mv` — (a) Anker:
+  kein Steering-Loop-Eintrag mit `liegt in` getragen (der §7-Eintrag ist
+  gezählt statt verkörpert, die Zeile entfällt; die `liegt in`-Treffer im
+  Dokument nennen den Verzeichnis-Stand des Träger-Slices, sie sind kein
+  Pflichtfeld); (b) Folge-Slice: keiner neu angelegt — die offenen Ausgänge
+  tragen `slice-traeger-tag-nachzug-untergrenze-v1`
+  (`ls docs/plan/planning/*/slice-traeger-tag-nachzug-untergrenze-v1.md` →
+  genau eine Datei, `in-progress/`) und die Re-Evaluierungs-Trigger 1/2 von
+  ADR-0115; (c) Register: die fünf berührten Verzeichnisse existieren mit
+  nicht leerem `evidence/` (`BEO-ALL/werkzeug-zelle-…` 2, `BEO-ALL/gepinnter-werkzeug-weg-…`
+  2, `BEO-ALL/gefetchter-traeger-…` 2, `BEO-ALL/mutate-cases-leakt-…` 3,
+  `BEO-ALL/runner-toolchain-…` 1 Beleg) — zweite Hälfte: 1 Verzeichnis ohne
+  Beleg, namentlich
+  `BEO-ALL/einstiegs-datei-weicht-von-der-pflichtgliederung-ab`
+  (`for d in docs/plan/planning/observations/BEO-ALL/*/; do …; done`,
+  [ADR-0069](../../adr/0069-beleglose-register-verzeichnisse-sind-ein-befund-der-paarung-keine-ausnahme.md)
+  Festlegung 2) — nicht als getragen behauptet.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
