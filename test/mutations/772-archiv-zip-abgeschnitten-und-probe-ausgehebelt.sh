@@ -10,7 +10,8 @@
 # oeffnen.
 #
 # Die Stufe "Archivierung im Ziel" in harness/tools/full-smoke.sh muss das Archiv lesen
-# (archiv_gueltig: `unzip -t` und `unzip -lq` im BATS_IMAGE) und mit der Meldung enden, dass
+# (archiv_gueltig: das Traeger-Unterkommando archive-lesen, Lesung je Eintrag bis zum
+# Ende) und mit der Meldung enden, dass
 # es die Leseprobe nicht besteht — ueber dem Traeger aus dem Arbeitsbaum, im Aufruf
 # `make archive-welle`.
 # Ein Lauf, der nur die Existenz von archive.zip haelt, bleibt gruen.

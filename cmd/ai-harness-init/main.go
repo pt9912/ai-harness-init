@@ -39,6 +39,7 @@ Verwendung:
   ai-harness-init span-emit
   ai-harness-init span-report [<ablageort>]
   ai-harness-init archive-welle [--vorschau] <wave-id>
+  ai-harness-init archive-lesen <archiv.zip> [eintrag...]
   ai-harness-init vendor-baseline <tag> <sha256>
   ai-harness-init --version
 
@@ -100,6 +101,14 @@ Subkommando archive-welle [--vorschau] <wave-id>:
   Vorlage an unveranderter Adresse. Verlangt einen sauberen Arbeitsbaum, setzt
   zwei getrennte Commits (reiner Move, dann Inhalt) und bricht an jeder Sperre
   ab, bevor er etwas anfasst. Mit --vorschau wird nur gesagt, was der Lauf taete.
+
+Subkommando archive-lesen <archiv.zip> [eintrag...]:
+  Liest ein Archiv am Host: jeden Eintrag bis zum Ende (der CRC-Vergleich liegt
+  am Ende des Lesens) und die Namensliste des Archivs auf stdout. Leseprobe
+  hinter einem abgeschlossenen Lauf, ohne Vergleich gegen Quellen — die
+  Rueckleseprobe des Traegers (archive-welle) haelt die Bytes gegen seine
+  Quellen und gilt fuer den Zeitpunkt der Probe; dieses Unterkommando liest die
+  Datei, die der Lauf hinterlassen hat. Ein Befund endet laut mit Exit 1.
 
 Subkommando vendor-baseline <tag> <sha256>:
   Legt den vendored Baum DIESES Repos (.harness/baseline/<tag>/) aus dem
@@ -744,6 +753,8 @@ func main() {
 			os.Exit(spanReport(os.Args[2:], os.Stdout, os.Stderr))
 		case "archive-welle":
 			os.Exit(archiveWelle(os.Args[2:], os.Stdout, os.Stderr))
+		case "archive-lesen":
+			os.Exit(archiveLesen(os.Args[2:], os.Stdout, os.Stderr))
 		case "vendor-baseline":
 			os.Exit(vendorBaseline(os.Args[2:], os.Stdout, os.Stderr))
 		case "add-lang":

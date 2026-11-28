@@ -21,8 +21,11 @@
 # Fragments ($(DCHECK_RUN)) faehrt den Carrier — jede Stufe unten haengt der env
 # DCHECK_CARRIER an ihre Rezept-fuehrenden make-Aufrufe — und der docker-Lauf bleibt
 # Rueffall am opt-in Weg. Am daemon-losen Host sind die ersten Abbruch-Punkte: (a) die
-# Archiv-Leseprobe (`archiv_gueltig`, BATS_IMAGE — unzip traegt das Inventar am Host
-# nicht); (b) die hexslice-/hexagonal-Bootstraps (a-check --print-mk ohne Host-Carrier).
+# hexslice-/hexagonal-Bootstraps (a-check --print-mk ohne Host-Carrier), danach die
+# Docker-Builds der nicht-Go-Code-Gates. DIE ARCHIV-LESEPROBE (`archiv_gueltig`) ist es
+# nicht mehr: sie liest am Host durch das Traeger-Unterkommando `archive-lesen` (Traeger
+# aus `make host-bin`) — das Inventar traegt kein `unzip`, und der docker-Lauf der
+# Leseprobe ist entfallen.
 # DAVON GETRENNT die carrier-gebundenen Zuege: die weiter
 # `make gates`-Laeufe des Mono-Repos (cpp/kotlin/java/python/csharp- und repo.mk-Stufen)
 # brauchen fuer den emittierten docs-check-host (fail-closed ohne Ablage) den CARRIER,
@@ -125,42 +128,29 @@ einordnen() {
 }
 
 # archiv_gueltig <zip> <Eintrag>... — das Archiv ist LESBAR und fuehrt jeden genannten
-# Eintrag. Gelesen wird im gepinnten Bild des Repos, nicht auf dem Host: `unzip -t` (BusyBox
-# im BATS_IMAGE aus dem Makefile, derselbe Pin wie `make test-bats`) liest jeden Eintrag bis
-# zum Ende und vergleicht die CRC; `unzip -lq` listet die Namen. Die Funktion ist die
-# Leseprobe des E2E, unabhaengig von der des Traegers (internal/archive, pruefeArchiv):
-# sie liest die Datei, die der Lauf hinterlassen hat.
+# Eintrag. Gelesen wird am Host durch das Traeger-Unterkommando `archive-lesen` (der
+# Traeger aus `make host-bin`, tmpbin): es oeffnet das Zip, liest jeden Eintrag bis zum
+# Ende (der CRC-Vergleich liegt am Ende des Lesens) und haelt jeden genannten Eintrag in
+# der Namensliste. Die Funktion ist die Leseprobe des E2E, unabhaengig von der
+# Rueckleseprobe des Traegers (archive-welle, pruefeArchiv): sie liest die Datei, die der
+# Lauf hinterlassen hat, ohne Vergleich gegen Quellen — die Quellen koennen schon zum Stub
+# gekuerzt sein.
 # NICHT geprueft: dass die Bytes einer Quelle gleichen — das haelt allein die Probe des
-# Traegers; und dass die Datei nach dem Lauf lesbar BLEIBT. Der Lauf braucht Docker (nicht
-# `unzip`); der Pin wird aus dem Makefile gelesen, `BATS_IMAGE` aus der Umgebung geht vor.
-# Grenze: die Leseprobe ist am Daemon-weg — am Host traegt das Inventar kein `unzip`
-# (harness/tools/environment-inventory.txt), seine docker-los Fassung ist ein eigener
-# Schnitt; bis dahin endet der docker-lose Teillauf an dieser Stufe.
+# Traegers an ihrem Schreibzeitpunkt; und dass die Datei nach dem Lauf lesbar BLEIBT. Der
+# Lauf braucht kein Bild und kein `unzip` (das traegt das Inventar am Host nicht) — der
+# docker-Lauf der Leseprobe ist entfallen, kein Rueffall haelt ihn.
 # Rueckgabe 0 gueltig, 1 mit dem Grund auf stdout.
 archiv_gueltig() {
-	local zip="$1" eintrag liste img out
+	local zip="$1" out
 	shift
-	img="${BATS_IMAGE:-$(sed -n 's/^BATS_IMAGE ?= //p' "$HIER/../../Makefile")}"
-	if [ -z "$img" ]; then
-		echo "der Pin BATS_IMAGE ist nicht lesbar — die Leseprobe des Archivs ist nicht gelaufen"
-		return 1
-	fi
 	if [ ! -f "$zip" ]; then
 		echo "$zip liegt nicht"
 		return 1
 	fi
-	if ! out="$(docker run --rm --network none --entrypoint sh -v "$(dirname "$zip")":/mnt:ro -w /mnt "$img" \
-		-c 'unzip -t "$1" && unzip -lq "$1"' _ "$(basename "$zip")" 2>&1)"; then
-		echo "$zip besteht die Leseprobe nicht (unzip -t): $(tr -s '[:space:]' ' ' <<<"$out")"
+	if ! out="$("$tmpbin/ai-harness-init" archive-lesen "$zip" "$@" 2>&1)"; then
+		echo "$zip besteht die Leseprobe nicht (archive-lesen): $(tr -s '[:space:]' ' ' <<<"$out")"
 		return 1
 	fi
-	liste="$(awk '{print $NF}' <<<"$out")"
-	for eintrag in "$@"; do
-		if ! grep -qxF -- "$eintrag" <<<"$liste"; then
-			echo "$zip fuehrt den Eintrag $eintrag nicht"
-			return 1
-		fi
-	done
 	return 0
 }
 
@@ -550,9 +540,9 @@ ARTIFACT_TARGET="${SMOKE_ARTIFACT_TARGET:-host-bin}"
 # der emittierten d-check.mk-Ziele, deren Rezept-Auswahl den Carrier waehlt, wenn sie
 # gesetzt und die Ablage laeuft, und den docker-Lauf als Rueffall am opt-in Weg haelt.
 # Grenze der docker-losen Deckung: am daemon-losen Host ist die ERSTE Abbruch-Stufe
-# die Archiv-Leseprobe (archiv_gueltig, BATS_IMAGE — unzip traegt das Inventar am
-# Host nicht); danach die hexslice-/hexagonal-Bootstraps (a-check --print-mk ohne
-# Host-Carrier).
+# der hexslice-/hexagonal-Bootstrap (a-check --print-mk ohne Host-Carrier); danach die
+# Docker-Builds der nicht-Go-Code-Gates. Die Archiv-Leseprobe (archiv_gueltig) liest am
+# Host durch das Traeger-Unterkommando archive-lesen (Traeger aus `make host-bin`).
 # Die weiter gates-Laeufe des Mono-Repos sind CARRIER-gebunden (docs-check-host
 # fail-closed ohne Ablage), nicht daemon-gebunden — mit Host-Carrier sind ihre
 # Doku-Anteile docker-oesbar; die Docker-Builds ihrer Code-Gates bleiben am opt-in Weg.

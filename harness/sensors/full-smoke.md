@@ -12,8 +12,9 @@ gebootstrapptes Repo out-of-the-box grün fährt (die Nutzer-Sicht, die
 die Stufen über den emittierten `d-check.mk`-Zielen (Vorlauf-Wächter/Zahn-Läufe
 `doc-commits`/`doc-immutable` und die `docs-check`-Zähne) fahren über die Rezept-Auswahl
 `$(DCHECK_RUN)` des emittierten Fragmentes am Carrier, wenn die Ablage liegt, sonst bleibt
-der docker-Lauf der Rückfall am opt-in Weg; die daemon-gebundenen Rest-Stufen (Archiv-Leseprobe,
-hexslice-/hexagonal-Bootstrap, Netz-Pull ggf.) trägt
+der docker-Lauf der Rückfall am opt-in Weg; die Archiv-Leseprobe liest am Host durch das
+Traeger-Unterkommando `archive-lesen`; die daemon-gebundenen Rest-Stufen (hexslice-/hexagonal-Bootstrap,
+Netz-Pull ggf.) trägt
 [`slice-full-smoke-gates-echt-gruen`](../../docs/plan/planning/in-progress/slice-full-smoke-gates-echt-gruen.md)
 — nicht in `make gates`; gehört an DoD-Verify/CI/Wellen-Closure.
 
@@ -30,14 +31,18 @@ hält und was der Dogfood-Wächter daneben hält, steht in [`slice-mv.md`](slice
 `open → done` und `next → done`.
 
 **Leseprobe der Archivierungs-Stufe.** An den drei Stellen, an denen ein `archive.zip` nach
-einem Vollzug liegt (Welle, Altbestand, gefetchter Träger), liest die Stufe das Archiv mit
-`unzip -t` und `unzip -lq` im Bild `BATS_IMAGE` aus dem `Makefile` (`archiv_gueltig` in
-`harness/tools/full-smoke.sh`; BusyBox, `docker run --network none`, Zip-Verzeichnis read-only
-gemountet) statt seine Existenz zu halten. Der Host braucht dafür nichts über Docker hinaus; der
-Pin ist derselbe wie bei `make test-bats`. Gelesen ist die Datei auf Lesbarkeit (CRC) und auf die
-genannten Einträge, nicht auf Byte-Gleichheit mit den Quellen — die hält die Rückleseprobe des
-Trägers (`internal/archive`). Die dritte Stelle fährt den Release-Träger; ein defektes Archiv
-ist dort nicht herstellbar, kein Mutations-Fall deckt sie.
+einem Vollzug liegt (Welle, Altbestand, gefetchter Träger), liest die Stufe das Archiv am
+Host durch das Traeger-Unterkommando `archive-lesen` (`archiv_gueltig` in
+`harness/tools/full-smoke.sh`; der Traeger aus `make host-bin` — er öffnet das Zip, liest
+jeden Eintrag bis zum Ende, der CRC-Vergleich liegt am Ende des Lesens, und hält
+jeden genannten Eintrag in der Namensliste) statt seine Existenz zu halten; docker und
+`unzip` braucht sie nicht — `unzip` trägt das Inventar am Host nicht. Gelesen ist die Datei
+auf Lesbarkeit (CRC) und auf die genannten Einträge, nicht auf Byte-Gleichheit mit den
+Quellen — die hält die Rückleseprobe des Trägers (`internal/archive`) am Schreibzeitpunkt.
+Die dritte Stelle fährt den Release-Träger; ein defektes Archiv ist dort nicht herstellbar,
+kein Mutations-Fall deckt sie. Lesewächter des Unterkommandos: ein verfaelschter
+Eintrag-Inhalt fällt erst beim Lesen bis zum Ende (`TestArchiveLesen_VerletzterEintragBrichtAb`,
+Mutations-Anlage 829).
 
 ### Deklaration der Stufen
 
