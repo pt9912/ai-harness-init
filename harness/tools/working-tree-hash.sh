@@ -24,8 +24,10 @@ cd "$(git rev-parse --show-toplevel)"
 #                                       damit keinen Baum-Hash und keinen Key, und
 #                                       das Rezept `record-gates` haelt denselben
 #                                       Nachweis ueber dem Transport-Konsum.
-#   .harness/state/full-smoke-passed.key — der committete E2E-Stempel (ADR-0111
-#                                       Festlegung 4), dieselbe Klasse.
+#   .harness/state/full-smoke-passed-*.key — die sieben committeten je-Variante-
+#                                       E2E-Stempel (ADR-0113 Festlegungen 1 und 5,
+#                                       Nachzug der Festlegungen 1/4 von ADR-0111 in
+#                                       der Je-Varianten-Fassung), dieselbe Klasse.
 # Der Grund ist derselbe wie MENGE_AUSSCHLUESS im Satzerzeuger
 # (harness/tools/gates-keys.sh: "ein Key deckt sich nicht selbst"). Wächst diese
 # Liste, ist DAS der sichtbare Ort (Form wie ISOLATION_KEY_EXEMPT in
@@ -39,7 +41,7 @@ cd "$(git rev-parse --show-toplevel)"
 HASH_AUSNAHMEN=(
   .harness/stamp/mutate
   '.harness/state/gates-passed-*.key'
-  '.harness/state/full-smoke-passed.key'
+  '.harness/state/full-smoke-passed-*.key'
 )
 
 # passt <pfad> <eintrag> — die Lesung eines deklarierten Eintrags: ohne Stern

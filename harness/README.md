@@ -72,7 +72,7 @@ ist (`make help` listet sie).
 | Target | Tut was | Bindung |
 |---|---|---|
 | [`make smoke`](sensors/smoke.md) | Tier-2-Emit-Smoke: emittiertes `docs-check` real gegen ein tmp-Repo | kein Gate |
-| [`make full-smoke`](sensors/full-smoke.md) | Voll-E2E: Bootstrap in tmp-Repo → dort `make gates` out-of-the-box grün; schreibt den E2E-Stempel `.harness/state/full-smoke-passed.key`, CI-Konsum am push-`main`-Job ([ADR-0111](../docs/plan/adr/0111-ci-stempel-eingecheckt-committed-je-check-keys.md)) | kein Gate · [`LH-FA-01`](../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) · Host Linux, macOS nicht getragen ([`AGENTS.md`](../AGENTS.md) §3.9) |
+| [`make full-smoke`](sensors/full-smoke.md) | Voll-E2E: Bootstrap in tmp-Repo → dort `make gates` out-of-the-box grün; schreibt die sieben je-Variante-E2E-Stempel `.harness/state/full-smoke-passed-<variante>.key`, CI-Konsum am push-`main`-Job ([ADR-0111](../docs/plan/adr/0111-ci-stempel-eingecheckt-committed-je-check-keys.md), je-Variante je [ADR-0113](../docs/plan/adr/0113-der-e2e-stempel-wird-je-variante-gestempelt.md)) | kein Gate · [`LH-FA-01`](../spec/lastenheft.md#lh-fa-01--repo-bootstrappen) · Host Linux, macOS nicht getragen ([`AGENTS.md`](../AGENTS.md) §3.9) |
 | [`make artifact-host`](sensors/artifact-host.md) | wie `artifact`, aber für den HOST cross-kompiliert | kein Gate · Hilfe ohne Anspruch ([`AGENTS.md`](../AGENTS.md) §3.9) |
 | `make smoke-host` | wie `make smoke`, mit `artifact-host` statt `artifact` | kein Gate |
 | `make full-smoke-host` | wie `make full-smoke`, mit `artifact-host` statt `artifact` | kein Gate · Hilfe ohne Anspruch, ein Lauf darüber ist kein Beleg ([`AGENTS.md`](../AGENTS.md) §3.9) |

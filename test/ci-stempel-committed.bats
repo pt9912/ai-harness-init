@@ -1,7 +1,9 @@
 #!/usr/bin/env bats
-# ci-stempel-committed.bats — Waechter der committeten Stempel-Klasse (ADR-0111,
-# Festlegung 6): die gitignore-Formen je Klasse, die CI-Verdrahtung des
-# push-main-Konsults und die hermetische Klassifikation des E2E-Skip-Griffs.
+# ci-stempel-committed.bats — Waechter der committeten Stempel-Klasse (ADR-0111
+# Festlegung 6, erweitert je ADR-0113 Festlegung 5): die gitignore-Formen je
+# Klasse und die CI-Verdrahtung des push-main-Konsults. Die hermetische
+# Klassifikation des je-Variante-Skip-Griffs haelt seit ADR-0113
+# test/full-smoke-varianten-keys.bats.
 #
 # GITIGNORE-FORMEN: gemessen `git check-ignore` in einem tmp-Repo ueber der
 # REAL committeten .gitignore (die reale Quelle; das tmp-Repo traegt nur die
@@ -14,7 +16,8 @@
 #     check-ignore-Fall rot (test/mutations/821-gitignore-ausnahme-faellt-still-weg.sh);
 #   - der push-main-Job konsultiert die transportierten Keys nicht mehr →
 #     der gates-Verdrahtungs-Fall rot (822, je LP 2);
-#   - der E2E-Skip liest ein fremdes Feld → der SKIP-Fall rot (823, je LP 3).
+#   - die Ausnahme der je-Variante-Stempel-Klasse faellt still weg → derselbe
+#     check-ignore-Fall rot (833, je ADR-0113 Festlegung 5).
 #
 # WAS HIER NICHT GEMESSEN WIRD: der reale CI-Lauf am frischen Klon — die
 # Verdrahtung der Workflows belegt der CI-Lauf selbst (MR-003-Form: die CI ist
@@ -39,7 +42,7 @@ tmp_gitignore_repo() {
   for f in \
     .harness/state/gates-passed-lint.key \
     .harness/state/gates-passed-span-check.key \
-    .harness/state/full-smoke-passed.key \
+    .harness/state/full-smoke-passed-kotlin.key \
     ; do
     : > "$root/$f"
     run git -C "$root" check-ignore -q "$f"
@@ -91,73 +94,18 @@ full_smoke_job_block() {
   grep -qF 'refs/heads/main' <<<"$block"
 }
 
-@test "rezept-verdrahtung: full-smoke rechnet den Baum-Hash am Lauf-Start und faehrt den Griff nur bei gesetzter Konsult-Umgebung (ADR-0111 Festlegung 2/4)" {
+@test "rezept-verdrahtung: full-smoke rechnet die Vorlagen-Mengen am Schreiber ueber dem Satzerzeuger und faehrt den Griff nur bei gesetzter Konsult-Umgebung (ADR-0111 Festlegung 2, ADR-0113 Festlegungen 3/4)" {
   local skript="$REPO/harness/tools/full-smoke.sh"
-  # der Lauf-Start-Wert ist derselbe, den der Stempel am Gruen-Ende traegt
-  grep -qF 'E2E_BAUM_HASH_START="$(bash "$HIER/working-tree-hash.sh")"' "$skript"
+  # der Schreiber stempelt aus der Satzerzeuger-Ernte am Gruen-Ende, ohne
+  # Baum-Hash — die Vorlagen-Menge ist der Umfang (ADR-0113 Festlegung 1/4);
+  # die Schreiber-Form im Einzelnen haelt test/full-smoke-varianten-keys.bats
+  grep -qF 'stempel_ernte="$(bash "$HIER/full-smoke-varianten.sh" alle)"' "$skript"
+  ! grep -qF 'E2E_BAUM_HASH_START' "$skript"
   # der Griff hoert auf GENAU die eine Lesung (gezaehlt ausserhalb der Kommentare);
-  # jede andere Umgebung laeuft unberuehrt voll
+  # jede andere Umgebung laeuft unberuehrt voll; der Konsum ist der je-Variante
+  # (ADR-0113 Festlegung 3) — seine Klassifikation haelt test/full-smoke-varianten-keys.bats
   [ "$(grep -vE '^[[:space:]]*#' "$skript" | grep -cF 'FULL_SMOKE_SKIP_KONSULT')" -eq 1 ]
   grep -qF '[ "${FULL_SMOKE_SKIP_KONSULT:-}" = "1" ]' "$skript"
-  grep -qF -- '--entscheide .harness/state/full-smoke-passed.key "$E2E_BAUM_HASH_START"' "$skript"
+  grep -qF 'if bash "$HIER/full-smoke-skip.sh" --entscheide; then' "$skript"
 }
 
-# --- die hermetische Klassifikation des Skip-Griffs (harness/tools/full-smoke-skip.sh,
-# dieselbe --entscheide-Form wie test/gates-fastpfad.bats) -------------------
-
-SKIP="$REPO/harness/tools/full-smoke-skip.sh"
-STAPEL="$(mktemp)"
-
-teardown() {
-  [ -f "${STAPEL:-}" ] && rm -f "$STAPEL"
-  return 0
-}
-
-H1="1111111111111111111111111111111111111111111111111111111111111111"
-H2="2222222222222222222222222222222222222222222222222222222222222222"
-
-@test "e2e-skip: deckender Stempel in der Zwei-Zeilen-Form -> SKIP, Meldung nennt Rest und Konservierungs-Form" {
-  printf 'baum-hash %s\nvarianten 24\n' "$H1" > "$STAPEL"
-  run bash "$SKIP" --entscheide "$STAPEL" "$H1"
-  [ "$status" -eq 0 ]
-  [[ "$output" == *"SKIP"* ]]
-  [[ "$output" == *"Traeger-Releases"* ]]
-  [[ "$output" == *"Runner-Fassung"* ]]
-  [[ "$output" == *"Runner-Verdikt"* ]]
-}
-
-@test "e2e-skip: fehlender Stempel -> voller Lauf (fail-closed)" {
-  run bash "$SKIP" --entscheide "$STAPEL" "$H1"
-  [ "$status" -eq 1 ]
-}
-
-@test "e2e-skip: baum-hash fehlt in der Zwei-Zeilen-Form -> voller Lauf (fail-closed)" {
-  printf 'varianten 24\n' > "$STAPEL"
-  run bash "$SKIP" --entscheide "$STAPEL" "$H1"
-  [ "$status" -eq 1 ]
-}
-
-@test "e2e-skip: unformaler baum-hash -> voller Lauf (fail-closed, MR-017)" {
-  printf 'baum-hash %s\nvarianten 24\n' "${H1:0:40}" > "$STAPEL"
-  run bash "$SKIP" --entscheide "$STAPEL" "$H1"
-  [ "$status" -eq 1 ]
-}
-
-@test "e2e-skip: fremder baum-hash -> voller Lauf (fail-closed)" {
-  printf 'baum-hash %s\nvarianten 24\n' "$H2" > "$STAPEL"
-  run bash "$SKIP" --entscheide "$STAPEL" "$H1"
-  [ "$status" -eq 1 ]
-}
-
-@test "e2e-skip: unformale Frisch-Rechnung -> voller Lauf (fail-closed)" {
-  printf 'baum-hash %s\n' "$H1" > "$STAPEL"
-  run bash "$SKIP" --entscheide "$STAPEL" "fremd"
-  [ "$status" -eq 1 ]
-}
-
-@test "e2e-skip: fremde Aufruf-Form -> Exit 2" {
-  run bash "$SKIP" --entscheide "$STAPEL"
-  [ "$status" -eq 2 ]
-  run bash "$SKIP"
-  [ "$status" -eq 2 ]
-}

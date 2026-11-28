@@ -117,7 +117,7 @@ STUB
   printf '9fe6c0c9d0fde3e6ea2c25f6dfa8fbd3a9ea1dcbdd8e5fa2c4b56fd0a9e0f1a2\n' >"$root/.harness/state/gates-passed-lint.key"
   b="$(cd "$root" && PATH="$root/.bin:$PATH" bash wth.sh)"
   [ "$a" = "$b" ]
-  printf '0a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9\n' >"$root/.harness/state/full-smoke-passed.key"
+  printf '0a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f9\n' >"$root/.harness/state/full-smoke-passed-kotlin.key"
   c="$(cd "$root" && PATH="$root/.bin:$PATH" bash wth.sh)"
   rm -rf "$root"
   [ "$b" = "$c" ]

@@ -132,7 +132,7 @@ rezept_zeilen() {
     # realen Ablageorts und die zwei Ausnahme-Zeilen tragen dieselbe Datei.
     git -C "$REPO" check-ignore -q .harness/state/bin/ai-harness-init || { echo "der Bau-Ablageort .harness/state/bin ist nicht ignored (MR-003); die git-eigene Lesung traegt make span-check." >&2; return 1; }
     grep -q '^!\.harness/state/gates-passed-\*\.key$' "$REPO/.gitignore" || { echo "die Ausnahme-Zeile der committeten je-Check-Keys fehlt (ADR-0111 Festlegung 1)." >&2; return 1; }
-    grep -q '^!\.harness/state/full-smoke-passed\.key$' "$REPO/.gitignore" || { echo "die Ausnahme-Zeile des E2E-Stempels fehlt (ADR-0111 Festlegung 4)." >&2; return 1; }
+    grep -q '^!\.harness/state/full-smoke-passed-\*\.key$' "$REPO/.gitignore" || { echo "die Ausnahme-Zeile der je-Variante-E2E-Stempel fehlt (ADR-0113 Festlegung 5)." >&2; return 1; }
 }
 
 @test "rezept: build-image baut die gepinnte build-Stage" {
