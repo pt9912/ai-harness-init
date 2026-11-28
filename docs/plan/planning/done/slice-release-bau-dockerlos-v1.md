@@ -160,7 +160,7 @@ wörtlich: kein Pflicht-Pfad dieses Repos braucht docker.
       und wird in §7 notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind von der
       nächsten Welle-Closure geprüft — in diesem Repo **ohne** Wellen-Betrieb
       hier geprüft, nach dem `git mv` (2026-11-28).
 
@@ -264,21 +264,21 @@ die drei Mutations-Fälle greifen je `make mutate` (`MUTATE_CASES`);
 
 - **Was hat funktioniert:** die drei Liefer-Punkte je Plan — Bau-Form
   (`make release-artifacts-host` über der `RELEASE_PLATFORMS`-Tafel,
-  Cross-Compile je `LH-QA-04`-Plattform, `release-sums.sh generate` und
-  Homebrew-Formel am selben Ort je ADR-0059 Folgepflicht 1), CI-Verdrahtung
+  Cross-Compile je [LH-QA-04](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)-Plattform, `release-sums.sh generate` und
+  Homebrew-Formel am selben Ort je [ADR-0059](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md) Folgepflicht 1), CI-Verdrahtung
   (der `artifacts`-Job ruft nur das Target, Go-Install aus dem
-  `GO_VERSION`-Pin, MR-014 Setzung 1) und Doku-Zellen in der host-Form.
+  `GO_VERSION`-Pin, [MR-014](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions) Setzung 1) und Doku-Zellen in der host-Form.
   Der reale `workflow_dispatch`-Lauf von release.yml (Run 46155129162, Ref
   main, kein Tag) belegt die Kette am frischen Runner: `artifacts` success je
   host-nativer Cross-Kompilierung — kein Docker im Pflicht-Weg —,
   `start-smoke` success auf allen sieben Plattform-Positionen je
-  `LH-QA-04`-Matrix, `publish`/`tap` skipped je tag-gebundener Condition
+  [LH-QA-04](../../../../spec/lastenheft.md#lh-qa-04--plattform-matrix)-Matrix, `publish`/`tap` skipped je tag-gebundener Condition
   (richtig — kein Release geschnitten). `test/release-host-bau.bats` grün
-  einschließlich byte-identischer Zweitlauf (`LH-QA-02`) und
-  `--version`-Fehlt-Fall je ADR-0063 Festlegung 2; `make gates` grün am
+  einschließlich byte-identischer Zweitlauf ([LH-QA-02](../../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)) und
+  `--version`-Fehlt-Fall je [ADR-0063](../../adr/0063-das-werkzeug-sagt-seine-fassung.md) Festlegung 2; `make gates` grün am
   frischen HEAD `7063c0b9` (record-gates Exit 0, `mutate-greift` 824/824,
-  transportierte je-Check-Keys decken je ADR-0111 Festlegung 2), CI grün je
-  Push `bf662609` (gates, adr-immutable, smoke — frischer Klon je MR-014).
+  transportierte je-Check-Keys decken je [ADR-0111](../../adr/0111-ci-stempel-eingecheckt-committed-je-check-keys.md) Festlegung 2), CI grün je
+  Push `bf662609` (gates, adr-immutable, smoke — frischer Klon je [MR-014](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)).
 - **Was ging anders als geplant:** der Release-Bau-Zweig lief nach main über
   fünf Cherry-Pick-Commits je fast-forward (`bf662609`) — die zwei
   Doppel-Läufe des Zwischenstands (der Fall-823-Vorbestand und der
@@ -302,7 +302,7 @@ die drei Mutations-Fälle greifen je `make mutate` (`MUTATE_CASES`);
   ergänzt (Zähler 2) — die `make build`-Sensor-Zelle trug den
   docker-getrieben-Ist-Stand; Liefer-Punkt c ist der Fix.
   `BEO-ALL/gepinnter-werkzeug-weg-umgangen-ohne-guard-treffer/evidence/slice-release-bau-dockerlos-v1.md`
-  ergänzt (Zähler 2) — Review F-3, der MR-014-Text-Wächter entkennt der
+  ergänzt (Zähler 2) — Review F-3, der [MR-014](../../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)-Text-Wächter entkennt der
   Quoted-Hash-Form. `BEO-ALL/gefetchter-traeger-sperrt-die-archivierungs-stufe/evidence/slice-release-bau-dockerlos-v1.md`
   ergänzt (Zähler 2) — der Mutations-Vorlauf-ABBRUCH (M-1).
   `BEO-ALL/mutate-cases-leakt-in-den-bats-gruen-vorlauf/evidence/slice-release-bau-dockerlos-v1.md`
@@ -319,7 +319,7 @@ die drei Mutations-Fälle greifen je `make mutate` (`MUTATE_CASES`);
   in `in-progress/` laufende
   [`slice-traeger-tag-nachzug-untergrenze-v1`](../in-progress/slice-traeger-tag-nachzug-untergrenze-v1.md)
   (Träger der Pin-Lage und damit des Mutations-Vorlauf-Aufholens nach der
-  Publikation) und die Re-Evaluierungs-Trigger 1/2 von ADR-0115 (Runner-Rest).
+  Publikation) und die Re-Evaluierungs-Trigger 1/2 von [ADR-0115](../../adr/0115-release-bau-docker-los-in-ci.md) (Runner-Rest).
 - **Risiken aus §6:** Runner-Rest *weiter offen* →
   `BEO-ALL/runner-toolchain-liegt-ausserhalb-jedes-repo-pins` · byte-identische
   SUMS *entfallen* (Zweitlauf-Beleg `test/release-host-bau.bats`) ·
@@ -335,7 +335,7 @@ die drei Mutations-Fälle greifen je `make mutate` (`MUTATE_CASES`);
   tragen `slice-traeger-tag-nachzug-untergrenze-v1`
   (`ls docs/plan/planning/*/slice-traeger-tag-nachzug-untergrenze-v1.md` →
   genau eine Datei, `in-progress/`) und die Re-Evaluierungs-Trigger 1/2 von
-  ADR-0115; (c) Register: die fünf berührten Verzeichnisse existieren mit
+  [ADR-0115](../../adr/0115-release-bau-docker-los-in-ci.md); (c) Register: die fünf berührten Verzeichnisse existieren mit
   nicht leerem `evidence/` (`BEO-ALL/werkzeug-zelle-…` 2, `BEO-ALL/gepinnter-werkzeug-weg-…`
   2, `BEO-ALL/gefetchter-traeger-…` 2, `BEO-ALL/mutate-cases-leakt-…` 3,
   `BEO-ALL/runner-toolchain-…` 1 Beleg) — zweite Hälfte: 1 Verzeichnis ohne

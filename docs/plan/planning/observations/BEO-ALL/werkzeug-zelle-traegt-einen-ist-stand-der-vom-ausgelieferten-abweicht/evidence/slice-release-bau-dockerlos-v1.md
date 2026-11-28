@@ -1,6 +1,6 @@
 **Vorgang:** slice-release-bau-dockerlos-v1
 **Fund:** Die `make build`-Sensor-Zelle in `harness/README.md` trug den
-Ist-Stand "Release-Bau bleibt docker-getrieben" — gegen die mit `ADR-0115`
+Ist-Stand "Release-Bau bleibt docker-getrieben" — gegen die mit [ADR-0115](../../../../../adr/0115-release-bau-docker-los-in-ci.md)
 umgestellte host-Form (`make release-artifacts-host`, Liefer-Punkt b). Der
 Slice änderte die Zelle (Liefer-Punkt c, Commit `bdf5c6cd`); die
 DoD-c-Messung `grep -n 'docker-getrieben\|Docker-only' harness/README.md
