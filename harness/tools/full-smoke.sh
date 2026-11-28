@@ -4251,8 +4251,11 @@ if [ "$hexagonal_rc" -ne 0 ]; then
 	einordnen "make -j gates mit dem hexagonalen Modul (apps/hexagonal)" "$hexagonal_out"
 	exit 1
 fi
+# Die Marker sind die Recipe-Echo-Zeilen: build/lint je drei Host-Fassung (der Modul-Lauf
+# faehrt am Host je Emit-Form, ADR-0109; die Dockerfile-Stages bleiben opt-in images) und
+# das Arch-Gate je Docker-Form (a-check liest am a-check-Bild je Pin).
 hexagonal_missing=""
-for marker in "apps-hexagonal:build" "apps-hexagonal:lint" 'apps/hexagonal":/src:ro'; do
+for marker in "cd apps/hexagonal && CGO_ENABLED=0" "cd apps/hexagonal && golangci-lint run --allow-parallel-runners" 'apps/hexagonal":/src:ro'; do
 	grep -qF -- "$marker" <<<"$hexagonal_out" || hexagonal_missing="$hexagonal_missing [$marker]"
 done
 if [ -n "$hexagonal_missing" ]; then
