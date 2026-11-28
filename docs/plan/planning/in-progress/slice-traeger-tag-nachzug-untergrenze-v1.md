@@ -114,6 +114,7 @@ zuvorkommt.
 |---|---|---|
 | `Makefile` (Pin-Block, Zeilen 53–61) | update | `TRAEGER_TAG` + die sechs `TRAEGER_SHA256_*`-Pins je `SHA256SUMS` der neu gebauten Assets |
 | `internal/emit/templates/enforce/traeger.mk` (Zeile 25) | update | der emit-Pin trägt je [`ADR-0059`](../../adr/0059-sha256sums-reisen-als-release-asset-der-emit-pin-traegt-nur-den-tag.md) nur den Tag — Nachzug auf `<neu>` |
+| `test/traeger-fetch.bats` (Zeilen 133–134, Umsetzungs-Fund) | update | der pin-kopplung-Fall hält das Tag-Literal an beiden Pin-Stellen — der Wert wandert je Release-Schnitt mit dem Pin, sonst fällt `make test` an der Fassung ohne Zugs-Grund |
 
 **Ansatz:** der Bump folgt der Publikation, nie umgekehrt — die
 Prüfsummen-Pins übernehmen die `SHA256SUMS`-Einträge des neu geschnittenen
