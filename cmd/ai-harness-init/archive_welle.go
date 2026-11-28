@@ -23,16 +23,17 @@
 //
 // DER BETRIEBS-EINGANG LAEUFT ALS PROZESS GEGEN EIN ECHTES REPO, in
 // archive_welle_echt_test.go: der Traeger startet in einem Scratch-Repo, und die
-// zwei fail-closed-Sperren, die aus der Aussenwelt entstehen, fallen dort je
-// einzeln — TestArchiveWelleEchtSperrtAmUnsauberenArbeitsbaum haengt an
-// `git status --porcelain`, TestArchiveWelleEchtSperrtAmHaengendenVerweis an
-// `git ls-files`. TestArchiveWelleEchtArchiviertUndSetztZweiCommits ist deren
-// Gegenprobe und der einzige Fall, der die vier schreibenden git-Aufrufe unten
-// wirklich ausfuehrt: zwei Commits, sauberer Arbeitsbaum danach.
+// aus der Aussenwelt entstehenden Kanten fallen dort je einzeln —
+// TestArchiveWelleEchtSperrtAmUnsauberenArbeitsbaum haengt an
+// `git status --porcelain`; TestArchiveWelleEchtArchiviertMitReportVerweisAusFremdemRang
+// haengt an `git ls-files` und misst dazu den Report-Stub am unveraenderten Pfad
+// (ADR-0061 Festlegung 1). TestArchiveWelleEchtArchiviertUndSetztZweiCommits ist
+// die Gegenprobe und der einzige Fall, der die drei schreibenden git-Aufrufe
+// unten wirklich ausfuehrt: zwei Commits, sauberer Arbeitsbaum danach.
 //
-// GRENZE, benannt statt verschwiegen: von den vier schreibenden Aufrufen ist der
+// GRENZE, benannt statt verschwiegen: von den drei schreibenden Aufrufen ist der
 // erste EINZELN gemessen (test/mutations/252 macht `Mv` zum No-Op, und Commit 1
-// laeuft danach ueber einen leeren Index). Fuer `Rm`, `Add` und `Commit` traegt
+// laeuft danach ueber einen leeren Index). Fuer `Add` und `Commit` traegt
 // der Fall nur ihr Zusammenspiel; welcher von ihnen ausfaellt, ist aus seinem
 // Rot nicht ablesbar. Reihenfolge, Aufteilung auf zwei Commits und die gestagte
 // Pfad-Liste liegen daneben in der Git-Schnittstelle von internal/archive und
@@ -102,7 +103,7 @@ func archiveWelle(args []string, out, errOut io.Writer) int {
 
 // laufEingang buendelt, was zwischen dem Parsen und dem Zweig aus der Aussenwelt
 // kommt: die Repo-Wurzel, die zwei lesenden git-Aufrufe und die Verdrahtung der
-// vier schreibenden. Es steht als Werte-Buendel, damit die STRECKE vom
+// drei schreibenden. Es steht als Werte-Buendel, damit die STRECKE vom
 // Kommandozeilen-Argument bis zum Vorschau-Guard ohne ein Repo pruefbar ist —
 // dieselbe Aufteilung, aus der archiveWelleLauf schon die zwei Lesungen als
 // Werte und die Schreib-Operationen als Schnittstelle nimmt.
@@ -115,7 +116,7 @@ type laufEingang struct {
 }
 
 // echterEingang ist die Verdrahtung des Betriebs: die Repo-Wurzel ueber dem
-// Arbeitsverzeichnis, die zwei lesenden git-Aufrufe und die vier schreibenden.
+// Arbeitsverzeichnis, die zwei lesenden git-Aufrufe und die drei schreibenden.
 //
 // ZUSAGE: die vier Felder tragen die echten Betriebs-Implementierungen — nicht
 // nur irgendeine Fassung mit passender Signatur. Gemessen in
