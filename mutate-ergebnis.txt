@@ -1,0 +1,48 @@
+mutate-ergebnis: slice-rules-pointer-emission-v1
+gepruefter Commit: f2485839ea61731127ad569653603575016a1ff9
+Basis (Claim-Commit): e28b3cc48f4b34530f50d0e738df380a3dfa118d
+Shard 0: Exit 2, 61 s, Faelle: 306-rollenachse-emit-aufruf-entfernt 379-mixed-root-waehlt-stets-einzelfassung 64-arch-cli-threading 669-pin-fallback-full-smoke-veraltet
+Shard 1: Exit 2, 51 s, Faelle: 367-zweiter-varianten-aufruf-mit-falschem-ziel 41-cli-lang-optional 677-java-hilfe-knopf 834-schreiber-stapelt-baum-hash
+Shard 2: Exit 2, 67 s, Faelle: 622-kotlin-gemischter-root 44-cli-addlang-dispatch 689-python-hilfe-knopf
+Shard 3: Exit 2, 59 s, Faelle: 773-archiv-altbestand-zip-ungelesen 48-addlang-path-containment 704-csharp-hilfe-knopf
+Shard 4: Exit 0, 92 s, Faelle: 154-unterkommando-routing-vertauscht 532-lauf-meldet-neues-gate-nicht 710-csharp-exit-klasse
+Shard 5: Exit 0, 119 s, Faelle: 19-gen-skel-go-version-wiring 534-bootstrap-meldet-werkzeug-index-nicht 839-rules-pointer-fehlt
+Shard 6: Exit 0, 143 s, Faelle: 237-archive-welle-go-routing-vertauscht 535-lauf-meldet-neues-kein-gate-target-nicht 840-rules-pointer-regular-file
+Shard 7: Exit 2, 404 s, Faelle: 253-archive-welle-go-init-pfad-positionsargument 59-cli-skelversion-generalisierung 190-abdeckung-einordnung-entfernt
+Shard 8: Exit 2, 313 s, Faelle: 377-init-argumentlos-stiller-init 62-arch-cli-exit2 261-dispatch-marke-nur-im-kommentar
+Shard 9: Exit 2, 318 s, Faelle: 378-init-argumentlos-bricht-aber-schreibt 620-kotlin-hilfe-knopf 362-e2e-stufe-ohne-deklaration
+BEFUND (kein Ergebnis im Log) 306-rollenachse-emit-aufruf-entfernt                     Shard 0
+BEFUND (kein Ergebnis im Log) 379-mixed-root-waehlt-stets-einzelfassung                Shard 0
+BEFUND (kein Ergebnis im Log) 64-arch-cli-threading                                    Shard 0
+BEFUND (kein Ergebnis im Log) 669-pin-fallback-full-smoke-veraltet                     Shard 0
+BEFUND (kein Ergebnis im Log) 367-zweiter-varianten-aufruf-mit-falschem-ziel           Shard 1
+BEFUND (kein Ergebnis im Log) 41-cli-lang-optional                                     Shard 1
+BEFUND (kein Ergebnis im Log) 677-java-hilfe-knopf                                     Shard 1
+BEFUND (kein Ergebnis im Log) 834-schreiber-stapelt-baum-hash                          Shard 1
+BEFUND (kein Ergebnis im Log) 622-kotlin-gemischter-root                               Shard 2
+BEFUND (kein Ergebnis im Log) 44-cli-addlang-dispatch                                  Shard 2
+BEFUND (kein Ergebnis im Log) 689-python-hilfe-knopf                                   Shard 2
+BEFUND (kein Ergebnis im Log) 773-archiv-altbestand-zip-ungelesen                      Shard 3
+BEFUND (kein Ergebnis im Log) 48-addlang-path-containment                              Shard 3
+BEFUND (kein Ergebnis im Log) 704-csharp-hilfe-knopf                                   Shard 3
+ok       154-unterkommando-routing-vertauscht                     Shard 4
+ok       532-lauf-meldet-neues-gate-nicht                         Shard 4
+ok       710-csharp-exit-klasse                                   Shard 4
+ok       19-gen-skel-go-version-wiring                            Shard 5
+ok       534-bootstrap-meldet-werkzeug-index-nicht                Shard 5
+ok       839-rules-pointer-fehlt                                  Shard 5
+ok       237-archive-welle-go-routing-vertauscht                  Shard 6
+ok       535-lauf-meldet-neues-kein-gate-target-nicht             Shard 6
+ok       840-rules-pointer-regular-file                           Shard 6
+BEFUND (kein Ergebnis im Log) 253-archive-welle-go-init-pfad-positionsargument         Shard 7
+BEFUND (kein Ergebnis im Log) 59-cli-skelversion-generalisierung                       Shard 7
+BEFUND (kein Ergebnis im Log) 190-abdeckung-einordnung-entfernt                        Shard 7
+BEFUND (kein Ergebnis im Log) 377-init-argumentlos-stiller-init                        Shard 8
+BEFUND (kein Ergebnis im Log) 62-arch-cli-exit2                                        Shard 8
+BEFUND (kein Ergebnis im Log) 261-dispatch-marke-nur-im-kommentar                      Shard 8
+BEFUND (kein Ergebnis im Log) 378-init-argumentlos-bricht-aber-schreibt                Shard 9
+BEFUND (kein Ergebnis im Log) 620-kotlin-hilfe-knopf                                   Shard 9
+BEFUND (kein Ergebnis im Log) 362-e2e-stufe-ohne-deklaration                           Shard 9
+Fallmenge: 32 (Slice: 32)
+Wanduhr gesamt (erster Shard-Start bis letztes Shard-Ende): 427 s
+Urteil: BEFUND
