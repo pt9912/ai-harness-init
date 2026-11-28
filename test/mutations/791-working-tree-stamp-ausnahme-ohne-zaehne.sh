@@ -16,4 +16,4 @@ set -euo pipefail
 # Die Deklaration ist eine mehrzeilige Form (die zwei committeten state-Klassen
 # je ADR-0111 Festlegung 1/4 liegen auf eigenen Zeilen); `sed -z` liest die Datei
 # als einen Record und ersetzt den ganzen Block.
-sed -zE 's@HASH_AUSNAHMEN=\([^\)]*\)@HASH_AUSNAHMEN=(.nicht-gedeckt-vorhanden)@' harness/tools/working-tree-hash.sh
+sed -zEi 's@HASH_AUSNAHMEN=\([^\)]*\)@HASH_AUSNAHMEN=(.nicht-gedeckt-vorhanden)@' harness/tools/working-tree-hash.sh
