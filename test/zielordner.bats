@@ -4,7 +4,7 @@
 #
 # WAS DIESER SENSOR HAELT. Der Init-Dispatch loest sein Ziel aus dem Argument,
 # nicht aus dem Arbeitsverzeichnis; ohne Argument bricht er laut (fail-closed),
-# und die vier Unterkommandos bleiben, wo sie waren. Der Verhaltens-Teil dieser
+# und die fuenf Unterkommandos bleiben, wo sie waren. Der Verhaltens-Teil dieser
 # Zusage laeuft am PROCESS und steht in der Go-Stufe (test-go) —
 # TestRun_OhneZielordnerBrichtLaut, TestRun_KeinGitRepoZielBrichtLaut,
 # TestZielordner_AusDemArgument und TestUnfallVektor_OhneArgumentImRepoWurzel
@@ -30,16 +30,18 @@ setup() {
   MUT="test/mutations/377-init-argumentlos-stiller-init.sh"
 }
 
-@test "Deckung: der Dispatch fuehrt genau die vier Unterkommandos und add-lang, keiner faellt aufs Zielordner-Verhalten" {
+@test "Deckung: der Dispatch fuehrt genau die fuenf Unterkommandos und add-lang, keiner faellt aufs Zielordner-Verhalten" {
   # Die Marken am Zeilenanfang sind die Menge, die main() dispatcht
   # (test/unterkommando-kopplung.bats liest sie gegen die Aufrufer; dieser Fall
   # haelt sie gegen ERWARTUNG). add-lang steht im switch, weil nur sein Zweig das
   # Arbeitsverzeichnis aufloest — der Init-Fall-through darunter nimmt kein Ziel
-  # mehr aus dem Arbeitsverzeichnis.
+  # mehr aus dem Arbeitsverzeichnis. archive-lesen naehrt sich am Aufrufer wie
+  # archive-welle: der Host-Träger (full-smoke) ruft es am Archiv-Pfad auf, ohne
+  # Zielverzeichnis — kein Zweig loest den CWD.
   run grep -cE '^[[:space:]]*case "[^"]*":' "$MAIN"
   [ "$status" -eq 0 ]
-  [ "$output" = "5" ]
-  for name in span-emit span-report archive-welle vendor-baseline add-lang; do
+  [ "$output" = "6" ]
+  for name in span-emit span-report archive-welle archive-lesen vendor-baseline add-lang; do
     run grep -cE "^$name\$" <<<"$(grep -oE '^[[:space:]]*case "[^"]*":' "$MAIN" | sed -E 's/^[[:space:]]*case "//; s/":$//')"
     [ "$output" = "1" ]
   done
