@@ -561,6 +561,7 @@ mein-projekt/
 │   │   │   └── .gitkeep
 │   │   └── planning/
 │   │       ├── README.md              wie Slices ihren Zustand wechseln
+│   │       ├── archive-stub-report.template.md  Vorlage der Report-Stubs beim Archivieren
 │   │       ├── open/                  Slices, noch nicht eingeplant
 │   │       │   └── .gitkeep
 │   │       ├── next/                  Slices, eingeplant
