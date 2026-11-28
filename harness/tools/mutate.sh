@@ -832,9 +832,13 @@ run_case() {
   fi
 
   # (3)+(4) Sensor-Lauf: rot erwartet, und zwar am benannten Waechter.
+  # ADR-0114 Festlegung 2 an JEDEM inneren make-Zug: der env-Auszug ueber die
+  # Treiber-eigenen Lauf-Variablen — sonst liest das mutierte Suite-Ziel den
+  # Teillauf-Selektor (MUTATE_CASES) aus der Umgebung und bricht an seinem
+  # eigenen Fixtur-Aufruf (Fall-Klasse B-1, gemessen am Fall 823 im Teillauf).
   local out rc=0
   out="$BACKUP/verify.log"
-  ( cd "$WORK" && make "$verify" ) >"$out" 2>&1 || rc=$?
+  ( cd "$WORK" && env -u MUTATE_CASES -u MUTATE_FORCE -u MUTATE_JOBS -u MUTATE_STALL_SECONDS make "$verify" ) >"$out" 2>&1 || rc=$?
 
   if [ "$rc" -eq 0 ]; then
     report_fail "$name" "make $verify blieb GRUEN — '$expect' hat keine Zaehne mehr"
@@ -1212,7 +1216,7 @@ green_prerun() {
     # mit eigenem Traeger, keine stille: wer sie schliesst, braucht eine Schranke, die
     # Fortschritt misst statt Wanduhr, und das ist ein eigener Schnitt.
     local rc=0
-    ( cd "$WORK" && make "$m" ) >"$log" 2>&1 || rc=$?
+    ( cd "$WORK" && env -u MUTATE_CASES -u MUTATE_FORCE -u MUTATE_JOBS -u MUTATE_STALL_SECONDS make "$m" ) >"$log" 2>&1 || rc=$?
     if [ "$rc" -ne 0 ]; then
       # Gemessen ist dieser eine Lauf: dieser Modus, diese Kopie, keine Mutation,
       # Exit != 0. Woran er lag, steht in den Zeilen darunter — die Meldung nennt es
