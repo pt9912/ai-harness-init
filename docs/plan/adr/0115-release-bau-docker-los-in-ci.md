@@ -13,8 +13,8 @@ Host-`go`**"*) samt seiner Fitness-Zeile (*`make build` — Cross-Compile je Pla
 kein Host-`go`*). Die übrigen Festlegungen von [ADR-0003](0003-go-native-binaries.md) bleiben
 **Accepted** und unberührt: Go als Implementierungssprache, native Binaries je
 `GOOS`/`GOARCH` als Auslieferungsform, die Verwerfung des Docker-in-Docker-Weges, der Supersede
-von [ADR-0002](0002-test-tooling-grenze.md)
-<!-- d-check:ignore (Lineage-Verweis auf superseded ADR) -->. Genau der Trigger von ADR-0003
+von `ADR-0002` <!-- d-check:ignore (Lineage-Verweis auf superseded ADR) -->
+Genau der Trigger von ADR-0003
 (*„Wenn ein air-gapped/registry-freier Vertrieb zur Pflicht wird — kein Docker-Pull beim Build —
 → Build-Model neu bewerten"*) greift hier: die Neubewertung ist diese ADR.
 [ADR-0109](0109-gates-lauefer-docker-los-image-weg-opt-in.md) wird nicht revidiert, sondern
@@ -79,7 +79,7 @@ gepinnten Docker-Rezepte des Werkzeug-Baus wandern vollständig in die opt-in-Kl
 Repro-Träger ist der Inventar-Pin statt des Image-Digests.** Sechs Festlegungen:
 
 **1. Der Release-Bau host-nativ in CI.** Neues make-Ziel
-`release-artifacts-host` (Form des Rezepts [`make host-bin`](../../../harness/sensors/host-bin.md),
+`release-artifacts-host` (Form des Rezepts `make host-bin`,
 generalisiert auf die Matrix): je `RELEASE_PLATFORMS`-Eintrag (Linux/AMD64, Linux/ARM64,
 Darwin/AMD64, Darwin/ARM64, Windows/AMD64, Windows/ARM64) ein Cross-Compile je
 `CGO_ENABLED=0`, `GOOS`/`GOARCH`, `-trimpath`, ldflags-Fassungs-Injektion je
@@ -146,7 +146,7 @@ bleibt unberührt — es verlangte nie Docker
 Drei Liefer-Punkte, je zwei Schichten (Build-Mechanik + CI-Form): (a) das make-Ziel
 `release-artifacts-host` (Tafel über `RELEASE_PLATFORMS`, Cross-Compile je Plattform,
 SHA256SUMS + Formel am selben Ort) samt der Wächter-Klasse (Matrix-Vollständigkeit je
-LH-QA-04 — eine gestrichene Plattform-Zeile färbt rot; Fehlt-Fall der Fassungs-Injektion am
+[LH-QA-04](../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) — eine gestrichene Plattform-Zeile färbt rot; Fehlt-Fall der Fassungs-Injektion am
 `--version` je [ADR-0063](0063-das-werkzeug-sagt-seine-fassung.md)
 Festlegung 2, rot-vor am realen Bau); (b) die CI-Fassung: `artifacts`-Job ruft das Host-Target,
 die Toolchain-Install aus dem Pin, die Entfallen-Grenze der gepinnten Bild-Ausnahme in der
@@ -159,13 +159,13 @@ ADR-0109-Form. Mutations-Fälle je
 (a-1) die Matrix-Tafel verliert still eine Plattform-Zeile → Wächter rot; (a-2) die
 ldflags-Injektion fällt still weg → Wächter rot am `--version`-Fehlt-Fall; (b-1) der CI-Step
 ruft das Docker-Target oder ein Inline-Compile statt des make-Ziels → Wächter rot (die
-MR-014-Setzung-1-Form: die YAML nennt nur make-Ziele).
+[`MR-014`](../../../harness/conventions.md#mr-014--ci-auf-frischem-klon-github-actions)-Setzung-1-Form: die YAML nennt nur make-Ziele).
 
 ## Verglichene Alternativen
 
 | Option | Pro | Contra |
 |---|---|---|
-| A — Status quo (Docker-only Bau, [ADR-0003](0003-go-native-binaries.md)) | ein Digest-Pin trägt die Reproduzierbarkeit, erprobt | der Daemon bleibt an der einzigen Stelle Pflicht, an der kein Gate ihn braucht; LH-QA-03 wörtlich unerfüllt am Release-Pfad |
+| A — Status quo (Docker-only Bau, [ADR-0003](0003-go-native-binaries.md)) | ein Digest-Pin trägt die Reproduzierbarkeit, erprobt | der Daemon bleibt an der einzigen Stelle Pflicht, an der kein Gate ihn braucht; [LH-QA-03](../../../spec/lastenheft.md#lh-qa-03--minimale-abhängigkeiten) wörtlich unerfüllt am Release-Pfad |
 | B — GoReleaser als Bau-Werkzeug | Standard-Form für Cross-Compiles | ein drittes Werkzeug im Inventar mit eigener Pin-Kante; dieselbe Form, die `RELEASE_PLATFORMS`-Tafel und `host-bin` bereits tragen, entstünde doppelt |
 | C — nativer Bau je Plattform-Runner | die Binaries wachsen auf ihrer Ziel-Plattform | keine Tool-Pin-Kante auf macOS/Windows (Host-Läufer dieser Repos sind Linux, §3.9-Form); sechs Toolchain-Umgebungen statt einer; der Runner-Rest wächst um sechs |
 | D — daemon-loses OCI-Pull der Toolchain (dcheck-fetch-Form) | pin-getragene Reproduzierbarkeit ohne Daemon | ein OCI-Zug je Bau für ein Werkzeug, das der Inventar-Pin schon trägt — Mechanik statt Form-Einfachheit; der Pull braucht Netz an genau diesem Aufruf |
@@ -191,7 +191,7 @@ MR-014-Setzung-1-Form: die YAML nennt nur make-Ziele).
 
 | Tooling | Regel | Make-Target |
 |---|---|---|
-| bats, `test/release-host-bau.bats` (neu) | **Happy:** `make release-artifacts-host DEST=<tmp>` erzeugt sechs Binaries + SHA256SUMS; der zweite Lauf desselben Baums liefert byte-identische SUMS ([LH-QA-02](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)); ohne `TRAEGER_VERSION` meldet `--version` den Fehlt-Fall laut ([ADR-0063](0063-das-werkzeug-sagt-seine-fassung.md) Festlegung 2). **Negative:** eine Plattform-Zeile gestrichen → Matrix-Wächter rot; ein Binary fehlt im DEST → rot. **Boundary:** die Tafel hält die Sechs-Satz-Anforderung von LH-QA-04 gegen die `RELEASE_PLATFORMS`-Zeile | `make test` (in `make gates`) |
+| bats, `test/release-host-bau.bats` (neu) | **Happy:** `make release-artifacts-host DEST=<tmp>` erzeugt sechs Binaries + SHA256SUMS; der zweite Lauf desselben Baums liefert byte-identische SUMS ([LH-QA-02](../../../spec/lastenheft.md#lh-qa-02--reproduzierbarkeit)); ohne `TRAEGER_VERSION` meldet `--version` den Fehlt-Fall laut ([ADR-0063](0063-das-werkzeug-sagt-seine-fassung.md) Festlegung 2). **Negative:** eine Plattform-Zeile gestrichen → Matrix-Wächter rot; ein Binary fehlt im DEST → rot. **Boundary:** die Tafel hält die Sechs-Satz-Anforderung von [LH-QA-04](../../../spec/lastenheft.md#lh-qa-04--plattform-matrix) gegen die `RELEASE_PLATFORMS`-Zeile | `make test` (in `make gates`) |
 | Mutations-Fälle, `test/mutations/` (drei, Festlegung 6) | je [`MR-071`](../../../harness/conventions.md#mr-071--die-fall-anlage-misst-ihre-sed-muster-gegen-den-quell-bestand)/[`MR-090`](../../../harness/conventions.md#mr-090--ein-sensor-hält-den-anker-eines-mutations-falls-am-commit) | `make mutate` (`MUTATE_CASES`) |
 
 **Was hier nicht behauptet wird:** der Rot-Beleg entsteht im Implementations-Zug, nicht in dieser
