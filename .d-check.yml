@@ -423,12 +423,13 @@ ignore-refs:
   # den Ist je Wächter test/ignore-refs-restbreite.bats
   - in: "docs/reviews/**"
     refs: [".harness/baseline/**"]
-  # Deckung: 7
+  # Deckung: 8
   # der Altbestand-Ablage-Lauf (5fe20502) zog die geclaimten
   # done-Slices nach done/altbestand/ (Volltexte im Archiv, Stub am Pfad ohne
-  # Baseline-Verweis): die Deklaration trägt den Ist je Wächter
-  # test/ignore-refs-restbreite.bats; die Vorgänger-Fassungen (4 -> 10 -> 11)
-  # stehen in der Vorbild-Historie des Moves je Move-Zug
+  # Baseline-Verweis); die Report-Stub-Closure (f5a4521c) verlinkte die
+  # Archive-Stub-Vorlage am Baseline-Pfad: die Deklaration trägt den Ist
+  # je Wächter test/ignore-refs-restbreite.bats; die Vorgänger-Fassungen
+  # (4 -> 10 -> 11 -> 7) stehen in der Vorbild-Historie des Moves je Move-Zug
   - in: "docs/plan/planning/done/**"
     refs: [".harness/baseline/**"]
   # Deckung: 2
