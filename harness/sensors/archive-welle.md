@@ -22,7 +22,9 @@ der Stelle des Review-Reports bleibt sein Stub am **unveränderten Pfad**
 Festlegungen 1 und 2); der volle Report-Inhalt liegt wie bisher im Archiv-Zip (Festlegung 3).
 
 Darüber hinaus bleibt je **referenziertem Umzug** ein **Umzugs-Stub** an der ALTEN Pfad-Adresse
-`done/<base>` stehen (ADR-0061 Festlegung 1, fünfte Klasse derselben Mechanik): verweist eine
+`done/<base>` stehen (Festlegung 1 derselben Mechanik wie
+[`ADR-0061`](../../docs/plan/adr/0061-review-report-bekommt-beim-archivieren-einen-stub.md), fünfte
+Klasse): verweist eine
 Datei, die der Verweis-Nachzug nicht erreicht — mit
 [`ADR-0042`](../../docs/plan/adr/0042-verweis-nachzug-im-eingefrorenen-artefakt.md) Festlegung 2
 sind das heute die `Accepted`-ADRs unter `docs/plan/adr`, gelesen über das
