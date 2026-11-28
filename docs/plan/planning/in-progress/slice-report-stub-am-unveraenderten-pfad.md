@@ -88,7 +88,7 @@ Implementer-Zug gegen den Bestand wiederholen, [`MR-025`](../../../../harness/co
 
 ## 2. Definition of Done
 
-- [ ] **Liefer-Punkt 1:** die **repo-eigene Stub-Vorlage** unter
+- [x] **Liefer-Punkt 1:** die **repo-eigene Stub-Vorlage** unter
       `docs/plan/planning/` (Name beim Implementer, Platzhalter
       `archive-stub-report.template.md` <!-- d-check:ignore (Platzhalter: entsteht im Implementer-Zug, MR-071-Form) -->)
       als Nachbar der vendored Vorlage
@@ -98,7 +98,7 @@ Implementer-Zug gegen den Bestand wiederholen, [`MR-025`](../../../../harness/co
       ([`MR-041`](../../../../harness/conventions.md#mr-041--die-referenz-statt-kopie-setzung-für-ausfüll-templates-steht-jetzt-in-der-adoptierten-baseline)-Grenze
       je [`ADR-0061`](../../adr/0061-review-report-bekommt-beim-archivieren-einen-stub.md)
       Festlegung 2).
-- [ ] **Liefer-Punkt 2:** [`internal/archive/anwenden.go`](../../../../internal/archive/anwenden.go)
+- [x] **Liefer-Punkt 2:** [`internal/archive/anwenden.go`](../../../../internal/archive/anwenden.go)
       schreibt statt `g.Rm(b.Reviews)` je Review einen Stub an
       unveränderter Adresse `docs/reviews/<datei>.md` und staged ihn; das
       Archiv-Zip nimmt den vollen Report-Inhalt wie bisher auf
@@ -108,7 +108,7 @@ Implementer-Zug gegen den Bestand wiederholen, [`MR-025`](../../../../harness/co
       und Zustand, die `[haenger]`-Vorschau führt nach der Umsetzung keine
       Report-Ziele mehr (`make test`), ein bestehender Verweis auf einen
       archivierten Report löst weiterhin auf (`make docs-check-host`).
-- [ ] **Liefer-Punkt 3:** die `[haenger]`-Vorschau-Messung je
+- [x] **Liefer-Punkt 3:** die `[haenger]`-Vorschau-Messung je
       [`ADR-0061`](../../adr/0061-review-report-bekommt-beim-archivieren-einen-stub.md)-Klasse
       — die fünf Report-Klassen des 107er-Befunds entfallen; die übrige Luft
       (Slice-/Welle-Ziele) bleibt je Quelle benannt und wird nicht still
@@ -121,16 +121,16 @@ Regeln dieser Sektion: Baseline-Regelwerk `modul-05-planning-harness.md`
 §Ziel-Form: Slice — **≤ 3 Liefer-Punkte**; Gate-Läufe und die Closure-Pflichten
 zählen nicht mit.
 
-- [ ] `make gates` grün.
-- [ ] Review durchgeführt, Report unter `docs/reviews/` liegt vor
+- [x] `make gates` grün.
+- [x] Review durchgeführt, Report unter `docs/reviews/` liegt vor
       (`.harness/skills/reviewer.md`) — kein Self-Review (Modul 8).
-- [ ] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
-- [ ] Closure-Notiz mit Steering-Loop-Lerneintrag.
-- [ ] Beobachtungs-Register (`../observations/`) fortgeschrieben —
+- [x] Doku-Update, falls ein öffentlicher Vertrag berührt ist.
+- [x] Closure-Notiz mit Steering-Loop-Lerneintrag.
+- [x] Beobachtungs-Register (`../observations/`) fortgeschrieben —
       `evidence/`-Datei ergänzen, wo eine Beobachtung anfiel; keine
       Beobachtung angefallen ist ebenfalls eine Antwort und wird in §7
       notiert.
-- [ ] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
+- [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
 - [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind hier geprüft
       — Repo ohne Wellen-Betrieb, nach dem `git mv`.
@@ -191,18 +191,13 @@ benannt. Zusätzlich: Closure-Notiz mit Lerneintrag geschrieben.
   wie es je hatte (Kontext der ADR). — **Ausgang:** entfallen mit Grund —
   die ADR nimmt den Preis in den Konsequenzen bewusst.
 - **Archiv-Zip wächst durch den vollen Report-Inhalt** (der Stub ersetzt den
-  Inhalt nur im Arbeitsbaum, nicht im Zip). — **Ausgang (vorgesehen):**
-  eingetreten → die Größe ist der gemessene Preis des Zips, benannt in der
-  Closure; kein zweites Kompilieren des Report-Bestands.
+  Inhalt nur im Arbeitsbaum, nicht im Zip). — **Ausgang:** eingetreten —
+  die Größe im Zip ist die gesetzte Form (Festlegung 3: das Zip trägt den
+  vollen Report-Inhalt, die Probe vergleicht byte-gleich); kein Carveout und
+  kein Folge-Slice, der Preis steht so in den Konsequenzen der
+  [`ADR-0061`](../../adr/0061-review-report-bekommt-beim-archivieren-einen-stub.md).
 
 ## 7. Closure-Notiz
-
-<!-- BEDIENHINWEIS — keine Norm; faellt beim Kopieren weg (README.md
-§Verwendung, Schritt 5) und darf deshalb nichts Tragendes halten. Reihenfolge:
-diese Sektion vor dem `git mv` nach done/ fuellen — einzige Ausnahme ist das
-letzte DoD-Item in §2 (die Paarungen suchen in `done/`, also nach dem `git mv`).
-Im Repo ohne Wellen-Betrieb braucht die Closure dadurch drei Commits: Inhalt,
-`git mv`, Haekchen — das folgt aus der Hard Rule, es widerspricht ihr nicht. -->
 
 Regeln dieser Sektion: Baseline-Regelwerk `modul-06-roadmap.md`
 §Das Beobachtungs-Register (vorhandene `BEO-<KUERZEL>/<slug>` **zitieren** statt neu
@@ -214,13 +209,80 @@ Ausgang; die Liefer-Punkte der DoD bleiben leer
 (`modul-05-planning-harness.md` §Ein Slice, dessen Gegenstand ein anderer
 übernimmt).
 
-- **Was hat funktioniert:** <…>
-- **Was ging anders als geplant:** <…>
-- **Steering-Loop-Eintrag:** <…>
-- **Beobachtungs-Register (`../observations/`):** <…>
-- **Folge-Slices:** <…>
-- **Risiken aus §6:** <jedes mit genau einem Ausgang — siehe §6>
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+- **Was hat funktioniert:** die drei Liefer-Punkte gegen
+  [`ADR-0061`](../../adr/0061-review-report-bekommt-beim-archivieren-einen-stub.md)
+  Festlegungen 1–3 — die repo-eigene Report-Stub-Vorlage
+  (`docs/plan/planning/archive-stub-report.template.md`) liest der Träger
+  `archive-welle` selbst, `schreibeReportStubs` schreibt je Review den Stub
+  an unveränderter Adresse `docs/reviews/<datei>.md` und das Zip trägt den
+  vollen Report-Inhalt, und die `[haenger]`-Vorschau zählt keine
+  Report-Ziele mehr (am realen Bestand gemessen,
+  `archive-welle --vorschau altbestand`, Review-Zug 2026-11-28:
+  `Sperren: keine — der schreibende Lauf liefe.`). Der Review-Verweis aus
+  Rang 1 überlebt den Lauf am Stub (`test/mutations/251`). Review
+  ([`../../../reviews/2026-11-28-slice-report-stub-am-unveraenderten-pfad.md`](../../../reviews/2026-11-28-slice-report-stub-am-unveraenderten-pfad.md))
+  ohne HIGH — 2 MEDIUM / 2 LOW / 1 INFO, alle behoben (`3ee2ebcb`,
+  `b2088a1e`, `9b565038`); Verifikation bestätigt LP1–LP3 und die
+  Pauschal-Punkte; `make gates` grün je Endlauf (Stempel
+  `gates-passed.head`), die Gates zu dieser Closure fährt der
+  koordinierende Kontext.
+
+- **Was ging anders als geplant:** die FormOK-Verdrahtung am Report-Zweig
+  trug bei der Übergabe keinen bindenden Fall — der im Kommentar genannte
+  Fall (243, `TestAnwendenBrichtBeiVerletzterStubFormAb`) setzt die
+  Slice-Vorlage an, der Lauf bricht vor dem Report-Zweig ab, und die
+  Bruchprobe (nur die Report-FormOK-Zeile unwirksam gesetzt) blieb grün
+  (Review F-2). Behoben in `b2088a1e`: eigener Fall am Report-Zweig
+  (`TestAnwendenBrichtBeiVerletzterReportStubFormAb`, Mutations-Anlage 819).
+  Weiter ging die Plan-§3-Tabelle: sie wurde im Implementation-Commit
+  (`c701d1bf`) gegen den Ist berichtigt (keine Makefile-Zeile mehr, je
+  [`ADR-0033`](../../adr/0033-wellen-archivierung-als-unterkommando.md)
+  Festlegung 1; Träger-/E2E-/Doku-Zeilen ergänzt) — transparent je Review
+  I-1, hier von der Rolle Planner gegen den Plan gelesen.
+
+- **Steering-Loop-Eintrag:** die wiederkehrende Finding-Klasse aus dem
+  Review (F-2 — ihre Quelle ist die verkörperte Zeile *„Mehrteilige
+  Regel-Zusage im Kommentar ohne Mutations-Deckung je Teil"*)
+  trägt einen Beleg in den bestehenden Eintrag
+  [`BEO-ALL/zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel`](../observations/BEO-ALL/zusage-im-doc-kommentar-ohne-zahn-fuer-eine-haelfte-der-regel/state.md)
+  — zitiert, nicht neu benannt. Der Eintrag führt Schwelle und Ausgang
+  schon: Folge-Slice
+  [`../open/slice-der-mutations-treiber-sieht-bindung-und-abdeckung.md`](../open/slice-der-mutations-treiber-sieht-bindung-und-abdeckung.md),
+  darum in dieser Closure gezählt und **nicht verkörpert** — es entsteht
+  keine Regel an einem Zielort, kein `liegt in`-Feld. F-1 ist eine Instanz
+  der in `AGENTS.md` §3.5 benannten Grenze des Ausnahme-Grund-Wächters
+  (sie prüft die Nennung, nicht ob sie stimmt) und trägt keinen zweiten
+  Namen; F-3/F-4 sind Einzelkorrekturen am Ist (`9b565038`), I-1 eine
+  Rollen-Notiz ohne Klasse.
+
+- **Beobachtungs-Register
+  ([`../observations/`](../observations/)):** zwei Belege an bestehenden
+  Einträgen ergänzt —
+  [`BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt`](../observations/BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt/state.md):
+  keine Treffer der Klasse (der Lauf schreibt keine Adresse um — je Review,
+  Abschnitt *Kein Nachzug, kein Ventil*), gekoppelt das **weiter
+  offen**-Risiko aus §6: die drei Gegenformen an Report-Stubs bleiben je
+  [`ADR-0061`](../../adr/0061-review-report-bekommt-beim-archivieren-einen-stub.md)
+  Festlegung 4 benannt, nicht geschlossen — die Grenze der Verkörperung
+  trägt der Eintrag selbst; und der F-2-Beleg in dem oben zitierten
+  Eintrag. Die Stand-Zeilen der zwei Einträge tragen ihre Ausgänge
+  (*verkörpert* / *geplant*) und bleiben unverändert.
+
+- **Folge-Slices:** keiner neu — der Ausgang der gezählten Klasse bleibt
+  der bestehende Slice
+  [`../open/slice-der-mutations-treiber-sieht-bindung-und-abdeckung.md`](../open/slice-der-mutations-treiber-sieht-bindung-und-abdeckung.md).
+
+- **Risiken aus §6:** (1) die drei Gegenformen — **weiter offen**, an den
+  Register-Eintrag oben gekoppelt; wird der Anker-Fall real, greift
+  Re-Evaluierungs-Trigger 1 der ADR. (2) der Verkleinerungsort —
+  **entfallen** mit Grund: die ADR nimmt den Preis in den Konsequenzen
+  bewusst. (3) die Zip-Größe — **eingetreten**: sie ist die gesetzte Form
+  (Festlegung 3 — voller Report-Inhalt im Zip, Probe byte-gleich); kein
+  Carveout und kein Folge-Slice, der Preis steht so in den Konsequenzen
+  der ADR.
+
+- **Drei Paarungen:** nach dem `git mv` geprüft und in dem darauffolgenden
+  Commit am Ruheort eingetragen (§2, letzter Punkt).
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
