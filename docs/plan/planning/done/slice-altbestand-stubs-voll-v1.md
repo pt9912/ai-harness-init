@@ -151,7 +151,7 @@ zählen nicht mit.
       notiert.
 - [x] Jedes Risiko aus §6 trägt einen Ausgang (eingetreten / entfallen /
       weiter offen).
-- [ ] Die drei Paarungen (Anker · Folge-Slice · Register) sind hier geprüft
+- [x] Die drei Paarungen (Anker · Folge-Slice · Register) sind hier geprüft
       — Repo ohne Wellen-Betrieb, nach dem `git mv`.
 
 ## 3. Plan (vor Code)
@@ -306,7 +306,19 @@ Ausgang; die Liefer-Punkte der DoD bleiben leer
   Restbreite der zwei ADR-0016-`ignore-refs`-Paare — **weiter offen** ·
   benannt; ihr Rückbau braucht eine eigene Schärfungs-ADR je
   [`AGENTS.md`](../../../../AGENTS.md) §3.5.
-- **Drei Paarungen:** <nur im Repo ohne Wellen-Betrieb — Anker · Folge-Slice · Register, Ergebnis>
+- **Drei Paarungen:** (1) *Anker* — der Steering-Loop-Eintrag trägt
+  `seit slice-altbestand-stubs-voll-v1`; die Gegen-Zeile am Zielort
+  (Fall-Kopf der Anlage 828) steht noch nicht und ist als
+  Übergabe-Artefakt an den Implementer-Zug benannt (eine Zeile im
+  Fall-Kopf) — gezählt, nicht am Zielort verkörpert. (2) *Folge-Slice* —
+  geschlossen: keine Folge-Slice-Kennung geht aus dieser Closure hervor;
+  die offenen Punkte (Gleichheits-Wächter je F-3, Anker-Zeile 828) sind
+  Register-Zählungen ohne Adresse. (3) *Register* — der Beleg
+  (`evidence/slice-altbestand-stubs-voll-v1.md`) ist an den bestehenden
+  Eintrag
+  `BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt` gekoppelt,
+  kein neues Verzeichnis; `state.md` bleibt unverändert auf
+  `**Stand:** verkörpert`.
 
 ## 8. Sub-Area-Prüfungen und Modus-Begründung
 
