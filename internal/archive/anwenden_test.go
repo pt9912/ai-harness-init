@@ -435,6 +435,16 @@ const vorlageSliceOhneZeiger = `# slice-<Kennung> — <Titel>
 **Hervorgegangen:** <BEO-*, ADR-*, Folge-Slice — oder ` + "`— keine —`" + `>
 `
 
+// vorlageReportOhneZeiger ist die Report-Vorlage ohne ihren Archiv-Zeiger-Block.
+// Der Stub, der daraus entsteht, ist form-widrig — genau der Zustand, gegen den
+// reportForm im Report-Zweig steht.
+const vorlageReportOhneZeiger = `# <Titel>
+
+> **Template-Hinweis.** ` + vorlagenMarker + ` — dieser Absatz faellt beim Kuerzen weg.
+
+**Archiviert mit:** <wave-id | altbestand>
+`
+
 // TestAnwendenBrichtBeiVerletzterStubFormAb misst die VERDRAHTUNG von FormOK,
 // nicht ihre Logik: dass der Lauf sie zwischen Stub-Erzeugung und Schreibzugriff
 // ruft und an ihrem Urteil abbricht. Die Logik selbst deckt
@@ -476,6 +486,42 @@ func TestAnwendenBrichtBeiVerletzterStubFormAb(t *testing.T) {
 	}
 	if got := lesen(t, root, "docs/plan/planning/done/wave-10/slice-100-a.md"); got != volltextSlice100 {
 		t.Errorf("der form-widrige Stub steht im Baum — FormOK laeuft nach dem Schreibzugriff:\n%q", got)
+	}
+}
+
+// TestAnwendenBrichtBeiVerletzterReportStubFormAb misst die Form-Verdrahtung
+// des REPORT-Zweigs am Lauf selbst — der Fall, den 243 nicht erreicht: die
+// Slice-Vorlage ist unveraendert, ihre Stubs bestehen, und erst der Report-Zweig
+// bricht an der verletzten Report-Form ab. Entthemen laesst sich nur diese
+// Haelfte: test/mutations/819-archive-welle-go-report-stub-form-verdrahtung.sh.
+//
+// Der Abbruch liegt ZWISCHEN den zwei Commits — der Rueckweg steht im
+// Fehlertext, der Move-Commit alleine da, und die zwei Originaldateien tragen
+// noch ihren VOLLLTEXT: die Pruefung laeuft VOR dem Schreibzugriff.
+func TestAnwendenBrichtBeiVerletzterReportStubFormAb(t *testing.T) {
+	root := baueBaum(t)
+	schreibe(t, filepath.Join(root, "docs", "plan", "planning", "archive-stub-report.template.md"), vorlageReportOhneZeiger)
+	b := einsammeln(t, root, "wave-10")
+	g := &gitMitschreiber{root: root,
+		beobachte: "docs/plan/planning/done/wave-10/slice-100-a.md",
+		zipPfad:   "docs/plan/planning/done/wave-10/" + archivNameTest}
+	var aus bytes.Buffer
+
+	err := archive.Anwenden(root, b, indexDateien(t, root), g, &aus)
+
+	if err == nil {
+		t.Fatal("form-widriger Report-Stub: want Fehler, got nil — die Form-Verdrahtung des Report-Zweigs ist nicht verdrahtet")
+	}
+	for _, teil := range []string{"docs/reviews/2026-05-05-slice-100-runde-1.md", "kein Archiv-Zeiger", "Abbruch nach Commit 1", "git reset --hard HEAD~1"} {
+		if !strings.Contains(err.Error(), teil) {
+			t.Errorf("Fehlertext nennt %q nicht:\n%v", teil, err)
+		}
+	}
+	if len(g.commits) != 1 {
+		t.Errorf("%d Commits, want 1 (nur der Move — der Inhalts-Commit kommt nicht mehr)", len(g.commits))
+	}
+	if got := lesen(t, root, "docs/reviews/2026-05-05-slice-100-runde-1.md"); got != "# Review\n" {
+		t.Errorf("der form-widrige Report-Stub steht im Baum — die Pruefung laeuft nach dem Schreibzugriff:\n%q", got)
 	}
 }
 

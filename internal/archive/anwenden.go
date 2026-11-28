@@ -324,12 +324,20 @@ func sliceStub(root, vorlagen string, b Bestand, planBase, wDatum, zipRel, neu, 
 	})
 }
 
+// reportForm ist die Form-Pruefung des Report-Zweigs. Sie steht als eigene
+// Funktion statt als direkter FormOK-Ruf am Ort, damit die Mutations-Anlage
+// sie einzeln enthemmt: die Verdrahtung misst
+// test/mutations/819-archive-welle-go-report-stub-form-verdrahtung.sh.
+func reportForm(inhalt string) error { return FormOK(inhalt) }
+
 // schreibeReportStubs ersetzt jeden Review-Report durch seinen Stub an
 // UNVERAENDERTER Adresse (ADR-0061 Festlegung 1). Dieselbe Form-Verdrahtung wie
-// ueber den Umzuegen: FormOK VOR dem Schreibzugriff, damit ein form-widriger
-// Report-Stub den Baum nicht erreicht; der Lauf bricht zwischen den zwei
-// Commits ab und nennt den Rueckweg. Gedeckt von denselben Faellen
-// (TestAnwendenBrichtBeiVerletzterStubFormAb, test/mutations/243).
+// ueber den Umzuegen: die Pruefung VOR dem Schreibzugriff, damit ein
+// form-widriger Report-Stub den Baum nicht erreicht; der Lauf bricht zwischen
+// den zwei Commits ab und nennt den Rueckweg. Der Report-Zweig ist eigen
+// gedeckt (TestAnwendenBrichtBeiVerletzterReportStubFormAb,
+// test/mutations/819); die Logik der Pruefung haelt
+// TestFormOKMeldetStehengebliebeneUeberschrift.
 func schreibeReportStubs(root string, b Bestand, zipRel string) error {
 	for _, r := range b.Reviews {
 		inhalt, ok, err := lies(root, r)
@@ -343,8 +351,8 @@ func schreibeReportStubs(root string, b Bestand, zipRel string) error {
 		if err != nil {
 			return err
 		}
-		if err := FormOK(text); err != nil {
-			return fmt.Errorf("%s: %v", r, err)
+		if ferr := reportForm(text); ferr != nil {
+			return fmt.Errorf("%s: %v", r, ferr)
 		}
 		if err := os.WriteFile(filepath.Join(root, filepath.FromSlash(r)), []byte(text), 0o644); err != nil {
 			return fmt.Errorf("%s schreiben: %w", r, err)
