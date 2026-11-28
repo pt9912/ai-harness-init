@@ -214,27 +214,8 @@ func inhaltsSchritt(root string, b Bestand, dateien []string, vorlagen string, u
 		return err
 	}
 
-	for _, r := range b.Reviews {
-		inhalt, ok, err := lies(root, r)
-		if err != nil {
-			return err
-		}
-		if !ok {
-			return fmt.Errorf("%s vor dem Stub nicht lesbar", r)
-		}
-		text, err := reportStub(root, b.Welle, zipRel, r, inhalt)
-		if err != nil {
-			return err
-		}
-		// Dieselbe Form-Verdrahtung wie ueber den Umzuegen: FormOK VOR dem
-		// Schreibzugriff, damit ein form-widriger Report-Stub den Baum nicht
-		// erreicht (Gedeckt von denselben Faellen).
-		if err := FormOK(text); err != nil {
-			return fmt.Errorf("%s: %v", r, err)
-		}
-		if err := os.WriteFile(filepath.Join(root, filepath.FromSlash(r)), []byte(text), 0o644); err != nil {
-			return fmt.Errorf("%s schreiben: %w", r, err)
-		}
+	if err := schreibeReportStubs(root, b, zipRel); err != nil {
+		return err
 	}
 
 	nachgezogen, err := Nachziehen(root, dateien, b.Bewegte(), b.Welle)
@@ -272,10 +253,9 @@ func inhaltsSchritt(root string, b Bestand, dateien []string, vorlagen string, u
 	return nil
 }
 
-// schreibeStubs ersetzt jede bewegte Datei durch ihren Stub und jeden
-// Review-Report durch seinen Stub an UNVERAENDERTER Adresse (ADR-0061
-// Festlegung 1). Der Welle-Plan bekommt die Welle-Vorlage, jeder Slice die
-// Slice-Vorlage, jeder Report die repo-eigene Report-Vorlage.
+// schreibeStubs ersetzt jede bewegte Datei durch ihren Stub. Der Welle-Plan
+// bekommt die Welle-Vorlage, jeder Slice die Slice-Vorlage. Die Review-Reports
+// werden hier nicht angefasst — ihr Stub schreibt schreibeReportStubs.
 func schreibeStubs(root string, b Bestand, vorlagen string, umzuege []Umzug, zipRel string) error {
 	// Der Schluessel AltbestandSchluessel hat weder Plan noch Ergebnisnotiz: kein
 	// Welle-Stub, und `Geschlossen:` traegt den Leerwert `—` (WelleDatum ohne Zeile).
@@ -342,6 +322,35 @@ func sliceStub(root, vorlagen string, b Bestand, planBase, wDatum, zipRel, neu, 
 		{"<pfad-im-archiv>", neu},
 		{"<wave-id>", b.Welle},
 	})
+}
+
+// schreibeReportStubs ersetzt jeden Review-Report durch seinen Stub an
+// UNVERAENDERTER Adresse (ADR-0061 Festlegung 1). Dieselbe Form-Verdrahtung wie
+// ueber den Umzuegen: FormOK VOR dem Schreibzugriff, damit ein form-widriger
+// Report-Stub den Baum nicht erreicht; der Lauf bricht zwischen den zwei
+// Commits ab und nennt den Rueckweg. Gedeckt von denselben Faellen
+// (TestAnwendenBrichtBeiVerletzterStubFormAb, test/mutations/243).
+func schreibeReportStubs(root string, b Bestand, zipRel string) error {
+	for _, r := range b.Reviews {
+		inhalt, ok, err := lies(root, r)
+		if err != nil {
+			return err
+		}
+		if !ok {
+			return fmt.Errorf("%s vor dem Stub nicht lesbar", r)
+		}
+		text, err := reportStub(root, b.Welle, zipRel, r, inhalt)
+		if err != nil {
+			return err
+		}
+		if err := FormOK(text); err != nil {
+			return fmt.Errorf("%s: %v", r, err)
+		}
+		if err := os.WriteFile(filepath.Join(root, filepath.FromSlash(r)), []byte(text), 0o644); err != nil {
+			return fmt.Errorf("%s schreiben: %w", r, err)
+		}
+	}
+	return nil
 }
 
 // reportVorlagePfad ist der Pfad einer Vorlage unter docs/plan/planning/ — den
