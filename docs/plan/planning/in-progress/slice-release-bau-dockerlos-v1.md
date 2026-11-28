@@ -38,7 +38,7 @@ Architect-Commit `90930bf8` bereits; dieser Slice liest sie als Soll). Der
 Verweis zeigt **aufwärts**: Die Spec nennt diesen Slice nie
 (Baseline-Regelwerk `grundlagen-referenz-richtung.md` §Referenz-Richtung (SDP)).
 
-**Verantwortlich:** pt9912
+**Verantwortlich:** pt9912 (Zweig slice-release-bau-dockerlos-v1)
 
 **Autor:** pt9912 (Rolle Planner). **Datum:** 2026-11-28.
 
