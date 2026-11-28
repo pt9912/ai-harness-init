@@ -46,7 +46,7 @@ um die zwei committeten Ablage-Klassen wächst),
 (beobachtbar an der ADR-Index-Zelle: „revidiert durch ADR-0111"). Der Verweis
 zeigt **aufwärts**: Die Spec nennt diesen Slice nie.
 
-**Verantwortlich:** —
+**Verantwortlich:** pt9912
 
 **Autor:** pt9912 (Rolle Planner, je [`ADR-0111`](../../adr/0111-ci-stempel-eingecheckt-committed-je-check-keys.md)
 Festlegung 6, Architektur-Zug `a23e4a06`). **Datum:** 2026-11-28.
