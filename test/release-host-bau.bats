@@ -47,6 +47,21 @@ setup() {
   rm -rf "$d"
 }
 
+# Der Formel-Teillauf (ein Plattform-Lauf mit gesetzter Fassung, aber ohne die
+# vier brew-Plattformen in der SHA256SUMS) meldet den Formel-Entfall statt den
+# Lauf zu brechen (Plan §3-Nachtrag, je Review F-5: die Meldung selbst ist die
+# Zusage, nicht nur der Status-0-Ende).
+@test "release-host: der Formel-Teillauf meldet den Formel-Entfall im DEST" {
+  local d
+  d="$(mktemp -d)"
+  run make -C "$REPO" release-artifacts-host DEST="$d" RELEASE_PLATFORMS=linux/amd64 TRAEGER_VERSION=v0.0.0-bautest
+  [ "$status" -eq 0 ]
+  printf '%s' "$output" | grep -qF 'Teillauf ohne die vier brew-Plattformen'
+  printf '%s' "$output" | grep -qF 'die Formel entfaellt im DEST'
+  [ ! -e "$d/ai-harness-init.rb" ]
+  rm -rf "$d"
+}
+
 # ADR-0063 Festlegung 2 am realen Bau: ohne uebergebenen Fassungs-Wert injiziert
 # das Rezept nicht — der Skelett-Kommentar nennt den Tag, darum entsteht ohne Tag
 # auch keine Formel im DEST.
