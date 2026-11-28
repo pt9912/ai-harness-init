@@ -3630,8 +3630,11 @@ if [ "$hex_rc" -ne 0 ]; then
 	einordnen "make -j gates nach add-lang go --arch hexslice (apps/hex)" "$hex_out"
 	exit 1
 fi
+# Die Marker sind die Recipe-Echo-Zeilen der drei hexslice-Gate-Ziele — der Host-Fassung
+# je Emit-Form (ADR-0109: der Modul-Lauf faehrt am Host, die Dockerfile-Stages bleiben
+# opt-in images); ein Marker je Zielform, sonst misst der Wächter einen leeren Prüfbereich.
 hex_missing=""
-for marker in "apps/hex" "apps-hex:build" "apps-hex:lint"; do
+for marker in "apps/hex" "cd apps/hex && CGO_ENABLED=0" "cd apps/hex && golangci-lint run --allow-parallel-runners"; do
 	grep -qF -- "$marker" <<<"$hex_out" || hex_missing="$hex_missing [$marker]"
 done
 if [ -n "$hex_missing" ]; then
