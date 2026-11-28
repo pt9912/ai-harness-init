@@ -2902,7 +2902,7 @@ for rel in apps/kt/settings.gradle.kts apps/kt/build.gradle.kts apps/kt/Dockerfi
 	fi
 done
 kt_rc=0
-kt_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || kt_rc=$?
+kt_out="$( DCHECK_CARRIER="$dcheck_carrier" make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || kt_rc=$?
 printf '%s\n' "$kt_out"
 if [ "$kt_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates nach add-lang kotlin ist NICHT Exit 0 (Kotlin-Gate kaputt)." >&2
@@ -2950,7 +2950,7 @@ for rel in apps/java/settings.gradle.kts apps/java/build.gradle.kts apps/java/Do
 	fi
 done
 java_rc=0
-java_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || java_rc=$?
+java_out="$( DCHECK_CARRIER="$dcheck_carrier" make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || java_rc=$?
 printf '%s\n' "$java_out"
 if [ "$java_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates nach add-lang java ist NICHT Exit 0 (Java-Gate kaputt)." >&2
@@ -3040,7 +3040,7 @@ for rel in apps/python/pyproject.toml apps/python/requirements-dev.txt apps/pyth
 	fi
 done
 python_rc=0
-python_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || python_rc=$?
+python_out="$( DCHECK_CARRIER="$dcheck_carrier" make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || python_rc=$?
 printf '%s\n' "$python_out"
 if [ "$python_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates nach add-lang python ist NICHT Exit 0 (Python-Gate kaputt)." >&2
@@ -3154,7 +3154,7 @@ for rel in apps/pythonhexslice/src/app/hexagon/domain/example/greeting.py \
 	fi
 done
 pyhex_rc=0
-pyhex_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || pyhex_rc=$?
+pyhex_out="$( DCHECK_CARRIER="$dcheck_carrier" make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || pyhex_rc=$?
 printf '%s\n' "$pyhex_out"
 if [ "$pyhex_rc" -ne 0 ]; then
 	if grep -qF -- 'wrong-direction: driven_adapters -> ports_outbound' <<<"$pyhex_out"; then
@@ -3235,7 +3235,7 @@ for rel in apps/csharp/app.sln apps/csharp/Directory.Build.props apps/csharp/.ed
 	fi
 done
 csharp_rc=0
-csharp_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || csharp_rc=$?
+csharp_out="$( DCHECK_CARRIER="$dcheck_carrier" make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || csharp_rc=$?
 printf '%s\n' "$csharp_out"
 if [ "$csharp_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates nach add-lang csharp ist NICHT Exit 0 (C#-Gate kaputt)." >&2
@@ -3367,7 +3367,7 @@ for rel in apps/csharphexslice/src/App/Hexagon/Domain/Example/Greeting.cs \
 	fi
 done
 cshex_rc=0
-cshex_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || cshex_rc=$?
+cshex_out="$( DCHECK_CARRIER="$dcheck_carrier" make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || cshex_rc=$?
 printf '%s\n' "$cshex_out"
 if [ "$cshex_rc" -ne 0 ]; then
 	if grep -qF -- 'wrong-direction: driven_adapters -> ports_outbound' <<<"$cshex_out"; then
@@ -3612,7 +3612,7 @@ if [ -e "$tmprepo_doc/apps/onion/CMakeLists.txt" ]; then
 	exit 1
 fi
 hex_rc=0
-hex_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || hex_rc=$?
+hex_out="$( DCHECK_CARRIER="$dcheck_carrier" make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || hex_rc=$?
 printf '%s\n' "$hex_out"
 if [ "$hex_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates nach add-lang --arch hexslice ist NICHT Exit 0 (hexSlice-Code uebersetzt/lintet nicht, slice-045b)." >&2
@@ -3714,7 +3714,7 @@ for rel in apps/cpphex/src/hexagon/domain/example/greeting.hpp \
 	fi
 done
 cpphex_rc=0
-cpphex_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || cpphex_rc=$?
+cpphex_out="$( DCHECK_CARRIER="$dcheck_carrier" make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || cpphex_rc=$?
 printf '%s\n' "$cpphex_out"
 if [ "$cpphex_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates nach add-lang cpp --arch hexslice ist NICHT Exit 0 (C++-hexSlice uebersetzt/lintet nicht, slice-053)." >&2
@@ -3834,7 +3834,7 @@ for rel in apps/kthex/src/main/kotlin/app/hexagon/domain/example/Greeting.kt \
 	fi
 done
 kthex_rc=0
-kthex_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || kthex_rc=$?
+kthex_out="$( DCHECK_CARRIER="$dcheck_carrier" make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || kthex_rc=$?
 printf '%s\n' "$kthex_out"
 if [ "$kthex_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates nach add-lang kotlin --arch hexslice ist NICHT Exit 0 (Kotlin-hexSlice-Gate kaputt)." >&2
@@ -3902,7 +3902,7 @@ for rel in apps/javahexslice/src/main/java/app/hexagon/domain/example/Greeting.j
 	fi
 done
 jvhex_rc=0
-jvhex_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || jvhex_rc=$?
+jvhex_out="$( DCHECK_CARRIER="$dcheck_carrier" make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || jvhex_rc=$?
 printf '%s\n' "$jvhex_out"
 if [ "$jvhex_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates nach add-lang java --arch hexslice ist NICHT Exit 0 (Java-hexSlice-Gate kaputt)." >&2
@@ -4013,7 +4013,7 @@ for rel in .a-check.yml a-check.mk harness/mk/arch-cpp.mk src/hexagon/domain/exa
 	fi
 done
 cpproot_rc=0
-cpproot_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_cpphex" gates 2>&1 )" || cpproot_rc=$?
+cpproot_out="$( DCHECK_CARRIER="$dcheck_carrier" make "${MAKE_JFLAGS[@]}" -C "$tmprepo_cpphex" gates 2>&1 )" || cpproot_rc=$?
 printf '%s\n' "$cpproot_out"
 if [ "$cpproot_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates am cpp-Root-Modul ist NICHT Exit 0 (Include-Pfad am Root? Schicht-Config falsch verortet? slice-054)." >&2
@@ -4101,7 +4101,7 @@ for rel in .a-check.yml a-check.mk harness/mk/arch-kotlin.mk harness/mk/kotlin.m
 	fi
 done
 ktroot_rc=0
-ktroot_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_kthexroot" gates 2>&1 )" || ktroot_rc=$?
+ktroot_out="$( DCHECK_CARRIER="$dcheck_carrier" make "${MAKE_JFLAGS[@]}" -C "$tmprepo_kthexroot" gates 2>&1 )" || ktroot_rc=$?
 printf '%s\n' "$ktroot_out"
 if [ "$ktroot_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates am Kotlin-Root-Modul ist NICHT Exit 0 (Gradle-Kontext am Root? Schicht-Config falsch verortet?)." >&2
@@ -4160,7 +4160,7 @@ for rel in apps/hex2/.a-check.yml harness/mk/arch-apps-hex2.mk; do
 	fi
 done
 two_rc=0
-two_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || two_rc=$?
+two_out="$( DCHECK_CARRIER="$dcheck_carrier" make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || two_rc=$?
 if [ "$two_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates mit ZWEI hexSlice-Modulen ist NICHT Exit 0 (doppelter include? slice-046/Review F-2). rc=$two_rc" >&2
 	printf '%s\n' "$two_out" >&2
@@ -4230,7 +4230,7 @@ if [ -e "$tmprepo_doc/apps/cpphexagonal/CMakeLists.txt" ]; then
 	exit 1
 fi
 hexagonal_rc=0
-hexagonal_out="$( make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || hexagonal_rc=$?
+hexagonal_out="$( DCHECK_CARRIER="$dcheck_carrier" make "${MAKE_JFLAGS[@]}" -C "$tmprepo_doc" gates 2>&1 )" || hexagonal_rc=$?
 if [ "$hexagonal_rc" -ne 0 ]; then
 	echo "full-smoke: FEHLER — make gates mit dem hexagonalen Modul ist NICHT Exit 0 (Schichten-Code uebersetzt/lintet nicht, slice-058)." >&2
 	printf '%s\n' "$hexagonal_out" >&2
