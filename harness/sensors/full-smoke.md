@@ -136,16 +136,16 @@ außerhalb des Baums; die committete Stempel-Klasse ist als deklarierte
 Hash-Ausnahme aus dem Baum-Hash genommen, der eigene Schreibzug rotiert den
 getragenen Vergleichswert also nicht. Kein Commit-SHA-Feld
 ([ADR-0111](../../docs/plan/adr/0111-ci-stempel-eingecheckt-committed-je-check-keys.md)
-Festlegung 3: zirkulär), kein Datumsfeld. `make` committiert nicht (ADR-0111
+Festlegung 3: zirkulär), kein Datumsfeld. `make` committiert nicht ([`ADR-0111`](../../docs/plan/adr/0111-ci-stempel-eingecheckt-committed-je-check-keys.md)
 Festlegung 5) — der committende Zug trägt die sieben Dateien mit ihrem Inhalt.
 
-Der Skip-Griff läuft **nur am push-`main`-Job der CI** (Festlegung 2 von ADR-0111):
+Der Skip-Griff läuft **nur am push-`main`-Job der CI** ([`ADR-0111`](../../docs/plan/adr/0111-ci-stempel-eingecheckt-committed-je-check-keys.md) Festlegung 2):
 der Job
 setzt `FULL_SMOKE_SKIP_KONSULT=1`, das Rezept konsultiert die sieben Stempel je
 gegen die frisch gerechnete Vorlagen-Menge über
 [`harness/tools/full-smoke-skip.sh`](../../harness/tools/full-smoke-skip.sh) und SKIPpt
 nur bei voller Deckung aller sieben, mit der Varianten-Menge und dem benannten Rest
-(ADR-0113 Festlegung 3: die Verfügbarkeit des Traeger-Releases, Registry- und
+([`ADR-0113`](../../docs/plan/adr/0113-der-e2e-stempel-wird-je-variante-gestempelt.md) Festlegung 3: die Verfügbarkeit des Traeger-Releases, Registry- und
 Netz-Zustände, die Runner-Fassung). Je Variante fehlend, unformal, fremd oder bei
 Parser-Zweifel fährt der Job voll (fail-closed,
 [`MR-017`](../../harness/conventions.md#mr-017--default-regel-für-emittierte-prüfbereiche-fail-closed)).
@@ -162,7 +162,7 @@ Mutations-Fälle 822 (push-main erzwungen voll), 832 (fremdes Feld im Konsum),
 [`test/mutations/`](../../test/mutations/). Die Verdrahtung der Workflows belegt
 der reale CI-Lauf selbst ([`MR-003`](../../harness/conventions.md#mr-003--härtung-inhaltsbasierter-nachweis-und-sub-shell-prüfung)-Form:
 die CI ist dort das Netz). Was der Stempel nicht deckt: Runner-Fassung und
-Netz-Zustand der CI (ADR-0113 Festlegung 3), die Schreiber-Kette am `main`-Push (der
+Netz-Zustand der CI ([`ADR-0113`](../../docs/plan/adr/0113-der-e2e-stempel-wird-je-variante-gestempelt.md) Festlegung 3), die Schreiber-Kette am `main`-Push (der
 benannte Rest der ADR, kein Wächter); **nicht gemessen bis zur Einzelfahrt:**
 der je-Variante-Skip wird nicht teilaufgelöst — SKIP verlangt alle sieben gedeckt
 (Festlegung 3), die Einzelfahrt `VARIANTE=<name>` (Festlegung 4, zweite Hälfte)
