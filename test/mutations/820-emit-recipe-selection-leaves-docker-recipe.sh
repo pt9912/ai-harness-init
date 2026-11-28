@@ -12,4 +12,4 @@
 # realen --print-mk-Ausgabe) und meldet "eine Rezept-Zeile faehrt docker direkt
 # statt ueber $(DCHECK_RUN)".
 set -euo pipefail
-sed -i 's|body = strings.ReplaceAll(body, dockerLauf, "$(DCHECK_RUN)")|body = strings.ReplaceAll(body, "---docker-run-nicht-in-der-ausgabe---", "$(DCHECK_RUN)")|' internal/emit/emit.go
+sed -i "s|body = strings.ReplaceAll(body, dockerLauf, \"\$(DCHECK_RUN)\")|body = strings.ReplaceAll(body, \"---docker-run-nicht-in-der-ausgabe---\", \"\$(DCHECK_RUN)\")|" internal/emit/emit.go
