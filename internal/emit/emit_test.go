@@ -384,9 +384,11 @@ func TestRunRef(t *testing.T) {
 	}
 }
 
-// TestAdaptMK_Fixture prueft die vier MR-010-Handgriffe an einer echten
-// --print-mk-Ausgabe (testdata/raw-print-mk.txt, v0.46.0): docs-check-Rename,
-// Digest-Pin, doc-help-Grep, Adopter-Header — advisory doc-*-Targets unberuehrt.
+// TestAdaptMK_Fixture prueft die MR-010-Handgriffe und den Host-Carrier-Weg an einer
+// echten --print-mk-Ausgabe (testdata/raw-print-mk.txt, vom gefetchten d-check v0.93.0
+// erzeugt, dieselbe Pin-Fassung wie emit.DefaultImage): docs-check-Rename, Digest-Pin,
+// doc-help-Grep, Adopter-Header — advisory doc-*-Targets unberuehrt; jedes docker-Pruefzept
+// faehrt ueber $(DCHECK_RUN) (Carrier, wenn die Ablage liegt, sonst docker als Rueffall).
 func TestAdaptMK_Fixture(t *testing.T) {
 	raw, err := os.ReadFile(filepath.Join("testdata", "raw-print-mk.txt"))
 	if err != nil {
@@ -423,6 +425,39 @@ func TestAdaptMK_Fixture(t *testing.T) {
 			t.Errorf("adaptiertes Fragment enthaelt unerwartet noch %q", w)
 		}
 	}
+	// Host-Carrier-Weg: die Rezept-Auswahl steht GENAU ein-mal (die zweite ?=-Stelle des
+	// Fragments, die doc-gate.mk traegt, ist eine Ziel-Datei, nicht dieses Fragment), jede
+	// Rezept-Zeile faehrt $(DCHECK_RUN), und die einzige docker-Form, die uebrig bleibt,
+	// ist der Rueffall-Absatz der Auswahl.
+	for _, w := range []string{
+		"DCHECK_CARRIER ?= .harness/state/bin/d-check",
+		"DCHECK_RUN = docker run --rm --network none -v \"$(CURDIR):/repo:ro\" $(DCHECK_REF)",
+		`DCHECK_RUN = "$(DCHECK_CARRIER)"`,
+	} {
+		if !strings.Contains(mk, w) {
+			t.Errorf("adaptiertes Fragment enthaelt die Rezept-Auswahl %q nicht:\n%s", w, mk)
+		}
+	}
+	if n := strings.Count(mk, "DCHECK_CARRIER ?="); n != 1 {
+		t.Errorf("die Carrier-Ablage-Default-Zeile steht %d-mal statt 1-mal", n)
+	}
+	for _, zeile := range strings.Split(mk, "\n") {
+		if !strings.HasPrefix(zeile, "\t") {
+			continue
+		}
+		if strings.Contains(zeile, "docker") {
+			t.Errorf("eine Rezept-Zeile faehrt docker direkt statt ueber $(DCHECK_RUN): %q", zeile)
+		}
+		if !strings.Contains(zeile, "$(DCHECK_RUN)") && zeile != "\t@grep -hE '^docs?-[a-z-]+:.*## ' $(MAKEFILE_LIST) | sort | sed -E 's/:.*## /  /'" {
+			t.Errorf("eine Rezept-Zeile faehrt kein d-check-Modul ueber $(DCHECK_RUN): %q", zeile)
+		}
+	}
+	// Der Block liegt NACH der DCHECK_REF-Ableitung: davor waere der docker-Absatz der
+	// Auswahl leer expandiert.
+	ref, block := strings.Index(mk, "DCHECK_REF :="), strings.Index(mk, "DCHECK_CARRIER ?=")
+	if ref < 0 || block < ref {
+		t.Errorf("der Carrier-Block steht vor der DCHECK_REF-Ableitung (oder die Ableitung fehlt):\n%s", mk)
+	}
 }
 
 // TestStreicheFremdeKennungenTrifftNurDieRegister haelt beide Richtungen der Streichung im
@@ -447,8 +482,9 @@ func TestStreicheFremdeKennungenTrifftNurDieRegister(t *testing.T) {
 }
 
 // TestDocGate_FragmentWiresDocsCheck: das Doc-Gate-Fragment haengt den HOST-Weg
-// docs-check-host an GATE_CHECKS und bindet d-check.mk ein (dessen docker-Lauf
-// docs-check bleibt opt-in, ADR-0109) — der netzlose Waechter auf die Verdrahtung
+// docs-check-host an GATE_CHECKS und bindet d-check.mk ein (dessen Rezept-Auswahl
+// $(DCHECK_RUN) faehrt den Carrier, wenn die Ablage liegt, sonst docker als Rueffall,
+// ADR-0109) — der netzlose Waechter auf die Verdrahtung
 // (DocGate selbst braucht den print-mk-Zugang; ersetzt zusammen mit full-smoke die
 // Deckung des entfernten Mutations-Falls 21, Review-Befund slice-034 F-1).
 // test/mutations/40 bricht die GATE_CHECKS-Zeile -> dieser Test wird rot.
@@ -524,6 +560,24 @@ func TestDocGateMk_BindetDenVorlaufWaechter(t *testing.T) {
 func TestAdaptMK_MissingAnchor(t *testing.T) {
 	if _, err := emit.AdaptMK([]byte("# voellig anderes Format\n"), "sha256:x"); err == nil {
 		t.Error("AdaptMK: kein Fehler trotz fehlendem DCHECK_IMAGE-Anker")
+	}
+}
+
+// TestAdaptMK_BrichtOhneDockerForm: der Carrier-Grip ersetzt die docker-Pruefzept-Form;
+// traegt die --print-mk-Ausgabe sie nicht (Format geaendert), bricht die Adaption ab,
+// statt ein Fragment zu emittieren, dessen Rezepte still am Daemon haetten — oder, schlimmer,
+// dessen Rueffall-Absatz eine docker-Form traegt, die zur restlichen Ausgabe nicht passt.
+func TestAdaptMK_BrichtOhneDockerForm(t *testing.T) {
+	raw, err := os.ReadFile(filepath.Join("testdata", "raw-print-mk.txt"))
+	if err != nil {
+		t.Fatalf("Fixture lesen: %v", err)
+	}
+	ohne := strings.ReplaceAll(string(raw), `docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF)`, "docker run $(DCHECK_REF)")
+	if ohne == string(raw) {
+		t.Fatal("die Fixture fuehrt die docker-Pruefzept-Form nicht — der Fall misst nichts")
+	}
+	if _, err := emit.AdaptMK([]byte(ohne), "sha256:deadbeef"); err == nil {
+		t.Error("AdaptMK: kein Fehler trotz geaendertem docker-Rezept-Format")
 	}
 }
 

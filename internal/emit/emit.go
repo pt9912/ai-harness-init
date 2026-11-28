@@ -120,8 +120,9 @@ doc-commits:
 endif
 
 # HOST-WEG des Doku-Gates (die docker-los Form): der Pflicht-Weg des Ziels faehrt das
-# gelieferte d-check-Binary (DCHECK_CARRIER) am Host; der docker-Lauf aus
-# d-check.mk (docs-check) bleibt opt-in Weg. Die Ablage fehlt im frischen Klon —
+# gelieferte d-check-Binary (DCHECK_CARRIER) am Host; die d-check.mk-Rezepte waehlen
+# denselben Weg ueber ihre eigene Rezept-Auswahl (DCHECK_RUN — Carrier, wenn die Ablage
+# liegt, sonst bleibt der docker-Lauf der opt-in Weg). Die Ablage fehlt im frischen Klon —
 # make dcheck-fetch legt sie an (curl + sha256sum + tar, Netz an genau diesem
 # Aufruf, Digest-Kette gegen den DCHECK_DIGEST-Pin aus d-check.mk). Bis dahin
 # bricht docs-check-host am Diagnose-Ausgang (Exit 2, fail-closed), nicht am Bild.
@@ -155,6 +156,30 @@ func DocGateMk() string { return docGateMk }
 // Als Funktion (nicht als Paket-Variable), gochecknoglobals-konform.
 func vorbindungsTargets() []string { return []string{"doc-immutable", "doc-commits"} }
 
+// dockerLauf ist die Rezept-Vorbereitung, mit der die --print-mk-Ausgabe jedes Modul-Lauf
+// ansetzt. Die Adaption ersetzt sie durch $(DCHECK_RUN), damit die Rezepte am Carrier faehren
+// (Host-Weg) und der docker-Lauf als Rueffall in der Auswahl-Variable liegt; der Grip bricht
+// ab, wenn die Ausgabe in dieser Form kein docker-Pruefzept mehr traegt.
+const dockerLauf = `docker run --rm --network none -v "$(CURDIR):/repo:ro" $(DCHECK_REF)`
+
+// carrierBlock ist der Host-Carrier-Weg im emittierten Fragment (ADR-0109): die Rezepte
+// fahren $(DCHECK_RUN), und die Auswahl entscheidet am Vorhandensein der Ablage — liegt sie
+// (make dcheck-fetch hat sie abgelegt), faehrt der Lauf das Binary am Host; fehlt sie
+// (frischer Klon), bleibt der docker-Lauf der Rueffall am opt-in Weg. Beide Formen lesen
+// denselben Pin (DCHECK_REF). Das Block-Fragment steht nach dem Docker-Ersatz in der Adaption,
+// sein docker-Absatz ist darum die einzige docker-Form, die im emittierten Fragment bleibt.
+const carrierBlock = "# Host-Carrier-Weg: die Rezepte fahren $(DCHECK_RUN) — das gefetchte d-check\n" +
+	"# am Host (make dcheck-fetch legt die Ablage ab), wenn sie liegt; sonst bleibt\n" +
+	"# der docker-Lauf der Rueffall am opt-in Weg. Beide Formen lesen denselben Pin\n" +
+	"# (DCHECK_REF).\n" +
+	"DCHECK_CARRIER ?= .harness/state/bin/d-check\n" +
+	"\n" +
+	"ifeq ($(wildcard $(DCHECK_CARRIER)),)\n" +
+	"DCHECK_RUN = " + dockerLauf + "\n" +
+	"else\n" +
+	"DCHECK_RUN = \"$(DCHECK_CARRIER)\"\n" +
+	"endif\n"
+
 // requireVorbindungsTargets prueft die Target-Zeile im erzeugten d-check.mk, nicht ein
 // Vorkommen des Namens: `.PHONY: doc-immutable` allein traegt kein Rezept und liesse dieselbe
 // stille Luecke offen.
@@ -170,7 +195,7 @@ func requireVorbindungsTargets(mk string) error {
 // Options steuert den Doc-Gate-Emit.
 type Options struct {
 	Image  string // Tag-Referenz -> emittiertes DCHECK_IMAGE
-	Digest string // sha256-Pin -> emittiertes DCHECK_DIGEST + docker-Lauf
+	Digest string // sha256-Pin -> emittiertes DCHECK_DIGEST + docker-Rueffall in der Rezept-Auswahl
 }
 
 // RunRef ist die Referenz fuer den docker-Lauf: per Digest, wenn gesetzt (sticht
@@ -217,8 +242,10 @@ func DocGate(ctx context.Context, targetDir string, opts Options, pm PrintMK) er
 // AdaptMK wandelt rohe `d-check --print-mk`-Ausgabe in das Adopter-Fragment: der
 // d-check-Kopf wird durch den ai-harness-init-Header ersetzt, das Befund-Gate
 // doc-check -> docs-check umbenannt (advisory doc-*-Targets bleiben), DCHECK_DIGEST
-// auf digest gepinnt und der doc-help-Grep auf docs?- erweitert (die MR-010-Handgriffe,
-// hier mechanisch). Bricht ab, wenn sich das --print-mk-Format so aendert, dass ein
+// auf digest gepinnt, der doc-help-Grep auf docs?- erweitert (die MR-010-Handgriffe,
+// hier mechanisch) und jedes docker-Pruefzept auf den Host-Carrier-Weg umgehängt
+// (die Auswahl-Variable $(DCHECK_RUN) in carrierBlock, ADR-0109). Bricht ab, wenn
+// sich das --print-mk-Format so aendert, dass ein
 // Handgriff nicht greift, und wenn eines der zwei Targets fehlt, an die das Doc-Gate-
 // Fragment den Vorlauf-Waechter haengt (requireVorbindungsTargets) — dann ist Tier-2
 // (echter Lauf) die Instanz, die es faengt.
@@ -238,6 +265,21 @@ func AdaptMK(raw []byte, digest string) ([]byte, error) {
 	body = strings.Replace(body, "DCHECK_DIGEST ?=\n", "DCHECK_DIGEST ?= "+digest+"\n", 1)
 	// doc-help-Grep auf docs?- weiten, damit das umbenannte docs-check gelistet wird.
 	body = strings.Replace(body, "'^doc-[a-z-]+:", "'^docs?-[a-z-]+:", 1)
+	// Host-Carrier-Weg (ADR-0109): jedes docker-Pruefzept faehrt ueber die Auswahl-Variable
+	// — der Carrier-Weg faehrt die Module am Host, der docker-Lauf bleibt der Rueffall in
+	// carrierBlock. Ein docker-Aufruf, den der Ersatz uebrig laesst, hat sich das
+	// --print-mk-Format geaendert — hart abbrechen statt ein Fragment zu emittieren, dessen
+	// Rezepte am Daemon haetten.
+	if strings.Count(body, dockerLauf) == 0 {
+		return nil, errors.New("docker-lauf-ersatz schlug fehl: die --print-mk-ausgabe traegt kein docker-Pruefzept in der erwarteten Form (--print-mk-format geaendert?)")
+	}
+	body = strings.ReplaceAll(body, dockerLauf, "$(DCHECK_RUN)")
+	// Die Block-Einsetzung braucht ein .PHONY-Target als Anker — die Adaption haengt den
+	// Carrier-Block VOR das erste Target-Set. Ohne Anker ist das --print-mk-Format geaendert.
+	if !strings.Contains(body, "\n.PHONY:") {
+		return nil, errors.New("einsatz des carrier-blocks schlug fehl: die --print-mk-ausgabe traegt kein .PHONY-Target (--print-mk-format geaendert?)")
+	}
+	body = strings.Replace(body, "\n.PHONY:", "\n"+carrierBlock+"\n.PHONY:", 1)
 	// Jeder MR-010-Handgriff MUSS gegriffen haben — sonst hat sich das --print-mk-Format
 	// geaendert; hart abbrechen statt ein halb-adaptiertes Fragment zu emittieren.
 	switch {
