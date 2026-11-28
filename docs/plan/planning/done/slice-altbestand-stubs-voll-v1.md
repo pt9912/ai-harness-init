@@ -271,7 +271,7 @@ Ausgang; die Liefer-Punkte der DoD bleiben leer
   Fall-Kopf), keine Änderung in dieser Closure.
 - **Beobachtungs-Register (`../observations/`):**
   `BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt`
-  (`../../observations/BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt/state.md`)
+  (`../observations/BEO-ALL/verweis-nachzug-schreibt-in-eingefrorenes-artefakt/state.md`)
   — `evidence/slice-altbestand-stubs-voll-v1.md` ergänzt: die Vorab-Messung
   über beide Adress-Formen fand die zu den bewegten Referenzen gehörenden
   Pfade nur in den Frozen-Bäumen (kein beweglicher Treffer), die
@@ -298,12 +298,12 @@ Ausgang; die Liefer-Punkte der DoD bleiben leer
   beide Adress-Formen ergab keinen beweglichen Treffer auf diese Pfade
   (Beleg im Register). Kein Folge-Slice.
 - **Risiken aus §6:** (1) Gegenformen am Umzugs-Stub — **weiter offen** ·
-  benannt, nicht geschlossen (ADR-0112 Festlegung 4); Träger bleibt der
+  benannt, nicht geschlossen ([ADR-0112](../../adr/0112-umzugs-stub-traegt-die-referenzen-die-der-nachzug-nicht-erreicht.md) Festlegung 4); Träger bleibt der
   Lauf, der schreibt; Re-Evaluierungs-Trigger der ADR greifen. (2)
   Stub-Overhead — **entfallen** mit Grund: die Funde-Zeile macht je Lauf
   sichtbar, was die Klasse kostet (am realen Altbestand-Lauf: neun Stubs);
   wächst die Zahl, ist die Zeile der sichtbare Ort, kein Still-Leiden. (3)
-  Restbreite der zwei ADR-0016-`ignore-refs`-Paare — **weiter offen** ·
+  Restbreite der zwei [ADR-0016](../../adr/0016-verweis-traegt-tag-und-zitat.md)-`ignore-refs`-Paare — **weiter offen** ·
   benannt; ihr Rückbau braucht eine eigene Schärfungs-ADR je
   [`AGENTS.md`](../../../../AGENTS.md) §3.5.
 - **Drei Paarungen:** (1) *Anker* — der Steering-Loop-Eintrag trägt
